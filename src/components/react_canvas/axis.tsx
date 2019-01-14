@@ -27,7 +27,6 @@ export class Axis extends React.PureComponent<AxisProps> {
         tickSize,
         tickPadding,
         position,
-        tickLabelRotation,
       },
       axisTicksDimensions: {
         maxTickHeight,
@@ -37,6 +36,8 @@ export class Axis extends React.PureComponent<AxisProps> {
       },
       debug,
     } = this.props;
+
+    const tickLabelRotation = this.props.axisSpec.tickLabelRotation || 0;
 
     const textProps = {
       x: 0,
@@ -54,7 +55,7 @@ export class Axis extends React.PureComponent<AxisProps> {
       // TODO: this assumes that tickLabelRotation will be <= 360 and >=-360;
       // should have a transform somewhere that ensures we're doing modulo arithmetic
       // This computes whether we need to offset the positions of the tickLabelRotation
-      const hasOffset = tickLabelRotation! > 0 ? tickLabelRotation! > 180 : tickLabelRotation! > -180;
+      const hasOffset = tickLabelRotation > 0 ? tickLabelRotation > 180 : tickLabelRotation > -180;
 
       const yPos = tick.position - maxTickHeight / 2;
       const adjustedYPos = yPos + maxTickHeight;
@@ -71,7 +72,7 @@ export class Axis extends React.PureComponent<AxisProps> {
       textProps.height = maxTickLabelHeight;
       textProps.width = maxTickLabelWidth;
     } else {
-      const hasOffset = tickLabelRotation! > 0 ? tickLabelRotation! < 180 : tickLabelRotation! < -180;
+      const hasOffset = tickLabelRotation > 0 ? tickLabelRotation < 180 : tickLabelRotation < -180;
 
       textProps.y = position === Position.Top ? 0 : tickSize + tickPadding;
 
