@@ -23,8 +23,18 @@ export class Axis extends React.PureComponent<AxisProps> {
       axes: { tickFontFamily, tickFontSize, tickFontStyle },
     } = this.props.chartTheme;
     const {
-      axisSpec: { tickSize, tickPadding, position },
-      axisTicksDimensions: { maxTickHeight, maxTickWidth },
+      axisSpec: {
+        tickSize,
+        tickPadding,
+        position,
+        tickLabelRotation,
+      },
+      axisTicksDimensions: {
+        maxTickHeight,
+        maxTickWidth,
+        maxTickLabelWidth,
+        maxTickLabelHeight,
+      },
       debug,
     } = this.props;
 
@@ -35,20 +45,45 @@ export class Axis extends React.PureComponent<AxisProps> {
       width: 0,
       height: 0,
       verticalAlign: 'middle',
+      rotation: tickLabelRotation,
     };
+
+    const isRotated = tickLabelRotation !== 0;
+
     if (isVertical(position)) {
-      textProps.y = tick.position - maxTickHeight / 2;
-      textProps.align = position === Position.Left ? 'right' : 'left';
-      textProps.x = position === Position.Left ? -maxTickWidth : tickSize + tickPadding;
-      textProps.height = maxTickHeight;
-      textProps.width = maxTickWidth;
+      // TODO: this assumes that tickLabelRotation will be <= 360 and >=-360;
+      // should have a transform somewhere that ensures we're doing modulo arithmetic
+      // This computes whether we need to offset the positions of the tickLabelRotation
+      const hasOffset = tickLabelRotation! > 0 ? tickLabelRotation! > 180 : tickLabelRotation! > -180;
+
+      const yPos = tick.position - maxTickHeight / 2;
+      const adjustedYPos = yPos + maxTickHeight;
+
+      textProps.y = hasOffset ? adjustedYPos : yPos;
+
+      if (!isRotated) {
+        textProps.align = (position === Position.Left) ? 'right' : 'left';
+      }
+
+      const xPos = position === Position.Left ? - (maxTickWidth) : tickSize + tickPadding;
+      textProps.x = (hasOffset) ? xPos : xPos + (maxTickWidth / 2);
+
+      textProps.height = maxTickLabelHeight;
+      textProps.width = maxTickLabelWidth;
     } else {
+      const hasOffset = tickLabelRotation! > 0 ? tickLabelRotation! < 180 : tickLabelRotation! < -180;
+
       textProps.y = position === Position.Top ? 0 : tickSize + tickPadding;
-      textProps.x = tick.position - maxTickWidth / 2;
-      textProps.align = 'center';
-      textProps.height = maxTickHeight;
-      textProps.width = maxTickWidth;
-      textProps.verticalAlign = position === Position.Top ? 'bottom' : 'top';
+
+      const xPos = tick.position - maxTickWidth / 2;
+      textProps.x = hasOffset ? xPos + maxTickWidth : xPos;
+
+      if (!isRotated) {
+        textProps.verticalAlign = position === Position.Top ? 'bottom' : 'top';
+      }
+
+      textProps.height = maxTickLabelHeight;
+      textProps.width = maxTickLabelWidth;
     }
     return (
       <Group key={`tick-${i}`}>
