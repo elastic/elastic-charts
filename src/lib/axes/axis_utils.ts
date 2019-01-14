@@ -8,7 +8,7 @@ import { Dimensions, Margins } from '../utils/dimensions';
 import { Domain } from '../utils/domain';
 import { AxisId } from '../utils/ids';
 import { Scale, ScaleType } from '../utils/scales/scales';
-import { BBoxCalculator } from './bbox_calculator';
+import { BBox, BBoxCalculator } from './bbox_calculator';
 
 export interface AxisTick {
   value: number | string;
@@ -24,6 +24,8 @@ export interface AxisTicksDimensions {
   tickLabels: string[];
   maxTickWidth: number;
   maxTickHeight: number;
+  maxTickLabelWidth: number;
+  maxTickLabelHeight: number;
 }
 
 /**
@@ -53,7 +55,13 @@ export function computeAxisTicksDimensions(
   if (!scale) {
     throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
   }
-  const dimensions = computeTickDimensions(scale, axisSpec.tickFormat, bboxCalculator);
+  const dimensions = computeTickDimensions(
+    scale,
+    axisSpec.tickFormat,
+    bboxCalculator,
+    axisSpec.tickLabelRotation,
+  );
+
   return {
     axisScaleDomain: xDomain.domain,
     axisScaleType: xDomain.scaleType,
@@ -81,10 +89,25 @@ export function getScaleForAxisSpec(
   }
 }
 
+function computeRotatedLabelDimensions(unrotatedDims: BBox, degreesRotation: number): BBox {
+  const { width, height } = unrotatedDims;
+
+  const radians = degreesRotation * Math.PI / 180;
+
+  const rotatedHeight = Math.abs(width * Math.sin(radians)) + Math.abs(height * Math.cos(radians));
+  const rotatedWidth = Math.abs(width * Math.cos(radians)) + Math.abs(height * Math.sin(radians));
+
+  return {
+    width: rotatedWidth,
+    height: rotatedHeight,
+  };
+}
+
 function computeTickDimensions(
   scale: Scale,
   tickFormat: TickFormatter,
   bboxCalculator: BBoxCalculator,
+  tickLabelRotation: number = 0,
 ) {
   const tickValues = scale.ticks();
   const tickLabels = tickValues.map(tickFormat);
@@ -95,20 +118,31 @@ function computeTickDimensions(
         width: 0,
         height: 0,
       });
+
+      const rotatedBbox = computeRotatedLabelDimensions(bbox, tickLabelRotation);
+
       return {
-        width: Math.ceil(bbox.width),
-        height: Math.ceil(bbox.height),
+        width: Math.ceil(rotatedBbox.width),
+        height: Math.ceil(rotatedBbox.height),
+        textWidth: Math.ceil(bbox.width),
+        textHeight: Math.ceil(bbox.height),
       };
     })
     .filter((d) => d);
   const maxTickWidth = max(ticksDimensions, (bbox) => bbox.width) || 0;
   const maxTickHeight = max(ticksDimensions, (bbox) => bbox.height) || 0;
+
+  const maxTickLabelWidth = max(ticksDimensions, (bbox) => bbox.textWidth) || 0;
+  const maxTickLabelHeight = max(ticksDimensions, (bbox) => bbox.textHeight) || 0;
+
   return {
     tickValues,
     tickLabels,
     ticksDimensions,
     maxTickWidth,
     maxTickHeight,
+    maxTickLabelWidth,
+    maxTickLabelHeight,
   };
 }
 

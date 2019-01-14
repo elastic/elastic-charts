@@ -33,6 +33,8 @@ describe('Computed chart dimensions', () => {
     tickLabels: ['first', 'second'],
     maxTickWidth: 10,
     maxTickHeight: 10,
+    maxTickLabelWidth: 10, // TODO update these w/ the right values
+    maxTickLabelHeight: 10, // TODO update these w/ the right values
   };
   const axis1Spec = {
     id: getAxisId('axis_1'),

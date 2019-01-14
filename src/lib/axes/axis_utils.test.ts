@@ -33,7 +33,7 @@ describe('Axis computational utils', () => {
   const originalGetBBox = SVGElement.prototype.getBoundingClientRect;
   beforeEach(
     () =>
-      (SVGElement.prototype.getBoundingClientRect = function() {
+      (SVGElement.prototype.getBoundingClientRect = function () {
         const text = this.textContent || 0;
         return { ...mockedRect, width: Number(text) * 10, heigh: Number(text) * 10 };
       }),
@@ -202,6 +202,8 @@ describe('Axis computational utils', () => {
       tickLabels: ['0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1'],
       maxTickWidth: 10,
       maxTickHeight: 20,
+      maxTickLabelWidth: 10, // TODO update these w/ the right values
+      maxTickLabelHeight: 10, // TODO update these w/ the right values
     };
     const visibleTicks = getVisibleTicks(allTicks, verticalAxisSpec, axis2Dims, chartDim, 0);
     const expectedVisibleTicks = [
