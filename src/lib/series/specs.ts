@@ -119,6 +119,7 @@ export interface AxisSpec {
   tickPadding: number;
   /** A function called to format each single tick label */
   tickFormat: TickFormatter;
+  tickLabelRotation?: number;
   /** The axis title */
   title?: string;
 }
