@@ -11,6 +11,7 @@ import {
   getMinMaxRange,
   getScaleForAxisSpec,
   getVisibleTicks,
+  hasLabelOffset,
 } from './axis_utils';
 import { SvgTextBBoxCalculator } from './svg_text_bbox_calculator';
 
@@ -104,6 +105,20 @@ describe('Axis computational utils', () => {
     const dims45 = computeRotatedLabelDimensions({ width: 1, height: 1 }, 45);
     expect(dims45.width).toBeCloseTo(Math.sqrt(2));
     expect(dims45.height).toBeCloseTo(Math.sqrt(2));
+  });
+
+  test('should determine if an axis label should have a position offset', () => {
+    expect(hasLabelOffset(true, 270)).toBe(true);
+    expect(hasLabelOffset(true, -90)).toBe(true);
+
+    expect(hasLabelOffset(true, 90)).toBe(false);
+    expect(hasLabelOffset(true, -270)).toBe(false);
+
+    expect(hasLabelOffset(false, 270)).toBe(false);
+    expect(hasLabelOffset(false, -90)).toBe(false);
+
+    expect(hasLabelOffset(false, -270)).toBe(true);
+    expect(hasLabelOffset(false, 90)).toBe(true);
   });
 
   test('should generate a valid scale', () => {
