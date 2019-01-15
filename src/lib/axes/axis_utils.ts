@@ -20,7 +20,6 @@ export interface AxisTicksDimensions {
   axisScaleType: ScaleType;
   axisScaleDomain: Domain;
   tickValues: string[] | number[];
-  ticksDimensions: Array<{ width: number; height: number }>;
   tickLabels: string[];
   maxTickWidth: number;
   maxTickHeight: number;
@@ -112,8 +111,8 @@ function computeTickDimensions(
   const tickValues = scale.ticks();
   const tickLabels = tickValues.map(tickFormat);
 
-  const ticksDimensions = tickLabels
-    .map((tickLabel: string) => {
+  const { maxTickWidth, maxTickHeight, maxTickLabelWidth, maxTickLabelHeight } = tickLabels
+    .reduce((acc: { [key: string]: number }, tickLabel: string) => {
       const bbox = bboxCalculator.compute(tickLabel).getOrElse({
         width: 0,
         height: 0,
@@ -121,24 +120,27 @@ function computeTickDimensions(
 
       const rotatedBbox = computeRotatedLabelDimensions(bbox, tickLabelRotation);
 
-      return {
-        width: Math.ceil(rotatedBbox.width),
-        height: Math.ceil(rotatedBbox.height),
-        textWidth: Math.ceil(bbox.width),
-        textHeight: Math.ceil(bbox.height),
-      };
-    })
-    .filter((d) => d);
-  const maxTickWidth = max(ticksDimensions, (bbox) => bbox.width) || 0;
-  const maxTickHeight = max(ticksDimensions, (bbox) => bbox.height) || 0;
+      const width = Math.ceil(rotatedBbox.width);
+      const height = Math.ceil(rotatedBbox.height);
+      const labelWidth = Math.ceil(bbox.width);
+      const labelHeight = Math.ceil(bbox.height);
 
-  const maxTickLabelWidth = max(ticksDimensions, (bbox) => bbox.textWidth) || 0;
-  const maxTickLabelHeight = max(ticksDimensions, (bbox) => bbox.textHeight) || 0;
+      const prevWidth = acc.maxTickWidth;
+      const prevHeight = acc.maxTickHeight;
+      const prevLabelWidth = acc.maxTickLabelWidth;
+      const prevLabelHeight = acc.maxTickLabelHeight;
+
+      return {
+        maxTickWidth: prevWidth > width ? prevWidth : width,
+        maxTickHeight: prevHeight > height ? prevHeight : height,
+        maxTickLabelWidth: prevLabelWidth > labelWidth ? prevLabelWidth : labelWidth,
+        maxTickLabelHeight: prevLabelHeight > labelHeight ? prevLabelHeight : labelHeight,
+      };
+    }, { maxTickWidth: 0, maxTickHeight: 0, maxTickLabelWidth: 0, maxTickLabelHeight: 0 });
 
   return {
     tickValues,
     tickLabels,
-    ticksDimensions,
     maxTickWidth,
     maxTickHeight,
     maxTickLabelWidth,
