@@ -88,7 +88,7 @@ export function getScaleForAxisSpec(
   }
 }
 
-function computeRotatedLabelDimensions(unrotatedDims: BBox, degreesRotation: number): BBox {
+export function computeRotatedLabelDimensions(unrotatedDims: BBox, degreesRotation: number): BBox {
   const { width, height } = unrotatedDims;
 
   const radians = degreesRotation * Math.PI / 180;

@@ -6,6 +6,7 @@ import { getAxisId, getGroupId } from '../utils/ids';
 import { ScaleType } from '../utils/scales/scales';
 import {
   computeAxisTicksDimensions,
+  computeRotatedLabelDimensions,
   getAvailableTicks,
   getMinMaxRange,
   getScaleForAxisSpec,
@@ -53,8 +54,8 @@ describe('Axis computational utils', () => {
     tickLabels: ['0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1'],
     maxTickWidth: 10,
     maxTickHeight: 10,
-    maxTickLabelWidth: 10, // TODO update these w/ the right values
-    maxTickLabelHeight: 10, // TODO update these w/ the right values
+    maxTickLabelWidth: 10,
+    maxTickLabelHeight: 10,
   };
   const verticalAxisSpec = {
     id: getAxisId('axis_1'),
@@ -88,16 +89,21 @@ describe('Axis computational utils', () => {
 
   test('should compute axis dimensions', () => {
     const bboxCalculator = new SvgTextBBoxCalculator();
-    const axisDimensions = computeAxisTicksDimensions(
-      verticalAxisSpec,
-      xDomain,
-      [yDomain],
-      1,
-      bboxCalculator,
-      0,
-    );
+    const axisDimensions = computeAxisTicksDimensions(verticalAxisSpec, xDomain, [yDomain], 1, bboxCalculator, 0);
     expect(axisDimensions).toEqual(axis1Dims);
     bboxCalculator.destroy();
+  });
+
+  test('should compute dimensions for the bounding box containing a rotated label', () => {
+    expect(computeRotatedLabelDimensions({ width: 1, height: 2 }, 0)).toEqual({ width: 1, height: 2 });
+
+    const dims90 = computeRotatedLabelDimensions({ width: 1, height: 2 }, 90);
+    expect(dims90.width).toBeCloseTo(2);
+    expect(dims90.height).toBeCloseTo(1);
+
+    const dims45 = computeRotatedLabelDimensions({ width: 1, height: 1 }, 45);
+    expect(dims45.width).toBeCloseTo(Math.sqrt(2));
+    expect(dims45.height).toBeCloseTo(Math.sqrt(2));
   });
 
   test('should generate a valid scale', () => {
