@@ -184,8 +184,8 @@ describe('Axis computational utils', () => {
       tickLabels: ['0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1'],
       maxTickWidth: 10,
       maxTickHeight: 20,
-      maxTickLabelWidth: 10, // TODO update these w/ the right values
-      maxTickLabelHeight: 10, // TODO update these w/ the right values
+      maxTickLabelWidth: 10,
+      maxTickLabelHeight: 20,
     };
     const visibleTicks = getVisibleTicks(allTicks, verticalAxisSpec, axis2Dims, chartDim, 0);
     const expectedVisibleTicks = [
