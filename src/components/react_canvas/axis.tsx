@@ -1,6 +1,8 @@
 import React from 'react';
 import { Group, Line, Rect, Text } from 'react-konva';
-import { AxisTick, AxisTicksDimensions, isHorizontal, isVertical } from '../../lib/axes/axis_utils';
+import {
+  AxisTick, AxisTicksDimensions, getTickLabelProps, hasLabelOffset, isHorizontal, isVertical,
+} from '../../lib/axes/axis_utils';
 import { AxisSpec, Position } from '../../lib/series/specs';
 import { Theme } from '../../lib/themes/theme';
 import { Dimensions } from '../../lib/utils/dimensions';
@@ -28,64 +30,34 @@ export class Axis extends React.PureComponent<AxisProps> {
         tickPadding,
         position,
       },
-      axisTicksDimensions: {
-        maxTickHeight,
-        maxTickWidth,
-        maxTickLabelWidth,
-        maxTickLabelHeight,
-      },
+      axisTicksDimensions,
       debug,
     } = this.props;
 
     const tickLabelRotation = this.props.axisSpec.tickLabelRotation || 0;
 
+    const isContainerVertical = isVertical(position);
+
+    const tickLabelProps = getTickLabelProps(
+      isContainerVertical,
+      tickLabelRotation,
+      tickSize,
+      tickPadding,
+      tick.position,
+      position,
+      axisTicksDimensions,
+      hasLabelOffset(isContainerVertical, tickLabelRotation),
+    );
+
+    const { maxTickLabelWidth, maxTickLabelHeight } = axisTicksDimensions;
+
     const textProps = {
-      x: 0,
-      y: 0,
-      align: 'center',
-      width: 0,
-      height: 0,
-      verticalAlign: 'middle',
+      width: maxTickLabelWidth,
+      height: maxTickLabelHeight,
       rotation: tickLabelRotation,
+      ...tickLabelProps,
     };
 
-    const isRotated = tickLabelRotation !== 0;
-
-    if (isVertical(position)) {
-      // TODO: this assumes that tickLabelRotation will be <= 360 and >=-360;
-      // should have a transform somewhere that ensures we're doing modulo arithmetic
-      // This computes whether we need to offset the positions of the tickLabelRotation
-      const hasOffset = tickLabelRotation > 0 ? tickLabelRotation > 180 : tickLabelRotation > -180;
-
-      const yPos = tick.position - maxTickHeight / 2;
-      const adjustedYPos = yPos + maxTickHeight;
-
-      textProps.y = hasOffset ? adjustedYPos : yPos;
-
-      if (!isRotated) {
-        textProps.align = (position === Position.Left) ? 'right' : 'left';
-      }
-
-      const xPos = position === Position.Left ? - (maxTickWidth) : tickSize + tickPadding;
-      textProps.x = (hasOffset) ? xPos : xPos + (maxTickWidth / 2);
-
-      textProps.height = maxTickLabelHeight;
-      textProps.width = maxTickLabelWidth;
-    } else {
-      const hasOffset = tickLabelRotation > 0 ? tickLabelRotation < 180 : tickLabelRotation < -180;
-
-      textProps.y = position === Position.Top ? 0 : tickSize + tickPadding;
-
-      const xPos = tick.position - maxTickWidth / 2;
-      textProps.x = hasOffset ? xPos + maxTickWidth : xPos;
-
-      if (!isRotated) {
-        textProps.verticalAlign = position === Position.Top ? 'bottom' : 'top';
-      }
-
-      textProps.height = maxTickLabelHeight;
-      textProps.width = maxTickLabelWidth;
-    }
     return (
       <Group key={`tick-${i}`}>
         {debug && <Rect {...textProps} stroke="black" strokeWidth={1} fill="violet" />}

@@ -148,6 +148,60 @@ function computeTickDimensions(
   };
 }
 
+export function hasLabelOffset(isContainerVertical: boolean, rotation: number): boolean {
+  if (isContainerVertical) {
+    return rotation > 0 ? rotation > 180 : rotation > -180;
+  }
+
+  return rotation > 0 ? rotation < 180 : rotation < -180;
+}
+
+export function getTickLabelProps(
+  isContainerVertical: boolean,
+  tickLabelRotation: number,
+  tickSize: number,
+  tickPadding: number,
+  tickPosition: number,
+  labelPosition: Position,
+  axisTicksDimensions: AxisTicksDimensions,
+  hasOffset: boolean,
+): {} {
+  const {
+    maxTickHeight,
+    maxTickWidth,
+  } = axisTicksDimensions;
+
+  const isRotated = tickLabelRotation !== 0;
+  let align = 'center';
+  let verticalAlign = 'middle';
+
+  if (isContainerVertical) {
+    if (!isRotated) {
+      align = (labelPosition === Position.Left) ? 'right' : 'left';
+    }
+
+    const xPos = labelPosition === Position.Left ? - (maxTickWidth) : tickSize + tickPadding;
+
+    return {
+      x: hasOffset ? xPos : xPos + (maxTickWidth / 2),
+      y: hasOffset ? tickPosition - maxTickHeight / 2 + maxTickHeight : tickPosition - maxTickHeight / 2,
+      align,
+      verticalAlign,
+    };
+  }
+
+  if (!isRotated) {
+    verticalAlign = labelPosition === Position.Top ? 'bottom' : 'top';
+  }
+
+  return {
+    x: hasOffset ? tickPosition - maxTickWidth / 2 + maxTickWidth : tickPosition - maxTickWidth / 2,
+    y: labelPosition === Position.Top ? 0 : tickSize + tickPadding,
+    align,
+    verticalAlign,
+  };
+}
+
 export function getMinMaxRange(
   axisPosition: Position,
   chartRotation: Rotation,
