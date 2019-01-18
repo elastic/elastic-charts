@@ -10,6 +10,7 @@ import {
   getAvailableTicks,
   getMinMaxRange,
   getScaleForAxisSpec,
+  getVerticalTickLabelX,
   getVisibleTicks,
   hasLabelOffset,
 } from './axis_utils';
@@ -107,7 +108,7 @@ describe('Axis computational utils', () => {
     expect(dims45.height).toBeCloseTo(Math.sqrt(2));
   });
 
-  test('should determine if an axis label should have a position offset', () => {
+  test('should determine if a vertical or horizontal axis rotation is clockwise', () => {
     expect(hasLabelOffset(true, 0)).toBe(false);
     expect(hasLabelOffset(false, 0)).toBe(false);
 
@@ -122,6 +123,34 @@ describe('Axis computational utils', () => {
 
     expect(hasLabelOffset(false, -270)).toBe(true);
     expect(hasLabelOffset(false, 90)).toBe(true);
+  });
+
+  test('should compute vertical tickLabelPositions correctly', () => {
+    const isAxisLeft = true;
+    const maxTickWidth = 20;
+    const tickSize = 5;
+    const tickPadding = 5;
+    let tickLabelRotation = 0;
+
+    expect(getVerticalTickLabelX(isAxisLeft,
+      maxTickWidth,
+      tickSize,
+      tickPadding,
+      tickLabelRotation)).toBe(-20);
+
+    tickLabelRotation = -90;
+    expect(getVerticalTickLabelX(isAxisLeft,
+      maxTickWidth,
+      tickSize,
+      tickPadding,
+      tickLabelRotation)).toBe(-20);
+
+    tickLabelRotation = 90;
+    expect(getVerticalTickLabelX(isAxisLeft,
+      maxTickWidth,
+      tickSize,
+      tickPadding,
+      tickLabelRotation)).toBe(0);
   });
 
   test('should generate a valid scale', () => {

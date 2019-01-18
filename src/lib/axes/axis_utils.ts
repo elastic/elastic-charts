@@ -160,16 +160,39 @@ export function hasLabelOffset(isContainerVertical: boolean, rotation: number): 
   return rotation > 0 ? rotation < 180 : rotation < -180;
 }
 
+export interface TickLabelProps {
+  x: number;
+  y: number;
+  align: string;
+  verticalAlign: string;
+}
+
+export function getVerticalTickLabelX(
+  isAxisLeft: boolean,
+  maxTickWidth: number,
+  tickSize: number,
+  tickPadding: number,
+  tickLabelRotation: number,
+): number {
+  if (isAxisLeft) {
+    const xPos = tickLabelRotation > 0 ? 0 : - (maxTickWidth);
+
+    return xPos;
+  }
+
+  return tickSize + tickPadding;
+}
+
 export function getTickLabelProps(
-  isContainerVertical: boolean,
+  isVerticalAxis: boolean,
   tickLabelRotation: number,
   tickSize: number,
   tickPadding: number,
   tickPosition: number,
   labelPosition: Position,
   axisTicksDimensions: AxisTicksDimensions,
-  hasOffset: boolean,
-): {} {
+  isClockwise: boolean,
+): TickLabelProps {
   const {
     maxTickHeight,
     maxTickWidth,
@@ -179,16 +202,24 @@ export function getTickLabelProps(
   let align = 'center';
   let verticalAlign = 'middle';
 
-  if (isContainerVertical) {
+  if (isVerticalAxis) {
+    const isAxisLeft = labelPosition === Position.Left;
+
     if (!isRotated) {
-      align = (labelPosition === Position.Left) ? 'right' : 'left';
+      align = isAxisLeft ? 'right' : 'left';
     }
 
-    const xPos = labelPosition === Position.Left ? - (maxTickWidth) : tickSize + tickPadding;
+    const xPos = getVerticalTickLabelX(
+      isAxisLeft,
+      maxTickWidth,
+      tickSize,
+      tickPadding,
+      tickLabelRotation,
+    );
 
     return {
-      x: hasOffset ? xPos + (maxTickWidth / 2) : xPos,
-      y: hasOffset ? tickPosition - maxTickHeight / 2 + maxTickHeight : tickPosition - maxTickHeight / 2,
+      x: xPos,
+      y: isClockwise ? tickPosition - maxTickHeight / 2 + maxTickHeight : tickPosition - maxTickHeight / 2,
       align,
       verticalAlign,
     };
@@ -199,7 +230,7 @@ export function getTickLabelProps(
   }
 
   return {
-    x: hasOffset ? tickPosition - maxTickWidth / 2 + maxTickWidth : tickPosition - maxTickWidth / 2,
+    x: isClockwise ? tickPosition - maxTickWidth / 2 + maxTickWidth : tickPosition - maxTickWidth / 2,
     y: labelPosition === Position.Top ? 0 : tickSize + tickPadding,
     align,
     verticalAlign,

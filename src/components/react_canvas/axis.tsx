@@ -52,11 +52,28 @@ export class Axis extends React.PureComponent<AxisProps> {
     const { maxTickLabelWidth, maxTickLabelHeight } = axisTicksDimensions;
 
     const textProps = {
-      width: maxTickLabelWidth,
+      width: maxTickLabelWidth, // TODO rename these to labelText & labelBbox
       height: maxTickLabelHeight,
       rotation: tickLabelRotation,
       ...tickLabelProps,
     };
+
+    // const unrotatedTickLabelProps = getTickLabelProps(
+    //   isContainerVertical,
+    //   0,
+    //   tickSize,
+    //   tickPadding,
+    //   tick.position,
+    //   position,
+    //   axisTicksDimensions,
+    //   hasLabelOffset(isContainerVertical, 0),
+    // );
+
+    // const unrotatedTextProps = {
+    //   ...textProps,
+    //   ...unrotatedTickLabelProps,
+    //   rotation: 0,
+    // };
 
     return (
       <Group key={`tick-${i}`}>
