@@ -49,7 +49,6 @@ storiesOf('Axis', module)
   .add('tick label rotation', () => {
     return (
       <Chart renderer="canvas" size={[500, 300]} className={'story-chart'}>
-        <Settings debug={boolean('debug', false)} />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
@@ -88,6 +87,7 @@ storiesOf('Axis', module)
           ]}
           yScaleToDataExtent={false}
         />
+        <Settings debug={boolean('debug', false)} />
       </Chart>);
   })
   .add('4 axes', () => {
