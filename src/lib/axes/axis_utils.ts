@@ -187,7 +187,7 @@ export function getTickLabelProps(
     const xPos = labelPosition === Position.Left ? - (maxTickWidth) : tickSize + tickPadding;
 
     return {
-      x: hasOffset ? xPos : xPos + (maxTickWidth / 2),
+      x: hasOffset ? xPos + (maxTickWidth / 2) : xPos,
       y: hasOffset ? tickPosition - maxTickHeight / 2 + maxTickHeight : tickPosition - maxTickHeight / 2,
       align,
       verticalAlign,
