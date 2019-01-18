@@ -108,6 +108,9 @@ describe('Axis computational utils', () => {
   });
 
   test('should determine if an axis label should have a position offset', () => {
+    expect(hasLabelOffset(true, 0)).toBe(false);
+    expect(hasLabelOffset(false, 0)).toBe(false);
+
     expect(hasLabelOffset(true, 270)).toBe(true);
     expect(hasLabelOffset(true, -90)).toBe(true);
 
