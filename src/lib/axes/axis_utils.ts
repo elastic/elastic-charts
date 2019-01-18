@@ -149,6 +149,10 @@ function computeTickDimensions(
 }
 
 export function hasLabelOffset(isContainerVertical: boolean, rotation: number): boolean {
+  if (rotation === 0) {
+    return false;
+  }
+
   if (isContainerVertical) {
     return rotation > 0 ? rotation > 180 : rotation > -180;
   }
