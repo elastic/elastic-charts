@@ -1,4 +1,4 @@
-import { max } from 'd3-array';
+
 import { XDomain } from '../series/domains/x_domain';
 import { YDomain } from '../series/domains/y_domain';
 import { computeXScale, computeYScales } from '../series/scales';
