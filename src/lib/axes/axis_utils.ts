@@ -148,18 +148,6 @@ function computeTickDimensions(
   };
 }
 
-export function hasLabelOffset(isContainerVertical: boolean, rotation: number): boolean {
-  if (rotation === 0) {
-    return false;
-  }
-
-  if (isContainerVertical) {
-    return rotation > 0 ? rotation > 180 : rotation > -180;
-  }
-
-  return rotation > 0 ? rotation < 180 : rotation < -180;
-}
-
 export interface TickLabelProps {
   x: number;
   y: number;
@@ -172,15 +160,19 @@ export function getVerticalTickLabelX(
   maxTickWidth: number,
   tickSize: number,
   tickPadding: number,
-  tickLabelRotation: number,
 ): number {
   if (isAxisLeft) {
-    const xPos = tickLabelRotation > 0 ? 0 : - (maxTickWidth);
-
-    return xPos;
+    return - (maxTickWidth);
   }
 
   return tickSize + tickPadding;
+}
+
+export function getHorizontalTickLabelX(
+  tickPosition: number,
+  maxTickWidth: number,
+): number {
+  return tickPosition - maxTickWidth / 2;
 }
 
 export function getTickLabelProps(
@@ -191,7 +183,6 @@ export function getTickLabelProps(
   tickPosition: number,
   labelPosition: Position,
   axisTicksDimensions: AxisTicksDimensions,
-  isClockwise: boolean,
 ): TickLabelProps {
   const {
     maxTickHeight,
@@ -214,12 +205,13 @@ export function getTickLabelProps(
       maxTickWidth,
       tickSize,
       tickPadding,
-      tickLabelRotation,
     );
+
+    const yPos = tickPosition - maxTickHeight / 2;
 
     return {
       x: xPos,
-      y: isClockwise ? tickPosition - maxTickHeight / 2 + maxTickHeight : tickPosition - maxTickHeight / 2,
+      y: yPos,
       align,
       verticalAlign,
     };
@@ -230,7 +222,7 @@ export function getTickLabelProps(
   }
 
   return {
-    x: isClockwise ? tickPosition - maxTickWidth / 2 + maxTickWidth : tickPosition - maxTickWidth / 2,
+    x: (tickPosition - maxTickWidth / 2),
     y: labelPosition === Position.Top ? 0 : tickSize + tickPadding,
     align,
     verticalAlign,

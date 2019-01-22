@@ -1,7 +1,7 @@
 import React from 'react';
 import { Group, Line, Rect, Text } from 'react-konva';
 import {
-  AxisTick, AxisTicksDimensions, getTickLabelProps, hasLabelOffset, isHorizontal, isVertical,
+  AxisTick, AxisTicksDimensions, getTickLabelProps, isHorizontal, isVertical,
 } from '../../lib/axes/axis_utils';
 import { AxisSpec, Position } from '../../lib/series/specs';
 import { Theme } from '../../lib/themes/theme';
@@ -36,26 +36,29 @@ export class Axis extends React.PureComponent<AxisProps> {
 
     const tickLabelRotation = this.props.axisSpec.tickLabelRotation || 0;
 
-    const isContainerVertical = isVertical(position);
+    const isVerticalAxis = isVertical(position);
 
     const tickLabelProps = getTickLabelProps(
-      isContainerVertical,
+      isVerticalAxis,
       tickLabelRotation,
       tickSize,
       tickPadding,
       tick.position,
       position,
       axisTicksDimensions,
-      hasLabelOffset(isContainerVertical, tickLabelRotation),
     );
 
-    const { maxTickLabelWidth, maxTickLabelHeight } = axisTicksDimensions;
+    const { maxTickLabelWidth, maxTickLabelHeight, maxTickWidth, maxTickHeight } = axisTicksDimensions;
 
     const textProps = {
       width: maxTickLabelWidth, // TODO rename these to labelText & labelBbox
       height: maxTickLabelHeight,
       rotation: tickLabelRotation,
+      offsetX: maxTickLabelWidth / 2,
+      offsetY: maxTickLabelHeight / 2,
       ...tickLabelProps,
+      x: tickLabelProps.x + maxTickWidth / 2, // This is necessary for centering the origin point for rotation
+      y: tickLabelProps.y + maxTickHeight / 2,
     };
 
     // const unrotatedTickLabelProps = getTickLabelProps(
