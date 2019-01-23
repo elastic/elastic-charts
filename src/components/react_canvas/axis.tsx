@@ -48,12 +48,12 @@ export class Axis extends React.PureComponent<AxisProps> {
       axisTicksDimensions,
     );
 
-    const { maxTickLabelWidth, maxTickLabelHeight } = axisTicksDimensions;
+    const { maxLabelTextWidth, maxLabelTextHeight } = axisTicksDimensions;
     const centeredRectProps = centerRotationOrigin(axisTicksDimensions, { x: tickLabelProps.x, y: tickLabelProps.y });
 
     const textProps = {
-      width: maxTickLabelWidth, // TODO rename these to labelText & labelBbox
-      height: maxTickLabelHeight,
+      width: maxLabelTextWidth,
+      height: maxLabelTextHeight,
       rotation: tickLabelRotation,
       ...tickLabelProps,
       ...centeredRectProps,
@@ -77,7 +77,7 @@ export class Axis extends React.PureComponent<AxisProps> {
   private renderTickLine = (tick: AxisTick, i: number) => {
     const {
       axisSpec: { tickSize, tickPadding, position },
-      axisTicksDimensions: { maxTickHeight },
+      axisTicksDimensions: { maxLabelBboxHeight },
     } = this.props;
 
     const lineProps = [];
@@ -89,9 +89,9 @@ export class Axis extends React.PureComponent<AxisProps> {
       lineProps[3] = tick.position;
     } else {
       lineProps[0] = tick.position;
-      lineProps[1] = position === Position.Top ? maxTickHeight + tickPadding : 0;
+      lineProps[1] = position === Position.Top ? maxLabelBboxHeight + tickPadding : 0;
       lineProps[2] = tick.position;
-      lineProps[3] = position === Position.Top ? maxTickHeight + tickPadding + tickSize : tickSize;
+      lineProps[3] = position === Position.Top ? maxLabelBboxHeight + tickPadding + tickSize : tickSize;
     }
 
     return <Line key={`tick-${i}`} points={lineProps} stroke={'gray'} strokeWidth={1} />;
@@ -125,9 +125,9 @@ export class Axis extends React.PureComponent<AxisProps> {
       lineProps[0] = 0;
       lineProps[2] = axisPosition.width;
       lineProps[1] =
-        position === Position.Top ? axisTicksDimensions.maxTickHeight + tickSize + tickPadding : 0;
+        position === Position.Top ? axisTicksDimensions.maxLabelBboxHeight + tickSize + tickPadding : 0;
       lineProps[3] =
-        position === Position.Top ? axisTicksDimensions.maxTickHeight + tickSize + tickPadding : 0;
+        position === Position.Top ? axisTicksDimensions.maxLabelBboxHeight + tickSize + tickPadding : 0;
     }
     return <Line points={lineProps} stroke={'gray'} strokeWidth={1} />;
   }
@@ -147,7 +147,7 @@ export class Axis extends React.PureComponent<AxisProps> {
     const {
       axisPosition: { height },
       axisSpec: { title, position, tickSize, tickPadding },
-      axisTicksDimensions: { maxTickWidth },
+      axisTicksDimensions: { maxLabelBboxWidth },
       chartTheme: {
         axes: { titleFontFamily, titleFontSize, titleFontStyle, titlePadding },
       },
@@ -159,8 +159,8 @@ export class Axis extends React.PureComponent<AxisProps> {
     const top = height;
     const left =
       position === Position.Left
-        ? -(maxTickWidth + titleFontSize + titlePadding)
-        : tickSize + tickPadding + maxTickWidth + titlePadding;
+        ? -(maxLabelBboxWidth + titleFontSize + titlePadding)
+        : tickSize + tickPadding + maxLabelBboxWidth + titlePadding;
 
     return (
       <Group>
@@ -195,7 +195,7 @@ export class Axis extends React.PureComponent<AxisProps> {
     const {
       axisPosition: { width, height },
       axisSpec: { title, position, tickSize, tickPadding },
-      axisTicksDimensions: { maxTickHeight },
+      axisTicksDimensions: { maxLabelBboxHeight },
       chartTheme: {
         axes: { titleFontSize },
       },
@@ -206,7 +206,7 @@ export class Axis extends React.PureComponent<AxisProps> {
       return;
     }
 
-    const top = position === Position.Top ? -maxTickHeight : maxTickHeight + tickPadding + tickSize;
+    const top = position === Position.Top ? -maxLabelBboxHeight : maxLabelBboxHeight + tickPadding + tickSize;
     const left = 0;
     return (
       <Group>
@@ -215,7 +215,7 @@ export class Axis extends React.PureComponent<AxisProps> {
             x={left}
             y={top}
             width={width}
-            height={maxTickHeight}
+            height={maxLabelBboxHeight}
             stroke="black"
             strokeWidth={1}
             fill="violet"

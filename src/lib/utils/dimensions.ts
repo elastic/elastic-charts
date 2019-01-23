@@ -37,7 +37,7 @@ export function computeChartDimensions(
   let hTopAxisSpecHeight = 0;
   let hBottomAxisSpecHeight = 0;
 
-  axisDimensions.forEach(({ maxTickWidth = 0, maxTickHeight = 0 }, id) => {
+  axisDimensions.forEach(({ maxLabelBboxWidth = 0, maxLabelBboxHeight = 0 }, id) => {
     const axisSpec = axisSpecs.get(id);
     if (!axisSpec) {
       return;
@@ -45,16 +45,16 @@ export function computeChartDimensions(
     const { position, tickSize, tickPadding } = axisSpec;
     switch (position) {
       case Position.Top:
-        hTopAxisSpecHeight += maxTickHeight + tickSize + tickPadding + chartMargins.top;
+        hTopAxisSpecHeight += maxLabelBboxHeight + tickSize + tickPadding + chartMargins.top;
         break;
       case Position.Bottom:
-        hBottomAxisSpecHeight += maxTickHeight + tickSize + tickPadding + chartMargins.bottom;
+        hBottomAxisSpecHeight += maxLabelBboxHeight + tickSize + tickPadding + chartMargins.bottom;
         break;
       case Position.Left:
-        vLeftAxisSpecWidth += maxTickWidth + tickSize + tickPadding + chartMargins.left;
+        vLeftAxisSpecWidth += maxLabelBboxWidth + tickSize + tickPadding + chartMargins.left;
         break;
       case Position.Right:
-        vRightAxisSpecWidth += maxTickWidth + tickSize + tickPadding + chartMargins.right;
+        vRightAxisSpecWidth += maxLabelBboxWidth + tickSize + tickPadding + chartMargins.right;
         break;
     }
   });

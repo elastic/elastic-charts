@@ -52,10 +52,10 @@ describe('Axis computational utils', () => {
     axisScaleDomain: [0, 1],
     tickValues: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
     tickLabels: ['0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1'],
-    maxTickWidth: 10,
-    maxTickHeight: 10,
-    maxTickLabelWidth: 10,
-    maxTickLabelHeight: 10,
+    maxLabelBboxWidth: 10,
+    maxLabelBboxHeight: 10,
+    maxLabelTextWidth: 10,
+    maxLabelTextHeight: 10,
   };
   const verticalAxisSpec = {
     id: getAxisId('axis_1'),
@@ -182,10 +182,10 @@ describe('Axis computational utils', () => {
       axisScaleDomain: [0, 1],
       tickValues: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
       tickLabels: ['0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1'],
-      maxTickWidth: 10,
-      maxTickHeight: 20,
-      maxTickLabelWidth: 10,
-      maxTickLabelHeight: 20,
+      maxLabelBboxWidth: 10,
+      maxLabelBboxHeight: 20,
+      maxLabelTextWidth: 10,
+      maxLabelTextHeight: 20,
     };
     const visibleTicks = getVisibleTicks(allTicks, verticalAxisSpec, axis2Dims, chartDim, 0);
     const expectedVisibleTicks = [

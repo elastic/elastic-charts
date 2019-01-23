@@ -31,10 +31,10 @@ describe('Computed chart dimensions', () => {
     tickValues: [0, 1],
     ticksDimensions: [{ width: 10, height: 10 }, { width: 10, height: 10 }],
     tickLabels: ['first', 'second'],
-    maxTickWidth: 10,
-    maxTickHeight: 10,
-    maxTickLabelWidth: 10,
-    maxTickLabelHeight: 10,
+    maxLabelBboxWidth: 10,
+    maxLabelBboxHeight: 10,
+    maxLabelTextWidth: 10,
+    maxLabelTextHeight: 10,
   };
   const axis1Spec = {
     id: getAxisId('axis_1'),
