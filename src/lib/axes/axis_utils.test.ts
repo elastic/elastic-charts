@@ -5,6 +5,7 @@ import { Position } from '../series/specs';
 import { getAxisId, getGroupId } from '../utils/ids';
 import { ScaleType } from '../utils/scales/scales';
 import {
+  centerRotationOrigin,
   computeAxisTicksDimensions,
   computeRotatedLabelDimensions,
   getAvailableTicks,
@@ -106,6 +107,7 @@ describe('Axis computational utils', () => {
     expect(dims45.height).toBeCloseTo(Math.sqrt(2));
   });
 
+  // TODO: these tests appear to be failing (also on master)
   test('should generate a valid scale', () => {
     const scale = getScaleForAxisSpec(verticalAxisSpec, xDomain, [yDomain], 0, 0, 0, 100);
     expect(scale).toBeDefined();
@@ -115,6 +117,7 @@ describe('Axis computational utils', () => {
     expect(scale!.ticks()).toEqual([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]);
   });
 
+  // TODO: these tests appear to be failing (also on master)
   test('should compute available ticks', () => {
     const scale = getScaleForAxisSpec(verticalAxisSpec, xDomain, [yDomain], 0, 0, 0, 100);
     const axisPositions = getAvailableTicks(verticalAxisSpec, scale!, 0);
@@ -234,4 +237,35 @@ describe('Axis computational utils', () => {
     });
     expect(minMax).toEqual({ minRange: 100, maxRange: 0 });
   });
+
+  test('should compute coordinates and offsets to anchor rotation origin from the center', () => {
+    const simpleCenteredProps = centerRotationOrigin({
+      maxLabelBboxWidth: 10,
+      maxLabelBboxHeight: 20,
+      maxLabelTextWidth: 10,
+      maxLabelTextHeight: 20,
+    }, { x: 0, y: 0 });
+
+    expect(simpleCenteredProps).toEqual({
+      offsetX: 5,
+      offsetY: 10,
+      x: 5,
+      y: 10,
+    });
+
+    const rotatedCenteredProps = centerRotationOrigin({
+      maxLabelBboxWidth: 10,
+      maxLabelBboxHeight: 20,
+      maxLabelTextWidth: 20,
+      maxLabelTextHeight: 10,
+    }, { x: 30, y: 40 });
+
+    expect(rotatedCenteredProps).toEqual({
+      offsetX: 10,
+      offsetY: 5,
+      x: 35,
+      y: 50,
+    });
+  });
+
 });

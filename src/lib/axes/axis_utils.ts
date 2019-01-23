@@ -155,8 +155,19 @@ export interface TickLabelProps {
   verticalAlign: string;
 }
 
+/**
+ * The Konva api sets the top right corner of a shape as the default origin of rotation.
+ * In order to apply rotation to tick labels while preserving their relative position to the axis,
+ * we compute offsets to apply to the Text element as well as adjust the x/y coordinates to adjust
+ * for these offsets.
+ */
 export function centerRotationOrigin(
-  axisTicksDimensions: AxisTicksDimensions,
+  axisTicksDimensions: {
+    maxLabelBboxWidth: number,
+    maxLabelBboxHeight: number,
+    maxLabelTextWidth: number,
+    maxLabelTextHeight: number,
+  },
   coordinates: { x: number, y: number }): { x: number, y: number, offsetX: number, offsetY: number } {
 
   const { maxLabelBboxWidth, maxLabelBboxHeight, maxLabelTextWidth, maxLabelTextHeight } = axisTicksDimensions;
