@@ -106,31 +106,6 @@ describe('Axis computational utils', () => {
     expect(dims45.height).toBeCloseTo(Math.sqrt(2));
   });
 
-  test('should compute vertical tickLabelPositions correctly', () => {
-    // const isAxisLeft = true;
-    // const maxTickWidth = 20;
-    // const tickSize = 5;
-    // const tickPadding = 5;
-
-    // expect(getVerticalTickLabelX(isAxisLeft,
-    //   maxTickWidth,
-    //   tickSize,
-    //   tickPadding,
-    // )).toBe(-20);
-
-    // expect(getVerticalTickLabelX(isAxisLeft,
-    //   maxTickWidth,
-    //   tickSize,
-    //   tickPadding,
-    // )).toBe(-20);
-
-    // expect(getVerticalTickLabelX(isAxisLeft,
-    //   maxTickWidth,
-    //   tickSize,
-    //   tickPadding,
-    // )).toBe(0);
-  });
-
   test('should generate a valid scale', () => {
     const scale = getScaleForAxisSpec(verticalAxisSpec, xDomain, [yDomain], 0, 0, 0, 100);
     expect(scale).toBeDefined();

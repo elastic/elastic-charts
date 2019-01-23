@@ -155,6 +155,20 @@ export interface TickLabelProps {
   verticalAlign: string;
 }
 
+export function centerRotationOrigin(
+  axisTicksDimensions: AxisTicksDimensions,
+  coordinates: { x: number, y: number }): { x: number, y: number, offsetX: number, offsetY: number } {
+
+  const { maxTickLabelWidth, maxTickLabelHeight, maxTickWidth, maxTickHeight } = axisTicksDimensions;
+
+  const offsetX = maxTickLabelWidth / 2;
+  const offsetY = maxTickLabelHeight / 2;
+  const x = coordinates.x + maxTickWidth / 2;
+  const y = coordinates.y + maxTickHeight / 2;
+
+  return { offsetX, offsetY, x, y };
+}
+
 export function getTickLabelProps(
   isVerticalAxis: boolean,
   tickLabelRotation: number,

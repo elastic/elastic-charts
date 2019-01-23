@@ -1,7 +1,7 @@
 import React from 'react';
 import { Group, Line, Rect, Text } from 'react-konva';
 import {
-  AxisTick, AxisTicksDimensions, getTickLabelProps, isHorizontal, isVertical,
+  AxisTick, AxisTicksDimensions, centerRotationOrigin, getTickLabelProps, isHorizontal, isVertical,
 } from '../../lib/axes/axis_utils';
 import { AxisSpec, Position } from '../../lib/series/specs';
 import { Theme } from '../../lib/themes/theme';
@@ -48,17 +48,15 @@ export class Axis extends React.PureComponent<AxisProps> {
       axisTicksDimensions,
     );
 
-    const { maxTickLabelWidth, maxTickLabelHeight, maxTickWidth, maxTickHeight } = axisTicksDimensions;
+    const { maxTickLabelWidth, maxTickLabelHeight } = axisTicksDimensions;
+    const centeredRectProps = centerRotationOrigin(axisTicksDimensions, { x: tickLabelProps.x, y: tickLabelProps.y });
 
     const textProps = {
       width: maxTickLabelWidth, // TODO rename these to labelText & labelBbox
       height: maxTickLabelHeight,
       rotation: tickLabelRotation,
-      offsetX: maxTickLabelWidth / 2,
-      offsetY: maxTickLabelHeight / 2,
       ...tickLabelProps,
-      x: tickLabelProps.x + maxTickWidth / 2, // This is necessary for centering the origin point for rotation
-      y: tickLabelProps.y + maxTickHeight / 2,
+      ...centeredRectProps,
     };
 
     return (
