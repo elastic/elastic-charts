@@ -155,26 +155,6 @@ export interface TickLabelProps {
   verticalAlign: string;
 }
 
-export function getVerticalTickLabelX(
-  isAxisLeft: boolean,
-  maxTickWidth: number,
-  tickSize: number,
-  tickPadding: number,
-): number {
-  if (isAxisLeft) {
-    return - (maxTickWidth);
-  }
-
-  return tickSize + tickPadding;
-}
-
-export function getHorizontalTickLabelX(
-  tickPosition: number,
-  maxTickWidth: number,
-): number {
-  return tickPosition - maxTickWidth / 2;
-}
-
 export function getTickLabelProps(
   isVerticalAxis: boolean,
   tickLabelRotation: number,
@@ -184,10 +164,7 @@ export function getTickLabelProps(
   labelPosition: Position,
   axisTicksDimensions: AxisTicksDimensions,
 ): TickLabelProps {
-  const {
-    maxTickHeight,
-    maxTickWidth,
-  } = axisTicksDimensions;
+  const { maxTickHeight, maxTickWidth } = axisTicksDimensions;
 
   const isRotated = tickLabelRotation !== 0;
   let align = 'center';
@@ -200,30 +177,23 @@ export function getTickLabelProps(
       align = isAxisLeft ? 'right' : 'left';
     }
 
-    const xPos = getVerticalTickLabelX(
-      isAxisLeft,
-      maxTickWidth,
-      tickSize,
-      tickPadding,
-    );
-
-    const yPos = tickPosition - maxTickHeight / 2;
-
     return {
-      x: xPos,
-      y: yPos,
+      x: isAxisLeft ? - (maxTickWidth) : tickSize + tickPadding,
+      y: tickPosition - maxTickHeight / 2,
       align,
       verticalAlign,
     };
   }
 
+  const isAxisTop = labelPosition === Position.Top;
+
   if (!isRotated) {
-    verticalAlign = labelPosition === Position.Top ? 'bottom' : 'top';
+    verticalAlign = isAxisTop ? 'bottom' : 'top';
   }
 
   return {
-    x: (tickPosition - maxTickWidth / 2),
-    y: labelPosition === Position.Top ? 0 : tickSize + tickPadding,
+    x: tickPosition - maxTickWidth / 2,
+    y: isAxisTop ? 0 : tickSize + tickPadding,
     align,
     verticalAlign,
   };

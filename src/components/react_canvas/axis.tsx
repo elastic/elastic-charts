@@ -61,23 +61,6 @@ export class Axis extends React.PureComponent<AxisProps> {
       y: tickLabelProps.y + maxTickHeight / 2,
     };
 
-    // const unrotatedTickLabelProps = getTickLabelProps(
-    //   isContainerVertical,
-    //   0,
-    //   tickSize,
-    //   tickPadding,
-    //   tick.position,
-    //   position,
-    //   axisTicksDimensions,
-    //   hasLabelOffset(isContainerVertical, 0),
-    // );
-
-    // const unrotatedTextProps = {
-    //   ...textProps,
-    //   ...unrotatedTickLabelProps,
-    //   rotation: 0,
-    // };
-
     return (
       <Group key={`tick-${i}`}>
         {debug && <Rect {...textProps} stroke="black" strokeWidth={1} fill="violet" />}
