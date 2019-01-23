@@ -27,6 +27,13 @@ export interface AxisTicksDimensions {
   maxLabelTextHeight: number;
 }
 
+export interface TickLabelProps {
+  x: number;
+  y: number;
+  align: string;
+  verticalAlign: string;
+}
+
 /**
  * Compute the ticks values and identify max width and height of the labels
  * so we can compute the max space occupied by the axis component.
@@ -148,13 +155,6 @@ function computeTickDimensions(
   };
 }
 
-export interface TickLabelProps {
-  x: number;
-  y: number;
-  align: string;
-  verticalAlign: string;
-}
-
 /**
  * The Konva api sets the top right corner of a shape as the default origin of rotation.
  * In order to apply rotation to tick labels while preserving their relative position to the axis,
@@ -180,23 +180,32 @@ export function centerRotationOrigin(
   return { offsetX, offsetY, x, y };
 }
 
+/**
+ * Gets the computed x/y coordinates & alignment properties for an axis tick label.
+ * @param isVerticalAxis if the axis is vertical (in contrast to horizontal)
+ * @param tickLabelRotation degree of rotation of the tick label
+ * @param tickSize length of tick line
+ * @param tickPadding amount of padding between label and tick line
+ * @param tickPosition position of tick relative to axis line origin and other ticks along it
+ * @param axisPosition position of where the axis sits relative to the visualization
+ * @param axisTicksDimensions computed axis dimensions and values (from computeTickDimensions)
+ */
 export function getTickLabelProps(
-  isVerticalAxis: boolean,
   tickLabelRotation: number,
   tickSize: number,
   tickPadding: number,
   tickPosition: number,
-  labelPosition: Position,
+  axisPosition: Position,
   axisTicksDimensions: AxisTicksDimensions,
 ): TickLabelProps {
   const { maxLabelBboxWidth, maxLabelBboxHeight } = axisTicksDimensions;
-
+  const isVerticalAxis = isVertical(axisPosition);
   const isRotated = tickLabelRotation !== 0;
   let align = 'center';
   let verticalAlign = 'middle';
 
   if (isVerticalAxis) {
-    const isAxisLeft = labelPosition === Position.Left;
+    const isAxisLeft = axisPosition === Position.Left;
 
     if (!isRotated) {
       align = isAxisLeft ? 'right' : 'left';
@@ -210,7 +219,7 @@ export function getTickLabelProps(
     };
   }
 
-  const isAxisTop = labelPosition === Position.Top;
+  const isAxisTop = axisPosition === Position.Top;
 
   if (!isRotated) {
     verticalAlign = isAxisTop ? 'bottom' : 'top';

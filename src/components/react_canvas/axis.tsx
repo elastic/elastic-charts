@@ -36,10 +36,7 @@ export class Axis extends React.PureComponent<AxisProps> {
 
     const tickLabelRotation = this.props.axisSpec.tickLabelRotation || 0;
 
-    const isVerticalAxis = isVertical(position);
-
     const tickLabelProps = getTickLabelProps(
-      isVerticalAxis,
       tickLabelRotation,
       tickSize,
       tickPadding,

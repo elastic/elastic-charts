@@ -11,6 +11,7 @@ import {
   getAvailableTicks,
   getMinMaxRange,
   getScaleForAxisSpec,
+  getTickLabelProps,
   getVisibleTicks,
 } from './axis_utils';
 import { SvgTextBBoxCalculator } from './svg_text_bbox_calculator';
@@ -268,4 +269,119 @@ describe('Axis computational utils', () => {
     });
   });
 
+  test('should compute positions and alignment of tick labels along a vertical axis', () => {
+    let tickLabelRotation = 0;
+    const tickSize = 10;
+    const tickPadding = 5;
+    const tickPosition = 0;
+    let axisPosition = Position.Left;
+
+    const unrotatedLabelProps = getTickLabelProps(
+      tickLabelRotation,
+      tickSize,
+      tickPadding,
+      tickPosition,
+      axisPosition,
+      axis1Dims,
+    );
+
+    expect(unrotatedLabelProps).toEqual({
+      x: -10,
+      y: -5,
+      align: 'right',
+      verticalAlign: 'middle',
+    });
+
+    tickLabelRotation = 90;
+    const rotatedLabelProps = getTickLabelProps(
+      tickLabelRotation,
+      tickSize,
+      tickPadding,
+      tickPosition,
+      axisPosition,
+      axis1Dims,
+    );
+
+    expect(rotatedLabelProps).toEqual({
+      x: -10,
+      y: -5,
+      align: 'center',
+      verticalAlign: 'middle',
+    });
+
+    axisPosition = Position.Right;
+    const rightRotatedLabelProps = getTickLabelProps(
+      tickLabelRotation,
+      tickSize,
+      tickPadding,
+      tickPosition,
+      axisPosition,
+      axis1Dims,
+    );
+
+    expect(rightRotatedLabelProps).toEqual({
+      x: 15,
+      y: -5,
+      align: 'center',
+      verticalAlign: 'middle',
+    });
+  });
+
+  test('should compute positions and alignment of tick labels along a horizontal axis', () => {
+    let tickLabelRotation = 0;
+    const tickSize = 10;
+    const tickPadding = 5;
+    const tickPosition = 0;
+    let axisPosition = Position.Top;
+
+    const unrotatedLabelProps = getTickLabelProps(
+      tickLabelRotation,
+      tickSize,
+      tickPadding,
+      tickPosition,
+      axisPosition,
+      axis1Dims,
+    );
+
+    expect(unrotatedLabelProps).toEqual({
+      x: -5,
+      y: 0,
+      align: 'center',
+      verticalAlign: 'bottom',
+    });
+
+    tickLabelRotation = 90;
+    const rotatedLabelProps = getTickLabelProps(
+      tickLabelRotation,
+      tickSize,
+      tickPadding,
+      tickPosition,
+      axisPosition,
+      axis1Dims,
+    );
+
+    expect(rotatedLabelProps).toEqual({
+      x: -5,
+      y: 0,
+      align: 'center',
+      verticalAlign: 'middle',
+    });
+
+    axisPosition = Position.Bottom;
+    const bottomRotatedLabelProps = getTickLabelProps(
+      tickLabelRotation,
+      tickSize,
+      tickPadding,
+      tickPosition,
+      axisPosition,
+      axis1Dims,
+    );
+
+    expect(bottomRotatedLabelProps).toEqual({
+      x: -5,
+      y: 15,
+      align: 'center',
+      verticalAlign: 'middle',
+    });
+  });
 });
