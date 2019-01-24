@@ -54,7 +54,7 @@ storiesOf('Axis', module)
           position={Position.Bottom}
           title={'Bottom axis'}
           showOverlappingTicks={true}
-          tickLabelRotation={number('bottom axis tick rotation', 0, {
+          tickLabelRotation={number('bottom axis tick label rotation', 0, {
             range: true,
             min: -90,
             max: 90,
@@ -65,7 +65,31 @@ storiesOf('Axis', module)
           id={getAxisId('left')}
           title={'Bar axis'}
           position={Position.Left}
-          tickLabelRotation={number('left axis tick rotation', 0, {
+          tickLabelRotation={number('left axis tick label rotation', 0, {
+            range: true,
+            min: -90,
+            max: 90,
+            step: 1,
+          })}
+          tickFormat={(d) => Number(d).toFixed(2)}
+        />
+        <Axis
+          id={getAxisId('top')}
+          title={'Bar axis'}
+          position={Position.Top}
+          tickLabelRotation={number('top axis tick label rotation', 0, {
+            range: true,
+            min: -90,
+            max: 90,
+            step: 1,
+          })}
+          tickFormat={(d) => Number(d).toFixed(2)}
+        />
+        <Axis
+          id={getAxisId('right')}
+          title={'Bar axis'}
+          position={Position.Right}
+          tickLabelRotation={number('right axis tick label rotation', 0, {
             range: true,
             min: -90,
             max: 90,
