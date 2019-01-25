@@ -363,7 +363,6 @@ export function getAxisPosition(
   cumLeftSum: number,
   cumRightSum: number,
 ) {
-  // TODO add title space
   const { position, tickSize, tickPadding } = axisSpec;
   const { maxLabelBboxHeight, maxLabelBboxWidth } = axisDim;
   const { top, left, height, width } = chartDimensions;
@@ -384,16 +383,16 @@ export function getAxisPosition(
       dimensions.left = maxLabelBboxWidth + cumLeftSum + chartMargins.left + axisTitleHeight;
     } else {
       rightIncrement = maxLabelBboxWidth + tickSize + tickPadding + chartMargins.right;
-      dimensions.left = left + width + cumRightSum;
+      dimensions.left = left + width + cumRightSum - axisTitleHeight;
     }
     dimensions.width = maxLabelBboxWidth;
   } else {
     if (position === Position.Top) {
       topIncrement = maxLabelBboxHeight + tickSize + tickPadding + chartMargins.top;
-      dimensions.top = cumTopSum + chartMargins.top;
+      dimensions.top = cumTopSum + chartMargins.top + axisTitleHeight;
     } else {
       bottomIncrement = maxLabelBboxHeight + tickSize + tickPadding + chartMargins.bottom;
-      dimensions.top = top + height + cumBottomSum;
+      dimensions.top = top + height + cumBottomSum - axisTitleHeight;
     }
     dimensions.height = maxLabelBboxHeight;
   }
