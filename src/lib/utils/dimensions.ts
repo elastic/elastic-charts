@@ -53,13 +53,13 @@ export function computeChartDimensions(
         hTopAxisSpecHeight += maxLabelBboxHeight + tickSize + tickPadding + chartMargins.top + axisTitleHeight;
         break;
       case Position.Bottom:
-        hBottomAxisSpecHeight += maxLabelBboxHeight + tickSize + tickPadding + chartMargins.bottom;
+        hBottomAxisSpecHeight += maxLabelBboxHeight + tickSize + tickPadding + chartMargins.bottom + axisTitleHeight;
         break;
       case Position.Left:
         vLeftAxisSpecWidth += maxLabelBboxWidth + tickSize + tickPadding + chartMargins.left + axisTitleHeight;
         break;
       case Position.Right:
-        vRightAxisSpecWidth += maxLabelBboxWidth + tickSize + tickPadding + chartMargins.right;
+        vRightAxisSpecWidth += maxLabelBboxWidth + tickSize + tickPadding + chartMargins.right + axisTitleHeight;
         break;
     }
   });

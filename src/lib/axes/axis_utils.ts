@@ -383,7 +383,7 @@ export function getAxisPosition(
       dimensions.left = maxLabelBboxWidth + cumLeftSum + chartMargins.left + axisTitleHeight;
     } else {
       rightIncrement = maxLabelBboxWidth + tickSize + tickPadding + chartMargins.right;
-      dimensions.left = left + width + cumRightSum - axisTitleHeight;
+      dimensions.left = left + width + cumRightSum;
     }
     dimensions.width = maxLabelBboxWidth;
   } else {
@@ -392,7 +392,7 @@ export function getAxisPosition(
       dimensions.top = cumTopSum + chartMargins.top + axisTitleHeight;
     } else {
       bottomIncrement = maxLabelBboxHeight + tickSize + tickPadding + chartMargins.bottom;
-      dimensions.top = top + height + cumBottomSum - axisTitleHeight;
+      dimensions.top = top + height + cumBottomSum;
     }
     dimensions.height = maxLabelBboxHeight;
   }
