@@ -359,9 +359,8 @@ export class ChartStore {
     // // compute visible ticks and their positions
     const axisTicksPositions = getAxisTicksPositions(
       this.chartDimensions,
-      this.chartTheme.chart,
+      this.chartTheme,
       this.chartRotation,
-      this.chartTheme.legend,
       this.showLegend.get() && !this.legendCollapsed.get(),
       this.axesSpecs,
       this.axesTicksDimensions,

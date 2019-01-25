@@ -3,7 +3,7 @@ import { XDomain } from '../series/domains/x_domain';
 import { YDomain } from '../series/domains/y_domain';
 import { computeXScale, computeYScales } from '../series/scales';
 import { AxisSpec, Position, Rotation, TickFormatter } from '../series/specs';
-import { ChartConfig, LegendStyle } from '../themes/theme';
+import { Theme } from '../themes/theme';
 import { Dimensions, Margins } from '../utils/dimensions';
 import { Domain } from '../utils/domain';
 import { AxisId } from '../utils/ids';
@@ -355,6 +355,7 @@ export function getVisibleTicks(
 export function getAxisPosition(
   chartDimensions: Dimensions,
   chartMargins: Margins,
+  axisTitleHeight: number,
   axisSpec: AxisSpec,
   axisDim: AxisTicksDimensions,
   cumTopSum: number,
@@ -380,7 +381,7 @@ export function getAxisPosition(
   if (isVertical(position)) {
     if (position === Position.Left) {
       leftIncrement = maxLabelBboxWidth + tickSize + tickPadding + chartMargins.left;
-      dimensions.left = maxLabelBboxWidth + cumLeftSum + chartMargins.left;
+      dimensions.left = maxLabelBboxWidth + cumLeftSum + chartMargins.left + axisTitleHeight;
     } else {
       rightIncrement = maxLabelBboxWidth + tickSize + tickPadding + chartMargins.right;
       dimensions.left = left + width + cumRightSum;
@@ -401,9 +402,8 @@ export function getAxisPosition(
 
 export function getAxisTicksPositions(
   chartDimensions: Dimensions,
-  chartConfig: ChartConfig,
+  chartTheme: Theme,
   chartRotation: Rotation,
-  legendStyle: LegendStyle,
   showLegend: boolean,
   axisSpecs: Map<AxisId, AxisSpec>,
   axisDimensions: Map<AxisId, AxisTicksDimensions>,
@@ -412,9 +412,12 @@ export function getAxisTicksPositions(
   totalGroupsCount: number,
   legendPosition?: Position,
 ) {
+  const chartConfig = chartTheme.chart;
+  const legendStyle = chartTheme.legend;
   const axisPositions: Map<AxisId, Dimensions> = new Map();
   const axisVisibleTicks: Map<AxisId, AxisTick[]> = new Map();
   const axisTicks: Map<AxisId, AxisTick[]> = new Map();
+
   let cumTopSum = 0;
   let cumBottomSum = chartConfig.paddings.bottom;
   let cumLeftSum = 0;
@@ -472,9 +475,14 @@ export function getAxisTicksPositions(
       chartDimensions,
       chartRotation,
     );
+
+    const { titleFontSize, titlePadding } = chartTheme.axes;
+    const axisTitleHeight = titleFontSize + titlePadding;
+
     const axisPosition = getAxisPosition(
       chartDimensions,
       chartConfig.margins,
+      axisTitleHeight,
       axisSpec,
       axisDim,
       cumTopSum,
@@ -482,6 +490,7 @@ export function getAxisTicksPositions(
       cumLeftSum,
       cumRightSum,
     );
+
     cumTopSum += axisPosition.topIncrement;
     cumBottomSum += axisPosition.bottomIncrement;
     cumLeftSum += axisPosition.leftIncrement;
