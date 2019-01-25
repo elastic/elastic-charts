@@ -1,6 +1,6 @@
 import { AxisTicksDimensions } from '../axes/axis_utils';
 import { AxisSpec, Position } from '../series/specs';
-import { LegendStyle } from '../themes/theme';
+import { DEFAULT_THEME, LegendStyle } from '../themes/theme';
 import { computeChartDimensions, Margins } from './dimensions';
 import { AxisId, getAxisId, getGroupId } from './ids';
 import { ScaleType } from './scales/scales';
@@ -54,14 +54,22 @@ describe('Computed chart dimensions', () => {
     horizontalHeight: 0,
   };
   const showLegend = false;
+
+  const chartTheme = {
+    ...DEFAULT_THEME,
+    chart: {
+      ...DEFAULT_THEME.chart,
+      margins: chartMargins,
+      paddings: chartPaddings,
+    },
+    ...legend,
+  };
   test('should be equal to parent dimension with no axis minus margins', () => {
     const axisDims = new Map<AxisId, AxisTicksDimensions>();
     const axisSpecs = new Map<AxisId, AxisSpec>();
     const chartDimensions = computeChartDimensions(
       parentDim,
-      chartMargins,
-      chartPaddings,
-      legend,
+      chartTheme,
       axisDims,
       axisSpecs,
       showLegend,
@@ -75,9 +83,7 @@ describe('Computed chart dimensions', () => {
     axisSpecs.set(getAxisId('axis_1'), axis1Spec);
     const chartDimensions = computeChartDimensions(
       parentDim,
-      chartMargins,
-      chartPaddings,
-      legend,
+      chartTheme,
       axisDims,
       axisSpecs,
       showLegend,
@@ -91,9 +97,7 @@ describe('Computed chart dimensions', () => {
     axisSpecs.set(getAxisId('axis_1'), { ...axis1Spec, position: Position.Right });
     const chartDimensions = computeChartDimensions(
       parentDim,
-      chartMargins,
-      chartPaddings,
-      legend,
+      chartTheme,
       axisDims,
       axisSpecs,
       showLegend,
@@ -110,9 +114,7 @@ describe('Computed chart dimensions', () => {
     });
     const chartDimensions = computeChartDimensions(
       parentDim,
-      chartMargins,
-      chartPaddings,
-      legend,
+      chartTheme,
       axisDims,
       axisSpecs,
       showLegend,
@@ -129,9 +131,7 @@ describe('Computed chart dimensions', () => {
     });
     const chartDimensions = computeChartDimensions(
       parentDim,
-      chartMargins,
-      chartPaddings,
-      legend,
+      chartTheme,
       axisDims,
       axisSpecs,
       showLegend,

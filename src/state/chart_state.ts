@@ -323,9 +323,7 @@ export class ChartStore {
     // // compute chart dimensions
     this.chartDimensions = computeChartDimensions(
       this.parentDimensions,
-      this.chartTheme.chart.margins,
-      this.chartTheme.chart.paddings,
-      this.chartTheme.legend,
+      this.chartTheme,
       this.axesTicksDimensions,
       this.axesSpecs,
       this.showLegend.get() && !this.legendCollapsed.get(),
