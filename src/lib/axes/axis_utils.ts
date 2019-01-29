@@ -233,6 +233,55 @@ export function getTickLabelProps(
   };
 }
 
+export function getVerticalAxisTickLineProps(
+  showGridLine: boolean,
+  position: Position,
+  tickPadding: number,
+  tickSize: number,
+  tickPosition: number,
+  chartWidth: number,
+): number[] {
+  const isLeftAxis = position === Position.Left;
+  const y = tickPosition;
+  const x1 = isLeftAxis ? tickPadding : 0;
+  const x2 = isLeftAxis ? tickSize + tickPadding : tickSize;
+
+  if (showGridLine) {
+    if (isLeftAxis) {
+      return [x1, y, x2 + chartWidth, y];
+    }
+
+    return [x1 - chartWidth, y, x2, y];
+  }
+
+  return [x1, y, x2, y];
+}
+
+export function getHorizontalAxisTickLineProps(
+  showGridLine: boolean,
+  position: Position,
+  tickPadding: number,
+  tickSize: number,
+  tickPosition: number,
+  labelHeight: number,
+  chartHeight: number,
+): number[] {
+  const isTopAxis = position === Position.Top;
+  const x = tickPosition;
+  const y1 = isTopAxis ? labelHeight + tickPadding : 0;
+  const y2 = isTopAxis ? labelHeight + tickPadding + tickSize : tickSize;
+
+  if (showGridLine) {
+    if (isTopAxis) {
+      return [x, y1, x, y2 + chartHeight];
+    }
+
+    return [x, y1 - chartHeight, x, y2];
+  }
+
+  return [x, y1, x, y2];
+}
+
 export function getMinMaxRange(
   axisPosition: Position,
   chartRotation: Rotation,
