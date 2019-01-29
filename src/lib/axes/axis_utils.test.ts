@@ -1,7 +1,7 @@
 import { XDomain } from '../series/domains/x_domain';
 import { YDomain } from '../series/domains/y_domain';
 import { Position } from '../series/specs';
-// import { ScalesConfig } from '../themes/theme';
+import { DEFAULT_THEME } from '../themes/theme';
 import { getAxisId, getGroupId } from '../utils/ids';
 import { ScaleType } from '../utils/scales/scales';
 import {
@@ -89,9 +89,19 @@ describe('Axis computational utils', () => {
     isBandScale: false,
   };
 
+  const { axes } = DEFAULT_THEME;
+
   test('should compute axis dimensions', () => {
     const bboxCalculator = new SvgTextBBoxCalculator();
-    const axisDimensions = computeAxisTicksDimensions(verticalAxisSpec, xDomain, [yDomain], 1, bboxCalculator, 0);
+    const axisDimensions = computeAxisTicksDimensions(
+      verticalAxisSpec,
+      xDomain,
+      [yDomain],
+      1,
+      bboxCalculator,
+      0,
+      axes,
+    );
     expect(axisDimensions).toEqual(axis1Dims);
     bboxCalculator.destroy();
   });

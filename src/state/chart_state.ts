@@ -313,6 +313,7 @@ export class ChartStore {
         totalGroupCount,
         bboxCalculator,
         this.chartRotation,
+        this.chartTheme.axes,
       );
       if (dimensions) {
         this.axesTicksDimensions.set(id, dimensions);

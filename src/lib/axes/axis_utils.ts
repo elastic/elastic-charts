@@ -3,7 +3,7 @@ import { XDomain } from '../series/domains/x_domain';
 import { YDomain } from '../series/domains/y_domain';
 import { computeXScale, computeYScales } from '../series/scales';
 import { AxisSpec, Position, Rotation, TickFormatter } from '../series/specs';
-import { Theme } from '../themes/theme';
+import { AxisConfig, Theme } from '../themes/theme';
 import { Dimensions, Margins } from '../utils/dimensions';
 import { Domain } from '../utils/domain';
 import { AxisId } from '../utils/ids';
@@ -48,6 +48,7 @@ export function computeAxisTicksDimensions(
   totalGroupCount: number,
   bboxCalculator: BBoxCalculator,
   chartRotation: Rotation,
+  axisConfig: AxisConfig,
 ): AxisTicksDimensions | null {
   const scale = getScaleForAxisSpec(
     axisSpec,
@@ -65,6 +66,7 @@ export function computeAxisTicksDimensions(
     scale,
     axisSpec.tickFormat,
     bboxCalculator,
+    axisConfig,
     axisSpec.tickLabelRotation,
   );
 
@@ -113,14 +115,17 @@ function computeTickDimensions(
   scale: Scale,
   tickFormat: TickFormatter,
   bboxCalculator: BBoxCalculator,
+  axisConfig: AxisConfig,
   tickLabelRotation: number = 0,
 ) {
   const tickValues = scale.ticks();
   const tickLabels = tickValues.map(tickFormat);
 
+  const { tickFontSize, tickFontFamily } = axisConfig;
+
   const { maxLabelBboxWidth, maxLabelBboxHeight, maxLabelTextWidth, maxLabelTextHeight } = tickLabels
     .reduce((acc: { [key: string]: number }, tickLabel: string) => {
-      const bbox = bboxCalculator.compute(tickLabel).getOrElse({
+      const bbox = bboxCalculator.compute(tickLabel, tickFontSize, tickFontFamily).getOrElse({
         width: 0,
         height: 0,
       });
