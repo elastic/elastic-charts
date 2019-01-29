@@ -78,6 +78,7 @@ export class Axis extends React.PureComponent<AxisProps> {
       axisSpec: { tickSize, tickPadding, position },
       axisTicksDimensions: { maxLabelBboxHeight },
       chartDimensions,
+      chartTheme: { chart: { paddings } },
     } = this.props;
 
     const showGridLines = this.props.axisSpec.showGridLines || false;
@@ -90,6 +91,7 @@ export class Axis extends React.PureComponent<AxisProps> {
         tickSize,
         tick.position,
         chartDimensions.width,
+        paddings,
       ) : getHorizontalAxisTickLineProps(
         showGridLines,
         position,
@@ -98,6 +100,7 @@ export class Axis extends React.PureComponent<AxisProps> {
         tick.position,
         maxLabelBboxHeight,
         chartDimensions.height,
+        paddings,
       );
 
     return <Line key={`tick-${i}`} points={lineProps} stroke={'gray'} strokeWidth={1} />;

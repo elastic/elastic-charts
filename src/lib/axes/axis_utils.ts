@@ -240,6 +240,7 @@ export function getVerticalAxisTickLineProps(
   tickSize: number,
   tickPosition: number,
   chartWidth: number,
+  paddings: Margins,
 ): number[] {
   const isLeftAxis = position === Position.Left;
   const y = tickPosition;
@@ -248,10 +249,10 @@ export function getVerticalAxisTickLineProps(
 
   if (showGridLine) {
     if (isLeftAxis) {
-      return [x1, y, x2 + chartWidth, y];
+      return [x1, y, x2 + chartWidth + paddings.left, y];
     }
 
-    return [x1 - chartWidth, y, x2, y];
+    return [x1 - chartWidth - paddings.right, y, x2, y];
   }
 
   return [x1, y, x2, y];
@@ -265,6 +266,7 @@ export function getHorizontalAxisTickLineProps(
   tickPosition: number,
   labelHeight: number,
   chartHeight: number,
+  paddings: Margins,
 ): number[] {
   const isTopAxis = position === Position.Top;
   const x = tickPosition;
@@ -273,10 +275,10 @@ export function getHorizontalAxisTickLineProps(
 
   if (showGridLine) {
     if (isTopAxis) {
-      return [x, y1, x, y2 + chartHeight];
+      return [x, y1, x, y2 + chartHeight + paddings.top];
     }
 
-    return [x, y1 - chartHeight, x, y2];
+    return [x, y1 - chartHeight - paddings.bottom, x, y2];
   }
 
   return [x, y1, x, y2];
