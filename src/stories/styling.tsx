@@ -40,14 +40,28 @@ storiesOf('Stylings', module)
           position={Position.Bottom}
           title={'Bottom axis'}
           showOverlappingTicks={true}
-          showGridLines={boolean('show horizontal axis grid lines', false)}
+          showGridLines={boolean('show bottom axis grid lines', false)}
         />
         <Axis
           id={getAxisId('left2')}
           title={'Left axis'}
           position={Position.Left}
           tickFormat={(d) => Number(d).toFixed(2)}
-          showGridLines={boolean('show vertical axis grid lines', false)}
+          showGridLines={boolean('show left axis grid lines', false)}
+        />
+        <Axis
+          id={getAxisId('top')}
+          position={Position.Top}
+          title={'Top axis'}
+          showOverlappingTicks={true}
+          showGridLines={boolean('show top axis grid lines', false)}
+        />
+        <Axis
+          id={getAxisId('right')}
+          title={'Right axis'}
+          position={Position.Right}
+          tickFormat={(d) => Number(d).toFixed(2)}
+          showGridLines={boolean('show right axis grid lines', false)}
         />
         <BarSeries
           id={getSpecId('bars')}
