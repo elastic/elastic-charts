@@ -11,10 +11,10 @@
 ---
 
 This library is a complete rewrite of the current vislib in Kibana and EUISeriesChart in EUI.
-The rationale behind this refactoring is the need for a testable and decoupled architecture for displaying data as charts. The current EUI implementation is based on ReactVis that directly manipulate data series inside components, without a clear rendering pipeline and without a clean way to extend it. Some of the downside of using react vis are:
+The rationale behind this refactoring is the need for a testable and decoupled architecture for displaying data within charts. The current EUI implementation is based on ReactVis, which directly manipulates the data series inside components without a clear rendering pipeline and without a clean way to extend it. Some of the downsides of using ReactVis are:
 
-- the main chart component, before rendering children, looks at their props and recompute them injecting new props. Some configuration is accessed through references to children components
-- the components are themselves SVG components that render bars, lines, axis. The problem with this is that not all components can be rendered at the same time, but there is the need of a rendering pipeline to allow a correct placement for all the geometries, especially when we face the need of having auto-scaled axis dimensions.
+- the main chart component, before rendering children, looks at their props and recomputes them, injecting new props. Some configuration is accessed through references to children components.
+- the components are themselves SVG components that render bars, lines, and axes. The problem with this is that not all components can be rendered at the same time, but there is the need for a rendering pipeline to allow a correct placement for all the geometries, especially when we face the need for having auto-scaled axis dimensions.
 - the only way to test the chart is testing the resulting SVG component. If rendered through canvas the test can be only a visual regression test.
 - no possibility of manage x-indexing of elements
 
@@ -24,13 +24,13 @@ This new implementation revisits the concept of a charting library and tries to 
 
 This controlled flow allows us to achieve the following points:
 
-- the computation of series dimensions (x and y domains of the datasets for examples) are required to precompute the space required for the axis labeling. Axis rendering is dependant on the axis displayed values thus on the data series provided. To accommodate automatically spaced axis this is a required passage. Other libraries just live the developer with the needs to specify static margin space to render the axis labels that can incur into truncated labels.
-- put a testing probe just before rendering the chart, the computed geometries are the exact values that need to be used to render on SVG, canvas or WebGL on that exact portion of the screen. No further calculation is needed on the rendered. x, y, width, height, color, transforms are computed before the rendering phase that action.
+- the computation of series dimensions (x and y domains of the datasets, for example) are required to precompute the space required for the axis labeling. Axis rendering is dependent on the axis displayed values, and thus on the data series provided. This is a required passage to accommodate automatically spaced axes . Other libraries just live the developer with the needs to specify static margin space to render the axis labels, and this can result in truncated labels.
+- put a testing probe just before rendering the chart, the computed geometries are the exact values that need to be used to render on SVG, canvas or WebGL on that exact portion of the screen. No further calculation is needed on the rendered component. x, y, width, height, color, and transforms are computed before the rendering phase.
 - reduce the rendering operation to the minimum required. Resizing, for example, will only require the last 3 phases to complete.
-- decouple the charts from its rendering medium: can be SVG, canvas or WebGL, using React or any other DOM library.
+- decouple the chart from its rendering medium: can be SVG, canvas or WebGL, using React or any other DOM library.
 - part of this computation can also be processed server side or on a WebWorker.
 
-The rendering pipeline is achieved revisiting the way on how a chart library is built. Instead of creating a chart library around a set of rendering components: bar series, axis etc, this new implementation decouple the specification of the chart from the rendering components. The rendering components are part of the internals of the library. We are exposing `empty` react components to the developer, using the JSX format just as a declarative language to describe the specification of your chart and not as a set of real react component that will render something.
+The rendering pipeline is achieved by revisiting the way a chart library is built. Instead of creating a chart library around a set of rendering components: bar series, axis etc., this new implementation decouples the specification of the chart from the rendering components. The rendering components are part of the internals of the library. We are exposing `empty` react components to the developer, using the JSX format just as a declarative language to describe the specification of your chart and not as a set of real react components that will render something.
 That is achieved using the following render function on the main `Chart` component:
 
 ```jsx
@@ -126,7 +126,7 @@ yarn add @elastic/charts
 
 ## Contributing
 
-We are trying to enforce some good practice in this library:
+We are trying to enforce some good practices in this library:
 
 - All commits must follow the [conventional commits](https://www.conventionalcommits.org/en/v1.0.0-beta.2/)
 - [semantic-release](https://semantic-release.gitbook.io) is used as an automated release manager suite.
@@ -149,14 +149,14 @@ The following tools are used to ensure this convention:
 The concept of an axis in this library follow the following constraints:
 
 - there is no distinction between x-axis or y-axis.
-- the distinction is between the position of the axis on the chart, top, bottom, left, right in relation with the rotation of the chart: A standard horizontal bar chart, with the Y, dependent variable, that rise to the top, can be supported by left and right axis that will show the Y values, and bottom and top axis that will show the X, independent variable. On the contrary, a 90 degree clockwise rotated bar chart, with the Y value that spread from left to right, will have a horizontal (bottom/top) axis that shows the Y independent variable and the left/right vertical axis that shows the X variable.
+- the distinction is between the position of the axis on the chart (top, bottom, left, or right) in relation to the rotation of the chart: A standard horizontal bar chart with a Y axis (for a dependent variable whose values rise to the top) can be supported by left and right axis that will show the Y values, and the bottom and top axes will show the X axis for an independent variable. In contrast, a 90-degree (clockwise-rotated) bar chart, with Y values that spread from left to right, will have a horizontal (bottom/top) axis that shows the Y independent variable and the left/right vertical axis that shows the X variable.
 
-As a constraint, we allow only one X-axis, but we provide the ability to add multiple Y-axis (also if it's a discouraged practice (see https://blog.datawrapper.de/dualaxis/ or http://www.storytellingwithdata.com/blog/2016/2/1/be-gone-dual-y-axis)
+As a constraint, we allow only one X-axis, but we provide the ability to add multiple Y-axes (also if it's a discouraged practice (see https://blog.datawrapper.de/dualaxis/ or http://www.storytellingwithdata.com/blog/2016/2/1/be-gone-dual-y-axis)).
 
 ### Dataset Domains:
 
-Related to a dataset, is the extent of a variable. It usually used to draw the position of the specific value/datum along one axis (vertical or horizontal).
-On a series chart, we always need to have at least two domain, representing the 2 dimensions of the data we are drawing.
+Related to a dataset is the extent of a variable. It usually used to draw the position of the specific value/datum along one axis (vertical or horizontal).
+On a series chart, we always need to have at least two domains, representing the 2 dimensions of the data we are drawing.
 
 ### Data
 
@@ -238,7 +238,7 @@ A chart can be feed with data in the following ways:
 - a set of series types with `data` props configured. In these case the data arrays are merged together as the following rules:
   - x values are merged together. If the chart has multiple different `xScaleType`s, the main x scale type is coerced to `ScaleType.Linear` if all the scales are continuous or to `ScaleType.Ordinal` if one scale type is ordinal. Also, a temporal scale is, in specific cases, coerced to linear, so be careful to configure correctly the scales.
   - if there is a specified x domain on the spec, this is used as x domain for that series, and it's merged together with the existing x domains.
-  - specifications with `splitAccessors` are split into different series. Each specification is treated in a separated manner: if you have one chart with 3 series merged to one chart with 1 series, this results in a chart like that has each x value split in two (the number of specification used, two charts) than on split is used to accommodate 3 series and the other to accommodate the remaining series. If you want to treat each series in the same way, split your chart before and create 4 different BarSeries specs, so that these are rendered evenly on the x-axis.
+  - specifications with `splitAccessors` are split into different series. Each specification is treated in a separated manner: if you have one chart with 3 series merged to one chart with 1 series, this results in a chart that has each x value split in two (the number of specification used, two charts) than on split is used to accommodate 3 series and the other to accommodate the remaining series. If you want to treat each series in the same way, split your chart before and create 4 different BarSeries specs, so that these are rendered evenly on the x-axis.
   - bar, area, line series with a `stackAccessor` are stacked together each stacked above their respective group (areas with areas, bars with bars, lines with lines. You cannot mix stacking bars above lines above areas).
   - bar series without `stackAccessors` are clustered together for the same x value
   - area and line series, without `stackAccessors` are just drawn each one on their own layer (not stacked nor clustered).
@@ -257,7 +257,7 @@ On the current `Visualize Editor`, you can stack or cluster in the following cas
 
 Small multiples are created using the `<SmallMultiples>` component, that takes multiple `<SplittedSeries>` component with the usual element inside. `<SplittedSeries>` can contain only `BarSeries` `AreaSeries` and `LineSeries` Axis and other configuration need to be configured outside the `SplittedSeries` element.
 
-In the case of small multiples, each `SplittedSeries` compute its own x and y domains. Then the x domains are merged and expanded. The same happens with the main Y domains, they are merged together.
+In the case of small multiples, each `SplittedSeries` computes its own x and y domains. Then the x domains are merged and expanded. The same happens with the main Y domains; they are merged together.
 
 ### Colors
 
@@ -269,4 +269,4 @@ for example:
 - a dataset that has 1 variable to split the dataset into 3 different series, will have 3 different colors if that variable is specified through the `colorAccessors`.
 - a dataset with 2 split variables, each with 3 different values (a dataset with 3 \* 2 series) will have 6 different colors if the two variables are defined in `colorAccessors`
 - a dataset with 2 split variables, each with 3 different values, but only one specified in the `colorAccessors` will have only 3 colors.
-- if no `colorAccessors` is specified, it will be used `splitAccessors` to identify how to coloring the series
+- if no `colorAccessors` is specified, `splitAccessors` will be used to identify how to coloring the series
