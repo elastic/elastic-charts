@@ -22,6 +22,10 @@ export interface AxisConfig {
   titleFontStyle: string;
   titlePadding: number;
 }
+export interface GridLineConfig {
+  stroke?: string;
+  strokeWidth?: number;
+}
 export interface ScalesConfig {
   ordinal: {
     padding: number;
@@ -78,6 +82,11 @@ export interface PartialTheme {
   interactions?: Partial<InteractionConfig>;
   legend?: Partial<LegendStyle>;
 }
+
+export const DEFAULT_GRID_LINE_CONFIG: GridLineConfig = {
+  stroke: 'red',
+  strokeWidth: 1,
+};
 
 export const DEFAULT_THEME: Theme = {
   chart: {

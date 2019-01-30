@@ -2,7 +2,7 @@ import { boolean, number, select } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import React from 'react';
 import { Axis, BarSeries, Chart, getAxisId, getSpecId, Position, ScaleType, Settings } from '..';
-import { PartialTheme } from '../lib/themes/theme';
+import { GridLineConfig, PartialTheme } from '../lib/themes/theme';
 import './stories.scss';
 
 function createThemeAction(title: string, min: number, max: number, value: number) {
@@ -32,6 +32,17 @@ storiesOf('Stylings', module)
         },
       },
     };
+
+    const leftAxisGridLine: GridLineConfig = {
+      stroke: 'purple',
+      strokeWidth: number('left axis grid line stroke width', 1, {
+        range: true,
+        min: 0,
+        max: 10,
+        step: 1,
+      }),
+    };
+
     return (
       <Chart renderer="canvas" size={[500, 300]} className={'story-chart'}>
         <Settings theme={theme} debug={boolean('debug', true)} />
@@ -48,6 +59,7 @@ storiesOf('Stylings', module)
           position={Position.Left}
           tickFormat={(d) => Number(d).toFixed(2)}
           showGridLines={boolean('show left axis grid lines', false)}
+          gridLineStyle={leftAxisGridLine}
         />
         <Axis
           id={getAxisId('top')}

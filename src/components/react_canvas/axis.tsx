@@ -6,7 +6,7 @@ import {
   getVerticalAxisTickLineProps, isHorizontal, isVertical,
 } from '../../lib/axes/axis_utils';
 import { AxisSpec, Position } from '../../lib/series/specs';
-import { Theme } from '../../lib/themes/theme';
+import { DEFAULT_GRID_LINE_CONFIG, Theme } from '../../lib/themes/theme';
 import { Dimensions } from '../../lib/utils/dimensions';
 
 interface AxisProps {
@@ -82,11 +82,18 @@ export class Axis extends React.PureComponent<AxisProps> {
     }
 
     const {
-      axisSpec: { tickSize, tickPadding, position },
+      axisSpec: { tickSize, tickPadding, position, gridLineStyle },
       axisTicksDimensions: { maxLabelBboxHeight },
       chartDimensions,
       chartTheme: { chart: { paddings } },
     } = this.props;
+
+    const config = gridLineStyle || DEFAULT_GRID_LINE_CONFIG;
+
+    const styleProps = {
+      ...config,
+      ...DEFAULT_GRID_LINE_CONFIG,
+    };
 
     const lineProps = isVertical(position) ?
       getVerticalAxisGridLineProps(
@@ -106,7 +113,7 @@ export class Axis extends React.PureComponent<AxisProps> {
         paddings,
       );
 
-    return <Line key={`tick-${i}`} points={lineProps} stroke={'red'} strokeWidth={1} />;
+    return <Line key={`tick-${i}`} points={lineProps} {...styleProps} />;
   }
 
   private renderTickLine = (tick: AxisTick, i: number) => {
