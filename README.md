@@ -1,11 +1,14 @@
-# Elastic Charts
-
+<h1 align="center">
+  Elastic Charts
+</h1>
 <p align="center">
   <a href="(https://travis-ci.org/elastic/elastic-charts"><img alt="Build Status" src="https://travis-ci.org/elastic/elastic-charts.svg?branch=master"></a>
   <a href="http://commitizen.github.io/cz-cli/"><img alt="Commitizen friendly" src="https://img.shields.io/badge/commitizen-friendly-brightgreen.svg"></a>
 </p>
 
 🚨 **WARNING** While open source, the intended consumers of this repository are Elastic products. Read the [FAQ][faq] for details.
+
+---
 
 This library is a complete rewrite of the current vislib in Kibana and EUISeriesChart in EUI.
 The rationale behind this refactoring is the need for a testable and decoupled architecture for displaying data as charts. The current EUI implementation is based on ReactVis that directly manipulate data series inside components, without a clear rendering pipeline and without a clean way to extend it. Some of the downside of using react vis are:
@@ -48,7 +51,7 @@ The actual rendering is done by one of the rendered like the `ReactChart` that i
 
 A spec can be something like the following:
 
-```jsx
+```js
 <Chart renderer={renderer}>
   <Settings rotation={rotation} animateData={true} />
   <Axis id={getAxisId('bottom')} position={AxisPosition.Bottom} title={`Rendering test`} />
