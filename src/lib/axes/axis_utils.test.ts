@@ -9,9 +9,11 @@ import {
   computeAxisTicksDimensions,
   computeRotatedLabelDimensions,
   getAvailableTicks,
+  getHorizontalAxisTickLineProps,
   getMinMaxRange,
   getScaleForAxisSpec,
   getTickLabelProps,
+  getVerticalAxisTickLineProps,
   getVisibleTicks,
 } from './axis_utils';
 import { SvgTextBBoxCalculator } from './svg_text_bbox_calculator';
@@ -121,7 +123,6 @@ describe('Axis computational utils', () => {
     expect(dims45.height).toBeCloseTo(Math.sqrt(2));
   });
 
-  // TODO: these tests appear to be failing (also on master)
   test('should generate a valid scale', () => {
     const scale = getScaleForAxisSpec(verticalAxisSpec, xDomain, [yDomain], 0, 0, 100, 0);
     expect(scale).toBeDefined();
@@ -131,7 +132,6 @@ describe('Axis computational utils', () => {
     expect(scale!.ticks()).toEqual([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]);
   });
 
-  // TODO: these tests appear to be failing (also on master)
   test('should compute available ticks', () => {
     const scale = getScaleForAxisSpec(verticalAxisSpec, xDomain, [yDomain], 0, 0, 100, 0);
     const axisPositions = getAvailableTicks(verticalAxisSpec, scale!, 0);
@@ -402,5 +402,50 @@ describe('Axis computational utils', () => {
       align: 'center',
       verticalAlign: 'middle',
     });
+  });
+
+  test('should compute axis tick line positions', () => {
+    const tickPadding = 5;
+    const tickSize = 10;
+    const tickPosition = 10;
+    const maxLabelBboxHeight = 20;
+
+    const leftAxisTickLinePositions = getVerticalAxisTickLineProps(
+      Position.Left,
+      tickPadding,
+      tickSize,
+      tickPosition,
+    );
+
+    expect(leftAxisTickLinePositions).toEqual([5, 10, 15, 10]);
+
+    const rightAxisTickLinePositions = getVerticalAxisTickLineProps(
+      Position.Right,
+      tickPadding,
+      tickSize,
+      tickPosition,
+    );
+
+    expect(rightAxisTickLinePositions).toEqual([0, 10, 10, 10]);
+
+    const topAxisTickLinePositions = getHorizontalAxisTickLineProps(
+      Position.Top,
+      tickPadding,
+      tickSize,
+      tickPosition,
+      maxLabelBboxHeight,
+    );
+
+    expect(topAxisTickLinePositions).toEqual([10, 25, 10, 35]);
+
+    const bottomAxisTickLinePositions = getHorizontalAxisTickLineProps(
+      Position.Bottom,
+      tickPadding,
+      tickSize,
+      tickPosition,
+      maxLabelBboxHeight,
+    );
+
+    expect(bottomAxisTickLinePositions).toEqual([10, 0, 10, 10]);
   });
 });
