@@ -3,7 +3,7 @@ import { XDomain } from '../series/domains/x_domain';
 import { YDomain } from '../series/domains/y_domain';
 import { computeXScale, computeYScales } from '../series/scales';
 import { AxisSpec, Position, Rotation, TickFormatter } from '../series/specs';
-import { AxisConfig, Theme, GridLineConfig, DEFAULT_GRID_LINE_CONFIG } from '../themes/theme';
+import { AxisConfig, DEFAULT_GRID_LINE_CONFIG, GridLineConfig, Theme } from '../themes/theme';
 import { Dimensions, Margins } from '../utils/dimensions';
 import { Domain } from '../utils/domain';
 import { AxisId } from '../utils/ids';
