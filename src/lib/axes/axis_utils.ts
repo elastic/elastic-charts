@@ -3,7 +3,7 @@ import { XDomain } from '../series/domains/x_domain';
 import { YDomain } from '../series/domains/y_domain';
 import { computeXScale, computeYScales } from '../series/scales';
 import { AxisSpec, Position, Rotation, TickFormatter } from '../series/specs';
-import { AxisConfig, Theme } from '../themes/theme';
+import { AxisConfig, Theme, GridLineConfig, DEFAULT_GRID_LINE_CONFIG } from '../themes/theme';
 import { Dimensions, Margins } from '../utils/dimensions';
 import { Domain } from '../utils/domain';
 import { AxisId } from '../utils/ids';
@@ -307,6 +307,13 @@ export function getHorizontalAxisGridLineProps(
   const y1 = isTopAxis ? topY1 : bottomY1;
 
   return [x, y1, x, y1 + chartHeight];
+}
+
+export function mergeWithDefaultGridLineConfig(config: GridLineConfig): GridLineConfig {
+  return {
+    stroke: config.stroke || DEFAULT_GRID_LINE_CONFIG.stroke,
+    strokeWidth: config.strokeWidth || DEFAULT_GRID_LINE_CONFIG.strokeWidth,
+  };
 }
 
 export function getMinMaxRange(

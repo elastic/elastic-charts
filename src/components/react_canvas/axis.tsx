@@ -3,7 +3,7 @@ import { Group, Line, Rect, Text } from 'react-konva';
 import {
   AxisTick, AxisTicksDimensions, centerRotationOrigin, getHorizontalAxisGridLineProps,
   getHorizontalAxisTickLineProps, getTickLabelProps, getVerticalAxisGridLineProps,
-  getVerticalAxisTickLineProps, isHorizontal, isVertical,
+  getVerticalAxisTickLineProps, isHorizontal, isVertical, mergeWithDefaultGridLineConfig,
 } from '../../lib/axes/axis_utils';
 import { AxisSpec, Position } from '../../lib/series/specs';
 import { DEFAULT_GRID_LINE_CONFIG, Theme } from '../../lib/themes/theme';
@@ -88,12 +88,7 @@ export class Axis extends React.PureComponent<AxisProps> {
       chartTheme: { chart: { paddings } },
     } = this.props;
 
-    const config = gridLineStyle || DEFAULT_GRID_LINE_CONFIG;
-
-    const styleProps = {
-      ...config,
-      ...DEFAULT_GRID_LINE_CONFIG,
-    };
+    const config = gridLineStyle ? mergeWithDefaultGridLineConfig(gridLineStyle) : DEFAULT_GRID_LINE_CONFIG;
 
     const lineProps = isVertical(position) ?
       getVerticalAxisGridLineProps(
@@ -113,7 +108,7 @@ export class Axis extends React.PureComponent<AxisProps> {
         paddings,
       );
 
-    return <Line key={`tick-${i}`} points={lineProps} {...styleProps} />;
+    return <Line key={`tick-${i}`} points={lineProps} {...config} />;
   }
 
   private renderTickLine = (tick: AxisTick, i: number) => {
