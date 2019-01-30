@@ -148,7 +148,7 @@ export class Axis extends React.PureComponent<AxisProps> {
       return null;
     }
     if (isHorizontal(position)) {
-      return this.renderOriziontalAxisTitle();
+      return this.renderHorizontalAxisTitle();
     }
     return this.renderVerticalAxisTitle();
   }
@@ -200,13 +200,13 @@ export class Axis extends React.PureComponent<AxisProps> {
       </Group>
     );
   }
-  private renderOriziontalAxisTitle() {
+  private renderHorizontalAxisTitle() {
     const {
       axisPosition: { width, height },
       axisSpec: { title, position, tickSize, tickPadding },
       axisTicksDimensions: { maxLabelBboxHeight },
       chartTheme: {
-        axes: { titleFontSize },
+        axes: { titleFontSize, titlePadding },
       },
       debug,
     } = this.props;
@@ -215,7 +215,10 @@ export class Axis extends React.PureComponent<AxisProps> {
       return;
     }
 
-    const top = position === Position.Top ? -maxLabelBboxHeight : maxLabelBboxHeight + tickPadding + tickSize;
+    const top = position === Position.Top ?
+      -maxLabelBboxHeight - titlePadding :
+      maxLabelBboxHeight + tickPadding + tickSize + titlePadding;
+
     const left = 0;
     return (
       <Group>
