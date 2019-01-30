@@ -41,6 +41,26 @@ storiesOf('Stylings', module)
         max: 10,
         step: 1,
       }),
+      opacity: number('left axis grid line stroke opacity', 1, {
+        range: true,
+        min: 0,
+        max: 1,
+        step: 0.01,
+      }),
+      dash: [
+        number('left axis grid line dash length', 1, {
+          range: true,
+          min: 0,
+          max: 10,
+          step: 1,
+        }),
+        number('left axis grid line dash spacing', 1, {
+          range: true,
+          min: 0,
+          max: 10,
+          step: 1,
+        }),
+      ],
     };
 
     return (

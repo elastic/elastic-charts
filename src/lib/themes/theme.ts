@@ -25,6 +25,8 @@ export interface AxisConfig {
 export interface GridLineConfig {
   stroke?: string;
   strokeWidth?: number;
+  opacity?: number;
+  dash?: number[];
 }
 export interface ScalesConfig {
   ordinal: {
@@ -86,6 +88,7 @@ export interface PartialTheme {
 export const DEFAULT_GRID_LINE_CONFIG: GridLineConfig = {
   stroke: 'red',
   strokeWidth: 1,
+  opacity: 1,
 };
 
 export const DEFAULT_THEME: Theme = {

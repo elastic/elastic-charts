@@ -313,6 +313,8 @@ export function mergeWithDefaultGridLineConfig(config: GridLineConfig): GridLine
   return {
     stroke: config.stroke || DEFAULT_GRID_LINE_CONFIG.stroke,
     strokeWidth: config.strokeWidth || DEFAULT_GRID_LINE_CONFIG.strokeWidth,
+    opacity: config.opacity || DEFAULT_GRID_LINE_CONFIG.opacity,
+    dash: config.dash || DEFAULT_GRID_LINE_CONFIG.dash,
   };
 }
 
