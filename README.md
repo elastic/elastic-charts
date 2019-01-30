@@ -1,6 +1,9 @@
 # Elastic Charts
 
-[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+<p align="center">
+  <a href="(https://travis-ci.org/elastic/elastic-charts"><img alt="Build Status" src="https://travis-ci.org/elastic/elastic-charts.svg?branch=master"></a>
+  <a href="http://commitizen.github.io/cz-cli/"><img alt="Commitizen friendly" src="https://img.shields.io/badge/commitizen-friendly-brightgreen.svg"></a>
+</p>
 
 🚨 **WARNING** While open source, the intended consumers of this repository are Elastic products. Read the [FAQ][faq] for details.
 
