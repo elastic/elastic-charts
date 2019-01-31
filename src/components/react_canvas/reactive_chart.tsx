@@ -7,6 +7,7 @@ import { BrushExtent } from '../../state/utils';
 import { AreaGeometries } from './area_geometries';
 import { Axis } from './axis';
 import { BarGeometries } from './bar_geometries';
+import { Grid } from './grid';
 import { LineGeometries } from './line_geometries';
 
 interface ReactiveChartProps {
@@ -161,6 +162,43 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
     });
     return axesComponents;
   }
+
+  renderGrids = () => {
+    const {
+      axesVisibleTicks,
+      axesSpecs,
+      axesTicksDimensions,
+      axesPositions,
+      chartTheme,
+      debug,
+      chartDimensions,
+    } = this.props.chartStore!;
+
+    const axesComponents: JSX.Element[] = [];
+    axesVisibleTicks.forEach((axisTicks, axisId) => {
+      const axisSpec = axesSpecs.get(axisId);
+      const axisTicksDimensions = axesTicksDimensions.get(axisId);
+      const axisPosition = axesPositions.get(axisId);
+      const ticks = axesVisibleTicks.get(axisId);
+      if (!ticks || !axisSpec || !axisTicksDimensions || !axisPosition) {
+        return;
+      }
+      axesComponents.push(
+        <Grid
+          key={`axis-${axisId}`}
+          axisSpec={axisSpec}
+          axisTicksDimensions={axisTicksDimensions}
+          axisPosition={axisPosition}
+          ticks={ticks}
+          chartTheme={chartTheme}
+          debug={debug}
+          chartDimensions={chartDimensions}
+        />,
+      );
+    });
+    return axesComponents;
+  }
+
   renderBrushTool = () => {
     const { brushing, brushStart, brushEnd } = this.state;
     const { chartDimensions, chartRotation, chartTransform } = this.props.chartStore!;
@@ -273,6 +311,8 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
           }}
           {...brushProps}
         >
+          <Layer hitGraphEnabled={false}>{this.renderGrids()}</Layer>
+
           <Layer
             ref={this.renderingLayerRef}
             x={chartDimensions.left + chartTransform.x}
