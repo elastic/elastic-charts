@@ -43,7 +43,6 @@ function generateGridLineConfig(group: string): GridLineConfig {
 storiesOf('Grids', module)
   .add('basic', () => {
     const leftAxisGridLineConfig = generateGridLineConfig(Position.Left);
-    const leftAxisGridLineConfig2 = generateGridLineConfig(`${Position.Left}2`);
     const rightAxisGridLineConfig = generateGridLineConfig(Position.Right);
     const topAxisGridLineConfig = generateGridLineConfig(Position.Top);
     const bottomAxisGridLineConfig = generateGridLineConfig(Position.Bottom);
@@ -68,15 +67,6 @@ storiesOf('Grids', module)
           gridLineStyle={leftAxisGridLineConfig}
         />
         <Axis
-          id={getAxisId('left2')}
-          title={'Left axis 2'}
-          groupId={getGroupId('group2')}
-          position={Position.Left}
-          tickFormat={(d) => Number(d).toFixed(2)}
-          showGridLines={boolean('show left axis 2 grid lines', false, 'left2 axis')}
-          gridLineStyle={leftAxisGridLineConfig2}
-        />
-        <Axis
           id={getAxisId('top')}
           position={Position.Top}
           title={'Top axis'}
@@ -91,6 +81,54 @@ storiesOf('Grids', module)
           tickFormat={(d) => Number(d).toFixed(2)}
           showGridLines={boolean('show right axis grid lines', false, 'right axis')}
           gridLineStyle={rightAxisGridLineConfig}
+        />
+        <BarSeries
+          id={getSpecId('bars')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
+          yScaleToDataExtent={false}
+        />
+        <LineSeries
+          id={getSpecId('lines')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          groupId={getGroupId('group2')}
+          xAccessor="x"
+          yAccessors={['y']}
+          stackAccessors={['x']}
+          splitSeriesAccessors={['g']}
+          data={[{ x: 0, y: 3 }, { x: 1, y: 2 }, { x: 2, y: 4 }, { x: 3, y: 10 }]}
+          yScaleToDataExtent={false}
+        />
+      </Chart>
+    );
+  })
+  .add('multiple axes with the same position', () => {
+    const leftAxisGridLineConfig = generateGridLineConfig(Position.Left);
+    const leftAxisGridLineConfig2 = generateGridLineConfig(`${Position.Left}2`);
+
+    return (
+      <Chart renderer="canvas" size={[500, 300]} className={'story-chart'}>
+        <Settings debug={boolean('debug', false)} />
+        <Axis
+          id={getAxisId('left1')}
+          title={'Left axis 1'}
+          position={Position.Left}
+          tickFormat={(d) => Number(d).toFixed(2)}
+          showGridLines={boolean('show left axis grid lines', false, 'left axis')}
+          gridLineStyle={leftAxisGridLineConfig}
+        />
+        <Axis
+          id={getAxisId('left2')}
+          title={'Left axis 2'}
+          groupId={getGroupId('group2')}
+          position={Position.Left}
+          tickFormat={(d) => Number(d).toFixed(2)}
+          showGridLines={boolean('show left axis 2 grid lines', false, 'left2 axis')}
+          gridLineStyle={leftAxisGridLineConfig2}
         />
         <BarSeries
           id={getSpecId('bars')}
