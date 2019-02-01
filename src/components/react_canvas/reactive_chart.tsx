@@ -174,7 +174,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       chartDimensions,
     } = this.props.chartStore!;
 
-    const axesComponents: JSX.Element[] = [];
+    const gridComponents: JSX.Element[] = [];
     axesVisibleTicks.forEach((axisTicks, axisId) => {
       const axisSpec = axesSpecs.get(axisId);
       const axisTicksDimensions = axesTicksDimensions.get(axisId);
@@ -183,9 +183,9 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       if (!ticks || !axisSpec || !axisTicksDimensions || !axisPosition) {
         return;
       }
-      axesComponents.push(
+      gridComponents.push(
         <Grid
-          key={`axis-${axisId}`}
+          key={`axis-grid-${axisId}`}
           axisSpec={axisSpec}
           axisTicksDimensions={axisTicksDimensions}
           axisPosition={axisPosition}
@@ -196,7 +196,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
         />,
       );
     });
-    return axesComponents;
+    return gridComponents;
   }
 
   renderBrushTool = () => {
