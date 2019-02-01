@@ -271,42 +271,17 @@ export function getHorizontalAxisTickLineProps(
 }
 
 export function getVerticalAxisGridLineProps(
-  position: Position,
-  tickPadding: number,
-  tickSize: number,
   tickPosition: number,
   chartWidth: number,
-  paddings: Margins,
 ): number[] {
-  const isLeftAxis = position === Position.Left;
-  const y = tickPosition;
-
-  const leftX1 = tickSize + tickPadding + paddings.left;
-  const rightX1 = - chartWidth - paddings.right;
-
-  const x1 = isLeftAxis ? leftX1 : rightX1;
-
-  return [x1, y, x1 + chartWidth, y];
+  return [0, tickPosition, chartWidth, tickPosition];
 }
 
 export function getHorizontalAxisGridLineProps(
-  position: Position,
-  tickPadding: number,
-  tickSize: number,
   tickPosition: number,
-  labelHeight: number,
   chartHeight: number,
-  paddings: Margins,
 ): number[] {
-  const isTopAxis = position === Position.Top;
-  const x = tickPosition;
-
-  const topY1 = labelHeight + tickPadding + tickSize + paddings.top;
-  const bottomY1 = - chartHeight - paddings.bottom;
-
-  const y1 = isTopAxis ? topY1 : bottomY1;
-
-  return [x, y1, x, y1 + chartHeight];
+  return [tickPosition, 0, tickPosition, chartHeight];
 }
 
 export function mergeWithDefaultGridLineConfig(config: GridLineConfig): GridLineConfig {

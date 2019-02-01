@@ -30,39 +30,29 @@ export class Grid extends React.PureComponent<GridProps> {
     }
 
     const {
-      axisSpec: { tickSize, tickPadding, position, gridLineStyle },
-      axisTicksDimensions: { maxLabelBboxHeight },
+      axisSpec: { position, gridLineStyle },
       chartDimensions,
-      chartTheme: { chart: { paddings } },
     } = this.props;
 
     const config = gridLineStyle ? mergeWithDefaultGridLineConfig(gridLineStyle) : DEFAULT_GRID_LINE_CONFIG;
 
     const lineProps = isVertical(position) ?
       getVerticalAxisGridLineProps(
-        position,
-        tickPadding,
-        tickSize,
         tick.position,
         chartDimensions.width,
-        paddings,
       ) : getHorizontalAxisGridLineProps(
-        position,
-        tickPadding,
-        tickSize,
         tick.position,
-        maxLabelBboxHeight,
         chartDimensions.height,
-        paddings,
       );
 
     return <Line key={`tick-${i}`} points={lineProps} {...config} />;
   }
 
   private renderGrid = () => {
-    const { ticks, axisPosition } = this.props;
+    const { ticks, chartDimensions } = this.props;
+
     return (
-      <Group x={axisPosition.left} y={axisPosition.top}>
+      <Group x={chartDimensions.left} y={chartDimensions.top}>
         <Group key="grid-lines">{ticks.map(this.renderGridLine)}</Group>
       </Group>
     );
