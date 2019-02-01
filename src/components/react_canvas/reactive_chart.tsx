@@ -167,9 +167,6 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
     const {
       axesVisibleTicks,
       axesSpecs,
-      axesTicksDimensions,
-      axesPositions,
-      chartTheme,
       debug,
       chartDimensions,
     } = this.props.chartStore!;
@@ -177,20 +174,15 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
     const gridComponents: JSX.Element[] = [];
     axesVisibleTicks.forEach((axisTicks, axisId) => {
       const axisSpec = axesSpecs.get(axisId);
-      const axisTicksDimensions = axesTicksDimensions.get(axisId);
-      const axisPosition = axesPositions.get(axisId);
       const ticks = axesVisibleTicks.get(axisId);
-      if (!ticks || !axisSpec || !axisTicksDimensions || !axisPosition) {
+      if (!ticks || !axisSpec) {
         return;
       }
       gridComponents.push(
         <Grid
           key={`axis-grid-${axisId}`}
           axisSpec={axisSpec}
-          axisTicksDimensions={axisTicksDimensions}
-          axisPosition={axisPosition}
           ticks={ticks}
-          chartTheme={chartTheme}
           debug={debug}
           chartDimensions={chartDimensions}
         />,

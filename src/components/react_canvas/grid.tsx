@@ -1,18 +1,15 @@
 import React from 'react';
 import { Group, Line } from 'react-konva';
 import {
-  AxisTick, AxisTicksDimensions, getHorizontalAxisGridLineProps, getVerticalAxisGridLineProps,
+  AxisTick, getHorizontalAxisGridLineProps, getVerticalAxisGridLineProps,
   isVertical, mergeWithDefaultGridLineConfig,
 } from '../../lib/axes/axis_utils';
 import { AxisSpec } from '../../lib/series/specs';
-import { DEFAULT_GRID_LINE_CONFIG, Theme } from '../../lib/themes/theme';
+import { DEFAULT_GRID_LINE_CONFIG } from '../../lib/themes/theme';
 import { Dimensions } from '../../lib/utils/dimensions';
 
 interface GridProps {
-  chartTheme: Theme;
   axisSpec: AxisSpec;
-  axisTicksDimensions: AxisTicksDimensions;
-  axisPosition: Dimensions;
   ticks: AxisTick[];
   debug: boolean;
   chartDimensions: Dimensions;
