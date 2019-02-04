@@ -91,7 +91,7 @@ export class BarGeometries extends React.PureComponent<
         return 1;
       }
 
-      return 0.6;
+      return 0.25;
     }
     return 1;
   }

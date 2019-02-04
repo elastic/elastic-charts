@@ -186,6 +186,7 @@ export class LineGeometries extends React.PureComponent<
             listening={false}
             lineCap="round"
             lineJoin="round"
+            opacity={opacity}
           />
         );
       }

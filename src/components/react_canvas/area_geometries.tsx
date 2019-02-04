@@ -3,7 +3,9 @@ import { IAction } from 'mobx';
 import React from 'react';
 import { Circle, Group, Path } from 'react-konva';
 import { animated, Spring } from 'react-spring/konva';
+import { LegendItem } from '../../lib/series/legend';
 import { AreaGeometry, GeometryValue, PointGeometry } from '../../lib/series/rendering';
+import { belongsToDataSeries } from '../../lib/series/series_utils';
 import { AreaSeriesStyle } from '../../lib/themes/theme';
 import { ElementClickListener, TooltipData } from '../../state/chart_state';
 
@@ -15,6 +17,7 @@ interface AreaGeometriesDataProps {
   onElementClick?: ElementClickListener;
   onElementOver: ((tooltip: TooltipData) => void) & IAction;
   onElementOut: (() => void) & IAction;
+  highlightedLegendItem: LegendItem | null;
 }
 interface AreaGeometriesDataState {
   overPoint?: PointGeometry;
@@ -22,7 +25,7 @@ interface AreaGeometriesDataState {
 export class AreaGeometries extends React.PureComponent<
   AreaGeometriesDataProps,
   AreaGeometriesDataState
-> {
+  > {
   static defaultProps: Partial<AreaGeometriesDataProps> = {
     animated: false,
     num: 1,
@@ -131,10 +134,31 @@ export class AreaGeometries extends React.PureComponent<
       );
     });
   }
+
+  private computeAreaOpacity = (point: PointGeometry): number => {
+    const { highlightedLegendItem } = this.props;
+
+    if (highlightedLegendItem != null) {
+      const isPartOfHighlightedSeries = belongsToDataSeries(point.value, highlightedLegendItem.value);
+
+      if (isPartOfHighlightedSeries) {
+        return 1;
+      }
+
+      return 0.25;
+    }
+    return 1;
+  }
+
   private renderAreaGeoms = (): JSX.Element[] => {
     const { areas } = this.props;
     return areas.map((glyph, i) => {
-      const { area, color, transform } = glyph;
+      const { area, color, transform, points } = glyph;
+
+      // TODO: May want to consider a way to get GeometryValue from LineGeometry instead of
+      // PointGeometry (which is why we currently use the first point)
+      const opacity = this.computeAreaOpacity(points[0]);
+
       if (this.props.animated) {
         return (
           <Group key={`area-group-${i}`} x={transform.x}>
@@ -145,8 +169,9 @@ export class AreaGeometries extends React.PureComponent<
                   data={props.area}
                   fill={color}
                   listening={false}
-                  // areaCap="round"
-                  // areaJoin="round"
+                  opacity={opacity}
+                // areaCap="round"
+                // areaJoin="round"
                 />
               )}
             </Spring>
@@ -159,8 +184,9 @@ export class AreaGeometries extends React.PureComponent<
             data={area}
             fill={color}
             listening={false}
-            // areaCap="round"
-            // areaJoin="round"
+            opacity={opacity}
+          // areaCap="round"
+          // areaJoin="round"
           />
         );
       }

@@ -123,6 +123,9 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
     if (!geometries) {
       return;
     }
+
+    const highlightedLegendItem = this.getHighlightedLegendItem();
+
     return (
       <AreaGeometries
         animated={canDataBeAnimated}
@@ -131,6 +134,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
         onElementOver={onOverElement}
         onElementOut={onOutElement}
         onElementClick={onElementClickListener}
+        highlightedLegendItem={highlightedLegendItem}
       />
     );
   }
