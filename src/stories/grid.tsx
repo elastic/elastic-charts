@@ -4,7 +4,6 @@ import React from 'react';
 import { Axis, BarSeries, Chart, getAxisId, getSpecId, LineSeries, Position, ScaleType, Settings } from '..';
 import { GridLineConfig } from '../lib/themes/theme';
 import { getGroupId } from '../lib/utils/ids';
-import './stories.scss';
 
 function generateGridLineConfig(group: string): GridLineConfig {
   const groupId = `${group} axis`;
