@@ -93,9 +93,11 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
                 onMouseOut: this.onLegendItemMouseout,
               };
 
+              const { color, label } = item;
+
               return (
                 <EuiFlexItem {...legendItemProps}>
-                  <LegendElement color={item.color} label={item.label} />
+                  {this.renderLegendElement({ color, label }, index)}
                 </EuiFlexItem>
               );
             })}
@@ -105,6 +107,11 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
     );
   }
 
+  private onLegendTitleClick = (legendItemIndex: number) => () => {
+    // tslint:disable-next-line:no-console
+    console.log(legendItemIndex);
+  }
+
   private onLegendItemMouseover = (legendItemIndex: number) => () => {
     this.props.chartStore!.onLegendItemOver(legendItemIndex);
   }
@@ -112,24 +119,45 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
   private onLegendItemMouseout = () => {
     this.props.chartStore!.onLegendItemOut();
   }
+
+  private renderLegendElement = ({ color, label }: Partial<LegendItem>, legendItemIndex: number) => {
+    const onTitleClick = this.onLegendTitleClick(legendItemIndex);
+
+    return (
+      <EuiFlexGroup gutterSize="xs" alignItems="center" responsive={false}>
+        <EuiFlexItem grow={false}>
+          <EuiIcon type="dot" color={color} />
+        </EuiFlexItem>
+        <EuiFlexItem grow={false}>
+          <EuiToolTip position="right" content={<EuiText size="xs">{label}</EuiText>}>
+            <EuiFlexItem grow={true} className="euiChartLegendListItem__title" onClick={onTitleClick}>
+              <EuiText size="xs" className="eui-textTruncate">
+                {label}
+              </EuiText>
+            </EuiFlexItem>
+          </EuiToolTip>
+        </EuiFlexItem>
+      </EuiFlexGroup>
+    );
+  }
 }
-function LegendElement({ color, label }: Partial<LegendItem>) {
-  return (
-    <EuiFlexGroup gutterSize="xs" alignItems="center" responsive={false}>
-      <EuiFlexItem grow={false}>
-        <EuiIcon type="dot" color={color} />
-      </EuiFlexItem>
-      <EuiFlexItem grow={false}>
-        <EuiToolTip position="right" content={<EuiText size="xs">{label}</EuiText>}>
-          <EuiFlexItem grow={true} className="euiChartLegendListItem__title">
-            <EuiText size="xs" className="eui-textTruncate">
-              {label}
-            </EuiText>
-          </EuiFlexItem>
-        </EuiToolTip>
-      </EuiFlexItem>
-    </EuiFlexGroup>
-  );
-}
+// function LegendElement({ color, label }: Partial<LegendItem>) {
+//   return (
+//     <EuiFlexGroup gutterSize="xs" alignItems="center" responsive={false}>
+//       <EuiFlexItem grow={false}>
+//         <EuiIcon type="dot" color={color} />
+//       </EuiFlexItem>
+//       <EuiFlexItem grow={false}>
+//         <EuiToolTip position="right" content={<EuiText size="xs">{label}</EuiText>}>
+//           <EuiFlexItem grow={true} className="euiChartLegendListItem__title" onClick={onLegendTitleClick}>
+//             <EuiText size="xs" className="eui-textTruncate">
+//               {label}
+//             </EuiText>
+//           </EuiFlexItem>
+//         </EuiToolTip>
+//       </EuiFlexItem>
+//     </EuiFlexGroup>
+//   );
+// }
 
 export const Legend = inject('chartStore')(observer(LegendComponent));
