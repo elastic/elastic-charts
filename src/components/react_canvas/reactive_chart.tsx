@@ -73,7 +73,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
     if (!geometries) {
       return;
     }
-    const highlightedLegendItem = highlightedLegendItemIndex ? legendItems[highlightedLegendItemIndex] : null;
+    const highlightedLegendItem = highlightedLegendItemIndex != null ? legendItems[highlightedLegendItemIndex] : null;
 
     return (
       <BarGeometries
