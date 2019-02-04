@@ -230,7 +230,7 @@ export class ChartStore {
     return this.xScale.type !== ScaleType.Ordinal && Boolean(this.onBrushEndListener);
   }
 
-  updateHighlightedLegendItem(legendItemIndex: number) {
+  updateHighlightedLegendItem(legendItemIndex: number | null) {
     if (legendItemIndex !== this.highlightedLegendItemIndex) {
       this.highlightedLegendItemIndex = legendItemIndex;
       this.computeChart();
