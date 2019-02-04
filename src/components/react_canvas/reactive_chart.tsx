@@ -67,10 +67,14 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       onOverElement,
       onOutElement,
       onElementClickListener,
+      highlightedLegendItemIndex,
+      legendItems,
     } = this.props.chartStore!;
     if (!geometries) {
       return;
     }
+    const highlightedLegendItem = highlightedLegendItemIndex ? legendItems[highlightedLegendItemIndex] : null;
+
     return (
       <BarGeometries
         animated={canDataBeAnimated}
@@ -78,6 +82,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
         onElementOver={onOverElement}
         onElementOut={onOutElement}
         onElementClick={onElementClickListener}
+        highlightedLegendItem={highlightedLegendItem}
       />
     );
   }

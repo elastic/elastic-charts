@@ -86,8 +86,14 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
             responsive={false}
           >
             {legendItems.map((item, index) => {
+              const legendItemProps = {
+                key: index,
+                className: 'euiChartLegendList__item',
+                onMouseOver: this.onLegendItemMouseover(index),
+              };
+
               return (
-                <EuiFlexItem key={index} className="euiChartLegendList__item">
+                <EuiFlexItem {...legendItemProps}>
                   <LegendElement color={item.color} label={item.label} />
                 </EuiFlexItem>
               );
@@ -96,6 +102,10 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
         </div>
       </div>
     );
+  }
+
+  private onLegendItemMouseover = (legendItemIndex: number) => () => {
+    this.props.chartStore!.updateHighlightedLegendItem(legendItemIndex);
   }
 }
 function LegendElement({ color, label }: Partial<LegendItem>) {

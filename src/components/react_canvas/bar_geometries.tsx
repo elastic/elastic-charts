@@ -3,7 +3,9 @@ import { IAction } from 'mobx';
 import React from 'react';
 import { Group, Rect } from 'react-konva';
 import { animated, Spring } from 'react-spring/konva';
+import { LegendItem } from '../../lib/series/legend';
 import { BarGeometry, GeometryValue } from '../../lib/series/rendering';
+import { belongsToDataSeries } from '../../lib/series/series_utils';
 import { ElementClickListener, TooltipData } from '../../state/chart_state';
 
 interface BarGeometriesDataProps {
@@ -12,6 +14,7 @@ interface BarGeometriesDataProps {
   onElementClick?: ElementClickListener;
   onElementOver: ((tooltip: TooltipData) => void) & IAction;
   onElementOut: (() => void) & IAction;
+  highlightedLegendItem: LegendItem | null;
 }
 interface BarGeometriesDataState {
   overBar?: BarGeometry;
@@ -19,7 +22,7 @@ interface BarGeometriesDataState {
 export class BarGeometries extends React.PureComponent<
   BarGeometriesDataProps,
   BarGeometriesDataState
-> {
+  > {
   static defaultProps: Partial<BarGeometriesDataProps> = {
     animated: false,
   };
@@ -70,14 +73,34 @@ export class BarGeometries extends React.PureComponent<
     });
     onElementOut();
   }
+
+  private computeBarOpacity = (bar: BarGeometry, overBar: BarGeometry | undefined): number => {
+    const { highlightedLegendItem } = this.props;
+
+    // There are two elements that might be hovered over that could affect this:
+    // a specific bar element or a legend item; thus, we handle these states as mutually exclusive.
+    if (overBar) {
+      if (overBar !== bar) {
+        return 0.6;
+      }
+      return 1;
+    } else if (highlightedLegendItem != null) {
+      const isPartOfHighlightedSeries = belongsToDataSeries(bar.value, highlightedLegendItem.value);
+
+      if (isPartOfHighlightedSeries) {
+        return 1;
+      }
+
+      return 0.6;
+    }
+    return 1;
+  }
+
   private renderBarGeoms = (bars: BarGeometry[]): JSX.Element[] => {
     const { overBar } = this.state;
     return bars.map((bar, i) => {
       const { x, y, width, height, color, value } = bar;
-      let opacity = 1;
-      if (overBar && overBar !== bar) {
-        opacity = 0.6;
-      }
+      const opacity = this.computeBarOpacity(bar, overBar);
       if (this.props.animated) {
         return (
           <Group key={i}>

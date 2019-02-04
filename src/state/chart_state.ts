@@ -123,6 +123,7 @@ export class ChartStore {
   yScales?: Map<GroupId, Scale>;
 
   legendItems: LegendItem[] = [];
+  highlightedLegendItemIndex: number | null = null;
 
   tooltipData = observable.box<Array<[any, any]> | null>(null);
   tooltipPosition = observable.box<{ x: number; y: number } | null>();
@@ -227,6 +228,13 @@ export class ChartStore {
       return false;
     }
     return this.xScale.type !== ScaleType.Ordinal && Boolean(this.onBrushEndListener);
+  }
+
+  updateHighlightedLegendItem(legendItemIndex: number) {
+    if (legendItemIndex !== this.highlightedLegendItemIndex) {
+      this.highlightedLegendItemIndex = legendItemIndex;
+      this.computeChart();
+    }
   }
 
   updateParentDimensions(width: number, height: number, top: number, left: number) {
