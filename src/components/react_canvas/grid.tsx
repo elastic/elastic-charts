@@ -1,56 +1,38 @@
 import React from 'react';
 import { Group, Line } from 'react-konva';
 import {
-  AxisTick, getHorizontalAxisGridLineProps, getVerticalAxisGridLineProps,
-  isVertical, mergeWithDefaultGridLineConfig,
+  AxisLinePosition, mergeWithDefaultGridLineConfig,
 } from '../../lib/axes/axis_utils';
-import { AxisSpec } from '../../lib/series/specs';
-import { DEFAULT_GRID_LINE_CONFIG } from '../../lib/themes/theme';
+import { DEFAULT_GRID_LINE_CONFIG, GridLineConfig } from '../../lib/themes/theme';
 import { Dimensions } from '../../lib/utils/dimensions';
 
 interface GridProps {
-  axisSpec: AxisSpec;
-  ticks: AxisTick[];
-  debug: boolean;
   chartDimensions: Dimensions;
+  debug: boolean;
+  gridLineStyle: GridLineConfig | undefined;
+  linesPositions: AxisLinePosition[];
 }
 
 export class Grid extends React.PureComponent<GridProps> {
   render() {
     return this.renderGrid();
   }
-  private renderGridLine = (tick: AxisTick, i: number) => {
-    const showGridLines = this.props.axisSpec.showGridLines || false;
-
-    if (!showGridLines) {
-      return null;
-    }
-
+  private renderGridLine = (linePosition: AxisLinePosition, i: number) => {
     const {
-      axisSpec: { position, gridLineStyle },
-      chartDimensions,
+      gridLineStyle,
     } = this.props;
 
     const config = gridLineStyle ? mergeWithDefaultGridLineConfig(gridLineStyle) : DEFAULT_GRID_LINE_CONFIG;
 
-    const lineProps = isVertical(position) ?
-      getVerticalAxisGridLineProps(
-        tick.position,
-        chartDimensions.width,
-      ) : getHorizontalAxisGridLineProps(
-        tick.position,
-        chartDimensions.height,
-      );
-
-    return <Line key={`tick-${i}`} points={lineProps} {...config} />;
+    return <Line key={`tick-${i}`} points={linePosition} {...config} />;
   }
 
   private renderGrid = () => {
-    const { ticks, chartDimensions } = this.props;
+    const { chartDimensions, linesPositions } = this.props;
 
     return (
       <Group x={chartDimensions.left} y={chartDimensions.top}>
-        <Group key="grid-lines">{ticks.map(this.renderGridLine)}</Group>
+        <Group key="grid-lines">{linesPositions.map(this.renderGridLine)}</Group>
       </Group>
     );
   }

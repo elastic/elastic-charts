@@ -165,28 +165,26 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
 
   renderGrids = () => {
     const {
-      axesVisibleTicks,
+      axesGridLinesPositions,
       axesSpecs,
-      debug,
       chartDimensions,
+      debug,
     } = this.props.chartStore!;
 
     const gridComponents: JSX.Element[] = [];
-    axesVisibleTicks.forEach((axisTicks, axisId) => {
+    axesGridLinesPositions.forEach((axisGridLinesPositions, axisId) => {
       const axisSpec = axesSpecs.get(axisId);
-      const ticks = axesVisibleTicks.get(axisId);
-      if (!ticks || !axisSpec) {
-        return;
+      if (axisSpec && axisGridLinesPositions.length > 0) {
+        gridComponents.push(
+          <Grid
+            key={`axis-grid-${axisId}`}
+            chartDimensions={chartDimensions}
+            debug={debug}
+            gridLineStyle={axisSpec.gridLineStyle}
+            linesPositions={axisGridLinesPositions}
+          />,
+        );
       }
-      gridComponents.push(
-        <Grid
-          key={`axis-grid-${axisId}`}
-          axisSpec={axisSpec}
-          ticks={ticks}
-          debug={debug}
-          chartDimensions={chartDimensions}
-        />,
-      );
     });
     return gridComponents;
   }

@@ -10,6 +10,8 @@ import { AxisId } from '../utils/ids';
 import { Scale, ScaleType } from '../utils/scales/scales';
 import { BBox, BBoxCalculator } from './bbox_calculator';
 
+export type AxisLinePosition = [number, number, number, number];
+
 export interface AxisTick {
   value: number | string;
   label: string;
@@ -246,7 +248,7 @@ export function getVerticalAxisTickLineProps(
   tickPadding: number,
   tickSize: number,
   tickPosition: number,
-): [number, number, number, number] {
+): AxisLinePosition {
   const isLeftAxis = position === Position.Left;
   const y = tickPosition;
   const x1 = isLeftAxis ? tickPadding : 0;
@@ -261,7 +263,7 @@ export function getHorizontalAxisTickLineProps(
   tickSize: number,
   tickPosition: number,
   labelHeight: number,
-): [number, number, number, number] {
+): AxisLinePosition {
   const isTopAxis = position === Position.Top;
   const x = tickPosition;
   const y1 = isTopAxis ? labelHeight + tickPadding : 0;
@@ -273,14 +275,14 @@ export function getHorizontalAxisTickLineProps(
 export function getVerticalAxisGridLineProps(
   tickPosition: number,
   chartWidth: number,
-): [number, number, number, number] {
+): AxisLinePosition {
   return [0, tickPosition, chartWidth, tickPosition];
 }
 
 export function getHorizontalAxisGridLineProps(
   tickPosition: number,
   chartHeight: number,
-): [number, number, number, number] {
+): AxisLinePosition {
   return [tickPosition, 0, tickPosition, chartHeight];
 }
 
@@ -476,6 +478,7 @@ export function getAxisTicksPositions(
   const axisPositions: Map<AxisId, Dimensions> = new Map();
   const axisVisibleTicks: Map<AxisId, AxisTick[]> = new Map();
   const axisTicks: Map<AxisId, AxisTick[]> = new Map();
+  const axisGridLinesPositions: Map<AxisId, AxisLinePosition[]> = new Map();
 
   let cumTopSum = 0;
   let cumBottomSum = chartConfig.paddings.bottom;
@@ -535,6 +538,14 @@ export function getAxisTicksPositions(
       chartRotation,
     );
 
+    if (axisSpec.showGridLines) {
+      const isVerticalAxis = isVertical(axisSpec.position);
+      const gridLines = visibleTicks.map((tick: AxisTick): AxisLinePosition => {
+        return computeAxisGridLinePositions(isVerticalAxis, tick.position, chartDimensions);
+      });
+      axisGridLinesPositions.set(id, gridLines);
+    }
+
     const { titleFontSize, titlePadding } = chartTheme.axes;
     const axisTitleHeight = titleFontSize + titlePadding;
 
@@ -562,7 +573,25 @@ export function getAxisTicksPositions(
     axisPositions,
     axisTicks,
     axisVisibleTicks,
+    axisGridLinesPositions,
   };
+}
+
+function computeAxisGridLinePositions(
+  isVerticalAxis: boolean,
+  tickPosition: number,
+  chartDimensions: Dimensions,
+): AxisLinePosition {
+  const positions = isVerticalAxis ?
+    getVerticalAxisGridLineProps(
+      tickPosition,
+      chartDimensions.width,
+    ) : getHorizontalAxisGridLineProps(
+      tickPosition,
+      chartDimensions.height,
+    );
+
+  return positions;
 }
 
 function getVerticalDomain(
