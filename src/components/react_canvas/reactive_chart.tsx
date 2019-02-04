@@ -67,13 +67,11 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       onOverElement,
       onOutElement,
       onElementClickListener,
-      highlightedLegendItemIndex,
-      legendItems,
     } = this.props.chartStore!;
     if (!geometries) {
       return;
     }
-    const highlightedLegendItem = highlightedLegendItemIndex != null ? legendItems[highlightedLegendItemIndex] : null;
+    const highlightedLegendItem = this.getHighlightedLegendItem();
 
     return (
       <BarGeometries
@@ -98,6 +96,9 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
     if (!geometries) {
       return;
     }
+
+    const highlightedLegendItem = this.getHighlightedLegendItem();
+
     return (
       <LineGeometries
         animated={canDataBeAnimated}
@@ -106,6 +107,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
         onElementOver={onOverElement}
         onElementOut={onOutElement}
         onElementClick={onElementClickListener}
+        highlightedLegendItem={highlightedLegendItem}
       />
     );
   }
@@ -357,6 +359,16 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
         dash={[2, 2]}
       />
     );
+  }
+
+  private getHighlightedLegendItem = () => {
+    const {
+      highlightedLegendItemIndex,
+      legendItems,
+    } = this.props.chartStore!;
+    const highlightedLegendItem = highlightedLegendItemIndex != null ? legendItems[highlightedLegendItemIndex] : null;
+
+    return highlightedLegendItem;
   }
 }
 
