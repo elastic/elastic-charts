@@ -271,6 +271,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
           ? chartDimensions.width
           : chartDimensions.height,
       };
+
     let brushProps = {};
     const isBrushEnabled = this.props.chartStore!.isBrushEnabled();
     if (isBrushEnabled) {
@@ -280,6 +281,13 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
         onMouseMove: this.onBrushing,
       };
     }
+
+    const gridClippings = {
+      clipX: chartDimensions.left,
+      clipY: chartDimensions.top,
+      clipWidth: chartDimensions.width,
+      clipHeight: chartDimensions.height,
+    };
 
     return (
       <div
@@ -301,7 +309,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
           }}
           {...brushProps}
         >
-          <Layer hitGraphEnabled={false}>{this.renderGrids()}</Layer>
+          <Layer hitGraphEnabled={false} {...gridClippings}>{this.renderGrids()}</Layer>
 
           <Layer
             ref={this.renderingLayerRef}
