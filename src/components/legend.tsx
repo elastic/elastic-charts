@@ -108,8 +108,7 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
   }
 
   private onLegendTitleClick = (legendItemIndex: number) => () => {
-    // tslint:disable-next-line:no-console
-    console.log(legendItemIndex);
+    this.props.chartStore!.updateSelectedLegendItem(legendItemIndex);
   }
 
   private onLegendItemMouseover = (legendItemIndex: number) => () => {

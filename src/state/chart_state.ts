@@ -125,6 +125,7 @@ export class ChartStore {
 
   legendItems: LegendItem[] = [];
   highlightedLegendItemIndex: IObservableValue<number | null> = observable.box(null);
+  selectedLegendItemIndex: number | null = null;
 
   tooltipData = observable.box<Array<[any, any]> | null>(null);
   tooltipPosition = observable.box<{ x: number; y: number } | null>();
@@ -265,6 +266,13 @@ export class ChartStore {
       return false;
     }
     return this.xScale.type !== ScaleType.Ordinal && Boolean(this.onBrushEndListener);
+  }
+
+  updateSelectedLegendItem(legendItemIndex: number | null) {
+    if (legendItemIndex !== this.selectedLegendItemIndex) {
+      this.selectedLegendItemIndex = legendItemIndex;
+      this.computeChart();
+    }
   }
 
   updateParentDimensions(width: number, height: number, top: number, left: number) {
