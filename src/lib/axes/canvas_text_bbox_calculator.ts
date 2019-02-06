@@ -5,14 +5,14 @@ export class CanvasTextBBoxCalculator implements BBoxCalculator {
   private attachedRoot: HTMLElement;
   private offscreenCanvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D | null;
-  private fontScale: number;
+  private scaledFontSize: number;
 
   constructor(rootElement?: HTMLElement) {
     this.offscreenCanvas = document.createElement('canvas');
     this.context = this.offscreenCanvas.getContext('2d');
     this.attachedRoot = rootElement || document.documentElement;
     this.attachedRoot.appendChild(this.offscreenCanvas);
-    this.fontScale = 100;
+    this.scaledFontSize = 100;
   }
   compute(text: string, fontSize = 16, fontFamily = 'Arial'): Option<BBox> {
     if (!this.context) {
@@ -21,12 +21,12 @@ export class CanvasTextBBoxCalculator implements BBoxCalculator {
 
     // We scale the text up to get a more accurate computation of the width of the text
     // because `measureText` can vary a lot between browsers.
-    const scaledFontSize = fontSize * this.fontScale;
-    this.context.font = `${scaledFontSize}px ${fontFamily}`;
+    const scalingFactor = this.scaledFontSize / fontSize;
+    this.context.font = `${this.scaledFontSize}px ${fontFamily}`;
     const measure = this.context.measureText(text);
 
     return some({
-      width: measure.width / this.fontScale,
+      width: measure.width / scalingFactor,
       height: fontSize,
     });
   }
