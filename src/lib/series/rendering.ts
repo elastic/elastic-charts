@@ -4,10 +4,13 @@ import { Scale } from '../utils/scales/scales';
 import { CurveType, getCurveFactory } from './curves';
 import { DataSeriesDatum } from './series';
 
-export interface GeometryValue {
+export interface GeometryId {
   specId: SpecId;
-  datum: any;
   seriesKey: any[];
+}
+
+export interface GeometryValue extends GeometryId {
+  datum: any;
 }
 export interface PointGeometry {
   x: number;
@@ -26,6 +29,7 @@ export interface BarGeometry {
   height: number;
   color: string;
   value: GeometryValue;
+  geometryId: GeometryId;
 }
 export interface LineGeometry {
   line: string;
@@ -35,6 +39,7 @@ export interface LineGeometry {
     x: number;
     y: number;
   };
+  geometryId: GeometryId;
 }
 export interface AreaGeometry {
   area: string;
@@ -45,6 +50,7 @@ export interface AreaGeometry {
     x: number;
     y: number;
   };
+  geometryId: GeometryId;
 }
 
 export function renderPoints(
@@ -95,6 +101,10 @@ export function renderBars(
         datum: datum.datum,
         seriesKey,
       },
+      geometryId: {
+        specId,
+        seriesKey,
+      },
     };
   });
 }
@@ -123,6 +133,10 @@ export function renderLine(
       x,
       y,
     },
+    geometryId: {
+      specId,
+      seriesKey,
+    },
   };
 }
 
@@ -148,5 +162,9 @@ export function renderArea(
     points: lineGeometry.points,
     color,
     transform: lineGeometry.transform,
+    geometryId: {
+      specId,
+      seriesKey,
+    },
   };
 }

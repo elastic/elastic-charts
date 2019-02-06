@@ -4,7 +4,7 @@ import React from 'react';
 import { Circle, Group, Path } from 'react-konva';
 import { animated, Spring } from 'react-spring/konva';
 import { LegendItem } from '../../lib/series/legend';
-import { AreaGeometry, GeometryValue, PointGeometry } from '../../lib/series/rendering';
+import { AreaGeometry, GeometryId, GeometryValue, PointGeometry } from '../../lib/series/rendering';
 import { belongsToDataSeries } from '../../lib/series/series_utils';
 import { AreaSeriesStyle } from '../../lib/themes/theme';
 import { ElementClickListener, TooltipData } from '../../state/chart_state';
@@ -135,11 +135,11 @@ export class AreaGeometries extends React.PureComponent<
     });
   }
 
-  private computeAreaOpacity = (point: PointGeometry): number => {
+  private computeAreaOpacity = (geometryId: GeometryId): number => {
     const { highlightedLegendItem } = this.props;
 
     if (highlightedLegendItem != null) {
-      const isPartOfHighlightedSeries = belongsToDataSeries(point.value, highlightedLegendItem.value);
+      const isPartOfHighlightedSeries = belongsToDataSeries(geometryId, highlightedLegendItem.value);
 
       if (isPartOfHighlightedSeries) {
         return 1;
@@ -153,11 +153,9 @@ export class AreaGeometries extends React.PureComponent<
   private renderAreaGeoms = (): JSX.Element[] => {
     const { areas } = this.props;
     return areas.map((glyph, i) => {
-      const { area, color, transform, points } = glyph;
+      const { area, color, transform, geometryId } = glyph;
 
-      // TODO: May want to consider a way to get GeometryValue from LineGeometry instead of
-      // PointGeometry (which is why we currently use the first point)
-      const opacity = this.computeAreaOpacity(points[0]);
+      const opacity = this.computeAreaOpacity(geometryId);
 
       if (this.props.animated) {
         return (

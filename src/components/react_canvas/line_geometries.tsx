@@ -4,7 +4,7 @@ import React from 'react';
 import { Circle, Group, Path } from 'react-konva';
 import { animated, Spring } from 'react-spring/konva';
 import { LegendItem } from '../../lib/series/legend';
-import { GeometryValue, LineGeometry, PointGeometry } from '../../lib/series/rendering';
+import { GeometryId, GeometryValue, LineGeometry, PointGeometry } from '../../lib/series/rendering';
 import { belongsToDataSeries } from '../../lib/series/series_utils';
 import { LineSeriesStyle } from '../../lib/themes/theme';
 import { ElementClickListener, TooltipData } from '../../state/chart_state';
@@ -133,11 +133,11 @@ export class LineGeometries extends React.PureComponent<
     });
   }
 
-  private computeLineOpacity = (point: PointGeometry): number => {
+  private computeLineOpacity = (geometryId: GeometryId): number => {
     const { highlightedLegendItem } = this.props;
 
     if (highlightedLegendItem != null) {
-      const isPartOfHighlightedSeries = belongsToDataSeries(point.value, highlightedLegendItem.value);
+      const isPartOfHighlightedSeries = belongsToDataSeries(geometryId, highlightedLegendItem.value);
 
       if (isPartOfHighlightedSeries) {
         return 1;
@@ -151,11 +151,9 @@ export class LineGeometries extends React.PureComponent<
   private renderLineGeoms = (): JSX.Element[] => {
     const { style, lines } = this.props;
     return lines.map((glyph, i) => {
-      const { line, color, transform, points } = glyph;
+      const { line, color, transform, geometryId } = glyph;
 
-      // TODO: May want to consider a way to get GeometryValue from LineGeometry instead of
-      // PointGeometry (which is why we currently use the first point)
-      const opacity = this.computeLineOpacity(points[0]);
+      const opacity = this.computeLineOpacity(geometryId);
 
       if (this.props.animated) {
         return (

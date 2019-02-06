@@ -85,7 +85,7 @@ export class BarGeometries extends React.PureComponent<
       }
       return 1;
     } else if (highlightedLegendItem != null) {
-      const isPartOfHighlightedSeries = belongsToDataSeries(bar.value, highlightedLegendItem.value);
+      const isPartOfHighlightedSeries = belongsToDataSeries(bar.geometryId, highlightedLegendItem.value);
 
       if (isPartOfHighlightedSeries) {
         return 1;

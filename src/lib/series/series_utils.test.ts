@@ -1,5 +1,5 @@
 import { getSpecId } from '../utils/ids';
-import { GeometryValue } from './rendering';
+import { GeometryId } from './rendering';
 import { DataSeriesColorsValues } from './series';
 import { belongsToDataSeries, isEqualSeriesKey } from './series_utils';
 
@@ -18,10 +18,9 @@ describe('Series utility functions', () => {
     expect(isEqualSeriesKey(seriesKeyA, [])).toBe(false);
   });
 
-  test('can determine if a geometry value belongs to a data series', () => {
-    const geometryValueA: GeometryValue = {
+  test('can determine if a geometry id belongs to a data series', () => {
+    const geometryIdA: GeometryId = {
       specId: getSpecId('a'),
-      datum: null,
       seriesKey: ['a', 'b', 'c'],
     };
 
@@ -40,8 +39,8 @@ describe('Series utility functions', () => {
       colorValues: ['a', 'b', 'd'],
     };
 
-    expect(belongsToDataSeries(geometryValueA, dataSeriesValuesA)).toBe(true);
-    expect(belongsToDataSeries(geometryValueA, dataSeriesValuesB)).toBe(false);
-    expect(belongsToDataSeries(geometryValueA, dataSeriesValuesC)).toBe(false);
+    expect(belongsToDataSeries(geometryIdA, dataSeriesValuesA)).toBe(true);
+    expect(belongsToDataSeries(geometryIdA, dataSeriesValuesB)).toBe(false);
+    expect(belongsToDataSeries(geometryIdA, dataSeriesValuesC)).toBe(false);
   });
 });
