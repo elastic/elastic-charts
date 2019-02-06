@@ -125,7 +125,8 @@ storiesOf('Bar Chart', module)
           id={getAxisId('bottom')}
           position={Position.Bottom}
           title={'Bottom axis'}
-          showOverlappingTicks={false}
+          showOverlappingTicks={boolean('showOverlappingTicks bottom axis', false)}
+          showOverlappingLabels={boolean('showOverlappingLabels bottom axis', false)}
           tickFormat={niceTimeFormatter([now, max])}
         />
         <Axis
