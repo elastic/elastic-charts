@@ -1,49 +1,65 @@
-import { boolean, number, select } from '@storybook/addon-knobs';
+import { boolean, color, number, select } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import React from 'react';
 import {
   Axis,
   BarSeries,
   Chart,
+  DARK_THEME,
   getAxisId,
   getSpecId,
+  LIGHT_THEME,
+  mergeWithDefaultTheme,
+  PartialTheme,
   Position,
   ScaleType,
   Settings,
 } from '../src/';
-import { PartialTheme } from '../src/lib/themes/theme';
 
-function createThemeAction(title: string, min: number, max: number, value: number) {
-  return number(title, value, {
-    range: true,
-    min,
-    max,
-    step: 1,
-  });
+function range(title: string, min: number, max: number, value: number, groupId?: string) {
+  return number(
+    title,
+    value,
+    {
+      range: true,
+      min,
+      max,
+      step: 1,
+    },
+    groupId,
+  );
 }
 
 storiesOf('Stylings', module)
   .add('margins and paddings', () => {
     const theme: PartialTheme = {
-      chart: {
-        margins: {
-          left: createThemeAction('margin left', 0, 50, 10),
-          right: createThemeAction('margin right', 0, 50, 10),
-          top: createThemeAction('margin top', 0, 50, 10),
-          bottom: createThemeAction('margin bottom', 0, 50, 10),
-        },
-        paddings: {
-          left: createThemeAction('padding left', 0, 50, 10),
-          right: createThemeAction('padding right', 0, 50, 10),
-          top: createThemeAction('padding top', 0, 50, 10),
-          bottom: createThemeAction('padding bottom', 0, 50, 10),
-        },
+      chartMargins: {
+        left: range('margin left', 0, 50, 10),
+        right: range('margin right', 0, 50, 10),
+        top: range('margin top', 0, 50, 10),
+        bottom: range('margin bottom', 0, 50, 10),
+      },
+      chartPaddings: {
+        left: range('padding left', 0, 50, 10),
+        right: range('padding right', 0, 50, 10),
+        top: range('padding top', 0, 50, 10),
+        bottom: range('padding bottom', 0, 50, 10),
       },
     };
 
+    const darkmode = boolean('darkmode', false);
+    const className = darkmode ? 'story-chart-dark' : 'story-chart';
+    const defaultTheme = darkmode ? DARK_THEME : LIGHT_THEME;
+    const customTheme = mergeWithDefaultTheme(theme, defaultTheme);
+
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
-        <Settings theme={theme} debug={boolean('debug', true)} />
+      <Chart renderer="canvas" className={className}>
+        <Settings
+          theme={customTheme}
+          debug={boolean('debug', true)}
+          showLegend={true}
+          legendPosition={Position.Right}
+        />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
@@ -84,22 +100,38 @@ storiesOf('Stylings', module)
       </Chart>
     );
   })
-  .add('axis (TOFIX)', () => {
+  .add('axis', () => {
     const theme: PartialTheme = {
       axes: {
-        tickFontSize: createThemeAction('tickFontSize', 0, 40, 10),
-        tickFontFamily: `'Open Sans', Helvetica, Arial, sans-serif`,
-        tickFontStyle: 'normal',
-        titleFontSize: createThemeAction('titleFontSize', 0, 40, 12),
-        titleFontStyle: 'bold',
-        titleFontFamily: `'Open Sans', Helvetica, Arial, sans-serif`,
-        titlePadding: createThemeAction('titlePadding', 0, 40, 5),
+        axisTitleStyle: {
+          fill: color('titleFill', '#333', 'Axis Title'),
+          fontSize: range('titleFontSize', 0, 40, 12, 'Axis Title'),
+          fontStyle: 'bold',
+          fontFamily: `'Open Sans', Helvetica, Arial, sans-serif`,
+          padding: range('titlePadding', 0, 40, 5, 'Axis Title'),
+        },
+        axisLineStyle: {
+          stroke: color('axisLinecolor', '#333', 'Axis Line'),
+          strokeWidth: range('axisLineWidth', 0, 5, 1, 'Axis Line'),
+        },
+        tickLabelStyle: {
+          fill: color('tickFill', '#333', 'Tick Label'),
+          fontSize: range('tickFontSize', 0, 40, 10, 'Tick Label'),
+          fontFamily: `'Open Sans', Helvetica, Arial, sans-serif`,
+          fontStyle: 'normal',
+          padding: 0,
+        },
+        tickLineStyle: {
+          stroke: color('tickLineColor', '#333', 'Tick Line'),
+          strokeWidth: range('tickLineWidth', 0, 5, 1, 'Tick Line'),
+        },
       },
     };
+    const customTheme = mergeWithDefaultTheme(theme, LIGHT_THEME);
     return (
       <Chart renderer="canvas" className={'story-chart'}>
         <Settings
-          theme={theme}
+          theme={customTheme}
           debug={boolean('debug', true)}
           rotation={select('rotation', { '0': 0, '90': 90, '-90': -90, '180': 180 }, 0)}
         />
