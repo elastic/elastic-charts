@@ -6,9 +6,7 @@ export class CanvasTextBBoxCalculator implements BBoxCalculator {
   private offscreenCanvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D | null;
   private fontScale: number;
-  // TODO specify styles for text
-  // TODO specify how to hide the svg from the current dom view
-  // like moving it a -9999999px
+
   constructor(rootElement?: HTMLElement) {
     this.offscreenCanvas = document.createElement('canvas');
     this.context = this.offscreenCanvas.getContext('2d');
