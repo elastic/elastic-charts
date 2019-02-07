@@ -20,7 +20,7 @@
     "start": "webpack-dev-server --open --config webpack.dev.js",
     "storybook": "start-storybook -p 9001 -c .storybook",
     "storybook:build": "rm -rf .out && build-storybook -c .storybook -o .out",
-    "lint": "tslint -c ./tslint.yaml -p ./tsconfig.json",
+    "lint": "yarn build:ts --noEmit && tslint -c ./tslint.yaml -p ./tsconfig.json",
     "lint:fix": "yarn lint --fix",
     "prettier": "prettier -l \"{,!(node_modules)/}**/*.{ts,tsx}\"",
     "prettier:fix": "prettier --write \"{,!(node_modules)/}**/*.{ts,tsx}\"",
