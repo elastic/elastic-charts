@@ -181,14 +181,23 @@ export function getGeometryStyle(
   geometryId: GeometryId,
   highlightedLegendItem: LegendItem | null,
 ): GeometryStyle {
-  let opacity = 1;
   if (highlightedLegendItem != null) {
     const isPartOfHighlightedSeries = belongsToDataSeries(geometryId, highlightedLegendItem.value);
 
-    if (!isPartOfHighlightedSeries) {
-      opacity = 0.25;
-    }
+    return isPartOfHighlightedSeries ? GEOMETRY_STYLES.highlighted : GEOMETRY_STYLES.unhighlighted;
   }
 
-  return { opacity };
+  return GEOMETRY_STYLES.default;
 }
+
+const GEOMETRY_STYLES: { [key: string]: GeometryStyle } = {
+  default: {
+    opacity: 1,
+  },
+  highlighted: {
+    opacity: 1,
+  },
+  unhighlighted: {
+    opacity: 0.25,
+  },
+};
