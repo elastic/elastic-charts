@@ -4,8 +4,7 @@ import React from 'react';
 import { Group, Rect } from 'react-konva';
 import { animated, Spring } from 'react-spring/konva';
 import { LegendItem } from '../../lib/series/legend';
-import { BarGeometry, GeometryValue } from '../../lib/series/rendering';
-import { belongsToDataSeries } from '../../lib/series/series_utils';
+import { BarGeometry, GeometryValue, getGeometryStyle } from '../../lib/series/rendering';
 import { ElementClickListener, TooltipData } from '../../state/chart_state';
 
 interface BarGeometriesDataProps {
@@ -75,23 +74,8 @@ export class BarGeometries extends React.PureComponent<
   }
 
   private computeBarOpacity = (bar: BarGeometry, overBar: BarGeometry | undefined): number => {
-    const { highlightedLegendItem } = this.props;
-
-    // There are two elements that might be hovered over that could affect this:
-    // a specific bar element or a legend item; thus, we handle these states as mutually exclusive.
-    if (overBar) {
-      if (overBar !== bar) {
-        return 0.6;
-      }
-      return 1;
-    } else if (highlightedLegendItem != null) {
-      const isPartOfHighlightedSeries = belongsToDataSeries(bar.geometryId, highlightedLegendItem.value);
-
-      if (isPartOfHighlightedSeries) {
-        return 1;
-      }
-
-      return 0.25;
+    if (overBar && overBar !== bar) {
+      return 0.6;
     }
     return 1;
   }
@@ -100,7 +84,12 @@ export class BarGeometries extends React.PureComponent<
     const { overBar } = this.state;
     return bars.map((bar, i) => {
       const { x, y, width, height, color, value } = bar;
+
+      // This sets the opacity if any bars within the chart are hovered over
       const opacity = this.computeBarOpacity(bar, overBar);
+
+      const geometryStyle = getGeometryStyle(bar.geometryId, this.props.highlightedLegendItem);
+
       if (this.props.animated) {
         return (
           <Group key={i}>
@@ -119,6 +108,7 @@ export class BarGeometries extends React.PureComponent<
                   onMouseOver={this.onOverBar(bar)}
                   onMouseLeave={this.onOutBar}
                   onClick={this.onElementClick(value)}
+                  {...geometryStyle}
                 />
               )}
             </Spring>
@@ -139,6 +129,7 @@ export class BarGeometries extends React.PureComponent<
             onMouseOver={this.onOverBar(bar)}
             onMouseLeave={this.onOutBar}
             onClick={this.onElementClick(bar.value)}
+            {...geometryStyle}
           />
         );
       }

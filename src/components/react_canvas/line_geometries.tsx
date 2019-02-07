@@ -4,8 +4,7 @@ import React from 'react';
 import { Circle, Group, Path } from 'react-konva';
 import { animated, Spring } from 'react-spring/konva';
 import { LegendItem } from '../../lib/series/legend';
-import { GeometryId, GeometryValue, LineGeometry, PointGeometry } from '../../lib/series/rendering';
-import { belongsToDataSeries } from '../../lib/series/series_utils';
+import { GeometryValue, getGeometryStyle, LineGeometry, PointGeometry } from '../../lib/series/rendering';
 import { LineSeriesStyle } from '../../lib/themes/theme';
 import { ElementClickListener, TooltipData } from '../../state/chart_state';
 
@@ -133,27 +132,12 @@ export class LineGeometries extends React.PureComponent<
     });
   }
 
-  private computeLineOpacity = (geometryId: GeometryId): number => {
-    const { highlightedLegendItem } = this.props;
-
-    if (highlightedLegendItem != null) {
-      const isPartOfHighlightedSeries = belongsToDataSeries(geometryId, highlightedLegendItem.value);
-
-      if (isPartOfHighlightedSeries) {
-        return 1;
-      }
-
-      return 0.25;
-    }
-    return 1;
-  }
-
   private renderLineGeoms = (): JSX.Element[] => {
     const { style, lines } = this.props;
     return lines.map((glyph, i) => {
       const { line, color, transform, geometryId } = glyph;
 
-      const opacity = this.computeLineOpacity(geometryId);
+      const geometryStyle = getGeometryStyle(geometryId, this.props.highlightedLegendItem);
 
       if (this.props.animated) {
         return (
@@ -168,7 +152,7 @@ export class LineGeometries extends React.PureComponent<
                   listening={false}
                   lineCap="round"
                   lineJoin="round"
-                  opacity={opacity}
+                  {...geometryStyle}
                 />
               )}
             </Spring>
@@ -184,7 +168,7 @@ export class LineGeometries extends React.PureComponent<
             listening={false}
             lineCap="round"
             lineJoin="round"
-            opacity={opacity}
+            {...geometryStyle}
           />
         );
       }

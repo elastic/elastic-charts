@@ -2,7 +2,9 @@ import { area, line } from 'd3-shape';
 import { SpecId } from '../utils/ids';
 import { Scale } from '../utils/scales/scales';
 import { CurveType, getCurveFactory } from './curves';
+import { LegendItem } from './legend';
 import { DataSeriesDatum } from './series';
+import { belongsToDataSeries } from './series_utils';
 
 export interface GeometryId {
   specId: SpecId;
@@ -12,6 +14,12 @@ export interface GeometryId {
 export interface GeometryValue extends GeometryId {
   datum: any;
 }
+
+/** Shared style properties for varies geometries */
+export interface GeometryStyle {
+  opacity: number;
+}
+
 export interface PointGeometry {
   x: number;
   y: number;
@@ -167,4 +175,20 @@ export function renderArea(
       seriesKey,
     },
   };
+}
+
+export function getGeometryStyle(
+  geometryId: GeometryId,
+  highlightedLegendItem: LegendItem | null,
+): GeometryStyle {
+  let opacity = 1;
+  if (highlightedLegendItem != null) {
+    const isPartOfHighlightedSeries = belongsToDataSeries(geometryId, highlightedLegendItem.value);
+
+    if (!isPartOfHighlightedSeries) {
+      opacity = 0.25;
+    }
+  }
+
+  return { opacity };
 }
