@@ -19,7 +19,7 @@
     "build": "yarn build:clean && yarn build:ts && yarn build:sass",
     "start": "webpack-dev-server --open --config webpack.dev.js",
     "storybook": "start-storybook -p 9001 -c .storybook",
-    "storybook:build": "build-storybook -c .storybook -o .out",
+    "storybook:build": "rm -rf .out && build-storybook -c .storybook -o .out",
     "storybook:deploy": "storybook-to-ghpages",
     "lint": "tslint -c ./tslint.yaml -p ./tsconfig.json",
     "lint:fix": "yarn lint --fix",
