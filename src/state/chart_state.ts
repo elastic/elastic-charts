@@ -271,8 +271,10 @@ export class ChartStore {
   updateSelectedLegendItem(legendItemIndex: number | null) {
     if (legendItemIndex !== this.selectedLegendItemIndex) {
       this.selectedLegendItemIndex = legendItemIndex;
-      this.computeChart();
+    } else {
+      this.selectedLegendItemIndex = null;
     }
+    this.computeChart();
   }
 
   updateParentDimensions(width: number, height: number, top: number, left: number) {
@@ -325,7 +327,12 @@ export class ChartStore {
       return;
     }
 
-    const seriesDomains = computeSeriesDomains(this.seriesSpecs);
+    const selectedDataSeries: DataSeriesColorsValues | null =
+      this.selectedLegendItemIndex != null
+        ? this.legendItems[this.selectedLegendItemIndex].value
+        : null;
+
+    const seriesDomains = computeSeriesDomains(this.seriesSpecs, selectedDataSeries);
     this.seriesDomainsAndData = seriesDomains;
     // tslint:disable-next-line:no-console
     // console.log({colors: seriesDomains.seriesColors});
