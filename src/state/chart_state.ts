@@ -268,9 +268,19 @@ export class ChartStore {
     return this.xScale.type !== ScaleType.Ordinal && Boolean(this.onBrushEndListener);
   }
 
+  /* Keeping this here so I remember to use this logic :P
+  updateHighlightedLegendItem(legendItemIndex: number | null) {
+    if (this.selectedLegendItemIndex == null && legendItemIndex !== this.highlightedLegendItemIndex) {
+      this.highlightedLegendItemIndex = legendItemIndex;
+      this.computeChart();
+    }
+  }
+  */
+
   updateSelectedLegendItem(legendItemIndex: number | null) {
     if (legendItemIndex !== this.selectedLegendItemIndex) {
       this.selectedLegendItemIndex = legendItemIndex;
+      this.highlightedLegendItemIndex.set(null);
     } else {
       this.selectedLegendItemIndex = null;
     }
