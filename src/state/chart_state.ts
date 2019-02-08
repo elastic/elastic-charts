@@ -135,9 +135,9 @@ export class ChartStore {
   onElementOverListener?: ElementOverListener;
   onElementOutListener?: () => undefined;
   onBrushEndListener?: BrushEndListener;
-
   onLegendItemOverListener?: LegendItemListener;
   onLegendItemOutListener?: () => undefined;
+  onLegendItemClickListener?: LegendItemListener;
 
   geometries: {
     points: PointGeometry[];
@@ -337,12 +337,7 @@ export class ChartStore {
       return;
     }
 
-    const selectedDataSeries: DataSeriesColorsValues | null =
-      this.selectedLegendItemIndex != null
-        ? this.legendItems[this.selectedLegendItemIndex].value
-        : null;
-
-    const seriesDomains = computeSeriesDomains(this.seriesSpecs, selectedDataSeries);
+    const seriesDomains = computeSeriesDomains(this.seriesSpecs);
     this.seriesDomainsAndData = seriesDomains;
     // tslint:disable-next-line:no-console
     // console.log({colors: seriesDomains.seriesColors});

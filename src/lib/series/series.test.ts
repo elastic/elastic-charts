@@ -193,7 +193,7 @@ describe('Series', () => {
     };
     seriesSpecs.set(spec1.id, spec1);
     seriesSpecs.set(spec2.id, spec2);
-    const splittedDataSeries = getSplittedSeries(seriesSpecs, null);
+    const splittedDataSeries = getSplittedSeries(seriesSpecs);
     expect(splittedDataSeries.splittedSeries.get(getSpecId('spec1'))).toMatchSnapshot();
     expect(splittedDataSeries.splittedSeries.get(getSpecId('spec2'))).toMatchSnapshot();
   });
@@ -224,7 +224,7 @@ describe('Series', () => {
     };
     seriesSpecs.set(spec1.id, spec1);
     seriesSpecs.set(spec2.id, spec2);
-    const splittedDataSeries = getSplittedSeries(seriesSpecs, null);
+    const splittedDataSeries = getSplittedSeries(seriesSpecs);
     const stackedDataSeries = getFormattedDataseries(
       [spec1, spec2],
       splittedDataSeries.splittedSeries,

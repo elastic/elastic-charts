@@ -2,7 +2,6 @@ import { ColorConfig } from '../themes/theme';
 import { Accessor } from '../utils/accessor';
 import { GroupId, SpecId } from '../utils/ids';
 import { splitSpecsByGroupId, YBasicSeriesSpec } from './domains/y_domain';
-import { isEqualSeriesKey } from './series_utils';
 import { BasicSeriesSpec, Datum, SeriesAccessors } from './specs';
 
 export interface RawDataSeriesDatum {
@@ -342,7 +341,6 @@ export function formatStackedDataSeriesValues(
 
 export function getSplittedSeries(
   seriesSpecs: Map<SpecId, BasicSeriesSpec>,
-  selectedDataSeries: DataSeriesColorsValues | null,
 ): {
   splittedSeries: Map<SpecId, RawDataSeries[]>;
   seriesColors: Map<string, DataSeriesColorsValues>;
@@ -355,17 +353,7 @@ export function getSplittedSeries(
   for (const [specId, spec] of seriesSpecs) {
     const dataSeries = splitSeries(spec.data, spec, specId);
 
-    let currentRawDataSeries = dataSeries.rawDataSeries;
-    if (selectedDataSeries) {
-      const selectedSpecId = selectedDataSeries.specId;
-      const selectedSeriesKey = selectedDataSeries.colorValues;
-
-      currentRawDataSeries = dataSeries.rawDataSeries.filter((series): boolean => {
-        return (selectedSpecId === specId) && isEqualSeriesKey(selectedSeriesKey, series.key);
-      });
-    }
-
-    splittedSeries.set(specId, currentRawDataSeries);
+    splittedSeries.set(specId, dataSeries.rawDataSeries);
 
     dataSeries.colorsValues.forEach((colorValues, key) => {
       seriesColors.set(key, {

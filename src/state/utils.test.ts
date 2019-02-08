@@ -31,7 +31,7 @@ describe('Chart State utils', () => {
     const specs = new Map<SpecId, BasicSeriesSpec>();
     specs.set(spec1.id, spec1);
     specs.set(spec2.id, spec2);
-    const domains = computeSeriesDomains(specs, null);
+    const domains = computeSeriesDomains(specs);
     expect(domains.xDomain).toEqual({
       domain: [0, 3],
       isBandScale: false,
@@ -87,7 +87,7 @@ describe('Chart State utils', () => {
     const specs = new Map<SpecId, BasicSeriesSpec>();
     specs.set(spec1.id, spec1);
     specs.set(spec2.id, spec2);
-    const domains = computeSeriesDomains(specs, null);
+    const domains = computeSeriesDomains(specs);
     expect(domains.xDomain).toEqual({
       domain: [0, 3],
       isBandScale: false,

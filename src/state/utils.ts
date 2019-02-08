@@ -47,7 +47,6 @@ export interface BrushExtent {
 
 export function computeSeriesDomains(
   seriesSpecs: Map<SpecId, BasicSeriesSpec>,
-  selectedDataSeries: DataSeriesColorsValues | null,
 ): {
   xDomain: XDomain;
   yDomain: YDomain[];
@@ -58,7 +57,7 @@ export function computeSeriesDomains(
   };
   seriesColors: Map<string, DataSeriesColorsValues>;
 } {
-  const { splittedSeries, xValues, seriesColors } = getSplittedSeries(seriesSpecs, selectedDataSeries);
+  const { splittedSeries, xValues, seriesColors } = getSplittedSeries(seriesSpecs);
   // tslint:disable-next-line:no-console
   // console.log({ splittedSeries, xValues, seriesColors });
   const splittedDataSeries = [...splittedSeries.values()];
