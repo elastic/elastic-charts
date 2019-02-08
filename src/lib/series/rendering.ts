@@ -1,4 +1,5 @@
 import { area, line } from 'd3-shape';
+import { DEFAULT_THEME } from '../themes/theme';
 import { SpecId } from '../utils/ids';
 import { Scale } from '../utils/scales/scales';
 import { CurveType, getCurveFactory } from './curves';
@@ -181,23 +182,12 @@ export function getGeometryStyle(
   geometryId: GeometryId,
   highlightedLegendItem: LegendItem | null,
 ): GeometryStyle {
+  const { shared } = DEFAULT_THEME.chart.styles;
   if (highlightedLegendItem != null) {
     const isPartOfHighlightedSeries = belongsToDataSeries(geometryId, highlightedLegendItem.value);
 
-    return isPartOfHighlightedSeries ? GEOMETRY_STYLES.highlighted : GEOMETRY_STYLES.unhighlighted;
+    return isPartOfHighlightedSeries ? shared.highlighted : shared.unhighlighted;
   }
 
-  return GEOMETRY_STYLES.default;
+  return shared.default;
 }
-
-const GEOMETRY_STYLES: { [key: string]: GeometryStyle } = {
-  default: {
-    opacity: 1,
-  },
-  highlighted: {
-    opacity: 1,
-  },
-  unhighlighted: {
-    opacity: 0.25,
-  },
-};
