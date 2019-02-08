@@ -108,6 +108,7 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
   }
 
   private onLegendTitleClick = (legendItemIndex: number) => () => {
+    console.log(this.props.chartStore);
     this.props.chartStore!.updateSelectedLegendItem(legendItemIndex);
   }
 

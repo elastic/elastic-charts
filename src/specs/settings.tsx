@@ -25,6 +25,7 @@ interface SettingSpecProps {
   onBrushEnd?: BrushEndListener;
   onLegendItemOver?: LegendItemListener;
   onLegendItemOut?: () => undefined;
+  onLegendItemClick?: LegendItemListener;
 }
 
 function updateChartStore(props: SettingSpecProps) {
@@ -42,6 +43,7 @@ function updateChartStore(props: SettingSpecProps) {
     onBrushEnd,
     onLegendItemOver,
     onLegendItemOut,
+    onLegendItemClick,
     debug,
   } = props;
   if (!chartStore) {
@@ -73,6 +75,9 @@ function updateChartStore(props: SettingSpecProps) {
   }
   if (onLegendItemOut) {
     chartStore.setOnLegendItemOutListener(onLegendItemOut);
+  }
+  if (onLegendItemClick) {
+    chartStore.setOnLegendItemClickListener(onLegendItemClick);
   }
 }
 

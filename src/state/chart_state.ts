@@ -231,6 +231,9 @@ export class ChartStore {
   setOnLegendItemOutListener(listener: () => undefined) {
     this.onLegendItemOutListener = listener;
   }
+  setOnLegendItemClickListener(listener: LegendItemListener) {
+    this.onLegendItemClickListener = listener;
+  }
   removeElementClickListener() {
     this.onElementClickListener = undefined;
   }
