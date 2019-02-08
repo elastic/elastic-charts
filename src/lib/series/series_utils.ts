@@ -6,15 +6,13 @@ export function isEqualSeriesKey(a: any[], b: any[]): boolean {
     return false;
   }
 
-  let ret = true;
-
-  a.forEach((aVal: any, idx: number) => {
-    if (aVal !== b[idx]) {
-      ret = false;
+  for (let i = 0, l = a.length; i < l; i++) {
+    if (a[i] !== b[i]) {
+      return false;
     }
-  });
+  }
 
-  return ret;
+  return true;
 }
 
 export function belongsToDataSeries(geometryValue: GeometryId, dataSeriesValues: DataSeriesColorsValues): boolean {
