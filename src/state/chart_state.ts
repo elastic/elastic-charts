@@ -1,4 +1,4 @@
-import { action, IObservableValue, observable } from 'mobx';
+import { action, computed, IObservableValue, observable } from 'mobx';
 import {
   AxisLinePosition,
   AxisTick,
@@ -187,6 +187,11 @@ export class ChartStore {
     this.showLegend.set(showLegend);
   });
 
+  highlightedLegendItem = computed(() => {
+    const index = this.highlightedLegendItemIndex.get();
+    return index == null ? null : this.legendItems[index];
+  });
+
   setOnElementClickListener(listener: ElementClickListener) {
     this.onElementClickListener = listener;
   }
@@ -232,11 +237,6 @@ export class ChartStore {
 
   updateHighlightedLegendItem(legendItemIndex: number | null) {
     this.highlightedLegendItemIndex.set(legendItemIndex);
-  }
-
-  getHighlightedLegendItem(): LegendItem | null {
-    const index = this.highlightedLegendItemIndex.get();
-    return index == null ? null : this.legendItems[index];
   }
 
   updateParentDimensions(width: number, height: number, top: number, left: number) {
