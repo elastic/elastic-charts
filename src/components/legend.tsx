@@ -122,6 +122,10 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
   private renderLegendElement = ({ color, label }: Partial<LegendItem>, legendItemIndex: number) => {
     const onTitleClick = this.onLegendTitleClick(legendItemIndex);
 
+    const titleClassNames = classNames({
+      ['euiChartLegendListItem__title--selected']: legendItemIndex === this.props.chartStore!.selectedLegendItemIndex,
+    }, 'euiChartLegendListItem__title');
+
     return (
       <EuiFlexGroup gutterSize="xs" alignItems="center" responsive={false}>
         <EuiFlexItem grow={false}>
@@ -129,7 +133,7 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
           <EuiToolTip position="right" content={<EuiText size="xs">{label}</EuiText>}>
-            <EuiFlexItem grow={true} className="euiChartLegendListItem__title" onClick={onTitleClick}>
+            <EuiFlexItem grow={true} className={titleClassNames} onClick={onTitleClick}>
               <EuiText size="xs" className="eui-textTruncate">
                 {label}
               </EuiText>
