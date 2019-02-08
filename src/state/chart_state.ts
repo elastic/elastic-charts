@@ -1,4 +1,4 @@
-import { action, observable } from 'mobx';
+import { action, IObservableValue, observable } from 'mobx';
 import {
   AxisLinePosition,
   AxisTick,
@@ -123,7 +123,7 @@ export class ChartStore {
   yScales?: Map<GroupId, Scale>;
 
   legendItems: LegendItem[] = [];
-  highlightedLegendItemIndex: number | null = null;
+  highlightedLegendItemIndex: IObservableValue<number | null> = observable.box(null);
 
   tooltipData = observable.box<Array<[any, any]> | null>(null);
   tooltipPosition = observable.box<{ x: number; y: number } | null>();
@@ -231,17 +231,12 @@ export class ChartStore {
   }
 
   updateHighlightedLegendItem(legendItemIndex: number | null) {
-    if (legendItemIndex !== this.highlightedLegendItemIndex) {
-      this.highlightedLegendItemIndex = legendItemIndex;
-      this.computeChart();
-    }
+    this.highlightedLegendItemIndex.set(legendItemIndex);
   }
 
   getHighlightedLegendItem(): LegendItem | null {
-    if (this.highlightedLegendItemIndex != null) {
-      return this.legendItems[this.highlightedLegendItemIndex];
-    }
-    return null;
+    const index = this.highlightedLegendItemIndex.get();
+    return index == null ? null : this.legendItems[index];
   }
 
   updateParentDimensions(width: number, height: number, top: number, left: number) {
