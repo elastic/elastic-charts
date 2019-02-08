@@ -237,6 +237,13 @@ export class ChartStore {
     }
   }
 
+  getHighlightedLegendItem(): LegendItem | null {
+    if (this.highlightedLegendItemIndex != null) {
+      return this.legendItems[this.highlightedLegendItemIndex];
+    }
+    return null;
+  }
+
   updateParentDimensions(width: number, height: number, top: number, left: number) {
     let isChanged = false;
     if (width !== this.parentDimensions.width) {

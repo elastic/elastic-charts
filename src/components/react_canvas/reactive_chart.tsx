@@ -366,13 +366,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
   }
 
   private getHighlightedLegendItem = () => {
-    const {
-      highlightedLegendItemIndex,
-      legendItems,
-    } = this.props.chartStore!;
-    const highlightedLegendItem = highlightedLegendItemIndex != null ? legendItems[highlightedLegendItemIndex] : null;
-
-    return highlightedLegendItem;
+    return this.props.chartStore!.getHighlightedLegendItem();
   }
 }
 
