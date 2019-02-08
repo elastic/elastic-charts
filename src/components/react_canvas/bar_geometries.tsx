@@ -73,22 +73,20 @@ export class BarGeometries extends React.PureComponent<
     onElementOut();
   }
 
-  private computeBarOpacity = (bar: BarGeometry, overBar: BarGeometry | undefined): number => {
-    if (overBar && overBar !== bar) {
-      return 0.6;
-    }
-    return 1;
-  }
-
   private renderBarGeoms = (bars: BarGeometry[]): JSX.Element[] => {
     const { overBar } = this.state;
     return bars.map((bar, i) => {
       const { x, y, width, height, color, value } = bar;
 
-      // This sets the opacity if any bars within the chart are hovered over
-      const opacity = this.computeBarOpacity(bar, overBar);
+      // Properties to determine if we need to highlight individual bars depending on hover state
+      const hasGeometryHover = overBar != null;
+      const hasHighlight = overBar === bar;
+      const individualHighlight = {
+        hasGeometryHover,
+        hasHighlight,
+      };
 
-      const geometryStyle = getGeometryStyle(bar.geometryId, this.props.highlightedLegendItem);
+      const geometryStyle = getGeometryStyle(bar.geometryId, this.props.highlightedLegendItem, individualHighlight);
 
       if (this.props.animated) {
         return (
@@ -103,7 +101,6 @@ export class BarGeometries extends React.PureComponent<
                   height={props.height}
                   fill={color}
                   strokeWidth={0}
-                  opacity={opacity}
                   perfectDrawEnabled={true}
                   onMouseOver={this.onOverBar(bar)}
                   onMouseLeave={this.onOutBar}
@@ -124,7 +121,6 @@ export class BarGeometries extends React.PureComponent<
             height={height}
             fill={color}
             strokeWidth={0}
-            opacity={opacity}
             perfectDrawEnabled={false}
             onMouseOver={this.onOverBar(bar)}
             onMouseLeave={this.onOutBar}

@@ -181,12 +181,22 @@ export function renderArea(
 export function getGeometryStyle(
   geometryId: GeometryId,
   highlightedLegendItem: LegendItem | null,
+  individualHighlight?: { [key: string]: boolean },
 ): GeometryStyle {
   const { shared } = DEFAULT_THEME.chart.styles;
+
   if (highlightedLegendItem != null) {
     const isPartOfHighlightedSeries = belongsToDataSeries(geometryId, highlightedLegendItem.value);
 
     return isPartOfHighlightedSeries ? shared.highlighted : shared.unhighlighted;
+  }
+
+  if (individualHighlight) {
+    const { hasHighlight, hasGeometryHover } = individualHighlight;
+    if (!hasGeometryHover) {
+      return shared.highlighted;
+    }
+    return hasHighlight ? shared.highlighted : shared.unhighlighted;
   }
 
   return shared.default;
