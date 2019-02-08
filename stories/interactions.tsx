@@ -25,6 +25,11 @@ const onElementListeners = {
   onElementOut: action('onElementOut'),
 };
 
+const onLegendItemListeners = {
+  onLegendItemOver: action('onLegendItemOver'),
+  onLegendItemOut: action('onLegendItemOut'),
+};
+
 storiesOf('Interactions', module)
   .add('bar clicks and hovers', () => {
     return (
@@ -116,7 +121,7 @@ storiesOf('Interactions', module)
   .add('click/hovers on legend items [bar chart] (TO DO click)', () => {
     return (
       <Chart renderer="canvas" className={'story-chart'}>
-        <Settings showLegend={true} legendPosition={Position.Right} />
+        <Settings showLegend={true} legendPosition={Position.Right} {...onLegendItemListeners} />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}

@@ -106,6 +106,7 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
   }
 
   private onLegendItemMouseover = (legendItemIndex: number) => () => {
+    this.props.chartStore!.onLegendItemOver();
     this.props.chartStore!.updateHighlightedLegendItem(legendItemIndex);
   }
 

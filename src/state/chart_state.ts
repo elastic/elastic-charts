@@ -76,6 +76,7 @@ export interface SeriesDomainsAndData {
 export type ElementClickListener = (value: GeometryValue) => void;
 export type ElementOverListener = (value: GeometryValue) => void;
 export type BrushEndListener = (min: number, max: number) => void;
+export type LegendItemListener = () => void;
 // const MAX_ANIMATABLE_GLYPHS = 500;
 
 export class ChartStore {
@@ -133,6 +134,9 @@ export class ChartStore {
   onElementOverListener?: ElementOverListener;
   onElementOutListener?: () => undefined;
   onBrushEndListener?: BrushEndListener;
+
+  onLegendItemOverListener?: LegendItemListener;
+  onLegendItemOutListener?: LegendItemListener;
 
   geometries: {
     points: PointGeometry[];
@@ -192,6 +196,18 @@ export class ChartStore {
     return index == null ? null : this.legendItems[index];
   });
 
+  onLegendItemOver = action(() => {
+    if (this.onLegendItemOverListener) {
+      this.onLegendItemOverListener();
+    }
+  });
+
+  onLegendItemOut = action(() => {
+    if (this.onLegendItemOutListener) {
+      this.onLegendItemOutListener();
+    }
+  });
+
   setOnElementClickListener(listener: ElementClickListener) {
     this.onElementClickListener = listener;
   }
@@ -204,6 +220,12 @@ export class ChartStore {
   setOnBrushEndListener(listener: BrushEndListener) {
     this.onBrushEndListener = listener;
   }
+  setOnLegendItemOverListener(listener: LegendItemListener) {
+    this.onLegendItemOverListener = listener;
+  }
+  setOnLegendItemOutListener(listener: LegendItemListener) {
+    this.onLegendItemOutListener = listener;
+  }
   removeElementClickListener() {
     this.onElementClickListener = undefined;
   }
@@ -212,6 +234,12 @@ export class ChartStore {
   }
   removeElementOutListener() {
     this.onElementOutListener = undefined;
+  }
+  removeOnLegendItemOverListener() {
+    this.onLegendItemOverListener = undefined;
+  }
+  removeOnLegendItemOutListener() {
+    this.onLegendItemOutListener = undefined;
   }
   onBrushEnd(start: Point, end: Point) {
     if (!this.onBrushEndListener) {
