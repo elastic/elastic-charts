@@ -1,10 +1,12 @@
 import {
   EuiButtonIcon,
+  EuiContextMenuPanel,
   EuiFlexGroup,
   EuiFlexItem,
   EuiIcon,
+  EuiPopover,
   EuiText,
-  EuiToolTip,
+  // EuiToolTip,
 } from '@elastic/eui';
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
@@ -119,6 +121,11 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
     this.props.chartStore!.onLegendItemOut();
   }
 
+  private onLegendItemPanelClose = () => {
+    // tslint:disable-next-line:no-console
+    console.log('close');
+  }
+
   private renderLegendElement = ({ color, label }: Partial<LegendItem>, legendItemIndex: number) => {
     const onTitleClick = this.onLegendTitleClick(legendItemIndex);
 
@@ -133,13 +140,44 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
           <EuiIcon type="dot" color={color} />
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiToolTip position="right" content={<EuiText size="xs">{label}</EuiText>}>
-            <EuiFlexItem grow={true} className={titleClassNames} onClick={onTitleClick}>
-              <EuiText size="xs" className="eui-textTruncate">
+          {/* <EuiToolTip position="right" content={<EuiText size="xs">{label}</EuiText>}> */}
+          <EuiFlexItem grow={true} className={titleClassNames} onClick={onTitleClick}>
+            {/* <EuiText size="xs" className="eui-textTruncate">
                 {label}
               </EuiText>
-            </EuiFlexItem>
-          </EuiToolTip>
+              {this.renderLegendItemDropdown(isSelected)} */}
+            <EuiPopover
+              id="contentPanel"
+              button={(<EuiText size="xs" className="eui-textTruncate">
+                {label}
+              </EuiText>)
+              }
+              isOpen={isSelected}
+              closePopover={this.onLegendItemPanelClose}
+              panelPaddingSize="s"
+              anchorPosition="downCenter"
+            >
+              <EuiContextMenuPanel>
+                <EuiFlexGroup gutterSize="xs" alignItems="center" responsive={false}>
+                  <EuiFlexItem>
+                    <EuiButtonIcon
+                      onClick={() => window.alert('Button clicked')}
+                      iconType="plusInCircle"
+                      aria-label="Show this group only"
+                    />
+                  </EuiFlexItem>
+                  <EuiFlexItem>
+                    <EuiButtonIcon
+                      onClick={() => window.alert('Button clicked')}
+                      iconType="minusInCircle"
+                      aria-label="Remove this group"
+                    />
+                  </EuiFlexItem>
+                </EuiFlexGroup>
+              </EuiContextMenuPanel>
+            </EuiPopover>
+          </EuiFlexItem>
+          {/* </EuiToolTip> */}
         </EuiFlexItem>
       </EuiFlexGroup>
     );
