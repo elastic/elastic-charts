@@ -76,7 +76,7 @@ export interface SeriesDomainsAndData {
 export type ElementClickListener = (value: GeometryValue) => void;
 export type ElementOverListener = (value: GeometryValue) => void;
 export type BrushEndListener = (min: number, max: number) => void;
-export type LegendItemListener = () => void;
+export type LegendItemListener = (dataSeriesIdentifiers: DataSeriesColorsValues | null) => void;
 // const MAX_ANIMATABLE_GLYPHS = 500;
 
 export class ChartStore {
@@ -136,7 +136,7 @@ export class ChartStore {
   onBrushEndListener?: BrushEndListener;
 
   onLegendItemOverListener?: LegendItemListener;
-  onLegendItemOutListener?: LegendItemListener;
+  onLegendItemOutListener?: () => undefined;
 
   geometries: {
     points: PointGeometry[];
@@ -196,13 +196,17 @@ export class ChartStore {
     return index == null ? null : this.legendItems[index];
   });
 
-  onLegendItemOver = action(() => {
+  onLegendItemOver = action((legendItemIndex: number) => {
+    this.highlightedLegendItemIndex.set(legendItemIndex);
     if (this.onLegendItemOverListener) {
-      this.onLegendItemOverListener();
+      const currentLegendItem = this.highlightedLegendItem.get();
+      const listenerData = currentLegendItem ? currentLegendItem.value : null;
+      this.onLegendItemOverListener(listenerData);
     }
   });
 
   onLegendItemOut = action(() => {
+    this.highlightedLegendItemIndex.set(null);
     if (this.onLegendItemOutListener) {
       this.onLegendItemOutListener();
     }
@@ -223,7 +227,7 @@ export class ChartStore {
   setOnLegendItemOverListener(listener: LegendItemListener) {
     this.onLegendItemOverListener = listener;
   }
-  setOnLegendItemOutListener(listener: LegendItemListener) {
+  setOnLegendItemOutListener(listener: () => undefined) {
     this.onLegendItemOutListener = listener;
   }
   removeElementClickListener() {
@@ -261,10 +265,6 @@ export class ChartStore {
       return false;
     }
     return this.xScale.type !== ScaleType.Ordinal && Boolean(this.onBrushEndListener);
-  }
-
-  updateHighlightedLegendItem(legendItemIndex: number | null) {
-    this.highlightedLegendItemIndex.set(legendItemIndex);
   }
 
   updateParentDimensions(width: number, height: number, top: number, left: number) {

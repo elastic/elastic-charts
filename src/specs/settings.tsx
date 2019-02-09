@@ -24,7 +24,7 @@ interface SettingSpecProps {
   onElementOut?: () => undefined;
   onBrushEnd?: BrushEndListener;
   onLegendItemOver?: LegendItemListener;
-  onLegendItemOut?: LegendItemListener;
+  onLegendItemOut?: () => undefined;
 }
 
 function updateChartStore(props: SettingSpecProps) {
