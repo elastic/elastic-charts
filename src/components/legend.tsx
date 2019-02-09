@@ -108,8 +108,7 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
   }
 
   private onLegendTitleClick = (legendItemIndex: number) => () => {
-    console.log(this.props.chartStore);
-    this.props.chartStore!.updateSelectedLegendItem(legendItemIndex);
+    this.props.chartStore!.onLegendItemClick(legendItemIndex);
   }
 
   private onLegendItemMouseover = (legendItemIndex: number) => () => {
@@ -123,8 +122,9 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
   private renderLegendElement = ({ color, label }: Partial<LegendItem>, legendItemIndex: number) => {
     const onTitleClick = this.onLegendTitleClick(legendItemIndex);
 
+    const isSelected = legendItemIndex === this.props.chartStore!.selectedLegendItemIndex.get();
     const titleClassNames = classNames({
-      ['euiChartLegendListItem__title--selected']: legendItemIndex === this.props.chartStore!.selectedLegendItemIndex,
+      ['euiChartLegendListItem__title--selected']: isSelected,
     }, 'euiChartLegendListItem__title');
 
     return (
@@ -145,23 +145,5 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
     );
   }
 }
-// function LegendElement({ color, label }: Partial<LegendItem>) {
-//   return (
-//     <EuiFlexGroup gutterSize="xs" alignItems="center" responsive={false}>
-//       <EuiFlexItem grow={false}>
-//         <EuiIcon type="dot" color={color} />
-//       </EuiFlexItem>
-//       <EuiFlexItem grow={false}>
-//         <EuiToolTip position="right" content={<EuiText size="xs">{label}</EuiText>}>
-//           <EuiFlexItem grow={true} className="euiChartLegendListItem__title" onClick={onLegendTitleClick}>
-//             <EuiText size="xs" className="eui-textTruncate">
-//               {label}
-//             </EuiText>
-//           </EuiFlexItem>
-//         </EuiToolTip>
-//       </EuiFlexItem>
-//     </EuiFlexGroup>
-//   );
-// }
 
 export const Legend = inject('chartStore')(observer(LegendComponent));

@@ -125,7 +125,7 @@ export class ChartStore {
 
   legendItems: LegendItem[] = [];
   highlightedLegendItemIndex: IObservableValue<number | null> = observable.box(null);
-  selectedLegendItemIndex: number | null = null;
+  selectedLegendItemIndex: IObservableValue<number | null> = observable.box(null);
 
   tooltipData = observable.box<Array<[any, any]> | null>(null);
   tooltipPosition = observable.box<{ x: number; y: number } | null>();
@@ -197,6 +197,11 @@ export class ChartStore {
     return index == null ? null : this.legendItems[index];
   });
 
+  selectedLegendItem = computed(() => {
+    const index = this.selectedLegendItemIndex.get();
+    return index == null ? null : this.legendItems[index];
+  });
+
   onLegendItemOver = action((legendItemIndex: number) => {
     this.highlightedLegendItemIndex.set(legendItemIndex);
     if (this.onLegendItemOverListener) {
@@ -210,6 +215,20 @@ export class ChartStore {
     this.highlightedLegendItemIndex.set(null);
     if (this.onLegendItemOutListener) {
       this.onLegendItemOutListener();
+    }
+  });
+
+  onLegendItemClick = action((legendItemIndex: number) => {
+    if (legendItemIndex !== this.selectedLegendItemIndex.get()) {
+      this.selectedLegendItemIndex.set(legendItemIndex);
+    } else {
+      this.selectedLegendItemIndex.set(null);
+    }
+
+    if (this.onLegendItemClickListener) {
+      const currentLegendItem = this.selectedLegendItem.get();
+      const listenerData = currentLegendItem ? currentLegendItem.value : null;
+      this.onLegendItemClickListener(listenerData);
     }
   });
 
@@ -269,25 +288,6 @@ export class ChartStore {
       return false;
     }
     return this.xScale.type !== ScaleType.Ordinal && Boolean(this.onBrushEndListener);
-  }
-
-  /* Keeping this here so I remember to use this logic :P
-  updateHighlightedLegendItem(legendItemIndex: number | null) {
-    if (this.selectedLegendItemIndex == null && legendItemIndex !== this.highlightedLegendItemIndex) {
-      this.highlightedLegendItemIndex = legendItemIndex;
-      this.computeChart();
-    }
-  }
-  */
-
-  updateSelectedLegendItem(legendItemIndex: number | null) {
-    if (legendItemIndex !== this.selectedLegendItemIndex) {
-      this.selectedLegendItemIndex = legendItemIndex;
-      this.highlightedLegendItemIndex.set(null);
-    } else {
-      this.selectedLegendItemIndex = null;
-    }
-    this.computeChart();
   }
 
   updateParentDimensions(width: number, height: number, top: number, left: number) {
