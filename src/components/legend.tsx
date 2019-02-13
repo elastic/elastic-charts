@@ -4,7 +4,6 @@ import {
   EuiFlexItem,
   EuiIcon,
   EuiText,
-  EuiToolTip,
 } from '@elastic/eui';
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
@@ -120,13 +119,11 @@ function LegendElement({ color, label }: Partial<LegendItem>) {
         <EuiIcon type="dot" color={color} />
       </EuiFlexItem>
       <EuiFlexItem grow={false}>
-        <EuiToolTip position="right" content={<EuiText size="xs">{label}</EuiText>}>
-          <EuiFlexItem grow={true} className="euiChartLegendListItem__title">
-            <EuiText size="xs" className="eui-textTruncate">
-              {label}
-            </EuiText>
-          </EuiFlexItem>
-        </EuiToolTip>
+        <EuiFlexItem grow={true} className="euiChartLegendListItem__title" title={label}>
+          <EuiText size="xs" className="eui-textTruncate">
+            {label}
+          </EuiText>
+        </EuiFlexItem>
       </EuiFlexItem>
     </EuiFlexGroup>
   );
