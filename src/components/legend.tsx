@@ -89,8 +89,8 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
               const legendItemProps = {
                 key: index,
                 className: 'euiChartLegendList__item',
-                onMouseOver: this.onLegendItemMouseover(index),
-                onMouseOut: this.onLegendItemMouseout,
+                onMouseEnter: this.onLegendItemMouseover(index),
+                onMouseLeave: this.onLegendItemMouseout,
               };
 
               return (
