@@ -86,6 +86,7 @@ $elasticChartsLegendMaxHeight: $euiSize * 4 + $euiSize;
   overflow-y: auto;
   overflow-x: hidden;
   height: 100%;
+  @include euiScrollBar;
 }
 
 .elasticChartsLegendList__item {
