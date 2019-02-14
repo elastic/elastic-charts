@@ -6,7 +6,6 @@ import {
   EuiIcon,
   EuiPopover,
   EuiText,
-  // EuiToolTip,
 } from '@elastic/eui';
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
@@ -91,8 +90,8 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
               const legendItemProps = {
                 key: index,
                 className: 'euiChartLegendList__item',
-                onMouseOver: this.onLegendItemMouseover(index),
-                onMouseOut: this.onLegendItemMouseout,
+                onMouseEnter: this.onLegendItemMouseover(index),
+                onMouseLeave: this.onLegendItemMouseout,
               };
 
               const { color, label } = item;

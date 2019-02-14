@@ -96,8 +96,12 @@ $euiChartLegendMaxHeight: $euiSize * 4 + $euiSize;
 .euiChartLegendListItem__title {
   width: $euiChartLegendMaxWidth - 4 * $euiSize;
   max-width: $euiChartLegendMaxWidth - 4 * $euiSize;
-
-  &:hover, &.euiChartLegendListItem__title--selected {
+  &.euiChartLegendListItem__title--selected {
+    text-decoration: underline;
+  }
+}
+.euiChartLegendList__item {
+  &:hover {
     text-decoration: underline;
   }
 }
