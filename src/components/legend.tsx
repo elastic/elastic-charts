@@ -1,5 +1,8 @@
 import {
   EuiButtonIcon,
+  // TODO: remove ts-ignore below once typings file is included in eui for color picker
+  // @ts-ignore
+  EuiColorPicker,
   EuiContextMenuPanel,
   EuiFlexGroup,
   EuiFlexItem,
@@ -125,6 +128,29 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
     console.log('close');
   }
 
+  private onColorPickerClose = () => {
+    // tslint:disable-next-line:no-console
+    console.log('color picker close');
+  }
+
+  private renderPlusButton = () => {
+    return (
+      <EuiButtonIcon
+        onClick={() => window.alert('Button clicked')}
+        iconType="plusInCircle"
+        aria-label="Show this group only"
+      />);
+  }
+
+  private renderMinusButton = () => {
+    return (
+      <EuiButtonIcon
+        onClick={() => window.alert('Button clicked')}
+        iconType="plusInCircle"
+        aria-label="Show this group only"
+      />);
+  }
+
   private renderLegendElement = ({ color, label }: Partial<LegendItem>, legendItemIndex: number) => {
     const onTitleClick = this.onLegendTitleClick(legendItemIndex);
 
@@ -134,49 +160,38 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
     }, 'euiChartLegendListItem__title');
 
     return (
-      <EuiFlexGroup gutterSize="xs" alignItems="center" responsive={false}>
+      <EuiFlexGroup gutterSize="xs" alignItems="center" responsive={false} onClick={onTitleClick}>
         <EuiFlexItem grow={false}>
           <EuiIcon type="dot" color={color} />
         </EuiFlexItem>
-        <EuiFlexItem grow={false}>
-          {/* <EuiToolTip position="right" content={<EuiText size="xs">{label}</EuiText>}> */}
-          <EuiFlexItem grow={true} className={titleClassNames} onClick={onTitleClick}>
-            {/* <EuiText size="xs" className="eui-textTruncate">
-                {label}
-              </EuiText>
-              {this.renderLegendItemDropdown(isSelected)} */}
-            <EuiPopover
-              id="contentPanel"
-              button={(<EuiText size="xs" className="eui-textTruncate">
-                {label}
-              </EuiText>)
-              }
-              isOpen={isSelected}
-              closePopover={this.onLegendItemPanelClose}
-              panelPaddingSize="s"
-              anchorPosition="downCenter"
-            >
-              <EuiContextMenuPanel>
-                <EuiFlexGroup gutterSize="xs" alignItems="center" responsive={false}>
-                  <EuiFlexItem>
-                    <EuiButtonIcon
-                      onClick={() => window.alert('Button clicked')}
-                      iconType="plusInCircle"
-                      aria-label="Show this group only"
-                    />
-                  </EuiFlexItem>
-                  <EuiFlexItem>
-                    <EuiButtonIcon
-                      onClick={() => window.alert('Button clicked')}
-                      iconType="minusInCircle"
-                      aria-label="Remove this group"
-                    />
-                  </EuiFlexItem>
-                </EuiFlexGroup>
-              </EuiContextMenuPanel>
-            </EuiPopover>
-          </EuiFlexItem>
-          {/* </EuiToolTip> */}
+        <EuiFlexItem grow={false} className={titleClassNames}>
+          <EuiPopover
+            id="contentPanel"
+            button={(<EuiText size="xs" className="eui-textTruncate">
+              {label}
+            </EuiText>)
+            }
+            isOpen={isSelected}
+            closePopover={this.onLegendItemPanelClose}
+            panelPaddingSize="s"
+            anchorPosition="downCenter"
+          >
+            <EuiContextMenuPanel>
+              <EuiFlexGroup gutterSize="xs" alignItems="center" responsive={false}>
+                <EuiFlexItem>
+                  {this.renderPlusButton()}
+                </EuiFlexItem>
+                <EuiFlexItem>
+                  {this.renderMinusButton()}
+                </EuiFlexItem>
+              </EuiFlexGroup>
+              <EuiFlexGroup gutterSize="xs" alignItems="center" responsive={false}>
+                <EuiFlexItem>
+                  <EuiColorPicker onChange={this.onColorPickerClose} />
+                </EuiFlexItem>
+              </EuiFlexGroup>
+            </EuiContextMenuPanel>
+          </EuiPopover>
         </EuiFlexItem>
       </EuiFlexGroup>
     );
