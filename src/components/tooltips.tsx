@@ -57,7 +57,7 @@ class TooltipsComponent extends React.Component<ReactiveChartProps> {
     hPosition: { position: string; value: number },
   ) => {
     const className = classNames('elasticChartsTooltip', {
-      'elasticChartsTooltip--hidden': showTooltip,
+      'elasticChartsTooltip--hidden': !showTooltip,
     });
     return (
       <div
