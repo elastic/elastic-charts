@@ -56,12 +56,12 @@ class TooltipsComponent extends React.Component<ReactiveChartProps> {
     vPosition: { position: string; value: number },
     hPosition: { position: string; value: number },
   ) => {
+    const className = classNames('elasticChartsTooltip', {
+      'elasticChartsTooltip--hidden': showTooltip,
+    });
     return (
       <div
-        className={classNames(
-          'elasticChartsTooltip',
-          showTooltip ? null : 'elasticChartsTooltip--hidden',
-        )}
+        className={className}
         style={{
           position: 'absolute',
           [vPosition.position]: vPosition.value,

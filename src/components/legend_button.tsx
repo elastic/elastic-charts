@@ -21,13 +21,12 @@ class LegendButtonComponent extends React.Component<ReactiveChartProps> {
       return null;
     }
     const isOpen = !legendCollapsed.get();
-    const classes = classNames(
-      'elasticChartsLegend__toggle',
-      isOpen && 'elasticChartsLegend__toggle--isOpen',
-    );
+    const className = classNames('elasticChartsLegend__toggle', {
+      'elasticChartsLegend__toggle--isOpen': isOpen,
+    });
     return (
       <EuiButtonIcon
-        className={classes}
+        className={className}
         onClick={this.onCollapseLegend}
         iconType="list"
         aria-label={legendCollapsed.get() ? 'Expand legend' : 'Collapse legend'}

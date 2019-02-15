@@ -40,8 +40,10 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
     const legendClasses = classNames(
       'elasticChartsLegend',
       `elasticChartsLegend--${legendPosition}`,
-      legendCollapsed.get() && 'elasticChartsLegend--collapsed',
-      debug && 'elasticChartsLegend--debug',
+      {
+        'elasticChartsLegend--collapsed': legendCollapsed.get(),
+        'elasticChartsLegend--debug': debug,
+      },
     );
     let paddingStyle;
     if (isVertical(legendPosition)) {
