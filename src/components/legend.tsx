@@ -136,7 +136,7 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
   private renderPlusButton = () => {
     return (
       <EuiButtonIcon
-        onClick={() => window.alert('Button clicked')}
+        onClick={this.props.chartStore!.onLegendItemPlusClick}
         iconType="plusInCircle"
         aria-label="Show this group only"
       />);
@@ -145,8 +145,8 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
   private renderMinusButton = () => {
     return (
       <EuiButtonIcon
-        onClick={() => window.alert('Button clicked')}
-        iconType="plusInCircle"
+        onClick={this.props.chartStore!.onLegendItemMinusClick}
+        iconType="minusInCircle"
         aria-label="Show this group only"
       />);
   }

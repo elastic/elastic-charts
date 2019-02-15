@@ -26,6 +26,8 @@ interface SettingSpecProps {
   onLegendItemOver?: LegendItemListener;
   onLegendItemOut?: () => undefined;
   onLegendItemClick?: LegendItemListener;
+  onLegendItemPlusClick?: LegendItemListener;
+  onLegendItemMinusClick?: LegendItemListener;
 }
 
 function updateChartStore(props: SettingSpecProps) {
@@ -44,6 +46,8 @@ function updateChartStore(props: SettingSpecProps) {
     onLegendItemOver,
     onLegendItemOut,
     onLegendItemClick,
+    onLegendItemMinusClick,
+    onLegendItemPlusClick,
     debug,
   } = props;
   if (!chartStore) {
@@ -78,6 +82,12 @@ function updateChartStore(props: SettingSpecProps) {
   }
   if (onLegendItemClick) {
     chartStore.setOnLegendItemClickListener(onLegendItemClick);
+  }
+  if (onLegendItemPlusClick) {
+    chartStore.setOnLegendItemPlusClickListener(onLegendItemPlusClick);
+  }
+  if (onLegendItemMinusClick) {
+    chartStore.setOnLegendItemMinusClickListener(onLegendItemMinusClick);
   }
 }
 

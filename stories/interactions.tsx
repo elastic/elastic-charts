@@ -29,6 +29,8 @@ const onLegendItemListeners = {
   onLegendItemOver: action('onLegendItemOver'),
   onLegendItemOut: action('onLegendItemOut'),
   onLegendItemClick: action('onLegendItemClick'),
+  onLegendItemPlusClick: action('onLegendItemPlusClick'),
+  onLegendItemMinusClick: action('onLegendItemMinusClick'),
 };
 
 storiesOf('Interactions', module)

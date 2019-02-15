@@ -138,6 +138,8 @@ export class ChartStore {
   onLegendItemOverListener?: LegendItemListener;
   onLegendItemOutListener?: () => undefined;
   onLegendItemClickListener?: LegendItemListener;
+  onLegendItemPlusClickListener?: LegendItemListener;
+  onLegendItemMinusClickListener?: LegendItemListener;
 
   geometries: {
     points: PointGeometry[];
@@ -232,6 +234,22 @@ export class ChartStore {
     }
   });
 
+  onLegendItemPlusClick = action(() => {
+    if (this.onLegendItemPlusClickListener) {
+      const currentLegendItem = this.selectedLegendItem.get();
+      const listenerData = currentLegendItem ? currentLegendItem.value : null;
+      this.onLegendItemPlusClickListener(listenerData);
+    }
+  });
+
+  onLegendItemMinusClick = action(() => {
+    if (this.onLegendItemMinusClickListener) {
+      const currentLegendItem = this.selectedLegendItem.get();
+      const listenerData = currentLegendItem ? currentLegendItem.value : null;
+      this.onLegendItemMinusClickListener(listenerData);
+    }
+  });
+
   setOnElementClickListener(listener: ElementClickListener) {
     this.onElementClickListener = listener;
   }
@@ -253,6 +271,12 @@ export class ChartStore {
   setOnLegendItemClickListener(listener: LegendItemListener) {
     this.onLegendItemClickListener = listener;
   }
+  setOnLegendItemPlusClickListener(listener: LegendItemListener) {
+    this.onLegendItemPlusClickListener = listener;
+  }
+  setOnLegendItemMinusClickListener(listener: LegendItemListener) {
+    this.onLegendItemMinusClickListener = listener;
+  }
   removeElementClickListener() {
     this.onElementClickListener = undefined;
   }
@@ -267,6 +291,12 @@ export class ChartStore {
   }
   removeOnLegendItemOutListener() {
     this.onLegendItemOutListener = undefined;
+  }
+  removeOnLegendItemPlusClickListener() {
+    this.onLegendItemPlusClickListener = undefined;
+  }
+  removeOnLegendItemMinusClickListener() {
+    this.onLegendItemMinusClickListener = undefined;
   }
   onBrushEnd(start: Point, end: Point) {
     if (!this.onBrushEndListener) {
