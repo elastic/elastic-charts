@@ -46,7 +46,7 @@ export const LIGHT_THEME: Theme = {
     },
     point: {
       visible: false,
-      radius: 4,
+      radius: 5,
       stroke: 'white',
       strokeWidth: 1,
     },
@@ -91,9 +91,6 @@ export const LIGHT_THEME: Theme = {
   colors: {
     vizColors: palettes.euiPaletteColorBlind.colors,
     defaultVizColor: DEFAULT_MISSING_COLOR,
-  },
-  interactions: {
-    dimmingOpacity: 0.1,
   },
   legend: {
     verticalWidth: 150,

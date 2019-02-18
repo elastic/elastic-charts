@@ -55,9 +55,6 @@ export interface ColorConfig {
   vizColors: string[];
   defaultVizColor: string;
 }
-export interface InteractionConfig {
-  dimmingOpacity: number;
-}
 export interface LegendStyle {
   verticalWidth: number;
   horizontalHeight: number;
@@ -78,7 +75,6 @@ export interface Theme {
   axes: AxisConfig;
   scales: ScalesConfig;
   colors: ColorConfig;
-  interactions: InteractionConfig;
   legend: LegendStyle;
 }
 export interface BarSeriesStyle {
@@ -101,10 +97,10 @@ export interface PartialTheme {
   lineSeriesStyle?: LineSeriesStyle;
   areaSeriesStyle?: AreaSeriesStyle;
   barSeriesStyle?: BarSeriesStyle;
+  sharedStyle?: SharedGeometryStyle;
   axes?: Partial<AxisConfig>;
   scales?: Partial<ScalesConfig>;
   colors?: Partial<ColorConfig>;
-  interactions?: Partial<InteractionConfig>;
   legend?: Partial<LegendStyle>;
 }
 
@@ -145,6 +141,18 @@ export function mergeWithDefaultTheme(
       ...theme.lineSeriesStyle,
     };
   }
+  if (theme.barSeriesStyle) {
+    customTheme.barSeriesStyle = {
+      ...defaultTheme.barSeriesStyle,
+      ...theme.barSeriesStyle,
+    };
+  }
+  if (theme.sharedStyle) {
+    customTheme.sharedStyle = {
+      ...defaultTheme.sharedStyle,
+      ...theme.sharedStyle,
+    };
+  }
   if (theme.scales) {
     customTheme.scales.ordinal = {
       ...defaultTheme.scales.ordinal,
@@ -164,12 +172,6 @@ export function mergeWithDefaultTheme(
     if (theme.colors.vizColors) {
       customTheme.colors.vizColors = theme.colors.vizColors;
     }
-  }
-  if (theme.interactions) {
-    customTheme.interactions = {
-      ...defaultTheme.interactions,
-      ...theme.interactions,
-    };
   }
   if (theme.legend) {
     customTheme.legend = {

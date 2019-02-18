@@ -101,7 +101,7 @@ export class BarGeometries extends React.PureComponent<
       );
 
       // min 5px bars with white border
-      const borderEnabled = width > border.strokeWidth * 7;
+      const borderEnabled = border.visible && width > border.strokeWidth * 7;
       if (this.props.animated) {
         return (
           <Group key={i}>

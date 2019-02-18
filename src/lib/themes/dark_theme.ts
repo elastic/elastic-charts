@@ -92,9 +92,6 @@ export const DARK_THEME: Theme = {
     vizColors: palettes.euiPaletteColorBlind.colors,
     defaultVizColor: DEFAULT_MISSING_COLOR,
   },
-  interactions: {
-    dimmingOpacity: 0.1,
-  },
   legend: {
     verticalWidth: 150,
     horizontalHeight: 50,

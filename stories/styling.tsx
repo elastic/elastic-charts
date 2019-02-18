@@ -1,22 +1,34 @@
 import { boolean, color, number, select } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import React from 'react';
+import { switchTheme } from '../.storybook/theme_service';
 import {
+  AreaSeries,
   Axis,
   BarSeries,
   Chart,
+  CurveType,
   DARK_THEME,
   getAxisId,
   getSpecId,
   LIGHT_THEME,
+  LineSeries,
   mergeWithDefaultTheme,
   PartialTheme,
   Position,
   ScaleType,
   Settings,
 } from '../src/';
+import { DEFAULT_MISSING_COLOR } from '../src/lib/themes/theme_commons';
 
-function range(title: string, min: number, max: number, value: number, groupId?: string) {
+function range(
+  title: string,
+  min: number,
+  max: number,
+  value: number,
+  groupId?: string,
+  step: number = 1,
+) {
   return number(
     title,
     value,
@@ -24,7 +36,7 @@ function range(title: string, min: number, max: number, value: number, groupId?:
       range: true,
       min,
       max,
-      step: 1,
+      step,
     },
     groupId,
   );
@@ -46,14 +58,9 @@ storiesOf('Stylings', module)
         bottom: range('padding bottom', 0, 50, 10),
       },
     };
-
-    const darkmode = boolean('darkmode', false);
-    const className = darkmode ? 'story-chart-dark' : 'story-chart';
-    const defaultTheme = darkmode ? DARK_THEME : LIGHT_THEME;
-    const customTheme = mergeWithDefaultTheme(theme, defaultTheme);
-
+    const customTheme = mergeWithDefaultTheme(theme, LIGHT_THEME);
     return (
-      <Chart renderer="canvas" className={className}>
+      <Chart renderer="canvas" className={'story-chart'}>
         <Settings
           theme={customTheme}
           debug={boolean('debug', true)}
@@ -155,6 +162,167 @@ storiesOf('Stylings', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
+          yScaleToDataExtent={false}
+        />
+      </Chart>
+    );
+  })
+  .add('theme/style', () => {
+    const theme: PartialTheme = {
+      chartMargins: {
+        left: range('margin left', 0, 50, 10, 'Margins'),
+        right: range('margin right', 0, 50, 10, 'Margins'),
+        top: range('margin top', 0, 50, 10, 'Margins'),
+        bottom: range('margin bottom', 0, 50, 10, 'Margins'),
+      },
+      chartPaddings: {
+        left: range('padding left', 0, 50, 10, 'Paddings'),
+        right: range('padding right', 0, 50, 10, 'Paddings'),
+        top: range('padding top', 0, 50, 10, 'Paddings'),
+        bottom: range('padding bottom', 0, 50, 10, 'Paddings'),
+      },
+      lineSeriesStyle: {
+        line: {
+          stroke: DEFAULT_MISSING_COLOR,
+          strokeWidth: range('lStrokeWidth', 0, 10, 1, 'line'),
+          visible: true,
+          // not already customizeable
+          // visible: boolean('lVisible', true, 'line'),
+        },
+        border: {
+          stroke: 'gray',
+          strokeWidth: 2,
+          visible: false,
+          // not already customizeable
+          // stroke: color('lBorderStroke', 'gray', 'line'),
+          // strokeWidth: range('lBorderStrokeWidth', 0, 10, 2, 'line'),
+          // visible: boolean('lBorderVisible', false, 'line'),
+        },
+        point: {
+          visible: true,
+          // not already customizeable
+          // visible: boolean('lPointVisible', true, 'line'),
+          radius: range('lPointRadius', 0, 20, 5, 'line'),
+          stroke: color('lPointStroke', 'white', 'line'),
+          strokeWidth: range('lPointStrokeWidth', 0, 20, 1, 'line'),
+        },
+      },
+      areaSeriesStyle: {
+        area: {
+          // not already customizeable
+          fill: DEFAULT_MISSING_COLOR,
+          visible: true,
+        },
+        line: {
+          stroke: DEFAULT_MISSING_COLOR,
+          strokeWidth: range('aStrokeWidth', 0, 10, 1, 'area'),
+          visible: true,
+          // not already customizeable
+          // visible: boolean('aVisible', true, 'area'),
+        },
+        border: {
+          stroke: 'gray',
+          strokeWidth: 2,
+          visible: false,
+          // not already customizeable
+          // stroke: color('aBorderStroke', 'gray', 'area'),
+          // strokeWidth: range('aBorderStrokeWidth', 0, 10, 2, 'area'),
+          // visible: boolean('aBorderVisible', false, 'area'),
+        },
+        point: {
+          visible: true,
+          // not already customizeable
+          // visible: boolean('aPointVisible', true, 'area'),
+          radius: range('aPointRadius', 0, 20, 5, 'area'),
+          stroke: color('aPointStroke', 'white', 'area'),
+          strokeWidth: range('aPointStrokeWidth', 0, 20, 1, 'area'),
+        },
+      },
+      barSeriesStyle: {
+        border: {
+          stroke: color('bBorderStroke', 'white', 'bar'),
+          strokeWidth: range('bStrokeWidth', 0, 10, 1, 'bar'),
+          visible: boolean('bBorderVisible', true, 'bar'),
+        },
+      },
+      sharedStyle: {
+        default: {
+          opacity: range('sOpacity', 0, 1, 1, 'Shared', 0.05),
+        },
+        highlighted: {
+          opacity: range('sHighlighted', 0, 1, 1, 'Shared', 0.05),
+        },
+        unhighlighted: {
+          opacity: range('sUnhighlighted', 0, 1, 0.25, 'Shared', 0.05),
+        },
+      },
+    };
+
+    const darkmode = boolean('darkmode', false);
+    const className = darkmode ? 'story-chart-dark' : 'story-chart';
+    const defaultTheme = darkmode ? DARK_THEME : LIGHT_THEME;
+    const customTheme = mergeWithDefaultTheme(theme, defaultTheme);
+    switchTheme(darkmode ? 'dark' : 'light');
+
+    return (
+      <Chart renderer="canvas" className={className}>
+        <Settings
+          theme={customTheme}
+          debug={boolean('debug', false)}
+          showLegend={true}
+          legendPosition={Position.Right}
+        />
+        <Axis
+          id={getAxisId('bottom')}
+          position={Position.Bottom}
+          title={'Bottom axis'}
+          showOverlappingTicks={true}
+        />
+        <Axis
+          id={getAxisId('left2')}
+          title={'Left axis'}
+          position={Position.Left}
+          tickFormat={(d) => Number(d).toFixed(2)}
+        />
+        <Axis
+          id={getAxisId('top')}
+          position={Position.Top}
+          title={'Top axis'}
+          showOverlappingTicks={true}
+        />
+        <Axis
+          id={getAxisId('right')}
+          title={'Right axis'}
+          position={Position.Right}
+          tickFormat={(d) => Number(d).toFixed(2)}
+        />
+        <BarSeries
+          id={getSpecId('bars')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
+          yScaleToDataExtent={false}
+        />
+        <LineSeries
+          id={getSpecId('lines')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          curve={CurveType.CURVE_MONOTONE_X}
+          data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 2.7 }]}
+          yScaleToDataExtent={false}
+        />
+        <AreaSeries
+          id={getSpecId('areas')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          curve={CurveType.CURVE_MONOTONE_X}
+          data={[{ x: 0, y: 1 }, { x: 1, y: 2.3 }, { x: 2, y: 0.8 }, { x: 3, y: 2.6 }]}
           yScaleToDataExtent={false}
         />
       </Chart>
