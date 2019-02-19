@@ -371,6 +371,13 @@ export class ChartStore {
       return;
     }
 
+    // for passing in selectedDataSeries info to show/hide a series
+    // commenting out for now as we consider how to show/hide a series
+    // const selectedDataSeries: DataSeriesColorsValues | null =
+    //   this.selectedLegendItem.get()
+    //     ? this.selectedLegendItem.get()!.value
+    //     : null;
+
     const seriesDomains = computeSeriesDomains(this.seriesSpecs);
     this.seriesDomainsAndData = seriesDomains;
     // tslint:disable-next-line:no-console
