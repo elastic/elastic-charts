@@ -13,30 +13,12 @@ import {
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
+import { isVertical } from '../lib/axes/axis_utils';
 import { LegendItem } from '../lib/series/legend';
-import { Position } from '../lib/series/specs';
 import { ChartStore } from '../state/chart_state';
 
 interface ReactiveChartProps {
   chartStore?: ChartStore; // FIX until we find a better way on ts mobx
-}
-
-function getCollapseArrowType(
-  position: Position | undefined,
-  legendShown: boolean,
-): 'arrowRight' | 'arrowLeft' | 'arrowDown' | 'arrowUp' {
-  switch (position) {
-    case Position.Left:
-      return legendShown ? 'arrowRight' : 'arrowLeft';
-    case Position.Bottom:
-      return legendShown ? 'arrowUp' : 'arrowDown';
-    case Position.Right:
-      return legendShown ? 'arrowLeft' : 'arrowRight';
-    case Position.Top:
-      return legendShown ? 'arrowDown' : 'arrowUp';
-    default:
-      return 'arrowRight';
-  }
 }
 
 class LegendComponent extends React.Component<ReactiveChartProps> {
@@ -54,45 +36,51 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
       showLegend,
       legendCollapsed,
       debug,
+      chartTheme,
     } = this.props.chartStore!;
 
-    if (!showLegend.get() || !initialized.get() || legendItems.length === 0) {
+    if (
+      !showLegend.get() ||
+      !initialized.get() ||
+      legendItems.length === 0 ||
+      legendPosition === undefined
+    ) {
       return null;
     }
 
     const legendClasses = classNames(
-      'euiChartLegend',
-      `euiChartLegend--${legendPosition}`,
-      legendCollapsed.get() && 'euiChartLegend--collapsed',
-      debug && 'euiChartLegend--debug',
+      'elasticChartsLegend',
+      `elasticChartsLegend--${legendPosition}`,
+      {
+        'elasticChartsLegend--collapsed': legendCollapsed.get(),
+        'elasticChartsLegend--debug': debug,
+      },
     );
-
-    const legendCollapser = classNames(
-      'euiChartLegendCollapser',
-      `euiChartLegendCollapser--${legendPosition}`,
-    );
-    const collapseArrowType = getCollapseArrowType(legendPosition, legendCollapsed.get());
-
+    let paddingStyle;
+    if (isVertical(legendPosition)) {
+      paddingStyle = {
+        paddingTop: chartTheme.chartMargins.top,
+        paddingBottom: chartTheme.chartMargins.bottom,
+      };
+    } else {
+      paddingStyle = {
+        paddingLeft: chartTheme.chartMargins.left,
+        paddingRight: chartTheme.chartMargins.right,
+      };
+    }
     return (
-      <div className={legendClasses}>
-        <div className={legendCollapser}>
-          <EuiButtonIcon
-            onClick={this.onCollapseLegend}
-            iconType={collapseArrowType}
-            aria-label={legendCollapsed.get() ? 'Expand legend' : 'Collapse legend'}
-          />
-        </div>
-        <div className="euiChartLegendList">
+      <div className={legendClasses} style={paddingStyle}>
+        <div className="elasticChartsLegendList">
           <EuiFlexGroup
             gutterSize="s"
             wrap
-            className="euiChartLegendListContainer"
+            className="elasticChartsLegendListContainer"
             responsive={false}
           >
             {legendItems.map((item, index) => {
               const legendItemProps = {
                 key: index,
-                className: 'euiChartLegendList__item',
+                className: 'elasticChartsLegendList__item',
                 onMouseEnter: this.onLegendItemMouseover(index),
                 onMouseLeave: this.onLegendItemMouseout,
               };
@@ -156,8 +144,8 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
 
     const isSelected = legendItemIndex === this.props.chartStore!.selectedLegendItemIndex.get();
     const titleClassNames = classNames({
-      ['euiChartLegendListItem__title--selected']: isSelected,
-    }, 'euiChartLegendListItem__title');
+      ['elasticChartsLegendListItem__title--selected']: isSelected,
+    }, 'elasticChartsLegendListItem__title');
 
     return (
       <EuiFlexGroup gutterSize="xs" alignItems="center" responsive={false} onClick={onTitleClick}>

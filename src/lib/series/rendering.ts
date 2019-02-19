@@ -1,7 +1,7 @@
 import { area, line } from 'd3-shape';
-import { DEFAULT_THEME } from '../themes/theme';
+import { SharedGeometryStyle } from '../themes/theme';
 import { SpecId } from '../utils/ids';
-import { Scale } from '../utils/scales/scales';
+import { Scale, ScaleType } from '../utils/scales/scales';
 import { CurveType, getCurveFactory } from './curves';
 import { LegendItem } from './legend';
 import { DataSeriesDatum } from './series';
@@ -99,11 +99,28 @@ export function renderBars(
   seriesKey: any[],
 ): BarGeometry[] {
   return dataset.map((datum, i) => {
+    const { x, y0, y1 } = datum;
+    let height = 0;
+    let y = 0;
+    if (yScale.type === ScaleType.Log) {
+      y = y1 === 0 ? yScale.range[0] : yScale.scale(y1);
+      let y0Scaled;
+      if (yScale.isInverted) {
+        y0Scaled = y0 === 0 ? yScale.range[1] : yScale.scale(y0);
+      } else {
+        y0Scaled = y0 === 0 ? yScale.range[0] : yScale.scale(y0);
+      }
+      height = y0Scaled - y;
+    } else {
+      y = yScale.scale(y1);
+      height = yScale.scale(y0) - y;
+    }
+
     return {
-      x: xScale.scale(datum.x) + xScale.bandwidth * orderIndex,
-      y: yScale.scale(datum.y1), // top most value
+      x: xScale.scale(x) + xScale.bandwidth * orderIndex,
+      y, // top most value
       width: xScale.bandwidth,
-      height: yScale.scale(datum.y0) - yScale.scale(datum.y1),
+      height,
       color,
       value: {
         specId,
@@ -181,23 +198,22 @@ export function renderArea(
 export function getGeometryStyle(
   geometryId: GeometryId,
   highlightedLegendItem: LegendItem | null,
+  sharedStyle: SharedGeometryStyle,
   individualHighlight?: { [key: string]: boolean },
 ): GeometryStyle {
-  const { shared } = DEFAULT_THEME.chart.styles;
-
   if (highlightedLegendItem != null) {
     const isPartOfHighlightedSeries = belongsToDataSeries(geometryId, highlightedLegendItem.value);
 
-    return isPartOfHighlightedSeries ? shared.highlighted : shared.unhighlighted;
+    return isPartOfHighlightedSeries ? sharedStyle.highlighted : sharedStyle.unhighlighted;
   }
 
   if (individualHighlight) {
     const { hasHighlight, hasGeometryHover } = individualHighlight;
     if (!hasGeometryHover) {
-      return shared.highlighted;
+      return sharedStyle.highlighted;
     }
-    return hasHighlight ? shared.highlighted : shared.unhighlighted;
+    return hasHighlight ? sharedStyle.highlighted : sharedStyle.unhighlighted;
   }
 
-  return shared.default;
+  return sharedStyle.default;
 }

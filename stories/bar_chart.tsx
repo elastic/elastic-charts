@@ -5,20 +5,24 @@ import {
   Axis,
   BarSeries,
   Chart,
+  DARK_THEME,
+  DataGenerator,
   getAxisId,
   getSpecId,
+  LIGHT_THEME,
+  niceTimeFormatter,
   Position,
   ScaleType,
   Settings,
 } from '../src/';
 import * as TestDatasets from '../src/lib/series/utils/test_dataset';
-import { niceTimeFormatter } from '../src/utils/data/formatters';
-import { DataGenerator } from '../src/utils/data_generators/data_generator';
 
 storiesOf('Bar Chart', module)
   .add('basic', () => {
+    const darkmode = boolean('darkmode', false);
+    const className = darkmode ? 'story-chart-dark' : 'story-chart';
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart renderer="canvas" className={className}>
         <BarSeries
           id={getSpecId('bars')}
           xScaleType={ScaleType.Linear}
@@ -32,8 +36,12 @@ storiesOf('Bar Chart', module)
     );
   })
   .add('with axis', () => {
+    const darkmode = boolean('darkmode', false);
+    const className = darkmode ? 'story-chart-dark' : 'story-chart';
+    const defaultTheme = darkmode ? DARK_THEME : LIGHT_THEME;
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart renderer="canvas" className={className}>
+        <Settings theme={defaultTheme} />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
@@ -153,7 +161,7 @@ storiesOf('Bar Chart', module)
       </Chart>
     );
   })
-  .add('with log y axis (TO FIX)', () => {
+  .add('with log y axis', () => {
     return (
       <Chart renderer="canvas" className={'story-chart'}>
         <Axis
@@ -175,7 +183,63 @@ storiesOf('Bar Chart', module)
           yScaleType={ScaleType.Log}
           xAccessor="x"
           yAccessors={['y']}
-          data={[{ x: 1, y: 2 }, { x: 2, y: 7 }, { x: 4, y: 3 }, { x: 9, y: 6 }]}
+          data={[
+            { x: 1, y: 0 },
+            { x: 2, y: 1 },
+            { x: 3, y: 2 },
+            { x: 4, y: 3 },
+            { x: 5, y: 4 },
+            { x: 6, y: 5 },
+            { x: 7, y: 6 },
+            { x: 8, y: 7 },
+          ]}
+          yScaleToDataExtent={true}
+        />
+      </Chart>
+    );
+  })
+  .add('with stacked log y axis', () => {
+    return (
+      <Chart renderer="canvas" className={'story-chart'}>
+        <Axis
+          id={getAxisId('bottom')}
+          position={Position.Bottom}
+          title={'Bottom axis'}
+          showOverlappingTicks={true}
+        />
+        <Axis
+          id={getAxisId('left2')}
+          title={'Left axis'}
+          position={Position.Left}
+          tickFormat={(d) => Number(d).toFixed(2)}
+        />
+
+        <BarSeries
+          id={getSpecId('bars')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Log}
+          xAccessor="x"
+          yAccessors={['y']}
+          splitSeriesAccessors={['g']}
+          stackAccessors={['x']}
+          data={[
+            { x: 1, y: 0, g: 'a' },
+            { x: 1, y: 0, g: 'b' },
+            { x: 2, y: 1, g: 'a' },
+            { x: 2, y: 1, g: 'b' },
+            { x: 3, y: 2, g: 'a' },
+            { x: 3, y: 2, g: 'b' },
+            { x: 4, y: 3, g: 'a' },
+            { x: 4, y: 0, g: 'b' },
+            { x: 5, y: 4, g: 'a' },
+            { x: 5, y: 0.5, g: 'b' },
+            { x: 6, y: 5, g: 'a' },
+            { x: 6, y: 1, g: 'b' },
+            { x: 7, y: 6, g: 'b' },
+            { x: 8, y: 7, g: 'a' },
+            { x: 8, y: 10, g: 'b' },
+            { x: 9, y: 4, g: 'a' },
+          ]}
           yScaleToDataExtent={true}
         />
       </Chart>
