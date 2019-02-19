@@ -89,6 +89,14 @@ $elasticChartsLegendMaxHeight: $euiSize * 4;
   @include euiScrollBar;
 }
 
+.elasticChartsLegendList__item {
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 .elasticChartsLegendListItem__title {
   width: $elasticChartsLegendMaxWidth - 4 * $euiSize;
   max-width: $elasticChartsLegendMaxWidth - 4 * $euiSize;
