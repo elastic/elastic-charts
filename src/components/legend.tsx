@@ -155,7 +155,7 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
         <EuiFlexItem grow={false} className={titleClassNames}>
           <EuiPopover
             id="contentPanel"
-            button={(<EuiText size="xs" className="eui-textTruncate">
+            button={(<EuiText size="xs" className="eui-textTruncate elasticChartsLegendListItem__title">
               {label}
             </EuiText>)
             }

@@ -93,7 +93,9 @@ $elasticChartsLegendMaxHeight: $euiSize * 4;
   cursor: pointer;
 
   &:hover {
-    text-decoration: underline;
+    .elasticChartsLegendListItem__title {
+      text-decoration: underline;
+    }
   }
 }
 
@@ -102,7 +104,9 @@ $elasticChartsLegendMaxHeight: $euiSize * 4;
   max-width: $elasticChartsLegendMaxWidth - 4 * $euiSize;
 
   &.elasticChartsLegendListItem__title--selected {
-    text-decoration: underline;
+    .elasticChartsLegendListItem__title {
+      text-decoration: underline;
+    }
   }
 }
 
