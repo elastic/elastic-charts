@@ -1,3 +1,4 @@
+import { palettes } from '@elastic/eui';
 import { boolean, color, number, select } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import React from 'react';
@@ -9,6 +10,7 @@ import {
   Chart,
   CurveType,
   DARK_THEME,
+  DataGenerator,
   getAxisId,
   getSpecId,
   LIGHT_THEME,
@@ -256,14 +258,31 @@ storiesOf('Stylings', module)
           opacity: range('sUnhighlighted', 0, 1, 0.25, 'Shared', 0.05),
         },
       },
+      colors: {
+        vizColors: select(
+          'vizColors',
+          {
+            colorBlind: palettes.euiPaletteColorBlind.colors,
+            darkBackground: palettes.euiPaletteForDarkBackground.colors,
+            lightBackground: palettes.euiPaletteForLightBackground.colors,
+            forStatus: palettes.euiPaletteForStatus.colors,
+          },
+          palettes.euiPaletteColorBlind.colors,
+          'Colors',
+        ),
+        defaultVizColor: DEFAULT_MISSING_COLOR,
+      },
     };
 
-    const darkmode = boolean('darkmode', false);
+    const darkmode = boolean('darkmode', false, 'Colors');
     const className = darkmode ? 'story-chart-dark' : 'story-chart';
     const defaultTheme = darkmode ? DARK_THEME : LIGHT_THEME;
     const customTheme = mergeWithDefaultTheme(theme, defaultTheme);
     switchTheme(darkmode ? 'dark' : 'light');
-
+    const dg = new DataGenerator();
+    const data1 = dg.generateGroupedSeries(40, 4);
+    const data2 = dg.generateSimpleSeries(40);
+    const data3 = dg.generateSimpleSeries(40);
     return (
       <Chart renderer="canvas" className={className}>
         <Settings
@@ -302,7 +321,9 @@ storiesOf('Stylings', module)
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y']}
-          data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
+          splitSeriesAccessors={['g']}
+          stackAccessors={['x']}
+          data={data1}
           yScaleToDataExtent={false}
         />
         <LineSeries
@@ -312,7 +333,7 @@ storiesOf('Stylings', module)
           xAccessor="x"
           yAccessors={['y']}
           curve={CurveType.CURVE_MONOTONE_X}
-          data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 2.7 }]}
+          data={data2}
           yScaleToDataExtent={false}
         />
         <AreaSeries
@@ -322,7 +343,7 @@ storiesOf('Stylings', module)
           xAccessor="x"
           yAccessors={['y']}
           curve={CurveType.CURVE_MONOTONE_X}
-          data={[{ x: 0, y: 1 }, { x: 1, y: 2.3 }, { x: 2, y: 0.8 }, { x: 3, y: 2.6 }]}
+          data={data3}
           yScaleToDataExtent={false}
         />
       </Chart>
