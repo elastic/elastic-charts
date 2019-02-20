@@ -3,6 +3,7 @@ import { AxisSpec, BarSeriesSpec, Position } from '../lib/series/specs';
 import { getAxisId, getGroupId, getSpecId } from '../lib/utils/ids';
 import { ScaleType } from '../lib/utils/scales/scales';
 import { ChartStore, TooltipData } from './chart_state';
+import { DataSeriesColorsValues } from '../lib/series/series';
 
 describe('Chart Store', () => {
   const mockedRect = {
@@ -43,6 +44,27 @@ describe('Chart Store', () => {
     yScaleType: ScaleType.Linear,
   };
 
+  const mockFn = jest.fn();
+  const elementListener = (value: GeometryValue): void => { mockFn(); };
+  const outListener = (): undefined => { mockFn(); return undefined; };
+
+  const mockLegendFn = jest.fn((ds: DataSeriesColorsValues | null) => { return; });
+  const legendListener = (ds: DataSeriesColorsValues | null): void => { mockLegendFn(ds); };
+
+  const firstLegendItem = {
+    color: 'foo', label: 'bar', value: {
+      specId: SPEC_ID,
+      colorValues: [],
+    },
+  };
+
+  const secondLegendItem = {
+    color: 'baz', label: 'qux', value: {
+      specId: SPEC_ID,
+      colorValues: [],
+    },
+  };
+
   test('can add a single spec', () => {
     store.addSeriesSpec(spec);
     store.updateParentDimensions(600, 600, 0, 0);
@@ -81,7 +103,7 @@ describe('Chart Store', () => {
     expect(store.legendCollapsed.get()).toBe(false);
   });
 
-  test('can respond to mouseover event', () => {
+  test('can respond to chart element mouseover event', () => {
     const tooltipPosition = {
       top: 0,
       left: 0,
@@ -116,9 +138,7 @@ describe('Chart Store', () => {
     expect(store.tooltipData.get()).toEqual(null);
     expect(store.showTooltip.get()).toBe(false);
 
-    const mockFn = jest.fn();
-    const onOverListener = (value: GeometryValue): void => { mockFn(); };
-    store.setOnElementOverListener(onOverListener);
+    store.setOnElementOverListener(elementListener);
     store.addSeriesSpec(spec);
     store.onOverElement(tooltipData);
     expect(store.tooltipData.get()).toEqual([['Value', 'value 0'], ['X Value', 0]]);
@@ -126,15 +146,13 @@ describe('Chart Store', () => {
     expect(mockFn).toBeCalled();
   });
 
-  test('can respond to mouseout event', () => {
+  test('can respond to chart element mouseout event', () => {
     store.showTooltip.set(true);
 
     store.onOutElement();
     expect(store.showTooltip.get()).toBe(false);
 
-    const mockFn = jest.fn();
-    const onOutListener = (): undefined => { mockFn(); return undefined; };
-    store.setOnElementOutListener(onOutListener);
+    store.setOnElementOutListener(outListener);
 
     store.onOutElement();
     expect(mockFn).toBeCalled();
@@ -155,20 +173,6 @@ describe('Chart Store', () => {
   });
 
   test('can get highlighted legend item', () => {
-    const firstLegendItem = {
-      color: 'foo', label: 'bar', value: {
-        specId: SPEC_ID,
-        colorValues: [],
-      },
-    };
-
-    const secondLegendItem = {
-      color: 'baz', label: 'qux', value: {
-        specId: SPEC_ID,
-        colorValues: [],
-      },
-    };
-
     store.legendItems = [firstLegendItem, secondLegendItem];
 
     store.highlightedLegendItemIndex.set(null);
@@ -176,5 +180,18 @@ describe('Chart Store', () => {
 
     store.highlightedLegendItemIndex.set(1);
     expect(store.highlightedLegendItem.get()).toEqual(secondLegendItem);
+  });
+
+  test('can respond to legend item mouseover event', () => {
+    store.legendItems = [firstLegendItem, secondLegendItem];
+    store.highlightedLegendItemIndex.set(null);
+
+    store.onLegendItemOver(0);
+    expect(store.highlightedLegendItemIndex.get()).toBe(0);
+
+    store.setOnLegendItemOverListener(legendListener);
+    store.onLegendItemOver(1);
+    expect(mockLegendFn).toBeCalled();
+    expect(mockLegendFn.mock.calls[0][0]).toBe(secondLegendItem.value);
   });
 });
