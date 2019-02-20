@@ -269,4 +269,34 @@ describe('Chart Store', () => {
     store.xScale = undefined;
     expect(store.isBrushEnabled()).toBe(false);
   });
+
+  test('can update parent dimensions', () => {
+    const computeChart = jest.fn((): void => { return; });
+    store.computeChart = computeChart;
+
+    store.parentDimensions = {
+      width: 10,
+      height: 20,
+      top: 5,
+      left: 15,
+    };
+
+    store.updateParentDimensions(10, 20, 5, 15);
+    expect(store.parentDimensions).toEqual({
+      width: 10,
+      height: 20,
+      top: 5,
+      left: 15,
+    });
+    expect(computeChart).not.toBeCalled();
+
+    store.updateParentDimensions(15, 25, 10, 20);
+    expect(store.parentDimensions).toEqual({
+      width: 15,
+      height: 25,
+      top: 10,
+      left: 20,
+    });
+    expect(computeChart).toBeCalled();
+  });
 });
