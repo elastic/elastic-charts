@@ -1,8 +1,8 @@
+import { GeometryValue } from '../lib/series/rendering';
 import { AxisSpec, BarSeriesSpec, Position } from '../lib/series/specs';
 import { getAxisId, getGroupId, getSpecId } from '../lib/utils/ids';
 import { ScaleType } from '../lib/utils/scales/scales';
 import { ChartStore, TooltipData } from './chart_state';
-import { GeometryValue } from '../lib/series/rendering';
 
 describe('Chart Store', () => {
   const mockedRect = {
@@ -152,5 +152,29 @@ describe('Chart Store', () => {
     store.setShowLegend(true);
 
     expect(store.showLegend.get()).toEqual(true);
+  });
+
+  test('can get highlighted legend item', () => {
+    const firstLegendItem = {
+      color: 'foo', label: 'bar', value: {
+        specId: SPEC_ID,
+        colorValues: [],
+      },
+    };
+
+    const secondLegendItem = {
+      color: 'baz', label: 'qux', value: {
+        specId: SPEC_ID,
+        colorValues: [],
+      },
+    };
+
+    store.legendItems = [firstLegendItem, secondLegendItem];
+
+    store.highlightedLegendItemIndex.set(null);
+    expect(store.highlightedLegendItem.get()).toBe(null);
+
+    store.highlightedLegendItemIndex.set(1);
+    expect(store.highlightedLegendItem.get()).toEqual(secondLegendItem);
   });
 });
