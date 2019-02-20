@@ -1,14 +1,9 @@
 import {
-  EuiButtonIcon,
   // TODO: remove ts-ignore below once typings file is included in eui for color picker
   // @ts-ignore
   EuiColorPicker,
-  EuiContextMenuPanel,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiIcon,
-  EuiPopover,
-  EuiText,
 } from '@elastic/eui';
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
@@ -16,6 +11,7 @@ import React from 'react';
 import { isVertical } from '../lib/axes/axis_utils';
 import { LegendItem } from '../lib/series/legend';
 import { ChartStore } from '../state/chart_state';
+import { LegendElement } from './legend_element';
 
 interface ReactiveChartProps {
   chartStore?: ChartStore; // FIX until we find a better way on ts mobx
@@ -99,10 +95,6 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
     );
   }
 
-  private onLegendTitleClick = (legendItemIndex: number) => () => {
-    this.props.chartStore!.onLegendItemClick(legendItemIndex);
-  }
-
   private onLegendItemMouseover = (legendItemIndex: number) => () => {
     this.props.chartStore!.onLegendItemOver(legendItemIndex);
   }
@@ -111,78 +103,10 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
     this.props.chartStore!.onLegendItemOut();
   }
 
-  private onLegendItemPanelClose = () => {
-    // tslint:disable-next-line:no-console
-    console.log('close');
-  }
-
-  private onColorPickerClose = () => {
-    // tslint:disable-next-line:no-console
-    console.log('color picker close');
-  }
-
-  private renderPlusButton = () => {
-    return (
-      <EuiButtonIcon
-        onClick={this.props.chartStore!.onLegendItemPlusClick}
-        iconType="plusInCircle"
-        aria-label="Show this group only"
-      />);
-  }
-
-  private renderMinusButton = () => {
-    return (
-      <EuiButtonIcon
-        onClick={this.props.chartStore!.onLegendItemMinusClick}
-        iconType="minusInCircle"
-        aria-label="Show this group only"
-      />);
-  }
-
   private renderLegendElement = ({ color, label }: Partial<LegendItem>, legendItemIndex: number) => {
-    const onTitleClick = this.onLegendTitleClick(legendItemIndex);
+    const props = { color, label, index: legendItemIndex };
 
-    const isSelected = legendItemIndex === this.props.chartStore!.selectedLegendItemIndex.get();
-    const titleClassNames = classNames({
-      ['elasticChartsLegendListItem__title--selected']: isSelected,
-    }, 'elasticChartsLegendListItem__title');
-
-    return (
-      <EuiFlexGroup gutterSize="xs" alignItems="center" responsive={false} onClick={onTitleClick}>
-        <EuiFlexItem grow={false}>
-          <EuiIcon type="dot" color={color} />
-        </EuiFlexItem>
-        <EuiFlexItem grow={false} className={titleClassNames}>
-          <EuiPopover
-            id="contentPanel"
-            button={(<EuiText size="xs" className="eui-textTruncate elasticChartsLegendListItem__title">
-              {label}
-            </EuiText>)
-            }
-            isOpen={isSelected}
-            closePopover={this.onLegendItemPanelClose}
-            panelPaddingSize="s"
-            anchorPosition="downCenter"
-          >
-            <EuiContextMenuPanel>
-              <EuiFlexGroup gutterSize="xs" alignItems="center" responsive={false}>
-                <EuiFlexItem>
-                  {this.renderPlusButton()}
-                </EuiFlexItem>
-                <EuiFlexItem>
-                  {this.renderMinusButton()}
-                </EuiFlexItem>
-              </EuiFlexGroup>
-              <EuiFlexGroup gutterSize="xs" alignItems="center" responsive={false}>
-                <EuiFlexItem>
-                  <EuiColorPicker onChange={this.onColorPickerClose} />
-                </EuiFlexItem>
-              </EuiFlexGroup>
-            </EuiContextMenuPanel>
-          </EuiPopover>
-        </EuiFlexItem>
-      </EuiFlexGroup>
-    );
+    return <LegendElement {...props} />;
   }
 }
 
