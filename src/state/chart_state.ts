@@ -201,7 +201,7 @@ export class ChartStore {
     this.highlightedLegendItemIndex.set(legendItemIndex);
     if (this.onLegendItemOverListener) {
       const currentLegendItem = this.highlightedLegendItem.get();
-      const listenerData = currentLegendItem ? currentLegendItem.value : null;
+      const listenerData = currentLegendItem!.value;
       this.onLegendItemOverListener(listenerData);
     }
   });
