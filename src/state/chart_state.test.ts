@@ -1,7 +1,8 @@
 import { AxisSpec, BarSeriesSpec, Position } from '../lib/series/specs';
 import { getAxisId, getGroupId, getSpecId } from '../lib/utils/ids';
 import { ScaleType } from '../lib/utils/scales/scales';
-import { ChartStore } from './chart_state';
+import { ChartStore, TooltipData } from './chart_state';
+import { GeometryValue } from '../lib/series/rendering';
 
 describe('Chart Store', () => {
   const mockedRect = {
@@ -70,5 +71,58 @@ describe('Chart Store', () => {
     expect(axesPositions.get(AXIS_ID)).not.toBeUndefined();
     expect(axesVisibleTicks.get(AXIS_ID)).not.toBeUndefined();
     expect(axesTicks.get(AXIS_ID)).not.toBeUndefined();
+  });
+
+  test('can toggle legend visibility', () => {
+    store.toggleLegendCollapsed();
+    expect(store.legendCollapsed.get()).toBe(true);
+
+    store.toggleLegendCollapsed();
+    expect(store.legendCollapsed.get()).toBe(false);
+  });
+
+  test('can respond to mouseover event', () => {
+    const tooltipPosition = {
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+    };
+
+    const tooltipDatum = {
+      x: 0,
+      y: 0,
+    };
+
+    const tooltipData: TooltipData = {
+      value: {
+        datum: tooltipDatum,
+        seriesKey: [],
+        specId: SPEC_ID,
+      },
+      position: tooltipPosition,
+    };
+
+    const tooltipDataInvalidSpecId: TooltipData = {
+      value: {
+        datum: tooltipDatum,
+        seriesKey: [],
+        specId: getSpecId(''),
+      },
+      position: tooltipPosition,
+    };
+
+    store.onOverElement(tooltipDataInvalidSpecId);
+    expect(store.tooltipData.get()).toEqual(null);
+    expect(store.showTooltip.get()).toBe(false);
+
+    const mockFn = jest.fn();
+    const onOverListener = (value: GeometryValue): void => { mockFn(); };
+    store.setOnElementOverListener(onOverListener);
+    store.addSeriesSpec(spec);
+    store.onOverElement(tooltipData);
+    expect(store.tooltipData.get()).toEqual([['Value', 'value 0'], ['X Value', 0]]);
+    expect(store.showTooltip.get()).toBe(true);
+    expect(mockFn).toBeCalled();
   });
 });
