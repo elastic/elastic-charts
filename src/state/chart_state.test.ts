@@ -299,4 +299,28 @@ describe('Chart Store', () => {
     });
     expect(computeChart).toBeCalled();
   });
+
+  test('can remove a series spec', () => {
+    store.addSeriesSpec(spec);
+    store.removeSeriesSpec(SPEC_ID);
+    expect(store.seriesSpecs.get(SPEC_ID)).toBe(undefined);
+  });
+
+  test('can remove an axis spec', () => {
+    const axisSpec: AxisSpec = {
+      id: AXIS_ID,
+      groupId: GROUP_ID,
+      hide: false,
+      showOverlappingTicks: false,
+      showOverlappingLabels: false,
+      position: Position.Left,
+      tickSize: 30,
+      tickPadding: 10,
+      tickFormat: (value: any) => `value ${value}`,
+    };
+
+    store.addAxisSpec(axisSpec);
+    store.removeAxisSpec(AXIS_ID);
+    expect(store.axesSpecs.get(AXIS_ID)).toBe(undefined);
+  });
 });
