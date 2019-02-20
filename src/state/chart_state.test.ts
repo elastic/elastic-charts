@@ -139,4 +139,11 @@ describe('Chart Store', () => {
     store.onOutElement();
     expect(mockFn).toBeCalled();
   });
+
+  test('can set tooltip position', () => {
+    const position = { x: 10, y: 20 };
+    store.setTooltipPosition(position.x, position.y);
+
+    expect(store.tooltipPosition.get()).toEqual(position);
+  });
 });
