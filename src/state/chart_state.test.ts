@@ -125,4 +125,18 @@ describe('Chart Store', () => {
     expect(store.showTooltip.get()).toBe(true);
     expect(mockFn).toBeCalled();
   });
+
+  test('can respond to mouseout event', () => {
+    store.showTooltip.set(true);
+
+    store.onOutElement();
+    expect(store.showTooltip.get()).toBe(false);
+
+    const mockFn = jest.fn();
+    const onOutListener = (): undefined => { mockFn(); return undefined; };
+    store.setOnElementOutListener(onOutListener);
+
+    store.onOutElement();
+    expect(mockFn).toBeCalled();
+  });
 });
