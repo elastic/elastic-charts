@@ -209,4 +209,18 @@ describe('Chart Store', () => {
 
     expect(outListener.mock.calls.length).toBe(1);
   });
+
+  test('can set an element click listener', () => {
+    const clickListener = (value: GeometryValue): void => { return; };
+    store.setOnElementClickListener(clickListener);
+
+    expect(store.onElementClickListener).toEqual(clickListener);
+  });
+
+  test('can set a brush end listener', () => {
+    const brushEndListener = (min: number, max: number): void => { return; };
+    store.setOnBrushEndListener(brushEndListener);
+
+    expect(store.onBrushEndListener).toEqual(brushEndListener);
+  });
 });
