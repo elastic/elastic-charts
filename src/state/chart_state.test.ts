@@ -44,9 +44,6 @@ describe('Chart Store', () => {
     yScaleType: ScaleType.Linear,
   };
 
-  const elementListener = jest.fn((value: GeometryValue): void => { return; });
-  const legendListener = jest.fn((ds: DataSeriesColorsValues | null): void => { return; });
-
   const firstLegendItem = {
     color: 'foo', label: 'bar', value: {
       specId: SPEC_ID,
@@ -130,6 +127,8 @@ describe('Chart Store', () => {
       position: tooltipPosition,
     };
 
+    const elementListener = jest.fn((value: GeometryValue): void => { return; });
+
     store.onOverElement(tooltipDataInvalidSpecId);
     expect(store.tooltipData.get()).toEqual(null);
     expect(store.showTooltip.get()).toBe(false);
@@ -181,6 +180,8 @@ describe('Chart Store', () => {
   });
 
   test('can respond to legend item mouseover event', () => {
+    const legendListener = jest.fn((ds: DataSeriesColorsValues | null): void => { return; });
+
     store.legendItems = [firstLegendItem, secondLegendItem];
     store.highlightedLegendItemIndex.set(null);
 
@@ -189,7 +190,6 @@ describe('Chart Store', () => {
 
     store.setOnLegendItemOverListener(legendListener);
     store.onLegendItemOver(1);
-    expect(legendListener).toBeCalled();
     expect(legendListener).toBeCalledWith(secondLegendItem.value);
   });
 
@@ -236,5 +236,37 @@ describe('Chart Store', () => {
 
     store.removeOnLegendItemOverListener();
     expect(store.onLegendItemOverListener).toEqual(undefined);
+  });
+
+  test('can respond to a brush end event', () => {
+    const brushEndListener = jest.fn((min: number, max: number): void => { return; });
+
+    const start = { x: 0, y: 0 };
+    const end1 = { x: 100, y: 0 };
+    const end2 = { x: -100, y: 0 };
+    store.chartDimensions.left = 10;
+
+    store.onBrushEndListener = undefined;
+    store.onBrushEnd(start, end1);
+    expect(brushEndListener).not.toBeCalled();
+
+    store.onBrushEnd(start, start);
+    expect(brushEndListener).not.toBeCalled();
+
+    store.setOnBrushEndListener(brushEndListener);
+    store.onBrushEnd(start, end1);
+    expect(brushEndListener.mock.calls[0][0]).toEqual(0.9426386233269598);
+    expect(brushEndListener.mock.calls[0][1]).toEqual(1.5162523900573615);
+
+    store.onBrushEnd(start, end2);
+    expect(brushEndListener.mock.calls[1][0]).toEqual(0.36902485659655826);
+    expect(brushEndListener.mock.calls[1][1]).toEqual(0.9426386233269598);
+  });
+
+  test('can determine if brush is enabled', () => {
+    expect(store.isBrushEnabled()).toBe(true);
+
+    store.xScale = undefined;
+    expect(store.isBrushEnabled()).toBe(false);
   });
 });
