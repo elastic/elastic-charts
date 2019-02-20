@@ -223,4 +223,18 @@ describe('Chart Store', () => {
 
     expect(store.onBrushEndListener).toEqual(brushEndListener);
   });
+
+  test('can remove listeners', () => {
+    store.removeElementClickListener();
+    expect(store.onElementClickListener).toEqual(undefined);
+
+    store.removeElementOverListener();
+    expect(store.onElementOverListener).toEqual(undefined);
+
+    store.removeElementOutListener();
+    expect(store.onElementOutListener).toEqual(undefined);
+
+    store.removeOnLegendItemOverListener();
+    expect(store.onLegendItemOverListener).toEqual(undefined);
+  });
 });
