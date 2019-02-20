@@ -1,9 +1,9 @@
 import { GeometryValue } from '../lib/series/rendering';
+import { DataSeriesColorsValues } from '../lib/series/series';
 import { AxisSpec, BarSeriesSpec, Position } from '../lib/series/specs';
 import { getAxisId, getGroupId, getSpecId } from '../lib/utils/ids';
 import { ScaleType } from '../lib/utils/scales/scales';
 import { ChartStore, TooltipData } from './chart_state';
-import { DataSeriesColorsValues } from '../lib/series/series';
 
 describe('Chart Store', () => {
   const mockedRect = {
@@ -44,12 +44,8 @@ describe('Chart Store', () => {
     yScaleType: ScaleType.Linear,
   };
 
-  const mockFn = jest.fn();
-  const elementListener = (value: GeometryValue): void => { mockFn(); };
-  const outListener = (): undefined => { mockFn(); return undefined; };
-
-  const mockLegendFn = jest.fn((ds: DataSeriesColorsValues | null) => { return; });
-  const legendListener = (ds: DataSeriesColorsValues | null): void => { mockLegendFn(ds); };
+  const elementListener = jest.fn((value: GeometryValue): void => { return; });
+  const legendListener = jest.fn((ds: DataSeriesColorsValues | null): void => { return; });
 
   const firstLegendItem = {
     color: 'foo', label: 'bar', value: {
@@ -143,10 +139,12 @@ describe('Chart Store', () => {
     store.onOverElement(tooltipData);
     expect(store.tooltipData.get()).toEqual([['Value', 'value 0'], ['X Value', 0]]);
     expect(store.showTooltip.get()).toBe(true);
-    expect(mockFn).toBeCalled();
+    expect(elementListener).toBeCalled();
   });
 
   test('can respond to chart element mouseout event', () => {
+    const outListener = jest.fn((): undefined => undefined);
+
     store.showTooltip.set(true);
 
     store.onOutElement();
@@ -155,7 +153,7 @@ describe('Chart Store', () => {
     store.setOnElementOutListener(outListener);
 
     store.onOutElement();
-    expect(mockFn).toBeCalled();
+    expect(outListener).toBeCalled();
   });
 
   test('can set tooltip position', () => {
@@ -191,7 +189,24 @@ describe('Chart Store', () => {
 
     store.setOnLegendItemOverListener(legendListener);
     store.onLegendItemOver(1);
-    expect(mockLegendFn).toBeCalled();
-    expect(mockLegendFn.mock.calls[0][0]).toBe(secondLegendItem.value);
+    expect(legendListener).toBeCalled();
+    expect(legendListener).toBeCalledWith(secondLegendItem.value);
+  });
+
+  test('can respond to legend item mouseout event', () => {
+    const outListener = jest.fn((): undefined => undefined);
+
+    store.highlightedLegendItemIndex.set(0);
+
+    store.setOnLegendItemOutListener(outListener);
+
+    store.onLegendItemOut();
+    expect(store.highlightedLegendItemIndex.get()).toBe(null);
+    expect(outListener).toBeCalled();
+
+    store.removeOnLegendItemOutListener();
+    store.onLegendItemOut();
+
+    expect(outListener.mock.calls.length).toBe(1);
   });
 });
