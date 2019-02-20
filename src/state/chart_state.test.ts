@@ -146,4 +146,11 @@ describe('Chart Store', () => {
 
     expect(store.tooltipPosition.get()).toEqual(position);
   });
+
+  test('can set legend visibility', () => {
+    store.showLegend.set(false);
+    store.setShowLegend(true);
+
+    expect(store.showLegend.get()).toEqual(true);
+  });
 });
