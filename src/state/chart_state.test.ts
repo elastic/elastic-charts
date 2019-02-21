@@ -250,10 +250,11 @@ describe('Chart Store', () => {
     store.onBrushEnd(start, end1);
     expect(brushEndListener).not.toBeCalled();
 
+    store.setOnBrushEndListener(brushEndListener);
+
     store.onBrushEnd(start, start);
     expect(brushEndListener).not.toBeCalled();
 
-    store.setOnBrushEndListener(brushEndListener);
     store.onBrushEnd(start, end1);
     expect(brushEndListener.mock.calls[0][0]).toEqual(0.9426386233269598);
     expect(brushEndListener.mock.calls[0][1]).toEqual(1.5162523900573615);
