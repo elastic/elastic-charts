@@ -323,4 +323,18 @@ describe('Chart Store', () => {
     store.removeAxisSpec(AXIS_ID);
     expect(store.axesSpecs.get(AXIS_ID)).toBe(undefined);
   });
+
+  test('only computes chart if parent dimensions are computed', () => {
+    const localStore = new ChartStore();
+
+    localStore.parentDimensions = {
+      width: 0,
+      height: 0,
+      top: 0,
+      left: 0,
+    };
+
+    localStore.computeChart();
+    expect(localStore.initialized.get()).toBe(false);
+  });
 });
