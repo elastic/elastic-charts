@@ -1,35 +1,52 @@
-// import { toJS } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-// import { LineSeries } from '../components/line_series';
-import { ChartStore } from '../../state/chart_state';
-// import { DataSeriesType } from '../commons/series/specs';
-// import { AreaSeries } from '../components/area_series';
+import { ChartStore, Point } from '../../state/chart_state';
+import { BrushExtent } from '../../state/utils';
+import { AreaGeometries } from './area_geometries';
 import { Axis } from './axis';
-import { BarSeries } from './bar_series';
-// import { AreaSeriesGlyph } from '../utils/area_series_utils';
-// import { BarSeriesGlyph } from '../utils/bar_series_utils';
-// import { LineSeriesGlyph } from '../utils/line_series_utils';
+import { BarGeometries } from './bar_geometries';
+import { Grid } from './grid';
+import { LineGeometries } from './line_geometries';
 
 interface ReactiveChartProps {
   chartStore?: ChartStore; // FIX until we find a better way on ts mobx
 }
-// interface BarSeriesDataGlyphs {
-//   type: DataSeriesType;
-//   bars: BarSeriesGlyph[];
-// }
-// interface LineSeriesDataGlyphs {
-//   type: DataSeriesType;
-//   line: LineSeriesGlyph;
-// }
-// interface AreaSeriesDataGlyphs {
-//   type: DataSeriesType;
-//   area: AreaSeriesGlyph;
-// }
 
-class Chart extends React.Component<ReactiveChartProps> {
+interface ReactiveChartState {
+  brushing: boolean;
+  brushStart: Point;
+  brushEnd: Point;
+}
+function limitPoint(value: number, min: number, max: number) {
+  if (value > max) {
+    return max;
+  } else if (value < min) {
+    return min;
+  } else {
+    return value;
+  }
+}
+function getPoint(event: MouseEvent, extent: BrushExtent): Point {
+  const point = {
+    x: limitPoint(event.layerX, extent.minX, extent.maxX),
+    y: limitPoint(event.layerY, extent.minY, extent.maxY),
+  };
+  return point;
+}
+class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
   static displayName = 'ReactiveChart';
-
+  firstRender = true;
+  state = {
+    brushing: false,
+    brushStart: {
+      x: 0,
+      y: 0,
+    },
+    brushEnd: {
+      x: 0,
+      y: 0,
+    },
+  };
   componentDidMount() {
     // tslint:disable-next-line:no-console
     console.log('Chart mounted');
@@ -40,6 +57,89 @@ class Chart extends React.Component<ReactiveChartProps> {
     console.log('Chart unmounted');
   }
 
+  renderBarSeries = () => {
+    const {
+      geometries,
+      canDataBeAnimated,
+      chartTheme,
+      onOverElement,
+      onOutElement,
+      onElementClickListener,
+    } = this.props.chartStore!;
+    if (!geometries) {
+      return;
+    }
+    const highlightedLegendItem = this.getHighlightedLegendItem();
+
+    return (
+      <BarGeometries
+        animated={canDataBeAnimated}
+        bars={geometries.bars}
+        style={chartTheme.barSeriesStyle}
+        sharedStyle={chartTheme.sharedStyle}
+        onElementOver={onOverElement}
+        onElementOut={onOutElement}
+        onElementClick={onElementClickListener}
+        highlightedLegendItem={highlightedLegendItem}
+      />
+    );
+  }
+  renderLineSeries = () => {
+    const {
+      geometries,
+      canDataBeAnimated,
+      chartTheme,
+      onOverElement,
+      onOutElement,
+      onElementClickListener,
+    } = this.props.chartStore!;
+    if (!geometries) {
+      return;
+    }
+
+    const highlightedLegendItem = this.getHighlightedLegendItem();
+
+    return (
+      <LineGeometries
+        animated={canDataBeAnimated}
+        lines={geometries.lines}
+        style={chartTheme.lineSeriesStyle}
+        sharedStyle={chartTheme.sharedStyle}
+        onElementOver={onOverElement}
+        onElementOut={onOutElement}
+        onElementClick={onElementClickListener}
+        highlightedLegendItem={highlightedLegendItem}
+      />
+    );
+  }
+  renderAreaSeries = () => {
+    const {
+      geometries,
+      canDataBeAnimated,
+      chartTheme,
+      onOverElement,
+      onOutElement,
+      onElementClickListener,
+    } = this.props.chartStore!;
+    if (!geometries) {
+      return;
+    }
+
+    const highlightedLegendItem = this.getHighlightedLegendItem();
+
+    return (
+      <AreaGeometries
+        animated={canDataBeAnimated}
+        areas={geometries.areas}
+        style={chartTheme.areaSeriesStyle}
+        sharedStyle={chartTheme.sharedStyle}
+        onElementOver={onOverElement}
+        onElementOut={onOutElement}
+        onElementClick={onElementClickListener}
+        highlightedLegendItem={highlightedLegendItem}
+      />
+    );
+  }
   renderAxes = () => {
     const {
       axesVisibleTicks,
@@ -47,7 +147,10 @@ class Chart extends React.Component<ReactiveChartProps> {
       axesTicksDimensions,
       axesPositions,
       chartTheme,
+      debug,
+      chartDimensions,
     } = this.props.chartStore!;
+
     const axesComponents: JSX.Element[] = [];
     axesVisibleTicks.forEach((axisTicks, axisId) => {
       const axisSpec = axesSpecs.get(axisId);
@@ -65,65 +168,133 @@ class Chart extends React.Component<ReactiveChartProps> {
           axisPosition={axisPosition}
           ticks={ticks}
           chartTheme={chartTheme}
+          debug={debug}
+          chartDimensions={chartDimensions}
         />,
       );
     });
     return axesComponents;
   }
-  // public renderLineSeries = () => {
-  //   const { seriesGlyphs } = this.props.chartStore!;
-  //   const points: JSX.Element[] = [];
-  //   seriesGlyphs.forEach((spec, specId) => {
-  //     if (spec.type !== DataSeriesType.Line) {
-  //       return;
-  //     }
-  //     const lineGlyph = spec as LineSeriesDataGlyphs;
-  //     points.push(<LineSeries key={`line-series-${specId}`} line={lineGlyph.line} />);
-  //   });
-  //   return points;
-  // }
-  // public renderPointSeries = () => {
-  //   return null;
-  // }
-  renderBarSeries = () => {
-    const { geometries, canDataBeAnimated } = this.props.chartStore!;
-    if (!geometries) {
+
+  renderGrids = () => {
+    const { axesGridLinesPositions, axesSpecs, chartDimensions, debug } = this.props.chartStore!;
+
+    const gridComponents: JSX.Element[] = [];
+    axesGridLinesPositions.forEach((axisGridLinesPositions, axisId) => {
+      const axisSpec = axesSpecs.get(axisId);
+      if (axisSpec && axisGridLinesPositions.length > 0) {
+        gridComponents.push(
+          <Grid
+            key={`axis-grid-${axisId}`}
+            chartDimensions={chartDimensions}
+            debug={debug}
+            gridLineStyle={axisSpec.gridLineStyle}
+            linesPositions={axisGridLinesPositions}
+          />,
+        );
+      }
+    });
+    return gridComponents;
+  }
+
+  renderBrushTool = () => {
+    const { brushing, brushStart, brushEnd } = this.state;
+    const { chartDimensions, chartRotation, chartTransform } = this.props.chartStore!;
+    if (!brushing) {
+      return null;
+    }
+    let x = 0;
+    let y = 0;
+    let width = 0;
+    let height = 0;
+    // x = {chartDimensions.left + chartTransform.x};
+    // y = {chartDimensions.top + chartTransform.y};
+    if (chartRotation === 0 || chartRotation === 180) {
+      x = brushStart.x;
+      y = chartDimensions.top + chartTransform.y;
+      width = brushEnd.x - brushStart.x;
+      height = chartDimensions.height;
+    } else {
+      x = chartDimensions.left + chartTransform.x;
+      y = brushStart.y;
+      width = chartDimensions.width;
+      height = brushEnd.y - brushStart.y;
+    }
+    return <rect x={x} y={y} width={width} height={height} fill="gray" opacity={0.6} />;
+  }
+  onStartBrusing = (event: { evt: MouseEvent }) => {
+    const { brushExtent } = this.props.chartStore!;
+    const point = getPoint(event.evt, brushExtent);
+    this.setState(() => ({
+      brushing: true,
+      brushStart: point,
+      brushEnd: point,
+    }));
+  }
+  onEndBrushing = () => {
+    const { brushStart, brushEnd } = this.state;
+    this.props.chartStore!.onBrushEnd(brushStart, brushEnd);
+    this.setState(() => ({
+      brushing: false,
+      brushStart: { x: 0, y: 0 },
+      brushEnd: { x: 0, y: 0 },
+    }));
+  }
+  onBrushing = (event: { evt: MouseEvent }) => {
+    if (!this.state.brushing) {
       return;
     }
-    return <BarSeries key="data bars" animated={canDataBeAnimated} bars={geometries.bars} />;
+    const { brushExtent } = this.props.chartStore!;
+    const point = getPoint(event.evt, brushExtent);
+    this.setState(() => ({
+      brushEnd: point,
+    }));
   }
-  // public renderAreaSeries = () => {
-  //   const { seriesGlyphs } = this.props.chartStore!;
-  //   const points: JSX.Element[] = [];
-  //   seriesGlyphs.forEach((spec, specId) => {
-  //     if (spec.type !== DataSeriesType.Area) {
-  //       return;
-  //     }
-  //     const areaGlyph = spec as AreaSeriesDataGlyphs;
-  //     // tslint:disable-next-line:no-console
-  //     console.log('areaGlyph', areaGlyph);
-  //     points.push(<AreaSeries key={`area-series-${specId}`} area={areaGlyph.area} />);
-  //   });
-  //   return points;
-  // }
+
   render() {
-    const { initialized } = this.props.chartStore!;
+    const { initialized, debug } = this.props.chartStore!;
     if (!initialized.get()) {
       return null;
     }
 
-    const { parentDimensions, chartDimensions, chartRotation } = this.props.chartStore!;
-    // console.log({ lineSeriesSpecs: toJS(lineSeriesSpecs)})
-    // console.log({ groupDomains: toJS(groupDomains)})
-    // console.log({ vLeftAxisSpec: toJS(vLeftAxisSpec)})
-    // console.log({ hBottomAxisSpec: toJS(hBottomAxisSpec)})
-    // console.log({ chartDimensions});
-    let chartTransform = '';
-    if (chartRotation === 90) {
-      chartTransform = `translate(${chartDimensions.width} 0) rotate(90)`;
-    } else if (chartRotation === -90) {
-      chartTransform = `translate(0 ${chartDimensions.height}) rotate(-90)`;
+    const {
+      parentDimensions,
+      chartDimensions,
+      chartRotation,
+      chartTransform,
+    } = this.props.chartStore!;
+
+    // disable clippings when debugging
+    const clippings = debug
+      ? {}
+      : {
+          clipX: 0,
+          clipY: 0,
+          clipWidth: [90, -90].includes(chartRotation)
+            ? chartDimensions.height
+            : chartDimensions.width,
+          clipHeight: [90, -90].includes(chartRotation)
+            ? chartDimensions.width
+            : chartDimensions.height,
+        };
+
+    let brushProps = {};
+    const isBrushEnabled = this.props.chartStore!.isBrushEnabled();
+    if (isBrushEnabled) {
+      brushProps = {
+        onMouseDown: this.onStartBrusing,
+        onMouseUp: this.onEndBrushing,
+        onMouseMove: this.onBrushing,
+      };
     }
+
+    const gridClippings = {
+      clipX: chartDimensions.left,
+      clipY: chartDimensions.top,
+      clipWidth: chartDimensions.width,
+      clipHeight: chartDimensions.height,
+    };
+
     return (
       <div
         style={{
@@ -132,10 +303,6 @@ class Chart extends React.Component<ReactiveChartProps> {
           bottom: 0,
           right: 0,
           left: 0,
-          // width: '100%',
-          // height: '100%',
-          // background: 'lightblue',
-          // border: '10px solid blue',
           boxSizing: 'border-box',
         }}
       >
@@ -146,40 +313,51 @@ class Chart extends React.Component<ReactiveChartProps> {
             width: '100%',
             height: '100%',
           }}
+          {...brushProps}
         >
-          {/* <defs>
-            <clipPath id="chart-bbox" clipPathUnits="objectBoundingBox">
-              <rect
-                x={chartDimensions.left}
-                y={chartDimensions.top}
-                width={chartDimensions.width + chartDimensions.left}
-                height={chartDimensions.height}
-              />
-            </clipPath>
-          </defs> */}
+          <g {...gridClippings}>{this.renderGrids()}</g>
+
           <g
-            className="euiSeriesChartChart_group"
-            transform={`translate(${chartDimensions.left} ${chartDimensions.top})`}
+            transform={`translate(${chartDimensions.left + chartTransform.x} ${chartDimensions.top +
+              chartTransform.y}) rotate(${chartRotation})`}
+            {...clippings}
+            // onMouseMove={({ evt }) => {
+            //   if (tooltipData != null) {
+            //     setTooltipPosition(evt.layerX, evt.layerY);
+            //   }
+            // }}
           >
-            {/* <rect
-              x={0}
-              y={0}
-              width={chartDimensions.width}
-              height={chartDimensions.height}
-              fill="red"
-              fillOpacity={0.3}
-            /> */}
-            {/* <g className="euiSeriesChartSeries_lineSeries">{this.renderLineSeries()}</g>
-            <g className="euiSeriesChartSeries_pointSeries">{this.renderPointSeries()}</g> */}
-            <g className="euiSeriesChartSeries_barSeries" transform={chartTransform}>
-              {this.renderBarSeries()}
-            </g>
-            {/* <g className="euiSeriesChartSeries_areaSeries">{this.renderAreaSeries()}</g> */}
+            {this.renderBarSeries()}
+            {this.renderAreaSeries()}
+            {this.renderLineSeries()}
+
+            {debug && this.renderDebugChartBorders()}
           </g>
-          <g className="euiSeriesChartAxis_group">{this.renderAxes()}</g>
+          {isBrushEnabled && <g>{this.renderBrushTool()}</g>}
+
+          <g>{this.renderAxes()}</g>
         </svg>
       </div>
     );
+  }
+
+  private renderDebugChartBorders = () => {
+    const { chartDimensions, chartRotation } = this.props.chartStore!;
+    return (
+      <rect
+        x={0}
+        y={0}
+        width={[90, -90].includes(chartRotation) ? chartDimensions.height : chartDimensions.width}
+        height={[90, -90].includes(chartRotation) ? chartDimensions.width : chartDimensions.height}
+        stroke="red"
+        strokeWidth={0.5}
+        strokeDasharray="2, 2"
+      />
+    );
+  }
+
+  private getHighlightedLegendItem = () => {
+    return this.props.chartStore!.highlightedLegendItem.get();
   }
 }
 

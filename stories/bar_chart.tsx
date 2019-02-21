@@ -22,7 +22,7 @@ storiesOf('Bar Chart', module)
     const darkmode = boolean('darkmode', false);
     const className = darkmode ? 'story-chart-dark' : 'story-chart';
     return (
-      <Chart renderer="canvas" className={className}>
+      <Chart renderer="svg" className={className}>
         <BarSeries
           id={getSpecId('bars')}
           xScaleType={ScaleType.Linear}
@@ -40,7 +40,7 @@ storiesOf('Bar Chart', module)
     const className = darkmode ? 'story-chart-dark' : 'story-chart';
     const defaultTheme = darkmode ? DARK_THEME : LIGHT_THEME;
     return (
-      <Chart renderer="canvas" className={className}>
+      <Chart renderer="svg" className={className}>
         <Settings theme={defaultTheme} />
         <Axis
           id={getAxisId('bottom')}
@@ -69,7 +69,7 @@ storiesOf('Bar Chart', module)
   })
   .add('with ordinal x axis', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart renderer="svg" className={'story-chart'}>
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
@@ -97,7 +97,7 @@ storiesOf('Bar Chart', module)
   })
   .add('with linear x axis', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart renderer="svg" className={'story-chart'}>
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
@@ -127,7 +127,7 @@ storiesOf('Bar Chart', module)
     const now = new Date().getTime();
     const max = now + 1000 * 60 * 60 * 24 * 90;
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart renderer="svg" className={'story-chart'}>
         <Settings debug={boolean('debug', false)} />
         <Axis
           id={getAxisId('bottom')}
@@ -163,7 +163,7 @@ storiesOf('Bar Chart', module)
   })
   .add('with log y axis', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart renderer="svg" className={'story-chart'}>
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
@@ -200,7 +200,7 @@ storiesOf('Bar Chart', module)
   })
   .add('with stacked log y axis', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart renderer="svg" className={'story-chart'}>
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
@@ -247,7 +247,7 @@ storiesOf('Bar Chart', module)
   })
   .add('with axis and legend', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart renderer="svg" className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}
@@ -276,7 +276,7 @@ storiesOf('Bar Chart', module)
   })
   .add('stacked with axis and legend', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart renderer="svg" className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}
@@ -316,7 +316,7 @@ storiesOf('Bar Chart', module)
   })
   .add('clustered with axis and legend', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart renderer="svg" className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}
@@ -355,7 +355,7 @@ storiesOf('Bar Chart', module)
   })
   .add('clustered multiple series specs', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart renderer="svg" className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}
@@ -412,7 +412,7 @@ storiesOf('Bar Chart', module)
   })
   .add('1y0g', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart renderer="svg" className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}
@@ -441,7 +441,7 @@ storiesOf('Bar Chart', module)
   })
   .add('1y1g', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart renderer="svg" className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}
@@ -471,7 +471,7 @@ storiesOf('Bar Chart', module)
   })
   .add('1y2g', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart renderer="svg" className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}
@@ -501,7 +501,7 @@ storiesOf('Bar Chart', module)
   })
   .add('2y0g', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart renderer="svg" className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}
@@ -530,7 +530,7 @@ storiesOf('Bar Chart', module)
   })
   .add('2y1g', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart renderer="svg" className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}
@@ -560,7 +560,7 @@ storiesOf('Bar Chart', module)
   })
   .add('2y2g', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart renderer="svg" className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}
@@ -592,7 +592,7 @@ storiesOf('Bar Chart', module)
     const dg = new DataGenerator();
     const data = dg.generateSimpleSeries(200);
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart renderer="svg" className={'story-chart'}>
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} />
         <Axis
           id={getAxisId('left2')}
@@ -615,7 +615,7 @@ storiesOf('Bar Chart', module)
   })
   .add('single data chart', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart renderer="svg" className={'story-chart'}>
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} />
         <Axis
           id={getAxisId('left2')}
@@ -638,7 +638,7 @@ storiesOf('Bar Chart', module)
   })
   .add('single data clusterd chart', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart renderer="svg" className={'story-chart'}>
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} />
         <Axis
           id={getAxisId('left2')}
@@ -667,7 +667,7 @@ storiesOf('Bar Chart', module)
   })
   .add('single data stacked chart', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart renderer="svg" className={'story-chart'}>
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} />
         <Axis
           id={getAxisId('left2')}
@@ -697,7 +697,7 @@ storiesOf('Bar Chart', module)
   })
   .add('negative and positive x values', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart renderer="svg" className={'story-chart'}>
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} />
         <Axis
           id={getAxisId('left2')}

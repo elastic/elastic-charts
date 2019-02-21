@@ -46,8 +46,8 @@
     "@babel/core": "^7.2.2",
     "@commitlint/cli": "^7.4.0",
     "@commitlint/config-conventional": "^7.3.1",
-    "@elastic/eui": "^6.10.0",
     "@elastic/datemath": "^5.0.2",
+    "@elastic/eui": "^6.10.0",
     "@semantic-release/changelog": "^3.0.2",
     "@semantic-release/commit-analyzer": "^6.1.0",
     "@semantic-release/git": "^7.0.8",
@@ -129,8 +129,8 @@
     "resize-observer-polyfill": "^1.5.1"
   },
   "peerDependencies": {
-    "@elastic/eui": "^6.10.0",
     "@elastic/datemath": "^5.0.2",
+    "@elastic/eui": "^6.10.0",
     "moment": "^2.23.0"
   },
   "config": {

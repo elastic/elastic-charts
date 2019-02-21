@@ -1,5 +1,14 @@
-import React, { SVGProps } from 'react';
-import { AxisTick, AxisTicksDimensions, isHorizontal, isVertical } from '../../lib/axes/axis_utils';
+import React from 'react';
+import {
+  AxisTick,
+  AxisTicksDimensions,
+  centerRotationOrigin,
+  getHorizontalAxisTickLineProps,
+  getTickLabelProps,
+  getVerticalAxisTickLineProps,
+  isHorizontal,
+  isVertical,
+} from '../../lib/axes/axis_utils';
 import { AxisSpec, Position } from '../../lib/series/specs';
 import { Theme } from '../../lib/themes/theme';
 import { Dimensions } from '../../lib/utils/dimensions';
@@ -10,6 +19,8 @@ interface AxisProps {
   axisTicksDimensions: AxisTicksDimensions;
   axisPosition: Dimensions;
   ticks: AxisTick[];
+  debug: boolean;
+  chartDimensions: Dimensions;
 }
 
 export class Axis extends React.PureComponent<AxisProps> {
@@ -17,35 +28,48 @@ export class Axis extends React.PureComponent<AxisProps> {
     return this.renderAxis();
   }
   renderTickLabel = (tick: AxisTick, i: number) => {
+    const { padding, ...labelStyle } = this.props.chartTheme.axes.tickLabelStyle;
     const {
       axisSpec: { tickSize, tickPadding, position },
+      axisTicksDimensions,
+      debug,
     } = this.props;
 
-    const textProps: SVGProps<SVGTextElement> = {};
+    const tickLabelRotation = this.props.axisSpec.tickLabelRotation || 0;
 
-    if (isVertical(position)) {
-      textProps.y = tick.position;
-      textProps.textAnchor = position === 'left' ? 'end' : 'start';
-      textProps.x = position === 'left' ? 0 : tickSize + tickPadding;
-      textProps.dominantBaseline = 'middle';
-    } else {
-      textProps.y = position === 'top' ? 0 : tickSize + tickPadding;
-      textProps.x = tick.position;
-      textProps.textAnchor = 'middle';
-      textProps.dominantBaseline = 'hanging';
-    }
-    // const transform = `translate(${textProps.x}, ${textProps.y})`;
+    const tickLabelProps = getTickLabelProps(
+      tickLabelRotation,
+      tickSize,
+      tickPadding,
+      tick.position,
+      position,
+      axisTicksDimensions,
+    );
+
+    const { maxLabelTextWidth, maxLabelTextHeight } = axisTicksDimensions;
+    const centeredRectProps = centerRotationOrigin(axisTicksDimensions, {
+      x: tickLabelProps.x,
+      y: tickLabelProps.y,
+    });
+    const { align, verticalAlign, ...tickLabelRestProps } = tickLabelProps;
+    const textProps = {
+      width: maxLabelTextWidth,
+      height: maxLabelTextHeight,
+      transform: `rotate(${tickLabelRotation} ${tickLabelRestProps.x} ${tickLabelRestProps.y})`,
+      // ...tickLabelRestProps,
+      x: centeredRectProps.x,
+      y: centeredRectProps.y,
+      // dx: centeredRectProps.offsetX,
+      // dy: centeredRectProps.offsetY,
+    };
+
     return (
-      <text
-        className="euiSeriesChartAxis_tickLabel"
-        key={`tick-${i}`}
-        {...textProps}
-        // textAnchor={textProps.textAnchor}
-        // dominantBaseline={textProps.dominantBaseline}
-        // transform={transform}
-      >
-        {tick.label}
-      </text>
+      <g key={`tick-${i}`}>
+        {debug && <rect {...textProps} stroke="black" strokeWidth={1} fill="violet" />}
+        <text {...textProps} {...labelStyle}>
+          {tick.label}
+        </text>
+      </g>
     );
   }
 
@@ -53,59 +77,79 @@ export class Axis extends React.PureComponent<AxisProps> {
     const {
       axisSpec: { tickSize, tickPadding, position },
       axisTicksDimensions: { maxLabelBboxHeight },
+      chartTheme: {
+        axes: { tickLineStyle },
+      },
     } = this.props;
 
-    const lineProps: SVGProps<SVGLineElement> = {};
+    const lineProps = isVertical(position)
+      ? getVerticalAxisTickLineProps(position, tickPadding, tickSize, tick.position)
+      : getHorizontalAxisTickLineProps(
+          position,
+          tickPadding,
+          tickSize,
+          tick.position,
+          maxLabelBboxHeight,
+        );
 
-    if (isVertical(position)) {
-      lineProps.x1 = position === 'left' ? tickPadding : 0;
-      lineProps.x2 = position === 'left' ? tickSize + tickPadding : tickSize;
-      lineProps.y1 = tick.position;
-      lineProps.y2 = tick.position;
-    } else {
-      lineProps.x1 = tick.position;
-      lineProps.x2 = tick.position;
-      lineProps.y1 = position === 'top' ? maxLabelBboxHeight + tickPadding : 0;
-      lineProps.y2 = position === 'top' ? maxLabelBboxHeight + tickPadding + tickSize : tickSize;
-    }
-
-    return <line className="euiSeriesChartAxis_tickLine" key={`tick-${i}`} {...lineProps} />;
+    return (
+      <line
+        key={`tick-${i}`}
+        x1={lineProps[0]}
+        y1={lineProps[1]}
+        x2={lineProps[2]}
+        y2={lineProps[3]}
+        {...tickLineStyle}
+      />
+    );
   }
   private renderAxis = () => {
     const { ticks, axisPosition } = this.props;
-    const translation = `translate(${axisPosition.left} ${axisPosition.top})`;
     return (
-      <g className="euiSeriesChartAxis" transform={translation}>
-        <g className="euiSeriesChartAxis_lineGroup">{this.renderLine()}</g>
-        <g className="euiSeriesChartAxis_ticksGroup">{ticks.map(this.renderTickLine)}</g>
-        <g className="euiSeriesChartAxis_tickLabelsGroup">
-          {ticks.filter((tick) => tick.label !== null).map(this.renderTickLabel)}
-        </g>
+      <g transform={`translate(${axisPosition.left} ${axisPosition.top})`}>
+        <g key="lines">{this.renderAxisLine()}</g>
+        <g key="tick-lines">{ticks.map(this.renderTickLine)}</g>
+        <g key="ticks">{ticks.filter((tick) => tick.label !== null).map(this.renderTickLabel)}</g>
         {this.renderAxisTitle()}
       </g>
     );
   }
-  private renderLine = () => {
+  private renderAxisLine = () => {
     const {
       axisSpec: { tickSize, tickPadding, position },
       axisPosition,
       axisTicksDimensions,
+      chartTheme: {
+        axes: { axisLineStyle },
+      },
     } = this.props;
-    const lineProps: SVGProps<SVGLineElement> = {};
-    if (orientation === 'vertical') {
-      lineProps.x1 = position === 'left' ? tickSize + tickPadding : 0;
-      lineProps.x2 = position === 'left' ? tickSize + tickPadding : 0;
-      lineProps.y1 = 0;
-      lineProps.y2 = axisPosition.height;
+    const lineProps: number[] = [];
+    if (isVertical(position)) {
+      lineProps[0] = position === Position.Left ? tickSize + tickPadding : 0;
+      lineProps[2] = position === Position.Left ? tickSize + tickPadding : 0;
+      lineProps[1] = 0;
+      lineProps[3] = axisPosition.height;
     } else {
-      lineProps.x1 = 0;
-      lineProps.x2 = axisPosition.width;
-      lineProps.y1 =
-        position === 'top' ? axisTicksDimensions.maxLabelBboxHeight + tickSize + tickPadding : 0;
-      lineProps.y2 =
-        position === 'top' ? axisTicksDimensions.maxLabelBboxHeight + tickSize + tickPadding : 0;
+      lineProps[0] = 0;
+      lineProps[2] = axisPosition.width;
+      lineProps[1] =
+        position === Position.Top
+          ? axisTicksDimensions.maxLabelBboxHeight + tickSize + tickPadding
+          : 0;
+      lineProps[3] =
+        position === Position.Top
+          ? axisTicksDimensions.maxLabelBboxHeight + tickSize + tickPadding
+          : 0;
     }
-    return <line className="euiSeriesChartAxis_line" {...lineProps} />;
+    return (
+      <line
+        x1={lineProps[0]}
+        y1={lineProps[1]}
+        x2={lineProps[2]}
+        y2={lineProps[3]}
+        {...axisLineStyle}
+      />
+    );
   }
   private renderAxisTitle() {
     const {
@@ -115,7 +159,7 @@ export class Axis extends React.PureComponent<AxisProps> {
       return null;
     }
     if (isHorizontal(position)) {
-      return this.renderHoriziontalAxisTitle();
+      return this.renderHorizontalAxisTitle();
     }
     return this.renderVerticalAxisTitle();
   }
@@ -124,40 +168,96 @@ export class Axis extends React.PureComponent<AxisProps> {
       axisPosition: { height },
       axisSpec: { title, position, tickSize, tickPadding },
       axisTicksDimensions: { maxLabelBboxWidth },
-      chartTheme: { chartMargins },
+      chartTheme: {
+        axes: { axisTitleStyle },
+      },
+      debug,
     } = this.props;
-
-    const top = height / 2;
+    if (!title) {
+      return null;
+    }
+    const { padding, ...titleStyle } = axisTitleStyle;
+    const top = height;
     const left =
       position === Position.Left
-        ? -(maxLabelBboxWidth + chartMargins.left / 2)
-        : tickSize + tickPadding + maxLabelBboxWidth + +chartMargins.right / 2;
-    const translate = `translate(${left} ${top}) rotate(-90)`;
+        ? -(maxLabelBboxWidth + titleStyle.fontSize + padding)
+        : tickSize + tickPadding + maxLabelBboxWidth + padding;
+
     return (
-      <g className="euiSeriesChartAxis_axisTitle">
-        <text textAnchor="middle" dominantBaseline="middle" transform={translate}>
+      <g>
+        {debug && (
+          <rect
+            x={left}
+            y={top}
+            width={height}
+            height={titleStyle.fontSize}
+            fill="violet"
+            stroke="black"
+            strokeWidth={1}
+            transform={`rotate(-90 ${left} ${top})`}
+          />
+        )}
+        <text
+          dx={height / 2}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          x={left}
+          y={top}
+          width={height}
+          transform={`rotate(-90 ${left} ${top})`}
+          {...titleStyle}
+        >
           {title}
         </text>
       </g>
     );
   }
-  private renderHoriziontalAxisTitle() {
+  private renderHorizontalAxisTitle() {
     const {
-      axisPosition: { width },
+      axisPosition: { width, height },
       axisSpec: { title, position, tickSize, tickPadding },
       axisTicksDimensions: { maxLabelBboxHeight },
-      chartTheme: { chartMargins },
+      chartTheme: {
+        axes: {
+          axisTitleStyle: { padding, ...titleStyle },
+        },
+      },
+      debug,
     } = this.props;
+
+    if (!title) {
+      return;
+    }
 
     const top =
       position === Position.Top
-        ? -chartMargins.top / 2
-        : maxLabelBboxHeight + tickPadding + tickSize + chartMargins.bottom / 2;
-    const left = width / 2;
-    const translate = `translate(${left} ${top} )`;
+        ? -maxLabelBboxHeight - padding
+        : maxLabelBboxHeight + tickPadding + tickSize + padding;
+
+    const left = 0;
     return (
-      <g className="euiSeriesChartAxis_axisTitle">
-        <text textAnchor="middle" dominantBaseline="middle" transform={translate}>
+      <g>
+        {debug && (
+          <rect
+            x={left}
+            y={top}
+            width={width}
+            height={titleStyle.fontSize}
+            stroke="black"
+            strokeWidth={1}
+            fill="violet"
+          />
+        )}
+        <text
+          dx={width / 2}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          x={left}
+          y={top}
+          width={width}
+          height={height}
+          {...titleStyle}
+        >
           {title}
         </text>
       </g>

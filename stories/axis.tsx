@@ -55,7 +55,7 @@ function renderAxisWithOptions(position: Position, seriesGroup: string, show: bo
 storiesOf('Axis', module)
   .add('basic', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart renderer="svg" className={'story-chart'}>
         <Settings debug={boolean('debug', false)} />
         <Axis
           id={getAxisId('bottom')}
@@ -84,7 +84,7 @@ storiesOf('Axis', module)
   })
   .add('tick label rotation', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart renderer="svg" className={'story-chart'}>
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
@@ -148,7 +148,7 @@ storiesOf('Axis', module)
   })
   .add('4 axes', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart renderer="svg" className={'story-chart'}>
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
@@ -206,7 +206,7 @@ storiesOf('Axis', module)
     const seriesGroup1 = 'group1';
     const seriesGroup2 = 'group2';
     return (
-      <Chart renderer="canvas" size={[500, 300]} className={'story-chart'}>
+      <Chart renderer="svg" size={[500, 300]} className={'story-chart'}>
         <Settings showLegend={false} theme={customTheme} debug={boolean('debug', true)} />
         {renderAxisWithOptions(Position.Top, seriesGroup1, false)}
         {renderAxisWithOptions(Position.Top, seriesGroup2, true)}
@@ -229,7 +229,7 @@ storiesOf('Axis', module)
   })
   .add('with multi axis bar/lines', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart renderer="svg" className={'story-chart'}>
         <Settings showLegend={false} />
         <Axis
           id={getAxisId('bottom')}
@@ -278,7 +278,7 @@ storiesOf('Axis', module)
     const dg = new DataGenerator();
     const data = dg.generateSimpleSeries(31);
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart renderer="svg" className={'story-chart'}>
         <Settings debug={true} />
         <Axis
           id={getAxisId('bottom')}
