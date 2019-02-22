@@ -198,10 +198,15 @@ export class ChartStore {
   });
 
   onLegendItemOver = action((legendItemIndex: number) => {
-    this.highlightedLegendItemIndex.set(legendItemIndex);
+    if (legendItemIndex >= this.legendItems.length || legendItemIndex < 0) {
+      this.highlightedLegendItemIndex.set(null);
+    } else {
+      this.highlightedLegendItemIndex.set(legendItemIndex);
+    }
+
     if (this.onLegendItemOverListener) {
       const currentLegendItem = this.highlightedLegendItem.get();
-      const listenerData = currentLegendItem!.value;
+      const listenerData = currentLegendItem ? currentLegendItem.value : null;
       this.onLegendItemOverListener(listenerData);
     }
   });

@@ -191,6 +191,12 @@ describe('Chart Store', () => {
     store.setOnLegendItemOverListener(legendListener);
     store.onLegendItemOver(1);
     expect(legendListener).toBeCalledWith(secondLegendItem.value);
+
+    store.onLegendItemOver(-1);
+    expect(legendListener).toBeCalledWith(null);
+
+    store.onLegendItemOver(3);
+    expect(legendListener).toBeCalledWith(null);
   });
 
   test('can respond to legend item mouseout event', () => {
