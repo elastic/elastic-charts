@@ -159,8 +159,8 @@ class LegendElementComponent extends React.Component<LegendElementProps, LegendE
     this.props.chartStore!.toggleVisibility(legendItemIndex);
   }
 
-  private renderVisibilityButton = (legendItemIndex: number, isVisible: boolean = true) => {
-    const iconType = isVisible ? 'eye' : 'eyeClosed';
+  private renderVisibilityButton = (legendItemIndex: number, isSelected: boolean = true) => {
+    const iconType = isSelected ? 'eye' : 'eyeClosed';
 
     return <EuiButtonIcon
       onClick={this.onVisibilityClick(legendItemIndex)}
