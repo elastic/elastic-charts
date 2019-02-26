@@ -169,6 +169,7 @@ describe('Chart State utils', () => {
 
     expect(findSelectedDataSeries(selectedSeries, dataSeriesValuesA)).toBe(0);
     expect(findSelectedDataSeries(selectedSeries, dataSeriesValuesC)).toBe(-1);
+    expect(findSelectedDataSeries(null, dataSeriesValuesA)).toBe(-1);
   });
   it('should update a list of DataSeriesColorsValues given a selected DataSeriesColorValues item', () => {
     const dataSeriesValuesA: DataSeriesColorsValues = {
@@ -190,8 +191,9 @@ describe('Chart State utils', () => {
     const addedSelectedSeries = [dataSeriesValuesA, dataSeriesValuesB, dataSeriesValuesC];
     const removedSelectedSeries = [dataSeriesValuesB];
 
-    expect(updateSelectedDataSeries([...selectedSeries], dataSeriesValuesC)).toEqual(addedSelectedSeries);
-    expect(updateSelectedDataSeries([...selectedSeries], dataSeriesValuesA)).toEqual(removedSelectedSeries);
+    expect(updateSelectedDataSeries(selectedSeries, dataSeriesValuesC)).toEqual(addedSelectedSeries);
+    expect(updateSelectedDataSeries(selectedSeries, dataSeriesValuesA)).toEqual(removedSelectedSeries);
+    expect(updateSelectedDataSeries(null, dataSeriesValuesA)).toEqual([dataSeriesValuesA]);
   });
   it('should return all of the DataSeriesColorValues on initialization', () => {
     const dataSeriesValuesA: DataSeriesColorsValues = {

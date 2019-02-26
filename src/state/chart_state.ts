@@ -266,7 +266,7 @@ export class ChartStore {
     const legendItem = getLegendItemByIndex(this.legendItems, legendItemIndex);
 
     if (legendItem) {
-      if (this.selectedDataSeries && findSelectedDataSeries(this.selectedDataSeries, legendItem.value) > -1) {
+      if (findSelectedDataSeries(this.selectedDataSeries, legendItem.value) > -1) {
         this.selectedDataSeries =
           this.legendItems
             .filter((item: LegendItem, idx: number) => idx !== legendItemIndex)
@@ -283,7 +283,7 @@ export class ChartStore {
     const legendItem = getLegendItemByIndex(this.legendItems, legendItemIndex);
 
     if (legendItem) {
-      this.selectedDataSeries = updateSelectedDataSeries(this.selectedDataSeries || [], legendItem.value);
+      this.selectedDataSeries = updateSelectedDataSeries(this.selectedDataSeries, legendItem.value);
       this.computeChart();
     }
   });

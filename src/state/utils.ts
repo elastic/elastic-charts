@@ -54,7 +54,14 @@ export function getLegendItemByIndex(items: LegendItem[], index: number): Legend
   return items[index];
 }
 
-export function findSelectedDataSeries(series: DataSeriesColorsValues[], value: DataSeriesColorsValues): number {
+export function findSelectedDataSeries(
+  series: DataSeriesColorsValues[] | null,
+  value: DataSeriesColorsValues,
+): number {
+  if (!series) {
+    return -1;
+  }
+
   return series.findIndex((item: DataSeriesColorsValues) => {
     return isEqualSeriesKey(item.colorValues, value.colorValues) && item.specId === value.specId;
   });
@@ -67,11 +74,12 @@ export function getAllDataSeriesColorValues(
 }
 
 export function updateSelectedDataSeries(
-  series: DataSeriesColorsValues[],
+  series: DataSeriesColorsValues[] | null,
   value: DataSeriesColorsValues,
 ): DataSeriesColorsValues[] {
+
   const seriesIndex = findSelectedDataSeries(series, value);
-  const updatedSeries = [...series];
+  const updatedSeries = series ? [...series] : [];
 
   if (seriesIndex > -1) {
     updatedSeries.splice(seriesIndex, 1);
