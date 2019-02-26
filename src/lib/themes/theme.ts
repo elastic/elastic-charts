@@ -154,9 +154,9 @@ export function mergeWithDefaultTheme(
     };
   }
   if (theme.scales) {
-    customTheme.scales.ordinal = {
-      ...defaultTheme.scales.ordinal,
-      ...theme.scales.ordinal,
+    customTheme.scales = {
+      ...defaultTheme.scales,
+      ...theme.scales,
     };
   }
   if (theme.axes) {
@@ -166,12 +166,10 @@ export function mergeWithDefaultTheme(
     };
   }
   if (theme.colors) {
-    if (theme.colors.defaultVizColor) {
-      customTheme.colors.defaultVizColor = theme.colors.defaultVizColor;
-    }
-    if (theme.colors.vizColors) {
-      customTheme.colors.vizColors = theme.colors.vizColors;
-    }
+    customTheme.colors = {
+      ...defaultTheme.colors,
+      ...theme.colors,
+    };
   }
   if (theme.legend) {
     customTheme.legend = {
