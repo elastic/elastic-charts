@@ -6,7 +6,13 @@ import { BARCHART_1Y0G, BARCHART_1Y1G } from '../lib/series/utils/test_dataset';
 
 import { getGroupId, getSpecId, SpecId } from '../lib/utils/ids';
 import { ScaleType } from '../lib/utils/scales/scales';
-import { computeSeriesDomains, findSelectedDataSeries, getLegendItemByIndex, updateSelectedDataSeries } from './utils';
+import {
+  computeSeriesDomains,
+  findSelectedDataSeries,
+  getAllDataSeriesColorValues,
+  getLegendItemByIndex,
+  updateSelectedDataSeries,
+} from './utils';
 
 describe('Chart State utils', () => {
   it('should compute and format specifications for non stacked chart', () => {
@@ -186,5 +192,24 @@ describe('Chart State utils', () => {
 
     expect(updateSelectedDataSeries([...selectedSeries], dataSeriesValuesC)).toEqual(addedSelectedSeries);
     expect(updateSelectedDataSeries([...selectedSeries], dataSeriesValuesA)).toEqual(removedSelectedSeries);
+  });
+  it('should return all of the DataSeriesColorValues on initialization', () => {
+    const dataSeriesValuesA: DataSeriesColorsValues = {
+      specId: getSpecId('a'),
+      colorValues: ['a', 'b', 'c'],
+    };
+
+    const dataSeriesValuesB: DataSeriesColorsValues = {
+      specId: getSpecId('b'),
+      colorValues: ['a', 'b', 'c'],
+    };
+
+    const colorMap = new Map();
+    colorMap.set('a', dataSeriesValuesA);
+    colorMap.set('b', dataSeriesValuesB);
+
+    const expected = [dataSeriesValuesA, dataSeriesValuesB];
+
+    expect(getAllDataSeriesColorValues(colorMap)).toEqual(expected);
   });
 });

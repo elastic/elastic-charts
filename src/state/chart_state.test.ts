@@ -50,6 +50,12 @@ describe('Chart Store', () => {
     expect(seriesDomainsAndData).not.toBeUndefined();
   });
 
+  test('can initialize selectedDataSeries depending on previous state', () => {
+    store.selectedDataSeries = null;
+    store.computeChart();
+    expect(store.selectedDataSeries).toEqual([{ specId: SPEC_ID, colorValues: [] }]);
+  });
+
   test('can add an axis', () => {
     const axisSpec: AxisSpec = {
       id: AXIS_ID,

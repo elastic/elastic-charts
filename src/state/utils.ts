@@ -60,6 +60,12 @@ export function findSelectedDataSeries(series: DataSeriesColorsValues[], value: 
   });
 }
 
+export function getAllDataSeriesColorValues(
+  seriesColors: Map<string, DataSeriesColorsValues>,
+): DataSeriesColorsValues[] {
+  return Array.from(seriesColors.values());
+}
+
 export function updateSelectedDataSeries(
   series: DataSeriesColorsValues[],
   value: DataSeriesColorsValues,

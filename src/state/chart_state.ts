@@ -46,6 +46,7 @@ import {
   computeChartTransform,
   computeSeriesDomains,
   computeSeriesGeometries,
+  getAllDataSeriesColorValues,
   getAxesSpecForSpecId,
   getLegendItemByIndex,
   Transform,
@@ -129,7 +130,7 @@ export class ChartStore {
   legendItems: LegendItem[] = [];
   highlightedLegendItemIndex: IObservableValue<number | null> = observable.box(null);
   selectedLegendItemIndex: IObservableValue<number | null> = observable.box(null);
-  selectedDataSeries: DataSeriesColorsValues[] = [];
+  selectedDataSeries: DataSeriesColorsValues[] | null = null;
 
   tooltipData = observable.box<Array<[any, any]> | null>(null);
   tooltipPosition = observable.box<{ x: number; y: number } | null>();
@@ -259,7 +260,7 @@ export class ChartStore {
     const legendItem = getLegendItemByIndex(this.legendItems, legendItemIndex);
 
     if (legendItem) {
-      this.selectedDataSeries = updateSelectedDataSeries(this.selectedDataSeries, legendItem.value);
+      this.selectedDataSeries = updateSelectedDataSeries(this.selectedDataSeries || [], legendItem.value);
       this.computeChart();
     }
   });
@@ -384,17 +385,18 @@ export class ChartStore {
       return;
     }
 
-    const isSpecsInitialized = this.specsInitialized.get();
-    const seriesForFiltering = isSpecsInitialized ? this.selectedDataSeries : null;
-    // for passing in selectedDataSeries info to show/hide a series
-    // commenting out for now as we consider how to show/hide a series
-    // const selectedDataSeries: DataSeriesColorsValues | null =
-    //   this.selectedLegendItem.get()
-    //     ? this.selectedLegendItem.get()!.value
-    //     : null;
+    if (!this.specsInitialized.get()) {
+      this.selectedDataSeries = null;
+    }
 
-    const seriesDomains = computeSeriesDomains(this.seriesSpecs, seriesForFiltering);
+    const seriesDomains = computeSeriesDomains(this.seriesSpecs, this.selectedDataSeries);
     this.seriesDomainsAndData = seriesDomains;
+
+    // If this.selectedDataSeries is null, initialize with all split series
+    if (!this.selectedDataSeries) {
+      this.selectedDataSeries = getAllDataSeriesColorValues(seriesDomains.seriesColors);
+    }
+
     // tslint:disable-next-line:no-console
     // console.log({colors: seriesDomains.seriesColors});
 
@@ -406,7 +408,7 @@ export class ChartStore {
       seriesColorMap,
       this.seriesSpecs,
       this.chartTheme.colors.defaultVizColor,
-      seriesForFiltering,
+      this.selectedDataSeries,
     );
     // tslint:disable-next-line:no-console
     // console.log({ legendItems: this.legendItems });

@@ -1,6 +1,8 @@
+import { findSelectedDataSeries } from '../../state/utils';
 import { SpecId } from '../utils/ids';
 import { DataSeriesColorsValues } from './series';
 import { BasicSeriesSpec } from './specs';
+
 export interface LegendItem {
   color: string;
   label: string;
@@ -12,7 +14,7 @@ export function computeLegend(
   seriesColorMap: Map<string, string>,
   specs: Map<SpecId, BasicSeriesSpec>,
   defaultColor: string,
-  seriesForFiltering: DataSeriesColorsValues[] | null = null,
+  selectedDataSeries?: DataSeriesColorsValues[] | null,
 ): LegendItem[] {
   const legendItems: LegendItem[] = [];
   seriesColor.forEach((series, key) => {
@@ -28,11 +30,14 @@ export function computeLegend(
     } else {
       label = series.colorValues.join(' - ');
     }
+
+    const isVisible = selectedDataSeries ? findSelectedDataSeries(selectedDataSeries, series) > -1 : true;
+
     legendItems.push({
       color,
       label,
       value: series,
-      isVisible: true,
+      isVisible,
     });
   });
   return legendItems;
