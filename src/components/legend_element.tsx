@@ -160,14 +160,11 @@ class LegendElementComponent extends React.Component<LegendElementProps, LegendE
   }
 
   private renderVisibilityButton = (legendItemIndex: number, isVisible: boolean = true) => {
-    const className = classNames('elasticChartsLegendListItem__vibilityIndicator', {
-      'elasticChartsLegendListItem__vibilityIndicator--visible': isVisible,
-    });
+    const iconType = isVisible ? 'eye' : 'eyeClosed';
 
     return <EuiButtonIcon
       onClick={this.onVisibilityClick(legendItemIndex)}
-      iconType="eye"
-      className={className}
+      iconType={iconType}
       aria-label="toggle visibility"
     />;
   }

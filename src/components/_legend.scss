@@ -110,14 +110,6 @@ $elasticChartsLegendMaxHeight: $euiSize * 4;
   }
 }
 
-.elasticChartsLegendListItem__vibilityIndicator {
-  opacity: 0.5;
-
-  &.elasticChartsLegendListItem__vibilityIndicator--visible {
-    opacity: 1;
-  }
-}
-
 .elasticChartsLegend__toggle {
   border-radius: $euiBorderRadius;
   border-bottom-right-radius: 0;
