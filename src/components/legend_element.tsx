@@ -155,12 +155,16 @@ class LegendElementComponent extends React.Component<LegendElementProps, LegendE
       />);
   }
 
-  private onVisibilityClick = (legendItemIndex: number) => () => {
-    this.props.chartStore!.toggleVisibility(legendItemIndex);
+  private onVisibilityClick = (legendItemIndex: number) => (event: React.MouseEvent<HTMLElement>) => {
+    if (event.shiftKey) {
+      this.props.chartStore!.toggleSingleSeries(legendItemIndex);
+    } else {
+      this.props.chartStore!.toggleSeriesVisibility(legendItemIndex);
+    }
   }
 
-  private renderVisibilityButton = (legendItemIndex: number, isSelected: boolean = true) => {
-    const iconType = isSelected ? 'eye' : 'eyeClosed';
+  private renderVisibilityButton = (legendItemIndex: number, isVisible: boolean = true) => {
+    const iconType = isVisible ? 'eye' : 'eyeClosed';
 
     return <EuiButtonIcon
       onClick={this.onVisibilityClick(legendItemIndex)}

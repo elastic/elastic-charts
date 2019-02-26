@@ -46,6 +46,7 @@ import {
   computeChartTransform,
   computeSeriesDomains,
   computeSeriesGeometries,
+  findSelectedDataSeries,
   getAllDataSeriesColorValues,
   getAxesSpecForSpecId,
   getLegendItemByIndex,
@@ -256,7 +257,24 @@ export class ChartStore {
     }
   });
 
-  toggleVisibility = action((legendItemIndex: number) => {
+  toggleSingleSeries = action((legendItemIndex: number) => {
+    const legendItem = getLegendItemByIndex(this.legendItems, legendItemIndex);
+
+    if (legendItem) {
+      if (this.selectedDataSeries && findSelectedDataSeries(this.selectedDataSeries, legendItem.value) > -1) {
+        this.selectedDataSeries =
+          this.legendItems
+            .filter((item: LegendItem, idx: number) => idx !== legendItemIndex)
+            .map((item: LegendItem) => item.value);
+      } else {
+        this.selectedDataSeries = [legendItem.value];
+      }
+
+      this.computeChart();
+    }
+  });
+
+  toggleSeriesVisibility = action((legendItemIndex: number) => {
     const legendItem = getLegendItemByIndex(this.legendItems, legendItemIndex);
 
     if (legendItem) {

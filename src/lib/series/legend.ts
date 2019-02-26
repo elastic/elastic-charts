@@ -7,7 +7,7 @@ export interface LegendItem {
   color: string;
   label: string;
   value: DataSeriesColorsValues;
-  isSelected?: boolean;
+  isVisible?: boolean;
 }
 export function computeLegend(
   seriesColor: Map<string, DataSeriesColorsValues>,
@@ -31,13 +31,13 @@ export function computeLegend(
       label = series.colorValues.join(' - ');
     }
 
-    const isSelected = selectedDataSeries ? findSelectedDataSeries(selectedDataSeries, series) > -1 : true;
+    const isVisible = selectedDataSeries ? findSelectedDataSeries(selectedDataSeries, series) > -1 : true;
 
     legendItems.push({
       color,
       label,
       value: series,
-      isSelected,
+      isVisible,
     });
   });
   return legendItems;
