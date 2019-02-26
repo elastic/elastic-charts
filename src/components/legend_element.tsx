@@ -21,13 +21,14 @@ interface LegendElementProps {
   index: number;
   color: string | undefined;
   label: string | undefined;
+  isVisible?: boolean;
 }
 
 interface LegendElementState {
   isColorPickerOpen: boolean;
 }
 
-class LegendElementComponent extends React.PureComponent<LegendElementProps, LegendElementState> {
+class LegendElementComponent extends React.Component<LegendElementProps, LegendElementState> {
   static displayName = 'LegendElement';
 
   constructor(props: LegendElementProps) {
@@ -51,7 +52,7 @@ class LegendElementComponent extends React.PureComponent<LegendElementProps, Leg
 
   render() {
     const legendItemIndex = this.props.index;
-    const { color, label } = this.props;
+    const { color, label, isVisible } = this.props;
 
     const onTitleClick = this.onLegendTitleClick(legendItemIndex);
 
@@ -82,6 +83,9 @@ class LegendElementComponent extends React.PureComponent<LegendElementProps, Leg
               <EuiColorPicker onChange={this.onColorPickerChange} color={color} />
             </EuiContextMenuPanel>
           </EuiPopover>
+        </EuiFlexItem>
+        <EuiFlexItem grow={false}>
+          {this.renderVisibilityButton(legendItemIndex, isVisible)}
         </EuiFlexItem>
         <EuiFlexItem grow={false} className={titleClassNames} onClick={onTitleClick}>
           <EuiPopover
@@ -138,7 +142,7 @@ class LegendElementComponent extends React.PureComponent<LegendElementProps, Leg
       <EuiButtonIcon
         onClick={this.props.chartStore!.onLegendItemPlusClick}
         iconType="plusInCircle"
-        aria-label="Show this group only"
+        aria-label="minus"
       />);
   }
 
@@ -147,8 +151,25 @@ class LegendElementComponent extends React.PureComponent<LegendElementProps, Leg
       <EuiButtonIcon
         onClick={this.props.chartStore!.onLegendItemMinusClick}
         iconType="minusInCircle"
-        aria-label="Show this group only"
+        aria-label="minus"
       />);
+  }
+
+  private onVisibilityClick = (legendItemIndex: number) => () => {
+    this.props.chartStore!.toggleVisibility(legendItemIndex);
+  }
+
+  private renderVisibilityButton = (legendItemIndex: number, isVisible: boolean = true) => {
+    const className = classNames('elasticChartsLegendListItem__vibilityIndicator', {
+      'elasticChartsLegendListItem__vibilityIndicator--visible': isVisible,
+    });
+
+    return <EuiButtonIcon
+      onClick={this.onVisibilityClick(legendItemIndex)}
+      iconType="eye"
+      className={className}
+      aria-label="toggle visibility"
+    />;
   }
 }
 

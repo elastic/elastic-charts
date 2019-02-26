@@ -2,6 +2,7 @@ import { isVertical } from '../lib/axes/axis_utils';
 import { CurveType } from '../lib/series/curves';
 import { mergeXDomain, XDomain } from '../lib/series/domains/x_domain';
 import { mergeYDomain, YDomain } from '../lib/series/domains/y_domain';
+import { LegendItem } from '../lib/series/legend';
 import {
   AreaGeometry,
   BarGeometry,
@@ -21,6 +22,7 @@ import {
   getSplittedSeries,
   RawDataSeries,
 } from '../lib/series/series';
+import { isEqualSeriesKey } from '../lib/series/series_utils';
 import {
   AreaSeriesSpec,
   AxisSpec,
@@ -45,9 +47,37 @@ export interface BrushExtent {
   maxY: number;
 }
 
+export function getLegendItemByIndex(items: LegendItem[], index: number): LegendItem | null {
+  if (index < 0 || index >= items.length) {
+    return null;
+  }
+  return items[index];
+}
+
+export function findSelectedDataSeries(series: DataSeriesColorsValues[], value: DataSeriesColorsValues): number {
+  return series.findIndex((item: DataSeriesColorsValues) => {
+    return isEqualSeriesKey(item.colorValues, value.colorValues) && item.specId === value.specId;
+  });
+}
+
+export function updateSelectedDataSeries(
+  series: DataSeriesColorsValues[],
+  value: DataSeriesColorsValues,
+): DataSeriesColorsValues[] {
+  const seriesIndex = findSelectedDataSeries(series, value);
+  const updatedSeries = [...series];
+
+  if (seriesIndex > -1) {
+    updatedSeries.splice(seriesIndex, 1);
+  } else {
+    updatedSeries.push(value);
+  }
+  return updatedSeries;
+}
+
 export function computeSeriesDomains(
   seriesSpecs: Map<SpecId, BasicSeriesSpec>,
-  selectedDataSeries?: DataSeriesColorsValues | null,
+  selectedDataSeries?: DataSeriesColorsValues[] | null,
 ): {
   xDomain: XDomain;
   yDomain: YDomain[];

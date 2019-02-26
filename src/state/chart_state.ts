@@ -47,7 +47,9 @@ import {
   computeSeriesDomains,
   computeSeriesGeometries,
   getAxesSpecForSpecId,
+  getLegendItemByIndex,
   Transform,
+  updateSelectedDataSeries,
 } from './utils';
 export interface TooltipPosition {
   top?: number;
@@ -127,6 +129,7 @@ export class ChartStore {
   legendItems: LegendItem[] = [];
   highlightedLegendItemIndex: IObservableValue<number | null> = observable.box(null);
   selectedLegendItemIndex: IObservableValue<number | null> = observable.box(null);
+  selectedDataSeries: DataSeriesColorsValues[] = [];
 
   tooltipData = observable.box<Array<[any, any]> | null>(null);
   tooltipPosition = observable.box<{ x: number; y: number } | null>();
@@ -141,6 +144,7 @@ export class ChartStore {
   onLegendItemClickListener?: LegendItemListener;
   onLegendItemPlusClickListener?: LegendItemListener;
   onLegendItemMinusClickListener?: LegendItemListener;
+  onLegendItemVisibilityToggleClickListener?: LegendItemListener;
 
   geometries: {
     points: PointGeometry[];
@@ -248,6 +252,15 @@ export class ChartStore {
       const currentLegendItem = this.selectedLegendItem.get();
       const listenerData = currentLegendItem ? currentLegendItem.value : null;
       this.onLegendItemMinusClickListener(listenerData);
+    }
+  });
+
+  toggleVisibility = action((legendItemIndex: number) => {
+    const legendItem = getLegendItemByIndex(this.legendItems, legendItemIndex);
+
+    if (legendItem) {
+      this.selectedDataSeries = updateSelectedDataSeries(this.selectedDataSeries, legendItem.value);
+      this.computeChart();
     }
   });
 
@@ -371,6 +384,8 @@ export class ChartStore {
       return;
     }
 
+    const isSpecsInitialized = this.specsInitialized.get();
+    const seriesForFiltering = isSpecsInitialized ? this.selectedDataSeries : null;
     // for passing in selectedDataSeries info to show/hide a series
     // commenting out for now as we consider how to show/hide a series
     // const selectedDataSeries: DataSeriesColorsValues | null =
@@ -378,7 +393,7 @@ export class ChartStore {
     //     ? this.selectedLegendItem.get()!.value
     //     : null;
 
-    const seriesDomains = computeSeriesDomains(this.seriesSpecs);
+    const seriesDomains = computeSeriesDomains(this.seriesSpecs, seriesForFiltering);
     this.seriesDomainsAndData = seriesDomains;
     // tslint:disable-next-line:no-console
     // console.log({colors: seriesDomains.seriesColors});
@@ -391,6 +406,7 @@ export class ChartStore {
       seriesColorMap,
       this.seriesSpecs,
       this.chartTheme.colors.defaultVizColor,
+      seriesForFiltering,
     );
     // tslint:disable-next-line:no-console
     // console.log({ legendItems: this.legendItems });

@@ -5,12 +5,14 @@ export interface LegendItem {
   color: string;
   label: string;
   value: DataSeriesColorsValues;
+  isVisible?: boolean;
 }
 export function computeLegend(
   seriesColor: Map<string, DataSeriesColorsValues>,
   seriesColorMap: Map<string, string>,
   specs: Map<SpecId, BasicSeriesSpec>,
   defaultColor: string,
+  seriesForFiltering: DataSeriesColorsValues[] | null = null,
 ): LegendItem[] {
   const legendItems: LegendItem[] = [];
   seriesColor.forEach((series, key) => {
@@ -30,6 +32,7 @@ export function computeLegend(
       color,
       label,
       value: series,
+      isVisible: true,
     });
   });
   return legendItems;
