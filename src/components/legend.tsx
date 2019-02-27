@@ -81,9 +81,11 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
                 onMouseLeave: this.onLegendItemMouseout,
               };
 
+              const { color, label, isVisible } = item;
+
               return (
                 <EuiFlexItem {...legendItemProps}>
-                  {this.renderLegendElement(item, index)}
+                  {this.renderLegendElement({ color, label, isVisible }, index)}
                 </EuiFlexItem>
               );
             })}

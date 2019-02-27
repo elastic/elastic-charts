@@ -80,7 +80,7 @@ class LegendElementComponent extends React.Component<LegendElementProps, LegendE
             anchorPosition="downCenter"
           >
             <EuiContextMenuPanel>
-              <EuiColorPicker onChange={this.onColorPickerChange} color={color} />
+              <EuiColorPicker onChange={this.onColorPickerChange(legendItemIndex)} color={color} />
             </EuiContextMenuPanel>
           </EuiPopover>
         </EuiFlexItem>
@@ -119,22 +119,13 @@ class LegendElementComponent extends React.Component<LegendElementProps, LegendE
     this.props.chartStore!.onLegendItemClick(legendItemIndex);
   }
 
-  // private onLegendItemMouseover = (legendItemIndex: number) => () => {
-  //   this.props.chartStore!.onLegendItemOver(legendItemIndex);
-  // }
-
-  // private onLegendItemMouseout = () => {
-  //   this.props.chartStore!.onLegendItemOut();
-  // }
-
   private onLegendItemPanelClose = () => {
     // tslint:disable-next-line:no-console
     console.log('close');
   }
 
-  private onColorPickerChange = () => {
-    // tslint:disable-next-line:no-console
-    console.log('color picker close');
+  private onColorPickerChange = (legendItemIndex: number) => (color: string) => {
+    this.props.chartStore!.setSeriesColor(legendItemIndex, color);
   }
 
   private renderPlusButton = () => {

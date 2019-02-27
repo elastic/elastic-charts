@@ -1,8 +1,11 @@
+import { ColorConfig } from '../themes/theme';
 import { getGroupId, getSpecId, SpecId } from '../utils/ids';
 import { ScaleType } from '../utils/scales/scales';
 import {
+  DataSeriesColorsValues,
   formatStackedDataSeriesValues,
   getFormattedDataseries,
+  getSeriesColorMap,
   getSplittedSeries,
   RawDataSeries,
   splitSeries,
@@ -230,5 +233,49 @@ describe('Series', () => {
       splittedDataSeries.splittedSeries,
     );
     expect(stackedDataSeries.stacked).toMatchSnapshot();
+  });
+  test('should get series color map', () => {
+    const spec1: BasicSeriesSpec = {
+      id: getSpecId('spec1'),
+      groupId: getGroupId('group'),
+      seriesType: 'line',
+      yScaleType: ScaleType.Log,
+      xScaleType: ScaleType.Linear,
+      xAccessor: 'x',
+      yAccessors: ['y'],
+      yScaleToDataExtent: false,
+      data: TestDataset.BARCHART_1Y0G,
+    };
+
+    const specs = new Map();
+    specs.set(spec1.id, spec1);
+
+    const dataSeriesValuesA: DataSeriesColorsValues = {
+      specId: getSpecId('spec1'),
+      colorValues: ['a', 'b', 'c'],
+    };
+
+    const chartColors: ColorConfig = {
+      vizColors: ['elastic_charts_c1', 'elastic_charts_c2'],
+      defaultVizColor: 'elastic_charts',
+    };
+
+    const seriesColors = new Map();
+    seriesColors.set('spec1', dataSeriesValuesA);
+
+    const emptyCustomColors = new Map();
+
+    const defaultColorMap = getSeriesColorMap(seriesColors, chartColors, emptyCustomColors, specs);
+    const expectedDefaultColorMap = new Map();
+    expectedDefaultColorMap.set('spec1', 'elastic_charts_c1');
+    expect(defaultColorMap).toEqual(expectedDefaultColorMap);
+
+    const customColors: Map<string, string> = new Map();
+    customColors.set('spec1', 'custom_color');
+
+    const customizedColorMap = getSeriesColorMap(seriesColors, chartColors, customColors, specs);
+    const expectedCustomizedColorMap = new Map();
+    expectedCustomizedColorMap.set('spec1', 'custom_color');
+    expect(customizedColorMap).toEqual(expectedCustomizedColorMap);
   });
 });

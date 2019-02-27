@@ -132,6 +132,7 @@ export class ChartStore {
   highlightedLegendItemIndex: IObservableValue<number | null> = observable.box(null);
   selectedLegendItemIndex: IObservableValue<number | null> = observable.box(null);
   selectedDataSeries: DataSeriesColorsValues[] | null = null;
+  customSeriesColors: Map<string, string> = new Map();
 
   tooltipData = observable.box<Array<[any, any]> | null>(null);
   tooltipPosition = observable.box<{ x: number; y: number } | null>();
@@ -288,6 +289,16 @@ export class ChartStore {
     }
   });
 
+  setSeriesColor = action((legendItemIndex: number, color: string) => {
+    const legendItem = getLegendItemByIndex(this.legendItems, legendItemIndex);
+
+    if (legendItem) {
+      const key = legendItem.label;
+      this.customSeriesColors.set(key, color);
+      this.computeChart();
+    }
+  });
+
   setOnElementClickListener(listener: ElementClickListener) {
     this.onElementClickListener = listener;
   }
@@ -408,6 +419,7 @@ export class ChartStore {
       return;
     }
 
+    // When specs are not initialized, reset selectedDataSeries to null
     if (!this.specsInitialized.get()) {
       this.selectedDataSeries = null;
     }
@@ -425,7 +437,13 @@ export class ChartStore {
 
     // tslint:disable-next-line:no-console
     // console.log({ seriesDomains });
-    const seriesColorMap = getSeriesColorMap(seriesDomains.seriesColors, this.chartTheme.colors);
+    const seriesColorMap = getSeriesColorMap(
+      seriesDomains.seriesColors,
+      this.chartTheme.colors,
+      this.customSeriesColors,
+      this.seriesSpecs,
+    );
+
     this.legendItems = computeLegend(
       seriesDomains.seriesColors,
       seriesColorMap,

@@ -3,6 +3,7 @@ import { ColorConfig } from '../themes/theme';
 import { Accessor } from '../utils/accessor';
 import { GroupId, SpecId } from '../utils/ids';
 import { splitSpecsByGroupId, YBasicSeriesSpec } from './domains/y_domain';
+import { getSeriesColorLabel } from './legend';
 import { BasicSeriesSpec, Datum, SeriesAccessors } from './specs';
 
 export interface RawDataSeriesDatum {
@@ -390,13 +391,23 @@ export function getSplittedSeries(
 export function getSeriesColorMap(
   seriesColors: Map<string, DataSeriesColorsValues>,
   chartColors: ColorConfig,
+  customColors: Map<string, string>,
+  specs: Map<SpecId, BasicSeriesSpec>,
 ): Map<string, string> {
   const seriesColorMap = new Map<string, string>();
   let counter = 0;
+
   seriesColors.forEach((value, seriesColorKey) => {
+    const spec = specs.get(value.specId);
+    const hasSingleSeries = seriesColors.size === 1;
+    const seriesLabel = getSeriesColorLabel(value, hasSingleSeries, spec);
+
+    const color = (seriesLabel && customColors.get(seriesLabel)) ||
+      chartColors.vizColors[counter % chartColors.vizColors.length];
+
     seriesColorMap.set(
       seriesColorKey,
-      chartColors.vizColors[counter % chartColors.vizColors.length],
+      color,
     );
     counter++;
   });
