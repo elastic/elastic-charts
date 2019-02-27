@@ -67,9 +67,16 @@ describe('Chart Store', () => {
   });
 
   test('can initialize selectedDataSeries depending on previous state', () => {
+    const selectedDataSeries = [{ specId: SPEC_ID, colorValues: [] }];
+
     store.selectedDataSeries = null;
     store.computeChart();
-    expect(store.selectedDataSeries).toEqual([{ specId: SPEC_ID, colorValues: [] }]);
+    expect(store.selectedDataSeries).toEqual(selectedDataSeries);
+
+    store.selectedDataSeries = selectedDataSeries;
+    store.specsInitialized.set(true);
+    store.computeChart();
+    expect(store.selectedDataSeries).toEqual(selectedDataSeries);
   });
 
   test('can add an axis', () => {
@@ -454,5 +461,37 @@ describe('Chart Store', () => {
 
     localStore.computeChart();
     expect(localStore.initialized.get()).toBe(false);
+  });
+
+  test('only computes chart if series specs exist', () => {
+    const localStore = new ChartStore();
+
+    localStore.parentDimensions = {
+      width: 100,
+      height: 100,
+      top: 0,
+      left: 0,
+    };
+
+    localStore.seriesSpecs = new Map();
+    localStore.computeChart();
+    expect(localStore.initialized.get()).toBe(false);
+  });
+
+  test('can set the color for a series', () => {
+    const computeChart = jest.fn((): void => { return; });
+    store.computeChart = computeChart;
+    store.legendItems = [firstLegendItem, secondLegendItem];
+
+    const expectedCustomColors = new Map();
+    expectedCustomColors.set(firstLegendItem.label, 'foo');
+
+    store.setSeriesColor(-1, 'foo');
+    expect(computeChart).not.toBeCalled();
+    expect(store.customSeriesColors).toEqual(new Map());
+
+    store.setSeriesColor(0, 'foo');
+    expect(computeChart).toBeCalled();
+    expect(store.customSeriesColors).toEqual(expectedCustomColors);
   });
 });
