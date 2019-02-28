@@ -278,4 +278,36 @@ describe('Series', () => {
     expectedCustomizedColorMap.set('spec1', 'custom_color');
     expect(customizedColorMap).toEqual(expectedCustomizedColorMap);
   });
+  test('should only include selectedDataSeries when splitting series if selectedDataSeries is defined', () => {
+    const seriesSpecs = new Map<SpecId, BasicSeriesSpec>();
+    const specId = getSpecId('splitSpec');
+
+    const splitSpec: BasicSeriesSpec = {
+      id: specId,
+      groupId: getGroupId('group'),
+      seriesType: 'line',
+      yScaleType: ScaleType.Log,
+      xScaleType: ScaleType.Linear,
+      xAccessor: 'x',
+      yAccessors: ['y1', 'y2'],
+      stackAccessors: ['x'],
+      yScaleToDataExtent: false,
+      data: TestDataset.BARCHART_2Y0G,
+    };
+
+    seriesSpecs.set(splitSpec.id, splitSpec);
+
+    const allSeries = getSplittedSeries(seriesSpecs, null);
+    expect(allSeries.splittedSeries.get(specId)!.length).toBe(2);
+
+    const emptySplit = getSplittedSeries(seriesSpecs, []);
+    expect(emptySplit.splittedSeries.get(specId)!.length).toBe(0);
+
+    const selectedDataSeries: DataSeriesColorsValues[] = [{
+      specId,
+      colorValues: ['y1'],
+    }];
+    const subsetSplit = getSplittedSeries(seriesSpecs, selectedDataSeries);
+    expect(subsetSplit.splittedSeries.get(specId)!.length).toBe(1);
+  });
 });
