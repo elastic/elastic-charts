@@ -299,6 +299,10 @@ export class ChartStore {
     }
   });
 
+  resetSelectedDataSeries() {
+    this.selectedDataSeries = null;
+  }
+
   setOnElementClickListener(listener: ElementClickListener) {
     this.onElementClickListener = listener;
   }

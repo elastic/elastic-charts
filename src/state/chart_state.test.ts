@@ -494,4 +494,10 @@ describe('Chart Store', () => {
     expect(computeChart).toBeCalled();
     expect(store.customSeriesColors).toEqual(expectedCustomColors);
   });
+
+  test('can reset selectedDataSeries', () => {
+    store.selectedDataSeries = [firstLegendItem.value];
+    store.resetSelectedDataSeries();
+    expect(store.selectedDataSeries).toBe(null);
+  });
 });
