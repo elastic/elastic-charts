@@ -1,7 +1,4 @@
 import {
-  // TODO: remove ts-ignore below once typings file is included in eui for color picker
-  // @ts-ignore
-  EuiColorPicker,
   EuiFlexGroup,
   EuiFlexItem,
 } from '@elastic/eui';
