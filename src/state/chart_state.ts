@@ -428,10 +428,12 @@ export class ChartStore {
       this.selectedDataSeries = null;
     }
 
+    // The second argument is optional; if not supplied, then all series will be factored into computations
+    // Otherwise, selectedDataSeries is used to restrict the computation for just the selected series
     const seriesDomains = computeSeriesDomains(this.seriesSpecs, this.selectedDataSeries);
     this.seriesDomainsAndData = seriesDomains;
 
-    // If this.selectedDataSeries is null, initialize with all split series
+    // If this.selectedDataSeries is null, initialize with all series
     if (!this.selectedDataSeries) {
       this.selectedDataSeries = getAllDataSeriesColorValues(seriesDomains.seriesColors);
     }
