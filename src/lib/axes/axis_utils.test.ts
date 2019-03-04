@@ -384,6 +384,23 @@ describe('Axis computational utils', () => {
       align: 'center',
       verticalAlign: 'middle',
     });
+
+    tickLabelRotation = 0;
+    const rightUnrotatedLabelProps = getTickLabelProps(
+      tickLabelRotation,
+      tickSize,
+      tickPadding,
+      tickPosition,
+      axisPosition,
+      axis1Dims,
+    );
+
+    expect(rightUnrotatedLabelProps).toEqual({
+      x: 15,
+      y: -5,
+      align: 'left',
+      verticalAlign: 'middle',
+    });
   });
 
   test('should compute positions and alignment of tick labels along a horizontal axis', () => {
@@ -441,6 +458,23 @@ describe('Axis computational utils', () => {
       y: 15,
       align: 'center',
       verticalAlign: 'middle',
+    });
+
+    tickLabelRotation = 0;
+    const bottomUnrotatedLabelProps = getTickLabelProps(
+      tickLabelRotation,
+      tickSize,
+      tickPadding,
+      tickPosition,
+      axisPosition,
+      axis1Dims,
+    );
+
+    expect(bottomUnrotatedLabelProps).toEqual({
+      x: -5,
+      y: 15,
+      align: 'center',
+      verticalAlign: 'top',
     });
   });
 
