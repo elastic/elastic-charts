@@ -78,6 +78,20 @@ describe('Axis computational utils', () => {
     },
   };
 
+  const horizontalAxisSpec = {
+    id: getAxisId('axis_2'),
+    groupId: getGroupId('group_1'),
+    hide: false,
+    showOverlappingTicks: false,
+    showOverlappingLabels: false,
+    position: Position.Top,
+    tickSize: 10,
+    tickPadding: 10,
+    tickFormat: (value: any) => {
+      return `${value}`;
+    },
+  };
+
   const xDomain: XDomain = {
     type: 'xDomain',
     scaleType: ScaleType.Linear,
@@ -108,6 +122,22 @@ describe('Axis computational utils', () => {
       axes,
     );
     expect(axisDimensions).toEqual(axis1Dims);
+
+    const computeScalelessSpec = () => {
+      computeAxisTicksDimensions(
+        ungroupedAxisSpec,
+        xDomain,
+        [yDomain],
+        1,
+        bboxCalculator,
+        0,
+        axes,
+      );
+    };
+
+    const ungroupedAxisSpec = { ...verticalAxisSpec, groupId: getGroupId('foo') };
+    expect(computeScalelessSpec).toThrowError('Cannot compute scale for axis spec axis_1');
+
     bboxCalculator.destroy();
   });
 
@@ -127,12 +157,19 @@ describe('Axis computational utils', () => {
   });
 
   test('should generate a valid scale', () => {
-    const scale = getScaleForAxisSpec(verticalAxisSpec, xDomain, [yDomain], 0, 0, 100, 0);
-    expect(scale).toBeDefined();
-    expect(scale!.bandwidth).toBe(0);
-    expect(scale!.domain).toEqual([0, 1]);
-    expect(scale!.range).toEqual([100, 0]);
-    expect(scale!.ticks()).toEqual([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]);
+    const yScale = getScaleForAxisSpec(verticalAxisSpec, xDomain, [yDomain], 0, 0, 100, 0);
+    expect(yScale).toBeDefined();
+    expect(yScale!.bandwidth).toBe(0);
+    expect(yScale!.domain).toEqual([0, 1]);
+    expect(yScale!.range).toEqual([100, 0]);
+    expect(yScale!.ticks()).toEqual([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]);
+
+    const ungroupedAxisSpec = { ...verticalAxisSpec, groupId: getGroupId('foo') };
+    const nullYScale = getScaleForAxisSpec(ungroupedAxisSpec, xDomain, [yDomain], 0, 0, 100, 0);
+    expect(nullYScale).toBe(null);
+
+    const xScale = getScaleForAxisSpec(horizontalAxisSpec, xDomain, [yDomain], 0, 0, 100, 0);
+    expect(xScale).toBeDefined();
   });
 
   test('should compute available ticks', () => {

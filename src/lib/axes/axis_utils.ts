@@ -90,7 +90,8 @@ export function getScaleForAxisSpec(
   maxRange: number,
 ): Scale | null {
   const axisDomain = getAxisDomain(axisSpec.position, xDomain, yDomain, chartRotation);
-  if (axisDomain && Array.isArray(axisDomain)) {
+  // If axisDomain is an array of values, this is an array of YDomains
+  if (Array.isArray(axisDomain)) {
     const yScales = computeYScales(yDomain, minRange, maxRange);
     if (yScales.has(axisSpec.groupId)) {
       return yScales.get(axisSpec.groupId)!;
