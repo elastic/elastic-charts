@@ -11,16 +11,16 @@ import {
   getAvailableTicks,
   getHorizontalAxisGridLineProps,
   getHorizontalAxisTickLineProps,
+  getMaxBboxDimensions,
   getMinMaxRange,
   getScaleForAxisSpec,
   getTickLabelProps,
   getVerticalAxisGridLineProps,
   getVerticalAxisTickLineProps,
   getVisibleTicks,
-  getMaxBboxDimensions,
 } from './axis_utils';
-import { SvgTextBBoxCalculator } from './svg_text_bbox_calculator';
 import { CanvasTextBBoxCalculator } from './canvas_text_bbox_calculator';
+import { SvgTextBBoxCalculator } from './svg_text_bbox_calculator';
 
 // const chartScalesConfig: ScalesConfig = {
 //   ordinal: {
@@ -266,23 +266,14 @@ describe('Axis computational utils', () => {
     });
     expect(minMax).toEqual({ minRange: 0, maxRange: 100 });
   });
-  test('should compute min max range for on 90 deg Left', () => {
-    const minMax = getMinMaxRange(Position.Left, 90, {
+  test('should compute min max range for on 90 deg bottom', () => {
+    const minMax = getMinMaxRange(Position.Bottom, 90, {
       width: 100,
       height: 50,
       top: 0,
       left: 0,
     });
-    expect(minMax).toEqual({ minRange: 0, maxRange: 50 });
-  });
-  test('should compute min max range for on -90 deg Right', () => {
-    const minMax = getMinMaxRange(Position.Bottom, -90, {
-      width: 100,
-      height: 50,
-      top: 0,
-      left: 0,
-    });
-    expect(minMax).toEqual({ minRange: 100, maxRange: 0 });
+    expect(minMax).toEqual({ minRange: 0, maxRange: 100 });
   });
   test('should compute min max range for on 180 deg bottom', () => {
     const minMax = getMinMaxRange(Position.Bottom, 180, {
@@ -293,8 +284,43 @@ describe('Axis computational utils', () => {
     });
     expect(minMax).toEqual({ minRange: 100, maxRange: 0 });
   });
-
-  test('should get max bbox dimensions for a set of ticks', () => {
+  test('should compute min max range for on -90 deg bottom', () => {
+    const minMax = getMinMaxRange(Position.Bottom, -90, {
+      width: 100,
+      height: 50,
+      top: 0,
+      left: 0,
+    });
+    expect(minMax).toEqual({ minRange: 100, maxRange: 0 });
+  });
+  test('should compute min max range for on 90 deg Left', () => {
+    const minMax = getMinMaxRange(Position.Left, 90, {
+      width: 100,
+      height: 50,
+      top: 0,
+      left: 0,
+    });
+    expect(minMax).toEqual({ minRange: 0, maxRange: 50 });
+  });
+  test('should compute min max range for on 180 deg Left', () => {
+    const minMax = getMinMaxRange(Position.Left, 180, {
+      width: 100,
+      height: 50,
+      top: 0,
+      left: 0,
+    });
+    expect(minMax).toEqual({ minRange: 0, maxRange: 50 });
+  });
+  test('should compute min max range for on -90 deg Right', () => {
+    const minMax = getMinMaxRange(Position.Right, -90, {
+      width: 100,
+      height: 50,
+      top: 0,
+      left: 0,
+    });
+    expect(minMax).toEqual({ minRange: 50, maxRange: 0 });
+  });
+  test('should get max bbox dimensions for a tick in comparison to previous values', () => {
     const bboxCalculator = new CanvasTextBBoxCalculator();
     const reducer = getMaxBboxDimensions(bboxCalculator, 16, 'Arial', 0);
 
