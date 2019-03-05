@@ -389,12 +389,13 @@ export function getVisibleTicks(
   allTicks: AxisTick[],
   axisSpec: AxisSpec,
   axisDim: AxisTicksDimensions,
-  chartDimensions: Dimensions,
-  chartRotation: Rotation,
 ): AxisTick[] {
+  // We sort the ticks by position so that we can incrementally compute previousOccupiedSpace
+  allTicks.sort((a: AxisTick, b: AxisTick) => a.position - b.position);
+
   const { showOverlappingTicks, showOverlappingLabels } = axisSpec;
   const { maxLabelBboxHeight, maxLabelBboxWidth } = axisDim;
-  const { width, height } = chartDimensions;
+
   const requiredSpace = isVertical(axisSpec.position)
     ? maxLabelBboxHeight / 2
     : maxLabelBboxWidth / 2;
@@ -404,27 +405,12 @@ export function getVisibleTicks(
   for (let i = 0; i < allTicks.length; i++) {
     const { position } = allTicks[i];
 
-    let relativeTickPosition = 0;
-    if (isVertical(axisSpec.position)) {
-      if (chartRotation === 90 || chartRotation === 180) {
-        relativeTickPosition = position;
-      } else {
-        relativeTickPosition = height - position;
-      }
-    } else {
-      // horizontal axis
-      if (chartRotation === 180 || chartRotation === -90) {
-        relativeTickPosition = width - position;
-      } else {
-        relativeTickPosition = position;
-      }
-    }
     if (i === 0) {
       visibleTicks.push(allTicks[i]);
-      previousOccupiedSpace = relativeTickPosition + requiredSpace;
-    } else if (relativeTickPosition - requiredSpace >= previousOccupiedSpace) {
+      previousOccupiedSpace = position + requiredSpace;
+    } else if (position - requiredSpace >= previousOccupiedSpace) {
       visibleTicks.push(allTicks[i]);
-      previousOccupiedSpace = relativeTickPosition + requiredSpace;
+      previousOccupiedSpace = position + requiredSpace;
     } else {
       // still add the tick but without a label
       if (showOverlappingTicks || showOverlappingLabels) {
@@ -564,8 +550,6 @@ export function getAxisTicksPositions(
       allTicks,
       axisSpec,
       axisDim,
-      chartDimensions,
-      chartRotation,
     );
 
     if (axisSpec.showGridLines) {

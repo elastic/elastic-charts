@@ -50,12 +50,6 @@ describe('Axis computational utils', () => {
   );
   afterEach(() => (SVGElement.prototype.getBoundingClientRect = originalGetBBox));
 
-  const chartDim = {
-    width: 100,
-    height: 100,
-    top: 0,
-    left: 0,
-  };
   const axis1Dims = {
     axisScaleType: ScaleType.Linear,
     axisScaleDomain: [0, 1],
@@ -192,7 +186,7 @@ describe('Axis computational utils', () => {
     ];
     expect(axisPositions).toEqual(expectedAxisPositions);
   });
-  test('should compute visible ticks', () => {
+  test('should compute visible ticks for a vertical axis', () => {
     const allTicks = [
       { label: '0', position: 100, value: 0 },
       { label: '0.1', position: 90, value: 0.1 },
@@ -206,8 +200,24 @@ describe('Axis computational utils', () => {
       { label: '0.9', position: 10, value: 0.9 },
       { label: '1', position: 0, value: 1 },
     ];
-    const visibleTicks = getVisibleTicks(allTicks, verticalAxisSpec, axis1Dims, chartDim, 0);
+    const visibleTicks = getVisibleTicks(allTicks, verticalAxisSpec, axis1Dims);
     const expectedVisibleTicks = [
+      { label: '1', position: 0, value: 1 },
+      { label: '0.9', position: 10, value: 0.9 },
+      { label: '0.8', position: 20, value: 0.8 },
+      { label: '0.7', position: 30, value: 0.7 },
+      { label: '0.6', position: 40, value: 0.6 },
+      { label: '0.5', position: 50, value: 0.5 },
+      { label: '0.4', position: 60, value: 0.4 },
+      { label: '0.3', position: 70, value: 0.3 },
+      { label: '0.2', position: 80, value: 0.2 },
+      { label: '0.1', position: 90, value: 0.1 },
+      { label: '0', position: 100, value: 0 },
+    ];
+    expect(visibleTicks).toEqual(expectedVisibleTicks);
+  });
+  test('should compute visible ticks for a horizontal axis', () => {
+    const allTicks = [
       { label: '0', position: 100, value: 0 },
       { label: '0.1', position: 90, value: 0.1 },
       { label: '0.2', position: 80, value: 0.2 },
@@ -220,6 +230,21 @@ describe('Axis computational utils', () => {
       { label: '0.9', position: 10, value: 0.9 },
       { label: '1', position: 0, value: 1 },
     ];
+    const visibleTicks = getVisibleTicks(allTicks, horizontalAxisSpec, axis1Dims);
+    const expectedVisibleTicks = [
+      { label: '1', position: 0, value: 1 },
+      { label: '0.9', position: 10, value: 0.9 },
+      { label: '0.8', position: 20, value: 0.8 },
+      { label: '0.7', position: 30, value: 0.7 },
+      { label: '0.6', position: 40, value: 0.6 },
+      { label: '0.5', position: 50, value: 0.5 },
+      { label: '0.4', position: 60, value: 0.4 },
+      { label: '0.3', position: 70, value: 0.3 },
+      { label: '0.2', position: 80, value: 0.2 },
+      { label: '0.1', position: 90, value: 0.1 },
+      { label: '0', position: 100, value: 0 },
+    ];
+
     expect(visibleTicks).toEqual(expectedVisibleTicks);
   });
   test('should hide some ticks', () => {
@@ -246,16 +271,77 @@ describe('Axis computational utils', () => {
       maxLabelTextWidth: 10,
       maxLabelTextHeight: 20,
     };
-    const visibleTicks = getVisibleTicks(allTicks, verticalAxisSpec, axis2Dims, chartDim, 0);
+    const visibleTicks = getVisibleTicks(allTicks, verticalAxisSpec, axis2Dims);
     const expectedVisibleTicks = [
-      { label: '0', position: 100, value: 0 },
-      { label: '0.2', position: 80, value: 0.2 },
-      { label: '0.4', position: 60, value: 0.4 },
-      { label: '0.6', position: 40, value: 0.6 },
-      { label: '0.8', position: 20, value: 0.8 },
       { label: '1', position: 0, value: 1 },
+      { label: '0.8', position: 20, value: 0.8 },
+      { label: '0.6', position: 40, value: 0.6 },
+      { label: '0.4', position: 60, value: 0.4 },
+      { label: '0.2', position: 80, value: 0.2 },
+      { label: '0', position: 100, value: 0 },
     ];
     expect(visibleTicks).toEqual(expectedVisibleTicks);
+  });
+  test('should show all overlapping ticks and labels if configured to', () => {
+    const allTicks = [
+      { label: '0', position: 100, value: 0 },
+      { label: '0.1', position: 90, value: 0.1 },
+      { label: '0.2', position: 80, value: 0.2 },
+      { label: '0.3', position: 70, value: 0.3 },
+      { label: '0.4', position: 60, value: 0.4 },
+      { label: '0.5', position: 50, value: 0.5 },
+      { label: '0.6', position: 40, value: 0.6 },
+      { label: '0.7', position: 30, value: 0.7 },
+      { label: '0.8', position: 20, value: 0.8 },
+      { label: '0.9', position: 10, value: 0.9 },
+      { label: '1', position: 0, value: 1 },
+    ];
+    const axis2Dims = {
+      axisScaleType: ScaleType.Linear,
+      axisScaleDomain: [0, 1],
+      tickValues: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+      tickLabels: ['0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1'],
+      maxLabelBboxWidth: 10,
+      maxLabelBboxHeight: 20,
+      maxLabelTextWidth: 10,
+      maxLabelTextHeight: 20,
+    };
+
+    verticalAxisSpec.showOverlappingTicks = true;
+    verticalAxisSpec.showOverlappingLabels = true;
+    const visibleOverlappingTicks = getVisibleTicks(allTicks, verticalAxisSpec, axis2Dims);
+    const expectedVisibleOverlappingTicks = [
+      { label: '1', position: 0, value: 1 },
+      { label: '0.9', position: 10, value: 0.9 },
+      { label: '0.8', position: 20, value: 0.8 },
+      { label: '0.7', position: 30, value: 0.7 },
+      { label: '0.6', position: 40, value: 0.6 },
+      { label: '0.5', position: 50, value: 0.5 },
+      { label: '0.4', position: 60, value: 0.4 },
+      { label: '0.3', position: 70, value: 0.3 },
+      { label: '0.2', position: 80, value: 0.2 },
+      { label: '0.1', position: 90, value: 0.1 },
+      { label: '0', position: 100, value: 0 },
+    ];
+    expect(visibleOverlappingTicks).toEqual(expectedVisibleOverlappingTicks);
+
+    verticalAxisSpec.showOverlappingTicks = true;
+    verticalAxisSpec.showOverlappingLabels = false;
+    const visibleOverlappingTicksAndLabels = getVisibleTicks(allTicks, verticalAxisSpec, axis2Dims);
+    const expectedVisibleOverlappingTicksAndLabels = [
+      { label: '1', position: 0, value: 1 },
+      { label: '', position: 10, value: 0.9 },
+      { label: '0.8', position: 20, value: 0.8 },
+      { label: '', position: 30, value: 0.7 },
+      { label: '0.6', position: 40, value: 0.6 },
+      { label: '', position: 50, value: 0.5 },
+      { label: '0.4', position: 60, value: 0.4 },
+      { label: '', position: 70, value: 0.3 },
+      { label: '0.2', position: 80, value: 0.2 },
+      { label: '', position: 90, value: 0.1 },
+      { label: '0', position: 100, value: 0 },
+    ];
+    expect(visibleOverlappingTicksAndLabels).toEqual(expectedVisibleOverlappingTicksAndLabels);
   });
   test('should compute min max range for on 0 deg bottom', () => {
     const minMax = getMinMaxRange(Position.Bottom, 0, {
