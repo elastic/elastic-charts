@@ -116,6 +116,42 @@ export function computeRotatedLabelDimensions(unrotatedDims: BBox, degreesRotati
   };
 }
 
+export const getMaxBboxDimensions = (
+  bboxCalculator: BBoxCalculator,
+  fontSize: number,
+  fontFamily: string,
+  tickLabelRotation: number,
+) => (acc: { [key: string]: number }, tickLabel: string): {
+  maxLabelBboxWidth: number,
+  maxLabelBboxHeight: number,
+  maxLabelTextWidth: number,
+  maxLabelTextHeight: number,
+} => {
+    const bbox = bboxCalculator.compute(tickLabel, fontSize, fontFamily).getOrElse({
+      width: 0,
+      height: 0,
+    });
+
+    const rotatedBbox = computeRotatedLabelDimensions(bbox, tickLabelRotation);
+
+    const width = Math.ceil(rotatedBbox.width);
+    const height = Math.ceil(rotatedBbox.height);
+    const labelWidth = Math.ceil(bbox.width);
+    const labelHeight = Math.ceil(bbox.height);
+
+    const prevWidth = acc.maxLabelBboxWidth;
+    const prevHeight = acc.maxLabelBboxHeight;
+    const prevLabelWidth = acc.maxLabelTextWidth;
+    const prevLabelHeight = acc.maxLabelTextHeight;
+
+    return {
+      maxLabelBboxWidth: prevWidth > width ? prevWidth : width,
+      maxLabelBboxHeight: prevHeight > height ? prevHeight : height,
+      maxLabelTextWidth: prevLabelWidth > labelWidth ? prevLabelWidth : labelWidth,
+      maxLabelTextHeight: prevLabelHeight > labelHeight ? prevLabelHeight : labelHeight,
+    };
+  };
+
 function computeTickDimensions(
   scale: Scale,
   tickFormat: TickFormatter,
@@ -136,31 +172,7 @@ function computeTickDimensions(
     maxLabelTextWidth,
     maxLabelTextHeight,
   } = tickLabels.reduce(
-    (acc: { [key: string]: number }, tickLabel: string) => {
-      const bbox = bboxCalculator.compute(tickLabel, fontSize, fontFamily).getOrElse({
-        width: 0,
-        height: 0,
-      });
-
-      const rotatedBbox = computeRotatedLabelDimensions(bbox, tickLabelRotation);
-
-      const width = Math.ceil(rotatedBbox.width);
-      const height = Math.ceil(rotatedBbox.height);
-      const labelWidth = Math.ceil(bbox.width);
-      const labelHeight = Math.ceil(bbox.height);
-
-      const prevWidth = acc.maxLabelBboxWidth;
-      const prevHeight = acc.maxLabelBboxHeight;
-      const prevLabelWidth = acc.maxLabelTextWidth;
-      const prevLabelHeight = acc.maxLabelTextHeight;
-
-      return {
-        maxLabelBboxWidth: prevWidth > width ? prevWidth : width,
-        maxLabelBboxHeight: prevHeight > height ? prevHeight : height,
-        maxLabelTextWidth: prevLabelWidth > labelWidth ? prevLabelWidth : labelWidth,
-        maxLabelTextHeight: prevLabelHeight > labelHeight ? prevLabelHeight : labelHeight,
-      };
-    },
+    getMaxBboxDimensions(bboxCalculator, fontSize, fontFamily, tickLabelRotation),
     { maxLabelBboxWidth: 0, maxLabelBboxHeight: 0, maxLabelTextWidth: 0, maxLabelTextHeight: 0 },
   );
 

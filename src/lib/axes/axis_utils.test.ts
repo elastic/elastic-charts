@@ -17,8 +17,10 @@ import {
   getVerticalAxisGridLineProps,
   getVerticalAxisTickLineProps,
   getVisibleTicks,
+  getMaxBboxDimensions,
 } from './axis_utils';
 import { SvgTextBBoxCalculator } from './svg_text_bbox_calculator';
+import { CanvasTextBBoxCalculator } from './canvas_text_bbox_calculator';
 
 // const chartScalesConfig: ScalesConfig = {
 //   ordinal: {
@@ -290,6 +292,19 @@ describe('Axis computational utils', () => {
       left: 0,
     });
     expect(minMax).toEqual({ minRange: 100, maxRange: 0 });
+  });
+
+  test('should get max bbox dimensions for a set of ticks', () => {
+    const bboxCalculator = new CanvasTextBBoxCalculator();
+    const reducer = getMaxBboxDimensions(bboxCalculator, 16, 'Arial', 0);
+
+    const accWithGreaterValues = {
+      maxLabelBboxWidth: 100,
+      maxLabelBboxHeight: 100,
+      maxLabelTextWidth: 100,
+      maxLabelTextHeight: 100,
+    };
+    expect(reducer(accWithGreaterValues, 'foo')).toEqual(accWithGreaterValues);
   });
 
   test('should compute coordinates and offsets to anchor rotation origin from the center', () => {
