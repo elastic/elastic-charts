@@ -563,7 +563,7 @@ export function getAxisTicksPositions(
     }
 
     const { fontSize, padding } = chartTheme.axes.axisTitleStyle;
-    const axisTitleHeight = (fontSize || 10) + (padding || 0);
+    const axisTitleHeight = fontSize + padding;
 
     const axisPosition = getAxisPosition(
       chartDimensions,
