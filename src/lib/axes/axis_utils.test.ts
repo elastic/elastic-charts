@@ -18,6 +18,7 @@ import {
   getVerticalAxisGridLineProps,
   getVerticalAxisTickLineProps,
   getVisibleTicks,
+  getAxisPosition,
 } from './axis_utils';
 import { CanvasTextBBoxCalculator } from './canvas_text_bbox_calculator';
 import { SvgTextBBoxCalculator } from './svg_text_bbox_calculator';
@@ -50,6 +51,12 @@ describe('Axis computational utils', () => {
   );
   afterEach(() => (SVGElement.prototype.getBoundingClientRect = originalGetBBox));
 
+  const chartDim = {
+    width: 100,
+    height: 100,
+    top: 0,
+    left: 0,
+  };
   const axis1Dims = {
     axisScaleType: ScaleType.Linear,
     axisScaleDomain: [0, 1],
@@ -665,5 +672,148 @@ describe('Axis computational utils', () => {
     );
 
     expect(horizontalAxisGridLinePositions).toEqual([10, 0, 10, 200]);
+  });
+
+  test('should compute left axis position', () => {
+    const axisTitleHeight = 10;
+    const cumTopSum = 10;
+    const cumBottomSum = 10;
+    const cumLeftSum = 10;
+    const cumRightSum = 10;
+
+    const leftAxisPosition = getAxisPosition(
+      chartDim,
+      LIGHT_THEME.chartMargins,
+      axisTitleHeight,
+      verticalAxisSpec,
+      axis1Dims,
+      cumTopSum,
+      cumBottomSum,
+      cumLeftSum,
+      cumRightSum,
+    );
+
+    const expectedLeftAxisPosition = {
+      dimensions: {
+        height: 100,
+        width: 10,
+        left: 40,
+        top: 0,
+      },
+      topIncrement: 0,
+      bottomIncrement: 0,
+      leftIncrement: 50,
+      rightIncrement: 0,
+    };
+
+    expect(leftAxisPosition).toEqual(expectedLeftAxisPosition);
+  });
+
+  test('should compute right axis position', () => {
+    const axisTitleHeight = 10;
+    const cumTopSum = 10;
+    const cumBottomSum = 10;
+    const cumLeftSum = 10;
+    const cumRightSum = 10;
+
+    verticalAxisSpec.position = Position.Right;
+    const rightAxisPosition = getAxisPosition(
+      chartDim,
+      LIGHT_THEME.chartMargins,
+      axisTitleHeight,
+      verticalAxisSpec,
+      axis1Dims,
+      cumTopSum,
+      cumBottomSum,
+      cumLeftSum,
+      cumRightSum,
+    );
+
+    const expectedRightAxisPosition = {
+      dimensions: {
+        height: 100,
+        width: 10,
+        left: 110,
+        top: 0,
+      },
+      topIncrement: 0,
+      bottomIncrement: 0,
+      leftIncrement: 0,
+      rightIncrement: 50,
+    };
+
+    expect(rightAxisPosition).toEqual(expectedRightAxisPosition);
+  });
+
+  test('should compute top axis position', () => {
+    const axisTitleHeight = 10;
+    const cumTopSum = 10;
+    const cumBottomSum = 10;
+    const cumLeftSum = 10;
+    const cumRightSum = 10;
+
+    horizontalAxisSpec.position = Position.Top;
+    const topAxisPosition = getAxisPosition(
+      chartDim,
+      LIGHT_THEME.chartMargins,
+      axisTitleHeight,
+      horizontalAxisSpec,
+      axis1Dims,
+      cumTopSum,
+      cumBottomSum,
+      cumLeftSum,
+      cumRightSum,
+    );
+
+    const expectedTopAxisPosition = {
+      dimensions: {
+        height: 10,
+        width: 100,
+        left: 0,
+        top: 30,
+      },
+      topIncrement: 50,
+      bottomIncrement: 0,
+      leftIncrement: 0,
+      rightIncrement: 0,
+    };
+
+    expect(topAxisPosition).toEqual(expectedTopAxisPosition);
+  });
+
+  test('should compute bottom axis position', () => {
+    const axisTitleHeight = 10;
+    const cumTopSum = 10;
+    const cumBottomSum = 10;
+    const cumLeftSum = 10;
+    const cumRightSum = 10;
+
+    horizontalAxisSpec.position = Position.Bottom;
+    const bottomAxisPosition = getAxisPosition(
+      chartDim,
+      LIGHT_THEME.chartMargins,
+      axisTitleHeight,
+      horizontalAxisSpec,
+      axis1Dims,
+      cumTopSum,
+      cumBottomSum,
+      cumLeftSum,
+      cumRightSum,
+    );
+
+    const expectedBottomAxisPosition = {
+      dimensions: {
+        height: 10,
+        width: 100,
+        left: 0,
+        top: 110,
+      },
+      topIncrement: 0,
+      bottomIncrement: 50,
+      leftIncrement: 0,
+      rightIncrement: 0,
+    };
+
+    expect(bottomAxisPosition).toEqual(expectedBottomAxisPosition);
   });
 });
