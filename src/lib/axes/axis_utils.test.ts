@@ -9,6 +9,8 @@ import {
   computeAxisTicksDimensions,
   computeRotatedLabelDimensions,
   getAvailableTicks,
+  getAxisPosition,
+  getAxisTicksPositions,
   getHorizontalAxisGridLineProps,
   getHorizontalAxisTickLineProps,
   getMaxBboxDimensions,
@@ -18,7 +20,6 @@ import {
   getVerticalAxisGridLineProps,
   getVerticalAxisTickLineProps,
   getVisibleTicks,
-  getAxisPosition,
 } from './axis_utils';
 import { CanvasTextBBoxCalculator } from './canvas_text_bbox_calculator';
 import { SvgTextBBoxCalculator } from './svg_text_bbox_calculator';
@@ -79,6 +80,7 @@ describe('Axis computational utils', () => {
     tickFormat: (value: any) => {
       return `${value}`;
     },
+    showGridLines: true,
   };
 
   const horizontalAxisSpec = {
@@ -815,5 +817,89 @@ describe('Axis computational utils', () => {
     };
 
     expect(bottomAxisPosition).toEqual(expectedBottomAxisPosition);
+  });
+
+  test('should compute axis ticks positions', () => {
+    const chartRotation = 0;
+    const showLegend = true;
+    const leftLegendPosition = Position.Left;
+    const topLegendPosition = Position.Top;
+
+    const axisSpecs = new Map();
+    axisSpecs.set(verticalAxisSpec.id, verticalAxisSpec);
+
+    const axisDims = new Map();
+    axisDims.set(verticalAxisSpec.id, axis1Dims);
+
+    const axisTicksPosition = getAxisTicksPositions(
+      chartDim,
+      LIGHT_THEME,
+      chartRotation,
+      showLegend,
+      axisSpecs,
+      axisDims,
+      xDomain,
+      [yDomain],
+      1,
+      leftLegendPosition,
+    );
+
+    const expectedVerticalAxisGridLines = [
+      [0, 0, 100, 0],
+      [0, 10, 100, 10],
+      [0, 20, 100, 20],
+      [0, 30, 100, 30],
+      [0, 40, 100, 40],
+      [0, 50, 100, 50],
+      [0, 60, 100, 60],
+      [0, 70, 100, 70],
+      [0, 80, 100, 80],
+      [0, 90, 100, 90],
+      [0, 100, 100, 100],
+    ];
+
+    expect(axisTicksPosition.axisGridLinesPositions.get(verticalAxisSpec.id)).toEqual(expectedVerticalAxisGridLines);
+
+    const axisTicksPositionWithTopLegend = getAxisTicksPositions(
+      chartDim,
+      LIGHT_THEME,
+      chartRotation,
+      showLegend,
+      axisSpecs,
+      axisDims,
+      xDomain,
+      [yDomain],
+      1,
+      topLegendPosition,
+    );
+
+    const expectedPositionWithTopLegend = {
+      height: 100,
+      width: 10,
+      left: 100,
+      top: 0,
+    };
+    const verticalAxisWithTopLegendPosition = axisTicksPositionWithTopLegend.axisPositions.get(verticalAxisSpec.id);
+    expect(verticalAxisWithTopLegendPosition).toEqual(expectedPositionWithTopLegend);
+
+    const ungroupedAxisSpec = { ...verticalAxisSpec, groupId: getGroupId('foo') };
+    const invalidSpecs = new Map();
+    invalidSpecs.set(verticalAxisSpec.id, ungroupedAxisSpec);
+    const computeScalelessSpec = () => {
+      getAxisTicksPositions(
+        chartDim,
+        LIGHT_THEME,
+        chartRotation,
+        showLegend,
+        invalidSpecs,
+        axisDims,
+        xDomain,
+        [yDomain],
+        1,
+        leftLegendPosition,
+      );
+    };
+
+    expect(computeScalelessSpec).toThrowError('Cannot compute scale for axis spec axis_1');
   });
 });

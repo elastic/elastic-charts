@@ -524,6 +524,8 @@ export function getAxisTicksPositions(
   axisDimensions.forEach((axisDim, id) => {
     const axisSpec = axisSpecs.get(id);
 
+    // Consider refactoring this so this condition can be tested
+    // Given some of the values that get passed around, maybe re-write as a reduce instead of forEach?
     if (!axisSpec) {
       return;
     }
@@ -542,7 +544,7 @@ export function getAxisTicksPositions(
     );
 
     if (!scale) {
-      throw new Error(`cannot compute scale for spec ${axisSpec.id}`);
+      throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
     }
 
     const allTicks = getAvailableTicks(axisSpec, scale, totalGroupsCount);
