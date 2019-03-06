@@ -6,6 +6,7 @@ import { getAxisId, getGroupId } from '../utils/ids';
 import { ScaleType } from '../utils/scales/scales';
 import {
   centerRotationOrigin,
+  computeAxisGridLinePositions,
   computeAxisTicksDimensions,
   computeRotatedLabelDimensions,
   getAvailableTicks,
@@ -901,5 +902,13 @@ describe('Axis computational utils', () => {
     };
 
     expect(computeScalelessSpec).toThrowError('Cannot compute scale for axis spec axis_1');
+  });
+
+  test('should compute positions for grid lines', () => {
+    const verticalAxisGridLines = computeAxisGridLinePositions(true, 25, chartDim);
+    expect(verticalAxisGridLines).toEqual([0, 25, 100, 25]);
+
+    const horizontalAxisGridLines = computeAxisGridLinePositions(false, 25, chartDim);
+    expect(horizontalAxisGridLines).toEqual([25, 0, 25, 100]);
   });
 });

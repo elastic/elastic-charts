@@ -595,7 +595,7 @@ export function getAxisTicksPositions(
   };
 }
 
-function computeAxisGridLinePositions(
+export function computeAxisGridLinePositions(
   isVerticalAxis: boolean,
   tickPosition: number,
   chartDimensions: Dimensions,
