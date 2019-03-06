@@ -523,13 +523,12 @@ export function getAxisTicksPositions(
   // let cumRightSum = chartConfig.paddings.right;
   axisDimensions.forEach((axisDim, id) => {
     const axisSpec = axisSpecs.get(id);
+
     if (!axisSpec) {
       return;
     }
     const minMaxRanges = getMinMaxRange(axisSpec.position, chartRotation, chartDimensions);
-    if (minMaxRanges === null) {
-      throw new Error(`cannot comput min and max ranges for spec ${axisSpec.id}`);
-    }
+
     const scale = getScaleForAxisSpec(
       axisSpec,
       xDomain,
@@ -541,6 +540,7 @@ export function getAxisTicksPositions(
       // minRange,
       // maxRange,
     );
+
     if (!scale) {
       throw new Error(`cannot compute scale for spec ${axisSpec.id}`);
     }
