@@ -14,12 +14,14 @@ import {
   getAxisTicksPositions,
   getHorizontalAxisGridLineProps,
   getHorizontalAxisTickLineProps,
+  getHorizontalDomain,
   getMaxBboxDimensions,
   getMinMaxRange,
   getScaleForAxisSpec,
   getTickLabelProps,
   getVerticalAxisGridLineProps,
   getVerticalAxisTickLineProps,
+  getVerticalDomain,
   getVisibleTicks,
 } from './axis_utils';
 import { CanvasTextBBoxCalculator } from './canvas_text_bbox_calculator';
@@ -910,5 +912,15 @@ describe('Axis computational utils', () => {
 
     const horizontalAxisGridLines = computeAxisGridLinePositions(false, 25, chartDim);
     expect(horizontalAxisGridLines).toEqual([25, 0, 25, 100]);
+  });
+
+  test('should return correct domain based on rotation', () => {
+    const chartRotation = 180;
+    expect(getHorizontalDomain(xDomain, [yDomain], chartRotation)).toEqual(xDomain);
+    expect(getVerticalDomain(xDomain, [yDomain], chartRotation)).toEqual([yDomain]);
+
+    const skewChartRotation = 45;
+    expect(getHorizontalDomain(xDomain, [yDomain], skewChartRotation)).toEqual([yDomain]);
+    expect(getVerticalDomain(xDomain, [yDomain], skewChartRotation)).toEqual(xDomain);
   });
 });

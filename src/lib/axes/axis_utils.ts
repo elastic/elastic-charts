@@ -607,7 +607,7 @@ export function computeAxisGridLinePositions(
   return positions;
 }
 
-function getVerticalDomain(
+export function getVerticalDomain(
   xDomain: XDomain,
   yDomain: YDomain[],
   chartRotation: number,
@@ -618,7 +618,8 @@ function getVerticalDomain(
     return xDomain;
   }
 }
-function getHorizontalDomain(
+
+export function getHorizontalDomain(
   xDomain: XDomain,
   yDomain: YDomain[],
   chartRotation: number,
@@ -630,7 +631,7 @@ function getHorizontalDomain(
   }
 }
 
-function getAxisDomain(
+export function getAxisDomain(
   position: Position,
   xDomain: XDomain,
   yDomain: YDomain[],
