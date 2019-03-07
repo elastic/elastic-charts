@@ -15,9 +15,9 @@ export class CanvasTextBBoxCalculator implements BBoxCalculator {
     this.context = this.offscreenCanvas.getContext('2d');
     this.attachedRoot = rootElement || document.documentElement;
     this.attachedRoot.appendChild(this.offscreenCanvas);
-    this.scaledFontSize = 200;
+    this.scaledFontSize = 5;
   }
-  compute(text: string, fontSize = 16, fontFamily = 'Arial'): Option<BBox> {
+  compute(text: string, fontSize = 16, fontFamily = 'Arial', padding: number = 1): Option<BBox> {
     if (!this.context) {
       return none;
     }
@@ -29,7 +29,7 @@ export class CanvasTextBBoxCalculator implements BBoxCalculator {
     const measure = this.context.measureText(text);
 
     return some({
-      width: measure.width / scalingFactor,
+      width: measure.width / scalingFactor + padding,
       height: fontSize,
     });
   }
