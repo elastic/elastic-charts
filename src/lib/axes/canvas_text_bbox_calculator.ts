@@ -2,9 +2,9 @@ import { none, Option, some } from 'fp-ts/lib/Option';
 import { BBox, BBoxCalculator } from './bbox_calculator';
 
 export class CanvasTextBBoxCalculator implements BBoxCalculator {
+  context: CanvasRenderingContext2D | null;
   private attachedRoot: HTMLElement;
   private offscreenCanvas: HTMLCanvasElement;
-  private context: CanvasRenderingContext2D | null;
   private scaledFontSize: number;
 
   constructor(rootElement?: HTMLElement) {
