@@ -15,7 +15,7 @@ export class CanvasTextBBoxCalculator implements BBoxCalculator {
     this.context = this.offscreenCanvas.getContext('2d');
     this.attachedRoot = rootElement || document.documentElement;
     this.attachedRoot.appendChild(this.offscreenCanvas);
-    this.scaledFontSize = 100;
+    this.scaledFontSize = 200;
   }
   compute(text: string, fontSize = 16, fontFamily = 'Arial'): Option<BBox> {
     if (!this.context) {
