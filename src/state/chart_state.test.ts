@@ -484,7 +484,7 @@ describe('Chart Store', () => {
     store.legendItems = [firstLegendItem, secondLegendItem];
 
     const expectedCustomColors = new Map();
-    expectedCustomColors.set(firstLegendItem.label, 'foo');
+    expectedCustomColors.set('specId:{spec_1},colors:{}', 'foo');
 
     store.setSeriesColor(-1, 'foo');
     expect(computeChart).not.toBeCalled();

@@ -21,6 +21,7 @@ import { countClusteredSeries } from '../lib/series/scales';
 import {
   DataSeriesColorsValues,
   FormattedDataSeries,
+  getColorValuesAsString,
   getSeriesColorMap,
   RawDataSeries,
 } from '../lib/series/series';
@@ -293,7 +294,8 @@ export class ChartStore {
     const legendItem = getLegendItemByIndex(this.legendItems, legendItemIndex);
 
     if (legendItem) {
-      const key = legendItem.label;
+      const { colorValues, specId } = legendItem.value;
+      const key = getColorValuesAsString(colorValues, specId);
       this.customSeriesColors.set(key, color);
       this.computeChart();
     }
@@ -438,6 +440,21 @@ export class ChartStore {
       this.selectedDataSeries = getAllDataSeriesColorValues(seriesDomains.seriesColors);
     }
 
+    // Merge all series spec custom colors with state custom colors map
+    this.seriesSpecs.forEach((spec: BasicSeriesSpec, id: SpecId) => {
+      if (spec.customSeriesColors) {
+        spec.customSeriesColors.forEach((color: string, seriesColorValues: DataSeriesColorsValues) => {
+          const seriesLabel = getColorValuesAsString(seriesColorValues.colorValues, id);
+          if (seriesLabel) {
+            this.customSeriesColors.set(seriesLabel, color);
+          } else {
+            // tslint:disable-next-line:no-console
+            console.warn('Cannot assign custom color to series: ', seriesColorValues);
+          }
+        });
+      }
+    });
+
     // tslint:disable-next-line:no-console
     // console.log({colors: seriesDomains.seriesColors});
 
@@ -447,7 +464,6 @@ export class ChartStore {
       seriesDomains.seriesColors,
       this.chartTheme.colors,
       this.customSeriesColors,
-      this.seriesSpecs,
     );
 
     this.legendItems = computeLegend(
