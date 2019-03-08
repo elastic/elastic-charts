@@ -21,7 +21,6 @@ import { countClusteredSeries } from '../lib/series/scales';
 import {
   DataSeriesColorsValues,
   FormattedDataSeries,
-  getColorValuesAsString,
   getSeriesColorMap,
   RawDataSeries,
 } from '../lib/series/series';
@@ -51,6 +50,7 @@ import {
   getAllDataSeriesColorValues,
   getAxesSpecForSpecId,
   getLegendItemByIndex,
+  getUpdatedCustomSeriesColors,
   Transform,
   updateSelectedDataSeries,
 } from './utils';
@@ -451,19 +451,8 @@ export class ChartStore {
     }
 
     // Merge all series spec custom colors with state custom colors map
-    this.seriesSpecs.forEach((spec: BasicSeriesSpec, id: SpecId) => {
-      if (spec.customSeriesColors) {
-        spec.customSeriesColors.forEach((color: string, seriesColorValues: DataSeriesColorsValues) => {
-          const seriesLabel = getColorValuesAsString(seriesColorValues.colorValues, id);
-          if (seriesLabel) {
-            this.customSeriesColors.set(seriesLabel, color);
-          } else {
-            // tslint:disable-next-line:no-console
-            console.warn('Cannot assign custom color to series: ', seriesColorValues);
-          }
-        });
-      }
-    });
+    const updatedCustomSeriesColors = getUpdatedCustomSeriesColors(this.seriesSpecs);
+    this.customSeriesColors = new Map([...this.customSeriesColors, ...updatedCustomSeriesColors]);
 
     // tslint:disable-next-line:no-console
     // console.log({colors: seriesDomains.seriesColors});
