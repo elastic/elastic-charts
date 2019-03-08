@@ -496,6 +496,10 @@ describe('Chart Store', () => {
     const expectedSpecCustomColorSeries = new Map();
     expectedSpecCustomColorSeries.set(firstLegendItem.value, 'foo');
     expect(spec.customSeriesColors).toEqual(expectedSpecCustomColorSeries);
+
+    store.setSeriesColor(1, 'bar');
+    expectedSpecCustomColorSeries.set(secondLegendItem.value, 'bar');
+    expect(spec.customSeriesColors).toEqual(expectedSpecCustomColorSeries);
   });
 
   test('can reset selectedDataSeries', () => {
