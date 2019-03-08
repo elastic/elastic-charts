@@ -352,14 +352,23 @@ storiesOf('Stylings', module)
       </Chart>
     );
   })
-  .add('series colors', () => {
-    // const customSeriesColors: SpecsCustomSeriesColorsMap = new Map();
-    const customSeriesColors: CustomSeriesColorsMap = new Map();
-    const dataSeriesColorValues: DataSeriesColorsValues = {
+  .add('custom series colors through spec props', () => {
+    const barCustomSeriesColors: CustomSeriesColorsMap = new Map();
+    const barDataSeriesColorValues: DataSeriesColorsValues = {
       colorValues: ['cloudflare.com', 'direct-cdn', 'y2'],
       specId: getSpecId('bars'),
     };
-    customSeriesColors.set(dataSeriesColorValues, '#000');
+
+    const lineCustomSeriesColors: CustomSeriesColorsMap = new Map();
+    const lineDataSeriesColorValues: DataSeriesColorsValues = {
+      colorValues: [],
+      specId: getSpecId('lines'),
+    };
+
+    const customBarColorKnob = color('barDataSeriesColor', '#000');
+    const customLineColorKnob = color('lineDataSeriesColor', '#ff0');
+    barCustomSeriesColors.set(barDataSeriesColorValues, customBarColorKnob);
+    lineCustomSeriesColors.set(lineDataSeriesColorValues, customLineColorKnob);
 
     return (
       <Chart renderer="canvas" className={'story-chart'}>
@@ -384,8 +393,18 @@ storiesOf('Stylings', module)
           xAccessor="x"
           yAccessors={['y1', 'y2']}
           splitSeriesAccessors={['g1', 'g2']}
-          customSeriesColors={customSeriesColors}
+          customSeriesColors={barCustomSeriesColors}
           data={TestDatasets.BARCHART_2Y2G}
+          yScaleToDataExtent={false}
+        />
+        <LineSeries
+          id={getSpecId('lines')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          customSeriesColors={lineCustomSeriesColors}
+          data={[{ x: 0, y: 3 }, { x: 1, y: 2 }, { x: 2, y: 4 }, { x: 3, y: 10 }]}
           yScaleToDataExtent={false}
         />
       </Chart>
