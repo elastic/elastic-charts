@@ -294,9 +294,19 @@ export class ChartStore {
     const legendItem = getLegendItemByIndex(this.legendItems, legendItemIndex);
 
     if (legendItem) {
-      const { colorValues, specId } = legendItem.value;
-      const key = getColorValuesAsString(colorValues, specId);
-      this.customSeriesColors.set(key, color);
+      const { specId } = legendItem.value;
+
+      const spec = this.seriesSpecs.get(specId);
+      if (spec) {
+        if (spec.customSeriesColors) {
+          spec.customSeriesColors.set(legendItem.value, color);
+        } else {
+          const specCustomSeriesColors = new Map();
+          spec.customSeriesColors = specCustomSeriesColors;
+          spec.customSeriesColors.set(legendItem.value, color);
+        }
+      }
+
       this.computeChart();
     }
   });
