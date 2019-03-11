@@ -1,6 +1,6 @@
 import { GridLineConfig } from '../themes/theme';
 import { Accessor } from '../utils/accessor';
-import { Domain } from '../utils/domain';
+// import { Domain } from '../utils/domain';
 import { AxisId, GroupId, SpecId } from '../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../utils/scales/scales';
 import { CurveType } from './curves';
@@ -23,6 +23,11 @@ export interface GeomDatum {
   tooltipPosition: TooltipPosition;
 }
 
+export interface DomainRange {
+  min: number;
+  max: number;
+}
+
 export interface SeriesSpec {
   /** The ID of the spec, generated via getSpecId method */
   id: SpecId;
@@ -33,9 +38,9 @@ export interface SeriesSpec {
   /** An array of data */
   data: Datum[];
   /** If specified, it constrant the x domain to these values */
-  xDomain?: Domain;
+  xDomain?: DomainRange;
   /** If specified, it constrant the y Domain to these values */
-  yDomain?: Domain;
+  yDomain?: DomainRange;
   /** The type of series you are looking to render */
   seriesType: 'bar' | 'line' | 'area' | 'basic';
   /** Custom colors for series */
