@@ -16,7 +16,7 @@ export type XDomain = BaseDomain & {
  * Merge X domain value between a set of chart specification.
  */
 export function mergeXDomain(
-  specs: Array<Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType' | 'xDomain'>>,
+  specs: Array<Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>>,
   xValues: Set<any>,
 ): XDomain {
   const mainXScaleType = convertXScaleTypes(specs);

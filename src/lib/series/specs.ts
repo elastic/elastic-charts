@@ -37,10 +37,6 @@ export interface SeriesSpec {
   groupId: GroupId;
   /** An array of data */
   data: Datum[];
-  /** If specified, it constrant the x domain to these values */
-  xDomain?: DomainRange;
-  /** If specified, it constrant the y Domain to these values */
-  yDomain?: DomainRange;
   /** The type of series you are looking to render */
   seriesType: 'bar' | 'line' | 'area' | 'basic';
   /** Custom colors for series */
@@ -138,6 +134,10 @@ export interface AxisSpec {
   tickLabelRotation?: number;
   /** The axis title */
   title?: string;
+  /** If specified, it constrains the x domain to these values */
+  xDomain?: DomainRange;
+  /** If specified, it constrains the y domain to these values */
+  yDomain?: DomainRange;
 }
 
 export type TickFormatter = (value: any) => string;

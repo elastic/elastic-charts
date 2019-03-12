@@ -1,4 +1,4 @@
-import { boolean, number } from '@storybook/addon-knobs';
+import { boolean } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import React from 'react';
 import {
@@ -821,65 +821,6 @@ storiesOf('Bar Chart', module)
             { x: -1, y: 3 },
             { x: 3, y: 1 },
           ]}
-          yScaleToDataExtent={false}
-        />
-      </Chart>
-    );
-  })
-  .add('with limited domain', () => {
-    const darkmode = boolean('darkmode', false);
-    const className = darkmode ? 'story-chart-dark' : 'story-chart';
-    const defaultTheme = darkmode ? DARK_THEME : LIGHT_THEME;
-
-    const xDomainOptions = {
-      range: false,
-      max: 3,
-      min: 0,
-      step: 0.5,
-    };
-
-    const yDomainOptions = {
-      range: false,
-      max: 7,
-      min: 0,
-      step: 0.5,
-    };
-
-    const xDomain = {
-      min: number('xDomain min', 0, xDomainOptions),
-      max: number('xDomain max', 3, xDomainOptions),
-    };
-
-    const yDomain = {
-      min: number('yDomain min', 0, yDomainOptions),
-      max: number('yDomain max', 7, yDomainOptions),
-    };
-
-    return (
-      <Chart renderer="canvas" className={className}>
-        <Settings theme={defaultTheme} />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          title={'Bottom axis'}
-          showOverlappingTicks={true}
-        />
-        <Axis
-          id={getAxisId('left2')}
-          title={'Left axis'}
-          position={Position.Left}
-          tickFormat={(d) => Number(d).toFixed(2)}
-        />
-
-        <BarSeries
-          id={getSpecId('bars')}
-          xScaleType={ScaleType.Linear}
-          yScaleType={ScaleType.Linear}
-          xAccessor="x"
-          yAccessors={['y']}
-          xDomain={xDomain}
-          yDomain={yDomain}
-          data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
           yScaleToDataExtent={false}
         />
       </Chart>

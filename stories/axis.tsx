@@ -297,4 +297,54 @@ storiesOf('Axis', module)
         />
       </Chart>
     );
+  })
+  .add('customizing domain limits', () => {
+    const xDomainOptions = {
+      range: false,
+      max: 3,
+      min: 0,
+      step: 0.5,
+    };
+
+    const yDomainOptions = {
+      range: false,
+      max: 7,
+      min: 0,
+      step: 0.5,
+    };
+
+    const xDomain = {
+      min: number('xDomain min', 0, xDomainOptions),
+      max: number('xDomain max', 3, xDomainOptions),
+    };
+
+    const yDomain = {
+      min: number('yDomain min', 0, yDomainOptions),
+      max: number('yDomain max', 7, yDomainOptions),
+    };
+
+    const dg = new DataGenerator();
+    const data = dg.generateSimpleSeries(31);
+    return (
+      <Chart renderer="canvas" className={'story-chart'}>
+        <Settings debug={true} />
+        <Axis
+          id={getAxisId('bottom')}
+          position={Position.Bottom}
+          title={'Bottom axis'}
+          showOverlappingTicks={true}
+          xDomain={xDomain}
+          yDomain={yDomain}
+        />
+        <AreaSeries
+          id={getSpecId('lines')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          data={data}
+          yScaleToDataExtent={false}
+        />
+      </Chart>
+    );
   });

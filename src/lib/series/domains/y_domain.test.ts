@@ -442,57 +442,9 @@ describe('Y Domain', () => {
       id: getSpecId('a'),
       stackAccessors: ['a'],
       yScaleToDataExtent: true,
-      yDomain: {
-        max: 12,
-        min: 2,
-      },
     }];
 
     const rawDataSeries = getDataSeriesOnGroup(specDataSeries, specs);
     expect(rawDataSeries).toEqual([]);
-
-  });
-
-  test('Should merge Y domain with limited range', () => {
-    const dataSeries: RawDataSeries[] = [
-      {
-        specId: getSpecId('a'),
-        key: [''],
-        seriesColorKey: '',
-        data: [{ x: 1, y: 2 }, { x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 5 }],
-      },
-      {
-        specId: getSpecId('a'),
-        key: [''],
-        seriesColorKey: '',
-        data: [{ x: 1, y: 2 }, { x: 4, y: 7 }],
-      },
-    ];
-    const specDataSeries = new Map();
-    specDataSeries.set(getSpecId('a'), dataSeries);
-
-    const mergedDomain = mergeYDomain(specDataSeries, [
-      {
-        seriesType: 'area',
-        yScaleType: ScaleType.Linear,
-        groupId: getGroupId('a'),
-        id: getSpecId('a'),
-        stackAccessors: ['a'],
-        yScaleToDataExtent: true,
-        yDomain: {
-          max: 12,
-          min: 2,
-        },
-      },
-    ]);
-    expect(mergedDomain).toEqual([
-      {
-        type: 'yDomain',
-        groupId: 'a',
-        domain: [2, 12],
-        scaleType: ScaleType.Linear,
-        isBandScale: false,
-      },
-    ]);
   });
 });

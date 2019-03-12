@@ -18,7 +18,6 @@ export type YBasicSeriesSpec = Pick<
   | 'id'
   | 'seriesType'
   | 'yScaleType'
-  | 'yDomain'
   | 'groupId'
   | 'stackAccessors'
   | 'yScaleToDataExtent'
@@ -176,4 +175,22 @@ function coerceYScale(scaleTypes: Set<ScaleContinuousType>): ScaleContinuousType
     return value;
   }
   return ScaleType.Linear;
+}
+
+/**
+ * Coerce the y domain limits of a set of specification to a generic one.
+ * Given a set of domain limits, coerce the maximum
+ * @returns {ChartScaleType}
+ */
+export function coerceYDomain(
+  specs: Array<Pick<BasicSeriesSpec, 'yScaleType'>>,
+): ScaleContinuousType | null {
+  const scaleTypes = new Set<ScaleContinuousType>();
+  specs.forEach((spec) => {
+    scaleTypes.add(spec.yScaleType);
+  });
+  if (specs.length === 0 || scaleTypes.size === 0) {
+    return null;
+  }
+  return coerceYScale(scaleTypes);
 }
