@@ -3,7 +3,13 @@ import { ScaleType } from '../../utils/scales/scales';
 import { RawDataSeries } from '../series';
 import { BasicSeriesSpec } from '../specs';
 import { BARCHART_1Y0G } from '../utils/test_dataset';
-import { coerceYScaleTypes, mergeYDomain, splitSpecsByGroupId } from './y_domain';
+import {
+  coerceYScaleTypes,
+  getDataSeriesOnGroup,
+  mergeYDomain,
+  splitSpecsByGroupId,
+  YBasicSeriesSpec,
+} from './y_domain';
 
 describe('Y Domain', () => {
   test('Should merge Y domain', () => {
@@ -409,5 +415,84 @@ describe('Y Domain', () => {
   test('Should return null for YScaleType when there are no specs', () => {
     const specs: Array<Pick<BasicSeriesSpec, 'yScaleType'>> = [];
     expect(coerceYScaleTypes(specs)).toBe(null);
+  });
+
+  test.only('Should getDataSeriesOnGroup for matching specs', () => {
+    const dataSeries: RawDataSeries[] = [
+      {
+        specId: getSpecId('a'),
+        key: [''],
+        seriesColorKey: '',
+        data: [{ x: 1, y: 2 }, { x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 5 }],
+      },
+      {
+        specId: getSpecId('a'),
+        key: [''],
+        seriesColorKey: '',
+        data: [{ x: 1, y: 2 }, { x: 4, y: 7 }],
+      },
+    ];
+    const specDataSeries = new Map();
+    specDataSeries.set(getSpecId('b'), dataSeries);
+
+    const specs: YBasicSeriesSpec[] = [{
+      seriesType: 'area',
+      yScaleType: ScaleType.Linear,
+      groupId: getGroupId('a'),
+      id: getSpecId('a'),
+      stackAccessors: ['a'],
+      yScaleToDataExtent: true,
+      yDomain: {
+        max: 12,
+        min: 2,
+      },
+    }];
+
+    const rawDataSeries = getDataSeriesOnGroup(specDataSeries, specs);
+    expect(rawDataSeries).toEqual([]);
+
+  });
+
+  test('Should merge Y domain with limited range', () => {
+    const dataSeries: RawDataSeries[] = [
+      {
+        specId: getSpecId('a'),
+        key: [''],
+        seriesColorKey: '',
+        data: [{ x: 1, y: 2 }, { x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 5 }],
+      },
+      {
+        specId: getSpecId('a'),
+        key: [''],
+        seriesColorKey: '',
+        data: [{ x: 1, y: 2 }, { x: 4, y: 7 }],
+      },
+    ];
+    const specDataSeries = new Map();
+    specDataSeries.set(getSpecId('a'), dataSeries);
+
+    const mergedDomain = mergeYDomain(specDataSeries, [
+      {
+        seriesType: 'area',
+        yScaleType: ScaleType.Linear,
+        groupId: getGroupId('a'),
+        id: getSpecId('a'),
+        stackAccessors: ['a'],
+        yScaleToDataExtent: true,
+        yDomain: {
+          max: 12,
+          min: 2,
+        },
+      },
+    ]);
+    expect(mergedDomain).toEqual([
+      {
+        type: 'yDomain',
+        groupId: 'a',
+        domain: [2, 12],
+        scaleType: ScaleType.Linear,
+        isBandScale: false,
+      },
+    ]);
   });
 });

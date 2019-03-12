@@ -37,7 +37,7 @@ export function mergeYDomain(
 
   const yDomains = specsByGroupIdsEntries.map(
     ([groupId, groupSpecs]): YDomain => {
-      const groupYScaleType = coerchYScaleTypes([...groupSpecs.stacked, ...groupSpecs.nonStacked]);
+      const groupYScaleType = coerceYScaleTypes([...groupSpecs.stacked, ...groupSpecs.nonStacked]);
       if (groupYScaleType === null) {
         throw new Error(`Cannot merge ${groupId} domain. Missing Y scale types`);
       }
@@ -79,7 +79,7 @@ export function mergeYDomain(
   return yDomains;
 }
 
-function getDataSeriesOnGroup(
+export function getDataSeriesOnGroup(
   dataSeries: Map<SpecId, RawDataSeries[]>,
   specs: YBasicSeriesSpec[],
 ): RawDataSeries[] {
@@ -147,16 +147,16 @@ export function splitSpecsByGroupId(specs: YBasicSeriesSpec[]) {
 }
 
 /**
- * Coerch the scale types of a set of specification to a generic one.
+ * Coerce the scale types of a set of specification to a generic one.
  * If there is at least one bar series type, than the response will specity
- * that the coerched scale is a `scaleBand` (each point needs to have a surrounding empty
+ * that the coerced scale is a `scaleBand` (each point needs to have a surrounding empty
  * space to draw the bar width).
- * If there are multiple continuous scale types, is coerched to linear.
- * If there are at least one Ordinal scale type, is coerched to ordinal.
- * If none of the above, than coerch to the specified scale.
+ * If there are multiple continuous scale types, is coerced to linear.
+ * If there are at least one Ordinal scale type, is coerced to ordinal.
+ * If none of the above, than coerce to the specified scale.
  * @returns {ChartScaleType}
  */
-export function coerchYScaleTypes(
+export function coerceYScaleTypes(
   specs: Array<Pick<BasicSeriesSpec, 'yScaleType'>>,
 ): ScaleContinuousType | null {
   const scaleTypes = new Set<ScaleContinuousType>();
@@ -166,10 +166,10 @@ export function coerchYScaleTypes(
   if (specs.length === 0 || scaleTypes.size === 0) {
     return null;
   }
-  return coerchYScale(scaleTypes);
+  return coerceYScale(scaleTypes);
 }
 
-function coerchYScale(scaleTypes: Set<ScaleContinuousType>): ScaleContinuousType {
+function coerceYScale(scaleTypes: Set<ScaleContinuousType>): ScaleContinuousType {
   if (scaleTypes.size === 1) {
     const scales = scaleTypes.values();
     const value = scales.next().value;
