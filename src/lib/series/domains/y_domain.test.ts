@@ -3,7 +3,7 @@ import { ScaleType } from '../../utils/scales/scales';
 import { RawDataSeries } from '../series';
 import { BasicSeriesSpec } from '../specs';
 import { BARCHART_1Y0G } from '../utils/test_dataset';
-import { mergeYDomain, splitSpecsByGroupId } from './y_domain';
+import { coerceYScaleTypes, mergeYDomain, splitSpecsByGroupId } from './y_domain';
 
 describe('Y Domain', () => {
   test('Should merge Y domain', () => {
@@ -404,5 +404,10 @@ describe('Y Domain', () => {
     expect(groupValues[0].nonStacked).toEqual([]);
     expect(groupValues[1].stacked).toEqual([spec3]);
     expect(groupValues[0].nonStacked).toEqual([]);
+  });
+
+  test('Should return null for YScaleType when there are no specs', () => {
+    const specs: Array<Pick<BasicSeriesSpec, 'yScaleType'>> = [];
+    expect(coerceYScaleTypes(specs)).toBe(null);
   });
 });
