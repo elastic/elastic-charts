@@ -608,43 +608,6 @@ export function computeAxisGridLinePositions(
   return positions;
 }
 
-export function getVerticalDomain(
-  xDomain: XDomain,
-  yDomain: YDomain[],
-  chartRotation: number,
-): XDomain | YDomain[] {
-  if (chartRotation === 0 || chartRotation === 180) {
-    return yDomain;
-  } else {
-    return xDomain;
-  }
-}
-
-export function getHorizontalDomain(
-  xDomain: XDomain,
-  yDomain: YDomain[],
-  chartRotation: number,
-): XDomain | YDomain[] {
-  if (chartRotation === 0 || chartRotation === 180) {
-    return xDomain;
-  } else {
-    return yDomain;
-  }
-}
-
-export function getAxisDomain(
-  position: Position,
-  xDomain: XDomain,
-  yDomain: YDomain[],
-  chartRotation: number,
-): XDomain | YDomain[] {
-  if (!isHorizontal(position)) {
-    return getVerticalDomain(xDomain, yDomain, chartRotation);
-  } else {
-    return getHorizontalDomain(xDomain, yDomain, chartRotation);
-  }
-}
-
 export function isVertical(position: Position) {
   return position === Position.Left || position === Position.Right;
 }

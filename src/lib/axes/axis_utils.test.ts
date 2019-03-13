@@ -14,17 +14,17 @@ import {
   getAxisTicksPositions,
   getHorizontalAxisGridLineProps,
   getHorizontalAxisTickLineProps,
-  getHorizontalDomain,
   getMaxBboxDimensions,
   getMinMaxRange,
   getScaleForAxisSpec,
   getTickLabelProps,
   getVerticalAxisGridLineProps,
   getVerticalAxisTickLineProps,
-  getVerticalDomain,
   getVisibleTicks,
   isYDomain,
   mergeDomainsByGroupId,
+  isVertical,
+  isHorizontal,
 } from './axis_utils';
 import { CanvasTextBBoxCalculator } from './canvas_text_bbox_calculator';
 import { SvgTextBBoxCalculator } from './svg_text_bbox_calculator';
@@ -916,14 +916,16 @@ describe('Axis computational utils', () => {
     expect(horizontalAxisGridLines).toEqual([25, 0, 25, 100]);
   });
 
-  test('should return correct domain based on rotation', () => {
-    const chartRotation = 180;
-    expect(getHorizontalDomain(xDomain, [yDomain], chartRotation)).toEqual(xDomain);
-    expect(getVerticalDomain(xDomain, [yDomain], chartRotation)).toEqual([yDomain]);
+  test('should determine orientation of axis position', () => {
+    expect(isVertical(Position.Left)).toBe(true);
+    expect(isVertical(Position.Right)).toBe(true);
+    expect(isVertical(Position.Top)).toBe(false);
+    expect(isVertical(Position.Bottom)).toBe(false);
 
-    const skewChartRotation = 45;
-    expect(getHorizontalDomain(xDomain, [yDomain], skewChartRotation)).toEqual([yDomain]);
-    expect(getVerticalDomain(xDomain, [yDomain], skewChartRotation)).toEqual(xDomain);
+    expect(isHorizontal(Position.Left)).toBe(false);
+    expect(isHorizontal(Position.Right)).toBe(false);
+    expect(isHorizontal(Position.Top)).toBe(true);
+    expect(isHorizontal(Position.Bottom)).toBe(true);
   });
 
   test('should determine if axis belongs to yDomain', () => {
