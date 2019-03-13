@@ -38,7 +38,7 @@ describe('Y Domain', () => {
         stackAccessors: ['a'],
         yScaleToDataExtent: true,
       },
-    ]);
+    ], new Map());
     expect(mergedDomain).toEqual([
       {
         type: 'yDomain',
@@ -92,7 +92,7 @@ describe('Y Domain', () => {
         stackAccessors: ['a'],
         yScaleToDataExtent: true,
       },
-    ]);
+    ], new Map());
     expect(mergedDomain).toEqual([
       {
         groupId: 'a',
@@ -153,7 +153,7 @@ describe('Y Domain', () => {
         stackAccessors: ['a'],
         yScaleToDataExtent: true,
       },
-    ]);
+    ], new Map());
     expect(mergedDomain).toEqual([
       {
         groupId: 'a',
@@ -206,7 +206,7 @@ describe('Y Domain', () => {
         id: getSpecId('b'),
         yScaleToDataExtent: true,
       },
-    ]);
+    ], new Map());
     expect(mergedDomain).toEqual([
       {
         groupId: 'a',
@@ -260,7 +260,7 @@ describe('Y Domain', () => {
         id: getSpecId('b'),
         yScaleToDataExtent: true,
       },
-    ]);
+    ], new Map());
     expect(mergedDomain.length).toEqual(1);
   });
   test('Should split specs by groupId, two groups, non stacked', () => {
@@ -417,7 +417,7 @@ describe('Y Domain', () => {
     expect(coerceYScaleTypes(specs)).toBe(null);
   });
 
-  test.only('Should getDataSeriesOnGroup for matching specs', () => {
+  test('Should getDataSeriesOnGroup for matching specs', () => {
     const dataSeries: RawDataSeries[] = [
       {
         specId: getSpecId('a'),
@@ -446,5 +446,49 @@ describe('Y Domain', () => {
 
     const rawDataSeries = getDataSeriesOnGroup(specDataSeries, specs);
     expect(rawDataSeries).toEqual([]);
+  });
+  test('Should merge Y domain accounting for custom domain limits', () => {
+    const groupId = getGroupId('a');
+
+    const dataSeries: RawDataSeries[] = [
+      {
+        specId: getSpecId('a'),
+        key: [''],
+        seriesColorKey: '',
+        data: [{ x: 1, y: 2 }, { x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 5 }],
+      },
+      {
+        specId: getSpecId('a'),
+        key: [''],
+        seriesColorKey: '',
+        data: [{ x: 1, y: 2 }, { x: 4, y: 7 }],
+      },
+    ];
+    const specDataSeries = new Map();
+    specDataSeries.set(getSpecId('a'), dataSeries);
+    const domainsByGroupId = new Map();
+    const yDomainConfig = new Map();
+    yDomainConfig.set('y', { min: 0, max: 20 });
+    domainsByGroupId.set(groupId, yDomainConfig);
+
+    const mergedDomain = mergeYDomain(specDataSeries, [
+      {
+        seriesType: 'area',
+        yScaleType: ScaleType.Linear,
+        groupId,
+        id: getSpecId('a'),
+        stackAccessors: ['a'],
+        yScaleToDataExtent: true,
+      },
+    ], domainsByGroupId);
+    expect(mergedDomain).toEqual([
+      {
+        type: 'yDomain',
+        groupId,
+        domain: [0, 20],
+        scaleType: ScaleType.Linear,
+        isBandScale: false,
+      },
+    ]);
   });
 });
