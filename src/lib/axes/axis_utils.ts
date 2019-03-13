@@ -1,11 +1,11 @@
 import { XDomain } from '../series/domains/x_domain';
 import { YDomain } from '../series/domains/y_domain';
 import { computeXScale, computeYScales } from '../series/scales';
-import { AxisSpec, Position, Rotation, TickFormatter } from '../series/specs';
+import { AxisSpec, DomainRange, Position, Rotation, TickFormatter } from '../series/specs';
 import { AxisConfig, Theme } from '../themes/theme';
 import { Dimensions, Margins } from '../utils/dimensions';
 import { Domain } from '../utils/domain';
-import { AxisId } from '../utils/ids';
+import { AxisId, GroupId } from '../utils/ids';
 import { Scale, ScaleType } from '../utils/scales/scales';
 import { BBox, BBoxCalculator } from './bbox_calculator';
 
@@ -80,6 +80,16 @@ export function computeAxisTicksDimensions(
     ...dimensions,
   };
 }
+
+export function isYDomain(position: Position, chartRotation: Rotation): boolean {
+  const isStraightRotation = chartRotation === 0 || chartRotation === 180;
+  if (isVertical(position)) {
+    return isStraightRotation;
+  }
+
+  return !isStraightRotation;
+}
+
 export function getScaleForAxisSpec(
   axisSpec: AxisSpec,
   xDomain: XDomain,
@@ -89,9 +99,9 @@ export function getScaleForAxisSpec(
   minRange: number,
   maxRange: number,
 ): Scale | null {
-  const axisDomain = getAxisDomain(axisSpec.position, xDomain, yDomain, chartRotation);
-  // If axisDomain is an array of values, this is an array of YDomains
-  if (Array.isArray(axisDomain)) {
+  const axisIsYDomain = isYDomain(axisSpec.position, chartRotation);
+
+  if (axisIsYDomain) {
     const yScales = computeYScales(yDomain, minRange, maxRange);
     if (yScales.has(axisSpec.groupId)) {
       return yScales.get(axisSpec.groupId)!;
@@ -641,4 +651,42 @@ export function isVertical(position: Position) {
 
 export function isHorizontal(position: Position) {
   return !isVertical(position);
+}
+
+// TODO: make domain type
+export function mergeDomainsByGroupId(
+  axesSpecs: Map<AxisId, AxisSpec>,
+  chartRotation: Rotation,
+): Map<GroupId, Map<string, DomainRange>> {
+  const domainsByGroupId = new Map<GroupId, Map<string, DomainRange>>();
+  axesSpecs.forEach((spec: AxisSpec, id: AxisId) => {
+    const { groupId, domain } = spec;
+
+    if (domain) {
+      const prevGroupDomains = domainsByGroupId.get(groupId);
+      const isAxisYDomain = isYDomain(spec.position, chartRotation);
+      const domainKey = isAxisYDomain ? 'y' : 'x';
+
+      if (prevGroupDomains) {
+        const prevGroupDomainForAxis = prevGroupDomains.get(domainKey);
+
+        if (prevGroupDomainForAxis) {
+          const mergedDomain = {
+            min: Math.min(domain.min, prevGroupDomainForAxis.min),
+            max: Math.max(domain.max, prevGroupDomainForAxis.max),
+          };
+
+          prevGroupDomains.set(domainKey, mergedDomain);
+        } else {
+          prevGroupDomains.set(domainKey, domain);
+        }
+      } else {
+        const axisDomain = new Map();
+        axisDomain.set(domainKey, domain);
+
+        domainsByGroupId.set(groupId, axisDomain);
+      }
+    }
+  });
+  return domainsByGroupId;
 }

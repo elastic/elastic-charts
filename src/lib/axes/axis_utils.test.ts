@@ -1,8 +1,8 @@
 import { XDomain } from '../series/domains/x_domain';
 import { YDomain } from '../series/domains/y_domain';
-import { Position } from '../series/specs';
+import { AxisSpec, DomainRange, Position } from '../series/specs';
 import { LIGHT_THEME } from '../themes/light_theme';
-import { getAxisId, getGroupId } from '../utils/ids';
+import { getAxisId, getGroupId, GroupId } from '../utils/ids';
 import { ScaleType } from '../utils/scales/scales';
 import {
   centerRotationOrigin,
@@ -23,6 +23,8 @@ import {
   getVerticalAxisTickLineProps,
   getVerticalDomain,
   getVisibleTicks,
+  isYDomain,
+  mergeDomainsByGroupId,
 } from './axis_utils';
 import { CanvasTextBBoxCalculator } from './canvas_text_bbox_calculator';
 import { SvgTextBBoxCalculator } from './svg_text_bbox_calculator';
@@ -71,7 +73,7 @@ describe('Axis computational utils', () => {
     maxLabelTextWidth: 10,
     maxLabelTextHeight: 10,
   };
-  const verticalAxisSpec = {
+  const verticalAxisSpec: AxisSpec = {
     id: getAxisId('axis_1'),
     groupId: getGroupId('group_1'),
     hide: false,
@@ -86,7 +88,7 @@ describe('Axis computational utils', () => {
     showGridLines: true,
   };
 
-  const horizontalAxisSpec = {
+  const horizontalAxisSpec: AxisSpec = {
     id: getAxisId('axis_2'),
     groupId: getGroupId('group_1'),
     hide: false,
@@ -922,5 +924,73 @@ describe('Axis computational utils', () => {
     const skewChartRotation = 45;
     expect(getHorizontalDomain(xDomain, [yDomain], skewChartRotation)).toEqual([yDomain]);
     expect(getVerticalDomain(xDomain, [yDomain], skewChartRotation)).toEqual(xDomain);
+  });
+
+  test('should determine if axis belongs to yDomain', () => {
+    const verticalY = isYDomain(Position.Left, 0);
+    expect(verticalY).toBe(true);
+
+    const verticalX = isYDomain(Position.Left, 90);
+    expect(verticalX).toBe(false);
+
+    const horizontalX = isYDomain(Position.Top, 0);
+    expect(horizontalX).toBe(false);
+
+    const horizontalY = isYDomain(Position.Top, 90);
+    expect(horizontalY).toBe(true);
+  });
+
+  test('should merge axis domains by group id', () => {
+    const groupId = getGroupId('group_1');
+    const domainRange1 = {
+      min: 2,
+      max: 9,
+    };
+
+    verticalAxisSpec.domain = domainRange1;
+
+    const axesSpecs = new Map();
+    axesSpecs.set(verticalAxisSpec.id, verticalAxisSpec);
+
+    // Base case
+    const expectedSimpleMap = new Map<GroupId, Map<string, DomainRange>>();
+    const expectedSimpleMapDomains = new Map<string, DomainRange>();
+
+    expectedSimpleMapDomains.set('y', { min: 2, max: 9 });
+    expectedSimpleMap.set(groupId, expectedSimpleMapDomains);
+
+    const simpleDomainsByGroupId = mergeDomainsByGroupId(axesSpecs, 0);
+    expect(simpleDomainsByGroupId).toEqual(expectedSimpleMap);
+
+    // Multiple definitions for the same group
+    const domainRange2 = {
+      min: 0,
+      max: 7,
+    };
+
+    const altVerticalAxisSpec = { ...verticalAxisSpec, id: getAxisId('axis2') };
+
+    altVerticalAxisSpec.domain = domainRange2;
+    axesSpecs.set(altVerticalAxisSpec.id, altVerticalAxisSpec);
+
+    const expectedMergedMap = new Map<GroupId, Map<string, DomainRange>>();
+    const expectedMergedMapDomains = new Map<string, DomainRange>();
+    expectedMergedMapDomains.set('y', { min: 0, max: 9 });
+    expectedMergedMap.set(groupId, expectedMergedMapDomains);
+
+    const mergedDomainsByGroupId = mergeDomainsByGroupId(axesSpecs, 0);
+    expect(mergedDomainsByGroupId).toEqual(expectedMergedMap);
+
+    // xDomain limit
+    horizontalAxisSpec.domain = {
+      min: 5,
+      max: 15,
+    };
+    axesSpecs.set(horizontalAxisSpec.id, horizontalAxisSpec);
+    expectedMergedMapDomains.set('x', { min: 5, max: 15 });
+
+    const mergedMultiDomainsByGroupId = mergeDomainsByGroupId(axesSpecs, 0);
+
+    expect(mergedMultiDomainsByGroupId).toEqual(expectedMergedMap);
   });
 });

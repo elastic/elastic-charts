@@ -299,50 +299,72 @@ storiesOf('Axis', module)
     );
   })
   .add('customizing domain limits', () => {
-    const xDomainOptions = {
-      range: false,
-      max: 3,
-      min: 0,
-      step: 0.5,
+    const bottomDomain = {
+      min: number('bottom min', 0),
+      max: number('botttom max', 3),
     };
 
-    const yDomainOptions = {
-      range: false,
-      max: 7,
-      min: 0,
-      step: 0.5,
+    const leftDomain = {
+      min: number('left min', 0),
+      max: number('left max', 7),
     };
 
-    const xDomain = {
-      min: number('xDomain min', 0, xDomainOptions),
-      max: number('xDomain max', 3, xDomainOptions),
+    const right1Domain = {
+      min: number('right1 min', 0),
+      max: number('right1 max', 10),
     };
 
-    const yDomain = {
-      min: number('yDomain min', 0, yDomainOptions),
-      max: number('yDomain max', 7, yDomainOptions),
-    };
-
-    const dg = new DataGenerator();
-    const data = dg.generateSimpleSeries(31);
     return (
       <Chart renderer="canvas" className={'story-chart'}>
-        <Settings debug={true} />
+        <Settings showLegend={false} />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
           title={'Bottom axis'}
           showOverlappingTicks={true}
-          xDomain={xDomain}
-          yDomain={yDomain}
+          domain={bottomDomain}
         />
-        <AreaSeries
-          id={getSpecId('lines')}
+        <Axis
+          id={getAxisId('left')}
+          title={'Bar axis'}
+          position={Position.Left}
+          tickFormat={(d) => Number(d).toFixed(2)}
+          domain={leftDomain}
+        />
+        <Axis
+          id={getAxisId('right')}
+          title={'Line axis'}
+          groupId={getGroupId('group2')}
+          position={Position.Right}
+          tickFormat={(d) => Number(d).toFixed(2)}
+          domain={right1Domain}
+        />
+        <Axis
+          id={getAxisId('right 2')}
+          title={'Line axis 2'}
+          groupId={getGroupId('group2')}
+          position={Position.Right}
+          tickFormat={(d) => Number(d).toFixed(2)}
+        />
+        <BarSeries
+          id={getSpecId('bars')}
           xScaleType={ScaleType.Linear}
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y']}
-          data={data}
+          data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
+          yScaleToDataExtent={false}
+        />
+        <LineSeries
+          id={getSpecId('lines')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          groupId={getGroupId('group2')}
+          xAccessor="x"
+          yAccessors={['y']}
+          stackAccessors={['x']}
+          splitSeriesAccessors={['g']}
+          data={[{ x: 0, y: 3 }, { x: 1, y: 2 }, { x: 2, y: 4 }, { x: 3, y: 10 }]}
           yScaleToDataExtent={false}
         />
       </Chart>

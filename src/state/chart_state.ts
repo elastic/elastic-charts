@@ -5,6 +5,7 @@ import {
   AxisTicksDimensions,
   computeAxisTicksDimensions,
   getAxisTicksPositions,
+  mergeDomainsByGroupId,
 } from '../lib/axes/axis_utils';
 import { CanvasTextBBoxCalculator } from '../lib/axes/canvas_text_bbox_calculator';
 import { XDomain } from '../lib/series/domains/x_domain';
@@ -440,9 +441,11 @@ export class ChartStore {
       this.selectedDataSeries = null;
     }
 
-    // The second argument is optional; if not supplied, then all series will be factored into computations
+    const domainsByGroupId = mergeDomainsByGroupId(this.axesSpecs, this.chartRotation);
+
+    // The last argument is optional; if not supplied, then all series will be factored into computations
     // Otherwise, selectedDataSeries is used to restrict the computation for just the selected series
-    const seriesDomains = computeSeriesDomains(this.seriesSpecs, this.selectedDataSeries);
+    const seriesDomains = computeSeriesDomains(this.seriesSpecs, domainsByGroupId, this.selectedDataSeries);
     this.seriesDomainsAndData = seriesDomains;
 
     // If this.selectedDataSeries is null, initialize with all series

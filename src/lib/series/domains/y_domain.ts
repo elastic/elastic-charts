@@ -4,7 +4,7 @@ import { computeContinuousDataDomain } from '../../utils/domain';
 import { GroupId, SpecId } from '../../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../../utils/scales/scales';
 import { RawDataSeries } from '../series';
-import { BasicSeriesSpec } from '../specs';
+import { BasicSeriesSpec, DomainRange } from '../specs';
 import { BaseDomain } from './domain';
 
 export type YDomain = BaseDomain & {
@@ -27,6 +27,7 @@ export type YBasicSeriesSpec = Pick<
 export function mergeYDomain(
   dataSeries: Map<SpecId, RawDataSeries[]>,
   specs: YBasicSeriesSpec[],
+  domainsByGroupId: Map<GroupId, Map<string, DomainRange>>,
 ): YDomain[] {
   // group specs by group ids
   const specsByGroupIds = splitSpecsByGroupId(specs);
@@ -65,12 +66,16 @@ export function mergeYDomain(
         isStackedScaleToExtent || isNonStackedScaleToExtent,
       );
 
+      const groupDomains = domainsByGroupId.get(groupId);
+      const limitedDomain = groupDomains && groupDomains.get('y');
+      const domain = limitedDomain ? [limitedDomain.min, limitedDomain.max] : groupDomain;
+
       return {
         type: 'yDomain',
         isBandScale: false,
         scaleType: groupYScaleType as ScaleContinuousType,
         groupId,
-        domain: groupDomain,
+        domain,
       };
     },
   );
@@ -162,7 +167,8 @@ export function coerceYScaleTypes(
   specs.forEach((spec) => {
     scaleTypes.add(spec.yScaleType);
   });
-  if (specs.length === 0 || scaleTypes.size === 0) {
+
+  if (specs.length === 0) {
     return null;
   }
   return coerceYScale(scaleTypes);
@@ -175,22 +181,4 @@ function coerceYScale(scaleTypes: Set<ScaleContinuousType>): ScaleContinuousType
     return value;
   }
   return ScaleType.Linear;
-}
-
-/**
- * Coerce the y domain limits of a set of specification to a generic one.
- * Given a set of domain limits, coerce the maximum
- * @returns {ChartScaleType}
- */
-export function coerceYDomain(
-  specs: Array<Pick<BasicSeriesSpec, 'yScaleType'>>,
-): ScaleContinuousType | null {
-  const scaleTypes = new Set<ScaleContinuousType>();
-  specs.forEach((spec) => {
-    scaleTypes.add(spec.yScaleType);
-  });
-  if (specs.length === 0 || scaleTypes.size === 0) {
-    return null;
-  }
-  return coerceYScale(scaleTypes);
 }

@@ -1,6 +1,5 @@
 import { GridLineConfig } from '../themes/theme';
 import { Accessor } from '../utils/accessor';
-// import { Domain } from '../utils/domain';
 import { AxisId, GroupId, SpecId } from '../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../utils/scales/scales';
 import { CurveType } from './curves';
@@ -134,10 +133,8 @@ export interface AxisSpec {
   tickLabelRotation?: number;
   /** The axis title */
   title?: string;
-  /** If specified, it constrains the x domain to these values */
-  xDomain?: DomainRange;
-  /** If specified, it constrains the y domain to these values */
-  yDomain?: DomainRange;
+  /** If specified, it constrains the domain for these values */
+  domain?: DomainRange;
 }
 
 export type TickFormatter = (value: any) => string;
