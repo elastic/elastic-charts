@@ -627,30 +627,33 @@ export function mergeDomainsByGroupId(
     const { groupId, domain } = spec;
 
     if (domain) {
+      const isAxisYDomain = isYDomain(spec.position, chartRotation);
+
+      if (!isAxisYDomain) {
+        // tslint:disable-next-line:no-console
+        console.warn(`[Axis ${id}]: custom domain for xDomain should be defined in Settings`);
+        return;
+      }
+
       if (domain.min > domain.max) {
         const errorMessage = `[Axis ${id}]: custom domain is invalid, min is greater than max`;
         throw new Error(errorMessage);
       }
 
       const prevGroupDomain = domainsByGroupId.get(groupId);
-      const isAxisYDomain = isYDomain(spec.position, chartRotation);
 
       if (prevGroupDomain) {
-        if (isAxisYDomain) {
-          const mergedDomain = {
-            min: Math.min(domain.min, prevGroupDomain.min),
-            max: Math.max(domain.max, prevGroupDomain.max),
-          };
+        const mergedDomain = {
+          min: Math.min(domain.min, prevGroupDomain.min),
+          max: Math.max(domain.max, prevGroupDomain.max),
+        };
 
-          domainsByGroupId.set(groupId, mergedDomain);
-        } else {
-          // tslint:disable-next-line:no-console
-          console.warn(`A custom domain was specified for an xDomain axis ${id}; instead define this in Settings`);
-        }
+        domainsByGroupId.set(groupId, mergedDomain);
       } else {
         domainsByGroupId.set(groupId, domain);
       }
     }
   });
+
   return domainsByGroupId;
 }
