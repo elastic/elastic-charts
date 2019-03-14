@@ -108,7 +108,7 @@ export function getUpdatedCustomSeriesColors(seriesSpecs: Map<SpecId, BasicSerie
 
 export function computeSeriesDomains(
   seriesSpecs: Map<SpecId, BasicSeriesSpec>,
-  domainsByGroupId: Map<GroupId, Map<string, DomainRange>>,
+  domainsByGroupId: Map<GroupId, DomainRange>,
   customXDomain: DomainRange | Domain | undefined,
   selectedDataSeries?: DataSeriesColorsValues[] | null,
 ): {

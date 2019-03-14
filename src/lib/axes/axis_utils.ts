@@ -616,40 +616,34 @@ export function isHorizontal(position: Position) {
   return !isVertical(position);
 }
 
-// TODO: make domain type
 // TODO: only hold yDomain values (xDomain handle elsewhere), so return value can be Map<GroupId, DomainRange>
 // TODO: if domain defined on an xDomain axis, do not add and console.warn
 export function mergeDomainsByGroupId(
   axesSpecs: Map<AxisId, AxisSpec>,
   chartRotation: Rotation,
-): Map<GroupId, Map<string, DomainRange>> {
-  const domainsByGroupId = new Map<GroupId, Map<string, DomainRange>>();
+): Map<GroupId, DomainRange> {
+  const domainsByGroupId = new Map<GroupId, DomainRange>();
   axesSpecs.forEach((spec: AxisSpec, id: AxisId) => {
     const { groupId, domain } = spec;
 
     if (domain) {
-      const prevGroupDomains = domainsByGroupId.get(groupId);
+      const prevGroupDomain = domainsByGroupId.get(groupId);
       const isAxisYDomain = isYDomain(spec.position, chartRotation);
-      const domainKey = isAxisYDomain ? 'y' : 'x';
 
-      if (prevGroupDomains) {
-        const prevGroupDomainForAxis = prevGroupDomains.get(domainKey);
-
-        if (prevGroupDomainForAxis) {
+      if (prevGroupDomain) {
+        if (isAxisYDomain) {
           const mergedDomain = {
-            min: Math.min(domain.min, prevGroupDomainForAxis.min),
-            max: Math.max(domain.max, prevGroupDomainForAxis.max),
+            min: Math.min(domain.min, prevGroupDomain.min),
+            max: Math.max(domain.max, prevGroupDomain.max),
           };
 
-          prevGroupDomains.set(domainKey, mergedDomain);
+          domainsByGroupId.set(groupId, mergedDomain);
         } else {
-          prevGroupDomains.set(domainKey, domain);
+          // tslint:disable-next-line:no-console
+          console.warn(`A custom domain was specified for an xDomain axis ${id}; instead define this in Settings`);
         }
       } else {
-        const axisDomain = new Map();
-        axisDomain.set(domainKey, domain);
-
-        domainsByGroupId.set(groupId, axisDomain);
+        domainsByGroupId.set(groupId, domain);
       }
     }
   });

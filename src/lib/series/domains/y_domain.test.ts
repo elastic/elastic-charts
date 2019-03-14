@@ -1,7 +1,7 @@
-import { getGroupId, getSpecId } from '../../utils/ids';
+import { getGroupId, getSpecId, GroupId } from '../../utils/ids';
 import { ScaleType } from '../../utils/scales/scales';
 import { RawDataSeries } from '../series';
-import { BasicSeriesSpec } from '../specs';
+import { BasicSeriesSpec, DomainRange } from '../specs';
 import { BARCHART_1Y0G } from '../utils/test_dataset';
 import {
   coerceYScaleTypes,
@@ -466,10 +466,8 @@ describe('Y Domain', () => {
     ];
     const specDataSeries = new Map();
     specDataSeries.set(getSpecId('a'), dataSeries);
-    const domainsByGroupId = new Map();
-    const yDomainConfig = new Map();
-    yDomainConfig.set('y', { min: 0, max: 20 });
-    domainsByGroupId.set(groupId, yDomainConfig);
+    const domainsByGroupId = new Map<GroupId, DomainRange>();
+    domainsByGroupId.set(groupId, { min: 0, max: 20 });
 
     const mergedDomain = mergeYDomain(specDataSeries, [
       {

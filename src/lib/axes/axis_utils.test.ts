@@ -955,11 +955,8 @@ describe('Axis computational utils', () => {
     axesSpecs.set(verticalAxisSpec.id, verticalAxisSpec);
 
     // Base case
-    const expectedSimpleMap = new Map<GroupId, Map<string, DomainRange>>();
-    const expectedSimpleMapDomains = new Map<string, DomainRange>();
-
-    expectedSimpleMapDomains.set('y', { min: 2, max: 9 });
-    expectedSimpleMap.set(groupId, expectedSimpleMapDomains);
+    const expectedSimpleMap = new Map<GroupId, DomainRange>();
+    expectedSimpleMap.set(groupId, { min: 2, max: 9 });
 
     const simpleDomainsByGroupId = mergeDomainsByGroupId(axesSpecs, 0);
     expect(simpleDomainsByGroupId).toEqual(expectedSimpleMap);
@@ -975,10 +972,8 @@ describe('Axis computational utils', () => {
     altVerticalAxisSpec.domain = domainRange2;
     axesSpecs.set(altVerticalAxisSpec.id, altVerticalAxisSpec);
 
-    const expectedMergedMap = new Map<GroupId, Map<string, DomainRange>>();
-    const expectedMergedMapDomains = new Map<string, DomainRange>();
-    expectedMergedMapDomains.set('y', { min: 0, max: 9 });
-    expectedMergedMap.set(groupId, expectedMergedMapDomains);
+    const expectedMergedMap = new Map<GroupId, DomainRange>();
+    expectedMergedMap.set(groupId, { min: 0, max: 9 });
 
     const mergedDomainsByGroupId = mergeDomainsByGroupId(axesSpecs, 0);
     expect(mergedDomainsByGroupId).toEqual(expectedMergedMap);
@@ -989,7 +984,6 @@ describe('Axis computational utils', () => {
       max: 15,
     };
     axesSpecs.set(horizontalAxisSpec.id, horizontalAxisSpec);
-    expectedMergedMapDomains.set('x', { min: 5, max: 15 });
 
     const mergedMultiDomainsByGroupId = mergeDomainsByGroupId(axesSpecs, 0);
 

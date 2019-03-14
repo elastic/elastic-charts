@@ -27,7 +27,7 @@ export type YBasicSeriesSpec = Pick<
 export function mergeYDomain(
   dataSeries: Map<SpecId, RawDataSeries[]>,
   specs: YBasicSeriesSpec[],
-  domainsByGroupId: Map<GroupId, Map<string, DomainRange>>,
+  domainsByGroupId: Map<GroupId, DomainRange>,
 ): YDomain[] {
   // group specs by group ids
   const specsByGroupIds = splitSpecsByGroupId(specs);
@@ -66,8 +66,7 @@ export function mergeYDomain(
         isStackedScaleToExtent || isNonStackedScaleToExtent,
       );
 
-      const groupDomains = domainsByGroupId.get(groupId);
-      const customDomain = groupDomains && groupDomains.get('y');
+      const customDomain = domainsByGroupId.get(groupId);
       const domain = customDomain ? [customDomain.min, customDomain.max] : groupDomain;
 
       return {
