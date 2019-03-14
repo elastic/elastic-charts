@@ -627,6 +627,11 @@ export function mergeDomainsByGroupId(
     const { groupId, domain } = spec;
 
     if (domain) {
+      if (domain.min > domain.max) {
+        const errorMessage = `[Axis ${id}]: custom domain is invalid, min is greater than max`;
+        throw new Error(errorMessage);
+      }
+
       const prevGroupDomain = domainsByGroupId.get(groupId);
       const isAxisYDomain = isYDomain(spec.position, chartRotation);
 

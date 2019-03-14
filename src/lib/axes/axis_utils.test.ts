@@ -989,4 +989,21 @@ describe('Axis computational utils', () => {
 
     expect(mergedMultiDomainsByGroupId).toEqual(expectedMergedMap);
   });
+
+  test('should throw on invalid domain', () => {
+    const domainRange1 = {
+      min: 9,
+      max: 2,
+    };
+
+    verticalAxisSpec.domain = domainRange1;
+
+    const axesSpecs = new Map();
+    axesSpecs.set(verticalAxisSpec.id, verticalAxisSpec);
+
+    const attemptToMerge = () => { mergeDomainsByGroupId(axesSpecs, 0); };
+    const expectedError = '[Axis axis_1]: custom domain is invalid, min is greater than max';
+
+    expect(attemptToMerge).toThrowError(expectedError);
+  });
 });
