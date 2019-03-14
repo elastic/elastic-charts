@@ -67,8 +67,8 @@ export function mergeYDomain(
       );
 
       const groupDomains = domainsByGroupId.get(groupId);
-      const limitedDomain = groupDomains && groupDomains.get('y');
-      const domain = limitedDomain ? [limitedDomain.min, limitedDomain.max] : groupDomain;
+      const customDomain = groupDomains && groupDomains.get('y');
+      const domain = customDomain ? [customDomain.min, customDomain.max] : groupDomain;
 
       return {
         type: 'yDomain',

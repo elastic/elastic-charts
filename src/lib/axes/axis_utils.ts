@@ -617,6 +617,8 @@ export function isHorizontal(position: Position) {
 }
 
 // TODO: make domain type
+// TODO: only hold yDomain values (xDomain handle elsewhere), so return value can be Map<GroupId, DomainRange>
+// TODO: if domain defined on an xDomain axis, do not add and console.warn
 export function mergeDomainsByGroupId(
   axesSpecs: Map<AxisId, AxisSpec>,
   chartRotation: Rotation,

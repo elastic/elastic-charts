@@ -13,7 +13,7 @@ describe('X Domain', () => {
 
   test('should throw if we miss calling merge X domain without specs configured', () => {
     expect(() => {
-      mergeXDomain([], new Set());
+      mergeXDomain([], new Set(), undefined);
     }).toThrow();
   });
 
@@ -226,6 +226,7 @@ describe('X Domain', () => {
         },
       ],
       xValues,
+      undefined,
     );
     expect(mergedDomain.domain).toEqual([0, 7]);
   });
@@ -264,6 +265,7 @@ describe('X Domain', () => {
         },
       ],
       xValues,
+      undefined,
     );
     expect(mergedDomain.domain).toEqual([0, 7]);
   });
@@ -306,6 +308,7 @@ describe('X Domain', () => {
         },
       ],
       xValues,
+      undefined,
     );
     expect(mergedDomain.domain).toEqual([0, 7]);
   });
@@ -348,6 +351,7 @@ describe('X Domain', () => {
         },
       ],
       xValues,
+      undefined,
     );
     expect(mergedDomain.domain).toEqual([0, 7]);
   });
@@ -390,6 +394,7 @@ describe('X Domain', () => {
         },
       ],
       xValues,
+      undefined,
     );
     expect(mergedDomain.domain).toEqual([0, 1, 2, 5, 7]);
   });
@@ -432,6 +437,7 @@ describe('X Domain', () => {
         },
       ],
       xValues,
+      undefined,
     );
     expect(mergedDomain.domain).toEqual([0, 1, 2, 5, 7]);
   });
@@ -474,6 +480,7 @@ describe('X Domain', () => {
         },
       ],
       xValues,
+      undefined,
     );
     expect(mergedDomain.domain).toEqual([0, 1, 2, 5, 7]);
   });
@@ -516,6 +523,7 @@ describe('X Domain', () => {
         },
       ],
       xValues,
+      undefined,
     );
     expect(mergedDomain.domain).toEqual([0, 1, 2, 5, 7]);
   });
@@ -558,6 +566,7 @@ describe('X Domain', () => {
         },
       ],
       xValues,
+      undefined,
     );
     expect(mergedDomain.domain).toEqual([0, 7]);
   });
@@ -603,6 +612,7 @@ describe('X Domain', () => {
         },
       ],
       xValues,
+      undefined,
     );
     expect(mergedDomain.domain.length).toEqual(maxValues);
   });
