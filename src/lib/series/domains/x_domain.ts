@@ -35,13 +35,22 @@ export function mergeXDomain(
     if (xDomain) {
       if (Array.isArray(xDomain)) {
         seriesXComputedDomains = xDomain;
+      } else {
+        // tslint:disable-next-line:no-console
+        console.warn('xDomain for ordinal scale should be an array of values, not a DomainRange object');
       }
     }
   } else {
     seriesXComputedDomains = computeContinuousDataDomain(values, identity, true);
     if (xDomain) {
       if (!Array.isArray(xDomain)) {
+        if (xDomain.min > xDomain.max) {
+          throw new Error('custom xDomain is invalid, min is greater than max');
+        }
         seriesXComputedDomains = [xDomain.min, xDomain.max];
+      } else {
+        // tslint:disable-next-line:no-console
+        console.warn('xDomain for continuous scale should be a DomainRange object, not an array');
       }
     }
     minInterval = findMinInterval(values);

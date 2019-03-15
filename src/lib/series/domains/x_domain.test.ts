@@ -640,4 +640,34 @@ describe('X Domain', () => {
     const minInterval = findMinInterval([100]);
     expect(minInterval).toBe(1);
   });
+  test('should account for custom domain when merging a linear domain', () => {
+    const xValues = new Set([1, 2, 3, 4, 5]);
+    const xDomain = { min: 0, max: 3 };
+    const specs: Array<Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>> =
+      [{ seriesType: 'line', xScaleType: ScaleType.Linear }];
+
+    const basicMergedDomain = mergeXDomain(specs, xValues, xDomain);
+    expect(basicMergedDomain.domain).toEqual([0, 3]);
+
+    const arrayXDomain = [1, 2];
+    const unappliedArrayMergedDomain = mergeXDomain(specs, xValues, arrayXDomain);
+    expect(unappliedArrayMergedDomain.domain).toEqual([1, 5]);
+
+    const invalidXDomain = { min: 10, max: 0 };
+    const attemptToMerge = () => { mergeXDomain(specs, xValues, invalidXDomain); };
+    expect(attemptToMerge).toThrowError('custom xDomain is invalid, min is greater than max');
+  });
+
+  test('should account for custom domain when merging an ordinal domain', () => {
+    const xValues = new Set(['a', 'b', 'c', 'd']);
+    const xDomain = ['a', 'b', 'c'];
+    const specs: Array<Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>> =
+      [{ seriesType: 'bar', xScaleType: ScaleType.Ordinal }];
+    const basicMergedDomain = mergeXDomain(specs, xValues, xDomain);
+    expect(basicMergedDomain.domain).toEqual(['a', 'b', 'c']);
+
+    const objectXDomain = { max: 10, min: 0 };
+    const unappliedArrayMergedDomain = mergeXDomain(specs, xValues, objectXDomain);
+    expect(unappliedArrayMergedDomain.domain).toEqual(['a', 'b', 'c', 'd']);
+  });
 });
