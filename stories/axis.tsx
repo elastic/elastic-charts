@@ -1,4 +1,4 @@
-import { boolean, number } from '@storybook/addon-knobs';
+import { boolean, number, array } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import React from 'react';
 import {
@@ -309,9 +309,14 @@ storiesOf('Axis', module)
       max: number('left max', 7),
     };
 
-    const rightDomain = {
+    const rightDomain1 = {
       min: number('right1 min', 0),
       max: number('right1 max', 10),
+    };
+
+    const rightDomain2 = {
+      min: number('right2 min', 0),
+      max: number('right2 max', 10),
     };
 
     const xDomain = {
@@ -338,11 +343,19 @@ storiesOf('Axis', module)
         />
         <Axis
           id={getAxisId('right')}
-          title={'Line axis'}
+          title={'Line axis (Right 1)'}
           groupId={getGroupId('group2')}
           position={Position.Right}
           tickFormat={(d) => Number(d).toFixed(2)}
-          domain={rightDomain}
+          domain={rightDomain1}
+        />
+        <Axis
+          id={getAxisId('right2')}
+          title={'Line axis (Right 2)'}
+          groupId={getGroupId('group2')}
+          position={Position.Right}
+          tickFormat={(d) => Number(d).toFixed(2)}
+          domain={rightDomain2}
         />
         <BarSeries
           id={getSpecId('bars')}
@@ -384,7 +397,7 @@ storiesOf('Axis', module)
       max: number('right1 max', 10),
     };
 
-    const xDomain = ['a', 'b', 'c', 'd', 3, 0];
+    const xDomain = array('xDomain', ['a', 'b', 'c', 'd', 0, 1, 2, 3]);
 
     return (
       <Chart renderer="canvas" className={'story-chart'}>
