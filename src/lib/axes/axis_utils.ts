@@ -54,6 +54,10 @@ export function computeAxisTicksDimensions(
   chartRotation: Rotation,
   axisConfig: AxisConfig,
 ): AxisTicksDimensions | null {
+  if (axisSpec.hide) {
+    return null;
+  }
+
   const scale = getScaleForAxisSpec(
     axisSpec,
     xDomain,

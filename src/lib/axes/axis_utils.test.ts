@@ -21,10 +21,10 @@ import {
   getVerticalAxisGridLineProps,
   getVerticalAxisTickLineProps,
   getVisibleTicks,
+  isHorizontal,
+  isVertical,
   isYDomain,
   mergeDomainsByGroupId,
-  isVertical,
-  isHorizontal,
 } from './axis_utils';
 import { CanvasTextBBoxCalculator } from './canvas_text_bbox_calculator';
 import { SvgTextBBoxCalculator } from './svg_text_bbox_calculator';
@@ -149,6 +149,21 @@ describe('Axis computational utils', () => {
     expect(computeScalelessSpec).toThrowError('Cannot compute scale for axis spec axis_1');
 
     bboxCalculator.destroy();
+  });
+
+  test('should not compute axis dimensions when spec is configured to hide', () => {
+    const bboxCalculator = new SvgTextBBoxCalculator();
+    verticalAxisSpec.hide = true;
+    const axisDimensions = computeAxisTicksDimensions(
+      verticalAxisSpec,
+      xDomain,
+      [yDomain],
+      1,
+      bboxCalculator,
+      0,
+      axes,
+    );
+    expect(axisDimensions).toBe(null);
   });
 
   test('should compute dimensions for the bounding box containing a rotated label', () => {

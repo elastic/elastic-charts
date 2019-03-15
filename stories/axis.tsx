@@ -154,24 +154,28 @@ storiesOf('Axis', module)
           position={Position.Bottom}
           title={'bottom'}
           showOverlappingTicks={true}
+          hide={boolean('hide botttom axis', false)}
         />
         <Axis
           id={getAxisId('left')}
           title={'left'}
           position={Position.Left}
           tickFormat={(d) => Number(d).toFixed(2)}
+          hide={boolean('hide left axis', false)}
         />
         <Axis
           id={getAxisId('top')}
           position={Position.Top}
           title={'top'}
           showOverlappingTicks={true}
+          hide={boolean('hide top axis', false)}
         />
         <Axis
           id={getAxisId('right')}
           title={'right'}
           position={Position.Right}
           tickFormat={(d) => Number(d).toFixed(2)}
+          hide={boolean('hide right axis', false)}
         />
 
         <AreaSeries
@@ -298,7 +302,7 @@ storiesOf('Axis', module)
       </Chart>
     );
   })
-  .add('customizing domain limits [mixed chart]', () => {
+  .add('customizing domain limits [mixed linear chart]', () => {
     const bottomDomain = {
       min: number('bottom min', 0),
       max: number('botttom max', 3),
