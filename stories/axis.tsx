@@ -1,4 +1,4 @@
-import { boolean, number, array } from '@storybook/addon-knobs';
+import { array, boolean, number } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import React from 'react';
 import {
@@ -344,6 +344,7 @@ storiesOf('Axis', module)
           position={Position.Left}
           tickFormat={(d) => Number(d).toFixed(2)}
           domain={leftDomain}
+          hide={boolean('hide left axis', false)}
         />
         <Axis
           id={getAxisId('right')}
