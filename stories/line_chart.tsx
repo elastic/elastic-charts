@@ -261,4 +261,3 @@ storiesOf('Line Chart', module)
       </Chart>
     );
   });
-
