@@ -47,37 +47,7 @@ export class LineGeometries extends React.PureComponent<
       </Group>
     );
   }
-  // private onElementClick = (value: GeometryValue) => () => {
-  //   if (this.props.onElementClick) {
-  //     this.props.onElementClick(value);
-  //   }
-  // }
-  // private onOverPoint = (point: PointGeometry) => () => {
-  //   const { onElementOver } = this.props;
-  //   const { x, y, value, transform } = point;
-  //   this.setState(() => {
-  //     return {
-  //       overPoint: point,
-  //     };
-  //   });
-  //   onElementOver({
-  //     value,
-  //     position: {
-  //       left: transform.x + x,
-  //       top: y,
-  //     },
-  //   });
-  // }
-  // private onOutPoint = () => {
-  //   const { onElementOut } = this.props;
 
-  //   this.setState(() => {
-  //     return {
-  //       overPoint: undefined,
-  //     };
-  //   });
-  //   onElementOut();
-  // }
   private renderLinePoints = (): JSX.Element[] => {
     const { lines } = this.props;
     return lines.reduce(
@@ -88,6 +58,7 @@ export class LineGeometries extends React.PureComponent<
       [] as JSX.Element[],
     );
   }
+
   private renderPoints = (linePoints: PointGeometry[], i: number): JSX.Element[] => {
     const { radius, stroke, strokeWidth, opacity } = this.props.style.point;
 
