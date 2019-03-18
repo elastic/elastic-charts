@@ -21,11 +21,11 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
     return (
       <svg className="elasticChartsHighlighter">
         <g transform={`translate(${left}, ${top}) rotate(${chartRotation})`}>
-          {highlightedGeometries.map((highligtedGeometry) => {
+          {highlightedGeometries.map((highlightedGeometry) => {
             const {
               color,
               geom: { x, y, width, height, isPoint },
-            } = highligtedGeometry;
+            } = highlightedGeometry;
             if (isPoint) {
               return (
                 <circle cx={x} cy={y} r={width} stroke={color} strokeWidth={4} fill="transparent" />
