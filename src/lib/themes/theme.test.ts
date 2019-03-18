@@ -88,6 +88,7 @@ describe('Themes', () => {
         stroke: 'elastic_charts',
         strokeWidth: 314571,
         visible: true,
+        opacity: 314571,
       },
     };
     const customTheme = mergeWithDefaultTheme({
@@ -108,6 +109,7 @@ describe('Themes', () => {
       area: {
         fill: 'elastic_charts',
         visible: true,
+        opacity: 314571,
       },
       line: {
         stroke: 'elastic_charts',
@@ -124,6 +126,7 @@ describe('Themes', () => {
         radius: 314571,
         stroke: 'elastic_charts',
         strokeWidth: 314571,
+        opacity: 314571,
       },
     };
     const customTheme = mergeWithDefaultTheme({

@@ -1,0 +1,16 @@
+.elasticChartsCrosshair {
+  position: absolute;
+  pointer-events: none;
+}
+
+.elasticChartsCrosshair__verticalBand {
+  position: absolute;
+  pointer-events: none;
+  background: shade($euiColorGhost, 20%);
+}
+
+.elasticChartsCrosshair__horizontalLine {
+  position: absolute;
+  pointer-events: none;
+  z-index: $euiZLevel8;
+}

@@ -1,58 +1,81 @@
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
+import { isCrosshairTooltipType, TooltipType, TooltipValue } from '../lib/utils/interactions';
 import { ChartStore } from '../state/chart_state';
 
-interface ReactiveChartProps {
+interface TooltipProps {
   chartStore?: ChartStore; // FIX until we find a better way on ts mobx
 }
 
-class TooltipsComponent extends React.Component<ReactiveChartProps> {
+class TooltipsComponent extends React.Component<TooltipProps> {
   static displayName = 'Tooltips';
 
   render() {
     const {
       initialized,
       tooltipData,
-      tooltipPosition,
+      cursorPosition,
+      cursorBandPosition,
       showTooltip,
       parentDimensions,
+      chartDimensions,
+      tooltipType,
     } = this.props.chartStore!;
-    const tooltip = tooltipData.get();
-    const tooltipPos = tooltipPosition.get();
     let hPosition;
-    if (!initialized.get() || !tooltip || !tooltipPos) {
+    if (
+      !initialized.get() ||
+      tooltipType.get() === TooltipType.None ||
+      !tooltipData ||
+      tooltipData.length === 0 ||
+      cursorBandPosition.x === -1 ||
+      cursorBandPosition.y === -1 ||
+      cursorPosition.y === -1
+    ) {
       return <div className="elasticChartsTooltip elasticChartsTooltip--hidden" />;
     }
-    if (tooltipPos.x <= parentDimensions.width / 2) {
+    if (cursorBandPosition.x <= chartDimensions.width / 2) {
       hPosition = {
         position: 'left',
-        value: tooltipPos.x + 20,
+        value: chartDimensions.left + cursorBandPosition.x + cursorBandPosition.width + 20,
       };
     } else {
       hPosition = {
         position: 'right',
-        value: parentDimensions.width - tooltipPos.x + 10,
+        value: parentDimensions.width - chartDimensions.left - cursorBandPosition.x + 20,
       };
     }
-    let vPosition;
-    if (tooltipPos.y <= parentDimensions.height / 2) {
+    let vPosition = {
+      position: 'top',
+      value: chartDimensions.top,
+    };
+    // if crosshair fix the tooltip on the top
+    if (isCrosshairTooltipType(tooltipType.get())) {
       vPosition = {
         position: 'top',
-        value: tooltipPos.y,
+        value: chartDimensions.top,
       };
     } else {
-      vPosition = {
-        position: 'bottom',
-        value: parentDimensions.height - tooltipPos.y,
-      };
+      // if it's a follow tooltip, let the tooltip follow the mouse position
+      if (cursorPosition.y <= chartDimensions.height / 2) {
+        vPosition = {
+          position: 'top',
+          value: cursorPosition.y,
+        };
+      } else {
+        vPosition = {
+          position: 'bottom',
+          value: chartDimensions.height - cursorPosition.y,
+        };
+      }
     }
-    return this.renderTooltip(showTooltip.get(), tooltip, vPosition, hPosition);
+
+    return this.renderTooltip(showTooltip.get(), tooltipData, vPosition, hPosition);
   }
 
   private renderTooltip = (
     showTooltip: boolean,
-    tooltip: Array<[any, any]>,
+    tooltipData: TooltipValue[],
     vPosition: { position: string; value: number },
     hPosition: { position: string; value: number },
   ) => {
@@ -68,19 +91,31 @@ class TooltipsComponent extends React.Component<ReactiveChartProps> {
           [hPosition.position]: hPosition.value,
         }}
       >
-        {/* <p>{tooltipData.value.specId}</p> */}
-        <table>
-          <tbody>
-            {tooltip.map(([field, value], index) => {
-              return (
-                <tr key={`row-${index}`}>
-                  <td className="elasticChartsTooltip__label">{field}</td>
-                  <td>{value}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <p className="elasticChartsTooltip__header">{tooltipData[0] && tooltipData[0].value}</p>
+        <div className="elasticChartsTooltip__table">
+          <table>
+            <tbody>
+              {tooltipData.slice(1).map(({ name, value, color, isHighlighted }, index) => {
+                const classes = classNames({
+                  elasticChartsTooltip__rowHighlighted: isHighlighted,
+                });
+                return (
+                  <tr key={`row-${index}`} className={classes}>
+                    <td
+                      className="elasticChartsTooltip__label"
+                      style={{
+                        borderLeftColor: color,
+                      }}
+                    >
+                      {name}
+                    </td>
+                    <td>{value}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     );
   }

@@ -60,7 +60,7 @@ export function computeXScale(
     const bandwitdh = rangeDiff / (domain.length * dividend);
     return createOrdinalScale(domain, minRange, maxRange, 0, bandwitdh);
   } else {
-    if (isBandScale && minInterval !== null) {
+    if (isBandScale) {
       const intervalCount = (domain[1] - domain[0]) / minInterval;
       const bandwidth = rangeDiff / (intervalCount + 1);
       const start = isInverse ? minRange - bandwidth : minRange;
@@ -75,7 +75,15 @@ export function computeXScale(
         minInterval,
       );
     } else {
-      return createContinuousScale(scaleType, domain, minRange, maxRange, 0);
+      return createContinuousScale(
+        scaleType,
+        domain,
+        minRange,
+        maxRange,
+        0,
+        undefined,
+        minInterval,
+      );
     }
   }
 }

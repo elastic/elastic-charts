@@ -1,4 +1,3 @@
-import { LegendItem } from '../lib/series/legend';
 import { DataSeriesColorsValues } from '../lib/series/series';
 import { BasicSeriesSpec } from '../lib/series/specs';
 
@@ -10,7 +9,6 @@ import {
   computeSeriesDomains,
   findSelectedDataSeries,
   getAllDataSeriesColorValues,
-  getLegendItemByIndex,
   getUpdatedCustomSeriesColors,
   updateSelectedDataSeries,
 } from './utils';
@@ -125,31 +123,6 @@ describe('Chart State utils', () => {
     expect(domains.formattedDataSeries.stacked).toMatchSnapshot();
     expect(domains.formattedDataSeries.nonStacked).toMatchSnapshot();
   });
-  it('should get a legend item by index', () => {
-    const dataSeriesColorValues = {
-      specId: getSpecId('foo'),
-      colorValues: [],
-    };
-
-    const firstItem = {
-      color: 'foo',
-      label: 'foo',
-      value: dataSeriesColorValues,
-    };
-
-    const secondItem = {
-      color: 'bar',
-      label: 'bar',
-      value: dataSeriesColorValues,
-    };
-
-    const legendItems: LegendItem[] = [firstItem, secondItem];
-    const legendItemIndex = 1;
-
-    expect(getLegendItemByIndex([], legendItemIndex)).toBe(null);
-    expect(getLegendItemByIndex(legendItems, 2)).toEqual(null);
-    expect(getLegendItemByIndex(legendItems, legendItemIndex)).toEqual(secondItem);
-  });
   it('should check if a DataSeriesColorValues item exists in a list of DataSeriesColorValues', () => {
     const dataSeriesValuesA: DataSeriesColorsValues = {
       specId: getSpecId('a'),
@@ -192,8 +165,12 @@ describe('Chart State utils', () => {
     const addedSelectedSeries = [dataSeriesValuesA, dataSeriesValuesB, dataSeriesValuesC];
     const removedSelectedSeries = [dataSeriesValuesB];
 
-    expect(updateSelectedDataSeries(selectedSeries, dataSeriesValuesC)).toEqual(addedSelectedSeries);
-    expect(updateSelectedDataSeries(selectedSeries, dataSeriesValuesA)).toEqual(removedSelectedSeries);
+    expect(updateSelectedDataSeries(selectedSeries, dataSeriesValuesC)).toEqual(
+      addedSelectedSeries,
+    );
+    expect(updateSelectedDataSeries(selectedSeries, dataSeriesValuesA)).toEqual(
+      removedSelectedSeries,
+    );
     expect(updateSelectedDataSeries(null, dataSeriesValuesA)).toEqual([dataSeriesValuesA]);
   });
   it('should return all of the DataSeriesColorValues on initialization', () => {
