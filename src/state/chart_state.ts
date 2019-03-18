@@ -301,21 +301,21 @@ export class ChartStore {
         }
 
         // check if the pointer is on the geometry
-        let isHighligthed = false;
+        let isHighlighted = false;
         if (isPointerOnGeometry(xAxisCursorPosition, yAxisCursorPosition, indexedGeometry)) {
-          isHighligthed = true;
+          isHighlighted = true;
           oneHighlighted = true;
           newHighlightedGeometris.push(indexedGeometry);
         }
 
         // if it's a follow tooltip, and no element is highlighted
         // not add that element into the tooltip list
-        if (!isHighligthed && isFollowTooltipType(this.tooltipType.get())) {
+        if (!isHighlighted && isFollowTooltipType(this.tooltipType.get())) {
           return acc;
         }
 
         // format the tooltip values
-        const formattedTooltip = formatTooltip(indexedGeometry, spec, color, isHighligthed, yAxis);
+        const formattedTooltip = formatTooltip(indexedGeometry, spec, color, isHighlighted, yAxis);
 
         // format only one time the x value
         if (!xValueInfo) {
