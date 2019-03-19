@@ -303,11 +303,6 @@ storiesOf('Axis', module)
     );
   })
   .add('customizing domain limits [mixed linear chart]', () => {
-    const bottomDomain = {
-      min: number('bottom min', 0),
-      max: number('botttom max', 3),
-    };
-
     const leftDomain = {
       min: number('left min', 0),
       max: number('left max', 7),
@@ -336,7 +331,6 @@ storiesOf('Axis', module)
           position={Position.Bottom}
           title={'Bottom axis'}
           showOverlappingTicks={true}
-          domain={bottomDomain}
         />
         <Axis
           id={getAxisId('left')}
@@ -387,11 +381,6 @@ storiesOf('Axis', module)
     );
   })
   .add('customizing domain limits [mixed ordinal & linear x domain]', () => {
-    const bottomDomain = {
-      min: number('bottom min', 0),
-      max: number('botttom max', 3),
-    };
-
     const leftDomain = {
       min: number('left min', 0),
       max: number('left max', 7),
@@ -412,7 +401,6 @@ storiesOf('Axis', module)
           position={Position.Bottom}
           title={'Bottom axis'}
           showOverlappingTicks={true}
-          domain={bottomDomain}
         />
         <Axis
           id={getAxisId('left')}

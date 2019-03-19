@@ -993,16 +993,16 @@ describe('Axis computational utils', () => {
     const mergedDomainsByGroupId = mergeDomainsByGroupId(axesSpecs, 0);
     expect(mergedDomainsByGroupId).toEqual(expectedMergedMap);
 
-    // xDomain limit
+    // xDomain limit (bad config)
     horizontalAxisSpec.domain = {
       min: 5,
       max: 15,
     };
     axesSpecs.set(horizontalAxisSpec.id, horizontalAxisSpec);
 
-    const mergedMultiDomainsByGroupId = mergeDomainsByGroupId(axesSpecs, 0);
+    const attemptToMerge = () => { mergeDomainsByGroupId(axesSpecs, 0); };
 
-    expect(mergedMultiDomainsByGroupId).toEqual(expectedMergedMap);
+    expect(attemptToMerge).toThrowError('[Axis axis_2]: custom domain for xDomain should be defined in Settings');
   });
 
   test('should throw on invalid domain', () => {

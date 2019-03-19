@@ -632,9 +632,8 @@ export function mergeDomainsByGroupId(
       const isAxisYDomain = isYDomain(spec.position, chartRotation);
 
       if (!isAxisYDomain) {
-        // tslint:disable-next-line:no-console
-        console.warn(`[Axis ${id}]: custom domain for xDomain should be defined in Settings`);
-        return;
+        const errorMessage = `[Axis ${id}]: custom domain for xDomain should be defined in Settings`;
+        throw new Error(errorMessage);
       }
 
       if (domain.min > domain.max) {
