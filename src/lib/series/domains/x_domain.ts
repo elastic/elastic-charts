@@ -18,7 +18,7 @@ export type XDomain = BaseDomain & {
 export function mergeXDomain(
   specs: Array<Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>>,
   xValues: Set<any>,
-  xDomain: DomainRange | Domain | undefined,
+  xDomain?: DomainRange | Domain,
 ): XDomain {
   const mainXScaleType = convertXScaleTypes(specs);
   if (!mainXScaleType) {
