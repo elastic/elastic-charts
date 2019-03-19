@@ -625,34 +625,37 @@ export function mergeDomainsByGroupId(
   chartRotation: Rotation,
 ): Map<GroupId, DomainRange> {
   const domainsByGroupId = new Map<GroupId, DomainRange>();
+
   axesSpecs.forEach((spec: AxisSpec, id: AxisId) => {
     const { groupId, domain } = spec;
 
-    if (domain) {
-      const isAxisYDomain = isYDomain(spec.position, chartRotation);
+    if (!domain) {
+      return;
+    }
 
-      if (!isAxisYDomain) {
-        const errorMessage = `[Axis ${id}]: custom domain for xDomain should be defined in Settings`;
-        throw new Error(errorMessage);
-      }
+    const isAxisYDomain = isYDomain(spec.position, chartRotation);
 
-      if (domain.min > domain.max) {
-        const errorMessage = `[Axis ${id}]: custom domain is invalid, min is greater than max`;
-        throw new Error(errorMessage);
-      }
+    if (!isAxisYDomain) {
+      const errorMessage = `[Axis ${id}]: custom domain for xDomain should be defined in Settings`;
+      throw new Error(errorMessage);
+    }
 
-      const prevGroupDomain = domainsByGroupId.get(groupId);
+    if (domain.min > domain.max) {
+      const errorMessage = `[Axis ${id}]: custom domain is invalid, min is greater than max`;
+      throw new Error(errorMessage);
+    }
 
-      if (prevGroupDomain) {
-        const mergedDomain = {
-          min: Math.min(domain.min, prevGroupDomain.min),
-          max: Math.max(domain.max, prevGroupDomain.max),
-        };
+    const prevGroupDomain = domainsByGroupId.get(groupId);
 
-        domainsByGroupId.set(groupId, mergedDomain);
-      } else {
-        domainsByGroupId.set(groupId, domain);
-      }
+    if (prevGroupDomain) {
+      const mergedDomain = {
+        min: Math.min(domain.min, prevGroupDomain.min),
+        max: Math.max(domain.max, prevGroupDomain.max),
+      };
+
+      domainsByGroupId.set(groupId, mergedDomain);
+    } else {
+      domainsByGroupId.set(groupId, domain);
     }
   });
 
