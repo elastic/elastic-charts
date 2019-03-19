@@ -36,8 +36,7 @@ export function mergeXDomain(
       if (Array.isArray(xDomain)) {
         seriesXComputedDomains = xDomain;
       } else {
-        // tslint:disable-next-line:no-console
-        console.warn('xDomain for ordinal scale should be an array of values, not a DomainRange object');
+        throw new Error('xDomain for ordinal scale should be an array of values, not a DomainRange object');
       }
     }
   } else {
@@ -49,8 +48,7 @@ export function mergeXDomain(
         }
         seriesXComputedDomains = [xDomain.min, xDomain.max];
       } else {
-        // tslint:disable-next-line:no-console
-        console.warn('xDomain for continuous scale should be a DomainRange object, not an array');
+        throw new Error('xDomain for continuous scale should be a DomainRange object, not an array');
       }
     }
     minInterval = findMinInterval(values);
