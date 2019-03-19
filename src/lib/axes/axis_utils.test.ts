@@ -152,7 +152,7 @@ describe('Axis computational utils', () => {
   });
 
   test('should not compute axis dimensions when spec is configured to hide', () => {
-    const bboxCalculator = new SvgTextBBoxCalculator();
+    const bboxCalculator = new CanvasTextBBoxCalculator();
     verticalAxisSpec.hide = true;
     const axisDimensions = computeAxisTicksDimensions(
       verticalAxisSpec,
