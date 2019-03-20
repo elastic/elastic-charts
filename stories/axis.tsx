@@ -95,6 +95,7 @@ storiesOf('Axis', module)
             max: 90,
             step: 1,
           })}
+          tickLabelPadding={200}
         />
         <Axis
           id={getAxisId('left')}
@@ -107,6 +108,7 @@ storiesOf('Axis', module)
             step: 1,
           })}
           tickFormat={(d) => Number(d).toFixed(2)}
+          tickLabelPadding={200}
         />
         <Axis
           id={getAxisId('top')}
@@ -119,6 +121,7 @@ storiesOf('Axis', module)
             step: 1,
           })}
           tickFormat={(d) => Number(d).toFixed(2)}
+          tickLabelPadding ={200}
         />
         <Axis
           id={getAxisId('right')}
@@ -131,6 +134,7 @@ storiesOf('Axis', module)
             step: 1,
           })}
           tickFormat={(d) => Number(d).toFixed(2)}
+          tickLabelPadding={200}
         />
         <AreaSeries
           id={getSpecId('lines')}

@@ -35,6 +35,7 @@ export interface AxisTicksDimensions {
   maxLabelBboxHeight: number;
   maxLabelTextWidth: number;
   maxLabelTextHeight: number;
+  // tickLabelPadding?: number;
 }
 
 export interface TickLabelProps {
@@ -47,7 +48,7 @@ export interface TickLabelProps {
 /**
  * Compute the ticks values and identify max width and height of the labels
  * so we can compute the max space occupied by the axis component.
- * @param axisSpec tbe spec of the axis
+ * @param axisSpec the spec of the axis
  * @param xDomain the x domain associated
  * @param yDomain the y domain array
  * @param totalBarsInCluster the total number of grouped series
@@ -78,6 +79,7 @@ export function computeAxisTicksDimensions(
     1,
     barsPadding,
   );
+
   if (!scale) {
     throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
   }
@@ -262,10 +264,12 @@ export function getTickLabelProps(
   tickPosition: number,
   axisPosition: Position,
   axisTicksDimensions: AxisTicksDimensions,
+  tickLabelPadding?: number,
 ): TickLabelProps {
   const { maxLabelBboxWidth, maxLabelBboxHeight } = axisTicksDimensions;
   const isVerticalAxis = isVertical(axisPosition);
   const isRotated = tickLabelRotation !== 0;
+  let desiredTickPadding;
   let align = 'center';
   let verticalAlign = 'middle';
 
@@ -275,9 +279,15 @@ export function getTickLabelProps(
     if (!isRotated) {
       align = isAxisLeft ? 'right' : 'left';
     }
+    // console.log('$$$$$$$$$ tickPadding', tickPadding);
+    if (tickPadding !== tickLabelPadding) {
+      desiredTickPadding = tickLabelPadding;
+    }
+    desiredTickPadding = tickPadding;
 
     return {
-      x: isAxisLeft ? -maxLabelBboxWidth : tickSize + tickPadding,
+      x: isAxisLeft ? -maxLabelBboxWidth : tickSize + desiredTickPadding,
+      // x: isAxisLeft ? -maxLabelBboxWidth : tickSize + tickPadding,
       y: tickPosition - maxLabelBboxHeight / 2,
       align,
       verticalAlign,

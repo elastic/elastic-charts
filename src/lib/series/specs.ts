@@ -176,6 +176,8 @@ export interface AxisSpec {
   title?: string;
   /** If specified, it constrains the domain for these values */
   domain?: DomainRange;
+  /** Handles the user supplied padding for axis debug */
+  tickLabelPadding?: number;
 }
 
 export type TickFormatter = (value: any) => string;
