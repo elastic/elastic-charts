@@ -147,3 +147,32 @@ export enum Position {
   Left = 'left',
   Right = 'right',
 }
+
+export enum AnnotationPositionType {
+  ChartCoordinate,
+  SeriesDatum,
+}
+
+/**
+ * The position of the annotation defined in terms of a series datapoint.
+ */
+interface SeriesDatumAnnotationPosition {
+  specId: SpecId;
+  accessor: Accessor;
+  datumValue: any;
+  positionType: AnnotationPositionType.SeriesDatum;
+}
+
+/**
+ * The position of the annotation defined in terms of chart coordinates.
+ */
+interface CoordinateAnnotationPosition {
+  coordinateType: 'x' | 'y';
+  value: number;
+  positionType: AnnotationPositionType.ChartCoordinate;
+}
+
+export interface LineAnnotationSpec {
+  position: SeriesDatumAnnotationPosition | CoordinateAnnotationPosition;
+  annotationId: string;
+}

@@ -6,7 +6,7 @@ import { BarSeries, Chart, getSpecId, ScaleType, Settings } from '../src';
 storiesOf('Annotations', module)
   .add('basic', () => {
     return (
-      <Chart renderer="canvas" size={[500, 300]} className={'story-chart'}>
+      <Chart renderer="canvas" className={'story-chart'}>
         <Settings debug={boolean('debug', false)} />
         <BarSeries
           id={getSpecId('bars')}
