@@ -134,6 +134,9 @@ export class ChartStore {
   axesTicks: Map<AxisId, AxisTick[]> = new Map(); // computed
   axesGridLinesPositions: Map<AxisId, AxisLinePosition[]> = new Map(); // computed
 
+  // TODO: add types
+  annotationSpecs = new Map(); // read from jsx
+
   seriesSpecs: Map<SpecId, BasicSeriesSpec> = new Map(); // readed from jsx
 
   seriesDomainsAndData?: SeriesDomainsAndData; // computed
@@ -638,6 +641,14 @@ export class ChartStore {
   }
   removeAxisSpec(axisId: AxisId) {
     this.axesSpecs.delete(axisId);
+  }
+
+  addAnnotationSpec() {
+    // TODO: add spec
+  }
+
+  removeAnnotationSpec() {
+    // TODO: remove spec
   }
 
   computeChart() {
