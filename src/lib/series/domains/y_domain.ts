@@ -63,8 +63,16 @@ export function mergeYDomain(
         isStackedScaleToExtent || isNonStackedScaleToExtent,
       );
 
+      let domainMin = groupDomain[0];
+      let domainMax = groupDomain[1];
+
       const customDomain = domainsByGroupId.get(groupId);
-      const domain = customDomain ? [customDomain.min, customDomain.max] : groupDomain;
+
+      if (customDomain) {
+        domainMin = customDomain.min;
+        domainMax = customDomain.max;
+      }
+      const domain = [domainMin, domainMax];
 
       return {
         type: 'yDomain',

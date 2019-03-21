@@ -45,7 +45,11 @@ export function mergeXDomain(
         if (xDomain.min > xDomain.max) {
           throw new Error('custom xDomain is invalid, min is greater than max');
         }
-        seriesXComputedDomains = [xDomain.min, xDomain.max];
+
+        const [computedDomainMin, computedDomainMax] = seriesXComputedDomains;
+        const domainMin = xDomain.min == null ? computedDomainMin : xDomain.min;
+        const domainMax = xDomain.max == null ? computedDomainMax : xDomain.max;
+        seriesXComputedDomains = [domainMin, domainMax];
       } else {
         throw new Error('xDomain for continuous scale should be a DomainRange object, not an array');
       }
