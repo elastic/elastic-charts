@@ -1,18 +1,7 @@
 import { Accessor } from '../utils/accessor';
 import { TooltipValue } from '../utils/interactions';
-import { GeometryValue, IndexedGeometry } from './rendering';
+import { IndexedGeometry } from './rendering';
 import { AxisSpec, BasicSeriesSpec, Datum, TickFormatter } from './specs';
-
-export interface TooltipPosition {
-  top?: number;
-  left?: number;
-  bottom?: number;
-  right?: number;
-}
-export interface TooltipData {
-  value: GeometryValue;
-  position: TooltipPosition;
-}
 
 export function formatTooltip(
   searchIndexValue: IndexedGeometry,

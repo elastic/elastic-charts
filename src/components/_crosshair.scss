@@ -3,14 +3,14 @@
   pointer-events: none;
 }
 
-.elasticChartsCrosshair__verticalBand {
+.elasticChartsCrosshair__band {
   position: absolute;
   pointer-events: none;
-  background: shade($euiColorGhost, 20%);
 }
 
-.elasticChartsCrosshair__horizontalLine {
+.elasticChartsCrosshair__line {
   position: absolute;
   pointer-events: none;
   z-index: $euiZLevel8;
+  background: 'transparent';
 }

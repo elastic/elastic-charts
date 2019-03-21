@@ -48,13 +48,18 @@ import {
   areIndexedGeometryArraysEquals,
   getValidXPosition,
   getValidYPosition,
+  isCrosshairTooltipType,
   isFollowTooltipType,
   TooltipType,
   TooltipValue,
 } from '../lib/utils/interactions';
 import { Scale, ScaleType } from '../lib/utils/scales/scales';
 import { DEFAULT_TOOLTIP_SNAP, DEFAULT_TOOLTIP_TYPE } from '../specs/settings';
-import { getSnapPosition } from './crosshair_utils';
+import {
+  getCursorBandPosition,
+  getCursorLinePosition,
+  getTooltipPosition,
+} from './crosshair_utils';
 import {
   BrushExtent,
   computeBrushExtent,
@@ -69,16 +74,6 @@ import {
   updateSelectedDataSeries,
 } from './utils';
 
-export interface TooltipPosition {
-  top?: number;
-  left?: number;
-  bottom?: number;
-  right?: number;
-}
-export interface TooltipData {
-  value: GeometryValue;
-  position: TooltipPosition;
-}
 export interface Point {
   x: number;
   y: number;
@@ -101,7 +96,7 @@ export type LegendItemListener = (dataSeriesIdentifiers: DataSeriesColorsValues 
 // const MAX_ANIMATABLE_GLYPHS = 500;
 
 export class ChartStore {
-  debug = true;
+  debug = false;
   specsInitialized = observable.box(false);
   initialized = observable.box(false);
   parentDimensions: Dimensions = {
@@ -156,13 +151,21 @@ export class ChartStore {
   tooltipData = observable.array<TooltipValue>([], { deep: false });
   tooltipType = observable.box(DEFAULT_TOOLTIP_TYPE);
   tooltipSnap = observable.box(DEFAULT_TOOLTIP_SNAP);
-  showTooltip = observable.box(false);
+  tooltipPosition = observable.object<{ transform: string }>({ transform: '' });
 
+  /** position of the cursor relative to the chart */
   cursorPosition = observable.object<{ x: number; y: number }>({ x: -1, y: -1 }, undefined, {
     deep: false,
   });
-  cursorBandPosition = observable.object<{ x: number; y: number; width: number; height: number }>(
-    { x: -1, y: -1, height: -1, width: -1 },
+  cursorBandPosition = observable.object<Dimensions>(
+    { top: -1, left: -1, height: -1, width: -1 },
+    undefined,
+    {
+      deep: false,
+    },
+  );
+  cursorLinePosition = observable.object<Dimensions>(
+    { top: -1, left: -1, height: -1, width: -1 },
     undefined,
     {
       deep: false,
@@ -205,6 +208,9 @@ export class ChartStore {
     this.computeChart();
   });
 
+  /**
+   * x and y values are relative to the container.
+   */
   setCursorPosition = action((x: number, y: number) => {
     if (!this.seriesDomainsAndData || this.tooltipType.get() === TooltipType.None) {
       return;
@@ -216,10 +222,10 @@ export class ChartStore {
 
     // limit cursorPosition to chartDimensions
     // note: to debug and inspect tooltip html, just comment the following ifs
-    if (xPos < 0 || xPos > this.chartDimensions.width) {
+    if (xPos < 0 || xPos >= this.chartDimensions.width) {
       xPos = -1;
     }
-    if (yPos < 0 || yPos > this.chartDimensions.height) {
+    if (yPos < 0 || yPos >= this.chartDimensions.height) {
       yPos = -1;
     }
     this.cursorPosition.x = xPos;
@@ -253,22 +259,37 @@ export class ChartStore {
 
     // invert the cursor position to get the scale value
     const xValue = this.xScale.invertWithStep(xAxisCursorPosition);
-    this.cursorBandPosition.y = 0;
-    this.cursorBandPosition.height = this.chartDimensions.height;
 
-    // update the cursor position if we are snapping the tooltip/crosshair to grid
-    const snapPosition = getSnapPosition(
-      this.xScale.invertWithStep(xPos),
+    // update che cursorBandPosition based on chart configuration
+    const updatedCursorBand = getCursorBandPosition(
+      this.chartRotation,
+      this.chartDimensions,
+      this.cursorPosition,
+      this.isTooltipSnapEnabled.get(),
       this.xScale,
       this.totalGroupCount,
     );
-
-    // always snap to grid the background crosshair band
-    this.cursorBandPosition.x = snapPosition.x;
-    this.cursorBandPosition.width = snapPosition.width;
-    if (this.tooltipSnap.get()) {
-      this.cursorPosition.x = snapPosition.snappingPosition;
+    if (updatedCursorBand === undefined) {
+      this.clearTooltipAndHighlighted();
+      return;
     }
+    Object.assign(this.cursorBandPosition, updatedCursorBand);
+
+    const updatedCursorLine = getCursorLinePosition(
+      this.chartRotation,
+      this.chartDimensions,
+      this.cursorPosition,
+    );
+    Object.assign(this.cursorLinePosition, updatedCursorLine);
+
+    const updatedTooltipPosition = getTooltipPosition(
+      this.chartDimensions,
+      this.chartRotation,
+      this.cursorBandPosition,
+      this.cursorPosition,
+    );
+
+    this.tooltipPosition.transform = updatedTooltipPosition.transform;
 
     // get the elements on at this cursor position
     const elements = this.geometriesIndex.get(xValue);
@@ -348,10 +369,8 @@ export class ChartStore {
     // update tooltip visibility
     if (tooltipValues.length === 0) {
       this.tooltipData.clear();
-      this.showTooltip.set(false);
     } else {
       this.tooltipData.replace(tooltipValues);
-      this.showTooltip.set(true);
     }
 
     // TODO move this into the renderer
@@ -362,14 +381,34 @@ export class ChartStore {
     }
   });
 
+  isTooltipVisible = computed(() => {
+    return (
+      this.tooltipType.get() !== TooltipType.None &&
+      this.cursorPosition.x > -1 &&
+      this.cursorPosition.y > -1 &&
+      this.tooltipData.length > 0
+    );
+  });
+  isCrosshairVisible = computed(() => {
+    return (
+      isCrosshairTooltipType(this.tooltipType.get()) &&
+      this.cursorPosition.x > -1 &&
+      this.cursorPosition.y > -1
+    );
+  });
+
+  isTooltipSnapEnabled = computed(() => {
+    return (this.xScale && this.xScale.bandwidth > 0) || this.tooltipSnap.get();
+  });
+
   clearTooltipAndHighlighted = action(() => {
-    this.showTooltip.set(false);
     // if exist any highlighted geometry, send an out element event
     if (this.onElementOutListener && this.highlightedGeometries.length > 0) {
       this.onElementOutListener();
     }
     // clear highlight geoms
     this.highlightedGeometries.clear();
+    document.body.style.cursor = 'default';
   });
 
   setShowLegend = action((showLegend: boolean) => {

@@ -1,22 +1,17 @@
 import { inject, observer } from 'mobx-react';
 import React, { CSSProperties } from 'react';
-import { Rotation } from '../lib/series/specs';
-import { isCrosshairTooltipType, TooltipType } from '../lib/utils/interactions';
+import { TooltipType } from '../lib/utils/interactions';
 import { ChartStore } from '../state/chart_state';
+import { isHorizontalRotation } from '../state/utils';
 
 interface CrosshairProps {
   chartStore?: ChartStore;
 }
 
-function canRenderVertical(type: TooltipType, chartRotation: Rotation, visible: boolean) {
-  if (visible && type === TooltipType.Crosshairs) {
-    return true;
-  }
-  return (
-    visible && type === TooltipType.VerticalCursor && (chartRotation === 0 || chartRotation === 180)
-  );
+function canRenderBand(type: TooltipType, visible: boolean) {
+  return visible && (type === TooltipType.Crosshairs || type === TooltipType.VerticalCursor);
 }
-function canRenderHorizontal(type: TooltipType, visible: boolean) {
+function canRenderHelpLine(type: TooltipType, visible: boolean) {
   return visible && type === TooltipType.Crosshairs;
 }
 
@@ -24,78 +19,70 @@ class CrosshairComponent extends React.Component<CrosshairProps> {
   static displayName = 'Crosshair';
 
   render() {
-    const {
-      cursorPosition,
-      chartRotation,
-      tooltipType,
-      chartTheme: { crosshair },
-    } = this.props.chartStore!;
-    if (
-      !isCrosshairTooltipType(tooltipType.get()) ||
-      cursorPosition.x === -1 ||
-      cursorPosition.y === -1
-    ) {
+    const { isCrosshairVisible } = this.props.chartStore!;
+    if (!isCrosshairVisible.get()) {
       return <div className="elasticChartsCrosshair" />;
     }
 
     return (
       <div className="elasticChartsCrosshair">
-        {canRenderVertical(tooltipType.get(), chartRotation, crosshair.vertical.visible) &&
-          this.renderVertical()}
-        {canRenderHorizontal(tooltipType.get(), crosshair.horizontal.visible) &&
-          this.renderHorizontal()}
+        {this.renderBand()}
+        {this.renderLine()}
       </div>
     );
   }
-  renderVertical() {
-    const {
-      // cursorPosition,
-      chartDimensions,
-      chartRotation,
-      cursorBandPosition,
-      chartTheme: { crosshair },
-    } = this.props.chartStore!;
-    const crossHairStyle = [180, 0].includes(chartRotation)
-      ? crosshair.vertical
-      : crosshair.horizontal;
-    const left = cursorBandPosition.x + chartDimensions.left;
-    const { top, height } = chartDimensions;
 
-    const style: CSSProperties = {
-      left,
-      top,
-      height,
-      width: cursorBandPosition.width,
-      opacity: crossHairStyle.opacity,
-    };
-    return <div className="elasticChartsCrosshair__verticalBand" style={style} />;
-  }
-  renderHorizontal() {
+  renderBand() {
     const {
-      cursorPosition,
-      chartDimensions,
-      chartRotation,
-      chartTheme: { crosshair },
+      chartTheme: {
+        crosshair: { band },
+      },
+      cursorBandPosition,
+      tooltipType,
     } = this.props.chartStore!;
-    const left = chartDimensions.left;
-    const crossHairStyle = [180, 0].includes(chartRotation)
-      ? crosshair.horizontal
-      : crosshair.vertical;
-    const top = cursorPosition.y + chartDimensions.top;
-    const { width } = chartDimensions;
+
+    if (!canRenderBand(tooltipType.get(), band.visible)) {
+      return null;
+    }
     const style: CSSProperties = {
-      left,
-      width,
-      top,
-      height: 0,
-      borderTopWidth: crossHairStyle.strokeWidth,
-      borderTopColor: crossHairStyle.stroke,
-      borderTopStyle: crossHairStyle.dash ? 'dashed' : 'solid',
-      background: 'transparent',
-      zIndex: 190,
-      opacity: crossHairStyle.opacity,
+      ...cursorBandPosition,
+      background: band.fill,
     };
-    return <div className="elasticChartsCrosshair__horizontalLine" style={style} />;
+
+    return <div className="elasticChartsCrosshair__band" style={style} />;
+  }
+
+  renderLine() {
+    const {
+      chartTheme: {
+        crosshair: { line },
+      },
+      cursorLinePosition,
+      tooltipType,
+      chartRotation,
+    } = this.props.chartStore!;
+
+    if (!canRenderHelpLine(tooltipType.get(), line.visible)) {
+      return null;
+    }
+    const isHorizontalRotated = isHorizontalRotation(chartRotation);
+    let style: CSSProperties;
+    if (isHorizontalRotated) {
+      style = {
+        ...cursorLinePosition,
+        borderTopWidth: line.strokeWidth,
+        borderTopColor: line.stroke,
+        borderTopStyle: line.dash ? 'dashed' : 'solid',
+      };
+    } else {
+      style = {
+        ...cursorLinePosition,
+        borderLeftWidth: line.strokeWidth,
+        borderLeftColor: line.stroke,
+        borderLeftStyle: line.dash ? 'dashed' : 'solid',
+      };
+    }
+    return <div className="elasticChartsCrosshair__line" style={style} />;
   }
 }
 

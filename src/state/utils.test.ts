@@ -10,6 +10,8 @@ import {
   findSelectedDataSeries,
   getAllDataSeriesColorValues,
   getUpdatedCustomSeriesColors,
+  isHorizontalRotation,
+  isVerticalRotation,
   updateSelectedDataSeries,
 } from './utils';
 
@@ -223,5 +225,23 @@ describe('Chart State utils', () => {
     expectedCustomSeriesColors.set('specId:{spec1},colors:{bar}', 'custom_color');
 
     expect(updatedCustomSeriesColors).toEqual(expectedCustomSeriesColors);
+  });
+
+  test('is horizontal chart rotation', () => {
+    expect(isHorizontalRotation(0)).toBe(true);
+    expect(isHorizontalRotation(180)).toBe(true);
+    expect(isHorizontalRotation(-90)).toBe(false);
+    expect(isHorizontalRotation(90)).toBe(false);
+    expect(isVerticalRotation(-90)).toBe(true);
+    expect(isVerticalRotation(90)).toBe(true);
+    expect(isVerticalRotation(0)).toBe(false);
+    expect(isVerticalRotation(180)).toBe(false);
+  });
+
+  test('is vertical chart rotation', () => {
+    expect(isVerticalRotation(-90)).toBe(true);
+    expect(isVerticalRotation(90)).toBe(true);
+    expect(isVerticalRotation(0)).toBe(false);
+    expect(isVerticalRotation(180)).toBe(false);
   });
 });

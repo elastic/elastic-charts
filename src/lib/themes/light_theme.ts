@@ -100,16 +100,13 @@ export const LIGHT_THEME: Theme = {
     horizontalHeight: 50,
   },
   crosshair: {
-    vertical: {
-      stroke: 'gray',
-      strokeWidth: 1,
-      opacity: 1,
+    band: {
+      fill: 'lightgray',
       visible: true,
     },
-    horizontal: {
+    line: {
       stroke: 'gray',
       strokeWidth: 1,
-      opacity: 1,
       dash: [5, 5],
       visible: true,
     },

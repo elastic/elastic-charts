@@ -80,10 +80,10 @@ export class ScaleContinuous implements Scale {
     domain: any[],
     range: [number, number],
     type: ScaleContinuousType,
-    clamp?: boolean,
-    bandwidth?: number,
+    clamp: boolean = false,
+    bandwidth: number = 0,
     /** the min interval computed on the XDomain, not available for yDomains */
-    minInterval?: number,
+    minInterval: number = 0,
   ) {
     this.d3Scale = SCALES[type]();
     if (type === ScaleType.Log) {
@@ -96,11 +96,11 @@ export class ScaleContinuous implements Scale {
     this.d3Scale.range(range);
     this.d3Scale.clamp(clamp);
     // this.d3Scale.nice();
-    this.bandwidth = bandwidth || 0;
+    this.bandwidth = bandwidth;
     this.step = 0;
     this.type = type;
     this.range = range;
-    this.minInterval = minInterval || 0;
+    this.minInterval = minInterval;
     this.isInverted = this.domain[0] > this.domain[1];
     if (type === ScaleType.Time) {
       this.tickValues = this.d3Scale.ticks().map((d: Date) => {

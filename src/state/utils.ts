@@ -467,3 +467,11 @@ export function mutableIndexedGeometryMapUpsert(
     mutableGeometriesIndex.set(key, [...upsertGeometry, ...existing]);
   }
 }
+
+export function isHorizontalRotation(chartRotation: Rotation) {
+  return chartRotation === 0 || chartRotation === 180;
+}
+
+export function isVerticalRotation(chartRotation: Rotation) {
+  return chartRotation === -90 || chartRotation === 90;
+}

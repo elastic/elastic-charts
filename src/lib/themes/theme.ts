@@ -102,8 +102,8 @@ export interface AreaSeriesStyle {
   point: StrokeStyle & Opacity & Visible & Radius;
 }
 export interface CrosshairStyle {
-  vertical: StrokeStyle & Opacity & Visible;
-  horizontal: StrokeStyle & Opacity & Visible;
+  band: FillStyle & Visible;
+  line: StrokeStyle & Visible;
 }
 export interface PartialTheme {
   chartMargins?: Margins;

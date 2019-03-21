@@ -2,7 +2,7 @@
   @include euiBottomShadow($color: $euiColorFullShade);
   @include euiFontSizeXS;
   pointer-events: none;
-  position: fixed;
+  position: absolute;
   z-index: $euiZLevel9;
   background-color: rgba(tintOrShade($euiColorFullShade, 25%, 80%), 0.9);
   color: $euiColorGhost;
@@ -10,7 +10,6 @@
   max-width: $euiSizeXL * 10;
   overflow: hidden;
   overflow-wrap: break-word;
-
   transition: opacity $euiAnimSpeedNormal;
   user-select: none;
   table {

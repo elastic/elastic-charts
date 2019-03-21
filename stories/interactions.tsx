@@ -7,20 +7,23 @@ import {
   BarSeries,
   Chart,
   CurveType,
+  DARK_THEME,
   getAxisId,
   getSpecId,
+  LIGHT_THEME,
   LineSeries,
   niceTimeFormatter,
   Position,
   ScaleType,
   Settings,
+  TooltipType,
 } from '../src/';
 
 import { boolean, select } from '@storybook/addon-knobs';
 import { DateTime } from 'luxon';
+import { switchTheme } from '../.storybook/theme_service';
 import * as TestDatasets from '../src/lib/series/utils/test_dataset';
 import { KIBANA_METRICS } from '../src/lib/series/utils/test_dataset_kibana';
-import { TooltipType } from '../src/lib/utils/interactions';
 import { niceTimeFormatByDay, timeFormatter } from '../src/utils/data/formatters';
 
 const onElementListeners = {
@@ -465,9 +468,17 @@ storiesOf('Interactions', module)
     );
   })
   .add('crosshair with time axis', () => {
+    const hideBars = boolean('hideBars', false);
     const formatter = timeFormatter(niceTimeFormatByDay(1));
+    const darkmode = boolean('darkmode', false);
+    const className = darkmode ? 'story-chart-dark' : 'story-chart';
+    const defaultTheme = darkmode ? DARK_THEME : LIGHT_THEME;
+    switchTheme(darkmode ? 'dark' : 'light');
+    const chartRotation = select('rotation', { '90': 90, '0': 0, '-90': -90, '180': 180 }, 0);
+    const numberFormatter = (d: any) => Number(d).toFixed(2);
+
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart renderer="canvas" className={className}>
         <Settings
           debug={boolean('debug', false)}
           tooltipType={select(
@@ -480,40 +491,54 @@ storiesOf('Interactions', module)
             },
             TooltipType.Crosshairs,
           )}
+          theme={defaultTheme}
           tooltipSnap={boolean('tooltip snap to grid', true)}
+          rotation={chartRotation}
         />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
           title={'Bottom axis'}
-          tickFormat={formatter}
+          tickFormat={[0, 180].includes(chartRotation) ? formatter : numberFormatter}
         />
         <Axis
           id={getAxisId('left2')}
           title={'Left axis'}
           position={Position.Left}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={[0, 180].includes(chartRotation) ? numberFormatter : formatter}
         />
-
-        <BarSeries
-          id={getSpecId('data 1')}
+        {!hideBars && (
+          <BarSeries
+            id={getSpecId('data 1')}
+            xScaleType={ScaleType.Time}
+            yScaleType={ScaleType.Linear}
+            xAccessor={0}
+            yAccessors={[1]}
+            stackAccessors={[0]}
+            data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 20)}
+            yScaleToDataExtent={false}
+          />
+        )}
+        {!hideBars && (
+          <BarSeries
+            id={getSpecId('data 2')}
+            xScaleType={ScaleType.Time}
+            yScaleType={ScaleType.Linear}
+            xAccessor={0}
+            yAccessors={[1]}
+            stackAccessors={[0]}
+            data={KIBANA_METRICS.metrics.kibana_os_load[1].data.slice(0, 20)}
+            yScaleToDataExtent={false}
+          />
+        )}
+        <LineSeries
+          id={getSpecId('data 3')}
           xScaleType={ScaleType.Time}
           yScaleType={ScaleType.Linear}
           xAccessor={0}
           yAccessors={[1]}
-          stackAccessors={[0]}
-          data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
-          yScaleToDataExtent={false}
-        />
-        <BarSeries
-          id={getSpecId('data 2')}
-          xScaleType={ScaleType.Time}
-          yScaleType={ScaleType.Linear}
-          xAccessor={0}
-          yAccessors={[1]}
-          stackAccessors={[0]}
-          data={KIBANA_METRICS.metrics.kibana_os_load[1].data}
-          yScaleToDataExtent={false}
+          data={KIBANA_METRICS.metrics.kibana_os_load[2].data.slice(0, 20)}
+          yScaleToDataExtent={hideBars}
         />
       </Chart>
     );

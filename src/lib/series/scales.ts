@@ -57,8 +57,8 @@ export function computeXScale(
   const isInverse = maxRange < minRange;
   if (scaleType === ScaleType.Ordinal) {
     const dividend = totalGroupCount > 0 ? totalGroupCount : 1;
-    const bandwitdh = rangeDiff / (domain.length * dividend);
-    return createOrdinalScale(domain, minRange, maxRange, 0, bandwitdh);
+    const bandwidth = rangeDiff / (domain.length * dividend);
+    return createOrdinalScale(domain, minRange, maxRange, 0, bandwidth);
   } else {
     if (isBandScale) {
       const intervalCount = (domain[1] - domain[0]) / minInterval;

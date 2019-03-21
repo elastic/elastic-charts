@@ -1,21 +1,16 @@
 import { Group as KonvaGroup } from 'konva';
-import { IAction } from 'mobx';
 import React from 'react';
 import { Circle, Group, Path } from 'react-konva';
 import { animated, Spring } from 'react-spring/renderprops-konva';
 import { LegendItem } from '../../lib/series/legend';
 import { getGeometryStyle, LineGeometry, PointGeometry } from '../../lib/series/rendering';
 import { LineSeriesStyle, SharedGeometryStyle } from '../../lib/themes/theme';
-import { ElementClickListener, TooltipData } from '../../state/chart_state';
 
 interface LineGeometriesDataProps {
   animated?: boolean;
   lines: LineGeometry[];
   style: LineSeriesStyle;
   sharedStyle: SharedGeometryStyle;
-  onElementClick?: ElementClickListener;
-  onElementOver: ((tooltip: TooltipData) => void) & IAction;
-  onElementOut: (() => void) & IAction;
   highlightedLegendItem: LegendItem | null;
 }
 interface LineGeometriesDataState {
@@ -90,7 +85,7 @@ export class LineGeometries extends React.PureComponent<
       } else {
         return (
           <Circle
-            key={`line-point-${index}`}
+            key={`line-point-${i}-${index}`}
             x={transform.x + x}
             y={y}
             radius={radius}
