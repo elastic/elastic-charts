@@ -303,7 +303,7 @@ export class ChartStore {
     // build the tooltip value list
     let xValueInfo: TooltipValue | null = null;
     let oneHighlighted = false;
-    const newHighlightedGeometris: IndexedGeometry[] = [];
+    const newHighlightedGeometries: IndexedGeometry[] = [];
     const tooltipValues = elements.reduce(
       (acc, indexedGeometry) => {
         const { specId, color } = indexedGeometry;
@@ -326,7 +326,7 @@ export class ChartStore {
         if (isPointerOnGeometry(xAxisCursorPosition, yAxisCursorPosition, indexedGeometry)) {
           isHighlighted = true;
           oneHighlighted = true;
-          newHighlightedGeometris.push(indexedGeometry);
+          newHighlightedGeometries.push(indexedGeometry);
         }
 
         // if it's a follow tooltip, and no element is highlighted
@@ -352,10 +352,10 @@ export class ChartStore {
     // check if we already have send out an over/out event on highlighted elements
     if (
       this.onElementOverListener &&
-      !areIndexedGeometryArraysEquals(newHighlightedGeometris, this.highlightedGeometries.toJS())
+      !areIndexedGeometryArraysEquals(newHighlightedGeometries, this.highlightedGeometries.toJS())
     ) {
-      if (newHighlightedGeometris.length > 0) {
-        this.onElementOverListener(newHighlightedGeometris);
+      if (newHighlightedGeometries.length > 0) {
+        this.onElementOverListener(newHighlightedGeometries);
       } else {
         if (this.onElementOutListener) {
           this.onElementOutListener();
@@ -364,7 +364,7 @@ export class ChartStore {
     }
 
     // update highlighted geometries observer
-    this.highlightedGeometries.replace(newHighlightedGeometris);
+    this.highlightedGeometries.replace(newHighlightedGeometries);
 
     // update tooltip visibility
     if (tooltipValues.length === 0) {

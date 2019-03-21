@@ -64,16 +64,20 @@ export function mergeXDomain(
 
 /**
  * Find the minimum interval between xValues.
+ * Default to 0 if an empty array, 1 if one item array
  */
 export function findMinInterval(xValues: number[]): number {
-  if (xValues.length === 1) {
+  const valuesLength = xValues.length - 1;
+  if (valuesLength < 0) {
+    return 0;
+  }
+  if (valuesLength === 0) {
     return 1;
   }
   const sortedValues = xValues.slice().sort(compareByValueAsc);
-  const sortedValuesLength = sortedValues.length - 1;
   let i;
   let minInterval = null;
-  for (i = 0; i < sortedValuesLength; i++) {
+  for (i = 0; i < valuesLength; i++) {
     const current = sortedValues[i];
     const next = sortedValues[i + 1];
     const interval = Math.abs(next - current);
@@ -83,7 +87,7 @@ export function findMinInterval(xValues: number[]): number {
       minInterval = Math.min(minInterval, interval);
     }
   }
-  return minInterval!;
+  return minInterval === null ? 0 : minInterval;
 }
 
 /**
