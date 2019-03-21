@@ -1,5 +1,5 @@
 import { AccessorFn } from './accessor';
-import { computeOrdinalDataDomain, computeContinuousDataDomain, computeStackedContinuousDomain } from './domain';
+import { computeContinuousDataDomain, computeOrdinalDataDomain, computeStackedContinuousDomain } from './domain';
 
 describe('utils/domain', () => {
   test('should compute ordinal data domain: sort & remove nulls', () => {
@@ -119,9 +119,9 @@ describe('utils/domain', () => {
   });
 
   test('should compute stacked data domain: data scaled to extent', () => {
-    const data = [{ x: 12, y: 'a' }, { x: 6, y: 'b' }, { x: 8, y: 'a' }];
-    const yAccessor: AccessorFn = (datum: any) => datum.x;
-    const xAccessor: AccessorFn = (datum: any) => datum.y;
+    const data = [{ y: 12, x: 'a' }, { y: 6, x: 'b' }, { y: 8, x: 'a' }];
+    const yAccessor: AccessorFn = (datum: any) => datum.y;
+    const xAccessor: AccessorFn = (datum: any) => datum.x;
     const scaleToExtent = true;
 
     const stackedDataDomain = computeStackedContinuousDomain(
@@ -137,9 +137,9 @@ describe('utils/domain', () => {
   });
 
   test('should compute stacked data domain: data not scaled to extent', () => {
-    const data = [{ x: 12, y: 'a' }, { x: 6, y: 'b' }, { x: 8, y: 'a' }];
-    const yAccessor: AccessorFn = (datum: any) => datum.x;
-    const xAccessor: AccessorFn = (datum: any) => datum.y;
+    const data = [{ y: 12, x: 'a' }, { y: 6, x: 'b' }, { y: 8, x: 'a' }];
+    const yAccessor: AccessorFn = (datum: any) => datum.y;
+    const xAccessor: AccessorFn = (datum: any) => datum.x;
 
     const stackedDataDomain = computeStackedContinuousDomain(
       data,
