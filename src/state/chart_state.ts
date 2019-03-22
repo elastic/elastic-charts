@@ -20,7 +20,7 @@ import {
   LineGeometry,
   PointGeometry,
 } from '../lib/series/rendering';
-import { countClusteredSeries } from '../lib/series/scales';
+import { countBarsInCluster } from '../lib/series/scales';
 import {
   DataSeriesColorsValues,
   FormattedDataSeries,
@@ -147,7 +147,7 @@ export class ChartStore {
   selectedDataSeries: DataSeriesColorsValues[] | null = null;
   customSeriesColors: Map<string, string> = new Map();
   seriesColorMap: Map<string, string> = new Map();
-  totalGroupCount?: number;
+  totalBarsInCluster?: number;
 
   tooltipData = observable.array<TooltipValue>([], { deep: false });
   tooltipType = observable.box(DEFAULT_TOOLTIP_TYPE);
@@ -269,7 +269,7 @@ export class ChartStore {
       this.cursorPosition,
       this.isTooltipSnapEnabled.get(),
       this.xScale,
-      isLineAreaOnly ? 1 : this.totalGroupCount,
+      isLineAreaOnly ? 1 : this.totalBarsInCluster,
     );
     if (updatedCursorBand === undefined) {
       this.clearTooltipAndHighlighted();
@@ -702,9 +702,10 @@ export class ChartStore {
       yDomain,
       formattedDataSeries: { stacked, nonStacked },
     } = seriesDomains;
-    // compute how many series are clustered
-    const { totalGroupCount } = countClusteredSeries(stacked, nonStacked);
-    this.totalGroupCount = totalGroupCount;
+
+    // compute how many bar series are clustered
+    const { totalBarsInCluster } = countBarsInCluster(stacked, nonStacked);
+    this.totalBarsInCluster = totalBarsInCluster;
 
     // compute axis dimensions
     const bboxCalculator = new CanvasTextBBoxCalculator();
@@ -715,7 +716,7 @@ export class ChartStore {
         axisSpec,
         xDomain,
         yDomain,
-        totalGroupCount,
+        totalBarsInCluster,
         bboxCalculator,
         this.chartRotation,
         this.chartTheme.axes,
@@ -771,7 +772,7 @@ export class ChartStore {
       this.axesTicksDimensions,
       seriesDomains.xDomain,
       seriesDomains.yDomain,
-      totalGroupCount,
+      totalBarsInCluster,
       this.legendPosition,
     );
     // tslint:disable-next-line:no-console

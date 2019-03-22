@@ -13,7 +13,7 @@ import {
   renderLine,
   renderPoints,
 } from '../lib/series/rendering';
-import { computeXScale, computeYScales, countClusteredSeries } from '../lib/series/scales';
+import { computeXScale, computeYScales, countBarsInCluster } from '../lib/series/scales';
 import {
   DataSeries,
   DataSeriesColorsValues,
@@ -172,10 +172,10 @@ export function computeSeriesGeometries(
   const { stacked, nonStacked } = formattedDataSeries;
 
   // compute how many series are clustered
-  const { stackedGroupCount, totalGroupCount } = countClusteredSeries(stacked, nonStacked);
+  const { stackedBarsInCluster, totalBarsInCluster } = countBarsInCluster(stacked, nonStacked);
 
   // compute scales
-  const xScale = computeXScale(xDomain, totalGroupCount, 0, width);
+  const xScale = computeXScale(xDomain, totalBarsInCluster, 0, width);
   const yScales = computeYScales(yDomain, height, 0);
 
   // compute colors
@@ -197,7 +197,7 @@ export function computeSeriesGeometries(
 
     const geometries = renderGeometries(
       orderIndex,
-      totalGroupCount,
+      totalBarsInCluster,
       true,
       dataSeries,
       xScale,
@@ -220,8 +220,8 @@ export function computeSeriesGeometries(
       return;
     }
     const geometries = renderGeometries(
-      stackedGroupCount,
-      totalGroupCount,
+      stackedBarsInCluster,
+      totalBarsInCluster,
       false,
       dataSeries,
       xScale,

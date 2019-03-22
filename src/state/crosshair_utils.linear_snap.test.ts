@@ -160,7 +160,7 @@ describe('Crosshair utils linear scale', () => {
     // expect(snappedPosition.band).toEqual(40);
     // expect(snappedPosition.position).toBeUndefined();
 
-    // test a scale with a value of totalGroupCount > 1
+    // test a scale with a value of totalBarsInCluster > 1
     snappedPosition = getSnapPosition(0, multiBarSeriesScale, 2);
     expect(snappedPosition.band).toEqual(40);
     expect(snappedPosition.position).toEqual(0);

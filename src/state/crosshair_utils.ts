@@ -13,13 +13,13 @@ export const DEFAULT_SNAP_POSITION_BAND = 1;
 export function getSnapPosition(
   value: string | number,
   scale: Scale,
-  totalGroupCount: number = 1,
+  totalBarsInCluster: number = 1,
 ): { band: number; position: number } {
   const position = scale.scale(value);
   if (scale.bandwidth > 0) {
     return {
       position,
-      band: scale.bandwidth * totalGroupCount,
+      band: scale.bandwidth * totalBarsInCluster,
     };
   } else {
     return {
@@ -62,7 +62,7 @@ export function getCursorBandPosition(
   cursorPosition: { x: number; y: number },
   snapEnabled: boolean,
   xScale: Scale,
-  totalGroupCount?: number,
+  totalBarsInCluster?: number,
 ): Dimensions | undefined {
   const { top, left, width, height } = chartDimensions;
   const { x, y } = cursorPosition;
@@ -73,7 +73,7 @@ export function getCursorBandPosition(
   const { position, band } = getSnapPosition(
     xScale.invertWithStep(isHorizontalRotated ? x : y),
     xScale,
-    totalGroupCount,
+    totalBarsInCluster,
   );
   if (isHorizontalRotated) {
     return {
