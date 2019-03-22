@@ -1,7 +1,8 @@
-import { GeometryValue } from '../lib/series/rendering';
+import { GeometryValue, IndexedGeometry } from '../lib/series/rendering';
 import { DataSeriesColorsValues } from '../lib/series/series';
 import { AxisSpec, BarSeriesSpec, Position } from '../lib/series/specs';
 import { getAxisId, getGroupId, getSpecId } from '../lib/utils/ids';
+import { TooltipType, TooltipValue } from '../lib/utils/interactions';
 import { ScaleType } from '../lib/utils/scales/scales';
 import { ChartStore } from './chart_state';
 
@@ -490,5 +491,111 @@ describe('Chart Store', () => {
     store.selectedDataSeries = [firstLegendItem.value];
     store.resetSelectedDataSeries();
     expect(store.selectedDataSeries).toBe(null);
+  });
+  test('can update the crosshair visibility', () => {
+    store.cursorPosition.x = -1;
+    store.cursorPosition.y = 1;
+    store.tooltipType.set(TooltipType.Crosshairs);
+    expect(store.isCrosshairVisible.get()).toBe(false);
+
+    store.cursorPosition.x = 1;
+    store.cursorPosition.x = -1;
+    store.tooltipType.set(TooltipType.Crosshairs);
+    expect(store.isCrosshairVisible.get()).toBe(false);
+
+    store.cursorPosition.x = 1;
+    store.cursorPosition.x = 1;
+    store.tooltipType.set(TooltipType.None);
+    expect(store.isCrosshairVisible.get()).toBe(false);
+
+    store.cursorPosition.x = 1;
+    store.cursorPosition.x = 1;
+    store.tooltipType.set(TooltipType.Crosshairs);
+    expect(store.isCrosshairVisible.get()).toBe(true);
+  });
+
+  test('can update the tooltip visibility', () => {
+    const tooltipValue: TooltipValue = {
+      name: 'a',
+      value: 'a',
+      color: 'a',
+      isHighlighted: false,
+      isXValue: false,
+    };
+    store.cursorPosition.x = -1;
+    store.cursorPosition.y = 1;
+    store.tooltipType.set(TooltipType.Crosshairs);
+    store.tooltipData.replace([tooltipValue]);
+    expect(store.isTooltipVisible.get()).toBe(false);
+
+    store.cursorPosition.x = 1;
+    store.cursorPosition.x = -1;
+    store.tooltipType.set(TooltipType.Crosshairs);
+    store.tooltipData.replace([tooltipValue]);
+    expect(store.isTooltipVisible.get()).toBe(false);
+
+    store.cursorPosition.x = 1;
+    store.cursorPosition.x = 1;
+    store.tooltipType.set(TooltipType.None);
+    store.tooltipData.replace([tooltipValue]);
+    expect(store.isTooltipVisible.get()).toBe(false);
+
+    store.cursorPosition.x = 1;
+    store.cursorPosition.x = 1;
+    store.tooltipType.set(TooltipType.Crosshairs);
+    store.tooltipData.replace([]);
+    expect(store.isTooltipVisible.get()).toBe(false);
+
+    store.cursorPosition.x = 1;
+    store.cursorPosition.x = 1;
+    store.tooltipType.set(TooltipType.Crosshairs);
+    store.tooltipData.replace([tooltipValue]);
+    expect(store.isTooltipVisible.get()).toBe(true);
+  });
+  test('handle click on chart', () => {
+    const geom1: IndexedGeometry = {
+      color: 'red',
+      specId: getSpecId('specId1'),
+      datum: [0, 1, 2],
+      geom: {
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+      },
+      seriesKey: [2],
+    };
+    const geom2: IndexedGeometry = {
+      color: 'blue',
+      specId: getSpecId('specId2'),
+      datum: [0, 3, 2],
+      geom: {
+        x: 50,
+        y: 0,
+        width: 0,
+        height: 0,
+      },
+      seriesKey: [2],
+    };
+    const clickListener = jest.fn(
+      (ds: GeometryValue[]): void => {
+        return;
+      },
+    );
+    store.setOnElementClickListener(clickListener);
+
+    store.highlightedGeometries.replace([]);
+    store.handleChartClick();
+    expect(clickListener).toBeCalledTimes(0);
+
+    store.highlightedGeometries.replace([geom1]);
+    store.handleChartClick();
+    expect(clickListener).toBeCalledTimes(1);
+    expect(clickListener.mock.calls[0][0]).toEqual([geom1]);
+
+    store.highlightedGeometries.replace([geom1, geom2]);
+    store.handleChartClick();
+    expect(clickListener).toBeCalledTimes(2);
+    expect(clickListener.mock.calls[1][0]).toEqual([geom1, geom2]);
   });
 });

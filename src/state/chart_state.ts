@@ -410,6 +410,7 @@ export class ChartStore {
     }
     // clear highlight geoms
     this.highlightedGeometries.clear();
+    this.tooltipData.clear();
     document.body.style.cursor = 'default';
   });
 

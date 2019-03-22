@@ -191,6 +191,49 @@ describe('Crosshair utils linear scale', () => {
     expect(snappedPosition.band).toEqual(40);
     expect(snappedPosition.position).toEqual(80);
   });
+  test('safeguard cursor band position', () => {
+    const chartDimensions: Dimensions = { top: 0, left: 0, width: 120, height: 100 };
+    const chartRotation = 0;
+    const snapPosition = false;
+    let bandPosition = getCursorBandPosition(
+      chartRotation,
+      chartDimensions,
+      { x: 200, y: 0 },
+      snapPosition,
+      lineSeriesScale,
+      1,
+    );
+    expect(bandPosition).toBeUndefined();
+    bandPosition = getCursorBandPosition(
+      chartRotation,
+      chartDimensions,
+      { x: 0, y: 200 },
+      snapPosition,
+      lineSeriesScale,
+      1,
+    );
+    expect(bandPosition).toBeUndefined();
+
+    bandPosition = getCursorBandPosition(
+      chartRotation,
+      chartDimensions,
+      { x: -1, y: 0 },
+      snapPosition,
+      lineSeriesScale,
+      1,
+    );
+    expect(bandPosition).toBeUndefined();
+
+    bandPosition = getCursorBandPosition(
+      chartRotation,
+      chartDimensions,
+      { x: 0, y: -1 },
+      snapPosition,
+      lineSeriesScale,
+      1,
+    );
+    expect(bandPosition).toBeUndefined();
+  });
 
   describe('BandPosition line chart', () => {
     const chartDimensions: Dimensions = { top: 0, left: 0, width: 120, height: 100 };

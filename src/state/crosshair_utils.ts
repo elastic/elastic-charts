@@ -66,7 +66,7 @@ export function getCursorBandPosition(
 ): Dimensions | undefined {
   const { top, left, width, height } = chartDimensions;
   const { x, y } = cursorPosition;
-  if (x > width || y > height) {
+  if (x > width || y > height || x < 0 || y < 0) {
     return;
   }
   const isHorizontalRotated = isHorizontalRotation(chartRotation);

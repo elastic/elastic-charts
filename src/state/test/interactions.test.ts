@@ -1,4 +1,4 @@
-import { IndexedGeometry } from '../../lib/series/rendering';
+import { GeometryValue, IndexedGeometry } from '../../lib/series/rendering';
 import { computeXScale, computeYScales } from '../../lib/series/scales';
 import { DataSeriesColorsValues } from '../../lib/series/series';
 import { BarSeriesSpec, BasicSeriesSpec } from '../../lib/series/specs';
@@ -72,7 +72,7 @@ function initStore(spec: BasicSeriesSpec) {
   store.seriesSpecs.set(spec.id, spec);
   return store;
 }
-const indexedGeom: IndexedGeometry = {
+const indexedGeom1Red: IndexedGeometry = {
   color: 'red',
   geom: {
     x: 0,
@@ -80,11 +80,11 @@ const indexedGeom: IndexedGeometry = {
     width: 50,
     height: 100,
   },
-  datum: {},
+  datum: [0, 10],
   specId: SPEC_ID,
   seriesKey: [],
 };
-const indexedGeom1: IndexedGeometry = {
+const indexedGeom2Blue: IndexedGeometry = {
   color: 'blue',
   geom: {
     x: 50,
@@ -92,7 +92,7 @@ const indexedGeom1: IndexedGeometry = {
     width: 50,
     height: 50,
   },
-  datum: {},
+  datum: [1, 5],
   specId: SPEC_ID,
   seriesKey: [],
 };
@@ -129,7 +129,7 @@ describe('Chart state pointer interactions', () => {
   });
 
   test('call onElementOut if moving the mouse out from the chart', () => {
-    store.highlightedGeometries.push(indexedGeom);
+    store.highlightedGeometries.push(indexedGeom1Red);
     const listener = jest.fn((): undefined => undefined);
     store.setOnElementOutListener(listener);
     store.setCursorPosition(5, 5);
@@ -146,7 +146,7 @@ describe('Chart state pointer interactions', () => {
     store.xScale = new ScaleContinuous([0, 1], [0, 100], ScaleType.Linear, false, 50, 0.5);
     store.yScales = new Map();
     store.yScales.set(GROUP_ID, new ScaleContinuous([0, 1], [0, 100], ScaleType.Linear));
-    store.geometriesIndex.set(0, [indexedGeom]);
+    store.geometriesIndex.set(0, [indexedGeom1Red]);
 
     store.tooltipType.set(TooltipType.None);
     store.setCursorPosition(10, 10 + 70);
@@ -186,13 +186,14 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     const yScales = computeYScales(barSeriesDomains.yDomain, 0, 100);
     store.xScale = barSeriesScale;
     store.yScales = yScales;
-    store.geometriesIndex.set(0, [indexedGeom]);
-    store.geometriesIndex.set(1, [indexedGeom1]);
-    onOverListener = jest.fn((): undefined => undefined);
+    store.geometriesIndex.set(0, [indexedGeom1Red]);
+    store.geometriesIndex.set(1, [indexedGeom2Blue]);
+    onOverListener = jest.fn((elements: GeometryValue[]): undefined => undefined);
     onOutListener = jest.fn((): undefined => undefined);
     store.setOnElementOverListener(onOverListener);
     store.setOnElementOutListener(onOutListener);
     expect(store.xScale).not.toBeUndefined();
+    expect(store.tooltipData).toEqual([]);
   });
 
   test('store is correctly configured', () => {
@@ -202,18 +203,22 @@ function mouseOverTestSuite(scaleType: ScaleType) {
   });
 
   test('can hover top-left corner of the first bar', () => {
+    expect(store.tooltipData).toEqual([]);
     store.setCursorPosition(chartLeft + 0, chartTop + 0);
     expect(store.cursorPosition).toEqual({ x: 0, y: 0 });
     expect(store.cursorBandPosition.left).toBe(chartLeft + 0);
     expect(store.cursorBandPosition.width).toBe(50);
     expect(store.isTooltipVisible.get()).toBe(true);
+    expect(store.tooltipData.length).toBe(2); // x value + 1 y value
     expect(store.highlightedGeometries.length).toBe(1);
     expect(onOverListener).toBeCalledTimes(1);
     expect(onOutListener).toBeCalledTimes(0);
+    expect(onOverListener.mock.calls[0][0]).toEqual([indexedGeom1Red]);
 
     store.setCursorPosition(chartLeft - 1, chartTop - 1);
     expect(store.cursorPosition).toEqual({ x: -1, y: -1 });
     expect(store.isTooltipVisible.get()).toBe(false);
+    expect(store.tooltipData.length).toBe(0);
     expect(store.highlightedGeometries.length).toBe(0);
     expect(onOverListener).toBeCalledTimes(1);
     expect(onOutListener).toBeCalledTimes(1);
@@ -226,12 +231,15 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(store.cursorBandPosition.width).toBe(50);
     expect(store.isTooltipVisible.get()).toBe(true);
     expect(store.highlightedGeometries.length).toBe(1);
+    expect(store.tooltipData.length).toBe(2); // x value + 1 y value
     expect(onOverListener).toBeCalledTimes(1);
     expect(onOutListener).toBeCalledTimes(0);
+    expect(onOverListener.mock.calls[0][0]).toEqual([indexedGeom1Red]);
 
     store.setCursorPosition(chartLeft - 1, chartTop + 99);
     expect(store.cursorPosition).toEqual({ x: -1, y: 99 });
     expect(store.isTooltipVisible.get()).toBe(false);
+    expect(store.tooltipData.length).toBe(0);
     expect(store.highlightedGeometries.length).toBe(0);
     expect(onOverListener).toBeCalledTimes(1);
     expect(onOutListener).toBeCalledTimes(1);
@@ -244,14 +252,17 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(store.cursorBandPosition.width).toBe(50);
     expect(store.isTooltipVisible.get()).toBe(true);
     expect(store.highlightedGeometries.length).toBe(1);
+    expect(store.tooltipData.length).toBe(2);
     expect(onOverListener).toBeCalledTimes(1);
     expect(onOutListener).toBeCalledTimes(0);
+    expect(onOverListener.mock.calls[0][0]).toEqual([indexedGeom1Red]);
 
     store.setCursorPosition(chartLeft + 50, chartTop + 0);
     expect(store.cursorPosition).toEqual({ x: 50, y: 0 });
     expect(store.cursorBandPosition.left).toBe(chartLeft + 50);
     expect(store.cursorBandPosition.width).toBe(50);
     expect(store.isTooltipVisible.get()).toBe(true);
+    expect(store.tooltipData.length).toBe(2);
     expect(store.highlightedGeometries.length).toBe(0);
     expect(onOverListener).toBeCalledTimes(1);
     expect(onOutListener).toBeCalledTimes(1);
@@ -264,17 +275,22 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(store.cursorBandPosition.width).toBe(50);
     expect(store.isTooltipVisible.get()).toBe(true);
     expect(store.highlightedGeometries.length).toBe(1);
+    expect(store.tooltipData.length).toBe(2);
     expect(onOverListener).toBeCalledTimes(1);
     expect(onOutListener).toBeCalledTimes(0);
+    expect(onOverListener.mock.calls[0][0]).toEqual([indexedGeom1Red]);
 
     store.setCursorPosition(chartLeft + 50, chartTop + 99);
     expect(store.cursorPosition).toEqual({ x: 50, y: 99 });
     expect(store.cursorBandPosition.left).toBe(chartLeft + 50);
     expect(store.cursorBandPosition.width).toBe(50);
     expect(store.isTooltipVisible.get()).toBe(true);
+    expect(store.tooltipData.length).toBe(2);
     // we are over the second bar here
     expect(store.highlightedGeometries.length).toBe(1);
     expect(onOverListener).toBeCalledTimes(2);
+    expect(onOverListener.mock.calls[1][0]).toEqual([indexedGeom2Blue]);
+
     expect(onOutListener).toBeCalledTimes(0);
   });
 
@@ -286,6 +302,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
 
     expect(store.isTooltipVisible.get()).toBe(true);
     expect(store.highlightedGeometries.length).toBe(0);
+    expect(store.tooltipData.length).toBe(2);
     expect(onOverListener).toBeCalledTimes(0);
     expect(onOutListener).toBeCalledTimes(0);
   });
@@ -297,7 +314,9 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(store.cursorBandPosition.width).toBe(50);
     expect(store.isTooltipVisible.get()).toBe(true);
     expect(store.highlightedGeometries.length).toBe(1);
+    expect(store.tooltipData.length).toBe(2);
     expect(onOverListener).toBeCalledTimes(1);
+    expect(onOverListener.mock.calls[0][0]).toEqual([indexedGeom2Blue]);
     expect(onOutListener).toBeCalledTimes(0);
   });
 }
