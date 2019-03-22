@@ -87,39 +87,56 @@ export function renderPoints(
   indexedGeometries: Map<any, IndexedGeometry[]>;
 } {
   const indexedGeometries: Map<any, IndexedGeometry[]> = new Map();
+  const isLogScale = yScale.type === ScaleType.Log;
 
-  const pointGeometries = dataset.map((datum) => {
-    const x = xScale.scale(datum.x);
-    const y = yScale.scale(datum.y1);
-    const indexedGeometry: IndexedGeometry = {
-      specId,
-      datum: datum.datum,
-      color,
-      seriesKey,
-      geom: {
-        x: x + shift,
-        y,
-        width: 10,
-        height: 10,
-        isPoint: true,
-      },
-    };
-    mutableIndexedGeometryMapUpsert(indexedGeometries, datum.x, indexedGeometry);
-    return {
-      x,
-      y,
-      color,
-      value: {
+  const pointGeometries = dataset.reduce(
+    (acc, datum) => {
+      const x = xScale.scale(datum.x);
+      let y;
+      let radius = 10;
+      const isHidden = datum.y1 === null || (isLogScale && datum.y1 <= 0);
+      // we fix 0 and negative values at y = 0
+      if (isHidden) {
+        y = yScale.range[0];
+        radius = 0;
+      } else {
+        y = yScale.scale(datum.y1);
+      }
+      const indexedGeometry: IndexedGeometry = {
         specId,
         datum: datum.datum,
+        color,
         seriesKey,
-      },
-      transform: {
-        x: shift,
-        y: 0,
-      },
-    };
-  });
+        geom: {
+          x: x + shift,
+          y,
+          width: radius,
+          height: radius,
+          isPoint: true,
+        },
+      };
+      mutableIndexedGeometryMapUpsert(indexedGeometries, datum.x, indexedGeometry);
+      const pointGeometry: PointGeometry = {
+        x,
+        y,
+        color,
+        value: {
+          specId,
+          datum: datum.datum,
+          seriesKey,
+        },
+        transform: {
+          x: shift,
+          y: 0,
+        },
+      };
+      if (isHidden) {
+        return acc;
+      }
+      return [...acc, pointGeometry];
+    },
+    [] as PointGeometry[],
+  );
   return {
     pointGeometries,
     indexedGeometries,
@@ -216,9 +233,12 @@ export function renderLine(
   lineGeometry: LineGeometry;
   indexedGeometries: Map<any, IndexedGeometry[]>;
 } {
+  const isLogScale = yScale.type === ScaleType.Log;
+
   const pathGenerator = line<DataSeriesDatum>()
     .x((datum: DataSeriesDatum) => xScale.scale(datum.x))
     .y((datum: DataSeriesDatum) => yScale.scale(datum.y1))
+    .defined((datum: DataSeriesDatum) => datum.y1 !== null && !(isLogScale && datum.y1 <= 0))
     .curve(getCurveFactory(curve));
   const y = 0;
   const x = shift;
@@ -263,10 +283,17 @@ export function renderArea(
   areaGeometry: AreaGeometry;
   indexedGeometries: Map<any, IndexedGeometry[]>;
 } {
+  const isLogScale = yScale.type === ScaleType.Log;
   const pathGenerator = area<DataSeriesDatum>()
     .x((datum: DataSeriesDatum) => xScale.scale(datum.x))
     .y1((datum: DataSeriesDatum) => yScale.scale(datum.y1))
-    .y0((datum: DataSeriesDatum) => yScale.scale(datum.y0))
+    .y0((datum: DataSeriesDatum) => {
+      if (isLogScale && datum.y0 <= 0) {
+        return yScale.range[0];
+      }
+      return yScale.scale(datum.y0);
+    })
+    .defined((datum: DataSeriesDatum) => datum.y1 !== null && !(isLogScale && datum.y1 <= 0))
     .curve(getCurveFactory(curve));
   const { lineGeometry, indexedGeometries } = renderLine(
     shift,
