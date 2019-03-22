@@ -58,28 +58,28 @@ describe('Crosshair utils ordinal scales', () => {
 
   const barSeriesMap = new Map();
   barSeriesMap.set(barSeries1SpecId, barSeries1);
-  const barSeriesDomains = computeSeriesDomains(barSeriesMap);
+  const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
 
   const multiBarSeriesMap = new Map();
   multiBarSeriesMap.set(barSeries1SpecId, barSeries1);
   multiBarSeriesMap.set(barSeries2SpecId, barSeries2);
-  const multiBarSeriesDomains = computeSeriesDomains(multiBarSeriesMap);
+  const multiBarSeriesDomains = computeSeriesDomains(multiBarSeriesMap, new Map());
 
   const lineSeriesMap = new Map();
   lineSeriesMap.set(lineSeries1SpecId, lineSeries1);
-  const lineSeriesDomains = computeSeriesDomains(lineSeriesMap);
+  const lineSeriesDomains = computeSeriesDomains(lineSeriesMap, new Map());
 
   const multiLineSeriesMap = new Map();
   multiLineSeriesMap.set(lineSeries1SpecId, lineSeries1);
   multiLineSeriesMap.set(lineSeries2SpecId, lineSeries2);
-  const multiLineSeriesDomains = computeSeriesDomains(multiLineSeriesMap);
+  const multiLineSeriesDomains = computeSeriesDomains(multiLineSeriesMap, new Map());
 
   const mixedLinesBarsMap = new Map();
   mixedLinesBarsMap.set(lineSeries1SpecId, lineSeries1);
   mixedLinesBarsMap.set(lineSeries2SpecId, lineSeries2);
   mixedLinesBarsMap.set(barSeries1SpecId, barSeries1);
   mixedLinesBarsMap.set(barSeries2SpecId, barSeries2);
-  const mixedLinesBarsSeriesDomains = computeSeriesDomains(mixedLinesBarsMap);
+  const mixedLinesBarsSeriesDomains = computeSeriesDomains(mixedLinesBarsMap, new Map());
 
   const barSeriesScale = computeXScale(barSeriesDomains.xDomain, barSeriesMap.size, 0, 120);
   const multiBarSeriesScale = computeXScale(
