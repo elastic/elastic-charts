@@ -21,6 +21,7 @@ import {
   getVerticalAxisGridLineProps,
   getVerticalAxisTickLineProps,
   getVisibleTicks,
+  isBounded,
   isHorizontal,
   isVertical,
   isYDomain,
@@ -1179,5 +1180,18 @@ describe('Axis computational utils', () => {
     const expectedError = '[Axis axis_1]: custom domain is invalid, min is greater than max';
 
     expect(attemptToMerge).toThrowError(expectedError);
+  });
+
+  test('should determine that a domain has at least one bound', () => {
+    const lowerBounded = {
+      min: 0,
+    };
+
+    const upperBounded = {
+      max: 0,
+    };
+
+    expect(isBounded(lowerBounded)).toBe(true);
+    expect(isBounded(upperBounded)).toBe(true);
   });
 });

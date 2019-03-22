@@ -1,7 +1,8 @@
+import { isCompleteBound, isLowerBound, isUpperBound } from '../../axes/axis_utils';
 import { compareByValueAsc, identity } from '../../utils/commons';
 import { computeContinuousDataDomain, computeOrdinalDataDomain, Domain } from '../../utils/domain';
 import { ScaleType } from '../../utils/scales/scales';
-import { BasicSeriesSpec, CompleteBoundedDomain } from '../specs';
+import { BasicSeriesSpec, DomainRange } from '../specs';
 import { BaseDomain } from './domain';
 
 export type XDomain = BaseDomain & {
@@ -18,7 +19,7 @@ export type XDomain = BaseDomain & {
 export function mergeXDomain(
   specs: Array<Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>>,
   xValues: Set<any>,
-  xDomain?: Partial<CompleteBoundedDomain> | Domain,
+  xDomain?: DomainRange | Domain,
 ): XDomain {
   const mainXScaleType = convertXScaleTypes(specs);
   if (!mainXScaleType) {
@@ -42,14 +43,19 @@ export function mergeXDomain(
     seriesXComputedDomains = computeContinuousDataDomain(values, identity, true);
     if (xDomain) {
       if (!Array.isArray(xDomain)) {
-        if ((xDomain.min != null && xDomain.max != null) && xDomain.min > xDomain.max) {
+        if (isCompleteBound(xDomain) && xDomain.min > xDomain.max) {
           throw new Error('custom xDomain is invalid, min is greater than max');
         }
 
         const [computedDomainMin, computedDomainMax] = seriesXComputedDomains;
-        const domainMin = xDomain.min == null ? computedDomainMin : xDomain.min;
-        const domainMax = xDomain.max == null ? computedDomainMax : xDomain.max;
-        seriesXComputedDomains = [domainMin, domainMax];
+
+        if (isCompleteBound(xDomain)) {
+          seriesXComputedDomains = [xDomain.min, xDomain.max];
+        } else if (isLowerBound(xDomain)) {
+          seriesXComputedDomains = [xDomain.min, computedDomainMax];
+        } else if (isUpperBound(xDomain)) {
+          seriesXComputedDomains = [computedDomainMin, xDomain.max];
+        }
       } else {
         throw new Error('xDomain for continuous scale should be a DomainRange object, not an array');
       }

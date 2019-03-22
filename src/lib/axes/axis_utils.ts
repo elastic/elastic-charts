@@ -1,7 +1,16 @@
 import { XDomain } from '../series/domains/x_domain';
 import { YDomain } from '../series/domains/y_domain';
 import { computeXScale, computeYScales } from '../series/scales';
-import { AxisSpec, CompleteBoundedDomain, Position, Rotation, TickFormatter } from '../series/specs';
+import {
+  AxisSpec,
+  CompleteBoundedDomain,
+  DomainRange,
+  LowerBoundedDomain,
+  Position,
+  Rotation,
+  TickFormatter,
+  UpperBoundedDomain,
+} from '../series/specs';
 import { AxisConfig, Theme } from '../themes/theme';
 import { Dimensions, Margins } from '../utils/dimensions';
 import { Domain } from '../utils/domain';
@@ -620,16 +629,30 @@ export function isHorizontal(position: Position) {
   return !isVertical(position);
 }
 
+export function isLowerBound(domain: Partial<CompleteBoundedDomain>): domain is LowerBoundedDomain {
+  return domain.min != null;
+}
+
+export function isUpperBound(domain: Partial<CompleteBoundedDomain>): domain is UpperBoundedDomain {
+  return domain.max != null;
+}
+
+export function isCompleteBound(domain: Partial<CompleteBoundedDomain>): domain is CompleteBoundedDomain {
+  return domain.max != null && domain.min != null;
+}
+
+export function isBounded(domain: Partial<CompleteBoundedDomain>): domain is DomainRange {
+  return domain.max != null || domain.min != null;
+}
+
 export function mergeDomainsByGroupId(
   axesSpecs: Map<AxisId, AxisSpec>,
   chartRotation: Rotation,
-): Map<GroupId, Partial<CompleteBoundedDomain>> {
-  const domainsByGroupId = new Map<GroupId, Partial<CompleteBoundedDomain>>();
+): Map<GroupId, DomainRange> {
+  const domainsByGroupId = new Map<GroupId, DomainRange>();
 
   axesSpecs.forEach((spec: AxisSpec, id: AxisId) => {
-    const { groupId } = spec;
-
-    const domain = spec.domain as Partial<CompleteBoundedDomain>;
+    const { groupId, domain } = spec;
 
     if (!domain) {
       return;
@@ -642,7 +665,7 @@ export function mergeDomainsByGroupId(
       throw new Error(errorMessage);
     }
 
-    if ((domain.min != null && domain.max != null) && domain.min > domain.max) {
+    if (isCompleteBound(domain) && domain.min > domain.max) {
       const errorMessage = `[Axis ${id}]: custom domain is invalid, min is greater than max`;
       throw new Error(errorMessage);
     }
@@ -650,18 +673,20 @@ export function mergeDomainsByGroupId(
     const prevGroupDomain = domainsByGroupId.get(groupId);
 
     if (prevGroupDomain) {
-      const prevMin = prevGroupDomain.min;
-      const prevMax = prevGroupDomain.max;
+      const prevDomain = prevGroupDomain as DomainRange;
+
+      const prevMin = (isCompleteBound(prevDomain) || isLowerBound(prevDomain)) ? prevDomain.min : undefined;
+      const prevMax = (isCompleteBound(prevDomain) || isUpperBound(prevDomain)) ? prevDomain.max : undefined;
 
       let max = prevMax;
       let min = prevMin;
 
-      if ((domain.min != null && domain.max != null)) {
+      if (isCompleteBound(domain)) {
         min = prevMin != null ? Math.min(domain.min, prevMin) : domain.min;
         max = prevMax != null ? Math.max(domain.max, prevMax) : domain.max;
-      } else if (domain.min != null) {
+      } else if (isLowerBound(domain)) {
         min = prevMin != null ? Math.min(domain.min, prevMin) : domain.min;
-      } else if (domain.max != null) {
+      } else if (isUpperBound(domain)) {
         max = prevMax != null ? Math.max(domain.max, prevMax) : domain.max;
       }
 
@@ -670,7 +695,9 @@ export function mergeDomainsByGroupId(
         max,
       };
 
-      domainsByGroupId.set(groupId, mergedDomain);
+      if (isBounded(mergedDomain)) {
+        domainsByGroupId.set(groupId, mergedDomain);
+      }
     } else {
       domainsByGroupId.set(groupId, domain);
     }
