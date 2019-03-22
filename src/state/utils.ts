@@ -318,6 +318,7 @@ export function renderGeometries(
       case 'line':
         const lineShift = clusteredCount > 0 ? clusteredCount : 1;
         const renderedLines = renderLine(
+          // move the point on half of the bandwidth if we have mixed bars/lines
           (xScale.bandwidth * lineShift) / 2,
           ds.data,
           xScale,
@@ -336,6 +337,7 @@ export function renderGeometries(
       case 'area':
         const areaShift = clusteredCount > 0 ? clusteredCount : 1;
         const renderedAreas = renderArea(
+          // move the point on half of the bandwidth if we have mixed bars/lines
           (xScale.bandwidth * areaShift) / 2,
           ds.data,
           xScale,
@@ -474,4 +476,14 @@ export function isHorizontalRotation(chartRotation: Rotation) {
 
 export function isVerticalRotation(chartRotation: Rotation) {
   return chartRotation === -90 || chartRotation === 90;
+}
+
+/**
+ * Check if a specs map contains only line or area specs
+ * @param specs Map<SpecId, BasicSeriesSpec>
+ */
+export function isLineAreaOnlyChart(specs: Map<SpecId, BasicSeriesSpec>) {
+  return ![...specs.values()].some((spec) => {
+    return spec.seriesType === 'bar';
+  });
 }

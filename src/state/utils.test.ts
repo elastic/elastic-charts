@@ -1,5 +1,10 @@
 import { DataSeriesColorsValues } from '../lib/series/series';
-import { BasicSeriesSpec } from '../lib/series/specs';
+import {
+  AreaSeriesSpec,
+  BarSeriesSpec,
+  BasicSeriesSpec,
+  LineSeriesSpec,
+} from '../lib/series/specs';
 
 import { BARCHART_1Y0G, BARCHART_1Y1G } from '../lib/series/utils/test_dataset';
 
@@ -11,6 +16,7 @@ import {
   getAllDataSeriesColorValues,
   getUpdatedCustomSeriesColors,
   isHorizontalRotation,
+  isLineAreaOnlyChart,
   isVerticalRotation,
   updateSelectedDataSeries,
 } from './utils';
@@ -243,5 +249,59 @@ describe('Chart State utils', () => {
     expect(isVerticalRotation(90)).toBe(true);
     expect(isVerticalRotation(0)).toBe(false);
     expect(isVerticalRotation(180)).toBe(false);
+  });
+  test('is an area or line only map', () => {
+    const area: AreaSeriesSpec = {
+      id: getSpecId('area'),
+      groupId: getGroupId('group1'),
+      seriesType: 'area',
+      yScaleType: ScaleType.Log,
+      xScaleType: ScaleType.Linear,
+      xAccessor: 'x',
+      yAccessors: ['y'],
+      splitSeriesAccessors: ['g'],
+      yScaleToDataExtent: false,
+      data: BARCHART_1Y1G,
+    };
+    const line: LineSeriesSpec = {
+      id: getSpecId('line'),
+      groupId: getGroupId('group2'),
+      seriesType: 'line',
+      yScaleType: ScaleType.Log,
+      xScaleType: ScaleType.Linear,
+      xAccessor: 'x',
+      yAccessors: ['y'],
+      splitSeriesAccessors: ['g'],
+      stackAccessors: ['x'],
+      yScaleToDataExtent: false,
+      data: BARCHART_1Y1G,
+    };
+    const bar: BarSeriesSpec = {
+      id: getSpecId('bar'),
+      groupId: getGroupId('group2'),
+      seriesType: 'bar',
+      yScaleType: ScaleType.Log,
+      xScaleType: ScaleType.Linear,
+      xAccessor: 'x',
+      yAccessors: ['y'],
+      splitSeriesAccessors: ['g'],
+      stackAccessors: ['x'],
+      yScaleToDataExtent: false,
+      data: BARCHART_1Y1G,
+    };
+    let seriesMap = new Map<SpecId, BasicSeriesSpec>([
+      [area.id, area],
+      [line.id, line],
+      [bar.id, bar],
+    ]);
+    expect(isLineAreaOnlyChart(seriesMap)).toBe(false);
+    seriesMap = new Map<SpecId, BasicSeriesSpec>([[area.id, area], [line.id, line]]);
+    expect(isLineAreaOnlyChart(seriesMap)).toBe(true);
+    seriesMap = new Map<SpecId, BasicSeriesSpec>([[area.id, area]]);
+    expect(isLineAreaOnlyChart(seriesMap)).toBe(true);
+    seriesMap = new Map<SpecId, BasicSeriesSpec>([[line.id, line]]);
+    expect(isLineAreaOnlyChart(seriesMap)).toBe(true);
+    seriesMap = new Map<SpecId, BasicSeriesSpec>([[bar.id, bar], [getSpecId('bar2'), bar]]);
+    expect(isLineAreaOnlyChart(seriesMap)).toBe(false);
   });
 });

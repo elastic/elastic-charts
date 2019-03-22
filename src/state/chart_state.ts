@@ -70,6 +70,7 @@ import {
   getAllDataSeriesColorValues,
   getAxesSpecForSpecId,
   getUpdatedCustomSeriesColors,
+  isLineAreaOnlyChart,
   Transform,
   updateSelectedDataSeries,
 } from './utils';
@@ -261,13 +262,14 @@ export class ChartStore {
     const xValue = this.xScale.invertWithStep(xAxisCursorPosition);
 
     // update che cursorBandPosition based on chart configuration
+    const isLineAreaOnly = isLineAreaOnlyChart(this.seriesSpecs);
     const updatedCursorBand = getCursorBandPosition(
       this.chartRotation,
       this.chartDimensions,
       this.cursorPosition,
       this.isTooltipSnapEnabled.get(),
       this.xScale,
-      this.totalGroupCount,
+      isLineAreaOnly ? 1 : this.totalGroupCount,
     );
     if (updatedCursorBand === undefined) {
       this.clearTooltipAndHighlighted();
