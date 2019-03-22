@@ -650,19 +650,19 @@ export function mergeDomainsByGroupId(
     const prevGroupDomain = domainsByGroupId.get(groupId);
 
     if (prevGroupDomain) {
-      let max;
-      let min;
-
       const prevMin = prevGroupDomain.min;
       const prevMax = prevGroupDomain.max;
 
+      let max = prevMax;
+      let min = prevMin;
+
       if ((domain.min != null && domain.max != null)) {
-        min = prevMin ? Math.min(domain.min, prevMin) : domain.min;
-        max = prevMax ? Math.max(domain.max, prevMax) : domain.max;
+        min = prevMin != null ? Math.min(domain.min, prevMin) : domain.min;
+        max = prevMax != null ? Math.max(domain.max, prevMax) : domain.max;
       } else if (domain.min != null) {
-        min = prevMin ? Math.min(domain.min, prevMin) : domain.min;
+        min = prevMin != null ? Math.min(domain.min, prevMin) : domain.min;
       } else if (domain.max != null) {
-        max = prevMax ? Math.max(domain.max, prevMax) : domain.max;
+        max = prevMax != null ? Math.max(domain.max, prevMax) : domain.max;
       }
 
       const mergedDomain = {
