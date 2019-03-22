@@ -55,8 +55,9 @@ function renderAxisWithOptions(position: Position, seriesGroup: string, show: bo
 storiesOf('Axis', module)
   .add('basic', () => {
     return (
-      <Chart className={'story-chart'}>
-        <Settings debug={boolean('debug', false)} />
+      <Chart renderer="canvas" className={'story-chart'}>
+        <Settings debug={boolean('debug', false)}
+          testUserInput={number('Specify Custom Tick Padding', 10)} />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}

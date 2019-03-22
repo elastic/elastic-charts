@@ -6,6 +6,7 @@ export class CanvasTextBBoxCalculator implements BBoxCalculator {
   private attachedRoot: HTMLElement;
   private offscreenCanvas: HTMLCanvasElement;
   private scaledFontSize: number;
+  private testUserInputPadding!: number;
 
   constructor(rootElement?: HTMLElement, scaledFontSize: number = 100) {
     this.offscreenCanvas = document.createElement('canvas');
@@ -27,6 +28,10 @@ export class CanvasTextBBoxCalculator implements BBoxCalculator {
     const scalingFactor = this.scaledFontSize / fontSize;
     this.context.font = `${this.scaledFontSize}px ${fontFamily}`;
     const measure = this.context.measureText(text);
+
+    if (this.testUserInputPadding) {
+      padding = this.testUserInputPadding;
+    }
 
     return some({
       width: measure.width / scalingFactor + padding,

@@ -35,7 +35,6 @@ export interface AxisTicksDimensions {
   maxLabelBboxHeight: number;
   maxLabelTextWidth: number;
   maxLabelTextHeight: number;
-  // tickLabelPadding?: number;
 }
 
 export interface TickLabelProps {
@@ -174,14 +173,13 @@ export const getMaxBboxDimensions = (
   const prevHeight = acc.maxLabelBboxHeight;
   const prevLabelWidth = acc.maxLabelTextWidth;
   const prevLabelHeight = acc.maxLabelTextHeight;
-
   return {
-    maxLabelBboxWidth: prevWidth > width ? prevWidth : width,
-    maxLabelBboxHeight: prevHeight > height ? prevHeight : height,
-    maxLabelTextWidth: prevLabelWidth > labelWidth ? prevLabelWidth : labelWidth,
-    maxLabelTextHeight: prevLabelHeight > labelHeight ? prevLabelHeight : labelHeight,
+      maxLabelBboxWidth: prevWidth > width ? prevWidth : width,
+      maxLabelBboxHeight: prevHeight > height ? prevHeight : height,
+      maxLabelTextWidth: prevLabelWidth > labelWidth ? prevLabelWidth : labelWidth,
+      maxLabelTextHeight: prevLabelHeight > labelHeight ? prevLabelHeight : labelHeight,
+    };
   };
-};
 
 function computeTickDimensions(
   scale: Scale,
@@ -269,7 +267,6 @@ export function getTickLabelProps(
   const { maxLabelBboxWidth, maxLabelBboxHeight } = axisTicksDimensions;
   const isVerticalAxis = isVertical(axisPosition);
   const isRotated = tickLabelRotation !== 0;
-  let desiredTickPadding;
   let align = 'center';
   let verticalAlign = 'middle';
 
@@ -279,15 +276,9 @@ export function getTickLabelProps(
     if (!isRotated) {
       align = isAxisLeft ? 'right' : 'left';
     }
-    // console.log('$$$$$$$$$ tickPadding', tickPadding);
-    if (tickPadding !== tickLabelPadding) {
-      desiredTickPadding = tickLabelPadding;
-    }
-    desiredTickPadding = tickPadding;
 
     return {
-      x: isAxisLeft ? -maxLabelBboxWidth : tickSize + desiredTickPadding,
-      // x: isAxisLeft ? -maxLabelBboxWidth : tickSize + tickPadding,
+      x: isAxisLeft ? -maxLabelBboxWidth : tickSize + tickPadding,
       y: tickPosition - maxLabelBboxHeight / 2,
       align,
       verticalAlign,

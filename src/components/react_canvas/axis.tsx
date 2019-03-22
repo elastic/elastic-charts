@@ -48,6 +48,7 @@ export class Axis extends React.PureComponent<AxisProps> {
     );
 
     const { maxLabelTextWidth, maxLabelTextHeight } = axisTicksDimensions;
+
     const centeredRectProps = centerRotationOrigin(axisTicksDimensions, {
       x: tickLabelProps.x,
       y: tickLabelProps.y,
@@ -64,7 +65,7 @@ export class Axis extends React.PureComponent<AxisProps> {
     return (
       <Group key={`tick-${i}`}>
         {debug && <Rect {...textProps} stroke="black" strokeWidth={1} fill="violet" />}
-        <Text {...textProps} {...labelStyle} text={tick.label} />
+        <Text {...textProps} {...labelStyle} text={tick.label}/>
       </Group>
     );
   }
