@@ -1,7 +1,7 @@
 import { XDomain } from '../series/domains/x_domain';
 import { YDomain } from '../series/domains/y_domain';
 import { computeXScale, computeYScales } from '../series/scales';
-import { AxisSpec, PartialDomainRange, Position, Rotation, TickFormatter } from '../series/specs';
+import { AxisSpec, CompleteBoundedDomain, Position, Rotation, TickFormatter } from '../series/specs';
 import { AxisConfig, Theme } from '../themes/theme';
 import { Dimensions, Margins } from '../utils/dimensions';
 import { Domain } from '../utils/domain';
@@ -623,13 +623,13 @@ export function isHorizontal(position: Position) {
 export function mergeDomainsByGroupId(
   axesSpecs: Map<AxisId, AxisSpec>,
   chartRotation: Rotation,
-): Map<GroupId, PartialDomainRange> {
-  const domainsByGroupId = new Map<GroupId, PartialDomainRange>();
+): Map<GroupId, Partial<CompleteBoundedDomain>> {
+  const domainsByGroupId = new Map<GroupId, Partial<CompleteBoundedDomain>>();
 
   axesSpecs.forEach((spec: AxisSpec, id: AxisId) => {
     const { groupId } = spec;
 
-    const domain = spec.domain as PartialDomainRange;
+    const domain = spec.domain as Partial<CompleteBoundedDomain>;
 
     if (!domain) {
       return;

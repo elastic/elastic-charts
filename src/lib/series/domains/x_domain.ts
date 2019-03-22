@@ -1,7 +1,7 @@
 import { compareByValueAsc, identity } from '../../utils/commons';
 import { computeContinuousDataDomain, computeOrdinalDataDomain, Domain } from '../../utils/domain';
 import { ScaleType } from '../../utils/scales/scales';
-import { BasicSeriesSpec, PartialDomainRange } from '../specs';
+import { BasicSeriesSpec, CompleteBoundedDomain } from '../specs';
 import { BaseDomain } from './domain';
 
 export type XDomain = BaseDomain & {
@@ -18,7 +18,7 @@ export type XDomain = BaseDomain & {
 export function mergeXDomain(
   specs: Array<Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>>,
   xValues: Set<any>,
-  xDomain?: PartialDomainRange | Domain,
+  xDomain?: Partial<CompleteBoundedDomain> | Domain,
 ): XDomain {
   const mainXScaleType = convertXScaleTypes(specs);
   if (!mainXScaleType) {

@@ -9,17 +9,6 @@ export type Datum = any;
 export type Rotation = 0 | 90 | -90 | 180;
 export type Rendering = 'canvas' | 'svg';
 
-export enum DomainRangeType {
-  Lower,
-  Upper,
-  Complete,
-}
-
-export interface PartialDomainRange {
-  min?: number;
-  max?: number;
-}
-
 export interface LowerBoundedDomain {
   min: number;
 }

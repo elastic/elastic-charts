@@ -32,8 +32,8 @@ import {
   AxisSpec,
   BarSeriesSpec,
   BasicSeriesSpec,
+  CompleteBoundedDomain,
   LineSeriesSpec,
-  PartialDomainRange,
   Position,
   Rendering,
   Rotation,
@@ -139,7 +139,7 @@ export class ChartStore {
   seriesDomainsAndData?: SeriesDomainsAndData; // computed
   xScale?: Scale;
   yScales?: Map<GroupId, Scale>;
-  xDomain?: Domain | PartialDomainRange;
+  xDomain?: Domain | Partial<CompleteBoundedDomain>;
 
   legendItems: Map<string, LegendItem> = new Map();
   highlightedLegendItemKey: IObservableValue<string | null> = observable.box(null);
