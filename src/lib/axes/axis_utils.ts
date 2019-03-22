@@ -1,7 +1,7 @@
 import { XDomain } from '../series/domains/x_domain';
 import { YDomain } from '../series/domains/y_domain';
 import { computeXScale, computeYScales } from '../series/scales';
-import { AxisSpec, DomainRange, Position, Rotation, TickFormatter } from '../series/specs';
+import { AxisSpec, PartialDomainRange, Position, Rotation, TickFormatter } from '../series/specs';
 import { AxisConfig, Theme } from '../themes/theme';
 import { Dimensions, Margins } from '../utils/dimensions';
 import { Domain } from '../utils/domain';
@@ -623,11 +623,13 @@ export function isHorizontal(position: Position) {
 export function mergeDomainsByGroupId(
   axesSpecs: Map<AxisId, AxisSpec>,
   chartRotation: Rotation,
-): Map<GroupId, DomainRange> {
-  const domainsByGroupId = new Map<GroupId, DomainRange>();
+): Map<GroupId, PartialDomainRange> {
+  const domainsByGroupId = new Map<GroupId, PartialDomainRange>();
 
   axesSpecs.forEach((spec: AxisSpec, id: AxisId) => {
-    const { groupId, domain } = spec;
+    const { groupId } = spec;
+
+    const domain = spec.domain as PartialDomainRange;
 
     if (!domain) {
       return;
@@ -640,7 +642,7 @@ export function mergeDomainsByGroupId(
       throw new Error(errorMessage);
     }
 
-    if (domain.min > domain.max) {
+    if ((domain.min != null && domain.max != null) && domain.min > domain.max) {
       const errorMessage = `[Axis ${id}]: custom domain is invalid, min is greater than max`;
       throw new Error(errorMessage);
     }
@@ -648,9 +650,24 @@ export function mergeDomainsByGroupId(
     const prevGroupDomain = domainsByGroupId.get(groupId);
 
     if (prevGroupDomain) {
+      let max;
+      let min;
+
+      const prevMin = prevGroupDomain.min;
+      const prevMax = prevGroupDomain.max;
+
+      if ((domain.min != null && domain.max != null)) {
+        min = prevMin ? Math.min(domain.min, prevMin) : domain.min;
+        max = prevMax ? Math.max(domain.max, prevMax) : domain.max;
+      } else if (domain.min != null) {
+        min = prevMin ? Math.min(domain.min, prevMin) : domain.min;
+      } else if (domain.max != null) {
+        max = prevMax ? Math.max(domain.max, prevMax) : domain.max;
+      }
+
       const mergedDomain = {
-        min: Math.min(domain.min, prevGroupDomain.min),
-        max: Math.max(domain.max, prevGroupDomain.max),
+        min,
+        max,
       };
 
       domainsByGroupId.set(groupId, mergedDomain);

@@ -27,8 +27,8 @@ import {
   AreaSeriesSpec,
   AxisSpec,
   BasicSeriesSpec,
-  DomainRange,
   LineSeriesSpec,
+  PartialDomainRange,
   Rotation,
 } from '../lib/series/specs';
 import { ColorConfig } from '../lib/themes/theme';
@@ -112,8 +112,8 @@ export function getUpdatedCustomSeriesColors(
  */
 export function computeSeriesDomains(
   seriesSpecs: Map<SpecId, BasicSeriesSpec>,
-  domainsByGroupId: Map<GroupId, DomainRange>,
-  customXDomain?: DomainRange | Domain,
+  domainsByGroupId: Map<GroupId, PartialDomainRange>,
+  customXDomain?: PartialDomainRange | Domain,
   selectedDataSeries?: DataSeriesColorsValues[] | null,
 ): SeriesDomainsAndData {
   const { splittedSeries, xValues, seriesColors } = getSplittedSeries(

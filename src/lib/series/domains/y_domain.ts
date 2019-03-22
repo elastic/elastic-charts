@@ -4,7 +4,7 @@ import { computeContinuousDataDomain } from '../../utils/domain';
 import { GroupId, SpecId } from '../../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../../utils/scales/scales';
 import { RawDataSeries } from '../series';
-import { BasicSeriesSpec, DomainRange } from '../specs';
+import { BasicSeriesSpec, PartialDomainRange } from '../specs';
 import { BaseDomain } from './domain';
 
 export type YDomain = BaseDomain & {
@@ -27,7 +27,7 @@ export type YBasicSeriesSpec = Pick<
 export function mergeYDomain(
   dataSeries: Map<SpecId, RawDataSeries[]>,
   specs: YBasicSeriesSpec[],
-  domainsByGroupId: Map<GroupId, DomainRange>,
+  domainsByGroupId: Map<GroupId, PartialDomainRange>,
 ): YDomain[] {
   // group specs by group ids
   const specsByGroupIds = splitSpecsByGroupId(specs);
@@ -68,10 +68,14 @@ export function mergeYDomain(
 
       const customDomain = domainsByGroupId.get(groupId);
 
-      if (customDomain) {
+      if (customDomain && customDomain.min != null) {
         domainMin = customDomain.min;
+      }
+
+      if (customDomain && customDomain.max != null) {
         domainMax = customDomain.max;
       }
+
       const domain = [domainMin, domainMax];
 
       return {
