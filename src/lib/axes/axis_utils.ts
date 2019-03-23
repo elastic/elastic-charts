@@ -675,8 +675,8 @@ export function mergeDomainsByGroupId(
     if (prevGroupDomain) {
       const prevDomain = prevGroupDomain as DomainRange;
 
-      const prevMin = (isCompleteBound(prevDomain) || isLowerBound(prevDomain)) ? prevDomain.min : undefined;
-      const prevMax = (isCompleteBound(prevDomain) || isUpperBound(prevDomain)) ? prevDomain.max : undefined;
+      const prevMin = (isLowerBound(prevDomain)) ? prevDomain.min : undefined;
+      const prevMax = (isUpperBound(prevDomain)) ? prevDomain.max : undefined;
 
       let max = prevMax;
       let min = prevMin;

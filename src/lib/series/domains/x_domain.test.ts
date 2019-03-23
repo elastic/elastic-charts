@@ -668,6 +668,12 @@ describe('X Domain', () => {
 
     const mergedDomain = mergeXDomain(specs, xValues, xDomain);
     expect(mergedDomain.domain).toEqual([0, 5]);
+
+    const invalidXDomain = { min: 10 };
+    const attemptToMerge = () => {
+      mergeXDomain(specs, xValues, invalidXDomain);
+    };
+    expect(attemptToMerge).toThrowError('custom xDomain is invalid, custom min is greater than computed max');
   });
 
   test('should account for custom domain when merging a linear domain: upper bounded domain', () => {
@@ -679,6 +685,12 @@ describe('X Domain', () => {
 
     const mergedDomain = mergeXDomain(specs, xValues, xDomain);
     expect(mergedDomain.domain).toEqual([1, 3]);
+
+    const invalidXDomain = { max: -1 };
+    const attemptToMerge = () => {
+      mergeXDomain(specs, xValues, invalidXDomain);
+    };
+    expect(attemptToMerge).toThrowError('custom xDomain is invalid, computed min is greater than custom max');
   });
 
   test('should account for custom domain when merging an ordinal domain', () => {
