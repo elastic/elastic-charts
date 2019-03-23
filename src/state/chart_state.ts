@@ -25,6 +25,7 @@ import {
   DataSeriesColorsValues,
   FormattedDataSeries,
   getSeriesColorMap,
+  getSplittedSeries,
   RawDataSeries,
 } from '../lib/series/series';
 import {
@@ -624,6 +625,24 @@ export class ChartStore {
     }
   }
   addSeriesSpec(seriesSpec: BasicSeriesSpec | LineSeriesSpec | AreaSeriesSpec | BarSeriesSpec) {
+    if (this.seriesDomainsAndData) {
+      const prevSeriesColors = this.seriesDomainsAndData.seriesColors;
+      const nextSeriesSpecs = new Map([...this.seriesSpecs]);
+      nextSeriesSpecs.set(seriesSpec.id, seriesSpec);
+
+      const nextSeriesColors = getSplittedSeries(nextSeriesSpecs, this.selectedDataSeries).seriesColors;
+      if (prevSeriesColors.size !== nextSeriesColors.size) {
+        this.resetSelectedDataSeries();
+      } else {
+        for (const [seriesKey] of prevSeriesColors) {
+          if (!nextSeriesColors.get(seriesKey)) {
+            this.resetSelectedDataSeries();
+            break;
+          }
+        }
+      }
+    }
+
     this.seriesSpecs.set(seriesSpec.id, seriesSpec);
   }
   removeSeriesSpec(specId: SpecId) {
@@ -666,6 +685,7 @@ export class ChartStore {
       this.xDomain,
       this.selectedDataSeries,
     );
+
     this.seriesDomainsAndData = seriesDomains;
 
     // If this.selectedDataSeries is null, initialize with all series
