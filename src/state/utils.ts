@@ -26,6 +26,7 @@ import { isEqualSeriesKey } from '../lib/series/series_utils';
 import {
   AreaSeriesSpec,
   AxisSpec,
+  BarSeriesSpec,
   BasicSeriesSpec,
   DomainRange,
   LineSeriesSpec,
@@ -61,6 +62,30 @@ export function findSelectedDataSeries(
   return series.findIndex((item: DataSeriesColorsValues) => {
     return isEqualSeriesKey(item.colorValues, value.colorValues) && item.specId === value.specId;
   });
+}
+
+export function hasSeriesColorsChanged(
+  prevSeriesColors: Map<string, DataSeriesColorsValues>,
+  prevSeriesSpecs: Map<SpecId, BasicSeriesSpec>,
+  prevSelectedDataSeries: DataSeriesColorsValues[] | null,
+  nextSeriesSpec: BasicSeriesSpec | LineSeriesSpec | AreaSeriesSpec | BarSeriesSpec,
+
+): boolean {
+  const nextSeriesSpecs = new Map([...prevSeriesSpecs]);
+  nextSeriesSpecs.set(nextSeriesSpec.id, nextSeriesSpec);
+
+  const nextSeriesColors = getSplittedSeries(nextSeriesSpecs, prevSelectedDataSeries).seriesColors;
+  if (prevSeriesColors.size !== nextSeriesColors.size) {
+    return true;
+  }
+
+  for (const [seriesKey] of prevSeriesColors) {
+    if (!nextSeriesColors.get(seriesKey)) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 export function getAllDataSeriesColorValues(

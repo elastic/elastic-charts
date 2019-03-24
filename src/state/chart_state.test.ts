@@ -18,7 +18,7 @@ describe('Chart Store', () => {
     groupId: GROUP_ID,
     seriesType: 'bar',
     yScaleToDataExtent: false,
-    data: [{ x: 1, y: 1 }, { x: 2, y: 2 }, { x: 3, y: 3 }],
+    data: [{ x: 1, y: 1, g: 0 }, { x: 2, y: 2, g: 1 }, { x: 3, y: 3, g: 3 }],
     xAccessor: 'x',
     yAccessors: ['y'],
     xScaleType: ScaleType.Linear,
@@ -51,6 +51,18 @@ describe('Chart Store', () => {
     store.computeChart();
     const { seriesDomainsAndData } = store;
     expect(seriesDomainsAndData).not.toBeUndefined();
+  });
+
+  test('resets selectedDataSeries in state if series colors change on addSeriesSpec', () => {
+    const localStore = new ChartStore();
+    localStore.seriesSpecs = new Map();
+    localStore.addSeriesSpec(spec);
+    localStore.updateParentDimensions(600, 600, 0, 0);
+    localStore.computeChart();
+
+    const updatedSpec = { ...spec, splitSeriesAccessors: ['g'] };
+    localStore.addSeriesSpec(updatedSpec);
+    expect(localStore.selectedDataSeries).toBe(null);
   });
 
   test('can initialize selectedDataSeries depending on previous state', () => {
