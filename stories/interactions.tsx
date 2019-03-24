@@ -19,7 +19,7 @@ import {
   TooltipType,
 } from '../src/';
 
-import { boolean, select } from '@storybook/addon-knobs';
+import { array, boolean, number, select } from '@storybook/addon-knobs';
 import { DateTime } from 'luxon';
 import { switchTheme } from '../.storybook/theme_service';
 import * as TestDatasets from '../src/lib/series/utils/test_dataset';
@@ -177,9 +177,52 @@ storiesOf('Interactions', module)
     );
   })
   .add('click/hovers on legend items [bar chart]', () => {
+    const doesNotTriggerReset = 'does not trigger reset';
+    const doesTriggerReset = 'does trigger reset';
+
+    const xDomain = {
+      min: number('xDomain min', 0, {}, doesNotTriggerReset),
+      max: number('xDomain max', 6, {}, doesNotTriggerReset),
+    };
+
+    const yDomain = {
+      min: number('yDomain min', 0, {}, doesNotTriggerReset),
+      max: number('yDomain max', 10, {}, doesNotTriggerReset),
+    };
+
+    const scaleTypeOptions: { [key: string]: ScaleType.Linear | ScaleType.Log } = {
+      linear: ScaleType.Linear,
+      log: ScaleType.Log,
+    };
+
+    const xScaleType = select('xScaleType', scaleTypeOptions, ScaleType.Linear, doesNotTriggerReset);
+    const yScaleType = select('yScaleType', scaleTypeOptions, ScaleType.Linear, doesNotTriggerReset);
+
+    const xAccessorOptions = { x: 'x', y1: 'y1', y2: 'y2' };
+    const xAccessor = select('xAccessor', xAccessorOptions, 'x', doesNotTriggerReset);
+
+    const yScaleToDataExtent = boolean('yScaleDataToExtent', false, doesNotTriggerReset)
+
+    const splitSeriesAccessors = array('split series accessors', ['g1', 'g2'], ',', doesTriggerReset);
+    const yAccessors = array('y accessors', ['y1', 'y2'], ',', doesTriggerReset);
+    const additionalG1Value = boolean('additional split accessors group (g1)', false, doesTriggerReset);
+
+    const additionalDataRow = { x: 0, g1: 'foo', g2: 'direct-cdn', y1: 1, y2: 4 };
+    const data = additionalG1Value ? [...TestDatasets.BARCHART_2Y2G, additionalDataRow] : TestDatasets.BARCHART_2Y2G;
+
+    const barSeriesProps = {
+      xScaleType,
+      yScaleType,
+      xAccessor,
+      yAccessors,
+      splitSeriesAccessors,
+      data,
+      yScaleToDataExtent,
+    };
+
     return (
       <Chart renderer="canvas" className={'story-chart'}>
-        <Settings showLegend={true} legendPosition={Position.Right} {...onLegendItemListeners} />
+        <Settings showLegend={true} legendPosition={Position.Right} {...onLegendItemListeners} xDomain={xDomain} />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
@@ -191,18 +234,10 @@ storiesOf('Interactions', module)
           title={'Left axis'}
           position={Position.Left}
           tickFormat={(d) => Number(d).toFixed(2)}
+          domain={yDomain}
         />
 
-        <BarSeries
-          id={getSpecId('bars')}
-          xScaleType={ScaleType.Linear}
-          yScaleType={ScaleType.Linear}
-          xAccessor="x"
-          yAccessors={['y1', 'y2']}
-          splitSeriesAccessors={['g1', 'g2']}
-          data={TestDatasets.BARCHART_2Y2G}
-          yScaleToDataExtent={false}
-        />
+        <BarSeries id={getSpecId('bars')} {...barSeriesProps} />
       </Chart>
     );
   })
