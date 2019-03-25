@@ -6,20 +6,18 @@ import {
   LineSeriesSpec,
 } from '../lib/series/specs';
 
-import { BARCHART_1Y0G, BARCHART_1Y1G, BARCHART_2Y2G } from '../lib/series/utils/test_dataset';
+import { BARCHART_1Y0G, BARCHART_1Y1G } from '../lib/series/utils/test_dataset';
 
 import { getGroupId, getSpecId, SpecId } from '../lib/utils/ids';
 import { ScaleType } from '../lib/utils/scales/scales';
 import {
   computeSeriesDomains,
-  findSelectedDataSeries,
-  getAllDataSeriesColorValues,
+  findDataSeriesByColorValues,
   getUpdatedCustomSeriesColors,
-  hasSeriesColorsChanged,
   isHorizontalRotation,
   isLineAreaOnlyChart,
   isVerticalRotation,
-  updateSelectedDataSeries,
+  updateDeselectedDataSeries,
 } from './utils';
 
 describe('Chart State utils', () => {
@@ -148,11 +146,11 @@ describe('Chart State utils', () => {
       colorValues: ['a', 'b', 'd'],
     };
 
-    const selectedSeries = [dataSeriesValuesA, dataSeriesValuesB];
+    const deselectedSeries = [dataSeriesValuesA, dataSeriesValuesB];
 
-    expect(findSelectedDataSeries(selectedSeries, dataSeriesValuesA)).toBe(0);
-    expect(findSelectedDataSeries(selectedSeries, dataSeriesValuesC)).toBe(-1);
-    expect(findSelectedDataSeries(null, dataSeriesValuesA)).toBe(-1);
+    expect(findDataSeriesByColorValues(deselectedSeries, dataSeriesValuesA)).toBe(0);
+    expect(findDataSeriesByColorValues(deselectedSeries, dataSeriesValuesC)).toBe(-1);
+    expect(findDataSeriesByColorValues(null, dataSeriesValuesA)).toBe(-1);
   });
   it('should update a list of DataSeriesColorsValues given a selected DataSeriesColorValues item', () => {
     const dataSeriesValuesA: DataSeriesColorsValues = {
@@ -174,32 +172,13 @@ describe('Chart State utils', () => {
     const addedSelectedSeries = [dataSeriesValuesA, dataSeriesValuesB, dataSeriesValuesC];
     const removedSelectedSeries = [dataSeriesValuesB];
 
-    expect(updateSelectedDataSeries(selectedSeries, dataSeriesValuesC)).toEqual(
+    expect(updateDeselectedDataSeries(selectedSeries, dataSeriesValuesC)).toEqual(
       addedSelectedSeries,
     );
-    expect(updateSelectedDataSeries(selectedSeries, dataSeriesValuesA)).toEqual(
+    expect(updateDeselectedDataSeries(selectedSeries, dataSeriesValuesA)).toEqual(
       removedSelectedSeries,
     );
-    expect(updateSelectedDataSeries(null, dataSeriesValuesA)).toEqual([dataSeriesValuesA]);
-  });
-  it('should return all of the DataSeriesColorValues on initialization', () => {
-    const dataSeriesValuesA: DataSeriesColorsValues = {
-      specId: getSpecId('a'),
-      colorValues: ['a', 'b', 'c'],
-    };
-
-    const dataSeriesValuesB: DataSeriesColorsValues = {
-      specId: getSpecId('b'),
-      colorValues: ['a', 'b', 'c'],
-    };
-
-    const colorMap = new Map();
-    colorMap.set('a', dataSeriesValuesA);
-    colorMap.set('b', dataSeriesValuesB);
-
-    const expected = [dataSeriesValuesA, dataSeriesValuesB];
-
-    expect(getAllDataSeriesColorValues(colorMap)).toEqual(expected);
+    expect(updateDeselectedDataSeries(null, dataSeriesValuesA)).toEqual([dataSeriesValuesA]);
   });
   it('should get an updated customSeriesColor based on specs', () => {
     const spec1: BasicSeriesSpec = {
@@ -304,95 +283,5 @@ describe('Chart State utils', () => {
     expect(isLineAreaOnlyChart(seriesMap)).toBe(true);
     seriesMap = new Map<SpecId, BasicSeriesSpec>([[bar.id, bar], [getSpecId('bar2'), bar]]);
     expect(isLineAreaOnlyChart(seriesMap)).toBe(false);
-  });
-  test('should detect when series colors have changed', () => {
-    const specId = getSpecId('spec_1');
-    const groupId = getGroupId('group_1');
-
-    const spec1: BarSeriesSpec = {
-      id: specId,
-      groupId,
-      seriesType: 'bar',
-      yScaleToDataExtent: false,
-      data: BARCHART_2Y2G,
-      xAccessor: 'x',
-      yAccessors: ['y1', 'y2'],
-      splitSeriesAccessors: ['g1'],
-      xScaleType: ScaleType.Linear,
-      yScaleType: ScaleType.Linear,
-    };
-
-    const prevSeriesSpecs = new Map();
-    const prevSeriesColors = new Map();
-
-    const hasChangedSize = hasSeriesColorsChanged(
-      prevSeriesColors,
-      prevSeriesSpecs,
-      null,
-      spec1,
-    );
-    expect(hasChangedSize).toBe(true);
-
-    prevSeriesSpecs.set(spec1.id, spec1);
-    const seriesColors1 = {
-      specId,
-      colorValues: ['cdn.google.com', 'y1'],
-    };
-    prevSeriesColors.set('specId:{spec_1},colors:{cdn.google.com,y1}', seriesColors1);
-
-    const seriesColors2 = {
-      specId,
-      colorValues: ['cloudflare.com', 'y1'],
-    };
-    prevSeriesColors.set('specId:{spec_1},colors:{cloudflare.com,y1}', seriesColors2);
-
-    const seriesColors3 = {
-      specId,
-      colorValues: ['cdn.google.com', 'y2'],
-    };
-    prevSeriesColors.set('specId:{spec_1},colors:{cdn.google.com,y2}', seriesColors3);
-
-    const seriesColors4 = {
-      specId,
-      colorValues: ['cloudflare.com', 'y2'],
-    };
-    prevSeriesColors.set('specId:{spec_1},colors:{cloudflare.com,y2}', seriesColors4);
-
-    const changedXAccessorSpec: BarSeriesSpec = { ...spec1, xAccessor: 'y2' };
-    const hasChangedXAccessor = hasSeriesColorsChanged(
-      prevSeriesColors,
-      prevSeriesSpecs,
-      null,
-      changedXAccessorSpec,
-    );
-    expect(hasChangedXAccessor).toBe(false);
-
-    const changedYAccessorSpec: BarSeriesSpec = { ...spec1, yAccessors: ['y2'] };
-    const hasChangedYAccessor = hasSeriesColorsChanged(
-      prevSeriesColors,
-      prevSeriesSpecs,
-      null,
-      changedYAccessorSpec,
-    );
-    expect(hasChangedYAccessor).toBe(true);
-
-    const changedSplitAccessorSpec: BarSeriesSpec = { ...spec1, splitSeriesAccessors: ['g2'] };
-    const hasChangedSplitAccessor = hasSeriesColorsChanged(
-      prevSeriesColors,
-      prevSeriesSpecs,
-      null,
-      changedSplitAccessorSpec,
-    );
-    expect(hasChangedSplitAccessor).toBe(true);
-
-    const additionalSplitData = [...BARCHART_2Y2G, { x: 0, g1: 'foo', g2: 'direct-cdn', y1: 1, y2: 4 }];
-    const changedDataValuesSpec: BarSeriesSpec = { ...spec1, data: additionalSplitData };
-    const hasChangedDataValues = hasSeriesColorsChanged(
-      prevSeriesColors,
-      prevSeriesSpecs,
-      null,
-      changedDataValuesSpec,
-    );
-    expect(hasChangedDataValues).toBe(true);
   });
 });
