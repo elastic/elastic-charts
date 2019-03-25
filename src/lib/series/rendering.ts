@@ -2,6 +2,7 @@ import { area, line } from 'd3-shape';
 import { mutableIndexedGeometryMapUpsert } from '../../state/utils';
 import { SharedGeometryStyle } from '../themes/theme';
 import { SpecId } from '../utils/ids';
+import { isLogarithmicScale } from '../utils/scales/scale_continuous';
 import { Scale, ScaleType } from '../utils/scales/scales';
 import { CurveType, getCurveFactory } from './curves';
 import { LegendItem } from './legend';
@@ -87,7 +88,7 @@ export function renderPoints(
   indexedGeometries: Map<any, IndexedGeometry[]>;
 } {
   const indexedGeometries: Map<any, IndexedGeometry[]> = new Map();
-  const isLogScale = yScale.type === ScaleType.Log;
+  const isLogScale = isLogarithmicScale(yScale);
 
   const pointGeometries = dataset.reduce(
     (acc, datum) => {
@@ -233,7 +234,7 @@ export function renderLine(
   lineGeometry: LineGeometry;
   indexedGeometries: Map<any, IndexedGeometry[]>;
 } {
-  const isLogScale = yScale.type === ScaleType.Log;
+  const isLogScale = isLogarithmicScale(yScale);
 
   const pathGenerator = line<DataSeriesDatum>()
     .x((datum: DataSeriesDatum) => xScale.scale(datum.x))
@@ -283,7 +284,8 @@ export function renderArea(
   areaGeometry: AreaGeometry;
   indexedGeometries: Map<any, IndexedGeometry[]>;
 } {
-  const isLogScale = yScale.type === ScaleType.Log;
+  const isLogScale = isLogarithmicScale(yScale);
+
   const pathGenerator = area<DataSeriesDatum>()
     .x((datum: DataSeriesDatum) => xScale.scale(datum.x))
     .y1((datum: DataSeriesDatum) => yScale.scale(datum.y1))

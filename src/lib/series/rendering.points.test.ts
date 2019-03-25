@@ -679,4 +679,75 @@ describe('Rendering points - line', () => {
       expect(indexedGeometries.size).toEqual(points.length);
     });
   });
+  describe('Single series pointchart - y log', () => {
+    const pointSeriesSpec: LineSeriesSpec = {
+      id: SPEC_ID,
+      groupId: GROUP_ID,
+      seriesType: 'line',
+      yScaleToDataExtent: false,
+      data: [[0, 10], [1, 5], [2, null], [3, 5], [4, 5], [5, 0], [6, 10], [7, 10], [8, 10]],
+      xAccessor: 0,
+      yAccessors: [1],
+      xScaleType: ScaleType.Linear,
+      yScaleType: ScaleType.Log,
+    };
+    const pointSeriesMap = new Map();
+    pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
+    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
+    const xScale = computeXScale(pointSeriesDomains.xDomain, pointSeriesMap.size, 0, 90);
+    const yScales = computeYScales(pointSeriesDomains.yDomain, 100, 0);
+
+    let renderedLine: {
+      lineGeometry: LineGeometry;
+      indexedGeometries: Map<any, IndexedGeometry[]>;
+    };
+
+    beforeEach(() => {
+      renderedLine = renderLine(
+        0, // not applied any shift, renderGeometries applies it only with mixed charts
+        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0].data,
+        xScale,
+        yScales.get(GROUP_ID)!,
+        'red',
+        CurveType.LINEAR,
+        SPEC_ID,
+        [],
+      );
+    });
+    test('Can render a splitted line', () => {
+      // expect(renderedLine.lineGeometry.line).toBe('ss');
+      expect(renderedLine.lineGeometry.line.split('M').length - 1).toBe(3);
+      expect(renderedLine.lineGeometry.color).toBe('red');
+      expect(renderedLine.lineGeometry.geometryId.seriesKey).toEqual([]);
+      expect(renderedLine.lineGeometry.geometryId.specId).toEqual(SPEC_ID);
+      expect(renderedLine.lineGeometry.transform).toEqual({ x: 0, y: 0 });
+    });
+    test('Can render points points', () => {
+      const {
+        lineGeometry: { points },
+        indexedGeometries,
+      } = renderedLine;
+      // all the points minus the undefined ones on a log scale
+      expect(points.length).toBe(7);
+      // all the points
+      expect(indexedGeometries.size).toEqual(9);
+      const nullIndexdGeometry = indexedGeometries.get(2);
+      expect(nullIndexdGeometry).toBeDefined();
+      expect(nullIndexdGeometry!.length).toBe(1);
+      // moved to the bottom of the chart
+      expect(nullIndexdGeometry![0].geom.y).toBe(100);
+      // 0 radius point
+      expect(nullIndexdGeometry![0].geom.width).toBe(0);
+      expect(nullIndexdGeometry![0].geom.height).toBe(0);
+
+      const zeroValueIndexdGeometry = indexedGeometries.get(5);
+      expect(zeroValueIndexdGeometry).toBeDefined();
+      expect(zeroValueIndexdGeometry!.length).toBe(1);
+      // moved to the bottom of the chart
+      expect(zeroValueIndexdGeometry![0].geom.y).toBe(100);
+      // 0 radius point
+      expect(zeroValueIndexdGeometry![0].geom.width).toBe(0);
+      expect(zeroValueIndexdGeometry![0].geom.height).toBe(0);
+    });
+  });
 });
