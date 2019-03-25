@@ -19,9 +19,10 @@ import {
   TooltipType,
 } from '../src/';
 
-import { array, boolean, number, select, text } from '@storybook/addon-knobs';
+import { array, boolean, number, select } from '@storybook/addon-knobs';
 import { DateTime } from 'luxon';
 import { switchTheme } from '../.storybook/theme_service';
+import { BARCHART_2Y2G } from '../src/lib/series/utils/test_dataset';
 import { KIBANA_METRICS } from '../src/lib/series/utils/test_dataset_kibana';
 import { niceTimeFormatByDay, timeFormatter } from '../src/utils/data/formatters';
 
@@ -38,23 +39,6 @@ const onLegendItemListeners = {
   onLegendItemPlusClick: action('onLegendItemPlusClick'),
   onLegendItemMinusClick: action('onLegendItemMinusClick'),
 };
-
-function setG1ValueData(value: string): any[] {
-  return [
-    { x: 0, g1: value, g2: 'direct-cdn', y1: 1, y2: 4 },
-    { x: 0, g1: value, g2: 'indirect-cdn', y1: 1, y2: 4 },
-    { x: 0, g1: 'cloudflare.com', g2: 'direct-cdn', y1: 3, y2: 6 },
-    { x: 0, g1: 'cloudflare.com', g2: 'indirect-cdn', y1: 3, y2: 6 },
-    { x: 1, g1: value, g2: 'direct-cdn', y1: 7, y2: 3 },
-    { x: 1, g1: value, g2: 'indirect-cdn', y1: 7, y2: 3 },
-    { x: 3, g1: 'cloudflare.com', g2: 'direct-cdn', y1: 6, y2: 4 },
-    { x: 3, g1: 'cloudflare.com', g2: 'indirect-cdn', y1: 6, y2: 4 },
-    { x: 6, g1: value, g2: 'direct-cdn', y1: 7, y2: 3 },
-    { x: 6, g1: value, g2: 'indirect-cdn', y1: 7, y2: 3 },
-    { x: 6, g1: 'cloudflare.com', g2: 'direct-cdn', y1: 6, y2: 4 },
-    { x: 6, g1: 'cloudflare.com', g2: 'indirect-cdn', y1: 6, y2: 4 },
-  ];
-}
 
 storiesOf('Interactions', module)
   .add('bar clicks and hovers', () => {
@@ -193,17 +177,17 @@ storiesOf('Interactions', module)
     );
   })
   .add('click/hovers on legend items [bar chart]', () => {
-    const doesNotTriggerReset = 'does not trigger reset';
-    const doesTriggerReset = 'does trigger reset';
+    const notSpecChange = 'not spec change';
+    const specChange = 'spec change';
 
     const xDomain = {
-      min: number('xDomain min', 0, {}, doesNotTriggerReset),
-      max: number('xDomain max', 6, {}, doesNotTriggerReset),
+      min: number('xDomain min', 0, {}, notSpecChange),
+      max: number('xDomain max', 6, {}, notSpecChange),
     };
 
     const yDomain = {
-      min: number('yDomain min', 0, {}, doesNotTriggerReset),
-      max: number('yDomain max', 10, {}, doesNotTriggerReset),
+      min: number('yDomain min', 0, {}, notSpecChange),
+      max: number('yDomain max', 10, {}, notSpecChange),
     };
 
     const scaleTypeOptions: { [key: string]: ScaleType.Linear | ScaleType.Log } = {
@@ -211,27 +195,25 @@ storiesOf('Interactions', module)
       log: ScaleType.Log,
     };
 
-    const xScaleType = select('xScaleType', scaleTypeOptions, ScaleType.Linear, doesNotTriggerReset);
-    const yScaleType = select('yScaleType', scaleTypeOptions, ScaleType.Linear, doesNotTriggerReset);
+    const xScaleType = select('xScaleType', scaleTypeOptions, ScaleType.Linear, specChange);
+    const yScaleType = select('yScaleType', scaleTypeOptions, ScaleType.Linear, specChange);
 
     const xAccessorOptions = { x: 'x', y1: 'y1', y2: 'y2' };
-    const xAccessor = select('xAccessor', xAccessorOptions, 'x', doesNotTriggerReset);
+    const xAccessor = select('xAccessor', xAccessorOptions, 'x', notSpecChange);
 
-    const yScaleToDataExtent = boolean('yScaleDataToExtent', false, doesNotTriggerReset);
+    const yScaleToDataExtent = boolean('yScaleDataToExtent', false, specChange);
 
-    const splitSeriesAccessors = array('split series accessors', ['g1', 'g2'], ',', doesTriggerReset);
+    const splitSeriesAccessors = array('split series accessors', ['g1', 'g2'], ',', specChange);
 
-    const hasY2 = boolean('has y2 yAccessor', true, doesTriggerReset);
+    const hasY2 = boolean('has y2 yAccessor', true, specChange);
     const yAccessors = hasY2 ? ['y1', 'y2'] : ['y1'];
 
-    const g1Value = text('g1 value', 'cdn.google.com', doesTriggerReset);
-
     const additionalG1Value = { x: 4, g1: '$$$$$$$$', g2: 'indirect-cdn', y1: 7, y2: 3 };
-    const hasAdditionalG1Value = boolean('has additional g1 value', false, doesTriggerReset);
+    const hasAdditionalG1Value = boolean('has additional g1 value', false, specChange);
 
-    const generatedData = setG1ValueData(g1Value);
+    const seriesData = BARCHART_2Y2G;
 
-    const data = hasAdditionalG1Value ? [...generatedData, additionalG1Value] : generatedData;
+    const data = hasAdditionalG1Value ? [...seriesData, additionalG1Value] : seriesData;
 
     const barSeriesProps = {
       xScaleType,
