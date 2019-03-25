@@ -3,6 +3,7 @@ import { DataSeriesColorsValues } from '../lib/series/series';
 import { AxisSpec, BarSeriesSpec, Position } from '../lib/series/specs';
 import { getAxisId, getGroupId, getSpecId } from '../lib/utils/ids';
 import { TooltipType, TooltipValue } from '../lib/utils/interactions';
+import { ScaleContinuous } from '../lib/utils/scales/scale_continuous';
 import { ScaleType } from '../lib/utils/scales/scales';
 import { ChartStore } from './chart_state';
 
@@ -550,6 +551,32 @@ describe('Chart Store', () => {
     store.cursorPosition.x = 1;
     store.tooltipType.set(TooltipType.Crosshairs);
     store.tooltipData.replace([tooltipValue]);
+    expect(store.isTooltipVisible.get()).toBe(true);
+  });
+
+  test('can disable tooltip on brushing', () => {
+    const tooltipValue: TooltipValue = {
+      name: 'a',
+      value: 'a',
+      color: 'a',
+      isHighlighted: false,
+      isXValue: false,
+    };
+    store.xScale = new ScaleContinuous([0, 100], [0, 100], ScaleType.Linear);
+    store.cursorPosition.x = 1;
+    store.cursorPosition.x = 1;
+    store.tooltipType.set(TooltipType.Crosshairs);
+    store.tooltipData.replace([tooltipValue]);
+    store.onBrushStart();
+    expect(store.isBrushing.get()).toBe(true);
+    expect(store.isTooltipVisible.get()).toBe(false);
+
+    store.cursorPosition.x = 1;
+    store.cursorPosition.x = 1;
+    store.tooltipType.set(TooltipType.Crosshairs);
+    store.tooltipData.replace([tooltipValue]);
+    store.onBrushEnd({ x: 0, y: 0 }, { x: 1, y: 1 });
+    expect(store.isBrushing.get()).toBe(false);
     expect(store.isTooltipVisible.get()).toBe(true);
   });
   test('handle click on chart', () => {
