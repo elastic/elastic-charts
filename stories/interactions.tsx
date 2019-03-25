@@ -19,10 +19,9 @@ import {
   TooltipType,
 } from '../src/';
 
-import { array, boolean, number, select } from '@storybook/addon-knobs';
+import { array, boolean, number, select, text } from '@storybook/addon-knobs';
 import { DateTime } from 'luxon';
 import { switchTheme } from '../.storybook/theme_service';
-import * as TestDatasets from '../src/lib/series/utils/test_dataset';
 import { KIBANA_METRICS } from '../src/lib/series/utils/test_dataset_kibana';
 import { niceTimeFormatByDay, timeFormatter } from '../src/utils/data/formatters';
 
@@ -39,6 +38,23 @@ const onLegendItemListeners = {
   onLegendItemPlusClick: action('onLegendItemPlusClick'),
   onLegendItemMinusClick: action('onLegendItemMinusClick'),
 };
+
+function setG1ValueData(value: string): any[] {
+  return [
+    { x: 0, g1: value, g2: 'direct-cdn', y1: 1, y2: 4 },
+    { x: 0, g1: value, g2: 'indirect-cdn', y1: 1, y2: 4 },
+    { x: 0, g1: 'cloudflare.com', g2: 'direct-cdn', y1: 3, y2: 6 },
+    { x: 0, g1: 'cloudflare.com', g2: 'indirect-cdn', y1: 3, y2: 6 },
+    { x: 1, g1: value, g2: 'direct-cdn', y1: 7, y2: 3 },
+    { x: 1, g1: value, g2: 'indirect-cdn', y1: 7, y2: 3 },
+    { x: 3, g1: 'cloudflare.com', g2: 'direct-cdn', y1: 6, y2: 4 },
+    { x: 3, g1: 'cloudflare.com', g2: 'indirect-cdn', y1: 6, y2: 4 },
+    { x: 6, g1: value, g2: 'direct-cdn', y1: 7, y2: 3 },
+    { x: 6, g1: value, g2: 'indirect-cdn', y1: 7, y2: 3 },
+    { x: 6, g1: 'cloudflare.com', g2: 'direct-cdn', y1: 6, y2: 4 },
+    { x: 6, g1: 'cloudflare.com', g2: 'indirect-cdn', y1: 6, y2: 4 },
+  ];
+}
 
 storiesOf('Interactions', module)
   .add('bar clicks and hovers', () => {
@@ -201,14 +217,21 @@ storiesOf('Interactions', module)
     const xAccessorOptions = { x: 'x', y1: 'y1', y2: 'y2' };
     const xAccessor = select('xAccessor', xAccessorOptions, 'x', doesNotTriggerReset);
 
-    const yScaleToDataExtent = boolean('yScaleDataToExtent', false, doesNotTriggerReset)
+    const yScaleToDataExtent = boolean('yScaleDataToExtent', false, doesNotTriggerReset);
 
     const splitSeriesAccessors = array('split series accessors', ['g1', 'g2'], ',', doesTriggerReset);
-    const yAccessors = array('y accessors', ['y1', 'y2'], ',', doesTriggerReset);
-    const additionalG1Value = boolean('additional split accessors group (g1)', false, doesTriggerReset);
 
-    const additionalDataRow = { x: 0, g1: 'foo', g2: 'direct-cdn', y1: 1, y2: 4 };
-    const data = additionalG1Value ? [...TestDatasets.BARCHART_2Y2G, additionalDataRow] : TestDatasets.BARCHART_2Y2G;
+    const hasY2 = boolean('has y2 yAccessor', true, doesTriggerReset);
+    const yAccessors = hasY2 ? ['y1', 'y2'] : ['y1'];
+
+    const g1Value = text('g1 value', 'cdn.google.com', doesTriggerReset);
+
+    const additionalG1Value = { x: 4, g1: '$$$$$$$$', g2: 'indirect-cdn', y1: 7, y2: 3 };
+    const hasAdditionalG1Value = boolean('has additional g1 value', false, doesTriggerReset);
+
+    const generatedData = setG1ValueData(g1Value);
+
+    const data = hasAdditionalG1Value ? [...generatedData, additionalG1Value] : generatedData;
 
     const barSeriesProps = {
       xScaleType,
