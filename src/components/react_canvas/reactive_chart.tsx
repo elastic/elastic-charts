@@ -3,6 +3,7 @@ import React from 'react';
 import { Layer, Rect, Stage } from 'react-konva';
 import { ChartStore, Point } from '../../state/chart_state';
 import { BrushExtent } from '../../state/utils';
+import { Annotation } from './annotation';
 import { AreaGeometries } from './area_geometries';
 import { Axis } from './axis';
 import { BarGeometries } from './bar_geometries';
@@ -167,6 +168,23 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
     return gridComponents;
   }
 
+  renderAnnotations = () => {
+    const { annotationDimensions, chartDimensions, debug } = this.props.chartStore!;
+
+    const annotationComponents: JSX.Element[] = [];
+    annotationDimensions.forEach((dimensions, annotationId) => {
+      annotationComponents.push(
+        <Annotation
+          key={`annotation-${annotationId}`}
+          chartDimensions={chartDimensions}
+          debug={debug}
+          linePositions={dimensions}
+        />,
+      );
+    });
+    return annotationComponents;
+  }
+
   renderBrushTool = () => {
     const { brushing, brushStart, brushEnd } = this.state;
     const { chartDimensions, chartRotation, chartTransform } = this.props.chartStore!;
@@ -239,15 +257,15 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
     const clippings = debug
       ? {}
       : {
-          clipX: 0,
-          clipY: 0,
-          clipWidth: [90, -90].includes(chartRotation)
-            ? chartDimensions.height
-            : chartDimensions.width,
-          clipHeight: [90, -90].includes(chartRotation)
-            ? chartDimensions.width
-            : chartDimensions.height,
-        };
+        clipX: 0,
+        clipY: 0,
+        clipWidth: [90, -90].includes(chartRotation)
+          ? chartDimensions.height
+          : chartDimensions.width,
+        clipHeight: [90, -90].includes(chartRotation)
+          ? chartDimensions.width
+          : chartDimensions.height,
+      };
 
     let brushProps = {};
     const isBrushEnabled = this.props.chartStore!.isBrushEnabled();
@@ -326,6 +344,10 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
 
           <Layer hitGraphEnabled={false} listening={false}>
             {this.renderAxes()}
+          </Layer>
+
+          <Layer hitGraphEnabled={false} listening={false} {...clippings}>
+            {this.renderAnnotations()}
           </Layer>
         </Stage>
       </div>

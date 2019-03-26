@@ -159,13 +159,18 @@ export enum AnnotationType {
   Text = 'text',
 }
 
+export enum AnnotationDomainType {
+  XDomain = 'xDomain',
+  YDomain = 'yDomain',
+}
+
 /**
  * The position of the annotation defined in terms of a series datapoint.
  */
 export interface SeriesDatumAnnotationPosition {
-  specId: SpecId;
-  accessor: Accessor;
-  datumValue: any;
+  groupId?: GroupId; // defaults to __global__; needed for yDomain position
+  domainType: AnnotationDomainType;
+  dataValues: any[];
   positionType: AnnotationPositionType.SeriesDatum;
 }
 

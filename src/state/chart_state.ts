@@ -56,6 +56,7 @@ import {
 } from '../lib/utils/interactions';
 import { Scale, ScaleType } from '../lib/utils/scales/scales';
 import { DEFAULT_TOOLTIP_SNAP, DEFAULT_TOOLTIP_TYPE } from '../specs/settings';
+import { computeAnnotationDimensions } from './annotation_utils';
 import {
   getCursorBandPosition,
   getCursorLinePosition,
@@ -135,8 +136,10 @@ export class ChartStore {
   axesTicks: Map<AxisId, AxisTick[]> = new Map(); // computed
   axesGridLinesPositions: Map<AxisId, AxisLinePosition[]> = new Map(); // computed
 
-  // TODO: add types
   annotationSpecs = new Map<AnnotationId, AnnotationSpec>(); // read from jsx
+
+  // TODO: add type
+  annotationDimensions = new Map<AnnotationId, any>(); // computed
 
   seriesSpecs: Map<SpecId, BasicSeriesSpec> = new Map(); // readed from jsx
 
@@ -801,8 +804,11 @@ export class ChartStore {
     // }
 
     // annotation computations
-    console.log('geometries index');
-    console.log(this.geometriesIndex);
+    this.annotationDimensions = computeAnnotationDimensions(
+      this.annotationSpecs,
+      this.geometriesIndex,
+      this.chartDimensions,
+    );
 
     this.canDataBeAnimated = true;
 

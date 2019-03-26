@@ -2,21 +2,27 @@ import { boolean } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import React from 'react';
 import { BarSeries, Chart, getSpecId, LineAnnotation, ScaleType, Settings } from '../src';
-import { AnnotationPositionType, SeriesDatumAnnotationPosition } from '../src/lib/series/specs';
+import {
+  AnnotationDomainType,
+  AnnotationPositionType,
+  AnnotationType,
+  LineAnnotationSpec,
+  SeriesDatumAnnotationPosition,
+} from '../src/lib/series/specs';
 import { getAnnotationId } from '../src/lib/utils/ids';
 
 storiesOf('Annotations', module)
   .add('basic', () => {
     const position: SeriesDatumAnnotationPosition = {
-      specId: getSpecId('bars'),
-      accessor: 'x',
-      datumValue: 0,
+      domainType: AnnotationDomainType.XDomain,
+      dataValues: [1],
       positionType: AnnotationPositionType.SeriesDatum,
     };
 
-    const lineAnnotationProps = {
+    const lineAnnotationProps: LineAnnotationSpec = {
       annotationId: getAnnotationId('anno_1'),
       position,
+      annotationType: AnnotationType.Line,
     };
 
     return (
