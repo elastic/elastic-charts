@@ -28,6 +28,7 @@ import {
   RawDataSeries,
 } from '../lib/series/series';
 import {
+  AnnotationSpec,
   AreaSeriesSpec,
   AxisSpec,
   BarSeriesSpec,
@@ -43,7 +44,7 @@ import { LIGHT_THEME } from '../lib/themes/light_theme';
 import { Theme } from '../lib/themes/theme';
 import { computeChartDimensions, Dimensions } from '../lib/utils/dimensions';
 import { Domain } from '../lib/utils/domain';
-import { AxisId, GroupId, SpecId } from '../lib/utils/ids';
+import { AnnotationId, AxisId, GroupId, SpecId } from '../lib/utils/ids';
 import {
   areIndexedGeometryArraysEquals,
   getValidXPosition,
@@ -135,7 +136,7 @@ export class ChartStore {
   axesGridLinesPositions: Map<AxisId, AxisLinePosition[]> = new Map(); // computed
 
   // TODO: add types
-  annotationSpecs = new Map(); // read from jsx
+  annotationSpecs = new Map<AnnotationId, AnnotationSpec>(); // read from jsx
 
   seriesSpecs: Map<SpecId, BasicSeriesSpec> = new Map(); // readed from jsx
 
@@ -643,12 +644,12 @@ export class ChartStore {
     this.axesSpecs.delete(axisId);
   }
 
-  addAnnotationSpec() {
-    // TODO: add spec
+  addAnnotationSpec(annotationSpec: AnnotationSpec) {
+    this.annotationSpecs.set(annotationSpec.annotationId, annotationSpec);
   }
 
-  removeAnnotationSpec() {
-    // TODO: remove spec
+  removeAnnotationSpec(annotationId: AnnotationId) {
+    this.annotationSpecs.delete(annotationId);
   }
 
   computeChart() {
@@ -798,6 +799,11 @@ export class ChartStore {
     // } else {
     //   this.canDataBeAnimated = this.animateData;
     // }
+
+    // annotation computations
+    console.log('geometries index');
+    console.log(this.geometriesIndex);
+
     this.canDataBeAnimated = true;
 
     this.initialized.set(true);

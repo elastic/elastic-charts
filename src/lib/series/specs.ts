@@ -1,6 +1,6 @@
 import { GridLineConfig } from '../themes/theme';
 import { Accessor } from '../utils/accessor';
-import { AxisId, GroupId, SpecId } from '../utils/ids';
+import { AnnotationId, AxisId, GroupId, SpecId } from '../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../utils/scales/scales';
 import { CurveType } from './curves';
 import { DataSeriesColorsValues } from './series';
@@ -149,14 +149,20 @@ export enum Position {
 }
 
 export enum AnnotationPositionType {
-  ChartCoordinate,
-  SeriesDatum,
+  ChartCoordinate = 'chart_coordinate',
+  SeriesDatum = 'series_datum',
+}
+
+export enum AnnotationType {
+  Line = 'line',
+  Rectangle = 'rectangle',
+  Text = 'text',
 }
 
 /**
  * The position of the annotation defined in terms of a series datapoint.
  */
-interface SeriesDatumAnnotationPosition {
+export interface SeriesDatumAnnotationPosition {
   specId: SpecId;
   accessor: Accessor;
   datumValue: any;
@@ -174,5 +180,9 @@ interface CoordinateAnnotationPosition {
 
 export interface LineAnnotationSpec {
   position: SeriesDatumAnnotationPosition | CoordinateAnnotationPosition;
-  annotationId: string;
+  annotationId: AnnotationId;
+  annotationType: AnnotationType.Line;
 }
+
+// TODO: RectangleAnnotationSpec & TextAnnotationSpec
+export type AnnotationSpec = LineAnnotationSpec;
