@@ -190,13 +190,13 @@ storiesOf('Interactions', module)
       max: number('yDomain max', 10, {}, notSpecChange),
     };
 
-    const scaleTypeOptions: { [key: string]: ScaleType.Linear | ScaleType.Log } = {
+    const yScaleTypeOptions: { [key: string]: ScaleType.Linear | ScaleType.Log } = {
       linear: ScaleType.Linear,
       log: ScaleType.Log,
     };
 
-    const xScaleType = select('xScaleType', scaleTypeOptions, ScaleType.Linear, specChange);
-    const yScaleType = select('yScaleType', scaleTypeOptions, ScaleType.Linear, specChange);
+    const xScaleType = ScaleType.Linear;
+    const yScaleType = select('yScaleType', yScaleTypeOptions, ScaleType.Linear, specChange);
 
     const xAccessorOptions = { x: 'x', y1: 'y1', y2: 'y2' };
     const xAccessor = select('xAccessor', xAccessorOptions, 'x', notSpecChange);
