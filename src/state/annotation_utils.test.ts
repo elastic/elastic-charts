@@ -21,6 +21,12 @@ describe('annotation utils', () => {
     left: 15,
   };
 
+  // TODO: test various cursor positions and their effect on details visiblity
+  const cursorPosition = {
+    x: 0,
+    y: 0,
+  };
+
   test('should compute annotation dimensions', () => {
     const groupId = getGroupId('foo-group');
 
@@ -42,9 +48,16 @@ describe('annotation utils', () => {
 
     annotations.set(annotationId, lineAnnotation);
 
-    const dimensions = computeAnnotationDimensions(annotations, chartDimensions, chartRotation, yScales, xScale);
+    const dimensions = computeAnnotationDimensions(
+      annotations,
+      chartDimensions,
+      chartRotation,
+      yScales,
+      xScale,
+      cursorPosition,
+    );
     const expectedDimensions = new Map();
-    expectedDimensions.set(annotationId, [[0, 20, 10, 20]]);
+    expectedDimensions.set(annotationId, [{ position: [0, 20, 10, 20], details: { isVisible: false } }]);
     expect(dimensions).toEqual(expectedDimensions);
   });
 
@@ -66,8 +79,15 @@ describe('annotation utils', () => {
       groupId,
     };
 
-    const dimensions = computeLineAnnotationDimensions(lineAnnotation, chartDimensions, chartRotation, yScales, xScale);
-    const expectedDimensions = [[0, 20, 10, 20]];
+    const dimensions = computeLineAnnotationDimensions(
+      lineAnnotation,
+      chartDimensions,
+      chartRotation,
+      yScales,
+      xScale,
+      cursorPosition,
+    );
+    const expectedDimensions = [{ position: [0, 20, 10, 20], details: { isVisible: false } }];
     expect(dimensions).toEqual(expectedDimensions);
   });
 
@@ -88,8 +108,15 @@ describe('annotation utils', () => {
       groupId,
     };
 
-    const dimensions = computeLineAnnotationDimensions(lineAnnotation, chartDimensions, chartRotation, yScales, xScale);
-    const expectedDimensions = [[20, 0, 20, 20]];
+    const dimensions = computeLineAnnotationDimensions(
+      lineAnnotation,
+      chartDimensions,
+      chartRotation,
+      yScales,
+      xScale,
+      cursorPosition,
+    );
+    const expectedDimensions = [{ position: [20, 0, 20, 20], details: { isVisible: false } }];
     expect(dimensions).toEqual(expectedDimensions);
   });
 
@@ -109,7 +136,14 @@ describe('annotation utils', () => {
       groupId,
     };
 
-    const dimensions = computeLineAnnotationDimensions(lineAnnotation, chartDimensions, chartRotation, yScales, xScale);
+    const dimensions = computeLineAnnotationDimensions(
+      lineAnnotation,
+      chartDimensions,
+      chartRotation,
+      yScales,
+      xScale,
+      cursorPosition,
+    );
     expect(dimensions).toEqual(null);
   });
 
@@ -129,8 +163,15 @@ describe('annotation utils', () => {
       groupId,
     };
 
-    const dimensions = computeLineAnnotationDimensions(lineAnnotation, chartDimensions, chartRotation, yScales, xScale);
-    const expectedDimensions = [[12.5, 0, 12.5, 20]];
+    const dimensions = computeLineAnnotationDimensions(
+      lineAnnotation,
+      chartDimensions,
+      chartRotation,
+      yScales,
+      xScale,
+      cursorPosition,
+    );
+    const expectedDimensions = [{ position: [12.5, 0, 12.5, 20], details: { isVisible: true } }];
     expect(dimensions).toEqual(expectedDimensions);
   });
 
@@ -150,8 +191,15 @@ describe('annotation utils', () => {
       groupId,
     };
 
-    const dimensions = computeLineAnnotationDimensions(lineAnnotation, chartDimensions, chartRotation, yScales, xScale);
-    const expectedDimensions = [[20, 0, 20, 20]];
+    const dimensions = computeLineAnnotationDimensions(
+      lineAnnotation,
+      chartDimensions,
+      chartRotation,
+      yScales,
+      xScale,
+      cursorPosition,
+    );
+    const expectedDimensions = [{ position: [20, 0, 20, 20], details: { isVisible: false } }];
     expect(dimensions).toEqual(expectedDimensions);
   });
 
@@ -171,8 +219,15 @@ describe('annotation utils', () => {
       groupId,
     };
 
-    const dimensions = computeLineAnnotationDimensions(lineAnnotation, chartDimensions, chartRotation, yScales, xScale);
-    const expectedDimensions = [[0, 12.5, 10, 12.5]];
+    const dimensions = computeLineAnnotationDimensions(
+      lineAnnotation,
+      chartDimensions,
+      chartRotation,
+      yScales,
+      xScale,
+      cursorPosition,
+    );
+    const expectedDimensions = [{ position: [0, 12.5, 10, 12.5], details: { isVisible: false } }];
     expect(dimensions).toEqual(expectedDimensions);
   });
 
@@ -192,8 +247,15 @@ describe('annotation utils', () => {
       groupId,
     };
 
-    const dimensions = computeLineAnnotationDimensions(lineAnnotation, chartDimensions, chartRotation, yScales, xScale);
-    const expectedDimensions = [[0, 20, 10, 20]];
+    const dimensions = computeLineAnnotationDimensions(
+      lineAnnotation,
+      chartDimensions,
+      chartRotation,
+      yScales,
+      xScale,
+      cursorPosition,
+    );
+    const expectedDimensions = [{ position: [0, 20, 10, 20], details: { isVisible: false } }];
     expect(dimensions).toEqual(expectedDimensions);
   });
 });

@@ -14,7 +14,7 @@ const dateFormatter = timeFormatter('HH:mm:ss');
 
 storiesOf('Annotations', module)
   .add('basic xDomain', () => {
-    const dataValues = [2.5, 3];
+    const dataValues = [2.5];
 
     const lineAnnotationProps = {
       annotationId: getAnnotationId('anno_1'),

@@ -138,8 +138,8 @@ export class ChartStore {
 
   annotationSpecs = new Map<AnnotationId, AnnotationSpec>(); // read from jsx
 
-  // TODO: add type
-  annotationDimensions = new Map<AnnotationId, any>(); // computed
+  // TODO: tighten type
+  annotationDimensions = observable.map<Map<AnnotationId, any>>(new Map());
 
   seriesSpecs: Map<SpecId, BasicSeriesSpec> = new Map(); // readed from jsx
 
@@ -264,6 +264,22 @@ export class ChartStore {
       this.clearTooltipAndHighlighted();
       return;
     }
+
+    // are we on an annotation?
+    // TODO: re-work so we don't need to go through computeAnnotationDimensions
+    const chartCursorPosition = {
+      x: xAxisCursorPosition,
+      y: yAxisCursorPosition,
+    };
+    const updatedAnnotationDimensions = computeAnnotationDimensions(
+      this.annotationSpecs,
+      this.chartDimensions,
+      this.chartRotation,
+      this.yScales,
+      this.xScale,
+      chartCursorPosition,
+    );
+    this.annotationDimensions.replace(observable.map(updatedAnnotationDimensions));
 
     // invert the cursor position to get the scale value
     const xValue = this.xScale.invertWithStep(xAxisCursorPosition);
@@ -804,13 +820,35 @@ export class ChartStore {
     // }
 
     // annotation computations
-    this.annotationDimensions = computeAnnotationDimensions(
+    // get the cursor position depending on the chart rotation
+    const xAxisCursorPosition = getValidXPosition(
+      this.cursorPosition.x,
+      this.cursorPosition.y,
+      this.chartRotation,
+      this.chartDimensions,
+    );
+    const yAxisCursorPosition = getValidYPosition(
+      this.cursorPosition.x,
+      this.cursorPosition.y,
+      this.chartRotation,
+      this.chartDimensions,
+    );
+
+    const chartCursorPosition = {
+      x: xAxisCursorPosition,
+      y: yAxisCursorPosition,
+    };
+
+    const updatedAnnotationDimensions = computeAnnotationDimensions(
       this.annotationSpecs,
       this.chartDimensions,
       this.chartRotation,
       this.yScales,
       this.xScale,
+      chartCursorPosition,
     );
+
+    this.annotationDimensions.replace(observable.map(updatedAnnotationDimensions));
 
     this.canDataBeAnimated = true;
 

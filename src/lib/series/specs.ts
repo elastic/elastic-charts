@@ -163,6 +163,13 @@ export interface AnnotationLineStyle {
   strokeWidth?: number;
   stroke?: string;
   dash?: [number, number];
+  opacity?: number;
+}
+
+export interface AnnotationDatum {
+  dataValue: any[];
+  details: string; // could also be jsx to render
+  isDetailsVisible: boolean;
 }
 
 export interface LineAnnotationSpec {
@@ -171,6 +178,7 @@ export interface LineAnnotationSpec {
   groupId?: GroupId; // defaults to __global__; needed for yDomain position
   domainType: AnnotationDomainType;
   dataValues: any[];
+  lineStyle?: AnnotationLineStyle;
 }
 
 // TODO: RectangleAnnotationSpec & TextAnnotationSpec

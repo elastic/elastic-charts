@@ -172,13 +172,15 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
     const { annotationDimensions, chartDimensions, debug } = this.props.chartStore!;
 
     const annotationComponents: JSX.Element[] = [];
-    annotationDimensions.forEach((dimensions, annotationId) => {
+    annotationDimensions.forEach((annotation, id) => {
+      // TODO: conditional logic if Line, Rect, or Text
+
       annotationComponents.push(
         <Annotation
-          key={`annotation-${annotationId}`}
+          key={`annotation-${id}`}
           chartDimensions={chartDimensions}
           debug={debug}
-          linePositions={dimensions}
+          lines={annotation}
         />,
       );
     });
