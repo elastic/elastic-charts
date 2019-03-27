@@ -14,6 +14,7 @@ import {
   computeSeriesDomains,
   findDataSeriesByColorValues,
   getUpdatedCustomSeriesColors,
+  isChartAnimatable,
   isHorizontalRotation,
   isLineAreaOnlyChart,
   isVerticalRotation,
@@ -283,5 +284,26 @@ describe('Chart State utils', () => {
     expect(isLineAreaOnlyChart(seriesMap)).toBe(true);
     seriesMap = new Map<SpecId, BasicSeriesSpec>([[bar.id, bar], [getSpecId('bar2'), bar]]);
     expect(isLineAreaOnlyChart(seriesMap)).toBe(false);
+  });
+  test('can enable the chart animation if we have a valid number of elements', () => {
+    const geometriesCounts = {
+      points: 0,
+      bars: 0,
+      areas: 0,
+      areasPoints: 0,
+      lines: 0,
+      linePoints: 0,
+    };
+    expect(isChartAnimatable(geometriesCounts, false)).toBe(false);
+    expect(isChartAnimatable(geometriesCounts, true)).toBe(true);
+    geometriesCounts.bars = 300;
+    expect(isChartAnimatable(geometriesCounts, true)).toBe(true);
+    geometriesCounts.areasPoints = 300;
+    expect(isChartAnimatable(geometriesCounts, true)).toBe(true);
+    geometriesCounts.linePoints = 300;
+    expect(isChartAnimatable(geometriesCounts, true)).toBe(true);
+    expect(isChartAnimatable(geometriesCounts, false)).toBe(false);
+    geometriesCounts.linePoints = 301;
+    expect(isChartAnimatable(geometriesCounts, true)).toBe(false);
   });
 });
