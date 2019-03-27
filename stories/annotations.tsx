@@ -1,12 +1,10 @@
-import { boolean, select, array } from '@storybook/addon-knobs';
+import { array, boolean, select } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import React from 'react';
 import { Axis, BarSeries, Chart, getSpecId, LineAnnotation, ScaleType, Settings, timeFormatter } from '../src';
 
 import {
   AnnotationDomainType,
-  AnnotationType,
-  LineAnnotationSpec,
   Position,
 } from '../src/lib/series/specs';
 import { KIBANA_METRICS } from '../src/lib/series/utils/test_dataset_kibana';
@@ -18,9 +16,8 @@ storiesOf('Annotations', module)
   .add('basic xDomain', () => {
     const dataValues = [2.5, 3];
 
-    const lineAnnotationProps: LineAnnotationSpec = {
+    const lineAnnotationProps = {
       annotationId: getAnnotationId('anno_1'),
-      annotationType: AnnotationType.Line,
       domainType: AnnotationDomainType.XDomain,
       dataValues,
     };
@@ -66,9 +63,8 @@ storiesOf('Annotations', module)
   .add('basic xDomain ordinal', () => {
     const dataValues = array('annotation values', ['a', 'c']);
 
-    const lineAnnotationProps: LineAnnotationSpec = {
+    const lineAnnotationProps = {
       annotationId: getAnnotationId('anno_1'),
-      annotationType: AnnotationType.Line,
       domainType: AnnotationDomainType.XDomain,
       dataValues,
     };
@@ -114,9 +110,8 @@ storiesOf('Annotations', module)
   .add('basic yDomain', () => {
     const dataValues = [3.5];
 
-    const lineAnnotationProps: LineAnnotationSpec = {
+    const lineAnnotationProps = {
       annotationId: getAnnotationId('anno_1'),
-      annotationType: AnnotationType.Line,
       domainType: AnnotationDomainType.YDomain,
       dataValues,
     };
@@ -162,9 +157,8 @@ storiesOf('Annotations', module)
   .add('time series', () => {
     const dataValues = [1551438150000, 1551438180000, 1551438330000, 1551438390000, 1551438450000, 1551438480000];
 
-    const lineAnnotationProps: LineAnnotationSpec = {
+    const lineAnnotationProps = {
       annotationId: getAnnotationId('anno_1'),
-      annotationType: AnnotationType.Line,
       domainType: AnnotationDomainType.XDomain,
       dataValues,
     };
