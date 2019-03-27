@@ -1,7 +1,6 @@
 import { IndexedGeometry } from '../lib/series/rendering';
 import {
   AnnotationDomainType,
-  AnnotationPositionType,
   AnnotationSpec,
   AnnotationType,
 } from '../lib/series/specs';
@@ -15,35 +14,29 @@ export function computeLineAnnotationDimensions(
   geometriesIndex: Map<any, IndexedGeometry[]>,
   chartDimensions: Dimensions,
 ) {
-  const { position } = annotationSpec;
   const chartHeight = chartDimensions.height;
   // const chartWidth = chartDimensions.width;
-  switch (position.positionType) {
-    case AnnotationPositionType.SeriesDatum:
-      const { domainType, dataValues } = position;
-      if (domainType === AnnotationDomainType.XDomain) {
-        // TODO: clean this up with a reduce or something
-        // my kingdom for an Array.prototype.filterMap
-        const renderedPositions: number[][] = [];
-        dataValues.forEach((value: any) => {
-          const indexedValues = geometriesIndex.get(value);
-          if (indexedValues != null && indexedValues.length >= 0) {
-            const xOffset = indexedValues[0].geom.width / 2;
-            const xPosition = indexedValues[0].geom.x + xOffset;
 
-            // Adjust for rotation?
-            const linePositions = [xPosition, 0, xPosition, chartHeight];
+  const { domainType, dataValues } = annotationSpec;
+  if (domainType === AnnotationDomainType.XDomain) {
+    // TODO: clean this up with a reduce or something
+    // my kingdom for an Array.prototype.filterMap
+    const renderedPositions: number[][] = [];
+    dataValues.forEach((value: any) => {
+      const indexedValues = geometriesIndex.get(value);
+      if (indexedValues != null && indexedValues.length >= 0) {
+        const xOffset = indexedValues[0].geom.width / 2;
+        const xPosition = indexedValues[0].geom.x + xOffset;
 
-            renderedPositions.push(linePositions);
-          }
-        });
+        // Adjust for rotation?
+        // Add top padding + margin + axis stuff
+        const linePositions = [xPosition, 0, xPosition, chartHeight];
 
-        return renderedPositions;
+        renderedPositions.push(linePositions);
       }
+    });
 
-      break;
-    case AnnotationPositionType.ChartCoordinate:
-      break;
+    return renderedPositions;
   }
 }
 

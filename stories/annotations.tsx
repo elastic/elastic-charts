@@ -5,11 +5,9 @@ import { Axis, BarSeries, Chart, getSpecId, LineAnnotation, ScaleType, Settings,
 
 import {
   AnnotationDomainType,
-  AnnotationPositionType,
   AnnotationType,
   LineAnnotationSpec,
   Position,
-  SeriesDatumAnnotationPosition,
 } from '../src/lib/series/specs';
 import { KIBANA_METRICS } from '../src/lib/series/utils/test_dataset_kibana';
 import { getAnnotationId, getAxisId } from '../src/lib/utils/ids';
@@ -20,22 +18,23 @@ storiesOf('Annotations', module)
   .add('basic', () => {
     const dataValues = [1551438150000, 1551438180000, 1551438330000, 1551438390000, 1551438450000, 1551438480000];
 
-    const position: SeriesDatumAnnotationPosition = {
-      domainType: AnnotationDomainType.XDomain,
-      dataValues,
-      positionType: AnnotationPositionType.SeriesDatum,
-    };
-
     const lineAnnotationProps: LineAnnotationSpec = {
       annotationId: getAnnotationId('anno_1'),
-      position,
       annotationType: AnnotationType.Line,
+      domainType: AnnotationDomainType.XDomain,
+      dataValues,
     };
 
     return (
       <Chart renderer="canvas" className={'story-chart'}>
         <Settings debug={boolean('debug', false)} />
         <LineAnnotation {...lineAnnotationProps} />
+        <Axis
+          id={getAxisId('top')}
+          position={Position.Top}
+          title={'Bottom axis'}
+          tickFormat={dateFormatter}
+        />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}

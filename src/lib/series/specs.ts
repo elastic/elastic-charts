@@ -148,11 +148,6 @@ export enum Position {
   Right = 'right',
 }
 
-export enum AnnotationPositionType {
-  ChartCoordinate = 'chart_coordinate',
-  SeriesDatum = 'series_datum',
-}
-
 export enum AnnotationType {
   Line = 'line',
   Rectangle = 'rectangle',
@@ -164,29 +159,18 @@ export enum AnnotationDomainType {
   YDomain = 'yDomain',
 }
 
-/**
- * The position of the annotation defined in terms of a series datapoint.
- */
-export interface SeriesDatumAnnotationPosition {
-  groupId?: GroupId; // defaults to __global__; needed for yDomain position
-  domainType: AnnotationDomainType;
-  dataValues: any[];
-  positionType: AnnotationPositionType.SeriesDatum;
-}
-
-/**
- * The position of the annotation defined in terms of chart coordinates.
- */
-interface CoordinateAnnotationPosition {
-  coordinateType: 'x' | 'y';
-  value: number;
-  positionType: AnnotationPositionType.ChartCoordinate;
+export interface AnnotationLineStyle {
+  strokeWidth?: number;
+  stroke?: string;
+  dash?: [number, number];
 }
 
 export interface LineAnnotationSpec {
-  position: SeriesDatumAnnotationPosition | CoordinateAnnotationPosition;
   annotationId: AnnotationId;
-  annotationType: AnnotationType.Line;
+  annotationType: AnnotationType;
+  groupId?: GroupId; // defaults to __global__; needed for yDomain position
+  domainType: AnnotationDomainType;
+  dataValues: any[];
 }
 
 // TODO: RectangleAnnotationSpec & TextAnnotationSpec
