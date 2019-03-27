@@ -806,8 +806,10 @@ export class ChartStore {
     // annotation computations
     this.annotationDimensions = computeAnnotationDimensions(
       this.annotationSpecs,
-      this.geometriesIndex,
       this.chartDimensions,
+      this.chartRotation,
+      this.yScales,
+      this.xScale,
     );
 
     this.canDataBeAnimated = true;
