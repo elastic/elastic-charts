@@ -277,7 +277,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       };
     }
 
-    const gridClippings = {
+    const layerClippings = {
       clipX: chartDimensions.left,
       clipY: chartDimensions.top,
       clipWidth: chartDimensions.width,
@@ -317,7 +317,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
           }}
           {...brushProps}
         >
-          <Layer hitGraphEnabled={false} listening={false} {...gridClippings}>
+          <Layer hitGraphEnabled={false} listening={false} {...layerClippings}>
             {this.renderGrids()}
           </Layer>
 
@@ -346,7 +346,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
             {this.renderAxes()}
           </Layer>
 
-          <Layer hitGraphEnabled={false} listening={false} {...clippings}>
+          <Layer hitGraphEnabled={false} listening={false} {...layerClippings}>
             {this.renderAnnotations()}
           </Layer>
         </Stage>
