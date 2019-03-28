@@ -19,32 +19,10 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
     }
     return (
       <div className="elasticChartsTooltip" style={{ transform }}>
-        <div>yoooo</div>
-        {/* <p className="elasticChartsTooltip__header">{tooltipData[0] && tooltipData[0].value}</p>
-        <div className="elasticChartsTooltip__table">
-          <table>
-            <tbody>
-              {tooltipData.slice(1).map(({ name, value, color, isHighlighted }, index) => {
-                const classes = classNames({
-                  elasticChartsTooltip__rowHighlighted: isHighlighted,
-                });
-                return (
-                  <tr key={`row-${index}`} className={classes}>
-                    <td
-                      className="elasticChartsTooltip__label"
-                      style={{
-                        borderLeftColor: color,
-                      }}
-                    >
-                      {name}
-                    </td>
-                    <td>{value}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div> */}
+        <p className="elasticChartsTooltip__header">{annotationTooltipState.header}</p>
+        <div className="elasticChartsTooltip__details">
+          {annotationTooltipState.details}
+        </div>
       </div>
     );
   }

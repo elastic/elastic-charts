@@ -167,9 +167,8 @@ export interface AnnotationLineStyle {
 }
 
 export interface AnnotationDatum {
-  dataValue: any[];
-  details: string; // could also be jsx to render
-  isDetailsVisible: boolean;
+  dataValue: any;
+  details?: string; // could also be jsx to render
 }
 
 export interface LineAnnotationSpec {
@@ -177,7 +176,7 @@ export interface LineAnnotationSpec {
   annotationType: AnnotationType;
   groupId?: GroupId; // defaults to __global__; needed for yDomain position
   domainType: AnnotationDomainType;
-  dataValues: any[];
+  dataValues: AnnotationDatum[];
   lineStyle?: AnnotationLineStyle;
 }
 

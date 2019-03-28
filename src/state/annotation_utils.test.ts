@@ -36,7 +36,7 @@ describe('annotation utils', () => {
       annotationType: AnnotationType.Line,
       annotationId,
       domainType: AnnotationDomainType.YDomain,
-      dataValues: [2],
+      dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
     };
 
@@ -50,7 +50,7 @@ describe('annotation utils', () => {
       xScale,
     );
     const expectedDimensions = new Map();
-    expectedDimensions.set(annotationId, [{ position: [0, 20, 10, 20] }]);
+    expectedDimensions.set(annotationId, [{ position: [0, 20, 10, 20], details: { detailsText: 'foo' } }]);
     expect(dimensions).toEqual(expectedDimensions);
   });
 
@@ -68,7 +68,7 @@ describe('annotation utils', () => {
       annotationType: AnnotationType.Line,
       annotationId,
       domainType: AnnotationDomainType.YDomain,
-      dataValues: [2],
+      dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
     };
 
@@ -79,7 +79,7 @@ describe('annotation utils', () => {
       yScales,
       xScale,
     );
-    const expectedDimensions = [{ position: [0, 20, 10, 20] }];
+    const expectedDimensions = [{ position: [0, 20, 10, 20], details: { detailsText: 'foo' } }];
     expect(dimensions).toEqual(expectedDimensions);
   });
 
@@ -96,7 +96,7 @@ describe('annotation utils', () => {
       annotationType: AnnotationType.Line,
       annotationId,
       domainType: AnnotationDomainType.YDomain,
-      dataValues: [2],
+      dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
     };
 
@@ -107,7 +107,7 @@ describe('annotation utils', () => {
       yScales,
       xScale,
     );
-    const expectedDimensions = [{ position: [20, 0, 20, 20] }];
+    const expectedDimensions = [{ position: [20, 0, 20, 20], details: { detailsText: 'foo' } }];
     expect(dimensions).toEqual(expectedDimensions);
   });
 
@@ -149,7 +149,7 @@ describe('annotation utils', () => {
       annotationType: AnnotationType.Line,
       annotationId,
       domainType: AnnotationDomainType.XDomain,
-      dataValues: ['a'],
+      dataValues: [{ dataValue: 'a', details: 'foo' }],
       groupId,
     };
 
@@ -160,7 +160,7 @@ describe('annotation utils', () => {
       yScales,
       xScale,
     );
-    const expectedDimensions = [{ position: [12.5, 0, 12.5, 20] }];
+    const expectedDimensions = [{ position: [12.5, 0, 12.5, 20], details: { detailsText: 'foo' } }];
     expect(dimensions).toEqual(expectedDimensions);
   });
 
@@ -176,7 +176,7 @@ describe('annotation utils', () => {
       annotationType: AnnotationType.Line,
       annotationId,
       domainType: AnnotationDomainType.XDomain,
-      dataValues: [2],
+      dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
     };
 
@@ -187,7 +187,7 @@ describe('annotation utils', () => {
       yScales,
       xScale,
     );
-    const expectedDimensions = [{ position: [20, 0, 20, 20] }];
+    const expectedDimensions = [{ position: [20, 0, 20, 20], details: { detailsText: 'foo' } }];
     expect(dimensions).toEqual(expectedDimensions);
   });
 
@@ -203,7 +203,7 @@ describe('annotation utils', () => {
       annotationType: AnnotationType.Line,
       annotationId,
       domainType: AnnotationDomainType.XDomain,
-      dataValues: ['a'],
+      dataValues: [{ dataValue: 'a', details: 'foo' }],
       groupId,
     };
 
@@ -214,7 +214,7 @@ describe('annotation utils', () => {
       yScales,
       xScale,
     );
-    const expectedDimensions = [{ position: [0, 12.5, 10, 12.5] }];
+    const expectedDimensions = [{ position: [0, 12.5, 10, 12.5], details: { detailsText: 'foo' } }];
     expect(dimensions).toEqual(expectedDimensions);
   });
 
@@ -230,7 +230,7 @@ describe('annotation utils', () => {
       annotationType: AnnotationType.Line,
       annotationId,
       domainType: AnnotationDomainType.XDomain,
-      dataValues: [2],
+      dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
     };
 
@@ -241,7 +241,7 @@ describe('annotation utils', () => {
       yScales,
       xScale,
     );
-    const expectedDimensions = [{ position: [0, 20, 10, 20] }];
+    const expectedDimensions = [{ position: [0, 20, 10, 20], details: { detailsText: 'foo' } }];
     expect(dimensions).toEqual(expectedDimensions);
   });
 });

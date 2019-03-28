@@ -4,6 +4,7 @@ import React from 'react';
 import { Axis, BarSeries, Chart, getSpecId, LineAnnotation, ScaleType, Settings, timeFormatter } from '../src';
 
 import {
+  AnnotationDatum,
   AnnotationDomainType,
   Position,
 } from '../src/lib/series/specs';
@@ -12,9 +13,16 @@ import { getAnnotationId, getAxisId } from '../src/lib/utils/ids';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
 
+function generateAnnotationData(values: any[]): AnnotationDatum[] {
+  return values.map((value, index) => ({ dataValue: value, detail: `detail-${index}` }));
+}
+
 storiesOf('Annotations', module)
   .add('basic xDomain', () => {
-    const dataValues = [2.5];
+    const dataValues = [{
+      dataValue: 2.5,
+      details: 'an annotation',
+    }];
 
     const lineAnnotationProps = {
       annotationId: getAnnotationId('anno_1'),
@@ -61,7 +69,7 @@ storiesOf('Annotations', module)
     );
   })
   .add('basic xDomain ordinal', () => {
-    const dataValues = array('annotation values', ['a', 'c']);
+    const dataValues = generateAnnotationData(array('annotation values', ['a', 'c']));
 
     const lineAnnotationProps = {
       annotationId: getAnnotationId('anno_1'),
@@ -108,7 +116,7 @@ storiesOf('Annotations', module)
     );
   })
   .add('basic yDomain', () => {
-    const dataValues = [3.5];
+    const dataValues = generateAnnotationData([3.5]);
 
     const lineAnnotationProps = {
       annotationId: getAnnotationId('anno_1'),
@@ -155,7 +163,8 @@ storiesOf('Annotations', module)
     );
   })
   .add('time series', () => {
-    const dataValues = [1551438150000, 1551438180000, 1551438330000, 1551438390000, 1551438450000, 1551438480000];
+    const dataValues =
+      generateAnnotationData([1551438150000, 1551438180000, 1551438390000, 1551438450000, 1551438480000]);
 
     const lineAnnotationProps = {
       annotationId: getAnnotationId('anno_1'),

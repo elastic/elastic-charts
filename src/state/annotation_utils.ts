@@ -1,4 +1,5 @@
 import {
+  AnnotationDatum,
   AnnotationDomainType,
   AnnotationSpec,
   AnnotationType,
@@ -9,9 +10,15 @@ import { AnnotationId, getGroupId, GroupId } from '../lib/utils/ids';
 import { Scale } from '../lib/utils/scales/scales';
 import { isHorizontalRotation } from './utils';
 
+export interface AnnotationDetails {
+  headerText?: string;
+  detailsText?: string;
+}
+
 export type AnnotationLinePosition = [number, number, number, number];
 export interface AnnotationLineProps {
   position: AnnotationLinePosition; // Or AnnotationRectanglePosition or AnnotationTextPosition
+  details: AnnotationDetails;
 }
 
 export function computeLineAnnotationDimensions(
@@ -30,15 +37,20 @@ export function computeLineAnnotationDimensions(
   // TODO: positions for hover state details component
   switch (domainType) {
     case AnnotationDomainType.XDomain: {
-      return dataValues.map((value: any): AnnotationLineProps => {
+      return dataValues.map((datum: AnnotationDatum): AnnotationLineProps => {
+        const { dataValue } = datum;
+        const details = {
+          detailsText: datum.details,
+        };
+
         // TODO: make offset dependent on annotationSpec.alignment (left, center, right)
         const offset = xScale.bandwidth / 2;
-        const xDomainPosition = xScale.scale(value) + offset;
+        const xDomainPosition = xScale.scale(dataValue) + offset;
         const linePosition: AnnotationLinePosition = isHorizontalChartRotation ?
           [xDomainPosition, 0, xDomainPosition, chartHeight] :
           [0, xDomainPosition, chartWidth, xDomainPosition];
 
-        return { position: linePosition };
+        return { position: linePosition, details };
       });
     }
     case AnnotationDomainType.YDomain: {
@@ -48,13 +60,18 @@ export function computeLineAnnotationDimensions(
         return null;
       }
 
-      return dataValues.map((value: any): AnnotationLineProps => {
-        const yDomainPosition = yScale.scale(value);
+      return dataValues.map((datum: AnnotationDatum): AnnotationLineProps => {
+        const { dataValue } = datum;
+        const details = {
+          detailsText: datum.details,
+        };
+
+        const yDomainPosition = yScale.scale(dataValue);
         const linePosition: AnnotationLinePosition = isHorizontalChartRotation ?
           [0, yDomainPosition, chartWidth, yDomainPosition]
           : [yDomainPosition, 0, yDomainPosition, chartHeight];
 
-        return { position: linePosition };
+        return { position: linePosition, details };
       });
     }
   }

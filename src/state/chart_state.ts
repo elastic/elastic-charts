@@ -29,6 +29,7 @@ import {
 } from '../lib/series/series';
 import {
   AnnotationSpec,
+  AnnotationType,
   AreaSeriesSpec,
   AxisSpec,
   BarSeriesSpec,
@@ -38,7 +39,6 @@ import {
   Position,
   Rendering,
   Rotation,
-  AnnotationType,
 } from '../lib/series/specs';
 import { formatTooltip, formatXTooltipValue } from '../lib/series/tooltip';
 import { LIGHT_THEME } from '../lib/themes/light_theme';
@@ -57,7 +57,7 @@ import {
 } from '../lib/utils/interactions';
 import { Scale, ScaleType } from '../lib/utils/scales/scales';
 import { DEFAULT_TOOLTIP_SNAP, DEFAULT_TOOLTIP_TYPE } from '../specs/settings';
-import { computeAnnotationDimensions, AnnotationLineProps } from './annotation_utils';
+import { AnnotationLineProps, computeAnnotationDimensions } from './annotation_utils';
 import {
   getCursorBandPosition,
   getCursorLinePosition,
@@ -436,7 +436,16 @@ export class ChartStore {
       y: yAxisCursorPosition,
     };
 
-    let isVisible = false;
+    const annotationTooltipState: {
+      isVisible: boolean;
+      header: undefined | string;
+      details: undefined | string;
+    } = {
+      isVisible: false,
+      header: undefined,
+      details: undefined,
+    };
+
     this.annotationDimensions.forEach((annotationDimension: any, annotationId: AnnotationId) => {
       const spec = this.annotationSpecs.get(annotationId);
       if (!spec) {
@@ -447,13 +456,20 @@ export class ChartStore {
       switch (annotationType) {
         case AnnotationType.Line: {
           annotationDimension.forEach((line: AnnotationLineProps) => {
-            const [startX, startY, endX, endY] = line.position;
+            const { position } = line;
+
+            const [startX, startY, endX, endY] = position;
             const cursorOffset = 30 / 2;
             const isCursorWithinXBounds = cursorPosition.x >= startX - cursorOffset &&
               cursorPosition.x <= endX + cursorOffset;
             const isCursorWithinYBounds = cursorPosition.y >= startY && cursorPosition.y <= endY;
             if (isCursorWithinXBounds && isCursorWithinYBounds) {
-              isVisible = true;
+              annotationTooltipState.isVisible = true;
+
+              if (line.details) {
+                annotationTooltipState.header = line.details.headerText;
+                annotationTooltipState.details = line.details.detailsText;
+              }
             }
           });
           break;
@@ -461,7 +477,7 @@ export class ChartStore {
       }
     });
 
-    return { isVisible };
+    return annotationTooltipState;
   });
 
   isTooltipVisible = computed(() => {
