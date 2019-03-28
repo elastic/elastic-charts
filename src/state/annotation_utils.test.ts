@@ -21,12 +21,6 @@ describe('annotation utils', () => {
     left: 15,
   };
 
-  // TODO: test various cursor positions and their effect on details visiblity
-  const cursorPosition = {
-    x: 0,
-    y: 0,
-  };
-
   test('should compute annotation dimensions', () => {
     const groupId = getGroupId('foo-group');
 
@@ -54,10 +48,9 @@ describe('annotation utils', () => {
       chartRotation,
       yScales,
       xScale,
-      cursorPosition,
     );
     const expectedDimensions = new Map();
-    expectedDimensions.set(annotationId, [{ position: [0, 20, 10, 20], details: { isVisible: false } }]);
+    expectedDimensions.set(annotationId, [{ position: [0, 20, 10, 20] }]);
     expect(dimensions).toEqual(expectedDimensions);
   });
 
@@ -85,9 +78,8 @@ describe('annotation utils', () => {
       chartRotation,
       yScales,
       xScale,
-      cursorPosition,
     );
-    const expectedDimensions = [{ position: [0, 20, 10, 20], details: { isVisible: false } }];
+    const expectedDimensions = [{ position: [0, 20, 10, 20] }];
     expect(dimensions).toEqual(expectedDimensions);
   });
 
@@ -114,9 +106,8 @@ describe('annotation utils', () => {
       chartRotation,
       yScales,
       xScale,
-      cursorPosition,
     );
-    const expectedDimensions = [{ position: [20, 0, 20, 20], details: { isVisible: false } }];
+    const expectedDimensions = [{ position: [20, 0, 20, 20] }];
     expect(dimensions).toEqual(expectedDimensions);
   });
 
@@ -142,7 +133,6 @@ describe('annotation utils', () => {
       chartRotation,
       yScales,
       xScale,
-      cursorPosition,
     );
     expect(dimensions).toEqual(null);
   });
@@ -169,9 +159,8 @@ describe('annotation utils', () => {
       chartRotation,
       yScales,
       xScale,
-      cursorPosition,
     );
-    const expectedDimensions = [{ position: [12.5, 0, 12.5, 20], details: { isVisible: true } }];
+    const expectedDimensions = [{ position: [12.5, 0, 12.5, 20] }];
     expect(dimensions).toEqual(expectedDimensions);
   });
 
@@ -197,9 +186,8 @@ describe('annotation utils', () => {
       chartRotation,
       yScales,
       xScale,
-      cursorPosition,
     );
-    const expectedDimensions = [{ position: [20, 0, 20, 20], details: { isVisible: false } }];
+    const expectedDimensions = [{ position: [20, 0, 20, 20] }];
     expect(dimensions).toEqual(expectedDimensions);
   });
 
@@ -225,9 +213,8 @@ describe('annotation utils', () => {
       chartRotation,
       yScales,
       xScale,
-      cursorPosition,
     );
-    const expectedDimensions = [{ position: [0, 12.5, 10, 12.5], details: { isVisible: false } }];
+    const expectedDimensions = [{ position: [0, 12.5, 10, 12.5] }];
     expect(dimensions).toEqual(expectedDimensions);
   });
 
@@ -253,9 +240,8 @@ describe('annotation utils', () => {
       chartRotation,
       yScales,
       xScale,
-      cursorPosition,
     );
-    const expectedDimensions = [{ position: [0, 20, 10, 20], details: { isVisible: false } }];
+    const expectedDimensions = [{ position: [0, 20, 10, 20] }];
     expect(dimensions).toEqual(expectedDimensions);
   });
 });

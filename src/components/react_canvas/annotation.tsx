@@ -7,7 +7,6 @@ interface AnnotationProps {
   chartDimensions: Dimensions;
   debug: boolean;
   lines: AnnotationLineProps[];
-  isDetailsVisible?: boolean;
 }
 
 export class Annotation extends React.PureComponent<AnnotationProps> {
@@ -15,11 +14,11 @@ export class Annotation extends React.PureComponent<AnnotationProps> {
     return this.renderAnnotation();
   }
   private renderAnnotationLine = (lineConfig: AnnotationLineProps, i: number) => {
-    const { position, details } = lineConfig;
-    const color = details.isVisible ? '#ff0' : '#000';
+    const { position } = lineConfig;
+
     const lineProps = {
       points: position,
-      stroke: color,
+      stroke: '#000',
       strokeWidth: 30,
     };
 
