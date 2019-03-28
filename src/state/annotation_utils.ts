@@ -5,11 +5,19 @@ import {
   AnnotationType,
   Rotation,
 } from '../lib/series/specs';
+import { DEFAULT_ANNOTATION_LINE_STYLE } from '../lib/themes/theme';
 import { Dimensions } from '../lib/utils/dimensions';
 import { AnnotationId, getGroupId, GroupId } from '../lib/utils/ids';
 import { Scale } from '../lib/utils/scales/scales';
+import { Point } from './chart_state';
 import { isHorizontalRotation } from './utils';
 
+export interface AnnotationTooltipState {
+  isVisible: boolean;
+  header: undefined | string;
+  details: undefined | string;
+  transform: string;
+}
 export interface AnnotationDetails {
   headerText?: string;
   detailsText?: string;
@@ -105,4 +113,60 @@ export function computeAnnotationDimensions(
   });
 
   return annotationDimensions;
+}
+
+export function computeAnnotationTooltipState(
+  cursorPosition: Point,
+  annotationDimensions: Map<AnnotationId, any>,
+  annotationSpecs: Map<AnnotationId, AnnotationSpec>,
+): AnnotationTooltipState {
+
+  const annotationTooltipState: {
+    isVisible: boolean;
+    header: undefined | string;
+    details: undefined | string;
+    transform: string;
+  } = {
+    isVisible: false,
+    header: undefined,
+    details: undefined,
+    transform: '',
+  };
+
+  annotationDimensions.forEach((annotationDimension: any, annotationId: AnnotationId) => {
+    const spec = annotationSpecs.get(annotationId);
+    if (!spec) {
+      return;
+    }
+
+    const { annotationType } = spec;
+    switch (annotationType) {
+      case AnnotationType.Line: {
+        annotationDimension.forEach((line: AnnotationLineProps) => {
+          const { position } = line;
+
+          const [startX, startY, endX, endY] = position;
+          const hasStrokeWidth = spec.lineStyle && spec.lineStyle.line && (spec.lineStyle.line.strokeWidth !== null);
+          const lineStrokeWidth = hasStrokeWidth ?
+            spec.lineStyle!.line!.strokeWidth : DEFAULT_ANNOTATION_LINE_STYLE.line.strokeWidth;
+          const cursorOffset = lineStrokeWidth / 2;
+
+          const isCursorWithinXBounds = cursorPosition.x >= startX - cursorOffset &&
+            cursorPosition.x <= endX + cursorOffset;
+          const isCursorWithinYBounds = cursorPosition.y >= startY && cursorPosition.y <= endY;
+          if (isCursorWithinXBounds && isCursorWithinYBounds) {
+            annotationTooltipState.isVisible = true;
+
+            if (line.details) {
+              annotationTooltipState.header = line.details.headerText;
+              annotationTooltipState.details = line.details.detailsText;
+            }
+          }
+        });
+        break;
+      }
+    }
+  });
+
+  return annotationTooltipState;
 }

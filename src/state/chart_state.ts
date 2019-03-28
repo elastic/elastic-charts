@@ -29,7 +29,6 @@ import {
 } from '../lib/series/series';
 import {
   AnnotationSpec,
-  AnnotationType,
   AreaSeriesSpec,
   AxisSpec,
   BarSeriesSpec,
@@ -42,7 +41,7 @@ import {
 } from '../lib/series/specs';
 import { formatTooltip, formatXTooltipValue } from '../lib/series/tooltip';
 import { LIGHT_THEME } from '../lib/themes/light_theme';
-import { DEFAULT_ANNOTATION_LINE_STYLE, Theme } from '../lib/themes/theme';
+import { Theme } from '../lib/themes/theme';
 import { computeChartDimensions, Dimensions } from '../lib/utils/dimensions';
 import { Domain } from '../lib/utils/domain';
 import { AnnotationId, AxisId, GroupId, SpecId } from '../lib/utils/ids';
@@ -57,7 +56,7 @@ import {
 } from '../lib/utils/interactions';
 import { Scale, ScaleType } from '../lib/utils/scales/scales';
 import { DEFAULT_TOOLTIP_SNAP, DEFAULT_TOOLTIP_TYPE } from '../specs/settings';
-import { AnnotationLineProps, computeAnnotationDimensions } from './annotation_utils';
+import { computeAnnotationDimensions, computeAnnotationTooltipState } from './annotation_utils';
 import {
   getCursorBandPosition,
   getCursorLinePosition,
@@ -266,23 +265,6 @@ export class ChartStore {
       return;
     }
 
-    // are we on an annotation?
-    // TODO: re-work so we don't need to go through computeAnnotationDimensions
-    // Do some logic here on what's visible + set annotation tooltip visibility state
-    // const chartCursorPosition = {
-    //   x: xAxisCursorPosition,
-    //   y: yAxisCursorPosition,
-    // };
-    // const updatedAnnotationDimensions = computeAnnotationDimensions(
-    //   this.annotationSpecs,
-    //   this.chartDimensions,
-    //   this.chartRotation,
-    //   this.yScales,
-    //   this.xScale,
-    //   chartCursorPosition,
-    // );
-    // this.annotationDimensions.replace(observable.map(updatedAnnotationDimensions));
-
     // invert the cursor position to get the scale value
     const xValue = this.xScale.invertWithStep(xAxisCursorPosition);
 
@@ -436,52 +418,11 @@ export class ChartStore {
       y: yAxisCursorPosition,
     };
 
-    const annotationTooltipState: {
-      isVisible: boolean;
-      header: undefined | string;
-      details: undefined | string;
-      transform: string;
-    } = {
-      isVisible: false,
-      header: undefined,
-      details: undefined,
-      transform: '',
-    };
-
-    this.annotationDimensions.forEach((annotationDimension: any, annotationId: AnnotationId) => {
-      const spec = this.annotationSpecs.get(annotationId);
-      if (!spec) {
-        return;
-      }
-
-      const { annotationType } = spec;
-      switch (annotationType) {
-        case AnnotationType.Line: {
-          annotationDimension.forEach((line: AnnotationLineProps) => {
-            const { position } = line;
-
-            const [startX, startY, endX, endY] = position;
-            const hasStrokeWidth = spec.lineStyle && spec.lineStyle.line && (spec.lineStyle.line.strokeWidth !== null);
-            const lineStrokeWidth = hasStrokeWidth ?
-              spec.lineStyle!.line!.strokeWidth : DEFAULT_ANNOTATION_LINE_STYLE.line.strokeWidth;
-            const cursorOffset = lineStrokeWidth / 2;
-
-            const isCursorWithinXBounds = cursorPosition.x >= startX - cursorOffset &&
-              cursorPosition.x <= endX + cursorOffset;
-            const isCursorWithinYBounds = cursorPosition.y >= startY && cursorPosition.y <= endY;
-            if (isCursorWithinXBounds && isCursorWithinYBounds) {
-              annotationTooltipState.isVisible = true;
-
-              if (line.details) {
-                annotationTooltipState.header = line.details.headerText;
-                annotationTooltipState.details = line.details.detailsText;
-              }
-            }
-          });
-          break;
-        }
-      }
-    });
+    const annotationTooltipState = computeAnnotationTooltipState(
+      cursorPosition,
+      this.annotationDimensions,
+      this.annotationSpecs,
+    );
 
     return annotationTooltipState;
   });
