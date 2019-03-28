@@ -42,7 +42,7 @@ import {
 } from '../lib/series/specs';
 import { formatTooltip, formatXTooltipValue } from '../lib/series/tooltip';
 import { LIGHT_THEME } from '../lib/themes/light_theme';
-import { Theme } from '../lib/themes/theme';
+import { DEFAULT_ANNOTATION_LINE_STYLE, Theme } from '../lib/themes/theme';
 import { computeChartDimensions, Dimensions } from '../lib/utils/dimensions';
 import { Domain } from '../lib/utils/domain';
 import { AnnotationId, AxisId, GroupId, SpecId } from '../lib/utils/ids';
@@ -440,10 +440,12 @@ export class ChartStore {
       isVisible: boolean;
       header: undefined | string;
       details: undefined | string;
+      transform: string;
     } = {
       isVisible: false,
       header: undefined,
       details: undefined,
+      transform: '',
     };
 
     this.annotationDimensions.forEach((annotationDimension: any, annotationId: AnnotationId) => {
@@ -459,7 +461,11 @@ export class ChartStore {
             const { position } = line;
 
             const [startX, startY, endX, endY] = position;
-            const cursorOffset = 30 / 2;
+            const hasStrokeWidth = spec.lineStyle && spec.lineStyle.line && (spec.lineStyle.line.strokeWidth !== null);
+            const lineStrokeWidth = hasStrokeWidth ?
+              spec.lineStyle!.line!.strokeWidth : DEFAULT_ANNOTATION_LINE_STYLE.line.strokeWidth;
+            const cursorOffset = lineStrokeWidth / 2;
+
             const isCursorWithinXBounds = cursorPosition.x >= startX - cursorOffset &&
               cursorPosition.x <= endX + cursorOffset;
             const isCursorWithinYBounds = cursorPosition.y >= startY && cursorPosition.y <= endY;

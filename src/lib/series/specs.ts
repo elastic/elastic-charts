@@ -1,4 +1,4 @@
-import { GridLineConfig } from '../themes/theme';
+import { AnnotationLineStyle, GridLineConfig } from '../themes/theme';
 import { Accessor } from '../utils/accessor';
 import { AnnotationId, AxisId, GroupId, SpecId } from '../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../utils/scales/scales';
@@ -159,13 +159,6 @@ export enum AnnotationDomainType {
   YDomain = 'yDomain',
 }
 
-export interface AnnotationLineStyle {
-  strokeWidth?: number;
-  stroke?: string;
-  dash?: [number, number];
-  opacity?: number;
-}
-
 export interface AnnotationDatum {
   dataValue: any;
   details?: string; // could also be jsx to render
@@ -177,7 +170,7 @@ export interface LineAnnotationSpec {
   groupId?: GroupId; // defaults to __global__; needed for yDomain position
   domainType: AnnotationDomainType;
   dataValues: AnnotationDatum[];
-  lineStyle?: AnnotationLineStyle;
+  lineStyle: Partial<AnnotationLineStyle>;
 }
 
 // TODO: RectangleAnnotationSpec & TextAnnotationSpec

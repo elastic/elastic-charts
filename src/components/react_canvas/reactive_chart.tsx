@@ -1,6 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Layer, Rect, Stage } from 'react-konva';
+import { mergeWithDefaultAnnotationLine } from '../../lib/themes/theme';
 import { ChartStore, Point } from '../../state/chart_state';
 import { BrushExtent } from '../../state/utils';
 import { Annotation } from './annotation';
@@ -169,10 +170,16 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
   }
 
   renderAnnotations = () => {
-    const { annotationDimensions, chartDimensions, debug } = this.props.chartStore!;
+    const { annotationDimensions, annotationSpecs, chartDimensions, debug } = this.props.chartStore!;
 
     const annotationComponents: JSX.Element[] = [];
     annotationDimensions.forEach((annotation, id) => {
+      const spec = annotationSpecs.get(id);
+      if (!spec) {
+        return;
+      }
+
+      const annotationStyle = mergeWithDefaultAnnotationLine(spec.lineStyle);
       // TODO: conditional logic if Line, Rect, or Text
 
       annotationComponents.push(
@@ -181,6 +188,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
           chartDimensions={chartDimensions}
           debug={debug}
           lines={annotation}
+          annotationStyle={annotationStyle}
         />,
       );
     });

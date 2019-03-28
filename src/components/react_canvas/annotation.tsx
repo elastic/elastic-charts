@@ -1,5 +1,6 @@
 import React from 'react';
 import { Group, Line } from 'react-konva';
+import { AnnotationLineStyle } from '../../lib/themes/theme';
 import { Dimensions } from '../../lib/utils/dimensions';
 import { AnnotationLineProps } from '../../state/annotation_utils';
 
@@ -7,6 +8,7 @@ interface AnnotationProps {
   chartDimensions: Dimensions;
   debug: boolean;
   lines: AnnotationLineProps[];
+  annotationStyle: AnnotationLineStyle;
 }
 
 export class Annotation extends React.PureComponent<AnnotationProps> {
@@ -14,12 +16,12 @@ export class Annotation extends React.PureComponent<AnnotationProps> {
     return this.renderAnnotation();
   }
   private renderAnnotationLine = (lineConfig: AnnotationLineProps, i: number) => {
+    const { line } = this.props.annotationStyle;
     const { position } = lineConfig;
 
     const lineProps = {
       points: position,
-      stroke: '#000',
-      strokeWidth: 30,
+      ...line,
     };
 
     return <Line key={`tick-${i}`} {...lineProps} />;
