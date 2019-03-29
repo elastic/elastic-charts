@@ -115,6 +115,13 @@ export function computeAnnotationDimensions(
   return annotationDimensions;
 }
 
+export function getAnnotationLineOffset(spec: AnnotationSpec): number {
+  if (spec.lineStyle && spec.lineStyle.line && (spec.lineStyle.line.strokeWidth !== null)) {
+    return spec.lineStyle.line.strokeWidth / 2;
+  }
+  return DEFAULT_ANNOTATION_LINE_STYLE.line.strokeWidth / 2;
+}
+
 export function computeAnnotationTooltipState(
   cursorPosition: Point,
   annotationDimensions: Map<AnnotationId, any>,
@@ -146,10 +153,7 @@ export function computeAnnotationTooltipState(
           const { position } = line;
 
           const [startX, startY, endX, endY] = position;
-          const hasStrokeWidth = spec.lineStyle && spec.lineStyle.line && (spec.lineStyle.line.strokeWidth !== null);
-          const lineStrokeWidth = hasStrokeWidth ?
-            spec.lineStyle!.line!.strokeWidth : DEFAULT_ANNOTATION_LINE_STYLE.line.strokeWidth;
-          const cursorOffset = lineStrokeWidth / 2;
+          const cursorOffset = getAnnotationLineOffset(spec);
 
           const isCursorWithinXBounds = cursorPosition.x >= startX - cursorOffset &&
             cursorPosition.x <= endX + cursorOffset;

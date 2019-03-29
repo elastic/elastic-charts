@@ -170,7 +170,7 @@ export interface LineAnnotationSpec {
   groupId?: GroupId; // defaults to __global__; needed for yDomain position
   domainType: AnnotationDomainType;
   dataValues: AnnotationDatum[];
-  lineStyle: Partial<AnnotationLineStyle>;
+  lineStyle?: Partial<AnnotationLineStyle>;
 }
 
 // TODO: RectangleAnnotationSpec & TextAnnotationSpec

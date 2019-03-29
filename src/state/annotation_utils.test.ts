@@ -2,7 +2,11 @@ import { AnnotationDomainType, AnnotationSpec, AnnotationType, Rotation } from '
 import { Dimensions } from '../lib/utils/dimensions';
 import { AnnotationId, getAnnotationId, getGroupId, GroupId } from '../lib/utils/ids';
 import { createContinuousScale, createOrdinalScale, Scale, ScaleType } from '../lib/utils/scales/scales';
-import { computeAnnotationDimensions, computeLineAnnotationDimensions } from './annotation_utils';
+import {
+  computeAnnotationDimensions,
+  computeLineAnnotationDimensions,
+  getAnnotationLineOffset,
+} from './annotation_utils';
 
 describe('annotation utils', () => {
   const minRange = 0;
@@ -243,5 +247,36 @@ describe('annotation utils', () => {
     );
     const expectedDimensions = [{ position: [0, 20, 10, 20], details: { detailsText: 'foo' } }];
     expect(dimensions).toEqual(expectedDimensions);
+  });
+
+  test('should get amount of line position offset based on lineStyle strokeWidth (default config)', () => {
+    const spec = {
+      annotationId: getAnnotationId('foo'),
+      annotationType: AnnotationType.Line,
+      domainType: AnnotationDomainType.YDomain,
+      dataValues: [],
+    };
+
+    const defaultOffset = getAnnotationLineOffset(spec);
+    expect(defaultOffset).toBe(0.5);
+  });
+
+  test('should get amount of line position offset based on lineStyle strokeWidth (custom config)', () => {
+    const spec = {
+      annotationId: getAnnotationId('foo'),
+      annotationType: AnnotationType.Line,
+      domainType: AnnotationDomainType.YDomain,
+      dataValues: [],
+      lineStyle: {
+        line: {
+          strokeWidth: 10,
+          stroke: '#000',
+          opacity: 1,
+        },
+      },
+    };
+
+    const customOffset = getAnnotationLineOffset(spec);
+    expect(customOffset).toBe(5);
   });
 });
