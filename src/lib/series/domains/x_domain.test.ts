@@ -105,6 +105,23 @@ describe('X Domain', () => {
       isBandScale: true,
     });
   });
+  test('Should return correct scale type with multi bar, area with same scale types (linear, linear)', () => {
+    const seriesSpecs: Array<Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>> = [
+      {
+        seriesType: 'bar',
+        xScaleType: ScaleType.Linear,
+      },
+      {
+        seriesType: 'area',
+        xScaleType: ScaleType.Time,
+      },
+    ];
+    const mainXScale = convertXScaleTypes(seriesSpecs);
+    expect(mainXScale).toEqual({
+      scaleType: ScaleType.Linear,
+      isBandScale: true,
+    });
+  });
 
   test('Should merge line series correctly', () => {
     const ds1: BasicSeriesSpec = {
