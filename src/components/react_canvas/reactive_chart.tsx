@@ -356,7 +356,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
             {this.renderAxes()}
           </Layer>
 
-          <Layer hitGraphEnabled={false} listening={false} {...layerClippings}>
+          <Layer hitGraphEnabled={false} listening={false}>
             {this.renderAnnotations()}
           </Layer>
         </Stage>
