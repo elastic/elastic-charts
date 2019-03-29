@@ -162,18 +162,10 @@ export function computeAnnotationTooltipState(
   annotationDimensions: Map<AnnotationId, any>,
   annotationSpecs: Map<AnnotationId, AnnotationSpec>,
 ): AnnotationTooltipState {
-
-  let annotationTooltipState: AnnotationTooltipState = {
-    isVisible: false,
-    header: undefined,
-    details: undefined,
-    transform: '',
-  };
-
-  annotationDimensions.forEach((annotationDimension: any, annotationId: AnnotationId) => {
+  for (const [annotationId, annotationDimension] of annotationDimensions) {
     const spec = annotationSpecs.get(annotationId);
     if (!spec) {
-      return;
+      continue;
     }
 
     const { annotationType } = spec;
@@ -185,15 +177,17 @@ export function computeAnnotationTooltipState(
           spec,
         );
 
-        annotationTooltipState = {
-          ...annotationTooltipState,
-          ...lineAnnotationTooltipState,
-        };
-
-        break;
+        if (lineAnnotationTooltipState.isVisible) {
+          return lineAnnotationTooltipState;
+        }
       }
     }
-  });
+  }
 
-  return annotationTooltipState;
+  return {
+    isVisible: false,
+    header: undefined,
+    details: undefined,
+    transform: '',
+  };
 }

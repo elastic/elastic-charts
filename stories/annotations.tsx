@@ -22,12 +22,22 @@ storiesOf('Annotations', module)
     const dataValues = [{
       dataValue: 2.5,
       details: 'an annotation',
+    }, {
+      dataValue: 1,
+      details: 'another annotation',
     }];
 
     const lineAnnotationProps = {
       annotationId: getAnnotationId('anno_1'),
       domainType: AnnotationDomainType.XDomain,
       dataValues,
+      lineStyle: {
+        line: {
+          strokeWidth: 3,
+          stroke: '#f00',
+          opacity: 1,
+        },
+      },
     };
 
     const chartRotation = select('chartRotation', {
