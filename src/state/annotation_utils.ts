@@ -3,14 +3,16 @@ import {
   AnnotationDomainType,
   AnnotationSpec,
   AnnotationType,
+  AxisSpec,
+  Position,
   Rotation,
 } from '../lib/series/specs';
 import { DEFAULT_ANNOTATION_LINE_STYLE } from '../lib/themes/theme';
 import { Dimensions } from '../lib/utils/dimensions';
-import { AnnotationId, getGroupId, GroupId } from '../lib/utils/ids';
+import { AnnotationId, AxisId, getGroupId, GroupId } from '../lib/utils/ids';
 import { Scale } from '../lib/utils/scales/scales';
 import { Point } from './chart_state';
-import { isHorizontalRotation } from './utils';
+import { getAxesSpecForSpecId, isHorizontalRotation } from './utils';
 
 export interface AnnotationTooltipState {
   isVisible: boolean;
@@ -45,7 +47,6 @@ export function computeLineAnnotationDimensions(
   // TODO : need to make this dependent on axis position as well
   const lineOverflow = 0;
 
-  // TODO: positions for hover state details component
   switch (domainType) {
     case AnnotationDomainType.XDomain: {
       return dataValues.map((datum: AnnotationDatum): AnnotationLineProps => {
@@ -57,9 +58,26 @@ export function computeLineAnnotationDimensions(
         // TODO: make offset dependent on annotationSpec.alignment (left, center, right)
         const offset = xScale.bandwidth / 2;
         const xDomainPosition = xScale.scale(dataValue) + offset;
-        const linePosition: AnnotationLinePosition = isHorizontalChartRotation ?
-          [xDomainPosition, 0, xDomainPosition, chartHeight + lineOverflow] :
-          [0 - lineOverflow, xDomainPosition, chartWidth, xDomainPosition];
+
+        let linePosition: AnnotationLinePosition = [0, 0, 0, 0];
+        switch (chartRotation) {
+          case 0: {
+            linePosition = [xDomainPosition, 0, xDomainPosition, chartHeight + lineOverflow];
+            break;
+          }
+          case 90: {
+            linePosition = [0 - lineOverflow, xDomainPosition, chartWidth, xDomainPosition];
+            break;
+          }
+          case -90: {
+            linePosition = [0 - lineOverflow, chartHeight - xDomainPosition, chartWidth, chartHeight - xDomainPosition];
+            break;
+          }
+          case 180: {
+            linePosition = [chartWidth - xDomainPosition, 0, chartWidth - xDomainPosition, chartHeight + lineOverflow];
+            break;
+          }
+        }
 
         return { position: linePosition, details };
       });
@@ -126,13 +144,13 @@ export function isWithinLineBounds(
   domainType: AnnotationDomainType,
 ): boolean {
   const [startX, startY, endX, endY] = linePosition;
-  const isXDomain = domainType === AnnotationDomainType.XDomain;
+  const isXDomainAnnotation = isXDomain(domainType);
 
   let isCursorWithinXBounds = false;
   let isCursorWithinYBounds = false;
   const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
 
-  if (isXDomain) {
+  if (isXDomainAnnotation) {
     isCursorWithinXBounds = isHorizontalChartRotation ?
       cursorPosition.x >= startX - offset && cursorPosition.x <= endX + offset
       : cursorPosition.x >= startX && cursorPosition.x <= endX;
@@ -162,21 +180,168 @@ export function getAnnotationLineOffset(spec: AnnotationSpec): number {
   return getAnnotationLineStrokeWidth(spec) / 2;
 }
 
+export function isVerticalAnnotationLine(isXDomainAnnotation: boolean, isHorizontalChartRotation: boolean): boolean {
+  if (isXDomainAnnotation) {
+    return isHorizontalChartRotation;
+  }
+
+  return !isHorizontalChartRotation;
+}
+
 export function getAnnotationLineTooltipTransform(
   chartRotation: Rotation,
   linePosition: AnnotationLinePosition,
-  lineStrokeWidth: number,
-  annotationDomainType: AnnotationDomainType,
+  axisPosition: Position,
 ) {
-  const startX = linePosition[0];
-  const endY = linePosition[3];
-  // Assumes xDomain & 0 rotation
+  const [startX, startY, endX, endY] = linePosition;
 
-  const xTranslation = `calc(${startX}px - 50%)`;
-  const yTranslation = `calc(${endY}px)`;
+  let xPosition = startX;
+  let yPosition = endY;
+  let xOffset = 0;
+  let yOffset = 0;
+
+  switch (chartRotation) {
+    case 0: {
+      switch (axisPosition) {
+        case Position.Bottom: {
+          xPosition = startX;
+          yPosition = endY;
+          xOffset = 50;
+          yOffset = 100;
+          break;
+        }
+        case Position.Top: {
+          xPosition = startX;
+          yPosition = startY;
+          xOffset = 50;
+          yOffset = 0;
+          break;
+        }
+        case Position.Left: {
+          xPosition = startX;
+          yPosition = endY;
+          xOffset = 0;
+          yOffset = 50;
+          break;
+        }
+        case Position.Right: {
+          xPosition = endX;
+          yPosition = startY;
+          xOffset = 100;
+          yOffset = 50;
+          break;
+        }
+      }
+      break;
+    }
+    case 90: {
+      switch (axisPosition) {
+        case Position.Bottom: {
+          xPosition = startX;
+          yPosition = endY;
+          xOffset = 0;
+          yOffset = 50;
+          break;
+        }
+        case Position.Top: {
+          xPosition = startX;
+          yPosition = startY;
+          xOffset = 0;
+          yOffset = 50;
+          break;
+        }
+        case Position.Left: {
+          xPosition = startX;
+          yPosition = endY;
+          xOffset = 50;
+          yOffset = 100;
+          break;
+        }
+        case Position.Right: {
+          xPosition = endX;
+          yPosition = endY;
+          xOffset = 50;
+          yOffset = 100;
+          break;
+        }
+      }
+      break;
+    }
+    case -90: {
+      switch (axisPosition) {
+        case Position.Bottom: {
+          xPosition = startX;
+          yPosition = endY;
+          xOffset = 0;
+          yOffset = 50;
+          break;
+        }
+        case Position.Top: {
+          xPosition = startX;
+          yPosition = startY;
+          xOffset = 0;
+          yOffset = 50;
+          break;
+        }
+        case Position.Left: {
+          xPosition = startX;
+          yPosition = endY;
+          xOffset = 50;
+          yOffset = 100;
+          break;
+        }
+        case Position.Right: {
+          xPosition = startX;
+          yPosition = endY;
+          xOffset = 50;
+          yOffset = 100;
+          break;
+        }
+      }
+      break;
+    }
+    case 180: {
+      switch (axisPosition) {
+        case Position.Bottom: {
+          xPosition = startX;
+          yPosition = endY;
+          xOffset = 50;
+          yOffset = 100;
+          break;
+        }
+        case Position.Top: {
+          xPosition = startX;
+          yPosition = startY;
+          xOffset = 50;
+          yOffset = 0;
+          break;
+        }
+        case Position.Left: {
+          xPosition = startX;
+          yPosition = endY;
+          xOffset = 0;
+          yOffset = 50;
+          break;
+        }
+        case Position.Right: {
+          xPosition = endX;
+          yPosition = startY;
+          xOffset = 100;
+          yOffset = 50;
+          break;
+        }
+      }
+      break;
+    }
+  }
+  const xTranslation = `calc(${xPosition}px - ${xOffset}%)`;
+  const yTranslation = `calc(${yPosition}px - ${yOffset}%)`;
 
   return `translate(${xTranslation},${yTranslation})`;
+}
 
+export function isXDomain(domainType: AnnotationDomainType): boolean {
+  return domainType === AnnotationDomainType.XDomain;
 }
 
 export function computeLineAnnotationTooltipState(
@@ -184,7 +349,7 @@ export function computeLineAnnotationTooltipState(
   annotationLines: AnnotationLineProps[],
   spec: AnnotationSpec,
   chartRotation: Rotation,
-  chartDimensions: Dimensions,
+  axesSpecs: Map<AxisId, AxisSpec>,
 ): AnnotationTooltipState {
 
   const annotationTooltipState: AnnotationTooltipState = {
@@ -193,6 +358,17 @@ export function computeLineAnnotationTooltipState(
     details: undefined,
     transform: '',
   };
+
+  const groupId = spec.groupId || getGroupId('__global__');
+  const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, groupId);
+  const isXDomainAnnotation = isXDomain(spec.domainType);
+  const annotationAxis = isXDomainAnnotation ? xAxis : yAxis;
+
+  if (!annotationAxis) {
+    return annotationTooltipState;
+  }
+
+  const axisPosition = annotationAxis.position;
 
   annotationLines.forEach((line: AnnotationLineProps) => {
     const cursorOffset = getAnnotationLineOffset(spec);
@@ -208,12 +384,10 @@ export function computeLineAnnotationTooltipState(
       annotationTooltipState.isVisible = true;
 
       // Position tooltip based on axis position & lineOffset amount
-      const lineStrokeWidth = getAnnotationLineStrokeWidth(spec);
       annotationTooltipState.transform = getAnnotationLineTooltipTransform(
         chartRotation,
         line.position,
-        lineStrokeWidth,
-        spec.domainType,
+        axisPosition,
       );
 
       if (line.details) {
@@ -231,7 +405,7 @@ export function computeAnnotationTooltipState(
   annotationDimensions: Map<AnnotationId, any>,
   annotationSpecs: Map<AnnotationId, AnnotationSpec>,
   chartRotation: Rotation,
-  chartDimensions: Dimensions,
+  axesSpecs: Map<AxisId, AxisSpec>,
 ): AnnotationTooltipState {
   for (const [annotationId, annotationDimension] of annotationDimensions) {
     const spec = annotationSpecs.get(annotationId);
@@ -247,7 +421,7 @@ export function computeAnnotationTooltipState(
           annotationDimension,
           spec,
           chartRotation,
-          chartDimensions,
+          axesSpecs,
         );
 
         if (lineAnnotationTooltipState.isVisible) {

@@ -258,7 +258,7 @@ describe('annotation utils', () => {
     };
 
     const defaultOffset = getAnnotationLineOffset(spec);
-    expect(defaultOffset).toBe(0.5);
+    expect(defaultOffset).toBe(1.5);
   });
 
   test('should get amount of line position offset based on lineStyle strokeWidth (custom config)', () => {

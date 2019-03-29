@@ -134,7 +134,7 @@ export const DEFAULT_GRID_LINE_CONFIG: GridLineConfig = {
 export const DEFAULT_ANNOTATION_LINE_STYLE: AnnotationLineStyle = {
   line: {
     stroke: '#000',
-    strokeWidth: 1,
+    strokeWidth: 3,
     opacity: 1,
   },
   details: {

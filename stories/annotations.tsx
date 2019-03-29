@@ -1,15 +1,24 @@
 import { array, boolean, select } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import React from 'react';
-import { Axis, BarSeries, Chart, getSpecId, LineAnnotation, ScaleType, Settings, timeFormatter } from '../src';
-
+import {
+  Axis,
+  BarSeries,
+  Chart,
+  getSpecId,
+  LineAnnotation,
+  LineSeries,
+  ScaleType,
+  Settings,
+  timeFormatter,
+} from '../src';
 import {
   AnnotationDatum,
   AnnotationDomainType,
   Position,
 } from '../src/lib/series/specs';
 import { KIBANA_METRICS } from '../src/lib/series/utils/test_dataset_kibana';
-import { getAnnotationId, getAxisId } from '../src/lib/utils/ids';
+import { getAnnotationId, getAxisId, getGroupId } from '../src/lib/utils/ids';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
 
@@ -44,6 +53,61 @@ storiesOf('Annotations', module)
       '180 deg': 180,
     }, 0);
 
+    const isBottom = boolean('x domain axis is bottom', true);
+    const axisPosition = isBottom ? Position.Bottom : Position.Top;
+
+    return (
+      <Chart renderer="canvas" className={'story-chart'}>
+        <Settings debug={boolean('debug', false)} rotation={chartRotation} />
+        <LineAnnotation {...lineAnnotationProps} />
+        <Axis
+          id={getAxisId('bottom')}
+          position={axisPosition}
+          title={'Bottom axis'}
+        />
+        <Axis
+          id={getAxisId('vertical')}
+          title={'Vertical axis'}
+          position={Position.Left}
+        />
+        <BarSeries
+          id={getSpecId('bars')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 3, y: 6 }]}
+          yScaleToDataExtent={false}
+        />
+      </Chart>
+    );
+  })
+  .add('yDomain with multiple axes', () => {
+    const dataValues = [{
+      dataValue: 2.5,
+      details: 'an annotation',
+    }];
+
+    const lineAnnotationProps = {
+      annotationId: getAnnotationId('anno_1'),
+      domainType: AnnotationDomainType.XDomain,
+      dataValues,
+      lineStyle: {
+        line: {
+          strokeWidth: 3,
+          stroke: '#f00',
+          opacity: 1,
+        },
+      },
+    };
+
+    const chartRotation = select('chartRotation', {
+      '0 deg': 0,
+      '90 deg': 90,
+      '-90 deg': -90,
+      '180 deg': 180,
+    }, 0);
+
     return (
       <Chart renderer="canvas" className={'story-chart'}>
         <Settings debug={boolean('debug', false)} rotation={chartRotation} />
@@ -51,7 +115,7 @@ storiesOf('Annotations', module)
         <Axis
           id={getAxisId('top')}
           position={Position.Top}
-          title={'Bottom axis'}
+          title={'Top axis'}
         />
         <Axis
           id={getAxisId('bottom')}
@@ -63,6 +127,12 @@ storiesOf('Annotations', module)
           title={'Left axis'}
           position={Position.Left}
         />
+        <Axis
+          id={getAxisId('right')}
+          title={'Right axis'}
+          position={Position.Right}
+          groupId={getGroupId('group2')}
+        />
         <BarSeries
           id={getSpecId('bars')}
           xScaleType={ScaleType.Linear}
@@ -70,6 +140,18 @@ storiesOf('Annotations', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 3, y: 6 }]}
+          yScaleToDataExtent={false}
+        />
+        <LineSeries
+          id={getSpecId('lines')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          groupId={getGroupId('group2')}
+          xAccessor="x"
+          yAccessors={['y']}
+          stackAccessors={['x']}
+          splitSeriesAccessors={['g']}
+          data={[{ x: 0, y: 3 }, { x: 1, y: 2 }, { x: 2, y: 4 }, { x: 3, y: 10 }]}
           yScaleToDataExtent={false}
         />
       </Chart>
@@ -138,15 +220,13 @@ storiesOf('Annotations', module)
       '180 deg': 180,
     }, 0);
 
+    const isLeft = boolean('y domain axis is Position.Left', true);
+    const axisPosition = isLeft ? Position.Left : Position.Right;
+
     return (
       <Chart renderer="canvas" className={'story-chart'}>
         <Settings debug={boolean('debug', false)} rotation={chartRotation} />
         <LineAnnotation {...lineAnnotationProps} />
-        <Axis
-          id={getAxisId('top')}
-          position={Position.Top}
-          title={'Bottom axis'}
-        />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
@@ -155,7 +235,7 @@ storiesOf('Annotations', module)
         <Axis
           id={getAxisId('left')}
           title={'Left axis'}
-          position={Position.Left}
+          position={axisPosition}
         />
         <BarSeries
           id={getSpecId('bars')}

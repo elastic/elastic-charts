@@ -401,7 +401,7 @@ export class ChartStore {
       this.annotationDimensions,
       this.annotationSpecs,
       this.chartRotation,
-      this.chartDimensions,
+      this.axesSpecs,
     );
   });
 
