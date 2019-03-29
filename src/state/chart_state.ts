@@ -391,40 +391,17 @@ export class ChartStore {
   });
 
   annotationTooltipState = computed(() => {
-    // get the cursor position depending on the chart rotation
-    const xAxisCursorPosition = getValidXPosition(
-      this.cursorPosition.x,
-      this.cursorPosition.y,
-      this.chartRotation,
-      this.chartDimensions,
-    );
-    const yAxisCursorPosition = getValidYPosition(
-      this.cursorPosition.x,
-      this.cursorPosition.y,
-      this.chartRotation,
-      this.chartDimensions,
-    );
-
     // only if we have a valid cursor position and the necessary scale
-    if (xAxisCursorPosition < 0 || !this.xScale || !this.yScales) {
+    if (this.cursorPosition.x < 0 || !this.xScale || !this.yScales) {
       return;
     }
 
-    // are we on an annotation?
-    // TODO: re-work so we don't need to go through computeAnnotationDimensions
-    // Do some logic here on what's visible + set annotation tooltip visibility state
-    const cursorPosition = {
-      x: xAxisCursorPosition,
-      y: yAxisCursorPosition,
-    };
-
-    const annotationTooltipState = computeAnnotationTooltipState(
-      cursorPosition,
+    return computeAnnotationTooltipState(
+      this.cursorPosition,
       this.annotationDimensions,
       this.annotationSpecs,
+      this.chartRotation,
     );
-
-    return annotationTooltipState;
   });
 
   isTooltipVisible = computed(() => {

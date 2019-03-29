@@ -115,6 +115,39 @@ export function computeAnnotationDimensions(
   return annotationDimensions;
 }
 
+export function isWithinLineBounds(
+  linePosition: AnnotationLinePosition,
+  cursorPosition: Point,
+  offset: number,
+  chartRotation: Rotation,
+  domainType: AnnotationDomainType,
+): boolean {
+  const [startX, startY, endX, endY] = linePosition;
+  const isXDomain = domainType === AnnotationDomainType.XDomain;
+
+  let isCursorWithinXBounds = false;
+  let isCursorWithinYBounds = false;
+  const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
+
+  if (isXDomain) {
+    isCursorWithinXBounds = isHorizontalChartRotation ?
+      cursorPosition.x >= startX - offset && cursorPosition.x <= endX + offset
+      : cursorPosition.x >= startX && cursorPosition.x <= endX;
+    isCursorWithinYBounds = isHorizontalChartRotation ?
+      cursorPosition.y >= startY && cursorPosition.y <= endY
+      : cursorPosition.y >= startY - offset && cursorPosition.y <= endY + offset;
+    return isCursorWithinXBounds && isCursorWithinYBounds;
+  }
+
+  isCursorWithinXBounds = isHorizontalChartRotation ?
+    cursorPosition.x >= startX && cursorPosition.x <= endX
+    : cursorPosition.x >= startX - offset && cursorPosition.x <= endX + offset;
+  isCursorWithinYBounds = isHorizontalChartRotation ?
+    cursorPosition.y >= startY - offset && cursorPosition.y <= endY + offset
+    : cursorPosition.y >= startY && cursorPosition.y <= endY;
+  return isCursorWithinXBounds && isCursorWithinYBounds;
+}
+
 export function getAnnotationLineOffset(spec: AnnotationSpec): number {
   if (spec.lineStyle && spec.lineStyle.line && (spec.lineStyle.line.strokeWidth !== null)) {
     return spec.lineStyle.line.strokeWidth / 2;
@@ -126,6 +159,7 @@ export function computeLineAnnotationTooltipState(
   cursorPosition: Point,
   annotationLines: AnnotationLineProps[],
   spec: AnnotationSpec,
+  chartRotation: Rotation,
 ): AnnotationTooltipState {
 
   const annotationTooltipState: AnnotationTooltipState = {
@@ -136,15 +170,16 @@ export function computeLineAnnotationTooltipState(
   };
 
   annotationLines.forEach((line: AnnotationLineProps) => {
-    const { position } = line;
-
-    const [startX, startY, endX, endY] = position;
     const cursorOffset = getAnnotationLineOffset(spec);
+    const isWithinBounds = isWithinLineBounds(
+      line.position,
+      cursorPosition,
+      cursorOffset,
+      chartRotation,
+      spec.domainType,
+    );
 
-    const isCursorWithinXBounds = cursorPosition.x >= startX - cursorOffset &&
-      cursorPosition.x <= endX + cursorOffset;
-    const isCursorWithinYBounds = cursorPosition.y >= startY && cursorPosition.y <= endY;
-    if (isCursorWithinXBounds && isCursorWithinYBounds) {
+    if (isWithinBounds) {
       annotationTooltipState.isVisible = true;
 
       if (line.details) {
@@ -161,6 +196,7 @@ export function computeAnnotationTooltipState(
   cursorPosition: Point,
   annotationDimensions: Map<AnnotationId, any>,
   annotationSpecs: Map<AnnotationId, AnnotationSpec>,
+  chartRotation: Rotation,
 ): AnnotationTooltipState {
   for (const [annotationId, annotationDimension] of annotationDimensions) {
     const spec = annotationSpecs.get(annotationId);
@@ -175,6 +211,7 @@ export function computeAnnotationTooltipState(
           cursorPosition,
           annotationDimension,
           spec,
+          chartRotation,
         );
 
         if (lineAnnotationTooltipState.isVisible) {

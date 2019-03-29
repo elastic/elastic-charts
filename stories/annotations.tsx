@@ -14,7 +14,7 @@ import { getAnnotationId, getAxisId } from '../src/lib/utils/ids';
 const dateFormatter = timeFormatter('HH:mm:ss');
 
 function generateAnnotationData(values: any[]): AnnotationDatum[] {
-  return values.map((value, index) => ({ dataValue: value, detail: `detail-${index}` }));
+  return values.map((value, index) => ({ dataValue: value, details: `detail-${index}` }));
 }
 
 storiesOf('Annotations', module)
@@ -22,9 +22,6 @@ storiesOf('Annotations', module)
     const dataValues = [{
       dataValue: 2.5,
       details: 'an annotation',
-    }, {
-      dataValue: 1,
-      details: 'another annotation',
     }];
 
     const lineAnnotationProps = {
