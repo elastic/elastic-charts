@@ -53,7 +53,7 @@ export interface BrushExtent {
   maxY: number;
 }
 
-export interface GeometrisCounts {
+export interface GeometriesCounts {
   points: number;
   bars: number;
   areas: number;
@@ -171,7 +171,7 @@ export function computeSeriesGeometries(
     lines: LineGeometry[];
   };
   geometriesIndex: Map<any, IndexedGeometry[]>;
-  geometriesCounts: GeometrisCounts;
+  geometriesCounts: GeometriesCounts;
 } {
   const width = [0, 180].includes(chartRotation) ? chartDims.width : chartDims.height;
   const height = [0, 180].includes(chartRotation) ? chartDims.height : chartDims.width;
@@ -301,7 +301,7 @@ export function renderGeometries(
   areas: AreaGeometry[];
   lines: LineGeometry[];
   geometriesIndex: Map<any, IndexedGeometry[]>;
-  geometriesCounts: GeometrisCounts;
+  geometriesCounts: GeometriesCounts;
 } {
   const len = dataSeries.length;
   let i;
@@ -537,16 +537,14 @@ export function isLineAreaOnlyChart(specs: Map<SpecId, BasicSeriesSpec>) {
 }
 
 export function isChartAnimatable(
-  geometriesCounts: GeometrisCounts,
+  geometriesCounts: GeometriesCounts,
   animationEnabled: boolean,
 ): boolean {
   if (!animationEnabled) {
     return false;
   }
   const { bars, linePoints, areasPoints } = geometriesCounts;
-  if (bars > MAX_ANIMATABLE_BARS || linePoints + areasPoints > MAX_ANIMATABLE_LINES_AREA_POINTS) {
-    return false;
-  } else {
-    return true;
-  }
+  const isBarsAnimatable = bars <= MAX_ANIMATABLE_BARS;
+  const isLinesAndAreasAnimatable = linePoints + areasPoints <= MAX_ANIMATABLE_LINES_AREA_POINTS;
+  return isBarsAnimatable && isLinesAndAreasAnimatable;
 }
