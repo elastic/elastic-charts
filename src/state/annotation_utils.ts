@@ -42,6 +42,9 @@ export function computeLineAnnotationDimensions(
 
   const { domainType, dataValues } = annotationSpec;
 
+  // TODO : need to make this dependent on axis position as well
+  const lineOverflow = 0;
+
   // TODO: positions for hover state details component
   switch (domainType) {
     case AnnotationDomainType.XDomain: {
@@ -55,8 +58,8 @@ export function computeLineAnnotationDimensions(
         const offset = xScale.bandwidth / 2;
         const xDomainPosition = xScale.scale(dataValue) + offset;
         const linePosition: AnnotationLinePosition = isHorizontalChartRotation ?
-          [xDomainPosition, 0, xDomainPosition, chartHeight] :
-          [0, xDomainPosition, chartWidth, xDomainPosition];
+          [xDomainPosition, 0, xDomainPosition, chartHeight + lineOverflow] :
+          [0 - lineOverflow, xDomainPosition, chartWidth, xDomainPosition];
 
         return { position: linePosition, details };
       });
@@ -148,11 +151,32 @@ export function isWithinLineBounds(
   return isCursorWithinXBounds && isCursorWithinYBounds;
 }
 
-export function getAnnotationLineOffset(spec: AnnotationSpec): number {
+export function getAnnotationLineStrokeWidth(spec: AnnotationSpec): number {
   if (spec.lineStyle && spec.lineStyle.line && (spec.lineStyle.line.strokeWidth !== null)) {
-    return spec.lineStyle.line.strokeWidth / 2;
+    return spec.lineStyle.line.strokeWidth;
   }
-  return DEFAULT_ANNOTATION_LINE_STYLE.line.strokeWidth / 2;
+  return DEFAULT_ANNOTATION_LINE_STYLE.line.strokeWidth;
+}
+
+export function getAnnotationLineOffset(spec: AnnotationSpec): number {
+  return getAnnotationLineStrokeWidth(spec) / 2;
+}
+
+export function getAnnotationLineTooltipTransform(
+  chartRotation: Rotation,
+  linePosition: AnnotationLinePosition,
+  lineStrokeWidth: number,
+  annotationDomainType: AnnotationDomainType,
+) {
+  const startX = linePosition[0];
+  const endY = linePosition[3];
+  // Assumes xDomain & 0 rotation
+
+  const xTranslation = `calc(${startX}px - 50%)`;
+  const yTranslation = `calc(${endY}px)`;
+
+  return `translate(${xTranslation},${yTranslation})`;
+
 }
 
 export function computeLineAnnotationTooltipState(
@@ -160,6 +184,7 @@ export function computeLineAnnotationTooltipState(
   annotationLines: AnnotationLineProps[],
   spec: AnnotationSpec,
   chartRotation: Rotation,
+  chartDimensions: Dimensions,
 ): AnnotationTooltipState {
 
   const annotationTooltipState: AnnotationTooltipState = {
@@ -182,6 +207,15 @@ export function computeLineAnnotationTooltipState(
     if (isWithinBounds) {
       annotationTooltipState.isVisible = true;
 
+      // Position tooltip based on axis position & lineOffset amount
+      const lineStrokeWidth = getAnnotationLineStrokeWidth(spec);
+      annotationTooltipState.transform = getAnnotationLineTooltipTransform(
+        chartRotation,
+        line.position,
+        lineStrokeWidth,
+        spec.domainType,
+      );
+
       if (line.details) {
         annotationTooltipState.header = line.details.headerText;
         annotationTooltipState.details = line.details.detailsText;
@@ -197,6 +231,7 @@ export function computeAnnotationTooltipState(
   annotationDimensions: Map<AnnotationId, any>,
   annotationSpecs: Map<AnnotationId, AnnotationSpec>,
   chartRotation: Rotation,
+  chartDimensions: Dimensions,
 ): AnnotationTooltipState {
   for (const [annotationId, annotationDimension] of annotationDimensions) {
     const spec = annotationSpecs.get(annotationId);
@@ -212,6 +247,7 @@ export function computeAnnotationTooltipState(
           annotationDimension,
           spec,
           chartRotation,
+          chartDimensions,
         );
 
         if (lineAnnotationTooltipState.isVisible) {
