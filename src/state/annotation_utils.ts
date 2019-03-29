@@ -122,18 +122,48 @@ export function getAnnotationLineOffset(spec: AnnotationSpec): number {
   return DEFAULT_ANNOTATION_LINE_STYLE.line.strokeWidth / 2;
 }
 
+export function computeLineAnnotationTooltipState(
+  cursorPosition: Point,
+  annotationLines: AnnotationLineProps[],
+  spec: AnnotationSpec,
+): AnnotationTooltipState {
+
+  const annotationTooltipState: AnnotationTooltipState = {
+    isVisible: false,
+    header: undefined,
+    details: undefined,
+    transform: '',
+  };
+
+  annotationLines.forEach((line: AnnotationLineProps) => {
+    const { position } = line;
+
+    const [startX, startY, endX, endY] = position;
+    const cursorOffset = getAnnotationLineOffset(spec);
+
+    const isCursorWithinXBounds = cursorPosition.x >= startX - cursorOffset &&
+      cursorPosition.x <= endX + cursorOffset;
+    const isCursorWithinYBounds = cursorPosition.y >= startY && cursorPosition.y <= endY;
+    if (isCursorWithinXBounds && isCursorWithinYBounds) {
+      annotationTooltipState.isVisible = true;
+
+      if (line.details) {
+        annotationTooltipState.header = line.details.headerText;
+        annotationTooltipState.details = line.details.detailsText;
+      }
+    }
+  });
+
+  return annotationTooltipState;
+}
+
 export function computeAnnotationTooltipState(
   cursorPosition: Point,
   annotationDimensions: Map<AnnotationId, any>,
   annotationSpecs: Map<AnnotationId, AnnotationSpec>,
 ): AnnotationTooltipState {
 
-  const annotationTooltipState: {
-    isVisible: boolean;
-    header: undefined | string;
-    details: undefined | string;
-    transform: string;
-  } = {
+  let annotationTooltipState: AnnotationTooltipState = {
     isVisible: false,
     header: undefined,
     details: undefined,
@@ -149,24 +179,17 @@ export function computeAnnotationTooltipState(
     const { annotationType } = spec;
     switch (annotationType) {
       case AnnotationType.Line: {
-        annotationDimension.forEach((line: AnnotationLineProps) => {
-          const { position } = line;
+        const lineAnnotationTooltipState = computeLineAnnotationTooltipState(
+          cursorPosition,
+          annotationDimension,
+          spec,
+        );
 
-          const [startX, startY, endX, endY] = position;
-          const cursorOffset = getAnnotationLineOffset(spec);
+        annotationTooltipState = {
+          ...annotationTooltipState,
+          ...lineAnnotationTooltipState,
+        };
 
-          const isCursorWithinXBounds = cursorPosition.x >= startX - cursorOffset &&
-            cursorPosition.x <= endX + cursorOffset;
-          const isCursorWithinYBounds = cursorPosition.y >= startY && cursorPosition.y <= endY;
-          if (isCursorWithinXBounds && isCursorWithinYBounds) {
-            annotationTooltipState.isVisible = true;
-
-            if (line.details) {
-              annotationTooltipState.header = line.details.headerText;
-              annotationTooltipState.details = line.details.detailsText;
-            }
-          }
-        });
         break;
       }
     }
