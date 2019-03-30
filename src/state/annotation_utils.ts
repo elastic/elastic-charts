@@ -1,3 +1,4 @@
+import { isHorizontal } from '../lib/axes/axis_utils';
 import {
   AnnotationDatum,
   AnnotationDomainType,
@@ -195,43 +196,20 @@ export function getAnnotationLineTooltipPosition(
 ) {
   const [startX, startY, endX, endY] = linePosition;
 
-  let xPosition = startX;
-  let yPosition = endY;
   let xOffset = 0;
   let yOffset = 0;
 
-  // const isHorizontalAxis = isHorizontal(axisPosition);
+  const isHorizontalAxis = isHorizontal(axisPosition);
   const isChartHorizontalRotation = isHorizontalRotation(chartRotation);
+  const xPosition = (axisPosition === Position.Right) ? endX : startX;
+  const yPosition = (axisPosition === Position.Top) ? startY : endY;
 
-  switch (axisPosition) {
-    case Position.Bottom: {
-      xPosition = startX;
-      yPosition = endY;
-      xOffset = isChartHorizontalRotation ? 50 : 0;
-      yOffset = isChartHorizontalRotation ? 100 : 50;
-      break;
-    }
-    case Position.Top: {
-      xPosition = startX;
-      yPosition = startY;
-      xOffset = isChartHorizontalRotation ? 50 : 0;
-      yOffset = isChartHorizontalRotation ? 0 : 50;
-      break;
-    }
-    case Position.Left: {
-      xPosition = startX;
-      yPosition = endY;
-      xOffset = isChartHorizontalRotation ? 0 : 50;
-      yOffset = isChartHorizontalRotation ? 50 : 100;
-      break;
-    }
-    case Position.Right: {
-      xPosition = endX;
-      yPosition = endY;
-      xOffset = isChartHorizontalRotation ? 100 : 50;
-      yOffset = isChartHorizontalRotation ? 50 : 100;
-      break;
-    }
+  if (isHorizontalAxis) {
+    xOffset = isChartHorizontalRotation ? 50 : 0;
+    yOffset = isChartHorizontalRotation ? (axisPosition === Position.Top ? 0 : 100) : 50;
+  } else {
+    xOffset = isChartHorizontalRotation ? (axisPosition === Position.Right ? 100 : 0) : 50;
+    yOffset = isChartHorizontalRotation ? 50 : 100;
   }
 
   return { xPosition, yPosition, xOffset, yOffset };
