@@ -188,7 +188,7 @@ export function isVerticalAnnotationLine(isXDomainAnnotation: boolean, isHorizon
   return !isHorizontalChartRotation;
 }
 
-export function getAnnotationLineTooltipTransform(
+export function getAnnotationLineTooltipPosition(
   chartRotation: Rotation,
   linePosition: AnnotationLinePosition,
   axisPosition: Position,
@@ -233,6 +233,20 @@ export function getAnnotationLineTooltipTransform(
       break;
     }
   }
+
+  return { xPosition, yPosition, xOffset, yOffset };
+}
+
+export function getAnnotationLineTooltipTransform(
+  chartRotation: Rotation,
+  linePosition: AnnotationLinePosition,
+  axisPosition: Position,
+) {
+  const { xPosition, yPosition, xOffset, yOffset } = getAnnotationLineTooltipPosition(
+    chartRotation,
+    linePosition,
+    axisPosition,
+  );
 
   const xTranslation = `calc(${xPosition}px - ${xOffset}%)`;
   const yTranslation = `calc(${yPosition}px - ${yOffset}%)`;
