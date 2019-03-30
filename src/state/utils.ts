@@ -38,6 +38,9 @@ import { AxisId, GroupId, SpecId } from '../lib/utils/ids';
 import { Scale } from '../lib/utils/scales/scales';
 import { SeriesDomainsAndData } from './chart_state';
 
+const MAX_ANIMATABLE_BARS = 300;
+const MAX_ANIMATABLE_LINES_AREA_POINTS = 600;
+
 export interface Transform {
   x: number;
   y: number;
@@ -50,7 +53,16 @@ export interface BrushExtent {
   maxY: number;
 }
 
-export function findSelectedDataSeries(
+export interface GeometriesCounts {
+  points: number;
+  bars: number;
+  areas: number;
+  areasPoints: number;
+  lines: number;
+  linePoints: number;
+}
+
+export function findDataSeriesByColorValues(
   series: DataSeriesColorsValues[] | null,
   value: DataSeriesColorsValues,
 ): number {
@@ -63,17 +75,11 @@ export function findSelectedDataSeries(
   });
 }
 
-export function getAllDataSeriesColorValues(
-  seriesColors: Map<string, DataSeriesColorsValues>,
-): DataSeriesColorsValues[] {
-  return Array.from(seriesColors.values());
-}
-
-export function updateSelectedDataSeries(
+export function updateDeselectedDataSeries(
   series: DataSeriesColorsValues[] | null,
   value: DataSeriesColorsValues,
 ): DataSeriesColorsValues[] {
-  const seriesIndex = findSelectedDataSeries(series, value);
+  const seriesIndex = findDataSeriesByColorValues(series, value);
   const updatedSeries = series ? [...series] : [];
 
   if (seriesIndex > -1) {
@@ -114,11 +120,11 @@ export function computeSeriesDomains(
   seriesSpecs: Map<SpecId, BasicSeriesSpec>,
   domainsByGroupId: Map<GroupId, DomainRange>,
   customXDomain?: DomainRange | Domain,
-  selectedDataSeries?: DataSeriesColorsValues[] | null,
+  deselectedDataSeries?: DataSeriesColorsValues[] | null,
 ): SeriesDomainsAndData {
   const { splittedSeries, xValues, seriesColors } = getSplittedSeries(
     seriesSpecs,
-    selectedDataSeries,
+    deselectedDataSeries,
   );
   // tslint:disable-next-line:no-console
   // console.log({ splittedSeries, xValues, seriesColors });
@@ -165,6 +171,7 @@ export function computeSeriesGeometries(
     lines: LineGeometry[];
   };
   geometriesIndex: Map<any, IndexedGeometry[]>;
+  geometriesCounts: GeometriesCounts;
 } {
   const width = [0, 180].includes(chartRotation) ? chartDims.width : chartDims.height;
   const height = [0, 180].includes(chartRotation) ? chartDims.height : chartDims.width;
@@ -188,6 +195,14 @@ export function computeSeriesGeometries(
   let stackedGeometriesIndex: Map<any, IndexedGeometry[]> = new Map();
   let nonStackedGeometriesIndex: Map<any, IndexedGeometry[]> = new Map();
   let orderIndex = 0;
+  const geometriesCounts = {
+    points: 0,
+    bars: 0,
+    areas: 0,
+    areasPoints: 0,
+    lines: 0,
+    linePoints: 0,
+  };
   formattedDataSeries.stacked.forEach((dataSeriesGroup, index) => {
     const { groupId, dataSeries, counts } = dataSeriesGroup;
     const yScale = yScales.get(groupId);
@@ -211,7 +226,15 @@ export function computeSeriesGeometries(
     lines.push(...geometries.lines);
     bars.push(...geometries.bars);
     points.push(...geometries.points);
+
+    // update counts
     stackedGeometriesIndex = geometries.geometriesIndex;
+    geometriesCounts.points += geometries.geometriesCounts.points;
+    geometriesCounts.bars += geometries.geometriesCounts.bars;
+    geometriesCounts.areas += geometries.geometriesCounts.areas;
+    geometriesCounts.areasPoints += geometries.geometriesCounts.areasPoints;
+    geometriesCounts.lines += geometries.geometriesCounts.lines;
+    geometriesCounts.linePoints += geometries.geometriesCounts.linePoints;
   });
   formattedDataSeries.nonStacked.map((dataSeriesGroup, index) => {
     const { groupId, dataSeries } = dataSeriesGroup;
@@ -236,6 +259,14 @@ export function computeSeriesGeometries(
     bars.push(...geometries.bars);
     points.push(...geometries.points);
     nonStackedGeometriesIndex = geometries.geometriesIndex;
+
+    // update counts
+    geometriesCounts.points += geometries.geometriesCounts.points;
+    geometriesCounts.bars += geometries.geometriesCounts.bars;
+    geometriesCounts.areas += geometries.geometriesCounts.areas;
+    geometriesCounts.areasPoints += geometries.geometriesCounts.areasPoints;
+    geometriesCounts.lines += geometries.geometriesCounts.lines;
+    geometriesCounts.linePoints += geometries.geometriesCounts.linePoints;
   });
   const geometriesIndex = mergeGeometriesIndexes(stackedGeometriesIndex, nonStackedGeometriesIndex);
   return {
@@ -250,6 +281,7 @@ export function computeSeriesGeometries(
       lines,
     },
     geometriesIndex,
+    geometriesCounts,
   };
 }
 
@@ -269,6 +301,7 @@ export function renderGeometries(
   areas: AreaGeometry[];
   lines: LineGeometry[];
   geometriesIndex: Map<any, IndexedGeometry[]>;
+  geometriesCounts: GeometriesCounts;
 } {
   const len = dataSeries.length;
   let i;
@@ -280,6 +313,14 @@ export function renderGeometries(
   let barGeometriesIndex: Map<any, IndexedGeometry[]> = new Map();
   let lineGeometriesIndex: Map<any, IndexedGeometry[]> = new Map();
   let areaGeometriesIndex: Map<any, IndexedGeometry[]> = new Map();
+  const geometriesCounts = {
+    points: 0,
+    bars: 0,
+    areas: 0,
+    areasPoints: 0,
+    lines: 0,
+    linePoints: 0,
+  };
   for (i = 0; i < len; i++) {
     const ds = dataSeries[i];
     const spec = getSpecById(seriesSpecs, ds.specId);
@@ -305,6 +346,7 @@ export function renderGeometries(
           pointGeometriesIndex,
           renderedPoints.indexedGeometries,
         );
+        geometriesCounts.points += renderedPoints.pointGeometries.length;
         break;
       case 'bar':
         const shift = isStacked ? indexOffset : indexOffset + i;
@@ -314,6 +356,7 @@ export function renderGeometries(
           renderedBars.indexedGeometries,
         );
         bars.push(...renderedBars.barGeometries);
+        geometriesCounts.bars += renderedBars.barGeometries.length;
         break;
       case 'line':
         const lineShift = clusteredCount > 0 ? clusteredCount : 1;
@@ -333,6 +376,8 @@ export function renderGeometries(
           renderedLines.indexedGeometries,
         );
         lines.push(renderedLines.lineGeometry);
+        geometriesCounts.linePoints += renderedLines.lineGeometry.points.length;
+        geometriesCounts.lines += 1;
         break;
       case 'area':
         const areaShift = clusteredCount > 0 ? clusteredCount : 1;
@@ -352,6 +397,8 @@ export function renderGeometries(
           renderedAreas.indexedGeometries,
         );
         areas.push(renderedAreas.areaGeometry);
+        geometriesCounts.areasPoints += renderedAreas.areaGeometry.points.length;
+        geometriesCounts.areas += 1;
         break;
     }
   }
@@ -367,6 +414,7 @@ export function renderGeometries(
     areas,
     lines,
     geometriesIndex,
+    geometriesCounts,
   };
 }
 
@@ -486,4 +534,17 @@ export function isLineAreaOnlyChart(specs: Map<SpecId, BasicSeriesSpec>) {
   return ![...specs.values()].some((spec) => {
     return spec.seriesType === 'bar';
   });
+}
+
+export function isChartAnimatable(
+  geometriesCounts: GeometriesCounts,
+  animationEnabled: boolean,
+): boolean {
+  if (!animationEnabled) {
+    return false;
+  }
+  const { bars, linePoints, areasPoints } = geometriesCounts;
+  const isBarsAnimatable = bars <= MAX_ANIMATABLE_BARS;
+  const isLinesAndAreasAnimatable = linePoints + areasPoints <= MAX_ANIMATABLE_LINES_AREA_POINTS;
+  return isBarsAnimatable && isLinesAndAreasAnimatable;
 }

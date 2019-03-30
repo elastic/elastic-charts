@@ -68,13 +68,13 @@ import {
   computeChartTransform,
   computeSeriesDomains,
   computeSeriesGeometries,
-  findSelectedDataSeries,
-  getAllDataSeriesColorValues,
+  findDataSeriesByColorValues,
   getAxesSpecForSpecId,
   getUpdatedCustomSeriesColors,
+  isChartAnimatable,
   isLineAreaOnlyChart,
   Transform,
-  updateSelectedDataSeries,
+  updateDeselectedDataSeries,
 } from './utils';
 
 export interface Point {
@@ -96,7 +96,6 @@ export type ElementClickListener = (values: GeometryValue[]) => void;
 export type ElementOverListener = (values: GeometryValue[]) => void;
 export type BrushEndListener = (min: number, max: number) => void;
 export type LegendItemListener = (dataSeriesIdentifiers: DataSeriesColorsValues | null) => void;
-// const MAX_ANIMATABLE_GLYPHS = 500;
 
 export class ChartStore {
   debug = false;
@@ -119,6 +118,7 @@ export class ChartStore {
     y: 0,
     rotate: 0,
   };
+  isBrushing = observable.box(false);
   brushExtent: BrushExtent = {
     minX: 0,
     minY: 0,
@@ -151,7 +151,7 @@ export class ChartStore {
   legendItems: Map<string, LegendItem> = new Map();
   highlightedLegendItemKey: IObservableValue<string | null> = observable.box(null);
   selectedLegendItemKey: IObservableValue<string | null> = observable.box(null);
-  selectedDataSeries: DataSeriesColorsValues[] | null = null;
+  deselectedDataSeries: DataSeriesColorsValues[] | null = null;
   customSeriesColors: Map<string, string> = new Map();
   seriesColorMap: Map<string, string> = new Map();
   totalBarsInCluster?: number;
@@ -407,6 +407,7 @@ export class ChartStore {
 
   isTooltipVisible = computed(() => {
     return (
+      !this.isBrushing.get() &&
       this.tooltipType.get() !== TooltipType.None &&
       this.cursorPosition.x > -1 &&
       this.cursorPosition.y > -1 &&
@@ -415,6 +416,7 @@ export class ChartStore {
   });
   isCrosshairVisible = computed(() => {
     return (
+      !this.isBrushing.get() &&
       isCrosshairTooltipType(this.tooltipType.get()) &&
       this.cursorPosition.x > -1 &&
       this.cursorPosition.y > -1
@@ -501,12 +503,12 @@ export class ChartStore {
     const legendItem = this.legendItems.get(legendItemKey);
 
     if (legendItem) {
-      if (findSelectedDataSeries(this.selectedDataSeries, legendItem.value) > -1) {
-        this.selectedDataSeries = [...this.legendItems.values()]
+      if (findDataSeriesByColorValues(this.deselectedDataSeries, legendItem.value) > -1) {
+        this.deselectedDataSeries = [...this.legendItems.values()]
           .filter((item: LegendItem) => item.key !== legendItemKey)
           .map((item: LegendItem) => item.value);
       } else {
-        this.selectedDataSeries = [legendItem.value];
+        this.deselectedDataSeries = [legendItem.value];
       }
 
       this.computeChart();
@@ -517,7 +519,10 @@ export class ChartStore {
     const legendItem = this.legendItems.get(legendItemKey);
 
     if (legendItem) {
-      this.selectedDataSeries = updateSelectedDataSeries(this.selectedDataSeries, legendItem.value);
+      this.deselectedDataSeries = updateDeselectedDataSeries(
+        this.deselectedDataSeries,
+        legendItem.value,
+      );
       this.computeChart();
     }
   });
@@ -543,14 +548,37 @@ export class ChartStore {
     }
   });
 
+  onBrushStart = action(() => {
+    if (!this.onBrushEndListener) {
+      return;
+    }
+    this.isBrushing.set(true);
+  });
+
+  onBrushEnd = action((start: Point, end: Point) => {
+    if (!this.onBrushEndListener) {
+      return;
+    }
+    this.isBrushing.set(false);
+    const minValue = start.x < end.x ? start.x : end.x;
+    const maxValue = start.x > end.x ? start.x : end.x;
+    if (maxValue === minValue) {
+      // if 0 size brush, avoid computing the value
+      return;
+    }
+    const min = this.xScale!.invert(minValue - this.chartDimensions.left);
+    const max = this.xScale!.invert(maxValue - this.chartDimensions.left);
+    this.onBrushEndListener(min, max);
+  });
+
   handleChartClick() {
     if (this.highlightedGeometries.length > 0 && this.onElementClickListener) {
       this.onElementClickListener(this.highlightedGeometries.toJS());
     }
   }
 
-  resetSelectedDataSeries() {
-    this.selectedDataSeries = null;
+  resetDeselectedDataSeries() {
+    this.deselectedDataSeries = null;
   }
 
   setOnElementClickListener(listener: ElementClickListener) {
@@ -600,20 +628,6 @@ export class ChartStore {
   }
   removeOnLegendItemMinusClickListener() {
     this.onLegendItemMinusClickListener = undefined;
-  }
-  onBrushEnd(start: Point, end: Point) {
-    if (!this.onBrushEndListener) {
-      return;
-    }
-    const minValue = start.x < end.x ? start.x : end.x;
-    const maxValue = start.x > end.x ? start.x : end.x;
-    if (maxValue === minValue) {
-      // if 0 size brush, avoid computing the value
-      return;
-    }
-    const min = this.xScale!.invert(minValue - this.chartDimensions.left);
-    const max = this.xScale!.invert(maxValue - this.chartDimensions.left);
-    this.onBrushEndListener(min, max);
   }
 
   isBrushEnabled(): boolean {
@@ -683,25 +697,21 @@ export class ChartStore {
 
     // When specs are not initialized, reset selectedDataSeries to null
     if (!this.specsInitialized.get()) {
-      this.selectedDataSeries = null;
+      this.deselectedDataSeries = null;
     }
 
     const domainsByGroupId = mergeDomainsByGroupId(this.axesSpecs, this.chartRotation);
 
     // The last argument is optional; if not supplied, then all series will be factored into computations
-    // Otherwise, selectedDataSeries is used to restrict the computation for just the selected series
+    // Otherwise, deselectedDataSeries is used to restrict the computation excluding the deselected series
     const seriesDomains = computeSeriesDomains(
       this.seriesSpecs,
       domainsByGroupId,
       this.xDomain,
-      this.selectedDataSeries,
+      this.deselectedDataSeries,
     );
-    this.seriesDomainsAndData = seriesDomains;
 
-    // If this.selectedDataSeries is null, initialize with all series
-    if (!this.selectedDataSeries) {
-      this.selectedDataSeries = getAllDataSeriesColorValues(seriesDomains.seriesColors);
-    }
+    this.seriesDomainsAndData = seriesDomains;
 
     // Merge all series spec custom colors with state custom colors map
     const updatedCustomSeriesColors = getUpdatedCustomSeriesColors(this.seriesSpecs);
@@ -723,7 +733,7 @@ export class ChartStore {
       this.seriesColorMap,
       this.seriesSpecs,
       this.chartTheme.colors.defaultVizColor,
-      this.selectedDataSeries,
+      this.deselectedDataSeries,
     );
     // tslint:disable-next-line:no-console
     // console.log({ legendItems: this.legendItems });
@@ -812,11 +822,6 @@ export class ChartStore {
     this.axesTicks = axisTicksPositions.axisTicks;
     this.axesVisibleTicks = axisTicksPositions.axisVisibleTicks;
     this.axesGridLinesPositions = axisTicksPositions.axisGridLinesPositions;
-    // if (glyphsCount > MAX_ANIMATABLE_GLYPHS) {
-    //   this.canDataBeAnimated = false;
-    // } else {
-    //   this.canDataBeAnimated = this.animateData;
-    // }
 
     // annotation computations
     const updatedAnnotationDimensions = computeAnnotationDimensions(
@@ -829,8 +834,7 @@ export class ChartStore {
 
     this.annotationDimensions = updatedAnnotationDimensions;
 
-    this.canDataBeAnimated = true;
-
+    this.canDataBeAnimated = isChartAnimatable(seriesGeometries.geometriesCounts, this.animateData);
     this.initialized.set(true);
   }
 }

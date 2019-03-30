@@ -3,6 +3,8 @@ import { DataSeriesColorsValues } from '../lib/series/series';
 import { AxisSpec, BarSeriesSpec, Position } from '../lib/series/specs';
 import { getAxisId, getGroupId, getSpecId } from '../lib/utils/ids';
 import { TooltipType, TooltipValue } from '../lib/utils/interactions';
+import { ScaleBand } from '../lib/utils/scales/scale_band';
+import { ScaleContinuous } from '../lib/utils/scales/scale_continuous';
 import { ScaleType } from '../lib/utils/scales/scales';
 import { ChartStore } from './chart_state';
 
@@ -18,7 +20,7 @@ describe('Chart Store', () => {
     groupId: GROUP_ID,
     seriesType: 'bar',
     yScaleToDataExtent: false,
-    data: [{ x: 1, y: 1 }, { x: 2, y: 2 }, { x: 3, y: 3 }],
+    data: [{ x: 1, y: 1, g: 0 }, { x: 2, y: 2, g: 1 }, { x: 3, y: 3, g: 3 }],
     xAccessor: 'x',
     yAccessors: ['y'],
     xScaleType: ScaleType.Linear,
@@ -53,17 +55,10 @@ describe('Chart Store', () => {
     expect(seriesDomainsAndData).not.toBeUndefined();
   });
 
-  test('can initialize selectedDataSeries depending on previous state', () => {
-    const selectedDataSeries = [{ specId: SPEC_ID, colorValues: [] }];
-
-    store.selectedDataSeries = null;
+  test('can initialize deselectedDataSeries depending on previous state', () => {
+    store.specsInitialized.set(false);
     store.computeChart();
-    expect(store.selectedDataSeries).toEqual(selectedDataSeries);
-
-    store.selectedDataSeries = selectedDataSeries;
-    store.specsInitialized.set(true);
-    store.computeChart();
-    expect(store.selectedDataSeries).toEqual(selectedDataSeries);
+    expect(store.deselectedDataSeries).toEqual(null);
   });
 
   test('can add an axis', () => {
@@ -252,21 +247,21 @@ describe('Chart Store', () => {
       [firstLegendItem.key, firstLegendItem],
       [secondLegendItem.key, secondLegendItem],
     ]);
-    store.selectedDataSeries = null;
+    store.deselectedDataSeries = null;
     store.computeChart = computeChart;
 
     store.toggleSeriesVisibility('other');
-    expect(store.selectedDataSeries).toEqual(null);
+    expect(store.deselectedDataSeries).toEqual(null);
     expect(computeChart).not.toBeCalled();
 
-    store.selectedDataSeries = [firstLegendItem.value, secondLegendItem.value];
+    store.deselectedDataSeries = [firstLegendItem.value, secondLegendItem.value];
     store.toggleSeriesVisibility(firstLegendItem.key);
-    expect(store.selectedDataSeries).toEqual([secondLegendItem.value]);
+    expect(store.deselectedDataSeries).toEqual([secondLegendItem.value]);
     expect(computeChart).toBeCalled();
 
-    store.selectedDataSeries = [firstLegendItem.value];
+    store.deselectedDataSeries = [firstLegendItem.value];
     store.toggleSeriesVisibility(firstLegendItem.key);
-    expect(store.selectedDataSeries).toEqual([]);
+    expect(store.deselectedDataSeries).toEqual([]);
   });
 
   test('can toggle single series visibility', () => {
@@ -280,18 +275,18 @@ describe('Chart Store', () => {
       [firstLegendItem.key, firstLegendItem],
       [secondLegendItem.key, secondLegendItem],
     ]);
-    store.selectedDataSeries = null;
+    store.deselectedDataSeries = null;
     store.computeChart = computeChart;
 
     store.toggleSingleSeries('other');
-    expect(store.selectedDataSeries).toEqual(null);
+    expect(store.deselectedDataSeries).toEqual(null);
     expect(computeChart).not.toBeCalled();
 
     store.toggleSingleSeries(firstLegendItem.key);
-    expect(store.selectedDataSeries).toEqual([firstLegendItem.value]);
+    expect(store.deselectedDataSeries).toEqual([firstLegendItem.value]);
 
     store.toggleSingleSeries(firstLegendItem.key);
-    expect(store.selectedDataSeries).toEqual([secondLegendItem.value]);
+    expect(store.deselectedDataSeries).toEqual([secondLegendItem.value]);
   });
 
   test('can set an element click listener', () => {
@@ -345,11 +340,14 @@ describe('Chart Store', () => {
     store.chartDimensions.left = 10;
 
     store.onBrushEndListener = undefined;
+    store.onBrushStart();
+    expect(store.isBrushing.get()).toBe(false);
     store.onBrushEnd(start, end1);
     expect(brushEndListener).not.toBeCalled();
 
     store.setOnBrushEndListener(brushEndListener);
-
+    store.onBrushStart();
+    expect(store.isBrushing.get()).toBe(true);
     store.onBrushEnd(start, start);
     expect(brushEndListener).not.toBeCalled();
 
@@ -360,13 +358,6 @@ describe('Chart Store', () => {
     store.onBrushEnd(start, end2);
     expect(brushEndListener.mock.calls[1][0]).toBeCloseTo(0.3, 1);
     expect(brushEndListener.mock.calls[1][1]).toBeCloseTo(0.9, 1);
-  });
-
-  test('can determine if brush is enabled', () => {
-    expect(store.isBrushEnabled()).toBe(true);
-
-    store.xScale = undefined;
-    expect(store.isBrushEnabled()).toBe(false);
   });
 
   test('can update parent dimensions', () => {
@@ -488,9 +479,9 @@ describe('Chart Store', () => {
   });
 
   test('can reset selectedDataSeries', () => {
-    store.selectedDataSeries = [firstLegendItem.value];
-    store.resetSelectedDataSeries();
-    expect(store.selectedDataSeries).toBe(null);
+    store.deselectedDataSeries = [firstLegendItem.value];
+    store.resetDeselectedDataSeries();
+    expect(store.deselectedDataSeries).toBe(null);
   });
   test('can update the crosshair visibility', () => {
     store.cursorPosition.x = -1;
@@ -550,6 +541,44 @@ describe('Chart Store', () => {
     store.cursorPosition.x = 1;
     store.tooltipType.set(TooltipType.Crosshairs);
     store.tooltipData.replace([tooltipValue]);
+    expect(store.isTooltipVisible.get()).toBe(true);
+  });
+
+  test('can disable brush based on scale and listener', () => {
+    store.xScale = undefined;
+    expect(store.isBrushEnabled()).toBe(false);
+    store.xScale = new ScaleContinuous([0, 100], [0, 100], ScaleType.Linear);
+    store.onBrushEndListener = undefined;
+    expect(store.isBrushEnabled()).toBe(false);
+    store.setOnBrushEndListener(() => ({}));
+    expect(store.isBrushEnabled()).toBe(true);
+    store.xScale = new ScaleBand([0, 100], [0, 100]);
+    expect(store.isBrushEnabled()).toBe(false);
+  });
+
+  test('can disable tooltip on brushing', () => {
+    const tooltipValue: TooltipValue = {
+      name: 'a',
+      value: 'a',
+      color: 'a',
+      isHighlighted: false,
+      isXValue: false,
+    };
+    store.xScale = new ScaleContinuous([0, 100], [0, 100], ScaleType.Linear);
+    store.cursorPosition.x = 1;
+    store.cursorPosition.x = 1;
+    store.tooltipType.set(TooltipType.Crosshairs);
+    store.tooltipData.replace([tooltipValue]);
+    store.onBrushStart();
+    expect(store.isBrushing.get()).toBe(true);
+    expect(store.isTooltipVisible.get()).toBe(false);
+
+    store.cursorPosition.x = 1;
+    store.cursorPosition.x = 1;
+    store.tooltipType.set(TooltipType.Crosshairs);
+    store.tooltipData.replace([tooltipValue]);
+    store.onBrushEnd({ x: 0, y: 0 }, { x: 1, y: 1 });
+    expect(store.isBrushing.get()).toBe(false);
     expect(store.isTooltipVisible.get()).toBe(true);
   });
   test('handle click on chart', () => {
