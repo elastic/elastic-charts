@@ -200,140 +200,40 @@ export function getAnnotationLineTooltipTransform(
   let xOffset = 0;
   let yOffset = 0;
 
-  switch (chartRotation) {
-    case 0: {
-      switch (axisPosition) {
-        case Position.Bottom: {
-          xPosition = startX;
-          yPosition = endY;
-          xOffset = 50;
-          yOffset = 100;
-          break;
-        }
-        case Position.Top: {
-          xPosition = startX;
-          yPosition = startY;
-          xOffset = 50;
-          yOffset = 0;
-          break;
-        }
-        case Position.Left: {
-          xPosition = startX;
-          yPosition = endY;
-          xOffset = 0;
-          yOffset = 50;
-          break;
-        }
-        case Position.Right: {
-          xPosition = endX;
-          yPosition = startY;
-          xOffset = 100;
-          yOffset = 50;
-          break;
-        }
-      }
+  // const isHorizontalAxis = isHorizontal(axisPosition);
+  const isChartHorizontalRotation = isHorizontalRotation(chartRotation);
+
+  switch (axisPosition) {
+    case Position.Bottom: {
+      xPosition = startX;
+      yPosition = endY;
+      xOffset = isChartHorizontalRotation ? 50 : 0;
+      yOffset = isChartHorizontalRotation ? 100 : 50;
       break;
     }
-    case 90: {
-      switch (axisPosition) {
-        case Position.Bottom: {
-          xPosition = startX;
-          yPosition = endY;
-          xOffset = 0;
-          yOffset = 50;
-          break;
-        }
-        case Position.Top: {
-          xPosition = startX;
-          yPosition = startY;
-          xOffset = 0;
-          yOffset = 50;
-          break;
-        }
-        case Position.Left: {
-          xPosition = startX;
-          yPosition = endY;
-          xOffset = 50;
-          yOffset = 100;
-          break;
-        }
-        case Position.Right: {
-          xPosition = endX;
-          yPosition = endY;
-          xOffset = 50;
-          yOffset = 100;
-          break;
-        }
-      }
+    case Position.Top: {
+      xPosition = startX;
+      yPosition = startY;
+      xOffset = isChartHorizontalRotation ? 50 : 0;
+      yOffset = isChartHorizontalRotation ? 0 : 50;
       break;
     }
-    case -90: {
-      switch (axisPosition) {
-        case Position.Bottom: {
-          xPosition = startX;
-          yPosition = endY;
-          xOffset = 0;
-          yOffset = 50;
-          break;
-        }
-        case Position.Top: {
-          xPosition = startX;
-          yPosition = startY;
-          xOffset = 0;
-          yOffset = 50;
-          break;
-        }
-        case Position.Left: {
-          xPosition = startX;
-          yPosition = endY;
-          xOffset = 50;
-          yOffset = 100;
-          break;
-        }
-        case Position.Right: {
-          xPosition = startX;
-          yPosition = endY;
-          xOffset = 50;
-          yOffset = 100;
-          break;
-        }
-      }
+    case Position.Left: {
+      xPosition = startX;
+      yPosition = endY;
+      xOffset = isChartHorizontalRotation ? 0 : 50;
+      yOffset = isChartHorizontalRotation ? 50 : 100;
       break;
     }
-    case 180: {
-      switch (axisPosition) {
-        case Position.Bottom: {
-          xPosition = startX;
-          yPosition = endY;
-          xOffset = 50;
-          yOffset = 100;
-          break;
-        }
-        case Position.Top: {
-          xPosition = startX;
-          yPosition = startY;
-          xOffset = 50;
-          yOffset = 0;
-          break;
-        }
-        case Position.Left: {
-          xPosition = startX;
-          yPosition = endY;
-          xOffset = 0;
-          yOffset = 50;
-          break;
-        }
-        case Position.Right: {
-          xPosition = endX;
-          yPosition = startY;
-          xOffset = 100;
-          yOffset = 50;
-          break;
-        }
-      }
+    case Position.Right: {
+      xPosition = endX;
+      yPosition = endY;
+      xOffset = isChartHorizontalRotation ? 100 : 50;
+      yOffset = isChartHorizontalRotation ? 50 : 100;
       break;
     }
   }
+
   const xTranslation = `calc(${xPosition}px - ${xOffset}%)`;
   const yTranslation = `calc(${yPosition}px - ${yOffset}%)`;
 
