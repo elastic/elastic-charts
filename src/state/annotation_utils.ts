@@ -70,7 +70,7 @@ export function computeYDomainLineAnnotationDimensions(
     const { dataValue } = datum;
     const details = {
       detailsText: datum.details,
-      headerText: datum.header || dataValue,
+      headerText: datum.header || dataValue.toString(),
     };
 
     const yDomainPosition = yScale.scale(dataValue);
@@ -125,7 +125,7 @@ export function computeXDomainLineAnnotationDimensions(
     const { dataValue } = datum;
     const details = {
       detailsText: datum.details,
-      headerText: datum.header || dataValue,
+      headerText: datum.header || dataValue.toString(),
     };
 
     // TODO: make offset dependent on annotationSpec.alignment (left, center, right)
