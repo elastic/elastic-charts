@@ -1,3 +1,4 @@
+import { EuiIcon } from '@elastic/eui';
 import { array, boolean, select } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import React from 'react';
@@ -33,16 +34,11 @@ storiesOf('Annotations', module)
       details: 'an annotation',
     }];
 
-    const lineAnnotationProps = {
-      annotationId: getAnnotationId('anno_1'),
-      domainType: AnnotationDomainType.XDomain,
-      dataValues,
-      lineStyle: {
-        line: {
-          strokeWidth: 3,
-          stroke: '#f00',
-          opacity: 1,
-        },
+    const lineStyle = {
+      line: {
+        strokeWidth: 3,
+        stroke: '#f00',
+        opacity: 1,
       },
     };
 
@@ -59,7 +55,13 @@ storiesOf('Annotations', module)
     return (
       <Chart renderer="canvas" className={'story-chart'}>
         <Settings debug={boolean('debug', false)} rotation={chartRotation} />
-        <LineAnnotation {...lineAnnotationProps} />
+        <LineAnnotation
+          annotationId={getAnnotationId('anno_1')}
+          domainType={AnnotationDomainType.XDomain}
+          dataValues={dataValues}
+          lineStyle={lineStyle}
+          marker={(<EuiIcon type="alert" />)}
+        />
         <Axis
           id={getAxisId('bottom')}
           position={axisPosition}
@@ -207,12 +209,6 @@ storiesOf('Annotations', module)
   .add('basic yDomain', () => {
     const dataValues = generateAnnotationData([3.5]);
 
-    const lineAnnotationProps = {
-      annotationId: getAnnotationId('anno_1'),
-      domainType: AnnotationDomainType.YDomain,
-      dataValues,
-    };
-
     const chartRotation = select('chartRotation', {
       '0 deg': 0,
       '90 deg': 90,
@@ -226,7 +222,12 @@ storiesOf('Annotations', module)
     return (
       <Chart renderer="canvas" className={'story-chart'}>
         <Settings debug={boolean('debug', false)} rotation={chartRotation} />
-        <LineAnnotation {...lineAnnotationProps} />
+        <LineAnnotation
+          annotationId={getAnnotationId('anno_')}
+          domainType={AnnotationDomainType.YDomain}
+          dataValues={dataValues}
+          marker={(<EuiIcon type="alert" />)}
+        />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}

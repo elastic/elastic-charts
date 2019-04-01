@@ -174,6 +174,7 @@ export interface LineAnnotationSpec {
   domainType: AnnotationDomainType;
   dataValues: AnnotationDatum[];
   lineStyle?: Partial<AnnotationLineStyle>;
+  marker?: JSX.Element;
 }
 
 // TODO: RectangleAnnotationSpec & TextAnnotationSpec

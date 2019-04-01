@@ -26,10 +26,17 @@ export interface AnnotationDetails {
   detailsText?: string;
 }
 
+export interface AnnotationMarker {
+  icon: JSX.Element;
+  transform: string;
+}
+
 export type AnnotationLinePosition = [number, number, number, number];
 export interface AnnotationLineProps {
   position: AnnotationLinePosition; // Or AnnotationRectanglePosition or AnnotationTextPosition
+  tooltipLinePosition: AnnotationLinePosition;
   details: AnnotationDetails;
+  marker?: AnnotationMarker;
 }
 
 interface TransformPosition {
@@ -41,21 +48,24 @@ interface TransformPosition {
 
 export type AnnotationDimensions = AnnotationLineProps[];
 
+const DEFAULT_LINE_OVERFLOW = 30;
+
 export function computeLineAnnotationDimensions(
   annotationSpec: AnnotationSpec,
   chartDimensions: Dimensions,
   chartRotation: Rotation,
   yScales: Map<GroupId, Scale>,
   xScale: Scale,
+  axisPosition: Position,
 ): AnnotationLineProps[] | null {
   const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
   const chartHeight = chartDimensions.height;
   const chartWidth = chartDimensions.width;
 
-  const { domainType, dataValues } = annotationSpec;
+  const { domainType, dataValues, marker } = annotationSpec;
 
-  // TODO : need to make this dependent on axis position as well
-  const lineOverflow = 0;
+  // TODO : make line overflow configurable via prop
+  const lineOverflow = DEFAULT_LINE_OVERFLOW;
 
   switch (domainType) {
     case AnnotationDomainType.XDomain: {
@@ -70,26 +80,38 @@ export function computeLineAnnotationDimensions(
         const xDomainPosition = xScale.scale(dataValue) + offset;
 
         let linePosition: AnnotationLinePosition = [0, 0, 0, 0];
+        let tooltipLinePosition: AnnotationLinePosition = [0, 0, 0, 0];
+
         switch (chartRotation) {
           case 0: {
-            linePosition = [xDomainPosition, 0, xDomainPosition, chartHeight + lineOverflow];
+            const startY = (axisPosition === Position.Bottom) ? 0 : -lineOverflow;
+            const endY = (axisPosition === Position.Bottom) ? chartHeight + lineOverflow : chartHeight;
+            linePosition = [xDomainPosition, startY, xDomainPosition, endY];
+            tooltipLinePosition = [xDomainPosition, 0, xDomainPosition, chartHeight];
             break;
           }
           case 90: {
-            linePosition = [0 - lineOverflow, xDomainPosition, chartWidth, xDomainPosition];
+            linePosition = [-lineOverflow, xDomainPosition, chartWidth, xDomainPosition];
+            tooltipLinePosition = [0, xDomainPosition, chartWidth, xDomainPosition];
             break;
           }
           case -90: {
-            linePosition = [0 - lineOverflow, chartHeight - xDomainPosition, chartWidth, chartHeight - xDomainPosition];
+            linePosition = [-lineOverflow, chartHeight - xDomainPosition, chartWidth, chartHeight - xDomainPosition];
+            tooltipLinePosition = [0, chartHeight - xDomainPosition, chartWidth, chartHeight - xDomainPosition];
             break;
           }
           case 180: {
-            linePosition = [chartWidth - xDomainPosition, 0, chartWidth - xDomainPosition, chartHeight + lineOverflow];
+            const startY = (axisPosition === Position.Bottom) ? 0 : -lineOverflow;
+            const endY = (axisPosition === Position.Bottom) ? chartHeight + lineOverflow : chartHeight;
+            linePosition = [chartWidth - xDomainPosition, startY, chartWidth - xDomainPosition, endY];
+            tooltipLinePosition = [chartWidth - xDomainPosition, 0, chartWidth - xDomainPosition, chartHeight];
             break;
           }
         }
 
-        return { position: linePosition, details };
+        const markerPosition = getAnnotationLineTooltipTransform(chartRotation, linePosition, axisPosition);
+        const annotationMarker = marker ? { icon: marker, transform: markerPosition } : undefined;
+        return { position: linePosition, details, marker: annotationMarker, tooltipLinePosition };
       });
     }
     case AnnotationDomainType.YDomain: {
@@ -106,14 +128,39 @@ export function computeLineAnnotationDimensions(
         };
 
         const yDomainPosition = yScale.scale(dataValue);
+
+        const leftHorizontalAxis: AnnotationLinePosition =
+          [0 - lineOverflow, yDomainPosition, chartWidth, yDomainPosition];
+        const rightHorizontaAxis: AnnotationLinePosition =
+          [0, yDomainPosition, chartWidth + lineOverflow, yDomainPosition];
+
         const linePosition: AnnotationLinePosition = isHorizontalChartRotation ?
+          (axisPosition === Position.Left) ? leftHorizontalAxis : rightHorizontaAxis
+          : [yDomainPosition, 0, yDomainPosition, chartHeight + lineOverflow];
+
+        const tooltipLinePosition: AnnotationLinePosition = isHorizontalChartRotation ?
           [0, yDomainPosition, chartWidth, yDomainPosition]
           : [yDomainPosition, 0, yDomainPosition, chartHeight];
 
-        return { position: linePosition, details };
+        const markerPosition = getAnnotationLineTooltipTransform(chartRotation, linePosition, axisPosition);
+        const annotationMarker = marker ? { icon: marker, transform: markerPosition } : undefined;
+        return { position: linePosition, details, marker: annotationMarker, tooltipLinePosition };
       });
     }
   }
+}
+
+export function getAnnotationAxis(
+  axesSpecs: Map<AxisId, AxisSpec>,
+  groupId: GroupId,
+  domainType: AnnotationDomainType,
+): Position | null {
+  const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, groupId);
+
+  const isXDomainAnnotation = isXDomain(domainType);
+  const annotationAxis = isXDomainAnnotation ? xAxis : yAxis;
+
+  return annotationAxis ? annotationAxis.position : null;
 }
 
 export function computeAnnotationDimensions(
@@ -122,18 +169,25 @@ export function computeAnnotationDimensions(
   chartRotation: Rotation,
   yScales: Map<GroupId, Scale>,
   xScale: Scale,
-): Map<AnnotationId, AnnotationDimensions> { // TODO: tighten up this type
+  axesSpecs: Map<AxisId, AxisSpec>,
+): Map<AnnotationId, AnnotationDimensions> {
   const annotationDimensions = new Map<AnnotationId, AnnotationDimensions>();
 
   annotations.forEach((annotationSpec: AnnotationSpec, annotationId: AnnotationId) => {
     switch (annotationSpec.annotationType) {
       case AnnotationType.Line:
+        const { groupId, domainType } = annotationSpec;
+        const annotationAxis = getAnnotationAxis(axesSpecs, groupId, domainType);
+
+        const axisPosition = annotationAxis || Position.Bottom;
+
         const dimensions = computeLineAnnotationDimensions(
           annotationSpec,
           chartDimensions,
           chartRotation,
           yScales,
           xScale,
+          axisPosition,
         );
 
         if (dimensions) {
@@ -319,9 +373,10 @@ export function computeLineAnnotationTooltipState(
       annotationTooltipState.isVisible = true;
 
       // Position tooltip based on axis position & lineOffset amount
+      // const adjustedPosition = computeLinePositionWithoutOverflow(line.position);
       annotationTooltipState.transform = getAnnotationLineTooltipTransform(
         chartRotation,
-        line.position,
+        line.tooltipLinePosition,
         axisPosition,
       );
 

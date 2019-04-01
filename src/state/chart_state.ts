@@ -142,7 +142,7 @@ export class ChartStore {
 
   annotationSpecs = new Map<AnnotationId, AnnotationSpec>(); // read from jsx
 
-  annotationDimensions = new Map<AnnotationId, AnnotationDimensions>();
+  annotationDimensions = observable.map<AnnotationId, AnnotationDimensions>(new Map());
 
   seriesSpecs: Map<SpecId, BasicSeriesSpec> = new Map(); // readed from jsx
 
@@ -833,9 +833,10 @@ export class ChartStore {
       this.chartRotation,
       this.yScales,
       this.xScale,
+      this.axesSpecs,
     );
 
-    this.annotationDimensions = updatedAnnotationDimensions;
+    this.annotationDimensions.replace(updatedAnnotationDimensions);
 
     this.canDataBeAnimated = isChartAnimatable(seriesGeometries.geometriesCounts, this.animateData);
     this.initialized.set(true);

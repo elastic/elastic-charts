@@ -44,9 +44,37 @@ describe('annotation utils', () => {
     left: 15,
   };
 
-  test('should compute annotation dimensions', () => {
-    const groupId = getGroupId('foo-group');
+  const groupId = getGroupId('foo-group');
 
+  const axesSpecs: Map<AxisId, AxisSpec> = new Map();
+  const verticalAxisSpec: AxisSpec = {
+    id: getAxisId('vertical_axis'),
+    groupId,
+    hide: false,
+    showOverlappingTicks: false,
+    showOverlappingLabels: false,
+    position: Position.Left,
+    tickSize: 10,
+    tickPadding: 10,
+    tickFormat: (value: any) => value.toString(),
+    showGridLines: true,
+  };
+  const horizontalAxisSpec: AxisSpec = {
+    id: getAxisId('horizontal_axis'),
+    groupId,
+    hide: false,
+    showOverlappingTicks: false,
+    showOverlappingLabels: false,
+    position: Position.Bottom,
+    tickSize: 10,
+    tickPadding: 10,
+    tickFormat: (value: any) => value.toString(),
+    showGridLines: true,
+  };
+
+  axesSpecs.set(verticalAxisSpec.id, verticalAxisSpec);
+
+  test('should compute annotation dimensions', () => {
     const chartRotation: Rotation = 0;
     const yScales: Map<GroupId, Scale> = new Map();
     yScales.set(groupId, continuousScale);
@@ -71,15 +99,18 @@ describe('annotation utils', () => {
       chartRotation,
       yScales,
       xScale,
+      axesSpecs,
     );
     const expectedDimensions = new Map();
-    expectedDimensions.set(annotationId, [{ position: [0, 20, 10, 20], details: { detailsText: 'foo' } }]);
+    expectedDimensions.set(annotationId, [{
+      position: [-30, 20, 10, 20],
+      details: { detailsText: 'foo' },
+      tooltipLinePosition: [0, 20, 10, 20],
+    }]);
     expect(dimensions).toEqual(expectedDimensions);
   });
 
   test('should compute line annotation dimensions for yDomain on a yScale (chartRotation 0)', () => {
-    const groupId = getGroupId('foo-group');
-
     const chartRotation: Rotation = 0;
     const yScales: Map<GroupId, Scale> = new Map();
     yScales.set(groupId, continuousScale);
@@ -101,13 +132,17 @@ describe('annotation utils', () => {
       chartRotation,
       yScales,
       xScale,
+      Position.Left,
     );
-    const expectedDimensions = [{ position: [0, 20, 10, 20], details: { detailsText: 'foo' } }];
+    const expectedDimensions = [{
+      position: [-30, 20, 10, 20],
+      details: { detailsText: 'foo' },
+      tooltipLinePosition: [0, 20, 10, 20],
+    }];
     expect(dimensions).toEqual(expectedDimensions);
   });
 
   test('should compute line annotation dimensions for yDomain on a yScale (chartRotation 90)', () => {
-    const groupId = getGroupId('foo-group');
     const chartRotation: Rotation = 90;
     const yScales: Map<GroupId, Scale> = new Map();
     yScales.set(groupId, continuousScale);
@@ -129,14 +164,17 @@ describe('annotation utils', () => {
       chartRotation,
       yScales,
       xScale,
+      Position.Left,
     );
-    const expectedDimensions = [{ position: [20, 0, 20, 20], details: { detailsText: 'foo' } }];
+    const expectedDimensions = [{
+      position: [20, 0, 20, 50],
+      details: { detailsText: 'foo' },
+      tooltipLinePosition: [20, 0, 20, 20],
+    }];
     expect(dimensions).toEqual(expectedDimensions);
   });
 
   test('should not compute line annotation dimensions for yDomain if no corresponding yScale', () => {
-    const groupId = getGroupId('foo-group');
-
     const chartRotation: Rotation = 0;
     const yScales: Map<GroupId, Scale> = new Map();
     const xScale: Scale = ordinalScale;
@@ -156,13 +194,12 @@ describe('annotation utils', () => {
       chartRotation,
       yScales,
       xScale,
+      Position.Left,
     );
     expect(dimensions).toEqual(null);
   });
 
   test('should compute line annotation dimensions for xDomain (chartRotation 0, ordinal scale)', () => {
-    const groupId = getGroupId('foo-group');
-
     const chartRotation: Rotation = 0;
     const yScales: Map<GroupId, Scale> = new Map();
     const xScale: Scale = ordinalScale;
@@ -182,14 +219,17 @@ describe('annotation utils', () => {
       chartRotation,
       yScales,
       xScale,
+      Position.Left,
     );
-    const expectedDimensions = [{ position: [12.5, 0, 12.5, 20], details: { detailsText: 'foo' } }];
+    const expectedDimensions = [{
+      position: [12.5, -30, 12.5, 20],
+      details: { detailsText: 'foo' },
+      tooltipLinePosition: [12.5, 0, 12.5, 20],
+    }];
     expect(dimensions).toEqual(expectedDimensions);
   });
 
   test('should compute line annotation dimensions for xDomain (chartRotation 0, continuous scale)', () => {
-    const groupId = getGroupId('foo-group');
-
     const chartRotation: Rotation = 0;
     const yScales: Map<GroupId, Scale> = new Map();
     const xScale: Scale = continuousScale;
@@ -209,13 +249,17 @@ describe('annotation utils', () => {
       chartRotation,
       yScales,
       xScale,
+      Position.Left,
     );
-    const expectedDimensions = [{ position: [20, 0, 20, 20], details: { detailsText: 'foo' } }];
+    const expectedDimensions = [{
+      position: [20, -30, 20, 20],
+      details: { detailsText: 'foo' },
+      tooltipLinePosition: [20, 0, 20, 20],
+    }];
     expect(dimensions).toEqual(expectedDimensions);
   });
 
   test('should compute line annotation dimensions for xDomain on a xScale (chartRotation 90, ordinal scale)', () => {
-    const groupId = getGroupId('foo-group');
     const chartRotation: Rotation = 90;
     const yScales: Map<GroupId, Scale> = new Map();
 
@@ -236,13 +280,17 @@ describe('annotation utils', () => {
       chartRotation,
       yScales,
       xScale,
+      Position.Left,
     );
-    const expectedDimensions = [{ position: [0, 12.5, 10, 12.5], details: { detailsText: 'foo' } }];
+    const expectedDimensions = [{
+      position: [-30, 12.5, 10, 12.5],
+      details: { detailsText: 'foo' },
+      tooltipLinePosition: [0, 12.5, 10, 12.5],
+    }];
     expect(dimensions).toEqual(expectedDimensions);
   });
 
   test('should compute line annotation dimensions for xDomain on a xScale (chartRotation 90, continuous scale)', () => {
-    const groupId = getGroupId('foo-group');
     const chartRotation: Rotation = 90;
     const yScales: Map<GroupId, Scale> = new Map();
 
@@ -263,14 +311,18 @@ describe('annotation utils', () => {
       chartRotation,
       yScales,
       xScale,
+      Position.Left,
     );
-    const expectedDimensions = [{ position: [0, 20, 10, 20], details: { detailsText: 'foo' } }];
+    const expectedDimensions = [{
+      position: [-30, 20, 10, 20],
+      details: { detailsText: 'foo' },
+      tooltipLinePosition: [0, 20, 10, 20],
+    }];
     expect(dimensions).toEqual(expectedDimensions);
   });
 
   test('should compute line annotation dimensions for xDomain on a xScale (chartRotation -90, continuous scale)',
     () => {
-      const groupId = getGroupId('foo-group');
       const chartRotation: Rotation = -90;
       const yScales: Map<GroupId, Scale> = new Map();
 
@@ -291,14 +343,18 @@ describe('annotation utils', () => {
         chartRotation,
         yScales,
         xScale,
+        Position.Left,
       );
-      const expectedDimensions = [{ position: [0, 0, 10, 0], details: { detailsText: 'foo' } }];
+      const expectedDimensions = [{
+        position: [-30, 0, 10, 0],
+        details: { detailsText: 'foo' },
+        tooltipLinePosition: [0, 0, 10, 0],
+      }];
       expect(dimensions).toEqual(expectedDimensions);
     });
 
   test('should compute line annotation dimensions for xDomain on a xScale (chartRotation 180, continuous scale)',
     () => {
-      const groupId = getGroupId('foo-group');
       const chartRotation: Rotation = 180;
       const yScales: Map<GroupId, Scale> = new Map();
 
@@ -319,8 +375,13 @@ describe('annotation utils', () => {
         chartRotation,
         yScales,
         xScale,
+        Position.Left,
       );
-      const expectedDimensions = [{ position: [-10, 0, -10, 20], details: { detailsText: 'foo' } }];
+      const expectedDimensions = [{
+        position: [-10, -30, -10, 20],
+        details: { detailsText: 'foo' },
+        tooltipLinePosition: [-10, 0, -10, 20],
+      }];
       expect(dimensions).toEqual(expectedDimensions);
     });
 
@@ -554,37 +615,14 @@ describe('annotation utils', () => {
   test('should compute the tooltip state for an annotation line', () => {
     const cursorPosition: Point = { x: 1, y: 2 };
 
-    const annotationLines: AnnotationLineProps[] = [{ position: [1, 2, 3, 4], details: {} }];
-    const groupId = getGroupId('foo');
+    const annotationLines: AnnotationLineProps[] = [{
+      position: [1, 2, 3, 4],
+      details: {},
+      tooltipLinePosition: [1, 2, 3, 4],
+    }];
     const lineStyle = {};
     const chartRotation: Rotation = 0;
-    const axesSpecs: Map<AxisId, AxisSpec> = new Map();
-    const verticalAxisSpec: AxisSpec = {
-      id: getAxisId('vertical_axis'),
-      groupId,
-      hide: false,
-      showOverlappingTicks: false,
-      showOverlappingLabels: false,
-      position: Position.Left,
-      tickSize: 10,
-      tickPadding: 10,
-      tickFormat: (value: any) => value.toString(),
-      showGridLines: true,
-    };
-    const horizontalAxisSpec: AxisSpec = {
-      id: getAxisId('horizontal_axis'),
-      groupId,
-      hide: false,
-      showOverlappingTicks: false,
-      showOverlappingLabels: false,
-      position: Position.Bottom,
-      tickSize: 10,
-      tickPadding: 10,
-      tickFormat: (value: any) => value.toString(),
-      showGridLines: true,
-    };
-
-    axesSpecs.set(verticalAxisSpec.id, verticalAxisSpec);
+    const localAxesSpecs = new Map();
 
     // missing annotation axis (xDomain)
     const missingTooltipState = computeLineAnnotationTooltipState(
@@ -594,7 +632,7 @@ describe('annotation utils', () => {
       AnnotationDomainType.XDomain,
       lineStyle,
       chartRotation,
-      axesSpecs,
+      localAxesSpecs,
     );
 
     const expectedMissingTooltipState = {
@@ -605,7 +643,7 @@ describe('annotation utils', () => {
     expect(missingTooltipState).toEqual(expectedMissingTooltipState);
 
     // add axis for xDomain annotation
-    axesSpecs.set(horizontalAxisSpec.id, horizontalAxisSpec);
+    localAxesSpecs.set(horizontalAxisSpec.id, horizontalAxisSpec);
 
     const xDomainTooltipState = computeLineAnnotationTooltipState(
       cursorPosition,
@@ -614,7 +652,7 @@ describe('annotation utils', () => {
       AnnotationDomainType.XDomain,
       lineStyle,
       chartRotation,
-      axesSpecs,
+      localAxesSpecs,
     );
     const expectedXDomainTooltipState = {
       isVisible: true,
@@ -623,6 +661,9 @@ describe('annotation utils', () => {
 
     expect(xDomainTooltipState).toEqual(expectedXDomainTooltipState);
 
+    // add axis for yDomain annotation
+    localAxesSpecs.set(verticalAxisSpec.id, verticalAxisSpec);
+
     const yDomainTooltipState = computeLineAnnotationTooltipState(
       cursorPosition,
       annotationLines,
@@ -630,7 +671,7 @@ describe('annotation utils', () => {
       AnnotationDomainType.YDomain,
       lineStyle,
       chartRotation,
-      axesSpecs,
+      localAxesSpecs,
     );
     const expectedYDomainTooltipState = {
       isVisible: true,
@@ -641,8 +682,6 @@ describe('annotation utils', () => {
   });
 
   test('should compute the tooltip state for an annotation', () => {
-    const groupId = getGroupId('foo');
-
     const annotations: Map<AnnotationId, AnnotationSpec> = new Map();
     const annotationId = getAnnotationId('foo');
     const lineAnnotation: AnnotationSpec = {
@@ -655,21 +694,13 @@ describe('annotation utils', () => {
 
     const cursorPosition: Point = { x: 1, y: 2 };
 
-    const annotationLines: AnnotationLineProps[] = [{ position: [1, 2, 3, 4], details: {} }];
+    const annotationLines: AnnotationLineProps[] = [{
+      position: [1, 2, 3, 4],
+      details: {},
+      tooltipLinePosition: [1, 2, 3, 4],
+    }];
     const chartRotation: Rotation = 0;
-    const axesSpecs: Map<AxisId, AxisSpec> = new Map();
-    const verticalAxisSpec: AxisSpec = {
-      id: getAxisId('vertical_axis'),
-      groupId,
-      hide: false,
-      showOverlappingTicks: false,
-      showOverlappingLabels: false,
-      position: Position.Left,
-      tickSize: 10,
-      tickPadding: 10,
-      tickFormat: (value: any) => value.toString(),
-      showGridLines: true,
-    };
+    const localAxesSpecs: Map<AxisId, AxisSpec> = new Map();
 
     const annotationDimensions = new Map();
     annotationDimensions.set(annotationId, annotationLines);
@@ -680,7 +711,7 @@ describe('annotation utils', () => {
       annotationDimensions,
       annotations,
       chartRotation,
-      axesSpecs,
+      localAxesSpecs,
     );
 
     const expectedMissingTooltipState = {
@@ -692,14 +723,14 @@ describe('annotation utils', () => {
 
     // add valid annotation axis
     annotations.set(annotationId, lineAnnotation);
-    axesSpecs.set(verticalAxisSpec.id, verticalAxisSpec);
+    localAxesSpecs.set(verticalAxisSpec.id, verticalAxisSpec);
 
     const tooltipState = computeAnnotationTooltipState(
       cursorPosition,
       annotationDimensions,
       annotations,
       chartRotation,
-      axesSpecs,
+      localAxesSpecs,
     );
 
     const expectedTooltipState = {
