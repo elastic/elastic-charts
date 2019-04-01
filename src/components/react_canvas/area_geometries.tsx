@@ -1,7 +1,7 @@
 import { Group as KonvaGroup } from 'konva';
 import React from 'react';
 import { Circle, Group, Path } from 'react-konva';
-import { animated, Spring } from 'react-spring/renderprops-konva';
+import { animated, Spring } from 'react-spring/renderprops-konva.cjs';
 import { LegendItem } from '../../lib/series/legend';
 import { AreaGeometry, getGeometryStyle, PointGeometry } from '../../lib/series/rendering';
 import { AreaSeriesStyle, SharedGeometryStyle } from '../../lib/themes/theme';
