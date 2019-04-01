@@ -8,17 +8,17 @@ import {
   Position,
   Rotation,
 } from '../lib/series/specs';
-import { DEFAULT_ANNOTATION_LINE_STYLE } from '../lib/themes/theme';
+import { AnnotationLineStyle, DEFAULT_ANNOTATION_LINE_STYLE } from '../lib/themes/theme';
 import { Dimensions } from '../lib/utils/dimensions';
-import { AnnotationId, AxisId, getGroupId, GroupId } from '../lib/utils/ids';
+import { AnnotationId, AxisId, GroupId } from '../lib/utils/ids';
 import { Scale } from '../lib/utils/scales/scales';
 import { Point } from './chart_state';
 import { getAxesSpecForSpecId, isHorizontalRotation } from './utils';
 
 export interface AnnotationTooltipState {
   isVisible: boolean;
-  header: undefined | string;
-  details: undefined | string;
+  header?: string;
+  details?: string;
   transform: string;
 }
 export interface AnnotationDetails {
@@ -31,6 +31,15 @@ export interface AnnotationLineProps {
   position: AnnotationLinePosition; // Or AnnotationRectanglePosition or AnnotationTextPosition
   details: AnnotationDetails;
 }
+
+interface TransformPosition {
+  xPosition: number;
+  yPosition: number;
+  xOffset: number;
+  yOffset: number;
+}
+
+export type AnnotationDimensions = AnnotationLineProps[];
 
 export function computeLineAnnotationDimensions(
   annotationSpec: AnnotationSpec,
@@ -84,7 +93,7 @@ export function computeLineAnnotationDimensions(
       });
     }
     case AnnotationDomainType.YDomain: {
-      const groupId = annotationSpec.groupId || getGroupId('__global__');
+      const groupId = annotationSpec.groupId;
       const yScale = yScales.get(groupId);
       if (!yScale) {
         return null;
@@ -113,8 +122,8 @@ export function computeAnnotationDimensions(
   chartRotation: Rotation,
   yScales: Map<GroupId, Scale>,
   xScale: Scale,
-): Map<AnnotationId, any> { // TODO: tighten up this type
-  const annotationDimensions = new Map<AnnotationId, any>();
+): Map<AnnotationId, AnnotationDimensions> { // TODO: tighten up this type
+  const annotationDimensions = new Map<AnnotationId, AnnotationDimensions>();
 
   annotations.forEach((annotationSpec: AnnotationSpec, annotationId: AnnotationId) => {
     switch (annotationSpec.annotationType) {
@@ -170,18 +179,21 @@ export function isWithinLineBounds(
   return isCursorWithinXBounds && isCursorWithinYBounds;
 }
 
-export function getAnnotationLineStrokeWidth(spec: AnnotationSpec): number {
-  if (spec.lineStyle && spec.lineStyle.line && (spec.lineStyle.line.strokeWidth !== null)) {
-    return spec.lineStyle.line.strokeWidth;
+export function getAnnotationLineStrokeWidth(lineStyle?: Partial<AnnotationLineStyle>): number {
+  if (lineStyle && lineStyle.line && (lineStyle.line.strokeWidth !== null)) {
+    return lineStyle.line.strokeWidth;
   }
   return DEFAULT_ANNOTATION_LINE_STYLE.line.strokeWidth;
 }
 
-export function getAnnotationLineOffset(spec: AnnotationSpec): number {
-  return getAnnotationLineStrokeWidth(spec) / 2;
+export function getAnnotationLineOffset(lineStyle?: Partial<AnnotationLineStyle>): number {
+  return getAnnotationLineStrokeWidth(lineStyle) / 2;
 }
 
-export function isVerticalAnnotationLine(isXDomainAnnotation: boolean, isHorizontalChartRotation: boolean): boolean {
+export function isVerticalAnnotationLine(
+  isXDomainAnnotation: boolean,
+  isHorizontalChartRotation: boolean,
+): boolean {
   if (isXDomainAnnotation) {
     return isHorizontalChartRotation;
   }
@@ -189,47 +201,79 @@ export function isVerticalAnnotationLine(isXDomainAnnotation: boolean, isHorizon
   return !isHorizontalChartRotation;
 }
 
-export function getAnnotationLineTooltipPosition(
+export function getAnnotationLineTooltipXOffset(
   chartRotation: Rotation,
-  linePosition: AnnotationLinePosition,
   axisPosition: Position,
-) {
-  const [startX, startY, endX, endY] = linePosition;
-
+): number {
   let xOffset = 0;
+
+  const isHorizontalAxis = isHorizontal(axisPosition);
+  const isChartHorizontalRotation = isHorizontalRotation(chartRotation);
+
+  if (isHorizontalAxis) {
+    xOffset = isChartHorizontalRotation ? 50 : 0;
+  } else {
+    xOffset = isChartHorizontalRotation ? (axisPosition === Position.Right ? 100 : 0) : 50;
+  }
+
+  return xOffset;
+}
+
+export function getAnnotationLineTooltipYOffset(
+  chartRotation: Rotation,
+  axisPosition: Position,
+): number {
   let yOffset = 0;
 
   const isHorizontalAxis = isHorizontal(axisPosition);
   const isChartHorizontalRotation = isHorizontalRotation(chartRotation);
-  const xPosition = (axisPosition === Position.Right) ? endX : startX;
-  const yPosition = (axisPosition === Position.Top) ? startY : endY;
 
   if (isHorizontalAxis) {
-    xOffset = isChartHorizontalRotation ? 50 : 0;
     yOffset = isChartHorizontalRotation ? (axisPosition === Position.Top ? 0 : 100) : 50;
   } else {
-    xOffset = isChartHorizontalRotation ? (axisPosition === Position.Right ? 100 : 0) : 50;
     yOffset = isChartHorizontalRotation ? 50 : 100;
   }
 
+  return yOffset;
+}
+
+export function getAnnotationLineTooltipPosition(
+  chartRotation: Rotation,
+  linePosition: AnnotationLinePosition,
+  axisPosition: Position,
+): TransformPosition {
+  const [startX, startY, endX, endY] = linePosition;
+
+  const xPosition = (axisPosition === Position.Right) ? endX : startX;
+  const yPosition = (axisPosition === Position.Top) ? startY : endY;
+
+  const xOffset = getAnnotationLineTooltipXOffset(chartRotation, axisPosition);
+  const yOffset = getAnnotationLineTooltipYOffset(chartRotation, axisPosition);
+
   return { xPosition, yPosition, xOffset, yOffset };
+}
+
+export function toTransformString(position: TransformPosition): string {
+  const { xPosition, yPosition, xOffset, yOffset } = position;
+
+  const xTranslation = `calc(${xPosition}px - ${xOffset}%)`;
+  const yTranslation = `calc(${yPosition}px - ${yOffset}%)`;
+
+  return `translate(${xTranslation},${yTranslation})`;
 }
 
 export function getAnnotationLineTooltipTransform(
   chartRotation: Rotation,
   linePosition: AnnotationLinePosition,
   axisPosition: Position,
-) {
-  const { xPosition, yPosition, xOffset, yOffset } = getAnnotationLineTooltipPosition(
+): string {
+  const position = getAnnotationLineTooltipPosition(
     chartRotation,
     linePosition,
     axisPosition,
   );
 
-  const xTranslation = `calc(${xPosition}px - ${xOffset}%)`;
-  const yTranslation = `calc(${yPosition}px - ${yOffset}%)`;
-
-  return `translate(${xTranslation},${yTranslation})`;
+  return toTransformString(position);
 }
 
 export function isXDomain(domainType: AnnotationDomainType): boolean {
@@ -239,21 +283,20 @@ export function isXDomain(domainType: AnnotationDomainType): boolean {
 export function computeLineAnnotationTooltipState(
   cursorPosition: Point,
   annotationLines: AnnotationLineProps[],
-  spec: AnnotationSpec,
+  groupId: GroupId,
+  domainType: AnnotationDomainType,
+  lineStyle: Partial<AnnotationLineStyle> | undefined,
   chartRotation: Rotation,
   axesSpecs: Map<AxisId, AxisSpec>,
 ): AnnotationTooltipState {
 
   const annotationTooltipState: AnnotationTooltipState = {
     isVisible: false,
-    header: undefined,
-    details: undefined,
     transform: '',
   };
 
-  const groupId = spec.groupId || getGroupId('__global__');
   const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, groupId);
-  const isXDomainAnnotation = isXDomain(spec.domainType);
+  const isXDomainAnnotation = isXDomain(domainType);
   const annotationAxis = isXDomainAnnotation ? xAxis : yAxis;
 
   if (!annotationAxis) {
@@ -263,13 +306,13 @@ export function computeLineAnnotationTooltipState(
   const axisPosition = annotationAxis.position;
 
   annotationLines.forEach((line: AnnotationLineProps) => {
-    const cursorOffset = getAnnotationLineOffset(spec);
+    const lineOffset = getAnnotationLineOffset(lineStyle);
     const isWithinBounds = isWithinLineBounds(
       line.position,
       cursorPosition,
-      cursorOffset,
+      lineOffset,
       chartRotation,
-      spec.domainType,
+      domainType,
     );
 
     if (isWithinBounds) {
@@ -308,10 +351,13 @@ export function computeAnnotationTooltipState(
     const { annotationType } = spec;
     switch (annotationType) {
       case AnnotationType.Line: {
+        const groupId = spec.groupId;
         const lineAnnotationTooltipState = computeLineAnnotationTooltipState(
           cursorPosition,
           annotationDimension,
-          spec,
+          groupId,
+          spec.domainType,
+          spec.lineStyle,
           chartRotation,
           axesSpecs,
         );
@@ -325,8 +371,6 @@ export function computeAnnotationTooltipState(
 
   return {
     isVisible: false,
-    header: undefined,
-    details: undefined,
     transform: '',
   };
 }

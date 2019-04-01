@@ -56,7 +56,11 @@ import {
 } from '../lib/utils/interactions';
 import { Scale, ScaleType } from '../lib/utils/scales/scales';
 import { DEFAULT_TOOLTIP_SNAP, DEFAULT_TOOLTIP_TYPE } from '../specs/settings';
-import { computeAnnotationDimensions, computeAnnotationTooltipState } from './annotation_utils';
+import {
+  AnnotationDimensions,
+  computeAnnotationDimensions,
+  computeAnnotationTooltipState,
+} from './annotation_utils';
 import {
   getCursorBandPosition,
   getCursorLinePosition,
@@ -138,8 +142,7 @@ export class ChartStore {
 
   annotationSpecs = new Map<AnnotationId, AnnotationSpec>(); // read from jsx
 
-  // TODO: tighten type
-  annotationDimensions = new Map<AnnotationId, any>();
+  annotationDimensions = new Map<AnnotationId, AnnotationDimensions>();
 
   seriesSpecs: Map<SpecId, BasicSeriesSpec> = new Map(); // readed from jsx
 

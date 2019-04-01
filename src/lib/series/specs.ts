@@ -167,7 +167,10 @@ export interface AnnotationDatum {
 export interface LineAnnotationSpec {
   annotationId: AnnotationId;
   annotationType: AnnotationType;
-  groupId?: GroupId; // defaults to __global__; needed for yDomain position
+  /** The ID of the axis group, generated via getGroupId method
+   * @default __global__
+   */
+  groupId: GroupId; // defaults to __global__; needed for yDomain position
   domainType: AnnotationDomainType;
   dataValues: AnnotationDatum[];
   lineStyle?: Partial<AnnotationLineStyle>;
