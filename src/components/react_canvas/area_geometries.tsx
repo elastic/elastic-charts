@@ -3,14 +3,13 @@ import React from 'react';
 import { Circle, Group, Path } from 'react-konva';
 import { animated, Spring } from 'react-spring/renderprops-konva.cjs';
 import { LegendItem } from '../../lib/series/legend';
-import {
-  AreaGeometry,
-  GeometryStyle,
-  getGeometryStyle,
-  PointGeometry,
-} from '../../lib/series/rendering';
+import { AreaGeometry, getGeometryStyle, PointGeometry } from '../../lib/series/rendering';
 import { AreaSeriesStyle, SharedGeometryStyle } from '../../lib/themes/theme';
-import { GlobalKonvaElementProps } from './globals';
+import {
+  buildAreaLineProps,
+  buildAreaPointProps,
+  buildAreaProps,
+} from './utils/rendering_props_utils';
 
 interface AreaGeometriesDataProps {
   animated?: boolean;
@@ -175,84 +174,4 @@ export class AreaGeometries extends React.PureComponent<
       }
     });
   }
-}
-
-export function buildAreaPointProps({
-  areaIndex,
-  pointIndex,
-  x,
-  y,
-  radius,
-  strokeWidth,
-  color,
-  opacity,
-}: {
-  areaIndex: number;
-  pointIndex: number;
-  x: number;
-  y: number;
-  radius: number;
-  strokeWidth: number;
-  color: string;
-  opacity: number;
-}) {
-  return {
-    key: `area-point-${areaIndex}-${pointIndex}`,
-    x,
-    y,
-    radius,
-    strokeWidth,
-    strokeEnabled: strokeWidth !== 0,
-    stroke: color,
-    fill: 'white',
-    opacity,
-    ...GlobalKonvaElementProps,
-  };
-}
-
-export function buildAreaProps({
-  index,
-  areaPath,
-  color,
-  opacity,
-}: {
-  index: number;
-  areaPath: string;
-  color: string;
-  opacity: number;
-}) {
-  return {
-    key: `area-${index}`,
-    data: areaPath,
-    fill: color,
-    lineCap: 'round',
-    lineJoin: 'round',
-    opacity,
-    ...GlobalKonvaElementProps,
-  };
-}
-
-export function buildAreaLineProps({
-  index,
-  linePath,
-  color,
-  strokeWidth,
-  geometryStyle,
-}: {
-  index: number;
-  linePath: string;
-  color: string;
-  strokeWidth: number;
-  geometryStyle: GeometryStyle;
-}) {
-  return {
-    key: `area-line-${index}`,
-    data: linePath,
-    stroke: color,
-    strokeWidth,
-    lineCap: 'round',
-    lineJoin: 'round',
-    ...geometryStyle,
-    ...GlobalKonvaElementProps,
-  };
 }

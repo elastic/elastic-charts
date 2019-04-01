@@ -3,9 +3,9 @@ import React from 'react';
 import { Group, Rect } from 'react-konva';
 import { animated, Spring } from 'react-spring/renderprops-konva.cjs';
 import { LegendItem } from '../../lib/series/legend';
-import { BarGeometry, GeometryStyle, getGeometryStyle } from '../../lib/series/rendering';
+import { BarGeometry, getGeometryStyle } from '../../lib/series/rendering';
 import { BarSeriesStyle, SharedGeometryStyle } from '../../lib/themes/theme';
-import { GlobalKonvaElementProps } from './globals';
+import { buildBarProps } from './utils/rendering_props_utils';
 
 interface BarGeometriesDataProps {
   animated?: boolean;
@@ -107,42 +107,4 @@ export class BarGeometries extends React.PureComponent<
       }
     });
   }
-}
-
-export function buildBarProps({
-  index,
-  x,
-  y,
-  width,
-  height,
-  fill,
-  stroke,
-  strokeWidth,
-  borderEnabled,
-  geometryStyle,
-}: {
-  index: number;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  fill: string;
-  stroke: string;
-  strokeWidth: number;
-  borderEnabled: boolean;
-  geometryStyle: GeometryStyle;
-}) {
-  return {
-    key: `bar-${index}`,
-    x,
-    y,
-    width,
-    height,
-    fill,
-    strokeWidth,
-    stroke,
-    strokeEnabled: borderEnabled,
-    ...GlobalKonvaElementProps,
-    ...geometryStyle,
-  };
 }

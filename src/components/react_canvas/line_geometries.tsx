@@ -3,14 +3,9 @@ import React from 'react';
 import { Circle, Group, Path } from 'react-konva';
 import { animated, Spring } from 'react-spring/renderprops-konva.cjs';
 import { LegendItem } from '../../lib/series/legend';
-import {
-  GeometryStyle,
-  getGeometryStyle,
-  LineGeometry,
-  PointGeometry,
-} from '../../lib/series/rendering';
+import { getGeometryStyle, LineGeometry, PointGeometry } from '../../lib/series/rendering';
 import { LineSeriesStyle, SharedGeometryStyle } from '../../lib/themes/theme';
-import { GlobalKonvaElementProps } from './globals';
+import { buildLinePointProps, buildLineProps } from './utils/rendering_props_utils';
 
 interface LineGeometriesDataProps {
   animated?: boolean;
@@ -144,65 +139,4 @@ export class LineGeometries extends React.PureComponent<
       }
     });
   }
-}
-
-export function buildLinePointProps({
-  lineIndex,
-  pointIndex,
-  x,
-  y,
-  radius,
-  strokeWidth,
-  color,
-  opacity,
-}: {
-  lineIndex: number;
-  pointIndex: number;
-  x: number;
-  y: number;
-  radius: number;
-  strokeWidth: number;
-  color: string;
-  opacity: number;
-}) {
-  return {
-    key: `line-point-${lineIndex}-${pointIndex}`,
-    x,
-    y,
-    radius,
-    stroke: color,
-    strokeWidth,
-    strokeEnabled: strokeWidth !== 0,
-    fill: 'white',
-    opacity,
-    ...GlobalKonvaElementProps,
-  };
-}
-
-export function buildLineProps({
-  index,
-  linePath,
-  color,
-  strokeWidth,
-  opacity,
-  geometryStyle,
-}: {
-  index: number;
-  linePath: string;
-  color: string;
-  strokeWidth: number;
-  opacity: number;
-  geometryStyle: GeometryStyle;
-}) {
-  return {
-    key: `line-${index}`,
-    data: linePath,
-    stroke: color,
-    strokeWidth,
-    opacity,
-    lineCap: 'round',
-    lineJoin: 'round',
-    ...geometryStyle,
-    ...GlobalKonvaElementProps,
-  };
 }
