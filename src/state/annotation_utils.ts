@@ -49,7 +49,7 @@ interface TransformPosition {
 
 export type AnnotationDimensions = AnnotationLineProps[];
 
-const DEFAULT_LINE_OVERFLOW = 30;
+export const DEFAULT_LINE_OVERFLOW = 0;
 
 export function computeYDomainLineAnnotationDimensions(
   dataValues: AnnotationDatum[],

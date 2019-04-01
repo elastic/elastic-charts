@@ -166,15 +166,21 @@ export interface AnnotationDatum {
 }
 
 export interface LineAnnotationSpec {
+  /** The id of the annotation */
   annotationId: AnnotationId;
+  /** Annotation type: line, rectangle, text */
   annotationType: AnnotationType;
   /** The ID of the axis group, generated via getGroupId method
    * @default __global__
    */
   groupId: GroupId; // defaults to __global__; needed for yDomain position
+  /** Annotation domain type: XDomain or YDomain */
   domainType: AnnotationDomainType;
+  /** Data values defined with value, details, and header */
   dataValues: AnnotationDatum[];
+  /** Custom line styles */
   lineStyle?: Partial<AnnotationLineStyle>;
+  /** Custom marker */
   marker?: JSX.Element;
 }
 

@@ -16,6 +16,7 @@ import {
   computeAnnotationTooltipState,
   computeLineAnnotationDimensions,
   computeLineAnnotationTooltipState,
+  DEFAULT_LINE_OVERFLOW,
   getAnnotationLineOffset,
   getAnnotationLineTooltipPosition,
   getAnnotationLineTooltipTransform,
@@ -103,7 +104,7 @@ describe('annotation utils', () => {
     );
     const expectedDimensions = new Map();
     expectedDimensions.set(annotationId, [{
-      position: [-30, 20, 10, 20],
+      position: [DEFAULT_LINE_OVERFLOW, 20, 10, 20],
       details: { detailsText: 'foo', headerText: '2' },
       tooltipLinePosition: [0, 20, 10, 20],
     }]);
@@ -135,7 +136,7 @@ describe('annotation utils', () => {
       Position.Left,
     );
     const expectedDimensions = [{
-      position: [-30, 20, 10, 20],
+      position: [DEFAULT_LINE_OVERFLOW, 20, 10, 20],
       details: { detailsText: 'foo', headerText: '2' },
       tooltipLinePosition: [0, 20, 10, 20],
     }];
@@ -167,7 +168,7 @@ describe('annotation utils', () => {
       Position.Left,
     );
     const expectedDimensions = [{
-      position: [20, 0, 20, 50],
+      position: [20, 0, 20, 20 + DEFAULT_LINE_OVERFLOW],
       details: { detailsText: 'foo', headerText: '2' },
       tooltipLinePosition: [20, 0, 20, 20],
     }];
@@ -222,7 +223,7 @@ describe('annotation utils', () => {
       Position.Left,
     );
     const expectedDimensions = [{
-      position: [12.5, -30, 12.5, 20],
+      position: [12.5, -DEFAULT_LINE_OVERFLOW, 12.5, 20],
       details: { detailsText: 'foo', headerText: 'a' },
       tooltipLinePosition: [12.5, 0, 12.5, 20],
     }];
@@ -252,7 +253,7 @@ describe('annotation utils', () => {
       Position.Left,
     );
     const expectedDimensions = [{
-      position: [20, -30, 20, 20],
+      position: [20, -DEFAULT_LINE_OVERFLOW, 20, 20],
       details: { detailsText: 'foo', headerText: '2' },
       tooltipLinePosition: [20, 0, 20, 20],
     }];
@@ -283,7 +284,7 @@ describe('annotation utils', () => {
       Position.Left,
     );
     const expectedDimensions = [{
-      position: [-30, 12.5, 10, 12.5],
+      position: [-DEFAULT_LINE_OVERFLOW, 12.5, 10, 12.5],
       details: { detailsText: 'foo', headerText: 'a' },
       tooltipLinePosition: [0, 12.5, 10, 12.5],
     }];
@@ -314,7 +315,7 @@ describe('annotation utils', () => {
       Position.Left,
     );
     const expectedDimensions = [{
-      position: [-30, 20, 10, 20],
+      position: [-DEFAULT_LINE_OVERFLOW, 20, 10, 20],
       details: { detailsText: 'foo', headerText: '2' },
       tooltipLinePosition: [0, 20, 10, 20],
     }];
@@ -346,7 +347,7 @@ describe('annotation utils', () => {
         Position.Left,
       );
       const expectedDimensions = [{
-        position: [-30, 0, 10, 0],
+        position: [-DEFAULT_LINE_OVERFLOW, 0, 10, 0],
         details: { detailsText: 'foo', headerText: '2' },
         tooltipLinePosition: [0, 0, 10, 0],
       }];
@@ -378,7 +379,7 @@ describe('annotation utils', () => {
         Position.Left,
       );
       const expectedDimensions = [{
-        position: [-10, -30, -10, 20],
+        position: [-10, -DEFAULT_LINE_OVERFLOW, -10, 20],
         details: { detailsText: 'foo', headerText: '2' },
         tooltipLinePosition: [-10, 0, -10, 20],
       }];
