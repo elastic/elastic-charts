@@ -29,6 +29,7 @@ export interface AnnotationDetails {
 export interface AnnotationMarker {
   icon: JSX.Element;
   transform: string;
+  color: string;
 }
 
 export type AnnotationLinePosition = [number, number, number, number];
@@ -66,6 +67,8 @@ export function computeLineAnnotationDimensions(
 
   // TODO : make line overflow configurable via prop
   const lineOverflow = DEFAULT_LINE_OVERFLOW;
+
+  const lineColor = getAnnotationLineColor(annotationSpec.lineStyle);
 
   switch (domainType) {
     case AnnotationDomainType.XDomain: {
@@ -110,7 +113,7 @@ export function computeLineAnnotationDimensions(
         }
 
         const markerPosition = getAnnotationLineTooltipTransform(chartRotation, linePosition, axisPosition);
-        const annotationMarker = marker ? { icon: marker, transform: markerPosition } : undefined;
+        const annotationMarker = marker ? { icon: marker, transform: markerPosition, color: lineColor } : undefined;
         return { position: linePosition, details, marker: annotationMarker, tooltipLinePosition };
       });
     }
@@ -142,8 +145,8 @@ export function computeLineAnnotationDimensions(
           [0, yDomainPosition, chartWidth, yDomainPosition]
           : [yDomainPosition, 0, yDomainPosition, chartHeight];
 
-        const markerPosition = getAnnotationLineTooltipTransform(chartRotation, linePosition, axisPosition);
-        const annotationMarker = marker ? { icon: marker, transform: markerPosition } : undefined;
+        const markerTransform = getAnnotationLineTooltipTransform(chartRotation, linePosition, axisPosition);
+        const annotationMarker = marker ? { icon: marker, transform: markerTransform, color: lineColor } : undefined;
         return { position: linePosition, details, marker: annotationMarker, tooltipLinePosition };
       });
     }
@@ -238,6 +241,13 @@ export function getAnnotationLineStrokeWidth(lineStyle?: Partial<AnnotationLineS
     return lineStyle.line.strokeWidth;
   }
   return DEFAULT_ANNOTATION_LINE_STYLE.line.strokeWidth;
+}
+
+export function getAnnotationLineColor(lineStyle?: Partial<AnnotationLineStyle>): string {
+  if (lineStyle && lineStyle.line && (lineStyle.line.stroke !== null)) {
+    return lineStyle.line.stroke;
+  }
+  return DEFAULT_ANNOTATION_LINE_STYLE.line.stroke;
 }
 
 export function getAnnotationLineOffset(lineStyle?: Partial<AnnotationLineStyle>): number {

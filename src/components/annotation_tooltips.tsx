@@ -15,7 +15,7 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
   renderTooltip() {
     const annotationTooltipState = this.props.chartStore!.annotationTooltipState.get();
     if (!annotationTooltipState || !annotationTooltipState.isVisible) {
-      return <div className="elasticChartsTooltip elasticChartsTooltip--hidden" />;
+      return <div className="elasticChartsAnnotation__tooltip elasticChartsAnnotation__tooltip--hidden" />;
     }
 
     const transform = annotationTooltipState.transform;
@@ -28,9 +28,9 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
     };
 
     return (
-      <div className="elasticChartsTooltip" style={{ ...style }}>
-        <p className="elasticChartsTooltip__header">{annotationTooltipState.header}</p>
-        <div className="elasticChartsTooltip__details">
+      <div className="elasticChartsAnnotation__tooltip" style={{ ...style }}>
+        <p className="elasticChartsAnnotation__header">{annotationTooltipState.header}</p>
+        <div className="elasticChartsAnnotation__details">
           {annotationTooltipState.details}
         </div>
       </div>
@@ -48,16 +48,17 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
           return;
         }
 
-        const { transform, icon } = line.marker;
+        const { transform, icon, color } = line.marker;
 
         const style = {
+          color,
           transform,
           top: chartDimensions.top,
           left: chartDimensions.left,
         };
 
         const markerElement = (
-          <div className="elasticChartsTooltip" style={{ ...style }} key={`annotation-${id}-${index}`}>
+          <div className="elasticChartsAnnotation" style={{ ...style }} key={`annotation-${id}-${index}`}>
             {icon}
           </div>
         );

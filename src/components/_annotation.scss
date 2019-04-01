@@ -1,0 +1,32 @@
+.elasticChartsAnnotation {
+  @include euiFontSizeXS;
+  pointer-events: none;
+  position: absolute;
+  z-index: $euiZLevel9;
+  max-width: $euiSizeXL * 10;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  transition: opacity $euiAnimSpeedNormal;
+  user-select: none;
+}
+
+.elasticChartsAnnotation--hidden, .elasticChartsAnnotation__tooltip--hidden {
+  opacity: 0;
+}
+
+.elasticChartsAnnotation__tooltip {
+  @include euiBottomShadow($color: $euiColorFullShade);
+  @include euiFontSizeXS;
+  pointer-events: none;
+  position: absolute;
+  z-index: $euiZLevel9;
+  background-color: rgba(tintOrShade($euiColorFullShade, 25%, 80%), 0.9);
+  color: $euiColorGhost;
+  border-radius: $euiBorderRadius;
+  max-width: $euiSizeXL * 10;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  transition: opacity $euiAnimSpeedNormal;
+  user-select: none;
+  padding: 3px;
+}
