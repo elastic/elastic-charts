@@ -396,7 +396,7 @@ export class ChartStore {
   annotationTooltipState = computed(() => {
     // only if we have a valid cursor position and the necessary scale
     if (this.cursorPosition.x < 0 || !this.xScale || !this.yScales) {
-      return;
+      return null;
     }
 
     return computeAnnotationTooltipState(
