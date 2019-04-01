@@ -75,5 +75,6 @@ describe('[canvas] Line Geometries', () => {
       perfectDrawEnabled: false,
       listening: false,
     });
+    expect(props.fill).toBeFalsy();
   });
 });
