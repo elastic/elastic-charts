@@ -28,5 +28,16 @@
   overflow-wrap: break-word;
   transition: opacity $euiAnimSpeedNormal;
   user-select: none;
-  padding: 3px;
+}
+
+.elasticChartsAnnotation__header {
+  margin: 0;
+  background: rgba(shade($euiColorGhost, 20%), 0.9);
+  color: $euiColorFullShade;
+  padding: 0 8px;
+}
+
+.elasticChartsAnnotation__details {
+  margin: 0;
+  padding: 0 8px;
 }

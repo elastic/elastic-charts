@@ -70,6 +70,7 @@ export function computeYDomainLineAnnotationDimensions(
     const { dataValue } = datum;
     const details = {
       detailsText: datum.details,
+      headerText: datum.header || dataValue,
     };
 
     const yDomainPosition = yScale.scale(dataValue);
@@ -124,6 +125,7 @@ export function computeXDomainLineAnnotationDimensions(
     const { dataValue } = datum;
     const details = {
       detailsText: datum.details,
+      headerText: datum.header || dataValue,
     };
 
     // TODO: make offset dependent on annotationSpec.alignment (left, center, right)
@@ -191,10 +193,6 @@ export function computeLineAnnotationDimensions(
   xScale: Scale,
   axisPosition: Position,
 ): AnnotationLineProps[] | null {
-  // const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
-  // const chartHeight = chartDimensions.height;
-  // const chartWidth = chartDimensions.width;
-
   const { domainType, dataValues, marker } = annotationSpec;
 
   // TODO : make line overflow configurable via prop

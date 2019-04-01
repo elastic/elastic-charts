@@ -27,6 +27,10 @@ function generateAnnotationData(values: any[]): AnnotationDatum[] {
   return values.map((value, index) => ({ dataValue: value, details: `detail-${index}` }));
 }
 
+function generateTimeAnnotationData(values: any[]): AnnotationDatum[] {
+  return values.map((value, index) => ({ dataValue: value, details: `detail-${index}`, header: dateFormatter(value) }));
+}
+
 storiesOf('Annotations', module)
   .add('basic xDomain', () => {
     const dataValues = [{
@@ -252,13 +256,7 @@ storiesOf('Annotations', module)
   })
   .add('time series', () => {
     const dataValues =
-      generateAnnotationData([1551438150000, 1551438180000, 1551438390000, 1551438450000, 1551438480000]);
-
-    const lineAnnotationProps = {
-      annotationId: getAnnotationId('anno_1'),
-      domainType: AnnotationDomainType.XDomain,
-      dataValues,
-    };
+      generateTimeAnnotationData([1551438150000, 1551438180000, 1551438390000, 1551438450000, 1551438480000]);
 
     const chartRotation = select('chartRotation', {
       '0 deg': 0,
@@ -270,7 +268,12 @@ storiesOf('Annotations', module)
     return (
       <Chart renderer="canvas" className={'story-chart'}>
         <Settings debug={boolean('debug', false)} rotation={chartRotation} />
-        <LineAnnotation {...lineAnnotationProps} />
+        <LineAnnotation
+          annotationId={getAnnotationId('anno_1')}
+          domainType={AnnotationDomainType.XDomain}
+          dataValues={dataValues}
+          marker={(<EuiIcon type="alert" />)}
+        />
         <Axis
           id={getAxisId('top')}
           position={Position.Top}

@@ -161,7 +161,8 @@ export enum AnnotationDomainType {
 
 export interface AnnotationDatum {
   dataValue: any;
-  details?: string; // could also be jsx to render
+  details?: string;
+  header?: string;
 }
 
 export interface LineAnnotationSpec {
