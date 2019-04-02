@@ -1,6 +1,6 @@
-// import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
+import { AnnotationType } from '../lib/series/specs';
 import { AnnotationId } from '../lib/utils/ids';
 import { AnnotationLineProps } from '../state/annotation_utils';
 import { ChartStore } from '../state/chart_state';
@@ -37,34 +37,53 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
     );
   }
 
+  renderAnnotationLineMarkers(annotationLines: AnnotationLineProps[], id: AnnotationId): JSX.Element[] {
+    const { chartDimensions } = this.props.chartStore!;
+
+    const markers: JSX.Element[] = [];
+
+    annotationLines.forEach((line: AnnotationLineProps, index: number) => {
+      if (!line.marker) {
+        return;
+      }
+
+      const { transform, icon, color } = line.marker;
+
+      const style = {
+        color,
+        transform,
+        top: chartDimensions.top,
+        left: chartDimensions.left,
+      };
+
+      const markerElement = (
+        <div className="elasticChartsAnnotation" style={{ ...style }} key={`annotation-${id}-${index}`}>
+          {icon}
+        </div>
+      );
+
+      markers.push(markerElement);
+    });
+
+    return markers;
+  }
+
   renderAnnotationMarkers(): JSX.Element[] {
-    const { chartDimensions, annotationDimensions } = this.props.chartStore!;
+    const { annotationDimensions, annotationSpecs } = this.props.chartStore!;
     const markers: JSX.Element[] = [];
 
     annotationDimensions.forEach((annotationLines: AnnotationLineProps[], id: AnnotationId) => {
-      // TODO: check for annotation type
-      annotationLines.forEach((line: AnnotationLineProps, index: number) => {
-        if (!line.marker) {
-          return;
-        }
+      const annotationSpec = annotationSpecs.get(id);
+      if (!annotationSpec) {
+        return;
+      }
 
-        const { transform, icon, color } = line.marker;
-
-        const style = {
-          color,
-          transform,
-          top: chartDimensions.top,
-          left: chartDimensions.left,
-        };
-
-        const markerElement = (
-          <div className="elasticChartsAnnotation" style={{ ...style }} key={`annotation-${id}-${index}`}>
-            {icon}
-          </div>
-        );
-
-        markers.push(markerElement);
-      });
+      switch (annotationSpec.annotationType) {
+        case AnnotationType.Line:
+          const lineMarkers = this.renderAnnotationLineMarkers(annotationLines, id);
+          markers.push(...lineMarkers);
+          break;
+      }
     });
 
     return markers;
