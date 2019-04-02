@@ -8,7 +8,7 @@ import {
   Position,
   Rotation,
 } from '../lib/series/specs';
-import { AnnotationLineStyle, DEFAULT_ANNOTATION_LINE_STYLE } from '../lib/themes/theme';
+import { AnnotationLineStyle } from '../lib/themes/theme';
 import { Dimensions } from '../lib/utils/dimensions';
 import { AnnotationId, AxisId, GroupId } from '../lib/utils/ids';
 import { Scale } from '../lib/utils/scales/scales';
@@ -198,7 +198,7 @@ export function computeLineAnnotationDimensions(
   // TODO : make line overflow configurable via prop
   const lineOverflow = DEFAULT_LINE_OVERFLOW;
 
-  const lineColor = getAnnotationLineColor(annotationSpec.lineStyle);
+  const lineColor = annotationSpec.style.line.stroke;
 
   switch (domainType) {
     case AnnotationDomainType.XDomain: {
@@ -319,25 +319,6 @@ export function isWithinLineBounds(
   return isCursorWithinXBounds && isCursorWithinYBounds;
 }
 
-// TODO: remove this and below function; we will merge on spec add
-export function getAnnotationLineStrokeWidth(lineStyle?: Partial<AnnotationLineStyle>): number {
-  if (lineStyle && lineStyle.line && (lineStyle.line.strokeWidth !== null)) {
-    return lineStyle.line.strokeWidth;
-  }
-  return DEFAULT_ANNOTATION_LINE_STYLE.line.strokeWidth;
-}
-
-export function getAnnotationLineColor(lineStyle?: Partial<AnnotationLineStyle>): string {
-  if (lineStyle && lineStyle.line && (lineStyle.line.stroke !== null)) {
-    return lineStyle.line.stroke;
-  }
-  return DEFAULT_ANNOTATION_LINE_STYLE.line.stroke;
-}
-
-export function getAnnotationLineOffset(lineStyle?: Partial<AnnotationLineStyle>): number {
-  return getAnnotationLineStrokeWidth(lineStyle) / 2;
-}
-
 export function isVerticalAnnotationLine(
   isXDomainAnnotation: boolean,
   isHorizontalChartRotation: boolean,
@@ -433,7 +414,7 @@ export function computeLineAnnotationTooltipState(
   annotationLines: AnnotationLineProps[],
   groupId: GroupId,
   domainType: AnnotationDomainType,
-  lineStyle: Partial<AnnotationLineStyle> | undefined,
+  style: AnnotationLineStyle,
   chartRotation: Rotation,
   axesSpecs: Map<AxisId, AxisSpec>,
 ): AnnotationTooltipState {
@@ -454,7 +435,7 @@ export function computeLineAnnotationTooltipState(
   const axisPosition = annotationAxis.position;
 
   annotationLines.forEach((line: AnnotationLineProps) => {
-    const lineOffset = getAnnotationLineOffset(lineStyle);
+    const lineOffset = style.line.strokeWidth / 2;
     const isWithinBounds = isWithinLineBounds(
       line.position,
       cursorPosition,
@@ -505,7 +486,7 @@ export function computeAnnotationTooltipState(
           annotationDimension,
           groupId,
           spec.domainType,
-          spec.lineStyle,
+          spec.style,
           chartRotation,
           axesSpecs,
         );

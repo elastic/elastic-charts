@@ -8,7 +8,7 @@ interface AnnotationProps {
   chartDimensions: Dimensions;
   debug: boolean;
   lines: AnnotationLineProps[];
-  annotationStyle: AnnotationLineStyle;
+  lineStyle: AnnotationLineStyle;
 }
 
 export class Annotation extends React.PureComponent<AnnotationProps> {
@@ -16,7 +16,7 @@ export class Annotation extends React.PureComponent<AnnotationProps> {
     return this.renderAnnotation();
   }
   private renderAnnotationLine = (lineConfig: AnnotationLineProps, i: number) => {
-    const { line } = this.props.annotationStyle;
+    const { line } = this.props.lineStyle;
     const { position } = lineConfig;
 
     const lineProps = {

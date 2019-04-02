@@ -179,7 +179,7 @@ export interface LineAnnotationSpec {
   /** Data values defined with value, details, and header */
   dataValues: AnnotationDatum[];
   /** Custom line styles */
-  lineStyle?: Partial<AnnotationLineStyle>;
+  style: AnnotationLineStyle;
   /** Custom marker */
   marker?: JSX.Element;
 }

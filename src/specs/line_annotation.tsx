@@ -1,6 +1,7 @@
 import { inject } from 'mobx-react';
 import { PureComponent } from 'react';
 import { AnnotationType, LineAnnotationSpec } from '../lib/series/specs';
+import { DEFAULT_ANNOTATION_LINE_STYLE } from '../lib/themes/theme';
 import { getGroupId } from '../lib/utils/ids';
 import { SpecProps } from './specs_parser';
 
@@ -10,6 +11,7 @@ export class LineAnnotationSpecComponent extends PureComponent<LineAnnotationPro
   static defaultProps: Partial<LineAnnotationProps> = {
     groupId: getGroupId('__global__'),
     annotationType: AnnotationType.Line,
+    style: DEFAULT_ANNOTATION_LINE_STYLE,
   };
   componentDidMount() {
     const { chartStore, children, ...config } = this.props;

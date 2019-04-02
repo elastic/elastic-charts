@@ -429,12 +429,28 @@ describe('Chart Store', () => {
     const annotationId = getAnnotationId('annotation');
     const groupId = getGroupId('group');
 
+    const customStyle = {
+      line: {
+        strokeWidth: 30,
+        stroke: '#f00000',
+        opacity: 0.32,
+      },
+      details: {
+        fontSize: 90,
+        fontFamily: 'custom-font',
+        fontStyle: 'custom-style',
+        fill: 'custom-color',
+        padding: 20,
+      },
+    };
+
     const lineAnnotation: AnnotationSpec = {
       annotationType: AnnotationType.Line,
       annotationId,
       domainType: AnnotationDomainType.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
+      style: customStyle,
     };
 
     store.addAnnotationSpec(lineAnnotation);

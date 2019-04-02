@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { AnnotationDomainType, AnnotationSpec, AnnotationType, Position, Rotation } from '../lib/series/specs';
+import { DEFAULT_ANNOTATION_LINE_STYLE } from '../lib/themes/theme';
 import { Dimensions } from '../lib/utils/dimensions';
 import { getAnnotationId, getGroupId, GroupId } from '../lib/utils/ids';
 import { createContinuousScale, Scale, ScaleType } from '../lib/utils/scales/scales';
@@ -37,6 +38,7 @@ describe('annotation marker', () => {
       domainType: AnnotationDomainType.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
+      style: DEFAULT_ANNOTATION_LINE_STYLE,
       marker: <div />,
     };
 
@@ -71,6 +73,7 @@ describe('annotation marker', () => {
       domainType: AnnotationDomainType.XDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
+      style: DEFAULT_ANNOTATION_LINE_STYLE,
       marker: <div />,
     };
 

@@ -6,6 +6,7 @@ import {
   Position,
   Rotation,
 } from '../lib/series/specs';
+import { DEFAULT_ANNOTATION_LINE_STYLE } from '../lib/themes/theme';
 import { Dimensions } from '../lib/utils/dimensions';
 import { AnnotationId, AxisId, getAnnotationId, getAxisId, getGroupId, GroupId } from '../lib/utils/ids';
 import { createContinuousScale, createOrdinalScale, Scale, ScaleType } from '../lib/utils/scales/scales';
@@ -18,7 +19,6 @@ import {
   computeLineAnnotationTooltipState,
   DEFAULT_LINE_OVERFLOW,
   getAnnotationAxis,
-  getAnnotationLineOffset,
   getAnnotationLineTooltipPosition,
   getAnnotationLineTooltipTransform,
   getAnnotationLineTooltipXOffset,
@@ -91,6 +91,7 @@ describe('annotation utils', () => {
       domainType: AnnotationDomainType.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
+      style: DEFAULT_ANNOTATION_LINE_STYLE,
     };
 
     annotations.set(annotationId, lineAnnotation);
@@ -127,6 +128,7 @@ describe('annotation utils', () => {
       domainType: AnnotationDomainType.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
+      style: DEFAULT_ANNOTATION_LINE_STYLE,
     };
 
     annotations.set(annotationId, lineAnnotation);
@@ -157,6 +159,7 @@ describe('annotation utils', () => {
       domainType: AnnotationDomainType.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
+      style: DEFAULT_ANNOTATION_LINE_STYLE,
     };
 
     const dimensions = computeLineAnnotationDimensions(
@@ -189,6 +192,7 @@ describe('annotation utils', () => {
       domainType: AnnotationDomainType.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
+      style: DEFAULT_ANNOTATION_LINE_STYLE,
     };
 
     const dimensions = computeLineAnnotationDimensions(
@@ -221,6 +225,7 @@ describe('annotation utils', () => {
       domainType: AnnotationDomainType.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
+      style: DEFAULT_ANNOTATION_LINE_STYLE,
     };
 
     const dimensions = computeLineAnnotationDimensions(
@@ -251,6 +256,7 @@ describe('annotation utils', () => {
       domainType: AnnotationDomainType.YDomain,
       dataValues: [],
       groupId,
+      style: DEFAULT_ANNOTATION_LINE_STYLE,
     };
 
     const dimensions = computeLineAnnotationDimensions(
@@ -276,6 +282,7 @@ describe('annotation utils', () => {
       domainType: AnnotationDomainType.XDomain,
       dataValues: [{ dataValue: 'a', details: 'foo' }],
       groupId,
+      style: DEFAULT_ANNOTATION_LINE_STYLE,
     };
 
     const dimensions = computeLineAnnotationDimensions(
@@ -306,6 +313,7 @@ describe('annotation utils', () => {
       domainType: AnnotationDomainType.XDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
+      style: DEFAULT_ANNOTATION_LINE_STYLE,
     };
 
     const dimensions = computeLineAnnotationDimensions(
@@ -336,6 +344,7 @@ describe('annotation utils', () => {
       domainType: AnnotationDomainType.XDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
+      style: DEFAULT_ANNOTATION_LINE_STYLE,
     };
 
     const dimensions = computeLineAnnotationDimensions(
@@ -367,6 +376,7 @@ describe('annotation utils', () => {
       domainType: AnnotationDomainType.XDomain,
       dataValues: [{ dataValue: 'a', details: 'foo' }],
       groupId,
+      style: DEFAULT_ANNOTATION_LINE_STYLE,
     };
 
     const dimensions = computeLineAnnotationDimensions(
@@ -398,6 +408,7 @@ describe('annotation utils', () => {
       domainType: AnnotationDomainType.XDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
+      style: DEFAULT_ANNOTATION_LINE_STYLE,
     };
 
     const dimensions = computeLineAnnotationDimensions(
@@ -430,6 +441,7 @@ describe('annotation utils', () => {
         domainType: AnnotationDomainType.XDomain,
         dataValues: [{ dataValue: 2, details: 'foo' }],
         groupId,
+        style: DEFAULT_ANNOTATION_LINE_STYLE,
       };
 
       const dimensions = computeLineAnnotationDimensions(
@@ -461,6 +473,7 @@ describe('annotation utils', () => {
       domainType: AnnotationDomainType.XDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
+      style: DEFAULT_ANNOTATION_LINE_STYLE,
     };
 
     const dimensions = computeLineAnnotationDimensions(
@@ -492,6 +505,7 @@ describe('annotation utils', () => {
         domainType: AnnotationDomainType.XDomain,
         dataValues: [{ dataValue: 2, details: 'foo' }],
         groupId,
+        style: DEFAULT_ANNOTATION_LINE_STYLE,
       };
 
       const dimensions = computeLineAnnotationDimensions(
@@ -510,23 +524,6 @@ describe('annotation utils', () => {
       expect(dimensions).toEqual(expectedDimensions);
     });
 
-  test('should get amount of line position offset based on lineStyle strokeWidth (default config)', () => {
-    const defaultOffset = getAnnotationLineOffset();
-    expect(defaultOffset).toBe(1.5);
-  });
-
-  test('should get amount of line position offset based on lineStyle strokeWidth (custom config)', () => {
-    const lineStyle = {
-      line: {
-        strokeWidth: 10,
-        stroke: '#000',
-        opacity: 1,
-      },
-    };
-
-    const customOffset = getAnnotationLineOffset(lineStyle);
-    expect(customOffset).toBe(5);
-  });
   test('should compute if a point is within an annotation line bounds (xDomain annotation)', () => {
     const linePosition1: AnnotationLinePosition = [10, 0, 10, 20];
     const cursorPosition1: Point = { x: 0, y: 0 };
@@ -745,7 +742,7 @@ describe('annotation utils', () => {
       details: {},
       tooltipLinePosition: [1, 2, 3, 4],
     }];
-    const lineStyle = {};
+    const lineStyle = DEFAULT_ANNOTATION_LINE_STYLE;
     const chartRotation: Rotation = 0;
     const localAxesSpecs = new Map();
 
@@ -815,6 +812,7 @@ describe('annotation utils', () => {
       domainType: AnnotationDomainType.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
+      style: DEFAULT_ANNOTATION_LINE_STYLE,
     };
 
     const cursorPosition: Point = { x: 1, y: 2 };

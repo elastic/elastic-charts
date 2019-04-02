@@ -1,7 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Layer, Rect, Stage } from 'react-konva';
-import { mergeWithDefaultAnnotationLine } from '../../lib/themes/theme';
 import { AnnotationId } from '../../lib/utils/ids';
 import { AnnotationDimensions } from '../../state/annotation_utils';
 import { ChartStore, Point } from '../../state/chart_state';
@@ -181,16 +180,13 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
         return;
       }
 
-      const annotationStyle = mergeWithDefaultAnnotationLine(spec.lineStyle);
-      // TODO: conditional logic if Line, Rect, or Text
-
       annotationComponents.push(
         <Annotation
           key={`annotation-${id}`}
           chartDimensions={chartDimensions}
           debug={debug}
           lines={annotation}
-          annotationStyle={annotationStyle}
+          lineStyle={spec.style}
         />,
       );
     });

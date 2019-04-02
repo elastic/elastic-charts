@@ -37,11 +37,18 @@ storiesOf('Annotations', module)
       details: 'an annotation',
     }];
 
-    const lineStyle = {
+    const style = {
       line: {
         strokeWidth: 3,
         stroke: '#f00',
         opacity: 1,
+      },
+      details: {
+        fontSize: 12,
+        fontFamily: 'Arial',
+        fontStyle: 'bold',
+        fill: 'gray',
+        padding: 0,
       },
     };
 
@@ -62,7 +69,7 @@ storiesOf('Annotations', module)
           annotationId={getAnnotationId('anno_1')}
           domainType={AnnotationDomainType.XDomain}
           dataValues={dataValues}
-          lineStyle={lineStyle}
+          style={style}
           marker={(<EuiIcon type="alert" />)}
         />
         <Axis
