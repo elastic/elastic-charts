@@ -261,9 +261,11 @@ export function computeAnnotationDimensions(
     switch (annotationSpec.annotationType) {
       case AnnotationType.Line:
         const { groupId, domainType } = annotationSpec;
-        const annotationAxis = getAnnotationAxis(axesSpecs, groupId, domainType);
+        const annotationAxisPosition = getAnnotationAxis(axesSpecs, groupId, domainType);
 
-        const axisPosition = annotationAxis || Position.Bottom;
+        if (!annotationAxisPosition) {
+          return;
+        }
 
         const dimensions = computeLineAnnotationDimensions(
           annotationSpec,
@@ -271,7 +273,7 @@ export function computeAnnotationDimensions(
           chartRotation,
           yScales,
           xScale,
-          axisPosition,
+          annotationAxisPosition,
         );
 
         if (dimensions) {
@@ -317,6 +319,7 @@ export function isWithinLineBounds(
   return isCursorWithinXBounds && isCursorWithinYBounds;
 }
 
+// TODO: remove this and below function; we will merge on spec add
 export function getAnnotationLineStrokeWidth(lineStyle?: Partial<AnnotationLineStyle>): number {
   if (lineStyle && lineStyle.line && (lineStyle.line.strokeWidth !== null)) {
     return lineStyle.line.strokeWidth;
