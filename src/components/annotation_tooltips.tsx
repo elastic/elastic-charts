@@ -38,10 +38,10 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
   }
 
   renderAnnotationMarkers(): JSX.Element[] {
+    const { chartDimensions, annotationDimensions } = this.props.chartStore!;
     const markers: JSX.Element[] = [];
-    const chartDimensions = this.props.chartStore!.chartDimensions;
 
-    this.props.chartStore!.annotationDimensions.forEach((annotationLines: AnnotationLineProps[], id: AnnotationId) => {
+    annotationDimensions.forEach((annotationLines: AnnotationLineProps[], id: AnnotationId) => {
       // TODO: check for annotation type
       annotationLines.forEach((line: AnnotationLineProps, index: number) => {
         if (!line.marker) {
@@ -72,10 +72,10 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
 
   render() {
     return (
-      <div>
+      <React.Fragment>
         {this.renderAnnotationMarkers()}
         {this.renderTooltip()}
-      </div>
+      </React.Fragment>
     );
   }
 }
