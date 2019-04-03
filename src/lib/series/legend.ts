@@ -22,11 +22,6 @@ export function computeLegend(
   seriesColor.forEach((series, key) => {
     const spec = specs.get(series.specId);
 
-    if (!spec) {
-      return;
-    }
-    const { hideInLegend } = spec;
-
     const color = seriesColorMap.get(key) || defaultColor;
     const hasSingleSeries = seriesColor.size === 1;
     const label = getSeriesColorLabel(series.colorValues, hasSingleSeries, spec);
@@ -34,9 +29,11 @@ export function computeLegend(
       ? findDataSeriesByColorValues(deselectedDataSeries, series) < 0
       : true;
 
-    if (!label) {
+    if (!label || !spec) {
       return;
     }
+
+    const { hideInLegend } = spec;
 
     legendItems.set(key, {
       key,
