@@ -65,7 +65,7 @@ export function computeYDomainLineAnnotationDimensions(
   lineColor: string,
   marker?: JSX.Element,
   markerDimensions?: { width: number; height: number; },
-) {
+): AnnotationLineProps[] {
   const chartHeight = chartDimensions.height;
   const chartWidth = chartDimensions.width;
   const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
@@ -124,7 +124,7 @@ export function computeXDomainLineAnnotationDimensions(
   lineColor: string,
   marker?: JSX.Element,
   markerDimensions?: { width: number; height: number; },
-) {
+): AnnotationLineProps[] {
   const chartHeight = chartDimensions.height;
   const chartWidth = chartDimensions.width;
   const markerOffsets = markerDimensions || { width: 0, height: 0 };
