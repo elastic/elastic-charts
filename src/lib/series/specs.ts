@@ -182,6 +182,14 @@ export interface LineAnnotationSpec {
   style: AnnotationLineStyle;
   /** Custom marker */
   marker?: JSX.Element;
+  /**
+   * Custom marker dimensions; will be computed internally
+   * Any user-supplied values will be overwritten
+   */
+  markerDimensions?: {
+    width: number;
+    height: number;
+  };
 }
 
 // TODO: RectangleAnnotationSpec & TextAnnotationSpec

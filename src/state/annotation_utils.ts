@@ -60,11 +60,12 @@ export function computeYDomainLineAnnotationDimensions(
   chartDimensions: Dimensions,
   lineColor: string,
   marker?: JSX.Element,
+  markerDimensions?: { width: number; height: number; },
 ) {
   const chartHeight = chartDimensions.height;
   const chartWidth = chartDimensions.width;
   const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
-  const markerDimensions = { width: 16, height: 18 }; // todo : get from spec
+  const markerOffsets = markerDimensions || { width: 0, height: 0 };
 
   return dataValues.map((datum: AnnotationDatum): AnnotationLineProps => {
     const { dataValue } = datum;
@@ -93,12 +94,12 @@ export function computeYDomainLineAnnotationDimensions(
 
     if (isHorizontalChartRotation) {
       if (axisPosition === Position.Left) {
-        markerPosition[0] -= markerDimensions.width;
+        markerPosition[0] -= markerOffsets.width;
       } else {
-        markerPosition[2] += markerDimensions.width;
+        markerPosition[2] += markerOffsets.width;
       }
     } else {
-      markerPosition[3] += markerDimensions.height;
+      markerPosition[3] += markerOffsets.height;
     }
 
     const markerTransform = getAnnotationLineTooltipTransform(chartRotation, markerPosition, axisPosition);
@@ -116,10 +117,11 @@ export function computeXDomainLineAnnotationDimensions(
   chartDimensions: Dimensions,
   lineColor: string,
   marker?: JSX.Element,
+  markerDimensions?: { width: number; height: number; },
 ) {
   const chartHeight = chartDimensions.height;
   const chartWidth = chartDimensions.width;
-  const markerDimensions = { width: 16, height: 18 }; // todo : get from spec
+  const markerOffsets = markerDimensions || { width: 0, height: 0 };
 
   return dataValues.map((datum: AnnotationDatum): AnnotationLineProps => {
     const { dataValue } = datum;
@@ -143,9 +145,9 @@ export function computeXDomainLineAnnotationDimensions(
         linePosition = [xDomainPosition, startY, xDomainPosition, endY];
         tooltipLinePosition = [xDomainPosition, 0, xDomainPosition, chartHeight];
 
-        const startMarkerY = (axisPosition === Position.Bottom) ? 0 : -lineOverflow - markerDimensions.height;
+        const startMarkerY = (axisPosition === Position.Bottom) ? 0 : -lineOverflow - markerOffsets.height;
         const endMarkerY = (axisPosition === Position.Bottom) ?
-          chartHeight + lineOverflow + markerDimensions.height : chartHeight;
+          chartHeight + lineOverflow + markerOffsets.height : chartHeight;
         markerPosition = [xDomainPosition, startMarkerY, xDomainPosition, endMarkerY];
         break;
       }
@@ -153,7 +155,7 @@ export function computeXDomainLineAnnotationDimensions(
         linePosition = [-lineOverflow, xDomainPosition, chartWidth, xDomainPosition];
         tooltipLinePosition = [0, xDomainPosition, chartWidth, xDomainPosition];
 
-        const markerStartX = linePosition[0] - markerDimensions.width;
+        const markerStartX = linePosition[0] - markerOffsets.width;
         markerPosition = [markerStartX, xDomainPosition, chartWidth, xDomainPosition];
         break;
       }
@@ -161,7 +163,7 @@ export function computeXDomainLineAnnotationDimensions(
         linePosition = [-lineOverflow, chartHeight - xDomainPosition, chartWidth, chartHeight - xDomainPosition];
         tooltipLinePosition = [0, chartHeight - xDomainPosition, chartWidth, chartHeight - xDomainPosition];
 
-        const markerStartX = linePosition[0] - markerDimensions.width;
+        const markerStartX = linePosition[0] - markerOffsets.width;
         markerPosition = [markerStartX, chartHeight - xDomainPosition, chartWidth, chartHeight - xDomainPosition];
         break;
       }
@@ -171,9 +173,9 @@ export function computeXDomainLineAnnotationDimensions(
         linePosition = [chartWidth - xDomainPosition, startY, chartWidth - xDomainPosition, endY];
         tooltipLinePosition = [chartWidth - xDomainPosition, 0, chartWidth - xDomainPosition, chartHeight];
 
-        const startMarkerY = (axisPosition === Position.Bottom) ? 0 : -lineOverflow - markerDimensions.height;
+        const startMarkerY = (axisPosition === Position.Bottom) ? 0 : -lineOverflow - markerOffsets.height;
         const endMarkerY = (axisPosition === Position.Bottom) ?
-          chartHeight + lineOverflow + markerDimensions.height : chartHeight;
+          chartHeight + lineOverflow + markerOffsets.height : chartHeight;
         markerPosition = [chartWidth - xDomainPosition, startMarkerY, chartWidth - xDomainPosition, endMarkerY];
         break;
       }
@@ -193,7 +195,7 @@ export function computeLineAnnotationDimensions(
   xScale: Scale,
   axisPosition: Position,
 ): AnnotationLineProps[] | null {
-  const { domainType, dataValues, marker } = annotationSpec;
+  const { domainType, dataValues, marker, markerDimensions } = annotationSpec;
 
   // TODO : make line overflow configurable via prop
   const lineOverflow = DEFAULT_LINE_OVERFLOW;
@@ -211,6 +213,7 @@ export function computeLineAnnotationDimensions(
         chartDimensions,
         lineColor,
         marker,
+        markerDimensions,
       );
     }
     case AnnotationDomainType.YDomain: {
@@ -229,6 +232,7 @@ export function computeLineAnnotationDimensions(
         chartDimensions,
         lineColor,
         marker,
+        markerDimensions,
       );
     }
   }

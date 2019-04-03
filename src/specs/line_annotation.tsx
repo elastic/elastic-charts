@@ -1,5 +1,5 @@
 import { inject } from 'mobx-react';
-import { PureComponent } from 'react';
+import React, { createRef, CSSProperties, PureComponent } from 'react';
 import { AnnotationType, LineAnnotationSpec } from '../lib/series/specs';
 import { DEFAULT_ANNOTATION_LINE_STYLE } from '../lib/themes/theme';
 import { getGroupId } from '../lib/utils/ids';
@@ -13,12 +13,29 @@ export class LineAnnotationSpecComponent extends PureComponent<LineAnnotationPro
     annotationType: AnnotationType.Line,
     style: DEFAULT_ANNOTATION_LINE_STYLE,
   };
+
+  private markerRef = createRef<HTMLDivElement>();
+
   componentDidMount() {
     const { chartStore, children, ...config } = this.props;
+    if (this.markerRef.current) {
+      const { offsetWidth, offsetHeight } = this.markerRef.current;
+      config.markerDimensions = {
+        width: offsetWidth,
+        height: offsetHeight,
+      };
+    }
     chartStore!.addAnnotationSpec({ ...config });
   }
   componentDidUpdate() {
     const { chartStore, children, ...config } = this.props;
+    if (this.markerRef.current) {
+      const { offsetWidth, offsetHeight } = this.markerRef.current;
+      config.markerDimensions = {
+        width: offsetWidth,
+        height: offsetHeight,
+      };
+    }
     chartStore!.addAnnotationSpec({ ...config });
   }
   componentWillUnmount() {
@@ -26,7 +43,20 @@ export class LineAnnotationSpecComponent extends PureComponent<LineAnnotationPro
     chartStore!.removeAnnotationSpec(annotationId);
   }
   render() {
-    return null;
+    if (!this.props.marker) {
+      return null;
+    }
+
+    // We need to get the width & height of the marker passed into the spec
+    // so we render the marker offscreen if one has been defined & update the config
+    // with the width & height.
+    const offscreenStyle: CSSProperties = {
+      position: 'absolute',
+      left: -9999,
+      opacity: 0,
+    };
+
+    return (<div ref={this.markerRef} style={{ ...offscreenStyle }}>{this.props.marker}</div>);
   }
 }
 

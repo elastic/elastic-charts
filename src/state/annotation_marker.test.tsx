@@ -56,7 +56,7 @@ describe('annotation marker', () => {
       tooltipLinePosition: [0, 20, 10, 20],
       marker: {
         icon: <div />,
-        transform: 'translate(calc(-16px - 0%),calc(20px - 50%))',
+        transform: 'translate(calc(0px - 0%),calc(20px - 50%))',
         color: '#000',
       },
     }];
