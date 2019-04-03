@@ -4,7 +4,7 @@ import {
   AnnotationDomainType,
   AnnotationDomainTypes,
   AnnotationSpec,
-  AnnotationType,
+  AnnotationTypes,
   AxisSpec,
   Position,
   Rotation,
@@ -273,7 +273,7 @@ export function computeAnnotationDimensions(
 
   annotations.forEach((annotationSpec: AnnotationSpec, annotationId: AnnotationId) => {
     switch (annotationSpec.annotationType) {
-      case AnnotationType.Line:
+      case AnnotationTypes.Line:
         const { groupId, domainType } = annotationSpec;
         const annotationAxisPosition = getAnnotationAxis(axesSpecs, groupId, domainType);
 
@@ -542,7 +542,7 @@ export function computeAnnotationTooltipState(
 
     const { annotationType } = spec;
     switch (annotationType) {
-      case AnnotationType.Line: {
+      case AnnotationTypes.Line: {
         const groupId = spec.groupId;
         const lineAnnotationTooltipState = computeLineAnnotationTooltipState(
           cursorPosition,

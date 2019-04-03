@@ -148,11 +148,13 @@ export enum Position {
   Right = 'right',
 }
 
-export enum AnnotationType {
-  Line = 'line',
-  Rectangle = 'rectangle',
-  Text = 'text',
-}
+export const AnnotationTypes = Object.freeze({
+  Line: 'line' as AnnotationType,
+  Rectangle: 'rectangle' as AnnotationType,
+  Text: 'text' as AnnotationType,
+});
+
+export type AnnotationType = 'line' | 'rectangle' | 'text';
 
 export const AnnotationDomainTypes = Object.freeze({
   XDomain: 'xDomain' as AnnotationDomainType,

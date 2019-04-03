@@ -3,7 +3,7 @@ import { DataSeriesColorsValues } from '../lib/series/series';
 import {
   AnnotationDomainTypes,
   AnnotationSpec,
-  AnnotationType,
+  AnnotationTypes,
   AxisSpec,
   BarSeriesSpec,
   Position,
@@ -445,7 +445,7 @@ describe('Chart Store', () => {
     };
 
     const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationType.Line,
+      annotationType: AnnotationTypes.Line,
       annotationId,
       domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],

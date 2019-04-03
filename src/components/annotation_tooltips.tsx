@@ -1,6 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { AnnotationType } from '../lib/series/specs';
+import { AnnotationTypes } from '../lib/series/specs';
 import { AnnotationId } from '../lib/utils/ids';
 import { AnnotationLineProps } from '../state/annotation_utils';
 import { ChartStore } from '../state/chart_state';
@@ -79,7 +79,7 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
       }
 
       switch (annotationSpec.annotationType) {
-        case AnnotationType.Line:
+        case AnnotationTypes.Line:
           const lineMarkers = this.renderAnnotationLineMarkers(annotationLines, id);
           markers.push(...lineMarkers);
           break;

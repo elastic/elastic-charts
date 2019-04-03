@@ -2,7 +2,7 @@ import {
   AnnotationDomainType,
   AnnotationDomainTypes,
   AnnotationSpec,
-  AnnotationType,
+  AnnotationTypes,
   AxisSpec,
   Position,
   Rotation,
@@ -87,7 +87,7 @@ describe('annotation utils', () => {
     const annotations: Map<AnnotationId, AnnotationSpec> = new Map();
     const annotationId = getAnnotationId('foo');
     const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationType.Line,
+      annotationType: AnnotationTypes.Line,
       annotationId,
       domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -124,7 +124,7 @@ describe('annotation utils', () => {
     const annotations: Map<AnnotationId, AnnotationSpec> = new Map();
     const annotationId = getAnnotationId('foo');
     const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationType.Line,
+      annotationType: AnnotationTypes.Line,
       annotationId,
       domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -155,7 +155,7 @@ describe('annotation utils', () => {
 
     const annotationId = getAnnotationId('foo-line');
     const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationType.Line,
+      annotationType: AnnotationTypes.Line,
       annotationId,
       domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -188,7 +188,7 @@ describe('annotation utils', () => {
 
     const annotationId = getAnnotationId('foo-line');
     const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationType.Line,
+      annotationType: AnnotationTypes.Line,
       annotationId,
       domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -221,7 +221,7 @@ describe('annotation utils', () => {
 
     const annotationId = getAnnotationId('foo-line');
     const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationType.Line,
+      annotationType: AnnotationTypes.Line,
       annotationId,
       domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -252,7 +252,7 @@ describe('annotation utils', () => {
 
     const annotationId = getAnnotationId('foo-line');
     const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationType.Line,
+      annotationType: AnnotationTypes.Line,
       annotationId,
       domainType: AnnotationDomainTypes.YDomain,
       dataValues: [],
@@ -278,7 +278,7 @@ describe('annotation utils', () => {
 
     const annotationId = getAnnotationId('foo-line');
     const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationType.Line,
+      annotationType: AnnotationTypes.Line,
       annotationId,
       domainType: AnnotationDomainTypes.XDomain,
       dataValues: [{ dataValue: 'a', details: 'foo' }],
@@ -309,7 +309,7 @@ describe('annotation utils', () => {
 
     const annotationId = getAnnotationId('foo-line');
     const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationType.Line,
+      annotationType: AnnotationTypes.Line,
       annotationId,
       domainType: AnnotationDomainTypes.XDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -340,7 +340,7 @@ describe('annotation utils', () => {
 
     const annotationId = getAnnotationId('foo-line');
     const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationType.Line,
+      annotationType: AnnotationTypes.Line,
       annotationId,
       domainType: AnnotationDomainTypes.XDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -372,7 +372,7 @@ describe('annotation utils', () => {
 
     const annotationId = getAnnotationId('foo-line');
     const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationType.Line,
+      annotationType: AnnotationTypes.Line,
       annotationId,
       domainType: AnnotationDomainTypes.XDomain,
       dataValues: [{ dataValue: 'a', details: 'foo' }],
@@ -404,7 +404,7 @@ describe('annotation utils', () => {
 
     const annotationId = getAnnotationId('foo-line');
     const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationType.Line,
+      annotationType: AnnotationTypes.Line,
       annotationId,
       domainType: AnnotationDomainTypes.XDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -437,7 +437,7 @@ describe('annotation utils', () => {
 
       const annotationId = getAnnotationId('foo-line');
       const lineAnnotation: AnnotationSpec = {
-        annotationType: AnnotationType.Line,
+        annotationType: AnnotationTypes.Line,
         annotationId,
         domainType: AnnotationDomainTypes.XDomain,
         dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -469,7 +469,7 @@ describe('annotation utils', () => {
 
     const annotationId = getAnnotationId('foo-line');
     const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationType.Line,
+      annotationType: AnnotationTypes.Line,
       annotationId,
       domainType: AnnotationDomainTypes.XDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -501,7 +501,7 @@ describe('annotation utils', () => {
 
       const annotationId = getAnnotationId('foo-line');
       const lineAnnotation: AnnotationSpec = {
-        annotationType: AnnotationType.Line,
+        annotationType: AnnotationTypes.Line,
         annotationId,
         domainType: AnnotationDomainTypes.XDomain,
         dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -816,7 +816,7 @@ describe('annotation utils', () => {
     const annotations: Map<AnnotationId, AnnotationSpec> = new Map();
     const annotationId = getAnnotationId('foo');
     const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationType.Line,
+      annotationType: AnnotationTypes.Line,
       annotationId,
       domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],

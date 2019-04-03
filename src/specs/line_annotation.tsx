@@ -1,6 +1,6 @@
 import { inject } from 'mobx-react';
 import React, { createRef, CSSProperties, PureComponent } from 'react';
-import { AnnotationType, LineAnnotationSpec } from '../lib/series/specs';
+import { AnnotationTypes, LineAnnotationSpec } from '../lib/series/specs';
 import { DEFAULT_ANNOTATION_LINE_STYLE } from '../lib/themes/theme';
 import { getGroupId } from '../lib/utils/ids';
 import { SpecProps } from './specs_parser';
@@ -10,7 +10,7 @@ type LineAnnotationProps = SpecProps & LineAnnotationSpec;
 export class LineAnnotationSpecComponent extends PureComponent<LineAnnotationProps> {
   static defaultProps: Partial<LineAnnotationProps> = {
     groupId: getGroupId('__global__'),
-    annotationType: AnnotationType.Line,
+    annotationType: AnnotationTypes.Line,
     style: DEFAULT_ANNOTATION_LINE_STYLE,
   };
 
