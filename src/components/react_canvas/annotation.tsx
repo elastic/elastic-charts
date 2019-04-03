@@ -32,7 +32,7 @@ export class Annotation extends React.PureComponent<AnnotationProps> {
 
     return (
       <Group x={chartDimensions.left} y={chartDimensions.top}>
-        <Group key="grid-lines">{lines.map(this.renderAnnotationLine)}</Group>
+        {lines.map(this.renderAnnotationLine)}
       </Group>
     );
   }
