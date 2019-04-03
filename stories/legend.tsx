@@ -168,6 +168,9 @@ storiesOf('Legend', module)
     );
   })
   .add('hide legend items by series', () => {
+    const hideBarSeriesInLegend = boolean('hide bar series in legend', false);
+    const hideLineSeriesInLegend = boolean('hide line series in legend', false);
+
     return (
       <Chart renderer="canvas" className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
@@ -192,6 +195,7 @@ storiesOf('Legend', module)
           yAccessors={['y']}
           data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
           yScaleToDataExtent={false}
+          hideInLegend={hideBarSeriesInLegend}
         />
         <LineSeries
           id={getSpecId('lines')}
@@ -203,6 +207,7 @@ storiesOf('Legend', module)
           splitSeriesAccessors={['g']}
           data={[{ x: 0, y: 3 }, { x: 1, y: 2 }, { x: 2, y: 4 }, { x: 3, y: 10 }]}
           yScaleToDataExtent={false}
+          hideInLegend={hideLineSeriesInLegend}
         />
       </Chart>
     );

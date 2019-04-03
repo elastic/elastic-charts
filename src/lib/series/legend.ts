@@ -9,6 +9,7 @@ export interface LegendItem {
   label: string;
   value: DataSeriesColorsValues;
   isSeriesVisible?: boolean;
+  isLegendItemVisible?: boolean;
 }
 export function computeLegend(
   seriesColor: Map<string, DataSeriesColorsValues>,
@@ -20,6 +21,11 @@ export function computeLegend(
   const legendItems: Map<string, LegendItem> = new Map();
   seriesColor.forEach((series, key) => {
     const spec = specs.get(series.specId);
+
+    if (!spec) {
+      return;
+    }
+    const { hideInLegend } = spec;
 
     const color = seriesColorMap.get(key) || defaultColor;
     const hasSingleSeries = seriesColor.size === 1;
@@ -38,6 +44,7 @@ export function computeLegend(
       label,
       value: series,
       isSeriesVisible,
+      isLegendItemVisible: !hideInLegend,
     });
   });
   return legendItems;
