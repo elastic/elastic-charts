@@ -246,42 +246,37 @@ export function computeLineAnnotationDimensions(
 
   const lineColor = annotationSpec.style.line.stroke;
 
-  switch (domainType) {
-    case AnnotationDomainTypes.XDomain: {
-      return computeXDomainLineAnnotationDimensions(
-        dataValues,
-        xScale,
-        chartRotation,
-        lineOverflow,
-        axisPosition,
-        chartDimensions,
-        lineColor,
-        marker,
-        markerDimensions,
-      );
-    }
-    case AnnotationDomainTypes.YDomain: {
-      const groupId = annotationSpec.groupId;
-      const yScale = yScales.get(groupId);
-      if (!yScale) {
-        return null;
-      }
-
-      return computeYDomainLineAnnotationDimensions(
-        dataValues,
-        yScale,
-        chartRotation,
-        lineOverflow,
-        axisPosition,
-        chartDimensions,
-        lineColor,
-        marker,
-        markerDimensions,
-      );
-    }
+  if (domainType === AnnotationDomainTypes.XDomain) {
+    return computeXDomainLineAnnotationDimensions(
+      dataValues,
+      xScale,
+      chartRotation,
+      lineOverflow,
+      axisPosition,
+      chartDimensions,
+      lineColor,
+      marker,
+      markerDimensions,
+    );
   }
 
-  return null;
+  const groupId = annotationSpec.groupId;
+  const yScale = yScales.get(groupId);
+  if (!yScale) {
+    return null;
+  }
+
+  return computeYDomainLineAnnotationDimensions(
+    dataValues,
+    yScale,
+    chartRotation,
+    lineOverflow,
+    axisPosition,
+    chartDimensions,
+    lineColor,
+    marker,
+    markerDimensions,
+  );
 }
 
 export function getAnnotationAxis(
