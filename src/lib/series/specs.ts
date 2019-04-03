@@ -42,7 +42,7 @@ export interface SeriesSpec {
   /** If the series should appear in the legend
    * @default false
    */
-  hideInLegend: boolean;
+  hideInLegend?: boolean;
 }
 
 export type CustomSeriesColorsMap = Map<DataSeriesColorsValues, string>;
