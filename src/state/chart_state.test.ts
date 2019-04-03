@@ -25,6 +25,7 @@ describe('Chart Store', () => {
     yAccessors: ['y'],
     xScaleType: ScaleType.Linear,
     yScaleType: ScaleType.Linear,
+    hideInLegend: false,
   };
 
   const firstLegendItem = {
