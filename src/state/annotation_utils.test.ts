@@ -1,5 +1,6 @@
 import {
   AnnotationDomainType,
+  AnnotationDomainTypes,
   AnnotationSpec,
   AnnotationType,
   AxisSpec,
@@ -88,7 +89,7 @@ describe('annotation utils', () => {
     const lineAnnotation: AnnotationSpec = {
       annotationType: AnnotationType.Line,
       annotationId,
-      domainType: AnnotationDomainType.YDomain,
+      domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
       style: DEFAULT_ANNOTATION_LINE_STYLE,
@@ -125,7 +126,7 @@ describe('annotation utils', () => {
     const lineAnnotation: AnnotationSpec = {
       annotationType: AnnotationType.Line,
       annotationId,
-      domainType: AnnotationDomainType.YDomain,
+      domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
       style: DEFAULT_ANNOTATION_LINE_STYLE,
@@ -156,7 +157,7 @@ describe('annotation utils', () => {
     const lineAnnotation: AnnotationSpec = {
       annotationType: AnnotationType.Line,
       annotationId,
-      domainType: AnnotationDomainType.YDomain,
+      domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
       style: DEFAULT_ANNOTATION_LINE_STYLE,
@@ -189,7 +190,7 @@ describe('annotation utils', () => {
     const lineAnnotation: AnnotationSpec = {
       annotationType: AnnotationType.Line,
       annotationId,
-      domainType: AnnotationDomainType.YDomain,
+      domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
       style: DEFAULT_ANNOTATION_LINE_STYLE,
@@ -222,7 +223,7 @@ describe('annotation utils', () => {
     const lineAnnotation: AnnotationSpec = {
       annotationType: AnnotationType.Line,
       annotationId,
-      domainType: AnnotationDomainType.YDomain,
+      domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
       style: DEFAULT_ANNOTATION_LINE_STYLE,
@@ -253,7 +254,7 @@ describe('annotation utils', () => {
     const lineAnnotation: AnnotationSpec = {
       annotationType: AnnotationType.Line,
       annotationId,
-      domainType: AnnotationDomainType.YDomain,
+      domainType: AnnotationDomainTypes.YDomain,
       dataValues: [],
       groupId,
       style: DEFAULT_ANNOTATION_LINE_STYLE,
@@ -279,7 +280,7 @@ describe('annotation utils', () => {
     const lineAnnotation: AnnotationSpec = {
       annotationType: AnnotationType.Line,
       annotationId,
-      domainType: AnnotationDomainType.XDomain,
+      domainType: AnnotationDomainTypes.XDomain,
       dataValues: [{ dataValue: 'a', details: 'foo' }],
       groupId,
       style: DEFAULT_ANNOTATION_LINE_STYLE,
@@ -310,7 +311,7 @@ describe('annotation utils', () => {
     const lineAnnotation: AnnotationSpec = {
       annotationType: AnnotationType.Line,
       annotationId,
-      domainType: AnnotationDomainType.XDomain,
+      domainType: AnnotationDomainTypes.XDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
       style: DEFAULT_ANNOTATION_LINE_STYLE,
@@ -341,7 +342,7 @@ describe('annotation utils', () => {
     const lineAnnotation: AnnotationSpec = {
       annotationType: AnnotationType.Line,
       annotationId,
-      domainType: AnnotationDomainType.XDomain,
+      domainType: AnnotationDomainTypes.XDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
       style: DEFAULT_ANNOTATION_LINE_STYLE,
@@ -373,7 +374,7 @@ describe('annotation utils', () => {
     const lineAnnotation: AnnotationSpec = {
       annotationType: AnnotationType.Line,
       annotationId,
-      domainType: AnnotationDomainType.XDomain,
+      domainType: AnnotationDomainTypes.XDomain,
       dataValues: [{ dataValue: 'a', details: 'foo' }],
       groupId,
       style: DEFAULT_ANNOTATION_LINE_STYLE,
@@ -405,7 +406,7 @@ describe('annotation utils', () => {
     const lineAnnotation: AnnotationSpec = {
       annotationType: AnnotationType.Line,
       annotationId,
-      domainType: AnnotationDomainType.XDomain,
+      domainType: AnnotationDomainTypes.XDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
       style: DEFAULT_ANNOTATION_LINE_STYLE,
@@ -438,7 +439,7 @@ describe('annotation utils', () => {
       const lineAnnotation: AnnotationSpec = {
         annotationType: AnnotationType.Line,
         annotationId,
-        domainType: AnnotationDomainType.XDomain,
+        domainType: AnnotationDomainTypes.XDomain,
         dataValues: [{ dataValue: 2, details: 'foo' }],
         groupId,
         style: DEFAULT_ANNOTATION_LINE_STYLE,
@@ -470,7 +471,7 @@ describe('annotation utils', () => {
     const lineAnnotation: AnnotationSpec = {
       annotationType: AnnotationType.Line,
       annotationId,
-      domainType: AnnotationDomainType.XDomain,
+      domainType: AnnotationDomainTypes.XDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
       style: DEFAULT_ANNOTATION_LINE_STYLE,
@@ -502,7 +503,7 @@ describe('annotation utils', () => {
       const lineAnnotation: AnnotationSpec = {
         annotationType: AnnotationType.Line,
         annotationId,
-        domainType: AnnotationDomainType.XDomain,
+        domainType: AnnotationDomainTypes.XDomain,
         dataValues: [{ dataValue: 2, details: 'foo' }],
         groupId,
         style: DEFAULT_ANNOTATION_LINE_STYLE,
@@ -532,7 +533,7 @@ describe('annotation utils', () => {
     const offset: number = 0;
     const horizontalChartRotation: Rotation = 0;
     const verticalChartRotation: Rotation = 90;
-    const domainType: AnnotationDomainType = AnnotationDomainType.XDomain;
+    const domainType: AnnotationDomainType = AnnotationDomainTypes.XDomain;
 
     const horizontalRotationOutsideBounds = isWithinLineBounds(
       Position.Bottom,
@@ -585,7 +586,7 @@ describe('annotation utils', () => {
     const offset: number = 0;
     const horizontalChartRotation: Rotation = 0;
     const verticalChartRotation: Rotation = 90;
-    const domainType: AnnotationDomainType = AnnotationDomainType.YDomain;
+    const domainType: AnnotationDomainType = AnnotationDomainTypes.YDomain;
 
     const horizontalRotationOutsideBounds = isWithinLineBounds(
       Position.Left,
@@ -759,7 +760,7 @@ describe('annotation utils', () => {
       cursorPosition,
       annotationLines,
       groupId,
-      AnnotationDomainType.XDomain,
+      AnnotationDomainTypes.XDomain,
       lineStyle,
       chartRotation,
       localAxesSpecs,
@@ -779,7 +780,7 @@ describe('annotation utils', () => {
       cursorPosition,
       annotationLines,
       groupId,
-      AnnotationDomainType.XDomain,
+      AnnotationDomainTypes.XDomain,
       lineStyle,
       chartRotation,
       localAxesSpecs,
@@ -798,7 +799,7 @@ describe('annotation utils', () => {
       cursorPosition,
       annotationLines,
       groupId,
-      AnnotationDomainType.YDomain,
+      AnnotationDomainTypes.YDomain,
       lineStyle,
       chartRotation,
       localAxesSpecs,
@@ -817,7 +818,7 @@ describe('annotation utils', () => {
     const lineAnnotation: AnnotationSpec = {
       annotationType: AnnotationType.Line,
       annotationId,
-      domainType: AnnotationDomainType.YDomain,
+      domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
       style: DEFAULT_ANNOTATION_LINE_STYLE,
@@ -873,7 +874,7 @@ describe('annotation utils', () => {
     const noAxis = getAnnotationAxis(
       localAxesSpecs,
       groupId,
-      AnnotationDomainType.XDomain,
+      AnnotationDomainTypes.XDomain,
     );
     expect(noAxis).toBe(null);
 
@@ -883,14 +884,14 @@ describe('annotation utils', () => {
     const xAnnotationAxisPosition = getAnnotationAxis(
       localAxesSpecs,
       groupId,
-      AnnotationDomainType.XDomain,
+      AnnotationDomainTypes.XDomain,
     );
     expect(xAnnotationAxisPosition).toEqual(Position.Bottom);
 
     const yAnnotationAxisPosition = getAnnotationAxis(
       localAxesSpecs,
       groupId,
-      AnnotationDomainType.YDomain,
+      AnnotationDomainTypes.YDomain,
     );
     expect(yAnnotationAxisPosition).toEqual(Position.Left);
   });

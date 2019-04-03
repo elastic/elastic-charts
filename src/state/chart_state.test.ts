@@ -1,7 +1,7 @@
 import { GeometryValue, IndexedGeometry } from '../lib/series/rendering';
 import { DataSeriesColorsValues } from '../lib/series/series';
 import {
-  AnnotationDomainType,
+  AnnotationDomainTypes,
   AnnotationSpec,
   AnnotationType,
   AxisSpec,
@@ -447,7 +447,7 @@ describe('Chart Store', () => {
     const lineAnnotation: AnnotationSpec = {
       annotationType: AnnotationType.Line,
       annotationId,
-      domainType: AnnotationDomainType.YDomain,
+      domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
       style: customStyle,

@@ -2,6 +2,7 @@ import { isHorizontal } from '../lib/axes/axis_utils';
 import {
   AnnotationDatum,
   AnnotationDomainType,
+  AnnotationDomainTypes,
   AnnotationSpec,
   AnnotationType,
   AxisSpec,
@@ -210,7 +211,7 @@ export function computeLineAnnotationDimensions(
   const lineColor = annotationSpec.style.line.stroke;
 
   switch (domainType) {
-    case AnnotationDomainType.XDomain: {
+    case AnnotationDomainTypes.XDomain: {
       return computeXDomainLineAnnotationDimensions(
         dataValues,
         xScale,
@@ -223,7 +224,7 @@ export function computeLineAnnotationDimensions(
         markerDimensions,
       );
     }
-    case AnnotationDomainType.YDomain: {
+    case AnnotationDomainTypes.YDomain: {
       const groupId = annotationSpec.groupId;
       const yScale = yScales.get(groupId);
       if (!yScale) {
@@ -243,6 +244,8 @@ export function computeLineAnnotationDimensions(
       );
     }
   }
+
+  return null;
 }
 
 export function getAnnotationAxis(
@@ -464,7 +467,7 @@ export function getAnnotationLineTooltipTransform(
 }
 
 export function isXDomain(domainType: AnnotationDomainType): boolean {
-  return domainType === AnnotationDomainType.XDomain;
+  return domainType === AnnotationDomainTypes.XDomain;
 }
 
 export function computeLineAnnotationTooltipState(

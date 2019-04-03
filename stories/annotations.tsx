@@ -14,7 +14,7 @@ import {
 } from '../src';
 import {
   AnnotationDatum,
-  AnnotationDomainType,
+  AnnotationDomainTypes,
   Position,
 } from '../src/lib/series/specs';
 import { KIBANA_METRICS } from '../src/lib/series/utils/test_dataset_kibana';
@@ -67,7 +67,7 @@ storiesOf('Annotations', module)
         <Settings debug={boolean('debug', false)} rotation={chartRotation} />
         <LineAnnotation
           annotationId={getAnnotationId('anno_1')}
-          domainType={AnnotationDomainType.XDomain}
+          domainType={AnnotationDomainTypes.XDomain}
           dataValues={dataValues}
           style={style}
           marker={(<EuiIcon type="alert" />)}
@@ -109,7 +109,7 @@ storiesOf('Annotations', module)
         <Settings debug={boolean('debug', false)} rotation={chartRotation} />
         <LineAnnotation
           annotationId={getAnnotationId('anno_1')}
-          domainType={AnnotationDomainType.XDomain}
+          domainType={AnnotationDomainTypes.XDomain}
           dataValues={dataValues}
           marker={(<EuiIcon type="alert" />)}
         />
@@ -159,7 +159,7 @@ storiesOf('Annotations', module)
         <Settings debug={boolean('debug', false)} rotation={chartRotation} />
         <LineAnnotation
           annotationId={getAnnotationId('anno_')}
-          domainType={AnnotationDomainType.YDomain}
+          domainType={AnnotationDomainTypes.YDomain}
           dataValues={dataValues}
           marker={(<EuiIcon type="alert" />)}
         />
@@ -201,7 +201,7 @@ storiesOf('Annotations', module)
         <Settings debug={boolean('debug', false)} rotation={chartRotation} />
         <LineAnnotation
           annotationId={getAnnotationId('anno_1')}
-          domainType={AnnotationDomainType.XDomain}
+          domainType={AnnotationDomainTypes.XDomain}
           dataValues={dataValues}
           marker={(<EuiIcon type="alert" />)}
         />

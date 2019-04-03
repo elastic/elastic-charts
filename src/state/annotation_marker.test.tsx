@@ -1,11 +1,23 @@
 import * as React from 'react';
 
-import { AnnotationDomainType, AnnotationSpec, AnnotationType, Position, Rotation } from '../lib/series/specs';
+import {
+  AnnotationDomainType,
+  AnnotationDomainTypes,
+  AnnotationSpec,
+  AnnotationType,
+  Position,
+  Rotation,
+} from '../lib/series/specs';
 import { DEFAULT_ANNOTATION_LINE_STYLE } from '../lib/themes/theme';
 import { Dimensions } from '../lib/utils/dimensions';
 import { getAnnotationId, getGroupId, GroupId } from '../lib/utils/ids';
 import { createContinuousScale, Scale, ScaleType } from '../lib/utils/scales/scales';
-import { computeLineAnnotationDimensions, DEFAULT_LINE_OVERFLOW, AnnotationLinePosition, isWithinLineBounds } from './annotation_utils';
+import {
+  AnnotationLinePosition,
+  computeLineAnnotationDimensions,
+  DEFAULT_LINE_OVERFLOW,
+  isWithinLineBounds,
+} from './annotation_utils';
 import { Point } from './chart_state';
 
 describe('annotation marker', () => {
@@ -36,7 +48,7 @@ describe('annotation marker', () => {
     const lineAnnotation: AnnotationSpec = {
       annotationType: AnnotationType.Line,
       annotationId,
-      domainType: AnnotationDomainType.YDomain,
+      domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
       style: DEFAULT_ANNOTATION_LINE_STYLE,
@@ -72,7 +84,7 @@ describe('annotation marker', () => {
     const lineAnnotation: AnnotationSpec = {
       annotationType: AnnotationType.Line,
       annotationId,
-      domainType: AnnotationDomainType.XDomain,
+      domainType: AnnotationDomainTypes.XDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
       style: DEFAULT_ANNOTATION_LINE_STYLE,
@@ -109,7 +121,7 @@ describe('annotation marker', () => {
     const offset: number = 0;
     const horizontalChartRotation: Rotation = 0;
     const verticalChartRotation: Rotation = 90;
-    const domainType: AnnotationDomainType = AnnotationDomainType.XDomain;
+    const domainType: AnnotationDomainType = AnnotationDomainTypes.XDomain;
 
     const marker = {
       icon: <div />,
@@ -175,7 +187,7 @@ describe('annotation marker', () => {
     const offset: number = 0;
     const horizontalChartRotation: Rotation = 0;
     const verticalChartRotation: Rotation = 90;
-    const domainType: AnnotationDomainType = AnnotationDomainType.YDomain;
+    const domainType: AnnotationDomainType = AnnotationDomainTypes.YDomain;
 
     const marker = {
       icon: <div />,

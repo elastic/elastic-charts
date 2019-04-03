@@ -154,11 +154,12 @@ export enum AnnotationType {
   Text = 'text',
 }
 
-export enum AnnotationDomainType {
-  XDomain = 'xDomain',
-  YDomain = 'yDomain',
-}
+export const AnnotationDomainTypes = Object.freeze({
+  XDomain: 'xDomain' as AnnotationDomainType,
+  YDomain: 'yDomain' as AnnotationDomainType,
+});
 
+export type AnnotationDomainType = 'xDomain' | 'yDomain';
 export interface AnnotationDatum {
   dataValue: any;
   details?: string;
@@ -174,7 +175,7 @@ export interface LineAnnotationSpec {
    * @default __global__
    */
   groupId: GroupId; // defaults to __global__; needed for yDomain position
-  /** Annotation domain type: XDomain or YDomain */
+  /** Annotation domain type: AnnotationDomainTypes.XDomain or AnnotationDomainTypes.YDomain */
   domainType: AnnotationDomainType;
   /** Data values defined with value, details, and header */
   dataValues: AnnotationDatum[];
