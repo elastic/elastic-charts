@@ -70,15 +70,26 @@ export function computeYDomainLineAnnotationDimensions(
   const chartWidth = chartDimensions.width;
   const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
   const markerOffsets = markerDimensions || { width: 0, height: 0 };
+  const lineProps: AnnotationLineProps[] = [];
 
-  return dataValues.map((datum: AnnotationDatum): AnnotationLineProps => {
+  dataValues.forEach((datum: AnnotationDatum) => {
     const { dataValue } = datum;
     const details = {
       detailsText: datum.details,
       headerText: datum.header || dataValue.toString(),
     };
 
-    const yDomainPosition = yScale.scale(dataValue);
+    const scaledYValue = yScale.scale(dataValue);
+    if (isNaN(scaledYValue)) {
+      return;
+    }
+
+    const [domainStart, domainEnd] = yScale.domain;
+    if (domainStart > dataValue || domainEnd < dataValue) {
+      return;
+    }
+
+    const yDomainPosition = scaledYValue;
 
     const leftHorizontalAxis: AnnotationLinePosition =
       [0 - lineOverflow, yDomainPosition, chartWidth, yDomainPosition];
@@ -110,8 +121,17 @@ export function computeYDomainLineAnnotationDimensions(
     const annotationMarker = marker ?
       { icon: marker, transform: markerTransform, color: lineColor, dimensions: markerOffsets }
       : undefined;
-    return { position: linePosition, details, marker: annotationMarker, tooltipLinePosition: baseLinePosition };
+    const lineProp = {
+      position: linePosition,
+      details,
+      marker: annotationMarker,
+      tooltipLinePosition: baseLinePosition,
+    };
+
+    lineProps.push(lineProp);
   });
+
+  return lineProps;
 }
 
 export function computeXDomainLineAnnotationDimensions(
@@ -128,8 +148,9 @@ export function computeXDomainLineAnnotationDimensions(
   const chartHeight = chartDimensions.height;
   const chartWidth = chartDimensions.width;
   const markerOffsets = markerDimensions || { width: 0, height: 0 };
+  const lineProps: AnnotationLineProps[] = [];
 
-  return dataValues.map((datum: AnnotationDatum): AnnotationLineProps => {
+  dataValues.forEach((datum: AnnotationDatum) => {
     const { dataValue } = datum;
     const details = {
       detailsText: datum.details,
@@ -138,7 +159,19 @@ export function computeXDomainLineAnnotationDimensions(
 
     // TODO: make offset dependent on annotationSpec.alignment (left, center, right)
     const offset = xScale.bandwidth / 2;
-    const xDomainPosition = xScale.scale(dataValue) + offset;
+    const scaledXValue = xScale.scale(dataValue);
+
+    if (isNaN(scaledXValue)) {
+      return;
+    }
+
+    const domainStart = xScale.domain[0];
+    const domainEnd = xScale.domain[xScale.domain.length - 1];
+    if (domainStart > dataValue || domainEnd < dataValue) {
+      return;
+    }
+
+    const xDomainPosition = scaledXValue + offset;
 
     let linePosition: AnnotationLinePosition = [0, 0, 0, 0];
     let tooltipLinePosition: AnnotationLinePosition = [0, 0, 0, 0];
@@ -191,8 +224,11 @@ export function computeXDomainLineAnnotationDimensions(
     const annotationMarker = marker ?
       { icon: marker, transform: markerTransform, color: lineColor, dimensions: markerOffsets }
       : undefined;
-    return { position: linePosition, details, marker: annotationMarker, tooltipLinePosition };
+    const lineProp = { position: linePosition, details, marker: annotationMarker, tooltipLinePosition };
+    lineProps.push(lineProp);
   });
+
+  return lineProps;
 }
 
 export function computeLineAnnotationDimensions(

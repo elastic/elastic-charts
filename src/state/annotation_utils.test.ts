@@ -525,6 +525,95 @@ describe('annotation utils', () => {
       expect(dimensions).toEqual(expectedDimensions);
     });
 
+  test('should not compute annotation line values for values outside of domain', () => {
+    const chartRotation: Rotation = 0;
+    const yScales: Map<GroupId, Scale> = new Map();
+    yScales.set(groupId, continuousScale);
+
+    const xScale: Scale = ordinalScale;
+
+    const annotationId = getAnnotationId('foo-line');
+    const invalidXLineAnnotation: AnnotationSpec = {
+      annotationType: AnnotationTypes.Line,
+      annotationId,
+      domainType: AnnotationDomainTypes.XDomain,
+      dataValues: [{ dataValue: 'e', details: 'foo' }],
+      groupId,
+      style: DEFAULT_ANNOTATION_LINE_STYLE,
+    };
+
+    const emptyXDimensions = computeLineAnnotationDimensions(
+      invalidXLineAnnotation,
+      chartDimensions,
+      chartRotation,
+      yScales,
+      xScale,
+      Position.Right,
+    );
+
+    expect(emptyXDimensions).toEqual([]);
+
+    const outOfBoundsXLineAnnotation: AnnotationSpec = {
+      annotationType: AnnotationTypes.Line,
+      annotationId,
+      domainType: AnnotationDomainTypes.XDomain,
+      dataValues: [{ dataValue: -999, details: 'foo' }],
+      groupId,
+      style: DEFAULT_ANNOTATION_LINE_STYLE,
+    };
+
+    const emptyOutOfBoundsXDimensions = computeLineAnnotationDimensions(
+      outOfBoundsXLineAnnotation,
+      chartDimensions,
+      chartRotation,
+      yScales,
+      continuousScale,
+      Position.Right,
+    );
+
+    expect(emptyOutOfBoundsXDimensions).toEqual([]);
+
+    const invalidYLineAnnotation: AnnotationSpec = {
+      annotationType: AnnotationTypes.Line,
+      annotationId,
+      domainType: AnnotationDomainTypes.YDomain,
+      dataValues: [{ dataValue: 'e', details: 'foo' }],
+      groupId,
+      style: DEFAULT_ANNOTATION_LINE_STYLE,
+    };
+
+    const emptyYDimensions = computeLineAnnotationDimensions(
+      invalidYLineAnnotation,
+      chartDimensions,
+      chartRotation,
+      yScales,
+      xScale,
+      Position.Right,
+    );
+
+    expect(emptyYDimensions).toEqual([]);
+
+    const outOfBoundsYLineAnnotation: AnnotationSpec = {
+      annotationType: AnnotationTypes.Line,
+      annotationId,
+      domainType: AnnotationDomainTypes.YDomain,
+      dataValues: [{ dataValue: -999, details: 'foo' }],
+      groupId,
+      style: DEFAULT_ANNOTATION_LINE_STYLE,
+    };
+
+    const emptyOutOfBoundsYDimensions = computeLineAnnotationDimensions(
+      outOfBoundsYLineAnnotation,
+      chartDimensions,
+      chartRotation,
+      yScales,
+      xScale,
+      Position.Right,
+    );
+
+    expect(emptyOutOfBoundsYDimensions).toEqual([]);
+  });
+
   test('should compute if a point is within an annotation line bounds (xDomain annotation)', () => {
     const linePosition1: AnnotationLinePosition = [10, 0, 10, 20];
     const cursorPosition1: Point = { x: 0, y: 0 };

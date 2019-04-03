@@ -32,10 +32,8 @@ function generateTimeAnnotationData(values: any[]): AnnotationDatum[] {
 
 storiesOf('Annotations', module)
   .add('basic xDomain continuous', () => {
-    const dataValues = [{
-      dataValue: 2.5,
-      details: 'an annotation',
-    }];
+    const data = array('data values', [2.5, 7.2]);
+    const dataValues = generateAnnotationData(data);
 
     const style = {
       line: {
@@ -141,7 +139,8 @@ storiesOf('Annotations', module)
     );
   })
   .add('basic yDomain', () => {
-    const dataValues = generateAnnotationData([3.5]);
+    const data = array('data values', [3.5, 7.2]);
+    const dataValues = generateAnnotationData(data);
 
     const chartRotation = select('chartRotation', {
       '0 deg': 0,
