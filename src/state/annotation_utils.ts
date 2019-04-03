@@ -12,7 +12,7 @@ import {
 import { AnnotationLineStyle } from '../lib/themes/theme';
 import { Dimensions } from '../lib/utils/dimensions';
 import { AnnotationId, AxisId, GroupId } from '../lib/utils/ids';
-import { Scale } from '../lib/utils/scales/scales';
+import { Scale, ScaleType } from '../lib/utils/scales/scales';
 import { Point } from './chart_state';
 import { getAxesSpecForSpecId, isHorizontalRotation } from './utils';
 
@@ -165,10 +165,12 @@ export function computeXDomainLineAnnotationDimensions(
       return;
     }
 
-    const domainStart = xScale.domain[0];
-    const domainEnd = xScale.domain[xScale.domain.length - 1];
-    if (domainStart > dataValue || domainEnd < dataValue) {
-      return;
+    if (xScale.type !== ScaleType.Ordinal) {
+      const [domainStart, domainEnd] = xScale.domain;
+
+      if (domainStart > dataValue || domainEnd < dataValue) {
+        return;
+      }
     }
 
     const xDomainPosition = scaledXValue + offset;
