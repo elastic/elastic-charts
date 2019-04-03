@@ -5,7 +5,8 @@ import { DEFAULT_ANNOTATION_LINE_STYLE } from '../lib/themes/theme';
 import { Dimensions } from '../lib/utils/dimensions';
 import { getAnnotationId, getGroupId, GroupId } from '../lib/utils/ids';
 import { createContinuousScale, Scale, ScaleType } from '../lib/utils/scales/scales';
-import { computeLineAnnotationDimensions, DEFAULT_LINE_OVERFLOW } from './annotation_utils';
+import { computeLineAnnotationDimensions, DEFAULT_LINE_OVERFLOW, AnnotationLinePosition, isWithinLineBounds } from './annotation_utils';
+import { Point } from './chart_state';
 
 describe('annotation marker', () => {
   const groupId = getGroupId('foo-group');
@@ -58,6 +59,7 @@ describe('annotation marker', () => {
         icon: <div />,
         transform: 'translate(calc(0px - 0%),calc(20px - 50%))',
         color: '#000',
+        dimensions: { width: 0, height: 0 }
       },
     }];
     expect(dimensions).toEqual(expectedDimensions);
@@ -93,8 +95,141 @@ describe('annotation marker', () => {
         icon: <div />,
         transform: 'translate(calc(20px - 0%),calc(20px - 50%))',
         color: '#000',
+        dimensions: { width: 0, height: 0 },
       },
     }];
     expect(dimensions).toEqual(expectedDimensions);
+  });
+
+  test('should compute if a point is within an annotation line bounds (xDomain annotation)', () => {
+    const linePosition1: AnnotationLinePosition = [10, 0, 10, 20];
+    const cursorPosition1: Point = { x: 0, y: 0 };
+    const cursorPosition2: Point = { x: 10, y: 0 };
+
+    const offset: number = 0;
+    const horizontalChartRotation: Rotation = 0;
+    const verticalChartRotation: Rotation = 90;
+    const domainType: AnnotationDomainType = AnnotationDomainType.XDomain;
+
+    const marker = {
+      icon: <div />,
+      transform: '',
+      color: 'custom-color',
+      dimensions: { width: 10, height: 10 },
+    };
+
+    const bottomHorizontalRotationOutsideBounds = isWithinLineBounds(
+      Position.Bottom,
+      linePosition1,
+      cursorPosition1,
+      offset,
+      horizontalChartRotation,
+      domainType,
+      marker,
+    );
+
+    expect(bottomHorizontalRotationOutsideBounds).toBe(false);
+
+    const bottomHorizontalRotationWithinBounds = isWithinLineBounds(
+      Position.Bottom,
+      linePosition1,
+      cursorPosition2,
+      offset,
+      horizontalChartRotation,
+      domainType,
+      marker,
+    );
+
+    expect(bottomHorizontalRotationWithinBounds).toBe(true);
+
+    const topHorizontalRotationOutsideBounds = isWithinLineBounds(
+      Position.Top,
+      linePosition1,
+      cursorPosition1,
+      offset,
+      horizontalChartRotation,
+      domainType,
+      marker,
+    );
+
+    expect(topHorizontalRotationOutsideBounds).toBe(false);
+
+    const verticalRotationOutsideBounds = isWithinLineBounds(
+      Position.Bottom,
+      linePosition1,
+      cursorPosition1,
+      offset,
+      verticalChartRotation,
+      domainType,
+      marker,
+    );
+
+    expect(verticalRotationOutsideBounds).toBe(true);
+  });
+
+  test('should compute if a point is within an annotation line bounds (yDomain annotation)', () => {
+    const linePosition1: AnnotationLinePosition = [10, 0, 10, 20];
+    const cursorPosition1: Point = { x: 0, y: 0 };
+    const cursorPosition2: Point = { x: 10, y: 0 };
+
+    const offset: number = 0;
+    const horizontalChartRotation: Rotation = 0;
+    const verticalChartRotation: Rotation = 90;
+    const domainType: AnnotationDomainType = AnnotationDomainType.YDomain;
+
+    const marker = {
+      icon: <div />,
+      transform: '',
+      color: 'custom-color',
+      dimensions: { width: 10, height: 10 },
+    };
+
+    const rightHorizontalRotationWithinBounds = isWithinLineBounds(
+      Position.Left,
+      linePosition1,
+      cursorPosition1,
+      offset,
+      horizontalChartRotation,
+      domainType,
+      marker,
+    );
+
+    expect(rightHorizontalRotationWithinBounds).toBe(true);
+
+    const leftHorizontalRotationWithinBounds = isWithinLineBounds(
+      Position.Left,
+      linePosition1,
+      cursorPosition2,
+      offset,
+      horizontalChartRotation,
+      domainType,
+      marker,
+    );
+
+    expect(leftHorizontalRotationWithinBounds).toBe(true);
+
+    const rightHorizontalRotationOutsideBounds = isWithinLineBounds(
+      Position.Right,
+      linePosition1,
+      cursorPosition1,
+      offset,
+      horizontalChartRotation,
+      domainType,
+      marker,
+    );
+
+    expect(rightHorizontalRotationOutsideBounds).toBe(false);
+
+    const verticalRotationOutsideBounds = isWithinLineBounds(
+      Position.Left,
+      linePosition1,
+      cursorPosition1,
+      offset,
+      verticalChartRotation,
+      domainType,
+      marker,
+    );
+
+    expect(verticalRotationOutsideBounds).toBe(false);
   });
 });

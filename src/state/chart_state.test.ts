@@ -693,10 +693,6 @@ describe('Chart Store', () => {
     store.yScales.set(GROUP_ID, scale);
 
     store.cursorPosition.x = 0;
-    const outsideTooltipState = {
-      isVisible: false,
-      transform: '',
-    };
-    expect(store.annotationTooltipState.get()).toEqual(outsideTooltipState);
+    expect(store.annotationTooltipState.get()).toBe(null);
   });
 });

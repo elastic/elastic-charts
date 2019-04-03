@@ -535,6 +535,7 @@ describe('annotation utils', () => {
     const domainType: AnnotationDomainType = AnnotationDomainType.XDomain;
 
     const horizontalRotationOutsideBounds = isWithinLineBounds(
+      Position.Bottom,
       linePosition1,
       cursorPosition1,
       offset,
@@ -545,6 +546,7 @@ describe('annotation utils', () => {
     expect(horizontalRotationOutsideBounds).toBe(false);
 
     const horizontalRotationWithinBounds = isWithinLineBounds(
+      Position.Bottom,
       linePosition1,
       cursorPosition2,
       offset,
@@ -554,6 +556,7 @@ describe('annotation utils', () => {
     expect(horizontalRotationWithinBounds).toBe(true);
 
     const verticalRotationOutsideBounds = isWithinLineBounds(
+      Position.Bottom,
       linePosition1,
       cursorPosition1,
       offset,
@@ -564,6 +567,7 @@ describe('annotation utils', () => {
     expect(verticalRotationOutsideBounds).toBe(false);
 
     const verticalRotationWithinBounds = isWithinLineBounds(
+      Position.Bottom,
       linePosition1,
       cursorPosition2,
       offset,
@@ -584,6 +588,7 @@ describe('annotation utils', () => {
     const domainType: AnnotationDomainType = AnnotationDomainType.YDomain;
 
     const horizontalRotationOutsideBounds = isWithinLineBounds(
+      Position.Left,
       linePosition1,
       cursorPosition1,
       offset,
@@ -594,6 +599,7 @@ describe('annotation utils', () => {
     expect(horizontalRotationOutsideBounds).toBe(false);
 
     const horizontalRotationWithinBounds = isWithinLineBounds(
+      Position.Left,
       linePosition1,
       cursorPosition2,
       offset,
@@ -603,6 +609,7 @@ describe('annotation utils', () => {
     expect(horizontalRotationWithinBounds).toBe(true);
 
     const verticalRotationOutsideBounds = isWithinLineBounds(
+      Position.Left,
       linePosition1,
       cursorPosition1,
       offset,
@@ -613,6 +620,7 @@ describe('annotation utils', () => {
     expect(verticalRotationOutsideBounds).toBe(false);
 
     const verticalRotationWithinBounds = isWithinLineBounds(
+      Position.Left,
       linePosition1,
       cursorPosition2,
       offset,
@@ -837,12 +845,7 @@ describe('annotation utils', () => {
       localAxesSpecs,
     );
 
-    const expectedMissingTooltipState = {
-      isVisible: false,
-      transform: '',
-    };
-
-    expect(missingTooltipState).toEqual(expectedMissingTooltipState);
+    expect(missingTooltipState).toBe(null);
 
     // add valid annotation axis
     annotations.set(annotationId, lineAnnotation);

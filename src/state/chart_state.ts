@@ -164,6 +164,11 @@ export class ChartStore {
   tooltipSnap = observable.box(DEFAULT_TOOLTIP_SNAP);
   tooltipPosition = observable.object<{ transform: string }>({ transform: '' });
 
+  /** cursorPosition is used by tooltip, so this is a way to expose the position for other uses */
+  rawCursorPosition = observable.object<{ x: number; y: number }>({ x: -1, y: -1 }, undefined, {
+    deep: false,
+  });
+
   /** position of the cursor relative to the chart */
   cursorPosition = observable.object<{ x: number; y: number }>({ x: -1, y: -1 }, undefined, {
     deep: false,
@@ -223,6 +228,9 @@ export class ChartStore {
    * x and y values are relative to the container.
    */
   setCursorPosition = action((x: number, y: number) => {
+    this.rawCursorPosition.x = x;
+    this.rawCursorPosition.y = y;
+
     if (!this.seriesDomainsAndData || this.tooltipType.get() === TooltipType.None) {
       return;
     }
@@ -394,13 +402,22 @@ export class ChartStore {
   });
 
   annotationTooltipState = computed(() => {
+    // get positions relative to chart
+    const xPos = this.rawCursorPosition.x - this.chartDimensions.left;
+    const yPos = this.rawCursorPosition.y - this.chartDimensions.top;
+
     // only if we have a valid cursor position and the necessary scale
-    if (this.cursorPosition.x < 0 || !this.xScale || !this.yScales) {
+    if (!this.xScale || !this.yScales) {
       return null;
     }
 
+    const cursorPosition = {
+      x: xPos,
+      y: yPos,
+    };
+
     return computeAnnotationTooltipState(
-      this.cursorPosition,
+      cursorPosition,
       this.annotationDimensions,
       this.annotationSpecs,
       this.chartRotation,

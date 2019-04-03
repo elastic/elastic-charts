@@ -29,12 +29,14 @@ export interface AnnotationDetails {
 export interface AnnotationMarker {
   icon: JSX.Element;
   transform: string;
+  dimensions: { width: number; height: number; };
   color: string;
 }
 
 export type AnnotationLinePosition = [number, number, number, number];
+
 export interface AnnotationLineProps {
-  position: AnnotationLinePosition; // Or AnnotationRectanglePosition or AnnotationTextPosition
+  position: AnnotationLinePosition;
   tooltipLinePosition: AnnotationLinePosition;
   details: AnnotationDetails;
   marker?: AnnotationMarker;
@@ -47,6 +49,7 @@ interface TransformPosition {
   yOffset: number;
 }
 
+// TODO: add AnnotationRectangleProps or AnnotationTextProps
 export type AnnotationDimensions = AnnotationLineProps[];
 
 export const DEFAULT_LINE_OVERFLOW = 0;
@@ -103,7 +106,9 @@ export function computeYDomainLineAnnotationDimensions(
     }
 
     const markerTransform = getAnnotationLineTooltipTransform(chartRotation, markerPosition, axisPosition);
-    const annotationMarker = marker ? { icon: marker, transform: markerTransform, color: lineColor } : undefined;
+    const annotationMarker = marker ?
+      { icon: marker, transform: markerTransform, color: lineColor, dimensions: markerOffsets }
+      : undefined;
     return { position: linePosition, details, marker: annotationMarker, tooltipLinePosition: baseLinePosition };
   });
 }
@@ -182,7 +187,9 @@ export function computeXDomainLineAnnotationDimensions(
     }
 
     const markerTransform = getAnnotationLineTooltipTransform(chartRotation, markerPosition, axisPosition);
-    const annotationMarker = marker ? { icon: marker, transform: markerTransform, color: lineColor } : undefined;
+    const annotationMarker = marker ?
+      { icon: marker, transform: markerTransform, color: lineColor, dimensions: markerOffsets }
+      : undefined;
     return { position: linePosition, details, marker: annotationMarker, tooltipLinePosition };
   });
 }
@@ -291,17 +298,20 @@ export function computeAnnotationDimensions(
 }
 
 export function isWithinLineBounds(
+  axisPosition: Position,
   linePosition: AnnotationLinePosition,
   cursorPosition: Point,
   offset: number,
   chartRotation: Rotation,
   domainType: AnnotationDomainType,
+  marker?: AnnotationMarker,
 ): boolean {
   const [startX, startY, endX, endY] = linePosition;
   const isXDomainAnnotation = isXDomain(domainType);
 
   let isCursorWithinXBounds = false;
   let isCursorWithinYBounds = false;
+
   const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
 
   if (isXDomainAnnotation) {
@@ -311,16 +321,60 @@ export function isWithinLineBounds(
     isCursorWithinYBounds = isHorizontalChartRotation ?
       cursorPosition.y >= startY && cursorPosition.y <= endY
       : cursorPosition.y >= startY - offset && cursorPosition.y <= endY + offset;
-    return isCursorWithinXBounds && isCursorWithinYBounds;
+  } else {
+    isCursorWithinXBounds = isHorizontalChartRotation ?
+      cursorPosition.x >= startX && cursorPosition.x <= endX
+      : cursorPosition.x >= startX - offset && cursorPosition.x <= endX + offset;
+    isCursorWithinYBounds = isHorizontalChartRotation ?
+      cursorPosition.y >= startY - offset && cursorPosition.y <= endY + offset
+      : cursorPosition.y >= startY && cursorPosition.y <= endY;
   }
 
-  isCursorWithinXBounds = isHorizontalChartRotation ?
-    cursorPosition.x >= startX && cursorPosition.x <= endX
-    : cursorPosition.x >= startX - offset && cursorPosition.x <= endX + offset;
-  isCursorWithinYBounds = isHorizontalChartRotation ?
-    cursorPosition.y >= startY - offset && cursorPosition.y <= endY + offset
-    : cursorPosition.y >= startY && cursorPosition.y <= endY;
-  return isCursorWithinXBounds && isCursorWithinYBounds;
+  // If it's within cursor bounds, return true (no need to check marker bounds)
+  if (isCursorWithinXBounds && isCursorWithinYBounds) {
+    return true;
+  }
+
+  if (!marker) {
+    return false;
+  }
+
+  // Check if cursor within marker bounds
+  let isCursorWithinMarkerXBounds = false;
+  let isCursorWithinMarkerYBounds = false;
+
+  const markerWidth = marker.dimensions.width;
+  const markerHeight = marker.dimensions.height;
+
+  if (isXDomainAnnotation) {
+    const bottomAxisYBounds =
+      cursorPosition.y <= endY + markerHeight && cursorPosition.y >= endY;
+
+    const topAxisYBounds =
+      cursorPosition.y >= startY - markerHeight && cursorPosition.y <= startY;
+
+    isCursorWithinMarkerXBounds = isHorizontalChartRotation ?
+      cursorPosition.x <= endX + offset + markerWidth / 2 && cursorPosition.x >= startX - offset - markerWidth / 2
+      : cursorPosition.x >= startX - markerWidth && cursorPosition.x <= startX;
+    isCursorWithinMarkerYBounds = isHorizontalChartRotation ?
+      (axisPosition === Position.Top ? topAxisYBounds : bottomAxisYBounds)
+      : cursorPosition.y >= startY - offset - markerHeight / 2 && cursorPosition.y <= endY + offset + markerHeight / 2;
+  } else {
+    const leftAxisXBounds =
+      cursorPosition.x >= startX - markerWidth && cursorPosition.x <= startX;
+
+    const rightAxisXBounds =
+      cursorPosition.x <= endX + markerWidth && cursorPosition.x >= endX;
+
+    isCursorWithinMarkerXBounds = isHorizontalChartRotation ?
+      (axisPosition === Position.Right ? rightAxisXBounds : leftAxisXBounds)
+      : cursorPosition.x <= endX + offset + markerWidth / 2 && cursorPosition.x >= startX - offset - markerWidth / 2;
+    isCursorWithinMarkerYBounds = isHorizontalChartRotation ?
+      cursorPosition.y >= startY - offset - markerHeight / 2 && cursorPosition.y <= endY + offset + markerHeight / 2
+      : cursorPosition.y <= endY + markerHeight && cursorPosition.y >= endY;
+  }
+
+  return isCursorWithinMarkerXBounds && isCursorWithinMarkerYBounds;
 }
 
 export function isVerticalAnnotationLine(
@@ -441,11 +495,13 @@ export function computeLineAnnotationTooltipState(
   annotationLines.forEach((line: AnnotationLineProps) => {
     const lineOffset = style.line.strokeWidth / 2;
     const isWithinBounds = isWithinLineBounds(
+      axisPosition,
       line.position,
       cursorPosition,
       lineOffset,
       chartRotation,
       domainType,
+      line.marker,
     );
 
     if (isWithinBounds) {
@@ -474,7 +530,7 @@ export function computeAnnotationTooltipState(
   annotationSpecs: Map<AnnotationId, AnnotationSpec>,
   chartRotation: Rotation,
   axesSpecs: Map<AxisId, AxisSpec>,
-): AnnotationTooltipState {
+): AnnotationTooltipState | null {
   for (const [annotationId, annotationDimension] of annotationDimensions) {
     const spec = annotationSpecs.get(annotationId);
     if (!spec) {
@@ -502,8 +558,5 @@ export function computeAnnotationTooltipState(
     }
   }
 
-  return {
-    isVisible: false,
-    transform: '',
-  };
+  return null;
 }
