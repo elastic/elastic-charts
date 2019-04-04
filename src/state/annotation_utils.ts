@@ -79,6 +79,11 @@ export function computeYDomainLineAnnotationDimensions(
       headerText: datum.header || dataValue.toString(),
     };
 
+    // d3.scale will return 0 for '', rendering the line incorrectly at 0
+    if (dataValue === '') {
+      return;
+    }
+
     const scaledYValue = yScale.scale(dataValue);
     if (isNaN(scaledYValue)) {
       return;
@@ -163,6 +168,7 @@ export function computeXDomainLineAnnotationDimensions(
 
     const scaledXValue = xScale.scale(dataValue);
 
+    // d3.scale will return 0 for '', rendering the line incorrectly at 0
     if (isNaN(scaledXValue) || (isContinuous && dataValue === '')) {
       return;
     }

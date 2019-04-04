@@ -632,6 +632,26 @@ describe('annotation utils', () => {
     );
 
     expect(emptyOutOfBoundsYDimensions).toEqual([]);
+
+    const invalidStringYLineAnnotation: AnnotationSpec = {
+      annotationType: AnnotationTypes.Line,
+      annotationId,
+      domainType: AnnotationDomainTypes.YDomain,
+      dataValues: [{ dataValue: '', details: 'foo' }],
+      groupId,
+      style: DEFAULT_ANNOTATION_LINE_STYLE,
+    };
+
+    const invalidStringYDimensions = computeLineAnnotationDimensions(
+      invalidStringYLineAnnotation,
+      chartDimensions,
+      chartRotation,
+      yScales,
+      continuousScale,
+      Position.Right,
+    );
+
+    expect(invalidStringYDimensions).toEqual([]);
   });
 
   test('should compute if a point is within an annotation line bounds (xDomain annotation)', () => {
