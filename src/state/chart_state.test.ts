@@ -43,6 +43,7 @@ describe('Chart Store', () => {
       specId: SPEC_ID,
       colorValues: [],
     },
+    lastValue: 'last',
   };
 
   const secondLegendItem = {
@@ -53,6 +54,7 @@ describe('Chart Store', () => {
       specId: SPEC_ID,
       colorValues: [],
     },
+    lastValue: 'last',
   };
 
   test('can add a single spec', () => {

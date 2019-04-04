@@ -47,6 +47,7 @@ export interface DataSeriesCounts {
 export interface DataSeriesColorsValues {
   specId: SpecId;
   colorValues: any[];
+  lastValue?: any;
 }
 
 /**
@@ -61,6 +62,7 @@ export function splitSeries(
   rawDataSeries: RawDataSeries[];
   colorsValues: Map<string, any[]>;
   xValues: Set<any>;
+  splitSeriesLastValues: Map<string, any>;
 } {
   const { xAccessor, yAccessors, splitSeriesAccessors = [] } = accessors;
   const colorAccessors = accessors.colorAccessors ? accessors.colorAccessors : splitSeriesAccessors;
@@ -68,6 +70,8 @@ export function splitSeries(
   const series = new Map<string, RawDataSeries>();
   const colorsValues = new Map<string, any[]>();
   const xValues = new Set<any>();
+  const splitSeriesLastValues = new Map<string, any>();
+
   data.forEach((datum) => {
     const seriesKey = getAccessorsValues(datum, splitSeriesAccessors);
     if (isMultipleY) {
@@ -76,6 +80,7 @@ export function splitSeries(
         const colorValuesKey = getColorValuesAsString(colorValues, specId);
         colorsValues.set(colorValuesKey, colorValues);
         const cleanedDatum = cleanDatum(datum, xAccessor, accessor);
+        splitSeriesLastValues.set(colorValuesKey, cleanedDatum.y);
         xValues.add(cleanedDatum.x);
         updateSeriesMap(series, [...seriesKey, accessor], cleanedDatum, specId, colorValuesKey);
       }, {});
@@ -84,14 +89,17 @@ export function splitSeries(
       const colorValuesKey = getColorValuesAsString(colorValues, specId);
       colorsValues.set(colorValuesKey, colorValues);
       const cleanedDatum = cleanDatum(datum, xAccessor, yAccessors[0]);
+      splitSeriesLastValues.set(colorValuesKey, cleanedDatum.y);
       xValues.add(cleanedDatum.x);
       updateSeriesMap(series, [...seriesKey], cleanedDatum, specId, colorValuesKey);
     }
   }, {});
+
   return {
     rawDataSeries: [...series.values()],
     colorsValues,
     xValues,
+    splitSeriesLastValues,
   };
 }
 
@@ -370,9 +378,12 @@ export function getSplittedSeries(
     splittedSeries.set(specId, currentRawDataSeries);
 
     dataSeries.colorsValues.forEach((colorValues, key) => {
+      const lastValue = dataSeries.splitSeriesLastValues.get(key);
+
       seriesColors.set(key, {
         specId,
         colorValues,
+        lastValue,
       });
     });
 

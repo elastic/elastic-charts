@@ -22,6 +22,7 @@ interface LegendElementProps {
   color: string | undefined;
   label: string | undefined;
   isSeriesVisible?: boolean;
+  lastValue: string;
 }
 
 interface LegendElementState {
@@ -52,7 +53,7 @@ class LegendElementComponent extends React.Component<LegendElementProps, LegendE
 
   render() {
     const { legendItemKey } = this.props;
-    const { color, label, isSeriesVisible } = this.props;
+    const { color, label, isSeriesVisible, lastValue } = this.props;
 
     const onTitleClick = this.onLegendTitleClick(legendItemKey);
 
@@ -110,6 +111,11 @@ class LegendElementComponent extends React.Component<LegendElementProps, LegendE
               </EuiFlexGroup>
             </EuiContextMenuPanel>
           </EuiPopover>
+        </EuiFlexItem>
+        <EuiFlexItem grow={false}>
+          <EuiText size="xs" className="eui-textTruncate elasticChartsLegendListItem__lastBucket">
+            {lastValue}
+          </EuiText>
         </EuiFlexItem>
       </EuiFlexGroup>
     );

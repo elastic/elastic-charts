@@ -104,14 +104,19 @@ $elasticChartsLegendMaxHeight: $euiSize * 4;
 }
 
 .elasticChartsLegendListItem__title {
-  width: $elasticChartsLegendMaxWidth - 4 * $euiSize;
-  max-width: $elasticChartsLegendMaxWidth - 4 * $euiSize;
+  width: $elasticChartsLegendMaxWidth - 5 * $euiSize;
+  max-width: $elasticChartsLegendMaxWidth - 5 * $euiSize;
 
   &.elasticChartsLegendListItem__title--selected {
     .elasticChartsLegendListItem__title {
       text-decoration: underline;
     }
   }
+}
+
+.elasticChartsLegendListItem__lastBucket {
+  font-weight: $euiFontWeightMedium;
+  text-align: right;
 }
 
 .elasticChartsLegend__toggle {

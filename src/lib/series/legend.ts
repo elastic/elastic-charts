@@ -10,6 +10,7 @@ export interface LegendItem {
   value: DataSeriesColorsValues;
   isSeriesVisible?: boolean;
   isLegendItemVisible?: boolean;
+  lastValue: any;
 }
 export function computeLegend(
   seriesColor: Map<string, DataSeriesColorsValues>,
@@ -33,6 +34,9 @@ export function computeLegend(
       return;
     }
 
+    // Use this to get axis spec w/ tick formatter
+    // const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, groupId);
+
     const { hideInLegend } = spec;
 
     legendItems.set(key, {
@@ -42,6 +46,7 @@ export function computeLegend(
       value: series,
       isSeriesVisible,
       isLegendItemVisible: !hideInLegend,
+      lastValue: series.lastValue,
     });
   });
   return legendItems;
