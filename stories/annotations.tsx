@@ -1,5 +1,5 @@
 import { EuiIcon } from '@elastic/eui';
-import { array, boolean, select } from '@storybook/addon-knobs';
+import { array, boolean, color, number, select } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import React from 'react';
 import {
@@ -222,6 +222,69 @@ storiesOf('Annotations', module)
           xAccessor={0}
           yAccessors={[1]}
           data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 20)}
+          yScaleToDataExtent={false}
+        />
+      </Chart>
+    );
+  })
+  .add('styling', () => {
+    const data = [2.5, 7.2];
+    const dataValues = generateAnnotationData(data);
+
+    const dashWidth = number('dash line width', 1);
+    const dashGapWidth = number('dash gap width', 0);
+
+    const style = {
+      line: {
+        strokeWidth: number('line stroke width', 3),
+        stroke: color('line & marker color', '#f00'),
+        dash: [dashWidth, dashGapWidth],
+        opacity: number('line opacity', 1, {
+          range: true,
+          min: 0,
+          max: 1,
+          step: 0.1,
+        }),
+      },
+    };
+
+    const chartRotation = 0;
+
+    const axisPosition = Position.Bottom;
+
+    const marker = select('marker icon (examples from EUI)', {
+      alert: 'alert',
+      asterisk: 'asterisk',
+      questionInCircle: 'questionInCircle',
+    }, 'alert');
+
+    return (
+      <Chart renderer="canvas" className={'story-chart'}>
+        <Settings debug={boolean('debug', false)} rotation={chartRotation} />
+        <LineAnnotation
+          annotationId={getAnnotationId('anno_1')}
+          domainType={AnnotationDomainTypes.XDomain}
+          dataValues={dataValues}
+          style={style}
+          marker={(<EuiIcon type={marker} />)}
+        />
+        <Axis
+          id={getAxisId('horizontal')}
+          position={axisPosition}
+          title={'x-domain axis'}
+        />
+        <Axis
+          id={getAxisId('vertical')}
+          title={'y-domain axis'}
+          position={Position.Left}
+        />
+        <BarSeries
+          id={getSpecId('bars')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 3, y: 6 }]}
           yScaleToDataExtent={false}
         />
       </Chart>
