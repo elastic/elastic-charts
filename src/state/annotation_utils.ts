@@ -159,13 +159,15 @@ export function computeXDomainLineAnnotationDimensions(
 
     // TODO: make offset dependent on annotationSpec.alignment (left, center, right)
     const offset = xScale.bandwidth / 2;
+    const isContinuous = xScale.type !== ScaleType.Ordinal;
+
     const scaledXValue = xScale.scale(dataValue);
 
-    if (isNaN(scaledXValue)) {
+    if (isNaN(scaledXValue) || (isContinuous && dataValue === '')) {
       return;
     }
 
-    if (xScale.type !== ScaleType.Ordinal) {
+    if (isContinuous) {
       const [domainStart, domainEnd] = xScale.domain;
 
       if (domainStart > dataValue || domainEnd < dataValue) {

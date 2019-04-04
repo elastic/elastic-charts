@@ -553,6 +553,26 @@ describe('annotation utils', () => {
 
     expect(emptyXDimensions).toEqual([]);
 
+    const invalidStringXLineAnnotation: AnnotationSpec = {
+      annotationType: AnnotationTypes.Line,
+      annotationId,
+      domainType: AnnotationDomainTypes.XDomain,
+      dataValues: [{ dataValue: '', details: 'foo' }],
+      groupId,
+      style: DEFAULT_ANNOTATION_LINE_STYLE,
+    };
+
+    const invalidStringXDimensions = computeLineAnnotationDimensions(
+      invalidStringXLineAnnotation,
+      chartDimensions,
+      chartRotation,
+      yScales,
+      continuousScale,
+      Position.Right,
+    );
+
+    expect(invalidStringXDimensions).toEqual([]);
+
     const outOfBoundsXLineAnnotation: AnnotationSpec = {
       annotationType: AnnotationTypes.Line,
       annotationId,
