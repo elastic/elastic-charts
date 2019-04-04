@@ -246,7 +246,9 @@ export function computeLineAnnotationDimensions(
   // TODO : make line overflow configurable via prop
   const lineOverflow = DEFAULT_LINE_OVERFLOW;
 
-  const lineColor = annotationSpec.style.line.stroke;
+  // this type is guaranteed as this has been merged with default
+  const lineStyle = annotationSpec.style as AnnotationLineStyle;
+  const lineColor = lineStyle.line.stroke;
 
   if (domainType === AnnotationDomainTypes.XDomain) {
     return computeXDomainLineAnnotationDimensions(
@@ -582,7 +584,7 @@ export function computeAnnotationTooltipState(
           annotationDimension,
           groupId,
           spec.domainType,
-          spec.style,
+          spec.style as AnnotationLineStyle, // this type is guaranteed as this has been merged with default
           chartRotation,
           axesSpecs,
         );

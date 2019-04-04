@@ -698,6 +698,8 @@ export class ChartStore {
 
   addAnnotationSpec(annotationSpec: AnnotationSpec) {
     const { style } = annotationSpec;
+
+    // TODO: will need to check for annotationType when we introduce other types
     const mergedLineStyle = mergeWithDefaultAnnotationLine(style);
     annotationSpec.style = mergedLineStyle;
     this.annotationSpecs.set(annotationSpec.annotationId, annotationSpec);
