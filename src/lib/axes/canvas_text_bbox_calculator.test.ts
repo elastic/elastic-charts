@@ -9,14 +9,56 @@ describe('CanvasTextBBoxCalculator', () => {
       height: 0,
     });
 
-    const expectedDims = {
-      width: 10.6,
-      height: 16,
-    };
-
-    expect(bbox).toEqual(expectedDims);
+    expect(bbox.width).toBeCloseTo(23.2, 1);
+    expect(bbox.height).toBe(16);
 
     canvasBboxCalculator.context = null;
     expect(canvasBboxCalculator.compute('foo')).toBe(none);
+  });
+  test('can compute near the same width for the same text independently of the scale factor', () => {
+    let canvasBboxCalculator = new CanvasTextBBoxCalculator(undefined, 5);
+
+    let bbox = canvasBboxCalculator.compute('foo').getOrElse({
+      width: 0,
+      height: 0,
+    });
+    expect(bbox.width).toBeCloseTo(23.2, 1);
+    expect(bbox.height).toBe(16);
+
+    canvasBboxCalculator = new CanvasTextBBoxCalculator(undefined, 10);
+
+    bbox = canvasBboxCalculator.compute('foo').getOrElse({
+      width: 0,
+      height: 0,
+    });
+    expect(bbox.width).toBeCloseTo(23.2, 1);
+    expect(bbox.height).toBe(16);
+
+    canvasBboxCalculator = new CanvasTextBBoxCalculator(undefined, 50);
+
+    bbox = canvasBboxCalculator.compute('foo').getOrElse({
+      width: 0,
+      height: 0,
+    });
+    expect(bbox.width).toBeCloseTo(23.2, 1);
+    expect(bbox.height).toBe(16);
+
+    canvasBboxCalculator = new CanvasTextBBoxCalculator(undefined, 100);
+
+    bbox = canvasBboxCalculator.compute('foo').getOrElse({
+      width: 0,
+      height: 0,
+    });
+    expect(bbox.width).toBeCloseTo(23.2, 1);
+    expect(bbox.height).toBe(16);
+
+    canvasBboxCalculator = new CanvasTextBBoxCalculator(undefined, 1000);
+
+    bbox = canvasBboxCalculator.compute('foo').getOrElse({
+      width: 0,
+      height: 0,
+    });
+    expect(bbox.width).toBeCloseTo(23.2, 1);
+    expect(bbox.height).toBe(16);
   });
 });
