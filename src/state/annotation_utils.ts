@@ -249,7 +249,11 @@ export function computeLineAnnotationDimensions(
   xScale: Scale,
   axisPosition: Position,
 ): AnnotationLineProps[] | null {
-  const { domainType, dataValues, marker, markerDimensions } = annotationSpec;
+  const { domainType, dataValues, marker, markerDimensions, hideLines } = annotationSpec;
+
+  if (hideLines) {
+    return null;
+  }
 
   // TODO : make line overflow configurable via prop
   const lineOverflow = DEFAULT_LINE_OVERFLOW;
