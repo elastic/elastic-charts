@@ -122,31 +122,6 @@ export class ScaleContinuous implements Scale {
           .minus({ minutes: offset })
           .toMillis();
       });
-      // const formatFunction = (d: number) => {
-      //   return DateTime.fromMillis(d, { zone: this.timeZone }).toISO();
-      // };
-      // const localFormatFunction = (d: number) => {
-      //   return DateTime.fromMillis(d).toISO();
-      // };
-      // const utcFormatFunction = (d: number) => {
-      //   return DateTime.fromMillis(d)
-      //     .toUTC()
-      //     .toISO();
-      // };
-      // console.log({
-      //   startDomainMillis: startDomain.toMillis(),
-      //   startDomain: startDomain.toISO(),
-      //   endDomainMillis: endDomain.toMillis(),
-      //   endDomain: endDomain.toISO(),
-      //   offset,
-      //   shiftedDomainMin,
-      //   shiftedDomainMax,
-      //   values: this.tickValues,
-      //   timezone: this.timeZone,
-      //   textValues: this.tickValues.map(formatFunction),
-      //   textLocal: this.tickValues.map(localFormatFunction),
-      //   textUTC: this.tickValues.map(utcFormatFunction),
-      // });
     } else {
       if (this.minInterval > 0) {
         const intervalCount = (this.domain[1] - this.domain[0]) / this.minInterval;
@@ -228,13 +203,6 @@ export function linearStepAfter(invertedValue: number, minInterval: number): num
 export function linearStep(minDomain: number, invertedValue: number, minInterval: number): number {
   const diff = (invertedValue - minDomain) / minInterval;
   const base = diff - Math.floor(diff) > 0.5 ? 1 : 0;
-  // console.log({
-  //   invertedValue,
-  //   diff,
-  //   base,
-  //   start: Math.floor(diff) * minInterval,
-  //   adding: minInterval * base,
-  // });
   return minDomain + Math.floor(diff) * minInterval + minInterval * base;
 }
 

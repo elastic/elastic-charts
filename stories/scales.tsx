@@ -4,9 +4,6 @@ import { DateTime } from 'luxon';
 import React from 'react';
 import { Axis, Chart, getAxisId, getSpecId, LineSeries, Position, ScaleType } from '../src';
 
-// const day1 = 1546300800000; // 2019-01-01T00:00:00.000Z
-// const day2 = day1 + 1000 * 60 * 61;
-// const day3 = day2 + 1000 * 60 * 61;
 const today = new Date().getTime();
 const UTC_DATE = DateTime.fromISO('2019-01-01T00:00:00.000Z').toMillis();
 const UTC_PLUS8_DATE = DateTime.fromISO('2019-01-01T00:00:00.000+08:00', {
