@@ -22,7 +22,7 @@ describe('CanvasTextBBoxCalculator', () => {
       width: 0,
       height: 0,
     });
-    expect(bbox.width).toBeCloseTo(23.2, 1);
+    expect(Math.abs(bbox.width - 23.2)).toBeLessThanOrEqual(1);
     expect(bbox.height).toBe(16);
 
     canvasBboxCalculator = new CanvasTextBBoxCalculator(undefined, 10);
@@ -31,7 +31,7 @@ describe('CanvasTextBBoxCalculator', () => {
       width: 0,
       height: 0,
     });
-    expect(bbox.width).toBeCloseTo(23.2, 1);
+    expect(Math.abs(bbox.width - 23.2)).toBeLessThanOrEqual(1);
     expect(bbox.height).toBe(16);
 
     canvasBboxCalculator = new CanvasTextBBoxCalculator(undefined, 50);
@@ -40,7 +40,7 @@ describe('CanvasTextBBoxCalculator', () => {
       width: 0,
       height: 0,
     });
-    expect(bbox.width).toBeCloseTo(23.2, 1);
+    expect(Math.abs(bbox.width - 23.2)).toBeLessThanOrEqual(1);
     expect(bbox.height).toBe(16);
 
     canvasBboxCalculator = new CanvasTextBBoxCalculator(undefined, 100);
@@ -49,7 +49,7 @@ describe('CanvasTextBBoxCalculator', () => {
       width: 0,
       height: 0,
     });
-    expect(bbox.width).toBeCloseTo(23.2, 1);
+    expect(Math.abs(bbox.width - 23.2)).toBeLessThanOrEqual(1);
     expect(bbox.height).toBe(16);
 
     canvasBboxCalculator = new CanvasTextBBoxCalculator(undefined, 1000);
@@ -58,7 +58,7 @@ describe('CanvasTextBBoxCalculator', () => {
       width: 0,
       height: 0,
     });
-    expect(bbox.width).toBeCloseTo(23.2, 1);
+    expect(Math.abs(bbox.width - 23.2)).toBeLessThanOrEqual(1);
     expect(bbox.height).toBe(16);
   });
 });
