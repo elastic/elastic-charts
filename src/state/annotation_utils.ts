@@ -579,7 +579,7 @@ export function computeAnnotationTooltipState(
 ): AnnotationTooltipState | null {
   for (const [annotationId, annotationDimension] of annotationDimensions) {
     const spec = annotationSpecs.get(annotationId);
-    if (!spec) {
+    if (!spec || spec.hideTooltips || spec.hideLines) {
       continue;
     }
 
