@@ -758,6 +758,7 @@ export class ChartStore {
       this.seriesColorMap,
       this.seriesSpecs,
       this.chartTheme.colors.defaultVizColor,
+      this.axesSpecs,
       this.deselectedDataSeries,
     );
     // tslint:disable-next-line:no-console

@@ -68,7 +68,7 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
             responsive={false}
           >
             {[...legendItems.values()].map((item) => {
-              const { color, label, isSeriesVisible, isLegendItemVisible, lastValue } = item;
+              const { isLegendItemVisible } = item;
 
               const legendItemProps = {
                 key: item.key,
@@ -81,7 +81,7 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
 
               return (
                 <EuiFlexItem {...legendItemProps}>
-                  {this.renderLegendElement({ color, label, isSeriesVisible, lastValue }, item.key)}
+                  {this.renderLegendElement(item, item.key)}
                 </EuiFlexItem>
               );
             })}
@@ -100,10 +100,11 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
   }
 
   private renderLegendElement = (
-    { color, label, isSeriesVisible, lastValue }: Partial<LegendItem>,
+    { color, label, isSeriesVisible, lastValue }: LegendItem,
     legendItemKey: string,
   ) => {
-    const props = { color, label, isSeriesVisible, legendItemKey, lastValue };
+
+    const props = { color, label, isSeriesVisible, legendItemKey, lastValue: lastValue.formatted };
 
     return <LegendElement {...props} />;
   }

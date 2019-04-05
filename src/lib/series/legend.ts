@@ -1,7 +1,8 @@
-import { findDataSeriesByColorValues } from '../../state/utils';
-import { SpecId } from '../utils/ids';
+import { findDataSeriesByColorValues, getAxesSpecForSpecId } from '../../state/utils';
+import { identity } from '../utils/commons';
+import { AxisId, SpecId } from '../utils/ids';
 import { DataSeriesColorsValues } from './series';
-import { BasicSeriesSpec } from './specs';
+import { AxisSpec, BasicSeriesSpec } from './specs';
 
 export interface LegendItem {
   key: string;
@@ -10,13 +11,17 @@ export interface LegendItem {
   value: DataSeriesColorsValues;
   isSeriesVisible?: boolean;
   isLegendItemVisible?: boolean;
-  lastValue: any;
+  lastValue: {
+    raw: any;
+    formatted: any;
+  };
 }
 export function computeLegend(
   seriesColor: Map<string, DataSeriesColorsValues>,
   seriesColorMap: Map<string, string>,
   specs: Map<SpecId, BasicSeriesSpec>,
   defaultColor: string,
+  axesSpecs: Map<AxisId, AxisSpec>,
   deselectedDataSeries?: DataSeriesColorsValues[] | null,
 ): Map<string, LegendItem> {
   const legendItems: Map<string, LegendItem> = new Map();
@@ -35,7 +40,8 @@ export function computeLegend(
     }
 
     // Use this to get axis spec w/ tick formatter
-    // const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, groupId);
+    const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
+    const formatter = yAxis ? yAxis.tickFormat : identity;
 
     const { hideInLegend } = spec;
 
@@ -46,7 +52,10 @@ export function computeLegend(
       value: series,
       isSeriesVisible,
       isLegendItemVisible: !hideInLegend,
-      lastValue: series.lastValue,
+      lastValue: {
+        raw: series.lastValue,
+        formatted: formatter(series.lastValue),
+      },
     });
   });
   return legendItems;
