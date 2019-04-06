@@ -5,6 +5,25 @@ import { IndexedGeometry } from './rendering';
 import { getColorValuesAsString } from './series';
 import { AxisSpec, BasicSeriesSpec, Datum, TickFormatter } from './specs';
 
+export function getSeriesTooltipValues(
+  tooltipValues: TooltipValue[],
+): Map<string, any> {
+  // map from seriesKey to tooltipValue
+  const seriesTooltipValues = new Map();
+
+  // First tooltipValue is the header
+  if (tooltipValues.length <= 1) {
+    return seriesTooltipValues;
+  }
+
+  tooltipValues.slice(1).forEach((tooltipValue: TooltipValue) => {
+    const { seriesKey, value } = tooltipValue;
+    seriesTooltipValues.set(seriesKey, value);
+  });
+
+  return seriesTooltipValues;
+}
+
 export function formatTooltip(
   searchIndexValue: IndexedGeometry,
   spec: BasicSeriesSpec,

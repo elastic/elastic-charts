@@ -10,7 +10,7 @@ import {
 import { CanvasTextBBoxCalculator } from '../lib/axes/canvas_text_bbox_calculator';
 import { XDomain } from '../lib/series/domains/x_domain';
 import { YDomain } from '../lib/series/domains/y_domain';
-import { computeLegend, getSeriesTooltipValues, LegendItem } from '../lib/series/legend';
+import { computeLegend, LegendItem } from '../lib/series/legend';
 import {
   AreaGeometry,
   BarGeometry,
@@ -39,7 +39,7 @@ import {
   Rendering,
   Rotation,
 } from '../lib/series/specs';
-import { formatTooltip, formatXTooltipValue } from '../lib/series/tooltip';
+import { formatTooltip, formatXTooltipValue, getSeriesTooltipValues } from '../lib/series/tooltip';
 import { LIGHT_THEME } from '../lib/themes/light_theme';
 import { mergeWithDefaultAnnotationLine, Theme } from '../lib/themes/theme';
 import { computeChartDimensions, Dimensions } from '../lib/utils/dimensions';

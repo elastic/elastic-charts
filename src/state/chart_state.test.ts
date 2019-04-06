@@ -44,7 +44,7 @@ describe('Chart Store', () => {
       specId: SPEC_ID,
       colorValues: [],
     },
-    lastValue: {
+    displayValue: {
       raw: 'last',
       formatted: 'formatted-last',
     },
@@ -58,7 +58,7 @@ describe('Chart Store', () => {
       specId: SPEC_ID,
       colorValues: [],
     },
-    lastValue: {
+    displayValue: {
       raw: 'last',
       formatted: 'formatted-last',
     },
@@ -568,6 +568,7 @@ describe('Chart Store', () => {
       color: 'a',
       isHighlighted: false,
       isXValue: false,
+      seriesKey: 'a',
     };
     store.cursorPosition.x = -1;
     store.cursorPosition.y = 1;
@@ -619,6 +620,7 @@ describe('Chart Store', () => {
       color: 'a',
       isHighlighted: false,
       isXValue: false,
+      seriesKey: 'a',
     };
     store.xScale = new ScaleContinuous([0, 100], [0, 100], ScaleType.Linear);
     store.cursorPosition.x = 1;
@@ -704,5 +706,36 @@ describe('Chart Store', () => {
 
     store.cursorPosition.x = 0;
     expect(store.annotationTooltipState.get()).toBe(null);
+  });
+  test('can get tooltipValues by seriesKeys', () => {
+    store.tooltipData.clear();
+
+    expect(store.legendItemTooltipValues.get()).toEqual(new Map());
+
+    const headerValue: TooltipValue = {
+      name: 'header',
+      value: 'foo',
+      color: 'a',
+      isHighlighted: false,
+      isXValue: true,
+      seriesKey: 'headerSeries',
+    };
+
+    store.tooltipData.replace([headerValue]);
+    expect(store.legendItemTooltipValues.get()).toEqual(new Map());
+
+    const tooltipValue: TooltipValue = {
+      name: 'a',
+      value: 123,
+      color: 'a',
+      isHighlighted: false,
+      isXValue: false,
+      seriesKey: 'seriesKey',
+    };
+    store.tooltipData.replace([headerValue, tooltipValue]);
+
+    const expectedTooltipValues = new Map();
+    expectedTooltipValues.set('seriesKey', 123);
+    expect(store.legendItemTooltipValues.get()).toEqual(expectedTooltipValues);
   });
 });

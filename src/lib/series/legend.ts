@@ -1,7 +1,6 @@
 import { findDataSeriesByColorValues, getAxesSpecForSpecId } from '../../state/utils';
 import { identity } from '../utils/commons';
 import { AxisId, SpecId } from '../utils/ids';
-import { TooltipValue } from '../utils/interactions';
 import { DataSeriesColorsValues } from './series';
 import { AxisSpec, BasicSeriesSpec } from './specs';
 
@@ -80,23 +79,4 @@ export function getSeriesColorLabel(
   }
 
   return label;
-}
-
-export function getSeriesTooltipValues(
-  tooltipValues: TooltipValue[],
-): Map<string, any> {
-  // map from seriesKey to tooltipValue
-  const seriesTooltipValues = new Map();
-
-  // First tooltipValue is the header
-  if (tooltipValues.length <= 1) {
-    return seriesTooltipValues;
-  }
-
-  tooltipValues.slice(1).forEach((tooltipValue: TooltipValue) => {
-    const { seriesKey, value } = tooltipValue;
-    seriesTooltipValues.set(seriesKey, value);
-  });
-
-  return seriesTooltipValues;
 }
