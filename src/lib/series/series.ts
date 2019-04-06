@@ -357,7 +357,7 @@ export function getSplittedSeries(
   xValues: Set<any>;
 } {
   const splittedSeries = new Map<SpecId, RawDataSeries[]>();
-  const seriesColors = new Map<string, DataSeriesColorsValues>();
+  let seriesColors = new Map<string, DataSeriesColorsValues>();
   const xValues: Set<any> = new Set();
   for (const [specId, spec] of seriesSpecs) {
     const dataSeries = splitSeries(spec.data, spec, specId);
@@ -377,36 +377,15 @@ export function getSplittedSeries(
 
     splittedSeries.set(specId, currentRawDataSeries);
 
-    const { splitSeriesLastValues } = dataSeries;
+    const { splitSeriesLastValues, colorsValues } = dataSeries;
 
-    // We sort the series keys by their last values and this order determines the
-    // insertion order of the seriesColors Map so that when it is iterated over,
-    // the items are in order of this sorting.
-    const isAsc = false; // TODO: get this from Setting spec legendSortOrder
-    const sortOp = isAsc ? 1 : -1;
+    const dataSeriesColorValues = getDataSeriesColorsValuesMap(
+      splitSeriesLastValues,
+      colorsValues,
+      specId,
+    );
 
-    [...splitSeriesLastValues.keys()].sort((keyA, keyB) => {
-      const lastValueA = splitSeriesLastValues.get(keyA);
-      const lastValueB = splitSeriesLastValues.get(keyB);
-
-      if (!lastValueA || !lastValueB) {
-        return -1;
-      }
-
-      return (lastValueA - lastValueB) * sortOp;
-    }).forEach((key) => {
-      const colorValues = dataSeries.colorsValues.get(key);
-
-      if (!colorValues) {
-        return;
-      }
-
-      seriesColors.set(key, {
-        specId,
-        colorValues,
-        lastValue: splitSeriesLastValues.get(key),
-      });
-    });
+    seriesColors = new Map([...seriesColors, ...dataSeriesColorValues]);
 
     for (const xValue of dataSeries.xValues) {
       xValues.add(xValue);
@@ -417,6 +396,41 @@ export function getSplittedSeries(
     seriesColors,
     xValues,
   };
+}
+
+export function getDataSeriesColorsValuesMap(
+  splitSeriesLastValues: Map<string, any>,
+  colorValuesMap: Map<string, any[]>,
+  specId: SpecId,
+  isDesc: boolean = true,
+): Map<string, DataSeriesColorsValues> {
+  const seriesColors = new Map<string, DataSeriesColorsValues>();
+
+  // We sort the series keys by their last values and this order determines the
+  // insertion order of the seriesColors Map so that when it is iterated over,
+  // the items are in order of this sorting.
+  const sortOp = isDesc ? -1 : 1;
+
+  [...splitSeriesLastValues.keys()].sort((keyA, keyB) => {
+    const lastValueA = splitSeriesLastValues.get(keyA);
+    const lastValueB = splitSeriesLastValues.get(keyB);
+
+    return (lastValueA - lastValueB) * sortOp;
+  }).forEach((key) => {
+    const colorValues = colorValuesMap.get(key);
+
+    if (!colorValues) {
+      return;
+    }
+
+    seriesColors.set(key, {
+      specId,
+      colorValues,
+      lastValue: splitSeriesLastValues.get(key),
+    });
+  });
+
+  return seriesColors;
 }
 
 export function getSeriesColorMap(
