@@ -377,13 +377,34 @@ export function getSplittedSeries(
 
     splittedSeries.set(specId, currentRawDataSeries);
 
-    dataSeries.colorsValues.forEach((colorValues, key) => {
-      const lastValue = dataSeries.splitSeriesLastValues.get(key);
+    const { splitSeriesLastValues } = dataSeries;
+
+    // We sort the series keys by their last values and this order determines the
+    // insertion order of the seriesColors Map so that when it is iterated over,
+    // the items are in order of this sorting.
+    const isAsc = false; // TODO: get this from Setting spec legendSortOrder
+    const sortOp = isAsc ? 1 : -1;
+
+    [...splitSeriesLastValues.keys()].sort((keyA, keyB) => {
+      const lastValueA = splitSeriesLastValues.get(keyA);
+      const lastValueB = splitSeriesLastValues.get(keyB);
+
+      if (!lastValueA || !lastValueB) {
+        return -1;
+      }
+
+      return (lastValueA - lastValueB) * sortOp;
+    }).forEach((key) => {
+      const colorValues = dataSeries.colorsValues.get(key);
+
+      if (!colorValues) {
+        return;
+      }
 
       seriesColors.set(key, {
         specId,
         colorValues,
-        lastValue,
+        lastValue: splitSeriesLastValues.get(key),
       });
     });
 

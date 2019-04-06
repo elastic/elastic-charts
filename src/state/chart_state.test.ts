@@ -1,3 +1,4 @@
+import { LegendItem } from '../lib/series/legend';
 import { GeometryValue, IndexedGeometry } from '../lib/series/rendering';
 import { DataSeriesColorsValues } from '../lib/series/series';
 import {
@@ -35,7 +36,7 @@ describe('Chart Store', () => {
     hideInLegend: false,
   };
 
-  const firstLegendItem = {
+  const firstLegendItem: LegendItem = {
     key: 'color1',
     color: 'foo',
     label: 'bar',
@@ -43,10 +44,13 @@ describe('Chart Store', () => {
       specId: SPEC_ID,
       colorValues: [],
     },
-    lastValue: 'last',
+    lastValue: {
+      raw: 'last',
+      formatted: 'formatted-last',
+    },
   };
 
-  const secondLegendItem = {
+  const secondLegendItem: LegendItem = {
     key: 'color2',
     color: 'baz',
     label: 'qux',
@@ -54,7 +58,10 @@ describe('Chart Store', () => {
       specId: SPEC_ID,
       colorValues: [],
     },
-    lastValue: 'last',
+    lastValue: {
+      raw: 'last',
+      formatted: 'formatted-last',
+    },
   };
 
   test('can add a single spec', () => {
