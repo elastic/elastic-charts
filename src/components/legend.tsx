@@ -100,11 +100,18 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
   }
 
   private renderLegendElement = (
-    { color, label, isSeriesVisible, lastValue }: LegendItem,
+    { color, label, isSeriesVisible, displayValue }: LegendItem,
     legendItemKey: string,
   ) => {
+    const tooltipValues = this.props.chartStore!.legendItemTooltipValues.get();
+    let tooltipValue;
 
-    const props = { color, label, isSeriesVisible, legendItemKey, lastValue: lastValue.formatted };
+    if (tooltipValues && tooltipValues.get(legendItemKey)) {
+      tooltipValue = tooltipValues.get(legendItemKey);
+    }
+
+    const display = tooltipValue != null ? tooltipValue : displayValue.formatted;
+    const props = { color, label, isSeriesVisible, legendItemKey, displayValue: display };
 
     return <LegendElement {...props} />;
   }

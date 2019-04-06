@@ -10,7 +10,7 @@ import {
 import { CanvasTextBBoxCalculator } from '../lib/axes/canvas_text_bbox_calculator';
 import { XDomain } from '../lib/series/domains/x_domain';
 import { YDomain } from '../lib/series/domains/y_domain';
-import { computeLegend, LegendItem } from '../lib/series/legend';
+import { computeLegend, getSeriesTooltipValues, LegendItem } from '../lib/series/legend';
 import {
   AreaGeometry,
   BarGeometry,
@@ -401,6 +401,11 @@ export class ChartStore {
     }
   });
 
+  legendItemTooltipValues = computed(() => {
+    // update legend items with value to display
+    return getSeriesTooltipValues(this.tooltipData);
+  });
+
   annotationTooltipState = computed(() => {
     // get positions relative to chart
     const xPos = this.rawCursorPosition.x - this.chartDimensions.left;
@@ -455,6 +460,7 @@ export class ChartStore {
     // clear highlight geoms
     this.highlightedGeometries.clear();
     this.tooltipData.clear();
+
     document.body.style.cursor = 'default';
   });
 
@@ -761,6 +767,7 @@ export class ChartStore {
       this.axesSpecs,
       this.deselectedDataSeries,
     );
+
     // tslint:disable-next-line:no-console
     // console.log({ legendItems: this.legendItems });
 

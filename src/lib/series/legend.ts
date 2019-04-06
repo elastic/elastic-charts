@@ -1,6 +1,7 @@
 import { findDataSeriesByColorValues, getAxesSpecForSpecId } from '../../state/utils';
 import { identity } from '../utils/commons';
 import { AxisId, SpecId } from '../utils/ids';
+import { TooltipValue } from '../utils/interactions';
 import { DataSeriesColorsValues } from './series';
 import { AxisSpec, BasicSeriesSpec } from './specs';
 
@@ -11,11 +12,12 @@ export interface LegendItem {
   value: DataSeriesColorsValues;
   isSeriesVisible?: boolean;
   isLegendItemVisible?: boolean;
-  lastValue: {
+  displayValue: {
     raw: any;
     formatted: any;
   };
 }
+
 export function computeLegend(
   seriesColor: Map<string, DataSeriesColorsValues>,
   seriesColorMap: Map<string, string>,
@@ -52,7 +54,7 @@ export function computeLegend(
       value: series,
       isSeriesVisible,
       isLegendItemVisible: !hideInLegend,
-      lastValue: {
+      displayValue: {
         raw: series.lastValue,
         formatted: formatter(series.lastValue),
       },
@@ -78,4 +80,23 @@ export function getSeriesColorLabel(
   }
 
   return label;
+}
+
+export function getSeriesTooltipValues(
+  tooltipValues: TooltipValue[],
+): Map<string, any> {
+  // map from seriesKey to tooltipValue
+  const seriesTooltipValues = new Map();
+
+  // First tooltipValue is the header
+  if (tooltipValues.length <= 1) {
+    return seriesTooltipValues;
+  }
+
+  tooltipValues.slice(1).forEach((tooltipValue: TooltipValue) => {
+    const { seriesKey, value } = tooltipValue;
+    seriesTooltipValues.set(seriesKey, value);
+  });
+
+  return seriesTooltipValues;
 }

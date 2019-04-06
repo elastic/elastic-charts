@@ -86,7 +86,7 @@ describe('Legends', () => {
         isSeriesVisible: true,
         isLegendItemVisible: true,
         key: 'colorSeries1a',
-        lastValue: {},
+        displayValue: {},
       },
     ];
     expect(Array.from(legend.values())).toEqual(expected);
@@ -103,7 +103,7 @@ describe('Legends', () => {
         isSeriesVisible: true,
         isLegendItemVisible: true,
         key: 'colorSeries1a',
-        lastValue: {},
+        displayValue: {},
       },
       {
         color: 'blue',
@@ -112,7 +112,7 @@ describe('Legends', () => {
         isSeriesVisible: true,
         isLegendItemVisible: true,
         key: 'colorSeries1b',
-        lastValue: {},
+        displayValue: {},
       },
     ];
     expect(Array.from(legend.values())).toEqual(expected);
@@ -129,7 +129,7 @@ describe('Legends', () => {
         isSeriesVisible: true,
         isLegendItemVisible: true,
         key: 'colorSeries1a',
-        lastValue: {},
+        displayValue: {},
       },
       {
         color: 'green',
@@ -138,7 +138,7 @@ describe('Legends', () => {
         isSeriesVisible: true,
         isLegendItemVisible: true,
         key: 'colorSeries2a',
-        lastValue: {},
+        displayValue: {},
       },
     ];
     expect(Array.from(legend.values())).toEqual(expected);
@@ -160,7 +160,7 @@ describe('Legends', () => {
         isSeriesVisible: true,
         isLegendItemVisible: true,
         key: 'colorSeries1a',
-        lastValue: {},
+        displayValue: {},
       },
     ];
     expect(Array.from(legend.values())).toEqual(expected);
