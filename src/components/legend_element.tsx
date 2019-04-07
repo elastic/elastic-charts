@@ -113,7 +113,11 @@ class LegendElementComponent extends React.Component<LegendElementProps, LegendE
           </EuiPopover>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiText size="xs" className="eui-textTruncate elasticChartsLegendListItem__lastBucket">
+          <EuiText
+            size="xs"
+            className="eui-textTruncate elasticChartsLegendListItem__displayValue"
+            title={displayValue}
+          >
             {displayValue}
           </EuiText>
         </EuiFlexItem>
