@@ -6,6 +6,8 @@ import { getSnapPosition } from './crosshair_utils';
 import { computeSeriesDomains } from './utils';
 
 describe('Crosshair utils ordinal scales', () => {
+  const isSortDesc = true;
+
   const barSeries1SpecId = getSpecId('barSeries1');
   const barSeries2SpecId = getSpecId('barSeries2');
   const lineSeries1SpecId = getSpecId('lineSeries1');
@@ -58,28 +60,28 @@ describe('Crosshair utils ordinal scales', () => {
 
   const barSeriesMap = new Map();
   barSeriesMap.set(barSeries1SpecId, barSeries1);
-  const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
+  const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map(), isSortDesc);
 
   const multiBarSeriesMap = new Map();
   multiBarSeriesMap.set(barSeries1SpecId, barSeries1);
   multiBarSeriesMap.set(barSeries2SpecId, barSeries2);
-  const multiBarSeriesDomains = computeSeriesDomains(multiBarSeriesMap, new Map());
+  const multiBarSeriesDomains = computeSeriesDomains(multiBarSeriesMap, new Map(), isSortDesc);
 
   const lineSeriesMap = new Map();
   lineSeriesMap.set(lineSeries1SpecId, lineSeries1);
-  const lineSeriesDomains = computeSeriesDomains(lineSeriesMap, new Map());
+  const lineSeriesDomains = computeSeriesDomains(lineSeriesMap, new Map(), isSortDesc);
 
   const multiLineSeriesMap = new Map();
   multiLineSeriesMap.set(lineSeries1SpecId, lineSeries1);
   multiLineSeriesMap.set(lineSeries2SpecId, lineSeries2);
-  const multiLineSeriesDomains = computeSeriesDomains(multiLineSeriesMap, new Map());
+  const multiLineSeriesDomains = computeSeriesDomains(multiLineSeriesMap, new Map(), isSortDesc);
 
   const mixedLinesBarsMap = new Map();
   mixedLinesBarsMap.set(lineSeries1SpecId, lineSeries1);
   mixedLinesBarsMap.set(lineSeries2SpecId, lineSeries2);
   mixedLinesBarsMap.set(barSeries1SpecId, barSeries1);
   mixedLinesBarsMap.set(barSeries2SpecId, barSeries2);
-  const mixedLinesBarsSeriesDomains = computeSeriesDomains(mixedLinesBarsMap, new Map());
+  const mixedLinesBarsSeriesDomains = computeSeriesDomains(mixedLinesBarsMap, new Map(), isSortDesc);
 
   const barSeriesScale = computeXScale(barSeriesDomains.xDomain, barSeriesMap.size, 0, 120);
   const multiBarSeriesScale = computeXScale(

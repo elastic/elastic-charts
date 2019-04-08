@@ -9,6 +9,8 @@ const SPEC_ID = getSpecId('spec_1');
 const GROUP_ID = getGroupId('group_1');
 
 describe('Rendering points - line', () => {
+  const isSortDesc = true;
+
   describe('Single series line chart - ordinal', () => {
     const pointSeriesSpec: LineSeriesSpec = {
       id: SPEC_ID,
@@ -23,7 +25,7 @@ describe('Rendering points - line', () => {
     };
     const pointSeriesMap = new Map();
     pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
-    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
+    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map(), isSortDesc);
     const xScale = computeXScale(pointSeriesDomains.xDomain, pointSeriesMap.size, 0, 100);
     const yScales = computeYScales(pointSeriesDomains.yDomain, 100, 0);
     let renderedLine: {
@@ -116,7 +118,7 @@ describe('Rendering points - line', () => {
     const pointSeriesMap = new Map();
     pointSeriesMap.set(spec1Id, pointSeriesSpec1);
     pointSeriesMap.set(spec2Id, pointSeriesSpec2);
-    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
+    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map(), isSortDesc);
     const xScale = computeXScale(pointSeriesDomains.xDomain, pointSeriesMap.size, 0, 100);
     const yScales = computeYScales(pointSeriesDomains.yDomain, 100, 0);
 
@@ -252,7 +254,7 @@ describe('Rendering points - line', () => {
     };
     const pointSeriesMap = new Map();
     pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
-    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
+    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map(), isSortDesc);
     const xScale = computeXScale(pointSeriesDomains.xDomain, pointSeriesMap.size, 0, 100);
     const yScales = computeYScales(pointSeriesDomains.yDomain, 100, 0);
 
@@ -344,7 +346,7 @@ describe('Rendering points - line', () => {
     const pointSeriesMap = new Map();
     pointSeriesMap.set(spec1Id, pointSeriesSpec1);
     pointSeriesMap.set(spec2Id, pointSeriesSpec2);
-    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
+    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map(), isSortDesc);
     const xScale = computeXScale(pointSeriesDomains.xDomain, pointSeriesMap.size, 0, 100);
     const yScales = computeYScales(pointSeriesDomains.yDomain, 100, 0);
 
@@ -479,7 +481,7 @@ describe('Rendering points - line', () => {
     };
     const pointSeriesMap = new Map();
     pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
-    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
+    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map(), isSortDesc);
     const xScale = computeXScale(pointSeriesDomains.xDomain, pointSeriesMap.size, 0, 100);
     const yScales = computeYScales(pointSeriesDomains.yDomain, 100, 0);
 
@@ -571,7 +573,7 @@ describe('Rendering points - line', () => {
     const pointSeriesMap = new Map();
     pointSeriesMap.set(spec1Id, pointSeriesSpec1);
     pointSeriesMap.set(spec2Id, pointSeriesSpec2);
-    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
+    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map(), isSortDesc);
     const xScale = computeXScale(pointSeriesDomains.xDomain, pointSeriesMap.size, 0, 100);
     const yScales = computeYScales(pointSeriesDomains.yDomain, 100, 0);
 
@@ -693,7 +695,7 @@ describe('Rendering points - line', () => {
     };
     const pointSeriesMap = new Map();
     pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
-    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
+    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map(), isSortDesc);
     const xScale = computeXScale(pointSeriesDomains.xDomain, pointSeriesMap.size, 0, 90);
     const yScales = computeYScales(pointSeriesDomains.yDomain, 100, 0);
 
