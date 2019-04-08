@@ -164,7 +164,7 @@ export function isLogarithmicScale(scale: Scale) {
 }
 
 function invertValue(
-  minDomain: number,
+  domainMin: number,
   invertedValue: number,
   minInterval: number,
   stepType?: StepType,
@@ -177,7 +177,7 @@ function invertValue(
         return linearStepBefore(invertedValue, minInterval);
       case StepType.Step:
       default:
-        return linearStep(minDomain, invertedValue, minInterval);
+        return linearStep(domainMin, invertedValue, minInterval);
     }
   }
   return invertedValue;
@@ -197,13 +197,14 @@ export function linearStepAfter(invertedValue: number, minInterval: number): num
  * Return an inverted value that is valid from the half point before and half point
  * after the value. |----****|*****----|
  * till the end of the interval.
+ * @param domainMin the domain's minimum value
  * @param invertedValue the inverted value
  * @param minInterval the data minimum interval grether than 0
  */
-export function linearStep(minDomain: number, invertedValue: number, minInterval: number): number {
-  const diff = (invertedValue - minDomain) / minInterval;
+export function linearStep(domainMin: number, invertedValue: number, minInterval: number): number {
+  const diff = (invertedValue - domainMin) / minInterval;
   const base = diff - Math.floor(diff) > 0.5 ? 1 : 0;
-  return minDomain + Math.floor(diff) * minInterval + minInterval * base;
+  return domainMin + Math.floor(diff) * minInterval + minInterval * base;
 }
 
 /**
