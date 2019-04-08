@@ -8,7 +8,6 @@ const SPEC_ID = getSpecId('spec_1');
 const GROUP_ID = getGroupId('group_1');
 
 describe('Rendering bars', () => {
-  const isSortDesc = true;
   describe('Single series bar chart - ordinal', () => {
     const barSeriesSpec: BarSeriesSpec = {
       id: SPEC_ID,
@@ -23,7 +22,7 @@ describe('Rendering bars', () => {
     };
     const barSeriesMap = new Map();
     barSeriesMap.set(SPEC_ID, barSeriesSpec);
-    const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map(), isSortDesc);
+    const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
     const xScale = computeXScale(barSeriesDomains.xDomain, barSeriesMap.size, 0, 100);
     const yScales = computeYScales(barSeriesDomains.yDomain, 100, 0);
 
@@ -99,7 +98,7 @@ describe('Rendering bars', () => {
     const barSeriesMap = new Map();
     barSeriesMap.set(spec1Id, barSeriesSpec1);
     barSeriesMap.set(spec2Id, barSeriesSpec2);
-    const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map(), isSortDesc);
+    const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
     const xScale = computeXScale(barSeriesDomains.xDomain, barSeriesMap.size, 0, 100);
     const yScales = computeYScales(barSeriesDomains.yDomain, 100, 0);
 
@@ -206,7 +205,7 @@ describe('Rendering bars', () => {
     };
     const barSeriesMap = new Map();
     barSeriesMap.set(SPEC_ID, barSeriesSpec);
-    const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map(), isSortDesc);
+    const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
     const xScale = computeXScale(barSeriesDomains.xDomain, barSeriesMap.size, 0, 100);
     const yScales = computeYScales(barSeriesDomains.yDomain, 100, 0);
 
@@ -282,7 +281,7 @@ describe('Rendering bars', () => {
     const barSeriesMap = new Map();
     barSeriesMap.set(spec1Id, barSeriesSpec1);
     barSeriesMap.set(spec2Id, barSeriesSpec2);
-    const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map(), isSortDesc);
+    const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
     const xScale = computeXScale(barSeriesDomains.xDomain, barSeriesMap.size, 0, 100);
     const yScales = computeYScales(barSeriesDomains.yDomain, 100, 0);
 
@@ -403,7 +402,7 @@ describe('Rendering bars', () => {
     const barSeriesMap = new Map();
     barSeriesMap.set(spec1Id, barSeriesSpec1);
     barSeriesMap.set(spec2Id, barSeriesSpec2);
-    const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map(), isSortDesc);
+    const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
     const xScale = computeXScale(barSeriesDomains.xDomain, barSeriesMap.size, 0, 100);
     const yScales = computeYScales(barSeriesDomains.yDomain, 100, 0);
 

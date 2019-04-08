@@ -9,8 +9,6 @@ import { ScaleType } from '../../lib/utils/scales/scales';
 import { ChartStore } from '../chart_state';
 import { computeSeriesDomains } from '../utils';
 
-const isSortDesc = true;
-
 const SPEC_ID = getSpecId('spec_1');
 const GROUP_ID = getGroupId('group_1');
 
@@ -185,7 +183,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     store = initStore(spec);
     const barSeriesMap = new Map();
     barSeriesMap.set(SPEC_ID, spec);
-    const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map(), isSortDesc);
+    const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
     const barSeriesScale = computeXScale(barSeriesDomains.xDomain, barSeriesMap.size, 0, 100);
     const yScales = computeYScales(barSeriesDomains.yDomain, 0, 100);
     store.xScale = barSeriesScale;

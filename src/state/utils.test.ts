@@ -23,8 +23,6 @@ import {
 } from './utils';
 
 describe('Chart State utils', () => {
-  const isSortDesc = true;
-
   it('should compute and format specifications for non stacked chart', () => {
     const spec1: BasicSeriesSpec = {
       id: getSpecId('spec1'),
@@ -51,7 +49,7 @@ describe('Chart State utils', () => {
     const specs = new Map<SpecId, BasicSeriesSpec>();
     specs.set(spec1.id, spec1);
     specs.set(spec2.id, spec2);
-    const domains = computeSeriesDomains(specs, new Map(), isSortDesc, undefined);
+    const domains = computeSeriesDomains(specs, new Map(), undefined);
     expect(domains.xDomain).toEqual({
       domain: [0, 3],
       isBandScale: false,
@@ -107,7 +105,7 @@ describe('Chart State utils', () => {
     const specs = new Map<SpecId, BasicSeriesSpec>();
     specs.set(spec1.id, spec1);
     specs.set(spec2.id, spec2);
-    const domains = computeSeriesDomains(specs, new Map(), isSortDesc, undefined);
+    const domains = computeSeriesDomains(specs, new Map(), undefined);
     expect(domains.xDomain).toEqual({
       domain: [0, 3],
       isBandScale: false,
@@ -362,7 +360,7 @@ describe('Chart State utils', () => {
         defaultVizColor: 'red',
       };
       const domainsByGroupId = mergeDomainsByGroupId(axesSpecs, chartRotation);
-      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId, isSortDesc);
+      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
       const seriesColorMap = getSeriesColorMap(seriesDomains.seriesColors, chartColors, new Map());
       const geometries = computeSeriesGeometries(
         seriesSpecs,
@@ -430,7 +428,7 @@ describe('Chart State utils', () => {
         defaultVizColor: 'red',
       };
       const domainsByGroupId = mergeDomainsByGroupId(axesSpecs, chartRotation);
-      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId, isSortDesc);
+      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
       const seriesColorMap = getSeriesColorMap(seriesDomains.seriesColors, chartColors, new Map());
       const geometries = computeSeriesGeometries(
         seriesSpecs,
@@ -498,7 +496,7 @@ describe('Chart State utils', () => {
         defaultVizColor: 'red',
       };
       const domainsByGroupId = mergeDomainsByGroupId(axesSpecs, chartRotation);
-      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId, isSortDesc);
+      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
       const seriesColorMap = getSeriesColorMap(seriesDomains.seriesColors, chartColors, new Map());
       const geometries = computeSeriesGeometries(
         seriesSpecs,
@@ -566,7 +564,7 @@ describe('Chart State utils', () => {
         defaultVizColor: 'red',
       };
       const domainsByGroupId = mergeDomainsByGroupId(axesSpecs, chartRotation);
-      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId, isSortDesc);
+      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
       const seriesColorMap = getSeriesColorMap(seriesDomains.seriesColors, chartColors, new Map());
       const geometries = computeSeriesGeometries(
         seriesSpecs,
@@ -634,7 +632,7 @@ describe('Chart State utils', () => {
         defaultVizColor: 'red',
       };
       const domainsByGroupId = mergeDomainsByGroupId(axesSpecs, chartRotation);
-      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId, isSortDesc);
+      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
       const seriesColorMap = getSeriesColorMap(seriesDomains.seriesColors, chartColors, new Map());
       const geometries = computeSeriesGeometries(
         seriesSpecs,
