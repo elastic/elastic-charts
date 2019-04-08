@@ -374,19 +374,5 @@ describe('Series', () => {
     expectedDefaultDesc.set('b', dataSeriesColorsValuesB);
 
     expect(defaultDesc).toEqual(expectedDefaultDesc);
-
-    const ascMap = getDataSeriesColorsValuesMap(
-      splitSeriesLastValues,
-      colorValuesMap,
-      specId,
-      false,
-    );
-
-    const expectedAscMap = new Map();
-    expectedAscMap.set('b', dataSeriesColorsValuesB);
-    expectedAscMap.set('a', dataSeriesColorsValuesA);
-    expectedAscMap.set('c', dataSeriesColorsValuesC);
-
-    expect(ascMap).toEqual(expectedAscMap);
   });
 });

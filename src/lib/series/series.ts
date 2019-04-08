@@ -402,21 +402,10 @@ export function getDataSeriesColorsValuesMap(
   splitSeriesLastValues: Map<string, any>,
   colorValuesMap: Map<string, any[]>,
   specId: SpecId,
-  isDesc: boolean = true,
 ): Map<string, DataSeriesColorsValues> {
   const seriesColors = new Map<string, DataSeriesColorsValues>();
 
-  // We sort the series keys by their last values and this order determines the
-  // insertion order of the seriesColors Map so that when it is iterated over,
-  // the items are in order of this sorting.
-  const sortOp = isDesc ? -1 : 1;
-
-  [...splitSeriesLastValues.keys()].sort((keyA, keyB) => {
-    const lastValueA = splitSeriesLastValues.get(keyA);
-    const lastValueB = splitSeriesLastValues.get(keyB);
-
-    return (lastValueA - lastValueB) * sortOp;
-  }).forEach((key) => {
+  [...splitSeriesLastValues.keys()].forEach((key) => {
     const colorValues = colorValuesMap.get(key);
 
     if (!colorValues) {
