@@ -8,8 +8,7 @@ describe('CanvasTextBBoxCalculator', () => {
       width: 0,
       height: 0,
     });
-
-    expect(bbox.width).toBeCloseTo(23.2, 1);
+    expect(Math.abs(bbox.width - 23.2)).toBeLessThanOrEqual(1);
     expect(bbox.height).toBe(16);
 
     canvasBboxCalculator.context = null;
