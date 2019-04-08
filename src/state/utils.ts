@@ -119,11 +119,13 @@ export function getUpdatedCustomSeriesColors(
 export function computeSeriesDomains(
   seriesSpecs: Map<SpecId, BasicSeriesSpec>,
   domainsByGroupId: Map<GroupId, DomainRange>,
+  isSortOrderDesc: boolean,
   customXDomain?: DomainRange | Domain,
   deselectedDataSeries?: DataSeriesColorsValues[] | null,
 ): SeriesDomainsAndData {
   const { splittedSeries, xValues, seriesColors } = getSplittedSeries(
     seriesSpecs,
+    isSortOrderDesc,
     deselectedDataSeries,
   );
   // tslint:disable-next-line:no-console

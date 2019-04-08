@@ -219,6 +219,8 @@ export class ChartStore {
   showLegend = observable.box(false);
   legendCollapsed = observable.box(false);
   legendPosition: Position | undefined;
+  isLegendItemsSortDesc = true;
+
   toggleLegendCollapsed = action(() => {
     this.legendCollapsed.set(!this.legendCollapsed.get());
     this.computeChart();
@@ -738,6 +740,7 @@ export class ChartStore {
     const seriesDomains = computeSeriesDomains(
       this.seriesSpecs,
       domainsByGroupId,
+      this.isLegendItemsSortDesc,
       this.xDomain,
       this.deselectedDataSeries,
     );
