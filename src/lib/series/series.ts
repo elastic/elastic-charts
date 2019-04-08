@@ -350,7 +350,6 @@ export function formatStackedDataSeriesValues(
 
 export function getSplittedSeries(
   seriesSpecs: Map<SpecId, BasicSeriesSpec>,
-  isSortOrderDesc: boolean,
   deselectedDataSeries?: DataSeriesColorsValues[] | null,
 ): {
   splittedSeries: Map<SpecId, RawDataSeries[]>;
@@ -384,7 +383,6 @@ export function getSplittedSeries(
       splitSeriesLastValues,
       colorsValues,
       specId,
-      isSortOrderDesc,
     );
 
     seriesColors = new Map([...seriesColors, ...dataSeriesColorValues]);

@@ -213,7 +213,6 @@ storiesOf('Legend', module)
     );
   })
   .add('display values', () => {
-    const isLegendItemsSortDesc = boolean('sort legend items descending', true);
     const showLegendDisplayValue = boolean('show display value in legend', true);
 
     return (
@@ -221,7 +220,6 @@ storiesOf('Legend', module)
         <Settings
           showLegend={true}
           legendPosition={Position.Right}
-          isLegendItemsSortDesc={isLegendItemsSortDesc}
           showLegendDisplayValue={showLegendDisplayValue}
         />
         <Axis

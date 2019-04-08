@@ -15,8 +15,6 @@ import { BasicSeriesSpec } from './specs';
 import * as TestDataset from './utils/test_dataset';
 
 describe('Series', () => {
-  const isSortDesc = true;
-
   test('Can split dataset into 1Y0G series', () => {
     const splittedSeries = splitSeries(
       TestDataset.BARCHART_1Y0G,
@@ -201,7 +199,7 @@ describe('Series', () => {
     };
     seriesSpecs.set(spec1.id, spec1);
     seriesSpecs.set(spec2.id, spec2);
-    const splittedDataSeries = getSplittedSeries(seriesSpecs, isSortDesc);
+    const splittedDataSeries = getSplittedSeries(seriesSpecs);
     expect(splittedDataSeries.splittedSeries.get(getSpecId('spec1'))).toMatchSnapshot();
     expect(splittedDataSeries.splittedSeries.get(getSpecId('spec2'))).toMatchSnapshot();
   });
@@ -234,7 +232,7 @@ describe('Series', () => {
     };
     seriesSpecs.set(spec1.id, spec1);
     seriesSpecs.set(spec2.id, spec2);
-    const splittedDataSeries = getSplittedSeries(seriesSpecs, isSortDesc);
+    const splittedDataSeries = getSplittedSeries(seriesSpecs);
     const stackedDataSeries = getFormattedDataseries(
       [spec1, spec2],
       splittedDataSeries.splittedSeries,
@@ -306,17 +304,17 @@ describe('Series', () => {
 
     seriesSpecs.set(splitSpec.id, splitSpec);
 
-    const allSeries = getSplittedSeries(seriesSpecs, isSortDesc, null);
+    const allSeries = getSplittedSeries(seriesSpecs, null);
     expect(allSeries.splittedSeries.get(specId)!.length).toBe(2);
 
-    const emptyDeselected = getSplittedSeries(seriesSpecs, isSortDesc, []);
+    const emptyDeselected = getSplittedSeries(seriesSpecs, []);
     expect(emptyDeselected.splittedSeries.get(specId)!.length).toBe(2);
 
     const deselectedDataSeries: DataSeriesColorsValues[] = [{
       specId,
       colorValues: ['y1'],
     }];
-    const subsetSplit = getSplittedSeries(seriesSpecs, isSortDesc, deselectedDataSeries);
+    const subsetSplit = getSplittedSeries(seriesSpecs, deselectedDataSeries);
     expect(subsetSplit.splittedSeries.get(specId)!.length).toBe(1);
   });
 
