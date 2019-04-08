@@ -51,18 +51,37 @@ class LegendElementComponent extends React.Component<LegendElementProps, LegendE
     });
   }
 
+  renderDisplayValue(displayValue: string, show: boolean) {
+    if (!show) {
+      return;
+    }
+
+    return (
+      <EuiText
+        size="xs"
+        className="eui-textTruncate elasticChartsLegendListItem__displayValue"
+        title={displayValue}
+      >
+        {displayValue}
+      </EuiText>
+    );
+  }
+
   render() {
     const { legendItemKey } = this.props;
     const { color, label, isSeriesVisible, displayValue } = this.props;
 
     const onTitleClick = this.onLegendTitleClick(legendItemKey);
 
+    const showLegendDisplayValue = this.props.chartStore!.showLegendDisplayValue.get();
     const isSelected = legendItemKey === this.props.chartStore!.selectedLegendItemKey.get();
     const titleClassNames = classNames(
+      'eui-textTruncate',
+      'elasticChartsLegendListItem__title',
       {
         ['elasticChartsLegendListItem__title--selected']: isSelected,
+        ['elasticChartsLegendListItem__title--hasDisplayValue']: this.props.chartStore!.showLegendDisplayValue.get(),
       },
-      'elasticChartsLegendListItem__title',
     );
 
     const colorDotProps = {
@@ -91,11 +110,11 @@ class LegendElementComponent extends React.Component<LegendElementProps, LegendE
         <EuiFlexItem grow={false}>
           {this.renderVisibilityButton(legendItemKey, isSeriesVisible)}
         </EuiFlexItem>
-        <EuiFlexItem grow={false} className={titleClassNames} onClick={onTitleClick}>
+        <EuiFlexItem grow={false} onClick={onTitleClick}>
           <EuiPopover
             id="contentPanel"
             button={
-              <EuiText size="xs" className="eui-textTruncate elasticChartsLegendListItem__title">
+              <EuiText size="xs" className={titleClassNames}>
                 {label}
               </EuiText>
             }
@@ -113,13 +132,7 @@ class LegendElementComponent extends React.Component<LegendElementProps, LegendE
           </EuiPopover>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiText
-            size="xs"
-            className="eui-textTruncate elasticChartsLegendListItem__displayValue"
-            title={displayValue}
-          >
-            {displayValue}
-          </EuiText>
+          {this.renderDisplayValue(displayValue, showLegendDisplayValue)}
         </EuiFlexItem>
       </EuiFlexGroup>
     );

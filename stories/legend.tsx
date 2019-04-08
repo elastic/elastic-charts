@@ -214,10 +214,16 @@ storiesOf('Legend', module)
   })
   .add('display values', () => {
     const isLegendItemsSortDesc = boolean('sort legend items descending', true);
+    const showLegendDisplayValue = boolean('show display value in legend', true);
 
     return (
       <Chart renderer="canvas" className={'story-chart'}>
-        <Settings showLegend={true} legendPosition={Position.Right} isLegendItemsSortDesc={isLegendItemsSortDesc} />
+        <Settings
+          showLegend={true}
+          legendPosition={Position.Right}
+          isLegendItemsSortDesc={isLegendItemsSortDesc}
+          showLegendDisplayValue={showLegendDisplayValue}
+        />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}

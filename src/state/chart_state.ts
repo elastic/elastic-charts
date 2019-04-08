@@ -220,6 +220,7 @@ export class ChartStore {
   legendCollapsed = observable.box(false);
   legendPosition: Position | undefined;
   isLegendItemsSortDesc = true;
+  showLegendDisplayValue = observable.box(true);
 
   toggleLegendCollapsed = action(() => {
     this.legendCollapsed.set(!this.legendCollapsed.get());

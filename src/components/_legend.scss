@@ -106,13 +106,16 @@ $elasticChartsLegendMaxHeight: $euiSize * 4;
 }
 
 .elasticChartsLegendListItem__title {
-  width: $elasticChartsLegendMaxWidth - 6 * $euiSize;
-  max-width: $elasticChartsLegendMaxWidth - 6 * $euiSize;
+  width: $elasticChartsLegendMaxWidth - 4 * $euiSize;
+  max-width: $elasticChartsLegendMaxWidth - 4 * $euiSize;
 
   &.elasticChartsLegendListItem__title--selected {
-    .elasticChartsLegendListItem__title {
-      text-decoration: underline;
-    }
+    text-decoration: underline;
+  }
+
+  &.elasticChartsLegendListItem__title--hasDisplayValue {
+    width: $elasticChartsLegendMaxWidth - 6 * $euiSize;
+    max-width: $elasticChartsLegendMaxWidth - 6 * $euiSize;
   }
 }
 
