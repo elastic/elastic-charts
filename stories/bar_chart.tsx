@@ -11,6 +11,7 @@ import {
   getAxisId,
   getSpecId,
   LIGHT_THEME,
+  LineSeries,
   niceTimeFormatByDay,
   Position,
   ScaleType,
@@ -882,6 +883,59 @@ storiesOf('Bar Chart', module)
           stackAccessors={['x']}
           data={data}
           yScaleToDataExtent={yScaleToDataExtent}
+        />
+      </Chart>
+    );
+  })
+  .add('band bar chart', () => {
+    const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d) => {
+      return {
+        x: d[0],
+        max: d[1] + 4 + 4 * Math.random(),
+        min: d[1] - 4 - 4 * Math.random(),
+      };
+    });
+    const lineData = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d) => {
+      return [d[0], d[1]];
+    });
+    const scaleToDataExtent = boolean('scale to extent', true);
+    return (
+      <Chart renderer="canvas" className={'story-chart'}>
+        <Axis
+          id={getAxisId('bottom')}
+          title={'timestamp per 1 minute'}
+          position={Position.Bottom}
+          showOverlappingTicks={true}
+          tickFormat={dateFormatter}
+        />
+        <Axis
+          id={getAxisId('left')}
+          title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
+          position={Position.Left}
+          tickFormat={(d) => Number(d).toFixed(2)}
+        />
+
+        <BarSeries
+          id={getSpecId('bars')}
+          xScaleType={ScaleType.Time}
+          yScaleType={ScaleType.Linear}
+          xAccessor={'x'}
+          yAccessors={['max']}
+          y0Accessors={['min']}
+          data={data}
+          // this is a temporary hack to display names for min and max values
+          splitSeriesAccessors={['fake']}
+          yScaleToDataExtent={scaleToDataExtent}
+        />
+
+        <LineSeries
+          id={getSpecId('average')}
+          xScaleType={ScaleType.Time}
+          yScaleType={ScaleType.Linear}
+          xAccessor={0}
+          yAccessors={[1]}
+          data={lineData}
+          yScaleToDataExtent={scaleToDataExtent}
         />
       </Chart>
     );

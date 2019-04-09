@@ -368,7 +368,7 @@ storiesOf('Area Chart', module)
       </Chart>
     );
   })
-  .add('Band area chart', () => {
+  .add('band area chart', () => {
     const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d) => {
       return {
         x: d[0],

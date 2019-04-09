@@ -164,7 +164,7 @@ export function renderBars(
   const xScaleType = xScale.type;
   const barGeometries: BarGeometry[] = [];
   dataset.forEach((datum) => {
-    const { y0, y1 } = datum;
+    const { y0, y1, initialY1 } = datum;
 
     if (xScaleType === ScaleType.Ordinal && !xDomain.includes(datum.x)) {
       return;
@@ -195,7 +195,7 @@ export function renderBars(
       color,
       value: {
         x: datum.x,
-        y: y1,
+        y: initialY1,
         accessor: 'y1',
       },
       geometryId: {
