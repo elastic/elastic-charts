@@ -17,6 +17,7 @@ const ig1: IndexedGeometry = {
     seriesKey: [0, 1, 2],
   },
   value: {
+    accessor: 'y1',
     x: 0,
     y: 1,
   },
@@ -31,6 +32,7 @@ const ig2: IndexedGeometry = {
     seriesKey: [0, 1, 2],
   },
   value: {
+    accessor: 'y1',
     x: 0,
     y: 1,
   },
@@ -46,6 +48,7 @@ const ig3: IndexedGeometry = {
     seriesKey: [123, 123, 123],
   },
   value: {
+    accessor: 'y1',
     x: 123,
     y: 123,
   },
@@ -62,6 +65,7 @@ const ig4: IndexedGeometry = {
     seriesKey: [123, 123, 123],
   },
   value: {
+    accessor: 'y1',
     x: 123,
     y: 123,
   },
@@ -77,6 +81,7 @@ const ig5: IndexedGeometry = {
     seriesKey: [123, 123, 123],
   },
   value: {
+    accessor: 'y1',
     x: 123,
     y: 123,
   },
@@ -92,6 +97,7 @@ const ig6: PointGeometry = {
     seriesKey: [123, 123, 123],
   },
   value: {
+    accessor: 'y1',
     x: 123,
     y: 123,
   },

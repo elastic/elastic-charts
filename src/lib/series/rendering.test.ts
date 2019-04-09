@@ -10,6 +10,7 @@ describe('Rendering utils', () => {
         specId: getSpecId('id'),
       },
       value: {
+        accessor: 'y1',
         x: 0,
         y: 0,
       },
@@ -34,6 +35,7 @@ describe('Rendering utils', () => {
         specId: getSpecId('id'),
       },
       value: {
+        accessor: 'y1',
         x: 0,
         y: 0,
       },
