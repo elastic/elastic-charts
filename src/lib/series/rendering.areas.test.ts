@@ -2,7 +2,13 @@ import { computeSeriesDomains } from '../../state/utils';
 import { getGroupId, getSpecId } from '../utils/ids';
 import { ScaleType } from '../utils/scales/scales';
 import { CurveType } from './curves';
-import { AreaGeometry, IndexedGeometry, renderArea } from './rendering';
+import {
+  AreaGeometry,
+  IndexedGeometry,
+  isPointGeometry,
+  PointGeometry,
+  renderArea,
+} from './rendering';
 import { computeXScale, computeYScales } from './scales';
 import { AreaSeriesSpec } from './specs';
 const SPEC_ID = getSpecId('spec_1');
@@ -65,31 +71,40 @@ describe('Rendering points - areas', () => {
       expect(points[0]).toEqual({
         x: 0,
         y: 0,
+        radius: 10,
         color: 'red',
-        value: {
+        geometryId: {
           specId: SPEC_ID,
           seriesKey: [],
-          datum: [0, 10],
         },
+        value: {
+          x: 0,
+          y: 10,
+        },
+
         transform: {
           x: 25,
           y: 0,
         },
-      });
+      } as PointGeometry);
       expect(points[1]).toEqual({
         x: 50,
         y: 50,
+        radius: 10,
         color: 'red',
-        value: {
+        geometryId: {
           specId: SPEC_ID,
           seriesKey: [],
-          datum: [1, 5],
+        },
+        value: {
+          x: 1,
+          y: 5,
         },
         transform: {
           x: 25,
           y: 0,
         },
-      });
+      } as PointGeometry);
       expect(indexedGeometries.size).toEqual(points.length);
     });
   });
@@ -183,31 +198,39 @@ describe('Rendering points - areas', () => {
       expect(points[0]).toEqual({
         x: 0,
         y: 50,
+        radius: 10,
         color: 'red',
-        value: {
+        geometryId: {
           specId: spec1Id,
           seriesKey: [],
-          datum: [0, 10],
+        },
+        value: {
+          x: 0,
+          y: 10,
         },
         transform: {
           x: 25,
           y: 0,
         },
-      });
+      } as PointGeometry);
       expect(points[1]).toEqual({
         x: 50,
         y: 75,
+        radius: 10,
         color: 'red',
-        value: {
+        geometryId: {
           specId: spec1Id,
           seriesKey: [],
-          datum: [1, 5],
+        },
+        value: {
+          x: 1,
+          y: 5,
         },
         transform: {
           x: 25,
           y: 0,
         },
-      });
+      } as PointGeometry);
       expect(indexedGeometries.size).toEqual(points.length);
     });
     test('can render second spec points', () => {
@@ -219,31 +242,39 @@ describe('Rendering points - areas', () => {
       expect(points[0]).toEqual({
         x: 0,
         y: 0,
+        radius: 10,
         color: 'blue',
-        value: {
+        geometryId: {
           specId: spec2Id,
           seriesKey: [],
-          datum: [0, 20],
+        },
+        value: {
+          x: 0,
+          y: 20,
         },
         transform: {
           x: 25,
           y: 0,
         },
-      });
+      } as PointGeometry);
       expect(points[1]).toEqual({
         x: 50,
         y: 50,
+        radius: 10,
         color: 'blue',
-        value: {
+        geometryId: {
           specId: spec2Id,
           seriesKey: [],
-          datum: [1, 10],
+        },
+        value: {
+          x: 1,
+          y: 10,
         },
         transform: {
           x: 25,
           y: 0,
         },
-      });
+      } as PointGeometry);
       expect(indexedGeometries.size).toEqual(points.length);
     });
   });
@@ -299,31 +330,39 @@ describe('Rendering points - areas', () => {
       expect(points[0]).toEqual({
         x: 0,
         y: 0,
+        radius: 10,
         color: 'red',
-        value: {
+        geometryId: {
           specId: SPEC_ID,
           seriesKey: [],
-          datum: [0, 10],
+        },
+        value: {
+          x: 0,
+          y: 10,
         },
         transform: {
           x: 0,
           y: 0,
         },
-      });
+      } as PointGeometry);
       expect(points[1]).toEqual({
         x: 100,
         y: 50,
+        radius: 10,
         color: 'red',
-        value: {
+        geometryId: {
           specId: SPEC_ID,
           seriesKey: [],
-          datum: [1, 5],
+        },
+        value: {
+          x: 1,
+          y: 5,
         },
         transform: {
           x: 0,
           y: 0,
         },
-      });
+      } as PointGeometry);
       expect(indexedGeometries.size).toEqual(points.length);
     });
   });
@@ -416,31 +455,39 @@ describe('Rendering points - areas', () => {
       expect(points[0]).toEqual({
         x: 0,
         y: 50,
+        radius: 10,
         color: 'red',
-        value: {
+        geometryId: {
           specId: spec1Id,
           seriesKey: [],
-          datum: [0, 10],
+        },
+        value: {
+          x: 0,
+          y: 10,
         },
         transform: {
           x: 0,
           y: 0,
         },
-      });
+      } as PointGeometry);
       expect(points[1]).toEqual({
         x: 100,
         y: 75,
+        radius: 10,
         color: 'red',
-        value: {
+        geometryId: {
           specId: spec1Id,
           seriesKey: [],
-          datum: [1, 5],
+        },
+        value: {
+          x: 1,
+          y: 5,
         },
         transform: {
           x: 0,
           y: 0,
         },
-      });
+      } as PointGeometry);
       expect(indexedGeometries.size).toEqual(points.length);
     });
     test('can render second spec points', () => {
@@ -452,31 +499,39 @@ describe('Rendering points - areas', () => {
       expect(points[0]).toEqual({
         x: 0,
         y: 0,
+        radius: 10,
         color: 'blue',
-        value: {
+        geometryId: {
           specId: spec2Id,
           seriesKey: [],
-          datum: [0, 20],
+        },
+        value: {
+          x: 0,
+          y: 20,
         },
         transform: {
           x: 0,
           y: 0,
         },
-      });
+      } as PointGeometry);
       expect(points[1]).toEqual({
         x: 100,
         y: 50,
+        radius: 10,
         color: 'blue',
-        value: {
+        geometryId: {
           specId: spec2Id,
           seriesKey: [],
-          datum: [1, 10],
+        },
+        value: {
+          x: 1,
+          y: 10,
         },
         transform: {
           x: 0,
           y: 0,
         },
-      });
+      } as PointGeometry);
       expect(indexedGeometries.size).toEqual(points.length);
     });
   });
@@ -532,31 +587,39 @@ describe('Rendering points - areas', () => {
       expect(points[0]).toEqual({
         x: 0,
         y: 0,
+        radius: 10,
         color: 'red',
-        value: {
+        geometryId: {
           specId: SPEC_ID,
           seriesKey: [],
-          datum: [1546300800000, 10],
+        },
+        value: {
+          x: 1546300800000,
+          y: 10,
         },
         transform: {
           x: 0,
           y: 0,
         },
-      });
+      } as PointGeometry);
       expect(points[1]).toEqual({
         x: 100,
         y: 50,
+        radius: 10,
         color: 'red',
-        value: {
+        geometryId: {
           specId: SPEC_ID,
           seriesKey: [],
-          datum: [1546387200000, 5],
+        },
+        value: {
+          x: 1546387200000,
+          y: 5,
         },
         transform: {
           x: 0,
           y: 0,
         },
-      });
+      } as PointGeometry);
       expect(indexedGeometries.size).toEqual(points.length);
     });
   });
@@ -634,31 +697,39 @@ describe('Rendering points - areas', () => {
       expect(points[0]).toEqual({
         x: 0,
         y: 50,
+        radius: 10,
         color: 'red',
-        value: {
+        geometryId: {
           specId: spec1Id,
           seriesKey: [],
-          datum: [1546300800000, 10],
+        },
+        value: {
+          x: 1546300800000,
+          y: 10,
         },
         transform: {
           x: 0,
           y: 0,
         },
-      });
+      } as PointGeometry);
       expect(points[1]).toEqual({
         x: 100,
         y: 75,
+        radius: 10,
         color: 'red',
-        value: {
+        geometryId: {
           specId: spec1Id,
           seriesKey: [],
-          datum: [1546387200000, 5],
+        },
+        value: {
+          x: 1546387200000,
+          y: 5,
         },
         transform: {
           x: 0,
           y: 0,
         },
-      });
+      } as PointGeometry);
       expect(indexedGeometries.size).toEqual(points.length);
     });
     test('can render second spec points', () => {
@@ -670,31 +741,39 @@ describe('Rendering points - areas', () => {
       expect(points[0]).toEqual({
         x: 0,
         y: 0,
+        radius: 10,
         color: 'blue',
-        value: {
+        geometryId: {
           specId: spec2Id,
           seriesKey: [],
-          datum: [1546300800000, 20],
+        },
+        value: {
+          x: 1546300800000,
+          y: 20,
         },
         transform: {
           x: 0,
           y: 0,
         },
-      });
+      } as PointGeometry);
       expect(points[1]).toEqual({
         x: 100,
         y: 50,
+        radius: 10,
         color: 'blue',
-        value: {
+        geometryId: {
           specId: spec2Id,
           seriesKey: [],
-          datum: [1546387200000, 10],
+        },
+        value: {
+          x: 1546387200000,
+          y: 10,
         },
         transform: {
           x: 0,
           y: 0,
         },
-      });
+      } as PointGeometry);
       expect(indexedGeometries.size).toEqual(points.length);
     });
   });
@@ -752,23 +831,23 @@ describe('Rendering points - areas', () => {
       expect(points.length).toBe(7);
       // all the points
       expect(indexedGeometries.size).toEqual(9);
-      const nullIndexdGeometry = indexedGeometries.get(2);
-      expect(nullIndexdGeometry).toBeDefined();
-      expect(nullIndexdGeometry!.length).toBe(1);
-      // moved to the bottom of the chart
-      expect(nullIndexdGeometry![0].geom.y).toBe(100);
-      // 0 radius point
-      expect(nullIndexdGeometry![0].geom.width).toBe(0);
-      expect(nullIndexdGeometry![0].geom.height).toBe(0);
+      const nullIndexdGeometry = indexedGeometries.get(2)!;
 
-      const zeroValueIndexdGeometry = indexedGeometries.get(5);
-      expect(zeroValueIndexdGeometry).toBeDefined();
-      expect(zeroValueIndexdGeometry!.length).toBe(1);
+      expect(nullIndexdGeometry).toBeDefined();
+      expect(nullIndexdGeometry.length).toBe(1);
+      expect(isPointGeometry(nullIndexdGeometry[0])).toBe(true);
       // moved to the bottom of the chart
-      expect(zeroValueIndexdGeometry![0].geom.y).toBe(100);
+      expect(nullIndexdGeometry[0].y).toBe(100);
       // 0 radius point
-      expect(zeroValueIndexdGeometry![0].geom.width).toBe(0);
-      expect(zeroValueIndexdGeometry![0].geom.height).toBe(0);
+      expect((nullIndexdGeometry[0] as PointGeometry).radius).toBe(0);
+
+      const zeroValueIndexdGeometry = indexedGeometries.get(5)!;
+      expect(zeroValueIndexdGeometry).toBeDefined();
+      expect(zeroValueIndexdGeometry.length).toBe(1);
+      // moved to the bottom of the chart
+      expect(zeroValueIndexdGeometry[0].y).toBe(100);
+      // 0 radius point
+      expect((zeroValueIndexdGeometry[0] as PointGeometry).radius).toBe(0);
     });
   });
 });

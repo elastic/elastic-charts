@@ -1,4 +1,4 @@
-import { GeometryValue, IndexedGeometry } from '../../lib/series/rendering';
+import { BarGeometry, GeometryValue } from '../../lib/series/rendering';
 import { computeXScale, computeYScales } from '../../lib/series/scales';
 import { DataSeriesColorsValues } from '../../lib/series/series';
 import { BarSeriesSpec, BasicSeriesSpec } from '../../lib/series/specs';
@@ -74,29 +74,35 @@ function initStore(spec: BasicSeriesSpec) {
   store.seriesSpecs.set(spec.id, spec);
   return store;
 }
-const indexedGeom1Red: IndexedGeometry = {
+const indexedGeom1Red: BarGeometry = {
   color: 'red',
-  geom: {
+  x: 0,
+  y: 0,
+  width: 50,
+  height: 100,
+  value: {
     x: 0,
     y: 0,
-    width: 50,
-    height: 100,
   },
-  datum: [0, 10],
-  specId: SPEC_ID,
-  seriesKey: [],
+  geometryId: {
+    specId: SPEC_ID,
+    seriesKey: [],
+  },
 };
-const indexedGeom2Blue: IndexedGeometry = {
+const indexedGeom2Blue: BarGeometry = {
   color: 'blue',
-  geom: {
-    x: 50,
-    y: 50,
-    width: 50,
-    height: 50,
+  x: 50,
+  y: 50,
+  width: 50,
+  height: 50,
+  value: {
+    x: 1,
+    y: 5,
   },
-  datum: [1, 5],
-  specId: SPEC_ID,
-  seriesKey: [],
+  geometryId: {
+    specId: SPEC_ID,
+    seriesKey: [],
+  },
 };
 
 describe('Chart state pointer interactions', () => {

@@ -3,11 +3,9 @@ import { SpecId } from '../utils/ids';
 import { TooltipValue } from '../utils/interactions';
 import { IndexedGeometry } from './rendering';
 import { getColorValuesAsString } from './series';
-import { AxisSpec, BasicSeriesSpec, Datum, TickFormatter } from './specs';
+import { AxisSpec, BasicSeriesSpec, TickFormatter } from './specs';
 
-export function getSeriesTooltipValues(
-  tooltipValues: TooltipValue[],
-): Map<string, any> {
+export function getSeriesTooltipValues(tooltipValues: TooltipValue[]): Map<string, any> {
   // map from seriesKey to tooltipValue
   const seriesTooltipValues = new Map();
 
@@ -31,7 +29,8 @@ export function formatTooltip(
   isHighlighted: boolean,
   yAxis?: AxisSpec,
 ): TooltipValue[] {
-  const { seriesKey, datum } = searchIndexValue;
+  const { y } = searchIndexValue.value;
+  const { seriesKey } = searchIndexValue.geometryId;
   let yAccessors = spec.yAccessors;
   if (yAccessors.length > 1) {
     // the last element of the seriesKey is the yAccessor
@@ -39,7 +38,7 @@ export function formatTooltip(
   }
   let name: string | undefined;
   if (seriesKey.length > 0) {
-    name = searchIndexValue.seriesKey.join(' - ');
+    name = seriesKey.join(' - ');
   } else {
     name = spec.name || `${spec.id}`;
   }
@@ -47,7 +46,7 @@ export function formatTooltip(
   return formatAccessor(
     spec.id,
     seriesKey,
-    datum,
+    y,
     yAccessors,
     color,
     yAxis ? yAxis.tickFormat : emptyFormatter,
@@ -70,15 +69,17 @@ export function formatXTooltipValue(
   xAxis?: AxisSpec,
 ): TooltipValue {
   let name: string | undefined;
-  if (searchIndexValue.seriesKey.length > 0) {
-    name = searchIndexValue.seriesKey.join(' - ');
+  const { seriesKey } = searchIndexValue.geometryId;
+  const { x } = searchIndexValue.value;
+  if (seriesKey.length > 0) {
+    name = seriesKey.join(' - ');
   } else {
     name = spec.name || `${spec.id}`;
   }
   const xValues = formatAccessor(
     spec.id,
-    searchIndexValue.seriesKey,
-    searchIndexValue.datum,
+    seriesKey,
+    x,
     [spec.xAccessor],
     color,
     xAxis ? xAxis.tickFormat : emptyFormatter,
@@ -92,7 +93,7 @@ export function formatXTooltipValue(
 export function formatAccessor(
   specId: SpecId,
   seriesKeys: any[],
-  datum: Datum,
+  value: any,
   accessors: Accessor[] = [],
   color: string,
   formatter: TickFormatter,
@@ -107,7 +108,7 @@ export function formatAccessor(
       return {
         seriesKey,
         name: name || `${accessor}`,
-        value: formatter(datum[accessor]),
+        value: formatter(value),
         color,
         isHighlighted,
         isXValue,

@@ -328,7 +328,10 @@ export class ChartStore {
     const newHighlightedGeometries: IndexedGeometry[] = [];
     const tooltipValues = elements.reduce(
       (acc, indexedGeometry) => {
-        const { specId, color } = indexedGeometry;
+        const {
+          geometryId: { specId },
+          color,
+        } = indexedGeometry;
         const spec = this.seriesSpecs.get(specId);
 
         // safe guard check

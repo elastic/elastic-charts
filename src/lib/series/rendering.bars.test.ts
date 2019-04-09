@@ -43,9 +43,8 @@ describe('Rendering bars', () => {
         height: 100,
         color: 'red',
         value: {
-          specId: SPEC_ID,
-          seriesKey: [],
-          datum: [0, 10],
+          x: 0,
+          y: 10,
         },
         geometryId: {
           specId: SPEC_ID,
@@ -59,9 +58,8 @@ describe('Rendering bars', () => {
         height: 50,
         color: 'red',
         value: {
-          specId: SPEC_ID,
-          seriesKey: [],
-          datum: [1, 5],
+          x: 1,
+          y: 5,
         },
         geometryId: {
           specId: SPEC_ID,
@@ -120,9 +118,8 @@ describe('Rendering bars', () => {
         height: 50,
         color: 'red',
         value: {
-          specId: spec1Id,
-          seriesKey: [],
-          datum: [0, 10],
+          x: 0,
+          y: 10,
         },
         geometryId: {
           specId: spec1Id,
@@ -136,9 +133,8 @@ describe('Rendering bars', () => {
         height: 25,
         color: 'red',
         value: {
-          specId: spec1Id,
-          seriesKey: [],
-          datum: [1, 5],
+          x: 1,
+          y: 5,
         },
         geometryId: {
           specId: spec1Id,
@@ -164,9 +160,8 @@ describe('Rendering bars', () => {
         height: 100,
         color: 'blue',
         value: {
-          specId: spec2Id,
-          seriesKey: [],
-          datum: [0, 20],
+          x: 0,
+          y: 20,
         },
         geometryId: {
           specId: spec2Id,
@@ -180,9 +175,8 @@ describe('Rendering bars', () => {
         height: 50,
         color: 'blue',
         value: {
-          specId: spec2Id,
-          seriesKey: [],
-          datum: [1, 10],
+          x: 1,
+          y: 10,
         },
         geometryId: {
           specId: spec2Id,
@@ -226,9 +220,8 @@ describe('Rendering bars', () => {
         height: 100,
         color: 'red',
         value: {
-          specId: SPEC_ID,
-          seriesKey: [],
-          datum: [0, 10],
+          x: 0,
+          y: 10,
         },
         geometryId: {
           specId: SPEC_ID,
@@ -242,9 +235,8 @@ describe('Rendering bars', () => {
         height: 50,
         color: 'red',
         value: {
-          specId: SPEC_ID,
-          seriesKey: [],
-          datum: [1, 5],
+          x: 1,
+          y: 5,
         },
         geometryId: {
           specId: SPEC_ID,
@@ -303,9 +295,8 @@ describe('Rendering bars', () => {
         height: 50,
         color: 'red',
         value: {
-          specId: spec1Id,
-          seriesKey: [],
-          datum: [0, 10],
+          x: 0,
+          y: 10,
         },
         geometryId: {
           specId: spec1Id,
@@ -319,9 +310,8 @@ describe('Rendering bars', () => {
         height: 25,
         color: 'red',
         value: {
-          specId: spec1Id,
-          seriesKey: [],
-          datum: [1, 5],
+          x: 1,
+          y: 5,
         },
         geometryId: {
           specId: spec1Id,
@@ -347,9 +337,8 @@ describe('Rendering bars', () => {
         height: 100,
         color: 'blue',
         value: {
-          specId: spec2Id,
-          seriesKey: [],
-          datum: [0, 20],
+          x: 0,
+          y: 20,
         },
         geometryId: {
           specId: spec2Id,
@@ -363,9 +352,8 @@ describe('Rendering bars', () => {
         height: 50,
         color: 'blue',
         value: {
-          specId: spec2Id,
-          seriesKey: [],
-          datum: [1, 10],
+          x: 1,
+          y: 10,
         },
         geometryId: {
           specId: spec2Id,
@@ -424,9 +412,8 @@ describe('Rendering bars', () => {
         height: 50,
         color: 'red',
         value: {
-          specId: spec1Id,
-          seriesKey: [],
-          datum: [1546300800000, 10],
+          x: 1546300800000,
+          y: 10,
         },
         geometryId: {
           specId: spec1Id,
@@ -440,9 +427,8 @@ describe('Rendering bars', () => {
         height: 25,
         color: 'red',
         value: {
-          specId: spec1Id,
-          seriesKey: [],
-          datum: [1546387200000, 5],
+          x: 1546387200000,
+          y: 5,
         },
         geometryId: {
           specId: spec1Id,
@@ -468,9 +454,8 @@ describe('Rendering bars', () => {
         height: 100,
         color: 'blue',
         value: {
-          specId: spec2Id,
-          seriesKey: [],
-          datum: [1546300800000, 20],
+          x: 1546300800000,
+          y: 20,
         },
         geometryId: {
           specId: spec2Id,
@@ -484,9 +469,8 @@ describe('Rendering bars', () => {
         height: 50,
         color: 'blue',
         value: {
-          specId: spec2Id,
-          seriesKey: [],
-          datum: [1546387200000, 10],
+          x: 1546387200000,
+          y: 10,
         },
         geometryId: {
           specId: spec2Id,
