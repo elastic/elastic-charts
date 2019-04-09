@@ -27,7 +27,7 @@ export function computeLegend(
 ): Map<string, LegendItem> {
   const legendItems: Map<string, LegendItem> = new Map();
 
-  const sortedSeriesColors = getSortedDataSeriesColorsValuesMap(specs, seriesColor);
+  const sortedSeriesColors = getSortedDataSeriesColorsValuesMap(seriesColor);
 
   sortedSeriesColors.forEach((series, key) => {
     const spec = specs.get(series.specId);

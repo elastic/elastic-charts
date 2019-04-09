@@ -48,6 +48,7 @@ export interface DataSeriesColorsValues {
   specId: SpecId;
   colorValues: any[];
   lastValue?: any;
+  specSortIndex?: number;
 }
 
 /**
@@ -382,6 +383,7 @@ export function getSplittedSeries(
 
       seriesColors.set(key, {
         specId,
+        specSortIndex: spec.sortIndex,
         colorValues,
         lastValue,
       });
@@ -399,40 +401,20 @@ export function getSplittedSeries(
 }
 
 export function getSortedDataSeriesColorsValuesMap(
-  specs: Map<SpecId, BasicSeriesSpec>,
   colorValuesMap: Map<string, DataSeriesColorsValues>,
 ): Map<string, DataSeriesColorsValues> {
-  const seriesColors = new Map<string, DataSeriesColorsValues>();
+  const seriesColorsArray = [...colorValuesMap];
+  seriesColorsArray.sort((seriesA, seriesB) => {
+    const [, colorValuesA] = seriesA;
+    const [, colorValuesB] = seriesB;
 
-  [...colorValuesMap.keys()].sort((keyA, keyB) => {
-    const colorValuesA = colorValuesMap.get(keyA);
-    const colorValuesB = colorValuesMap.get(keyB);
-
-    if (!colorValuesA || !colorValuesB) {
-      return -1;
-    }
-
-    const specA = specs.get(colorValuesA.specId);
-    const specB = specs.get(colorValuesB.specId);
-
-    if (!specA || !specB) {
-      return -1;
-    }
-
-    const specAIndex = specA.sortIndex != null ? specA.sortIndex : colorValuesMap.size;
-    const specBIndex = specB.sortIndex != null ? specB.sortIndex : colorValuesMap.size;
+    const specAIndex = colorValuesA.specSortIndex != null ? colorValuesA.specSortIndex : colorValuesMap.size;
+    const specBIndex = colorValuesB.specSortIndex != null ? colorValuesB.specSortIndex : colorValuesMap.size;
 
     return specAIndex - specBIndex;
-  }).forEach((seriesKey: string) => {
-    const colorValues = colorValuesMap.get(seriesKey);
-    if (!colorValues) {
-      return;
-    }
-
-    seriesColors.set(seriesKey, colorValues);
   });
 
-  return seriesColors;
+  return new Map([...seriesColorsArray]);
 }
 
 export function getSeriesColorMap(

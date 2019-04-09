@@ -319,90 +319,61 @@ describe('Series', () => {
   });
 
   test('should sort series color by series spec sort index', () => {
-    const seriesSpecs = new Map<SpecId, BasicSeriesSpec>();
-
-    const baseSpec: BasicSeriesSpec = {
-      id: getSpecId('spec'),
-      groupId: getGroupId('group'),
-      seriesType: 'line',
-      yScaleType: ScaleType.Log,
-      xScaleType: ScaleType.Linear,
-      xAccessor: 'x',
-      yAccessors: ['y1', 'y2'],
-      stackAccessors: ['x'],
-      yScaleToDataExtent: false,
-      data: TestDataset.BARCHART_2Y0G,
-      hideInLegend: false,
-    };
-
-    const spec1: BasicSeriesSpec = {
-      ...baseSpec,
-      id: getSpecId('spec1'),
-      sortIndex: 0,
-    };
-    const spec2: BasicSeriesSpec = {
-      ...baseSpec,
-      id: getSpecId('spec2'),
-      sortIndex: 1,
-    };
-    const spec3: BasicSeriesSpec = {
-      ...baseSpec,
-      id: getSpecId('spec3'),
-      sortIndex: 2,
-    };
-
-    seriesSpecs.set(spec3.id, spec3);
-    seriesSpecs.set(spec1.id, spec1);
-    seriesSpecs.set(spec2.id, spec2);
+    const spec1Id = getSpecId('spec1');
+    const spec2Id = getSpecId('spec2');
+    const spec3Id = getSpecId('spec3');
 
     const colorValuesMap = new Map();
     const dataSeriesValues1: DataSeriesColorsValues = {
-      specId: spec1.id,
+      specId: spec1Id,
       colorValues: [],
+      specSortIndex: 0,
     };
 
     const dataSeriesValues2: DataSeriesColorsValues = {
-      specId: spec2.id,
+      specId: spec2Id,
       colorValues: [],
+      specSortIndex: 1,
     };
 
     const dataSeriesValues3: DataSeriesColorsValues = {
-      specId: spec3.id,
+      specId: spec3Id,
       colorValues: [],
+      specSortIndex: 3,
     };
 
-    colorValuesMap.set(spec3.id, dataSeriesValues3);
-    colorValuesMap.set(spec1.id, dataSeriesValues1);
-    colorValuesMap.set(spec2.id, dataSeriesValues2);
+    colorValuesMap.set(spec3Id, dataSeriesValues3);
+    colorValuesMap.set(spec1Id, dataSeriesValues1);
+    colorValuesMap.set(spec2Id, dataSeriesValues2);
 
     const descSortedColorValues = new Map();
-    descSortedColorValues.set(spec1.id, dataSeriesValues1);
-    descSortedColorValues.set(spec2.id, dataSeriesValues2);
-    descSortedColorValues.set(spec3.id, dataSeriesValues3);
+    descSortedColorValues.set(spec1Id, dataSeriesValues1);
+    descSortedColorValues.set(spec2Id, dataSeriesValues2);
+    descSortedColorValues.set(spec3Id, dataSeriesValues3);
 
-    expect(getSortedDataSeriesColorsValuesMap(seriesSpecs, colorValuesMap)).toEqual(descSortedColorValues);
+    expect(getSortedDataSeriesColorsValuesMap(colorValuesMap)).toEqual(descSortedColorValues);
 
     const ascSortedColorValues = new Map();
-    spec1.sortIndex = 2;
-    spec2.sortIndex = 1;
-    spec3.sortIndex = 0;
+    dataSeriesValues1.specSortIndex = 2;
+    dataSeriesValues2.specSortIndex = 1;
+    dataSeriesValues3.specSortIndex = 0;
 
-    ascSortedColorValues.set(spec3.id, dataSeriesValues3);
-    ascSortedColorValues.set(spec2.id, dataSeriesValues2);
-    ascSortedColorValues.set(spec1.id, dataSeriesValues1);
+    ascSortedColorValues.set(spec3Id, dataSeriesValues3);
+    ascSortedColorValues.set(spec2Id, dataSeriesValues2);
+    ascSortedColorValues.set(spec1Id, dataSeriesValues1);
 
-    expect(getSortedDataSeriesColorsValuesMap(seriesSpecs, colorValuesMap)).toEqual(ascSortedColorValues);
+    expect(getSortedDataSeriesColorsValuesMap(colorValuesMap)).toEqual(ascSortedColorValues);
 
     // Any series with undefined sort order should come last
     const undefinedSortedColorValues = new Map();
-    spec1.sortIndex = 1;
-    spec2.sortIndex = undefined;
-    spec3.sortIndex = 0;
+    dataSeriesValues1.specSortIndex = 1;
+    dataSeriesValues2.specSortIndex = undefined;
+    dataSeriesValues3.specSortIndex = 0;
 
-    undefinedSortedColorValues.set(spec3.id, dataSeriesValues3);
-    undefinedSortedColorValues.set(spec1.id, dataSeriesValues1);
-    undefinedSortedColorValues.set(spec2.id, dataSeriesValues2);
+    undefinedSortedColorValues.set(spec3Id, dataSeriesValues3);
+    undefinedSortedColorValues.set(spec1Id, dataSeriesValues1);
+    undefinedSortedColorValues.set(spec2Id, dataSeriesValues2);
 
-    expect(getSortedDataSeriesColorsValuesMap(seriesSpecs, colorValuesMap)).toEqual(undefinedSortedColorValues);
+    expect(getSortedDataSeriesColorsValuesMap(colorValuesMap)).toEqual(undefinedSortedColorValues);
   });
 });
