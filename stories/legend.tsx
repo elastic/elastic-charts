@@ -235,7 +235,8 @@ storiesOf('Legend', module)
     ]);
 
     const seriesComponents = tsvbSeries.map((series: any) => {
-      const sortIndex = namesArray.findIndex((name: string) => name === series.label);
+      const nameIndex = namesArray.findIndex((name: string) => name === series.label);
+      const sortIndex = nameIndex > -1 ? nameIndex : undefined;
 
       return (<AreaSeries
         key={`${series.id}-${series.label}`}

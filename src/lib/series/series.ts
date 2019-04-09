@@ -398,7 +398,7 @@ export function getSplittedSeries(
   };
 }
 
-export function getDataSeriesColorsValuesMap(
+export function getSortedDataSeriesColorsValuesMap(
   specs: Map<SpecId, BasicSeriesSpec>,
   colorValuesMap: Map<string, DataSeriesColorsValues>,
 ): Map<string, DataSeriesColorsValues> {
@@ -419,7 +419,10 @@ export function getDataSeriesColorsValuesMap(
       return -1;
     }
 
-    return (specA.sortIndex || -1) - (specB.sortIndex || -1);
+    const specAIndex = specA.sortIndex != null ? specA.sortIndex : colorValuesMap.size;
+    const specBIndex = specB.sortIndex != null ? specB.sortIndex : colorValuesMap.size;
+
+    return specAIndex - specBIndex;
   }).forEach((seriesKey: string) => {
     const colorValues = colorValuesMap.get(seriesKey);
     if (!colorValues) {

@@ -1,7 +1,7 @@
 import { findDataSeriesByColorValues, getAxesSpecForSpecId } from '../../state/utils';
 import { identity } from '../utils/commons';
 import { AxisId, SpecId } from '../utils/ids';
-import { DataSeriesColorsValues, getDataSeriesColorsValuesMap } from './series';
+import { DataSeriesColorsValues, getSortedDataSeriesColorsValuesMap } from './series';
 import { AxisSpec, BasicSeriesSpec } from './specs';
 
 export interface LegendItem {
@@ -27,7 +27,7 @@ export function computeLegend(
 ): Map<string, LegendItem> {
   const legendItems: Map<string, LegendItem> = new Map();
 
-  const sortedSeriesColors = getDataSeriesColorsValuesMap(specs, seriesColor);
+  const sortedSeriesColors = getSortedDataSeriesColorsValuesMap(specs, seriesColor);
 
   sortedSeriesColors.forEach((series, key) => {
     const spec = specs.get(series.specId);
