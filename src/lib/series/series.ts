@@ -357,7 +357,7 @@ export function getSplittedSeries(
   xValues: Set<any>;
 } {
   const splittedSeries = new Map<SpecId, RawDataSeries[]>();
-  let seriesColors = new Map<string, DataSeriesColorsValues>();
+  const seriesColors = new Map<string, DataSeriesColorsValues>();
   const xValues: Set<any> = new Set();
   for (const [specId, spec] of seriesSpecs) {
     const dataSeries = splitSeries(spec.data, spec, specId);
@@ -377,15 +377,15 @@ export function getSplittedSeries(
 
     splittedSeries.set(specId, currentRawDataSeries);
 
-    const { splitSeriesLastValues, colorsValues } = dataSeries;
+    dataSeries.colorsValues.forEach((colorValues, key) => {
+      const lastValue = dataSeries.splitSeriesLastValues.get(key);
 
-    const dataSeriesColorValues = getDataSeriesColorsValuesMap(
-      splitSeriesLastValues,
-      colorsValues,
-      specId,
-    );
-
-    seriesColors = new Map([...seriesColors, ...dataSeriesColorValues]);
+      seriesColors.set(key, {
+        specId,
+        colorValues,
+        lastValue,
+      });
+    });
 
     for (const xValue of dataSeries.xValues) {
       xValues.add(xValue);
@@ -399,24 +399,34 @@ export function getSplittedSeries(
 }
 
 export function getDataSeriesColorsValuesMap(
-  splitSeriesLastValues: Map<string, any>,
-  colorValuesMap: Map<string, any[]>,
-  specId: SpecId,
+  specs: Map<SpecId, BasicSeriesSpec>,
+  colorValuesMap: Map<string, DataSeriesColorsValues>,
 ): Map<string, DataSeriesColorsValues> {
   const seriesColors = new Map<string, DataSeriesColorsValues>();
 
-  [...splitSeriesLastValues.keys()].forEach((key) => {
-    const colorValues = colorValuesMap.get(key);
+  [...colorValuesMap.keys()].sort((keyA, keyB) => {
+    const colorValuesA = colorValuesMap.get(keyA);
+    const colorValuesB = colorValuesMap.get(keyB);
 
+    if (!colorValuesA || !colorValuesB) {
+      return -1;
+    }
+
+    const specA = specs.get(colorValuesA.specId);
+    const specB = specs.get(colorValuesB.specId);
+
+    if (!specA || !specB) {
+      return -1;
+    }
+
+    return (specA.sortIndex || -1) - (specB.sortIndex || -1);
+  }).forEach((seriesKey: string) => {
+    const colorValues = colorValuesMap.get(seriesKey);
     if (!colorValues) {
       return;
     }
 
-    seriesColors.set(key, {
-      specId,
-      colorValues,
-      lastValue: splitSeriesLastValues.get(key),
-    });
+    seriesColors.set(seriesKey, colorValues);
   });
 
   return seriesColors;

@@ -1,10 +1,12 @@
-import { boolean } from '@storybook/addon-knobs';
+import { array, boolean, select } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import React from 'react';
 import {
+  AreaSeries,
   Axis,
   BarSeries,
   Chart,
+  CurveType,
   getAxisId,
   getSpecId,
   LineSeries,
@@ -13,6 +15,7 @@ import {
   Settings,
 } from '../src/';
 import * as TestDatasets from '../src/lib/series/utils/test_dataset';
+import { TSVB_DATASET } from '../src/lib/series/utils/test_dataset_tsvb';
 
 storiesOf('Legend', module)
   .add('right', () => {
@@ -214,12 +217,44 @@ storiesOf('Legend', module)
   })
   .add('display values', () => {
     const showLegendDisplayValue = boolean('show display value in legend', true);
+    const legendPosition = select('legendPosition', {
+      right: Position.Right,
+      bottom: Position.Bottom,
+      left: Position.Left,
+      top: Position.Top,
+    }, Position.Right);
 
+    const tsvbSeries = TSVB_DATASET.series;
+
+    const namesArray = array('series names (in sort order)', [
+      'jpg',
+      'php',
+      'png',
+      'css',
+      'gif',
+    ]);
+
+    const seriesComponents = tsvbSeries.map((series: any) => {
+      const sortIndex = namesArray.findIndex((name: string) => name === series.label);
+
+      return (<AreaSeries
+        key={`${series.id}-${series.label}`}
+        id={getSpecId(`${series.id}-${series.label}`)}
+        name={series.label}
+        xScaleType={ScaleType.Time}
+        yScaleType={ScaleType.Linear}
+        xAccessor={0}
+        yAccessors={[1]}
+        data={series.data}
+        curve={series.lines.steps ? CurveType.CURVE_STEP : CurveType.LINEAR}
+        sortIndex={sortIndex}
+      />);
+    });
     return (
       <Chart renderer="canvas" className={'story-chart'}>
         <Settings
           showLegend={true}
-          legendPosition={Position.Right}
+          legendPosition={legendPosition}
           showLegendDisplayValue={showLegendDisplayValue}
         />
         <Axis
@@ -234,18 +269,7 @@ storiesOf('Legend', module)
           position={Position.Left}
           tickFormat={(d) => Number(d).toFixed(2)}
         />
-
-        <BarSeries
-          id={getSpecId('bars')}
-          xScaleType={ScaleType.Linear}
-          yScaleType={ScaleType.Linear}
-          xAccessor="x"
-          yAccessors={['y1', 'y2']}
-          splitSeriesAccessors={['g1', 'g2']}
-          data={TestDatasets.BARCHART_2Y2G}
-          yScaleToDataExtent={false}
-          hideInLegend={false}
-        />
+        {seriesComponents}
       </Chart>
     );
   });

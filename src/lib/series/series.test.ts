@@ -4,7 +4,6 @@ import { ScaleType } from '../utils/scales/scales';
 import {
   DataSeriesColorsValues,
   formatStackedDataSeriesValues,
-  getDataSeriesColorsValuesMap,
   getFormattedDataseries,
   getSeriesColorMap,
   getSplittedSeries,
@@ -316,63 +315,5 @@ describe('Series', () => {
     }];
     const subsetSplit = getSplittedSeries(seriesSpecs, deselectedDataSeries);
     expect(subsetSplit.splittedSeries.get(specId)!.length).toBe(1);
-  });
-
-  test('should get sorted dataSeriesColorsValues map', () => {
-    const specId = getSpecId('spec1');
-
-    const splitSeriesLastValues = new Map();
-    splitSeriesLastValues.set('a', 20);
-    splitSeriesLastValues.set('b', 10);
-    splitSeriesLastValues.set('c', 30);
-
-    const colorValuesA = ['a', '1'];
-    const colorValuesB = ['b', '2'];
-    const colorValuesC = ['b', '3'];
-
-    const colorValuesMap = new Map();
-
-    const dataSeriesColorsValuesA = {
-      specId,
-      colorValues: colorValuesA,
-      lastValue: 20,
-    };
-
-    const dataSeriesColorsValuesB = {
-      specId,
-      colorValues: colorValuesB,
-      lastValue: 10,
-    };
-
-    const dataSeriesColorsValuesC = {
-      specId,
-      colorValues: colorValuesC,
-      lastValue: 30,
-    };
-
-    const missingColorValues = getDataSeriesColorsValuesMap(
-      splitSeriesLastValues,
-      colorValuesMap,
-      specId,
-    );
-
-    expect(missingColorValues).toEqual(new Map());
-
-    colorValuesMap.set('a', colorValuesA);
-    colorValuesMap.set('b', colorValuesB);
-    colorValuesMap.set('c', colorValuesC);
-
-    const defaultDesc = getDataSeriesColorsValuesMap(
-      splitSeriesLastValues,
-      colorValuesMap,
-      specId,
-    );
-
-    const expectedDefaultDesc = new Map();
-    expectedDefaultDesc.set('c', dataSeriesColorsValuesC);
-    expectedDefaultDesc.set('a', dataSeriesColorsValuesA);
-    expectedDefaultDesc.set('b', dataSeriesColorsValuesB);
-
-    expect(defaultDesc).toEqual(expectedDefaultDesc);
   });
 });
