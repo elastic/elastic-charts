@@ -29,12 +29,19 @@ export function formatTooltip(
   isHighlighted: boolean,
   yAxis?: AxisSpec,
 ): TooltipValue[] {
-  const { y } = searchIndexValue.value;
+  const { y, accessor } = searchIndexValue.value;
   const { seriesKey } = searchIndexValue.geometryId;
   let yAccessors = spec.yAccessors;
   if (yAccessors.length > 1) {
     // the last element of the seriesKey is the yAccessor
     yAccessors = seriesKey.slice(-1);
+  }
+  let accessors = yAccessors;
+  if (accessor === 'y0' && spec.y0Accessors) {
+    const y1AccessorIndex = spec.yAccessors.findIndex((acc) => {
+      return acc === yAccessors[0];
+    });
+    accessors = [spec.y0Accessors[y1AccessorIndex]];
   }
   let name: string | undefined;
   if (seriesKey.length > 0) {
@@ -47,7 +54,7 @@ export function formatTooltip(
     spec.id,
     seriesKey,
     y,
-    yAccessors,
+    accessors,
     color,
     yAxis ? yAxis.tickFormat : emptyFormatter,
     isHighlighted,

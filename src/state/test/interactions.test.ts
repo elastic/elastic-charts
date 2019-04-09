@@ -82,7 +82,8 @@ const indexedGeom1Red: BarGeometry = {
   height: 100,
   value: {
     x: 0,
-    y: 0,
+    y: 10,
+    accessor: 'y1',
   },
   geometryId: {
     specId: SPEC_ID,
@@ -98,6 +99,7 @@ const indexedGeom2Blue: BarGeometry = {
   value: {
     x: 1,
     y: 5,
+    accessor: 'y1',
   },
   geometryId: {
     specId: SPEC_ID,
@@ -221,7 +223,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(store.highlightedGeometries.length).toBe(1);
     expect(onOverListener).toBeCalledTimes(1);
     expect(onOutListener).toBeCalledTimes(0);
-    expect(onOverListener.mock.calls[0][0]).toEqual([indexedGeom1Red]);
+    expect(onOverListener.mock.calls[0][0]).toEqual([indexedGeom1Red.value]);
 
     store.setCursorPosition(chartLeft - 1, chartTop - 1);
     expect(store.cursorPosition).toEqual({ x: -1, y: -1 });
@@ -242,7 +244,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(store.tooltipData.length).toBe(2); // x value + 1 y value
     expect(onOverListener).toBeCalledTimes(1);
     expect(onOutListener).toBeCalledTimes(0);
-    expect(onOverListener.mock.calls[0][0]).toEqual([indexedGeom1Red]);
+    expect(onOverListener.mock.calls[0][0]).toEqual([indexedGeom1Red.value]);
 
     store.setCursorPosition(chartLeft - 1, chartTop + 99);
     expect(store.cursorPosition).toEqual({ x: -1, y: 99 });
@@ -263,7 +265,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(store.tooltipData.length).toBe(2);
     expect(onOverListener).toBeCalledTimes(1);
     expect(onOutListener).toBeCalledTimes(0);
-    expect(onOverListener.mock.calls[0][0]).toEqual([indexedGeom1Red]);
+    expect(onOverListener.mock.calls[0][0]).toEqual([indexedGeom1Red.value]);
 
     store.setCursorPosition(chartLeft + 50, chartTop + 0);
     expect(store.cursorPosition).toEqual({ x: 50, y: 0 });
@@ -286,7 +288,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(store.tooltipData.length).toBe(2);
     expect(onOverListener).toBeCalledTimes(1);
     expect(onOutListener).toBeCalledTimes(0);
-    expect(onOverListener.mock.calls[0][0]).toEqual([indexedGeom1Red]);
+    expect(onOverListener.mock.calls[0][0]).toEqual([indexedGeom1Red.value]);
 
     store.setCursorPosition(chartLeft + 50, chartTop + 99);
     expect(store.cursorPosition).toEqual({ x: 50, y: 99 });
@@ -297,7 +299,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     // we are over the second bar here
     expect(store.highlightedGeometries.length).toBe(1);
     expect(onOverListener).toBeCalledTimes(2);
-    expect(onOverListener.mock.calls[1][0]).toEqual([indexedGeom2Blue]);
+    expect(onOverListener.mock.calls[1][0]).toEqual([indexedGeom2Blue.value]);
 
     expect(onOutListener).toBeCalledTimes(0);
   });
@@ -324,7 +326,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(store.highlightedGeometries.length).toBe(1);
     expect(store.tooltipData.length).toBe(2);
     expect(onOverListener).toBeCalledTimes(1);
-    expect(onOverListener.mock.calls[0][0]).toEqual([indexedGeom2Blue]);
+    expect(onOverListener.mock.calls[0][0]).toEqual([indexedGeom2Blue.value]);
     expect(onOutListener).toBeCalledTimes(0);
   });
 }

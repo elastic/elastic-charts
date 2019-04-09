@@ -17,6 +17,7 @@ export interface GeometryId {
 export interface GeometryValue {
   y: any;
   x: any;
+  accessor: 'y1' | 'y0';
 }
 
 /** Shared style properties for varies geometries */
@@ -100,7 +101,7 @@ export function renderPoints(
       if (hasY0Accessors) {
         yDatums.unshift(datum.y0);
       }
-      yDatums.forEach((yDatum) => {
+      yDatums.forEach((yDatum, index) => {
         let y;
         let radius = 10;
         const isHidden = yDatum === null || (isLogScale && yDatum <= 0);
@@ -111,6 +112,7 @@ export function renderPoints(
         } else {
           y = yScale.scale(yDatum);
         }
+        const originalY = hasY0Accessors && index === 0 ? datum.initialY0 : datum.initialY1;
         const pointGeometry: PointGeometry = {
           radius,
           x,
@@ -118,7 +120,8 @@ export function renderPoints(
           color,
           value: {
             x: datum.x,
-            y: yDatum,
+            y: originalY,
+            accessor: hasY0Accessors && index === 0 ? 'y0' : 'y1',
           },
           transform: {
             x: shift,
@@ -193,6 +196,7 @@ export function renderBars(
       value: {
         x: datum.x,
         y: y1,
+        accessor: 'y1',
       },
       geometryId: {
         specId,

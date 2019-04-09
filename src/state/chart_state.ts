@@ -380,7 +380,7 @@ export class ChartStore {
       !areIndexedGeometryArraysEquals(newHighlightedGeometries, this.highlightedGeometries.toJS())
     ) {
       if (newHighlightedGeometries.length > 0) {
-        this.onElementOverListener(newHighlightedGeometries);
+        this.onElementOverListener(newHighlightedGeometries.map(({ value }) => value));
       } else {
         if (this.onElementOutListener) {
           this.onElementOutListener();
@@ -604,7 +604,7 @@ export class ChartStore {
 
   handleChartClick() {
     if (this.highlightedGeometries.length > 0 && this.onElementClickListener) {
-      this.onElementClickListener(this.highlightedGeometries.toJS());
+      this.onElementClickListener(this.highlightedGeometries.toJS().map(({ value }) => value));
     }
   }
 

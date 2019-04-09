@@ -22,6 +22,10 @@ export interface DataSeriesDatum {
   y1: number | null;
   /** the minimum y value */
   y0: number | null;
+  /** initial y1 value, non stacked */
+  initialY1: number | null;
+  /** initial y0 value, non stacked */
+  initialY0: number | null;
   /** the datum */
   datum?: any;
 }
@@ -324,6 +328,8 @@ export function formatNonStackedDataValues(
       x,
       y1,
       y0,
+      initialY1: y1,
+      initialY0: y0,
       datum,
     };
     formattedValues.data.push(formattedValue);
@@ -380,6 +386,8 @@ export function formatStackedDataSeriesValues(
           x,
           y1,
           y0: computedY0,
+          initialY1: y1,
+          initialY0: computedY0,
           datum,
         });
       } else {
@@ -394,6 +402,8 @@ export function formatStackedDataSeriesValues(
           x,
           y1: stackedY1,
           y0: stackedY0,
+          initialY1: y1,
+          initialY0: data.y0 || null,
           datum,
         });
       }

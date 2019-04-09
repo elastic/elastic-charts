@@ -671,6 +671,7 @@ describe('Chart Store', () => {
       value: {
         x: 0,
         y: 1,
+        accessor: 'y1',
       },
       x: 0,
       y: 0,
@@ -686,6 +687,7 @@ describe('Chart Store', () => {
       value: {
         x: 0,
         y: 3,
+        accessor: 'y1',
       },
       x: 50,
       y: 0,
@@ -706,12 +708,12 @@ describe('Chart Store', () => {
     store.highlightedGeometries.replace([geom1]);
     store.handleChartClick();
     expect(clickListener).toBeCalledTimes(1);
-    expect(clickListener.mock.calls[0][0]).toEqual([geom1]);
+    expect(clickListener.mock.calls[0][0]).toEqual([geom1.value]);
 
     store.highlightedGeometries.replace([geom1, geom2]);
     store.handleChartClick();
     expect(clickListener).toBeCalledTimes(2);
-    expect(clickListener.mock.calls[1][0]).toEqual([geom1, geom2]);
+    expect(clickListener.mock.calls[1][0]).toEqual([geom1.value, geom2.value]);
   });
   test('can compute annotation tooltip state', () => {
     const scale = new ScaleContinuous([0, 100], [0, 100], ScaleType.Linear);

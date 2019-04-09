@@ -68,6 +68,7 @@ describe('Rendering points - line', () => {
           seriesKey: [],
         },
         value: {
+          accessor: 'y1',
           x: 0,
           y: 10,
         },
@@ -86,6 +87,7 @@ describe('Rendering points - line', () => {
           seriesKey: [],
         },
         value: {
+          accessor: 'y1',
           x: 1,
           y: 5,
         },
@@ -192,6 +194,7 @@ describe('Rendering points - line', () => {
           seriesKey: [],
         },
         value: {
+          accessor: 'y1',
           x: 0,
           y: 10,
         },
@@ -210,6 +213,7 @@ describe('Rendering points - line', () => {
           seriesKey: [],
         },
         value: {
+          accessor: 'y1',
           x: 1,
           y: 5,
         },
@@ -236,6 +240,7 @@ describe('Rendering points - line', () => {
           seriesKey: [],
         },
         value: {
+          accessor: 'y1',
           x: 0,
           y: 20,
         },
@@ -254,6 +259,7 @@ describe('Rendering points - line', () => {
           seriesKey: [],
         },
         value: {
+          accessor: 'y1',
           x: 1,
           y: 10,
         },
@@ -323,6 +329,7 @@ describe('Rendering points - line', () => {
           seriesKey: [],
         },
         value: {
+          accessor: 'y1',
           x: 0,
           y: 10,
         },
@@ -341,6 +348,7 @@ describe('Rendering points - line', () => {
           seriesKey: [],
         },
         value: {
+          accessor: 'y1',
           x: 1,
           y: 5,
         },
@@ -446,6 +454,7 @@ describe('Rendering points - line', () => {
           seriesKey: [],
         },
         value: {
+          accessor: 'y1',
           x: 0,
           y: 10,
         },
@@ -463,7 +472,11 @@ describe('Rendering points - line', () => {
           specId: spec1Id,
           seriesKey: [],
         },
-        value: { x: 1, y: 5 },
+        value: {
+          accessor: 'y1',
+          x: 1,
+          y: 5,
+        },
         transform: {
           x: 0,
           y: 0,
@@ -487,6 +500,7 @@ describe('Rendering points - line', () => {
           seriesKey: [],
         },
         value: {
+          accessor: 'y1',
           x: 0,
           y: 20,
         },
@@ -505,6 +519,7 @@ describe('Rendering points - line', () => {
           seriesKey: [],
         },
         value: {
+          accessor: 'y1',
           x: 1,
           y: 10,
         },
@@ -574,6 +589,7 @@ describe('Rendering points - line', () => {
           seriesKey: [],
         },
         value: {
+          accessor: 'y1',
           x: 1546300800000,
           y: 10,
         },
@@ -592,6 +608,7 @@ describe('Rendering points - line', () => {
           seriesKey: [],
         },
         value: {
+          accessor: 'y1',
           x: 1546387200000,
           y: 5,
         },
@@ -684,6 +701,7 @@ describe('Rendering points - line', () => {
           seriesKey: [],
         },
         value: {
+          accessor: 'y1',
           x: 1546300800000,
           y: 10,
         },
@@ -702,6 +720,7 @@ describe('Rendering points - line', () => {
           seriesKey: [],
         },
         value: {
+          accessor: 'y1',
           x: 1546387200000,
           y: 5,
         },
@@ -728,6 +747,7 @@ describe('Rendering points - line', () => {
           seriesKey: [],
         },
         value: {
+          accessor: 'y1',
           x: 1546300800000,
           y: 20,
         },
@@ -746,6 +766,7 @@ describe('Rendering points - line', () => {
           seriesKey: [],
         },
         value: {
+          accessor: 'y1',
           x: 1546387200000,
           y: 10,
         },
