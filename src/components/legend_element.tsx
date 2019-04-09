@@ -131,7 +131,7 @@ class LegendElementComponent extends React.Component<LegendElementProps, LegendE
             </EuiContextMenuPanel>
           </EuiPopover>
         </EuiFlexItem>
-        <EuiFlexItem grow={false}>
+        <EuiFlexItem grow={true} className="elasticChartsLegendListItem__displayValue">
           {this.renderDisplayValue(displayValue, showLegendDisplayValue)}
         </EuiFlexItem>
       </EuiFlexGroup>
