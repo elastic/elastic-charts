@@ -10,7 +10,8 @@ Array [
           "y": 1,
         },
         "x": 0,
-        "y": 1,
+        "y0": null,
+        "y1": 1,
       },
       Object {
         "datum": Object {
@@ -18,7 +19,8 @@ Array [
           "y": 2,
         },
         "x": 1,
-        "y": 2,
+        "y0": null,
+        "y1": 2,
       },
       Object {
         "datum": Object {
@@ -26,7 +28,8 @@ Array [
           "y": 10,
         },
         "x": 2,
-        "y": 10,
+        "y0": null,
+        "y1": 10,
       },
       Object {
         "datum": Object {
@@ -34,7 +37,8 @@ Array [
           "y": 6,
         },
         "x": 3,
-        "y": 6,
+        "y0": null,
+        "y1": 6,
       },
     ],
     "key": Array [],
@@ -55,7 +59,8 @@ Array [
           "y": 1,
         },
         "x": 0,
-        "y": 1,
+        "y0": null,
+        "y1": 1,
       },
       Object {
         "datum": Object {
@@ -64,7 +69,8 @@ Array [
           "y": 2,
         },
         "x": 1,
-        "y": 2,
+        "y0": null,
+        "y1": 2,
       },
       Object {
         "datum": Object {
@@ -73,7 +79,8 @@ Array [
           "y": 3,
         },
         "x": 2,
-        "y": 3,
+        "y0": null,
+        "y1": 3,
       },
       Object {
         "datum": Object {
@@ -82,7 +89,8 @@ Array [
           "y": 4,
         },
         "x": 3,
-        "y": 4,
+        "y0": null,
+        "y1": 4,
       },
     ],
     "key": Array [
@@ -100,7 +108,8 @@ Array [
           "y": 2,
         },
         "x": 0,
-        "y": 2,
+        "y0": null,
+        "y1": 2,
       },
       Object {
         "datum": Object {
@@ -109,7 +118,8 @@ Array [
           "y": 3,
         },
         "x": 1,
-        "y": 3,
+        "y0": null,
+        "y1": 3,
       },
       Object {
         "datum": Object {
@@ -118,7 +128,8 @@ Array [
           "y": 4,
         },
         "x": 2,
-        "y": 4,
+        "y0": null,
+        "y1": 4,
       },
       Object {
         "datum": Object {
@@ -127,7 +138,8 @@ Array [
           "y": 5,
         },
         "x": 3,
-        "y": 5,
+        "y0": null,
+        "y1": 5,
       },
     ],
     "key": Array [
@@ -151,7 +163,8 @@ Array [
           "y": 1,
         },
         "x": 0,
-        "y": 1,
+        "y0": null,
+        "y1": 1,
       },
       Object {
         "datum": Object {
@@ -161,7 +174,8 @@ Array [
           "y": 2,
         },
         "x": 1,
-        "y": 2,
+        "y0": null,
+        "y1": 2,
       },
       Object {
         "datum": Object {
@@ -171,7 +185,8 @@ Array [
           "y": 1,
         },
         "x": 2,
-        "y": 1,
+        "y0": null,
+        "y1": 1,
       },
       Object {
         "datum": Object {
@@ -181,7 +196,8 @@ Array [
           "y": 6,
         },
         "x": 3,
-        "y": 6,
+        "y0": null,
+        "y1": 6,
       },
     ],
     "key": Array [
@@ -201,7 +217,8 @@ Array [
           "y": 1,
         },
         "x": 0,
-        "y": 1,
+        "y0": null,
+        "y1": 1,
       },
       Object {
         "datum": Object {
@@ -211,7 +228,8 @@ Array [
           "y": 2,
         },
         "x": 1,
-        "y": 2,
+        "y0": null,
+        "y1": 2,
       },
       Object {
         "datum": Object {
@@ -221,7 +239,8 @@ Array [
           "y": 2,
         },
         "x": 2,
-        "y": 2,
+        "y0": null,
+        "y1": 2,
       },
       Object {
         "datum": Object {
@@ -231,7 +250,8 @@ Array [
           "y": 6,
         },
         "x": 3,
-        "y": 6,
+        "y0": null,
+        "y1": 6,
       },
     ],
     "key": Array [
@@ -251,7 +271,8 @@ Array [
           "y": 1,
         },
         "x": 0,
-        "y": 1,
+        "y0": null,
+        "y1": 1,
       },
       Object {
         "datum": Object {
@@ -261,7 +282,8 @@ Array [
           "y": 2,
         },
         "x": 1,
-        "y": 2,
+        "y0": null,
+        "y1": 2,
       },
       Object {
         "datum": Object {
@@ -271,7 +293,8 @@ Array [
           "y": 3,
         },
         "x": 2,
-        "y": 3,
+        "y0": null,
+        "y1": 3,
       },
       Object {
         "datum": Object {
@@ -281,7 +304,8 @@ Array [
           "y": 6,
         },
         "x": 3,
-        "y": 6,
+        "y0": null,
+        "y1": 6,
       },
     ],
     "key": Array [
@@ -301,7 +325,8 @@ Array [
           "y": 1,
         },
         "x": 0,
-        "y": 1,
+        "y0": null,
+        "y1": 1,
       },
       Object {
         "datum": Object {
@@ -311,7 +336,8 @@ Array [
           "y": 2,
         },
         "x": 1,
-        "y": 2,
+        "y0": null,
+        "y1": 2,
       },
       Object {
         "datum": Object {
@@ -321,7 +347,8 @@ Array [
           "y": 4,
         },
         "x": 2,
-        "y": 4,
+        "y0": null,
+        "y1": 4,
       },
       Object {
         "datum": Object {
@@ -331,7 +358,8 @@ Array [
           "y": 6,
         },
         "x": 3,
-        "y": 6,
+        "y0": null,
+        "y1": 6,
       },
     ],
     "key": Array [
@@ -355,7 +383,8 @@ Array [
           "y2": 3,
         },
         "x": 0,
-        "y": 1,
+        "y0": null,
+        "y1": 1,
       },
       Object {
         "datum": Object {
@@ -364,7 +393,8 @@ Array [
           "y2": 7,
         },
         "x": 1,
-        "y": 2,
+        "y0": null,
+        "y1": 2,
       },
       Object {
         "datum": Object {
@@ -373,7 +403,8 @@ Array [
           "y2": 2,
         },
         "x": 2,
-        "y": 1,
+        "y0": null,
+        "y1": 1,
       },
       Object {
         "datum": Object {
@@ -382,7 +413,8 @@ Array [
           "y2": 10,
         },
         "x": 3,
-        "y": 6,
+        "y0": null,
+        "y1": 6,
       },
     ],
     "key": Array [
@@ -400,7 +432,8 @@ Array [
           "y2": 3,
         },
         "x": 0,
-        "y": 3,
+        "y0": null,
+        "y1": 3,
       },
       Object {
         "datum": Object {
@@ -409,7 +442,8 @@ Array [
           "y2": 7,
         },
         "x": 1,
-        "y": 7,
+        "y0": null,
+        "y1": 7,
       },
       Object {
         "datum": Object {
@@ -418,7 +452,8 @@ Array [
           "y2": 2,
         },
         "x": 2,
-        "y": 2,
+        "y0": null,
+        "y1": 2,
       },
       Object {
         "datum": Object {
@@ -427,7 +462,8 @@ Array [
           "y2": 10,
         },
         "x": 3,
-        "y": 10,
+        "y0": null,
+        "y1": 10,
       },
     ],
     "key": Array [
@@ -451,7 +487,8 @@ Array [
           "y2": 4,
         },
         "x": 0,
-        "y": 1,
+        "y0": null,
+        "y1": 1,
       },
       Object {
         "datum": Object {
@@ -461,7 +498,8 @@ Array [
           "y2": 1,
         },
         "x": 1,
-        "y": 2,
+        "y0": null,
+        "y1": 2,
       },
       Object {
         "datum": Object {
@@ -471,7 +509,8 @@ Array [
           "y2": 5,
         },
         "x": 2,
-        "y": 10,
+        "y0": null,
+        "y1": 10,
       },
       Object {
         "datum": Object {
@@ -481,7 +520,8 @@ Array [
           "y2": 3,
         },
         "x": 3,
-        "y": 7,
+        "y0": null,
+        "y1": 7,
       },
     ],
     "key": Array [
@@ -501,7 +541,8 @@ Array [
           "y2": 4,
         },
         "x": 0,
-        "y": 4,
+        "y0": null,
+        "y1": 4,
       },
       Object {
         "datum": Object {
@@ -511,7 +552,8 @@ Array [
           "y2": 1,
         },
         "x": 1,
-        "y": 1,
+        "y0": null,
+        "y1": 1,
       },
       Object {
         "datum": Object {
@@ -521,7 +563,8 @@ Array [
           "y2": 5,
         },
         "x": 2,
-        "y": 5,
+        "y0": null,
+        "y1": 5,
       },
       Object {
         "datum": Object {
@@ -531,7 +574,8 @@ Array [
           "y2": 3,
         },
         "x": 3,
-        "y": 3,
+        "y0": null,
+        "y1": 3,
       },
     ],
     "key": Array [
@@ -551,7 +595,8 @@ Array [
           "y2": 6,
         },
         "x": 0,
-        "y": 3,
+        "y0": null,
+        "y1": 3,
       },
       Object {
         "datum": Object {
@@ -561,7 +606,8 @@ Array [
           "y2": 5,
         },
         "x": 1,
-        "y": 2,
+        "y0": null,
+        "y1": 2,
       },
       Object {
         "datum": Object {
@@ -571,7 +617,8 @@ Array [
           "y2": 1,
         },
         "x": 2,
-        "y": 3,
+        "y0": null,
+        "y1": 3,
       },
       Object {
         "datum": Object {
@@ -581,7 +628,8 @@ Array [
           "y2": 4,
         },
         "x": 3,
-        "y": 6,
+        "y0": null,
+        "y1": 6,
       },
     ],
     "key": Array [
@@ -601,7 +649,8 @@ Array [
           "y2": 6,
         },
         "x": 0,
-        "y": 6,
+        "y0": null,
+        "y1": 6,
       },
       Object {
         "datum": Object {
@@ -611,7 +660,8 @@ Array [
           "y2": 5,
         },
         "x": 1,
-        "y": 5,
+        "y0": null,
+        "y1": 5,
       },
       Object {
         "datum": Object {
@@ -621,7 +671,8 @@ Array [
           "y2": 1,
         },
         "x": 2,
-        "y": 1,
+        "y0": null,
+        "y1": 1,
       },
       Object {
         "datum": Object {
@@ -631,7 +682,8 @@ Array [
           "y2": 4,
         },
         "x": 3,
-        "y": 4,
+        "y0": null,
+        "y1": 4,
       },
     ],
     "key": Array [
@@ -657,7 +709,8 @@ Array [
           "y2": 4,
         },
         "x": 0,
-        "y": 1,
+        "y0": null,
+        "y1": 1,
       },
       Object {
         "datum": Object {
@@ -668,7 +721,8 @@ Array [
           "y2": 1,
         },
         "x": 1,
-        "y": 2,
+        "y0": null,
+        "y1": 2,
       },
       Object {
         "datum": Object {
@@ -679,7 +733,8 @@ Array [
           "y2": 5,
         },
         "x": 2,
-        "y": 10,
+        "y0": null,
+        "y1": 10,
       },
       Object {
         "datum": Object {
@@ -690,7 +745,8 @@ Array [
           "y2": 3,
         },
         "x": 3,
-        "y": 7,
+        "y0": null,
+        "y1": 7,
       },
       Object {
         "datum": Object {
@@ -701,7 +757,8 @@ Array [
           "y2": 3,
         },
         "x": 6,
-        "y": 7,
+        "y0": null,
+        "y1": 7,
       },
     ],
     "key": Array [
@@ -723,7 +780,8 @@ Array [
           "y2": 4,
         },
         "x": 0,
-        "y": 4,
+        "y0": null,
+        "y1": 4,
       },
       Object {
         "datum": Object {
@@ -734,7 +792,8 @@ Array [
           "y2": 1,
         },
         "x": 1,
-        "y": 1,
+        "y0": null,
+        "y1": 1,
       },
       Object {
         "datum": Object {
@@ -745,7 +804,8 @@ Array [
           "y2": 5,
         },
         "x": 2,
-        "y": 5,
+        "y0": null,
+        "y1": 5,
       },
       Object {
         "datum": Object {
@@ -756,7 +816,8 @@ Array [
           "y2": 3,
         },
         "x": 3,
-        "y": 3,
+        "y0": null,
+        "y1": 3,
       },
       Object {
         "datum": Object {
@@ -767,7 +828,8 @@ Array [
           "y2": 3,
         },
         "x": 6,
-        "y": 3,
+        "y0": null,
+        "y1": 3,
       },
     ],
     "key": Array [
@@ -789,7 +851,8 @@ Array [
           "y2": 4,
         },
         "x": 0,
-        "y": 1,
+        "y0": null,
+        "y1": 1,
       },
       Object {
         "datum": Object {
@@ -800,7 +863,8 @@ Array [
           "y2": 1,
         },
         "x": 1,
-        "y": 2,
+        "y0": null,
+        "y1": 2,
       },
       Object {
         "datum": Object {
@@ -811,7 +875,8 @@ Array [
           "y2": 5,
         },
         "x": 2,
-        "y": 10,
+        "y0": null,
+        "y1": 10,
       },
       Object {
         "datum": Object {
@@ -822,7 +887,8 @@ Array [
           "y2": 3,
         },
         "x": 3,
-        "y": 7,
+        "y0": null,
+        "y1": 7,
       },
       Object {
         "datum": Object {
@@ -833,7 +899,8 @@ Array [
           "y2": 3,
         },
         "x": 6,
-        "y": 7,
+        "y0": null,
+        "y1": 7,
       },
     ],
     "key": Array [
@@ -855,7 +922,8 @@ Array [
           "y2": 4,
         },
         "x": 0,
-        "y": 4,
+        "y0": null,
+        "y1": 4,
       },
       Object {
         "datum": Object {
@@ -866,7 +934,8 @@ Array [
           "y2": 1,
         },
         "x": 1,
-        "y": 1,
+        "y0": null,
+        "y1": 1,
       },
       Object {
         "datum": Object {
@@ -877,7 +946,8 @@ Array [
           "y2": 5,
         },
         "x": 2,
-        "y": 5,
+        "y0": null,
+        "y1": 5,
       },
       Object {
         "datum": Object {
@@ -888,7 +958,8 @@ Array [
           "y2": 3,
         },
         "x": 3,
-        "y": 3,
+        "y0": null,
+        "y1": 3,
       },
       Object {
         "datum": Object {
@@ -899,7 +970,8 @@ Array [
           "y2": 3,
         },
         "x": 6,
-        "y": 3,
+        "y0": null,
+        "y1": 3,
       },
     ],
     "key": Array [
@@ -921,7 +993,8 @@ Array [
           "y2": 6,
         },
         "x": 0,
-        "y": 3,
+        "y0": null,
+        "y1": 3,
       },
       Object {
         "datum": Object {
@@ -932,7 +1005,8 @@ Array [
           "y2": 5,
         },
         "x": 1,
-        "y": 2,
+        "y0": null,
+        "y1": 2,
       },
       Object {
         "datum": Object {
@@ -943,7 +1017,8 @@ Array [
           "y2": 1,
         },
         "x": 2,
-        "y": 3,
+        "y0": null,
+        "y1": 3,
       },
       Object {
         "datum": Object {
@@ -954,7 +1029,8 @@ Array [
           "y2": 4,
         },
         "x": 3,
-        "y": 6,
+        "y0": null,
+        "y1": 6,
       },
       Object {
         "datum": Object {
@@ -965,7 +1041,8 @@ Array [
           "y2": 4,
         },
         "x": 6,
-        "y": 6,
+        "y0": null,
+        "y1": 6,
       },
     ],
     "key": Array [
@@ -987,7 +1064,8 @@ Array [
           "y2": 6,
         },
         "x": 0,
-        "y": 6,
+        "y0": null,
+        "y1": 6,
       },
       Object {
         "datum": Object {
@@ -998,7 +1076,8 @@ Array [
           "y2": 5,
         },
         "x": 1,
-        "y": 5,
+        "y0": null,
+        "y1": 5,
       },
       Object {
         "datum": Object {
@@ -1009,7 +1088,8 @@ Array [
           "y2": 1,
         },
         "x": 2,
-        "y": 1,
+        "y0": null,
+        "y1": 1,
       },
       Object {
         "datum": Object {
@@ -1020,7 +1100,8 @@ Array [
           "y2": 4,
         },
         "x": 3,
-        "y": 4,
+        "y0": null,
+        "y1": 4,
       },
       Object {
         "datum": Object {
@@ -1031,7 +1112,8 @@ Array [
           "y2": 4,
         },
         "x": 6,
-        "y": 4,
+        "y0": null,
+        "y1": 4,
       },
     ],
     "key": Array [
@@ -1053,7 +1135,8 @@ Array [
           "y2": 6,
         },
         "x": 0,
-        "y": 3,
+        "y0": null,
+        "y1": 3,
       },
       Object {
         "datum": Object {
@@ -1064,7 +1147,8 @@ Array [
           "y2": 5,
         },
         "x": 1,
-        "y": 2,
+        "y0": null,
+        "y1": 2,
       },
       Object {
         "datum": Object {
@@ -1075,7 +1159,8 @@ Array [
           "y2": 1,
         },
         "x": 2,
-        "y": 3,
+        "y0": null,
+        "y1": 3,
       },
       Object {
         "datum": Object {
@@ -1086,7 +1171,8 @@ Array [
           "y2": 4,
         },
         "x": 3,
-        "y": 6,
+        "y0": null,
+        "y1": 6,
       },
       Object {
         "datum": Object {
@@ -1097,7 +1183,8 @@ Array [
           "y2": 4,
         },
         "x": 6,
-        "y": 6,
+        "y0": null,
+        "y1": 6,
       },
     ],
     "key": Array [
@@ -1119,7 +1206,8 @@ Array [
           "y2": 6,
         },
         "x": 0,
-        "y": 6,
+        "y0": null,
+        "y1": 6,
       },
       Object {
         "datum": Object {
@@ -1130,7 +1218,8 @@ Array [
           "y2": 5,
         },
         "x": 1,
-        "y": 5,
+        "y0": null,
+        "y1": 5,
       },
       Object {
         "datum": Object {
@@ -1141,7 +1230,8 @@ Array [
           "y2": 1,
         },
         "x": 2,
-        "y": 1,
+        "y0": null,
+        "y1": 1,
       },
       Object {
         "datum": Object {
@@ -1152,7 +1242,8 @@ Array [
           "y2": 4,
         },
         "x": 3,
-        "y": 4,
+        "y0": null,
+        "y1": 4,
       },
       Object {
         "datum": Object {
@@ -1163,7 +1254,8 @@ Array [
           "y2": 4,
         },
         "x": 6,
-        "y": 4,
+        "y0": null,
+        "y1": 4,
       },
     ],
     "key": Array [
@@ -13567,7 +13659,8 @@ Array [
           "y": 1,
         },
         "x": 0,
-        "y": 1,
+        "y0": null,
+        "y1": 1,
       },
       Object {
         "datum": Object {
@@ -13575,7 +13668,8 @@ Array [
           "y": 2,
         },
         "x": 1,
-        "y": 2,
+        "y0": null,
+        "y1": 2,
       },
       Object {
         "datum": Object {
@@ -13583,7 +13677,8 @@ Array [
           "y": 10,
         },
         "x": 2,
-        "y": 10,
+        "y0": null,
+        "y1": 10,
       },
       Object {
         "datum": Object {
@@ -13591,7 +13686,8 @@ Array [
           "y": 6,
         },
         "x": 3,
-        "y": 6,
+        "y0": null,
+        "y1": 6,
       },
     ],
     "key": Array [],
@@ -13612,7 +13708,8 @@ Array [
           "y2": 3,
         },
         "x": 0,
-        "y": 1,
+        "y0": null,
+        "y1": 1,
       },
       Object {
         "datum": Object {
@@ -13621,7 +13718,8 @@ Array [
           "y2": 7,
         },
         "x": 1,
-        "y": 2,
+        "y0": null,
+        "y1": 2,
       },
       Object {
         "datum": Object {
@@ -13630,7 +13728,8 @@ Array [
           "y2": 2,
         },
         "x": 2,
-        "y": 1,
+        "y0": null,
+        "y1": 1,
       },
       Object {
         "datum": Object {
@@ -13639,7 +13738,8 @@ Array [
           "y2": 10,
         },
         "x": 3,
-        "y": 6,
+        "y0": null,
+        "y1": 6,
       },
     ],
     "key": Array [
@@ -13657,7 +13757,8 @@ Array [
           "y2": 3,
         },
         "x": 0,
-        "y": 3,
+        "y0": null,
+        "y1": 3,
       },
       Object {
         "datum": Object {
@@ -13666,7 +13767,8 @@ Array [
           "y2": 7,
         },
         "x": 1,
-        "y": 7,
+        "y0": null,
+        "y1": 7,
       },
       Object {
         "datum": Object {
@@ -13675,7 +13777,8 @@ Array [
           "y2": 2,
         },
         "x": 2,
-        "y": 2,
+        "y0": null,
+        "y1": 2,
       },
       Object {
         "datum": Object {
@@ -13684,7 +13787,8 @@ Array [
           "y2": 10,
         },
         "x": 3,
-        "y": 10,
+        "y0": null,
+        "y1": 10,
       },
     ],
     "key": Array [

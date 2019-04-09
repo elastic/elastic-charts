@@ -40,6 +40,7 @@ describe('Rendering points - line', () => {
         'red',
         CurveType.LINEAR,
         SPEC_ID,
+        false,
         [],
       );
     });
@@ -138,6 +139,7 @@ describe('Rendering points - line', () => {
         'red',
         CurveType.LINEAR,
         spec1Id,
+        false,
         [],
       );
       secondLine = renderLine(
@@ -148,6 +150,7 @@ describe('Rendering points - line', () => {
         'blue',
         CurveType.LINEAR,
         spec2Id,
+        false,
         [],
       );
     });
@@ -270,6 +273,7 @@ describe('Rendering points - line', () => {
         'red',
         CurveType.LINEAR,
         SPEC_ID,
+        false,
         [],
       );
     });
@@ -366,6 +370,7 @@ describe('Rendering points - line', () => {
         'red',
         CurveType.LINEAR,
         spec1Id,
+        false,
         [],
       );
       secondLine = renderLine(
@@ -376,6 +381,7 @@ describe('Rendering points - line', () => {
         'blue',
         CurveType.LINEAR,
         spec2Id,
+        false,
         [],
       );
     });
@@ -497,6 +503,7 @@ describe('Rendering points - line', () => {
         'red',
         CurveType.LINEAR,
         SPEC_ID,
+        false,
         [],
       );
     });
@@ -593,6 +600,7 @@ describe('Rendering points - line', () => {
         'red',
         CurveType.LINEAR,
         spec1Id,
+        false,
         [],
       );
       secondLine = renderLine(
@@ -603,6 +611,7 @@ describe('Rendering points - line', () => {
         'blue',
         CurveType.LINEAR,
         spec2Id,
+        false,
         [],
       );
     });
@@ -711,6 +720,7 @@ describe('Rendering points - line', () => {
         'red',
         CurveType.LINEAR,
         SPEC_ID,
+        false,
         [],
       );
     });

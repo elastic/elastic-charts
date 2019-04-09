@@ -91,13 +91,13 @@ describe('Series', () => {
         specId: getSpecId('spec1'),
         key: ['a'],
         seriesColorKey: 'a',
-        data: [{ x: 1, y: 1 }, { x: 2, y: 2 }, { x: 4, y: 4 }],
+        data: [{ x: 1, y1: 1 }, { x: 2, y1: 2 }, { x: 4, y1: 4 }],
       },
       {
         specId: getSpecId('spec1'),
         key: ['b'],
         seriesColorKey: 'b',
-        data: [{ x: 1, y: 21 }, { x: 3, y: 23 }],
+        data: [{ x: 1, y1: 21 }, { x: 3, y1: 23 }],
       },
     ];
     const stackedValues = formatStackedDataSeriesValues(dataSeries, false);
@@ -109,25 +109,25 @@ describe('Series', () => {
         specId: getSpecId('spec1'),
         key: ['a'],
         seriesColorKey: 'a',
-        data: [{ x: 1, y: 1 }, { x: 2, y: 2 }, { x: 3, y: 3 }, { x: 4, y: 4 }],
+        data: [{ x: 1, y1: 1 }, { x: 2, y1: 2 }, { x: 3, y1: 3 }, { x: 4, y1: 4 }],
       },
       {
         specId: getSpecId('spec1'),
         key: ['b'],
         seriesColorKey: 'b',
-        data: [{ x: 1, y: 1 }, { x: 2, y: 2 }, { x: 3, y: 3 }, { x: 4, y: 4 }],
+        data: [{ x: 1, y1: 1 }, { x: 2, y1: 2 }, { x: 3, y1: 3 }, { x: 4, y1: 4 }],
       },
       {
         specId: getSpecId('spec1'),
         key: ['b'],
         seriesColorKey: 'b',
-        data: [{ x: 1, y: 1 }, { x: 2, y: 2 }, { x: 3, y: 3 }, { x: 4, y: 4 }],
+        data: [{ x: 1, y1: 1 }, { x: 2, y1: 2 }, { x: 3, y1: 3 }, { x: 4, y1: 4 }],
       },
       {
         specId: getSpecId('spec1'),
         key: ['b'],
         seriesColorKey: 'b',
-        data: [{ x: 1, y: 1 }, { x: 2, y: 2 }, { x: 3, y: 3 }, { x: 4, y: 4 }],
+        data: [{ x: 1, y1: 1 }, { x: 2, y1: 2 }, { x: 3, y1: 3 }, { x: 4, y1: 4 }],
       },
     ];
     const stackedValues = formatStackedDataSeriesValues(dataSeries, false);
@@ -139,13 +139,13 @@ describe('Series', () => {
         specId: getSpecId('spec1'),
         key: ['a'],
         seriesColorKey: 'a',
-        data: [{ x: 1, y: 1 }, { x: 4, y: 4 }, { x: 2, y: 2 }],
+        data: [{ x: 1, y1: 1 }, { x: 4, y1: 4 }, { x: 2, y1: 2 }],
       },
       {
         specId: getSpecId('spec1'),
         key: ['b'],
         seriesColorKey: 'b',
-        data: [{ x: 3, y: 23 }, { x: 1, y: 21 }],
+        data: [{ x: 3, y1: 23 }, { x: 1, y1: 21 }],
       },
     ];
     const stackedValues = formatStackedDataSeriesValues(dataSeries, false);
@@ -158,13 +158,13 @@ describe('Series', () => {
         specId: getSpecId('spec1'),
         key: ['a'],
         seriesColorKey: 'a',
-        data: new Array(maxArrayItems).fill(0).map((d, i) => ({ x: i, y: i })),
+        data: new Array(maxArrayItems).fill(0).map((d, i) => ({ x: i, y1: i })),
       },
       {
         specId: getSpecId('spec1'),
         key: ['b'],
         seriesColorKey: 'b',
-        data: new Array(maxArrayItems).fill(0).map((d, i) => ({ x: i, y: i })),
+        data: new Array(maxArrayItems).fill(0).map((d, i) => ({ x: i, y1: i })),
       },
     ];
     const stackedValues = formatStackedDataSeriesValues(dataSeries, false);
@@ -310,10 +310,12 @@ describe('Series', () => {
     const emptyDeselected = getSplittedSeries(seriesSpecs, []);
     expect(emptyDeselected.splittedSeries.get(specId)!.length).toBe(2);
 
-    const deselectedDataSeries: DataSeriesColorsValues[] = [{
-      specId,
-      colorValues: ['y1'],
-    }];
+    const deselectedDataSeries: DataSeriesColorsValues[] = [
+      {
+        specId,
+        colorValues: ['y1'],
+      },
+    ];
     const subsetSplit = getSplittedSeries(seriesSpecs, deselectedDataSeries);
     expect(subsetSplit.splittedSeries.get(specId)!.length).toBe(1);
   });

@@ -40,14 +40,15 @@ describe('Rendering points - areas', () => {
         'red',
         CurveType.LINEAR,
         SPEC_ID,
+        false,
         [],
       );
     });
     test('Can render an line and area paths', () => {
       const {
-        areaGeometry: { line, area, color, geometryId, transform },
+        areaGeometry: { lines, area, color, geometryId, transform },
       } = renderedArea;
-      expect(line).toBe('M0,0L50,50');
+      expect(lines[0]).toBe('M0,0L50,50');
       expect(area).toBe('M0,0L50,50L50,100L0,100Z');
       expect(color).toBe('red');
       expect(geometryId.seriesKey).toEqual([]);
@@ -142,6 +143,7 @@ describe('Rendering points - areas', () => {
         'red',
         CurveType.LINEAR,
         spec1Id,
+        false,
         [],
       );
       secondLine = renderArea(
@@ -152,19 +154,20 @@ describe('Rendering points - areas', () => {
         'blue',
         CurveType.LINEAR,
         spec2Id,
+        false,
         [],
       );
     });
 
     test('Can render two ordinal areas', () => {
-      expect(firstLine.areaGeometry.line).toBe('M0,50L50,75');
+      expect(firstLine.areaGeometry.lines[0]).toBe('M0,50L50,75');
       expect(firstLine.areaGeometry.area).toBe('M0,50L50,75L50,100L0,100Z');
       expect(firstLine.areaGeometry.color).toBe('red');
       expect(firstLine.areaGeometry.geometryId.seriesKey).toEqual([]);
       expect(firstLine.areaGeometry.geometryId.specId).toEqual(spec1Id);
       expect(firstLine.areaGeometry.transform).toEqual({ x: 25, y: 0 });
 
-      expect(secondLine.areaGeometry.line).toBe('M0,0L50,50');
+      expect(secondLine.areaGeometry.lines[0]).toBe('M0,0L50,50');
       expect(secondLine.areaGeometry.area).toBe('M0,0L50,50L50,100L0,100Z');
       expect(secondLine.areaGeometry.color).toBe('blue');
       expect(secondLine.areaGeometry.geometryId.seriesKey).toEqual([]);
@@ -276,11 +279,12 @@ describe('Rendering points - areas', () => {
         'red',
         CurveType.LINEAR,
         SPEC_ID,
+        false,
         [],
       );
     });
     test('Can render a linear area', () => {
-      expect(renderedArea.areaGeometry.line).toBe('M0,0L100,50');
+      expect(renderedArea.areaGeometry.lines[0]).toBe('M0,0L100,50');
       expect(renderedArea.areaGeometry.area).toBe('M0,0L100,50L100,100L0,100Z');
       expect(renderedArea.areaGeometry.color).toBe('red');
       expect(renderedArea.areaGeometry.geometryId.seriesKey).toEqual([]);
@@ -373,6 +377,7 @@ describe('Rendering points - areas', () => {
         'red',
         CurveType.LINEAR,
         spec1Id,
+        false,
         [],
       );
       secondLine = renderArea(
@@ -383,18 +388,19 @@ describe('Rendering points - areas', () => {
         'blue',
         CurveType.LINEAR,
         spec2Id,
+        false,
         [],
       );
     });
     test('can render two linear areas', () => {
-      expect(firstLine.areaGeometry.line).toBe('M0,50L100,75');
+      expect(firstLine.areaGeometry.lines[0]).toBe('M0,50L100,75');
       expect(firstLine.areaGeometry.area).toBe('M0,50L100,75L100,100L0,100Z');
       expect(firstLine.areaGeometry.color).toBe('red');
       expect(firstLine.areaGeometry.geometryId.seriesKey).toEqual([]);
       expect(firstLine.areaGeometry.geometryId.specId).toEqual(spec1Id);
       expect(firstLine.areaGeometry.transform).toEqual({ x: 0, y: 0 });
 
-      expect(secondLine.areaGeometry.line).toBe('M0,0L100,50');
+      expect(secondLine.areaGeometry.lines[0]).toBe('M0,0L100,50');
       expect(secondLine.areaGeometry.area).toBe('M0,0L100,50L100,100L0,100Z');
       expect(secondLine.areaGeometry.color).toBe('blue');
       expect(secondLine.areaGeometry.geometryId.seriesKey).toEqual([]);
@@ -506,11 +512,12 @@ describe('Rendering points - areas', () => {
         'red',
         CurveType.LINEAR,
         SPEC_ID,
+        false,
         [],
       );
     });
     test('Can render a time area', () => {
-      expect(renderedArea.areaGeometry.line).toBe('M0,0L100,50');
+      expect(renderedArea.areaGeometry.lines[0]).toBe('M0,0L100,50');
       expect(renderedArea.areaGeometry.area).toBe('M0,0L100,50L100,100L0,100Z');
       expect(renderedArea.areaGeometry.color).toBe('red');
       expect(renderedArea.areaGeometry.geometryId.seriesKey).toEqual([]);
@@ -603,6 +610,7 @@ describe('Rendering points - areas', () => {
         'red',
         CurveType.LINEAR,
         spec1Id,
+        false,
         [],
       );
       secondLine = renderArea(
@@ -613,6 +621,7 @@ describe('Rendering points - areas', () => {
         'blue',
         CurveType.LINEAR,
         spec2Id,
+        false,
         [],
       );
     });
@@ -721,12 +730,13 @@ describe('Rendering points - areas', () => {
         'red',
         CurveType.LINEAR,
         SPEC_ID,
+        false,
         [],
       );
     });
     test('Can render a splitted area and line', () => {
       // expect(renderedArea.lineGeometry.line).toBe('ss');
-      expect(renderedArea.areaGeometry.line.split('M').length - 1).toBe(3);
+      expect(renderedArea.areaGeometry.lines[0].split('M').length - 1).toBe(3);
       expect(renderedArea.areaGeometry.area.split('M').length - 1).toBe(3);
       expect(renderedArea.areaGeometry.color).toBe('red');
       expect(renderedArea.areaGeometry.geometryId.seriesKey).toEqual([]);
