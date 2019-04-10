@@ -40,6 +40,7 @@ describe('Settings spec component', () => {
     expect(chartStore.showLegend.get()).toEqual(false);
     expect(chartStore.tooltipType.get()).toEqual(DEFAULT_TOOLTIP_TYPE);
     expect(chartStore.tooltipSnap.get()).toEqual(DEFAULT_TOOLTIP_SNAP);
+    expect(chartStore.showLegendDisplayValue.get()).toEqual(true);
     expect(chartStore.legendPosition).toBeUndefined();
     expect(chartStore.debug).toBe(false);
     expect(chartStore.xDomain).toBeUndefined();
@@ -53,6 +54,7 @@ describe('Settings spec component', () => {
       tooltipType: TooltipType.None,
       tooltipSnap: false,
       legendPosition: Position.Bottom,
+      showLegendDisplayValue: false,
       debug: true,
       xDomain: { min: 0, max: 10 },
     };
@@ -67,6 +69,7 @@ describe('Settings spec component', () => {
     expect(chartStore.tooltipType.get()).toEqual(TooltipType.None);
     expect(chartStore.tooltipSnap.get()).toEqual(false);
     expect(chartStore.legendPosition).toBe(Position.Bottom);
+    expect(chartStore.showLegendDisplayValue.get()).toEqual(false);
     expect(chartStore.debug).toBe(true);
     expect(chartStore.xDomain).toEqual({ min: 0, max: 10 });
   });
