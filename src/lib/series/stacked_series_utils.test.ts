@@ -1,6 +1,10 @@
 import { getSpecId } from '../utils/ids';
-import { formatStackedDataSeriesValues, RawDataSeries } from './series';
-import { computeYStackedMapValues, getYValueStackMap } from './stacked_series_utils';
+import { RawDataSeries } from './series';
+import {
+  computeYStackedMapValues,
+  formatStackedDataSeriesValues,
+  getYValueStackMap,
+} from './stacked_series_utils';
 
 describe('Stacked Series Utils', () => {
   const EMPTY_DATA_SET: RawDataSeries[] = [

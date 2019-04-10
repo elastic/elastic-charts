@@ -3,7 +3,6 @@ import { getGroupId, getSpecId, SpecId } from '../utils/ids';
 import { ScaleType } from '../utils/scales/scales';
 import {
   DataSeriesColorsValues,
-  formatStackedDataSeriesValues,
   getFormattedDataseries,
   getSeriesColorMap,
   getSortedDataSeriesColorsValuesMap,
@@ -12,6 +11,7 @@ import {
   splitSeries,
 } from './series';
 import { BasicSeriesSpec } from './specs';
+import { formatStackedDataSeriesValues } from './stacked_series_utils';
 import * as TestDataset from './utils/test_dataset';
 
 describe('Series', () => {

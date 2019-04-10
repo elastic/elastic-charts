@@ -829,15 +829,10 @@ describe('Rendering points - line', () => {
       } = renderedLine;
       // all the points minus the undefined ones on a log scale
       expect(points.length).toBe(7);
-      // all the points
-      expect(indexedGeometries.size).toEqual(9);
+      // all the points expect null geometries
+      expect(indexedGeometries.size).toEqual(8);
       const nullIndexdGeometry = indexedGeometries.get(2)!;
-      expect(nullIndexdGeometry).toBeDefined();
-      expect(nullIndexdGeometry.length).toBe(1);
-      // moved to the bottom of the chart
-      expect(nullIndexdGeometry[0].y).toBe(100);
-      // 0 radius point
-      expect((nullIndexdGeometry[0] as PointGeometry).radius).toBe(0);
+      expect(nullIndexdGeometry).toBeUndefined();
 
       const zeroValueIndexdGeometry = indexedGeometries.get(5)!;
       expect(zeroValueIndexdGeometry).toBeDefined();

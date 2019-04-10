@@ -91,6 +91,38 @@ storiesOf('Area Chart', module)
       </Chart>
     );
   })
+  .add('with log y axis', () => {
+    const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d) => {
+      return d[1] < 7 ? [d[0], null] : [d[0], d[1] - 10];
+    });
+    return (
+      <Chart renderer="canvas" className={'story-chart'}>
+        <Axis
+          id={getAxisId('bottom')}
+          title={'index'}
+          position={Position.Bottom}
+          tickFormat={dateFormatter}
+        />
+        <Axis
+          id={getAxisId('left')}
+          title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
+          position={Position.Left}
+          tickFormat={(d) => Number(d).toFixed(2)}
+        />
+
+        <AreaSeries
+          id={getSpecId('areas')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Log}
+          xAccessor={0}
+          yAccessors={[1]}
+          data={data}
+          curve={CurveType.CURVE_MONOTONE_X}
+          yScaleToDataExtent={false}
+        />
+      </Chart>
+    );
+  })
   .add('with 4 axes', () => {
     return (
       <Chart renderer="canvas" className={'story-chart'}>

@@ -17983,7 +17983,6 @@ Array [
     "counts": Object {
       "areaSeries": 0,
       "barSeries": 0,
-      "basicSeries": 0,
       "lineSeries": 2,
     },
     "dataSeries": Array [

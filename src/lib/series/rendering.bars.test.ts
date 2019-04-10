@@ -191,7 +191,7 @@ describe('Rendering bars', () => {
       });
     });
   });
-  describe('Single series bar chart - lineaar', () => {
+  describe('Single series bar chart - linear', () => {
     const barSeriesSpec: BarSeriesSpec = {
       id: SPEC_ID,
       groupId: GROUP_ID,

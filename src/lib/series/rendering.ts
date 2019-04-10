@@ -102,6 +102,10 @@ export function renderPoints(
         yDatums.unshift(datum.y0);
       }
       yDatums.forEach((yDatum, index) => {
+        // skip rendering point if y1 is null
+        if (datum.y1 === null) {
+          return;
+        }
         let y;
         let radius = 10;
         const isHidden = yDatum === null || (isLogScale && yDatum <= 0);

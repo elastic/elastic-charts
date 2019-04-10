@@ -3,8 +3,9 @@ import { ColorConfig } from '../themes/theme';
 import { Accessor } from '../utils/accessor';
 import { GroupId, SpecId } from '../utils/ids';
 import { splitSpecsByGroupId, YBasicSeriesSpec } from './domains/y_domain';
+import { formatNonStackedDataSeriesValues } from './nonstacked_series_utils';
 import { BasicSeriesSpec, Datum, SeriesAccessors } from './specs';
-import { computeYStackedMapValues, getYValueStackMap } from './stacked_series_utils';
+import { formatStackedDataSeriesValues } from './stacked_series_utils';
 
 export interface RawDataSeriesDatum {
   /** the x value */
@@ -54,7 +55,6 @@ export interface DataSeriesCounts {
   barSeries: number;
   lineSeries: number;
   areaSeries: number;
-  basicSeries: number;
 }
 
 export interface DataSeriesColorsValues {
@@ -259,7 +259,6 @@ export function getRawDataSeries(
     barSeries: 0,
     lineSeries: 0,
     areaSeries: 0,
-    basicSeries: 0,
   };
   const seriesSpecsCount = seriesSpecs.length;
   let i;
@@ -277,9 +276,6 @@ export function getRawDataSeries(
       case 'area':
         counts.areaSeries += ds ? ds.length : 0;
         break;
-      case 'basic':
-        counts.basicSeries += ds ? ds.length : 0;
-        break;
     }
 
     if (ds) {
@@ -290,119 +286,6 @@ export function getRawDataSeries(
     rawDataSeries,
     counts,
   };
-}
-
-export function formatNonStackedDataSeriesValues(
-  dataseries: RawDataSeries[],
-  scaleToExtent: boolean,
-): DataSeries[] {
-  const len = dataseries.length;
-  let i;
-  const formattedValues: DataSeries[] = [];
-  for (i = 0; i < len; i++) {
-    const formattedValue = formatNonStackedDataValues(dataseries[i], scaleToExtent);
-    formattedValues.push(formattedValue);
-  }
-  return formattedValues;
-}
-
-export function formatNonStackedDataValues(
-  dataSeries: RawDataSeries,
-  scaleToExtent: boolean,
-): DataSeries {
-  const len = dataSeries.data.length;
-  let i;
-  const formattedValues: DataSeries = {
-    key: dataSeries.key,
-    specId: dataSeries.specId,
-    seriesColorKey: dataSeries.seriesColorKey,
-    data: [],
-  };
-  for (i = 0; i < len; i++) {
-    const data = dataSeries.data[i];
-    const { x, y1, datum } = data;
-    let y0: number | null;
-    if (scaleToExtent) {
-      y0 = data.y0 ? data.y0 : y1;
-    } else {
-      y0 = data.y0 ? data.y0 : 0;
-    }
-    const formattedValue: DataSeriesDatum = {
-      x,
-      y1,
-      y0,
-      initialY1: y1,
-      initialY0: y0,
-      datum,
-    };
-    formattedValues.data.push(formattedValue);
-  }
-  return formattedValues;
-}
-
-export function formatStackedDataSeriesValues(
-  dataseries: RawDataSeries[],
-  scaleToExtent: boolean,
-): DataSeries[] {
-  const yValueStackMap = getYValueStackMap(dataseries);
-
-  const stackedValues = computeYStackedMapValues(yValueStackMap, scaleToExtent);
-
-  const stackedDataSeries: DataSeries[] = dataseries.map((ds, seriesIndex) => {
-    const newData: DataSeriesDatum[] = [];
-    ds.data.forEach((data) => {
-      const { x, y1, datum } = data;
-      if (stackedValues.get(x) === undefined) {
-        return;
-      }
-      let computedY0: number | null;
-      if (scaleToExtent) {
-        computedY0 = data.y0 ? data.y0 : y1;
-      } else {
-        computedY0 = data.y0 ? data.y0 : 0;
-      }
-      const initialY0 = data.y0 == null ? null : data.y0;
-      if (seriesIndex === 0) {
-        newData.push({
-          x,
-          y1,
-          y0: computedY0,
-          initialY1: y1,
-          initialY0,
-          datum,
-        });
-      } else {
-        const stack = stackedValues.get(x);
-        if (!stack) {
-          return;
-        }
-        const stackY = stack[seriesIndex];
-        const stackedY1 = y1 !== null ? stackY + y1 : null;
-        let stackedY0: number | null = data.y0 == null ? stackY : stackY + data.y0;
-        // configure null y0 if y1 is null
-        // it's semantically right to say y0 is null if y1 is null
-        if (stackedY1 === null) {
-          stackedY0 = null;
-        }
-        newData.push({
-          x,
-          y1: stackedY1,
-          y0: stackedY0,
-          initialY1: y1,
-          initialY0: data.y0 === undefined ? null : data.y0,
-          datum,
-        });
-      }
-    });
-    return {
-      specId: ds.specId,
-      key: ds.key,
-      seriesColorKey: ds.seriesColorKey,
-      data: newData,
-    };
-  });
-
-  return stackedDataSeries;
 }
 
 export function getSplittedSeries(

@@ -2,13 +2,7 @@ import { computeSeriesDomains } from '../../state/utils';
 import { getGroupId, getSpecId } from '../utils/ids';
 import { ScaleType } from '../utils/scales/scales';
 import { CurveType } from './curves';
-import {
-  AreaGeometry,
-  IndexedGeometry,
-  isPointGeometry,
-  PointGeometry,
-  renderArea,
-} from './rendering';
+import { AreaGeometry, IndexedGeometry, PointGeometry, renderArea } from './rendering';
 import { computeXScale, computeYScales } from './scales';
 import { AreaSeriesSpec } from './specs';
 const SPEC_ID = getSpecId('spec_1');
@@ -847,17 +841,10 @@ describe('Rendering points - areas', () => {
       } = renderedArea;
       // all the points minus the undefined ones on a log scale
       expect(points.length).toBe(7);
-      // all the points
-      expect(indexedGeometries.size).toEqual(9);
+      // all the points expect null geometries
+      expect(indexedGeometries.size).toEqual(8);
       const nullIndexdGeometry = indexedGeometries.get(2)!;
-
-      expect(nullIndexdGeometry).toBeDefined();
-      expect(nullIndexdGeometry.length).toBe(1);
-      expect(isPointGeometry(nullIndexdGeometry[0])).toBe(true);
-      // moved to the bottom of the chart
-      expect(nullIndexdGeometry[0].y).toBe(100);
-      // 0 radius point
-      expect((nullIndexdGeometry[0] as PointGeometry).radius).toBe(0);
+      expect(nullIndexdGeometry).toBeUndefined();
 
       const zeroValueIndexdGeometry = indexedGeometries.get(5)!;
       expect(zeroValueIndexdGeometry).toBeDefined();

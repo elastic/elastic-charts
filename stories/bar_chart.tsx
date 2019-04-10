@@ -799,6 +799,55 @@ storiesOf('Bar Chart', module)
       </Chart>
     );
   })
+  .add('single data stacked chart scale to extent', () => {
+    return (
+      <Chart renderer="canvas" className={'story-chart'}>
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} />
+        <Axis
+          id={getAxisId('left2')}
+          title={'Left axis'}
+          position={Position.Left}
+          tickFormat={(d) => Number(d).toFixed(2)}
+        />
+
+        <BarSeries
+          id={getSpecId('bars')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          splitSeriesAccessors={['g']}
+          stackAccessors={['x']}
+          data={[{ x: 0, y: 10, g: 'a' }, { x: 0, y: 20, g: 'b' }, { x: 0, y: 30, g: 'c' }]}
+          yScaleToDataExtent={true}
+        />
+      </Chart>
+    );
+  })
+  .add('single data clustered chart scale to extent', () => {
+    return (
+      <Chart renderer="canvas" className={'story-chart'}>
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} />
+        <Axis
+          id={getAxisId('left2')}
+          title={'Left axis'}
+          position={Position.Left}
+          tickFormat={(d) => Number(d).toFixed(2)}
+        />
+
+        <BarSeries
+          id={getSpecId('bars')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          splitSeriesAccessors={['g']}
+          data={[{ x: 0, y: 10, g: 'a' }, { x: 0, y: 20, g: 'b' }, { x: 0, y: 30, g: 'c' }]}
+          yScaleToDataExtent={true}
+        />
+      </Chart>
+    );
+  })
   .add('negative and positive x values', () => {
     return (
       <Chart renderer="canvas" className={'story-chart'}>
@@ -847,11 +896,15 @@ storiesOf('Bar Chart', module)
     const allPositive = mixed.map((datum) => ({ x: datum.x, y: Math.abs(datum.y) }));
     const allNegative = mixed.map((datum) => ({ x: datum.x, y: Math.abs(datum.y) * -1 }));
 
-    const dataChoice = select('data', {
-      mixed: 'mixed',
-      allPositive: 'all positive',
-      allNegative: 'all negative',
-    }, 'mixed');
+    const dataChoice = select(
+      'data',
+      {
+        mixed: 'mixed',
+        allPositive: 'all positive',
+        allNegative: 'all negative',
+      },
+      'mixed',
+    );
 
     let data = mixed;
     switch (dataChoice) {

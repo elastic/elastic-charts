@@ -1,4 +1,4 @@
-import { RawDataSeries } from './series';
+import { DataSeries, DataSeriesDatum, RawDataSeries } from './series';
 
 /**
  * Map each y value from a RawDataSeries on it's specific x value into,
@@ -45,4 +45,69 @@ export function computeYStackedMapValues(
     stackedValues.set(xValue, stackArray);
   });
   return stackedValues;
+}
+
+export function formatStackedDataSeriesValues(
+  dataseries: RawDataSeries[],
+  scaleToExtent: boolean,
+): DataSeries[] {
+  const yValueStackMap = getYValueStackMap(dataseries);
+
+  const stackedValues = computeYStackedMapValues(yValueStackMap, scaleToExtent);
+
+  const stackedDataSeries: DataSeries[] = dataseries.map((ds, seriesIndex) => {
+    const newData: DataSeriesDatum[] = [];
+    ds.data.forEach((data) => {
+      const { x, y1, datum } = data;
+      if (stackedValues.get(x) === undefined) {
+        return;
+      }
+      let computedY0: number | null;
+      if (scaleToExtent) {
+        computedY0 = data.y0 ? data.y0 : y1;
+      } else {
+        computedY0 = data.y0 ? data.y0 : 0;
+      }
+      const initialY0 = data.y0 == null ? null : data.y0;
+      if (seriesIndex === 0) {
+        newData.push({
+          x,
+          y1,
+          y0: computedY0,
+          initialY1: y1,
+          initialY0,
+          datum,
+        });
+      } else {
+        const stack = stackedValues.get(x);
+        if (!stack) {
+          return;
+        }
+        const stackY = stack[seriesIndex];
+        const stackedY1 = y1 !== null ? stackY + y1 : null;
+        let stackedY0: number | null = data.y0 == null ? stackY : stackY + data.y0;
+        // configure null y0 if y1 is null
+        // it's semantically right to say y0 is null if y1 is null
+        if (stackedY1 === null) {
+          stackedY0 = null;
+        }
+        newData.push({
+          x,
+          y1: stackedY1,
+          y0: stackedY0,
+          initialY1: y1,
+          initialY0,
+          datum,
+        });
+      }
+    });
+    return {
+      specId: ds.specId,
+      key: ds.key,
+      seriesColorKey: ds.seriesColorKey,
+      data: newData,
+    };
+  });
+
+  return stackedDataSeries;
 }
