@@ -121,6 +121,10 @@ $elasticChartsLegendMaxHeight: $euiSize * 4;
 
 .elasticChartsLegendListItem__displayValue {
   text-align: right;
+
+  &.elasticChartsLegendListItem__displayValue--hidden {
+    display: none;
+  }
 }
 
 .elasticChartsLegend__toggle {

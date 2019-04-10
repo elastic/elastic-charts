@@ -91,6 +91,13 @@ class LegendElementComponent extends React.Component<LegendElementProps, LegendE
 
     const colorDot = <EuiIcon type="dot" {...colorDotProps} />;
 
+    const displayValueClassNames = classNames(
+      'elasticChartsLegendListItem__displayValue',
+      {
+        ['elasticChartsLegendListItem__displayValue--hidden']: !isSeriesVisible,
+      },
+    );
+
     return (
       <EuiFlexGroup gutterSize="xs" alignItems="center" responsive={false}>
         <EuiFlexItem grow={false}>
@@ -131,7 +138,7 @@ class LegendElementComponent extends React.Component<LegendElementProps, LegendE
             </EuiContextMenuPanel>
           </EuiPopover>
         </EuiFlexItem>
-        <EuiFlexItem grow={true} className="elasticChartsLegendListItem__displayValue">
+        <EuiFlexItem grow={true} className={displayValueClassNames}>
           {this.renderDisplayValue(displayValue, showLegendDisplayValue)}
         </EuiFlexItem>
       </EuiFlexGroup>
