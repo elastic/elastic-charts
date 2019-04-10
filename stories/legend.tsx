@@ -215,7 +215,7 @@ storiesOf('Legend', module)
       </Chart>
     );
   })
-  .add('display values', () => {
+  .add('display values in legend elements', () => {
     const showLegendDisplayValue = boolean('show display value in legend', true);
     const legendPosition = select('legendPosition', {
       right: Position.Right,
