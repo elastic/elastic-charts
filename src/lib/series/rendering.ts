@@ -165,9 +165,11 @@ export function renderBars(
   const barGeometries: BarGeometry[] = [];
   dataset.forEach((datum) => {
     const { y0, y1, initialY1 } = datum;
+    // don't create a bar if the initialY1 value is null.
     if (initialY1 === null) {
       return;
     }
+    // don't create a bar if the x value is not part of the ordinal scale
     if (xScaleType === ScaleType.Ordinal && !xDomain.includes(datum.x)) {
       return;
     }

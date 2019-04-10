@@ -344,7 +344,7 @@ export function formatStackedDataSeriesValues(
   dataseries: RawDataSeries[],
   scaleToExtent: boolean,
 ): DataSeries[] {
-  const yValueStackMap: Map<any, number[]> = getYValueStackMap(dataseries);
+  const yValueStackMap = getYValueStackMap(dataseries);
 
   const stackedValues = computeYStackedMapValues(yValueStackMap, scaleToExtent);
 
