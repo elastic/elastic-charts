@@ -26,8 +26,31 @@ describe('Settings spec component', () => {
     const chartStore = new ChartStore();
 
     const component = mount(<SettingsComponent chartStore={chartStore} />);
-    component.setProps({ rotation: 90 });
+    component.setProps({
+      theme: DARK_THEME,
+      rotation: 90 as Rotation,
+      rendering: 'svg' as Rendering,
+      animateData: true,
+      showLegend: true,
+      tooltipType: TooltipType.None,
+      tooltipSnap: false,
+      legendPosition: Position.Bottom,
+      showLegendDisplayValue: false,
+      debug: true,
+      xDomain: { min: 0, max: 10 },
+    });
+
+    expect(chartStore.chartTheme).toEqual(DARK_THEME);
     expect(chartStore.chartRotation).toBe(90);
+    expect(chartStore.chartRendering).toBe('svg');
+    expect(chartStore.animateData).toBe(true);
+    expect(chartStore.showLegend.get()).toEqual(true);
+    expect(chartStore.tooltipType.get()).toEqual(TooltipType.None);
+    expect(chartStore.tooltipSnap.get()).toEqual(false);
+    expect(chartStore.legendPosition).toBe(Position.Bottom);
+    expect(chartStore.showLegendDisplayValue.get()).toEqual(false);
+    expect(chartStore.debug).toBe(true);
+    expect(chartStore.xDomain).toEqual({ min: 0, max: 10 });
   });
 
   test('should set chart properties on chart store', () => {
