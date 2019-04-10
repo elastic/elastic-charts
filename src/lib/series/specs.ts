@@ -1,4 +1,11 @@
-import { AnnotationLineStyle, GridLineConfig } from '../themes/theme';
+import {
+  AnnotationLineStyle,
+  AreaSeriesStyle,
+  BarSeriesStyle,
+  GridLineConfig,
+  LineSeriesStyle,
+  SharedGeometryStyle,
+} from '../themes/theme';
 import { Accessor } from '../utils/accessor';
 import { AnnotationId, AxisId, GroupId, SpecId } from '../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../utils/scales/scales';
@@ -94,6 +101,8 @@ export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales;
 export type BarSeriesSpec = BasicSeriesSpec & {
   /** @default bar */
   seriesType: 'bar';
+  /** Custom series style (takes precedence over custom theme style) */
+  seriesStyle?: BarSeriesStyle & SharedGeometryStyle;
 };
 
 /**
@@ -102,6 +111,8 @@ export type BarSeriesSpec = BasicSeriesSpec & {
 export type LineSeriesSpec = BasicSeriesSpec & {
   /** @default line */
   seriesType: 'line';
+  /** Custom series style (takes precedence over custom theme style) */
+  seriesStyle?: LineSeriesStyle & SharedGeometryStyle;
   curve?: CurveType;
 };
 
@@ -111,6 +122,8 @@ export type LineSeriesSpec = BasicSeriesSpec & {
 export type AreaSeriesSpec = BasicSeriesSpec & {
   /** @default area */
   seriesType: 'area';
+  /** Custom series style (takes precedence over custom theme style) */
+  seriesStyle?: AreaSeriesStyle & SharedGeometryStyle;
   /** The type of interpolator to be used to interpolate values between points */
   curve?: CurveType;
 };
