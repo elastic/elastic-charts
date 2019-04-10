@@ -404,8 +404,6 @@ storiesOf('Area Chart', module)
           yAccessors={['max']}
           y0Accessors={['min']}
           data={data}
-          // this is a temporary hack to display names for min and max values
-          splitSeriesAccessors={['fake']}
           yScaleToDataExtent={scaleToDataExtent}
           curve={CurveType.CURVE_MONOTONE_X}
         />

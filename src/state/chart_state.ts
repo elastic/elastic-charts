@@ -39,7 +39,7 @@ import {
   Rendering,
   Rotation,
 } from '../lib/series/specs';
-import { formatTooltip, formatXTooltipValue, getSeriesTooltipValues } from '../lib/series/tooltip';
+import { formatTooltip, getSeriesTooltipValues } from '../lib/series/tooltip';
 import { LIGHT_THEME } from '../lib/themes/light_theme';
 import { mergeWithDefaultAnnotationLine, Theme } from '../lib/themes/theme';
 import { computeChartDimensions, Dimensions } from '../lib/utils/dimensions';
@@ -330,7 +330,6 @@ export class ChartStore {
       (acc, indexedGeometry) => {
         const {
           geometryId: { specId },
-          color,
         } = indexedGeometry;
         const spec = this.seriesSpecs.get(specId);
 
@@ -361,15 +360,15 @@ export class ChartStore {
         }
 
         // format the tooltip values
-        const formattedTooltip = formatTooltip(indexedGeometry, spec, color, isHighlighted, yAxis);
+        const formattedTooltip = formatTooltip(indexedGeometry, spec, false, isHighlighted, yAxis);
 
         // format only one time the x value
         if (!xValueInfo) {
-          xValueInfo = formatXTooltipValue(indexedGeometry, spec, color, xAxis);
-          return [xValueInfo, ...acc, ...formattedTooltip];
+          xValueInfo = formatTooltip(indexedGeometry, spec, true, false, xAxis);
+          return [xValueInfo, ...acc, formattedTooltip];
         }
 
-        return [...acc, ...formattedTooltip];
+        return [...acc, formattedTooltip];
       },
       [] as TooltipValue[],
     );

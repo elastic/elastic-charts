@@ -90,7 +90,7 @@ export function areIndexedGeometryArraysEquals(arr1: IndexedGeometry[], arr2: In
   if (arr1.length !== arr2.length) {
     return false;
   }
-  for (let i = arr1.length; i--;) {
+  for (let i = arr1.length; i--; ) {
     return areIndexedGeomsEquals(arr1[i], arr2[i]);
   }
   return true;

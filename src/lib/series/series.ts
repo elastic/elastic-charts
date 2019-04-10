@@ -156,9 +156,11 @@ function updateSeriesMap(
  * Get the array of values that forms a series key
  */
 function getAccessorsValues(datum: Datum, accessors: Accessor[] = []): any[] {
-  return accessors.map((accessor) => {
-    return datum[accessor];
-  });
+  return accessors
+    .map((accessor) => {
+      return datum[accessor];
+    })
+    .filter((value) => value !== undefined);
 }
 
 /**
