@@ -1073,4 +1073,71 @@ storiesOf('Bar Chart', module)
         />
       </Chart>
     );
+  })
+  .add('[test] - clustered bar chart with null bars', () => {
+    const data = [
+      [1, 1, 3, 'a'],
+      [2, null, 4, 'a'],
+      [3, 3, 5, 'a'],
+      [4, 4, 6, 'a'],
+      [1, 1, 3, 'b'],
+      [2, 2, 4, 'b'],
+      [3, 3, 5, 'b'],
+      [4, 4, 6, 'b'],
+    ];
+    return (
+      <Chart renderer="canvas" className={'story-chart'}>
+        <Axis id={getAxisId('bottom')} title={'index'} position={Position.Bottom} />
+        <Axis
+          id={getAxisId('left')}
+          title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
+          position={Position.Left}
+          tickFormat={(d) => Number(d).toFixed(2)}
+        />
+        <BarSeries
+          id={getSpecId('lines')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor={0}
+          yAccessors={[1]}
+          splitSeriesAccessors={[3]}
+          data={data}
+          yScaleToDataExtent={false}
+        />
+      </Chart>
+    );
+  })
+  .add('[test] - stacked bar chart with null bars', () => {
+    const data = [
+      [1, 1, 3, 'a'],
+      [2, null, 4, 'a'],
+      [3, 3, 5, 'a'],
+      [4, 4, 6, 'a'],
+      [1, 1, 3, 'b'],
+      [2, 2, 4, 'b'],
+      [3, null, 5, 'b'],
+      [4, 4, 6, 'b'],
+    ];
+    return (
+      <Chart renderer="canvas" className={'story-chart'}>
+        <Axis id={getAxisId('bottom')} title={'index'} position={Position.Bottom} />
+        <Axis
+          id={getAxisId('left')}
+          title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
+          position={Position.Left}
+          tickFormat={(d) => Number(d).toFixed(2)}
+        />
+        <BarSeries
+          id={getSpecId('lines')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor={0}
+          yAccessors={[1]}
+          splitSeriesAccessors={[3]}
+          stackAccessors={[0]}
+          data={data}
+          yScaleToDataExtent={false}
+        />
+      </Chart>
+    );
   });

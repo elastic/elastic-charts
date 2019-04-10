@@ -165,7 +165,9 @@ export function renderBars(
   const barGeometries: BarGeometry[] = [];
   dataset.forEach((datum) => {
     const { y0, y1, initialY1 } = datum;
-
+    if (initialY1 === null) {
+      return;
+    }
     if (xScaleType === ScaleType.Ordinal && !xDomain.includes(datum.x)) {
       return;
     }

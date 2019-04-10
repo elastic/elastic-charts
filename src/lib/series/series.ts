@@ -4,6 +4,7 @@ import { Accessor } from '../utils/accessor';
 import { GroupId, SpecId } from '../utils/ids';
 import { splitSpecsByGroupId, YBasicSeriesSpec } from './domains/y_domain';
 import { BasicSeriesSpec, Datum, SeriesAccessors } from './specs';
+import { computeYStackedMapValues, getYValueStackMap } from './stacked_series_utils';
 
 export interface RawDataSeriesDatum {
   /** the x value */
@@ -343,32 +344,9 @@ export function formatStackedDataSeriesValues(
   dataseries: RawDataSeries[],
   scaleToExtent: boolean,
 ): DataSeries[] {
-  const stackMap = new Map<any, number[]>();
-  dataseries.forEach((ds, index) => {
-    ds.data.forEach((datum) => {
-      const stack = stackMap.get(datum.x) || new Array(dataseries.length).fill(0);
-      if (datum.y1 !== null) {
-        stack[index] = datum.y1;
-        stackMap.set(datum.x, stack);
-      }
-    });
-  });
-  const stackedValues = new Map<any, number[]>();
-  stackMap.forEach((value, key) => {
-    const stackArray = value.reduce(
-      (stackedValue, currentValue, index) => {
-        if (stackedValue.length === 0) {
-          if (scaleToExtent) {
-            return [currentValue, currentValue];
-          }
-          return [0, currentValue];
-        }
-        return [...stackedValue, stackedValue[index] + currentValue];
-      },
-      [] as number[],
-    );
-    stackedValues.set(key, stackArray);
-  });
+  const yValueStackMap: Map<any, number[]> = getYValueStackMap(dataseries);
+
+  const stackedValues = computeYStackedMapValues(yValueStackMap, scaleToExtent);
 
   const stackedDataSeries: DataSeries[] = dataseries.map((ds, seriesIndex) => {
     const newData: DataSeriesDatum[] = [];
@@ -383,13 +361,14 @@ export function formatStackedDataSeriesValues(
       } else {
         computedY0 = data.y0 ? data.y0 : 0;
       }
+      const initialY0 = data.y0 == null ? null : data.y0;
       if (seriesIndex === 0) {
         newData.push({
           x,
           y1,
           y0: computedY0,
           initialY1: y1,
-          initialY0: computedY0,
+          initialY0,
           datum,
         });
       } else {
@@ -399,13 +378,18 @@ export function formatStackedDataSeriesValues(
         }
         const stackY = stack[seriesIndex];
         const stackedY1 = y1 !== null ? stackY + y1 : null;
-        const stackedY0 = data.y0 == null ? stackY : stackY + data.y0;
+        let stackedY0: number | null = data.y0 == null ? stackY : stackY + data.y0;
+        // configure null y0 if y1 is null
+        // it's semantically right to say y0 is null if y1 is null
+        if (stackedY1 === null) {
+          stackedY0 = null;
+        }
         newData.push({
           x,
           y1: stackedY1,
           y0: stackedY0,
           initialY1: y1,
-          initialY0: data.y0 || null,
+          initialY0: data.y0 === undefined ? null : data.y0,
           datum,
         });
       }
