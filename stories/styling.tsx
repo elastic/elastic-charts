@@ -25,6 +25,7 @@ import {
   Settings,
 } from '../src/';
 import * as TestDatasets from '../src/lib/series/utils/test_dataset';
+// import { GeometryStyle } from '../src/lib/series/rendering';
 
 function range(
   title: string,
@@ -351,23 +352,25 @@ storiesOf('Stylings', module)
       </Chart>
     );
   })
-  .add('custom series colors through spec props', () => {
+  .add('custom series styles: bars', () => {
     const barCustomSeriesColors: CustomSeriesColorsMap = new Map();
     const barDataSeriesColorValues: DataSeriesColorsValues = {
       colorValues: ['cloudflare.com', 'direct-cdn', 'y2'],
       specId: getSpecId('bars'),
     };
 
-    const lineCustomSeriesColors: CustomSeriesColorsMap = new Map();
-    const lineDataSeriesColorValues: DataSeriesColorsValues = {
-      colorValues: [],
-      specId: getSpecId('lines'),
-    };
-
     const customBarColorKnob = color('barDataSeriesColor', '#000');
-    const customLineColorKnob = color('lineDataSeriesColor', '#ff0');
     barCustomSeriesColors.set(barDataSeriesColorValues, customBarColorKnob);
-    lineCustomSeriesColors.set(lineDataSeriesColorValues, customLineColorKnob);
+
+    // const barSeriesStyle: BarSeriesStyle & GeometryStyle = {
+    //   border: {
+    //     stroke: color('borderStroke', 'white', 'bar'),
+    //     strokeWidth: range('strokeWidth', 0, 10, 1, 'bar'),
+    //     visible: boolean('borderVisible', true, 'bar'),
+    //   },
+    //   opacity: range('opacity', 0, 1, 1, 'Shared', 0.05),
+    //   fill:
+    // },
 
     return (
       <Chart renderer="canvas" className={'story-chart'}>
@@ -375,7 +378,6 @@ storiesOf('Stylings', module)
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
-          // title={'Bottom axis'}
           showOverlappingTicks={true}
         />
         <Axis
@@ -395,6 +397,72 @@ storiesOf('Stylings', module)
           customSeriesColors={barCustomSeriesColors}
           data={TestDatasets.BARCHART_2Y2G}
           yScaleToDataExtent={false}
+        />
+      </Chart>
+    );
+  })
+  .add('custom series styles: lines', () => {
+    const lineCustomSeriesColors: CustomSeriesColorsMap = new Map();
+    const lineDataSeriesColorValues: DataSeriesColorsValues = {
+      colorValues: [],
+      specId: getSpecId('lines'),
+    };
+
+    const customLineColorKnob = color('lineDataSeriesColor', '#9F2C8A');
+    lineCustomSeriesColors.set(lineDataSeriesColorValues, customLineColorKnob);
+
+    return (
+      <Chart renderer="canvas" className={'story-chart'}>
+        <Settings showLegend={true} legendPosition={Position.Right} />
+        <Axis
+          id={getAxisId('bottom')}
+          position={Position.Bottom}
+          // title={'Bottom axis'}
+          showOverlappingTicks={true}
+        />
+        <Axis
+          id={getAxisId('left2')}
+          title={'Left axis'}
+          position={Position.Left}
+          tickFormat={(d) => Number(d).toFixed(2)}
+        />
+        <LineSeries
+          id={getSpecId('lines')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          customSeriesColors={lineCustomSeriesColors}
+          data={[{ x: 0, y: 3 }, { x: 1, y: 2 }, { x: 2, y: 4 }, { x: 3, y: 10 }]}
+          yScaleToDataExtent={false}
+        />
+      </Chart>
+    );
+  })
+  .add('custom series styles: area', () => {
+    const lineCustomSeriesColors: CustomSeriesColorsMap = new Map();
+    const lineDataSeriesColorValues: DataSeriesColorsValues = {
+      colorValues: [],
+      specId: getSpecId('lines'),
+    };
+
+    const customLineColorKnob = color('lineDataSeriesColor', '#9F2C8A');
+    lineCustomSeriesColors.set(lineDataSeriesColorValues, customLineColorKnob);
+
+    return (
+      <Chart renderer="canvas" className={'story-chart'}>
+        <Settings showLegend={true} legendPosition={Position.Right} />
+        <Axis
+          id={getAxisId('bottom')}
+          position={Position.Bottom}
+          // title={'Bottom axis'}
+          showOverlappingTicks={true}
+        />
+        <Axis
+          id={getAxisId('left2')}
+          title={'Left axis'}
+          position={Position.Left}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
         <LineSeries
           id={getSpecId('lines')}
