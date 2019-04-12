@@ -20,7 +20,7 @@ interface LineGeometriesDataState {
 export class LineGeometries extends React.PureComponent<
   LineGeometriesDataProps,
   LineGeometriesDataState
-> {
+  > {
   static defaultProps: Partial<LineGeometriesDataProps> = {
     animated: false,
   };
@@ -38,30 +38,39 @@ export class LineGeometries extends React.PureComponent<
 
     return (
       <Group ref={this.barSeriesRef} key={'bar_series'}>
-        {line.visible && this.renderLineGeoms()}
-        {point.visible && this.renderLinePoints()}
+        {this.renderLineGeoms(line.visible)}
+        {this.renderLinePoints(point.visible)}
       </Group>
     );
   }
 
-  private renderLinePoints = (): JSX.Element[] => {
+  private renderLinePoints = (themeIsVisible: boolean): JSX.Element[] => {
     const { lines } = this.props;
     return lines.reduce(
       (acc, glyph, i) => {
         const { points } = glyph;
-        return [...acc, ...this.renderPoints(points, i)];
+        return [...acc, ...this.renderPoints(points, i, themeIsVisible)];
       },
       [] as JSX.Element[],
     );
   }
 
-  private renderPoints = (linePoints: PointGeometry[], lineIndex: number): JSX.Element[] => {
+  private renderPoints = (
+    linePoints: PointGeometry[],
+    lineIndex: number,
+    themeIsVisible: boolean,
+  ): JSX.Element[] => {
     const { radius, strokeWidth, opacity } = this.props.style.point;
+    const linePointsElements: JSX.Element[] = [];
+    linePoints.forEach((linePoint, pointIndex) => {
+      const { x, y, color, transform, seriesPointStyle } = linePoint;
+      const isVisible = seriesPointStyle ? seriesPointStyle.visible : themeIsVisible;
+      if (!isVisible) {
+        return;
+      }
 
-    return linePoints.map((linePoint, pointIndex) => {
-      const { x, y, color, transform } = linePoint;
       if (this.props.animated) {
-        return (
+        linePointsElements.push(
           <Group key={`line-point-group-${lineIndex}-${pointIndex}`} x={transform.x}>
             <Spring native from={{ y }} to={{ y }}>
               {(props: { y: number }) => {
@@ -74,12 +83,12 @@ export class LineGeometries extends React.PureComponent<
                   color,
                   strokeWidth,
                   opacity,
+                  seriesPointStyle,
                 });
                 return <animated.Circle {...pointProps} />;
               }}
             </Spring>
-          </Group>
-        );
+          </Group>);
       } else {
         const pointProps = buildLinePointProps({
           lineIndex,
@@ -90,26 +99,39 @@ export class LineGeometries extends React.PureComponent<
           color,
           strokeWidth,
           opacity,
+          seriesPointStyle,
         });
-        return <Circle {...pointProps} />;
+        linePointsElements.push(<Circle {...pointProps} />);
       }
     });
+    return linePointsElements;
   }
 
-  private renderLineGeoms = (): JSX.Element[] => {
+  private renderLineGeoms = (themeIsVisible: boolean): JSX.Element[] => {
     const { style, lines, sharedStyle } = this.props;
     const { strokeWidth } = style.line;
-    return lines.map((glyph, index) => {
-      const { line, color, transform, geometryId } = glyph;
+
+    const lineElements: JSX.Element[] = [];
+
+    lines.forEach((glyph, index) => {
+      const { line, color, transform, geometryId, seriesLineStyle } = glyph;
+      const isVisible = seriesLineStyle ? seriesLineStyle.visible : themeIsVisible;
+
+      if (!isVisible) {
+        return;
+      }
+
+      const customOpacity = seriesLineStyle ? seriesLineStyle.opacity : undefined;
 
       const geometryStyle = getGeometryStyle(
         geometryId,
         this.props.highlightedLegendItem,
         sharedStyle,
+        customOpacity,
       );
 
       if (this.props.animated) {
-        return (
+        lineElements.push(
           <Group key={index} x={transform.x}>
             <Spring native reset from={{ opacity: 0 }} to={{ opacity: 1 }}>
               {(props: { opacity: number }) => {
@@ -118,25 +140,26 @@ export class LineGeometries extends React.PureComponent<
                   linePath: line,
                   color,
                   strokeWidth,
-                  opacity: props.opacity,
                   geometryStyle,
+                  seriesLineStyle,
                 });
                 return <animated.Path {...lineProps} />;
               }}
             </Spring>
-          </Group>
-        );
+          </Group>);
       } else {
         const lineProps = buildLineProps({
           index,
           linePath: line,
           color,
           strokeWidth,
-          opacity: 1,
           geometryStyle,
+          seriesLineStyle,
         });
-        return <Path {...lineProps} />;
+        lineElements.push(<Path {...lineProps} />);
       }
     });
+
+    return lineElements;
   }
 }

@@ -48,6 +48,31 @@ function range(
   );
 }
 
+function generateLineSeriesStyleKnobs(index: number) {
+  const groupName = `lines${index}`;
+  return {
+    line: {
+      stroke: DEFAULT_MISSING_COLOR,
+      strokeWidth: range(`lineStrokeWidth ${index}`, 0, 10, 1, groupName),
+      visible: boolean(`lineVisible ${index}`, true, groupName),
+      opacity: range(`lineOpacity ${index}`, 0, 1, 1, groupName, 0.01),
+    },
+    border: {
+      stroke: 'gray',
+      strokeWidth: 2,
+      visible: false,
+    },
+    point: {
+      visible: boolean(`linePointVisible ${index}`, true, groupName),
+      radius: range(`linePointRadius ${index}`, 0, 20, 1, groupName, 0.5),
+      // not customizable
+      stroke: 'red',
+      strokeWidth: 0.5,
+      opacity: range(`linePointOpacity ${index}`, 0, 1, 1, groupName, 0.01),
+    },
+  };
+}
+
 const dg = new DataGenerator();
 const data1 = dg.generateGroupedSeries(40, 4);
 const data2 = dg.generateSimpleSeries(40);
@@ -497,6 +522,12 @@ storiesOf('Stylings', module)
     );
   })
   .add('custom series styles: lines', () => {
+    const lineSeriesStyle1 = generateLineSeriesStyleKnobs(1);
+    const lineSeriesStyle2 = generateLineSeriesStyleKnobs(2);
+
+    const dataset1 = [{ x: 0, y: 3 }, { x: 1, y: 2 }, { x: 2, y: 4 }, { x: 3, y: 10 }];
+    const dataset2 = dataset1.map((datum) => ({ ...datum, y: datum.y - 1 }));
+
     return (
       <Chart renderer="canvas" className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
@@ -513,13 +544,24 @@ storiesOf('Stylings', module)
           tickFormat={(d) => Number(d).toFixed(2)}
         />
         <LineSeries
-          id={getSpecId('lines')}
+          id={getSpecId('lines1')}
           xScaleType={ScaleType.Linear}
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y']}
-          data={[{ x: 0, y: 3 }, { x: 1, y: 2 }, { x: 2, y: 4 }, { x: 3, y: 10 }]}
+          data={dataset1}
           yScaleToDataExtent={false}
+          lineSeriesStyle={lineSeriesStyle1}
+        />
+        <LineSeries
+          id={getSpecId('lines2')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          data={dataset2}
+          yScaleToDataExtent={false}
+          lineSeriesStyle={lineSeriesStyle2}
         />
       </Chart>
     );

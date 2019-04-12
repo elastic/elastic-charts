@@ -156,6 +156,38 @@ describe('[canvas] Line Geometries', () => {
       perfectDrawEnabled: false,
       listening: false,
     });
+
+    const seriesPointStyle = buildLinePointProps({
+      lineIndex: 1,
+      pointIndex: 2,
+      x: 10,
+      y: 20,
+      radius: 30,
+      strokeWidth: 2,
+      color: 'red',
+      opacity: 0.5,
+      seriesPointStyle: {
+        stroke: 'series-stroke',
+        strokeWidth: 6,
+        visible: true,
+        radius: 12,
+        opacity: 18,
+      },
+    });
+    expect(seriesPointStyle).toEqual({
+      key: 'line-point-1-2',
+      x: 10,
+      y: 20,
+      radius: 12,
+      strokeWidth: 2,
+      strokeEnabled: true,
+      stroke: 'red',
+      fill: 'white',
+      opacity: 18,
+      strokeHitEnabled: false,
+      perfectDrawEnabled: false,
+      listening: false,
+    });
   });
   test('can build line path props', () => {
     const props = buildLineProps({
@@ -163,7 +195,6 @@ describe('[canvas] Line Geometries', () => {
       linePath: 'M0,0L10,10Z',
       color: 'red',
       strokeWidth: 1,
-      opacity: 0.3,
       geometryStyle: {
         opacity: 0.5,
       },
@@ -181,6 +212,33 @@ describe('[canvas] Line Geometries', () => {
       listening: false,
     });
     expect(props.fill).toBeFalsy();
+
+    const seriesLineStyleProps = buildLineProps({
+      index: 1,
+      linePath: 'M0,0L10,10Z',
+      color: 'red',
+      strokeWidth: 1,
+      geometryStyle: {
+        opacity: 0.5,
+      },
+      seriesLineStyle: {
+        stroke: 'series-stroke',
+        strokeWidth: 66,
+        visible: true,
+      },
+    });
+    expect(seriesLineStyleProps).toEqual({
+      key: `line-1`,
+      data: 'M0,0L10,10Z',
+      stroke: 'red',
+      strokeWidth: 66,
+      lineCap: 'round',
+      lineJoin: 'round',
+      opacity: 0.5,
+      strokeHitEnabled: false,
+      perfectDrawEnabled: false,
+      listening: false,
+    });
   });
 });
 

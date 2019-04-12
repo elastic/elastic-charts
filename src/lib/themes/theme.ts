@@ -94,10 +94,14 @@ export interface BarSeriesStyle {
 export type CustomBarSeriesStyle = BarSeriesStyle & Partial<Opacity>;
 
 export interface LineSeriesStyle {
-  line: StrokeStyle & Visible;
+  line: LineStyle;
   border: StrokeStyle & Visible;
-  point: StrokeStyle & Opacity & Visible & Radius;
+  point: PointStyle;
 }
+
+export type PointStyle = StrokeStyle & Opacity & Visible & Radius;
+export type LineStyle = StrokeStyle & Visible & Partial<Opacity>;
+
 export interface AreaSeriesStyle {
   area: FillStyle & Opacity & Visible;
   line: StrokeStyle & Visible;

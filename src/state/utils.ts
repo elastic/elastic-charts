@@ -362,6 +362,7 @@ export function renderGeometries(
         break;
       case 'line':
         const lineShift = clusteredCount > 0 ? clusteredCount : 1;
+        const lineStyle = spec.lineSeriesStyle;
         const renderedLines = renderLine(
           // move the point on half of the bandwidth if we have mixed bars/lines
           (xScale.bandwidth * lineShift) / 2,
@@ -373,6 +374,7 @@ export function renderGeometries(
           ds.specId,
           Boolean(spec.y0Accessors),
           ds.key,
+          lineStyle,
         );
         lineGeometriesIndex = mergeGeometriesIndexes(
           lineGeometriesIndex,

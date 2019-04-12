@@ -1,6 +1,6 @@
 import { area, line } from 'd3-shape';
 import { mutableIndexedGeometryMapUpsert } from '../../state/utils';
-import { CustomBarSeriesStyle, SharedGeometryStyle } from '../themes/theme';
+import { CustomBarSeriesStyle, LineSeriesStyle, LineStyle, PointStyle, SharedGeometryStyle } from '../themes/theme';
 import { SpecId } from '../utils/ids';
 import { isLogarithmicScale } from '../utils/scales/scale_continuous';
 import { Scale, ScaleType } from '../utils/scales/scales';
@@ -38,6 +38,7 @@ export interface PointGeometry {
   };
   geometryId: GeometryId;
   value: GeometryValue;
+  seriesPointStyle?: PointStyle;
 }
 export interface BarGeometry {
   x: number;
@@ -58,6 +59,7 @@ export interface LineGeometry {
     y: number;
   };
   geometryId: GeometryId;
+  seriesLineStyle?: LineStyle;
 }
 export interface AreaGeometry {
   area: string;
@@ -87,6 +89,7 @@ export function renderPoints(
   specId: SpecId,
   hasY0Accessors: boolean,
   seriesKey: any[],
+  seriesPointStyle?: PointStyle,
 ): {
   pointGeometries: PointGeometry[];
   indexedGeometries: Map<any, IndexedGeometry[]>;
@@ -136,6 +139,7 @@ export function renderPoints(
             specId,
             seriesKey,
           },
+          seriesPointStyle,
         };
         mutableIndexedGeometryMapUpsert(indexedGeometries, datum.x, pointGeometry);
         if (!isHidden) {
@@ -233,6 +237,7 @@ export function renderLine(
   specId: SpecId,
   hasY0Accessors: boolean,
   seriesKey: any[],
+  seriesStyle?: LineSeriesStyle,
 ): {
   lineGeometry: LineGeometry;
   indexedGeometries: Map<any, IndexedGeometry[]>;
@@ -246,6 +251,10 @@ export function renderLine(
     .curve(getCurveFactory(curve));
   const y = 0;
   const x = shift;
+
+  const pointStyle = seriesStyle ? seriesStyle.point : undefined;
+  const seriesLineStyle = seriesStyle ? seriesStyle.line : undefined;
+
   const { pointGeometries, indexedGeometries } = renderPoints(
     shift,
     dataset,
@@ -255,6 +264,7 @@ export function renderLine(
     specId,
     hasY0Accessors,
     seriesKey,
+    pointStyle,
   );
   const lineGeometry = {
     line: pathGenerator(dataset) || '',
@@ -268,6 +278,7 @@ export function renderLine(
       specId,
       seriesKey,
     },
+    seriesLineStyle,
   };
   return {
     lineGeometry,
