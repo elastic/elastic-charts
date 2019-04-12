@@ -25,7 +25,6 @@ import {
   Settings,
 } from '../src/';
 import * as TestDatasets from '../src/lib/series/utils/test_dataset';
-// import { GeometryStyle } from '../src/lib/series/rendering';
 
 function range(
   title: string,
@@ -48,14 +47,13 @@ function range(
   );
 }
 
-function generateLineSeriesStyleKnobs(index: number) {
-  const groupName = `lines${index}`;
+function generateLineSeriesStyleKnobs(groupName: string) {
   return {
     line: {
       stroke: DEFAULT_MISSING_COLOR,
-      strokeWidth: range(`lineStrokeWidth ${index}`, 0, 10, 1, groupName),
-      visible: boolean(`lineVisible ${index}`, true, groupName),
-      opacity: range(`lineOpacity ${index}`, 0, 1, 1, groupName, 0.01),
+      strokeWidth: range(`lineStrokeWidth (${groupName})`, 0, 10, 1, groupName),
+      visible: boolean(`lineVisible (${groupName})`, true, groupName),
+      opacity: range(`lineOpacity (${groupName})`, 0, 1, 1, groupName, 0.01),
     },
     border: {
       stroke: 'gray',
@@ -63,12 +61,12 @@ function generateLineSeriesStyleKnobs(index: number) {
       visible: false,
     },
     point: {
-      visible: boolean(`linePointVisible ${index}`, true, groupName),
-      radius: range(`linePointRadius ${index}`, 0, 20, 1, groupName, 0.5),
+      visible: boolean(`linePointVisible (${groupName})`, true, groupName),
+      radius: range(`linePointRadius (${groupName})`, 0, 20, 1, groupName, 0.5),
       // not customizable
       stroke: 'red',
       strokeWidth: 0.5,
-      opacity: range(`linePointOpacity ${index}`, 0, 1, 1, groupName, 0.01),
+      opacity: range(`linePointOpacity (${groupName})`, 0, 1, 1, groupName, 0.01),
     },
   };
 }
@@ -522,15 +520,22 @@ storiesOf('Stylings', module)
     );
   })
   .add('custom series styles: lines', () => {
-    const lineSeriesStyle1 = generateLineSeriesStyleKnobs(1);
-    const lineSeriesStyle2 = generateLineSeriesStyleKnobs(2);
+    const useOnlyChartTheme = boolean('ignore series style (use only chart theme)', false, 'chartTheme');
+    const lineSeriesStyle1 = useOnlyChartTheme ? undefined : generateLineSeriesStyleKnobs('lines1');
+    const lineSeriesStyle2 = useOnlyChartTheme ? undefined : generateLineSeriesStyleKnobs('lines2');
+
+    const chartTheme = {
+      ...LIGHT_THEME,
+      lineSeriesStyle: generateLineSeriesStyleKnobs('chartTheme'),
+    };
 
     const dataset1 = [{ x: 0, y: 3 }, { x: 1, y: 2 }, { x: 2, y: 4 }, { x: 3, y: 10 }];
     const dataset2 = dataset1.map((datum) => ({ ...datum, y: datum.y - 1 }));
+    const dataset3 = dataset1.map((datum) => ({ ...datum, y: datum.y - 2 }));
 
     return (
       <Chart renderer="canvas" className={'story-chart'}>
-        <Settings showLegend={true} legendPosition={Position.Right} />
+        <Settings showLegend={true} legendPosition={Position.Right} theme={chartTheme} />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
@@ -562,6 +567,15 @@ storiesOf('Stylings', module)
           data={dataset2}
           yScaleToDataExtent={false}
           lineSeriesStyle={lineSeriesStyle2}
+        />
+        <LineSeries
+          id={getSpecId('lines3')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          data={dataset3}
+          yScaleToDataExtent={false}
         />
       </Chart>
     );
