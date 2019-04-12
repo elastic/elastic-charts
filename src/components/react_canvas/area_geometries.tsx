@@ -24,7 +24,7 @@ interface AreaGeometriesDataState {
 export class AreaGeometries extends React.PureComponent<
   AreaGeometriesDataProps,
   AreaGeometriesDataState
-> {
+  > {
   static defaultProps: Partial<AreaGeometriesDataProps> = {
     animated: false,
   };
@@ -128,7 +128,7 @@ export class AreaGeometries extends React.PureComponent<
           color,
           opacity,
         });
-        return <Path {...areaProps} />;
+        return <Path {...areaProps} x={transform.x} />;
       }
     });
   }
@@ -137,7 +137,7 @@ export class AreaGeometries extends React.PureComponent<
     const { strokeWidth } = this.props.style.line;
     const linesToRender: JSX.Element[] = [];
     areas.forEach((glyph, areaIndex) => {
-      const { lines, color, geometryId } = glyph;
+      const { lines, color, geometryId, transform } = glyph;
 
       const geometryStyle = getGeometryStyle(
         geometryId,
@@ -154,7 +154,7 @@ export class AreaGeometries extends React.PureComponent<
           strokeWidth,
           geometryStyle,
         });
-        linesToRender.push(<Path {...lineProps} />);
+        linesToRender.push(<Path {...lineProps} x={transform.x} />);
       });
     });
     return linesToRender;

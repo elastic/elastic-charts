@@ -20,7 +20,7 @@ interface LineGeometriesDataState {
 export class LineGeometries extends React.PureComponent<
   LineGeometriesDataProps,
   LineGeometriesDataState
-> {
+  > {
   static defaultProps: Partial<LineGeometriesDataProps> = {
     animated: false,
   };
@@ -135,7 +135,7 @@ export class LineGeometries extends React.PureComponent<
           opacity: 1,
           geometryStyle,
         });
-        return <Path {...lineProps} />;
+        return <Path {...lineProps} x={transform.x} />;
       }
     });
   }
