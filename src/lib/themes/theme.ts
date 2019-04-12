@@ -101,12 +101,13 @@ export interface LineSeriesStyle {
 
 export type PointStyle = StrokeStyle & Opacity & Visible & Radius;
 export type LineStyle = StrokeStyle & Visible & Partial<Opacity>;
+export type AreaStyle = FillStyle & Opacity & Visible;
 
 export interface AreaSeriesStyle {
-  area: FillStyle & Opacity & Visible;
-  line: StrokeStyle & Visible;
+  area: AreaStyle;
+  line: LineStyle;
   border: StrokeStyle & Visible;
-  point: StrokeStyle & Opacity & Visible & Radius;
+  point: PointStyle;
 }
 export interface CrosshairStyle {
   band: FillStyle & Visible;

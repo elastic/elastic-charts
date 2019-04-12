@@ -351,8 +351,8 @@ export function renderGeometries(
         break;
       case 'bar':
         const shift = isStacked ? indexOffset : indexOffset + i;
-        const barStyle = spec.barSeriesStyle;
-        const renderedBars = renderBars(shift, ds.data, xScale, yScale, color, ds.specId, ds.key, barStyle);
+        const barSeriesStyle = spec.barSeriesStyle;
+        const renderedBars = renderBars(shift, ds.data, xScale, yScale, color, ds.specId, ds.key, barSeriesStyle);
         barGeometriesIndex = mergeGeometriesIndexes(
           barGeometriesIndex,
           renderedBars.indexedGeometries,
@@ -362,7 +362,7 @@ export function renderGeometries(
         break;
       case 'line':
         const lineShift = clusteredCount > 0 ? clusteredCount : 1;
-        const lineStyle = spec.lineSeriesStyle;
+        const lineSeriesStyle = spec.lineSeriesStyle;
         const renderedLines = renderLine(
           // move the point on half of the bandwidth if we have mixed bars/lines
           (xScale.bandwidth * lineShift) / 2,
@@ -374,7 +374,7 @@ export function renderGeometries(
           ds.specId,
           Boolean(spec.y0Accessors),
           ds.key,
-          lineStyle,
+          lineSeriesStyle,
         );
         lineGeometriesIndex = mergeGeometriesIndexes(
           lineGeometriesIndex,
@@ -386,6 +386,7 @@ export function renderGeometries(
         break;
       case 'area':
         const areaShift = clusteredCount > 0 ? clusteredCount : 1;
+        const areaSeriesStyle = spec.areaSeriesStyle;
         const renderedAreas = renderArea(
           // move the point on half of the bandwidth if we have mixed bars/lines
           (xScale.bandwidth * areaShift) / 2,
@@ -397,6 +398,7 @@ export function renderGeometries(
           ds.specId,
           Boolean(spec.y0Accessors),
           ds.key,
+          areaSeriesStyle,
         );
         areaGeometriesIndex = mergeGeometriesIndexes(
           areaGeometriesIndex,

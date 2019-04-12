@@ -1,6 +1,14 @@
 import { area, line } from 'd3-shape';
 import { mutableIndexedGeometryMapUpsert } from '../../state/utils';
-import { CustomBarSeriesStyle, LineSeriesStyle, LineStyle, PointStyle, SharedGeometryStyle } from '../themes/theme';
+import {
+  AreaSeriesStyle,
+  AreaStyle,
+  CustomBarSeriesStyle,
+  LineSeriesStyle,
+  LineStyle,
+  PointStyle,
+  SharedGeometryStyle,
+} from '../themes/theme';
 import { SpecId } from '../utils/ids';
 import { isLogarithmicScale } from '../utils/scales/scale_continuous';
 import { Scale, ScaleType } from '../utils/scales/scales';
@@ -71,6 +79,8 @@ export interface AreaGeometry {
     y: number;
   };
   geometryId: GeometryId;
+  seriesAreaStyle?: AreaStyle;
+  seriesAreaLineStyle?: LineStyle;
 }
 
 export function isPointGeometry(ig: IndexedGeometry): ig is PointGeometry {
@@ -296,6 +306,7 @@ export function renderArea(
   specId: SpecId,
   hasY0Accessors: boolean,
   seriesKey: any[],
+  seriesStyle?: AreaSeriesStyle,
 ): {
   areaGeometry: AreaGeometry;
   indexedGeometries: Map<any, IndexedGeometry[]>;
@@ -327,6 +338,10 @@ export function renderArea(
     }
   }
 
+  const seriesPointStyle = seriesStyle ? seriesStyle.point : undefined;
+  const seriesAreaStyle = seriesStyle ? seriesStyle.area : undefined;
+  const seriesAreaLineStyle = seriesStyle ? seriesStyle.line : undefined;
+
   const { pointGeometries, indexedGeometries } = renderPoints(
     shift,
     dataset,
@@ -336,6 +351,7 @@ export function renderArea(
     specId,
     hasY0Accessors,
     seriesKey,
+    seriesPointStyle,
   );
 
   const areaGeometry = {
@@ -351,6 +367,8 @@ export function renderArea(
       specId,
       seriesKey,
     },
+    seriesAreaStyle,
+    seriesAreaLineStyle,
   };
   return {
     areaGeometry,
