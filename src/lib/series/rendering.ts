@@ -1,6 +1,6 @@
 import { area, line } from 'd3-shape';
 import { mutableIndexedGeometryMapUpsert } from '../../state/utils';
-import { SharedGeometryStyle } from '../themes/theme';
+import { BarSeriesStyle, SharedGeometryStyle } from '../themes/theme';
 import { SpecId } from '../utils/ids';
 import { isLogarithmicScale } from '../utils/scales/scale_continuous';
 import { Scale, ScaleType } from '../utils/scales/scales';
@@ -47,6 +47,7 @@ export interface BarGeometry {
   color: string;
   geometryId: GeometryId;
   value: GeometryValue;
+  seriesStyle?: BarSeriesStyle;
 }
 export interface LineGeometry {
   line: string;
@@ -159,6 +160,7 @@ export function renderBars(
   color: string,
   specId: SpecId,
   seriesKey: any[],
+  seriesStyle?: BarSeriesStyle,
 ): {
   barGeometries: BarGeometry[];
   indexedGeometries: Map<any, IndexedGeometry[]>;
@@ -210,6 +212,7 @@ export function renderBars(
         specId,
         seriesKey,
       },
+      seriesStyle,
     };
     mutableIndexedGeometryMapUpsert(indexedGeometries, datum.x, barGeometry);
     barGeometries.push(barGeometry);

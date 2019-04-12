@@ -411,18 +411,40 @@ storiesOf('Stylings', module)
     );
   })
   .add('custom series styles: bars', () => {
-    const barSeriesStyle = {
+    const barSeriesStyle1 = {
       border: {
-        stroke: color('borderStroke', 'white'),
-        strokeWidth: range('strokeWidth', 0, 10, 1),
-        visible: boolean('borderVisible', true),
+        stroke: color('borderStroke 1', 'white', 'group1'),
+        strokeWidth: range('strokeWidth 1', 0, 10, 1, 'group1'),
+        visible: boolean('borderVisible 1', true, 'group1'),
       },
-      opacity: range('opacity', 0, 1, 1),
     };
+
+    const barSeriesStyle2 = {
+      border: {
+        stroke: color('borderStroke 2', 'white', 'group2'),
+        strokeWidth: range('strokeWidth 2', 0, 10, 1, 'group2'),
+        visible: boolean('borderVisible 2', true, 'group2'),
+      },
+    };
+
+    const chartTheme = {
+      ...LIGHT_THEME,
+      barSeriesStyle: {
+        border: {
+          stroke: color('theme borderStroke', 'white', 'theme'),
+          strokeWidth: range('theme strokeWidth', 0, 10, 1, 'theme'),
+          visible: boolean('theme borderVisible', true, 'theme'),
+        },
+      },
+    };
+
+    const dataset1 = TestDatasets.BARCHART_2Y2G.filter((data) => data.g1 === 'cdn.google.com');
+    const dataset2 = TestDatasets.BARCHART_2Y2G.filter((data) => data.g1 === 'cloudflare.com');
+    const dataset3 = TestDatasets.BARCHART_2Y2G.filter((data) => data.g2 === 'indirect-cdn');
 
     return (
       <Chart renderer="canvas" className={'story-chart'}>
-        <Settings showLegend={true} legendPosition={Position.Right} />
+        <Settings showLegend={true} legendPosition={Position.Right} theme={chartTheme} />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
@@ -442,9 +464,32 @@ storiesOf('Stylings', module)
           xAccessor="x"
           yAccessors={['y1', 'y2']}
           splitSeriesAccessors={['g1', 'g2']}
-          data={TestDatasets.BARCHART_2Y2G}
+          data={dataset1}
           yScaleToDataExtent={false}
-          seriesStyle={barSeriesStyle}
+          barSeriesStyle={barSeriesStyle1}
+          name={'bars 1'}
+        />
+        <BarSeries
+          id={getSpecId('bars2')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y1', 'y2']}
+          splitSeriesAccessors={['g1', 'g2']}
+          data={dataset2}
+          yScaleToDataExtent={false}
+          barSeriesStyle={barSeriesStyle2}
+          name={'bars 2'}
+        />
+        <BarSeries
+          id={getSpecId('bars3')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y1', 'y2']}
+          splitSeriesAccessors={['g1', 'g2']}
+          data={dataset3}
+          yScaleToDataExtent={false}
         />
       </Chart>
     );

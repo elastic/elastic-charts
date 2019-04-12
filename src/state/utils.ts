@@ -351,7 +351,8 @@ export function renderGeometries(
         break;
       case 'bar':
         const shift = isStacked ? indexOffset : indexOffset + i;
-        const renderedBars = renderBars(shift, ds.data, xScale, yScale, color, ds.specId, ds.key);
+        const barStyle = spec.barSeriesStyle;
+        const renderedBars = renderBars(shift, ds.data, xScale, yScale, color, ds.specId, ds.key, barStyle);
         barGeometriesIndex = mergeGeometriesIndexes(
           barGeometriesIndex,
           renderedBars.indexedGeometries,

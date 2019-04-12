@@ -4,7 +4,7 @@ import {
   BarSeriesStyle,
   GridLineConfig,
   LineSeriesStyle,
-  Opacity,
+  SharedGeometryStyle,
 } from '../themes/theme';
 import { Accessor } from '../utils/accessor';
 import { AnnotationId, AxisId, GroupId, SpecId } from '../utils/ids';
@@ -93,7 +93,12 @@ export interface SeriesScales {
   yScaleToDataExtent: boolean;
 }
 
-export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales;
+export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales & {
+  barSeriesStyle?: BarSeriesStyle;
+  lineSeriesStyle?: LineSeriesStyle;
+  areaSeriesStyle?: AreaSeriesStyle;
+  sharedGeometryStyle?: SharedGeometryStyle;
+};
 
 /**
  * This spec describe the dataset configuration used to display a bar series.
@@ -101,8 +106,6 @@ export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales;
 export type BarSeriesSpec = BasicSeriesSpec & {
   /** @default bar */
   seriesType: 'bar';
-  /** Custom series style (takes precedence over custom theme style) */
-  seriesStyle?: BarSeriesStyle & Opacity;
 };
 
 /**
@@ -111,8 +114,6 @@ export type BarSeriesSpec = BasicSeriesSpec & {
 export type LineSeriesSpec = BasicSeriesSpec & {
   /** @default line */
   seriesType: 'line';
-  /** Custom series style (takes precedence over custom theme style) */
-  seriesStyle?: LineSeriesStyle & Opacity;
   curve?: CurveType;
 };
 
@@ -122,8 +123,6 @@ export type LineSeriesSpec = BasicSeriesSpec & {
 export type AreaSeriesSpec = BasicSeriesSpec & {
   /** @default area */
   seriesType: 'area';
-  /** Custom series style (takes precedence over custom theme style) */
-  seriesStyle?: AreaSeriesStyle & Opacity;
   /** The type of interpolator to be used to interpolate values between points */
   curve?: CurveType;
 };

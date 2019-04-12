@@ -185,6 +185,20 @@ export function mergeWithDefaultAnnotationLine(config?: Partial<AnnotationLineSt
   return mergedConfig;
 }
 
+export function mergeWithBarSeriesStyles(
+  defaultStyle: BarSeriesStyle,
+  seriesStyle?: BarSeriesStyle,
+): BarSeriesStyle | undefined {
+  if (!seriesStyle) {
+    return undefined;
+  }
+
+  return {
+    ...defaultStyle,
+    ...seriesStyle,
+  };
+}
+
 export function mergeWithDefaultTheme(
   theme: PartialTheme,
   defaultTheme: Theme = LIGHT_THEME,
