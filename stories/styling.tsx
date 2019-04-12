@@ -444,7 +444,9 @@ storiesOf('Stylings', module)
     );
   })
   .add('custom series styles: bars', () => {
-    const barSeriesStyle1 = {
+    const useOnlyChartTheme = boolean('ignore series style (use only chart theme)', false, 'chartTheme');
+
+    const barSeriesStyle1 = useOnlyChartTheme ? undefined : {
       border: {
         stroke: color('borderStroke 1', 'white', 'group1'),
         strokeWidth: range('strokeWidth 1', 0, 10, 1, 'group1'),
@@ -453,7 +455,7 @@ storiesOf('Stylings', module)
       opacity: range('opacity 1', 0, 1, 1, 'group1', 0.1),
     };
 
-    const barSeriesStyle2 = {
+    const barSeriesStyle2 = useOnlyChartTheme ? undefined : {
       border: {
         stroke: color('borderStroke 2', 'white', 'group2'),
         strokeWidth: range('strokeWidth 2', 0, 10, 1, 'group2'),
@@ -466,9 +468,9 @@ storiesOf('Stylings', module)
       ...LIGHT_THEME,
       barSeriesStyle: {
         border: {
-          stroke: color('theme borderStroke', 'white', 'theme'),
-          strokeWidth: range('theme strokeWidth', 0, 10, 1, 'theme'),
-          visible: boolean('theme borderVisible', true, 'theme'),
+          stroke: color('theme borderStroke', 'white', 'chartTheme'),
+          strokeWidth: range('theme strokeWidth', 0, 10, 1, 'chartTheme'),
+          visible: boolean('theme borderVisible', true, 'chartTheme'),
         },
       },
     };
