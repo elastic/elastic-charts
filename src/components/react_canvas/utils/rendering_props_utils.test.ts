@@ -63,12 +63,14 @@ describe('[canvas] Area Geometries props', () => {
     const props = buildAreaProps({
       index: 1,
       areaPath: 'M0,0L10,10Z',
+      xTransform: 40,
       color: 'red',
       opacity: 0.5,
     });
     expect(props).toEqual({
       key: 'area-1',
       data: 'M0,0L10,10Z',
+      x: 40,
       fill: 'red',
       lineCap: 'round',
       lineJoin: 'round',
@@ -82,6 +84,7 @@ describe('[canvas] Area Geometries props', () => {
     const props = buildAreaLineProps({
       areaIndex: 1,
       lineIndex: 2,
+      xTransform: 40,
       linePath: 'M0,0L10,10Z',
       color: 'red',
       strokeWidth: 1,
@@ -92,6 +95,7 @@ describe('[canvas] Area Geometries props', () => {
     expect(props).toEqual({
       key: `area-1-line-2`,
       data: 'M0,0L10,10Z',
+      x: 40,
       stroke: 'red',
       strokeWidth: 1,
       lineCap: 'round',
@@ -161,6 +165,7 @@ describe('[canvas] Line Geometries', () => {
     const props = buildLineProps({
       index: 1,
       linePath: 'M0,0L10,10Z',
+      xTransform: 40,
       color: 'red',
       strokeWidth: 1,
       opacity: 0.3,
@@ -171,6 +176,7 @@ describe('[canvas] Line Geometries', () => {
     expect(props).toEqual({
       key: `line-1`,
       data: 'M0,0L10,10Z',
+      x: 40,
       stroke: 'red',
       strokeWidth: 1,
       lineCap: 'round',

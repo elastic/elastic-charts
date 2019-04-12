@@ -115,6 +115,7 @@ export class LineGeometries extends React.PureComponent<
               {(props: { opacity: number }) => {
                 const lineProps = buildLineProps({
                   index,
+                  xTransform: 0,
                   linePath: line,
                   color,
                   strokeWidth,
@@ -129,13 +130,14 @@ export class LineGeometries extends React.PureComponent<
       } else {
         const lineProps = buildLineProps({
           index,
+          xTransform: transform.x,
           linePath: line,
           color,
           strokeWidth,
           opacity: 1,
           geometryStyle,
         });
-        return <Path {...lineProps} x={transform.x} />;
+        return <Path {...lineProps} />;
       }
     });
   }

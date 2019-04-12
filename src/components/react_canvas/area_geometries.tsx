@@ -113,6 +113,7 @@ export class AreaGeometries extends React.PureComponent<
                 const areaProps = buildAreaProps({
                   index: i,
                   areaPath: props.area,
+                  xTransform: 0,
                   color,
                   opacity,
                 });
@@ -125,10 +126,11 @@ export class AreaGeometries extends React.PureComponent<
         const areaProps = buildAreaProps({
           index: i,
           areaPath: area,
+          xTransform: transform.x,
           color,
           opacity,
         });
-        return <Path {...areaProps} x={transform.x} />;
+        return <Path {...areaProps} />;
       }
     });
   }
@@ -149,12 +151,13 @@ export class AreaGeometries extends React.PureComponent<
         const lineProps = buildAreaLineProps({
           areaIndex,
           lineIndex,
+          xTransform: transform.x,
           linePath,
           color,
           strokeWidth,
           geometryStyle,
         });
-        linesToRender.push(<Path {...lineProps} x={transform.x} />);
+        linesToRender.push(<Path {...lineProps} />);
       });
     });
     return linesToRender;
