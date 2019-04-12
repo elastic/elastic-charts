@@ -1,6 +1,6 @@
 import { area, line } from 'd3-shape';
 import { mutableIndexedGeometryMapUpsert } from '../../state/utils';
-import { BarSeriesStyle, SharedGeometryStyle } from '../themes/theme';
+import { CustomBarSeriesStyle, SharedGeometryStyle } from '../themes/theme';
 import { SpecId } from '../utils/ids';
 import { isLogarithmicScale } from '../utils/scales/scale_continuous';
 import { Scale, ScaleType } from '../utils/scales/scales';
@@ -47,7 +47,7 @@ export interface BarGeometry {
   color: string;
   geometryId: GeometryId;
   value: GeometryValue;
-  seriesStyle?: BarSeriesStyle;
+  seriesStyle?: CustomBarSeriesStyle;
 }
 export interface LineGeometry {
   line: string;
@@ -160,7 +160,7 @@ export function renderBars(
   color: string,
   specId: SpecId,
   seriesKey: any[],
-  seriesStyle?: BarSeriesStyle,
+  seriesStyle?: CustomBarSeriesStyle,
 ): {
   barGeometries: BarGeometry[];
   indexedGeometries: Map<any, IndexedGeometry[]>;
@@ -350,9 +350,19 @@ export function renderArea(
 export function getGeometryStyle(
   geometryId: GeometryId,
   highlightedLegendItem: LegendItem | null,
-  sharedStyle: SharedGeometryStyle,
+  sharedThemeStyle: SharedGeometryStyle,
+  specOpacity?: number,
   individualHighlight?: { [key: string]: boolean },
 ): GeometryStyle {
+
+  const sharedStyle = specOpacity == null ?
+    sharedThemeStyle :
+    {
+      ...sharedThemeStyle,
+      highlighted: { opacity: specOpacity },
+      default: { opacity: specOpacity },
+    };
+
   if (highlightedLegendItem != null) {
     const isPartOfHighlightedSeries = belongsToDataSeries(geometryId, highlightedLegendItem.value);
 

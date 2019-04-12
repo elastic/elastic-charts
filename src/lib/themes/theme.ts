@@ -90,6 +90,9 @@ export interface Theme {
 export interface BarSeriesStyle {
   border: StrokeStyle & Visible;
 }
+
+export type CustomBarSeriesStyle = BarSeriesStyle & Partial<Opacity>;
+
 export interface LineSeriesStyle {
   line: StrokeStyle & Visible;
   border: StrokeStyle & Visible;
@@ -183,20 +186,6 @@ export function mergeWithDefaultAnnotationLine(config?: Partial<AnnotationLineSt
   }
 
   return mergedConfig;
-}
-
-export function mergeWithBarSeriesStyles(
-  defaultStyle: BarSeriesStyle,
-  seriesStyle?: BarSeriesStyle,
-): BarSeriesStyle | undefined {
-  if (!seriesStyle) {
-    return undefined;
-  }
-
-  return {
-    ...defaultStyle,
-    ...seriesStyle,
-  };
 }
 
 export function mergeWithDefaultTheme(

@@ -1,10 +1,9 @@
 import {
   AnnotationLineStyle,
   AreaSeriesStyle,
-  BarSeriesStyle,
+  CustomBarSeriesStyle,
   GridLineConfig,
   LineSeriesStyle,
-  SharedGeometryStyle,
 } from '../themes/theme';
 import { Accessor } from '../utils/accessor';
 import { AnnotationId, AxisId, GroupId, SpecId } from '../utils/ids';
@@ -94,10 +93,9 @@ export interface SeriesScales {
 }
 
 export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales & {
-  barSeriesStyle?: BarSeriesStyle;
+  barSeriesStyle?: CustomBarSeriesStyle;
   lineSeriesStyle?: LineSeriesStyle;
   areaSeriesStyle?: AreaSeriesStyle;
-  sharedGeometryStyle?: SharedGeometryStyle;
 };
 
 /**

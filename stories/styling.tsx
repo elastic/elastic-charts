@@ -417,6 +417,7 @@ storiesOf('Stylings', module)
         strokeWidth: range('strokeWidth 1', 0, 10, 1, 'group1'),
         visible: boolean('borderVisible 1', true, 'group1'),
       },
+      opacity: range('opacity 1', 0, 1, 1, 'group1', 0.1),
     };
 
     const barSeriesStyle2 = {
@@ -425,6 +426,7 @@ storiesOf('Stylings', module)
         strokeWidth: range('strokeWidth 2', 0, 10, 1, 'group2'),
         visible: boolean('borderVisible 2', true, 'group2'),
       },
+      opacity: range('opacity 2', 0, 1, 1, 'group2', 0.1),
     };
 
     const chartTheme = {
