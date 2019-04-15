@@ -229,5 +229,24 @@ export interface LineAnnotationSpec {
   hideTooltips?: boolean;
 }
 
+export interface RectAnnotationSpec {
+  /** The id of the annotation */
+  annotationId: AnnotationId;
+  /** Annotation type: line, rectangle, text */
+  annotationType: AnnotationType;
+  /** The ID of the axis group, generated via getGroupId method
+   * @default __global__
+   */
+  groupId: GroupId; // defaults to __global__; needed for yDomain position
+}
+
 // TODO: RectangleAnnotationSpec & TextAnnotationSpec
-export type AnnotationSpec = LineAnnotationSpec;
+export type AnnotationSpec = LineAnnotationSpec | RectAnnotationSpec;
+
+export function isLineAnnotation(spec: AnnotationSpec): spec is LineAnnotationSpec {
+  return spec.annotationType === AnnotationTypes.Line;
+}
+
+export function isRectAnnotation(spec: AnnotationSpec): spec is RectAnnotationSpec {
+  return spec.annotationType === AnnotationTypes.Rectangle;
+}

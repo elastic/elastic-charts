@@ -4,8 +4,9 @@ import {
   AnnotationDomainType,
   AnnotationDomainTypes,
   AnnotationSpec,
-  AnnotationTypes,
   AxisSpec,
+  isLineAnnotation,
+  LineAnnotationSpec,
   Position,
   Rotation,
 } from '../lib/series/specs';
@@ -242,7 +243,7 @@ export function computeXDomainLineAnnotationDimensions(
 }
 
 export function computeLineAnnotationDimensions(
-  annotationSpec: AnnotationSpec,
+  annotationSpec: LineAnnotationSpec,
   chartDimensions: Dimensions,
   chartRotation: Rotation,
   yScales: Map<GroupId, Scale>,
@@ -319,28 +320,26 @@ export function computeAnnotationDimensions(
   const annotationDimensions = new Map<AnnotationId, AnnotationDimensions>();
 
   annotations.forEach((annotationSpec: AnnotationSpec, annotationId: AnnotationId) => {
-    switch (annotationSpec.annotationType) {
-      case AnnotationTypes.Line:
-        const { groupId, domainType } = annotationSpec;
-        const annotationAxisPosition = getAnnotationAxis(axesSpecs, groupId, domainType);
+    if (isLineAnnotation(annotationSpec)) {
+      const { groupId, domainType } = annotationSpec;
+      const annotationAxisPosition = getAnnotationAxis(axesSpecs, groupId, domainType);
 
-        if (!annotationAxisPosition) {
-          return;
-        }
+      if (!annotationAxisPosition) {
+        return;
+      }
 
-        const dimensions = computeLineAnnotationDimensions(
-          annotationSpec,
-          chartDimensions,
-          chartRotation,
-          yScales,
-          xScale,
-          annotationAxisPosition,
-        );
+      const dimensions = computeLineAnnotationDimensions(
+        annotationSpec,
+        chartDimensions,
+        chartRotation,
+        yScales,
+        xScale,
+        annotationAxisPosition,
+      );
 
-        if (dimensions) {
-          annotationDimensions.set(annotationId, dimensions);
-        }
-        break;
+      if (dimensions) {
+        annotationDimensions.set(annotationId, dimensions);
+      }
     }
   });
 
@@ -583,27 +582,28 @@ export function computeAnnotationTooltipState(
 ): AnnotationTooltipState | null {
   for (const [annotationId, annotationDimension] of annotationDimensions) {
     const spec = annotationSpecs.get(annotationId);
-    if (!spec || spec.hideTooltips || spec.hideLines) {
+    if (!spec) {
       continue;
     }
 
-    const { annotationType } = spec;
-    switch (annotationType) {
-      case AnnotationTypes.Line: {
-        const groupId = spec.groupId;
-        const lineAnnotationTooltipState = computeLineAnnotationTooltipState(
-          cursorPosition,
-          annotationDimension,
-          groupId,
-          spec.domainType,
-          spec.style as AnnotationLineStyle, // this type is guaranteed as this has been merged with default
-          chartRotation,
-          axesSpecs,
-        );
+    if (isLineAnnotation(spec)) {
+      if (spec.hideTooltips || spec.hideLines) {
+        continue;
+      }
 
-        if (lineAnnotationTooltipState.isVisible) {
-          return lineAnnotationTooltipState;
-        }
+      const groupId = spec.groupId;
+      const lineAnnotationTooltipState = computeLineAnnotationTooltipState(
+        cursorPosition,
+        annotationDimension,
+        groupId,
+        spec.domainType,
+        spec.style as AnnotationLineStyle, // this type is guaranteed as this has been merged with default
+        chartRotation,
+        axesSpecs,
+      );
+
+      if (lineAnnotationTooltipState.isVisible) {
+        return lineAnnotationTooltipState;
       }
     }
   }

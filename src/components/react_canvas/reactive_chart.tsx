@@ -1,6 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Layer, Rect, Stage } from 'react-konva';
+import { isLineAnnotation } from '../../lib/series/specs';
 import { AnnotationLineStyle } from '../../lib/themes/theme';
 import { AnnotationId } from '../../lib/utils/ids';
 import { AnnotationDimensions } from '../../state/annotation_utils';
@@ -181,19 +182,19 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
         return;
       }
 
-      // We merge custom style w/ the default on addAnnotationSpec, so this is guaranteed
-      // to be complete by the time we get to rendering
-      const lineStyle = spec.style as AnnotationLineStyle;
+      if (isLineAnnotation(spec)) {
+        const lineStyle = spec.style as AnnotationLineStyle;
 
-      annotationComponents.push(
-        <Annotation
-          key={`annotation-${id}`}
-          chartDimensions={chartDimensions}
-          debug={debug}
-          lines={annotation}
-          lineStyle={lineStyle}
-        />,
-      );
+        annotationComponents.push(
+          <Annotation
+            key={`annotation-${id}`}
+            chartDimensions={chartDimensions}
+            debug={debug}
+            lines={annotation}
+            lineStyle={lineStyle}
+          />,
+        );
+      }
     });
     return annotationComponents;
   }
