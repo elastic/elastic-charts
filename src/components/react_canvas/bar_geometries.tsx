@@ -1,6 +1,6 @@
 import { Group as KonvaGroup } from 'konva';
 import React from 'react';
-import { Group, Rect } from 'react-konva';
+import { Group, Rect, Text } from 'react-konva';
 import { animated, Spring } from 'react-spring/renderprops-konva.cjs';
 import { LegendItem } from '../../lib/series/legend';
 import { BarGeometry, getGeometryStyle } from '../../lib/series/rendering';
@@ -20,7 +20,7 @@ interface BarGeometriesDataState {
 export class BarGeometries extends React.PureComponent<
   BarGeometriesDataProps,
   BarGeometriesDataState
-> {
+  > {
   static defaultProps: Partial<BarGeometriesDataProps> = {
     animated: false,
   };
@@ -48,7 +48,7 @@ export class BarGeometries extends React.PureComponent<
       sharedStyle,
     } = this.props;
     return bars.map((bar, index) => {
-      const { x, y, width, height, color } = bar;
+      const { showValueLabel, value, x, y, width, height, color } = bar;
 
       // Properties to determine if we need to highlight individual bars depending on hover state
       const hasGeometryHover = overBar != null;
@@ -103,7 +103,12 @@ export class BarGeometries extends React.PureComponent<
           borderEnabled,
           geometryStyle,
         });
-        return <Rect {...barProps} />;
+        return (
+          <React.Fragment>
+            <Rect {...barProps} />
+            {showValueLabel && <Text text={value.y} x={x} y={y} width={width} align={'center'} />}
+          </React.Fragment>
+        );
       }
     });
   }

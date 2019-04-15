@@ -45,6 +45,8 @@ export interface SeriesSpec {
   hideInLegend?: boolean;
   /** Index per series to sort by */
   sortIndex?: number;
+  /** Show value label in chart element */
+  showValueLabel?: boolean;
 }
 
 export type CustomSeriesColorsMap = Map<DataSeriesColorsValues, string>;

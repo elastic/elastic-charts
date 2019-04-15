@@ -45,6 +45,7 @@ export interface BarGeometry {
   width: number;
   height: number;
   color: string;
+  showValueLabel?: boolean;
   geometryId: GeometryId;
   value: GeometryValue;
 }
@@ -159,6 +160,7 @@ export function renderBars(
   color: string,
   specId: SpecId,
   seriesKey: any[],
+  showValueLabel?: boolean,
 ): {
   barGeometries: BarGeometry[];
   indexedGeometries: Map<any, IndexedGeometry[]>;
@@ -196,6 +198,7 @@ export function renderBars(
     const x = xScale.scale(datum.x) + xScale.bandwidth * orderIndex;
     const width = xScale.bandwidth;
     const barGeometry: BarGeometry = {
+      showValueLabel,
       x,
       y, // top most value
       width,

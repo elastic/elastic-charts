@@ -41,6 +41,36 @@ storiesOf('Bar Chart', module)
       </Chart>
     );
   })
+  .add('with value label', () => {
+    const showValueLabel = boolean('show value label', false);
+    return (
+      <Chart renderer="canvas" className={'story-chart'}>
+        <Settings theme={LIGHT_THEME} />
+        <Axis
+          id={getAxisId('bottom')}
+          position={Position.Bottom}
+          title={'Bottom axis'}
+          showOverlappingTicks={true}
+        />
+        <Axis
+          id={getAxisId('left2')}
+          title={'Left axis'}
+          position={Position.Left}
+          tickFormat={(d) => Number(d).toFixed(2)}
+        />
+        <BarSeries
+          id={getSpecId('bars')}
+          showValueLabel={showValueLabel}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
+          yScaleToDataExtent={false}
+        />
+      </Chart>
+    );
+  })
   .add('with axis', () => {
     const darkmode = boolean('darkmode', false);
     const className = darkmode ? 'story-chart-dark' : 'story-chart';
