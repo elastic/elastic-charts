@@ -46,7 +46,6 @@ export interface PointGeometry {
   };
   geometryId: GeometryId;
   value: GeometryValue;
-  seriesPointStyle?: PointStyle;
 }
 export interface BarGeometry {
   x: number;
@@ -68,6 +67,7 @@ export interface LineGeometry {
   };
   geometryId: GeometryId;
   seriesLineStyle?: LineStyle;
+  seriesPointStyle?: PointStyle;
 }
 export interface AreaGeometry {
   area: string;
@@ -81,6 +81,7 @@ export interface AreaGeometry {
   geometryId: GeometryId;
   seriesAreaStyle?: AreaStyle;
   seriesAreaLineStyle?: LineStyle;
+  seriesPointStyle?: PointStyle;
 }
 
 export function isPointGeometry(ig: IndexedGeometry): ig is PointGeometry {
@@ -99,7 +100,6 @@ export function renderPoints(
   specId: SpecId,
   hasY0Accessors: boolean,
   seriesKey: any[],
-  seriesPointStyle?: PointStyle,
 ): {
   pointGeometries: PointGeometry[];
   indexedGeometries: Map<any, IndexedGeometry[]>;
@@ -149,7 +149,6 @@ export function renderPoints(
             specId,
             seriesKey,
           },
-          seriesPointStyle,
         };
         mutableIndexedGeometryMapUpsert(indexedGeometries, datum.x, pointGeometry);
         if (!isHidden) {
@@ -262,7 +261,7 @@ export function renderLine(
   const y = 0;
   const x = shift;
 
-  const pointStyle = seriesStyle ? seriesStyle.point : undefined;
+  const seriesPointStyle = seriesStyle ? seriesStyle.point : undefined;
   const seriesLineStyle = seriesStyle ? seriesStyle.line : undefined;
 
   const { pointGeometries, indexedGeometries } = renderPoints(
@@ -274,7 +273,6 @@ export function renderLine(
     specId,
     hasY0Accessors,
     seriesKey,
-    pointStyle,
   );
   const lineGeometry = {
     line: pathGenerator(dataset) || '',
@@ -289,6 +287,7 @@ export function renderLine(
       seriesKey,
     },
     seriesLineStyle,
+    seriesPointStyle,
   };
   return {
     lineGeometry,
@@ -351,7 +350,6 @@ export function renderArea(
     specId,
     hasY0Accessors,
     seriesKey,
-    seriesPointStyle,
   );
 
   const areaGeometry = {
@@ -369,6 +367,7 @@ export function renderArea(
     },
     seriesAreaStyle,
     seriesAreaLineStyle,
+    seriesPointStyle,
   };
   return {
     areaGeometry,

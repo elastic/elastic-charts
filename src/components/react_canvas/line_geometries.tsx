@@ -5,7 +5,12 @@ import { animated, Spring } from 'react-spring/renderprops-konva.cjs';
 import { LegendItem } from '../../lib/series/legend';
 import { getGeometryStyle, LineGeometry, PointGeometry } from '../../lib/series/rendering';
 import { LineSeriesStyle, SharedGeometryStyle } from '../../lib/themes/theme';
-import { buildLinePointProps, buildLineProps } from './utils/rendering_props_utils';
+import {
+  buildLinePointProps,
+  buildLineProps,
+  buildPointStyleProps,
+  PointStyleProps,
+} from './utils/rendering_props_utils';
 
 interface LineGeometriesDataProps {
   animated?: boolean;
@@ -48,8 +53,22 @@ export class LineGeometries extends React.PureComponent<
     const { lines } = this.props;
     return lines.reduce(
       (acc, glyph, i) => {
-        const { points } = glyph;
-        return [...acc, ...this.renderPoints(points, i, themeIsVisible)];
+        const { points, seriesPointStyle } = glyph;
+
+        const isVisible = seriesPointStyle ? seriesPointStyle.visible : themeIsVisible;
+        if (!isVisible) {
+          return acc;
+        }
+
+        const { radius, strokeWidth, opacity } = this.props.style.point;
+        const pointStyleProps = buildPointStyleProps({
+          radius,
+          strokeWidth,
+          opacity,
+          seriesPointStyle,
+        });
+
+        return [...acc, ...this.renderPoints(points, i, pointStyleProps)];
       },
       [] as JSX.Element[],
     );
@@ -58,16 +77,11 @@ export class LineGeometries extends React.PureComponent<
   private renderPoints = (
     linePoints: PointGeometry[],
     lineIndex: number,
-    themeIsVisible: boolean,
+    pointStyleProps: PointStyleProps,
   ): JSX.Element[] => {
-    const { radius, strokeWidth, opacity } = this.props.style.point;
     const linePointsElements: JSX.Element[] = [];
     linePoints.forEach((linePoint, pointIndex) => {
-      const { x, y, color, transform, seriesPointStyle } = linePoint;
-      const isVisible = seriesPointStyle ? seriesPointStyle.visible : themeIsVisible;
-      if (!isVisible) {
-        return;
-      }
+      const { x, y, color, transform } = linePoint;
 
       if (this.props.animated) {
         linePointsElements.push(
@@ -79,11 +93,8 @@ export class LineGeometries extends React.PureComponent<
                   pointIndex,
                   x,
                   y,
-                  radius,
                   color,
-                  strokeWidth,
-                  opacity,
-                  seriesPointStyle,
+                  pointStyleProps,
                 });
                 return <animated.Circle {...pointProps} />;
               }}
@@ -95,11 +106,8 @@ export class LineGeometries extends React.PureComponent<
           pointIndex,
           x: transform.x + x,
           y,
-          radius,
           color,
-          strokeWidth,
-          opacity,
-          seriesPointStyle,
+          pointStyleProps,
         });
         linePointsElements.push(<Circle {...pointProps} />);
       }

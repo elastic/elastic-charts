@@ -2,39 +2,57 @@ import { GeometryStyle } from '../../../lib/series/rendering';
 import { AreaStyle, LineStyle, PointStyle } from '../../../lib/themes/theme';
 import { GlobalKonvaElementProps } from '../globals';
 
+export interface PointStyleProps {
+  radius: number;
+  strokeWidth: number;
+  strokeEnabled: boolean;
+  fill: string;
+  opacity: number;
+}
+
 export function buildAreaPointProps({
   areaIndex,
   pointIndex,
   x,
   y,
-  radius,
-  strokeWidth,
   color,
-  opacity,
-  seriesPointStyle,
+  pointStyleProps,
 }: {
   areaIndex: number;
   pointIndex: number;
   x: number;
   y: number;
-  radius: number;
-  strokeWidth: number;
   color: string;
-  opacity: number;
-  seriesPointStyle?: PointStyle;
+  pointStyleProps: PointStyleProps;
 }) {
-  const pointStrokeWidth = seriesPointStyle ? seriesPointStyle.strokeWidth : strokeWidth;
   return {
     key: `area-point-${areaIndex}-${pointIndex}`,
     x,
     y,
+    stroke: color,
+    ...pointStyleProps,
+    ...GlobalKonvaElementProps,
+  };
+}
+
+export function buildPointStyleProps({
+  radius,
+  strokeWidth,
+  opacity,
+  seriesPointStyle,
+}: {
+  radius: number;
+  strokeWidth: number;
+  opacity: number;
+  seriesPointStyle?: PointStyle;
+}): PointStyleProps {
+  const pointStrokeWidth = seriesPointStyle ? seriesPointStyle.strokeWidth : strokeWidth;
+  return {
     radius: seriesPointStyle ? seriesPointStyle.radius : radius,
     strokeWidth: pointStrokeWidth,
     strokeEnabled: pointStrokeWidth !== 0,
-    stroke: color,
     fill: 'white',
     opacity: seriesPointStyle ? seriesPointStyle.opacity : opacity,
-    ...GlobalKonvaElementProps,
   };
 }
 
@@ -134,32 +152,22 @@ export function buildLinePointProps({
   pointIndex,
   x,
   y,
-  radius,
-  strokeWidth,
   color,
-  opacity,
-  seriesPointStyle,
+  pointStyleProps,
 }: {
   lineIndex: number;
   pointIndex: number;
   x: number;
   y: number;
-  radius: number;
-  strokeWidth: number;
   color: string;
-  opacity: number;
-  seriesPointStyle?: PointStyle;
+  pointStyleProps: PointStyleProps;
 }) {
   return {
     key: `line-point-${lineIndex}-${pointIndex}`,
     x,
     y,
-    radius: seriesPointStyle ? seriesPointStyle.radius : radius,
     stroke: color,
-    strokeWidth,
-    strokeEnabled: strokeWidth !== 0,
-    fill: 'white',
-    opacity: seriesPointStyle ? seriesPointStyle.opacity : opacity,
+    ...pointStyleProps,
     ...GlobalKonvaElementProps,
   };
 }

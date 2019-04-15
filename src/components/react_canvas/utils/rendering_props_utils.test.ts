@@ -5,19 +5,24 @@ import {
   buildBarProps,
   buildLinePointProps,
   buildLineProps,
+  buildPointStyleProps,
 } from './rendering_props_utils';
 
 describe('[canvas] Area Geometries props', () => {
   test('can build area point props', () => {
+    const pointStyleProps = buildPointStyleProps({
+      radius: 30,
+      strokeWidth: 2,
+      opacity: 0.5,
+    });
+
     const props = buildAreaPointProps({
       areaIndex: 1,
       pointIndex: 2,
       x: 10,
       y: 20,
-      radius: 30,
-      strokeWidth: 2,
       color: 'red',
-      opacity: 0.5,
+      pointStyleProps,
     });
     expect(props).toEqual({
       key: 'area-point-1-2',
@@ -34,15 +39,19 @@ describe('[canvas] Area Geometries props', () => {
       listening: false,
     });
 
+    const noStrokePointStyleProps = buildPointStyleProps({
+      radius: 30,
+      strokeWidth: 0,
+      opacity: 0.5,
+    });
+
     const propsNoStroke = buildAreaPointProps({
       areaIndex: 1,
       pointIndex: 2,
       x: 10,
       y: 20,
-      radius: 30,
-      strokeWidth: 0,
       color: 'red',
-      opacity: 0.5,
+      pointStyleProps: noStrokePointStyleProps,
     });
     expect(propsNoStroke).toEqual({
       key: 'area-point-1-2',
@@ -59,14 +68,9 @@ describe('[canvas] Area Geometries props', () => {
       listening: false,
     });
 
-    const seriesPointStyle = buildAreaPointProps({
-      areaIndex: 1,
-      pointIndex: 2,
-      x: 10,
-      y: 20,
+    const seriesPointStyleProps = buildPointStyleProps({
       radius: 30,
       strokeWidth: 2,
-      color: 'red',
       opacity: 0.5,
       seriesPointStyle: {
         radius: 123,
@@ -75,6 +79,14 @@ describe('[canvas] Area Geometries props', () => {
         opacity: 789,
         visible: true,
       },
+    });
+    const seriesPointStyle = buildAreaPointProps({
+      areaIndex: 1,
+      pointIndex: 2,
+      x: 10,
+      y: 20,
+      color: 'red',
+      pointStyleProps: seriesPointStyleProps,
     });
     expect(seriesPointStyle).toEqual({
       key: 'area-point-1-2',
@@ -191,15 +203,19 @@ describe('[canvas] Area Geometries props', () => {
 
 describe('[canvas] Line Geometries', () => {
   test('can build line point props', () => {
+    const pointStyleProps = buildPointStyleProps({
+      radius: 30,
+      strokeWidth: 2,
+      opacity: 0.5,
+    });
+
     const props = buildLinePointProps({
       lineIndex: 1,
       pointIndex: 2,
       x: 10,
       y: 20,
-      radius: 30,
-      strokeWidth: 2,
       color: 'red',
-      opacity: 0.5,
+      pointStyleProps,
     });
     expect(props).toEqual({
       key: 'line-point-1-2',
@@ -216,15 +232,18 @@ describe('[canvas] Line Geometries', () => {
       listening: false,
     });
 
+    const noStrokeStyleProps = buildPointStyleProps({
+      radius: 30,
+      strokeWidth: 0,
+      opacity: 0.5,
+    });
     const propsNoStroke = buildLinePointProps({
       lineIndex: 1,
       pointIndex: 2,
       x: 10,
       y: 20,
-      radius: 30,
-      strokeWidth: 0,
       color: 'red',
-      opacity: 0.5,
+      pointStyleProps: noStrokeStyleProps,
     });
     expect(propsNoStroke).toEqual({
       key: 'line-point-1-2',
@@ -241,14 +260,9 @@ describe('[canvas] Line Geometries', () => {
       listening: false,
     });
 
-    const seriesPointStyle = buildLinePointProps({
-      lineIndex: 1,
-      pointIndex: 2,
-      x: 10,
-      y: 20,
+    const seriesPointStyleProps = buildPointStyleProps({
       radius: 30,
       strokeWidth: 2,
-      color: 'red',
       opacity: 0.5,
       seriesPointStyle: {
         stroke: 'series-stroke',
@@ -258,12 +272,20 @@ describe('[canvas] Line Geometries', () => {
         opacity: 18,
       },
     });
+    const seriesPointStyle = buildLinePointProps({
+      lineIndex: 1,
+      pointIndex: 2,
+      x: 10,
+      y: 20,
+      color: 'red',
+      pointStyleProps: seriesPointStyleProps,
+    });
     expect(seriesPointStyle).toEqual({
       key: 'line-point-1-2',
       x: 10,
       y: 20,
       radius: 12,
-      strokeWidth: 2,
+      strokeWidth: 6,
       strokeEnabled: true,
       stroke: 'red',
       fill: 'white',

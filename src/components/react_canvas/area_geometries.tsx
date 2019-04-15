@@ -9,6 +9,7 @@ import {
   buildAreaLineProps,
   buildAreaPointProps,
   buildAreaProps,
+  buildPointStyleProps,
 } from './utils/rendering_props_utils';
 
 interface AreaGeometriesDataProps {
@@ -51,22 +52,34 @@ export class AreaGeometries extends React.PureComponent<
     const { areas } = this.props;
     return areas.reduce(
       (acc, glyph, i) => {
-        const { points } = glyph;
-        return [...acc, ...this.renderPoints(points, i, themeIsVisible)];
+        const { points, seriesPointStyle } = glyph;
+
+        const isVisible = seriesPointStyle ? seriesPointStyle.visible : themeIsVisible;
+        if (!isVisible) {
+          return acc;
+        }
+
+        const { radius, strokeWidth, opacity } = this.props.style.point;
+        const pointStyleProps = buildPointStyleProps({
+          radius,
+          strokeWidth,
+          opacity,
+          seriesPointStyle,
+        });
+
+        return [...acc, ...this.renderPoints(points, i, pointStyleProps)];
       },
       [] as JSX.Element[],
     );
   }
-  private renderPoints = (areaPoints: PointGeometry[], areaIndex: number, themeIsVisible: boolean): JSX.Element[] => {
-    const { radius, strokeWidth, opacity } = this.props.style.point;
-
+  private renderPoints = (
+    areaPoints: PointGeometry[],
+    areaIndex: number,
+    pointStyleProps: any,
+  ): JSX.Element[] => {
     const areaPointElements: JSX.Element[] = [];
     areaPoints.forEach((areaPoint, pointIndex) => {
-      const { x, y, color, transform, seriesPointStyle } = areaPoint;
-      const isVisible = seriesPointStyle ? seriesPointStyle.visible : themeIsVisible;
-      if (!isVisible) {
-        return;
-      }
+      const { x, y, color, transform } = areaPoint;
 
       if (this.props.animated) {
         areaPointElements.push(
@@ -78,11 +91,8 @@ export class AreaGeometries extends React.PureComponent<
                   pointIndex,
                   x,
                   y,
-                  radius,
-                  strokeWidth,
                   color,
-                  opacity,
-                  seriesPointStyle,
+                  pointStyleProps,
                 });
                 return <animated.Circle {...pointProps} />;
               }}
@@ -94,11 +104,8 @@ export class AreaGeometries extends React.PureComponent<
           pointIndex,
           x: transform.x + x,
           y,
-          radius,
-          strokeWidth,
           color,
-          opacity,
-          seriesPointStyle,
+          pointStyleProps,
         });
         areaPointElements.push(<Circle {...pointProps} />);
       }
