@@ -100,15 +100,15 @@ echo " -- installing dependencies"
 yarn install
 
 ###
-### build
+### building
 ###
-echo " -- building "
+echo " -- building"
 yarn build 
 
 ###
-### check linting
+### run linter
 ###
-echo " -- check linting"
+echo " -- run linter"
 yarn lint
 
 ###
@@ -118,7 +118,7 @@ echo " -- testing"
 yarn test --coverage
 
 ###
-### upload coverage
+### upload code coverage
 ###
-echo " -- upload coverage"
+echo " -- upload code coverage"
 ./node_modules/.bin/codecov
