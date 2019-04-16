@@ -35,7 +35,7 @@ function generateTimeAnnotationData(values: any[]): AnnotationDatum[] {
 }
 
 storiesOf('Annotations', module)
-  .add('basic xDomain continuous', () => {
+  .add('[line] basic xDomain continuous', () => {
     const data = array('data values', [2.5, 7.2]);
     const dataValues = generateAnnotationData(data);
 
@@ -91,7 +91,7 @@ storiesOf('Annotations', module)
       </Chart>
     );
   })
-  .add('basic xDomain ordinal', () => {
+  .add('[line] basic xDomain ordinal', () => {
     const dataValues = generateAnnotationData(array('annotation values', ['a', 'c']));
 
     const chartRotation = select<Rotation>(
@@ -132,7 +132,7 @@ storiesOf('Annotations', module)
       </Chart>
     );
   })
-  .add('basic yDomain', () => {
+  .add('[line] basic yDomain', () => {
     const data = array('data values', [3.5, 7.2]);
     const dataValues = generateAnnotationData(data);
 
@@ -173,7 +173,7 @@ storiesOf('Annotations', module)
       </Chart>
     );
   })
-  .add('time series', () => {
+  .add('[line] time series', () => {
     const dataValues = generateTimeAnnotationData([
       1551438150000,
       1551438180000,
@@ -220,7 +220,7 @@ storiesOf('Annotations', module)
       </Chart>
     );
   })
-  .add('styling', () => {
+  .add('[line] styling', () => {
     const data = [2.5, 7.2];
     const dataValues = generateAnnotationData(data);
 
@@ -279,6 +279,40 @@ storiesOf('Annotations', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 3, y: 6 }]}
+        />
+      </Chart>
+    );
+  })
+  .add('[rect] basic annotation', () => {
+    const chartRotation = select<Rotation>(
+      'chartRotation',
+      {
+        '0 deg': 0,
+        '90 deg': 90,
+        '-90 deg': -90,
+        '180 deg': 180,
+      },
+      0,
+    );
+
+    return (
+      <Chart renderer="canvas" className={'story-chart'}>
+        <Settings debug={boolean('debug', false)} rotation={chartRotation} />
+        <Axis
+          id={getAxisId('bottom')}
+          position={Position.Bottom}
+          title={'x-domain axis'}
+          tickFormat={dateFormatter}
+        />
+        <Axis id={getAxisId('left')} title={'y-domain axis'} position={Position.Left} />
+        <BarSeries
+          id={getSpecId('bars')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor={0}
+          yAccessors={[1]}
+          data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 20)}
+          yScaleToDataExtent={false}
         />
       </Chart>
     );
