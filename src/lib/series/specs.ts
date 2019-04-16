@@ -36,7 +36,7 @@ export interface SeriesSpec {
   /** An array of data */
   data: Datum[];
   /** The type of series you are looking to render */
-  seriesType: 'bar' | 'line' | 'area' | 'basic';
+  seriesType: 'bar' | 'line' | 'area';
   /** Custom colors for series */
   customSeriesColors?: CustomSeriesColorsMap;
   /** If the series should appear in the legend
