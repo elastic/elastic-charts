@@ -109,7 +109,7 @@ yarn build
 ### check linting
 ###
 echo " -- check linting"
-yarn build
+yarn lint
 
 ###
 ### testing
