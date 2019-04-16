@@ -1,36 +1,58 @@
 import { GeometryStyle } from '../../../lib/series/rendering';
+import { AreaStyle, LineStyle, PointStyle } from '../../../lib/themes/theme';
 import { GlobalKonvaElementProps } from '../globals';
+
+export interface PointStyleProps {
+  radius: number;
+  strokeWidth: number;
+  strokeEnabled: boolean;
+  fill: string;
+  opacity: number;
+}
 
 export function buildAreaPointProps({
   areaIndex,
   pointIndex,
   x,
   y,
-  radius,
-  strokeWidth,
   color,
-  opacity,
+  pointStyleProps,
 }: {
   areaIndex: number;
   pointIndex: number;
   x: number;
   y: number;
-  radius: number;
-  strokeWidth: number;
   color: string;
-  opacity: number;
+  pointStyleProps: PointStyleProps;
 }) {
   return {
     key: `area-point-${areaIndex}-${pointIndex}`,
     x,
     y,
-    radius,
-    strokeWidth,
-    strokeEnabled: strokeWidth !== 0,
     stroke: color,
-    fill: 'white',
-    opacity,
+    ...pointStyleProps,
     ...GlobalKonvaElementProps,
+  };
+}
+
+export function buildPointStyleProps({
+  radius,
+  strokeWidth,
+  opacity,
+  seriesPointStyle,
+}: {
+  radius: number;
+  strokeWidth: number;
+  opacity: number;
+  seriesPointStyle?: PointStyle;
+}): PointStyleProps {
+  const pointStrokeWidth = seriesPointStyle ? seriesPointStyle.strokeWidth : strokeWidth;
+  return {
+    radius: seriesPointStyle ? seriesPointStyle.radius : radius,
+    strokeWidth: pointStrokeWidth,
+    strokeEnabled: pointStrokeWidth !== 0,
+    fill: 'white',
+    opacity: seriesPointStyle ? seriesPointStyle.opacity : opacity,
   };
 }
 
@@ -40,12 +62,14 @@ export function buildAreaProps({
   xTransform,
   color,
   opacity,
+  seriesAreaStyle,
 }: {
   index: number;
   areaPath: string;
   xTransform: number;
   color: string;
   opacity: number;
+  seriesAreaStyle?: AreaStyle,
 }) {
   return {
     key: `area-${index}`,
@@ -54,7 +78,7 @@ export function buildAreaProps({
     fill: color,
     lineCap: 'round',
     lineJoin: 'round',
-    opacity,
+    opacity: seriesAreaStyle ? seriesAreaStyle.opacity : opacity,
     ...GlobalKonvaElementProps,
   };
 }
@@ -67,6 +91,7 @@ export function buildAreaLineProps({
   color,
   strokeWidth,
   geometryStyle,
+  seriesAreaLineStyle,
 }: {
   areaIndex: number;
   lineIndex: number;
@@ -75,13 +100,14 @@ export function buildAreaLineProps({
   color: string;
   strokeWidth: number;
   geometryStyle: GeometryStyle;
+  seriesAreaLineStyle?: LineStyle;
 }) {
   return {
     key: `area-${areaIndex}-line-${lineIndex}`,
     data: linePath,
     x: xTransform,
     stroke: color,
-    strokeWidth,
+    strokeWidth: seriesAreaLineStyle ? seriesAreaLineStyle.strokeWidth : strokeWidth,
     lineCap: 'round',
     lineJoin: 'round',
     ...geometryStyle,
@@ -132,30 +158,22 @@ export function buildLinePointProps({
   pointIndex,
   x,
   y,
-  radius,
-  strokeWidth,
   color,
-  opacity,
+  pointStyleProps,
 }: {
   lineIndex: number;
   pointIndex: number;
   x: number;
   y: number;
-  radius: number;
-  strokeWidth: number;
   color: string;
-  opacity: number;
+  pointStyleProps: PointStyleProps;
 }) {
   return {
     key: `line-point-${lineIndex}-${pointIndex}`,
     x,
     y,
-    radius,
     stroke: color,
-    strokeWidth,
-    strokeEnabled: strokeWidth !== 0,
-    fill: 'white',
-    opacity,
+    ...pointStyleProps,
     ...GlobalKonvaElementProps,
   };
 }
@@ -166,24 +184,23 @@ export function buildLineProps({
   linePath,
   color,
   strokeWidth,
-  opacity,
   geometryStyle,
+  seriesLineStyle,
 }: {
   index: number;
   xTransform: number;
   linePath: string;
   color: string;
   strokeWidth: number;
-  opacity: number;
   geometryStyle: GeometryStyle;
+  seriesLineStyle?: LineStyle;
 }) {
   return {
     key: `line-${index}`,
     x: xTransform,
     data: linePath,
     stroke: color,
-    strokeWidth,
-    opacity,
+    strokeWidth: seriesLineStyle ? seriesLineStyle.strokeWidth : strokeWidth,
     lineCap: 'round',
     lineJoin: 'round',
     ...geometryStyle,
