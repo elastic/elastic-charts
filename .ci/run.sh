@@ -86,11 +86,12 @@ yarnGlobalDir="$(yarn global bin)"
 export PATH="$PATH:$yarnGlobalDir"
 
 
+
 ###
-### install global dependencies
+### install codecov dependencies
 ###
-echo " -- installing global dependencies"
-yarn global add codecov --prefer-offline
+echo " -- installing codecov dependencies"
+yarn add codecov --prefer-offline
 
 ###
 ### install dependencies
@@ -120,4 +121,4 @@ yarn test --coverage
 ### upload coverage
 ###
 echo " -- upload coverage"
-codecov
+./node_modules/.bin/codecov
