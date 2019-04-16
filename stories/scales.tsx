@@ -79,7 +79,7 @@ storiesOf('Scales', module)
         break;
     }
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Axis id={getAxisId('time')} position={Position.Bottom} tickFormat={tooltipFn} />
         <Axis id={getAxisId('y')} position={Position.Left} />
         <LineSeries
@@ -99,7 +99,7 @@ storiesOf('Scales', module)
     'x scale: UTC Time zone - local tooltip',
     () => {
       return (
-        <Chart renderer="canvas" className={'story-chart'}>
+        <Chart className={'story-chart'}>
           <Axis
             id={getAxisId('time')}
             position={Position.Bottom}
@@ -133,7 +133,7 @@ storiesOf('Scales', module)
     'x scale: UTC Time zone - UTC tooltip',
     () => {
       return (
-        <Chart renderer="canvas" className={'story-chart'}>
+        <Chart className={'story-chart'}>
           <Axis
             id={getAxisId('time')}
             position={Position.Bottom}
@@ -169,7 +169,7 @@ storiesOf('Scales', module)
     'x scale year scale: custom timezone - same zone tooltip',
     () => {
       return (
-        <Chart renderer="canvas" className={'story-chart'}>
+        <Chart className={'story-chart'}>
           <Axis
             id={getAxisId('time')}
             position={Position.Bottom}

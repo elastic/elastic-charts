@@ -20,7 +20,7 @@ const dateFormatter = timeFormatter(niceTimeFormatByDay(1));
 storiesOf('Line Chart', module)
   .add('basic', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <LineSeries
           id={getSpecId('lines')}
           xScaleType={ScaleType.Time}
@@ -35,7 +35,7 @@ storiesOf('Line Chart', module)
   })
   .add('w axis', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
@@ -62,7 +62,7 @@ storiesOf('Line Chart', module)
   })
   .add('ordinal w axis', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
@@ -89,7 +89,7 @@ storiesOf('Line Chart', module)
   })
   .add('linear w axis', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
@@ -116,7 +116,7 @@ storiesOf('Line Chart', module)
   })
   .add('w axis and legend', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}
@@ -144,7 +144,7 @@ storiesOf('Line Chart', module)
   })
   .add('curved w axis and legend', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}
@@ -224,7 +224,7 @@ storiesOf('Line Chart', module)
   })
   .add('multiple w axis and legend', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}
@@ -271,7 +271,7 @@ storiesOf('Line Chart', module)
   })
   .add('stacked w axis and legend', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}
@@ -320,7 +320,7 @@ storiesOf('Line Chart', module)
   })
   .add('multi series with log values (limit 0 or negative values)', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}

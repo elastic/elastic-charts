@@ -18,7 +18,7 @@ import { timeFormatter } from '../src/utils/data/formatters';
 storiesOf('Mixed Charts', module)
   .add('bar and lines', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} />
         <Axis
@@ -49,7 +49,7 @@ storiesOf('Mixed Charts', module)
   })
   .add('lines and areas', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}
@@ -91,7 +91,7 @@ storiesOf('Mixed Charts', module)
     const data2 = [[1, 5], [2, 4], [3, 3], [4, 2], [5, 1], [6, 2], [7, 3], [8, 4], [9, 5]];
 
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}
@@ -154,7 +154,7 @@ storiesOf('Mixed Charts', module)
     const dateFormatter = timeFormatter('HH:mm:ss');
 
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}

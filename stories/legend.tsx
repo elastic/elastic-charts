@@ -20,7 +20,7 @@ import { TSVB_DATASET } from '../src/lib/series/utils/test_dataset_tsvb';
 storiesOf('Legend', module)
   .add('right', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}
@@ -51,7 +51,7 @@ storiesOf('Legend', module)
   })
   .add('bottom', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Bottom} />
         <Axis
           id={getAxisId('bottom')}
@@ -81,7 +81,7 @@ storiesOf('Legend', module)
   })
   .add('left', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Left} />
         <Axis
           id={getAxisId('bottom')}
@@ -111,7 +111,7 @@ storiesOf('Legend', module)
   })
   .add('top', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Top} />
         <Axis
           id={getAxisId('bottom')}
@@ -142,7 +142,7 @@ storiesOf('Legend', module)
   .add('changing specs', () => {
     const splitSeries = boolean('split series', true) ? ['g1', 'g2'] : undefined;
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Top} />
         <Axis
           id={getAxisId('bottom')}
@@ -175,7 +175,7 @@ storiesOf('Legend', module)
     const hideLineSeriesInLegend = boolean('hide line series in legend', false);
 
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}
@@ -217,42 +217,42 @@ storiesOf('Legend', module)
   })
   .add('display values in legend elements', () => {
     const showLegendDisplayValue = boolean('show display value in legend', true);
-    const legendPosition = select('legendPosition', {
-      right: Position.Right,
-      bottom: Position.Bottom,
-      left: Position.Left,
-      top: Position.Top,
-    }, Position.Right);
+    const legendPosition = select(
+      'legendPosition',
+      {
+        right: Position.Right,
+        bottom: Position.Bottom,
+        left: Position.Left,
+        top: Position.Top,
+      },
+      Position.Right,
+    );
 
     const tsvbSeries = TSVB_DATASET.series;
 
-    const namesArray = array('series names (in sort order)', [
-      'jpg',
-      'php',
-      'png',
-      'css',
-      'gif',
-    ]);
+    const namesArray = array('series names (in sort order)', ['jpg', 'php', 'png', 'css', 'gif']);
 
     const seriesComponents = tsvbSeries.map((series: any) => {
       const nameIndex = namesArray.findIndex((name: string) => name === series.label);
       const sortIndex = nameIndex > -1 ? nameIndex : undefined;
 
-      return (<AreaSeries
-        key={`${series.id}-${series.label}`}
-        id={getSpecId(`${series.id}-${series.label}`)}
-        name={series.label}
-        xScaleType={ScaleType.Time}
-        yScaleType={ScaleType.Linear}
-        xAccessor={0}
-        yAccessors={[1]}
-        data={series.data}
-        curve={series.lines.steps ? CurveType.CURVE_STEP : CurveType.LINEAR}
-        sortIndex={sortIndex}
-      />);
+      return (
+        <AreaSeries
+          key={`${series.id}-${series.label}`}
+          id={getSpecId(`${series.id}-${series.label}`)}
+          name={series.label}
+          xScaleType={ScaleType.Time}
+          yScaleType={ScaleType.Linear}
+          xAccessor={0}
+          yAccessors={[1]}
+          data={series.data}
+          curve={series.lines.steps ? CurveType.CURVE_STEP : CurveType.LINEAR}
+          sortIndex={sortIndex}
+        />
+      );
     });
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings
           showLegend={true}
           legendPosition={legendPosition}

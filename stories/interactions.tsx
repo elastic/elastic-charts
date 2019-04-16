@@ -45,7 +45,7 @@ const onLegendItemListeners = {
 storiesOf('Interactions', module)
   .add('bar clicks and hovers', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} {...onElementListeners} />
         <Axis
           id={getAxisId('bottom')}
@@ -74,7 +74,7 @@ storiesOf('Interactions', module)
   })
   .add('area point clicks and hovers', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} {...onElementListeners} />
         <Axis
           id={getAxisId('bottom')}
@@ -103,7 +103,7 @@ storiesOf('Interactions', module)
   })
   .add('line point clicks and hovers', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} {...onElementListeners} />
         <Axis
           id={getAxisId('bottom')}
@@ -132,7 +132,7 @@ storiesOf('Interactions', module)
   })
   .add('line area bar point clicks and hovers', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} {...onElementListeners} />
         <Axis
           id={getAxisId('bottom')}
@@ -216,7 +216,7 @@ storiesOf('Interactions', module)
     const data = hasAdditionalG1Value ? [...seriesData, additionalG1Value] : seriesData;
 
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings
           showLegend={true}
           legendPosition={Position.Right}
@@ -252,7 +252,7 @@ storiesOf('Interactions', module)
   })
   .add('click/hovers on legend items [area chart]', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}
@@ -292,7 +292,7 @@ storiesOf('Interactions', module)
   })
   .add('click/hovers on legend items [line chart]', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}
@@ -372,7 +372,7 @@ storiesOf('Interactions', module)
   })
   .add('click/hovers on legend items [mixed chart]', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}
@@ -412,7 +412,7 @@ storiesOf('Interactions', module)
   })
   .add('brush selection tool on linear', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings onBrushEnd={action('onBrushEnd')} />
         <Axis
           id={getAxisId('bottom')}
@@ -453,7 +453,7 @@ storiesOf('Interactions', module)
   })
   .add('brush selection tool on bar chart linear', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings onBrushEnd={action('onBrushEnd')} />
         <Axis
           id={getAxisId('bottom')}
@@ -496,7 +496,7 @@ storiesOf('Interactions', module)
     const now = DateTime.fromISO('2019-01-11T00:00:00.000Z').toMillis();
     const oneDay = 1000 * 60 * 60 * 24;
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings debug={boolean('debug', false)} onBrushEnd={action('onBrushEnd')} />
         <Axis
           id={getAxisId('bottom')}
@@ -531,7 +531,7 @@ storiesOf('Interactions', module)
   })
   .add('brush disabled on ordinal x axis', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings onBrushEnd={action('onBrushEnd')} />
         <Axis
           id={getAxisId('bottom')}
@@ -567,7 +567,7 @@ storiesOf('Interactions', module)
     const numberFormatter = (d: any) => Number(d).toFixed(2);
 
     return (
-      <Chart renderer="canvas" className={className}>
+      <Chart className={className}>
         <Settings
           debug={boolean('debug', false)}
           tooltipType={select(

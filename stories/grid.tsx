@@ -77,7 +77,7 @@ storiesOf('Grids', module)
     const bottomAxisGridLineConfig = generateGridLineConfig(Position.Bottom);
 
     return (
-      <Chart renderer="canvas" size={[500, 300]} className={'story-chart'}>
+      <Chart size={[500, 300]} className={'story-chart'}>
         <Settings debug={boolean('debug', false)} />
         <Axis
           id={getAxisId('bottom')}
@@ -140,7 +140,7 @@ storiesOf('Grids', module)
     const leftAxisGridLineConfig2 = generateGridLineConfig(`${Position.Left}2`);
 
     return (
-      <Chart renderer="canvas" size={[500, 300]} className={'story-chart'}>
+      <Chart size={[500, 300]} className={'story-chart'}>
         <Settings debug={boolean('debug', false)} />
         <Axis
           id={getAxisId('left1')}

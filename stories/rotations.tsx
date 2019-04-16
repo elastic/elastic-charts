@@ -15,7 +15,7 @@ import {
 storiesOf('Rotations', module)
   .add('with ordinal axis', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings
           debug={boolean('Debug', true)}
           showLegend={boolean('Legend', true)}
@@ -69,7 +69,7 @@ storiesOf('Rotations', module)
   })
   .add('-90 deg ordinal', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} rotation={-90} />
         <Axis id={getAxisId('y top')} position={Position.Top} title={'y top axis'} />
         <Axis id={getAxisId('x right')} title={'x right axis'} position={Position.Right} />
@@ -89,7 +89,7 @@ storiesOf('Rotations', module)
   })
   .add('0 deg ordinal', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} rotation={0} />
         <Axis id={getAxisId('x top')} position={Position.Top} title={'x top axis'} />
         <Axis id={getAxisId('y right')} title={'y right axis'} position={Position.Right} />
@@ -109,7 +109,7 @@ storiesOf('Rotations', module)
   })
   .add('90 deg ordinal', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} rotation={90} />
         <Axis id={getAxisId('y top')} position={Position.Top} title={'y top axis'} />
         <Axis id={getAxisId('x right')} title={'x right axis'} position={Position.Right} />
@@ -129,7 +129,7 @@ storiesOf('Rotations', module)
   })
   .add('180 deg ordinal', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} rotation={180} />
         <Axis id={getAxisId('x top')} position={Position.Top} title={'x top axis'} />
         <Axis id={getAxisId('y right')} title={'y right axis'} position={Position.Right} />
@@ -149,7 +149,7 @@ storiesOf('Rotations', module)
   })
   .add('-90 deg linear', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} rotation={-90} />
         <Axis id={getAxisId('y top')} position={Position.Top} title={'y top axis'} />
         <Axis id={getAxisId('x right')} title={'x right axis'} position={Position.Right} />
@@ -169,7 +169,7 @@ storiesOf('Rotations', module)
   })
   .add('0 deg linear', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} rotation={0} />
         <Axis id={getAxisId('x top')} position={Position.Top} title={'x top axis'} />
         <Axis id={getAxisId('y right')} title={'y right axis'} position={Position.Right} />
@@ -189,7 +189,7 @@ storiesOf('Rotations', module)
   })
   .add('90 deg linear', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} rotation={90} />
         <Axis id={getAxisId('y top')} position={Position.Top} title={'y top axis'} />
         <Axis id={getAxisId('x right')} title={'x right axis'} position={Position.Right} />
@@ -209,7 +209,7 @@ storiesOf('Rotations', module)
   })
   .add('180 deg linear', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} rotation={180} />
         <Axis id={getAxisId('x top')} position={Position.Top} title={'x top axis'} />
         <Axis id={getAxisId('y right')} title={'y right axis'} position={Position.Right} />

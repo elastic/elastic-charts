@@ -69,7 +69,7 @@ storiesOf('Annotations', module)
     const axisPosition = isBottom ? Position.Bottom : Position.Top;
 
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings debug={boolean('debug', false)} rotation={chartRotation} />
         <LineAnnotation
           annotationId={getAnnotationId('anno_1')}
@@ -107,7 +107,7 @@ storiesOf('Annotations', module)
     );
 
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings debug={boolean('debug', false)} rotation={chartRotation} />
         <LineAnnotation
           annotationId={getAnnotationId('anno_1')}
@@ -154,7 +154,7 @@ storiesOf('Annotations', module)
     const axisPosition = isLeft ? Position.Left : Position.Right;
 
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings debug={boolean('debug', false)} rotation={chartRotation} />
         <LineAnnotation
           annotationId={getAnnotationId('anno_')}
@@ -197,7 +197,7 @@ storiesOf('Annotations', module)
     );
 
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings debug={boolean('debug', false)} rotation={chartRotation} />
         <LineAnnotation
           annotationId={getAnnotationId('anno_1')}
@@ -263,7 +263,7 @@ storiesOf('Annotations', module)
     const hideTooltips = boolean('annotation tooltips hidden', false);
 
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings debug={boolean('debug', false)} rotation={chartRotation} />
         <LineAnnotation
           annotationId={getAnnotationId('anno_1')}

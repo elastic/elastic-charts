@@ -70,7 +70,7 @@ storiesOf('Stylings', module)
     };
     const customTheme = mergeWithDefaultTheme(theme, LIGHT_THEME);
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings
           theme={customTheme}
           debug={boolean('debug', true)}
@@ -146,7 +146,7 @@ storiesOf('Stylings', module)
     };
     const customTheme = mergeWithDefaultTheme(theme, LIGHT_THEME);
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings
           theme={customTheme}
           debug={boolean('debug', true)}
@@ -286,7 +286,7 @@ storiesOf('Stylings', module)
     switchTheme(darkmode ? 'dark' : 'light');
 
     return (
-      <Chart renderer="canvas" className={className}>
+      <Chart className={className}>
         <Settings
           theme={customTheme}
           debug={boolean('debug', false)}
@@ -370,7 +370,7 @@ storiesOf('Stylings', module)
     lineCustomSeriesColors.set(lineDataSeriesColorValues, customLineColorKnob);
 
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}
