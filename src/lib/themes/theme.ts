@@ -114,10 +114,12 @@ export interface CrosshairStyle {
   line: StrokeStyle & Visible;
 }
 
-export interface AnnotationLineStyle {
+export interface LineAnnotationStyle {
   line: StrokeStyle & Opacity;
   details: TextStyle;
 }
+
+export type RectAnnotationStyle = GeometryStyle;
 
 export interface PartialTheme {
   chartMargins?: Margins;
@@ -139,7 +141,7 @@ export const DEFAULT_GRID_LINE_CONFIG: GridLineConfig = {
   opacity: 1,
 };
 
-export const DEFAULT_ANNOTATION_LINE_STYLE: AnnotationLineStyle = {
+export const DEFAULT_ANNOTATION_LINE_STYLE: LineAnnotationStyle = {
   line: {
     stroke: '#000',
     strokeWidth: 3,
@@ -167,10 +169,10 @@ export function mergeWithDefaultGridLineConfig(config: GridLineConfig): GridLine
   };
 }
 
-export function mergeWithDefaultAnnotationLine(config?: Partial<AnnotationLineStyle>): AnnotationLineStyle {
+export function mergeWithDefaultAnnotationLine(config?: Partial<LineAnnotationStyle>): LineAnnotationStyle {
   const defaultLine = DEFAULT_ANNOTATION_LINE_STYLE.line;
   const defaultDetails = DEFAULT_ANNOTATION_LINE_STYLE.details;
-  const mergedConfig: AnnotationLineStyle = { ...DEFAULT_ANNOTATION_LINE_STYLE };
+  const mergedConfig: LineAnnotationStyle = { ...DEFAULT_ANNOTATION_LINE_STYLE };
 
   if (!config) {
     return mergedConfig;

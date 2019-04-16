@@ -2,7 +2,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Layer, Rect, Stage } from 'react-konva';
 import { isLineAnnotation } from '../../lib/series/specs';
-import { AnnotationLineStyle } from '../../lib/themes/theme';
+import { LineAnnotationStyle } from '../../lib/themes/theme';
 import { AnnotationId } from '../../lib/utils/ids';
 import { AnnotationDimensions } from '../../state/annotation_utils';
 import { ChartStore, Point } from '../../state/chart_state';
@@ -183,7 +183,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       }
 
       if (isLineAnnotation(spec)) {
-        const lineStyle = spec.style as AnnotationLineStyle;
+        const lineStyle = spec.style as LineAnnotationStyle;
 
         annotationComponents.push(
           <Annotation

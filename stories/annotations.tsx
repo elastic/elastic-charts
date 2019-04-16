@@ -3,7 +3,6 @@ import { array, boolean, color, number, select } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import React from 'react';
 import {
-  AnnotationDatum,
   AnnotationDomainTypes,
   Axis,
   BarSeries,
@@ -12,6 +11,7 @@ import {
   getAxisId,
   getSpecId,
   LineAnnotation,
+  LineAnnotationDatum,
   Position,
   Rotation,
   ScaleType,
@@ -22,11 +22,11 @@ import { KIBANA_METRICS } from '../src/lib/series/utils/test_dataset_kibana';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
 
-function generateAnnotationData(values: any[]): AnnotationDatum[] {
+function generateAnnotationData(values: any[]): LineAnnotationDatum[] {
   return values.map((value, index) => ({ dataValue: value, details: `detail-${index}` }));
 }
 
-function generateTimeAnnotationData(values: any[]): AnnotationDatum[] {
+function generateTimeAnnotationData(values: any[]): LineAnnotationDatum[] {
   return values.map((value, index) => ({
     dataValue: value,
     details: `detail-${index}`,
@@ -296,7 +296,7 @@ storiesOf('Annotations', module)
     );
 
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings debug={boolean('debug', false)} rotation={chartRotation} />
         <Axis
           id={getAxisId('bottom')}
@@ -312,7 +312,6 @@ storiesOf('Annotations', module)
           xAccessor={0}
           yAccessors={[1]}
           data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 20)}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );

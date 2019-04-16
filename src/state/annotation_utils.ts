@@ -1,16 +1,16 @@
 import { isHorizontal } from '../lib/axes/axis_utils';
 import {
-  AnnotationDatum,
   AnnotationDomainType,
   AnnotationDomainTypes,
   AnnotationSpec,
   AxisSpec,
   isLineAnnotation,
+  LineAnnotationDatum,
   LineAnnotationSpec,
   Position,
   Rotation,
 } from '../lib/series/specs';
-import { AnnotationLineStyle } from '../lib/themes/theme';
+import { LineAnnotationStyle } from '../lib/themes/theme';
 import { Dimensions } from '../lib/utils/dimensions';
 import { AnnotationId, AxisId, GroupId } from '../lib/utils/ids';
 import { Scale, ScaleType } from '../lib/utils/scales/scales';
@@ -57,7 +57,7 @@ export type AnnotationDimensions = AnnotationLineProps[];
 export const DEFAULT_LINE_OVERFLOW = 0;
 
 export function computeYDomainLineAnnotationDimensions(
-  dataValues: AnnotationDatum[],
+  dataValues: LineAnnotationDatum[],
   yScale: Scale,
   chartRotation: Rotation,
   lineOverflow: number,
@@ -73,7 +73,7 @@ export function computeYDomainLineAnnotationDimensions(
   const markerOffsets = markerDimensions || { width: 0, height: 0 };
   const lineProps: AnnotationLineProps[] = [];
 
-  dataValues.forEach((datum: AnnotationDatum) => {
+  dataValues.forEach((datum: LineAnnotationDatum) => {
     const { dataValue } = datum;
     const details = {
       detailsText: datum.details,
@@ -141,7 +141,7 @@ export function computeYDomainLineAnnotationDimensions(
 }
 
 export function computeXDomainLineAnnotationDimensions(
-  dataValues: AnnotationDatum[],
+  dataValues: LineAnnotationDatum[],
   xScale: Scale,
   chartRotation: Rotation,
   lineOverflow: number,
@@ -156,7 +156,7 @@ export function computeXDomainLineAnnotationDimensions(
   const markerOffsets = markerDimensions || { width: 0, height: 0 };
   const lineProps: AnnotationLineProps[] = [];
 
-  dataValues.forEach((datum: AnnotationDatum) => {
+  dataValues.forEach((datum: LineAnnotationDatum) => {
     const { dataValue } = datum;
     const details = {
       detailsText: datum.details,
@@ -260,7 +260,7 @@ export function computeLineAnnotationDimensions(
   const lineOverflow = DEFAULT_LINE_OVERFLOW;
 
   // this type is guaranteed as this has been merged with default
-  const lineStyle = annotationSpec.style as AnnotationLineStyle;
+  const lineStyle = annotationSpec.style as LineAnnotationStyle;
   const lineColor = lineStyle.line.stroke;
 
   if (domainType === AnnotationDomainTypes.XDomain) {
@@ -521,7 +521,7 @@ export function computeLineAnnotationTooltipState(
   annotationLines: AnnotationLineProps[],
   groupId: GroupId,
   domainType: AnnotationDomainType,
-  style: AnnotationLineStyle,
+  style: LineAnnotationStyle,
   chartRotation: Rotation,
   axesSpecs: Map<AxisId, AxisSpec>,
 ): AnnotationTooltipState {
@@ -597,7 +597,7 @@ export function computeAnnotationTooltipState(
         annotationDimension,
         groupId,
         spec.domainType,
-        spec.style as AnnotationLineStyle, // this type is guaranteed as this has been merged with default
+        spec.style as LineAnnotationStyle, // this type is guaranteed as this has been merged with default
         chartRotation,
         axesSpecs,
       );

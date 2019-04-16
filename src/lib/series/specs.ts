@@ -1,8 +1,8 @@
 import {
-  AnnotationLineStyle,
   AreaSeriesStyle,
   CustomBarSeriesStyle,
   GridLineConfig,
+  LineAnnotationStyle,
   LineSeriesStyle,
 } from '../themes/theme';
 import { Accessor } from '../utils/accessor';
@@ -192,7 +192,7 @@ export const AnnotationDomainTypes = Object.freeze({
 });
 
 export type AnnotationDomainType = 'xDomain' | 'yDomain';
-export interface AnnotationDatum {
+export interface LineAnnotationDatum {
   dataValue: any;
   details?: string;
   header?: string;
@@ -210,9 +210,9 @@ export interface LineAnnotationSpec {
   /** Annotation domain type: AnnotationDomainTypes.XDomain or AnnotationDomainTypes.YDomain */
   domainType: AnnotationDomainType;
   /** Data values defined with value, details, and header */
-  dataValues: AnnotationDatum[];
+  dataValues: LineAnnotationDatum[];
   /** Custom line styles */
-  style?: Partial<AnnotationLineStyle>;
+  style?: Partial<LineAnnotationStyle>;
   /** Custom marker */
   marker?: JSX.Element;
   /**
@@ -229,6 +229,16 @@ export interface LineAnnotationSpec {
   hideTooltips?: boolean;
 }
 
+export interface RectLineAnnotationDatum {
+  coordinates: {
+    x1: number;
+    x2: number;
+    y1: number;
+    y2: number;
+  };
+  details?: string;
+}
+
 export interface RectAnnotationSpec {
   /** The id of the annotation */
   annotationId: AnnotationId;
@@ -238,6 +248,16 @@ export interface RectAnnotationSpec {
    * @default __global__
    */
   groupId: GroupId; // defaults to __global__; needed for yDomain position
+  /** Custom marker */
+  marker?: JSX.Element;
+  /**
+   * Custom marker dimensions; will be computed internally
+   * Any user-supplied values will be overwritten
+   */
+  markerDimensions?: {
+    width: number;
+    height: number;
+  };
 }
 
 // TODO: RectangleAnnotationSpec & TextAnnotationSpec

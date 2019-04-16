@@ -1,6 +1,6 @@
 import React from 'react';
 import { Group, Line } from 'react-konva';
-import { AnnotationLineStyle } from '../../lib/themes/theme';
+import { LineAnnotationStyle } from '../../lib/themes/theme';
 import { Dimensions } from '../../lib/utils/dimensions';
 import { AnnotationLineProps } from '../../state/annotation_utils';
 
@@ -8,7 +8,7 @@ interface AnnotationProps {
   chartDimensions: Dimensions;
   debug: boolean;
   lines: AnnotationLineProps[];
-  lineStyle: AnnotationLineStyle;
+  lineStyle: LineAnnotationStyle;
 }
 
 export class Annotation extends React.PureComponent<AnnotationProps> {
