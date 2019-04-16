@@ -152,7 +152,10 @@ export interface SeriesScales {
    * @default ScaleType.Linear
    */
   yScaleType: ScaleContinuousType;
-  /** if true, the min y value is set to the minimum domain value, 0 otherwise */
+  /**
+   * if true, the min y value is set to the minimum domain value, 0 otherwise
+   * @default false
+   */
   yScaleToDataExtent: boolean;
 }
 ```

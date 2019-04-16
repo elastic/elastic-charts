@@ -62,7 +62,6 @@ storiesOf('Rotations', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 'a', y: 1 }, { x: 'b', y: 2 }, { x: 'c', y: 3 }, { x: 'd', y: 4 }]}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -82,7 +81,6 @@ storiesOf('Rotations', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 'a', y: 1 }, { x: 'b', y: 2 }, { x: 'c', y: 3 }, { x: 'd', y: 4 }]}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -102,7 +100,6 @@ storiesOf('Rotations', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 'a', y: 1 }, { x: 'b', y: 2 }, { x: 'c', y: 3 }, { x: 'd', y: 4 }]}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -122,7 +119,6 @@ storiesOf('Rotations', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 'a', y: 1 }, { x: 'b', y: 2 }, { x: 'c', y: 3 }, { x: 'd', y: 4 }]}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -142,7 +138,6 @@ storiesOf('Rotations', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 'a', y: 1 }, { x: 'b', y: 2 }, { x: 'c', y: 3 }, { x: 'd', y: 4 }]}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -162,7 +157,6 @@ storiesOf('Rotations', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 0, y: 1 }, { x: 1, y: 2 }, { x: 2, y: 3 }, { x: 3, y: 4 }]}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -182,7 +176,6 @@ storiesOf('Rotations', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 0, y: 1 }, { x: 1, y: 2 }, { x: 2, y: 3 }, { x: 3, y: 4 }]}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -202,7 +195,6 @@ storiesOf('Rotations', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 0, y: 1 }, { x: 1, y: 2 }, { x: 2, y: 3 }, { x: 3, y: 4 }]}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -222,7 +214,6 @@ storiesOf('Rotations', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 0, y: 1 }, { x: 1, y: 2 }, { x: 2, y: 3 }, { x: 3, y: 4 }]}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );

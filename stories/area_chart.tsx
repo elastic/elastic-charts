@@ -29,7 +29,6 @@ storiesOf('Area Chart', module)
           xAccessor={0}
           yAccessors={[1]}
           data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -58,7 +57,6 @@ storiesOf('Area Chart', module)
           xAccessor={0}
           yAccessors={[1]}
           data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -86,7 +84,6 @@ storiesOf('Area Chart', module)
           yAccessors={[1]}
           data={data}
           curve={CurveType.CURVE_MONOTONE_X}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -118,7 +115,6 @@ storiesOf('Area Chart', module)
           yAccessors={[1]}
           data={data}
           curve={CurveType.CURVE_MONOTONE_X}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -160,7 +156,6 @@ storiesOf('Area Chart', module)
           xAccessor={0}
           yAccessors={[1]}
           data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -189,7 +184,6 @@ storiesOf('Area Chart', module)
           xAccessor={0}
           yAccessors={[1]}
           data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -229,7 +223,6 @@ storiesOf('Area Chart', module)
           stackAccessors={[0]}
           splitSeriesAccessors={[2]}
           data={allMetrics}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -259,7 +252,6 @@ storiesOf('Area Chart', module)
           yAccessors={[1]}
           stackAccessors={[0]}
           data={KIBANA_METRICS.metrics.kibana_os_load[2].data}
-          yScaleToDataExtent={false}
         />
         <AreaSeries
           id={getSpecId('2')}
@@ -270,7 +262,6 @@ storiesOf('Area Chart', module)
           yAccessors={[1]}
           stackAccessors={[0]}
           data={KIBANA_METRICS.metrics.kibana_os_load[1].data}
-          yScaleToDataExtent={false}
         />
         <AreaSeries
           id={getSpecId('3')}
@@ -281,7 +272,6 @@ storiesOf('Area Chart', module)
           yAccessors={[1]}
           stackAccessors={[0]}
           data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -311,7 +301,6 @@ storiesOf('Area Chart', module)
           yAccessors={[1]}
           stackAccessors={[0]}
           data={KIBANA_METRICS.metrics.kibana_os_load[2].data}
-          yScaleToDataExtent={false}
         />
         <AreaSeries
           id={getSpecId('2')}
@@ -322,7 +311,6 @@ storiesOf('Area Chart', module)
           yAccessors={[1]}
           stackAccessors={[0]}
           data={KIBANA_METRICS.metrics.kibana_os_load[1].data}
-          yScaleToDataExtent={false}
         />
         <AreaSeries
           id={getSpecId('3')}
@@ -333,7 +321,6 @@ storiesOf('Area Chart', module)
           yAccessors={[1]}
           stackAccessors={[0]}
           data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -356,7 +343,6 @@ storiesOf('Area Chart', module)
           xAccessor={0}
           yAccessors={[1]}
           data={data}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -395,7 +381,6 @@ storiesOf('Area Chart', module)
           xAccessor={0}
           yAccessors={[1]}
           data={data}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );

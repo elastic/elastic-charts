@@ -90,7 +90,6 @@ storiesOf('Scales', module)
           xAccessor={0}
           yAccessors={[1]}
           data={data}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -116,7 +115,6 @@ storiesOf('Scales', module)
             xAccessor={0}
             yAccessors={[1]}
             data={UTC_DATASET}
-            yScaleToDataExtent={false}
           />
         </Chart>
       );
@@ -152,7 +150,6 @@ storiesOf('Scales', module)
             xAccessor={0}
             yAccessors={[1]}
             data={UTC_DATASET}
-            yScaleToDataExtent={false}
           />
         </Chart>
       );
@@ -193,7 +190,6 @@ storiesOf('Scales', module)
               ['2017-01-01T00:00:00.000-06:00', 1483250400000, 6206],
               ['2018-01-01T00:00:00.000-06:00', 1514786400000, 3698],
             ]}
-            yScaleToDataExtent={false}
           />
         </Chart>
       );

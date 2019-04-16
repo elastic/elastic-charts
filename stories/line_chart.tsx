@@ -28,7 +28,6 @@ storiesOf('Line Chart', module)
           xAccessor={0}
           yAccessors={[1]}
           data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -55,7 +54,6 @@ storiesOf('Line Chart', module)
           xAccessor={0}
           yAccessors={[1]}
           data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 5)}
-          yScaleToDataExtent={true}
         />
       </Chart>
     );
@@ -82,7 +80,6 @@ storiesOf('Line Chart', module)
           xAccessor={0}
           yAccessors={[1]}
           data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 5)}
-          yScaleToDataExtent={true}
         />
       </Chart>
     );
@@ -109,7 +106,6 @@ storiesOf('Line Chart', module)
           xAccessor={0}
           yAccessors={[1]}
           data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 5)}
-          yScaleToDataExtent={true}
         />
       </Chart>
     );
@@ -137,7 +133,6 @@ storiesOf('Line Chart', module)
           xAccessor={0}
           yAccessors={[1]}
           data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -167,7 +162,6 @@ storiesOf('Line Chart', module)
           yAccessors={[1]}
           data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
           curve={CurveType.CURVE_MONOTONE_X}
-          yScaleToDataExtent={false}
         />
         <LineSeries
           id={getSpecId('basis')}
@@ -177,7 +171,6 @@ storiesOf('Line Chart', module)
           yAccessors={[1]}
           data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
           curve={CurveType.CURVE_BASIS}
-          yScaleToDataExtent={false}
         />
         <LineSeries
           id={getSpecId('cardinal')}
@@ -187,7 +180,6 @@ storiesOf('Line Chart', module)
           yAccessors={[1]}
           data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
           curve={CurveType.CURVE_CARDINAL}
-          yScaleToDataExtent={false}
         />
         <LineSeries
           id={getSpecId('catmull rom')}
@@ -197,7 +189,6 @@ storiesOf('Line Chart', module)
           yAccessors={[1]}
           data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
           curve={CurveType.CURVE_CATMULL_ROM}
-          yScaleToDataExtent={false}
         />
         <LineSeries
           id={getSpecId('natural')}
@@ -207,7 +198,6 @@ storiesOf('Line Chart', module)
           yAccessors={[1]}
           data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
           curve={CurveType.CURVE_NATURAL}
-          yScaleToDataExtent={false}
         />
         <LineSeries
           id={getSpecId('linear')}
@@ -217,7 +207,6 @@ storiesOf('Line Chart', module)
           yAccessors={[1]}
           data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
           curve={CurveType.LINEAR}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -345,7 +334,6 @@ storiesOf('Line Chart', module)
               yAccessors={[1]}
               data={series.data}
               curve={CurveType.CURVE_MONOTONE_X}
-              yScaleToDataExtent={false}
             />
           );
         })}

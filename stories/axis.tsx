@@ -77,7 +77,6 @@ storiesOf('Axis', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -140,7 +139,6 @@ storiesOf('Axis', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
-          yScaleToDataExtent={false}
         />
         <Settings debug={boolean('debug', false)} />
       </Chart>
@@ -185,7 +183,6 @@ storiesOf('Axis', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -261,7 +258,6 @@ storiesOf('Axis', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
-          yScaleToDataExtent={false}
         />
         <LineSeries
           id={getSpecId('lines')}
@@ -273,7 +269,6 @@ storiesOf('Axis', module)
           stackAccessors={['x']}
           splitSeriesAccessors={['g']}
           data={[{ x: 0, y: 3 }, { x: 1, y: 2 }, { x: 2, y: 4 }, { x: 3, y: 10 }]}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -297,7 +292,6 @@ storiesOf('Axis', module)
           xAccessor="x"
           yAccessors={['y']}
           data={data}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -363,7 +357,6 @@ storiesOf('Axis', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
-          yScaleToDataExtent={false}
         />
         <LineSeries
           id={getSpecId('lines')}
@@ -375,7 +368,6 @@ storiesOf('Axis', module)
           stackAccessors={['x']}
           splitSeriesAccessors={['g']}
           data={[{ x: 0, y: 3 }, { x: 1, y: 2 }, { x: 2, y: 4 }, { x: 3, y: 10 }]}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -431,7 +423,6 @@ storiesOf('Axis', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 'a', y: 2 }, { x: 'b', y: 7 }, { x: 'c', y: 3 }, { x: 'd', y: 6 }]}
-          yScaleToDataExtent={false}
         />
         <LineSeries
           id={getSpecId('lines')}
@@ -443,7 +434,6 @@ storiesOf('Axis', module)
           stackAccessors={['x']}
           splitSeriesAccessors={['g']}
           data={[{ x: 0, y: 3 }, { x: 1, y: 2 }, { x: 2, y: 4 }, { x: 3, y: 10 }]}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -480,7 +470,6 @@ storiesOf('Axis', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );

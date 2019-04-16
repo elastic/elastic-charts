@@ -71,7 +71,6 @@ storiesOf('Mixed Charts', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 0, y: 2.5 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
-          yScaleToDataExtent={false}
         />
         <LineSeries
           id={getSpecId('lines')}
@@ -81,7 +80,6 @@ storiesOf('Mixed Charts', module)
           yAccessors={['y']}
           stackAccessors={['x']}
           data={[{ x: 0, y: 2.8 }, { x: 1, y: 2 }, { x: 2, y: 4 }, { x: 3, y: 10 }]}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -113,7 +111,6 @@ storiesOf('Mixed Charts', module)
           xAccessor={0}
           yAccessors={[1]}
           data={data1}
-          yScaleToDataExtent={false}
         />
         <LineSeries
           id={getSpecId('data2')}
@@ -122,7 +119,6 @@ storiesOf('Mixed Charts', module)
           xAccessor={0}
           yAccessors={[1]}
           data={data2}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -177,7 +173,6 @@ storiesOf('Mixed Charts', module)
           xAccessor={0}
           yAccessors={[1]}
           data={data1}
-          yScaleToDataExtent={false}
         />
         <LineSeries
           id={getSpecId('data2')}
@@ -186,7 +181,6 @@ storiesOf('Mixed Charts', module)
           xAccessor={0}
           yAccessors={[2]}
           data={data2}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );

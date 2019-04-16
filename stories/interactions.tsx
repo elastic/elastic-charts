@@ -67,7 +67,6 @@ storiesOf('Interactions', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -96,7 +95,6 @@ storiesOf('Interactions', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -125,7 +123,6 @@ storiesOf('Interactions', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -155,7 +152,6 @@ storiesOf('Interactions', module)
           yAccessors={['y']}
           splitSeriesAccessors={['g']}
           data={[{ x: 0, y: 2.3 }, { x: 1, y: 2 }, { x: 2, y: 4 }, { x: 3, y: 8 }]}
-          yScaleToDataExtent={false}
         />
         <LineSeries
           id={getSpecId('line')}
@@ -164,7 +160,6 @@ storiesOf('Interactions', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
-          yScaleToDataExtent={false}
         />
         <AreaSeries
           id={getSpecId('area')}
@@ -173,7 +168,6 @@ storiesOf('Interactions', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 0, y: 2.3 }, { x: 1, y: 7.3 }, { x: 2, y: 6 }, { x: 3, y: 2 }]}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -285,7 +279,6 @@ storiesOf('Interactions', module)
             { x: 2, y: 8, g: 'b' },
             { x: 3, y: 2, g: 'b' },
           ]}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -315,7 +308,6 @@ storiesOf('Interactions', module)
           yAccessors={['y']}
           curve={CurveType.CURVE_MONOTONE_X}
           data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
-          yScaleToDataExtent={false}
         />
         <LineSeries
           id={getSpecId('lines2')}
@@ -325,7 +317,6 @@ storiesOf('Interactions', module)
           yAccessors={['y']}
           curve={CurveType.CURVE_BASIS}
           data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
-          yScaleToDataExtent={false}
         />
         <LineSeries
           id={getSpecId('lines3')}
@@ -335,7 +326,6 @@ storiesOf('Interactions', module)
           yAccessors={['y']}
           curve={CurveType.CURVE_CARDINAL}
           data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
-          yScaleToDataExtent={false}
         />
         <LineSeries
           id={getSpecId('lines4')}
@@ -345,7 +335,6 @@ storiesOf('Interactions', module)
           yAccessors={['y']}
           curve={CurveType.CURVE_CATMULL_ROM}
           data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
-          yScaleToDataExtent={false}
         />
         <LineSeries
           id={getSpecId('lines5')}
@@ -355,7 +344,6 @@ storiesOf('Interactions', module)
           yAccessors={['y']}
           curve={CurveType.CURVE_NATURAL}
           data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
-          yScaleToDataExtent={false}
         />
         <LineSeries
           id={getSpecId('lines6')}
@@ -365,7 +353,6 @@ storiesOf('Interactions', module)
           yAccessors={['y']}
           curve={CurveType.LINEAR}
           data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -394,7 +381,6 @@ storiesOf('Interactions', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
-          yScaleToDataExtent={false}
         />
         <LineSeries
           id={getSpecId('lines')}
@@ -405,7 +391,6 @@ storiesOf('Interactions', module)
           stackAccessors={['x']}
           splitSeriesAccessors={['g']}
           data={[{ x: 0, y: 3 }, { x: 1, y: 2 }, { x: 2, y: 4 }, { x: 3, y: 10 }]}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -446,7 +431,6 @@ storiesOf('Interactions', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -487,7 +471,6 @@ storiesOf('Interactions', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 1, y: 2 }, { x: 2, y: 7 }, { x: 3, y: 3 }]}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -524,7 +507,6 @@ storiesOf('Interactions', module)
             { x: now + oneDay * 2, y: 3 },
             { x: now + oneDay * 5, y: 6 },
           ]}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -547,7 +529,6 @@ storiesOf('Interactions', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 'a', y: 2 }, { x: 'b', y: 7 }, { x: 'c', y: 3 }, { x: 'd', y: 6 }]}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -605,7 +586,6 @@ storiesOf('Interactions', module)
             yAccessors={[1]}
             stackAccessors={[0]}
             data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 20)}
-            yScaleToDataExtent={false}
           />
         )}
         {!hideBars && (
@@ -617,7 +597,6 @@ storiesOf('Interactions', module)
             yAccessors={[1]}
             stackAccessors={[0]}
             data={KIBANA_METRICS.metrics.kibana_os_load[1].data.slice(0, 20)}
-            yScaleToDataExtent={false}
           />
         )}
         <LineSeries

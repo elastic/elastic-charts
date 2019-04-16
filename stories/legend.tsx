@@ -43,7 +43,6 @@ storiesOf('Legend', module)
           yAccessors={['y1', 'y2']}
           splitSeriesAccessors={['g1', 'g2']}
           data={TestDatasets.BARCHART_2Y2G}
-          yScaleToDataExtent={false}
           hideInLegend={false}
         />
       </Chart>
@@ -74,7 +73,6 @@ storiesOf('Legend', module)
           yAccessors={['y1', 'y2']}
           splitSeriesAccessors={['g1', 'g2']}
           data={TestDatasets.BARCHART_2Y2G}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -104,7 +102,6 @@ storiesOf('Legend', module)
           yAccessors={['y1', 'y2']}
           splitSeriesAccessors={['g1', 'g2']}
           data={TestDatasets.BARCHART_2Y2G}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -134,7 +131,6 @@ storiesOf('Legend', module)
           yAccessors={['y1', 'y2']}
           splitSeriesAccessors={['g1', 'g2']}
           data={TestDatasets.BARCHART_2Y2G}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -165,7 +161,6 @@ storiesOf('Legend', module)
           yAccessors={['y1', 'y2']}
           splitSeriesAccessors={splitSeries}
           data={TestDatasets.BARCHART_2Y2G}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -197,7 +192,6 @@ storiesOf('Legend', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
-          yScaleToDataExtent={false}
           hideInLegend={hideBarSeriesInLegend}
         />
         <LineSeries
@@ -209,7 +203,6 @@ storiesOf('Legend', module)
           stackAccessors={['x']}
           splitSeriesAccessors={['g']}
           data={[{ x: 0, y: 3 }, { x: 1, y: 2 }, { x: 2, y: 4 }, { x: 3, y: 10 }]}
-          yScaleToDataExtent={false}
           hideInLegend={hideLineSeriesInLegend}
         />
       </Chart>
