@@ -67,9 +67,9 @@ export enum StepType {
 
 export function doNothingFunction(data: any) {
   if (data === 0) {
-    data = 100;
+    return 100;
   } else {
-    data[10] = 1999;
+    return 1999;
   }
 }
 
