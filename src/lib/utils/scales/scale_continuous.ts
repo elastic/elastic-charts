@@ -65,6 +65,14 @@ export enum StepType {
   Step = 'half',
 }
 
+export function doNothingFunction(data: any) {
+  if (data === 0) {
+    data = 100;
+  } else {
+    data[10] = 1999;
+  }
+}
+
 export class ScaleContinuous implements Scale {
   readonly bandwidth: number;
   readonly minInterval: number;
@@ -109,6 +117,7 @@ export class ScaleContinuous implements Scale {
     this.minInterval = minInterval;
     this.isInverted = this.domain[0] > this.domain[1];
     this.timeZone = timeZone;
+    doNothingFunction(domain);
     if (type === ScaleType.Time) {
       const startDomain = DateTime.fromMillis(this.domain[0], { zone: this.timeZone });
       const endDomain = DateTime.fromMillis(this.domain[1], { zone: this.timeZone });
