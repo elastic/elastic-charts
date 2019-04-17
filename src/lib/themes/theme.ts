@@ -157,10 +157,10 @@ export const DEFAULT_ANNOTATION_LINE_STYLE: LineAnnotationStyle = {
 };
 
 export const DEFAULT_ANNOTATION_RECT_STYLE: RectAnnotationStyle = {
-  stroke: '#000',
+  stroke: '#e5e5e5',
   strokeWidth: 1,
-  opacity: 1,
-  fill: '#f0f',
+  opacity: 0.5,
+  fill: '#e5e5e5',
 };
 
 export function mergeWithDefaultGridLineConfig(config: GridLineConfig): GridLineConfig {

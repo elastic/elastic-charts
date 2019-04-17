@@ -1,8 +1,8 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { AnnotationTypes } from '../lib/series/specs';
+import { isLineAnnotation } from '../lib/series/specs';
 import { AnnotationId } from '../lib/utils/ids';
-import { AnnotationLineProps } from '../state/annotation_utils';
+import { AnnotationDimensions, AnnotationLineProps } from '../state/annotation_utils';
 import { ChartStore } from '../state/chart_state';
 
 interface AnnotationTooltipProps {
@@ -72,17 +72,16 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
     const { annotationDimensions, annotationSpecs } = this.props.chartStore!;
     const markers: JSX.Element[] = [];
 
-    annotationDimensions.forEach((annotationLines: AnnotationLineProps[], id: AnnotationId) => {
+    annotationDimensions.forEach((dimensions: AnnotationDimensions, id: AnnotationId) => {
       const annotationSpec = annotationSpecs.get(id);
       if (!annotationSpec) {
         return;
       }
 
-      switch (annotationSpec.annotationType) {
-        case AnnotationTypes.Line:
-          const lineMarkers = this.renderAnnotationLineMarkers(annotationLines, id);
-          markers.push(...lineMarkers);
-          break;
+      if (isLineAnnotation(annotationSpec)) {
+        const annotationLines = dimensions as AnnotationLineProps[];
+        const lineMarkers = this.renderAnnotationLineMarkers(annotationLines, id);
+        markers.push(...lineMarkers);
       }
     });
 

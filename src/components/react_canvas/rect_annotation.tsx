@@ -2,12 +2,12 @@ import React from 'react';
 import { Group, Rect } from 'react-konva';
 import { RectAnnotationStyle } from '../../lib/themes/theme';
 import { Dimensions } from '../../lib/utils/dimensions';
-import { AnnotationLineProps } from '../../state/annotation_utils';
+import { AnnotationRectProps } from '../../state/annotation_utils';
 
 interface RectAnnotationProps {
   chartDimensions: Dimensions;
   debug: boolean;
-  rects: AnnotationLineProps[];
+  rects: AnnotationRectProps[];
   rectStyle: RectAnnotationStyle;
 }
 
@@ -15,14 +15,15 @@ export class RectAnnotation extends React.PureComponent<RectAnnotationProps> {
   render() {
     return this.renderAnnotation();
   }
-  private renderAnnotationRect = (lineConfig: AnnotationLineProps, i: number) => {
+  private renderAnnotationRect = (props: AnnotationRectProps, i: number) => {
+    const { x, y, width, height } = props.rect;
+
     const rectProps = {
       ...this.props.rectStyle,
-      x: 0,
-      y: 0,
-      width: 10,
-      height: 20,
-      fill: '#ececec',
+      x,
+      y,
+      width,
+      height,
     };
 
     return <Rect key={`rect-${i}`} {...rectProps} />;

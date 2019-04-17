@@ -5,9 +5,12 @@ import {
   AnnotationSpec,
   AxisSpec,
   isLineAnnotation,
+  isRectAnnotation,
   LineAnnotationDatum,
   LineAnnotationSpec,
   Position,
+  RectAnnotationDatum,
+  RectAnnotationSpec,
   Rotation,
 } from '../lib/series/specs';
 import { LineAnnotationStyle } from '../lib/themes/theme';
@@ -44,6 +47,15 @@ export interface AnnotationLineProps {
   marker?: AnnotationMarker;
 }
 
+export interface AnnotationRectProps {
+  rect: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
+}
+
 interface TransformPosition {
   xPosition: number;
   yPosition: number;
@@ -52,7 +64,7 @@ interface TransformPosition {
 }
 
 // TODO: add AnnotationRectangleProps or AnnotationTextProps
-export type AnnotationDimensions = AnnotationLineProps[];
+export type AnnotationDimensions = AnnotationLineProps[] | AnnotationRectProps[];
 
 export const DEFAULT_LINE_OVERFLOW = 0;
 
@@ -296,6 +308,58 @@ export function computeLineAnnotationDimensions(
   );
 }
 
+export function computeRectAnnotationDimensions(
+  annotationSpec: RectAnnotationSpec,
+  chartDimensions: Dimensions,
+  chartRotation: Rotation,
+  yScales: Map<GroupId, Scale>,
+  xScale: Scale,
+  axesPositions: {
+    xAxisPosition: Position,
+    yAxisPosition: Position,
+  },
+): AnnotationRectProps[] | null {
+  const { dataValues } = annotationSpec;
+
+  // this type is guaranteed as this has been merged with default
+  // const rectStyle = annotationSpec.style as RectAnnotationStyle;
+
+  const groupId = annotationSpec.groupId;
+  const yScale = yScales.get(groupId);
+  if (!yScale) {
+    return null;
+  }
+
+  const rectsProps: AnnotationRectProps[] = [];
+
+  dataValues.forEach((dataValue: RectAnnotationDatum) => {
+    const { x1, x2, y1, y2 } = dataValue.coordinates;
+
+    // TODO: validate each coordinate value
+    const x1Scaled = xScale.scale(x1);
+    const x2Scaled = xScale.scale(x2);
+    const y1Scaled = yScale.scale(y1);
+    const y2Scaled = yScale.scale(y2);
+
+    const xOrigin = Math.min(x1Scaled, x2Scaled);
+    const yOrigin = Math.min(y1Scaled, y2Scaled);
+
+    const width = Math.abs(x1Scaled - x2Scaled);
+    const height = Math.abs(y1Scaled - y2Scaled);
+
+    const rectDimensions = {
+      x: xOrigin,
+      y: yOrigin,
+      width,
+      height,
+    };
+
+    rectsProps.push({ rect: rectDimensions });
+  });
+
+  return rectsProps;
+}
+
 export function getAnnotationAxis(
   axesSpecs: Map<AxisId, AxisSpec>,
   groupId: GroupId,
@@ -335,6 +399,27 @@ export function computeAnnotationDimensions(
         yScales,
         xScale,
         annotationAxisPosition,
+      );
+
+      if (dimensions) {
+        annotationDimensions.set(annotationId, dimensions);
+      }
+    } else if (isRectAnnotation(annotationSpec)) {
+      const { groupId } = annotationSpec;
+
+      const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, groupId);
+
+      if (!xAxis || !yAxis) {
+        return;
+      }
+
+      const dimensions = computeRectAnnotationDimensions(
+        annotationSpec,
+        chartDimensions,
+        chartRotation,
+        yScales,
+        xScale,
+        { xAxisPosition: xAxis.position, yAxisPosition: yAxis.position },
       );
 
       if (dimensions) {

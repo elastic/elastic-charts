@@ -4,7 +4,7 @@ import { Layer, Rect, Stage } from 'react-konva';
 import { isLineAnnotation, isRectAnnotation } from '../../lib/series/specs';
 import { LineAnnotationStyle, RectAnnotationStyle } from '../../lib/themes/theme';
 import { AnnotationId } from '../../lib/utils/ids';
-import { AnnotationDimensions } from '../../state/annotation_utils';
+import { AnnotationDimensions, AnnotationLineProps, AnnotationRectProps } from '../../state/annotation_utils';
 import { ChartStore, Point } from '../../state/chart_state';
 import { BrushExtent } from '../../state/utils';
 import { AreaGeometries } from './area_geometries';
@@ -191,7 +191,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
             key={`annotation-${id}`}
             chartDimensions={chartDimensions}
             debug={debug}
-            lines={annotation}
+            lines={annotation as AnnotationLineProps[]}
             lineStyle={lineStyle}
           />,
         );
@@ -203,7 +203,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
             key={`annotation-${id}`}
             chartDimensions={chartDimensions}
             debug={debug}
-            rects={annotation}
+            rects={annotation as AnnotationRectProps[]}
             rectStyle={rectStyle}
           />,
         );
