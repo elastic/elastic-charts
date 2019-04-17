@@ -430,7 +430,7 @@ describe('Axis computational utils', () => {
   });
   test('should get max bbox dimensions for a tick in comparison to previous values', () => {
     const bboxCalculator = new CanvasTextBBoxCalculator();
-    const reducer = getMaxBboxDimensions(bboxCalculator, 16, 'Arial', 0);
+    const reducer = getMaxBboxDimensions(bboxCalculator, 16, 'Arial', 0, 1);
 
     const accWithGreaterValues = {
       maxLabelBboxWidth: 100,

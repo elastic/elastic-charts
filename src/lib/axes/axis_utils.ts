@@ -88,6 +88,7 @@ export function computeAxisTicksDimensions(
     bboxCalculator,
     axisConfig,
     axisSpec.tickLabelRotation,
+    axisSpec.tickLabelPadding,
   );
 
   return {
@@ -148,6 +149,7 @@ export const getMaxBboxDimensions = (
   fontSize: number,
   fontFamily: string,
   tickLabelRotation: number,
+  tickLabelPadding: number,
 ) => (
   acc: { [key: string]: number },
   tickLabel: string,
@@ -157,7 +159,8 @@ export const getMaxBboxDimensions = (
   maxLabelTextWidth: number;
   maxLabelTextHeight: number;
 } => {
-  const bbox = bboxCalculator.compute(tickLabel, fontSize, fontFamily).getOrElse({
+
+  const bbox = bboxCalculator.compute(tickLabel, fontSize, fontFamily, tickLabelPadding).getOrElse({
     width: 0,
     height: 0,
   });
@@ -187,6 +190,7 @@ function computeTickDimensions(
   bboxCalculator: BBoxCalculator,
   axisConfig: AxisConfig,
   tickLabelRotation: number = 0,
+  tickLabelPadding: number = 1,
 ) {
   const tickValues = scale.ticks();
   const tickLabels = tickValues.map(tickFormat);
@@ -201,7 +205,7 @@ function computeTickDimensions(
     maxLabelTextWidth,
     maxLabelTextHeight,
   } = tickLabels.reduce(
-    getMaxBboxDimensions(bboxCalculator, fontSize, fontFamily, tickLabelRotation),
+    getMaxBboxDimensions(bboxCalculator, fontSize, fontFamily, tickLabelRotation, tickLabelPadding),
     { maxLabelBboxWidth: 0, maxLabelBboxHeight: 0, maxLabelTextWidth: 0, maxLabelTextHeight: 0 },
   );
 
