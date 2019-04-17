@@ -4,6 +4,7 @@ import {
   GridLineConfig,
   LineAnnotationStyle,
   LineSeriesStyle,
+  RectAnnotationStyle,
 } from '../themes/theme';
 import { Accessor } from '../utils/accessor';
 import { AnnotationId, AxisId, GroupId, SpecId } from '../utils/ids';
@@ -229,7 +230,7 @@ export interface LineAnnotationSpec {
   hideTooltips?: boolean;
 }
 
-export interface RectLineAnnotationDatum {
+export interface RectAnnotationDatum {
   coordinates: {
     x1: number;
     x2: number;
@@ -258,9 +259,13 @@ export interface RectAnnotationSpec {
     width: number;
     height: number;
   };
+  /** Data values defined with coordinates and details */
+  dataValues: RectAnnotationDatum[];
+  /** Custom annotation style */
+  style?: Partial<RectAnnotationStyle>;
 }
 
-// TODO: RectangleAnnotationSpec & TextAnnotationSpec
+// TODO:  TextAnnotationSpec
 export type AnnotationSpec = LineAnnotationSpec | RectAnnotationSpec;
 
 export function isLineAnnotation(spec: AnnotationSpec): spec is LineAnnotationSpec {

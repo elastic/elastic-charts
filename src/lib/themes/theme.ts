@@ -119,7 +119,7 @@ export interface LineAnnotationStyle {
   details: TextStyle;
 }
 
-export type RectAnnotationStyle = GeometryStyle;
+export type RectAnnotationStyle = StrokeStyle & FillStyle & Opacity;
 
 export interface PartialTheme {
   chartMargins?: Margins;
@@ -154,6 +154,13 @@ export const DEFAULT_ANNOTATION_LINE_STYLE: LineAnnotationStyle = {
     fill: 'gray',
     padding: 0,
   },
+};
+
+export const DEFAULT_ANNOTATION_RECT_STYLE: RectAnnotationStyle = {
+  stroke: '#000',
+  strokeWidth: 1,
+  opacity: 1,
+  fill: '#f0f',
 };
 
 export function mergeWithDefaultGridLineConfig(config: GridLineConfig): GridLineConfig {

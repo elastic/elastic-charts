@@ -13,6 +13,7 @@ import {
   LineAnnotation,
   LineAnnotationDatum,
   Position,
+  RectAnnotation,
   Rotation,
   ScaleType,
   Settings,
@@ -284,6 +285,16 @@ storiesOf('Annotations', module)
     );
   })
   .add('[rect] basic annotation', () => {
+    const dataValues = [{
+      coordinates: {
+        x1: 0.5,
+        x2: 1.5,
+        y1: 0,
+        y2: 7,
+      },
+      details: 'details about this annotation',
+    }];
+
     const chartRotation = select<Rotation>(
       'chartRotation',
       {
@@ -298,20 +309,20 @@ storiesOf('Annotations', module)
     return (
       <Chart className={'story-chart'}>
         <Settings debug={boolean('debug', false)} rotation={chartRotation} />
+        <RectAnnotation dataValues={dataValues} />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
           title={'x-domain axis'}
-          tickFormat={dateFormatter}
         />
         <Axis id={getAxisId('left')} title={'y-domain axis'} position={Position.Left} />
         <BarSeries
           id={getSpecId('bars')}
           xScaleType={ScaleType.Linear}
           yScaleType={ScaleType.Linear}
-          xAccessor={0}
-          yAccessors={[1]}
-          data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 20)}
+          xAccessor={'x'}
+          yAccessors={['y']}
+          data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 3, y: 6 }]}
         />
       </Chart>
     );
