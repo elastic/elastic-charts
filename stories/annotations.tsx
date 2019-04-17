@@ -309,7 +309,7 @@ storiesOf('Annotations', module)
     return (
       <Chart className={'story-chart'}>
         <Settings debug={boolean('debug', false)} rotation={chartRotation} />
-        <RectAnnotation dataValues={dataValues} />
+        <RectAnnotation dataValues={dataValues} annotationId={getAnnotationId('rect')} />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}

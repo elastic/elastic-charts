@@ -35,6 +35,7 @@ import {
   BasicSeriesSpec,
   DomainRange,
   isLineAnnotation,
+  isRectAnnotation,
   LineSeriesSpec,
   Position,
   Rendering,
@@ -713,6 +714,9 @@ export class ChartStore {
 
       const mergedLineStyle = mergeWithDefaultAnnotationLine(style);
       annotationSpec.style = mergedLineStyle;
+    }
+    if (isRectAnnotation(annotationSpec)) {
+      // TODO: merge RectAnnotation style
     }
     this.annotationSpecs.set(annotationSpec.annotationId, annotationSpec);
   }

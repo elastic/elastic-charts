@@ -9,8 +9,7 @@ type RectAnnotationProps = SpecProps & RectAnnotationSpec;
 export class RectAnnotationSpecComponent extends PureComponent<RectAnnotationProps> {
   static defaultProps: Partial<RectAnnotationProps> = {
     groupId: getGroupId('__global__'),
-    annotationType: AnnotationTypes.Rectangle
-    ,
+    annotationType: AnnotationTypes.Rectangle,
   };
 
   componentDidMount() {

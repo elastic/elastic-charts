@@ -4,14 +4,14 @@ import { LineAnnotationStyle } from '../../lib/themes/theme';
 import { Dimensions } from '../../lib/utils/dimensions';
 import { AnnotationLineProps } from '../../state/annotation_utils';
 
-interface AnnotationProps {
+interface LineAnnotationProps {
   chartDimensions: Dimensions;
   debug: boolean;
   lines: AnnotationLineProps[];
   lineStyle: LineAnnotationStyle;
 }
 
-export class Annotation extends React.PureComponent<AnnotationProps> {
+export class LineAnnotation extends React.PureComponent<LineAnnotationProps> {
   render() {
     return this.renderAnnotation();
   }

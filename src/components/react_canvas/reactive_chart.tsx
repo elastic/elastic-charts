@@ -7,11 +7,11 @@ import { AnnotationId } from '../../lib/utils/ids';
 import { AnnotationDimensions } from '../../state/annotation_utils';
 import { ChartStore, Point } from '../../state/chart_state';
 import { BrushExtent } from '../../state/utils';
-import { Annotation } from './annotation';
 import { AreaGeometries } from './area_geometries';
 import { Axis } from './axis';
 import { BarGeometries } from './bar_geometries';
 import { Grid } from './grid';
+import { LineAnnotation } from './line_annotation';
 import { LineGeometries } from './line_geometries';
 
 interface ReactiveChartProps {
@@ -186,7 +186,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
         const lineStyle = spec.style as LineAnnotationStyle;
 
         annotationComponents.push(
-          <Annotation
+          <LineAnnotation
             key={`annotation-${id}`}
             chartDimensions={chartDimensions}
             debug={debug}
