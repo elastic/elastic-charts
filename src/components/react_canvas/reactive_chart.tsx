@@ -1,8 +1,8 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Layer, Rect, Stage } from 'react-konva';
-import { isLineAnnotation } from '../../lib/series/specs';
-import { LineAnnotationStyle } from '../../lib/themes/theme';
+import { isLineAnnotation, isRectAnnotation } from '../../lib/series/specs';
+import { LineAnnotationStyle, RectAnnotationStyle } from '../../lib/themes/theme';
 import { AnnotationId } from '../../lib/utils/ids';
 import { AnnotationDimensions } from '../../state/annotation_utils';
 import { ChartStore, Point } from '../../state/chart_state';
@@ -13,6 +13,7 @@ import { BarGeometries } from './bar_geometries';
 import { Grid } from './grid';
 import { LineAnnotation } from './line_annotation';
 import { LineGeometries } from './line_geometries';
+import { RectAnnotation } from './rect_annotation';
 
 interface ReactiveChartProps {
   chartStore?: ChartStore; // FIX until we find a better way on ts mobx
@@ -192,6 +193,18 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
             debug={debug}
             lines={annotation}
             lineStyle={lineStyle}
+          />,
+        );
+      } else if (isRectAnnotation(spec)) {
+        const rectStyle = spec.style as RectAnnotationStyle;
+
+        annotationComponents.push(
+          <RectAnnotation
+            key={`annotation-${id}`}
+            chartDimensions={chartDimensions}
+            debug={debug}
+            rects={annotation}
+            rectStyle={rectStyle}
           />,
         );
       }

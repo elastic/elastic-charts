@@ -43,7 +43,7 @@ import {
 } from '../lib/series/specs';
 import { formatTooltip, getSeriesTooltipValues } from '../lib/series/tooltip';
 import { LIGHT_THEME } from '../lib/themes/light_theme';
-import { mergeWithDefaultAnnotationLine, Theme } from '../lib/themes/theme';
+import { mergeWithDefaultAnnotationLine, mergeWithDefaultAnnotationRect, Theme } from '../lib/themes/theme';
 import { computeChartDimensions, Dimensions } from '../lib/utils/dimensions';
 import { Domain } from '../lib/utils/domain';
 import { AnnotationId, AxisId, GroupId, SpecId } from '../lib/utils/ids';
@@ -716,7 +716,10 @@ export class ChartStore {
       annotationSpec.style = mergedLineStyle;
     }
     if (isRectAnnotation(annotationSpec)) {
-      // TODO: merge RectAnnotation style
+      const { style } = annotationSpec;
+
+      const mergedRectStyle = mergeWithDefaultAnnotationRect(style);
+      annotationSpec.style = mergedRectStyle;
     }
     this.annotationSpecs.set(annotationSpec.annotationId, annotationSpec);
   }
