@@ -339,8 +339,8 @@ storiesOf('Annotations', module)
       details: 'details about this annotation',
     }, {
       coordinates: {
-        x1: 1.25,
-        x2: 1.5,
+        x1: 2.0,
+        x2: 2.1,
         y1: 0,
         y2: 7,
       },
@@ -377,7 +377,104 @@ storiesOf('Annotations', module)
     return (
       <Chart className={'story-chart'}>
         <Settings debug={boolean('debug', false)} rotation={chartRotation} />
-        <RectAnnotation dataValues={dataValues} annotationId={getAnnotationId('rect')} />
+        <RectAnnotation
+          dataValues={dataValues}
+          annotationId={getAnnotationId('rect')}
+        />
+        <Axis
+          id={getAxisId('bottom')}
+          position={xAxisPosition}
+          title={xAxisTitle}
+        />
+        <Axis id={getAxisId('left')} title={yAxisTitle} position={yAxisPosition} />
+        <LineSeries
+          id={getSpecId('lines')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor={'x'}
+          yAccessors={['y']}
+          data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 3, y: 6 }]}
+        />
+      </Chart>
+    );
+  })
+  .add('[rect] styling', () => {
+    const dataValues = [{
+      coordinates: {
+        x1: 0,
+        x2: 0.25,
+        y1: 0,
+        y2: 7,
+      },
+      details: 'details about this annotation',
+    }, {
+      coordinates: {
+        x1: 2.0,
+        x2: 2.1,
+        y1: 0,
+        y2: 7,
+      },
+      details: 'details about this annotation',
+    }, {
+      coordinates: {
+        x1: 2.5,
+        x2: 3,
+        y1: 0,
+        y2: 7,
+      },
+      details: 'details about this annotation',
+    }];
+
+    const chartRotation = select<Rotation>(
+      'chartRotation',
+      {
+        '0 deg': 0,
+        '90 deg': 90,
+        '-90 deg': -90,
+        '180 deg': 180,
+      },
+      0,
+    );
+
+    const style = {
+      strokeWidth: number('rect border stroke width', 1),
+      stroke: color('rect border stroke color', '#e5e5e5'),
+      fill: color('fill color', '#e5e5e5'),
+      opacity: number('annotation opacity', 1, {
+        range: true,
+        min: 0,
+        max: 1,
+        step: 0.1,
+      }),
+    };
+
+    const marker = select<'alert' | 'asterisk' | 'questionInCircle'>(
+      'marker icon (examples from EUI)',
+      {
+        alert: 'alert',
+        asterisk: 'asterisk',
+        questionInCircle: 'questionInCircle',
+      },
+      'alert',
+    );
+
+    const isLeft = boolean('y-domain axis is Position.Left', true);
+    const yAxisTitle = isLeft ? 'y-domain axis (left)' : 'y-domain axis (right)';
+    const yAxisPosition = isLeft ? Position.Left : Position.Right;
+
+    const isBottom = boolean('x-domain axis is Position.Bottom', true);
+    const xAxisTitle = isBottom ? 'x-domain axis (botttom)' : 'x-domain axis (top)';
+    const xAxisPosition = isBottom ? Position.Bottom : Position.Top;
+
+    return (
+      <Chart className={'story-chart'}>
+        <Settings debug={boolean('debug', false)} rotation={chartRotation} />
+        <RectAnnotation
+          dataValues={dataValues}
+          annotationId={getAnnotationId('rect')}
+          style={style}
+          marker={<EuiIcon type={marker} />}
+        />
         <Axis
           id={getAxisId('bottom')}
           position={xAxisPosition}

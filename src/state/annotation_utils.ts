@@ -30,6 +30,7 @@ export interface AnnotationTooltipState {
   transform: string;
   top?: number;
   left?: number;
+  marker?: JSX.Element;
 }
 export interface AnnotationDetails {
   headerText?: string;
@@ -69,7 +70,7 @@ interface TransformPosition {
   yOffset: number;
 }
 
-// TODO: add AnnotationRectangleProps or AnnotationTextProps
+// TODO: add AnnotationTextProps
 export type AnnotationDimensions = AnnotationLineProps[] | AnnotationRectProps[];
 
 export const DEFAULT_LINE_OVERFLOW = 0;
@@ -364,7 +365,10 @@ export function computeRectAnnotationDimensions(
       height: chartRotation === -90 ? -height : height,
     };
 
-    rectsProps.push({ rect: rectDimensions, details: dataValue.details });
+    rectsProps.push({
+      rect: rectDimensions,
+      details: dataValue.details,
+    });
   });
 
   return rectsProps;
@@ -665,6 +669,7 @@ export function computeRectAnnotationTooltipState(
   annotationRects: AnnotationRectProps[],
   chartRotation: Rotation,
   chartDimensions: Dimensions,
+  marker?: JSX.Element,
 ) {
 
   const annotationTooltipState: AnnotationTooltipState = {
@@ -716,6 +721,7 @@ export function computeRectAnnotationTooltipState(
       annotationTooltipState.top = tooltipTop;
       annotationTooltipState.left = tooltipLeft;
       annotationTooltipState.transform = `translate(${offsetLeft} , ${offsetTop})`;
+      annotationTooltipState.marker = marker;
     }
   });
 
@@ -763,6 +769,7 @@ export function computeAnnotationTooltipState(
         annotationDimension,
         chartRotation,
         chartDimensions,
+        spec.marker,
       );
 
       if (rectAnnotationTooltipState.isVisible) {
