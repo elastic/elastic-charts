@@ -345,6 +345,14 @@ storiesOf('Annotations', module)
         y2: 7,
       },
       details: 'details about this annotation',
+    }, {
+      coordinates: {
+        x1: 2.5,
+        x2: 3,
+        y1: 0,
+        y2: 7,
+      },
+      details: 'details about this annotation',
     }];
 
     const chartRotation = select<Rotation>(

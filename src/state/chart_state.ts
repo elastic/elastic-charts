@@ -433,6 +433,7 @@ export class ChartStore {
       this.annotationSpecs,
       this.chartRotation,
       this.axesSpecs,
+      this.chartDimensions,
     );
 
     return tooltipState;

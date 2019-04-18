@@ -18,6 +18,7 @@ import {
   computeAnnotationTooltipState,
   computeLineAnnotationDimensions,
   computeLineAnnotationTooltipState,
+  computeRectAnnotationDimensions,
   DEFAULT_LINE_OVERFLOW,
   getAnnotationAxis,
   getAnnotationLineTooltipPosition,
@@ -27,7 +28,6 @@ import {
   isVerticalAnnotationLine,
   isWithinLineBounds,
   toTransformString,
-  computeRectAnnotationDimensions,
 } from './annotation_utils';
 import { Point } from './chart_state';
 
@@ -998,6 +998,7 @@ describe('annotation utils', () => {
       annotations,
       chartRotation,
       localAxesSpecs,
+      chartDimensions,
     );
 
     expect(missingSpecTooltipState).toBe(null);
@@ -1015,6 +1016,7 @@ describe('annotation utils', () => {
       annotations,
       chartRotation,
       localAxesSpecs,
+      chartDimensions,
     );
 
     expect(hideTooltipState).toBe(null);
@@ -1029,6 +1031,7 @@ describe('annotation utils', () => {
       annotations,
       chartRotation,
       localAxesSpecs,
+      chartDimensions,
     );
 
     expect(hideLinesTooltipState).toBe(null);
@@ -1043,6 +1046,7 @@ describe('annotation utils', () => {
       annotations,
       chartRotation,
       localAxesSpecs,
+      chartDimensions,
     );
 
     const expectedTooltipState = {

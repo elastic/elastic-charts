@@ -679,6 +679,7 @@ export function computeRectAnnotationTooltipState(
   groupId: GroupId,
   chartRotation: Rotation,
   axesSpecs: Map<AxisId, AxisSpec>,
+  chartDimensions: Dimensions,
 ) {
 
   const annotationTooltipState: AnnotationTooltipState = {
@@ -686,6 +687,8 @@ export function computeRectAnnotationTooltipState(
     transform: '',
     annotationType: AnnotationTypes.Rectangle,
   };
+
+  const isPostTooltip = cursorPosition.x < chartDimensions.width / 2;
 
   annotationRects.forEach((rectProps: AnnotationRectProps) => {
     const { rect, details } = rectProps;
@@ -701,7 +704,6 @@ export function computeRectAnnotationTooltipState(
       annotationTooltipState.isVisible = true;
       annotationTooltipState.details = details;
 
-      const isPostTooltip = cursorPosition.x > startX + rect.width / 2;
       const tooltipLeft = isPostTooltip ? endX : startX;
       const offsetLeft = isPostTooltip ? '0%' : '-100%';
       annotationTooltipState.top = cursorPosition.y;
@@ -719,6 +721,7 @@ export function computeAnnotationTooltipState(
   annotationSpecs: Map<AnnotationId, AnnotationSpec>,
   chartRotation: Rotation,
   axesSpecs: Map<AxisId, AxisSpec>,
+  chartDimensions: Dimensions,
 ): AnnotationTooltipState | null {
   for (const [annotationId, annotationDimension] of annotationDimensions) {
     const spec = annotationSpecs.get(annotationId);
@@ -754,6 +757,7 @@ export function computeAnnotationTooltipState(
         groupId,
         chartRotation,
         axesSpecs,
+        chartDimensions,
       );
 
       if (rectAnnotationTooltipState.isVisible) {
