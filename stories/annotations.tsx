@@ -350,16 +350,24 @@ storiesOf('Annotations', module)
       0,
     );
 
+    const isLeft = boolean('y-domain axis is Position.Left', true);
+    const yAxisTitle = isLeft ? 'y-domain axis (left)' : 'y-domain axis (right)';
+    const yAxisPosition = isLeft ? Position.Left : Position.Right;
+
+    const isBottom = boolean('x-domain axis is Position.Bottom', true);
+    const xAxisTitle = isBottom ? 'x-domain axis (botttom)' : 'x-domain axis (top)';
+    const xAxisPosition = isBottom ? Position.Bottom : Position.Top;
+
     return (
       <Chart className={'story-chart'}>
         <Settings debug={boolean('debug', false)} rotation={chartRotation} />
         <RectAnnotation dataValues={dataValues} annotationId={getAnnotationId('rect')} />
         <Axis
           id={getAxisId('bottom')}
-          position={Position.Bottom}
-          title={'x-domain axis'}
+          position={xAxisPosition}
+          title={xAxisTitle}
         />
-        <Axis id={getAxisId('left')} title={'y-domain axis'} position={Position.Left} />
+        <Axis id={getAxisId('left')} title={yAxisTitle} position={yAxisPosition} />
         <LineSeries
           id={getSpecId('lines')}
           xScaleType={ScaleType.Linear}

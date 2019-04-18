@@ -3,6 +3,8 @@ import {
   AnnotationDomainType,
   AnnotationDomainTypes,
   AnnotationSpec,
+  AnnotationType,
+  AnnotationTypes,
   AxisSpec,
   isLineAnnotation,
   isRectAnnotation,
@@ -21,6 +23,7 @@ import { Point } from './chart_state';
 import { getAxesSpecForSpecId, isHorizontalRotation } from './utils';
 
 export interface AnnotationTooltipState {
+  annotationType: AnnotationType;
   isVisible: boolean;
   header?: string;
   details?: string;
@@ -622,6 +625,7 @@ export function computeLineAnnotationTooltipState(
   const annotationTooltipState: AnnotationTooltipState = {
     isVisible: false,
     transform: '',
+    annotationType: AnnotationTypes.Line,
   };
 
   const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, groupId);
@@ -698,6 +702,16 @@ export function computeAnnotationTooltipState(
       if (lineAnnotationTooltipState.isVisible) {
         return lineAnnotationTooltipState;
       }
+    } else if (isRectAnnotation(spec)) {
+      // const rectAnnotationTooltipState = computeLineAnnotationTooltipState(
+      //   cursorPosition,
+      //   annotationDimension,
+      //   groupId,
+      //   spec.domainType,
+      //   spec.style as LineAnnotationStyle, // this type is guaranteed as this has been merged with default
+      //   chartRotation,
+      //   axesSpecs,
+      // );
     }
   }
 

@@ -920,6 +920,7 @@ describe('annotation utils', () => {
     const expectedMissingTooltipState = {
       isVisible: false,
       transform: '',
+      annotationType: AnnotationTypes.Line,
     };
 
     expect(missingTooltipState).toEqual(expectedMissingTooltipState);
@@ -939,6 +940,7 @@ describe('annotation utils', () => {
     const expectedXDomainTooltipState = {
       isVisible: true,
       transform: 'translate(calc(1px - 50%),calc(4px - 100%))',
+      annotationType: AnnotationTypes.Line,
     };
 
     expect(xDomainTooltipState).toEqual(expectedXDomainTooltipState);
@@ -958,6 +960,7 @@ describe('annotation utils', () => {
     const expectedYDomainTooltipState = {
       isVisible: true,
       transform: 'translate(calc(1px - 0%),calc(4px - 50%))',
+      annotationType: AnnotationTypes.Line,
     };
 
     expect(yDomainTooltipState).toEqual(expectedYDomainTooltipState);
@@ -1045,6 +1048,7 @@ describe('annotation utils', () => {
     const expectedTooltipState = {
       isVisible: true,
       transform: 'translate(calc(1px - 0%),calc(4px - 50%))',
+      annotationType: AnnotationTypes.Line,
     };
 
     expect(tooltipState).toEqual(expectedTooltipState);
