@@ -320,10 +320,6 @@ export function computeRectAnnotationDimensions(
   chartRotation: Rotation,
   yScales: Map<GroupId, Scale>,
   xScale: Scale,
-  axesPositions: {
-    xAxisPosition: Position,
-    yAxisPosition: Position,
-  },
 ): AnnotationRectProps[] | null {
   const { dataValues } = annotationSpec;
 
@@ -419,21 +415,12 @@ export function computeAnnotationDimensions(
         annotationDimensions.set(annotationId, dimensions);
       }
     } else if (isRectAnnotation(annotationSpec)) {
-      const { groupId } = annotationSpec;
-
-      const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, groupId);
-
-      if (!xAxis || !yAxis) {
-        return;
-      }
-
       const dimensions = computeRectAnnotationDimensions(
         annotationSpec,
         chartDimensions,
         chartRotation,
         yScales,
         xScale,
-        { xAxisPosition: xAxis.position, yAxisPosition: yAxis.position },
       );
 
       if (dimensions) {

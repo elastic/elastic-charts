@@ -1104,10 +1104,6 @@ describe('annotation utils', () => {
       0,
       yScales,
       xScale,
-      {
-        xAxisPosition: Position.Left,
-        yAxisPosition: Position.Bottom,
-      },
     );
 
     expect(unrotated).toEqual([{ rect: { x: 10, y: 30, width: 10, height: 20 } }]);
@@ -1131,10 +1127,6 @@ describe('annotation utils', () => {
       0,
       yScales,
       xScale,
-      {
-        xAxisPosition: Position.Left,
-        yAxisPosition: Position.Bottom,
-      },
     );
 
     expect(unrotated).toEqual([{ rect: { x: 0, y: 0, width: 25, height: 20 } }]);
@@ -1158,10 +1150,6 @@ describe('annotation utils', () => {
       180,
       yScales,
       xScale,
-      {
-        xAxisPosition: Position.Left,
-        yAxisPosition: Position.Bottom,
-      },
     );
 
     expect(rotated).toEqual([{ rect: { x: 0, y: 30, width: -10, height: 20 } }]);
@@ -1185,10 +1173,6 @@ describe('annotation utils', () => {
       180,
       yScales,
       xScale,
-      {
-        xAxisPosition: Position.Left,
-        yAxisPosition: Position.Bottom,
-      },
     );
 
     expect(unrotated).toEqual([{ rect: { x: 10, y: 0, width: -25, height: 20 } }]);
@@ -1212,10 +1196,6 @@ describe('annotation utils', () => {
       90,
       yScales,
       xScale,
-      {
-        xAxisPosition: Position.Left,
-        yAxisPosition: Position.Bottom,
-      },
     );
 
     expect(unrotated).toEqual([{ rect: { x: 30, y: 10, width: 20, height: 10 } }]);
@@ -1239,10 +1219,6 @@ describe('annotation utils', () => {
       90,
       yScales,
       xScale,
-      {
-        xAxisPosition: Position.Left,
-        yAxisPosition: Position.Bottom,
-      },
     );
 
     expect(unrotated).toEqual([{ rect: { x: 0, y: 0, width: 20, height: 25 } }]);
@@ -1266,10 +1242,6 @@ describe('annotation utils', () => {
       -90,
       yScales,
       xScale,
-      {
-        xAxisPosition: Position.Left,
-        yAxisPosition: Position.Bottom,
-      },
     );
 
     expect(unrotated).toEqual([{ rect: { x: 30, y: 10, width: 20, height: -10 } }]);
@@ -1293,10 +1265,6 @@ describe('annotation utils', () => {
       -90,
       yScales,
       xScale,
-      {
-        xAxisPosition: Position.Left,
-        yAxisPosition: Position.Bottom,
-      },
     );
 
     expect(unrotated).toEqual([{ rect: { x: 0, y: 20, width: 20, height: -25 } }]);
