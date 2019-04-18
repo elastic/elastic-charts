@@ -21,10 +21,13 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
     const transform = annotationTooltipState.transform;
     const chartDimensions = this.props.chartStore!.chartDimensions;
 
+    const top = annotationTooltipState.top == null ? chartDimensions.top : annotationTooltipState.top;
+    const left = annotationTooltipState.left == null ? chartDimensions.left : annotationTooltipState.left;
+
     const style = {
       transform,
-      top: chartDimensions.top,
-      left: chartDimensions.left,
+      top,
+      left,
     };
 
     return (

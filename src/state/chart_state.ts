@@ -427,13 +427,15 @@ export class ChartStore {
       y: yPos,
     };
 
-    return computeAnnotationTooltipState(
+    const tooltipState = computeAnnotationTooltipState(
       cursorPosition,
       this.annotationDimensions,
       this.annotationSpecs,
       this.chartRotation,
       this.axesSpecs,
     );
+
+    return tooltipState;
   });
 
   isTooltipVisible = computed(() => {

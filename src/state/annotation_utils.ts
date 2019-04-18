@@ -28,6 +28,8 @@ export interface AnnotationTooltipState {
   header?: string;
   details?: string;
   transform: string;
+  top?: number;
+  left?: number;
 }
 export interface AnnotationDetails {
   headerText?: string;
@@ -57,6 +59,7 @@ export interface AnnotationRectProps {
     width: number;
     height: number;
   };
+  details?: string;
 }
 
 interface TransformPosition {
@@ -365,7 +368,7 @@ export function computeRectAnnotationDimensions(
       height: chartRotation === -90 ? -height : height,
     };
 
-    rectsProps.push({ rect: rectDimensions });
+    rectsProps.push({ rect: rectDimensions, details: dataValue.details });
   });
 
   return rectsProps;
@@ -670,6 +673,35 @@ export function computeLineAnnotationTooltipState(
   return annotationTooltipState;
 }
 
+export function computeRectAnnotationTooltipState(
+  cursorPosition: Point,
+  annotationRects: AnnotationRectProps[],
+  groupId: GroupId,
+  chartRotation: Rotation,
+  axesSpecs: Map<AxisId, AxisSpec>,
+) {
+
+  const annotationTooltipState: AnnotationTooltipState = {
+    isVisible: false,
+    transform: '',
+    annotationType: AnnotationTypes.Rectangle,
+  };
+
+  annotationRects.forEach((rectProps: AnnotationRectProps) => {
+    const { rect, details } = rectProps;
+    const withinXBounds = cursorPosition.x > rect.x && cursorPosition.x < rect.x + rect.width;
+    const withinYBounds = cursorPosition.y > rect.y && cursorPosition.y < rect.y + rect.height;
+    if (withinXBounds && withinYBounds) {
+      annotationTooltipState.isVisible = true;
+      annotationTooltipState.details = details;
+      annotationTooltipState.top = cursorPosition.y;
+      annotationTooltipState.left = cursorPosition.x;
+    }
+  });
+
+  return annotationTooltipState;
+}
+
 export function computeAnnotationTooltipState(
   cursorPosition: Point,
   annotationDimensions: Map<AnnotationId, any>,
@@ -679,16 +711,18 @@ export function computeAnnotationTooltipState(
 ): AnnotationTooltipState | null {
   for (const [annotationId, annotationDimension] of annotationDimensions) {
     const spec = annotationSpecs.get(annotationId);
+
     if (!spec) {
       continue;
     }
+
+    const groupId = spec.groupId;
 
     if (isLineAnnotation(spec)) {
       if (spec.hideTooltips || spec.hideLines) {
         continue;
       }
 
-      const groupId = spec.groupId;
       const lineAnnotationTooltipState = computeLineAnnotationTooltipState(
         cursorPosition,
         annotationDimension,
@@ -703,15 +737,17 @@ export function computeAnnotationTooltipState(
         return lineAnnotationTooltipState;
       }
     } else if (isRectAnnotation(spec)) {
-      // const rectAnnotationTooltipState = computeLineAnnotationTooltipState(
-      //   cursorPosition,
-      //   annotationDimension,
-      //   groupId,
-      //   spec.domainType,
-      //   spec.style as LineAnnotationStyle, // this type is guaranteed as this has been merged with default
-      //   chartRotation,
-      //   axesSpecs,
-      // );
+      const rectAnnotationTooltipState = computeRectAnnotationTooltipState(
+        cursorPosition,
+        annotationDimension,
+        groupId,
+        chartRotation,
+        axesSpecs,
+      );
+
+      if (rectAnnotationTooltipState.isVisible) {
+        return rectAnnotationTooltipState;
+      }
     }
   }
 
