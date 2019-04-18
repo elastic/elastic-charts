@@ -676,9 +676,7 @@ export function computeLineAnnotationTooltipState(
 export function computeRectAnnotationTooltipState(
   cursorPosition: Point,
   annotationRects: AnnotationRectProps[],
-  groupId: GroupId,
   chartRotation: Rotation,
-  axesSpecs: Map<AxisId, AxisSpec>,
   chartDimensions: Dimensions,
 ) {
 
@@ -688,7 +686,11 @@ export function computeRectAnnotationTooltipState(
     annotationType: AnnotationTypes.Rectangle,
   };
 
-  const isPostTooltip = cursorPosition.x < chartDimensions.width / 2;
+  const isRightTooltip = chartRotation === 180 ?
+    cursorPosition.x > chartDimensions.width / 2
+    : cursorPosition.x < chartDimensions.width / 2;
+  const isBottomTooltip = cursorPosition.y < chartDimensions.height / 2;
+  const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
 
   annotationRects.forEach((rectProps: AnnotationRectProps) => {
     const { rect, details } = rectProps;
@@ -698,17 +700,35 @@ export function computeRectAnnotationTooltipState(
     const startY = rect.y;
     const endY = startY + rect.height;
 
-    const withinXBounds = cursorPosition.x > startX && cursorPosition.x < endX;
-    const withinYBounds = cursorPosition.y > startY && cursorPosition.y < endY;
+    const withinXBounds = chartRotation === 180 ?
+      cursorPosition.x > endX && cursorPosition.x < startX
+      : cursorPosition.x > startX && cursorPosition.x < endX;
+
+    const withinYBounds = chartRotation === -90 ?
+      cursorPosition.y > endY && cursorPosition.y < startY
+      : cursorPosition.y > startY && cursorPosition.y < endY;
+
     if (withinXBounds && withinYBounds) {
       annotationTooltipState.isVisible = true;
       annotationTooltipState.details = details;
 
-      const tooltipLeft = isPostTooltip ? endX : startX;
-      const offsetLeft = isPostTooltip ? '0%' : '-100%';
-      annotationTooltipState.top = cursorPosition.y;
+      const tooltipLeft = isHorizontalChartRotation ?
+        (isRightTooltip ? endX : startX)
+        : cursorPosition.x;
+      const tooltipTop = isHorizontalChartRotation ?
+        cursorPosition.y
+        : (isBottomTooltip ? endY : startY);
+
+      const offsetLeft = isRightTooltip ?
+        (chartRotation === 180 ? '-100%' : '0')
+        : (chartRotation === 180 ? '0' : '-100%');
+      const offsetTop = isBottomTooltip ?
+        (chartRotation === -90 ? '-100%' : '0')
+        : (chartRotation === -90 ? '0' : '-100%');
+
+      annotationTooltipState.top = tooltipTop;
       annotationTooltipState.left = tooltipLeft;
-      annotationTooltipState.transform = `translate(${offsetLeft} , 100%)`;
+      annotationTooltipState.transform = `translate(${offsetLeft} , ${offsetTop})`;
     }
   });
 
@@ -754,9 +774,7 @@ export function computeAnnotationTooltipState(
       const rectAnnotationTooltipState = computeRectAnnotationTooltipState(
         cursorPosition,
         annotationDimension,
-        groupId,
         chartRotation,
-        axesSpecs,
         chartDimensions,
       );
 
