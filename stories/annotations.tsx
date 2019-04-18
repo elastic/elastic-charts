@@ -331,7 +331,15 @@ storiesOf('Annotations', module)
   .add('[rect] basic annotation (line)', () => {
     const dataValues = [{
       coordinates: {
-        x1: 0.5,
+        x1: 0,
+        x2: 0.25,
+        y1: 0,
+        y2: 7,
+      },
+      details: 'details about this annotation',
+    }, {
+      coordinates: {
+        x1: 1.25,
         x2: 1.5,
         y1: 0,
         y2: 7,

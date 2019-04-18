@@ -689,13 +689,24 @@ export function computeRectAnnotationTooltipState(
 
   annotationRects.forEach((rectProps: AnnotationRectProps) => {
     const { rect, details } = rectProps;
-    const withinXBounds = cursorPosition.x > rect.x && cursorPosition.x < rect.x + rect.width;
-    const withinYBounds = cursorPosition.y > rect.y && cursorPosition.y < rect.y + rect.height;
+    const startX = rect.x;
+    const endX = startX + rect.width;
+
+    const startY = rect.y;
+    const endY = startY + rect.height;
+
+    const withinXBounds = cursorPosition.x > startX && cursorPosition.x < endX;
+    const withinYBounds = cursorPosition.y > startY && cursorPosition.y < endY;
     if (withinXBounds && withinYBounds) {
       annotationTooltipState.isVisible = true;
       annotationTooltipState.details = details;
+
+      const isPostTooltip = cursorPosition.x > startX + rect.width / 2;
+      const tooltipLeft = isPostTooltip ? endX : startX;
+      const offsetLeft = isPostTooltip ? '0%' : '-100%';
       annotationTooltipState.top = cursorPosition.y;
-      annotationTooltipState.left = cursorPosition.x;
+      annotationTooltipState.left = tooltipLeft;
+      annotationTooltipState.transform = `translate(${offsetLeft} , 100%)`;
     }
   });
 
