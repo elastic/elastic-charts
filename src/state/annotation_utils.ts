@@ -341,17 +341,25 @@ export function computeRectAnnotationDimensions(
     const y1Scaled = yScale.scale(y1);
     const y2Scaled = yScale.scale(y2);
 
-    const xOrigin = Math.min(x1Scaled, x2Scaled);
-    const yOrigin = Math.min(y1Scaled, y2Scaled);
+    const minX = Math.min(x1Scaled, x2Scaled);
+    const minY = Math.min(y1Scaled, y2Scaled);
 
-    const width = Math.abs(x1Scaled - x2Scaled);
-    const height = Math.abs(y1Scaled - y2Scaled);
+    const deltaX = Math.abs(x1Scaled - x2Scaled);
+    const deltaY = Math.abs(y1Scaled - y2Scaled);
+
+    const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
+
+    const xOrigin = isHorizontalChartRotation ? minX : minY;
+    const yOrigin = isHorizontalChartRotation ? minY : minX;
+
+    const width = isHorizontalChartRotation ? deltaX : deltaY;
+    const height = isHorizontalChartRotation ? deltaY : deltaX;
 
     const rectDimensions = {
-      x: xOrigin,
-      y: yOrigin,
-      width,
-      height,
+      x: chartRotation === 180 ? chartDimensions.width - xOrigin : xOrigin,
+      y: chartRotation === -90 ? chartDimensions.height - yOrigin : yOrigin,
+      width: chartRotation === 180 ? -width : width,
+      height: chartRotation === -90 ? -height : height,
     };
 
     rectsProps.push({ rect: rectDimensions });
