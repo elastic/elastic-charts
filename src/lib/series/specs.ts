@@ -251,14 +251,6 @@ export interface RectAnnotationSpec {
   groupId: GroupId; // defaults to __global__; needed for yDomain position
   /** Custom marker */
   marker?: JSX.Element;
-  /**
-   * Custom marker dimensions; will be computed internally
-   * Any user-supplied values will be overwritten
-   */
-  markerDimensions?: {
-    width: number;
-    height: number;
-  };
   /** Data values defined with coordinates and details */
   dataValues: RectAnnotationDatum[];
   /** Custom annotation style */
