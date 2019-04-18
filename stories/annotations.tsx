@@ -406,15 +406,23 @@ storiesOf('Annotations', module)
         y1: 0,
         y2: 7,
       },
-      details: 'details about this annotation',
+      details: 'annotation 1',
     }, {
       coordinates: {
-        x1: 2.0,
-        x2: 2.1,
+        x1: -0.1,
+        x2: 0,
         y1: 0,
         y2: 7,
       },
-      details: 'details about this annotation',
+      details: 'annotation 2',
+    }, {
+      coordinates: {
+        x1: 1.1,
+        x2: 1.3,
+        y1: 0,
+        y2: 7,
+      },
+      details: 'annotation 2',
     }, {
       coordinates: {
         x1: 2.5,
@@ -422,7 +430,7 @@ storiesOf('Annotations', module)
         y1: 0,
         y2: 7,
       },
-      details: 'details about this annotation',
+      details: 'annotation 3',
     }];
 
     const chartRotation = select<Rotation>(
@@ -440,7 +448,7 @@ storiesOf('Annotations', module)
       strokeWidth: number('rect border stroke width', 1),
       stroke: color('rect border stroke color', '#e5e5e5'),
       fill: color('fill color', '#e5e5e5'),
-      opacity: number('annotation opacity', 1, {
+      opacity: number('annotation opacity', 0.5, {
         range: true,
         min: 0,
         max: 1,

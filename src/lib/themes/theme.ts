@@ -203,16 +203,13 @@ export function mergeWithDefaultAnnotationLine(config?: Partial<LineAnnotationSt
 }
 
 export function mergeWithDefaultAnnotationRect(config?: Partial<RectAnnotationStyle>): RectAnnotationStyle {
-  const defaultStyle = DEFAULT_ANNOTATION_RECT_STYLE;
-  const mergedConfig: RectAnnotationStyle = { ...DEFAULT_ANNOTATION_RECT_STYLE };
-
   if (!config) {
-    return mergedConfig;
+    return DEFAULT_ANNOTATION_RECT_STYLE;
   }
 
   return {
-    ...mergedConfig,
-    ...defaultStyle,
+    ...DEFAULT_ANNOTATION_RECT_STYLE,
+    ...config,
   };
 }
 
