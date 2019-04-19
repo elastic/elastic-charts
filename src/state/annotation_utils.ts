@@ -681,7 +681,9 @@ export function computeRectAnnotationTooltipState(
   const isRightTooltip = chartRotation === 180 ?
     cursorPosition.x > chartDimensions.width / 2
     : cursorPosition.x < chartDimensions.width / 2;
-  const isBottomTooltip = cursorPosition.y < chartDimensions.height / 2;
+  const isBottomTooltip = chartRotation === -90 ?
+    cursorPosition.y > chartDimensions.height / 2
+    : cursorPosition.y < chartDimensions.height / 2;
   const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
 
   annotationRects.forEach((rectProps: AnnotationRectProps) => {

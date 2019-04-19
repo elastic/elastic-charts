@@ -29,6 +29,7 @@ import {
 } from '../lib/series/series';
 import {
   AnnotationSpec,
+  AnnotationTypes,
   AreaSeriesSpec,
   AxisSpec,
   BarSeriesSpec,
@@ -375,6 +376,14 @@ export class ChartStore {
       [] as TooltipValue[],
     );
 
+    // if there's an annotation rect tooltip & there isn't a single highlighted element, hide
+    const annotationTooltip = this.annotationTooltipState.get();
+    const hasRectAnnotationToolip = annotationTooltip && annotationTooltip.annotationType === AnnotationTypes.Rectangle;
+    if (hasRectAnnotationToolip && !oneHighlighted) {
+      this.clearTooltipAndHighlighted();
+      return;
+    }
+
     // check if we already have send out an over/out event on highlighted elements
     if (
       this.onElementOverListener &&
@@ -435,6 +444,15 @@ export class ChartStore {
       this.axesSpecs,
       this.chartDimensions,
     );
+
+    // If there's a highlighted chart element tooltip value, don't show annotation tooltip
+    if (tooltipState && tooltipState.annotationType === AnnotationTypes.Rectangle) {
+      for (const tooltipValue of this.tooltipData) {
+        if (tooltipValue.isHighlighted) {
+          return null;
+        }
+      }
+    }
 
     return tooltipState;
   });
