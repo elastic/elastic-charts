@@ -89,6 +89,7 @@ export interface Theme {
 }
 export interface BarSeriesStyle {
   border: StrokeStyle & Visible;
+  displayValue?: TextStyle;
 }
 
 export type CustomBarSeriesStyle = BarSeriesStyle & Partial<Opacity>;

@@ -70,6 +70,13 @@ export class BarGeometries extends React.PureComponent<
 
       // min border depending on bar width bars with white border
       const borderEnabled = border.visible && width > border.strokeWidth * 7;
+      const displayValueProps = {
+        x,
+        y,
+        width,
+        align: 'center',
+        ...style.displayValue,
+      };
       if (this.props.animated) {
         return (
           <Group key={index}>
@@ -91,6 +98,7 @@ export class BarGeometries extends React.PureComponent<
                 return <animated.Rect {...barProps} />;
               }}
             </Spring>
+            {displayValue && <Text text={displayValue} {...displayValueProps} />}
           </Group>
         );
       } else {
@@ -109,7 +117,7 @@ export class BarGeometries extends React.PureComponent<
         return (
           <React.Fragment>
             <Rect {...barProps} />
-            {displayValue && <Text text={displayValue} x={x} y={y} width={width} align={'center'} />}
+            {displayValue && <Text text={displayValue} {...displayValueProps} />}
           </React.Fragment>
         );
       }

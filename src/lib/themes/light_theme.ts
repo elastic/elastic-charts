@@ -60,6 +60,13 @@ export const LIGHT_THEME: Theme = {
       strokeWidth: 1,
       visible: false,
     },
+    displayValue: {
+      fontSize: 10,
+      fontStyle: 'normal',
+      fontFamily: `'Open Sans', Helvetica, Arial, sans-serif`,
+      padding: 5,
+      fill: 'gray',
+    },
   },
   sharedStyle: DEFAULT_GEOMETRY_STYLES,
   scales: {
