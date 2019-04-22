@@ -1,8 +1,8 @@
 import { BarGeometry, GeometryValue } from '../../lib/series/rendering';
 import { computeXScale, computeYScales } from '../../lib/series/scales';
 import { DataSeriesColorsValues } from '../../lib/series/series';
-import { BarSeriesSpec, BasicSeriesSpec } from '../../lib/series/specs';
-import { getGroupId, getSpecId } from '../../lib/utils/ids';
+import { BarSeriesSpec, BasicSeriesSpec, AnnotationTypes } from '../../lib/series/specs';
+import { getGroupId, getSpecId, getAnnotationId } from '../../lib/utils/ids';
 import { TooltipType } from '../../lib/utils/interactions';
 import { ScaleContinuous } from '../../lib/utils/scales/scale_continuous';
 import { ScaleType } from '../../lib/utils/scales/scales';
@@ -63,7 +63,7 @@ function initStore(spec: BasicSeriesSpec) {
     yDomain: [
       {
         scaleType: spec.yScaleType,
-        domain: [0, 10],
+        domain: [0, 20],
         isBandScale: false,
         groupId: GROUP_ID,
         type: 'yDomain',
@@ -210,6 +210,25 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     // checking this to avoid broken tests due to nested describe and before
     expect(store.xScale).not.toBeUndefined();
     expect(store.yScales).not.toBeUndefined();
+  });
+
+  test('can determine which tooltip to display if chart & annotation tooltips possible', () => {
+    const annotationDimensions = [{ rect: { x: 49, y: -1, width: 2, height: 99 } }];
+    const rectAnnotationSpec = {
+      annotationId: getAnnotationId('rect'),
+      groupId: GROUP_ID,
+      annotationType: AnnotationTypes.Rectangle,
+      dataValues: [
+        { coordinates: { x1: 1, x2: 1.5, y1: 0.5, y2: 10 } },
+      ],
+    };
+
+    store.annotationSpecs.set(rectAnnotationSpec.annotationId, rectAnnotationSpec);
+    store.annotationDimensions.set(rectAnnotationSpec.annotationId, annotationDimensions);
+
+    // isHighlighted false, chart tooltip true; should show annotationTooltip only
+    store.setCursorPosition(chartLeft + 50, chartTop + 0);
+    expect(store.isTooltipVisible.get()).toBe(false);
   });
 
   test('can hover top-left corner of the first bar', () => {
