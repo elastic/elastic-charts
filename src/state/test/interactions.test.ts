@@ -1,8 +1,8 @@
 import { BarGeometry, GeometryValue } from '../../lib/series/rendering';
 import { computeXScale, computeYScales } from '../../lib/series/scales';
 import { DataSeriesColorsValues } from '../../lib/series/series';
-import { BarSeriesSpec, BasicSeriesSpec, AnnotationTypes } from '../../lib/series/specs';
-import { getGroupId, getSpecId, getAnnotationId } from '../../lib/utils/ids';
+import { AnnotationTypes, BarSeriesSpec, BasicSeriesSpec } from '../../lib/series/specs';
+import { getAnnotationId, getGroupId, getSpecId } from '../../lib/utils/ids';
 import { TooltipType } from '../../lib/utils/interactions';
 import { ScaleContinuous } from '../../lib/utils/scales/scale_continuous';
 import { ScaleType } from '../../lib/utils/scales/scales';

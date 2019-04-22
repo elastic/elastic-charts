@@ -492,6 +492,19 @@ describe('Chart Store', () => {
 
     store.removeAnnotationSpec(annotationId);
     expect(store.annotationSpecs).toEqual(new Map());
+
+    const rectAnnotation = {
+      annotationId: getAnnotationId('rect'),
+      groupId: GROUP_ID,
+      annotationType: AnnotationTypes.Rectangle,
+      dataValues: [
+        { coordinates: { x1: 1, x2: 2, y1: 3, y2: 5 } },
+      ],
+    };
+    store.addAnnotationSpec(rectAnnotation);
+    expectedAnnotationSpecs.clear();
+    expectedAnnotationSpecs.set(rectAnnotation.annotationId, rectAnnotation);
+    expect(store.annotationSpecs).toEqual(expectedAnnotationSpecs);
   });
 
   test('only computes chart if parent dimensions are computed', () => {
