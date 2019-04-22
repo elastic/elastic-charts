@@ -1,4 +1,4 @@
-import { boolean, select } from '@storybook/addon-knobs';
+import { boolean, color, number, select } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import { DateTime } from 'luxon';
 import React from 'react';
@@ -12,6 +12,7 @@ import {
   getSpecId,
   LIGHT_THEME,
   LineSeries,
+  mergeWithDefaultTheme,
   niceTimeFormatByDay,
   Position,
   ScaleType,
@@ -48,9 +49,28 @@ storiesOf('Bar Chart', module)
   })
   .add('with value label', () => {
     const showValueLabel = boolean('show value label', false);
+    const displayValueStyle = {
+      displayValue: {
+        fontSize: number('value font size', 10),
+        fontFamily: `'Open Sans', Helvetica, Arial, sans-serif`,
+        fontStyle: 'normal',
+        padding: number('value padding', 10),
+        fill: color('value color', 'gray'),
+      },
+    };
+
+    const barStyle = {
+      barSeriesStyle: {
+        ...LIGHT_THEME.barSeriesStyle,
+        ...displayValueStyle,
+      },
+    };
+
+    const theme = mergeWithDefaultTheme(barStyle, LIGHT_THEME);
+
     return (
       <Chart renderer="canvas" className={'story-chart'}>
-        <Settings theme={LIGHT_THEME} />
+        <Settings theme={theme} />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
