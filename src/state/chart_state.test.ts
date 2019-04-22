@@ -718,8 +718,8 @@ describe('Chart Store', () => {
   test('can compute annotation tooltip state', () => {
     const scale = new ScaleContinuous([0, 100], [0, 100], ScaleType.Linear);
 
-    store.cursorPosition.x = -1;
-    store.cursorPosition.y = 0;
+    store.rawCursorPosition.x = -1;
+    store.rawCursorPosition.y = 0;
 
     expect(store.annotationTooltipState.get()).toBe(null);
 
@@ -734,7 +734,47 @@ describe('Chart Store', () => {
     store.yScales = new Map();
     store.yScales.set(GROUP_ID, scale);
 
-    store.cursorPosition.x = 0;
+    store.rawCursorPosition.x = 0;
+    expect(store.annotationTooltipState.get()).toBe(null);
+
+    // If there's a rect annotation & there's also a highlight chart element tooltip, ignore annotation tooltip
+    store.rawCursorPosition.x = 18;
+    store.rawCursorPosition.y = 9;
+    store.chartDimensions = { width: 10, height: 20, top: 5, left: 15 };
+
+    const annotationDimensions = [{ rect: { x: 2, y: 3, width: 3, height: 5 } }];
+    const rectAnnotationSpec = {
+      annotationId: getAnnotationId('rect'),
+      groupId: GROUP_ID,
+      annotationType: AnnotationTypes.Rectangle,
+      dataValues: [
+        { coordinates: { x1: 1, x2: 2, y1: 3, y2: 5 } },
+      ],
+    };
+
+    store.annotationSpecs.set(rectAnnotationSpec.annotationId, rectAnnotationSpec);
+    store.annotationDimensions.set(rectAnnotationSpec.annotationId, annotationDimensions);
+
+    const highlightedTooltipValue = {
+      name: 'foo', value: 1, color: 'color',
+      isHighlighted: true, isXValue: false, seriesKey: 'foo',
+    };
+    const unhighlightedTooltipValue = {
+      name: 'foo', value: 1, color: 'color',
+      isHighlighted: false, isXValue: false, seriesKey: 'foo',
+    };
+
+    const expectedRectTooltipState = {
+      isVisible: true,
+      transform: 'translate(0, 0)',
+      annotationType: AnnotationTypes.Rectangle,
+      top: 4,
+      left: 5,
+    };
+    store.tooltipData.push(unhighlightedTooltipValue);
+    expect(store.annotationTooltipState.get()).toEqual(expectedRectTooltipState);
+
+    store.tooltipData.push(highlightedTooltipValue);
     expect(store.annotationTooltipState.get()).toBe(null);
   });
   test('can get tooltipValues by seriesKeys', () => {
