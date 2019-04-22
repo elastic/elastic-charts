@@ -31,6 +31,7 @@ import {
   Rotation,
 } from '../lib/series/specs';
 import { ColorConfig } from '../lib/themes/theme';
+import { identity } from '../lib/utils/commons';
 import { Dimensions } from '../lib/utils/dimensions';
 import { Domain } from '../lib/utils/domain';
 import { AxisId, GroupId, SpecId } from '../lib/utils/ids';
@@ -158,6 +159,7 @@ export function computeSeriesGeometries(
   chartColors: ColorConfig,
   chartDims: Dimensions,
   chartRotation: Rotation,
+  axesSpecs: Map<AxisId, AxisSpec>,
 ): {
   scales: {
     xScale: Scale;
@@ -219,6 +221,7 @@ export function computeSeriesGeometries(
       seriesSpecs,
       seriesColorMap,
       chartColors.defaultVizColor,
+      axesSpecs,
     );
     orderIndex = counts.barSeries > 0 ? orderIndex + 1 : orderIndex;
     areas.push(...geometries.areas);
@@ -251,6 +254,7 @@ export function computeSeriesGeometries(
       seriesSpecs,
       seriesColorMap,
       chartColors.defaultVizColor,
+      axesSpecs,
     );
 
     areas.push(...geometries.areas);
@@ -294,6 +298,7 @@ export function renderGeometries(
   seriesSpecs: Map<SpecId, BasicSeriesSpec>,
   seriesColorsMap: Map<string, string>,
   defaultColor: string,
+  axesSpecs: Map<AxisId, AxisSpec>,
 ): {
   points: PointGeometry[];
   bars: BarGeometry[];
@@ -331,9 +336,13 @@ export function renderGeometries(
       case 'bar':
         const shift = isStacked ? indexOffset : indexOffset + i;
         const barSeriesStyle = spec.barSeriesStyle;
+
+        const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
+        const valueFormatter = yAxis && yAxis.tickFormat ? yAxis.tickFormat : identity;
+
         const renderedBars = renderBars(
           shift, ds.data, xScale, yScale, color,
-          ds.specId, ds.key, spec.showValueLabel, barSeriesStyle,
+          ds.specId, ds.key, (spec.showValueLabel ? valueFormatter : undefined), barSeriesStyle,
         );
         barGeometriesIndex = mergeGeometriesIndexes(
           barGeometriesIndex,

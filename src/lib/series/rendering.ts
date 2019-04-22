@@ -16,6 +16,7 @@ import { CurveType, getCurveFactory } from './curves';
 import { LegendItem } from './legend';
 import { DataSeriesDatum } from './series';
 import { belongsToDataSeries } from './series_utils';
+import { TickFormatter } from './specs';
 
 export interface GeometryId {
   specId: SpecId;
@@ -53,7 +54,7 @@ export interface BarGeometry {
   width: number;
   height: number;
   color: string;
-  showValueLabel?: boolean;
+  displayValue?: any;
   geometryId: GeometryId;
   value: GeometryValue;
   seriesStyle?: CustomBarSeriesStyle;
@@ -174,7 +175,7 @@ export function renderBars(
   color: string,
   specId: SpecId,
   seriesKey: any[],
-  showValueLabel?: boolean,
+  valueFormatter?: TickFormatter,
   seriesStyle?: CustomBarSeriesStyle,
 ): {
   barGeometries: BarGeometry[];
@@ -212,8 +213,9 @@ export function renderBars(
     }
     const x = xScale.scale(datum.x) + xScale.bandwidth * orderIndex;
     const width = xScale.bandwidth;
+    const displayValue = valueFormatter ? valueFormatter(initialY1) : undefined;
     const barGeometry: BarGeometry = {
-      showValueLabel,
+      displayValue,
       x,
       y, // top most value
       width,

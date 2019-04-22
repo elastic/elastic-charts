@@ -371,6 +371,7 @@ describe('Chart State utils', () => {
         chartColors,
         chartDimensions,
         chartRotation,
+        axesSpecs,
       );
       expect(geometries.geometriesCounts.bars).toBe(8);
       expect(geometries.geometriesCounts.linePoints).toBe(8);
@@ -439,6 +440,7 @@ describe('Chart State utils', () => {
         chartColors,
         chartDimensions,
         chartRotation,
+        axesSpecs,
       );
       expect(geometries.geometriesCounts.bars).toBe(8);
       expect(geometries.geometriesCounts.linePoints).toBe(8);
@@ -507,6 +509,7 @@ describe('Chart State utils', () => {
         chartColors,
         chartDimensions,
         chartRotation,
+        axesSpecs,
       );
       expect(geometries.geometriesCounts.bars).toBe(0);
       expect(geometries.geometriesCounts.linePoints).toBe(24);
@@ -575,6 +578,7 @@ describe('Chart State utils', () => {
         chartColors,
         chartDimensions,
         chartRotation,
+        axesSpecs,
       );
       expect(geometries.geometriesCounts.bars).toBe(0);
       expect(geometries.geometriesCounts.linePoints).toBe(0);
@@ -643,6 +647,7 @@ describe('Chart State utils', () => {
         chartColors,
         chartDimensions,
         chartRotation,
+        axesSpecs,
       );
       expect(geometries.geometriesCounts.bars).toBe(24);
       expect(geometries.geometriesCounts.linePoints).toBe(0);

@@ -48,7 +48,7 @@ export class BarGeometries extends React.PureComponent<
       sharedStyle,
     } = this.props;
     return bars.map((bar, index) => {
-      const { showValueLabel, value, x, y, width, height, color, seriesStyle } = bar;
+      const { displayValue, x, y, width, height, color, seriesStyle } = bar;
       const border = seriesStyle ? seriesStyle.border : style.border;
       const customOpacity = seriesStyle ? seriesStyle.opacity : undefined;
 
@@ -109,7 +109,7 @@ export class BarGeometries extends React.PureComponent<
         return (
           <React.Fragment>
             <Rect {...barProps} />
-            {showValueLabel && <Text text={value.y} x={x} y={y} width={width} align={'center'} />}
+            {displayValue && <Text text={displayValue} x={x} y={y} width={width} align={'center'} />}
           </React.Fragment>
         );
       }

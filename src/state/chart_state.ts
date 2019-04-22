@@ -831,6 +831,7 @@ export class ChartStore {
       this.chartTheme.colors,
       this.chartDimensions,
       this.chartRotation,
+      this.axesSpecs,
     );
 
     // tslint:disable-next-line:no-console
