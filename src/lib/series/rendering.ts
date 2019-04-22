@@ -1,6 +1,14 @@
 import { area, line } from 'd3-shape';
 import { mutableIndexedGeometryMapUpsert } from '../../state/utils';
-import { SharedGeometryStyle } from '../themes/theme';
+import {
+  AreaSeriesStyle,
+  AreaStyle,
+  CustomBarSeriesStyle,
+  LineSeriesStyle,
+  LineStyle,
+  PointStyle,
+  SharedGeometryStyle,
+} from '../themes/theme';
 import { SpecId } from '../utils/ids';
 import { isLogarithmicScale } from '../utils/scales/scale_continuous';
 import { Scale, ScaleType } from '../utils/scales/scales';
@@ -48,6 +56,7 @@ export interface BarGeometry {
   showValueLabel?: boolean;
   geometryId: GeometryId;
   value: GeometryValue;
+  seriesStyle?: CustomBarSeriesStyle;
 }
 export interface LineGeometry {
   line: string;
@@ -58,6 +67,8 @@ export interface LineGeometry {
     y: number;
   };
   geometryId: GeometryId;
+  seriesLineStyle?: LineStyle;
+  seriesPointStyle?: PointStyle;
 }
 export interface AreaGeometry {
   area: string;
@@ -69,6 +80,9 @@ export interface AreaGeometry {
     y: number;
   };
   geometryId: GeometryId;
+  seriesAreaStyle?: AreaStyle;
+  seriesAreaLineStyle?: LineStyle;
+  seriesPointStyle?: PointStyle;
 }
 
 export function isPointGeometry(ig: IndexedGeometry): ig is PointGeometry {
@@ -161,6 +175,7 @@ export function renderBars(
   specId: SpecId,
   seriesKey: any[],
   showValueLabel?: boolean,
+  seriesStyle?: CustomBarSeriesStyle,
 ): {
   barGeometries: BarGeometry[];
   indexedGeometries: Map<any, IndexedGeometry[]>;
@@ -213,6 +228,7 @@ export function renderBars(
         specId,
         seriesKey,
       },
+      seriesStyle,
     };
     mutableIndexedGeometryMapUpsert(indexedGeometries, datum.x, barGeometry);
     barGeometries.push(barGeometry);
@@ -233,6 +249,7 @@ export function renderLine(
   specId: SpecId,
   hasY0Accessors: boolean,
   seriesKey: any[],
+  seriesStyle?: LineSeriesStyle,
 ): {
   lineGeometry: LineGeometry;
   indexedGeometries: Map<any, IndexedGeometry[]>;
@@ -246,6 +263,10 @@ export function renderLine(
     .curve(getCurveFactory(curve));
   const y = 0;
   const x = shift;
+
+  const seriesPointStyle = seriesStyle ? seriesStyle.point : undefined;
+  const seriesLineStyle = seriesStyle ? seriesStyle.line : undefined;
+
   const { pointGeometries, indexedGeometries } = renderPoints(
     shift,
     dataset,
@@ -268,6 +289,8 @@ export function renderLine(
       specId,
       seriesKey,
     },
+    seriesLineStyle,
+    seriesPointStyle,
   };
   return {
     lineGeometry,
@@ -285,6 +308,7 @@ export function renderArea(
   specId: SpecId,
   hasY0Accessors: boolean,
   seriesKey: any[],
+  seriesStyle?: AreaSeriesStyle,
 ): {
   areaGeometry: AreaGeometry;
   indexedGeometries: Map<any, IndexedGeometry[]>;
@@ -316,6 +340,10 @@ export function renderArea(
     }
   }
 
+  const seriesPointStyle = seriesStyle ? seriesStyle.point : undefined;
+  const seriesAreaStyle = seriesStyle ? seriesStyle.area : undefined;
+  const seriesAreaLineStyle = seriesStyle ? seriesStyle.line : undefined;
+
   const { pointGeometries, indexedGeometries } = renderPoints(
     shift,
     dataset,
@@ -340,6 +368,9 @@ export function renderArea(
       specId,
       seriesKey,
     },
+    seriesAreaStyle,
+    seriesAreaLineStyle,
+    seriesPointStyle,
   };
   return {
     areaGeometry,
@@ -350,9 +381,19 @@ export function renderArea(
 export function getGeometryStyle(
   geometryId: GeometryId,
   highlightedLegendItem: LegendItem | null,
-  sharedStyle: SharedGeometryStyle,
+  sharedThemeStyle: SharedGeometryStyle,
+  specOpacity?: number,
   individualHighlight?: { [key: string]: boolean },
 ): GeometryStyle {
+
+  const sharedStyle = specOpacity == null ?
+    sharedThemeStyle :
+    {
+      ...sharedThemeStyle,
+      highlighted: { opacity: specOpacity },
+      default: { opacity: specOpacity },
+    };
+
   if (highlightedLegendItem != null) {
     const isPartOfHighlightedSeries = belongsToDataSeries(geometryId, highlightedLegendItem.value);
 

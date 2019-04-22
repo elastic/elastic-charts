@@ -20,23 +20,28 @@ const dateFormatter = timeFormatter('HH:mm');
 
 storiesOf('Area Chart', module)
   .add('basic', () => {
+    const toggleSpec = boolean('toggle area spec', true);
+    const data1 = KIBANA_METRICS.metrics.kibana_os_load[0].data;
+    const data2 = data1.map((datum) => [datum[0], datum[1] - 1]);
+    const data = toggleSpec ? data1 : data2;
+    const specId = toggleSpec ? 'areas1' : 'areas2';
+
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <AreaSeries
-          id={getSpecId('areas')}
+          id={getSpecId(specId)}
           xScaleType={ScaleType.Time}
           yScaleType={ScaleType.Linear}
           xAccessor={0}
           yAccessors={[1]}
-          data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
-          yScaleToDataExtent={false}
+          data={data}
         />
       </Chart>
     );
   })
   .add('with time x axis', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Axis
           id={getAxisId('bottom')}
           title={'timestamp per 1 minute'}
@@ -58,7 +63,6 @@ storiesOf('Area Chart', module)
           xAccessor={0}
           yAccessors={[1]}
           data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -69,7 +73,7 @@ storiesOf('Area Chart', module)
       return [(d[0] - start) / 30000, d[1]];
     });
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Axis id={getAxisId('bottom')} title={'index'} position={Position.Bottom} />
         <Axis
           id={getAxisId('left')}
@@ -86,7 +90,6 @@ storiesOf('Area Chart', module)
           yAccessors={[1]}
           data={data}
           curve={CurveType.CURVE_MONOTONE_X}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -96,7 +99,7 @@ storiesOf('Area Chart', module)
       return d[1] < 7 ? [d[0], null] : [d[0], d[1] - 10];
     });
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Axis
           id={getAxisId('bottom')}
           title={'index'}
@@ -118,14 +121,13 @@ storiesOf('Area Chart', module)
           yAccessors={[1]}
           data={data}
           curve={CurveType.CURVE_MONOTONE_X}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
   })
   .add('with 4 axes', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings debug={false} />
         <Axis
           id={getAxisId('bottom')}
@@ -160,14 +162,13 @@ storiesOf('Area Chart', module)
           xAccessor={0}
           yAccessors={[1]}
           data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
   })
   .add('w axis and legend', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}
@@ -189,7 +190,6 @@ storiesOf('Area Chart', module)
           xAccessor={0}
           yAccessors={[1]}
           data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -206,7 +206,7 @@ storiesOf('Area Chart', module)
     });
     const allMetrics = [...data3, ...data2, ...data1];
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}
@@ -229,14 +229,13 @@ storiesOf('Area Chart', module)
           stackAccessors={[0]}
           splitSeriesAccessors={[2]}
           data={allMetrics}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
   })
   .add('stacked with separated specs', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}
@@ -259,7 +258,6 @@ storiesOf('Area Chart', module)
           yAccessors={[1]}
           stackAccessors={[0]}
           data={KIBANA_METRICS.metrics.kibana_os_load[2].data}
-          yScaleToDataExtent={false}
         />
         <AreaSeries
           id={getSpecId('2')}
@@ -270,7 +268,6 @@ storiesOf('Area Chart', module)
           yAccessors={[1]}
           stackAccessors={[0]}
           data={KIBANA_METRICS.metrics.kibana_os_load[1].data}
-          yScaleToDataExtent={false}
         />
         <AreaSeries
           id={getSpecId('3')}
@@ -281,14 +278,13 @@ storiesOf('Area Chart', module)
           yAccessors={[1]}
           stackAccessors={[0]}
           data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
   })
   .add('stacked with separated specs - same naming', () => {
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}
@@ -311,7 +307,6 @@ storiesOf('Area Chart', module)
           yAccessors={[1]}
           stackAccessors={[0]}
           data={KIBANA_METRICS.metrics.kibana_os_load[2].data}
-          yScaleToDataExtent={false}
         />
         <AreaSeries
           id={getSpecId('2')}
@@ -322,7 +317,6 @@ storiesOf('Area Chart', module)
           yAccessors={[1]}
           stackAccessors={[0]}
           data={KIBANA_METRICS.metrics.kibana_os_load[1].data}
-          yScaleToDataExtent={false}
         />
         <AreaSeries
           id={getSpecId('3')}
@@ -333,7 +327,6 @@ storiesOf('Area Chart', module)
           yAccessors={[1]}
           stackAccessors={[0]}
           data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -341,7 +334,7 @@ storiesOf('Area Chart', module)
   .add('[test] - linear', () => {
     const data = [[1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 4], [7, 3], [8, 2], [9, 1]];
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Axis id={getAxisId('bottom')} title={'index'} position={Position.Bottom} />
         <Axis
           id={getAxisId('left')}
@@ -356,7 +349,6 @@ storiesOf('Area Chart', module)
           xAccessor={0}
           yAccessors={[1]}
           data={data}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -375,7 +367,7 @@ storiesOf('Area Chart', module)
       [start.plus({ minute: 8 }).toMillis(), 1],
     ];
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Axis
           id={getAxisId('bottom')}
           title={'index'}
@@ -395,7 +387,6 @@ storiesOf('Area Chart', module)
           xAccessor={0}
           yAccessors={[1]}
           data={data}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
@@ -413,7 +404,7 @@ storiesOf('Area Chart', module)
     });
     const scaleToDataExtent = boolean('scale to extent', true);
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Axis
           id={getAxisId('bottom')}
           title={'timestamp per 1 minute'}
@@ -460,7 +451,7 @@ storiesOf('Area Chart', module)
     });
     const scaleToDataExtent = boolean('scale to extent', false);
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Axis
           id={getAxisId('bottom')}
           title={'timestamp per 1 minute'}
