@@ -17,9 +17,9 @@ export class ScaleBand implements Scale {
   constructor(
     domain: any[],
     range: [number, number],
+    overrideBandwidth?: number,
     padding?: [number, number],
     round?: boolean,
-    overrideBandwidth?: number,
   ) {
     this.type = ScaleType.Ordinal;
     this.d3Scale = scaleBand();

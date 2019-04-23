@@ -78,10 +78,9 @@ export class ScaleContinuous implements Scale {
   private readonly d3Scale: any;
 
   constructor(
+    type: ScaleContinuousType,
     domain: any[],
     range: [number, number],
-    type: ScaleContinuousType,
-    clamp: boolean = false,
     bandwidth: number = 0,
     /** the min interval computed on the XDomain, not available for yDomains */
     minInterval: number = 0,
@@ -90,6 +89,7 @@ export class ScaleContinuous implements Scale {
      * or a fixed-offset name of the form 'utc+3', or the strings 'local' or 'utc'.
      */
     timeZone: string = 'utc',
+    clamp: boolean = false,
   ) {
     this.d3Scale = SCALES[type]();
     if (type === ScaleType.Log) {
@@ -99,10 +99,9 @@ export class ScaleContinuous implements Scale {
       this.domain = domain;
       this.d3Scale.domain(domain);
     }
+    this.bandwidth = bandwidth;
     this.d3Scale.range(range);
     this.d3Scale.clamp(clamp);
-    // this.d3Scale.nice();
-    this.bandwidth = bandwidth;
     this.step = 0;
     this.type = type;
     this.range = range;

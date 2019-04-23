@@ -60,7 +60,7 @@ describe.only('Scale Band', () => {
     expect(scale.scale(null)).toBeUndefined();
   });
   it('shall scale a numeric domain with padding', () => {
-    const scale = new ScaleBand([0, 1, 2], [0, 100], [0, 1]);
+    const scale = new ScaleBand([0, 1, 2], [0, 100], undefined, [0, 1]);
     expect(scale.bandwidth).toBe(20);
     expect(scale.step).toBe(20);
     // an empty 1 step place at the beginning
@@ -69,7 +69,7 @@ describe.only('Scale Band', () => {
     expect(scale.scale(2)).toBe(60);
     // an empty 1 step place at the end
 
-    const scale2 = new ScaleBand([0, 1, 2, 3], [0, 100], [0, 0.5]);
+    const scale2 = new ScaleBand([0, 1, 2, 3], [0, 100], undefined, [0, 0.5]);
     expect(scale2.bandwidth).toBe(20);
     expect(scale2.step).toBe(20);
     // an empty 1/2 step place at the beginning
@@ -80,7 +80,7 @@ describe.only('Scale Band', () => {
     // an empty 1/2 step place at the end
   });
   it('shall scale a numeric domain with rounding', () => {
-    const scale = new ScaleBand([0, 1, 2, 3], [0, 100], [0, 1], true);
+    const scale = new ScaleBand([0, 1, 2, 3], [0, 100], undefined, [0, 1], true);
     expect(scale.bandwidth).toBe(16);
     expect(scale.step).toBe(16);
     // an empty 1 step place at the beginning

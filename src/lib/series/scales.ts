@@ -1,10 +1,7 @@
 import { GroupId } from '../utils/ids';
-import {
-  createContinuousScale,
-  createOrdinalScale,
-  Scale,
-  ScaleType,
-} from '../utils/scales/scales';
+import { ScaleBand } from '../utils/scales/scale_band';
+import { ScaleContinuous } from '../utils/scales/scale_continuous';
+import { Scale, ScaleType } from '../utils/scales/scales';
 import { XDomain } from './domains/x_domain';
 import { YDomain } from './domains/y_domain';
 import { FormattedDataSeries } from './series';
@@ -59,34 +56,23 @@ export function computeXScale(
   if (scaleType === ScaleType.Ordinal) {
     const dividend = totalBarsInCluster > 0 ? totalBarsInCluster : 1;
     const bandwidth = rangeDiff / (domain.length * dividend);
-    return createOrdinalScale(domain, minRange, maxRange, 0, bandwidth);
+    return new ScaleBand(domain, [minRange, maxRange], bandwidth);
   } else {
     if (isBandScale) {
       const intervalCount = (domain[1] - domain[0]) / minInterval;
       const bandwidth = rangeDiff / (intervalCount + 1);
       const start = isInverse ? minRange - bandwidth : minRange;
       const end = isInverse ? maxRange : maxRange - bandwidth;
-      return createContinuousScale(
+      return new ScaleContinuous(
         scaleType,
         domain,
-        start,
-        end,
+        [start, end],
         bandwidth / totalBarsInCluster,
-        false,
         minInterval,
         timeZone,
       );
     } else {
-      return createContinuousScale(
-        scaleType,
-        domain,
-        minRange,
-        maxRange,
-        0,
-        undefined,
-        minInterval,
-        timeZone,
-      );
+      return new ScaleContinuous(scaleType, domain, [minRange, maxRange], 0, minInterval, timeZone);
     }
   }
 }
@@ -104,7 +90,7 @@ export function computeYScales(
   const yScales: Map<GroupId, Scale> = new Map();
 
   yDomains.forEach((yDomain) => {
-    const yScale = createContinuousScale(yDomain.scaleType, yDomain.domain, minRange, maxRange);
+    const yScale = new ScaleContinuous(yDomain.scaleType, yDomain.domain, [minRange, maxRange]);
     yScales.set(yDomain.groupId, yScale);
   });
 
