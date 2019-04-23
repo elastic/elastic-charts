@@ -82,13 +82,14 @@ export function computeAxisTicksDimensions(
   if (!scale) {
     throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
   }
+  const tickLabelPadding = axisSpec.tickLabelPadding || axisConfig.tickLabelStyle.padding;
   const dimensions = computeTickDimensions(
     scale,
     axisSpec.tickFormat,
     bboxCalculator,
     axisConfig,
     axisSpec.tickLabelRotation,
-    axisSpec.tickLabelPadding,
+    tickLabelPadding,
   );
 
   return {
@@ -160,7 +161,7 @@ export const getMaxBboxDimensions = (
   maxLabelTextHeight: number;
 } => {
 
-  const bbox = bboxCalculator.compute(tickLabel, fontSize, fontFamily, tickLabelPadding).getOrElse({
+  const bbox = bboxCalculator.compute(tickLabel, fontSize, tickLabelPadding, fontFamily).getOrElse({
     width: 0,
     height: 0,
   });

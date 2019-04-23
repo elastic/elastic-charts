@@ -172,7 +172,7 @@ storiesOf('Stylings', module)
           fontSize: range('tickFontSize', 0, 40, 10, 'Tick Label'),
           fontFamily: `'Open Sans', Helvetica, Arial, sans-serif`,
           fontStyle: 'normal',
-          padding: 0,
+          padding: number('tickLabelPadding', 1, {}, 'Tick Label'),
         },
         tickLineStyle: {
           stroke: color('tickLineColor', '#333', 'Tick Line'),

@@ -28,7 +28,6 @@ interface SettingSpecProps {
   /** Snap tooltip to grid */
   tooltipSnap?: boolean;
   debug: boolean;
-  testUserInput: number;
   legendPosition?: Position;
   isLegendItemsSortDesc: boolean;
   showLegendDisplayValue: boolean;

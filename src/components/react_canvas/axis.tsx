@@ -29,7 +29,12 @@ export class Axis extends React.PureComponent<AxisProps> {
     return this.renderAxis();
   }
   renderTickLabel = (tick: AxisTick, i: number) => {
-    const { padding, ...labelStyle } = this.props.chartTheme.axes.tickLabelStyle;
+    // suppress padding render from canvas
+    const labelStyle = {
+      ...this.props.chartTheme.axes.tickLabelStyle,
+      padding: 0,
+    };
+
     const {
       axisSpec: { tickSize, tickPadding, position },
       axisTicksDimensions,
@@ -37,6 +42,7 @@ export class Axis extends React.PureComponent<AxisProps> {
     } = this.props;
 
     const tickLabelRotation = this.props.axisSpec.tickLabelRotation || 0;
+    const tickLabelPadding = this.props.axisSpec.tickLabelPadding || this.props.chartTheme.axes.tickLabelStyle.padding;
 
     const tickLabelProps = getTickLabelProps(
       tickLabelRotation,
@@ -45,6 +51,7 @@ export class Axis extends React.PureComponent<AxisProps> {
       tick.position,
       position,
       axisTicksDimensions,
+      tickLabelPadding,
     );
 
     const { maxLabelTextWidth, maxLabelTextHeight } = axisTicksDimensions;
@@ -64,8 +71,8 @@ export class Axis extends React.PureComponent<AxisProps> {
 
     return (
       <Group key={`tick-${i}`}>
-        {debug && <Rect {...textProps} stroke="black" strokeWidth={1} fill="violet" />}
-        <Text {...textProps} {...labelStyle} text={tick.label}/>
+        {debug && <Rect {...textProps} stroke="black" strokeWidth={1} fill="violet"/>}
+        <Text {...textProps} {...labelStyle} text={tick.label} />
       </Group>
     );
   }
