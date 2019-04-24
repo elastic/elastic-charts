@@ -77,7 +77,6 @@ export class BarGeometries extends React.PureComponent<
         width,
         height,
         displayValueStyle: style.displayValue!, // displayValue is guaranteed on style as part of the merged theme
-
       });
 
       if (this.props.animated) {
