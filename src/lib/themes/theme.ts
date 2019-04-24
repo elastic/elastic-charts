@@ -60,7 +60,6 @@ export interface ScalesConfig {
    * The proportion of the range that is reserved for blank space between bands.
    * A value of 0 means no blank space between bands, and a value of 1 means a bandwidth of zero.
    * A number between 0 and 1.
-   * @default 0
    */
   barsPadding: number;
 }
