@@ -53,6 +53,8 @@ export interface SeriesSpec {
   sortIndex?: number;
   /** Show value label in chart element */
   showValueLabel?: boolean;
+  /** If value labels are shown, skips every other label */
+  alternatingValueLabel?: boolean;
 }
 
 export type CustomSeriesColorsMap = Map<DataSeriesColorsValues, string>;

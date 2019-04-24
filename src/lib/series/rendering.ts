@@ -176,6 +176,7 @@ export function renderBars(
   specId: SpecId,
   seriesKey: any[],
   valueFormatter?: TickFormatter,
+  alternatingValueLabel?: boolean,
   seriesStyle?: CustomBarSeriesStyle,
 ): {
   barGeometries: BarGeometry[];
@@ -185,7 +186,7 @@ export function renderBars(
   const xDomain = xScale.domain;
   const xScaleType = xScale.type;
   const barGeometries: BarGeometry[] = [];
-  dataset.forEach((datum) => {
+  dataset.forEach((datum, index) => {
     const { y0, y1, initialY1 } = datum;
     // don't create a bar if the initialY1 value is null.
     if (initialY1 === null) {
@@ -213,7 +214,14 @@ export function renderBars(
     }
     const x = xScale.scale(datum.x) + xScale.bandwidth * orderIndex;
     const width = xScale.bandwidth;
-    const displayValue = valueFormatter ? valueFormatter(initialY1) : undefined;
+
+    const formattedDisplayValue = valueFormatter ? valueFormatter(initialY1) : undefined;
+
+    // only show displayValue for even bars if showOverlappingValue is false
+    const displayValue = alternatingValueLabel ?
+      (index % 2 === 0 ? formattedDisplayValue : undefined)
+      : formattedDisplayValue;
+
     const barGeometry: BarGeometry = {
       displayValue,
       x,
