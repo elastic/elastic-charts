@@ -49,6 +49,7 @@ export function computeXScale(
   totalBarsInCluster: number,
   minRange: number,
   maxRange: number,
+  barsPadding?: number,
 ): Scale {
   const { scaleType, minInterval, domain, isBandScale, timeZone } = xDomain;
   const rangeDiff = Math.abs(maxRange - minRange);
@@ -56,7 +57,7 @@ export function computeXScale(
   if (scaleType === ScaleType.Ordinal) {
     const dividend = totalBarsInCluster > 0 ? totalBarsInCluster : 1;
     const bandwidth = rangeDiff / (domain.length * dividend);
-    return new ScaleBand(domain, [minRange, maxRange], bandwidth);
+    return new ScaleBand(domain, [minRange, maxRange], bandwidth, barsPadding);
   } else {
     if (isBandScale) {
       const intervalCount = (domain[1] - domain[0]) / minInterval;
@@ -70,9 +71,20 @@ export function computeXScale(
         bandwidth / totalBarsInCluster,
         minInterval,
         timeZone,
+        totalBarsInCluster,
+        barsPadding,
       );
     } else {
-      return new ScaleContinuous(scaleType, domain, [minRange, maxRange], 0, minInterval, timeZone);
+      return new ScaleContinuous(
+        scaleType,
+        domain,
+        [minRange, maxRange],
+        0,
+        minInterval,
+        timeZone,
+        totalBarsInCluster,
+        barsPadding,
+      );
     }
   }
 }

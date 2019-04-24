@@ -56,9 +56,7 @@ export interface GridLineConfig {
   dash?: number[];
 }
 export interface ScalesConfig {
-  ordinal: {
-    padding: number;
-  };
+  barsPadding: number;
 }
 export interface ColorConfig {
   vizColors: string[];
@@ -167,7 +165,9 @@ export function mergeWithDefaultGridLineConfig(config: GridLineConfig): GridLine
   };
 }
 
-export function mergeWithDefaultAnnotationLine(config?: Partial<AnnotationLineStyle>): AnnotationLineStyle {
+export function mergeWithDefaultAnnotationLine(
+  config?: Partial<AnnotationLineStyle>,
+): AnnotationLineStyle {
   const defaultLine = DEFAULT_ANNOTATION_LINE_STYLE.line;
   const defaultDetails = DEFAULT_ANNOTATION_LINE_STYLE.details;
   const mergedConfig: AnnotationLineStyle = { ...DEFAULT_ANNOTATION_LINE_STYLE };

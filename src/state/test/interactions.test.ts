@@ -169,7 +169,7 @@ describe('Chart state pointer interactions', () => {
     expect(store.highlightedGeometries.length).toBe(1);
   });
 
-  describe('mouse over with ordinal scale', () => {
+  describe('mouse over with Ordinal scale', () => {
     mouseOverTestSuite(ScaleType.Ordinal);
   });
   describe('mouse over with Linear scale', () => {

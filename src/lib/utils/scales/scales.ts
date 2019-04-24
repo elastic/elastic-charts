@@ -11,6 +11,7 @@ export interface Scale {
   minInterval: number;
   type: ScaleType;
   isInverted: boolean;
+  barsPadding: number;
 }
 export type ScaleFunction = (value: any) => number;
 
