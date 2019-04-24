@@ -463,15 +463,11 @@ storiesOf('Annotations', module)
       }),
     };
 
-    const marker = select<'alert' | 'asterisk' | 'questionInCircle'>(
-      'marker icon (examples from EUI)',
-      {
-        alert: 'alert',
-        asterisk: 'asterisk',
-        questionInCircle: 'questionInCircle',
-      },
-      'alert',
-    );
+    const hasCustomTooltip = boolean('has custom tooltip render', false);
+
+    const renderTooltip = hasCustomTooltip ?
+      (details: string) => (<div><EuiIcon type="alert" />{details}</div>)
+      : undefined;
 
     const isLeft = boolean('y-domain axis is Position.Left', true);
     const yAxisTitle = isLeft ? 'y-domain axis (left)' : 'y-domain axis (right)';
@@ -488,7 +484,7 @@ storiesOf('Annotations', module)
           dataValues={dataValues}
           annotationId={getAnnotationId('rect')}
           style={style}
-          marker={<EuiIcon type={marker} />}
+          renderTooltip={renderTooltip}
         />
         <Axis
           id={getAxisId('bottom')}

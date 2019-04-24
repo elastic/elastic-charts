@@ -35,7 +35,21 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
     );
   }
 
+  renderRectAnnotationTooltipDetails(details: string) {
+    return (
+      <div className="elasticChartsAnnotation__details">
+        <div className="elasticChartsAnnotation__detailsText">
+          {details}
+        </div>
+      </div>
+    );
+  }
+
   renderRectAnnotationTooltip(tooltipState: AnnotationTooltipState) {
+    if (!tooltipState.details) {
+      return;
+    }
+
     const transform = tooltipState.transform;
     const chartDimensions = this.props.chartStore!.chartDimensions;
 
@@ -50,16 +64,11 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
       left,
     };
 
+    const detailsRenderer = tooltipState.renderTooltip || this.renderRectAnnotationTooltipDetails;
+
     return (
       <div className="elasticChartsAnnotation__tooltip" style={{ ...style }}>
-        <div className="elasticChartsAnnotation__details">
-          <div className="elasticChartsAnnotation__detailsMarker">
-            {tooltipState.marker}
-          </div>
-          <div className="elasticChartsAnnotation__detailsText">
-            {tooltipState.details}
-          </div>
-        </div>
+        {detailsRenderer(tooltipState.details)}
       </div>
     );
   }

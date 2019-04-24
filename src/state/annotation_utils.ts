@@ -30,7 +30,7 @@ export interface AnnotationTooltipState {
   transform: string;
   top?: number;
   left?: number;
-  marker?: JSX.Element;
+  renderTooltip?: (details: string) => JSX.Element;
 }
 export interface AnnotationDetails {
   headerText?: string;
@@ -793,7 +793,7 @@ export function computeRectAnnotationTooltipState(
   annotationRects: AnnotationRectProps[],
   chartRotation: Rotation,
   chartDimensions: Dimensions,
-  marker?: JSX.Element,
+  renderTooltip?: (details: string) => JSX.Element,
 ): AnnotationTooltipState {
 
   const annotationTooltipState: AnnotationTooltipState = {
@@ -842,7 +842,7 @@ export function computeRectAnnotationTooltipState(
       annotationTooltipState.top = tooltipTop;
       annotationTooltipState.left = tooltipLeft;
       annotationTooltipState.transform = `translate(${offsetLeft}, ${offsetTop})`;
-      annotationTooltipState.marker = marker;
+      annotationTooltipState.renderTooltip = renderTooltip;
     }
   });
 
@@ -890,7 +890,7 @@ export function computeAnnotationTooltipState(
         annotationDimension,
         chartRotation,
         chartDimensions,
-        spec.marker,
+        spec.renderTooltip,
       );
 
       if (rectAnnotationTooltipState.isVisible) {

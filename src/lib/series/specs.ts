@@ -249,12 +249,14 @@ export interface RectAnnotationSpec {
    * @default __global__
    */
   groupId: GroupId; // defaults to __global__; needed for yDomain position
-  /** Custom marker */
-  marker?: JSX.Element;
+  /** Custom rendering function for tooltip */
+  renderTooltip?: (details: string) => JSX.Element;
   /** Data values defined with coordinates and details */
   dataValues: RectAnnotationDatum[];
   /** Custom annotation style */
   style?: Partial<RectAnnotationStyle>;
+  /** Toggles tooltip annotation visibility */
+  hideTooltips?: boolean;
 }
 
 // TODO:  TextAnnotationSpec
