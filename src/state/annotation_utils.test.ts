@@ -1174,7 +1174,7 @@ describe('annotation utils', () => {
       annotationType: AnnotationTypes.Rectangle,
       dataValues: [
         { coordinates: { x0: 1, x1: 2, y0: -10, y1: 5 } },
-        { coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } },
+        { coordinates: { x0: null, x1: null, y0: null, y1: null } },
       ],
     };
 
@@ -1186,7 +1186,42 @@ describe('annotation utils', () => {
       xScale,
     );
 
-    expect(skippedInvalid).toEqual([{ rect: { x: 10, y: 30, width: 10, height: 20 } }]);
+    expect(skippedInvalid).toEqual([]);
+  });
+  test('should compute rectangle dimensions when only a single coordinate defined', () => {
+    const yScales: Map<GroupId, Scale> = new Map();
+    yScales.set(groupId, continuousScale);
+
+    const xScale: Scale = continuousScale;
+
+    const annotationRectangle = {
+      annotationId: getAnnotationId('rect'),
+      groupId,
+      annotationType: AnnotationTypes.Rectangle,
+      dataValues: [
+        { coordinates: { x0: 1, x1: null, y0: null, y1: null } },
+        { coordinates: { x0: null, x1: 1, y0: null, y1: null } },
+        { coordinates: { x0: null, x1: null, y0: 1, y1: null } },
+        { coordinates: { x0: null, x1: null, y0: null, y1: 1 } },
+      ],
+    };
+
+    const dimensions = computeRectAnnotationDimensions(
+      annotationRectangle,
+      chartDimensions,
+      0,
+      yScales,
+      xScale,
+    );
+
+    const expectedDimensions = [
+      { rect: { x: 0, y: 0, width: 10, height: 100 } },
+      { rect: { x: 10, y: 0, width: 90, height: 100 } },
+      { rect: { x: 0, y: 0, width: 100, height: 10 } },
+      { rect: { x: 0, y: 10, width: 100, height: 90 } },
+    ];
+
+    expect(dimensions).toEqual(expectedDimensions);
   });
   test('should compute rectangle annotation dimensions continuous (0 deg rotation)', () => {
     const yScales: Map<GroupId, Scale> = new Map();

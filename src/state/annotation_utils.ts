@@ -351,10 +351,38 @@ export function computeRectAnnotationDimensions(
     return null;
   }
 
+  const xDomain = xScale.domain;
+  const yDomain = yScale.domain;
+
   const rectsProps: AnnotationRectProps[] = [];
 
   dataValues.forEach((dataValue: RectAnnotationDatum) => {
-    const { x0, x1, y0, y1 } = dataValue.coordinates;
+    let { x0, x1, y0, y1 } = dataValue.coordinates;
+
+    // if everything is null, return; otherwise we coerce the other coordinates
+    if (x0 == null && x1 == null && y0 == null && y1 == null) {
+      return;
+    }
+
+    if (x0 == null) {
+      // if x1 is defined, we want the rect to draw to the end of the scale
+      x0 = xDomain[xDomain.length - 1];
+    }
+
+    if (x1 == null) {
+      // if x0 is defined, we want the rect to draw to the start of the scale
+      x1 = xDomain[0];
+    }
+
+    if (y0 == null) {
+      // if y0 is defined, we want the rect to draw to the end of the scale
+      y0 = yDomain[yDomain.length - 1];
+    }
+
+    if (y1 == null) {
+      // if y1 is defined, we want the rect to draw to the start of the scale
+      y1 = yDomain[0];
+    }
 
     const x0Scaled = scaleAndValidateDatum(x0, xScale);
     const x1Scaled = scaleAndValidateDatum(x1, xScale);

@@ -329,10 +329,17 @@ storiesOf('Annotations', module)
     );
   })
   .add('[rect] basic annotation (line)', () => {
+    const definedCoordinate = select('defined coordinate', {
+      x0: 'x0',
+      x1: 'x1',
+      y0: 'y0',
+      y1: 'y1',
+    }, 'x0');
+
     const dataValues = [{
       coordinates: {
-        x0: 0,
-        x1: 0.25,
+        x0: 1,
+        x1: 1.25,
         y0: 0,
         y1: 7,
       },
@@ -347,12 +354,12 @@ storiesOf('Annotations', module)
       details: 'details about this annotation',
     }, {
       coordinates: {
-        x0: 2.5,
-        x1: 3,
-        y0: 0,
-        y1: 7,
+        x0: definedCoordinate === 'x0' ? 0.25 : null,
+        x1: definedCoordinate === 'x1' ? 2.75 : null,
+        y0: definedCoordinate === 'y0' ? 0.25 : null,
+        y1: definedCoordinate === 'y1' ? 6.75 : null,
       },
-      details: 'details about this annotation',
+      details: 'can have null values',
     }];
 
     const chartRotation = select<Rotation>(
