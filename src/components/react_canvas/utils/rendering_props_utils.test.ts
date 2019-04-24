@@ -6,6 +6,7 @@ import {
   buildLinePointProps,
   buildLineProps,
   buildPointStyleProps,
+  buildBarValueProps,
 } from './rendering_props_utils';
 
 describe('[canvas] Area Geometries props', () => {
@@ -390,6 +391,61 @@ describe('[canvas] Bar Geometries', () => {
       perfectDrawEnabled: false,
       listening: false,
       opacity: 0.5,
+    });
+  });
+
+  test('can build bar value props', () => {
+    const valueArguments = {
+      x: 10,
+      y: 20,
+      width: 30,
+      height: 40,
+      displayValueStyle: {
+        fill: 'fill',
+        fontFamily: 'ff',
+        fontSize: 10,
+        padding: 5,
+      },
+    };
+
+    const basicProps = buildBarValueProps(valueArguments);
+    expect(basicProps).toEqual({
+      x: 10,
+      y: 20,
+      width: 30,
+      align: 'center',
+      fill: 'fill',
+      fontFamily: 'ff',
+      fontSize: 10,
+      padding: 5,
+    });
+
+    valueArguments.height = 2;
+    const insufficientHeightBarProps = buildBarValueProps(valueArguments);
+    expect(insufficientHeightBarProps).toEqual({
+      x: 10,
+      y: 5,
+      width: 30,
+      align: 'center',
+      fill: 'fill',
+      fontFamily: 'ff',
+      fontSize: 10,
+      padding: 5,
+    });
+
+    valueArguments.y = 4;
+    valueArguments.height = 20;
+    valueArguments.displayValueStyle.padding = -5;
+    const chartOverflowBarProps = buildBarValueProps(valueArguments);
+    expect(chartOverflowBarProps).toEqual({
+      x: 10,
+      y: 4,
+      width: 30,
+      align: 'center',
+      fill: 'fill',
+      fontFamily: 'ff',
+      fontSize: 10,
+      padding: 5,
     });
   });
 });
