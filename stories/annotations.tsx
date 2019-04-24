@@ -288,10 +288,10 @@ storiesOf('Annotations', module)
   .add('[rect] basic annotation (bar)', () => {
     const dataValues = [{
       coordinates: {
-        x1: 0.5,
-        x2: 1.5,
-        y1: 0,
-        y2: 7,
+        x0: 0.5,
+        x1: 1.5,
+        y0: 0,
+        y1: 7,
       },
       details: 'details about this annotation',
     }];
@@ -331,26 +331,26 @@ storiesOf('Annotations', module)
   .add('[rect] basic annotation (line)', () => {
     const dataValues = [{
       coordinates: {
-        x1: 0,
-        x2: 0.25,
-        y1: 0,
-        y2: 7,
+        x0: 0,
+        x1: 0.25,
+        y0: 0,
+        y1: 7,
       },
       details: 'details about this annotation',
     }, {
       coordinates: {
-        x1: 2.0,
-        x2: 2.1,
-        y1: 0,
-        y2: 7,
+        x0: 2.0,
+        x1: 2.1,
+        y0: 0,
+        y1: 7,
       },
       details: 'details about this annotation',
     }, {
       coordinates: {
-        x1: 2.5,
-        x2: 3,
-        y1: 0,
-        y2: 7,
+        x0: 2.5,
+        x1: 3,
+        y0: 0,
+        y1: 7,
       },
       details: 'details about this annotation',
     }];
@@ -401,34 +401,34 @@ storiesOf('Annotations', module)
   .add('[rect] styling', () => {
     const dataValues = [{
       coordinates: {
-        x1: 0,
-        x2: 0.25,
-        y1: 0,
-        y2: 7,
+        x0: 0,
+        x1: 0.25,
+        y0: 0,
+        y1: 7,
       },
       details: 'annotation 1',
     }, {
       coordinates: {
-        x1: -0.1,
-        x2: 0,
-        y1: 0,
-        y2: 7,
+        x0: -0.1,
+        x1: 0,
+        y0: 0,
+        y1: 7,
       },
       details: 'annotation 2',
     }, {
       coordinates: {
-        x1: 1.1,
-        x2: 1.3,
-        y1: 0,
-        y2: 7,
+        x0: 1.1,
+        x1: 1.3,
+        y0: 0,
+        y1: 7,
       },
       details: 'annotation 2',
     }, {
       coordinates: {
-        x1: 2.5,
-        x2: 3,
-        y1: 0,
-        y2: 7,
+        x0: 2.5,
+        x1: 3,
+        y0: 0,
+        y1: 7,
       },
       details: 'annotation 3',
     }];

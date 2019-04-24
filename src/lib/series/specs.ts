@@ -232,10 +232,10 @@ export interface LineAnnotationSpec {
 
 export interface RectAnnotationDatum {
   coordinates: {
+    x0: any;
     x1: any;
-    x2: any;
+    y0: any;
     y1: any;
-    y2: any;
   };
   details?: string;
 }

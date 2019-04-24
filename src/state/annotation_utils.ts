@@ -354,23 +354,23 @@ export function computeRectAnnotationDimensions(
   const rectsProps: AnnotationRectProps[] = [];
 
   dataValues.forEach((dataValue: RectAnnotationDatum) => {
-    const { x1, x2, y1, y2 } = dataValue.coordinates;
+    const { x0, x1, y0, y1 } = dataValue.coordinates;
 
+    const x0Scaled = scaleAndValidateDatum(x0, xScale);
     const x1Scaled = scaleAndValidateDatum(x1, xScale);
-    const x2Scaled = scaleAndValidateDatum(x2, xScale);
+    const y0Scaled = scaleAndValidateDatum(y0, yScale);
     const y1Scaled = scaleAndValidateDatum(y1, yScale);
-    const y2Scaled = scaleAndValidateDatum(y2, yScale);
 
     // TODO: surface this as a warning
-    if ([x1Scaled, x2Scaled, y1Scaled, y2Scaled].includes(null)) {
+    if ([x0Scaled, x1Scaled, y0Scaled, y1Scaled].includes(null)) {
       return;
     }
 
-    const minX = Math.min(x1Scaled, x2Scaled);
-    const minY = Math.min(y1Scaled, y2Scaled);
+    const minX = Math.min(x0Scaled, x1Scaled);
+    const minY = Math.min(y0Scaled, y1Scaled);
 
-    const deltaX = Math.abs(x1Scaled - x2Scaled);
-    const deltaY = Math.abs(y1Scaled - y2Scaled);
+    const deltaX = Math.abs(x0Scaled - x1Scaled);
+    const deltaY = Math.abs(y0Scaled - y1Scaled);
 
     const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
 

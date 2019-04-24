@@ -109,7 +109,7 @@ describe('annotation utils', () => {
       annotationId: rectAnnotationId,
       groupId,
       annotationType: AnnotationTypes.Rectangle,
-      dataValues: [{ coordinates: { x1: 'a', x2: 'b', y1: 3, y2: 5 } }],
+      dataValues: [{ coordinates: { x0: 'a', x1: 'b', y0: 3, y1: 5 } }],
     };
 
     annotations.set(annotationId, lineAnnotation);
@@ -1082,7 +1082,7 @@ describe('annotation utils', () => {
       groupId,
       annotationType: AnnotationTypes.Rectangle,
       dataValues: [
-        { coordinates: { x1: 1, x2: 2, y1: 3, y2: 5 } },
+        { coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } },
       ],
     };
 
@@ -1149,7 +1149,7 @@ describe('annotation utils', () => {
       annotationId: getAnnotationId('rect'),
       groupId: getGroupId('foo'),
       annotationType: AnnotationTypes.Rectangle,
-      dataValues: [{ coordinates: { x1: 1, x2: 2, y1: 3, y2: 5 } }],
+      dataValues: [{ coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } }],
     };
 
     const noYScale = computeRectAnnotationDimensions(
@@ -1173,8 +1173,8 @@ describe('annotation utils', () => {
       groupId,
       annotationType: AnnotationTypes.Rectangle,
       dataValues: [
-        { coordinates: { x1: 1, x2: 2, y1: -10, y2: 5 } },
-        { coordinates: { x1: 1, x2: 2, y1: 3, y2: 5 } },
+        { coordinates: { x0: 1, x1: 2, y0: -10, y1: 5 } },
+        { coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } },
       ],
     };
 
@@ -1198,7 +1198,7 @@ describe('annotation utils', () => {
       annotationId: getAnnotationId('rect'),
       groupId,
       annotationType: AnnotationTypes.Rectangle,
-      dataValues: [{ coordinates: { x1: 1, x2: 2, y1: 3, y2: 5 } }],
+      dataValues: [{ coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } }],
     };
 
     const unrotated = computeRectAnnotationDimensions(
@@ -1221,7 +1221,7 @@ describe('annotation utils', () => {
       annotationId: getAnnotationId('rect'),
       groupId,
       annotationType: AnnotationTypes.Rectangle,
-      dataValues: [{ coordinates: { x1: 'a', x2: 'b', y1: 0, y2: 2 } }],
+      dataValues: [{ coordinates: { x0: 'a', x1: 'b', y0: 0, y1: 2 } }],
     };
 
     const unrotated = computeRectAnnotationDimensions(
@@ -1244,7 +1244,7 @@ describe('annotation utils', () => {
       annotationId: getAnnotationId('rect'),
       groupId,
       annotationType: AnnotationTypes.Rectangle,
-      dataValues: [{ coordinates: { x1: 1, x2: 2, y1: 3, y2: 5 } }],
+      dataValues: [{ coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } }],
     };
 
     const rotated = computeRectAnnotationDimensions(
@@ -1267,7 +1267,7 @@ describe('annotation utils', () => {
       annotationId: getAnnotationId('rect'),
       groupId,
       annotationType: AnnotationTypes.Rectangle,
-      dataValues: [{ coordinates: { x1: 'a', x2: 'b', y1: 0, y2: 2 } }],
+      dataValues: [{ coordinates: { x0: 'a', x1: 'b', y0: 0, y1: 2 } }],
     };
 
     const unrotated = computeRectAnnotationDimensions(
@@ -1290,7 +1290,7 @@ describe('annotation utils', () => {
       annotationId: getAnnotationId('rect'),
       groupId,
       annotationType: AnnotationTypes.Rectangle,
-      dataValues: [{ coordinates: { x1: 1, x2: 2, y1: 3, y2: 5 } }],
+      dataValues: [{ coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } }],
     };
 
     const unrotated = computeRectAnnotationDimensions(
@@ -1313,7 +1313,7 @@ describe('annotation utils', () => {
       annotationId: getAnnotationId('rect'),
       groupId,
       annotationType: AnnotationTypes.Rectangle,
-      dataValues: [{ coordinates: { x1: 'a', x2: 'b', y1: 0, y2: 2 } }],
+      dataValues: [{ coordinates: { x0: 'a', x1: 'b', y0: 0, y1: 2 } }],
     };
 
     const unrotated = computeRectAnnotationDimensions(
@@ -1336,7 +1336,7 @@ describe('annotation utils', () => {
       annotationId: getAnnotationId('rect'),
       groupId,
       annotationType: AnnotationTypes.Rectangle,
-      dataValues: [{ coordinates: { x1: 1, x2: 2, y1: 3, y2: 5 } }],
+      dataValues: [{ coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } }],
     };
 
     const unrotated = computeRectAnnotationDimensions(
@@ -1359,7 +1359,7 @@ describe('annotation utils', () => {
       annotationId: getAnnotationId('rect'),
       groupId,
       annotationType: AnnotationTypes.Rectangle,
-      dataValues: [{ coordinates: { x1: 'a', x2: 'b', y1: 0, y2: 2 } }],
+      dataValues: [{ coordinates: { x0: 'a', x1: 'b', y0: 0, y1: 2 } }],
     };
 
     const unrotated = computeRectAnnotationDimensions(
