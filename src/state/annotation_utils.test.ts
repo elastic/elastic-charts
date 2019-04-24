@@ -2,10 +2,11 @@ import {
   AnnotationDomainType,
   AnnotationDomainTypes,
   AnnotationSpec,
-  AnnotationTypes,
   AxisSpec,
   Position,
+  RectAnnotationSpec,
   Rotation,
+  LineAnnotationSpec,
 } from '../lib/series/specs';
 import { DEFAULT_ANNOTATION_LINE_STYLE } from '../lib/themes/theme';
 import { Dimensions } from '../lib/utils/dimensions';
@@ -95,8 +96,8 @@ describe('annotation utils', () => {
 
     const annotations: Map<AnnotationId, AnnotationSpec> = new Map();
     const annotationId = getAnnotationId('foo');
-    const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationTypes.Line,
+    const lineAnnotation: LineAnnotationSpec = {
+      annotationType: 'line',
       annotationId,
       domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -108,7 +109,7 @@ describe('annotation utils', () => {
     const rectAnnotation: AnnotationSpec = {
       annotationId: rectAnnotationId,
       groupId,
-      annotationType: AnnotationTypes.Rectangle,
+      annotationType: 'rectangle',
       dataValues: [{ coordinates: { x0: 'a', x1: 'b', y0: 3, y1: 5 } }],
     };
 
@@ -143,8 +144,8 @@ describe('annotation utils', () => {
 
     const annotations: Map<AnnotationId, AnnotationSpec> = new Map();
     const annotationId = getAnnotationId('foo');
-    const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationTypes.Line,
+    const lineAnnotation: LineAnnotationSpec = {
+      annotationType: 'line',
       annotationId,
       domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -174,8 +175,8 @@ describe('annotation utils', () => {
     const xScale: Scale = ordinalScale;
 
     const annotationId = getAnnotationId('foo-line');
-    const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationTypes.Line,
+    const lineAnnotation: LineAnnotationSpec = {
+      annotationType: 'line',
       annotationId,
       domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -207,8 +208,8 @@ describe('annotation utils', () => {
     const xScale: Scale = ordinalScale;
 
     const annotationId = getAnnotationId('foo-line');
-    const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationTypes.Line,
+    const lineAnnotation: LineAnnotationSpec = {
+      annotationType: 'line',
       annotationId,
       domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -240,8 +241,8 @@ describe('annotation utils', () => {
     const xScale: Scale = ordinalScale;
 
     const annotationId = getAnnotationId('foo-line');
-    const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationTypes.Line,
+    const lineAnnotation: LineAnnotationSpec = {
+      annotationType: 'line',
       annotationId,
       domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -271,8 +272,8 @@ describe('annotation utils', () => {
     const xScale: Scale = ordinalScale;
 
     const annotationId = getAnnotationId('foo-line');
-    const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationTypes.Line,
+    const lineAnnotation: LineAnnotationSpec = {
+      annotationType: 'line',
       annotationId,
       domainType: AnnotationDomainTypes.YDomain,
       dataValues: [],
@@ -297,8 +298,8 @@ describe('annotation utils', () => {
     const xScale: Scale = ordinalScale;
 
     const annotationId = getAnnotationId('foo-line');
-    const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationTypes.Line,
+    const lineAnnotation: LineAnnotationSpec = {
+      annotationType: 'line',
       annotationId,
       domainType: AnnotationDomainTypes.XDomain,
       dataValues: [{ dataValue: 'a', details: 'foo' }],
@@ -328,8 +329,8 @@ describe('annotation utils', () => {
     const xScale: Scale = continuousScale;
 
     const annotationId = getAnnotationId('foo-line');
-    const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationTypes.Line,
+    const lineAnnotation: LineAnnotationSpec = {
+      annotationType: 'line',
       annotationId,
       domainType: AnnotationDomainTypes.XDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -359,8 +360,8 @@ describe('annotation utils', () => {
     const xScale: Scale = continuousScale;
 
     const annotationId = getAnnotationId('foo-line');
-    const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationTypes.Line,
+    const lineAnnotation: LineAnnotationSpec = {
+      annotationType: 'line',
       annotationId,
       domainType: AnnotationDomainTypes.XDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -391,8 +392,8 @@ describe('annotation utils', () => {
     const xScale: Scale = ordinalScale;
 
     const annotationId = getAnnotationId('foo-line');
-    const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationTypes.Line,
+    const lineAnnotation: LineAnnotationSpec = {
+      annotationType: 'line',
       annotationId,
       domainType: AnnotationDomainTypes.XDomain,
       dataValues: [{ dataValue: 'a', details: 'foo' }],
@@ -423,8 +424,8 @@ describe('annotation utils', () => {
     const xScale: Scale = continuousScale;
 
     const annotationId = getAnnotationId('foo-line');
-    const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationTypes.Line,
+    const lineAnnotation: LineAnnotationSpec = {
+      annotationType: 'line',
       annotationId,
       domainType: AnnotationDomainTypes.XDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -456,8 +457,8 @@ describe('annotation utils', () => {
       const xScale: Scale = continuousScale;
 
       const annotationId = getAnnotationId('foo-line');
-      const lineAnnotation: AnnotationSpec = {
-        annotationType: AnnotationTypes.Line,
+      const lineAnnotation: LineAnnotationSpec = {
+        annotationType: 'line',
         annotationId,
         domainType: AnnotationDomainTypes.XDomain,
         dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -488,8 +489,8 @@ describe('annotation utils', () => {
     const xScale: Scale = continuousScale;
 
     const annotationId = getAnnotationId('foo-line');
-    const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationTypes.Line,
+    const lineAnnotation: LineAnnotationSpec = {
+      annotationType: 'line',
       annotationId,
       domainType: AnnotationDomainTypes.XDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -520,8 +521,8 @@ describe('annotation utils', () => {
       const xScale: Scale = continuousScale;
 
       const annotationId = getAnnotationId('foo-line');
-      const lineAnnotation: AnnotationSpec = {
-        annotationType: AnnotationTypes.Line,
+      const lineAnnotation: LineAnnotationSpec = {
+        annotationType: 'line',
         annotationId,
         domainType: AnnotationDomainTypes.XDomain,
         dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -554,7 +555,7 @@ describe('annotation utils', () => {
 
     const annotationId = getAnnotationId('foo-line');
     const invalidXLineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationTypes.Line,
+      annotationType: 'line',
       annotationId,
       domainType: AnnotationDomainTypes.XDomain,
       dataValues: [{ dataValue: 'e', details: 'foo' }],
@@ -574,7 +575,7 @@ describe('annotation utils', () => {
     expect(emptyXDimensions).toEqual([]);
 
     const invalidStringXLineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationTypes.Line,
+      annotationType: 'line',
       annotationId,
       domainType: AnnotationDomainTypes.XDomain,
       dataValues: [{ dataValue: '', details: 'foo' }],
@@ -594,7 +595,7 @@ describe('annotation utils', () => {
     expect(invalidStringXDimensions).toEqual([]);
 
     const outOfBoundsXLineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationTypes.Line,
+      annotationType: 'line',
       annotationId,
       domainType: AnnotationDomainTypes.XDomain,
       dataValues: [{ dataValue: -999, details: 'foo' }],
@@ -614,7 +615,7 @@ describe('annotation utils', () => {
     expect(emptyOutOfBoundsXDimensions).toEqual([]);
 
     const invalidYLineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationTypes.Line,
+      annotationType: 'line',
       annotationId,
       domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 'e', details: 'foo' }],
@@ -634,7 +635,7 @@ describe('annotation utils', () => {
     expect(emptyYDimensions).toEqual([]);
 
     const outOfBoundsYLineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationTypes.Line,
+      annotationType: 'line',
       annotationId,
       domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: -999, details: 'foo' }],
@@ -654,7 +655,7 @@ describe('annotation utils', () => {
     expect(emptyOutOfBoundsYDimensions).toEqual([]);
 
     const invalidStringYLineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationTypes.Line,
+      annotationType: 'line',
       annotationId,
       domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: '', details: 'foo' }],
@@ -674,7 +675,7 @@ describe('annotation utils', () => {
     expect(invalidStringYDimensions).toEqual([]);
 
     const validHiddenAnnotation: AnnotationSpec = {
-      annotationType: AnnotationTypes.Line,
+      annotationType: 'line',
       annotationId,
       domainType: AnnotationDomainTypes.XDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -939,7 +940,7 @@ describe('annotation utils', () => {
     const expectedMissingTooltipState = {
       isVisible: false,
       transform: '',
-      annotationType: AnnotationTypes.Line,
+      annotationType: 'line',
     };
 
     expect(missingTooltipState).toEqual(expectedMissingTooltipState);
@@ -959,7 +960,7 @@ describe('annotation utils', () => {
     const expectedXDomainTooltipState = {
       isVisible: true,
       transform: 'translate(calc(1px - 50%),calc(4px - 100%))',
-      annotationType: AnnotationTypes.Line,
+      annotationType: 'line',
     };
 
     expect(xDomainTooltipState).toEqual(expectedXDomainTooltipState);
@@ -979,7 +980,7 @@ describe('annotation utils', () => {
     const expectedYDomainTooltipState = {
       isVisible: true,
       transform: 'translate(calc(1px - 0%),calc(4px - 50%))',
-      annotationType: AnnotationTypes.Line,
+      annotationType: 'line',
     };
 
     expect(yDomainTooltipState).toEqual(expectedYDomainTooltipState);
@@ -988,8 +989,8 @@ describe('annotation utils', () => {
   test('should compute the tooltip state for an annotation', () => {
     const annotations: Map<AnnotationId, AnnotationSpec> = new Map();
     const annotationId = getAnnotationId('foo');
-    const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationTypes.Line,
+    const lineAnnotation: LineAnnotationSpec = {
+      annotationType: 'line',
       annotationId,
       domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -1071,16 +1072,16 @@ describe('annotation utils', () => {
     const expectedTooltipState = {
       isVisible: true,
       transform: 'translate(calc(1px - 0%),calc(4px - 50%))',
-      annotationType: AnnotationTypes.Line,
+      annotationType: 'line',
     };
 
     expect(tooltipState).toEqual(expectedTooltipState);
 
     // rect annotation tooltip
-    const annotationRectangle = {
+    const annotationRectangle: RectAnnotationSpec = {
       annotationId: getAnnotationId('rect'),
       groupId,
-      annotationType: AnnotationTypes.Rectangle,
+      annotationType: 'rectangle',
       dataValues: [
         { coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } },
       ],
@@ -1104,7 +1105,7 @@ describe('annotation utils', () => {
     const expectedRectTooltipState = {
       isVisible: true,
       transform: 'translate(0, 0)',
-      annotationType: AnnotationTypes.Rectangle,
+      annotationType: 'rectangle',
       top: 4,
       left: 5,
     };
@@ -1145,10 +1146,10 @@ describe('annotation utils', () => {
 
     const xScale: Scale = continuousScale;
 
-    const annotationRectangle = {
+    const annotationRectangle: RectAnnotationSpec = {
       annotationId: getAnnotationId('rect'),
       groupId: getGroupId('foo'),
-      annotationType: AnnotationTypes.Rectangle,
+      annotationType: 'rectangle',
       dataValues: [{ coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } }],
     };
 
@@ -1168,10 +1169,10 @@ describe('annotation utils', () => {
 
     const xScale: Scale = continuousScale;
 
-    const annotationRectangle = {
+    const annotationRectangle: RectAnnotationSpec = {
       annotationId: getAnnotationId('rect'),
       groupId,
-      annotationType: AnnotationTypes.Rectangle,
+      annotationType: 'rectangle',
       dataValues: [
         { coordinates: { x0: 1, x1: 2, y0: -10, y1: 5 } },
         { coordinates: { x0: null, x1: null, y0: null, y1: null } },
@@ -1194,10 +1195,10 @@ describe('annotation utils', () => {
 
     const xScale: Scale = continuousScale;
 
-    const annotationRectangle = {
+    const annotationRectangle: RectAnnotationSpec = {
       annotationId: getAnnotationId('rect'),
       groupId,
-      annotationType: AnnotationTypes.Rectangle,
+      annotationType: 'rectangle',
       dataValues: [
         { coordinates: { x0: 1, x1: null, y0: null, y1: null } },
         { coordinates: { x0: null, x1: 1, y0: null, y1: null } },
@@ -1229,10 +1230,10 @@ describe('annotation utils', () => {
 
     const xScale: Scale = continuousScale;
 
-    const annotationRectangle = {
+    const annotationRectangle: RectAnnotationSpec = {
       annotationId: getAnnotationId('rect'),
       groupId,
-      annotationType: AnnotationTypes.Rectangle,
+      annotationType: 'rectangle',
       dataValues: [{ coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } }],
     };
 
@@ -1252,10 +1253,10 @@ describe('annotation utils', () => {
 
     const xScale: Scale = ordinalScale;
 
-    const annotationRectangle = {
+    const annotationRectangle: RectAnnotationSpec = {
       annotationId: getAnnotationId('rect'),
       groupId,
-      annotationType: AnnotationTypes.Rectangle,
+      annotationType: 'rectangle',
       dataValues: [{ coordinates: { x0: 'a', x1: 'b', y0: 0, y1: 2 } }],
     };
 
@@ -1275,10 +1276,10 @@ describe('annotation utils', () => {
 
     const xScale: Scale = continuousScale;
 
-    const annotationRectangle = {
+    const annotationRectangle: RectAnnotationSpec = {
       annotationId: getAnnotationId('rect'),
       groupId,
-      annotationType: AnnotationTypes.Rectangle,
+      annotationType: 'rectangle',
       dataValues: [{ coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } }],
     };
 
@@ -1298,10 +1299,10 @@ describe('annotation utils', () => {
 
     const xScale: Scale = ordinalScale;
 
-    const annotationRectangle = {
+    const annotationRectangle: RectAnnotationSpec = {
       annotationId: getAnnotationId('rect'),
       groupId,
-      annotationType: AnnotationTypes.Rectangle,
+      annotationType: 'rectangle',
       dataValues: [{ coordinates: { x0: 'a', x1: 'b', y0: 0, y1: 2 } }],
     };
 
@@ -1321,10 +1322,10 @@ describe('annotation utils', () => {
 
     const xScale: Scale = continuousScale;
 
-    const annotationRectangle = {
+    const annotationRectangle: RectAnnotationSpec = {
       annotationId: getAnnotationId('rect'),
       groupId,
-      annotationType: AnnotationTypes.Rectangle,
+      annotationType: 'rectangle',
       dataValues: [{ coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } }],
     };
 
@@ -1344,10 +1345,10 @@ describe('annotation utils', () => {
 
     const xScale: Scale = ordinalScale;
 
-    const annotationRectangle = {
+    const annotationRectangle: RectAnnotationSpec = {
       annotationId: getAnnotationId('rect'),
       groupId,
-      annotationType: AnnotationTypes.Rectangle,
+      annotationType: 'rectangle',
       dataValues: [{ coordinates: { x0: 'a', x1: 'b', y0: 0, y1: 2 } }],
     };
 
@@ -1367,10 +1368,10 @@ describe('annotation utils', () => {
 
     const xScale: Scale = continuousScale;
 
-    const annotationRectangle = {
+    const annotationRectangle: RectAnnotationSpec = {
       annotationId: getAnnotationId('rect'),
       groupId,
-      annotationType: AnnotationTypes.Rectangle,
+      annotationType: 'rectangle',
       dataValues: [{ coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } }],
     };
 
@@ -1390,10 +1391,10 @@ describe('annotation utils', () => {
 
     const xScale: Scale = ordinalScale;
 
-    const annotationRectangle = {
+    const annotationRectangle: RectAnnotationSpec = {
       annotationId: getAnnotationId('rect'),
       groupId,
-      annotationType: AnnotationTypes.Rectangle,
+      annotationType: 'rectangle',
       dataValues: [{ coordinates: { x0: 'a', x1: 'b', y0: 0, y1: 2 } }],
     };
 

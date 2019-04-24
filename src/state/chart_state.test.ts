@@ -8,6 +8,7 @@ import {
   AxisSpec,
   BarSeriesSpec,
   Position,
+  RectAnnotationSpec,
 } from '../lib/series/specs';
 import { LIGHT_THEME } from '../lib/themes/light_theme';
 import { mergeWithDefaultTheme } from '../lib/themes/theme';
@@ -475,7 +476,7 @@ describe('Chart Store', () => {
     };
 
     const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationTypes.Line,
+      annotationType: 'line',
       annotationId,
       domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -493,12 +494,12 @@ describe('Chart Store', () => {
     store.removeAnnotationSpec(annotationId);
     expect(store.annotationSpecs).toEqual(new Map());
 
-    const rectAnnotation = {
+    const rectAnnotation: RectAnnotationSpec = {
       annotationId: getAnnotationId('rect'),
       groupId: GROUP_ID,
-      annotationType: AnnotationTypes.Rectangle,
+      annotationType: 'rectangle',
       dataValues: [
-        { coordinates: { x1: 1, x2: 2, y1: 3, y2: 5 } },
+        { coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } },
       ],
     };
     store.addAnnotationSpec(rectAnnotation);
@@ -756,12 +757,12 @@ describe('Chart Store', () => {
     store.chartDimensions = { width: 10, height: 20, top: 5, left: 15 };
 
     const annotationDimensions = [{ rect: { x: 2, y: 3, width: 3, height: 5 } }];
-    const rectAnnotationSpec = {
+    const rectAnnotationSpec: RectAnnotationSpec = {
       annotationId: getAnnotationId('rect'),
       groupId: GROUP_ID,
-      annotationType: AnnotationTypes.Rectangle,
+      annotationType: 'rectangle',
       dataValues: [
-        { coordinates: { x1: 1, x2: 2, y1: 3, y2: 5 } },
+        { coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } },
       ],
     };
 

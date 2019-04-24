@@ -4,7 +4,6 @@ import {
   AnnotationDomainType,
   AnnotationDomainTypes,
   AnnotationSpec,
-  AnnotationTypes,
   Position,
   Rotation,
 } from '../lib/series/specs';
@@ -51,7 +50,7 @@ describe('annotation marker', () => {
 
     const annotationId = getAnnotationId('foo-line');
     const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationTypes.Line,
+      annotationType: 'line',
       annotationId,
       domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -89,7 +88,7 @@ describe('annotation marker', () => {
 
     const annotationId = getAnnotationId('foo-line');
     const lineAnnotation: AnnotationSpec = {
-      annotationType: AnnotationTypes.Line,
+      annotationType: 'line',
       annotationId,
       domainType: AnnotationDomainTypes.XDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],

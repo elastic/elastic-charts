@@ -1,7 +1,7 @@
 import { BarGeometry, GeometryValue } from '../../lib/series/rendering';
 import { computeXScale, computeYScales } from '../../lib/series/scales';
 import { DataSeriesColorsValues } from '../../lib/series/series';
-import { AnnotationTypes, BarSeriesSpec, BasicSeriesSpec } from '../../lib/series/specs';
+import { BarSeriesSpec, BasicSeriesSpec, RectAnnotationSpec } from '../../lib/series/specs';
 import { getAnnotationId, getGroupId, getSpecId } from '../../lib/utils/ids';
 import { TooltipType } from '../../lib/utils/interactions';
 import { ScaleContinuous } from '../../lib/utils/scales/scale_continuous';
@@ -214,12 +214,12 @@ function mouseOverTestSuite(scaleType: ScaleType) {
 
   test('can determine which tooltip to display if chart & annotation tooltips possible', () => {
     const annotationDimensions = [{ rect: { x: 49, y: -1, width: 2, height: 99 } }];
-    const rectAnnotationSpec = {
+    const rectAnnotationSpec: RectAnnotationSpec = {
       annotationId: getAnnotationId('rect'),
       groupId: GROUP_ID,
-      annotationType: AnnotationTypes.Rectangle,
+      annotationType: 'rectangle',
       dataValues: [
-        { coordinates: { x1: 1, x2: 1.5, y1: 0.5, y2: 10 } },
+        { coordinates: { x0: 1, x1: 1.5, y0: 0.5, y1: 10 } },
       ],
     };
 
