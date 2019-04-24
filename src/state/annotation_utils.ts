@@ -30,7 +30,7 @@ export interface AnnotationTooltipState {
   transform: string;
   top?: number;
   left?: number;
-  renderTooltip?: (details: string) => JSX.Element;
+  renderTooltip?: (position: { transform: string; top: number; left: number; }, details?: string) => JSX.Element;
 }
 export interface AnnotationDetails {
   headerText?: string;
@@ -793,7 +793,7 @@ export function computeRectAnnotationTooltipState(
   annotationRects: AnnotationRectProps[],
   chartRotation: Rotation,
   chartDimensions: Dimensions,
-  renderTooltip?: (details: string) => JSX.Element,
+  renderTooltip?: (position: { transform: string; top: number; left: number; }, details?: string) => JSX.Element,
 ): AnnotationTooltipState {
 
   const annotationTooltipState: AnnotationTooltipState = {

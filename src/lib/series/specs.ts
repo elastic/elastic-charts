@@ -250,7 +250,7 @@ export interface RectAnnotationSpec {
    */
   groupId: GroupId; // defaults to __global__; needed for yDomain position
   /** Custom rendering function for tooltip */
-  renderTooltip?: (details: string) => JSX.Element;
+  renderTooltip?: (position: { transform: string; top: number; left: number; }, details?: string) => JSX.Element;
   /** Data values defined with coordinates and details */
   dataValues: RectAnnotationDatum[];
   /** Custom annotation style */
