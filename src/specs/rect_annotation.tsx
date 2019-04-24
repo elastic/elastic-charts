@@ -1,6 +1,6 @@
 import { inject } from 'mobx-react';
 import { PureComponent } from 'react';
-import { AnnotationTypes, RectAnnotationSpec } from '../lib/series/specs';
+import { RectAnnotationSpec } from '../lib/series/specs';
 import { getGroupId } from '../lib/utils/ids';
 import { SpecProps } from './specs_parser';
 
@@ -9,7 +9,7 @@ type RectAnnotationProps = SpecProps & RectAnnotationSpec;
 export class RectAnnotationSpecComponent extends PureComponent<RectAnnotationProps> {
   static defaultProps: Partial<RectAnnotationProps> = {
     groupId: getGroupId('__global__'),
-    annotationType: AnnotationTypes.Rectangle,
+    annotationType: 'rectangle',
   };
 
   componentDidMount() {

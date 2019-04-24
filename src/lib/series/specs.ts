@@ -199,16 +199,8 @@ export interface LineAnnotationDatum {
   header?: string;
 }
 
-export interface LineAnnotationSpec {
-  /** The id of the annotation */
-  annotationId: AnnotationId;
-  /** Annotation type: line, rectangle, text */
-  annotationType: AnnotationType;
-  /** The ID of the axis group, generated via getGroupId method
-   * @default __global__
-   */
-  groupId: GroupId; // defaults to __global__; needed for yDomain position
-  /** Annotation domain type: AnnotationDomainTypes.XDomain or AnnotationDomainTypes.YDomain */
+export type LineAnnotationSpec = BaseAnnotationSpec & {
+  annotationType: 'line';
   domainType: AnnotationDomainType;
   /** Data values defined with value, details, and header */
   dataValues: LineAnnotationDatum[];
@@ -226,9 +218,7 @@ export interface LineAnnotationSpec {
   };
   /** Annotation lines are hidden */
   hideLines?: boolean;
-  /** Annotation tooltips are hidden */
-  hideTooltips?: boolean;
-}
+};
 
 export interface RectAnnotationDatum {
   coordinates: {
@@ -240,7 +230,17 @@ export interface RectAnnotationDatum {
   details?: string;
 }
 
-export interface RectAnnotationSpec {
+export type RectAnnotationSpec = BaseAnnotationSpec & {
+  annotationType: 'rectangle';
+  /** Custom rendering function for tooltip */
+  renderTooltip?: (position: { transform: string; top: number; left: number; }, details?: string) => JSX.Element;
+  /** Data values defined with coordinates and details */
+  dataValues: RectAnnotationDatum[];
+  /** Custom annotation style */
+  style?: Partial<RectAnnotationStyle>;
+};
+
+export interface BaseAnnotationSpec {
   /** The id of the annotation */
   annotationId: AnnotationId;
   /** Annotation type: line, rectangle, text */
@@ -249,15 +249,16 @@ export interface RectAnnotationSpec {
    * @default __global__
    */
   groupId: GroupId; // defaults to __global__; needed for yDomain position
-  /** Custom rendering function for tooltip */
-  renderTooltip?: (position: { transform: string; top: number; left: number; }, details?: string) => JSX.Element;
   /** Data values defined with coordinates and details */
-  dataValues: RectAnnotationDatum[];
+  dataValues: AnnotationDatum[];
   /** Custom annotation style */
-  style?: Partial<RectAnnotationStyle>;
+  style?: Partial<AnnotationStyle>;
   /** Toggles tooltip annotation visibility */
   hideTooltips?: boolean;
 }
+
+export type AnnotationDatum = LineAnnotationDatum | RectAnnotationDatum;
+export type AnnotationStyle = LineAnnotationStyle | RectAnnotationStyle;
 
 // TODO:  TextAnnotationSpec
 export type AnnotationSpec = LineAnnotationSpec | RectAnnotationSpec;
