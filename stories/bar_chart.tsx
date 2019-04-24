@@ -49,7 +49,7 @@ storiesOf('Bar Chart', module)
   })
   .add('with value label', () => {
     const showValueLabel = boolean('show value label', false);
-    const alternatingValueLabel = boolean('alternating value label', true);
+    const alternatingValueLabel = boolean('alternating value label', false);
 
     const displayValueStyle = {
       displayValue: {
@@ -57,7 +57,7 @@ storiesOf('Bar Chart', module)
         fontFamily: `'Open Sans', Helvetica, Arial, sans-serif`,
         fontStyle: 'normal',
         padding: number('value padding', 10),
-        fill: color('value color', 'gray'),
+        fill: color('value color', '#000'),
       },
     };
 
@@ -93,7 +93,7 @@ storiesOf('Bar Chart', module)
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y']}
-          data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
+          data={[{ x: 0, y: 0.15 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
           yScaleToDataExtent={false}
         />
       </Chart>

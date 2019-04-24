@@ -5,7 +5,7 @@ import { animated, Spring } from 'react-spring/renderprops-konva.cjs';
 import { LegendItem } from '../../lib/series/legend';
 import { BarGeometry, getGeometryStyle } from '../../lib/series/rendering';
 import { BarSeriesStyle, SharedGeometryStyle } from '../../lib/themes/theme';
-import { buildBarProps } from './utils/rendering_props_utils';
+import { buildBarProps, buildBarValueProps } from './utils/rendering_props_utils';
 
 interface BarGeometriesDataProps {
   animated?: boolean;
@@ -70,13 +70,16 @@ export class BarGeometries extends React.PureComponent<
 
       // min border depending on bar width bars with white border
       const borderEnabled = border.visible && width > border.strokeWidth * 7;
-      const displayValueProps = {
+
+      const displayValueProps = buildBarValueProps({
         x,
         y,
         width,
-        align: 'center',
-        ...style.displayValue,
-      };
+        height,
+        displayValueStyle: style.displayValue!, // displayValue is guaranteed on style as part of the merged theme
+
+      });
+
       if (this.props.animated) {
         return (
           <Group key={index}>
@@ -115,7 +118,7 @@ export class BarGeometries extends React.PureComponent<
           geometryStyle,
         });
         return (
-          <React.Fragment>
+          <React.Fragment key={index}>
             <Rect {...barProps} />
             {displayValue && <Text text={displayValue} {...displayValueProps} />}
           </React.Fragment>

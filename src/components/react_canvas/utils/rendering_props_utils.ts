@@ -1,5 +1,5 @@
 import { GeometryStyle } from '../../../lib/series/rendering';
-import { AreaStyle, LineStyle, PointStyle } from '../../../lib/themes/theme';
+import { AreaStyle, LineStyle, PointStyle, TextStyle } from '../../../lib/themes/theme';
 import { GlobalKonvaElementProps } from '../globals';
 
 export interface PointStyleProps {
@@ -150,6 +150,43 @@ export function buildBarProps({
     strokeEnabled: borderEnabled,
     ...GlobalKonvaElementProps,
     ...geometryStyle,
+  };
+}
+
+export function buildBarValueProps({
+  x,
+  y,
+  width,
+  height,
+  displayValueStyle,
+}: {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  displayValueStyle: TextStyle;
+}): TextStyle & {
+  x: number;
+  y: number;
+  width: number;
+  align: string;
+} {
+  const { fontSize, padding } = displayValueStyle;
+  const displayValueTextHeight = fontSize + padding;
+  const displayValueY = height >= displayValueTextHeight ? y : y - displayValueTextHeight;
+
+  // if padding is less than 0, then text will appear above bar
+  // this checks if there is enough space above the bar to render the value
+  // if not, render the value within the bar
+  const textPadding = (padding < 0 && y < fontSize) ? -padding : padding;
+
+  return {
+    x,
+    y: displayValueY,
+    width,
+    align: 'center',
+    ...displayValueStyle,
+    padding: textPadding,
   };
 }
 
