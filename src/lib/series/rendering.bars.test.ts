@@ -1,9 +1,11 @@
 import { computeSeriesDomains } from '../../state/utils';
+import { identity } from '../utils/commons';
 import { getGroupId, getSpecId } from '../utils/ids';
 import { ScaleType } from '../utils/scales/scales';
 import { renderBars } from './rendering';
 import { computeXScale, computeYScales } from './scales';
 import { BarSeriesSpec } from './specs';
+
 const SPEC_ID = getSpecId('spec_1');
 const GROUP_ID = getGroupId('group_1');
 
@@ -14,7 +16,7 @@ describe('Rendering bars', () => {
       groupId: GROUP_ID,
       seriesType: 'bar',
       yScaleToDataExtent: false,
-      data: [[0, 10], [1, 5]],
+      data: [[-200, 0], [0, 10], [1, 5]], // first datum should be skipped as it's out of domain
       xAccessor: 0,
       yAccessors: [1],
       xScaleType: ScaleType.Ordinal,
@@ -22,11 +24,12 @@ describe('Rendering bars', () => {
     };
     const barSeriesMap = new Map();
     barSeriesMap.set(SPEC_ID, barSeriesSpec);
-    const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
+    const customDomain = [0, 1];
+    const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map(), customDomain);
     const xScale = computeXScale(barSeriesDomains.xDomain, barSeriesMap.size, 0, 100);
     const yScales = computeYScales(barSeriesDomains.yDomain, 100, 0);
 
-    test('Can render two bars', () => {
+    test('Can render two bars within domain', () => {
       const { barGeometries } = renderBars(
         0,
         barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0].data,
@@ -35,6 +38,102 @@ describe('Rendering bars', () => {
         'red',
         SPEC_ID,
         [],
+      );
+
+      expect(barGeometries[0]).toEqual({
+        x: 0,
+        y: 0,
+        width: 50,
+        height: 100,
+        color: 'red',
+        value: {
+          accessor: 'y1',
+          x: 0,
+          y: 10,
+        },
+        geometryId: {
+          specId: SPEC_ID,
+          seriesKey: [],
+        },
+      });
+      expect(barGeometries[1]).toEqual({
+        x: 50,
+        y: 50,
+        width: 50,
+        height: 50,
+        color: 'red',
+        value: {
+          accessor: 'y1',
+          x: 1,
+          y: 5,
+        },
+        geometryId: {
+          specId: SPEC_ID,
+          seriesKey: [],
+        },
+      });
+      expect(barGeometries.length).toBe(2);
+    });
+    test('Can render bars with value labels', () => {
+      const valueFormatter = identity;
+      const { barGeometries } = renderBars(
+        0,
+        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0].data,
+        xScale,
+        yScales.get(GROUP_ID)!,
+        'red',
+        SPEC_ID,
+        [],
+        valueFormatter,
+      );
+
+      expect(barGeometries[0]).toEqual({
+        x: 0,
+        y: 0,
+        width: 50,
+        height: 100,
+        color: 'red',
+        value: {
+          accessor: 'y1',
+          x: 0,
+          y: 10,
+        },
+        geometryId: {
+          specId: SPEC_ID,
+          seriesKey: [],
+        },
+        displayValue: 10,
+      });
+      expect(barGeometries[1]).toEqual({
+        x: 50,
+        y: 50,
+        width: 50,
+        height: 50,
+        color: 'red',
+        value: {
+          accessor: 'y1',
+          x: 1,
+          y: 5,
+        },
+        geometryId: {
+          specId: SPEC_ID,
+          seriesKey: [],
+        },
+        displayValue: 5,
+      });
+    });
+    test('Can render bars with alternating value labels', () => {
+      const valueFormatter = identity;
+      const { barGeometries } = renderBars(
+        0,
+        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0].data,
+        xScale,
+        yScales.get(GROUP_ID)!,
+        'red',
+        SPEC_ID,
+        [],
+        valueFormatter,
+        true,
       );
       expect(barGeometries[0]).toEqual({
         x: 0,
@@ -51,6 +150,7 @@ describe('Rendering bars', () => {
           specId: SPEC_ID,
           seriesKey: [],
         },
+        displayValue: 10,
       });
       expect(barGeometries[1]).toEqual({
         x: 50,

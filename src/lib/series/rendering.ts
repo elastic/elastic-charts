@@ -186,7 +186,7 @@ export function renderBars(
   const xDomain = xScale.domain;
   const xScaleType = xScale.type;
   const barGeometries: BarGeometry[] = [];
-  dataset.forEach((datum, index) => {
+  dataset.forEach((datum) => {
     const { y0, y1, initialY1 } = datum;
     // don't create a bar if the initialY1 value is null.
     if (initialY1 === null) {
@@ -219,7 +219,7 @@ export function renderBars(
 
     // only show displayValue for even bars if showOverlappingValue is false
     const displayValue = alternatingValueLabel ?
-      (index % 2 === 0 ? formattedDisplayValue : undefined)
+      (barGeometries.length % 2 === 0 ? formattedDisplayValue : undefined)
       : formattedDisplayValue;
 
     const barGeometry: BarGeometry = {
