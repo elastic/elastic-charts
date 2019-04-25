@@ -16,5 +16,7 @@ export {
   AnnotationDomainTypes,
   CustomSeriesColorsMap,
   LineAnnotationDatum,
+  LineAnnotationSpec,
   RectAnnotationDatum,
+  RectAnnotationSpec,
 } from './lib/series/specs';
