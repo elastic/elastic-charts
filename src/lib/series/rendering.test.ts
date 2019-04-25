@@ -99,7 +99,6 @@ describe('Rendering utils', () => {
     // no highlighted elements
     expect(defaultStyle).toEqual({ opacity: 1 });
 
-
     const customDefaultStyle = getGeometryStyle(
       geometryId,
       null,

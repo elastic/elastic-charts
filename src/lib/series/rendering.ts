@@ -188,12 +188,14 @@ export function renderBars(
   barGeometries: BarGeometry[];
   indexedGeometries: Map<any, IndexedGeometry[]>;
 } {
+
   const indexedGeometries: Map<any, IndexedGeometry[]> = new Map();
   const xDomain = xScale.domain;
   const xScaleType = xScale.type;
   const barGeometries: BarGeometry[] = [];
 
   const bboxCalculator = new CanvasTextBBoxCalculator();
+  const padding = 1;
   const fontSize = seriesStyle && seriesStyle.displayValue ? seriesStyle.displayValue.fontSize : undefined;
   const fontFamily = seriesStyle && seriesStyle.displayValue ? seriesStyle.displayValue.fontFamily : undefined;
 
@@ -234,7 +236,8 @@ export function renderBars(
       (barGeometries.length % 2 === 0 ? formattedDisplayValue : undefined)
       : formattedDisplayValue;
 
-    const computedDisplayValueWidth = bboxCalculator.compute(displayValueText || '', fontSize, fontFamily).getOrElse({
+    const computedDisplayValueWidth = bboxCalculator.compute(displayValueText || '', padding, fontSize, fontFamily)
+                                                    .getOrElse({
       width: 0,
       height: 0,
     }).width;
@@ -298,6 +301,7 @@ export function renderLine(
   lineGeometry: LineGeometry;
   indexedGeometries: Map<any, IndexedGeometry[]>;
 } {
+
   const isLogScale = isLogarithmicScale(yScale);
 
   const pathGenerator = line<DataSeriesDatum>()

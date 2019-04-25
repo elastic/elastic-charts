@@ -82,14 +82,16 @@ export function computeAxisTicksDimensions(
   if (!scale) {
     throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
   }
+
   const tickLabelPadding = axisSpec.tickLabelPadding || axisConfig.tickLabelStyle.padding;
+
   const dimensions = computeTickDimensions(
     scale,
     axisSpec.tickFormat,
     bboxCalculator,
     axisConfig,
-    axisSpec.tickLabelRotation,
     tickLabelPadding,
+    axisSpec.tickLabelRotation,
   );
 
   return {
@@ -161,7 +163,7 @@ export const getMaxBboxDimensions = (
   maxLabelTextHeight: number;
 } => {
 
-  const bbox = bboxCalculator.compute(tickLabel, fontSize, tickLabelPadding, fontFamily).getOrElse({
+  const bbox = bboxCalculator.compute(tickLabel, tickLabelPadding, fontSize, fontFamily).getOrElse({
     width: 0,
     height: 0,
   });
@@ -190,8 +192,8 @@ function computeTickDimensions(
   tickFormat: TickFormatter,
   bboxCalculator: BBoxCalculator,
   axisConfig: AxisConfig,
+  tickLabelPadding: number,
   tickLabelRotation: number = 0,
-  tickLabelPadding: number = 1,
 ) {
   const tickValues = scale.ticks();
   const tickLabels = tickValues.map(tickFormat);
@@ -267,7 +269,6 @@ export function getTickLabelProps(
   tickPosition: number,
   axisPosition: Position,
   axisTicksDimensions: AxisTicksDimensions,
-  tickLabelPadding?: number,
 ): TickLabelProps {
   const { maxLabelBboxWidth, maxLabelBboxHeight } = axisTicksDimensions;
   const isVerticalAxis = isVertical(axisPosition);

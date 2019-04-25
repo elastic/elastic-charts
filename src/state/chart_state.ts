@@ -162,7 +162,6 @@ export class ChartStore {
   customSeriesColors: Map<string, string> = new Map();
   seriesColorMap: Map<string, string> = new Map();
   totalBarsInCluster?: number;
-  testUserInput!: number;
 
   tooltipData = observable.array<TooltipValue>([], { deep: false });
   tooltipType = observable.box(DEFAULT_TOOLTIP_TYPE);

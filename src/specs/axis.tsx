@@ -17,7 +17,6 @@ class AxisSpec extends PureComponent<AxisSpecProps> {
     tickPadding: 10,
     tickFormat: (tick: any) => `${tick}`,
     tickLabelRotation: 0,
-    tickLabelPadding: 10,
   };
   componentDidMount() {
     const { chartStore, children, ...spec } = this.props;

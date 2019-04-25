@@ -42,7 +42,6 @@ export class Axis extends React.PureComponent<AxisProps> {
     } = this.props;
 
     const tickLabelRotation = this.props.axisSpec.tickLabelRotation || 0;
-    const tickLabelPadding = this.props.axisSpec.tickLabelPadding || this.props.chartTheme.axes.tickLabelStyle.padding;
 
     const tickLabelProps = getTickLabelProps(
       tickLabelRotation,
@@ -51,7 +50,6 @@ export class Axis extends React.PureComponent<AxisProps> {
       tick.position,
       position,
       axisTicksDimensions,
-      tickLabelPadding,
     );
 
     const { maxLabelTextWidth, maxLabelTextHeight } = axisTicksDimensions;

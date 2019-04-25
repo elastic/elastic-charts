@@ -482,7 +482,6 @@ describe('Axis computational utils', () => {
     const tickSize = 10;
     const tickPadding = 5;
     const tickPosition = 0;
-    const tickLabelPadding = 10;
     let axisPosition = Position.Left;
 
     const unrotatedLabelProps = getTickLabelProps(
@@ -492,7 +491,6 @@ describe('Axis computational utils', () => {
       tickPosition,
       axisPosition,
       axis1Dims,
-      tickLabelPadding,
     );
 
     expect(unrotatedLabelProps).toEqual({
@@ -510,7 +508,6 @@ describe('Axis computational utils', () => {
       tickPosition,
       axisPosition,
       axis1Dims,
-      tickLabelPadding,
     );
 
     expect(rotatedLabelProps).toEqual({
@@ -528,7 +525,6 @@ describe('Axis computational utils', () => {
       tickPosition,
       axisPosition,
       axis1Dims,
-      tickLabelPadding,
     );
 
     expect(rightRotatedLabelProps).toEqual({
@@ -546,7 +542,6 @@ describe('Axis computational utils', () => {
       tickPosition,
       axisPosition,
       axis1Dims,
-      tickLabelPadding,
     );
 
     expect(rightUnrotatedLabelProps).toEqual({
@@ -563,7 +558,6 @@ describe('Axis computational utils', () => {
     const tickPadding = 5;
     const tickPosition = 0;
     let axisPosition = Position.Top;
-    const tickLabelPadding = 10;
 
     const unrotatedLabelProps = getTickLabelProps(
       tickLabelRotation,
@@ -572,7 +566,6 @@ describe('Axis computational utils', () => {
       tickPosition,
       axisPosition,
       axis1Dims,
-      tickLabelPadding,
     );
 
     expect(unrotatedLabelProps).toEqual({
@@ -590,7 +583,6 @@ describe('Axis computational utils', () => {
       tickPosition,
       axisPosition,
       axis1Dims,
-      tickLabelPadding,
     );
 
     expect(rotatedLabelProps).toEqual({
@@ -608,7 +600,6 @@ describe('Axis computational utils', () => {
       tickPosition,
       axisPosition,
       axis1Dims,
-      tickLabelPadding,
     );
 
     expect(bottomRotatedLabelProps).toEqual({
@@ -626,7 +617,6 @@ describe('Axis computational utils', () => {
       tickPosition,
       axisPosition,
       axis1Dims,
-      tickLabelPadding,
     );
 
     expect(bottomUnrotatedLabelProps).toEqual({

@@ -91,7 +91,7 @@ export const LIGHT_THEME: Theme = {
       fontFamily: `'Open Sans', Helvetica, Arial, sans-serif`,
       fontStyle: 'normal',
       fill: 'gray',
-      padding: 0,
+      padding: 1,
     },
     tickLineStyle: {
       stroke: 'gray',
