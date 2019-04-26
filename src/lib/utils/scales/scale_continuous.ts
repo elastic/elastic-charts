@@ -86,7 +86,7 @@ export class ScaleContinuous implements Scale {
     domain: any[],
     range: [number, number],
     /**
-     * The desidered bandwidth for a linea band scale.
+     * The desidered bandwidth for a linear band scale.
      * @default 0
      */
     bandwidth: number = 0,
@@ -98,7 +98,7 @@ export class ScaleContinuous implements Scale {
     /**
      * A time zone identifier. Can be any IANA zone supported by he host environment,
      * or a fixed-offset name of the form 'utc+3', or the strings 'local' or 'utc'.
-     * @default utc
+     * @default 'utc'
      */
     timeZone: string = 'utc',
     /**
