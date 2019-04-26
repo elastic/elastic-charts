@@ -1,4 +1,4 @@
-import '@elastic/eui/dist/eui_theme_dark.css';
+import '@elastic/eui/dist/eui_theme_light.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import '../dist/style.css';

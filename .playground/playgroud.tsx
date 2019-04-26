@@ -14,24 +14,30 @@ import {
 
 export class Playground extends React.Component {
   render() {
-    const data = [[1555819200000, 10], [1555862400000, 20], [1555905600000, 15]];
+    const data = [
+      [1555819200000, 111],
+      [1555840800000, 90],
+      [1555862400000, 20],
+      [1555884000000, 210],
+      [1555905600000, 88],
+    ];
     return (
-      <Chart size={[800, 300]} renderer="canvas">
+      <Chart>
         <Settings showLegend={true} legendPosition={Position.Right} />
         <Axis
-          id={getAxisId('bottom')}
+          id={getAxisId('timestamp')}
+          title="timestamp"
           position={Position.Bottom}
-          tickFormat={niceTimeFormatter([1553861780116, 1556021780116])}
+          tickFormat={niceTimeFormatter([1555819200000, 1555905600000])}
         />
-        <Axis id={getAxisId('left')} title={'left'} position={Position.Left} />
+        <Axis id={getAxisId('count')} title="count" position={Position.Left} />
         <LineSeries
-          id={getSpecId('line1')}
+          id={getSpecId('dataset A')}
           xScaleType={ScaleType.Time}
           yScaleType={ScaleType.Linear}
           data={data}
           xAccessor={0}
           yAccessors={[1]}
-          timeZone="America/New_York"
         />
       </Chart>
     );
