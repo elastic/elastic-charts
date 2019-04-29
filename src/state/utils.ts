@@ -158,6 +158,7 @@ export function computeSeriesGeometries(
   chartColors: ColorConfig,
   chartDims: Dimensions,
   chartRotation: Rotation,
+  barsPadding?: number,
 ): {
   scales: {
     xScale: Scale;
@@ -181,7 +182,7 @@ export function computeSeriesGeometries(
   const { stackedBarsInCluster, totalBarsInCluster } = countBarsInCluster(stacked, nonStacked);
 
   // compute scales
-  const xScale = computeXScale(xDomain, totalBarsInCluster, 0, width);
+  const xScale = computeXScale(xDomain, totalBarsInCluster, 0, width, barsPadding);
   const yScales = computeYScales(yDomain, height, 0);
 
   // compute colors
@@ -225,9 +226,11 @@ export function computeSeriesGeometries(
     lines.push(...geometries.lines);
     bars.push(...geometries.bars);
     points.push(...geometries.points);
-
+    stackedGeometriesIndex = mergeGeometriesIndexes(
+      stackedGeometriesIndex,
+      geometries.geometriesIndex,
+    );
     // update counts
-    stackedGeometriesIndex = geometries.geometriesIndex;
     geometriesCounts.points += geometries.geometriesCounts.points;
     geometriesCounts.bars += geometries.geometriesCounts.bars;
     geometriesCounts.areas += geometries.geometriesCounts.areas;
@@ -257,8 +260,11 @@ export function computeSeriesGeometries(
     lines.push(...geometries.lines);
     bars.push(...geometries.bars);
     points.push(...geometries.points);
-    nonStackedGeometriesIndex = geometries.geometriesIndex;
 
+    nonStackedGeometriesIndex = mergeGeometriesIndexes(
+      nonStackedGeometriesIndex,
+      geometries.geometriesIndex,
+    );
     // update counts
     geometriesCounts.points += geometries.geometriesCounts.points;
     geometriesCounts.bars += geometries.geometriesCounts.bars;
@@ -331,7 +337,16 @@ export function renderGeometries(
       case 'bar':
         const shift = isStacked ? indexOffset : indexOffset + i;
         const barSeriesStyle = spec.barSeriesStyle;
-        const renderedBars = renderBars(shift, ds.data, xScale, yScale, color, ds.specId, ds.key, barSeriesStyle);
+        const renderedBars = renderBars(
+          shift,
+          ds.data,
+          xScale,
+          yScale,
+          color,
+          ds.specId,
+          ds.key,
+          barSeriesStyle,
+        );
         barGeometriesIndex = mergeGeometriesIndexes(
           barGeometriesIndex,
           renderedBars.indexedGeometries,
@@ -480,6 +495,12 @@ export function computeBrushExtent(
   };
 }
 
+/**
+ * Merge multiple geometry indexes maps together.
+ * @param iterables a set of maps to be merged
+ * @returns a new Map where each element with the same key are concatenated on a single
+ * IndexedGemoetry array for that key
+ */
 export function mergeGeometriesIndexes(...iterables: Array<Map<any, IndexedGeometry[]>>) {
   const geometriesIndex: Map<any, IndexedGeometry[]> = new Map();
 
