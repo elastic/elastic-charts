@@ -440,6 +440,8 @@ storiesOf('Annotations', module)
       details: 'annotation 3',
     }];
 
+    const zIndex = number('annotation zIndex', 0);
+
     const chartRotation = select<Rotation>(
       'chartRotation',
       {
@@ -493,6 +495,7 @@ storiesOf('Annotations', module)
           annotationId={getAnnotationId('rect')}
           style={style}
           renderTooltip={renderTooltip}
+          zIndex={zIndex}
         />
         <Axis
           id={getAxisId('bottom')}

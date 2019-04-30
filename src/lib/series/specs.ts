@@ -52,10 +52,6 @@ export interface SeriesSpec {
   hideInLegend?: boolean;
   /** Index per series to sort by */
   sortIndex?: number;
-  /** z-index of the series relative to other elements in the chart
-   * @default 0
-   */
-  zIndex?: number;
 }
 
 export type CustomSeriesColorsMap = Map<DataSeriesColorsValues, string>;
