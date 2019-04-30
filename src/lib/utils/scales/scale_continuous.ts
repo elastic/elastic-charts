@@ -183,6 +183,9 @@ export class ScaleContinuous implements Scale {
       }
       return prevValue1;
     }
+    if (leftIndex === data.length) {
+      return data[leftIndex - 1];
+    }
     const nextValue = data[leftIndex];
     const prevValue = data[leftIndex - 1];
     const nextDiff = Math.abs(nextValue - invertedValue);
