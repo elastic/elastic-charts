@@ -384,8 +384,8 @@ export function computeRectAnnotationDimensions(
       y1 = yDomain[0];
     }
 
-    const x0Scaled = scaleAndValidateDatum(x0, xScale);
-    const x1Scaled = scaleAndValidateDatum(x1, xScale);
+    let x0Scaled = scaleAndValidateDatum(x0, xScale);
+    let x1Scaled = scaleAndValidateDatum(x1, xScale);
     const y0Scaled = scaleAndValidateDatum(y0, yScale);
     const y1Scaled = scaleAndValidateDatum(y1, yScale);
 
@@ -393,6 +393,14 @@ export function computeRectAnnotationDimensions(
     if ([x0Scaled, x1Scaled, y0Scaled, y1Scaled].includes(null)) {
       return;
     }
+
+    let xOffset = 0;
+    if (xScale.bandwidth > 0) {
+      const xBand = xScale.bandwidth / (1 - xScale.barsPadding);
+      xOffset = (xBand - xScale.bandwidth) / 2;
+    }
+    x0Scaled = x0Scaled - xOffset;
+    x1Scaled = x1Scaled - xOffset;
 
     const minX = Math.min(x0Scaled, x1Scaled);
     const minY = Math.min(y0Scaled, y1Scaled);
