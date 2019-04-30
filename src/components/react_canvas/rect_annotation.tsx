@@ -30,10 +30,10 @@ export class RectAnnotation extends React.PureComponent<RectAnnotationProps> {
   }
 
   private renderAnnotation = () => {
-    const { chartDimensions, rects } = this.props;
+    const { rects } = this.props;
 
     return (
-      <Group x={chartDimensions.left} y={chartDimensions.top}>
+      <Group>
         {rects.map(this.renderAnnotationRect)}
       </Group>
     );

@@ -28,10 +28,10 @@ export class LineAnnotation extends React.PureComponent<LineAnnotationProps> {
   }
 
   private renderAnnotation = () => {
-    const { chartDimensions, lines } = this.props;
+    const { lines } = this.props;
 
     return (
-      <Group x={chartDimensions.left} y={chartDimensions.top}>
+      <Group>
         {lines.map(this.renderAnnotationLine)}
       </Group>
     );

@@ -269,6 +269,13 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
     }));
   }
 
+  // sortElements() {
+  //   const bars = this.renderBarSeries();
+  //   const areas = this.renderAreaSeries();
+  //   const lines = this.renderLineSeries();
+  //   const annotations = this.renderAnnotations();
+  // }
+
   render() {
     const { initialized, debug } = this.props.chartStore!;
     if (!initialized.get()) {
@@ -357,7 +364,9 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
             {this.renderBarSeries()}
             {this.renderAreaSeries()}
             {this.renderLineSeries()}
+            {this.renderAnnotations()}
           </Layer>
+
           <Layer hitGraphEnabled={false} listening={false}>
             {debug && this.renderDebugChartBorders()}
           </Layer>
@@ -369,10 +378,6 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
 
           <Layer hitGraphEnabled={false} listening={false}>
             {this.renderAxes()}
-          </Layer>
-
-          <Layer hitGraphEnabled={false} listening={false} {...layerClippings}>
-            {this.renderAnnotations()}
           </Layer>
         </Stage>
       </div>

@@ -288,8 +288,8 @@ storiesOf('Annotations', module)
   .add('[rect] basic annotation (bar)', () => {
     const dataValues = [{
       coordinates: {
-        x0: 0.5,
-        x1: 1.5,
+        x0: 0,
+        x1: 1,
         y0: 0,
         y1: 7,
       },
