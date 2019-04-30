@@ -1207,8 +1207,6 @@ describe('annotation utils', () => {
 
     const noYScale = computeRectAnnotationDimensions(
       annotationRectangle,
-      chartDimensions,
-      0,
       yScales,
       xScale,
     );
@@ -1233,8 +1231,6 @@ describe('annotation utils', () => {
 
     const skippedInvalid = computeRectAnnotationDimensions(
       annotationRectangle,
-      chartDimensions,
-      0,
       yScales,
       xScale,
     );
@@ -1261,8 +1257,6 @@ describe('annotation utils', () => {
 
     const dimensions = computeRectAnnotationDimensions(
       annotationRectangle,
-      chartDimensions,
-      0,
       yScales,
       xScale,
     );
@@ -1291,8 +1285,6 @@ describe('annotation utils', () => {
 
     const unrotated = computeRectAnnotationDimensions(
       annotationRectangle,
-      chartDimensions,
-      0,
       yScales,
       xScale,
     );
@@ -1314,151 +1306,11 @@ describe('annotation utils', () => {
 
     const unrotated = computeRectAnnotationDimensions(
       annotationRectangle,
-      chartDimensions,
-      0,
       yScales,
       xScale,
     );
 
     expect(unrotated).toEqual([{ rect: { x: 0, y: 0, width: 25, height: 20 } }]);
-  });
-  test('should compute rectangle annotation dimensions continuous (180 deg rotation)', () => {
-    const yScales: Map<GroupId, Scale> = new Map();
-    yScales.set(groupId, continuousScale);
-
-    const xScale: Scale = continuousScale;
-
-    const annotationRectangle: RectAnnotationSpec = {
-      annotationId: getAnnotationId('rect'),
-      groupId,
-      annotationType: 'rectangle',
-      dataValues: [{ coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } }],
-    };
-
-    const rotated = computeRectAnnotationDimensions(
-      annotationRectangle,
-      chartDimensions,
-      180,
-      yScales,
-      xScale,
-    );
-
-    expect(rotated).toEqual([{ rect: { x: 0, y: 30, width: -10, height: 20 } }]);
-  });
-  test('should compute rectangle annotation dimensions ordinal (180 deg rotation)', () => {
-    const yScales: Map<GroupId, Scale> = new Map();
-    yScales.set(groupId, continuousScale);
-
-    const xScale: Scale = ordinalScale;
-
-    const annotationRectangle: RectAnnotationSpec = {
-      annotationId: getAnnotationId('rect'),
-      groupId,
-      annotationType: 'rectangle',
-      dataValues: [{ coordinates: { x0: 'a', x1: 'b', y0: 0, y1: 2 } }],
-    };
-
-    const unrotated = computeRectAnnotationDimensions(
-      annotationRectangle,
-      chartDimensions,
-      180,
-      yScales,
-      xScale,
-    );
-
-    expect(unrotated).toEqual([{ rect: { x: 10, y: 0, width: -25, height: 20 } }]);
-  });
-  test('should compute rectangle annotation dimensions continuous (90 deg rotation)', () => {
-    const yScales: Map<GroupId, Scale> = new Map();
-    yScales.set(groupId, continuousScale);
-
-    const xScale: Scale = continuousScale;
-
-    const annotationRectangle: RectAnnotationSpec = {
-      annotationId: getAnnotationId('rect'),
-      groupId,
-      annotationType: 'rectangle',
-      dataValues: [{ coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } }],
-    };
-
-    const unrotated = computeRectAnnotationDimensions(
-      annotationRectangle,
-      chartDimensions,
-      90,
-      yScales,
-      xScale,
-    );
-
-    expect(unrotated).toEqual([{ rect: { x: 30, y: 10, width: 20, height: 10 } }]);
-  });
-  test('should compute rectangle annotation dimensions ordinal (90 deg rotation)', () => {
-    const yScales: Map<GroupId, Scale> = new Map();
-    yScales.set(groupId, continuousScale);
-
-    const xScale: Scale = ordinalScale;
-
-    const annotationRectangle: RectAnnotationSpec = {
-      annotationId: getAnnotationId('rect'),
-      groupId,
-      annotationType: 'rectangle',
-      dataValues: [{ coordinates: { x0: 'a', x1: 'b', y0: 0, y1: 2 } }],
-    };
-
-    const unrotated = computeRectAnnotationDimensions(
-      annotationRectangle,
-      chartDimensions,
-      90,
-      yScales,
-      xScale,
-    );
-
-    expect(unrotated).toEqual([{ rect: { x: 0, y: 0, width: 20, height: 25 } }]);
-  });
-  test('should compute rectangle annotation dimensions continuous (-90 deg rotation)', () => {
-    const yScales: Map<GroupId, Scale> = new Map();
-    yScales.set(groupId, continuousScale);
-
-    const xScale: Scale = continuousScale;
-
-    const annotationRectangle: RectAnnotationSpec = {
-      annotationId: getAnnotationId('rect'),
-      groupId,
-      annotationType: 'rectangle',
-      dataValues: [{ coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } }],
-    };
-
-    const unrotated = computeRectAnnotationDimensions(
-      annotationRectangle,
-      chartDimensions,
-      -90,
-      yScales,
-      xScale,
-    );
-
-    expect(unrotated).toEqual([{ rect: { x: 30, y: 10, width: 20, height: -10 } }]);
-  });
-  test('should compute rectangle annotation dimensions ordinal (-90 deg rotation)', () => {
-    const yScales: Map<GroupId, Scale> = new Map();
-    yScales.set(groupId, continuousScale);
-
-    const xScale: Scale = ordinalScale;
-
-    const annotationRectangle: RectAnnotationSpec = {
-      annotationId: getAnnotationId('rect'),
-      groupId,
-      annotationType: 'rectangle',
-      dataValues: [{ coordinates: { x0: 'a', x1: 'b', y0: 0, y1: 2 } }],
-    };
-
-    const unrotated = computeRectAnnotationDimensions(
-      annotationRectangle,
-      chartDimensions,
-      -90,
-      yScales,
-      xScale,
-    );
-
-    expect(unrotated).toEqual([{ rect: { x: 0, y: 20, width: 20, height: -25 } }]);
   });
   test('should validate scaled dataValues', () => {
     expect(scaleAndValidateDatum('', ordinalScale)).toBe(null);

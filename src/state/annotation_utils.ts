@@ -338,8 +338,6 @@ export function scaleAndValidateDatum(dataValue: any, scale: Scale): any | null 
 
 export function computeRectAnnotationDimensions(
   annotationSpec: RectAnnotationSpec,
-  chartDimensions: Dimensions,
-  chartRotation: Rotation,
   yScales: Map<GroupId, Scale>,
   xScale: Scale,
 ): AnnotationRectProps[] | null {
@@ -408,19 +406,17 @@ export function computeRectAnnotationDimensions(
     const deltaX = Math.abs(x0Scaled - x1Scaled);
     const deltaY = Math.abs(y0Scaled - y1Scaled);
 
-    const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
+    const xOrigin = minX;
+    const yOrigin = minY;
 
-    const xOrigin = isHorizontalChartRotation ? minX : minY;
-    const yOrigin = isHorizontalChartRotation ? minY : minX;
-
-    const width = isHorizontalChartRotation ? deltaX : deltaY;
-    const height = isHorizontalChartRotation ? deltaY : deltaX;
+    const width = deltaX;
+    const height = deltaY;
 
     const rectDimensions = {
-      x: chartRotation === 180 ? chartDimensions.width - xOrigin : xOrigin,
-      y: chartRotation === -90 ? chartDimensions.height - yOrigin : yOrigin,
-      width: chartRotation === 180 ? -width : width,
-      height: chartRotation === -90 ? -height : height,
+      x: xOrigin,
+      y: yOrigin,
+      width,
+      height,
     };
 
     rectsProps.push({
@@ -479,8 +475,6 @@ export function computeAnnotationDimensions(
     } else if (isRectAnnotation(annotationSpec)) {
       const dimensions = computeRectAnnotationDimensions(
         annotationSpec,
-        chartDimensions,
-        chartRotation,
         yScales,
         xScale,
       );
