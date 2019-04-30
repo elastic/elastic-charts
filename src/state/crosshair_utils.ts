@@ -67,6 +67,7 @@ export function getCursorBandPosition(
   cursorPosition: { x: number; y: number },
   snapEnabled: boolean,
   xScale: Scale,
+  data: any[],
   totalBarsInCluster?: number,
 ): Dimensions | undefined {
   const { top, left, width, height } = chartDimensions;
@@ -76,7 +77,7 @@ export function getCursorBandPosition(
   }
   const isHorizontalRotated = isHorizontalRotation(chartRotation);
   const snappedPosition = getSnapPosition(
-    xScale.invertWithStep(isHorizontalRotated ? x : y),
+    xScale.invertWithStep(isHorizontalRotated ? x : y, data),
     xScale,
     totalBarsInCluster,
   );

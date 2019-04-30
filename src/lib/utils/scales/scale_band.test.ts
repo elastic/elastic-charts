@@ -1,6 +1,6 @@
 import { ScaleBand } from './scale_band';
 
-describe.only('Scale Band', () => {
+describe('Scale Band', () => {
   it('shall clone domain and range arrays', () => {
     const domain = [0, 1, 2, 3];
     const range = [0, 100] as [number, number];
