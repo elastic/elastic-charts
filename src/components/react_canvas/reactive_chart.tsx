@@ -76,6 +76,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
     const highlightedLegendItem = this.getHighlightedLegendItem();
 
     const element = <BarGeometries
+      key={'bar-geometries'}
       animated={canDataBeAnimated}
       bars={geometries.bars}
       style={chartTheme.barSeriesStyle}
@@ -97,6 +98,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
     const highlightedLegendItem = this.getHighlightedLegendItem();
 
     const element = <LineGeometries
+      key={'line-geometries'}
       animated={canDataBeAnimated}
       lines={geometries.lines}
       style={chartTheme.lineSeriesStyle}
@@ -118,6 +120,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
     const highlightedLegendItem = this.getHighlightedLegendItem();
 
     const element = <AreaGeometries
+      key={'area-geometries'}
       animated={canDataBeAnimated}
       areas={geometries.areas}
       style={chartTheme.areaSeriesStyle}
