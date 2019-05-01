@@ -70,6 +70,7 @@ storiesOf('Bar Chart', module)
       },
     };
 
+    const debug = boolean('debug', true);
     const theme = mergeWithDefaultTheme(barStyle, LIGHT_THEME);
 
     const dg = new DataGenerator();
@@ -77,7 +78,7 @@ storiesOf('Bar Chart', module)
 
     return (
       <Chart renderer="canvas" className={'story-chart'}>
-        <Settings theme={theme} />
+        <Settings theme={theme} debug={debug} />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}

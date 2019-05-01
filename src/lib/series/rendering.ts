@@ -1,5 +1,6 @@
 import { area, line } from 'd3-shape';
 import { mutableIndexedGeometryMapUpsert } from '../../state/utils';
+import { CanvasTextBBoxCalculator } from '../axes/canvas_text_bbox_calculator';
 import {
   AreaSeriesStyle,
   AreaStyle,
@@ -54,7 +55,10 @@ export interface BarGeometry {
   width: number;
   height: number;
   color: string;
-  displayValue?: any;
+  displayValue?: {
+    text: any;
+    width: number;
+  };
   geometryId: GeometryId;
   value: GeometryValue;
   seriesStyle?: CustomBarSeriesStyle;
@@ -186,6 +190,8 @@ export function renderBars(
   const xDomain = xScale.domain;
   const xScaleType = xScale.type;
   const barGeometries: BarGeometry[] = [];
+  const bboxCalculator = new CanvasTextBBoxCalculator();
+
   dataset.forEach((datum) => {
     const { y0, y1, initialY1 } = datum;
     // don't create a bar if the initialY1 value is null.
@@ -218,9 +224,17 @@ export function renderBars(
     const formattedDisplayValue = valueFormatter ? valueFormatter(initialY1) : undefined;
 
     // only show displayValue for even bars if showOverlappingValue is false
-    const displayValue = alternatingValueLabel ?
+    const displayValueText = alternatingValueLabel ?
       (barGeometries.length % 2 === 0 ? formattedDisplayValue : undefined)
       : formattedDisplayValue;
+
+    const fontSize = seriesStyle && seriesStyle.displayValue ? seriesStyle.displayValue.fontSize : undefined;
+    const fontFamily = seriesStyle && seriesStyle.displayValue ? seriesStyle.displayValue.fontFamily : undefined;
+    const displayValueWidth = bboxCalculator.compute(displayValueText || '', fontSize, fontFamily).getOrElse({
+      width: 0,
+      height: 0,
+    }).width;
+    const displayValue = displayValueText != null ? { text: displayValueText, width: displayValueWidth } : undefined;
 
     const barGeometry: BarGeometry = {
       displayValue,
@@ -243,6 +257,9 @@ export function renderBars(
     mutableIndexedGeometryMapUpsert(indexedGeometries, datum.x, barGeometry);
     barGeometries.push(barGeometry);
   });
+
+  bboxCalculator.destroy();
+
   return {
     barGeometries,
     indexedGeometries,

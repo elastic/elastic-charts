@@ -156,24 +156,26 @@ export function buildBarProps({
 export function buildBarValueProps({
   x,
   y,
-  width,
-  height,
+  barHeight,
   displayValueStyle,
+  displayValue,
 }: {
   x: number;
   y: number;
-  width: number;
-  height: number;
+  barHeight: number;
   displayValueStyle: TextStyle;
+  displayValue: { text: string; width: number; };
 }): TextStyle & {
   x: number;
   y: number;
-  width: number;
   align: string;
+  text: string;
+  width: number;
+  height: number;
 } {
   const { fontSize, padding } = displayValueStyle;
   const displayValueTextHeight = fontSize + padding;
-  const displayValueY = height >= displayValueTextHeight ? y : y - displayValueTextHeight;
+  const displayValueY = barHeight >= displayValueTextHeight ? y : y - displayValueTextHeight;
 
   // if padding is less than 0, then text will appear above bar
   // this checks if there is enough space above the bar to render the value
@@ -183,10 +185,12 @@ export function buildBarValueProps({
   return {
     x,
     y: displayValueY,
-    width,
     align: 'center',
     ...displayValueStyle,
     padding: textPadding,
+    text: displayValue.text,
+    width: displayValue.width,
+    height: fontSize,
   };
 }
 

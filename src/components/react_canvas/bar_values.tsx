@@ -1,5 +1,5 @@
 import React from 'react';
-import { Group, Text } from 'react-konva';
+import { Group, Rect, Text } from 'react-konva';
 import { BarGeometry } from '../../lib/series/rendering';
 import { DisplayValueStyle } from '../../lib/themes/theme';
 import { Dimensions } from '../../lib/utils/dimensions';
@@ -24,19 +24,35 @@ export class BarValues extends React.PureComponent<BarValuesProps> {
   }
 
   private renderBarValues = () => {
-    const { bars, displayValueStyle } = this.props;
+    const { bars, displayValueStyle, debug } = this.props;
     return bars.map((bar, index) => {
-      const { displayValue, x, y, width, height } = bar;
+      const { displayValue, x, y, height } = bar;
+      if (!displayValue) {
+        return;
+      }
+
       const key = `bar-value-${index}`;
       const displayValueProps = buildBarValueProps({
         x,
         y,
-        width,
-        height,
+        barHeight: height,
         displayValueStyle,
+        displayValue,
       });
 
-      return displayValue && <Text text={displayValue} {...displayValueProps} key={key} />;
+      const debugProps = {
+        ...displayValueProps,
+        stroke: 'violet',
+        strokeWidth: 1,
+        fill: 'transparent',
+      };
+
+      return (
+        <React.Fragment>
+          {debug && <Rect {...debugProps} />}
+          {displayValue && <Text {...displayValueProps} key={key} />}
+        </React.Fragment>
+      );
     });
   }
 }
