@@ -1328,86 +1328,92 @@ describe('annotation utils', () => {
     const withinBoundsReverseYScale = { startX: 2, endX: 4, startY: 5, endY: 3 };
 
     // chart rotation 0
-    expect(isWithinRectBounds(0, cursorPosition, outOfXBounds)).toBe(false);
-    expect(isWithinRectBounds(0, cursorPosition, outOfYBounds)).toBe(false);
-    expect(isWithinRectBounds(0, cursorPosition, withinBounds)).toBe(true);
-    expect(isWithinRectBounds(0, cursorPosition, withinBoundsReverseXScale)).toBe(false);
-    expect(isWithinRectBounds(0, cursorPosition, withinBoundsReverseYScale)).toBe(false);
+    expect(isWithinRectBounds(cursorPosition, outOfXBounds)).toBe(false);
+    expect(isWithinRectBounds(cursorPosition, outOfYBounds)).toBe(false);
+    expect(isWithinRectBounds(cursorPosition, withinBounds)).toBe(true);
+    expect(isWithinRectBounds(cursorPosition, withinBoundsReverseXScale)).toBe(false);
+    expect(isWithinRectBounds(cursorPosition, withinBoundsReverseYScale)).toBe(false);
 
     // chart rotation 180
-    expect(isWithinRectBounds(180, cursorPosition, outOfXBounds)).toBe(false);
-    expect(isWithinRectBounds(180, cursorPosition, outOfYBounds)).toBe(false);
-    expect(isWithinRectBounds(180, cursorPosition, withinBounds)).toBe(false);
-    expect(isWithinRectBounds(180, cursorPosition, withinBoundsReverseXScale)).toBe(true);
-    expect(isWithinRectBounds(0, cursorPosition, withinBoundsReverseYScale)).toBe(false);
+    expect(isWithinRectBounds(cursorPosition, outOfXBounds)).toBe(false);
+    expect(isWithinRectBounds(cursorPosition, outOfYBounds)).toBe(false);
+    expect(isWithinRectBounds(cursorPosition, withinBounds)).toBe(true);
+    expect(isWithinRectBounds(cursorPosition, withinBoundsReverseXScale)).toBe(false);
+    expect(isWithinRectBounds(cursorPosition, withinBoundsReverseYScale)).toBe(false);
 
     // chart rotation 90
-    expect(isWithinRectBounds(90, cursorPosition, outOfXBounds)).toBe(false);
-    expect(isWithinRectBounds(90, cursorPosition, outOfYBounds)).toBe(false);
-    expect(isWithinRectBounds(90, cursorPosition, withinBounds)).toBe(true);
-    expect(isWithinRectBounds(0, cursorPosition, withinBoundsReverseXScale)).toBe(false);
-    expect(isWithinRectBounds(0, cursorPosition, withinBoundsReverseYScale)).toBe(false);
+    expect(isWithinRectBounds(cursorPosition, outOfXBounds)).toBe(false);
+    expect(isWithinRectBounds(cursorPosition, outOfYBounds)).toBe(false);
+    expect(isWithinRectBounds(cursorPosition, withinBounds)).toBe(true);
+    expect(isWithinRectBounds(cursorPosition, withinBoundsReverseXScale)).toBe(false);
+    expect(isWithinRectBounds(cursorPosition, withinBoundsReverseYScale)).toBe(false);
 
     // chart rotation -90
-    expect(isWithinRectBounds(-90, cursorPosition, outOfXBounds)).toBe(false);
-    expect(isWithinRectBounds(-90, cursorPosition, outOfYBounds)).toBe(false);
-    expect(isWithinRectBounds(-90, cursorPosition, withinBounds)).toBe(false);
-    expect(isWithinRectBounds(0, cursorPosition, withinBoundsReverseXScale)).toBe(false);
-    expect(isWithinRectBounds(-90, cursorPosition, withinBoundsReverseYScale)).toBe(true);
+    expect(isWithinRectBounds(cursorPosition, outOfXBounds)).toBe(false);
+    expect(isWithinRectBounds(cursorPosition, outOfYBounds)).toBe(false);
+    expect(isWithinRectBounds(cursorPosition, withinBounds)).toBe(true);
+    expect(isWithinRectBounds(cursorPosition, withinBoundsReverseXScale)).toBe(false);
+    expect(isWithinRectBounds(cursorPosition, withinBoundsReverseYScale)).toBe(false);
   });
   test('should determine if an annotation has a rightward tooltip based on cursor position', () => {
+    const cursor1 = { x: 8, y: 0 };
+    const cursor2 = { x: 0, y: 8 };
+
     // chart rotation 0
-    expect(isRightRectTooltip(0, 0, 10)).toBe(true);
-    expect(isRightRectTooltip(0, 8, 10)).toBe(false);
+    expect(isRightRectTooltip(0, cursor1, 10)).toBe(false);
+    expect(isRightRectTooltip(0, cursor2, 10)).toBe(true);
 
     // chart rotation 180
-    expect(isRightRectTooltip(180, 0, 10)).toBe(false);
-    expect(isRightRectTooltip(180, 8, 10)).toBe(true);
+    expect(isRightRectTooltip(180, cursor1, 10)).toBe(false);
+    expect(isRightRectTooltip(180, cursor2, 10)).toBe(true);
 
     // chart rotation 90
-    expect(isRightRectTooltip(90, 0, 10)).toBe(true);
-    expect(isRightRectTooltip(90, 8, 10)).toBe(false);
+    expect(isRightRectTooltip(90, cursor1, 10)).toBe(true);
+    expect(isRightRectTooltip(90, cursor2, 10)).toBe(false);
 
     // chart rotation -90
-    expect(isRightRectTooltip(-90, 0, 10)).toBe(true);
-    expect(isRightRectTooltip(-90, 8, 10)).toBe(false);
+    expect(isRightRectTooltip(-90, cursor1, 10)).toBe(false);
+    expect(isRightRectTooltip(-90, cursor2, 10)).toBe(true);
   });
   test('should determine if an annotation has a bottomward tooltip based on cursor position', () => {
+    const cursor1 = { x: 8, y: 0 };
+    const cursor2 = { x: 0, y: 8 };
+
     // chart rotation 0
-    expect(isBottomRectTooltip(0, 0, 10)).toBe(true);
-    expect(isBottomRectTooltip(0, 8, 10)).toBe(false);
+    expect(isBottomRectTooltip(0, cursor1, 10)).toBe(true);
+    expect(isBottomRectTooltip(0, cursor2, 10)).toBe(false);
 
     // chart rotation 180
-    expect(isBottomRectTooltip(180, 0, 10)).toBe(true);
-    expect(isBottomRectTooltip(180, 8, 10)).toBe(false);
+    expect(isBottomRectTooltip(180, cursor1, 10)).toBe(false);
+    expect(isBottomRectTooltip(180, cursor2, 10)).toBe(true);
 
     // chart rotation 90
-    expect(isBottomRectTooltip(90, 0, 10)).toBe(true);
-    expect(isBottomRectTooltip(90, 8, 10)).toBe(false);
+    expect(isBottomRectTooltip(90, cursor1, 10)).toBe(false);
+    expect(isBottomRectTooltip(90, cursor2, 10)).toBe(true);
 
     // chart rotation -90
-    expect(isBottomRectTooltip(-90, 0, 10)).toBe(false);
-    expect(isBottomRectTooltip(-90, 8, 10)).toBe(true);
+    expect(isBottomRectTooltip(-90, cursor1, 10)).toBe(false);
+    expect(isBottomRectTooltip(-90, cursor2, 10)).toBe(true);
   });
   test('should compute rect annotation tooltip left', () => {
-    const isHorizontalChartRotation = true;
     const isRightTooltip = true;
     const xPosition = { startX: 2, endX: 4 };
     const cursorX = 3;
+    const chartWidth = 10;
 
-    expect(computeRectTooltipLeft(isHorizontalChartRotation, isRightTooltip, xPosition, cursorX)).toBe(4);
-    expect(computeRectTooltipLeft(isHorizontalChartRotation, !isRightTooltip, xPosition, cursorX)).toBe(2);
-    expect(computeRectTooltipLeft(!isHorizontalChartRotation, isRightTooltip, xPosition, cursorX)).toBe(3);
+    expect(computeRectTooltipLeft(0, isRightTooltip, xPosition, cursorX, chartWidth)).toBe(4);
+    expect(computeRectTooltipLeft(180, !isRightTooltip, xPosition, cursorX, chartWidth)).toBe(8);
+    expect(computeRectTooltipLeft(90, isRightTooltip, xPosition, cursorX, chartWidth)).toBe(3);
   });
   test('should compute rect annotation tooltip top', () => {
-    const isHorizontalChartRotation = true;
     const isBottomTooltip = true;
-    const yPosition = { startY: 2, endY: 4 };
+    const xPosition = { startX: 2, endX: 4 };
     const cursorY = 3;
+    const chartHeight = 10;
 
-    expect(computeRectTooltipTop(isHorizontalChartRotation, isBottomTooltip, yPosition, cursorY)).toBe(3);
-    expect(computeRectTooltipTop(!isHorizontalChartRotation, isBottomTooltip, yPosition, cursorY)).toBe(4);
-    expect(computeRectTooltipTop(!isHorizontalChartRotation, !isBottomTooltip, yPosition, cursorY)).toBe(2);
+    expect(computeRectTooltipTop(0, isBottomTooltip, xPosition, cursorY, chartHeight)).toBe(3);
+    expect(computeRectTooltipTop(90, isBottomTooltip, xPosition, cursorY, chartHeight)).toBe(4);
+    expect(computeRectTooltipTop(-90, !isBottomTooltip, xPosition, cursorY, chartHeight)).toBe(8);
   });
   test('should compute rect annotation tooltip offset', () => {
     const isRightTooltip = true;

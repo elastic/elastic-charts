@@ -717,62 +717,66 @@ export function computeLineAnnotationTooltipState(
 }
 
 export function isWithinRectBounds(
-  chartRotation: Rotation,
   cursorPosition: Point,
   { startX, endX, startY, endY }:
     { startX: number; endX: number; startY: number; endY: number; },
 ): boolean {
-  const withinXBounds = chartRotation === 180 ?
-    cursorPosition.x > endX && cursorPosition.x < startX
-    : cursorPosition.x > startX && cursorPosition.x < endX;
-
-  const withinYBounds = chartRotation === -90 ?
-    cursorPosition.y > endY && cursorPosition.y < startY
-    : cursorPosition.y > startY && cursorPosition.y < endY;
+  const withinXBounds = cursorPosition.x > startX && cursorPosition.x < endX;
+  const withinYBounds = cursorPosition.y > startY && cursorPosition.y < endY;
 
   return withinXBounds && withinYBounds;
 }
 
 export function isRightRectTooltip(
   chartRotation: Rotation,
-  xPosition: number,
+  cursorPosition: Point,
   chartWidth: number,
 ) {
-  return chartRotation === 180 ?
+  const xPosition = isHorizontalRotation(chartRotation) ? cursorPosition.x : cursorPosition.y;
+
+  return chartRotation === -90 ?
     xPosition > chartWidth / 2
     : xPosition < chartWidth / 2;
 }
 
 export function isBottomRectTooltip(
   chartRotation: Rotation,
-  yPosition: number,
+  cursorPosition: Point,
   chartHeight: number,
 ) {
-  return chartRotation === -90 ?
+  const yPosition = isHorizontalRotation(chartRotation) ? cursorPosition.y : cursorPosition.x;
+  return (chartRotation === 180) ?
     yPosition > chartHeight / 2
     : yPosition < chartHeight / 2;
 }
 
 export function computeRectTooltipLeft(
-  isHorizontalChartRotation: boolean,
+  chartRotation: Rotation,
   isRightTooltip: boolean,
   { startX, endX }: { startX: number, endX: number },
   cursorX: number,
+  chartWidth: number,
 ): number {
+  const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
+  const horizontalLeft = isRightTooltip ? endX : startX;
   return isHorizontalChartRotation ?
-    (isRightTooltip ? endX : startX)
+    (chartRotation === 180 ? chartWidth - horizontalLeft : horizontalLeft)
     : cursorX;
 }
 
 export function computeRectTooltipTop(
-  isHorizontalChartRotation: boolean,
+  chartRotation: Rotation,
   isBottomTooltip: boolean,
-  { startY, endY }: { startY: number, endY: number },
+  { startX, endX }: { startX: number, endX: number },
   cursorY: number,
+  chartHeight: number,
 ): number {
+  const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
+  const verticalTop = isBottomTooltip ? endX : startX;
+
   return isHorizontalChartRotation ?
     cursorY
-    : (isBottomTooltip ? endY : startY);
+    : (chartRotation === -90) ? chartHeight - verticalTop : verticalTop;
 }
 
 export function computeRectTooltipOffset(
@@ -791,12 +795,27 @@ export function computeRectTooltipOffset(
 }
 
 export function computeRectAnnotationTooltipState(
-  cursorPosition: Point,
+  rawCursorPosition: Point,
   annotationRects: AnnotationRectProps[],
   chartRotation: Rotation,
   chartDimensions: Dimensions,
   renderTooltip?: (position: { transform: string; top: number; left: number; }, details?: string) => JSX.Element,
 ): AnnotationTooltipState {
+  const cursorPosition = { ...rawCursorPosition };
+  switch (chartRotation) {
+    case 90:
+      cursorPosition.x = rawCursorPosition.y;
+      cursorPosition.y = rawCursorPosition.x;
+      break;
+    case -90:
+      cursorPosition.x = chartDimensions.height - rawCursorPosition.y;
+      cursorPosition.y = chartDimensions.width - rawCursorPosition.x;
+      break;
+    case 180:
+      cursorPosition.x = chartDimensions.width - rawCursorPosition.x;
+      cursorPosition.y = chartDimensions.height - rawCursorPosition.y;
+      break;
+  }
 
   const annotationTooltipState: AnnotationTooltipState = {
     isVisible: false,
@@ -804,9 +823,8 @@ export function computeRectAnnotationTooltipState(
     annotationType: AnnotationTypes.Rectangle,
   };
 
-  const isRightTooltip = isRightRectTooltip(chartRotation, cursorPosition.x, chartDimensions.width);
-  const isBottomTooltip = isBottomRectTooltip(chartRotation, cursorPosition.y, chartDimensions.height);
-  const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
+  const isRightTooltip = isRightRectTooltip(chartRotation, cursorPosition, chartDimensions.width);
+  const isBottomTooltip = isBottomRectTooltip(chartRotation, cursorPosition, chartDimensions.height);
 
   annotationRects.forEach((rectProps: AnnotationRectProps) => {
     const { rect, details } = rectProps;
@@ -817,7 +835,6 @@ export function computeRectAnnotationTooltipState(
     const endY = startY + rect.height;
 
     const isWithinBounds = isWithinRectBounds(
-      chartRotation,
       cursorPosition,
       { startX, endX, startY, endY },
     );
@@ -827,16 +844,18 @@ export function computeRectAnnotationTooltipState(
       annotationTooltipState.details = details;
 
       const tooltipLeft = computeRectTooltipLeft(
-        isHorizontalChartRotation,
+        chartRotation,
         isRightTooltip,
         { startX, endX },
-        cursorPosition.x,
+        rawCursorPosition.x,
+        chartDimensions.width,
       );
       const tooltipTop = computeRectTooltipTop(
-        isHorizontalChartRotation,
+        chartRotation,
         isBottomTooltip,
-        { startY, endY },
-        cursorPosition.y,
+        { startX, endX },
+        rawCursorPosition.y,
+        chartDimensions.height,
       );
 
       const { offsetLeft, offsetTop } = computeRectTooltipOffset(isRightTooltip, isBottomTooltip, chartRotation);
