@@ -135,7 +135,7 @@ storiesOf('Annotations', module)
     );
   })
   .add('[line] basic yDomain', () => {
-    const data = array('data values', [3.5, 7.2]);
+    const data = array('data values', [1.5, 7.2]);
     const dataValues = generateAnnotationData(data);
 
     const chartRotation = select<Rotation>(
@@ -243,7 +243,16 @@ storiesOf('Annotations', module)
       },
     };
 
-    const chartRotation: Rotation = 0;
+    const chartRotation = select<Rotation>(
+      'chartRotation',
+      {
+        '0 deg': 0,
+        '90 deg': 90,
+        '-90 deg': -90,
+        '180 deg': 180,
+      },
+      0,
+    );
 
     const axisPosition = Position.Bottom;
 

@@ -143,6 +143,7 @@ describe('annotation marker', () => {
       cursorPosition1,
       offset,
       horizontalChartRotation,
+      chartDimensions,
       domainType,
       marker,
     );
@@ -155,6 +156,7 @@ describe('annotation marker', () => {
       cursorPosition2,
       offset,
       horizontalChartRotation,
+      chartDimensions,
       domainType,
       marker,
     );
@@ -167,6 +169,7 @@ describe('annotation marker', () => {
       cursorPosition1,
       offset,
       horizontalChartRotation,
+      chartDimensions,
       domainType,
       marker,
     );
@@ -179,6 +182,7 @@ describe('annotation marker', () => {
       cursorPosition1,
       offset,
       verticalChartRotation,
+      chartDimensions,
       domainType,
       marker,
     );
@@ -209,6 +213,7 @@ describe('annotation marker', () => {
       cursorPosition1,
       offset,
       horizontalChartRotation,
+      chartDimensions,
       domainType,
       marker,
     );
@@ -221,6 +226,7 @@ describe('annotation marker', () => {
       cursorPosition2,
       offset,
       horizontalChartRotation,
+      chartDimensions,
       domainType,
       marker,
     );
@@ -233,6 +239,7 @@ describe('annotation marker', () => {
       cursorPosition1,
       offset,
       horizontalChartRotation,
+      chartDimensions,
       domainType,
       marker,
     );
@@ -245,6 +252,7 @@ describe('annotation marker', () => {
       cursorPosition1,
       offset,
       verticalChartRotation,
+      chartDimensions,
       domainType,
       marker,
     );

@@ -276,7 +276,7 @@ describe('annotation utils', () => {
     );
     const expectedDimensions = [
       {
-        position: [20, 0, 20, 20 + DEFAULT_LINE_OVERFLOW],
+        position: [0, 20, 20 + DEFAULT_LINE_OVERFLOW, 20],
         details: { detailsText: 'foo', headerText: '2' },
         tooltipLinePosition: [20, 0, 20, 20],
       },
@@ -401,7 +401,7 @@ describe('annotation utils', () => {
     );
     const expectedDimensions = [
       {
-        position: [20, DEFAULT_LINE_OVERFLOW, 20, 20],
+        position: [20, 0, 20, 20],
         details: { detailsText: 'foo', headerText: '2' },
         tooltipLinePosition: [20, 0, 20, 20],
       },
@@ -435,7 +435,7 @@ describe('annotation utils', () => {
     );
     const expectedDimensions = [
       {
-        position: [-DEFAULT_LINE_OVERFLOW, 12.5, 10, 12.5],
+        position: [12.5, -DEFAULT_LINE_OVERFLOW, 12.5, 10],
         details: { detailsText: 'foo', headerText: 'a' },
         tooltipLinePosition: [0, 12.5, 10, 12.5],
       },
@@ -469,7 +469,7 @@ describe('annotation utils', () => {
     );
     const expectedDimensions = [
       {
-        position: [-DEFAULT_LINE_OVERFLOW, 20, 10, 20],
+        position: [20, -DEFAULT_LINE_OVERFLOW, 20, 10],
         details: { detailsText: 'foo', headerText: '2' },
         tooltipLinePosition: [0, 20, 10, 20],
       },
@@ -503,7 +503,7 @@ describe('annotation utils', () => {
         Position.Left,
       );
       const expectedDimensions = [{
-        position: [-DEFAULT_LINE_OVERFLOW, 0, 10, 0],
+        position: [20, -DEFAULT_LINE_OVERFLOW, 20, 10],
         details: { detailsText: 'foo', headerText: '2' },
         tooltipLinePosition: [0, 0, 10, 0],
       },
@@ -537,9 +537,9 @@ describe('annotation utils', () => {
     );
     const expectedDimensions = [
       {
-        position: [-10, -DEFAULT_LINE_OVERFLOW, -10, 20],
+        position: [20, -DEFAULT_LINE_OVERFLOW, 20, 20],
         details: { detailsText: 'foo', headerText: '2' },
-        tooltipLinePosition: [-10, 0, -10, 20],
+        tooltipLinePosition: [20, 0, 20, 20],
       },
     ];
     expect(dimensions).toEqual(expectedDimensions);
@@ -570,9 +570,9 @@ describe('annotation utils', () => {
         Position.Bottom,
       );
       const expectedDimensions = [{
-        position: [-10, DEFAULT_LINE_OVERFLOW, -10, 20],
+        position: [20, DEFAULT_LINE_OVERFLOW, 20, 20],
         details: { detailsText: 'foo', headerText: '2' },
-        tooltipLinePosition: [-10, DEFAULT_LINE_OVERFLOW, -10, 20],
+        tooltipLinePosition: [20, DEFAULT_LINE_OVERFLOW, 20, 20],
       },
       ];
       expect(dimensions).toEqual(expectedDimensions);
@@ -744,6 +744,7 @@ describe('annotation utils', () => {
       cursorPosition1,
       offset,
       horizontalChartRotation,
+      chartDimensions,
       domainType,
     );
 
@@ -755,6 +756,7 @@ describe('annotation utils', () => {
       cursorPosition2,
       offset,
       horizontalChartRotation,
+      chartDimensions,
       domainType,
     );
     expect(horizontalRotationWithinBounds).toBe(true);
@@ -765,6 +767,7 @@ describe('annotation utils', () => {
       cursorPosition1,
       offset,
       verticalChartRotation,
+      chartDimensions,
       domainType,
     );
 
@@ -776,10 +779,11 @@ describe('annotation utils', () => {
       cursorPosition2,
       offset,
       verticalChartRotation,
+      chartDimensions,
       domainType,
     );
 
-    expect(verticalRotationWithinBounds).toBe(true);
+    expect(verticalRotationWithinBounds).toBe(false);
   });
   test('should compute if a point is within an annotation line bounds (yDomain annotation)', () => {
     const linePosition1: AnnotationLinePosition = [10, 0, 10, 20];
@@ -797,6 +801,7 @@ describe('annotation utils', () => {
       cursorPosition1,
       offset,
       horizontalChartRotation,
+      chartDimensions,
       domainType,
     );
 
@@ -808,6 +813,7 @@ describe('annotation utils', () => {
       cursorPosition2,
       offset,
       horizontalChartRotation,
+      chartDimensions,
       domainType,
     );
     expect(horizontalRotationWithinBounds).toBe(true);
@@ -818,6 +824,7 @@ describe('annotation utils', () => {
       cursorPosition1,
       offset,
       verticalChartRotation,
+      chartDimensions,
       domainType,
     );
 
@@ -829,10 +836,11 @@ describe('annotation utils', () => {
       cursorPosition2,
       offset,
       verticalChartRotation,
+      chartDimensions,
       domainType,
     );
 
-    expect(verticalRotationWithinBounds).toBe(true);
+    expect(verticalRotationWithinBounds).toBe(false);
   });
   test('should determine if an annotation line is vertical dependent on domain type & chart rotation', () => {
     const isHorizontal = true;
@@ -988,6 +996,7 @@ describe('annotation utils', () => {
       AnnotationDomainTypes.XDomain,
       lineStyle,
       chartRotation,
+      chartDimensions,
       localAxesSpecs,
     );
 
@@ -1009,6 +1018,7 @@ describe('annotation utils', () => {
       AnnotationDomainTypes.XDomain,
       lineStyle,
       chartRotation,
+      chartDimensions,
       localAxesSpecs,
     );
     const expectedXDomainTooltipState = {
@@ -1029,6 +1039,7 @@ describe('annotation utils', () => {
       AnnotationDomainTypes.YDomain,
       lineStyle,
       chartRotation,
+      chartDimensions,
       localAxesSpecs,
     );
     const expectedYDomainTooltipState = {
