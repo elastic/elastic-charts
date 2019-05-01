@@ -26,7 +26,7 @@ export class BarValues extends React.PureComponent<BarValuesProps> {
   private renderBarValues = () => {
     const { bars, displayValueStyle, debug } = this.props;
     return bars.map((bar, index) => {
-      const { displayValue, x, y, height } = bar;
+      const { displayValue, x, y, height, width } = bar;
       if (!displayValue) {
         return;
       }
@@ -36,6 +36,7 @@ export class BarValues extends React.PureComponent<BarValuesProps> {
         x,
         y,
         barHeight: height,
+        barWidth: width,
         displayValueStyle,
         displayValue,
       });
