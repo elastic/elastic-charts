@@ -198,31 +198,42 @@ export function buildBarValueProps({
     : x + Math.abs(barWidth - displayValueWidth) / 2;
 
   const displayValueOffsetY = displayValueStyle.offsetY || 0;
+  const sharedProps = {
+    align: 'center',
+    ...displayValueStyle,
+    padding: textPadding,
+    text: displayValue.text,
+    width: displayValueWidth,
+    height: fontSize,
+    offsetY: displayValueOffsetY,
+  };
 
   switch (chartRotation) {
     case 0:
       return {
         x: textX,
         y: displayValueY,
-        align: 'center',
-        ...displayValueStyle,
-        padding: textPadding,
-        text: displayValue.text,
-        width: displayValueWidth,
-        height: fontSize,
-        offsetY: displayValueOffsetY,
+        ...sharedProps,
       };
     case 180:
       return {
         x: chartWidth - textX - displayValueWidth,
         y: chartHeight - displayValueY - displayValueTextHeight,
-        align: 'center',
-        ...displayValueStyle,
-        padding: textPadding,
-        text: displayValue.text,
-        width: displayValueWidth,
-        height: fontSize,
-        offsetY: displayValueOffsetY,
+        ...sharedProps,
+      };
+    case 90:
+      return {
+        x: chartWidth - displayValueY - displayValueWidth,
+        y: textX + barWidth + displayValueTextHeight / 2,
+        ...sharedProps,
+        align: 'right',
+      };
+    case -90:
+      return {
+        x: displayValueY,
+        y: chartHeight - textX - barWidth - displayValueWidth / 2,
+        ...sharedProps,
+        align: 'left',
       };
   }
 
