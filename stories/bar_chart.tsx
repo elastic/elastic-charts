@@ -56,8 +56,10 @@ storiesOf('Bar Chart', module)
         fontSize: number('value font size', 10),
         fontFamily: `'Open Sans', Helvetica, Arial, sans-serif`,
         fontStyle: 'normal',
-        padding: number('value padding', 10),
+        padding: 0,
         fill: color('value color', '#000'),
+        offsetX: number('offsetX', 0),
+        offsetY: number('offsetY', 0),
       },
     };
 
@@ -69,6 +71,9 @@ storiesOf('Bar Chart', module)
     };
 
     const theme = mergeWithDefaultTheme(barStyle, LIGHT_THEME);
+
+    const dg = new DataGenerator();
+    const data = dg.generateSimpleSeries(50);
 
     return (
       <Chart renderer="canvas" className={'story-chart'}>
@@ -93,7 +98,7 @@ storiesOf('Bar Chart', module)
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y']}
-          data={[{ x: 0, y: 0.15 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
+          data={data}
           yScaleToDataExtent={false}
         />
       </Chart>

@@ -1,11 +1,11 @@
 import { Group as KonvaGroup } from 'konva';
 import React from 'react';
-import { Group, Rect, Text } from 'react-konva';
+import { Group, Rect } from 'react-konva';
 import { animated, Spring } from 'react-spring/renderprops-konva.cjs';
 import { LegendItem } from '../../lib/series/legend';
 import { BarGeometry, getGeometryStyle } from '../../lib/series/rendering';
 import { BarSeriesStyle, SharedGeometryStyle } from '../../lib/themes/theme';
-import { buildBarProps, buildBarValueProps } from './utils/rendering_props_utils';
+import { buildBarProps } from './utils/rendering_props_utils';
 
 interface BarGeometriesDataProps {
   animated?: boolean;
@@ -48,7 +48,7 @@ export class BarGeometries extends React.PureComponent<
       sharedStyle,
     } = this.props;
     return bars.map((bar, index) => {
-      const { displayValue, x, y, width, height, color, seriesStyle } = bar;
+      const { x, y, width, height, color, seriesStyle } = bar;
       const border = seriesStyle ? seriesStyle.border : style.border;
       const customOpacity = seriesStyle ? seriesStyle.opacity : undefined;
 
@@ -71,14 +71,6 @@ export class BarGeometries extends React.PureComponent<
       // min border depending on bar width bars with white border
       const borderEnabled = border.visible && width > border.strokeWidth * 7;
 
-      const displayValueProps = buildBarValueProps({
-        x,
-        y,
-        width,
-        height,
-        displayValueStyle: style.displayValue!, // displayValue is guaranteed on style as part of the merged theme
-      });
-
       if (this.props.animated) {
         return (
           <Group key={index}>
@@ -100,7 +92,6 @@ export class BarGeometries extends React.PureComponent<
                 return <animated.Rect {...barProps} />;
               }}
             </Spring>
-            {displayValue && <Text text={displayValue} {...displayValueProps} />}
           </Group>
         );
       } else {
@@ -119,7 +110,6 @@ export class BarGeometries extends React.PureComponent<
         return (
           <React.Fragment key={index}>
             <Rect {...barProps} />
-            {displayValue && <Text text={displayValue} {...displayValueProps} />}
           </React.Fragment>
         );
       }

@@ -87,9 +87,15 @@ export interface Theme {
   legend: LegendStyle;
   crosshair: CrosshairStyle;
 }
+
+export type DisplayValueStyle = TextStyle & {
+  offsetX?: number;
+  offsetY?: number;
+};
+
 export interface BarSeriesStyle {
   border: StrokeStyle & Visible;
-  displayValue?: TextStyle;
+  displayValue?: DisplayValueStyle;
 }
 
 export type CustomBarSeriesStyle = BarSeriesStyle & Partial<Opacity>;
