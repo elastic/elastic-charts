@@ -553,33 +553,39 @@ export function isWithinLineBounds(
 
   const markerWidth = marker.dimensions.width;
   const markerHeight = marker.dimensions.height;
+  const markerWidthOffset = offset + markerWidth / 2;
+  const markerHeightOffset = offset + markerHeight / 2;
 
   if (isXDomainAnnotation) {
-    const bottomAxisYBounds =
-      cursorPosition.y <= endY + markerHeight && cursorPosition.y >= endY;
-
-    const topAxisYBounds =
-      cursorPosition.y >= startY - markerHeight && cursorPosition.y <= startY;
+    const bottomAxisYBounds = chartRotation === 0 ?
+      cursorPosition.y <= endY + markerHeight && cursorPosition.y >= endY
+      : cursorPosition.y >= startY - markerHeight && cursorPosition.y <= startY;
+    const topAxisYBounds = chartRotation === 0 ?
+      cursorPosition.y >= startY - markerHeight && cursorPosition.y <= startY
+      : cursorPosition.y <= endY + markerHeight && cursorPosition.y >= endY;
 
     isCursorWithinMarkerXBounds = isHorizontalChartRotation ?
-      cursorPosition.x <= endX + offset + markerWidth / 2 && cursorPosition.x >= startX - offset - markerWidth / 2
-      : cursorPosition.x >= startX - markerWidth && cursorPosition.x <= startX;
+      cursorPosition.x <= endX + markerWidthOffset && cursorPosition.x >= startX - markerWidthOffset
+      : cursorPosition.x >= startX - markerWidthOffset && cursorPosition.x <= startX + markerWidthOffset;
     isCursorWithinMarkerYBounds = isHorizontalChartRotation ?
       (axisPosition === Position.Top ? topAxisYBounds : bottomAxisYBounds)
-      : cursorPosition.y >= startY - offset - markerHeight / 2 && cursorPosition.y <= endY + offset + markerHeight / 2;
+      : cursorPosition.y >= startY - markerHeightOffset && cursorPosition.y <= endY + markerHeightOffset;
   } else {
-    const leftAxisXBounds =
-      cursorPosition.x >= startX - markerWidth && cursorPosition.x <= startX;
+    const leftAxisXBounds = chartRotation === 0 ?
+      cursorPosition.x >= startX - markerWidth && cursorPosition.x <= startX
+      : cursorPosition.x <= endX + markerWidth && cursorPosition.x >= endX;
 
-    const rightAxisXBounds =
-      cursorPosition.x <= endX + markerWidth && cursorPosition.x >= endX;
+    const rightAxisXBounds = chartRotation === 0 ?
+      cursorPosition.x <= endX + markerWidth && cursorPosition.x >= endX
+      : cursorPosition.x >= startX - markerWidth && cursorPosition.x <= startX;
 
     isCursorWithinMarkerXBounds = isHorizontalChartRotation ?
       (axisPosition === Position.Right ? rightAxisXBounds : leftAxisXBounds)
-      : cursorPosition.x <= endX + offset + markerWidth / 2 && cursorPosition.x >= startX - offset - markerWidth / 2;
+      : cursorPosition.x <= endX + offset + markerWidth && cursorPosition.x >= startX - offset - markerWidth;
     isCursorWithinMarkerYBounds = isHorizontalChartRotation ?
-      cursorPosition.y >= startY - offset - markerHeight / 2 && cursorPosition.y <= endY + offset + markerHeight / 2
-      : cursorPosition.y <= endY + markerHeight && cursorPosition.y >= endY;
+      cursorPosition.y >= startY - markerHeightOffset && cursorPosition.y <= endY + markerHeightOffset
+      : cursorPosition.y >= chartWidth - startY - markerHeightOffset
+      && cursorPosition.y <= chartWidth - endY + markerHeightOffset;
   }
 
   return isCursorWithinMarkerXBounds && isCursorWithinMarkerYBounds;

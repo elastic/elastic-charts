@@ -187,7 +187,7 @@ describe('annotation marker', () => {
       marker,
     );
 
-    expect(verticalRotationOutsideBounds).toBe(true);
+    expect(verticalRotationOutsideBounds).toBe(false);
   });
 
   test('should compute if a point is within an annotation line bounds (yDomain annotation)', () => {
