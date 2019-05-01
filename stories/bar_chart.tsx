@@ -15,6 +15,7 @@ import {
   mergeWithDefaultTheme,
   niceTimeFormatByDay,
   Position,
+  Rotation,
   ScaleType,
   Settings,
   timeFormatter,
@@ -22,6 +23,13 @@ import {
 import * as TestDatasets from '../src/lib/series/utils/test_dataset';
 import { KIBANA_METRICS } from '../src/lib/series/utils/test_dataset_kibana';
 const dateFormatter = timeFormatter('HH:mm:ss');
+
+const dataGen = new DataGenerator();
+const frozenData = [
+  ...dataGen.generateSimpleSeries(50),
+  { x: 50, y: 0.25, g: 0 },
+  { x: 51, y: 8, g: 0 },
+];
 
 storiesOf('Bar Chart', module)
   .add('basic', () => {
@@ -71,14 +79,22 @@ storiesOf('Bar Chart', module)
     };
 
     const debug = boolean('debug', true);
-    const theme = mergeWithDefaultTheme(barStyle, LIGHT_THEME);
+    const chartRotation = select<Rotation>(
+      'chartRotation',
+      {
+        '0 deg': 0,
+        '90 deg': 90,
+        '-90 deg': -90,
+        '180 deg': 180,
+      },
+      0,
+    );
 
-    const dg = new DataGenerator();
-    const data = dg.generateSimpleSeries(50);
+    const theme = mergeWithDefaultTheme(barStyle, LIGHT_THEME);
 
     return (
       <Chart renderer="canvas" className={'story-chart'}>
-        <Settings theme={theme} debug={debug} />
+        <Settings theme={theme} debug={debug} rotation={chartRotation} />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
@@ -99,7 +115,7 @@ storiesOf('Bar Chart', module)
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y']}
-          data={data}
+          data={frozenData}
           yScaleToDataExtent={false}
         />
       </Chart>

@@ -1,5 +1,7 @@
 import { GeometryStyle } from '../../../lib/series/rendering';
-import { AreaStyle, LineStyle, PointStyle, TextStyle } from '../../../lib/themes/theme';
+import { Rotation } from '../../../lib/series/specs';
+import { AreaStyle, DisplayValueStyle, LineStyle, PointStyle } from '../../../lib/themes/theme';
+import { Dimensions } from '../../../lib/utils/dimensions';
 import { GlobalKonvaElementProps } from '../globals';
 
 export interface PointStyleProps {
@@ -160,14 +162,18 @@ export function buildBarValueProps({
   barWidth,
   displayValueStyle,
   displayValue,
+  chartRotation,
+  chartDimensions,
 }: {
   x: number;
   y: number;
   barHeight: number;
   barWidth: number;
-  displayValueStyle: TextStyle;
+  displayValueStyle: DisplayValueStyle;
   displayValue: { text: string; width: number; };
-}): TextStyle & {
+  chartRotation: Rotation;
+  chartDimensions: Dimensions;
+}): DisplayValueStyle & {
   x: number;
   y: number;
   align: string;
@@ -175,6 +181,8 @@ export function buildBarValueProps({
   width: number;
   height: number;
 } {
+  const chartHeight = chartDimensions.height;
+  const chartWidth = chartDimensions.width;
   const { fontSize, padding } = displayValueStyle;
   const displayValueTextHeight = fontSize + padding;
   const displayValueY = barHeight >= displayValueTextHeight ? y : y - displayValueTextHeight;
@@ -189,6 +197,35 @@ export function buildBarValueProps({
     x - Math.abs(barWidth - displayValueWidth) / 2
     : x + Math.abs(barWidth - displayValueWidth) / 2;
 
+  const displayValueOffsetY = displayValueStyle.offsetY || 0;
+
+  switch (chartRotation) {
+    case 0:
+      return {
+        x: textX,
+        y: displayValueY,
+        align: 'center',
+        ...displayValueStyle,
+        padding: textPadding,
+        text: displayValue.text,
+        width: displayValueWidth,
+        height: fontSize,
+        offsetY: displayValueOffsetY,
+      };
+    case 180:
+      return {
+        x: chartWidth - textX - displayValueWidth,
+        y: chartHeight - displayValueY - displayValueTextHeight,
+        align: 'center',
+        ...displayValueStyle,
+        padding: textPadding,
+        text: displayValue.text,
+        width: displayValueWidth,
+        height: fontSize,
+        offsetY: displayValueOffsetY,
+      };
+  }
+
   return {
     x: textX,
     y: displayValueY,
@@ -198,6 +235,7 @@ export function buildBarValueProps({
     text: displayValue.text,
     width: displayValueWidth,
     height: fontSize,
+    offsetY: displayValueOffsetY,
   };
 }
 

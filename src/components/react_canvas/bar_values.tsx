@@ -1,12 +1,14 @@
 import React from 'react';
 import { Group, Rect, Text } from 'react-konva';
 import { BarGeometry } from '../../lib/series/rendering';
+import { Rotation } from '../../lib/series/specs';
 import { DisplayValueStyle } from '../../lib/themes/theme';
 import { Dimensions } from '../../lib/utils/dimensions';
 import { buildBarValueProps } from './utils/rendering_props_utils';
 
 interface BarValuesProps {
   chartDimensions: Dimensions;
+  chartRotation: Rotation;
   debug: boolean;
   bars: BarGeometry[];
   displayValueStyle: DisplayValueStyle;
@@ -24,7 +26,7 @@ export class BarValues extends React.PureComponent<BarValuesProps> {
   }
 
   private renderBarValues = () => {
-    const { bars, displayValueStyle, debug } = this.props;
+    const { bars, displayValueStyle, debug, chartRotation, chartDimensions } = this.props;
     return bars.map((bar, index) => {
       const { displayValue, x, y, height, width } = bar;
       if (!displayValue) {
@@ -39,6 +41,8 @@ export class BarValues extends React.PureComponent<BarValuesProps> {
         barWidth: width,
         displayValueStyle,
         displayValue,
+        chartRotation,
+        chartDimensions,
       });
 
       const debugProps = {
@@ -49,7 +53,7 @@ export class BarValues extends React.PureComponent<BarValuesProps> {
       };
 
       return (
-        <React.Fragment>
+        <React.Fragment >
           {debug && <Rect {...debugProps} />}
           {displayValue && <Text {...displayValueProps} key={key} />}
         </React.Fragment>

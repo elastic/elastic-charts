@@ -200,13 +200,14 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
   }
 
   renderBarValues = () => {
-    const { debug, chartDimensions, geometries, chartTheme } = this.props.chartStore!;
+    const { debug, chartDimensions, geometries, chartTheme, chartRotation } = this.props.chartStore!;
     if (!geometries) {
       return;
     }
     const props = {
       debug,
       chartDimensions,
+      chartRotation,
       bars: geometries.bars,
       // displayValue is guaranteed on style as part of the merged theme
       displayValueStyle: chartTheme.barSeriesStyle.displayValue!,
@@ -377,7 +378,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
             {this.renderAnnotations()}
           </Layer>
 
-          <Layer hitGraphEnabled={false} listening={false}>
+          <Layer hitGraphEnabled={false} listening={false} {...layerClippings}>
             {this.renderBarValues()}
           </Layer>
         </Stage>
