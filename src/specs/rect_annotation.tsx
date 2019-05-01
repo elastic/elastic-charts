@@ -10,6 +10,7 @@ export class RectAnnotationSpecComponent extends PureComponent<RectAnnotationPro
   static defaultProps: Partial<RectAnnotationProps> = {
     groupId: getGroupId('__global__'),
     annotationType: 'rectangle',
+    zIndex: 0,
   };
 
   componentDidMount() {
