@@ -175,6 +175,7 @@ export function computeSeriesGeometries(
   geometriesCounts: GeometriesCounts;
 } {
   const chartColors: ColorConfig = chartTheme.colors;
+  const barsPadding = chartTheme.scales.barsPadding;
 
   const width = [0, 180].includes(chartRotation) ? chartDims.width : chartDims.height;
   const height = [0, 180].includes(chartRotation) ? chartDims.height : chartDims.width;
@@ -185,7 +186,7 @@ export function computeSeriesGeometries(
   const { stackedBarsInCluster, totalBarsInCluster } = countBarsInCluster(stacked, nonStacked);
 
   // compute scales
-  const xScale = computeXScale(xDomain, totalBarsInCluster, 0, width);
+  const xScale = computeXScale(xDomain, totalBarsInCluster, 0, width, barsPadding);
   const yScales = computeYScales(yDomain, height, 0);
 
   // compute colors

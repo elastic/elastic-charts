@@ -42,6 +42,7 @@ import {
 import { formatTooltip, getSeriesTooltipValues } from '../lib/series/tooltip';
 import { LIGHT_THEME } from '../lib/themes/light_theme';
 import { mergeWithDefaultAnnotationLine, Theme } from '../lib/themes/theme';
+import { compareByValueAsc } from '../lib/utils/commons';
 import { computeChartDimensions, Dimensions } from '../lib/utils/dimensions';
 import { Domain } from '../lib/utils/domain';
 import { AnnotationId, AxisId, GroupId, SpecId } from '../lib/utils/ids';
@@ -207,6 +208,7 @@ export class ChartStore {
   } | null = null;
 
   geometriesIndex: Map<any, IndexedGeometry[]> = new Map();
+  geometriesIndexKeys: any[] = [];
   highlightedGeometries = observable.array<IndexedGeometry>([], { deep: false });
 
   animateData = false;
@@ -279,7 +281,8 @@ export class ChartStore {
     }
 
     // invert the cursor position to get the scale value
-    const xValue = this.xScale.invertWithStep(xAxisCursorPosition);
+
+    const xValue = this.xScale.invertWithStep(xAxisCursorPosition, this.geometriesIndexKeys);
 
     // update che cursorBandPosition based on chart configuration
     const isLineAreaOnly = isLineAreaOnlyChart(this.seriesSpecs);
@@ -289,6 +292,7 @@ export class ChartStore {
       this.cursorPosition,
       this.isTooltipSnapEnabled.get(),
       this.xScale,
+      this.geometriesIndexKeys,
       isLineAreaOnly ? 1 : this.totalBarsInCluster,
     );
     if (updatedCursorBand === undefined) {
@@ -798,6 +802,7 @@ export class ChartStore {
         bboxCalculator,
         this.chartRotation,
         this.chartTheme.axes,
+        this.chartTheme.scales.barsPadding,
       );
       if (dimensions) {
         this.axesTicksDimensions.set(id, dimensions);
@@ -840,6 +845,7 @@ export class ChartStore {
     this.xScale = seriesGeometries.scales.xScale;
     this.yScales = seriesGeometries.scales.yScales;
     this.geometriesIndex = seriesGeometries.geometriesIndex;
+    this.geometriesIndexKeys = [...this.geometriesIndex.keys()].sort(compareByValueAsc);
 
     // // compute visible ticks and their positions
     const axisTicksPositions = getAxisTicksPositions(
@@ -853,6 +859,7 @@ export class ChartStore {
       seriesDomains.yDomain,
       totalBarsInCluster,
       this.legendPosition,
+      this.chartTheme.scales.barsPadding,
     );
     // tslint:disable-next-line:no-console
     // console.log({axisTicksPositions});

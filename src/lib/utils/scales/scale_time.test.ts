@@ -71,15 +71,15 @@ describe('[Scale Time] - timezones', () => {
       const startTime = DateTime.fromISO('2019-01-01T00:00:00.000').toMillis();
       const midTime = DateTime.fromISO('2019-01-02T00:00:00.000').toMillis();
       const endTime = DateTime.fromISO('2019-01-03T00:00:00.000').toMillis();
+      const data = [startTime, midTime, endTime];
       const domain = [startTime, endTime];
       const minRange = 0;
       const maxRange = 100;
       const minInterval = (endTime - startTime) / 2;
       const scale = new ScaleContinuous(
+        ScaleType.Time,
         domain,
         [minRange, maxRange],
-        ScaleType.Time,
-        undefined,
         undefined,
         minInterval,
         'local',
@@ -87,13 +87,13 @@ describe('[Scale Time] - timezones', () => {
       expect(scale.invert(0)).toBe(startTime);
       expect(scale.invert(50)).toBe(midTime);
       expect(scale.invert(100)).toBe(endTime);
-      expect(scale.invertWithStep(0)).toBe(startTime);
-      expect(scale.invertWithStep(25)).toBe(startTime);
-      expect(scale.invertWithStep(26)).toBe(midTime);
-      expect(scale.invertWithStep(50)).toBe(midTime);
-      expect(scale.invertWithStep(75)).toBe(midTime);
-      expect(scale.invertWithStep(76)).toBe(endTime);
-      expect(scale.invertWithStep(100)).toBe(endTime);
+      expect(scale.invertWithStep(0, data)).toBe(startTime);
+      expect(scale.invertWithStep(24, data)).toBe(startTime);
+      expect(scale.invertWithStep(25, data)).toBe(midTime);
+      expect(scale.invertWithStep(50, data)).toBe(midTime);
+      expect(scale.invertWithStep(74, data)).toBe(midTime);
+      expect(scale.invertWithStep(76, data)).toBe(endTime);
+      expect(scale.invertWithStep(100, data)).toBe(endTime);
       expect(scale.tickValues.length).toBe(9);
       expect(scale.tickValues[0]).toEqual(startTime);
       expect(scale.tickValues[4]).toEqual(midTime);
@@ -103,15 +103,15 @@ describe('[Scale Time] - timezones', () => {
       const startTime = DateTime.fromISO('2019-01-01T00:00:00.000Z').toMillis();
       const midTime = DateTime.fromISO('2019-01-02T00:00:00.000Z').toMillis();
       const endTime = DateTime.fromISO('2019-01-03T00:00:00.000Z').toMillis();
+      const data = [startTime, midTime, endTime];
       const domain = [startTime, endTime];
       const minRange = 0;
       const maxRange = 100;
       const minInterval = (endTime - startTime) / 2;
       const scale = new ScaleContinuous(
+        ScaleType.Time,
         domain,
         [minRange, maxRange],
-        ScaleType.Time,
-        undefined,
         undefined,
         minInterval,
         'utc',
@@ -119,13 +119,13 @@ describe('[Scale Time] - timezones', () => {
       expect(scale.invert(0)).toBe(startTime);
       expect(scale.invert(50)).toBe(midTime);
       expect(scale.invert(100)).toBe(endTime);
-      expect(scale.invertWithStep(0)).toBe(startTime);
-      expect(scale.invertWithStep(25)).toBe(startTime);
-      expect(scale.invertWithStep(26)).toBe(midTime);
-      expect(scale.invertWithStep(50)).toBe(midTime);
-      expect(scale.invertWithStep(75)).toBe(midTime);
-      expect(scale.invertWithStep(76)).toBe(endTime);
-      expect(scale.invertWithStep(100)).toBe(endTime);
+      expect(scale.invertWithStep(0, data)).toBe(startTime);
+      expect(scale.invertWithStep(24, data)).toBe(startTime);
+      expect(scale.invertWithStep(25, data)).toBe(midTime);
+      expect(scale.invertWithStep(50, data)).toBe(midTime);
+      expect(scale.invertWithStep(74, data)).toBe(midTime);
+      expect(scale.invertWithStep(75, data)).toBe(endTime);
+      expect(scale.invertWithStep(100, data)).toBe(endTime);
       expect(scale.tickValues.length).toBe(9);
       expect(scale.tickValues[0]).toEqual(startTime);
       expect(scale.tickValues[4]).toEqual(midTime);
@@ -135,15 +135,15 @@ describe('[Scale Time] - timezones', () => {
       const startTime = DateTime.fromISO('2019-01-01T00:00:00.000+08:00').toMillis();
       const midTime = DateTime.fromISO('2019-01-02T00:00:00.000+08:00').toMillis();
       const endTime = DateTime.fromISO('2019-01-03T00:00:00.000+08:00').toMillis();
+      const data = [startTime, midTime, endTime];
       const domain = [startTime, endTime];
       const minRange = 0;
       const maxRange = 100;
       const minInterval = (endTime - startTime) / 2;
       const scale = new ScaleContinuous(
+        ScaleType.Time,
         domain,
         [minRange, maxRange],
-        ScaleType.Time,
-        undefined,
         undefined,
         minInterval,
         'utc+8',
@@ -151,13 +151,13 @@ describe('[Scale Time] - timezones', () => {
       expect(scale.invert(0)).toBe(startTime);
       expect(scale.invert(50)).toBe(midTime);
       expect(scale.invert(100)).toBe(endTime);
-      expect(scale.invertWithStep(0)).toBe(startTime);
-      expect(scale.invertWithStep(25)).toBe(startTime);
-      expect(scale.invertWithStep(26)).toBe(midTime);
-      expect(scale.invertWithStep(50)).toBe(midTime);
-      expect(scale.invertWithStep(75)).toBe(midTime);
-      expect(scale.invertWithStep(76)).toBe(endTime);
-      expect(scale.invertWithStep(100)).toBe(endTime);
+      expect(scale.invertWithStep(0, data)).toBe(startTime);
+      expect(scale.invertWithStep(24, data)).toBe(startTime);
+      expect(scale.invertWithStep(25, data)).toBe(midTime);
+      expect(scale.invertWithStep(50, data)).toBe(midTime);
+      expect(scale.invertWithStep(74, data)).toBe(midTime);
+      expect(scale.invertWithStep(75, data)).toBe(endTime);
+      expect(scale.invertWithStep(100, data)).toBe(endTime);
       expect(scale.tickValues.length).toBe(9);
       expect(scale.tickValues[0]).toEqual(startTime);
       expect(scale.tickValues[4]).toEqual(midTime);
@@ -167,15 +167,15 @@ describe('[Scale Time] - timezones', () => {
       const startTime = DateTime.fromISO('2019-01-01T00:00:00.000-08:00').toMillis();
       const midTime = DateTime.fromISO('2019-01-02T00:00:00.000-08:00').toMillis();
       const endTime = DateTime.fromISO('2019-01-03T00:00:00.000-08:00').toMillis();
+      const data = [startTime, midTime, endTime];
       const domain = [startTime, endTime];
       const minRange = 0;
       const maxRange = 100;
       const minInterval = (endTime - startTime) / 2;
       const scale = new ScaleContinuous(
+        ScaleType.Time,
         domain,
         [minRange, maxRange],
-        ScaleType.Time,
-        undefined,
         undefined,
         minInterval,
         'utc-8',
@@ -183,13 +183,13 @@ describe('[Scale Time] - timezones', () => {
       expect(scale.invert(0)).toBe(startTime);
       expect(scale.invert(50)).toBe(midTime);
       expect(scale.invert(100)).toBe(endTime);
-      expect(scale.invertWithStep(0)).toBe(startTime);
-      expect(scale.invertWithStep(25)).toBe(startTime);
-      expect(scale.invertWithStep(26)).toBe(midTime);
-      expect(scale.invertWithStep(50)).toBe(midTime);
-      expect(scale.invertWithStep(75)).toBe(midTime);
-      expect(scale.invertWithStep(76)).toBe(endTime);
-      expect(scale.invertWithStep(100)).toBe(endTime);
+      expect(scale.invertWithStep(0, data)).toBe(startTime);
+      expect(scale.invertWithStep(24, data)).toBe(startTime);
+      expect(scale.invertWithStep(25, data)).toBe(midTime);
+      expect(scale.invertWithStep(50, data)).toBe(midTime);
+      expect(scale.invertWithStep(74, data)).toBe(midTime);
+      expect(scale.invertWithStep(75, data)).toBe(endTime);
+      expect(scale.invertWithStep(100, data)).toBe(endTime);
       expect(scale.tickValues.length).toBe(9);
       expect(scale.tickValues[0]).toEqual(startTime);
       expect(scale.tickValues[4]).toEqual(midTime);
@@ -203,15 +203,15 @@ describe('[Scale Time] - timezones', () => {
         }).toMillis();
         const midTime = DateTime.fromISO('2019-01-02T00:00:00.000', { zone: timezone }).toMillis();
         const endTime = DateTime.fromISO('2019-01-03T00:00:00.000', { zone: timezone }).toMillis();
+        const data = [startTime, midTime, endTime];
         const domain = [startTime, endTime];
         const minRange = 0;
         const maxRange = 100;
         const minInterval = (endTime - startTime) / 2;
         const scale = new ScaleContinuous(
+          ScaleType.Time,
           domain,
           [minRange, maxRange],
-          ScaleType.Time,
-          undefined,
           undefined,
           minInterval,
           timezone,
@@ -222,13 +222,13 @@ describe('[Scale Time] - timezones', () => {
         expect(scale.invert(0)).toBe(startTime);
         expect(scale.invert(50)).toBe(midTime);
         expect(scale.invert(100)).toBe(endTime);
-        expect(scale.invertWithStep(0)).toBe(startTime);
-        expect(scale.invertWithStep(25)).toBe(startTime);
-        expect(scale.invertWithStep(26)).toBe(midTime);
-        expect(scale.invertWithStep(50)).toBe(midTime);
-        expect(scale.invertWithStep(75)).toBe(midTime);
-        expect(scale.invertWithStep(76)).toBe(endTime);
-        expect(scale.invertWithStep(100)).toBe(endTime);
+        expect(scale.invertWithStep(0, data)).toBe(startTime);
+        expect(scale.invertWithStep(24, data)).toBe(startTime);
+        expect(scale.invertWithStep(25, data)).toBe(midTime);
+        expect(scale.invertWithStep(50, data)).toBe(midTime);
+        expect(scale.invertWithStep(74, data)).toBe(midTime);
+        expect(scale.invertWithStep(75, data)).toBe(endTime);
+        expect(scale.invertWithStep(100, data)).toBe(endTime);
         expect(scale.tickValues.length).toBe(9);
         expect(scale.tickValues[0]).toEqual(startTime);
         expect(scale.tickValues[4]).toEqual(midTime);

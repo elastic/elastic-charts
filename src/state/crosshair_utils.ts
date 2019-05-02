@@ -14,12 +14,17 @@ export function getSnapPosition(
   value: string | number,
   scale: Scale,
   totalBarsInCluster: number = 1,
-): { band: number; position: number } {
+): { band: number; position: number } | undefined {
   const position = scale.scale(value);
+  if (position === undefined) {
+    return;
+  }
   if (scale.bandwidth > 0) {
+    const band = scale.bandwidth / (1 - scale.barsPadding);
+    const halfPadding = (band - scale.bandwidth) / 2;
     return {
-      position,
-      band: scale.bandwidth * totalBarsInCluster,
+      position: position - halfPadding * totalBarsInCluster,
+      band: band * totalBarsInCluster,
     };
   } else {
     return {
@@ -62,6 +67,7 @@ export function getCursorBandPosition(
   cursorPosition: { x: number; y: number },
   snapEnabled: boolean,
   xScale: Scale,
+  data: any[],
   totalBarsInCluster?: number,
 ): Dimensions | undefined {
   const { top, left, width, height } = chartDimensions;
@@ -70,11 +76,15 @@ export function getCursorBandPosition(
     return;
   }
   const isHorizontalRotated = isHorizontalRotation(chartRotation);
-  const { position, band } = getSnapPosition(
-    xScale.invertWithStep(isHorizontalRotated ? x : y),
-    xScale,
-    totalBarsInCluster,
-  );
+  const invertedValue = xScale.invertWithStep(isHorizontalRotated ? x : y, data);
+  if (invertedValue == null) {
+    return;
+  }
+  const snappedPosition = getSnapPosition(invertedValue, xScale, totalBarsInCluster);
+  if (!snappedPosition) {
+    return;
+  }
+  const { position, band } = snappedPosition;
   if (isHorizontalRotated) {
     return {
       top,
