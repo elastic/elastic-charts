@@ -190,7 +190,10 @@ export function renderBars(
   const xDomain = xScale.domain;
   const xScaleType = xScale.type;
   const barGeometries: BarGeometry[] = [];
+
   const bboxCalculator = new CanvasTextBBoxCalculator();
+  const fontSize = seriesStyle && seriesStyle.displayValue ? seriesStyle.displayValue.fontSize : undefined;
+  const fontFamily = seriesStyle && seriesStyle.displayValue ? seriesStyle.displayValue.fontFamily : undefined;
 
   dataset.forEach((datum) => {
     const { y0, y1, initialY1 } = datum;
@@ -228,8 +231,6 @@ export function renderBars(
       (barGeometries.length % 2 === 0 ? formattedDisplayValue : undefined)
       : formattedDisplayValue;
 
-    const fontSize = seriesStyle && seriesStyle.displayValue ? seriesStyle.displayValue.fontSize : undefined;
-    const fontFamily = seriesStyle && seriesStyle.displayValue ? seriesStyle.displayValue.fontFamily : undefined;
     const displayValueWidth = bboxCalculator.compute(displayValueText || '', fontSize, fontFamily).getOrElse({
       width: 0,
       height: 0,

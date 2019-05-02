@@ -9,6 +9,7 @@ import {
   LineSeriesSpec,
 } from '../lib/series/specs';
 import { BARCHART_1Y0G, BARCHART_1Y1G } from '../lib/series/utils/test_dataset';
+import { LIGHT_THEME } from '../lib/themes/light_theme';
 import { AxisId, getGroupId, getSpecId, SpecId } from '../lib/utils/ids';
 import { ScaleType } from '../lib/utils/scales/scales';
 import {
@@ -361,6 +362,7 @@ describe('Chart State utils', () => {
         vizColors: ['violet', 'green', 'blue'],
         defaultVizColor: 'red',
       };
+      const chartTheme = { ...LIGHT_THEME, colors: chartColors };
       const domainsByGroupId = mergeDomainsByGroupId(axesSpecs, chartRotation);
       const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
       const seriesColorMap = getSeriesColorMap(seriesDomains.seriesColors, chartColors, new Map());
@@ -370,7 +372,7 @@ describe('Chart State utils', () => {
         seriesDomains.yDomain,
         seriesDomains.formattedDataSeries,
         seriesColorMap,
-        chartColors,
+        chartTheme,
         chartDimensions,
         chartRotation,
         axesSpecs,
@@ -412,6 +414,7 @@ describe('Chart State utils', () => {
         vizColors: ['violet', 'green', 'blue'],
         defaultVizColor: 'red',
       };
+      const chartTheme = { ...LIGHT_THEME, colors: chartColors };
       const domainsByGroupId = mergeDomainsByGroupId(axesSpecs, chartRotation);
       const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
       const seriesColorMap = getSeriesColorMap(seriesDomains.seriesColors, chartColors, new Map());
@@ -421,7 +424,7 @@ describe('Chart State utils', () => {
         seriesDomains.yDomain,
         seriesDomains.formattedDataSeries,
         seriesColorMap,
-        chartColors,
+        chartTheme,
         chartDimensions,
         chartRotation,
         axesSpecs,
@@ -465,6 +468,7 @@ describe('Chart State utils', () => {
         vizColors: ['violet', 'green', 'blue'],
         defaultVizColor: 'red',
       };
+      const chartTheme = { ...LIGHT_THEME, colors: chartColors };
       const domainsByGroupId = mergeDomainsByGroupId(axesSpecs, chartRotation);
       const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
       const seriesColorMap = getSeriesColorMap(seriesDomains.seriesColors, chartColors, new Map());
@@ -474,7 +478,7 @@ describe('Chart State utils', () => {
         seriesDomains.yDomain,
         seriesDomains.formattedDataSeries,
         seriesColorMap,
-        chartColors,
+        chartTheme,
         chartDimensions,
         chartRotation,
         axesSpecs,
@@ -534,6 +538,7 @@ describe('Chart State utils', () => {
         vizColors: ['violet', 'green', 'blue'],
         defaultVizColor: 'red',
       };
+      const chartTheme = { ...LIGHT_THEME, colors: chartColors };
       const domainsByGroupId = mergeDomainsByGroupId(axesSpecs, chartRotation);
       const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
       const seriesColorMap = getSeriesColorMap(seriesDomains.seriesColors, chartColors, new Map());
@@ -543,7 +548,7 @@ describe('Chart State utils', () => {
         seriesDomains.yDomain,
         seriesDomains.formattedDataSeries,
         seriesColorMap,
-        chartColors,
+        chartTheme,
         chartDimensions,
         chartRotation,
         axesSpecs,
@@ -603,6 +608,7 @@ describe('Chart State utils', () => {
         vizColors: ['violet', 'green', 'blue'],
         defaultVizColor: 'red',
       };
+      const chartTheme = { ...LIGHT_THEME, colors: chartColors };
       const domainsByGroupId = mergeDomainsByGroupId(axesSpecs, chartRotation);
       const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
       const seriesColorMap = getSeriesColorMap(seriesDomains.seriesColors, chartColors, new Map());
@@ -612,7 +618,7 @@ describe('Chart State utils', () => {
         seriesDomains.yDomain,
         seriesDomains.formattedDataSeries,
         seriesColorMap,
-        chartColors,
+        chartTheme,
         chartDimensions,
         chartRotation,
         axesSpecs,
@@ -672,6 +678,7 @@ describe('Chart State utils', () => {
         vizColors: ['violet', 'green', 'blue'],
         defaultVizColor: 'red',
       };
+      const chartTheme = { ...LIGHT_THEME, colors: chartColors };
       const domainsByGroupId = mergeDomainsByGroupId(axesSpecs, chartRotation);
       const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
       const seriesColorMap = getSeriesColorMap(seriesDomains.seriesColors, chartColors, new Map());
@@ -681,7 +688,7 @@ describe('Chart State utils', () => {
         seriesDomains.yDomain,
         seriesDomains.formattedDataSeries,
         seriesColorMap,
-        chartColors,
+        chartTheme,
         chartDimensions,
         chartRotation,
         axesSpecs,
@@ -742,6 +749,7 @@ describe('Chart State utils', () => {
         vizColors: ['violet', 'green', 'blue'],
         defaultVizColor: 'red',
       };
+      const chartTheme = { ...LIGHT_THEME, colors: chartColors };
       const domainsByGroupId = mergeDomainsByGroupId(axesSpecs, chartRotation);
       const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
       const seriesColorMap = getSeriesColorMap(seriesDomains.seriesColors, chartColors, new Map());
@@ -751,7 +759,7 @@ describe('Chart State utils', () => {
         seriesDomains.yDomain,
         seriesDomains.formattedDataSeries,
         seriesColorMap,
-        chartColors,
+        chartTheme,
         chartDimensions,
         chartRotation,
         axesSpecs,

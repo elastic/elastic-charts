@@ -30,7 +30,7 @@ import {
   LineSeriesSpec,
   Rotation,
 } from '../lib/series/specs';
-import { ColorConfig } from '../lib/themes/theme';
+import { ColorConfig, Theme } from '../lib/themes/theme';
 import { identity } from '../lib/utils/commons';
 import { Dimensions } from '../lib/utils/dimensions';
 import { Domain } from '../lib/utils/domain';
@@ -156,7 +156,7 @@ export function computeSeriesGeometries(
     nonStacked: FormattedDataSeries[];
   },
   seriesColorMap: Map<string, string>,
-  chartColors: ColorConfig,
+  chartTheme: Theme,
   chartDims: Dimensions,
   chartRotation: Rotation,
   axesSpecs: Map<AxisId, AxisSpec>,
@@ -174,6 +174,8 @@ export function computeSeriesGeometries(
   geometriesIndex: Map<any, IndexedGeometry[]>;
   geometriesCounts: GeometriesCounts;
 } {
+  const chartColors: ColorConfig = chartTheme.colors;
+
   const width = [0, 180].includes(chartRotation) ? chartDims.width : chartDims.height;
   const height = [0, 180].includes(chartRotation) ? chartDims.height : chartDims.width;
   // const { width, height } = chartDims;
@@ -222,6 +224,7 @@ export function computeSeriesGeometries(
       seriesColorMap,
       chartColors.defaultVizColor,
       axesSpecs,
+      chartTheme,
     );
     orderIndex = counts.barSeries > 0 ? orderIndex + 1 : orderIndex;
     areas.push(...geometries.areas);
@@ -257,6 +260,7 @@ export function computeSeriesGeometries(
       seriesColorMap,
       chartColors.defaultVizColor,
       axesSpecs,
+      chartTheme,
     );
 
     areas.push(...geometries.areas);
@@ -304,6 +308,7 @@ export function renderGeometries(
   seriesColorsMap: Map<string, string>,
   defaultColor: string,
   axesSpecs: Map<AxisId, AxisSpec>,
+  chartTheme: Theme,
 ): {
   points: PointGeometry[];
   bars: BarGeometry[];
@@ -340,7 +345,14 @@ export function renderGeometries(
     switch (spec.seriesType) {
       case 'bar':
         const shift = isStacked ? indexOffset : indexOffset + i;
-        const barSeriesStyle = spec.barSeriesStyle;
+
+        // TODO: we can handle style merging here and not pass that off to the component
+        // then barSeriesStyle should not be an optional parameter and we can simplify
+        // the props building in the geometries component
+        const barSeriesStyle = spec.barSeriesStyle ? {
+          ...chartTheme.barSeriesStyle,
+          ...spec.barSeriesStyle,
+        } : chartTheme.barSeriesStyle;
 
         const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
         const valueFormatter = yAxis && yAxis.tickFormat ? yAxis.tickFormat : identity;
