@@ -183,16 +183,11 @@ export function buildBarValueProps({
 } {
   const chartHeight = chartDimensions.height;
   const chartWidth = chartDimensions.width;
-  const { fontSize, padding } = displayValueStyle;
+  const { padding } = displayValueStyle;
   const displayValueHeight = displayValue.height + padding;
+  const displayValueWidth = displayValue.width + padding;
+
   const displayValueY = barHeight >= displayValueHeight ? y : y - displayValueHeight;
-
-  // if padding is less than 0, then text will appear above bar
-  // this checks if there is enough space above the bar to render the value
-  // if not, render the value within the bar
-  const textPadding = (padding < 0 && y < fontSize) ? -padding : padding;
-  const displayValueWidth = displayValue.width;
-
   const displayValueX = displayValueWidth > barWidth ?
     x - Math.abs(barWidth - displayValueWidth) / 2
     : x + Math.abs(barWidth - displayValueWidth) / 2;
@@ -205,8 +200,8 @@ export function buildBarValueProps({
 
   const props = {
     align: 'center',
+    verticalAlign: 'middle',
     ...displayValueStyle,
-    padding: textPadding,
     text: displayValue.text,
     width: displayValueWidth,
     height: displayValueHeight,
@@ -225,11 +220,13 @@ export function buildBarValueProps({
       props.y = chartHeight - displayValueY - displayValueHeight;
       break;
     case 90:
-      props.x = chartWidth - displayValueY - displayValueWidth;
+      props.x = (barHeight >= displayValueWidth) ?
+        chartWidth - displayValueY - displayValueWidth
+        : chartWidth - displayValueY;
       props.y = rotatedDisplayValueX;
       break;
     case -90:
-      props.x = displayValueY;
+      props.x = (barHeight >= displayValueWidth) ? displayValueY : displayValueY - displayValueWidth;
       props.y = chartHeight - rotatedDisplayValueX - displayValueHeight;
       break;
   }
