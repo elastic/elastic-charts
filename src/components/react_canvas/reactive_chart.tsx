@@ -387,13 +387,13 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
   }
 
   private renderDebugChartBorders = () => {
-    const { chartDimensions, chartRotation, chartTransform } = this.props.chartStore!;
+    const { chartDimensions } = this.props.chartStore!;
     return (
       <Rect
-        x={chartDimensions.left + chartTransform.x}
-        y={chartDimensions.top + chartTransform.y}
-        width={[90, -90].includes(chartRotation) ? chartDimensions.height : chartDimensions.width}
-        height={[90, -90].includes(chartRotation) ? chartDimensions.width : chartDimensions.height}
+        x={chartDimensions.left}
+        y={chartDimensions.top}
+        width={chartDimensions.width}
+        height={chartDimensions.height}
         stroke="red"
         strokeWidth={4}
         listening={false}
