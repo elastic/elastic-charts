@@ -8,6 +8,7 @@ import {
   buildLineProps,
   buildPointStyleProps,
 } from './rendering_props_utils';
+import { Rotation } from '../../../lib/series/specs';
 
 describe('[canvas] Area Geometries props', () => {
   test('can build area point props', () => {
@@ -399,18 +400,27 @@ describe('[canvas] Bar Geometries', () => {
     const valueArguments = {
       x: 10,
       y: 20,
-      width: 30,
+      barWidth: 30,
       barHeight: 40,
       displayValueStyle: {
         fill: 'fill',
         fontFamily: 'ff',
         fontSize: 10,
         padding: 5,
+        offsetX: 0,
+        offsetY: 0,
       },
       displayValue: {
         text: 'foo',
         width: 10,
       },
+      chartDimensions: {
+        width: 10,
+        height: 10,
+        top: 0,
+        left: 0,
+      },
+      chartRotation: 0 as Rotation,
     };
 
     const basicProps = buildBarValueProps(valueArguments);
