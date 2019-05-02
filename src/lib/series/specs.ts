@@ -34,9 +34,11 @@ export interface DisplayValueSpec {
   /** Show value label in chart element */
   showValueLabel?: boolean;
   /** If value labels are shown, skips every other label */
-  alternatingValueLabel?: boolean;
+  isAlternatingValueLabel?: boolean;
   /** Function for formatting values; will use axis tickFormatter if none specified */
   valueFormatter?: TickFormatter;
+  /** If true will contain value label within element, else dimensions are computed based on value */
+  isValueContainedInElement?: boolean;
 }
 
 export interface SeriesSpec {

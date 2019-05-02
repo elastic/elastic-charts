@@ -170,7 +170,7 @@ export function buildBarValueProps({
   barHeight: number;
   barWidth: number;
   displayValueStyle: DisplayValueStyle;
-  displayValue: { text: string; width: number; };
+  displayValue: { text: string; width: number; height: number; };
   chartRotation: Rotation;
   chartDimensions: Dimensions;
 }): DisplayValueStyle & {
@@ -184,7 +184,7 @@ export function buildBarValueProps({
   const chartHeight = chartDimensions.height;
   const chartWidth = chartDimensions.width;
   const { fontSize, padding } = displayValueStyle;
-  const displayValueHeight = fontSize + padding;
+  const displayValueHeight = displayValue.height + padding;
   const displayValueY = barHeight >= displayValueHeight ? y : y - displayValueHeight;
 
   // if padding is less than 0, then text will appear above bar
@@ -209,7 +209,7 @@ export function buildBarValueProps({
     padding: textPadding,
     text: displayValue.text,
     width: displayValueWidth,
-    height: fontSize,
+    height: displayValueHeight,
     offsetY: displayValueOffsetY,
     x: displayValueX,
     y: displayValueY,

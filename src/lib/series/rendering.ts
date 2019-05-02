@@ -58,6 +58,7 @@ export interface BarGeometry {
   displayValue?: {
     text: any;
     width: number;
+    height: number;
   };
   geometryId: GeometryId;
   value: GeometryValue;
@@ -227,15 +228,23 @@ export function renderBars(
       displayValueSettings.valueFormatter(initialY1) : undefined;
 
     // only show displayValue for even bars if showOverlappingValue
-    const displayValueText = displayValueSettings && displayValueSettings.alternatingValueLabel ?
+    const displayValueText = displayValueSettings && displayValueSettings.isAlternatingValueLabel ?
       (barGeometries.length % 2 === 0 ? formattedDisplayValue : undefined)
       : formattedDisplayValue;
 
-    const displayValueWidth = bboxCalculator.compute(displayValueText || '', fontSize, fontFamily).getOrElse({
+    const computedDisplayValueWidth = bboxCalculator.compute(displayValueText || '', fontSize, fontFamily).getOrElse({
       width: 0,
       height: 0,
     }).width;
-    const displayValue = displayValueText != null ? { text: displayValueText, width: displayValueWidth } : undefined;
+    const displayValueWidth = displayValueSettings && displayValueSettings.isValueContainedInElement ?
+      width : computedDisplayValueWidth;
+
+    const displayValueHeight = displayValueSettings && displayValueSettings.isValueContainedInElement ?
+      height : fontSize || 0;
+
+    const displayValue = displayValueText != null ?
+      { text: displayValueText, width: displayValueWidth, height: displayValueHeight }
+      : undefined;
 
     const barGeometry: BarGeometry = {
       displayValue,

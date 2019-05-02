@@ -58,8 +58,10 @@ storiesOf('Bar Chart', module)
   })
   .add('with value label', () => {
     const showValueLabel = boolean('show value label', false);
-    const alternatingValueLabel = boolean('alternating value label', false);
-    const displayValueSettings = { showValueLabel, alternatingValueLabel };
+    const isAlternatingValueLabel = boolean('alternating value label', false);
+    const isValueContainedInElement = boolean('contain value label within bar element', false);
+
+    const displayValueSettings = { showValueLabel, isAlternatingValueLabel, isValueContainedInElement };
 
     const displayValueStyle = {
       displayValue: {
