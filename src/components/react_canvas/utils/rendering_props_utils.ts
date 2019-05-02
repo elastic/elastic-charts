@@ -243,6 +243,11 @@ export function buildBarValueProps({
         props.align = 'right';
       }
 
+      if (displayValue.isValueContainedInElement && displayValueHeight > barWidth) {
+        props.width = 0;
+        props.height = 0;
+      }
+
       break;
     case -90:
       props.x = (barHeight >= displayValueWidth) ? displayValueY : displayValueY - displayValueWidth;
@@ -256,6 +261,12 @@ export function buildBarValueProps({
         props.height = barWidth;
         props.align = 'left';
       }
+
+      if (displayValue.isValueContainedInElement && displayValueHeight > barWidth) {
+        props.width = 0;
+        props.height = 0;
+      }
+
       break;
   }
 
