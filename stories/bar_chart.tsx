@@ -26,11 +26,22 @@ import { KIBANA_METRICS } from '../src/lib/series/utils/test_dataset_kibana';
 const dateFormatter = timeFormatter('HH:mm:ss');
 
 const dataGen = new DataGenerator();
-const frozenData = [
-  ...dataGen.generateSimpleSeries(50),
-  { x: 50, y: 0.25, g: 0 },
-  { x: 51, y: 8, g: 0 },
-];
+function generateDataWithAdditional(num: number) {
+  return [
+    ...dataGen.generateSimpleSeries(num),
+    { x: num, y: 0.25, g: 0 },
+    { x: num + 1, y: 8, g: 0 },
+  ];
+}
+const frozenDataSmallVolume = generateDataWithAdditional(10);
+const frozenDataMediumVolume = generateDataWithAdditional(50);
+const frozenDataHighVolume = generateDataWithAdditional(1500);
+
+const frozenData: { [key: string]: any[] } = {
+  s: frozenDataSmallVolume,
+  m: frozenDataMediumVolume,
+  h: frozenDataHighVolume,
+};
 
 storiesOf('Bar Chart', module)
   .add('basic', () => {
@@ -101,6 +112,16 @@ storiesOf('Bar Chart', module)
     );
 
     const theme = mergeWithDefaultTheme(barStyle, LIGHT_THEME);
+    const dataSize = select(
+      'data volume size',
+      {
+        'small volume': 's',
+        'medium volume': 'm',
+        'high volume': 'h',
+      },
+      's',
+    );
+    const data = frozenData[dataSize];
 
     return (
       <Chart renderer="canvas" className={'story-chart'}>
@@ -124,7 +145,7 @@ storiesOf('Bar Chart', module)
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y']}
-          data={frozenData}
+          data={data}
           yScaleToDataExtent={false}
         />
       </Chart>
