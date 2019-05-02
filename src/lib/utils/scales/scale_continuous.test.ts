@@ -1,13 +1,14 @@
 import { DateTime } from 'luxon';
 import { XDomain } from '../../series/domains/x_domain';
 import { computeXScale } from '../../series/scales';
+import { Domain } from '../domain';
 import { ScaleBand } from './scale_band';
 import { isLogarithmicScale, ScaleContinuous } from './scale_continuous';
 import { ScaleType } from './scales';
 
 describe('Scale Continuous', () => {
   test('shall invert on continuous scale linear', () => {
-    const domain = [0, 2];
+    const domain: Domain = [0, 2];
     const minRange = 0;
     const maxRange = 100;
     const scale = new ScaleContinuous(ScaleType.Linear, domain, [minRange, maxRange]);
@@ -28,7 +29,7 @@ describe('Scale Continuous', () => {
     expect(scale.invert(100)).toBe(endTime.toMillis());
   });
   test('check if a scale is log scale', () => {
-    const domain: any[] = [0, 2];
+    const domain: Domain = [0, 2];
     const range: [number, number] = [0, 100];
     const scaleLinear = new ScaleContinuous(ScaleType.Linear, domain, range);
     const scaleLog = new ScaleContinuous(ScaleType.Log, domain, range);
@@ -42,7 +43,7 @@ describe('Scale Continuous', () => {
     expect(isLogarithmicScale(scaleBand)).toBe(false);
   });
   test('can get the right x value on linear scale', () => {
-    const domain = [0, 2];
+    const domain: Domain = [0, 2];
     const data = [0, 0.5, 0.8, 2];
     const range: [number, number] = [0, 2];
     const scaleLinear = new ScaleContinuous(ScaleType.Linear, domain, range);
