@@ -53,10 +53,10 @@ export class BarValues extends React.PureComponent<BarValuesProps> {
       };
 
       return (
-        <React.Fragment >
+        <Group key={key}>
           {debug && <Rect {...debugProps} />}
-          {displayValue && <Text {...displayValueProps} key={key} />}
-        </React.Fragment>
+          {displayValue && <Text {...displayValueProps} />}
+        </Group>
       );
     });
   }

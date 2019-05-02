@@ -202,7 +202,8 @@ export function buildBarValueProps({
     : x + Math.abs(barWidth - displayValueHeight) / 2;
 
   const displayValueOffsetY = displayValueStyle.offsetY || 0;
-  const sharedProps = {
+
+  const props = {
     align: 'center',
     ...displayValueStyle,
     padding: textPadding,
@@ -210,36 +211,38 @@ export function buildBarValueProps({
     width: displayValueWidth,
     height: fontSize,
     offsetY: displayValueOffsetY,
+    x: displayValueX,
+    y: displayValueY,
   };
 
   switch (chartRotation) {
     case 0:
-      return {
-        x: displayValueX,
-        y: displayValueY,
-        ...sharedProps,
-      };
+      props.x = displayValueX;
+      props.y = displayValueY;
+      break;
     case 180:
-      return {
-        x: chartWidth - displayValueX - displayValueWidth,
-        y: chartHeight - displayValueY - displayValueHeight,
-        ...sharedProps,
-      };
+      props.x = chartWidth - displayValueX - displayValueWidth;
+      props.y = chartHeight - displayValueY - displayValueHeight;
+      break;
     case 90:
-      return {
-        x: chartWidth - displayValueY - displayValueWidth,
-        y: rotatedDisplayValueX,
-        ...sharedProps,
-        align: 'right',
-      };
+      props.x = chartWidth - displayValueY - displayValueWidth;
+      props.y = rotatedDisplayValueX;
+      break;
     case -90:
-      return {
-        x: displayValueY,
-        y: chartHeight - rotatedDisplayValueX - displayValueHeight,
-        ...sharedProps,
-        align: 'left',
-      };
+      props.x = displayValueY;
+      props.y = chartHeight - rotatedDisplayValueX - displayValueHeight;
+      break;
   }
+
+  const isOverflowX = props.x + props.width > chartWidth || props.x < 0;
+  const isOverflowY = props.y + props.height > chartHeight || props.y < 0;
+
+  if (isOverflowX || isOverflowY) {
+    props.width = 0;
+    props.height = 0;
+  }
+
+  return props;
 }
 
 export function buildLinePointProps({
