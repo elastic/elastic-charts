@@ -205,6 +205,7 @@ export function buildBarValueProps({
     : x + Math.abs(barWidth - displayValueHeight) / 2;
 
   const displayValueOffsetY = displayValueStyle.offsetY || 0;
+  const displayValueOffsetX = displayValueStyle.offsetX || 0;
 
   const props = {
     align: 'center',
@@ -270,8 +271,8 @@ export function buildBarValueProps({
       break;
   }
 
-  const isOverflowX = props.x + props.width > chartWidth || props.x < 0;
-  const isOverflowY = props.y + props.height > chartHeight || props.y < 0;
+  const isOverflowX = props.x + props.width - displayValueOffsetX > chartWidth || props.x - displayValueOffsetX < 0;
+  const isOverflowY = props.y + props.height - displayValueOffsetY > chartHeight || props.y - displayValueOffsetY < 0;
 
   if (displayValue.hideClippedValue && (isOverflowX || isOverflowY)) {
     props.width = 0;
