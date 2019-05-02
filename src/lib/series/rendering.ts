@@ -60,6 +60,7 @@ export interface BarGeometry {
     width: number;
     height: number;
     hideClippedValue?: boolean;
+    isValueContainedInElement?: boolean;
   };
   geometryId: GeometryId;
   value: GeometryValue;
@@ -240,13 +241,19 @@ export function renderBars(
     const displayValueWidth = displayValueSettings && displayValueSettings.isValueContainedInElement ?
       width : computedDisplayValueWidth;
 
-    const displayValueHeight = displayValueSettings && displayValueSettings.isValueContainedInElement ?
-      height : fontSize || 0;
+    // const displayValueHeight = displayValueSettings && displayValueSettings.isValueContainedInElement ?
+    //   height : fontSize || 0;
 
     const hideClippedValue = displayValueSettings ? displayValueSettings.hideClippedValue : undefined;
 
     const displayValue = (displayValueSettings && displayValueSettings.showValueLabel) ?
-      { text: displayValueText, width: displayValueWidth, height: displayValueHeight, hideClippedValue }
+      {
+        text: displayValueText,
+        width: displayValueWidth,
+        height: fontSize || 0,
+        hideClippedValue,
+        isValueContainedInElement: displayValueSettings.isValueContainedInElement,
+      }
       : undefined;
 
     const barGeometry: BarGeometry = {

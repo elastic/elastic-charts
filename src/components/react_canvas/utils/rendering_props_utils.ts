@@ -170,7 +170,13 @@ export function buildBarValueProps({
   barHeight: number;
   barWidth: number;
   displayValueStyle: DisplayValueStyle;
-  displayValue: { text: string; width: number; height: number; hideClippedValue?: boolean; };
+  displayValue: {
+    text: string;
+    width: number;
+    height: number;
+    hideClippedValue?: boolean;
+    isValueContainedInElement?: boolean;
+  };
   chartRotation: Rotation;
   chartDimensions: Dimensions;
 }): DisplayValueStyle & {
@@ -184,7 +190,9 @@ export function buildBarValueProps({
   const chartHeight = chartDimensions.height;
   const chartWidth = chartDimensions.width;
   const { padding } = displayValueStyle;
-  const displayValueHeight = displayValue.height + padding;
+  const elementHeight = displayValue.isValueContainedInElement ? barHeight : displayValue.height;
+
+  const displayValueHeight = elementHeight + padding;
   const displayValueWidth = displayValue.width + padding;
 
   const displayValueY = barHeight >= displayValueHeight ? y : y - displayValueHeight;
@@ -200,7 +208,7 @@ export function buildBarValueProps({
 
   const props = {
     align: 'center',
-    verticalAlign: 'middle',
+    verticalAlign: 'top',
     ...displayValueStyle,
     text: displayValue.text,
     width: displayValueWidth,
@@ -218,16 +226,36 @@ export function buildBarValueProps({
     case 180:
       props.x = chartWidth - displayValueX - displayValueWidth;
       props.y = chartHeight - displayValueY - displayValueHeight;
+      props.verticalAlign = 'bottom';
       break;
     case 90:
       props.x = (barHeight >= displayValueWidth) ?
         chartWidth - displayValueY - displayValueWidth
         : chartWidth - displayValueY;
       props.y = rotatedDisplayValueX;
+      props.verticalAlign = 'middle';
+
+      if (displayValue.isValueContainedInElement && barHeight >= displayValueWidth) {
+        props.x = chartWidth - y - barHeight;
+        props.y = x;
+        props.width = barHeight;
+        props.height = barWidth;
+        props.align = 'right';
+      }
+
       break;
     case -90:
       props.x = (barHeight >= displayValueWidth) ? displayValueY : displayValueY - displayValueWidth;
       props.y = chartHeight - rotatedDisplayValueX - displayValueHeight;
+      props.verticalAlign = 'middle';
+
+      if (displayValue.isValueContainedInElement && barHeight >= displayValueWidth) {
+        props.x = y;
+        props.y = chartHeight - x - barWidth;
+        props.width = barHeight;
+        props.height = barWidth;
+        props.align = 'left';
+      }
       break;
   }
 
