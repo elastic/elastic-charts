@@ -59,6 +59,7 @@ storiesOf('Bar Chart', module)
   .add('with value label', () => {
     const showValueLabel = boolean('show value label', false);
     const alternatingValueLabel = boolean('alternating value label', false);
+    const displayValueSettings = { showValueLabel, alternatingValueLabel };
 
     const displayValueStyle = {
       displayValue: {
@@ -110,8 +111,7 @@ storiesOf('Bar Chart', module)
         />
         <BarSeries
           id={getSpecId('bars')}
-          showValueLabel={showValueLabel}
-          alternatingValueLabel={alternatingValueLabel}
+          displayValueSettings={displayValueSettings}
           xScaleType={ScaleType.Linear}
           yScaleType={ScaleType.Linear}
           xAccessor="x"

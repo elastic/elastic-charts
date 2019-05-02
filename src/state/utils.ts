@@ -358,10 +358,14 @@ export function renderGeometries(
         const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
         const valueFormatter = yAxis && yAxis.tickFormat ? yAxis.tickFormat : identity;
 
+        const displayValueSettings = spec.displayValueSettings ? {
+          valueFormatter,
+          ...spec.displayValueSettings,
+        } : undefined;
+
         const renderedBars = renderBars(
           shift, ds.data, xScale, yScale, color,
-          ds.specId, ds.key, (spec.showValueLabel ? valueFormatter : undefined),
-          spec.alternatingValueLabel, barSeriesStyle,
+          ds.specId, ds.key, displayValueSettings, barSeriesStyle,
         );
         barGeometriesIndex = mergeGeometriesIndexes(
           barGeometriesIndex,

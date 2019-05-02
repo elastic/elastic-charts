@@ -17,7 +17,7 @@ import { CurveType, getCurveFactory } from './curves';
 import { LegendItem } from './legend';
 import { DataSeriesDatum } from './series';
 import { belongsToDataSeries } from './series_utils';
-import { TickFormatter } from './specs';
+import { DisplayValueSpec } from './specs';
 
 export interface GeometryId {
   specId: SpecId;
@@ -179,8 +179,7 @@ export function renderBars(
   color: string,
   specId: SpecId,
   seriesKey: any[],
-  valueFormatter?: TickFormatter,
-  alternatingValueLabel?: boolean,
+  displayValueSettings?: DisplayValueSpec,
   seriesStyle?: CustomBarSeriesStyle,
 ): {
   barGeometries: BarGeometry[];
@@ -224,10 +223,11 @@ export function renderBars(
     const x = xScale.scale(datum.x) + xScale.bandwidth * orderIndex;
     const width = xScale.bandwidth;
 
-    const formattedDisplayValue = valueFormatter ? valueFormatter(initialY1) : undefined;
+    const formattedDisplayValue = displayValueSettings && displayValueSettings.valueFormatter ?
+      displayValueSettings.valueFormatter(initialY1) : undefined;
 
-    // only show displayValue for even bars if showOverlappingValue is false
-    const displayValueText = alternatingValueLabel ?
+    // only show displayValue for even bars if showOverlappingValue
+    const displayValueText = displayValueSettings && displayValueSettings.alternatingValueLabel ?
       (barGeometries.length % 2 === 0 ? formattedDisplayValue : undefined)
       : formattedDisplayValue;
 
