@@ -711,7 +711,6 @@ describe('Chart State utils', () => {
         splitSeriesAccessors: ['g'],
         yScaleToDataExtent: false,
         data: BARCHART_1Y1G,
-        showValueLabel: true,
       };
       const bars2: BarSeriesSpec = {
         id: getSpecId('bars2'),

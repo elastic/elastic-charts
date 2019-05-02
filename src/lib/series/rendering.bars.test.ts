@@ -85,7 +85,7 @@ describe('Rendering bars', () => {
         'red',
         SPEC_ID,
         [],
-        valueFormatter,
+        { valueFormatter },
       );
 
       expect(barGeometries[0]).toEqual({
@@ -134,8 +134,7 @@ describe('Rendering bars', () => {
         'red',
         SPEC_ID,
         [],
-        valueFormatter,
-        true,
+        { valueFormatter, showValueLabel: true },
       );
       expect(barGeometries[0]).toEqual({
         x: 0,

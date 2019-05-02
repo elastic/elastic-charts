@@ -413,6 +413,7 @@ describe('[canvas] Bar Geometries', () => {
       displayValue: {
         text: 'foo',
         width: 10,
+        height: 10,
       },
       chartDimensions: {
         width: 10,
