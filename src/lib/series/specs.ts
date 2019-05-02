@@ -39,6 +39,8 @@ export interface DisplayValueSpec {
   valueFormatter?: TickFormatter;
   /** If true will contain value label within element, else dimensions are computed based on value */
   isValueContainedInElement?: boolean;
+  /** If true will hide values that are clipped at chart edges */
+  hideClippedValue?: boolean;
 }
 
 export interface SeriesSpec {

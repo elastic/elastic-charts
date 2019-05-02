@@ -170,7 +170,7 @@ export function buildBarValueProps({
   barHeight: number;
   barWidth: number;
   displayValueStyle: DisplayValueStyle;
-  displayValue: { text: string; width: number; height: number; };
+  displayValue: { text: string; width: number; height: number; hideClippedValue?: boolean; };
   chartRotation: Rotation;
   chartDimensions: Dimensions;
 }): DisplayValueStyle & {
@@ -237,7 +237,7 @@ export function buildBarValueProps({
   const isOverflowX = props.x + props.width > chartWidth || props.x < 0;
   const isOverflowY = props.y + props.height > chartHeight || props.y < 0;
 
-  if (isOverflowX || isOverflowY) {
+  if (displayValue.hideClippedValue && (isOverflowX || isOverflowY)) {
     props.width = 0;
     props.height = 0;
   }

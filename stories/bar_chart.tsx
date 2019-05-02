@@ -60,8 +60,14 @@ storiesOf('Bar Chart', module)
     const showValueLabel = boolean('show value label', false);
     const isAlternatingValueLabel = boolean('alternating value label', false);
     const isValueContainedInElement = boolean('contain value label within bar element', false);
+    const hideClippedValue = boolean('hide clipped value', false);
 
-    const displayValueSettings = { showValueLabel, isAlternatingValueLabel, isValueContainedInElement };
+    const displayValueSettings = {
+      showValueLabel,
+      isAlternatingValueLabel,
+      isValueContainedInElement,
+      hideClippedValue,
+    };
 
     const displayValueStyle = {
       displayValue: {

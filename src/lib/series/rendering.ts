@@ -59,6 +59,7 @@ export interface BarGeometry {
     text: any;
     width: number;
     height: number;
+    hideClippedValue?: boolean;
   };
   geometryId: GeometryId;
   value: GeometryValue;
@@ -242,8 +243,10 @@ export function renderBars(
     const displayValueHeight = displayValueSettings && displayValueSettings.isValueContainedInElement ?
       height : fontSize || 0;
 
+    const hideClippedValue = displayValueSettings ? displayValueSettings.hideClippedValue : undefined;
+
     const displayValue = displayValueText != null ?
-      { text: displayValueText, width: displayValueWidth, height: displayValueHeight }
+      { text: displayValueText, width: displayValueWidth, height: displayValueHeight, hideClippedValue }
       : undefined;
 
     const barGeometry: BarGeometry = {
