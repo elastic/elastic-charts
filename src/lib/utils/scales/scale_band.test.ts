@@ -79,7 +79,12 @@ describe('Scale Band', () => {
     expect(scale2.scale(3)).toBe(81.25);
     // an empty 1/2 step place at the end
   });
-  test('shall invert all values in range', () => {
+  it('shall not scale scale null values', () => {
+    const scale = new ScaleBand([0, 1, 2], [0, 120], undefined, 0.5);
+    expect(scale.scale(-1)).toBeUndefined();
+    expect(scale.scale(3)).toBeUndefined();
+  });
+  it('shall invert all values in range', () => {
     const domain = ['a', 'b', 'c', 'd'];
     const minRange = 0;
     const maxRange = 100;

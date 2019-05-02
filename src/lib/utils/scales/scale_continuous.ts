@@ -169,12 +169,15 @@ export class ScaleContinuous implements Scale {
     }
     return invertedValue;
   }
-  invertWithStep(value: number, data: number[]): number | undefined {
+  invertWithStep(value: number, data: number[]): any {
     const invertedValue = this.invert(value - this.bandwidth / 2);
     const leftIndex = bisectLeft(data, invertedValue);
     if (leftIndex === 0) {
       // is equal or less than the first value
       const prevValue1 = data[leftIndex];
+      if (data.length === 0) {
+        return prevValue1;
+      }
       const nextValue1 = data[leftIndex + 1];
       const nextDiff1 = Math.abs(nextValue1 - invertedValue);
       const prevDiff1 = Math.abs(invertedValue - prevValue1);
