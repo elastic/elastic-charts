@@ -245,7 +245,7 @@ export function renderBars(
 
     const hideClippedValue = displayValueSettings ? displayValueSettings.hideClippedValue : undefined;
 
-    const displayValue = displayValueText != null ?
+    const displayValue = (displayValueSettings && displayValueSettings.showValueLabel) ?
       { text: displayValueText, width: displayValueWidth, height: displayValueHeight, hideClippedValue }
       : undefined;
 
