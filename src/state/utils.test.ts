@@ -525,6 +525,17 @@ describe('Chart State utils', () => {
         splitSeriesAccessors: ['g'],
         yScaleToDataExtent: false,
         data: BARCHART_1Y1G,
+        barSeriesStyle: {
+          border: {
+            stroke: 'stroke',
+            strokeWidth: 123,
+            visible: true,
+          },
+          opacity: 0.2,
+        },
+        displayValueSettings: {
+          showValueLabel: true,
+        },
       };
       const seriesSpecs = new Map<SpecId, BasicSeriesSpec>([
         [area.id, area],
