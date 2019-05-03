@@ -10,6 +10,7 @@ import {
   buildPointStyleProps,
   getBarValueClipDimensions,
   isBarValueOverflow,
+  rotateBarValueProps,
 } from './rendering_props_utils';
 
 describe('[canvas] Area Geometries props', () => {
@@ -603,5 +604,194 @@ describe('[canvas] Bar Geometries', () => {
     expect(verticalRotatedClipDimensions).toEqual({
       width: 20, height: 10, offsetX: 15, offsetY: 0,
     });
+  });
+  test('can compute props for rotated bar values', () => {
+    const chartDimensions = {
+      width: 100,
+      height: 100,
+      top: 0,
+      left: 0,
+    };
+    const barDimensions = {
+      width: 10,
+      height: 20,
+      top: 0,
+      left: 0,
+    };
+    const displayValueDimensions = {
+      width: 15,
+      height: 25,
+      top: 0,
+      left: 0,
+    };
+    const displayValue = {
+      text: 'foo',
+      width: 10,
+      height: 20,
+      isValueContainedInElement: false,
+    };
+    const displayValueStyle = {
+      fill: 'fill',
+      fontFamily: 'ff',
+      fontSize: 10,
+      padding: 0,
+      offsetX: 0,
+      offsetY: 0,
+    };
+    const props = {
+      ...displayValueStyle,
+      x: 33,
+      y: 66,
+      align: 'center',
+      verticalAlign: 'top',
+      text: 'foo',
+      width: 10,
+      height: 20,
+    };
+
+    // 0 rotation
+    const defaultProps = rotateBarValueProps(
+      0,
+      chartDimensions,
+      barDimensions,
+      displayValueDimensions,
+      displayValue,
+      props,
+    );
+    expect(defaultProps).toEqual(props);
+
+    // 180 rotation
+    const rotatedHorizontalProps = rotateBarValueProps(
+      180,
+      chartDimensions,
+      barDimensions,
+      displayValueDimensions,
+      displayValue,
+      props,
+    );
+    const expectedRotatedHorizontalProps = {
+      ...props,
+      verticalAlign: 'bottom',
+      x: 85,
+      y: 75,
+    };
+    expect(rotatedHorizontalProps).toEqual(expectedRotatedHorizontalProps);
+
+    // 90 rotation
+    const verticalProps = rotateBarValueProps(
+      90,
+      chartDimensions,
+      barDimensions,
+      displayValueDimensions,
+      displayValue,
+      props,
+    );
+    const expectedVerticalProps = {
+      ...props,
+      verticalAlign: 'middle',
+      x: 85,
+      y: -7.5,
+    };
+    expect(verticalProps).toEqual(expectedVerticalProps);
+
+    const verticalOverflowProps = rotateBarValueProps(
+      90,
+      chartDimensions,
+      { ...barDimensions, height: 0 },
+      displayValueDimensions,
+      displayValue,
+      props,
+    );
+
+    expectedVerticalProps.x = 100;
+    expect(verticalOverflowProps).toEqual(expectedVerticalProps);
+
+    const verticalContainedProps = rotateBarValueProps(
+      90,
+      chartDimensions,
+      barDimensions,
+      displayValueDimensions,
+      { ...displayValue, isValueContainedInElement: true },
+      props,
+    );
+
+    expectedVerticalProps.x = 80;
+    expectedVerticalProps.y = 0;
+    expectedVerticalProps.height = 0;
+    expectedVerticalProps.width = 20;
+    expectedVerticalProps.align = 'right';
+    expect(verticalContainedProps).toEqual(expectedVerticalProps);
+
+    const verticalContainedOverflowProps = rotateBarValueProps(
+      90,
+      chartDimensions,
+      { ...barDimensions, height: 0, width: 50 },
+      displayValueDimensions,
+      { ...displayValue, isValueContainedInElement: true },
+      props,
+    );
+    expectedVerticalProps.width = 0;
+    expectedVerticalProps.height = 50;
+    expectedVerticalProps.x = 100;
+    expectedVerticalProps.y = 0;
+    expect(verticalContainedOverflowProps).toEqual(expectedVerticalProps);
+
+    // -90 rotation
+    const rotatedVerticalProps = rotateBarValueProps(
+      -90,
+      chartDimensions,
+      barDimensions,
+      displayValueDimensions,
+      displayValue,
+      props,
+    );
+    const expectedRotatedVerticalProps = {
+      ...props,
+      verticalAlign: 'middle',
+      x: 0,
+      y: 82.5,
+      height: 50,
+      width: 0,
+    };
+    expect(rotatedVerticalProps).toEqual(expectedRotatedVerticalProps);
+
+    const rotatedVerticalOverflowProps = rotateBarValueProps(
+      -90,
+      chartDimensions,
+      { ...barDimensions, height: 0 },
+      displayValueDimensions,
+      displayValue,
+      props,
+    );
+    expectedRotatedVerticalProps.x = -15;
+    expect(rotatedVerticalOverflowProps).toEqual(expectedRotatedVerticalProps);
+
+    const rotatedVerticalOverflowContainedProps = rotateBarValueProps(
+      -90,
+      chartDimensions,
+      { ...barDimensions, height: 0, width: 50 },
+      displayValueDimensions,
+      { ...displayValue, isValueContainedInElement: true },
+      props,
+    );
+
+    expectedRotatedVerticalProps.x = 0;
+    expectedRotatedVerticalProps.y = 50;
+    expectedRotatedVerticalProps.align = 'left';
+    expect(rotatedVerticalOverflowContainedProps).toEqual(expectedRotatedVerticalProps);
+
+    const rotatedVerticalContainedProps = rotateBarValueProps(
+      -90,
+      chartDimensions,
+      barDimensions,
+      displayValueDimensions,
+      { ...displayValue, isValueContainedInElement: true },
+      props,
+    );
+
+    expectedRotatedVerticalProps.width = 20;
+    expectedRotatedVerticalProps.height = 0;
+    expectedRotatedVerticalProps.y = 90;
+    expect(rotatedVerticalContainedProps).toEqual(expectedRotatedVerticalProps);
   });
 });

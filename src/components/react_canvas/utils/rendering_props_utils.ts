@@ -164,7 +164,6 @@ export function rotateBarValueProps(
     text: string;
     width: number;
     height: number;
-    hideClippedValue?: boolean;
     isValueContainedInElement?: boolean;
   },
   props: DisplayValueStyle & {
