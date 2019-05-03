@@ -218,6 +218,10 @@ export type LineAnnotationSpec = BaseAnnotationSpec & {
   };
   /** Annotation lines are hidden */
   hideLines?: boolean;
+  /** z-index of the annotation relative to other elements in the chart
+   * @default 1
+   */
+  zIndex?: number;
 };
 
 export interface RectAnnotationDatum {
@@ -238,6 +242,10 @@ export type RectAnnotationSpec = BaseAnnotationSpec & {
   dataValues: RectAnnotationDatum[];
   /** Custom annotation style */
   style?: Partial<RectAnnotationStyle>;
+  /** z-index of the annotation relative to other elements in the chart
+   * @default -1
+   */
+  zIndex?: number;
 };
 
 export interface BaseAnnotationSpec {
@@ -256,7 +264,7 @@ export interface BaseAnnotationSpec {
   /** Toggles tooltip annotation visibility */
   hideTooltips?: boolean;
   /** z-index of the annotation relative to other elements in the chart
-   * @default 0
+   * Default specified per specific annotation spec.
    */
   zIndex?: number;
 }
