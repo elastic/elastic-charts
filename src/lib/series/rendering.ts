@@ -241,11 +241,9 @@ export function renderBars(
     const displayValueWidth = displayValueSettings && displayValueSettings.isValueContainedInElement ?
       width : computedDisplayValueWidth;
 
-    // const displayValueHeight = displayValueSettings && displayValueSettings.isValueContainedInElement ?
-    //   height : fontSize || 0;
-
     const hideClippedValue = displayValueSettings ? displayValueSettings.hideClippedValue : undefined;
 
+    // whyyyy
     const displayValue = (displayValueSettings && displayValueSettings.showValueLabel) ?
       {
         text: displayValueText,
