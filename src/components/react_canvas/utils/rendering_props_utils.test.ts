@@ -1,3 +1,4 @@
+import { Rotation } from '../../../lib/series/specs';
 import {
   buildAreaLineProps,
   buildAreaPointProps,
@@ -7,9 +8,9 @@ import {
   buildLinePointProps,
   buildLineProps,
   buildPointStyleProps,
+  getBarValueClipDimensions,
   isBarValueOverflow,
 } from './rendering_props_utils';
-import { Rotation } from '../../../lib/series/specs';
 
 describe('[canvas] Area Geometries props', () => {
   test('can build area point props', () => {
@@ -560,5 +561,47 @@ describe('[canvas] Bar Geometries', () => {
       true,
     );
     expect(overflowYHidden).toBe(true);
+  });
+  test('can get bar value clip dimensions', () => {
+    const barHeight = 30;
+    const computedDimensions = {
+      width: 20,
+      height: 10,
+    };
+    const displayValue = {
+      width: 15,
+      height: 5,
+      isValueContainedInElement: false,
+    };
+
+    const unrotatedClipDimensions = getBarValueClipDimensions(
+      displayValue,
+      computedDimensions,
+      barHeight,
+      0,
+    );
+    expect(unrotatedClipDimensions).toEqual({
+      width: 20, height: 10, offsetX: 0, offsetY: 0,
+    });
+
+    const horizontalRotatedClipDimensions = getBarValueClipDimensions(
+      displayValue,
+      computedDimensions,
+      barHeight,
+      180,
+    );
+    expect(horizontalRotatedClipDimensions).toEqual({
+      width: 20, height: 10, offsetX: 0, offsetY: 25,
+    });
+
+    const verticalRotatedClipDimensions = getBarValueClipDimensions(
+      displayValue,
+      computedDimensions,
+      barHeight,
+      90,
+    );
+    expect(verticalRotatedClipDimensions).toEqual({
+      width: 20, height: 10, offsetX: 15, offsetY: 0,
+    });
   });
 });
