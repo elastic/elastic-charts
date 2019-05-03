@@ -236,43 +236,39 @@ export function buildBarValueProps({
       props.y = rotatedDisplayValueX;
       props.verticalAlign = 'middle';
 
-      if (displayValue.isValueContainedInElement && barHeight >= displayValueWidth) {
+      if (displayValue.isValueContainedInElement) {
         props.x = chartWidth - y - barHeight;
         props.y = x;
-        props.width = barHeight;
-        props.height = barWidth;
+        props.width = barHeight >= displayValueWidth ? barHeight : 0;
+        props.height = displayValue.height <= barWidth ? barWidth : 0;
         props.align = 'right';
       }
-
-      if (displayValue.isValueContainedInElement && displayValueHeight > barWidth) {
-        props.width = 0;
-        props.height = 0;
-      }
-
       break;
     case -90:
       props.x = (barHeight >= displayValueWidth) ? displayValueY : displayValueY - displayValueWidth;
       props.y = chartHeight - rotatedDisplayValueX - displayValueHeight;
       props.verticalAlign = 'middle';
 
-      if (displayValue.isValueContainedInElement && barHeight >= displayValueWidth) {
+      if (displayValue.isValueContainedInElement) {
         props.x = y;
         props.y = chartHeight - x - barWidth;
-        props.width = barHeight;
-        props.height = barWidth;
+        props.width = barHeight >= displayValueWidth ? barHeight : 0;
+        props.height = displayValue.height <= barWidth ? barWidth : 0;
         props.align = 'left';
       }
-
-      if (displayValue.isValueContainedInElement && displayValueHeight > barWidth) {
-        props.width = 0;
-        props.height = 0;
-      }
-
       break;
   }
 
-  const isOverflowX = props.x + props.width - displayValueOffsetX > chartWidth || props.x - displayValueOffsetX < 0;
-  const isOverflowY = props.y + props.height - displayValueOffsetY > chartHeight || props.y - displayValueOffsetY < 0;
+  const clipHeight = displayValue.isValueContainedInElement ? displayValue.height : props.height;
+  const clipWidth = displayValue.isValueContainedInElement ? displayValue.width : props.width;
+
+  const clipOffsetY = chartRotation === 180 ? barHeight - displayValue.height : 0;
+  const clipOffsetX = chartRotation === 90 ? barHeight - displayValue.width : 0;
+
+  const isOverflowX = props.x + clipWidth - displayValueOffsetX > chartWidth
+    || props.x + clipOffsetX - displayValueOffsetX < 0;
+  const isOverflowY = props.y + clipHeight - displayValueOffsetY > chartHeight
+    || props.y + clipOffsetY - displayValueOffsetY < 0;
 
   if (displayValue.hideClippedValue && (isOverflowX || isOverflowY)) {
     props.width = 0;
