@@ -395,8 +395,7 @@ describe('[canvas] Bar Geometries', () => {
     });
   });
 
-  // TODO: fix these tests
-  test.skip('can build bar value props', () => {
+  test('can build bar value props', () => {
     const valueArguments = {
       x: 10,
       y: 20,
@@ -426,42 +425,47 @@ describe('[canvas] Bar Geometries', () => {
 
     const basicProps = buildBarValueProps(valueArguments);
     expect(basicProps).toEqual({
-      x: 10,
+      ...valueArguments.displayValueStyle,
+      x: 17.5,
       y: 20,
-      width: 30,
+      height: 15,
+      width: 15,
       align: 'center',
-      fill: 'fill',
-      fontFamily: 'ff',
-      fontSize: 10,
-      padding: 5,
+      verticalAlign: 'top',
+      text: 'foo',
     });
 
     valueArguments.barHeight = 2;
     const insufficientHeightBarProps = buildBarValueProps(valueArguments);
     expect(insufficientHeightBarProps).toEqual({
-      x: 10,
+      ...valueArguments.displayValueStyle,
+      x: 17.5,
       y: 5,
-      width: 30,
+      height: 15,
+      width: 15,
       align: 'center',
-      fill: 'fill',
-      fontFamily: 'ff',
-      fontSize: 10,
-      padding: 5,
+      verticalAlign: 'top',
+      text: 'foo',
     });
 
     valueArguments.y = 4;
     valueArguments.barHeight = 20;
-    valueArguments.displayValueStyle.padding = -5;
+    valueArguments.chartDimensions = {
+      left: 0,
+      top: 0,
+      width: 0,
+      height: 0,
+    };
     const chartOverflowBarProps = buildBarValueProps(valueArguments);
     expect(chartOverflowBarProps).toEqual({
-      x: 10,
+      ...valueArguments.displayValueStyle,
+      x: 17.5,
       y: 4,
-      width: 30,
+      width: 15,
+      height: 15,
       align: 'center',
-      fill: 'fill',
-      fontFamily: 'ff',
-      fontSize: 10,
-      padding: 5,
+      verticalAlign: 'top',
+      text: 'foo',
     });
   });
 });
