@@ -7,6 +7,7 @@ import {
   buildLinePointProps,
   buildLineProps,
   buildPointStyleProps,
+  isBarValueOverflow,
 } from './rendering_props_utils';
 import { Rotation } from '../../../lib/series/specs';
 
@@ -414,6 +415,7 @@ describe('[canvas] Bar Geometries', () => {
         width: 10,
         height: 10,
         isValueContainedInElement: false,
+        hideClippedValue: false,
       },
       chartDimensions: {
         width: 10,
@@ -484,8 +486,8 @@ describe('[canvas] Bar Geometries', () => {
 
     valueArguments.displayValue.isValueContainedInElement = false;
     valueArguments.barWidth = 0;
-    const overflowXBarProps = buildBarValueProps(valueArguments);
-    expect(overflowXBarProps).toEqual({
+    const containedXBarProps = buildBarValueProps(valueArguments);
+    expect(containedXBarProps).toEqual({
       ...valueArguments.displayValueStyle,
       x: 2.5,
       y: 4,
@@ -495,5 +497,68 @@ describe('[canvas] Bar Geometries', () => {
       verticalAlign: 'top',
       text: 'foo',
     });
+
+    valueArguments.displayValue.hideClippedValue = true;
+    valueArguments.barWidth = 0;
+    const clippedBarProps = buildBarValueProps(valueArguments);
+    expect(clippedBarProps).toEqual({
+      ...valueArguments.displayValueStyle,
+      x: 2.5,
+      y: 4,
+      height: 0,
+      width: 0,
+      align: 'center',
+      verticalAlign: 'top',
+      text: 'foo',
+    });
+  });
+  test('shouold get clipDimensions for bar values', () => {
+    const chartDimensions = {
+      width: 100,
+      height: 100,
+      top: 0,
+      left: 0,
+    };
+
+    const clip = {
+      width: 10,
+      height: 20,
+      offsetX: 0,
+      offsetY: 0,
+    };
+
+    const displayValue = {
+      x: 0,
+      y: 0,
+      offsetX: 2,
+      offsetY: 4,
+    };
+
+    const overflowVisible = isBarValueOverflow(
+      chartDimensions,
+      clip,
+      displayValue,
+    );
+    expect(overflowVisible).toBe(false);
+
+    clip.offsetX = -15;
+    clip.offsetY = 0;
+    const overflowXHidden = isBarValueOverflow(
+      chartDimensions,
+      clip,
+      displayValue,
+      true,
+    );
+    expect(overflowXHidden).toBe(true);
+
+    clip.offsetX = 10;
+    clip.offsetY = -25;
+    const overflowYHidden = isBarValueOverflow(
+      chartDimensions,
+      clip,
+      displayValue,
+      true,
+    );
+    expect(overflowYHidden).toBe(true);
   });
 });

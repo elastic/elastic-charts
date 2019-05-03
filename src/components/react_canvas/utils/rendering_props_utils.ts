@@ -237,7 +237,7 @@ export function rotateBarValueProps(
   return props;
 }
 
-export function getClipDimensions(
+export function getBarValueClipDimensions(
   displayValue: { width: number; height: number; isValueContainedInElement?: boolean },
   computedDimensions: { width: number; height: number; },
   barHeight: number,
@@ -252,12 +252,12 @@ export function getClipDimensions(
   return { height, width, offsetX, offsetY };
 }
 
-export function isValueOverflow(
+export function isBarValueOverflow(
   chartDimensions: Dimensions,
   clip: { width: number; height: number; offsetX: number; offsetY: number },
   valuePosition: { x: number; y: number; offsetX: number; offsetY: number },
   hideClippedValue?: boolean,
-) {
+): boolean {
   const chartHeight = chartDimensions.height;
   const chartWidth = chartDimensions.width;
 
@@ -266,7 +266,7 @@ export function isValueOverflow(
   const isOverflowY = valuePosition.y + clip.height - valuePosition.offsetY > chartHeight
     || valuePosition.y + clip.offsetY - valuePosition.offsetY < 0;
 
-  return hideClippedValue && (isOverflowX || isOverflowY);
+  return !!hideClippedValue && (isOverflowX || isOverflowY);
 }
 
 export function buildBarValueProps({
@@ -350,14 +350,13 @@ export function buildBarValueProps({
     baseProps,
   );
 
-  const clip = getClipDimensions(displayValue, props, barHeight, chartRotation);
+  const clip = getBarValueClipDimensions(displayValue, props, barHeight, chartRotation);
 
-  const hideOverflow = isValueOverflow(
+  const hideOverflow = isBarValueOverflow(
     chartDimensions,
     clip,
     { x: props.x, y: props.y, offsetX: displayValueOffsetX, offsetY: displayValueOffsetY },
     displayValue.hideClippedValue,
-
   );
 
   if (hideOverflow) {
