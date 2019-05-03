@@ -413,6 +413,7 @@ describe('[canvas] Bar Geometries', () => {
         text: 'foo',
         width: 10,
         height: 10,
+        isValueContainedInElement: false,
       },
       chartDimensions: {
         width: 10,
@@ -463,6 +464,33 @@ describe('[canvas] Bar Geometries', () => {
       y: 4,
       width: 15,
       height: 15,
+      align: 'center',
+      verticalAlign: 'top',
+      text: 'foo',
+    });
+
+    valueArguments.displayValue.isValueContainedInElement = true;
+    const containedBarProps = buildBarValueProps(valueArguments);
+    expect(containedBarProps).toEqual({
+      ...valueArguments.displayValueStyle,
+      x: 17.5,
+      y: -21,
+      height: 25,
+      width: 15,
+      align: 'center',
+      verticalAlign: 'top',
+      text: 'foo',
+    });
+
+    valueArguments.displayValue.isValueContainedInElement = false;
+    valueArguments.barWidth = 0;
+    const overflowXBarProps = buildBarValueProps(valueArguments);
+    expect(overflowXBarProps).toEqual({
+      ...valueArguments.displayValueStyle,
+      x: 2.5,
+      y: 4,
+      height: 15,
+      width: 15,
       align: 'center',
       verticalAlign: 'top',
       text: 'foo',
