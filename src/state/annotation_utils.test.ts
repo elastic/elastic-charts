@@ -728,7 +728,7 @@ describe('annotation utils', () => {
     expect(hiddenAnnotationDimensions).toEqual(null);
   });
 
-  test('should compute if a point is within an annotation line bounds (xDomain annotation)', () => {
+  test.only('should compute if a point is within an annotation line bounds (xDomain annotation)', () => {
     const linePosition1: AnnotationLinePosition = [10, 0, 10, 20];
     const cursorPosition1: Point = { x: 0, y: 0 };
     const cursorPosition2: Point = { x: 10, y: 0 };
@@ -776,16 +776,16 @@ describe('annotation utils', () => {
     const verticalRotationWithinBounds = isWithinLineBounds(
       Position.Bottom,
       linePosition1,
-      cursorPosition2,
+      { x: 0, y: 10 },
       offset,
       verticalChartRotation,
       chartDimensions,
       domainType,
     );
 
-    expect(verticalRotationWithinBounds).toBe(false);
+    expect(verticalRotationWithinBounds).toBe(true);
   });
-  test('should compute if a point is within an annotation line bounds (yDomain annotation)', () => {
+  test.only('should compute if a point is within an annotation line bounds (yDomain annotation)', () => {
     const linePosition1: AnnotationLinePosition = [10, 0, 10, 20];
     const cursorPosition1: Point = { x: 0, y: 0 };
     const cursorPosition2: Point = { x: 10, y: 0 };
@@ -832,15 +832,15 @@ describe('annotation utils', () => {
 
     const verticalRotationWithinBounds = isWithinLineBounds(
       Position.Left,
-      linePosition1,
-      cursorPosition2,
+      [0, 10, 20, 10],
+      { x: 0, y: 10 },
       offset,
       verticalChartRotation,
       chartDimensions,
       domainType,
     );
 
-    expect(verticalRotationWithinBounds).toBe(false);
+    expect(verticalRotationWithinBounds).toBe(true);
   });
   test('should determine if an annotation line is vertical dependent on domain type & chart rotation', () => {
     const isHorizontal = true;
