@@ -863,10 +863,10 @@ export class ChartStore {
       seriesDomains.yDomain,
       seriesDomains.formattedDataSeries,
       this.seriesColorMap,
-      this.chartTheme.colors,
+      this.chartTheme,
       this.chartDimensions,
       this.chartRotation,
-      this.chartTheme.scales.barsPadding,
+      this.axesSpecs,
     );
 
     // tslint:disable-next-line:no-console
