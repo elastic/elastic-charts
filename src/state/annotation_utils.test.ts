@@ -46,6 +46,7 @@ import {
   isWithinRectBounds,
   scaleAndValidateDatum,
   toTransformString,
+  getRotatedCursor,
 } from './annotation_utils';
 import { Point } from './chart_state';
 
@@ -728,7 +729,7 @@ describe('annotation utils', () => {
     expect(hiddenAnnotationDimensions).toEqual(null);
   });
 
-  test.only('should compute if a point is within an annotation line bounds (xDomain annotation)', () => {
+  test('should compute if a point is within an annotation line bounds (xDomain annotation)', () => {
     const linePosition1: AnnotationLinePosition = [10, 0, 10, 20];
     const cursorPosition1: Point = { x: 0, y: 0 };
     const cursorPosition2: Point = { x: 10, y: 0 };
@@ -785,7 +786,7 @@ describe('annotation utils', () => {
 
     expect(verticalRotationWithinBounds).toBe(true);
   });
-  test.only('should compute if a point is within an annotation line bounds (yDomain annotation)', () => {
+  test('should compute if a point is within an annotation line bounds (yDomain annotation)', () => {
     const linePosition1: AnnotationLinePosition = [10, 0, 10, 20];
     const cursorPosition1: Point = { x: 0, y: 0 };
     const cursorPosition2: Point = { x: 10, y: 0 };
@@ -1484,5 +1485,20 @@ describe('annotation utils', () => {
     };
 
     expect(visibleTooltip).toEqual(expectedVisibleTooltipState);
+  });
+  test('should determine if line is vertical annotation', () => {
+    expect(isVerticalAnnotationLine(true, true)).toBe(true);
+    expect(isVerticalAnnotationLine(true, false)).toBe(false);
+    expect(isVerticalAnnotationLine(false, true)).toBe(false);
+    expect(isVerticalAnnotationLine(false, false)).toBe(true);
+  });
+
+  test('should get rotated cursor position', () => {
+    const rawCursorPosition = { x: 1, y: 2 };
+
+    expect(getRotatedCursor(rawCursorPosition, chartDimensions, 0)).toEqual(rawCursorPosition);
+    expect(getRotatedCursor(rawCursorPosition, chartDimensions, 90)).toEqual({ x: 2, y: 1 });
+    expect(getRotatedCursor(rawCursorPosition, chartDimensions, -90)).toEqual({ x: 18, y: 9 });
+    expect(getRotatedCursor(rawCursorPosition, chartDimensions, 180)).toEqual({ x: 9, y: 18 });
   });
 });

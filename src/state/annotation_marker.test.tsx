@@ -188,6 +188,19 @@ describe('annotation marker', () => {
     );
 
     expect(verticalRotationOutsideBounds).toBe(false);
+
+    const verticalRotationMarkerOutsideBounds = isWithinLineBounds(
+      Position.Bottom,
+      [0, 0, 0, 0],
+      { x: 0, y: 10 },
+      offset,
+      verticalChartRotation,
+      chartDimensions,
+      domainType,
+      marker,
+    );
+
+    expect(verticalRotationMarkerOutsideBounds).toBe(false);
   });
 
   test('should compute if a point is within an annotation line bounds (yDomain annotation)', () => {
@@ -258,5 +271,18 @@ describe('annotation marker', () => {
     );
 
     expect(verticalRotationOutsideBounds).toBe(false);
+
+    const verticalRotationMarkerOutsideBounds = isWithinLineBounds(
+      Position.Left,
+      [0, 0, 0, 0],
+      { x: 0, y: 10 },
+      offset,
+      verticalChartRotation,
+      chartDimensions,
+      domainType,
+      marker,
+    );
+
+    expect(verticalRotationMarkerOutsideBounds).toBe(false);
   });
 });
