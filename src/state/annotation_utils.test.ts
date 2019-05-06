@@ -39,6 +39,7 @@ import {
   getAnnotationLineTooltipTransform,
   getAnnotationLineTooltipXOffset,
   getAnnotationLineTooltipYOffset,
+  getRotatedCursor,
   isBottomRectTooltip,
   isRightRectTooltip,
   isVerticalAnnotationLine,
@@ -46,7 +47,6 @@ import {
   isWithinRectBounds,
   scaleAndValidateDatum,
   toTransformString,
-  getRotatedCursor,
 } from './annotation_utils';
 import { Point } from './chart_state';
 
@@ -977,13 +977,17 @@ describe('annotation utils', () => {
   });
   test('should compute the tooltip state for an annotation line', () => {
     const cursorPosition: Point = { x: 1, y: 2 };
-
     const annotationLines: AnnotationLineProps[] = [
       {
         position: [1, 2, 3, 4],
         details: {},
         tooltipLinePosition: [1, 2, 3, 4],
       },
+      {
+        position: [0, 10, 20, 10],
+        details: {},
+        tooltipLinePosition: [0, 10, 20, 10],
+      }
     ];
     const lineStyle = DEFAULT_ANNOTATION_LINE_STYLE;
     const chartRotation: Rotation = 0;
@@ -1030,6 +1034,25 @@ describe('annotation utils', () => {
 
     expect(xDomainTooltipState).toEqual(expectedXDomainTooltipState);
 
+    // rotated xDomain
+    const xDomainRotatedTooltipState = computeLineAnnotationTooltipState(
+      { x: 9, y: 18 },
+      annotationLines,
+      groupId,
+      AnnotationDomainTypes.XDomain,
+      lineStyle,
+      180,
+      chartDimensions,
+      localAxesSpecs,
+    );
+    const expectedXDomainRotatedTooltipState = {
+      isVisible: true,
+      transform: 'translate(calc(9px - 50%),calc(4px - 100%))',
+      annotationType: 'line',
+    };
+
+    expect(xDomainRotatedTooltipState).toEqual(expectedXDomainRotatedTooltipState);
+
     // add axis for yDomain annotation
     localAxesSpecs.set(verticalAxisSpec.id, verticalAxisSpec);
 
@@ -1050,6 +1073,42 @@ describe('annotation utils', () => {
     };
 
     expect(yDomainTooltipState).toEqual(expectedYDomainTooltipState);
+
+    const flippedYDomainTooltipState = computeLineAnnotationTooltipState(
+      { x: 9, y: 18 },
+      annotationLines,
+      groupId,
+      AnnotationDomainTypes.YDomain,
+      lineStyle,
+      180,
+      chartDimensions,
+      localAxesSpecs,
+    );
+    const expectedFlippedYDomainTooltipState = {
+      isVisible: true,
+      transform: 'translate(calc(1px - 0%),calc(16px - 50%))',
+      annotationType: 'line',
+    };
+
+    expect(flippedYDomainTooltipState).toEqual(expectedFlippedYDomainTooltipState);
+
+    const rotatedYDomainTooltipState = computeLineAnnotationTooltipState(
+      { x: 0, y: 10 },
+      annotationLines,
+      groupId,
+      AnnotationDomainTypes.YDomain,
+      lineStyle,
+      90,
+      chartDimensions,
+      localAxesSpecs,
+    );
+    const expectedRotatedYDomainTooltipState = {
+      isVisible: true,
+      transform: 'translate(calc(10px - 50%),calc(10px - 100%))',
+      annotationType: 'line',
+    };
+
+    expect(rotatedYDomainTooltipState).toEqual(expectedRotatedYDomainTooltipState);
   });
 
   test('should compute the tooltip state for an annotation', () => {

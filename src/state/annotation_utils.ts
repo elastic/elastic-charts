@@ -728,22 +728,43 @@ export function computeLineAnnotationTooltipState(
 
       // Position tooltip based on axis position & lineOffset amount
       const [tooltipStartX, tooltipStartY, tooltipEndX, tooltipEndY] = line.tooltipLinePosition;
-      let tooltipLinePosition: AnnotationLinePosition = [tooltipStartX, tooltipStartY, tooltipEndX, tooltipEndY];
-      if (chartRotation === 180 && domainType === AnnotationDomainTypes.YDomain) {
-        tooltipLinePosition = [tooltipStartX, chartHeight - tooltipStartY, tooltipEndX, chartHeight - tooltipEndY];
-      }
-      if (chartRotation === 180 && domainType === AnnotationDomainTypes.XDomain) {
-        tooltipLinePosition = [chartWidth - tooltipStartX, tooltipStartY, chartWidth - tooltipEndX, tooltipEndY];
-      }
-      if (chartRotation === 90 && domainType === AnnotationDomainTypes.YDomain) {
-        tooltipLinePosition = [chartWidth - tooltipStartX, tooltipStartY, chartWidth - tooltipEndX, tooltipEndY];
-      }
+      const tooltipLinePosition: AnnotationLinePosition = [tooltipStartX, tooltipStartY, tooltipEndX, tooltipEndY];
 
       annotationTooltipState.transform = getAnnotationLineTooltipTransform(
         chartRotation,
         tooltipLinePosition,
         axisPosition,
       );
+
+      if (chartRotation === 180 && domainType === AnnotationDomainTypes.YDomain) {
+        const flippedYDomainTooltipLinePosition: AnnotationLinePosition =
+          [tooltipStartX, chartHeight - tooltipStartY, tooltipEndX, chartHeight - tooltipEndY];
+
+        annotationTooltipState.transform = getAnnotationLineTooltipTransform(
+          chartRotation,
+          flippedYDomainTooltipLinePosition,
+          axisPosition,
+        );
+      }
+      if (chartRotation === 180 && domainType === AnnotationDomainTypes.XDomain) {
+        const rotatedXDomainTooltipLinePosition: AnnotationLinePosition =
+          [chartWidth - tooltipStartX, tooltipStartY, chartWidth - tooltipEndX, tooltipEndY];
+        annotationTooltipState.transform = getAnnotationLineTooltipTransform(
+          chartRotation,
+          rotatedXDomainTooltipLinePosition,
+          axisPosition,
+        );
+      }
+      if (chartRotation === 90 && domainType === AnnotationDomainTypes.YDomain) {
+        const rotatedYDomainTooltipLinePosition: AnnotationLinePosition =
+          [chartWidth - tooltipStartX, tooltipStartY, chartWidth - tooltipEndX, tooltipEndY];
+
+        annotationTooltipState.transform = getAnnotationLineTooltipTransform(
+          chartRotation,
+          rotatedYDomainTooltipLinePosition,
+          axisPosition,
+        );
+      }
 
       if (line.details) {
         annotationTooltipState.header = line.details.headerText;
