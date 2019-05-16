@@ -1,6 +1,7 @@
 import { boolean, color, number, select } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import { DateTime } from 'luxon';
+import moment from 'moment';
 import React from 'react';
 import {
   Axis,
@@ -22,7 +23,11 @@ import {
   timeFormatter,
 } from '../src/';
 import * as TestDatasets from '../src/lib/series/utils/test_dataset';
+import { TEST_DISCOVER_DATA_MINUTES } from '../src/lib/series/utils/test_discover';
+import { TEST_DISCOVER_DATA_DAYS } from '../src/lib/series/utils/test_discover_days';
+
 import { KIBANA_METRICS } from '../src/lib/series/utils/test_dataset_kibana';
+
 const dateFormatter = timeFormatter('HH:mm:ss');
 
 const dataGen = new DataGenerator();
@@ -1365,6 +1370,46 @@ storiesOf('Bar Chart', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
+        />
+      </Chart>
+    );
+  })
+  .add('[test] discover chart', () => {
+    const dataSelection = select('data selection', {
+      days: 'days',
+      minutes: 'minutes',
+    }, 'days');
+
+    const data = dataSelection === 'days' ? TEST_DISCOVER_DATA_DAYS : TEST_DISCOVER_DATA_MINUTES;
+    const discoData = data.series[0].values;
+
+    // Our time formatters use luxon so the moment patterns are incompatible
+    // Since we can pass in our own formatter though that should be ok.
+    const formatter = (val: string) => {
+      return moment(val).format(data.xAxisFormat.params.pattern);
+    };
+
+    return (
+      <Chart className={'story-chart'}>
+        <Axis
+          id={getAxisId('discover-histogram-left-axis')}
+          position={Position.Left}
+          title={data.yAxisLabel}
+        />
+        <Axis
+          id={getAxisId('discover-histogram-bottom-axis')}
+          position={Position.Bottom}
+          title={data.xAxisLabel}
+          tickFormat={formatter}
+        />
+        <BarSeries
+          id={getSpecId('bars')}
+          xScaleType={ScaleType.Time}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          data={discoData}
+          name={data.yAxisLabel}
         />
       </Chart>
     );
