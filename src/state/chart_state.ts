@@ -109,6 +109,8 @@ export class ChartStore {
   debug = false;
   specsInitialized = observable.box(false);
   initialized = observable.box(false);
+  enableHistogramMode: IObservableValue<boolean | undefined> = observable.box(false);
+
   parentDimensions: Dimensions = {
     width: 0,
     height: 0,

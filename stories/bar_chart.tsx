@@ -1391,6 +1391,7 @@ storiesOf('Bar Chart', module)
 
     return (
       <Chart className={'story-chart'}>
+        <Settings enableHistogramMode={true} />
         <Axis
           id={getAxisId('discover-histogram-left-axis')}
           position={Position.Left}
