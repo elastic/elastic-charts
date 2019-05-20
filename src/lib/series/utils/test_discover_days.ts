@@ -1,4 +1,4 @@
-/* tslint: disable */
+/* tslint:disable */
 
 export const TEST_DISCOVER_DATA_DAYS = {
   "xAxisOrderedValues": [
