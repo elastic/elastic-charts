@@ -1,5 +1,6 @@
 // Core
 $echColorPrimary: #1ba9f5;
+$echColorSecondary: #7de2d1;
 $echColorGhost: #fff !default;
 
 // Grays
@@ -9,6 +10,12 @@ $echColorMediumShade: #535966;
 $echColorDarkShade: #98a2b3;
 $echColorDarkestShade: #d4dae5;
 $echColorFullShade: #fff;
+$echColorDanger: #f66;
+
+// Status
+$echColorSuccess: $echColorSecondary;
+$echColorWarning: #ffce7a;
+$echColorDanger: #f66;
 
 // Every color below must be based mathmatically on the set above.
 

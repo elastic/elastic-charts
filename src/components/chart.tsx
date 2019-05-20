@@ -43,7 +43,7 @@ export class Chart extends React.Component<ChartProps> {
     } else {
       containerStyle = {};
     }
-    const chartClass = classNames('ech', className);
+    const chartClass = classNames('echContainer', className);
     return (
       <Provider chartStore={this.chartSpecStore}>
         <Fragment>
