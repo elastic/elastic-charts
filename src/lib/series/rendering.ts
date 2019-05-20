@@ -195,6 +195,7 @@ export function renderBars(
   const barGeometries: BarGeometry[] = [];
 
   const bboxCalculator = new CanvasTextBBoxCalculator();
+  // default padding to 1 for now
   const padding = 1;
   const fontSize = seriesStyle && seriesStyle.displayValue ? seriesStyle.displayValue.fontSize : undefined;
   const fontFamily = seriesStyle && seriesStyle.displayValue ? seriesStyle.displayValue.fontFamily : undefined;
