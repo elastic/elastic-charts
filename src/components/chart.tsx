@@ -10,7 +10,7 @@ import { Highlighter } from './highlighter';
 import { Legend } from './legend/legend';
 import { LegendButton } from './legend/legend_button';
 import { ReactiveChart as ReactChart } from './react_canvas/reactive_chart';
-import { ReactiveChart as SVGChart } from './svg/reactive_chart';
+// import { ReactiveChart as SVGChart } from './svg/reactive_chart';
 import { Tooltips } from './tooltips';
 
 interface ChartProps {
@@ -51,7 +51,8 @@ export class Chart extends React.Component<ChartProps> {
           <div style={containerStyle} className={chartClass}>
             <ChartResizer />
             <Crosshair />
-            {renderer === 'svg' && <SVGChart />}
+            {// TODO reenable when SVG rendered is aligned with canvas one
+            renderer === 'svg' && <ReactChart />}
             {renderer === 'canvas' && <ReactChart />}
             <Tooltips />
             <AnnotationTooltip />

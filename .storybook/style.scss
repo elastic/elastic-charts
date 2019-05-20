@@ -1,12 +1,10 @@
-@import '../src/style/globals/variables/colors';
-
 .story-chart {
   box-sizing: border-box;
   background: white;
 }
 .story-chart-dark {
   box-sizing: border-box;
-  background: $euiColorEmptyShade;
+  background: black;
 }
 #root {
   background-color: blanchedalmond;

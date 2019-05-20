@@ -37,11 +37,11 @@ export function getColorKey(datum: any, colorAccessors: Accessor[], yAccessor?: 
     .join('--');
 }
 
-interface EuiPalette {
+interface EchPalette {
   colors: string[];
 }
 
-const euiPaletteColorBlind: EuiPalette = {
+const echPaletteColorBlind: EchPalette = {
   colors: [
     '#1EA593',
     '#2B70F7',
@@ -56,15 +56,15 @@ const euiPaletteColorBlind: EuiPalette = {
   ],
 };
 
-const euiPaletteForLightBackground: EuiPalette = {
+const echPaletteForLightBackground: EchPalette = {
   colors: ['#006BB4', '#017D73', '#F5A700', '#BD271E', '#DD0A73'],
 };
 
-const euiPaletteForDarkBackground: EuiPalette = {
+const echPaletteForDarkBackground: EchPalette = {
   colors: ['#4DA1C0', '#01B2A4', '#C06C4C', '#BF4D4D', '#F5258C'],
 };
 
-const euiPaletteForStatus: EuiPalette = {
+const echPaletteForStatus: EchPalette = {
   colors: [
     '#58BA6D',
     '#6ECE67',
@@ -80,8 +80,8 @@ const euiPaletteForStatus: EuiPalette = {
 };
 
 export const palettes = {
-  euiPaletteColorBlind,
-  euiPaletteForLightBackground,
-  euiPaletteForDarkBackground,
-  euiPaletteForStatus,
+  echPaletteColorBlind,
+  echPaletteForLightBackground,
+  echPaletteForDarkBackground,
+  echPaletteForStatus,
 };

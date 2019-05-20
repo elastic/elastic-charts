@@ -1,16 +1,16 @@
 .echTooltip {
-  @include euiBottomShadow($color: $euiColorFullShade);
+  @include echBottomShadow($color: $echColorFullShade);
   @include echFontSizeXS;
   pointer-events: none;
   position: absolute;
-  z-index: $euiZLevel9;
-  background-color: rgba(tintOrShade($euiColorFullShade, 25%, 80%), 0.9);
-  color: $euiColorGhost;
-  border-radius: $euiBorderRadius;
+  z-index: $echZLevel9;
+  background-color: rgba(tintOrShade($echColorFullShade, 25%, 80%), 0.9);
+  color: $echColorGhost;
+  border-radius: $echBorderRadius;
   max-width: $echSizeXL * 10;
   overflow: hidden;
   overflow-wrap: break-word;
-  transition: opacity $euiAnimSpeedNormal;
+  transition: opacity $echAnimSpeedNormal;
   user-select: none;
   table {
     border-collapse: collapse;
@@ -25,15 +25,15 @@
   }
 }
 .echTooltip__label {
-  font-weight: $euiFontWeightMedium;
-  color: shade($euiColorGhost, 20%);
+  font-weight: $echFontWeightMedium;
+  color: shade($echColorGhost, 20%);
   border-left: 3px solid red;
 }
 .echTooltip__rowHighlighted {
-  background-color: shade($euiColorGhost, 20%);
-  color: shade($euiColorGhost, 90%);
+  background-color: shade($echColorGhost, 20%);
+  color: shade($echColorGhost, 90%);
   .echTooltip__label {
-    color: shade($euiColorGhost, 90%);
+    color: shade($echColorGhost, 90%);
   }
 }
 
@@ -43,8 +43,8 @@
 
 .echTooltip__header {
   margin: 0;
-  background: rgba(shade($euiColorGhost, 20%), 0.9);
-  color: $euiColorFullShade;
+  background: rgba(shade($echColorGhost, 20%), 0.9);
+  color: $echColorFullShade;
   padding: 0 8px;
 }
 .echTooltip__table {

@@ -2,7 +2,7 @@
   position: relative;
   width: 100%;
   height: 100%;
-  @include euiFont;
+  @include echFont;
   font-size: $echFontSize;
   color: $echTextColor;
   box-sizing: border-box;

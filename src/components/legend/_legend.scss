@@ -88,7 +88,7 @@ $echLegendMaxHeight: 64px;
   }
 }
 .echLegendListContainer {
-  @include euiScrollBar;
+  @include echScrollBar;
   height: 100%;
   width: 100%;
   overflow-y: auto;
@@ -193,11 +193,11 @@ $echLegendMaxHeight: 64px;
 //   height: 100%;
 //   max-width: 100%;
 //   width: 100%;
-//   @include euiScrollBar;
+//   @include echScrollBar;
 // }
 
 // .echLegend__toggle {
-//   border-radius: $euiBorderRadius;
+//   border-radius: $echBorderRadius;
 //   border-bottom-right-radius: 0;
 //   border-top-left-radius: 0;
 //   border-bottom-left-radius: 0;
@@ -205,14 +205,14 @@ $echLegendMaxHeight: 64px;
 //   bottom: 0;
 //   left: 0;
 //   opacity: 0;
-//   background-color: $euiColorEmptyShade;
-//   transition: opacity $euiAnimSpeedFast $euiAnimSlightResistance,
-//     background-color $euiAnimSpeedFast $euiAnimSlightResistance $euiAnimSpeedExtraSlow;
+//   background-color: $echColorEmptyShade;
+//   transition: opacity $echAnimSpeedFast $echAnimSlightResistance,
+//     background-color $echAnimSpeedFast $echAnimSlightResistance $echAnimSpeedExtraSlow;
 //   &:focus {
 //     box-shadow: none;
-//     background-color: $euiFocusBackgroundColor !important;
+//     background-color: $echFocusBackgroundColor !important;
 //   }
 // }
 // .echLegend__toggle--isOpen {
-//   background-color: transparentize($euiColorDarkestShade, 0.9);
+//   background-color: transparentize($echColorDarkestShade, 0.9);
 // }

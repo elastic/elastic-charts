@@ -99,7 +99,7 @@ export const DARK_THEME: Theme = {
     },
   },
   colors: {
-    vizColors: palettes.euiPaletteColorBlind.colors,
+    vizColors: palettes.echPaletteColorBlind.colors,
     defaultVizColor: DEFAULT_MISSING_COLOR,
   },
   legend: {

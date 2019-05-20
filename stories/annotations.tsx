@@ -257,7 +257,7 @@ storiesOf('Annotations', module)
     const axisPosition = Position.Bottom;
 
     const marker = select<'alert' | 'eye' | 'questionInCircle'>(
-      'marker icon (examples from EUI)',
+      'marker icon (examples from internal Icon library)',
       {
         alert: 'alert',
         eye: 'eye',
