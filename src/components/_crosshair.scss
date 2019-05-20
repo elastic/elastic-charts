@@ -1,14 +1,14 @@
-.elasticChartsCrosshair {
+.echCrosshair {
   position: absolute;
   pointer-events: none;
 }
 
-.elasticChartsCrosshair__band {
+.echCrosshair__band {
   position: absolute;
   pointer-events: none;
 }
 
-.elasticChartsCrosshair__line {
+.echCrosshair__line {
   position: absolute;
   pointer-events: none;
   z-index: $euiZLevel8;

@@ -1,18 +1,20 @@
-.elasticChartsTooltip {
+.echTooltip {
   @include euiBottomShadow($color: $euiColorFullShade);
-  @include euiFontSizeXS;
+  @include echFontSizeXS;
   pointer-events: none;
   position: absolute;
   z-index: $euiZLevel9;
   background-color: rgba(tintOrShade($euiColorFullShade, 25%, 80%), 0.9);
   color: $euiColorGhost;
   border-radius: $euiBorderRadius;
-  max-width: $euiSizeXL * 10;
+  max-width: $echSizeXL * 10;
   overflow: hidden;
   overflow-wrap: break-word;
   transition: opacity $euiAnimSpeedNormal;
   user-select: none;
   table {
+    border-collapse: collapse;
+    border-spacing: 0;
     td,
     th {
       padding: 3px;
@@ -22,29 +24,29 @@
     width: 100%;
   }
 }
-.elasticChartsTooltip__label {
+.echTooltip__label {
   font-weight: $euiFontWeightMedium;
   color: shade($euiColorGhost, 20%);
   border-left: 3px solid red;
 }
-.elasticChartsTooltip__rowHighlighted {
+.echTooltip__rowHighlighted {
   background-color: shade($euiColorGhost, 20%);
   color: shade($euiColorGhost, 90%);
-  .elasticChartsTooltip__label {
+  .echTooltip__label {
     color: shade($euiColorGhost, 90%);
   }
 }
 
-.elasticChartsTooltip--hidden {
+.echTooltip--hidden {
   opacity: 0;
 }
 
-.elasticChartsTooltip__header {
+.echTooltip__header {
   margin: 0;
   background: rgba(shade($euiColorGhost, 20%), 0.9);
   color: $euiColorFullShade;
   padding: 0 8px;
 }
-.elasticChartsTooltip__table {
+.echTooltip__table {
   margin: 4px;
 }

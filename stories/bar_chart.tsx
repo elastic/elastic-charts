@@ -3,6 +3,7 @@ import { storiesOf } from '@storybook/react';
 import { DateTime } from 'luxon';
 import React from 'react';
 import {
+  AreaSeries,
   Axis,
   BarSeries,
   Chart,
@@ -20,6 +21,7 @@ import {
   ScaleType,
   Settings,
   timeFormatter,
+  TooltipType,
 } from '../src/';
 import * as TestDatasets from '../src/lib/series/utils/test_dataset';
 import { KIBANA_METRICS } from '../src/lib/series/utils/test_dataset_kibana';
@@ -895,6 +897,7 @@ storiesOf('Bar Chart', module)
     const data = dg.generateSimpleSeries(15000);
     return (
       <Chart className={'story-chart'}>
+        <Settings tooltipType={TooltipType.Follow} />
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} />
         <Axis
           id={getAxisId('left2')}
@@ -903,12 +906,13 @@ storiesOf('Bar Chart', module)
           tickFormat={(d) => Number(d).toFixed(2)}
         />
 
-        <BarSeries
+        <AreaSeries
           id={getSpecId('bars')}
           xScaleType={ScaleType.Linear}
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y']}
+          splitSeriesAccessors={['g']}
           data={data}
         />
       </Chart>

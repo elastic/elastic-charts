@@ -1,0 +1,14 @@
+// Font sizing extends, using rem mixin
+@mixin euiFont {
+  font-family: $euiFontFamily;
+  font-weight: $euiFontWeightRegular;
+  letter-spacing: -0.005em;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  font-kerning: normal;
+}
+
+@mixin echFontSizeXS {
+  @include fontSize($echFontSizeXS);
+  line-height: $euiLineHeight;
+}

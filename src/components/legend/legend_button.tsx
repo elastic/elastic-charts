@@ -1,8 +1,7 @@
-import { EuiButtonIcon } from '@elastic/eui';
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { ChartStore } from '../state/chart_state';
+import { ChartStore } from '../../state/chart_state';
 
 interface ReactiveChartProps {
   chartStore?: ChartStore;
@@ -21,14 +20,14 @@ class LegendButtonComponent extends React.Component<ReactiveChartProps> {
       return null;
     }
     const isOpen = !legendCollapsed.get();
-    const className = classNames('elasticChartsLegend__toggle', {
-      'elasticChartsLegend__toggle--isOpen': isOpen,
+    const className = classNames('echLegend__toggle', {
+      'echLegend__toggle--isOpen': isOpen,
     });
     return (
-      <EuiButtonIcon
+      <div
         className={className}
         onClick={this.onCollapseLegend}
-        iconType="list"
+        // iconType="list"
         aria-label={legendCollapsed.get() ? 'Expand legend' : 'Collapse legend'}
       />
     );

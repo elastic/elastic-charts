@@ -1,0 +1,57 @@
+.echLegendItem {
+  color: $echTextColor;
+  max-width: 100%;
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  user-select: none;
+  &:hover {
+    .echLegendItem__title {
+      text-decoration: underline;
+    }
+  }
+}
+.echLegendItem__color {
+  margin: 0 4px;
+}
+
+.echLegendItem__visibility {
+  width: 15px;
+  height: 15px;
+  margin-right: 4px;
+  &:hover {
+    cursor: pointer;
+  }
+  svg {
+    fill: $echTextColor;
+  }
+}
+
+.echLegendItem__title {
+  @include echFontSizeXS;
+  margin-right: 4px;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: default;
+}
+.echLegendItem__title--selected {
+  text-decoration: underline;
+}
+.echLegendItem__title--hasClickListener {
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.echLegendItem__displayValue {
+  @include echFontSizeXS;
+  text-align: right;
+  margin-right: 4px;
+
+  &.echLegendItem__displayValue--hidden {
+    display: none;
+  }
+}

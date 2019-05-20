@@ -1,4 +1,4 @@
-import { palettes } from '@elastic/eui';
+import { palettes } from './colors';
 import { Theme } from './theme';
 
 import {
@@ -103,7 +103,7 @@ export const LIGHT_THEME: Theme = {
     defaultVizColor: DEFAULT_MISSING_COLOR,
   },
   legend: {
-    verticalWidth: 160,
+    verticalWidth: 200,
     horizontalHeight: 64,
   },
   crosshair: {

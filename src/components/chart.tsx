@@ -7,8 +7,8 @@ import { AnnotationTooltip } from './annotation_tooltips';
 import { ChartResizer } from './chart_resizer';
 import { Crosshair } from './crosshair';
 import { Highlighter } from './highlighter';
-import { Legend } from './legend';
-import { LegendButton } from './legend_button';
+import { Legend } from './legend/legend';
+import { LegendButton } from './legend/legend_button';
 import { ReactiveChart as ReactChart } from './react_canvas/reactive_chart';
 import { ReactiveChart as SVGChart } from './svg/reactive_chart';
 import { Tooltips } from './tooltips';
@@ -43,7 +43,7 @@ export class Chart extends React.Component<ChartProps> {
     } else {
       containerStyle = {};
     }
-    const chartClass = classNames('elasticCharts', className);
+    const chartClass = classNames('ech', className);
     return (
       <Provider chartStore={this.chartSpecStore}>
         <Fragment>

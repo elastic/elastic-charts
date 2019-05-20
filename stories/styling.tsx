@@ -1,4 +1,3 @@
-import { palettes } from '@elastic/eui';
 import { boolean, color, number, select } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import React from 'react';
@@ -25,6 +24,7 @@ import {
   Settings,
 } from '../src/';
 import * as TestDatasets from '../src/lib/series/utils/test_dataset';
+import { palettes } from '../src/lib/themes/colors';
 
 function range(
   title: string,

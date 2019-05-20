@@ -1,0 +1,28 @@
+// Mixes a provided color with white.
+@function tint($color, $percent) {
+  @return mix(#fff, $color, $percent);
+}
+
+// Mixes a provided color with black.
+@function shade($color, $percent) {
+  @return mix(#000, $color, $percent);
+}
+
+// For theming. Checks the text color and tells us whether it's light or dark.
+// Based on that we either tint (add white) or shade (add black).
+@function tintOrShade($color, $tint, $shade) {
+  @if (lightness($echTextColor) > 50) {
+    @return shade($color, $shade);
+  } @else {
+    @return tint($color, $tint);
+  }
+}
+
+// The reverse of the above
+@function shadeOrTint($color, $shade, $tint) {
+  @if (lightness($echTextColor) < 50) {
+    @return shade($color, $shade);
+  } @else {
+    @return tint($color, $tint);
+  }
+}

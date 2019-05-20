@@ -1,0 +1,11 @@
+$echSize: 16px !default;
+
+$echSizeXS: $echSize * 0.25 !default;
+$echSizeS: $echSize * 0.5 !default;
+$echSizeM: $echSize * 0.75 !default;
+$echSizeL: $echSize * 1.5 !default;
+$echSizeXL: $echSize * 2 !default;
+$echSizeXXL: $echSize * 2.5 !default;
+
+$euiScrollBar: $echSize !default;
+$euiScrollBarCorner: $echSizeS * 0.75 !default;

@@ -1,0 +1,17 @@
+// Core
+
+$euiColorPrimary: #006bb4 !default;
+$euiColorGhost: #fff !default;
+
+// Grays
+$euiColorEmptyShade: #fff !default;
+$euiColorLightShade: #d3dae6 !default;
+$euiColorMediumShade: #98a2b3 !default;
+$euiColorDarkShade: #69707d !default;
+$euiColorDarkestShade: #343741 !default;
+$euiColorFullShade: #000 !default;
+
+// Every color below must be based mathmatically on the set above.
+
+$echTextColor: $euiColorDarkestShade !default;
+$euiFocusBackgroundColor: tintOrShade($euiColorPrimary, 90%, 50%) !default;
