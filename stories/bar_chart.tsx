@@ -4,15 +4,18 @@ import { DateTime } from 'luxon';
 import moment from 'moment';
 import React from 'react';
 import {
+  AnnotationDomainTypes,
   Axis,
   BarSeries,
   Chart,
   DARK_THEME,
   DataGenerator,
+  getAnnotationId,
   getAxisId,
   getGroupId,
   getSpecId,
   LIGHT_THEME,
+  LineAnnotation,
   LineSeries,
   mergeWithDefaultTheme,
   niceTimeFormatByDay,
@@ -1389,9 +1392,23 @@ storiesOf('Bar Chart', module)
       return moment(val).format(data.xAxisFormat.params.pattern);
     };
 
+    const lineAnnotationStyle = {
+      line: {
+        strokeWidth: 2,
+        stroke: '#c80000',
+        opacity: 0.3,
+      },
+    };
+
     return (
       <Chart className={'story-chart'}>
         <Settings enableHistogramMode={true} />
+        <LineAnnotation
+          annotationId={getAnnotationId('line-annotation')}
+          domainType={AnnotationDomainTypes.XDomain}
+          dataValues={[{dataValue: 1557403200000}]}
+          style={lineAnnotationStyle}
+        />
         <Axis
           id={getAxisId('discover-histogram-left-axis')}
           position={Position.Left}
