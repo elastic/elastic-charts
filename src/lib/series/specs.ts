@@ -122,6 +122,7 @@ export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales & {
 export type BarSeriesSpec = BasicSeriesSpec & {
   /** @default bar */
   seriesType: 'bar';
+  barSeriesStyle?: CustomBarSeriesStyle;
 };
 
 /**
@@ -131,6 +132,7 @@ export type LineSeriesSpec = BasicSeriesSpec & {
   /** @default line */
   seriesType: 'line';
   curve?: CurveType;
+  lineSeriesStyle?: LineSeriesStyle;
 };
 
 /**
@@ -141,6 +143,7 @@ export type AreaSeriesSpec = BasicSeriesSpec & {
   seriesType: 'area';
   /** The type of interpolator to be used to interpolate values between points */
   curve?: CurveType;
+  areaSeriesStyle?: AreaSeriesStyle;
 };
 
 /**
