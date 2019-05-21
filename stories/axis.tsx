@@ -70,6 +70,7 @@ storiesOf('Axis', module)
           title={'Left axis'}
           position={Position.Left}
           tickFormat={(d) => Number(d).toFixed(2)}
+          tickLabelPadding={tickLabelPadding}
         />
 
         <AreaSeries
@@ -84,7 +85,7 @@ storiesOf('Axis', module)
     );
   })
   .add('tick label rotation', () => {
-    const tickLabelPadding = number('Bottom Axis Tick Label Padding', 0);
+    const tickLabelPadding = number('Axis Tick Label Padding', 0);
     return (
       <Chart className={'story-chart'}>
         <Axis
@@ -94,7 +95,7 @@ storiesOf('Axis', module)
           showOverlappingTicks={true}
           tickLabelRotation={number('bottom axis tick label rotation', 0, {
             range: true,
-            min: -90,
+            min: -900,
             max: 90,
             step: 1,
           })}
@@ -111,6 +112,7 @@ storiesOf('Axis', module)
             step: 1,
           })}
           tickFormat={(d) => Number(d).toFixed(2)}
+          tickLabelPadding={tickLabelPadding}
         />
         <Axis
           id={getAxisId('top')}
@@ -123,6 +125,7 @@ storiesOf('Axis', module)
             step: 1,
           })}
           tickFormat={(d) => Number(d).toFixed(2)}
+          tickLabelPadding={tickLabelPadding}
         />
         <Axis
           id={getAxisId('right')}
@@ -135,6 +138,7 @@ storiesOf('Axis', module)
             step: 1,
           })}
           tickFormat={(d) => Number(d).toFixed(2)}
+          tickLabelPadding={tickLabelPadding}
         />
         <AreaSeries
           id={getSpecId('lines')}
@@ -369,7 +373,6 @@ storiesOf('Axis', module)
       min: number('xDomain min', 0),
       max: number('xDomain max', 3),
     };
-
     return (
       <Chart className={'story-chart'}>
         <Settings showLegend={false} xDomain={xDomain} />
