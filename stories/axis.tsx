@@ -56,7 +56,7 @@ storiesOf('Axis', module)
   .add('basic', () => {
     const tickLabelPadding = number('Tick Label Padding', 0);
     return (
-      <Chart renderer="canvas" className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings debug={boolean('debug', false)}/>
         <Axis
           id={getAxisId('bottom')}

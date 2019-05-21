@@ -1,4 +1,4 @@
-import { boolean, number, select } from '@storybook/addon-knobs';
+import { boolean, select } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import React from 'react';
 import {
@@ -14,7 +14,6 @@ import {
 
 storiesOf('Rotations', module)
   .add('with ordinal axis', () => {
-    const tickLabelPadding = number('Tick Label Padding', 0);
     return (
       <Chart className={'story-chart'}>
         <Settings
@@ -47,7 +46,6 @@ storiesOf('Rotations', module)
           title={'Bottom axis'}
           showOverlappingTicks={true}
           showOverlappingLabels={boolean('bottom show overlapping labels', false)}
-          tickLabelPadding={tickLabelPadding}
         />
         <Axis
           id={getAxisId('left2')}

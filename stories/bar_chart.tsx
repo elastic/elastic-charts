@@ -302,7 +302,6 @@ storiesOf('Bar Chart', module)
   })
   .add('with time x axis', () => {
     const formatter = timeFormatter(niceTimeFormatByDay(1));
-    const tickLabelPadding = number('Tick Label Padding', 0);
     return (
       <Chart className={'story-chart'}>
         <Settings debug={boolean('debug', false)} />
@@ -313,7 +312,6 @@ storiesOf('Bar Chart', module)
           showOverlappingTicks={boolean('showOverlappingTicks bottom axis', false)}
           showOverlappingLabels={boolean('showOverlappingLabels bottom axis', false)}
           tickFormat={formatter}
-          tickLabelPadding={tickLabelPadding}
         />
         <Axis
           id={getAxisId('left2')}

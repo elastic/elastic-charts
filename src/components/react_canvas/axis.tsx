@@ -29,7 +29,7 @@ export class Axis extends React.PureComponent<AxisProps> {
     return this.renderAxis();
   }
   renderTickLabel = (tick: AxisTick, i: number) => {
-    // suppress padding render from canvas
+    // suppress padding render from canvas to avoid conflict with tickLabelPadding
     const labelStyle = {
       ...this.props.chartTheme.axes.tickLabelStyle,
       padding: 0,
