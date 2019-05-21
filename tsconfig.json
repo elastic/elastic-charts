@@ -8,13 +8,14 @@
     "preserveConstEnums": true,
     "strict": true,
     "esModuleInterop": true,
-    "module": "es6",
-    "target": "es6",
+    "module": "CommonJS",
+    "target": "es5",
     "lib": ["esnext", "dom"],
     "moduleResolution": "node",
     "jsx": "react",
     "allowJs": false,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "downlevelIteration": true
   },
   "include": ["src/**/*"],
   "exclude": ["**/*.test.*"]
