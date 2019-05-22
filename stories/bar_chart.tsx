@@ -3,7 +3,6 @@ import { storiesOf } from '@storybook/react';
 import { DateTime } from 'luxon';
 import React from 'react';
 import {
-  AreaSeries,
   Axis,
   BarSeries,
   Chart,
@@ -906,7 +905,7 @@ storiesOf('Bar Chart', module)
           tickFormat={(d) => Number(d).toFixed(2)}
         />
 
-        <AreaSeries
+        <BarSeries
           id={getSpecId('bars')}
           xScaleType={ScaleType.Linear}
           yScaleType={ScaleType.Linear}
