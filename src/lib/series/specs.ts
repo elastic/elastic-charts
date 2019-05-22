@@ -110,11 +110,7 @@ export interface SeriesScales {
   yScaleToDataExtent: boolean;
 }
 
-export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales & {
-  barSeriesStyle?: CustomBarSeriesStyle;
-  lineSeriesStyle?: LineSeriesStyle;
-  areaSeriesStyle?: AreaSeriesStyle;
-};
+export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales;
 
 /**
  * This spec describe the dataset configuration used to display a bar series.
@@ -298,4 +294,16 @@ export function isLineAnnotation(spec: AnnotationSpec): spec is LineAnnotationSp
 
 export function isRectAnnotation(spec: AnnotationSpec): spec is RectAnnotationSpec {
   return spec.annotationType === AnnotationTypes.Rectangle;
+}
+
+export function isBarSeriesSpec(spec: BasicSeriesSpec): spec is BarSeriesSpec {
+  return spec.seriesType === 'bar';
+}
+
+export function isLineSeriesSpec(spec: BasicSeriesSpec): spec is LineSeriesSpec {
+  return spec.seriesType === 'line';
+}
+
+export function isAreaSeriesSpec(spec: BasicSeriesSpec): spec is AreaSeriesSpec {
+  return spec.seriesType === 'area';
 }
