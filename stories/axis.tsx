@@ -333,6 +333,7 @@ storiesOf('Axis', module)
   .add('w many tick labels', () => {
     const dg = new DataGenerator();
     const data = dg.generateSimpleSeries(31);
+    const tickLabelPadding = number('Axis Tick Label Padding', 0);
     return (
       <Chart className={'story-chart'}>
         <Settings debug={true} />
@@ -341,6 +342,7 @@ storiesOf('Axis', module)
           position={Position.Bottom}
           title={'Bottom axis'}
           showOverlappingTicks={true}
+          tickLabelPadding={tickLabelPadding}
         />
         <AreaSeries
           id={getSpecId('lines')}

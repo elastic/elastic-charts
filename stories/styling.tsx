@@ -661,4 +661,49 @@ storiesOf('Stylings', module)
         />
       </Chart>
     );
+  })
+  .add('tickLabelPadding both prop and theme', () => {
+    const theme: PartialTheme = {
+      axes: {
+        tickLabelStyle: {
+          fill: color('tickFill', '#333', 'Tick Label'),
+          fontSize: range('tickFontSize', 0, 40, 10, 'Tick Label'),
+          fontFamily: `'Open Sans', Helvetica, Arial, sans-serif`,
+          fontStyle: 'normal',
+          padding: number('Tick Label Padding Theme', 1, {}, 'Tick Label'),
+        },
+      },
+    };
+    const customTheme = mergeWithDefaultTheme(theme, LIGHT_THEME);
+    const tickLabelPadding = number('Tick Label Padding Prop', 0);
+    return (
+      <Chart className={'story-chart'}>
+        <Settings
+          theme={customTheme}
+          debug={boolean('debug', true)}
+        />
+        <Axis
+          id={getAxisId('bottom')}
+          position={Position.Bottom}
+          title={'Bottom axis'}
+          showOverlappingTicks={true}
+          tickLabelPadding={tickLabelPadding}
+        />
+        <Axis
+          id={getAxisId('left2')}
+          title={'Left axis'}
+          position={Position.Left}
+          tickFormat={(d) => Number(d).toFixed(2)}
+          tickLabelPadding={tickLabelPadding}
+        />
+        <AreaSeries
+          id={getSpecId('lines')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
+        />
+      </Chart>
+    );
   });
