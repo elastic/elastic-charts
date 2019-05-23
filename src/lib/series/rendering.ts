@@ -239,9 +239,9 @@ export function renderBars(
 
     const computedDisplayValueWidth = bboxCalculator.compute(displayValueText || '', padding, fontSize, fontFamily)
                                                     .getOrElse({
-      width: 0,
-      height: 0,
-    }).width;
+                                                                width: 0,
+                                                                height: 0,
+                                                              }).width;
     const displayValueWidth = displayValueSettings && displayValueSettings.isValueContainedInElement ?
       width : computedDisplayValueWidth;
 

@@ -95,7 +95,7 @@ storiesOf('Axis', module)
           showOverlappingTicks={true}
           tickLabelRotation={number('bottom axis tick label rotation', 0, {
             range: true,
-            min: -900,
+            min: -90,
             max: 90,
             step: 1,
           })}

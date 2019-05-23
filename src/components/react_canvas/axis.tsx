@@ -29,7 +29,11 @@ export class Axis extends React.PureComponent<AxisProps> {
     return this.renderAxis();
   }
   renderTickLabel = (tick: AxisTick, i: number) => {
-// padding is already being computed through bbox_calculator using tickLabelPadding, set padding to 0 to avoid conflict
+  /**
+   * padding is already computed through width
+   * and bbox_calculator using tickLabelPadding
+   * set padding to 0 to avoid conflict
+   */
     const labelStyle = {
       ...this.props.chartTheme.axes.tickLabelStyle,
       padding: 0,
