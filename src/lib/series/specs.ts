@@ -176,7 +176,7 @@ export interface AxisSpec {
   title?: string;
   /** If specified, it constrains the domain for these values */
   domain?: DomainRange;
-  /** Handles the user supplied padding for axis debug */
+  /** Specifies the amount of padding on the tick label bounding box */
   tickLabelPadding?: number;
 }
 

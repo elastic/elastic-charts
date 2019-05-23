@@ -675,7 +675,7 @@ storiesOf('Stylings', module)
       },
     };
     const customTheme = mergeWithDefaultTheme(theme, LIGHT_THEME);
-    const tickLabelPadding = number('Tick Label Padding Prop', 0);
+    const tickLabelPadding = number('Tick Label Padding Axis Spec', 0);
     return (
       <Chart className={'story-chart'}>
         <Settings
@@ -694,7 +694,6 @@ storiesOf('Stylings', module)
           title={'Left axis'}
           position={Position.Left}
           tickFormat={(d) => Number(d).toFixed(2)}
-          tickLabelPadding={tickLabelPadding}
         />
         <AreaSeries
           id={getSpecId('lines')}
