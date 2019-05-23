@@ -90,8 +90,8 @@ export function computeAxisTicksDimensions(
   );
 
   return {
-    axisScaleDomain: xDomain.domain,
-    axisScaleType: xDomain.scaleType,
+    axisScaleDomain: xDomain.domain, // is this used anymore?
+    axisScaleType: xDomain.scaleType, // is this used anymore?
     ...dimensions,
   };
 }
@@ -291,7 +291,7 @@ export function getTickLabelProps(
   }
 
   return {
-    x: tickPosition - maxLabelBboxWidth / 2,
+    x: (tickPosition - maxLabelBboxWidth / 2),
     y: isAxisTop ? 0 : tickSize + tickPadding,
     align,
     verticalAlign,

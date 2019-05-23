@@ -1400,9 +1400,20 @@ storiesOf('Bar Chart', module)
       },
     };
 
+    const chartRotation = select<Rotation>(
+      'chartRotation',
+      {
+        '0 deg': 0,
+        '90 deg': 90,
+        '-90 deg': -90,
+        '180 deg': 180,
+      },
+      0,
+    );
+
     return (
       <Chart className={'story-chart'}>
-        <Settings enableHistogramMode={true} />
+        <Settings rotation={chartRotation} />
         <LineAnnotation
           annotationId={getAnnotationId('line-annotation')}
           domainType={AnnotationDomainTypes.XDomain}
@@ -1420,7 +1431,7 @@ storiesOf('Bar Chart', module)
           title={data.xAxisLabel}
           tickFormat={formatter}
         />
-        <BarSeries
+        <BarSeries // assume histogram mode is enabled already
           id={getSpecId('bars')}
           xScaleType={ScaleType.Time}
           yScaleType={ScaleType.Linear}
@@ -1428,7 +1439,19 @@ storiesOf('Bar Chart', module)
           yAccessors={['y']}
           data={discoData}
           name={data.yAxisLabel}
+          timeZone={'local'}
+          enableHistogramMode={true}
         />
+        <LineSeries
+          id={getSpecId('lines')}
+          xScaleType={ScaleType.Time}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          data={discoData}
+        />
+        {/* <BarSeries enableHistogramMode={true} /> if the user specifies,
+        then we will stack the series & this misconfiguration can be caught when validation */}
       </Chart>
     );
   })

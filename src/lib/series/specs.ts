@@ -122,6 +122,8 @@ export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales & {
 export type BarSeriesSpec = BasicSeriesSpec & {
   /** @default bar */
   seriesType: 'bar';
+  /* If true, will stack all BarSeries and align bars to ticks (instead of centered on ticks) */
+  enableHistogramMode?: boolean;
 };
 
 /**
