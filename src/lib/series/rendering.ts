@@ -182,6 +182,7 @@ export function renderBars(
   color: string,
   specId: SpecId,
   seriesKey: any[],
+  enableHistogramMode: boolean,
   displayValueSettings?: DisplayValueSpec,
   seriesStyle?: CustomBarSeriesStyle,
 ): {
@@ -223,8 +224,10 @@ export function renderBars(
       y = yScale.scale(y1);
       height = yScale.scale(y0) - y;
     }
-    const x = xScale.scale(datum.x) + xScale.bandwidth * orderIndex;
+
     const width = xScale.bandwidth;
+    const bandOffset = enableHistogramMode ? width / 2 : 0;
+    const x = (xScale.scale(datum.x) + xScale.bandwidth * orderIndex) + bandOffset;
 
     const formattedDisplayValue = displayValueSettings && displayValueSettings.valueFormatter ?
       displayValueSettings.valueFormatter(initialY1) : undefined;

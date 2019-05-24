@@ -163,6 +163,7 @@ export function computeSeriesGeometries(
   chartDims: Dimensions,
   chartRotation: Rotation,
   axesSpecs: Map<AxisId, AxisSpec>,
+  enableHistogramMode: boolean,
 ): {
   scales: {
     xScale: Scale;
@@ -229,6 +230,7 @@ export function computeSeriesGeometries(
       chartColors.defaultVizColor,
       axesSpecs,
       chartTheme,
+      enableHistogramMode,
     );
     orderIndex = counts.barSeries > 0 ? orderIndex + 1 : orderIndex;
     areas.push(...geometries.areas);
@@ -265,6 +267,7 @@ export function computeSeriesGeometries(
       chartColors.defaultVizColor,
       axesSpecs,
       chartTheme,
+      enableHistogramMode,
     );
 
     areas.push(...geometries.areas);
@@ -313,6 +316,7 @@ export function renderGeometries(
   defaultColor: string,
   axesSpecs: Map<AxisId, AxisSpec>,
   chartTheme: Theme,
+  enableHistogramMode: boolean,
 ): {
   points: PointGeometry[];
   bars: BarGeometry[];
@@ -368,7 +372,7 @@ export function renderGeometries(
 
         const renderedBars = renderBars(
           shift, ds.data, xScale, yScale, color,
-          ds.specId, ds.key, displayValueSettings, barSeriesStyle,
+          ds.specId, ds.key, enableHistogramMode, displayValueSettings, barSeriesStyle,
         );
         barGeometriesIndex = mergeGeometriesIndexes(
           barGeometriesIndex,

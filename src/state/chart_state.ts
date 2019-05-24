@@ -35,6 +35,7 @@ import {
   BarSeriesSpec,
   BasicSeriesSpec,
   DomainRange,
+  isBarSeriesSpec,
   isLineAnnotation,
   isRectAnnotation,
   LineSeriesSpec,
@@ -109,7 +110,7 @@ export class ChartStore {
   debug = false;
   specsInitialized = observable.box(false);
   initialized = observable.box(false);
-  enableHistogramMode: IObservableValue<boolean | undefined> = observable.box(false);
+  enableHistogramMode = observable.box(false);
 
   parentDimensions: Dimensions = {
     width: 0,
@@ -720,6 +721,9 @@ export class ChartStore {
   }
   addSeriesSpec(seriesSpec: BasicSeriesSpec | LineSeriesSpec | AreaSeriesSpec | BarSeriesSpec) {
     this.seriesSpecs.set(seriesSpec.id, seriesSpec);
+    if (isBarSeriesSpec(seriesSpec) && seriesSpec.enableHistogramMode) {
+      this.enableHistogramMode.set(true);
+    }
   }
   removeSeriesSpec(specId: SpecId) {
     this.seriesSpecs.delete(specId);
@@ -869,6 +873,7 @@ export class ChartStore {
       this.chartDimensions,
       this.chartRotation,
       this.axesSpecs,
+      this.enableHistogramMode.get(),
     );
 
     // tslint:disable-next-line:no-console

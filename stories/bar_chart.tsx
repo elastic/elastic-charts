@@ -1440,7 +1440,7 @@ storiesOf('Bar Chart', module)
           data={discoData}
           name={data.yAxisLabel}
           timeZone={'local'}
-          enableHistogramMode={true}
+          enableHistogramMode={boolean('enableHistogramMode', true)}
         />
         <LineSeries
           id={getSpecId('lines')}
