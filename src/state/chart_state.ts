@@ -721,8 +721,8 @@ export class ChartStore {
   }
   addSeriesSpec(seriesSpec: BasicSeriesSpec | LineSeriesSpec | AreaSeriesSpec | BarSeriesSpec) {
     this.seriesSpecs.set(seriesSpec.id, seriesSpec);
-    if (isBarSeriesSpec(seriesSpec) && seriesSpec.enableHistogramMode) {
-      this.enableHistogramMode.set(true);
+    if (isBarSeriesSpec(seriesSpec)) {
+      this.enableHistogramMode.set(seriesSpec.enableHistogramMode || false);
     }
   }
   removeSeriesSpec(specId: SpecId) {
