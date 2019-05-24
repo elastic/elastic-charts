@@ -1,13 +1,3 @@
-// Font sizing extends, using rem mixin
-@mixin echFont {
-  font-family: $echFontFamily;
-  font-weight: $echFontWeightRegular;
-  letter-spacing: -0.005em;
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
-  font-kerning: normal;
-}
-
 @mixin echFontSizeXS {
   @include fontSize($echFontSizeXS);
   line-height: $echLineHeight;

@@ -1,5 +1,5 @@
 .echTooltip {
-  @include echBottomShadow($color: $echColorFullShade);
+  @include echBottomShadow($color: #000);
   @include echFontSizeXS;
   pointer-events: none;
   position: absolute;
@@ -44,7 +44,7 @@
 .echTooltip__header {
   margin: 0;
   background: rgba(shade($echColorGhost, 20%), 0.9);
-  color: $echColorFullShade;
+  color: shade($echColorGhost, 90%);
   padding: 0 8px;
 }
 .echTooltip__table {
