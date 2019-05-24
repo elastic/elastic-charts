@@ -14,7 +14,7 @@ import { DataSeriesColorsValues } from './series';
 
 export type Datum = any;
 export type Rotation = 0 | 90 | -90 | 180;
-export type Rendering = 'canvas' | 'svg';
+export type Rendering = 'canvas' | 'svg' | 'empty';
 
 export interface LowerBoundedDomain {
   min: number;
