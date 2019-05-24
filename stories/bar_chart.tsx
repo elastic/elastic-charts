@@ -1411,9 +1411,27 @@ storiesOf('Bar Chart', module)
       0,
     );
 
+    const theme = mergeWithDefaultTheme({
+      chartMargins: {
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+      },
+      chartPaddings: {
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+      },
+      scales: {
+        barsPadding: 0,
+      },
+    }, LIGHT_THEME);
+
     return (
       <Chart className={'story-chart'}>
-        <Settings rotation={chartRotation} />
+        <Settings rotation={chartRotation} theme={theme} />
         <LineAnnotation
           annotationId={getAnnotationId('line-annotation')}
           domainType={AnnotationDomainTypes.XDomain}
