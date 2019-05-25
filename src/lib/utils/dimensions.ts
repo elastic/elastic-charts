@@ -28,6 +28,7 @@ export interface Margins {
  * @param legendPosition the optional legend position
  */
 export function computeChartDimensions(
+  histogramBandOffset: number,
   parentDimensions: Dimensions,
   chartTheme: Theme,
   axisDimensions: Map<AxisId, AxisTicksDimensions>,
@@ -120,6 +121,7 @@ export function computeChartDimensions(
   } else {
     left = vLeftAxisSpecWidth + chartPaddings.left + legendLeftMargin;
   }
+  left = left - histogramBandOffset;
   return {
     top,
     left,

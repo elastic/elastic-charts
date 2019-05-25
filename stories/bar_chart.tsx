@@ -1431,7 +1431,7 @@ storiesOf('Bar Chart', module)
 
     return (
       <Chart className={'story-chart'}>
-        <Settings rotation={chartRotation} theme={theme} />
+        <Settings rotation={chartRotation} theme={theme} debug={boolean('debug', true)} />
         <LineAnnotation
           annotationId={getAnnotationId('line-annotation')}
           domainType={AnnotationDomainTypes.XDomain}

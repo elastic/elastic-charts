@@ -847,7 +847,10 @@ export class ChartStore {
     bboxCalculator.destroy();
 
     // // compute chart dimensions
+    const histogramBandOffset = this.enableHistogramMode.get() && this.xScale ? this.xScale.bandwidth / 2 : 0;
+
     this.chartDimensions = computeChartDimensions(
+      histogramBandOffset,
       this.parentDimensions,
       this.chartTheme,
       this.axesTicksDimensions,
