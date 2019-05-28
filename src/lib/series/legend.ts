@@ -17,26 +17,6 @@ export interface LegendItem {
   };
 }
 
-// export function computeIfEmpty(
-//   seriesColor: Map<string, DataSeriesColorsValues>,
-//   deselectedDataSeries?: DataSeriesColorsValues[] | null,
-//   ) {
-//   let isChartEmpty = 0;
-//   const sortedSeriesColors = getSortedDataSeriesColorsValuesMap(seriesColor);
-//   console.log('\n\n\n\n\n TESTsortedSeriesColors', sortedSeriesColors.size);
-//   sortedSeriesColors.forEach((series) => {
-//     if (deselectedDataSeries) {
-//       isChartEmpty += 1;
-//     }
-//     console.log('\n\n\n\n isChartEmpty', isChartEmpty);
-//     return isChartEmpty;
-//   });
-
-//   if (isChartEmpty === sortedSeriesColors.size) {
-//     console.log('empty');
-//   }
-// }
-
 export function computeLegend(
   seriesColor: Map<string, DataSeriesColorsValues>,
   seriesColorMap: Map<string, string>,
@@ -46,15 +26,17 @@ export function computeLegend(
   deselectedDataSeries?: DataSeriesColorsValues[] | null,
 ): Map<string, LegendItem> {
   const legendItems: Map<string, LegendItem> = new Map();
-  let isChartNotEmpty: number = 0;
+  // export let isChartNotEmpty: number = 0;
   const sortedSeriesColors = getSortedDataSeriesColorsValuesMap(seriesColor);
+  // tslint:disable-next-line:prefer-const
+  // let isChartNotEmptyResult: number = 0;
 
   sortedSeriesColors.forEach((series, key) => {
     const spec = specs.get(series.specId);
     const color = seriesColorMap.get(key) || defaultColor;
     const hasSingleSeries = seriesColor.size === 1;
     const label = getSeriesColorLabel(series.colorValues, hasSingleSeries, spec);
-    // computeIfEmpty(seriesColor, deselectedDataSeries);
+    // isChartEmpty(seriesColor, isChartNotEmptyResult, deselectedDataSeries);
     const isSeriesVisible = deselectedDataSeries
     ? findDataSeriesByColorValues(deselectedDataSeries, series) < 0
     : true;
@@ -67,9 +49,6 @@ export function computeLegend(
     const formatter = yAxis ? yAxis.tickFormat : identity;
 
     const { hideInLegend } = spec;
-    // 1 true
-    isChartNotEmpty +=  Number(isSeriesVisible);
-    console.log(isChartNotEmpty);
 
     legendItems.set(key, {
       key,
@@ -84,10 +63,6 @@ export function computeLegend(
       },
     });
   });
-  // need to sum up the isChartNotEmpty to confirm it is all 0
-  if (!isChartNotEmpty) {
-    // renderEmptyState(isChartNotEmpty);
-  }
   return legendItems;
 }
 

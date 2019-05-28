@@ -1,7 +1,7 @@
-import { EuiEmptyPrompt } from '@elastic/eui';
 import classNames from 'classnames';
 import { Provider } from 'mobx-react';
 import React, { CSSProperties, Fragment } from 'react';
+// import { isChartEmpty } from '../lib/series/legend';
 import { SpecsParser } from '../specs/specs_parser';
 import { ChartStore } from '../state/chart_state';
 import { AnnotationTooltip } from './annotation_tooltips';
@@ -18,18 +18,14 @@ interface ChartProps {
   /** The type of rendered
    * @default 'canvas'
    */
-  renderer: 'svg' | 'canvas' | 'empty';
+  renderer: 'svg' | 'canvas';
   size?: [number, number];
   className?: string;
 }
-// export function renderEmptyStaten(isChartNotEmpty: number) {
-//   return static defaultProps: ChartProps = {
-//     renderer: 'empty',
-//   };
-// }
+
 export class Chart extends React.Component<ChartProps> {
   static defaultProps: ChartProps = {
-    renderer: 'empty',
+    renderer: 'canvas', // 'empty',
   };
   private chartSpecStore: ChartStore;
   constructor(props: any) {
@@ -58,11 +54,6 @@ export class Chart extends React.Component<ChartProps> {
             <Crosshair />
             {renderer === 'svg' && <SVGChart />}
             {renderer === 'canvas' && <ReactChart />}
-            {renderer === 'empty' && <EuiEmptyPrompt
-                                      className="euiSeriesChartContainer__emptyPrompt"
-                                      iconType="visualizeApp"
-                                      title={<span>No data available to show</span>}
-                                      />}
             <Tooltips />
             <AnnotationTooltip />
             <Legend />

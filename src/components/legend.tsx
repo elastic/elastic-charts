@@ -70,7 +70,7 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
             className="elasticChartsLegendListContainer"
             responsive={false}
           >
-            {[...legendItems.values()].map((item) => {
+            {[...legendItems.values()].map((item, key) => {
               const { isLegendItemVisible } = item;
 
               const legendItemProps = {
@@ -83,7 +83,7 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
               };
 
               return (
-                <EuiFlexItem className={legendItemProps.className}>
+                <EuiFlexItem className={legendItemProps.className} key={key}>
                   {this.renderLegendElement(item, item.key, legendItemGrow, legendItemProps)}
                 </EuiFlexItem>
               );

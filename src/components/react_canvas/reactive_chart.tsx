@@ -332,9 +332,16 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       chartRotation,
       chartTransform,
       setCursorPosition,
+      isChartEmpty,
     } = this.props.chartStore!;
-
     // disable clippings when debugging
+    if (isChartEmpty) {
+      return (
+        <div>
+          There is no data to display
+        </div>
+      );
+    }
     const clippings = debug
       ? {}
       : {

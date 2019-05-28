@@ -149,7 +149,7 @@ export class ChartStore {
   annotationDimensions = observable.map<AnnotationId, AnnotationDimensions>(new Map());
 
   seriesSpecs: Map<SpecId, BasicSeriesSpec> = new Map(); // readed from jsx
-
+  isChartEmpty: boolean = true;
   seriesDomainsAndData?: SeriesDomainsAndData; // computed
   xScale?: Scale;
   yScales?: Map<GroupId, Scale>;
@@ -753,6 +753,12 @@ export class ChartStore {
     this.annotationSpecs.delete(annotationId);
   }
 
+  determineEmptyChart(val: LegendItem) {
+    if (val.isSeriesVisible) {
+      this.isChartEmpty = false;
+    }
+  }
+
   computeChart() {
     this.initialized.set(false);
     // compute only if parent dimensions are computed
@@ -806,8 +812,10 @@ export class ChartStore {
       this.deselectedDataSeries,
     );
 
-    // tslint:disable-next-line:no-console
-    // console.log({ legendItems: this.legendItems });
+    this.isChartEmpty = true;
+    this.legendItems.forEach((val, key) => {
+      this.determineEmptyChart(val);
+    });
 
     const {
       xDomain,
