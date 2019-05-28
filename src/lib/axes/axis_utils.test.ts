@@ -2,7 +2,7 @@ import { XDomain } from '../series/domains/x_domain';
 import { YDomain } from '../series/domains/y_domain';
 import { AxisSpec, DomainRange, Position } from '../series/specs';
 import { LIGHT_THEME } from '../themes/light_theme';
-import { getAxisId, getGroupId, GroupId } from '../utils/ids';
+import { getAxisId, getGroupId, GroupId, AxisId } from '../utils/ids';
 import { ScaleType } from '../utils/scales/scales';
 import {
   centerRotationOrigin,
@@ -26,6 +26,7 @@ import {
   isVertical,
   isYDomain,
   mergeDomainsByGroupId,
+  AxisTicksDimensions,
 } from './axis_utils';
 import { CanvasTextBBoxCalculator } from './canvas_text_bbox_calculator';
 import { SvgTextBBoxCalculator } from './svg_text_bbox_calculator';
@@ -192,7 +193,7 @@ describe('Axis computational utils', () => {
 
   test('should compute available ticks', () => {
     const scale = getScaleForAxisSpec(verticalAxisSpec, xDomain, [yDomain], 0, 0, 100, 0);
-    const axisPositions = getAvailableTicks(verticalAxisSpec, scale!, 0);
+    const axisPositions = getAvailableTicks(verticalAxisSpec, scale!, 0, false);
     const expectedAxisPositions = [
       { label: '0', position: 100, value: 0 },
       { label: '0.1', position: 90, value: 0.1 },
@@ -837,10 +838,10 @@ describe('Axis computational utils', () => {
     const showLegend = true;
     const leftLegendPosition = Position.Left;
 
-    const axisSpecs = new Map();
+    const axisSpecs = new Map<AxisId, AxisSpec>();
     axisSpecs.set(verticalAxisSpec.id, verticalAxisSpec);
 
-    const axisDims = new Map();
+    const axisDims = new Map<AxisId, AxisTicksDimensions>();
     axisDims.set(getAxisId('not_a_mapped_one'), axis1Dims);
 
     const axisTicksPosition = getAxisTicksPositions(
@@ -853,6 +854,7 @@ describe('Axis computational utils', () => {
       xDomain,
       [yDomain],
       1,
+      false,
       leftLegendPosition,
     );
     expect(axisTicksPosition.axisPositions.size).toBe(0);
@@ -867,10 +869,10 @@ describe('Axis computational utils', () => {
     const leftLegendPosition = Position.Left;
     const topLegendPosition = Position.Top;
 
-    const axisSpecs = new Map();
+    const axisSpecs = new Map<AxisId, AxisSpec>();
     axisSpecs.set(verticalAxisSpec.id, verticalAxisSpec);
 
-    const axisDims = new Map();
+    const axisDims = new Map<AxisId, AxisTicksDimensions>();
     axisDims.set(verticalAxisSpec.id, axis1Dims);
 
     const axisTicksPosition = getAxisTicksPositions(
@@ -883,6 +885,7 @@ describe('Axis computational utils', () => {
       xDomain,
       [yDomain],
       1,
+      false,
       leftLegendPosition,
     );
 
@@ -914,6 +917,7 @@ describe('Axis computational utils', () => {
       xDomain,
       [yDomain],
       1,
+      false,
       topLegendPosition,
     );
 
@@ -929,7 +933,7 @@ describe('Axis computational utils', () => {
     expect(verticalAxisWithTopLegendPosition).toEqual(expectedPositionWithTopLegend);
 
     const ungroupedAxisSpec = { ...verticalAxisSpec, groupId: getGroupId('foo') };
-    const invalidSpecs = new Map();
+    const invalidSpecs = new Map<AxisId, AxisSpec>();
     invalidSpecs.set(verticalAxisSpec.id, ungroupedAxisSpec);
     const computeScalelessSpec = () => {
       getAxisTicksPositions(
@@ -942,6 +946,7 @@ describe('Axis computational utils', () => {
         xDomain,
         [yDomain],
         1,
+        false,
         leftLegendPosition,
       );
     };
@@ -992,7 +997,7 @@ describe('Axis computational utils', () => {
 
     verticalAxisSpec.domain = domainRange1;
 
-    const axesSpecs = new Map();
+    const axesSpecs = new Map<AxisId, AxisSpec>();
     axesSpecs.set(verticalAxisSpec.id, verticalAxisSpec);
 
     // Base case
@@ -1048,7 +1053,7 @@ describe('Axis computational utils', () => {
 
     verticalAxisSpec.domain = domainRange1;
 
-    const axesSpecs = new Map();
+    const axesSpecs = new Map<AxisId, AxisSpec>();
     axesSpecs.set(verticalAxisSpec.id, verticalAxisSpec);
 
     const axis2 = { ...verticalAxisSpec, id: getAxisId('axis2') };
@@ -1076,7 +1081,7 @@ describe('Axis computational utils', () => {
 
     verticalAxisSpec.domain = domainRange1;
 
-    const axesSpecs = new Map();
+    const axesSpecs = new Map<AxisId, AxisSpec>();
     axesSpecs.set(verticalAxisSpec.id, verticalAxisSpec);
 
     const axis2 = { ...verticalAxisSpec, id: getAxisId('axis2') };
@@ -1107,7 +1112,7 @@ describe('Axis computational utils', () => {
 
     verticalAxisSpec.domain = domainRange1;
 
-    const axesSpecs = new Map();
+    const axesSpecs = new Map<AxisId, AxisSpec>();
     axesSpecs.set(verticalAxisSpec.id, verticalAxisSpec);
 
     const axis2 = { ...verticalAxisSpec, id: getAxisId('axis2') };
@@ -1143,7 +1148,7 @@ describe('Axis computational utils', () => {
 
     verticalAxisSpec.domain = domainRange1;
 
-    const axesSpecs = new Map();
+    const axesSpecs = new Map<AxisId, AxisSpec>();
     axesSpecs.set(verticalAxisSpec.id, verticalAxisSpec);
 
     const axis2 = { ...verticalAxisSpec, id: getAxisId('axis2') };
@@ -1171,7 +1176,7 @@ describe('Axis computational utils', () => {
 
     verticalAxisSpec.domain = domainRange1;
 
-    const axesSpecs = new Map();
+    const axesSpecs = new Map<AxisId, AxisSpec>();
     axesSpecs.set(verticalAxisSpec.id, verticalAxisSpec);
 
     const attemptToMerge = () => {

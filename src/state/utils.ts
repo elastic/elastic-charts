@@ -372,7 +372,7 @@ export function renderGeometries(
 
         const renderedBars = renderBars(
           shift, ds.data, xScale, yScale, color,
-          ds.specId, ds.key, enableHistogramMode, displayValueSettings, barSeriesStyle,
+          ds.specId, ds.key, displayValueSettings, barSeriesStyle,
         );
         barGeometriesIndex = mergeGeometriesIndexes(
           barGeometriesIndex,

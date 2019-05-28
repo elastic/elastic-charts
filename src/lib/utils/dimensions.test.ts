@@ -70,7 +70,6 @@ describe('Computed chart dimensions', () => {
     const axisDims = new Map<AxisId, AxisTicksDimensions>();
     const axisSpecs = new Map<AxisId, AxisSpec>();
     const chartDimensions = computeChartDimensions(
-      0,
       parentDim,
       chartTheme,
       axisDims,
@@ -89,7 +88,6 @@ describe('Computed chart dimensions', () => {
     axisDims.set(getAxisId('axis_1'), axis1Dims);
     axisSpecs.set(getAxisId('axis_1'), axisLeftSpec);
     const chartDimensions = computeChartDimensions(
-      0,
       parentDim,
       chartTheme,
       axisDims,
@@ -108,7 +106,6 @@ describe('Computed chart dimensions', () => {
     axisDims.set(getAxisId('axis_1'), axis1Dims);
     axisSpecs.set(getAxisId('axis_1'), { ...axisLeftSpec, position: Position.Right });
     const chartDimensions = computeChartDimensions(
-      0,
       parentDim,
       chartTheme,
       axisDims,
@@ -130,7 +127,6 @@ describe('Computed chart dimensions', () => {
       position: Position.Top,
     });
     const chartDimensions = computeChartDimensions(
-      0,
       parentDim,
       chartTheme,
       axisDims,
@@ -152,7 +148,6 @@ describe('Computed chart dimensions', () => {
       position: Position.Bottom,
     });
     const chartDimensions = computeChartDimensions(
-      0,
       parentDim,
       chartTheme,
       axisDims,
@@ -172,7 +167,6 @@ describe('Computed chart dimensions', () => {
       position: Position.Bottom,
     });
     const chartDimensions = computeChartDimensions(
-      0,
       parentDim,
       chartTheme,
       axisDims,
@@ -198,7 +192,6 @@ describe('Computed chart dimensions', () => {
       position: Position.Bottom,
     });
     const hiddenAxisChartDimensions = computeChartDimensions(
-      0,
       parentDim,
       chartTheme,
       axisDims,

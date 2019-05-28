@@ -38,7 +38,6 @@ describe('Rendering bars', () => {
         'red',
         SPEC_ID,
         [],
-        false,
       );
 
       expect(barGeometries[0]).toEqual({
@@ -85,7 +84,6 @@ describe('Rendering bars', () => {
         'red',
         SPEC_ID,
         [],
-        false,
         { valueFormatter, showValueLabel: true, isAlternatingValueLabel: true },
       );
       expect(barGeometries[0].displayValue).toBeDefined();
@@ -100,7 +98,6 @@ describe('Rendering bars', () => {
         'red',
         SPEC_ID,
         [],
-        false,
         {},
       );
       expect(barGeometries[0].displayValue).toBeUndefined();
@@ -116,7 +113,6 @@ describe('Rendering bars', () => {
         'red',
         SPEC_ID,
         [],
-        false,
         { valueFormatter, showValueLabel: true, isAlternatingValueLabel: true },
       );
       expect(barGeometries[0].displayValue!.text).toBeDefined();
@@ -133,7 +129,6 @@ describe('Rendering bars', () => {
         'red',
         SPEC_ID,
         [],
-        false,
         { valueFormatter, showValueLabel: true, isValueContainedInElement: true },
       );
       expect(barGeometries[0].displayValue!.width).toBe(50);
@@ -180,7 +175,6 @@ describe('Rendering bars', () => {
         'red',
         spec1Id,
         [],
-        false,
       );
       expect(barGeometries.length).toEqual(2);
       expect(barGeometries[0]).toEqual({
@@ -225,7 +219,6 @@ describe('Rendering bars', () => {
         'blue',
         spec2Id,
         [],
-        false,
       );
       expect(barGeometries.length).toEqual(2);
       expect(barGeometries[0]).toEqual({
@@ -289,7 +282,6 @@ describe('Rendering bars', () => {
         'red',
         SPEC_ID,
         [],
-        false,
       );
       expect(barGeometries[0]).toEqual({
         x: 0,
@@ -366,7 +358,6 @@ describe('Rendering bars', () => {
         'red',
         spec1Id,
         [],
-        false,
       );
       expect(barGeometries.length).toEqual(2);
       expect(barGeometries[0]).toEqual({
@@ -411,7 +402,6 @@ describe('Rendering bars', () => {
         'blue',
         spec2Id,
         [],
-        false,
       );
       expect(barGeometries.length).toEqual(2);
       expect(barGeometries[0]).toEqual({
@@ -489,7 +479,6 @@ describe('Rendering bars', () => {
         'red',
         spec1Id,
         [],
-        false,
       );
       expect(barGeometries.length).toEqual(2);
       expect(barGeometries[0]).toEqual({
@@ -534,7 +523,6 @@ describe('Rendering bars', () => {
         'blue',
         spec2Id,
         [],
-        false,
       );
       expect(barGeometries.length).toEqual(2);
       expect(barGeometries[0]).toEqual({

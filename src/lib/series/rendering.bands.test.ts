@@ -1,5 +1,5 @@
 import { computeSeriesDomains } from '../../state/utils';
-import { getGroupId, getSpecId } from '../utils/ids';
+import { getGroupId, getSpecId, SpecId } from '../utils/ids';
 import { ScaleType } from '../utils/scales/scales';
 import { CurveType } from './curves';
 import { AreaGeometry, IndexedGeometry, PointGeometry, renderArea, renderBars } from './rendering';
@@ -22,7 +22,7 @@ describe('Rendering bands - areas', () => {
       xScaleType: ScaleType.Ordinal,
       yScaleType: ScaleType.Linear,
     };
-    const pointSeriesMap = new Map();
+    const pointSeriesMap = new Map<SpecId, AreaSeriesSpec>();
     pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
     const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
     const xScale = computeXScale(pointSeriesDomains.xDomain, pointSeriesMap.size, 0, 100);
@@ -158,7 +158,7 @@ describe('Rendering bands - areas', () => {
       xScaleType: ScaleType.Ordinal,
       yScaleType: ScaleType.Linear,
     };
-    const pointSeriesMap = new Map();
+    const pointSeriesMap = new Map<SpecId, AreaSeriesSpec>();
     pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
     const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
     const xScale = computeXScale(pointSeriesDomains.xDomain, pointSeriesMap.size, 0, 100);
@@ -333,7 +333,7 @@ describe('Rendering bands - areas', () => {
       xScaleType: ScaleType.Ordinal,
       yScaleType: ScaleType.Linear,
     };
-    const barSeriesMap = new Map();
+    const barSeriesMap = new Map<SpecId, BarSeriesSpec>();
     barSeriesMap.set(SPEC_ID, barSeriesSpec);
     const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
     const xScale = computeXScale(barSeriesDomains.xDomain, barSeriesMap.size, 0, 100);

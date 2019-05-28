@@ -393,10 +393,16 @@ export function getLeftAxisMinMaxRange(chartRotation: Rotation, height: number) 
   }
 }
 
-export function getAvailableTicks(axisSpec: AxisSpec, scale: Scale, totalBarsInCluster: number) {
+export function getAvailableTicks(
+  axisSpec: AxisSpec,
+  scale: Scale,
+  totalBarsInCluster: number,
+  enableHistogramMode: boolean,
+): AxisTick[] {
   const ticks = scale.ticks();
   const shift = totalBarsInCluster > 0 ? totalBarsInCluster : 1;
-  const offset = (scale.bandwidth * shift) / 2;
+
+  const offset = enableHistogramMode ? 0 : (scale.bandwidth * shift) / 2;
   return ticks.map((tick) => {
     return {
       value: tick,
@@ -507,6 +513,7 @@ export function getAxisTicksPositions(
   xDomain: XDomain,
   yDomain: YDomain[],
   totalGroupsCount: number,
+  enableHistogramMode: boolean,
   legendPosition?: Position,
   barsPadding?: number,
 ) {
@@ -567,7 +574,7 @@ export function getAxisTicksPositions(
       throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
     }
 
-    const allTicks = getAvailableTicks(axisSpec, scale, totalGroupsCount);
+    const allTicks = getAvailableTicks(axisSpec, scale, totalGroupsCount, enableHistogramMode);
     const visibleTicks = getVisibleTicks(allTicks, axisSpec, axisDim);
 
     if (axisSpec.showGridLines) {
