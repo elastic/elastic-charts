@@ -5,6 +5,7 @@ import moment from 'moment';
 import React from 'react';
 import {
   AnnotationDomainTypes,
+  AreaSeries,
   Axis,
   BarSeries,
   Chart,
@@ -1425,9 +1426,44 @@ storiesOf('Bar Chart', module)
         right: 0,
       },
       scales: {
-        barsPadding: 0,
+        barsPadding: number('bars padding', 0, {
+          range: true,
+          min: 0,
+          max: 1,
+          step: 0.1,
+        }),
       },
     }, LIGHT_THEME);
+
+    const otherSeriesSelection = select(
+      'other series',
+      {
+        line: 'line',
+        area: 'area',
+      },
+      'line',
+    );
+
+    const otherSeries = otherSeriesSelection === 'line' ?
+      <LineSeries
+        id={getSpecId('other-series')}
+        xScaleType={ScaleType.Time}
+        yScaleType={ScaleType.Linear}
+        xAccessor="x"
+        yAccessors={['y']}
+        data={discoData}
+      /> :
+      <AreaSeries
+      id={getSpecId('other-series')}
+      xScaleType={ScaleType.Time}
+      yScaleType={ScaleType.Linear}
+      xAccessor="x"
+      yAccessors={['y']}
+      data={discoData}
+    />;
+
+    // const leftAxisFormatter = [0, 180].includes(chartRotation) ? (val: any) => val : formatter;
+    const bottomAxisFormatter = [0, 180].includes(chartRotation) ? formatter : (val: any) => val;
 
     return (
       <Chart className={'story-chart'}>
@@ -1435,19 +1471,20 @@ storiesOf('Bar Chart', module)
         <LineAnnotation
           annotationId={getAnnotationId('line-annotation')}
           domainType={AnnotationDomainTypes.XDomain}
-          dataValues={[{dataValue: 1557403200000}]}
+          dataValues={[{dataValue: 1557406800000, header: moment(1557406800000).toString()}]}
           style={lineAnnotationStyle}
         />
         <Axis
           id={getAxisId('discover-histogram-left-axis')}
           position={Position.Left}
           title={data.yAxisLabel}
+          // tickFormat={leftAxisFormatter}
         />
         <Axis
           id={getAxisId('discover-histogram-bottom-axis')}
           position={Position.Bottom}
           title={data.xAxisLabel}
-          tickFormat={formatter}
+          tickFormat={bottomAxisFormatter}
         />
         <BarSeries // assume histogram mode is enabled already
           id={getSpecId('bars')}
@@ -1460,14 +1497,7 @@ storiesOf('Bar Chart', module)
           timeZone={'local'}
           enableHistogramMode={boolean('enableHistogramMode', true)}
         />
-        <LineSeries
-          id={getSpecId('lines')}
-          xScaleType={ScaleType.Time}
-          yScaleType={ScaleType.Linear}
-          xAccessor="x"
-          yAccessors={['y']}
-          data={discoData}
-        />
+        {otherSeries}
         {/* <BarSeries enableHistogramMode={true} /> if the user specifies,
         then we will stack the series & this misconfiguration can be caught when validation */}
       </Chart>

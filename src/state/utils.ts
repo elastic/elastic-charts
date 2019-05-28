@@ -350,6 +350,9 @@ export function renderGeometries(
       continue;
     }
     const color = seriesColorsMap.get(ds.seriesColorKey) || defaultColor;
+    // TODO: account for chartRotation
+    // TODO: account for barsPadding
+    const xScaleOffset = enableHistogramMode ? xScale.bandwidth / 2 : 0;
 
     if (isBarSeriesSpec(spec)) {
         const shift = isStacked ? indexOffset : indexOffset + i;
@@ -383,6 +386,7 @@ export function renderGeometries(
     } else if (isLineSeriesSpec(spec)) {
         const lineShift = clusteredCount > 0 ? clusteredCount : 1;
         const lineSeriesStyle = spec.lineSeriesStyle;
+
         const renderedLines = renderLine(
           // move the point on half of the bandwidth if we have mixed bars/lines
           (xScale.bandwidth * lineShift) / 2,
@@ -394,6 +398,7 @@ export function renderGeometries(
           ds.specId,
           Boolean(spec.y0Accessors),
           ds.key,
+          xScaleOffset,
           lineSeriesStyle,
         );
         lineGeometriesIndex = mergeGeometriesIndexes(
@@ -417,6 +422,7 @@ export function renderGeometries(
           ds.specId,
           Boolean(spec.y0Accessors),
           ds.key,
+          xScaleOffset,
           areaSeriesStyle,
         );
         areaGeometriesIndex = mergeGeometriesIndexes(

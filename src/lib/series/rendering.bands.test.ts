@@ -43,6 +43,7 @@ describe('Rendering bands - areas', () => {
         SPEC_ID,
         true,
         [],
+        0,
       );
     });
     test('Can render upper and lower lines and area paths', () => {
@@ -179,6 +180,7 @@ describe('Rendering bands - areas', () => {
         SPEC_ID,
         true,
         [],
+        0,
       );
     });
     test('Can render upper and lower lines and area paths', () => {

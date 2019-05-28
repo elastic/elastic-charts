@@ -402,6 +402,8 @@ export function getAvailableTicks(
   const ticks = scale.ticks();
   const shift = totalBarsInCluster > 0 ? totalBarsInCluster : 1;
 
+  // TODO: account for rotation
+  // TODO: account for barsPadding
   const offset = enableHistogramMode ? 0 : (scale.bandwidth * shift) / 2;
   return ticks.map((tick) => {
     return {

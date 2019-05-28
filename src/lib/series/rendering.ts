@@ -294,6 +294,7 @@ export function renderLine(
   specId: SpecId,
   hasY0Accessors: boolean,
   seriesKey: any[],
+  xScaleOffset: number,
   seriesStyle?: LineSeriesStyle,
 ): {
   lineGeometry: LineGeometry;
@@ -302,7 +303,7 @@ export function renderLine(
   const isLogScale = isLogarithmicScale(yScale);
 
   const pathGenerator = line<DataSeriesDatum>()
-    .x((datum: DataSeriesDatum) => xScale.scale(datum.x))
+    .x((datum: DataSeriesDatum) => xScale.scale(datum.x) - xScaleOffset)
     .y((datum: DataSeriesDatum) => yScale.scale(datum.y1))
     .defined((datum: DataSeriesDatum) => datum.y1 !== null && !(isLogScale && datum.y1 <= 0))
     .curve(getCurveFactory(curve));
@@ -313,7 +314,7 @@ export function renderLine(
   const seriesLineStyle = seriesStyle ? seriesStyle.line : undefined;
 
   const { pointGeometries, indexedGeometries } = renderPoints(
-    shift,
+    shift - xScaleOffset,
     dataset,
     xScale,
     yScale,
@@ -353,6 +354,7 @@ export function renderArea(
   specId: SpecId,
   hasY0Accessors: boolean,
   seriesKey: any[],
+  xScaleOffset: number,
   seriesStyle?: AreaSeriesStyle,
 ): {
   areaGeometry: AreaGeometry;
@@ -361,7 +363,7 @@ export function renderArea(
   const isLogScale = isLogarithmicScale(yScale);
 
   const pathGenerator = area<DataSeriesDatum>()
-    .x((datum: DataSeriesDatum) => xScale.scale(datum.x))
+    .x((datum: DataSeriesDatum) => xScale.scale(datum.x) - xScaleOffset)
     .y1((datum: DataSeriesDatum) => yScale.scale(datum.y1))
     .y0((datum: DataSeriesDatum) => {
       if (datum.y0 === null || (isLogScale && datum.y0 <= 0)) {
@@ -390,7 +392,7 @@ export function renderArea(
   const seriesAreaLineStyle = seriesStyle ? seriesStyle.line : undefined;
 
   const { pointGeometries, indexedGeometries } = renderPoints(
-    shift,
+    shift - xScaleOffset,
     dataset,
     xScale,
     yScale,
