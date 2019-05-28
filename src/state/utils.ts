@@ -193,6 +193,13 @@ export function computeSeriesGeometries(
   const xScale = computeXScale(xDomain, totalBarsInCluster, 0, width, barsPadding);
   const yScales = computeYScales(yDomain, height, 0);
 
+  // TODO: account for chartRotation
+  const xScaleOffset = computeXScaleOffset(
+    xScale,
+    chartRotation,
+    enableHistogramMode,
+  );
+
   // compute colors
 
   // compute geometries
@@ -230,7 +237,7 @@ export function computeSeriesGeometries(
       chartColors.defaultVizColor,
       axesSpecs,
       chartTheme,
-      enableHistogramMode,
+      xScaleOffset,
     );
     orderIndex = counts.barSeries > 0 ? orderIndex + 1 : orderIndex;
     areas.push(...geometries.areas);
@@ -267,7 +274,7 @@ export function computeSeriesGeometries(
       chartColors.defaultVizColor,
       axesSpecs,
       chartTheme,
-      enableHistogramMode,
+      xScaleOffset,
     );
 
     areas.push(...geometries.areas);
@@ -304,6 +311,22 @@ export function computeSeriesGeometries(
   };
 }
 
+export function computeXScaleOffset(
+  xScale: Scale,
+  chartRotation: number,
+  enableHistogramMode: boolean,
+): number {
+  if (!enableHistogramMode) {
+    return 0;
+  }
+
+  const { bandwidth, barsPadding } = xScale;
+  const band = bandwidth > 0 ? bandwidth / (1 - barsPadding) : 0;
+  const halfPadding = (band - bandwidth) / 2;
+
+  return (bandwidth / 2) + halfPadding;
+}
+
 export function renderGeometries(
   indexOffset: number,
   clusteredCount: number,
@@ -316,7 +339,7 @@ export function renderGeometries(
   defaultColor: string,
   axesSpecs: Map<AxisId, AxisSpec>,
   chartTheme: Theme,
-  enableHistogramMode: boolean,
+  xScaleOffset: number,
 ): {
   points: PointGeometry[];
   bars: BarGeometry[];
@@ -350,9 +373,6 @@ export function renderGeometries(
       continue;
     }
     const color = seriesColorsMap.get(ds.seriesColorKey) || defaultColor;
-    // TODO: account for chartRotation
-    // TODO: account for barsPadding
-    const xScaleOffset = enableHistogramMode ? xScale.bandwidth / 2 : 0;
 
     if (isBarSeriesSpec(spec)) {
         const shift = isStacked ? indexOffset : indexOffset + i;

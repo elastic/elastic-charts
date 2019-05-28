@@ -403,8 +403,9 @@ export function getAvailableTicks(
   const shift = totalBarsInCluster > 0 ? totalBarsInCluster : 1;
 
   // TODO: account for rotation
-  // TODO: account for barsPadding
-  const offset = enableHistogramMode ? 0 : (scale.bandwidth * shift) / 2;
+  const band = scale.bandwidth / (1 - scale.barsPadding);
+  const halfPadding = (band - scale.bandwidth) / 2;
+  const offset = enableHistogramMode ? -halfPadding : (scale.bandwidth * shift) / 2;
   return ticks.map((tick) => {
     return {
       value: tick,
@@ -517,7 +518,7 @@ export function getAxisTicksPositions(
   totalGroupsCount: number,
   enableHistogramMode: boolean,
   legendPosition?: Position,
-  barsPadding?: number,
+  barsPadding?: number, // This is never undefined?
 ) {
   const { chartPaddings, chartMargins } = chartTheme;
   const legendStyle = chartTheme.legend;

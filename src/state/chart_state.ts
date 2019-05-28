@@ -863,9 +863,6 @@ export class ChartStore {
       this.chartTransform,
     );
 
-    // TODO: compute offset using enableHistogramMode, chartRotation, barsPadding
-    // & pass number to computeSeriesGeometries & getAxisTicksPositions
-
     const seriesGeometries = computeSeriesGeometries(
       this.seriesSpecs,
       seriesDomains.xDomain,
