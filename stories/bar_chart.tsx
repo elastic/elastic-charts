@@ -247,8 +247,20 @@ storiesOf('Bar Chart', module)
     );
   })
   .add('with linear x axis', () => {
+    const chartRotation = select<Rotation>(
+      'chartRotation',
+      {
+        '0 deg': 0,
+        '90 deg': 90,
+        '-90 deg': -90,
+        '180 deg': 180,
+      },
+      0,
+    );
+
     return (
       <Chart className={'story-chart'}>
+        <Settings rotation={chartRotation} />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
