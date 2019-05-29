@@ -118,7 +118,7 @@ export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales;
 export type BarSeriesSpec = BasicSeriesSpec & {
   /** @default bar */
   seriesType: 'bar';
-  /* If true, will stack all BarSeries and align bars to ticks (instead of centered on ticks) */
+  /** If true, will stack all BarSeries and align bars to ticks (instead of centered on ticks) */
   enableHistogramMode?: boolean;
   barSeriesStyle?: CustomBarSeriesStyle;
 };
@@ -131,6 +131,10 @@ export type LineSeriesSpec = BasicSeriesSpec & {
   seriesType: 'line';
   curve?: CurveType;
   lineSeriesStyle?: LineSeriesStyle;
+  /**  Determines how points in the series will align to bands in histogram mode
+   * @default 'start'
+   */
+  histogramModeAlignment?: HistogramModeAlignment;
 };
 
 /**
@@ -142,7 +146,19 @@ export type AreaSeriesSpec = BasicSeriesSpec & {
   /** The type of interpolator to be used to interpolate values between points */
   curve?: CurveType;
   areaSeriesStyle?: AreaSeriesStyle;
+  /**  Determines how points in the series will align to bands in histogram mode
+   * @default 'start'
+   */
+  histogramModeAlignment?: HistogramModeAlignment;
 };
+
+export const HistogramModeAlignments = Object.freeze({
+  Start: 'start' as HistogramModeAlignment,
+  Center: 'center' as HistogramModeAlignment,
+  End: 'end' as HistogramModeAlignment,
+});
+
+export type HistogramModeAlignment = 'start' | 'center' | 'end';
 
 /**
  * This spec describe the configuration for a chart axis.

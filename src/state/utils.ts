@@ -27,6 +27,8 @@ import {
   AxisSpec,
   BasicSeriesSpec,
   DomainRange,
+  HistogramModeAlignment,
+  HistogramModeAlignments,
   isAreaSeriesSpec,
   isBarSeriesSpec,
   isLineSeriesSpec,
@@ -193,13 +195,6 @@ export function computeSeriesGeometries(
   const xScale = computeXScale(xDomain, totalBarsInCluster, 0, width, barsPadding);
   const yScales = computeYScales(yDomain, height, 0);
 
-  // TODO: account for chartRotation
-  const xScaleOffset = computeXScaleOffset(
-    xScale,
-    chartRotation,
-    enableHistogramMode,
-  );
-
   // compute colors
 
   // compute geometries
@@ -237,7 +232,7 @@ export function computeSeriesGeometries(
       chartColors.defaultVizColor,
       axesSpecs,
       chartTheme,
-      xScaleOffset,
+      enableHistogramMode,
     );
     orderIndex = counts.barSeries > 0 ? orderIndex + 1 : orderIndex;
     areas.push(...geometries.areas);
@@ -274,7 +269,7 @@ export function computeSeriesGeometries(
       chartColors.defaultVizColor,
       axesSpecs,
       chartTheme,
-      xScaleOffset,
+      enableHistogramMode,
     );
 
     areas.push(...geometries.areas);
@@ -313,8 +308,8 @@ export function computeSeriesGeometries(
 
 export function computeXScaleOffset(
   xScale: Scale,
-  chartRotation: number,
   enableHistogramMode: boolean,
+  histogramModeAlignment: HistogramModeAlignment = HistogramModeAlignments.Start,
 ): number {
   if (!enableHistogramMode) {
     return 0;
@@ -324,7 +319,18 @@ export function computeXScaleOffset(
   const band = bandwidth > 0 ? bandwidth / (1 - barsPadding) : 0;
   const halfPadding = (band - bandwidth) / 2;
 
-  return (bandwidth / 2) + halfPadding;
+  const startAlignmentOffset = (bandwidth / 2) + halfPadding;
+
+  switch (histogramModeAlignment) {
+    case HistogramModeAlignments.Start:
+      return startAlignmentOffset;
+    case HistogramModeAlignments.Center:
+      return 0;
+    case HistogramModeAlignments.End:
+      return -startAlignmentOffset;
+    default:
+      return startAlignmentOffset;
+  }
 }
 
 export function renderGeometries(
@@ -339,7 +345,7 @@ export function renderGeometries(
   defaultColor: string,
   axesSpecs: Map<AxisId, AxisSpec>,
   chartTheme: Theme,
-  xScaleOffset: number,
+  enableHistogramMode: boolean,
 ): {
   points: PointGeometry[];
   bars: BarGeometry[];
@@ -407,6 +413,13 @@ export function renderGeometries(
         const lineShift = clusteredCount > 0 ? clusteredCount : 1;
         const lineSeriesStyle = spec.lineSeriesStyle;
 
+        // TODO: account for chartRotation
+        const xScaleOffset = computeXScaleOffset(
+          xScale,
+          enableHistogramMode,
+          spec.histogramModeAlignment,
+        );
+
         const renderedLines = renderLine(
           // move the point on half of the bandwidth if we have mixed bars/lines
           (xScale.bandwidth * lineShift) / 2,
@@ -431,6 +444,14 @@ export function renderGeometries(
     } else if (isAreaSeriesSpec(spec)) {
         const areaShift = clusteredCount > 0 ? clusteredCount : 1;
         const areaSeriesStyle = spec.areaSeriesStyle;
+
+        // TODO: account for chartRotation
+        const xScaleOffset = computeXScaleOffset(
+          xScale,
+          enableHistogramMode,
+          spec.histogramModeAlignment,
+        );
+
         const renderedAreas = renderArea(
           // move the point on half of the bandwidth if we have mixed bars/lines
           (xScale.bandwidth * areaShift) / 2,

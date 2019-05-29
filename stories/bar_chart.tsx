@@ -15,6 +15,7 @@ import {
   getAxisId,
   getGroupId,
   getSpecId,
+  HistogramModeAlignments,
   LIGHT_THEME,
   LineAnnotation,
   LineSeries,
@@ -1456,6 +1457,8 @@ storiesOf('Bar Chart', module)
       'line',
     );
 
+    const pointAlignment = select('point series alignment', HistogramModeAlignments, HistogramModeAlignments.Start);
+
     const otherSeries = otherSeriesSelection === 'line' ?
       <LineSeries
         id={getSpecId('other-series')}
@@ -1464,6 +1467,7 @@ storiesOf('Bar Chart', module)
         xAccessor="x"
         yAccessors={['y']}
         data={discoData}
+        histogramModeAlignment={pointAlignment}
       /> :
       <AreaSeries
       id={getSpecId('other-series')}
@@ -1472,6 +1476,7 @@ storiesOf('Bar Chart', module)
       xAccessor="x"
       yAccessors={['y']}
       data={discoData}
+      histogramModeAlignment={pointAlignment}
     />;
 
     // const leftAxisFormatter = [0, 180].includes(chartRotation) ? (val: any) => val : formatter;
