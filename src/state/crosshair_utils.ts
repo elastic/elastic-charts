@@ -102,7 +102,7 @@ export function getCursorBandPosition(
   }
   const { position, band } = snappedPosition;
   if (isHorizontalRotated) {
-    const adjustedLeft = snapEnabled ? position : x;
+    const adjustedLeft = snapEnabled ? position : xAxisCursorPosition;
     const leftPosition = chartRotation === 0 ? left + adjustedLeft : left + width - adjustedLeft - band;
 
     return {
@@ -112,7 +112,7 @@ export function getCursorBandPosition(
       height,
     };
   } else {
-    const adjustedTop = snapEnabled ? position : y;
+    const adjustedTop = snapEnabled ? position : yAxisCursorPosition;
     const topPosition = chartRotation === 90 ? top + adjustedTop : top + height - adjustedTop - band;
 
     return {
