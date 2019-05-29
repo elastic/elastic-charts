@@ -1,5 +1,6 @@
 import { Rotation } from '../lib/series/specs';
 import { Dimensions } from '../lib/utils/dimensions';
+import { getValidXPosition } from '../lib/utils/interactions';
 import { Scale } from '../lib/utils/scales/scales';
 import { isHorizontalRotation } from './utils';
 
@@ -76,7 +77,22 @@ export function getCursorBandPosition(
     return;
   }
   const isHorizontalRotated = isHorizontalRotation(chartRotation);
-  const invertedValue = xScale.invertWithStep(isHorizontalRotated ? x : y, data);
+  const xAxisCursorPosition = getValidXPosition(
+    x,
+    y,
+    chartRotation,
+    chartDimensions,
+  );
+
+  const yAxisCursorPosition = getValidXPosition(
+      x,
+      y,
+      chartRotation,
+      chartDimensions,
+    );
+
+  const invertedValue = xScale.invertWithStep(isHorizontalRotated ? xAxisCursorPosition : yAxisCursorPosition, data);
+
   if (invertedValue == null) {
     return;
   }
@@ -86,15 +102,21 @@ export function getCursorBandPosition(
   }
   const { position, band } = snappedPosition;
   if (isHorizontalRotated) {
+    const adjustedLeft = snapEnabled ? position : x;
+    const leftPosition = chartRotation === 0 ? left + adjustedLeft : left + width - adjustedLeft - band;
+
     return {
       top,
-      left: left + (snapEnabled ? position : x),
+      left: leftPosition,
       width: band,
       height,
     };
   } else {
+    const adjustedTop = snapEnabled ? position : y;
+    const topPosition = chartRotation === 90 ? top + adjustedTop : top + height - adjustedTop - band;
+
     return {
-      top: top + (snapEnabled ? position : y),
+      top: topPosition,
       left,
       width,
       height: band,
