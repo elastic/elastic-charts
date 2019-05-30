@@ -1,6 +1,6 @@
 import { inject } from 'mobx-react';
 import React, { createRef, CSSProperties, PureComponent } from 'react';
-import { LineAnnotationSpec } from '../lib/series/specs';
+import { HistogramModeAlignments, LineAnnotationSpec } from '../lib/series/specs';
 import { DEFAULT_ANNOTATION_LINE_STYLE } from '../lib/themes/theme';
 import { getGroupId } from '../lib/utils/ids';
 import { SpecProps } from './specs_parser';
@@ -15,6 +15,7 @@ export class LineAnnotationSpecComponent extends PureComponent<LineAnnotationPro
     hideLines: false,
     hideTooltips: false,
     zIndex: 1,
+    histogramModeAlignment: HistogramModeAlignments.Start,
   };
 
   private markerRef = createRef<HTMLDivElement>();

@@ -136,6 +136,7 @@ describe('annotation utils', () => {
       yScales,
       xScale,
       axesSpecs,
+      false,
     );
     const expectedDimensions = new Map();
     expectedDimensions.set(annotationId, [{
@@ -175,6 +176,7 @@ describe('annotation utils', () => {
       yScales,
       xScale,
       new Map(), // empty axesSpecs
+      false,
     );
     const expectedDimensions = new Map();
     expect(dimensions).toEqual(expectedDimensions);
@@ -204,6 +206,7 @@ describe('annotation utils', () => {
       yScales,
       xScale,
       Position.Left,
+      0,
     );
     const expectedDimensions = [
       {
@@ -239,6 +242,7 @@ describe('annotation utils', () => {
       yScales,
       xScale,
       Position.Right,
+      0,
     );
     const expectedDimensions = [
       {
@@ -274,6 +278,7 @@ describe('annotation utils', () => {
       yScales,
       xScale,
       Position.Left,
+      0,
     );
     const expectedDimensions = [
       {
@@ -307,6 +312,7 @@ describe('annotation utils', () => {
       yScales,
       xScale,
       Position.Left,
+      0,
     );
     expect(dimensions).toEqual(null);
   });
@@ -333,6 +339,7 @@ describe('annotation utils', () => {
       yScales,
       xScale,
       Position.Left,
+      0,
     );
     const expectedDimensions = [
       {
@@ -366,6 +373,7 @@ describe('annotation utils', () => {
       yScales,
       xScale,
       Position.Top,
+      0,
     );
     const expectedDimensions = [
       {
@@ -399,6 +407,7 @@ describe('annotation utils', () => {
       yScales,
       xScale,
       Position.Bottom,
+      0,
     );
     const expectedDimensions = [
       {
@@ -433,6 +442,7 @@ describe('annotation utils', () => {
       yScales,
       xScale,
       Position.Left,
+      0,
     );
     const expectedDimensions = [
       {
@@ -467,6 +477,7 @@ describe('annotation utils', () => {
       yScales,
       xScale,
       Position.Left,
+      0,
     );
     const expectedDimensions = [
       {
@@ -502,6 +513,7 @@ describe('annotation utils', () => {
         yScales,
         xScale,
         Position.Left,
+        0,
       );
       const expectedDimensions = [{
         position: [20, -DEFAULT_LINE_OVERFLOW, 20, 10],
@@ -535,6 +547,7 @@ describe('annotation utils', () => {
       yScales,
       xScale,
       Position.Top,
+      0,
     );
     const expectedDimensions = [
       {
@@ -569,6 +582,7 @@ describe('annotation utils', () => {
         yScales,
         xScale,
         Position.Bottom,
+        0,
       );
       const expectedDimensions = [{
         position: [20, DEFAULT_LINE_OVERFLOW, 20, 20],
@@ -603,6 +617,7 @@ describe('annotation utils', () => {
       yScales,
       xScale,
       Position.Right,
+      0,
     );
 
     expect(emptyXDimensions).toEqual([]);
@@ -623,6 +638,7 @@ describe('annotation utils', () => {
       yScales,
       continuousScale,
       Position.Right,
+      0,
     );
 
     expect(invalidStringXDimensions).toEqual([]);
@@ -643,6 +659,7 @@ describe('annotation utils', () => {
       yScales,
       continuousScale,
       Position.Right,
+      0,
     );
 
     expect(emptyOutOfBoundsXDimensions).toEqual([]);
@@ -663,6 +680,7 @@ describe('annotation utils', () => {
       yScales,
       xScale,
       Position.Right,
+      0,
     );
 
     expect(emptyYDimensions).toEqual([]);
@@ -683,6 +701,7 @@ describe('annotation utils', () => {
       yScales,
       xScale,
       Position.Right,
+      0,
     );
 
     expect(emptyOutOfBoundsYDimensions).toEqual([]);
@@ -703,6 +722,7 @@ describe('annotation utils', () => {
       yScales,
       continuousScale,
       Position.Right,
+      0,
     );
 
     expect(invalidStringYDimensions).toEqual([]);
@@ -724,6 +744,7 @@ describe('annotation utils', () => {
       yScales,
       continuousScale,
       Position.Right,
+      0,
     );
 
     expect(hiddenAnnotationDimensions).toEqual(null);

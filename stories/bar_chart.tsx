@@ -32,6 +32,7 @@ import { TEST_DISCOVER_DATA_MINUTES } from '../src/lib/series/utils/test_discove
 import { TEST_DISCOVER_DATA_DAYS } from '../src/lib/series/utils/test_discover_days';
 
 import { KIBANA_METRICS } from '../src/lib/series/utils/test_dataset_kibana';
+import { EuiIcon } from '@elastic/eui';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
 
@@ -1490,6 +1491,8 @@ storiesOf('Bar Chart', module)
           domainType={AnnotationDomainTypes.XDomain}
           dataValues={[{dataValue: 1557406800000, header: moment(1557406800000).toString()}]}
           style={lineAnnotationStyle}
+          histogramModeAlignment={pointAlignment}
+          marker={<EuiIcon type="alert" />}
         />
         <Axis
           id={getAxisId('discover-histogram-left-axis')}

@@ -1,6 +1,6 @@
 import { inject } from 'mobx-react';
 import { PureComponent } from 'react';
-import { RectAnnotationSpec } from '../lib/series/specs';
+import { HistogramModeAlignments, RectAnnotationSpec } from '../lib/series/specs';
 import { getGroupId } from '../lib/utils/ids';
 import { SpecProps } from './specs_parser';
 
@@ -11,6 +11,7 @@ export class RectAnnotationSpecComponent extends PureComponent<RectAnnotationPro
     groupId: getGroupId('__global__'),
     annotationType: 'rectangle',
     zIndex: -1,
+    histogramModeAlignment: HistogramModeAlignments.Start,
   };
 
   componentDidMount() {

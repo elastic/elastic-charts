@@ -126,31 +126,30 @@ export type BarSeriesSpec = BasicSeriesSpec & {
 /**
  * This spec describe the dataset configuration used to display a line series.
  */
-export type LineSeriesSpec = BasicSeriesSpec & {
+export type LineSeriesSpec = BasicSeriesSpec & HistogramConfig & {
   /** @default line */
   seriesType: 'line';
   curve?: CurveType;
   lineSeriesStyle?: LineSeriesStyle;
-  /**  Determines how points in the series will align to bands in histogram mode
-   * @default 'start'
-   */
-  histogramModeAlignment?: HistogramModeAlignment;
 };
 
 /**
  * This spec describe the dataset configuration used to display an area series.
  */
-export type AreaSeriesSpec = BasicSeriesSpec & {
+export type AreaSeriesSpec = BasicSeriesSpec & HistogramConfig & {
   /** @default area */
   seriesType: 'area';
   /** The type of interpolator to be used to interpolate values between points */
   curve?: CurveType;
   areaSeriesStyle?: AreaSeriesStyle;
+};
+
+interface HistogramConfig {
   /**  Determines how points in the series will align to bands in histogram mode
    * @default 'start'
    */
   histogramModeAlignment?: HistogramModeAlignment;
-};
+}
 
 export const HistogramModeAlignments = Object.freeze({
   Start: 'start' as HistogramModeAlignment,
@@ -279,7 +278,7 @@ export type RectAnnotationSpec = BaseAnnotationSpec & {
   zIndex?: number;
 };
 
-export interface BaseAnnotationSpec {
+export type BaseAnnotationSpec = HistogramConfig & {
   /** The id of the annotation */
   annotationId: AnnotationId;
   /** Annotation type: line, rectangle, text */
@@ -298,7 +297,7 @@ export interface BaseAnnotationSpec {
    * Default specified per specific annotation spec.
    */
   zIndex?: number;
-}
+};
 
 export type AnnotationDatum = LineAnnotationDatum | RectAnnotationDatum;
 export type AnnotationStyle = LineAnnotationStyle | RectAnnotationStyle;

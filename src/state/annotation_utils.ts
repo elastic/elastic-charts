@@ -20,7 +20,7 @@ import { Dimensions } from '../lib/utils/dimensions';
 import { AnnotationId, AxisId, GroupId } from '../lib/utils/ids';
 import { Scale, ScaleType } from '../lib/utils/scales/scales';
 import { Point } from './chart_state';
-import { getAxesSpecForSpecId, isHorizontalRotation } from './utils';
+import { computeXScaleOffset, getAxesSpecForSpecId, isHorizontalRotation } from './utils';
 
 export interface AnnotationTooltipState {
   annotationType: AnnotationType;
@@ -177,6 +177,7 @@ export function computeXDomainLineAnnotationDimensions(
   axisPosition: Position,
   chartDimensions: Dimensions,
   lineColor: string,
+  xScaleOffset: number,
   marker?: JSX.Element,
   markerDimensions?: { width: number; height: number; },
 ): AnnotationLineProps[] {
@@ -192,8 +193,7 @@ export function computeXDomainLineAnnotationDimensions(
       headerText: datum.header || dataValue.toString(),
     };
 
-    // TODO: make offset dependent on annotationSpec.alignment (left, center, right)
-    const offset = xScale.bandwidth / 2;
+    const offset = xScale.bandwidth / 2 - xScaleOffset;
     const isContinuous = xScale.type !== ScaleType.Ordinal;
 
     const scaledXValue = xScale.scale(dataValue);
@@ -250,10 +250,7 @@ export function computeXDomainLineAnnotationDimensions(
         const startY = (axisPosition === Position.Bottom) ? 0 : -lineOverflow;
         const endY = (axisPosition === Position.Bottom) ? chartHeight + lineOverflow : chartHeight;
         linePosition = [xDomainPosition, startY, xDomainPosition, endY];
-        // tooltipLinePosition = [chartWidth - xDomainPosition, 0, chartWidth - xDomainPosition, chartHeight];
         tooltipLinePosition = [xDomainPosition, 0, xDomainPosition, chartHeight];
-
-        // tooltipLinePosition = [0, chartWidth - xDomainPosition, chartHeight, chartWidth - xDomainPosition];
 
         const startMarkerY = (axisPosition === Position.Bottom) ? 0 : -lineOverflow - markerOffsets.height;
         const endMarkerY = (axisPosition === Position.Bottom) ?
@@ -281,6 +278,7 @@ export function computeLineAnnotationDimensions(
   yScales: Map<GroupId, Scale>,
   xScale: Scale,
   axisPosition: Position,
+  xScaleOffset: number,
 ): AnnotationLineProps[] | null {
   const { domainType, dataValues, marker, markerDimensions, hideLines } = annotationSpec;
 
@@ -304,6 +302,7 @@ export function computeLineAnnotationDimensions(
       axisPosition,
       chartDimensions,
       lineColor,
+      xScaleOffset,
       marker,
       markerDimensions,
     );
@@ -461,10 +460,13 @@ export function computeAnnotationDimensions(
   yScales: Map<GroupId, Scale>,
   xScale: Scale,
   axesSpecs: Map<AxisId, AxisSpec>,
+  enableHistogramMode: boolean,
 ): Map<AnnotationId, AnnotationDimensions> {
   const annotationDimensions = new Map<AnnotationId, AnnotationDimensions>();
 
   annotations.forEach((annotationSpec: AnnotationSpec, annotationId: AnnotationId) => {
+    const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, annotationSpec.histogramModeAlignment);
+
     if (isLineAnnotation(annotationSpec)) {
       const { groupId, domainType } = annotationSpec;
       const annotationAxisPosition = getAnnotationAxis(axesSpecs, groupId, domainType);
@@ -480,6 +482,7 @@ export function computeAnnotationDimensions(
         yScales,
         xScale,
         annotationAxisPosition,
+        xScaleOffset,
       );
 
       if (dimensions) {
