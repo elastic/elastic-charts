@@ -7,14 +7,18 @@ import {
   BarSeriesSpec,
   BasicSeriesSpec,
   LineSeriesSpec,
+  HistogramModeAlignments,
+  // HistogramModeAlignments,
 } from '../lib/series/specs';
 import { BARCHART_1Y0G, BARCHART_1Y1G } from '../lib/series/utils/test_dataset';
 import { LIGHT_THEME } from '../lib/themes/light_theme';
 import { AxisId, getGroupId, getSpecId, SpecId } from '../lib/utils/ids';
+import { ScaleContinuous } from '../lib/utils/scales/scale_continuous';
 import { ScaleType } from '../lib/utils/scales/scales';
 import {
   computeSeriesDomains,
   computeSeriesGeometries,
+  computeXScaleOffset,
   findDataSeriesByColorValues,
   getUpdatedCustomSeriesColors,
   isChartAnimatable,
@@ -816,5 +820,31 @@ describe('Chart State utils', () => {
     const merged = mergeGeometriesIndexes(map1, map2);
     expect(merged.get('a')).toBeDefined();
     expect(merged.get('a')!.length).toBe(2);
+  });
+  test('can compute xScaleOffset dependent on histogram mode', () => {
+    const domain = [0, 10];
+    const range: [number, number] = [0, 100];
+    const bandwidth = 10;
+    const barsPadding = 0.5;
+    const scale = new ScaleContinuous(
+      ScaleType.Linear,
+      domain,
+      range,
+      bandwidth,
+      0,
+      'utc',
+      1,
+      barsPadding,
+    );
+    const histogramModeEnabled = true;
+    const histogramModeDisabled = false;
+
+    expect(computeXScaleOffset(scale, histogramModeDisabled)).toBe(0);
+
+    // default alignment (start)
+    expect(computeXScaleOffset(scale, histogramModeEnabled)).toBe(5);
+
+    expect(computeXScaleOffset(scale, histogramModeEnabled, HistogramModeAlignments.Center)).toBe(0);
+    expect(computeXScaleOffset(scale, histogramModeEnabled, HistogramModeAlignments.End)).toBe(-5);
   });
 });

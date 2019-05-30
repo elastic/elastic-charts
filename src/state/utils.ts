@@ -316,14 +316,12 @@ export function computeXScaleOffset(
   }
 
   const { bandwidth, barsPadding } = xScale;
-  const band = bandwidth > 0 ? bandwidth / (1 - barsPadding) : 0;
+  const band = bandwidth / (1 - barsPadding);
   const halfPadding = (band - bandwidth) / 2;
 
   const startAlignmentOffset = (bandwidth / 2) + halfPadding;
 
   switch (histogramModeAlignment) {
-    case HistogramModeAlignments.Start:
-      return startAlignmentOffset;
     case HistogramModeAlignments.Center:
       return 0;
     case HistogramModeAlignments.End:
