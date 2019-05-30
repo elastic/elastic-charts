@@ -306,6 +306,15 @@ export function computeSeriesGeometries(
   };
 }
 
+export function isHistogramModeEnabled(seriesSpecs: Map<SpecId, BasicSeriesSpec>): boolean {
+  for (const [, spec] of seriesSpecs) {
+    if (isBarSeriesSpec(spec) && spec.enableHistogramMode) {
+      return true;
+    }
+  }
+  return false;
+}
+
 export function computeXScaleOffset(
   xScale: Scale,
   enableHistogramMode: boolean,

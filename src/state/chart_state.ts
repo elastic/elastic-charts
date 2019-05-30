@@ -35,7 +35,6 @@ import {
   BarSeriesSpec,
   BasicSeriesSpec,
   DomainRange,
-  isBarSeriesSpec,
   isLineAnnotation,
   isRectAnnotation,
   LineSeriesSpec,
@@ -81,6 +80,7 @@ import {
   getAxesSpecForSpecId,
   getUpdatedCustomSeriesColors,
   isChartAnimatable,
+  isHistogramModeEnabled,
   isLineAreaOnlyChart,
   Transform,
   updateDeselectedDataSeries,
@@ -721,9 +721,9 @@ export class ChartStore {
   }
   addSeriesSpec(seriesSpec: BasicSeriesSpec | LineSeriesSpec | AreaSeriesSpec | BarSeriesSpec) {
     this.seriesSpecs.set(seriesSpec.id, seriesSpec);
-    if (isBarSeriesSpec(seriesSpec)) {
-      this.enableHistogramMode.set(seriesSpec.enableHistogramMode || false);
-    }
+
+    const isEnabled = isHistogramModeEnabled(this.seriesSpecs);
+    this.enableHistogramMode.set(isEnabled);
   }
   removeSeriesSpec(specId: SpecId) {
     this.seriesSpecs.delete(specId);

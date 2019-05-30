@@ -6,9 +6,8 @@ import {
   AxisSpec,
   BarSeriesSpec,
   BasicSeriesSpec,
-  LineSeriesSpec,
   HistogramModeAlignments,
-  // HistogramModeAlignments,
+  LineSeriesSpec,
 } from '../lib/series/specs';
 import { BARCHART_1Y0G, BARCHART_1Y1G } from '../lib/series/utils/test_dataset';
 import { LIGHT_THEME } from '../lib/themes/light_theme';
@@ -27,6 +26,7 @@ import {
   isVerticalRotation,
   mergeGeometriesIndexes,
   updateDeselectedDataSeries,
+  isHistogramModeEnabled,
 } from './utils';
 
 describe('Chart State utils', () => {
@@ -846,5 +846,73 @@ describe('Chart State utils', () => {
 
     expect(computeXScaleOffset(scale, histogramModeEnabled, HistogramModeAlignments.Center)).toBe(0);
     expect(computeXScaleOffset(scale, histogramModeEnabled, HistogramModeAlignments.End)).toBe(-5);
+  });
+  test('can determine if histogram mode is enabled', () => {
+    const area: AreaSeriesSpec = {
+      id: getSpecId('area'),
+      groupId: getGroupId('group1'),
+      seriesType: 'area',
+      yScaleType: ScaleType.Log,
+      xScaleType: ScaleType.Linear,
+      xAccessor: 'x',
+      yAccessors: ['y'],
+      splitSeriesAccessors: ['g'],
+      yScaleToDataExtent: false,
+      data: BARCHART_1Y1G,
+    };
+    const line: LineSeriesSpec = {
+      id: getSpecId('line'),
+      groupId: getGroupId('group2'),
+      seriesType: 'line',
+      yScaleType: ScaleType.Log,
+      xScaleType: ScaleType.Linear,
+      xAccessor: 'x',
+      yAccessors: ['y'],
+      splitSeriesAccessors: ['g'],
+      stackAccessors: ['x'],
+      yScaleToDataExtent: false,
+      data: BARCHART_1Y1G,
+    };
+    const basicBar: BarSeriesSpec = {
+      id: getSpecId('bar'),
+      groupId: getGroupId('group2'),
+      seriesType: 'bar',
+      yScaleType: ScaleType.Log,
+      xScaleType: ScaleType.Linear,
+      xAccessor: 'x',
+      yAccessors: ['y'],
+      splitSeriesAccessors: ['g'],
+      stackAccessors: ['x'],
+      yScaleToDataExtent: false,
+      data: BARCHART_1Y1G,
+    };
+    const histogramBar: BarSeriesSpec = {
+      id: getSpecId('histo'),
+      groupId: getGroupId('group2'),
+      seriesType: 'bar',
+      yScaleType: ScaleType.Log,
+      xScaleType: ScaleType.Linear,
+      xAccessor: 'x',
+      yAccessors: ['y'],
+      splitSeriesAccessors: ['g'],
+      stackAccessors: ['x'],
+      yScaleToDataExtent: false,
+      data: BARCHART_1Y1G,
+      enableHistogramMode: true,
+    };
+    const seriesMap = new Map<SpecId, BasicSeriesSpec>([
+      [area.id, area],
+      [line.id, line],
+      [basicBar.id, basicBar],
+      [histogramBar.id, histogramBar],
+    ]);
+
+    expect(isHistogramModeEnabled(seriesMap)).toBe(true);
+
+    seriesMap.delete(histogramBar.id);
+    expect(isHistogramModeEnabled(seriesMap)).toBe(false);
+
+    seriesMap.delete(basicBar.id);
+    expect(isHistogramModeEnabled(seriesMap)).toBe(false);
   });
 });
