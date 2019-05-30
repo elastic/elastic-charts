@@ -21,12 +21,12 @@ import {
   findDataSeriesByColorValues,
   getUpdatedCustomSeriesColors,
   isChartAnimatable,
+  isHistogramModeEnabled,
   isHorizontalRotation,
   isLineAreaOnlyChart,
   isVerticalRotation,
   mergeGeometriesIndexes,
   updateDeselectedDataSeries,
-  isHistogramModeEnabled,
 } from './utils';
 
 describe('Chart State utils', () => {

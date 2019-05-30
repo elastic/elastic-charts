@@ -16,6 +16,7 @@ import {
   getAxisId,
   getGroupId,
   getSpecId,
+  HistogramBarSeries,
   HistogramModeAlignments,
   LIGHT_THEME,
   LineAnnotation,
@@ -1528,20 +1529,38 @@ storiesOf('Bar Chart', module)
           title={data.xAxisLabel}
           tickFormat={bottomAxisFormatter}
         />
-        <BarSeries // assume histogram mode is enabled already
-          id={getSpecId('bars')}
+        <BarSeries
+          id={getSpecId('bars-1')}
           xScaleType={ScaleType.Time}
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y']}
           data={discoData}
-          name={data.yAxisLabel}
+          name={'bars 1'}
           timeZone={'local'}
           enableHistogramMode={boolean('enableHistogramMode', true)}
         />
+        <BarSeries
+          id={getSpecId('bars-2')}
+          xScaleType={ScaleType.Time}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          data={discoData.map((value: any) => ({...value, y: value.y - 1}))}
+          name={'bars 2'}
+          timeZone={'local'}
+        />
+        <HistogramBarSeries
+          id={getSpecId('histo')}
+          xScaleType={ScaleType.Time}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          data={discoData.map((value: any) => ({...value, y: value.y + 1}))}
+          name={'histogram'}
+          timeZone={'local'}
+        />
         {otherSeries}
-        {/* <BarSeries enableHistogramMode={true} /> if the user specifies,
-        then we will stack the series & this misconfiguration can be caught when validation */}
       </Chart>
     );
   })

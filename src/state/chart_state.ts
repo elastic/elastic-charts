@@ -35,6 +35,7 @@ import {
   BarSeriesSpec,
   BasicSeriesSpec,
   DomainRange,
+  isBarSeriesSpec,
   isLineAnnotation,
   isRectAnnotation,
   LineSeriesSpec,
@@ -724,7 +725,22 @@ export class ChartStore {
 
     const isEnabled = isHistogramModeEnabled(this.seriesSpecs);
     this.enableHistogramMode.set(isEnabled);
+
+    if (isEnabled) {
+      for (const [, spec] of this.seriesSpecs) {
+        if (isBarSeriesSpec(spec)) {
+          let stackAccessors = spec.stackAccessors ? [...spec.stackAccessors] : spec.yAccessors;
+
+          if (spec.splitSeriesAccessors) {
+            stackAccessors = [...stackAccessors, ...spec.splitSeriesAccessors];
+          }
+
+          spec.stackAccessors = stackAccessors;
+        }
+      }
+    }
   }
+
   removeSeriesSpec(specId: SpecId) {
     this.seriesSpecs.delete(specId);
   }

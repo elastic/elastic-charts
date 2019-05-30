@@ -7,6 +7,7 @@ import {
   RectAnnotationStyle,
 } from '../themes/theme';
 import { Accessor } from '../utils/accessor';
+import { Omit } from '../utils/commons';
 import { AnnotationId, AxisId, GroupId, SpecId } from '../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../utils/scales/scales';
 import { CurveType } from './curves';
@@ -121,6 +122,14 @@ export type BarSeriesSpec = BasicSeriesSpec & {
   /** If true, will stack all BarSeries and align bars to ticks (instead of centered on ticks) */
   enableHistogramMode?: boolean;
   barSeriesStyle?: CustomBarSeriesStyle;
+};
+
+/**
+ * This spec describe the dataset configuration used to display a histogram bar series.
+ * A histogram bar series is identical to a bar series except that stackAccessors are not allowed.
+ */
+export type HistogramBarSeriesSpec = Omit<BarSeriesSpec, 'stackAccessors'> & {
+  enableHistogramMode: true;
 };
 
 /**
