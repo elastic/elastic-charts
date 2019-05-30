@@ -229,7 +229,7 @@ export interface LineAnnotationDatum {
   header?: string;
 }
 
-export type LineAnnotationSpec = BaseAnnotationSpec & {
+export type LineAnnotationSpec = BaseAnnotationSpec & HistogramConfig & {
   annotationType: 'line';
   domainType: AnnotationDomainType;
   /** Data values defined with value, details, and header */
@@ -278,7 +278,7 @@ export type RectAnnotationSpec = BaseAnnotationSpec & {
   zIndex?: number;
 };
 
-export type BaseAnnotationSpec = HistogramConfig & {
+export interface BaseAnnotationSpec {
   /** The id of the annotation */
   annotationId: AnnotationId;
   /** Annotation type: line, rectangle, text */
@@ -297,7 +297,7 @@ export type BaseAnnotationSpec = HistogramConfig & {
    * Default specified per specific annotation spec.
    */
   zIndex?: number;
-};
+}
 
 export type AnnotationDatum = LineAnnotationDatum | RectAnnotationDatum;
 export type AnnotationStyle = LineAnnotationStyle | RectAnnotationStyle;

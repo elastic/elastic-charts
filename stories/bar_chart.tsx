@@ -1,3 +1,4 @@
+import { EuiIcon } from '@elastic/eui';
 import { boolean, color, number, select } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import { DateTime } from 'luxon';
@@ -22,6 +23,7 @@ import {
   mergeWithDefaultTheme,
   niceTimeFormatByDay,
   Position,
+  RectAnnotation,
   Rotation,
   ScaleType,
   Settings,
@@ -32,7 +34,6 @@ import { TEST_DISCOVER_DATA_MINUTES } from '../src/lib/series/utils/test_discove
 import { TEST_DISCOVER_DATA_DAYS } from '../src/lib/series/utils/test_discover_days';
 
 import { KIBANA_METRICS } from '../src/lib/series/utils/test_dataset_kibana';
-import { EuiIcon } from '@elastic/eui';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
 
@@ -1483,16 +1484,37 @@ storiesOf('Bar Chart', module)
     // const leftAxisFormatter = [0, 180].includes(chartRotation) ? (val: any) => val : formatter;
     const bottomAxisFormatter = [0, 180].includes(chartRotation) ? formatter : (val: any) => val;
 
+    const annotationTime = 1557406800000;
+
     return (
       <Chart className={'story-chart'}>
         <Settings rotation={chartRotation} theme={theme} debug={boolean('debug', true)} />
         <LineAnnotation
           annotationId={getAnnotationId('line-annotation')}
           domainType={AnnotationDomainTypes.XDomain}
-          dataValues={[{dataValue: 1557406800000, header: moment(1557406800000).toString()}]}
+          dataValues={[{dataValue: annotationTime, header: moment(annotationTime).toString()}]}
           style={lineAnnotationStyle}
           histogramModeAlignment={pointAlignment}
           marker={<EuiIcon type="alert" />}
+        />
+        <RectAnnotation
+          dataValues={[
+            {
+              coordinates: {
+                x0: discoData[0].x,
+                x1: discoData[0].x + 1800000,
+              },
+              details: 'rect annotation',
+            },
+            {
+              coordinates: {
+                x0: discoData[discoData.length - 1].x - 1800000,
+                x1: discoData[discoData.length - 1].x,
+              },
+              details: 'rect annotation',
+            },
+          ]}
+          annotationId={getAnnotationId('rect')}
         />
         <Axis
           id={getAxisId('discover-histogram-left-axis')}

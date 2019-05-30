@@ -465,8 +465,6 @@ export function computeAnnotationDimensions(
   const annotationDimensions = new Map<AnnotationId, AnnotationDimensions>();
 
   annotations.forEach((annotationSpec: AnnotationSpec, annotationId: AnnotationId) => {
-    const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, annotationSpec.histogramModeAlignment);
-
     if (isLineAnnotation(annotationSpec)) {
       const { groupId, domainType } = annotationSpec;
       const annotationAxisPosition = getAnnotationAxis(axesSpecs, groupId, domainType);
@@ -474,6 +472,7 @@ export function computeAnnotationDimensions(
       if (!annotationAxisPosition) {
         return;
       }
+      const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, annotationSpec.histogramModeAlignment);
 
       const dimensions = computeLineAnnotationDimensions(
         annotationSpec,
