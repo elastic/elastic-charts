@@ -23,6 +23,7 @@ import {
 import { countBarsInCluster } from '../lib/series/scales';
 import {
   DataSeriesColorsValues,
+  findDataSeriesByColorValues,
   FormattedDataSeries,
   getSeriesColorMap,
   RawDataSeries,
@@ -80,7 +81,6 @@ import {
   computeChartTransform,
   computeSeriesDomains,
   computeSeriesGeometries,
-  findDataSeriesByColorValues,
   getAxesSpecForSpecId,
   getUpdatedCustomSeriesColors,
   isChartAnimatable,

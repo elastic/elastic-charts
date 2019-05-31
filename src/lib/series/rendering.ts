@@ -1,5 +1,4 @@
 import { area, line } from 'd3-shape';
-import { mutableIndexedGeometryMapUpsert } from '../../state/utils';
 import { CanvasTextBBoxCalculator } from '../axes/canvas_text_bbox_calculator';
 import {
   AreaSeriesStyle,
@@ -98,6 +97,20 @@ export function isPointGeometry(ig: IndexedGeometry): ig is PointGeometry {
 }
 export function isBarGeometry(ig: IndexedGeometry): ig is BarGeometry {
   return ig.hasOwnProperty('width') && ig.hasOwnProperty('height');
+}
+
+export function mutableIndexedGeometryMapUpsert(
+  mutableGeometriesIndex: Map<any, IndexedGeometry[]>,
+  key: any,
+  geometry: IndexedGeometry | IndexedGeometry[],
+) {
+  const existing = mutableGeometriesIndex.get(key);
+  const upsertGeometry: IndexedGeometry[] = Array.isArray(geometry) ? geometry : [geometry];
+  if (existing === undefined) {
+    mutableGeometriesIndex.set(key, upsertGeometry);
+  } else {
+    mutableGeometriesIndex.set(key, [...upsertGeometry, ...existing]);
+  }
 }
 
 export function renderPoints(
