@@ -1,8 +1,6 @@
-import { EuiIcon } from '@elastic/eui';
 import { boolean, color, number, select } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import { DateTime } from 'luxon';
-import moment from 'moment';
 import React from 'react';
 import {
   AnnotationDomainTypes,
@@ -31,8 +29,6 @@ import {
   timeFormatter,
 } from '../src/';
 import * as TestDatasets from '../src/lib/series/utils/test_dataset';
-import { TEST_DISCOVER_DATA_MINUTES } from '../src/lib/series/utils/test_discover';
-import { TEST_DISCOVER_DATA_DAYS } from '../src/lib/series/utils/test_discover_days';
 
 import { KIBANA_METRICS } from '../src/lib/series/utils/test_dataset_kibana';
 
@@ -1394,20 +1390,8 @@ storiesOf('Bar Chart', module)
       </Chart>
     );
   })
-  .add('[test] discover chart', () => {
-    const dataSelection = select('data selection', {
-      days: 'days',
-      minutes: 'minutes',
-    }, 'days');
-
-    const data = dataSelection === 'days' ? TEST_DISCOVER_DATA_DAYS : TEST_DISCOVER_DATA_MINUTES;
-    const discoData = data.series[0].values;
-
-    // Our time formatters use luxon so the moment patterns are incompatible
-    // Since we can pass in our own formatter though that should be ok.
-    const formatter = (val: string) => {
-      return moment(val).format(data.xAxisFormat.params.pattern);
-    };
+  .add('[test] histogram mode', () => {
+    const data = TestDatasets.BARCHART_2Y1G;
 
     const lineAnnotationStyle = {
       line: {
@@ -1461,31 +1445,29 @@ storiesOf('Bar Chart', module)
     );
 
     const pointAlignment = select('point series alignment', HistogramModeAlignments, HistogramModeAlignments.Start);
+    const pointData = TestDatasets.BARCHART_1Y0G;
 
     const otherSeries = otherSeriesSelection === 'line' ?
       <LineSeries
         id={getSpecId('other-series')}
-        xScaleType={ScaleType.Time}
+        xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
-        data={discoData}
+        data={pointData}
         histogramModeAlignment={pointAlignment}
       /> :
       <AreaSeries
       id={getSpecId('other-series')}
-      xScaleType={ScaleType.Time}
+      xScaleType={ScaleType.Linear}
       yScaleType={ScaleType.Linear}
       xAccessor="x"
       yAccessors={['y']}
-      data={discoData}
+      data={pointData}
       histogramModeAlignment={pointAlignment}
     />;
 
-    // const leftAxisFormatter = [0, 180].includes(chartRotation) ? (val: any) => val : formatter;
-    const bottomAxisFormatter = [0, 180].includes(chartRotation) ? formatter : (val: any) => val;
-
-    const annotationTime = 1557406800000;
+    const hasHistogramBarSeries = boolean('hasHistogramBarSeries', false);
 
     return (
       <Chart className={'story-chart'}>
@@ -1493,24 +1475,24 @@ storiesOf('Bar Chart', module)
         <LineAnnotation
           annotationId={getAnnotationId('line-annotation')}
           domainType={AnnotationDomainTypes.XDomain}
-          dataValues={[{dataValue: annotationTime, header: moment(annotationTime).toString()}]}
+          dataValues={[{dataValue: 2}]}
           style={lineAnnotationStyle}
           histogramModeAlignment={pointAlignment}
-          marker={<EuiIcon type="alert" />}
+          marker={<div style={{background: 'red', width: 10, height: 10}} />}
         />
         <RectAnnotation
           dataValues={[
             {
               coordinates: {
-                x0: discoData[0].x,
-                x1: discoData[0].x + 1800000,
+                x0: 0,
+                x1: 0.5,
               },
               details: 'rect annotation',
             },
             {
               coordinates: {
-                x0: discoData[discoData.length - 1].x - 1800000,
-                x1: discoData[discoData.length - 1].x,
+                x0: 2.5,
+                x1: 3,
               },
               details: 'rect annotation',
             },
@@ -1520,45 +1502,41 @@ storiesOf('Bar Chart', module)
         <Axis
           id={getAxisId('discover-histogram-left-axis')}
           position={Position.Left}
-          title={data.yAxisLabel}
-          // tickFormat={leftAxisFormatter}
+          title={'left axis'}
         />
         <Axis
           id={getAxisId('discover-histogram-bottom-axis')}
           position={Position.Bottom}
-          title={data.xAxisLabel}
-          tickFormat={bottomAxisFormatter}
+          title={'bottom axis'}
         />
+        {hasHistogramBarSeries && <HistogramBarSeries
+          id={getSpecId('histo')}
+          xScaleType={ScaleType.Time}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          data={pointData}
+          name={'histogram'}
+        />}
         <BarSeries
           id={getSpecId('bars-1')}
           xScaleType={ScaleType.Time}
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y']}
-          data={discoData}
+          data={pointData}
           name={'bars 1'}
-          timeZone={'local'}
-          enableHistogramMode={boolean('enableHistogramMode', true)}
+          enableHistogramMode={boolean('bars-1 enableHistogramMode', false)}
         />
         <BarSeries
           id={getSpecId('bars-2')}
-          xScaleType={ScaleType.Time}
+          xScaleType={ScaleType.Linear}
           yScaleType={ScaleType.Linear}
           xAccessor="x"
-          yAccessors={['y']}
-          data={discoData.map((value: any) => ({...value, y: value.y - 1}))}
-          name={'bars 2'}
-          timeZone={'local'}
-        />
-        <HistogramBarSeries
-          id={getSpecId('histo')}
-          xScaleType={ScaleType.Time}
-          yScaleType={ScaleType.Linear}
-          xAccessor="x"
-          yAccessors={['y']}
-          data={discoData.map((value: any) => ({...value, y: value.y + 1}))}
-          name={'histogram'}
-          timeZone={'local'}
+          yAccessors={['y1', 'y2']}
+          splitSeriesAccessors={['g']}
+          data={data}
+          enableHistogramMode={boolean('bars-2 enableHistogramMode', false)}
         />
         {otherSeries}
       </Chart>
