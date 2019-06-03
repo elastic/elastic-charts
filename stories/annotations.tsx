@@ -117,11 +117,7 @@ storiesOf('Annotations', module)
           marker={<Icon type="alert" />}
         />
         <Axis id={getAxisId('top')} position={Position.Top} title={'x-domain axis (top)'} />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          title={'x-domain axis (bottom)'}
-        />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'x-domain axis (bottom)'} />
         <Axis id={getAxisId('left')} title={'y-domain axis'} position={Position.Left} />
         <BarSeries
           id={getSpecId('bars')}
@@ -204,12 +200,7 @@ storiesOf('Annotations', module)
           dataValues={dataValues}
           marker={<Icon type="alert" />}
         />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          title={'x-domain axis'}
-          tickFormat={dateFormatter}
-        />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'x-domain axis'} tickFormat={dateFormatter} />
         <Axis id={getAxisId('left')} title={'y-domain axis'} position={Position.Left} />
         <BarSeries
           id={getSpecId('bars')}

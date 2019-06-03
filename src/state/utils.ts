@@ -83,19 +83,15 @@ export function updateDeselectedDataSeries(
   return updatedSeries;
 }
 
-export function getUpdatedCustomSeriesColors(
-  seriesSpecs: Map<SpecId, BasicSeriesSpec>,
-): Map<string, string> {
+export function getUpdatedCustomSeriesColors(seriesSpecs: Map<SpecId, BasicSeriesSpec>): Map<string, string> {
   const updatedCustomSeriesColors = new Map();
-  seriesSpecs.forEach((spec: BasicSeriesSpec, id: SpecId) => {
+  seriesSpecs.forEach((spec: BasicSeriesSpec) => {
     if (spec.customSeriesColors) {
-      spec.customSeriesColors.forEach(
-        (color: string, seriesColorValues: DataSeriesColorsValues) => {
-          const { colorValues, specId } = seriesColorValues;
-          const seriesLabel = getColorValuesAsString(colorValues, specId);
-          updatedCustomSeriesColors.set(seriesLabel, color);
-        },
-      );
+      spec.customSeriesColors.forEach((color: string, seriesColorValues: DataSeriesColorsValues) => {
+        const { colorValues, specId } = seriesColorValues;
+        const seriesLabel = getColorValuesAsString(colorValues, specId);
+        updatedCustomSeriesColors.set(seriesLabel, color);
+      });
     }
   });
   return updatedCustomSeriesColors;
@@ -115,10 +111,7 @@ export function computeSeriesDomains(
   customXDomain?: DomainRange | Domain,
   deselectedDataSeries?: DataSeriesColorsValues[] | null,
 ): SeriesDomainsAndData {
-  const { splittedSeries, xValues, seriesColors } = getSplittedSeries(
-    seriesSpecs,
-    deselectedDataSeries,
-  );
+  const { splittedSeries, xValues, seriesColors } = getSplittedSeries(seriesSpecs, deselectedDataSeries);
   // tslint:disable-next-line:no-console
   // console.log({ splittedSeries, xValues, seriesColors });
   const splittedDataSeries = [...splittedSeries.values()];
@@ -201,7 +194,7 @@ export function computeSeriesGeometries(
     lines: 0,
     linePoints: 0,
   };
-  formattedDataSeries.stacked.forEach((dataSeriesGroup, index) => {
+  formattedDataSeries.stacked.forEach((dataSeriesGroup) => {
     const { groupId, dataSeries, counts } = dataSeriesGroup;
     const yScale = yScales.get(groupId);
     if (!yScale) {
@@ -227,10 +220,7 @@ export function computeSeriesGeometries(
     lines.push(...geometries.lines);
     bars.push(...geometries.bars);
     points.push(...geometries.points);
-    stackedGeometriesIndex = mergeGeometriesIndexes(
-      stackedGeometriesIndex,
-      geometries.geometriesIndex,
-    );
+    stackedGeometriesIndex = mergeGeometriesIndexes(stackedGeometriesIndex, geometries.geometriesIndex);
     // update counts
     geometriesCounts.points += geometries.geometriesCounts.points;
     geometriesCounts.bars += geometries.geometriesCounts.bars;
@@ -239,7 +229,7 @@ export function computeSeriesGeometries(
     geometriesCounts.lines += geometries.geometriesCounts.lines;
     geometriesCounts.linePoints += geometries.geometriesCounts.linePoints;
   });
-  formattedDataSeries.nonStacked.map((dataSeriesGroup, index) => {
+  formattedDataSeries.nonStacked.map((dataSeriesGroup) => {
     const { groupId, dataSeries } = dataSeriesGroup;
     const yScale = yScales.get(groupId);
     if (!yScale) {
@@ -265,10 +255,7 @@ export function computeSeriesGeometries(
     bars.push(...geometries.bars);
     points.push(...geometries.points);
 
-    nonStackedGeometriesIndex = mergeGeometriesIndexes(
-      nonStackedGeometriesIndex,
-      geometries.geometriesIndex,
-    );
+    nonStackedGeometriesIndex = mergeGeometriesIndexes(nonStackedGeometriesIndex, geometries.geometriesIndex);
     // update counts
     geometriesCounts.points += geometries.geometriesCounts.points;
     geometriesCounts.bars += geometries.geometriesCounts.bars;
@@ -399,34 +386,42 @@ export function renderGeometries(
     const color = seriesColorsMap.get(ds.seriesColorKey) || defaultColor;
 
     if (isBarSeriesSpec(spec)) {
-        const shift = isStacked ? indexOffset : indexOffset + i;
+      const shift = isStacked ? indexOffset : indexOffset + i;
 
-        // TODO: we can handle style merging here and not pass that off to the component
-        // then barSeriesStyle should not be an optional parameter and we can simplify
-        // the props building in the geometries component
-        const barSeriesStyle = spec.barSeriesStyle ? {
-          ...chartTheme.barSeriesStyle,
-          ...spec.barSeriesStyle,
-        } : chartTheme.barSeriesStyle;
+      // TODO: we can handle style merging here and not pass that off to the component
+      // then barSeriesStyle should not be an optional parameter and we can simplify
+      // the props building in the geometries component
+      const barSeriesStyle = spec.barSeriesStyle
+        ? {
+            ...chartTheme.barSeriesStyle,
+            ...spec.barSeriesStyle,
+          }
+        : chartTheme.barSeriesStyle;
 
-        const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
-        const valueFormatter = yAxis && yAxis.tickFormat ? yAxis.tickFormat : identity;
+      const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
+      const valueFormatter = yAxis && yAxis.tickFormat ? yAxis.tickFormat : identity;
 
-        const displayValueSettings = spec.displayValueSettings ? {
-          valueFormatter,
-          ...spec.displayValueSettings,
-        } : undefined;
+      const displayValueSettings = spec.displayValueSettings
+        ? {
+            valueFormatter,
+            ...spec.displayValueSettings,
+          }
+        : undefined;
 
-        const renderedBars = renderBars(
-          shift, ds.data, xScale, yScale, color,
-          ds.specId, ds.key, displayValueSettings, barSeriesStyle,
-        );
-        barGeometriesIndex = mergeGeometriesIndexes(
-          barGeometriesIndex,
-          renderedBars.indexedGeometries,
-        );
-        bars.push(...renderedBars.barGeometries);
-        geometriesCounts.bars += renderedBars.barGeometries.length;
+      const renderedBars = renderBars(
+        shift,
+        ds.data,
+        xScale,
+        yScale,
+        color,
+        ds.specId,
+        ds.key,
+        displayValueSettings,
+        barSeriesStyle,
+      );
+      barGeometriesIndex = mergeGeometriesIndexes(barGeometriesIndex, renderedBars.indexedGeometries);
+      bars.push(...renderedBars.barGeometries);
+      geometriesCounts.bars += renderedBars.barGeometries.length;
     } else if (isLineSeriesSpec(spec)) {
         const lineShift = clusteredCount > 0 ? clusteredCount : 1;
         const lineSeriesStyle = spec.lineSeriesStyle;
@@ -530,10 +525,7 @@ export function getAxesSpecForSpecId(axesSpecs: Map<AxisId, AxisSpec>, groupId: 
   };
 }
 
-export function computeChartTransform(
-  chartDimensions: Dimensions,
-  chartRotation: Rotation,
-): Transform {
+export function computeChartTransform(chartDimensions: Dimensions, chartRotation: Rotation): Transform {
   if (chartRotation === 90) {
     return {
       x: chartDimensions.width,
@@ -588,7 +580,7 @@ export function computeBrushExtent(
  * @returns a new Map where each element with the same key are concatenated on a single
  * IndexedGemoetry array for that key
  */
-export function mergeGeometriesIndexes(...iterables: Array<Map<any, IndexedGeometry[]>>) {
+export function mergeGeometriesIndexes(...iterables: Map<any, IndexedGeometry[]>[]) {
   const geometriesIndex: Map<any, IndexedGeometry[]> = new Map();
 
   for (const iterable of iterables) {
@@ -617,10 +609,7 @@ export function isLineAreaOnlyChart(specs: Map<SpecId, BasicSeriesSpec>) {
   });
 }
 
-export function isChartAnimatable(
-  geometriesCounts: GeometriesCounts,
-  animationEnabled: boolean,
-): boolean {
+export function isChartAnimatable(geometriesCounts: GeometriesCounts, animationEnabled: boolean): boolean {
   if (!animationEnabled) {
     return false;
   }

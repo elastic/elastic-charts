@@ -32,7 +32,7 @@ class Resizer extends React.Component<ResizerProps> {
     entries.forEach(({ contentRect: { width, height } }) => {
       this.props.chartStore!.updateParentDimensions(width, height, 0, 0);
     });
-  }
+  };
 
   render() {
     return (

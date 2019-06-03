@@ -118,7 +118,7 @@ export const AnnotationTooltip = inject('chartStore')(observer(AnnotationTooltip
 
 function RectAnnotationTooltip(props: {
   details?: string;
-  position: { transform: string; top: number; left: number; };
+  position: { transform: string; top: number; left: number };
 }) {
   const { details, position } = props;
   return (
@@ -135,7 +135,7 @@ function RectAnnotationTooltip(props: {
 function LineAnnotationTooltip(props: {
   details?: string;
   header?: string;
-  position: { transform: string; top: number; left: number; };
+  position: { transform: string; top: number; left: number };
 }) {
   const { details, position, header } = props;
   return (

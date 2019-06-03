@@ -10,14 +10,7 @@ import {
 } from '../lib/series/specs';
 import { DEFAULT_ANNOTATION_LINE_STYLE } from '../lib/themes/theme';
 import { Dimensions } from '../lib/utils/dimensions';
-import {
-  AnnotationId,
-  AxisId,
-  getAnnotationId,
-  getAxisId,
-  getGroupId,
-  GroupId,
-} from '../lib/utils/ids';
+import { AnnotationId, AxisId, getAnnotationId, getAxisId, getGroupId, GroupId } from '../lib/utils/ids';
 import { ScaleBand } from '../lib/utils/scales/scale_band';
 import { ScaleContinuous } from '../lib/utils/scales/scale_continuous';
 import { Scale, ScaleType } from '../lib/utils/scales/scales';
@@ -142,11 +135,13 @@ describe('annotation utils', () => {
       false,
     );
     const expectedDimensions = new Map();
-    expectedDimensions.set(annotationId, [{
-      position: [DEFAULT_LINE_OVERFLOW, 20, 10, 20],
-      details: { detailsText: 'foo', headerText: '2' },
-      tooltipLinePosition: [0, 20, 10, 20],
-    }]);
+    expectedDimensions.set(annotationId, [
+      {
+        position: [DEFAULT_LINE_OVERFLOW, 20, 10, 20],
+        details: { detailsText: 'foo', headerText: '2' },
+        tooltipLinePosition: [0, 20, 10, 20],
+      },
+    ]);
     expectedDimensions.set(rectAnnotationId, [{ rect: { x: 0, y: 30, width: 25, height: 20 } }]);
 
     expect(dimensions).toEqual(expectedDimensions);
@@ -524,9 +519,9 @@ describe('annotation utils', () => {
         details: { detailsText: 'foo', headerText: '2' },
         tooltipLinePosition: [0, 0, 10, 0],
       },
-      ];
-      expect(dimensions).toEqual(expectedDimensions);
-    });
+    ];
+    expect(dimensions).toEqual(expectedDimensions);
+  });
 
   test('should compute line annotation dimensions for xDomain (chartRotation 180, continuous scale, top axis)', () => {
     const chartRotation: Rotation = 180;
@@ -593,9 +588,9 @@ describe('annotation utils', () => {
         details: { detailsText: 'foo', headerText: '2' },
         tooltipLinePosition: [20, DEFAULT_LINE_OVERFLOW, 20, 20],
       },
-      ];
-      expect(dimensions).toEqual(expectedDimensions);
-    });
+    ];
+    expect(dimensions).toEqual(expectedDimensions);
+  });
 
   test('should not compute annotation line values for values outside of domain or AnnotationSpec.hideLines', () => {
     const chartRotation: Rotation = 0;
@@ -759,7 +754,7 @@ describe('annotation utils', () => {
     const cursorPosition1: Point = { x: 0, y: 0 };
     const cursorPosition2: Point = { x: 10, y: 0 };
 
-    const offset: number = 0;
+    const offset = 0;
     const horizontalChartRotation: Rotation = 0;
     const verticalChartRotation: Rotation = 90;
     const domainType: AnnotationDomainType = AnnotationDomainTypes.XDomain;
@@ -816,7 +811,7 @@ describe('annotation utils', () => {
     const cursorPosition1: Point = { x: 0, y: 0 };
     const cursorPosition2: Point = { x: 10, y: 0 };
 
-    const offset: number = 0;
+    const offset = 0;
     const horizontalChartRotation: Rotation = 0;
     const verticalChartRotation: Rotation = 90;
     const domainType: AnnotationDomainType = AnnotationDomainTypes.YDomain;
@@ -937,11 +932,7 @@ describe('annotation utils', () => {
     const chartRotation: Rotation = 0;
     const linePosition: AnnotationLinePosition = [1, 2, 3, 4];
 
-    const bottomLineTooltipPosition = getAnnotationLineTooltipPosition(
-      chartRotation,
-      linePosition,
-      Position.Bottom,
-    );
+    const bottomLineTooltipPosition = getAnnotationLineTooltipPosition(chartRotation, linePosition, Position.Bottom);
     expect(bottomLineTooltipPosition).toEqual({
       xPosition: 1,
       yPosition: 4,
@@ -949,18 +940,10 @@ describe('annotation utils', () => {
       yOffset: 100,
     });
 
-    const topLineTooltipPosition = getAnnotationLineTooltipPosition(
-      chartRotation,
-      linePosition,
-      Position.Top,
-    );
+    const topLineTooltipPosition = getAnnotationLineTooltipPosition(chartRotation, linePosition, Position.Top);
     expect(topLineTooltipPosition).toEqual({ xPosition: 1, yPosition: 2, xOffset: 50, yOffset: 0 });
 
-    const leftLineTooltipPosition = getAnnotationLineTooltipPosition(
-      chartRotation,
-      linePosition,
-      Position.Left,
-    );
+    const leftLineTooltipPosition = getAnnotationLineTooltipPosition(chartRotation, linePosition, Position.Left);
     expect(leftLineTooltipPosition).toEqual({
       xPosition: 1,
       yPosition: 4,
@@ -968,11 +951,7 @@ describe('annotation utils', () => {
       yOffset: 50,
     });
 
-    const rightLineTooltipPosition = getAnnotationLineTooltipPosition(
-      chartRotation,
-      linePosition,
-      Position.Right,
-    );
+    const rightLineTooltipPosition = getAnnotationLineTooltipPosition(chartRotation, linePosition, Position.Right);
     expect(rightLineTooltipPosition).toEqual({
       xPosition: 3,
       yPosition: 4,
@@ -993,11 +972,7 @@ describe('annotation utils', () => {
     const chartRotation: Rotation = 0;
     const linePosition: AnnotationLinePosition = [1, 2, 3, 4];
 
-    const lineTooltipTransform = getAnnotationLineTooltipTransform(
-      chartRotation,
-      linePosition,
-      Position.Bottom,
-    );
+    const lineTooltipTransform = getAnnotationLineTooltipTransform(chartRotation, linePosition, Position.Bottom);
     expect(lineTooltipTransform).toBe('translate(calc(1px - 50%),calc(4px - 100%))');
   });
   test('should compute the tooltip state for an annotation line', () => {
@@ -1234,9 +1209,7 @@ describe('annotation utils', () => {
       annotationId: getAnnotationId('rect'),
       groupId,
       annotationType: 'rectangle',
-      dataValues: [
-        { coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } },
-      ],
+      dataValues: [{ coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } }],
     };
 
     const rectAnnotations = new Map();
@@ -1274,18 +1247,10 @@ describe('annotation utils', () => {
     localAxesSpecs.set(horizontalAxisSpec.id, horizontalAxisSpec);
     localAxesSpecs.set(verticalAxisSpec.id, verticalAxisSpec);
 
-    const xAnnotationAxisPosition = getAnnotationAxis(
-      localAxesSpecs,
-      groupId,
-      AnnotationDomainTypes.XDomain,
-    );
+    const xAnnotationAxisPosition = getAnnotationAxis(localAxesSpecs, groupId, AnnotationDomainTypes.XDomain);
     expect(xAnnotationAxisPosition).toEqual(Position.Bottom);
 
-    const yAnnotationAxisPosition = getAnnotationAxis(
-      localAxesSpecs,
-      groupId,
-      AnnotationDomainTypes.YDomain,
-    );
+    const yAnnotationAxisPosition = getAnnotationAxis(localAxesSpecs, groupId, AnnotationDomainTypes.YDomain);
     expect(yAnnotationAxisPosition).toEqual(Position.Left);
   });
   test('should not compute rectangle annotation dimensions when no yScale', () => {
@@ -1584,44 +1549,70 @@ describe('annotation utils', () => {
     const isBottomTooltip = true;
 
     // chart rotation 0
-    expect(computeRectTooltipOffset(isRightTooltip, isBottomTooltip, 0))
-      .toEqual({ offsetLeft: '0', offsetTop: '0' });
-    expect(computeRectTooltipOffset(!isRightTooltip, isBottomTooltip, 0))
-      .toEqual({ offsetLeft: '-100%', offsetTop: '0' });
-    expect(computeRectTooltipOffset(isRightTooltip, !isBottomTooltip, 0))
-      .toEqual({ offsetLeft: '0', offsetTop: '-100%' });
-    expect(computeRectTooltipOffset(!isRightTooltip, !isBottomTooltip, 0))
-      .toEqual({ offsetLeft: '-100%', offsetTop: '-100%' });
+    expect(computeRectTooltipOffset(isRightTooltip, isBottomTooltip, 0)).toEqual({ offsetLeft: '0', offsetTop: '0' });
+    expect(computeRectTooltipOffset(!isRightTooltip, isBottomTooltip, 0)).toEqual({
+      offsetLeft: '-100%',
+      offsetTop: '0',
+    });
+    expect(computeRectTooltipOffset(isRightTooltip, !isBottomTooltip, 0)).toEqual({
+      offsetLeft: '0',
+      offsetTop: '-100%',
+    });
+    expect(computeRectTooltipOffset(!isRightTooltip, !isBottomTooltip, 0)).toEqual({
+      offsetLeft: '-100%',
+      offsetTop: '-100%',
+    });
 
     // chart rotation 180
-    expect(computeRectTooltipOffset(isRightTooltip, isBottomTooltip, 180))
-      .toEqual({ offsetLeft: '-100%', offsetTop: '0' });
-    expect(computeRectTooltipOffset(!isRightTooltip, isBottomTooltip, 180))
-      .toEqual({ offsetLeft: '0', offsetTop: '0' });
-    expect(computeRectTooltipOffset(isRightTooltip, !isBottomTooltip, 180))
-      .toEqual({ offsetLeft: '-100%', offsetTop: '-100%' });
-    expect(computeRectTooltipOffset(!isRightTooltip, !isBottomTooltip, 180))
-      .toEqual({ offsetLeft: '0', offsetTop: '-100%' });
+    expect(computeRectTooltipOffset(isRightTooltip, isBottomTooltip, 180)).toEqual({
+      offsetLeft: '-100%',
+      offsetTop: '0',
+    });
+    expect(computeRectTooltipOffset(!isRightTooltip, isBottomTooltip, 180)).toEqual({
+      offsetLeft: '0',
+      offsetTop: '0',
+    });
+    expect(computeRectTooltipOffset(isRightTooltip, !isBottomTooltip, 180)).toEqual({
+      offsetLeft: '-100%',
+      offsetTop: '-100%',
+    });
+    expect(computeRectTooltipOffset(!isRightTooltip, !isBottomTooltip, 180)).toEqual({
+      offsetLeft: '0',
+      offsetTop: '-100%',
+    });
 
     // chart rotation 90
-    expect(computeRectTooltipOffset(isRightTooltip, isBottomTooltip, 90))
-      .toEqual({ offsetLeft: '0', offsetTop: '0' });
-    expect(computeRectTooltipOffset(!isRightTooltip, isBottomTooltip, 90))
-      .toEqual({ offsetLeft: '-100%', offsetTop: '0' });
-    expect(computeRectTooltipOffset(isRightTooltip, !isBottomTooltip, 90))
-      .toEqual({ offsetLeft: '0', offsetTop: '-100%' });
-    expect(computeRectTooltipOffset(!isRightTooltip, !isBottomTooltip, 90))
-      .toEqual({ offsetLeft: '-100%', offsetTop: '-100%' });
+    expect(computeRectTooltipOffset(isRightTooltip, isBottomTooltip, 90)).toEqual({ offsetLeft: '0', offsetTop: '0' });
+    expect(computeRectTooltipOffset(!isRightTooltip, isBottomTooltip, 90)).toEqual({
+      offsetLeft: '-100%',
+      offsetTop: '0',
+    });
+    expect(computeRectTooltipOffset(isRightTooltip, !isBottomTooltip, 90)).toEqual({
+      offsetLeft: '0',
+      offsetTop: '-100%',
+    });
+    expect(computeRectTooltipOffset(!isRightTooltip, !isBottomTooltip, 90)).toEqual({
+      offsetLeft: '-100%',
+      offsetTop: '-100%',
+    });
 
     // chart rotation -90
-    expect(computeRectTooltipOffset(isRightTooltip, isBottomTooltip, -90))
-      .toEqual({ offsetLeft: '0', offsetTop: '-100%' });
-    expect(computeRectTooltipOffset(!isRightTooltip, isBottomTooltip, -90))
-      .toEqual({ offsetLeft: '-100%', offsetTop: '-100%' });
-    expect(computeRectTooltipOffset(isRightTooltip, !isBottomTooltip, -90))
-      .toEqual({ offsetLeft: '0', offsetTop: '0' });
-    expect(computeRectTooltipOffset(!isRightTooltip, !isBottomTooltip, -90))
-      .toEqual({ offsetLeft: '-100%', offsetTop: '0' });
+    expect(computeRectTooltipOffset(isRightTooltip, isBottomTooltip, -90)).toEqual({
+      offsetLeft: '0',
+      offsetTop: '-100%',
+    });
+    expect(computeRectTooltipOffset(!isRightTooltip, isBottomTooltip, -90)).toEqual({
+      offsetLeft: '-100%',
+      offsetTop: '-100%',
+    });
+    expect(computeRectTooltipOffset(isRightTooltip, !isBottomTooltip, -90)).toEqual({
+      offsetLeft: '0',
+      offsetTop: '0',
+    });
+    expect(computeRectTooltipOffset(!isRightTooltip, !isBottomTooltip, -90)).toEqual({
+      offsetLeft: '-100%',
+      offsetTop: '0',
+    });
   });
   test('should compute tooltip state for rect annotation', () => {
     const cursorPosition = { x: 3, y: 4 };
