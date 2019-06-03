@@ -400,9 +400,14 @@ export function getAvailableTicks(
   enableHistogramMode: boolean,
 ): AxisTick[] {
   const ticks = scale.ticks();
+
+  if (enableHistogramMode && scale.bandwidth > 0) {
+    const finalTick = ticks[ticks.length - 1] + scale.minInterval;
+    ticks.push(finalTick);
+  }
+
   const shift = totalBarsInCluster > 0 ? totalBarsInCluster : 1;
 
-  // TODO: account for rotation
   const band = scale.bandwidth / (1 - scale.barsPadding);
   const halfPadding = (band - scale.bandwidth) / 2;
   const offset = enableHistogramMode ? -halfPadding : (scale.bandwidth * shift) / 2;

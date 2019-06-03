@@ -2,9 +2,10 @@ import { XDomain } from '../series/domains/x_domain';
 import { YDomain } from '../series/domains/y_domain';
 import { AxisSpec, DomainRange, Position } from '../series/specs';
 import { LIGHT_THEME } from '../themes/light_theme';
-import { getAxisId, getGroupId, GroupId, AxisId } from '../utils/ids';
+import { AxisId, getAxisId, getGroupId, GroupId } from '../utils/ids';
 import { ScaleType } from '../utils/scales/scales';
 import {
+  AxisTicksDimensions,
   centerRotationOrigin,
   computeAxisGridLinePositions,
   computeAxisTicksDimensions,
@@ -26,7 +27,7 @@ import {
   isVertical,
   isYDomain,
   mergeDomainsByGroupId,
-  AxisTicksDimensions,
+  AxisTick,
 } from './axis_utils';
 import { CanvasTextBBoxCalculator } from './canvas_text_bbox_calculator';
 import { SvgTextBBoxCalculator } from './svg_text_bbox_calculator';
@@ -208,6 +209,19 @@ describe('Axis computational utils', () => {
       { label: '1', position: 0, value: 1 },
     ];
     expect(axisPositions).toEqual(expectedAxisPositions);
+
+    // histogram mode axis ticks should add an additional tick
+    const xBandDomain: XDomain = {
+      type: 'xDomain',
+      scaleType: ScaleType.Linear,
+      domain: [0, 100],
+      isBandScale: true,
+      minInterval: 10,
+    };
+    const xScale = getScaleForAxisSpec(horizontalAxisSpec, xBandDomain, [yDomain], 1, 0, 100, 0);
+    const histogramAxisPositions = getAvailableTicks(horizontalAxisSpec, xScale!, 1, true);
+    const histogramTickLabels = histogramAxisPositions.map((tick: AxisTick) => tick.label);
+    expect(histogramTickLabels).toEqual(['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100', '110']);
   });
   test('should compute visible ticks for a vertical axis', () => {
     const allTicks = [
