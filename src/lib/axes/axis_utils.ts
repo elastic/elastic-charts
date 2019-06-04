@@ -180,10 +180,10 @@ export const getMaxBboxDimensions = (
   const prevLabelWidth = acc.maxLabelTextWidth;
   const prevLabelHeight = acc.maxLabelTextHeight;
   return {
-      maxLabelBboxWidth: prevWidth > width ? prevWidth : width,
-      maxLabelBboxHeight: prevHeight > height ? prevHeight : height,
-      maxLabelTextWidth: prevLabelWidth > labelWidth ? prevLabelWidth : labelWidth,
-      maxLabelTextHeight: prevLabelHeight > labelHeight ? prevLabelHeight : labelHeight,
+    maxLabelBboxWidth: prevWidth > width ? prevWidth : width,
+    maxLabelBboxHeight: prevHeight > height ? prevHeight : height,
+    maxLabelTextWidth: prevLabelWidth > labelWidth ? prevLabelWidth : labelWidth,
+    maxLabelTextHeight: prevLabelHeight > labelHeight ? prevLabelHeight : labelHeight,
     };
   };
 

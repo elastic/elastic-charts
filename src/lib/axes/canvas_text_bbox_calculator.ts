@@ -22,6 +22,11 @@ export class CanvasTextBBoxCalculator implements BBoxCalculator {
       return none;
     }
 
+    // Avoid having negative padding that can obscure text
+    if (padding < 1) {
+      padding = 1;
+    }
+
     // We scale the text up to get a more accurate computation of the width of the text
     // because `measureText` can vary a lot between browsers.
     const scalingFactor = this.scaledFontSize / fontSize;

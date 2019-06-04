@@ -91,7 +91,7 @@ export const DARK_THEME: Theme = {
       fontFamily: `'Open Sans', Helvetica, Arial, sans-serif`,
       fontStyle: 'normal',
       fill: 'white',
-      padding: 0,
+      padding: 1,
     },
     tickLineStyle: {
       stroke: 'white',
