@@ -832,4 +832,24 @@ describe('Chart State utils', () => {
     });
     expect(isAllSeriesDeselected(legendItems1)).toBe(true);
   });
+  test('displays data availble if chart is not empty', () => {
+    const legendItems2 = new Map<string, LegendItem>();
+    legendItems2.set('specId:{bars},colors:{a}', {
+      key: 'specId:{bars},colors:{a}',
+      color: '#1EA593',
+      label: 'a',
+      value: { specId: getSpecId('bars'), colorValues: ['a'], lastValue: 6 },
+      displayValue: { raw: 6, formatted: '6.00'},
+      isSeriesVisible: true,
+    });
+    legendItems2.set('specId:{bars},colors:{b}', {
+      key: 'specId:{bars},colors:{b}',
+      color: '#2B70F7',
+      label: 'b',
+      value: { specId: getSpecId('bars'), colorValues: ['b'], lastValue: 2 },
+      displayValue: { raw: 2, formatted: '2.00'},
+      isSeriesVisible: false,
+    });
+    expect(isAllSeriesDeselected(legendItems2)).toBe(false);
+  });
 });

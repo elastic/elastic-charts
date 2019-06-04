@@ -334,14 +334,16 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       setCursorPosition,
       isChartEmpty,
     } = this.props.chartStore!;
-    // disable clippings when debugging
+
     if (isChartEmpty) {
       return (
-        <div>
-          There is no data to display
+        <div className="euiEmptyPrompt euiSeriesChartContainer__emptyPrompt">
+          {<span className="euiTitle euiTitle--large" style={{paddingBottom: '1.2rem'}}>Chart not available</span>}
+          {<p className="euiTextColor euiTextColor--subdued">There is no data to display</p>}
         </div>
       );
     }
+    // disable clippings when debugging
     const clippings = debug
       ? {}
       : {

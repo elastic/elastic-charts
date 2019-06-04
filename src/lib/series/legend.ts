@@ -26,20 +26,16 @@ export function computeLegend(
   deselectedDataSeries?: DataSeriesColorsValues[] | null,
 ): Map<string, LegendItem> {
   const legendItems: Map<string, LegendItem> = new Map();
-  // export let isChartNotEmpty: number = 0;
   const sortedSeriesColors = getSortedDataSeriesColorsValuesMap(seriesColor);
-  // tslint:disable-next-line:prefer-const
-  // let isChartNotEmptyResult: number = 0;
 
   sortedSeriesColors.forEach((series, key) => {
     const spec = specs.get(series.specId);
     const color = seriesColorMap.get(key) || defaultColor;
     const hasSingleSeries = seriesColor.size === 1;
     const label = getSeriesColorLabel(series.colorValues, hasSingleSeries, spec);
-    // isChartEmpty(seriesColor, isChartNotEmptyResult, deselectedDataSeries);
     const isSeriesVisible = deselectedDataSeries
-    ? findDataSeriesByColorValues(deselectedDataSeries, series) < 0
-    : true;
+      ? findDataSeriesByColorValues(deselectedDataSeries, series) < 0
+      : true;
     if (!label || !spec) {
       return;
     }
