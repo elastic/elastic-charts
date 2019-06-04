@@ -1,7 +1,6 @@
 import classNames from 'classnames';
 import { Provider } from 'mobx-react';
 import React, { CSSProperties, Fragment } from 'react';
-// import { isChartEmpty } from '../lib/series/legend';
 import { SpecsParser } from '../specs/specs_parser';
 import { ChartStore } from '../state/chart_state';
 import { AnnotationTooltip } from './annotation_tooltips';
@@ -25,7 +24,7 @@ interface ChartProps {
 
 export class Chart extends React.Component<ChartProps> {
   static defaultProps: ChartProps = {
-    renderer: 'canvas', // 'empty',
+    renderer: 'canvas',
   };
   private chartSpecStore: ChartStore;
   constructor(props: any) {

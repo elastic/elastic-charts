@@ -79,6 +79,7 @@ import {
   findDataSeriesByColorValues,
   getAxesSpecForSpecId,
   getUpdatedCustomSeriesColors,
+  isAllSeriesDeselected,
   isChartAnimatable,
   isLineAreaOnlyChart,
   Transform,
@@ -753,12 +754,6 @@ export class ChartStore {
     this.annotationSpecs.delete(annotationId);
   }
 
-  determineEmptyChart(val: LegendItem) {
-    if (val.isSeriesVisible) {
-      this.isChartEmpty = false;
-    }
-  }
-
   computeChart() {
     this.initialized.set(false);
     // compute only if parent dimensions are computed
@@ -812,10 +807,7 @@ export class ChartStore {
       this.deselectedDataSeries,
     );
 
-    this.isChartEmpty = true;
-    this.legendItems.forEach((val, key) => {
-      this.determineEmptyChart(val);
-    });
+    this.isChartEmpty = isAllSeriesDeselected(this.legendItems);
 
     const {
       xDomain,
