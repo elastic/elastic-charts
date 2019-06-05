@@ -84,14 +84,7 @@ export function getCursorBandPosition(
     chartDimensions,
   );
 
-  const yAxisCursorPosition = getValidXPosition(
-      x,
-      y,
-      chartRotation,
-      chartDimensions,
-    );
-
-  const invertedValue = xScale.invertWithStep(isHorizontalRotated ? xAxisCursorPosition : yAxisCursorPosition, data);
+  const invertedValue = xScale.invertWithStep(xAxisCursorPosition, data);
 
   if (invertedValue == null) {
     return;
@@ -112,7 +105,7 @@ export function getCursorBandPosition(
       height,
     };
   } else {
-    const adjustedTop = snapEnabled ? position : yAxisCursorPosition;
+    const adjustedTop = snapEnabled ? position : xAxisCursorPosition;
     const topPosition = chartRotation === 90 ? top + adjustedTop : top + height - adjustedTop - band;
 
     return {
