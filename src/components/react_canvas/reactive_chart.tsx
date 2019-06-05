@@ -338,7 +338,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
     if (isChartEmpty) {
       return (
         <div className="elasticChartsUnavailable">
-          {<h3>No series selected to display</h3>}
+          <h3>No series selected to display</h3>
         </div>
       );
     }
