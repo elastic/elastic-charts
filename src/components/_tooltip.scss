@@ -3,8 +3,6 @@
   @include euiFontSizeXS;
   position: absolute;
   padding: 0;
-
-  // overflow: hidden;
   transition: opacity $euiAnimSpeedNormal;
   pointer-events: none;
   user-select: none;
@@ -29,18 +27,19 @@
 
 .echTooltip__label {
   @include euiTextTruncate;
-  color: shade($euiColorGhost, 20%);
   // Border indicates series color
-  border-left: $euiSizeXS solid red;
+  border-left: $euiSizeXS solid transparent;
 }
 
 .echTooltip__value {
+  font-weight: $euiFontWeightBold;
   text-align: right;
   font-feature-settings: 'tnum';
 }
 
 .echTooltip__rowHighlighted {
-  font-weight: $euiFontWeightBold;
+  background-color: transparentize($euiColorGhost, .9);
+  border-radius: $euiBorderRadius;
 }
 
 .echTooltip--hidden {
