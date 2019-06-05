@@ -337,9 +337,8 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
 
     if (isChartEmpty) {
       return (
-        <div className="euiEmptyPrompt euiSeriesChartContainer__emptyPrompt">
-          {<span className="euiTitle euiTitle--large" style={{paddingBottom: '1.2rem'}}>Chart not available</span>}
-          {<p className="euiTextColor euiTextColor--subdued">There is no data to display</p>}
+        <div className="elasticChartsUnavailable">
+          {<h3>No series selected to display</h3>}
         </div>
       );
     }
