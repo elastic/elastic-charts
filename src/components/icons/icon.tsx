@@ -35,7 +35,7 @@ export const Icon: FunctionComponent<Props> = ({ type, color, className, tabInde
   let optionalCustomStyles = null;
 
   if (color) {
-    optionalCustomStyles = { fill: color };
+    optionalCustomStyles = { color };
   }
 
   const classes = classNames('echIcon', className);

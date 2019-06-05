@@ -35,7 +35,7 @@ class TooltipsComponent extends React.Component<TooltipProps> {
                     >
                       {name}
                     </td>
-                    <td>{value}</td>
+                    <td className="echTooltip__value">{value}</td>
                   </tr>
                 );
               })}

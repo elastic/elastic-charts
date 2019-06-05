@@ -63,7 +63,7 @@ export const DARK_THEME: Theme = {
     displayValue: {
       fontSize: 10,
       fontStyle: 'normal',
-      fontFamily: `'Open Sans', Helvetica, Arial, sans-serif`,
+      fontFamily: 'sans-serif',
       padding: 0,
       fill: 'white',
       offsetX: 0,
@@ -78,7 +78,7 @@ export const DARK_THEME: Theme = {
     axisTitleStyle: {
       fontSize: 12,
       fontStyle: 'bold',
-      fontFamily: `'Open Sans', Helvetica, Arial, sans-serif`,
+      fontFamily: 'sans-serif',
       padding: 5,
       fill: 'white',
     },
@@ -88,7 +88,7 @@ export const DARK_THEME: Theme = {
     },
     tickLabelStyle: {
       fontSize: 10,
-      fontFamily: `'Open Sans', Helvetica, Arial, sans-serif`,
+      fontFamily: 'sans-serif',
       fontStyle: 'normal',
       fill: 'white',
       padding: 0,

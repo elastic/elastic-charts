@@ -1,16 +1,11 @@
-.echCrosshair {
-  position: absolute;
-  pointer-events: none;
-}
-
-.echCrosshair__band {
-  position: absolute;
-  pointer-events: none;
-}
-
+.echCrosshair,
+.echCrosshair__band,
 .echCrosshair__line {
   position: absolute;
   pointer-events: none;
-  z-index: $echZLevel8;
-  background: 'transparent';
+}
+
+
+.echCrosshair__line {
+  z-index: $euiZLevel8;
 }

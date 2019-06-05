@@ -15,7 +15,7 @@
     "cz": "git-cz",
     "build:clean": "rm -rf ./dist",
     "build:ts": "tsc -p ./tsconfig.json",
-    "build:sass": "node-sass src/theme_light.scss dist/theme_light.css --output-style compressed && node-sass src/theme_dark.scss dist/theme_dark.css --output-style compressed",
+    "build:sass": "node-sass src/theme_light.scss dist/theme_light.css --output-style compressed && node-sass src/theme_dark.scss dist/theme_dark.css --output-style compressed && node-sass src/reset_light.scss dist/reset_light.css --output-style compressed && node-sass src/reset_dark.scss dist/reset_dark.css --output-style compressed",
     "build": "yarn build:clean && yarn build:ts && yarn build:sass",
     "start": "yarn storybook",
     "storybook": "start-storybook -p 9001 -c .storybook",
@@ -48,6 +48,7 @@
   "devDependencies": {
     "@babel/core": "^7.3.4",
     "@babel/polyfill": "^7.4.4",
+    "@elastic/eui": "^11.2.1",
     "@commitlint/cli": "^7.5.2",
     "@commitlint/config-conventional": "^7.5.0",
     "@semantic-release/changelog": "^3.0.2",

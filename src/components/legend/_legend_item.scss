@@ -1,45 +1,43 @@
 .echLegendItem {
-  color: $echTextColor;
-  max-width: 100%;
+  color: $euiTextColor;
+  height: $echLegendItemHeight;
   width: 100%;
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-between;
   user-select: none;
+  align-items: center;
+
   &:hover {
     .echLegendItem__title {
       text-decoration: underline;
     }
   }
 }
+
 .echLegendItem__color {
-  margin: 0 4px;
+  margin-right: $euiSizeXS;
 }
 
 .echLegendItem__visibility {
-  width: 15px;
-  height: 15px;
-  margin-right: 4px;
+  margin-right: $euiSizeXS;
+
   &:hover {
     cursor: pointer;
-  }
-  svg {
-    fill: $echTextColor;
   }
 }
 
 .echLegendItem__title {
-  @include echFontSizeXS;
-  margin-right: 4px;
+  @include euiFontSizeXS;
+  @include euiTextTruncate;
+  margin-right: $euiSizeXS;
   flex: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  cursor: default;
 }
+
 .echLegendItem__title--selected {
   text-decoration: underline;
 }
+
 .echLegendItem__title--hasClickListener {
   &:hover {
     cursor: pointer;
@@ -47,9 +45,9 @@
 }
 
 .echLegendItem__displayValue {
-  @include echFontSizeXS;
+  @include euiFontSizeXS;
   text-align: right;
-  margin-right: 4px;
+  font-feature-settings: 'tnum';
 
   &.echLegendItem__displayValue--hidden {
     display: none;

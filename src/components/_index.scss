@@ -1,7 +1,11 @@
+@import '../../node_modules/@elastic/eui/src/components/tool_tip/variables';
+@import '../../node_modules/@elastic/eui/src/components/tool_tip/mixins';
+
 @import 'container';
-@import 'icons/icon';
-@import 'legend/index';
-@import 'tooltip';
+@import 'annotation';
 @import 'crosshair';
 @import 'highlighter';
-@import 'annotation';
+@import 'tooltip';
+
+@import 'icons/index';
+@import 'legend/index';

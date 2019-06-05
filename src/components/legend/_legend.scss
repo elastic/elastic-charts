@@ -1,10 +1,10 @@
-$echLegendMaxWidth: 200px;
-$echLegendMaxHeight: 64px;
-
 // Legend
 
 .echLegend {
-  position: absolute;
+  @include euiOverflowShadow;
+  // Padding supplied in JS to match chart margins
+  position: absolute !important; // Override shadow
+  overflow: hidden;
 }
 
 .echLegend--collapsed {
@@ -15,204 +15,57 @@ $echLegendMaxHeight: 64px;
   background: red;
 }
 
-.echLegend--top {
-  top: 0;
+.echLegend--top,
+.echLegend--bottom {
   left: 0;
   right: 0;
   width: 100%;
   height: $echLegendMaxHeight;
-  .echLegendItem {
-    margin-right: 24px;
-    min-height: $echLegendMaxHeight / 2 - 6px;
-    height: $echLegendMaxHeight / 2 - 6px;
-    width: $echLegendMaxWidth;
-    min-width: $echLegendMaxWidth;
-  }
+
   .echLegendList {
-    display: flex;
     flex-direction: row;
     flex-wrap: wrap;
   }
+
+  .echLegendItem {
+    margin-right: $euiSizeL;
+    width: $echLegendMaxWidth;
+  }
+}
+
+.echLegend--top {
+  top: 0;
 }
 .echLegend--bottom {
   bottom: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  height: $echLegendMaxHeight;
-  .echLegendList {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-  .echLegendItem {
-    margin-right: 24px;
-    min-height: $echLegendMaxHeight / 2 - 6px;
-    height: $echLegendMaxHeight / 2 - 6px;
-    width: $echLegendMaxWidth;
-    min-width: $echLegendMaxWidth;
-  }
 }
-.echLegend--left {
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: $echLegendMaxWidth;
-  .echLegendList {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-  }
-  .echLegendItem {
-    min-height: $echSize * 2;
-    height: $echSize * 2;
-    min-width: 100%;
-    width: 100%;
-  }
-}
+
+.echLegend--left,
 .echLegend--right {
   top: 0;
   bottom: 0;
-  right: 0;
   width: $echLegendMaxWidth;
+
   .echLegendList {
-    display: flex;
     flex-direction: column;
-    flex-wrap: nowrap;
   }
+
   .echLegendItem {
-    min-height: $echSize * 2;
-    height: $echSize * 2;
-    min-width: 100%;
     width: 100%;
   }
 }
+
+.echLegend--left {
+  left: 0;
+}
+.echLegend--right {
+  right: 0;
+}
+
 .echLegendListContainer {
-  @include echScrollBar;
+  @include euiScrollBar;
   height: 100%;
   width: 100%;
   overflow-y: auto;
   overflow-x: hidden;
 }
-
-// .echLegend {
-//   position: absolute;
-//   display: flex;
-//   align-items: flex-start;
-//   flex-direction: row;
-// }
-// .echLegend--collapsed {
-//   width: $echSize * 2 !important;
-//   height: $echSize * 2 !important;
-//   .echLegendList {
-//     display: none;
-//   }
-// }
-// .echLegend--debug {
-//   background: red;
-// }
-// .echLegend--top {
-//   top: 0;
-//   left: 0;
-//   right: 0;
-//   width: 100%;
-//   height: $echLegendMaxHeight;
-//   flex-direction: column;
-//   order: 1;
-//   .echLegendList__item {
-//     min-height: $echLegendMaxHeight / 2 - 6px;
-//     height: $echLegendMaxHeight / 2 - 6px;
-//     width: $echLegendMaxWidth;
-//     min-width: $echLegendMaxWidth;
-//   }
-// }
-// .echLegend--bottom {
-//   bottom: 0;
-//   left: 0;
-//   right: 0;
-//   width: 100%;
-//   height: $echLegendMaxHeight;
-//   flex-direction: column;
-//   .echLegendList__item {
-//     min-height: $echLegendMaxHeight / 2 - 6px;
-//     height: $echLegendMaxHeight / 2 - 6px;
-//     width: $echLegendMaxWidth;
-//     min-width: $echLegendMaxWidth;
-//   }
-// }
-// .echLegend--left {
-//   top: 0;
-//   bottom: 0;
-//   left: 0;
-//   width: $echLegendMaxWidth;
-//   order: 1;
-//   .echLegendList__item {
-//     min-height: $echSize * 2;
-//     height: $echSize * 2;
-//     min-width: 100%;
-//     width: 100%;
-//   }
-// }
-// .echLegend--right {
-//   top: 0;
-//   bottom: 0;
-//   right: 0;
-//   width: $echLegendMaxWidth;
-//   .echLegendList__item {
-//     min-height: $echSize * 2;
-//     height: $echSize * 2;
-//     min-width: 100%;
-//     max-width: 100%;
-//     width: 100%;
-//   }
-// }
-
-// .echLegendCollapser {
-//   width: 2 * $echSize;
-//   height: 2 * $echSize;
-//   flex-shrink: 0;
-//   flex-grow: 0;
-// }
-// .echLegendCollapser--top {
-//   order: 2;
-// }
-// .echLegendCollapser--left {
-//   order: 2;
-// }
-
-// .echLegendListContainer {
-//   display: grid;
-//   display: -ms-grid;
-//   grid-gap: 10px;
-//   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-//   -ms-grid-columns: repeat(auto-fill, minmax(200px, 1fr));
-// }
-// .echLegendList {
-//   overflow-y: auto;
-//   overflow-x: hidden;
-//   height: 100%;
-//   max-width: 100%;
-//   width: 100%;
-//   @include echScrollBar;
-// }
-
-// .echLegend__toggle {
-//   border-radius: $echBorderRadius;
-//   border-bottom-right-radius: 0;
-//   border-top-left-radius: 0;
-//   border-bottom-left-radius: 0;
-//   position: absolute;
-//   bottom: 0;
-//   left: 0;
-//   opacity: 0;
-//   background-color: $echColorEmptyShade;
-//   transition: opacity $echAnimSpeedFast $echAnimSlightResistance,
-//     background-color $echAnimSpeedFast $echAnimSlightResistance $echAnimSpeedExtraSlow;
-//   &:focus {
-//     box-shadow: none;
-//     background-color: $echFocusBackgroundColor !important;
-//   }
-// }
-// .echLegend__toggle--isOpen {
-//   background-color: transparentize($echColorDarkestShade, 0.9);
-// }

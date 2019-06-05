@@ -1,4 +1,0 @@
-// Shadows
-// Transparency only affects the use of variable this outside of the shadow mixins (borders)
-$echShadowColor: $echColorMediumShade !default;
-$echShadowColorLarge: shade(saturate($echColorMediumShade, 25%), 50%) !default;

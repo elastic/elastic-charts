@@ -1,12 +1,6 @@
 .echAnnotation {
-  @include echFontSizeXS;
   pointer-events: none;
   position: absolute;
-  z-index: $echZLevel9;
-  max-width: $echSizeXL * 10;
-  overflow: hidden;
-  overflow-wrap: break-word;
-  transition: opacity $echAnimSpeedNormal;
   user-select: none;
 }
 
@@ -16,34 +10,22 @@
 }
 
 .echAnnotation__tooltip {
-  @include echBottomShadow($color: $echColorFullShade);
-  @include echFontSizeXS;
-  pointer-events: none;
+  @include euiToolTipStyle;
+  @include euiFontSizeXS;
   position: absolute;
-  z-index: $echZLevel9;
-  background-color: rgba(tintOrShade($echColorFullShade, 25%, 80%), 0.9);
-  color: $echColorGhost;
-  border-radius: $echBorderRadius;
-  max-width: $echSizeXL * 10;
-  overflow: hidden;
-  overflow-wrap: break-word;
-  transition: opacity $echAnimSpeedNormal;
+  padding: 0;
+
+  // overflow: hidden;
+  transition: opacity $euiAnimSpeedNormal;
+  pointer-events: none;
   user-select: none;
 }
 
 .echAnnotation__header {
-  margin: 0;
-  background: rgba(shade($echColorGhost, 20%), 0.9);
-  color: $echColorFullShade;
-  padding: 0 8px;
+  @include euiToolTipTitle;
+  padding: $euiSizeXS ($euiSizeXS * 2);
 }
 
 .echAnnotation__details {
-  margin: 0;
-  padding: 0 8px;
-  display: flex;
-}
-
-.echAnnotation__detailsMarker {
-  margin-right: 4px;
+  padding: $euiSizeXS ($euiSizeXS * 2);
 }
