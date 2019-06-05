@@ -14,7 +14,7 @@ class Resizer extends React.Component<ResizerProps> {
   constructor(props: ResizerProps) {
     super(props);
     this.containerRef = React.createRef();
-    this.ro = new ResizeObserver(debounce(this.onResize, 200));
+    this.ro = new ResizeObserver(debounce(this.onResize, 200, { leading: true }));
   }
 
   componentDidMount() {
