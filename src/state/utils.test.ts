@@ -26,6 +26,7 @@ import {
   isLineAreaOnlyChart,
   isVerticalRotation,
   mergeGeometriesIndexes,
+  setBarSeriesAccessors,
   updateDeselectedDataSeries,
 } from './utils';
 
@@ -914,5 +915,83 @@ describe('Chart State utils', () => {
 
     seriesMap.delete(basicBar.id);
     expect(isHistogramModeEnabled(seriesMap)).toBe(false);
+  });
+  test('can set the bar series accessors dependent on histogram mode', () => {
+    const isNotHistogramEnabled = false;
+    const isHistogramEnabled = true;
+
+    const area: AreaSeriesSpec = {
+      id: getSpecId('area'),
+      groupId: getGroupId('group1'),
+      seriesType: 'area',
+      yScaleType: ScaleType.Log,
+      xScaleType: ScaleType.Linear,
+      xAccessor: 'x',
+      yAccessors: ['y'],
+      splitSeriesAccessors: ['g'],
+      yScaleToDataExtent: false,
+      data: BARCHART_1Y1G,
+    };
+    const line: LineSeriesSpec = {
+      id: getSpecId('line'),
+      groupId: getGroupId('group2'),
+      seriesType: 'line',
+      yScaleType: ScaleType.Log,
+      xScaleType: ScaleType.Linear,
+      xAccessor: 'x',
+      yAccessors: ['y'],
+      splitSeriesAccessors: ['g'],
+      stackAccessors: ['x'],
+      yScaleToDataExtent: false,
+      data: BARCHART_1Y1G,
+    };
+    const bar: BarSeriesSpec = {
+      id: getSpecId('bar'),
+      groupId: getGroupId('group2'),
+      seriesType: 'bar',
+      yScaleType: ScaleType.Log,
+      xScaleType: ScaleType.Linear,
+      xAccessor: 'x',
+      yAccessors: ['y'],
+      splitSeriesAccessors: ['g'],
+      stackAccessors: ['foo'],
+      yScaleToDataExtent: false,
+      data: BARCHART_1Y1G,
+    };
+
+    const seriesMap = new Map<SpecId, BasicSeriesSpec>([
+      [area.id, area],
+      [line.id, line],
+    ]);
+
+    // should not affect area or line series
+    setBarSeriesAccessors(isHistogramEnabled, seriesMap);
+    expect(seriesMap).toEqual(seriesMap);
+
+    // add bar series, histogram mode not enabled
+    seriesMap.set(bar.id, bar);
+    setBarSeriesAccessors(isNotHistogramEnabled, seriesMap);
+
+    // histogram mode
+    setBarSeriesAccessors(isHistogramEnabled, seriesMap);
+    expect(bar.stackAccessors).toEqual(['foo', 'g']);
+
+    // add another bar
+    const bar2: BarSeriesSpec = {
+      id: getSpecId('bar2'),
+      groupId: getGroupId('group2'),
+      seriesType: 'bar',
+      yScaleType: ScaleType.Log,
+      xScaleType: ScaleType.Linear,
+      xAccessor: 'x',
+      yAccessors: ['y'],
+      splitSeriesAccessors: ['bar'],
+      yScaleToDataExtent: false,
+      data: BARCHART_1Y1G,
+    };
+
+    seriesMap.set(bar2.id, bar2);
+    setBarSeriesAccessors(isHistogramEnabled, seriesMap);
+    expect(bar2.stackAccessors).toEqual(['y', 'bar']);
   });
 });

@@ -306,6 +306,29 @@ export function computeSeriesGeometries(
   };
 }
 
+export function setBarSeriesAccessors(
+  isHistogramMode: boolean,
+  seriesSpecs: Map<SpecId, BasicSeriesSpec>,
+): void {
+  if (!isHistogramMode) {
+    return;
+  }
+
+  for (const [, spec] of seriesSpecs) {
+    if (isBarSeriesSpec(spec)) {
+      let stackAccessors = spec.stackAccessors ? [...spec.stackAccessors] : spec.yAccessors;
+
+      if (spec.splitSeriesAccessors) {
+        stackAccessors = [...stackAccessors, ...spec.splitSeriesAccessors];
+      }
+
+      spec.stackAccessors = stackAccessors;
+    }
+  }
+
+  return;
+}
+
 export function isHistogramModeEnabled(seriesSpecs: Map<SpecId, BasicSeriesSpec>): boolean {
   for (const [, spec] of seriesSpecs) {
     if (isBarSeriesSpec(spec) && spec.enableHistogramMode) {
