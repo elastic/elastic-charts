@@ -251,18 +251,6 @@ storiesOf('Bar Chart', module)
 
     const theme = {
       ...LIGHT_THEME,
-      chartMargins: {
-        left: 30,
-        right: 0,
-        top: 30,
-        bottom: 0,
-      },
-      chartPaddings: {
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-      },
       scales: {
         barsPadding: number('bar padding', 0, {
           range: true,
@@ -532,18 +520,6 @@ storiesOf('Bar Chart', module)
 
     const theme = {
       ...LIGHT_THEME,
-      chartMargins: {
-        left: 30,
-        right: 0,
-        top: 30,
-        bottom: 0,
-      },
-      chartPaddings: {
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-      },
       scales: {
         barsPadding: number('bar padding', 0, {
           range: true,
