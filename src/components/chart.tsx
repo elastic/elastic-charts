@@ -3,6 +3,7 @@ import { Provider } from 'mobx-react';
 import React, { CSSProperties, Fragment } from 'react';
 import { SpecsParser } from '../specs/specs_parser';
 import { ChartStore } from '../state/chart_state';
+import { htmlIdGenerator } from '../utils/utils';
 import { AnnotationTooltip } from './annotation_tooltips';
 import { ChartResizer } from './chart_resizer';
 import { Crosshair } from './crosshair';
@@ -27,9 +28,11 @@ export class Chart extends React.Component<ChartProps> {
     renderer: 'canvas',
   };
   private chartSpecStore: ChartStore;
+  private legendId: string;
   constructor(props: any) {
     super(props);
     this.chartSpecStore = new ChartStore();
+    this.legendId = htmlIdGenerator()('legend');
   }
   render() {
     const { renderer, size, className } = this.props;
@@ -56,8 +59,8 @@ export class Chart extends React.Component<ChartProps> {
             {renderer === 'canvas' && <ReactChart />}
             <Tooltips />
             <AnnotationTooltip />
-            <Legend />
-            <LegendButton />
+            <Legend legendId={this.legendId}/>
+            <LegendButton legendId={this.legendId}/>
             <Highlighter />
           </div>
         </Fragment>

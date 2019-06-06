@@ -48,9 +48,9 @@
   "devDependencies": {
     "@babel/core": "^7.3.4",
     "@babel/polyfill": "^7.4.4",
-    "@elastic/eui": "^11.2.1",
     "@commitlint/cli": "^7.5.2",
     "@commitlint/config-conventional": "^7.5.0",
+    "@elastic/eui": "^11.2.1",
     "@semantic-release/changelog": "^3.0.2",
     "@semantic-release/commit-analyzer": "^6.1.0",
     "@semantic-release/git": "^7.0.8",
@@ -79,6 +79,7 @@
     "@types/storybook__addon-knobs": "^4.0.1",
     "@types/storybook__addon-options": "^4.0.1",
     "@types/storybook__react": "^4.0.0",
+    "@types/uuid": "^3.4.4",
     "babel-loader": "^8.0.5",
     "canvas": "^2.4.1",
     "commitizen": "^3.0.7",
@@ -127,7 +128,8 @@
     "react-konva": "16.8.3",
     "react-spring": "^8.0.8",
     "resize-observer-polyfill": "^1.5.1",
-    "ts-debounce": "^1.0.0"
+    "ts-debounce": "^1.0.0",
+    "uuid": "^3.3.2"
   },
   "peerDependencies": {
     "@elastic/datemath": "^5.0.2",

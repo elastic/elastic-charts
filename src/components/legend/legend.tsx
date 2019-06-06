@@ -6,11 +6,12 @@ import { LegendItem as SeriesLegendItem } from '../../lib/series/legend';
 import { ChartStore } from '../../state/chart_state';
 import { LegendItem } from './legend_item';
 
-interface ReactiveChartProps {
+interface LegendProps {
   chartStore?: ChartStore; // FIX until we find a better way on ts mobx
+  legendId: string;
 }
 
-class LegendComponent extends React.Component<ReactiveChartProps> {
+class LegendComponent extends React.Component<LegendProps> {
   static displayName = 'Legend';
 
   onCollapseLegend = () => {
@@ -18,6 +19,7 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
   }
 
   render() {
+    const { legendId } = this.props;
     const {
       initialized,
       legendItems,
@@ -47,14 +49,14 @@ class LegendComponent extends React.Component<ReactiveChartProps> {
         paddingTop: chartTheme.chartMargins.top,
         paddingBottom: chartTheme.chartMargins.bottom,
       };
-    } else {
-      paddingStyle = {
-        paddingLeft: chartTheme.chartMargins.left,
-        paddingRight: chartTheme.chartMargins.right,
-      };
     }
     return (
-      <div className={legendClasses} style={paddingStyle}>
+      <div
+        className={legendClasses}
+        style={paddingStyle}
+        id={legendId}
+        aria-hidden={legendCollapsed.get()}
+      >
         <div className="echLegendListContainer">
           <div className="echLegendList">
             {[...legendItems.values()].map((item) => {

@@ -5,16 +5,18 @@ import { DotIcon } from './assets/dot';
 import { EmptyIcon } from './assets/empty';
 import { EyeIcon } from './assets/eye';
 import { EyeClosedIcon } from './assets/eye_closed';
+import { ListIcon } from './assets/list';
 import { QuestionInCircle } from './assets/question_in_circle';
 
 export type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 
 const typeToIconMap = {
   alert: AlertIcon,
+  dot: DotIcon,
   empty: EmptyIcon,
   eye: EyeIcon,
   eyeClosed: EyeClosedIcon,
-  dot: DotIcon,
+  list: ListIcon,
   questionInCircle: QuestionInCircle,
 };
 export type IconColor = string;
