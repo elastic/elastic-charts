@@ -22,8 +22,8 @@ class LegendButtonComponent extends React.Component<LegendButtonProps> {
       return null;
     }
     const isOpen = !legendCollapsed.get();
-    const className = classNames('echLegend__toggle', {
-      'echLegend__toggle--isOpen': isOpen,
+    const className = classNames('echLegendButton', {
+      'echLegendButton--isOpen': isOpen,
     });
     return (
       <button

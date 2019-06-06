@@ -68,30 +68,3 @@
   overflow-y: auto;
   overflow-x: hidden;
 }
-
-.echLegend__toggle {
-  padding: 4px;
-  opacity: 0.35;
-
-  &:hover {
-    opacity: 1;
-  }
-
-  border-radius: $euiBorderRadius;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  background-color: $euiColorEmptyShade;
-  transition: opacity $euiAnimSpeedFast $euiAnimSlightResistance,
-    background-color $euiAnimSpeedFast $euiAnimSlightResistance $euiAnimSpeedExtraSlow;
-
-  &:focus {
-    box-shadow: none;
-    background-color: $euiFocusBackgroundColor !important;
-  }
-}
-
-.echLegend__toggle--isOpen {
-  background-color: transparentize($euiColorDarkestShade, 0.9);
-  opacity: 1;
-}
