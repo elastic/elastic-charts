@@ -17,7 +17,7 @@ export class LineSeriesSpecComponent extends PureComponent<LineSpecProps> {
     yAccessors: ['y'],
     yScaleToDataExtent: false,
     hideInLegend: false,
-    histogramModeAlignment: HistogramModeAlignments.Start,
+    histogramModeAlignment: HistogramModeAlignments.Center,
   };
   componentDidMount() {
     const { chartStore, children, ...config } = this.props;
