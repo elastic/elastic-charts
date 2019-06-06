@@ -1499,7 +1499,6 @@ storiesOf('Bar Chart', module)
           domainType={AnnotationDomainTypes.XDomain}
           dataValues={[{dataValue: 2}]}
           style={lineAnnotationStyle}
-          histogramModeAlignment={pointAlignment}
           marker={<div style={{background: 'red', width: 10, height: 10}} />}
         />
         <RectAnnotation

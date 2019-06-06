@@ -238,7 +238,7 @@ export interface LineAnnotationDatum {
   header?: string;
 }
 
-export type LineAnnotationSpec = BaseAnnotationSpec & HistogramConfig & {
+export type LineAnnotationSpec = BaseAnnotationSpec & {
   annotationType: 'line';
   domainType: AnnotationDomainType;
   /** Data values defined with value, details, and header */

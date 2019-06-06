@@ -6,6 +6,7 @@ import {
   AnnotationType,
   AnnotationTypes,
   AxisSpec,
+  HistogramModeAlignments,
   isLineAnnotation,
   isRectAnnotation,
   LineAnnotationDatum,
@@ -472,7 +473,9 @@ export function computeAnnotationDimensions(
       if (!annotationAxisPosition) {
         return;
       }
-      const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, annotationSpec.histogramModeAlignment);
+
+      // Annotations should always align with the axis line in histogram mode
+      const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, HistogramModeAlignments.Start);
 
       const dimensions = computeLineAnnotationDimensions(
         annotationSpec,
