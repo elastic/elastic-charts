@@ -7,14 +7,8 @@ import { ChartStore } from '../state/chart_state';
 interface ResizerProps {
   chartStore?: ChartStore;
 }
-interface ResizerState {
-  initialResizeComplete: boolean;
-}
-class Resizer extends React.Component<ResizerProps, ResizerState> {
-  state = {
-    initialResizeComplete: false,
-  };
-
+class Resizer extends React.Component<ResizerProps> {
+  private initialResizeComplete = false;
   private containerRef: RefObject<HTMLDivElement>;
   private ro: ResizeObserver;
   private onResizeDebounced: (entries: ResizeObserverEntry[]) => void;
@@ -58,12 +52,10 @@ class Resizer extends React.Component<ResizerProps, ResizerState> {
   }
 
   private handleResize = (entries: ResizeObserverEntry[]) => {
-    if (this.state.initialResizeComplete) {
+    if (this.initialResizeComplete) {
       this.onResizeDebounced(entries);
     } else {
-      this.setState({
-        initialResizeComplete: true,
-      });
+      this.initialResizeComplete = true;
       this.onResize(entries);
     }
   }
