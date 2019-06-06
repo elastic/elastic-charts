@@ -738,7 +738,7 @@ describe('Axis computational utils', () => {
   test('should compute axis ticks positions with title', () => {
     const chartRotation = 0;
     const showLegend = false;
-    
+
     // validate assumptions for test
     expect(verticalAxisSpec.id).toEqual(verticalAxisSpecWTitle.id);
 
@@ -758,6 +758,7 @@ describe('Axis computational utils', () => {
       xDomain,
       [yDomain],
       1,
+      false,
     );
 
     let left = 12 + 5 + 10 + 10; // font size + title padding + chart margin left + label width
@@ -778,6 +779,7 @@ describe('Axis computational utils', () => {
       xDomain,
       [yDomain],
       1,
+      false,
     );
 
     left = 0 + 10 + 10; // no title + chart margin left + label width
