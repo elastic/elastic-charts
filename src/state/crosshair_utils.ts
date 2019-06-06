@@ -1,6 +1,5 @@
 import { Rotation } from '../lib/series/specs';
 import { Dimensions } from '../lib/utils/dimensions';
-import { getValidXPosition } from '../lib/utils/interactions';
 import { Scale } from '../lib/utils/scales/scales';
 import { isHorizontalRotation } from './utils';
 
@@ -20,6 +19,7 @@ export function getSnapPosition(
   if (position === undefined) {
     return;
   }
+
   if (scale.bandwidth > 0) {
     const band = scale.bandwidth / (1 - scale.barsPadding);
     const halfPadding = (band - scale.bandwidth) / 2;
@@ -73,18 +73,15 @@ export function getCursorBandPosition(
 ): Dimensions | undefined {
   const { top, left, width, height } = chartDimensions;
   const { x, y } = cursorPosition;
-  if (x > width || y > height || x < 0 || y < 0) {
+  const isHorizontalRotated = isHorizontalRotation(chartRotation);
+
+  const chartWidth = isHorizontalRotated ? width : height;
+  const chartHeight = isHorizontalRotated ? height : width;
+  if (x > chartWidth || y > chartHeight || x < 0 || y < 0) {
     return;
   }
-  const isHorizontalRotated = isHorizontalRotation(chartRotation);
-  const xAxisCursorPosition = getValidXPosition(
-    x,
-    y,
-    chartRotation,
-    chartDimensions,
-  );
 
-  const invertedValue = xScale.invertWithStep(xAxisCursorPosition, data);
+  const invertedValue = xScale.invertWithStep(x, data);
 
   if (invertedValue == null) {
     return;
@@ -93,10 +90,13 @@ export function getCursorBandPosition(
   if (!snappedPosition) {
     return;
   }
+
   const { position, band } = snappedPosition;
+  const bandOffset = xScale.bandwidth > 0 ? band : 0;
+
   if (isHorizontalRotated) {
-    const adjustedLeft = snapEnabled ? position : xAxisCursorPosition;
-    const leftPosition = chartRotation === 0 ? left + adjustedLeft : left + width - adjustedLeft - band;
+    const adjustedLeft = snapEnabled ? position : x;
+    const leftPosition = chartRotation === 0 ? left + adjustedLeft : left + width - adjustedLeft - bandOffset;
 
     return {
       top,
@@ -105,8 +105,8 @@ export function getCursorBandPosition(
       height,
     };
   } else {
-    const adjustedTop = snapEnabled ? position : xAxisCursorPosition;
-    const topPosition = chartRotation === 90 ? top + adjustedTop : top + height - adjustedTop - band;
+    const adjustedTop = snapEnabled ? position : x;
+    const topPosition = chartRotation === 90 ? top + adjustedTop : height + top - adjustedTop - bandOffset;
 
     return {
       top: topPosition,
