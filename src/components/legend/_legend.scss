@@ -17,7 +17,7 @@
 
 .echLegend--top,
 .echLegend--bottom {
-  left: 24px;
+  left: $euiSizeL;
   right: 0;
   height: $echLegendMaxHeight;
 
@@ -70,14 +70,7 @@
 }
 
 .echLegend__toggle {
-  appearance: none;
-  background-color: transparent;
   padding: 4px;
-  border: none;
-  line-height: 1;
-  font-size: 16px;
-  color: $euiTextColor !important;
-  cursor: pointer;
   opacity: 0.35;
 
   &:hover {
