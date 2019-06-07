@@ -39,6 +39,7 @@ import {
   getAnnotationLineTooltipTransform,
   getAnnotationLineTooltipXOffset,
   getAnnotationLineTooltipYOffset,
+  getNearestTick,
   getRotatedCursor,
   isBottomRectTooltip,
   isRightRectTooltip,
@@ -1303,6 +1304,8 @@ describe('annotation utils', () => {
       annotationRectangle,
       yScales,
       xScale,
+      false,
+      0,
     );
 
     expect(noYScale).toBe(null);
@@ -1327,6 +1330,8 @@ describe('annotation utils', () => {
       annotationRectangle,
       yScales,
       xScale,
+      false,
+      0,
     );
 
     expect(skippedInvalid).toEqual([]);
@@ -1353,6 +1358,8 @@ describe('annotation utils', () => {
       annotationRectangle,
       yScales,
       xScale,
+      false,
+      0,
     );
 
     const expectedDimensions = [
@@ -1381,6 +1388,8 @@ describe('annotation utils', () => {
       annotationRectangle,
       yScales,
       xScale,
+      false,
+      0,
     );
 
     expect(unrotated).toEqual([{ rect: { x: 10, y: 30, width: 10, height: 20 } }]);
@@ -1402,15 +1411,17 @@ describe('annotation utils', () => {
       annotationRectangle,
       yScales,
       xScale,
+      false,
+      0,
     );
 
     expect(unrotated).toEqual([{ rect: { x: 0, y: 0, width: 25, height: 20 } }]);
   });
   test('should validate scaled dataValues', () => {
-    expect(scaleAndValidateDatum('', ordinalScale)).toBe(null);
-    expect(scaleAndValidateDatum('a', continuousScale)).toBe(null);
-    expect(scaleAndValidateDatum(-10, continuousScale)).toBe(null);
-    expect(scaleAndValidateDatum(20, continuousScale)).toBe(null);
+    expect(scaleAndValidateDatum('', ordinalScale, false)).toBe(null);
+    expect(scaleAndValidateDatum('a', continuousScale, false)).toBe(null);
+    expect(scaleAndValidateDatum(-10, continuousScale, false)).toBe(null);
+    expect(scaleAndValidateDatum(20, continuousScale, false)).toBe(null);
   });
   test('should determine if a point is within a rectangle annotation', () => {
     const cursorPosition = { x: 3, y: 4 };
@@ -1582,5 +1593,13 @@ describe('annotation utils', () => {
     expect(getRotatedCursor(rawCursorPosition, chartDimensions, 90)).toEqual({ x: 2, y: 1 });
     expect(getRotatedCursor(rawCursorPosition, chartDimensions, -90)).toEqual({ x: 18, y: 9 });
     expect(getRotatedCursor(rawCursorPosition, chartDimensions, 180)).toEqual({ x: 9, y: 18 });
+  });
+  test.only('should get nearest tick', () => {
+    const ticks = [0, 1, 2];
+    expect(getNearestTick(0.25, [], 1)).toBeUndefined();
+    expect(getNearestTick(0.25, [100], 1)).toBeUndefined();
+    expect(getNearestTick(0.25, ticks, 1)).toBe(0);
+    expect(getNearestTick(0.75, ticks, 1)).toBe(1);
+    expect(getNearestTick(0.5, ticks, 1)).toBe(1);
   });
 });

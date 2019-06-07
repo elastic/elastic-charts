@@ -328,10 +328,38 @@ export function computeLineAnnotationDimensions(
   );
 }
 
-export function scaleAndValidateDatum(dataValue: any, scale: Scale): any | null {
+export function getNearestTick(dataValue: number, ticks: number[], minInterval: number): number | undefined {
+  if (ticks.length === 0) {
+    return;
+  }
+  if (ticks.length === 1) {
+
+    if (Math.abs(dataValue - ticks[0]) <= minInterval / 2) {
+      return ticks[0];
+    }
+    return;
+  }
+
+  const numTicks = ticks.length - 1;
+  const midIdx = Math.ceil(numTicks / 2);
+  const midPoint = ticks[midIdx];
+
+  if (Math.abs(dataValue - midPoint) <= minInterval / 2) {
+    return midPoint;
+  }
+
+  if (dataValue > midPoint) {
+    return getNearestTick(dataValue, ticks.slice(midIdx, ticks.length), minInterval);
+  }
+  return getNearestTick(dataValue, ticks.slice(0, midIdx), minInterval);
+}
+
+export function scaleAndValidateDatum(dataValue: any, scale: Scale, alignWithTick: boolean): any | null {
   const isContinuous = scale.type !== ScaleType.Ordinal;
 
-  const scaledValue = scale.scale(dataValue);
+  const value = (isContinuous && alignWithTick) ?
+    getNearestTick(dataValue, scale.ticks(), scale.minInterval) : dataValue;
+  const scaledValue = scale.scale(value);
 
   // d3.scale will return 0 for '', rendering the line incorrectly at 0
   if (isNaN(scaledValue) || (isContinuous && dataValue === '')) {
@@ -353,6 +381,8 @@ export function computeRectAnnotationDimensions(
   annotationSpec: RectAnnotationSpec,
   yScales: Map<GroupId, Scale>,
   xScale: Scale,
+  enableHistogramMode: boolean,
+  barsPadding: number,
 ): AnnotationRectProps[] | null {
   const { dataValues } = annotationSpec;
 
@@ -395,10 +425,12 @@ export function computeRectAnnotationDimensions(
       y1 = yDomain[0];
     }
 
-    let x0Scaled = scaleAndValidateDatum(x0, xScale);
-    let x1Scaled = scaleAndValidateDatum(x1, xScale);
-    const y0Scaled = scaleAndValidateDatum(y0, yScale);
-    const y1Scaled = scaleAndValidateDatum(y1, yScale);
+    const alignWithTick = !enableHistogramMode;
+
+    let x0Scaled = scaleAndValidateDatum(x0, xScale, alignWithTick);
+    let x1Scaled = scaleAndValidateDatum(x1, xScale, alignWithTick);
+    const y0Scaled = scaleAndValidateDatum(y0, yScale, false);
+    const y1Scaled = scaleAndValidateDatum(y1, yScale, false);
 
     // TODO: surface this as a warning
     if ([x0Scaled, x1Scaled, y0Scaled, y1Scaled].includes(null)) {
@@ -408,8 +440,9 @@ export function computeRectAnnotationDimensions(
     let xOffset = 0;
     if (xScale.bandwidth > 0) {
       const xBand = xScale.bandwidth / (1 - xScale.barsPadding);
-      xOffset = (xBand - xScale.bandwidth) / 2;
+      xOffset = enableHistogramMode ? (xBand - xScale.bandwidth) / 2 : barsPadding;
     }
+
     x0Scaled = x0Scaled - xOffset;
     x1Scaled = x1Scaled - xOffset;
 
@@ -467,7 +500,14 @@ export function computeAnnotationDimensions(
   const annotationDimensions = new Map<AnnotationId, AnnotationDimensions>();
 
   const barsShift = totalBarsInCluster * xScale.bandwidth / 2;
+
+  const band = xScale.bandwidth / (1 - xScale.barsPadding);
+  const halfPadding = (band - xScale.bandwidth) / 2;
+  const barsPadding = halfPadding * totalBarsInCluster;
   const clusterOffset = totalBarsInCluster > 1 ? barsShift - xScale.bandwidth / 2 : 0;
+
+  // Annotations should always align with the axis line in histogram mode
+  const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, HistogramModeAlignments.Start);
 
   annotations.forEach((annotationSpec: AnnotationSpec, annotationId: AnnotationId) => {
     if (isLineAnnotation(annotationSpec)) {
@@ -477,9 +517,6 @@ export function computeAnnotationDimensions(
       if (!annotationAxisPosition) {
         return;
       }
-
-      // Annotations should always align with the axis line in histogram mode
-      const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, HistogramModeAlignments.Start);
 
       const dimensions = computeLineAnnotationDimensions(
         annotationSpec,
@@ -499,6 +536,8 @@ export function computeAnnotationDimensions(
         annotationSpec,
         yScales,
         xScale,
+        enableHistogramMode,
+        barsPadding,
       );
 
       if (dimensions) {
