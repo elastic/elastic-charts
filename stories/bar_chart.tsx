@@ -1448,7 +1448,7 @@ storiesOf('Bar Chart', module)
 
     const theme = mergeWithDefaultTheme({
       scales: {
-        barsPadding: number('bars padding', 0, {
+        barsPadding: number('bars padding', 0.25, {
           range: true,
           min: 0,
           max: 1,
@@ -1466,7 +1466,7 @@ storiesOf('Bar Chart', module)
       'line',
     );
 
-    const pointAlignment = select('point series alignment', HistogramModeAlignments, HistogramModeAlignments.Start);
+    const pointAlignment = select('point series alignment', HistogramModeAlignments, HistogramModeAlignments.Center);
     const pointData = TestDatasets.BARCHART_1Y0G;
 
     const otherSeries = otherSeriesSelection === 'line' ?
@@ -1497,7 +1497,7 @@ storiesOf('Bar Chart', module)
         <LineAnnotation
           annotationId={getAnnotationId('line-annotation')}
           domainType={AnnotationDomainTypes.XDomain}
-          dataValues={[{dataValue: 2}]}
+          dataValues={[{dataValue: 2}, {dataValue: 2.5}]}
           style={lineAnnotationStyle}
           marker={<div style={{background: 'red', width: 10, height: 10}} />}
         />
@@ -1512,8 +1512,8 @@ storiesOf('Bar Chart', module)
             },
             {
               coordinates: {
-                x0: 2.5,
-                x1: 3,
+                x0: 3,
+                x1: 4,
               },
               details: 'rect annotation',
             },

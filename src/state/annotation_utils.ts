@@ -461,9 +461,13 @@ export function computeAnnotationDimensions(
   yScales: Map<GroupId, Scale>,
   xScale: Scale,
   axesSpecs: Map<AxisId, AxisSpec>,
+  totalBarsInCluster: number,
   enableHistogramMode: boolean,
 ): Map<AnnotationId, AnnotationDimensions> {
   const annotationDimensions = new Map<AnnotationId, AnnotationDimensions>();
+
+  const barsShift = totalBarsInCluster * xScale.bandwidth / 2;
+  const clusterOffset = totalBarsInCluster > 1 ? barsShift - xScale.bandwidth / 2 : 0;
 
   annotations.forEach((annotationSpec: AnnotationSpec, annotationId: AnnotationId) => {
     if (isLineAnnotation(annotationSpec)) {
@@ -484,7 +488,7 @@ export function computeAnnotationDimensions(
         yScales,
         xScale,
         annotationAxisPosition,
-        xScaleOffset,
+        xScaleOffset - clusterOffset,
       );
 
       if (dimensions) {

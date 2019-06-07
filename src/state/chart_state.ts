@@ -923,6 +923,7 @@ export class ChartStore {
       this.yScales,
       this.xScale,
       this.axesSpecs,
+      this.totalBarsInCluster,
       this.enableHistogramMode.get(),
     );
 
