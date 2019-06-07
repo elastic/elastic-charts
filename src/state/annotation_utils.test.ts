@@ -136,6 +136,7 @@ describe('annotation utils', () => {
       yScales,
       xScale,
       axesSpecs,
+      1,
       false,
     );
     const expectedDimensions = new Map();
@@ -176,6 +177,7 @@ describe('annotation utils', () => {
       yScales,
       xScale,
       new Map(), // empty axesSpecs
+      1,
       false,
     );
     const expectedDimensions = new Map();
