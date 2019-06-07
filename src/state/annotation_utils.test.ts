@@ -1594,7 +1594,7 @@ describe('annotation utils', () => {
     expect(getRotatedCursor(rawCursorPosition, chartDimensions, -90)).toEqual({ x: 18, y: 9 });
     expect(getRotatedCursor(rawCursorPosition, chartDimensions, 180)).toEqual({ x: 9, y: 18 });
   });
-  test.only('should get nearest tick', () => {
+  test('should get nearest tick', () => {
     const ticks = [0, 1, 2];
     expect(getNearestTick(0.25, [], 1)).toBeUndefined();
     expect(getNearestTick(0.25, [100], 1)).toBeUndefined();
