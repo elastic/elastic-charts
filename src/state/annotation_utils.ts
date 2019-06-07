@@ -368,7 +368,10 @@ export function scaleAndValidateDatum(dataValue: any, scale: Scale, alignWithTic
   if (isContinuous) {
     const [domainStart, domainEnd] = scale.domain;
 
-    if (domainStart > dataValue || domainEnd < dataValue) {
+    // if we're not aligning the ticks, we need to extend the domain by one more tick for histograms
+    const domainEndOffset = alignWithTick ? 0 : scale.minInterval;
+
+    if (domainStart > dataValue || domainEnd + domainEndOffset < dataValue) {
       return null;
     }
   }
