@@ -5,6 +5,7 @@ import { LIGHT_THEME } from '../themes/light_theme';
 import { AxisId, getAxisId, getGroupId, GroupId } from '../utils/ids';
 import { ScaleType } from '../utils/scales/scales';
 import {
+  AxisTick,
   AxisTicksDimensions,
   centerRotationOrigin,
   computeAxisGridLinePositions,
@@ -27,7 +28,6 @@ import {
   isVertical,
   isYDomain,
   mergeDomainsByGroupId,
-  AxisTick,
 } from './axis_utils';
 import { CanvasTextBBoxCalculator } from './canvas_text_bbox_calculator';
 import { SvgTextBBoxCalculator } from './svg_text_bbox_calculator';
@@ -67,8 +67,6 @@ describe('Axis computational utils', () => {
     left: 0,
   };
   const axis1Dims = {
-    axisScaleType: ScaleType.Linear,
-    axisScaleDomain: [0, 1],
     tickValues: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
     tickLabels: ['0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1'],
     maxLabelBboxWidth: 10,

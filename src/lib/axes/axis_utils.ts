@@ -13,9 +13,8 @@ import {
 } from '../series/specs';
 import { AxisConfig, Theme } from '../themes/theme';
 import { Dimensions, Margins } from '../utils/dimensions';
-import { Domain } from '../utils/domain';
 import { AxisId, GroupId } from '../utils/ids';
-import { Scale, ScaleType } from '../utils/scales/scales';
+import { Scale } from '../utils/scales/scales';
 import { BBox, BBoxCalculator } from './bbox_calculator';
 
 export type AxisLinePosition = [number, number, number, number];
@@ -27,8 +26,6 @@ export interface AxisTick {
 }
 
 export interface AxisTicksDimensions {
-  axisScaleType: ScaleType;
-  axisScaleDomain: Domain;
   tickValues: string[] | number[];
   tickLabels: string[];
   maxLabelBboxWidth: number;
@@ -90,8 +87,6 @@ export function computeAxisTicksDimensions(
   );
 
   return {
-    axisScaleDomain: xDomain.domain, // is this used anymore?
-    axisScaleType: xDomain.scaleType, // is this used anymore?
     ...dimensions,
   };
 }

@@ -26,6 +26,7 @@ import {
   AnnotationLineProps,
   computeAnnotationDimensions,
   computeAnnotationTooltipState,
+  computeClusterOffset,
   computeLineAnnotationDimensions,
   computeLineAnnotationTooltipState,
   computeRectAnnotationDimensions,
@@ -48,7 +49,6 @@ import {
   isWithinRectBounds,
   scaleAndValidateDatum,
   toTransformString,
-  computeClusterOffset,
 } from './annotation_utils';
 import { Point } from './chart_state';
 
