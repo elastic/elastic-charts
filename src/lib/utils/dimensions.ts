@@ -121,7 +121,6 @@ export function computeChartDimensions(
   } else {
     left = vLeftAxisSpecWidth + chartPaddings.left + legendLeftMargin;
   }
-
   return {
     top,
     left,

@@ -518,7 +518,7 @@ export function getAxisTicksPositions(
   totalGroupsCount: number,
   enableHistogramMode: boolean,
   legendPosition?: Position,
-  barsPadding?: number, // This is never undefined?
+  barsPadding?: number,
 ) {
   const { chartPaddings, chartMargins } = chartTheme;
   const legendStyle = chartTheme.legend;

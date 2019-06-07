@@ -443,7 +443,6 @@ export function renderGeometries(
         const lineShift = clusteredCount > 0 ? clusteredCount : 1;
         const lineSeriesStyle = spec.lineSeriesStyle;
 
-        // TODO: account for chartRotation
         const xScaleOffset = computeXScaleOffset(
           xScale,
           enableHistogramMode,
@@ -475,7 +474,6 @@ export function renderGeometries(
         const areaShift = clusteredCount > 0 ? clusteredCount : 1;
         const areaSeriesStyle = spec.areaSeriesStyle;
 
-        // TODO: account for chartRotation
         const xScaleOffset = computeXScaleOffset(
           xScale,
           enableHistogramMode,
