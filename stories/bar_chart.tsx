@@ -1424,7 +1424,7 @@ storiesOf('Bar Chart', module)
       </Chart>
     );
   })
-  .add('[test] histogram mode', () => {
+  .add('[test] histogram mode (linear)', () => {
     const data = TestDatasets.BARCHART_2Y1G;
 
     const lineAnnotationStyle = {
@@ -1560,6 +1560,77 @@ storiesOf('Bar Chart', module)
           enableHistogramMode={boolean('bars-2 enableHistogramMode', false)}
         />
         {otherSeries}
+      </Chart>
+    );
+  })
+  .add('[test] histogram mode (ordinal)', () => {
+    const data = [{ x: 'a', y: 2 }, { x: 'b', y: 7 }, { x: 'c', y: 0 }, { x: 'd', y: 6 }];
+
+    const chartRotation = select<Rotation>(
+      'chartRotation',
+      {
+        '0 deg': 0,
+        '90 deg': 90,
+        '-90 deg': -90,
+        '180 deg': 180,
+      },
+      0,
+    );
+
+    const theme = mergeWithDefaultTheme({
+      scales: {
+        barsPadding: number('bars padding', 0.25, {
+          range: true,
+          min: 0,
+          max: 1,
+          step: 0.1,
+        }),
+      },
+    }, LIGHT_THEME);
+
+    const hasHistogramBarSeries = boolean('hasHistogramBarSeries', false);
+
+    return (
+      <Chart className={'story-chart'}>
+        <Settings rotation={chartRotation} theme={theme} debug={boolean('debug', true)} />
+        <Axis
+          id={getAxisId('discover-histogram-left-axis')}
+          position={Position.Left}
+          title={'left axis'}
+        />
+        <Axis
+          id={getAxisId('discover-histogram-bottom-axis')}
+          position={Position.Bottom}
+          title={'bottom axis'}
+        />
+        {hasHistogramBarSeries && <HistogramBarSeries
+          id={getSpecId('histo')}
+          xScaleType={ScaleType.Ordinal}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          data={data}
+          name={'histogram'}
+        />}
+        <BarSeries
+          id={getSpecId('bars-1')}
+          xScaleType={ScaleType.Ordinal}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          data={data}
+          name={'bars 1'}
+          enableHistogramMode={boolean('bars-1 enableHistogramMode', false)}
+        />
+        <BarSeries
+          id={getSpecId('bars-2')}
+          xScaleType={ScaleType.Ordinal}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          data={data}
+          enableHistogramMode={boolean('bars-2 enableHistogramMode', false)}
+        />
       </Chart>
     );
   })
