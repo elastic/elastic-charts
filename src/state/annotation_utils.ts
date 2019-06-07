@@ -356,7 +356,6 @@ export function getNearestTick(dataValue: number, ticks: number[], minInterval: 
 
 export function scaleAndValidateDatum(dataValue: any, scale: Scale, alignWithTick: boolean): any | null {
   const isContinuous = scale.type !== ScaleType.Ordinal;
-
   const value = (isContinuous && alignWithTick) ?
     getNearestTick(dataValue, scale.ticks(), scale.minInterval) : dataValue;
   const scaledValue = scale.scale(value);
@@ -425,7 +424,7 @@ export function computeRectAnnotationDimensions(
       y1 = yDomain[0];
     }
 
-    const alignWithTick = !enableHistogramMode;
+    const alignWithTick = xScale.bandwidth > 0 && !enableHistogramMode;
 
     let x0Scaled = scaleAndValidateDatum(x0, xScale, alignWithTick);
     let x1Scaled = scaleAndValidateDatum(x1, xScale, alignWithTick);
