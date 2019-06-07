@@ -328,12 +328,18 @@ export function computeLineAnnotationDimensions(
   );
 }
 
+/**
+ * Used when we need to snap values to the nearest tick edge, this performs a binary search for the nearest tick
+ * @param dataValue - dataValue defined as an annotation cooordinate
+ * @param ticks - ticks from the scale
+ * @param minInterval - minInterva from the scale
+ */
 export function getNearestTick(dataValue: number, ticks: number[], minInterval: number): number | undefined {
   if (ticks.length === 0) {
     return;
   }
-  if (ticks.length === 1) {
 
+  if (ticks.length === 1) {
     if (Math.abs(dataValue - ticks[0]) <= minInterval / 2) {
       return ticks[0];
     }
@@ -351,6 +357,7 @@ export function getNearestTick(dataValue: number, ticks: number[], minInterval: 
   if (dataValue > midPoint) {
     return getNearestTick(dataValue, ticks.slice(midIdx, ticks.length), minInterval);
   }
+
   return getNearestTick(dataValue, ticks.slice(0, midIdx), minInterval);
 }
 
@@ -489,6 +496,14 @@ export function getAnnotationAxis(
   return annotationAxis ? annotationAxis.position : null;
 }
 
+export function computeClusterOffset(totalBarsInCluster: number, barsShift: number, bandwidth: number): number {
+  if (totalBarsInCluster > 1) {
+    return barsShift - bandwidth / 2;
+  }
+
+  return 0;
+}
+
 export function computeAnnotationDimensions(
   annotations: Map<AnnotationId, AnnotationSpec>,
   chartDimensions: Dimensions,
@@ -506,7 +521,7 @@ export function computeAnnotationDimensions(
   const band = xScale.bandwidth / (1 - xScale.barsPadding);
   const halfPadding = (band - xScale.bandwidth) / 2;
   const barsPadding = halfPadding * totalBarsInCluster;
-  const clusterOffset = totalBarsInCluster > 1 ? barsShift - xScale.bandwidth / 2 : 0;
+  const clusterOffset = computeClusterOffset(totalBarsInCluster, barsShift, xScale.bandwidth);
 
   // Annotations should always align with the axis line in histogram mode
   const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, HistogramModeAlignments.Start);

@@ -48,6 +48,7 @@ import {
   isWithinRectBounds,
   scaleAndValidateDatum,
   toTransformString,
+  computeClusterOffset,
 } from './annotation_utils';
 import { Point } from './chart_state';
 
@@ -59,7 +60,7 @@ describe('annotation utils', () => {
   const continuousScale = new ScaleContinuous(ScaleType.Linear, continuousData, [
     minRange,
     maxRange,
-  ]);
+  ], 0, 1);
 
   const ordinalData = ['a', 'b', 'c', 'd', 'a', 'b', 'c'];
   const ordinalScale = new ScaleBand(ordinalData, [minRange, maxRange]);
@@ -1336,6 +1337,41 @@ describe('annotation utils', () => {
 
     expect(skippedInvalid).toEqual([]);
   });
+  test('should compute rectangle dimensions shifted for histogram mode', () => {
+    const yScales: Map<GroupId, Scale> = new Map();
+    yScales.set(groupId, continuousScale);
+
+    const xScale: Scale = new ScaleContinuous(ScaleType.Linear, continuousData, [ minRange, maxRange ], 1, 1);
+
+    const annotationRectangle: RectAnnotationSpec = {
+      annotationId: getAnnotationId('rect'),
+      groupId,
+      annotationType: 'rectangle',
+      dataValues: [
+        { coordinates: { x0: 1, x1: null, y0: null, y1: null } },
+        { coordinates: { x0: null, x1: 1, y0: null, y1: null } },
+        { coordinates: { x0: null, x1: null, y0: 1, y1: null } },
+        { coordinates: { x0: null, x1: null, y0: null, y1: 1 } },
+      ],
+    };
+
+    const dimensions = computeRectAnnotationDimensions(
+      annotationRectangle,
+      yScales,
+      xScale,
+      true,
+      0,
+    );
+
+    const expectedDimensions = [
+      { rect: { x: 0, y: 0, width: 10, height: 100 } },
+      { rect: { x: 10, y: 0, width: 90, height: 100 } },
+      { rect: { x: 0, y: 0, width: 100, height: 10 } },
+      { rect: { x: 0, y: 10, width: 100, height: 90 } },
+    ];
+
+    expect(dimensions).toEqual(expectedDimensions);
+  });
   test('should compute rectangle dimensions when only a single coordinate defined', () => {
     const yScales: Map<GroupId, Scale> = new Map();
     yScales.set(groupId, continuousScale);
@@ -1418,10 +1454,21 @@ describe('annotation utils', () => {
     expect(unrotated).toEqual([{ rect: { x: 0, y: 0, width: 25, height: 20 } }]);
   });
   test('should validate scaled dataValues', () => {
+    // not aligned with tick
     expect(scaleAndValidateDatum('', ordinalScale, false)).toBe(null);
     expect(scaleAndValidateDatum('a', continuousScale, false)).toBe(null);
     expect(scaleAndValidateDatum(-10, continuousScale, false)).toBe(null);
     expect(scaleAndValidateDatum(20, continuousScale, false)).toBe(null);
+
+    // allow values within domainEnd + minInterval when not alignWithTick
+    expect(scaleAndValidateDatum(10.25, continuousScale, false)).toBeCloseTo(102.5);
+    expect(scaleAndValidateDatum(10.25, continuousScale, true)).toBe(null);
+
+    expect(scaleAndValidateDatum('a', ordinalScale, false)).toBe(0);
+    expect(scaleAndValidateDatum(0, continuousScale, false)).toBe(0);
+
+    // aligned with tick
+    expect(scaleAndValidateDatum(1.25, continuousScale, true)).toBe(10);
   });
   test('should determine if a point is within a rectangle annotation', () => {
     const cursorPosition = { x: 3, y: 4 };
@@ -1601,5 +1648,16 @@ describe('annotation utils', () => {
     expect(getNearestTick(0.25, ticks, 1)).toBe(0);
     expect(getNearestTick(0.75, ticks, 1)).toBe(1);
     expect(getNearestTick(0.5, ticks, 1)).toBe(1);
+    expect(getNearestTick(1.75, ticks, 1)).toBe(2);
+  });
+  test('should compute cluster offset', () => {
+    const singleBarCluster = 1;
+    const multiBarCluster = 2;
+
+    const barsShift = 4;
+    const bandwidth = 2;
+
+    expect(computeClusterOffset(singleBarCluster, barsShift, bandwidth)).toBe(0);
+    expect(computeClusterOffset(multiBarCluster, barsShift, bandwidth)).toBe(3);
   });
 });
