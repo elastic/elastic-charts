@@ -262,6 +262,12 @@ storiesOf('Bar Chart', module)
     const theme = {
       ...LIGHT_THEME,
       scales: {
+        histogramPadding: number('histogram padding', 0, {
+          range: true,
+          min: 0,
+          max: 1,
+          step: 0.01,
+        }),
         barsPadding: number('bar padding', 0, {
           range: true,
           min: 0,
@@ -531,7 +537,13 @@ storiesOf('Bar Chart', module)
     const theme = {
       ...LIGHT_THEME,
       scales: {
-        barsPadding: number('bar padding', 0, {
+        histogramPadding: number('histogram padding', 0.05, {
+          range: true,
+          min: 0,
+          max: 1,
+          step: 0.01,
+        }),
+        barsPadding: number('bar padding', 0.25, {
           range: true,
           min: 0,
           max: 1,
@@ -1452,6 +1464,12 @@ storiesOf('Bar Chart', module)
     const theme = mergeWithDefaultTheme({
       scales: {
         barsPadding: number('bars padding', 0.25, {
+          range: true,
+          min: 0,
+          max: 1,
+          step: 0.1,
+        }),
+        histogramPadding: number('histogram padding', 0.05, {
           range: true,
           min: 0,
           max: 1,

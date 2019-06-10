@@ -169,7 +169,7 @@ export function computeSeriesGeometries(
   geometriesCounts: GeometriesCounts;
 } {
   const chartColors: ColorConfig = chartTheme.colors;
-  const barsPadding = chartTheme.scales.barsPadding;
+  const barsPadding = enableHistogramMode ? chartTheme.scales.histogramPadding : chartTheme.scales.barsPadding;
 
   const width = [0, 180].includes(chartRotation) ? chartDims.width : chartDims.height;
   const height = [0, 180].includes(chartRotation) ? chartDims.height : chartDims.width;

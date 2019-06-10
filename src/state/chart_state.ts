@@ -840,6 +840,9 @@ export class ChartStore {
 
     // compute axis dimensions
     const bboxCalculator = new CanvasTextBBoxCalculator();
+    const barsPadding = this.enableHistogramMode.get() ?
+      this.chartTheme.scales.histogramPadding : this.chartTheme.scales.barsPadding;
+
     this.axesTicksDimensions.clear();
     this.axesSpecs.forEach((axisSpec) => {
       const { id } = axisSpec;
@@ -851,7 +854,7 @@ export class ChartStore {
         bboxCalculator,
         this.chartRotation,
         this.chartTheme.axes,
-        this.chartTheme.scales.barsPadding,
+        barsPadding,
       );
       if (dimensions) {
         this.axesTicksDimensions.set(id, dimensions);
@@ -910,7 +913,7 @@ export class ChartStore {
       totalBarsInCluster,
       this.enableHistogramMode.get(),
       this.legendPosition,
-      this.chartTheme.scales.barsPadding,
+      barsPadding,
     );
     // tslint:disable-next-line:no-console
     // console.log({axisTicksPositions});
