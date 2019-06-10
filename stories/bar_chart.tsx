@@ -27,6 +27,7 @@ import {
   ScaleType,
   Settings,
   timeFormatter,
+  TooltipType,
 } from '../src/';
 import * as TestDatasets from '../src/lib/series/utils/test_dataset';
 
@@ -904,6 +905,7 @@ storiesOf('Bar Chart', module)
     const data = dg.generateSimpleSeries(15000);
     return (
       <Chart className={'story-chart'}>
+        <Settings tooltipType={TooltipType.Follow} />
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} />
         <Axis
           id={getAxisId('left2')}
@@ -918,6 +920,7 @@ storiesOf('Bar Chart', module)
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y']}
+          splitSeriesAccessors={['g']}
           data={data}
         />
       </Chart>
