@@ -1,4 +1,3 @@
-import { palettes } from '@elastic/eui';
 import { boolean, color, number, select } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import React from 'react';
@@ -25,6 +24,7 @@ import {
   Settings,
 } from '../src/';
 import * as TestDatasets from '../src/lib/series/utils/test_dataset';
+import { palettes } from '../src/lib/themes/colors';
 
 function range(
   title: string,
@@ -105,6 +105,10 @@ storiesOf('Stylings', module)
         barsPadding: range('bar padding', 0, 1, 0.1, undefined, 0.01),
       },
     };
+    const withLeftTitle = boolean('left axis with title', true);
+    const withBottomTitle = boolean('bottom axis with title', true);
+    const withRightTitle = boolean('right axis with title', true);
+    const withTopTitle = boolean('top axis with title', true);
     const customTheme = mergeWithDefaultTheme(theme, LIGHT_THEME);
     return (
       <Chart className={'story-chart'}>
@@ -117,13 +121,13 @@ storiesOf('Stylings', module)
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
-          title={'Bottom axis'}
+          title={withBottomTitle ? 'Bottom axis' : undefined}
           showOverlappingTicks={true}
           showGridLines={boolean('show bottom axis grid lines', false)}
         />
         <Axis
           id={getAxisId('left2')}
-          title={'Left axis'}
+          title={withLeftTitle ? 'Left axis' : undefined}
           position={Position.Left}
           tickFormat={(d) => Number(d).toFixed(2)}
           showGridLines={boolean('show left axis grid lines', false)}
@@ -131,13 +135,13 @@ storiesOf('Stylings', module)
         <Axis
           id={getAxisId('top')}
           position={Position.Top}
-          title={'Top axis'}
+          title={withTopTitle ? 'Top axis' : undefined}
           showOverlappingTicks={true}
           showGridLines={boolean('show top axis grid lines', false)}
         />
         <Axis
           id={getAxisId('right')}
-          title={'Right axis'}
+          title={withRightTitle ? 'Right axis' : undefined}
           position={Position.Right}
           tickFormat={(d) => Number(d).toFixed(2)}
           showGridLines={boolean('show right axis grid lines', false)}
@@ -302,12 +306,12 @@ storiesOf('Stylings', module)
         vizColors: select(
           'vizColors',
           {
-            colorBlind: palettes.euiPaletteColorBlind.colors,
-            darkBackground: palettes.euiPaletteForDarkBackground.colors,
-            lightBackground: palettes.euiPaletteForLightBackground.colors,
-            forStatus: palettes.euiPaletteForStatus.colors,
+            colorBlind: palettes.echPaletteColorBlind.colors,
+            darkBackground: palettes.echPaletteForDarkBackground.colors,
+            lightBackground: palettes.echPaletteForLightBackground.colors,
+            forStatus: palettes.echPaletteForStatus.colors,
           },
-          palettes.euiPaletteColorBlind.colors,
+          palettes.echPaletteColorBlind.colors,
           'Colors',
         ),
         defaultVizColor: DEFAULT_MISSING_COLOR,

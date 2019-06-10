@@ -20,6 +20,7 @@ import {
   ScaleType,
   Settings,
   timeFormatter,
+  TooltipType,
 } from '../src/';
 import * as TestDatasets from '../src/lib/series/utils/test_dataset';
 import { KIBANA_METRICS } from '../src/lib/series/utils/test_dataset_kibana';
@@ -238,8 +239,31 @@ storiesOf('Bar Chart', module)
     );
   })
   .add('with linear x axis', () => {
+    const chartRotation = select<Rotation>(
+      'chartRotation',
+      {
+        '0 deg': 0,
+        '90 deg': 90,
+        '-90 deg': -90,
+        '180 deg': 180,
+      },
+      0,
+    );
+
+    const theme = {
+      ...LIGHT_THEME,
+      scales: {
+        barsPadding: number('bar padding', 0, {
+          range: true,
+          min: 0,
+          max: 1,
+          step: 0.01,
+        }),
+      },
+    };
     return (
       <Chart className={'story-chart'}>
+        <Settings rotation={chartRotation} theme={theme} />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
@@ -484,9 +508,32 @@ storiesOf('Bar Chart', module)
     );
   })
   .add('clustered with axis and legend', () => {
+    const chartRotation = select<Rotation>(
+      'chartRotation',
+      {
+        '0 deg': 0,
+        '90 deg': 90,
+        '-90 deg': -90,
+        '180 deg': 180,
+      },
+      0,
+    );
+
+    const theme = {
+      ...LIGHT_THEME,
+      scales: {
+        barsPadding: number('bar padding', 0, {
+          range: true,
+          min: 0,
+          max: 1,
+          step: 0.01,
+        }),
+      },
+    };
+
     return (
       <Chart className={'story-chart'}>
-        <Settings showLegend={true} legendPosition={Position.Right} />
+        <Settings showLegend={true} legendPosition={Position.Right} theme={theme} rotation={chartRotation}/>
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
@@ -849,6 +896,7 @@ storiesOf('Bar Chart', module)
     const data = dg.generateSimpleSeries(15000);
     return (
       <Chart className={'story-chart'}>
+        <Settings tooltipType={TooltipType.Follow} />
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} />
         <Axis
           id={getAxisId('left2')}
@@ -863,6 +911,7 @@ storiesOf('Bar Chart', module)
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y']}
+          splitSeriesAccessors={['g']}
           data={data}
         />
       </Chart>
