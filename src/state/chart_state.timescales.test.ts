@@ -50,12 +50,12 @@ describe('Render chart', () => {
       expect(store.tooltipData[1].value).toBe('10'); // y value
       store.setCursorPosition(35, 10); // check first valid tooltip
       expect(store.tooltipData.length).toBe(2); // x value + y value
-      expect(store.tooltipData[0].value).toBe(`${day2}`); // x value
-      expect(store.tooltipData[1].value).toBe('22'); // y value
+      expect(store.tooltipData[0].value).toBe(`${day1}`); // x value
+      expect(store.tooltipData[1].value).toBe('10'); // y value
       store.setCursorPosition(76, 10); // check first valid tooltip
       expect(store.tooltipData.length).toBe(2); // x value + y value
-      expect(store.tooltipData[0].value).toBe(`${day3}`); // x value
-      expect(store.tooltipData[1].value).toBe('6'); // y value
+      expect(store.tooltipData[0].value).toBe(`${day2}`); // x value
+      expect(store.tooltipData[1].value).toBe('22'); // y value
     });
   });
   describe('line, utc-time, 5m interval', () => {
@@ -101,12 +101,12 @@ describe('Render chart', () => {
       expect(store.tooltipData[1].value).toBe('10'); // y value
       store.setCursorPosition(35, 10); // check first valid tooltip
       expect(store.tooltipData.length).toBe(2); // x value + y value
-      expect(store.tooltipData[0].value).toBe(`${date2}`); // x value
-      expect(store.tooltipData[1].value).toBe('22'); // y value
+      expect(store.tooltipData[0].value).toBe(`${date1}`); // x value
+      expect(store.tooltipData[1].value).toBe('10'); // y value
       store.setCursorPosition(76, 10); // check first valid tooltip
       expect(store.tooltipData.length).toBe(2); // x value + y value
-      expect(store.tooltipData[0].value).toBe(`${date3}`); // x value
-      expect(store.tooltipData[1].value).toBe('6'); // y value
+      expect(store.tooltipData[0].value).toBe(`${date2}`); // x value
+      expect(store.tooltipData[1].value).toBe('22'); // y value
     });
   });
   describe('line, non utc-time, 5m + 1s interval', () => {
@@ -155,11 +155,11 @@ describe('Render chart', () => {
       expect(store.xScale!.invert(100)).toBe(date3);
       expect(store.xScale!.invertWithStep(5, xValues)).toBe(date1);
       expect(store.xScale!.invertWithStep(20, xValues)).toBe(date1);
-      expect(store.xScale!.invertWithStep(30, xValues)).toBe(date2);
-      expect(store.xScale!.invertWithStep(50, xValues)).toBe(date2);
+      expect(store.xScale!.invertWithStep(30, xValues)).toBe(date1);
+      expect(store.xScale!.invertWithStep(50, xValues)).toBe(date1);
       expect(store.xScale!.invertWithStep(70, xValues)).toBe(date2);
-      expect(store.xScale!.invertWithStep(80, xValues)).toBe(date3);
-      expect(store.xScale!.invertWithStep(100, xValues)).toBe(date3);
+      expect(store.xScale!.invertWithStep(80, xValues)).toBe(date2);
+      expect(store.xScale!.invertWithStep(100, xValues)).toBe(date2);
     });
     test('check mouse position correctly return inverted value', () => {
       store.setCursorPosition(15, 10); // check first valid tooltip
@@ -168,12 +168,12 @@ describe('Render chart', () => {
       expect(store.tooltipData[1].value).toBe('10'); // y value
       store.setCursorPosition(35, 10); // check first valid tooltip
       expect(store.tooltipData.length).toBe(2); // x value + y value
-      expect(store.tooltipData[0].value).toBe(`${date2}`); // x value
-      expect(store.tooltipData[1].value).toBe('22'); // y value
+      expect(store.tooltipData[0].value).toBe(`${date1}`); // x value
+      expect(store.tooltipData[1].value).toBe('10'); // y value
       store.setCursorPosition(76, 10); // check first valid tooltip
       expect(store.tooltipData.length).toBe(2); // x value + y value
-      expect(store.tooltipData[0].value).toBe(`${date3}`); // x value
-      expect(store.tooltipData[1].value).toBe('6'); // y value
+      expect(store.tooltipData[0].value).toBe(`${date2}`); // x value
+      expect(store.tooltipData[1].value).toBe('22'); // y value
     });
   });
 });

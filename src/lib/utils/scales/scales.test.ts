@@ -160,8 +160,8 @@ describe('Scale Test', () => {
     expect(ordinalScale.invertWithStep(40)).toBe(1);
     expect(ordinalScale.invertWithStep(80)).toBe(2);
     expect(linearScale.invertWithStep(0, data)).toBe(0);
-    expect(linearScale.invertWithStep(40, data)).toBe(1);
-    expect(linearScale.invertWithStep(80, data)).toBe(2);
+    expect(linearScale.invertWithStep(40, data)).toBe(0);
+    expect(linearScale.invertWithStep(80, data)).toBe(1);
   });
   test('compare ordinal scale and linear/band 2 bars', () => {
     const dataLinear = [0, 1];
@@ -187,7 +187,7 @@ describe('Scale Test', () => {
     expect(ordinalScale.invertWithStep(50)).toBe(1);
     expect(ordinalScale.invertWithStep(100)).toBe(1);
     expect(linearScale.invertWithStep(0, dataLinear)).toBe(0);
-    expect(linearScale.invertWithStep(50, dataLinear)).toBe(1);
+    expect(linearScale.invertWithStep(50, dataLinear)).toBe(0);
     expect(linearScale.invertWithStep(100, dataLinear)).toBe(1);
     expect(linearScale.bandwidth).toBe(50);
     expect(linearScale.range).toEqual([0, 50]);

@@ -178,7 +178,9 @@ export class ScaleContinuous implements Scale {
   }
   invertWithStep(value: number, data: number[]): any {
     const invertedValue = this.invert(value - this.bandwidth / 2);
+
     const leftIndex = bisectLeft(data, invertedValue);
+
     if (leftIndex === 0) {
       // is equal or less than the first value
       const prevValue1 = data[leftIndex];
@@ -198,11 +200,17 @@ export class ScaleContinuous implements Scale {
     }
     const nextValue = data[leftIndex];
     const prevValue = data[leftIndex - 1];
-    const nextDiff = Math.abs(nextValue - invertedValue);
-    const prevDiff = Math.abs(invertedValue - prevValue);
-    if (nextDiff <= prevDiff) {
-      return nextValue;
+
+    // if there's gap, then we want to snap to the nearest, otherwise, get the current bisection point
+    if (Math.abs(nextValue - prevValue) > this.minInterval) {
+      const nextDiff = Math.abs(nextValue - invertedValue);
+      const prevDiff = Math.abs(invertedValue - prevValue);
+      if (nextDiff <= prevDiff) {
+        return nextValue;
+      }
+      return prevValue;
     }
+
     return prevValue;
   }
 }

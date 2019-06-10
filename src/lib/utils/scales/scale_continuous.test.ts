@@ -81,13 +81,13 @@ describe('Scale Continuous', () => {
     const scaleLinear = computeXScale(xDomain, 1, 0, 120, 0);
     expect(scaleLinear.bandwidth).toBe(40);
     expect(scaleLinear.invertWithStep(0, data)).toBe(0);
-    expect(scaleLinear.invertWithStep(40, data)).toBe(1);
+    expect(scaleLinear.invertWithStep(40, data)).toBe(0);
 
-    expect(scaleLinear.invertWithStep(41, data)).toBe(1);
+    expect(scaleLinear.invertWithStep(41, data)).toBe(0);
     expect(scaleLinear.invertWithStep(79, data)).toBe(1);
 
-    expect(scaleLinear.invertWithStep(80, data)).toBe(2);
-    expect(scaleLinear.invertWithStep(81, data)).toBe(2);
+    expect(scaleLinear.invertWithStep(80, data)).toBe(1);
+    expect(scaleLinear.invertWithStep(81, data)).toBe(1);
     expect(scaleLinear.invertWithStep(120, data)).toBe(2);
   });
   test('can get the right x value on linear scale with regular band 1', () => {
@@ -100,8 +100,8 @@ describe('Scale Continuous', () => {
     const scaleLinear = new ScaleContinuous(ScaleType.Linear, domain, range, 10, 10);
     expect(scaleLinear.bandwidth).toBe(10);
     expect(scaleLinear.invertWithStep(0, data)).toBe(0);
-    expect(scaleLinear.invertWithStep(10, data)).toBe(10);
-    expect(scaleLinear.invertWithStep(20, data)).toBe(20);
+    expect(scaleLinear.invertWithStep(10, data)).toBe(0);
+    expect(scaleLinear.invertWithStep(20, data)).toBe(10);
     expect(scaleLinear.invertWithStep(90, data)).toBe(90);
   });
   test('can get the right x value on linear scale with band', () => {
@@ -125,13 +125,13 @@ describe('Scale Continuous', () => {
     expect(scaleLinear.invertWithStep(5, data)).toBe(0);
     expect(scaleLinear.invertWithStep(9, data)).toBe(0);
 
-    expect(scaleLinear.invertWithStep(10, data)).toBe(10);
-    expect(scaleLinear.invertWithStep(11, data)).toBe(10);
+    expect(scaleLinear.invertWithStep(10, data)).toBe(0);
+    expect(scaleLinear.invertWithStep(11, data)).toBe(0);
     expect(scaleLinear.invertWithStep(19, data)).toBe(10);
 
-    expect(scaleLinear.invertWithStep(20, data)).toBe(20);
-    expect(scaleLinear.invertWithStep(21, data)).toBe(20);
-    expect(scaleLinear.invertWithStep(25, data)).toBe(20);
+    expect(scaleLinear.invertWithStep(20, data)).toBe(10);
+    expect(scaleLinear.invertWithStep(21, data)).toBe(10);
+    expect(scaleLinear.invertWithStep(25, data)).toBe(10);
     expect(scaleLinear.invertWithStep(29, data)).toBe(20);
     expect(scaleLinear.invertWithStep(30, data)).toBe(20);
     expect(scaleLinear.invertWithStep(39, data)).toBe(20);
