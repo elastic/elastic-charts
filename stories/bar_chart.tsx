@@ -260,12 +260,7 @@ storiesOf('Bar Chart', module)
     return (
       <Chart className={'story-chart'}>
         <Settings rotation={chartRotation} theme={theme} />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          title={'Bottom axis'}
-          showOverlappingTicks={true}
-        />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
           title={'Left axis'}
@@ -510,13 +505,8 @@ storiesOf('Bar Chart', module)
 
     return (
       <Chart className={'story-chart'}>
-        <Settings showLegend={true} legendPosition={Position.Right} theme={theme} rotation={chartRotation}/>
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          title={'Bottom axis'}
-          showOverlappingTicks={true}
-        />
+        <Settings showLegend={true} legendPosition={Position.Right} theme={theme} rotation={chartRotation} />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
           title={'Left axis'}

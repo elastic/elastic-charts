@@ -253,12 +253,7 @@ storiesOf('Interactions', module)
           onLegendItemOver={action('onLegendItemOver')}
           onLegendItemOut={action('onLegendItemOut')}
         />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          title={'Bottom axis'}
-          showOverlappingTicks={true}
-        />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
           title={'Left axis'}
@@ -298,12 +293,7 @@ storiesOf('Interactions', module)
           onLegendItemOver={action('onLegendItemOver')}
           onLegendItemOut={action('onLegendItemOut')}
         />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          title={'Bottom axis'}
-          showOverlappingTicks={true}
-        />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
           title={'Left axis'}
@@ -378,12 +368,7 @@ storiesOf('Interactions', module)
           onLegendItemOver={action('onLegendItemOver')}
           onLegendItemOut={action('onLegendItemOut')}
         />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          title={'Bottom axis'}
-          showOverlappingTicks={true}
-        />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
           title={'Left axis'}

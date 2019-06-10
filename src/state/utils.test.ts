@@ -798,16 +798,7 @@ describe('Chart State utils', () => {
     const range: [number, number] = [0, 100];
     const bandwidth = 10;
     const barsPadding = 0.5;
-    const scale = new ScaleContinuous(
-      ScaleType.Linear,
-      domain,
-      range,
-      bandwidth,
-      0,
-      'utc',
-      1,
-      barsPadding,
-    );
+    const scale = new ScaleContinuous(ScaleType.Linear, domain, range, bandwidth, 0, 'utc', 1, barsPadding);
     const histogramModeEnabled = true;
     const histogramModeDisabled = false;
 
@@ -930,10 +921,7 @@ describe('Chart State utils', () => {
       data: BARCHART_1Y1G,
     };
 
-    const seriesMap = new Map<SpecId, BasicSeriesSpec>([
-      [area.id, area],
-      [line.id, line],
-    ]);
+    const seriesMap = new Map<SpecId, BasicSeriesSpec>([[area.id, area], [line.id, line]]);
 
     // should not affect area or line series
     setBarSeriesAccessors(isHistogramEnabled, seriesMap);

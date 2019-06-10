@@ -58,7 +58,7 @@ class Resizer extends React.Component<ResizerProps> {
       this.initialResizeComplete = true;
       this.onResize(entries);
     }
-  }
+  };
 }
 
 export const ChartResizer = inject('chartStore')(observer(Resizer));

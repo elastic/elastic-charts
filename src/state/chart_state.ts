@@ -45,11 +45,7 @@ import {
 } from '../lib/series/specs';
 import { formatTooltip, getSeriesTooltipValues } from '../lib/series/tooltip';
 import { LIGHT_THEME } from '../lib/themes/light_theme';
-import {
-  mergeWithDefaultAnnotationLine,
-  mergeWithDefaultAnnotationRect,
-  Theme,
-} from '../lib/themes/theme';
+import { mergeWithDefaultAnnotationLine, mergeWithDefaultAnnotationRect, Theme } from '../lib/themes/theme';
 import { compareByValueAsc } from '../lib/utils/commons';
 import { computeChartDimensions, Dimensions } from '../lib/utils/dimensions';
 import { Domain } from '../lib/utils/domain';
@@ -276,7 +272,7 @@ export class ChartStore {
     const updatedCursorBand = getCursorBandPosition(
       this.chartRotation,
       this.chartDimensions,
-      { x: xAxisCursorPosition, y: yAxisCursorPosition},
+      { x: xAxisCursorPosition, y: yAxisCursorPosition },
       this.isTooltipSnapEnabled.get(),
       this.xScale,
       this.geometriesIndexKeys,
@@ -362,8 +358,7 @@ export class ChartStore {
 
     // if there's an annotation rect tooltip & there isn't a single highlighted element, hide
     const annotationTooltip = this.annotationTooltipState.get();
-    const hasRectAnnotationToolip =
-      annotationTooltip && annotationTooltip.annotationType === AnnotationTypes.Rectangle;
+    const hasRectAnnotationToolip = annotationTooltip && annotationTooltip.annotationType === AnnotationTypes.Rectangle;
     if (hasRectAnnotationToolip && !oneHighlighted) {
       this.clearTooltipAndHighlighted();
       return;

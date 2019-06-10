@@ -88,10 +88,7 @@ export class Axis extends React.PureComponent<AxisProps> {
     const { ticks, axisPosition, debug } = this.props;
     return (
       <Group x={axisPosition.left} y={axisPosition.top}>
-        {debug && (
-            <Rect x={0} y={0} width={axisPosition.width} height={axisPosition.height} fill={'blue'} />
-          )
-        }
+        {debug && <Rect x={0} y={0} width={axisPosition.width} height={axisPosition.height} fill={'blue'} />}
         <Group key="lines">{this.renderAxisLine()}</Group>
         <Group key="tick-lines">{ticks.map(this.renderTickLine)}</Group>
         <Group key="ticks">{ticks.filter((tick) => tick.label !== null).map(this.renderTickLabel)}</Group>

@@ -207,10 +207,8 @@ export function renderBars(
   const barGeometries: BarGeometry[] = [];
 
   const bboxCalculator = new CanvasTextBBoxCalculator();
-  const fontSize =
-    seriesStyle && seriesStyle.displayValue ? seriesStyle.displayValue.fontSize : undefined;
-  const fontFamily =
-    seriesStyle && seriesStyle.displayValue ? seriesStyle.displayValue.fontFamily : undefined;
+  const fontSize = seriesStyle && seriesStyle.displayValue ? seriesStyle.displayValue.fontSize : undefined;
+  const fontFamily = seriesStyle && seriesStyle.displayValue ? seriesStyle.displayValue.fontFamily : undefined;
 
   dataset.forEach((datum) => {
     const { y0, y1, initialY1 } = datum;

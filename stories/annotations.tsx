@@ -516,14 +516,13 @@ storiesOf('Annotations', module)
       overflowWrap: 'break-word',
       width: '120px',
     };
-    const renderTooltip = hasCustomTooltip
-      ? (position: { transform: string; top: number; left: number }, details?: string) => (
-          <div style={{ ...tooltipStyle, ...position }}>
-            <Icon type="alert" />
-            {details}
-          </div>
-        )
-      : undefined;
+    const customTooltip = (position: { transform: string; top: number; left: number }, details?: string) => (
+      <div style={{ ...tooltipStyle, ...position }}>
+        <Icon type="alert" />
+        {details}
+      </div>
+    );
+    const renderTooltip = hasCustomTooltip ? customTooltip : undefined;
 
     const isLeft = boolean('y-domain axis is Position.Left', true);
     const yAxisTitle = isLeft ? 'y-domain axis (left)' : 'y-domain axis (right)';

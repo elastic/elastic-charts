@@ -736,8 +736,12 @@ describe('Axis computational utils', () => {
     );
 
     let left = 12 + 5 + 10 + 10; // font size + title padding + chart margin left + label width
-    expect(axisTicksPosition.axisPositions.get(verticalAxisSpecWTitle.id))
-      .toEqual({ top: 0, left, width: 10, height: 100 });
+    expect(axisTicksPosition.axisPositions.get(verticalAxisSpecWTitle.id)).toEqual({
+      top: 0,
+      left,
+      width: 10,
+      height: 100,
+    });
 
     axisSpecs.set(verticalAxisSpec.id, verticalAxisSpec);
 
@@ -757,8 +761,12 @@ describe('Axis computational utils', () => {
     );
 
     left = 0 + 10 + 10; // no title + chart margin left + label width
-    expect(axisTicksPosition.axisPositions.get(verticalAxisSpecWTitle.id))
-      .toEqual({ top: 0, left: 20, width: 10, height: 100 });
+    expect(axisTicksPosition.axisPositions.get(verticalAxisSpecWTitle.id)).toEqual({
+      top: 0,
+      left: 20,
+      width: 10,
+      height: 100,
+    });
   });
 
   test('should compute left axis position', () => {
