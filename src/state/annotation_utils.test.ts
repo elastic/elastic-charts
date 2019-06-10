@@ -1363,14 +1363,26 @@ describe('annotation utils', () => {
       0,
     );
 
-    const expectedDimensions = [
-      { rect: { x: 0, y: 0, width: 10, height: 100 } },
-      { rect: { x: 10, y: 0, width: 90, height: 100 } },
-      { rect: { x: 0, y: 0, width: 100, height: 10 } },
-      { rect: { x: 0, y: 10, width: 100, height: 90 } },
-    ];
+    const [ dims1, dims2, dims3, dims4 ] = dimensions;
+    expect(dims1.rect.x).toBe(0);
+    expect(dims1.rect.y).toBe(0);
+    expect(dims1.rect.width).toBe(10);
+    expect(dims1.rect.height).toBe(100);
 
-    expect(dimensions).toEqual(expectedDimensions);
+    expect(dims2.rect.x).toBe(10);
+    expect(dims2.rect.y).toBe(0);
+    expect(dims2.rect.width).toBeCloseTo(100);
+    expect(dims2.rect.height).toBe(100);
+
+    expect(dims3.rect.x).toBe(0);
+    expect(dims3.rect.y).toBe(0);
+    expect(dims3.rect.width).toBeCloseTo(110);
+    expect(dims3.rect.height).toBe(10);
+
+    expect(dims4.rect.x).toBe(0);
+    expect(dims4.rect.y).toBe(10);
+    expect(dims4.rect.width).toBeCloseTo(110);
+    expect(dims4.rect.height).toBe(90);
   });
   test('should compute rectangle dimensions when only a single coordinate defined', () => {
     const yScales: Map<GroupId, Scale> = new Map();

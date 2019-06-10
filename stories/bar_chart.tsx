@@ -1508,15 +1508,13 @@ storiesOf('Bar Chart', module)
           dataValues={[
             {
               coordinates: {
-                x0: 0,
-                x1: 0.5,
+                x0: 0.5,
               },
               details: 'rect annotation',
             },
             {
               coordinates: {
-                x0: 3,
-                x1: 4,
+                x1: 3,
               },
               details: 'rect annotation',
             },
