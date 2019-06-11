@@ -27,6 +27,7 @@ import { DateTime } from 'luxon';
 import { switchTheme } from '../.storybook/theme_service';
 import { BARCHART_2Y2G } from '../src/lib/series/utils/test_dataset';
 import { KIBANA_METRICS } from '../src/lib/series/utils/test_dataset_kibana';
+import { TooltipValue } from '../src/lib/utils/interactions';
 
 const onElementListeners = {
   onElementClick: action('onElementClick'),
@@ -44,9 +45,18 @@ const onLegendItemListeners = {
 
 storiesOf('Interactions', module)
   .add('bar clicks and hovers', () => {
+    const headerFormatter = (tooltipData: TooltipValue) => {
+      return tooltipData.value;
+    };
+
     return (
       <Chart className={'story-chart'}>
-        <Settings showLegend={true} legendPosition={Position.Right} {...onElementListeners} />
+        <Settings
+          showLegend={true}
+          legendPosition={Position.Right}
+          {...onElementListeners}
+          tooltipHeaderFormatter={headerFormatter}
+        />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}

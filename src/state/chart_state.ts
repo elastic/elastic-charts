@@ -175,6 +175,7 @@ export class ChartStore {
   tooltipType = observable.box(DEFAULT_TOOLTIP_TYPE);
   tooltipSnap = observable.box(DEFAULT_TOOLTIP_SNAP);
   tooltipPosition = observable.object<{ transform: string }>({ transform: '' });
+  tooltipHeaderFormatter?: (data: TooltipValue) => JSX.Element;
 
   /** cursorPosition is used by tooltip, so this is a way to expose the position for other uses */
   rawCursorPosition = observable.object<{ x: number; y: number }>({ x: -1, y: -1 }, undefined, {

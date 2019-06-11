@@ -4,7 +4,7 @@ import { DomainRange, Position, Rendering, Rotation } from '../lib/series/specs'
 import { LIGHT_THEME } from '../lib/themes/light_theme';
 import { Theme } from '../lib/themes/theme';
 import { Domain } from '../lib/utils/domain';
-import { TooltipType } from '../lib/utils/interactions';
+import { TooltipType, TooltipValue } from '../lib/utils/interactions';
 import {
   BrushEndListener,
   ChartStore,
@@ -27,6 +27,8 @@ interface SettingSpecProps {
   tooltipType?: TooltipType;
   /** Snap tooltip to grid */
   tooltipSnap?: boolean;
+  /** Formatter for tooltip header */
+  tooltipHeaderFormatter?: (data: TooltipValue) => JSX.Element;
   debug: boolean;
   legendPosition?: Position;
   showLegendDisplayValue: boolean;
@@ -52,6 +54,7 @@ function updateChartStore(props: SettingSpecProps) {
     showLegend,
     tooltipType,
     tooltipSnap,
+    tooltipHeaderFormatter,
     legendPosition,
     showLegendDisplayValue,
     onElementClick,
@@ -77,6 +80,7 @@ function updateChartStore(props: SettingSpecProps) {
 
   chartStore.tooltipType.set(tooltipType!);
   chartStore.tooltipSnap.set(tooltipSnap!);
+  chartStore.tooltipHeaderFormatter = tooltipHeaderFormatter;
 
   chartStore.setShowLegend(showLegend);
   chartStore.legendPosition = legendPosition;
