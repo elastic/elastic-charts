@@ -21,6 +21,7 @@ import {
   timeFormatter,
   TooltipType,
   TooltipValue,
+  TooltipValueFormatter,
 } from '../src/';
 
 import { array, boolean, number, select } from '@storybook/addon-knobs';
@@ -45,7 +46,7 @@ const onLegendItemListeners = {
 
 storiesOf('Interactions', module)
   .add('bar clicks and hovers', () => {
-    const headerFormatter = (tooltipData: TooltipValue): JSX.Element => {
+    const headerFormatter: TooltipValueFormatter = (tooltipData: TooltipValue) => {
       if (tooltipData.value % 2 === 0) {
         return (
           <div>

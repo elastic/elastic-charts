@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { TooltipValue } from '../lib/utils/interactions';
+import { TooltipValue, TooltipValueFormatter } from '../lib/utils/interactions';
 import { ChartStore } from '../state/chart_state';
 
 interface TooltipProps {
@@ -11,7 +11,7 @@ interface TooltipProps {
 class TooltipsComponent extends React.Component<TooltipProps> {
   static displayName = 'Tooltips';
 
-  renderHeader(headerData?: TooltipValue, formatter?: (data: TooltipValue) => JSX.Element): JSX.Element | null {
+  renderHeader(headerData?: TooltipValue, formatter?: TooltipValueFormatter) {
     if (!headerData) {
       return null;
     }
@@ -26,7 +26,7 @@ class TooltipsComponent extends React.Component<TooltipProps> {
     }
     return (
       <div className="echTooltip" style={{ transform: tooltipPosition.transform }}>
-        <p className="echTooltip__header">{this.renderHeader(tooltipData[0], tooltipHeaderFormatter)}</p>
+        <div className="echTooltip__header">{this.renderHeader(tooltipData[0], tooltipHeaderFormatter)}</div>
         <div className="echTooltip__table">
           <table>
             <tbody>

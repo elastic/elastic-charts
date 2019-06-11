@@ -4,7 +4,7 @@ import { DomainRange, Position, Rendering, Rotation } from '../lib/series/specs'
 import { LIGHT_THEME } from '../lib/themes/light_theme';
 import { Theme } from '../lib/themes/theme';
 import { Domain } from '../lib/utils/domain';
-import { TooltipType, TooltipValue } from '../lib/utils/interactions';
+import { TooltipType, TooltipValueFormatter } from '../lib/utils/interactions';
 import {
   BrushEndListener,
   ChartStore,
@@ -28,7 +28,7 @@ interface SettingSpecProps {
   /** Snap tooltip to grid */
   tooltipSnap?: boolean;
   /** Formatter for tooltip header */
-  tooltipHeaderFormatter?: (data: TooltipValue) => JSX.Element;
+  tooltipHeaderFormatter?: TooltipValueFormatter;
   debug: boolean;
   legendPosition?: Position;
   showLegendDisplayValue: boolean;
