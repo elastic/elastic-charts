@@ -59,13 +59,17 @@ storiesOf('Interactions', module)
       return tooltipData.value;
     };
 
+    const tooltipProps = {
+      headerFormatter,
+    };
+
     return (
       <Chart className={'story-chart'}>
         <Settings
           showLegend={true}
           legendPosition={Position.Right}
           {...onElementListeners}
-          tooltipHeaderFormatter={headerFormatter}
+          tooltipProps={tooltipProps}
         />
         <Axis
           id={getAxisId('bottom')}
@@ -585,22 +589,27 @@ storiesOf('Interactions', module)
     );
     const numberFormatter = (d: any) => Number(d).toFixed(2);
 
+    const tooltipType = select('tooltipType',
+      {
+        cross: TooltipType.Crosshairs,
+        vertical: TooltipType.VerticalCursor,
+        follow: TooltipType.Follow,
+        none: TooltipType.None,
+      },
+      TooltipType.Crosshairs,
+    );
+
+    const tooltipProps = {
+      type: tooltipType,
+      snap: boolean('tooltip snap to grid', true),
+    };
+
     return (
       <Chart className={className}>
         <Settings
           debug={boolean('debug', false)}
-          tooltipType={select(
-            'tooltipType',
-            {
-              cross: TooltipType.Crosshairs,
-              vertical: TooltipType.VerticalCursor,
-              follow: TooltipType.Follow,
-              none: TooltipType.None,
-            },
-            TooltipType.Crosshairs,
-          )}
+          tooltipProps={tooltipProps}
           theme={defaultTheme}
-          tooltipSnap={boolean('tooltip snap to grid', true)}
           rotation={chartRotation}
         />
         <Axis

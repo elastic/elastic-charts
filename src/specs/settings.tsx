@@ -16,6 +16,12 @@ import {
 export const DEFAULT_TOOLTIP_TYPE = TooltipType.VerticalCursor;
 export const DEFAULT_TOOLTIP_SNAP = true;
 
+interface TooltipProps {
+  type?: TooltipType;
+  snap?: boolean;
+  headerFormatter?: TooltipValueFormatter;
+}
+
 interface SettingSpecProps {
   chartStore?: ChartStore;
   theme?: Theme;
@@ -23,12 +29,8 @@ interface SettingSpecProps {
   rotation: Rotation;
   animateData: boolean;
   showLegend: boolean;
-  /** Specify the tooltip type */
-  tooltipType?: TooltipType;
-  /** Snap tooltip to grid */
-  tooltipSnap?: boolean;
-  /** Formatter for tooltip header */
-  tooltipHeaderFormatter?: TooltipValueFormatter;
+  /** Props for customizing the chart tooltip on hover */
+  tooltipProps?: TooltipProps;
   debug: boolean;
   legendPosition?: Position;
   showLegendDisplayValue: boolean;
@@ -52,9 +54,7 @@ function updateChartStore(props: SettingSpecProps) {
     rendering,
     animateData,
     showLegend,
-    tooltipType,
-    tooltipSnap,
-    tooltipHeaderFormatter,
+    tooltipProps,
     legendPosition,
     showLegendDisplayValue,
     onElementClick,
@@ -78,9 +78,12 @@ function updateChartStore(props: SettingSpecProps) {
   chartStore.animateData = animateData;
   chartStore.debug = debug;
 
-  chartStore.tooltipType.set(tooltipType!);
-  chartStore.tooltipSnap.set(tooltipSnap!);
-  chartStore.tooltipHeaderFormatter = tooltipHeaderFormatter;
+  if (tooltipProps) {
+    const { type, snap, headerFormatter } = tooltipProps;
+    chartStore.tooltipType.set(type!);
+    chartStore.tooltipSnap.set(snap!);
+    chartStore.tooltipHeaderFormatter = headerFormatter;
+  }
 
   chartStore.setShowLegend(showLegend);
   chartStore.legendPosition = legendPosition;
@@ -123,8 +126,10 @@ export class SettingsComponent extends PureComponent<SettingSpecProps> {
     animateData: true,
     showLegend: false,
     debug: false,
-    tooltipType: DEFAULT_TOOLTIP_TYPE,
-    tooltipSnap: DEFAULT_TOOLTIP_SNAP,
+    tooltipProps: {
+      type: DEFAULT_TOOLTIP_TYPE,
+      snap: DEFAULT_TOOLTIP_SNAP,
+    },
     showLegendDisplayValue: true,
   };
   componentDidMount() {
