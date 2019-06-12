@@ -1,5 +1,5 @@
 import { ColorConfig } from '../themes/theme';
-import { Accessor } from '../utils/accessor';
+import { Accessor, AccessorFn, isAccessorFn } from '../utils/accessor';
 import { GroupId, SpecId } from '../utils/ids';
 import { splitSpecsByGroupId, YBasicSeriesSpec } from './domains/y_domain';
 import { formatNonStackedDataSeriesValues } from './nonstacked_series_utils';
@@ -92,7 +92,7 @@ export function splitSeries(
   splitSeriesLastValues: Map<string, any>;
 } {
   const { xAccessor, yAccessors, y0Accessors, splitSeriesAccessors = [] } = accessors;
-  const colorAccessors = accessors.colorAccessors ? accessors.colorAccessors : splitSeriesAccessors;
+  const colorAccessors = [...splitSeriesAccessors, ...accessors.colorAccessors || []];
   const isMultipleY = yAccessors && yAccessors.length > 1;
   const series = new Map<string, RawDataSeries>();
   const colorsValues = new Map<string, any[]>();
@@ -100,7 +100,6 @@ export function splitSeries(
   const splitSeriesLastValues = new Map<string, any>();
 
   data.forEach((datum) => {
-    const seriesKey = getAccessorsValues(datum, splitSeriesAccessors);
     if (isMultipleY) {
       yAccessors.forEach((accessor, index) => {
         const colorValues = getColorValues(datum, colorAccessors, accessor);
@@ -114,7 +113,7 @@ export function splitSeries(
         );
         splitSeriesLastValues.set(colorValuesKey, cleanedDatum.y1);
         xValues.add(cleanedDatum.x);
-        updateSeriesMap(series, [...seriesKey, accessor], cleanedDatum, specId, colorValuesKey);
+        updateSeriesMap(series, colorValues, cleanedDatum, specId, colorValuesKey);
       }, {});
     } else {
       const colorValues = getColorValues(datum, colorAccessors);
@@ -128,7 +127,7 @@ export function splitSeries(
       );
       splitSeriesLastValues.set(colorValuesKey, cleanedDatum.y1);
       xValues.add(cleanedDatum.x);
-      updateSeriesMap(series, [...seriesKey], cleanedDatum, specId, colorValuesKey);
+      updateSeriesMap(series, colorValues, cleanedDatum, specId, colorValuesKey);
     }
   }, {});
 
@@ -169,12 +168,12 @@ function updateSeriesMap(
 /**
  * Get the array of values that forms a series key
  */
-function getAccessorsValues(datum: Datum, accessors: Accessor[] = []): any[] {
+function getAccessorsValues(datum: Datum, accessors: Array<Accessor | AccessorFn> = []): any[] {
   return accessors
     .map((accessor) => {
-      return datum[accessor];
+      return isAccessorFn(accessor) ? (accessor as AccessorFn)(datum) : datum[accessor as Accessor];
     })
-    .filter((value) => value !== undefined);
+    .filter((value) => value !== undefined && value !== null);
 }
 
 /**
@@ -182,12 +181,12 @@ function getAccessorsValues(datum: Datum, accessors: Accessor[] = []): any[] {
  */
 function getColorValues(
   datum: Datum,
-  colorAccessors: Accessor[] = [],
+  colorAccessors: Array<Accessor | AccessorFn> = [],
   yAccessorValue?: any,
 ): any[] {
   const colorValues = getAccessorsValues(datum, colorAccessors);
   if (yAccessorValue) {
-    return [...colorValues, yAccessorValue];
+    return [yAccessorValue, ...colorValues];
   }
   return colorValues;
 }

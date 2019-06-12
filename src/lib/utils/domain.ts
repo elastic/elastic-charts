@@ -13,13 +13,6 @@ export interface SpecDomain {
   isStacked?: boolean;
 }
 
-export interface ColorDomain {
-  accessors: Accessor[];
-  yAccessors?: Accessor[];
-  domain: string[];
-  scaleType: ScaleType;
-}
-
 export interface SeriesScales {
   groupLevel: number;
   xDomain: Domain;

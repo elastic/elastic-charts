@@ -6,7 +6,7 @@ import {
   LineSeriesStyle,
   RectAnnotationStyle,
 } from '../themes/theme';
-import { Accessor } from '../utils/accessor';
+import { Accessor, AccessorFn } from '../utils/accessor';
 import { Omit } from '../utils/commons';
 import { AnnotationId, AxisId, GroupId, SpecId } from '../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../utils/scales/scales';
@@ -83,7 +83,7 @@ export interface SeriesAccessors {
   /** An array of fields thats indicates the stack membership */
   stackAccessors?: Accessor[];
   /** An optional array of field name thats indicates the stack membership */
-  colorAccessors?: Accessor[];
+  colorAccessors?: Array<Accessor | AccessorFn>;
 }
 
 export interface SeriesScales {

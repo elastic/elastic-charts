@@ -10,12 +10,18 @@ export type Accessor = AccessorString;
  */
 export function getAccessorFn(accessor: Accessor): AccessorFn {
   if (typeof accessor === 'string' || typeof accessor === 'number') {
-    return (datum: Datum) => {
-      return datum[accessor];
-    };
+    return (datum: Datum) => datum[accessor];
   }
-  if (typeof accessor === 'function') {
+  if (isAccessorFn(accessor)) {
     return accessor;
   }
   throw new Error('Accessor must be a string or a function');
+}
+
+/**
+ * Returns if the accessor is an AccessorFn
+ * @param accessor the spec accessor
+ */
+export function isAccessorFn(accessor: Accessor | AccessorFn): boolean {
+  return typeof accessor === 'function';
 }
