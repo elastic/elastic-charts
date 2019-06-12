@@ -211,6 +211,7 @@ describe('annotation utils', () => {
       xScale,
       Position.Left,
       0,
+      false,
     );
     const expectedDimensions = [
       {
@@ -247,6 +248,7 @@ describe('annotation utils', () => {
       xScale,
       Position.Right,
       0,
+      false,
     );
     const expectedDimensions = [
       {
@@ -283,6 +285,7 @@ describe('annotation utils', () => {
       xScale,
       Position.Left,
       0,
+      false,
     );
     const expectedDimensions = [
       {
@@ -317,6 +320,7 @@ describe('annotation utils', () => {
       xScale,
       Position.Left,
       0,
+      false,
     );
     expect(dimensions).toEqual(null);
   });
@@ -344,6 +348,7 @@ describe('annotation utils', () => {
       xScale,
       Position.Left,
       0,
+      false,
     );
     const expectedDimensions = [
       {
@@ -378,6 +383,7 @@ describe('annotation utils', () => {
       xScale,
       Position.Top,
       0,
+      false,
     );
     const expectedDimensions = [
       {
@@ -412,6 +418,7 @@ describe('annotation utils', () => {
       xScale,
       Position.Bottom,
       0,
+      false,
     );
     const expectedDimensions = [
       {
@@ -447,6 +454,7 @@ describe('annotation utils', () => {
       xScale,
       Position.Left,
       0,
+      false,
     );
     const expectedDimensions = [
       {
@@ -482,6 +490,7 @@ describe('annotation utils', () => {
       xScale,
       Position.Left,
       0,
+      false,
     );
     const expectedDimensions = [
       {
@@ -518,6 +527,7 @@ describe('annotation utils', () => {
         xScale,
         Position.Left,
         0,
+        false,
       );
       const expectedDimensions = [{
         position: [20, -DEFAULT_LINE_OVERFLOW, 20, 10],
@@ -552,6 +562,7 @@ describe('annotation utils', () => {
       xScale,
       Position.Top,
       0,
+      false,
     );
     const expectedDimensions = [
       {
@@ -587,6 +598,7 @@ describe('annotation utils', () => {
         xScale,
         Position.Bottom,
         0,
+        false,
       );
       const expectedDimensions = [{
         position: [20, DEFAULT_LINE_OVERFLOW, 20, 20],
@@ -622,6 +634,7 @@ describe('annotation utils', () => {
       xScale,
       Position.Right,
       0,
+      false,
     );
 
     expect(emptyXDimensions).toEqual([]);
@@ -643,6 +656,7 @@ describe('annotation utils', () => {
       continuousScale,
       Position.Right,
       0,
+      false,
     );
 
     expect(invalidStringXDimensions).toEqual([]);
@@ -664,6 +678,7 @@ describe('annotation utils', () => {
       continuousScale,
       Position.Right,
       0,
+      false,
     );
 
     expect(emptyOutOfBoundsXDimensions).toEqual([]);
@@ -685,6 +700,7 @@ describe('annotation utils', () => {
       xScale,
       Position.Right,
       0,
+      false,
     );
 
     expect(emptyYDimensions).toEqual([]);
@@ -706,6 +722,7 @@ describe('annotation utils', () => {
       xScale,
       Position.Right,
       0,
+      false,
     );
 
     expect(emptyOutOfBoundsYDimensions).toEqual([]);
@@ -727,6 +744,7 @@ describe('annotation utils', () => {
       continuousScale,
       Position.Right,
       0,
+      false,
     );
 
     expect(invalidStringYDimensions).toEqual([]);
@@ -749,6 +767,7 @@ describe('annotation utils', () => {
       continuousScale,
       Position.Right,
       0,
+      false,
     );
 
     expect(hiddenAnnotationDimensions).toEqual(null);

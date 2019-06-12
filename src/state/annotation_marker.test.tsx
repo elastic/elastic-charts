@@ -66,6 +66,7 @@ describe('annotation marker', () => {
       xScale,
       Position.Left,
       0,
+      false,
     );
     const expectedDimensions = [
       {
@@ -105,6 +106,7 @@ describe('annotation marker', () => {
       xScale,
       Position.Left,
       0,
+      false,
     );
     const expectedDimensions = [
       {
@@ -144,6 +146,7 @@ describe('annotation marker', () => {
       xScale,
       Position.Left,
       0,
+      false,
     );
     const expectedDimensions = [
       {
