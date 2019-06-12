@@ -430,6 +430,41 @@ describe('annotation utils', () => {
     expect(dimensions).toEqual(expectedDimensions);
   });
 
+  test('should compute line annotation dimensions for xDomain in histogramMode with extended upper bound', () => {
+    const chartRotation: Rotation = 0;
+    const yScales: Map<GroupId, Scale> = new Map();
+    const xScale: Scale = continuousScale;
+
+    const annotationId = getAnnotationId('foo-line');
+    const lineAnnotation: LineAnnotationSpec = {
+      annotationType: 'line',
+      annotationId,
+      domainType: AnnotationDomainTypes.XDomain,
+      dataValues: [{ dataValue: 10.5, details: 'foo' }],
+      groupId,
+      style: DEFAULT_ANNOTATION_LINE_STYLE,
+    };
+
+    const dimensions = computeLineAnnotationDimensions(
+      lineAnnotation,
+      chartDimensions,
+      chartRotation,
+      yScales,
+      xScale,
+      Position.Bottom,
+      0,
+      true,
+    );
+    const expectedDimensions = [
+      {
+        position: [105, 0, 105, 20],
+        details: { detailsText: 'foo', headerText: '10.5' },
+        tooltipLinePosition: [105, 0, 105, 20],
+      },
+    ];
+    expect(dimensions).toEqual(expectedDimensions);
+  });
+
   test('should compute line annotation dimensions for xDomain on a xScale (chartRotation 90, ordinal scale)', () => {
     const chartRotation: Rotation = 90;
     const yScales: Map<GroupId, Scale> = new Map();
