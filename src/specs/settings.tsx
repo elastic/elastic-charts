@@ -22,6 +22,14 @@ interface TooltipProps {
   headerFormatter?: TooltipValueFormatter;
 }
 
+function isTooltipProps(config: TooltipType | TooltipProps): config is TooltipProps {
+  return typeof config === 'object';
+}
+
+function isTooltipType(config: TooltipType | TooltipProps): config is TooltipType {
+  return typeof config === 'string';
+}
+
 interface SettingSpecProps {
   chartStore?: ChartStore;
   theme?: Theme;
@@ -29,8 +37,8 @@ interface SettingSpecProps {
   rotation: Rotation;
   animateData: boolean;
   showLegend: boolean;
-  /** Props for customizing the chart tooltip on hover */
-  tooltipProps?: TooltipProps;
+  /** Either a TooltipType or an object with configuration of type, snap, and/or headerFormatter */
+  tooltip?: TooltipType | TooltipProps;
   debug: boolean;
   legendPosition?: Position;
   showLegendDisplayValue: boolean;
@@ -54,7 +62,7 @@ function updateChartStore(props: SettingSpecProps) {
     rendering,
     animateData,
     showLegend,
-    tooltipProps,
+    tooltip,
     legendPosition,
     showLegendDisplayValue,
     onElementClick,
@@ -78,11 +86,13 @@ function updateChartStore(props: SettingSpecProps) {
   chartStore.animateData = animateData;
   chartStore.debug = debug;
 
-  if (tooltipProps) {
-    const { type, snap, headerFormatter } = tooltipProps;
+  if (tooltip && isTooltipProps(tooltip)) {
+    const { type, snap, headerFormatter } = tooltip;
     chartStore.tooltipType.set(type!);
     chartStore.tooltipSnap.set(snap!);
     chartStore.tooltipHeaderFormatter = headerFormatter;
+  } else if (tooltip && isTooltipType(tooltip)) {
+    chartStore.tooltipType.set(tooltip);
   }
 
   chartStore.setShowLegend(showLegend);
@@ -126,7 +136,7 @@ export class SettingsComponent extends PureComponent<SettingSpecProps> {
     animateData: true,
     showLegend: false,
     debug: false,
-    tooltipProps: {
+    tooltip: {
       type: DEFAULT_TOOLTIP_TYPE,
       snap: DEFAULT_TOOLTIP_SNAP,
     },

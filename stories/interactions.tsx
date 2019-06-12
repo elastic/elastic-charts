@@ -69,7 +69,7 @@ storiesOf('Interactions', module)
           showLegend={true}
           legendPosition={Position.Right}
           {...onElementListeners}
-          tooltipProps={tooltipProps}
+          tooltip={tooltipProps}
         />
         <Axis
           id={getAxisId('bottom')}
@@ -608,7 +608,7 @@ storiesOf('Interactions', module)
       <Chart className={className}>
         <Settings
           debug={boolean('debug', false)}
-          tooltipProps={tooltipProps}
+          tooltip={tooltipProps}
           theme={defaultTheme}
           rotation={chartRotation}
         />

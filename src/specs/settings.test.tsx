@@ -32,7 +32,7 @@ describe('Settings spec component', () => {
       rendering: 'svg' as Rendering,
       animateData: true,
       showLegend: true,
-      tooltipProps: {
+      tooltip: {
         type: TooltipType.None,
         snap: false,
       },
@@ -76,7 +76,7 @@ describe('Settings spec component', () => {
       rendering: 'svg' as Rendering,
       animateData: true,
       showLegend: true,
-      tooltipProps: {
+      tooltip: {
         type: TooltipType.None,
         snap: false,
       },

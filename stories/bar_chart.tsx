@@ -921,7 +921,7 @@ storiesOf('Bar Chart', module)
 
     return (
       <Chart className={'story-chart'}>
-        <Settings tooltipProps={tooltipProps} />
+        <Settings tooltip={tooltipProps} />
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} />
         <Axis
           id={getAxisId('left2')}
