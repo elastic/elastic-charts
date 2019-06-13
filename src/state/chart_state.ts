@@ -806,8 +806,9 @@ export class ChartStore {
 
     // compute axis dimensions
     const bboxCalculator = new CanvasTextBBoxCalculator();
-    const barsPadding = this.enableHistogramMode.get() ?
-      this.chartTheme.scales.histogramPadding : this.chartTheme.scales.barsPadding;
+    const barsPadding = this.enableHistogramMode.get()
+      ? this.chartTheme.scales.histogramPadding
+      : this.chartTheme.scales.barsPadding;
 
     this.axesTicksDimensions.clear();
     this.axesSpecs.forEach((axisSpec) => {

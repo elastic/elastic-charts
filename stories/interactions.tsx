@@ -65,18 +65,8 @@ storiesOf('Interactions', module)
 
     return (
       <Chart className={'story-chart'}>
-        <Settings
-          showLegend={true}
-          legendPosition={Position.Right}
-          {...onElementListeners}
-          tooltip={tooltipProps}
-        />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          title={'Bottom axis'}
-          showOverlappingTicks={true}
-        />
+        <Settings showLegend={true} legendPosition={Position.Right} {...onElementListeners} tooltip={tooltipProps} />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
           title={'Left axis'}
@@ -505,7 +495,8 @@ storiesOf('Interactions', module)
     const chartRotation = select<Rotation>('rotation', { '90': 90, '0': 0, '-90': -90, '180': 180 }, 0);
     const numberFormatter = (d: any) => Number(d).toFixed(2);
 
-    const tooltipType = select('tooltipType',
+    const tooltipType = select(
+      'tooltipType',
       {
         cross: TooltipType.Crosshairs,
         vertical: TooltipType.VerticalCursor,

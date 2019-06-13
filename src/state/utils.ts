@@ -281,10 +281,7 @@ export function computeSeriesGeometries(
   };
 }
 
-export function setBarSeriesAccessors(
-  isHistogramMode: boolean,
-  seriesSpecs: Map<SpecId, BasicSeriesSpec>,
-): void {
+export function setBarSeriesAccessors(isHistogramMode: boolean, seriesSpecs: Map<SpecId, BasicSeriesSpec>): void {
   if (!isHistogramMode) {
     return;
   }
@@ -326,7 +323,7 @@ export function computeXScaleOffset(
   const band = bandwidth / (1 - barsPadding);
   const halfPadding = (band - bandwidth) / 2;
 
-  const startAlignmentOffset = (bandwidth / 2) + halfPadding;
+  const startAlignmentOffset = bandwidth / 2 + halfPadding;
 
   switch (histogramModeAlignment) {
     case HistogramModeAlignments.Center:
@@ -423,67 +420,53 @@ export function renderGeometries(
       bars.push(...renderedBars.barGeometries);
       geometriesCounts.bars += renderedBars.barGeometries.length;
     } else if (isLineSeriesSpec(spec)) {
-        const lineShift = clusteredCount > 0 ? clusteredCount : 1;
-        const lineSeriesStyle = spec.lineSeriesStyle;
+      const lineShift = clusteredCount > 0 ? clusteredCount : 1;
+      const lineSeriesStyle = spec.lineSeriesStyle;
 
-        const xScaleOffset = computeXScaleOffset(
-          xScale,
-          enableHistogramMode,
-          spec.histogramModeAlignment,
-        );
+      const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, spec.histogramModeAlignment);
 
-        const renderedLines = renderLine(
-          // move the point on half of the bandwidth if we have mixed bars/lines
-          (xScale.bandwidth * lineShift) / 2,
-          ds.data,
-          xScale,
-          yScale,
-          color,
-          (spec as LineSeriesSpec).curve || CurveType.LINEAR,
-          ds.specId,
-          Boolean(spec.y0Accessors),
-          ds.key,
-          xScaleOffset,
-          lineSeriesStyle,
-        );
-        lineGeometriesIndex = mergeGeometriesIndexes(
-          lineGeometriesIndex,
-          renderedLines.indexedGeometries,
-        );
-        lines.push(renderedLines.lineGeometry);
-        geometriesCounts.linePoints += renderedLines.lineGeometry.points.length;
-        geometriesCounts.lines += 1;
+      const renderedLines = renderLine(
+        // move the point on half of the bandwidth if we have mixed bars/lines
+        (xScale.bandwidth * lineShift) / 2,
+        ds.data,
+        xScale,
+        yScale,
+        color,
+        (spec as LineSeriesSpec).curve || CurveType.LINEAR,
+        ds.specId,
+        Boolean(spec.y0Accessors),
+        ds.key,
+        xScaleOffset,
+        lineSeriesStyle,
+      );
+      lineGeometriesIndex = mergeGeometriesIndexes(lineGeometriesIndex, renderedLines.indexedGeometries);
+      lines.push(renderedLines.lineGeometry);
+      geometriesCounts.linePoints += renderedLines.lineGeometry.points.length;
+      geometriesCounts.lines += 1;
     } else if (isAreaSeriesSpec(spec)) {
-        const areaShift = clusteredCount > 0 ? clusteredCount : 1;
-        const areaSeriesStyle = spec.areaSeriesStyle;
+      const areaShift = clusteredCount > 0 ? clusteredCount : 1;
+      const areaSeriesStyle = spec.areaSeriesStyle;
 
-        const xScaleOffset = computeXScaleOffset(
-          xScale,
-          enableHistogramMode,
-          spec.histogramModeAlignment,
-        );
+      const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, spec.histogramModeAlignment);
 
-        const renderedAreas = renderArea(
-          // move the point on half of the bandwidth if we have mixed bars/lines
-          (xScale.bandwidth * areaShift) / 2,
-          ds.data,
-          xScale,
-          yScale,
-          color,
-          (spec as AreaSeriesSpec).curve || CurveType.LINEAR,
-          ds.specId,
-          Boolean(spec.y0Accessors),
-          ds.key,
-          xScaleOffset,
-          areaSeriesStyle,
-        );
-        areaGeometriesIndex = mergeGeometriesIndexes(
-          areaGeometriesIndex,
-          renderedAreas.indexedGeometries,
-        );
-        areas.push(renderedAreas.areaGeometry);
-        geometriesCounts.areasPoints += renderedAreas.areaGeometry.points.length;
-        geometriesCounts.areas += 1;
+      const renderedAreas = renderArea(
+        // move the point on half of the bandwidth if we have mixed bars/lines
+        (xScale.bandwidth * areaShift) / 2,
+        ds.data,
+        xScale,
+        yScale,
+        color,
+        (spec as AreaSeriesSpec).curve || CurveType.LINEAR,
+        ds.specId,
+        Boolean(spec.y0Accessors),
+        ds.key,
+        xScaleOffset,
+        areaSeriesStyle,
+      );
+      areaGeometriesIndex = mergeGeometriesIndexes(areaGeometriesIndex, renderedAreas.indexedGeometries);
+      areas.push(renderedAreas.areaGeometry);
+      geometriesCounts.areasPoints += renderedAreas.areaGeometry.points.length;
+      geometriesCounts.areas += 1;
     }
   }
   const geometriesIndex = mergeGeometriesIndexes(

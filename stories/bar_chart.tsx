@@ -1341,22 +1341,25 @@ storiesOf('Bar Chart', module)
       0,
     );
 
-    const theme = mergeWithDefaultTheme({
-      scales: {
-        barsPadding: number('bars padding', 0.25, {
-          range: true,
-          min: 0,
-          max: 1,
-          step: 0.1,
-        }),
-        histogramPadding: number('histogram padding', 0.05, {
-          range: true,
-          min: 0,
-          max: 1,
-          step: 0.1,
-        }),
+    const theme = mergeWithDefaultTheme(
+      {
+        scales: {
+          barsPadding: number('bars padding', 0.25, {
+            range: true,
+            min: 0,
+            max: 1,
+            step: 0.1,
+          }),
+          histogramPadding: number('histogram padding', 0.05, {
+            range: true,
+            min: 0,
+            max: 1,
+            step: 0.1,
+          }),
+        },
       },
-    }, LIGHT_THEME);
+      LIGHT_THEME,
+    );
 
     const otherSeriesSelection = select(
       'other series',
@@ -1370,25 +1373,28 @@ storiesOf('Bar Chart', module)
     const pointAlignment = select('point series alignment', HistogramModeAlignments, HistogramModeAlignments.Center);
     const pointData = TestDatasets.BARCHART_1Y0G;
 
-    const otherSeries = otherSeriesSelection === 'line' ?
-      <LineSeries
-        id={getSpecId('other-series')}
-        xScaleType={ScaleType.Linear}
-        yScaleType={ScaleType.Linear}
-        xAccessor="x"
-        yAccessors={['y']}
-        data={pointData}
-        histogramModeAlignment={pointAlignment}
-      /> :
-      <AreaSeries
-      id={getSpecId('other-series')}
-      xScaleType={ScaleType.Linear}
-      yScaleType={ScaleType.Linear}
-      xAccessor="x"
-      yAccessors={['y']}
-      data={pointData}
-      histogramModeAlignment={pointAlignment}
-    />;
+    const otherSeries =
+      otherSeriesSelection === 'line' ? (
+        <LineSeries
+          id={getSpecId('other-series')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          data={pointData}
+          histogramModeAlignment={pointAlignment}
+        />
+      ) : (
+        <AreaSeries
+          id={getSpecId('other-series')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          data={pointData}
+          histogramModeAlignment={pointAlignment}
+        />
+      );
 
     const hasHistogramBarSeries = boolean('hasHistogramBarSeries', false);
 
@@ -1398,9 +1404,9 @@ storiesOf('Bar Chart', module)
         <LineAnnotation
           annotationId={getAnnotationId('line-annotation')}
           domainType={AnnotationDomainTypes.XDomain}
-          dataValues={[{dataValue: 2}, {dataValue: 2.5}]}
+          dataValues={[{ dataValue: 2 }, { dataValue: 2.5 }]}
           style={lineAnnotationStyle}
-          marker={<div style={{background: 'red', width: 10, height: 10}} />}
+          marker={<div style={{ background: 'red', width: 10, height: 10 }} />}
         />
         <RectAnnotation
           dataValues={[
@@ -1419,25 +1425,19 @@ storiesOf('Bar Chart', module)
           ]}
           annotationId={getAnnotationId('rect')}
         />
-        <Axis
-          id={getAxisId('discover-histogram-left-axis')}
-          position={Position.Left}
-          title={'left axis'}
-        />
-        <Axis
-          id={getAxisId('discover-histogram-bottom-axis')}
-          position={Position.Bottom}
-          title={'bottom axis'}
-        />
-        {hasHistogramBarSeries && <HistogramBarSeries
-          id={getSpecId('histo')}
-          xScaleType={ScaleType.Time}
-          yScaleType={ScaleType.Linear}
-          xAccessor="x"
-          yAccessors={['y']}
-          data={pointData}
-          name={'histogram'}
-        />}
+        <Axis id={getAxisId('discover-histogram-left-axis')} position={Position.Left} title={'left axis'} />
+        <Axis id={getAxisId('discover-histogram-bottom-axis')} position={Position.Bottom} title={'bottom axis'} />
+        {hasHistogramBarSeries && (
+          <HistogramBarSeries
+            id={getSpecId('histo')}
+            xScaleType={ScaleType.Time}
+            yScaleType={ScaleType.Linear}
+            xAccessor="x"
+            yAccessors={['y']}
+            data={pointData}
+            name={'histogram'}
+          />
+        )}
         <BarSeries
           id={getSpecId('bars-1')}
           xScaleType={ScaleType.Time}
@@ -1476,41 +1476,38 @@ storiesOf('Bar Chart', module)
       0,
     );
 
-    const theme = mergeWithDefaultTheme({
-      scales: {
-        barsPadding: number('bars padding', 0.25, {
-          range: true,
-          min: 0,
-          max: 1,
-          step: 0.1,
-        }),
+    const theme = mergeWithDefaultTheme(
+      {
+        scales: {
+          barsPadding: number('bars padding', 0.25, {
+            range: true,
+            min: 0,
+            max: 1,
+            step: 0.1,
+          }),
+        },
       },
-    }, LIGHT_THEME);
+      LIGHT_THEME,
+    );
 
     const hasHistogramBarSeries = boolean('hasHistogramBarSeries', false);
 
     return (
       <Chart className={'story-chart'}>
         <Settings rotation={chartRotation} theme={theme} debug={boolean('debug', true)} />
-        <Axis
-          id={getAxisId('discover-histogram-left-axis')}
-          position={Position.Left}
-          title={'left axis'}
-        />
-        <Axis
-          id={getAxisId('discover-histogram-bottom-axis')}
-          position={Position.Bottom}
-          title={'bottom axis'}
-        />
-        {hasHistogramBarSeries && <HistogramBarSeries
-          id={getSpecId('histo')}
-          xScaleType={ScaleType.Ordinal}
-          yScaleType={ScaleType.Linear}
-          xAccessor="x"
-          yAccessors={['y']}
-          data={data}
-          name={'histogram'}
-        />}
+        <Axis id={getAxisId('discover-histogram-left-axis')} position={Position.Left} title={'left axis'} />
+        <Axis id={getAxisId('discover-histogram-bottom-axis')} position={Position.Bottom} title={'bottom axis'} />
+        {hasHistogramBarSeries && (
+          <HistogramBarSeries
+            id={getSpecId('histo')}
+            xScaleType={ScaleType.Ordinal}
+            yScaleType={ScaleType.Linear}
+            xAccessor="x"
+            yAccessors={['y']}
+            data={data}
+            name={'histogram'}
+          />
+        )}
         <BarSeries
           id={getSpecId('bars-1')}
           xScaleType={ScaleType.Ordinal}

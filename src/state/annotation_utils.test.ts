@@ -50,10 +50,7 @@ describe('annotation utils', () => {
   const maxRange = 100;
 
   const continuousData = [0, 10];
-  const continuousScale = new ScaleContinuous(ScaleType.Linear, continuousData, [
-    minRange,
-    maxRange,
-  ], 0, 1);
+  const continuousScale = new ScaleContinuous(ScaleType.Linear, continuousData, [minRange, maxRange], 0, 1);
 
   const ordinalData = ['a', 'b', 'c', 'd', 'a', 'b', 'c'];
   const ordinalScale = new ScaleBand(ordinalData, [minRange, maxRange]);
@@ -488,33 +485,33 @@ describe('annotation utils', () => {
     expect(dimensions).toEqual(expectedDimensions);
   });
 
-  test('should compute line annotation dimensions for xDomain on a xScale (chartRotation -90, continuous scale)',
-    () => {
-      const chartRotation: Rotation = -90;
-      const yScales: Map<GroupId, Scale> = new Map();
+  test('should compute line annotation dimensions for xDomain on a xScale (chartRotation -90, continuous scale)', () => {
+    const chartRotation: Rotation = -90;
+    const yScales: Map<GroupId, Scale> = new Map();
 
-      const xScale: Scale = continuousScale;
+    const xScale: Scale = continuousScale;
 
-      const annotationId = getAnnotationId('foo-line');
-      const lineAnnotation: LineAnnotationSpec = {
-        annotationType: 'line',
-        annotationId,
-        domainType: AnnotationDomainTypes.XDomain,
-        dataValues: [{ dataValue: 2, details: 'foo' }],
-        groupId,
-        style: DEFAULT_ANNOTATION_LINE_STYLE,
-      };
+    const annotationId = getAnnotationId('foo-line');
+    const lineAnnotation: LineAnnotationSpec = {
+      annotationType: 'line',
+      annotationId,
+      domainType: AnnotationDomainTypes.XDomain,
+      dataValues: [{ dataValue: 2, details: 'foo' }],
+      groupId,
+      style: DEFAULT_ANNOTATION_LINE_STYLE,
+    };
 
-      const dimensions = computeLineAnnotationDimensions(
-        lineAnnotation,
-        chartDimensions,
-        chartRotation,
-        yScales,
-        xScale,
-        Position.Left,
-        0,
-      );
-      const expectedDimensions = [{
+    const dimensions = computeLineAnnotationDimensions(
+      lineAnnotation,
+      chartDimensions,
+      chartRotation,
+      yScales,
+      xScale,
+      Position.Left,
+      0,
+    );
+    const expectedDimensions = [
+      {
         position: [20, -DEFAULT_LINE_OVERFLOW, 20, 10],
         details: { detailsText: 'foo', headerText: '2' },
         tooltipLinePosition: [0, 0, 10, 0],
@@ -558,32 +555,32 @@ describe('annotation utils', () => {
     expect(dimensions).toEqual(expectedDimensions);
   });
 
-  test('should compute line annotation dimensions for xDomain (chartRotation 180, continuous scale, bottom axis)',
-    () => {
-      const chartRotation: Rotation = 180;
-      const yScales: Map<GroupId, Scale> = new Map();
-      const xScale: Scale = continuousScale;
+  test('should compute line annotation dimensions for xDomain (chartRotation 180, continuous scale, bottom axis)', () => {
+    const chartRotation: Rotation = 180;
+    const yScales: Map<GroupId, Scale> = new Map();
+    const xScale: Scale = continuousScale;
 
-      const annotationId = getAnnotationId('foo-line');
-      const lineAnnotation: LineAnnotationSpec = {
-        annotationType: 'line',
-        annotationId,
-        domainType: AnnotationDomainTypes.XDomain,
-        dataValues: [{ dataValue: 2, details: 'foo' }],
-        groupId,
-        style: DEFAULT_ANNOTATION_LINE_STYLE,
-      };
+    const annotationId = getAnnotationId('foo-line');
+    const lineAnnotation: LineAnnotationSpec = {
+      annotationType: 'line',
+      annotationId,
+      domainType: AnnotationDomainTypes.XDomain,
+      dataValues: [{ dataValue: 2, details: 'foo' }],
+      groupId,
+      style: DEFAULT_ANNOTATION_LINE_STYLE,
+    };
 
-      const dimensions = computeLineAnnotationDimensions(
-        lineAnnotation,
-        chartDimensions,
-        chartRotation,
-        yScales,
-        xScale,
-        Position.Bottom,
-        0,
-      );
-      const expectedDimensions = [{
+    const dimensions = computeLineAnnotationDimensions(
+      lineAnnotation,
+      chartDimensions,
+      chartRotation,
+      yScales,
+      xScale,
+      Position.Bottom,
+      0,
+    );
+    const expectedDimensions = [
+      {
         position: [20, DEFAULT_LINE_OVERFLOW, 20, 20],
         details: { detailsText: 'foo', headerText: '2' },
         tooltipLinePosition: [20, DEFAULT_LINE_OVERFLOW, 20, 20],
@@ -1266,13 +1263,7 @@ describe('annotation utils', () => {
       dataValues: [{ coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } }],
     };
 
-    const noYScale = computeRectAnnotationDimensions(
-      annotationRectangle,
-      yScales,
-      xScale,
-      false,
-      0,
-    );
+    const noYScale = computeRectAnnotationDimensions(annotationRectangle, yScales, xScale, false, 0);
 
     expect(noYScale).toBe(null);
   });
@@ -1292,13 +1283,7 @@ describe('annotation utils', () => {
       ],
     };
 
-    const skippedInvalid = computeRectAnnotationDimensions(
-      annotationRectangle,
-      yScales,
-      xScale,
-      false,
-      0,
-    );
+    const skippedInvalid = computeRectAnnotationDimensions(annotationRectangle, yScales, xScale, false, 0);
 
     expect(skippedInvalid).toEqual([]);
   });
@@ -1306,7 +1291,7 @@ describe('annotation utils', () => {
     const yScales: Map<GroupId, Scale> = new Map();
     yScales.set(groupId, continuousScale);
 
-    const xScale: Scale = new ScaleContinuous(ScaleType.Linear, continuousData, [ minRange, maxRange ], 1, 1);
+    const xScale: Scale = new ScaleContinuous(ScaleType.Linear, continuousData, [minRange, maxRange], 1, 1);
 
     const annotationRectangle: RectAnnotationSpec = {
       annotationId: getAnnotationId('rect'),
@@ -1320,15 +1305,9 @@ describe('annotation utils', () => {
       ],
     };
 
-    const dimensions = computeRectAnnotationDimensions(
-      annotationRectangle,
-      yScales,
-      xScale,
-      true,
-      0,
-    );
+    const dimensions = computeRectAnnotationDimensions(annotationRectangle, yScales, xScale, true, 0);
 
-    const [ dims1, dims2, dims3, dims4 ] = dimensions;
+    const [dims1, dims2, dims3, dims4] = dimensions;
     expect(dims1.rect.x).toBe(0);
     expect(dims1.rect.y).toBe(0);
     expect(dims1.rect.width).toBe(10);
@@ -1367,13 +1346,7 @@ describe('annotation utils', () => {
       ],
     };
 
-    const dimensions = computeRectAnnotationDimensions(
-      annotationRectangle,
-      yScales,
-      xScale,
-      false,
-      0,
-    );
+    const dimensions = computeRectAnnotationDimensions(annotationRectangle, yScales, xScale, false, 0);
 
     const expectedDimensions = [
       { rect: { x: 0, y: 0, width: 10, height: 100 } },
@@ -1397,13 +1370,7 @@ describe('annotation utils', () => {
       dataValues: [{ coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } }],
     };
 
-    const unrotated = computeRectAnnotationDimensions(
-      annotationRectangle,
-      yScales,
-      xScale,
-      false,
-      0,
-    );
+    const unrotated = computeRectAnnotationDimensions(annotationRectangle, yScales, xScale, false, 0);
 
     expect(unrotated).toEqual([{ rect: { x: 10, y: 30, width: 10, height: 20 } }]);
   });
@@ -1420,13 +1387,7 @@ describe('annotation utils', () => {
       dataValues: [{ coordinates: { x0: 'a', x1: 'b', y0: 0, y1: 2 } }],
     };
 
-    const unrotated = computeRectAnnotationDimensions(
-      annotationRectangle,
-      yScales,
-      xScale,
-      false,
-      0,
-    );
+    const unrotated = computeRectAnnotationDimensions(annotationRectangle, yScales, xScale, false, 0);
 
     expect(unrotated).toEqual([{ rect: { x: 0, y: 0, width: 25, height: 20 } }]);
   });

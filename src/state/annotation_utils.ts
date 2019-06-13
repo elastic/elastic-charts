@@ -253,9 +253,9 @@ export function computeXDomainLineAnnotationDimensions(
         linePosition = [xDomainPosition, startY, xDomainPosition, endY];
         tooltipLinePosition = [xDomainPosition, 0, xDomainPosition, chartHeight];
 
-        const startMarkerY = (axisPosition === Position.Bottom) ? 0 : -lineOverflow - markerOffsets.height;
-        const endMarkerY = (axisPosition === Position.Bottom) ?
-          chartHeight + lineOverflow + markerOffsets.height : chartHeight;
+        const startMarkerY = axisPosition === Position.Bottom ? 0 : -lineOverflow - markerOffsets.height;
+        const endMarkerY =
+          axisPosition === Position.Bottom ? chartHeight + lineOverflow + markerOffsets.height : chartHeight;
         markerPosition = [chartWidth - xDomainPosition, startMarkerY, chartWidth - xDomainPosition, endMarkerY];
         break;
       }
@@ -363,8 +363,7 @@ export function getNearestTick(dataValue: number, ticks: number[], minInterval: 
 
 export function scaleAndValidateDatum(dataValue: any, scale: Scale, alignWithTick: boolean): any | null {
   const isContinuous = scale.type !== ScaleType.Ordinal;
-  const value = (isContinuous && alignWithTick) ?
-    getNearestTick(dataValue, scale.ticks(), scale.minInterval) : dataValue;
+  const value = isContinuous && alignWithTick ? getNearestTick(dataValue, scale.ticks(), scale.minInterval) : dataValue;
   const scaledValue = scale.scale(value);
 
   // d3.scale will return 0 for '', rendering the line incorrectly at 0
@@ -519,7 +518,7 @@ export function computeAnnotationDimensions(
 ): Map<AnnotationId, AnnotationDimensions> {
   const annotationDimensions = new Map<AnnotationId, AnnotationDimensions>();
 
-  const barsShift = totalBarsInCluster * xScale.bandwidth / 2;
+  const barsShift = (totalBarsInCluster * xScale.bandwidth) / 2;
 
   const band = xScale.bandwidth / (1 - xScale.barsPadding);
   const halfPadding = (band - xScale.bandwidth) / 2;

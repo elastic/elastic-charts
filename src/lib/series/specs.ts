@@ -135,23 +135,25 @@ export type HistogramBarSeriesSpec = Omit<BarSeriesSpec, 'stackAccessors'> & {
 /**
  * This spec describe the dataset configuration used to display a line series.
  */
-export type LineSeriesSpec = BasicSeriesSpec & HistogramConfig & {
-  /** @default line */
-  seriesType: 'line';
-  curve?: CurveType;
-  lineSeriesStyle?: LineSeriesStyle;
-};
+export type LineSeriesSpec = BasicSeriesSpec &
+  HistogramConfig & {
+    /** @default line */
+    seriesType: 'line';
+    curve?: CurveType;
+    lineSeriesStyle?: LineSeriesStyle;
+  };
 
 /**
  * This spec describe the dataset configuration used to display an area series.
  */
-export type AreaSeriesSpec = BasicSeriesSpec & HistogramConfig & {
-  /** @default area */
-  seriesType: 'area';
-  /** The type of interpolator to be used to interpolate values between points */
-  curve?: CurveType;
-  areaSeriesStyle?: AreaSeriesStyle;
-};
+export type AreaSeriesSpec = BasicSeriesSpec &
+  HistogramConfig & {
+    /** @default area */
+    seriesType: 'area';
+    /** The type of interpolator to be used to interpolate values between points */
+    curve?: CurveType;
+    areaSeriesStyle?: AreaSeriesStyle;
+  };
 
 interface HistogramConfig {
   /**  Determines how points in the series will align to bands in histogram mode

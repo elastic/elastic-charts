@@ -267,7 +267,7 @@ export function getTickLabelProps(
   }
 
   return {
-    x: (tickPosition - maxLabelBboxWidth / 2),
+    x: tickPosition - maxLabelBboxWidth / 2,
     y: isAxisTop ? 0 : tickSize + tickPadding,
     align,
     verticalAlign,
