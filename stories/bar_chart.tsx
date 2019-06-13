@@ -33,6 +33,8 @@ import * as TestDatasets from '../src/lib/series/utils/test_dataset';
 
 import { KIBANA_METRICS } from '../src/lib/series/utils/test_dataset_kibana';
 
+import { TEST_DATASET_DISCOVER } from '../src/lib/series/utils/test_dataset_discover_per_30s';
+
 const dateFormatter = timeFormatter('HH:mm:ss');
 
 const dataGen = new DataGenerator();
@@ -1653,6 +1655,49 @@ storiesOf('Bar Chart', module)
           yAccessors={['y']}
           data={data}
           enableHistogramMode={boolean('bars-2 enableHistogramMode', false)}
+        />
+      </Chart>
+    );
+  })
+  .add('[test] discover', () => {
+    const data = TEST_DATASET_DISCOVER.series[0].values;
+
+    // const formatter = timeFormatter(niceTimeFormatByDay(1));
+
+    // const domain = TEST_DATASET_DISCOVER.ordered;
+    // const domainStart = Number(domain.min);
+    // const domainEnd = Number(domain.max);
+    // const domainMin = data[0].x > domainStart ? domainStart : data[0].x;
+
+    // const xDomain = {
+    //   min: domainMin,
+    //   // max: domainMax,
+    // };
+
+    return (
+      <Chart className={'story-chart'}>
+        <Settings xDomain={undefined} />
+        <Axis
+          id={getAxisId('discover-histogram-left-axis')}
+          position={Position.Left}
+          title={TEST_DATASET_DISCOVER.yAxisLabel}
+        />
+        <Axis
+          id={getAxisId('discover-histogram-bottom-axis')}
+          position={Position.Bottom}
+          title={TEST_DATASET_DISCOVER.xAxisLabel}
+          // tickFormat={formatter}
+        />
+
+        <HistogramBarSeries
+          id={getSpecId('discover-histogram')}
+          xScaleType={ScaleType.Time}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          data={data}
+          timeZone={'local'}
+          name={'Count'}
         />
       </Chart>
     );
