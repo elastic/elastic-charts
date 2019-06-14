@@ -17,6 +17,9 @@ export type Datum = any;
 export type Rotation = 0 | 90 | -90 | 180;
 export type Rendering = 'canvas' | 'svg';
 
+export interface MinInterval {
+  minInterval?: number;
+}
 export interface LowerBoundedDomain {
   min: number;
 }
@@ -31,6 +34,27 @@ export interface CompleteBoundedDomain {
 }
 
 export type DomainRange = LowerBoundedDomain | UpperBoundedDomain | CompleteBoundedDomain;
+export type DomainWithInterval = MinInterval & {
+  domainRange?: DomainRange;
+};
+export type CustomXDomain = DomainRange | DomainWithInterval;
+
+export function isDomainWithInterval(customDomain: CustomXDomain): customDomain is DomainWithInterval {
+  const keys = Object.keys(customDomain);
+  if (!keys.length) {
+    return true;
+  }
+
+  if (keys.indexOf('minInterval') > -1) {
+    return true;
+  }
+
+  if (keys.indexOf('domainRange') > -1) {
+    return true;
+  }
+
+  return false;
+}
 
 export interface DisplayValueSpec {
   /** Show value label in chart element */

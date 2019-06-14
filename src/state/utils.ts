@@ -27,6 +27,7 @@ import {
   AreaSeriesSpec,
   AxisSpec,
   BasicSeriesSpec,
+  CustomXDomain,
   DomainRange,
   HistogramModeAlignment,
   HistogramModeAlignments,
@@ -112,7 +113,7 @@ export function getUpdatedCustomSeriesColors(
 export function computeSeriesDomains(
   seriesSpecs: Map<SpecId, BasicSeriesSpec>,
   domainsByGroupId: Map<GroupId, DomainRange>,
-  customXDomain?: DomainRange | Domain,
+  customXDomain?: CustomXDomain | Domain,
   deselectedDataSeries?: DataSeriesColorsValues[] | null,
 ): SeriesDomainsAndData {
   const { splittedSeries, xValues, seriesColors } = getSplittedSeries(

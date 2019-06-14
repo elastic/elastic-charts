@@ -1662,21 +1662,22 @@ storiesOf('Bar Chart', module)
   .add('[test] discover', () => {
     const data = TEST_DATASET_DISCOVER.series[0].values;
 
-    // const formatter = timeFormatter(niceTimeFormatByDay(1));
+    const formatter = timeFormatter(niceTimeFormatByDay(1));
+
+    console.log(TEST_DATASET_DISCOVER);
 
     // const domain = TEST_DATASET_DISCOVER.ordered;
     // const domainStart = Number(domain.min);
     // const domainEnd = Number(domain.max);
     // const domainMin = data[0].x > domainStart ? domainStart : data[0].x;
 
-    // const xDomain = {
-    //   min: domainMin,
-    //   // max: domainMax,
-    // };
+    const xDomain = {
+      minInterval: 30000,
+    };
 
     return (
       <Chart className={'story-chart'}>
-        <Settings xDomain={undefined} />
+        <Settings xDomain={xDomain} />
         <Axis
           id={getAxisId('discover-histogram-left-axis')}
           position={Position.Left}
@@ -1686,7 +1687,7 @@ storiesOf('Bar Chart', module)
           id={getAxisId('discover-histogram-bottom-axis')}
           position={Position.Bottom}
           title={TEST_DATASET_DISCOVER.xAxisLabel}
-          // tickFormat={formatter}
+          tickFormat={formatter}
         />
 
         <HistogramBarSeries
