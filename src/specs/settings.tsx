@@ -32,7 +32,7 @@ function isTooltipType(config: TooltipType | TooltipProps): config is TooltipTyp
   return typeof config === 'string';
 }
 
-interface SettingSpecProps {
+export interface SettingSpecProps {
   chartStore?: ChartStore;
   theme?: Theme | PartialTheme;
   baseThemeType?: BaseThemeType;
