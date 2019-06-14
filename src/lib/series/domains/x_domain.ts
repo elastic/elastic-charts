@@ -2,7 +2,7 @@ import { isCompleteBound, isLowerBound, isUpperBound } from '../../axes/axis_uti
 import { compareByValueAsc, identity } from '../../utils/commons';
 import { computeContinuousDataDomain, computeOrdinalDataDomain, Domain } from '../../utils/domain';
 import { ScaleType } from '../../utils/scales/scales';
-import { BasicSeriesSpec, CustomXDomain, isDomainWithInterval } from '../specs';
+import { BasicSeriesSpec, CustomXDomain, DomainWithInterval } from '../specs';
 import { BaseDomain } from './domain';
 
 export type XDomain = BaseDomain & {
@@ -12,6 +12,26 @@ export type XDomain = BaseDomain & {
   /** if x domain is time, we should also specify the timezone */
   timeZone?: string;
 };
+
+/**
+ * Typeguard to determine if a CustomXDomain is a DomainWithInterval.
+ */
+export function isDomainWithInterval(customDomain: CustomXDomain): customDomain is DomainWithInterval {
+  const keys = Object.keys(customDomain);
+  if (!keys.length) {
+    return true;
+  }
+
+  if (keys.indexOf('minInterval') > -1) {
+    return true;
+  }
+
+  if (keys.indexOf('domainRange') > -1) {
+    return true;
+  }
+
+  return false;
+}
 
 /**
  * Merge X domain value between a set of chart specification.

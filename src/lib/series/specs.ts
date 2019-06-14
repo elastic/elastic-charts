@@ -39,23 +39,6 @@ export type DomainWithInterval = MinInterval & {
 };
 export type CustomXDomain = DomainRange | DomainWithInterval;
 
-export function isDomainWithInterval(customDomain: CustomXDomain): customDomain is DomainWithInterval {
-  const keys = Object.keys(customDomain);
-  if (!keys.length) {
-    return true;
-  }
-
-  if (keys.indexOf('minInterval') > -1) {
-    return true;
-  }
-
-  if (keys.indexOf('domainRange') > -1) {
-    return true;
-  }
-
-  return false;
-}
-
 export interface DisplayValueSpec {
   /** Show value label in chart element */
   showValueLabel?: boolean;

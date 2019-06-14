@@ -1537,13 +1537,6 @@ storiesOf('Bar Chart', module)
 
     const formatter = timeFormatter(niceTimeFormatByDay(1));
 
-    console.log(TEST_DATASET_DISCOVER);
-
-    // const domain = TEST_DATASET_DISCOVER.ordered;
-    // const domainStart = Number(domain.min);
-    // const domainEnd = Number(domain.max);
-    // const domainMin = data[0].x > domainStart ? domainStart : data[0].x;
-
     const xDomain = {
       minInterval: 30000,
     };
