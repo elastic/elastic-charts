@@ -43,7 +43,13 @@ export function mergeXDomain(
   } else {
     seriesXComputedDomains = computeContinuousDataDomain(values, identity, true);
 
-    if (xDomain && !Array.isArray(xDomain)) {
+    if (xDomain) {
+      if (Array.isArray(xDomain)) {
+        throw new Error(
+          'xDomain for continuous scale should be a DomainRange object, not an array',
+        );
+      }
+
       const domainRange = isDomainWithInterval(xDomain) ? xDomain.domainRange : xDomain;
       customMinInterval = isDomainWithInterval(xDomain) ? xDomain.minInterval : undefined;
 
@@ -70,10 +76,6 @@ export function mergeXDomain(
           seriesXComputedDomains = [computedDomainMin, domainRange.max];
         }
       }
-    } else {
-      throw new Error(
-        'xDomain for continuous scale should be a DomainRange object, not an array',
-      );
     }
 
     minInterval = customMinInterval || findMinInterval(values);
