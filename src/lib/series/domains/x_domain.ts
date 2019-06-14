@@ -2,7 +2,7 @@ import { isCompleteBound, isLowerBound, isUpperBound } from '../../axes/axis_uti
 import { compareByValueAsc, identity } from '../../utils/commons';
 import { computeContinuousDataDomain, computeOrdinalDataDomain, Domain } from '../../utils/domain';
 import { ScaleType } from '../../utils/scales/scales';
-import { BasicSeriesSpec, CustomXDomain, DomainWithInterval } from '../specs';
+import { BasicSeriesSpec, DomainRange } from '../specs';
 import { BaseDomain } from './domain';
 
 export type XDomain = BaseDomain & {
@@ -14,32 +14,12 @@ export type XDomain = BaseDomain & {
 };
 
 /**
- * Typeguard to determine if a CustomXDomain is a DomainWithInterval.
- */
-export function isDomainWithInterval(customDomain: CustomXDomain): customDomain is DomainWithInterval {
-  const keys = Object.keys(customDomain);
-  if (!keys.length) {
-    return true;
-  }
-
-  if (keys.indexOf('minInterval') > -1) {
-    return true;
-  }
-
-  if (keys.indexOf('domainRange') > -1) {
-    return true;
-  }
-
-  return false;
-}
-
-/**
  * Merge X domain value between a set of chart specification.
  */
 export function mergeXDomain(
   specs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>[],
   xValues: Set<any>,
-  xDomain?: CustomXDomain | Domain,
+  xDomain?: DomainRange | Domain,
 ): XDomain {
   const mainXScaleType = convertXScaleTypes(specs);
   if (!mainXScaleType) {
@@ -49,7 +29,6 @@ export function mergeXDomain(
   const values = [...xValues.values()];
   let seriesXComputedDomains;
   let minInterval = 0;
-  let customMinInterval: undefined | number;
 
   if (mainXScaleType.scaleType === ScaleType.Ordinal) {
     seriesXComputedDomains = computeOrdinalDataDomain(values, identity, false, true);
@@ -62,36 +41,36 @@ export function mergeXDomain(
     }
   } else {
     seriesXComputedDomains = computeContinuousDataDomain(values, identity, true);
+    let customMinInterval: undefined | number;
 
     if (xDomain) {
       if (Array.isArray(xDomain)) {
         throw new Error('xDomain for continuous scale should be a DomainRange object, not an array');
       }
 
-      const domainRange = isDomainWithInterval(xDomain) ? xDomain.domainRange : xDomain;
-      customMinInterval = isDomainWithInterval(xDomain) ? xDomain.minInterval : undefined;
+      customMinInterval = xDomain.minInterval;
 
-      if (domainRange) {
+      if (xDomain) {
         const [computedDomainMin, computedDomainMax] = seriesXComputedDomains;
 
-        if (isCompleteBound(domainRange)) {
-          if (domainRange.min > domainRange.max) {
+        if (isCompleteBound(xDomain)) {
+          if (xDomain.min > xDomain.max) {
             throw new Error('custom xDomain is invalid, min is greater than max');
           }
 
-          seriesXComputedDomains = [domainRange.min, domainRange.max];
-        } else if (isLowerBound(domainRange)) {
-          if (domainRange.min > computedDomainMax) {
+          seriesXComputedDomains = [xDomain.min, xDomain.max];
+        } else if (isLowerBound(xDomain)) {
+          if (xDomain.min > computedDomainMax) {
             throw new Error('custom xDomain is invalid, custom min is greater than computed max');
           }
 
-          seriesXComputedDomains = [domainRange.min, computedDomainMax];
-        } else if (isUpperBound(domainRange)) {
-          if (computedDomainMin > domainRange.max) {
+          seriesXComputedDomains = [xDomain.min, computedDomainMax];
+        } else if (isUpperBound(xDomain)) {
+          if (computedDomainMin > xDomain.max) {
             throw new Error('custom xDomain is invalid, computed min is greater than custom max');
           }
 
-          seriesXComputedDomains = [computedDomainMin, domainRange.max];
+          seriesXComputedDomains = [computedDomainMin, xDomain.max];
         }
       }
     }

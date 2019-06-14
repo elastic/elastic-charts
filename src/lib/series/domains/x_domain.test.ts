@@ -2,7 +2,7 @@ import { getGroupId, getSpecId, SpecId } from '../../utils/ids';
 import { ScaleType } from '../../utils/scales/scales';
 import { getSplittedSeries } from '../series';
 import { BasicSeriesSpec } from '../specs';
-import { convertXScaleTypes, findMinInterval, mergeXDomain, isDomainWithInterval } from './x_domain';
+import { convertXScaleTypes, findMinInterval, mergeXDomain } from './x_domain';
 
 describe('X Domain', () => {
   test('Should return null when missing specs or specs types', () => {
@@ -641,12 +641,5 @@ describe('X Domain', () => {
     };
     const errorMessage = 'xDomain for ordinal scale should be an array of values, not a DomainRange object';
     expect(attemptToMerge).toThrowError(errorMessage);
-  });
-  test('should determine if a custom domain is a DomainRange or DomainWithInterval', () => {
-    const domainRange = { min: 0 };
-    const domainWithInterval = { minInterval: 3 };
-
-    expect(isDomainWithInterval(domainRange)).toBe(false);
-    expect(isDomainWithInterval(domainWithInterval)).toBe(true);
   });
 });

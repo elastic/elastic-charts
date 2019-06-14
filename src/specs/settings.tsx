@@ -1,6 +1,6 @@
 import { inject } from 'mobx-react';
 import { PureComponent } from 'react';
-import { CustomXDomain, Position, Rendering, Rotation } from '../lib/series/specs';
+import { DomainRange, Position, Rendering, Rotation } from '../lib/series/specs';
 import { LIGHT_THEME } from '../lib/themes/light_theme';
 import { Theme } from '../lib/themes/theme';
 import { Domain } from '../lib/utils/domain';
@@ -51,7 +51,7 @@ interface SettingSpecProps {
   onLegendItemClick?: LegendItemListener;
   onLegendItemPlusClick?: LegendItemListener;
   onLegendItemMinusClick?: LegendItemListener;
-  xDomain?: Domain | CustomXDomain;
+  xDomain?: Domain | DomainRange;
 }
 
 function updateChartStore(props: SettingSpecProps) {

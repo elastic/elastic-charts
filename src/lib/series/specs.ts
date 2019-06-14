@@ -17,27 +17,27 @@ export type Datum = any;
 export type Rotation = 0 | 90 | -90 | 180;
 export type Rendering = 'canvas' | 'svg';
 
-export interface MinInterval {
-  minInterval?: number;
-}
 export interface LowerBoundedDomain {
   min: number;
+  minInterval?: number;
 }
 
 export interface UpperBoundedDomain {
   max: number;
+  minInterval?: number;
 }
 
 export interface CompleteBoundedDomain {
   min: number;
   max: number;
+  minInterval?: number;
 }
 
-export type DomainRange = LowerBoundedDomain | UpperBoundedDomain | CompleteBoundedDomain;
-export type DomainWithInterval = MinInterval & {
-  domainRange?: DomainRange;
-};
-export type CustomXDomain = DomainRange | DomainWithInterval;
+export interface UnboundedDomainWithInterval {
+  minInterval: number;
+}
+
+export type DomainRange = LowerBoundedDomain | UpperBoundedDomain | CompleteBoundedDomain | UnboundedDomainWithInterval;
 
 export interface DisplayValueSpec {
   /** Show value label in chart element */
