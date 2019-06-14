@@ -45,9 +45,7 @@ export function mergeXDomain(
 
     if (xDomain) {
       if (Array.isArray(xDomain)) {
-        throw new Error(
-          'xDomain for continuous scale should be a DomainRange object, not an array',
-        );
+        throw new Error('xDomain for continuous scale should be a DomainRange object, not an array');
       }
 
       const domainRange = isDomainWithInterval(xDomain) ? xDomain.domainRange : xDomain;

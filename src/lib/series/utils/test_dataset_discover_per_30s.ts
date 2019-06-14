@@ -1,4 +1,5 @@
-/* tslint:disable */
+/* eslint-disable */
+
 export const TEST_DATASET_DISCOVER = {
   "xAxisOrderedValues": [
     1560438420000,
