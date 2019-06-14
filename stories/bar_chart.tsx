@@ -1541,9 +1541,11 @@ storiesOf('Bar Chart', module)
       minInterval: 30000,
     };
 
+    const useCustomMinInterval = boolean('use custom minInterval of 30s', true);
+
     return (
       <Chart className={'story-chart'}>
-        <Settings xDomain={xDomain} />
+        <Settings xDomain={useCustomMinInterval ? xDomain : undefined} />
         <Axis
           id={getAxisId('discover-histogram-left-axis')}
           position={Position.Left}
