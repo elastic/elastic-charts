@@ -151,7 +151,6 @@ export class ChartStore {
   xScale?: Scale;
   yScales?: Map<GroupId, Scale>;
   xDomain?: Domain | DomainRange;
-  minInterval?: number;
 
   legendItems: Map<string, LegendItem> = new Map();
   highlightedLegendItemKey: IObservableValue<string | null> = observable.box(null);
