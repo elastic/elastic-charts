@@ -75,7 +75,17 @@ export function mergeXDomain(
       }
     }
 
-    minInterval = customMinInterval || findMinInterval(values);
+    const computedMinInterval = findMinInterval(values);
+    if (customMinInterval != null) {
+      if (customMinInterval > computedMinInterval) {
+        throw new Error('custom xDomain is invalid, custom minInterval is greater than computed minInterval');
+      }
+      if (customMinInterval < 0) {
+        throw new Error('custom xDomain is invalid, custom minInterval is less than 0');
+      }
+    }
+
+    minInterval = customMinInterval || computedMinInterval;
   }
 
   return {
