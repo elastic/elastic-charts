@@ -3,7 +3,7 @@
     "declaration": true,
     "outDir": "./dist/",
     "noImplicitAny": true,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "sourceMap": true,
     "preserveConstEnums": true,
     "strict": true,
@@ -18,12 +18,15 @@
     "jsx": "react",
     "allowJs": false,
     "skipLibCheck": true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "typeRoots": [
+      "node_modules/**/@types",
+      "node_modules/@types",
+      "src/@types"
+    ]
   },
   "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "**/*.test.*"
+    "src/**/*",
+    "stories/**/*"
   ]
 }
