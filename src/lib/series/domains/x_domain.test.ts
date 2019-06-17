@@ -655,7 +655,13 @@ describe('X Domain', () => {
       expect(mergedDomain.minInterval).toEqual(0.5);
     });
 
-    test('with invalid minInterval greater than computed minInterval', () => {
+    test('with valid minInterval greater than computed minInterval for single datum set', () => {
+      const xDomain = { minInterval: 10 };
+      const mergedDomain = mergeXDomain(specs, new Set([5]), xDomain);
+      expect(mergedDomain.minInterval).toEqual(10);
+    });
+
+    test('with invalid minInterval greater than computed minInterval for multi data set', () => {
       const invalidXDomain = { minInterval: 10 };
       const attemptToMerge = () => {
         mergeXDomain(specs, xValues, invalidXDomain);

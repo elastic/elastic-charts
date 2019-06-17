@@ -77,7 +77,8 @@ export function mergeXDomain(
 
     const computedMinInterval = findMinInterval(values);
     if (customMinInterval != null) {
-      if (customMinInterval > computedMinInterval) {
+      // Allow greater custom min iff xValues has 1 member.
+      if (xValues.size > 1 && customMinInterval > computedMinInterval) {
         throw new Error('custom xDomain is invalid, custom minInterval is greater than computed minInterval');
       }
       if (customMinInterval < 0) {
