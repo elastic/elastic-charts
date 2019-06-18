@@ -228,7 +228,7 @@ export class ChartStore {
     const xPos = this.cursorPosition.x;
     const yPos = this.cursorPosition.y;
 
-    if (yPos === -1 || xPos === -1) {
+    if (yPos < 0 || xPos < 0) {
       return false;
     }
 
