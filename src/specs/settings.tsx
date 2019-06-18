@@ -4,7 +4,7 @@ import { PureComponent } from 'react';
 import { DomainRange, Position, Rendering, Rotation } from '../lib/series/specs';
 import { DARK_THEME } from '../lib/themes/dark_theme';
 import { LIGHT_THEME } from '../lib/themes/light_theme';
-import { BaseThemeType, mergeWithDefaultTheme, PartialTheme, Theme } from '../lib/themes/theme';
+import { BaseThemeType, mergeWithDefaultTheme, PartialTheme, Theme, BaseThemeTypes } from '../lib/themes/theme';
 import { Domain } from '../lib/utils/domain';
 import { TooltipType, TooltipValueFormatter } from '../lib/utils/interactions';
 import {
@@ -57,9 +57,9 @@ export interface SettingSpecProps {
   xDomain?: Domain | DomainRange;
 }
 
-function getTheme(theme?: Theme | PartialTheme, baseThemeType: BaseThemeType = BaseThemeType.Light): Theme {
+function getTheme(theme?: Theme | PartialTheme, baseThemeType: BaseThemeType = BaseThemeTypes.Light): Theme {
   if (theme) {
-    const baseTheme = baseThemeType === BaseThemeType.Light ? LIGHT_THEME : DARK_THEME;
+    const baseTheme = baseThemeType === BaseThemeTypes.Light ? LIGHT_THEME : DARK_THEME;
     return mergeWithDefaultTheme(theme, baseTheme);
   }
 
@@ -150,7 +150,7 @@ export class SettingsComponent extends PureComponent<SettingSpecProps> {
     animateData: true,
     showLegend: false,
     debug: false,
-    baseThemeType: BaseThemeType.Light,
+    baseThemeType: BaseThemeTypes.Light,
     tooltip: {
       type: DEFAULT_TOOLTIP_TYPE,
       snap: DEFAULT_TOOLTIP_SNAP,

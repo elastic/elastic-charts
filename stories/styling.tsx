@@ -6,7 +6,6 @@ import {
   AreaSeries,
   Axis,
   BarSeries,
-  BaseThemeType,
   Chart,
   CurveType,
   CustomSeriesColorsMap,
@@ -23,6 +22,7 @@ import {
   Position,
   ScaleType,
   Settings,
+  BaseThemeTypes,
 } from '../src/';
 import * as TestDatasets from '../src/lib/series/utils/test_dataset';
 import { palettes } from '../src/lib/themes/colors';
@@ -381,7 +381,7 @@ storiesOf('Stylings', module)
         <Settings
           showLegend
           theme={customPartialTheme}
-          baseThemeType={BaseThemeType.Light}
+          baseThemeType={BaseThemeTypes.Light}
           legendPosition={Position.Right}
         />
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />

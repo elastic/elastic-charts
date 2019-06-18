@@ -6,7 +6,7 @@ import { LIGHT_THEME } from '../lib/themes/light_theme';
 import { TooltipType } from '../lib/utils/interactions';
 import { ChartStore } from '../state/chart_state';
 import { DEFAULT_TOOLTIP_SNAP, DEFAULT_TOOLTIP_TYPE, SettingsComponent, SettingSpecProps } from './settings';
-import { PartialTheme, BaseThemeType } from '../lib/themes/theme';
+import { PartialTheme, BaseThemeTypes } from '../lib/themes/theme';
 
 describe('Settings spec component', () => {
   test('should update store on mount if spec has a chart store', () => {
@@ -162,7 +162,7 @@ describe('Settings spec component', () => {
 
     const updatedProps: SettingSpecProps = {
       theme: partialTheme,
-      baseThemeType: BaseThemeType.Dark,
+      baseThemeType: BaseThemeTypes.Dark,
       rotation: 90 as Rotation,
       rendering: 'svg' as Rendering,
       animateData: true,

@@ -100,10 +100,11 @@ export interface Theme {
 
 export type PartialTheme = RecursivePartial<Theme>;
 
-export enum BaseThemeType {
-  Light,
-  Dark,
-}
+export type BaseThemeType = 'light' | 'dark';
+export const BaseThemeTypes: Readonly<{ [key: string]: BaseThemeType }> = Object.freeze({
+  Light: 'light',
+  Dark: 'dark',
+});
 
 export type DisplayValueStyle = TextStyle & {
   offsetX?: number;
