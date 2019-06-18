@@ -1,4 +1,4 @@
-import { clamp, compareByValueAsc, identity, mergePartial } from './commons';
+import { clamp, compareByValueAsc, identity, mergePartial, RecursivePartial } from './commons';
 
 describe('commons utilities', () => {
   test('can clamp a value to min max', () => {
@@ -63,6 +63,7 @@ describe('commons utilities', () => {
     test('should allow partial to be undefined', () => {
       expect(mergePartial('test')).toBe('test');
     });
+
     test('should override base value with partial', () => {
       expect(mergePartial(1 as number, 2)).toBe(2);
     });

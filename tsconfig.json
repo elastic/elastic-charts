@@ -10,23 +10,12 @@
     "esModuleInterop": true,
     "module": "CommonJS",
     "target": "es5",
-    "lib": [
-      "esnext",
-      "dom"
-    ],
+    "lib": ["esnext", "dom"],
     "moduleResolution": "node",
     "jsx": "react",
     "allowJs": false,
     "skipLibCheck": true,
-    "downlevelIteration": true,
-    "typeRoots": [
-      "node_modules/**/@types",
-      "node_modules/@types",
-      "src/@types"
-    ]
+    "downlevelIteration": true
   },
-  "include": [
-    "src/**/*",
-    "stories/**/*"
-  ]
+  "include": ["src/**/*", "stories/**/*"]
 }

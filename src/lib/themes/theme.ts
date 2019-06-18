@@ -1,5 +1,5 @@
 import { GeometryStyle } from '../series/rendering';
-import { mergePartial } from '../utils/commons';
+import { mergePartial, RecursivePartial } from '../utils/commons';
 import { Margins } from '../utils/dimensions';
 import { LIGHT_THEME } from './light_theme';
 
