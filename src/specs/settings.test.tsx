@@ -50,7 +50,7 @@ describe('Settings spec component', () => {
     expect(chartStore.legendPosition).toBe(Position.Bottom);
     expect(chartStore.showLegendDisplayValue.get()).toEqual(false);
     expect(chartStore.debug).toBe(true);
-    expect(chartStore.xDomain).toEqual({ min: 0, max: 10 });
+    expect(chartStore.customXDomain).toEqual({ min: 0, max: 10 });
   });
 
   test('should set chart properties on chart store', () => {
@@ -66,7 +66,7 @@ describe('Settings spec component', () => {
     expect(chartStore.showLegendDisplayValue.get()).toEqual(true);
     expect(chartStore.legendPosition).toBeUndefined();
     expect(chartStore.debug).toBe(false);
-    expect(chartStore.xDomain).toBeUndefined();
+    expect(chartStore.customXDomain).toBeUndefined();
 
     const updatedProps: SettingSpecProps = {
       theme: DARK_THEME,
@@ -96,7 +96,7 @@ describe('Settings spec component', () => {
     expect(chartStore.legendPosition).toBe(Position.Bottom);
     expect(chartStore.showLegendDisplayValue.get()).toEqual(false);
     expect(chartStore.debug).toBe(true);
-    expect(chartStore.xDomain).toEqual({ min: 0, max: 10 });
+    expect(chartStore.customXDomain).toEqual({ min: 0, max: 10 });
   });
 
   test('should set event listeners on chart store', () => {

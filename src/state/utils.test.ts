@@ -1,4 +1,4 @@
-import { mergeDomainsByGroupId } from '../lib/axes/axis_utils';
+import { mergeYCustomDomainsByGroupId } from '../lib/axes/axis_utils';
 import { LegendItem } from '../lib/series/legend';
 import { IndexedGeometry } from '../lib/series/rendering';
 import { DataSeriesColorsValues, findDataSeriesByColorValues, getSeriesColorMap } from '../lib/series/series';
@@ -357,7 +357,7 @@ describe('Chart State utils', () => {
         defaultVizColor: 'red',
       };
       const chartTheme = { ...LIGHT_THEME, colors: chartColors };
-      const domainsByGroupId = mergeDomainsByGroupId(axesSpecs, chartRotation);
+      const domainsByGroupId = mergeYCustomDomainsByGroupId(axesSpecs, chartRotation);
       const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
       const seriesColorMap = getSeriesColorMap(seriesDomains.seriesColors, chartColors, new Map());
       const geometries = computeSeriesGeometries(
@@ -410,7 +410,7 @@ describe('Chart State utils', () => {
         defaultVizColor: 'red',
       };
       const chartTheme = { ...LIGHT_THEME, colors: chartColors };
-      const domainsByGroupId = mergeDomainsByGroupId(axesSpecs, chartRotation);
+      const domainsByGroupId = mergeYCustomDomainsByGroupId(axesSpecs, chartRotation);
       const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
       const seriesColorMap = getSeriesColorMap(seriesDomains.seriesColors, chartColors, new Map());
       const geometries = computeSeriesGeometries(
@@ -465,7 +465,7 @@ describe('Chart State utils', () => {
         defaultVizColor: 'red',
       };
       const chartTheme = { ...LIGHT_THEME, colors: chartColors };
-      const domainsByGroupId = mergeDomainsByGroupId(axesSpecs, chartRotation);
+      const domainsByGroupId = mergeYCustomDomainsByGroupId(axesSpecs, chartRotation);
       const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
       const seriesColorMap = getSeriesColorMap(seriesDomains.seriesColors, chartColors, new Map());
       const geometries = computeSeriesGeometries(
@@ -545,7 +545,7 @@ describe('Chart State utils', () => {
         defaultVizColor: 'red',
       };
       const chartTheme = { ...LIGHT_THEME, colors: chartColors };
-      const domainsByGroupId = mergeDomainsByGroupId(axesSpecs, chartRotation);
+      const domainsByGroupId = mergeYCustomDomainsByGroupId(axesSpecs, chartRotation);
       const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
       const seriesColorMap = getSeriesColorMap(seriesDomains.seriesColors, chartColors, new Map());
       const geometries = computeSeriesGeometries(
@@ -612,7 +612,7 @@ describe('Chart State utils', () => {
         defaultVizColor: 'red',
       };
       const chartTheme = { ...LIGHT_THEME, colors: chartColors };
-      const domainsByGroupId = mergeDomainsByGroupId(axesSpecs, chartRotation);
+      const domainsByGroupId = mergeYCustomDomainsByGroupId(axesSpecs, chartRotation);
       const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
       const seriesColorMap = getSeriesColorMap(seriesDomains.seriesColors, chartColors, new Map());
       const geometries = computeSeriesGeometries(
@@ -679,7 +679,7 @@ describe('Chart State utils', () => {
         defaultVizColor: 'red',
       };
       const chartTheme = { ...LIGHT_THEME, colors: chartColors };
-      const domainsByGroupId = mergeDomainsByGroupId(axesSpecs, chartRotation);
+      const domainsByGroupId = mergeYCustomDomainsByGroupId(axesSpecs, chartRotation);
       const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
       const seriesColorMap = getSeriesColorMap(seriesDomains.seriesColors, chartColors, new Map());
       const geometries = computeSeriesGeometries(
@@ -754,7 +754,7 @@ describe('Chart State utils', () => {
         defaultVizColor: 'red',
       };
       const chartTheme = { ...LIGHT_THEME, colors: chartColors };
-      const domainsByGroupId = mergeDomainsByGroupId(axesSpecs, chartRotation);
+      const domainsByGroupId = mergeYCustomDomainsByGroupId(axesSpecs, chartRotation);
       const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
       const seriesColorMap = getSeriesColorMap(seriesDomains.seriesColors, chartColors, new Map());
       const geometries = computeSeriesGeometries(
@@ -841,7 +841,7 @@ describe('Chart State utils', () => {
         defaultVizColor: 'red',
       };
       const chartTheme = { ...LIGHT_THEME, colors: chartColors };
-      const domainsByGroupId = mergeDomainsByGroupId(axesSpecs, chartRotation);
+      const domainsByGroupId = mergeYCustomDomainsByGroupId(axesSpecs, chartRotation);
       const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
       const seriesColorMap = getSeriesColorMap(seriesDomains.seriesColors, chartColors, new Map());
       const geometries = computeSeriesGeometries(
@@ -921,7 +921,7 @@ describe('Chart State utils', () => {
         defaultVizColor: 'red',
       };
       const chartTheme = { ...LIGHT_THEME, colors: chartColors };
-      const domainsByGroupId = mergeDomainsByGroupId(axesSpecs, chartRotation);
+      const domainsByGroupId = mergeYCustomDomainsByGroupId(axesSpecs, chartRotation);
       const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
       const seriesColorMap = getSeriesColorMap(seriesDomains.seriesColors, chartColors, new Map());
       const geometries = computeSeriesGeometries(

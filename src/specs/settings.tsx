@@ -112,7 +112,7 @@ function updateChartStore(props: SettingSpecProps) {
   chartStore.setShowLegend(showLegend);
   chartStore.legendPosition = legendPosition;
   chartStore.showLegendDisplayValue.set(showLegendDisplayValue);
-  chartStore.xDomain = xDomain;
+  chartStore.customXDomain = xDomain;
 
   if (onElementOver) {
     chartStore.setOnElementOverListener(onElementOver);

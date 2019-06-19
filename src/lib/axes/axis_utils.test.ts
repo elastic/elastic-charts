@@ -27,8 +27,8 @@ import {
   isHorizontal,
   isVertical,
   isYDomain,
-  mergeDomainsByGroupId,
   getAxisTickLabelPadding,
+  mergeYCustomDomainsByGroupId,
 } from './axis_utils';
 import { CanvasTextBBoxCalculator } from './canvas_text_bbox_calculator';
 import { SvgTextBBoxCalculator } from './svg_text_bbox_calculator';
@@ -1130,7 +1130,7 @@ describe('Axis computational utils', () => {
     const expectedSimpleMap = new Map<GroupId, DomainRange>();
     expectedSimpleMap.set(groupId, { min: 2, max: 9 });
 
-    const simpleDomainsByGroupId = mergeDomainsByGroupId(axesSpecs, 0);
+    const simpleDomainsByGroupId = mergeYCustomDomainsByGroupId(axesSpecs, 0);
     expect(simpleDomainsByGroupId).toEqual(expectedSimpleMap);
 
     // Multiple definitions for the same group
@@ -1147,7 +1147,7 @@ describe('Axis computational utils', () => {
     const expectedMergedMap = new Map<GroupId, DomainRange>();
     expectedMergedMap.set(groupId, { min: 0, max: 9 });
 
-    const mergedDomainsByGroupId = mergeDomainsByGroupId(axesSpecs, 0);
+    const mergedDomainsByGroupId = mergeYCustomDomainsByGroupId(axesSpecs, 0);
     expect(mergedDomainsByGroupId).toEqual(expectedMergedMap);
 
     // xDomain limit (bad config)
@@ -1158,7 +1158,7 @@ describe('Axis computational utils', () => {
     axesSpecs.set(horizontalAxisSpec.id, horizontalAxisSpec);
 
     const attemptToMerge = () => {
-      mergeDomainsByGroupId(axesSpecs, 0);
+      mergeYCustomDomainsByGroupId(axesSpecs, 0);
     };
 
     expect(attemptToMerge).toThrowError('[Axis axis_2]: custom domain for xDomain should be defined in Settings');
@@ -1188,7 +1188,7 @@ describe('Axis computational utils', () => {
     const expectedMergedMap = new Map<GroupId, DomainRange>();
     expectedMergedMap.set(groupId, { min: 0, max: 9 });
 
-    const mergedDomainsByGroupId = mergeDomainsByGroupId(axesSpecs, 0);
+    const mergedDomainsByGroupId = mergeYCustomDomainsByGroupId(axesSpecs, 0);
     expect(mergedDomainsByGroupId).toEqual(expectedMergedMap);
   });
 
@@ -1216,7 +1216,7 @@ describe('Axis computational utils', () => {
     const expectedMergedMap = new Map<GroupId, DomainRange>();
     expectedMergedMap.set(groupId, { min: -1, max: 7 });
 
-    const mergedDomainsByGroupId = mergeDomainsByGroupId(axesSpecs, 0);
+    const mergedDomainsByGroupId = mergeYCustomDomainsByGroupId(axesSpecs, 0);
     expect(mergedDomainsByGroupId).toEqual(expectedMergedMap);
   });
 
@@ -1252,7 +1252,7 @@ describe('Axis computational utils', () => {
     const expectedMergedMap = new Map<GroupId, DomainRange>();
     expectedMergedMap.set(groupId, { min: -1, max: 9 });
 
-    const mergedDomainsByGroupId = mergeDomainsByGroupId(axesSpecs, 0);
+    const mergedDomainsByGroupId = mergeYCustomDomainsByGroupId(axesSpecs, 0);
     expect(mergedDomainsByGroupId).toEqual(expectedMergedMap);
   });
 
@@ -1288,7 +1288,7 @@ describe('Axis computational utils', () => {
     const expectedMergedMap = new Map<GroupId, DomainRange>();
     expectedMergedMap.set(groupId, { min: 2, max: 9 });
 
-    const mergedDomainsByGroupId = mergeDomainsByGroupId(axesSpecs, 0);
+    const mergedDomainsByGroupId = mergeYCustomDomainsByGroupId(axesSpecs, 0);
     expect(mergedDomainsByGroupId).toEqual(expectedMergedMap);
   });
 
@@ -1304,7 +1304,7 @@ describe('Axis computational utils', () => {
     axesSpecs.set(verticalAxisSpec.id, verticalAxisSpec);
 
     const attemptToMerge = () => {
-      mergeDomainsByGroupId(axesSpecs, 0);
+      mergeYCustomDomainsByGroupId(axesSpecs, 0);
     };
     const expectedError = '[Axis axis_1]: custom domain is invalid, min is greater than max';
 

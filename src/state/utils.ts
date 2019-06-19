@@ -129,16 +129,18 @@ export function getLastValues(formattedDataSeries: {
 }
 
 /**
- *
- * @param seriesSpecs
- * @param selectedDataSeries is optional; if not supplied,
+ * Compute data domains for all specified specs.
+ * @param seriesSpecs a map of all the series specs
+ * @param customYDomainsByGroupId custom Y domains grouped by GroupId
+ * @param customXDomain if specified in <Settings />, the custom X domain
+ * @param deselectedDataSeries is optional; if not supplied,
  * then all series will be factored into computations. Otherwise, selectedDataSeries
  * is used to restrict the computation for just the selected series
  * @returns `SeriesDomainsAndData`
  */
 export function computeSeriesDomains(
   seriesSpecs: Map<SpecId, BasicSeriesSpec>,
-  domainsByGroupId: Map<GroupId, DomainRange>,
+  customYDomainsByGroupId: Map<GroupId, DomainRange>,
   customXDomain?: DomainRange | Domain,
   deselectedDataSeries?: DataSeriesColorsValues[] | null,
 ): SeriesDomainsAndData {
@@ -148,7 +150,7 @@ export function computeSeriesDomains(
   const specsArray = [...seriesSpecs.values()];
 
   const xDomain = mergeXDomain(specsArray, xValues, customXDomain);
-  const yDomain = mergeYDomain(splittedSeries, specsArray, domainsByGroupId);
+  const yDomain = mergeYDomain(splittedSeries, specsArray, customYDomainsByGroupId);
 
   const formattedDataSeries = getFormattedDataseries(specsArray, splittedSeries);
 

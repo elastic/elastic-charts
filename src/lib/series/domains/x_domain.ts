@@ -15,11 +15,15 @@ export type XDomain = BaseDomain & {
 
 /**
  * Merge X domain value between a set of chart specification.
+ * @param specs an array of [{ seriesType, xScaleType }]
+ * @param xValues a set of unique x values from all specs
+ * @param customXDomain if specified, a custom xDomain
+ * @returns a merged XDomain between all series.
  */
 export function mergeXDomain(
   specs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>[],
   xValues: Set<any>,
-  xDomain?: DomainRange | Domain,
+  customXDomain?: DomainRange | Domain,
 ): XDomain {
   const mainXScaleType = convertXScaleTypes(specs);
   if (!mainXScaleType) {
@@ -32,9 +36,9 @@ export function mergeXDomain(
 
   if (mainXScaleType.scaleType === ScaleType.Ordinal) {
     seriesXComputedDomains = computeOrdinalDataDomain(values, identity, false, true);
-    if (xDomain) {
-      if (Array.isArray(xDomain)) {
-        seriesXComputedDomains = xDomain;
+    if (customXDomain) {
+      if (Array.isArray(customXDomain)) {
+        seriesXComputedDomains = customXDomain;
       } else {
         throw new Error('xDomain for ordinal scale should be an array of values, not a DomainRange object');
       }
@@ -43,34 +47,34 @@ export function mergeXDomain(
     seriesXComputedDomains = computeContinuousDataDomain(values, identity, true);
     let customMinInterval: undefined | number;
 
-    if (xDomain) {
-      if (Array.isArray(xDomain)) {
+    if (customXDomain) {
+      if (Array.isArray(customXDomain)) {
         throw new Error('xDomain for continuous scale should be a DomainRange object, not an array');
       }
 
-      customMinInterval = xDomain.minInterval;
+      customMinInterval = customXDomain.minInterval;
 
-      if (xDomain) {
+      if (customXDomain) {
         const [computedDomainMin, computedDomainMax] = seriesXComputedDomains;
 
-        if (isCompleteBound(xDomain)) {
-          if (xDomain.min > xDomain.max) {
+        if (isCompleteBound(customXDomain)) {
+          if (customXDomain.min > customXDomain.max) {
             throw new Error('custom xDomain is invalid, min is greater than max');
           }
 
-          seriesXComputedDomains = [xDomain.min, xDomain.max];
-        } else if (isLowerBound(xDomain)) {
-          if (xDomain.min > computedDomainMax) {
+          seriesXComputedDomains = [customXDomain.min, customXDomain.max];
+        } else if (isLowerBound(customXDomain)) {
+          if (customXDomain.min > computedDomainMax) {
             throw new Error('custom xDomain is invalid, custom min is greater than computed max');
           }
 
-          seriesXComputedDomains = [xDomain.min, computedDomainMax];
-        } else if (isUpperBound(xDomain)) {
-          if (computedDomainMin > xDomain.max) {
+          seriesXComputedDomains = [customXDomain.min, computedDomainMax];
+        } else if (isUpperBound(customXDomain)) {
+          if (computedDomainMin > customXDomain.max) {
             throw new Error('custom xDomain is invalid, computed min is greater than custom max');
           }
 
-          seriesXComputedDomains = [computedDomainMin, xDomain.max];
+          seriesXComputedDomains = [computedDomainMin, customXDomain.max];
         }
       }
     }
@@ -125,13 +129,11 @@ export function findMinInterval(xValues: number[]): number {
 
 /**
  * Convert the scale types of a set of specification to a generic one.
- * If there is at least one bar series type, than the response will specity
- * that the coerched scale is a `scaleBand` (each point needs to have a surrounding empty
- * space to draw the bar width).
- * If there are multiple continuous scale types, is coerched to linear.
- * If there are at least one Ordinal scale type, is coerched to ordinal.
- * If none of the above, than coerch to the specified scale.
- * @returns {ChartScaleType}
+ * If there are at least one `ordinal` scale type, the resulting scale is coerched to ordinal.
+ * If there are only `continuous` scale types, the resulting scale is coerched to linear.
+ * If there are only `time` scales, we coerch the timeZone to `utc` only if we have multiple
+ * different timezones.
+ * @returns the coerched scale type, the timezone and a parameter that describe if its a bandScale or not
  */
 export function convertXScaleTypes(
   specs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType' | 'timeZone'>[],

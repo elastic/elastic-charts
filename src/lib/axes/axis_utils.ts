@@ -680,7 +680,7 @@ export function isBounded(domain: Partial<CompleteBoundedDomain>): domain is Dom
   return domain.max != null || domain.min != null;
 }
 
-export function mergeDomainsByGroupId(
+export function mergeYCustomDomainsByGroupId(
   axesSpecs: Map<AxisId, AxisSpec>,
   chartRotation: Rotation,
 ): Map<GroupId, DomainRange> {

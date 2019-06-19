@@ -5,7 +5,7 @@ import {
   AxisTicksDimensions,
   computeAxisTicksDimensions,
   getAxisTicksPositions,
-  mergeDomainsByGroupId,
+  mergeYCustomDomainsByGroupId,
 } from '../lib/axes/axis_utils';
 import { CanvasTextBBoxCalculator } from '../lib/axes/canvas_text_bbox_calculator';
 import { XDomain } from '../lib/series/domains/x_domain';
@@ -152,11 +152,13 @@ export class ChartStore {
   seriesDomainsAndData?: SeriesDomainsAndData; // computed
   xScale?: Scale;
   yScales?: Map<GroupId, Scale>;
-  xDomain?: Domain | DomainRange;
+  // custom X domain passed via <Settings />
+  customXDomain?: Domain | DomainRange;
 
   legendItems: Map<string, LegendItem> = new Map();
   highlightedLegendItemKey: IObservableValue<string | null> = observable.box(null);
   selectedLegendItemKey: IObservableValue<string | null> = observable.box(null);
+  // deselected/hidden data series from the legend
   deselectedDataSeries: DataSeriesColorsValues[] | null = null;
   customSeriesColors: Map<string, string> = new Map();
   seriesColorMap: Map<string, string> = new Map();
@@ -773,36 +775,30 @@ export class ChartStore {
       this.deselectedDataSeries = null;
     }
 
-    const domainsByGroupId = mergeDomainsByGroupId(this.axesSpecs, this.chartRotation);
+    // merge Y custom domains specified on the axis
+    const customYDomainsByGroupId = mergeYCustomDomainsByGroupId(this.axesSpecs, this.chartRotation);
 
-    // The last argument is optional; if not supplied, then all series will be factored into computations
-    // Otherwise, deselectedDataSeries is used to restrict the computation excluding the deselected series
-    const seriesDomains = computeSeriesDomains(
+    // compute general X and Y domains, split series based on split accessors
+    // process stacked and non-stacked values series formatting the data
+    this.seriesDomainsAndData = computeSeriesDomains(
       this.seriesSpecs,
-      domainsByGroupId,
-      this.xDomain,
+      customYDomainsByGroupId,
+      this.customXDomain,
       this.deselectedDataSeries,
     );
-
-    this.seriesDomainsAndData = seriesDomains;
 
     // Merge all series spec custom colors with state custom colors map
     const updatedCustomSeriesColors = getUpdatedCustomSeriesColors(this.seriesSpecs);
     this.customSeriesColors = new Map([...this.customSeriesColors, ...updatedCustomSeriesColors]);
 
-    // tslint:disable-next-line:no-console
-    // console.log({ colors: seriesDomains.seriesColors });
-
-    // tslint:disable-next-line:no-console
-    // console.log({ seriesDomains });
     this.seriesColorMap = getSeriesColorMap(
-      seriesDomains.seriesColors,
+      this.seriesDomainsAndData.seriesColors,
       this.chartTheme.colors,
       this.customSeriesColors,
     );
 
     this.legendItems = computeLegend(
-      seriesDomains.seriesColors,
+      this.seriesDomainsAndData.seriesColors,
       this.seriesColorMap,
       this.seriesSpecs,
       this.chartTheme.colors.defaultVizColor,
@@ -812,14 +808,10 @@ export class ChartStore {
 
     this.isChartEmpty = isAllSeriesDeselected(this.legendItems);
 
-    const {
-      xDomain,
-      yDomain,
-      formattedDataSeries: { stacked, nonStacked },
-    } = seriesDomains;
+    const { xDomain, yDomain, formattedDataSeries } = this.seriesDomainsAndData;
 
     // compute how many bar series are clustered
-    const { totalBarsInCluster } = countBarsInCluster(stacked, nonStacked);
+    const { totalBarsInCluster } = countBarsInCluster(formattedDataSeries.stacked, formattedDataSeries.nonStacked);
     this.totalBarsInCluster = totalBarsInCluster;
 
     // compute axis dimensions
@@ -863,9 +855,9 @@ export class ChartStore {
 
     const seriesGeometries = computeSeriesGeometries(
       this.seriesSpecs,
-      seriesDomains.xDomain,
-      seriesDomains.yDomain,
-      seriesDomains.formattedDataSeries,
+      xDomain,
+      yDomain,
+      formattedDataSeries,
       this.seriesColorMap,
       this.chartTheme,
       this.chartDimensions,
@@ -896,8 +888,8 @@ export class ChartStore {
       this.showLegend.get() && !this.legendCollapsed.get(),
       this.axesSpecs,
       this.axesTicksDimensions,
-      seriesDomains.xDomain,
-      seriesDomains.yDomain,
+      xDomain,
+      yDomain,
       totalBarsInCluster,
       this.enableHistogramMode.get(),
       this.legendPosition,

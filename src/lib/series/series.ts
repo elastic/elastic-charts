@@ -78,8 +78,9 @@ export function findDataSeriesByColorValues(
 }
 
 /**
- * Split a dataset into multiple series, each having a key with the relative
- * series configuration
+ * Split a dataset into multiple series depending on the accessors.
+ * Each series is then associated with a key thats belong to its configuration.
+ *
  */
 export function splitSeries(
   data: Datum[],
@@ -281,7 +282,11 @@ export function getRawDataSeries(
     counts,
   };
 }
-
+/**
+ *
+ * @param seriesSpecs the map for all the series spec
+ * @param deselectedDataSeries the array of deselected/hidden data series
+ */
 export function getSplittedSeries(
   seriesSpecs: Map<SpecId, BasicSeriesSpec>,
   deselectedDataSeries?: DataSeriesColorsValues[] | null,
