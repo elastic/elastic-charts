@@ -1,14 +1,14 @@
 import { getAxesSpecForSpecId } from '../../state/utils';
 import { identity } from '../utils/commons';
 import { AxisId, SpecId } from '../utils/ids';
-import { DataSeriesColorsValues, findDataSeriesByColorValues, getSortedDataSeriesColorsValuesMap } from './series';
+import { DataSeriesValues, getSeriesIndex, getSortedDataSeriesColorsValuesMap } from './series';
 import { AxisSpec, BasicSeriesSpec } from './specs';
 
 export interface LegendItem {
   key: string;
   color: string;
   label: string;
-  value: DataSeriesColorsValues;
+  value: DataSeriesValues;
   isSeriesVisible?: boolean;
   isLegendItemVisible?: boolean;
   displayValue: {
@@ -18,24 +18,25 @@ export interface LegendItem {
 }
 
 export function computeLegend(
-  seriesColor: Map<string, DataSeriesColorsValues>,
+  seriesColor: Map<string, DataSeriesValues>,
   seriesColorMap: Map<string, string>,
   specs: Map<SpecId, BasicSeriesSpec>,
   defaultColor: string,
   axesSpecs: Map<AxisId, AxisSpec>,
-  deselectedDataSeries?: DataSeriesColorsValues[] | null,
+  deselectedDataSeries?: DataSeriesValues[] | null,
 ): Map<string, LegendItem> {
   const legendItems: Map<string, LegendItem> = new Map();
 
   const sortedSeriesColors = getSortedDataSeriesColorsValuesMap(seriesColor);
 
   sortedSeriesColors.forEach((series, key) => {
-    const spec = specs.get(series.specId);
+    const spec = series.specId && specs.get(series.specId);
 
     const color = seriesColorMap.get(key) || defaultColor;
-    const hasSingleSeries = seriesColor.size === 1;
-    const label = getSeriesColorLabel(series.colorValues, hasSingleSeries, spec);
-    const isSeriesVisible = deselectedDataSeries ? findDataSeriesByColorValues(deselectedDataSeries, series) < 0 : true;
+    // const hasSingleSeries = seriesColor.size === 1;
+    const label = 'nick';
+    // const label = getSeriesColorLabel(series.colorValues, hasSingleSeries, spec);
+    const isSeriesVisible = deselectedDataSeries ? getSeriesIndex(deselectedDataSeries, series) < 0 : true;
 
     if (!label || !spec) {
       return;

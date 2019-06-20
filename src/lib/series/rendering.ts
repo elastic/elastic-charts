@@ -17,6 +17,7 @@ import { LegendItem } from './legend';
 import { DataSeriesDatum } from './series';
 import { belongsToDataSeries } from './series_utils';
 import { DisplayValueSpec } from './specs';
+import { Accessor, getAccessorValues, AccessorFn } from '../utils/accessor';
 
 export interface GeometryId {
   specId: SpecId;
@@ -187,6 +188,17 @@ export function renderPoints(
   };
 }
 
+export interface RenderBarsGeometry {
+  barGeometries: BarGeometry[];
+  indexedGeometries: Map<any, IndexedGeometry[]>;
+}
+
+export interface SubSeries {
+  dataset: DataSeriesDatum[];
+  specId: SpecId;
+  seriesKey: any[];
+}
+
 export function renderBars(
   orderIndex: number,
   dataset: DataSeriesDatum[],
@@ -197,11 +209,9 @@ export function renderBars(
   seriesKey: any[],
   displayValueSettings?: DisplayValueSpec,
   seriesStyle?: CustomBarSeriesStyle,
-): {
-  barGeometries: BarGeometry[];
-  indexedGeometries: Map<any, IndexedGeometry[]>;
-} {
-  const indexedGeometries: Map<any, IndexedGeometry[]> = new Map();
+  groupAccessors?: (Accessor | AccessorFn)[],
+): RenderBarsGeometry {
+  const indexedGeometries = new Map<any, IndexedGeometry[]>();
   const xDomain = xScale.domain;
   const xScaleType = xScale.type;
   const barGeometries: BarGeometry[] = [];
@@ -273,6 +283,14 @@ export function renderBars(
           }
         : undefined;
 
+    if (groupAccessors) {
+      const [colorGroup] = getAccessorValues(datum!.datum, groupAccessors);
+      if (colorGroup) {
+        console.log(colorGroup);
+        color = colorGroup;
+      }
+    }
+
     const barGeometry: BarGeometry = {
       displayValue,
       x,
@@ -303,6 +321,11 @@ export function renderBars(
   };
 }
 
+export interface RenderLineGeometry {
+  lineGeometry: LineGeometry;
+  indexedGeometries: Map<any, IndexedGeometry[]>;
+}
+
 export function renderLine(
   shift: number,
   dataset: DataSeriesDatum[],
@@ -315,10 +338,7 @@ export function renderLine(
   seriesKey: any[],
   xScaleOffset: number,
   seriesStyle?: LineSeriesStyle,
-): {
-  lineGeometry: LineGeometry;
-  indexedGeometries: Map<any, IndexedGeometry[]>;
-} {
+): RenderLineGeometry {
   const isLogScale = isLogarithmicScale(yScale);
 
   const pathGenerator = line<DataSeriesDatum>()
@@ -363,6 +383,11 @@ export function renderLine(
   };
 }
 
+export interface RenderAreaGeometry {
+  areaGeometry: AreaGeometry;
+  indexedGeometries: Map<any, IndexedGeometry[]>;
+}
+
 export function renderArea(
   shift: number,
   dataset: DataSeriesDatum[],
@@ -375,22 +400,19 @@ export function renderArea(
   seriesKey: any[],
   xScaleOffset: number,
   seriesStyle?: AreaSeriesStyle,
-): {
-  areaGeometry: AreaGeometry;
-  indexedGeometries: Map<any, IndexedGeometry[]>;
-} {
+): RenderAreaGeometry {
   const isLogScale = isLogarithmicScale(yScale);
 
   const pathGenerator = area<DataSeriesDatum>()
-    .x((datum: DataSeriesDatum) => xScale.scale(datum.x) - xScaleOffset)
-    .y1((datum: DataSeriesDatum) => yScale.scale(datum.y1))
-    .y0((datum: DataSeriesDatum) => {
-      if (datum.y0 === null || (isLogScale && datum.y0 <= 0)) {
+    .x(({ x }) => xScale.scale(x) - xScaleOffset)
+    .y1(({ y1 }) => yScale.scale(y1))
+    .y0(({ y0 }) => {
+      if (y0 === null || (isLogScale && y0 <= 0)) {
         return yScale.range[0];
       }
-      return yScale.scale(datum.y0);
+      return yScale.scale(y0);
     })
-    .defined((datum: DataSeriesDatum) => datum.y1 !== null && !(isLogScale && datum.y1 <= 0))
+    .defined(({ y1 }) => y1 !== null && !(isLogScale && y1 <= 0))
     .curve(getCurveFactory(curve));
 
   const y1Line = pathGenerator.lineY1()(dataset);

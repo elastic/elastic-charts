@@ -39,6 +39,7 @@ describe('commons utilities', () => {
       array2: number[];
       nested: Partial<TestType>;
     }
+
     type PartialTestType = RecursivePartial<TestType>;
     const base: TestType = {
       string: 'string1',

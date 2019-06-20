@@ -6,12 +6,12 @@ import {
   LineSeriesStyle,
   RectAnnotationStyle,
 } from '../themes/theme';
-import { Accessor } from '../utils/accessor';
+import { Accessor, AccessorFn } from '../utils/accessor';
 import { Omit } from '../utils/commons';
 import { AnnotationId, AxisId, GroupId, SpecId } from '../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../utils/scales/scales';
 import { CurveType } from './curves';
-import { DataSeriesColorsValues } from './series';
+import { DataSeriesValues } from './series';
 
 export type Datum = any;
 export type Rotation = 0 | 90 | -90 | 180;
@@ -83,7 +83,7 @@ export interface SeriesSpec {
   displayValueSettings?: DisplayValueSpec;
 }
 
-export type CustomSeriesColorsMap = Map<DataSeriesColorsValues, string>;
+export type CustomSeriesColorsMap = Map<DataSeriesValues, string>;
 
 export interface SeriesAccessors {
   /** The field name of the x value on Datum object */
@@ -96,8 +96,8 @@ export interface SeriesAccessors {
   splitSeriesAccessors?: Accessor[];
   /** An array of fields thats indicates the stack membership */
   stackAccessors?: Accessor[];
-  /** An optional array of field name thats indicates the stack membership */
-  colorAccessors?: Accessor[];
+  /** An optional array of field name thats indicates the color grouping */
+  groupAccessors?: (Accessor | AccessorFn)[];
 }
 
 export interface SeriesScales {

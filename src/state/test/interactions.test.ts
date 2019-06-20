@@ -1,6 +1,6 @@
 import { BarGeometry } from '../../lib/series/rendering';
 import { computeXScale, computeYScales } from '../../lib/series/scales';
-import { DataSeriesColorsValues } from '../../lib/series/series';
+import { DataSeriesValues } from '../../lib/series/series';
 import { BarSeriesSpec, BasicSeriesSpec, RectAnnotationSpec } from '../../lib/series/specs';
 import { getAnnotationId, getGroupId, getSpecId } from '../../lib/utils/ids';
 import { TooltipType } from '../../lib/utils/interactions';
@@ -52,7 +52,7 @@ function initStore(spec: BasicSeriesSpec) {
       stacked: [],
       nonStacked: [],
     },
-    seriesColors: new Map<string, DataSeriesColorsValues>(),
+    seriesColors: new Map<string, DataSeriesValues>(),
     xDomain: {
       scaleType: spec.xScaleType,
       domain: [0, 1],

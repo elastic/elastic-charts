@@ -22,8 +22,8 @@ import {
 } from '../lib/series/rendering';
 import { countBarsInCluster } from '../lib/series/scales';
 import {
-  DataSeriesColorsValues,
-  findDataSeriesByColorValues,
+  DataSeriesValues,
+  getSeriesIndex,
   FormattedDataSeries,
   getSeriesColorMap,
   RawDataSeries,
@@ -92,13 +92,12 @@ export interface SeriesDomainsAndData {
     stacked: FormattedDataSeries[];
     nonStacked: FormattedDataSeries[];
   };
-  seriesColors: Map<string, DataSeriesColorsValues>;
 }
 
 export type ElementClickListener = (values: GeometryValue[]) => void;
 export type ElementOverListener = (values: GeometryValue[]) => void;
 export type BrushEndListener = (min: number, max: number) => void;
-export type LegendItemListener = (dataSeriesIdentifiers: DataSeriesColorsValues | null) => void;
+export type LegendItemListener = (dataSeriesIdentifiers: DataSeriesValues | null) => void;
 
 export class ChartStore {
   debug = false;
@@ -155,7 +154,7 @@ export class ChartStore {
   legendItems: Map<string, LegendItem> = new Map();
   highlightedLegendItemKey: IObservableValue<string | null> = observable.box(null);
   selectedLegendItemKey: IObservableValue<string | null> = observable.box(null);
-  deselectedDataSeries: DataSeriesColorsValues[] | null = null;
+  deselectedDataSeries: DataSeriesValues[] | null = null;
   customSeriesColors: Map<string, string> = new Map();
   seriesColorMap: Map<string, string> = new Map();
   totalBarsInCluster?: number;
@@ -551,10 +550,10 @@ export class ChartStore {
     const legendItem = this.legendItems.get(legendItemKey);
 
     if (legendItem) {
-      if (findDataSeriesByColorValues(this.deselectedDataSeries, legendItem.value) > -1) {
+      if (getSeriesIndex(this.deselectedDataSeries, legendItem.value) > -1) {
         this.deselectedDataSeries = [...this.legendItems.values()]
-          .filter((item: LegendItem) => item.key !== legendItemKey)
-          .map((item: LegendItem) => item.value);
+          .filter(({ key }) => key !== legendItemKey)
+          .map(({ value }) => value);
       } else {
         this.deselectedDataSeries = [legendItem.value];
       }
@@ -578,7 +577,7 @@ export class ChartStore {
     if (legendItem) {
       const { specId } = legendItem.value;
 
-      const spec = this.seriesSpecs.get(specId);
+      const spec = specId && this.seriesSpecs.get(specId);
       if (spec) {
         if (spec.customSeriesColors) {
           spec.customSeriesColors.set(legendItem.value, color);
@@ -785,28 +784,16 @@ export class ChartStore {
     const updatedCustomSeriesColors = getUpdatedCustomSeriesColors(this.seriesSpecs);
     this.customSeriesColors = new Map([...this.customSeriesColors, ...updatedCustomSeriesColors]);
 
-    // tslint:disable-next-line:no-console
-    // console.log({ colors: seriesDomains.seriesColors });
-
-    // tslint:disable-next-line:no-console
-    // console.log({ seriesDomains });
-    this.seriesColorMap = getSeriesColorMap(
-      seriesDomains.seriesColors,
-      this.chartTheme.colors,
-      this.customSeriesColors,
-    );
+    this.seriesColorMap = getSeriesColorMap(new Map(), this.chartTheme.colors, this.customSeriesColors);
 
     this.legendItems = computeLegend(
-      seriesDomains.seriesColors,
+      new Map(),
       this.seriesColorMap,
       this.seriesSpecs,
       this.chartTheme.colors.defaultVizColor,
       this.axesSpecs,
       this.deselectedDataSeries,
     );
-
-    // tslint:disable-next-line:no-console
-    // console.log({ legendItems: this.legendItems });
 
     const {
       xDomain,
@@ -869,8 +856,6 @@ export class ChartStore {
       this.enableHistogramMode.get(),
     );
 
-    // tslint:disable-next-line:no-console
-    // console.log({ seriesGeometries });
     this.geometries = seriesGeometries.geometries;
     this.xScale = seriesGeometries.scales.xScale;
     this.yScales = seriesGeometries.scales.yScales;
@@ -892,8 +877,6 @@ export class ChartStore {
       this.legendPosition,
       barsPadding,
     );
-    // tslint:disable-next-line:no-console
-    // console.log({axisTicksPositions});
     this.axesPositions = axisTicksPositions.axisPositions;
     this.axesTicks = axisTicksPositions.axisTicks;
     this.axesVisibleTicks = axisTicksPositions.axisVisibleTicks;

@@ -16,10 +16,10 @@ import {
 import { computeXScale, computeYScales, countBarsInCluster } from '../lib/series/scales';
 import {
   DataSeries,
-  DataSeriesColorsValues,
-  findDataSeriesByColorValues,
+  DataSeriesValues,
+  getSeriesIndex,
   FormattedDataSeries,
-  getColorValuesAsString,
+  getSeriesKey,
   getFormattedDataseries,
   getSplittedSeries,
 } from '../lib/series/series';
@@ -69,10 +69,10 @@ export interface GeometriesCounts {
 }
 
 export function updateDeselectedDataSeries(
-  series: DataSeriesColorsValues[] | null,
-  value: DataSeriesColorsValues,
-): DataSeriesColorsValues[] {
-  const seriesIndex = findDataSeriesByColorValues(series, value);
+  series: DataSeriesValues[] | null,
+  value: DataSeriesValues,
+): DataSeriesValues[] {
+  const seriesIndex = getSeriesIndex(series, value);
   const updatedSeries = series ? [...series] : [];
 
   if (seriesIndex > -1) {
@@ -87,9 +87,9 @@ export function getUpdatedCustomSeriesColors(seriesSpecs: Map<SpecId, BasicSerie
   const updatedCustomSeriesColors = new Map();
   seriesSpecs.forEach((spec: BasicSeriesSpec) => {
     if (spec.customSeriesColors) {
-      spec.customSeriesColors.forEach((color: string, seriesColorValues: DataSeriesColorsValues) => {
-        const { colorValues, specId } = seriesColorValues;
-        const seriesLabel = getColorValuesAsString(colorValues, specId);
+      spec.customSeriesColors.forEach((color: string, seriesColorValues: DataSeriesValues) => {
+        const { specId, accessors, group } = seriesColorValues;
+        const seriesLabel = getSeriesKey(specId, accessors, group);
         updatedCustomSeriesColors.set(seriesLabel, color);
       });
     }
@@ -109,11 +109,9 @@ export function computeSeriesDomains(
   seriesSpecs: Map<SpecId, BasicSeriesSpec>,
   domainsByGroupId: Map<GroupId, DomainRange>,
   customXDomain?: DomainRange | Domain,
-  deselectedDataSeries?: DataSeriesColorsValues[] | null,
+  deselectedDataSeries?: DataSeriesValues[] | null,
 ): SeriesDomainsAndData {
-  const { splittedSeries, xValues, seriesColors } = getSplittedSeries(seriesSpecs, deselectedDataSeries);
-  // tslint:disable-next-line:no-console
-  // console.log({ splittedSeries, xValues, seriesColors });
+  const { splittedSeries, xValues } = getSplittedSeries(seriesSpecs, deselectedDataSeries);
   const splittedDataSeries = [...splittedSeries.values()];
   const specsArray = [...seriesSpecs.values()];
 
@@ -121,15 +119,12 @@ export function computeSeriesDomains(
   const yDomain = mergeYDomain(splittedSeries, specsArray, domainsByGroupId);
 
   const formattedDataSeries = getFormattedDataseries(specsArray, splittedSeries);
-  // tslint:disable-next-line:no-console
-  // console.log({ formattedDataSeries, xDomain, yDomain });
 
   return {
     xDomain,
     yDomain,
     splittedDataSeries,
     formattedDataSeries,
-    seriesColors,
   };
 }
 
@@ -380,7 +375,7 @@ export function renderGeometries(
     if (spec === undefined) {
       continue;
     }
-    const color = seriesColorsMap.get(ds.seriesColorKey) || defaultColor;
+    const color = seriesColorsMap.get(ds.seriesKey) || defaultColor;
 
     if (isBarSeriesSpec(spec)) {
       const shift = isStacked ? indexOffset : indexOffset + i;
@@ -412,9 +407,10 @@ export function renderGeometries(
         yScale,
         color,
         ds.specId,
-        ds.key,
+        ds.keys,
         displayValueSettings,
         barSeriesStyle,
+        spec.groupAccessors,
       );
       barGeometriesIndex = mergeGeometriesIndexes(barGeometriesIndex, renderedBars.indexedGeometries);
       bars.push(...renderedBars.barGeometries);
@@ -435,7 +431,7 @@ export function renderGeometries(
         (spec as LineSeriesSpec).curve || CurveType.LINEAR,
         ds.specId,
         Boolean(spec.y0Accessors),
-        ds.key,
+        ds.keys,
         xScaleOffset,
         lineSeriesStyle,
       );
@@ -459,7 +455,7 @@ export function renderGeometries(
         (spec as AreaSeriesSpec).curve || CurveType.LINEAR,
         ds.specId,
         Boolean(spec.y0Accessors),
-        ds.key,
+        ds.keys,
         xScaleOffset,
         areaSeriesStyle,
       );

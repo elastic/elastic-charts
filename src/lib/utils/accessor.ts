@@ -10,12 +10,19 @@ export type Accessor = AccessorString;
  */
 export function getAccessorFn(accessor: Accessor): AccessorFn {
   if (typeof accessor === 'string' || typeof accessor === 'number') {
-    return (datum: Datum) => {
-      return datum[accessor];
-    };
+    return (datum: Datum) => datum[accessor];
   }
   if (typeof accessor === 'function') {
     return accessor;
   }
   throw new Error('Accessor must be a string or a function');
+}
+
+/**
+ * Get array of values that from accessors
+ */
+export function getAccessorValues(datum: Datum, accessors: (Accessor | AccessorFn)[] = []): any[] {
+  return accessors
+    .map((accessor) => (typeof accessor === 'function' ? accessor(datum) : datum[accessor]))
+    .filter((value) => value !== undefined && value !== null);
 }

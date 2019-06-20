@@ -1,7 +1,7 @@
 import { getSpecId } from '../utils/ids';
 import { GeometryId } from './rendering';
-import { DataSeriesColorsValues } from './series';
-import { belongsToDataSeries, isEqualSeriesKey } from './series_utils';
+import { DataSeriesValues } from './series';
+import { belongsToDataSeries, isArrayEqual } from './series_utils';
 
 describe('Series utility functions', () => {
   test('can compare series keys for identity', () => {
@@ -11,11 +11,11 @@ describe('Series utility functions', () => {
     const seriesKeyD = ['d'];
     const seriesKeyE = ['b', 'a', 'c'];
 
-    expect(isEqualSeriesKey(seriesKeyA, seriesKeyB)).toBe(true);
-    expect(isEqualSeriesKey(seriesKeyB, seriesKeyC)).toBe(false);
-    expect(isEqualSeriesKey(seriesKeyA, seriesKeyD)).toBe(false);
-    expect(isEqualSeriesKey(seriesKeyA, seriesKeyE)).toBe(false);
-    expect(isEqualSeriesKey(seriesKeyA, [])).toBe(false);
+    expect(isArrayEqual(seriesKeyA, seriesKeyB)).toBe(true);
+    expect(isArrayEqual(seriesKeyB, seriesKeyC)).toBe(false);
+    expect(isArrayEqual(seriesKeyA, seriesKeyD)).toBe(false);
+    expect(isArrayEqual(seriesKeyA, seriesKeyE)).toBe(false);
+    expect(isArrayEqual(seriesKeyA, [])).toBe(false);
   });
 
   test('can determine if a geometry id belongs to a data series', () => {
@@ -24,17 +24,17 @@ describe('Series utility functions', () => {
       seriesKey: ['a', 'b', 'c'],
     };
 
-    const dataSeriesValuesA: DataSeriesColorsValues = {
+    const dataSeriesValuesA: DataSeriesValues = {
       specId: getSpecId('a'),
       colorValues: ['a', 'b', 'c'],
     };
 
-    const dataSeriesValuesB: DataSeriesColorsValues = {
+    const dataSeriesValuesB: DataSeriesValues = {
       specId: getSpecId('b'),
       colorValues: ['a', 'b', 'c'],
     };
 
-    const dataSeriesValuesC: DataSeriesColorsValues = {
+    const dataSeriesValuesC: DataSeriesValues = {
       specId: getSpecId('a'),
       colorValues: ['a', 'b', 'd'],
     };

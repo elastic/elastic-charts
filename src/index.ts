@@ -11,7 +11,7 @@ export * from './lib/themes/theme_commons';
 export { CurveType } from './lib/series/curves';
 export { timeFormatter, niceTimeFormatter, niceTimeFormatByDay } from './utils/data/formatters';
 export { DataGenerator } from './utils/data_generators/data_generator';
-export { DataSeriesColorsValues } from './lib/series/series';
+export { DataSeriesValues } from './lib/series/series';
 export {
   AnnotationDomainType,
   AnnotationDomainTypes,

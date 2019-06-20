@@ -1,6 +1,6 @@
 import { TooltipValue } from '../utils/interactions';
 import { IndexedGeometry } from './rendering';
-import { getColorValuesAsString } from './series';
+import { getSeriesKey } from './series';
 import { AxisSpec, BasicSeriesSpec } from './specs';
 
 export function getSeriesTooltipValues(tooltipValues: TooltipValue[]): Map<string, any> {
@@ -33,7 +33,7 @@ export function formatTooltip(
     value: { x, y },
     geometryId: { seriesKey },
   } = searchIndexValue;
-  const seriesKeyAsString = getColorValuesAsString(seriesKey, id);
+  const seriesKeyAsString = getSeriesKey(id, seriesKey);
   let name: string | undefined;
   if (seriesKey.length > 0) {
     name = seriesKey.join(' - ');

@@ -1,11 +1,12 @@
 import { ColorConfig } from '../themes/theme';
-import { Accessor } from '../utils/accessor';
+import { Accessor, getAccessorValues } from '../utils/accessor';
 import { GroupId, SpecId } from '../utils/ids';
 import { splitSpecsByGroupId, YBasicSeriesSpec } from './domains/y_domain';
 import { formatNonStackedDataSeriesValues } from './nonstacked_series_utils';
-import { isEqualSeriesKey } from './series_utils';
+import { isArrayEqual } from './series_utils';
 import { BasicSeriesSpec, Datum, SeriesAccessors } from './specs';
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
+import { Merge } from '../utils/commons';
 
 export interface RawDataSeriesDatum {
   /** the x value */
@@ -18,32 +19,32 @@ export interface RawDataSeriesDatum {
   datum?: any;
 }
 
-export interface DataSeriesDatum {
-  x: number | string;
-  /** the max y value */
-  y1: number | null;
-  /** the minimum y value */
-  y0: number | null;
-  /** initial y1 value, non stacked */
-  initialY1: number | null;
-  /** initial y0 value, non stacked */
-  initialY0: number | null;
-  /** the datum */
-  datum?: any;
-}
+export type DataSeriesDatum = Merge<
+  RawDataSeriesDatum,
+  {
+    /** the minimum y value */
+    y0: number | null;
+    initialY1: number | null;
+    /** initial y0 value, non stacked */
+    initialY0: number | null;
+    /** the datum */
+    datum?: any;
+  }
+>;
 
-export interface DataSeries {
-  specId: SpecId;
-  key: any[];
-  seriesColorKey: string;
-  data: DataSeriesDatum[];
-}
 export interface RawDataSeries {
   specId: SpecId;
-  key: any[];
-  seriesColorKey: string;
+  keys: any[];
+  seriesKey: string;
   data: RawDataSeriesDatum[];
 }
+
+export type DataSeries = Merge<
+  RawDataSeries,
+  {
+    data: DataSeriesDatum[];
+  }
+>;
 
 export interface FormattedDataSeries {
   groupId: GroupId;
@@ -57,23 +58,21 @@ export interface DataSeriesCounts {
   areaSeries: number;
 }
 
-export interface DataSeriesColorsValues {
-  specId: SpecId;
-  colorValues: any[];
+export interface DataSeriesValues {
+  specId?: SpecId;
+  group?: string;
+  accessors?: any[];
   lastValue?: any;
   specSortIndex?: number;
 }
 
-export function findDataSeriesByColorValues(
-  series: DataSeriesColorsValues[] | null,
-  value: DataSeriesColorsValues,
-): number {
+export function getSeriesIndex(series: DataSeriesValues[] | null, value: DataSeriesValues): number {
   if (!series) {
     return -1;
   }
 
-  return series.findIndex((item: DataSeriesColorsValues) => {
-    return isEqualSeriesKey(item.colorValues, value.colorValues) && item.specId === value.specId;
+  return series.findIndex((item: DataSeriesValues) => {
+    return isArrayEqual(item!.accessors, value!.accessors) && item.specId === value.specId;
   });
 }
 
@@ -87,44 +86,44 @@ export function splitSeries(
   specId: SpecId,
 ): {
   rawDataSeries: RawDataSeries[];
-  colorsValues: Map<string, any[]>;
   xValues: Set<any>;
   splitSeriesLastValues: Map<string, any>;
 } {
-  const { xAccessor, yAccessors, y0Accessors, splitSeriesAccessors = [] } = accessors;
-  const colorAccessors = accessors.colorAccessors ? accessors.colorAccessors : splitSeriesAccessors;
+  const { xAccessor, yAccessors, y0Accessors, splitSeriesAccessors = [], groupAccessors } = accessors;
   const isMultipleY = yAccessors && yAccessors.length > 1;
   const series = new Map<string, RawDataSeries>();
-  const colorsValues = new Map<string, any[]>();
   const xValues = new Set<any>();
   const splitSeriesLastValues = new Map<string, any>();
 
   data.forEach((datum) => {
-    const seriesKey = getAccessorsValues(datum, splitSeriesAccessors);
+    const splitSeriesKeys = getAccessorValues(datum, splitSeriesAccessors);
+    const [groupKey] = getAccessorValues(datum, groupAccessors);
+
     if (isMultipleY) {
       yAccessors.forEach((accessor, index) => {
-        const colorValues = getColorValues(datum, colorAccessors, accessor);
-        const colorValuesKey = getColorValuesAsString(colorValues, specId);
-        colorsValues.set(colorValuesKey, colorValues);
+        const seriesKeys = [...splitSeriesKeys, accessor];
+        const seriesKey = getSeriesKey(specId, seriesKeys);
+
+        console.log('nick - 1', seriesKey);
+
         const cleanedDatum = cleanDatum(datum, xAccessor, accessor, y0Accessors && y0Accessors[index]);
-        splitSeriesLastValues.set(colorValuesKey, cleanedDatum.y1);
+        splitSeriesLastValues.set(seriesKey, cleanedDatum.y1);
         xValues.add(cleanedDatum.x);
-        updateSeriesMap(series, [...seriesKey, accessor], cleanedDatum, specId, colorValuesKey);
-      }, {});
+        updateSeriesMap(series, seriesKeys, seriesKey, cleanedDatum, specId);
+      });
     } else {
-      const colorValues = getColorValues(datum, colorAccessors);
-      const colorValuesKey = getColorValuesAsString(colorValues, specId);
-      colorsValues.set(colorValuesKey, colorValues);
+      const seriesKey = getSeriesKey(specId, splitSeriesKeys);
+
+      console.log('nick - 2', seriesKey);
       const cleanedDatum = cleanDatum(datum, xAccessor, yAccessors[0], y0Accessors && y0Accessors[0]);
-      splitSeriesLastValues.set(colorValuesKey, cleanedDatum.y1);
+      splitSeriesLastValues.set(seriesKey, cleanedDatum.y1);
       xValues.add(cleanedDatum.x);
-      updateSeriesMap(series, [...seriesKey], cleanedDatum, specId, colorValuesKey);
+      updateSeriesMap(series, splitSeriesKeys, seriesKey, cleanedDatum, specId);
     }
-  }, {});
+  });
 
   return {
     rawDataSeries: [...series.values()],
-    colorsValues,
     xValues,
     splitSeriesLastValues,
   };
@@ -136,20 +135,19 @@ export function splitSeries(
  */
 function updateSeriesMap(
   seriesMap: Map<string, RawDataSeries>,
-  seriesKey: any[],
+  keys: any[],
+  seriesKey: string,
   datum: RawDataSeriesDatum,
   specId: SpecId,
-  seriesColorKey: string,
 ): Map<string, RawDataSeries> {
-  const seriesKeyString = seriesKey.join('___');
-  const series = seriesMap.get(seriesKeyString);
+  const series = seriesMap.get(seriesKey);
   if (series) {
     series.data.push(datum);
   } else {
-    seriesMap.set(seriesKeyString, {
+    seriesMap.set(seriesKey, {
       specId,
-      seriesColorKey,
-      key: seriesKey,
+      keys,
+      seriesKey,
       data: [datum],
     });
   }
@@ -157,31 +155,10 @@ function updateSeriesMap(
 }
 
 /**
- * Get the array of values that forms a series key
+ * Get series key as string
  */
-function getAccessorsValues(datum: Datum, accessors: Accessor[] = []): any[] {
-  return accessors
-    .map((accessor) => {
-      return datum[accessor];
-    })
-    .filter((value) => value !== undefined);
-}
-
-/**
- * Get the array of values that forms a series key
- */
-function getColorValues(datum: Datum, colorAccessors: Accessor[] = [], yAccessorValue?: any): any[] {
-  const colorValues = getAccessorsValues(datum, colorAccessors);
-  if (yAccessorValue) {
-    return [...colorValues, yAccessorValue];
-  }
-  return colorValues;
-}
-/**
- * Get the array of values that forms a series key
- */
-export function getColorValuesAsString(colorValues: any[], specId: SpecId): string {
-  return `specId:{${specId}},colors:{${colorValues}}`;
+export function getSeriesKey(specId?: SpecId, accessors: any[] = []): string {
+  return `specId:{${specId}},accessors:{${accessors}}`;
 }
 
 /**
@@ -284,43 +261,34 @@ export function getRawDataSeries(
 
 export function getSplittedSeries(
   seriesSpecs: Map<SpecId, BasicSeriesSpec>,
-  deselectedDataSeries?: DataSeriesColorsValues[] | null,
+  deselectedDataSeries?: DataSeriesValues[] | null,
 ): {
   splittedSeries: Map<SpecId, RawDataSeries[]>;
-  seriesColors: Map<string, DataSeriesColorsValues>;
   xValues: Set<any>;
 } {
   const splittedSeries = new Map<SpecId, RawDataSeries[]>();
-  const seriesColors = new Map<string, DataSeriesColorsValues>();
   const xValues: Set<any> = new Set();
   for (const [specId, spec] of seriesSpecs) {
     const dataSeries = splitSeries(spec.data, spec, specId);
     let currentRawDataSeries = dataSeries.rawDataSeries;
     if (deselectedDataSeries) {
       currentRawDataSeries = dataSeries.rawDataSeries.filter(
-        (series): boolean => {
-          const seriesValues = {
-            specId,
-            colorValues: series.key,
-          };
-
-          return findDataSeriesByColorValues(deselectedDataSeries, seriesValues) < 0;
-        },
+        (series): boolean => getSeriesIndex(deselectedDataSeries, series) < 0,
       );
     }
 
     splittedSeries.set(specId, currentRawDataSeries);
 
-    dataSeries.colorsValues.forEach((colorValues, key) => {
-      const lastValue = dataSeries.splitSeriesLastValues.get(key);
+    // dataSeries.colorsValues.forEach((colorValues, key) => {
+    //   const lastValue = dataSeries.splitSeriesLastValues.get(key);
 
-      seriesColors.set(key, {
-        specId,
-        specSortIndex: spec.sortIndex,
-        colorValues,
-        lastValue,
-      });
-    });
+    //   seriesColors.set(key, {
+    //     specId,
+    //     specSortIndex: spec.sortIndex,
+    //     colorValues,
+    //     lastValue,
+    //   });
+    // });
 
     for (const xValue of dataSeries.xValues) {
       xValues.add(xValue);
@@ -328,19 +296,15 @@ export function getSplittedSeries(
   }
   return {
     splittedSeries,
-    seriesColors,
     xValues,
   };
 }
 
 export function getSortedDataSeriesColorsValuesMap(
-  colorValuesMap: Map<string, DataSeriesColorsValues>,
-): Map<string, DataSeriesColorsValues> {
+  colorValuesMap: Map<string, DataSeriesValues>,
+): Map<string, DataSeriesValues> {
   const seriesColorsArray = [...colorValuesMap];
-  seriesColorsArray.sort((seriesA, seriesB) => {
-    const [, colorValuesA] = seriesA;
-    const [, colorValuesB] = seriesB;
-
+  seriesColorsArray.sort(([, colorValuesA], [, colorValuesB]) => {
     const specAIndex = colorValuesA.specSortIndex != null ? colorValuesA.specSortIndex : colorValuesMap.size;
     const specBIndex = colorValuesB.specSortIndex != null ? colorValuesB.specSortIndex : colorValuesMap.size;
 
@@ -351,14 +315,14 @@ export function getSortedDataSeriesColorsValuesMap(
 }
 
 export function getSeriesColorMap(
-  seriesColors: Map<string, DataSeriesColorsValues>,
+  seriesColors: Map<string, DataSeriesValues>,
   chartColors: ColorConfig,
   customColors: Map<string, string>,
 ): Map<string, string> {
   const seriesColorMap = new Map<string, string>();
   let counter = 0;
 
-  seriesColors.forEach((value: DataSeriesColorsValues, seriesColorKey: string) => {
+  seriesColors.forEach((_, seriesColorKey: string) => {
     const customSeriesColor: string | undefined = customColors.get(seriesColorKey);
     const color = customSeriesColor || chartColors.vizColors[counter % chartColors.vizColors.length];
 

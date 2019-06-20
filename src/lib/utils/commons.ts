@@ -13,6 +13,9 @@ export function clamp(value: number, min: number, max: number): number {
 // Can remove once we upgrade to TypesScript >= 3.5
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
+// Merge two types with overrides
+export type Merge<M, N> = Omit<M, Extract<keyof M, keyof N>> & N;
+
 /**
  * Replaces all properties on any type as optional, includes nested types
  *

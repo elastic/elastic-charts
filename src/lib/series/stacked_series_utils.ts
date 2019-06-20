@@ -100,8 +100,8 @@ export function formatStackedDataSeriesValues(dataseries: RawDataSeries[], scale
     });
     return {
       specId: ds.specId,
-      key: ds.key,
-      seriesColorKey: ds.seriesColorKey,
+      keys: ds.keys,
+      seriesKey: ds.seriesKey,
       data: newData,
     };
   });

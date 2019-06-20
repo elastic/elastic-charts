@@ -15,9 +15,9 @@ export function formatNonStackedDataValues(dataSeries: RawDataSeries, scaleToExt
   const len = dataSeries.data.length;
   let i;
   const formattedValues: DataSeries = {
-    key: dataSeries.key,
+    keys: dataSeries.keys,
     specId: dataSeries.specId,
-    seriesColorKey: dataSeries.seriesColorKey,
+    seriesKey: dataSeries.seriesKey,
     data: [],
   };
   for (i = 0; i < len; i++) {

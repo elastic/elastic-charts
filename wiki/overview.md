@@ -148,7 +148,7 @@ export interface SeriesAccessors {
   /** An array of fields thats indicates the stack membership */
   stackAccessors?: Accessor[];
   /** An optional array of field name thats indicates the stack membership */
-  colorAccessors?: Accessor[];
+  groupAccessors?: Accessor[];
 }
 
 export interface SeriesScales {
@@ -217,11 +217,11 @@ In the case of small multiples, each `SplittedSeries` computes its own x and y d
 ### Colors
 
 Each data series can have its own color.
-The color is assigned through the `colorAccessors` prop that specifies which data attributes are used to define the color,
+The color is assigned through the `groupAccessors` prop that specifies which data attributes are used to define the color,
 for example:
 
 - a dataset without any split accessor or fields that can be used to identify a color will have a single color.
-- a dataset that has 1 variable to split the dataset into 3 different series, will have 3 different colors if that variable is specified through the `colorAccessors`.
-- a dataset with 2 split variables, each with 3 different values (a dataset with 3 \* 2 series) will have 6 different colors if the two variables are defined in `colorAccessors`
-- a dataset with 2 split variables, each with 3 different values, but only one specified in the `colorAccessors` will have only 3 colors.
-- if no `colorAccessors` is specified, `splitAccessors` will be used to identify how to coloring the series
+- a dataset that has 1 variable to split the dataset into 3 different series, will have 3 different colors if that variable is specified through the `groupAccessors`.
+- a dataset with 2 split variables, each with 3 different values (a dataset with 3 \* 2 series) will have 6 different colors if the two variables are defined in `groupAccessors`
+- a dataset with 2 split variables, each with 3 different values, but only one specified in the `groupAccessors` will have only 3 colors.
+- if no `groupAccessors` is specified, `splitAccessors` will be used to identify how to coloring the series

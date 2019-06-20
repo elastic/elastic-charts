@@ -11,7 +11,7 @@ import {
   CustomSeriesColorsMap,
   DARK_THEME,
   DataGenerator,
-  DataSeriesColorsValues,
+  DataSeriesValues,
   DEFAULT_MISSING_COLOR,
   getAxisId,
   getSpecId,
@@ -413,14 +413,12 @@ storiesOf('Stylings', module)
   })
   .add('custom series colors through spec props', () => {
     const barCustomSeriesColors: CustomSeriesColorsMap = new Map();
-    const barDataSeriesColorValues: DataSeriesColorsValues = {
-      colorValues: ['cloudflare.com', 'direct-cdn', 'y2'],
-      specId: getSpecId('bars'),
+    const barDataSeriesColorValues: DataSeriesValues = {
+      group: 'red',
     };
 
     const lineCustomSeriesColors: CustomSeriesColorsMap = new Map();
-    const lineDataSeriesColorValues: DataSeriesColorsValues = {
-      colorValues: [],
+    const lineDataSeriesColorValues: DataSeriesValues = {
       specId: getSpecId('lines'),
     };
 
@@ -452,10 +450,10 @@ storiesOf('Stylings', module)
           xAccessor="x"
           yAccessors={['y1', 'y2']}
           splitSeriesAccessors={['g1', 'g2']}
-          customSeriesColors={barCustomSeriesColors}
+          groupAccessors={['color']}
           data={TestDatasets.BARCHART_2Y2G}
         />
-        <LineSeries
+        {/* <LineSeries
           id={getSpecId('lines')}
           xScaleType={ScaleType.Linear}
           yScaleType={ScaleType.Linear}
@@ -463,7 +461,7 @@ storiesOf('Stylings', module)
           yAccessors={['y']}
           customSeriesColors={lineCustomSeriesColors}
           data={[{ x: 0, y: 3 }, { x: 1, y: 2 }, { x: 2, y: 4 }, { x: 3, y: 10 }]}
-        />
+        /> */}
       </Chart>
     );
   })
