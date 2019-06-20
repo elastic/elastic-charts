@@ -30,8 +30,8 @@ import {
   getAxisTickLabelPadding,
   mergeYCustomDomainsByGroupId,
 } from './axis_utils';
-import { CanvasTextBBoxCalculator } from './canvas_text_bbox_calculator';
-import { SvgTextBBoxCalculator } from './svg_text_bbox_calculator';
+import { CanvasTextBBoxCalculator } from '../../utils/bbox/canvas_text_bbox_calculator';
+import { SvgTextBBoxCalculator } from '../../utils/bbox/svg_text_bbox_calculator';
 
 // const chartScalesConfig: ScalesConfig = {
 //   ordinal: {

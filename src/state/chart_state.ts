@@ -7,7 +7,7 @@ import {
   getAxisTicksPositions,
   mergeYCustomDomainsByGroupId,
 } from '../lib/axes/axis_utils';
-import { CanvasTextBBoxCalculator } from '../lib/axes/canvas_text_bbox_calculator';
+import { CanvasTextBBoxCalculator } from '../utils/bbox/canvas_text_bbox_calculator';
 import { XDomain } from '../lib/series/domains/x_domain';
 import { YDomain } from '../lib/series/domains/y_domain';
 import { computeLegend, LegendItem } from '../lib/series/legend';
