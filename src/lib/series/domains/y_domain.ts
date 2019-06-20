@@ -5,7 +5,7 @@ import { isCompleteBound, isLowerBound, isUpperBound } from '../../axes/axis_uti
 import { BaseDomain } from './domain';
 import { RawDataSeries } from '../series';
 import { computeContinuousDataDomain } from '../../utils/domain';
-import { identity } from '../../utils/commons';
+import { identity } from '../../../utils/commons';
 import { sum } from 'd3-array';
 
 export type YDomain = BaseDomain & {

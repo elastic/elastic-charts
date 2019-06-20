@@ -38,7 +38,7 @@ import {
   Rotation,
 } from '../lib/series/specs';
 import { ColorConfig, Theme } from '../lib/themes/theme';
-import { identity, mergePartial } from '../lib/utils/commons';
+import { identity, mergePartial } from '../utils/commons';
 import { Dimensions } from '../lib/utils/dimensions';
 import { Domain } from '../lib/utils/domain';
 import { AxisId, GroupId, SpecId } from '../lib/utils/ids';

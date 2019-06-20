@@ -1,7 +1,7 @@
 import { bisectLeft } from 'd3-array';
 import { scaleLinear, scaleLog, scaleSqrt, scaleUtc } from 'd3-scale';
 import { DateTime } from 'luxon';
-import { clamp } from '../commons';
+import { clamp } from '../../../utils/commons';
 import { ScaleContinuousType, ScaleType, Scale } from './scales';
 
 const SCALES = {

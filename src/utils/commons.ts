@@ -1,3 +1,5 @@
+import * as uuid from 'uuid';
+
 export function identity<T>(value: T): T {
   return value;
 }
@@ -12,6 +14,18 @@ export function clamp(value: number, min: number, max: number): number {
 
 // Can remove once we upgrade to TypesScript >= 3.5
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+
+/**
+ * This function returns a function to generate ids.
+ * This can be used to generate unique, but predictable ids to pair labels
+ * with their inputs. It takes an optional prefix as a parameter. If you don't
+ * specify it, it generates a random id prefix. If you specify a custom prefix
+ * it should begin with an letter to be HTML4 compliant.
+ */
+export function htmlIdGenerator(idPrefix?: string) {
+  const prefix = idPrefix || `i${uuid.v1()}`;
+  return (suffix?: string) => `${prefix}_${suffix || uuid.v1()}`;
+}
 
 /**
  * Replaces all properties on any type as optional, includes nested types

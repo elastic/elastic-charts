@@ -3,7 +3,7 @@ import { Provider } from 'mobx-react';
 import React, { CSSProperties, Fragment } from 'react';
 import { SpecsParser } from '../specs/specs_parser';
 import { ChartStore } from '../state/chart_state';
-import { htmlIdGenerator } from '../utils/utils';
+import { htmlIdGenerator } from '../utils/commons';
 import { AnnotationTooltip } from './annotation_tooltips';
 import { ChartResizer } from './chart_resizer';
 import { Crosshair } from './crosshair';
