@@ -1,5 +1,5 @@
 import { getGroupId, getSpecId, SpecId } from '../../../utils/ids';
-import { ScaleType } from '../../utils/scales/scales';
+import { ScaleType } from '../../../utils/scales/scales';
 import { getSplittedSeries } from '../series';
 import { BasicSeriesSpec } from '../specs';
 import { convertXScaleTypes, findMinInterval, mergeXDomain } from './x_domain';

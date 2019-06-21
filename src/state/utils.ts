@@ -42,7 +42,7 @@ import { identity, mergePartial } from '../utils/commons';
 import { Dimensions } from '../lib/utils/dimensions';
 import { Domain } from '../lib/utils/domain';
 import { AxisId, GroupId, SpecId } from '../utils/ids';
-import { Scale } from '../lib/utils/scales/scales';
+import { Scale } from '../utils/scales/scales';
 import { SeriesDomainsAndData } from './chart_state';
 
 const MAX_ANIMATABLE_BARS = 300;

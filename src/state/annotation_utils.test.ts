@@ -11,9 +11,9 @@ import {
 import { DEFAULT_ANNOTATION_LINE_STYLE } from '../lib/themes/theme';
 import { Dimensions } from '../lib/utils/dimensions';
 import { AnnotationId, AxisId, getAnnotationId, getAxisId, getGroupId, GroupId } from '../utils/ids';
-import { ScaleBand } from '../lib/utils/scales/scale_band';
-import { ScaleContinuous } from '../lib/utils/scales/scale_continuous';
-import { Scale, ScaleType } from '../lib/utils/scales/scales';
+import { ScaleBand } from '../utils/scales/scale_band';
+import { ScaleContinuous } from '../utils/scales/scale_continuous';
+import { Scale, ScaleType } from '../utils/scales/scales';
 import {
   AnnotationLinePosition,
   AnnotationLineProps,

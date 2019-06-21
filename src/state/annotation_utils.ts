@@ -19,7 +19,7 @@ import {
 import { LineAnnotationStyle } from '../lib/themes/theme';
 import { Dimensions } from '../lib/utils/dimensions';
 import { AnnotationId, AxisId, GroupId } from '../utils/ids';
-import { Scale, ScaleType } from '../lib/utils/scales/scales';
+import { Scale, ScaleType } from '../utils/scales/scales';
 import { Point } from './chart_state';
 import { computeXScaleOffset, getAxesSpecForSpecId, isHorizontalRotation } from './utils';
 

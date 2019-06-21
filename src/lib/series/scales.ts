@@ -1,7 +1,7 @@
 import { GroupId } from '../../utils/ids';
-import { ScaleBand } from '../utils/scales/scale_band';
-import { ScaleContinuous } from '../utils/scales/scale_continuous';
-import { Scale, ScaleType } from '../utils/scales/scales';
+import { ScaleBand } from '../../utils/scales/scale_band';
+import { ScaleContinuous } from '../../utils/scales/scale_continuous';
+import { Scale, ScaleType } from '../../utils/scales/scales';
 import { XDomain } from './domains/x_domain';
 import { YDomain } from './domains/y_domain';
 import { FormattedDataSeries } from './series';

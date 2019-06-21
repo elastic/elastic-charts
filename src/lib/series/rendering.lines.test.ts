@@ -2,7 +2,7 @@
 
 import { computeSeriesDomains } from '../../state/utils';
 import { getGroupId, getSpecId, SpecId } from '../../utils/ids';
-import { ScaleType } from '../utils/scales/scales';
+import { ScaleType } from '../../utils/scales/scales';
 import { CurveType } from '../../utils/curves';
 import { IndexedGeometry, LineGeometry, PointGeometry, renderLine } from './rendering';
 import { computeXScale, computeYScales } from './scales';

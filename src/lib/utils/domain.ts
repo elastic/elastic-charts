@@ -1,7 +1,7 @@
 import { extent, sum } from 'd3-array';
 import { nest } from 'd3-collection';
 import { Accessor, AccessorFn } from './accessor';
-import { ScaleType } from './scales/scales';
+import { ScaleType } from '../../utils/scales/scales';
 
 export type Domain = any[];
 

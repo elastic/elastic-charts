@@ -13,8 +13,8 @@ import {
 import { BARCHART_1Y0G, BARCHART_1Y1G } from '../utils/data_samples/test_dataset';
 import { LIGHT_THEME } from '../lib/themes/light_theme';
 import { AxisId, getGroupId, getSpecId, SpecId } from '../utils/ids';
-import { ScaleContinuous } from '../lib/utils/scales/scale_continuous';
-import { ScaleType } from '../lib/utils/scales/scales';
+import { ScaleContinuous } from '../utils/scales/scale_continuous';
+import { ScaleType } from '../utils/scales/scales';
 import {
   computeSeriesDomains,
   computeSeriesGeometries,

@@ -1,6 +1,6 @@
 import { ColorConfig } from '../themes/theme';
 import { getGroupId, getSpecId, SpecId } from '../../utils/ids';
-import { ScaleType } from '../utils/scales/scales';
+import { ScaleType } from '../../utils/scales/scales';
 import {
   DataSeriesColorsValues,
   getFormattedDataseries,

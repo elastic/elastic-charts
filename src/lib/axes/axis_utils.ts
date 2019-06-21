@@ -15,7 +15,7 @@ import {
 import { AxisConfig, Theme } from '../themes/theme';
 import { Dimensions, Margins } from '../utils/dimensions';
 import { AxisId, GroupId } from '../../utils/ids';
-import { Scale } from '../utils/scales/scales';
+import { Scale } from '../../utils/scales/scales';
 import { BBox, BBoxCalculator } from '../../utils/bbox/bbox_calculator';
 
 export type AxisLinePosition = [number, number, number, number];

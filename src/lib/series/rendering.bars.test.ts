@@ -1,7 +1,7 @@
 import { computeSeriesDomains } from '../../state/utils';
 import { identity } from '../../utils/commons';
 import { getGroupId, getSpecId, SpecId } from '../../utils/ids';
-import { ScaleType } from '../utils/scales/scales';
+import { ScaleType } from '../../utils/scales/scales';
 import { renderBars } from './rendering';
 import { computeXScale, computeYScales } from './scales';
 import { BarSeriesSpec } from './specs';

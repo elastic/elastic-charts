@@ -4,8 +4,8 @@ import { AnnotationDomainType, AnnotationDomainTypes, AnnotationSpec, Position, 
 import { DEFAULT_ANNOTATION_LINE_STYLE } from '../lib/themes/theme';
 import { Dimensions } from '../lib/utils/dimensions';
 import { getAnnotationId, getGroupId, GroupId } from '../utils/ids';
-import { ScaleContinuous } from '../lib/utils/scales/scale_continuous';
-import { Scale, ScaleType } from '../lib/utils/scales/scales';
+import { ScaleContinuous } from '../utils/scales/scale_continuous';
+import { Scale, ScaleType } from '../utils/scales/scales';
 import {
   AnnotationLinePosition,
   computeLineAnnotationDimensions,

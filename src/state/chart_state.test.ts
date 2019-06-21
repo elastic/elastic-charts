@@ -13,9 +13,9 @@ import { LIGHT_THEME } from '../lib/themes/light_theme';
 import { mergeWithDefaultTheme } from '../lib/themes/theme';
 import { getAnnotationId, getAxisId, getGroupId, getSpecId } from '../utils/ids';
 import { TooltipType, TooltipValue } from '../lib/utils/interactions';
-import { ScaleBand } from '../lib/utils/scales/scale_band';
-import { ScaleContinuous } from '../lib/utils/scales/scale_continuous';
-import { ScaleType } from '../lib/utils/scales/scales';
+import { ScaleBand } from '../utils/scales/scale_band';
+import { ScaleContinuous } from '../utils/scales/scale_continuous';
+import { ScaleType } from '../utils/scales/scales';
 import { ChartStore } from './chart_state';
 
 describe('Chart Store', () => {

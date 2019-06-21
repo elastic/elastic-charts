@@ -2,7 +2,7 @@ import { inject } from 'mobx-react';
 import { PureComponent } from 'react';
 import { HistogramBarSeriesSpec } from '../lib/series/specs';
 import { getGroupId } from '../utils/ids';
-import { ScaleType } from '../lib/utils/scales/scales';
+import { ScaleType } from '../utils/scales/scales';
 import { SpecProps } from './specs_parser';
 
 type HistogramBarSpecProps = SpecProps & HistogramBarSeriesSpec;

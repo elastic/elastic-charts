@@ -3,7 +3,7 @@ import { YDomain } from '../series/domains/y_domain';
 import { AxisSpec, DomainRange, Position, AxisStyle } from '../series/specs';
 import { LIGHT_THEME } from '../themes/light_theme';
 import { AxisId, getAxisId, getGroupId, GroupId } from '../../utils/ids';
-import { ScaleType } from '../utils/scales/scales';
+import { ScaleType } from '../../utils/scales/scales';
 import {
   AxisTick,
   AxisTicksDimensions,

@@ -1,5 +1,5 @@
 import { getGroupId, getSpecId, GroupId } from '../../../utils/ids';
-import { ScaleType } from '../../utils/scales/scales';
+import { ScaleType } from '../../../utils/scales/scales';
 import { RawDataSeries } from '../series';
 import { BasicSeriesSpec, DomainRange } from '../specs';
 import { BARCHART_1Y0G } from '../../../utils/data_samples/test_dataset';

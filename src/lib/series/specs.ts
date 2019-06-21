@@ -9,7 +9,7 @@ import {
 import { Accessor } from '../utils/accessor';
 import { Omit, RecursivePartial } from '../../utils/commons';
 import { AnnotationId, AxisId, GroupId, SpecId } from '../../utils/ids';
-import { ScaleContinuousType, ScaleType } from '../utils/scales/scales';
+import { ScaleContinuousType, ScaleType } from '../../utils/scales/scales';
 import { CurveType } from '../../utils/curves';
 import { DataSeriesColorsValues } from './series';
 
