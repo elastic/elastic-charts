@@ -1,14 +1,14 @@
 import { inject } from 'mobx-react';
 import { PureComponent } from 'react';
-import { BarSeriesSpec } from '../lib/series/specs';
-import { getGroupId } from '../utils/ids';
-import { ScaleType } from '../utils/scales/scales';
-import { SpecProps } from './specs_parser';
+import { HistogramBarSeriesSpec } from '../../../lib/series/specs';
+import { getGroupId } from '../../../utils/ids';
+import { ScaleType } from '../../../utils/scales/scales';
+import { SpecProps } from '../../../specs/specs_parser';
 
-type BarSpecProps = SpecProps & BarSeriesSpec;
+type HistogramBarSpecProps = SpecProps & HistogramBarSeriesSpec;
 
-export class BarSeriesSpecComponent extends PureComponent<BarSpecProps> {
-  static defaultProps: Partial<BarSpecProps> = {
+export class HistogramBarSeriesSpecComponent extends PureComponent<HistogramBarSpecProps> {
+  static defaultProps: Partial<HistogramBarSpecProps> = {
     seriesType: 'bar',
     groupId: getGroupId('__global__'),
     xScaleType: ScaleType.Ordinal,
@@ -17,14 +17,13 @@ export class BarSeriesSpecComponent extends PureComponent<BarSpecProps> {
     yAccessors: ['y'],
     yScaleToDataExtent: false,
     hideInLegend: false,
-    enableHistogramMode: false,
-    stackAsPercentage: false,
+    enableHistogramMode: true,
   };
   componentDidMount() {
     const { chartStore, children, ...config } = this.props;
     chartStore!.addSeriesSpec({ ...config });
   }
-  componentDidUpdate(prevProps: BarSpecProps) {
+  componentDidUpdate(prevProps: HistogramBarSpecProps) {
     const { chartStore, children, ...config } = this.props;
     chartStore!.addSeriesSpec({ ...config });
     if (prevProps.id !== this.props.id) {
@@ -40,4 +39,4 @@ export class BarSeriesSpecComponent extends PureComponent<BarSpecProps> {
   }
 }
 
-export const BarSeries = inject('chartStore')(BarSeriesSpecComponent);
+export const HistogramBarSeries = inject('chartStore')(HistogramBarSeriesSpecComponent);

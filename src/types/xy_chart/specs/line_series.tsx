@@ -1,15 +1,15 @@
 import { inject } from 'mobx-react';
 import { PureComponent } from 'react';
-import { AreaSeriesSpec, HistogramModeAlignments } from '../lib/series/specs';
-import { getGroupId } from '../utils/ids';
-import { ScaleType } from '../utils/scales/scales';
-import { SpecProps } from './specs_parser';
+import { HistogramModeAlignments, LineSeriesSpec } from '../../../lib/series/specs';
+import { getGroupId } from '../../../utils/ids';
+import { ScaleType } from '../../../utils/scales/scales';
+import { SpecProps } from '../../../specs/specs_parser';
 
-type AreaSpecProps = SpecProps & AreaSeriesSpec;
+type LineSpecProps = SpecProps & LineSeriesSpec;
 
-export class AreaSeriesSpecComponent extends PureComponent<AreaSpecProps> {
-  static defaultProps: Partial<AreaSpecProps> = {
-    seriesType: 'area',
+export class LineSeriesSpecComponent extends PureComponent<LineSpecProps> {
+  static defaultProps: Partial<LineSpecProps> = {
+    seriesType: 'line',
     groupId: getGroupId('__global__'),
     xScaleType: ScaleType.Ordinal,
     yScaleType: ScaleType.Linear,
@@ -23,7 +23,7 @@ export class AreaSeriesSpecComponent extends PureComponent<AreaSpecProps> {
     const { chartStore, children, ...config } = this.props;
     chartStore!.addSeriesSpec({ ...config });
   }
-  componentDidUpdate(prevProps: AreaSpecProps) {
+  componentDidUpdate(prevProps: LineSpecProps) {
     const { chartStore, children, ...config } = this.props;
     chartStore!.addSeriesSpec({ ...config });
     if (prevProps.id !== this.props.id) {
@@ -39,4 +39,4 @@ export class AreaSeriesSpecComponent extends PureComponent<AreaSpecProps> {
   }
 }
 
-export const AreaSeries = inject('chartStore')(AreaSeriesSpecComponent);
+export const LineSeries = inject('chartStore')(LineSeriesSpecComponent);

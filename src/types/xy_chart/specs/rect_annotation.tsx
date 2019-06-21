@@ -1,8 +1,8 @@
 import { inject } from 'mobx-react';
 import { PureComponent } from 'react';
-import { RectAnnotationSpec } from '../lib/series/specs';
-import { getGroupId } from '../utils/ids';
-import { SpecProps } from './specs_parser';
+import { RectAnnotationSpec } from '../../../lib/series/specs';
+import { getGroupId } from '../../../utils/ids';
+import { SpecProps } from '../../../specs/specs_parser';
 
 type RectAnnotationProps = SpecProps & RectAnnotationSpec;
 

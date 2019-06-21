@@ -1,9 +1,9 @@
 import { inject } from 'mobx-react';
 import React, { createRef, CSSProperties, PureComponent } from 'react';
-import { LineAnnotationSpec } from '../lib/series/specs';
-import { DEFAULT_ANNOTATION_LINE_STYLE } from '../utils/themes/theme';
-import { getGroupId } from '../utils/ids';
-import { SpecProps } from './specs_parser';
+import { LineAnnotationSpec } from '../../../lib/series/specs';
+import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../utils/themes/theme';
+import { getGroupId } from '../../../utils/ids';
+import { SpecProps } from '../../../specs/specs_parser';
 
 type LineAnnotationProps = SpecProps & LineAnnotationSpec;
 
