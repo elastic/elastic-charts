@@ -48,7 +48,7 @@ import { LIGHT_THEME } from '../lib/themes/light_theme';
 import { mergeWithDefaultAnnotationLine, mergeWithDefaultAnnotationRect, Theme } from '../lib/themes/theme';
 import { compareByValueAsc } from '../utils/commons';
 import { computeChartDimensions, Dimensions } from '../lib/utils/dimensions';
-import { Domain } from '../lib/utils/domain';
+import { Domain } from '../utils/domain';
 import { AnnotationId, AxisId, GroupId, SpecId } from '../utils/ids';
 import {
   areIndexedGeometryArraysEquals,

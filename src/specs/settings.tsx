@@ -1,11 +1,10 @@
 import { inject } from 'mobx-react';
 import { PureComponent } from 'react';
-
 import { DomainRange, Position, Rendering, Rotation } from '../lib/series/specs';
 import { DARK_THEME } from '../lib/themes/dark_theme';
 import { LIGHT_THEME } from '../lib/themes/light_theme';
 import { BaseThemeType, mergeWithDefaultTheme, PartialTheme, Theme, BaseThemeTypes } from '../lib/themes/theme';
-import { Domain } from '../lib/utils/domain';
+import { Domain } from '../utils/domain';
 import { TooltipType, TooltipValueFormatter } from '../lib/utils/interactions';
 import {
   BrushEndListener,

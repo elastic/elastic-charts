@@ -1,4 +1,4 @@
-import { AccessorFn } from './accessor';
+import { AccessorFn } from '../lib/utils/accessor';
 import {
   computeContinuousDataDomain,
   computeDomainExtent,

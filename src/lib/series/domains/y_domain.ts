@@ -4,7 +4,7 @@ import { ScaleContinuousType, ScaleType } from '../../../utils/scales/scales';
 import { isCompleteBound, isLowerBound, isUpperBound } from '../../axes/axis_utils';
 import { BaseDomain } from './domain';
 import { RawDataSeries } from '../series';
-import { computeContinuousDataDomain } from '../../utils/domain';
+import { computeContinuousDataDomain } from '../../../utils/domain';
 import { identity } from '../../../utils/commons';
 import { sum } from 'd3-array';
 

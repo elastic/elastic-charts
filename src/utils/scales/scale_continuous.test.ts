@@ -1,6 +1,6 @@
 import { XDomain } from '../../lib/series/domains/x_domain';
 import { computeXScale } from '../../lib/series/scales';
-import { Domain } from '../../lib/utils/domain';
+import { Domain } from '../domain';
 import { DateTime, Settings } from 'luxon';
 import { ScaleBand } from './scale_band';
 import { isLogarithmicScale, ScaleContinuous } from './scale_continuous';
