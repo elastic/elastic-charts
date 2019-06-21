@@ -1,5 +1,5 @@
 import { ColorConfig } from '../themes/theme';
-import { Accessor } from '../utils/accessor';
+import { Accessor } from '../../utils/accessor';
 import { GroupId, SpecId } from '../../utils/ids';
 import { splitSpecsByGroupId, YBasicSeriesSpec } from './domains/y_domain';
 import { formatNonStackedDataSeriesValues } from './nonstacked_series_utils';

@@ -6,7 +6,7 @@ import {
   RectAnnotationStyle,
   BarSeriesStyle,
 } from '../themes/theme';
-import { Accessor } from '../utils/accessor';
+import { Accessor } from '../../utils/accessor';
 import { Omit, RecursivePartial } from '../../utils/commons';
 import { AnnotationId, AxisId, GroupId, SpecId } from '../../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../../utils/scales/scales';

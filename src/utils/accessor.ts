@@ -1,4 +1,4 @@
-import { Datum } from '../series/specs';
+import { Datum } from '../lib/series/specs';
 
 export type AccessorFn = (datum: Datum) => any;
 export type AccessorString = string | number;
