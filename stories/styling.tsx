@@ -22,7 +22,7 @@ import {
   BaseThemeTypes,
   LineSeriesStyle,
 } from '../src/';
-import * as TestDatasets from '../src/lib/series/utils/test_dataset';
+import * as TestDatasets from '../src/utils/data_samples/test_dataset';
 import { palettes } from '../src/lib/themes/colors';
 
 function range(title: string, min: number, max: number, value: number, groupId?: string, step: number = 1) {
