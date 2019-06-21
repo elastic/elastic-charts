@@ -12,7 +12,7 @@ import {
 import { SpecId } from '../../utils/ids';
 import { isLogarithmicScale } from '../utils/scales/scale_continuous';
 import { Scale, ScaleType } from '../utils/scales/scales';
-import { CurveType, getCurveFactory } from './curves';
+import { CurveType, getCurveFactory } from '../../utils/curves';
 import { LegendItem } from './legend';
 import { DataSeriesDatum } from './series';
 import { belongsToDataSeries } from './series_utils';

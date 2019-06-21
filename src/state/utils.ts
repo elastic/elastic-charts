@@ -1,5 +1,5 @@
 import { isVertical } from '../lib/axes/axis_utils';
-import { CurveType } from '../lib/series/curves';
+import { CurveType } from '../utils/curves';
 import { mergeXDomain, XDomain } from '../lib/series/domains/x_domain';
 import { mergeYDomain, YDomain } from '../lib/series/domains/y_domain';
 import { LegendItem } from '../lib/series/legend';
