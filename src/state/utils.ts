@@ -37,7 +37,7 @@ import {
   LineSeriesSpec,
   Rotation,
 } from '../lib/series/specs';
-import { ColorConfig, Theme } from '../lib/themes/theme';
+import { ColorConfig, Theme } from '../utils/themes/theme';
 import { identity, mergePartial } from '../utils/commons';
 import { Dimensions } from '../utils/dimensions';
 import { Domain } from '../utils/domain';

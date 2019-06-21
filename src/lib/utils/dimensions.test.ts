@@ -1,7 +1,7 @@
 import { AxisTicksDimensions } from '../axes/axis_utils';
 import { AxisSpec, Position } from '../series/specs';
-import { LIGHT_THEME } from '../themes/light_theme';
-import { LegendStyle } from '../themes/theme';
+import { LIGHT_THEME } from '../../utils/themes/light_theme';
+import { LegendStyle } from '../../utils/themes/theme';
 import { computeChartDimensions } from './dimensions';
 import { AxisId, getAxisId, getGroupId } from '../../utils/ids';
 import { Margins } from '../../utils/dimensions';

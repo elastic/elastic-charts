@@ -8,7 +8,7 @@ import {
   PointStyle,
   SharedGeometryStyle,
   BarSeriesStyle,
-} from '../themes/theme';
+} from '../../utils/themes/theme';
 import { SpecId } from '../../utils/ids';
 import { isLogarithmicScale } from '../../utils/scales/scale_continuous';
 import { Scale, ScaleType } from '../../utils/scales/scales';

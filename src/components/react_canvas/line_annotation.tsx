@@ -1,6 +1,6 @@
 import React from 'react';
 import { Group, Line } from 'react-konva';
-import { LineAnnotationStyle } from '../../lib/themes/theme';
+import { LineAnnotationStyle } from '../../utils/themes/theme';
 import { Dimensions } from '../../utils/dimensions';
 import { AnnotationLineProps } from '../../state/annotation_utils';
 

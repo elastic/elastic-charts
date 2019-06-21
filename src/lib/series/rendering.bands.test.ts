@@ -6,7 +6,7 @@ import { CurveType } from '../../utils/curves';
 import { AreaGeometry, IndexedGeometry, PointGeometry, renderArea, renderBars } from './rendering';
 import { computeXScale, computeYScales } from './scales';
 import { AreaSeriesSpec, BarSeriesSpec } from './specs';
-import { LIGHT_THEME } from '../themes/light_theme';
+import { LIGHT_THEME } from '../../utils/themes/light_theme';
 const SPEC_ID = getSpecId('spec_1');
 const GROUP_ID = getGroupId('group_1');
 

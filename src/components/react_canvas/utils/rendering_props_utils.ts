@@ -7,7 +7,7 @@ import {
   PointStyle,
   RectStyle,
   RectBorderStyle,
-} from '../../../lib/themes/theme';
+} from '../../../utils/themes/theme';
 import { Dimensions } from '../../../utils/dimensions';
 import { GlobalKonvaElementProps } from '../globals';
 

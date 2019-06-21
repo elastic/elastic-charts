@@ -4,10 +4,10 @@ export { TooltipType, TooltipValue, TooltipValueFormatter } from './lib/utils/in
 export { getAxisId, getGroupId, getSpecId, getAnnotationId } from './utils/ids';
 export { ScaleType } from './utils/scales/scales';
 export { Position, Rendering, Rotation } from './lib/series/specs';
-export * from './lib/themes/theme';
-export { LIGHT_THEME } from './lib/themes/light_theme';
-export { DARK_THEME } from './lib/themes/dark_theme';
-export * from './lib/themes/theme_commons';
+export * from './utils/themes/theme';
+export { LIGHT_THEME } from './utils/themes/light_theme';
+export { DARK_THEME } from './utils/themes/dark_theme';
+export * from './utils/themes/theme_commons';
 export { RecursivePartial } from './utils/commons';
 export { CurveType } from './utils/curves';
 export { timeFormatter, niceTimeFormatter, niceTimeFormatByDay } from './utils/data/formatters';

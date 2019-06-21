@@ -9,8 +9,8 @@ import {
   Position,
   RectAnnotationSpec,
 } from '../lib/series/specs';
-import { LIGHT_THEME } from '../lib/themes/light_theme';
-import { mergeWithDefaultTheme } from '../lib/themes/theme';
+import { LIGHT_THEME } from '../utils/themes/light_theme';
+import { mergeWithDefaultTheme } from '../utils/themes/theme';
 import { getAnnotationId, getAxisId, getGroupId, getSpecId } from '../utils/ids';
 import { TooltipType, TooltipValue } from '../lib/utils/interactions';
 import { ScaleBand } from '../utils/scales/scale_band';

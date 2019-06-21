@@ -5,7 +5,7 @@ import {
   LineSeriesStyle,
   RectAnnotationStyle,
   BarSeriesStyle,
-} from '../themes/theme';
+} from '../../utils/themes/theme';
 import { Accessor } from '../../utils/accessor';
 import { Omit, RecursivePartial } from '../../utils/commons';
 import { AnnotationId, AxisId, GroupId, SpecId } from '../../utils/ids';

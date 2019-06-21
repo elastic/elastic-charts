@@ -44,8 +44,8 @@ import {
   Rotation,
 } from '../lib/series/specs';
 import { formatTooltip, getSeriesTooltipValues } from '../lib/series/tooltip';
-import { LIGHT_THEME } from '../lib/themes/light_theme';
-import { mergeWithDefaultAnnotationLine, mergeWithDefaultAnnotationRect, Theme } from '../lib/themes/theme';
+import { LIGHT_THEME } from '../utils/themes/light_theme';
+import { mergeWithDefaultAnnotationLine, mergeWithDefaultAnnotationRect, Theme } from '../utils/themes/theme';
 import { compareByValueAsc } from '../utils/commons';
 import { computeChartDimensions } from '../lib/utils/dimensions';
 import { Dimensions } from '../utils/dimensions';

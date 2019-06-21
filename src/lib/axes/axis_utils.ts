@@ -12,7 +12,7 @@ import {
   UpperBoundedDomain,
   AxisStyle,
 } from '../series/specs';
-import { AxisConfig, Theme } from '../themes/theme';
+import { AxisConfig, Theme } from '../../utils/themes/theme';
 import { Dimensions, Margins } from '../../utils/dimensions';
 import { AxisId, GroupId } from '../../utils/ids';
 import { Scale } from '../../utils/scales/scales';

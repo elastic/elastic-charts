@@ -16,7 +16,7 @@ import {
   RectAnnotationSpec,
   Rotation,
 } from '../lib/series/specs';
-import { LineAnnotationStyle } from '../lib/themes/theme';
+import { LineAnnotationStyle } from '../utils/themes/theme';
 import { Dimensions } from '../utils/dimensions';
 import { AnnotationId, AxisId, GroupId } from '../utils/ids';
 import { Scale, ScaleType } from '../utils/scales/scales';

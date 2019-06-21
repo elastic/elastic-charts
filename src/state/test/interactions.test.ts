@@ -8,7 +8,7 @@ import { ScaleContinuous } from '../../utils/scales/scale_continuous';
 import { ScaleType } from '../../utils/scales/scales';
 import { ChartStore } from '../chart_state';
 import { computeSeriesDomains } from '../utils';
-import { ScaleBand } from '../../lib/utils/scales/scale_band';
+import { ScaleBand } from '../../utils/scales/scale_band';
 
 const SPEC_ID = getSpecId('spec_1');
 const GROUP_ID = getGroupId('group_1');

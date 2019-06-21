@@ -1,6 +1,6 @@
-import { GeometryStyle } from '../series/rendering';
-import { mergePartial, RecursivePartial } from '../../utils/commons';
-import { Margins } from '../../utils/dimensions';
+import { mergePartial, RecursivePartial } from '../commons';
+import { GeometryStyle } from '../../lib/series/rendering';
+import { Margins } from '../dimensions';
 import { LIGHT_THEME } from './light_theme';
 
 interface Visible {

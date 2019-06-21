@@ -1,12 +1,12 @@
 import { mount } from 'enzyme';
 import * as React from 'react';
 import { Position, Rendering, Rotation } from '../lib/series/specs';
-import { DARK_THEME } from '../lib/themes/dark_theme';
-import { LIGHT_THEME } from '../lib/themes/light_theme';
+import { DARK_THEME } from '../utils/themes/dark_theme';
+import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { TooltipType } from '../lib/utils/interactions';
 import { ChartStore } from '../state/chart_state';
 import { DEFAULT_TOOLTIP_SNAP, DEFAULT_TOOLTIP_TYPE, SettingsComponent, SettingSpecProps } from './settings';
-import { PartialTheme, BaseThemeTypes } from '../lib/themes/theme';
+import { PartialTheme, BaseThemeTypes } from '../utils/themes/theme';
 
 describe('Settings spec component', () => {
   test('should update store on mount if spec has a chart store', () => {

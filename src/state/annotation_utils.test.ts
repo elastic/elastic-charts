@@ -8,7 +8,7 @@ import {
   RectAnnotationSpec,
   Rotation,
 } from '../lib/series/specs';
-import { DEFAULT_ANNOTATION_LINE_STYLE } from '../lib/themes/theme';
+import { DEFAULT_ANNOTATION_LINE_STYLE } from '../utils/themes/theme';
 import { Dimensions } from '../utils/dimensions';
 import { AnnotationId, AxisId, getAnnotationId, getAxisId, getGroupId, GroupId } from '../utils/ids';
 import { ScaleBand } from '../utils/scales/scale_band';

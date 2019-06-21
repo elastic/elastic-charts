@@ -4,8 +4,8 @@ import { Group, Rect } from 'react-konva';
 import { animated, Spring } from 'react-spring/renderprops-konva.cjs';
 import { LegendItem } from '../../lib/series/legend';
 import { BarGeometry, getGeometryStyle } from '../../lib/series/rendering';
-import { SharedGeometryStyle } from '../../lib/themes/theme';
-import { buildBarRenderProps } from './utils/rendering_props_utils';
+import { SharedGeometryStyle } from '../../utils/themes/theme';
+import { buildBarRenderProps } from '../react_canvas/utils/rendering_props_utils';
 
 interface BarGeometriesDataProps {
   animated?: boolean;
