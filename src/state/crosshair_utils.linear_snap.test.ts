@@ -1,6 +1,6 @@
 import { computeXScale } from '../lib/series/scales';
 import { BasicSeriesSpec } from '../lib/series/specs';
-import { Dimensions } from '../lib/utils/dimensions';
+import { Dimensions } from '../utils/dimensions';
 import { getGroupId, getSpecId } from '../utils/ids';
 import { ScaleType } from '../utils/scales/scales';
 import { getCursorBandPosition, getSnapPosition } from './crosshair_utils';

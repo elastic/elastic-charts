@@ -39,7 +39,7 @@ import {
 } from '../lib/series/specs';
 import { ColorConfig, Theme } from '../lib/themes/theme';
 import { identity, mergePartial } from '../utils/commons';
-import { Dimensions } from '../lib/utils/dimensions';
+import { Dimensions } from '../utils/dimensions';
 import { Domain } from '../utils/domain';
 import { AxisId, GroupId, SpecId } from '../utils/ids';
 import { Scale } from '../utils/scales/scales';

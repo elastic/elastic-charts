@@ -12,7 +12,7 @@ import {
 } from '../../lib/axes/axis_utils';
 import { AxisSpec, Position } from '../../lib/series/specs';
 import { Theme } from '../../lib/themes/theme';
-import { Dimensions } from '../../lib/utils/dimensions';
+import { Dimensions } from '../../utils/dimensions';
 
 interface AxisProps {
   chartTheme: Theme;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Group, Rect } from 'react-konva';
 import { RectAnnotationStyle } from '../../lib/themes/theme';
-import { Dimensions } from '../../lib/utils/dimensions';
+import { Dimensions } from '../../utils/dimensions';
 import { AnnotationRectProps } from '../../state/annotation_utils';
 
 interface RectAnnotationProps {

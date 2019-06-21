@@ -3,7 +3,7 @@ import { Group, Rect, Text } from 'react-konva';
 import { BarGeometry } from '../../lib/series/rendering';
 import { Rotation } from '../../lib/series/specs';
 import { DisplayValueStyle } from '../../lib/themes/theme';
-import { Dimensions } from '../../lib/utils/dimensions';
+import { Dimensions } from '../../utils/dimensions';
 import { buildBarValueProps } from './utils/rendering_props_utils';
 
 interface BarValuesProps {

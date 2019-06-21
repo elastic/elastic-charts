@@ -2,8 +2,9 @@ import { AxisTicksDimensions } from '../axes/axis_utils';
 import { AxisSpec, Position } from '../series/specs';
 import { LIGHT_THEME } from '../themes/light_theme';
 import { LegendStyle } from '../themes/theme';
-import { computeChartDimensions, Margins } from './dimensions';
+import { computeChartDimensions } from './dimensions';
 import { AxisId, getAxisId, getGroupId } from '../../utils/ids';
+import { Margins } from '../../utils/dimensions';
 
 describe('Computed chart dimensions', () => {
   const parentDim = {

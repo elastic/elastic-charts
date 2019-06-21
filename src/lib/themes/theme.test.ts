@@ -1,4 +1,4 @@
-import { Margins } from '../utils/dimensions';
+import { Margins } from '../../utils/dimensions';
 import { DARK_THEME } from './dark_theme';
 import { LIGHT_THEME } from './light_theme';
 import {

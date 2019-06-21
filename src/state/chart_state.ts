@@ -47,7 +47,8 @@ import { formatTooltip, getSeriesTooltipValues } from '../lib/series/tooltip';
 import { LIGHT_THEME } from '../lib/themes/light_theme';
 import { mergeWithDefaultAnnotationLine, mergeWithDefaultAnnotationRect, Theme } from '../lib/themes/theme';
 import { compareByValueAsc } from '../utils/commons';
-import { computeChartDimensions, Dimensions } from '../lib/utils/dimensions';
+import { computeChartDimensions } from '../lib/utils/dimensions';
+import { Dimensions } from '../utils/dimensions';
 import { Domain } from '../utils/domain';
 import { AnnotationId, AxisId, GroupId, SpecId } from '../utils/ids';
 import {

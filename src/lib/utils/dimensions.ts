@@ -2,20 +2,7 @@ import { AxisTicksDimensions } from '../axes/axis_utils';
 import { AxisSpec, Position } from '../series/specs';
 import { Theme } from '../themes/theme';
 import { AxisId } from '../../utils/ids';
-
-export interface Dimensions {
-  top: number;
-  left: number;
-  width: number;
-  height: number;
-}
-
-export interface Margins {
-  top: number;
-  bottom: number;
-  left: number;
-  right: number;
-}
+import { Dimensions } from '../../utils/dimensions';
 
 /**
  * Compute the chart dimensions. It's computed removing from the parent dimensions

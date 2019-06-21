@@ -2,7 +2,7 @@ import React from 'react';
 import { Group, Line } from 'react-konva';
 import { AxisLinePosition } from '../../lib/axes/axis_utils';
 import { DEFAULT_GRID_LINE_CONFIG, GridLineConfig, mergeWithDefaultGridLineConfig } from '../../lib/themes/theme';
-import { Dimensions } from '../../lib/utils/dimensions';
+import { Dimensions } from '../../utils/dimensions';
 
 interface GridProps {
   chartDimensions: Dimensions;

@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { AnnotationDomainType, AnnotationDomainTypes, AnnotationSpec, Position, Rotation } from '../lib/series/specs';
 import { DEFAULT_ANNOTATION_LINE_STYLE } from '../lib/themes/theme';
-import { Dimensions } from '../lib/utils/dimensions';
+import { Dimensions } from '../utils/dimensions';
 import { getAnnotationId, getGroupId, GroupId } from '../utils/ids';
 import { ScaleContinuous } from '../utils/scales/scale_continuous';
 import { Scale, ScaleType } from '../utils/scales/scales';
