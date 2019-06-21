@@ -1,7 +1,7 @@
 import { AxisTicksDimensions } from '../axes/axis_utils';
 import { AxisSpec, Position } from '../series/specs';
 import { Theme } from '../themes/theme';
-import { AxisId } from './ids';
+import { AxisId } from '../../utils/ids';
 
 export interface Dimensions {
   top: number;

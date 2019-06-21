@@ -9,7 +9,7 @@ import {
   SharedGeometryStyle,
   BarSeriesStyle,
 } from '../themes/theme';
-import { SpecId } from '../utils/ids';
+import { SpecId } from '../../utils/ids';
 import { isLogarithmicScale } from '../utils/scales/scale_continuous';
 import { Scale, ScaleType } from '../utils/scales/scales';
 import { CurveType, getCurveFactory } from './curves';

@@ -41,7 +41,7 @@ import { ColorConfig, Theme } from '../lib/themes/theme';
 import { identity, mergePartial } from '../utils/commons';
 import { Dimensions } from '../lib/utils/dimensions';
 import { Domain } from '../lib/utils/domain';
-import { AxisId, GroupId, SpecId } from '../lib/utils/ids';
+import { AxisId, GroupId, SpecId } from '../utils/ids';
 import { Scale } from '../lib/utils/scales/scales';
 import { SeriesDomainsAndData } from './chart_state';
 

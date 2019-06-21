@@ -49,7 +49,7 @@ import { mergeWithDefaultAnnotationLine, mergeWithDefaultAnnotationRect, Theme }
 import { compareByValueAsc } from '../utils/commons';
 import { computeChartDimensions, Dimensions } from '../lib/utils/dimensions';
 import { Domain } from '../lib/utils/domain';
-import { AnnotationId, AxisId, GroupId, SpecId } from '../lib/utils/ids';
+import { AnnotationId, AxisId, GroupId, SpecId } from '../utils/ids';
 import {
   areIndexedGeometryArraysEquals,
   getValidXPosition,

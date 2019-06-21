@@ -1,4 +1,4 @@
-import { getGroupId, getSpecId, SpecId } from '../../utils/ids';
+import { getGroupId, getSpecId, SpecId } from '../../../utils/ids';
 import { ScaleType } from '../../utils/scales/scales';
 import { getSplittedSeries } from '../series';
 import { BasicSeriesSpec } from '../specs';

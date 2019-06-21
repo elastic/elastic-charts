@@ -1,4 +1,4 @@
-import { getGroupId } from '../utils/ids';
+import { getGroupId } from '../../utils/ids';
 import { ScaleType } from '../utils/scales/scales';
 import { XDomain } from './domains/x_domain';
 import { computeXScale, countBarsInCluster } from './scales';

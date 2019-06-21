@@ -1,4 +1,4 @@
-import { GroupId } from '../utils/ids';
+import { GroupId } from '../../utils/ids';
 import { ScaleBand } from '../utils/scales/scale_band';
 import { ScaleContinuous } from '../utils/scales/scale_continuous';
 import { Scale, ScaleType } from '../utils/scales/scales';

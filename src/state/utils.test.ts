@@ -12,7 +12,7 @@ import {
 } from '../lib/series/specs';
 import { BARCHART_1Y0G, BARCHART_1Y1G } from '../lib/series/utils/test_dataset';
 import { LIGHT_THEME } from '../lib/themes/light_theme';
-import { AxisId, getGroupId, getSpecId, SpecId } from '../lib/utils/ids';
+import { AxisId, getGroupId, getSpecId, SpecId } from '../utils/ids';
 import { ScaleContinuous } from '../lib/utils/scales/scale_continuous';
 import { ScaleType } from '../lib/utils/scales/scales';
 import {

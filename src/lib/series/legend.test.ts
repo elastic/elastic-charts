@@ -1,4 +1,4 @@
-import { AxisId, getAxisId, getGroupId, getSpecId, SpecId } from '../utils/ids';
+import { AxisId, getAxisId, getGroupId, getSpecId, SpecId } from '../../utils/ids';
 import { ScaleType } from '../utils/scales/scales';
 import { computeLegend, getSeriesColorLabel } from './legend';
 import { DataSeriesColorsValues } from './series';

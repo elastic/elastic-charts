@@ -11,7 +11,7 @@ import {
 } from '../lib/series/specs';
 import { LIGHT_THEME } from '../lib/themes/light_theme';
 import { mergeWithDefaultTheme } from '../lib/themes/theme';
-import { getAnnotationId, getAxisId, getGroupId, getSpecId } from '../lib/utils/ids';
+import { getAnnotationId, getAxisId, getGroupId, getSpecId } from '../utils/ids';
 import { TooltipType, TooltipValue } from '../lib/utils/interactions';
 import { ScaleBand } from '../lib/utils/scales/scale_band';
 import { ScaleContinuous } from '../lib/utils/scales/scale_continuous';

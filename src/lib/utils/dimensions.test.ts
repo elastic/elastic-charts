@@ -3,7 +3,7 @@ import { AxisSpec, Position } from '../series/specs';
 import { LIGHT_THEME } from '../themes/light_theme';
 import { LegendStyle } from '../themes/theme';
 import { computeChartDimensions, Margins } from './dimensions';
-import { AxisId, getAxisId, getGroupId } from './ids';
+import { AxisId, getAxisId, getGroupId } from '../../utils/ids';
 
 describe('Computed chart dimensions', () => {
   const parentDim = {

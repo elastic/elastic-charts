@@ -1,4 +1,4 @@
-import { getSpecId } from '../utils/ids';
+import { getSpecId } from '../../utils/ids';
 import { GeometryId } from './rendering';
 import { DataSeriesColorsValues } from './series';
 import { belongsToDataSeries, isEqualSeriesKey } from './series_utils';

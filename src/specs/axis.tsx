@@ -1,7 +1,7 @@
 import { inject } from 'mobx-react';
 import { PureComponent } from 'react';
 import { AxisSpec as AxisSpecType, Position } from '../lib/series/specs';
-import { getGroupId } from '../lib/utils/ids';
+import { getGroupId } from '../utils/ids';
 import { SpecProps } from './specs_parser';
 
 type AxisSpecProps = SpecProps & AxisSpecType;

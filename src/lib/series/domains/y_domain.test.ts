@@ -1,4 +1,4 @@
-import { getGroupId, getSpecId, GroupId } from '../../utils/ids';
+import { getGroupId, getSpecId, GroupId } from '../../../utils/ids';
 import { ScaleType } from '../../utils/scales/scales';
 import { RawDataSeries } from '../series';
 import { BasicSeriesSpec, DomainRange } from '../specs';

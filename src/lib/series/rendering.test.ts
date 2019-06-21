@@ -1,5 +1,5 @@
 import { DEFAULT_GEOMETRY_STYLES } from '../themes/theme_commons';
-import { getSpecId } from '../utils/ids';
+import { getSpecId } from '../../utils/ids';
 import { BarGeometry, getGeometryStyle, isPointOnGeometry, PointGeometry } from './rendering';
 
 describe('Rendering utils', () => {

@@ -10,7 +10,7 @@ import {
 } from '../lib/series/specs';
 import { DEFAULT_ANNOTATION_LINE_STYLE } from '../lib/themes/theme';
 import { Dimensions } from '../lib/utils/dimensions';
-import { AnnotationId, AxisId, getAnnotationId, getAxisId, getGroupId, GroupId } from '../lib/utils/ids';
+import { AnnotationId, AxisId, getAnnotationId, getAxisId, getGroupId, GroupId } from '../utils/ids';
 import { ScaleBand } from '../lib/utils/scales/scale_band';
 import { ScaleContinuous } from '../lib/utils/scales/scale_continuous';
 import { Scale, ScaleType } from '../lib/utils/scales/scales';

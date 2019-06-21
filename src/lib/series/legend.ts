@@ -1,6 +1,6 @@
 import { getAxesSpecForSpecId } from '../../state/utils';
 import { identity } from '../../utils/commons';
-import { AxisId, SpecId } from '../utils/ids';
+import { AxisId, SpecId } from '../../utils/ids';
 import { DataSeriesColorsValues, findDataSeriesByColorValues, getSortedDataSeriesColorsValuesMap } from './series';
 import { AxisSpec, BasicSeriesSpec } from './specs';
 

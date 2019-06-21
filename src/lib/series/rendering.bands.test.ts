@@ -1,6 +1,6 @@
 /* eslint @typescript-eslint/no-object-literal-type-assertion: off */
 import { computeSeriesDomains } from '../../state/utils';
-import { getGroupId, getSpecId, SpecId } from '../utils/ids';
+import { getGroupId, getSpecId, SpecId } from '../../utils/ids';
 import { ScaleType } from '../utils/scales/scales';
 import { CurveType } from './curves';
 import { AreaGeometry, IndexedGeometry, PointGeometry, renderArea, renderBars } from './rendering';
