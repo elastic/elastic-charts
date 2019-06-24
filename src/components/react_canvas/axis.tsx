@@ -29,11 +29,11 @@ export class Axis extends React.PureComponent<AxisProps> {
     return this.renderAxis();
   }
   renderTickLabel = (tick: AxisTick, i: number) => {
-  /**
-   * padding is already computed through width
-   * and bbox_calculator using tickLabelPadding
-   * set padding to 0 to avoid conflict
-   */
+    /**
+     * padding is already computed through width
+     * and bbox_calculator using tickLabelPadding
+     * set padding to 0 to avoid conflict
+     */
     const labelStyle = {
       ...this.props.chartTheme.axes.tickLabelStyle,
       padding: 0,
@@ -73,7 +73,7 @@ export class Axis extends React.PureComponent<AxisProps> {
 
     return (
       <Group key={`tick-${i}`}>
-        {debug && <Rect {...textProps} stroke="black" strokeWidth={1} fill="violet"/>}
+        {debug && <Rect {...textProps} stroke="black" strokeWidth={1} fill="violet" />}
         <Text {...textProps} {...labelStyle} text={tick.label} />
       </Group>
     );

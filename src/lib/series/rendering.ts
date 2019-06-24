@@ -201,7 +201,6 @@ export function renderBars(
   barGeometries: BarGeometry[];
   indexedGeometries: Map<any, IndexedGeometry[]>;
 } {
-
   const indexedGeometries: Map<any, IndexedGeometry[]> = new Map();
   const xDomain = xScale.domain;
   const xScaleType = xScale.type;
@@ -256,10 +255,12 @@ export function renderBars(
           : undefined
         : formattedDisplayValue;
 
-    const computedDisplayValueWidth = bboxCalculator.compute(displayValueText || '', padding, fontSize, fontFamily).getOrElse({
-      width: 0,
-      height: 0,
-    }).width;
+    const computedDisplayValueWidth = bboxCalculator
+      .compute(displayValueText || '', padding, fontSize, fontFamily)
+      .getOrElse({
+        width: 0,
+        height: 0,
+      }).width;
     const displayValueWidth =
       displayValueSettings && displayValueSettings.isValueContainedInElement ? width : computedDisplayValueWidth;
 
@@ -322,7 +323,6 @@ export function renderLine(
   lineGeometry: LineGeometry;
   indexedGeometries: Map<any, IndexedGeometry[]>;
 } {
-
   const isLogScale = isLogarithmicScale(yScale);
 
   const pathGenerator = line<DataSeriesDatum>()

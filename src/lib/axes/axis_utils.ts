@@ -147,7 +147,6 @@ export const getMaxBboxDimensions = (
   maxLabelTextWidth: number;
   maxLabelTextHeight: number;
 } => {
-
   const bbox = bboxCalculator.compute(tickLabel, tickLabelPadding, fontSize, fontFamily).getOrElse({
     width: 0,
     height: 0,
@@ -169,8 +168,8 @@ export const getMaxBboxDimensions = (
     maxLabelBboxHeight: prevHeight > height ? prevHeight : height,
     maxLabelTextWidth: prevLabelWidth > labelWidth ? prevLabelWidth : labelWidth,
     maxLabelTextHeight: prevLabelHeight > labelHeight ? prevLabelHeight : labelHeight,
-    };
   };
+};
 
 function computeTickDimensions(
   scale: Scale,

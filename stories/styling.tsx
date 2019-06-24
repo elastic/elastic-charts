@@ -689,10 +689,7 @@ storiesOf('Stylings', module)
     const tickLabelPadding = number('Tick Label Padding Axis Spec', 0);
     return (
       <Chart className={'story-chart'}>
-        <Settings
-          theme={customTheme}
-          debug={boolean('debug', true)}
-        />
+        <Settings theme={customTheme} debug={boolean('debug', true)} />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
