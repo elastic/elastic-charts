@@ -1,6 +1,6 @@
 import { inject } from 'mobx-react';
 import { PureComponent } from 'react';
-import { LineSeriesSpec } from '../lib/series/specs';
+import { HistogramModeAlignments, LineSeriesSpec } from '../lib/series/specs';
 import { getGroupId } from '../lib/utils/ids';
 import { ScaleType } from '../lib/utils/scales/scales';
 import { SpecProps } from './specs_parser';
@@ -17,6 +17,7 @@ export class LineSeriesSpecComponent extends PureComponent<LineSpecProps> {
     yAccessors: ['y'],
     yScaleToDataExtent: false,
     hideInLegend: false,
+    histogramModeAlignment: HistogramModeAlignments.Center,
   };
   componentDidMount() {
     const { chartStore, children, ...config } = this.props;

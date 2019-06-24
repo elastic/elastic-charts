@@ -13,9 +13,8 @@ import {
 } from '../series/specs';
 import { AxisConfig, Theme } from '../themes/theme';
 import { Dimensions, Margins } from '../utils/dimensions';
-import { Domain } from '../utils/domain';
 import { AxisId, GroupId } from '../utils/ids';
-import { Scale, ScaleType } from '../utils/scales/scales';
+import { Scale } from '../utils/scales/scales';
 import { BBox, BBoxCalculator } from './bbox_calculator';
 
 export type AxisLinePosition = [number, number, number, number];
@@ -27,8 +26,6 @@ export interface AxisTick {
 }
 
 export interface AxisTicksDimensions {
-  axisScaleType: ScaleType;
-  axisScaleDomain: Domain;
   tickValues: string[] | number[];
   tickLabels: string[];
   maxLabelBboxWidth: number;
@@ -68,17 +65,7 @@ export function computeAxisTicksDimensions(
     return null;
   }
 
-  const scale = getScaleForAxisSpec(
-    axisSpec,
-    xDomain,
-    yDomain,
-    totalBarsInCluster,
-    chartRotation,
-    0,
-    1,
-    barsPadding,
-  );
-
+  const scale = getScaleForAxisSpec(axisSpec, xDomain, yDomain, totalBarsInCluster, chartRotation, 0, 1, barsPadding);
   if (!scale) {
     throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
   }
@@ -95,8 +82,6 @@ export function computeAxisTicksDimensions(
   );
 
   return {
-    axisScaleDomain: xDomain.domain,
-    axisScaleType: xDomain.scaleType,
     ...dimensions,
   };
 }
@@ -202,12 +187,7 @@ function computeTickDimensions(
     tickLabelStyle: { fontFamily, fontSize },
   } = axisConfig;
 
-  const {
-    maxLabelBboxWidth,
-    maxLabelBboxHeight,
-    maxLabelTextWidth,
-    maxLabelTextHeight,
-  } = tickLabels.reduce(
+  const { maxLabelBboxWidth, maxLabelBboxHeight, maxLabelTextWidth, maxLabelTextHeight } = tickLabels.reduce(
     getMaxBboxDimensions(bboxCalculator, fontSize, fontFamily, tickLabelRotation, tickLabelPadding),
     { maxLabelBboxWidth: 0, maxLabelBboxHeight: 0, maxLabelTextWidth: 0, maxLabelTextHeight: 0 },
   );
@@ -237,12 +217,7 @@ export function centerRotationOrigin(
   },
   coordinates: { x: number; y: number },
 ): { x: number; y: number; offsetX: number; offsetY: number } {
-  const {
-    maxLabelBboxWidth,
-    maxLabelBboxHeight,
-    maxLabelTextWidth,
-    maxLabelTextHeight,
-  } = axisTicksDimensions;
+  const { maxLabelBboxWidth, maxLabelBboxHeight, maxLabelTextWidth, maxLabelTextHeight } = axisTicksDimensions;
 
   const offsetX = maxLabelTextWidth / 2;
   const offsetY = maxLabelTextHeight / 2;
@@ -334,17 +309,11 @@ export function getHorizontalAxisTickLineProps(
   return [x, y1, x, y2];
 }
 
-export function getVerticalAxisGridLineProps(
-  tickPosition: number,
-  chartWidth: number,
-): AxisLinePosition {
+export function getVerticalAxisGridLineProps(tickPosition: number, chartWidth: number): AxisLinePosition {
   return [0, tickPosition, chartWidth, tickPosition];
 }
 
-export function getHorizontalAxisGridLineProps(
-  tickPosition: number,
-  chartHeight: number,
-): AxisLinePosition {
+export function getHorizontalAxisGridLineProps(tickPosition: number, chartHeight: number): AxisLinePosition {
   return [tickPosition, 0, tickPosition, chartHeight];
 }
 
@@ -400,10 +369,24 @@ export function getLeftAxisMinMaxRange(chartRotation: Rotation, height: number) 
   }
 }
 
-export function getAvailableTicks(axisSpec: AxisSpec, scale: Scale, totalBarsInCluster: number) {
+export function getAvailableTicks(
+  axisSpec: AxisSpec,
+  scale: Scale,
+  totalBarsInCluster: number,
+  enableHistogramMode: boolean,
+): AxisTick[] {
   const ticks = scale.ticks();
+
+  if (enableHistogramMode && scale.bandwidth > 0) {
+    const finalTick = ticks[ticks.length - 1] + scale.minInterval;
+    ticks.push(finalTick);
+  }
+
   const shift = totalBarsInCluster > 0 ? totalBarsInCluster : 1;
-  const offset = (scale.bandwidth * shift) / 2;
+
+  const band = scale.bandwidth / (1 - scale.barsPadding);
+  const halfPadding = (band - scale.bandwidth) / 2;
+  const offset = enableHistogramMode ? -halfPadding : (scale.bandwidth * shift) / 2;
   return ticks.map((tick) => {
     return {
       value: tick,
@@ -412,20 +395,14 @@ export function getAvailableTicks(axisSpec: AxisSpec, scale: Scale, totalBarsInC
     };
   });
 }
-export function getVisibleTicks(
-  allTicks: AxisTick[],
-  axisSpec: AxisSpec,
-  axisDim: AxisTicksDimensions,
-): AxisTick[] {
+export function getVisibleTicks(allTicks: AxisTick[], axisSpec: AxisSpec, axisDim: AxisTicksDimensions): AxisTick[] {
   // We sort the ticks by position so that we can incrementally compute previousOccupiedSpace
   allTicks.sort((a: AxisTick, b: AxisTick) => a.position - b.position);
 
   const { showOverlappingTicks, showOverlappingLabels } = axisSpec;
   const { maxLabelBboxHeight, maxLabelBboxWidth } = axisDim;
 
-  const requiredSpace = isVertical(axisSpec.position)
-    ? maxLabelBboxHeight / 2
-    : maxLabelBboxWidth / 2;
+  const requiredSpace = isVertical(axisSpec.position) ? maxLabelBboxHeight / 2 : maxLabelBboxWidth / 2;
 
   let previousOccupiedSpace = 0;
   const visibleTicks = [];
@@ -479,23 +456,19 @@ export function getAxisPosition(
 
   if (isVertical(position)) {
     if (position === Position.Left) {
-      leftIncrement =
-        maxLabelBboxWidth + tickSize + tickPadding + chartMargins.left + axisTitleHeight;
+      leftIncrement = maxLabelBboxWidth + tickSize + tickPadding + chartMargins.left + axisTitleHeight;
       dimensions.left = maxLabelBboxWidth + cumLeftSum + chartMargins.left + axisTitleHeight;
     } else {
-      rightIncrement =
-        maxLabelBboxWidth + tickSize + tickPadding + chartMargins.right + axisTitleHeight;
+      rightIncrement = maxLabelBboxWidth + tickSize + tickPadding + chartMargins.right + axisTitleHeight;
       dimensions.left = left + width + cumRightSum;
     }
     dimensions.width = maxLabelBboxWidth;
   } else {
     if (position === Position.Top) {
-      topIncrement =
-        maxLabelBboxHeight + tickSize + tickPadding + chartMargins.top + axisTitleHeight;
+      topIncrement = maxLabelBboxHeight + tickSize + tickPadding + chartMargins.top + axisTitleHeight;
       dimensions.top = cumTopSum + chartMargins.top + axisTitleHeight;
     } else {
-      bottomIncrement =
-        maxLabelBboxHeight + tickSize + tickPadding + chartMargins.bottom + axisTitleHeight;
+      bottomIncrement = maxLabelBboxHeight + tickSize + tickPadding + chartMargins.bottom + axisTitleHeight;
       dimensions.top = top + height + cumBottomSum;
     }
     dimensions.height = maxLabelBboxHeight;
@@ -514,6 +487,7 @@ export function getAxisTicksPositions(
   xDomain: XDomain,
   yDomain: YDomain[],
   totalGroupsCount: number,
+  enableHistogramMode: boolean,
   legendPosition?: Position,
   barsPadding?: number,
 ) {
@@ -574,7 +548,7 @@ export function getAxisTicksPositions(
       throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
     }
 
-    const allTicks = getAvailableTicks(axisSpec, scale, totalGroupsCount);
+    const allTicks = getAvailableTicks(axisSpec, scale, totalGroupsCount, enableHistogramMode);
     const visibleTicks = getVisibleTicks(allTicks, axisSpec, axisDim);
 
     if (axisSpec.showGridLines) {
@@ -647,9 +621,7 @@ export function isUpperBound(domain: Partial<CompleteBoundedDomain>): domain is 
   return domain.max != null;
 }
 
-export function isCompleteBound(
-  domain: Partial<CompleteBoundedDomain>,
-): domain is CompleteBoundedDomain {
+export function isCompleteBound(domain: Partial<CompleteBoundedDomain>): domain is CompleteBoundedDomain {
   return domain.max != null && domain.min != null;
 }
 

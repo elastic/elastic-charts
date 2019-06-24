@@ -77,7 +77,7 @@ export class Axis extends React.PureComponent<AxisProps> {
         <Text {...textProps} {...labelStyle} text={tick.label} />
       </Group>
     );
-  }
+  };
 
   private renderTickLine = (tick: AxisTick, i: number) => {
     const {
@@ -90,33 +90,22 @@ export class Axis extends React.PureComponent<AxisProps> {
 
     const lineProps = isVertical(position)
       ? getVerticalAxisTickLineProps(position, tickPadding, tickSize, tick.position)
-      : getHorizontalAxisTickLineProps(
-          position,
-          tickPadding,
-          tickSize,
-          tick.position,
-          maxLabelBboxHeight,
-        );
+      : getHorizontalAxisTickLineProps(position, tickPadding, tickSize, tick.position, maxLabelBboxHeight);
 
     return <Line key={`tick-${i}`} points={lineProps} {...tickLineStyle} />;
-  }
+  };
   private renderAxis = () => {
     const { ticks, axisPosition, debug } = this.props;
     return (
       <Group x={axisPosition.left} y={axisPosition.top}>
-        {debug && (
-            <Rect x={0} y={0} width={axisPosition.width} height={axisPosition.height} fill={'blue'} />
-          )
-        }
+        {debug && <Rect x={0} y={0} width={axisPosition.width} height={axisPosition.height} fill={'blue'} />}
         <Group key="lines">{this.renderAxisLine()}</Group>
         <Group key="tick-lines">{ticks.map(this.renderTickLine)}</Group>
-        <Group key="ticks">
-          {ticks.filter((tick) => tick.label !== null).map(this.renderTickLabel)}
-        </Group>
+        <Group key="ticks">{ticks.filter((tick) => tick.label !== null).map(this.renderTickLabel)}</Group>
         {this.renderAxisTitle()}
       </Group>
     );
-  }
+  };
   private renderAxisLine = () => {
     const {
       axisSpec: { tickSize, tickPadding, position },
@@ -135,17 +124,11 @@ export class Axis extends React.PureComponent<AxisProps> {
     } else {
       lineProps[0] = 0;
       lineProps[2] = axisPosition.width;
-      lineProps[1] =
-        position === Position.Top
-          ? axisTicksDimensions.maxLabelBboxHeight + tickSize + tickPadding
-          : 0;
-      lineProps[3] =
-        position === Position.Top
-          ? axisTicksDimensions.maxLabelBboxHeight + tickSize + tickPadding
-          : 0;
+      lineProps[1] = position === Position.Top ? axisTicksDimensions.maxLabelBboxHeight + tickSize + tickPadding : 0;
+      lineProps[3] = position === Position.Top ? axisTicksDimensions.maxLabelBboxHeight + tickSize + tickPadding : 0;
     }
     return <Line points={lineProps} {...axisLineStyle} />;
-  }
+  };
   private renderAxisTitle() {
     const {
       axisSpec: { title, position },
@@ -192,15 +175,7 @@ export class Axis extends React.PureComponent<AxisProps> {
             rotation={-90}
           />
         )}
-        <Text
-          align="center"
-          x={left}
-          y={top}
-          text={title}
-          width={height}
-          rotation={-90}
-          {...titleStyle}
-        />
+        <Text align="center" x={left} y={top} text={title} width={height} rotation={-90} {...titleStyle} />
       </Group>
     );
   }
@@ -222,9 +197,7 @@ export class Axis extends React.PureComponent<AxisProps> {
     }
 
     const top =
-      position === Position.Top
-        ? -maxLabelBboxHeight - padding
-        : maxLabelBboxHeight + tickPadding + tickSize + padding;
+      position === Position.Top ? -maxLabelBboxHeight - padding : maxLabelBboxHeight + tickPadding + tickSize + padding;
 
     const left = 0;
     return (
@@ -240,15 +213,7 @@ export class Axis extends React.PureComponent<AxisProps> {
             fill="violet"
           />
         )}
-        <Text
-          align="center"
-          x={left}
-          y={top}
-          width={width}
-          height={height}
-          text={title}
-          {...titleStyle}
-        />
+        <Text align="center" x={left} y={top} width={width} height={height} text={title} {...titleStyle} />
       </Group>
     );
   }
