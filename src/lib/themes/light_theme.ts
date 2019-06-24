@@ -1,4 +1,4 @@
-import { palettes } from '@elastic/eui';
+import { palettes } from './colors';
 import { Theme } from './theme';
 
 import {
@@ -63,7 +63,7 @@ export const LIGHT_THEME: Theme = {
     displayValue: {
       fontSize: 10,
       fontStyle: 'normal',
-      fontFamily: `'Open Sans', Helvetica, Arial, sans-serif`,
+      fontFamily: 'sans-serif',
       padding: 0,
       fill: 'gray',
       offsetX: 0,
@@ -73,12 +73,13 @@ export const LIGHT_THEME: Theme = {
   sharedStyle: DEFAULT_GEOMETRY_STYLES,
   scales: {
     barsPadding: 0.25,
+    histogramPadding: 0.05,
   },
   axes: {
     axisTitleStyle: {
       fontSize: 12,
       fontStyle: 'bold',
-      fontFamily: `'Open Sans', Helvetica, Arial, sans-serif`,
+      fontFamily: 'sans-serif',
       padding: 5,
       fill: 'gray',
     },
@@ -88,7 +89,7 @@ export const LIGHT_THEME: Theme = {
     },
     tickLabelStyle: {
       fontSize: 10,
-      fontFamily: `'Open Sans', Helvetica, Arial, sans-serif`,
+      fontFamily: 'sans-serif',
       fontStyle: 'normal',
       fill: 'gray',
       padding: 0,
@@ -99,11 +100,11 @@ export const LIGHT_THEME: Theme = {
     },
   },
   colors: {
-    vizColors: palettes.euiPaletteColorBlind.colors,
+    vizColors: palettes.echPaletteColorBlind.colors,
     defaultVizColor: DEFAULT_MISSING_COLOR,
   },
   legend: {
-    verticalWidth: 160,
+    verticalWidth: 200,
     horizontalHeight: 64,
   },
   crosshair: {

@@ -1,9 +1,9 @@
-import { findDataSeriesByColorValues } from '../../state/utils';
 import { ColorConfig } from '../themes/theme';
 import { Accessor } from '../utils/accessor';
 import { GroupId, SpecId } from '../utils/ids';
 import { splitSpecsByGroupId, YBasicSeriesSpec } from './domains/y_domain';
 import { formatNonStackedDataSeriesValues } from './nonstacked_series_utils';
+import { isEqualSeriesKey } from './series_utils';
 import { BasicSeriesSpec, Datum, SeriesAccessors } from './specs';
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
 
@@ -64,6 +64,19 @@ export interface DataSeriesColorsValues {
   specSortIndex?: number;
 }
 
+export function findDataSeriesByColorValues(
+  series: DataSeriesColorsValues[] | null,
+  value: DataSeriesColorsValues,
+): number {
+  if (!series) {
+    return -1;
+  }
+
+  return series.findIndex((item: DataSeriesColorsValues) => {
+    return isEqualSeriesKey(item.colorValues, value.colorValues) && item.specId === value.specId;
+  });
+}
+
 /**
  * Split a dataset into multiple series, each having a key with the relative
  * series configuration
@@ -93,12 +106,7 @@ export function splitSeries(
         const colorValues = getColorValues(datum, colorAccessors, accessor);
         const colorValuesKey = getColorValuesAsString(colorValues, specId);
         colorsValues.set(colorValuesKey, colorValues);
-        const cleanedDatum = cleanDatum(
-          datum,
-          xAccessor,
-          accessor,
-          y0Accessors && y0Accessors[index],
-        );
+        const cleanedDatum = cleanDatum(datum, xAccessor, accessor, y0Accessors && y0Accessors[index]);
         splitSeriesLastValues.set(colorValuesKey, cleanedDatum.y1);
         xValues.add(cleanedDatum.x);
         updateSeriesMap(series, [...seriesKey, accessor], cleanedDatum, specId, colorValuesKey);
@@ -107,12 +115,7 @@ export function splitSeries(
       const colorValues = getColorValues(datum, colorAccessors);
       const colorValuesKey = getColorValuesAsString(colorValues, specId);
       colorsValues.set(colorValuesKey, colorValues);
-      const cleanedDatum = cleanDatum(
-        datum,
-        xAccessor,
-        yAccessors[0],
-        y0Accessors && y0Accessors[0],
-      );
+      const cleanedDatum = cleanDatum(datum, xAccessor, yAccessors[0], y0Accessors && y0Accessors[0]);
       splitSeriesLastValues.set(colorValuesKey, cleanedDatum.y1);
       xValues.add(cleanedDatum.x);
       updateSeriesMap(series, [...seriesKey], cleanedDatum, specId, colorValuesKey);
@@ -167,11 +170,7 @@ function getAccessorsValues(datum: Datum, accessors: Accessor[] = []): any[] {
 /**
  * Get the array of values that forms a series key
  */
-function getColorValues(
-  datum: Datum,
-  colorAccessors: Accessor[] = [],
-  yAccessorValue?: any,
-): any[] {
+function getColorValues(datum: Datum, colorAccessors: Accessor[] = [], yAccessorValue?: any): any[] {
   const colorValues = getAccessorsValues(datum, colorAccessors);
   if (yAccessorValue) {
     return [...colorValues, yAccessorValue];
@@ -188,12 +187,7 @@ export function getColorValuesAsString(colorValues: any[], specId: SpecId): stri
 /**
  * Reformat the datum having only the required x and y property.
  */
-function cleanDatum(
-  datum: Datum,
-  xAccessor: Accessor,
-  yAccessor: Accessor,
-  y0Accessor?: Accessor,
-): RawDataSeriesDatum {
+function cleanDatum(datum: Datum, xAccessor: Accessor, yAccessor: Accessor, y0Accessor?: Accessor): RawDataSeriesDatum {
   const x = datum[xAccessor];
   const y1 = datum[yAccessor];
   const cleanedDatum: RawDataSeriesDatum = { x, y1, datum, y0: null };
@@ -213,16 +207,16 @@ export function getFormattedDataseries(
   const specsByGroupIds = splitSpecsByGroupId(specs);
   const specsByGroupIdsEntries = [...specsByGroupIds.entries()];
 
-  const stackedFormattedDataSeries: Array<{
+  const stackedFormattedDataSeries: {
     groupId: GroupId;
     dataSeries: DataSeries[];
     counts: DataSeriesCounts;
-  }> = [];
-  const nonStackedFormattedDataSeries: Array<{
+  }[] = [];
+  const nonStackedFormattedDataSeries: {
     groupId: GroupId;
     dataSeries: DataSeries[];
     counts: DataSeriesCounts;
-  }> = [];
+  }[] = [];
 
   specsByGroupIdsEntries.forEach(([groupId, groupSpecs]) => {
     // format stacked data series
@@ -347,10 +341,8 @@ export function getSortedDataSeriesColorsValuesMap(
     const [, colorValuesA] = seriesA;
     const [, colorValuesB] = seriesB;
 
-    const specAIndex =
-      colorValuesA.specSortIndex != null ? colorValuesA.specSortIndex : colorValuesMap.size;
-    const specBIndex =
-      colorValuesB.specSortIndex != null ? colorValuesB.specSortIndex : colorValuesMap.size;
+    const specAIndex = colorValuesA.specSortIndex != null ? colorValuesA.specSortIndex : colorValuesMap.size;
+    const specBIndex = colorValuesB.specSortIndex != null ? colorValuesB.specSortIndex : colorValuesMap.size;
 
     return specAIndex - specBIndex;
   });
@@ -368,8 +360,7 @@ export function getSeriesColorMap(
 
   seriesColors.forEach((value: DataSeriesColorsValues, seriesColorKey: string) => {
     const customSeriesColor: string | undefined = customColors.get(seriesColorKey);
-    const color =
-      customSeriesColor || chartColors.vizColors[counter % chartColors.vizColors.length];
+    const color = customSeriesColor || chartColors.vizColors[counter % chartColors.vizColors.length];
 
     seriesColorMap.set(seriesColorKey, color);
     counter++;

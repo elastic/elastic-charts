@@ -23,6 +23,7 @@ import {
 import { countBarsInCluster } from '../lib/series/scales';
 import {
   DataSeriesColorsValues,
+  findDataSeriesByColorValues,
   FormattedDataSeries,
   getSeriesColorMap,
   RawDataSeries,
@@ -57,31 +58,25 @@ import {
   isFollowTooltipType,
   TooltipType,
   TooltipValue,
+  TooltipValueFormatter,
 } from '../lib/utils/interactions';
 import { Scale, ScaleType } from '../lib/utils/scales/scales';
 import { DEFAULT_TOOLTIP_SNAP, DEFAULT_TOOLTIP_TYPE } from '../specs/settings';
-import {
-  AnnotationDimensions,
-  computeAnnotationDimensions,
-  computeAnnotationTooltipState,
-} from './annotation_utils';
-import {
-  getCursorBandPosition,
-  getCursorLinePosition,
-  getTooltipPosition,
-} from './crosshair_utils';
+import { AnnotationDimensions, computeAnnotationDimensions, computeAnnotationTooltipState } from './annotation_utils';
+import { getCursorBandPosition, getCursorLinePosition, getTooltipPosition } from './crosshair_utils';
 import {
   BrushExtent,
   computeBrushExtent,
   computeChartTransform,
   computeSeriesDomains,
   computeSeriesGeometries,
-  findDataSeriesByColorValues,
   getAxesSpecForSpecId,
   getUpdatedCustomSeriesColors,
   isAllSeriesDeselected,
   isChartAnimatable,
+  isHistogramModeEnabled,
   isLineAreaOnlyChart,
+  setBarSeriesAccessors,
   Transform,
   updateDeselectedDataSeries,
 } from './utils';
@@ -110,6 +105,8 @@ export class ChartStore {
   debug = false;
   specsInitialized = observable.box(false);
   initialized = observable.box(false);
+  enableHistogramMode = observable.box(false);
+
   parentDimensions: Dimensions = {
     width: 0,
     height: 0,
@@ -168,6 +165,7 @@ export class ChartStore {
   tooltipType = observable.box(DEFAULT_TOOLTIP_TYPE);
   tooltipSnap = observable.box(DEFAULT_TOOLTIP_SNAP);
   tooltipPosition = observable.object<{ transform: string }>({ transform: '' });
+  tooltipHeaderFormatter?: TooltipValueFormatter;
 
   /** cursorPosition is used by tooltip, so this is a way to expose the position for other uses */
   rawCursorPosition = observable.object<{ x: number; y: number }>({ x: -1, y: -1 }, undefined, {
@@ -178,20 +176,12 @@ export class ChartStore {
   cursorPosition = observable.object<{ x: number; y: number }>({ x: -1, y: -1 }, undefined, {
     deep: false,
   });
-  cursorBandPosition = observable.object<Dimensions>(
-    { top: -1, left: -1, height: -1, width: -1 },
-    undefined,
-    {
-      deep: false,
-    },
-  );
-  cursorLinePosition = observable.object<Dimensions>(
-    { top: -1, left: -1, height: -1, width: -1 },
-    undefined,
-    {
-      deep: false,
-    },
-  );
+  cursorBandPosition = observable.object<Dimensions>({ top: -1, left: -1, height: -1, width: -1 }, undefined, {
+    deep: false,
+  });
+  cursorLinePosition = observable.object<Dimensions>({ top: -1, left: -1, height: -1, width: -1 }, undefined, {
+    deep: false,
+  });
 
   onElementClickListener?: ElementClickListener;
   onElementOverListener?: ElementOverListener;
@@ -233,6 +223,20 @@ export class ChartStore {
   });
 
   /**
+   * determine if crosshair cursor should be visible based on cursor position and brush enablement
+   */
+  isCrosshairCursorVisible = computed(() => {
+    const xPos = this.cursorPosition.x;
+    const yPos = this.cursorPosition.y;
+
+    if (yPos < 0 || xPos < 0) {
+      return false;
+    }
+
+    return this.isBrushEnabled();
+  });
+
+  /**
    * x and y values are relative to the container.
    */
   setCursorPosition = action((x: number, y: number) => {
@@ -265,18 +269,8 @@ export class ChartStore {
     }
 
     // get the cursor position depending on the chart rotation
-    const xAxisCursorPosition = getValidXPosition(
-      xPos,
-      yPos,
-      this.chartRotation,
-      this.chartDimensions,
-    );
-    const yAxisCursorPosition = getValidYPosition(
-      xPos,
-      yPos,
-      this.chartRotation,
-      this.chartDimensions,
-    );
+    const xAxisCursorPosition = getValidXPosition(xPos, yPos, this.chartRotation, this.chartDimensions);
+    const yAxisCursorPosition = getValidYPosition(xPos, yPos, this.chartRotation, this.chartDimensions);
 
     // only if we have a valid cursor position and the necessary scale
     if (xAxisCursorPosition < 0 || !this.xScale || !this.yScales) {
@@ -293,7 +287,7 @@ export class ChartStore {
     const updatedCursorBand = getCursorBandPosition(
       this.chartRotation,
       this.chartDimensions,
-      this.cursorPosition,
+      { x: xAxisCursorPosition, y: yAxisCursorPosition },
       this.isTooltipSnapEnabled.get(),
       this.xScale,
       this.geometriesIndexKeys,
@@ -305,21 +299,15 @@ export class ChartStore {
     }
     Object.assign(this.cursorBandPosition, updatedCursorBand);
 
-    const updatedCursorLine = getCursorLinePosition(
-      this.chartRotation,
-      this.chartDimensions,
-      this.cursorPosition,
-    );
+    const updatedCursorLine = getCursorLinePosition(this.chartRotation, this.chartDimensions, this.cursorPosition);
     Object.assign(this.cursorLinePosition, updatedCursorLine);
 
-    const updatedTooltipPosition = getTooltipPosition(
+    this.tooltipPosition.transform = getTooltipPosition(
       this.chartDimensions,
       this.chartRotation,
       this.cursorBandPosition,
       this.cursorPosition,
     );
-
-    this.tooltipPosition.transform = updatedTooltipPosition.transform;
 
     // get the elements on at this cursor position
     const elements = this.geometriesIndex.get(xValue);
@@ -372,7 +360,9 @@ export class ChartStore {
 
         // format only one time the x value
         if (!xValueInfo) {
-          xValueInfo = formatTooltip(indexedGeometry, spec, true, false, xAxis);
+          // if we have a tooltipHeaderFormatter, then don't pass in the xAxis as the user will define a formatter
+          const formatterAxis = this.tooltipHeaderFormatter ? undefined : xAxis;
+          xValueInfo = formatTooltip(indexedGeometry, spec, true, false, formatterAxis);
           return [xValueInfo, ...acc, formattedTooltip];
         }
 
@@ -528,14 +518,15 @@ export class ChartStore {
   });
 
   onLegendItemClick = action((legendItemKey: string) => {
-    if (legendItemKey !== this.selectedLegendItemKey.get()) {
-      this.selectedLegendItemKey.set(legendItemKey);
-    } else {
-      this.selectedLegendItemKey.set(null);
-    }
-
+    // Disabling the select until we implement the right contextual menu
+    // with extend possibility
+    // if (legendItemKey !== this.selectedLegendItemKey.get()) {
+    // this.selectedLegendItemKey.set(legendItemKey);
+    // } else {
+    //   this.selectedLegendItemKey.set(null);
+    // }
     if (this.onLegendItemClickListener) {
-      const currentLegendItem = this.selectedLegendItem.get();
+      const currentLegendItem = legendItemKey == null ? null : this.legendItems.get(legendItemKey);
       const listenerData = currentLegendItem ? currentLegendItem.value : null;
       this.onLegendItemClickListener(listenerData);
     }
@@ -577,10 +568,7 @@ export class ChartStore {
     const legendItem = this.legendItems.get(legendItemKey);
 
     if (legendItem) {
-      this.deselectedDataSeries = updateDeselectedDataSeries(
-        this.deselectedDataSeries,
-        legendItem.value,
-      );
+      this.deselectedDataSeries = updateDeselectedDataSeries(this.deselectedDataSeries, legendItem.value);
       this.computeChart();
     }
   });
@@ -719,10 +707,21 @@ export class ChartStore {
   }
   addSeriesSpec(seriesSpec: BasicSeriesSpec | LineSeriesSpec | AreaSeriesSpec | BarSeriesSpec) {
     this.seriesSpecs.set(seriesSpec.id, seriesSpec);
+
+    const isEnabled = isHistogramModeEnabled(this.seriesSpecs);
+    this.enableHistogramMode.set(isEnabled);
+
+    setBarSeriesAccessors(isEnabled, this.seriesSpecs);
   }
   removeSeriesSpec(specId: SpecId) {
     this.seriesSpecs.delete(specId);
+
+    const isEnabled = isHistogramModeEnabled(this.seriesSpecs);
+    this.enableHistogramMode.set(isEnabled);
+
+    setBarSeriesAccessors(isEnabled, this.seriesSpecs);
   }
+
   /**
    * Add an axis spec to the store
    * @param axisSpec an axis spec
@@ -821,6 +820,10 @@ export class ChartStore {
 
     // compute axis dimensions
     const bboxCalculator = new CanvasTextBBoxCalculator();
+    const barsPadding = this.enableHistogramMode.get()
+      ? this.chartTheme.scales.histogramPadding
+      : this.chartTheme.scales.barsPadding;
+
     this.axesTicksDimensions.clear();
     this.axesSpecs.forEach((axisSpec) => {
       const { id } = axisSpec;
@@ -832,7 +835,7 @@ export class ChartStore {
         bboxCalculator,
         this.chartRotation,
         this.chartTheme.axes,
-        this.chartTheme.scales.barsPadding,
+        barsPadding,
       );
       if (dimensions) {
         this.axesTicksDimensions.set(id, dimensions);
@@ -851,11 +854,7 @@ export class ChartStore {
     );
 
     this.chartTransform = computeChartTransform(this.chartDimensions, this.chartRotation);
-    this.brushExtent = computeBrushExtent(
-      this.chartDimensions,
-      this.chartRotation,
-      this.chartTransform,
-    );
+    this.brushExtent = computeBrushExtent(this.chartDimensions, this.chartRotation, this.chartTransform);
 
     const seriesGeometries = computeSeriesGeometries(
       this.seriesSpecs,
@@ -867,6 +866,7 @@ export class ChartStore {
       this.chartDimensions,
       this.chartRotation,
       this.axesSpecs,
+      this.enableHistogramMode.get(),
     );
 
     // tslint:disable-next-line:no-console
@@ -888,8 +888,9 @@ export class ChartStore {
       seriesDomains.xDomain,
       seriesDomains.yDomain,
       totalBarsInCluster,
+      this.enableHistogramMode.get(),
       this.legendPosition,
-      this.chartTheme.scales.barsPadding,
+      barsPadding,
     );
     // tslint:disable-next-line:no-console
     // console.log({axisTicksPositions});
@@ -906,6 +907,8 @@ export class ChartStore {
       this.yScales,
       this.xScale,
       this.axesSpecs,
+      this.totalBarsInCluster,
+      this.enableHistogramMode.get(),
     );
 
     this.annotationDimensions.replace(updatedAnnotationDimensions);

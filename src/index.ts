@@ -1,6 +1,6 @@
 export * from './specs';
 export { Chart } from './components/chart';
-export { TooltipType } from './lib/utils/interactions';
+export { TooltipType, TooltipValue, TooltipValueFormatter } from './lib/utils/interactions';
 export { getAxisId, getGroupId, getSpecId, getAnnotationId } from './lib/utils/ids';
 export { ScaleType } from './lib/utils/scales/scales';
 export { Position, Rendering, Rotation } from './lib/series/specs';
@@ -13,8 +13,11 @@ export { timeFormatter, niceTimeFormatter, niceTimeFormatByDay } from './utils/d
 export { DataGenerator } from './utils/data_generators/data_generator';
 export { DataSeriesColorsValues } from './lib/series/series';
 export {
+  AnnotationDomainType,
   AnnotationDomainTypes,
   CustomSeriesColorsMap,
+  HistogramModeAlignment,
+  HistogramModeAlignments,
   LineAnnotationDatum,
   LineAnnotationSpec,
   RectAnnotationDatum,

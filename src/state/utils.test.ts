@@ -1,29 +1,33 @@
 import { mergeDomainsByGroupId } from '../lib/axes/axis_utils';
 import { LegendItem } from '../lib/series/legend';
 import { IndexedGeometry } from '../lib/series/rendering';
-import { DataSeriesColorsValues, getSeriesColorMap } from '../lib/series/series';
+import { DataSeriesColorsValues, findDataSeriesByColorValues, getSeriesColorMap } from '../lib/series/series';
 import {
   AreaSeriesSpec,
   AxisSpec,
   BarSeriesSpec,
   BasicSeriesSpec,
+  HistogramModeAlignments,
   LineSeriesSpec,
 } from '../lib/series/specs';
 import { BARCHART_1Y0G, BARCHART_1Y1G } from '../lib/series/utils/test_dataset';
 import { LIGHT_THEME } from '../lib/themes/light_theme';
 import { AxisId, getGroupId, getSpecId, SpecId } from '../lib/utils/ids';
+import { ScaleContinuous } from '../lib/utils/scales/scale_continuous';
 import { ScaleType } from '../lib/utils/scales/scales';
 import {
   computeSeriesDomains,
   computeSeriesGeometries,
-  findDataSeriesByColorValues,
+  computeXScaleOffset,
   getUpdatedCustomSeriesColors,
   isAllSeriesDeselected,
   isChartAnimatable,
+  isHistogramModeEnabled,
   isHorizontalRotation,
   isLineAreaOnlyChart,
   isVerticalRotation,
   mergeGeometriesIndexes,
+  setBarSeriesAccessors,
   updateDeselectedDataSeries,
 } from './utils';
 
@@ -179,12 +183,8 @@ describe('Chart State utils', () => {
     const addedSelectedSeries = [dataSeriesValuesA, dataSeriesValuesB, dataSeriesValuesC];
     const removedSelectedSeries = [dataSeriesValuesB];
 
-    expect(updateDeselectedDataSeries(selectedSeries, dataSeriesValuesC)).toEqual(
-      addedSelectedSeries,
-    );
-    expect(updateDeselectedDataSeries(selectedSeries, dataSeriesValuesA)).toEqual(
-      removedSelectedSeries,
-    );
+    expect(updateDeselectedDataSeries(selectedSeries, dataSeriesValuesC)).toEqual(addedSelectedSeries);
+    expect(updateDeselectedDataSeries(selectedSeries, dataSeriesValuesA)).toEqual(removedSelectedSeries);
     expect(updateDeselectedDataSeries(null, dataSeriesValuesA)).toEqual([dataSeriesValuesA]);
   });
   it('should get an updated customSeriesColor based on specs', () => {
@@ -276,11 +276,7 @@ describe('Chart State utils', () => {
       yScaleToDataExtent: false,
       data: BARCHART_1Y1G,
     };
-    let seriesMap = new Map<SpecId, BasicSeriesSpec>([
-      [area.id, area],
-      [line.id, line],
-      [bar.id, bar],
-    ]);
+    let seriesMap = new Map<SpecId, BasicSeriesSpec>([[area.id, area], [line.id, line], [bar.id, bar]]);
     expect(isLineAreaOnlyChart(seriesMap)).toBe(false);
     seriesMap = new Map<SpecId, BasicSeriesSpec>([[area.id, area], [line.id, line]]);
     expect(isLineAreaOnlyChart(seriesMap)).toBe(true);
@@ -352,11 +348,7 @@ describe('Chart State utils', () => {
         yScaleToDataExtent: false,
         data: BARCHART_1Y1G,
       };
-      const seriesSpecs = new Map<SpecId, BasicSeriesSpec>([
-        [area.id, area],
-        [line.id, line],
-        [bar.id, bar],
-      ]);
+      const seriesSpecs = new Map<SpecId, BasicSeriesSpec>([[area.id, area], [line.id, line], [bar.id, bar]]);
       const axesSpecs = new Map<AxisId, AxisSpec>();
       const chartRotation = 0;
       const chartDimensions = { width: 100, height: 100, top: 0, left: 0 };
@@ -378,6 +370,7 @@ describe('Chart State utils', () => {
         chartDimensions,
         chartRotation,
         axesSpecs,
+        false,
       );
       expect(geometries.geometriesCounts.bars).toBe(8);
       expect(geometries.geometriesCounts.linePoints).toBe(8);
@@ -430,6 +423,7 @@ describe('Chart State utils', () => {
         chartDimensions,
         chartRotation,
         axesSpecs,
+        false,
       );
       expect(geometries.geometriesIndex.size).toBe(4);
       expect(geometries.geometriesIndex.get(0)!.length).toBe(2);
@@ -484,6 +478,7 @@ describe('Chart State utils', () => {
         chartDimensions,
         chartRotation,
         axesSpecs,
+        false,
       );
       expect(geometries.geometriesIndex.size).toBe(4);
       expect(geometries.geometriesIndex.get(0)!.length).toBe(2);
@@ -539,11 +534,7 @@ describe('Chart State utils', () => {
           showValueLabel: true,
         },
       };
-      const seriesSpecs = new Map<SpecId, BasicSeriesSpec>([
-        [area.id, area],
-        [line.id, line],
-        [bar.id, bar],
-      ]);
+      const seriesSpecs = new Map<SpecId, BasicSeriesSpec>([[area.id, area], [line.id, line], [bar.id, bar]]);
       const axesSpecs = new Map<AxisId, AxisSpec>();
       const chartRotation = 0;
       const chartDimensions = { width: 100, height: 100, top: 0, left: 0 };
@@ -565,6 +556,7 @@ describe('Chart State utils', () => {
         chartDimensions,
         chartRotation,
         axesSpecs,
+        false,
       );
       expect(geometries.geometriesCounts.bars).toBe(8);
       expect(geometries.geometriesCounts.linePoints).toBe(8);
@@ -609,11 +601,7 @@ describe('Chart State utils', () => {
         yScaleToDataExtent: false,
         data: BARCHART_1Y1G,
       };
-      const seriesSpecs = new Map<SpecId, BasicSeriesSpec>([
-        [line1.id, line1],
-        [line2.id, line2],
-        [line3.id, line3],
-      ]);
+      const seriesSpecs = new Map<SpecId, BasicSeriesSpec>([[line1.id, line1], [line2.id, line2], [line3.id, line3]]);
       const axesSpecs = new Map<AxisId, AxisSpec>();
       const chartRotation = 0;
       const chartDimensions = { width: 100, height: 100, top: 0, left: 0 };
@@ -635,6 +623,7 @@ describe('Chart State utils', () => {
         chartDimensions,
         chartRotation,
         axesSpecs,
+        false,
       );
       expect(geometries.geometriesCounts.bars).toBe(0);
       expect(geometries.geometriesCounts.linePoints).toBe(24);
@@ -679,11 +668,7 @@ describe('Chart State utils', () => {
         yScaleToDataExtent: false,
         data: BARCHART_1Y1G,
       };
-      const seriesSpecs = new Map<SpecId, BasicSeriesSpec>([
-        [area1.id, area1],
-        [area2.id, area2],
-        [area3.id, area3],
-      ]);
+      const seriesSpecs = new Map<SpecId, BasicSeriesSpec>([[area1.id, area1], [area2.id, area2], [area3.id, area3]]);
       const axesSpecs = new Map<AxisId, AxisSpec>();
       const chartRotation = 0;
       const chartDimensions = { width: 100, height: 100, top: 0, left: 0 };
@@ -705,6 +690,7 @@ describe('Chart State utils', () => {
         chartDimensions,
         chartRotation,
         axesSpecs,
+        false,
       );
       expect(geometries.geometriesCounts.bars).toBe(0);
       expect(geometries.geometriesCounts.linePoints).toBe(0);
@@ -749,11 +735,7 @@ describe('Chart State utils', () => {
         yScaleToDataExtent: false,
         data: BARCHART_1Y1G,
       };
-      const seriesSpecs = new Map<SpecId, BasicSeriesSpec>([
-        [bars1.id, bars1],
-        [bars2.id, bars2],
-        [bars3.id, bars3],
-      ]);
+      const seriesSpecs = new Map<SpecId, BasicSeriesSpec>([[bars1.id, bars1], [bars2.id, bars2], [bars3.id, bars3]]);
       const axesSpecs = new Map<AxisId, AxisSpec>();
       const chartRotation = 0;
       const chartDimensions = { width: 100, height: 100, top: 0, left: 0 };
@@ -775,6 +757,7 @@ describe('Chart State utils', () => {
         chartDimensions,
         chartRotation,
         axesSpecs,
+        false,
       );
       expect(geometries.geometriesCounts.bars).toBe(24);
       expect(geometries.geometriesCounts.linePoints).toBe(0);
@@ -812,6 +795,166 @@ describe('Chart State utils', () => {
     expect(merged.get('a')).toBeDefined();
     expect(merged.get('a')!.length).toBe(2);
   });
+  test('can compute xScaleOffset dependent on histogram mode', () => {
+    const domain = [0, 10];
+    const range: [number, number] = [0, 100];
+    const bandwidth = 10;
+    const barsPadding = 0.5;
+    const scale = new ScaleContinuous(ScaleType.Linear, domain, range, bandwidth, 0, 'utc', 1, barsPadding);
+    const histogramModeEnabled = true;
+    const histogramModeDisabled = false;
+
+    expect(computeXScaleOffset(scale, histogramModeDisabled)).toBe(0);
+
+    // default alignment (start)
+    expect(computeXScaleOffset(scale, histogramModeEnabled)).toBe(5);
+
+    expect(computeXScaleOffset(scale, histogramModeEnabled, HistogramModeAlignments.Center)).toBe(0);
+    expect(computeXScaleOffset(scale, histogramModeEnabled, HistogramModeAlignments.End)).toBe(-5);
+  });
+  test('can determine if histogram mode is enabled', () => {
+    const area: AreaSeriesSpec = {
+      id: getSpecId('area'),
+      groupId: getGroupId('group1'),
+      seriesType: 'area',
+      yScaleType: ScaleType.Log,
+      xScaleType: ScaleType.Linear,
+      xAccessor: 'x',
+      yAccessors: ['y'],
+      splitSeriesAccessors: ['g'],
+      yScaleToDataExtent: false,
+      data: BARCHART_1Y1G,
+    };
+    const line: LineSeriesSpec = {
+      id: getSpecId('line'),
+      groupId: getGroupId('group2'),
+      seriesType: 'line',
+      yScaleType: ScaleType.Log,
+      xScaleType: ScaleType.Linear,
+      xAccessor: 'x',
+      yAccessors: ['y'],
+      splitSeriesAccessors: ['g'],
+      stackAccessors: ['x'],
+      yScaleToDataExtent: false,
+      data: BARCHART_1Y1G,
+    };
+    const basicBar: BarSeriesSpec = {
+      id: getSpecId('bar'),
+      groupId: getGroupId('group2'),
+      seriesType: 'bar',
+      yScaleType: ScaleType.Log,
+      xScaleType: ScaleType.Linear,
+      xAccessor: 'x',
+      yAccessors: ['y'],
+      splitSeriesAccessors: ['g'],
+      stackAccessors: ['x'],
+      yScaleToDataExtent: false,
+      data: BARCHART_1Y1G,
+    };
+    const histogramBar: BarSeriesSpec = {
+      id: getSpecId('histo'),
+      groupId: getGroupId('group2'),
+      seriesType: 'bar',
+      yScaleType: ScaleType.Log,
+      xScaleType: ScaleType.Linear,
+      xAccessor: 'x',
+      yAccessors: ['y'],
+      splitSeriesAccessors: ['g'],
+      stackAccessors: ['x'],
+      yScaleToDataExtent: false,
+      data: BARCHART_1Y1G,
+      enableHistogramMode: true,
+    };
+    const seriesMap = new Map<SpecId, BasicSeriesSpec>([
+      [area.id, area],
+      [line.id, line],
+      [basicBar.id, basicBar],
+      [histogramBar.id, histogramBar],
+    ]);
+
+    expect(isHistogramModeEnabled(seriesMap)).toBe(true);
+
+    seriesMap.delete(histogramBar.id);
+    expect(isHistogramModeEnabled(seriesMap)).toBe(false);
+
+    seriesMap.delete(basicBar.id);
+    expect(isHistogramModeEnabled(seriesMap)).toBe(false);
+  });
+  test('can set the bar series accessors dependent on histogram mode', () => {
+    const isNotHistogramEnabled = false;
+    const isHistogramEnabled = true;
+
+    const area: AreaSeriesSpec = {
+      id: getSpecId('area'),
+      groupId: getGroupId('group1'),
+      seriesType: 'area',
+      yScaleType: ScaleType.Log,
+      xScaleType: ScaleType.Linear,
+      xAccessor: 'x',
+      yAccessors: ['y'],
+      splitSeriesAccessors: ['g'],
+      yScaleToDataExtent: false,
+      data: BARCHART_1Y1G,
+    };
+    const line: LineSeriesSpec = {
+      id: getSpecId('line'),
+      groupId: getGroupId('group2'),
+      seriesType: 'line',
+      yScaleType: ScaleType.Log,
+      xScaleType: ScaleType.Linear,
+      xAccessor: 'x',
+      yAccessors: ['y'],
+      splitSeriesAccessors: ['g'],
+      stackAccessors: ['x'],
+      yScaleToDataExtent: false,
+      data: BARCHART_1Y1G,
+    };
+    const bar: BarSeriesSpec = {
+      id: getSpecId('bar'),
+      groupId: getGroupId('group2'),
+      seriesType: 'bar',
+      yScaleType: ScaleType.Log,
+      xScaleType: ScaleType.Linear,
+      xAccessor: 'x',
+      yAccessors: ['y'],
+      splitSeriesAccessors: ['g'],
+      stackAccessors: ['foo'],
+      yScaleToDataExtent: false,
+      data: BARCHART_1Y1G,
+    };
+
+    const seriesMap = new Map<SpecId, BasicSeriesSpec>([[area.id, area], [line.id, line]]);
+
+    // should not affect area or line series
+    setBarSeriesAccessors(isHistogramEnabled, seriesMap);
+    expect(seriesMap).toEqual(seriesMap);
+
+    // add bar series, histogram mode not enabled
+    seriesMap.set(bar.id, bar);
+    setBarSeriesAccessors(isNotHistogramEnabled, seriesMap);
+
+    // histogram mode
+    setBarSeriesAccessors(isHistogramEnabled, seriesMap);
+    expect(bar.stackAccessors).toEqual(['foo', 'g']);
+
+    // add another bar
+    const bar2: BarSeriesSpec = {
+      id: getSpecId('bar2'),
+      groupId: getGroupId('group2'),
+      seriesType: 'bar',
+      yScaleType: ScaleType.Log,
+      xScaleType: ScaleType.Linear,
+      xAccessor: 'x',
+      yAccessors: ['y'],
+      splitSeriesAccessors: ['bar'],
+      yScaleToDataExtent: false,
+      data: BARCHART_1Y1G,
+    };
+
+    seriesMap.set(bar2.id, bar2);
+    setBarSeriesAccessors(isHistogramEnabled, seriesMap);
+    expect(bar2.stackAccessors).toEqual(['y', 'bar']);
+  });
   test('displays no data availble if chart is empty', () => {
     const legendItems1 = new Map<string, LegendItem>();
     legendItems1.set('specId:{bars},colors:{a}', {
@@ -819,7 +962,7 @@ describe('Chart State utils', () => {
       color: '#1EA593',
       label: 'a',
       value: { specId: getSpecId('bars'), colorValues: ['a'], lastValue: 6 },
-      displayValue: { raw: 6, formatted: '6.00'},
+      displayValue: { raw: 6, formatted: '6.00' },
       isSeriesVisible: false,
     });
     legendItems1.set('specId:{bars},colors:{b}', {
@@ -827,7 +970,7 @@ describe('Chart State utils', () => {
       color: '#2B70F7',
       label: 'b',
       value: { specId: getSpecId('bars'), colorValues: ['b'], lastValue: 2 },
-      displayValue: { raw: 2, formatted: '2.00'},
+      displayValue: { raw: 2, formatted: '2.00' },
       isSeriesVisible: false,
     });
     expect(isAllSeriesDeselected(legendItems1)).toBe(true);
@@ -839,7 +982,7 @@ describe('Chart State utils', () => {
       color: '#1EA593',
       label: 'a',
       value: { specId: getSpecId('bars'), colorValues: ['a'], lastValue: 6 },
-      displayValue: { raw: 6, formatted: '6.00'},
+      displayValue: { raw: 6, formatted: '6.00' },
       isSeriesVisible: true,
     });
     legendItems2.set('specId:{bars},colors:{b}', {
@@ -847,7 +990,7 @@ describe('Chart State utils', () => {
       color: '#2B70F7',
       label: 'b',
       value: { specId: getSpecId('bars'), colorValues: ['b'], lastValue: 2 },
-      displayValue: { raw: 2, formatted: '2.00'},
+      displayValue: { raw: 2, formatted: '2.00' },
       isSeriesVisible: false,
     });
     expect(isAllSeriesDeselected(legendItems2)).toBe(false);

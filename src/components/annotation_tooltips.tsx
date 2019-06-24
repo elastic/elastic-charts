@@ -17,7 +17,7 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
     const tooltipState = annotationTooltipState.get();
 
     if (!tooltipState || !tooltipState.isVisible) {
-      return <div className="elasticChartsAnnotation__tooltip elasticChartsAnnotation__tooltip--hidden" />;
+      return <div className="echAnnotation__tooltip echAnnotation__tooltip--hidden" />;
     }
 
     const { transform, details, header } = tooltipState;
@@ -73,7 +73,7 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
       };
 
       const markerElement = (
-        <div className="elasticChartsAnnotation" style={{ ...style }} key={`annotation-${id}-${index}`}>
+        <div className="echAnnotation" style={{ ...style }} key={`annotation-${id}-${index}`}>
           {icon}
         </div>
       );
@@ -118,15 +118,13 @@ export const AnnotationTooltip = inject('chartStore')(observer(AnnotationTooltip
 
 function RectAnnotationTooltip(props: {
   details?: string;
-  position: { transform: string; top: number; left: number; };
+  position: { transform: string; top: number; left: number };
 }) {
   const { details, position } = props;
   return (
-    <div className="elasticChartsAnnotation__tooltip" style={{ ...position }}>
-      <div className="elasticChartsAnnotation__details">
-        <div className="elasticChartsAnnotation__detailsText">
-          {details}
-        </div>
+    <div className="echAnnotation__tooltip" style={{ ...position }}>
+      <div className="echAnnotation__details">
+        <div className="echAnnotation__detailsText">{details}</div>
       </div>
     </div>
   );
@@ -135,15 +133,13 @@ function RectAnnotationTooltip(props: {
 function LineAnnotationTooltip(props: {
   details?: string;
   header?: string;
-  position: { transform: string; top: number; left: number; };
+  position: { transform: string; top: number; left: number };
 }) {
   const { details, position, header } = props;
   return (
-    <div className="elasticChartsAnnotation__tooltip" style={{ ...position }}>
-      <p className="elasticChartsAnnotation__header">{header}</p>
-      <div className="elasticChartsAnnotation__details">
-        {details}
-      </div>
+    <div className="echAnnotation__tooltip" style={{ ...position }}>
+      <p className="echAnnotation__header">{header}</p>
+      <div className="echAnnotation__details">{details}</div>
     </div>
   );
 }

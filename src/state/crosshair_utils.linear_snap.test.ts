@@ -83,25 +83,10 @@ describe('Crosshair utils linear scale', () => {
   const mixedLinesBarsSeriesDomains = computeSeriesDomains(mixedLinesBarsMap, new Map());
 
   const barSeriesScale = computeXScale(barSeriesDomains.xDomain, barSeriesMap.size, 0, 120);
-  const multiBarSeriesScale = computeXScale(
-    multiBarSeriesDomains.xDomain,
-    multiBarSeriesMap.size,
-    0,
-    120,
-  );
+  const multiBarSeriesScale = computeXScale(multiBarSeriesDomains.xDomain, multiBarSeriesMap.size, 0, 120);
   const lineSeriesScale = computeXScale(lineSeriesDomains.xDomain, lineSeriesMap.size, 0, 120);
-  const multiLineSeriesScale = computeXScale(
-    multiLineSeriesDomains.xDomain,
-    multiLineSeriesMap.size,
-    0,
-    120,
-  );
-  const mixedLinesBarsSeriesScale = computeXScale(
-    mixedLinesBarsSeriesDomains.xDomain,
-    mixedLinesBarsMap.size,
-    0,
-    120,
-  );
+  const multiLineSeriesScale = computeXScale(multiLineSeriesDomains.xDomain, multiLineSeriesMap.size, 0, 120);
+  const mixedLinesBarsSeriesScale = computeXScale(mixedLinesBarsSeriesDomains.xDomain, mixedLinesBarsMap.size, 0, 120);
 
   /**
    * if we have lines on a linear scale, the snap position and band should
@@ -264,7 +249,7 @@ describe('Crosshair utils linear scale', () => {
         });
       });
 
-      test('changes on y mouse position doesn\'t change the band position', () => {
+      test("changes on y mouse position doesn't change the band position", () => {
         const bandPosition = getCursorBandPosition(
           chartRotation,
           chartDimensions,
@@ -353,7 +338,7 @@ describe('Crosshair utils linear scale', () => {
         });
       });
 
-      test('changes on y mouse position doesn\'t change the band position', () => {
+      test("changes on y mouse position doesn't change the band position", () => {
         const bandPosition = getCursorBandPosition(
           chartRotation,
           chartDimensions,
@@ -453,15 +438,16 @@ describe('Crosshair utils linear scale', () => {
           [0, 1, 2],
           1,
         );
+
         expect(bandPosition).toEqual({
-          left: 0,
+          left: 120,
           top: 0,
           height: 100,
           width: 1,
         });
       });
 
-      test('changes on y mouse position doesn\'t change the band position', () => {
+      test("changes on y mouse position doesn't change the band position", () => {
         const bandPosition = getCursorBandPosition(
           chartRotation,
           chartDimensions,
@@ -472,7 +458,7 @@ describe('Crosshair utils linear scale', () => {
           1,
         );
         expect(bandPosition).toEqual({
-          left: 0,
+          left: 120,
           top: 0,
           height: 100,
           width: 1,
@@ -490,7 +476,7 @@ describe('Crosshair utils linear scale', () => {
           1,
         );
         expect(bandPosition).toEqual({
-          left: 40,
+          left: 80,
           top: 0,
           height: 100,
           width: 1,
@@ -508,7 +494,7 @@ describe('Crosshair utils linear scale', () => {
           1,
         );
         expect(bandPosition).toEqual({
-          left: 90,
+          left: 30,
           top: 0,
           height: 100,
           width: 1,
@@ -544,14 +530,14 @@ describe('Crosshair utils linear scale', () => {
           1,
         );
         expect(bandPosition).toEqual({
-          left: 0,
+          left: 120,
           top: 0,
           height: 100,
           width: 1,
         });
       });
 
-      test('changes on y mouse position doesn\'t change the band position', () => {
+      test("changes on y mouse position doesn't change the band position", () => {
         const bandPosition = getCursorBandPosition(
           chartRotation,
           chartDimensions,
@@ -562,7 +548,7 @@ describe('Crosshair utils linear scale', () => {
           1,
         );
         expect(bandPosition).toEqual({
-          left: 0,
+          left: 120,
           top: 0,
           height: 100,
           width: 1,
@@ -580,7 +566,7 @@ describe('Crosshair utils linear scale', () => {
           1,
         );
         expect(bandPosition).toEqual({
-          left: 0,
+          left: 120,
           top: 0,
           height: 100,
           width: 1,
@@ -616,7 +602,7 @@ describe('Crosshair utils linear scale', () => {
           1,
         );
         expect(bandPosition).toEqual({
-          left: 120,
+          left: 0,
           top: 0,
           height: 100,
           width: 1,
@@ -659,7 +645,7 @@ describe('Crosshair utils linear scale', () => {
         });
       });
 
-      test('changes on x mouse position doesn\'t change the band position', () => {
+      test("changes on x mouse position doesn't change the band position", () => {
         const bandPosition = getCursorBandPosition(
           chartRotation,
           chartDimensions,
@@ -671,7 +657,7 @@ describe('Crosshair utils linear scale', () => {
         );
         expect(bandPosition).toEqual({
           left: 0,
-          top: 0,
+          top: 45,
           height: 1,
           width: 120,
         });
@@ -689,7 +675,7 @@ describe('Crosshair utils linear scale', () => {
         );
         expect(bandPosition).toEqual({
           left: 0,
-          top: 40,
+          top: 0,
           height: 1,
           width: 120,
         });
@@ -707,7 +693,7 @@ describe('Crosshair utils linear scale', () => {
         );
         expect(bandPosition).toEqual({
           left: 0,
-          top: 90,
+          top: 0,
           height: 1,
           width: 120,
         });
@@ -749,7 +735,7 @@ describe('Crosshair utils linear scale', () => {
         });
       });
 
-      test('changes on x mouse position doesn\'t change the band position', () => {
+      test("changes on x mouse position doesn't change the band position", () => {
         const bandPosition = getCursorBandPosition(
           chartRotation,
           chartDimensions,
@@ -761,7 +747,7 @@ describe('Crosshair utils linear scale', () => {
         );
         expect(bandPosition).toEqual({
           left: 0,
-          top: 0,
+          top: 60,
           height: 1,
           width: 120,
         });
@@ -797,7 +783,7 @@ describe('Crosshair utils linear scale', () => {
         );
         expect(bandPosition).toEqual({
           left: 0,
-          top: 60,
+          top: 0,
           height: 1,
           width: 120,
         });
@@ -815,7 +801,7 @@ describe('Crosshair utils linear scale', () => {
         );
         expect(bandPosition).toEqual({
           left: 0,
-          top: 120,
+          top: 0,
           height: 1,
           width: 120,
         });
@@ -851,13 +837,13 @@ describe('Crosshair utils linear scale', () => {
         );
         expect(bandPosition).toEqual({
           left: 0,
-          top: 0,
+          top: 100,
           height: 1,
           width: 120,
         });
       });
 
-      test('changes on x mouse position doesn\'t change the band position', () => {
+      test("changes on x mouse position doesn't change the band position", () => {
         const bandPosition = getCursorBandPosition(
           chartRotation,
           chartDimensions,
@@ -869,7 +855,7 @@ describe('Crosshair utils linear scale', () => {
         );
         expect(bandPosition).toEqual({
           left: 0,
-          top: 0,
+          top: 55,
           height: 1,
           width: 120,
         });
@@ -887,7 +873,7 @@ describe('Crosshair utils linear scale', () => {
         );
         expect(bandPosition).toEqual({
           left: 0,
-          top: 40,
+          top: 100,
           height: 1,
           width: 120,
         });
@@ -905,7 +891,7 @@ describe('Crosshair utils linear scale', () => {
         );
         expect(bandPosition).toEqual({
           left: 0,
-          top: 90,
+          top: 100,
           height: 1,
           width: 120,
         });
@@ -941,13 +927,13 @@ describe('Crosshair utils linear scale', () => {
         );
         expect(bandPosition).toEqual({
           left: 0,
-          top: 0,
+          top: 100,
           height: 1,
           width: 120,
         });
       });
 
-      test('changes on x mouse position doesn\'t change the band position', () => {
+      test("changes on x mouse position doesn't change the band position", () => {
         const bandPosition = getCursorBandPosition(
           chartRotation,
           chartDimensions,
@@ -959,7 +945,7 @@ describe('Crosshair utils linear scale', () => {
         );
         expect(bandPosition).toEqual({
           left: 0,
-          top: 0,
+          top: 40,
           height: 1,
           width: 120,
         });
@@ -977,7 +963,7 @@ describe('Crosshair utils linear scale', () => {
         );
         expect(bandPosition).toEqual({
           left: 0,
-          top: 0,
+          top: 100,
           height: 1,
           width: 120,
         });
@@ -995,7 +981,7 @@ describe('Crosshair utils linear scale', () => {
         );
         expect(bandPosition).toEqual({
           left: 0,
-          top: 60,
+          top: 100,
           height: 1,
           width: 120,
         });
@@ -1013,7 +999,7 @@ describe('Crosshair utils linear scale', () => {
         );
         expect(bandPosition).toEqual({
           left: 0,
-          top: 120,
+          top: 100,
           height: 1,
           width: 120,
         });
@@ -1058,7 +1044,7 @@ describe('Crosshair utils linear scale', () => {
         });
       });
 
-      test('changes on y mouse position doesn\'t change the band position', () => {
+      test("changes on y mouse position doesn't change the band position", () => {
         const bandPosition = getCursorBandPosition(
           chartRotation,
           chartDimensions,
@@ -1156,14 +1142,14 @@ describe('Crosshair utils linear scale', () => {
           1,
         );
         expect(bandPosition).toEqual({
-          left: 0,
+          left: 80,
           top: 0,
           height: 100,
           width: 40,
         });
       });
 
-      test('changes on y mouse position doesn\'t change the band position', () => {
+      test("changes on y mouse position doesn't change the band position", () => {
         const bandPosition = getCursorBandPosition(
           chartRotation,
           chartDimensions,
@@ -1174,7 +1160,7 @@ describe('Crosshair utils linear scale', () => {
           1,
         );
         expect(bandPosition).toEqual({
-          left: 0,
+          left: 80,
           top: 0,
           height: 100,
           width: 40,
@@ -1210,7 +1196,7 @@ describe('Crosshair utils linear scale', () => {
           1,
         );
         expect(bandPosition).toEqual({
-          left: 80,
+          left: 0,
           top: 0,
           height: 100,
           width: 40,
@@ -1253,7 +1239,7 @@ describe('Crosshair utils linear scale', () => {
         });
       });
 
-      test('changes on x mouse position doesn\'t change the band position', () => {
+      test("changes on x mouse position doesn't change the band position", () => {
         const bandPosition = getCursorBandPosition(
           chartRotation,
           chartDimensions,
@@ -1265,7 +1251,7 @@ describe('Crosshair utils linear scale', () => {
         );
         expect(bandPosition).toEqual({
           left: 0,
-          top: 0,
+          top: 40,
           height: 40,
           width: 120,
         });
@@ -1283,7 +1269,7 @@ describe('Crosshair utils linear scale', () => {
         );
         expect(bandPosition).toEqual({
           left: 0,
-          top: 40,
+          top: 0,
           height: 40,
           width: 120,
         });
@@ -1301,7 +1287,7 @@ describe('Crosshair utils linear scale', () => {
         );
         expect(bandPosition).toEqual({
           left: 0,
-          top: 80,
+          top: 0,
           height: 40,
           width: 120,
         });
@@ -1337,13 +1323,13 @@ describe('Crosshair utils linear scale', () => {
         );
         expect(bandPosition).toEqual({
           left: 0,
-          top: 0,
+          top: 60,
           height: 40,
           width: 120,
         });
       });
 
-      test('changes on x mouse position doesn\'t change the band position', () => {
+      test("changes on x mouse position doesn't change the band position", () => {
         const bandPosition = getCursorBandPosition(
           chartRotation,
           chartDimensions,
@@ -1355,7 +1341,7 @@ describe('Crosshair utils linear scale', () => {
         );
         expect(bandPosition).toEqual({
           left: 0,
-          top: 0,
+          top: 20,
           height: 40,
           width: 120,
         });
@@ -1373,7 +1359,7 @@ describe('Crosshair utils linear scale', () => {
         );
         expect(bandPosition).toEqual({
           left: 0,
-          top: 40,
+          top: 60,
           height: 40,
           width: 120,
         });
@@ -1391,7 +1377,7 @@ describe('Crosshair utils linear scale', () => {
         );
         expect(bandPosition).toEqual({
           left: 0,
-          top: 80,
+          top: 60,
           height: 40,
           width: 120,
         });

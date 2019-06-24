@@ -1,7 +1,7 @@
-import { findDataSeriesByColorValues, getAxesSpecForSpecId } from '../../state/utils';
+import { getAxesSpecForSpecId } from '../../state/utils';
 import { identity } from '../utils/commons';
 import { AxisId, SpecId } from '../utils/ids';
-import { DataSeriesColorsValues, getSortedDataSeriesColorsValuesMap } from './series';
+import { DataSeriesColorsValues, findDataSeriesByColorValues, getSortedDataSeriesColorsValuesMap } from './series';
 import { AxisSpec, BasicSeriesSpec } from './specs';
 
 export interface LegendItem {
@@ -33,9 +33,8 @@ export function computeLegend(
     const color = seriesColorMap.get(key) || defaultColor;
     const hasSingleSeries = seriesColor.size === 1;
     const label = getSeriesColorLabel(series.colorValues, hasSingleSeries, spec);
-    const isSeriesVisible = deselectedDataSeries
-      ? findDataSeriesByColorValues(deselectedDataSeries, series) < 0
-      : true;
+    const isSeriesVisible = deselectedDataSeries ? findDataSeriesByColorValues(deselectedDataSeries, series) < 0 : true;
+
     if (!label || !spec) {
       return;
     }

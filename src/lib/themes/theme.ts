@@ -1,4 +1,5 @@
 import { GeometryStyle } from '../series/rendering';
+import { mergePartial, RecursivePartial } from '../utils/commons';
 import { Margins } from '../utils/dimensions';
 import { LIGHT_THEME } from './light_theme';
 
@@ -62,6 +63,12 @@ export interface ScalesConfig {
    * A number between 0 and 1.
    */
   barsPadding: number;
+  /**
+   * The proportion of the range that is reserved for blank space between bands in histogramMode.
+   * A value of 0 means no blank space between bands, and a value of 1 means a bandwidth of zero.
+   * A number between 0 and 1.
+   */
+  histogramPadding: number;
 }
 export interface ColorConfig {
   vizColors: string[];
@@ -90,6 +97,14 @@ export interface Theme {
   legend: LegendStyle;
   crosshair: CrosshairStyle;
 }
+
+export type PartialTheme = RecursivePartial<Theme>;
+
+export type BaseThemeType = 'light' | 'dark';
+export const BaseThemeTypes: Readonly<{ [key: string]: BaseThemeType }> = Object.freeze({
+  Light: 'light',
+  Dark: 'dark',
+});
 
 export type DisplayValueStyle = TextStyle & {
   offsetX?: number;
@@ -131,20 +146,6 @@ export interface LineAnnotationStyle {
 
 export type RectAnnotationStyle = StrokeStyle & FillStyle & Opacity;
 
-export interface PartialTheme {
-  chartMargins?: Margins;
-  chartPaddings?: Margins;
-  lineSeriesStyle?: LineSeriesStyle;
-  areaSeriesStyle?: AreaSeriesStyle;
-  barSeriesStyle?: BarSeriesStyle;
-  sharedStyle?: SharedGeometryStyle;
-  axes?: Partial<AxisConfig>;
-  scales?: Partial<ScalesConfig>;
-  colors?: Partial<ColorConfig>;
-  legend?: Partial<LegendStyle>;
-  crosshair?: Partial<CrosshairStyle>;
-}
-
 export const DEFAULT_GRID_LINE_CONFIG: GridLineConfig = {
   stroke: 'red',
   strokeWidth: 1,
@@ -174,8 +175,7 @@ export const DEFAULT_ANNOTATION_RECT_STYLE: RectAnnotationStyle = {
 };
 
 export function mergeWithDefaultGridLineConfig(config: GridLineConfig): GridLineConfig {
-  const strokeWidth =
-    config.strokeWidth != null ? config.strokeWidth : DEFAULT_GRID_LINE_CONFIG.strokeWidth;
+  const strokeWidth = config.strokeWidth != null ? config.strokeWidth : DEFAULT_GRID_LINE_CONFIG.strokeWidth;
   const opacity = config.opacity != null ? config.opacity : DEFAULT_GRID_LINE_CONFIG.opacity;
 
   return {
@@ -186,9 +186,7 @@ export function mergeWithDefaultGridLineConfig(config: GridLineConfig): GridLine
   };
 }
 
-export function mergeWithDefaultAnnotationLine(
-  config?: Partial<LineAnnotationStyle>,
-): LineAnnotationStyle {
+export function mergeWithDefaultAnnotationLine(config?: Partial<LineAnnotationStyle>): LineAnnotationStyle {
   const defaultLine = DEFAULT_ANNOTATION_LINE_STYLE.line;
   const defaultDetails = DEFAULT_ANNOTATION_LINE_STYLE.details;
   const mergedConfig: LineAnnotationStyle = { ...DEFAULT_ANNOTATION_LINE_STYLE };
@@ -225,78 +223,6 @@ export function mergeWithDefaultAnnotationRect(config?: Partial<RectAnnotationSt
   };
 }
 
-export function mergeWithDefaultTheme(
-  theme: PartialTheme,
-  defaultTheme: Theme = LIGHT_THEME,
-): Theme {
-  const customTheme: Theme = {
-    ...defaultTheme,
-  };
-  if (theme.chartMargins) {
-    customTheme.chartMargins = {
-      ...defaultTheme.chartMargins,
-      ...theme.chartMargins,
-    };
-  }
-  if (theme.chartPaddings) {
-    customTheme.chartPaddings = {
-      ...defaultTheme.chartPaddings,
-      ...theme.chartPaddings,
-    };
-  }
-  if (theme.areaSeriesStyle) {
-    customTheme.areaSeriesStyle = {
-      ...defaultTheme.areaSeriesStyle,
-      ...theme.areaSeriesStyle,
-    };
-  }
-  if (theme.lineSeriesStyle) {
-    customTheme.lineSeriesStyle = {
-      ...defaultTheme.lineSeriesStyle,
-      ...theme.lineSeriesStyle,
-    };
-  }
-  if (theme.barSeriesStyle) {
-    customTheme.barSeriesStyle = {
-      ...defaultTheme.barSeriesStyle,
-      ...theme.barSeriesStyle,
-    };
-  }
-  if (theme.sharedStyle) {
-    customTheme.sharedStyle = {
-      ...defaultTheme.sharedStyle,
-      ...theme.sharedStyle,
-    };
-  }
-  if (theme.scales) {
-    customTheme.scales = {
-      ...defaultTheme.scales,
-      ...theme.scales,
-    };
-  }
-  if (theme.axes) {
-    customTheme.axes = {
-      ...defaultTheme.axes,
-      ...theme.axes,
-    };
-  }
-  if (theme.colors) {
-    customTheme.colors = {
-      ...defaultTheme.colors,
-      ...theme.colors,
-    };
-  }
-  if (theme.legend) {
-    customTheme.legend = {
-      ...defaultTheme.legend,
-      ...theme.legend,
-    };
-  }
-  if (theme.crosshair) {
-    customTheme.crosshair = {
-      ...defaultTheme.crosshair,
-      ...theme.crosshair,
-    };
-  }
-  return customTheme;
+export function mergeWithDefaultTheme(theme: PartialTheme, defaultTheme: Theme = LIGHT_THEME): Theme {
+  return mergePartial(defaultTheme, theme);
 }

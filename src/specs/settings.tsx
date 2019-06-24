@@ -1,10 +1,12 @@
 import { inject } from 'mobx-react';
 import { PureComponent } from 'react';
+
 import { DomainRange, Position, Rendering, Rotation } from '../lib/series/specs';
+import { DARK_THEME } from '../lib/themes/dark_theme';
 import { LIGHT_THEME } from '../lib/themes/light_theme';
-import { Theme } from '../lib/themes/theme';
+import { BaseThemeType, mergeWithDefaultTheme, PartialTheme, Theme, BaseThemeTypes } from '../lib/themes/theme';
 import { Domain } from '../lib/utils/domain';
-import { TooltipType } from '../lib/utils/interactions';
+import { TooltipType, TooltipValueFormatter } from '../lib/utils/interactions';
 import {
   BrushEndListener,
   ChartStore,
@@ -16,20 +18,32 @@ import {
 export const DEFAULT_TOOLTIP_TYPE = TooltipType.VerticalCursor;
 export const DEFAULT_TOOLTIP_SNAP = true;
 
-interface SettingSpecProps {
+interface TooltipProps {
+  type?: TooltipType;
+  snap?: boolean;
+  headerFormatter?: TooltipValueFormatter;
+}
+
+function isTooltipProps(config: TooltipType | TooltipProps): config is TooltipProps {
+  return typeof config === 'object';
+}
+
+function isTooltipType(config: TooltipType | TooltipProps): config is TooltipType {
+  return typeof config === 'string';
+}
+
+export interface SettingSpecProps {
   chartStore?: ChartStore;
-  theme?: Theme;
+  theme?: Theme | PartialTheme;
+  baseThemeType?: BaseThemeType;
   rendering: Rendering;
   rotation: Rotation;
   animateData: boolean;
   showLegend: boolean;
-  /** Specify the tooltip type */
-  tooltipType?: TooltipType;
-  /** Snap tooltip to grid */
-  tooltipSnap?: boolean;
+  /** Either a TooltipType or an object with configuration of type, snap, and/or headerFormatter */
+  tooltip?: TooltipType | TooltipProps;
   debug: boolean;
   legendPosition?: Position;
-  isLegendItemsSortDesc: boolean;
   showLegendDisplayValue: boolean;
   onElementClick?: ElementClickListener;
   onElementOver?: ElementOverListener;
@@ -43,16 +57,25 @@ interface SettingSpecProps {
   xDomain?: Domain | DomainRange;
 }
 
+function getTheme(theme?: Theme | PartialTheme, baseThemeType: BaseThemeType = BaseThemeTypes.Light): Theme {
+  if (theme) {
+    const baseTheme = baseThemeType === BaseThemeTypes.Light ? LIGHT_THEME : DARK_THEME;
+    return mergeWithDefaultTheme(theme, baseTheme);
+  }
+
+  return LIGHT_THEME;
+}
+
 function updateChartStore(props: SettingSpecProps) {
   const {
     chartStore,
     theme,
+    baseThemeType,
     rotation,
     rendering,
     animateData,
     showLegend,
-    tooltipType,
-    tooltipSnap,
+    tooltip,
     legendPosition,
     showLegendDisplayValue,
     onElementClick,
@@ -70,14 +93,21 @@ function updateChartStore(props: SettingSpecProps) {
   if (!chartStore) {
     return;
   }
-  chartStore.chartTheme = theme || LIGHT_THEME;
+
+  chartStore.chartTheme = getTheme(theme, baseThemeType);
   chartStore.chartRotation = rotation;
   chartStore.chartRendering = rendering;
   chartStore.animateData = animateData;
   chartStore.debug = debug;
 
-  chartStore.tooltipType.set(tooltipType!);
-  chartStore.tooltipSnap.set(tooltipSnap!);
+  if (tooltip && isTooltipProps(tooltip)) {
+    const { type, snap, headerFormatter } = tooltip;
+    chartStore.tooltipType.set(type!);
+    chartStore.tooltipSnap.set(snap!);
+    chartStore.tooltipHeaderFormatter = headerFormatter;
+  } else if (tooltip && isTooltipType(tooltip)) {
+    chartStore.tooltipType.set(tooltip);
+  }
 
   chartStore.setShowLegend(showLegend);
   chartStore.legendPosition = legendPosition;
@@ -120,8 +150,11 @@ export class SettingsComponent extends PureComponent<SettingSpecProps> {
     animateData: true,
     showLegend: false,
     debug: false,
-    tooltipType: DEFAULT_TOOLTIP_TYPE,
-    tooltipSnap: DEFAULT_TOOLTIP_SNAP,
+    baseThemeType: BaseThemeTypes.Light,
+    tooltip: {
+      type: DEFAULT_TOOLTIP_TYPE,
+      snap: DEFAULT_TOOLTIP_SNAP,
+    },
     showLegendDisplayValue: true,
   };
   componentDidMount() {
