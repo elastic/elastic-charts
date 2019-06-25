@@ -1272,4 +1272,15 @@ describe('Axis computational utils', () => {
     expect(isBounded(lowerBounded)).toBe(true);
     expect(isBounded(upperBounded)).toBe(true);
   });
+  test('should not allow negative padding', () => {
+    const negativePadding = -2;
+    // value canvas_text_bbox_calculator changes negative values is 1
+    const positivePadding = 1;
+
+    const bboxCalculator = new CanvasTextBBoxCalculator();
+    const negativeReducer = getMaxBboxDimensions(bboxCalculator, 16, 'Arial', 0, negativePadding);
+    const positiveReducer = getMaxBboxDimensions(bboxCalculator, 16, 'Arial', 0, positivePadding);
+
+    expect(JSON.stringify(negativeReducer)).toEqual(JSON.stringify(positiveReducer));
+  });
 });
