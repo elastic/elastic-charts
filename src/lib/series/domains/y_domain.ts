@@ -16,7 +16,14 @@ export type YDomain = BaseDomain & {
 };
 export type YBasicSeriesSpec = Pick<
   BasicSeriesSpec,
-  'id' | 'seriesType' | 'yScaleType' | 'groupId' | 'stackAccessors' | 'yScaleToDataExtent' | 'colorAccessors'
+  | 'id'
+  | 'seriesType'
+  | 'yScaleType'
+  | 'groupId'
+  | 'stackAccessors'
+  | 'yScaleToDataExtent'
+  | 'colorAccessors'
+  | 'stackAsPercentage'
 >;
 
 export function mergeYDomain(
@@ -32,27 +39,35 @@ export function mergeYDomain(
   const yDomains = specsByGroupIdsEntries.map(
     ([groupId, groupSpecs]): YDomain => {
       const groupYScaleType = coerceYScaleTypes([...groupSpecs.stacked, ...groupSpecs.nonStacked]);
-
-      // compute stacked domain
-      const isStackedScaleToExtent = groupSpecs.stacked.some((spec) => {
-        return spec.yScaleToDataExtent;
+      const isPercentageStack = groupSpecs.stacked.some((spec) => {
+        return Boolean(spec.stackAsPercentage);
       });
-      const stackedDataSeries = getDataSeriesOnGroup(dataSeries, groupSpecs.stacked);
-      const stackedDomain = computeYStackedDomain(stackedDataSeries, isStackedScaleToExtent);
 
-      // compute non stacked domain
-      const isNonStackedScaleToExtent = groupSpecs.nonStacked.some((spec) => {
-        return spec.yScaleToDataExtent;
-      });
-      const nonStackedDataSeries = getDataSeriesOnGroup(dataSeries, groupSpecs.nonStacked);
-      const nonStackedDomain = computeYNonStackedDomain(nonStackedDataSeries, isNonStackedScaleToExtent);
+      let groupDomain: number[];
+      if (isPercentageStack) {
+        groupDomain = computeContinuousDataDomain([0, 1], identity);
+      } else {
+        // compute stacked domain
+        const isStackedScaleToExtent = groupSpecs.stacked.some((spec) => {
+          return spec.yScaleToDataExtent;
+        });
+        const stackedDataSeries = getDataSeriesOnGroup(dataSeries, groupSpecs.stacked);
+        const stackedDomain = computeYStackedDomain(stackedDataSeries, isStackedScaleToExtent);
 
-      // merge stacked and non stacked domain together
-      const groupDomain = computeContinuousDataDomain(
-        [...stackedDomain, ...nonStackedDomain],
-        identity,
-        isStackedScaleToExtent || isNonStackedScaleToExtent,
-      );
+        // compute non stacked domain
+        const isNonStackedScaleToExtent = groupSpecs.nonStacked.some((spec) => {
+          return spec.yScaleToDataExtent;
+        });
+        const nonStackedDataSeries = getDataSeriesOnGroup(dataSeries, groupSpecs.nonStacked);
+        const nonStackedDomain = computeYNonStackedDomain(nonStackedDataSeries, isNonStackedScaleToExtent);
+
+        // merge stacked and non stacked domain together
+        groupDomain = computeContinuousDataDomain(
+          [...stackedDomain, ...nonStackedDomain],
+          identity,
+          isStackedScaleToExtent || isNonStackedScaleToExtent,
+        );
+      }
 
       const [computedDomainMin, computedDomainMax] = groupDomain;
       let domain = groupDomain;

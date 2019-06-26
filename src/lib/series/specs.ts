@@ -96,6 +96,10 @@ export interface SeriesAccessors {
   splitSeriesAccessors?: Accessor[];
   /** An array of fields thats indicates the stack membership */
   stackAccessors?: Accessor[];
+  /**
+   * Stack each series in percentage for each point.
+   */
+  stackAsPercentage?: boolean;
   /** An optional array of field name thats indicates the stack membership */
   colorAccessors?: Accessor[];
 }
