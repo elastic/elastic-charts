@@ -372,8 +372,14 @@ export function getAvailableTicks(
   const ticks = scale.ticks();
 
   if (enableHistogramMode && scale.bandwidth > 0) {
-    const finalTick = ticks[ticks.length - 1] + scale.minInterval;
-    ticks.push(finalTick);
+    const lastComputedTick = ticks[ticks.length - 1];
+    const penultimateComputedTick = ticks[ticks.length - 2];
+    const computedTickDistance = lastComputedTick - penultimateComputedTick;
+    const numTicks = scale.minInterval / computedTickDistance;
+
+    for (let i = 1; i <= numTicks; i++) {
+      ticks.push(i * computedTickDistance + lastComputedTick);
+    }
   }
 
   const shift = totalBarsInCluster > 0 ? totalBarsInCluster : 1;
