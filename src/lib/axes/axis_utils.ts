@@ -384,8 +384,6 @@ export function getAvailableTicks(
       for (let i = 1; i <= numTicks; i++) {
         ticks.push(i * computedTickDistance + lastComputedTick);
       }
-    } else {
-      ticks.push(lastComputedTick + scale.minInterval);
     }
   }
 
@@ -396,15 +394,17 @@ export function getAvailableTicks(
   const offset = enableHistogramMode ? -halfPadding : (scale.bandwidth * shift) / 2;
 
   if (isSingleValueScale && hasAdditionalTicks) {
+    const firstTickValue = ticks[0];
     const firstTick = {
-      value: ticks[0],
-      label: axisSpec.tickFormat(ticks[0]),
-      position: scale.scale(ticks[0]) + offset,
+      value: firstTickValue,
+      label: axisSpec.tickFormat(firstTickValue),
+      position: scale.scale(firstTickValue) + offset,
     };
 
+    const lastTickValue = firstTickValue + scale.minInterval;
     const lastTick = {
-      value: ticks[1],
-      label: axisSpec.tickFormat(ticks[1]),
+      value: lastTickValue,
+      label: axisSpec.tickFormat(lastTickValue),
       position: scale.bandwidth + halfPadding * 2,
     };
 
