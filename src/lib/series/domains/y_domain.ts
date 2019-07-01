@@ -43,9 +43,9 @@ export function mergeYDomain(
         return Boolean(spec.stackAsPercentage);
       });
 
-      let groupDomain: number[];
+      let domain: number[];
       if (isPercentageStack) {
-        groupDomain = computeContinuousDataDomain([0, 1], identity);
+        domain = computeContinuousDataDomain([0, 1], identity);
       } else {
         // compute stacked domain
         const isStackedScaleToExtent = groupSpecs.stacked.some((spec) => {
@@ -62,35 +62,33 @@ export function mergeYDomain(
         const nonStackedDomain = computeYNonStackedDomain(nonStackedDataSeries, isNonStackedScaleToExtent);
 
         // merge stacked and non stacked domain together
-        groupDomain = computeContinuousDataDomain(
+        domain = computeContinuousDataDomain(
           [...stackedDomain, ...nonStackedDomain],
           identity,
           isStackedScaleToExtent || isNonStackedScaleToExtent,
         );
-      }
 
-      const [computedDomainMin, computedDomainMax] = groupDomain;
-      let domain = groupDomain;
+        const [computedDomainMin, computedDomainMax] = domain;
 
-      const customDomain = domainsByGroupId.get(groupId);
+        const customDomain = domainsByGroupId.get(groupId);
 
-      if (customDomain && isCompleteBound(customDomain)) {
-        // Don't need to check min > max because this has been validated on axis domain merge
-        domain = [customDomain.min, customDomain.max];
-      } else if (customDomain && isLowerBound(customDomain)) {
-        if (customDomain.min > computedDomainMax) {
-          throw new Error(`custom yDomain for ${groupId} is invalid, custom min is greater than computed max`);
+        if (customDomain && isCompleteBound(customDomain)) {
+          // Don't need to check min > max because this has been validated on axis domain merge
+          domain = [customDomain.min, customDomain.max];
+        } else if (customDomain && isLowerBound(customDomain)) {
+          if (customDomain.min > computedDomainMax) {
+            throw new Error(`custom yDomain for ${groupId} is invalid, custom min is greater than computed max`);
+          }
+
+          domain = [customDomain.min, computedDomainMax];
+        } else if (customDomain && isUpperBound(customDomain)) {
+          if (computedDomainMin > customDomain.max) {
+            throw new Error(`custom yDomain for ${groupId} is invalid, computed min is greater than custom max`);
+          }
+
+          domain = [computedDomainMin, customDomain.max];
         }
-
-        domain = [customDomain.min, computedDomainMax];
-      } else if (customDomain && isUpperBound(customDomain)) {
-        if (computedDomainMin > customDomain.max) {
-          throw new Error(`custom yDomain for ${groupId} is invalid, computed min is greater than custom max`);
-        }
-
-        domain = [computedDomainMin, customDomain.max];
       }
-
       return {
         type: 'yDomain',
         isBandScale: false,
