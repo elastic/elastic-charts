@@ -272,6 +272,23 @@ describe('Axis computational utils', () => {
 
       expect(histogramTickValues).toEqual(expectedTickValues);
     });
+
+    test('should extend ticks to domain + minInterval in histogram mode for a scale with single datum', () => {
+      const enableHistogramMode = true;
+      const xBandDomain: XDomain = {
+        type: 'xDomain',
+        scaleType: ScaleType.Time,
+        domain: [1560438420000, 1560438420000], // a single datum scale will have the same value for domain start & end
+        isBandScale: true,
+        minInterval: 90000,
+      };
+      const xScale = getScaleForAxisSpec(horizontalAxisSpec, xBandDomain, [yDomain], 1, 0, 100, 0);
+      const histogramAxisPositions = getAvailableTicks(horizontalAxisSpec, xScale!, 1, enableHistogramMode);
+      const histogramTickValues = histogramAxisPositions.map((tick: AxisTick) => tick.value);
+      const expectedTickValues = [1560438420000, 1560438510000];
+
+      expect(histogramTickValues).toEqual(expectedTickValues);
+    });
   });
   test('should compute visible ticks for a vertical axis', () => {
     const allTicks = [
