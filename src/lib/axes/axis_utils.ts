@@ -370,15 +370,22 @@ export function getAvailableTicks(
   enableHistogramMode: boolean,
 ): AxisTick[] {
   const ticks = scale.ticks();
+  const isSingleValueScale = scale.domain[0] - scale.domain[1] === 0;
+  const hasAdditionalTicks = enableHistogramMode && scale.bandwidth > 0;
 
-  if (enableHistogramMode && scale.bandwidth > 0) {
+  if (hasAdditionalTicks) {
     const lastComputedTick = ticks[ticks.length - 1];
-    const penultimateComputedTick = ticks[ticks.length - 2];
-    const computedTickDistance = lastComputedTick - penultimateComputedTick;
-    const numTicks = scale.minInterval / computedTickDistance;
 
-    for (let i = 1; i <= numTicks; i++) {
-      ticks.push(i * computedTickDistance + lastComputedTick);
+    if (!isSingleValueScale) {
+      const penultimateComputedTick = ticks[ticks.length - 2];
+      const computedTickDistance = lastComputedTick - penultimateComputedTick;
+      const numTicks = scale.minInterval / computedTickDistance;
+
+      for (let i = 1; i <= numTicks; i++) {
+        ticks.push(i * computedTickDistance + lastComputedTick);
+      }
+    } else {
+      ticks.push(lastComputedTick + scale.minInterval);
     }
   }
 
@@ -387,6 +394,23 @@ export function getAvailableTicks(
   const band = scale.bandwidth / (1 - scale.barsPadding);
   const halfPadding = (band - scale.bandwidth) / 2;
   const offset = enableHistogramMode ? -halfPadding : (scale.bandwidth * shift) / 2;
+
+  if (isSingleValueScale && hasAdditionalTicks) {
+    const firstTick = {
+      value: ticks[0],
+      label: axisSpec.tickFormat(ticks[0]),
+      position: scale.scale(ticks[0]) + offset,
+    };
+
+    const lastTick = {
+      value: ticks[1],
+      label: axisSpec.tickFormat(ticks[1]),
+      position: scale.bandwidth + halfPadding * 2,
+    };
+
+    return [firstTick, lastTick];
+  }
+
   return ticks.map((tick) => {
     return {
       value: tick,
@@ -426,6 +450,7 @@ export function getVisibleTicks(allTicks: AxisTick[], axisSpec: AxisSpec, axisDi
       }
     }
   }
+
   return visibleTicks;
 }
 
