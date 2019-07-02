@@ -1,6 +1,7 @@
 import { Datum } from '../series/specs';
+import { RawDataSeriesDatum } from '../series/series';
 
-export type AccessorFn = (datum: Datum) => any;
+export type AccessorFn<T = Datum> = (cleanedDatum: T, datum?: any) => any;
 export type AccessorString = string | number;
 export type Accessor = AccessorString;
 
@@ -21,8 +22,8 @@ export function getAccessorFn(accessor: Accessor): AccessorFn {
 /**
  * Get array of values that from accessors
  */
-export function getAccessorValues(datum: Datum, accessors: (Accessor | AccessorFn)[] = []): any[] {
+export function getAccessorValues(datum: Datum, accessors: (Accessor | AccessorFn<RawDataSeriesDatum>)[] = []): any[] {
   return accessors
-    .map((accessor) => (typeof accessor === 'function' ? accessor(datum) : datum[accessor]))
+    .map((accessor) => (typeof accessor === 'function' ? accessor(datum, datum.datum) : datum[accessor]))
     .filter((value) => value !== undefined && value !== null);
 }

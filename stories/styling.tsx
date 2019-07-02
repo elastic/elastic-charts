@@ -450,7 +450,11 @@ storiesOf('Stylings', module)
           xAccessor="x"
           yAccessors={['y1', 'y2']}
           splitSeriesAccessors={['g1', 'g2']}
-          groupAccessors={['color']}
+          groupAccessors={[
+            (d) => {
+              return d && d.yAccessor === 'y1' && d.y1 && d.y1 > 6 ? 'nick' : null;
+            },
+          ]}
           data={TestDatasets.BARCHART_2Y2G}
         />
         {/* <LineSeries

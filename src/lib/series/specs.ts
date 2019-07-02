@@ -11,7 +11,7 @@ import { Omit } from '../utils/commons';
 import { AnnotationId, AxisId, GroupId, SpecId } from '../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../utils/scales/scales';
 import { CurveType } from './curves';
-import { DataSeriesValues } from './series';
+import { DataSeriesValues, RawDataSeriesDatum } from './series';
 
 export type Datum = any;
 export type Rotation = 0 | 90 | -90 | 180;
@@ -97,7 +97,7 @@ export interface SeriesAccessors {
   /** An array of fields thats indicates the stack membership */
   stackAccessors?: Accessor[];
   /** An optional array of field name thats indicates the color grouping */
-  groupAccessors?: (Accessor | AccessorFn)[];
+  groupAccessors?: (Accessor | AccessorFn<RawDataSeriesDatum>)[];
 }
 
 export interface SeriesScales {

@@ -14,7 +14,7 @@ import { isLogarithmicScale } from '../utils/scales/scale_continuous';
 import { Scale, ScaleType } from '../utils/scales/scales';
 import { CurveType, getCurveFactory } from './curves';
 import { LegendItem } from './legend';
-import { DataSeriesDatum } from './series';
+import { DataSeriesDatum, RawDataSeriesDatum } from './series';
 import { belongsToDataSeries } from './series_utils';
 import { DisplayValueSpec } from './specs';
 import { Accessor, getAccessorValues, AccessorFn } from '../utils/accessor';
@@ -209,7 +209,7 @@ export function renderBars(
   seriesKey: any[],
   displayValueSettings?: DisplayValueSpec,
   seriesStyle?: CustomBarSeriesStyle,
-  groupAccessors?: (Accessor | AccessorFn)[],
+  groupAccessors?: (Accessor | AccessorFn<RawDataSeriesDatum>)[],
 ): RenderBarsGeometry {
   const indexedGeometries = new Map<any, IndexedGeometry[]>();
   const xDomain = xScale.domain;
@@ -284,9 +284,8 @@ export function renderBars(
         : undefined;
 
     if (groupAccessors) {
-      const [colorGroup] = getAccessorValues(datum!.datum, groupAccessors);
+      const [colorGroup] = getAccessorValues(datum, groupAccessors);
       if (colorGroup) {
-        console.log(colorGroup);
         color = colorGroup;
       }
     }

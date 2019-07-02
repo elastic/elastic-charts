@@ -15,6 +15,10 @@ export interface RawDataSeriesDatum {
   y1: number | null;
   /** the optional y0 metric, used for bars or area with a lower bound */
   y0?: number | null;
+  /** main(x) accessor value */
+  xAccessor: Accessor;
+  /** secondary(y) accessor value */
+  yAccessor: Accessor;
   /** the datum */
   datum?: any;
 }
@@ -36,13 +40,13 @@ export interface RawDataSeries {
   specId: SpecId;
   keys: any[];
   seriesKey: string;
-  data: RawDataSeriesDatum[];
+  data: Map<string, RawDataSeriesDatum[]>;
 }
 
 export type DataSeries = Merge<
   RawDataSeries,
   {
-    data: DataSeriesDatum[];
+    data: Map<string, DataSeriesDatum[]>;
   }
 >;
 
@@ -65,6 +69,8 @@ export interface DataSeriesValues {
   lastValue?: any;
   specSortIndex?: number;
 }
+
+export const BASE_GROUP_KEY = '__base__';
 
 export function getSeriesIndex(series: DataSeriesValues[] | null, value: DataSeriesValues): number {
   if (!series) {
@@ -97,28 +103,24 @@ export function splitSeries(
 
   data.forEach((datum) => {
     const splitSeriesKeys = getAccessorValues(datum, splitSeriesAccessors);
-    const [groupKey] = getAccessorValues(datum, groupAccessors);
 
     if (isMultipleY) {
       yAccessors.forEach((accessor, index) => {
         const seriesKeys = [...splitSeriesKeys, accessor];
         const seriesKey = getSeriesKey(specId, seriesKeys);
-
-        console.log('nick - 1', seriesKey);
-
         const cleanedDatum = cleanDatum(datum, xAccessor, accessor, y0Accessors && y0Accessors[index]);
+        const [groupKey] = getAccessorValues(cleanedDatum, groupAccessors);
         splitSeriesLastValues.set(seriesKey, cleanedDatum.y1);
         xValues.add(cleanedDatum.x);
-        updateSeriesMap(series, seriesKeys, seriesKey, cleanedDatum, specId);
+        updateSeriesMap(series, seriesKeys, seriesKey, cleanedDatum, specId, groupKey);
       });
     } else {
       const seriesKey = getSeriesKey(specId, splitSeriesKeys);
-
-      console.log('nick - 2', seriesKey);
       const cleanedDatum = cleanDatum(datum, xAccessor, yAccessors[0], y0Accessors && y0Accessors[0]);
+      const [groupKey] = getAccessorValues(cleanedDatum, groupAccessors);
       splitSeriesLastValues.set(seriesKey, cleanedDatum.y1);
       xValues.add(cleanedDatum.x);
-      updateSeriesMap(series, splitSeriesKeys, seriesKey, cleanedDatum, specId);
+      updateSeriesMap(series, splitSeriesKeys, seriesKey, cleanedDatum, specId, groupKey);
     }
   });
 
@@ -139,16 +141,23 @@ function updateSeriesMap(
   seriesKey: string,
   datum: RawDataSeriesDatum,
   specId: SpecId,
+  groupKey: string = BASE_GROUP_KEY,
 ): Map<string, RawDataSeries> {
   const series = seriesMap.get(seriesKey);
   if (series) {
-    series.data.push(datum);
+    if (series.data.has(groupKey)) {
+      series.data.get(groupKey)!.push(datum);
+    } else {
+      series.data.set(groupKey, [datum]);
+    }
   } else {
+    const data = new Map<string, RawDataSeriesDatum[]>();
+    data.set(groupKey, [datum]);
     seriesMap.set(seriesKey, {
       specId,
       keys,
       seriesKey,
-      data: [datum],
+      data,
     });
   }
   return seriesMap;
@@ -167,7 +176,14 @@ export function getSeriesKey(specId?: SpecId, accessors: any[] = []): string {
 function cleanDatum(datum: Datum, xAccessor: Accessor, yAccessor: Accessor, y0Accessor?: Accessor): RawDataSeriesDatum {
   const x = datum[xAccessor];
   const y1 = datum[yAccessor];
-  const cleanedDatum: RawDataSeriesDatum = { x, y1, datum, y0: null };
+  const cleanedDatum: RawDataSeriesDatum = {
+    x,
+    y1,
+    datum,
+    xAccessor,
+    yAccessor,
+    y0: null,
+  };
   if (y0Accessor) {
     cleanedDatum.y0 = datum[y0Accessor];
   }

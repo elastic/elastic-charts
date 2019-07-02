@@ -105,11 +105,13 @@ export function getDataSeriesOnGroup(
 function computeYStackedDomain(dataseries: RawDataSeries[], scaleToExtent: boolean): number[] {
   const stackMap = new Map<any, any[]>();
   dataseries.forEach((ds, index) => {
-    ds.data.forEach((datum) => {
-      const stack = stackMap.get(datum.x) || [];
-      stack[index] = datum.y1;
-      stackMap.set(datum.x, stack);
-    });
+    for (const [group, data] of ds.data) {
+      data.forEach((datum) => {
+        const stack = stackMap.get(datum.x) || [];
+        stack[index] = datum.y1;
+        stackMap.set(datum.x, stack);
+      });
+    }
   });
   const dataValues = [];
   for (const stackValues of stackMap) {
@@ -126,12 +128,14 @@ function computeYStackedDomain(dataseries: RawDataSeries[], scaleToExtent: boole
 function computeYNonStackedDomain(dataseries: RawDataSeries[], scaleToExtent: boolean) {
   const yValues = new Set<any>();
   dataseries.forEach((ds) => {
-    ds.data.forEach((datum) => {
-      yValues.add(datum.y1);
-      if (datum.y0 != null) {
-        yValues.add(datum.y0);
-      }
-    });
+    for (const [group, data] of ds.data) {
+      data.forEach((datum) => {
+        yValues.add(datum.y1);
+        if (datum.y0 != null) {
+          yValues.add(datum.y0);
+        }
+      });
+    }
   });
   if (yValues.size === 0) {
     return [];
