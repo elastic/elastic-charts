@@ -32,6 +32,9 @@
   @include euiTextTruncate;
   margin-right: $euiSizeXS;
   flex: 1;
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .echLegendItem__title--selected {

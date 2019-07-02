@@ -46,7 +46,7 @@ class LegendItemComponent extends React.Component<LegendItemProps, LegendItemSta
     const { legendItemKey } = this.props;
     const { color, label, isSeriesVisible, displayValue, onMouseEnter, onMouseLeave } = this.props;
 
-    const onTitleClick = this.onLegendTitleClick(legendItemKey);
+    const onTitleClick = this.onVisibilityClick(legendItemKey);
 
     const showLegendDisplayValue = this.props.chartStore!.showLegendDisplayValue.get();
     const isSelected = legendItemKey === this.props.chartStore!.selectedLegendItemKey.get();
@@ -55,7 +55,6 @@ class LegendItemComponent extends React.Component<LegendItemProps, LegendItemSta
     return (
       <div className="echLegendItem" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
         {this.renderColor(this.toggleColorPicker, color)}
-        {this.renderVisibilityButton(legendItemKey, isSeriesVisible)}
         {this.renderTitle(label, onTitleClick, hasTitleClickListener, isSelected, hasDisplayValue)}
         {this.renderDisplayValue(displayValue, showLegendDisplayValue, isSeriesVisible)}
       </div>
@@ -84,7 +83,7 @@ class LegendItemComponent extends React.Component<LegendItemProps, LegendItemSta
 
   renderTitle(
     title: string | undefined,
-    onTitleClick: () => void,
+    onTitleClick: (event: React.MouseEvent<Element, MouseEvent>) => void,
     hasTitleClickListener: boolean,
     isSelected: boolean,
     hasDisplayValue: boolean,
@@ -153,7 +152,7 @@ class LegendItemComponent extends React.Component<LegendItemProps, LegendItemSta
   //   );
   // }
 
-  private onVisibilityClick = (legendItemKey: string) => (event: React.MouseEvent<SVGElement>) => {
+  private onVisibilityClick = (legendItemKey: string) => (event: React.MouseEvent) => {
     if (event.shiftKey) {
       this.props.chartStore!.toggleSingleSeries(legendItemKey);
     } else {
