@@ -70,7 +70,10 @@ export function computeAxisTicksDimensions(
     throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
   }
 
-  const tickLabelPadding = axisSpec.tickLabelPadding || axisConfig.tickLabelStyle.padding;
+  const tickLabelPadding =
+    axisSpec.style && axisSpec.style.tickLabelPadding
+      ? axisSpec.style.tickLabelPadding
+      : axisConfig.tickLabelStyle.padding;
 
   const dimensions = computeTickDimensions(
     scale,

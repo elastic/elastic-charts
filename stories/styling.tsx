@@ -686,7 +686,9 @@ storiesOf('Stylings', module)
       },
     };
     const customTheme = mergeWithDefaultTheme(theme, LIGHT_THEME);
-    const tickLabelPadding = number('Tick Label Padding Axis Spec', 0);
+    const customStyle = {
+      tickLabelPadding: number('Tick Label Padding Axis Spec', 0),
+    };
     return (
       <Chart className={'story-chart'}>
         <Settings theme={customTheme} debug={boolean('debug', true)} />
@@ -695,7 +697,7 @@ storiesOf('Stylings', module)
           position={Position.Bottom}
           title={'Bottom axis'}
           showOverlappingTicks={true}
-          tickLabelPadding={tickLabelPadding}
+          style={customStyle}
         />
         <Axis
           id={getAxisId('left2')}

@@ -218,11 +218,16 @@ export interface AxisSpec {
   title?: string;
   /** If specified, it constrains the domain for these values */
   domain?: DomainRange;
-  /** Specifies the amount of padding on the tick label bounding box */
-  tickLabelPadding?: number;
+  /** Object to hold custom styling */
+  style?: CustomStyle;
 }
 
 export type TickFormatter = (value: any) => string;
+
+interface CustomStyle {
+  /** Specifies the amount of padding on the tick label bounding box */
+  tickLabelPadding?: number;
+}
 
 /**
  * The position of the axis relative to the chart.
