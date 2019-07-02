@@ -1,6 +1,5 @@
 import { palettes } from './colors';
 import { Theme } from './theme';
-
 import {
   DEFAULT_CHART_MARGINS,
   DEFAULT_CHART_PADDING,
@@ -86,6 +85,12 @@ export const LIGHT_THEME: Theme = {
     tickLineStyle: {
       stroke: 'gray',
       strokeWidth: 1,
+    },
+    gridLineStyle: {
+      stroke: 'test',
+      strokeWidth: 1,
+      opacity: 1,
+      dash: [],
     },
   },
   colors: {

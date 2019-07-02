@@ -7,7 +7,7 @@ import { Dimensions } from '../../lib/utils/dimensions';
 interface GridProps {
   chartDimensions: Dimensions;
   debug: boolean;
-  gridLineStyle: GridLineConfig | undefined;
+  gridLineStyle?: GridLineConfig;
   linesPositions: AxisLinePosition[];
 }
 

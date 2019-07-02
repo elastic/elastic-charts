@@ -87,6 +87,12 @@ export const DARK_THEME: Theme = {
       stroke: 'white',
       strokeWidth: 1,
     },
+    gridLineStyle: {
+      stroke: 'test',
+      strokeWidth: 1,
+      opacity: 1,
+      dash: [],
+    },
   },
   colors: {
     vizColors: palettes.echPaletteColorBlind.colors,
