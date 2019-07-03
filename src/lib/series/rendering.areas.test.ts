@@ -6,6 +6,7 @@ import { CurveType } from './curves';
 import { AreaGeometry, IndexedGeometry, PointGeometry, renderArea } from './rendering';
 import { computeXScale, computeYScales } from './scales';
 import { AreaSeriesSpec } from './specs';
+import { LIGHT_THEME } from '../themes/light_theme';
 const SPEC_ID = getSpecId('spec_1');
 const GROUP_ID = getGroupId('group_1');
 
@@ -44,6 +45,7 @@ describe('Rendering points - areas', () => {
         false,
         [],
         0,
+        LIGHT_THEME.areaSeriesStyle,
       );
     });
     test('Can render an line and area paths', () => {
@@ -159,6 +161,7 @@ describe('Rendering points - areas', () => {
         false,
         [],
         0,
+        LIGHT_THEME.areaSeriesStyle,
       );
       secondLine = renderArea(
         25, // adding a ideal 25px shift, generally applied by renderGeometries
@@ -171,6 +174,7 @@ describe('Rendering points - areas', () => {
         false,
         [],
         0,
+        LIGHT_THEME.areaSeriesStyle,
       );
     });
 
@@ -317,6 +321,7 @@ describe('Rendering points - areas', () => {
         false,
         [],
         0,
+        LIGHT_THEME.areaSeriesStyle,
       );
     });
     test('Can render a linear area', () => {
@@ -426,6 +431,7 @@ describe('Rendering points - areas', () => {
         false,
         [],
         0,
+        LIGHT_THEME.areaSeriesStyle,
       );
       secondLine = renderArea(
         0, // not applied any shift, renderGeometries applies it only with mixed charts
@@ -438,6 +444,7 @@ describe('Rendering points - areas', () => {
         false,
         [],
         0,
+        LIGHT_THEME.areaSeriesStyle,
       );
     });
     test('can render two linear areas', () => {
@@ -583,6 +590,7 @@ describe('Rendering points - areas', () => {
         false,
         [],
         0,
+        LIGHT_THEME.areaSeriesStyle,
       );
     });
     test('Can render a time area', () => {
@@ -692,6 +700,7 @@ describe('Rendering points - areas', () => {
         false,
         [],
         0,
+        LIGHT_THEME.areaSeriesStyle,
       );
       secondLine = renderArea(
         0, // not applied any shift, renderGeometries applies it only with mixed charts
@@ -704,6 +713,7 @@ describe('Rendering points - areas', () => {
         false,
         [],
         0,
+        LIGHT_THEME.areaSeriesStyle,
       );
     });
     test('can render first spec points', () => {
@@ -834,6 +844,7 @@ describe('Rendering points - areas', () => {
         false,
         [],
         0,
+        LIGHT_THEME.areaSeriesStyle,
       );
     });
     test('Can render a splitted area and line', () => {

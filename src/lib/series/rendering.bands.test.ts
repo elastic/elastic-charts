@@ -6,6 +6,7 @@ import { CurveType } from './curves';
 import { AreaGeometry, IndexedGeometry, PointGeometry, renderArea, renderBars } from './rendering';
 import { computeXScale, computeYScales } from './scales';
 import { AreaSeriesSpec, BarSeriesSpec } from './specs';
+import { LIGHT_THEME } from '../themes/light_theme';
 const SPEC_ID = getSpecId('spec_1');
 const GROUP_ID = getGroupId('group_1');
 
@@ -45,6 +46,7 @@ describe('Rendering bands - areas', () => {
         true,
         [],
         0,
+        LIGHT_THEME.areaSeriesStyle,
       );
     });
     test('Can render upper and lower lines and area paths', () => {
@@ -182,6 +184,7 @@ describe('Rendering bands - areas', () => {
         true,
         [],
         0,
+        LIGHT_THEME.areaSeriesStyle,
       );
     });
     test('Can render upper and lower lines and area paths', () => {
@@ -351,6 +354,7 @@ describe('Rendering bands - areas', () => {
         'red',
         SPEC_ID,
         [],
+        LIGHT_THEME.barSeriesStyle,
       );
       expect(barGeometries.length).toBe(3);
       expect(barGeometries[0]).toEqual({
@@ -368,6 +372,25 @@ describe('Rendering bands - areas', () => {
           specId: SPEC_ID,
           seriesKey: [],
         },
+        displayValue: undefined,
+        seriesStyle: {
+          displayValue: {
+            fill: 'gray',
+            fontFamily: 'sans-serif',
+            fontSize: 10,
+            fontStyle: 'normal',
+            offsetX: 0,
+            offsetY: 0,
+            padding: 0,
+          },
+          rect: {
+            opacity: 1,
+          },
+          rectBorder: {
+            strokeWidth: 0,
+            visible: false,
+          },
+        },
       });
       expect(barGeometries[1]).toEqual({
         x: 50,
@@ -384,6 +407,25 @@ describe('Rendering bands - areas', () => {
           specId: SPEC_ID,
           seriesKey: [],
         },
+        displayValue: undefined,
+        seriesStyle: {
+          displayValue: {
+            fill: 'gray',
+            fontFamily: 'sans-serif',
+            fontSize: 10,
+            fontStyle: 'normal',
+            offsetX: 0,
+            offsetY: 0,
+            padding: 0,
+          },
+          rect: {
+            opacity: 1,
+          },
+          rectBorder: {
+            strokeWidth: 0,
+            visible: false,
+          },
+        },
       });
       expect(barGeometries[2]).toEqual({
         x: 75,
@@ -399,6 +441,25 @@ describe('Rendering bands - areas', () => {
         geometryId: {
           specId: SPEC_ID,
           seriesKey: [],
+        },
+        displayValue: undefined,
+        seriesStyle: {
+          displayValue: {
+            fill: 'gray',
+            fontFamily: 'sans-serif',
+            fontSize: 10,
+            fontStyle: 'normal',
+            offsetX: 0,
+            offsetY: 0,
+            padding: 0,
+          },
+          rect: {
+            opacity: 1,
+          },
+          rectBorder: {
+            strokeWidth: 0,
+            visible: false,
+          },
         },
       });
     });

@@ -32,8 +32,10 @@ export interface StrokeStyle {
   stroke: string;
   /** The stroke width in pixel */
   strokeWidth: number;
+}
+export interface StrokeDashArray {
   /** The dash array for dashed strokes */
-  dash?: number[];
+  dash: number[];
 }
 export interface FillStyle {
   /** The fill color in hex, rgba, hsl */
@@ -107,36 +109,80 @@ export const BaseThemeTypes: Readonly<{ [key: string]: BaseThemeType }> = Object
 });
 
 export type DisplayValueStyle = TextStyle & {
-  offsetX?: number;
-  offsetY?: number;
+  offsetX: number;
+  offsetY: number;
 };
 
-export interface BarSeriesStyle {
-  border: StrokeStyle & Visible;
-  displayValue?: DisplayValueStyle;
+export interface PointStyle {
+  /** is the point visible or hidden */
+  visible: boolean;
+  /** a static stroke color if defined, if not it will use the color of the series */
+  stroke?: string;
+  /** the stroke width of the point */
+  strokeWidth: number;
+  /**  a static fill color if defined, if not it will use the color of the series */
+  fill?: string;
+  /** the opacity of each point on the theme/series */
+  opacity: number;
+  /** the radius of each point of the theme/series */
+  radius: number;
 }
 
-export type CustomBarSeriesStyle = BarSeriesStyle & Partial<Opacity>;
+export interface LineStyle {
+  /** is the line visible or hidden ? */
+  visible: boolean;
+  /** a static stroke color if defined, if not it will use the color of the series */
+  stroke?: string;
+  /** the stroke width of the line */
+  strokeWidth: number;
+  /** the opacity of each line on the theme/series */
+  opacity: number;
+}
+
+export interface AreaStyle {
+  /** is the area is visible or hidden ? */
+  visible: boolean;
+  /** a static fill color if defined, if not it will use the color of the series */
+  fill?: string;
+  /** the opacity of each area on the theme/series */
+  opacity: number;
+}
+
+export interface RectStyle {
+  /** a static fill color if defined, if not it will use the color of the series */
+  fill?: string;
+  /** the opacity of each rect on the theme/series */
+  opacity: number;
+}
+
+export interface RectBorderStyle {
+  /** is the rect border visible or hidden ? */
+  visible: boolean;
+  /** a static stroke color if defined, if not it will use the color of the series */
+  stroke?: string;
+  /** the stroke width of the rect border */
+  strokeWidth: number;
+}
+export interface BarSeriesStyle {
+  rect: RectStyle;
+  rectBorder: RectBorderStyle;
+  displayValue: DisplayValueStyle;
+}
 
 export interface LineSeriesStyle {
   line: LineStyle;
-  border: StrokeStyle & Visible;
   point: PointStyle;
 }
-
-export type PointStyle = StrokeStyle & Opacity & Visible & Radius;
-export type LineStyle = StrokeStyle & Visible & Partial<Opacity>;
-export type AreaStyle = FillStyle & Opacity & Visible;
 
 export interface AreaSeriesStyle {
   area: AreaStyle;
   line: LineStyle;
-  border: StrokeStyle & Visible;
   point: PointStyle;
 }
+
 export interface CrosshairStyle {
   band: FillStyle & Visible;
-  line: StrokeStyle & Visible;
+  line: StrokeStyle & Visible & Partial<StrokeDashArray>;
 }
 
 export interface LineAnnotationStyle {

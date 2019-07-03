@@ -23,6 +23,7 @@ import {
   ScaleType,
   Settings,
   BaseThemeTypes,
+  LineSeriesStyle,
 } from '../src/';
 import * as TestDatasets from '../src/lib/series/utils/test_dataset';
 import { palettes } from '../src/lib/themes/colors';
@@ -41,36 +42,60 @@ function range(title: string, min: number, max: number, value: number, groupId?:
   );
 }
 
-function generateLineSeriesStyleKnobs(groupName: string) {
+function generateLineSeriesStyleKnobs(
+  groupName: string,
+  tag: string,
+  pointFill?: string,
+  pointStroke?: string,
+  pointStrokeWidth?: number,
+  pointRadius?: number,
+  lineStrokeWidth?: number,
+  lineStroke?: string,
+): LineSeriesStyle {
   return {
     line: {
-      stroke: DEFAULT_MISSING_COLOR,
-      strokeWidth: range(`line.strokeWidth (${groupName})`, 0, 10, 1, groupName),
-      visible: boolean(`line.visible (${groupName})`, true, groupName),
-      opacity: range(`line.opacity (${groupName})`, 0, 1, 1, groupName, 0.01),
-    },
-    border: {
-      stroke: 'gray',
-      strokeWidth: 2,
-      visible: false,
+      stroke: lineStroke ? color(`line.stroke (${tag})`, lineStroke, groupName) : undefined,
+      strokeWidth: range(`line.strokeWidth (${tag})`, 0, 10, lineStrokeWidth ? lineStrokeWidth : 1, groupName),
+      visible: boolean(`line.visible (${tag})`, true, groupName),
+      opacity: range(`line.opacity (${tag})`, 0, 1, 1, groupName, 0.01),
     },
     point: {
-      visible: boolean(`point.visible (${groupName})`, true, groupName),
-      radius: range(`point.radius (${groupName})`, 0, 20, 1, groupName, 0.5),
-      opacity: range(`point.opacity (${groupName})`, 0, 1, 1, groupName, 0.01),
-      stroke: '',
-      strokeWidth: 0.5,
+      visible: boolean(`point.visible (${tag})`, true, groupName),
+      radius: range(`point.radius (${tag})`, 0, 20, pointRadius ? pointRadius : 5, groupName, 0.5),
+      opacity: range(`point.opacity (${tag})`, 0, 1, 1, groupName, 0.01),
+      stroke: color(`point.stroke (${tag})`, pointStroke ? pointStroke : 'black', groupName),
+      fill: color(`point.fill (${tag})`, pointFill ? pointFill : 'lightgray', groupName),
+      strokeWidth: range(`point.strokeWidth (${tag})`, 0, 5, pointStrokeWidth ? pointStrokeWidth : 2, groupName, 0.01),
     },
   };
 }
 
-function generateAreaSeriesStyleKnobs(groupName: string) {
+function generateAreaSeriesStyleKnobs(
+  groupName: string,
+  tag: string,
+  pointFill?: string,
+  pointStroke?: string,
+  pointStrokeWidth?: number,
+  pointRadius?: number,
+  lineStrokeWidth?: number,
+  lineStroke?: string,
+  areaFill?: string,
+) {
   return {
-    ...generateLineSeriesStyleKnobs(groupName),
+    ...generateLineSeriesStyleKnobs(
+      groupName,
+      tag,
+      pointFill,
+      pointStroke,
+      pointStrokeWidth,
+      pointRadius,
+      lineStrokeWidth,
+      lineStroke,
+    ),
     area: {
-      fill: DEFAULT_MISSING_COLOR,
-      visible: boolean(`area.visible (${groupName})`, true, groupName),
-      opacity: range(`area.opacity ${groupName}`, 0, 1, 1, groupName, 0.01),
+      fill: areaFill ? color(`area.fill (${tag})`, areaFill, groupName) : undefined,
+      visible: boolean(`area.visible (${tag})`, true, groupName),
+      opacity: range(`area.opacity (${tag})`, 0, 1, 0.8, groupName, 0.01),
     },
   };
 }
@@ -225,15 +250,6 @@ storiesOf('Stylings', module)
           strokeWidth: range('lineStrokeWidth', 0, 10, 1, 'line'),
           visible: boolean('lineVisible', true, 'line'),
         },
-        border: {
-          stroke: 'gray',
-          strokeWidth: 2,
-          visible: false,
-          // not already customizeable
-          // stroke: color('lBorderStroke', 'gray', 'line'),
-          // strokeWidth: range('lBorderStrokeWidth', 0, 10, 2, 'line'),
-          // visible: boolean('lBorderVisible', false, 'line'),
-        },
         point: {
           visible: boolean('linePointVisible', true, 'line'),
           radius: range('linePointRadius', 0, 20, 1, 'line', 0.5),
@@ -256,15 +272,6 @@ storiesOf('Stylings', module)
           strokeWidth: range('aStrokeWidth', 0, 10, 1, 'area'),
           visible: boolean('aLineVisible', true, 'area'),
         },
-        border: {
-          stroke: 'gray',
-          strokeWidth: 2,
-          visible: false,
-          // not already customizeable
-          // stroke: color('aBorderStroke', 'gray', 'area'),
-          // strokeWidth: range('aBorderStrokeWidth', 0, 10, 2, 'area'),
-          // visible: boolean('aBorderVisible', false, 'area'),
-        },
         point: {
           visible: boolean('aPointVisible', true, 'area'),
           radius: range('aPointRadius', 0, 20, 1, 'area'),
@@ -274,7 +281,10 @@ storiesOf('Stylings', module)
         },
       },
       barSeriesStyle: {
-        border: {
+        rect: {
+          opacity: range('rectOpacity', 0, 1, 0.1, 'bar'),
+        },
+        rectBorder: {
           stroke: color('bBorderStroke', 'white', 'bar'),
           strokeWidth: range('bStrokeWidth', 0, 10, 1, 'bar'),
           visible: boolean('bBorderVisible', true, 'bar'),
@@ -369,7 +379,7 @@ storiesOf('Stylings', module)
   .add('partial custom theme', () => {
     const customPartialTheme: PartialTheme = {
       barSeriesStyle: {
-        border: {
+        rectBorder: {
           stroke: color('BarBorderStroke', 'white'),
           visible: true,
         },
@@ -468,48 +478,36 @@ storiesOf('Stylings', module)
     );
   })
   .add('custom series styles: bars', () => {
-    const useOnlyChartTheme = boolean('ignore series style (use only chart theme)', false, 'chartTheme');
+    const applyBarStyle = boolean('apply bar style (bar 1 series)', true, 'Chart Global Theme');
 
-    const barSeriesStyle1 = useOnlyChartTheme
-      ? undefined
-      : {
-          border: {
-            stroke: color('borderStroke 1', 'white', 'group1'),
-            strokeWidth: range('strokeWidth 1', 0, 10, 1, 'group1'),
-            visible: boolean('borderVisible 1', true, 'group1'),
-          },
-          opacity: range('opacity 1', 0, 1, 1, 'group1', 0.1),
-        };
-
-    const barSeriesStyle2 = useOnlyChartTheme
-      ? undefined
-      : {
-          border: {
-            stroke: color('borderStroke 2', 'white', 'group2'),
-            strokeWidth: range('strokeWidth 2', 0, 10, 1, 'group2'),
-            visible: boolean('borderVisible 2', true, 'group2'),
-          },
-          opacity: range('opacity 2', 0, 1, 1, 'group2', 0.1),
-        };
-
-    const chartTheme = {
-      ...LIGHT_THEME,
-      barSeriesStyle: {
-        border: {
-          stroke: color('theme borderStroke', 'white', 'chartTheme'),
-          strokeWidth: range('theme strokeWidth', 0, 10, 1, 'chartTheme'),
-          visible: boolean('theme borderVisible', true, 'chartTheme'),
-        },
+    const barSeriesStyle = {
+      rectBorder: {
+        stroke: color('border stroke', 'blue', 'Bar 1 Style'),
+        strokeWidth: range('border strokeWidth', 0, 5, 2, 'Bar 1 Style', 0.1),
+        visible: boolean('border visible', true, 'Bar 1 Style'),
+      },
+      rect: {
+        fill: color('rect fill', '#22C61A', 'Bar 1 Style'),
+        opacity: range('rect opacity', 0, 1, 0.3, 'Bar 1 Style', 0.1),
       },
     };
 
-    const dataset1 = TestDatasets.BARCHART_2Y2G.filter((data) => data.g1 === 'cdn.google.com');
-    const dataset2 = TestDatasets.BARCHART_2Y2G.filter((data) => data.g1 === 'cloudflare.com');
-    const dataset3 = TestDatasets.BARCHART_2Y2G.filter((data) => data.g2 === 'indirect-cdn');
+    const theme = mergeWithDefaultTheme({
+      barSeriesStyle: {
+        rectBorder: {
+          stroke: color('theme border stroke', 'red', 'Chart Global Theme'),
+          strokeWidth: range('theme border strokeWidth', 0, 5, 2, 'Chart Global Theme', 0.1),
+          visible: boolean('theme border visible', true, 'Chart Global Theme'),
+        },
+        rect: {
+          opacity: range('theme opacity ', 0, 1, 0.9, 'Chart Global Theme', 0.1),
+        },
+      },
+    });
 
     return (
       <Chart renderer="canvas" className={'story-chart'}>
-        <Settings showLegend={true} legendPosition={Position.Right} theme={chartTheme} />
+        <Settings showLegend={true} legendPosition={Position.Right} theme={theme} />
         <Axis id={getAxisId('bottom')} position={Position.Bottom} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
@@ -519,51 +517,37 @@ storiesOf('Stylings', module)
         />
 
         <BarSeries
-          id={getSpecId('bars')}
+          id={getSpecId('bar 1')}
           xScaleType={ScaleType.Linear}
           yScaleType={ScaleType.Linear}
           xAccessor="x"
-          yAccessors={['y1', 'y2']}
-          splitSeriesAccessors={['g1', 'g2']}
-          data={dataset1}
+          yAccessors={['y']}
+          data={TestDatasets.BARCHART_1Y0G}
           yScaleToDataExtent={false}
-          barSeriesStyle={barSeriesStyle1}
+          barSeriesStyle={applyBarStyle ? barSeriesStyle : undefined}
           name={'bars 1'}
         />
         <BarSeries
-          id={getSpecId('bars2')}
+          id={getSpecId('bar 2')}
           xScaleType={ScaleType.Linear}
           yScaleType={ScaleType.Linear}
           xAccessor="x"
-          yAccessors={['y1', 'y2']}
-          splitSeriesAccessors={['g1', 'g2']}
-          data={dataset2}
+          yAccessors={['y']}
+          data={TestDatasets.BARCHART_1Y0G}
           yScaleToDataExtent={false}
-          barSeriesStyle={barSeriesStyle2}
           name={'bars 2'}
-        />
-        <BarSeries
-          id={getSpecId('bars3')}
-          xScaleType={ScaleType.Linear}
-          yScaleType={ScaleType.Linear}
-          xAccessor="x"
-          yAccessors={['y1', 'y2']}
-          splitSeriesAccessors={['g1', 'g2']}
-          data={dataset3}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );
   })
   .add('custom series styles: lines', () => {
-    const useOnlyChartTheme = boolean('ignore series style (use only chart theme)', false, 'chartTheme');
-    const lineSeriesStyle1 = useOnlyChartTheme ? undefined : generateLineSeriesStyleKnobs('lines1');
-    const lineSeriesStyle2 = useOnlyChartTheme ? undefined : generateLineSeriesStyleKnobs('lines2');
+    const applyLineStyles = boolean('apply line series style', true, 'Chart Global Theme');
+    const lineSeriesStyle1 = generateLineSeriesStyleKnobs('Line 1 style', 'line1', 'lime', 'green', 4, 10, 6);
+    const lineSeriesStyle2 = generateLineSeriesStyleKnobs('Line 2 style', 'line2', 'blue', 'violet', 2, 5, 4);
 
-    const chartTheme = {
-      ...LIGHT_THEME,
-      lineSeriesStyle: generateLineSeriesStyleKnobs('chartTheme'),
-    };
+    const chartTheme = mergeWithDefaultTheme({
+      lineSeriesStyle: generateLineSeriesStyleKnobs('Chart Global Theme', 'chartTheme'),
+    });
 
     const dataset1 = [{ x: 0, y: 3 }, { x: 1, y: 2 }, { x: 2, y: 4 }, { x: 3, y: 10 }];
     const dataset2 = dataset1.map((datum) => ({ ...datum, y: datum.y - 1 }));
@@ -572,12 +556,7 @@ storiesOf('Stylings', module)
     return (
       <Chart renderer="canvas" className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} theme={chartTheme} />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          // title={'Bottom axis'}
-          showOverlappingTicks={true}
-        />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
           title={'Left axis'}
@@ -592,7 +571,7 @@ storiesOf('Stylings', module)
           yAccessors={['y']}
           data={dataset1}
           yScaleToDataExtent={false}
-          lineSeriesStyle={lineSeriesStyle1}
+          lineSeriesStyle={applyLineStyles ? lineSeriesStyle1 : undefined}
         />
         <LineSeries
           id={getSpecId('lines2')}
@@ -602,7 +581,7 @@ storiesOf('Stylings', module)
           yAccessors={['y']}
           data={dataset2}
           yScaleToDataExtent={false}
-          lineSeriesStyle={lineSeriesStyle2}
+          lineSeriesStyle={applyLineStyles ? lineSeriesStyle2 : undefined}
         />
         <LineSeries
           id={getSpecId('lines3')}
@@ -617,19 +596,28 @@ storiesOf('Stylings', module)
     );
   })
   .add('custom series styles: area', () => {
-    const chartTheme = {
-      ...LIGHT_THEME,
-      areaSeriesStyle: generateAreaSeriesStyleKnobs('chartTheme'),
-    };
+    const applyLineStyles = boolean('apply line series style', true, 'Chart Global Theme');
 
-    const useOnlyChartTheme = boolean('ignore series style (use only chart theme)', false, 'chartTheme');
+    const chartTheme = mergeWithDefaultTheme({
+      areaSeriesStyle: generateAreaSeriesStyleKnobs('Chart Global Theme', 'chartTheme'),
+    });
 
-    const dataset1 = [{ x: 0, y: 3 }, { x: 1, y: 2 }, { x: 2, y: 4 }, { x: 3, y: 10 }];
+    const dataset1 = [{ x: 0, y: 3 }, { x: 1, y: 6 }, { x: 2, y: 4 }, { x: 3, y: 10 }];
     const dataset2 = dataset1.map((datum) => ({ ...datum, y: datum.y - 1 }));
     const dataset3 = dataset1.map((datum) => ({ ...datum, y: datum.y - 2 }));
 
-    const areaStyle1 = useOnlyChartTheme ? undefined : generateAreaSeriesStyleKnobs('area1');
-    const areaStyle2 = useOnlyChartTheme ? undefined : generateAreaSeriesStyleKnobs('area2');
+    const areaStyle1 = generateAreaSeriesStyleKnobs('Area 1 Style', 'area1', 'lime', 'green', 4, 10, 6, 'black');
+    const areaStyle2 = generateAreaSeriesStyleKnobs(
+      'Area 2 Style',
+      'area2',
+      'blue',
+      'violet',
+      2,
+      5,
+      4,
+      undefined,
+      'red',
+    );
 
     return (
       <Chart renderer="canvas" className={'story-chart'}>
@@ -647,9 +635,9 @@ storiesOf('Stylings', module)
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y']}
+          stackAccessors={['x']}
           data={dataset1}
-          yScaleToDataExtent={false}
-          areaSeriesStyle={areaStyle1}
+          areaSeriesStyle={applyLineStyles ? areaStyle1 : undefined}
         />
         <AreaSeries
           id={getSpecId('area2')}
@@ -657,9 +645,9 @@ storiesOf('Stylings', module)
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y']}
+          stackAccessors={['x']}
           data={dataset2}
-          yScaleToDataExtent={false}
-          areaSeriesStyle={areaStyle2}
+          areaSeriesStyle={applyLineStyles ? areaStyle2 : undefined}
         />
         <AreaSeries
           id={getSpecId('area3')}
@@ -667,8 +655,8 @@ storiesOf('Stylings', module)
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y']}
+          stackAccessors={['x']}
           data={dataset3}
-          yScaleToDataExtent={false}
         />
       </Chart>
     );

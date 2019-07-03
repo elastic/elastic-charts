@@ -3,11 +3,11 @@ import { CanvasTextBBoxCalculator } from '../axes/canvas_text_bbox_calculator';
 import {
   AreaSeriesStyle,
   AreaStyle,
-  CustomBarSeriesStyle,
   LineSeriesStyle,
   LineStyle,
   PointStyle,
   SharedGeometryStyle,
+  BarSeriesStyle,
 } from '../themes/theme';
 import { SpecId } from '../utils/ids';
 import { isLogarithmicScale } from '../utils/scales/scale_continuous';
@@ -63,7 +63,7 @@ export interface BarGeometry {
   };
   geometryId: GeometryId;
   value: GeometryValue;
-  seriesStyle?: CustomBarSeriesStyle;
+  seriesStyle: BarSeriesStyle;
 }
 export interface LineGeometry {
   line: string;
@@ -74,8 +74,8 @@ export interface LineGeometry {
     y: number;
   };
   geometryId: GeometryId;
-  seriesLineStyle?: LineStyle;
-  seriesPointStyle?: PointStyle;
+  seriesLineStyle: LineStyle;
+  seriesPointStyle: PointStyle;
 }
 export interface AreaGeometry {
   area: string;
@@ -87,9 +87,9 @@ export interface AreaGeometry {
     y: number;
   };
   geometryId: GeometryId;
-  seriesAreaStyle?: AreaStyle;
-  seriesAreaLineStyle?: LineStyle;
-  seriesPointStyle?: PointStyle;
+  seriesAreaStyle: AreaStyle;
+  seriesAreaLineStyle: LineStyle;
+  seriesPointStyle: PointStyle;
 }
 
 export function isPointGeometry(ig: IndexedGeometry): ig is PointGeometry {
@@ -195,8 +195,8 @@ export function renderBars(
   color: string,
   specId: SpecId,
   seriesKey: any[],
+  seriesStyle: BarSeriesStyle,
   displayValueSettings?: DisplayValueSpec,
-  seriesStyle?: CustomBarSeriesStyle,
 ): {
   barGeometries: BarGeometry[];
   indexedGeometries: Map<any, IndexedGeometry[]>;
@@ -207,8 +207,8 @@ export function renderBars(
   const barGeometries: BarGeometry[] = [];
 
   const bboxCalculator = new CanvasTextBBoxCalculator();
-  const fontSize = seriesStyle && seriesStyle.displayValue ? seriesStyle.displayValue.fontSize : undefined;
-  const fontFamily = seriesStyle && seriesStyle.displayValue ? seriesStyle.displayValue.fontFamily : undefined;
+  const fontSize = seriesStyle.displayValue.fontSize;
+  const fontFamily = seriesStyle.displayValue.fontFamily;
 
   dataset.forEach((datum) => {
     const { y0, y1, initialY1 } = datum;
@@ -314,7 +314,7 @@ export function renderLine(
   hasY0Accessors: boolean,
   seriesKey: any[],
   xScaleOffset: number,
-  seriesStyle?: LineSeriesStyle,
+  seriesStyle: LineSeriesStyle,
 ): {
   lineGeometry: LineGeometry;
   indexedGeometries: Map<any, IndexedGeometry[]>;
@@ -328,9 +328,6 @@ export function renderLine(
     .curve(getCurveFactory(curve));
   const y = 0;
   const x = shift;
-
-  const seriesPointStyle = seriesStyle ? seriesStyle.point : undefined;
-  const seriesLineStyle = seriesStyle ? seriesStyle.line : undefined;
 
   const { pointGeometries, indexedGeometries } = renderPoints(
     shift - xScaleOffset,
@@ -354,8 +351,8 @@ export function renderLine(
       specId,
       seriesKey,
     },
-    seriesLineStyle,
-    seriesPointStyle,
+    seriesLineStyle: seriesStyle.line,
+    seriesPointStyle: seriesStyle.point,
   };
   return {
     lineGeometry,
@@ -374,7 +371,7 @@ export function renderArea(
   hasY0Accessors: boolean,
   seriesKey: any[],
   xScaleOffset: number,
-  seriesStyle?: AreaSeriesStyle,
+  seriesStyle: AreaSeriesStyle,
 ): {
   areaGeometry: AreaGeometry;
   indexedGeometries: Map<any, IndexedGeometry[]>;
@@ -406,10 +403,6 @@ export function renderArea(
     }
   }
 
-  const seriesPointStyle = seriesStyle ? seriesStyle.point : undefined;
-  const seriesAreaStyle = seriesStyle ? seriesStyle.area : undefined;
-  const seriesAreaLineStyle = seriesStyle ? seriesStyle.line : undefined;
-
   const { pointGeometries, indexedGeometries } = renderPoints(
     shift - xScaleOffset,
     dataset,
@@ -434,9 +427,9 @@ export function renderArea(
       specId,
       seriesKey,
     },
-    seriesAreaStyle,
-    seriesAreaLineStyle,
-    seriesPointStyle,
+    seriesAreaStyle: seriesStyle.area,
+    seriesAreaLineStyle: seriesStyle.line,
+    seriesPointStyle: seriesStyle.point,
   };
   return {
     areaGeometry,

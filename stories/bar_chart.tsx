@@ -28,12 +28,14 @@ import {
   Settings,
   timeFormatter,
   TooltipType,
+  BarSeriesStyle,
 } from '../src/';
 import * as TestDatasets from '../src/lib/series/utils/test_dataset';
 
 import { KIBANA_METRICS } from '../src/lib/series/utils/test_dataset_kibana';
 
 import { TEST_DATASET_DISCOVER } from '../src/lib/series/utils/test_dataset_discover_per_30s';
+import { RecursivePartial } from '../src/lib/utils/commons';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
 
@@ -100,11 +102,8 @@ storiesOf('Bar Chart', module)
       },
     };
 
-    const barStyle = {
-      barSeriesStyle: {
-        ...LIGHT_THEME.barSeriesStyle,
-        ...displayValueStyle,
-      },
+    const barStyle: RecursivePartial<BarSeriesStyle> = {
+      ...displayValueStyle,
     };
 
     const debug = boolean('debug', true);
@@ -119,7 +118,12 @@ storiesOf('Bar Chart', module)
       0,
     );
 
-    const theme = mergeWithDefaultTheme(barStyle, LIGHT_THEME);
+    const theme = mergeWithDefaultTheme(
+      {
+        barSeriesStyle: barStyle,
+      },
+      LIGHT_THEME,
+    );
     const dataSize = select(
       'data volume size',
       {

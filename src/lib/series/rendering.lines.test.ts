@@ -7,6 +7,7 @@ import { CurveType } from './curves';
 import { IndexedGeometry, LineGeometry, PointGeometry, renderLine } from './rendering';
 import { computeXScale, computeYScales } from './scales';
 import { LineSeriesSpec } from './specs';
+import { LIGHT_THEME } from '../themes/light_theme';
 const SPEC_ID = getSpecId('spec_1');
 const GROUP_ID = getGroupId('group_1');
 
@@ -45,6 +46,7 @@ describe('Rendering points - line', () => {
         false,
         [],
         0,
+        LIGHT_THEME.lineSeriesStyle,
       );
     });
     test('Can render a line', () => {
@@ -155,6 +157,7 @@ describe('Rendering points - line', () => {
         false,
         [],
         0,
+        LIGHT_THEME.lineSeriesStyle,
       );
       secondLine = renderLine(
         25, // adding a ideal 25px shift, generally applied by renderGeometries
@@ -167,6 +170,7 @@ describe('Rendering points - line', () => {
         false,
         [],
         0,
+        LIGHT_THEME.lineSeriesStyle,
       );
     });
 
@@ -311,6 +315,7 @@ describe('Rendering points - line', () => {
         false,
         [],
         0,
+        LIGHT_THEME.lineSeriesStyle,
       );
     });
     test('Can render a linear line', () => {
@@ -419,6 +424,7 @@ describe('Rendering points - line', () => {
         false,
         [],
         0,
+        LIGHT_THEME.lineSeriesStyle,
       );
       secondLine = renderLine(
         0, // not applied any shift, renderGeometries applies it only with mixed charts
@@ -431,6 +437,7 @@ describe('Rendering points - line', () => {
         false,
         [],
         0,
+        LIGHT_THEME.lineSeriesStyle,
       );
     });
     test('can render two linear lines', () => {
@@ -574,6 +581,7 @@ describe('Rendering points - line', () => {
         false,
         [],
         0,
+        LIGHT_THEME.lineSeriesStyle,
       );
     });
     test('Can render a time line', () => {
@@ -682,6 +690,7 @@ describe('Rendering points - line', () => {
         false,
         [],
         0,
+        LIGHT_THEME.lineSeriesStyle,
       );
       secondLine = renderLine(
         0, // not applied any shift, renderGeometries applies it only with mixed charts
@@ -694,6 +703,7 @@ describe('Rendering points - line', () => {
         false,
         [],
         0,
+        LIGHT_THEME.lineSeriesStyle,
       );
     });
     test('can render first spec points', () => {
@@ -824,6 +834,7 @@ describe('Rendering points - line', () => {
         false,
         [],
         0,
+        LIGHT_THEME.lineSeriesStyle,
       );
     });
     test('Can render a splitted line', () => {

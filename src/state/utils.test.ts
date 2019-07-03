@@ -521,12 +521,14 @@ describe('Chart State utils', () => {
         yScaleToDataExtent: false,
         data: BARCHART_1Y1G,
         barSeriesStyle: {
-          border: {
+          rectBorder: {
             stroke: 'stroke',
             strokeWidth: 123,
             visible: true,
           },
-          opacity: 0.2,
+          rect: {
+            opacity: 0.2,
+          },
         },
         displayValueSettings: {
           showValueLabel: true,
