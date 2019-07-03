@@ -22,7 +22,7 @@ export class CanvasTextBBoxCalculator implements BBoxCalculator {
       return none;
     }
 
-    // Avoid having negative padding that can obscure text
+    // Padding should be at least one to avoid browser measureText inconsistencies
     if (padding < 1) {
       padding = 1;
     }

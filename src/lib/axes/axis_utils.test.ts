@@ -1,6 +1,6 @@
 import { XDomain } from '../series/domains/x_domain';
 import { YDomain } from '../series/domains/y_domain';
-import { AxisSpec, DomainRange, Position } from '../series/specs';
+import { AxisSpec, DomainRange, Position, AxisStyle } from '../series/specs';
 import { LIGHT_THEME } from '../themes/light_theme';
 import { AxisId, getAxisId, getGroupId, GroupId } from '../utils/ids';
 import { ScaleType } from '../utils/scales/scales';
@@ -28,6 +28,7 @@ import {
   isVertical,
   isYDomain,
   mergeDomainsByGroupId,
+  getAxisTickLabelPadding,
 } from './axis_utils';
 import { CanvasTextBBoxCalculator } from './canvas_text_bbox_calculator';
 import { SvgTextBBoxCalculator } from './svg_text_bbox_calculator';
@@ -1282,5 +1283,14 @@ describe('Axis computational utils', () => {
     const positiveReducer = getMaxBboxDimensions(bboxCalculator, 16, 'Arial', 0, positivePadding);
 
     expect(JSON.stringify(negativeReducer)).toEqual(JSON.stringify(positiveReducer));
+  });
+  test('should expect axisSpec.style.tickLabelPadding if specified', () => {
+    const axisSpecStyle: AxisStyle = {
+      tickLabelPadding: 2,
+    };
+
+    const axisConfigTickLabelPadding = 1;
+
+    expect(getAxisTickLabelPadding(axisConfigTickLabelPadding, axisSpecStyle)).toEqual(2);
   });
 });

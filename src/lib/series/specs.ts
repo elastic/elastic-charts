@@ -219,12 +219,12 @@ export interface AxisSpec {
   /** If specified, it constrains the domain for these values */
   domain?: DomainRange;
   /** Object to hold custom styling */
-  style?: CustomStyle;
+  style?: AxisStyle;
 }
 
 export type TickFormatter = (value: any) => string;
 
-interface CustomStyle {
+export interface AxisStyle {
   /** Specifies the amount of padding on the tick label bounding box */
   tickLabelPadding?: number;
 }

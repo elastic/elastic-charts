@@ -10,6 +10,7 @@ import {
   Rotation,
   TickFormatter,
   UpperBoundedDomain,
+  AxisStyle,
 } from '../series/specs';
 import { AxisConfig, Theme } from '../themes/theme';
 import { Dimensions, Margins } from '../utils/dimensions';
@@ -70,10 +71,7 @@ export function computeAxisTicksDimensions(
     throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
   }
 
-  const tickLabelPadding =
-    axisSpec.style && axisSpec.style.tickLabelPadding
-      ? axisSpec.style.tickLabelPadding
-      : axisConfig.tickLabelStyle.padding;
+  const tickLabelPadding = getAxisTickLabelPadding(axisConfig.tickLabelStyle.padding, axisSpec.style);
 
   const dimensions = computeTickDimensions(
     scale,
@@ -87,6 +85,13 @@ export function computeAxisTicksDimensions(
   return {
     ...dimensions,
   };
+}
+
+export function getAxisTickLabelPadding(axisConfigTickLabelPadding: number, axisSpecStyle?: AxisStyle): number {
+  if (axisSpecStyle && axisSpecStyle.tickLabelPadding) {
+    return axisSpecStyle.tickLabelPadding;
+  }
+  return axisConfigTickLabelPadding;
 }
 
 export function isYDomain(position: Position, chartRotation: Rotation): boolean {
