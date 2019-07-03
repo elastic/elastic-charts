@@ -54,20 +54,24 @@ class LegendItemComponent extends React.Component<LegendItemProps, LegendItemSta
     const hasTitleClickListener = Boolean(this.props.chartStore!.onLegendItemClickListener);
     return (
       <div className="echLegendItem" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-        {this.renderColor(this.toggleColorPicker, color)}
+        {this.renderColor(this.toggleColorPicker, color, isSeriesVisible)}
         {this.renderTitle(label, onTitleClick, hasTitleClickListener, isSelected, hasDisplayValue)}
         {this.renderDisplayValue(displayValue, showLegendDisplayValue, isSeriesVisible)}
       </div>
     );
   }
-  renderColor(colorClickAction: () => void, color: string | undefined) {
+  renderColor(colorClickAction: () => void, color?: string, isSeriesVisible: boolean = true) {
     if (!color) {
       return null;
     }
-    // TODO add color picler
+    // TODO add color picker
+    const iconType = isSeriesVisible ? 'dot' : 'eyeClosed';
+    const iconColor = isSeriesVisible ? color : undefined;
+    const ariaLabel = isSeriesVisible ? 'series color' : 'series hidden';
+    const viewBox = isSeriesVisible ? undefined : '-3 -3 22 22';
     return (
       <div className="echLegendItem__color">
-        <Icon type="dot" aria-label="series color" color={color} onClick={colorClickAction} />
+        <Icon type={iconType} aria-label={ariaLabel} color={iconColor} onClick={colorClickAction} viewBox={viewBox} />
       </div>
     );
   }
