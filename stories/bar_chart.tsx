@@ -495,7 +495,7 @@ storiesOf('Bar Chart', module)
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y']}
-          stackAccessors={clusterBars ? ['x'] : []}
+          stackAccessors={clusterBars ? [] : ['x']}
           stackAsPercentage={stackedAsPercentage}
           splitSeriesAccessors={['g']}
           data={[
