@@ -88,10 +88,10 @@ export function computeAxisTicksDimensions(
 }
 
 export function getAxisTickLabelPadding(axisConfigTickLabelPadding: number, axisSpecStyle?: AxisStyle): number {
-  if (!axisSpecStyle || !axisSpecStyle.tickLabelPadding) {
-    return axisConfigTickLabelPadding;
+  if (axisSpecStyle && axisSpecStyle.tickLabelPadding !== undefined) {
+    return axisSpecStyle.tickLabelPadding;
   }
-  return axisSpecStyle.tickLabelPadding;
+  return axisConfigTickLabelPadding;
 }
 
 export function isYDomain(position: Position, chartRotation: Rotation): boolean {
