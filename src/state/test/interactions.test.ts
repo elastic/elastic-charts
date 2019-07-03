@@ -351,26 +351,25 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(onOutListener).toBeCalledTimes(0);
   });
 
-  test('can position tooltip within chart when xScale is a single value scale [horizontal rotation]', () => {
-    const singleValueScale =
-      store.xScale!.type === ScaleType.Ordinal
-        ? new ScaleBand(['a'], [0, 0])
-        : new ScaleContinuous(ScaleType.Linear, [1, 1], [0, 0]);
-    store.xScale = singleValueScale;
-    store.setCursorPosition(chartLeft + 99, chartTop + 99);
-    const expectedTransform = `translateX(${chartLeft}px) translateX(-0%) translateY(109px) translateY(-100%)`;
-    expect(store.tooltipPosition.transform).toBe(expectedTransform);
-  });
+  describe('can position tooltip within chart when xScale is a single value scale', () => {
+    beforeEach(() => {
+      const singleValueScale =
+        store.xScale!.type === ScaleType.Ordinal
+          ? new ScaleBand(['a'], [0, 0])
+          : new ScaleContinuous(ScaleType.Linear, [1, 1], [0, 0]);
+      store.xScale = singleValueScale;
+    });
+    test('horizontal chart rotation', () => {
+      store.setCursorPosition(chartLeft + 99, chartTop + 99);
+      const expectedTransform = `translateX(${chartLeft}px) translateX(-0%) translateY(109px) translateY(-100%)`;
+      expect(store.tooltipPosition.transform).toBe(expectedTransform);
+    });
 
-  test('can position tooltip within chart when xScale is a single value scale [vertical rotation]', () => {
-    const singleValueScale =
-      store.xScale!.type === ScaleType.Ordinal
-        ? new ScaleBand(['a'], [0, 0])
-        : new ScaleContinuous(ScaleType.Linear, [1, 1], [0, 0]);
-    store.chartRotation = 90;
-    store.xScale = singleValueScale;
-    store.setCursorPosition(chartLeft + 99, chartTop + 99);
-    const expectedTransform = `translateX(109px) translateX(-100%) translateY(${chartTop}px) translateY(-0%)`;
-    expect(store.tooltipPosition.transform).toBe(expectedTransform);
+    test('vertical chart rotation', () => {
+      store.chartRotation = 90;
+      store.setCursorPosition(chartLeft + 99, chartTop + 99);
+      const expectedTransform = `translateX(109px) translateX(-100%) translateY(${chartTop}px) translateY(-0%)`;
+      expect(store.tooltipPosition.transform).toBe(expectedTransform);
+    });
   });
 }
