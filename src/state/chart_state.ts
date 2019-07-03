@@ -301,11 +301,14 @@ export class ChartStore {
     const updatedCursorLine = getCursorLinePosition(this.chartRotation, this.chartDimensions, this.cursorPosition);
     Object.assign(this.cursorLinePosition, updatedCursorLine);
 
+    const isSingleValueXScale = this.xScale.isSingleValue();
+
     this.tooltipPosition.transform = getTooltipPosition(
       this.chartDimensions,
       this.chartRotation,
       this.cursorBandPosition,
       this.cursorPosition,
+      isSingleValueXScale,
     );
 
     // get the elements on at this cursor position

@@ -856,8 +856,41 @@ storiesOf('Bar Chart', module)
     );
   })
   .add('single data chart', () => {
+    const hasCustomDomain = boolean('has custom domain', false);
+    const xDomain = hasCustomDomain
+      ? {
+          min: 0,
+        }
+      : undefined;
+
+    const chartRotation = select<Rotation>(
+      'chartRotation',
+      {
+        '0 deg': 0,
+        '90 deg': 90,
+        '-90 deg': -90,
+        '180 deg': 180,
+      },
+      0,
+    );
+
+    const theme = mergeWithDefaultTheme(
+      {
+        scales: {
+          barsPadding: number('bars padding', 0.25, {
+            range: true,
+            min: 0,
+            max: 1,
+            step: 0.1,
+          }),
+        },
+      },
+      LIGHT_THEME,
+    );
+
     return (
       <Chart className={'story-chart'}>
+        <Settings xDomain={xDomain} rotation={chartRotation} theme={theme} />
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} />
         <Axis
           id={getAxisId('left2')}
@@ -868,11 +901,12 @@ storiesOf('Bar Chart', module)
 
         <BarSeries
           id={getSpecId('bars')}
-          xScaleType={ScaleType.Linear}
+          xScaleType={ScaleType.Ordinal}
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y']}
-          data={[{ x: 1, y: 10 }]}
+          splitSeriesAccessors={['g']}
+          data={[{ x: 'a', y: 10, g: 1 }, { x: 'a', y: 12, g: 2 }]}
         />
       </Chart>
     );
