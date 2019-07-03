@@ -352,7 +352,7 @@ export function buildBarRenderProps(
     width,
     height,
     fill: rectStyle.fill || color,
-    strokeWidth: borderStyle.strokeWidth || 0,
+    strokeWidth: borderStyle.strokeWidth,
     stroke: borderStyle.stroke || 'transparent',
     strokeEnabled: borderStyle.visible && borderStyle.strokeWidth > 0,
     ...geometryStyle,

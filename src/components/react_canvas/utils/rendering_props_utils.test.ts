@@ -353,6 +353,38 @@ describe('[canvas] Bar Geometries', () => {
       listening: false,
       opacity: 0.5,
     });
+
+    const barWithNoBorder = buildBarRenderProps(
+      10,
+      20,
+      30,
+      40,
+      'red',
+      {
+        opacity: 1,
+      },
+      {
+        strokeWidth: 0,
+        visible: true,
+      },
+      {
+        opacity: 0.5,
+      },
+    );
+    expect(barWithNoBorder).toEqual({
+      x: 10,
+      y: 20,
+      width: 30,
+      height: 40,
+      fill: 'red',
+      stroke: 'transparent',
+      strokeWidth: 0,
+      strokeEnabled: false,
+      strokeHitEnabled: false,
+      perfectDrawEnabled: false,
+      listening: false,
+      opacity: 0.5,
+    });
   });
 
   test('can build bar value props', () => {
