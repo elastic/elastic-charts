@@ -135,21 +135,21 @@ export function computeSeriesDomains(
       }
     });
   });
-  const updatesSeriesColor = new Map<string, DataSeriesColorsValues>();
+  const updatedSeriesColors = new Map<string, DataSeriesColorsValues>();
   seriesColors.forEach((value, key) => {
     const lastValue = lastValues.get(key);
     const updatedColorSet = {
       ...value,
       lastValue,
     };
-    updatesSeriesColor.set(key, updatedColorSet);
+    updatedSeriesColors.set(key, updatedColorSet);
   });
   return {
     xDomain,
     yDomain,
     splittedDataSeries,
     formattedDataSeries,
-    seriesColors: updatesSeriesColor,
+    seriesColors: updatedSeriesColors,
   };
 }
 
