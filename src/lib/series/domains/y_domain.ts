@@ -39,9 +39,7 @@ export function mergeYDomain(
   const yDomains = specsByGroupIdsEntries.map(
     ([groupId, groupSpecs]): YDomain => {
       const groupYScaleType = coerceYScaleTypes([...groupSpecs.stacked, ...groupSpecs.nonStacked]);
-      const isPercentageStack = groupSpecs.stacked.some((spec) => {
-        return Boolean(spec.stackAsPercentage);
-      });
+      const { isPercentageStack } = groupSpecs;
 
       let domain: number[];
       if (isPercentageStack) {
@@ -152,10 +150,14 @@ function computeYNonStackedDomain(dataseries: RawDataSeries[], scaleToExtent: bo
   return computeContinuousDataDomain([...yValues.values()], identity, scaleToExtent);
 }
 export function splitSpecsByGroupId(specs: YBasicSeriesSpec[]) {
-  const specsByGroupIds = new Map<GroupId, { stacked: YBasicSeriesSpec[]; nonStacked: YBasicSeriesSpec[] }>();
+  const specsByGroupIds = new Map<
+    GroupId,
+    { isPercentageStack: boolean; stacked: YBasicSeriesSpec[]; nonStacked: YBasicSeriesSpec[] }
+  >();
   // split each specs by groupId and by stacked or not
   specs.forEach((spec) => {
     const group = specsByGroupIds.get(spec.groupId) || {
+      isPercentageStack: false,
       stacked: [],
       nonStacked: [],
     };
@@ -163,6 +165,9 @@ export function splitSpecsByGroupId(specs: YBasicSeriesSpec[]) {
       group.stacked.push(spec);
     } else {
       group.nonStacked.push(spec);
+    }
+    if (spec.stackAsPercentage === true) {
+      group.isPercentageStack = true;
     }
     specsByGroupIds.set(spec.groupId, group);
   });
