@@ -6,9 +6,7 @@ import { LIGHT_THEME } from './light_theme';
 interface Visible {
   visible: boolean;
 }
-interface Radius {
-  radius: number;
-}
+
 export interface TextStyle {
   fontSize: number;
   fontFamily: string;
