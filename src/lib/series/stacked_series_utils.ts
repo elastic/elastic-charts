@@ -1,5 +1,11 @@
 import { DataSeries, DataSeriesDatum, RawDataSeries } from './series';
 
+interface StackedValues {
+  values: number[];
+  percent: number[];
+  total: number;
+}
+
 /**
  * Map each y value from a RawDataSeries on it's specific x value into,
  * ordering the stack based on the dataseries index.
@@ -26,22 +32,8 @@ export function getYValueStackMap(dataseries: RawDataSeries[]): Map<any, number[
 export function computeYStackedMapValues(
   yValueStackMap: Map<any, number[]>,
   scaleToExtent: boolean,
-): Map<
-  any,
-  {
-    values: number[];
-    percent: number[];
-    total: number;
-  }
-> {
-  const stackedValues = new Map<
-    any,
-    {
-      values: number[];
-      percent: number[];
-      total: number;
-    }
-  >();
+): Map<any, StackedValues> {
+  const stackedValues = new Map<any, StackedValues>();
 
   yValueStackMap.forEach((yStackArray, xValue) => {
     const stackArray = yStackArray.reduce(
