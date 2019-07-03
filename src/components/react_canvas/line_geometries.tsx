@@ -74,14 +74,14 @@ export class LineGeometries extends React.PureComponent<LineGeometriesDataProps,
             <Spring native from={{ y }} to={{ y }}>
               {() => {
                 const pointProps = buildPointRenderProps(x, y, pointStyleProps);
-                return <animated.Circle key={key} {...pointProps} />;
+                return <animated.Circle {...pointProps} key={key} />;
               }}
             </Spring>
           </Group>,
         );
       } else {
         const pointProps = buildPointRenderProps(transform.x + x, y, pointStyleProps);
-        linePointsElements.push(<Circle key={key} {...pointProps} />);
+        linePointsElements.push(<Circle {...pointProps} key={key} />);
       }
     });
     return linePointsElements;
@@ -108,14 +108,14 @@ export class LineGeometries extends React.PureComponent<LineGeometriesDataProps,
             <Spring native reset from={{ opacity: 0 }} to={{ opacity: 1 }}>
               {() => {
                 const lineProps = buildLineRenderProps(0, line, color, seriesLineStyle, geometryStyle);
-                return <animated.Path key={key} {...lineProps} />;
+                return <animated.Path {...lineProps} key={key} />;
               }}
             </Spring>
           </Group>,
         );
       } else {
         const lineProps = buildLineRenderProps(transform.x, line, color, seriesLineStyle, geometryStyle);
-        lineElements.push(<Path key={key} {...lineProps} />);
+        lineElements.push(<Path {...lineProps} key={key} />);
       }
     });
 

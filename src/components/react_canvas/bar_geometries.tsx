@@ -76,7 +76,7 @@ export class BarGeometries extends React.PureComponent<BarGeometriesDataProps, B
                   geometryStyle,
                 );
 
-                return <animated.Rect key={key} {...barProps} />;
+                return <animated.Rect {...barProps} key={key} />;
               }}
             </Spring>
           </Group>
@@ -94,7 +94,7 @@ export class BarGeometries extends React.PureComponent<BarGeometriesDataProps, B
         );
         return (
           <React.Fragment key={index}>
-            <Rect key={key} {...barProps} />
+            <Rect {...barProps} key={key} />
           </React.Fragment>
         );
       }

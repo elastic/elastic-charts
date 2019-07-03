@@ -77,14 +77,14 @@ export class AreaGeometries extends React.PureComponent<AreaGeometriesDataProps,
             <Spring native from={{ y }} to={{ y }}>
               {() => {
                 const pointProps = buildPointRenderProps(x, y, pointStyleProps);
-                return <animated.Circle key={key} {...pointProps} />;
+                return <animated.Circle {...pointProps} key={key} />;
               }}
             </Spring>
           </Group>,
         );
       } else {
         const pointProps = buildPointRenderProps(transform.x + x, y, pointStyleProps);
-        areaPointElements.push(<Circle key={key} {...pointProps} />);
+        areaPointElements.push(<Circle {...pointProps} key={key} />);
       }
     });
     return areaPointElements;
@@ -108,14 +108,14 @@ export class AreaGeometries extends React.PureComponent<AreaGeometriesDataProps,
             <Spring native from={{ area }} to={{ area }}>
               {(props: { area: string }) => {
                 const areaProps = buildAreaRenderProps(0, props.area, color, seriesAreaStyle, geometryStyle);
-                return <animated.Path key={key} {...areaProps} />;
+                return <animated.Path {...areaProps} key={key} />;
               }}
             </Spring>
           </Group>,
         );
       } else {
         const areaProps = buildAreaRenderProps(transform.x, area, color, seriesAreaStyle, geometryStyle);
-        areasToRender.push(<Path key={key} {...areaProps} />);
+        areasToRender.push(<Path {...areaProps} key={key} />);
       }
     });
     return areasToRender;
@@ -139,7 +139,7 @@ export class AreaGeometries extends React.PureComponent<AreaGeometriesDataProps,
       lines.forEach((linePath, lineIndex) => {
         const key = `area-${areaIndex}-line-${lineIndex}`;
         const lineProps = buildLineRenderProps(transform.x, linePath, color, seriesAreaLineStyle, geometryStyle);
-        linesToRender.push(<Path key={key} {...lineProps} />);
+        linesToRender.push(<Path {...lineProps} key={key} />);
       });
     });
     return linesToRender;
