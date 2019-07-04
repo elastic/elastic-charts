@@ -272,7 +272,7 @@ export function renderBars(
         ? {
             text: displayValueText,
             width: displayValueWidth,
-            height: fontSize || 0,
+            height: fontSize,
             hideClippedValue,
             isValueContainedInElement: displayValueSettings.isValueContainedInElement,
           }
