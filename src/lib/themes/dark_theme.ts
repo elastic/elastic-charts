@@ -81,7 +81,7 @@ export const DARK_THEME: Theme = {
       fontFamily: 'sans-serif',
       fontStyle: 'normal',
       fill: 'white',
-      padding: 0,
+      padding: 1,
     },
     tickLineStyle: {
       stroke: 'white',

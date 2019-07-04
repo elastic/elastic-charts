@@ -207,6 +207,9 @@ export function renderBars(
   const barGeometries: BarGeometry[] = [];
 
   const bboxCalculator = new CanvasTextBBoxCalculator();
+
+  // default padding to 1 for now
+  const padding = 1;
   const fontSize = seriesStyle.displayValue.fontSize;
   const fontFamily = seriesStyle.displayValue.fontFamily;
 
@@ -253,10 +256,12 @@ export function renderBars(
           : undefined
         : formattedDisplayValue;
 
-    const computedDisplayValueWidth = bboxCalculator.compute(displayValueText || '', fontSize, fontFamily).getOrElse({
-      width: 0,
-      height: 0,
-    }).width;
+    const computedDisplayValueWidth = bboxCalculator
+      .compute(displayValueText || '', padding, fontSize, fontFamily)
+      .getOrElse({
+        width: 0,
+        height: 0,
+      }).width;
     const displayValueWidth =
       displayValueSettings && displayValueSettings.isValueContainedInElement ? width : computedDisplayValueWidth;
 
