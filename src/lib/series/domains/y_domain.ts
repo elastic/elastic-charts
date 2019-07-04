@@ -16,15 +16,8 @@ export type YDomain = BaseDomain & {
 };
 export type YBasicSeriesSpec = Pick<
   BasicSeriesSpec,
-  | 'id'
-  | 'seriesType'
-  | 'yScaleType'
-  | 'groupId'
-  | 'stackAccessors'
-  | 'yScaleToDataExtent'
-  | 'colorAccessors'
-  | 'stackAsPercentage'
->;
+  'id' | 'seriesType' | 'yScaleType' | 'groupId' | 'stackAccessors' | 'yScaleToDataExtent' | 'colorAccessors'
+> & { stackAsPercentage?: boolean };
 
 export function mergeYDomain(
   dataSeries: Map<SpecId, RawDataSeries[]>,
