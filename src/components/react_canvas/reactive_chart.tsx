@@ -16,6 +16,7 @@ import { Grid } from './grid';
 import { LineAnnotation } from './line_annotation';
 import { LineGeometries } from './line_geometries';
 import { RectAnnotation } from './rect_annotation';
+import { isVertical } from '../../lib/axes/axis_utils';
 interface ReactiveChartProps {
   chartStore?: ChartStore; // FIX until we find a better way on ts mobx
 }
@@ -337,7 +338,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
   }
 
   render() {
-    const { initialized, debug } = this.props.chartStore!;
+    const { initialized } = this.props.chartStore!;
     if (!initialized.get()) {
       return null;
     }
@@ -347,50 +348,34 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       chartDimensions,
       chartRotation,
       chartTransform,
+      debug,
       setCursorPosition,
       isChartEmpty,
+      legendCollapsed,
+      legendPosition,
+      chartTheme,
     } = this.props.chartStore!;
 
     if (isChartEmpty) {
-      const isLegendCollapsed = this.props.chartStore!.legendCollapsed.get();
-      if (isLegendCollapsed) {
-        return (
-          <div className="echReactiveChart_unavailable">
-            <p>No data to display</p>
-          </div>
-        );
-      } else {
-        const verticalOffset = this.props.chartStore!.chartTheme.legend.verticalWidth;
-        const legendPosition = this.props.chartStore!.legendPosition;
-        const horitizontalOffset = this.props.chartStore!.chartTheme.legend.horizontalHeight;
-        console.log(verticalOffset);
-        switch (legendPosition) {
-          case Position.Right:
-            return (
-              <div className="echReactiveChart_unavailable">
-                <p style={{ marginLeft: -verticalOffset }}>No data to display</p>
-              </div>
-            );
-          case Position.Left:
-            return (
-              <div className="echReactiveChart_unavailable">
-                <p style={{ marginLeft: verticalOffset }}>No data to display</p>
-              </div>
-            );
-          case Position.Top:
-            return (
-              <div className="echReactiveChart_unavailable">
-                <p style={{ marginTop: horitizontalOffset }}>No data to display</p>
-              </div>
-            );
-          case Position.Bottom:
-            return (
-              <div className="echReactiveChart_unavailable">
-                <p style={{ marginTop: -horitizontalOffset }}>No data to display</p>
-              </div>
-            );
-        }
-      }
+      const isLegendCollapsed = legendCollapsed.get();
+      const { verticalWidth, horizontalHeight } = chartTheme.legend;
+
+      const marginStyle =
+        legendPosition && isVertical(legendPosition)
+          ? legendPosition === Position.Right
+            ? { marginLeft: -verticalWidth }
+            : { marginLeft: verticalWidth }
+          : legendPosition === Position.Top
+          ? { marginTop: horizontalHeight }
+          : { marginTop: -horizontalHeight };
+
+      const style = isLegendCollapsed ? undefined : marginStyle;
+
+      return (
+        <div className="echReactiveChart_unavailable">
+          <p style={style}>No data to display</p>
+        </div>
+      );
     }
     // disable clippings when debugging
     const clippings = debug
