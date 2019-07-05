@@ -237,7 +237,7 @@ describe('Axis computational utils', () => {
       };
       const xScale = getScaleForAxisSpec(horizontalAxisSpec, xBandDomain, [yDomain], 1, 0, 100, 0);
       const histogramAxisPositions = getAvailableTicks(horizontalAxisSpec, xScale!, 1, enableHistogramMode);
-      const histogramTickLabels = histogramAxisPositions.map((tick: AxisTick) => tick.label);
+      const histogramTickLabels = histogramAxisPositions.map(({ label }: AxisTick) => label);
       expect(histogramTickLabels).toEqual(['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100', '110']);
     });
 
@@ -252,7 +252,7 @@ describe('Axis computational utils', () => {
       };
       const xScale = getScaleForAxisSpec(horizontalAxisSpec, xBandDomain, [yDomain], 1, 0, 100, 0);
       const histogramAxisPositions = getAvailableTicks(horizontalAxisSpec, xScale!, 1, enableHistogramMode);
-      const histogramTickValues = histogramAxisPositions.map((tick: AxisTick) => tick.value);
+      const histogramTickValues = histogramAxisPositions.map(({ value }: AxisTick) => value);
 
       const expectedTickValues = [
         1560438420000,
@@ -284,7 +284,7 @@ describe('Axis computational utils', () => {
       };
       const xScale = getScaleForAxisSpec(horizontalAxisSpec, xBandDomain, [yDomain], 1, 0, 100, 0);
       const histogramAxisPositions = getAvailableTicks(horizontalAxisSpec, xScale!, 1, enableHistogramMode);
-      const histogramTickValues = histogramAxisPositions.map((tick: AxisTick) => tick.value);
+      const histogramTickValues = histogramAxisPositions.map(({ value }: AxisTick) => value);
       const expectedTickValues = [1560438420000, 1560438510000];
 
       expect(histogramTickValues).toEqual(expectedTickValues);
