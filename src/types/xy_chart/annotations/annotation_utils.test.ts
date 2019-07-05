@@ -7,13 +7,13 @@ import {
   Position,
   RectAnnotationSpec,
   Rotation,
-} from '../lib/series/specs';
-import { DEFAULT_ANNOTATION_LINE_STYLE } from '../utils/themes/theme';
-import { Dimensions } from '../utils/dimensions';
-import { AnnotationId, AxisId, getAnnotationId, getAxisId, getGroupId, GroupId } from '../utils/ids';
-import { ScaleBand } from '../utils/scales/scale_band';
-import { ScaleContinuous } from '../utils/scales/scale_continuous';
-import { Scale, ScaleType } from '../utils/scales/scales';
+} from '../../../lib/series/specs';
+import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../utils/themes/theme';
+import { Dimensions } from '../../../utils/dimensions';
+import { AnnotationId, AxisId, getAnnotationId, getAxisId, getGroupId, GroupId } from '../../../utils/ids';
+import { ScaleBand } from '../../../utils/scales/scale_band';
+import { ScaleContinuous } from '../../../utils/scales/scale_continuous';
+import { Scale, ScaleType } from '../../../utils/scales/scales';
 import {
   AnnotationLinePosition,
   AnnotationLineProps,
@@ -43,7 +43,7 @@ import {
   scaleAndValidateDatum,
   toTransformString,
 } from './annotation_utils';
-import { Point } from './chart_state';
+import { Point } from '../../../state/chart_state';
 
 describe('annotation utils', () => {
   const minRange = 0;

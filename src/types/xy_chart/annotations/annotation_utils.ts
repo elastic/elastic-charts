@@ -1,4 +1,4 @@
-import { isHorizontal } from '../types/xy_chart/utils/axis_utils';
+import { isHorizontal } from '../utils/axis_utils';
 import {
   AnnotationDomainType,
   AnnotationDomainTypes,
@@ -15,13 +15,13 @@ import {
   RectAnnotationDatum,
   RectAnnotationSpec,
   Rotation,
-} from '../lib/series/specs';
-import { LineAnnotationStyle } from '../utils/themes/theme';
-import { Dimensions } from '../utils/dimensions';
-import { AnnotationId, AxisId, GroupId } from '../utils/ids';
-import { Scale, ScaleType } from '../utils/scales/scales';
-import { Point } from './chart_state';
-import { computeXScaleOffset, getAxesSpecForSpecId, isHorizontalRotation } from './utils';
+} from '../../../lib/series/specs';
+import { LineAnnotationStyle } from '../../../utils/themes/theme';
+import { Dimensions } from '../../../utils/dimensions';
+import { AnnotationId, AxisId, GroupId } from '../../../utils/ids';
+import { Scale, ScaleType } from '../../../utils/scales/scales';
+import { Point } from '../../../state/chart_state';
+import { computeXScaleOffset, getAxesSpecForSpecId, isHorizontalRotation } from '../../../state/utils';
 
 export interface AnnotationTooltipState {
   annotationType: AnnotationType;

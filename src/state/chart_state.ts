@@ -64,7 +64,11 @@ import {
 } from '../types/xy_chart/utils/interactions';
 import { Scale, ScaleType } from '../utils/scales/scales';
 import { DEFAULT_TOOLTIP_SNAP, DEFAULT_TOOLTIP_TYPE } from '../specs/settings';
-import { AnnotationDimensions, computeAnnotationDimensions, computeAnnotationTooltipState } from './annotation_utils';
+import {
+  AnnotationDimensions,
+  computeAnnotationDimensions,
+  computeAnnotationTooltipState,
+} from '../types/xy_chart/annotations/annotation_utils';
 import { getCursorBandPosition, getCursorLinePosition, getTooltipPosition } from './crosshair_utils';
 import {
   BrushExtent,

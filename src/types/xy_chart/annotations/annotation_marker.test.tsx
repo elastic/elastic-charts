@@ -1,18 +1,24 @@
 import * as React from 'react';
 
-import { AnnotationDomainType, AnnotationDomainTypes, AnnotationSpec, Position, Rotation } from '../lib/series/specs';
-import { DEFAULT_ANNOTATION_LINE_STYLE } from '../utils/themes/theme';
-import { Dimensions } from '../utils/dimensions';
-import { getAnnotationId, getGroupId, GroupId } from '../utils/ids';
-import { ScaleContinuous } from '../utils/scales/scale_continuous';
-import { Scale, ScaleType } from '../utils/scales/scales';
+import {
+  AnnotationDomainType,
+  AnnotationDomainTypes,
+  AnnotationSpec,
+  Position,
+  Rotation,
+} from '../../../lib/series/specs';
+import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../utils/themes/theme';
+import { Dimensions } from '../../../utils/dimensions';
+import { getAnnotationId, getGroupId, GroupId } from '../../../utils/ids';
+import { ScaleContinuous } from '../../../utils/scales/scale_continuous';
+import { Scale, ScaleType } from '../../../utils/scales/scales';
 import {
   AnnotationLinePosition,
   computeLineAnnotationDimensions,
   DEFAULT_LINE_OVERFLOW,
   isWithinLineBounds,
 } from './annotation_utils';
-import { Point } from './chart_state';
+import { Point } from '../../../state/chart_state';
 
 describe('annotation marker', () => {
   const groupId = getGroupId('foo-group');
