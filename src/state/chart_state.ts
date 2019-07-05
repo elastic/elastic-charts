@@ -10,7 +10,7 @@ import {
 import { CanvasTextBBoxCalculator } from '../utils/bbox/canvas_text_bbox_calculator';
 import { XDomain } from '../lib/series/domains/x_domain';
 import { YDomain } from '../lib/series/domains/y_domain';
-import { computeLegend, LegendItem } from '../lib/series/legend';
+import { computeLegend, LegendItem } from '../types/xy_chart/legend/legend';
 import {
   AreaGeometry,
   BarGeometry,

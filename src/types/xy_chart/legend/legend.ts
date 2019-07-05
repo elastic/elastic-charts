@@ -1,8 +1,12 @@
-import { getAxesSpecForSpecId } from '../../state/utils';
-import { identity } from '../../utils/commons';
-import { AxisId, SpecId } from '../../utils/ids';
-import { DataSeriesColorsValues, findDataSeriesByColorValues, getSortedDataSeriesColorsValuesMap } from './series';
-import { AxisSpec, BasicSeriesSpec } from './specs';
+import { getAxesSpecForSpecId } from '../../../state/utils';
+import { identity } from '../../../utils/commons';
+import { AxisId, SpecId } from '../../../utils/ids';
+import {
+  DataSeriesColorsValues,
+  findDataSeriesByColorValues,
+  getSortedDataSeriesColorsValuesMap,
+} from '../../../lib/series/series';
+import { AxisSpec, BasicSeriesSpec } from '../../../lib/series/specs';
 
 export interface LegendItem {
   key: string;

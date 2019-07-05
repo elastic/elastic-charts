@@ -1,4 +1,4 @@
-import { LegendItem } from '../lib/series/legend';
+import { LegendItem } from '../types/xy_chart/legend/legend';
 import { GeometryValue, IndexedGeometry } from '../types/xy_chart/rendering/rendering';
 import {
   AnnotationDomainTypes,

@@ -2,7 +2,7 @@ import { Group as KonvaGroup } from 'konva';
 import React from 'react';
 import { Circle, Group, Path } from 'react-konva';
 import { animated, Spring } from 'react-spring/renderprops-konva.cjs';
-import { LegendItem } from '../../lib/series/legend';
+import { LegendItem } from '../../types/xy_chart/legend/legend';
 import { getGeometryStyle, LineGeometry, PointGeometry } from '../../types/xy_chart/rendering/rendering';
 import { SharedGeometryStyle } from '../../utils/themes/theme';
 import {
