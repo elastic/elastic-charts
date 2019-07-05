@@ -13,7 +13,7 @@ import {
   renderArea,
   renderBars,
   renderLine,
-} from '../lib/series/rendering';
+} from '../types/xy_chart/rendering/rendering';
 import { computeXScale, computeYScales, countBarsInCluster } from '../lib/series/scales';
 import {
   DataSeries,

@@ -1,11 +1,11 @@
-import { computeSeriesDomains } from '../../state/utils';
-import { identity } from '../../utils/commons';
-import { getGroupId, getSpecId, SpecId } from '../../utils/ids';
-import { ScaleType } from '../../utils/scales/scales';
+import { computeSeriesDomains } from '../../../state/utils';
+import { identity } from '../../../utils/commons';
+import { getGroupId, getSpecId, SpecId } from '../../../utils/ids';
+import { ScaleType } from '../../../utils/scales/scales';
 import { renderBars } from './rendering';
-import { computeXScale, computeYScales } from './scales';
-import { BarSeriesSpec } from './specs';
-import { LIGHT_THEME } from '../../utils/themes/light_theme';
+import { computeXScale, computeYScales } from '../../../lib/series/scales';
+import { BarSeriesSpec } from '../../../lib/series/specs';
+import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 
 const SPEC_ID = getSpecId('spec_1');
 const GROUP_ID = getGroupId('group_1');

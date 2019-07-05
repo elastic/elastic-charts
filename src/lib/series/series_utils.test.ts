@@ -1,5 +1,5 @@
 import { getSpecId } from '../../utils/ids';
-import { GeometryId } from './rendering';
+import { GeometryId } from '../../types/xy_chart/rendering/rendering';
 import { DataSeriesColorsValues } from './series';
 import { belongsToDataSeries, isEqualSeriesKey } from './series_utils';
 

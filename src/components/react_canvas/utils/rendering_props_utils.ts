@@ -1,4 +1,4 @@
-import { GeometryStyle } from '../../../lib/series/rendering';
+import { GeometryStyle } from '../../../types/xy_chart/rendering/rendering';
 import { Rotation } from '../../../lib/series/specs';
 import {
   AreaStyle,

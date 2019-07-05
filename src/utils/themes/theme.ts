@@ -1,5 +1,5 @@
 import { mergePartial, RecursivePartial } from '../commons';
-import { GeometryStyle } from '../../lib/series/rendering';
+import { GeometryStyle } from '../../types/xy_chart/rendering/rendering';
 import { Margins } from '../dimensions';
 import { LIGHT_THEME } from './light_theme';
 

@@ -3,7 +3,7 @@ import React from 'react';
 import { Circle, Group, Path } from 'react-konva';
 import { animated, Spring } from 'react-spring/renderprops-konva.cjs';
 import { LegendItem } from '../../lib/series/legend';
-import { AreaGeometry, getGeometryStyle, PointGeometry } from '../../lib/series/rendering';
+import { AreaGeometry, getGeometryStyle, PointGeometry } from '../../types/xy_chart/rendering/rendering';
 import { SharedGeometryStyle } from '../../utils/themes/theme';
 import {
   buildAreaRenderProps,

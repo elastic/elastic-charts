@@ -1,6 +1,6 @@
 import React from 'react';
 import { Group, Rect, Text } from 'react-konva';
-import { BarGeometry } from '../../lib/series/rendering';
+import { BarGeometry } from '../../types/xy_chart/rendering/rendering';
 import { Rotation } from '../../lib/series/specs';
 import { DisplayValueStyle } from '../../utils/themes/theme';
 import { Dimensions } from '../../utils/dimensions';

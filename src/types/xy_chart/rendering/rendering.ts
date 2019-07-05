@@ -1,5 +1,5 @@
 import { area, line } from 'd3-shape';
-import { CanvasTextBBoxCalculator } from '../../utils/bbox/canvas_text_bbox_calculator';
+import { CanvasTextBBoxCalculator } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import {
   AreaSeriesStyle,
   AreaStyle,
@@ -8,15 +8,15 @@ import {
   PointStyle,
   SharedGeometryStyle,
   BarSeriesStyle,
-} from '../../utils/themes/theme';
-import { SpecId } from '../../utils/ids';
-import { isLogarithmicScale } from '../../utils/scales/scale_continuous';
-import { Scale, ScaleType } from '../../utils/scales/scales';
-import { CurveType, getCurveFactory } from '../../utils/curves';
-import { LegendItem } from './legend';
-import { DataSeriesDatum } from './series';
-import { belongsToDataSeries } from './series_utils';
-import { DisplayValueSpec } from './specs';
+} from '../../../utils/themes/theme';
+import { SpecId } from '../../../utils/ids';
+import { isLogarithmicScale } from '../../../utils/scales/scale_continuous';
+import { Scale, ScaleType } from '../../../utils/scales/scales';
+import { CurveType, getCurveFactory } from '../../../utils/curves';
+import { LegendItem } from '../../../lib/series/legend';
+import { DataSeriesDatum } from '../../../lib/series/series';
+import { belongsToDataSeries } from '../../../lib/series/series_utils';
+import { DisplayValueSpec } from '../../../lib/series/specs';
 
 export interface GeometryId {
   specId: SpecId;

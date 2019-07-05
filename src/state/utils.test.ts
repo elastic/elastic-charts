@@ -1,6 +1,6 @@
 import { LegendItem } from '../lib/series/legend';
 import { mergeYCustomDomainsByGroupId } from '../types/xy_chart/utils/axis_utils';
-import { IndexedGeometry } from '../lib/series/rendering';
+import { IndexedGeometry } from '../types/xy_chart/rendering/rendering';
 import { DataSeriesColorsValues, findDataSeriesByColorValues, getSeriesColorMap } from '../lib/series/series';
 import {
   AreaSeriesSpec,

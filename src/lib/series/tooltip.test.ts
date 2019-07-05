@@ -1,6 +1,6 @@
 import { getAxisId, getGroupId, getSpecId } from '../../utils/ids';
 import { ScaleType } from '../../utils/scales/scales';
-import { BarGeometry } from './rendering';
+import { BarGeometry } from '../../types/xy_chart/rendering/rendering';
 import { AxisSpec, BarSeriesSpec, Position } from './specs';
 import { formatTooltip } from './tooltip';
 

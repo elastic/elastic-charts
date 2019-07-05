@@ -1,12 +1,13 @@
 /* eslint @typescript-eslint/no-object-literal-type-assertion: off */
-import { computeSeriesDomains } from '../../state/utils';
-import { getGroupId, getSpecId, SpecId } from '../../utils/ids';
-import { ScaleType } from '../../utils/scales/scales';
-import { CurveType } from '../../utils/curves';
+import { computeSeriesDomains } from '../../../state/utils';
+import { getGroupId, getSpecId, SpecId } from '../../../utils/ids';
+import { ScaleType } from '../../../utils/scales/scales';
+import { CurveType } from '../../../utils/curves';
 import { AreaGeometry, IndexedGeometry, PointGeometry, renderArea, renderBars } from './rendering';
-import { computeXScale, computeYScales } from './scales';
-import { AreaSeriesSpec, BarSeriesSpec } from './specs';
-import { LIGHT_THEME } from '../../utils/themes/light_theme';
+import { computeXScale, computeYScales } from '../../../lib/series/scales';
+import { AreaSeriesSpec, BarSeriesSpec } from '../../../lib/series/specs';
+import { LIGHT_THEME } from '../../../utils/themes/light_theme';
+
 const SPEC_ID = getSpecId('spec_1');
 const GROUP_ID = getGroupId('group_1');
 

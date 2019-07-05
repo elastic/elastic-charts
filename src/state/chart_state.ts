@@ -19,7 +19,7 @@ import {
   isPointOnGeometry as isPointerOnGeometry,
   LineGeometry,
   PointGeometry,
-} from '../lib/series/rendering';
+} from '../types/xy_chart/rendering/rendering';
 import { countBarsInCluster } from '../lib/series/scales';
 import {
   DataSeriesColorsValues,

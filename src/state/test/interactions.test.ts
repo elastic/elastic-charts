@@ -1,4 +1,4 @@
-import { BarGeometry } from '../../lib/series/rendering';
+import { BarGeometry } from '../../types/xy_chart/rendering/rendering';
 import { computeXScale, computeYScales } from '../../lib/series/scales';
 import { DataSeriesColorsValues } from '../../lib/series/series';
 import { BarSeriesSpec, BasicSeriesSpec, RectAnnotationSpec } from '../../lib/series/specs';

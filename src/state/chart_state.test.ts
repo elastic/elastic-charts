@@ -1,5 +1,5 @@
 import { LegendItem } from '../lib/series/legend';
-import { GeometryValue, IndexedGeometry } from '../lib/series/rendering';
+import { GeometryValue, IndexedGeometry } from '../types/xy_chart/rendering/rendering';
 import {
   AnnotationDomainTypes,
   AnnotationSpec,

@@ -1,10 +1,4 @@
-import {
-  BarGeometry,
-  IndexedGeometry,
-  isBarGeometry,
-  isPointGeometry,
-  PointGeometry,
-} from '../../../lib/series/rendering';
+import { BarGeometry, IndexedGeometry, isBarGeometry, isPointGeometry, PointGeometry } from '../rendering/rendering';
 import { Datum, Rotation } from '../../../lib/series/specs';
 import { Dimensions } from '../../../utils/dimensions';
 

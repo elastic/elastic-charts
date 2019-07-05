@@ -1,4 +1,4 @@
-import { IndexedGeometry, PointGeometry } from '../../../lib/series/rendering';
+import { IndexedGeometry, PointGeometry } from '../rendering/rendering';
 import { Dimensions } from '../../../utils/dimensions';
 import { getSpecId } from '../../../utils/ids';
 import {

@@ -1,4 +1,4 @@
-import { GeometryId } from './rendering';
+import { GeometryId } from '../../types/xy_chart/rendering/rendering';
 import { DataSeriesColorsValues } from './series';
 
 export function isEqualSeriesKey(a: any[], b: any[]): boolean {
