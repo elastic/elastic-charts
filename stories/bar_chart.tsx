@@ -32,7 +32,7 @@ import * as TestDatasets from '../src/utils/data_samples/test_dataset';
 
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 
-import { TEST_DATASET_DISCOVER } from '../src/lib/series/utils/test_dataset_discover_per_30s';
+import { TEST_DATASET_DISCOVER } from '../src/utils/data_samples/test_dataset_discover_per_30s';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
 
