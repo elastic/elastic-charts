@@ -1,7 +1,7 @@
 import { ColorConfig } from '../../utils/themes/theme';
 import { Accessor } from '../../utils/accessor';
 import { GroupId, SpecId } from '../../utils/ids';
-import { splitSpecsByGroupId, YBasicSeriesSpec } from './domains/y_domain';
+import { splitSpecsByGroupId, YBasicSeriesSpec } from '../../types/xy_chart/domains/y_domain';
 import { formatNonStackedDataSeriesValues } from '../../types/xy_chart/utils/nonstacked_series_utils';
 import { isEqualSeriesKey } from '../../types/xy_chart/utils/series_utils';
 import { BasicSeriesSpec, Datum, SeriesAccessors } from '../../types/xy_chart/utils/specs';

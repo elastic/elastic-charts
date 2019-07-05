@@ -1,8 +1,8 @@
 import { getGroupId, getSpecId, SpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
-import { getSplittedSeries } from '../series';
+import { getSplittedSeries } from '../../../lib/series/series';
 import { BasicSeriesSpec } from '../../../types/xy_chart/utils/specs';
-import { convertXScaleTypes, findMinInterval, mergeXDomain } from './x_domain';
+import { convertXScaleTypes, findMinInterval, mergeXDomain } from '../../../types/xy_chart/domains/x_domain';
 
 describe('X Domain', () => {
   test('Should return null when missing specs or specs types', () => {

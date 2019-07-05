@@ -1,7 +1,7 @@
 import { isVertical } from '../types/xy_chart/utils/axis_utils';
 import { CurveType } from '../utils/curves';
-import { mergeXDomain, XDomain } from '../lib/series/domains/x_domain';
-import { mergeYDomain, YDomain } from '../lib/series/domains/y_domain';
+import { mergeXDomain, XDomain } from '../types/xy_chart/domains/x_domain';
+import { mergeYDomain, YDomain } from '../types/xy_chart/domains/y_domain';
 import {
   AreaGeometry,
   BarGeometry,

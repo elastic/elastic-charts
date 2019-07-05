@@ -1,5 +1,5 @@
-import { XDomain } from '../../../lib/series/domains/x_domain';
-import { YDomain } from '../../../lib/series/domains/y_domain';
+import { XDomain } from '../domains/x_domain';
+import { YDomain } from '../domains/y_domain';
 import { AxisSpec, DomainRange, Position, AxisStyle } from './specs';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { AxisId, getAxisId, getGroupId, GroupId } from '../../../utils/ids';

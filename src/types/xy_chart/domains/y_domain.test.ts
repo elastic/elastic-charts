@@ -1,7 +1,7 @@
 import { getGroupId, getSpecId, GroupId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
-import { RawDataSeries } from '../series';
-import { BasicSeriesSpec, DomainRange } from '../../../types/xy_chart/utils/specs';
+import { RawDataSeries } from '../../../lib/series/series';
+import { BasicSeriesSpec, DomainRange } from '../utils/specs';
 import { BARCHART_1Y0G } from '../../../utils/data_samples/test_dataset';
 import {
   coerceYScaleTypes,
