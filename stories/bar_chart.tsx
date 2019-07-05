@@ -855,7 +855,7 @@ storiesOf('Bar Chart', module)
       </Chart>
     );
   })
-  .add('single data chart', () => {
+  .add('single data chart [linear]', () => {
     const hasCustomDomain = boolean('has custom domain', false);
     const xDomain = hasCustomDomain
       ? {
@@ -901,12 +901,63 @@ storiesOf('Bar Chart', module)
 
         <BarSeries
           id={getSpecId('bars')}
-          xScaleType={ScaleType.Ordinal}
+          xScaleType={ScaleType.Linear}
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y']}
           splitSeriesAccessors={['g']}
-          data={[{ x: 'a', y: 10, g: 1 }, { x: 'a', y: 12, g: 2 }]}
+          data={[{ x: 1, y: 10 }]}
+        />
+      </Chart>
+    );
+  })
+  .add('single data chart [ordinal]', () => {
+    const hasCustomDomain = boolean('has custom domain', false);
+    const xDomain = hasCustomDomain ? ['a', 'b'] : undefined;
+
+    const chartRotation = select<Rotation>(
+      'chartRotation',
+      {
+        '0 deg': 0,
+        '90 deg': 90,
+        '-90 deg': -90,
+        '180 deg': 180,
+      },
+      0,
+    );
+
+    const theme = mergeWithDefaultTheme(
+      {
+        scales: {
+          barsPadding: number('bars padding', 0.25, {
+            range: true,
+            min: 0,
+            max: 1,
+            step: 0.1,
+          }),
+        },
+      },
+      LIGHT_THEME,
+    );
+
+    return (
+      <Chart className={'story-chart'}>
+        <Settings xDomain={xDomain} rotation={chartRotation} theme={theme} />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} />
+        <Axis
+          id={getAxisId('left2')}
+          title={'Left axis'}
+          position={Position.Left}
+          tickFormat={(d) => Number(d).toFixed(2)}
+        />
+
+        <BarSeries
+          id={getSpecId('bars')}
+          xScaleType={ScaleType.Ordinal}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          data={[{ x: 'a', y: 10, g: 1 }]}
         />
       </Chart>
     );
