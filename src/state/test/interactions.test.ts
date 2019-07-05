@@ -1,6 +1,6 @@
 import { BarGeometry } from '../../types/xy_chart/rendering/rendering';
 import { computeXScale, computeYScales } from '../../types/xy_chart/utils/scales';
-import { DataSeriesColorsValues } from '../../lib/series/series';
+import { DataSeriesColorsValues } from '../../types/xy_chart/utils/series';
 import { BarSeriesSpec, BasicSeriesSpec, RectAnnotationSpec } from '../../types/xy_chart/utils/specs';
 import { getAnnotationId, getGroupId, getSpecId } from '../../utils/ids';
 import { TooltipType } from '../../types/xy_chart/utils/interactions';

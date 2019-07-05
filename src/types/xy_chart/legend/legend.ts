@@ -5,7 +5,7 @@ import {
   DataSeriesColorsValues,
   findDataSeriesByColorValues,
   getSortedDataSeriesColorsValuesMap,
-} from '../../../lib/series/series';
+} from '../utils/series';
 import { AxisSpec, BasicSeriesSpec } from '../utils/specs';
 
 export interface LegendItem {

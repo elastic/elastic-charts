@@ -4,7 +4,7 @@ import { ScaleContinuous } from '../../../utils/scales/scale_continuous';
 import { Scale, ScaleType } from '../../../utils/scales/scales';
 import { XDomain } from '../domains/x_domain';
 import { YDomain } from '../domains/y_domain';
-import { FormattedDataSeries } from '../../../lib/series/series';
+import { FormattedDataSeries } from './series';
 
 /**
  * Count the max number of bars in cluster value.

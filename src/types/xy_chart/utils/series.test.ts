@@ -1,6 +1,6 @@
-import { ColorConfig } from '../../utils/themes/theme';
-import { getGroupId, getSpecId, SpecId } from '../../utils/ids';
-import { ScaleType } from '../../utils/scales/scales';
+import { ColorConfig } from '../../../utils/themes/theme';
+import { getGroupId, getSpecId, SpecId } from '../../../utils/ids';
+import { ScaleType } from '../../../utils/scales/scales';
 import {
   DataSeriesColorsValues,
   getFormattedDataseries,
@@ -10,9 +10,9 @@ import {
   RawDataSeries,
   splitSeries,
 } from './series';
-import { BasicSeriesSpec } from '../../types/xy_chart/utils/specs';
-import { formatStackedDataSeriesValues } from '../../types/xy_chart/utils/stacked_series_utils';
-import * as TestDataset from '../../utils/data_samples/test_dataset';
+import { BasicSeriesSpec } from './specs';
+import { formatStackedDataSeriesValues } from './stacked_series_utils';
+import * as TestDataset from '../../../utils/data_samples/test_dataset';
 
 describe('Series', () => {
   test('Can split dataset into 1Y0G series', () => {

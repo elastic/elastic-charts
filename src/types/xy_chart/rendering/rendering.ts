@@ -14,7 +14,7 @@ import { isLogarithmicScale } from '../../../utils/scales/scale_continuous';
 import { Scale, ScaleType } from '../../../utils/scales/scales';
 import { CurveType, getCurveFactory } from '../../../utils/curves';
 import { LegendItem } from '../legend/legend';
-import { DataSeriesDatum } from '../../../lib/series/series';
+import { DataSeriesDatum } from '../utils/series';
 import { belongsToDataSeries } from '../utils/series_utils';
 import { DisplayValueSpec } from '../utils/specs';
 

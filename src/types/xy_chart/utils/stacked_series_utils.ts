@@ -1,4 +1,4 @@
-import { DataSeries, DataSeriesDatum, RawDataSeries } from '../../../lib/series/series';
+import { DataSeries, DataSeriesDatum, RawDataSeries } from './series';
 
 interface StackedValues {
   values: number[];

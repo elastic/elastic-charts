@@ -1,6 +1,6 @@
 import { getSpecId } from '../../../utils/ids';
 import { formatNonStackedDataSeriesValues } from './nonstacked_series_utils';
-import { RawDataSeries } from '../../../lib/series/series';
+import { RawDataSeries } from './series';
 
 const EMPTY_DATA_SET: RawDataSeries[] = [
   {

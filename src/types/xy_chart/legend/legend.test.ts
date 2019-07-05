@@ -1,7 +1,7 @@
 import { AxisId, getAxisId, getGroupId, getSpecId, SpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
 import { computeLegend, getSeriesColorLabel } from './legend';
-import { DataSeriesColorsValues } from '../../../lib/series/series';
+import { DataSeriesColorsValues } from '../utils/series';
 import { AxisSpec, BasicSeriesSpec, Position } from '../utils/specs';
 
 const colorValues1a = {

@@ -2,7 +2,7 @@ import { getGroupId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
 import { XDomain } from '../domains/x_domain';
 import { computeXScale, countBarsInCluster } from './scales';
-import { FormattedDataSeries } from '../../../lib/series/series';
+import { FormattedDataSeries } from './series';
 
 describe('Series scales', () => {
   const xDomainLinear: XDomain = {

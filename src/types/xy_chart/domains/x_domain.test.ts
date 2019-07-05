@@ -1,6 +1,6 @@
 import { getGroupId, getSpecId, SpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
-import { getSplittedSeries } from '../../../lib/series/series';
+import { getSplittedSeries } from '../utils/series';
 import { BasicSeriesSpec } from '../../../types/xy_chart/utils/specs';
 import { convertXScaleTypes, findMinInterval, mergeXDomain } from '../../../types/xy_chart/domains/x_domain';
 

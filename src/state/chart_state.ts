@@ -27,7 +27,7 @@ import {
   FormattedDataSeries,
   getSeriesColorMap,
   RawDataSeries,
-} from '../lib/series/series';
+} from '../types/xy_chart/utils/series';
 import {
   AnnotationSpec,
   AnnotationTypes,

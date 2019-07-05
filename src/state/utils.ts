@@ -22,7 +22,7 @@ import {
   getColorValuesAsString,
   getFormattedDataseries,
   getSplittedSeries,
-} from '../lib/series/series';
+} from '../types/xy_chart/utils/series';
 import {
   AreaSeriesSpec,
   AxisSpec,

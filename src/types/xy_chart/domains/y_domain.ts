@@ -3,7 +3,7 @@ import { GroupId, SpecId } from '../../../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../../../utils/scales/scales';
 import { isCompleteBound, isLowerBound, isUpperBound } from '../utils/axis_utils';
 import { BaseDomain } from './domain';
-import { RawDataSeries } from '../../../lib/series/series';
+import { RawDataSeries } from '../utils/series';
 import { computeContinuousDataDomain } from '../../../utils/domain';
 import { identity } from '../../../utils/commons';
 import { sum } from 'd3-array';
