@@ -28,14 +28,12 @@ import {
   Settings,
   timeFormatter,
   TooltipType,
-  BarSeriesStyle,
 } from '../src/';
 import * as TestDatasets from '../src/lib/series/utils/test_dataset';
 
 import { KIBANA_METRICS } from '../src/lib/series/utils/test_dataset_kibana';
 
 import { TEST_DATASET_DISCOVER } from '../src/lib/series/utils/test_dataset_discover_per_30s';
-import { RecursivePartial } from '../src/lib/utils/commons';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
 
@@ -90,22 +88,6 @@ storiesOf('Bar Chart', module)
       hideClippedValue,
     };
 
-    const displayValueStyle = {
-      displayValue: {
-        fontSize: number('value font size', 10),
-        fontFamily: `'Open Sans', Helvetica, Arial, sans-serif`,
-        fontStyle: 'normal',
-        padding: 0,
-        fill: color('value color', '#000'),
-        offsetX: number('offsetX', 0),
-        offsetY: number('offsetY', 0),
-      },
-    };
-
-    const barStyle: RecursivePartial<BarSeriesStyle> = {
-      ...displayValueStyle,
-    };
-
     const debug = boolean('debug', true);
     const chartRotation = select<Rotation>(
       'chartRotation',
@@ -120,10 +102,21 @@ storiesOf('Bar Chart', module)
 
     const theme = mergeWithDefaultTheme(
       {
-        barSeriesStyle: barStyle,
+        barSeriesStyle: {
+          displayValue: {
+            fontSize: number('value font size', 10),
+            fontFamily: `'Open Sans', Helvetica, Arial, sans-serif`,
+            fontStyle: 'normal',
+            padding: 0,
+            fill: color('value color', '#000'),
+            offsetX: number('offsetX', 0),
+            offsetY: number('offsetY', 0),
+          },
+        },
       },
       LIGHT_THEME,
     );
+
     const dataSize = select(
       'data volume size',
       {
