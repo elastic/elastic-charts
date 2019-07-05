@@ -1,4 +1,4 @@
-import { computeXScale } from '../lib/series/scales';
+import { computeXScale } from '../types/xy_chart/utils/scales';
 import { BasicSeriesSpec } from '../lib/series/specs';
 import { Dimensions } from '../utils/dimensions';
 import { getGroupId, getSpecId } from '../utils/ids';

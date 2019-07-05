@@ -14,7 +14,7 @@ import {
   renderBars,
   renderLine,
 } from '../types/xy_chart/rendering/rendering';
-import { computeXScale, computeYScales, countBarsInCluster } from '../lib/series/scales';
+import { computeXScale, computeYScales, countBarsInCluster } from '../types/xy_chart/utils/scales';
 import {
   DataSeries,
   DataSeriesColorsValues,

@@ -20,7 +20,7 @@ import {
   LineGeometry,
   PointGeometry,
 } from '../types/xy_chart/rendering/rendering';
-import { countBarsInCluster } from '../lib/series/scales';
+import { countBarsInCluster } from '../types/xy_chart/utils/scales';
 import {
   DataSeriesColorsValues,
   findDataSeriesByColorValues,

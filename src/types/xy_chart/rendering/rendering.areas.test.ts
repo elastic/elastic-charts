@@ -4,7 +4,7 @@ import { getGroupId, getSpecId, SpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
 import { CurveType } from '../../../utils/curves';
 import { AreaGeometry, IndexedGeometry, PointGeometry, renderArea } from './rendering';
-import { computeXScale, computeYScales } from '../../../lib/series/scales';
+import { computeXScale, computeYScales } from '../utils/scales';
 import { AreaSeriesSpec } from '../../../lib/series/specs';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 const SPEC_ID = getSpecId('spec_1');
