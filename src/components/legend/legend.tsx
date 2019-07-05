@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { isVertical } from '../../lib/axes/axis_utils';
+import { isVertical } from '../../types/xy_chart/utils/axis_utils';
 import { LegendItem as SeriesLegendItem } from '../../lib/series/legend';
 import { ChartStore } from '../../state/chart_state';
 import { LegendItem } from './legend_item';

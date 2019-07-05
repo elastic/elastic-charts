@@ -1,6 +1,6 @@
-import { XDomain } from '../series/domains/x_domain';
-import { YDomain } from '../series/domains/y_domain';
-import { computeXScale, computeYScales } from '../series/scales';
+import { XDomain } from '../../../lib/series/domains/x_domain';
+import { YDomain } from '../../../lib/series/domains/y_domain';
+import { computeXScale, computeYScales } from '../../../lib/series/scales';
 import {
   AxisSpec,
   CompleteBoundedDomain,
@@ -11,12 +11,12 @@ import {
   TickFormatter,
   UpperBoundedDomain,
   AxisStyle,
-} from '../series/specs';
-import { AxisConfig, Theme } from '../../utils/themes/theme';
-import { Dimensions, Margins } from '../../utils/dimensions';
-import { AxisId, GroupId } from '../../utils/ids';
-import { Scale } from '../../utils/scales/scales';
-import { BBox, BBoxCalculator } from '../../utils/bbox/bbox_calculator';
+} from '../../../lib/series/specs';
+import { AxisConfig, Theme } from '../../../utils/themes/theme';
+import { Dimensions, Margins } from '../../../utils/dimensions';
+import { AxisId, GroupId } from '../../../utils/ids';
+import { Scale } from '../../../utils/scales/scales';
+import { BBox, BBoxCalculator } from '../../../utils/bbox/bbox_calculator';
 
 export type AxisLinePosition = [number, number, number, number];
 

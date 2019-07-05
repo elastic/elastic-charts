@@ -1,9 +1,9 @@
-import { XDomain } from '../series/domains/x_domain';
-import { YDomain } from '../series/domains/y_domain';
-import { AxisSpec, DomainRange, Position, AxisStyle } from '../series/specs';
-import { LIGHT_THEME } from '../../utils/themes/light_theme';
-import { AxisId, getAxisId, getGroupId, GroupId } from '../../utils/ids';
-import { ScaleType } from '../../utils/scales/scales';
+import { XDomain } from '../../../lib/series/domains/x_domain';
+import { YDomain } from '../../../lib/series/domains/y_domain';
+import { AxisSpec, DomainRange, Position, AxisStyle } from '../../../lib/series/specs';
+import { LIGHT_THEME } from '../../../utils/themes/light_theme';
+import { AxisId, getAxisId, getGroupId, GroupId } from '../../../utils/ids';
+import { ScaleType } from '../../../utils/scales/scales';
 import {
   AxisTick,
   AxisTicksDimensions,
@@ -30,8 +30,8 @@ import {
   getAxisTickLabelPadding,
   mergeYCustomDomainsByGroupId,
 } from './axis_utils';
-import { CanvasTextBBoxCalculator } from '../../utils/bbox/canvas_text_bbox_calculator';
-import { SvgTextBBoxCalculator } from '../../utils/bbox/svg_text_bbox_calculator';
+import { CanvasTextBBoxCalculator } from '../../../utils/bbox/canvas_text_bbox_calculator';
+import { SvgTextBBoxCalculator } from '../../../utils/bbox/svg_text_bbox_calculator';
 
 // const chartScalesConfig: ScalesConfig = {
 //   ordinal: {

@@ -1,4 +1,4 @@
-import { isHorizontal } from '../lib/axes/axis_utils';
+import { isHorizontal } from '../types/xy_chart/utils/axis_utils';
 import {
   AnnotationDomainType,
   AnnotationDomainTypes,

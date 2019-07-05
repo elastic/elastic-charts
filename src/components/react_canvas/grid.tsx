@@ -1,6 +1,6 @@
 import React from 'react';
 import { Group, Line } from 'react-konva';
-import { AxisLinePosition } from '../../lib/axes/axis_utils';
+import { AxisLinePosition } from '../../types/xy_chart/utils/axis_utils';
 import { DEFAULT_GRID_LINE_CONFIG, GridLineConfig, mergeWithDefaultGridLineConfig } from '../../utils/themes/theme';
 import { Dimensions } from '../../utils/dimensions';
 

@@ -1,4 +1,4 @@
-import { isVertical } from '../lib/axes/axis_utils';
+import { isVertical } from '../types/xy_chart/utils/axis_utils';
 import { CurveType } from '../utils/curves';
 import { mergeXDomain, XDomain } from '../lib/series/domains/x_domain';
 import { mergeYDomain, YDomain } from '../lib/series/domains/y_domain';

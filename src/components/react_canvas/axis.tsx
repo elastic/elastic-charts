@@ -9,7 +9,7 @@ import {
   getVerticalAxisTickLineProps,
   isHorizontal,
   isVertical,
-} from '../../lib/axes/axis_utils';
+} from '../../types/xy_chart/utils/axis_utils';
 import { AxisSpec, Position } from '../../lib/series/specs';
 import { Theme } from '../../utils/themes/theme';
 import { Dimensions } from '../../utils/dimensions';

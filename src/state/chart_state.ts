@@ -6,7 +6,7 @@ import {
   computeAxisTicksDimensions,
   getAxisTicksPositions,
   mergeYCustomDomainsByGroupId,
-} from '../lib/axes/axis_utils';
+} from '../types/xy_chart/utils/axis_utils';
 import { CanvasTextBBoxCalculator } from '../utils/bbox/canvas_text_bbox_calculator';
 import { XDomain } from '../lib/series/domains/x_domain';
 import { YDomain } from '../lib/series/domains/y_domain';

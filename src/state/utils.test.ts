@@ -1,5 +1,5 @@
-import { mergeYCustomDomainsByGroupId } from '../lib/axes/axis_utils';
 import { LegendItem } from '../lib/series/legend';
+import { mergeYCustomDomainsByGroupId } from '../types/xy_chart/utils/axis_utils';
 import { IndexedGeometry } from '../lib/series/rendering';
 import { DataSeriesColorsValues, findDataSeriesByColorValues, getSeriesColorMap } from '../lib/series/series';
 import {
