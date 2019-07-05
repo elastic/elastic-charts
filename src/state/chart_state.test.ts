@@ -12,7 +12,7 @@ import {
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { mergeWithDefaultTheme } from '../utils/themes/theme';
 import { getAnnotationId, getAxisId, getGroupId, getSpecId } from '../utils/ids';
-import { TooltipType, TooltipValue } from '../lib/utils/interactions';
+import { TooltipType, TooltipValue } from '../types/xy_chart/utils/interactions';
 import { ScaleBand } from '../utils/scales/scale_band';
 import { ScaleContinuous } from '../utils/scales/scale_continuous';
 import { ScaleType } from '../utils/scales/scales';

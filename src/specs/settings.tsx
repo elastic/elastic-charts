@@ -5,7 +5,7 @@ import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { DARK_THEME } from '../utils/themes/dark_theme';
 import { BaseThemeType, mergeWithDefaultTheme, PartialTheme, Theme, BaseThemeTypes } from '../utils/themes/theme';
 import { Domain } from '../utils/domain';
-import { TooltipType, TooltipValueFormatter } from '../lib/utils/interactions';
+import { TooltipType, TooltipValueFormatter } from '../types/xy_chart/utils/interactions';
 import {
   BrushEndListener,
   ChartStore,

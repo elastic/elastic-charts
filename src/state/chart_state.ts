@@ -47,7 +47,7 @@ import { formatTooltip, getSeriesTooltipValues } from '../lib/series/tooltip';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { mergeWithDefaultAnnotationLine, mergeWithDefaultAnnotationRect, Theme } from '../utils/themes/theme';
 import { compareByValueAsc } from '../utils/commons';
-import { computeChartDimensions } from '../lib/utils/dimensions';
+import { computeChartDimensions } from '../types/xy_chart/utils/dimensions';
 import { Dimensions } from '../utils/dimensions';
 import { Domain } from '../utils/domain';
 import { AnnotationId, AxisId, GroupId, SpecId } from '../utils/ids';
@@ -61,7 +61,7 @@ import {
   TooltipType,
   TooltipValue,
   TooltipValueFormatter,
-} from '../lib/utils/interactions';
+} from '../types/xy_chart/utils/interactions';
 import { Scale, ScaleType } from '../utils/scales/scales';
 import { DEFAULT_TOOLTIP_SNAP, DEFAULT_TOOLTIP_TYPE } from '../specs/settings';
 import { AnnotationDimensions, computeAnnotationDimensions, computeAnnotationTooltipState } from './annotation_utils';

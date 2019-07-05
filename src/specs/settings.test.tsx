@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Position, Rendering, Rotation } from '../lib/series/specs';
 import { DARK_THEME } from '../utils/themes/dark_theme';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
-import { TooltipType } from '../lib/utils/interactions';
+import { TooltipType } from '../types/xy_chart/utils/interactions';
 import { ChartStore } from '../state/chart_state';
 import { DEFAULT_TOOLTIP_SNAP, DEFAULT_TOOLTIP_TYPE, SettingsComponent, SettingSpecProps } from './settings';
 import { PartialTheme, BaseThemeTypes } from '../utils/themes/theme';

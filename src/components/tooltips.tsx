@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { TooltipValue, TooltipValueFormatter } from '../lib/utils/interactions';
+import { TooltipValue, TooltipValueFormatter } from '../types/xy_chart/utils/interactions';
 import { ChartStore } from '../state/chart_state';
 
 interface TooltipProps {

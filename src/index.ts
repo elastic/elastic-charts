@@ -1,6 +1,6 @@
 export * from './specs';
 export { Chart } from './components/chart';
-export { TooltipType, TooltipValue, TooltipValueFormatter } from './lib/utils/interactions';
+export { TooltipType, TooltipValue, TooltipValueFormatter } from './types/xy_chart/utils/interactions';
 export { getAxisId, getGroupId, getSpecId, getAnnotationId } from './utils/ids';
 export { ScaleType } from './utils/scales/scales';
 export { Position, Rendering, Rotation } from './lib/series/specs';

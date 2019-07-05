@@ -1,6 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import React, { CSSProperties } from 'react';
-import { TooltipType } from '../lib/utils/interactions';
+import { TooltipType } from '../types/xy_chart/utils/interactions';
 import { ChartStore } from '../state/chart_state';
 import { isHorizontalRotation } from '../state/utils';
 

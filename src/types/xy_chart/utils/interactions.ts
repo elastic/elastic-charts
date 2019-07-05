@@ -1,6 +1,12 @@
-import { BarGeometry, IndexedGeometry, isBarGeometry, isPointGeometry, PointGeometry } from '../series/rendering';
-import { Datum, Rotation } from '../series/specs';
-import { Dimensions } from '../../utils/dimensions';
+import {
+  BarGeometry,
+  IndexedGeometry,
+  isBarGeometry,
+  isPointGeometry,
+  PointGeometry,
+} from '../../../lib/series/rendering';
+import { Datum, Rotation } from '../../../lib/series/specs';
+import { Dimensions } from '../../../utils/dimensions';
 
 /** The type of tooltip to use */
 export const TooltipType = Object.freeze({

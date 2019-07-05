@@ -1,6 +1,6 @@
-import { IndexedGeometry, PointGeometry } from '../series/rendering';
-import { Dimensions } from '../../utils/dimensions';
-import { getSpecId } from '../../utils/ids';
+import { IndexedGeometry, PointGeometry } from '../../../lib/series/rendering';
+import { Dimensions } from '../../../utils/dimensions';
+import { getSpecId } from '../../../utils/ids';
 import {
   areIndexedGeometryArraysEquals,
   areIndexedGeomsEquals,

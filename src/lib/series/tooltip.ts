@@ -1,4 +1,4 @@
-import { TooltipValue } from '../utils/interactions';
+import { TooltipValue } from '../../types/xy_chart/utils/interactions';
 import { IndexedGeometry } from './rendering';
 import { getColorValuesAsString } from './series';
 import { AxisSpec, BasicSeriesSpec } from './specs';

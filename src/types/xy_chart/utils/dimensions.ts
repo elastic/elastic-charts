@@ -1,8 +1,8 @@
-import { AxisTicksDimensions } from '../axes/axis_utils';
-import { AxisSpec, Position } from '../series/specs';
-import { Theme } from '../../utils/themes/theme';
-import { AxisId } from '../../utils/ids';
-import { Dimensions } from '../../utils/dimensions';
+import { AxisTicksDimensions } from '../../../lib/axes/axis_utils';
+import { AxisSpec, Position } from '../../../lib/series/specs';
+import { Theme } from '../../../utils/themes/theme';
+import { AxisId } from '../../../utils/ids';
+import { Dimensions } from '../../../utils/dimensions';
 
 /**
  * Compute the chart dimensions. It's computed removing from the parent dimensions

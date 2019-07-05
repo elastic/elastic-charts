@@ -3,7 +3,7 @@ import { computeXScale, computeYScales } from '../../lib/series/scales';
 import { DataSeriesColorsValues } from '../../lib/series/series';
 import { BarSeriesSpec, BasicSeriesSpec, RectAnnotationSpec } from '../../lib/series/specs';
 import { getAnnotationId, getGroupId, getSpecId } from '../../utils/ids';
-import { TooltipType } from '../../lib/utils/interactions';
+import { TooltipType } from '../../types/xy_chart/utils/interactions';
 import { ScaleContinuous } from '../../utils/scales/scale_continuous';
 import { ScaleType } from '../../utils/scales/scales';
 import { ChartStore } from '../chart_state';
