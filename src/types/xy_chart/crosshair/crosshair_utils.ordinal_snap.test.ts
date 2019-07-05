@@ -1,9 +1,9 @@
-import { computeXScale } from '../types/xy_chart/utils/scales';
-import { BasicSeriesSpec } from '../lib/series/specs';
-import { getGroupId, getSpecId } from '../utils/ids';
-import { ScaleType } from '../utils/scales/scales';
+import { computeXScale } from '../utils/scales';
+import { BasicSeriesSpec } from '../../../lib/series/specs';
+import { getGroupId, getSpecId } from '../../../utils/ids';
+import { ScaleType } from '../../../utils/scales/scales';
 import { getSnapPosition } from './crosshair_utils';
-import { computeSeriesDomains } from './utils';
+import { computeSeriesDomains } from '../../../state/utils';
 
 describe('Crosshair utils ordinal scales', () => {
   const barSeries1SpecId = getSpecId('barSeries1');

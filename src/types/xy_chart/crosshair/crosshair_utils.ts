@@ -1,7 +1,7 @@
-import { Rotation } from '../lib/series/specs';
-import { Dimensions } from '../utils/dimensions';
-import { Scale } from '../utils/scales/scales';
-import { isHorizontalRotation } from './utils';
+import { Rotation } from '../../../lib/series/specs';
+import { Dimensions } from '../../../utils/dimensions';
+import { Scale } from '../../../utils/scales/scales';
+import { isHorizontalRotation } from '../../../state/utils';
 
 export interface SnappedPosition {
   position: number;

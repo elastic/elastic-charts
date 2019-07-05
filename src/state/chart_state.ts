@@ -69,7 +69,11 @@ import {
   computeAnnotationDimensions,
   computeAnnotationTooltipState,
 } from '../types/xy_chart/annotations/annotation_utils';
-import { getCursorBandPosition, getCursorLinePosition, getTooltipPosition } from './crosshair_utils';
+import {
+  getCursorBandPosition,
+  getCursorLinePosition,
+  getTooltipPosition,
+} from '../types/xy_chart/crosshair/crosshair_utils';
 import {
   BrushExtent,
   computeBrushExtent,
