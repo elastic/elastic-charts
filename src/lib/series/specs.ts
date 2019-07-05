@@ -136,6 +136,10 @@ export type BarSeriesSpec = BasicSeriesSpec & {
   /** If true, will stack all BarSeries and align bars to ticks (instead of centered on ticks) */
   enableHistogramMode?: boolean;
   barSeriesStyle?: RecursivePartial<BarSeriesStyle>;
+  /**
+   * Stack each series in percentage for each point.
+   */
+  stackAsPercentage?: boolean;
 };
 
 /**
@@ -167,6 +171,10 @@ export type AreaSeriesSpec = BasicSeriesSpec &
     /** The type of interpolator to be used to interpolate values between points */
     curve?: CurveType;
     areaSeriesStyle?: RecursivePartial<AreaSeriesStyle>;
+    /**
+     * Stack each series in percentage for each point.
+     */
+    stackAsPercentage?: boolean;
   };
 
 interface HistogramConfig {
