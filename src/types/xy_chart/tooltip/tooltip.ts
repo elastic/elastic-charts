@@ -1,7 +1,7 @@
-import { TooltipValue } from '../../types/xy_chart/utils/interactions';
-import { IndexedGeometry } from '../../types/xy_chart/rendering/rendering';
-import { getColorValuesAsString } from './series';
-import { AxisSpec, BasicSeriesSpec } from './specs';
+import { TooltipValue } from '../utils/interactions';
+import { IndexedGeometry } from '../rendering/rendering';
+import { getColorValuesAsString } from '../../../lib/series/series';
+import { AxisSpec, BasicSeriesSpec } from '../../../lib/series/specs';
 
 export function getSeriesTooltipValues(tooltipValues: TooltipValue[]): Map<string, any> {
   // map from seriesKey to tooltipValue

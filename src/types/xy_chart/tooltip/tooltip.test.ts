@@ -1,7 +1,7 @@
-import { getAxisId, getGroupId, getSpecId } from '../../utils/ids';
-import { ScaleType } from '../../utils/scales/scales';
-import { BarGeometry } from '../../types/xy_chart/rendering/rendering';
-import { AxisSpec, BarSeriesSpec, Position } from './specs';
+import { getAxisId, getGroupId, getSpecId } from '../../../utils/ids';
+import { ScaleType } from '../../../utils/scales/scales';
+import { BarGeometry } from '../rendering/rendering';
+import { AxisSpec, BarSeriesSpec, Position } from '../../../lib/series/specs';
 import { formatTooltip } from './tooltip';
 
 describe('Tooltip formatting', () => {

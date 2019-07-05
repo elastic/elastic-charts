@@ -43,7 +43,7 @@ import {
   Rendering,
   Rotation,
 } from '../lib/series/specs';
-import { formatTooltip, getSeriesTooltipValues } from '../lib/series/tooltip';
+import { formatTooltip, getSeriesTooltipValues } from '../types/xy_chart/tooltip/tooltip';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { mergeWithDefaultAnnotationLine, mergeWithDefaultAnnotationRect, Theme } from '../utils/themes/theme';
 import { compareByValueAsc } from '../utils/commons';
