@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Layer, Rect, Stage } from 'react-konva';
-import { isLineAnnotation, isRectAnnotation } from '../../lib/series/specs';
+import { isLineAnnotation, isRectAnnotation, Position } from '../../lib/series/specs';
 import { LineAnnotationStyle, RectAnnotationStyle } from '../../lib/themes/theme';
 import { AnnotationId } from '../../lib/utils/ids';
 import { AnnotationDimensions, AnnotationLineProps, AnnotationRectProps } from '../../state/annotation_utils';
@@ -16,7 +16,6 @@ import { Grid } from './grid';
 import { LineAnnotation } from './line_annotation';
 import { LineGeometries } from './line_geometries';
 import { RectAnnotation } from './rect_annotation';
-
 interface ReactiveChartProps {
   chartStore?: ChartStore; // FIX until we find a better way on ts mobx
 }
@@ -353,11 +352,45 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
     } = this.props.chartStore!;
 
     if (isChartEmpty) {
-      return (
-        <div className="echReactiveChart_unavailable">
-          <p>No data to display</p>
-        </div>
-      );
+      const isLegendCollapsed = this.props.chartStore!.legendCollapsed.get();
+      if (isLegendCollapsed) {
+        return (
+          <div className="echReactiveChart_unavailable">
+            <p>No data to display</p>
+          </div>
+        );
+      } else {
+        const verticalOffset = this.props.chartStore!.chartTheme.legend.verticalWidth;
+        const legendPosition = this.props.chartStore!.legendPosition;
+        const horitizontalOffset = this.props.chartStore!.chartTheme.legend.horizontalHeight;
+        console.log(verticalOffset);
+        switch (legendPosition) {
+          case Position.Right:
+            return (
+              <div className="echReactiveChart_unavailable">
+                <p style={{ marginLeft: -verticalOffset }}>No data to display</p>
+              </div>
+            );
+          case Position.Left:
+            return (
+              <div className="echReactiveChart_unavailable">
+                <p style={{ marginLeft: verticalOffset }}>No data to display</p>
+              </div>
+            );
+          case Position.Top:
+            return (
+              <div className="echReactiveChart_unavailable">
+                <p style={{ marginTop: horitizontalOffset }}>No data to display</p>
+              </div>
+            );
+          case Position.Bottom:
+            return (
+              <div className="echReactiveChart_unavailable">
+                <p style={{ marginTop: -horitizontalOffset }}>No data to display</p>
+              </div>
+            );
+        }
+      }
     }
     // disable clippings when debugging
     const clippings = debug
