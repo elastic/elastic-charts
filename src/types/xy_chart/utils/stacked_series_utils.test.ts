@@ -1,5 +1,5 @@
-import { getSpecId } from '../../utils/ids';
-import { RawDataSeries } from './series';
+import { getSpecId } from '../../../utils/ids';
+import { RawDataSeries } from '../../../lib/series/series';
 import { computeYStackedMapValues, formatStackedDataSeriesValues, getYValueStackMap } from './stacked_series_utils';
 
 describe('Stacked Series Utils', () => {

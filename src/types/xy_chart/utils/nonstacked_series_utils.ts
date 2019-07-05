@@ -1,4 +1,4 @@
-import { DataSeries, DataSeriesDatum, RawDataSeries } from './series';
+import { DataSeries, DataSeriesDatum, RawDataSeries } from '../../../lib/series/series';
 
 export function formatNonStackedDataSeriesValues(dataseries: RawDataSeries[], scaleToExtent: boolean): DataSeries[] {
   const len = dataseries.length;

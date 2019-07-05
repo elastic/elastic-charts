@@ -1,5 +1,5 @@
-import { GeometryId } from '../../types/xy_chart/rendering/rendering';
-import { DataSeriesColorsValues } from './series';
+import { GeometryId } from '../rendering/rendering';
+import { DataSeriesColorsValues } from '../../../lib/series/series';
 
 export function isEqualSeriesKey(a: any[], b: any[]): boolean {
   if (a.length !== b.length) {

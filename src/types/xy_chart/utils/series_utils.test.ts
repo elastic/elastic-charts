@@ -1,6 +1,6 @@
-import { getSpecId } from '../../utils/ids';
-import { GeometryId } from '../../types/xy_chart/rendering/rendering';
-import { DataSeriesColorsValues } from './series';
+import { getSpecId } from '../../../utils/ids';
+import { GeometryId } from '../rendering/rendering';
+import { DataSeriesColorsValues } from '../../../lib/series/series';
 import { belongsToDataSeries, isEqualSeriesKey } from './series_utils';
 
 describe('Series utility functions', () => {

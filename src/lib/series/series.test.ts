@@ -11,7 +11,7 @@ import {
   splitSeries,
 } from './series';
 import { BasicSeriesSpec } from './specs';
-import { formatStackedDataSeriesValues } from './stacked_series_utils';
+import { formatStackedDataSeriesValues } from '../../types/xy_chart/utils/stacked_series_utils';
 import * as TestDataset from '../../utils/data_samples/test_dataset';
 
 describe('Series', () => {
