@@ -1,12 +1,6 @@
 import * as React from 'react';
 
-import {
-  AnnotationDomainType,
-  AnnotationDomainTypes,
-  AnnotationSpec,
-  Position,
-  Rotation,
-} from '../../../lib/series/specs';
+import { AnnotationDomainType, AnnotationDomainTypes, AnnotationSpec, Position, Rotation } from '../utils/specs';
 import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../utils/themes/theme';
 import { Dimensions } from '../../../utils/dimensions';
 import { getAnnotationId, getGroupId, GroupId } from '../../../utils/ids';

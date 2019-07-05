@@ -8,7 +8,7 @@ import {
   BarSeriesSpec,
   Position,
   RectAnnotationSpec,
-} from '../lib/series/specs';
+} from '../types/xy_chart/utils/specs';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { mergeWithDefaultTheme } from '../utils/themes/theme';
 import { getAnnotationId, getAxisId, getGroupId, getSpecId } from '../utils/ids';

@@ -11,7 +11,7 @@ import {
   TickFormatter,
   UpperBoundedDomain,
   AxisStyle,
-} from '../../../lib/series/specs';
+} from './specs';
 import { AxisConfig, Theme } from '../../../utils/themes/theme';
 import { Dimensions, Margins } from '../../../utils/dimensions';
 import { AxisId, GroupId } from '../../../utils/ids';

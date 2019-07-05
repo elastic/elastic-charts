@@ -1,4 +1,4 @@
-import { Datum } from '../lib/series/specs';
+import { Datum } from '../types/xy_chart/utils/specs';
 
 export type AccessorFn = (datum: Datum) => any;
 export type AccessorString = string | number;

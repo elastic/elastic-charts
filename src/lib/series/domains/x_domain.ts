@@ -2,7 +2,7 @@ import { isCompleteBound, isLowerBound, isUpperBound } from '../../../types/xy_c
 import { compareByValueAsc, identity } from '../../../utils/commons';
 import { computeContinuousDataDomain, computeOrdinalDataDomain, Domain } from '../../../utils/domain';
 import { ScaleType } from '../../../utils/scales/scales';
-import { BasicSeriesSpec, DomainRange } from '../specs';
+import { BasicSeriesSpec, DomainRange } from '../../../types/xy_chart/utils/specs';
 import { BaseDomain } from './domain';
 
 export type XDomain = BaseDomain & {

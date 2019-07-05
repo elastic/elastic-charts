@@ -2,7 +2,6 @@ import { isVertical } from '../types/xy_chart/utils/axis_utils';
 import { CurveType } from '../utils/curves';
 import { mergeXDomain, XDomain } from '../lib/series/domains/x_domain';
 import { mergeYDomain, YDomain } from '../lib/series/domains/y_domain';
-import { LegendItem } from '../lib/series/legend';
 import {
   AreaGeometry,
   BarGeometry,
@@ -36,7 +35,7 @@ import {
   isLineSeriesSpec,
   LineSeriesSpec,
   Rotation,
-} from '../lib/series/specs';
+} from '../types/xy_chart/utils/specs';
 import { ColorConfig, Theme } from '../utils/themes/theme';
 import { identity, mergePartial } from '../utils/commons';
 import { Dimensions } from '../utils/dimensions';
@@ -44,6 +43,7 @@ import { Domain } from '../utils/domain';
 import { AxisId, GroupId, SpecId } from '../utils/ids';
 import { Scale } from '../utils/scales/scales';
 import { SeriesDomainsAndData } from './chart_state';
+import { LegendItem } from '../types/xy_chart/legend/legend';
 
 const MAX_ANIMATABLE_BARS = 300;
 const MAX_ANIMATABLE_LINES_AREA_POINTS = 600;

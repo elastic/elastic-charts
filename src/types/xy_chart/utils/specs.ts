@@ -5,13 +5,13 @@ import {
   LineSeriesStyle,
   RectAnnotationStyle,
   BarSeriesStyle,
-} from '../../utils/themes/theme';
-import { Accessor } from '../../utils/accessor';
-import { Omit, RecursivePartial } from '../../utils/commons';
-import { AnnotationId, AxisId, GroupId, SpecId } from '../../utils/ids';
-import { ScaleContinuousType, ScaleType } from '../../utils/scales/scales';
-import { CurveType } from '../../utils/curves';
-import { DataSeriesColorsValues } from './series';
+} from '../../../utils/themes/theme';
+import { Accessor } from '../../../utils/accessor';
+import { Omit, RecursivePartial } from '../../../utils/commons';
+import { AnnotationId, AxisId, GroupId, SpecId } from '../../../utils/ids';
+import { ScaleContinuousType, ScaleType } from '../../../utils/scales/scales';
+import { CurveType } from '../../../utils/curves';
+import { DataSeriesColorsValues } from '../../../lib/series/series';
 
 export type Datum = any;
 export type Rotation = 0 | 90 | -90 | 180;

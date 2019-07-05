@@ -1,4 +1,3 @@
-import { LegendItem } from '../lib/series/legend';
 import { mergeYCustomDomainsByGroupId } from '../types/xy_chart/utils/axis_utils';
 import { IndexedGeometry } from '../types/xy_chart/rendering/rendering';
 import { DataSeriesColorsValues, findDataSeriesByColorValues, getSeriesColorMap } from '../lib/series/series';
@@ -9,7 +8,7 @@ import {
   BasicSeriesSpec,
   HistogramModeAlignments,
   LineSeriesSpec,
-} from '../lib/series/specs';
+} from '../types/xy_chart/utils/specs';
 import { BARCHART_1Y0G, BARCHART_1Y1G } from '../utils/data_samples/test_dataset';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { AxisId, getGroupId, getSpecId, SpecId } from '../utils/ids';
@@ -30,6 +29,7 @@ import {
   setBarSeriesAccessors,
   updateDeselectedDataSeries,
 } from './utils';
+import { LegendItem } from '../types/xy_chart/legend/legend';
 
 describe('Chart State utils', () => {
   it('should compute and format specifications for non stacked chart', () => {

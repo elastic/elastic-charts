@@ -1,5 +1,5 @@
 import { BarGeometry, IndexedGeometry, isBarGeometry, isPointGeometry, PointGeometry } from '../rendering/rendering';
-import { Datum, Rotation } from '../../../lib/series/specs';
+import { Datum, Rotation } from './specs';
 import { Dimensions } from '../../../utils/dimensions';
 
 /** The type of tooltip to use */

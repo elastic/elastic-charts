@@ -15,7 +15,7 @@ import {
   RectAnnotationDatum,
   RectAnnotationSpec,
   Rotation,
-} from '../../../lib/series/specs';
+} from '../utils/specs';
 import { LineAnnotationStyle } from '../../../utils/themes/theme';
 import { Dimensions } from '../../../utils/dimensions';
 import { AnnotationId, AxisId, GroupId } from '../../../utils/ids';

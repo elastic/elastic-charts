@@ -1,6 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { isLineAnnotation } from '../lib/series/specs';
+import { isLineAnnotation } from '../types/xy_chart/utils/specs';
 import { AnnotationId } from '../utils/ids';
 import { AnnotationDimensions, AnnotationLineProps } from '../types/xy_chart/annotations/annotation_utils';
 import { ChartStore } from '../state/chart_state';

@@ -5,8 +5,9 @@ import { ScaleType } from '../../../utils/scales/scales';
 import { CurveType } from '../../../utils/curves';
 import { AreaGeometry, IndexedGeometry, PointGeometry, renderArea } from './rendering';
 import { computeXScale, computeYScales } from '../utils/scales';
-import { AreaSeriesSpec } from '../../../lib/series/specs';
+import { AreaSeriesSpec } from '../utils/specs';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
+
 const SPEC_ID = getSpecId('spec_1');
 const GROUP_ID = getGroupId('group_1');
 

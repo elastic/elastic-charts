@@ -1,5 +1,5 @@
 import { computeXScale } from '../utils/scales';
-import { BasicSeriesSpec } from '../../../lib/series/specs';
+import { BasicSeriesSpec } from '../utils/specs';
 import { Dimensions } from '../../../utils/dimensions';
 import { getGroupId, getSpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';

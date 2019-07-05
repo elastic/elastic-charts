@@ -1,12 +1,12 @@
 import { GeometryStyle } from '../../../types/xy_chart/rendering/rendering';
-import { Rotation } from '../../../lib/series/specs';
+import { Rotation } from '../../../types/xy_chart/utils/specs';
 import {
   AreaStyle,
   DisplayValueStyle,
   LineStyle,
   PointStyle,
-  RectStyle,
   RectBorderStyle,
+  RectStyle,
 } from '../../../utils/themes/theme';
 import { Dimensions } from '../../../utils/dimensions';
 import { GlobalKonvaElementProps } from '../globals';

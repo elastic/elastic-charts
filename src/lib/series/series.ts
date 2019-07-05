@@ -4,7 +4,7 @@ import { GroupId, SpecId } from '../../utils/ids';
 import { splitSpecsByGroupId, YBasicSeriesSpec } from './domains/y_domain';
 import { formatNonStackedDataSeriesValues } from '../../types/xy_chart/utils/nonstacked_series_utils';
 import { isEqualSeriesKey } from '../../types/xy_chart/utils/series_utils';
-import { BasicSeriesSpec, Datum, SeriesAccessors } from './specs';
+import { BasicSeriesSpec, Datum, SeriesAccessors } from '../../types/xy_chart/utils/specs';
 import { formatStackedDataSeriesValues } from '../../types/xy_chart/utils/stacked_series_utils';
 
 export interface RawDataSeriesDatum {

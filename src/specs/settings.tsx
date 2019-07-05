@@ -1,6 +1,6 @@
 import { inject } from 'mobx-react';
 import { PureComponent } from 'react';
-import { DomainRange, Position, Rendering, Rotation } from '../lib/series/specs';
+import { DomainRange, Position, Rendering, Rotation } from '../types/xy_chart/utils/specs';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { DARK_THEME } from '../utils/themes/dark_theme';
 import { BaseThemeType, mergeWithDefaultTheme, PartialTheme, Theme, BaseThemeTypes } from '../utils/themes/theme';

@@ -1,6 +1,6 @@
 import { inject } from 'mobx-react';
 import { PureComponent } from 'react';
-import { AreaSeriesSpec, HistogramModeAlignments } from '../../../lib/series/specs';
+import { AreaSeriesSpec, HistogramModeAlignments } from '../utils/specs';
 import { getGroupId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
 import { SpecProps } from '../../../specs/specs_parser';

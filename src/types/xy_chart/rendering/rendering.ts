@@ -16,7 +16,7 @@ import { CurveType, getCurveFactory } from '../../../utils/curves';
 import { LegendItem } from '../legend/legend';
 import { DataSeriesDatum } from '../../../lib/series/series';
 import { belongsToDataSeries } from '../utils/series_utils';
-import { DisplayValueSpec } from '../../../lib/series/specs';
+import { DisplayValueSpec } from '../utils/specs';
 
 export interface GeometryId {
   specId: SpecId;

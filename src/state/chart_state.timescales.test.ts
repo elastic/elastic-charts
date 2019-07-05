@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { LineSeriesSpec } from '../lib/series/specs';
+import { LineSeriesSpec } from '../types/xy_chart/utils/specs';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { mergeWithDefaultTheme } from '../utils/themes/theme';
 import { getGroupId, getSpecId } from '../utils/ids';

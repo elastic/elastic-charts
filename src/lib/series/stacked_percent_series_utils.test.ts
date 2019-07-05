@@ -1,6 +1,6 @@
 import { getSpecId } from '../../utils/ids';
 import { RawDataSeries } from './series';
-import { formatStackedDataSeriesValues } from './stacked_series_utils';
+import { formatStackedDataSeriesValues } from '../../types/xy_chart/utils/stacked_series_utils';
 
 describe('Stacked Series Utils', () => {
   const STANDARD_DATA_SET: RawDataSeries[] = [

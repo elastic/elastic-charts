@@ -7,7 +7,7 @@ import {
   Position,
   RectAnnotationSpec,
   Rotation,
-} from '../../../lib/series/specs';
+} from '../utils/specs';
 import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../utils/themes/theme';
 import { Dimensions } from '../../../utils/dimensions';
 import { AnnotationId, AxisId, getAnnotationId, getAxisId, getGroupId, GroupId } from '../../../utils/ids';

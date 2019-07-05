@@ -1,4 +1,4 @@
-import { BasicSeriesSpec, DomainRange } from '../specs';
+import { BasicSeriesSpec, DomainRange } from '../../../types/xy_chart/utils/specs';
 import { GroupId, SpecId } from '../../../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../../../utils/scales/scales';
 import { isCompleteBound, isLowerBound, isUpperBound } from '../../../types/xy_chart/utils/axis_utils';

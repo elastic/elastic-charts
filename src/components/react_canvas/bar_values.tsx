@@ -1,7 +1,7 @@
 import React from 'react';
 import { Group, Rect, Text } from 'react-konva';
 import { BarGeometry } from '../../types/xy_chart/rendering/rendering';
-import { Rotation } from '../../lib/series/specs';
+import { Rotation } from '../../types/xy_chart/utils/specs';
 import { DisplayValueStyle } from '../../utils/themes/theme';
 import { Dimensions } from '../../utils/dimensions';
 import { buildBarValueProps } from './utils/rendering_props_utils';

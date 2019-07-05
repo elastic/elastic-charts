@@ -1,5 +1,5 @@
 import { AxisTicksDimensions } from './axis_utils';
-import { AxisSpec, Position } from '../../../lib/series/specs';
+import { AxisSpec, Position } from './specs';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { LegendStyle } from '../../../utils/themes/theme';
 import { computeChartDimensions } from './dimensions';

@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Layer, Rect, Stage } from 'react-konva';
-import { isLineAnnotation, isRectAnnotation, Position } from '../../lib/series/specs';
+import { isLineAnnotation, isRectAnnotation, Position } from '../../types/xy_chart/utils/specs';
 import { LineAnnotationStyle, RectAnnotationStyle } from '../../utils/themes/theme';
 import { AnnotationId } from '../../utils/ids';
 import {
@@ -20,7 +20,7 @@ import { Grid } from './grid';
 import { LineAnnotation } from './line_annotation';
 import { LineGeometries } from './line_geometries';
 import { RectAnnotation } from './rect_annotation';
-import { isVertical } from '../../lib/axes/axis_utils';
+import { isVertical } from '../../types/xy_chart/utils/axis_utils';
 interface ReactiveChartProps {
   chartStore?: ChartStore; // FIX until we find a better way on ts mobx
 }

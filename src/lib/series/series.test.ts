@@ -10,7 +10,7 @@ import {
   RawDataSeries,
   splitSeries,
 } from './series';
-import { BasicSeriesSpec } from './specs';
+import { BasicSeriesSpec } from '../../types/xy_chart/utils/specs';
 import { formatStackedDataSeriesValues } from '../../types/xy_chart/utils/stacked_series_utils';
 import * as TestDataset from '../../utils/data_samples/test_dataset';
 

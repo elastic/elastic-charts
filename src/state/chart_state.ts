@@ -42,7 +42,7 @@ import {
   Position,
   Rendering,
   Rotation,
-} from '../lib/series/specs';
+} from '../types/xy_chart/utils/specs';
 import { formatTooltip, getSeriesTooltipValues } from '../types/xy_chart/tooltip/tooltip';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { mergeWithDefaultAnnotationLine, mergeWithDefaultAnnotationRect, Theme } from '../utils/themes/theme';

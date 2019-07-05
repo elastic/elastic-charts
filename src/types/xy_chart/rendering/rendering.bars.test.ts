@@ -4,7 +4,7 @@ import { getGroupId, getSpecId, SpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
 import { renderBars } from './rendering';
 import { computeXScale, computeYScales } from '../utils/scales';
-import { BarSeriesSpec } from '../../../lib/series/specs';
+import { BarSeriesSpec } from '../utils/specs';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 
 const SPEC_ID = getSpecId('spec_1');

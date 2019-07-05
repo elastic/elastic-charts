@@ -1,6 +1,6 @@
 import { XDomain } from '../../../lib/series/domains/x_domain';
 import { YDomain } from '../../../lib/series/domains/y_domain';
-import { AxisSpec, DomainRange, Position, AxisStyle } from '../../../lib/series/specs';
+import { AxisSpec, DomainRange, Position, AxisStyle } from './specs';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { AxisId, getAxisId, getGroupId, GroupId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';

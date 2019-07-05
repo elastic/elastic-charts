@@ -3,7 +3,7 @@ export { Chart } from './components/chart';
 export { TooltipType, TooltipValue, TooltipValueFormatter } from './types/xy_chart/utils/interactions';
 export { getAxisId, getGroupId, getSpecId, getAnnotationId } from './utils/ids';
 export { ScaleType } from './utils/scales/scales';
-export { Position, Rendering, Rotation } from './lib/series/specs';
+export { Position, Rendering, Rotation } from './types/xy_chart/utils/specs';
 export * from './utils/themes/theme';
 export { LIGHT_THEME } from './utils/themes/light_theme';
 export { DARK_THEME } from './utils/themes/dark_theme';
@@ -23,5 +23,5 @@ export {
   LineAnnotationSpec,
   RectAnnotationDatum,
   RectAnnotationSpec,
-} from './lib/series/specs';
-export { GeometryValue } from './lib/series/rendering';
+} from './types/xy_chart/utils/specs';
+export { GeometryValue } from './types/xy_chart/rendering/rendering';

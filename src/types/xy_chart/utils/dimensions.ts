@@ -1,5 +1,5 @@
 import { AxisTicksDimensions } from './axis_utils';
-import { AxisSpec, Position } from '../../../lib/series/specs';
+import { AxisSpec, Position } from './specs';
 import { Theme } from '../../../utils/themes/theme';
 import { AxisId } from '../../../utils/ids';
 import { Dimensions } from '../../../utils/dimensions';

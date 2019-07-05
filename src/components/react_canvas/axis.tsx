@@ -10,7 +10,7 @@ import {
   isHorizontal,
   isVertical,
 } from '../../types/xy_chart/utils/axis_utils';
-import { AxisSpec, Position } from '../../lib/series/specs';
+import { AxisSpec, Position } from '../../types/xy_chart/utils/specs';
 import { Theme } from '../../utils/themes/theme';
 import { Dimensions } from '../../utils/dimensions';
 

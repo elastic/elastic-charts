@@ -1,7 +1,7 @@
 import { TooltipValue } from '../utils/interactions';
 import { IndexedGeometry } from '../rendering/rendering';
 import { getColorValuesAsString } from '../../../lib/series/series';
-import { AxisSpec, BasicSeriesSpec } from '../../../lib/series/specs';
+import { AxisSpec, BasicSeriesSpec } from '../utils/specs';
 
 export function getSeriesTooltipValues(tooltipValues: TooltipValue[]): Map<string, any> {
   // map from seriesKey to tooltipValue
