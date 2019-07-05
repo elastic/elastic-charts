@@ -20,8 +20,8 @@ import { LineAnnotationStyle } from '../../../utils/themes/theme';
 import { Dimensions } from '../../../utils/dimensions';
 import { AnnotationId, AxisId, GroupId } from '../../../utils/ids';
 import { Scale, ScaleType } from '../../../utils/scales/scales';
-import { Point } from '../../../state/chart_state';
-import { computeXScaleOffset, getAxesSpecForSpecId, isHorizontalRotation } from '../../../state/utils';
+import { Point } from '../store/chart_state';
+import { computeXScaleOffset, getAxesSpecForSpecId, isHorizontalRotation } from '../store/utils';
 
 export interface AnnotationTooltipState {
   annotationType: AnnotationType;

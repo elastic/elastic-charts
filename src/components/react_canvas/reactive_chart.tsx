@@ -10,8 +10,8 @@ import {
   AnnotationLineProps,
   AnnotationRectProps,
 } from '../../types/xy_chart/annotations/annotation_utils';
-import { ChartStore, Point } from '../../state/chart_state';
-import { BrushExtent } from '../../state/utils';
+import { ChartStore, Point } from '../../types/xy_chart/store/chart_state';
+import { BrushExtent } from '../../types/xy_chart/store/utils';
 import { AreaGeometries } from './area_geometries';
 import { Axis } from './axis';
 import { BarGeometries } from './bar_geometries';

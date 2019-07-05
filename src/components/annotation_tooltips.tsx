@@ -3,7 +3,7 @@ import React from 'react';
 import { isLineAnnotation } from '../types/xy_chart/utils/specs';
 import { AnnotationId } from '../utils/ids';
 import { AnnotationDimensions, AnnotationLineProps } from '../types/xy_chart/annotations/annotation_utils';
-import { ChartStore } from '../state/chart_state';
+import { ChartStore } from '../types/xy_chart/store/chart_state';
 
 interface AnnotationTooltipProps {
   chartStore?: ChartStore;

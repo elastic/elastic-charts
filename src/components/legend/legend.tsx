@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { isVertical } from '../../types/xy_chart/utils/axis_utils';
 import { LegendItem as SeriesLegendItem } from '../../types/xy_chart/legend/legend';
-import { ChartStore } from '../../state/chart_state';
+import { ChartStore } from '../../types/xy_chart/store/chart_state';
 import { LegendItem } from './legend_item';
 
 interface LegendProps {

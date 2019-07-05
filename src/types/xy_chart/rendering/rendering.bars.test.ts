@@ -1,4 +1,4 @@
-import { computeSeriesDomains } from '../../../state/utils';
+import { computeSeriesDomains } from '../store/utils';
 import { identity } from '../../../utils/commons';
 import { getGroupId, getSpecId, SpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';

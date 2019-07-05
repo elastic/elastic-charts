@@ -1,6 +1,6 @@
-import { mergeYCustomDomainsByGroupId } from '../types/xy_chart/utils/axis_utils';
-import { IndexedGeometry } from '../types/xy_chart/rendering/rendering';
-import { DataSeriesColorsValues, findDataSeriesByColorValues, getSeriesColorMap } from '../types/xy_chart/utils/series';
+import { mergeYCustomDomainsByGroupId } from '../utils/axis_utils';
+import { IndexedGeometry } from '../rendering/rendering';
+import { DataSeriesColorsValues, findDataSeriesByColorValues, getSeriesColorMap } from '../utils/series';
 import {
   AreaSeriesSpec,
   AxisSpec,
@@ -8,12 +8,12 @@ import {
   BasicSeriesSpec,
   HistogramModeAlignments,
   LineSeriesSpec,
-} from '../types/xy_chart/utils/specs';
-import { BARCHART_1Y0G, BARCHART_1Y1G } from '../utils/data_samples/test_dataset';
-import { LIGHT_THEME } from '../utils/themes/light_theme';
-import { AxisId, getGroupId, getSpecId, SpecId } from '../utils/ids';
-import { ScaleContinuous } from '../utils/scales/scale_continuous';
-import { ScaleType } from '../utils/scales/scales';
+} from '../utils/specs';
+import { BARCHART_1Y0G, BARCHART_1Y1G } from '../../../utils/data_samples/test_dataset';
+import { LIGHT_THEME } from '../../../utils/themes/light_theme';
+import { AxisId, getGroupId, getSpecId, SpecId } from '../../../utils/ids';
+import { ScaleContinuous } from '../../../utils/scales/scale_continuous';
+import { ScaleType } from '../../../utils/scales/scales';
 import {
   computeSeriesDomains,
   computeSeriesGeometries,
@@ -28,8 +28,8 @@ import {
   mergeGeometriesIndexes,
   setBarSeriesAccessors,
   updateDeselectedDataSeries,
-} from './utils';
-import { LegendItem } from '../types/xy_chart/legend/legend';
+} from '../store/utils';
+import { LegendItem } from '../legend/legend';
 
 describe('Chart State utils', () => {
   it('should compute and format specifications for non stacked chart', () => {

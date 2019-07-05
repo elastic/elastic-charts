@@ -1,14 +1,14 @@
-import { BarGeometry } from '../../types/xy_chart/rendering/rendering';
-import { computeXScale, computeYScales } from '../../types/xy_chart/utils/scales';
-import { DataSeriesColorsValues } from '../../types/xy_chart/utils/series';
-import { BarSeriesSpec, BasicSeriesSpec, RectAnnotationSpec } from '../../types/xy_chart/utils/specs';
-import { getAnnotationId, getGroupId, getSpecId } from '../../utils/ids';
-import { TooltipType } from '../../types/xy_chart/utils/interactions';
-import { ScaleContinuous } from '../../utils/scales/scale_continuous';
-import { ScaleType } from '../../utils/scales/scales';
-import { ChartStore } from '../chart_state';
-import { computeSeriesDomains } from '../utils';
-import { ScaleBand } from '../../utils/scales/scale_band';
+import { BarGeometry } from '../rendering/rendering';
+import { computeXScale, computeYScales } from '../utils/scales';
+import { DataSeriesColorsValues } from '../utils/series';
+import { BarSeriesSpec, BasicSeriesSpec, RectAnnotationSpec } from '../utils/specs';
+import { getAnnotationId, getGroupId, getSpecId } from '../../../utils/ids';
+import { TooltipType } from '../utils/interactions';
+import { ScaleContinuous } from '../../../utils/scales/scale_continuous';
+import { ScaleType } from '../../../utils/scales/scales';
+import { ChartStore } from './chart_state';
+import { computeSeriesDomains } from './utils';
+import { ScaleBand } from '../../../utils/scales/scale_band';
 
 const SPEC_ID = getSpecId('spec_1');
 const GROUP_ID = getGroupId('group_1');

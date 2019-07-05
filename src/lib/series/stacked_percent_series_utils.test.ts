@@ -1,5 +1,5 @@
 import { getSpecId } from '../../utils/ids';
-import { RawDataSeries } from './series';
+import { RawDataSeries } from '../../types/xy_chart/utils/series';
 import { formatStackedDataSeriesValues } from '../../types/xy_chart/utils/stacked_series_utils';
 
 describe('Stacked Series Utils', () => {

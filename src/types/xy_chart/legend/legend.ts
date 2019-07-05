@@ -1,4 +1,4 @@
-import { getAxesSpecForSpecId } from '../../../state/utils';
+import { getAxesSpecForSpecId } from '../store/utils';
 import { identity } from '../../../utils/commons';
 import { AxisId, SpecId } from '../../../utils/ids';
 import {

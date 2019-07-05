@@ -1,6 +1,6 @@
 /* eslint @typescript-eslint/no-object-literal-type-assertion: off */
 
-import { computeSeriesDomains } from '../../../state/utils';
+import { computeSeriesDomains } from '../store/utils';
 import { getGroupId, getSpecId, SpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
 import { CurveType } from '../../../utils/curves';

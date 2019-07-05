@@ -12,7 +12,7 @@ import {
   ElementClickListener,
   ElementOverListener,
   LegendItemListener,
-} from '../state/chart_state';
+} from '../types/xy_chart/store/chart_state';
 
 export const DEFAULT_TOOLTIP_TYPE = TooltipType.VerticalCursor;
 export const DEFAULT_TOOLTIP_SNAP = true;

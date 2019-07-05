@@ -1,7 +1,7 @@
-import { isVertical } from '../types/xy_chart/utils/axis_utils';
-import { CurveType } from '../utils/curves';
-import { mergeXDomain, XDomain } from '../types/xy_chart/domains/x_domain';
-import { mergeYDomain, YDomain } from '../types/xy_chart/domains/y_domain';
+import { isVertical } from '../utils/axis_utils';
+import { CurveType } from '../../../utils/curves';
+import { mergeXDomain, XDomain } from '../domains/x_domain';
+import { mergeYDomain, YDomain } from '../domains/y_domain';
 import {
   AreaGeometry,
   BarGeometry,
@@ -12,8 +12,8 @@ import {
   renderArea,
   renderBars,
   renderLine,
-} from '../types/xy_chart/rendering/rendering';
-import { computeXScale, computeYScales, countBarsInCluster } from '../types/xy_chart/utils/scales';
+} from '../rendering/rendering';
+import { computeXScale, computeYScales, countBarsInCluster } from '../utils/scales';
 import {
   DataSeries,
   DataSeriesColorsValues,
@@ -22,7 +22,7 @@ import {
   getColorValuesAsString,
   getFormattedDataseries,
   getSplittedSeries,
-} from '../types/xy_chart/utils/series';
+} from '../utils/series';
 import {
   AreaSeriesSpec,
   AxisSpec,
@@ -35,15 +35,15 @@ import {
   isLineSeriesSpec,
   LineSeriesSpec,
   Rotation,
-} from '../types/xy_chart/utils/specs';
-import { ColorConfig, Theme } from '../utils/themes/theme';
-import { identity, mergePartial } from '../utils/commons';
-import { Dimensions } from '../utils/dimensions';
-import { Domain } from '../utils/domain';
-import { AxisId, GroupId, SpecId } from '../utils/ids';
-import { Scale } from '../utils/scales/scales';
+} from '../utils/specs';
+import { ColorConfig, Theme } from '../../../utils/themes/theme';
+import { identity, mergePartial } from '../../../utils/commons';
+import { Dimensions } from '../../../utils/dimensions';
+import { Domain } from '../../../utils/domain';
+import { AxisId, GroupId, SpecId } from '../../../utils/ids';
+import { Scale } from '../../../utils/scales/scales';
 import { SeriesDomainsAndData } from './chart_state';
-import { LegendItem } from '../types/xy_chart/legend/legend';
+import { LegendItem } from '../legend/legend';
 
 const MAX_ANIMATABLE_BARS = 300;
 const MAX_ANIMATABLE_LINES_AREA_POINTS = 600;

@@ -1,5 +1,5 @@
-import { LegendItem } from '../types/xy_chart/legend/legend';
-import { GeometryValue, IndexedGeometry } from '../types/xy_chart/rendering/rendering';
+import { LegendItem } from '../legend/legend';
+import { GeometryValue, IndexedGeometry } from '../rendering/rendering';
 import {
   AnnotationDomainTypes,
   AnnotationSpec,
@@ -8,14 +8,14 @@ import {
   BarSeriesSpec,
   Position,
   RectAnnotationSpec,
-} from '../types/xy_chart/utils/specs';
-import { LIGHT_THEME } from '../utils/themes/light_theme';
-import { mergeWithDefaultTheme } from '../utils/themes/theme';
-import { getAnnotationId, getAxisId, getGroupId, getSpecId } from '../utils/ids';
-import { TooltipType, TooltipValue } from '../types/xy_chart/utils/interactions';
-import { ScaleBand } from '../utils/scales/scale_band';
-import { ScaleContinuous } from '../utils/scales/scale_continuous';
-import { ScaleType } from '../utils/scales/scales';
+} from '../utils/specs';
+import { LIGHT_THEME } from '../../../utils/themes/light_theme';
+import { mergeWithDefaultTheme } from '../../../utils/themes/theme';
+import { getAnnotationId, getAxisId, getGroupId, getSpecId } from '../../../utils/ids';
+import { TooltipType, TooltipValue } from '../utils/interactions';
+import { ScaleBand } from '../../../utils/scales/scale_band';
+import { ScaleContinuous } from '../../../utils/scales/scale_continuous';
+import { ScaleType } from '../../../utils/scales/scales';
 import { ChartStore } from './chart_state';
 
 describe('Chart Store', () => {

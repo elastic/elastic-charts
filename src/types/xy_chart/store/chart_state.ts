@@ -6,11 +6,11 @@ import {
   computeAxisTicksDimensions,
   getAxisTicksPositions,
   mergeYCustomDomainsByGroupId,
-} from '../types/xy_chart/utils/axis_utils';
-import { CanvasTextBBoxCalculator } from '../utils/bbox/canvas_text_bbox_calculator';
-import { XDomain } from '../types/xy_chart/domains/x_domain';
-import { YDomain } from '../types/xy_chart/domains/y_domain';
-import { computeLegend, LegendItem } from '../types/xy_chart/legend/legend';
+} from '../utils/axis_utils';
+import { CanvasTextBBoxCalculator } from '../../../utils/bbox/canvas_text_bbox_calculator';
+import { XDomain } from '../domains/x_domain';
+import { YDomain } from '../domains/y_domain';
+import { computeLegend, LegendItem } from '../legend/legend';
 import {
   AreaGeometry,
   BarGeometry,
@@ -19,15 +19,15 @@ import {
   isPointOnGeometry as isPointerOnGeometry,
   LineGeometry,
   PointGeometry,
-} from '../types/xy_chart/rendering/rendering';
-import { countBarsInCluster } from '../types/xy_chart/utils/scales';
+} from '../rendering/rendering';
+import { countBarsInCluster } from '../utils/scales';
 import {
   DataSeriesColorsValues,
   findDataSeriesByColorValues,
   FormattedDataSeries,
   getSeriesColorMap,
   RawDataSeries,
-} from '../types/xy_chart/utils/series';
+} from '../utils/series';
 import {
   AnnotationSpec,
   AnnotationTypes,
@@ -42,15 +42,15 @@ import {
   Position,
   Rendering,
   Rotation,
-} from '../types/xy_chart/utils/specs';
-import { formatTooltip, getSeriesTooltipValues } from '../types/xy_chart/tooltip/tooltip';
-import { LIGHT_THEME } from '../utils/themes/light_theme';
-import { mergeWithDefaultAnnotationLine, mergeWithDefaultAnnotationRect, Theme } from '../utils/themes/theme';
-import { compareByValueAsc } from '../utils/commons';
-import { computeChartDimensions } from '../types/xy_chart/utils/dimensions';
-import { Dimensions } from '../utils/dimensions';
-import { Domain } from '../utils/domain';
-import { AnnotationId, AxisId, GroupId, SpecId } from '../utils/ids';
+} from '../utils/specs';
+import { formatTooltip, getSeriesTooltipValues } from '../tooltip/tooltip';
+import { LIGHT_THEME } from '../../../utils/themes/light_theme';
+import { mergeWithDefaultAnnotationLine, mergeWithDefaultAnnotationRect, Theme } from '../../../utils/themes/theme';
+import { compareByValueAsc } from '../../../utils/commons';
+import { computeChartDimensions } from '../utils/dimensions';
+import { Dimensions } from '../../../utils/dimensions';
+import { Domain } from '../../../utils/domain';
+import { AnnotationId, AxisId, GroupId, SpecId } from '../../../utils/ids';
 import {
   areIndexedGeometryArraysEquals,
   getValidXPosition,
@@ -61,19 +61,15 @@ import {
   TooltipType,
   TooltipValue,
   TooltipValueFormatter,
-} from '../types/xy_chart/utils/interactions';
-import { Scale, ScaleType } from '../utils/scales/scales';
-import { DEFAULT_TOOLTIP_SNAP, DEFAULT_TOOLTIP_TYPE } from '../specs/settings';
+} from '../utils/interactions';
+import { Scale, ScaleType } from '../../../utils/scales/scales';
+import { DEFAULT_TOOLTIP_SNAP, DEFAULT_TOOLTIP_TYPE } from '../../../specs/settings';
 import {
   AnnotationDimensions,
   computeAnnotationDimensions,
   computeAnnotationTooltipState,
-} from '../types/xy_chart/annotations/annotation_utils';
-import {
-  getCursorBandPosition,
-  getCursorLinePosition,
-  getTooltipPosition,
-} from '../types/xy_chart/crosshair/crosshair_utils';
+} from '../annotations/annotation_utils';
+import { getCursorBandPosition, getCursorLinePosition, getTooltipPosition } from '../crosshair/crosshair_utils';
 import {
   BrushExtent,
   computeBrushExtent,

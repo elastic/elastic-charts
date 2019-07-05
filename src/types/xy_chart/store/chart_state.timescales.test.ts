@@ -1,9 +1,9 @@
 import { DateTime } from 'luxon';
-import { LineSeriesSpec } from '../types/xy_chart/utils/specs';
-import { LIGHT_THEME } from '../utils/themes/light_theme';
-import { mergeWithDefaultTheme } from '../utils/themes/theme';
-import { getGroupId, getSpecId } from '../utils/ids';
-import { ScaleType } from '../utils/scales/scales';
+import { LineSeriesSpec } from '../utils/specs';
+import { LIGHT_THEME } from '../../../utils/themes/light_theme';
+import { mergeWithDefaultTheme } from '../../../utils/themes/theme';
+import { getGroupId, getSpecId } from '../../../utils/ids';
+import { ScaleType } from '../../../utils/scales/scales';
 import { ChartStore } from './chart_state';
 
 describe('Render chart', () => {
