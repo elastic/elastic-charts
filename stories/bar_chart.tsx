@@ -874,19 +874,16 @@ storiesOf('Bar Chart', module)
       0,
     );
 
-    const theme = mergeWithDefaultTheme(
-      {
-        scales: {
-          barsPadding: number('bars padding', 0.25, {
-            range: true,
-            min: 0,
-            max: 1,
-            step: 0.1,
-          }),
-        },
+    const theme = {
+      scales: {
+        barsPadding: number('bars padding', 0.25, {
+          range: true,
+          min: 0,
+          max: 1,
+          step: 0.1,
+        }),
       },
-      LIGHT_THEME,
-    );
+    };
 
     return (
       <Chart className={'story-chart'}>
@@ -926,19 +923,16 @@ storiesOf('Bar Chart', module)
       0,
     );
 
-    const theme = mergeWithDefaultTheme(
-      {
-        scales: {
-          barsPadding: number('bars padding', 0.25, {
-            range: true,
-            min: 0,
-            max: 1,
-            step: 0.1,
-          }),
-        },
+    const theme = {
+      scales: {
+        barsPadding: number('bars padding', 0.25, {
+          range: true,
+          min: 0,
+          max: 1,
+          step: 0.1,
+        }),
       },
-      LIGHT_THEME,
-    );
+    };
 
     return (
       <Chart className={'story-chart'}>
