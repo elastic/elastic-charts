@@ -56,6 +56,7 @@ import {
   getValidYPosition,
   isCrosshairTooltipType,
   isFollowTooltipType,
+  isNoneTooltipType,
   TooltipType,
   TooltipValue,
   TooltipValueFormatter,
@@ -876,6 +877,12 @@ export class ChartStore {
     // console.log({ seriesGeometries });
     this.geometries = seriesGeometries.geometries;
     this.xScale = seriesGeometries.scales.xScale;
+
+    const isSingleValueXScale = this.xScale.isSingleValue();
+    if (isSingleValueXScale && !isNoneTooltipType(this.tooltipType.get())) {
+      this.tooltipType.set(TooltipType.Follow);
+    }
+
     this.yScales = seriesGeometries.scales.yScales;
     this.geometriesIndex = seriesGeometries.geometriesIndex;
     this.geometriesIndexKeys = [...this.geometriesIndex.keys()].sort(compareByValueAsc);
