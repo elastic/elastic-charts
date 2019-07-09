@@ -547,4 +547,68 @@ storiesOf('Annotations', module)
         />
       </Chart>
     );
+  })
+  .add('[test] line annotation single value histogram', () => {
+    const dataValues = [
+      {
+        dataValue: 3.5,
+      },
+    ];
+
+    const style = {
+      line: {
+        strokeWidth: 3,
+        stroke: '#f00',
+        opacity: 1,
+      },
+      details: {
+        fontSize: 12,
+        fontFamily: 'Arial',
+        fontStyle: 'bold',
+        fill: 'gray',
+        padding: 0,
+      },
+    };
+
+    const chartRotation = select<Rotation>(
+      'chartRotation',
+      {
+        '0 deg': 0,
+        '90 deg': 90,
+        '-90 deg': -90,
+        '180 deg': 180,
+      },
+      0,
+    );
+
+    const isBottom = boolean('x domain axis is bottom', true);
+    const axisPosition = isBottom ? Position.Bottom : Position.Top;
+
+    const xDomain = {
+      minInterval: 1,
+      // max: 4,
+    };
+
+    return (
+      <Chart className={'story-chart'}>
+        <Settings debug={boolean('debug', false)} rotation={chartRotation} xDomain={xDomain} />
+        <LineAnnotation
+          annotationId={getAnnotationId('anno_1')}
+          domainType={AnnotationDomainTypes.XDomain}
+          dataValues={dataValues}
+          style={style}
+        />
+        <Axis id={getAxisId('horizontal')} position={axisPosition} title={'x-domain axis'} />
+        {/* <Axis id={getAxisId('vertical')} title={'y-domain axis'} position={Position.Left} /> */}
+        <BarSeries
+          enableHistogramMode={true}
+          id={getSpecId('bars')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          data={[{ x: 3, y: 2 }]}
+        />
+      </Chart>
+    );
   });

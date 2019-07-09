@@ -50,6 +50,7 @@ export function computeXScale(
   minRange: number,
   maxRange: number,
   barsPadding?: number,
+  enableHistogramMode?: boolean,
 ): Scale {
   const { scaleType, minInterval, domain, isBandScale, timeZone } = xDomain;
   const rangeDiff = Math.abs(maxRange - minRange);
@@ -60,20 +61,30 @@ export function computeXScale(
     return new ScaleBand(domain, [minRange, maxRange], bandwidth, barsPadding);
   } else {
     if (isBandScale) {
-      const intervalCount = (domain[1] - domain[0]) / minInterval;
-      const bandwidth = rangeDiff / (intervalCount + 1);
+      const isSingleValueHistogram = enableHistogramMode && domain[1] - domain[0] === 0;
+      const domainMin = domain[0];
+      const domainMax = isSingleValueHistogram ? domain[0] + minInterval : domain[1];
+      const domainForScale = [domainMin, domainMax];
+
+      const intervalCount = (domainForScale[1] - domainForScale[0]) / minInterval;
+      const intervalCountOffest = isSingleValueHistogram ? 0 : 1;
+      const bandwidth = rangeDiff / (intervalCount + intervalCountOffest);
       const start = isInverse ? minRange - bandwidth : minRange;
       const end = isInverse ? maxRange : maxRange - bandwidth;
-      return new ScaleContinuous(
+      const rangeEnd = isSingleValueHistogram ? end + bandwidth : end;
+
+      const scale = new ScaleContinuous(
         scaleType,
-        domain,
-        [start, end],
+        domainForScale,
+        [start, rangeEnd],
         bandwidth / totalBarsInCluster,
         minInterval,
         timeZone,
         totalBarsInCluster,
         barsPadding,
       );
+
+      return scale;
     } else {
       return new ScaleContinuous(
         scaleType,
