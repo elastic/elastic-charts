@@ -70,11 +70,11 @@ class LegendItemComponent extends React.Component<LegendItemProps, LegendItemSta
     // TODO add color picker
     const iconType = isSeriesVisible ? 'dot' : 'eyeClosed';
     const iconColor = isSeriesVisible ? color : undefined;
-    const ariaLabel = isSeriesVisible ? 'series color' : 'series hidden';
+    const title = isSeriesVisible ? 'series color' : 'series hidden';
     const viewBox = isSeriesVisible ? undefined : '-3 -3 22 22';
     return (
-      <div className="echLegendItem__color">
-        <Icon type={iconType} aria-label={ariaLabel} color={iconColor} onClick={colorClickAction} viewBox={viewBox} />
+      <div className="echLegendItem__color" aria-label={title} title={title}>
+        <Icon type={iconType} color={iconColor} onClick={colorClickAction} viewBox={viewBox} />
       </div>
     );
   }
