@@ -22,6 +22,8 @@ import {
   getSeriesKey,
   getFormattedDataseries,
   getSplittedSeries,
+  BASE_GROUP_KEY,
+  getGroupKey,
 } from '../lib/series/series';
 import {
   AreaSeriesSpec,
@@ -111,7 +113,7 @@ export function computeSeriesDomains(
   customXDomain?: DomainRange | Domain,
   deselectedDataSeries?: DataSeriesValues[] | null,
 ): SeriesDomainsAndData {
-  const { splittedSeries, xValues } = getSplittedSeries(seriesSpecs, deselectedDataSeries);
+  const { splittedSeries, xValues, seriesColors } = getSplittedSeries(seriesSpecs, deselectedDataSeries);
   const splittedDataSeries = [...splittedSeries.values()];
   const specsArray = [...seriesSpecs.values()];
 
@@ -125,6 +127,7 @@ export function computeSeriesDomains(
     yDomain,
     splittedDataSeries,
     formattedDataSeries,
+    seriesColors,
   };
 }
 
@@ -330,6 +333,24 @@ export function computeXScaleOffset(
   }
 }
 
+function getSeriesColor(
+  seriesColorsMap: Map<string, string>,
+  seriesKey: string,
+  group: string,
+  defaultColor: string,
+): string {
+  const groupKey = getGroupKey(group);
+  if (group && group !== BASE_GROUP_KEY) {
+    const color = seriesColorsMap.get(groupKey);
+
+    if (color) {
+      return color;
+    }
+  }
+
+  return seriesColorsMap.get(seriesKey) || defaultColor;
+}
+
 export function renderGeometries(
   indexOffset: number,
   clusteredCount: number,
@@ -377,7 +398,7 @@ export function renderGeometries(
     }
 
     for (const [group, data] of ds.data) {
-      const color = seriesColorsMap.get(ds.seriesKey) || 'blue';
+      const color = getSeriesColor(seriesColorsMap, ds.seriesKey, group, defaultColor);
 
       if (isBarSeriesSpec(spec)) {
         const shift = isStacked ? indexOffset : indexOffset + i;
@@ -412,7 +433,6 @@ export function renderGeometries(
           ds.keys,
           displayValueSettings,
           barSeriesStyle,
-          spec.groupAccessors,
         );
         barGeometriesIndex = mergeGeometriesIndexes(barGeometriesIndex, renderedBars.indexedGeometries);
         bars.push(...renderedBars.barGeometries);

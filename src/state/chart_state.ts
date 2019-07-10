@@ -92,6 +92,7 @@ export interface SeriesDomainsAndData {
     stacked: FormattedDataSeries[];
     nonStacked: FormattedDataSeries[];
   };
+  seriesColors: Map<string, DataSeriesValues>;
 }
 
 export type ElementClickListener = (values: GeometryValue[]) => void;
@@ -784,10 +785,14 @@ export class ChartStore {
     const updatedCustomSeriesColors = getUpdatedCustomSeriesColors(this.seriesSpecs);
     this.customSeriesColors = new Map([...this.customSeriesColors, ...updatedCustomSeriesColors]);
 
-    this.seriesColorMap = getSeriesColorMap(new Map(), this.chartTheme.colors, this.customSeriesColors);
+    this.seriesColorMap = getSeriesColorMap(
+      seriesDomains.seriesColors,
+      this.chartTheme.colors,
+      this.customSeriesColors,
+    );
 
     this.legendItems = computeLegend(
-      new Map(),
+      seriesDomains.seriesColors,
       this.seriesColorMap,
       this.seriesSpecs,
       this.chartTheme.colors.defaultVizColor,

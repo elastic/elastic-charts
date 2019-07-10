@@ -454,6 +454,9 @@ storiesOf('Stylings', module)
             (d) => {
               return d && d.yAccessor === 'y1' && d.y1 && d.y1 > 6 ? 'nick' : null;
             },
+            (d) => {
+              return d && d.yAccessor === 'y1' && d.y1 && d.y1 > 4 ? 'ben' : null;
+            },
           ]}
           data={TestDatasets.BARCHART_2Y2G}
         />

@@ -209,7 +209,6 @@ export function renderBars(
   seriesKey: any[],
   displayValueSettings?: DisplayValueSpec,
   seriesStyle?: CustomBarSeriesStyle,
-  groupAccessors?: (Accessor | AccessorFn<RawDataSeriesDatum>)[],
 ): RenderBarsGeometry {
   const indexedGeometries = new Map<any, IndexedGeometry[]>();
   const xDomain = xScale.domain;
@@ -282,13 +281,6 @@ export function renderBars(
             isValueContainedInElement: displayValueSettings.isValueContainedInElement,
           }
         : undefined;
-
-    if (groupAccessors) {
-      const [colorGroup] = getAccessorValues(datum, groupAccessors);
-      if (colorGroup) {
-        color = colorGroup;
-      }
-    }
 
     const barGeometry: BarGeometry = {
       displayValue,
