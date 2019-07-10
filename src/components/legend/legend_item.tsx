@@ -52,8 +52,11 @@ class LegendItemComponent extends React.Component<LegendItemProps, LegendItemSta
     const isSelected = legendItemKey === this.props.chartStore!.selectedLegendItemKey.get();
     const hasDisplayValue = this.props.chartStore!.showLegendDisplayValue.get();
     const hasTitleClickListener = Boolean(this.props.chartStore!.onLegendItemClickListener);
+    const itemClasses = classNames('echLegendItem', {
+      'echLegendItem-isHidden': !isSeriesVisible,
+    });
     return (
-      <div className="echLegendItem" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+      <div className={itemClasses} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
         {this.renderColor(this.toggleColorPicker, color, isSeriesVisible)}
         {this.renderTitle(label, onTitleClick, hasTitleClickListener, isSelected, hasDisplayValue)}
         {this.renderDisplayValue(displayValue, showLegendDisplayValue, isSeriesVisible)}
