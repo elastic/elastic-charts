@@ -1,6 +1,6 @@
 import { XDomain } from '../series/domains/x_domain';
 import { YDomain } from '../series/domains/y_domain';
-import { AxisSpec, DomainRange, Position } from '../series/specs';
+import { AxisSpec, DomainRange, Position, AxisStyle } from '../series/specs';
 import { LIGHT_THEME } from '../themes/light_theme';
 import { AxisId, getAxisId, getGroupId, GroupId } from '../utils/ids';
 import { ScaleType } from '../utils/scales/scales';
@@ -28,6 +28,7 @@ import {
   isVertical,
   isYDomain,
   mergeDomainsByGroupId,
+  getAxisTickLabelPadding,
 } from './axis_utils';
 import { CanvasTextBBoxCalculator } from './canvas_text_bbox_calculator';
 import { SvgTextBBoxCalculator } from './svg_text_bbox_calculator';
@@ -205,36 +206,90 @@ describe('Axis computational utils', () => {
     expect(xScale).toBeDefined();
   });
 
-  test('should compute available ticks', () => {
-    const scale = getScaleForAxisSpec(verticalAxisSpec, xDomain, [yDomain], 0, 0, 100, 0);
-    const axisPositions = getAvailableTicks(verticalAxisSpec, scale!, 0, false);
-    const expectedAxisPositions = [
-      { label: '0', position: 100, value: 0 },
-      { label: '0.1', position: 90, value: 0.1 },
-      { label: '0.2', position: 80, value: 0.2 },
-      { label: '0.3', position: 70, value: 0.3 },
-      { label: '0.4', position: 60, value: 0.4 },
-      { label: '0.5', position: 50, value: 0.5 },
-      { label: '0.6', position: 40, value: 0.6 },
-      { label: '0.7', position: 30, value: 0.7 },
-      { label: '0.8', position: 20, value: 0.8 },
-      { label: '0.9', position: 10, value: 0.9 },
-      { label: '1', position: 0, value: 1 },
-    ];
-    expect(axisPositions).toEqual(expectedAxisPositions);
+  describe('getAvailableTicks', () => {
+    test('should compute to end of domain when histogram mode not enabled', () => {
+      const enableHistogramMode = false;
+      const scale = getScaleForAxisSpec(verticalAxisSpec, xDomain, [yDomain], 0, 0, 100, 0);
+      const axisPositions = getAvailableTicks(verticalAxisSpec, scale!, 0, enableHistogramMode);
+      const expectedAxisPositions = [
+        { label: '0', position: 100, value: 0 },
+        { label: '0.1', position: 90, value: 0.1 },
+        { label: '0.2', position: 80, value: 0.2 },
+        { label: '0.3', position: 70, value: 0.3 },
+        { label: '0.4', position: 60, value: 0.4 },
+        { label: '0.5', position: 50, value: 0.5 },
+        { label: '0.6', position: 40, value: 0.6 },
+        { label: '0.7', position: 30, value: 0.7 },
+        { label: '0.8', position: 20, value: 0.8 },
+        { label: '0.9', position: 10, value: 0.9 },
+        { label: '1', position: 0, value: 1 },
+      ];
+      expect(axisPositions).toEqual(expectedAxisPositions);
+    });
 
-    // histogram mode axis ticks should add an additional tick
-    const xBandDomain: XDomain = {
-      type: 'xDomain',
-      scaleType: ScaleType.Linear,
-      domain: [0, 100],
-      isBandScale: true,
-      minInterval: 10,
-    };
-    const xScale = getScaleForAxisSpec(horizontalAxisSpec, xBandDomain, [yDomain], 1, 0, 100, 0);
-    const histogramAxisPositions = getAvailableTicks(horizontalAxisSpec, xScale!, 1, true);
-    const histogramTickLabels = histogramAxisPositions.map((tick: AxisTick) => tick.label);
-    expect(histogramTickLabels).toEqual(['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100', '110']);
+    test('should extend ticks to domain + minInterval in histogram mode for linear scale', () => {
+      const enableHistogramMode = true;
+      const xBandDomain: XDomain = {
+        type: 'xDomain',
+        scaleType: ScaleType.Linear,
+        domain: [0, 100],
+        isBandScale: true,
+        minInterval: 10,
+      };
+      const xScale = getScaleForAxisSpec(horizontalAxisSpec, xBandDomain, [yDomain], 1, 0, 100, 0);
+      const histogramAxisPositions = getAvailableTicks(horizontalAxisSpec, xScale!, 1, enableHistogramMode);
+      const histogramTickLabels = histogramAxisPositions.map(({ label }: AxisTick) => label);
+      expect(histogramTickLabels).toEqual(['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100', '110']);
+    });
+
+    test('should extend ticks to domain + minInterval in histogram mode for time scale', () => {
+      const enableHistogramMode = true;
+      const xBandDomain: XDomain = {
+        type: 'xDomain',
+        scaleType: ScaleType.Time,
+        domain: [1560438420000, 1560438510000],
+        isBandScale: true,
+        minInterval: 90000,
+      };
+      const xScale = getScaleForAxisSpec(horizontalAxisSpec, xBandDomain, [yDomain], 1, 0, 100, 0);
+      const histogramAxisPositions = getAvailableTicks(horizontalAxisSpec, xScale!, 1, enableHistogramMode);
+      const histogramTickValues = histogramAxisPositions.map(({ value }: AxisTick) => value);
+
+      const expectedTickValues = [
+        1560438420000,
+        1560438435000,
+        1560438450000,
+        1560438465000,
+        1560438480000,
+        1560438495000,
+        1560438510000,
+        1560438525000,
+        1560438540000,
+        1560438555000,
+        1560438570000,
+        1560438585000,
+        1560438600000,
+      ];
+
+      expect(histogramTickValues).toEqual(expectedTickValues);
+    });
+
+    test('should extend ticks to domain + minInterval in histogram mode for a scale with single datum', () => {
+      const enableHistogramMode = true;
+      const xBandDomain: XDomain = {
+        type: 'xDomain',
+        scaleType: ScaleType.Time,
+        domain: [1560438420000, 1560438420000], // a single datum scale will have the same value for domain start & end
+        isBandScale: true,
+        minInterval: 90000,
+      };
+      const xScale = getScaleForAxisSpec(horizontalAxisSpec, xBandDomain, [yDomain], 1, 0, 100, 0);
+      const histogramAxisPositions = getAvailableTicks(horizontalAxisSpec, xScale!, 1, enableHistogramMode);
+      const histogramTickValues = histogramAxisPositions.map(({ value }: AxisTick) => value);
+      const expectedTickValues = [1560438420000, 1560438510000];
+
+      expect(histogramTickValues).toEqual(expectedTickValues);
+    });
   });
   test('should compute visible ticks for a vertical axis', () => {
     const allTicks = [
@@ -458,7 +513,7 @@ describe('Axis computational utils', () => {
   });
   test('should get max bbox dimensions for a tick in comparison to previous values', () => {
     const bboxCalculator = new CanvasTextBBoxCalculator();
-    const reducer = getMaxBboxDimensions(bboxCalculator, 16, 'Arial', 0);
+    const reducer = getMaxBboxDimensions(bboxCalculator, 16, 'Arial', 0, 1);
 
     const accWithGreaterValues = {
       maxLabelBboxWidth: 100,
@@ -1271,5 +1326,25 @@ describe('Axis computational utils', () => {
 
     expect(isBounded(lowerBounded)).toBe(true);
     expect(isBounded(upperBounded)).toBe(true);
+  });
+  test('should not allow negative padding', () => {
+    const negativePadding = -2;
+    // value canvas_text_bbox_calculator changes negative values is 1
+    const positivePadding = 1;
+
+    const bboxCalculator = new CanvasTextBBoxCalculator();
+    const negativeReducer = getMaxBboxDimensions(bboxCalculator, 16, 'Arial', 0, negativePadding);
+    const positiveReducer = getMaxBboxDimensions(bboxCalculator, 16, 'Arial', 0, positivePadding);
+
+    expect(JSON.stringify(negativeReducer)).toEqual(JSON.stringify(positiveReducer));
+  });
+  test('should expect axisSpec.style.tickLabelPadding if specified', () => {
+    const axisSpecStyle: AxisStyle = {
+      tickLabelPadding: 2,
+    };
+
+    const axisConfigTickLabelPadding = 1;
+
+    expect(getAxisTickLabelPadding(axisConfigTickLabelPadding, axisSpecStyle)).toEqual(2);
   });
 });

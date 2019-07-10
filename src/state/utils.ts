@@ -99,6 +99,40 @@ export function getUpdatedCustomSeriesColors(seriesSpecs: Map<SpecId, BasicSerie
   return updatedCustomSeriesColors;
 }
 
+export function getLastValues(formattedDataSeries: {
+  stacked: FormattedDataSeries[];
+  nonStacked: FormattedDataSeries[];
+}): Map<string, number> {
+  const lastValues = new Map<string, number>();
+
+  // we need to get the latest
+  formattedDataSeries.stacked.forEach((ds) => {
+    ds.dataSeries.forEach((series) => {
+      for (const [, data] of series.data) {
+        if (data.length > 0) {
+          const last = data[data.length - 1];
+          if (last !== null && last.initialY1 !== null) {
+            lastValues.set(series.seriesKey, last.initialY1);
+          }
+        }
+      }
+    });
+  });
+  formattedDataSeries.nonStacked.forEach((ds) => {
+    ds.dataSeries.forEach((series) => {
+      for (const [, data] of series.data) {
+        if (data.length > 0) {
+          const last = data[data.length - 1];
+          if (last !== null && last.initialY1 !== null) {
+            lastValues.set(series.seriesKey, last.initialY1);
+          }
+        }
+      }
+    });
+  });
+  return lastValues;
+}
+
 /**
  *
  * @param seriesSpecs
@@ -122,12 +156,24 @@ export function computeSeriesDomains(
 
   const formattedDataSeries = getFormattedDataseries(specsArray, splittedSeries);
 
+  // we need to get the last values from the formatted dataseries
+  // because we change the format if we are on percentage mode
+  const lastValues = getLastValues(formattedDataSeries);
+  const updatedSeriesColors = new Map<string, DataSeriesValues>();
+  seriesColors.forEach((value, key) => {
+    const lastValue = lastValues.get(key);
+    const updatedColorSet = {
+      ...value,
+      lastValue,
+    };
+    updatedSeriesColors.set(key, updatedColorSet);
+  });
   return {
     xDomain,
     yDomain,
     splittedDataSeries,
     formattedDataSeries,
-    seriesColors,
+    seriesColors: updatedSeriesColors,
   };
 }
 

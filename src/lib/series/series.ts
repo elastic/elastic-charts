@@ -234,12 +234,18 @@ export function getFormattedDataseries(
   }[] = [];
 
   specsByGroupIdsEntries.forEach(([groupId, groupSpecs]) => {
+    const { isPercentageStack } = groupSpecs;
     // format stacked data series
     const stackedDataSeries = getRawDataSeries(groupSpecs.stacked, dataSeries);
+    const stackedDataSeriesValues = formatStackedDataSeriesValues(
+      stackedDataSeries.rawDataSeries,
+      false,
+      isPercentageStack,
+    );
     stackedFormattedDataSeries.push({
       groupId,
       counts: stackedDataSeries.counts,
-      dataSeries: formatStackedDataSeriesValues(stackedDataSeries.rawDataSeries, false),
+      dataSeries: stackedDataSeriesValues,
     });
 
     // format non stacked data series
@@ -320,12 +326,9 @@ export function getSplittedSeries(
     splittedSeries.set(specId, currentRawDataSeries);
 
     dataSeries.colorSeriesKeys.forEach((key) => {
-      const lastValue = dataSeries.splitSeriesLastValues.get(key);
-
       seriesColors.set(key, {
         specId,
         specSortIndex: spec.sortIndex,
-        lastValue,
       });
     });
 
