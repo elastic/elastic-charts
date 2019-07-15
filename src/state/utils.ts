@@ -24,6 +24,7 @@ import {
   getSplittedSeries,
   BASE_GROUP_KEY,
   getGroupKey,
+  CustomSeriesColor,
 } from '../lib/series/series';
 import {
   AreaSeriesSpec,
@@ -71,16 +72,16 @@ export interface GeometriesCounts {
 }
 
 export function updateDeselectedDataSeries(
-  series: DataSeriesValues[] | null,
-  value: DataSeriesValues,
+  allSeries: DataSeriesValues[] | null,
+  deselectedSeries: DataSeriesValues,
 ): DataSeriesValues[] {
-  const seriesIndex = getSeriesIndex(series, value);
-  const updatedSeries = series ? [...series] : [];
+  const seriesIndex = getSeriesIndex(allSeries, deselectedSeries);
+  const updatedSeries = allSeries ? [...allSeries] : [];
 
   if (seriesIndex > -1) {
     updatedSeries.splice(seriesIndex, 1);
   } else {
-    updatedSeries.push(value);
+    updatedSeries.push(deselectedSeries);
   }
   return updatedSeries;
 }
@@ -89,10 +90,16 @@ export function getUpdatedCustomSeriesColors(seriesSpecs: Map<SpecId, BasicSerie
   const updatedCustomSeriesColors = new Map();
   seriesSpecs.forEach((spec: BasicSeriesSpec) => {
     if (spec.customSeriesColors) {
-      spec.customSeriesColors.forEach((color: string, seriesColorValues: DataSeriesValues) => {
-        const { specId, accessors } = seriesColorValues;
-        const seriesLabel = getSeriesKey(specId, accessors);
-        updatedCustomSeriesColors.set(seriesLabel, color);
+      spec.customSeriesColors.forEach((color: string, customSeriesColor: CustomSeriesColor) => {
+        const { specId, accessors, group } = customSeriesColor;
+        updatedCustomSeriesColors.set(
+          {
+            ...customSeriesColor,
+            seriesKey: getSeriesKey(specId, accessors),
+            groupKey: getGroupKey(group),
+          },
+          color,
+        );
       });
     }
   });
@@ -386,7 +393,7 @@ function getSeriesColor(
   defaultColor: string,
 ): string {
   const groupKey = getGroupKey(group);
-  if (group && group !== BASE_GROUP_KEY) {
+  if (group && group !== BASE_GROUP_KEY && groupKey) {
     const color = seriesColorsMap.get(groupKey);
 
     if (color) {

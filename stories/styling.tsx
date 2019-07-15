@@ -8,10 +8,9 @@ import {
   BarSeries,
   Chart,
   CurveType,
-  CustomSeriesColorsMap,
+  CustomSeriesColorMap,
   DARK_THEME,
   DataGenerator,
-  DataSeriesValues,
   DEFAULT_MISSING_COLOR,
   getAxisId,
   getSpecId,
@@ -26,6 +25,7 @@ import {
 } from '../src/';
 import * as TestDatasets from '../src/lib/series/utils/test_dataset';
 import { palettes } from '../src/lib/themes/colors';
+import { CustomSeriesColor } from '../src/lib/series/series';
 
 function range(title: string, min: number, max: number, value: number, groupId?: string, step: number = 1) {
   return number(
@@ -412,17 +412,18 @@ storiesOf('Stylings', module)
     );
   })
   .add('custom series colors through spec props', () => {
-    const barCustomSeriesColors: CustomSeriesColorsMap = new Map();
-    const barDataSeriesColorValues: DataSeriesValues = {
+    const barCustomSeriesColors: CustomSeriesColorMap = new Map();
+    const barDataSeriesColorValues: CustomSeriesColor = {
+      specId: getSpecId('bars'),
       group: 'red',
     };
 
-    const lineCustomSeriesColors: CustomSeriesColorsMap = new Map();
-    const lineDataSeriesColorValues: DataSeriesValues = {
+    const lineCustomSeriesColors: CustomSeriesColorMap = new Map();
+    const lineDataSeriesColorValues: CustomSeriesColor = {
       specId: getSpecId('lines'),
     };
 
-    const customBarColorKnob = color('barDataSeriesColor', '#000');
+    const customBarColorKnob = color('barDataSeriesColor', '#0f0');
     const customLineColorKnob = color('lineDataSeriesColor', '#ff0');
     barCustomSeriesColors.set(barDataSeriesColorValues, customBarColorKnob);
     lineCustomSeriesColors.set(lineDataSeriesColorValues, customLineColorKnob);
@@ -450,6 +451,7 @@ storiesOf('Stylings', module)
           xAccessor="x"
           yAccessors={['y1', 'y2']}
           splitSeriesAccessors={['g1', 'g2']}
+          customSeriesColors={barCustomSeriesColors}
           groupAccessors={[
             (d) => {
               return d && d.yAccessor === 'y1' && d.y1 && d.y1 > 6 ? 'nick' : null;

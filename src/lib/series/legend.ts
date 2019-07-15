@@ -18,7 +18,7 @@ export interface LegendItem {
 }
 
 export function computeLegend(
-  seriesColor: Map<string, DataSeriesValues>,
+  seriesColors: Map<string, DataSeriesValues>,
   seriesColorMap: Map<string, string>,
   specs: Map<SpecId, BasicSeriesSpec>,
   defaultColor: string,
@@ -26,16 +26,13 @@ export function computeLegend(
   deselectedDataSeries?: DataSeriesValues[] | null,
 ): Map<string, LegendItem> {
   const legendItems: Map<string, LegendItem> = new Map();
-
-  const sortedSeriesColors = getSortedDataSeriesColorsValuesMap(seriesColor);
-
+  const sortedSeriesColors = getSortedDataSeriesColorsValuesMap(seriesColors);
   sortedSeriesColors.forEach((series, key) => {
     const spec = series.specId && specs.get(series.specId);
 
     const color = seriesColorMap.get(key) || defaultColor;
-    // const hasSingleSeries = seriesColor.size === 1;
-    const label = 'nick';
-    // const label = getSeriesColorLabel(series.colorValues, hasSingleSeries, spec);
+    const hasSingleSeries = seriesColors.size === 1;
+    const label = getSeriesLabel(series.keys, hasSingleSeries, spec);
     const isSeriesVisible = deselectedDataSeries ? getSeriesIndex(deselectedDataSeries, series) < 0 : true;
 
     if (!label || !spec) {
@@ -64,20 +61,16 @@ export function computeLegend(
   return legendItems;
 }
 
-export function getSeriesColorLabel(
-  colorValues: any[],
-  hasSingleSeries: boolean,
-  spec?: BasicSeriesSpec,
-): string | undefined {
+export function getSeriesLabel(keys: any[] = [], hasSingleSeries: boolean, spec?: BasicSeriesSpec): string | undefined {
   let label = '';
 
-  if (hasSingleSeries || colorValues.length === 0 || !colorValues[0]) {
+  if (hasSingleSeries || keys.length === 0 || !keys[0]) {
     if (!spec) {
       return;
     }
     label = spec.name || `${spec.id}`;
   } else {
-    label = colorValues.join(' - ');
+    label = keys.join(' - ');
   }
 
   return label;

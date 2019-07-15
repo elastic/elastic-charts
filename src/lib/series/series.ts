@@ -3,7 +3,6 @@ import { Accessor, getAccessorValues } from '../utils/accessor';
 import { GroupId, SpecId } from '../utils/ids';
 import { splitSpecsByGroupId, YBasicSeriesSpec } from './domains/y_domain';
 import { formatNonStackedDataSeriesValues } from './nonstacked_series_utils';
-import { isArrayEqual } from './series_utils';
 import { BasicSeriesSpec, Datum, SeriesAccessors } from './specs';
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
 import { Merge } from '../utils/commons';
@@ -62,13 +61,22 @@ export interface DataSeriesCounts {
   areaSeries: number;
 }
 
-export interface DataSeriesValues {
-  specId?: SpecId;
+export interface CustomSeriesColor {
+  specId: SpecId;
   group?: string;
   accessors?: any[];
   lastValue?: any;
   specSortIndex?: number;
 }
+
+export type DataSeriesValues = Merge<
+  CustomSeriesColor,
+  {
+    seriesKey: string | null;
+    groupKey: string | null;
+    keys: string[];
+  }
+>;
 
 export const BASE_GROUP_KEY = '__base__';
 
@@ -77,8 +85,12 @@ export function getSeriesIndex(series: DataSeriesValues[] | null, value: DataSer
     return -1;
   }
 
-  return series.findIndex((item: DataSeriesValues) => {
-    return isArrayEqual(item!.accessors, value!.accessors) && item.specId === value.specId;
+  return series.findIndex((item) => {
+    return (
+      item.specId === value.specId &&
+      ((Boolean(item.seriesKey) && item.seriesKey === value.seriesKey) ||
+        (Boolean(item.groupKey) && item.groupKey === value.groupKey))
+    );
   });
 }
 
@@ -94,13 +106,13 @@ export function splitSeries(
   rawDataSeries: RawDataSeries[];
   splitSeriesLastValues: Map<string, any>;
   xValues: Set<any>;
-  colorSeriesKeys: Set<string>;
+  colorSeriesKeys: Map<string, DataSeriesValues>;
 } {
   const { xAccessor, yAccessors, y0Accessors, splitSeriesAccessors = [], groupAccessors } = accessors;
   const isMultipleY = yAccessors && yAccessors.length > 1;
   const series = new Map<string, RawDataSeries>();
   const xValues = new Set<any>();
-  const colorSeriesKeys = new Set<string>();
+  const colorSeriesKeys = new Map<string, DataSeriesValues>();
   const splitSeriesLastValues = new Map<string, any>();
 
   data.forEach((datum) => {
@@ -111,30 +123,54 @@ export function splitSeries(
         const seriesKeys = [...splitSeriesKeys, accessor];
         const seriesKey = getSeriesKey(specId, seriesKeys);
         const cleanedDatum = cleanDatum(datum, xAccessor, accessor, y0Accessors && y0Accessors[index]);
-        const [groupKey] = getAccessorValues(cleanedDatum, groupAccessors);
+        const [group] = getAccessorValues(cleanedDatum, groupAccessors);
+        const groupKey = getGroupKey(group);
         splitSeriesLastValues.set(seriesKey, cleanedDatum.y1);
-        colorSeriesKeys.add(seriesKey);
+        colorSeriesKeys.set(seriesKey, {
+          specId,
+          seriesKey,
+          groupKey: null,
+          keys: seriesKeys,
+        });
 
         if (groupKey) {
-          colorSeriesKeys.add(getGroupKey(groupKey));
+          colorSeriesKeys.set(groupKey, {
+            specId,
+            seriesKey: null,
+            group,
+            groupKey,
+            keys: [group],
+          });
         }
 
         xValues.add(cleanedDatum.x);
-        updateSeriesMap(series, seriesKeys, seriesKey, cleanedDatum, specId, groupKey);
+        updateSeriesMap(series, seriesKeys, seriesKey, cleanedDatum, specId, group);
       });
     } else {
       const seriesKey = getSeriesKey(specId, splitSeriesKeys);
       const cleanedDatum = cleanDatum(datum, xAccessor, yAccessors[0], y0Accessors && y0Accessors[0]);
-      const [groupKey] = getAccessorValues(cleanedDatum, groupAccessors);
-      colorSeriesKeys.add(seriesKey);
+      const [group] = getAccessorValues(cleanedDatum, groupAccessors);
+      const groupKey = getGroupKey(group);
+      colorSeriesKeys.set(seriesKey, {
+        specId,
+        seriesKey,
+        groupKey: null,
+        keys: splitSeriesKeys,
+      });
 
       if (groupKey) {
-        colorSeriesKeys.add(getGroupKey(groupKey));
+        colorSeriesKeys.set(groupKey, {
+          specId,
+          seriesKey: null,
+          group,
+          groupKey,
+          keys: [group],
+        });
       }
 
       splitSeriesLastValues.set(seriesKey, cleanedDatum.y1);
       xValues.add(cleanedDatum.x);
-      updateSeriesMap(series, splitSeriesKeys, seriesKey, cleanedDatum, specId, groupKey);
+      updateSeriesMap(series, splitSeriesKeys, seriesKey, cleanedDatum, specId, group);
     }
   });
 
@@ -156,18 +192,18 @@ function updateSeriesMap(
   seriesKey: string,
   datum: RawDataSeriesDatum,
   specId: SpecId,
-  groupKey: string = BASE_GROUP_KEY,
+  group: string = BASE_GROUP_KEY,
 ): Map<string, RawDataSeries> {
   const series = seriesMap.get(seriesKey);
   if (series) {
-    if (series.data.has(groupKey)) {
-      series.data.get(groupKey)!.push(datum);
+    if (series.data.has(group)) {
+      series.data.get(group)!.push(datum);
     } else {
-      series.data.set(groupKey, [datum]);
+      series.data.set(group, [datum]);
     }
   } else {
     const data = new Map<string, RawDataSeriesDatum[]>();
-    data.set(groupKey, [datum]);
+    data.set(group, [datum]);
     seriesMap.set(seriesKey, {
       specId,
       keys,
@@ -181,15 +217,15 @@ function updateSeriesMap(
 /**
  * Get series key as string
  */
-export function getSeriesKey(specId?: SpecId, accessors: any[] = []): string {
+export function getSeriesKey(specId: SpecId, accessors: any[] = []): string {
   return `specId:{${specId}},accessors:{${accessors}}`;
 }
 
 /**
  * Get group key as string
  */
-export function getGroupKey(group: string = ''): string {
-  return group && `group:{${group}}`;
+export function getGroupKey(group?: string): string | null {
+  return group ? `group:{${group}}` : null;
 }
 
 /**
@@ -318,16 +354,41 @@ export function getSplittedSeries(
     const dataSeries = splitSeries(spec.data, spec, specId);
     let currentRawDataSeries = dataSeries.rawDataSeries;
     if (deselectedDataSeries) {
+      const deselectedGroups = deselectedDataSeries.reduce((groups, { group, groupKey }) => {
+        if (group && groupKey) {
+          groups.add(groupKey);
+        }
+
+        return groups;
+      }, new Set<string>());
       currentRawDataSeries = dataSeries.rawDataSeries.filter(
-        (series): boolean => getSeriesIndex(deselectedDataSeries, series) < 0,
+        (series) =>
+          getSeriesIndex(deselectedDataSeries, {
+            ...series,
+            groupKey: null,
+          }) < 0,
       );
+
+      if (deselectedGroups.size > 0) {
+        currentRawDataSeries.forEach((series) => {
+          for (const [group] of series.data) {
+            const groupKey = getGroupKey(group);
+
+            if (groupKey && deselectedGroups.has(groupKey)) {
+              series.data.delete(group);
+            }
+          }
+
+          return series;
+        });
+      }
     }
 
     splittedSeries.set(specId, currentRawDataSeries);
 
-    dataSeries.colorSeriesKeys.forEach((key) => {
+    dataSeries.colorSeriesKeys.forEach((values, key) => {
       seriesColors.set(key, {
-        specId,
+        ...values,
         specSortIndex: spec.sortIndex,
       });
     });

@@ -11,7 +11,7 @@ import { Omit } from '../utils/commons';
 import { AnnotationId, AxisId, GroupId, SpecId } from '../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../utils/scales/scales';
 import { CurveType } from './curves';
-import { DataSeriesValues, RawDataSeriesDatum } from './series';
+import { RawDataSeriesDatum, CustomSeriesColor } from './series';
 
 export type Datum = any;
 export type Rotation = 0 | 90 | -90 | 180;
@@ -73,7 +73,7 @@ export interface SeriesSpec {
   /** The type of series you are looking to render */
   seriesType: 'bar' | 'line' | 'area';
   /** Custom colors for series */
-  customSeriesColors?: CustomSeriesColorsMap;
+  customSeriesColors?: CustomSeriesColorMap;
   /** If the series should appear in the legend
    * @default false
    */
@@ -83,7 +83,7 @@ export interface SeriesSpec {
   displayValueSettings?: DisplayValueSpec;
 }
 
-export type CustomSeriesColorsMap = Map<DataSeriesValues, string>;
+export type CustomSeriesColorMap = Map<CustomSeriesColor, string>;
 
 export interface SeriesAccessors {
   /** The field name of the x value on Datum object */

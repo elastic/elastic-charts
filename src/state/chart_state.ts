@@ -583,8 +583,7 @@ export class ChartStore {
         if (spec.customSeriesColors) {
           spec.customSeriesColors.set(legendItem.value, color);
         } else {
-          const specCustomSeriesColors = new Map();
-          spec.customSeriesColors = specCustomSeriesColors;
+          spec.customSeriesColors = new Map();
           spec.customSeriesColors.set(legendItem.value, color);
         }
       }
@@ -778,6 +777,8 @@ export class ChartStore {
       this.xDomain,
       this.deselectedDataSeries,
     );
+
+    seriesDomains!.yDomain![0]!.domain = [0, 10];
 
     this.seriesDomainsAndData = seriesDomains;
 

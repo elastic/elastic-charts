@@ -15,7 +15,7 @@ export { DataSeriesValues } from './lib/series/series';
 export {
   AnnotationDomainType,
   AnnotationDomainTypes,
-  CustomSeriesColorsMap,
+  CustomSeriesColorMap,
   HistogramModeAlignment,
   HistogramModeAlignments,
   LineAnnotationDatum,
