@@ -19,7 +19,6 @@ import {
   LIGHT_THEME,
   LineAnnotation,
   LineSeries,
-  mergeWithDefaultTheme,
   niceTimeFormatByDay,
   Position,
   RectAnnotation,
@@ -100,22 +99,19 @@ storiesOf('Bar Chart', module)
       0,
     );
 
-    const theme = mergeWithDefaultTheme(
-      {
-        barSeriesStyle: {
-          displayValue: {
-            fontSize: number('value font size', 10),
-            fontFamily: `'Open Sans', Helvetica, Arial, sans-serif`,
-            fontStyle: 'normal',
-            padding: 0,
-            fill: color('value color', '#000'),
-            offsetX: number('offsetX', 0),
-            offsetY: number('offsetY', 0),
-          },
+    const theme = {
+      barSeriesStyle: {
+        displayValue: {
+          fontSize: number('value font size', 10),
+          fontFamily: `'Open Sans', Helvetica, Arial, sans-serif`,
+          fontStyle: 'normal',
+          padding: 0,
+          fill: color('value color', '#000'),
+          offsetX: number('offsetX', 0),
+          offsetY: number('offsetY', 0),
         },
       },
-      LIGHT_THEME,
-    );
+    };
 
     const dataSize = select(
       'data volume size',
@@ -1377,25 +1373,22 @@ storiesOf('Bar Chart', module)
       0,
     );
 
-    const theme = mergeWithDefaultTheme(
-      {
-        scales: {
-          barsPadding: number('bars padding', 0.25, {
-            range: true,
-            min: 0,
-            max: 1,
-            step: 0.1,
-          }),
-          histogramPadding: number('histogram padding', 0.05, {
-            range: true,
-            min: 0,
-            max: 1,
-            step: 0.1,
-          }),
-        },
+    const theme = {
+      scales: {
+        barsPadding: number('bars padding', 0.25, {
+          range: true,
+          min: 0,
+          max: 1,
+          step: 0.1,
+        }),
+        histogramPadding: number('histogram padding', 0.05, {
+          range: true,
+          min: 0,
+          max: 1,
+          step: 0.1,
+        }),
       },
-      LIGHT_THEME,
-    );
+    };
 
     const otherSeriesSelection = select(
       'other series',
@@ -1512,19 +1505,16 @@ storiesOf('Bar Chart', module)
       0,
     );
 
-    const theme = mergeWithDefaultTheme(
-      {
-        scales: {
-          barsPadding: number('bars padding', 0.25, {
-            range: true,
-            min: 0,
-            max: 1,
-            step: 0.1,
-          }),
-        },
+    const theme = {
+      scales: {
+        barsPadding: number('bars padding', 0.25, {
+          range: true,
+          min: 0,
+          max: 1,
+          step: 0.1,
+        }),
       },
-      LIGHT_THEME,
-    );
+    };
 
     const hasHistogramBarSeries = boolean('hasHistogramBarSeries', false);
 

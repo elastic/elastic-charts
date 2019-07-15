@@ -9,15 +9,12 @@ import {
   Chart,
   CurveType,
   CustomSeriesColorsMap,
-  DARK_THEME,
   DataGenerator,
   DataSeriesColorsValues,
   DEFAULT_MISSING_COLOR,
   getAxisId,
   getSpecId,
-  LIGHT_THEME,
   LineSeries,
-  mergeWithDefaultTheme,
   PartialTheme,
   Position,
   ScaleType,
@@ -128,15 +125,9 @@ storiesOf('Stylings', module)
     const withBottomTitle = boolean('bottom axis with title', true);
     const withRightTitle = boolean('right axis with title', true);
     const withTopTitle = boolean('top axis with title', true);
-    const customTheme = mergeWithDefaultTheme(theme, LIGHT_THEME);
     return (
       <Chart className={'story-chart'}>
-        <Settings
-          theme={customTheme}
-          debug={boolean('debug', true)}
-          showLegend={true}
-          legendPosition={Position.Right}
-        />
+        <Settings theme={theme} debug={boolean('debug', true)} showLegend={true} legendPosition={Position.Right} />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
@@ -203,11 +194,10 @@ storiesOf('Stylings', module)
         },
       },
     };
-    const customTheme = mergeWithDefaultTheme(theme, LIGHT_THEME);
     return (
       <Chart className={'story-chart'}>
         <Settings
-          theme={customTheme}
+          theme={theme}
           debug={boolean('debug', true)}
           rotation={select('rotation', { '0': 0, '90': 90, '-90': -90, '180': 180 }, 0)}
         />
@@ -319,14 +309,13 @@ storiesOf('Stylings', module)
 
     const darkmode = boolean('darkmode', false, 'Colors');
     const className = darkmode ? 'story-chart-dark' : 'story-chart';
-    const defaultTheme = darkmode ? DARK_THEME : LIGHT_THEME;
-    const customTheme = mergeWithDefaultTheme(theme, defaultTheme);
     switchTheme(darkmode ? 'dark' : 'light');
 
     return (
       <Chart className={className}>
         <Settings
-          theme={customTheme}
+          theme={theme}
+          baseThemeType={darkmode ? 'dark' : 'light'}
           debug={boolean('debug', false)}
           showLegend={true}
           legendPosition={Position.Right}
@@ -492,7 +481,7 @@ storiesOf('Stylings', module)
       },
     };
 
-    const theme = mergeWithDefaultTheme({
+    const theme = {
       barSeriesStyle: {
         rectBorder: {
           stroke: color('theme border stroke', 'red', 'Chart Global Theme'),
@@ -503,7 +492,7 @@ storiesOf('Stylings', module)
           opacity: range('theme opacity ', 0, 1, 0.9, 'Chart Global Theme', 0.1),
         },
       },
-    });
+    };
 
     return (
       <Chart renderer="canvas" className={'story-chart'}>
@@ -545,9 +534,9 @@ storiesOf('Stylings', module)
     const lineSeriesStyle1 = generateLineSeriesStyleKnobs('Line 1 style', 'line1', 'lime', 'green', 4, 10, 6);
     const lineSeriesStyle2 = generateLineSeriesStyleKnobs('Line 2 style', 'line2', 'blue', 'violet', 2, 5, 4);
 
-    const chartTheme = mergeWithDefaultTheme({
+    const chartTheme = {
       lineSeriesStyle: generateLineSeriesStyleKnobs('Chart Global Theme', 'chartTheme'),
-    });
+    };
 
     const dataset1 = [{ x: 0, y: 3 }, { x: 1, y: 2 }, { x: 2, y: 4 }, { x: 3, y: 10 }];
     const dataset2 = dataset1.map((datum) => ({ ...datum, y: datum.y - 1 }));
@@ -598,9 +587,9 @@ storiesOf('Stylings', module)
   .add('custom series styles: area', () => {
     const applyLineStyles = boolean('apply line series style', true, 'Chart Global Theme');
 
-    const chartTheme = mergeWithDefaultTheme({
+    const chartTheme = {
       areaSeriesStyle: generateAreaSeriesStyleKnobs('Chart Global Theme', 'chartTheme'),
-    });
+    };
 
     const dataset1 = [{ x: 0, y: 3 }, { x: 1, y: 6 }, { x: 2, y: 4 }, { x: 3, y: 10 }];
     const dataset2 = dataset1.map((datum) => ({ ...datum, y: datum.y - 1 }));
@@ -673,13 +662,12 @@ storiesOf('Stylings', module)
         },
       },
     };
-    const customTheme = mergeWithDefaultTheme(theme, LIGHT_THEME);
     const customStyle = {
       tickLabelPadding: number('Tick Label Padding Axis Spec', 0),
     };
     return (
       <Chart className={'story-chart'}>
-        <Settings theme={customTheme} debug={boolean('debug', true)} />
+        <Settings theme={theme} debug={boolean('debug', true)} />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
