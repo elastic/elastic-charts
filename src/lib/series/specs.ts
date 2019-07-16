@@ -242,12 +242,14 @@ export interface AxisStyle {
  * A left or right positioned axis is a vertical axis.
  * A top or bottom positioned axis is an horizontal axis.
  */
-export enum Position {
-  Top = 'top',
-  Bottom = 'bottom',
-  Left = 'left',
-  Right = 'right',
-}
+export const Position = Object.freeze({
+  Top: 'top' as 'top',
+  Bottom: 'bottom' as 'bottom',
+  Left: 'left' as 'left',
+  Right: 'right' as 'right',
+});
+
+export type Position = typeof Position.Top | typeof Position.Bottom | typeof Position.Left | typeof Position.Right;
 
 export const AnnotationTypes = Object.freeze({
   Line: 'line' as AnnotationType,
