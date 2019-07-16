@@ -581,12 +581,8 @@ storiesOf('Annotations', module)
       0,
     );
 
-    const isBottom = boolean('x domain axis is bottom', true);
-    const axisPosition = isBottom ? Position.Bottom : Position.Top;
-
     const xDomain = {
       minInterval: 1,
-      // max: 4,
     };
 
     return (
@@ -598,8 +594,8 @@ storiesOf('Annotations', module)
           dataValues={dataValues}
           style={style}
         />
-        <Axis id={getAxisId('horizontal')} position={axisPosition} title={'x-domain axis'} />
-        {/* <Axis id={getAxisId('vertical')} title={'y-domain axis'} position={Position.Left} /> */}
+        <Axis id={getAxisId('horizontal')} position={Position.Bottom} title={'x-domain axis'} />
+        <Axis id={getAxisId('vertical')} title={'y-domain axis'} position={Position.Left} />
         <BarSeries
           enableHistogramMode={true}
           id={getSpecId('bars')}
