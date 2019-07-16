@@ -105,7 +105,7 @@ export interface SeriesScales {
    * The x axis scale type
    * @default ScaleType.Ordinal
    */
-  xScaleType: ScaleType.Ordinal | ScaleType.Linear | ScaleType.Time;
+  xScaleType: typeof ScaleType.Ordinal | typeof ScaleType.Linear | typeof ScaleType.Time;
   /**
    * If using a ScaleType.Time this timezone identifier is required to
    * compute a nice set of xScale ticks. Can be any IANA zone supported by
