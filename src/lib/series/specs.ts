@@ -252,19 +252,23 @@ export const Position = Object.freeze({
 export type Position = typeof Position.Top | typeof Position.Bottom | typeof Position.Left | typeof Position.Right;
 
 export const AnnotationTypes = Object.freeze({
-  Line: 'line' as AnnotationType,
-  Rectangle: 'rectangle' as AnnotationType,
-  Text: 'text' as AnnotationType,
+  Line: 'line' as 'line',
+  Rectangle: 'rectangle' as 'rectangle',
+  Text: 'text' as 'text',
 });
 
-export type AnnotationType = 'line' | 'rectangle' | 'text';
+export type AnnotationType =
+  | typeof AnnotationTypes.Line
+  | typeof AnnotationTypes.Rectangle
+  | typeof AnnotationTypes.Text;
 
 export const AnnotationDomainTypes = Object.freeze({
-  XDomain: 'xDomain' as AnnotationDomainType,
-  YDomain: 'yDomain' as AnnotationDomainType,
+  XDomain: 'xDomain' as 'xDomain',
+  YDomain: 'yDomain' as 'yDomain',
 });
 
-export type AnnotationDomainType = 'xDomain' | 'yDomain';
+export type AnnotationDomainType = typeof AnnotationDomainTypes.XDomain | typeof AnnotationDomainTypes.YDomain;
+
 export interface LineAnnotationDatum {
   dataValue: any;
   details?: string;
