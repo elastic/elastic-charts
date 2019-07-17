@@ -46,6 +46,14 @@ module.exports = (baseConfig, env, config) => {
       },
       {
         loader: 'css-loader',
+        options: { importLoaders: 1 },
+      },
+      {
+        loader: 'postcss-loader',
+        options: {
+          plugins: [require('autoprefixer')],
+          debug: true,
+        },
       },
       {
         loader: 'sass-loader',
