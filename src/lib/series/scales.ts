@@ -38,6 +38,23 @@ export function countBarsInCluster(
   };
 }
 
+function getBandScaleRange(
+  isInverse: boolean,
+  isSingleValueHistogram: boolean,
+  minRange: number,
+  maxRange: number,
+  bandwidth: number,
+): {
+  start: number;
+  end: number;
+} {
+  const rangeEndOffset = isSingleValueHistogram ? 0 : bandwidth;
+  const start = isInverse ? minRange - rangeEndOffset : minRange;
+  const end = isInverse ? maxRange : maxRange - rangeEndOffset;
+
+  return { start, end };
+}
+
 /**
  * Compute the x scale used to align geometries to the x axis.
  * @param xDomain the x domain
@@ -62,7 +79,7 @@ export function computeXScale(
   } else {
     if (isBandScale) {
       const [domainMin, domainMax] = domain;
-      const isSingleValueHistogram = enableHistogramMode && domainMax - domainMin === 0;
+      const isSingleValueHistogram = !!enableHistogramMode && domainMax - domainMin === 0;
 
       const adjustedDomainMax = isSingleValueHistogram ? domainMin + minInterval : domainMax;
       const adjustedDomain = [domainMin, adjustedDomainMax];
@@ -71,9 +88,7 @@ export function computeXScale(
       const intervalCountOffest = isSingleValueHistogram ? 0 : 1;
       const bandwidth = rangeDiff / (intervalCount + intervalCountOffest);
 
-      const rangeEndOffset = isSingleValueHistogram ? 0 : bandwidth;
-      const start = isInverse ? minRange - rangeEndOffset : minRange;
-      const end = isInverse ? maxRange : maxRange - rangeEndOffset;
+      const { start, end } = getBandScaleRange(isInverse, isSingleValueHistogram, minRange, maxRange, bandwidth);
 
       const scale = new ScaleContinuous(
         scaleType,
