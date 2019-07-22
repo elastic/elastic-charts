@@ -475,6 +475,43 @@ storiesOf('Bar Chart', module)
       </Chart>
     );
   })
+  .add('stacked as percentage', () => {
+    const stackedAsPercentage = boolean('stacked as percentage', true);
+    const clusterBars = boolean('cluster', true);
+    return (
+      <Chart className={'story-chart'}>
+        <Settings showLegend={true} legendPosition={Position.Right} />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+        <Axis
+          id={getAxisId('left2')}
+          title={'Left axis'}
+          position={Position.Left}
+          tickFormat={(d) => (stackedAsPercentage && clusterBars ? `${Number(d * 100).toFixed(0)} %` : d)}
+        />
+
+        <BarSeries
+          id={getSpecId('bars')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          stackAccessors={clusterBars ? [] : ['x']}
+          stackAsPercentage={stackedAsPercentage}
+          splitSeriesAccessors={['g']}
+          data={[
+            { x: 0, y: 2, g: 'a' },
+            { x: 1, y: 7, g: 'a' },
+            { x: 2, y: 3, g: 'a' },
+            { x: 3, y: 6, g: 'a' },
+            { x: 0, y: 4, g: 'b' },
+            { x: 1, y: 5, g: 'b' },
+            { x: 2, y: 8, g: 'b' },
+            { x: 3, y: 2, g: 'b' },
+          ]}
+        />
+      </Chart>
+    );
+  })
   .add('clustered with axis and legend', () => {
     const chartRotation = select<Rotation>(
       'chartRotation',
@@ -1567,6 +1604,39 @@ storiesOf('Bar Chart', module)
           data={data}
           timeZone={'local'}
           name={'Count'}
+        />
+      </Chart>
+    );
+  })
+  .add('[test] single histogram bar chart', () => {
+    const formatter = timeFormatter(niceTimeFormatByDay(1));
+
+    const xDomain = {
+      minInterval: 60000,
+    };
+
+    return (
+      <Chart className={'story-chart'}>
+        <Settings xDomain={xDomain} />
+        <Axis
+          id={getAxisId('bottom')}
+          title={'timestamp per 1 minute'}
+          position={Position.Bottom}
+          showOverlappingTicks={true}
+          tickFormat={formatter}
+        />
+        <Axis
+          id={getAxisId('left')}
+          title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
+          position={Position.Left}
+        />
+        <HistogramBarSeries
+          id={getSpecId('bars')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor={0}
+          yAccessors={[1]}
+          data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 1)}
         />
       </Chart>
     );
