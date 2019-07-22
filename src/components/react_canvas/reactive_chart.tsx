@@ -360,16 +360,16 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       const isLegendCollapsed = legendCollapsed.get();
       const { verticalWidth, horizontalHeight } = chartTheme.legend;
 
-      const marginStyle =
+      const paddingStyle =
         legendPosition && isVertical(legendPosition)
           ? legendPosition === Position.Right
-            ? { marginLeft: -verticalWidth }
-            : { marginLeft: verticalWidth }
+            ? { paddingLeft: -verticalWidth }
+            : { paddingLeft: verticalWidth }
           : legendPosition === Position.Top
-          ? { marginTop: horizontalHeight }
-          : { marginTop: -horizontalHeight };
+          ? { paddingTop: horizontalHeight }
+          : { paddingTop: -horizontalHeight };
 
-      const style = isLegendCollapsed ? undefined : marginStyle;
+      const style = isLegendCollapsed ? undefined : paddingStyle;
 
       return (
         <div className="echReactiveChart_unavailable">
