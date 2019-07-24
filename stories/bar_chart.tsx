@@ -33,6 +33,7 @@ import * as TestDatasets from '../src/lib/series/utils/test_dataset';
 import { KIBANA_METRICS } from '../src/lib/series/utils/test_dataset_kibana';
 
 import { TEST_DATASET_DISCOVER } from '../src/lib/series/utils/test_dataset_discover_per_30s';
+import { ColorAccessor } from '../src/lib/series/specs';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
 
@@ -1784,6 +1785,33 @@ storiesOf('Bar Chart', module)
           yAccessors={[1]}
           data={data3}
           yScaleToDataExtent={false}
+        />
+      </Chart>
+    );
+  })
+  .add('colorAccessor overrides', () => {
+    const hasThreshold = boolean('threshold', true);
+    const threshold = number('min threshold', 4);
+    const colorAccessor: ColorAccessor = (d, g) => (g.specId === getSpecId('bars') && d.y1! > threshold ? 'red' : null);
+
+    return (
+      <Chart className="story-chart">
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+        <Axis
+          id={getAxisId('left2')}
+          title={'Left axis'}
+          position={Position.Left}
+          tickFormat={(d) => Number(d).toFixed(2)}
+        />
+
+        <BarSeries
+          id={getSpecId('bars')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          colorAccessor={hasThreshold ? colorAccessor : undefined}
+          data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
         />
       </Chart>
     );

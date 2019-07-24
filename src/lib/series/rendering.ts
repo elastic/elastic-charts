@@ -16,7 +16,7 @@ import { CurveType, getCurveFactory } from './curves';
 import { LegendItem } from './legend';
 import { DataSeriesDatum } from './series';
 import { belongsToDataSeries } from './series_utils';
-import { DisplayValueSpec } from './specs';
+import { DisplayValueSpec, ColorAccessor } from './specs';
 
 export interface GeometryId {
   specId: SpecId;
@@ -197,6 +197,7 @@ export function renderBars(
   seriesKey: any[],
   seriesStyle: BarSeriesStyle,
   displayValueSettings?: DisplayValueSpec,
+  colorAccessor?: ColorAccessor,
 ): {
   barGeometries: BarGeometry[];
   indexedGeometries: Map<any, IndexedGeometry[]>;
@@ -278,22 +279,26 @@ export function renderBars(
           }
         : undefined;
 
+    const geometryId = {
+      specId,
+      seriesKey,
+    };
+
+    const colorOverride = colorAccessor && colorAccessor(datum, geometryId);
+
     const barGeometry: BarGeometry = {
       displayValue,
       x,
       y, // top most value
       width,
       height,
-      color,
+      color: colorOverride || color,
       value: {
         x: datum.x,
         y: initialY1,
         accessor: 'y1',
       },
-      geometryId: {
-        specId,
-        seriesKey,
-      },
+      geometryId,
       seriesStyle,
     };
     mutableIndexedGeometryMapUpsert(indexedGeometries, datum.x, barGeometry);

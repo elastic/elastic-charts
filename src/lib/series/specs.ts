@@ -11,11 +11,13 @@ import { Omit, RecursivePartial } from '../utils/commons';
 import { AnnotationId, AxisId, GroupId, SpecId } from '../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../utils/scales/scales';
 import { CurveType } from './curves';
-import { DataSeriesColorsValues } from './series';
+import { DataSeriesColorsValues, RawDataSeriesDatum } from './series';
+import { GeometryId } from './rendering';
 
 export type Datum = any;
 export type Rotation = 0 | 90 | -90 | 180;
 export type Rendering = 'canvas' | 'svg';
+export type ColorAccessor = (datum: RawDataSeriesDatum, geometryId: GeometryId) => string | null;
 
 interface DomainMinInterval {
   /** Custom minInterval for the domain which will affect data bucket size.
@@ -97,7 +99,7 @@ export interface SeriesAccessors {
   /** An array of fields thats indicates the stack membership */
   stackAccessors?: Accessor[];
   /** An optional array of field name thats indicates the stack membership */
-  colorAccessors?: Accessor[];
+  colorAccessor?: ColorAccessor;
 }
 
 export interface SeriesScales {
