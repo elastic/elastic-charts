@@ -1,18 +1,18 @@
 import { inject } from 'mobx-react';
 import { PureComponent } from 'react';
-import { DomainRange, Position, Rendering, Rotation } from '../types/xy_chart/utils/specs';
+import { DomainRange, Position, Rendering, Rotation } from '../chart_types/xy_chart/utils/specs';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { DARK_THEME } from '../utils/themes/dark_theme';
 import { BaseThemeType, mergeWithDefaultTheme, PartialTheme, Theme, BaseThemeTypes } from '../utils/themes/theme';
 import { Domain } from '../utils/domain';
-import { TooltipType, TooltipValueFormatter } from '../types/xy_chart/utils/interactions';
+import { TooltipType, TooltipValueFormatter } from '../chart_types/xy_chart/utils/interactions';
 import {
   BrushEndListener,
   ChartStore,
   ElementClickListener,
   ElementOverListener,
   LegendItemListener,
-} from '../types/xy_chart/store/chart_state';
+} from '../chart_types/xy_chart/store/chart_state';
 
 export const DEFAULT_TOOLTIP_TYPE = TooltipType.VerticalCursor;
 export const DEFAULT_TOOLTIP_SNAP = true;

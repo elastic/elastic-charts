@@ -1,5 +1,5 @@
-import { XDomain } from '../../types/xy_chart/domains/x_domain';
-import { computeXScale } from '../../types/xy_chart/utils/scales';
+import { XDomain } from '../../chart_types/xy_chart/domains/x_domain';
+import { computeXScale } from '../../chart_types/xy_chart/utils/scales';
 import { Domain } from '../domain';
 import { DateTime, Settings } from 'luxon';
 import { ScaleBand } from './scale_band';

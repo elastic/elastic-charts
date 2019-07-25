@@ -1,10 +1,10 @@
 import { mount } from 'enzyme';
 import * as React from 'react';
-import { Position, Rendering, Rotation } from '../types/xy_chart/utils/specs';
+import { Position, Rendering, Rotation } from '../chart_types/xy_chart/utils/specs';
 import { DARK_THEME } from '../utils/themes/dark_theme';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
-import { TooltipType } from '../types/xy_chart/utils/interactions';
-import { ChartStore } from '../types/xy_chart/store/chart_state';
+import { TooltipType } from '../chart_types/xy_chart/utils/interactions';
+import { ChartStore } from '../chart_types/xy_chart/store/chart_state';
 import { DEFAULT_TOOLTIP_SNAP, DEFAULT_TOOLTIP_TYPE, SettingsComponent, SettingSpecProps } from './settings';
 import { PartialTheme, BaseThemeTypes } from '../utils/themes/theme';
 

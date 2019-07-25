@@ -2,16 +2,16 @@ import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Layer, Rect, Stage } from 'react-konva';
-import { isLineAnnotation, isRectAnnotation, Position } from '../../types/xy_chart/utils/specs';
+import { isLineAnnotation, isRectAnnotation, Position } from '../../chart_types/xy_chart/utils/specs';
 import { LineAnnotationStyle, RectAnnotationStyle } from '../../utils/themes/theme';
 import { AnnotationId } from '../../utils/ids';
 import {
   AnnotationDimensions,
   AnnotationLineProps,
   AnnotationRectProps,
-} from '../../types/xy_chart/annotations/annotation_utils';
-import { ChartStore, Point } from '../../types/xy_chart/store/chart_state';
-import { BrushExtent } from '../../types/xy_chart/store/utils';
+} from '../../chart_types/xy_chart/annotations/annotation_utils';
+import { ChartStore, Point } from '../../chart_types/xy_chart/store/chart_state';
+import { BrushExtent } from '../../chart_types/xy_chart/store/utils';
 import { AreaGeometries } from './area_geometries';
 import { Axis } from './axis';
 import { BarGeometries } from './bar_geometries';
@@ -20,7 +20,7 @@ import { Grid } from './grid';
 import { LineAnnotation } from './line_annotation';
 import { LineGeometries } from './line_geometries';
 import { RectAnnotation } from './rect_annotation';
-import { isVertical } from '../../types/xy_chart/utils/axis_utils';
+import { isVertical } from '../../chart_types/xy_chart/utils/axis_utils';
 interface ReactiveChartProps {
   chartStore?: ChartStore; // FIX until we find a better way on ts mobx
 }

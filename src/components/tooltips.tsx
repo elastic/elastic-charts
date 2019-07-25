@@ -1,8 +1,8 @@
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { TooltipValue, TooltipValueFormatter } from '../types/xy_chart/utils/interactions';
-import { ChartStore } from '../types/xy_chart/store/chart_state';
+import { TooltipValue, TooltipValueFormatter } from '../chart_types/xy_chart/utils/interactions';
+import { ChartStore } from '../chart_types/xy_chart/store/chart_state';
 
 interface TooltipProps {
   chartStore?: ChartStore;

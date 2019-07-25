@@ -1,7 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { isPointGeometry } from '../types/xy_chart/rendering/rendering';
-import { ChartStore } from '../types/xy_chart/store/chart_state';
+import { isPointGeometry } from '../chart_types/xy_chart/rendering/rendering';
+import { ChartStore } from '../chart_types/xy_chart/store/chart_state';
 
 interface HighlighterProps {
   chartStore?: ChartStore;

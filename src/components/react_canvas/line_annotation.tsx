@@ -2,7 +2,7 @@ import React from 'react';
 import { Group, Line } from 'react-konva';
 import { LineAnnotationStyle } from '../../utils/themes/theme';
 import { Dimensions } from '../../utils/dimensions';
-import { AnnotationLineProps } from '../../types/xy_chart/annotations/annotation_utils';
+import { AnnotationLineProps } from '../../chart_types/xy_chart/annotations/annotation_utils';
 
 interface LineAnnotationProps {
   chartDimensions: Dimensions;

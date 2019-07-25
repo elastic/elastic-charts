@@ -1,5 +1,5 @@
-import { GeometryStyle } from '../../../types/xy_chart/rendering/rendering';
-import { Rotation } from '../../../types/xy_chart/utils/specs';
+import { GeometryStyle } from '../../../chart_types/xy_chart/rendering/rendering';
+import { Rotation } from '../../../chart_types/xy_chart/utils/specs';
 import {
   AreaStyle,
   DisplayValueStyle,

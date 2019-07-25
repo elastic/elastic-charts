@@ -1,4 +1,4 @@
-import { Rotation } from '../../../types/xy_chart/utils/specs';
+import { Rotation } from '../../../chart_types/xy_chart/utils/specs';
 import {
   buildAreaRenderProps,
   buildBarRenderProps,
