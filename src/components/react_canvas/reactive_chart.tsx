@@ -299,7 +299,6 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
   };
   onStartBrusing = (event: { evt: MouseEvent }) => {
     window.addEventListener('mouseup', this.onEndBrushing);
-    this.props.chartStore!.onBrushStart();
     const { brushExtent } = this.props.chartStore!;
     const point = getPoint(event.evt, brushExtent);
     this.setState(() => ({
@@ -321,6 +320,9 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
   onBrushing = (event: { evt: MouseEvent }) => {
     if (!this.state.brushing) {
       return;
+    }
+    if (!this.props.chartStore!.isBrushing.get()) {
+      this.props.chartStore!.onBrushStart();
     }
     const { brushExtent } = this.props.chartStore!;
     const point = getPoint(event.evt, brushExtent);
@@ -426,7 +428,10 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
         onMouseLeave={() => {
           setCursorPosition(-1, -1);
         }}
-        onClick={() => {
+        onMouseUp={() => {
+          if (this.props.chartStore!.isBrushing.get()) {
+            return;
+          }
           this.props.chartStore!.handleChartClick();
         }}
         className={className}
