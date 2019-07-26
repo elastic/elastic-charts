@@ -88,6 +88,7 @@ export const DARK_THEME: Theme = {
       strokeWidth: 1,
     },
     gridLineStyle: {
+      visible: true,
       stroke: 'white',
       strokeWidth: 1,
       opacity: 1,

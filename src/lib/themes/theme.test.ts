@@ -32,6 +32,7 @@ describe('Theme', () => {
   describe('mergeWithDefaultGridLineConfig', () => {
     it('should merge partial grid line configs', () => {
       const fullConfig = {
+        visible: true,
         stroke: 'foo',
         strokeWidth: 1,
         opacity: 0,

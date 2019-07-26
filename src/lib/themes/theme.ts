@@ -52,6 +52,7 @@ export interface AxisConfig {
   gridLineStyle: GridLineConfig;
 }
 export interface GridLineConfig {
+  visible?: boolean;
   stroke?: string;
   strokeWidth?: number;
   opacity?: number;
@@ -218,10 +219,12 @@ export function mergeWithDefaultGridLineConfig(
   axisSpecConfig: GridLineConfig,
   themeConfig: GridLineConfig,
 ): GridLineConfig {
+  const visible = axisSpecConfig.visible != null ? axisSpecConfig.visible : themeConfig.visible;
   const strokeWidth = axisSpecConfig.strokeWidth != null ? axisSpecConfig.strokeWidth : themeConfig.strokeWidth;
   const opacity = axisSpecConfig.opacity != null ? axisSpecConfig.opacity : themeConfig.opacity;
 
   return {
+    visible,
     stroke: axisSpecConfig.stroke || themeConfig.stroke,
     dash: axisSpecConfig.dash || themeConfig.dash,
     strokeWidth,
