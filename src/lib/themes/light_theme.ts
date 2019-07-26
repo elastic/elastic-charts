@@ -89,7 +89,7 @@ export const LIGHT_THEME: Theme = {
     gridLineStyle: {
       stroke: 'black',
       strokeWidth: 1,
-      opacity: 0,
+      opacity: 1,
       dash: [0, 0],
     },
   },

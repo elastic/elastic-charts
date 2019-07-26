@@ -88,9 +88,9 @@ export const DARK_THEME: Theme = {
       strokeWidth: 1,
     },
     gridLineStyle: {
-      stroke: 'black',
+      stroke: 'white',
       strokeWidth: 1,
-      opacity: 0,
+      opacity: 1,
       dash: [0, 0],
     },
   },
