@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Layer, Rect, Stage } from 'react-konva';
 import { isLineAnnotation, isRectAnnotation, Position } from '../../lib/series/specs';
-import { LineAnnotationStyle, RectAnnotationStyle } from '../../lib/themes/theme';
+import { LineAnnotationStyle, mergeWithDefaultGridLineConfig, RectAnnotationStyle } from '../../lib/themes/theme';
 import { AnnotationId } from '../../lib/utils/ids';
 import { AnnotationDimensions, AnnotationLineProps, AnnotationRectProps } from '../../state/annotation_utils';
 import { ChartStore, Point } from '../../state/chart_state';
@@ -186,8 +186,13 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
     const gridComponents: JSX.Element[] = [];
     axesGridLinesPositions.forEach((axisGridLinesPositions, axisId) => {
       const axisSpec = axesSpecs.get(axisId);
+
       if (axisSpec && axisGridLinesPositions.length > 0) {
-        const gridLineStyle = axisSpec.gridLineStyle ? axisSpec.gridLineStyle : chartTheme.axes.gridLineStyle;
+        const axisSpecConfig = axisSpec.gridLineStyle;
+        const themeConfig = chartTheme.axes.gridLineStyle;
+        const gridLineStyle = axisSpecConfig
+          ? mergeWithDefaultGridLineConfig(axisSpecConfig, themeConfig)
+          : themeConfig;
         gridComponents.push(
           <Grid
             key={`axis-grid-${axisId}`}

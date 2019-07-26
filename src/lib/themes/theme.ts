@@ -192,12 +192,6 @@ export interface LineAnnotationStyle {
 
 export type RectAnnotationStyle = StrokeStyle & FillStyle & Opacity;
 
-export const DEFAULT_GRID_LINE_CONFIG: GridLineConfig = {
-  stroke: 'red',
-  strokeWidth: 1,
-  opacity: 1,
-};
-
 export const DEFAULT_ANNOTATION_LINE_STYLE: LineAnnotationStyle = {
   line: {
     stroke: '#000',
@@ -220,13 +214,16 @@ export const DEFAULT_ANNOTATION_RECT_STYLE: RectAnnotationStyle = {
   fill: '#e5e5e5',
 };
 
-export function mergeWithDefaultGridLineConfig(config: GridLineConfig): GridLineConfig {
-  const strokeWidth = config.strokeWidth != null ? config.strokeWidth : DEFAULT_GRID_LINE_CONFIG.strokeWidth;
-  const opacity = config.opacity != null ? config.opacity : DEFAULT_GRID_LINE_CONFIG.opacity;
+export function mergeWithDefaultGridLineConfig(
+  axisSpecConfig: GridLineConfig,
+  themeConfig: GridLineConfig,
+): GridLineConfig {
+  const strokeWidth = axisSpecConfig.strokeWidth != null ? axisSpecConfig.strokeWidth : themeConfig.strokeWidth;
+  const opacity = axisSpecConfig.opacity != null ? axisSpecConfig.opacity : themeConfig.opacity;
 
   return {
-    stroke: config.stroke || DEFAULT_GRID_LINE_CONFIG.stroke,
-    dash: config.dash || DEFAULT_GRID_LINE_CONFIG.dash,
+    stroke: axisSpecConfig.stroke || themeConfig.stroke,
+    dash: axisSpecConfig.dash || themeConfig.dash,
     strokeWidth,
     opacity,
   };

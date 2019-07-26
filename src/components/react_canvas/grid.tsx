@@ -1,13 +1,13 @@
 import React from 'react';
 import { Group, Line } from 'react-konva';
 import { AxisLinePosition } from '../../lib/axes/axis_utils';
-import { DEFAULT_GRID_LINE_CONFIG, GridLineConfig, mergeWithDefaultGridLineConfig } from '../../lib/themes/theme';
+import { GridLineConfig } from '../../lib/themes/theme';
 import { Dimensions } from '../../lib/utils/dimensions';
 
 interface GridProps {
   chartDimensions: Dimensions;
   debug: boolean;
-  gridLineStyle?: GridLineConfig;
+  gridLineStyle: GridLineConfig;
   linesPositions: AxisLinePosition[];
 }
 
@@ -18,9 +18,7 @@ export class Grid extends React.PureComponent<GridProps> {
   private renderGridLine = (linePosition: AxisLinePosition, i: number) => {
     const { gridLineStyle } = this.props;
 
-    const config = gridLineStyle ? mergeWithDefaultGridLineConfig(gridLineStyle) : DEFAULT_GRID_LINE_CONFIG;
-
-    return <Line {...config} key={`tick-${i}`} points={linePosition} />;
+    return <Line {...gridLineStyle} key={`tick-${i}`} points={linePosition} />;
   };
 
   private renderGrid = () => {

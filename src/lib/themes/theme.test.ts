@@ -5,7 +5,6 @@ import {
   AreaSeriesStyle,
   DEFAULT_ANNOTATION_LINE_STYLE,
   DEFAULT_ANNOTATION_RECT_STYLE,
-  DEFAULT_GRID_LINE_CONFIG,
   LineSeriesStyle,
   mergeWithDefaultAnnotationLine,
   mergeWithDefaultAnnotationRect,
@@ -38,8 +37,12 @@ describe('Theme', () => {
         opacity: 0,
         dash: [0, 0],
       };
-      expect(mergeWithDefaultGridLineConfig(fullConfig)).toEqual(fullConfig);
-      expect(mergeWithDefaultGridLineConfig({})).toEqual(DEFAULT_GRID_LINE_CONFIG);
+      const partialConfig = { strokeWidth: 5 };
+      const themeConfig = LIGHT_THEME.axes.gridLineStyle;
+
+      expect(mergeWithDefaultGridLineConfig(fullConfig, themeConfig)).toEqual(fullConfig);
+      expect(mergeWithDefaultGridLineConfig({}, themeConfig)).toEqual(themeConfig);
+      expect(mergeWithDefaultGridLineConfig(partialConfig, themeConfig)).toEqual({ ...themeConfig, ...partialConfig });
     });
   });
 
