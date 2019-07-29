@@ -14,7 +14,7 @@ import {
 } from './specs';
 import { AxisConfig, Theme } from '../../../utils/themes/theme';
 import { Dimensions, Margins } from '../../../utils/dimensions';
-import { AxisId, GroupId } from '../../../utils/ids';
+import { AxisId } from '../../../utils/ids';
 import { Scale } from '../../../utils/scales/scales';
 import { BBox, BBoxCalculator } from '../../../utils/bbox/bbox_calculator';
 
@@ -561,14 +561,19 @@ export function getAxisTicksPositions(
   },
   chartTheme: Theme,
   chartRotation: Rotation,
-  axisSpecs: Map<AxisId, AxisSpec>,
+  axisSpecs: AxisSpec[],
   axisDimensions: Map<AxisId, AxisTicksDimensions>,
   xDomain: XDomain,
   yDomain: YDomain[],
   totalGroupsCount: number,
   enableHistogramMode: boolean,
   barsPadding?: number,
-) {
+): {
+  axisPositions: Map<AxisId, Dimensions>;
+  axisTicks: Map<AxisId, AxisTick[]>;
+  axisVisibleTicks: Map<AxisId, AxisTick[]>;
+  axisGridLinesPositions: Map<AxisId, AxisLinePosition[]>;
+} {
   const { chartPaddings, chartMargins } = chartTheme;
   const axisPositions: Map<AxisId, Dimensions> = new Map();
   const axisVisibleTicks: Map<AxisId, AxisTick[]> = new Map();
@@ -581,7 +586,7 @@ export function getAxisTicksPositions(
   let cumRightSum = chartPaddings.right;
 
   axisDimensions.forEach((axisDim, id) => {
-    const axisSpec = axisSpecs.get(id);
+    const axisSpec = axisSpecs.find((spec) => spec.id === id);
 
     // Consider refactoring this so this condition can be tested
     // Given some of the values that get passed around, maybe re-write as a reduce instead of forEach?
@@ -676,65 +681,4 @@ export function isCompleteBound(domain: Partial<CompleteBoundedDomain>): domain 
 
 export function isBounded(domain: Partial<CompleteBoundedDomain>): domain is DomainRange {
   return domain.max != null || domain.min != null;
-}
-
-export function mergeYCustomDomainsByGroupId(
-  axesSpecs: Map<AxisId, AxisSpec>,
-  chartRotation: Rotation,
-): Map<GroupId, DomainRange> {
-  const domainsByGroupId = new Map<GroupId, DomainRange>();
-
-  axesSpecs.forEach((spec: AxisSpec, id: AxisId) => {
-    const { groupId, domain } = spec;
-
-    if (!domain) {
-      return;
-    }
-
-    const isAxisYDomain = isYDomain(spec.position, chartRotation);
-
-    if (!isAxisYDomain) {
-      const errorMessage = `[Axis ${id}]: custom domain for xDomain should be defined in Settings`;
-      throw new Error(errorMessage);
-    }
-
-    if (isCompleteBound(domain) && domain.min > domain.max) {
-      const errorMessage = `[Axis ${id}]: custom domain is invalid, min is greater than max`;
-      throw new Error(errorMessage);
-    }
-
-    const prevGroupDomain = domainsByGroupId.get(groupId);
-
-    if (prevGroupDomain) {
-      const prevDomain = prevGroupDomain as DomainRange;
-
-      const prevMin = isLowerBound(prevDomain) ? prevDomain.min : undefined;
-      const prevMax = isUpperBound(prevDomain) ? prevDomain.max : undefined;
-
-      let max = prevMax;
-      let min = prevMin;
-
-      if (isCompleteBound(domain)) {
-        min = prevMin != null ? Math.min(domain.min, prevMin) : domain.min;
-        max = prevMax != null ? Math.max(domain.max, prevMax) : domain.max;
-      } else if (isLowerBound(domain)) {
-        min = prevMin != null ? Math.min(domain.min, prevMin) : domain.min;
-      } else if (isUpperBound(domain)) {
-        max = prevMax != null ? Math.max(domain.max, prevMax) : domain.max;
-      }
-
-      const mergedDomain = {
-        min,
-        max,
-      };
-
-      if (isBounded(mergedDomain)) {
-        domainsByGroupId.set(groupId, mergedDomain);
-      }
-    } else {
-      domainsByGroupId.set(groupId, domain);
-    }
-  });
-
-  return domainsByGroupId;
 }

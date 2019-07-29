@@ -1,16 +1,9 @@
 import { getSpecId } from '../../../utils/ids';
-import {
-  BarGeometry,
-  getGeometryStyle,
-  isPointOnGeometry,
-  PointGeometry,
-  getBarStyleOverrides,
-  GeometryId,
-  getPointStyleOverrides,
-} from './rendering';
+import { getGeometryStyle, isPointOnGeometry, getBarStyleOverrides, getPointStyleOverrides } from './rendering';
+import { BarGeometry, PointGeometry, GeometryId } from '../../../utils/geometry';
 import { BarSeriesStyle, SharedGeometryStyle, PointStyle } from '../../../utils/themes/theme';
 import { DataSeriesDatum } from '../utils/series';
-import { RecursivePartial, mergePartial } from '../../../utils/commons';
+import { mergePartial, RecursivePartial } from '../../../utils/commons';
 
 describe('Rendering utils', () => {
   test('check if point is in geometry', () => {

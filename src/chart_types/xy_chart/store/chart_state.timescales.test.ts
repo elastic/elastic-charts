@@ -16,6 +16,8 @@ describe('Render chart', () => {
       store = new ChartStore();
 
       const lineSeries: LineSeriesSpec = {
+        chartType: 'xy_axis',
+        specType: 'series',
         id: getSpecId('lines'),
         groupId: getGroupId('line'),
         seriesType: 'line',
@@ -67,6 +69,8 @@ describe('Render chart', () => {
       store = new ChartStore();
 
       const lineSeries: LineSeriesSpec = {
+        chartType: 'xy_axis',
+        specType: 'series',
         id: getSpecId('lines'),
         groupId: getGroupId('line'),
         seriesType: 'line',
@@ -118,6 +122,8 @@ describe('Render chart', () => {
       store = new ChartStore();
 
       const lineSeries: LineSeriesSpec = {
+        chartType: 'xy_axis',
+        specType: 'series',
         id: getSpecId('lines'),
         groupId: getGroupId('line'),
         seriesType: 'line',

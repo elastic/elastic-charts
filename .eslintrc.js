@@ -1,19 +1,18 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint'],
+  plugins: ['import', 'react', '@typescript-eslint', 'prettier'],
   extends: [
     'plugin:@typescript-eslint/recommended',
     'prettier/@typescript-eslint',
     'plugin:prettier/recommended',
     'plugin:react/recommended',
   ],
-  plugins: ['import', 'jest'],
 
   env: {
     es6: true,
     node: true,
-    mocha: true,
     browser: true,
+    jest: true,
   },
 
   parserOptions: {
@@ -33,11 +32,14 @@ module.exports = {
     project: undefined,
   },
   rules: {
-    'no-unused-vars': ['error', {
-      vars: 'all',
-      args: 'after-used',
-      ignoreRestSiblings: true,
-    },],
+    'no-unused-vars': [
+      'error',
+      {
+        vars: 'all',
+        args: 'after-used',
+        ignoreRestSiblings: true,
+      },
+    ],
     '@typescript-eslint/no-unused-vars': [
       'error',
       {
@@ -65,6 +67,7 @@ module.exports = {
     'import/resolver': {
       node: {
         extensions: ['.mjs', '.js', '.json', '.ts', '.tsx'],
+        moduleDirectory: [ 'node_modules','src' ]
       },
     },
     react: {

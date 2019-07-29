@@ -1,17 +1,39 @@
 import classNames from 'classnames';
-import { inject, observer } from 'mobx-react';
 import React, { createRef } from 'react';
 import { isVerticalAxis, isHorizontalAxis } from '../../chart_types/xy_chart/utils/axis_utils';
+import { connect } from 'react-redux';
 import { LegendItem as SeriesLegendItem } from '../../chart_types/xy_chart/legend/legend';
-import { ChartStore } from '../../chart_types/xy_chart/store/chart_state';
 import { Position } from '../../chart_types/xy_chart/utils/specs';
+import { IChartState } from '../../store/chart_store';
+import { isInitialized } from '../../store/selectors/is_initialized';
+import { computeLegendSelector } from '../../chart_types/xy_chart/store/selectors/compute_legend';
+import { getSettingsSpecSelector } from '../../store/selectors/get_settings_specs';
+import { getChartThemeSelector } from '../../store/selectors/get_chart_theme';
+import { isLegendInitializedSelector } from '../../chart_types/xy_chart/store/selectors/is_legend_initialized';
+import { getLegendTooltipValuesSelector } from '../../chart_types/xy_chart/store/selectors/get_legend_tooltip_values';
+import { onToggleLegend, onLegendItemOver, onLegendItemOut, onLegendRendered } from '../../store/actions/legend';
+import { Dispatch, bindActionCreators } from 'redux';
+import { LIGHT_THEME } from '../../utils/themes/light_theme';
 import { LegendItem } from './legend_item';
 import { Theme } from '../../utils/themes/theme';
 import { TooltipLegendValue } from '../../chart_types/xy_chart/tooltip/tooltip';
-import { AccessorType } from '../../chart_types/xy_chart/rendering/rendering';
+import { AccessorType } from 'utils/geometry';
 
 interface LegendProps {
-  chartStore?: ChartStore; // FIX until we find a better way on ts mobx
+  initialized: boolean;
+  legendInitialized: boolean;
+  isCursorOnChart: boolean; //TODO
+  legendItems: Map<string, SeriesLegendItem>;
+  legendPosition: Position;
+  legendItemTooltipValues: Map<string, TooltipLegendValue>;
+  showLegend: boolean;
+  legendCollapsed: boolean;
+  debug: boolean;
+  chartTheme: Theme;
+  toggleLegend: () => void;
+  onLegendItemOut: () => void;
+  onLegendItemOver: (legendItem: string) => void;
+  onLegendRendered: () => void;
 }
 
 interface LegendState {
@@ -34,50 +56,43 @@ interface LegendListStyle {
 
 class LegendComponent extends React.Component<LegendProps, LegendState> {
   static displayName = 'Legend';
-
   state = {
     width: undefined,
   };
 
   private echLegend = createRef<HTMLDivElement>();
-
+  componentDidMount() {
+    console.log('LEGEND DID MOUNT');
+    const { legendInitialized, showLegend } = this.props;
+    if (showLegend && legendInitialized) {
+      this.props.onLegendRendered();
+    }
+  }
   componentDidUpdate() {
-    const { chartInitialized, chartTheme, legendPosition } = this.props.chartStore!;
-    if (
-      this.echLegend.current &&
-      isVerticalAxis(legendPosition.get()) &&
-      this.state.width === undefined &&
-      !chartInitialized.get()
-    ) {
+    console.log('LEGEND DID UPDATE');
+    const { chartTheme, legendPosition } = this.props;
+    if (this.echLegend.current && isVerticalAxis(legendPosition) && this.state.width === undefined) {
       const buffer = chartTheme.legend.spacingBuffer;
 
       this.setState({
         width: this.echLegend.current.offsetWidth + buffer,
       });
     }
+    this.props.onLegendRendered();
   }
 
   render() {
-    const {
-      legendInitialized,
-      chartInitialized,
-      legendItems,
-      legendPosition,
-      showLegend,
-      debug,
-      chartTheme,
-    } = this.props.chartStore!;
-    const position = legendPosition.get();
+    const { legendInitialized, legendItems, legendPosition, showLegend, debug, chartTheme } = this.props;
 
-    if (!showLegend.get() || !legendInitialized.get() || legendItems.size === 0) {
+    if (!showLegend || !legendInitialized || legendItems.size === 0) {
       return null;
     }
 
-    const legendContainerStyle = this.getLegendStyle(position, chartTheme);
-    const legendListStyle = this.getLegendListStyle(position, chartTheme);
-    const legendClasses = classNames('echLegend', `echLegend--${position}`, {
+    const legendContainerStyle = this.getLegendStyle(legendPosition, chartTheme);
+    const legendListStyle = this.getLegendListStyle(legendPosition, chartTheme);
+    const legendClasses = classNames('echLegend', `echLegend--${legendPosition}`, {
       'echLegend--debug': debug,
-      invisible: !chartInitialized.get(),
+      invisible: !legendInitialized,
     });
 
     return (
@@ -131,11 +146,11 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
   };
 
   onLegendItemMouseover = (legendItemKey: string) => () => {
-    this.props.chartStore!.onLegendItemOver(legendItemKey);
+    this.props.onLegendItemOver(legendItemKey);
   };
 
   onLegendItemMouseout = () => {
-    this.props.chartStore!.onLegendItemOut();
+    this.props.onLegendItemOut();
   };
 
   private getLegendValues(
@@ -165,9 +180,8 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
 
   private renderLegendElement = (item: SeriesLegendItem) => {
     const { key, displayValue, banded } = item;
-    const { legendPosition, legendItemTooltipValues, isCursorOnChart } = this.props.chartStore!;
-    const tooltipValues = legendItemTooltipValues.get();
-    const legendValues = this.getLegendValues(tooltipValues, key, banded);
+    const { isCursorOnChart, legendItemTooltipValues } = this.props;
+    const legendValues = this.getLegendValues(legendItemTooltipValues, key, banded);
 
     return legendValues.map((value, index) => {
       const yAccessor: AccessorType = index === 0 ? AccessorType.Y1 : AccessorType.Y0;
@@ -176,9 +190,8 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
           {...item}
           label={this.getItemLabel(item, yAccessor)}
           key={`${key}-${yAccessor}`}
-          legendItemKey={key}
-          legendPosition={legendPosition.get()}
-          displayValue={isCursorOnChart.get() ? value : displayValue.formatted[yAccessor]}
+          legendItem={item}
+          displayValue={isCursorOnChart ? value : displayValue.formatted[yAccessor]}
           onMouseEnter={this.onLegendItemMouseover(key)}
           onMouseLeave={this.onLegendItemMouseout}
         />
@@ -187,4 +200,48 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
   };
 }
 
-export const Legend = inject('chartStore')(observer(LegendComponent));
+const mapDispatchToProps = (dispatch: Dispatch) =>
+  bindActionCreators(
+    {
+      toggleLegend: onToggleLegend,
+      onLegendItemOut,
+      onLegendItemOver,
+      onLegendRendered,
+    },
+    dispatch,
+  );
+
+const mapStateToProps = (state: IChartState) => {
+  if (!isInitialized(state)) {
+    return {
+      legendInitialized: false, //TODO
+      isCursorOnChart: false, //TODO
+      initialized: false,
+      legendItems: new Map(),
+      legendPosition: Position.Right,
+      showLegend: false,
+      legendCollapsed: false,
+      legendItemTooltipValues: new Map(),
+      debug: false,
+      chartTheme: LIGHT_THEME,
+    };
+  }
+  const settingsSpec = getSettingsSpecSelector(state);
+  return {
+    legendInitialized: isLegendInitializedSelector(state),
+    isCursorOnChart: false, //TODO
+    initialized: isInitialized(state),
+    legendItems: computeLegendSelector(state),
+    legendPosition: settingsSpec.legendPosition,
+    showLegend: settingsSpec.showLegend,
+    legendCollapsed: state.interactions.legendCollapsed,
+    legendItemTooltipValues: getLegendTooltipValuesSelector(state),
+    debug: settingsSpec.debug,
+    chartTheme: getChartThemeSelector(state),
+  };
+};
+
+export const Legend = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(LegendComponent);

@@ -18,7 +18,7 @@ export function computeChartDimensions(
   parentDimensions: Dimensions,
   chartTheme: Theme,
   axisDimensions: Map<AxisId, AxisTicksDimensions>,
-  axisSpecs: Map<AxisId, AxisSpec>,
+  axisSpecs: AxisSpec[],
 ): {
   chartDimensions: Dimensions;
   leftMargin: number;
@@ -35,7 +35,7 @@ export function computeChartDimensions(
   let horizontalEdgeLabelOverflow = 0;
   let verticalEdgeLabelOverflow = 0;
   axisDimensions.forEach(({ maxLabelBboxWidth = 0, maxLabelBboxHeight = 0 }, id) => {
-    const axisSpec = axisSpecs.get(id);
+    const axisSpec = axisSpecs.find((spec) => spec.id === id);
     if (!axisSpec || axisSpec.hide) {
       return;
     }

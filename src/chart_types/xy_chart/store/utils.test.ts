@@ -1,5 +1,3 @@
-import { mergeYCustomDomainsByGroupId } from '../utils/axis_utils';
-import { IndexedGeometry, AccessorType } from '../rendering/rendering';
 import { DataSeriesColorsValues, findDataSeriesByColorValues, getSeriesColorMap } from '../utils/series';
 import {
   AreaSeriesSpec,
@@ -27,13 +25,15 @@ import {
   isVerticalRotation,
   mergeGeometriesIndexes,
   setBarSeriesAccessors,
-  updateDeselectedDataSeries,
 } from '../store/utils';
 import { LegendItem } from '../legend/legend';
+import { IndexedGeometry, AccessorType } from '../../../utils/geometry';
 
 describe('Chart State utils', () => {
   it('should compute and format specifications for non stacked chart', () => {
     const spec1: BasicSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
       id: getSpecId('spec1'),
       groupId: getGroupId('group1'),
       seriesType: 'line',
@@ -45,6 +45,8 @@ describe('Chart State utils', () => {
       data: BARCHART_1Y0G,
     };
     const spec2: BasicSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
       id: getSpecId('spec2'),
       groupId: getGroupId('group2'),
       seriesType: 'line',
@@ -87,6 +89,8 @@ describe('Chart State utils', () => {
   });
   it('should compute and format specifications for stacked chart', () => {
     const spec1: BasicSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
       id: getSpecId('spec1'),
       groupId: getGroupId('group1'),
       seriesType: 'line',
@@ -99,6 +103,8 @@ describe('Chart State utils', () => {
       data: BARCHART_1Y1G,
     };
     const spec2: BasicSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
       id: getSpecId('spec2'),
       groupId: getGroupId('group2'),
       seriesType: 'line',
@@ -189,6 +195,8 @@ describe('Chart State utils', () => {
   });
   it('should get an updated customSeriesColor based on specs', () => {
     const spec1: BasicSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
       id: getSpecId('spec1'),
       groupId: getGroupId('group1'),
       seriesType: 'line',
@@ -239,6 +247,8 @@ describe('Chart State utils', () => {
   });
   test('is an area or line only map', () => {
     const area: AreaSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
       id: getSpecId('area'),
       groupId: getGroupId('group1'),
       seriesType: 'area',
@@ -251,6 +261,8 @@ describe('Chart State utils', () => {
       data: BARCHART_1Y1G,
     };
     const line: LineSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
       id: getSpecId('line'),
       groupId: getGroupId('group2'),
       seriesType: 'line',
@@ -264,6 +276,8 @@ describe('Chart State utils', () => {
       data: BARCHART_1Y1G,
     };
     const bar: BarSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
       id: getSpecId('bar'),
       groupId: getGroupId('group2'),
       seriesType: 'bar',
@@ -311,6 +325,8 @@ describe('Chart State utils', () => {
   describe('Geometries counts', () => {
     test('can compute stacked geometries counts', () => {
       const area: AreaSeriesSpec = {
+        chartType: 'xy_axis',
+        specType: 'series',
         id: getSpecId('area'),
         groupId: getGroupId('group1'),
         seriesType: 'area',
@@ -323,6 +339,8 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y1G,
       };
       const line: LineSeriesSpec = {
+        chartType: 'xy_axis',
+        specType: 'series',
         id: getSpecId('line'),
         groupId: getGroupId('group2'),
         seriesType: 'line',
@@ -336,6 +354,8 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y1G,
       };
       const bar: BarSeriesSpec = {
+        chartType: 'xy_axis',
+        specType: 'series',
         id: getSpecId('bar'),
         groupId: getGroupId('group2'),
         seriesType: 'bar',
@@ -380,6 +400,8 @@ describe('Chart State utils', () => {
     });
     test('can compute non stacked geometries indexes', () => {
       const line1: LineSeriesSpec = {
+        chartType: 'xy_axis',
+        specType: 'series',
         id: getSpecId('line1'),
         groupId: getGroupId('group1'),
         seriesType: 'line',
@@ -391,6 +413,8 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y0G,
       };
       const line2: LineSeriesSpec = {
+        chartType: 'xy_axis',
+        specType: 'series',
         id: getSpecId('line2'),
         groupId: getGroupId('group2'),
         seriesType: 'line',
@@ -433,6 +457,8 @@ describe('Chart State utils', () => {
     });
     test('can compute stacked geometries indexes', () => {
       const line1: LineSeriesSpec = {
+        chartType: 'xy_axis',
+        specType: 'series',
         id: getSpecId('line1'),
         groupId: getGroupId('group1'),
         seriesType: 'line',
@@ -445,6 +471,8 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y0G,
       };
       const line2: LineSeriesSpec = {
+        chartType: 'xy_axis',
+        specType: 'series',
         id: getSpecId('line2'),
         groupId: getGroupId('group2'),
         seriesType: 'line',
@@ -488,6 +516,8 @@ describe('Chart State utils', () => {
     });
     test('can compute non stacked geometries counts', () => {
       const area: AreaSeriesSpec = {
+        chartType: 'xy_axis',
+        specType: 'series',
         id: getSpecId('area'),
         groupId: getGroupId('group1'),
         seriesType: 'area',
@@ -500,6 +530,8 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y1G,
       };
       const line: LineSeriesSpec = {
+        chartType: 'xy_axis',
+        specType: 'series',
         id: getSpecId('line'),
         groupId: getGroupId('group2'),
         seriesType: 'line',
@@ -512,6 +544,8 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y1G,
       };
       const bar: BarSeriesSpec = {
+        chartType: 'xy_axis',
+        specType: 'series',
         id: getSpecId('bar'),
         groupId: getGroupId('group2'),
         seriesType: 'bar',
@@ -568,6 +602,8 @@ describe('Chart State utils', () => {
     });
     test('can compute line geometries counts', () => {
       const line1: LineSeriesSpec = {
+        chartType: 'xy_axis',
+        specType: 'series',
         id: getSpecId('line1'),
         groupId: getGroupId('group2'),
         seriesType: 'line',
@@ -580,6 +616,8 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y1G,
       };
       const line2: LineSeriesSpec = {
+        chartType: 'xy_axis',
+        specType: 'series',
         id: getSpecId('line2'),
         groupId: getGroupId('group2'),
         seriesType: 'line',
@@ -592,6 +630,8 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y1G,
       };
       const line3: LineSeriesSpec = {
+        chartType: 'xy_axis',
+        specType: 'series',
         id: getSpecId('line3'),
         groupId: getGroupId('group2'),
         seriesType: 'line',
@@ -635,6 +675,8 @@ describe('Chart State utils', () => {
     });
     test('can compute area geometries counts', () => {
       const area1: AreaSeriesSpec = {
+        chartType: 'xy_axis',
+        specType: 'series',
         id: getSpecId('area1'),
         groupId: getGroupId('group2'),
         seriesType: 'area',
@@ -647,6 +689,8 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y1G,
       };
       const area2: AreaSeriesSpec = {
+        chartType: 'xy_axis',
+        specType: 'series',
         id: getSpecId('area2'),
         groupId: getGroupId('group2'),
         seriesType: 'area',
@@ -659,6 +703,8 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y1G,
       };
       const area3: AreaSeriesSpec = {
+        chartType: 'xy_axis',
+        specType: 'series',
         id: getSpecId('area3'),
         groupId: getGroupId('group2'),
         seriesType: 'area',
@@ -702,6 +748,8 @@ describe('Chart State utils', () => {
     });
     test('can compute line geometries with custom style', () => {
       const line1: LineSeriesSpec = {
+        chartType: 'xy_axis',
+        specType: 'series',
         id: getSpecId('line1'),
         groupId: getGroupId('group2'),
         seriesType: 'line',
@@ -722,6 +770,8 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y1G,
       };
       const line2: LineSeriesSpec = {
+        chartType: 'xy_axis',
+        specType: 'series',
         id: getSpecId('line2'),
         groupId: getGroupId('group2'),
         seriesType: 'line',
@@ -734,6 +784,8 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y1G,
       };
       const line3: LineSeriesSpec = {
+        chartType: 'xy_axis',
+        specType: 'series',
         id: getSpecId('line3'),
         groupId: getGroupId('group2'),
         seriesType: 'line',
@@ -785,6 +837,8 @@ describe('Chart State utils', () => {
     });
     test('can compute area geometries with custom style', () => {
       const area1: AreaSeriesSpec = {
+        chartType: 'xy_axis',
+        specType: 'series',
         id: getSpecId('area1'),
         groupId: getGroupId('group2'),
         seriesType: 'area',
@@ -809,6 +863,8 @@ describe('Chart State utils', () => {
         },
       };
       const area2: AreaSeriesSpec = {
+        chartType: 'xy_axis',
+        specType: 'series',
         id: getSpecId('area2'),
         groupId: getGroupId('group2'),
         seriesType: 'area',
@@ -821,6 +877,8 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y1G,
       };
       const area3: AreaSeriesSpec = {
+        chartType: 'xy_axis',
+        specType: 'series',
         id: getSpecId('area3'),
         groupId: getGroupId('group2'),
         seriesType: 'area',
@@ -877,6 +935,8 @@ describe('Chart State utils', () => {
     });
     test('can compute bars geometries counts', () => {
       const bars1: BarSeriesSpec = {
+        chartType: 'xy_axis',
+        specType: 'series',
         id: getSpecId('bars1'),
         groupId: getGroupId('group2'),
         seriesType: 'bar',
@@ -889,6 +949,8 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y1G,
       };
       const bars2: BarSeriesSpec = {
+        chartType: 'xy_axis',
+        specType: 'series',
         id: getSpecId('bars2'),
         groupId: getGroupId('group2'),
         seriesType: 'bar',
@@ -901,6 +963,8 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y1G,
       };
       const bars3: BarSeriesSpec = {
+        chartType: 'xy_axis',
+        specType: 'series',
         id: getSpecId('bars3'),
         groupId: getGroupId('group2'),
         seriesType: 'bar',
@@ -1056,6 +1120,8 @@ describe('Chart State utils', () => {
   });
   test('can determine if histogram mode is enabled', () => {
     const area: AreaSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
       id: getSpecId('area'),
       groupId: getGroupId('group1'),
       seriesType: 'area',
@@ -1068,6 +1134,8 @@ describe('Chart State utils', () => {
       data: BARCHART_1Y1G,
     };
     const line: LineSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
       id: getSpecId('line'),
       groupId: getGroupId('group2'),
       seriesType: 'line',
@@ -1081,6 +1149,8 @@ describe('Chart State utils', () => {
       data: BARCHART_1Y1G,
     };
     const basicBar: BarSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
       id: getSpecId('bar'),
       groupId: getGroupId('group2'),
       seriesType: 'bar',
@@ -1094,6 +1164,8 @@ describe('Chart State utils', () => {
       data: BARCHART_1Y1G,
     };
     const histogramBar: BarSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
       id: getSpecId('histo'),
       groupId: getGroupId('group2'),
       seriesType: 'bar',
@@ -1127,6 +1199,8 @@ describe('Chart State utils', () => {
     const isHistogramEnabled = true;
 
     const area: AreaSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
       id: getSpecId('area'),
       groupId: getGroupId('group1'),
       seriesType: 'area',
@@ -1139,6 +1213,8 @@ describe('Chart State utils', () => {
       data: BARCHART_1Y1G,
     };
     const line: LineSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
       id: getSpecId('line'),
       groupId: getGroupId('group2'),
       seriesType: 'line',
@@ -1152,6 +1228,8 @@ describe('Chart State utils', () => {
       data: BARCHART_1Y1G,
     };
     const bar: BarSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
       id: getSpecId('bar'),
       groupId: getGroupId('group2'),
       seriesType: 'bar',
@@ -1181,6 +1259,8 @@ describe('Chart State utils', () => {
 
     // add another bar
     const bar2: BarSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
       id: getSpecId('bar2'),
       groupId: getGroupId('group2'),
       seriesType: 'bar',

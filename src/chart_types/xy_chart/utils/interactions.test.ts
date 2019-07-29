@@ -1,4 +1,3 @@
-import { IndexedGeometry, PointGeometry } from '../rendering/rendering';
 import { Dimensions } from '../../../utils/dimensions';
 import { getSpecId } from '../../../utils/ids';
 import {
@@ -10,6 +9,7 @@ import {
   isFollowTooltipType,
   TooltipType,
 } from './interactions';
+import { IndexedGeometry, PointGeometry } from '../../../utils/geometry';
 
 const seriesStyle = {
   rect: {

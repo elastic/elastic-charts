@@ -1,15 +1,21 @@
-import { inject } from 'mobx-react';
 import React, { createRef, CSSProperties, PureComponent } from 'react';
 import { LineAnnotationSpec, DEFAULT_GLOBAL_ID } from '../utils/specs';
 import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../utils/themes/theme';
-import { getGroupId } from '../../../utils/ids';
-import { SpecProps } from '../../../specs/specs_parser';
+import { bindActionCreators, Dispatch } from 'redux';
+import { connect } from 'react-redux';
+import { upsertSpec, removeSpec } from '../../../store/actions/specs';
+import { Spec } from 'specs';
 
-type LineAnnotationProps = SpecProps & LineAnnotationSpec;
-
-export class LineAnnotationSpecComponent extends PureComponent<LineAnnotationProps> {
-  static defaultProps: Partial<LineAnnotationProps> = {
-    groupId: getGroupId(DEFAULT_GLOBAL_ID),
+type InjectedProps = LineAnnotationSpec &
+  DispatchProps &
+  Readonly<{
+    children?: React.ReactNode;
+  }>;
+export class LineAnnotationSpecComponent extends PureComponent<LineAnnotationSpec> {
+  static defaultProps: Partial<LineAnnotationSpec> = {
+    chartType: 'xy_axis',
+    specType: 'annotation',
+    groupId: DEFAULT_GLOBAL_ID,
     annotationType: 'line',
     style: DEFAULT_ANNOTATION_LINE_STYLE,
     hideLines: false,
@@ -20,7 +26,8 @@ export class LineAnnotationSpecComponent extends PureComponent<LineAnnotationPro
   private markerRef = createRef<HTMLDivElement>();
 
   componentDidMount() {
-    const { chartStore, children, ...config } = this.props;
+    const { children, upsertSpec, removeSpec, ...config } = this.props as InjectedProps;
+    console.log('ANNOTATION DID MOUNT');
     if (this.markerRef.current) {
       const { offsetWidth, offsetHeight } = this.markerRef.current;
       config.markerDimensions = {
@@ -28,10 +35,10 @@ export class LineAnnotationSpecComponent extends PureComponent<LineAnnotationPro
         height: offsetHeight,
       };
     }
-    chartStore!.addAnnotationSpec({ ...config });
+    upsertSpec({ ...config });
   }
   componentDidUpdate() {
-    const { chartStore, children, ...config } = this.props;
+    const { upsertSpec, removeSpec, children, ...config } = this.props as InjectedProps;
     if (this.markerRef.current) {
       const { offsetWidth, offsetHeight } = this.markerRef.current;
       config.markerDimensions = {
@@ -39,11 +46,11 @@ export class LineAnnotationSpecComponent extends PureComponent<LineAnnotationPro
         height: offsetHeight,
       };
     }
-    chartStore!.addAnnotationSpec({ ...config });
+    upsertSpec({ ...config });
   }
   componentWillUnmount() {
-    const { chartStore, annotationId } = this.props;
-    chartStore!.removeAnnotationSpec(annotationId);
+    const { removeSpec, id } = this.props as InjectedProps;
+    removeSpec(id);
   }
   render() {
     if (!this.props.marker) {
@@ -67,4 +74,22 @@ export class LineAnnotationSpecComponent extends PureComponent<LineAnnotationPro
   }
 }
 
-export const LineAnnotation = inject('chartStore')(LineAnnotationSpecComponent);
+interface DispatchProps {
+  upsertSpec: (spec: Spec) => void;
+  removeSpec: (id: string) => void;
+}
+const mapDispatchToProps = (dispatch: Dispatch) =>
+  bindActionCreators(
+    {
+      upsertSpec,
+      removeSpec,
+    },
+    dispatch,
+  );
+
+const mapStateToProps = () => ({});
+
+export const LineAnnotation = connect<{}, DispatchProps, LineAnnotationSpec>(
+  mapStateToProps,
+  mapDispatchToProps,
+)(LineAnnotationSpecComponent);

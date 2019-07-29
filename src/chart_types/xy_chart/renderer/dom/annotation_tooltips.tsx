@@ -1,31 +1,41 @@
-import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { isLineAnnotation } from '../chart_types/xy_chart/utils/specs';
-import { AnnotationId } from '../utils/ids';
+import { isLineAnnotation, AnnotationSpec } from '../../utils/specs';
+import { AnnotationId } from 'utils/ids';
 import {
   AnnotationDimensions,
   AnnotationLineProps,
+  AnnotationTooltipState,
   AnnotationTooltipFormatter,
-} from '../chart_types/xy_chart/annotations/annotation_utils';
-import { ChartStore } from '../chart_types/xy_chart/store/chart_state';
+} from '../../annotations/annotation_utils';
+import { connect } from 'react-redux';
+import { Dimensions } from 'utils/dimensions';
+import { IChartState } from 'store/chart_store';
+import { isInitialized } from 'store/selectors/is_initialized';
+import { getChartDimensionsSelector } from 'store/selectors/get_chart_dimensions';
+import { computeAnnotationDimensionsSelector } from 'chart_types/xy_chart/store/selectors/compute_annotations';
+import { getAnnotationSpecsSelector } from 'chart_types/xy_chart/store/selectors/get_specs';
+import { getAnnotationTooltipStateSelector } from 'chart_types/xy_chart/store/selectors/get_annotation_tooltip_state';
+import { isChartEmptySelector } from 'chart_types/xy_chart/store/selectors/is_chart_empty';
 
 interface AnnotationTooltipProps {
-  chartStore?: ChartStore;
+  isChartEmpty: boolean;
+  tooltipState: AnnotationTooltipState | null;
+  chartDimensions: Dimensions;
+  annotationDimensions: Map<AnnotationId, AnnotationDimensions>;
+  annotationSpecs: AnnotationSpec[];
 }
-
 class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps> {
   static displayName = 'AnnotationTooltip';
 
   renderTooltip() {
-    const { annotationTooltipState } = this.props.chartStore!;
-    const tooltipState = annotationTooltipState.get();
+    const { tooltipState } = this.props;
 
     if (!tooltipState || !tooltipState.isVisible) {
       return <div className="echAnnotation__tooltip echAnnotation__tooltip--hidden" />;
     }
 
     const { transform, details, header } = tooltipState;
-    const chartDimensions = this.props.chartStore!.chartDimensions;
+    const chartDimensions = this.props.chartDimensions;
 
     const tooltipTop = tooltipState.top;
     const tooltipLeft = tooltipState.left;
@@ -53,7 +63,7 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
   }
 
   renderAnnotationLineMarkers(annotationLines: AnnotationLineProps[], id: AnnotationId): JSX.Element[] {
-    const { chartDimensions } = this.props.chartStore!;
+    const { chartDimensions } = this.props;
 
     const markers: JSX.Element[] = [];
 
@@ -84,11 +94,11 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
   }
 
   renderAnnotationMarkers(): JSX.Element[] {
-    const { annotationDimensions, annotationSpecs } = this.props.chartStore!;
+    const { annotationDimensions, annotationSpecs } = this.props;
     const markers: JSX.Element[] = [];
 
     annotationDimensions.forEach((dimensions: AnnotationDimensions, id: AnnotationId) => {
-      const annotationSpec = annotationSpecs.get(id);
+      const annotationSpec = annotationSpecs.find((spec) => spec.id === id);
       if (!annotationSpec) {
         return;
       }
@@ -104,9 +114,9 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
   }
 
   render() {
-    const { chartStore } = this.props;
+    const { isChartEmpty } = this.props;
 
-    if (chartStore!.isChartEmpty.get()) {
+    if (isChartEmpty) {
       return null;
     }
 
@@ -118,8 +128,6 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
     );
   }
 }
-
-export const AnnotationTooltip = inject('chartStore')(observer(AnnotationTooltipComponent));
 
 function RectAnnotationTooltip(props: {
   details?: string;
@@ -155,3 +163,28 @@ function LineAnnotationTooltip(props: {
     </div>
   );
 }
+
+const mapDispatchToProps = () => ({});
+const mapStateToProps = (state: IChartState): AnnotationTooltipProps => {
+  if (!isInitialized(state)) {
+    return {
+      isChartEmpty: true,
+      chartDimensions: { top: 0, left: 0, width: 0, height: 0 },
+      annotationDimensions: new Map(),
+      annotationSpecs: [],
+      tooltipState: null,
+    };
+  }
+  return {
+    isChartEmpty: isChartEmptySelector(state),
+    chartDimensions: getChartDimensionsSelector(state),
+    annotationDimensions: computeAnnotationDimensionsSelector(state),
+    annotationSpecs: getAnnotationSpecsSelector(state),
+    tooltipState: getAnnotationTooltipStateSelector(state),
+  };
+};
+
+export const AnnotationTooltip = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(AnnotationTooltipComponent);

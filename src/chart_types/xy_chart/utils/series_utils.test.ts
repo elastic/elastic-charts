@@ -1,7 +1,7 @@
 import { getSpecId } from '../../../utils/ids';
-import { GeometryId } from '../rendering/rendering';
 import { DataSeriesColorsValues } from './series';
 import { belongsToDataSeries, isEqualSeriesKey } from './series_utils';
+import { GeometryId } from '../../../utils/geometry';
 
 describe('Series utility functions', () => {
   test('can compare series keys for identity', () => {

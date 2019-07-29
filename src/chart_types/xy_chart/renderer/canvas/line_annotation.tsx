@@ -1,8 +1,8 @@
 import React from 'react';
 import { Group, Line } from 'react-konva';
-import { LineAnnotationStyle } from '../../utils/themes/theme';
-import { Dimensions } from '../../utils/dimensions';
-import { AnnotationLineProps } from '../../chart_types/xy_chart/annotations/annotation_utils';
+import { LineAnnotationStyle } from 'utils/themes/theme';
+import { Dimensions } from 'utils/dimensions';
+import { AnnotationLineProps } from '../../annotations/annotation_utils';
 
 interface LineAnnotationProps {
   chartDimensions: Dimensions;
@@ -23,6 +23,7 @@ export class LineAnnotation extends React.PureComponent<LineAnnotationProps> {
       points: position,
       ...line,
     };
+    console.log({ lineProps });
 
     return <Line {...lineProps} key={`tick-${i}`} />;
   };

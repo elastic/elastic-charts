@@ -2,14 +2,8 @@ import { Group as KonvaGroup, ContainerConfig } from 'konva';
 import React from 'react';
 import { Circle, Group, Path } from 'react-konva';
 import { LegendItem } from '../../chart_types/xy_chart/legend/legend';
-import {
-  AreaGeometry,
-  getGeometryStyle,
-  PointGeometry,
-  getGeometryIdKey,
-  GeometryId,
-} from '../../chart_types/xy_chart/rendering/rendering';
-import { SharedGeometryStyle, PointStyle } from '../../utils/themes/theme';
+import { getGeometryStyle, getGeometryIdKey } from '../../chart_types/xy_chart/rendering/rendering';
+import { SharedGeometryStyle } from '../../utils/themes/theme';
 import {
   buildAreaRenderProps,
   buildPointStyleProps,
@@ -17,7 +11,8 @@ import {
   PointStyleProps,
   buildLineRenderProps,
 } from './utils/rendering_props_utils';
-import { mergePartial } from '../../utils/commons';
+import { AreaGeometry, PointGeometry, GeometryId } from '../../utils/geometry';
+import { mergePartial } from 'utils/commons';
 
 interface AreaGeometriesDataProps {
   animated?: boolean;
