@@ -12,6 +12,8 @@ describe('Crosshair utils ordinal scales', () => {
   const lineSeries2SpecId = getSpecId('lineSeries2');
 
   const barSeries1: BasicSeriesSpec = {
+    chartType: 'xy_axis',
+    specType: 'series',
     id: barSeries1SpecId,
     groupId: getGroupId('group1'),
     seriesType: 'bar',
@@ -23,6 +25,8 @@ describe('Crosshair utils ordinal scales', () => {
     yScaleToDataExtent: true,
   };
   const barSeries2: BasicSeriesSpec = {
+    chartType: 'xy_axis',
+    specType: 'series',
     id: barSeries2SpecId,
     groupId: getGroupId('group1'),
     seriesType: 'bar',
@@ -34,6 +38,8 @@ describe('Crosshair utils ordinal scales', () => {
     yScaleToDataExtent: true,
   };
   const lineSeries1: BasicSeriesSpec = {
+    chartType: 'xy_axis',
+    specType: 'series',
     id: lineSeries1SpecId,
     groupId: getGroupId('group1'),
     seriesType: 'line',
@@ -45,6 +51,8 @@ describe('Crosshair utils ordinal scales', () => {
     yScaleToDataExtent: true,
   };
   const lineSeries2: BasicSeriesSpec = {
+    chartType: 'xy_axis',
+    specType: 'series',
     id: lineSeries2SpecId,
     groupId: getGroupId('group1'),
     seriesType: 'line',
@@ -56,54 +64,44 @@ describe('Crosshair utils ordinal scales', () => {
     yScaleToDataExtent: true,
   };
 
-  const barSeriesMap = new Map();
-  barSeriesMap.set(barSeries1SpecId, barSeries1);
+  const barSeriesMap = [barSeries1];
   const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
 
-  const multiBarSeriesMap = new Map();
-  multiBarSeriesMap.set(barSeries1SpecId, barSeries1);
-  multiBarSeriesMap.set(barSeries2SpecId, barSeries2);
+  const multiBarSeriesMap = [barSeries1, barSeries2];
   const multiBarSeriesDomains = computeSeriesDomains(multiBarSeriesMap, new Map());
 
-  const lineSeriesMap = new Map();
-  lineSeriesMap.set(lineSeries1SpecId, lineSeries1);
+  const lineSeriesMap = [lineSeries1];
   const lineSeriesDomains = computeSeriesDomains(lineSeriesMap, new Map());
 
-  const multiLineSeriesMap = new Map();
-  multiLineSeriesMap.set(lineSeries1SpecId, lineSeries1);
-  multiLineSeriesMap.set(lineSeries2SpecId, lineSeries2);
+  const multiLineSeriesMap = [lineSeries1, lineSeries2];
   const multiLineSeriesDomains = computeSeriesDomains(multiLineSeriesMap, new Map());
 
-  const mixedLinesBarsMap = new Map();
-  mixedLinesBarsMap.set(lineSeries1SpecId, lineSeries1);
-  mixedLinesBarsMap.set(lineSeries2SpecId, lineSeries2);
-  mixedLinesBarsMap.set(barSeries1SpecId, barSeries1);
-  mixedLinesBarsMap.set(barSeries2SpecId, barSeries2);
+  const mixedLinesBarsMap = [lineSeries1, lineSeries2, barSeries1, barSeries2];
   const mixedLinesBarsSeriesDomains = computeSeriesDomains(mixedLinesBarsMap, new Map());
 
   const barSeriesScale = computeXScale({
     xDomain: barSeriesDomains.xDomain,
-    totalBarsInCluster: barSeriesMap.size,
+    totalBarsInCluster: barSeriesMap.length,
     range: [0, 120],
   });
   const multiBarSeriesScale = computeXScale({
     xDomain: multiBarSeriesDomains.xDomain,
-    totalBarsInCluster: multiBarSeriesMap.size,
+    totalBarsInCluster: multiBarSeriesMap.length,
     range: [0, 120],
   });
   const lineSeriesScale = computeXScale({
     xDomain: lineSeriesDomains.xDomain,
-    totalBarsInCluster: lineSeriesMap.size,
+    totalBarsInCluster: lineSeriesMap.length,
     range: [0, 120],
   });
   const multiLineSeriesScale = computeXScale({
     xDomain: multiLineSeriesDomains.xDomain,
-    totalBarsInCluster: multiLineSeriesMap.size,
+    totalBarsInCluster: multiLineSeriesMap.length,
     range: [0, 120],
   });
   const mixedLinesBarsSeriesScale = computeXScale({
     xDomain: mixedLinesBarsSeriesDomains.xDomain,
-    totalBarsInCluster: mixedLinesBarsMap.size,
+    totalBarsInCluster: mixedLinesBarsMap.length,
     range: [0, 120],
   });
 

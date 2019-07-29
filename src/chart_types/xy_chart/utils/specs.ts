@@ -9,12 +9,14 @@ import {
 } from '../../../utils/themes/theme';
 import { Accessor, AccessorFormat } from '../../../utils/accessor';
 import { Omit, RecursivePartial } from '../../../utils/commons';
-import { AnnotationId, AxisId, GroupId, SpecId } from '../../../utils/ids';
+import { AxisId, GroupId } from '../../../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../../../utils/scales/scales';
 import { CurveType } from '../../../utils/curves';
-import { DataSeriesColorsValues, RawDataSeriesDatum } from './series';
-import { GeometryId } from '../rendering/rendering';
+import { RawDataSeriesDatum } from './series';
 import { AnnotationTooltipFormatter } from '../annotations/annotation_utils';
+import { DataSeriesColorsValues } from './series';
+import { Spec } from '../../../specs';
+import { GeometryId } from '../../../utils/geometry';
 
 export type Datum = any;
 export type Rotation = 0 | 90 | -90 | 180;
@@ -84,20 +86,18 @@ export interface DisplayValueSpec {
   hideClippedValue?: boolean;
 }
 
-export interface SeriesSpec {
-  /** The ID of the spec, generated via getSpecId method */
-  id: SpecId;
+export interface SeriesSpec extends Spec {
   /** The name or label of the spec */
   name?: string;
   /** The ID of the spec group, generated via getGroupId method
    * @default __global__
    */
-  groupId: GroupId;
+  groupId: string;
   /** when using a different groupId this option will allow compute in the same domain of the global domain */
   useDefaultGroupDomain?: boolean;
   /** An array of data */
-  data: Datum[];
-  /** The type of series you are looking to render */
+  data: Datum[] | number[][];
+  /** the type of series */
   seriesType: 'bar' | 'line' | 'area';
   /** Custom colors for series */
   customSeriesColors?: CustomSeriesColorsMap;
@@ -120,6 +120,9 @@ export interface SeriesSpec {
    * @default ' - lower'
    */
   y1AccessorFormat?: AccessorFormat;
+
+  specType: 'series';
+  chartType: 'xy_axis';
 }
 
 export interface Postfixes {
@@ -243,7 +246,7 @@ export type AreaSeriesSpec = BasicSeriesSpec &
     pointStyleAccessor?: PointStyleAccessor;
   };
 
-interface HistogramConfig {
+export interface HistogramConfig {
   /**  Determines how points in the series will align to bands in histogram mode
    * @default 'start'
    */
@@ -261,7 +264,9 @@ export type HistogramModeAlignment = 'start' | 'center' | 'end';
 /**
  * This spec describe the configuration for a chart axis.
  */
-export interface AxisSpec {
+export interface AxisSpec extends Spec {
+  specType: 'axis';
+  chartType: 'xy_axis';
   /** The ID of the spec, generated via getSpecId method */
   id: AxisId;
   /** Style options for grid line */
@@ -399,9 +404,9 @@ export type RectAnnotationSpec = BaseAnnotationSpec & {
   zIndex?: number;
 };
 
-export interface BaseAnnotationSpec {
-  /** The id of the annotation */
-  annotationId: AnnotationId;
+export interface BaseAnnotationSpec extends Spec {
+  chartType: 'xy_axis';
+  specType: 'annotation';
   /** Annotation type: line, rectangle, text */
   annotationType: AnnotationType;
   /** The ID of the axis group, generated via getGroupId method

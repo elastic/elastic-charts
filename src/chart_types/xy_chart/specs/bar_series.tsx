@@ -1,43 +1,33 @@
-import { inject } from 'mobx-react';
-import { PureComponent } from 'react';
 import { BarSeriesSpec, DEFAULT_GLOBAL_ID } from '../utils/specs';
-import { getGroupId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
-import { SpecProps } from '../../../specs/specs_parser';
+import { ChartTypes } from '../../../chart_types';
+import { specComponentFactory, getConnect } from '../../../store/spec_factory';
 
-type BarSpecProps = SpecProps & BarSeriesSpec;
+const defaultProps = {
+  chartType: ChartTypes.XYAxis,
+  specType: 'series' as 'series',
+  seriesType: 'bar' as 'bar',
+  groupId: DEFAULT_GLOBAL_ID,
+  xScaleType: ScaleType.Ordinal,
+  yScaleType: ScaleType.Linear,
+  xAccessor: 'x',
+  yAccessors: ['y'],
+  yScaleToDataExtent: false,
+  hideInLegend: false,
+  enableHistogramMode: false,
+};
 
-export class BarSeriesSpecComponent extends PureComponent<BarSpecProps> {
-  static defaultProps: Partial<BarSpecProps> = {
-    seriesType: 'bar',
-    groupId: getGroupId(DEFAULT_GLOBAL_ID),
-    xScaleType: ScaleType.Ordinal,
-    yScaleType: ScaleType.Linear,
-    xAccessor: 'x',
-    yAccessors: ['y'],
-    yScaleToDataExtent: false,
-    hideInLegend: false,
-    enableHistogramMode: false,
-    stackAsPercentage: false,
-  };
-  componentDidMount() {
-    const { chartStore, children, ...config } = this.props;
-    chartStore!.addSeriesSpec({ ...config });
-  }
-  componentDidUpdate(prevProps: BarSpecProps) {
-    const { chartStore, children, ...config } = this.props;
-    chartStore!.addSeriesSpec({ ...config });
-    if (prevProps.id !== this.props.id) {
-      chartStore!.removeSeriesSpec(prevProps.id);
-    }
-  }
-  componentWillUnmount() {
-    const { chartStore, id } = this.props;
-    chartStore!.removeSeriesSpec(id);
-  }
-  render() {
-    return null;
-  }
-}
-
-export const BarSeries = inject('chartStore')(BarSeriesSpecComponent);
+export const BarSeries = getConnect()(
+  specComponentFactory<
+    BarSeriesSpec,
+    | 'seriesType'
+    | 'groupId'
+    | 'xScaleType'
+    | 'yScaleType'
+    | 'xAccessor'
+    | 'yAccessors'
+    | 'yScaleToDataExtent'
+    | 'hideInLegend'
+    | 'enableHistogramMode'
+  >(defaultProps),
+);

@@ -1,6 +1,6 @@
 import { computeSeriesDomains } from '../store/utils';
 import { identity } from '../../../utils/commons';
-import { getGroupId, getSpecId, SpecId, GroupId } from '../../../utils/ids';
+import { getGroupId, getSpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
 import { renderBars } from './rendering';
 import { computeXScale, computeYScales } from '../utils/scales';
@@ -13,6 +13,8 @@ const GROUP_ID = getGroupId('group_1');
 describe('Rendering bars', () => {
   describe('Single series bar chart - ordinal', () => {
     const barSeriesSpec: BarSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
       id: SPEC_ID,
       groupId: GROUP_ID,
       seriesType: 'bar',
@@ -23,13 +25,12 @@ describe('Rendering bars', () => {
       xScaleType: ScaleType.Ordinal,
       yScaleType: ScaleType.Linear,
     };
-    const barSeriesMap = new Map<SpecId, BarSeriesSpec>();
-    barSeriesMap.set(SPEC_ID, barSeriesSpec);
+    const barSeriesMap = [barSeriesSpec];
     const customDomain = [0, 1];
     const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map(), customDomain);
     const xScale = computeXScale({
       xDomain: barSeriesDomains.xDomain,
-      totalBarsInCluster: barSeriesMap.size,
+      totalBarsInCluster: barSeriesMap.length,
       range: [0, 100],
     });
     const yScales = computeYScales({ yDomains: barSeriesDomains.yDomain, range: [100, 0] });
@@ -186,6 +187,8 @@ describe('Rendering bars', () => {
     const spec1Id = getSpecId('bar1');
     const spec2Id = getSpecId('bar2');
     const barSeriesSpec1: BarSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
       id: spec1Id,
       groupId: GROUP_ID,
       seriesType: 'bar',
@@ -197,6 +200,8 @@ describe('Rendering bars', () => {
       yScaleType: ScaleType.Linear,
     };
     const barSeriesSpec2: BarSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
       id: spec2Id,
       groupId: GROUP_ID,
       seriesType: 'bar',
@@ -207,13 +212,11 @@ describe('Rendering bars', () => {
       xScaleType: ScaleType.Ordinal,
       yScaleType: ScaleType.Linear,
     };
-    const barSeriesMap = new Map<SpecId, BarSeriesSpec>();
-    barSeriesMap.set(spec1Id, barSeriesSpec1);
-    barSeriesMap.set(spec2Id, barSeriesSpec2);
+    const barSeriesMap = [barSeriesSpec1, barSeriesSpec2];
     const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
     const xScale = computeXScale({
       xDomain: barSeriesDomains.xDomain,
-      totalBarsInCluster: barSeriesMap.size,
+      totalBarsInCluster: barSeriesMap.length,
       range: [0, 100],
     });
     const yScales = computeYScales({ yDomains: barSeriesDomains.yDomain, range: [100, 0] });
@@ -387,6 +390,8 @@ describe('Rendering bars', () => {
   });
   describe('Single series bar chart - linear', () => {
     const barSeriesSpec: BarSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
       id: SPEC_ID,
       groupId: GROUP_ID,
       seriesType: 'bar',
@@ -397,12 +402,11 @@ describe('Rendering bars', () => {
       xScaleType: ScaleType.Linear,
       yScaleType: ScaleType.Linear,
     };
-    const barSeriesMap = new Map<SpecId, BarSeriesSpec>();
-    barSeriesMap.set(SPEC_ID, barSeriesSpec);
+    const barSeriesMap = [barSeriesSpec];
     const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
     const xScale = computeXScale({
       xDomain: barSeriesDomains.xDomain,
-      totalBarsInCluster: barSeriesMap.size,
+      totalBarsInCluster: barSeriesMap.length,
       range: [0, 100],
     });
     const yScales = computeYScales({ yDomains: barSeriesDomains.yDomain, range: [100, 0] });
@@ -534,6 +538,8 @@ describe('Rendering bars', () => {
     const spec1Id = getSpecId('bar1');
     const spec2Id = getSpecId('bar2');
     const barSeriesSpec1: BarSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
       id: spec1Id,
       groupId: GROUP_ID,
       seriesType: 'bar',
@@ -545,6 +551,8 @@ describe('Rendering bars', () => {
       yScaleType: ScaleType.Linear,
     };
     const barSeriesSpec2: BarSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
       id: spec2Id,
       groupId: GROUP_ID,
       seriesType: 'bar',
@@ -555,13 +563,11 @@ describe('Rendering bars', () => {
       xScaleType: ScaleType.Linear,
       yScaleType: ScaleType.Linear,
     };
-    const barSeriesMap = new Map<SpecId, BarSeriesSpec>();
-    barSeriesMap.set(spec1Id, barSeriesSpec1);
-    barSeriesMap.set(spec2Id, barSeriesSpec2);
+    const barSeriesMap = [barSeriesSpec1, barSeriesSpec2];
     const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
     const xScale = computeXScale({
       xDomain: barSeriesDomains.xDomain,
-      totalBarsInCluster: barSeriesMap.size,
+      totalBarsInCluster: barSeriesMap.length,
       range: [0, 100],
     });
     const yScales = computeYScales({ yDomains: barSeriesDomains.yDomain, range: [100, 0] });
@@ -737,6 +743,8 @@ describe('Rendering bars', () => {
     const spec1Id = getSpecId('bar1');
     const spec2Id = getSpecId('bar2');
     const barSeriesSpec1: BarSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
       id: spec1Id,
       groupId: GROUP_ID,
       seriesType: 'bar',
@@ -748,6 +756,8 @@ describe('Rendering bars', () => {
       yScaleType: ScaleType.Linear,
     };
     const barSeriesSpec2: BarSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
       id: spec2Id,
       groupId: GROUP_ID,
       seriesType: 'bar',
@@ -758,13 +768,11 @@ describe('Rendering bars', () => {
       xScaleType: ScaleType.Time,
       yScaleType: ScaleType.Linear,
     };
-    const barSeriesMap = new Map<SpecId, BarSeriesSpec>();
-    barSeriesMap.set(spec1Id, barSeriesSpec1);
-    barSeriesMap.set(spec2Id, barSeriesSpec2);
+    const barSeriesMap = [barSeriesSpec1, barSeriesSpec2];
     const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
     const xScale = computeXScale({
       xDomain: barSeriesDomains.xDomain,
-      totalBarsInCluster: barSeriesMap.size,
+      totalBarsInCluster: barSeriesMap.length,
       range: [0, 100],
     });
     const yScales = computeYScales({ yDomains: barSeriesDomains.yDomain, range: [100, 0] });

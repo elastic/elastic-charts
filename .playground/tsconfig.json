@@ -1,8 +1,7 @@
 {
   "extends": "../tsconfig",
   "compilerOptions": {
-    "downlevelIteration": true,
-    "target": "es5"
+    "downlevelIteration": true
   },
   "include": ["../src/**/*", "./**/*"],
   "exclude": [

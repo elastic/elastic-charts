@@ -35,6 +35,8 @@ describe('Computed chart dimensions', () => {
     maxLabelTextHeight: 10,
   };
   const axisLeftSpec: AxisSpec = {
+    chartType: 'xy_axis',
+    specType: 'axis',
     id: getAxisId('axis_1'),
     groupId: getGroupId('group_1'),
     hide: false,
@@ -66,7 +68,7 @@ describe('Computed chart dimensions', () => {
   chartTheme.axes.axisTitleStyle.padding = 10;
   test('should be equal to parent dimension with no axis minus margins', () => {
     const axisDims = new Map<AxisId, AxisTicksDimensions>();
-    const axisSpecs = new Map<AxisId, AxisSpec>();
+    const axisSpecs: AxisSpec[] = [];
     const { chartDimensions } = computeChartDimensions(parentDim, chartTheme, axisDims, axisSpecs);
     expect(chartDimensions.left + chartDimensions.width).toBeLessThanOrEqual(parentDim.width);
     expect(chartDimensions.top + chartDimensions.height).toBeLessThanOrEqual(parentDim.height);
@@ -76,9 +78,8 @@ describe('Computed chart dimensions', () => {
     // |margin|titleFontSize|titlePadding|maxLabelBboxWidth|tickPadding|tickSize|padding|
     // \10|10|10|10|10|10|10| = 70px from left
     const axisDims = new Map<AxisId, AxisTicksDimensions>();
-    const axisSpecs = new Map<AxisId, AxisSpec>();
+    const axisSpecs = [axisLeftSpec];
     axisDims.set(getAxisId('axis_1'), axis1Dims);
-    axisSpecs.set(getAxisId('axis_1'), axisLeftSpec);
     const { chartDimensions } = computeChartDimensions(parentDim, chartTheme, axisDims, axisSpecs);
     expect(chartDimensions.left + chartDimensions.width).toBeLessThanOrEqual(parentDim.width);
     expect(chartDimensions.top + chartDimensions.height).toBeLessThanOrEqual(parentDim.height);
@@ -88,9 +89,8 @@ describe('Computed chart dimensions', () => {
     // |padding|tickSize|tickPadding|maxLabelBBoxWidth|titlePadding|titleFontSize\margin|
     // \10|10|10|10|10|10|10| = 70px from right
     const axisDims = new Map<AxisId, AxisTicksDimensions>();
-    const axisSpecs = new Map<AxisId, AxisSpec>();
+    const axisSpecs = [{ ...axisLeftSpec, position: Position.Right }];
     axisDims.set(getAxisId('axis_1'), axis1Dims);
-    axisSpecs.set(getAxisId('axis_1'), { ...axisLeftSpec, position: Position.Right });
     const { chartDimensions } = computeChartDimensions(parentDim, chartTheme, axisDims, axisSpecs);
     expect(chartDimensions.left + chartDimensions.width).toBeLessThanOrEqual(parentDim.width);
     expect(chartDimensions.top + chartDimensions.height).toBeLessThanOrEqual(parentDim.height);
@@ -100,12 +100,13 @@ describe('Computed chart dimensions', () => {
     // |margin|titleFontSize|titlePadding|maxLabelBboxHeight|tickPadding|tickSize|padding|
     // \10|10|10|10|10|10|10| = 70px from top
     const axisDims = new Map<AxisId, AxisTicksDimensions>();
-    const axisSpecs = new Map<AxisId, AxisSpec>();
+    const axisSpecs = [
+      {
+        ...axisLeftSpec,
+        position: Position.Top,
+      },
+    ];
     axisDims.set(getAxisId('axis_1'), axis1Dims);
-    axisSpecs.set(getAxisId('axis_1'), {
-      ...axisLeftSpec,
-      position: Position.Top,
-    });
     const { chartDimensions } = computeChartDimensions(parentDim, chartTheme, axisDims, axisSpecs);
     expect(chartDimensions.left + chartDimensions.width).toBeLessThanOrEqual(parentDim.width);
     expect(chartDimensions.top + chartDimensions.height).toBeLessThanOrEqual(parentDim.height);
@@ -115,12 +116,13 @@ describe('Computed chart dimensions', () => {
     // |margin|titleFontSize|titlePadding|maxLabelBboxHeight|tickPadding|tickSize|padding|
     // \10|10|10|10|10|10|10| = 70px from bottom
     const axisDims = new Map<AxisId, AxisTicksDimensions>();
-    const axisSpecs = new Map<AxisId, AxisSpec>();
+    const axisSpecs = [
+      {
+        ...axisLeftSpec,
+        position: Position.Bottom,
+      },
+    ];
     axisDims.set(getAxisId('axis_1'), axis1Dims);
-    axisSpecs.set(getAxisId('axis_1'), {
-      ...axisLeftSpec,
-      position: Position.Bottom,
-    });
     const { chartDimensions } = computeChartDimensions(parentDim, chartTheme, axisDims, axisSpecs);
     expect(chartDimensions.left + chartDimensions.width).toBeLessThanOrEqual(parentDim.width);
     expect(chartDimensions.top + chartDimensions.height).toBeLessThanOrEqual(parentDim.height);
@@ -128,12 +130,13 @@ describe('Computed chart dimensions', () => {
   });
   test('should not add space for axis when no spec for axis dimensions or axis is hidden', () => {
     const axisDims = new Map<AxisId, AxisTicksDimensions>();
-    const axisSpecs = new Map<AxisId, AxisSpec>();
+    const axisSpecs = [
+      {
+        ...axisLeftSpec,
+        position: Position.Bottom,
+      },
+    ];
     axisDims.set(getAxisId('foo'), axis1Dims);
-    axisSpecs.set(getAxisId('axis_1'), {
-      ...axisLeftSpec,
-      position: Position.Bottom,
-    });
     const chartDimensions = computeChartDimensions(parentDim, chartTheme, axisDims, axisSpecs);
 
     const expectedDims = {

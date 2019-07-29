@@ -12,7 +12,7 @@ import {
   DEFAULT_LINE_OVERFLOW,
   isWithinLineBounds,
 } from './annotation_utils';
-import { Point } from '../store/chart_state';
+import { Point } from 'utils/point';
 
 describe('annotation marker', () => {
   const groupId = getGroupId('foo-group');
@@ -42,10 +42,10 @@ describe('annotation marker', () => {
   test('should compute line annotation dimensions with marker if defined (y domain)', () => {
     const chartRotation: Rotation = 0;
 
-    const annotationId = getAnnotationId('foo-line');
+    const id = getAnnotationId('foo-line');
     const lineAnnotation: AnnotationSpec = {
       annotationType: 'line',
-      annotationId,
+      id,
       domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
@@ -85,7 +85,7 @@ describe('annotation marker', () => {
     const annotationId = getAnnotationId('foo-line');
     const lineAnnotation: AnnotationSpec = {
       annotationType: 'line',
-      annotationId,
+      id,
       domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
@@ -125,7 +125,7 @@ describe('annotation marker', () => {
     const annotationId = getAnnotationId('foo-line');
     const lineAnnotation: AnnotationSpec = {
       annotationType: 'line',
-      annotationId,
+      id,
       domainType: AnnotationDomainTypes.XDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,

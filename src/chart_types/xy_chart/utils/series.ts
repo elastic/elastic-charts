@@ -313,8 +313,8 @@ export function getRawDataSeries(
  * @param deselectedDataSeries the array of deselected/hidden data series
  */
 export function getSplittedSeries(
-  seriesSpecs: Map<SpecId, BasicSeriesSpec>,
-  deselectedDataSeries?: DataSeriesColorsValues[] | null,
+  seriesSpecs: BasicSeriesSpec[],
+  deselectedDataSeries: DataSeriesColorsValues[],
 ): {
   splittedSeries: Map<SpecId, RawDataSeries[]>;
   seriesColors: Map<string, DataSeriesColorsValues>;
@@ -324,17 +324,17 @@ export function getSplittedSeries(
   const seriesColors = new Map<string, DataSeriesColorsValues>();
   let xValues: Set<string | number> = new Set();
   let isOrdinalScale = false;
-  for (const [specId, spec] of seriesSpecs) {
+  for (const spec of seriesSpecs) {
     if (spec.xScaleType === ScaleType.Ordinal) {
       isOrdinalScale = true;
     }
-    const dataSeries = splitSeries(spec.data, spec, specId);
+    const dataSeries = splitSeries(spec.data, spec, spec.id);
     let currentRawDataSeries = dataSeries.rawDataSeries;
-    if (deselectedDataSeries) {
+    if (deselectedDataSeries.length > 0) {
       currentRawDataSeries = dataSeries.rawDataSeries.filter(
         (series): boolean => {
           const seriesValues = {
-            specId,
+            specId: spec.id,
             colorValues: series.key,
           };
 
@@ -343,13 +343,13 @@ export function getSplittedSeries(
       );
     }
 
-    splittedSeries.set(specId, currentRawDataSeries);
+    splittedSeries.set(spec.id, currentRawDataSeries);
 
     const banded = spec.y0Accessors && spec.y0Accessors.length > 0;
 
     dataSeries.colorsValues.forEach((colorValues, key) => {
       seriesColors.set(key, {
-        specId,
+        specId: spec.id,
         specSortIndex: spec.sortIndex,
         banded,
         colorValues,

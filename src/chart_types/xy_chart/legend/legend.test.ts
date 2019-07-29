@@ -1,4 +1,4 @@
-import { AxisId, getAxisId, getGroupId, getSpecId, SpecId } from '../../../utils/ids';
+import { getAxisId, getGroupId, getSpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
 import { computeLegend, getSeriesColorLabel } from './legend';
 import { DataSeriesColorsValues } from '../utils/series';
@@ -31,6 +31,8 @@ const colorValues2b = {
   colorValues: ['c', 'd'],
 };
 const spec1: BasicSeriesSpec = {
+  chartType: 'xy_axis',
+  specType: 'series',
   id: getSpecId('spec1'),
   name: 'Spec 1 title',
   groupId: getGroupId('group'),
@@ -44,6 +46,8 @@ const spec1: BasicSeriesSpec = {
   hideInLegend: false,
 };
 const spec2: BasicSeriesSpec = {
+  chartType: 'xy_axis',
+  specType: 'series',
   id: getSpecId('spec2'),
   groupId: getGroupId('group'),
   seriesType: 'line',
@@ -56,8 +60,10 @@ const spec2: BasicSeriesSpec = {
   hideInLegend: false,
 };
 
-const axesSpecs = new Map<AxisId, AxisSpec>();
+const axesSpecs: AxisSpec[] = [];
 const axisSpec: AxisSpec = {
+  chartType: 'xy_axis',
+  specType: 'axis',
   id: getAxisId('axis1'),
   groupId: getGroupId('group1'),
   hide: false,
@@ -70,14 +76,12 @@ const axisSpec: AxisSpec = {
     return `${value}`;
   },
 };
-axesSpecs.set(axisSpec.id, axisSpec);
+axesSpecs.push(axisSpec);
 
 describe('Legends', () => {
   const seriesColor = new Map<string, DataSeriesColorsValues>();
   const seriesColorMap = new Map<string, string>();
-  const specs = new Map<SpecId, BasicSeriesSpec>();
-  specs.set(spec1.id, spec1);
-  specs.set(spec2.id, spec2);
+  const specs = [spec1, spec2];
   seriesColorMap.set('colorSeries1a', 'red');
   seriesColorMap.set('colorSeries1b', 'blue');
   seriesColorMap.set('colorSeries2a', 'green');

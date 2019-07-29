@@ -1437,7 +1437,7 @@ storiesOf('Bar Chart', module)
       <Chart className={'story-chart'}>
         <Settings rotation={getChartRotationKnob()} theme={theme} debug={boolean('debug', true)} />
         <LineAnnotation
-          annotationId={getAnnotationId('line-annotation')}
+          id={getAnnotationId('line-annotation')}
           domainType={AnnotationDomainTypes.XDomain}
           dataValues={[{ dataValue: 2 }, { dataValue: 2.5 }, { dataValue: 3.5 }]}
           style={lineAnnotationStyle}
@@ -1458,7 +1458,7 @@ storiesOf('Bar Chart', module)
               details: 'rect annotation',
             },
           ]}
-          annotationId={getAnnotationId('rect')}
+          id={getAnnotationId('rect')}
         />
         <Axis id={getAxisId('discover-histogram-left-axis')} position={Position.Left} title={'left axis'} />
         <Axis id={getAxisId('discover-histogram-bottom-axis')} position={Position.Bottom} title={'bottom axis'} />

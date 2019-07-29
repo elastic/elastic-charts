@@ -2,23 +2,21 @@ import React, { Fragment } from 'react';
 import { Axis, Chart, getAxisId, getSpecId, Position, ScaleType, BarSeries, Settings, niceTimeFormatter } from '../src';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 
-export class Playground extends React.Component<{}, { dataLimit: boolean }> {
+export class Playground extends React.Component {
   state = {
-    dataLimit: false,
-  };
-  changeData = () => {
-    this.setState((prevState) => {
-      return {
-        dataLimit: !prevState.dataLimit,
-      };
+    data: dg.generateSimpleSeries(),
+  }
+  updateData = () => {
+    this.setState({
+      data: dg.generateSimpleSeries()
     });
-  };
+  }
   render() {
     const { data } = KIBANA_METRICS.metrics.kibana_os_load[0];
     return (
       <Fragment>
         <div>
-          <button onClick={this.changeData}>Reduce data</button>
+          <button onClick={this.updateData}>Update Data</button>
         </div>
         <div className="chart">
           <Chart>

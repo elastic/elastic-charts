@@ -37,7 +37,7 @@ storiesOf('Scales', module)
     const datasetSelected = select('dataset', timezones, 'utc');
     const tooltipSelected = select('tooltip', timezones, 'utc');
 
-    let data;
+    let data = UTC_DATASET;
     switch (datasetSelected) {
       case 'utc':
         data = UTC_DATASET;

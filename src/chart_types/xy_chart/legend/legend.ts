@@ -1,10 +1,9 @@
 import { getAxesSpecForSpecId, LastValues } from '../store/utils';
 import { identity } from '../../../utils/commons';
-import { AxisId, SpecId } from '../../../utils/ids';
 import {
   DataSeriesColorsValues,
-  findDataSeriesByColorValues,
   getSortedDataSeriesColorsValuesMap,
+  findDataSeriesByColorValues,
 } from '../utils/series';
 import { AxisSpec, BasicSeriesSpec, Postfixes, isAreaSeriesSpec, isBarSeriesSpec } from '../utils/specs';
 import { Y0_ACCESSOR_POSTFIX, Y1_ACCESSOR_POSTFIX } from '../tooltip/tooltip';
@@ -43,17 +42,17 @@ export function getPostfix(spec: BasicSeriesSpec): Postfixes {
 export function computeLegend(
   seriesColor: Map<string, DataSeriesColorsValues>,
   seriesColorMap: Map<string, string>,
-  specs: Map<SpecId, BasicSeriesSpec>,
+  specs: BasicSeriesSpec[],
   defaultColor: string,
-  axesSpecs: Map<AxisId, AxisSpec>,
-  deselectedDataSeries?: DataSeriesColorsValues[] | null,
+  axesSpecs: AxisSpec[],
+  deselectedDataSeries: DataSeriesColorsValues[],
 ): Map<string, LegendItem> {
   const legendItems: Map<string, LegendItem> = new Map();
   const sortedSeriesColors = getSortedDataSeriesColorsValuesMap(seriesColor);
 
   sortedSeriesColors.forEach((series, key) => {
     const { banded, specId, lastValue, colorValues } = series;
-    const spec = specs.get(specId);
+    const spec = specs.find((spec) => spec.id === specId);
     const color = seriesColorMap.get(key) || defaultColor;
     const hasSingleSeries = seriesColor.size === 1;
     const label = getSeriesColorLabel(colorValues, hasSingleSeries, spec);

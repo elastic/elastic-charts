@@ -1,5 +1,4 @@
 import { LegendItem } from '../legend/legend';
-import { GeometryValue, IndexedGeometry, AccessorType } from '../rendering/rendering';
 import {
   AnnotationDomainTypes,
   AnnotationSpec,
@@ -11,22 +10,24 @@ import {
 } from '../utils/specs';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { mergeWithDefaultTheme } from '../../../utils/themes/theme';
-import { getAnnotationId, getAxisId, getGroupId, getSpecId, AxisId } from '../../../utils/ids';
+import {  AxisId } from '../../../utils/ids;
 import { TooltipType, TooltipValue } from '../utils/interactions';
 import { ScaleBand } from '../../../utils/scales/scale_band';
 import { ScaleContinuous } from '../../../utils/scales/scale_continuous';
 import { ScaleType } from '../../../utils/scales/scales';
-import { ChartStore, isDuplicateAxis } from './chart_state';
-import { AxisTicksDimensions } from '../utils/axis_utils';
+import { ChartStore } from './chart_state';
+import { IndexedGeometry, GeometryValue } from '../../../utils/geometry';
 
 describe('Chart Store', () => {
   let store = new ChartStore();
 
-  const SPEC_ID = getSpecId('spec_1');
-  const AXIS_ID = getAxisId('axis_1');
-  const GROUP_ID = getGroupId('group_1');
+  const SPEC_ID = ('spec_1');
+  const AXIS_ID = ('axis_1');
+  const GROUP_ID = ('group_1');
 
   const spec: BarSeriesSpec = {
+    chartType: 'xy_axis',
+    specType: 'series',
     id: SPEC_ID,
     groupId: GROUP_ID,
     seriesType: 'bar',
@@ -85,11 +86,11 @@ describe('Chart Store', () => {
   });
 
   describe('isDuplicateAxis', () => {
-    const AXIS_1_ID = getAxisId('spec_1');
-    const AXIS_2_ID = getAxisId('spec_1');
+    const AXIS_1_ID = ('spec_1');
+    const AXIS_2_ID = ('spec_1');
     const axis1: AxisSpec = {
       id: AXIS_1_ID,
-      groupId: getGroupId('group_1'),
+      groupId: ('group_1'),
       hide: false,
       showOverlappingTicks: false,
       showOverlappingLabels: false,
@@ -101,7 +102,7 @@ describe('Chart Store', () => {
     const axis2: AxisSpec = {
       ...axis1,
       id: AXIS_2_ID,
-      groupId: getGroupId('group_2'),
+      groupId: ('group_2'),
     };
     const axisTicksDimensions: AxisTicksDimensions = {
       tickValues: [],
@@ -626,8 +627,8 @@ describe('Chart Store', () => {
   });
 
   test('can add and remove an annotation spec', () => {
-    const annotationId = getAnnotationId('annotation');
-    const groupId = getGroupId('group');
+    const annotationId = 'annotation';
+    const groupId = ('group');
 
     const customStyle = {
       line: {
@@ -664,7 +665,7 @@ describe('Chart Store', () => {
     expect(store.annotationSpecs).toEqual(new Map());
 
     const rectAnnotation: RectAnnotationSpec = {
-      annotationId: getAnnotationId('rect'),
+      annotationId: 'rect',
       groupId: GROUP_ID,
       annotationType: 'rectangle',
       dataValues: [{ coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } }],
@@ -917,7 +918,7 @@ describe('Chart Store', () => {
     const geom1: IndexedGeometry = {
       color: 'red',
       geometryId: {
-        specId: getSpecId('specId1'),
+        specId: ('specId1'),
         seriesKey: [2],
       },
       value: {
@@ -934,7 +935,7 @@ describe('Chart Store', () => {
     const geom2: IndexedGeometry = {
       color: 'blue',
       geometryId: {
-        specId: getSpecId('specId2'),
+        specId: ('specId2'),
         seriesKey: [2],
       },
       value: {
@@ -998,7 +999,7 @@ describe('Chart Store', () => {
 
     const annotationDimensions = [{ rect: { x: 2, y: 3, width: 3, height: 5 } }];
     const rectAnnotationSpec: RectAnnotationSpec = {
-      annotationId: getAnnotationId('rect'),
+      annotationId: 'rect',
       groupId: GROUP_ID,
       annotationType: 'rectangle',
       dataValues: [{ coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } }],
@@ -1112,7 +1113,7 @@ describe('Chart Store', () => {
       const geom1: IndexedGeometry = {
         color: 'red',
         geometryId: {
-          specId: getSpecId('specId1'),
+          specId: ('specId1'),
           seriesKey: [2],
         },
         value: {
@@ -1150,6 +1151,8 @@ describe('Chart Store', () => {
   });
   test('should set tooltip type to follow when single value x scale', () => {
     const singleValueSpec: BarSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
       id: SPEC_ID,
       groupId: GROUP_ID,
       seriesType: 'bar',

@@ -1,42 +1,33 @@
-import { inject } from 'mobx-react';
-import { PureComponent } from 'react';
 import { HistogramBarSeriesSpec, DEFAULT_GLOBAL_ID } from '../utils/specs';
-import { getGroupId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
-import { SpecProps } from '../../../specs/specs_parser';
+import { specComponentFactory, getConnect } from '../../../store/spec_factory';
+import { ChartTypes } from 'chart_types';
 
-type HistogramBarSpecProps = SpecProps & HistogramBarSeriesSpec;
+const defaultProps = {
+  chartType: ChartTypes.XYAxis,
+  specType: 'series' as 'series',
+  seriesType: 'bar' as 'bar',
+  groupId: DEFAULT_GLOBAL_ID,
+  xScaleType: ScaleType.Ordinal,
+  yScaleType: ScaleType.Linear,
+  xAccessor: 'x',
+  yAccessors: ['y'],
+  yScaleToDataExtent: false,
+  hideInLegend: false,
+  enableHistogramMode: true as true,
+};
 
-export class HistogramBarSeriesSpecComponent extends PureComponent<HistogramBarSpecProps> {
-  static defaultProps: Partial<HistogramBarSpecProps> = {
-    seriesType: 'bar',
-    groupId: getGroupId(DEFAULT_GLOBAL_ID),
-    xScaleType: ScaleType.Ordinal,
-    yScaleType: ScaleType.Linear,
-    xAccessor: 'x',
-    yAccessors: ['y'],
-    yScaleToDataExtent: false,
-    hideInLegend: false,
-    enableHistogramMode: true,
-  };
-  componentDidMount() {
-    const { chartStore, children, ...config } = this.props;
-    chartStore!.addSeriesSpec({ ...config });
-  }
-  componentDidUpdate(prevProps: HistogramBarSpecProps) {
-    const { chartStore, children, ...config } = this.props;
-    chartStore!.addSeriesSpec({ ...config });
-    if (prevProps.id !== this.props.id) {
-      chartStore!.removeSeriesSpec(prevProps.id);
-    }
-  }
-  componentWillUnmount() {
-    const { chartStore, id } = this.props;
-    chartStore!.removeSeriesSpec(id);
-  }
-  render() {
-    return null;
-  }
-}
-
-export const HistogramBarSeries = inject('chartStore')(HistogramBarSeriesSpecComponent);
+export const HistogramBarSeries = getConnect()(
+  specComponentFactory<
+    HistogramBarSeriesSpec,
+    | 'seriesType'
+    | 'groupId'
+    | 'xScaleType'
+    | 'yScaleType'
+    | 'xAccessor'
+    | 'yAccessors'
+    | 'yScaleToDataExtent'
+    | 'hideInLegend'
+    | 'enableHistogramMode'
+  >(defaultProps),
+);

@@ -1,108 +1,79 @@
 import React from 'react';
-import { inject, observer } from 'mobx-react';
-import { ContainerConfig } from 'konva';
 import { Layer, Rect, Stage } from 'react-konva';
+import { ContainerConfig } from 'konva';
+import { AreaGeometries } from './area_geometries';
+import { ArcGeometries } from './arc_geometries';
+import { BarGeometries } from './bar_geometries';
+import { LineGeometries } from './line_geometries';
+import { IChartState, GeometriesList, GlobalSettings } from '../../store/chart_store';
+import { onCursorPositionChange, CursorPositionChangeAction } from '../../store/actions/cursor';
+import { onMouseDown, onMouseUp } from '../../store/actions/mouse';
+import { bindActionCreators, Dispatch } from 'redux';
+import { connect } from 'react-redux';
+import { getRenderedGeometriesSelector } from '../../store/selectors/get_rendered_geometries';
+import { getChartDimensionsSelector } from '../../store/selectors/get_chart_dimensions';
+import { Dimensions } from '../../utils/dimensions';
+import { isChartAnimatableSelector } from 'chart_types/xy_chart/store/selectors/is_chart_animatable';
+import { isInitialized } from '../../store/selectors/is_initialized';
+import { getChartRotationSelector } from '../../store/selectors/get_chart_rotation';
+import { getChartThemeSelector } from '../../store/selectors/get_chart_theme';
+import { LIGHT_THEME } from '../../utils/themes/light_theme';
+import { computeChartTransformSelector } from '../../chart_types/xy_chart/store/selectors/compute_chart_transform';
+import { Transform } from '../../chart_types/xy_chart/store/utils';
 import { AnnotationId } from '../../utils/ids';
-import { isLineAnnotation, isRectAnnotation, AxisSpec } from '../../chart_types/xy_chart/utils/specs';
-import { LineAnnotationStyle, RectAnnotationStyle, mergeGridLineConfigs } from '../../utils/themes/theme';
+import { isLineAnnotation, isRectAnnotation, Rotation, AnnotationSpec } from '../../chart_types/xy_chart/utils/specs';
+import { Theme, LineAnnotationStyle, RectAnnotationStyle } from '../../utils/themes/theme';
 import {
   AnnotationDimensions,
   AnnotationLineProps,
   AnnotationRectProps,
-} from '../../chart_types/xy_chart/annotations/annotation_utils';
-import { ChartStore, Point } from '../../chart_types/xy_chart/store/chart_state';
-import { BrushExtent } from '../../chart_types/xy_chart/store/utils';
-import { AreaGeometries } from './area_geometries';
-import { Axis } from './axis';
-import { BarGeometries } from './bar_geometries';
-import { BarValues } from './bar_values';
-import { Grid } from './grid';
-import { LineAnnotation } from './line_annotation';
-import { LineGeometries } from './line_geometries';
-import { RectAnnotation } from './rect_annotation';
-import { AxisTick, AxisTicksDimensions, isVerticalGrid } from '../../chart_types/xy_chart/utils/axis_utils';
-import { Dimensions } from '../../utils/dimensions';
+} from 'chart_types/xy_chart/annotations/annotation_utils';
+import { LineAnnotation } from 'chart_types/xy_chart/renderer/canvas/line_annotation';
+import { RectAnnotation } from 'chart_types/xy_chart/renderer/canvas/rect_annotation';
+import { computeAnnotationDimensionsSelector } from 'chart_types/xy_chart/store/selectors/compute_annotations';
+import { getAnnotationSpecsSelector } from 'chart_types/xy_chart/store/selectors/get_specs';
+import { isChartEmptySelector } from 'chart_types/xy_chart/store/selectors/is_chart_empty';
+import { isBrushAvailableSelector } from 'chart_types/xy_chart/store/selectors/is_brush_available';
+import { getHighlightedSeriesSelector } from 'chart_types/xy_chart/store/selectors/get_highlighted_series';
+import { LegendItem } from 'chart_types/xy_chart/legend/legend';
 
-interface ReactiveChartProps {
-  chartStore?: ChartStore; // FIX until we find a better way on ts mobx
+interface Props {
+  initialized: boolean;
+  geometries: GeometriesList;
+  globalSettings: GlobalSettings;
+  chartRotation: Rotation;
+  chartDimensions: Dimensions;
+  chartTransform: Transform;
+  theme: Theme;
+  isChartAnimatable: boolean;
+  onCursorPositionChange(x: number, y: number): CursorPositionChangeAction;
+  isChartEmpty: boolean;
+  annotationDimensions: Map<AnnotationId, AnnotationDimensions>;
+  annotationSpecs: AnnotationSpec[];
+  isBrushAvailable: boolean;
+  highlightedLegendItem?: LegendItem;
 }
-interface ReactiveChartState {
-  brushing: boolean;
-  brushStart: Point;
-  brushEnd: Point;
-  bbox: {
-    left: number;
-    top: number;
-  };
-}
-
-interface AxisProps {
-  key: string;
-  axisSpec: AxisSpec;
-  axisTicksDimensions: AxisTicksDimensions;
-  axisPosition: Dimensions;
-  ticks: AxisTick[];
-}
-
-interface ReactiveChartElementIndex {
+export interface ReactiveChartElementIndex {
   element: JSX.Element;
   zIndex: number;
 }
 
-function limitPoint(value: number, min: number, max: number) {
-  if (value > max) {
-    return max;
-  } else if (value < min) {
-    return min;
-  } else {
-    return value;
-  }
-}
-function getPoint(event: MouseEvent, extent: BrushExtent): Point {
-  const point = {
-    // @ts-ignore
-    x: limitPoint(event.layerX, extent.minX, extent.maxX),
-    // @ts-ignore
-    y: limitPoint(event.layerY, extent.minY, extent.maxY),
-  };
-  return point;
-}
-class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
+class Chart extends React.Component<Props> {
   static displayName = 'ReactiveChart';
   firstRender = true;
-  state = {
-    brushing: false,
-    brushStart: {
-      x: 0,
-      y: 0,
-    },
-    brushEnd: {
-      x: 0,
-      y: 0,
-    },
-    bbox: {
-      left: 0,
-      top: 0,
-    },
-  };
-
-  componentWillUnmount() {
-    window.removeEventListener('mouseup', this.onEndBrushing);
-  }
 
   renderBarSeries = (clippings: ContainerConfig): ReactiveChartElementIndex[] => {
-    const { geometries, canDataBeAnimated, chartTheme } = this.props.chartStore!;
+    const { geometries, theme, isChartAnimatable, highlightedLegendItem } = this.props;
     if (!geometries) {
       return [];
     }
-    const highlightedLegendItem = this.getHighlightedLegendItem();
 
     const element = (
       <BarGeometries
         key={'bar-geometries'}
-        animated={canDataBeAnimated}
-        bars={geometries.bars}
-        sharedStyle={chartTheme.sharedStyle}
+        animated={isChartAnimatable}
+        bars={geometries.bars || []}
+        sharedStyle={theme.sharedStyle}
         highlightedLegendItem={highlightedLegendItem}
         clippings={clippings}
       />
@@ -115,20 +86,19 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       },
     ];
   };
+
   renderLineSeries = (clippings: ContainerConfig): ReactiveChartElementIndex[] => {
-    const { geometries, canDataBeAnimated, chartTheme } = this.props.chartStore!;
+    const { geometries, theme, isChartAnimatable, highlightedLegendItem } = this.props;
     if (!geometries) {
       return [];
     }
-
-    const highlightedLegendItem = this.getHighlightedLegendItem();
 
     const element = (
       <LineGeometries
         key={'line-geometries'}
-        animated={canDataBeAnimated}
-        lines={geometries.lines}
-        sharedStyle={chartTheme.sharedStyle}
+        animated={isChartAnimatable}
+        lines={geometries.lines || []}
+        sharedStyle={theme.sharedStyle}
         highlightedLegendItem={highlightedLegendItem}
         clippings={clippings}
       />
@@ -141,20 +111,18 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       },
     ];
   };
+
   renderAreaSeries = (clippings: ContainerConfig): ReactiveChartElementIndex[] => {
-    const { geometries, canDataBeAnimated, chartTheme } = this.props.chartStore!;
+    const { geometries, theme, isChartAnimatable, highlightedLegendItem } = this.props;
     if (!geometries) {
       return [];
     }
-
-    const highlightedLegendItem = this.getHighlightedLegendItem();
-
     const element = (
       <AreaGeometries
         key={'area-geometries'}
-        animated={canDataBeAnimated}
-        areas={geometries.areas}
-        sharedStyle={chartTheme.sharedStyle}
+        animated={isChartAnimatable}
+        areas={geometries.areas || []}
+        sharedStyle={theme.sharedStyle}
         highlightedLegendItem={highlightedLegendItem}
         clippings={clippings}
       />
@@ -168,70 +136,70 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
     ];
   };
 
-  getAxes = (): AxisProps[] => {
-    const { axesVisibleTicks, axesSpecs, axesTicksDimensions, axesPositions } = this.props.chartStore!;
-    const ids = [...axesVisibleTicks.keys()];
+  // getAxes = (): AxisProps[] => {
+  //   const { axesVisibleTicks, axesSpecs, axesTicksDimensions, axesPositions } = this.props.chartStore!;
+  //   const ids = [...axesVisibleTicks.keys()];
 
-    return ids
-      .map((id) => ({
-        key: `axis-${id}`,
-        ticks: axesVisibleTicks.get(id),
-        axisSpec: axesSpecs.get(id),
-        axisTicksDimensions: axesTicksDimensions.get(id),
-        axisPosition: axesPositions.get(id),
-      }))
-      .filter(
-        (config: Partial<AxisProps>): config is AxisProps => {
-          const { ticks, axisSpec, axisTicksDimensions, axisPosition } = config;
+  //   return ids
+  //     .map((id) => ({
+  //       key: `axis-${id}`,
+  //       ticks: axesVisibleTicks.get(id),
+  //       axisSpec: axesSpecs.get(id),
+  //       axisTicksDimensions: axesTicksDimensions.get(id),
+  //       axisPosition: axesPositions.get(id),
+  //     }))
+  //     .filter(
+  //       (config: Partial<AxisProps>): config is AxisProps => {
+  //         const { ticks, axisSpec, axisTicksDimensions, axisPosition } = config;
 
-          return Boolean(ticks && axisSpec && axisTicksDimensions && axisPosition);
-        },
-      );
-  };
+  //         return Boolean(ticks && axisSpec && axisTicksDimensions && axisPosition);
+  //       },
+  //     );
+  // };
 
-  renderAxes = (): JSX.Element[] => {
-    const { chartTheme, debug, chartDimensions } = this.props.chartStore!;
-    const axes = this.getAxes();
+  // renderAxes = (): JSX.Element[] => {
+  //   const { chartTheme, debug, chartDimensions } = this.props.chartStore!;
+  //   const axes = this.getAxes();
 
-    return axes.map(({ key, ...axisProps }) => (
-      <Axis {...axisProps} key={key} chartTheme={chartTheme} debug={debug} chartDimensions={chartDimensions} />
-    ));
-  };
+  //   return axes.map(({ key, ...axisProps }) => (
+  //     <Axis {...axisProps} key={key} chartTheme={chartTheme} debug={debug} chartDimensions={chartDimensions} />
+  //   ));
+  // };
 
-  renderGrids = () => {
-    const { axesGridLinesPositions, axesSpecs, chartDimensions, chartTheme, debug } = this.props.chartStore!;
+  renderArcSeries = (): ReactiveChartElementIndex[] => {
+    const { geometries, theme, isChartAnimatable, highlightedLegendItem } = this.props;
+    if (!geometries) {
+      return [];
+    }
+    const element = (
+      <ArcGeometries
+        key={'arc-geometries'}
+        animated={isChartAnimatable}
+        arcs={geometries.arcs || []}
+        sharedStyle={theme.sharedStyle}
+        highlightedLegendItem={highlightedLegendItem}
+      />
+    );
 
-    const gridComponents: JSX.Element[] = [];
-    axesGridLinesPositions.forEach((axisGridLinesPositions, axisId) => {
-      const axisSpec = axesSpecs.get(axisId);
-
-      if (axisSpec && axisGridLinesPositions.length > 0) {
-        const themeConfig = isVerticalGrid(axisSpec.position)
-          ? chartTheme.axes.gridLineStyle.vertical
-          : chartTheme.axes.gridLineStyle.horizontal;
-
-        const axisSpecConfig = axisSpec.gridLineStyle;
-        const gridLineStyle = axisSpecConfig ? mergeGridLineConfigs(axisSpecConfig, themeConfig) : themeConfig;
-        gridComponents.push(
-          <Grid
-            key={`axis-grid-${axisId}`}
-            chartDimensions={chartDimensions}
-            debug={debug}
-            gridLineStyle={gridLineStyle}
-            linesPositions={axisGridLinesPositions}
-          />,
-        );
-      }
-    });
-    return gridComponents;
+    return [
+      {
+        element,
+        zIndex: 0,
+      },
+    ];
   };
 
   renderAnnotations = (): ReactiveChartElementIndex[] => {
-    const { annotationDimensions, annotationSpecs, chartDimensions, debug } = this.props.chartStore!;
-
+    const {
+      annotationDimensions,
+      annotationSpecs,
+      chartDimensions,
+      globalSettings: { debug },
+    } = this.props;
+    console.log({ annotationDimensions, annotationSpecs });
     const annotationElements: ReactiveChartElementIndex[] = [];
     annotationDimensions.forEach((annotation: AnnotationDimensions, id: AnnotationId) => {
-      const spec = annotationSpecs.get(id);
+      const spec = annotationSpecs.find((spec) => spec.id === id);
 
       if (!spec) {
         return;
@@ -239,7 +207,9 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
 
       const zIndex = spec.zIndex || 0;
       let element;
+      console.log({ spec });
       if (isLineAnnotation(spec)) {
+        console.log({ lineAnnotatio: spec });
         const lineStyle = spec.style as LineAnnotationStyle;
 
         element = (
@@ -252,6 +222,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
           />
         );
       } else if (isRectAnnotation(spec)) {
+        console.log('is rect annotation');
         const rectStyle = spec.style as RectAnnotationStyle;
 
         element = (
@@ -275,86 +246,8 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
     return annotationElements;
   };
 
-  renderBarValues = () => {
-    const { debug, chartDimensions, geometries, chartTheme, chartRotation } = this.props.chartStore!;
-    if (!geometries) {
-      return;
-    }
-    const props = {
-      debug,
-      chartDimensions,
-      chartRotation,
-      bars: geometries.bars,
-      // displayValue is guaranteed on style as part of the merged theme
-      displayValueStyle: chartTheme.barSeriesStyle.displayValue!,
-    };
-    return <BarValues {...props} />;
-  };
-
-  renderBrushTool = () => {
-    const { brushing, brushStart, brushEnd } = this.state;
-    const { chartDimensions, chartRotation, chartTransform } = this.props.chartStore!;
-    if (!brushing) {
-      return null;
-    }
-    let x = 0;
-    let y = 0;
-    let width = 0;
-    let height = 0;
-    if (chartRotation === 0 || chartRotation === 180) {
-      x = brushStart.x;
-      y = chartDimensions.top + chartTransform.y;
-      width = brushEnd.x - brushStart.x;
-      height = chartDimensions.height;
-    } else {
-      x = chartDimensions.left + chartTransform.x;
-      y = brushStart.y;
-      width = chartDimensions.width;
-      height = brushEnd.y - brushStart.y;
-    }
-    return <Rect x={x} y={y} width={width} height={height} fill="gray" opacity={0.6} />;
-  };
-  onStartBrusing = (event: { evt: MouseEvent }) => {
-    window.addEventListener('mouseup', this.onEndBrushing);
-    const { brushExtent } = this.props.chartStore!;
-    const point = getPoint(event.evt, brushExtent);
-    this.setState(() => ({
-      brushing: true,
-      brushStart: point,
-      brushEnd: point,
-    }));
-  };
-  onEndBrushing = () => {
-    window.removeEventListener('mouseup', this.onEndBrushing);
-    const { brushStart, brushEnd } = this.state;
-
-    this.setState(
-      () => ({
-        brushing: false,
-        brushStart: { x: 0, y: 0 },
-        brushEnd: { x: 0, y: 0 },
-      }),
-      () => {
-        this.props.chartStore!.onBrushEnd(brushStart, brushEnd);
-      },
-    );
-  };
-  onBrushing = (event: { evt: MouseEvent }) => {
-    if (!this.state.brushing) {
-      return;
-    }
-    if (!this.props.chartStore!.isBrushing.get()) {
-      this.props.chartStore!.onBrushStart();
-    }
-    const { brushExtent } = this.props.chartStore!;
-    const point = getPoint(event.evt, brushExtent);
-    this.setState(() => ({
-      brushEnd: point,
-    }));
-  };
-
   sortAndRenderElements() {
-    const { chartRotation, chartDimensions } = this.props.chartStore!;
+    const { chartDimensions, chartRotation } = this.props;
     const clippings = {
       clipX: 0,
       clipY: 0,
@@ -365,29 +258,25 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
     const bars = this.renderBarSeries(clippings);
     const areas = this.renderAreaSeries(clippings);
     const lines = this.renderLineSeries(clippings);
+    const arcs = this.renderArcSeries();
     const annotations = this.renderAnnotations();
 
-    return [...bars, ...areas, ...lines, ...annotations]
+    return [...bars, ...areas, ...lines, ...arcs, ...annotations]
       .sort((elemIdxA, elemIdxB) => elemIdxA.zIndex - elemIdxB.zIndex)
       .map((elemIdx) => elemIdx.element);
   }
 
   render() {
-    const { chartInitialized } = this.props.chartStore!;
-    if (!chartInitialized.get()) {
+    console.log('Rendering main chart');
+    const { initialized, globalSettings, chartRotation, chartDimensions, isChartEmpty } = this.props;
+    if (!initialized) {
       return null;
     }
 
-    const {
-      parentDimensions,
-      chartDimensions,
-      chartRotation,
-      chartTransform,
-      debug,
-      isChartEmpty,
-    } = this.props.chartStore!;
+    const { debug, parentDimensions } = globalSettings;
+    const { chartTransform } = this.props;
 
-    if (isChartEmpty.get()) {
+    if (isChartEmpty) {
       return (
         <div className="echReactiveChart_unavailable">
           <p>No data to display</p>
@@ -395,15 +284,9 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       );
     }
 
-    let brushProps = {};
-    const isBrushEnabled = this.props.chartStore!.isBrushEnabled();
-    if (isBrushEnabled) {
-      brushProps = {
-        onMouseDown: this.onStartBrusing,
-        onMouseMove: this.onBrushing,
-      };
-    }
+    const brushProps = {};
 
+    const childComponents = React.Children.toArray(this.props.children);
     return (
       <Stage
         width={parentDimensions.width}
@@ -414,12 +297,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
         }}
         {...brushProps}
       >
-        <Layer hitGraphEnabled={false} listening={false}>
-          {this.renderGrids()}
-        </Layer>
-        <Layer hitGraphEnabled={false} listening={false}>
-          {this.renderAxes()}
-        </Layer>
+        {childComponents && childComponents[0] ? childComponents[0] : null}
 
         <Layer
           x={chartDimensions.left + chartTransform.x}
@@ -436,21 +314,14 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
             {this.renderDebugChartBorders()}
           </Layer>
         )}
-        {isBrushEnabled && (
-          <Layer hitGraphEnabled={false} listening={false}>
-            {this.renderBrushTool()}
-          </Layer>
-        )}
 
-        <Layer hitGraphEnabled={false} listening={false}>
-          {this.renderBarValues()}
-        </Layer>
+        {childComponents && childComponents[1] ? childComponents[1] : null}
       </Stage>
     );
   }
 
   private renderDebugChartBorders = () => {
-    const { chartDimensions } = this.props.chartStore!;
+    const { chartDimensions } = this.props;
     return (
       <Rect
         x={chartDimensions.left}
@@ -464,10 +335,58 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       />
     );
   };
-
-  private getHighlightedLegendItem = () => {
-    return this.props.chartStore!.highlightedLegendItem.get();
-  };
 }
 
-export const ReactiveChart = inject('chartStore')(observer(Chart));
+const mapDispatchToProps = (dispatch: Dispatch) =>
+  bindActionCreators(
+    {
+      onCursorPositionChange,
+      onMouseDown,
+      onMouseUp,
+    },
+    dispatch,
+  );
+
+const mapStateToProps = (state: IChartState) => {
+  if (!isInitialized(state)) {
+    return {
+      initialized: false,
+      theme: LIGHT_THEME,
+      geometries: {},
+      globalSettings: state.settings,
+      chartRotation: 0 as 0,
+      chartDimensions: getChartDimensionsSelector(state),
+      chartTransform: {
+        x: 0,
+        y: 0,
+        rotate: 0,
+      },
+      isChartAnimatable: false,
+      isChartEmpty: true,
+      annotationDimensions: new Map(),
+      annotationSpecs: [],
+      isBrushAvailable: false,
+      highlightedLegendItem: undefined,
+    };
+  }
+  return {
+    initialized: state.initialized,
+    theme: getChartThemeSelector(state),
+    geometries: getRenderedGeometriesSelector(state),
+    globalSettings: state.settings,
+    chartRotation: getChartRotationSelector(state),
+    chartDimensions: getChartDimensionsSelector(state),
+    chartTransform: computeChartTransformSelector(state),
+    isChartAnimatable: isChartAnimatableSelector(state),
+    isChartEmpty: isChartEmptySelector(state),
+    annotationDimensions: computeAnnotationDimensionsSelector(state),
+    annotationSpecs: getAnnotationSpecsSelector(state),
+    isBrushAvailable: isBrushAvailableSelector(state),
+    highlightedLegendItem: getHighlightedSeriesSelector(state),
+  };
+};
+
+export const ReactiveChart = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Chart);

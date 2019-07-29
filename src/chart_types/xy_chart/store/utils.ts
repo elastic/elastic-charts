@@ -2,26 +2,16 @@ import { isVerticalAxis } from '../utils/axis_utils';
 import { CurveType } from '../../../utils/curves';
 import { mergeXDomain, XDomain } from '../domains/x_domain';
 import { mergeYDomain, YDomain } from '../domains/y_domain';
-import {
-  AreaGeometry,
-  BarGeometry,
-  IndexedGeometry,
-  LineGeometry,
-  mutableIndexedGeometryMapUpsert,
-  PointGeometry,
-  renderArea,
-  renderBars,
-  renderLine,
-} from '../rendering/rendering';
+import { mutableIndexedGeometryMapUpsert, renderArea, renderBars, renderLine } from '../rendering/rendering';
 import { computeXScale, computeYScales, countBarsInCluster } from '../utils/scales';
 import {
   DataSeries,
   DataSeriesColorsValues,
-  findDataSeriesByColorValues,
   FormattedDataSeries,
   getColorValuesAsString,
   getFormattedDataseries,
   getSplittedSeries,
+  RawDataSeries,
 } from '../utils/series';
 import {
   AreaSeriesSpec,
@@ -41,10 +31,10 @@ import { ColorConfig, Theme } from '../../../utils/themes/theme';
 import { identity, mergePartial } from '../../../utils/commons';
 import { Dimensions } from '../../../utils/dimensions';
 import { Domain } from '../../../utils/domain';
-import { AxisId, GroupId, SpecId } from '../../../utils/ids';
+import { GroupId, SpecId } from '../../../utils/ids';
 import { Scale } from '../../../utils/scales/scales';
-import { SeriesDomainsAndData } from './chart_state';
 import { LegendItem } from '../legend/legend';
+import { PointGeometry, BarGeometry, AreaGeometry, LineGeometry, IndexedGeometry } from '../../../utils/geometry';
 
 const MAX_ANIMATABLE_BARS = 300;
 const MAX_ANIMATABLE_LINES_AREA_POINTS = 600;
@@ -70,22 +60,50 @@ export interface GeometriesCounts {
   linePoints: number;
 }
 
-export function updateDeselectedDataSeries(
-  series: DataSeriesColorsValues[] | null,
-  value: DataSeriesColorsValues,
-): DataSeriesColorsValues[] {
-  const seriesIndex = findDataSeriesByColorValues(series, value);
-  const updatedSeries = series ? [...series] : [];
-
-  if (seriesIndex > -1) {
-    updatedSeries.splice(seriesIndex, 1);
-  } else {
-    updatedSeries.push(value);
-  }
-  return updatedSeries;
+export interface ComputedScales {
+  xScale: Scale;
+  yScales: Map<GroupId, Scale>;
 }
 
-export function getUpdatedCustomSeriesColors(seriesSpecs: Map<SpecId, BasicSeriesSpec>): Map<string, string> {
+export interface ComputedGeometries {
+  scales: ComputedScales;
+  geometries: {
+    points: PointGeometry[];
+    bars: BarGeometry[];
+    areas: AreaGeometry[];
+    lines: LineGeometry[];
+  };
+  geometriesIndex: Map<any, IndexedGeometry[]>;
+  geometriesCounts: GeometriesCounts;
+}
+
+export interface SeriesDomainsAndData {
+  xDomain: XDomain;
+  yDomain: YDomain[];
+  splittedDataSeries: RawDataSeries[][];
+  formattedDataSeries: {
+    stacked: FormattedDataSeries[];
+    nonStacked: FormattedDataSeries[];
+  };
+  seriesColors: Map<string, DataSeriesColorsValues>;
+}
+
+// export function updateDeselectedDataSeries(
+//   series: DataSeriesColorsValues[] | null,
+//   value: DataSeriesColorsValues,
+// ): DataSeriesColorsValues[] {
+//   const seriesIndex = findDataSeriesByColorValues(series, value);
+//   const updatedSeries = series ? [...series] : [];
+
+//   if (seriesIndex > -1) {
+//     updatedSeries.splice(seriesIndex, 1);
+//   } else {
+//     updatedSeries.push(value);
+//   }
+//   return updatedSeries;
+// }
+
+export function getUpdatedCustomSeriesColors(seriesSpecs: BasicSeriesSpec[]): Map<string, string> {
   const updatedCustomSeriesColors = new Map();
   seriesSpecs.forEach((spec: BasicSeriesSpec) => {
     if (spec.customSeriesColors) {
@@ -152,10 +170,10 @@ export function getLastValues(formattedDataSeries: {
  * @returns `SeriesDomainsAndData`
  */
 export function computeSeriesDomains(
-  seriesSpecs: Map<SpecId, BasicSeriesSpec>,
+  seriesSpecs: BasicSeriesSpec[],
   customYDomainsByGroupId: Map<GroupId, DomainRange>,
+  deselectedDataSeries: DataSeriesColorsValues[],
   customXDomain?: DomainRange | Domain,
-  deselectedDataSeries?: DataSeriesColorsValues[] | null,
 ): SeriesDomainsAndData {
   const { splittedSeries, xValues, seriesColors } = getSplittedSeries(seriesSpecs, deselectedDataSeries);
 
@@ -189,7 +207,7 @@ export function computeSeriesDomains(
 }
 
 export function computeSeriesGeometries(
-  seriesSpecs: Map<SpecId, BasicSeriesSpec>,
+  seriesSpecs: BasicSeriesSpec[],
   xDomain: XDomain,
   yDomain: YDomain[],
   formattedDataSeries: {
@@ -200,22 +218,9 @@ export function computeSeriesGeometries(
   chartTheme: Theme,
   chartDims: Dimensions,
   chartRotation: Rotation,
-  axesSpecs: Map<AxisId, AxisSpec>,
+  axesSpecs: AxisSpec[],
   enableHistogramMode: boolean,
-): {
-  scales: {
-    xScale: Scale;
-    yScales: Map<GroupId, Scale>;
-  };
-  geometries: {
-    points: PointGeometry[];
-    bars: BarGeometry[];
-    areas: AreaGeometry[];
-    lines: LineGeometry[];
-  };
-  geometriesIndex: Map<any, IndexedGeometry[]>;
-  geometriesCounts: GeometriesCounts;
-} {
+): ComputedGeometries {
   const chartColors: ColorConfig = chartTheme.colors;
   const barsPadding = enableHistogramMode ? chartTheme.scales.histogramPadding : chartTheme.scales.barsPadding;
 
@@ -356,8 +361,8 @@ export function setBarSeriesAccessors(isHistogramMode: boolean, seriesSpecs: Map
   return;
 }
 
-export function isHistogramModeEnabled(seriesSpecs: Map<SpecId, BasicSeriesSpec>): boolean {
-  for (const [, spec] of seriesSpecs) {
+export function isHistogramModeEnabled(seriesSpecs: BasicSeriesSpec[]): boolean {
+  for (const spec of seriesSpecs) {
     if (isBarSeriesSpec(spec) && spec.enableHistogramMode) {
       return true;
     }
@@ -397,10 +402,10 @@ export function renderGeometries(
   dataSeries: DataSeries[],
   xScale: Scale,
   yScale: Scale,
-  seriesSpecs: Map<SpecId, BasicSeriesSpec>,
+  seriesSpecs: BasicSeriesSpec[],
   seriesColorsMap: Map<string, string>,
   defaultColor: string,
-  axesSpecs: Map<AxisId, AxisSpec>,
+  axesSpecs: AxisSpec[],
   chartTheme: Theme,
   enableHistogramMode: boolean,
 ): {
@@ -542,14 +547,14 @@ export function renderGeometries(
   };
 }
 
-export function getSpecById(seriesSpecs: Map<SpecId, BasicSeriesSpec>, specId: SpecId) {
-  return seriesSpecs.get(specId);
+export function getSpecById(seriesSpecs: BasicSeriesSpec[], specId: SpecId) {
+  return seriesSpecs.find((spec) => spec.id === specId);
 }
 
-export function getAxesSpecForSpecId(axesSpecs: Map<AxisId, AxisSpec>, groupId: GroupId) {
+export function getAxesSpecForSpecId(axesSpecs: AxisSpec[], groupId: GroupId) {
   let xAxis;
   let yAxis;
-  for (const axisSpec of axesSpecs.values()) {
+  for (const axisSpec of axesSpecs) {
     if (axisSpec.groupId !== groupId) {
       continue;
     }
@@ -643,8 +648,8 @@ export function isVerticalRotation(chartRotation: Rotation) {
  * Check if a specs map contains only line or area specs
  * @param specs Map<SpecId, BasicSeriesSpec>
  */
-export function isLineAreaOnlyChart(specs: Map<SpecId, BasicSeriesSpec>) {
-  return ![...specs.values()].some((spec) => {
+export function isLineAreaOnlyChart(specs: BasicSeriesSpec[]) {
+  return !specs.some((spec) => {
     return spec.seriesType === 'bar';
   });
 }

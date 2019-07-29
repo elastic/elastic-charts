@@ -1,11 +1,16 @@
-import { inject, observer } from 'mobx-react';
 import React, { RefObject } from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
 import { debounce } from 'ts-debounce';
-import { ChartStore } from '../chart_types/xy_chart/store/chart_state';
+import { Dimensions } from '../utils/dimensions';
+import { UpdateParentDimensionAction, updateParentDimensions } from '../store/actions/chart_settings';
+import { Dispatch } from 'redux';
+import { connect } from 'react-redux';
+import { getSettingsSpecSelector } from 'store/selectors/get_settings_specs';
+import { IChartState } from 'store/chart_store';
 
 interface ResizerProps {
-  chartStore?: ChartStore;
+  resizeDebounce: number;
+  updateParentDimensions(dimension: Dimensions): void;
 }
 class Resizer extends React.Component<ResizerProps> {
   private initialResizeComplete = false;
@@ -22,7 +27,7 @@ class Resizer extends React.Component<ResizerProps> {
   }
 
   componentDidMount() {
-    this.onResizeDebounced = debounce(this.onResize, this.props.chartStore!.resizeDebounce);
+    this.onResizeDebounced = debounce(this.onResize, this.props.resizeDebounce);
     if (this.containerRef.current) {
       this.ro.observe(this.containerRef.current as Element);
     }
@@ -44,7 +49,7 @@ class Resizer extends React.Component<ResizerProps> {
     }
     const { width, height } = entries[0].contentRect;
     this.animationFrameID = window.requestAnimationFrame(() => {
-      this.props.chartStore!.updateParentDimensions(width, height, 0, 0);
+      this.props.updateParentDimensions({ width, height, top: 0, left: 0 });
     });
   };
 
@@ -62,4 +67,21 @@ class Resizer extends React.Component<ResizerProps> {
   };
 }
 
-export const ChartResizer = inject('chartStore')(observer(Resizer));
+const mapDispatchToProps = (dispatch: Dispatch<UpdateParentDimensionAction>) => {
+  return {
+    updateParentDimensions: (dimensions: Dimensions) => {
+      dispatch(updateParentDimensions(dimensions));
+    },
+  };
+};
+
+const mapStateToProps = (state: IChartState) => {
+  return {
+    resizeDebounce: getSettingsSpecSelector(state).resizeDebounce || 200,
+  };
+};
+
+export const ChartResizer = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Resizer);

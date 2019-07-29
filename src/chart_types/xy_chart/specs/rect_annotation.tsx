@@ -1,33 +1,17 @@
-import { inject } from 'mobx-react';
-import { PureComponent } from 'react';
 import { RectAnnotationSpec, DEFAULT_GLOBAL_ID } from '../utils/specs';
-import { getGroupId } from '../../../utils/ids';
-import { SpecProps } from '../../../specs/specs_parser';
+import { specComponentFactory, getConnect } from '../../../store/spec_factory';
+import { DEFAULT_ANNOTATION_RECT_STYLE } from '../../../utils/themes/theme';
+import { ChartTypes } from '../../index';
 
-type RectAnnotationProps = SpecProps & RectAnnotationSpec;
+const defaultProps = {
+  chartType: ChartTypes.XYAxis,
+  specType: 'annotation' as 'annotation',
+  groupId: DEFAULT_GLOBAL_ID,
+  annotationType: 'rectangle' as 'rectangle',
+  zIndex: -1,
+  style: DEFAULT_ANNOTATION_RECT_STYLE,
+};
 
-export class RectAnnotationSpecComponent extends PureComponent<RectAnnotationProps> {
-  static defaultProps: Partial<RectAnnotationProps> = {
-    groupId: getGroupId(DEFAULT_GLOBAL_ID),
-    annotationType: 'rectangle',
-    zIndex: -1,
-  };
-
-  componentDidMount() {
-    const { chartStore, children, ...config } = this.props;
-    chartStore!.addAnnotationSpec({ ...config });
-  }
-  componentDidUpdate() {
-    const { chartStore, children, ...config } = this.props;
-    chartStore!.addAnnotationSpec({ ...config });
-  }
-  componentWillUnmount() {
-    const { chartStore, annotationId } = this.props;
-    chartStore!.removeAnnotationSpec(annotationId);
-  }
-  render() {
-    return null;
-  }
-}
-
-export const RectAnnotation = inject('chartStore')(RectAnnotationSpecComponent);
+export const RectAnnotation = getConnect()(
+  specComponentFactory<RectAnnotationSpec, 'groupId' | 'annotationType' | 'zIndex' | 'style'>(defaultProps),
+);

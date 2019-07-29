@@ -1,26 +1,33 @@
-import { inject } from 'mobx-react';
-import { PureComponent } from 'react';
-import { ChartStore } from '../chart_types/xy_chart/store/chart_state';
+import { connect } from 'react-redux';
+import { useEffect } from 'react';
+import { specParsed } from '../store/actions/specs';
+import { bindActionCreators, Dispatch } from 'redux';
 
-export interface SpecProps {
-  chartStore?: ChartStore; // FIX
+export const SpecsRootComponent: React.FunctionComponent<{}> = (props) => {
+  const injected = props as DispatchProps;
+  useEffect(() => {
+    injected.specParsed();
+  });
+  return props.children ? (props.children as React.ReactElement) : null;
+};
+
+interface DispatchProps {
+  specParsed: () => void;
 }
 
-export class SpecsSpecRootComponent extends PureComponent<SpecProps> {
-  componentDidMount() {
-    this.props.chartStore!.specsInitialized.set(true);
-    this.props.chartStore!.computeChart();
-  }
-  componentDidUpdate() {
-    this.props.chartStore!.specsInitialized.set(true);
-    this.props.chartStore!.computeChart();
-  }
-  componentWillUnmount() {
-    this.props.chartStore!.chartInitialized.set(false);
-  }
-  render() {
-    return this.props.children || null;
-  }
-}
+const mapDispatchToProps = (dispatch: Dispatch) =>
+  bindActionCreators(
+    {
+      specParsed,
+    },
+    dispatch,
+  );
 
-export const SpecsParser = inject('chartStore')(SpecsSpecRootComponent);
+const mapStateToProps = () => ({});
+
+export const SpecsParser = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(SpecsRootComponent);
+
+export const CIAO_TEST = 'ccc';
