@@ -449,7 +449,7 @@ export function renderGeometries(
         ds.key,
         barSeriesStyle,
         displayValueSettings,
-        spec.colorAccessor,
+        spec.styleAccessor,
       );
       barGeometriesIndex = mergeGeometriesIndexes(barGeometriesIndex, renderedBars.indexedGeometries);
       bars.push(...renderedBars.barGeometries);

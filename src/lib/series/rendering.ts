@@ -16,7 +16,8 @@ import { CurveType, getCurveFactory } from './curves';
 import { LegendItem } from './legend';
 import { DataSeriesDatum } from './series';
 import { belongsToDataSeries } from './series_utils';
-import { DisplayValueSpec, ColorAccessor } from './specs';
+import { DisplayValueSpec, StyleAccessor } from './specs';
+import { mergePartial } from '../utils/commons';
 
 export interface GeometryId {
   specId: SpecId;
@@ -113,6 +114,33 @@ export function mutableIndexedGeometryMapUpsert(
   }
 }
 
+function getStyleOverrides(
+  styleAccessor: StyleAccessor | null = null,
+  datum: DataSeriesDatum,
+  geometryId: GeometryId,
+  seriesStyle: BarSeriesStyle,
+): BarSeriesStyle {
+  const styleOverride = styleAccessor && styleAccessor(datum, geometryId);
+
+  if (styleOverride) {
+    if (typeof styleOverride === 'string') {
+      return {
+        ...seriesStyle,
+        rect: {
+          ...seriesStyle.rect,
+          fill: styleOverride,
+        },
+      };
+    } else {
+      seriesStyle = mergePartial(seriesStyle, styleOverride, {
+        mergeOptionalPartialValues: true,
+      });
+    }
+  }
+
+  return seriesStyle;
+}
+
 export function renderPoints(
   shift: number,
   dataset: DataSeriesDatum[],
@@ -195,9 +223,9 @@ export function renderBars(
   color: string,
   specId: SpecId,
   seriesKey: any[],
-  seriesStyle: BarSeriesStyle,
+  sharedSeriesStyle: BarSeriesStyle,
   displayValueSettings?: DisplayValueSpec,
-  colorAccessor?: ColorAccessor,
+  styleAccessor?: StyleAccessor,
 ): {
   barGeometries: BarGeometry[];
   indexedGeometries: Map<any, IndexedGeometry[]>;
@@ -211,8 +239,8 @@ export function renderBars(
 
   // default padding to 1 for now
   const padding = 1;
-  const fontSize = seriesStyle.displayValue.fontSize;
-  const fontFamily = seriesStyle.displayValue.fontFamily;
+  const fontSize = sharedSeriesStyle.displayValue.fontSize;
+  const fontFamily = sharedSeriesStyle.displayValue.fontFamily;
 
   dataset.forEach((datum) => {
     const { y0, y1, initialY1 } = datum;
@@ -284,7 +312,7 @@ export function renderBars(
       seriesKey,
     };
 
-    const colorOverride = colorAccessor && colorAccessor(datum, geometryId);
+    const seriesStyle = getStyleOverrides(styleAccessor, datum, geometryId, sharedSeriesStyle);
 
     const barGeometry: BarGeometry = {
       displayValue,
@@ -292,7 +320,7 @@ export function renderBars(
       y, // top most value
       width,
       height,
-      color: colorOverride || color,
+      color,
       value: {
         x: datum.x,
         y: initialY1,

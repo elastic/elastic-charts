@@ -17,7 +17,9 @@ import { GeometryId } from './rendering';
 export type Datum = any;
 export type Rotation = 0 | 90 | -90 | 180;
 export type Rendering = 'canvas' | 'svg';
-export type ColorAccessor = (datum: RawDataSeriesDatum, geometryId: GeometryId) => string | null;
+export type Color = string;
+export type StyleOverride = RecursivePartial<BarSeriesStyle> | Color | null;
+export type StyleAccessor = (datum: RawDataSeriesDatum, geometryId: GeometryId) => StyleOverride;
 
 interface DomainMinInterval {
   /** Custom minInterval for the domain which will affect data bucket size.
@@ -99,7 +101,7 @@ export interface SeriesAccessors {
   /** An array of fields thats indicates the stack membership */
   stackAccessors?: Accessor[];
   /** An optional array of field name thats indicates the stack membership */
-  colorAccessor?: ColorAccessor;
+  styleAccessor?: StyleAccessor;
 }
 
 export interface SeriesScales {

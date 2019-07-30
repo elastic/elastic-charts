@@ -27,13 +27,15 @@ import {
   Settings,
   timeFormatter,
   TooltipType,
+  BarSeriesStyle,
+  RecursivePartial,
 } from '../src/';
 import * as TestDatasets from '../src/lib/series/utils/test_dataset';
 
 import { KIBANA_METRICS } from '../src/lib/series/utils/test_dataset_kibana';
 
 import { TEST_DATASET_DISCOVER } from '../src/lib/series/utils/test_dataset_discover_per_30s';
-import { ColorAccessor } from '../src/lib/series/specs';
+import { StyleAccessor } from '../src/lib/series/specs';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
 
@@ -1789,10 +1791,16 @@ storiesOf('Bar Chart', module)
       </Chart>
     );
   })
-  .add('colorAccessor overrides', () => {
+  .add('styleAccessor overrides', () => {
     const hasThreshold = boolean('threshold', true);
     const threshold = number('min threshold', 4);
-    const colorAccessor: ColorAccessor = (d, g) => (g.specId === getSpecId('bars') && d.y1! > threshold ? 'red' : null);
+    const style: RecursivePartial<BarSeriesStyle> = {
+      rect: {
+        opacity: 0.5,
+        fill: 'red',
+      },
+    };
+    const styleAccessor: StyleAccessor = (d, g) => (g.specId === getSpecId('bars') && d.y1! > threshold ? style : null);
 
     return (
       <Chart className="story-chart">
@@ -1810,7 +1818,7 @@ storiesOf('Bar Chart', module)
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y']}
-          colorAccessor={hasThreshold ? colorAccessor : undefined}
+          styleAccessor={hasThreshold ? styleAccessor : undefined}
           data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
         />
       </Chart>
