@@ -21,9 +21,11 @@ class TooltipsComponent extends React.Component<TooltipProps> {
 
   render() {
     const { isTooltipVisible, tooltipData, tooltipPosition, tooltipHeaderFormatter } = this.props.chartStore!;
+
     if (!isTooltipVisible.get()) {
       return <div className="echTooltip echTooltip--hidden" />;
     }
+
     return (
       <div className="echTooltip" style={{ transform: tooltipPosition.transform }}>
         <div className="echTooltip__header">{this.renderHeader(tooltipData[0], tooltipHeaderFormatter)}</div>
@@ -38,14 +40,14 @@ class TooltipsComponent extends React.Component<TooltipProps> {
                 return (
                   <tr key={`row-${index}`} className={classes}>
                     <td
-                      className="echTooltip__label"
+                      className="echTooltip__cell"
                       style={{
                         borderLeftColor: color,
                       }}
                     >
-                      {name}
+                      <span className="echTooltip__label">{name}</span>
+                      <span className="echTooltip__value">{value}</span>
                     </td>
-                    <td className="echTooltip__value">{value}</td>
                   </tr>
                 );
               })}

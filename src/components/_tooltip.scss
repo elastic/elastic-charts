@@ -10,13 +10,13 @@
   table {
     border-collapse: collapse;
     border-spacing: 0;
+    table-layout: fixed;
+    width: 100%;
+
     td,
     th {
       padding: 3px;
     }
-  }
-  table {
-    width: 100%;
   }
 }
 
@@ -25,10 +25,13 @@
   padding: $euiSizeXS ($euiSizeXS * 2);
 }
 
-.echTooltip__label {
-  @include euiTextTruncate;
-  // Border indicates series color
+.echTooltip__cell {
+  display: flex;
   border-left: $euiSizeXS solid transparent;
+}
+
+.echTooltip__label {
+  flex: 1;
 }
 
 .echTooltip__value {
@@ -38,7 +41,7 @@
 }
 
 .echTooltip__rowHighlighted {
-  background-color: transparentize($euiColorGhost, .9);
+  background-color: transparentize($euiColorGhost, 0.9);
   border-radius: $euiBorderRadius;
 }
 
