@@ -1,3 +1,24 @@
+## [8.1.3](https://github.com/elastic/elastic-charts/compare/v8.1.2...v8.1.3) (2019-07-30)
+
+
+### Bug Fixes
+
+* update EUI, storybook and add autoprefixer ([#267](https://github.com/elastic/elastic-charts/issues/267)) ([f70e084](https://github.com/elastic/elastic-charts/commit/f70e084)), closes [#249](https://github.com/elastic/elastic-charts/issues/249)
+
+## [8.1.2](https://github.com/elastic/elastic-charts/compare/v8.1.1...v8.1.2) (2019-07-24)
+
+
+### Bug Fixes
+
+* export GeometryValue so onElementClick callbacks can be typed ([#272](https://github.com/elastic/elastic-charts/issues/272)) ([8ed5d11](https://github.com/elastic/elastic-charts/commit/8ed5d11))
+
+## [8.1.1](https://github.com/elastic/elastic-charts/compare/v8.1.0...v8.1.1) (2019-07-24)
+
+
+### Bug Fixes
+
+* handle chart click as mouseUp to prevent click while brushing ([#269](https://github.com/elastic/elastic-charts/issues/269)) ([7881b8d](https://github.com/elastic/elastic-charts/commit/7881b8d))
+
 # [8.1.0](https://github.com/elastic/elastic-charts/compare/v8.0.2...v8.1.0) (2019-07-22)
 
 
@@ -37,19 +58,6 @@
 * **style:** `LineStyle`, `AreaStyle` and `BarSeriesStyle` types differs on the optional values.
 `stroke` and `fill` on the theme or specific series style now override the computed series color.
 
-* fix: no unused locals error on theme
-
-* fix: avoid key prop override by spread operator
-
-* test: increase test coverage on PR changes
-
-* fix: fontSize is now always a number
-
-* test: increase coverage for rendendering
-
-* refactor(story): simplify theme merging on `with value label` story
-
-* refactor: removed mergeWithDefaultTheme
 * **legend:** the `onLegendItemClick` click handler is no longer applied when clicking on the title. Instead a simple visibility change is applied.
 
 ## [7.2.1](https://github.com/elastic/elastic-charts/compare/v7.2.0...v7.2.1) (2019-07-10)

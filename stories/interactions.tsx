@@ -27,8 +27,8 @@ import {
 import { array, boolean, number, select } from '@storybook/addon-knobs';
 import { DateTime } from 'luxon';
 import { switchTheme } from '../.storybook/theme_service';
-import { BARCHART_2Y2G } from '../src/lib/series/utils/test_dataset';
-import { KIBANA_METRICS } from '../src/lib/series/utils/test_dataset_kibana';
+import { BARCHART_2Y2G } from '../src/utils/data_samples/test_dataset';
+import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 
 const onElementListeners = {
   onElementClick: action('onElementClick'),
@@ -442,7 +442,11 @@ storiesOf('Interactions', module)
     const oneDay = 1000 * 60 * 60 * 24;
     return (
       <Chart className={'story-chart'}>
-        <Settings debug={boolean('debug', false)} onBrushEnd={action('onBrushEnd')} />
+        <Settings
+          debug={boolean('debug', false)}
+          onBrushEnd={action('onBrushEnd')}
+          onElementClick={action('onElementClick')}
+        />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
