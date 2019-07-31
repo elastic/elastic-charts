@@ -75,25 +75,34 @@ storiesOf('Grids', module)
     const rightAxisGridLineConfig = generateGridLineConfig(Position.Right);
     const topAxisGridLineConfig = generateGridLineConfig(Position.Top);
     const bottomAxisGridLineConfig = generateGridLineConfig(Position.Bottom);
-
+    const toggleBottomAxisGridLineStyle = boolean('use axis gridLineStyle vertically', false, 'bottom axis');
+    const toggleHorizontalAxisGridLineStyle = boolean('use axis gridLineStyle horizontally', false, 'left axis');
+    const bottomAxisThemeGridLineConfig = generateGridLineConfig('Vertical Axis Theme');
+    const leftAxisThemeGridLineConfig = generateGridLineConfig('Horizontal Axis Theme');
+    const theme = {
+      axes: {
+        gridLineStyleVertical: leftAxisThemeGridLineConfig,
+        gridLineStyleHorizontal: bottomAxisThemeGridLineConfig,
+      },
+    };
     return (
       <Chart size={[500, 300]} className={'story-chart'}>
-        <Settings debug={boolean('debug', false)} />
+        <Settings debug={boolean('debug', false)} theme={theme} />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
           title={'Bottom axis'}
           showOverlappingTicks={true}
           showGridLines={boolean('show bottom axis grid lines', false, 'bottom axis')}
-          gridLineStyle={bottomAxisGridLineConfig}
+          gridLineStyle={toggleBottomAxisGridLineStyle ? bottomAxisGridLineConfig : undefined}
         />
         <Axis
           id={getAxisId('left1')}
-          title={'Left axis 1'}
           position={Position.Left}
+          title={'Left axis 1'}
           tickFormat={(d) => Number(d).toFixed(2)}
           showGridLines={boolean('show left axis grid lines', false, 'left axis')}
-          gridLineStyle={leftAxisGridLineConfig}
+          gridLineStyle={toggleHorizontalAxisGridLineStyle ? leftAxisGridLineConfig : undefined}
         />
         <Axis
           id={getAxisId('top')}

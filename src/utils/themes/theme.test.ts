@@ -39,7 +39,7 @@ describe('Theme', () => {
         dash: [0, 0],
       };
       const partialConfig = { strokeWidth: 5 };
-      const themeConfig = LIGHT_THEME.axes.gridLineStyle;
+      const themeConfig = LIGHT_THEME.axes.gridLineStyleVertical;
 
       expect(mergeWithDefaultGridLineConfig(fullConfig, themeConfig)).toEqual(fullConfig);
       expect(mergeWithDefaultGridLineConfig({}, themeConfig)).toEqual(themeConfig);
