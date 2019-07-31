@@ -115,7 +115,7 @@ export function mutableIndexedGeometryMapUpsert(
   }
 }
 
-function getStyleOverrides(
+export function getStyleOverrides(
   styleAccessor: StyleAccessor | null = null,
   datum: DataSeriesDatum,
   geometryId: GeometryId,
