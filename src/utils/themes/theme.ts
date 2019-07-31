@@ -49,8 +49,7 @@ export interface AxisConfig {
   axisLineStyle: StrokeStyle;
   tickLabelStyle: TextStyle;
   tickLineStyle: StrokeStyle;
-  gridLineStyleHorizontal: GridLineConfig;
-  gridLineStyleVertical: GridLineConfig;
+  gridLineStyle: { horizontal: GridLineConfig; vertical: GridLineConfig };
 }
 export interface GridLineConfig {
   visible?: boolean;

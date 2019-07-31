@@ -81,8 +81,7 @@ storiesOf('Grids', module)
     const leftAxisThemeGridLineConfig = generateGridLineConfig('Horizontal Axis Theme');
     const theme = {
       axes: {
-        gridLineStyleVertical: leftAxisThemeGridLineConfig,
-        gridLineStyleHorizontal: bottomAxisThemeGridLineConfig,
+        gridLineStyle: { vertical: leftAxisThemeGridLineConfig, horizontal: bottomAxisThemeGridLineConfig },
       },
     };
     return (

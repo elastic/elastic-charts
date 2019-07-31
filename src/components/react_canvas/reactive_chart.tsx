@@ -195,8 +195,8 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
         const axisSpecConfig = axisSpec.gridLineStyle;
 
         const themeConfig = isVertical(axisSpec.position)
-          ? chartTheme.axes.gridLineStyleVertical
-          : chartTheme.axes.gridLineStyleHorizontal;
+          ? chartTheme.axes.gridLineStyle.vertical
+          : chartTheme.axes.gridLineStyle.horizontal;
 
         const gridLineStyle = axisSpecConfig
           ? mergeWithDefaultGridLineConfig(axisSpecConfig, themeConfig)
