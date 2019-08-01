@@ -116,30 +116,30 @@ export function mutableIndexedGeometryMapUpsert(
 }
 
 export function getStyleOverrides(
-  styleAccessor: StyleAccessor | null = null,
   datum: DataSeriesDatum,
   geometryId: GeometryId,
   seriesStyle: BarSeriesStyle,
+  styleAccessor?: StyleAccessor,
 ): BarSeriesStyle {
   const styleOverride = styleAccessor && styleAccessor(datum, geometryId);
 
-  if (styleOverride) {
-    if (typeof styleOverride === 'string') {
-      return {
-        ...seriesStyle,
-        rect: {
-          ...seriesStyle.rect,
-          fill: styleOverride,
-        },
-      };
-    } else {
-      seriesStyle = mergePartial(seriesStyle, styleOverride, {
-        mergeOptionalPartialValues: true,
-      });
-    }
+  if (!styleOverride) {
+    return seriesStyle;
   }
 
-  return seriesStyle;
+  if (typeof styleOverride === 'string') {
+    return {
+      ...seriesStyle,
+      rect: {
+        ...seriesStyle.rect,
+        fill: styleOverride,
+      },
+    };
+  }
+
+  return mergePartial(seriesStyle, styleOverride, {
+    mergeOptionalPartialValues: true,
+  });
 }
 
 export function renderPoints(
@@ -313,7 +313,7 @@ export function renderBars(
       seriesKey,
     };
 
-    const seriesStyle = getStyleOverrides(styleAccessor, datum, geometryId, sharedSeriesStyle);
+    const seriesStyle = getStyleOverrides(datum, geometryId, sharedSeriesStyle, styleAccessor);
 
     const barGeometry: BarGeometry = {
       displayValue,

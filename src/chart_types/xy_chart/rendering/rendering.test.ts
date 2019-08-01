@@ -215,21 +215,21 @@ describe('Rendering utils', () => {
       mockAccessor = jest.fn();
     });
 
-    it('should return input seriesStyle if styleAccessor is null', () => {
-      const styleOverrides = getStyleOverrides(null, datum, geometryId, sampleSeriesStyle);
+    it('should return input seriesStyle if no styleAccessor is passed', () => {
+      const styleOverrides = getStyleOverrides(datum, geometryId, sampleSeriesStyle);
 
       expect(styleOverrides).toBe(sampleSeriesStyle);
     });
 
     it('should return input seriesStyle if styleAccessor returns null', () => {
       mockAccessor.mockReturnValue(null);
-      const styleOverrides = getStyleOverrides(mockAccessor, datum, geometryId, sampleSeriesStyle);
+      const styleOverrides = getStyleOverrides(datum, geometryId, sampleSeriesStyle, mockAccessor);
 
       expect(styleOverrides).toBe(sampleSeriesStyle);
     });
 
     it('should call styleAccessor with datum and geometryId', () => {
-      getStyleOverrides(mockAccessor, datum, geometryId, sampleSeriesStyle);
+      getStyleOverrides(datum, geometryId, sampleSeriesStyle, mockAccessor);
 
       expect(mockAccessor).toBeCalledWith(datum, geometryId);
     });
@@ -237,7 +237,7 @@ describe('Rendering utils', () => {
     it('should return seriesStyle with updated fill color', () => {
       const color = 'blue';
       mockAccessor.mockReturnValue(color);
-      const styleOverrides = getStyleOverrides(mockAccessor, datum, geometryId, sampleSeriesStyle);
+      const styleOverrides = getStyleOverrides(datum, geometryId, sampleSeriesStyle, mockAccessor);
       const expectedStyles: BarSeriesStyle = {
         ...sampleSeriesStyle,
         rect: {
@@ -250,7 +250,7 @@ describe('Rendering utils', () => {
 
     it('should return a new seriesStyle object with color', () => {
       mockAccessor.mockReturnValue('blue');
-      const styleOverrides = getStyleOverrides(mockAccessor, datum, geometryId, sampleSeriesStyle);
+      const styleOverrides = getStyleOverrides(datum, geometryId, sampleSeriesStyle, mockAccessor);
 
       expect(styleOverrides).not.toBe(sampleSeriesStyle);
     });
@@ -265,7 +265,7 @@ describe('Rendering utils', () => {
         },
       };
       mockAccessor.mockReturnValue(partialStyle);
-      const styleOverrides = getStyleOverrides(mockAccessor, datum, geometryId, sampleSeriesStyle);
+      const styleOverrides = getStyleOverrides(datum, geometryId, sampleSeriesStyle, mockAccessor);
       const expectedStyles = mergePartial(sampleSeriesStyle, partialStyle, {
         mergeOptionalPartialValues: true,
       });
@@ -279,7 +279,7 @@ describe('Rendering utils', () => {
           fill: 'blue',
         },
       });
-      const styleOverrides = getStyleOverrides(mockAccessor, datum, geometryId, sampleSeriesStyle);
+      const styleOverrides = getStyleOverrides(datum, geometryId, sampleSeriesStyle, mockAccessor);
 
       expect(styleOverrides).not.toBe(sampleSeriesStyle);
     });

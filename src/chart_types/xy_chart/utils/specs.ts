@@ -100,7 +100,7 @@ export interface SeriesAccessors {
   splitSeriesAccessors?: Accessor[];
   /** An array of fields thats indicates the stack membership */
   stackAccessors?: Accessor[];
-  /** An optional array of field name thats indicates the stack membership */
+  /** An optional functional accessor to return custom datum color or style */
   styleAccessor?: StyleAccessor;
 }
 
