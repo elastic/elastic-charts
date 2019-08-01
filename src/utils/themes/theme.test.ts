@@ -159,6 +159,7 @@ describe('Theme', () => {
           opacity: 1,
         },
         point: {
+          fill: 'white',
           radius: 314571,
           stroke: 'elastic_charts',
           strokeWidth: 314571,
@@ -193,6 +194,7 @@ describe('Theme', () => {
           opacity: 1,
         },
         point: {
+          fill: 'white',
           visible: true,
           radius: 314571,
           stroke: 'elastic_charts',

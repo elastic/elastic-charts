@@ -1,3 +1,10 @@
+## [8.1.4](https://github.com/elastic/elastic-charts/compare/v8.1.3...v8.1.4) (2019-08-01)
+
+
+### Bug Fixes
+
+* **theme:** restore original point radius values ([#276](https://github.com/elastic/elastic-charts/issues/276)) ([16f789a](https://github.com/elastic/elastic-charts/commit/16f789a))
+
 ## [8.1.3](https://github.com/elastic/elastic-charts/compare/v8.1.2...v8.1.3) (2019-07-30)
 
 
@@ -58,19 +65,6 @@
 * **style:** `LineStyle`, `AreaStyle` and `BarSeriesStyle` types differs on the optional values.
 `stroke` and `fill` on the theme or specific series style now override the computed series color.
 
-* fix: no unused locals error on theme
-
-* fix: avoid key prop override by spread operator
-
-* test: increase test coverage on PR changes
-
-* fix: fontSize is now always a number
-
-* test: increase coverage for rendendering
-
-* refactor(story): simplify theme merging on `with value label` story
-
-* refactor: removed mergeWithDefaultTheme
 * **legend:** the `onLegendItemClick` click handler is no longer applied when clicking on the title. Instead a simple visibility change is applied.
 
 ## [7.2.1](https://github.com/elastic/elastic-charts/compare/v7.2.0...v7.2.1) (2019-07-10)
