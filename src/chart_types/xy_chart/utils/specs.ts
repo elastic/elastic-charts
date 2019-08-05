@@ -13,6 +13,7 @@ import { ScaleContinuousType, ScaleType } from '../../../utils/scales/scales';
 import { CurveType } from '../../../utils/curves';
 import { DataSeriesColorsValues, RawDataSeriesDatum } from './series';
 import { GeometryId } from '../rendering/rendering';
+import { AnnotationTooltipFormatter } from '../annotations/annotation_utils';
 
 export type Datum = any;
 export type Rotation = 0 | 90 | -90 | 180;
@@ -317,7 +318,7 @@ export interface RectAnnotationDatum {
 export type RectAnnotationSpec = BaseAnnotationSpec & {
   annotationType: 'rectangle';
   /** Custom rendering function for tooltip */
-  renderTooltip?: (details?: string) => JSX.Element;
+  renderTooltip?: AnnotationTooltipFormatter;
   /** Data values defined with coordinates and details */
   dataValues: RectAnnotationDatum[];
   /** Custom annotation style */
