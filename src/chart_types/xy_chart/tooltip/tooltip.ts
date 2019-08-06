@@ -25,6 +25,7 @@ export function formatTooltip(
   spec: BasicSeriesSpec,
   isXValue: boolean,
   isHighlighted: boolean,
+  seriesNameMap: Map<string, string>,
   axisSpec?: AxisSpec,
 ): TooltipValue {
   const { id } = spec;
@@ -34,8 +35,12 @@ export function formatTooltip(
     geometryId: { seriesKey },
   } = searchIndexValue;
   const seriesKeyAsString = getColorValuesAsString(seriesKey, id);
+  const customName = seriesKey.length > 0 ? seriesNameMap.get(seriesKeyAsString) : '';
   let name: string | undefined;
-  if (seriesKey.length > 0) {
+
+  if (customName) {
+    name = customName;
+  } else if (seriesKey.length > 0) {
     name = seriesKey.join(' - ');
   } else {
     name = spec.name || `${spec.id}`;

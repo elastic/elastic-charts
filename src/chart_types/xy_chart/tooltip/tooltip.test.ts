@@ -3,6 +3,7 @@ import { ScaleType } from '../../../utils/scales/scales';
 import { BarGeometry } from '../rendering/rendering';
 import { AxisSpec, BarSeriesSpec, Position } from '../utils/specs';
 import { formatTooltip } from './tooltip';
+import { getColorValuesAsString } from '../utils/series';
 
 describe('Tooltip formatting', () => {
   const SPEC_ID_1 = getSpecId('bar_1');
@@ -65,7 +66,7 @@ describe('Tooltip formatting', () => {
   };
 
   test('format simple tooltip', () => {
-    const tooltipValue = formatTooltip(indexedGeometry, SPEC_1, false, false, YAXIS_SPEC);
+    const tooltipValue = formatTooltip(indexedGeometry, SPEC_1, false, false, new Map(), YAXIS_SPEC);
     expect(tooltipValue).toBeDefined();
     expect(tooltipValue.name).toBe('bar_1');
     expect(tooltipValue.isXValue).toBe(false);
@@ -81,13 +82,29 @@ describe('Tooltip formatting', () => {
         seriesKey: ['y1'],
       },
     };
-    const tooltipValue = formatTooltip(geometry, SPEC_1, false, false, YAXIS_SPEC);
+    const tooltipValue = formatTooltip(geometry, SPEC_1, false, false, new Map(), YAXIS_SPEC);
     expect(tooltipValue).toBeDefined();
     expect(tooltipValue.name).toBe('y1');
     expect(tooltipValue.isXValue).toBe(false);
     expect(tooltipValue.isHighlighted).toBe(false);
     expect(tooltipValue.color).toBe('blue');
     expect(tooltipValue.value).toBe('10');
+  });
+  test('format tooltip with custom series name', () => {
+    const seriesKey = ['y1'];
+    const customName = 'My Custom Series';
+    const geometry: BarGeometry = {
+      ...indexedGeometry,
+      geometryId: {
+        specId: SPEC_ID_1,
+        seriesKey,
+      },
+    };
+    const seriesKeyAsString = getColorValuesAsString(seriesKey, SPEC_ID_1);
+    const nameMap = new Map<string, string>([[seriesKeyAsString, customName]]);
+    const tooltipValue = formatTooltip(geometry, SPEC_1, false, false, nameMap, YAXIS_SPEC);
+    expect(tooltipValue).toBeDefined();
+    expect(tooltipValue.name).toBe(customName);
   });
   test('format y0 tooltip', () => {
     const geometry: BarGeometry = {
@@ -97,7 +114,7 @@ describe('Tooltip formatting', () => {
         accessor: 'y0',
       },
     };
-    const tooltipValue = formatTooltip(geometry, SPEC_1, false, false, YAXIS_SPEC);
+    const tooltipValue = formatTooltip(geometry, SPEC_1, false, false, new Map(), YAXIS_SPEC);
     expect(tooltipValue).toBeDefined();
     expect(tooltipValue.name).toBe('bar_1');
     expect(tooltipValue.isXValue).toBe(false);
@@ -113,7 +130,7 @@ describe('Tooltip formatting', () => {
         accessor: 'y0',
       },
     };
-    let tooltipValue = formatTooltip(geometry, SPEC_1, true, false, YAXIS_SPEC);
+    let tooltipValue = formatTooltip(geometry, SPEC_1, true, false, new Map(), YAXIS_SPEC);
     expect(tooltipValue).toBeDefined();
     expect(tooltipValue.name).toBe('bar_1');
     expect(tooltipValue.isXValue).toBe(true);
@@ -121,7 +138,7 @@ describe('Tooltip formatting', () => {
     expect(tooltipValue.color).toBe('blue');
     expect(tooltipValue.value).toBe('1');
     // disable any highlight on x value
-    tooltipValue = formatTooltip(geometry, SPEC_1, true, true, YAXIS_SPEC);
+    tooltipValue = formatTooltip(geometry, SPEC_1, true, true, new Map(), YAXIS_SPEC);
     expect(tooltipValue.isHighlighted).toBe(false);
   });
 });

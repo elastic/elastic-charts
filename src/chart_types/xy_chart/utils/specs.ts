@@ -77,6 +77,8 @@ export interface SeriesSpec {
   data: Datum[];
   /** The type of series you are looking to render */
   seriesType: 'bar' | 'line' | 'area';
+  /** Custom naming for series */
+  customSeriesNames?: CustomSeriesNamesMap;
   /** Custom colors for series */
   customSeriesColors?: CustomSeriesColorsMap;
   /** If the series should appear in the legend
@@ -89,6 +91,7 @@ export interface SeriesSpec {
 }
 
 export type CustomSeriesColorsMap = Map<DataSeriesColorsValues, string>;
+export type CustomSeriesNamesMap = Map<DataSeriesColorsValues, string>;
 
 export interface SeriesAccessors {
   /** The field name of the x value on Datum object */

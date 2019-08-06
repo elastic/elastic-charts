@@ -9,6 +9,8 @@ import {
   getSplittedSeries,
   RawDataSeries,
   splitSeries,
+  getSeriesNameMap,
+  getColorValuesAsString,
 } from './series';
 import { BasicSeriesSpec } from './specs';
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
@@ -487,5 +489,40 @@ describe('Series', () => {
     undefinedSortedColorValues.set(spec2Id, dataSeriesValues2);
 
     expect(getSortedDataSeriesColorsValuesMap(colorValuesMap)).toEqual(undefinedSortedColorValues);
+  });
+  describe('getSeriesNameMap', () => {
+    const seriesSpecs = new Map<SpecId, BasicSeriesSpec>();
+    const customName = 'Custom series name';
+    const specId = getSpecId('spec');
+    const colorValues = ['y1', 'x1'];
+    const customSeriesNames = new Map<DataSeriesColorsValues, string>([
+      [
+        {
+          specId,
+          colorValues,
+        },
+        customName,
+      ],
+    ]);
+    const spec: BasicSeriesSpec = {
+      id: specId,
+      groupId: getGroupId('group'),
+      xScaleType: ScaleType.Linear,
+      yScaleType: ScaleType.Linear,
+      seriesType: 'bar',
+      xAccessor: 'x',
+      yAccessors: ['y1', 'y2'],
+      stackAccessors: ['x'],
+      yScaleToDataExtent: false,
+      data: TestDataset.BARCHART_2Y0G,
+      customSeriesNames,
+    };
+    seriesSpecs.set(spec.id, spec);
+    const nameMap = getSeriesNameMap(seriesSpecs);
+    const expectedMap = new Map<string, string>([[getColorValuesAsString(colorValues, specId), customName]]);
+
+    it('should return the expected name map', () => {
+      expect(nameMap).toEqual(expectedMap);
+    });
   });
 });

@@ -1,7 +1,7 @@
 import { AxisId, getAxisId, getGroupId, getSpecId, SpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
 import { computeLegend, getSeriesColorLabel } from './legend';
-import { DataSeriesColorsValues } from '../utils/series';
+import { DataSeriesColorsValues, getColorValuesAsString } from '../utils/series';
 import { AxisSpec, BasicSeriesSpec, Position } from '../utils/specs';
 
 const colorValues1a = {
@@ -65,6 +65,7 @@ axesSpecs.set(axisSpec.id, axisSpec);
 describe('Legends', () => {
   const seriesColor = new Map<string, DataSeriesColorsValues>();
   const seriesColorMap = new Map<string, string>();
+  const seriesNameMap = new Map<string, string>();
   const specs = new Map<SpecId, BasicSeriesSpec>();
   specs.set(spec1.id, spec1);
   specs.set(spec2.id, spec2);
@@ -77,7 +78,7 @@ describe('Legends', () => {
   });
   it('compute legend for a single series', () => {
     seriesColor.set('colorSeries1a', colorValues1a);
-    const legend = computeLegend(seriesColor, seriesColorMap, specs, 'violet', axesSpecs);
+    const legend = computeLegend(seriesColor, seriesColorMap, seriesNameMap, specs, 'violet', axesSpecs);
     const expected = [
       {
         color: 'red',
@@ -94,7 +95,7 @@ describe('Legends', () => {
   it('compute legend for a single spec but with multiple series', () => {
     seriesColor.set('colorSeries1a', colorValues1a);
     seriesColor.set('colorSeries1b', colorValues1b);
-    const legend = computeLegend(seriesColor, seriesColorMap, specs, 'violet', axesSpecs);
+    const legend = computeLegend(seriesColor, seriesColorMap, seriesNameMap, specs, 'violet', axesSpecs);
     const expected = [
       {
         color: 'red',
@@ -120,7 +121,7 @@ describe('Legends', () => {
   it('compute legend for multiple specs', () => {
     seriesColor.set('colorSeries1a', colorValues1a);
     seriesColor.set('colorSeries2a', colorValues2a);
-    const legend = computeLegend(seriesColor, seriesColorMap, specs, 'violet', axesSpecs);
+    const legend = computeLegend(seriesColor, seriesColorMap, seriesNameMap, specs, 'violet', axesSpecs);
     const expected = [
       {
         color: 'red',
@@ -145,13 +146,13 @@ describe('Legends', () => {
   });
   it('empty legend for missing spec', () => {
     seriesColor.set('colorSeries2b', colorValues2b);
-    const legend = computeLegend(seriesColor, seriesColorMap, specs, 'violet', axesSpecs);
+    const legend = computeLegend(seriesColor, seriesColorMap, seriesNameMap, specs, 'violet', axesSpecs);
     expect(legend.size).toEqual(0);
   });
   it('compute legend with default color for missing series color', () => {
     seriesColor.set('colorSeries1a', colorValues1a);
     const emptyColorMap = new Map<string, string>();
-    const legend = computeLegend(seriesColor, emptyColorMap, specs, 'violet', axesSpecs);
+    const legend = computeLegend(seriesColor, emptyColorMap, seriesNameMap, specs, 'violet', axesSpecs);
     const expected = [
       {
         color: 'violet',
@@ -174,7 +175,15 @@ describe('Legends', () => {
     const emptyColorMap = new Map<string, string>();
     const deselectedDataSeries = null;
 
-    const legend = computeLegend(seriesColor, emptyColorMap, specs, 'violet', axesSpecs, deselectedDataSeries);
+    const legend = computeLegend(
+      seriesColor,
+      emptyColorMap,
+      seriesNameMap,
+      specs,
+      'violet',
+      axesSpecs,
+      deselectedDataSeries,
+    );
 
     const visibility = [...legend.values()].map((item) => item.isSeriesVisible);
 
@@ -189,32 +198,77 @@ describe('Legends', () => {
     const emptyColorMap = new Map<string, string>();
     const deselectedDataSeries = [colorValues1a, colorValues1b];
 
-    const legend = computeLegend(seriesColor, emptyColorMap, specs, 'violet', axesSpecs, deselectedDataSeries);
+    const legend = computeLegend(
+      seriesColor,
+      emptyColorMap,
+      seriesNameMap,
+      specs,
+      'violet',
+      axesSpecs,
+      deselectedDataSeries,
+    );
 
     const visibility = [...legend.values()].map((item) => item.isSeriesVisible);
     expect(visibility).toEqual([false, false, true]);
   });
-  it('returns the right series label for a color series', () => {
-    let label = getSeriesColorLabel([], true);
-    expect(label).toBeUndefined();
-    label = getSeriesColorLabel([], true, spec1);
-    expect(label).toBe('Spec 1 title');
-    label = getSeriesColorLabel([], true, spec2);
-    expect(label).toBe('spec2');
-    label = getSeriesColorLabel(['a', 'b'], true, spec1);
-    expect(label).toBe('Spec 1 title');
-    label = getSeriesColorLabel(['a', 'b'], true, spec2);
-    expect(label).toBe('spec2');
 
-    label = getSeriesColorLabel([], false);
-    expect(label).toBeUndefined();
-    label = getSeriesColorLabel([], false, spec1);
-    expect(label).toBe('Spec 1 title');
-    label = getSeriesColorLabel([], false, spec2);
-    expect(label).toBe('spec2');
-    label = getSeriesColorLabel(['a', 'b'], false, spec1);
-    expect(label).toBe('a - b');
-    label = getSeriesColorLabel(['a', 'b'], false, spec2);
-    expect(label).toBe('a - b');
+  describe('getSeriesColorLabel', () => {
+    it('should return undefined if there is no spec and hasSingleSeries is true', () => {
+      const label = getSeriesColorLabel([], true, new Map(), '');
+      expect(label).toBeUndefined();
+    });
+
+    it('should return undefined if there is no spec and hasSingleSeries is false', () => {
+      const label = getSeriesColorLabel([], false, new Map(), '');
+      expect(label).toBeUndefined();
+    });
+
+    it('should return spec name when hasSingleSeries is true', () => {
+      const label = getSeriesColorLabel([], true, new Map(), '', spec1);
+      expect(label).toBe(spec1.name);
+    });
+
+    it('should return spec name when hasSingleSeries is false', () => {
+      const label = getSeriesColorLabel([], false, new Map(), '', spec1);
+      expect(label).toBe(spec1.name);
+    });
+
+    it('should return spec id if no name when hasSingleSeries is true', () => {
+      const label = getSeriesColorLabel([], true, new Map(), '', spec2);
+      expect(label).toBe(spec2.id);
+    });
+
+    it('should return spec id if no name when hasSingleSeries is false', () => {
+      const label = getSeriesColorLabel([], false, new Map(), '', spec2);
+      expect(label).toBe('spec2');
+    });
+
+    it('should return spec name, not colorValues, when hasSingleSeries is true', () => {
+      const label = getSeriesColorLabel(['a', 'b'], true, new Map(), '', spec1);
+      expect(label).toBe('Spec 1 title');
+    });
+
+    it('should return colorValues, not spec name, when hasSingleSeries is false', () => {
+      const label = getSeriesColorLabel(['a', 'b'], false, new Map(), '', spec1);
+      expect(label).toBe('a - b');
+    });
+
+    it('should return spec id, not colorValues, when hasSingleSeries is true', () => {
+      const label = getSeriesColorLabel(['a', 'b'], true, new Map(), '', spec2);
+      expect(label).toBe(spec2.id);
+    });
+
+    it('should return colorValues, not spec id, when hasSingleSeries is false', () => {
+      const label = getSeriesColorLabel(['a', 'b'], false, new Map(), '', spec2);
+      expect(label).toBe('a - b');
+    });
+
+    it('should return custom name for given series', () => {
+      const customName = 'Custom series name';
+      const seriesKey = getColorValuesAsString(['a', 'b'], spec2.id);
+      const names = new Map<string, string>([[seriesKey, customName]]);
+      const label = getSeriesColorLabel(['a', 'b'], false, names, seriesKey, spec2);
+      expect(label).toBe(customName);
+    });
   });
 });

@@ -27,6 +27,7 @@ import {
   FormattedDataSeries,
   getSeriesColorMap,
   RawDataSeries,
+  getSeriesNameMap,
 } from '../utils/series';
 import {
   AnnotationSpec,
@@ -167,6 +168,7 @@ export class ChartStore {
   deselectedDataSeries: DataSeriesColorsValues[] | null = null;
   customSeriesColors: Map<string, string> = new Map();
   seriesColorMap: Map<string, string> = new Map();
+  seriesNameMap: Map<string, string> = new Map();
   totalBarsInCluster?: number;
 
   tooltipData = observable.array<TooltipValue>([], { deep: false });
@@ -368,13 +370,20 @@ export class ChartStore {
 
         // format the tooltip values
         const yAxisFormatSpec = [0, 180].includes(this.chartRotation) ? yAxis : xAxis;
-        const formattedTooltip = formatTooltip(indexedGeometry, spec, false, isHighlighted, yAxisFormatSpec);
+        const formattedTooltip = formatTooltip(
+          indexedGeometry,
+          spec,
+          false,
+          isHighlighted,
+          this.seriesNameMap,
+          yAxisFormatSpec,
+        );
         // format only one time the x value
         if (!xValueInfo) {
           // if we have a tooltipHeaderFormatter, then don't pass in the xAxis as the user will define a formatter
           const xAxisFormatSpec = [0, 180].includes(this.chartRotation) ? xAxis : yAxis;
           const formatterAxis = this.tooltipHeaderFormatter ? undefined : xAxisFormatSpec;
-          xValueInfo = formatTooltip(indexedGeometry, spec, true, false, formatterAxis);
+          xValueInfo = formatTooltip(indexedGeometry, spec, true, false, this.seriesNameMap, formatterAxis);
           return [xValueInfo, ...acc, formattedTooltip];
         }
 
@@ -803,9 +812,12 @@ export class ChartStore {
       this.customSeriesColors,
     );
 
+    this.seriesNameMap = getSeriesNameMap(this.seriesSpecs);
+
     this.legendItems = computeLegend(
       this.seriesDomainsAndData.seriesColors,
       this.seriesColorMap,
+      this.seriesNameMap,
       this.seriesSpecs,
       this.chartTheme.colors.defaultVizColor,
       this.axesSpecs,

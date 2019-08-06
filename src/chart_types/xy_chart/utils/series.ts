@@ -368,3 +368,21 @@ export function getSeriesColorMap(
   });
   return seriesColorMap;
 }
+
+export function getSeriesNameMap(seriesSpecs: Map<SpecId, BasicSeriesSpec>): Map<string, string> {
+  const seriesColorMap = new Map<string, string>();
+
+  seriesSpecs.forEach(({ customSeriesNames }) => {
+    if (!customSeriesNames || customSeriesNames.size === 0) {
+      return seriesColorMap;
+    }
+
+    customSeriesNames.forEach((seriesNameKey, { colorValues, specId }) => {
+      const seriesKey = getColorValuesAsString(colorValues, specId);
+
+      seriesColorMap.set(seriesKey, seriesNameKey);
+    });
+  });
+
+  return seriesColorMap;
+}

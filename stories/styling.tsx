@@ -1,4 +1,4 @@
-import { boolean, color, number, select } from '@storybook/addon-knobs';
+import { boolean, color, number, select, text } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import React from 'react';
 import { switchTheme } from '../.storybook/theme_service';
@@ -24,6 +24,7 @@ import {
 } from '../src/';
 import * as TestDatasets from '../src/utils/data_samples/test_dataset';
 import { palettes } from '../src/utils/themes/colors';
+import { CustomSeriesNamesMap } from '../src/chart_types/xy_chart/utils/specs';
 
 function range(title: string, min: number, max: number, value: number, groupId?: string, step: number = 1) {
   return number(
@@ -431,12 +432,7 @@ storiesOf('Stylings', module)
     return (
       <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          // title={'Bottom axis'}
-          showOverlappingTicks={true}
-        />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
           title={'Left axis'}
@@ -462,6 +458,41 @@ storiesOf('Stylings', module)
           yAccessors={['y']}
           customSeriesColors={lineCustomSeriesColors}
           data={[{ x: 0, y: 3 }, { x: 1, y: 2 }, { x: 2, y: 4 }, { x: 3, y: 10 }]}
+        />
+      </Chart>
+    );
+  })
+  .add('custom series names', () => {
+    const colorValues = ['cloudflare.com', 'direct-cdn', 'y2'];
+    const barCustomSeriesNames: CustomSeriesNamesMap = new Map();
+    const barDataSeries: DataSeriesColorsValues = {
+      colorValues,
+      specId: getSpecId('bars'),
+    };
+
+    const customSeriesText = text(`Custom series name`, 'MY CUSTOM SERIES');
+    barCustomSeriesNames.set(barDataSeries, customSeriesText);
+
+    return (
+      <Chart className={'story-chart'}>
+        <Settings showLegend={true} legendPosition={Position.Right} />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} showOverlappingTicks={true} />
+        <Axis
+          id={getAxisId('left2')}
+          title={'Left axis'}
+          position={Position.Left}
+          tickFormat={(d) => Number(d).toFixed(2)}
+        />
+
+        <BarSeries
+          id={getSpecId('bars')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y1', 'y2']}
+          splitSeriesAccessors={['g1', 'g2']}
+          customSeriesNames={barCustomSeriesNames}
+          data={TestDatasets.BARCHART_2Y2G}
         />
       </Chart>
     );

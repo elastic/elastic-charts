@@ -24,6 +24,7 @@ export interface LegendItem {
 export function computeLegend(
   seriesColor: Map<string, DataSeriesColorsValues>,
   seriesColorMap: Map<string, string>,
+  seriesNameMap: Map<string, string>,
   specs: Map<SpecId, BasicSeriesSpec>,
   defaultColor: string,
   axesSpecs: Map<AxisId, AxisSpec>,
@@ -36,7 +37,7 @@ export function computeLegend(
     const spec = specs.get(series.specId);
     const color = seriesColorMap.get(key) || defaultColor;
     const hasSingleSeries = seriesColor.size === 1;
-    const label = getSeriesColorLabel(series.colorValues, hasSingleSeries, spec);
+    const label = getSeriesColorLabel(series.colorValues, hasSingleSeries, seriesNameMap, key, spec);
     const isSeriesVisible = deselectedDataSeries ? findDataSeriesByColorValues(deselectedDataSeries, series) < 0 : true;
 
     if (!label || !spec) {
@@ -68,8 +69,16 @@ export function computeLegend(
 export function getSeriesColorLabel(
   colorValues: any[],
   hasSingleSeries: boolean,
+  seriesNameMap: Map<string, string>,
+  seriesKey: string,
   spec?: BasicSeriesSpec,
 ): string | undefined {
+  const customLabel = seriesNameMap.get(seriesKey!);
+
+  if (customLabel) {
+    return customLabel;
+  }
+
   let label = '';
 
   if (hasSingleSeries || colorValues.length === 0 || !colorValues[0]) {
