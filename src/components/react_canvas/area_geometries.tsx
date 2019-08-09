@@ -1,7 +1,6 @@
 import { Group as KonvaGroup } from 'konva';
 import React from 'react';
 import { Circle, Group, Path } from 'react-konva';
-import { animated, Spring } from 'react-spring/renderprops-konva.cjs';
 import { LegendItem } from '../../chart_types/xy_chart/legend/legend';
 import {
   AreaGeometry,
@@ -18,7 +17,6 @@ import {
   PointStyleProps,
   buildLineRenderProps,
 } from './utils/rendering_props_utils';
-import { HighlightedElement } from '../../chart_types/xy_chart/utils/interactions';
 
 interface AreaGeometriesDataProps {
   animated?: boolean;

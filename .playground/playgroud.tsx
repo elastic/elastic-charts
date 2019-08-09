@@ -5,7 +5,6 @@ import {
   Chart,
   getAxisId,
   getSpecId,
-  LineSeries,
   niceTimeFormatter,
   Position,
   ScaleType,
@@ -22,10 +21,6 @@ export class Playground extends React.Component {
   renderChart(legendPosition: Position) {
     const theme = mergeWithDefaultTheme({
       lineSeriesStyle: {
-        // area: {
-        //   fill: 'green',
-        //   opacity:0.2
-        // },
         line: {
           stroke: 'violet',
           strokeWidth: 4,
@@ -50,7 +45,7 @@ export class Playground extends React.Component {
             tickFormat={niceTimeFormatter([1555819200000, 1555905600000])}
           />
           <Axis id={getAxisId('count')} title="count" position={Position.Left} tickFormat={(d) => d.toFixed(2)} />
-         
+
           <AreaSeries
             id={getSpecId('dataset B')}
             xScaleType={ScaleType.Time}
@@ -68,7 +63,7 @@ export class Playground extends React.Component {
                 visible: true,
                 strokeWidth: 3,
                 radius: 10,
-              }
+              },
             }}
           />
           <AreaSeries
@@ -88,10 +83,10 @@ export class Playground extends React.Component {
                 visible: true,
                 strokeWidth: 3,
                 radius: 10,
-              }
+              },
             }}
           />
-           <AreaSeries
+          <AreaSeries
             id={getSpecId('dataset A with long title')}
             xScaleType={ScaleType.Time}
             yScaleType={ScaleType.Linear}
@@ -105,7 +100,7 @@ export class Playground extends React.Component {
               },
               line: {
                 strokeWidth: 10,
-              }
+              },
             }}
             yAccessors={[1]}
           />
