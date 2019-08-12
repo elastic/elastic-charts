@@ -404,7 +404,10 @@ export class ChartStore {
 
         // check if the pointer is on the geometry
         let isHighlighted = false;
-        if (isPointerOnGeometry(xAxisCursorPosition, yAxisCursorPosition, indexedGeometry, this.isActiveChart.get())) {
+        if (
+          this.isActiveChart.get() &&
+          isPointerOnGeometry(xAxisCursorPosition, yAxisCursorPosition, indexedGeometry)
+        ) {
           isHighlighted = true;
           oneHighlighted = true;
           newHighlightedGeometries.push(indexedGeometry);
