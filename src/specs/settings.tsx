@@ -1,5 +1,6 @@
-import { inject } from 'mobx-react';
 import { PureComponent } from 'react';
+import { inject } from 'mobx-react';
+
 import { DomainRange, Position, Rendering, Rotation } from '../chart_types/xy_chart/utils/specs';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { DARK_THEME } from '../utils/themes/dark_theme';
@@ -12,6 +13,7 @@ import {
   ElementClickListener,
   ElementOverListener,
   LegendItemListener,
+  CursorUpdateListener,
 } from '../chart_types/xy_chart/store/chart_state';
 
 export const DEFAULT_TOOLTIP_TYPE = TooltipType.VerticalCursor;
@@ -21,6 +23,11 @@ interface TooltipProps {
   type?: TooltipType;
   snap?: boolean;
   headerFormatter?: TooltipValueFormatter;
+}
+
+export interface Cursor {
+  chartId: string;
+  value: number;
 }
 
 function isTooltipProps(config: TooltipType | TooltipProps): config is TooltipProps {
@@ -53,7 +60,9 @@ export interface SettingSpecProps {
   onLegendItemClick?: LegendItemListener;
   onLegendItemPlusClick?: LegendItemListener;
   onLegendItemMinusClick?: LegendItemListener;
+  onCursorUpdate?: CursorUpdateListener;
   xDomain?: Domain | DomainRange;
+  activeCursor?: Cursor;
 }
 
 function getTheme(theme?: Theme | PartialTheme, baseThemeType: BaseThemeType = BaseThemeTypes.Light): Theme {
@@ -86,6 +95,8 @@ function updateChartStore(props: SettingSpecProps) {
     onLegendItemClick,
     onLegendItemMinusClick,
     onLegendItemPlusClick,
+    onCursorUpdate,
+    activeCursor,
     debug,
     xDomain,
   } = props;
@@ -106,6 +117,14 @@ function updateChartStore(props: SettingSpecProps) {
     chartStore.tooltipHeaderFormatter = headerFormatter;
   } else if (tooltip && isTooltipType(tooltip)) {
     chartStore.tooltipType.set(tooltip);
+  }
+
+  chartStore.setActiveChartId(activeCursor && activeCursor.chartId);
+
+  if (!activeCursor) {
+    chartStore.setCursorPosition(-1, -1);
+  } else if (!chartStore.isActiveChart.get()) {
+    chartStore.setCursorValue(activeCursor.value);
   }
 
   chartStore.setShowLegend(showLegend);
@@ -140,6 +159,9 @@ function updateChartStore(props: SettingSpecProps) {
   if (onLegendItemMinusClick) {
     chartStore.setOnLegendItemMinusClickListener(onLegendItemMinusClick);
   }
+  if (onCursorUpdate) {
+    chartStore.setOnCursorUpdateListener(onCursorUpdate);
+  }
 }
 
 export class SettingsComponent extends PureComponent<SettingSpecProps> {
@@ -156,6 +178,7 @@ export class SettingsComponent extends PureComponent<SettingSpecProps> {
     },
     showLegendDisplayValue: true,
   };
+
   componentDidMount() {
     updateChartStore(this.props);
   }

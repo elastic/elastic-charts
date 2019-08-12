@@ -513,6 +513,7 @@ export function isPointOnGeometry(
   xCoordinate: number,
   yCoordinate: number,
   indexedGeometry: BarGeometry | PointGeometry,
+  isActiveChart: boolean,
 ) {
   const { x, y } = indexedGeometry;
   if (isPointGeometry(indexedGeometry)) {
@@ -521,9 +522,10 @@ export function isPointOnGeometry(
       yCoordinate >= y - radius &&
       yCoordinate <= y + radius &&
       xCoordinate >= x + transform.x - radius &&
-      xCoordinate <= x + transform.x + radius
+      xCoordinate <= x + transform.x + radius &&
+      isActiveChart
     );
   }
   const { width, height } = indexedGeometry;
-  return yCoordinate >= y && yCoordinate <= y + height && xCoordinate >= x && xCoordinate <= x + width;
+  return yCoordinate >= y && yCoordinate <= y + height && xCoordinate >= x && xCoordinate <= x + width && isActiveChart;
 }
