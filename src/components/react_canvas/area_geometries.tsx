@@ -6,7 +6,7 @@ import {
   AreaGeometry,
   getGeometryStyle,
   PointGeometry,
-  getGeometryIdAsString,
+  getGeometryIdKey,
   GeometryId,
 } from '../../chart_types/xy_chart/rendering/rendering';
 import { SharedGeometryStyle } from '../../utils/themes/theme';
@@ -124,7 +124,7 @@ export class AreaGeometries extends React.PureComponent<AreaGeometriesDataProps,
     const { area, color, transform, geometryId, seriesAreaStyle } = glyph;
     const customOpacity = seriesAreaStyle ? seriesAreaStyle.opacity : undefined;
     const geometryStyle = getGeometryStyle(geometryId, highlightedLegendItem, sharedStyle, customOpacity);
-    const key = getGeometryIdAsString(geometryId, 'area-');
+    const key = getGeometryIdKey(geometryId, 'area-');
     const areaProps = buildAreaRenderProps(transform.x, area, color, seriesAreaStyle, geometryStyle);
     return <Path {...areaProps} key={key} />;
   };
@@ -138,7 +138,7 @@ export class AreaGeometries extends React.PureComponent<AreaGeometriesDataProps,
     const geometryStyle = getGeometryStyle(geometryId, highlightedLegendItem, sharedStyle, seriesAreaLineStyle.opacity);
 
     return lines.map((linePath, lineIndex) => {
-      const key = getGeometryIdAsString(geometryId, `area-line-${areaIndex}-${lineIndex}`);
+      const key = getGeometryIdKey(geometryId, `area-line-${areaIndex}-${lineIndex}`);
       const lineProps = buildLineRenderProps(transform.x, linePath, color, seriesAreaLineStyle, geometryStyle);
       return <Path {...lineProps} key={key} />;
     });
@@ -152,7 +152,7 @@ export class AreaGeometries extends React.PureComponent<AreaGeometriesDataProps,
   ): JSX.Element[] => {
     return areaPoints.map((areaPoint, pointIndex) => {
       const { x, y, transform } = areaPoint;
-      const key = getGeometryIdAsString(geometryId, `area-point-${areaIndex}-${pointIndex}-`);
+      const key = getGeometryIdKey(geometryId, `area-point-${areaIndex}-${pointIndex}-`);
       const pointProps = buildPointRenderProps(transform.x + x, y, pointStyleProps);
       return <Circle {...pointProps} key={key} />;
     });

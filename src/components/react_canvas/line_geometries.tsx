@@ -6,7 +6,7 @@ import {
   getGeometryStyle,
   LineGeometry,
   PointGeometry,
-  getGeometryIdAsString,
+  getGeometryIdKey,
 } from '../../chart_types/xy_chart/rendering/rendering';
 import { SharedGeometryStyle } from '../../utils/themes/theme';
 import {
@@ -66,7 +66,7 @@ export class LineGeometries extends React.PureComponent<LineGeometriesDataProps,
 
     return lines.reduce<JSX.Element[]>((acc, glyph) => {
       const { seriesLineStyle, seriesPointStyle, geometryId } = glyph;
-      const key = getGeometryIdAsString(geometryId, 'line-');
+      const key = getGeometryIdKey(geometryId, 'line-');
       if (seriesLineStyle.visible) {
         acc.push(this.getLineToRender(glyph, sharedStyle, key));
       }

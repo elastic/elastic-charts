@@ -497,6 +497,6 @@ export function isPointOnGeometry(
   return yCoordinate >= y && yCoordinate <= y + height && xCoordinate >= x && xCoordinate <= x + width;
 }
 
-export function getGeometryIdAsString(geometryId: GeometryId, prefix?: string, postfix?: string) {
+export function getGeometryIdKey(geometryId: GeometryId, prefix?: string, postfix?: string) {
   return `${prefix || ''}spec:${geometryId.specId}_${geometryId.seriesKey.join('::-::')}${postfix || ''}`;
 }
