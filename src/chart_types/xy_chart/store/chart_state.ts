@@ -331,9 +331,12 @@ export class ChartStore {
     const xValue = this.xScale.invertWithStep(xAxisCursorPosition, this.geometriesIndexKeys);
 
     if (updateCursor && this.onCursorUpdateListener) {
+      // Get non-stepped xValue
+      const value = this.xScale.invert(xAxisCursorPosition);
+
       this.onCursorUpdateListener({
         chartId: this.id,
-        value: xValue,
+        value,
       });
     }
 
