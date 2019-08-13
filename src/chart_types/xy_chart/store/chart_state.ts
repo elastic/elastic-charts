@@ -65,7 +65,7 @@ import {
   TooltipValueFormatter,
 } from '../utils/interactions';
 import { Scale, ScaleType } from '../../../utils/scales/scales';
-import { DEFAULT_TOOLTIP_SNAP, DEFAULT_TOOLTIP_TYPE, Cursor } from '../../../specs/settings';
+import { DEFAULT_TOOLTIP_SNAP, DEFAULT_TOOLTIP_TYPE, CursorEvent } from '../../../specs/settings';
 import {
   AnnotationDimensions,
   computeAnnotationDimensions,
@@ -113,7 +113,7 @@ export type ElementClickListener = (values: GeometryValue[]) => void;
 export type ElementOverListener = (values: GeometryValue[]) => void;
 export type BrushEndListener = (min: number, max: number) => void;
 export type LegendItemListener = (dataSeriesIdentifiers: DataSeriesColorsValues | null) => void;
-export type CursorUpdateListener = (cursor?: Cursor) => void;
+export type CursorUpdateListener = (event?: CursorEvent) => void;
 
 export class ChartStore {
   debug = false;
@@ -336,6 +336,8 @@ export class ChartStore {
 
       this.onCursorUpdateListener({
         chartId: this.id,
+        scale: this.xScale.type,
+        unit: this.xScale.unit,
         value,
       });
     }

@@ -15,6 +15,7 @@ import {
   LegendItemListener,
   CursorUpdateListener,
 } from '../chart_types/xy_chart/store/chart_state';
+import { ScaleTypes } from '../utils/scales/scales';
 
 export const DEFAULT_TOOLTIP_TYPE = TooltipType.VerticalCursor;
 export const DEFAULT_TOOLTIP_SNAP = true;
@@ -25,8 +26,14 @@ interface TooltipProps {
   headerFormatter?: TooltipValueFormatter;
 }
 
-export interface Cursor {
+export interface CursorEvent {
   chartId: string;
+  scale: ScaleTypes;
+  /**
+   * @todo
+   * unit for event (i.e. `time`, `feet`, `count`, etc.)
+   */
+  unit?: string;
   value: number;
 }
 
@@ -62,7 +69,6 @@ export interface SettingSpecProps {
   onLegendItemMinusClick?: LegendItemListener;
   onCursorUpdate?: CursorUpdateListener;
   xDomain?: Domain | DomainRange;
-  activeCursor?: Cursor;
 }
 
 function getTheme(theme?: Theme | PartialTheme, baseThemeType: BaseThemeType = BaseThemeTypes.Light): Theme {
@@ -96,7 +102,6 @@ function updateChartStore(props: SettingSpecProps) {
     onLegendItemMinusClick,
     onLegendItemPlusClick,
     onCursorUpdate,
-    activeCursor,
     debug,
     xDomain,
   } = props;
@@ -117,14 +122,6 @@ function updateChartStore(props: SettingSpecProps) {
     chartStore.tooltipHeaderFormatter = headerFormatter;
   } else if (tooltip && isTooltipType(tooltip)) {
     chartStore.tooltipType.set(tooltip);
-  }
-
-  chartStore.setActiveChartId(activeCursor && activeCursor.chartId);
-
-  if (!activeCursor) {
-    chartStore.setCursorPosition(-1, -1);
-  } else if (!chartStore.isActiveChart.get()) {
-    chartStore.setCursorValue(activeCursor.value);
   }
 
   chartStore.setShowLegend(showLegend);
