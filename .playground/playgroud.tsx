@@ -5,11 +5,11 @@ import {
   Chart,
   getAxisId,
   getSpecId,
-  LineSeries,
   niceTimeFormatter,
   Position,
   ScaleType,
   Settings,
+  LineSeries,
 } from '../src';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 import { CursorEvent } from '../src/specs/settings';
