@@ -278,7 +278,7 @@ export class ChartStore {
 
     const xPosition = getPosition(value, this.xScale);
 
-    if (!xPosition) {
+    if (xPosition === undefined) {
       return;
     }
 
