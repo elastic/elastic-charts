@@ -221,14 +221,8 @@ export class ChartStore {
   canDataBeAnimated = false;
 
   showLegend = observable.box(false);
-  legendCollapsed = observable.box(false);
   legendPosition: Position | undefined;
   showLegendDisplayValue = observable.box(true);
-
-  toggleLegendCollapsed = action(() => {
-    this.legendCollapsed.set(!this.legendCollapsed.get());
-    this.computeChart();
-  });
 
   /**
    * determine if crosshair cursor should be visible based on cursor position and brush enablement
@@ -852,7 +846,7 @@ export class ChartStore {
       this.chartTheme,
       this.axesTicksDimensions,
       this.axesSpecs,
-      this.showLegend.get() && !this.legendCollapsed.get(),
+      this.showLegend.get(),
       this.legendPosition,
     );
 
@@ -891,7 +885,7 @@ export class ChartStore {
       this.chartDimensions,
       this.chartTheme,
       this.chartRotation,
-      this.showLegend.get() && !this.legendCollapsed.get(),
+      this.showLegend.get(),
       this.axesSpecs,
       this.axesTicksDimensions,
       xDomain,

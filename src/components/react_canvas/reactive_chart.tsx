@@ -354,13 +354,11 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       debug,
       setCursorPosition,
       isChartEmpty,
-      legendCollapsed,
       legendPosition,
       chartTheme,
     } = this.props.chartStore!;
 
     if (isChartEmpty) {
-      const isLegendCollapsed = legendCollapsed.get();
       const { verticalWidth, horizontalHeight } = chartTheme.legend;
 
       const paddingStyle =
@@ -372,11 +370,9 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
           ? { paddingTop: horizontalHeight }
           : { paddingTop: -horizontalHeight };
 
-      const style = isLegendCollapsed ? undefined : paddingStyle;
-
       return (
         <div className="echReactiveChart_unavailable">
-          <p style={style}>No data to display</p>
+          <p style={paddingStyle}>No data to display</p>
         </div>
       );
     }

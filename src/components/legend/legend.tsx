@@ -14,28 +14,15 @@ interface LegendProps {
 class LegendComponent extends React.Component<LegendProps> {
   static displayName = 'Legend';
 
-  onCollapseLegend = () => {
-    this.props.chartStore!.toggleLegendCollapsed();
-  };
-
   render() {
     const { legendId } = this.props;
-    const {
-      initialized,
-      legendItems,
-      legendPosition,
-      showLegend,
-      legendCollapsed,
-      debug,
-      chartTheme,
-    } = this.props.chartStore!;
+    const { initialized, legendItems, legendPosition, showLegend, debug, chartTheme } = this.props.chartStore!;
 
     if (!showLegend.get() || !initialized.get() || legendItems.size === 0 || legendPosition === undefined) {
       return null;
     }
 
     const legendClasses = classNames('echLegend', `echLegend--${legendPosition}`, {
-      'echLegend--collapsed': legendCollapsed.get(),
       'echLegend--debug': debug,
     });
     let paddingStyle;
@@ -46,7 +33,7 @@ class LegendComponent extends React.Component<LegendProps> {
       };
     }
     return (
-      <div className={legendClasses} style={paddingStyle} id={legendId} aria-hidden={legendCollapsed.get()}>
+      <div className={legendClasses} style={paddingStyle} id={legendId}>
         <div className="echLegendListContainer">
           <div className="echLegendList">{[...legendItems.values()].map(this.renderLegendElement)}</div>
         </div>

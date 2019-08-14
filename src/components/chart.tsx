@@ -9,7 +9,6 @@ import { ChartResizer } from './chart_resizer';
 import { Crosshair } from './crosshair';
 import { Highlighter } from './highlighter';
 import { Legend } from './legend/legend';
-import { LegendButton } from './legend/legend_button';
 import { ReactiveChart as ReactChart } from './react_canvas/reactive_chart';
 // import { ReactiveChart as SVGChart } from './svg/reactive_chart';
 import { Tooltips } from './tooltips';
@@ -60,7 +59,6 @@ export class Chart extends React.Component<ChartProps> {
             <Tooltips />
             <AnnotationTooltip />
             <Legend legendId={this.legendId} />
-            <LegendButton legendId={this.legendId} />
             <Highlighter />
           </div>
         </Fragment>

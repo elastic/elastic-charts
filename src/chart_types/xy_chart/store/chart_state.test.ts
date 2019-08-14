@@ -108,14 +108,6 @@ describe('Chart Store', () => {
     expect(axesTicks.get(AXIS_ID)).not.toBeUndefined();
   });
 
-  test('can toggle legend visibility', () => {
-    store.toggleLegendCollapsed();
-    expect(store.legendCollapsed.get()).toBe(true);
-
-    store.toggleLegendCollapsed();
-    expect(store.legendCollapsed.get()).toBe(false);
-  });
-
   test('can set legend visibility', () => {
     store.showLegend.set(false);
     store.setShowLegend(true);
