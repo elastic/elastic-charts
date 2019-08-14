@@ -47,7 +47,7 @@ export class Chart extends React.Component<ChartProps> {
       if (
         !isActiveChart &&
         this.chartSpecStore.xScale!.type === event.scale &&
-        (!event.unit || event.unit === this.chartSpecStore.xScale!.unit)
+        (event.unit === undefined || event.unit === this.chartSpecStore.xScale!.unit)
       ) {
         this.chartSpecStore.setCursorValue(event.value);
       }

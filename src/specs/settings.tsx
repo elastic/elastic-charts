@@ -26,6 +26,11 @@ interface TooltipProps {
   headerFormatter?: TooltipValueFormatter;
 }
 
+/**
+ * Event used to syncronize cursors between Charts.
+ *
+ * fired as callback argument for `CursorUpdateListener`
+ */
 export interface CursorEvent {
   chartId: string;
   scale: ScaleTypes;
@@ -34,7 +39,7 @@ export interface CursorEvent {
    * unit for event (i.e. `time`, `feet`, `count`, etc.)
    */
   unit?: string;
-  value: number;
+  value: number | string;
 }
 
 function isTooltipProps(config: TooltipType | TooltipProps): config is TooltipProps {
