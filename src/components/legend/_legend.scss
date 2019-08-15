@@ -1,11 +1,5 @@
 // Legend
 
-.echLegend {
-  // Margin supplied in JS to match chart margins
-  position: absolute !important; // Override shadow
-  overflow-y: hidden;
-}
-
 .echLegend--debug {
   background: red;
 }
@@ -13,8 +7,7 @@
 .echLegend--top,
 .echLegend--bottom {
   left: $euiSizeL;
-  right: 0;
-  height: $echLegendMaxHeight;
+  max-height: $echLegendMaxHeight;
 
   .echLegendList {
     flex-direction: row;
@@ -23,22 +16,22 @@
 
   .echLegendItem {
     margin-right: $euiSizeL;
-    width: $echLegendMaxWidth;
+    max-width: $echLegendMaxWidth;
   }
 }
-
-.echLegend--top {
-  top: 0;
+.echLegend--top,
+.echLegend--left {
+  order: 0;
 }
-.echLegend--bottom {
-  bottom: 0;
+
+.echLegend--bottom,
+.echLegend--right {
+  order: 1;
 }
 
 .echLegend--left,
 .echLegend--right {
-  top: 0;
-  bottom: 0;
-  width: $echLegendMaxWidth;
+  max-width: $echLegendMaxWidth;
 
   .echLegendList {
     flex-direction: column;
@@ -47,13 +40,6 @@
   .echLegendItem {
     width: 100%;
   }
-}
-
-.echLegend--left {
-  left: 0;
-}
-.echLegend--right {
-  right: 0;
 }
 
 .echLegendListContainer {

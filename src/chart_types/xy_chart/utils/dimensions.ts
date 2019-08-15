@@ -19,11 +19,8 @@ export function computeChartDimensions(
   chartTheme: Theme,
   axisDimensions: Map<AxisId, AxisTicksDimensions>,
   axisSpecs: Map<AxisId, AxisSpec>,
-  showLegend: boolean,
-  legendPosition?: Position,
 ): Dimensions {
   const { chartMargins, chartPaddings } = chartTheme;
-  const legendStyle = chartTheme.legend;
   const { axisTitleStyle } = chartTheme.axes;
 
   const axisTitleHeight = axisTitleStyle.fontSize + axisTitleStyle.padding;
@@ -72,37 +69,18 @@ export function computeChartDimensions(
   if (vRightAxisSpecWidth === 0) {
     hMargin += chartMargins.right;
   }
-  let legendTopMargin = 0;
-  let legendLeftMargin = 0;
-  if (showLegend) {
-    switch (legendPosition) {
-      case Position.Right:
-        hMargin += legendStyle.verticalWidth;
-        break;
-      case Position.Left:
-        hMargin += legendStyle.verticalWidth;
-        legendLeftMargin = legendStyle.verticalWidth;
-        break;
-      case Position.Top:
-        vMargin += legendStyle.horizontalHeight;
-        legendTopMargin = legendStyle.horizontalHeight;
-        break;
-      case Position.Bottom:
-        vMargin += legendStyle.horizontalHeight;
-        break;
-    }
-  }
+
   let top = 0;
   let left = 0;
   if (hTopAxisSpecHeight === 0) {
-    top = chartMargins.top + chartPaddings.top + legendTopMargin;
+    top = chartMargins.top + chartPaddings.top;
   } else {
-    top = hTopAxisSpecHeight + chartPaddings.top + legendTopMargin;
+    top = hTopAxisSpecHeight + chartPaddings.top;
   }
   if (vLeftAxisSpecWidth === 0) {
-    left = chartMargins.left + chartPaddings.left + legendLeftMargin;
+    left = chartMargins.left + chartPaddings.left;
   } else {
-    left = vLeftAxisSpecWidth + chartPaddings.left + legendLeftMargin;
+    left = vLeftAxisSpecWidth + chartPaddings.left;
   }
   return {
     top,

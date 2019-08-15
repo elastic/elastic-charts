@@ -11,7 +11,6 @@ export class SpecsSpecRootComponent extends PureComponent<SpecProps> {
     props.chartStore!.specsInitialized.set(false);
     return null;
   }
-  state = {};
   componentDidMount() {
     this.props.chartStore!.specsInitialized.set(true);
     this.props.chartStore!.computeChart();
@@ -21,7 +20,7 @@ export class SpecsSpecRootComponent extends PureComponent<SpecProps> {
     this.props.chartStore!.computeChart();
   }
   componentWillUnmount() {
-    this.props.chartStore!.initialized.set(false);
+    this.props.chartStore!.chartInitialized.set(false);
   }
   render() {
     return this.props.children || null;

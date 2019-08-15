@@ -531,18 +531,15 @@ export function getAxisTicksPositions(
   chartDimensions: Dimensions,
   chartTheme: Theme,
   chartRotation: Rotation,
-  showLegend: boolean,
   axisSpecs: Map<AxisId, AxisSpec>,
   axisDimensions: Map<AxisId, AxisTicksDimensions>,
   xDomain: XDomain,
   yDomain: YDomain[],
   totalGroupsCount: number,
   enableHistogramMode: boolean,
-  legendPosition?: Position,
   barsPadding?: number,
 ) {
   const { chartPaddings, chartMargins } = chartTheme;
-  const legendStyle = chartTheme.legend;
   const axisPositions: Map<AxisId, Dimensions> = new Map();
   const axisVisibleTicks: Map<AxisId, AxisTick[]> = new Map();
   const axisTicks: Map<AxisId, AxisTick[]> = new Map();
@@ -552,27 +549,7 @@ export function getAxisTicksPositions(
   let cumBottomSum = chartPaddings.bottom;
   let cumLeftSum = 0;
   let cumRightSum = chartPaddings.right;
-  if (showLegend) {
-    switch (legendPosition) {
-      case Position.Left:
-        cumLeftSum += legendStyle.verticalWidth;
-        break;
-      // case Position.Right:
-      //   cumRightSum += legendStyle.verticalWidth;
-      //   break;
-      // case Position.Bottom:
-      //   cumBottomSum += legendStyle.horizontalHeight;
-      //   break;
-      case Position.Top:
-        cumTopSum += legendStyle.horizontalHeight;
-        break;
-    }
-  }
-  // console.log({cumRightSum});
-  // let cumTopSum = showLegend ? legendStyle.horizontalHeight : 0;
-  // let cumBottomSum = chartConfig.paddings.bottom;
-  // let cumLeftSum = showLegend ? legendStyle.verticalWidth : 0;
-  // let cumRightSum = chartConfig.paddings.right;
+
   axisDimensions.forEach((axisDim, id) => {
     const axisSpec = axisSpecs.get(id);
 
@@ -661,7 +638,7 @@ export function isVertical(position: Position) {
 }
 
 export function isHorizontal(position: Position) {
-  return !isVertical(position);
+  return position === Position.Top || position === Position.Bottom;
 }
 
 export function isLowerBound(domain: Partial<CompleteBoundedDomain>): domain is LowerBoundedDomain {

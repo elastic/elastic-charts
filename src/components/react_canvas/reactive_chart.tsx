@@ -341,8 +341,8 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
   }
 
   render() {
-    const { initialized } = this.props.chartStore!;
-    if (!initialized.get()) {
+    const { chartInitialized } = this.props.chartStore!;
+    if (!chartInitialized.get()) {
       return null;
     }
 
@@ -360,13 +360,14 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
 
     if (isChartEmpty) {
       const { verticalWidth, horizontalHeight } = chartTheme.legend;
+      const legendPositionValue = legendPosition.get();
 
       const paddingStyle =
-        legendPosition && isVertical(legendPosition)
-          ? legendPosition === Position.Right
+        legendPositionValue && isVertical(legendPositionValue)
+          ? legendPositionValue === Position.Right
             ? { paddingLeft: -verticalWidth }
             : { paddingLeft: verticalWidth }
-          : legendPosition === Position.Top
+          : legendPositionValue === Position.Top
           ? { paddingTop: horizontalHeight }
           : { paddingTop: -horizontalHeight };
 

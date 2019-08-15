@@ -1,7 +1,6 @@
 .echLegendItem {
   color: $euiTextColor;
   height: $echLegendItemHeight;
-  width: 100%;
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-between;
@@ -30,8 +29,8 @@
 .echLegendItem__title {
   @include euiFontSizeXS;
   @include euiTextTruncate;
-  margin-right: $euiSizeXS;
   flex: 1;
+
   &:hover {
     cursor: pointer;
   }
@@ -50,7 +49,9 @@
 .echLegendItem__displayValue {
   @include euiFontSizeXS;
   text-align: right;
+  margin-left: $euiSizeM;
   font-feature-settings: 'tnum';
+  min-width: $euiSizeL * 2;
 
   &--hidden {
     display: none;

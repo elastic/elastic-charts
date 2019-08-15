@@ -4,11 +4,20 @@ import React from 'react';
 import { isVertical } from '../../chart_types/xy_chart/utils/axis_utils';
 import { LegendItem as SeriesLegendItem } from '../../chart_types/xy_chart/legend/legend';
 import { ChartStore } from '../../chart_types/xy_chart/store/chart_state';
+import { Position } from '../../chart_types/xy_chart/utils/specs';
 import { LegendItem } from './legend_item';
+import { Theme } from '../../utils/themes/theme';
 
 interface LegendProps {
   chartStore?: ChartStore; // FIX until we find a better way on ts mobx
   legendId: string;
+}
+
+interface PaddingStyle {
+  paddingTop?: number | string;
+  paddingBottom?: number | string;
+  paddingLeft?: number | string;
+  paddingRight?: number | string;
 }
 
 class LegendComponent extends React.Component<LegendProps> {
@@ -16,22 +25,26 @@ class LegendComponent extends React.Component<LegendProps> {
 
   render() {
     const { legendId } = this.props;
-    const { initialized, legendItems, legendPosition, showLegend, debug, chartTheme } = this.props.chartStore!;
+    const {
+      legendInitialized,
+      chartInitialized,
+      legendItems,
+      legendPosition,
+      showLegend,
+      debug,
+      chartTheme,
+    } = this.props.chartStore!;
 
-    if (!showLegend.get() || !initialized.get() || legendItems.size === 0 || legendPosition === undefined) {
+    if (!showLegend.get() || !legendInitialized.get() || legendItems.size === 0) {
       return null;
     }
 
+    const paddingStyle = this.getPaddingStyle(legendPosition.get(), chartTheme);
     const legendClasses = classNames('echLegend', `echLegend--${legendPosition}`, {
       'echLegend--debug': debug,
+      invisible: !chartInitialized.get(),
     });
-    let paddingStyle;
-    if (isVertical(legendPosition)) {
-      paddingStyle = {
-        paddingTop: chartTheme.chartMargins.top,
-        paddingBottom: chartTheme.chartMargins.bottom,
-      };
-    }
+
     return (
       <div className={legendClasses} style={paddingStyle} id={legendId}>
         <div className="echLegendListContainer">
@@ -40,6 +53,20 @@ class LegendComponent extends React.Component<LegendProps> {
       </div>
     );
   }
+
+  getPaddingStyle = (position: Position, { chartMargins }: Theme): PaddingStyle => {
+    if (isVertical(position)) {
+      return {
+        paddingTop: chartMargins.top,
+        paddingBottom: chartMargins.bottom,
+      };
+    }
+
+    return {
+      paddingLeft: chartMargins.left,
+      paddingRight: chartMargins.right,
+    };
+  };
 
   onLegendItemMouseover = (legendItemKey: string) => () => {
     this.props.chartStore!.onLegendItemOver(legendItemKey);

@@ -3,9 +3,8 @@
  */
 
 .echContainer {
+  flex: 1;
   position: relative;
-  width: 100%;
-  height: 100%;
 
   &:hover {
     .echLegend__toggle {
@@ -14,6 +13,15 @@
   }
 }
 
-.echChart--isBrushEnabled {
-  cursor: crosshair;
+.echChart {
+  display: flex;
+  height: 100%;
+
+  &--isBrushEnabled {
+    cursor: crosshair;
+  }
+
+  &--column {
+    flex-direction: column;
+  }
 }

@@ -16,7 +16,7 @@ import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 
 export class Playground extends React.Component {
   render() {
-    return <>{this.renderChart(Position.Right)}</>;
+    return <>{this.renderChart(Position.Top)}</>;
   }
   renderChart(legendPosition: Position) {
     const theme = mergeWithDefaultTheme({
@@ -33,7 +33,6 @@ export class Playground extends React.Component {
         },
       },
     });
-    console.log(theme.areaSeriesStyle);
     return (
       <div className="chart">
         <Chart>
@@ -87,7 +86,7 @@ export class Playground extends React.Component {
             }}
           />
           <AreaSeries
-            id={getSpecId('dataset A with long title')}
+            id={getSpecId('dataset A')}
             xScaleType={ScaleType.Time}
             yScaleType={ScaleType.Linear}
             data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 15)}

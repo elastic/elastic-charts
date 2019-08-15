@@ -110,7 +110,8 @@ export type LegendItemListener = (dataSeriesIdentifiers: DataSeriesColorsValues 
 export class ChartStore {
   debug = false;
   specsInitialized = observable.box(false);
-  initialized = observable.box(false);
+  chartInitialized = observable.box(false);
+  legendInitialized = observable.box(false);
   enableHistogramMode = observable.box(false);
 
   parentDimensions: Dimensions = {
@@ -221,7 +222,7 @@ export class ChartStore {
   canDataBeAnimated = false;
 
   showLegend = observable.box(false);
-  legendPosition: Position | undefined;
+  legendPosition = observable.box<Position>(Position.Right);
   showLegendDisplayValue = observable.box(true);
 
   /**
@@ -760,7 +761,7 @@ export class ChartStore {
   }
 
   computeChart() {
-    this.initialized.set(false);
+    this.chartInitialized.set(false);
     // compute only if parent dimensions are computed
     if (this.parentDimensions.width === 0 || this.parentDimensions.height === 0) {
       return;
@@ -806,6 +807,14 @@ export class ChartStore {
       this.deselectedDataSeries,
     );
 
+    if (!this.legendInitialized.get()) {
+      this.legendInitialized.set(true);
+
+      if (this.legendItems.size > 0 && this.showLegend.get()) {
+        return;
+      }
+    }
+
     this.isChartEmpty = isAllSeriesDeselected(this.legendItems);
 
     const { xDomain, yDomain, formattedDataSeries } = this.seriesDomainsAndData;
@@ -846,8 +855,6 @@ export class ChartStore {
       this.chartTheme,
       this.axesTicksDimensions,
       this.axesSpecs,
-      this.showLegend.get(),
-      this.legendPosition,
     );
 
     this.chartTransform = computeChartTransform(this.chartDimensions, this.chartRotation);
@@ -885,14 +892,12 @@ export class ChartStore {
       this.chartDimensions,
       this.chartTheme,
       this.chartRotation,
-      this.showLegend.get(),
       this.axesSpecs,
       this.axesTicksDimensions,
       xDomain,
       yDomain,
       totalBarsInCluster,
       this.enableHistogramMode.get(),
-      this.legendPosition,
       barsPadding,
     );
     // tslint:disable-next-line:no-console
@@ -920,6 +925,6 @@ export class ChartStore {
     // temporary disabled until
     // https://github.com/elastic/elastic-charts/issues/89 and https://github.com/elastic/elastic-charts/issues/41
     this.canDataBeAnimated = false;
-    this.initialized.set(true);
+    this.chartInitialized.set(true);
   }
 }

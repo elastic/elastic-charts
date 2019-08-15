@@ -1,6 +1,7 @@
+import React, { CSSProperties } from 'react';
 import classNames from 'classnames';
 import { Provider } from 'mobx-react';
-import React, { CSSProperties, Fragment } from 'react';
+
 import { SpecsParser } from '../specs/specs_parser';
 import { ChartStore } from '../chart_types/xy_chart/store/chart_state';
 import { htmlIdGenerator } from '../utils/commons';
@@ -10,8 +11,9 @@ import { Crosshair } from './crosshair';
 import { Highlighter } from './highlighter';
 import { Legend } from './legend/legend';
 import { ReactiveChart as ReactChart } from './react_canvas/reactive_chart';
-// import { ReactiveChart as SVGChart } from './svg/reactive_chart';
 import { Tooltips } from './tooltips';
+import { isHorizontal } from '../chart_types/xy_chart/utils/axis_utils';
+import { Position } from '../chart_types/xy_chart/utils/specs';
 
 interface ChartProps {
   /** The type of rendered
@@ -22,7 +24,11 @@ interface ChartProps {
   className?: string;
 }
 
-export class Chart extends React.Component<ChartProps> {
+interface ChartState {
+  legendPosition: Position;
+}
+
+export class Chart extends React.Component<ChartProps, ChartState> {
   static defaultProps: ChartProps = {
     renderer: 'canvas',
   };
@@ -31,26 +37,43 @@ export class Chart extends React.Component<ChartProps> {
   constructor(props: any) {
     super(props);
     this.chartSpecStore = new ChartStore();
+    this.state = {
+      legendPosition: this.chartSpecStore.legendPosition.get(),
+    };
+    // value is set to chart_store in settings so need to watch the value
+    this.chartSpecStore.legendPosition.observe(({ newValue: legendPosition }) => {
+      this.setState({
+        legendPosition,
+      });
+    });
     this.legendId = htmlIdGenerator()('legend');
   }
-  render() {
-    const { renderer, size, className } = this.props;
-    let containerStyle: CSSProperties;
+
+  static getContainerStyle = (size: any): CSSProperties => {
     if (size) {
-      containerStyle = {
+      return {
         position: 'relative',
         width: size[0],
         height: size[1],
       };
-    } else {
-      containerStyle = {};
     }
-    const chartClass = classNames('echContainer', className);
+    return {};
+  };
+
+  render() {
+    const { renderer, size, className } = this.props;
+    const containerStyle = Chart.getContainerStyle(size);
+    const Horizontal = isHorizontal(this.state.legendPosition);
+    const chartClassNames = classNames('echChart', className, {
+      'echChart--column': Horizontal,
+    });
+
     return (
       <Provider chartStore={this.chartSpecStore}>
-        <Fragment>
+        <div style={containerStyle} className={chartClassNames}>
+          <Legend legendId={this.legendId} />
           <SpecsParser>{this.props.children}</SpecsParser>
-          <div style={containerStyle} className={chartClass}>
+          <div className="echContainer">
             <ChartResizer />
             <Crosshair />
             {// TODO reenable when SVG rendered is aligned with canvas one
@@ -58,10 +81,9 @@ export class Chart extends React.Component<ChartProps> {
             {renderer === 'canvas' && <ReactChart />}
             <Tooltips />
             <AnnotationTooltip />
-            <Legend legendId={this.legendId} />
             <Highlighter />
           </div>
-        </Fragment>
+        </div>
       </Provider>
     );
   }

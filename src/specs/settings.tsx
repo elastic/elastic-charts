@@ -109,7 +109,10 @@ function updateChartStore(props: SettingSpecProps) {
   }
 
   chartStore.setShowLegend(showLegend);
-  chartStore.legendPosition = legendPosition;
+
+  if (legendPosition) {
+    chartStore.legendPosition.set(legendPosition);
+  }
   chartStore.showLegendDisplayValue.set(showLegendDisplayValue);
   chartStore.customXDomain = xDomain;
 
