@@ -27,7 +27,11 @@ describe('Rendering bars', () => {
     barSeriesMap.set(SPEC_ID, barSeriesSpec);
     const customDomain = [0, 1];
     const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map(), customDomain);
-    const xScale = computeXScale(barSeriesDomains.xDomain, barSeriesMap.size, 0, 100);
+    const xScale = computeXScale({
+      xDomain: barSeriesDomains.xDomain,
+      totalBarsInCluster: barSeriesMap.size,
+      range: [0, 100],
+    });
     const yScales = computeYScales({ yDomains: barSeriesDomains.yDomain, range: [100, 0] });
 
     test('Can render two bars within domain', () => {
@@ -207,7 +211,11 @@ describe('Rendering bars', () => {
     barSeriesMap.set(spec1Id, barSeriesSpec1);
     barSeriesMap.set(spec2Id, barSeriesSpec2);
     const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
-    const xScale = computeXScale(barSeriesDomains.xDomain, barSeriesMap.size, 0, 100);
+    const xScale = computeXScale({
+      xDomain: barSeriesDomains.xDomain,
+      totalBarsInCluster: barSeriesMap.size,
+      range: [0, 100],
+    });
     const yScales = computeYScales({ yDomains: barSeriesDomains.yDomain, range: [100, 0] });
 
     test('can render first spec bars', () => {
@@ -392,7 +400,11 @@ describe('Rendering bars', () => {
     const barSeriesMap = new Map<SpecId, BarSeriesSpec>();
     barSeriesMap.set(SPEC_ID, barSeriesSpec);
     const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
-    const xScale = computeXScale(barSeriesDomains.xDomain, barSeriesMap.size, 0, 100);
+    const xScale = computeXScale({
+      xDomain: barSeriesDomains.xDomain,
+      totalBarsInCluster: barSeriesMap.size,
+      range: [0, 100],
+    });
     const yScales = computeYScales({ yDomains: barSeriesDomains.yDomain, range: [100, 0] });
 
     test('Can render two bars', () => {
@@ -507,7 +519,11 @@ describe('Rendering bars', () => {
     barSeriesMap.set(spec1Id, barSeriesSpec1);
     barSeriesMap.set(spec2Id, barSeriesSpec2);
     const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
-    const xScale = computeXScale(barSeriesDomains.xDomain, barSeriesMap.size, 0, 100);
+    const xScale = computeXScale({
+      xDomain: barSeriesDomains.xDomain,
+      totalBarsInCluster: barSeriesMap.size,
+      range: [0, 100],
+    });
     const yScales = computeYScales({ yDomains: barSeriesDomains.yDomain, range: [100, 0] });
 
     test('can render first spec bars', () => {
@@ -706,7 +722,11 @@ describe('Rendering bars', () => {
     barSeriesMap.set(spec1Id, barSeriesSpec1);
     barSeriesMap.set(spec2Id, barSeriesSpec2);
     const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
-    const xScale = computeXScale(barSeriesDomains.xDomain, barSeriesMap.size, 0, 100);
+    const xScale = computeXScale({
+      xDomain: barSeriesDomains.xDomain,
+      totalBarsInCluster: barSeriesMap.size,
+      range: [0, 100],
+    });
     const yScales = computeYScales({ yDomains: barSeriesDomains.yDomain, range: [100, 0] });
 
     test('can render first spec bars', () => {

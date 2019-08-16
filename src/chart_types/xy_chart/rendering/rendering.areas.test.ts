@@ -27,7 +27,11 @@ describe('Rendering points - areas', () => {
     const pointSeriesMap = new Map<SpecId, AreaSeriesSpec>();
     pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
     const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
-    const xScale = computeXScale(pointSeriesDomains.xDomain, pointSeriesMap.size, 0, 100);
+    const xScale = computeXScale({
+      xDomain: pointSeriesDomains.xDomain,
+      totalBarsInCluster: pointSeriesMap.size,
+      range: [0, 100],
+    });
     const yScales = computeYScales({
       yDomains: pointSeriesDomains.yDomain,
       range: [100, 0],
@@ -79,7 +83,11 @@ describe('Rendering points - areas', () => {
     const pointSeriesMap = new Map<SpecId, AreaSeriesSpec>();
     pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
     const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
-    const xScale = computeXScale(pointSeriesDomains.xDomain, pointSeriesMap.size, 0, 100);
+    const xScale = computeXScale({
+      xDomain: pointSeriesDomains.xDomain,
+      totalBarsInCluster: pointSeriesMap.size,
+      range: [0, 100],
+    });
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
     let renderedArea: {
       areaGeometry: AreaGeometry;
@@ -190,7 +198,11 @@ describe('Rendering points - areas', () => {
     pointSeriesMap.set(spec1Id, pointSeriesSpec1);
     pointSeriesMap.set(spec2Id, pointSeriesSpec2);
     const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
-    const xScale = computeXScale(pointSeriesDomains.xDomain, pointSeriesMap.size, 0, 100);
+    const xScale = computeXScale({
+      xDomain: pointSeriesDomains.xDomain,
+      totalBarsInCluster: pointSeriesMap.size,
+      range: [0, 100],
+    });
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
 
     let firstLine: {
@@ -354,7 +366,11 @@ describe('Rendering points - areas', () => {
     const pointSeriesMap = new Map<SpecId, AreaSeriesSpec>();
     pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
     const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
-    const xScale = computeXScale(pointSeriesDomains.xDomain, pointSeriesMap.size, 0, 100);
+    const xScale = computeXScale({
+      xDomain: pointSeriesDomains.xDomain,
+      totalBarsInCluster: pointSeriesMap.size,
+      range: [0, 100],
+    });
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
 
     let renderedArea: {
@@ -460,7 +476,11 @@ describe('Rendering points - areas', () => {
     pointSeriesMap.set(spec1Id, pointSeriesSpec1);
     pointSeriesMap.set(spec2Id, pointSeriesSpec2);
     const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
-    const xScale = computeXScale(pointSeriesDomains.xDomain, pointSeriesMap.size, 0, 100);
+    const xScale = computeXScale({
+      xDomain: pointSeriesDomains.xDomain,
+      totalBarsInCluster: pointSeriesMap.size,
+      range: [0, 100],
+    });
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
 
     let firstLine: {
@@ -623,7 +643,11 @@ describe('Rendering points - areas', () => {
     const pointSeriesMap = new Map<SpecId, AreaSeriesSpec>();
     pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
     const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
-    const xScale = computeXScale(pointSeriesDomains.xDomain, pointSeriesMap.size, 0, 100);
+    const xScale = computeXScale({
+      xDomain: pointSeriesDomains.xDomain,
+      totalBarsInCluster: pointSeriesMap.size,
+      range: [0, 100],
+    });
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
 
     let renderedArea: {
@@ -729,7 +753,11 @@ describe('Rendering points - areas', () => {
     pointSeriesMap.set(spec1Id, pointSeriesSpec1);
     pointSeriesMap.set(spec2Id, pointSeriesSpec2);
     const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
-    const xScale = computeXScale(pointSeriesDomains.xDomain, pointSeriesMap.size, 0, 100);
+    const xScale = computeXScale({
+      xDomain: pointSeriesDomains.xDomain,
+      totalBarsInCluster: pointSeriesMap.size,
+      range: [0, 100],
+    });
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
 
     let firstLine: {
@@ -877,7 +905,11 @@ describe('Rendering points - areas', () => {
     const pointSeriesMap = new Map<SpecId, AreaSeriesSpec>();
     pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
     const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
-    const xScale = computeXScale(pointSeriesDomains.xDomain, pointSeriesMap.size, 0, 90);
+    const xScale = computeXScale({
+      xDomain: pointSeriesDomains.xDomain,
+      totalBarsInCluster: pointSeriesMap.size,
+      range: [0, 90],
+    });
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
 
     let renderedArea: {

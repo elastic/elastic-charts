@@ -64,7 +64,7 @@ storiesOf('Axis', module)
         step: 1,
       }),
     };
-    const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 30);
+    const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 60);
     return (
       <Chart className={'story-chart'}>
         <Settings debug={boolean('debug', false)} />
@@ -73,7 +73,7 @@ storiesOf('Axis', module)
           position={Position.Bottom}
           title={'Bottom axis'}
           style={customStyle}
-          showOverlappingLabels={boolean('Bottom overlap labels', true, 'Bottom Axis')}
+          showOverlappingLabels={boolean('Bottom overlap labels', false, 'Bottom Axis')}
           showOverlappingTicks={boolean('Bottom overlap ticks', true, 'Bottom Axis')}
           ticks={number(
             'Number of ticks on bottom',
@@ -94,7 +94,7 @@ storiesOf('Axis', module)
           position={Position.Left}
           tickFormat={(d) => Number(d).toFixed(2)}
           style={customStyle}
-          showOverlappingLabels={boolean('Left overlap labels', true, 'Left Axis')}
+          showOverlappingLabels={boolean('Left overlap labels', false, 'Left Axis')}
           showOverlappingTicks={boolean('Left overlap ticks', true, 'Left Axis')}
           ticks={number(
             'Number of ticks on left',

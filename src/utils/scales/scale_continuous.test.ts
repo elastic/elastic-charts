@@ -78,7 +78,7 @@ describe('Scale Continuous', () => {
       type: 'xDomain',
     };
 
-    const scaleLinear = computeXScale(xDomain, 1, 0, 120, 0);
+    const scaleLinear = computeXScale({ xDomain, totalBarsInCluster: 1, range: [0, 120], barsPadding: 0 });
     expect(scaleLinear.bandwidth).toBe(40);
     expect(scaleLinear.invertWithStep(0, data)).toBe(0);
     expect(scaleLinear.invertWithStep(40, data)).toBe(1);
@@ -120,7 +120,7 @@ describe('Scale Continuous', () => {
       type: 'xDomain',
     };
 
-    const scaleLinear = computeXScale(xDomain, 1, 0, 110, 0);
+    const scaleLinear = computeXScale({ xDomain, totalBarsInCluster: 1, range: [0, 110], barsPadding: 0 });
     // const scaleLinear = new ScaleContinuous({type: ScaleType.Linear, domain, range}, 10, 10);
     expect(scaleLinear.bandwidth).toBe(10);
 
