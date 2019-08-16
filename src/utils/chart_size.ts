@@ -6,21 +6,13 @@ export interface ChartSizeObject {
 
 export type ChartSize = number | string | ChartSizeArray | ChartSizeObject;
 
-function isSizeArray(size: ChartSize): size is ChartSizeArray {
-  return Array.isArray(size);
-}
-function isSizeObject(size: ChartSize): size is ChartSizeObject {
-  return !Array.isArray(size) && typeof size === 'object';
-}
-
 export function getChartSize(size: ChartSize) {
-  if (isSizeArray(size)) {
+  if (Array.isArray(size)) {
     return {
       width: size[0] === undefined ? '100%' : size[0],
       height: size[1] === undefined ? '100%' : size[1],
     };
-  }
-  if (isSizeObject(size)) {
+  } else if (typeof size === 'object') {
     return {
       width: size.width === undefined ? '100%' : size.width,
       height: size.height === undefined ? '100%' : size.height,
