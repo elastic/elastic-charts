@@ -29,7 +29,7 @@ describe('Rendering points - line', () => {
     pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
     const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
     const xScale = computeXScale(pointSeriesDomains.xDomain, pointSeriesMap.size, 0, 100);
-    const yScales = computeYScales(pointSeriesDomains.yDomain, 100, 0);
+    const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
     let renderedLine: {
       lineGeometry: LineGeometry;
       indexedGeometries: Map<any, IndexedGeometry[]>;
@@ -75,7 +75,7 @@ describe('Rendering points - line', () => {
     pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
     const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
     const xScale = computeXScale(pointSeriesDomains.xDomain, pointSeriesMap.size, 0, 100);
-    const yScales = computeYScales(pointSeriesDomains.yDomain, 100, 0);
+    const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
     let renderedLine: {
       lineGeometry: LineGeometry;
       indexedGeometries: Map<any, IndexedGeometry[]>;
@@ -181,7 +181,7 @@ describe('Rendering points - line', () => {
     pointSeriesMap.set(spec2Id, pointSeriesSpec2);
     const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
     const xScale = computeXScale(pointSeriesDomains.xDomain, pointSeriesMap.size, 0, 100);
-    const yScales = computeYScales(pointSeriesDomains.yDomain, 100, 0);
+    const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
 
     let firstLine: {
       lineGeometry: LineGeometry;
@@ -343,7 +343,7 @@ describe('Rendering points - line', () => {
     pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
     const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
     const xScale = computeXScale(pointSeriesDomains.xDomain, pointSeriesMap.size, 0, 100);
-    const yScales = computeYScales(pointSeriesDomains.yDomain, 100, 0);
+    const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
 
     let renderedLine: {
       lineGeometry: LineGeometry;
@@ -448,7 +448,7 @@ describe('Rendering points - line', () => {
     pointSeriesMap.set(spec2Id, pointSeriesSpec2);
     const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
     const xScale = computeXScale(pointSeriesDomains.xDomain, pointSeriesMap.size, 0, 100);
-    const yScales = computeYScales(pointSeriesDomains.yDomain, 100, 0);
+    const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
 
     let firstLine: {
       lineGeometry: LineGeometry;
@@ -609,7 +609,7 @@ describe('Rendering points - line', () => {
     pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
     const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
     const xScale = computeXScale(pointSeriesDomains.xDomain, pointSeriesMap.size, 0, 100);
-    const yScales = computeYScales(pointSeriesDomains.yDomain, 100, 0);
+    const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
 
     let renderedLine: {
       lineGeometry: LineGeometry;
@@ -714,7 +714,7 @@ describe('Rendering points - line', () => {
     pointSeriesMap.set(spec2Id, pointSeriesSpec2);
     const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
     const xScale = computeXScale(pointSeriesDomains.xDomain, pointSeriesMap.size, 0, 100);
-    const yScales = computeYScales(pointSeriesDomains.yDomain, 100, 0);
+    const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
 
     let firstLine: {
       lineGeometry: LineGeometry;
@@ -862,7 +862,7 @@ describe('Rendering points - line', () => {
     pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
     const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
     const xScale = computeXScale(pointSeriesDomains.xDomain, pointSeriesMap.size, 0, 90);
-    const yScales = computeYScales(pointSeriesDomains.yDomain, 100, 0);
+    const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
 
     let renderedLine: {
       lineGeometry: LineGeometry;

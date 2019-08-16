@@ -222,7 +222,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     barSeriesMap.set(SPEC_ID, spec);
     const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
     const barSeriesScale = computeXScale(barSeriesDomains.xDomain, barSeriesMap.size, 0, 100);
-    const yScales = computeYScales(barSeriesDomains.yDomain, 0, 100);
+    const yScales = computeYScales({ yDomains: barSeriesDomains.yDomain, range: [0, 100] });
     store.xScale = barSeriesScale;
     store.yScales = yScales;
     store.geometriesIndex.set(0, [indexedGeom1Red]);

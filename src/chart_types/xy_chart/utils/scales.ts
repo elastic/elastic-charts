@@ -108,21 +108,31 @@ export function computeXScale(
   }
 }
 
+interface YScaleOptions {
+  yDomains: YDomain[];
+  range: [number, number];
+  ticks?: number;
+}
 /**
  * Compute the y scales, one per groupId for the y axis.
  * @param yDomains the y domains
  * @param axisLength the axisLength of the y axis
  */
-export function computeYScales(yDomains: YDomain[], minRange: number, maxRange: number): Map<GroupId, Scale> {
+export function computeYScales(options: YScaleOptions): Map<GroupId, Scale> {
   const yScales: Map<GroupId, Scale> = new Map();
-
-  yDomains.forEach((yDomain) => {
-    const yScale = new ScaleContinuous({
-      type: yDomain.scaleType,
-      domain: yDomain.domain,
-      range: [minRange, maxRange],
-    });
-    yScales.set(yDomain.groupId, yScale);
+  const { yDomains, range, ticks } = options;
+  yDomains.forEach(({ scaleType: type, domain, groupId }) => {
+    const yScale = new ScaleContinuous(
+      {
+        type,
+        domain,
+        range,
+      },
+      {
+        ticks,
+      },
+    );
+    yScales.set(groupId, yScale);
   });
 
   return yScales;

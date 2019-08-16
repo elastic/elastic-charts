@@ -128,7 +128,7 @@ export function getScaleForAxisSpec(
   const axisIsYDomain = isYDomain(axisSpec.position, chartRotation);
 
   if (axisIsYDomain) {
-    const yScales = computeYScales(yDomain, minRange, maxRange);
+    const yScales = computeYScales({ yDomains: yDomain, range: [minRange, maxRange], ticks: axisSpec.ticks });
     if (yScales.has(axisSpec.groupId)) {
       return yScales.get(axisSpec.groupId)!;
     }

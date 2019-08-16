@@ -216,7 +216,7 @@ export function computeSeriesGeometries(
 
   // compute scales
   const xScale = computeXScale(xDomain, totalBarsInCluster, 0, width, barsPadding, enableHistogramMode);
-  const yScales = computeYScales(yDomain, height, 0);
+  const yScales = computeYScales({ yDomains: yDomain, range: [height, 0] });
 
   // compute colors
 

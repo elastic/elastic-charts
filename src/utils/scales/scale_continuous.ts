@@ -98,6 +98,11 @@ interface ScaleOptions {
    * @default 0
    */
   barsPadding: number;
+  /**
+   * The approximated number of ticks.
+   * @default 10
+   */
+  ticks: number;
 }
 
 export class ScaleContinuous implements Scale {
@@ -124,10 +129,11 @@ export class ScaleContinuous implements Scale {
         timeZone: 'utc',
         totalBarsInCluster: 1,
         barsPadding: 0,
+        ticks: 10,
       },
       options,
     );
-    const { bandwidth, minInterval, timeZone, totalBarsInCluster, barsPadding } = scaleOptions;
+    const { bandwidth, minInterval, timeZone, totalBarsInCluster, barsPadding, ticks } = scaleOptions;
     this.d3Scale = SCALES[type]();
     if (type === ScaleType.Log) {
       this.domain = limitLogScaleDomain(domain);
@@ -156,7 +162,7 @@ export class ScaleContinuous implements Scale {
       const shiftedDomainMax = endDomain.plus({ minutes: offset }).toMillis();
       const tzShiftedScale = scaleUtc().domain([shiftedDomainMin, shiftedDomainMax]);
 
-      const rawTicks = tzShiftedScale.ticks();
+      const rawTicks = tzShiftedScale.ticks(ticks);
       const timePerTick = (shiftedDomainMax - shiftedDomainMin) / rawTicks.length;
       const hasHourTicks = timePerTick < 1000 * 60 * 60 * 12;
 
@@ -172,7 +178,7 @@ export class ScaleContinuous implements Scale {
           return this.domain[0] + i * this.minInterval;
         });
       } else {
-        this.tickValues = this.d3Scale.ticks();
+        this.tickValues = this.d3Scale.ticks(ticks);
       }
     }
   }
