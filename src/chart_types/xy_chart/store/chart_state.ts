@@ -574,6 +574,12 @@ export class ChartStore {
   });
 
   onLegendItemOver = action((legendItemKey: string | null) => {
+    if (legendItemKey) {
+      const legendItem = this.legendItems.get(legendItemKey);
+      if (legendItem && findDataSeriesByColorValues(this.deselectedDataSeries, legendItem.value) > -1) {
+        return;
+      }
+    }
     this.highlightedLegendItemKey.set(legendItemKey);
 
     if (this.onLegendItemOverListener) {
