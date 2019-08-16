@@ -87,31 +87,22 @@ export function computeXScale(
       const intervalCount = (adjustedDomain[1] - adjustedDomain[0]) / minInterval;
       const intervalCountOffest = isSingleValueHistogram ? 0 : 1;
       const bandwidth = rangeDiff / (intervalCount + intervalCountOffest);
-
       const { start, end } = getBandScaleRange(isInverse, isSingleValueHistogram, minRange, maxRange, bandwidth);
 
       const scale = new ScaleContinuous(
-        scaleType,
-        adjustedDomain,
-        [start, end],
-        bandwidth / totalBarsInCluster,
-        minInterval,
-        timeZone,
-        totalBarsInCluster,
-        barsPadding,
+        {
+          type: scaleType,
+          domain: adjustedDomain,
+          range: [start, end],
+        },
+        { bandwidth: bandwidth / totalBarsInCluster, minInterval, timeZone, totalBarsInCluster, barsPadding },
       );
 
       return scale;
     } else {
       return new ScaleContinuous(
-        scaleType,
-        domain,
-        [minRange, maxRange],
-        0,
-        minInterval,
-        timeZone,
-        totalBarsInCluster,
-        barsPadding,
+        { type: scaleType, domain, range: [minRange, maxRange] },
+        { bandwidth: 0, minInterval, timeZone, totalBarsInCluster, barsPadding },
       );
     }
   }
@@ -126,7 +117,11 @@ export function computeYScales(yDomains: YDomain[], minRange: number, maxRange: 
   const yScales: Map<GroupId, Scale> = new Map();
 
   yDomains.forEach((yDomain) => {
-    const yScale = new ScaleContinuous(yDomain.scaleType, yDomain.domain, [minRange, maxRange]);
+    const yScale = new ScaleContinuous({
+      type: yDomain.scaleType,
+      domain: yDomain.domain,
+      range: [minRange, maxRange],
+    });
     yScales.set(yDomain.groupId, yScale);
   });
 

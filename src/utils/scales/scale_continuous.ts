@@ -1,7 +1,7 @@
 import { bisectLeft } from 'd3-array';
 import { scaleLinear, scaleLog, scaleSqrt, scaleUtc } from 'd3-scale';
 import { DateTime } from 'luxon';
-import { clamp } from '../commons';
+import { clamp, mergePartial } from '../commons';
 import { ScaleContinuousType, ScaleType, Scale } from './scales';
 
 const SCALES = {
@@ -60,6 +60,45 @@ export function limitLogScaleDomain(domain: any[]) {
   }
   return domain;
 }
+interface ScaleData {
+  /** The Type of continuous scale */
+  type: ScaleContinuousType;
+  /** The data input domain */
+  domain: any[];
+  /** The data output range */
+  range: [number, number];
+}
+
+interface ScaleOptions {
+  /**
+   * The desidered bandwidth for a linear band scale.
+   * @default 0
+   */
+  bandwidth: number;
+  /**
+   * The min interval computed on the XDomain. Not available for yDomains.
+   * @default 0
+   */
+  minInterval: number;
+  /**
+   * A time zone identifier. Can be any IANA zone supported by he host environment,
+   * or a fixed-offset name of the form 'utc+3', or the strings 'local' or 'utc'.
+   * @default 'utc'
+   */
+  timeZone: string;
+  /**
+   * The number of bars in the cluster. Used to correctly compute scales when
+   * using padding between bars.
+   * @default 1
+   */
+  totalBarsInCluster: number;
+  /**
+   * The proportion of the range that is reserved for blank space between bands
+   * A number between 0 and 1.
+   * @default 0
+   */
+  barsPadding: number;
+}
 
 export class ScaleContinuous implements Scale {
   readonly bandwidth: number;
@@ -76,39 +115,19 @@ export class ScaleContinuous implements Scale {
   readonly barsPadding: number;
   private readonly d3Scale: any;
 
-  constructor(
-    type: ScaleContinuousType,
-    domain: any[],
-    range: [number, number],
-    /**
-     * The desidered bandwidth for a linear band scale.
-     * @default 0
-     */
-    bandwidth: number = 0,
-    /**
-     * The min interval computed on the XDomain. Not available for yDomains.
-     * @default 0
-     */
-    minInterval: number = 0,
-    /**
-     * A time zone identifier. Can be any IANA zone supported by he host environment,
-     * or a fixed-offset name of the form 'utc+3', or the strings 'local' or 'utc'.
-     * @default 'utc'
-     */
-    timeZone: string = 'utc',
-    /**
-     * The number of bars in the cluster. Used to correctly compute scales when
-     * using padding between bars.
-     * @default 1
-     */
-    totalBarsInCluster: number = 1,
-    /**
-     * The proportion of the range that is reserved for blank space between bands
-     * A number between 0 and 1.
-     * @default 0
-     */
-    barsPadding: number = 0,
-  ) {
+  constructor(scaleData: ScaleData, options?: Partial<ScaleOptions>) {
+    const { type, domain, range } = scaleData;
+    const scaleOptions: ScaleOptions = mergePartial(
+      {
+        bandwidth: 0,
+        minInterval: 0,
+        timeZone: 'utc',
+        totalBarsInCluster: 1,
+        barsPadding: 0,
+      },
+      options,
+    );
+    const { bandwidth, minInterval, timeZone, totalBarsInCluster, barsPadding } = scaleOptions;
     this.d3Scale = SCALES[type]();
     if (type === ScaleType.Log) {
       this.domain = limitLogScaleDomain(domain);

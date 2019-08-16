@@ -174,9 +174,16 @@ describe('Chart state pointer interactions', () => {
   });
 
   test('can respond to tooltip types changes', () => {
-    store.xScale = new ScaleContinuous(ScaleType.Linear, [0, 1], [0, 100], 50, 0.5);
+    store.xScale = new ScaleContinuous(
+      {
+        type: ScaleType.Linear,
+        domain: [0, 1],
+        range: [0, 100],
+      },
+      { bandwidth: 50, minInterval: 0.5 },
+    );
     store.yScales = new Map();
-    store.yScales.set(GROUP_ID, new ScaleContinuous(ScaleType.Linear, [0, 1], [0, 100]));
+    store.yScales.set(GROUP_ID, new ScaleContinuous({ type: ScaleType.Linear, domain: [0, 1], range: [0, 100] }));
     store.geometriesIndex.set(0, [indexedGeom1Red]);
     store.geometriesIndexKeys.push(0);
     store.tooltipType.set(TooltipType.None);
@@ -376,7 +383,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
       const singleValueScale =
         store.xScale!.type === ScaleType.Ordinal
           ? new ScaleBand(['a'], [0, 0])
-          : new ScaleContinuous(ScaleType.Linear, [1, 1], [0, 0]);
+          : new ScaleContinuous({ type: ScaleType.Linear, domain: [1, 1], range: [0, 0] });
       store.xScale = singleValueScale;
     });
     test('horizontal chart rotation', () => {

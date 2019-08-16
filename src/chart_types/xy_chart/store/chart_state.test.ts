@@ -680,7 +680,7 @@ describe('Chart Store', () => {
   test('can disable brush based on scale and listener', () => {
     store.xScale = undefined;
     expect(store.isBrushEnabled()).toBe(false);
-    store.xScale = new ScaleContinuous(ScaleType.Linear, [0, 100], [0, 100]);
+    store.xScale = new ScaleContinuous({ type: ScaleType.Linear, domain: [0, 100], range: [0, 100] });
     store.onBrushEndListener = undefined;
     expect(store.isBrushEnabled()).toBe(false);
     store.setOnBrushEndListener(() => ({}));
@@ -700,7 +700,7 @@ describe('Chart Store', () => {
       isXValue: false,
       seriesKey: 'a',
     };
-    store.xScale = new ScaleContinuous(ScaleType.Linear, [0, 100], [0, 100]);
+    store.xScale = new ScaleContinuous({ type: ScaleType.Linear, domain: [0, 100], range: [0, 100] });
     store.cursorPosition.x = 1;
     store.cursorPosition.y = 1;
     store.tooltipType.set(TooltipType.Crosshairs);
@@ -791,7 +791,7 @@ describe('Chart Store', () => {
     expect(clickListener.mock.calls[1][0]).toEqual([geom1.value, geom2.value]);
   });
   test('can compute annotation tooltip state', () => {
-    const scale = new ScaleContinuous(ScaleType.Linear, [0, 100], [0, 100]);
+    const scale = new ScaleContinuous({ type: ScaleType.Linear, domain: [0, 100], range: [0, 100] });
 
     store.rawCursorPosition.x = -1;
     store.rawCursorPosition.y = 0;
@@ -895,7 +895,7 @@ describe('Chart Store', () => {
     };
 
     beforeEach(() => {
-      store.xScale = new ScaleContinuous(ScaleType.Linear, [0, 100], [0, 100]);
+      store.xScale = new ScaleContinuous({ type: ScaleType.Linear, domain: [0, 100], range: [0, 100] });
     });
 
     test('when cursor is outside of chart bounds', () => {
@@ -976,7 +976,7 @@ describe('Chart Store', () => {
       getPosition,
     }));
 
-    const scale = new ScaleContinuous(ScaleType.Linear, [0, 100], [0, 100]);
+    const scale = new ScaleContinuous({ type: ScaleType.Linear, domain: [0, 100], range: [0, 100] });
     beforeEach(() => {
       // @ts-ignore
       store.setCursorPosition = jest.fn();
