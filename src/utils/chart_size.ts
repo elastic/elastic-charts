@@ -1,8 +1,9 @@
-type ChartSizeArray = [number | string | undefined, number | string | undefined];
-interface ChartSizeObject {
+export type ChartSizeArray = [number | string | undefined, number | string | undefined];
+export interface ChartSizeObject {
   width?: number | string;
   height?: number | string;
 }
+
 export type ChartSize = number | string | ChartSizeArray | ChartSizeObject;
 
 function isSizeArray(size: ChartSize): size is ChartSizeArray {
