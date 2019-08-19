@@ -10,8 +10,8 @@ import {
   Position,
   ScaleType,
   Settings,
-  mergeWithDefaultTheme,
   AreaSeries,
+  mergeWithDefaultTheme,
 } from '../src';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 

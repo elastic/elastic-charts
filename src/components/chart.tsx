@@ -14,6 +14,7 @@ import { ReactiveChart as ReactChart } from './react_canvas/reactive_chart';
 import { Tooltips } from './tooltips';
 import { isHorizontal } from '../chart_types/xy_chart/utils/axis_utils';
 import { Position } from '../chart_types/xy_chart/utils/specs';
+import { CursorEvent } from '../specs/settings';
 
 interface ChartProps {
   /** The type of rendered
@@ -59,6 +60,25 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     }
     return {};
   };
+
+  dispatchExternalCursorEvent(event?: CursorEvent) {
+    this.chartSpecStore.setActiveChartId(event && event.chartId);
+    const isActiveChart = this.chartSpecStore.isActiveChart.get();
+
+    if (!event) {
+      if (!isActiveChart) {
+        this.chartSpecStore.setCursorPosition(-1, -1);
+      }
+    } else {
+      if (
+        !isActiveChart &&
+        this.chartSpecStore.xScale!.type === event.scale &&
+        (event.unit === undefined || event.unit === this.chartSpecStore.xScale!.unit)
+      ) {
+        this.chartSpecStore.setCursorValue(event.value);
+      }
+    }
+  }
 
   render() {
     const { renderer, size, className } = this.props;

@@ -1,4 +1,6 @@
 import { action, computed, IObservableValue, observable } from 'mobx';
+import * as uuid from 'uuid';
+
 import {
   AxisLinePosition,
   AxisTick,
@@ -63,13 +65,18 @@ import {
   TooltipValueFormatter,
 } from '../utils/interactions';
 import { Scale, ScaleType } from '../../../utils/scales/scales';
-import { DEFAULT_TOOLTIP_SNAP, DEFAULT_TOOLTIP_TYPE } from '../../../specs/settings';
+import { DEFAULT_TOOLTIP_SNAP, DEFAULT_TOOLTIP_TYPE, CursorEvent } from '../../../specs/settings';
 import {
   AnnotationDimensions,
   computeAnnotationDimensions,
   computeAnnotationTooltipState,
 } from '../annotations/annotation_utils';
-import { getCursorBandPosition, getCursorLinePosition, getTooltipPosition } from '../crosshair/crosshair_utils';
+import {
+  getCursorBandPosition,
+  getCursorLinePosition,
+  getTooltipPosition,
+  getPosition,
+} from '../crosshair/crosshair_utils';
 import {
   BrushExtent,
   computeBrushExtent,
@@ -106,9 +113,11 @@ export type ElementClickListener = (values: GeometryValue[]) => void;
 export type ElementOverListener = (values: GeometryValue[]) => void;
 export type BrushEndListener = (min: number, max: number) => void;
 export type LegendItemListener = (dataSeriesIdentifiers: DataSeriesColorsValues | null) => void;
+export type CursorUpdateListener = (event?: CursorEvent) => void;
 
 export class ChartStore {
   debug = false;
+  id = uuid.v4();
   specsInitialized = observable.box(false);
   chartInitialized = observable.box(false);
   legendInitialized = observable.box(false);
@@ -155,6 +164,7 @@ export class ChartStore {
 
   seriesSpecs: Map<SpecId, BasicSeriesSpec> = new Map(); // readed from jsx
   isChartEmpty: boolean = true;
+  activeChartId?: string;
   seriesDomainsAndData?: SeriesDomainsAndData; // computed
   xScale?: Scale;
   yScales?: Map<GroupId, Scale>;
@@ -202,6 +212,7 @@ export class ChartStore {
   onLegendItemPlusClickListener?: LegendItemListener;
   onLegendItemMinusClickListener?: LegendItemListener;
   onLegendItemVisibilityToggleClickListener?: LegendItemListener;
+  onCursorUpdateListener?: CursorUpdateListener;
 
   geometries: {
     points: PointGeometry[];
@@ -229,8 +240,7 @@ export class ChartStore {
    * determine if crosshair cursor should be visible based on cursor position and brush enablement
    */
   isCrosshairCursorVisible = computed(() => {
-    const xPos = this.cursorPosition.x;
-    const yPos = this.cursorPosition.y;
+    const { x: xPos, y: yPos } = this.cursorPosition;
 
     if (yPos < 0 || xPos < 0) {
       return false;
@@ -240,9 +250,40 @@ export class ChartStore {
   });
 
   /**
+   * determine if chart is currently active
+   */
+  isActiveChart = computed(() => {
+    return !this.activeChartId ? true : this.activeChartId === this.id;
+  });
+
+  /**
+   * set activeChartId
+   */
+  setActiveChartId = (chartId?: string) => {
+    this.activeChartId = chartId;
+  };
+
+  /**
+   * set the x value of the cursor
+   */
+  setCursorValue = (value: string | number) => {
+    if (!this.xScale) {
+      return;
+    }
+
+    const xPosition = getPosition(value, this.xScale);
+
+    if (xPosition === undefined) {
+      return;
+    }
+
+    this.setCursorPosition(xPosition + this.chartDimensions.left, this.chartDimensions.top, false);
+  };
+
+  /**
    * x and y values are relative to the container.
    */
-  setCursorPosition = action((x: number, y: number) => {
+  setCursorPosition = action((x: number, y: number, updateCursor: boolean = true) => {
     this.rawCursorPosition.x = x;
     this.rawCursorPosition.y = y;
 
@@ -282,8 +323,19 @@ export class ChartStore {
     }
 
     // invert the cursor position to get the scale value
-
     const xValue = this.xScale.invertWithStep(xAxisCursorPosition, this.geometriesIndexKeys);
+
+    if (updateCursor && this.onCursorUpdateListener) {
+      // Get non-stepped xValue
+      const value = this.xScale.invert(xAxisCursorPosition);
+
+      this.onCursorUpdateListener({
+        chartId: this.id,
+        scale: this.xScale.type,
+        unit: this.xScale.unit,
+        value,
+      });
+    }
 
     // update che cursorBandPosition based on chart configuration
     const isLineAreaOnly = isLineAreaOnlyChart(this.seriesSpecs);
@@ -349,7 +401,10 @@ export class ChartStore {
 
         // check if the pointer is on the geometry
         let isHighlighted = false;
-        if (isPointerOnGeometry(xAxisCursorPosition, yAxisCursorPosition, indexedGeometry)) {
+        if (
+          this.isActiveChart.get() &&
+          isPointerOnGeometry(xAxisCursorPosition, yAxisCursorPosition, indexedGeometry)
+        ) {
           isHighlighted = true;
           oneHighlighted = true;
           newHighlightedGeometries.push(indexedGeometry);
@@ -465,9 +520,11 @@ export class ChartStore {
       this.tooltipType.get() !== TooltipType.None &&
       this.cursorPosition.x > -1 &&
       this.cursorPosition.y > -1 &&
-      this.tooltipData.length > 0
+      this.tooltipData.length > 0 &&
+      this.isActiveChart.get()
     );
   });
+
   isCrosshairVisible = computed(() => {
     return (
       !this.isBrushing.get() &&
@@ -491,6 +548,10 @@ export class ChartStore {
     this.tooltipData.clear();
 
     document.body.style.cursor = 'default';
+
+    if (this.onCursorUpdateListener && this.isActiveChart.get()) {
+      this.onCursorUpdateListener();
+    }
   });
 
   setShowLegend = action((showLegend: boolean) => {
@@ -661,6 +722,9 @@ export class ChartStore {
   setOnLegendItemMinusClickListener(listener: LegendItemListener) {
     this.onLegendItemMinusClickListener = listener;
   }
+  setOnCursorUpdateListener(listener: CursorUpdateListener) {
+    this.onCursorUpdateListener = listener;
+  }
   removeElementClickListener() {
     this.onElementClickListener = undefined;
   }
@@ -681,6 +745,9 @@ export class ChartStore {
   }
   removeOnLegendItemMinusClickListener() {
     this.onLegendItemMinusClickListener = undefined;
+  }
+  removeOnCursorUpdateListener() {
+    this.onCursorUpdateListener = undefined;
   }
 
   isBrushEnabled(): boolean {
@@ -850,12 +917,15 @@ export class ChartStore {
     bboxCalculator.destroy();
 
     // compute chart dimensions
-    this.chartDimensions = computeChartDimensions(
+    const computedChartDims = computeChartDimensions(
       this.parentDimensions,
       this.chartTheme,
       this.axesTicksDimensions,
       this.axesSpecs,
+      this.showLegend.get(),
+      this.legendPosition.get(),
     );
+    this.chartDimensions = computedChartDims.chartDimensions;
 
     this.chartTransform = computeChartTransform(this.chartDimensions, this.chartRotation);
     this.brushExtent = computeBrushExtent(this.chartDimensions, this.chartRotation, this.chartTransform);
@@ -887,7 +957,7 @@ export class ChartStore {
 
     // compute visible ticks and their positions
     const axisTicksPositions = getAxisTicksPositions(
-      this.chartDimensions,
+      computedChartDims,
       this.chartTheme,
       this.chartRotation,
       this.axesSpecs,
@@ -898,6 +968,7 @@ export class ChartStore {
       this.enableHistogramMode.get(),
       barsPadding,
     );
+
     this.axesPositions = axisTicksPositions.axisPositions;
     this.axesTicks = axisTicksPositions.axisTicks;
     this.axesVisibleTicks = axisTicksPositions.axisVisibleTicks;
