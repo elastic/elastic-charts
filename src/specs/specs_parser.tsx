@@ -7,10 +7,6 @@ export interface SpecProps {
 }
 
 export class SpecsSpecRootComponent extends PureComponent<SpecProps> {
-  static getDerivedStateFromProps(props: SpecProps) {
-    props.chartStore!.specsInitialized.set(false);
-    return null;
-  }
   componentDidMount() {
     this.props.chartStore!.specsInitialized.set(true);
     this.props.chartStore!.computeChart();
