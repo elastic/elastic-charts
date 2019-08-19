@@ -3,7 +3,7 @@
     "declaration": true,
     "outDir": "./dist/",
     "noImplicitAny": true,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "sourceMap": true,
     "preserveConstEnums": true,
     "strict": true,
@@ -17,6 +17,5 @@
     "skipLibCheck": true,
     "downlevelIteration": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["**/*.test.*"]
+  "include": ["src/**/*", "stories/**/*"]
 }

@@ -20,13 +20,15 @@ import {
   Settings,
   timeFormatter,
   TooltipType,
+  TooltipValue,
+  TooltipValueFormatter,
 } from '../src/';
 
 import { array, boolean, number, select } from '@storybook/addon-knobs';
 import { DateTime } from 'luxon';
 import { switchTheme } from '../.storybook/theme_service';
-import { BARCHART_2Y2G } from '../src/lib/series/utils/test_dataset';
-import { KIBANA_METRICS } from '../src/lib/series/utils/test_dataset_kibana';
+import { BARCHART_2Y2G } from '../src/utils/data_samples/test_dataset';
+import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 
 const onElementListeners = {
   onElementClick: action('onElementClick'),
@@ -44,15 +46,27 @@ const onLegendItemListeners = {
 
 storiesOf('Interactions', module)
   .add('bar clicks and hovers', () => {
+    const headerFormatter: TooltipValueFormatter = (tooltipData: TooltipValue) => {
+      if (tooltipData.value % 2 === 0) {
+        return (
+          <div>
+            <p>special header for even x values</p>
+            <p>{tooltipData.value}</p>
+          </div>
+        );
+      }
+
+      return tooltipData.value;
+    };
+
+    const tooltipProps = {
+      headerFormatter,
+    };
+
     return (
       <Chart className={'story-chart'}>
-        <Settings showLegend={true} legendPosition={Position.Right} {...onElementListeners} />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          title={'Bottom axis'}
-          showOverlappingTicks={true}
-        />
+        <Settings showLegend={true} legendPosition={Position.Right} {...onElementListeners} tooltip={tooltipProps} />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
           title={'Left axis'}
@@ -75,12 +89,7 @@ storiesOf('Interactions', module)
     return (
       <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} {...onElementListeners} />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          title={'Bottom axis'}
-          showOverlappingTicks={true}
-        />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
           title={'Left axis'}
@@ -103,12 +112,7 @@ storiesOf('Interactions', module)
     return (
       <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} {...onElementListeners} />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          title={'Bottom axis'}
-          showOverlappingTicks={true}
-        />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
           title={'Left axis'}
@@ -131,12 +135,7 @@ storiesOf('Interactions', module)
     return (
       <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} {...onElementListeners} />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          title={'Bottom axis'}
-          showOverlappingTicks={true}
-        />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
           title={'Left axis'}
@@ -186,7 +185,7 @@ storiesOf('Interactions', module)
       max: number('yDomain max', 10, {}, notSpecChange),
     };
 
-    const yScaleTypeOptions: { [key: string]: ScaleType.Linear | ScaleType.Log } = {
+    const yScaleTypeOptions: { [key: string]: typeof ScaleType.Linear | typeof ScaleType.Log } = {
       linear: ScaleType.Linear,
       log: ScaleType.Log,
     };
@@ -211,18 +210,8 @@ storiesOf('Interactions', module)
 
     return (
       <Chart className={'story-chart'}>
-        <Settings
-          showLegend={true}
-          legendPosition={Position.Right}
-          {...onLegendItemListeners}
-          xDomain={xDomain}
-        />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          title={'Bottom axis'}
-          showOverlappingTicks={true}
-        />
+        <Settings showLegend={true} legendPosition={Position.Right} {...onLegendItemListeners} xDomain={xDomain} />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
           title={'Left axis'}
@@ -247,13 +236,14 @@ storiesOf('Interactions', module)
   .add('click/hovers on legend items [area chart]', () => {
     return (
       <Chart className={'story-chart'}>
-        <Settings showLegend={true} legendPosition={Position.Right} />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          title={'Bottom axis'}
-          showOverlappingTicks={true}
+        <Settings
+          showLegend={true}
+          legendPosition={Position.Right}
+          onLegendItemClick={action('onLegendItemClick')}
+          onLegendItemOver={action('onLegendItemOver')}
+          onLegendItemOut={action('onLegendItemOut')}
         />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
           title={'Left axis'}
@@ -286,13 +276,14 @@ storiesOf('Interactions', module)
   .add('click/hovers on legend items [line chart]', () => {
     return (
       <Chart className={'story-chart'}>
-        <Settings showLegend={true} legendPosition={Position.Right} />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          title={'Bottom axis'}
-          showOverlappingTicks={true}
+        <Settings
+          showLegend={true}
+          legendPosition={Position.Right}
+          onLegendItemClick={action('onLegendItemClick')}
+          onLegendItemOver={action('onLegendItemOver')}
+          onLegendItemOut={action('onLegendItemOut')}
         />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
           title={'Left axis'}
@@ -360,13 +351,14 @@ storiesOf('Interactions', module)
   .add('click/hovers on legend items [mixed chart]', () => {
     return (
       <Chart className={'story-chart'}>
-        <Settings showLegend={true} legendPosition={Position.Right} />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          title={'Bottom axis'}
-          showOverlappingTicks={true}
+        <Settings
+          showLegend={true}
+          legendPosition={Position.Right}
+          onLegendItemClick={action('onLegendItemClick')}
+          onLegendItemOver={action('onLegendItemOver')}
+          onLegendItemOut={action('onLegendItemOut')}
         />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
           title={'Left axis'}
@@ -399,24 +391,9 @@ storiesOf('Interactions', module)
     return (
       <Chart className={'story-chart'}>
         <Settings onBrushEnd={action('onBrushEnd')} />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          title={'bottom'}
-          showOverlappingTicks={true}
-        />
-        <Axis
-          id={getAxisId('left')}
-          title={'left'}
-          position={Position.Left}
-          tickFormat={(d) => Number(d).toFixed(2)}
-        />
-        <Axis
-          id={getAxisId('top')}
-          position={Position.Top}
-          title={'top'}
-          showOverlappingTicks={true}
-        />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'bottom'} showOverlappingTicks={true} />
+        <Axis id={getAxisId('left')} title={'left'} position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
+        <Axis id={getAxisId('top')} position={Position.Top} title={'top'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('right')}
           title={'right'}
@@ -439,24 +416,9 @@ storiesOf('Interactions', module)
     return (
       <Chart className={'story-chart'}>
         <Settings onBrushEnd={action('onBrushEnd')} />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          title={'bottom'}
-          showOverlappingTicks={true}
-        />
-        <Axis
-          id={getAxisId('left')}
-          title={'left'}
-          position={Position.Left}
-          tickFormat={(d) => Number(d).toFixed(2)}
-        />
-        <Axis
-          id={getAxisId('top')}
-          position={Position.Top}
-          title={'top'}
-          showOverlappingTicks={true}
-        />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'bottom'} showOverlappingTicks={true} />
+        <Axis id={getAxisId('left')} title={'left'} position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
+        <Axis id={getAxisId('top')} position={Position.Top} title={'top'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('right')}
           title={'right'}
@@ -480,7 +442,11 @@ storiesOf('Interactions', module)
     const oneDay = 1000 * 60 * 60 * 24;
     return (
       <Chart className={'story-chart'}>
-        <Settings debug={boolean('debug', false)} onBrushEnd={action('onBrushEnd')} />
+        <Settings
+          debug={boolean('debug', false)}
+          onBrushEnd={action('onBrushEnd')}
+          onElementClick={action('onElementClick')}
+        />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
@@ -488,12 +454,7 @@ storiesOf('Interactions', module)
           showOverlappingTicks={true}
           tickFormat={niceTimeFormatter([now, now + oneDay * 5])}
         />
-        <Axis
-          id={getAxisId('left')}
-          title={'left'}
-          position={Position.Left}
-          tickFormat={(d) => Number(d).toFixed(2)}
-        />
+        <Axis id={getAxisId('left')} title={'left'} position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
         <BarSeries
           id={getSpecId('bars')}
@@ -515,12 +476,7 @@ storiesOf('Interactions', module)
     return (
       <Chart className={'story-chart'}>
         <Settings onBrushEnd={action('onBrushEnd')} />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          title={'bottom'}
-          showOverlappingTicks={true}
-        />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'bottom'} showOverlappingTicks={true} />
         <Axis id={getAxisId('left')} title={'left'} position={Position.Left} />
         <LineSeries
           id={getSpecId('lines')}
@@ -540,29 +496,31 @@ storiesOf('Interactions', module)
     const className = darkmode ? 'story-chart-dark' : 'story-chart';
     const defaultTheme = darkmode ? DARK_THEME : LIGHT_THEME;
     switchTheme(darkmode ? 'dark' : 'light');
-    const chartRotation = select<Rotation>(
-      'rotation',
-      { '90': 90, '0': 0, '-90': -90, '180': 180 },
-      0,
-    );
+    const chartRotation = select<Rotation>('rotation', { '90': 90, '0': 0, '-90': -90, '180': 180 }, 0);
     const numberFormatter = (d: any) => Number(d).toFixed(2);
+
+    const tooltipType = select(
+      'tooltipType',
+      {
+        cross: TooltipType.Crosshairs,
+        vertical: TooltipType.VerticalCursor,
+        follow: TooltipType.Follow,
+        none: TooltipType.None,
+      },
+      TooltipType.Crosshairs,
+    );
+
+    const tooltipProps = {
+      type: tooltipType,
+      snap: boolean('tooltip snap to grid', true),
+    };
 
     return (
       <Chart className={className}>
         <Settings
           debug={boolean('debug', false)}
-          tooltipType={select(
-            'tooltipType',
-            {
-              cross: TooltipType.Crosshairs,
-              vertical: TooltipType.VerticalCursor,
-              follow: TooltipType.Follow,
-              none: TooltipType.None,
-            },
-            TooltipType.Crosshairs,
-          )}
+          tooltip={tooltipProps}
           theme={defaultTheme}
-          tooltipSnap={boolean('tooltip snap to grid', true)}
           rotation={chartRotation}
         />
         <Axis

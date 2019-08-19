@@ -1,6 +1,6 @@
 import { mount } from 'enzyme';
 import * as React from 'react';
-import { ChartStore } from '../state/chart_state';
+import { ChartStore } from '../chart_types/xy_chart/store/chart_state';
 import { SpecsSpecRootComponent } from './specs_parser';
 
 describe('Specs parser', () => {
@@ -13,7 +13,11 @@ describe('Specs parser', () => {
   });
   test('chart store initialized and computeChart on component update', () => {
     const chartStore = new ChartStore();
-    const computeChart = jest.fn((): void => { return; });
+    const computeChart = jest.fn(
+      (): void => {
+        return;
+      },
+    );
     chartStore.computeChart = computeChart;
 
     const component = mount(<SpecsSpecRootComponent chartStore={chartStore} />);

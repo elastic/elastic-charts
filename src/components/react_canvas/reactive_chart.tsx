@@ -1,12 +1,17 @@
+import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Layer, Rect, Stage } from 'react-konva';
-import { isLineAnnotation, isRectAnnotation } from '../../lib/series/specs';
-import { LineAnnotationStyle, RectAnnotationStyle } from '../../lib/themes/theme';
-import { AnnotationId } from '../../lib/utils/ids';
-import { AnnotationDimensions, AnnotationLineProps, AnnotationRectProps } from '../../state/annotation_utils';
-import { ChartStore, Point } from '../../state/chart_state';
-import { BrushExtent } from '../../state/utils';
+import { isLineAnnotation, isRectAnnotation, Position } from '../../chart_types/xy_chart/utils/specs';
+import { LineAnnotationStyle, RectAnnotationStyle } from '../../utils/themes/theme';
+import { AnnotationId } from '../../utils/ids';
+import {
+  AnnotationDimensions,
+  AnnotationLineProps,
+  AnnotationRectProps,
+} from '../../chart_types/xy_chart/annotations/annotation_utils';
+import { ChartStore, Point } from '../../chart_types/xy_chart/store/chart_state';
+import { BrushExtent } from '../../chart_types/xy_chart/store/utils';
 import { AreaGeometries } from './area_geometries';
 import { Axis } from './axis';
 import { BarGeometries } from './bar_geometries';
@@ -15,7 +20,7 @@ import { Grid } from './grid';
 import { LineAnnotation } from './line_annotation';
 import { LineGeometries } from './line_geometries';
 import { RectAnnotation } from './rect_annotation';
-
+import { isVertical } from '../../chart_types/xy_chart/utils/axis_utils';
 interface ReactiveChartProps {
   chartStore?: ChartStore; // FIX until we find a better way on ts mobx
 }
@@ -76,20 +81,23 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
     }
     const highlightedLegendItem = this.getHighlightedLegendItem();
 
-    const element = <BarGeometries
-      key={'bar-geometries'}
-      animated={canDataBeAnimated}
-      bars={geometries.bars}
-      style={chartTheme.barSeriesStyle}
-      sharedStyle={chartTheme.sharedStyle}
-      highlightedLegendItem={highlightedLegendItem}
-    />;
+    const element = (
+      <BarGeometries
+        key={'bar-geometries'}
+        animated={canDataBeAnimated}
+        bars={geometries.bars}
+        sharedStyle={chartTheme.sharedStyle}
+        highlightedLegendItem={highlightedLegendItem}
+      />
+    );
 
-    return [{
-      element,
-      zIndex: 0,
-    }];
-  }
+    return [
+      {
+        element,
+        zIndex: 0,
+      },
+    ];
+  };
   renderLineSeries = (): ReactiveChartElementIndex[] => {
     const { geometries, canDataBeAnimated, chartTheme } = this.props.chartStore!;
     if (!geometries) {
@@ -98,20 +106,23 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
 
     const highlightedLegendItem = this.getHighlightedLegendItem();
 
-    const element = <LineGeometries
-      key={'line-geometries'}
-      animated={canDataBeAnimated}
-      lines={geometries.lines}
-      style={chartTheme.lineSeriesStyle}
-      sharedStyle={chartTheme.sharedStyle}
-      highlightedLegendItem={highlightedLegendItem}
-    />;
+    const element = (
+      <LineGeometries
+        key={'line-geometries'}
+        animated={canDataBeAnimated}
+        lines={geometries.lines}
+        sharedStyle={chartTheme.sharedStyle}
+        highlightedLegendItem={highlightedLegendItem}
+      />
+    );
 
-    return [{
-      element,
-      zIndex: 0,
-    }];
-  }
+    return [
+      {
+        element,
+        zIndex: 0,
+      },
+    ];
+  };
   renderAreaSeries = (): ReactiveChartElementIndex[] => {
     const { geometries, canDataBeAnimated, chartTheme } = this.props.chartStore!;
     if (!geometries) {
@@ -120,20 +131,23 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
 
     const highlightedLegendItem = this.getHighlightedLegendItem();
 
-    const element = <AreaGeometries
-      key={'area-geometries'}
-      animated={canDataBeAnimated}
-      areas={geometries.areas}
-      style={chartTheme.areaSeriesStyle}
-      sharedStyle={chartTheme.sharedStyle}
-      highlightedLegendItem={highlightedLegendItem}
-    />;
+    const element = (
+      <AreaGeometries
+        key={'area-geometries'}
+        animated={canDataBeAnimated}
+        areas={geometries.areas}
+        sharedStyle={chartTheme.sharedStyle}
+        highlightedLegendItem={highlightedLegendItem}
+      />
+    );
 
-    return [{
-      element,
-      zIndex: 0,
-    }];
-  }
+    return [
+      {
+        element,
+        zIndex: 0,
+      },
+    ];
+  };
   renderAxes = () => {
     const {
       axesVisibleTicks,
@@ -168,7 +182,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       );
     });
     return axesComponents;
-  }
+  };
 
   renderGrids = () => {
     const { axesGridLinesPositions, axesSpecs, chartDimensions, debug } = this.props.chartStore!;
@@ -189,7 +203,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       }
     });
     return gridComponents;
-  }
+  };
 
   renderAnnotations = (): ReactiveChartElementIndex[] => {
     const { annotationDimensions, annotationSpecs, chartDimensions, debug } = this.props.chartStore!;
@@ -207,23 +221,27 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       if (isLineAnnotation(spec)) {
         const lineStyle = spec.style as LineAnnotationStyle;
 
-        element = <LineAnnotation
-          key={`annotation-${id}`}
-          chartDimensions={chartDimensions}
-          debug={debug}
-          lines={annotation as AnnotationLineProps[]}
-          lineStyle={lineStyle}
-        />;
+        element = (
+          <LineAnnotation
+            key={`annotation-${id}`}
+            chartDimensions={chartDimensions}
+            debug={debug}
+            lines={annotation as AnnotationLineProps[]}
+            lineStyle={lineStyle}
+          />
+        );
       } else if (isRectAnnotation(spec)) {
         const rectStyle = spec.style as RectAnnotationStyle;
 
-        element = <RectAnnotation
-          key={`annotation-${id}`}
-          chartDimensions={chartDimensions}
-          debug={debug}
-          rects={annotation as AnnotationRectProps[]}
-          rectStyle={rectStyle}
-        />;
+        element = (
+          <RectAnnotation
+            key={`annotation-${id}`}
+            chartDimensions={chartDimensions}
+            debug={debug}
+            rects={annotation as AnnotationRectProps[]}
+            rectStyle={rectStyle}
+          />
+        );
       }
 
       if (element) {
@@ -234,7 +252,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       }
     });
     return annotationElements;
-  }
+  };
 
   renderBarValues = () => {
     const { debug, chartDimensions, geometries, chartTheme, chartRotation } = this.props.chartStore!;
@@ -250,7 +268,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       displayValueStyle: chartTheme.barSeriesStyle.displayValue!,
     };
     return <BarValues {...props} />;
-  }
+  };
 
   renderBrushTool = () => {
     const { brushing, brushStart, brushEnd } = this.state;
@@ -276,10 +294,9 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       height = brushEnd.y - brushStart.y;
     }
     return <Rect x={x} y={y} width={width} height={height} fill="gray" opacity={0.6} />;
-  }
+  };
   onStartBrusing = (event: { evt: MouseEvent }) => {
     window.addEventListener('mouseup', this.onEndBrushing);
-    this.props.chartStore!.onBrushStart();
     const { brushExtent } = this.props.chartStore!;
     const point = getPoint(event.evt, brushExtent);
     this.setState(() => ({
@@ -287,7 +304,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       brushStart: point,
       brushEnd: point,
     }));
-  }
+  };
   onEndBrushing = () => {
     window.removeEventListener('mouseup', this.onEndBrushing);
     const { brushStart, brushEnd } = this.state;
@@ -297,17 +314,20 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       brushStart: { x: 0, y: 0 },
       brushEnd: { x: 0, y: 0 },
     }));
-  }
+  };
   onBrushing = (event: { evt: MouseEvent }) => {
     if (!this.state.brushing) {
       return;
+    }
+    if (!this.props.chartStore!.isBrushing.get()) {
+      this.props.chartStore!.onBrushStart();
     }
     const { brushExtent } = this.props.chartStore!;
     const point = getPoint(event.evt, brushExtent);
     this.setState(() => ({
       brushEnd: point,
     }));
-  }
+  };
 
   sortAndRenderElements() {
     const bars = this.renderBarSeries();
@@ -321,7 +341,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
   }
 
   render() {
-    const { initialized, debug } = this.props.chartStore!;
+    const { initialized } = this.props.chartStore!;
     if (!initialized.get()) {
       return null;
     }
@@ -331,22 +351,44 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       chartDimensions,
       chartRotation,
       chartTransform,
+      debug,
       setCursorPosition,
+      isChartEmpty,
+      legendCollapsed,
+      legendPosition,
+      chartTheme,
     } = this.props.chartStore!;
 
+    if (isChartEmpty) {
+      const isLegendCollapsed = legendCollapsed.get();
+      const { verticalWidth, horizontalHeight } = chartTheme.legend;
+
+      const paddingStyle =
+        legendPosition && isVertical(legendPosition)
+          ? legendPosition === Position.Right
+            ? { paddingLeft: -verticalWidth }
+            : { paddingLeft: verticalWidth }
+          : legendPosition === Position.Top
+          ? { paddingTop: horizontalHeight }
+          : { paddingTop: -horizontalHeight };
+
+      const style = isLegendCollapsed ? undefined : paddingStyle;
+
+      return (
+        <div className="echReactiveChart_unavailable">
+          <p style={style}>No data to display</p>
+        </div>
+      );
+    }
     // disable clippings when debugging
     const clippings = debug
       ? {}
       : {
-        clipX: 0,
-        clipY: 0,
-        clipWidth: [90, -90].includes(chartRotation)
-          ? chartDimensions.height
-          : chartDimensions.width,
-        clipHeight: [90, -90].includes(chartRotation)
-          ? chartDimensions.width
-          : chartDimensions.height,
-      };
+          clipX: 0,
+          clipY: 0,
+          clipWidth: [90, -90].includes(chartRotation) ? chartDimensions.height : chartDimensions.width,
+          clipHeight: [90, -90].includes(chartRotation) ? chartDimensions.width : chartDimensions.height,
+        };
 
     let brushProps = {};
     const isBrushEnabled = this.props.chartStore!.isBrushEnabled();
@@ -364,6 +406,10 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       clipHeight: chartDimensions.height,
     };
 
+    const className = classNames({
+      'echChart--isBrushEnabled': this.props.chartStore!.isCrosshairCursorVisible.get(),
+    });
+
     return (
       <div
         style={{
@@ -380,9 +426,13 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
         onMouseLeave={() => {
           setCursorPosition(-1, -1);
         }}
-        onClick={() => {
+        onMouseUp={() => {
+          if (this.props.chartStore!.isBrushing.get()) {
+            return;
+          }
           this.props.chartStore!.handleChartClick();
         }}
+        className={className}
       >
         <Stage
           width={parentDimensions.width}
@@ -443,11 +493,11 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
         dash={[4, 4]}
       />
     );
-  }
+  };
 
   private getHighlightedLegendItem = () => {
     return this.props.chartStore!.highlightedLegendItem.get();
-  }
+  };
 }
 
 export const ReactiveChart = inject('chartStore')(observer(Chart));

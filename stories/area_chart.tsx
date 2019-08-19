@@ -15,7 +15,7 @@ import {
   Settings,
   timeFormatter,
 } from '../src';
-import { KIBANA_METRICS } from '../src/lib/series/utils/test_dataset_kibana';
+import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 const dateFormatter = timeFormatter('HH:mm');
 
 storiesOf('Area Chart', module)
@@ -100,12 +100,7 @@ storiesOf('Area Chart', module)
     });
     return (
       <Chart className={'story-chart'}>
-        <Axis
-          id={getAxisId('bottom')}
-          title={'index'}
-          position={Position.Bottom}
-          tickFormat={dateFormatter}
-        />
+        <Axis id={getAxisId('bottom')} title={'index'} position={Position.Bottom} tickFormat={dateFormatter} />
         <Axis
           id={getAxisId('left')}
           title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
@@ -229,6 +224,42 @@ storiesOf('Area Chart', module)
           stackAccessors={[0]}
           splitSeriesAccessors={[2]}
           data={allMetrics}
+        />
+      </Chart>
+    );
+  })
+  .add('stacked as percentage', () => {
+    const stackedAsPercentage = boolean('stacked as percentage', true);
+    return (
+      <Chart className={'story-chart'}>
+        <Settings showLegend={true} legendPosition={Position.Right} />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+        <Axis
+          id={getAxisId('left2')}
+          title={'Left axis'}
+          position={Position.Left}
+          tickFormat={(d) => `${Number(d * 100).toFixed(0)} %`}
+        />
+
+        <AreaSeries
+          id={getSpecId('areas')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          stackAccessors={['x']}
+          stackAsPercentage={stackedAsPercentage}
+          splitSeriesAccessors={['g']}
+          data={[
+            { x: 0, y: 2, g: 'a' },
+            { x: 1, y: 7, g: 'a' },
+            { x: 2, y: 3, g: 'a' },
+            { x: 3, y: 6, g: 'a' },
+            { x: 0, y: 4, g: 'b' },
+            { x: 1, y: 5, g: 'b' },
+            { x: 2, y: 8, g: 'b' },
+            { x: 3, y: 2, g: 'b' },
+          ]}
         />
       </Chart>
     );
@@ -368,12 +399,7 @@ storiesOf('Area Chart', module)
     ];
     return (
       <Chart className={'story-chart'}>
-        <Axis
-          id={getAxisId('bottom')}
-          title={'index'}
-          position={Position.Bottom}
-          tickFormat={dateFormatter}
-        />
+        <Axis id={getAxisId('bottom')} title={'index'} position={Position.Bottom} tickFormat={dateFormatter} />
         <Axis
           id={getAxisId('left')}
           title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}

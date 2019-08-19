@@ -1,31 +1,33 @@
 import { Group as KonvaGroup } from 'konva';
 import React from 'react';
 import { Circle, Group, Path } from 'react-konva';
-import { animated, Spring } from 'react-spring/renderprops-konva.cjs';
-import { LegendItem } from '../../lib/series/legend';
-import { AreaGeometry, getGeometryStyle, PointGeometry } from '../../lib/series/rendering';
-import { AreaSeriesStyle, SharedGeometryStyle } from '../../lib/themes/theme';
+import { LegendItem } from '../../chart_types/xy_chart/legend/legend';
 import {
-  buildAreaLineProps,
-  buildAreaPointProps,
-  buildAreaProps,
+  AreaGeometry,
+  getGeometryStyle,
+  PointGeometry,
+  getGeometryIdKey,
+  GeometryId,
+} from '../../chart_types/xy_chart/rendering/rendering';
+import { SharedGeometryStyle } from '../../utils/themes/theme';
+import {
+  buildAreaRenderProps,
   buildPointStyleProps,
+  buildPointRenderProps,
+  PointStyleProps,
+  buildLineRenderProps,
 } from './utils/rendering_props_utils';
 
 interface AreaGeometriesDataProps {
   animated?: boolean;
   areas: AreaGeometry[];
-  style: AreaSeriesStyle;
   sharedStyle: SharedGeometryStyle;
   highlightedLegendItem: LegendItem | null;
 }
 interface AreaGeometriesDataState {
   overPoint?: PointGeometry;
 }
-export class AreaGeometries extends React.PureComponent<
-  AreaGeometriesDataProps,
-  AreaGeometriesDataState
-  > {
+export class AreaGeometries extends React.PureComponent<AreaGeometriesDataProps, AreaGeometriesDataState> {
   static defaultProps: Partial<AreaGeometriesDataProps> = {
     animated: false,
   };
@@ -38,178 +40,135 @@ export class AreaGeometries extends React.PureComponent<
     };
   }
   render() {
-    const { point, area, line } = this.props.style;
-
     return (
       <Group ref={this.barSeriesRef} key={'bar_series'}>
-        {this.renderAreaGeoms(area.visible)}
-        {this.renderAreaLines(line.visible)}
-        {this.renderAreaPoints(point.visible)}
+        {this.renderAreaGeoms()}
       </Group>
     );
   }
-  private renderAreaPoints = (themeIsVisible: boolean): JSX.Element[] => {
-    const { areas } = this.props;
-    return areas.reduce(
-      (acc, glyph, i) => {
-        const { points, seriesPointStyle } = glyph;
-
-        const isVisible = seriesPointStyle ? seriesPointStyle.visible : themeIsVisible;
-        if (!isVisible) {
-          return acc;
+  private renderAreaGeoms = (): JSX.Element[] => {
+    const { sharedStyle, highlightedLegendItem } = this.props;
+    const areas = this.props.areas.reduce<{
+      stacked: AreaGeometry[];
+      nonStacked: AreaGeometry[];
+    }>(
+      (acc, area) => {
+        if (area.isStacked) {
+          acc.stacked.push(area);
+        } else {
+          acc.nonStacked.push(area);
         }
-
-        const { radius, strokeWidth, opacity } = this.props.style.point;
-        const pointStyleProps = buildPointStyleProps({
-          radius,
-          strokeWidth,
-          opacity,
-          seriesPointStyle,
-        });
-
-        return [...acc, ...this.renderPoints(points, i, pointStyleProps)];
+        return acc;
       },
-      [] as JSX.Element[],
+
+      { stacked: [], nonStacked: [] },
     );
-  }
+
+    return [
+      ...this.renderStackedAreas(areas.stacked, sharedStyle, highlightedLegendItem),
+      ...this.renderNonStackedAreas(areas.nonStacked, sharedStyle, highlightedLegendItem),
+    ];
+  };
+  renderStackedAreas = (
+    areas: AreaGeometry[],
+    sharedStyle: SharedGeometryStyle,
+    highlightedLegendItem: LegendItem | null,
+  ): JSX.Element[] => {
+    const elements: JSX.Element[] = [];
+    areas.forEach((glyph) => {
+      const { seriesAreaStyle } = glyph;
+      if (seriesAreaStyle.visible) {
+        elements.push(this.renderArea(glyph, sharedStyle, highlightedLegendItem));
+      }
+    });
+    areas.forEach((glyph, i) => {
+      const { seriesAreaLineStyle } = glyph;
+      if (seriesAreaLineStyle.visible) {
+        elements.push(...this.renderAreaLines(glyph, i, sharedStyle, highlightedLegendItem));
+      }
+    });
+    areas.forEach((glyph, i) => {
+      const { seriesPointStyle, geometryId } = glyph;
+      if (seriesPointStyle.visible) {
+        const customOpacity = seriesPointStyle ? seriesPointStyle.opacity : undefined;
+        const geometryStyle = getGeometryStyle(
+          geometryId,
+          this.props.highlightedLegendItem,
+          sharedStyle,
+          customOpacity,
+        );
+        const pointStyleProps = buildPointStyleProps(glyph.color, seriesPointStyle, geometryStyle);
+        elements.push(...this.renderPoints(glyph.points, i, pointStyleProps, glyph.geometryId));
+      }
+    });
+    return elements;
+  };
+  renderNonStackedAreas = (
+    areas: AreaGeometry[],
+    sharedStyle: SharedGeometryStyle,
+    highlightedLegendItem: LegendItem | null,
+  ): JSX.Element[] => {
+    return areas.reduce<JSX.Element[]>((acc, glyph, i) => {
+      const { seriesAreaLineStyle, seriesAreaStyle, seriesPointStyle, geometryId } = glyph;
+      if (seriesAreaStyle.visible) {
+        acc.push(this.renderArea(glyph, sharedStyle, highlightedLegendItem));
+      }
+      if (seriesAreaLineStyle.visible) {
+        acc.push(...this.renderAreaLines(glyph, i, sharedStyle, highlightedLegendItem));
+      }
+      if (seriesPointStyle.visible) {
+        const customOpacity = seriesPointStyle ? seriesPointStyle.opacity : undefined;
+        const geometryStyle = getGeometryStyle(
+          geometryId,
+          this.props.highlightedLegendItem,
+          sharedStyle,
+          customOpacity,
+        );
+        const pointStyleProps = buildPointStyleProps(glyph.color, seriesPointStyle, geometryStyle);
+        acc.push(...this.renderPoints(glyph.points, i, pointStyleProps, glyph.geometryId));
+      }
+      return acc;
+    }, []);
+  };
+  private renderArea = (
+    glyph: AreaGeometry,
+    sharedStyle: SharedGeometryStyle,
+    highlightedLegendItem: LegendItem | null,
+  ): JSX.Element => {
+    const { area, color, transform, geometryId, seriesAreaStyle } = glyph;
+    const customOpacity = seriesAreaStyle ? seriesAreaStyle.opacity : undefined;
+    const geometryStyle = getGeometryStyle(geometryId, highlightedLegendItem, sharedStyle, customOpacity);
+    const key = getGeometryIdKey(geometryId, 'area-');
+    const areaProps = buildAreaRenderProps(transform.x, area, color, seriesAreaStyle, geometryStyle);
+    return <Path {...areaProps} key={key} />;
+  };
+  private renderAreaLines = (
+    glyph: AreaGeometry,
+    areaIndex: number,
+    sharedStyle: SharedGeometryStyle,
+    highlightedLegendItem: LegendItem | null,
+  ): JSX.Element[] => {
+    const { lines, color, geometryId, transform, seriesAreaLineStyle } = glyph;
+    const geometryStyle = getGeometryStyle(geometryId, highlightedLegendItem, sharedStyle, seriesAreaLineStyle.opacity);
+
+    return lines.map((linePath, lineIndex) => {
+      const key = getGeometryIdKey(geometryId, `area-line-${areaIndex}-${lineIndex}`);
+      const lineProps = buildLineRenderProps(transform.x, linePath, color, seriesAreaLineStyle, geometryStyle);
+      return <Path {...lineProps} key={key} />;
+    });
+  };
+
   private renderPoints = (
     areaPoints: PointGeometry[],
     areaIndex: number,
-    pointStyleProps: any,
+    pointStyleProps: PointStyleProps,
+    geometryId: GeometryId,
   ): JSX.Element[] => {
-    const areaPointElements: JSX.Element[] = [];
-    areaPoints.forEach((areaPoint, pointIndex) => {
-      const { x, y, color, transform } = areaPoint;
-
-      if (this.props.animated) {
-        areaPointElements.push(
-          <Group key={`area-point-group-${areaIndex}-${pointIndex}`} x={transform.x}>
-            <Spring native from={{ y }} to={{ y }}>
-              {(props: { y: number }) => {
-                const pointProps = buildAreaPointProps({
-                  areaIndex,
-                  pointIndex,
-                  x,
-                  y,
-                  color,
-                  pointStyleProps,
-                });
-                return <animated.Circle {...pointProps} />;
-              }}
-            </Spring>
-          </Group>);
-      } else {
-        const pointProps = buildAreaPointProps({
-          areaIndex,
-          pointIndex,
-          x: transform.x + x,
-          y,
-          color,
-          pointStyleProps,
-        });
-        areaPointElements.push(<Circle {...pointProps} />);
-      }
+    return areaPoints.map((areaPoint, pointIndex) => {
+      const { x, y, transform } = areaPoint;
+      const key = getGeometryIdKey(geometryId, `area-point-${areaIndex}-${pointIndex}-`);
+      const pointProps = buildPointRenderProps(transform.x + x, y, pointStyleProps);
+      return <Circle {...pointProps} key={key} />;
     });
-    return areaPointElements;
-  }
-
-  private renderAreaGeoms = (themeIsVisible: boolean): JSX.Element[] => {
-    const { areas } = this.props;
-    const { opacity } = this.props.style.area;
-    const areasToRender: JSX.Element[] = [];
-
-    areas.forEach((glyph, i) => {
-      const { area, color, transform, seriesAreaStyle } = glyph;
-      const isVisible = seriesAreaStyle ? seriesAreaStyle.visible : themeIsVisible;
-      if (!isVisible) {
-        return;
-      }
-
-      if (this.props.animated) {
-        areasToRender.push(
-          <Group key={`area-group-${i}`} x={transform.x}>
-            <Spring native from={{ area }} to={{ area }}>
-              {(props: { area: string }) => {
-                const areaProps = buildAreaProps({
-                  index: i,
-                  areaPath: props.area,
-                  xTransform: 0,
-                  color,
-                  opacity,
-                  seriesAreaStyle,
-                });
-                return <animated.Path {...areaProps} />;
-              }}
-            </Spring>
-          </Group>);
-      } else {
-        const areaProps = buildAreaProps({
-          index: i,
-          areaPath: area,
-          xTransform: transform.x,
-          color,
-          opacity,
-          seriesAreaStyle,
-        });
-        areasToRender.push(<Path {...areaProps} />);
-      }
-    });
-    return areasToRender;
-  }
-  private renderAreaLines = (themeIsVisible: boolean): JSX.Element[] => {
-    const { areas, sharedStyle } = this.props;
-    const { strokeWidth } = this.props.style.line;
-    const linesToRender: JSX.Element[] = [];
-    areas.forEach((glyph, areaIndex) => {
-      const { lines, color, geometryId, transform, seriesAreaLineStyle } = glyph;
-      const isVisible = seriesAreaLineStyle ? seriesAreaLineStyle.visible : themeIsVisible;
-      if (!isVisible) {
-        return;
-      }
-
-      const customOpacity = seriesAreaLineStyle ? seriesAreaLineStyle.opacity : undefined;
-
-      const geometryStyle = getGeometryStyle(
-        geometryId,
-        this.props.highlightedLegendItem,
-        sharedStyle,
-        customOpacity,
-      );
-
-      lines.forEach((linePath, lineIndex) => {
-        const lineProps = buildAreaLineProps({
-          areaIndex,
-          lineIndex,
-          xTransform: transform.x,
-          linePath,
-          color,
-          strokeWidth,
-          geometryStyle,
-          seriesAreaLineStyle,
-        });
-        linesToRender.push(<Path {...lineProps} />);
-      });
-    });
-    return linesToRender;
-    // if (this.props.animated) {
-    //   return (
-    //     <Group key={`area-line-group-${i}`} x={transform.x}>
-    //       <Spring native from={{ line }} to={{ line }}>
-    //         {(props: { line: string }) => {
-    //           const lineProps = buildAreaLineProps({
-    //             index: i,
-    //             linePath: props.line,
-    //             color,
-    //             strokeWidth,
-    //             geometryStyle,
-    //           });
-    //           return <animated.Path {...lineProps} />;
-    //         }}
-    //       </Spring>
-    //     </Group>
-    //   );
-    // } else {
-
-    // }
-  }
+  };
 }

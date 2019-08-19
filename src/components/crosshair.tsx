@@ -1,8 +1,8 @@
 import { inject, observer } from 'mobx-react';
 import React, { CSSProperties } from 'react';
-import { TooltipType } from '../lib/utils/interactions';
-import { ChartStore } from '../state/chart_state';
-import { isHorizontalRotation } from '../state/utils';
+import { TooltipType } from '../chart_types/xy_chart/utils/interactions';
+import { ChartStore } from '../chart_types/xy_chart/store/chart_state';
+import { isHorizontalRotation } from '../chart_types/xy_chart/store/utils';
 
 interface CrosshairProps {
   chartStore?: ChartStore;
@@ -21,11 +21,11 @@ class CrosshairComponent extends React.Component<CrosshairProps> {
   render() {
     const { isCrosshairVisible } = this.props.chartStore!;
     if (!isCrosshairVisible.get()) {
-      return <div className="elasticChartsCrosshair" />;
+      return <div className="echCrosshair" />;
     }
 
     return (
-      <div className="elasticChartsCrosshair">
+      <div className="echCrosshair">
         {this.renderBand()}
         {this.renderLine()}
       </div>
@@ -49,7 +49,7 @@ class CrosshairComponent extends React.Component<CrosshairProps> {
       background: band.fill,
     };
 
-    return <div className="elasticChartsCrosshair__band" style={style} />;
+    return <div className="echCrosshair__band" style={style} />;
   }
 
   renderLine() {
@@ -82,7 +82,7 @@ class CrosshairComponent extends React.Component<CrosshairProps> {
         borderLeftStyle: line.dash ? 'dashed' : 'solid',
       };
     }
-    return <div className="elasticChartsCrosshair__line" style={style} />;
+    return <div className="echCrosshair__line" style={style} />;
   }
 }
 

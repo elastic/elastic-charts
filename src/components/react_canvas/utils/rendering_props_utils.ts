@@ -1,158 +1,23 @@
-import { GeometryStyle } from '../../../lib/series/rendering';
-import { Rotation } from '../../../lib/series/specs';
-import { AreaStyle, DisplayValueStyle, LineStyle, PointStyle } from '../../../lib/themes/theme';
-import { Dimensions } from '../../../lib/utils/dimensions';
+import { GeometryStyle } from '../../../chart_types/xy_chart/rendering/rendering';
+import { Rotation } from '../../../chart_types/xy_chart/utils/specs';
+import {
+  AreaStyle,
+  DisplayValueStyle,
+  LineStyle,
+  PointStyle,
+  RectBorderStyle,
+  RectStyle,
+} from '../../../utils/themes/theme';
+import { Dimensions } from '../../../utils/dimensions';
 import { GlobalKonvaElementProps } from '../globals';
 
 export interface PointStyleProps {
   radius: number;
+  stroke: string;
   strokeWidth: number;
   strokeEnabled: boolean;
   fill: string;
   opacity: number;
-}
-
-export function buildAreaPointProps({
-  areaIndex,
-  pointIndex,
-  x,
-  y,
-  color,
-  pointStyleProps,
-}: {
-  areaIndex: number;
-  pointIndex: number;
-  x: number;
-  y: number;
-  color: string;
-  pointStyleProps: PointStyleProps;
-}) {
-  return {
-    key: `area-point-${areaIndex}-${pointIndex}`,
-    x,
-    y,
-    stroke: color,
-    ...pointStyleProps,
-    ...GlobalKonvaElementProps,
-  };
-}
-
-export function buildPointStyleProps({
-  radius,
-  strokeWidth,
-  opacity,
-  seriesPointStyle,
-}: {
-  radius: number;
-  strokeWidth: number;
-  opacity: number;
-  seriesPointStyle?: PointStyle;
-}): PointStyleProps {
-  const pointStrokeWidth = seriesPointStyle ? seriesPointStyle.strokeWidth : strokeWidth;
-  return {
-    radius: seriesPointStyle ? seriesPointStyle.radius : radius,
-    strokeWidth: pointStrokeWidth,
-    strokeEnabled: pointStrokeWidth !== 0,
-    fill: 'white',
-    opacity: seriesPointStyle ? seriesPointStyle.opacity : opacity,
-  };
-}
-
-export function buildAreaProps({
-  index,
-  areaPath,
-  xTransform,
-  color,
-  opacity,
-  seriesAreaStyle,
-}: {
-  index: number;
-  areaPath: string;
-  xTransform: number;
-  color: string;
-  opacity: number;
-  seriesAreaStyle?: AreaStyle,
-}) {
-  return {
-    key: `area-${index}`,
-    data: areaPath,
-    x: xTransform,
-    fill: color,
-    lineCap: 'round',
-    lineJoin: 'round',
-    opacity: seriesAreaStyle ? seriesAreaStyle.opacity : opacity,
-    ...GlobalKonvaElementProps,
-  };
-}
-
-export function buildAreaLineProps({
-  areaIndex,
-  lineIndex,
-  xTransform,
-  linePath,
-  color,
-  strokeWidth,
-  geometryStyle,
-  seriesAreaLineStyle,
-}: {
-  areaIndex: number;
-  lineIndex: number;
-  xTransform: number;
-  linePath: string;
-  color: string;
-  strokeWidth: number;
-  geometryStyle: GeometryStyle;
-  seriesAreaLineStyle?: LineStyle;
-}) {
-  return {
-    key: `area-${areaIndex}-line-${lineIndex}`,
-    data: linePath,
-    x: xTransform,
-    stroke: color,
-    strokeWidth: seriesAreaLineStyle ? seriesAreaLineStyle.strokeWidth : strokeWidth,
-    lineCap: 'round',
-    lineJoin: 'round',
-    ...geometryStyle,
-    ...GlobalKonvaElementProps,
-  };
-}
-
-export function buildBarProps({
-  index,
-  x,
-  y,
-  width,
-  height,
-  fill,
-  stroke,
-  strokeWidth,
-  borderEnabled,
-  geometryStyle,
-}: {
-  index: number;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  fill: string;
-  stroke: string;
-  strokeWidth: number;
-  borderEnabled: boolean;
-  geometryStyle: GeometryStyle;
-}) {
-  return {
-    key: `bar-${index}`,
-    x,
-    y,
-    width,
-    height,
-    fill,
-    strokeWidth,
-    stroke,
-    strokeEnabled: borderEnabled,
-    ...GlobalKonvaElementProps,
-    ...geometryStyle,
-  };
 }
 
 export function rotateBarValueProps(
@@ -189,9 +54,10 @@ export function rotateBarValueProps(
   const displayValueX = displayValueDimensions.left;
   const displayValueY = displayValueDimensions.top;
 
-  const rotatedDisplayValueX = displayValueHeight > barWidth ?
-    x - Math.abs(barWidth - displayValueHeight) / 2
-    : x + Math.abs(barWidth - displayValueHeight) / 2;
+  const rotatedDisplayValueX =
+    displayValueHeight > barWidth
+      ? x - Math.abs(barWidth - displayValueHeight) / 2
+      : x + Math.abs(barWidth - displayValueHeight) / 2;
 
   switch (chartRotation) {
     case 0:
@@ -204,9 +70,8 @@ export function rotateBarValueProps(
       props.verticalAlign = 'bottom';
       break;
     case 90:
-      props.x = (barHeight >= displayValueWidth) ?
-        chartWidth - displayValueY - displayValueWidth
-        : chartWidth - displayValueY;
+      props.x =
+        barHeight >= displayValueWidth ? chartWidth - displayValueY - displayValueWidth : chartWidth - displayValueY;
       props.y = rotatedDisplayValueX;
       props.verticalAlign = 'middle';
 
@@ -219,7 +84,7 @@ export function rotateBarValueProps(
       }
       break;
     case -90:
-      props.x = (barHeight >= displayValueWidth) ? displayValueY : displayValueY - displayValueWidth;
+      props.x = barHeight >= displayValueWidth ? displayValueY : displayValueY - displayValueWidth;
       props.y = chartHeight - rotatedDisplayValueX - displayValueHeight;
       props.verticalAlign = 'middle';
 
@@ -238,10 +103,10 @@ export function rotateBarValueProps(
 
 export function getBarValueClipDimensions(
   displayValue: { width: number; height: number; isValueContainedInElement?: boolean },
-  computedDimensions: { width: number; height: number; },
+  computedDimensions: { width: number; height: number },
   barHeight: number,
   chartRotation: Rotation,
-): { width: number; height: number; offsetX: number; offsetY: number; } {
+): { width: number; height: number; offsetX: number; offsetY: number } {
   const height = displayValue.isValueContainedInElement ? displayValue.height : computedDimensions.height;
   const width = displayValue.isValueContainedInElement ? displayValue.width : computedDimensions.width;
 
@@ -260,10 +125,12 @@ export function isBarValueOverflow(
   const chartHeight = chartDimensions.height;
   const chartWidth = chartDimensions.width;
 
-  const isOverflowX = valuePosition.x + clip.width - valuePosition.offsetX > chartWidth
-    || valuePosition.x + clip.offsetX - valuePosition.offsetX < 0;
-  const isOverflowY = valuePosition.y + clip.height - valuePosition.offsetY > chartHeight
-    || valuePosition.y + clip.offsetY - valuePosition.offsetY < 0;
+  const isOverflowX =
+    valuePosition.x + clip.width - valuePosition.offsetX > chartWidth ||
+    valuePosition.x + clip.offsetX - valuePosition.offsetX < 0;
+  const isOverflowY =
+    valuePosition.y + clip.height - valuePosition.offsetY > chartHeight ||
+    valuePosition.y + clip.offsetY - valuePosition.offsetY < 0;
 
   return !!hideClippedValue && (isOverflowX || isOverflowY);
 }
@@ -307,9 +174,10 @@ export function buildBarValueProps({
   const displayValueWidth = displayValue.width + padding;
 
   const displayValueY = barHeight >= displayValueHeight ? y : y - displayValueHeight;
-  const displayValueX = displayValueWidth > barWidth ?
-    x - Math.abs(barWidth - displayValueWidth) / 2
-    : x + Math.abs(barWidth - displayValueWidth) / 2;
+  const displayValueX =
+    displayValueWidth > barWidth
+      ? x - Math.abs(barWidth - displayValueWidth) / 2
+      : x + Math.abs(barWidth - displayValueWidth) / 2;
 
   const displayValueOffsetY = displayValueStyle.offsetY || 0;
   const displayValueOffsetX = displayValueStyle.offsetX || 0;
@@ -366,56 +234,132 @@ export function buildBarValueProps({
   return props;
 }
 
-export function buildLinePointProps({
-  lineIndex,
-  pointIndex,
-  x,
-  y,
-  color,
-  pointStyleProps,
-}: {
-  lineIndex: number;
-  pointIndex: number;
-  x: number;
-  y: number;
-  color: string;
-  pointStyleProps: PointStyleProps;
-}) {
+/**
+ * Return the style of a point.
+ * The color value is used for stroke or fill if they are undefind in the PointStyle
+ * @param color the series color
+ * @param pointStyle the merged point style
+ */
+export function buildPointStyleProps(
+  color: string,
+  pointStyle: PointStyle,
+  geometryStyle: GeometryStyle,
+): PointStyleProps {
+  const { strokeWidth, opacity } = pointStyle;
+  const stroke = pointStyle.stroke || color;
+  const fill = pointStyle.fill || color;
   return {
-    key: `line-point-${lineIndex}-${pointIndex}`,
+    radius: pointStyle.radius,
+    stroke,
+    strokeWidth,
+    strokeEnabled: strokeWidth !== 0,
+    fill: fill,
+    opacity,
+    ...geometryStyle,
+  };
+}
+
+/**
+ * Return the rendering props for a point
+ * @param x the x position of the point
+ * @param y the y position of the point
+ * @param pointStyleProps the style props of the point
+ */
+export function buildPointRenderProps(x: number, y: number, pointStyleProps: PointStyleProps) {
+  return {
     x,
     y,
-    stroke: color,
     ...pointStyleProps,
     ...GlobalKonvaElementProps,
   };
 }
 
-export function buildLineProps({
-  index,
-  xTransform,
-  linePath,
-  color,
-  strokeWidth,
-  geometryStyle,
-  seriesLineStyle,
-}: {
-  index: number;
-  xTransform: number;
-  linePath: string;
-  color: string;
-  strokeWidth: number;
-  geometryStyle: GeometryStyle;
-  seriesLineStyle?: LineStyle;
-}) {
+/**
+ * Return the rendering props for a line. The color of the line will be overwritten
+ * by the stroke color of the lineStyle parameter if present
+ * @param x the horizontal offset to place the line
+ * @param linePath the SVG line path
+ * @param color the computed color of the line for this series
+ * @param lineStyle the line style
+ * @param geometryStyle the highlight geometry style
+ */
+export function buildLineRenderProps(
+  x: number,
+  linePath: string,
+  color: string,
+  lineStyle: LineStyle,
+  geometryStyle: GeometryStyle,
+) {
   return {
-    key: `line-${index}`,
-    x: xTransform,
+    x,
     data: linePath,
-    stroke: color,
-    strokeWidth: seriesLineStyle ? seriesLineStyle.strokeWidth : strokeWidth,
+    stroke: lineStyle.stroke || color,
+    strokeWidth: lineStyle.strokeWidth,
     lineCap: 'round',
     lineJoin: 'round',
+    ...geometryStyle,
+    ...GlobalKonvaElementProps,
+  };
+}
+
+/**
+ * Return the rendering props for an area. The color of the area will be overwritten
+ * by the fill color of the areaStyle parameter if present
+ * @param areaPath the SVG area path
+ * @param x the horizontal offset to place the area
+ * @param color the computed color of the line for this series
+ * @param areaStyle the area style
+ * @param geometryStyle the highlight geometry style
+ */
+export function buildAreaRenderProps(
+  xTransform: number,
+  areaPath: string,
+  color: string,
+  areaStyle: AreaStyle,
+  geometryStyle: GeometryStyle,
+) {
+  return {
+    x: xTransform,
+    data: areaPath,
+    fill: areaStyle.fill || color,
+    lineCap: 'round',
+    lineJoin: 'round',
+    ...geometryStyle,
+    ...GlobalKonvaElementProps,
+  };
+}
+
+/**
+ * Return the rendering props for a bar. The color of the bar will be overwritten
+ * by the fill color of the rectStyle parameter if present
+ * @param x the x position of the rect
+ * @param y the y position of the rect
+ * @param width the width of the rect
+ * @param height the height of the rect
+ * @param color the computed color of the rect for this series
+ * @param rectStyle the rect style
+ * @param borderStyle the border rect style
+ * @param geometryStyle the highlight geometry style
+ */
+export function buildBarRenderProps(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  color: string,
+  rectStyle: RectStyle,
+  borderStyle: RectBorderStyle,
+  geometryStyle: GeometryStyle,
+) {
+  return {
+    x,
+    y,
+    width,
+    height,
+    fill: rectStyle.fill || color,
+    strokeWidth: borderStyle.strokeWidth,
+    stroke: borderStyle.stroke || 'transparent',
+    strokeEnabled: borderStyle.visible && borderStyle.strokeWidth > 0,
     ...geometryStyle,
     ...GlobalKonvaElementProps,
   };

@@ -1,7 +1,8 @@
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { ChartStore } from '../state/chart_state';
+import { TooltipValue, TooltipValueFormatter } from '../chart_types/xy_chart/utils/interactions';
+import { ChartStore } from '../chart_types/xy_chart/store/chart_state';
 
 interface TooltipProps {
   chartStore?: ChartStore;
@@ -10,37 +11,43 @@ interface TooltipProps {
 class TooltipsComponent extends React.Component<TooltipProps> {
   static displayName = 'Tooltips';
 
-  render() {
-    const { isTooltipVisible, tooltipData, tooltipPosition } = this.props.chartStore!;
-    if (!isTooltipVisible.get()) {
-      return <div className="elasticChartsTooltip elasticChartsTooltip--hidden" />;
+  renderHeader(headerData?: TooltipValue, formatter?: TooltipValueFormatter) {
+    if (!headerData) {
+      return null;
     }
+
+    return formatter ? formatter(headerData) : headerData.value;
+  }
+
+  render() {
+    const { isTooltipVisible, tooltipData, tooltipPosition, tooltipHeaderFormatter } = this.props.chartStore!;
+
+    if (!isTooltipVisible.get()) {
+      return <div className="echTooltip echTooltip--hidden" />;
+    }
+
     return (
-      <div className="elasticChartsTooltip" style={{ transform: tooltipPosition.transform }}>
-        <p className="elasticChartsTooltip__header">{tooltipData[0] && tooltipData[0].value}</p>
-        <div className="elasticChartsTooltip__table">
-          <table>
-            <tbody>
-              {tooltipData.slice(1).map(({ name, value, color, isHighlighted }, index) => {
-                const classes = classNames({
-                  elasticChartsTooltip__rowHighlighted: isHighlighted,
-                });
-                return (
-                  <tr key={`row-${index}`} className={classes}>
-                    <td
-                      className="elasticChartsTooltip__label"
-                      style={{
-                        borderLeftColor: color,
-                      }}
-                    >
-                      {name}
-                    </td>
-                    <td>{value}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+      <div className="echTooltip" style={{ transform: tooltipPosition.transform }}>
+        <div className="echTooltip__header">{this.renderHeader(tooltipData[0], tooltipHeaderFormatter)}</div>
+        <div className="echTooltip__list">
+          {tooltipData.slice(1).map(({ name, value, color, isHighlighted, seriesKey }) => {
+            const classes = classNames('echTooltip__item', {
+              /* eslint @typescript-eslint/camelcase:0 */
+              echTooltip__rowHighlighted: isHighlighted,
+            });
+            return (
+              <div
+                key={seriesKey}
+                className={classes}
+                style={{
+                  borderLeftColor: color,
+                }}
+              >
+                <span className="echTooltip__label">{name}</span>
+                <span className="echTooltip__value">{value}</span>
+              </div>
+            );
+          })}
         </div>
       </div>
     );

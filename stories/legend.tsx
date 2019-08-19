@@ -14,20 +14,15 @@ import {
   ScaleType,
   Settings,
 } from '../src/';
-import * as TestDatasets from '../src/lib/series/utils/test_dataset';
-import { TSVB_DATASET } from '../src/lib/series/utils/test_dataset_tsvb';
+import * as TestDatasets from '../src/utils/data_samples/test_dataset';
+import { TSVB_DATASET } from '../src/utils/data_samples/test_dataset_tsvb';
 
 storiesOf('Legend', module)
   .add('right', () => {
     return (
       <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          title={'Bottom axis'}
-          showOverlappingTicks={true}
-        />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
           title={'Left axis'}
@@ -52,12 +47,7 @@ storiesOf('Legend', module)
     return (
       <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Bottom} />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          title={'Bottom axis'}
-          showOverlappingTicks={true}
-        />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
           title={'Left axis'}
@@ -81,12 +71,7 @@ storiesOf('Legend', module)
     return (
       <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Left} />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          title={'Bottom axis'}
-          showOverlappingTicks={true}
-        />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
           title={'Left axis'}
@@ -110,12 +95,7 @@ storiesOf('Legend', module)
     return (
       <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Top} />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          title={'Bottom axis'}
-          showOverlappingTicks={true}
-        />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
           title={'Left axis'}
@@ -140,12 +120,7 @@ storiesOf('Legend', module)
     return (
       <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Top} />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          title={'Bottom axis'}
-          showOverlappingTicks={true}
-        />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
           title={'Left axis'}
@@ -172,12 +147,7 @@ storiesOf('Legend', module)
     return (
       <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          title={'Bottom axis'}
-          showOverlappingTicks={true}
-        />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
           title={'Left axis'}
@@ -246,17 +216,8 @@ storiesOf('Legend', module)
     });
     return (
       <Chart className={'story-chart'}>
-        <Settings
-          showLegend={true}
-          legendPosition={legendPosition}
-          showLegendDisplayValue={showLegendDisplayValue}
-        />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          title={'Bottom axis'}
-          showOverlappingTicks={true}
-        />
+        <Settings showLegend={true} legendPosition={legendPosition} showLegendDisplayValue={showLegendDisplayValue} />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
           title={'Left axis'}
