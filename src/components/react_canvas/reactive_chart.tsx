@@ -354,26 +354,12 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       debug,
       setCursorPosition,
       isChartEmpty,
-      legendPosition,
-      chartTheme,
     } = this.props.chartStore!;
 
     if (isChartEmpty) {
-      const { verticalWidth, horizontalHeight } = chartTheme.legend;
-      const legendPositionValue = legendPosition.get();
-
-      const paddingStyle =
-        legendPositionValue && isVertical(legendPositionValue)
-          ? legendPositionValue === Position.Right
-            ? { paddingLeft: -verticalWidth }
-            : { paddingLeft: verticalWidth }
-          : legendPositionValue === Position.Top
-          ? { paddingTop: horizontalHeight }
-          : { paddingTop: -horizontalHeight };
-
       return (
         <div className="echReactiveChart_unavailable">
-          <p style={paddingStyle}>No data to display</p>
+          <p>No data to display</p>
         </div>
       );
     }

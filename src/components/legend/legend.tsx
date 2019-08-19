@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
-import React from 'react';
+import React, { createRef } from 'react';
 import { isVertical } from '../../chart_types/xy_chart/utils/axis_utils';
 import { LegendItem as SeriesLegendItem } from '../../chart_types/xy_chart/legend/legend';
 import { ChartStore } from '../../chart_types/xy_chart/store/chart_state';
@@ -13,15 +13,47 @@ interface LegendProps {
   legendId: string;
 }
 
-interface PaddingStyle {
-  paddingTop?: number | string;
-  paddingBottom?: number | string;
-  paddingLeft?: number | string;
-  paddingRight?: number | string;
+interface LegendState {
+  width?: number;
 }
 
-class LegendComponent extends React.Component<LegendProps> {
+interface HorizontalLegendStyle {
+  paddingLeft: number | string;
+  paddingRight: number | string;
+  height: string;
+}
+
+interface VerticalLegendStyle {
+  paddingTop: number | string;
+  paddingBottom: number | string;
+  maxWidth: string;
+  width?: string;
+}
+
+class LegendComponent extends React.Component<LegendProps, LegendState> {
   static displayName = 'Legend';
+
+  state = {
+    width: undefined,
+  };
+
+  private echLegend = createRef<HTMLDivElement>();
+
+  componentDidUpdate() {
+    const { chartInitialized, chartTheme, legendPosition } = this.props.chartStore!;
+    if (
+      this.echLegend.current &&
+      isVertical(legendPosition.get()) &&
+      this.state.width === undefined &&
+      !chartInitialized.get()
+    ) {
+      const buffer = chartTheme.legend.legendSpacingBuffer;
+
+      this.setState({
+        width: this.echLegend.current.offsetWidth + buffer,
+      });
+    }
+  }
 
   render() {
     const { legendId } = this.props;
@@ -39,14 +71,16 @@ class LegendComponent extends React.Component<LegendProps> {
       return null;
     }
 
-    const paddingStyle = this.getPaddingStyle(legendPosition.get(), chartTheme);
+    const style = {
+      ...this.getLegendStyle(legendPosition.get(), chartTheme),
+    };
     const legendClasses = classNames('echLegend', `echLegend--${legendPosition}`, {
       'echLegend--debug': debug,
       invisible: !chartInitialized.get(),
     });
 
     return (
-      <div className={legendClasses} style={paddingStyle} id={legendId}>
+      <div ref={this.echLegend} className={legendClasses} style={style} id={legendId}>
         <div className="echLegendListContainer">
           <div className="echLegendList">{[...legendItems.values()].map(this.renderLegendElement)}</div>
         </div>
@@ -54,17 +88,36 @@ class LegendComponent extends React.Component<LegendProps> {
     );
   }
 
-  getPaddingStyle = (position: Position, { chartMargins }: Theme): PaddingStyle => {
+  getLegendStyle = (
+    position: Position,
+    { chartMargins, legend }: Theme,
+  ): HorizontalLegendStyle | VerticalLegendStyle => {
+    const { top: paddingTop, bottom: paddingBottom, left: paddingLeft, right: paddingRight } = chartMargins;
+
     if (isVertical(position)) {
+      if (this.state.width !== undefined) {
+        const threshold = Math.min(this.state.width!, legend.verticalWidth);
+        const width = `${threshold}px`;
+
+        return {
+          width,
+          maxWidth: width,
+          paddingTop,
+          paddingBottom,
+        };
+      }
+
       return {
-        paddingTop: chartMargins.top,
-        paddingBottom: chartMargins.bottom,
+        maxWidth: `${legend.verticalWidth}px`,
+        paddingTop,
+        paddingBottom,
       };
     }
 
     return {
-      paddingLeft: chartMargins.left,
-      paddingRight: chartMargins.right,
+      paddingLeft,
+      paddingRight,
+      height: `${legend.horizontalHeight}px`,
     };
   };
 
@@ -78,7 +131,8 @@ class LegendComponent extends React.Component<LegendProps> {
 
   private renderLegendElement = (item: SeriesLegendItem) => {
     const { key, displayValue } = item;
-    const tooltipValues = this.props.chartStore!.legendItemTooltipValues.get();
+    const { legendPosition, legendItemTooltipValues } = this.props.chartStore!;
+    const tooltipValues = legendItemTooltipValues.get();
     let tooltipValue;
 
     if (tooltipValues && tooltipValues.get(key)) {
@@ -92,6 +146,7 @@ class LegendComponent extends React.Component<LegendProps> {
         {...item}
         key={key}
         legendItemKey={key}
+        legendPosition={legendPosition.get()}
         displayValue={newDisplayValue}
         onMouseEnter={this.onLegendItemMouseover(key)}
         onMouseLeave={this.onLegendItemMouseout}

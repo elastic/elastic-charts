@@ -97,6 +97,7 @@ export const DARK_THEME: Theme = {
   legend: {
     verticalWidth: 200,
     horizontalHeight: 64,
+    legendSpacingBuffer: 40,
   },
   crosshair: {
     band: {

@@ -849,7 +849,7 @@ export class ChartStore {
     });
     bboxCalculator.destroy();
 
-    // // compute chart dimensions
+    // compute chart dimensions
     this.chartDimensions = computeChartDimensions(
       this.parentDimensions,
       this.chartTheme,
@@ -873,8 +873,6 @@ export class ChartStore {
       this.enableHistogramMode.get(),
     );
 
-    // tslint:disable-next-line:no-console
-    // console.log({ seriesGeometries });
     this.geometries = seriesGeometries.geometries;
     this.xScale = seriesGeometries.scales.xScale;
 
@@ -887,7 +885,7 @@ export class ChartStore {
     this.geometriesIndex = seriesGeometries.geometriesIndex;
     this.geometriesIndexKeys = [...this.geometriesIndex.keys()].sort(compareByValueAsc);
 
-    // // compute visible ticks and their positions
+    // compute visible ticks and their positions
     const axisTicksPositions = getAxisTicksPositions(
       this.chartDimensions,
       this.chartTheme,
@@ -900,8 +898,6 @@ export class ChartStore {
       this.enableHistogramMode.get(),
       barsPadding,
     );
-    // tslint:disable-next-line:no-console
-    // console.log({axisTicksPositions});
     this.axesPositions = axisTicksPositions.axisPositions;
     this.axesTicks = axisTicksPositions.axisTicks;
     this.axesVisibleTicks = axisTicksPositions.axisVisibleTicks;

@@ -12,52 +12,51 @@
       text-decoration: underline;
     }
   }
-}
 
-.echLegendItem__color {
-  margin-right: $euiSizeXS;
-}
-
-.echLegendItem__visibility {
-  margin-right: $euiSizeXS;
-
-  &:hover {
-    cursor: pointer;
+  &__color {
+    margin-right: $euiSizeXS;
   }
-}
 
-.echLegendItem__title {
-  @include euiFontSizeXS;
-  @include euiTextTruncate;
-  flex: 1;
+  &__visibility {
+    margin-right: $euiSizeXS;
 
-  &:hover {
-    cursor: pointer;
+    &:hover {
+      cursor: pointer;
+    }
   }
-}
 
-.echLegendItem__title--selected {
-  text-decoration: underline;
-}
+  &__title {
+    @include euiFontSizeXS;
+    @include euiTextTruncate;
+    flex: 1;
 
-.echLegendItem__title--hasClickListener {
-  &:hover {
-    cursor: pointer;
+    &:hover {
+      cursor: pointer;
+    }
   }
-}
 
-.echLegendItem__displayValue {
-  @include euiFontSizeXS;
-  text-align: right;
-  margin-left: $euiSizeM;
-  font-feature-settings: 'tnum';
-  min-width: $euiSizeL * 2;
+  &__title--selected {
+    text-decoration: underline;
+  }
+
+  &__title--hasClickListener {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  &__displayValue {
+    @include euiFontSizeXS;
+    text-align: right;
+    margin-left: $euiSizeM;
+    font-feature-settings: 'tnum';
+
+    &--hidden {
+      display: none;
+    }
+  }
 
   &--hidden {
-    display: none;
+    color: $euiColorDarkShade;
   }
-}
-
-.echLegendItem-isHidden {
-  color: $euiColorDarkShade;
 }

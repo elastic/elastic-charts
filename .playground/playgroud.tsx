@@ -1,4 +1,5 @@
 import React from 'react';
+import { loremIpsum } from 'lorem-ipsum';
 
 import {
   Axis,
@@ -16,9 +17,33 @@ import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 
 export class Playground extends React.Component {
   render() {
-    return <>{this.renderChart(Position.Top)}</>;
+    return <>{this.renderChart(Position.Bottom)}</>;
   }
   renderChart(legendPosition: Position) {
+    const renderMore = () => {
+      const random = Math.floor(Math.random() * 3) + 1;
+      const id = loremIpsum({ count: random, units: 'words' });
+      return (
+        <AreaSeries
+          id={getSpecId(id)}
+          xScaleType={ScaleType.Time}
+          yScaleType={ScaleType.Linear}
+          data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 15)}
+          xAccessor={0}
+          areaSeriesStyle={{
+            point: {
+              visible: true,
+              strokeWidth: 3,
+              radius: 10,
+            },
+            line: {
+              strokeWidth: 10,
+            },
+          }}
+          yAccessors={[1]}
+        />
+      );
+    };
     const theme = mergeWithDefaultTheme({
       lineSeriesStyle: {
         line: {
@@ -103,6 +128,9 @@ export class Playground extends React.Component {
             }}
             yAccessors={[1]}
           />
+          {Array(10)
+            .fill(null)
+            .map(renderMore)}
         </Chart>
       </div>
     );
