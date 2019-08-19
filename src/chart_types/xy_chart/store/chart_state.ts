@@ -922,8 +922,6 @@ export class ChartStore {
       this.chartTheme,
       this.axesTicksDimensions,
       this.axesSpecs,
-      this.showLegend.get(),
-      this.legendPosition.get(),
     );
     this.chartDimensions = computedChartDims.chartDimensions;
 
