@@ -1,16 +1,6 @@
 import React from 'react';
 
-import {
-  Axis,
-  Chart,
-  getAxisId,
-  getSpecId,
-  niceTimeFormatter,
-  Position,
-  ScaleType,
-  Settings,
-  LineSeries,
-} from '../src';
+import { Axis, Chart, getAxisId, getSpecId, niceTimeFormatter, Position, ScaleType, Settings, BarSeries } from '../src';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 import { CursorEvent } from '../src/specs/settings';
 import { CursorUpdateListener } from '../src/chart_types/xy_chart/store/chart_state';
@@ -73,31 +63,16 @@ function renderChart(
           tickFormat={niceTimeFormatter([1555819200000, 1555905600000])}
         />
         <Axis id={getAxisId('count')} title="count" position={Position.Left} tickFormat={(d) => d.toFixed(2)} />
-        <LineSeries
-          id={getSpecId('dataset A with a really really really really long title')}
+        <BarSeries
+          id={getSpecId('dataset A with long title')}
           xScaleType={timeSeries ? ScaleType.Time : ScaleType.Linear}
           yScaleType={ScaleType.Linear}
           data={data}
           xAccessor={0}
-          lineSeriesStyle={{
-            line: {
-              stroke: 'red',
-              opacity: 1,
-            },
-          }}
           yAccessors={[1]}
         />
-        <LineSeries
+        <BarSeries
           id={getSpecId('dataset B')}
-          xScaleType={ScaleType.Time}
-          yScaleType={ScaleType.Linear}
-          data={KIBANA_METRICS.metrics.kibana_os_load[1].data.slice(0, 15)}
-          xAccessor={0}
-          yAccessors={[1]}
-          stackAccessors={[0]}
-        />
-        <LineSeries
-          id={getSpecId('dataset C')}
           xScaleType={ScaleType.Time}
           yScaleType={ScaleType.Linear}
           data={KIBANA_METRICS.metrics.kibana_os_load[1].data.slice(0, 15)}

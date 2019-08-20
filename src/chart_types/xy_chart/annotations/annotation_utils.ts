@@ -991,14 +991,14 @@ export function computeAnnotationTooltipState(
   for (const [annotationId, annotationDimension] of annotationDimensions) {
     const spec = annotationSpecs.get(annotationId);
 
-    if (!spec) {
+    if (!spec || spec.hideTooltips) {
       continue;
     }
 
     const groupId = spec.groupId;
 
     if (isLineAnnotation(spec)) {
-      if (spec.hideTooltips || spec.hideLines) {
+      if (spec.hideLines) {
         continue;
       }
 
