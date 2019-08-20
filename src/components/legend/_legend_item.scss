@@ -31,7 +31,8 @@
   @include euiFontSizeXS;
   @include euiTextTruncate;
   margin-right: $euiSizeXS;
-  flex: 1;
+  flex: 1 1 auto;
+
   &:hover {
     cursor: pointer;
   }
