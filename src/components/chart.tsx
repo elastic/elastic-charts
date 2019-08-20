@@ -10,7 +10,7 @@ import { Crosshair } from './crosshair';
 import { Highlighter } from './highlighter';
 import { Legend } from './legend/legend';
 import { LegendButton } from './legend/legend_button';
-import { ReactiveChart as ReactChart } from './react_canvas/reactive_chart';
+import { ChartContainer } from './react_canvas/chart_container';
 import { Tooltips } from './tooltips';
 import { CursorEvent } from '../specs/settings';
 import { ChartSize, getChartSize } from '../utils/chart_size';
@@ -75,8 +75,8 @@ export class Chart extends React.Component<ChartProps> {
             <ChartResizer />
             <Crosshair />
             {// TODO reenable when SVG rendered is aligned with canvas one
-            renderer === 'svg' && <ReactChart />}
-            {renderer === 'canvas' && <ReactChart />}
+            renderer === 'svg' && <ChartContainer />}
+            {renderer === 'canvas' && <ChartContainer />}
             <Tooltips />
             <AnnotationTooltip />
             <Legend legendId={this.legendId} />

@@ -17,3 +17,22 @@
 .echChart--isBrushEnabled {
   cursor: crosshair;
 }
+
+.echChartCursorContainer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  box-sizing: border-box;
+}
+
+.echChartResizer {
+  z-index: -10000000;
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  box-sizing: border-box;
+}

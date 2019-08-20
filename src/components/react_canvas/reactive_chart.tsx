@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Layer, Rect, Stage } from 'react-konva';
@@ -352,7 +351,6 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       chartRotation,
       chartTransform,
       debug,
-      setCursorPosition,
       isChartEmpty,
       legendCollapsed,
       legendPosition,
@@ -406,76 +404,48 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       clipHeight: chartDimensions.height,
     };
 
-    const className = classNames({
-      'echChart--isBrushEnabled': this.props.chartStore!.isCrosshairCursorVisible.get(),
-    });
-
     return (
-      <div
+      <Stage
+        width={parentDimensions.width}
+        height={parentDimensions.height}
         style={{
-          position: 'absolute',
-          top: 0,
-          bottom: 0,
-          right: 0,
-          left: 0,
-          boxSizing: 'border-box',
+          width: '100%',
+          height: '100%',
         }}
-        onMouseMove={({ nativeEvent: { offsetX, offsetY } }) => {
-          setCursorPosition(offsetX, offsetY);
-        }}
-        onMouseLeave={() => {
-          setCursorPosition(-1, -1);
-        }}
-        onMouseUp={() => {
-          if (this.props.chartStore!.isBrushing.get()) {
-            return;
-          }
-          this.props.chartStore!.handleChartClick();
-        }}
-        className={className}
+        {...brushProps}
       >
-        <Stage
-          width={parentDimensions.width}
-          height={parentDimensions.height}
-          style={{
-            width: '100%',
-            height: '100%',
-          }}
-          {...brushProps}
+        <Layer hitGraphEnabled={false} listening={false} {...layerClippings}>
+          {this.renderGrids()}
+        </Layer>
+
+        <Layer
+          x={chartDimensions.left + chartTransform.x}
+          y={chartDimensions.top + chartTransform.y}
+          rotation={chartRotation}
+          {...clippings}
+          hitGraphEnabled={false}
+          listening={false}
         >
-          <Layer hitGraphEnabled={false} listening={false} {...layerClippings}>
-            {this.renderGrids()}
-          </Layer>
+          {this.sortAndRenderElements()}
+        </Layer>
 
-          <Layer
-            x={chartDimensions.left + chartTransform.x}
-            y={chartDimensions.top + chartTransform.y}
-            rotation={chartRotation}
-            {...clippings}
-            hitGraphEnabled={false}
-            listening={false}
-          >
-            {this.sortAndRenderElements()}
-          </Layer>
-
+        <Layer hitGraphEnabled={false} listening={false}>
+          {debug && this.renderDebugChartBorders()}
+        </Layer>
+        {isBrushEnabled && (
           <Layer hitGraphEnabled={false} listening={false}>
-            {debug && this.renderDebugChartBorders()}
+            {this.renderBrushTool()}
           </Layer>
-          {isBrushEnabled && (
-            <Layer hitGraphEnabled={false} listening={false}>
-              {this.renderBrushTool()}
-            </Layer>
-          )}
+        )}
 
-          <Layer hitGraphEnabled={false} listening={false}>
-            {this.renderAxes()}
-          </Layer>
+        <Layer hitGraphEnabled={false} listening={false}>
+          {this.renderAxes()}
+        </Layer>
 
-          <Layer hitGraphEnabled={false} listening={false} {...layerClippings}>
-            {this.renderBarValues()}
-          </Layer>
-        </Stage>
-      </div>
+        <Layer hitGraphEnabled={false} listening={false} {...layerClippings}>
+          {this.renderBarValues()}
+        </Layer>
+      </Stage>
     );
   }
 

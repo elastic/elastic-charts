@@ -469,13 +469,6 @@ export class ChartStore {
     } else {
       this.tooltipData.replace(tooltipValues);
     }
-
-    // TODO move this into the renderer
-    if (oneHighlighted) {
-      document.body.style.cursor = 'pointer';
-    } else {
-      document.body.style.cursor = 'default';
-    }
   });
 
   legendItemTooltipValues = computed(() => {
@@ -551,8 +544,6 @@ export class ChartStore {
     // clear highlight geoms
     this.highlightedGeometries.clear();
     this.tooltipData.clear();
-
-    document.body.style.cursor = 'default';
 
     if (this.onCursorUpdateListener && this.isActiveChart.get()) {
       this.onCursorUpdateListener();

@@ -59,7 +59,7 @@ function renderChart(
   return (
     <div key={key} className="chart">
       <Chart ref={ref}>
-        <Settings tooltip={{ type: 'vertical' }} debug={false} showLegend={true} onCursorUpdate={onCursorUpdate} />
+        <Settings tooltip={{ type: 'vertical' }} debug={false} showLegend={true} onCursorUpdate={onCursorUpdate} onBrushEnd={console.log}/>
         <Axis
           id={getAxisId('timestamp')}
           title="timestamp"
