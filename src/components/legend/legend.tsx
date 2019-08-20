@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React, { createRef } from 'react';
-import { isVertical } from '../../chart_types/xy_chart/utils/axis_utils';
+import { isVertical, isHorizontal } from '../../chart_types/xy_chart/utils/axis_utils';
 import { LegendItem as SeriesLegendItem } from '../../chart_types/xy_chart/legend/legend';
 import { ChartStore } from '../../chart_types/xy_chart/store/chart_state';
 import { Position } from '../../chart_types/xy_chart/utils/specs';
@@ -17,17 +17,18 @@ interface LegendState {
   width?: number;
 }
 
-interface HorizontalLegendStyle {
-  paddingLeft: number | string;
-  paddingRight: number | string;
-  height: string;
+interface LegendStyle {
+  maxHeight?: string;
+  maxWidth?: string;
+  width?: string;
 }
 
-interface VerticalLegendStyle {
-  paddingTop: number | string;
-  paddingBottom: number | string;
-  maxWidth: string;
-  width?: string;
+interface LegendListStyle {
+  paddingTop?: number | string;
+  paddingBottom?: number | string;
+  paddingLeft?: number | string;
+  paddingRight?: number | string;
+  gridTemplateColumns?: string;
 }
 
 class LegendComponent extends React.Component<LegendProps, LegendState> {
@@ -47,7 +48,7 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
       this.state.width === undefined &&
       !chartInitialized.get()
     ) {
-      const buffer = chartTheme.legend.legendSpacingBuffer;
+      const buffer = chartTheme.legend.spacingBuffer;
 
       this.setState({
         width: this.echLegend.current.offsetWidth + buffer,
@@ -66,34 +67,48 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
       debug,
       chartTheme,
     } = this.props.chartStore!;
+    const postion = legendPosition.get();
 
     if (!showLegend.get() || !legendInitialized.get() || legendItems.size === 0) {
       return null;
     }
 
-    const style = {
-      ...this.getLegendStyle(legendPosition.get(), chartTheme),
-    };
-    const legendClasses = classNames('echLegend', `echLegend--${legendPosition}`, {
+    const legendStyle = this.getLegendStyle(postion, chartTheme);
+    const legendListStyle = this.getLegendListStyle(postion, chartTheme);
+    const legendClasses = classNames('echLegend', `echLegend--${postion}`, {
       'echLegend--debug': debug,
       invisible: !chartInitialized.get(),
     });
 
     return (
-      <div ref={this.echLegend} className={legendClasses} style={style} id={legendId}>
+      <div ref={this.echLegend} className={legendClasses} style={legendStyle} id={legendId}>
         <div className="echLegendListContainer">
-          <div className="echLegendList">{[...legendItems.values()].map(this.renderLegendElement)}</div>
+          <div style={legendListStyle} className="echLegendList">
+            {[...legendItems.values()].map(this.renderLegendElement)}
+          </div>
         </div>
       </div>
     );
   }
 
-  getLegendStyle = (
-    position: Position,
-    { chartMargins, legend }: Theme,
-  ): HorizontalLegendStyle | VerticalLegendStyle => {
+  getLegendListStyle = (position: Position, { chartMargins, legend }: Theme): LegendListStyle => {
     const { top: paddingTop, bottom: paddingBottom, left: paddingLeft, right: paddingRight } = chartMargins;
 
+    if (isHorizontal(position)) {
+      return {
+        paddingLeft,
+        paddingRight,
+        gridTemplateColumns: `repeat(auto-fill, minmax(${legend.verticalWidth}px, 1fr))`,
+      };
+    }
+
+    return {
+      paddingTop,
+      paddingBottom,
+    };
+  };
+
+  getLegendStyle = (position: Position, { legend }: Theme): LegendStyle => {
     if (isVertical(position)) {
       if (this.state.width !== undefined) {
         const threshold = Math.min(this.state.width!, legend.verticalWidth);
@@ -102,22 +117,16 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
         return {
           width,
           maxWidth: width,
-          paddingTop,
-          paddingBottom,
         };
       }
 
       return {
         maxWidth: `${legend.verticalWidth}px`,
-        paddingTop,
-        paddingBottom,
       };
     }
 
     return {
-      paddingLeft,
-      paddingRight,
-      height: `${legend.horizontalHeight}px`,
+      maxHeight: `${legend.horizontalHeight}px`,
     };
   };
 

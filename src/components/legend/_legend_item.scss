@@ -1,11 +1,13 @@
+$legendItemVerticalPadding: $echLegendRowGap / 2;
+
 .echLegendItem {
   color: $euiTextColor;
-  height: $echLegendItemHeight;
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-between;
   user-select: none;
   align-items: center;
+  width: 100%;
 
   &:hover {
     .echLegendItem__title {
@@ -28,7 +30,7 @@
   &__title {
     @include euiFontSizeXS;
     @include euiTextTruncate;
-    flex: 1;
+    flex: 1 1 auto;
 
     &:hover {
       cursor: pointer;
@@ -48,12 +50,29 @@
   &__displayValue {
     @include euiFontSizeXS;
     text-align: right;
-    margin-left: $euiSizeM;
+    margin-left: $euiSizeXS;
     font-feature-settings: 'tnum';
 
     &--hidden {
       display: none;
     }
+  }
+
+  &--right,
+  &--left {
+    padding-top: $legendItemVerticalPadding;
+    padding-bottom: $legendItemVerticalPadding;
+  }
+
+  @include internetExplorerOnly {
+    &--bottom,
+    &--top {
+      width: $echLegendMaxWidth;
+      margin-right: $euiSizeL;
+    }
+
+    padding-top: $legendItemVerticalPadding;
+    padding-bottom: $legendItemVerticalPadding;
   }
 
   &--hidden {

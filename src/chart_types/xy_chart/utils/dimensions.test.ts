@@ -50,7 +50,7 @@ describe('Computed chart dimensions', () => {
   const legend: LegendStyle = {
     verticalWidth: 10,
     horizontalHeight: 10,
-    legendSpacingBuffer: 10,
+    spacingBuffer: 10,
   };
   const defaultTheme = LIGHT_THEME;
   const chartTheme = {

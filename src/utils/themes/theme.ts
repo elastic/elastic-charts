@@ -92,7 +92,7 @@ export interface LegendStyle {
    *
    * Smaller values render a more compact legend
    */
-  legendSpacingBuffer: number;
+  spacingBuffer: number;
 }
 export interface Theme {
   /**

@@ -5,7 +5,6 @@ import { Icon } from '../icons/icon';
 
 import { ChartStore } from '../../chart_types/xy_chart/store/chart_state';
 import { Position } from '../../chart_types/xy_chart/utils/specs';
-import { isHorizontal } from '../../chart_types/xy_chart/utils/axis_utils';
 
 interface LegendItemProps {
   chartStore?: ChartStore; // FIX until we find a better way on ts mobx
@@ -65,16 +64,13 @@ class LegendItemComponent extends React.Component<LegendItemProps, LegendItemSta
     const hasDisplayValue = chartStore!.showLegendDisplayValue.get();
     const hasTitleClickListener = Boolean(chartStore!.onLegendItemClickListener);
 
-    const itemClasses = classNames('echLegendItem', {
+    const itemClasses = classNames('echLegendItem', `echLegendItem--${legendPosition}`, {
       'echLegendItem--hidden': !isSeriesVisible,
       'echLegendItem__displayValue--hidden': !isLegendItemVisible,
     });
-    const style = {
-      width: isHorizontal(legendPosition) ? `${chartStore!.chartTheme.legend.verticalWidth}px` : 'auto',
-    };
 
     return (
-      <div style={style} className={itemClasses} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+      <div className={itemClasses} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
         {this.renderColor(this.toggleColorPicker, color, isSeriesVisible)}
         {this.renderTitle(label, onTitleClick, hasTitleClickListener, isSelected, hasDisplayValue)}
         {this.renderDisplayValue(displayValue, showLegendDisplayValue, isSeriesVisible)}
