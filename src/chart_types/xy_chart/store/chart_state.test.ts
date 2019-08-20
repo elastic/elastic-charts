@@ -501,7 +501,7 @@ describe('Chart Store', () => {
     };
 
     localStore.computeChart();
-    expect(localStore.initialized.get()).toBe(false);
+    expect(localStore.chartInitialized.get()).toBe(false);
   });
 
   test('only computes chart if series specs exist', () => {
@@ -516,7 +516,7 @@ describe('Chart Store', () => {
 
     localStore.seriesSpecs = new Map();
     localStore.computeChart();
-    expect(localStore.initialized.get()).toBe(false);
+    expect(localStore.chartInitialized.get()).toBe(false);
   });
 
   test('can set the color for a series', () => {
