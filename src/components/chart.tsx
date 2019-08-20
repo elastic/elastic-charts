@@ -15,13 +15,14 @@ import { Tooltips } from './tooltips';
 import { isHorizontal } from '../chart_types/xy_chart/utils/axis_utils';
 import { Position } from '../chart_types/xy_chart/utils/specs';
 import { CursorEvent } from '../specs/settings';
+import { ChartSize, getChartSize } from '../utils/chart_size';
 
 interface ChartProps {
   /** The type of rendered
    * @default 'canvas'
    */
   renderer: 'svg' | 'canvas';
-  size?: [number, number];
+  size?: ChartSize;
   className?: string;
 }
 
@@ -54,8 +55,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     if (size) {
       return {
         position: 'relative',
-        width: size[0],
-        height: size[1],
+        ...getChartSize(size),
       };
     }
     return {};

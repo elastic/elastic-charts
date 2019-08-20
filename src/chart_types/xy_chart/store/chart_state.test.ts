@@ -582,6 +582,7 @@ describe('Chart Store', () => {
       isHighlighted: false,
       isXValue: false,
       seriesKey: 'a',
+      yAccessor: 'y',
     };
     store.cursorPosition.x = -1;
     store.cursorPosition.y = 1;
@@ -691,6 +692,7 @@ describe('Chart Store', () => {
       isHighlighted: false,
       isXValue: false,
       seriesKey: 'a',
+      yAccessor: 'y',
     };
     store.xScale = new ScaleContinuous(ScaleType.Linear, [0, 100], [0, 100]);
     store.cursorPosition.x = 1;
@@ -827,6 +829,7 @@ describe('Chart Store', () => {
       isHighlighted: true,
       isXValue: false,
       seriesKey: 'foo',
+      yAccessor: 'y',
     };
     const unhighlightedTooltipValue = {
       name: 'foo',
@@ -835,6 +838,7 @@ describe('Chart Store', () => {
       isHighlighted: false,
       isXValue: false,
       seriesKey: 'foo',
+      yAccessor: 'y',
     };
 
     const expectedRectTooltipState = {
@@ -862,6 +866,7 @@ describe('Chart Store', () => {
       isHighlighted: false,
       isXValue: true,
       seriesKey: 'headerSeries',
+      yAccessor: 'y',
     };
 
     store.tooltipData.replace([headerValue]);
@@ -874,6 +879,7 @@ describe('Chart Store', () => {
       isHighlighted: false,
       isXValue: false,
       seriesKey: 'seriesKey',
+      yAccessor: 'y',
     };
     store.tooltipData.replace([headerValue, tooltipValue]);
 
