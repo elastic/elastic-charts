@@ -26,6 +26,11 @@ interface TooltipProps {
   headerFormatter?: TooltipValueFormatter;
 }
 
+const THEMES: { [type: string]: Theme } = {
+  [BaseThemeTypes.Light]: LIGHT_THEME,
+  [BaseThemeTypes.Dark]: DARK_THEME,
+};
+
 /**
  * Event used to syncronize cursors between Charts.
  *
@@ -52,8 +57,22 @@ function isTooltipType(config: TooltipType | TooltipProps): config is TooltipTyp
 
 export interface SettingSpecProps {
   chartStore?: ChartStore;
+  /**
+   * Full or partial theme to be merged with base
+   */
   theme?: Theme | PartialTheme;
+  /**
+   * Theme type used to get base theme
+   *
+   * @default `BaseThemeType.Light`
+   */
   baseThemeType?: BaseThemeType;
+  /**
+   * Full default theme to use as base
+   *
+   * @overrides `baseThemeType`
+   */
+  baseTheme?: Theme;
   rendering: Rendering;
   rotation: Rotation;
   animateData: boolean;
@@ -76,20 +95,18 @@ export interface SettingSpecProps {
   xDomain?: Domain | DomainRange;
 }
 
-function getTheme(theme?: Theme | PartialTheme, baseThemeType: BaseThemeType = BaseThemeTypes.Light): Theme {
-  if (theme) {
-    const baseTheme = baseThemeType === BaseThemeTypes.Light ? LIGHT_THEME : DARK_THEME;
-    return mergeWithDefaultTheme(theme, baseTheme);
-  }
+function getTheme(baseThemeType: BaseThemeType, theme?: Theme | PartialTheme, baseTheme?: Theme): Theme {
+  const base = baseTheme ? baseTheme : THEMES[baseThemeType];
 
-  return LIGHT_THEME;
+  return theme ? mergeWithDefaultTheme(theme, base) : base;
 }
 
 function updateChartStore(props: SettingSpecProps) {
   const {
     chartStore,
     theme,
-    baseThemeType,
+    baseThemeType = BaseThemeTypes.Light,
+    baseTheme,
     rotation,
     rendering,
     animateData,
@@ -110,11 +127,12 @@ function updateChartStore(props: SettingSpecProps) {
     debug,
     xDomain,
   } = props;
+
   if (!chartStore) {
     return;
   }
 
-  chartStore.chartTheme = getTheme(theme, baseThemeType);
+  chartStore.chartTheme = getTheme(baseThemeType, theme, baseTheme);
   chartStore.chartRotation = rotation;
   chartStore.chartRendering = rendering;
   chartStore.animateData = animateData;
