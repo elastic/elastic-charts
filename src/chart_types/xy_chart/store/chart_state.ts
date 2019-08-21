@@ -247,7 +247,7 @@ export class ChartStore {
     if (yPos < 0 || xPos < 0) {
       return 'default';
     }
-    if (this.highlightedGeometries.length > 0) {
+    if (this.highlightedGeometries.length > 0 && (this.onElementClickListener || this.onElementOverListener)) {
       return 'pointer';
     }
     return this.isBrushEnabled() ? 'crosshair' : 'default';

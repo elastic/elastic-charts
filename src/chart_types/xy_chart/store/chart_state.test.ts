@@ -962,6 +962,8 @@ describe('Chart Store', () => {
         },
       };
       store.highlightedGeometries.replace([geom1]);
+      expect(store.chartCursor.get()).toBe('crosshair');
+      store.onElementClickListener = jest.fn();
       expect(store.chartCursor.get()).toBe('pointer');
     });
   });
