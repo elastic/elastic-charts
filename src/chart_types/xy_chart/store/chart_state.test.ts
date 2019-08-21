@@ -108,14 +108,6 @@ describe('Chart Store', () => {
     expect(axesTicks.get(AXIS_ID)).not.toBeUndefined();
   });
 
-  test('can toggle legend visibility', () => {
-    store.toggleLegendCollapsed();
-    expect(store.legendCollapsed.get()).toBe(true);
-
-    store.toggleLegendCollapsed();
-    expect(store.legendCollapsed.get()).toBe(false);
-  });
-
   test('can set legend visibility', () => {
     store.showLegend.set(false);
     store.setShowLegend(true);
@@ -509,7 +501,7 @@ describe('Chart Store', () => {
     };
 
     localStore.computeChart();
-    expect(localStore.initialized.get()).toBe(false);
+    expect(localStore.chartInitialized.get()).toBe(false);
   });
 
   test('only computes chart if series specs exist', () => {
@@ -524,7 +516,7 @@ describe('Chart Store', () => {
 
     localStore.seriesSpecs = new Map();
     localStore.computeChart();
-    expect(localStore.initialized.get()).toBe(false);
+    expect(localStore.chartInitialized.get()).toBe(false);
   });
 
   test('can set the color for a series', () => {
@@ -681,7 +673,7 @@ describe('Chart Store', () => {
   test('can disable brush based on scale and listener', () => {
     store.xScale = undefined;
     expect(store.isBrushEnabled()).toBe(false);
-    store.xScale = new ScaleContinuous(ScaleType.Linear, [0, 100], [0, 100]);
+    store.xScale = new ScaleContinuous({ type: ScaleType.Linear, domain: [0, 100], range: [0, 100] });
     store.onBrushEndListener = undefined;
     expect(store.isBrushEnabled()).toBe(false);
     store.setOnBrushEndListener(() => ({}));
@@ -702,7 +694,7 @@ describe('Chart Store', () => {
       seriesKey: 'a',
       yAccessor: 'y',
     };
-    store.xScale = new ScaleContinuous(ScaleType.Linear, [0, 100], [0, 100]);
+    store.xScale = new ScaleContinuous({ type: ScaleType.Linear, domain: [0, 100], range: [0, 100] });
     store.cursorPosition.x = 1;
     store.cursorPosition.y = 1;
     store.tooltipType.set(TooltipType.Crosshairs);
@@ -793,7 +785,7 @@ describe('Chart Store', () => {
     expect(clickListener.mock.calls[1][0]).toEqual([geom1.value, geom2.value]);
   });
   test('can compute annotation tooltip state', () => {
-    const scale = new ScaleContinuous(ScaleType.Linear, [0, 100], [0, 100]);
+    const scale = new ScaleContinuous({ type: ScaleType.Linear, domain: [0, 100], range: [0, 100] });
 
     store.rawCursorPosition.x = -1;
     store.rawCursorPosition.y = 0;
@@ -901,7 +893,7 @@ describe('Chart Store', () => {
     };
 
     beforeEach(() => {
-      store.xScale = new ScaleContinuous(ScaleType.Linear, [0, 100], [0, 100]);
+      store.xScale = new ScaleContinuous({ type: ScaleType.Linear, domain: [0, 100], range: [0, 100] });
     });
 
     test('when cursor is outside of chart bounds', () => {
@@ -982,7 +974,7 @@ describe('Chart Store', () => {
       getPosition,
     }));
 
-    const scale = new ScaleContinuous(ScaleType.Linear, [0, 100], [0, 100]);
+    const scale = new ScaleContinuous({ type: ScaleType.Linear, domain: [0, 100], range: [0, 100] });
     beforeEach(() => {
       // @ts-ignore
       store.setCursorPosition = jest.fn();
