@@ -10,7 +10,6 @@ import { Theme } from '../../utils/themes/theme';
 
 interface LegendProps {
   chartStore?: ChartStore; // FIX until we find a better way on ts mobx
-  legendId: string;
 }
 
 interface LegendState {
@@ -57,7 +56,6 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
   }
 
   render() {
-    const { legendId } = this.props;
     const {
       legendInitialized,
       chartInitialized,
@@ -73,7 +71,7 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
       return null;
     }
 
-    const legendStyle = this.getLegendStyle(postion, chartTheme);
+    const legendContainerStyle = this.getLegendStyle(postion, chartTheme);
     const legendListStyle = this.getLegendListStyle(postion, chartTheme);
     const legendClasses = classNames('echLegend', `echLegend--${postion}`, {
       'echLegend--debug': debug,
@@ -81,8 +79,8 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
     });
 
     return (
-      <div ref={this.echLegend} className={legendClasses} style={legendStyle} id={legendId}>
-        <div className="echLegendListContainer">
+      <div ref={this.echLegend} className={legendClasses}>
+        <div style={legendContainerStyle} className="echLegendListContainer">
           <div style={legendListStyle} className="echLegendList">
             {[...legendItems.values()].map(this.renderLegendElement)}
           </div>

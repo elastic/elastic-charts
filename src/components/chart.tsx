@@ -4,7 +4,6 @@ import { Provider } from 'mobx-react';
 
 import { SpecsParser } from '../specs/specs_parser';
 import { ChartStore } from '../chart_types/xy_chart/store/chart_state';
-import { htmlIdGenerator } from '../utils/commons';
 import { AnnotationTooltip } from './annotation_tooltips';
 import { ChartResizer } from './chart_resizer';
 import { Crosshair } from './crosshair';
@@ -35,7 +34,6 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     renderer: 'canvas',
   };
   private chartSpecStore: ChartStore;
-  private legendId: string;
   constructor(props: any) {
     super(props);
     this.chartSpecStore = new ChartStore();
@@ -48,7 +46,6 @@ export class Chart extends React.Component<ChartProps, ChartState> {
         legendPosition,
       });
     });
-    this.legendId = htmlIdGenerator()('legend');
   }
 
   static getContainerStyle = (size: any): CSSProperties => {
@@ -91,7 +88,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     return (
       <Provider chartStore={this.chartSpecStore}>
         <div style={containerStyle} className={chartClassNames}>
-          <Legend legendId={this.legendId} />
+          <Legend />
           <SpecsParser>{this.props.children}</SpecsParser>
           <div className="echContainer">
             <ChartResizer />
