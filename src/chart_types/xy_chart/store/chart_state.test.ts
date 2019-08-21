@@ -20,6 +20,7 @@ import { ChartStore } from './chart_state';
 
 describe('Chart Store', () => {
   let store = new ChartStore();
+  store.chartTheme = LIGHT_THEME;
 
   const SPEC_ID = getSpecId('spec_1');
   const AXIS_ID = getAxisId('axis_1');
@@ -67,6 +68,7 @@ describe('Chart Store', () => {
   };
   beforeEach(() => {
     store = new ChartStore();
+    store.chartTheme = LIGHT_THEME;
     store.updateParentDimensions(600, 600, 0, 0);
     store.computeChart();
   });
@@ -106,14 +108,6 @@ describe('Chart Store', () => {
     expect(axesPositions.get(AXIS_ID)).not.toBeUndefined();
     expect(axesVisibleTicks.get(AXIS_ID)).not.toBeUndefined();
     expect(axesTicks.get(AXIS_ID)).not.toBeUndefined();
-  });
-
-  test('can toggle legend visibility', () => {
-    store.toggleLegendCollapsed();
-    expect(store.legendCollapsed.get()).toBe(true);
-
-    store.toggleLegendCollapsed();
-    expect(store.legendCollapsed.get()).toBe(false);
   });
 
   test('can set legend visibility', () => {
@@ -509,7 +503,7 @@ describe('Chart Store', () => {
     };
 
     localStore.computeChart();
-    expect(localStore.initialized.get()).toBe(false);
+    expect(localStore.chartInitialized.get()).toBe(false);
   });
 
   test('only computes chart if series specs exist', () => {
@@ -524,7 +518,7 @@ describe('Chart Store', () => {
 
     localStore.seriesSpecs = new Map();
     localStore.computeChart();
-    expect(localStore.initialized.get()).toBe(false);
+    expect(localStore.chartInitialized.get()).toBe(false);
   });
 
   test('can set the color for a series', () => {

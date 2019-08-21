@@ -10,8 +10,8 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
   static displayName = 'ChartContainer';
 
   render() {
-    const { initialized } = this.props.chartStore!;
-    if (!initialized.get()) {
+    const { chartInitialized } = this.props.chartStore!;
+    if (!chartInitialized.get()) {
       return null;
     }
     const { setCursorPosition } = this.props.chartStore!;

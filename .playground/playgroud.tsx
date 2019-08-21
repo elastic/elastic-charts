@@ -43,7 +43,7 @@ export class Playground extends React.Component {
           this.onCursorUpdate,
           true,
         )}
-        {renderChart('2', this.ref3, KIBANA_METRICS.metrics.kibana_os_load[1].data.slice(15, 30), this.onCursorUpdate)}
+        {renderChart('3', this.ref3, KIBANA_METRICS.metrics.kibana_os_load[1].data.slice(15, 30), this.onCursorUpdate)}
       </>
     );
   }
@@ -59,7 +59,13 @@ function renderChart(
   return (
     <div key={key} className="chart">
       <Chart ref={ref}>
-        <Settings tooltip={{ type: 'vertical' }} debug={false} showLegend={true} onCursorUpdate={onCursorUpdate} />
+        <Settings
+          tooltip={{ type: 'vertical' }}
+          debug={false}
+          legendPosition={Position.Right}
+          showLegend={true}
+          onCursorUpdate={onCursorUpdate}
+        />
         <Axis
           id={getAxisId('timestamp')}
           title="timestamp"
@@ -68,7 +74,7 @@ function renderChart(
         />
         <Axis id={getAxisId('count')} title="count" position={Position.Left} tickFormat={(d) => d.toFixed(2)} />
         <LineSeries
-          id={getSpecId('dataset A with long title')}
+          id={getSpecId('dataset A with a really really really really long title')}
           xScaleType={timeSeries ? ScaleType.Time : ScaleType.Linear}
           yScaleType={ScaleType.Linear}
           data={data}
@@ -83,6 +89,15 @@ function renderChart(
         />
         <LineSeries
           id={getSpecId('dataset B')}
+          xScaleType={ScaleType.Time}
+          yScaleType={ScaleType.Linear}
+          data={KIBANA_METRICS.metrics.kibana_os_load[1].data.slice(0, 15)}
+          xAccessor={0}
+          yAccessors={[1]}
+          stackAccessors={[0]}
+        />
+        <LineSeries
+          id={getSpecId('dataset C')}
           xScaleType={ScaleType.Time}
           yScaleType={ScaleType.Linear}
           data={KIBANA_METRICS.metrics.kibana_os_load[1].data.slice(0, 15)}

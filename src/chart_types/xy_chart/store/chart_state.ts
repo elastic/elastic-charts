@@ -46,7 +46,6 @@ import {
   Rotation,
 } from '../utils/specs';
 import { formatTooltip, getSeriesTooltipValues } from '../tooltip/tooltip';
-import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { mergeWithDefaultAnnotationLine, mergeWithDefaultAnnotationRect, Theme } from '../../../utils/themes/theme';
 import { compareByValueAsc } from '../../../utils/commons';
 import { computeChartDimensions } from '../utils/dimensions';
@@ -119,7 +118,8 @@ export class ChartStore {
   debug = false;
   id = uuid.v4();
   specsInitialized = observable.box(false);
-  initialized = observable.box(false);
+  chartInitialized = observable.box(false);
+  legendInitialized = observable.box(false);
   enableHistogramMode = observable.box(false);
 
   parentDimensions: Dimensions = {
@@ -149,7 +149,10 @@ export class ChartStore {
 
   chartRotation: Rotation = 0; // updated from jsx
   chartRendering: Rendering = 'canvas'; // updated from jsx
-  chartTheme: Theme = LIGHT_THEME; // updated from jsx
+  /**
+   * Chart theme to be set from Settings.tsx
+   */
+  chartTheme!: Theme;
   axesSpecs: Map<AxisId, AxisSpec> = new Map(); // readed from jsx
   axesTicksDimensions: Map<AxisId, AxisTicksDimensions> = new Map(); // computed
   axesPositions: Map<AxisId, Dimensions> = new Map(); // computed
@@ -232,14 +235,8 @@ export class ChartStore {
   canDataBeAnimated = false;
 
   showLegend = observable.box(false);
-  legendCollapsed = observable.box(false);
-  legendPosition: Position | undefined;
+  legendPosition = observable.box<Position>(Position.Right);
   showLegendDisplayValue = observable.box(true);
-
-  toggleLegendCollapsed = action(() => {
-    this.legendCollapsed.set(!this.legendCollapsed.get());
-    this.computeChart();
-  });
 
   chartCursor = computed(() => {
     const { x: xPos, y: yPos } = this.cursorPosition;
@@ -823,7 +820,7 @@ export class ChartStore {
   }
 
   computeChart() {
-    this.initialized.set(false);
+    this.chartInitialized.set(false);
     // compute only if parent dimensions are computed
     if (this.parentDimensions.width === 0 || this.parentDimensions.height === 0) {
       return;
@@ -869,6 +866,14 @@ export class ChartStore {
       this.deselectedDataSeries,
     );
 
+    if (!this.legendInitialized.get()) {
+      this.legendInitialized.set(true);
+
+      if (this.legendItems.size > 0 && this.showLegend.get()) {
+        return;
+      }
+    }
+
     this.isChartEmpty = isAllSeriesDeselected(this.legendItems);
 
     const { xDomain, yDomain, formattedDataSeries } = this.seriesDomainsAndData;
@@ -903,14 +908,12 @@ export class ChartStore {
     });
     bboxCalculator.destroy();
 
-    // // compute chart dimensions
+    // compute chart dimensions
     const computedChartDims = computeChartDimensions(
       this.parentDimensions,
       this.chartTheme,
       this.axesTicksDimensions,
       this.axesSpecs,
-      this.showLegend.get() && !this.legendCollapsed.get(),
-      this.legendPosition,
     );
     this.chartDimensions = computedChartDims.chartDimensions;
 
@@ -930,7 +933,6 @@ export class ChartStore {
       this.enableHistogramMode.get(),
     );
 
-    // tslint:disable-next-line:no-console
     this.geometries = seriesGeometries.geometries;
     this.xScale = seriesGeometries.scales.xScale;
 
@@ -948,17 +950,15 @@ export class ChartStore {
       computedChartDims,
       this.chartTheme,
       this.chartRotation,
-      this.showLegend.get() && !this.legendCollapsed.get(),
       this.axesSpecs,
       this.axesTicksDimensions,
       xDomain,
       yDomain,
       totalBarsInCluster,
       this.enableHistogramMode.get(),
-      this.legendPosition,
       barsPadding,
     );
-    // tslint:disable-next-line:no-console
+
     this.axesPositions = axisTicksPositions.axisPositions;
     this.axesTicks = axisTicksPositions.axisTicks;
     this.axesVisibleTicks = axisTicksPositions.axisVisibleTicks;
@@ -982,6 +982,6 @@ export class ChartStore {
     // temporary disabled until
     // https://github.com/elastic/elastic-charts/issues/89 and https://github.com/elastic/elastic-charts/issues/41
     this.canDataBeAnimated = false;
-    this.initialized.set(true);
+    this.chartInitialized.set(true);
   }
 }

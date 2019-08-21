@@ -75,8 +75,24 @@ export interface ColorConfig {
   defaultVizColor: string;
 }
 export interface LegendStyle {
+  /**
+   * Max width used for left/right legend
+   *
+   * or
+   *
+   * Width of `LegendItem` for top/bottom legend
+   */
   verticalWidth: number;
+  /**
+   * Max height used for top/bottom legend
+   */
   horizontalHeight: number;
+  /**
+   * Added buffer between label and value.
+   *
+   * Smaller values render a more compact legend
+   */
+  spacingBuffer: number;
 }
 export interface Theme {
   /**
@@ -99,13 +115,6 @@ export interface Theme {
 }
 
 export type PartialTheme = RecursivePartial<Theme>;
-
-export const BaseThemeTypes = Object.freeze({
-  Light: 'light' as 'light',
-  Dark: 'dark' as 'dark',
-});
-
-export type BaseThemeType = typeof BaseThemeTypes.Dark | typeof BaseThemeTypes.Light;
 
 export type DisplayValueStyle = TextStyle & {
   offsetX: number;

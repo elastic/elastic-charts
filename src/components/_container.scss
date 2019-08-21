@@ -3,16 +3,17 @@
  */
 
 .echContainer {
+  flex: 1;
   position: relative;
-  width: 100%;
+}
+
+.echChart {
+  display: flex;
   height: 100%;
 
-  &:hover {
-    .echLegend__toggle {
-      opacity: 1;
-    }
+  &--column {
+    flex-direction: column;
   }
-}
 
 .echChartCursorContainer {
   position: absolute;
