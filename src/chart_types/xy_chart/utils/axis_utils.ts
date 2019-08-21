@@ -126,15 +126,22 @@ export function getScaleForAxisSpec(
   enableHistogramMode?: boolean,
 ): Scale | null {
   const axisIsYDomain = isYDomain(axisSpec.position, chartRotation);
-
+  const range: [number, number] = [minRange, maxRange];
   if (axisIsYDomain) {
-    const yScales = computeYScales(yDomain, minRange, maxRange);
+    const yScales = computeYScales({ yDomains: yDomain, range, ticks: axisSpec.ticks });
     if (yScales.has(axisSpec.groupId)) {
       return yScales.get(axisSpec.groupId)!;
     }
     return null;
   } else {
-    return computeXScale(xDomain, totalBarsInCluster, minRange, maxRange, barsPadding, enableHistogramMode);
+    return computeXScale({
+      xDomain,
+      totalBarsInCluster,
+      range,
+      barsPadding,
+      enableHistogramMode,
+      ticks: axisSpec.ticks,
+    });
   }
 }
 
@@ -535,18 +542,15 @@ export function getAxisTicksPositions(
   },
   chartTheme: Theme,
   chartRotation: Rotation,
-  showLegend: boolean,
   axisSpecs: Map<AxisId, AxisSpec>,
   axisDimensions: Map<AxisId, AxisTicksDimensions>,
   xDomain: XDomain,
   yDomain: YDomain[],
   totalGroupsCount: number,
   enableHistogramMode: boolean,
-  legendPosition?: Position,
   barsPadding?: number,
 ) {
   const { chartPaddings, chartMargins } = chartTheme;
-  const legendStyle = chartTheme.legend;
   const axisPositions: Map<AxisId, Dimensions> = new Map();
   const axisVisibleTicks: Map<AxisId, AxisTick[]> = new Map();
   const axisTicks: Map<AxisId, AxisTick[]> = new Map();
@@ -556,16 +560,6 @@ export function getAxisTicksPositions(
   let cumBottomSum = chartPaddings.bottom;
   let cumLeftSum = computedChartDims.leftMargin;
   let cumRightSum = chartPaddings.right;
-  if (showLegend) {
-    switch (legendPosition) {
-      case Position.Left:
-        cumLeftSum += legendStyle.verticalWidth;
-        break;
-      case Position.Top:
-        cumTopSum += legendStyle.horizontalHeight;
-        break;
-    }
-  }
 
   axisDimensions.forEach((axisDim, id) => {
     const axisSpec = axisSpecs.get(id);
@@ -654,7 +648,7 @@ export function isVertical(position: Position) {
 }
 
 export function isHorizontal(position: Position) {
-  return !isVertical(position);
+  return position === Position.Top || position === Position.Bottom;
 }
 
 export function isLowerBound(domain: Partial<CompleteBoundedDomain>): domain is LowerBoundedDomain {
