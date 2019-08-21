@@ -241,17 +241,16 @@ export class ChartStore {
     this.computeChart();
   });
 
-  /**
-   * determine if crosshair cursor should be visible based on cursor position and brush enablement
-   */
-  isCrosshairCursorVisible = computed(() => {
+  chartCursor = computed(() => {
     const { x: xPos, y: yPos } = this.cursorPosition;
 
     if (yPos < 0 || xPos < 0) {
-      return false;
+      return 'default';
     }
-
-    return this.isBrushEnabled();
+    if (this.highlightedGeometries.length > 0) {
+      return 'pointer';
+    }
+    return this.isBrushEnabled() ? 'crosshair' : 'default';
   });
 
   /**

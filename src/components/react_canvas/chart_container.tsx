@@ -1,5 +1,4 @@
 import React from 'react';
-import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import { ChartStore } from '../../chart_types/xy_chart/store/chart_state';
 import { ReactiveChart } from './reactive_chart';
@@ -15,14 +14,13 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     if (!initialized.get()) {
       return null;
     }
-    const className = classNames('echChartCursorContainer', {
-      'echChart--isBrushEnabled': this.props.chartStore!.isCrosshairCursorVisible.get(),
-    });
     const { setCursorPosition } = this.props.chartStore!;
-
     return (
       <div
-        className={className}
+        className="echChartCursorContainer"
+        style={{
+          cursor: this.props.chartStore!.chartCursor.get(),
+        }}
         onMouseMove={({ nativeEvent: { offsetX, offsetY } }) => {
           setCursorPosition(offsetX, offsetY);
         }}
