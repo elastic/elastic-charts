@@ -5,12 +5,6 @@
 .echContainer {
   flex: 1;
   position: relative;
-
-  &:hover {
-    .echLegend__toggle {
-      opacity: 1;
-    }
-  }
 }
 
 .echChart {
