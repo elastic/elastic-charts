@@ -34,6 +34,7 @@ export interface GeometryValue {
 /** Shared style properties for varies geometries */
 export interface GeometryStyle {
   opacity: number;
+  strokeOpacity?: number;
 }
 
 export type IndexedGeometry = PointGeometry | BarGeometry;
@@ -483,17 +484,20 @@ export function getGeometryStyle(
   geometryId: GeometryId,
   highlightedLegendItem: LegendItem | null,
   sharedThemeStyle: SharedGeometryStyle,
-  specOpacity?: number,
+  opacity?: number,
+  strokeOpacity?: number,
   individualHighlight?: { [key: string]: boolean },
 ): GeometryStyle {
-  const sharedStyle =
-    specOpacity == null
-      ? sharedThemeStyle
-      : {
-          ...sharedThemeStyle,
-          highlighted: { opacity: specOpacity },
-          default: { opacity: specOpacity },
-        };
+  const base = { opacity, strokeOpacity };
+  const sharedStyle = mergePartial<SharedGeometryStyle>(sharedThemeStyle, {
+    default: base,
+    highlighted: base,
+    unhighlighted: {
+      strokeOpacity: strokeOpacity
+        ? (strokeOpacity + sharedThemeStyle.unhighlighted.opacity) / 2
+        : sharedThemeStyle.unhighlighted.opacity,
+    },
+  });
 
   if (highlightedLegendItem != null) {
     const isPartOfHighlightedSeries = belongsToDataSeries(geometryId, highlightedLegendItem.value);

@@ -10,6 +10,7 @@ import {
 } from '../../../utils/themes/theme';
 import { Dimensions } from '../../../utils/dimensions';
 import { GlobalKonvaElementProps } from '../globals';
+import { RectConfig } from 'konva';
 
 export interface PointStyleProps {
   radius: number;
@@ -338,7 +339,6 @@ export function buildAreaRenderProps(
  * @param height the height of the rect
  * @param color the computed color of the rect for this series
  * @param rectStyle the rect style
- * @param borderStyle the border rect style
  * @param geometryStyle the highlight geometry style
  */
 export function buildBarRenderProps(
@@ -348,19 +348,59 @@ export function buildBarRenderProps(
   height: number,
   color: string,
   rectStyle: RectStyle,
-  borderStyle: RectBorderStyle,
   geometryStyle: GeometryStyle,
-) {
+): RectConfig {
   return {
     x,
     y,
     width,
     height,
     fill: rectStyle.fill || color,
-    strokeWidth: borderStyle.strokeWidth,
-    stroke: borderStyle.stroke || 'transparent',
-    strokeEnabled: borderStyle.visible && borderStyle.strokeWidth > 0,
+    strokeEnabled: false,
     ...geometryStyle,
+    ...GlobalKonvaElementProps,
+  };
+}
+
+/**
+ * Return the rendering props for a bar. The color of the bar will be overwritten
+ * by the fill color of the rectStyle parameter if present
+ * @param x the x position of the rect
+ * @param y the y position of the rect
+ * @param width the width of the rect
+ * @param height the height of the rect
+ * @param color the computed color of the rect for this series
+ * @param rectStyle the rect style
+ * @param borderStyle the border rect style
+ * @param geometryStyle the highlight geometry style
+ */
+export function buildBarBorderRenderProps(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  borderStyle: RectBorderStyle,
+  geometryStyle: GeometryStyle,
+): RectConfig | null {
+  const { stroke, visible, strokeWidth } = borderStyle;
+
+  if (!visible || strokeWidth <= 0 || !stroke) {
+    return null;
+  }
+
+  const opacity = geometryStyle.strokeOpacity;
+
+  return {
+    x: x + strokeWidth / 2,
+    y: y + strokeWidth / 2,
+    width: width - strokeWidth,
+    height: height - strokeWidth,
+    fillEnabled: false,
+    strokeEnabled: true,
+    strokeWidth,
+    stroke,
+    ...geometryStyle,
+    opacity, // want to override opactiy of geometryStyle
     ...GlobalKonvaElementProps,
   };
 }

@@ -164,12 +164,22 @@ export interface RectStyle {
 }
 
 export interface RectBorderStyle {
-  /** is the rect border visible or hidden ? */
+  /**
+   * Border visibility
+   */
   visible: boolean;
-  /** a static stroke color if defined, if not it will use the color of the series */
+  /**
+   * Border stroke color
+   */
   stroke?: string;
-  /** the stroke width of the rect border */
+  /**
+   * Border stroke width
+   */
   strokeWidth: number;
+  /**
+   * Border stroke opacity
+   */
+  strokeOpacity?: number;
 }
 export interface BarSeriesStyle {
   rect: RectStyle;
