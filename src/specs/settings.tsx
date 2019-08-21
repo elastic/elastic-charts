@@ -2,9 +2,7 @@ import { PureComponent } from 'react';
 import { inject } from 'mobx-react';
 
 import { DomainRange, Position, Rendering, Rotation } from '../chart_types/xy_chart/utils/specs';
-import { LIGHT_THEME } from '../utils/themes/light_theme';
-import { DARK_THEME } from '../utils/themes/dark_theme';
-import { BaseThemeType, mergeWithDefaultTheme, PartialTheme, Theme, BaseThemeTypes } from '../utils/themes/theme';
+import { mergeWithDefaultTheme, PartialTheme, Theme } from '../utils/themes/theme';
 import { Domain } from '../utils/domain';
 import { TooltipType, TooltipValueFormatter } from '../chart_types/xy_chart/utils/interactions';
 import {
@@ -16,6 +14,7 @@ import {
   CursorUpdateListener,
 } from '../chart_types/xy_chart/store/chart_state';
 import { ScaleTypes } from '../utils/scales/scales';
+import { LIGHT_THEME } from '../utils/themes/light_theme';
 
 export const DEFAULT_TOOLTIP_TYPE = TooltipType.VerticalCursor;
 export const DEFAULT_TOOLTIP_SNAP = true;
@@ -25,11 +24,6 @@ interface TooltipProps {
   snap?: boolean;
   headerFormatter?: TooltipValueFormatter;
 }
-
-const THEMES: { [type: string]: Theme } = {
-  [BaseThemeTypes.Light]: LIGHT_THEME,
-  [BaseThemeTypes.Dark]: DARK_THEME,
-};
 
 /**
  * Event used to syncronize cursors between Charts.
@@ -62,15 +56,9 @@ export interface SettingSpecProps {
    */
   theme?: Theme | PartialTheme;
   /**
-   * Theme type used to get base theme
-   *
-   * @default `BaseThemeType.Light`
-   */
-  baseThemeType?: BaseThemeType;
-  /**
    * Full default theme to use as base
    *
-   * @overrides `baseThemeType`
+   * @default `LIGHT_THEME`
    */
   baseTheme?: Theme;
   rendering: Rendering;
@@ -95,9 +83,8 @@ export interface SettingSpecProps {
   xDomain?: Domain | DomainRange;
 }
 
-function getTheme(baseThemeType: BaseThemeType, theme?: Theme | PartialTheme, baseTheme?: Theme): Theme {
-  const base = baseTheme ? baseTheme : THEMES[baseThemeType];
-
+function getTheme(baseTheme?: Theme, theme?: Theme | PartialTheme): Theme {
+  const base = baseTheme ? baseTheme : LIGHT_THEME;
   return theme ? mergeWithDefaultTheme(theme, base) : base;
 }
 
@@ -105,7 +92,6 @@ function updateChartStore(props: SettingSpecProps) {
   const {
     chartStore,
     theme,
-    baseThemeType = BaseThemeTypes.Light,
     baseTheme,
     rotation,
     rendering,
@@ -132,7 +118,7 @@ function updateChartStore(props: SettingSpecProps) {
     return;
   }
 
-  chartStore.chartTheme = getTheme(baseThemeType, theme, baseTheme);
+  chartStore.chartTheme = getTheme(baseTheme, theme);
   chartStore.chartRotation = rotation;
   chartStore.chartRendering = rendering;
   chartStore.animateData = animateData;
@@ -194,7 +180,6 @@ export class SettingsComponent extends PureComponent<SettingSpecProps> {
     animateData: true,
     showLegend: false,
     debug: false,
-    baseThemeType: BaseThemeTypes.Light,
     tooltip: {
       type: DEFAULT_TOOLTIP_TYPE,
       snap: DEFAULT_TOOLTIP_SNAP,

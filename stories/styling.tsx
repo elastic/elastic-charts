@@ -19,12 +19,12 @@ import {
   Position,
   ScaleType,
   Settings,
-  BaseThemeTypes,
   LineSeriesStyle,
   TooltipType,
   RecursivePartial,
   Theme,
   LIGHT_THEME,
+  DARK_THEME,
 } from '../src/';
 import * as TestDatasets from '../src/utils/data_samples/test_dataset';
 import { palettes } from '../src/utils/themes/colors';
@@ -393,7 +393,7 @@ storiesOf('Stylings', module)
       <Chart className={className}>
         <Settings
           theme={theme}
-          baseThemeType={darkmode ? 'dark' : 'light'}
+          baseTheme={darkmode ? DARK_THEME : LIGHT_THEME}
           debug={boolean('debug', false)}
           showLegend={true}
           legendPosition={Position.Right}
@@ -455,12 +455,7 @@ storiesOf('Stylings', module)
 
     return (
       <Chart className="story-chart">
-        <Settings
-          showLegend
-          theme={customPartialTheme}
-          baseThemeType={BaseThemeTypes.Light}
-          legendPosition={Position.Right}
-        />
+        <Settings showLegend theme={customPartialTheme} baseTheme={LIGHT_THEME} legendPosition={Position.Right} />
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
