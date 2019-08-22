@@ -10,7 +10,7 @@ import {
 } from '../../../utils/themes/theme';
 import { Dimensions } from '../../../utils/dimensions';
 import { GlobalKonvaElementProps } from '../globals';
-import { RectConfig } from 'konva';
+import { RectConfig, PathConfig, CircleConfig } from 'konva';
 
 export interface PointStyleProps {
   radius: number;
@@ -255,8 +255,8 @@ export function buildPointStyleProps(
     strokeWidth,
     strokeEnabled: strokeWidth !== 0,
     fill: fill,
-    opacity,
     ...geometryStyle,
+    opacity: opacity * geometryStyle.opacity,
   };
 }
 
@@ -266,7 +266,7 @@ export function buildPointStyleProps(
  * @param y the y position of the point
  * @param pointStyleProps the style props of the point
  */
-export function buildPointRenderProps(x: number, y: number, pointStyleProps: PointStyleProps) {
+export function buildPointRenderProps(x: number, y: number, pointStyleProps: PointStyleProps): CircleConfig {
   return {
     x,
     y,
@@ -290,7 +290,9 @@ export function buildLineRenderProps(
   color: string,
   lineStyle: LineStyle,
   geometryStyle: GeometryStyle,
-) {
+): PathConfig {
+  const opacity = lineStyle.opacity * geometryStyle.opacity;
+
   return {
     x,
     data: linePath,
@@ -299,6 +301,7 @@ export function buildLineRenderProps(
     lineCap: 'round',
     lineJoin: 'round',
     ...geometryStyle,
+    opacity, // want to override opactiy of geometryStyle
     ...GlobalKonvaElementProps,
   };
 }
@@ -318,7 +321,9 @@ export function buildAreaRenderProps(
   color: string,
   areaStyle: AreaStyle,
   geometryStyle: GeometryStyle,
-) {
+): PathConfig {
+  const opacity = areaStyle.opacity * geometryStyle.opacity;
+
   return {
     x: xTransform,
     data: areaPath,
@@ -326,6 +331,7 @@ export function buildAreaRenderProps(
     lineCap: 'round',
     lineJoin: 'round',
     ...geometryStyle,
+    opacity, // want to override opactiy of geometryStyle
     ...GlobalKonvaElementProps,
   };
 }
@@ -350,6 +356,8 @@ export function buildBarRenderProps(
   rectStyle: RectStyle,
   geometryStyle: GeometryStyle,
 ): RectConfig {
+  const opacity = rectStyle.opacity * geometryStyle.opacity;
+
   return {
     x,
     y,
@@ -358,6 +366,7 @@ export function buildBarRenderProps(
     fill: rectStyle.fill || color,
     strokeEnabled: false,
     ...geometryStyle,
+    opacity, // want to override opactiy of geometryStyle
     ...GlobalKonvaElementProps,
   };
 }
@@ -379,16 +388,16 @@ export function buildBarBorderRenderProps(
   y: number,
   width: number,
   height: number,
+  barStyle: RectStyle,
   borderStyle: RectBorderStyle,
   geometryStyle: GeometryStyle,
 ): RectConfig | null {
-  const { stroke, visible, strokeWidth } = borderStyle;
+  const { stroke, visible, strokeWidth, strokeOpacity = barStyle.opacity } = borderStyle;
+  const opacity = strokeOpacity * geometryStyle.opacity;
 
-  if (!visible || strokeWidth <= 0 || !stroke) {
+  if (!visible || strokeWidth <= 0 || !stroke || opacity <= 0) {
     return null;
   }
-
-  const opacity = geometryStyle.strokeOpacity;
 
   return {
     x: x + strokeWidth / 2,

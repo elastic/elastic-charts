@@ -55,8 +55,6 @@ export class BarGeometries extends React.PureComponent<BarGeometriesDataProps, B
         bar.geometryId,
         this.props.highlightedLegendItem,
         sharedStyle,
-        seriesStyle.rect.opacity,
-        seriesStyle.rectBorder.strokeOpacity,
         individualHighlight,
       );
       const key = `bar-${index}`;
@@ -71,6 +69,7 @@ export class BarGeometries extends React.PureComponent<BarGeometriesDataProps, B
                   props.y,
                   width,
                   props.height,
+                  seriesStyle.rect,
                   seriesStyle.rectBorder,
                   geometryStyle,
                 );
@@ -95,8 +94,17 @@ export class BarGeometries extends React.PureComponent<BarGeometriesDataProps, B
           </Group>
         );
       } else {
-        const barPropsBorder = buildBarBorderRenderProps(x, y, width, height, seriesStyle.rectBorder, geometryStyle);
+        const barPropsBorder = buildBarBorderRenderProps(
+          x,
+          y,
+          width,
+          height,
+          seriesStyle.rect,
+          seriesStyle.rectBorder,
+          geometryStyle,
+        );
         const barProps = buildBarRenderProps(x, y, width, height, color, seriesStyle.rect, geometryStyle);
+
         return (
           <React.Fragment key={key}>
             <Rect {...barProps} />

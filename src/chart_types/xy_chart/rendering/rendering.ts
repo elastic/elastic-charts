@@ -33,8 +33,12 @@ export interface GeometryValue {
 
 /** Shared style properties for varies geometries */
 export interface GeometryStyle {
+  /**
+   * Opacity multiplier
+   *
+   * if set to `0.5` all given opacities will be halfed
+   */
   opacity: number;
-  strokeOpacity?: number;
 }
 
 export type IndexedGeometry = PointGeometry | BarGeometry;
@@ -483,37 +487,26 @@ export function renderArea(
 export function getGeometryStyle(
   geometryId: GeometryId,
   highlightedLegendItem: LegendItem | null,
-  sharedThemeStyle: SharedGeometryStyle,
-  opacity?: number,
-  strokeOpacity?: number,
+  sharedGeometryStyle: SharedGeometryStyle,
   individualHighlight?: { [key: string]: boolean },
 ): GeometryStyle {
-  const base = { opacity, strokeOpacity };
-  const sharedStyle = mergePartial<SharedGeometryStyle>(sharedThemeStyle, {
-    default: base,
-    highlighted: base,
-    unhighlighted: {
-      strokeOpacity: strokeOpacity
-        ? (strokeOpacity + sharedThemeStyle.unhighlighted.opacity) / 2
-        : sharedThemeStyle.unhighlighted.opacity,
-    },
-  });
+  const { default: defaultStyles, highlighted, unhighlighted } = sharedGeometryStyle;
 
   if (highlightedLegendItem != null) {
     const isPartOfHighlightedSeries = belongsToDataSeries(geometryId, highlightedLegendItem.value);
 
-    return isPartOfHighlightedSeries ? sharedStyle.highlighted : sharedStyle.unhighlighted;
+    return isPartOfHighlightedSeries ? highlighted : unhighlighted;
   }
 
   if (individualHighlight) {
     const { hasHighlight, hasGeometryHover } = individualHighlight;
     if (!hasGeometryHover) {
-      return sharedStyle.highlighted;
+      return highlighted;
     }
-    return hasHighlight ? sharedStyle.highlighted : sharedStyle.unhighlighted;
+    return hasHighlight ? highlighted : unhighlighted;
   }
 
-  return sharedStyle.default;
+  return defaultStyles;
 }
 
 export function isPointOnGeometry(

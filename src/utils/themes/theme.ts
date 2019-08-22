@@ -22,7 +22,9 @@ export interface GeometryStyle {
 }
 
 export interface SharedGeometryStyle {
-  [key: string]: GeometryStyle;
+  default: GeometryStyle;
+  highlighted: GeometryStyle;
+  unhighlighted: GeometryStyle;
 }
 
 export interface StrokeStyle {
