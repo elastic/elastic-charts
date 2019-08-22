@@ -20,7 +20,6 @@ import { ChartStore } from './chart_state';
 
 describe('Chart Store', () => {
   let store = new ChartStore();
-  store.chartTheme = LIGHT_THEME;
 
   const SPEC_ID = getSpecId('spec_1');
   const AXIS_ID = getAxisId('axis_1');
@@ -68,7 +67,6 @@ describe('Chart Store', () => {
   };
   beforeEach(() => {
     store = new ChartStore();
-    store.chartTheme = LIGHT_THEME;
     store.updateParentDimensions(600, 600, 0, 0);
     store.computeChart();
   });
@@ -902,21 +900,63 @@ describe('Chart Store', () => {
       store.cursorPosition.x = -1;
       store.cursorPosition.y = -1;
       store.onBrushEndListener = brushEndListener;
-      expect(store.isCrosshairCursorVisible.get()).toBe(false);
+      expect(store.chartCursor.get()).toBe('default');
     });
 
     test('when cursor is within chart bounds and brush enabled', () => {
       store.cursorPosition.x = 10;
       store.cursorPosition.y = 10;
       store.onBrushEndListener = brushEndListener;
-      expect(store.isCrosshairCursorVisible.get()).toBe(true);
+      expect(store.chartCursor.get()).toBe('crosshair');
     });
 
     test('when cursor is within chart bounds and brush disabled', () => {
       store.cursorPosition.x = 10;
       store.cursorPosition.y = 10;
       store.onBrushEndListener = undefined;
-      expect(store.isCrosshairCursorVisible.get()).toBe(false);
+      expect(store.chartCursor.get()).toBe('default');
+    });
+    test('when cursor is within chart bounds and brush enabled but over one geom', () => {
+      store.cursorPosition.x = 10;
+      store.cursorPosition.y = 10;
+      store.onBrushEndListener = brushEndListener;
+      const geom1: IndexedGeometry = {
+        color: 'red',
+        geometryId: {
+          specId: getSpecId('specId1'),
+          seriesKey: [2],
+        },
+        value: {
+          x: 0,
+          y: 1,
+          accessor: 'y1',
+        },
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+        seriesStyle: {
+          rect: {
+            opacity: 1,
+          },
+          rectBorder: {
+            strokeWidth: 1,
+            visible: false,
+          },
+          displayValue: {
+            fill: 'black',
+            fontFamily: '',
+            fontSize: 2,
+            offsetX: 0,
+            offsetY: 0,
+            padding: 2,
+          },
+        },
+      };
+      store.highlightedGeometries.replace([geom1]);
+      expect(store.chartCursor.get()).toBe('crosshair');
+      store.onElementClickListener = jest.fn();
+      expect(store.chartCursor.get()).toBe('pointer');
     });
   });
   test('should set tooltip type to follow when single value x scale', () => {

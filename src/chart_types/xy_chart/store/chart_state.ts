@@ -92,6 +92,7 @@ import {
   Transform,
   updateDeselectedDataSeries,
 } from './utils';
+import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 
 export interface Point {
   x: number;
@@ -149,10 +150,7 @@ export class ChartStore {
 
   chartRotation: Rotation = 0; // updated from jsx
   chartRendering: Rendering = 'canvas'; // updated from jsx
-  /**
-   * Chart theme to be set from Settings.tsx
-   */
-  chartTheme!: Theme;
+  chartTheme: Theme = LIGHT_THEME;
   axesSpecs: Map<AxisId, AxisSpec> = new Map(); // readed from jsx
   axesTicksDimensions: Map<AxisId, AxisTicksDimensions> = new Map(); // computed
   axesPositions: Map<AxisId, Dimensions> = new Map(); // computed
@@ -238,17 +236,16 @@ export class ChartStore {
   legendPosition = observable.box<Position>(Position.Right);
   showLegendDisplayValue = observable.box(true);
 
-  /**
-   * determine if crosshair cursor should be visible based on cursor position and brush enablement
-   */
-  isCrosshairCursorVisible = computed(() => {
+  chartCursor = computed(() => {
     const { x: xPos, y: yPos } = this.cursorPosition;
 
     if (yPos < 0 || xPos < 0) {
-      return false;
+      return 'default';
     }
-
-    return this.isBrushEnabled();
+    if (this.highlightedGeometries.length > 0 && (this.onElementClickListener || this.onElementOverListener)) {
+      return 'pointer';
+    }
+    return this.isBrushEnabled() ? 'crosshair' : 'default';
   });
 
   /**
@@ -466,13 +463,6 @@ export class ChartStore {
     } else {
       this.tooltipData.replace(tooltipValues);
     }
-
-    // TODO move this into the renderer
-    if (oneHighlighted) {
-      document.body.style.cursor = 'pointer';
-    } else {
-      document.body.style.cursor = 'default';
-    }
   });
 
   legendItemTooltipValues = computed(() => {
@@ -548,8 +538,6 @@ export class ChartStore {
     // clear highlight geoms
     this.highlightedGeometries.clear();
     this.tooltipData.clear();
-
-    document.body.style.cursor = 'default';
 
     if (this.onCursorUpdateListener && this.isActiveChart.get()) {
       this.onCursorUpdateListener();
