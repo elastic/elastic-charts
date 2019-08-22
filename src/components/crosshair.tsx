@@ -8,8 +8,8 @@ interface CrosshairProps {
   chartStore?: ChartStore;
 }
 
-function canRenderBand(type: TooltipType, visible: boolean, chartEmpty: boolean) {
-  return visible && !chartEmpty && (type === TooltipType.Crosshairs || type === TooltipType.VerticalCursor);
+function canRenderBand(type: TooltipType, visible: boolean) {
+  return visible && (type === TooltipType.Crosshairs || type === TooltipType.VerticalCursor);
 }
 function canRenderHelpLine(type: TooltipType, visible: boolean) {
   return visible && type === TooltipType.Crosshairs;
@@ -39,10 +39,9 @@ class CrosshairComponent extends React.Component<CrosshairProps> {
       },
       cursorBandPosition,
       tooltipType,
-      isChartEmpty,
     } = this.props.chartStore!;
 
-    if (!canRenderBand(tooltipType.get(), band.visible, isChartEmpty)) {
+    if (!canRenderBand(tooltipType.get(), band.visible)) {
       return null;
     }
     const style: CSSProperties = {
