@@ -573,6 +573,7 @@ export function isWithinLineBounds(
   chartDimensions: Dimensions,
   domainType: AnnotationDomainType,
   marker?: AnnotationMarker,
+  hideLinesTooltips?: boolean,
 ): boolean {
   const [startX, startY, endX, endY] = linePosition;
   const isXDomainAnnotation = isXDomain(domainType);
@@ -584,26 +585,26 @@ export function isWithinLineBounds(
   const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
   const chartWidth = chartDimensions.width;
   const chartHeight = chartDimensions.height;
-
-  if (isXDomainAnnotation) {
-    isCursorWithinXBounds = isHorizontalChartRotation
-      ? cursorPosition.x >= startX - offset && cursorPosition.x <= endX + offset
-      : cursorPosition.x >= chartHeight - startX - offset && cursorPosition.x <= chartHeight - endX + offset;
-    isCursorWithinYBounds = isHorizontalChartRotation
-      ? cursorPosition.y >= startY && cursorPosition.y <= endY
-      : cursorPosition.y >= startY - offset && cursorPosition.y <= endY + offset;
-  } else {
-    isCursorWithinXBounds = isHorizontalChartRotation
-      ? cursorPosition.x >= startX && cursorPosition.x <= endX
-      : cursorPosition.x >= startX - offset && cursorPosition.x <= endX + offset;
-    isCursorWithinYBounds = isHorizontalChartRotation
-      ? cursorPosition.y >= startY - offset && cursorPosition.y <= endY + offset
-      : cursorPosition.y >= chartWidth - startY - offset && cursorPosition.y <= chartWidth - endY + offset;
-  }
-
-  // If it's within cursor bounds, return true (no need to check marker bounds)
-  if (isCursorWithinXBounds && isCursorWithinYBounds) {
-    return true;
+  if (!hideLinesTooltips) {
+    if (isXDomainAnnotation) {
+      isCursorWithinXBounds = isHorizontalChartRotation
+        ? cursorPosition.x >= startX - offset && cursorPosition.x <= endX + offset
+        : cursorPosition.x >= chartHeight - startX - offset && cursorPosition.x <= chartHeight - endX + offset;
+      isCursorWithinYBounds = isHorizontalChartRotation
+        ? cursorPosition.y >= startY && cursorPosition.y <= endY
+        : cursorPosition.y >= startY - offset && cursorPosition.y <= endY + offset;
+    } else {
+      isCursorWithinXBounds = isHorizontalChartRotation
+        ? cursorPosition.x >= startX && cursorPosition.x <= endX
+        : cursorPosition.x >= startX - offset && cursorPosition.x <= endX + offset;
+      isCursorWithinYBounds = isHorizontalChartRotation
+        ? cursorPosition.y >= startY - offset && cursorPosition.y <= endY + offset
+        : cursorPosition.y >= chartWidth - startY - offset && cursorPosition.y <= chartWidth - endY + offset;
+    }
+    // If it's within cursor bounds, return true (no need to check marker bounds)
+    if (isCursorWithinXBounds && isCursorWithinYBounds) {
+      return true;
+    }
   }
 
   if (!marker) {
@@ -748,6 +749,7 @@ export function computeLineAnnotationTooltipState(
   chartRotation: Rotation,
   chartDimensions: Dimensions,
   axesSpecs: Map<AxisId, AxisSpec>,
+  hideLinesTooltips?: boolean,
 ): AnnotationTooltipState {
   const annotationTooltipState: AnnotationTooltipState = {
     isVisible: false,
@@ -778,6 +780,7 @@ export function computeLineAnnotationTooltipState(
       chartDimensions,
       domainType,
       line.marker,
+      hideLinesTooltips,
     );
 
     if (isWithinBounds) {
@@ -1011,6 +1014,7 @@ export function computeAnnotationTooltipState(
         chartRotation,
         chartDimensions,
         axesSpecs,
+        spec.hideLinesTooltips,
       );
 
       if (lineAnnotationTooltipState.isVisible) {
