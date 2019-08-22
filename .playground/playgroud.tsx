@@ -1,6 +1,19 @@
 import React from 'react';
 
-import { Axis, Chart, getAxisId, getSpecId, niceTimeFormatter, Position, ScaleType, Settings, BarSeries, LineAnnotation, getAnnotationId, AnnotationDomainTypes } from '../src';
+import {
+  Axis,
+  Chart,
+  getAxisId,
+  getSpecId,
+  niceTimeFormatter,
+  Position,
+  ScaleType,
+  Settings,
+  BarSeries,
+  LineAnnotation,
+  getAnnotationId,
+  AnnotationDomainTypes,
+} from '../src';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 import { CursorEvent } from '../src/specs/settings';
 import { CursorUpdateListener } from '../src/chart_types/xy_chart/store/chart_state';
@@ -79,7 +92,7 @@ function renderChart(
             },
           ]}
           hideLinesTooltips={true}
-          marker={<Icon type='alert'/>}
+          marker={<Icon type="alert" />}
         />
         <BarSeries
           id={getSpecId('dataset A with long title')}
