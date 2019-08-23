@@ -9,7 +9,9 @@ import {
   isBarValueOverflow,
   rotateBarValueProps,
   buildPointStyleProps,
+  buildBarBorderRenderProps,
 } from './rendering_props_utils';
+import { RectBorderStyle, RectStyle } from '../../../utils/themes/theme';
 
 describe('[canvas] Area Geometries props', () => {
   test('can build area point props', () => {
@@ -785,5 +787,80 @@ describe('[canvas] Bar Geometries', () => {
     expectedRotatedVerticalProps.height = 0;
     expectedRotatedVerticalProps.y = 90;
     expect(rotatedVerticalContainedProps).toEqual(expectedRotatedVerticalProps);
+  });
+
+  describe('buildBarBorderRenderProps', () => {
+    const getProps = (borderStyle: Partial<RectBorderStyle> = {}, barStyle: Partial<RectStyle> = {}) => {
+      return [
+        10,
+        20,
+        30,
+        40,
+        {
+          opacity: 1,
+          ...barStyle,
+        },
+        {
+          strokeOpacity: 0.5,
+          strokeWidth: 2,
+          visible: true,
+          stroke: 'blue',
+          ...borderStyle,
+        },
+        {
+          opacity: 0.5,
+        },
+      ];
+    };
+    it('should build bar props with stroke', () => {
+      // @ts-ignore
+      const props = buildBarBorderRenderProps(...getProps());
+      expect(props).toEqual({
+        x: 11,
+        y: 21,
+        width: 28,
+        height: 38,
+        fillEnabled: false,
+        strokeEnabled: true,
+        strokeWidth: 2,
+        stroke: 'blue',
+        strokeHitEnabled: false,
+        perfectDrawEnabled: false,
+        listening: false,
+        opacity: 0.5 * 0.5,
+      });
+    });
+
+    it('should return null if visible is false', () => {
+      // @ts-ignore
+      const props = buildBarBorderRenderProps(...getProps({ visible: false }));
+      expect(props).toBeNull();
+    });
+
+    it('should return null if strokeWidth is 0 or less', () => {
+      // @ts-ignore
+      const props = buildBarBorderRenderProps(...getProps({ strokeWidth: 0 }));
+      expect(props).toBeNull();
+    });
+
+    it('should return null if no stroke color', () => {
+      // @ts-ignore
+      const props = buildBarBorderRenderProps(...getProps({ stroke: undefined }));
+      expect(props).toBeNull();
+    });
+
+    it('should return props with bar opacity if no stroke opacity', () => {
+      // @ts-ignore
+      const props = buildBarBorderRenderProps(...getProps({ strokeOpacity: undefined }));
+      expect(props).toMatchObject({
+        opacity: 1 * 0.5,
+      });
+    });
+
+    it('should return null if no stroke opacity and bar opacity in 0', () => {
+      // @ts-ignore
+      const props = buildBarBorderRenderProps(...getProps({ strokeOpacity: undefined }, { opacity: 0 }));
+      expect(props).toBeNull();
+    });
   });
 });
