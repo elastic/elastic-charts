@@ -80,6 +80,7 @@ export class BarGeometries extends React.PureComponent<BarGeometriesDataProps, B
                   props.height,
                   color,
                   seriesStyle.rect,
+                  seriesStyle.rectBorder,
                   geometryStyle,
                 );
 
@@ -103,7 +104,16 @@ export class BarGeometries extends React.PureComponent<BarGeometriesDataProps, B
           seriesStyle.rectBorder,
           geometryStyle,
         );
-        const barProps = buildBarRenderProps(x, y, width, height, color, seriesStyle.rect, geometryStyle);
+        const barProps = buildBarRenderProps(
+          x,
+          y,
+          width,
+          height,
+          color,
+          seriesStyle.rect,
+          seriesStyle.rectBorder,
+          geometryStyle,
+        );
 
         return (
           <React.Fragment key={key}>

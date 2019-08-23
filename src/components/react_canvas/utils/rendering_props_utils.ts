@@ -354,15 +354,18 @@ export function buildBarRenderProps(
   height: number,
   color: string,
   rectStyle: RectStyle,
+  borderStyle: RectBorderStyle,
   geometryStyle: GeometryStyle,
 ): RectConfig {
   const opacity = rectStyle.opacity * geometryStyle.opacity;
+  const { stroke, visible, strokeWidth, strokeOpacity = 0 } = borderStyle;
+  const offset = !visible || strokeWidth <= 0 || !stroke || strokeOpacity <= 0 || opacity <= 0 ? 0 : strokeWidth;
 
   return {
-    x,
-    y,
-    width,
-    height,
+    x: x + offset,
+    y: y + offset,
+    width: width - 2 * offset,
+    height: height - 2 * offset,
     fill: rectStyle.fill || color,
     strokeEnabled: false,
     ...geometryStyle,
@@ -388,11 +391,11 @@ export function buildBarBorderRenderProps(
   y: number,
   width: number,
   height: number,
-  barStyle: RectStyle,
+  rectStyle: RectStyle,
   borderStyle: RectBorderStyle,
   geometryStyle: GeometryStyle,
 ): RectConfig | null {
-  const { stroke, visible, strokeWidth, strokeOpacity = barStyle.opacity } = borderStyle;
+  const { stroke, visible, strokeWidth, strokeOpacity = rectStyle.opacity } = borderStyle;
   const opacity = strokeOpacity * geometryStyle.opacity;
 
   if (!visible || strokeWidth <= 0 || !stroke || opacity <= 0) {

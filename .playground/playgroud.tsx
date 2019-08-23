@@ -37,14 +37,14 @@ export class Playground extends React.Component {
           stackAccessors={[0]}
           barSeriesStyle={{
             rectBorder: {
-              strokeOpacity: 0.5,
+              strokeOpacity: 1,
               strokeWidth: 4,
-              stroke: 'black',
+              stroke: 'blue',
               visible: true,
             },
             rect: {
               opacity: 0.25,
-              fill: 'black',
+              fill: 'red',
             },
           }}
         />
