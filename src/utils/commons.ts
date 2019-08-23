@@ -60,19 +60,24 @@ export interface MergeOptions {
   mergeOptionalPartialValues?: boolean;
 }
 
-function getPartialValue<T>(base: T, partial?: RecursivePartial<T>, partials: RecursivePartial<T>[] = []): T {
+export function getPartialValue<T>(base: T, partial?: RecursivePartial<T>, partials: RecursivePartial<T>[] = []): T {
   const partialWithValue = partial !== undefined ? partial : partials.find((v) => v !== undefined);
   return partialWithValue !== undefined ? (partialWithValue as T) : base;
 }
 
-function getAllKey<T>(partial: T, partials: T[]): string[] {
-  return partials.reduce((keys, object) => {
-    if (object && typeof object === 'object') {
-      keys.push(...Object.keys(object));
+/**
+ * Returns all top-level keys from one or more objects
+ * @param object - first object to get keys
+ * @param objects
+ */
+export function getAllKeys(object: any, objects: any[] = []): string[] {
+  return objects.reduce((keys: any[], obj) => {
+    if (obj && typeof obj === 'object') {
+      keys.push(...Object.keys(obj));
     }
 
     return keys;
-  }, Object.keys(partial));
+  }, Object.keys(object));
 }
 
 /**
@@ -95,7 +100,7 @@ export function mergePartial<T>(
     const baseClone = { ...base };
 
     if (partial !== undefined && options.mergeOptionalPartialValues) {
-      getAllKey(partial, additionalPartials).forEach((key) => {
+      getAllKeys(partial, additionalPartials).forEach((key) => {
         if (!(key in baseClone)) {
           (baseClone as any)[key] =
             (partial as any)[key] !== undefined
