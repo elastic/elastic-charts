@@ -213,7 +213,7 @@ export const DEFAULT_ANNOTATION_LINE_STYLE: LineAnnotationStyle = {
     opacity: 1,
   },
   details: {
-    fontSize: 20,
+    fontSize: 10,
     fontFamily: 'sans-serif',
     fontStyle: 'normal',
     fill: '#777',
