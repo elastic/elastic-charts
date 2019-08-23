@@ -277,6 +277,10 @@ export function mergeWithDefaultAnnotationRect(config?: Partial<RectAnnotationSt
   };
 }
 
-export function mergeWithDefaultTheme(theme: PartialTheme, defaultTheme: Theme = LIGHT_THEME): Theme {
-  return mergePartial(defaultTheme, theme, { mergeOptionalPartialValues: true });
+export function mergeWithDefaultTheme(
+  theme: PartialTheme,
+  defaultTheme: Theme = LIGHT_THEME,
+  axillaryThemes: PartialTheme[] = [],
+): Theme {
+  return mergePartial(defaultTheme, theme, { mergeOptionalPartialValues: true }, axillaryThemes);
 }

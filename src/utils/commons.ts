@@ -60,35 +60,61 @@ export interface MergeOptions {
   mergeOptionalPartialValues?: boolean;
 }
 
+function getPartialValue<T>(base: T, partial?: RecursivePartial<T>, partials: RecursivePartial<T>[] = []): T {
+  const partialWithValue = partial !== undefined ? partial : partials.find((v) => v !== undefined);
+  return partialWithValue !== undefined ? (partialWithValue as T) : base;
+}
+
+function getAllKey<T>(partial: T, partials: T[]): string[] {
+  return partials.reduce((keys, object) => {
+    if (object && typeof object === 'object') {
+      keys.push(...Object.keys(object));
+    }
+
+    return keys;
+  }, Object.keys(partial));
+}
+
 /**
  * Merges values of a partial structure with a base structure.
+ *
+ * @note No nested array merging
  *
  * @param base structure to be duplicated, must have all props of `partial`
  * @param partial structure to override values from base
  *
  * @returns new base structure with updated partial values
  */
-export function mergePartial<T>(base: T, partial?: RecursivePartial<T>, options: MergeOptions = {}): T {
-  if (Array.isArray(base)) {
-    return partial ? (partial as T) : base; // No nested array merging
-  } else if (typeof base === 'object') {
+export function mergePartial<T>(
+  base: T,
+  partial?: RecursivePartial<T>,
+  options: MergeOptions = {},
+  additionalPartials: RecursivePartial<T>[] = [],
+): T {
+  if (!Array.isArray(base) && typeof base === 'object') {
     const baseClone = { ...base };
 
-    if (partial && options.mergeOptionalPartialValues) {
-      Object.keys(partial).forEach((key) => {
+    if (partial !== undefined && options.mergeOptionalPartialValues) {
+      getAllKey(partial, additionalPartials).forEach((key) => {
         if (!(key in baseClone)) {
-          // @ts-ignore
-          baseClone[key] = partial[key];
+          (baseClone as any)[key] =
+            (partial as any)[key] !== undefined
+              ? (partial as any)[key]
+              : (additionalPartials.find((v: any) => v[key] !== undefined) || ({} as any))[key];
         }
       });
     }
 
     return Object.keys(base).reduce((newBase, key) => {
-      // @ts-ignore
-      newBase[key] = mergePartial(base[key], partial && partial[key], options);
+      const partialValue = partial && (partial as any)[key];
+      const partialValues = additionalPartials.map((v) => (typeof v === 'object' ? (v as any)[key] : undefined));
+      const baseValue = (base as any)[key];
+
+      (newBase as any)[key] = mergePartial(baseValue, partialValue, options, partialValues);
+
       return newBase;
     }, baseClone);
   }
 
-  return partial !== undefined ? (partial as T) : base;
+  return getPartialValue<T>(base, partial, additionalPartials);
 }

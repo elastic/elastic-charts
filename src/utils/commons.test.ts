@@ -135,6 +135,120 @@ describe('commons utilities', () => {
       expect(base).toEqual(baseClone);
     });
 
+    describe('additionalPartials', () => {
+      test('should override string value in base with first partial value', () => {
+        const partial: PartialTestType = { string: 'test1' };
+        const partials: PartialTestType[] = [{ string: 'test2' }, { string: 'test3' }];
+        const newBase = mergePartial(base, partial, {}, partials);
+        expect(newBase).toEqual({
+          ...newBase,
+          string: partial.string,
+        });
+      });
+
+      test('should override string values in base with first and second partial value', () => {
+        const partial: PartialTestType = { number: 4 };
+        const partials: PartialTestType[] = [{ string: 'test2' }];
+        const newBase = mergePartial(base, partial, {}, partials);
+        expect(newBase).toEqual({
+          ...newBase,
+          number: partial.number,
+          string: partials[0].string,
+        });
+      });
+
+      test('should override string values in base with first, second and thrid partial value', () => {
+        const partial: PartialTestType = { number: 4 };
+        const partials: PartialTestType[] = [
+          { number: 10, string: 'test2' },
+          { number: 20, string: 'nope', boolean: true },
+        ];
+        const newBase = mergePartial(base, partial, {}, partials);
+        expect(newBase).toEqual({
+          ...newBase,
+          number: partial.number,
+          string: partials[0].string,
+          boolean: partials[1].boolean,
+        });
+      });
+
+      test('should override complex array value in base', () => {
+        const partial: PartialTestType = { array1: [{ string: 'test1' }] };
+        const partials: PartialTestType[] = [{ array1: [{ string: 'test2' }] }];
+        const newBase = mergePartial(base, partial, {}, partials);
+        expect(newBase).toEqual({
+          ...newBase,
+          array1: partial.array1,
+        });
+      });
+
+      test('should override complex array value in base second partial', () => {
+        const partial: PartialTestType = {};
+        const partials: PartialTestType[] = [{}, { array1: [{ string: 'test2' }] }];
+        const newBase = mergePartial(base, partial, {}, partials);
+        expect(newBase).toEqual({
+          ...newBase,
+          array1: partials[1].array1,
+        });
+      });
+
+      test('should override simple array value in base', () => {
+        const partial: PartialTestType = { array2: [4, 5, 6] };
+        const partials: PartialTestType[] = [{ array2: [7, 8, 9] }];
+        const newBase = mergePartial(base, partial, {}, partials);
+        expect(newBase).toEqual({
+          ...newBase,
+          array2: partial.array2,
+        });
+      });
+
+      test('should override simple array value in base with partial', () => {
+        const partial: PartialTestType = {};
+        const partials: PartialTestType[] = [{ array2: [7, 8, 9] }];
+        const newBase = mergePartial(base, partial, {}, partials);
+        expect(newBase).toEqual({
+          ...newBase,
+          array2: partials[0].array2,
+        });
+      });
+
+      test('should override simple array value in base with second partial', () => {
+        const partial: PartialTestType = {};
+        const partials: PartialTestType[] = [{}, { array2: [7, 8, 9] }];
+        const newBase = mergePartial(base, partial, {}, partials);
+        expect(newBase).toEqual({
+          ...newBase,
+          array2: partials![1].array2,
+        });
+      });
+
+      test('should override nested values in base', () => {
+        const partial: PartialTestType = { nested: { number: 5 } };
+        const partials: PartialTestType[] = [{ nested: { number: 10 } }];
+        const newBase = mergePartial(base, partial, {}, partials);
+        expect(newBase).toEqual({
+          ...newBase,
+          nested: {
+            ...newBase.nested,
+            number: partial!.nested!.number,
+          },
+        });
+      });
+
+      test('should override nested values from partial', () => {
+        const partial: PartialTestType = {};
+        const partials: PartialTestType[] = [{ nested: { number: 10 } }];
+        const newBase = mergePartial(base, partial, {}, partials);
+        expect(newBase).toEqual({
+          ...newBase,
+          nested: {
+            ...newBase.nested,
+            number: partials![0].nested!.number,
+          },
+        });
+      });
+    });
+
     describe('MergeOptions', () => {
       describe('mergeOptionalPartialValues', () => {
         interface OptionalTestType {
@@ -178,6 +292,19 @@ describe('commons utilities', () => {
                 value2: 10,
                 value3: 'bar',
               },
+            });
+          });
+
+          test('should merge optional params from partials', () => {
+            type PartialTestTypeOverride = PartialTestType & any;
+            const partial: PartialTestTypeOverride = { nick: 'test', number: 6 };
+            const partials: (PartialTestTypeOverride)[] = [{ string: 'test', foo: 'bar' }, { array3: [3, 3, 3] }];
+            const newBase = mergePartial(base, partial, { mergeOptionalPartialValues: true }, partials);
+            expect(newBase).toEqual({
+              ...newBase,
+              ...partial,
+              ...partials[0],
+              ...partials[1],
             });
           });
         });
