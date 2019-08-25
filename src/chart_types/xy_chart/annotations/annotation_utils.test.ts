@@ -290,6 +290,7 @@ describe('annotation utils', () => {
         position: [0, 20, 20 + DEFAULT_LINE_OVERFLOW, 20],
         details: { detailsText: 'foo', headerText: '2' },
         tooltipLinePosition: [20, 0, 20, 20],
+        marker: undefined,
       },
     ];
     expect(dimensions).toEqual(expectedDimensions);
@@ -385,9 +386,10 @@ describe('annotation utils', () => {
     );
     const expectedDimensions = [
       {
-        position: [20, -DEFAULT_LINE_OVERFLOW, 20, 20],
+        position: [25, -DEFAULT_LINE_OVERFLOW, 25, 20],
         details: { detailsText: 'foo', headerText: '2' },
-        tooltipLinePosition: [20, 0, 20, 20],
+        tooltipLinePosition: [25, 0, 25, 20],
+        marker: undefined,
       },
     ];
     expect(dimensions).toEqual(expectedDimensions);
@@ -420,9 +422,10 @@ describe('annotation utils', () => {
     );
     const expectedDimensions = [
       {
-        position: [20, 0, 20, 20],
+        position: [25, 0, 25, 20],
         details: { detailsText: 'foo', headerText: '2' },
-        tooltipLinePosition: [20, 0, 20, 20],
+        tooltipLinePosition: [25, 0, 25, 20],
+        marker: undefined,
       },
     ];
     expect(dimensions).toEqual(expectedDimensions);
@@ -455,9 +458,10 @@ describe('annotation utils', () => {
     );
     const expectedDimensions = [
       {
-        position: [105, 0, 105, 20],
+        position: [110, 0, 110, 20],
         details: { detailsText: 'foo', headerText: '10.5' },
-        tooltipLinePosition: [105, 0, 105, 20],
+        tooltipLinePosition: [110, 0, 110, 20],
+        marker: undefined,
       },
     ];
     expect(dimensions).toEqual(expectedDimensions);
@@ -494,6 +498,7 @@ describe('annotation utils', () => {
         position: [12.5, -DEFAULT_LINE_OVERFLOW, 12.5, 10],
         details: { detailsText: 'foo', headerText: 'a' },
         tooltipLinePosition: [0, 12.5, 10, 12.5],
+        marker: undefined,
       },
     ];
     expect(dimensions).toEqual(expectedDimensions);
@@ -527,9 +532,10 @@ describe('annotation utils', () => {
     );
     const expectedDimensions = [
       {
-        position: [20, -DEFAULT_LINE_OVERFLOW, 20, 10],
+        position: [25, -DEFAULT_LINE_OVERFLOW, 25, 10],
         details: { detailsText: 'foo', headerText: '2' },
-        tooltipLinePosition: [0, 20, 10, 20],
+        tooltipLinePosition: [0, 25, 10, 25],
+        marker: undefined,
       },
     ];
     expect(dimensions).toEqual(expectedDimensions);
@@ -563,9 +569,10 @@ describe('annotation utils', () => {
     );
     const expectedDimensions = [
       {
-        position: [20, -DEFAULT_LINE_OVERFLOW, 20, 10],
+        position: [25, -DEFAULT_LINE_OVERFLOW, 25, 10],
         details: { detailsText: 'foo', headerText: '2' },
-        tooltipLinePosition: [0, 0, 10, 0],
+        tooltipLinePosition: [0, -5, 10, -5],
+        marker: undefined,
       },
     ];
     expect(dimensions).toEqual(expectedDimensions);
@@ -599,9 +606,10 @@ describe('annotation utils', () => {
     );
     const expectedDimensions = [
       {
-        position: [20, -DEFAULT_LINE_OVERFLOW, 20, 20],
+        position: [25, -DEFAULT_LINE_OVERFLOW, 25, 20],
         details: { detailsText: 'foo', headerText: '2' },
-        tooltipLinePosition: [20, 0, 20, 20],
+        tooltipLinePosition: [25, 0, 25, 20],
+        marker: undefined,
       },
     ];
     expect(dimensions).toEqual(expectedDimensions);
@@ -634,9 +642,10 @@ describe('annotation utils', () => {
     );
     const expectedDimensions = [
       {
-        position: [20, DEFAULT_LINE_OVERFLOW, 20, 20],
+        position: [25, DEFAULT_LINE_OVERFLOW, 25, 20],
         details: { detailsText: 'foo', headerText: '2' },
-        tooltipLinePosition: [20, DEFAULT_LINE_OVERFLOW, 20, 20],
+        tooltipLinePosition: [25, DEFAULT_LINE_OVERFLOW, 25, 20],
+        marker: undefined,
       },
     ];
     expect(dimensions).toEqual(expectedDimensions);
@@ -1466,7 +1475,7 @@ describe('annotation utils', () => {
 
     expect(unrotated).toEqual([{ rect: { x: 0, y: 0, width: 25, height: 20 } }]);
   });
-  test.only('should validate scaled dataValues', () => {
+  test('should validate scaled dataValues', () => {
     // not aligned with tick
     expect(scaleAndValidateDatum('', ordinalScale, false)).toBe(null);
     expect(scaleAndValidateDatum('a', continuousScale, false)).toBe(null);
