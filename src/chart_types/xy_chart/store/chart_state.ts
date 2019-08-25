@@ -276,7 +276,7 @@ export class ChartStore {
 
     const xPosition = this.xScale.pureScale(value);
 
-    if (xPosition > this.chartDimensions.width + this.chartDimensions.left) {
+    if (xPosition == null || xPosition > this.chartDimensions.width + this.chartDimensions.left) {
       this.clearTooltipAndHighlighted();
       return;
     }
@@ -315,6 +315,7 @@ export class ChartStore {
     if (!this.seriesDomainsAndData || this.tooltipType.get() === TooltipType.None) {
       return;
     }
+    this.externalCursorShown.set(false);
 
     // get positions relative to chart
     let xPos = x - this.chartDimensions.left;
@@ -359,10 +360,6 @@ export class ChartStore {
         value: xValue.value,
       });
     }
-    // if (!xValue.withinBandwidth) {
-    //   this.clearTooltipAndHighlighted();
-    //   return;
-    // }
 
     // update che cursorBandPosition based on chart configuration
     const isLineAreaOnly = isLineAreaOnlyChart(this.seriesSpecs);

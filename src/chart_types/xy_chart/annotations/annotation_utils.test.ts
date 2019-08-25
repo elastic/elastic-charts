@@ -1482,9 +1482,6 @@ describe('annotation utils', () => {
 
     // aligned with tick
     expect(scaleAndValidateDatum(1.25, continuousScale, true)).toBe(12.5);
-    console.log(continuousScale.ticks());
-    console.log(continuousScale.tickValues);
-    console.log(continuousScale.range);
   });
   test('should determine if a point is within a rectangle annotation', () => {
     const cursorPosition = { x: 3, y: 4 };

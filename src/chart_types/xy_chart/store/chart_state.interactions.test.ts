@@ -247,6 +247,38 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(store.yScales).not.toBeUndefined();
   });
 
+  test('set cursor from external source', () => {
+    store.setCursorValue(0);
+    expect(store.externalCursorShown.get()).toBe(true);
+    expect(store.cursorBandPosition).toEqual({
+      height: 100,
+      left: 10,
+      top: 10,
+      visible: true,
+      width: 50,
+    });
+
+    store.setCursorValue(1);
+    expect(store.externalCursorShown.get()).toBe(true);
+    expect(store.cursorBandPosition).toEqual({
+      height: 100,
+      left: 60,
+      top: 10,
+      visible: true,
+      width: 50,
+    });
+
+    store.setCursorValue(2);
+    expect(store.externalCursorShown.get()).toBe(true);
+    // equal to the latest except the visiblility
+    expect(store.cursorBandPosition).toEqual({
+      height: 100,
+      left: 60,
+      top: 10,
+      visible: false,
+      width: 50,
+    });
+  });
   test('can determine which tooltip to display if chart & annotation tooltips possible', () => {
     const annotationDimensions = [{ rect: { x: 49, y: -1, width: 3, height: 99 } }];
     const rectAnnotationSpec: RectAnnotationSpec = {
