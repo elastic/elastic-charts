@@ -951,7 +951,6 @@ export function computeRectAnnotationTooltipState(
     const endY = startY + rect.height;
 
     const isWithinBounds = isWithinRectBounds(cursorPosition, { startX, endX, startY, endY });
-
     if (isWithinBounds) {
       annotationTooltipState.isVisible = true;
       annotationTooltipState.details = details;

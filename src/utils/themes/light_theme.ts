@@ -101,12 +101,12 @@ export const LIGHT_THEME: Theme = {
   },
   crosshair: {
     band: {
-      fill: 'lightgray',
+      fill: 'black',
       visible: true,
     },
     line: {
-      stroke: 'gray',
-      strokeWidth: 1,
+      stroke: 'black',
+      strokeWidth: 2,
       dash: [5, 5],
       visible: true,
     },
