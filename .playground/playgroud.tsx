@@ -16,6 +16,8 @@ import {
   AreaSeries,
   LineSeries,
   TooltipType,
+  RectAnnotation,
+  HistogramBarSeries,
 } from '../src';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 import { CursorEvent } from '../src/specs/settings';
@@ -27,12 +29,14 @@ export class Playground extends React.Component {
   ref2 = React.createRef<Chart>();
   ref3 = React.createRef<Chart>();
   ref4 = React.createRef<Chart>();
+  ref5 = React.createRef<Chart>();
 
   onCursorUpdate: CursorUpdateListener = (event?: CursorEvent) => {
     this.ref1.current!.dispatchExternalCursorEvent(event);
     this.ref2.current!.dispatchExternalCursorEvent(event);
     this.ref3.current!.dispatchExternalCursorEvent(event);
     this.ref4.current!.dispatchExternalCursorEvent(event);
+    this.ref5.current!.dispatchExternalCursorEvent(event);
   };
 
   render() {
@@ -41,7 +45,7 @@ export class Playground extends React.Component {
         {renderChart(
           '1 - top',
           this.ref1,
-          KIBANA_METRICS.metrics.kibana_os_load[1].data.slice(0, 20).filter((d, i) => i !== 1 && i !== 2),
+          KIBANA_METRICS.metrics.kibana_os_load[1].data.slice(0, 50).filter((d, i) => i !== 1 && i !== 2),
           ScaleType.Time,
           this.onCursorUpdate,
           2,
@@ -61,11 +65,11 @@ export class Playground extends React.Component {
         {renderChart(
           '3 - bottom',
           this.ref3,
-          KIBANA_METRICS.metrics.kibana_os_load[1].data.slice(0, 5),
+          KIBANA_METRICS.metrics.kibana_os_load[1].data.slice(0, 50),
           ScaleType.Time,
           this.onCursorUpdate,
-          4,
-          'bar',
+          2,
+          'mixed',
         )}
 
         {renderChart(
@@ -75,7 +79,16 @@ export class Playground extends React.Component {
           ScaleType.Time,
           this.onCursorUpdate,
           1,
-          'mixed',
+          'bar',
+        )}
+        {renderChart(
+          '5 - histogram',
+          this.ref5,
+          KIBANA_METRICS.metrics.kibana_os_load[1].data.slice(0, 7),
+          ScaleType.Time,
+          this.onCursorUpdate,
+          1,
+          'histogram',
         )}
       </>
     );
@@ -89,7 +102,7 @@ function renderChart(
   scaleType: 'linear' | 'ordinal' | 'time',
   onCursorUpdate?: CursorUpdateListener,
   maxSeries: number = 4,
-  chartType: 'bar' | 'line' | 'area' | 'mixed' = 'bar',
+  chartType: 'bar' | 'line' | 'area' | 'mixed' | 'histogram' = 'bar',
 ) {
   const formatter = niceTimeFormatter([data[0][0], data[data.length - 1][0]]);
   return (
@@ -127,17 +140,30 @@ function renderChart(
           domainType={AnnotationDomainTypes.XDomain}
           dataValues={[
             {
-              dataValue: KIBANA_METRICS.metrics.kibana_os_load[1].data[0][0],
-              details: 'tooltip 1',
+              dataValue: KIBANA_METRICS.metrics.kibana_os_load[1].data[2][0],
+              details: `${formatter(KIBANA_METRICS.metrics.kibana_os_load[1].data[2][0])}`,
             },
             {
-              dataValue: KIBANA_METRICS.metrics.kibana_os_load[1].data[12][0],
-              details: `${formatter(KIBANA_METRICS.metrics.kibana_os_load[1].data[12][0])}`,
+              dataValue: KIBANA_METRICS.metrics.kibana_os_load[1].data[3][0],
+              details: `${formatter(KIBANA_METRICS.metrics.kibana_os_load[1].data[3][0])}`,
             },
           ]}
           hideLinesTooltips={true}
-          hideLines={true}
           marker={<Icon type="alert" />}
+        />
+        <RectAnnotation
+          annotationId={getAnnotationId('rect annotations')}
+          dataValues={[
+            {
+              coordinates: {
+                x0: KIBANA_METRICS.metrics.kibana_os_load[1].data[2][0],
+                x1: KIBANA_METRICS.metrics.kibana_os_load[1].data[3][0],
+              },
+              details: `from: ${formatter(KIBANA_METRICS.metrics.kibana_os_load[1].data[2][0])} to: ${formatter(
+                KIBANA_METRICS.metrics.kibana_os_load[1].data[3][0],
+              )}`,
+            },
+          ]}
         />
         {(chartType === 'mixed' || chartType === 'line') &&
           new Array(maxSeries).fill(0).map((d, k) => {
@@ -159,6 +185,21 @@ function renderChart(
               <BarSeries
                 key={k}
                 id={getSpecId('dataset bar ' + k)}
+                xScaleType={scaleType}
+                yScaleType={ScaleType.Linear}
+                data={data.map((d, i) => [d[0], d[1] + 5 + Math.cos((i * (k + 1)) % data.length) * 5])}
+                xAccessor={0}
+                yAccessors={[1]}
+                sortIndex={-10}
+              />
+            );
+          })}
+        {chartType === 'histogram' &&
+          new Array(maxSeries).fill(0).map((d, k) => {
+            return (
+              <HistogramBarSeries
+                key={k}
+                id={getSpecId('dataset histogram ' + k)}
                 xScaleType={scaleType}
                 yScaleType={ScaleType.Linear}
                 data={data.map((d, i) => [d[0], d[1] + 5 + Math.cos((i * (k + 1)) % data.length) * 5])}

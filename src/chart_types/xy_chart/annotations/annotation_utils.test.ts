@@ -33,7 +33,6 @@ import {
   getAnnotationLineTooltipTransform,
   getAnnotationLineTooltipXOffset,
   getAnnotationLineTooltipYOffset,
-  getNearestTick,
   getRotatedCursor,
   isBottomRectTooltip,
   isRightRectTooltip,
@@ -56,7 +55,7 @@ describe('annotation utils', () => {
       domain: continuousData,
       range: [minRange, maxRange],
     },
-    { bandwidth: 0, minInterval: 1 },
+    { bandwidth: 10, minInterval: 1 },
   );
 
   const ordinalData = ['a', 'b', 'c', 'd', 'a', 'b', 'c'];
@@ -1467,7 +1466,7 @@ describe('annotation utils', () => {
 
     expect(unrotated).toEqual([{ rect: { x: 0, y: 0, width: 25, height: 20 } }]);
   });
-  test('should validate scaled dataValues', () => {
+  test.only('should validate scaled dataValues', () => {
     // not aligned with tick
     expect(scaleAndValidateDatum('', ordinalScale, false)).toBe(null);
     expect(scaleAndValidateDatum('a', continuousScale, false)).toBe(null);
@@ -1482,7 +1481,10 @@ describe('annotation utils', () => {
     expect(scaleAndValidateDatum(0, continuousScale, false)).toBe(0);
 
     // aligned with tick
-    expect(scaleAndValidateDatum(1.25, continuousScale, true)).toBe(10);
+    expect(scaleAndValidateDatum(1.25, continuousScale, true)).toBe(12.5);
+    console.log(continuousScale.ticks());
+    console.log(continuousScale.tickValues);
+    console.log(continuousScale.range);
   });
   test('should determine if a point is within a rectangle annotation', () => {
     const cursorPosition = { x: 3, y: 4 };
@@ -1681,15 +1683,7 @@ describe('annotation utils', () => {
     expect(getRotatedCursor(rawCursorPosition, chartDimensions, -90)).toEqual({ x: 18, y: 9 });
     expect(getRotatedCursor(rawCursorPosition, chartDimensions, 180)).toEqual({ x: 9, y: 18 });
   });
-  test('should get nearest tick', () => {
-    const ticks = [0, 1, 2];
-    expect(getNearestTick(0.25, [], 1)).toBeUndefined();
-    expect(getNearestTick(0.25, [100], 1)).toBeUndefined();
-    expect(getNearestTick(0.25, ticks, 1)).toBe(0);
-    expect(getNearestTick(0.75, ticks, 1)).toBe(1);
-    expect(getNearestTick(0.5, ticks, 1)).toBe(1);
-    expect(getNearestTick(1.75, ticks, 1)).toBe(2);
-  });
+
   test('should compute cluster offset', () => {
     const singleBarCluster = 1;
     const multiBarCluster = 2;
