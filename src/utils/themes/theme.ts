@@ -22,7 +22,9 @@ export interface GeometryStyle {
 }
 
 export interface SharedGeometryStyle {
-  [key: string]: GeometryStyle;
+  default: GeometryStyle;
+  highlighted: GeometryStyle;
+  unhighlighted: GeometryStyle;
 }
 
 export interface StrokeStyle {
@@ -164,12 +166,22 @@ export interface RectStyle {
 }
 
 export interface RectBorderStyle {
-  /** is the rect border visible or hidden ? */
+  /**
+   * Border visibility
+   */
   visible: boolean;
-  /** a static stroke color if defined, if not it will use the color of the series */
+  /**
+   * Border stroke color
+   */
   stroke?: string;
-  /** the stroke width of the rect border */
+  /**
+   * Border stroke width
+   */
   strokeWidth: number;
+  /**
+   * Border stroke opacity
+   */
+  strokeOpacity?: number;
 }
 export interface BarSeriesStyle {
   rect: RectStyle;
@@ -201,31 +213,31 @@ export interface LineAnnotationStyle {
 export type RectAnnotationStyle = StrokeStyle & FillStyle & Opacity;
 
 export const DEFAULT_GRID_LINE_CONFIG: GridLineConfig = {
-  stroke: 'red',
+  stroke: '#EFEFEF',
   strokeWidth: 1,
   opacity: 1,
 };
 
 export const DEFAULT_ANNOTATION_LINE_STYLE: LineAnnotationStyle = {
   line: {
-    stroke: '#000',
-    strokeWidth: 3,
+    stroke: '#777',
+    strokeWidth: 1,
     opacity: 1,
   },
   details: {
     fontSize: 10,
-    fontFamily: `'Open Sans', Helvetica, Arial, sans-serif`,
+    fontFamily: 'sans-serif',
     fontStyle: 'normal',
-    fill: 'gray',
+    fill: '#777',
     padding: 0,
   },
 };
 
 export const DEFAULT_ANNOTATION_RECT_STYLE: RectAnnotationStyle = {
-  stroke: '#e5e5e5',
-  strokeWidth: 1,
-  opacity: 0.5,
-  fill: '#e5e5e5',
+  stroke: '#FFEEBC',
+  strokeWidth: 0,
+  opacity: 0.25,
+  fill: '#FFEEBC',
 };
 
 export function mergeWithDefaultGridLineConfig(config: GridLineConfig): GridLineConfig {
