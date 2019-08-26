@@ -31,14 +31,13 @@ export class Playground extends React.Component {
           <Chart ref={this.ref1}>
             <Settings
               showLegend={true}
-              onBrushEnd={console.log}
               xDomain={{
                 min: KIBANA_METRICS.metrics.kibana_os_load[0].data[0][0],
                 max: KIBANA_METRICS.metrics.kibana_os_load[0].data[40][0],
               }}
               onCursorUpdate={this.onCursorUpdate}
             />
-            <Axis id={getAxisId('y')} position={Position.Left} />
+            <Axis id={getAxisId('y')} position={Position.Left} tickFormat={d => d.toFixed(2)}/>
             <Axis id={getAxisId('x')} position={Position.Bottom} />
             <HistogramBarSeries
               id={getSpecId('hbar')}
@@ -54,11 +53,10 @@ export class Playground extends React.Component {
           <Chart ref={this.ref2}>
             <Settings
               showLegend={true}
-              onBrushEnd={console.log}
               xDomain={{ min: KIBANA_METRICS.metrics.kibana_os_load[0].data[0][0] }}
               onCursorUpdate={this.onCursorUpdate}
             />
-            <Axis id={getAxisId('y')} position={Position.Left} />
+            <Axis id={getAxisId('y')} position={Position.Left} tickFormat={d => d.toFixed(2)}/>
             <Axis id={getAxisId('x')} position={Position.Bottom} />
             <BarSeries
               id={getSpecId('bar')}
@@ -66,7 +64,15 @@ export class Playground extends React.Component {
               xScaleType={ScaleType.Time}
               xAccessor={0}
               yAccessors={[1]}
-              data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(5, 30).filter((d, i) => i != 0 && i !== 5)}
+              data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 30).filter((d, i) => i != 0 && i !== 5)}
+            />
+            <BarSeries
+              id={getSpecId('bar2')}
+              yScaleType={ScaleType.Linear}
+              xScaleType={ScaleType.Time}
+              xAccessor={0}
+              yAccessors={[1]}
+              data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(5, 30)}
             />
           </Chart>
         </div>
@@ -74,11 +80,10 @@ export class Playground extends React.Component {
           <Chart ref={this.ref3}>
             <Settings
               showLegend={true}
-              onBrushEnd={console.log}
               xDomain={{ min: KIBANA_METRICS.metrics.kibana_os_load[0].data[0][0] }}
               onCursorUpdate={this.onCursorUpdate}
             />
-            <Axis id={getAxisId('y')} position={Position.Left} />
+            <Axis id={getAxisId('y')} position={Position.Left} tickFormat={d => d.toFixed(2)}/>
             <Axis id={getAxisId('x')} position={Position.Bottom} />
             <LineSeries
               id={getSpecId('line')}
