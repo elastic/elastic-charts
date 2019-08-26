@@ -37,7 +37,7 @@ export class Playground extends React.Component {
               }}
               onCursorUpdate={this.onCursorUpdate}
             />
-            <Axis id={getAxisId('y')} position={Position.Left} tickFormat={d => d.toFixed(2)}/>
+            <Axis id={getAxisId('y')} position={Position.Left} tickFormat={(d) => d.toFixed(2)} />
             <Axis id={getAxisId('x')} position={Position.Bottom} />
             <HistogramBarSeries
               id={getSpecId('hbar')}
@@ -56,7 +56,7 @@ export class Playground extends React.Component {
               xDomain={{ min: KIBANA_METRICS.metrics.kibana_os_load[0].data[0][0] }}
               onCursorUpdate={this.onCursorUpdate}
             />
-            <Axis id={getAxisId('y')} position={Position.Left} tickFormat={d => d.toFixed(2)}/>
+            <Axis id={getAxisId('y')} position={Position.Left} tickFormat={(d) => d.toFixed(2)} />
             <Axis id={getAxisId('x')} position={Position.Bottom} />
             <BarSeries
               id={getSpecId('bar')}
@@ -83,7 +83,7 @@ export class Playground extends React.Component {
               xDomain={{ min: KIBANA_METRICS.metrics.kibana_os_load[0].data[0][0] }}
               onCursorUpdate={this.onCursorUpdate}
             />
-            <Axis id={getAxisId('y')} position={Position.Left} tickFormat={d => d.toFixed(2)}/>
+            <Axis id={getAxisId('y')} position={Position.Left} tickFormat={(d) => d.toFixed(2)} />
             <Axis id={getAxisId('x')} position={Position.Bottom} />
             <LineSeries
               id={getSpecId('line')}

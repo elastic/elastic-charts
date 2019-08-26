@@ -158,7 +158,7 @@ export class ChartStore {
   annotationDimensions = observable.map<AnnotationId, AnnotationDimensions>(new Map());
 
   seriesSpecs: Map<SpecId, BasicSeriesSpec> = new Map(); // readed from jsx
-  isChartEmpty: boolean = true;
+  isChartEmpty = observable.box(false);
   activeChartId?: string;
   seriesDomainsAndData?: SeriesDomainsAndData; // computed
   xScale?: Scale;
@@ -527,6 +527,7 @@ export class ChartStore {
     return (
       !this.isBrushing.get() &&
       isCrosshairTooltipType(this.tooltipType.get()) &&
+      !this.isChartEmpty.get() &&
       (this.externalCursorShown.get() || (this.cursorPosition.x > -1 && this.cursorPosition.y > -1))
     );
   });
@@ -875,8 +876,7 @@ export class ChartStore {
         return;
       }
     }
-
-    this.isChartEmpty = isAllSeriesDeselected(this.legendItems);
+    this.isChartEmpty.set(isAllSeriesDeselected(this.legendItems));
 
     const { xDomain, yDomain, formattedDataSeries } = this.seriesDomainsAndData;
 
