@@ -47,25 +47,21 @@ export function mergeYDomain(
     return mergeYDomainForGroup(dataSeries, groupId, groupSpecs, customDomain);
   });
 
-  const globalGroupIds: GroupId[] = [];
-  specsByGroupIdsEntries.forEach(([groupId, groupSpecs]) => {
-    if (
-      groupId === globalId ||
-      groupSpecs.nonStacked.some((spec) => Boolean(spec.useDefaultGroupDomain)) ||
-      groupSpecs.stacked.some((spec) => Boolean(spec.useDefaultGroupDomain))
-    ) {
-      globalGroupIds.push(groupId);
+  const globalGroupIds: Set<GroupId> = specs.reduce<Set<GroupId>>((acc, { groupId, useDefaultGroupDomain }) => {
+    if (groupId !== globalId && useDefaultGroupDomain) {
+      acc.add(groupId);
     }
-  });
-  //
-  const globalYDomains = yDomains.filter((domain) => globalGroupIds.includes(domain.groupId));
+    return acc;
+  }, new Set());
+  globalGroupIds.add(globalId);
+
+  const globalYDomains = yDomains.filter((domain) => globalGroupIds.has(domain.groupId));
   let globalYDomain = [Number.MAX_SAFE_INTEGER, Number.MIN_SAFE_INTEGER];
   globalYDomains.forEach((domain) => {
     globalYDomain = [Math.min(globalYDomain[0], domain.domain[0]), Math.max(globalYDomain[1], domain.domain[1])];
   });
-  console.log({ globalYDomains });
   return yDomains.map((domain) => {
-    if (globalGroupIds.includes(domain.groupId)) {
+    if (globalGroupIds.has(domain.groupId)) {
       return {
         ...domain,
         domain: globalYDomain,
