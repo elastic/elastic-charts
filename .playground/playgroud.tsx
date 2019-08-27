@@ -58,7 +58,7 @@ export class Playground extends React.Component {
               position={Position.Left}
               domain={{
                 min: 50,
-                max: 250,
+                max: 450,
               }}
             />
             <Axis id={getAxisId('x')} position={Position.Bottom} />
@@ -68,7 +68,17 @@ export class Playground extends React.Component {
               xScaleType={ScaleType.Linear}
               xAccessor={0}
               yAccessors={[1]}
-              data={[[0, 100], [1, 50], [3, 400], [4, 250], [5, 235]]}
+              stackAccessors={[0]}
+              data={[[0.25, 100], [1, 50], [3, 400], [4, 250], [5, 235]]}
+              />
+             <LineSeries
+              id={getSpecId('line2')}
+              yScaleType={ScaleType.Linear}
+              xScaleType={ScaleType.Linear}
+              xAccessor={0}
+              yAccessors={[1]}
+              stackAccessors={[0]}
+              data={[[0.25, 100],[0.5, 100], [1, 50], [3, 400], [4, 250], [4.5, 220], [5, 235]]}
             />
           </Chart>
         </div>
