@@ -13,7 +13,7 @@ export class Playground extends React.Component {
               min: KIBANA_METRICS.metrics.kibana_os_load[0].data[0][0] - 10000,
               max: KIBANA_METRICS.metrics.kibana_os_load[0].data[18][0] + 10000,
             }}
-            rotation={180}
+            rotation={0}
           />
           <Axis id={getAxisId('y')} position={Position.Left} />
           <Axis id={getAxisId('x')} position={Position.Bottom} />
