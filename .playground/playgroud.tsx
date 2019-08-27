@@ -70,15 +70,15 @@ export class Playground extends React.Component {
               yAccessors={[1]}
               stackAccessors={[0]}
               data={[[0.25, 100], [1, 50], [3, 400], [4, 250], [5, 235]]}
-              />
-             <LineSeries
+            />
+            <LineSeries
               id={getSpecId('line2')}
               yScaleType={ScaleType.Linear}
               xScaleType={ScaleType.Linear}
               xAccessor={0}
               yAccessors={[1]}
               stackAccessors={[0]}
-              data={[[0.25, 100],[0.5, 100], [1, 50], [3, 400], [4, 250], [4.5, 220], [5, 235]]}
+              data={[[0.25, 100], [0.5, 100], [1, 50], [3, 400], [4, 250], [4.5, 220], [5, 235]]}
             />
           </Chart>
         </div>
