@@ -106,6 +106,8 @@ export type ElementOverListener = (values: GeometryValue[]) => void;
 export type BrushEndListener = (min: number, max: number) => void;
 export type LegendItemListener = (dataSeriesIdentifiers: DataSeriesColorsValues | null) => void;
 export type CursorUpdateListener = (event?: CursorEvent) => void;
+export type RenderChangeListener = (isRendered: boolean) => void;
+export type BasicListener = () => undefined | void;
 
 export class ChartStore {
   constructor(id?: string) {
@@ -206,15 +208,16 @@ export class ChartStore {
 
   onElementClickListener?: ElementClickListener;
   onElementOverListener?: ElementOverListener;
-  onElementOutListener?: () => undefined | void;
+  onElementOutListener?: BasicListener;
   onBrushEndListener?: BrushEndListener;
   onLegendItemOverListener?: LegendItemListener;
-  onLegendItemOutListener?: () => undefined | void;
+  onLegendItemOutListener?: BasicListener;
   onLegendItemClickListener?: LegendItemListener;
   onLegendItemPlusClickListener?: LegendItemListener;
   onLegendItemMinusClickListener?: LegendItemListener;
   onLegendItemVisibilityToggleClickListener?: LegendItemListener;
   onCursorUpdateListener?: CursorUpdateListener;
+  onRenderChangeListener?: RenderChangeListener;
 
   geometries: {
     points: PointGeometry[];
@@ -698,7 +701,7 @@ export class ChartStore {
   setOnElementOverListener(listener: ElementOverListener) {
     this.onElementOverListener = listener;
   }
-  setOnElementOutListener(listener: () => undefined | void) {
+  setOnElementOutListener(listener: BasicListener) {
     this.onElementOutListener = listener;
   }
   setOnBrushEndListener(listener: BrushEndListener) {
@@ -707,7 +710,7 @@ export class ChartStore {
   setOnLegendItemOverListener(listener: LegendItemListener) {
     this.onLegendItemOverListener = listener;
   }
-  setOnLegendItemOutListener(listener: () => undefined | void) {
+  setOnLegendItemOutListener(listener: BasicListener) {
     this.onLegendItemOutListener = listener;
   }
   setOnLegendItemClickListener(listener: LegendItemListener) {
@@ -721,6 +724,15 @@ export class ChartStore {
   }
   setOnCursorUpdateListener(listener: CursorUpdateListener) {
     this.onCursorUpdateListener = listener;
+  }
+  setOnRenderChangeListener(listener: RenderChangeListener) {
+    this.onRenderChangeListener = listener;
+
+    this.chartInitialized.observe(({ newValue, oldValue }) => {
+      if (this.onRenderChangeListener && newValue !== oldValue) {
+        this.onRenderChangeListener(newValue);
+      }
+    });
   }
   removeElementClickListener() {
     this.onElementClickListener = undefined;
@@ -745,6 +757,9 @@ export class ChartStore {
   }
   removeOnCursorUpdateListener() {
     this.onCursorUpdateListener = undefined;
+  }
+  removeOnRenderChangeListener() {
+    this.onRenderChangeListener = undefined;
   }
 
   isBrushEnabled(): boolean {
