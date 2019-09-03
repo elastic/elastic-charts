@@ -106,6 +106,11 @@ export type ElementOverListener = (values: GeometryValue[]) => void;
 export type BrushEndListener = (min: number, max: number) => void;
 export type LegendItemListener = (dataSeriesIdentifiers: DataSeriesColorsValues | null) => void;
 export type CursorUpdateListener = (event?: CursorEvent) => void;
+/**
+ * Listener to be called when chart render state changes
+ *
+ * `isRendered` value is `true` when rendering is complete and `false` otherwise
+ */
 export type RenderChangeListener = (isRendered: boolean) => void;
 export type BasicListener = () => undefined | void;
 
