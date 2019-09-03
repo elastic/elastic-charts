@@ -323,6 +323,24 @@ describe('Chart Store', () => {
     expect(store.onRenderChangeListener).toEqual(listener);
   });
 
+  test('should observe chartInitialized value', () => {
+    const listener = jest.fn();
+    store.chartInitialized.set(false);
+    store.setOnRenderChangeListener(listener);
+    store.chartInitialized.set(true);
+
+    expect(listener).toBeCalledWith(true);
+  });
+
+  test('should observe chartInitialized value only on change', () => {
+    const listener = jest.fn();
+    store.chartInitialized.set(false);
+    store.setOnRenderChangeListener(listener);
+    store.chartInitialized.set(false);
+
+    expect(listener).not.toBeCalled();
+  });
+
   test('can remove listeners', () => {
     store.removeElementClickListener();
     expect(store.onElementClickListener).toBeUndefined();
