@@ -1,9 +1,9 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Layer, Rect, Stage } from 'react-konva';
-import { isLineAnnotation, isRectAnnotation } from '../../chart_types/xy_chart/utils/specs';
+import { isLineAnnotation, isRectAnnotation, AxisSpec } from '../../chart_types/xy_chart/utils/specs';
 import { LineAnnotationStyle, RectAnnotationStyle } from '../../utils/themes/theme';
-import { AnnotationId } from '../../utils/ids';
+import { AnnotationId, AxisId } from '../../utils/ids';
 import {
   AnnotationDimensions,
   AnnotationLineProps,
@@ -20,6 +20,8 @@ import { LineAnnotation } from './line_annotation';
 import { LineGeometries } from './line_geometries';
 import { RectAnnotation } from './rect_annotation';
 import { ContainerConfig } from 'konva';
+import { AxisTick, AxisTicksDimensions } from '../../chart_types/xy_chart/utils/axis_utils';
+import { Dimensions } from '../../utils/dimensions';
 
 interface ReactiveChartProps {
   chartStore?: ChartStore; // FIX until we find a better way on ts mobx
@@ -32,6 +34,14 @@ interface ReactiveChartState {
     left: number;
     top: number;
   };
+}
+
+interface AxisConfig {
+  id: AxisId;
+  axisSpec: AxisSpec;
+  axisTicksDimensions: AxisTicksDimensions;
+  axisPosition: Dimensions;
+  ticks: AxisTick[];
 }
 
 interface ReactiveChartElementIndex {
@@ -151,40 +161,50 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       },
     ];
   };
-  renderAxes = () => {
-    const {
-      axesVisibleTicks,
-      axesSpecs,
-      axesTicksDimensions,
-      axesPositions,
-      chartTheme,
-      debug,
-      chartDimensions,
-    } = this.props.chartStore!;
 
-    const axesComponents: JSX.Element[] = [];
-    axesVisibleTicks.forEach((axisTicks, axisId) => {
-      const axisSpec = axesSpecs.get(axisId);
-      const axisTicksDimensions = axesTicksDimensions.get(axisId);
-      const axisPosition = axesPositions.get(axisId);
-      const ticks = axesVisibleTicks.get(axisId);
-      if (!ticks || !axisSpec || !axisTicksDimensions || !axisPosition) {
-        return;
-      }
-      axesComponents.push(
-        <Axis
-          key={`axis-${axisId}`}
-          axisSpec={axisSpec}
-          axisTicksDimensions={axisTicksDimensions}
-          axisPosition={axisPosition}
-          ticks={ticks}
-          chartTheme={chartTheme}
-          debug={debug}
-          chartDimensions={chartDimensions}
-        />,
-      );
-    });
-    return axesComponents;
+  getAxes = (): AxisConfig[] => {
+    const { axesVisibleTicks, axesSpecs, axesTicksDimensions, axesPositions } = this.props.chartStore!;
+    const ids = [...axesVisibleTicks.keys()];
+
+    return ids.reduce(
+      (acc, id) => {
+        const ticks = axesVisibleTicks.get(id);
+        const axisSpec = axesSpecs.get(id);
+        const axisTicksDimensions = axesTicksDimensions.get(id);
+        const axisPosition = axesPositions.get(id);
+
+        if (ticks && axisSpec && axisTicksDimensions && axisPosition) {
+          acc.push({
+            id,
+            ticks,
+            axisSpec,
+            axisTicksDimensions,
+            axisPosition,
+          });
+        }
+
+        return acc;
+      },
+      [] as AxisConfig[],
+    );
+  };
+
+  renderAxes = (): JSX.Element[] => {
+    const { chartTheme, debug, chartDimensions } = this.props.chartStore!;
+    const axes = this.getAxes();
+
+    return axes.map(({ id, ticks, axisSpec, axisTicksDimensions, axisPosition }) => (
+      <Axis
+        key={`axis-${id}`}
+        axisSpec={axisSpec}
+        axisTicksDimensions={axisTicksDimensions}
+        axisPosition={axisPosition}
+        ticks={ticks}
+        chartTheme={chartTheme}
+        debug={debug}
+        chartDimensions={chartDimensions}
+      />
+    ));
   };
 
   renderGrids = () => {

@@ -155,6 +155,7 @@ export class ChartStore {
   chartRotation: Rotation = 0; // updated from jsx
   chartRendering: Rendering = 'canvas'; // updated from jsx
   chartTheme: Theme = LIGHT_THEME;
+  hideDuplicateAxes: boolean = false; // updated from jsx
   axesSpecs: Map<AxisId, AxisSpec> = new Map(); // readed from jsx
   axesTicksDimensions: Map<AxisId, AxisTicksDimensions> = new Map(); // computed
   axesPositions: Map<AxisId, Dimensions> = new Map(); // computed
@@ -844,6 +845,35 @@ export class ChartStore {
     this.annotationSpecs.delete(annotationId);
   }
 
+  isDuplicateAxis(
+    { position, title }: AxisSpec,
+    { tickLabels }: AxisTicksDimensions,
+    tickMap: Map<AxisId, AxisTicksDimensions>,
+    specMap: Map<AxisId, AxisSpec>,
+  ): boolean {
+    const firstTickLabel = tickLabels[0];
+    const lastTickLabel = tickLabels.slice(-1)[0];
+
+    let hasDuplicate = false;
+    tickMap.forEach(({ tickLabels: axisTickLabels }, axisId) => {
+      if (
+        !hasDuplicate &&
+        axisTickLabels &&
+        tickLabels.length === axisTickLabels.length &&
+        firstTickLabel === axisTickLabels[0] &&
+        lastTickLabel === axisTickLabels.slice(-1)[0]
+      ) {
+        const spec = specMap.get(axisId);
+
+        if (spec && spec.position === position && ((!title && !spec.title) || title === spec.title)) {
+          hasDuplicate = true;
+        }
+      }
+    });
+
+    return hasDuplicate;
+  }
+
   computeChart() {
     this.chartInitialized.set(false);
     // compute only if parent dimensions are computed
@@ -926,7 +956,12 @@ export class ChartStore {
         barsPadding,
         this.enableHistogramMode.get(),
       );
-      if (dimensions) {
+
+      if (
+        dimensions &&
+        (!this.hideDuplicateAxes ||
+          !this.isDuplicateAxis(axisSpec, dimensions, this.axesTicksDimensions, this.axesSpecs))
+      ) {
         this.axesTicksDimensions.set(id, dimensions);
       }
     });
