@@ -1,9 +1,8 @@
-import { inject } from 'mobx-react';
 import { PureComponent } from 'react';
+import { inject } from 'mobx-react';
+
 import { DomainRange, Position, Rendering, Rotation } from '../chart_types/xy_chart/utils/specs';
-import { LIGHT_THEME } from '../utils/themes/light_theme';
-import { DARK_THEME } from '../utils/themes/dark_theme';
-import { BaseThemeType, mergeWithDefaultTheme, PartialTheme, Theme, BaseThemeTypes } from '../utils/themes/theme';
+import { mergeWithDefaultTheme, PartialTheme, Theme } from '../utils/themes/theme';
 import { Domain } from '../utils/domain';
 import { TooltipType, TooltipValueFormatter } from '../chart_types/xy_chart/utils/interactions';
 import {
@@ -12,7 +11,11 @@ import {
   ElementClickListener,
   ElementOverListener,
   LegendItemListener,
+  CursorUpdateListener,
+  RenderChangeListener,
 } from '../chart_types/xy_chart/store/chart_state';
+import { ScaleTypes } from '../utils/scales/scales';
+import { LIGHT_THEME } from '../utils/themes/light_theme';
 
 export const DEFAULT_TOOLTIP_TYPE = TooltipType.VerticalCursor;
 export const DEFAULT_TOOLTIP_SNAP = true;
@@ -21,6 +24,22 @@ interface TooltipProps {
   type?: TooltipType;
   snap?: boolean;
   headerFormatter?: TooltipValueFormatter;
+}
+
+/**
+ * Event used to syncronize cursors between Charts.
+ *
+ * fired as callback argument for `CursorUpdateListener`
+ */
+export interface CursorEvent {
+  chartId: string;
+  scale: ScaleTypes;
+  /**
+   * @todo
+   * unit for event (i.e. `time`, `feet`, `count`, etc.)
+   */
+  unit?: string;
+  value: number | string;
 }
 
 function isTooltipProps(config: TooltipType | TooltipProps): config is TooltipProps {
@@ -33,8 +52,23 @@ function isTooltipType(config: TooltipType | TooltipProps): config is TooltipTyp
 
 export interface SettingSpecProps {
   chartStore?: ChartStore;
-  theme?: Theme | PartialTheme;
-  baseThemeType?: BaseThemeType;
+  /**
+   * Partial theme to be merged with base
+   *
+   * or
+   *
+   * Array of partial themes to be merged with base
+   * index `0` being the hightest priority
+   *
+   * i.e. `[primary, secondary, tertiary]`
+   */
+  theme?: PartialTheme | PartialTheme[];
+  /**
+   * Full default theme to use as base
+   *
+   * @default `LIGHT_THEME`
+   */
+  baseTheme?: Theme;
   rendering: Rendering;
   rotation: Rotation;
   animateData: boolean;
@@ -53,23 +87,28 @@ export interface SettingSpecProps {
   onLegendItemClick?: LegendItemListener;
   onLegendItemPlusClick?: LegendItemListener;
   onLegendItemMinusClick?: LegendItemListener;
+  onCursorUpdate?: CursorUpdateListener;
+  onRenderChange?: RenderChangeListener;
   xDomain?: Domain | DomainRange;
+  resizeDebounce?: number;
 }
 
-function getTheme(theme?: Theme | PartialTheme, baseThemeType: BaseThemeType = BaseThemeTypes.Light): Theme {
-  if (theme) {
-    const baseTheme = baseThemeType === BaseThemeTypes.Light ? LIGHT_THEME : DARK_THEME;
-    return mergeWithDefaultTheme(theme, baseTheme);
+function getTheme(baseTheme?: Theme, theme?: PartialTheme | PartialTheme[]): Theme {
+  const base = baseTheme ? baseTheme : LIGHT_THEME;
+
+  if (Array.isArray(theme)) {
+    const [firstTheme, ...axillaryThemes] = theme;
+    return mergeWithDefaultTheme(firstTheme, base, axillaryThemes);
   }
 
-  return LIGHT_THEME;
+  return theme ? mergeWithDefaultTheme(theme, base) : base;
 }
 
 function updateChartStore(props: SettingSpecProps) {
   const {
     chartStore,
     theme,
-    baseThemeType,
+    baseTheme,
     rotation,
     rendering,
     animateData,
@@ -86,18 +125,23 @@ function updateChartStore(props: SettingSpecProps) {
     onLegendItemClick,
     onLegendItemMinusClick,
     onLegendItemPlusClick,
+    onRenderChange,
+    onCursorUpdate,
     debug,
     xDomain,
+    resizeDebounce,
   } = props;
+
   if (!chartStore) {
     return;
   }
 
-  chartStore.chartTheme = getTheme(theme, baseThemeType);
+  chartStore.chartTheme = getTheme(baseTheme, theme);
   chartStore.chartRotation = rotation;
   chartStore.chartRendering = rendering;
   chartStore.animateData = animateData;
   chartStore.debug = debug;
+  chartStore.resizeDebounce = resizeDebounce!;
 
   if (tooltip && isTooltipProps(tooltip)) {
     const { type, snap, headerFormatter } = tooltip;
@@ -109,7 +153,10 @@ function updateChartStore(props: SettingSpecProps) {
   }
 
   chartStore.setShowLegend(showLegend);
-  chartStore.legendPosition = legendPosition;
+
+  if (legendPosition) {
+    chartStore.legendPosition.set(legendPosition);
+  }
   chartStore.showLegendDisplayValue.set(showLegendDisplayValue);
   chartStore.customXDomain = xDomain;
 
@@ -140,6 +187,12 @@ function updateChartStore(props: SettingSpecProps) {
   if (onLegendItemMinusClick) {
     chartStore.setOnLegendItemMinusClickListener(onLegendItemMinusClick);
   }
+  if (onCursorUpdate) {
+    chartStore.setOnCursorUpdateListener(onCursorUpdate);
+  }
+  if (onRenderChange) {
+    chartStore.setOnRenderChangeListener(onRenderChange);
+  }
 }
 
 export class SettingsComponent extends PureComponent<SettingSpecProps> {
@@ -148,14 +201,15 @@ export class SettingsComponent extends PureComponent<SettingSpecProps> {
     rotation: 0,
     animateData: true,
     showLegend: false,
+    resizeDebounce: 10,
     debug: false,
-    baseThemeType: BaseThemeTypes.Light,
     tooltip: {
       type: DEFAULT_TOOLTIP_TYPE,
       snap: DEFAULT_TOOLTIP_SNAP,
     },
     showLegendDisplayValue: true,
   };
+
   componentDidMount() {
     updateChartStore(this.props);
   }

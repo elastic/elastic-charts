@@ -44,6 +44,9 @@ const onLegendItemListeners = {
   onLegendItemMinusClick: action('onLegendItemMinusClick'),
 };
 
+const onRenderChange = action('onRenderChange');
+const onCursorUpdate = action('onCursorUpdate');
+
 storiesOf('Interactions', module)
   .add('bar clicks and hovers', () => {
     const headerFormatter: TooltipValueFormatter = (tooltipData: TooltipValue) => {
@@ -438,13 +441,18 @@ storiesOf('Interactions', module)
     );
   })
   .add('brush selection tool on time charts', () => {
-    const now = DateTime.fromISO('2019-01-11T00:00:00.000Z').toMillis();
+    const now = DateTime.fromISO('2019-01-11T00:00:00.000')
+      .setZone('utc+1')
+      .toMillis();
     const oneDay = 1000 * 60 * 60 * 24;
+    const formatter = niceTimeFormatter([now, now + oneDay * 5]);
     return (
       <Chart className={'story-chart'}>
         <Settings
           debug={boolean('debug', false)}
-          onBrushEnd={action('onBrushEnd')}
+          onBrushEnd={(start, end) => {
+            action('onBrushEnd')(formatter(start), formatter(end));
+          }}
           onElementClick={action('onElementClick')}
         />
         <Axis
@@ -452,7 +460,7 @@ storiesOf('Interactions', module)
           position={Position.Bottom}
           title={'bottom'}
           showOverlappingTicks={true}
-          tickFormat={niceTimeFormatter([now, now + oneDay * 5])}
+          tickFormat={formatter}
         />
         <Axis id={getAxisId('left')} title={'left'} position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
@@ -568,4 +576,63 @@ storiesOf('Interactions', module)
         />
       </Chart>
     );
-  });
+  })
+  .add(
+    'Render change action',
+    () => {
+      return (
+        <Chart className={'story-chart'}>
+          <Settings showLegend={true} legendPosition={Position.Right} onRenderChange={onRenderChange} />
+          <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+          <Axis
+            id={getAxisId('left2')}
+            title={'Left axis'}
+            position={Position.Left}
+            tickFormat={(d) => Number(d).toFixed(2)}
+          />
+
+          <BarSeries
+            id={getSpecId('bars')}
+            xScaleType={ScaleType.Linear}
+            yScaleType={ScaleType.Linear}
+            xAccessor="x"
+            yAccessors={['y']}
+            data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
+          />
+        </Chart>
+      );
+    },
+    {
+      info:
+        'Sends an event every time the chart render state changes. This is provided to bind attributes to the chart for visulaization loading checks.',
+    },
+  )
+  .add(
+    'Cursor update action',
+    () => {
+      return (
+        <Chart className={'story-chart'}>
+          <Settings showLegend={true} legendPosition={Position.Right} onCursorUpdate={onCursorUpdate} />
+          <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+          <Axis
+            id={getAxisId('left2')}
+            title={'Left axis'}
+            position={Position.Left}
+            tickFormat={(d) => Number(d).toFixed(2)}
+          />
+
+          <BarSeries
+            id={getSpecId('bars')}
+            xScaleType={ScaleType.Linear}
+            yScaleType={ScaleType.Linear}
+            xAccessor="x"
+            yAccessors={['y']}
+            data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
+          />
+        </Chart>
+      );
+    },
+    {
+      info: 'Sends an event every time the cursor changes. This is provided to sync cursors between multiple charts.',
+    },
+  );

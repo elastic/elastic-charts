@@ -4,13 +4,16 @@ import React from 'react';
 import { Icon } from '../icons/icon';
 
 import { ChartStore } from '../../chart_types/xy_chart/store/chart_state';
+import { Position } from '../../chart_types/xy_chart/utils/specs';
 
 interface LegendItemProps {
   chartStore?: ChartStore; // FIX until we find a better way on ts mobx
   legendItemKey: string;
+  legendPosition: Position;
   color: string | undefined;
   label: string | undefined;
   isSeriesVisible?: boolean;
+  isLegendItemVisible?: boolean;
   displayValue: string;
   onMouseEnter: (event: React.MouseEvent) => void;
   onMouseLeave: () => void;
@@ -43,18 +46,29 @@ class LegendItemComponent extends React.Component<LegendItemProps, LegendItemSta
   };
 
   render() {
-    const { legendItemKey } = this.props;
-    const { color, label, isSeriesVisible, displayValue, onMouseEnter, onMouseLeave } = this.props;
-
+    const {
+      legendItemKey,
+      legendPosition,
+      chartStore,
+      color,
+      label,
+      isSeriesVisible,
+      isLegendItemVisible,
+      displayValue,
+      onMouseEnter,
+      onMouseLeave,
+    } = this.props;
     const onTitleClick = this.onVisibilityClick(legendItemKey);
+    const showLegendDisplayValue = chartStore!.showLegendDisplayValue.get();
+    const isSelected = legendItemKey === chartStore!.selectedLegendItemKey.get();
+    const hasDisplayValue = chartStore!.showLegendDisplayValue.get();
+    const hasTitleClickListener = Boolean(chartStore!.onLegendItemClickListener);
 
-    const showLegendDisplayValue = this.props.chartStore!.showLegendDisplayValue.get();
-    const isSelected = legendItemKey === this.props.chartStore!.selectedLegendItemKey.get();
-    const hasDisplayValue = this.props.chartStore!.showLegendDisplayValue.get();
-    const hasTitleClickListener = Boolean(this.props.chartStore!.onLegendItemClickListener);
-    const itemClasses = classNames('echLegendItem', {
-      'echLegendItem-isHidden': !isSeriesVisible,
+    const itemClasses = classNames('echLegendItem', `echLegendItem--${legendPosition}`, {
+      'echLegendItem--hidden': !isSeriesVisible,
+      'echLegendItem__displayValue--hidden': !isLegendItemVisible,
     });
+
     return (
       <div className={itemClasses} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
         {this.renderColor(this.toggleColorPicker, color, isSeriesVisible)}

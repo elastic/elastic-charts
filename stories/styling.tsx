@@ -19,8 +19,12 @@ import {
   Position,
   ScaleType,
   Settings,
-  BaseThemeTypes,
   LineSeriesStyle,
+  TooltipType,
+  RecursivePartial,
+  Theme,
+  LIGHT_THEME,
+  DARK_THEME,
 } from '../src/';
 import * as TestDatasets from '../src/utils/data_samples/test_dataset';
 import { palettes } from '../src/utils/themes/colors';
@@ -103,6 +107,75 @@ const data2 = dg.generateSimpleSeries(40);
 const data3 = dg.generateSimpleSeries(40);
 
 storiesOf('Stylings', module)
+  .add('chart size', () => {
+    const theme: RecursivePartial<Theme> = {
+      chartMargins: {
+        bottom: 0,
+        left: 0,
+        top: 0,
+        right: 0,
+      },
+    };
+    return (
+      <div>
+        <Chart className={'story-chart'} size={{ width: 100, height: 50 }}>
+          <Settings tooltip={TooltipType.None} theme={theme} />
+          <BarSeries
+            id={getSpecId('bars')}
+            xScaleType={ScaleType.Linear}
+            yScaleType={ScaleType.Linear}
+            xAccessor="x"
+            yAccessors={['y']}
+            data={data2}
+          />
+        </Chart>
+        <Chart className={'story-chart'} size={{ height: 50 }}>
+          <Settings tooltip={TooltipType.None} theme={theme} />
+          <BarSeries
+            id={getSpecId('bars')}
+            xScaleType={ScaleType.Linear}
+            yScaleType={ScaleType.Linear}
+            xAccessor="x"
+            yAccessors={['y']}
+            data={data2}
+          />
+        </Chart>
+        <Chart className={'story-chart'} size={['50%', 50]}>
+          <Settings tooltip={TooltipType.None} theme={theme} />
+          <BarSeries
+            id={getSpecId('bars')}
+            xScaleType={ScaleType.Linear}
+            yScaleType={ScaleType.Linear}
+            xAccessor="x"
+            yAccessors={['y']}
+            data={data2}
+          />
+        </Chart>
+        <Chart className={'story-chart'} size={[undefined, 50]}>
+          <Settings tooltip={TooltipType.None} theme={theme} />
+          <BarSeries
+            id={getSpecId('bars')}
+            xScaleType={ScaleType.Linear}
+            yScaleType={ScaleType.Linear}
+            xAccessor="x"
+            yAccessors={['y']}
+            data={data2}
+          />
+        </Chart>
+        <Chart className={'story-chart'} size={50}>
+          <Settings tooltip={TooltipType.None} theme={theme} />
+          <BarSeries
+            id={getSpecId('bars')}
+            xScaleType={ScaleType.Linear}
+            yScaleType={ScaleType.Linear}
+            xAccessor="x"
+            yAccessors={['y']}
+            data={data2}
+          />
+        </Chart>
+      </div>
+    );
+  })
   .add('margins and paddings', () => {
     const theme: PartialTheme = {
       chartMargins: {
@@ -221,6 +294,11 @@ storiesOf('Stylings', module)
     );
   })
   .add('theme/style', () => {
+    const customizeLineStroke = boolean('customizeLineStroke', false, 'line');
+    const customizePointStroke = boolean('customizeLinePointStroke', false, 'line');
+    const customizeAreaFill = boolean('customizeAreaFill', false, 'area');
+    const customizeAreaLineStroke = boolean('customizeAreaLineStroke', false, 'area');
+    const customizeRectFill = boolean('customizeRectFill', false, 'bar');
     const theme: PartialTheme = {
       chartMargins: {
         left: range('margin left', 0, 50, 10, 'Margins'),
@@ -236,34 +314,33 @@ storiesOf('Stylings', module)
       },
       lineSeriesStyle: {
         line: {
-          stroke: DEFAULT_MISSING_COLOR,
+          stroke: customizeLineStroke ? color('customLineStroke', 'red', 'line') : undefined,
           strokeWidth: range('lineStrokeWidth', 0, 10, 1, 'line'),
           visible: boolean('lineVisible', true, 'line'),
         },
         point: {
           visible: boolean('linePointVisible', true, 'line'),
           radius: range('linePointRadius', 0, 20, 1, 'line', 0.5),
-          // not customizable
-          stroke: 'red',
+          fill: color('linePointFill', 'white', 'line'),
+          stroke: customizePointStroke ? color('customLinePointStroke', 'red', 'line') : undefined,
           strokeWidth: range('linePointStrokeWidth', 0, 20, 0.5, 'line'),
           opacity: range('linePointOpacity', 0, 1, 1, 'line', 0.01),
         },
       },
       areaSeriesStyle: {
         area: {
-          // not already customizeable
-          fill: DEFAULT_MISSING_COLOR,
+          fill: customizeAreaFill ? color('customAreaFill', 'red', 'area') : undefined,
           visible: boolean('aAreaVisible', true, 'area'),
           opacity: range('aAreaOpacity', 0, 1, 1, 'area'),
         },
         line: {
-          // not already customizeable
-          stroke: DEFAULT_MISSING_COLOR,
+          stroke: customizeAreaLineStroke ? color('customAreaLineStroke', 'red', 'area') : undefined,
           strokeWidth: range('aStrokeWidth', 0, 10, 1, 'area'),
           visible: boolean('aLineVisible', true, 'area'),
         },
         point: {
           visible: boolean('aPointVisible', true, 'area'),
+          fill: color('aPointFill', 'white', 'area'),
           radius: range('aPointRadius', 0, 20, 1, 'area'),
           stroke: color('aPointStroke', 'white', 'area'),
           strokeWidth: range('aPointStrokeWidth', 0, 20, 0.5, 'area'),
@@ -272,7 +349,8 @@ storiesOf('Stylings', module)
       },
       barSeriesStyle: {
         rect: {
-          opacity: range('rectOpacity', 0, 1, 0.1, 'bar'),
+          fill: customizeRectFill ? color('recCustomFull', 'red', 'bar') : undefined,
+          opacity: range('rectOpacity', 0, 1, 0.5, 'bar', 0.1),
         },
         rectBorder: {
           stroke: color('bBorderStroke', 'white', 'bar'),
@@ -315,7 +393,7 @@ storiesOf('Stylings', module)
       <Chart className={className}>
         <Settings
           theme={theme}
-          baseThemeType={darkmode ? 'dark' : 'light'}
+          baseTheme={darkmode ? DARK_THEME : LIGHT_THEME}
           debug={boolean('debug', false)}
           showLegend={true}
           legendPosition={Position.Right}
@@ -377,12 +455,7 @@ storiesOf('Stylings', module)
 
     return (
       <Chart className="story-chart">
-        <Settings
-          showLegend
-          theme={customPartialTheme}
-          baseThemeType={BaseThemeTypes.Light}
-          legendPosition={Position.Right}
-        />
+        <Settings showLegend theme={customPartialTheme} legendPosition={Position.Right} />
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
@@ -410,6 +483,99 @@ storiesOf('Stylings', module)
       </Chart>
     );
   })
+  .add('partial custom theme with baseTheme', () => {
+    const customPartialTheme: PartialTheme = {
+      barSeriesStyle: {
+        rectBorder: {
+          stroke: color('BarBorderStroke', 'white'),
+          visible: true,
+        },
+      },
+    };
+
+    return (
+      <Chart className="story-chart">
+        <Settings showLegend theme={customPartialTheme} baseTheme={LIGHT_THEME} legendPosition={Position.Right} />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+        <Axis
+          id={getAxisId('left2')}
+          title="Left axis"
+          position={Position.Left}
+          tickFormat={(d) => Number(d).toFixed(2)}
+        />
+        <Axis id={getAxisId('top')} position={Position.Top} title="Top axis" showOverlappingTicks={true} />
+        <Axis
+          id={getAxisId('right')}
+          title="Right axis"
+          position={Position.Right}
+          tickFormat={(d) => Number(d).toFixed(2)}
+        />
+        <BarSeries
+          id={getSpecId('bars')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          splitSeriesAccessors={['g']}
+          stackAccessors={['x']}
+          data={data1}
+        />
+      </Chart>
+    );
+  })
+  .add(
+    'multiple custom partial themes',
+    () => {
+      const primaryTheme: PartialTheme = {
+        barSeriesStyle: {
+          rect: {
+            fill: color('bar fill - primary theme', 'red'),
+          },
+        },
+      };
+      const secondaryTheme: PartialTheme = {
+        barSeriesStyle: {
+          rect: {
+            fill: color('bar fill - secondary theme', 'blue'),
+            opacity: range('bar opacity - secondary theme', 0.1, 1, 0.7, undefined, 0.1),
+          },
+        },
+      };
+
+      return (
+        <Chart className="story-chart">
+          <Settings showLegend theme={[primaryTheme, secondaryTheme]} legendPosition={Position.Right} />
+          <Axis id={getAxisId('bottom')} position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+          <Axis
+            id={getAxisId('left2')}
+            title="Left axis"
+            position={Position.Left}
+            tickFormat={(d) => Number(d).toFixed(2)}
+          />
+          <Axis id={getAxisId('top')} position={Position.Top} title="Top axis" showOverlappingTicks={true} />
+          <Axis
+            id={getAxisId('right')}
+            title="Right axis"
+            position={Position.Right}
+            tickFormat={(d) => Number(d).toFixed(2)}
+          />
+          <BarSeries
+            id={getSpecId('bars')}
+            xScaleType={ScaleType.Linear}
+            yScaleType={ScaleType.Linear}
+            xAccessor="x"
+            yAccessors={['y']}
+            splitSeriesAccessors={['g']}
+            stackAccessors={['x']}
+            data={data1}
+          />
+        </Chart>
+      );
+    },
+    {
+      info: 'Notice that the secondary theme bar fill has no effect as the primary value takes priority',
+    },
+  )
   .add('custom series colors through spec props', () => {
     const barCustomSeriesColors: CustomSeriesColorsMap = new Map();
     const barDataSeriesColorValues: DataSeriesColorsValues = {

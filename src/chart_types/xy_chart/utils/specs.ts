@@ -11,11 +11,17 @@ import { Omit, RecursivePartial } from '../../../utils/commons';
 import { AnnotationId, AxisId, GroupId, SpecId } from '../../../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../../../utils/scales/scales';
 import { CurveType } from '../../../utils/curves';
-import { DataSeriesColorsValues } from './series';
+import { DataSeriesColorsValues, RawDataSeriesDatum } from './series';
+import { GeometryId } from '../rendering/rendering';
+import { AnnotationTooltipFormatter } from '../annotations/annotation_utils';
 
 export type Datum = any;
 export type Rotation = 0 | 90 | -90 | 180;
 export type Rendering = 'canvas' | 'svg';
+export type Color = string;
+export type StyleOverride = RecursivePartial<BarSeriesStyle> | Color | null;
+export type StyleAccessor = (datum: RawDataSeriesDatum, geometryId: GeometryId) => StyleOverride;
+export const DEFAULT_GLOBAL_ID = '__global__';
 
 interface DomainMinInterval {
   /** Custom minInterval for the domain which will affect data bucket size.
@@ -68,6 +74,8 @@ export interface SeriesSpec {
    * @default __global__
    */
   groupId: GroupId;
+  /** when using a different groupId this option will allow compute in the same domain of the global domain */
+  useDefaultGroupDomain?: boolean;
   /** An array of data */
   data: Datum[];
   /** The type of series you are looking to render */
@@ -96,8 +104,8 @@ export interface SeriesAccessors {
   splitSeriesAccessors?: Accessor[];
   /** An array of fields thats indicates the stack membership */
   stackAccessors?: Accessor[];
-  /** An optional array of field name thats indicates the stack membership */
-  colorAccessors?: Accessor[];
+  /** An optional functional accessor to return custom datum color or style */
+  styleAccessor?: StyleAccessor;
 }
 
 export interface SeriesScales {
@@ -222,6 +230,8 @@ export interface AxisSpec {
   tickFormat: TickFormatter;
   /** The degrees of rotation of the tick labels */
   tickLabelRotation?: number;
+  /** An approximate count of how many ticks will be generated */
+  ticks?: number;
   /** The axis title */
   title?: string;
   /** If specified, it constrains the domain for these values */
@@ -294,6 +304,8 @@ export type LineAnnotationSpec = BaseAnnotationSpec & {
   };
   /** Annotation lines are hidden */
   hideLines?: boolean;
+  /** Hide tooltip when hovering over the line */
+  hideLinesTooltips?: boolean;
   /** z-index of the annotation relative to other elements in the chart
    * @default 1
    */
@@ -313,7 +325,7 @@ export interface RectAnnotationDatum {
 export type RectAnnotationSpec = BaseAnnotationSpec & {
   annotationType: 'rectangle';
   /** Custom rendering function for tooltip */
-  renderTooltip?: (details?: string) => JSX.Element;
+  renderTooltip?: AnnotationTooltipFormatter;
   /** Data values defined with coordinates and details */
   dataValues: RectAnnotationDatum[];
   /** Custom annotation style */

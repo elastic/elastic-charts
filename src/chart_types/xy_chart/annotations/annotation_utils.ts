@@ -23,6 +23,7 @@ import { Scale, ScaleType } from '../../../utils/scales/scales';
 import { Point } from '../store/chart_state';
 import { computeXScaleOffset, getAxesSpecForSpecId, isHorizontalRotation } from '../store/utils';
 
+export type AnnotationTooltipFormatter = (details?: string) => JSX.Element | null;
 export interface AnnotationTooltipState {
   annotationType: AnnotationType;
   isVisible: boolean;
@@ -31,7 +32,7 @@ export interface AnnotationTooltipState {
   transform: string;
   top?: number;
   left?: number;
-  renderTooltip?: (details?: string) => JSX.Element;
+  renderTooltip?: AnnotationTooltipFormatter;
 }
 export interface AnnotationDetails {
   headerText?: string;
@@ -322,44 +323,9 @@ export function computeLineAnnotationDimensions(
   );
 }
 
-/**
- * Used when we need to snap values to the nearest tick edge, this performs a binary search for the nearest tick
- * @param dataValue - dataValue defined as an annotation cooordinate
- * @param ticks - ticks from the scale
- * @param minInterval - minInterva from the scale
- */
-export function getNearestTick(dataValue: number, ticks: number[], minInterval: number): number | undefined {
-  if (ticks.length === 0) {
-    return;
-  }
-
-  if (ticks.length === 1) {
-    if (Math.abs(dataValue - ticks[0]) <= minInterval / 2) {
-      return ticks[0];
-    }
-    return;
-  }
-
-  const numTicks = ticks.length - 1;
-  const midIdx = Math.ceil(numTicks / 2);
-  const midPoint = ticks[midIdx];
-
-  if (Math.abs(dataValue - midPoint) <= minInterval / 2) {
-    return midPoint;
-  }
-
-  if (dataValue > midPoint) {
-    return getNearestTick(dataValue, ticks.slice(midIdx, ticks.length), minInterval);
-  }
-
-  return getNearestTick(dataValue, ticks.slice(0, midIdx), minInterval);
-}
-
 export function scaleAndValidateDatum(dataValue: any, scale: Scale, alignWithTick: boolean): any | null {
   const isContinuous = scale.type !== ScaleType.Ordinal;
-  const value = isContinuous && alignWithTick ? getNearestTick(dataValue, scale.ticks(), scale.minInterval) : dataValue;
-  const scaledValue = scale.scale(value);
-
+  const scaledValue = scale.scale(dataValue);
   // d3.scale will return 0 for '', rendering the line incorrectly at 0
   if (isNaN(scaledValue) || (isContinuous && dataValue === '')) {
     return null;
@@ -398,7 +364,6 @@ export function computeRectAnnotationDimensions(
   const yDomain = yScale.domain;
   const lastX = xDomain[xDomain.length - 1];
   const xMinInterval = xScale.minInterval;
-
   const rectsProps: AnnotationRectProps[] = [];
 
   dataValues.forEach((dataValue: RectAnnotationDatum) => {
@@ -409,15 +374,15 @@ export function computeRectAnnotationDimensions(
       return;
     }
 
-    if (x0 == null) {
+    if (x1 == null) {
       // if x1 is defined, we want the rect to draw to the end of the scale
       // if we're in histogram mode, extend domain end by min interval
-      x0 = enableHistogramMode ? lastX + xMinInterval : lastX;
+      x1 = enableHistogramMode && !xScale.isSingleValue() ? lastX + xMinInterval : lastX;
     }
 
-    if (x1 == null) {
+    if (x0 == null) {
       // if x0 is defined, we want the rect to draw to the start of the scale
-      x1 = xDomain[0];
+      x0 = xDomain[0];
     }
 
     if (y0 == null) {
@@ -572,6 +537,7 @@ export function isWithinLineBounds(
   chartDimensions: Dimensions,
   domainType: AnnotationDomainType,
   marker?: AnnotationMarker,
+  hideLinesTooltips?: boolean,
 ): boolean {
   const [startX, startY, endX, endY] = linePosition;
   const isXDomainAnnotation = isXDomain(domainType);
@@ -583,26 +549,26 @@ export function isWithinLineBounds(
   const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
   const chartWidth = chartDimensions.width;
   const chartHeight = chartDimensions.height;
-
-  if (isXDomainAnnotation) {
-    isCursorWithinXBounds = isHorizontalChartRotation
-      ? cursorPosition.x >= startX - offset && cursorPosition.x <= endX + offset
-      : cursorPosition.x >= chartHeight - startX - offset && cursorPosition.x <= chartHeight - endX + offset;
-    isCursorWithinYBounds = isHorizontalChartRotation
-      ? cursorPosition.y >= startY && cursorPosition.y <= endY
-      : cursorPosition.y >= startY - offset && cursorPosition.y <= endY + offset;
-  } else {
-    isCursorWithinXBounds = isHorizontalChartRotation
-      ? cursorPosition.x >= startX && cursorPosition.x <= endX
-      : cursorPosition.x >= startX - offset && cursorPosition.x <= endX + offset;
-    isCursorWithinYBounds = isHorizontalChartRotation
-      ? cursorPosition.y >= startY - offset && cursorPosition.y <= endY + offset
-      : cursorPosition.y >= chartWidth - startY - offset && cursorPosition.y <= chartWidth - endY + offset;
-  }
-
-  // If it's within cursor bounds, return true (no need to check marker bounds)
-  if (isCursorWithinXBounds && isCursorWithinYBounds) {
-    return true;
+  if (!hideLinesTooltips) {
+    if (isXDomainAnnotation) {
+      isCursorWithinXBounds = isHorizontalChartRotation
+        ? cursorPosition.x >= startX - offset && cursorPosition.x <= endX + offset
+        : cursorPosition.x >= chartHeight - startX - offset && cursorPosition.x <= chartHeight - endX + offset;
+      isCursorWithinYBounds = isHorizontalChartRotation
+        ? cursorPosition.y >= startY && cursorPosition.y <= endY
+        : cursorPosition.y >= startY - offset && cursorPosition.y <= endY + offset;
+    } else {
+      isCursorWithinXBounds = isHorizontalChartRotation
+        ? cursorPosition.x >= startX && cursorPosition.x <= endX
+        : cursorPosition.x >= startX - offset && cursorPosition.x <= endX + offset;
+      isCursorWithinYBounds = isHorizontalChartRotation
+        ? cursorPosition.y >= startY - offset && cursorPosition.y <= endY + offset
+        : cursorPosition.y >= chartWidth - startY - offset && cursorPosition.y <= chartWidth - endY + offset;
+    }
+    // If it's within cursor bounds, return true (no need to check marker bounds)
+    if (isCursorWithinXBounds && isCursorWithinYBounds) {
+      return true;
+    }
   }
 
   if (!marker) {
@@ -747,6 +713,7 @@ export function computeLineAnnotationTooltipState(
   chartRotation: Rotation,
   chartDimensions: Dimensions,
   axesSpecs: Map<AxisId, AxisSpec>,
+  hideLinesTooltips?: boolean,
 ): AnnotationTooltipState {
   const annotationTooltipState: AnnotationTooltipState = {
     isVisible: false,
@@ -777,6 +744,7 @@ export function computeLineAnnotationTooltipState(
       chartDimensions,
       domainType,
       line.marker,
+      hideLinesTooltips,
     );
 
     if (isWithinBounds) {
@@ -925,7 +893,7 @@ export function computeRectAnnotationTooltipState(
   annotationRects: AnnotationRectProps[],
   chartRotation: Rotation,
   chartDimensions: Dimensions,
-  renderTooltip?: (details?: string) => JSX.Element,
+  renderTooltip?: AnnotationTooltipFormatter,
 ): AnnotationTooltipState {
   const cursorPosition = getRotatedCursor(rawCursorPosition, chartDimensions, chartRotation);
 
@@ -947,7 +915,6 @@ export function computeRectAnnotationTooltipState(
     const endY = startY + rect.height;
 
     const isWithinBounds = isWithinRectBounds(cursorPosition, { startX, endX, startY, endY });
-
     if (isWithinBounds) {
       annotationTooltipState.isVisible = true;
       annotationTooltipState.details = details;
@@ -990,14 +957,14 @@ export function computeAnnotationTooltipState(
   for (const [annotationId, annotationDimension] of annotationDimensions) {
     const spec = annotationSpecs.get(annotationId);
 
-    if (!spec) {
+    if (!spec || spec.hideTooltips) {
       continue;
     }
 
     const groupId = spec.groupId;
 
     if (isLineAnnotation(spec)) {
-      if (spec.hideTooltips || spec.hideLines) {
+      if (spec.hideLines) {
         continue;
       }
 
@@ -1010,6 +977,7 @@ export function computeAnnotationTooltipState(
         chartRotation,
         chartDimensions,
         axesSpecs,
+        spec.hideLinesTooltips,
       );
 
       if (lineAnnotationTooltipState.isVisible) {

@@ -1,79 +1,116 @@
-import React from 'react';
-
+import React, { Fragment } from 'react';
 import {
   Axis,
   Chart,
   getAxisId,
   getSpecId,
-  LineSeries,
-  niceTimeFormatter,
   Position,
   ScaleType,
   Settings,
-  mergeWithDefaultTheme,
+  BarSeries,
+  LineSeries,
+  AreaSeries,
 } from '../src';
-import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 
 export class Playground extends React.Component {
   render() {
-    return <>{this.renderChart(Position.Right)}</>;
-  }
-  renderChart(legendPosition: Position) {
-    const theme = mergeWithDefaultTheme({
-      lineSeriesStyle: {
-        // area: {
-        //   fill: 'green',
-        //   opacity:0.2
-        // },
-        line: {
-          stroke: 'violet',
-          strokeWidth: 4,
-        },
-        point: {
-          fill: 'yellow',
-          stroke: 'black',
-          strokeWidth: 2,
-          radius: 6,
-        },
-      },
-    });
-    console.log(theme.areaSeriesStyle);
     return (
-      <div className="chart">
-        <Chart>
-          <Settings debug={false} showLegend={true} legendPosition={legendPosition} rotation={0} theme={theme} />
-          <Axis
-            id={getAxisId('timestamp')}
-            title="timestamp"
-            position={Position.Bottom}
-            tickFormat={niceTimeFormatter([1555819200000, 1555905600000])}
-          />
-          <Axis id={getAxisId('count')} title="count" position={Position.Left} tickFormat={(d) => d.toFixed(2)} />
-          <LineSeries
-            id={getSpecId('dataset A with long title')}
-            xScaleType={ScaleType.Time}
-            yScaleType={ScaleType.Linear}
-            data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 15)}
-            xAccessor={0}
-            lineSeriesStyle={{
-              line: {
-                stroke: 'red',
-                opacity: 1,
-              },
-            }}
-            yAccessors={[1]}
-          />
-          <LineSeries
-            id={getSpecId('dataset B')}
-            xScaleType={ScaleType.Time}
-            yScaleType={ScaleType.Linear}
-            data={KIBANA_METRICS.metrics.kibana_os_load[1].data.slice(0, 15)}
-            xAccessor={0}
-            yAccessors={[1]}
-            stackAccessors={[0]}
-          />
-        </Chart>
-      </div>
+      <Fragment>
+        <div className="chart">
+          <Chart>
+            <Settings
+              showLegend={true}
+              xDomain={{
+                min: 0.5,
+                max: 4.5,
+              }}
+            />
+            <Axis
+              id={getAxisId('y')}
+              position={Position.Left}
+              domain={{
+                min: 50,
+                max: 250,
+              }}
+            />
+            <Axis id={getAxisId('x')} position={Position.Bottom} />
+            <BarSeries
+              id={getSpecId('bar')}
+              yScaleType={ScaleType.Linear}
+              xScaleType={ScaleType.Linear}
+              xAccessor={0}
+              yAccessors={[1]}
+              data={[[0, 100], [1, 50], [3, 400], [4, 250], [5, 235]]}
+            />
+          </Chart>
+        </div>
+        <div className="chart">
+          <Chart>
+            <Settings
+              showLegend={true}
+              xDomain={{
+                min: 0.5,
+                max: 4.5,
+              }}
+            />
+            <Axis
+              id={getAxisId('y')}
+              position={Position.Left}
+              domain={{
+                min: 50,
+                max: 450,
+              }}
+            />
+            <Axis id={getAxisId('x')} position={Position.Bottom} />
+            <LineSeries
+              id={getSpecId('line')}
+              yScaleType={ScaleType.Linear}
+              xScaleType={ScaleType.Linear}
+              xAccessor={0}
+              yAccessors={[1]}
+              stackAccessors={[0]}
+              data={[[0.25, 100], [1, 50], [3, 400], [4, 250], [5, 235]]}
+            />
+            <LineSeries
+              id={getSpecId('line2')}
+              yScaleType={ScaleType.Linear}
+              xScaleType={ScaleType.Linear}
+              xAccessor={0}
+              yAccessors={[1]}
+              stackAccessors={[0]}
+              data={[[0.25, 100], [0.5, 100], [1, 50], [3, 400], [4, 250], [4.5, 220], [5, 235]]}
+            />
+          </Chart>
+        </div>
+        <div className="chart">
+          <Chart>
+            <Settings
+              showLegend={true}
+              xDomain={{
+                min: 0.5,
+                max: 4.5,
+              }}
+            />
+            <Axis
+              id={getAxisId('y')}
+              position={Position.Left}
+              domain={{
+                min: 50,
+                max: 250,
+              }}
+            />
+            <Axis id={getAxisId('x')} position={Position.Bottom} />
+            <AreaSeries
+              id={getSpecId('line')}
+              yScaleType={ScaleType.Linear}
+              xScaleType={ScaleType.Linear}
+              xAccessor={0}
+              yAccessors={[1]}
+              data={[[0, 100], [1, 50], [3, 400], [4, 250], [5, 235]]}
+            />
+          </Chart>
+        </div>
+      </Fragment>
     );
   }
 }

@@ -108,14 +108,6 @@ describe('Chart Store', () => {
     expect(axesTicks.get(AXIS_ID)).not.toBeUndefined();
   });
 
-  test('can toggle legend visibility', () => {
-    store.toggleLegendCollapsed();
-    expect(store.legendCollapsed.get()).toBe(true);
-
-    store.toggleLegendCollapsed();
-    expect(store.legendCollapsed.get()).toBe(false);
-  });
-
   test('can set legend visibility', () => {
     store.showLegend.set(false);
     store.setShowLegend(true);
@@ -313,24 +305,66 @@ describe('Chart Store', () => {
     expect(store.onBrushEndListener).toEqual(brushEndListener);
   });
 
+  test('can set a cursor hover listener', () => {
+    const listener = (): void => {
+      return;
+    };
+    store.setOnCursorUpdateListener(listener);
+
+    expect(store.onCursorUpdateListener).toEqual(listener);
+  });
+
+  test('can set a render change listener', () => {
+    const listener = (): void => {
+      return;
+    };
+    store.setOnRenderChangeListener(listener);
+
+    expect(store.onRenderChangeListener).toEqual(listener);
+  });
+
+  test('should observe chartInitialized value', () => {
+    const listener = jest.fn();
+    store.chartInitialized.set(false);
+    store.setOnRenderChangeListener(listener);
+    store.chartInitialized.set(true);
+
+    expect(listener).toBeCalledWith(true);
+  });
+
+  test('should observe chartInitialized value only on change', () => {
+    const listener = jest.fn();
+    store.chartInitialized.set(false);
+    store.setOnRenderChangeListener(listener);
+    store.chartInitialized.set(false);
+
+    expect(listener).not.toBeCalled();
+  });
+
   test('can remove listeners', () => {
     store.removeElementClickListener();
-    expect(store.onElementClickListener).toEqual(undefined);
+    expect(store.onElementClickListener).toBeUndefined();
 
     store.removeElementOverListener();
-    expect(store.onElementOverListener).toEqual(undefined);
+    expect(store.onElementOverListener).toBeUndefined();
 
     store.removeElementOutListener();
-    expect(store.onElementOutListener).toEqual(undefined);
+    expect(store.onElementOutListener).toBeUndefined();
 
     store.removeOnLegendItemOverListener();
-    expect(store.onLegendItemOverListener).toEqual(undefined);
+    expect(store.onLegendItemOverListener).toBeUndefined();
 
     store.removeOnLegendItemPlusClickListener();
-    expect(store.onLegendItemPlusClickListener).toEqual(undefined);
+    expect(store.onLegendItemPlusClickListener).toBeUndefined();
 
     store.removeOnLegendItemMinusClickListener();
-    expect(store.onLegendItemMinusClickListener).toEqual(undefined);
+    expect(store.onLegendItemMinusClickListener).toBeUndefined();
+
+    store.removeOnCursorUpdateListener();
+    expect(store.onCursorUpdateListener).toBeUndefined();
+
+    store.removeOnRenderChangeListener();
+    expect(store.onRenderChangeListener).toBeUndefined();
   });
 
   test('can respond to a brush end event', () => {
@@ -497,7 +531,7 @@ describe('Chart Store', () => {
     };
 
     localStore.computeChart();
-    expect(localStore.initialized.get()).toBe(false);
+    expect(localStore.chartInitialized.get()).toBe(false);
   });
 
   test('only computes chart if series specs exist', () => {
@@ -512,7 +546,7 @@ describe('Chart Store', () => {
 
     localStore.seriesSpecs = new Map();
     localStore.computeChart();
-    expect(localStore.initialized.get()).toBe(false);
+    expect(localStore.chartInitialized.get()).toBe(false);
   });
 
   test('can set the color for a series', () => {
@@ -578,6 +612,7 @@ describe('Chart Store', () => {
       isHighlighted: false,
       isXValue: false,
       seriesKey: 'a',
+      yAccessor: 'y',
     };
     store.cursorPosition.x = -1;
     store.cursorPosition.y = 1;
@@ -611,6 +646,9 @@ describe('Chart Store', () => {
   });
 
   describe('can use a custom tooltip header formatter', () => {
+    jest.unmock('../crosshair/crosshair_utils');
+    jest.resetModules();
+
     beforeEach(() => {
       const axisSpec: AxisSpec = {
         id: AXIS_ID,
@@ -641,12 +679,31 @@ describe('Chart Store', () => {
       store.setCursorPosition(10, 10);
       expect(store.tooltipData[0].value).toBe(1);
     });
+
+    test('should update cursor postion with hover event', () => {
+      const legendListener = jest.fn(
+        (): void => {
+          return;
+        },
+      );
+
+      store.legendItems = new Map([[firstLegendItem.key, firstLegendItem], [secondLegendItem.key, secondLegendItem]]);
+      store.selectedLegendItemKey.set(null);
+      store.onCursorUpdateListener = undefined;
+
+      store.setCursorPosition(1, 1);
+      expect(legendListener).not.toBeCalled();
+
+      store.setOnCursorUpdateListener(legendListener);
+      store.setCursorPosition(1, 1);
+      expect(legendListener).toBeCalled();
+    });
   });
 
   test('can disable brush based on scale and listener', () => {
     store.xScale = undefined;
     expect(store.isBrushEnabled()).toBe(false);
-    store.xScale = new ScaleContinuous(ScaleType.Linear, [0, 100], [0, 100]);
+    store.xScale = new ScaleContinuous({ type: ScaleType.Linear, domain: [0, 100], range: [0, 100] });
     store.onBrushEndListener = undefined;
     expect(store.isBrushEnabled()).toBe(false);
     store.setOnBrushEndListener(() => ({}));
@@ -665,8 +722,9 @@ describe('Chart Store', () => {
       isHighlighted: false,
       isXValue: false,
       seriesKey: 'a',
+      yAccessor: 'y',
     };
-    store.xScale = new ScaleContinuous(ScaleType.Linear, [0, 100], [0, 100]);
+    store.xScale = new ScaleContinuous({ type: ScaleType.Linear, domain: [0, 100], range: [0, 100] });
     store.cursorPosition.x = 1;
     store.cursorPosition.y = 1;
     store.tooltipType.set(TooltipType.Crosshairs);
@@ -757,7 +815,7 @@ describe('Chart Store', () => {
     expect(clickListener.mock.calls[1][0]).toEqual([geom1.value, geom2.value]);
   });
   test('can compute annotation tooltip state', () => {
-    const scale = new ScaleContinuous(ScaleType.Linear, [0, 100], [0, 100]);
+    const scale = new ScaleContinuous({ type: ScaleType.Linear, domain: [0, 100], range: [0, 100] });
 
     store.rawCursorPosition.x = -1;
     store.rawCursorPosition.y = 0;
@@ -801,6 +859,7 @@ describe('Chart Store', () => {
       isHighlighted: true,
       isXValue: false,
       seriesKey: 'foo',
+      yAccessor: 'y',
     };
     const unhighlightedTooltipValue = {
       name: 'foo',
@@ -809,6 +868,7 @@ describe('Chart Store', () => {
       isHighlighted: false,
       isXValue: false,
       seriesKey: 'foo',
+      yAccessor: 'y',
     };
 
     const expectedRectTooltipState = {
@@ -836,6 +896,7 @@ describe('Chart Store', () => {
       isHighlighted: false,
       isXValue: true,
       seriesKey: 'headerSeries',
+      yAccessor: 'y',
     };
 
     store.tooltipData.replace([headerValue]);
@@ -848,6 +909,7 @@ describe('Chart Store', () => {
       isHighlighted: false,
       isXValue: false,
       seriesKey: 'seriesKey',
+      yAccessor: 'y',
     };
     store.tooltipData.replace([headerValue, tooltipValue]);
 
@@ -861,28 +923,70 @@ describe('Chart Store', () => {
     };
 
     beforeEach(() => {
-      store.xScale = new ScaleContinuous(ScaleType.Linear, [0, 100], [0, 100]);
+      store.xScale = new ScaleContinuous({ type: ScaleType.Linear, domain: [0, 100], range: [0, 100] });
     });
 
     test('when cursor is outside of chart bounds', () => {
       store.cursorPosition.x = -1;
       store.cursorPosition.y = -1;
       store.onBrushEndListener = brushEndListener;
-      expect(store.isCrosshairCursorVisible.get()).toBe(false);
+      expect(store.chartCursor.get()).toBe('default');
     });
 
     test('when cursor is within chart bounds and brush enabled', () => {
       store.cursorPosition.x = 10;
       store.cursorPosition.y = 10;
       store.onBrushEndListener = brushEndListener;
-      expect(store.isCrosshairCursorVisible.get()).toBe(true);
+      expect(store.chartCursor.get()).toBe('crosshair');
     });
 
     test('when cursor is within chart bounds and brush disabled', () => {
       store.cursorPosition.x = 10;
       store.cursorPosition.y = 10;
       store.onBrushEndListener = undefined;
-      expect(store.isCrosshairCursorVisible.get()).toBe(false);
+      expect(store.chartCursor.get()).toBe('default');
+    });
+    test('when cursor is within chart bounds and brush enabled but over one geom', () => {
+      store.cursorPosition.x = 10;
+      store.cursorPosition.y = 10;
+      store.onBrushEndListener = brushEndListener;
+      const geom1: IndexedGeometry = {
+        color: 'red',
+        geometryId: {
+          specId: getSpecId('specId1'),
+          seriesKey: [2],
+        },
+        value: {
+          x: 0,
+          y: 1,
+          accessor: 'y1',
+        },
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+        seriesStyle: {
+          rect: {
+            opacity: 1,
+          },
+          rectBorder: {
+            strokeWidth: 1,
+            visible: false,
+          },
+          displayValue: {
+            fill: 'black',
+            fontFamily: '',
+            fontSize: 2,
+            offsetX: 0,
+            offsetY: 0,
+            padding: 2,
+          },
+        },
+      };
+      store.highlightedGeometries.replace([geom1]);
+      expect(store.chartCursor.get()).toBe('crosshair');
+      store.onElementClickListener = jest.fn();
+      expect(store.chartCursor.get()).toBe('pointer');
     });
   });
   test('should set tooltip type to follow when single value x scale', () => {
@@ -902,5 +1006,36 @@ describe('Chart Store', () => {
     store.addSeriesSpec(singleValueSpec);
     store.computeChart();
     expect(store.tooltipType.get()).toBe(TooltipType.Follow);
+  });
+
+  describe('isActiveChart', () => {
+    it('should return true if no activeChartId is defined', () => {
+      store.activeChartId = undefined;
+      expect(store.isActiveChart.get()).toBe(true);
+    });
+
+    it('should return true if activeChartId is defined and matches chart id', () => {
+      store.activeChartId = store.id;
+      expect(store.isActiveChart.get()).toBe(true);
+    });
+
+    it('should return false if activeChartId is defined and does NOT match chart id', () => {
+      store.activeChartId = '123';
+      expect(store.isActiveChart.get()).toBe(false);
+    });
+  });
+
+  describe('setActiveChartId', () => {
+    it('should set activeChartId with value', () => {
+      store.activeChartId = undefined;
+      store.setActiveChartId('test-id');
+      expect(store.activeChartId).toBe('test-id');
+    });
+
+    it('should set activeChartId to undefined if no value', () => {
+      store.activeChartId = 'test';
+      store.setActiveChartId();
+      expect(store.activeChartId).toBeUndefined();
+    });
   });
 });

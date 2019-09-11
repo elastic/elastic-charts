@@ -58,8 +58,8 @@ describe('Theme', () => {
       };
 
       const defaultLineConfig = {
-        stroke: '#000',
-        strokeWidth: 3,
+        stroke: '#777',
+        strokeWidth: 1,
         opacity: 1,
       };
 
@@ -73,9 +73,9 @@ describe('Theme', () => {
 
       const defaultDetailsConfig = {
         fontSize: 10,
-        fontFamily: `'Open Sans', Helvetica, Arial, sans-serif`,
+        fill: '#777',
+        fontFamily: 'sans-serif',
         fontStyle: 'normal',
-        fill: 'gray',
         padding: 0,
       };
 
@@ -101,8 +101,8 @@ describe('Theme', () => {
       const expectedMergedConfig = {
         stroke: 'customStroke',
         fill: 'customFill',
-        opacity: 0.5,
-        strokeWidth: 1,
+        opacity: 0.25,
+        strokeWidth: 0,
       };
 
       expect(mergeWithDefaultAnnotationRect(customConfig)).toEqual(expectedMergedConfig);
@@ -110,6 +110,12 @@ describe('Theme', () => {
   });
 
   describe('mergeWithDefaultTheme', () => {
+    it('should default to LIGHT_THEME', () => {
+      const partialTheme: PartialTheme = {};
+      const mergedTheme = mergeWithDefaultTheme(partialTheme);
+      expect(mergedTheme).toEqual(LIGHT_THEME);
+    });
+
     it('should merge partial theme: margins', () => {
       const customTheme = mergeWithDefaultTheme({
         chartMargins: {
@@ -376,10 +382,61 @@ describe('Theme', () => {
       expect(mergedTheme).toEqual(LIGHT_THEME);
     });
 
-    it('should default to LIGHT_THEME', () => {
-      const partialTheme: PartialTheme = {};
-      const mergedTheme = mergeWithDefaultTheme(partialTheme);
-      expect(mergedTheme).toEqual(LIGHT_THEME);
+    it('should merge partial theme wtih axillaryThemes', () => {
+      const customTheme = mergeWithDefaultTheme(
+        {
+          chartMargins: {
+            bottom: 123,
+          },
+        },
+        LIGHT_THEME,
+        [
+          {
+            chartMargins: {
+              top: 123,
+            },
+          },
+          {
+            chartMargins: {
+              left: 123,
+            },
+          },
+        ],
+      );
+      expect(customTheme.chartMargins).toBeDefined();
+      expect(customTheme.chartMargins.bottom).toBe(123);
+      expect(customTheme.chartMargins.top).toBe(123);
+      expect(customTheme.chartMargins.left).toBe(123);
+    });
+
+    it('should merge theme with axillaryThemes in spatial order priority', () => {
+      const customTheme = mergeWithDefaultTheme(
+        {
+          chartMargins: {
+            bottom: 1,
+          },
+        },
+        LIGHT_THEME,
+        [
+          {
+            chartMargins: {
+              top: 2,
+              bottom: 2,
+            },
+          },
+          {
+            chartMargins: {
+              top: 3,
+              left: 3,
+              bottom: 3,
+            },
+          },
+        ],
+      );
+      expect(customTheme.chartMargins).toBeDefined();
+      expect(customTheme.chartMargins.bottom).toBe(1);
+      expect(customTheme.chartMargins.top).toBe(2);
+      expect(customTheme.chartMargins.left).toBe(3);
     });
   });
 });

@@ -1,8 +1,7 @@
-import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Layer, Rect, Stage } from 'react-konva';
-import { isLineAnnotation, isRectAnnotation, Position } from '../../chart_types/xy_chart/utils/specs';
+import { isLineAnnotation, isRectAnnotation } from '../../chart_types/xy_chart/utils/specs';
 import { LineAnnotationStyle, RectAnnotationStyle, mergeWithDefaultGridLineConfig } from '../../utils/themes/theme';
 import { AnnotationId } from '../../utils/ids';
 import {
@@ -20,7 +19,9 @@ import { Grid } from './grid';
 import { LineAnnotation } from './line_annotation';
 import { LineGeometries } from './line_geometries';
 import { RectAnnotation } from './rect_annotation';
+import { ContainerConfig } from 'konva';
 import { isVertical } from '../../chart_types/xy_chart/utils/axis_utils';
+
 interface ReactiveChartProps {
   chartStore?: ChartStore; // FIX until we find a better way on ts mobx
 }
@@ -74,7 +75,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
     },
   };
 
-  renderBarSeries = (): ReactiveChartElementIndex[] => {
+  renderBarSeries = (clippings: ContainerConfig): ReactiveChartElementIndex[] => {
     const { geometries, canDataBeAnimated, chartTheme } = this.props.chartStore!;
     if (!geometries) {
       return [];
@@ -88,6 +89,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
         bars={geometries.bars}
         sharedStyle={chartTheme.sharedStyle}
         highlightedLegendItem={highlightedLegendItem}
+        clippings={clippings}
       />
     );
 
@@ -98,7 +100,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       },
     ];
   };
-  renderLineSeries = (): ReactiveChartElementIndex[] => {
+  renderLineSeries = (clippings: ContainerConfig): ReactiveChartElementIndex[] => {
     const { geometries, canDataBeAnimated, chartTheme } = this.props.chartStore!;
     if (!geometries) {
       return [];
@@ -113,6 +115,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
         lines={geometries.lines}
         sharedStyle={chartTheme.sharedStyle}
         highlightedLegendItem={highlightedLegendItem}
+        clippings={clippings}
       />
     );
 
@@ -123,7 +126,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       },
     ];
   };
-  renderAreaSeries = (): ReactiveChartElementIndex[] => {
+  renderAreaSeries = (clippings: ContainerConfig): ReactiveChartElementIndex[] => {
     const { geometries, canDataBeAnimated, chartTheme } = this.props.chartStore!;
     if (!geometries) {
       return [];
@@ -138,6 +141,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
         areas={geometries.areas}
         sharedStyle={chartTheme.sharedStyle}
         highlightedLegendItem={highlightedLegendItem}
+        clippings={clippings}
       />
     );
 
@@ -340,9 +344,17 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
   };
 
   sortAndRenderElements() {
-    const bars = this.renderBarSeries();
-    const areas = this.renderAreaSeries();
-    const lines = this.renderLineSeries();
+    const { chartRotation, chartDimensions } = this.props.chartStore!;
+    const clippings = {
+      clipX: 0,
+      clipY: 0,
+      clipWidth: [90, -90].includes(chartRotation) ? chartDimensions.height : chartDimensions.width,
+      clipHeight: [90, -90].includes(chartRotation) ? chartDimensions.width : chartDimensions.height,
+    };
+
+    const bars = this.renderBarSeries(clippings);
+    const areas = this.renderAreaSeries(clippings);
+    const lines = this.renderLineSeries(clippings);
     const annotations = this.renderAnnotations();
 
     return [...bars, ...areas, ...lines, ...annotations]
@@ -351,8 +363,8 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
   }
 
   render() {
-    const { initialized } = this.props.chartStore!;
-    if (!initialized.get()) {
+    const { chartInitialized } = this.props.chartStore!;
+    if (!chartInitialized.get()) {
       return null;
     }
 
@@ -362,43 +374,16 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       chartRotation,
       chartTransform,
       debug,
-      setCursorPosition,
       isChartEmpty,
-      legendCollapsed,
-      legendPosition,
-      chartTheme,
     } = this.props.chartStore!;
 
-    if (isChartEmpty) {
-      const isLegendCollapsed = legendCollapsed.get();
-      const { verticalWidth, horizontalHeight } = chartTheme.legend;
-
-      const paddingStyle =
-        legendPosition && isVertical(legendPosition)
-          ? legendPosition === Position.Right
-            ? { paddingLeft: -verticalWidth }
-            : { paddingLeft: verticalWidth }
-          : legendPosition === Position.Top
-          ? { paddingTop: horizontalHeight }
-          : { paddingTop: -horizontalHeight };
-
-      const style = isLegendCollapsed ? undefined : paddingStyle;
-
+    if (isChartEmpty.get()) {
       return (
         <div className="echReactiveChart_unavailable">
-          <p style={style}>No data to display</p>
+          <p>No data to display</p>
         </div>
       );
     }
-    // disable clippings when debugging
-    const clippings = debug
-      ? {}
-      : {
-          clipX: 0,
-          clipY: 0,
-          clipWidth: [90, -90].includes(chartRotation) ? chartDimensions.height : chartDimensions.width,
-          clipHeight: [90, -90].includes(chartRotation) ? chartDimensions.width : chartDimensions.height,
-        };
 
     let brushProps = {};
     const isBrushEnabled = this.props.chartStore!.isBrushEnabled();
@@ -409,83 +394,48 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       };
     }
 
-    const layerClippings = {
-      clipX: chartDimensions.left,
-      clipY: chartDimensions.top,
-      clipWidth: chartDimensions.width,
-      clipHeight: chartDimensions.height,
-    };
-
-    const className = classNames({
-      'echChart--isBrushEnabled': this.props.chartStore!.isCrosshairCursorVisible.get(),
-    });
-
     return (
-      <div
+      <Stage
+        width={parentDimensions.width}
+        height={parentDimensions.height}
         style={{
-          position: 'absolute',
-          top: 0,
-          bottom: 0,
-          right: 0,
-          left: 0,
-          boxSizing: 'border-box',
+          width: '100%',
+          height: '100%',
         }}
-        onMouseMove={({ nativeEvent: { offsetX, offsetY } }) => {
-          setCursorPosition(offsetX, offsetY);
-        }}
-        onMouseLeave={() => {
-          setCursorPosition(-1, -1);
-        }}
-        onMouseUp={() => {
-          if (this.props.chartStore!.isBrushing.get()) {
-            return;
-          }
-          this.props.chartStore!.handleChartClick();
-        }}
-        className={className}
+        {...brushProps}
       >
-        <Stage
-          width={parentDimensions.width}
-          height={parentDimensions.height}
-          style={{
-            width: '100%',
-            height: '100%',
-          }}
-          {...brushProps}
+        <Layer hitGraphEnabled={false} listening={false}>
+          {this.renderGrids()}
+        </Layer>
+        <Layer hitGraphEnabled={false} listening={false}>
+          {this.renderAxes()}
+        </Layer>
+
+        <Layer
+          x={chartDimensions.left + chartTransform.x}
+          y={chartDimensions.top + chartTransform.y}
+          rotation={chartRotation}
+          hitGraphEnabled={false}
+          listening={false}
         >
-          <Layer hitGraphEnabled={false} listening={false} {...layerClippings}>
-            {this.renderGrids()}
-          </Layer>
+          {this.sortAndRenderElements()}
+        </Layer>
 
-          <Layer
-            x={chartDimensions.left + chartTransform.x}
-            y={chartDimensions.top + chartTransform.y}
-            rotation={chartRotation}
-            {...clippings}
-            hitGraphEnabled={false}
-            listening={false}
-          >
-            {this.sortAndRenderElements()}
-          </Layer>
-
+        {debug && (
           <Layer hitGraphEnabled={false} listening={false}>
-            {debug && this.renderDebugChartBorders()}
+            {this.renderDebugChartBorders()}
           </Layer>
-          {isBrushEnabled && (
-            <Layer hitGraphEnabled={false} listening={false}>
-              {this.renderBrushTool()}
-            </Layer>
-          )}
-
+        )}
+        {isBrushEnabled && (
           <Layer hitGraphEnabled={false} listening={false}>
-            {this.renderAxes()}
+            {this.renderBrushTool()}
           </Layer>
+        )}
 
-          <Layer hitGraphEnabled={false} listening={false} {...layerClippings}>
-            {this.renderBarValues()}
-          </Layer>
-        </Stage>
-      </div>
+        <Layer hitGraphEnabled={false} listening={false}>
+          {this.renderBarValues()}
+        </Layer>
+      </Stage>
     );
   }
 

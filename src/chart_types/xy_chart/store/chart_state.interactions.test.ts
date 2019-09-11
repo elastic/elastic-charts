@@ -1,8 +1,8 @@
 import { BarGeometry } from '../rendering/rendering';
 import { computeXScale, computeYScales } from '../utils/scales';
 import { DataSeriesColorsValues } from '../utils/series';
-import { BarSeriesSpec, BasicSeriesSpec, RectAnnotationSpec } from '../utils/specs';
-import { getAnnotationId, getGroupId, getSpecId } from '../../../utils/ids';
+import { BarSeriesSpec, BasicSeriesSpec, RectAnnotationSpec, Position } from '../utils/specs';
+import { getAnnotationId, getGroupId, getSpecId, getAxisId } from '../../../utils/ids';
 import { TooltipType } from '../utils/interactions';
 import { ScaleContinuous } from '../../../utils/scales/scale_continuous';
 import { ScaleType } from '../../../utils/scales/scales';
@@ -174,9 +174,16 @@ describe('Chart state pointer interactions', () => {
   });
 
   test('can respond to tooltip types changes', () => {
-    store.xScale = new ScaleContinuous(ScaleType.Linear, [0, 1], [0, 100], 50, 0.5);
+    store.xScale = new ScaleContinuous(
+      {
+        type: ScaleType.Linear,
+        domain: [0, 1],
+        range: [0, 100],
+      },
+      { bandwidth: 50, minInterval: 0.5 },
+    );
     store.yScales = new Map();
-    store.yScales.set(GROUP_ID, new ScaleContinuous(ScaleType.Linear, [0, 1], [0, 100]));
+    store.yScales.set(GROUP_ID, new ScaleContinuous({ type: ScaleType.Linear, domain: [0, 1], range: [0, 100] }));
     store.geometriesIndex.set(0, [indexedGeom1Red]);
     store.geometriesIndexKeys.push(0);
     store.tooltipType.set(TooltipType.None);
@@ -214,8 +221,12 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     const barSeriesMap = new Map();
     barSeriesMap.set(SPEC_ID, spec);
     const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
-    const barSeriesScale = computeXScale(barSeriesDomains.xDomain, barSeriesMap.size, 0, 100);
-    const yScales = computeYScales(barSeriesDomains.yDomain, 0, 100);
+    const barSeriesScale = computeXScale({
+      xDomain: barSeriesDomains.xDomain,
+      totalBarsInCluster: barSeriesMap.size,
+      range: [0, 100],
+    });
+    const yScales = computeYScales({ yDomains: barSeriesDomains.yDomain, range: [0, 100] });
     store.xScale = barSeriesScale;
     store.yScales = yScales;
     store.geometriesIndex.set(0, [indexedGeom1Red]);
@@ -236,8 +247,40 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(store.yScales).not.toBeUndefined();
   });
 
+  test('set cursor from external source', () => {
+    store.setCursorValue(0);
+    expect(store.externalCursorShown.get()).toBe(true);
+    expect(store.cursorBandPosition).toEqual({
+      height: 100,
+      left: 10,
+      top: 10,
+      visible: true,
+      width: 50,
+    });
+
+    store.setCursorValue(1);
+    expect(store.externalCursorShown.get()).toBe(true);
+    expect(store.cursorBandPosition).toEqual({
+      height: 100,
+      left: 60,
+      top: 10,
+      visible: true,
+      width: 50,
+    });
+
+    store.setCursorValue(2);
+    expect(store.externalCursorShown.get()).toBe(true);
+    // equal to the latest except the visiblility
+    expect(store.cursorBandPosition).toEqual({
+      height: 100,
+      left: 60,
+      top: 10,
+      visible: false,
+      width: 50,
+    });
+  });
   test('can determine which tooltip to display if chart & annotation tooltips possible', () => {
-    const annotationDimensions = [{ rect: { x: 49, y: -1, width: 2, height: 99 } }];
+    const annotationDimensions = [{ rect: { x: 49, y: -1, width: 3, height: 99 } }];
     const rectAnnotationSpec: RectAnnotationSpec = {
       annotationId: getAnnotationId('rect'),
       groupId: GROUP_ID,
@@ -247,9 +290,9 @@ function mouseOverTestSuite(scaleType: ScaleType) {
 
     store.annotationSpecs.set(rectAnnotationSpec.annotationId, rectAnnotationSpec);
     store.annotationDimensions.set(rectAnnotationSpec.annotationId, annotationDimensions);
-
+    debugger;
     // isHighlighted false, chart tooltip true; should show annotationTooltip only
-    store.setCursorPosition(chartLeft + 50, chartTop + 0);
+    store.setCursorPosition(chartLeft + 51, chartTop + 1);
     expect(store.isTooltipVisible.get()).toBe(false);
   });
 
@@ -297,8 +340,12 @@ function mouseOverTestSuite(scaleType: ScaleType) {
   });
 
   test('can hover top-right corner of the first bar', () => {
-    store.setCursorPosition(chartLeft + 49, chartTop + 0);
-    expect(store.cursorPosition).toEqual({ x: 49, y: 0 });
+    let scaleOffset = 0;
+    if (scaleType !== ScaleType.Ordinal) {
+      scaleOffset = 1;
+    }
+    store.setCursorPosition(chartLeft + 49 + scaleOffset, chartTop + 0);
+    expect(store.cursorPosition).toEqual({ x: 49 + scaleOffset, y: 0 });
     expect(store.cursorBandPosition.left).toBe(chartLeft + 0);
     expect(store.cursorBandPosition.width).toBe(50);
     expect(store.isTooltipVisible.get()).toBe(true);
@@ -308,8 +355,8 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(onOutListener).toBeCalledTimes(0);
     expect(onOverListener.mock.calls[0][0]).toEqual([indexedGeom1Red.value]);
 
-    store.setCursorPosition(chartLeft + 50, chartTop + 0);
-    expect(store.cursorPosition).toEqual({ x: 50, y: 0 });
+    store.setCursorPosition(chartLeft + 50 + scaleOffset, chartTop + 0);
+    expect(store.cursorPosition).toEqual({ x: 50 + scaleOffset, y: 0 });
     expect(store.cursorBandPosition.left).toBe(chartLeft + 50);
     expect(store.cursorBandPosition.width).toBe(50);
     expect(store.isTooltipVisible.get()).toBe(true);
@@ -320,8 +367,12 @@ function mouseOverTestSuite(scaleType: ScaleType) {
   });
 
   test('can hover bottom-right corner of the first bar', () => {
-    store.setCursorPosition(chartLeft + 49, chartTop + 99);
-    expect(store.cursorPosition).toEqual({ x: 49, y: 99 });
+    let scaleOffset = 0;
+    if (scaleType !== ScaleType.Ordinal) {
+      scaleOffset = 1;
+    }
+    store.setCursorPosition(chartLeft + 49 + scaleOffset, chartTop + 99);
+    expect(store.cursorPosition).toEqual({ x: 49 + scaleOffset, y: 99 });
     expect(store.cursorBandPosition.left).toBe(chartLeft + 0);
     expect(store.cursorBandPosition.width).toBe(50);
     expect(store.isTooltipVisible.get()).toBe(true);
@@ -331,8 +382,8 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(onOutListener).toBeCalledTimes(0);
     expect(onOverListener.mock.calls[0][0]).toEqual([indexedGeom1Red.value]);
 
-    store.setCursorPosition(chartLeft + 50, chartTop + 99);
-    expect(store.cursorPosition).toEqual({ x: 50, y: 99 });
+    store.setCursorPosition(chartLeft + 50 + scaleOffset, chartTop + 99);
+    expect(store.cursorPosition).toEqual({ x: 50 + scaleOffset, y: 99 });
     expect(store.cursorBandPosition.left).toBe(chartLeft + 50);
     expect(store.cursorBandPosition.width).toBe(50);
     expect(store.isTooltipVisible.get()).toBe(true);
@@ -376,7 +427,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
       const singleValueScale =
         store.xScale!.type === ScaleType.Ordinal
           ? new ScaleBand(['a'], [0, 0])
-          : new ScaleContinuous(ScaleType.Linear, [1, 1], [0, 0]);
+          : new ScaleContinuous({ type: ScaleType.Linear, domain: [1, 1], range: [0, 0] });
       store.xScale = singleValueScale;
     });
     test('horizontal chart rotation', () => {
@@ -390,6 +441,44 @@ function mouseOverTestSuite(scaleType: ScaleType) {
       store.setCursorPosition(chartLeft + 99, chartTop + 99);
       const expectedTransform = `translateX(109px) translateX(-100%) translateY(${chartTop}px) translateY(-0%)`;
       expect(store.tooltipPosition.transform).toBe(expectedTransform);
+    });
+  });
+  describe('can format tooltip values on rotated chart', () => {
+    beforeEach(() => {
+      store.addAxisSpec({
+        hide: true,
+        id: getAxisId('yaxis'),
+        groupId: GROUP_ID,
+        position: Position.Left,
+        tickFormat: (value) => `left ${Number(value)}`,
+        showOverlappingLabels: false,
+        showOverlappingTicks: false,
+        tickPadding: 0,
+        tickSize: 0,
+      });
+      store.addAxisSpec({
+        hide: true,
+        id: getAxisId('xaxis'),
+        groupId: GROUP_ID,
+        position: Position.Bottom,
+        tickFormat: (value) => `bottom ${Number(value)}`,
+        showOverlappingLabels: false,
+        showOverlappingTicks: false,
+        tickPadding: 0,
+        tickSize: 0,
+      });
+    });
+    test('chart 0 rotation', () => {
+      store.setCursorPosition(chartLeft + 0, chartTop + 99);
+      expect(store.tooltipData[0].value).toBe('bottom 0');
+      expect(store.tooltipData[1].value).toBe('left 10');
+    });
+
+    test('chart 90 deg rotated', () => {
+      store.chartRotation = 90;
+      store.setCursorPosition(chartLeft + 0, chartTop + 99);
+      expect(store.tooltipData[0].value).toBe('left 1');
+      expect(store.tooltipData[1].value).toBe('bottom 5');
     });
   });
 }

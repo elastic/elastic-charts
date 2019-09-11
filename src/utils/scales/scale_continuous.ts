@@ -1,7 +1,7 @@
 import { bisectLeft } from 'd3-array';
 import { scaleLinear, scaleLog, scaleSqrt, scaleUtc } from 'd3-scale';
 import { DateTime } from 'luxon';
-import { clamp } from '../commons';
+import { clamp, mergePartial } from '../commons';
 import { ScaleContinuousType, ScaleType, Scale } from './scales';
 
 const SCALES = {
@@ -60,7 +60,61 @@ export function limitLogScaleDomain(domain: any[]) {
   }
   return domain;
 }
+interface ScaleData {
+  /** The Type of continuous scale */
+  type: ScaleContinuousType;
+  /** The data input domain */
+  domain: any[];
+  /** The data output range */
+  range: [number, number];
+}
 
+interface ScaleOptions {
+  /**
+   * The desidered bandwidth for a linear band scale.
+   * @default 0
+   */
+  bandwidth: number;
+  /**
+   * The min interval computed on the XDomain. Not available for yDomains.
+   * @default 0
+   */
+  minInterval: number;
+  /**
+   * A time zone identifier. Can be any IANA zone supported by he host environment,
+   * or a fixed-offset name of the form 'utc+3', or the strings 'local' or 'utc'.
+   * @default 'utc'
+   */
+  timeZone: string;
+  /**
+   * The number of bars in the cluster. Used to correctly compute scales when
+   * using padding between bars.
+   * @default 1
+   */
+  totalBarsInCluster: number;
+  /**
+   * The proportion of the range that is reserved for blank space between bands
+   * A number between 0 and 1.
+   * @default 0
+   */
+  barsPadding: number;
+  /**
+   * The approximated number of ticks.
+   * @default 10
+   */
+  ticks: number;
+  /** true if the scale was adjusted to fit one single value histogram */
+  isSingleValueHistogram: boolean;
+}
+const defaultScaleOptions: ScaleOptions = {
+  bandwidth: 0,
+  minInterval: 0,
+  timeZone: 'utc',
+  totalBarsInCluster: 1,
+  barsPadding: 0,
+  ticks: 10,
+  isSingleValueHistogram: false,
+};
 export class ScaleContinuous implements Scale {
   readonly bandwidth: number;
   readonly totalBarsInCluster: number;
@@ -74,41 +128,21 @@ export class ScaleContinuous implements Scale {
   readonly tickValues: number[];
   readonly timeZone: string;
   readonly barsPadding: number;
+  readonly isSingleValueHistogram: boolean;
   private readonly d3Scale: any;
 
-  constructor(
-    type: ScaleContinuousType,
-    domain: any[],
-    range: [number, number],
-    /**
-     * The desidered bandwidth for a linear band scale.
-     * @default 0
-     */
-    bandwidth: number = 0,
-    /**
-     * The min interval computed on the XDomain. Not available for yDomains.
-     * @default 0
-     */
-    minInterval: number = 0,
-    /**
-     * A time zone identifier. Can be any IANA zone supported by he host environment,
-     * or a fixed-offset name of the form 'utc+3', or the strings 'local' or 'utc'.
-     * @default 'utc'
-     */
-    timeZone: string = 'utc',
-    /**
-     * The number of bars in the cluster. Used to correctly compute scales when
-     * using padding between bars.
-     * @default 1
-     */
-    totalBarsInCluster: number = 1,
-    /**
-     * The proportion of the range that is reserved for blank space between bands
-     * A number between 0 and 1.
-     * @default 0
-     */
-    barsPadding: number = 0,
-  ) {
+  constructor(scaleData: ScaleData, options?: Partial<ScaleOptions>) {
+    const { type, domain, range } = scaleData;
+    const {
+      bandwidth,
+      minInterval,
+      timeZone,
+      totalBarsInCluster,
+      barsPadding,
+      ticks,
+      isSingleValueHistogram,
+    } = mergePartial(defaultScaleOptions, options);
+
     this.d3Scale = SCALES[type]();
     if (type === ScaleType.Log) {
       this.domain = limitLogScaleDomain(domain);
@@ -129,6 +163,7 @@ export class ScaleContinuous implements Scale {
     this.isInverted = this.domain[0] > this.domain[1];
     this.timeZone = timeZone;
     this.totalBarsInCluster = totalBarsInCluster;
+    this.isSingleValueHistogram = isSingleValueHistogram;
     if (type === ScaleType.Time) {
       const startDomain = DateTime.fromMillis(this.domain[0], { zone: this.timeZone });
       const endDomain = DateTime.fromMillis(this.domain[1], { zone: this.timeZone });
@@ -137,7 +172,7 @@ export class ScaleContinuous implements Scale {
       const shiftedDomainMax = endDomain.plus({ minutes: offset }).toMillis();
       const tzShiftedScale = scaleUtc().domain([shiftedDomainMin, shiftedDomainMax]);
 
-      const rawTicks = tzShiftedScale.ticks();
+      const rawTicks = tzShiftedScale.ticks(ticks);
       const timePerTick = (shiftedDomainMax - shiftedDomainMin) / rawTicks.length;
       const hasHourTicks = timePerTick < 1000 * 60 * 60 * 12;
 
@@ -153,7 +188,7 @@ export class ScaleContinuous implements Scale {
           return this.domain[0] + i * this.minInterval;
         });
       } else {
-        this.tickValues = this.d3Scale.ticks();
+        this.tickValues = this.d3Scale.ticks(ticks);
       }
     }
   }
@@ -161,7 +196,12 @@ export class ScaleContinuous implements Scale {
   scale(value: any) {
     return this.d3Scale(value) + (this.bandwidthPadding / 2) * this.totalBarsInCluster;
   }
-
+  pureScale(value: any) {
+    if (this.bandwidth === 0) {
+      return this.d3Scale(value);
+    }
+    return this.d3Scale(value + this.minInterval / 2);
+  }
   ticks() {
     return this.tickValues;
   }
@@ -172,36 +212,55 @@ export class ScaleContinuous implements Scale {
     }
     return invertedValue;
   }
-  invertWithStep(value: number, data: number[]): any {
-    const invertedValue = this.invert(value - this.bandwidth / 2);
-    const leftIndex = bisectLeft(data, invertedValue);
+  invertWithStep(
+    value: number,
+    data: number[],
+  ): {
+    value: any;
+    withinBandwidth: boolean;
+  } {
+    const invertedValue = this.invert(value);
+    const bisectValue = this.bandwidth === 0 ? invertedValue + this.minInterval / 2 : invertedValue;
+    const leftIndex = bisectLeft(data, bisectValue);
+
     if (leftIndex === 0) {
-      // is equal or less than the first value
-      const prevValue1 = data[leftIndex];
-      if (data.length === 0) {
-        return prevValue1;
+      if (invertedValue < data[0]) {
+        return {
+          value: data[0] - this.minInterval * Math.ceil((data[0] - invertedValue) / this.minInterval),
+          withinBandwidth: false,
+        };
       }
-      const nextValue1 = data[leftIndex + 1];
-      const nextDiff1 = Math.abs(nextValue1 - invertedValue);
-      const prevDiff1 = Math.abs(invertedValue - prevValue1);
-      if (nextDiff1 < prevDiff1) {
-        return nextValue1;
-      }
-      return prevValue1;
+      return {
+        value: data[0],
+        withinBandwidth: true,
+      };
     }
-    if (leftIndex === data.length) {
-      return data[leftIndex - 1];
+    const currentValue = data[leftIndex - 1];
+    // pure linear scale
+    if (this.minInterval === 0) {
+      const nextValue = data[leftIndex];
+      const nextDiff = Math.abs(nextValue - invertedValue);
+      const prevDiff = Math.abs(invertedValue - currentValue);
+      return {
+        value: nextDiff <= prevDiff ? nextValue : currentValue,
+        withinBandwidth: true,
+      };
     }
-    const nextValue = data[leftIndex];
-    const prevValue = data[leftIndex - 1];
-    const nextDiff = Math.abs(nextValue - invertedValue);
-    const prevDiff = Math.abs(invertedValue - prevValue);
-    if (nextDiff <= prevDiff) {
-      return nextValue;
+    if (invertedValue - currentValue <= this.minInterval) {
+      return {
+        value: currentValue,
+        withinBandwidth: true,
+      };
     }
-    return prevValue;
+    return {
+      value: currentValue + this.minInterval * Math.floor((invertedValue - currentValue) / this.minInterval),
+      withinBandwidth: false,
+    };
   }
   isSingleValue() {
+    if (this.isSingleValueHistogram) {
+      return true;
+    }
     if (this.domain.length < 2) {
       return true;
     }

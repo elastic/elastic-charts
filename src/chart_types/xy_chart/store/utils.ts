@@ -215,8 +215,8 @@ export function computeSeriesGeometries(
   const { stackedBarsInCluster, totalBarsInCluster } = countBarsInCluster(stacked, nonStacked);
 
   // compute scales
-  const xScale = computeXScale(xDomain, totalBarsInCluster, 0, width, barsPadding, enableHistogramMode);
-  const yScales = computeYScales(yDomain, height, 0);
+  const xScale = computeXScale({ xDomain, totalBarsInCluster, range: [0, width], barsPadding, enableHistogramMode });
+  const yScales = computeYScales({ yDomains: yDomain, range: [height, 0] });
 
   // compute colors
 
@@ -416,6 +416,7 @@ export function renderGeometries(
     lines: 0,
     linePoints: 0,
   };
+  let barIndexOffset = 0;
   for (i = 0; i < len; i++) {
     const ds = dataSeries[i];
     const spec = getSpecById(seriesSpecs, ds.specId);
@@ -425,8 +426,7 @@ export function renderGeometries(
     const color = seriesColorsMap.get(ds.seriesColorKey) || defaultColor;
 
     if (isBarSeriesSpec(spec)) {
-      const shift = isStacked ? indexOffset : indexOffset + i;
-
+      const shift = isStacked ? indexOffset : indexOffset + barIndexOffset;
       const barSeriesStyle = mergePartial(chartTheme.barSeriesStyle, spec.barSeriesStyle, {
         mergeOptionalPartialValues: true,
       });
@@ -451,10 +451,12 @@ export function renderGeometries(
         ds.key,
         barSeriesStyle,
         displayValueSettings,
+        spec.styleAccessor,
       );
       barGeometriesIndex = mergeGeometriesIndexes(barGeometriesIndex, renderedBars.indexedGeometries);
       bars.push(...renderedBars.barGeometries);
       geometriesCounts.bars += renderedBars.barGeometries.length;
+      barIndexOffset += 1;
     } else if (isLineSeriesSpec(spec)) {
       const lineShift = clusteredCount > 0 ? clusteredCount : 1;
       const lineSeriesStyle = spec.lineSeriesStyle
@@ -501,6 +503,7 @@ export function renderGeometries(
         ds.key,
         xScaleOffset,
         areaSeriesStyle,
+        isStacked,
       );
       areaGeometriesIndex = mergeGeometriesIndexes(areaGeometriesIndex, renderedAreas.indexedGeometries);
       areas.push(renderedAreas.areaGeometry);

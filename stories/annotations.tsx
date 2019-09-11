@@ -3,6 +3,7 @@ import { storiesOf } from '@storybook/react';
 import React from 'react';
 import {
   AnnotationDomainTypes,
+  AnnotationTooltipFormatter,
   Axis,
   BarSeries,
   Chart,
@@ -72,7 +73,7 @@ storiesOf('Annotations', module)
 
     return (
       <Chart className={'story-chart'}>
-        <Settings debug={boolean('debug', false)} rotation={chartRotation} />
+        <Settings showLegend debug={boolean('debug', false)} rotation={chartRotation} />
         <LineAnnotation
           annotationId={getAnnotationId('anno_1')}
           domainType={AnnotationDomainTypes.XDomain}
@@ -330,7 +331,7 @@ storiesOf('Annotations', module)
       {
         coordinates: {
           x0: 'a',
-          x1: 'b.5',
+          x1: 'b',
         },
         details: 'details about this annotation',
       },
@@ -534,6 +535,7 @@ storiesOf('Annotations', module)
           style={style}
           renderTooltip={renderTooltip}
           zIndex={zIndex}
+          hideTooltips={boolean('hide tooltips', false)}
         />
         <Axis id={getAxisId('bottom')} position={xAxisPosition} title={xAxisTitle} />
         <Axis id={getAxisId('left')} title={yAxisTitle} position={yAxisPosition} />
@@ -604,6 +606,61 @@ storiesOf('Annotations', module)
           xAccessor="x"
           yAccessors={['y']}
           data={[{ x: 3, y: 2 }]}
+        />
+      </Chart>
+    );
+  })
+  .add('[rect] tooltip visibility dependent on content', () => {
+    const tooltipOptions = {
+      'default formatter, details defined': 'default_defined',
+      'default formatter, details undefined': 'default_undefined',
+      'custom formatter, return element': 'custom_element',
+      'custom formatter, return null': 'custom_null',
+    };
+
+    const tooltipFormat = select('tooltip format', tooltipOptions, 'default_defined');
+
+    const isDefaultDefined = tooltipFormat === 'default_defined';
+
+    const dataValues = [
+      {
+        coordinates: {
+          x0: 0,
+          x1: 1,
+          y0: 0,
+          y1: 7,
+        },
+        details: isDefaultDefined ? 'foo' : undefined,
+      },
+    ];
+
+    const isCustomTooltipElement = tooltipFormat === 'custom_element';
+    const tooltipFormatter: AnnotationTooltipFormatter = () => {
+      if (!isCustomTooltipElement) {
+        return null;
+      }
+
+      return <div>{'custom formatter'}</div>;
+    };
+
+    const isCustomTooltip = tooltipFormat.includes('custom');
+
+    return (
+      <Chart className={'story-chart'}>
+        <RectAnnotation
+          dataValues={dataValues}
+          annotationId={getAnnotationId('rect')}
+          renderTooltip={isCustomTooltip ? tooltipFormatter : undefined}
+        />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'x-domain axis'} />
+        <Axis id={getAxisId('left')} title={'y-domain axis'} position={Position.Left} />
+        <BarSeries
+          id={getSpecId('bars')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor={'x'}
+          yAccessors={['y']}
+          data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 3, y: 6 }]}
         />
       </Chart>
     );

@@ -11,7 +11,7 @@ describe('Scale Continuous', () => {
     const domain: Domain = [0, 2];
     const minRange = 0;
     const maxRange = 100;
-    const scale = new ScaleContinuous(ScaleType.Linear, domain, [minRange, maxRange]);
+    const scale = new ScaleContinuous({ type: ScaleType.Linear, domain, range: [minRange, maxRange] });
     expect(scale.invert(0)).toBe(0);
     expect(scale.invert(50)).toBe(1);
     expect(scale.invert(100)).toBe(2);
@@ -23,7 +23,7 @@ describe('Scale Continuous', () => {
     const domain = [startTime.toMillis(), endTime.toMillis()];
     const minRange = 0;
     const maxRange = 100;
-    const scale = new ScaleContinuous(ScaleType.Time, domain, [minRange, maxRange]);
+    const scale = new ScaleContinuous({ type: ScaleType.Time, domain, range: [minRange, maxRange] });
     expect(scale.invert(0)).toBe(startTime.toMillis());
     expect(scale.invert(50)).toBe(midTime.toMillis());
     expect(scale.invert(100)).toBe(endTime.toMillis());
@@ -31,10 +31,10 @@ describe('Scale Continuous', () => {
   test('check if a scale is log scale', () => {
     const domain: Domain = [0, 2];
     const range: [number, number] = [0, 100];
-    const scaleLinear = new ScaleContinuous(ScaleType.Linear, domain, range);
-    const scaleLog = new ScaleContinuous(ScaleType.Log, domain, range);
-    const scaleTime = new ScaleContinuous(ScaleType.Time, domain, range);
-    const scaleSqrt = new ScaleContinuous(ScaleType.Sqrt, domain, range);
+    const scaleLinear = new ScaleContinuous({ type: ScaleType.Linear, domain, range });
+    const scaleLog = new ScaleContinuous({ type: ScaleType.Log, domain, range });
+    const scaleTime = new ScaleContinuous({ type: ScaleType.Time, domain, range });
+    const scaleSqrt = new ScaleContinuous({ type: ScaleType.Sqrt, domain, range });
     const scaleBand = new ScaleBand(domain, range);
     expect(isLogarithmicScale(scaleLinear)).toBe(false);
     expect(isLogarithmicScale(scaleLog)).toBe(true);
@@ -46,27 +46,27 @@ describe('Scale Continuous', () => {
     const domain: Domain = [0, 2];
     const data = [0, 0.5, 0.8, 2];
     const range: [number, number] = [0, 2];
-    const scaleLinear = new ScaleContinuous(ScaleType.Linear, domain, range);
+    const scaleLinear = new ScaleContinuous({ type: ScaleType.Linear, domain, range });
     expect(scaleLinear.bandwidth).toBe(0);
-    expect(scaleLinear.invertWithStep(0, data)).toBe(0);
-    expect(scaleLinear.invertWithStep(0.1, data)).toBe(0);
+    expect(scaleLinear.invertWithStep(0, data)).toEqual({ value: 0, withinBandwidth: true });
+    expect(scaleLinear.invertWithStep(0.1, data)).toEqual({ value: 0, withinBandwidth: true });
 
-    expect(scaleLinear.invertWithStep(0.4, data)).toBe(0.5);
-    expect(scaleLinear.invertWithStep(0.5, data)).toBe(0.5);
-    expect(scaleLinear.invertWithStep(0.6, data)).toBe(0.5);
+    expect(scaleLinear.invertWithStep(0.4, data)).toEqual({ value: 0.5, withinBandwidth: true });
+    expect(scaleLinear.invertWithStep(0.5, data)).toEqual({ value: 0.5, withinBandwidth: true });
+    expect(scaleLinear.invertWithStep(0.6, data)).toEqual({ value: 0.5, withinBandwidth: true });
 
-    expect(scaleLinear.invertWithStep(0.7, data)).toBe(0.8);
-    expect(scaleLinear.invertWithStep(0.8, data)).toBe(0.8);
-    expect(scaleLinear.invertWithStep(0.9, data)).toBe(0.8);
+    expect(scaleLinear.invertWithStep(0.7, data)).toEqual({ value: 0.8, withinBandwidth: true });
+    expect(scaleLinear.invertWithStep(0.8, data)).toEqual({ value: 0.8, withinBandwidth: true });
+    expect(scaleLinear.invertWithStep(0.9, data)).toEqual({ value: 0.8, withinBandwidth: true });
 
-    expect(scaleLinear.invertWithStep(2, data)).toBe(2);
+    expect(scaleLinear.invertWithStep(2, data)).toEqual({ value: 2, withinBandwidth: true });
 
-    expect(scaleLinear.invertWithStep(1.7, data)).toBe(2);
+    expect(scaleLinear.invertWithStep(1.7, data)).toEqual({ value: 2, withinBandwidth: true });
 
-    expect(scaleLinear.invertWithStep(0.8 + (2 - 0.8) / 2, data)).toBe(0.8);
-    expect(scaleLinear.invertWithStep(0.8 + (2 - 0.8) / 2 - 0.01, data)).toBe(0.8);
+    expect(scaleLinear.invertWithStep(0.8 + (2 - 0.8) / 2, data)).toEqual({ value: 0.8, withinBandwidth: true });
+    expect(scaleLinear.invertWithStep(0.8 + (2 - 0.8) / 2 - 0.01, data)).toEqual({ value: 0.8, withinBandwidth: true });
 
-    expect(scaleLinear.invertWithStep(0.8 + (2 - 0.8) / 2 + 0.01, data)).toBe(2);
+    expect(scaleLinear.invertWithStep(0.8 + (2 - 0.8) / 2 + 0.01, data)).toEqual({ value: 2, withinBandwidth: true });
   });
   test('invert with step x value on linear band scale', () => {
     const data = [0, 1, 2];
@@ -78,17 +78,18 @@ describe('Scale Continuous', () => {
       type: 'xDomain',
     };
 
-    const scaleLinear = computeXScale(xDomain, 1, 0, 120, 0);
-    expect(scaleLinear.bandwidth).toBe(40);
-    expect(scaleLinear.invertWithStep(0, data)).toBe(0);
-    expect(scaleLinear.invertWithStep(40, data)).toBe(1);
+    const scaleLinear = computeXScale({ xDomain, totalBarsInCluster: 1, range: [0, 119], barsPadding: 0 });
+    expect(scaleLinear.bandwidth).toBe(119 / 3);
+    expect(scaleLinear.invertWithStep(0, data)).toEqual({ value: 0, withinBandwidth: true });
 
-    expect(scaleLinear.invertWithStep(41, data)).toBe(1);
-    expect(scaleLinear.invertWithStep(79, data)).toBe(1);
+    expect(scaleLinear.invertWithStep(40, data)).toEqual({ value: 1, withinBandwidth: true });
+    expect(scaleLinear.invertWithStep(41, data)).toEqual({ value: 1, withinBandwidth: true });
+    expect(scaleLinear.invertWithStep(79, data)).toEqual({ value: 1, withinBandwidth: true });
 
-    expect(scaleLinear.invertWithStep(80, data)).toBe(2);
-    expect(scaleLinear.invertWithStep(81, data)).toBe(2);
-    expect(scaleLinear.invertWithStep(120, data)).toBe(2);
+    expect(scaleLinear.invertWithStep(80, data)).toEqual({ value: 2, withinBandwidth: true });
+    expect(scaleLinear.invertWithStep(81, data)).toEqual({ value: 2, withinBandwidth: true });
+
+    expect(scaleLinear.invertWithStep(120, data)).toEqual({ value: 3, withinBandwidth: false });
   });
   test('can get the right x value on linear scale with regular band 1', () => {
     const domain = [0, 100];
@@ -97,17 +98,18 @@ describe('Scale Continuous', () => {
     // we tweak the maxRange removing the bandwidth to correctly compute
     // a band linear scale in computeXScale
     const range: [number, number] = [0, 100 - 10];
-    const scaleLinear = new ScaleContinuous(ScaleType.Linear, domain, range, 10, 10);
+    const scaleLinear = new ScaleContinuous(
+      { type: ScaleType.Linear, domain, range },
+      { bandwidth: 10, minInterval: 10 },
+    );
     expect(scaleLinear.bandwidth).toBe(10);
-    expect(scaleLinear.invertWithStep(0, data)).toBe(0);
-    expect(scaleLinear.invertWithStep(10, data)).toBe(10);
-    expect(scaleLinear.invertWithStep(20, data)).toBe(20);
-    expect(scaleLinear.invertWithStep(90, data)).toBe(90);
+    expect(scaleLinear.invertWithStep(0, data)).toEqual({ value: 0, withinBandwidth: true });
+    expect(scaleLinear.invertWithStep(10, data)).toEqual({ value: 10, withinBandwidth: true });
+    expect(scaleLinear.invertWithStep(20, data)).toEqual({ value: 20, withinBandwidth: true });
+    expect(scaleLinear.invertWithStep(90, data)).toEqual({ value: 90, withinBandwidth: true });
   });
   test('can get the right x value on linear scale with band', () => {
     const data = [0, 10, 20, 50, 90];
-    // we tweak the maxRange removing the bandwidth to correctly compute
-    // a band linear scale in computeXScale
 
     const xDomain: XDomain = {
       domain: [0, 100],
@@ -116,41 +118,46 @@ describe('Scale Continuous', () => {
       scaleType: ScaleType.Linear,
       type: 'xDomain',
     };
+    // we tweak the maxRange removing the bandwidth to correctly compute
+    // a band linear scale in computeXScale
+    const scaleLinear = computeXScale({ xDomain, totalBarsInCluster: 1, range: [0, 109], barsPadding: 0 });
+    expect(scaleLinear.bandwidth).toBe(109 / 11);
 
-    const scaleLinear = computeXScale(xDomain, 1, 0, 110, 0);
-    // const scaleLinear = new ScaleContinuous(ScaleType.Linear, domain, range, 10, 10);
-    expect(scaleLinear.bandwidth).toBe(10);
+    expect(scaleLinear.invertWithStep(0, data)).toEqual({ value: 0, withinBandwidth: true });
+    expect(scaleLinear.invertWithStep(9, data)).toEqual({ value: 0, withinBandwidth: true });
 
-    expect(scaleLinear.invertWithStep(0, data)).toBe(0);
-    expect(scaleLinear.invertWithStep(5, data)).toBe(0);
-    expect(scaleLinear.invertWithStep(9, data)).toBe(0);
+    expect(scaleLinear.invertWithStep(10, data)).toEqual({ value: 10, withinBandwidth: true });
+    expect(scaleLinear.invertWithStep(19, data)).toEqual({ value: 10, withinBandwidth: true });
 
-    expect(scaleLinear.invertWithStep(10, data)).toBe(10);
-    expect(scaleLinear.invertWithStep(11, data)).toBe(10);
-    expect(scaleLinear.invertWithStep(19, data)).toBe(10);
+    expect(scaleLinear.invertWithStep(20, data)).toEqual({ value: 20, withinBandwidth: true });
+    expect(scaleLinear.invertWithStep(29, data)).toEqual({ value: 20, withinBandwidth: true });
 
-    expect(scaleLinear.invertWithStep(20, data)).toBe(20);
-    expect(scaleLinear.invertWithStep(21, data)).toBe(20);
-    expect(scaleLinear.invertWithStep(25, data)).toBe(20);
-    expect(scaleLinear.invertWithStep(29, data)).toBe(20);
-    expect(scaleLinear.invertWithStep(30, data)).toBe(20);
-    expect(scaleLinear.invertWithStep(39, data)).toBe(20);
-    expect(scaleLinear.invertWithStep(40, data)).toBe(50);
-    expect(scaleLinear.invertWithStep(50, data)).toBe(50);
-    expect(scaleLinear.invertWithStep(90, data)).toBe(90);
+    expect(scaleLinear.invertWithStep(30, data)).toEqual({ value: 30, withinBandwidth: false });
+    expect(scaleLinear.invertWithStep(39, data)).toEqual({ value: 30, withinBandwidth: false });
+
+    expect(scaleLinear.invertWithStep(40, data)).toEqual({ value: 40, withinBandwidth: false });
+
+    expect(scaleLinear.invertWithStep(50, data)).toEqual({ value: 50, withinBandwidth: true });
+    expect(scaleLinear.invertWithStep(59, data)).toEqual({ value: 50, withinBandwidth: true });
+
+    expect(scaleLinear.invertWithStep(60, data)).toEqual({ value: 60, withinBandwidth: false });
+
+    expect(scaleLinear.invertWithStep(90, data)).toEqual({ value: 90, withinBandwidth: true });
+
+    expect(scaleLinear.invertWithStep(100, data)).toEqual({ value: 100, withinBandwidth: false });
   });
 
   describe('isSingleValue', () => {
     test('should return true for domain with fewer than 2 values', () => {
-      const scale = new ScaleContinuous(ScaleType.Linear, [], [0, 100]);
+      const scale = new ScaleContinuous({ type: ScaleType.Linear, domain: [], range: [0, 100] });
       expect(scale.isSingleValue()).toBe(true);
     });
     test('should return true for domain with equal min and max values', () => {
-      const scale = new ScaleContinuous(ScaleType.Linear, [1, 1], [0, 100]);
+      const scale = new ScaleContinuous({ type: ScaleType.Linear, domain: [1, 1], range: [0, 100] });
       expect(scale.isSingleValue()).toBe(true);
     });
     test('should return false for domain with differing min and max values', () => {
-      const scale = new ScaleContinuous(ScaleType.Linear, [1, 2], [0, 100]);
+      const scale = new ScaleContinuous({ type: ScaleType.Linear, domain: [1, 2], range: [0, 100] });
       expect(scale.isSingleValue()).toBe(false);
     });
   });
@@ -160,12 +167,8 @@ describe('Scale Continuous', () => {
 
     function getTicksForDomain(domainStart: number, domainEnd: number) {
       const scale = new ScaleContinuous(
-        ScaleType.Time,
-        [domainStart, domainEnd],
-        [0, 100],
-        0,
-        0,
-        Settings.defaultZoneName,
+        { type: ScaleType.Time, domain: [domainStart, domainEnd], range: [0, 100] },
+        { bandwidth: 0, minInterval: 0, timeZone: Settings.defaultZoneName },
       );
       return scale.tickValues;
     }

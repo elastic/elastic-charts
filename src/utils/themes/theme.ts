@@ -22,7 +22,9 @@ export interface GeometryStyle {
 }
 
 export interface SharedGeometryStyle {
-  [key: string]: GeometryStyle;
+  default: GeometryStyle;
+  highlighted: GeometryStyle;
+  unhighlighted: GeometryStyle;
 }
 
 export interface StrokeStyle {
@@ -49,7 +51,10 @@ export interface AxisConfig {
   axisLineStyle: StrokeStyle;
   tickLabelStyle: TextStyle;
   tickLineStyle: StrokeStyle;
-  gridLineStyle: { horizontal: GridLineConfig; vertical: GridLineConfig };
+  gridLineStyle: {
+    horizontal: GridLineConfig;
+    vertical: GridLineConfig;
+  };
 }
 export interface GridLineConfig {
   visible?: boolean;
@@ -77,8 +82,24 @@ export interface ColorConfig {
   defaultVizColor: string;
 }
 export interface LegendStyle {
+  /**
+   * Max width used for left/right legend
+   *
+   * or
+   *
+   * Width of `LegendItem` for top/bottom legend
+   */
   verticalWidth: number;
+  /**
+   * Max height used for top/bottom legend
+   */
   horizontalHeight: number;
+  /**
+   * Added buffer between label and value.
+   *
+   * Smaller values render a more compact legend
+   */
+  spacingBuffer: number;
 }
 export interface Theme {
   /**
@@ -101,13 +122,6 @@ export interface Theme {
 }
 
 export type PartialTheme = RecursivePartial<Theme>;
-
-export const BaseThemeTypes = Object.freeze({
-  Light: 'light' as 'light',
-  Dark: 'dark' as 'dark',
-});
-
-export type BaseThemeType = typeof BaseThemeTypes.Dark | typeof BaseThemeTypes.Light;
 
 export type DisplayValueStyle = TextStyle & {
   offsetX: number;
@@ -157,12 +171,22 @@ export interface RectStyle {
 }
 
 export interface RectBorderStyle {
-  /** is the rect border visible or hidden ? */
+  /**
+   * Border visibility
+   */
   visible: boolean;
-  /** a static stroke color if defined, if not it will use the color of the series */
+  /**
+   * Border stroke color
+   */
   stroke?: string;
-  /** the stroke width of the rect border */
+  /**
+   * Border stroke width
+   */
   strokeWidth: number;
+  /**
+   * Border stroke opacity
+   */
+  strokeOpacity?: number;
 }
 export interface BarSeriesStyle {
   rect: RectStyle;
@@ -195,24 +219,24 @@ export type RectAnnotationStyle = StrokeStyle & FillStyle & Opacity;
 
 export const DEFAULT_ANNOTATION_LINE_STYLE: LineAnnotationStyle = {
   line: {
-    stroke: '#000',
-    strokeWidth: 3,
+    stroke: '#777',
+    strokeWidth: 1,
     opacity: 1,
   },
   details: {
     fontSize: 10,
-    fontFamily: `'Open Sans', Helvetica, Arial, sans-serif`,
+    fontFamily: 'sans-serif',
     fontStyle: 'normal',
-    fill: 'gray',
+    fill: '#777',
     padding: 0,
   },
 };
 
 export const DEFAULT_ANNOTATION_RECT_STYLE: RectAnnotationStyle = {
-  stroke: '#e5e5e5',
-  strokeWidth: 1,
-  opacity: 0.5,
-  fill: '#e5e5e5',
+  stroke: '#FFEEBC',
+  strokeWidth: 0,
+  opacity: 0.25,
+  fill: '#FFEEBC',
 };
 
 export function mergeWithDefaultGridLineConfig(
@@ -269,6 +293,19 @@ export function mergeWithDefaultAnnotationRect(config?: Partial<RectAnnotationSt
   };
 }
 
-export function mergeWithDefaultTheme(theme: PartialTheme, defaultTheme: Theme = LIGHT_THEME): Theme {
-  return mergePartial(defaultTheme, theme, { mergeOptionalPartialValues: true });
+/**
+ * Merge theme or themes with a base theme
+ *
+ * priority is based on spatial order
+ *
+ * @param theme - primary partial theme
+ * @param defaultTheme - base theme
+ * @param axillaryThemes - additional themes to be merged
+ */
+export function mergeWithDefaultTheme(
+  theme: PartialTheme,
+  defaultTheme: Theme = LIGHT_THEME,
+  axillaryThemes: PartialTheme[] = [],
+): Theme {
+  return mergePartial(defaultTheme, theme, { mergeOptionalPartialValues: true }, axillaryThemes);
 }

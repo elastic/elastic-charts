@@ -1,4 +1,5 @@
 import { area, line } from 'd3-shape';
+
 import { CanvasTextBBoxCalculator } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import {
   AreaSeriesStyle,
@@ -16,7 +17,8 @@ import { CurveType, getCurveFactory } from '../../../utils/curves';
 import { LegendItem } from '../legend/legend';
 import { DataSeriesDatum } from '../utils/series';
 import { belongsToDataSeries } from '../utils/series_utils';
-import { DisplayValueSpec } from '../utils/specs';
+import { DisplayValueSpec, StyleAccessor } from '../utils/specs';
+import { mergePartial } from '../../../utils/commons';
 
 export interface GeometryId {
   specId: SpecId;
@@ -31,6 +33,11 @@ export interface GeometryValue {
 
 /** Shared style properties for varies geometries */
 export interface GeometryStyle {
+  /**
+   * Opacity multiplier
+   *
+   * if set to `0.5` all given opacities will be halfed
+   */
   opacity: number;
 }
 
@@ -90,6 +97,7 @@ export interface AreaGeometry {
   seriesAreaStyle: AreaStyle;
   seriesAreaLineStyle: LineStyle;
   seriesPointStyle: PointStyle;
+  isStacked: boolean;
 }
 
 export function isPointGeometry(ig: IndexedGeometry): ig is PointGeometry {
@@ -113,6 +121,33 @@ export function mutableIndexedGeometryMapUpsert(
   }
 }
 
+export function getStyleOverrides(
+  datum: DataSeriesDatum,
+  geometryId: GeometryId,
+  seriesStyle: BarSeriesStyle,
+  styleAccessor?: StyleAccessor,
+): BarSeriesStyle {
+  const styleOverride = styleAccessor && styleAccessor(datum, geometryId);
+
+  if (!styleOverride) {
+    return seriesStyle;
+  }
+
+  if (typeof styleOverride === 'string') {
+    return {
+      ...seriesStyle,
+      rect: {
+        ...seriesStyle.rect,
+        fill: styleOverride,
+      },
+    };
+  }
+
+  return mergePartial(seriesStyle, styleOverride, {
+    mergeOptionalPartialValues: true,
+  });
+}
+
 export function renderPoints(
   shift: number,
   dataset: DataSeriesDatum[],
@@ -132,6 +167,9 @@ export function renderPoints(
   const pointGeometries = dataset.reduce(
     (acc, datum) => {
       const x = xScale.scale(datum.x);
+      if (x < xScale.range[0] || x > xScale.range[1]) {
+        return acc;
+      }
       const points: PointGeometry[] = [];
       const yDatums = [datum.y1];
       if (hasY0Accessors) {
@@ -151,6 +189,9 @@ export function renderPoints(
           radius = 0;
         } else {
           y = yScale.scale(yDatum);
+        }
+        if (y < yScale.range[1] || y > yScale.range[0]) {
+          return;
         }
         const originalY = hasY0Accessors && index === 0 ? datum.initialY0 : datum.initialY1;
         const pointGeometry: PointGeometry = {
@@ -195,8 +236,9 @@ export function renderBars(
   color: string,
   specId: SpecId,
   seriesKey: any[],
-  seriesStyle: BarSeriesStyle,
+  sharedSeriesStyle: BarSeriesStyle,
   displayValueSettings?: DisplayValueSpec,
+  styleAccessor?: StyleAccessor,
 ): {
   barGeometries: BarGeometry[];
   indexedGeometries: Map<any, IndexedGeometry[]>;
@@ -210,8 +252,8 @@ export function renderBars(
 
   // default padding to 1 for now
   const padding = 1;
-  const fontSize = seriesStyle.displayValue.fontSize;
-  const fontFamily = seriesStyle.displayValue.fontFamily;
+  const fontSize = sharedSeriesStyle.displayValue.fontSize;
+  const fontFamily = sharedSeriesStyle.displayValue.fontFamily;
 
   dataset.forEach((datum) => {
     const { y0, y1, initialY1 } = datum;
@@ -278,6 +320,13 @@ export function renderBars(
           }
         : undefined;
 
+    const geometryId = {
+      specId,
+      seriesKey,
+    };
+
+    const seriesStyle = getStyleOverrides(datum, geometryId, sharedSeriesStyle, styleAccessor);
+
     const barGeometry: BarGeometry = {
       displayValue,
       x,
@@ -290,10 +339,7 @@ export function renderBars(
         y: initialY1,
         accessor: 'y1',
       },
-      geometryId: {
-        specId,
-        seriesKey,
-      },
+      geometryId,
       seriesStyle,
     };
     mutableIndexedGeometryMapUpsert(indexedGeometries, datum.x, barGeometry);
@@ -377,6 +423,7 @@ export function renderArea(
   seriesKey: any[],
   xScaleOffset: number,
   seriesStyle: AreaSeriesStyle,
+  isStacked: boolean = false,
 ): {
   areaGeometry: AreaGeometry;
   indexedGeometries: Map<any, IndexedGeometry[]>;
@@ -435,6 +482,7 @@ export function renderArea(
     seriesAreaStyle: seriesStyle.area,
     seriesAreaLineStyle: seriesStyle.line,
     seriesPointStyle: seriesStyle.point,
+    isStacked,
   };
   return {
     areaGeometry,
@@ -445,34 +493,26 @@ export function renderArea(
 export function getGeometryStyle(
   geometryId: GeometryId,
   highlightedLegendItem: LegendItem | null,
-  sharedThemeStyle: SharedGeometryStyle,
-  specOpacity?: number,
+  sharedGeometryStyle: SharedGeometryStyle,
   individualHighlight?: { [key: string]: boolean },
 ): GeometryStyle {
-  const sharedStyle =
-    specOpacity == null
-      ? sharedThemeStyle
-      : {
-          ...sharedThemeStyle,
-          highlighted: { opacity: specOpacity },
-          default: { opacity: specOpacity },
-        };
+  const { default: defaultStyles, highlighted, unhighlighted } = sharedGeometryStyle;
 
   if (highlightedLegendItem != null) {
     const isPartOfHighlightedSeries = belongsToDataSeries(geometryId, highlightedLegendItem.value);
 
-    return isPartOfHighlightedSeries ? sharedStyle.highlighted : sharedStyle.unhighlighted;
+    return isPartOfHighlightedSeries ? highlighted : unhighlighted;
   }
 
   if (individualHighlight) {
     const { hasHighlight, hasGeometryHover } = individualHighlight;
     if (!hasGeometryHover) {
-      return sharedStyle.highlighted;
+      return highlighted;
     }
-    return hasHighlight ? sharedStyle.highlighted : sharedStyle.unhighlighted;
+    return hasHighlight ? highlighted : unhighlighted;
   }
 
-  return sharedStyle.default;
+  return defaultStyles;
 }
 
 export function isPointOnGeometry(
@@ -492,4 +532,8 @@ export function isPointOnGeometry(
   }
   const { width, height } = indexedGeometry;
   return yCoordinate >= y && yCoordinate <= y + height && xCoordinate >= x && xCoordinate <= x + width;
+}
+
+export function getGeometryIdKey(geometryId: GeometryId, prefix?: string, postfix?: string) {
+  return `${prefix || ''}spec:${geometryId.specId}_${geometryId.seriesKey.join('::-::')}${postfix || ''}`;
 }

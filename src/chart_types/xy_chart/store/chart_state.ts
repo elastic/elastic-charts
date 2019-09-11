@@ -1,4 +1,6 @@
 import { action, computed, IObservableValue, observable } from 'mobx';
+import * as uuid from 'uuid';
+
 import {
   AxisLinePosition,
   AxisTick,
@@ -16,7 +18,6 @@ import {
   BarGeometry,
   GeometryValue,
   IndexedGeometry,
-  isPointOnGeometry as isPointerOnGeometry,
   LineGeometry,
   PointGeometry,
 } from '../rendering/rendering';
@@ -43,8 +44,7 @@ import {
   Rendering,
   Rotation,
 } from '../utils/specs';
-import { formatTooltip, getSeriesTooltipValues } from '../tooltip/tooltip';
-import { LIGHT_THEME } from '../../../utils/themes/light_theme';
+import { getSeriesTooltipValues, getTooltipAndHighlightFromXValue } from '../tooltip/tooltip';
 import { mergeWithDefaultAnnotationLine, mergeWithDefaultAnnotationRect, Theme } from '../../../utils/themes/theme';
 import { compareByValueAsc } from '../../../utils/commons';
 import { computeChartDimensions } from '../utils/dimensions';
@@ -56,14 +56,13 @@ import {
   getValidXPosition,
   getValidYPosition,
   isCrosshairTooltipType,
-  isFollowTooltipType,
   isNoneTooltipType,
   TooltipType,
   TooltipValue,
   TooltipValueFormatter,
 } from '../utils/interactions';
 import { Scale, ScaleType } from '../../../utils/scales/scales';
-import { DEFAULT_TOOLTIP_SNAP, DEFAULT_TOOLTIP_TYPE } from '../../../specs/settings';
+import { DEFAULT_TOOLTIP_SNAP, DEFAULT_TOOLTIP_TYPE, CursorEvent } from '../../../specs/settings';
 import {
   AnnotationDimensions,
   computeAnnotationDimensions,
@@ -76,7 +75,6 @@ import {
   computeChartTransform,
   computeSeriesDomains,
   computeSeriesGeometries,
-  getAxesSpecForSpecId,
   getUpdatedCustomSeriesColors,
   isAllSeriesDeselected,
   isChartAnimatable,
@@ -86,6 +84,7 @@ import {
   Transform,
   updateDeselectedDataSeries,
 } from './utils';
+import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 
 export interface Point {
   x: number;
@@ -106,11 +105,24 @@ export type ElementClickListener = (values: GeometryValue[]) => void;
 export type ElementOverListener = (values: GeometryValue[]) => void;
 export type BrushEndListener = (min: number, max: number) => void;
 export type LegendItemListener = (dataSeriesIdentifiers: DataSeriesColorsValues | null) => void;
+export type CursorUpdateListener = (event?: CursorEvent) => void;
+/**
+ * Listener to be called when chart render state changes
+ *
+ * `isRendered` value is `true` when rendering is complete and `false` otherwise
+ */
+export type RenderChangeListener = (isRendered: boolean) => void;
+export type BasicListener = () => undefined | void;
 
 export class ChartStore {
+  constructor(id?: string) {
+    this.id = id || uuid.v4();
+  }
   debug = false;
+  id = uuid.v4();
   specsInitialized = observable.box(false);
-  initialized = observable.box(false);
+  chartInitialized = observable.box(false);
+  legendInitialized = observable.box(false);
   enableHistogramMode = observable.box(false);
 
   parentDimensions: Dimensions = {
@@ -138,9 +150,11 @@ export class ChartStore {
     maxY: 0,
   };
 
+  resizeDebounce: number = 10;
+
   chartRotation: Rotation = 0; // updated from jsx
   chartRendering: Rendering = 'canvas'; // updated from jsx
-  chartTheme: Theme = LIGHT_THEME; // updated from jsx
+  chartTheme: Theme = LIGHT_THEME;
   axesSpecs: Map<AxisId, AxisSpec> = new Map(); // readed from jsx
   axesTicksDimensions: Map<AxisId, AxisTicksDimensions> = new Map(); // computed
   axesPositions: Map<AxisId, Dimensions> = new Map(); // computed
@@ -153,7 +167,8 @@ export class ChartStore {
   annotationDimensions = observable.map<AnnotationId, AnnotationDimensions>(new Map());
 
   seriesSpecs: Map<SpecId, BasicSeriesSpec> = new Map(); // readed from jsx
-  isChartEmpty: boolean = true;
+  isChartEmpty = observable.box(false);
+  activeChartId?: string;
   seriesDomainsAndData?: SeriesDomainsAndData; // computed
   xScale?: Scale;
   yScales?: Map<GroupId, Scale>;
@@ -184,23 +199,30 @@ export class ChartStore {
   cursorPosition = observable.object<{ x: number; y: number }>({ x: -1, y: -1 }, undefined, {
     deep: false,
   });
-  cursorBandPosition = observable.object<Dimensions>({ top: -1, left: -1, height: -1, width: -1 }, undefined, {
-    deep: false,
-  });
+  cursorBandPosition = observable.object<Dimensions & { visible: boolean }>(
+    { top: -1, left: -1, height: -1, width: -1, visible: false },
+    undefined,
+    {
+      deep: false,
+    },
+  );
   cursorLinePosition = observable.object<Dimensions>({ top: -1, left: -1, height: -1, width: -1 }, undefined, {
     deep: false,
   });
+  externalCursorShown = observable.box(false);
 
   onElementClickListener?: ElementClickListener;
   onElementOverListener?: ElementOverListener;
-  onElementOutListener?: () => undefined | void;
+  onElementOutListener?: BasicListener;
   onBrushEndListener?: BrushEndListener;
   onLegendItemOverListener?: LegendItemListener;
-  onLegendItemOutListener?: () => undefined | void;
+  onLegendItemOutListener?: BasicListener;
   onLegendItemClickListener?: LegendItemListener;
   onLegendItemPlusClickListener?: LegendItemListener;
   onLegendItemMinusClickListener?: LegendItemListener;
   onLegendItemVisibilityToggleClickListener?: LegendItemListener;
+  onCursorUpdateListener?: CursorUpdateListener;
+  onRenderChangeListener?: RenderChangeListener;
 
   geometries: {
     points: PointGeometry[];
@@ -221,44 +243,114 @@ export class ChartStore {
   canDataBeAnimated = false;
 
   showLegend = observable.box(false);
-  legendCollapsed = observable.box(false);
-  legendPosition: Position | undefined;
+  legendPosition = observable.box<Position>(Position.Right);
   showLegendDisplayValue = observable.box(true);
+  isCursorOnChart = observable.box(false);
 
-  toggleLegendCollapsed = action(() => {
-    this.legendCollapsed.set(!this.legendCollapsed.get());
-    this.computeChart();
+  chartCursor = computed(() => {
+    const { x: xPos, y: yPos } = this.cursorPosition;
+
+    if (yPos < 0 || xPos < 0) {
+      return 'default';
+    }
+    if (this.highlightedGeometries.length > 0 && (this.onElementClickListener || this.onElementOverListener)) {
+      return 'pointer';
+    }
+    return this.isBrushEnabled() ? 'crosshair' : 'default';
   });
 
   /**
-   * determine if crosshair cursor should be visible based on cursor position and brush enablement
+   * determine if chart is currently active
    */
-  isCrosshairCursorVisible = computed(() => {
-    const xPos = this.cursorPosition.x;
-    const yPos = this.cursorPosition.y;
+  isActiveChart = computed(() => {
+    return !this.activeChartId ? true : this.activeChartId === this.id;
+  });
 
-    if (yPos < 0 || xPos < 0) {
-      return false;
+  /**
+   * set activeChartId
+   */
+  setActiveChartId = (chartId?: string) => {
+    this.activeChartId = chartId;
+  };
+
+  /**
+   * set the x value of the cursor
+   */
+  setCursorValue = action((value: string | number) => {
+    this.externalCursorShown.set(true);
+    this.isCursorOnChart.set(true);
+
+    if (!this.xScale) {
+      return;
     }
 
-    return this.isBrushEnabled();
+    const xPosition = this.xScale.pureScale(value);
+
+    if (xPosition == null || xPosition > this.chartDimensions.width + this.chartDimensions.left) {
+      this.clearTooltipAndHighlighted();
+      return;
+    }
+
+    const isLineAreaOnly = isLineAreaOnlyChart(this.seriesSpecs);
+
+    const updatedCursorBand = getCursorBandPosition(
+      this.chartRotation,
+      this.chartDimensions,
+      { x: xPosition, y: 0 },
+      {
+        value,
+        withinBandwidth: true,
+      },
+      this.isTooltipSnapEnabled.get(),
+      this.xScale,
+      isLineAreaOnly ? 1 : this.totalBarsInCluster,
+    );
+
+    Object.assign(this.cursorBandPosition, updatedCursorBand);
+
+    const tooltipAndHighlight = getTooltipAndHighlightFromXValue(
+      { x: xPosition, y: 0 },
+      this.seriesSpecs,
+      this.axesSpecs,
+      this.geometriesIndex,
+      {
+        value,
+        withinBandwidth: true,
+      },
+      this.isActiveChart.get(),
+      this.tooltipType.get(),
+      this.chartRotation,
+      this.yScales,
+      this.tooltipHeaderFormatter,
+    );
+    if (!tooltipAndHighlight || tooltipAndHighlight.tooltipData.length === 0) {
+      this.clearTooltipAndHighlighted(false);
+      return;
+    }
+    // update tooltip visibility
+    if (tooltipAndHighlight.tooltipData.length === 0) {
+      this.tooltipData.clear();
+    } else {
+      this.tooltipData.replace(tooltipAndHighlight.tooltipData);
+    }
   });
 
   /**
    * x and y values are relative to the container.
    */
-  setCursorPosition = action((x: number, y: number) => {
+  setCursorPosition = action((x: number, y: number, updateCursor: boolean = true) => {
+    this.isCursorOnChart.set(true);
     this.rawCursorPosition.x = x;
     this.rawCursorPosition.y = y;
 
     if (!this.seriesDomainsAndData || this.tooltipType.get() === TooltipType.None) {
       return;
     }
+    this.externalCursorShown.set(false);
 
     // get positions relative to chart
     let xPos = x - this.chartDimensions.left;
     let yPos = y - this.chartDimensions.top;
-
     // limit cursorPosition to chartDimensions
     // note: to debug and inspect tooltip html, just comment the following ifs
     if (xPos < 0 || xPos >= this.chartDimensions.width) {
@@ -272,6 +364,10 @@ export class ChartStore {
 
     // hide tooltip if outside chart dimensions
     if (yPos === -1 || xPos === -1) {
+      this.isCursorOnChart.set(false);
+      if (this.onCursorUpdateListener && this.isActiveChart.get()) {
+        this.onCursorUpdateListener();
+      }
       this.clearTooltipAndHighlighted();
       return;
     }
@@ -279,6 +375,7 @@ export class ChartStore {
     // get the cursor position depending on the chart rotation
     const xAxisCursorPosition = getValidXPosition(xPos, yPos, this.chartRotation, this.chartDimensions);
     const yAxisCursorPosition = getValidYPosition(xPos, yPos, this.chartRotation, this.chartDimensions);
+    const axisCursorPosition = { x: xAxisCursorPosition, y: yAxisCursorPosition };
 
     // only if we have a valid cursor position and the necessary scale
     if (xAxisCursorPosition < 0 || !this.xScale || !this.yScales) {
@@ -287,24 +384,30 @@ export class ChartStore {
     }
 
     // invert the cursor position to get the scale value
-
     const xValue = this.xScale.invertWithStep(xAxisCursorPosition, this.geometriesIndexKeys);
+    if (updateCursor && this.onCursorUpdateListener) {
+      this.onCursorUpdateListener({
+        chartId: this.id,
+        scale: this.xScale.type,
+        unit: this.xScale.unit,
+        value: xValue.value,
+      });
+    }
 
     // update che cursorBandPosition based on chart configuration
     const isLineAreaOnly = isLineAreaOnlyChart(this.seriesSpecs);
     const updatedCursorBand = getCursorBandPosition(
       this.chartRotation,
       this.chartDimensions,
-      { x: xAxisCursorPosition, y: yAxisCursorPosition },
+      axisCursorPosition,
+      {
+        value: xValue.value,
+        withinBandwidth: true,
+      },
       this.isTooltipSnapEnabled.get(),
       this.xScale,
-      this.geometriesIndexKeys,
       isLineAreaOnly ? 1 : this.totalBarsInCluster,
     );
-    if (updatedCursorBand === undefined) {
-      this.clearTooltipAndHighlighted();
-      return;
-    }
     Object.assign(this.cursorBandPosition, updatedCursorBand);
 
     const updatedCursorLine = getCursorLinePosition(this.chartRotation, this.chartDimensions, this.cursorPosition);
@@ -320,72 +423,30 @@ export class ChartStore {
       isSingleValueXScale,
     );
 
-    // get the elements on at this cursor position
-    const elements = this.geometriesIndex.get(xValue);
+    const tooltipAndHighlight = getTooltipAndHighlightFromXValue(
+      axisCursorPosition,
+      this.seriesSpecs,
+      this.axesSpecs,
+      this.geometriesIndex,
+      xValue,
+      this.isActiveChart.get(),
+      this.tooltipType.get(),
+      this.chartRotation,
+      this.yScales,
+      this.tooltipHeaderFormatter,
+    );
 
-    // if no element, hide everything
-    if (!elements || elements.length === 0) {
-      this.clearTooltipAndHighlighted();
+    // if no element, hide everything keep crosshair
+    if (!tooltipAndHighlight || tooltipAndHighlight.tooltipData.length === 0) {
+      this.clearTooltipAndHighlighted(false);
       return;
     }
-
-    // build the tooltip value list
-    let xValueInfo: TooltipValue | null = null;
-    let oneHighlighted = false;
-    const newHighlightedGeometries: IndexedGeometry[] = [];
-    const tooltipValues = elements.reduce(
-      (acc, indexedGeometry) => {
-        const {
-          geometryId: { specId },
-        } = indexedGeometry;
-        const spec = this.seriesSpecs.get(specId);
-
-        // safe guard check
-        if (!spec) {
-          return acc;
-        }
-        const { xAxis, yAxis } = getAxesSpecForSpecId(this.axesSpecs, spec.groupId);
-
-        // yScales is ensured by the enclosing if
-        const yScale = this.yScales!.get(spec.groupId);
-        if (!yScale) {
-          return acc;
-        }
-
-        // check if the pointer is on the geometry
-        let isHighlighted = false;
-        if (isPointerOnGeometry(xAxisCursorPosition, yAxisCursorPosition, indexedGeometry)) {
-          isHighlighted = true;
-          oneHighlighted = true;
-          newHighlightedGeometries.push(indexedGeometry);
-        }
-
-        // if it's a follow tooltip, and no element is highlighted
-        // not add that element into the tooltip list
-        if (!isHighlighted && isFollowTooltipType(this.tooltipType.get())) {
-          return acc;
-        }
-
-        // format the tooltip values
-        const formattedTooltip = formatTooltip(indexedGeometry, spec, false, isHighlighted, yAxis);
-
-        // format only one time the x value
-        if (!xValueInfo) {
-          // if we have a tooltipHeaderFormatter, then don't pass in the xAxis as the user will define a formatter
-          const formatterAxis = this.tooltipHeaderFormatter ? undefined : xAxis;
-          xValueInfo = formatTooltip(indexedGeometry, spec, true, false, formatterAxis);
-          return [xValueInfo, ...acc, formattedTooltip];
-        }
-
-        return [...acc, formattedTooltip];
-      },
-      [] as TooltipValue[],
-    );
+    const { highlightedGeometries, tooltipData } = tooltipAndHighlight;
 
     // if there's an annotation rect tooltip & there isn't a single highlighted element, hide
     const annotationTooltip = this.annotationTooltipState.get();
     const hasRectAnnotationToolip = annotationTooltip && annotationTooltip.annotationType === AnnotationTypes.Rectangle;
-    if (hasRectAnnotationToolip && !oneHighlighted) {
+    if (hasRectAnnotationToolip && highlightedGeometries.length === 0) {
       this.clearTooltipAndHighlighted();
       return;
     }
@@ -393,10 +454,10 @@ export class ChartStore {
     // check if we already have send out an over/out event on highlighted elements
     if (
       this.onElementOverListener &&
-      !areIndexedGeometryArraysEquals(newHighlightedGeometries, this.highlightedGeometries.toJS())
+      !areIndexedGeometryArraysEquals(highlightedGeometries, this.highlightedGeometries.toJS())
     ) {
-      if (newHighlightedGeometries.length > 0) {
-        this.onElementOverListener(newHighlightedGeometries.map(({ value }) => value));
+      if (highlightedGeometries.length > 0) {
+        this.onElementOverListener(highlightedGeometries.map(({ value }) => value));
       } else {
         if (this.onElementOutListener) {
           this.onElementOutListener();
@@ -405,24 +466,22 @@ export class ChartStore {
     }
 
     // update highlighted geometries observer
-    this.highlightedGeometries.replace(newHighlightedGeometries);
+    this.highlightedGeometries.replace(highlightedGeometries);
 
     // update tooltip visibility
-    if (tooltipValues.length === 0) {
+    if (tooltipData.length === 0) {
       this.tooltipData.clear();
     } else {
-      this.tooltipData.replace(tooltipValues);
-    }
-
-    // TODO move this into the renderer
-    if (oneHighlighted) {
-      document.body.style.cursor = 'pointer';
-    } else {
-      document.body.style.cursor = 'default';
+      this.tooltipData.replace(tooltipData);
     }
   });
 
   legendItemTooltipValues = computed(() => {
+    const xPos = this.rawCursorPosition.x - this.chartDimensions.left;
+    const yPos = this.rawCursorPosition.y - this.chartDimensions.top;
+    if (xPos > 0 && xPos <= this.chartDimensions.width && yPos > 0 && yPos <= this.chartDimensions.height) {
+      return getSeriesTooltipValues(this.tooltipData, '');
+    }
     // update legend items with value to display
     return getSeriesTooltipValues(this.tooltipData);
   });
@@ -469,15 +528,17 @@ export class ChartStore {
       this.tooltipType.get() !== TooltipType.None &&
       this.cursorPosition.x > -1 &&
       this.cursorPosition.y > -1 &&
-      this.tooltipData.length > 0
+      this.tooltipData.length > 0 &&
+      this.isActiveChart.get()
     );
   });
+
   isCrosshairVisible = computed(() => {
     return (
       !this.isBrushing.get() &&
       isCrosshairTooltipType(this.tooltipType.get()) &&
-      this.cursorPosition.x > -1 &&
-      this.cursorPosition.y > -1
+      !this.isChartEmpty.get() &&
+      (this.externalCursorShown.get() || (this.cursorPosition.x > -1 && this.cursorPosition.y > -1))
     );
   });
 
@@ -485,7 +546,7 @@ export class ChartStore {
     return (this.xScale && this.xScale.bandwidth > 0) || this.tooltipSnap.get();
   });
 
-  clearTooltipAndHighlighted = action(() => {
+  clearTooltipAndHighlighted = action((clearCursorBand: boolean = true) => {
     // if exist any highlighted geometry, send an out element event
     if (this.onElementOutListener && this.highlightedGeometries.length > 0) {
       this.onElementOutListener();
@@ -493,8 +554,9 @@ export class ChartStore {
     // clear highlight geoms
     this.highlightedGeometries.clear();
     this.tooltipData.clear();
-
-    document.body.style.cursor = 'default';
+    if (clearCursorBand) {
+      Object.assign(this.cursorBandPosition, { visible: false });
+    }
   });
 
   setShowLegend = action((showLegend: boolean) => {
@@ -617,8 +679,8 @@ export class ChartStore {
       return;
     }
     this.isBrushing.set(false);
-    const minValue = start.x < end.x ? start.x : end.x;
-    const maxValue = start.x > end.x ? start.x : end.x;
+    const minValue = Math.min(start.x, end.x);
+    const maxValue = Math.max(start.x, end.x);
     if (maxValue === minValue) {
       // if 0 size brush, avoid computing the value
       return;
@@ -644,7 +706,7 @@ export class ChartStore {
   setOnElementOverListener(listener: ElementOverListener) {
     this.onElementOverListener = listener;
   }
-  setOnElementOutListener(listener: () => undefined | void) {
+  setOnElementOutListener(listener: BasicListener) {
     this.onElementOutListener = listener;
   }
   setOnBrushEndListener(listener: BrushEndListener) {
@@ -653,7 +715,7 @@ export class ChartStore {
   setOnLegendItemOverListener(listener: LegendItemListener) {
     this.onLegendItemOverListener = listener;
   }
-  setOnLegendItemOutListener(listener: () => undefined | void) {
+  setOnLegendItemOutListener(listener: BasicListener) {
     this.onLegendItemOutListener = listener;
   }
   setOnLegendItemClickListener(listener: LegendItemListener) {
@@ -664,6 +726,18 @@ export class ChartStore {
   }
   setOnLegendItemMinusClickListener(listener: LegendItemListener) {
     this.onLegendItemMinusClickListener = listener;
+  }
+  setOnCursorUpdateListener(listener: CursorUpdateListener) {
+    this.onCursorUpdateListener = listener;
+  }
+  setOnRenderChangeListener(listener: RenderChangeListener) {
+    this.onRenderChangeListener = listener;
+
+    this.chartInitialized.observe(({ newValue, oldValue }) => {
+      if (this.onRenderChangeListener && newValue !== oldValue) {
+        this.onRenderChangeListener(newValue);
+      }
+    });
   }
   removeElementClickListener() {
     this.onElementClickListener = undefined;
@@ -685,6 +759,12 @@ export class ChartStore {
   }
   removeOnLegendItemMinusClickListener() {
     this.onLegendItemMinusClickListener = undefined;
+  }
+  removeOnCursorUpdateListener() {
+    this.onCursorUpdateListener = undefined;
+  }
+  removeOnRenderChangeListener() {
+    this.onRenderChangeListener = undefined;
   }
 
   isBrushEnabled(): boolean {
@@ -765,7 +845,7 @@ export class ChartStore {
   }
 
   computeChart() {
-    this.initialized.set(false);
+    this.chartInitialized.set(false);
     // compute only if parent dimensions are computed
     if (this.parentDimensions.width === 0 || this.parentDimensions.height === 0) {
       return;
@@ -811,7 +891,14 @@ export class ChartStore {
       this.deselectedDataSeries,
     );
 
-    this.isChartEmpty = isAllSeriesDeselected(this.legendItems);
+    if (!this.legendInitialized.get()) {
+      this.legendInitialized.set(true);
+
+      if (this.legendItems.size > 0 && this.showLegend.get()) {
+        return;
+      }
+    }
+    this.isChartEmpty.set(isAllSeriesDeselected(this.legendItems));
 
     const { xDomain, yDomain, formattedDataSeries } = this.seriesDomainsAndData;
 
@@ -845,15 +932,14 @@ export class ChartStore {
     });
     bboxCalculator.destroy();
 
-    // // compute chart dimensions
-    this.chartDimensions = computeChartDimensions(
+    // compute chart dimensions
+    const computedChartDims = computeChartDimensions(
       this.parentDimensions,
       this.chartTheme,
       this.axesTicksDimensions,
       this.axesSpecs,
-      this.showLegend.get() && !this.legendCollapsed.get(),
-      this.legendPosition,
     );
+    this.chartDimensions = computedChartDims.chartDimensions;
 
     this.chartTransform = computeChartTransform(this.chartDimensions, this.chartRotation);
     this.brushExtent = computeBrushExtent(this.chartDimensions, this.chartRotation, this.chartTransform);
@@ -871,8 +957,6 @@ export class ChartStore {
       this.enableHistogramMode.get(),
     );
 
-    // tslint:disable-next-line:no-console
-    // console.log({ seriesGeometries });
     this.geometries = seriesGeometries.geometries;
     this.xScale = seriesGeometries.scales.xScale;
 
@@ -885,23 +969,20 @@ export class ChartStore {
     this.geometriesIndex = seriesGeometries.geometriesIndex;
     this.geometriesIndexKeys = [...this.geometriesIndex.keys()].sort(compareByValueAsc);
 
-    // // compute visible ticks and their positions
+    // compute visible ticks and their positions
     const axisTicksPositions = getAxisTicksPositions(
-      this.chartDimensions,
+      computedChartDims,
       this.chartTheme,
       this.chartRotation,
-      this.showLegend.get() && !this.legendCollapsed.get(),
       this.axesSpecs,
       this.axesTicksDimensions,
       xDomain,
       yDomain,
       totalBarsInCluster,
       this.enableHistogramMode.get(),
-      this.legendPosition,
       barsPadding,
     );
-    // tslint:disable-next-line:no-console
-    // console.log({axisTicksPositions});
+
     this.axesPositions = axisTicksPositions.axisPositions;
     this.axesTicks = axisTicksPositions.axisTicks;
     this.axesVisibleTicks = axisTicksPositions.axisVisibleTicks;
@@ -925,6 +1006,6 @@ export class ChartStore {
     // temporary disabled until
     // https://github.com/elastic/elastic-charts/issues/89 and https://github.com/elastic/elastic-charts/issues/41
     this.canDataBeAnimated = false;
-    this.initialized.set(true);
+    this.chartInitialized.set(true);
   }
 }

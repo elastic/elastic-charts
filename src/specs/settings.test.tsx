@@ -2,11 +2,11 @@ import { mount } from 'enzyme';
 import * as React from 'react';
 import { Position, Rendering, Rotation } from '../chart_types/xy_chart/utils/specs';
 import { DARK_THEME } from '../utils/themes/dark_theme';
-import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { TooltipType } from '../chart_types/xy_chart/utils/interactions';
 import { ChartStore } from '../chart_types/xy_chart/store/chart_state';
 import { DEFAULT_TOOLTIP_SNAP, DEFAULT_TOOLTIP_TYPE, SettingsComponent, SettingSpecProps } from './settings';
-import { PartialTheme, BaseThemeTypes } from '../utils/themes/theme';
+import { PartialTheme } from '../utils/themes/theme';
+import { LIGHT_THEME } from '../utils/themes/light_theme';
 
 describe('Settings spec component', () => {
   test('should update store on mount if spec has a chart store', () => {
@@ -47,7 +47,7 @@ describe('Settings spec component', () => {
     expect(chartStore.showLegend.get()).toEqual(true);
     expect(chartStore.tooltipType.get()).toEqual(TooltipType.None);
     expect(chartStore.tooltipSnap.get()).toEqual(false);
-    expect(chartStore.legendPosition).toBe(Position.Bottom);
+    expect(chartStore.legendPosition.get()).toBe(Position.Bottom);
     expect(chartStore.showLegendDisplayValue.get()).toEqual(false);
     expect(chartStore.debug).toBe(true);
     expect(chartStore.customXDomain).toEqual({ min: 0, max: 10 });
@@ -64,7 +64,7 @@ describe('Settings spec component', () => {
     expect(chartStore.tooltipType.get()).toEqual(DEFAULT_TOOLTIP_TYPE);
     expect(chartStore.tooltipSnap.get()).toEqual(DEFAULT_TOOLTIP_SNAP);
     expect(chartStore.showLegendDisplayValue.get()).toEqual(true);
-    expect(chartStore.legendPosition).toBeUndefined();
+    expect(chartStore.legendPosition.get()).toBe(Position.Right);
     expect(chartStore.debug).toBe(false);
     expect(chartStore.customXDomain).toBeUndefined();
 
@@ -93,7 +93,7 @@ describe('Settings spec component', () => {
     expect(chartStore.showLegend.get()).toEqual(true);
     expect(chartStore.tooltipType.get()).toEqual(TooltipType.None);
     expect(chartStore.tooltipSnap.get()).toEqual(false);
-    expect(chartStore.legendPosition).toBe(Position.Bottom);
+    expect(chartStore.legendPosition.get()).toBe(Position.Bottom);
     expect(chartStore.showLegendDisplayValue.get()).toEqual(false);
     expect(chartStore.debug).toBe(true);
     expect(chartStore.customXDomain).toEqual({ min: 0, max: 10 });
@@ -125,6 +125,12 @@ describe('Settings spec component', () => {
     const onLegendEvent = (): void => {
       return;
     };
+    const onCursorUpdateEvent = (): void => {
+      return;
+    };
+    const onRenderChangeEvent = (): void => {
+      return;
+    };
 
     const chartStoreListeners = {
       onElementClick,
@@ -136,6 +142,8 @@ describe('Settings spec component', () => {
       onLegendItemClick: onLegendEvent,
       onLegendItemPlusClick: onLegendEvent,
       onLegendItemMinusClick: onLegendEvent,
+      onCursorUpdate: onCursorUpdateEvent,
+      onRenderChange: onRenderChangeEvent,
     };
 
     mount(<SettingsComponent chartStore={chartStore} {...chartStoreListeners} />);
@@ -148,6 +156,8 @@ describe('Settings spec component', () => {
     expect(chartStore.onLegendItemClickListener).toEqual(onLegendEvent);
     expect(chartStore.onLegendItemPlusClickListener).toEqual(onLegendEvent);
     expect(chartStore.onLegendItemMinusClickListener).toEqual(onLegendEvent);
+    expect(chartStore.onCursorUpdateListener).toEqual(onCursorUpdateEvent);
+    expect(chartStore.onRenderChangeListener).toEqual(onRenderChangeEvent);
   });
 
   test('should allow partial theme', () => {
@@ -162,7 +172,7 @@ describe('Settings spec component', () => {
 
     const updatedProps: SettingSpecProps = {
       theme: partialTheme,
-      baseThemeType: BaseThemeTypes.Dark,
+      baseTheme: DARK_THEME,
       rotation: 90 as Rotation,
       rendering: 'svg' as Rendering,
       animateData: true,

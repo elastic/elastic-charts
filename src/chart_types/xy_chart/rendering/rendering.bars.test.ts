@@ -27,8 +27,12 @@ describe('Rendering bars', () => {
     barSeriesMap.set(SPEC_ID, barSeriesSpec);
     const customDomain = [0, 1];
     const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map(), customDomain);
-    const xScale = computeXScale(barSeriesDomains.xDomain, barSeriesMap.size, 0, 100);
-    const yScales = computeYScales(barSeriesDomains.yDomain, 100, 0);
+    const xScale = computeXScale({
+      xDomain: barSeriesDomains.xDomain,
+      totalBarsInCluster: barSeriesMap.size,
+      range: [0, 100],
+    });
+    const yScales = computeYScales({ yDomains: barSeriesDomains.yDomain, range: [100, 0] });
 
     test('Can render two bars within domain', () => {
       const { barGeometries } = renderBars(
@@ -60,9 +64,9 @@ describe('Rendering bars', () => {
         displayValue: undefined,
         seriesStyle: {
           displayValue: {
-            fill: 'gray',
+            fill: '#777',
             fontFamily: 'sans-serif',
-            fontSize: 10,
+            fontSize: 8,
             fontStyle: 'normal',
             offsetX: 0,
             offsetY: 0,
@@ -95,9 +99,9 @@ describe('Rendering bars', () => {
         displayValue: undefined,
         seriesStyle: {
           displayValue: {
-            fill: 'gray',
+            fill: '#777',
             fontFamily: 'sans-serif',
-            fontSize: 10,
+            fontSize: 8,
             fontStyle: 'normal',
             offsetX: 0,
             offsetY: 0,
@@ -207,8 +211,12 @@ describe('Rendering bars', () => {
     barSeriesMap.set(spec1Id, barSeriesSpec1);
     barSeriesMap.set(spec2Id, barSeriesSpec2);
     const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
-    const xScale = computeXScale(barSeriesDomains.xDomain, barSeriesMap.size, 0, 100);
-    const yScales = computeYScales(barSeriesDomains.yDomain, 100, 0);
+    const xScale = computeXScale({
+      xDomain: barSeriesDomains.xDomain,
+      totalBarsInCluster: barSeriesMap.size,
+      range: [0, 100],
+    });
+    const yScales = computeYScales({ yDomains: barSeriesDomains.yDomain, range: [100, 0] });
 
     test('can render first spec bars', () => {
       const { barGeometries } = renderBars(
@@ -240,9 +248,9 @@ describe('Rendering bars', () => {
         displayValue: undefined,
         seriesStyle: {
           displayValue: {
-            fill: 'gray',
+            fill: '#777',
             fontFamily: 'sans-serif',
-            fontSize: 10,
+            fontSize: 8,
             fontStyle: 'normal',
             offsetX: 0,
             offsetY: 0,
@@ -275,9 +283,9 @@ describe('Rendering bars', () => {
         displayValue: undefined,
         seriesStyle: {
           displayValue: {
-            fill: 'gray',
+            fill: '#777',
             fontFamily: 'sans-serif',
-            fontSize: 10,
+            fontSize: 8,
             fontStyle: 'normal',
             offsetX: 0,
             offsetY: 0,
@@ -323,9 +331,9 @@ describe('Rendering bars', () => {
         displayValue: undefined,
         seriesStyle: {
           displayValue: {
-            fill: 'gray',
+            fill: '#777',
             fontFamily: 'sans-serif',
-            fontSize: 10,
+            fontSize: 8,
             fontStyle: 'normal',
             offsetX: 0,
             offsetY: 0,
@@ -358,9 +366,9 @@ describe('Rendering bars', () => {
         displayValue: undefined,
         seriesStyle: {
           displayValue: {
-            fill: 'gray',
+            fill: '#777',
             fontFamily: 'sans-serif',
-            fontSize: 10,
+            fontSize: 8,
             fontStyle: 'normal',
             offsetX: 0,
             offsetY: 0,
@@ -392,8 +400,12 @@ describe('Rendering bars', () => {
     const barSeriesMap = new Map<SpecId, BarSeriesSpec>();
     barSeriesMap.set(SPEC_ID, barSeriesSpec);
     const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
-    const xScale = computeXScale(barSeriesDomains.xDomain, barSeriesMap.size, 0, 100);
-    const yScales = computeYScales(barSeriesDomains.yDomain, 100, 0);
+    const xScale = computeXScale({
+      xDomain: barSeriesDomains.xDomain,
+      totalBarsInCluster: barSeriesMap.size,
+      range: [0, 100],
+    });
+    const yScales = computeYScales({ yDomains: barSeriesDomains.yDomain, range: [100, 0] });
 
     test('Can render two bars', () => {
       const { barGeometries } = renderBars(
@@ -424,9 +436,9 @@ describe('Rendering bars', () => {
         displayValue: undefined,
         seriesStyle: {
           displayValue: {
-            fill: 'gray',
+            fill: '#777',
             fontFamily: 'sans-serif',
-            fontSize: 10,
+            fontSize: 8,
             fontStyle: 'normal',
             offsetX: 0,
             offsetY: 0,
@@ -459,9 +471,9 @@ describe('Rendering bars', () => {
         displayValue: undefined,
         seriesStyle: {
           displayValue: {
-            fill: 'gray',
+            fill: '#777',
             fontFamily: 'sans-serif',
-            fontSize: 10,
+            fontSize: 8,
             fontStyle: 'normal',
             offsetX: 0,
             offsetY: 0,
@@ -507,8 +519,12 @@ describe('Rendering bars', () => {
     barSeriesMap.set(spec1Id, barSeriesSpec1);
     barSeriesMap.set(spec2Id, barSeriesSpec2);
     const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
-    const xScale = computeXScale(barSeriesDomains.xDomain, barSeriesMap.size, 0, 100);
-    const yScales = computeYScales(barSeriesDomains.yDomain, 100, 0);
+    const xScale = computeXScale({
+      xDomain: barSeriesDomains.xDomain,
+      totalBarsInCluster: barSeriesMap.size,
+      range: [0, 100],
+    });
+    const yScales = computeYScales({ yDomains: barSeriesDomains.yDomain, range: [100, 0] });
 
     test('can render first spec bars', () => {
       const { barGeometries } = renderBars(
@@ -540,9 +556,9 @@ describe('Rendering bars', () => {
         displayValue: undefined,
         seriesStyle: {
           displayValue: {
-            fill: 'gray',
+            fill: '#777',
             fontFamily: 'sans-serif',
-            fontSize: 10,
+            fontSize: 8,
             fontStyle: 'normal',
             offsetX: 0,
             offsetY: 0,
@@ -575,9 +591,9 @@ describe('Rendering bars', () => {
         displayValue: undefined,
         seriesStyle: {
           displayValue: {
-            fill: 'gray',
+            fill: '#777',
             fontFamily: 'sans-serif',
-            fontSize: 10,
+            fontSize: 8,
             fontStyle: 'normal',
             offsetX: 0,
             offsetY: 0,
@@ -623,9 +639,9 @@ describe('Rendering bars', () => {
         displayValue: undefined,
         seriesStyle: {
           displayValue: {
-            fill: 'gray',
+            fill: '#777',
             fontFamily: 'sans-serif',
-            fontSize: 10,
+            fontSize: 8,
             fontStyle: 'normal',
             offsetX: 0,
             offsetY: 0,
@@ -658,9 +674,9 @@ describe('Rendering bars', () => {
         displayValue: undefined,
         seriesStyle: {
           displayValue: {
-            fill: 'gray',
+            fill: '#777',
             fontFamily: 'sans-serif',
-            fontSize: 10,
+            fontSize: 8,
             fontStyle: 'normal',
             offsetX: 0,
             offsetY: 0,
@@ -706,8 +722,12 @@ describe('Rendering bars', () => {
     barSeriesMap.set(spec1Id, barSeriesSpec1);
     barSeriesMap.set(spec2Id, barSeriesSpec2);
     const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
-    const xScale = computeXScale(barSeriesDomains.xDomain, barSeriesMap.size, 0, 100);
-    const yScales = computeYScales(barSeriesDomains.yDomain, 100, 0);
+    const xScale = computeXScale({
+      xDomain: barSeriesDomains.xDomain,
+      totalBarsInCluster: barSeriesMap.size,
+      range: [0, 100],
+    });
+    const yScales = computeYScales({ yDomains: barSeriesDomains.yDomain, range: [100, 0] });
 
     test('can render first spec bars', () => {
       const { barGeometries } = renderBars(
@@ -739,9 +759,9 @@ describe('Rendering bars', () => {
         displayValue: undefined,
         seriesStyle: {
           displayValue: {
-            fill: 'gray',
+            fill: '#777',
             fontFamily: 'sans-serif',
-            fontSize: 10,
+            fontSize: 8,
             fontStyle: 'normal',
             offsetX: 0,
             offsetY: 0,
@@ -774,9 +794,9 @@ describe('Rendering bars', () => {
         displayValue: undefined,
         seriesStyle: {
           displayValue: {
-            fill: 'gray',
+            fill: '#777',
             fontFamily: 'sans-serif',
-            fontSize: 10,
+            fontSize: 8,
             fontStyle: 'normal',
             offsetX: 0,
             offsetY: 0,
@@ -822,9 +842,9 @@ describe('Rendering bars', () => {
         displayValue: undefined,
         seriesStyle: {
           displayValue: {
-            fill: 'gray',
+            fill: '#777',
             fontFamily: 'sans-serif',
-            fontSize: 10,
+            fontSize: 8,
             fontStyle: 'normal',
             offsetX: 0,
             offsetY: 0,
@@ -857,9 +877,9 @@ describe('Rendering bars', () => {
         displayValue: undefined,
         seriesStyle: {
           displayValue: {
-            fill: 'gray',
+            fill: '#777',
             fontFamily: 'sans-serif',
-            fontSize: 10,
+            fontSize: 8,
             fontStyle: 'normal',
             offsetX: 0,
             offsetY: 0,

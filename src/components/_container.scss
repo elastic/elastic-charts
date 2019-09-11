@@ -3,17 +3,35 @@
  */
 
 .echContainer {
+  flex: 1;
   position: relative;
-  width: 100%;
+}
+
+.echChart {
+  display: flex;
   height: 100%;
 
-  &:hover {
-    .echLegend__toggle {
-      opacity: 1;
-    }
+  &--column {
+    flex-direction: column;
   }
 }
 
-.echChart--isBrushEnabled {
-  cursor: crosshair;
+.echChartCursorContainer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+.echChartResizer {
+  z-index: -10000000;
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  box-sizing: border-box;
 }

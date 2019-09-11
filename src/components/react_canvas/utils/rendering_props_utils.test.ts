@@ -9,16 +9,24 @@ import {
   isBarValueOverflow,
   rotateBarValueProps,
   buildPointStyleProps,
+  buildBarBorderRenderProps,
 } from './rendering_props_utils';
+import { RectBorderStyle, RectStyle } from '../../../utils/themes/theme';
 
 describe('[canvas] Area Geometries props', () => {
   test('can build area point props', () => {
-    const pointStyleProps = buildPointStyleProps('red', {
-      visible: true,
-      radius: 30,
-      strokeWidth: 2,
-      opacity: 0.5,
-    });
+    const pointStyleProps = buildPointStyleProps(
+      'red',
+      {
+        visible: true,
+        radius: 30,
+        strokeWidth: 2,
+        opacity: 0.5,
+      },
+      {
+        opacity: 0.2,
+      },
+    );
 
     const props = buildPointRenderProps(10, 20, pointStyleProps);
     expect(props).toEqual({
@@ -29,19 +37,25 @@ describe('[canvas] Area Geometries props', () => {
       strokeEnabled: true,
       stroke: 'red',
       fill: 'red',
-      opacity: 0.5,
+      opacity: 0.2 * 0.5,
       strokeHitEnabled: false,
       perfectDrawEnabled: false,
       listening: false,
     });
 
-    const noStrokePointStyleProps = buildPointStyleProps('blue', {
-      visible: true,
-      radius: 30,
-      stroke: 'red',
-      strokeWidth: 0,
-      opacity: 0.5,
-    });
+    const noStrokePointStyleProps = buildPointStyleProps(
+      'blue',
+      {
+        visible: true,
+        radius: 30,
+        stroke: 'red',
+        strokeWidth: 0,
+        opacity: 0.5,
+      },
+      {
+        opacity: 0.2,
+      },
+    );
 
     const propsNoStroke = buildPointRenderProps(10, 20, noStrokePointStyleProps);
     expect(propsNoStroke).toEqual({
@@ -52,19 +66,25 @@ describe('[canvas] Area Geometries props', () => {
       strokeEnabled: false,
       stroke: 'red',
       fill: 'blue',
-      opacity: 0.5,
+      opacity: 0.2 * 0.5,
       strokeHitEnabled: false,
       perfectDrawEnabled: false,
       listening: false,
     });
 
-    const seriesPointStyleProps = buildPointStyleProps('violet', {
-      visible: true,
-      fill: 'pink',
-      radius: 123,
-      strokeWidth: 456,
-      opacity: 789,
-    });
+    const seriesPointStyleProps = buildPointStyleProps(
+      'violet',
+      {
+        visible: true,
+        fill: 'pink',
+        radius: 123,
+        strokeWidth: 456,
+        opacity: 789,
+      },
+      {
+        opacity: 0.2,
+      },
+    );
     const seriesPointStyle = buildPointRenderProps(10, 20, seriesPointStyleProps);
     expect(seriesPointStyle).toEqual({
       x: 10,
@@ -74,7 +94,7 @@ describe('[canvas] Area Geometries props', () => {
       strokeEnabled: true,
       stroke: 'violet',
       fill: 'pink',
-      opacity: 789,
+      opacity: 0.2 * 789,
       strokeHitEnabled: false,
       perfectDrawEnabled: false,
       listening: false,
@@ -100,7 +120,7 @@ describe('[canvas] Area Geometries props', () => {
       fill: 'red',
       lineCap: 'round',
       lineJoin: 'round',
-      opacity: 0.8,
+      opacity: 0.8 * 0.5,
       strokeHitEnabled: false,
       perfectDrawEnabled: false,
       listening: false,
@@ -126,7 +146,7 @@ describe('[canvas] Area Geometries props', () => {
       fill: 'blue',
       lineCap: 'round',
       lineJoin: 'round',
-      opacity: 1,
+      opacity: 1 * 123,
       strokeHitEnabled: false,
       perfectDrawEnabled: false,
       listening: false,
@@ -184,7 +204,7 @@ describe('[canvas] Area Geometries props', () => {
       strokeWidth: 66,
       lineCap: 'round',
       lineJoin: 'round',
-      opacity: 0.5,
+      opacity: 0.5 * 0.5,
       strokeHitEnabled: false,
       perfectDrawEnabled: false,
       listening: false,
@@ -194,12 +214,18 @@ describe('[canvas] Area Geometries props', () => {
 
 describe('[canvas] Line Geometries', () => {
   test('can build line point props', () => {
-    const pointStyleProps = buildPointStyleProps('pink', {
-      visible: true,
-      radius: 30,
-      strokeWidth: 2,
-      opacity: 0.5,
-    });
+    const pointStyleProps = buildPointStyleProps(
+      'pink',
+      {
+        visible: true,
+        radius: 30,
+        strokeWidth: 2,
+        opacity: 0.5,
+      },
+      {
+        opacity: 0.2,
+      },
+    );
 
     const props = buildPointRenderProps(10, 20, pointStyleProps);
     expect(props).toEqual({
@@ -210,18 +236,24 @@ describe('[canvas] Line Geometries', () => {
       strokeEnabled: true,
       stroke: 'pink',
       fill: 'pink',
-      opacity: 0.5,
+      opacity: 0.2 * 0.5,
       strokeHitEnabled: false,
       perfectDrawEnabled: false,
       listening: false,
     });
 
-    const noStrokeStyleProps = buildPointStyleProps('pink', {
-      visible: true,
-      radius: 30,
-      strokeWidth: 0,
-      opacity: 0.5,
-    });
+    const noStrokeStyleProps = buildPointStyleProps(
+      'pink',
+      {
+        visible: true,
+        radius: 30,
+        strokeWidth: 0,
+        opacity: 0.5,
+      },
+      {
+        opacity: 0.2,
+      },
+    );
     const propsNoStroke = buildPointRenderProps(10, 20, noStrokeStyleProps);
     expect(propsNoStroke).toEqual({
       x: 10,
@@ -231,19 +263,25 @@ describe('[canvas] Line Geometries', () => {
       strokeEnabled: false,
       stroke: 'pink',
       fill: 'pink',
-      opacity: 0.5,
+      opacity: 0.2 * 0.5,
       strokeHitEnabled: false,
       perfectDrawEnabled: false,
       listening: false,
     });
 
-    const seriesPointStyleProps = buildPointStyleProps('pink', {
-      stroke: 'series-stroke',
-      strokeWidth: 6,
-      visible: true,
-      radius: 12,
-      opacity: 18,
-    });
+    const seriesPointStyleProps = buildPointStyleProps(
+      'pink',
+      {
+        stroke: 'series-stroke',
+        strokeWidth: 6,
+        visible: true,
+        radius: 12,
+        opacity: 18,
+      },
+      {
+        opacity: 0.2,
+      },
+    );
     const seriesPointStyle = buildPointRenderProps(10, 20, seriesPointStyleProps);
     expect(seriesPointStyle).toEqual({
       x: 10,
@@ -253,7 +291,7 @@ describe('[canvas] Line Geometries', () => {
       strokeEnabled: true,
       stroke: 'series-stroke',
       fill: 'pink',
-      opacity: 18,
+      opacity: 0.2 * 18,
       strokeHitEnabled: false,
       perfectDrawEnabled: false,
       listening: false,
@@ -320,189 +358,290 @@ describe('[canvas] Line Geometries', () => {
 });
 
 describe('[canvas] Bar Geometries', () => {
-  test('can build bar props', () => {
-    const props = buildBarRenderProps(
-      10,
-      20,
-      30,
-      40,
-      'red',
-      {
-        opacity: 1,
-      },
-      {
-        stroke: 'blue',
-        strokeWidth: 1,
-        visible: true,
-      },
-      {
+  describe('buildBarValueProps', () => {
+    test('can build bar props', () => {
+      const props = buildBarRenderProps(
+        10,
+        20,
+        30,
+        40,
+        'red',
+        {
+          opacity: 1,
+        },
+        {
+          strokeOpacity: 0.5,
+          strokeWidth: 2,
+          visible: true,
+          stroke: 'blue',
+        },
+        {
+          opacity: 0.5,
+        },
+      );
+      expect(props).toEqual({
+        x: 12,
+        y: 22,
+        width: 26,
+        height: 36,
+        fill: 'red',
+        strokeEnabled: false,
+        strokeHitEnabled: false,
+        perfectDrawEnabled: false,
+        listening: false,
         opacity: 0.5,
-      },
-    );
-    expect(props).toEqual({
-      x: 10,
-      y: 20,
-      width: 30,
-      height: 40,
-      fill: 'red',
-      stroke: 'blue',
-      strokeWidth: 1,
-      strokeEnabled: true,
-      strokeHitEnabled: false,
-      perfectDrawEnabled: false,
-      listening: false,
-      opacity: 0.5,
+      });
+
+      const barWithNoBorder = buildBarRenderProps(
+        10,
+        20,
+        30,
+        40,
+        'red',
+        {
+          opacity: 1,
+        },
+        {
+          strokeOpacity: 0.5,
+          strokeWidth: 2,
+          visible: true,
+          stroke: 'blue',
+        },
+        {
+          opacity: 0.5,
+        },
+      );
+      expect(barWithNoBorder).toEqual({
+        x: 12,
+        y: 22,
+        width: 26,
+        height: 36,
+        fill: 'red',
+        strokeEnabled: false,
+        strokeHitEnabled: false,
+        perfectDrawEnabled: false,
+        listening: false,
+        opacity: 0.5,
+      });
     });
 
-    const barWithNoBorder = buildBarRenderProps(
-      10,
-      20,
-      30,
-      40,
-      'red',
-      {
-        opacity: 1,
-      },
-      {
-        strokeWidth: 0,
-        visible: true,
-      },
-      {
+    const getProps = (borderStyle: Partial<RectBorderStyle> = {}, barStyle: Partial<RectStyle> = {}) => {
+      return [
+        10,
+        20,
+        30,
+        40,
+        'red',
+        {
+          opacity: 1,
+          ...barStyle,
+        },
+        {
+          strokeOpacity: 0.5,
+          strokeWidth: 2,
+          visible: true,
+          stroke: 'blue',
+          ...borderStyle,
+        },
+        {
+          opacity: 0.5,
+        },
+      ];
+    };
+
+    it('should build bar props with stroke', () => {
+      // @ts-ignore
+      const props = buildBarRenderProps(...getProps());
+      expect(props).toEqual({
+        x: 12,
+        y: 22,
+        width: 26,
+        height: 36,
+        strokeEnabled: false,
+        strokeHitEnabled: false,
+        perfectDrawEnabled: false,
+        listening: false,
         opacity: 0.5,
-      },
-    );
-    expect(barWithNoBorder).toEqual({
-      x: 10,
-      y: 20,
-      width: 30,
-      height: 40,
-      fill: 'red',
-      stroke: 'transparent',
-      strokeWidth: 0,
-      strokeEnabled: false,
-      strokeHitEnabled: false,
-      perfectDrawEnabled: false,
-      listening: false,
-      opacity: 0.5,
+        fill: 'red',
+      });
+    });
+
+    it('should return dimensions without offset if visible is false', () => {
+      // @ts-ignore
+      const props = buildBarRenderProps(...getProps({ visible: false }));
+      expect(props).toMatchObject({
+        x: 10,
+        y: 20,
+        width: 30,
+        height: 40,
+      });
+    });
+
+    it('should return dimensions without offset if strokeWidth is 0 or less', () => {
+      // @ts-ignore
+      const props = buildBarRenderProps(...getProps({ strokeWidth: 0 }));
+      expect(props).toMatchObject({
+        x: 10,
+        y: 20,
+        width: 30,
+        height: 40,
+      });
+    });
+
+    it('should return dimensions without offset if no stroke color', () => {
+      // @ts-ignore
+      const props = buildBarRenderProps(...getProps({ stroke: undefined }));
+      expect(props).toMatchObject({
+        x: 10,
+        y: 20,
+        width: 30,
+        height: 40,
+      });
+    });
+
+    it('should return dimensions without offset if no stroke opacity', () => {
+      // @ts-ignore
+      const props = buildBarRenderProps(...getProps({ strokeOpacity: undefined }));
+      expect(props).toMatchObject({
+        x: 10,
+        y: 20,
+        width: 30,
+        height: 40,
+        opacity: 0.5,
+      });
+    });
+
+    it('should return dimensions without offset if no stroke opacity and bar opacity in 0', () => {
+      // @ts-ignore
+      const props = buildBarRenderProps(...getProps({ strokeOpacity: undefined }, { opacity: 0 }));
+      expect(props).toMatchObject({
+        x: 10,
+        y: 20,
+        width: 30,
+        height: 40,
+      });
     });
   });
 
-  test('can build bar value props', () => {
-    const valueArguments = {
-      x: 10,
-      y: 20,
-      barWidth: 30,
-      barHeight: 40,
-      displayValueStyle: {
-        fill: 'fill',
-        fontFamily: 'ff',
-        fontSize: 10,
-        padding: 5,
-        offsetX: 0,
-        offsetY: 0,
-      },
-      displayValue: {
+  describe('buildBarValueProps', () => {
+    test('can build bar value props', () => {
+      const valueArguments = {
+        x: 10,
+        y: 20,
+        barWidth: 30,
+        barHeight: 40,
+        displayValueStyle: {
+          fill: 'fill',
+          fontFamily: 'ff',
+          fontSize: 10,
+          padding: 5,
+          offsetX: 0,
+          offsetY: 0,
+        },
+        displayValue: {
+          text: 'foo',
+          width: 10,
+          height: 10,
+          isValueContainedInElement: false,
+          hideClippedValue: false,
+        },
+        chartDimensions: {
+          width: 10,
+          height: 10,
+          top: 0,
+          left: 0,
+        },
+        chartRotation: 0 as Rotation,
+      };
+
+      const basicProps = buildBarValueProps(valueArguments);
+      expect(basicProps).toEqual({
+        ...valueArguments.displayValueStyle,
+        x: 17.5,
+        y: 20,
+        height: 15,
+        width: 15,
+        align: 'center',
+        verticalAlign: 'top',
         text: 'foo',
-        width: 10,
-        height: 10,
-        isValueContainedInElement: false,
-        hideClippedValue: false,
-      },
-      chartDimensions: {
-        width: 10,
-        height: 10,
-        top: 0,
+      });
+
+      valueArguments.barHeight = 2;
+      const insufficientHeightBarProps = buildBarValueProps(valueArguments);
+      expect(insufficientHeightBarProps).toEqual({
+        ...valueArguments.displayValueStyle,
+        x: 17.5,
+        y: 5,
+        height: 15,
+        width: 15,
+        align: 'center',
+        verticalAlign: 'top',
+        text: 'foo',
+      });
+
+      valueArguments.y = 4;
+      valueArguments.barHeight = 20;
+      valueArguments.chartDimensions = {
         left: 0,
-      },
-      chartRotation: 0 as Rotation,
-    };
+        top: 0,
+        width: 0,
+        height: 0,
+      };
+      const chartOverflowBarProps = buildBarValueProps(valueArguments);
+      expect(chartOverflowBarProps).toEqual({
+        ...valueArguments.displayValueStyle,
+        x: 17.5,
+        y: 4,
+        width: 15,
+        height: 15,
+        align: 'center',
+        verticalAlign: 'top',
+        text: 'foo',
+      });
 
-    const basicProps = buildBarValueProps(valueArguments);
-    expect(basicProps).toEqual({
-      ...valueArguments.displayValueStyle,
-      x: 17.5,
-      y: 20,
-      height: 15,
-      width: 15,
-      align: 'center',
-      verticalAlign: 'top',
-      text: 'foo',
-    });
+      valueArguments.displayValue.isValueContainedInElement = true;
+      const containedBarProps = buildBarValueProps(valueArguments);
+      expect(containedBarProps).toEqual({
+        ...valueArguments.displayValueStyle,
+        x: 17.5,
+        y: -21,
+        height: 25,
+        width: 15,
+        align: 'center',
+        verticalAlign: 'top',
+        text: 'foo',
+      });
 
-    valueArguments.barHeight = 2;
-    const insufficientHeightBarProps = buildBarValueProps(valueArguments);
-    expect(insufficientHeightBarProps).toEqual({
-      ...valueArguments.displayValueStyle,
-      x: 17.5,
-      y: 5,
-      height: 15,
-      width: 15,
-      align: 'center',
-      verticalAlign: 'top',
-      text: 'foo',
-    });
+      valueArguments.displayValue.isValueContainedInElement = false;
+      valueArguments.barWidth = 0;
+      const containedXBarProps = buildBarValueProps(valueArguments);
+      expect(containedXBarProps).toEqual({
+        ...valueArguments.displayValueStyle,
+        x: 2.5,
+        y: 4,
+        height: 15,
+        width: 15,
+        align: 'center',
+        verticalAlign: 'top',
+        text: 'foo',
+      });
 
-    valueArguments.y = 4;
-    valueArguments.barHeight = 20;
-    valueArguments.chartDimensions = {
-      left: 0,
-      top: 0,
-      width: 0,
-      height: 0,
-    };
-    const chartOverflowBarProps = buildBarValueProps(valueArguments);
-    expect(chartOverflowBarProps).toEqual({
-      ...valueArguments.displayValueStyle,
-      x: 17.5,
-      y: 4,
-      width: 15,
-      height: 15,
-      align: 'center',
-      verticalAlign: 'top',
-      text: 'foo',
-    });
-
-    valueArguments.displayValue.isValueContainedInElement = true;
-    const containedBarProps = buildBarValueProps(valueArguments);
-    expect(containedBarProps).toEqual({
-      ...valueArguments.displayValueStyle,
-      x: 17.5,
-      y: -21,
-      height: 25,
-      width: 15,
-      align: 'center',
-      verticalAlign: 'top',
-      text: 'foo',
-    });
-
-    valueArguments.displayValue.isValueContainedInElement = false;
-    valueArguments.barWidth = 0;
-    const containedXBarProps = buildBarValueProps(valueArguments);
-    expect(containedXBarProps).toEqual({
-      ...valueArguments.displayValueStyle,
-      x: 2.5,
-      y: 4,
-      height: 15,
-      width: 15,
-      align: 'center',
-      verticalAlign: 'top',
-      text: 'foo',
-    });
-
-    valueArguments.displayValue.hideClippedValue = true;
-    valueArguments.barWidth = 0;
-    const clippedBarProps = buildBarValueProps(valueArguments);
-    expect(clippedBarProps).toEqual({
-      ...valueArguments.displayValueStyle,
-      x: 2.5,
-      y: 4,
-      height: 0,
-      width: 0,
-      align: 'center',
-      verticalAlign: 'top',
-      text: 'foo',
+      valueArguments.displayValue.hideClippedValue = true;
+      valueArguments.barWidth = 0;
+      const clippedBarProps = buildBarValueProps(valueArguments);
+      expect(clippedBarProps).toEqual({
+        ...valueArguments.displayValueStyle,
+        x: 2.5,
+        y: 4,
+        height: 0,
+        width: 0,
+        align: 'center',
+        verticalAlign: 'top',
+        text: 'foo',
+      });
     });
   });
+
   test('shouold get clipDimensions for bar values', () => {
     const chartDimensions = {
       width: 100,
@@ -762,5 +901,80 @@ describe('[canvas] Bar Geometries', () => {
     expectedRotatedVerticalProps.height = 0;
     expectedRotatedVerticalProps.y = 90;
     expect(rotatedVerticalContainedProps).toEqual(expectedRotatedVerticalProps);
+  });
+
+  describe('buildBarBorderRenderProps', () => {
+    const getProps = (borderStyle: Partial<RectBorderStyle> = {}, barStyle: Partial<RectStyle> = {}) => {
+      return [
+        10,
+        20,
+        30,
+        40,
+        {
+          opacity: 1,
+          ...barStyle,
+        },
+        {
+          strokeOpacity: 0.5,
+          strokeWidth: 2,
+          visible: true,
+          stroke: 'blue',
+          ...borderStyle,
+        },
+        {
+          opacity: 0.5,
+        },
+      ];
+    };
+    it('should build bar props with stroke', () => {
+      // @ts-ignore
+      const props = buildBarBorderRenderProps(...getProps());
+      expect(props).toEqual({
+        x: 11,
+        y: 21,
+        width: 28,
+        height: 38,
+        fillEnabled: false,
+        strokeEnabled: true,
+        strokeWidth: 2,
+        stroke: 'blue',
+        strokeHitEnabled: false,
+        perfectDrawEnabled: false,
+        listening: false,
+        opacity: 0.5 * 0.5,
+      });
+    });
+
+    it('should return null if visible is false', () => {
+      // @ts-ignore
+      const props = buildBarBorderRenderProps(...getProps({ visible: false }));
+      expect(props).toBeNull();
+    });
+
+    it('should return null if strokeWidth is 0 or less', () => {
+      // @ts-ignore
+      const props = buildBarBorderRenderProps(...getProps({ strokeWidth: 0 }));
+      expect(props).toBeNull();
+    });
+
+    it('should return null if no stroke color', () => {
+      // @ts-ignore
+      const props = buildBarBorderRenderProps(...getProps({ stroke: undefined }));
+      expect(props).toBeNull();
+    });
+
+    it('should return props with bar opacity if no stroke opacity', () => {
+      // @ts-ignore
+      const props = buildBarBorderRenderProps(...getProps({ strokeOpacity: undefined }));
+      expect(props).toMatchObject({
+        opacity: 1 * 0.5,
+      });
+    });
+
+    it('should return null if no stroke opacity and bar opacity in 0', () => {
+      // @ts-ignore
+      const props = buildBarBorderRenderProps(...getProps({ strokeOpacity: undefined }, { opacity: 0 }));
+      expect(props).toBeNull();
+    });
   });
 });
