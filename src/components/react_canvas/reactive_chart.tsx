@@ -2,7 +2,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Layer, Rect, Stage } from 'react-konva';
 import { isLineAnnotation, isRectAnnotation } from '../../chart_types/xy_chart/utils/specs';
-import { LineAnnotationStyle, RectAnnotationStyle, mergeWithDefaultGridLineConfig } from '../../utils/themes/theme';
+import { LineAnnotationStyle, RectAnnotationStyle, mergeGridLineConfigs } from '../../utils/themes/theme';
 import { AnnotationId } from '../../utils/ids';
 import {
   AnnotationDimensions,
@@ -196,15 +196,11 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       const axisSpec = axesSpecs.get(axisId);
 
       if (axisSpec && axisGridLinesPositions.length > 0) {
-        const axisSpecConfig = axisSpec.gridLineStyle;
-
         const themeConfig = isVertical(axisSpec.position)
           ? chartTheme.axes.gridLineStyle.vertical
           : chartTheme.axes.gridLineStyle.horizontal;
-
-        const gridLineStyle = axisSpecConfig
-          ? mergeWithDefaultGridLineConfig(axisSpecConfig, themeConfig)
-          : themeConfig;
+        const axisSpecConfig = axisSpec.gridLineStyle;
+        const gridLineStyle = axisSpecConfig ? mergeGridLineConfigs(axisSpecConfig, themeConfig) : themeConfig;
         gridComponents.push(
           <Grid
             key={`axis-grid-${axisId}`}

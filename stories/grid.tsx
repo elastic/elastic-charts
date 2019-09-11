@@ -15,11 +15,11 @@ import {
   Settings,
 } from '../src/';
 
-function generateGridLineConfig(group: string): GridLineConfig {
+function generateGridLineConfig(group: string, gridColor: string = 'purple'): GridLineConfig {
   const groupId = `${group} axis`;
 
   return {
-    stroke: color(`${groupId} grid line stroke color`, 'purple', groupId),
+    stroke: color(`${groupId} grid line stroke color`, gridColor, groupId),
     strokeWidth: number(
       `${groupId} grid line stroke width`,
       1,
@@ -71,21 +71,21 @@ function generateGridLineConfig(group: string): GridLineConfig {
 
 storiesOf('Grids', module)
   .add('basic', () => {
-    const leftAxisGridLineConfig = generateGridLineConfig(Position.Left);
-    const rightAxisGridLineConfig = generateGridLineConfig(Position.Right);
-    const topAxisGridLineConfig = generateGridLineConfig(Position.Top);
-    const bottomAxisGridLineConfig = generateGridLineConfig(Position.Bottom);
+    const leftAxisGridLineConfig = generateGridLineConfig(Position.Left, 'lightblue');
+    const rightAxisGridLineConfig = generateGridLineConfig(Position.Right, 'red');
+    const topAxisGridLineConfig = generateGridLineConfig(Position.Top, 'teal');
+    const bottomAxisGridLineConfig = generateGridLineConfig(Position.Bottom, 'blue');
     const toggleBottomAxisGridLineStyle = boolean('use axis gridLineStyle vertically', false, 'bottom axis');
     const toggleHorizontalAxisGridLineStyle = boolean('use axis gridLineStyle horizontally', false, 'left axis');
-    const bottomAxisThemeGridLineConfig = generateGridLineConfig('Vertical Axis Theme');
-    const leftAxisThemeGridLineConfig = generateGridLineConfig('Horizontal Axis Theme');
+    const bottomAxisThemeGridLineConfig = generateGridLineConfig('Vertical Axis Theme', 'violet');
+    const leftAxisThemeGridLineConfig = generateGridLineConfig('Horizontal Axis Theme', 'hotpink');
     const theme = {
       axes: {
         gridLineStyle: { vertical: leftAxisThemeGridLineConfig, horizontal: bottomAxisThemeGridLineConfig },
       },
     };
     return (
-      <Chart size={[500, 300]} className={'story-chart'}>
+      <Chart className={'story-chart'}>
         <Settings debug={boolean('debug', false)} theme={theme} />
         <Axis
           id={getAxisId('bottom')}
