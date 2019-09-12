@@ -1,9 +1,11 @@
-import { inject, observer } from 'mobx-react';
 import React from 'react';
+import { inject, observer } from 'mobx-react';
+import { ContainerConfig } from 'konva';
 import { Layer, Rect, Stage } from 'react-konva';
-import { isLineAnnotation, isRectAnnotation, AxisSpec } from '../../chart_types/xy_chart/utils/specs';
-import { LineAnnotationStyle, RectAnnotationStyle } from '../../utils/themes/theme';
+
 import { AnnotationId, AxisId } from '../../utils/ids';
+import { isLineAnnotation, isRectAnnotation, AxisSpec } from '../../chart_types/xy_chart/utils/specs';
+import { LineAnnotationStyle, RectAnnotationStyle, mergeGridLineConfigs } from '../../utils/themes/theme';
 import {
   AnnotationDimensions,
   AnnotationLineProps,
@@ -19,8 +21,7 @@ import { Grid } from './grid';
 import { LineAnnotation } from './line_annotation';
 import { LineGeometries } from './line_geometries';
 import { RectAnnotation } from './rect_annotation';
-import { ContainerConfig } from 'konva';
-import { AxisTick, AxisTicksDimensions } from '../../chart_types/xy_chart/utils/axis_utils';
+import { AxisTick, AxisTicksDimensions, isVertical } from '../../chart_types/xy_chart/utils/axis_utils';
 import { Dimensions } from '../../utils/dimensions';
 
 interface ReactiveChartProps {
@@ -208,18 +209,24 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
   };
 
   renderGrids = () => {
-    const { axesGridLinesPositions, axesSpecs, chartDimensions, debug } = this.props.chartStore!;
+    const { axesGridLinesPositions, axesSpecs, chartDimensions, chartTheme, debug } = this.props.chartStore!;
 
     const gridComponents: JSX.Element[] = [];
     axesGridLinesPositions.forEach((axisGridLinesPositions, axisId) => {
       const axisSpec = axesSpecs.get(axisId);
+
       if (axisSpec && axisGridLinesPositions.length > 0) {
+        const themeConfig = isVertical(axisSpec.position)
+          ? chartTheme.axes.gridLineStyle.vertical
+          : chartTheme.axes.gridLineStyle.horizontal;
+        const axisSpecConfig = axisSpec.gridLineStyle;
+        const gridLineStyle = axisSpecConfig ? mergeGridLineConfigs(axisSpecConfig, themeConfig) : themeConfig;
         gridComponents.push(
           <Grid
             key={`axis-grid-${axisId}`}
             chartDimensions={chartDimensions}
             debug={debug}
-            gridLineStyle={axisSpec.gridLineStyle}
+            gridLineStyle={gridLineStyle}
             linesPositions={axisGridLinesPositions}
           />,
         );
