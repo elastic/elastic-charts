@@ -85,6 +85,7 @@ export const LIGHT_THEME: Theme = {
       padding: 4,
     },
     tickLineStyle: {
+      visible: false,
       stroke: '#eaeaea',
       strokeWidth: 1,
     },
