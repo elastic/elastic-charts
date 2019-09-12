@@ -29,6 +29,8 @@ import {
   isYDomain,
   getAxisTickLabelPadding,
   mergeYCustomDomainsByGroupId,
+  isVerticalGrid,
+  isHorizontalGrid,
 } from './axis_utils';
 import { CanvasTextBBoxCalculator } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import { SvgTextBBoxCalculator } from '../../../utils/bbox/svg_text_bbox_calculator';
@@ -1104,6 +1106,18 @@ describe('Axis computational utils', () => {
     expect(isHorizontalAxis(Position.Right)).toBe(false);
     expect(isHorizontalAxis(Position.Top)).toBe(true);
     expect(isHorizontalAxis(Position.Bottom)).toBe(true);
+  });
+
+  test('should determine orientation of gridlines from axis position', () => {
+    expect(isVerticalGrid(Position.Left)).toBe(false);
+    expect(isVerticalGrid(Position.Right)).toBe(false);
+    expect(isVerticalGrid(Position.Top)).toBe(true);
+    expect(isVerticalGrid(Position.Bottom)).toBe(true);
+
+    expect(isHorizontalGrid(Position.Left)).toBe(true);
+    expect(isHorizontalGrid(Position.Right)).toBe(true);
+    expect(isHorizontalGrid(Position.Top)).toBe(false);
+    expect(isHorizontalGrid(Position.Bottom)).toBe(false);
   });
 
   test('should determine if axis belongs to yDomain', () => {
