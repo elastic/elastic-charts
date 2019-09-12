@@ -24,8 +24,8 @@ import {
   getVerticalAxisTickLineProps,
   getVisibleTicks,
   isBounded,
-  isHorizontal,
-  isVertical,
+  isHorizontalAxis,
+  isVerticalAxis,
   isYDomain,
   getAxisTickLabelPadding,
   mergeYCustomDomainsByGroupId,
@@ -1095,15 +1095,15 @@ describe('Axis computational utils', () => {
   });
 
   test('should determine orientation of axis position', () => {
-    expect(isVertical(Position.Left)).toBe(true);
-    expect(isVertical(Position.Right)).toBe(true);
-    expect(isVertical(Position.Top)).toBe(false);
-    expect(isVertical(Position.Bottom)).toBe(false);
+    expect(isVerticalAxis(Position.Left)).toBe(true);
+    expect(isVerticalAxis(Position.Right)).toBe(true);
+    expect(isVerticalAxis(Position.Top)).toBe(false);
+    expect(isVerticalAxis(Position.Bottom)).toBe(false);
 
-    expect(isHorizontal(Position.Left)).toBe(false);
-    expect(isHorizontal(Position.Right)).toBe(false);
-    expect(isHorizontal(Position.Top)).toBe(true);
-    expect(isHorizontal(Position.Bottom)).toBe(true);
+    expect(isHorizontalAxis(Position.Left)).toBe(false);
+    expect(isHorizontalAxis(Position.Right)).toBe(false);
+    expect(isHorizontalAxis(Position.Top)).toBe(true);
+    expect(isHorizontalAxis(Position.Bottom)).toBe(true);
   });
 
   test('should determine if axis belongs to yDomain', () => {
