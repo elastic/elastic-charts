@@ -167,27 +167,21 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
     const { axesVisibleTicks, axesSpecs, axesTicksDimensions, axesPositions } = this.props.chartStore!;
     const ids = [...axesVisibleTicks.keys()];
 
-    return ids.reduce(
-      (acc, id) => {
-        const ticks = axesVisibleTicks.get(id);
-        const axisSpec = axesSpecs.get(id);
-        const axisTicksDimensions = axesTicksDimensions.get(id);
-        const axisPosition = axesPositions.get(id);
+    return ids
+      .map((id) => ({
+        id,
+        ticks: axesVisibleTicks.get(id),
+        axisSpec: axesSpecs.get(id),
+        axisTicksDimensions: axesTicksDimensions.get(id),
+        axisPosition: axesPositions.get(id),
+      }))
+      .filter(
+        (config: Partial<AxisConfig>): config is AxisConfig => {
+          const { ticks, axisSpec, axisTicksDimensions, axisPosition } = config;
 
-        if (ticks && axisSpec && axisTicksDimensions && axisPosition) {
-          acc.push({
-            id,
-            ticks,
-            axisSpec,
-            axisTicksDimensions,
-            axisPosition,
-          });
-        }
-
-        return acc;
-      },
-      [] as AxisConfig[],
-    );
+          return Boolean(ticks && axisSpec && axisTicksDimensions && axisPosition);
+        },
+      );
   };
 
   renderAxes = (): JSX.Element[] => {
