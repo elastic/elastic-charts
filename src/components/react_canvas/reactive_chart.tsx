@@ -21,7 +21,7 @@ import { Grid } from './grid';
 import { LineAnnotation } from './line_annotation';
 import { LineGeometries } from './line_geometries';
 import { RectAnnotation } from './rect_annotation';
-import { AxisTick, AxisTicksDimensions, isVertical } from '../../chart_types/xy_chart/utils/axis_utils';
+import { AxisTick, AxisTicksDimensions, isVerticalGrid } from '../../chart_types/xy_chart/utils/axis_utils';
 import { Dimensions } from '../../utils/dimensions';
 
 interface ReactiveChartProps {
@@ -210,9 +210,10 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       const axisSpec = axesSpecs.get(axisId);
 
       if (axisSpec && axisGridLinesPositions.length > 0) {
-        const themeConfig = isVertical(axisSpec.position)
+        const themeConfig = isVerticalGrid(axisSpec.position)
           ? chartTheme.axes.gridLineStyle.vertical
           : chartTheme.axes.gridLineStyle.horizontal;
+
         const axisSpecConfig = axisSpec.gridLineStyle;
         const gridLineStyle = axisSpecConfig ? mergeGridLineConfigs(axisSpecConfig, themeConfig) : themeConfig;
         gridComponents.push(
