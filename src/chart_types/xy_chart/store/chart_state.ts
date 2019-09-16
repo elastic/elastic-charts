@@ -134,7 +134,7 @@ export const isDuplicateAxis = (
     ) {
       const spec = specMap.get(axisId);
 
-      if (spec && spec.position === position && ((!title && !spec.title) || title === spec.title)) {
+      if (spec && spec.position === position && title === spec.title) {
         hasDuplicate = true;
       }
     }

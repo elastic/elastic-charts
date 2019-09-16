@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import { ContainerConfig } from 'konva';
 import { Layer, Rect, Stage } from 'react-konva';
 
-import { AnnotationId, AxisId } from '../../utils/ids';
+import { AnnotationId } from '../../utils/ids';
 import { isLineAnnotation, isRectAnnotation, AxisSpec } from '../../chart_types/xy_chart/utils/specs';
 import { LineAnnotationStyle, RectAnnotationStyle, mergeGridLineConfigs } from '../../utils/themes/theme';
 import {
@@ -37,8 +37,8 @@ interface ReactiveChartState {
   };
 }
 
-interface AxisConfig {
-  id: AxisId;
+interface AxisProps {
+  key: string;
   axisSpec: AxisSpec;
   axisTicksDimensions: AxisTicksDimensions;
   axisPosition: Dimensions;
@@ -163,20 +163,20 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
     ];
   };
 
-  getAxes = (): AxisConfig[] => {
+  getAxes = (): AxisProps[] => {
     const { axesVisibleTicks, axesSpecs, axesTicksDimensions, axesPositions } = this.props.chartStore!;
     const ids = [...axesVisibleTicks.keys()];
 
     return ids
       .map((id) => ({
-        id,
+        key: `axis-${id}`,
         ticks: axesVisibleTicks.get(id),
         axisSpec: axesSpecs.get(id),
         axisTicksDimensions: axesTicksDimensions.get(id),
         axisPosition: axesPositions.get(id),
       }))
       .filter(
-        (config: Partial<AxisConfig>): config is AxisConfig => {
+        (config: Partial<AxisProps>): config is AxisProps => {
           const { ticks, axisSpec, axisTicksDimensions, axisPosition } = config;
 
           return Boolean(ticks && axisSpec && axisTicksDimensions && axisPosition);
@@ -188,17 +188,8 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
     const { chartTheme, debug, chartDimensions } = this.props.chartStore!;
     const axes = this.getAxes();
 
-    return axes.map(({ id, ticks, axisSpec, axisTicksDimensions, axisPosition }) => (
-      <Axis
-        key={`axis-${id}`}
-        axisSpec={axisSpec}
-        axisTicksDimensions={axisTicksDimensions}
-        axisPosition={axisPosition}
-        ticks={ticks}
-        chartTheme={chartTheme}
-        debug={debug}
-        chartDimensions={chartDimensions}
-      />
+    return axes.map(({ key, ...axisProps }) => (
+      <Axis {...axisProps} key={key} chartTheme={chartTheme} debug={debug} chartDimensions={chartDimensions} />
     ));
   };
 
