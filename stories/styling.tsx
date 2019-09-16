@@ -262,7 +262,7 @@ storiesOf('Stylings', module)
           padding: number('tickLabelPadding', 1, {}, 'Tick Label'),
         },
         tickLineStyle: {
-          visible: boolean('showTicks', false, 'Tick Line'),
+          visible: boolean('showTicks', true, 'Tick Line'),
           stroke: color('tickLineColor', '#333', 'Tick Line'),
           strokeWidth: range('tickLineWidth', 0, 5, 1, 'Tick Line'),
         },
