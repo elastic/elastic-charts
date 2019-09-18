@@ -64,44 +64,44 @@ describe('Crosshair utils ordinal scales', () => {
     yScaleToDataExtent: true,
   };
 
-  const barSeriesMap = [barSeries1];
-  const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
+  const barSeries = [barSeries1];
+  const barSeriesDomains = computeSeriesDomains(barSeries);
 
-  const multiBarSeriesMap = [barSeries1, barSeries2];
-  const multiBarSeriesDomains = computeSeriesDomains(multiBarSeriesMap, new Map());
+  const multiBarSeries = [barSeries1, barSeries2];
+  const multiBarSeriesDomains = computeSeriesDomains(multiBarSeries);
 
-  const lineSeriesMap = [lineSeries1];
-  const lineSeriesDomains = computeSeriesDomains(lineSeriesMap, new Map());
+  const lineSeries = [lineSeries1];
+  const lineSeriesDomains = computeSeriesDomains(lineSeries);
 
-  const multiLineSeriesMap = [lineSeries1, lineSeries2];
-  const multiLineSeriesDomains = computeSeriesDomains(multiLineSeriesMap, new Map());
+  const multiLineSeries = [lineSeries1, lineSeries2];
+  const multiLineSeriesDomains = computeSeriesDomains(multiLineSeries);
 
-  const mixedLinesBarsMap = [lineSeries1, lineSeries2, barSeries1, barSeries2];
-  const mixedLinesBarsSeriesDomains = computeSeriesDomains(mixedLinesBarsMap, new Map());
+  const mixedLinesBars = [lineSeries1, lineSeries2, barSeries1, barSeries2];
+  const mixedLinesBarsSeriesDomains = computeSeriesDomains(mixedLinesBars);
 
   const barSeriesScale = computeXScale({
     xDomain: barSeriesDomains.xDomain,
-    totalBarsInCluster: barSeriesMap.length,
+    totalBarsInCluster: barSeries.length,
     range: [0, 120],
   });
   const multiBarSeriesScale = computeXScale({
     xDomain: multiBarSeriesDomains.xDomain,
-    totalBarsInCluster: multiBarSeriesMap.length,
+    totalBarsInCluster: multiBarSeries.length,
     range: [0, 120],
   });
   const lineSeriesScale = computeXScale({
     xDomain: lineSeriesDomains.xDomain,
-    totalBarsInCluster: lineSeriesMap.length,
+    totalBarsInCluster: lineSeries.length,
     range: [0, 120],
   });
   const multiLineSeriesScale = computeXScale({
     xDomain: multiLineSeriesDomains.xDomain,
-    totalBarsInCluster: multiLineSeriesMap.length,
+    totalBarsInCluster: multiLineSeries.length,
     range: [0, 120],
   });
   const mixedLinesBarsSeriesScale = computeXScale({
     xDomain: mixedLinesBarsSeriesDomains.xDomain,
-    totalBarsInCluster: mixedLinesBarsMap.length,
+    totalBarsInCluster: mixedLinesBars.length,
     range: [0, 120],
   });
 
