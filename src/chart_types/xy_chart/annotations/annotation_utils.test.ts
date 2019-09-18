@@ -10,7 +10,7 @@ import {
 } from '../utils/specs';
 import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../utils/themes/theme';
 import { Dimensions } from '../../../utils/dimensions';
-import { AnnotationId, getAnnotationId, getAxisId, getGroupId, GroupId } from '../../../utils/ids';
+import { getAxisId, getGroupId, GroupId } from '../../../utils/ids';
 import { ScaleBand } from '../../../utils/scales/scale_band';
 import { ScaleContinuous } from '../../../utils/scales/scale_continuous';
 import { Scale, ScaleType } from '../../../utils/scales/scales';
@@ -110,7 +110,7 @@ describe('annotation utils', () => {
     const xScale: Scale = ordinalScale;
 
     const annotations: AnnotationSpec[] = [];
-    const annotationId = getAnnotationId('foo');
+    const annotationId = 'foo';
     const lineAnnotation: LineAnnotationSpec = {
       chartType: 'xy_axis',
       specType: 'annotation',
@@ -122,7 +122,7 @@ describe('annotation utils', () => {
       style: DEFAULT_ANNOTATION_LINE_STYLE,
     };
 
-    const rectAnnotationId = getAnnotationId('rect');
+    const rectAnnotationId = 'rect';
     const rectAnnotation: AnnotationSpec = {
       chartType: 'xy_axis',
       specType: 'annotation',
@@ -166,7 +166,7 @@ describe('annotation utils', () => {
     const xScale: Scale = ordinalScale;
 
     const annotations: AnnotationSpec[] = [];
-    const id = getAnnotationId('foo');
+    const id = 'foo';
     const lineAnnotation: LineAnnotationSpec = {
       chartType: 'xy_axis',
       specType: 'annotation',
@@ -201,7 +201,7 @@ describe('annotation utils', () => {
 
     const xScale: Scale = ordinalScale;
 
-    const id = getAnnotationId('foo-line');
+    const id = 'foo-line';
     const lineAnnotation: LineAnnotationSpec = {
       chartType: 'xy_axis',
       specType: 'annotation',
@@ -240,7 +240,7 @@ describe('annotation utils', () => {
 
     const xScale: Scale = ordinalScale;
 
-    const annotationId = getAnnotationId('foo-line');
+    const annotationId = 'foo-line';
     const lineAnnotation: LineAnnotationSpec = {
       chartType: 'xy_axis',
       specType: 'annotation',
@@ -279,7 +279,7 @@ describe('annotation utils', () => {
 
     const xScale: Scale = ordinalScale;
 
-    const annotationId = getAnnotationId('foo-line');
+    const annotationId = 'foo-line';
     const lineAnnotation: LineAnnotationSpec = {
       chartType: 'xy_axis',
       specType: 'annotation',
@@ -317,7 +317,7 @@ describe('annotation utils', () => {
     const yScales: Map<GroupId, Scale> = new Map();
     const xScale: Scale = ordinalScale;
 
-    const annotationId = getAnnotationId('foo-line');
+    const annotationId = 'foo-line';
     const lineAnnotation: LineAnnotationSpec = {
       chartType: 'xy_axis',
       specType: 'annotation',
@@ -347,7 +347,7 @@ describe('annotation utils', () => {
     const yScales: Map<GroupId, Scale> = new Map();
     const xScale: Scale = ordinalScale;
 
-    const annotationId = getAnnotationId('foo-line');
+    const annotationId = 'foo-line';
     const lineAnnotation: LineAnnotationSpec = {
       chartType: 'xy_axis',
       specType: 'annotation',
@@ -384,7 +384,7 @@ describe('annotation utils', () => {
     const yScales: Map<GroupId, Scale> = new Map();
     const xScale: Scale = continuousScale;
 
-    const annotationId = getAnnotationId('foo-line');
+    const annotationId = 'foo-line';
     const lineAnnotation: LineAnnotationSpec = {
       chartType: 'xy_axis',
       specType: 'annotation',
@@ -422,7 +422,7 @@ describe('annotation utils', () => {
     const yScales: Map<GroupId, Scale> = new Map();
     const xScale: Scale = continuousScale;
 
-    const annotationId = getAnnotationId('foo-line');
+    const annotationId = 'foo-line';
     const lineAnnotation: LineAnnotationSpec = {
       chartType: 'xy_axis',
       specType: 'annotation',
@@ -460,7 +460,7 @@ describe('annotation utils', () => {
     const yScales: Map<GroupId, Scale> = new Map();
     const xScale: Scale = continuousScale;
 
-    const annotationId = getAnnotationId('foo-line');
+    const annotationId = 'foo-line';
     const lineAnnotation: LineAnnotationSpec = {
       chartType: 'xy_axis',
       specType: 'annotation',
@@ -499,7 +499,7 @@ describe('annotation utils', () => {
 
     const xScale: Scale = ordinalScale;
 
-    const annotationId = getAnnotationId('foo-line');
+    const annotationId = 'foo-line';
     const lineAnnotation: LineAnnotationSpec = {
       chartType: 'xy_axis',
       specType: 'annotation',
@@ -538,7 +538,7 @@ describe('annotation utils', () => {
 
     const xScale: Scale = continuousScale;
 
-    const annotationId = getAnnotationId('foo-line');
+    const annotationId = 'foo-line';
     const lineAnnotation: LineAnnotationSpec = {
       chartType: 'xy_axis',
       specType: 'annotation',
@@ -577,7 +577,7 @@ describe('annotation utils', () => {
 
     const xScale: Scale = continuousScale;
 
-    const annotationId = getAnnotationId('foo-line');
+    const annotationId = 'foo-line';
     const lineAnnotation: LineAnnotationSpec = {
       chartType: 'xy_axis',
       specType: 'annotation',
@@ -616,7 +616,7 @@ describe('annotation utils', () => {
 
     const xScale: Scale = continuousScale;
 
-    const annotationId = getAnnotationId('foo-line');
+    const annotationId = 'foo-line';
     const lineAnnotation: LineAnnotationSpec = {
       chartType: 'xy_axis',
       specType: 'annotation',
@@ -654,7 +654,7 @@ describe('annotation utils', () => {
     const yScales: Map<GroupId, Scale> = new Map();
     const xScale: Scale = continuousScale;
 
-    const annotationId = getAnnotationId('foo-line');
+    const annotationId = 'foo-line';
     const lineAnnotation: LineAnnotationSpec = {
       chartType: 'xy_axis',
       specType: 'annotation',
@@ -694,7 +694,7 @@ describe('annotation utils', () => {
 
     const xScale: Scale = ordinalScale;
 
-    const annotationId = getAnnotationId('foo-line');
+    const annotationId = 'foo-line';
     const invalidXLineAnnotation: AnnotationSpec = {
       chartType: 'xy_axis',
       specType: 'annotation',
@@ -1228,8 +1228,8 @@ describe('annotation utils', () => {
   });
 
   test('should compute the tooltip state for an annotation', () => {
-    const annotations: Map<AnnotationId, AnnotationSpec> = new Map();
-    const annotationId = getAnnotationId('foo');
+    const annotations: AnnotationSpec[] = [];
+    const annotationId = 'foo';
     const lineAnnotation: LineAnnotationSpec = {
       chartType: 'xy_axis',
       specType: 'annotation',
@@ -1269,7 +1269,7 @@ describe('annotation utils', () => {
     expect(missingSpecTooltipState).toBe(null);
 
     // add valid annotation axis
-    annotations.set(annotationId, lineAnnotation);
+    annotations.push(lineAnnotation);
     localAxesSpecs.push(verticalAxisSpec);
 
     // hide tooltipState
@@ -1326,14 +1326,14 @@ describe('annotation utils', () => {
     const annotationRectangle: RectAnnotationSpec = {
       chartType: 'xy_axis',
       specType: 'annotation',
-      id: getAnnotationId('rect'),
+      id: 'rect',
       groupId,
       annotationType: 'rectangle',
       dataValues: [{ coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } }],
     };
 
-    const rectAnnotations = new Map();
-    rectAnnotations.set(annotationRectangle.id, annotationRectangle);
+    const rectAnnotations: RectAnnotationSpec[] = [];
+    rectAnnotations.push(annotationRectangle);
 
     const rectAnnotationDimensions = [{ rect: { x: 2, y: 3, width: 3, height: 5 } }];
     annotationDimensions.set(annotationRectangle.id, rectAnnotationDimensions);
@@ -1394,7 +1394,7 @@ describe('annotation utils', () => {
     const annotationRectangle: RectAnnotationSpec = {
       chartType: 'xy_axis',
       specType: 'annotation',
-      id: getAnnotationId('rect'),
+      id: 'rect',
       groupId: getGroupId('foo'),
       annotationType: 'rectangle',
       dataValues: [{ coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } }],
@@ -1413,7 +1413,7 @@ describe('annotation utils', () => {
     const annotationRectangle: RectAnnotationSpec = {
       chartType: 'xy_axis',
       specType: 'annotation',
-      id: getAnnotationId('rect'),
+      id: 'rect',
       groupId,
       annotationType: 'rectangle',
       dataValues: [
@@ -1438,7 +1438,7 @@ describe('annotation utils', () => {
     const annotationRectangle: RectAnnotationSpec = {
       chartType: 'xy_axis',
       specType: 'annotation',
-      id: getAnnotationId('rect'),
+      id: 'rect',
       groupId,
       annotationType: 'rectangle',
       dataValues: [
@@ -1481,7 +1481,7 @@ describe('annotation utils', () => {
     const annotationRectangle: RectAnnotationSpec = {
       chartType: 'xy_axis',
       specType: 'annotation',
-      id: getAnnotationId('rect'),
+      id: 'rect',
       groupId,
       annotationType: 'rectangle',
       dataValues: [
@@ -1512,7 +1512,7 @@ describe('annotation utils', () => {
     const annotationRectangle: RectAnnotationSpec = {
       chartType: 'xy_axis',
       specType: 'annotation',
-      id: getAnnotationId('rect'),
+      id: 'rect',
       groupId,
       annotationType: 'rectangle',
       dataValues: [{ coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } }],
@@ -1531,7 +1531,7 @@ describe('annotation utils', () => {
     const annotationRectangle: RectAnnotationSpec = {
       chartType: 'xy_axis',
       specType: 'annotation',
-      id: getAnnotationId('rect'),
+      id: 'rect',
       groupId,
       annotationType: 'rectangle',
       dataValues: [{ coordinates: { x0: 'a', x1: 'b', y0: 0, y1: 2 } }],
