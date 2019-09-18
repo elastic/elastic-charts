@@ -171,8 +171,8 @@ export function getLastValues(formattedDataSeries: {
  */
 export function computeSeriesDomains(
   seriesSpecs: BasicSeriesSpec[],
-  customYDomainsByGroupId: Map<GroupId, DomainRange>,
-  deselectedDataSeries: DataSeriesColorsValues[],
+  customYDomainsByGroupId: Map<GroupId, DomainRange> = new Map(),
+  deselectedDataSeries: DataSeriesColorsValues[] = [],
   customXDomain?: DomainRange | Domain,
 ): SeriesDomainsAndData {
   const { splittedSeries, xValues, seriesColors } = getSplittedSeries(seriesSpecs, deselectedDataSeries);
