@@ -307,7 +307,7 @@ export function getRawDataSeries(
  */
 export function getSplittedSeries(
   seriesSpecs: BasicSeriesSpec[],
-  deselectedDataSeries: DataSeriesColorsValues[],
+  deselectedDataSeries: DataSeriesColorsValues[] = [],
 ): {
   splittedSeries: Map<SpecId, RawDataSeries[]>;
   seriesColors: Map<string, DataSeriesColorsValues>;

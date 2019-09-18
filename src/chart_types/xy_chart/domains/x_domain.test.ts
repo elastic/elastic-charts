@@ -1,4 +1,3 @@
-import { getGroupId, getSpecId, SpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
 import { getSplittedSeries } from '../utils/series';
 import { BasicSeriesSpec } from '../utils/specs';
@@ -169,8 +168,10 @@ describe('X Domain', () => {
 
   test('Should merge line series correctly', () => {
     const ds1: BasicSeriesSpec = {
-      id: getSpecId('ds1'),
-      groupId: getGroupId('g1'),
+      chartType: 'xy_axis',
+      specType: 'series',
+      id: 'ds1',
+      groupId: 'g1',
       seriesType: 'line',
       xAccessor: 'x',
       yAccessors: ['y'],
@@ -180,8 +181,10 @@ describe('X Domain', () => {
       data: [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 5, y: 0 }],
     };
     const ds2: BasicSeriesSpec = {
-      id: getSpecId('ds2'),
-      groupId: getGroupId('g1'),
+      chartType: 'xy_axis',
+      specType: 'series',
+      id: 'ds2',
+      groupId: 'g1',
       seriesType: 'line',
       xAccessor: 'x',
       yAccessors: ['y'],
@@ -190,9 +193,7 @@ describe('X Domain', () => {
       yScaleToDataExtent: false,
       data: [{ x: 0, y: 0 }, { x: 7, y: 0 }],
     };
-    const specDataSeries = new Map<SpecId, BasicSeriesSpec>();
-    specDataSeries.set(ds1.id, ds1);
-    specDataSeries.set(ds2.id, ds2);
+    const specDataSeries: BasicSeriesSpec[] = [ds1, ds2];
     const { xValues } = getSplittedSeries(specDataSeries);
     const mergedDomain = mergeXDomain(
       [
@@ -207,8 +208,10 @@ describe('X Domain', () => {
   });
   test('Should merge bar series correctly', () => {
     const ds1: BasicSeriesSpec = {
-      id: getSpecId('ds1'),
-      groupId: getGroupId('g1'),
+      chartType: 'xy_axis',
+      specType: 'series',
+      id: 'ds1',
+      groupId: 'g1',
       seriesType: 'bar',
       xAccessor: 'x',
       yAccessors: ['y'],
@@ -218,8 +221,10 @@ describe('X Domain', () => {
       data: [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 5, y: 0 }],
     };
     const ds2: BasicSeriesSpec = {
-      id: getSpecId('ds2'),
-      groupId: getGroupId('g1'),
+      chartType: 'xy_axis',
+      specType: 'series',
+      id: 'ds2',
+      groupId: 'g1',
       seriesType: 'bar',
       xAccessor: 'x',
       yAccessors: ['y'],
@@ -228,9 +233,8 @@ describe('X Domain', () => {
       yScaleToDataExtent: false,
       data: [{ x: 0, y: 0 }, { x: 7, y: 0 }],
     };
-    const specDataSeries = new Map<SpecId, BasicSeriesSpec>();
-    specDataSeries.set(ds1.id, ds1);
-    specDataSeries.set(ds2.id, ds2);
+    const specDataSeries = [ds1, ds2];
+
     const { xValues } = getSplittedSeries(specDataSeries);
     const mergedDomain = mergeXDomain(
       [
@@ -245,8 +249,10 @@ describe('X Domain', () => {
   });
   test('Should merge multi bar series correctly', () => {
     const ds1: BasicSeriesSpec = {
-      id: getSpecId('ds1'),
-      groupId: getGroupId('g1'),
+      chartType: 'xy_axis',
+      specType: 'series',
+      id: 'ds1',
+      groupId: 'g1',
       seriesType: 'bar',
       xAccessor: 'x',
       yAccessors: ['y'],
@@ -256,8 +262,10 @@ describe('X Domain', () => {
       data: [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 5, y: 0 }],
     };
     const ds2: BasicSeriesSpec = {
-      id: getSpecId('ds2'),
-      groupId: getGroupId('g2'),
+      chartType: 'xy_axis',
+      specType: 'series',
+      id: 'ds2',
+      groupId: 'g2',
       seriesType: 'bar',
       xAccessor: 'x',
       yAccessors: ['y'],
@@ -266,9 +274,8 @@ describe('X Domain', () => {
       yScaleToDataExtent: false,
       data: [{ x: 0, y: 0 }, { x: 7, y: 0 }],
     };
-    const specDataSeries = new Map<SpecId, BasicSeriesSpec>();
-    specDataSeries.set(ds1.id, ds1);
-    specDataSeries.set(ds2.id, ds2);
+    const specDataSeries = [ds1, ds2];
+
     const { xValues } = getSplittedSeries(specDataSeries);
     const mergedDomain = mergeXDomain(
       [
@@ -287,8 +294,10 @@ describe('X Domain', () => {
   });
   test('Should merge multi bar series correctly', () => {
     const ds1: BasicSeriesSpec = {
-      id: getSpecId('ds1'),
-      groupId: getGroupId('g1'),
+      chartType: 'xy_axis',
+      specType: 'series',
+      id: 'ds1',
+      groupId: 'g1',
       seriesType: 'bar',
       xAccessor: 'x',
       yAccessors: ['y'],
@@ -298,8 +307,10 @@ describe('X Domain', () => {
       data: [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 5, y: 0 }],
     };
     const ds2: BasicSeriesSpec = {
-      id: getSpecId('ds2'),
-      groupId: getGroupId('g2'),
+      chartType: 'xy_axis',
+      specType: 'series',
+      id: 'ds2',
+      groupId: 'g2',
       seriesType: 'bar',
       xAccessor: 'x',
       yAccessors: ['y'],
@@ -308,9 +319,8 @@ describe('X Domain', () => {
       yScaleToDataExtent: false,
       data: [{ x: 0, y: 0 }, { x: 7, y: 0 }],
     };
-    const specDataSeries = new Map<SpecId, BasicSeriesSpec>();
-    specDataSeries.set(ds1.id, ds1);
-    specDataSeries.set(ds2.id, ds2);
+    const specDataSeries = [ds1, ds2];
+
     const { xValues } = getSplittedSeries(specDataSeries);
     const mergedDomain = mergeXDomain(
       [
@@ -329,8 +339,10 @@ describe('X Domain', () => {
   });
   test('Should merge multi bar linear/bar ordinal series correctly', () => {
     const ds1: BasicSeriesSpec = {
-      id: getSpecId('ds1'),
-      groupId: getGroupId('g1'),
+      chartType: 'xy_axis',
+      specType: 'series',
+      id: 'ds1',
+      groupId: 'g1',
       seriesType: 'bar',
       xAccessor: 'x',
       yAccessors: ['y'],
@@ -340,8 +352,10 @@ describe('X Domain', () => {
       data: [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 5, y: 0 }],
     };
     const ds2: BasicSeriesSpec = {
-      id: getSpecId('ds2'),
-      groupId: getGroupId('g2'),
+      chartType: 'xy_axis',
+      specType: 'series',
+      id: 'ds2',
+      groupId: 'g2',
       seriesType: 'bar',
       xAccessor: 'x',
       yAccessors: ['y'],
@@ -350,9 +364,8 @@ describe('X Domain', () => {
       yScaleToDataExtent: false,
       data: [{ x: 0, y: 0 }, { x: 7, y: 0 }],
     };
-    const specDataSeries = new Map<SpecId, BasicSeriesSpec>();
-    specDataSeries.set(ds1.id, ds1);
-    specDataSeries.set(ds2.id, ds2);
+    const specDataSeries = [ds1, ds2];
+
     const { xValues } = getSplittedSeries(specDataSeries);
     const mergedDomain = mergeXDomain(
       [
@@ -371,8 +384,10 @@ describe('X Domain', () => {
   });
   test('Should merge multi bar/line ordinal series correctly', () => {
     const ds1: BasicSeriesSpec = {
-      id: getSpecId('ds1'),
-      groupId: getGroupId('g1'),
+      chartType: 'xy_axis',
+      specType: 'series',
+      id: 'ds1',
+      groupId: 'g1',
       seriesType: 'bar',
       xAccessor: 'x',
       yAccessors: ['y'],
@@ -382,8 +397,10 @@ describe('X Domain', () => {
       data: [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 5, y: 0 }],
     };
     const ds2: BasicSeriesSpec = {
-      id: getSpecId('ds2'),
-      groupId: getGroupId('g2'),
+      chartType: 'xy_axis',
+      specType: 'series',
+      id: 'ds2',
+      groupId: 'g2',
       seriesType: 'line',
       xAccessor: 'x',
       yAccessors: ['y'],
@@ -392,9 +409,8 @@ describe('X Domain', () => {
       yScaleToDataExtent: false,
       data: [{ x: 0, y: 0 }, { x: 7, y: 0 }],
     };
-    const specDataSeries = new Map<SpecId, BasicSeriesSpec>();
-    specDataSeries.set(ds1.id, ds1);
-    specDataSeries.set(ds2.id, ds2);
+    const specDataSeries = [ds1, ds2];
+
     const { xValues } = getSplittedSeries(specDataSeries);
     const mergedDomain = mergeXDomain(
       [
@@ -413,8 +429,10 @@ describe('X Domain', () => {
   });
   test('Should merge multi bar/line time series correctly', () => {
     const ds1: BasicSeriesSpec = {
-      id: getSpecId('ds1'),
-      groupId: getGroupId('g1'),
+      chartType: 'xy_axis',
+      specType: 'series',
+      id: 'ds1',
+      groupId: 'g1',
       seriesType: 'bar',
       xAccessor: 'x',
       yAccessors: ['y'],
@@ -424,8 +442,10 @@ describe('X Domain', () => {
       data: [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 5, y: 0 }],
     };
     const ds2: BasicSeriesSpec = {
-      id: getSpecId('ds2'),
-      groupId: getGroupId('g2'),
+      chartType: 'xy_axis',
+      specType: 'series',
+      id: 'ds2',
+      groupId: 'g2',
       seriesType: 'line',
       xAccessor: 'x',
       yAccessors: ['y'],
@@ -434,9 +454,8 @@ describe('X Domain', () => {
       yScaleToDataExtent: false,
       data: [{ x: 0, y: 0 }, { x: 7, y: 0 }],
     };
-    const specDataSeries = new Map<SpecId, BasicSeriesSpec>();
-    specDataSeries.set(ds1.id, ds1);
-    specDataSeries.set(ds2.id, ds2);
+    const specDataSeries = [ds1, ds2];
+
     const { xValues } = getSplittedSeries(specDataSeries);
     const mergedDomain = mergeXDomain(
       [
@@ -455,8 +474,10 @@ describe('X Domain', () => {
   });
   test('Should merge multi lines series correctly', () => {
     const ds1: BasicSeriesSpec = {
-      id: getSpecId('ds1'),
-      groupId: getGroupId('g1'),
+      chartType: 'xy_axis',
+      specType: 'series',
+      id: 'ds1',
+      groupId: 'g1',
       seriesType: 'line',
       xAccessor: 'x',
       yAccessors: ['y'],
@@ -466,8 +487,10 @@ describe('X Domain', () => {
       data: [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 5, y: 0 }],
     };
     const ds2: BasicSeriesSpec = {
-      id: getSpecId('ds2'),
-      groupId: getGroupId('g2'),
+      chartType: 'xy_axis',
+      specType: 'series',
+      id: 'ds2',
+      groupId: 'g2',
       seriesType: 'line',
       xAccessor: 'x',
       yAccessors: ['y'],
@@ -476,9 +499,8 @@ describe('X Domain', () => {
       yScaleToDataExtent: false,
       data: [{ x: 0, y: 0 }, { x: 7, y: 0 }],
     };
-    const specDataSeries = new Map<SpecId, BasicSeriesSpec>();
-    specDataSeries.set(ds1.id, ds1);
-    specDataSeries.set(ds2.id, ds2);
+    const specDataSeries = [ds1, ds2];
+
     const { xValues } = getSplittedSeries(specDataSeries);
     const mergedDomain = mergeXDomain(
       [
@@ -499,8 +521,10 @@ describe('X Domain', () => {
   test('Should merge X multi high volume of data', () => {
     const maxValues = 10000;
     const ds1: BasicSeriesSpec = {
-      id: getSpecId('ds1'),
-      groupId: getGroupId('g1'),
+      chartType: 'xy_axis',
+      specType: 'series',
+      id: 'ds1',
+      groupId: 'g1',
       seriesType: 'area',
       xAccessor: 'x',
       yAccessors: ['y'],
@@ -510,8 +534,10 @@ describe('X Domain', () => {
       data: new Array(maxValues).fill(0).map((d, i) => ({ x: i, y: i })),
     };
     const ds2: BasicSeriesSpec = {
-      id: getSpecId('ds2'),
-      groupId: getGroupId('g2'),
+      chartType: 'xy_axis',
+      specType: 'series',
+      id: 'ds2',
+      groupId: 'g2',
       seriesType: 'line',
       xAccessor: 'x',
       yAccessors: ['y'],
@@ -520,9 +546,8 @@ describe('X Domain', () => {
       yScaleToDataExtent: false,
       data: new Array(maxValues).fill(0).map((d, i) => ({ x: i, y: i })),
     };
-    const specDataSeries = new Map<SpecId, BasicSeriesSpec>();
-    specDataSeries.set(ds1.id, ds1);
-    specDataSeries.set(ds2.id, ds2);
+    const specDataSeries = [ds1, ds2];
+
     const { xValues } = getSplittedSeries(specDataSeries);
 
     const mergedDomain = mergeXDomain(
