@@ -186,9 +186,8 @@ describe('Legends', () => {
     seriesColor.set('colorSeries2b', colorValues2b);
 
     const emptyColorMap = new Map<string, string>();
-    const deselectedDataSeries = null;
 
-    const legend = computeLegend(seriesColor, emptyColorMap, specs, 'violet', axesSpecs, deselectedDataSeries);
+    const legend = computeLegend(seriesColor, emptyColorMap, specs, 'violet', axesSpecs);
 
     const visibility = [...legend.values()].map((item) => item.isSeriesVisible);
 
