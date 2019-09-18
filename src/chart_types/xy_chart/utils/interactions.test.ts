@@ -1,5 +1,4 @@
 import { Dimensions } from '../../../utils/dimensions';
-import { getSpecId } from '../../../utils/ids';
 import {
   areIndexedGeometryArraysEquals,
   areIndexedGeomsEquals,
@@ -32,7 +31,7 @@ const seriesStyle = {
 const ig1: IndexedGeometry = {
   color: 'red',
   geometryId: {
-    specId: getSpecId('ig1'),
+    specId: 'ig1',
     seriesKey: [0, 1, 2],
   },
   value: {
@@ -48,7 +47,7 @@ const ig1: IndexedGeometry = {
 };
 const ig2: IndexedGeometry = {
   geometryId: {
-    specId: getSpecId('ig1'),
+    specId: 'ig1',
     seriesKey: [0, 1, 2],
   },
   value: {
@@ -65,7 +64,7 @@ const ig2: IndexedGeometry = {
 };
 const ig3: IndexedGeometry = {
   geometryId: {
-    specId: getSpecId('ig1'),
+    specId: 'ig1',
     seriesKey: [123, 123, 123],
   },
   value: {
@@ -83,7 +82,7 @@ const ig3: IndexedGeometry = {
 };
 const ig4: IndexedGeometry = {
   geometryId: {
-    specId: getSpecId('ig4'),
+    specId: 'ig4',
     seriesKey: [123, 123, 123],
   },
   value: {
@@ -100,7 +99,7 @@ const ig4: IndexedGeometry = {
 };
 const ig5: IndexedGeometry = {
   geometryId: {
-    specId: getSpecId('ig5'),
+    specId: 'ig5',
     seriesKey: [123, 123, 123],
   },
   value: {
@@ -117,7 +116,7 @@ const ig5: IndexedGeometry = {
 };
 const ig6: PointGeometry = {
   geometryId: {
-    specId: getSpecId('ig5'),
+    specId: 'ig5',
     seriesKey: [123, 123, 123],
   },
   value: {

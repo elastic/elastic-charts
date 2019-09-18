@@ -1,6 +1,6 @@
 import createCachedSelector from 're-reselect';
 import { IChartState } from '../chart_store';
-import { ChartTypes } from 'chart_types';
+import { ChartTypes } from '../../chart_types';
 import { getSpecsFromStore } from '../utils';
 import { SettingsSpec } from '../../specs/settings';
 

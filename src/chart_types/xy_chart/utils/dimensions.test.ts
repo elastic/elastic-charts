@@ -3,7 +3,7 @@ import { AxisSpec, Position } from './specs';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { LegendStyle } from '../../../utils/themes/theme';
 import { computeChartDimensions } from './dimensions';
-import { AxisId, getAxisId, getGroupId } from '../../../utils/ids';
+import { AxisId } from '../../../utils/ids';
 import { Margins } from '../../../utils/dimensions';
 
 describe('Computed chart dimensions', () => {
@@ -37,8 +37,8 @@ describe('Computed chart dimensions', () => {
   const axisLeftSpec: AxisSpec = {
     chartType: 'xy_axis',
     specType: 'axis',
-    id: getAxisId('axis_1'),
-    groupId: getGroupId('group_1'),
+    id: 'axis_1',
+    groupId: 'group_1',
     hide: false,
     showOverlappingTicks: false,
     showOverlappingLabels: false,
@@ -79,7 +79,7 @@ describe('Computed chart dimensions', () => {
     // \10|10|10|10|10|10|10| = 70px from left
     const axisDims = new Map<AxisId, AxisTicksDimensions>();
     const axisSpecs = [axisLeftSpec];
-    axisDims.set(getAxisId('axis_1'), axis1Dims);
+    axisDims.set('axis_1', axis1Dims);
     const { chartDimensions } = computeChartDimensions(parentDim, chartTheme, axisDims, axisSpecs);
     expect(chartDimensions.left + chartDimensions.width).toBeLessThanOrEqual(parentDim.width);
     expect(chartDimensions.top + chartDimensions.height).toBeLessThanOrEqual(parentDim.height);
@@ -90,7 +90,7 @@ describe('Computed chart dimensions', () => {
     // \10|10|10|10|10|10|10| = 70px from right
     const axisDims = new Map<AxisId, AxisTicksDimensions>();
     const axisSpecs = [{ ...axisLeftSpec, position: Position.Right }];
-    axisDims.set(getAxisId('axis_1'), axis1Dims);
+    axisDims.set('axis_1', axis1Dims);
     const { chartDimensions } = computeChartDimensions(parentDim, chartTheme, axisDims, axisSpecs);
     expect(chartDimensions.left + chartDimensions.width).toBeLessThanOrEqual(parentDim.width);
     expect(chartDimensions.top + chartDimensions.height).toBeLessThanOrEqual(parentDim.height);
@@ -106,7 +106,7 @@ describe('Computed chart dimensions', () => {
         position: Position.Top,
       },
     ];
-    axisDims.set(getAxisId('axis_1'), axis1Dims);
+    axisDims.set('axis_1', axis1Dims);
     const { chartDimensions } = computeChartDimensions(parentDim, chartTheme, axisDims, axisSpecs);
     expect(chartDimensions.left + chartDimensions.width).toBeLessThanOrEqual(parentDim.width);
     expect(chartDimensions.top + chartDimensions.height).toBeLessThanOrEqual(parentDim.height);
@@ -122,7 +122,7 @@ describe('Computed chart dimensions', () => {
         position: Position.Bottom,
       },
     ];
-    axisDims.set(getAxisId('axis_1'), axis1Dims);
+    axisDims.set('axis_1', axis1Dims);
     const { chartDimensions } = computeChartDimensions(parentDim, chartTheme, axisDims, axisSpecs);
     expect(chartDimensions.left + chartDimensions.width).toBeLessThanOrEqual(parentDim.width);
     expect(chartDimensions.top + chartDimensions.height).toBeLessThanOrEqual(parentDim.height);
@@ -136,7 +136,7 @@ describe('Computed chart dimensions', () => {
         position: Position.Bottom,
       },
     ];
-    axisDims.set(getAxisId('foo'), axis1Dims);
+    axisDims.set('foo', axis1Dims);
     const chartDimensions = computeChartDimensions(parentDim, chartTheme, axisDims, axisSpecs);
 
     const expectedDims = {
@@ -153,8 +153,8 @@ describe('Computed chart dimensions', () => {
 
     const hiddenAxisDims = new Map<AxisId, AxisTicksDimensions>();
     const hiddenAxisSpecs = new Map<AxisId, AxisSpec>();
-    hiddenAxisDims.set(getAxisId('axis_1'), axis1Dims);
-    hiddenAxisSpecs.set(getAxisId('axis_1'), {
+    hiddenAxisDims.set('axis_1', axis1Dims);
+    hiddenAxisSpecs.set('axis_1', {
       ...axisLeftSpec,
       hide: true,
       position: Position.Bottom,
