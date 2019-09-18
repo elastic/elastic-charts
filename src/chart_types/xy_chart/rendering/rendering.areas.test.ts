@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-object-literal-type-assertion */
-import { getGroupId, getSpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
 import { CurveType } from '../../../utils/curves';
 import { IndexedGeometry, PointGeometry, AreaGeometry } from '../../../utils/geometry';
@@ -9,8 +8,8 @@ import { AreaSeriesSpec } from '../utils/specs';
 import { computeSeriesDomains } from '../store/utils';
 import { renderArea } from './rendering';
 
-const SPEC_ID = getSpecId('spec_1');
-const GROUP_ID = getGroupId('group_1');
+const SPEC_ID = 'spec_1';
+const GROUP_ID = 'group_1';
 
 describe('Rendering points - areas', () => {
   describe('Empty line for missing data', () => {
@@ -173,8 +172,8 @@ describe('Rendering points - areas', () => {
     });
   });
   describe('Multi series area chart - ordinal', () => {
-    const spec1Id = getSpecId('point1');
-    const spec2Id = getSpecId('point2');
+    const spec1Id = 'point1';
+    const spec2Id = 'point2';
     const pointSeriesSpec1: AreaSeriesSpec = {
       chartType: 'xy_axis',
       specType: 'series',
@@ -454,8 +453,8 @@ describe('Rendering points - areas', () => {
     });
   });
   describe('Multi series area chart - linear', () => {
-    const spec1Id = getSpecId('point1');
-    const spec2Id = getSpecId('point2');
+    const spec1Id = 'point1';
+    const spec2Id = 'point2';
     const pointSeriesSpec1: AreaSeriesSpec = {
       chartType: 'xy_axis',
       specType: 'series',
@@ -734,8 +733,8 @@ describe('Rendering points - areas', () => {
     });
   });
   describe('Multi series area chart - time', () => {
-    const spec1Id = getSpecId('point1');
-    const spec2Id = getSpecId('point2');
+    const spec1Id = 'point1';
+    const spec2Id = 'point2';
     const pointSeriesSpec1: AreaSeriesSpec = {
       chartType: 'xy_axis',
       specType: 'series',

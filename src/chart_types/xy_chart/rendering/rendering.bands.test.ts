@@ -1,6 +1,5 @@
 /* eslint @typescript-eslint/no-object-literal-type-assertion: off */
 import { computeSeriesDomains } from '../store/utils';
-import { getGroupId, getSpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
 import { CurveType } from '../../../utils/curves';
 import { renderArea, renderBars } from './rendering';
@@ -9,8 +8,8 @@ import { AreaSeriesSpec, BarSeriesSpec } from '../utils/specs';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { AreaGeometry, IndexedGeometry, PointGeometry } from '../../../utils/geometry';
 
-const SPEC_ID = getSpecId('spec_1');
-const GROUP_ID = getGroupId('group_1');
+const SPEC_ID = 'spec_1';
+const GROUP_ID = 'group_1';
 
 describe('Rendering bands - areas', () => {
   describe('Empty line for missing data', () => {

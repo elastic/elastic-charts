@@ -1,14 +1,13 @@
 import { computeSeriesDomains } from '../store/utils';
 import { identity } from '../../../utils/commons';
-import { getGroupId, getSpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
 import { renderBars } from './rendering';
 import { computeXScale, computeYScales } from '../utils/scales';
 import { BarSeriesSpec, DomainRange } from '../utils/specs';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 
-const SPEC_ID = getSpecId('spec_1');
-const GROUP_ID = getGroupId('group_1');
+const SPEC_ID = 'spec_1';
+const GROUP_ID = 'group_1';
 
 describe('Rendering bars', () => {
   describe('Single series bar chart - ordinal', () => {
@@ -27,7 +26,7 @@ describe('Rendering bars', () => {
     };
     const barSeriesMap = [barSeriesSpec];
     const customDomain = [0, 1];
-    const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map(), customDomain);
+    const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map(), [], customDomain);
     const xScale = computeXScale({
       xDomain: barSeriesDomains.xDomain,
       totalBarsInCluster: barSeriesMap.length,
@@ -184,8 +183,8 @@ describe('Rendering bars', () => {
     });
   });
   describe('Multi series bar chart - ordinal', () => {
-    const spec1Id = getSpecId('bar1');
-    const spec2Id = getSpecId('bar2');
+    const spec1Id = 'bar1';
+    const spec2Id = 'bar2';
     const barSeriesSpec1: BarSeriesSpec = {
       chartType: 'xy_axis',
       specType: 'series',
@@ -495,8 +494,8 @@ describe('Rendering bars', () => {
     });
   });
   describe('Multi series bar chart - linear', () => {
-    const spec1Id = getSpecId('bar1');
-    const spec2Id = getSpecId('bar2');
+    const spec1Id = 'bar1';
+    const spec2Id = 'bar2';
     const barSeriesSpec1: BarSeriesSpec = {
       chartType: 'xy_axis',
       specType: 'series',
@@ -700,8 +699,8 @@ describe('Rendering bars', () => {
     });
   });
   describe('Multi series bar chart - time', () => {
-    const spec1Id = getSpecId('bar1');
-    const spec2Id = getSpecId('bar2');
+    const spec1Id = 'bar1';
+    const spec2Id = 'bar2';
     const barSeriesSpec1: BarSeriesSpec = {
       chartType: 'xy_axis',
       specType: 'series',

@@ -1,7 +1,5 @@
 /* eslint @typescript-eslint/no-object-literal-type-assertion: off */
-
 import { computeSeriesDomains } from '../store/utils';
-import { getGroupId, getSpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
 import { CurveType } from '../../../utils/curves';
 import { renderLine } from './rendering';
@@ -10,8 +8,8 @@ import { LineSeriesSpec, DomainRange } from '../utils/specs';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { LineGeometry, IndexedGeometry, PointGeometry } from '../../../utils/geometry';
 
-const SPEC_ID = getSpecId('spec_1');
-const GROUP_ID = getGroupId('group_1');
+const SPEC_ID = 'spec_1';
+const GROUP_ID = 'group_1';
 
 describe('Rendering points - line', () => {
   describe('Empty line for missing data', () => {
@@ -163,8 +161,8 @@ describe('Rendering points - line', () => {
     });
   });
   describe('Multi series line chart - ordinal', () => {
-    const spec1Id = getSpecId('point1');
-    const spec2Id = getSpecId('point2');
+    const spec1Id = 'point1';
+    const spec2Id = 'point2';
     const pointSeriesSpec1: LineSeriesSpec = {
       chartType: 'xy_axis',
       specType: 'series',
@@ -441,8 +439,8 @@ describe('Rendering points - line', () => {
     });
   });
   describe('Multi series line chart - linear', () => {
-    const spec1Id = getSpecId('point1');
-    const spec2Id = getSpecId('point2');
+    const spec1Id = 'point1';
+    const spec2Id = 'point2';
     const pointSeriesSpec1: LineSeriesSpec = {
       chartType: 'xy_axis',
       specType: 'series',
@@ -718,8 +716,8 @@ describe('Rendering points - line', () => {
     });
   });
   describe('Multi series line chart - time', () => {
-    const spec1Id = getSpecId('point1');
-    const spec2Id = getSpecId('point2');
+    const spec1Id = 'point1';
+    const spec2Id = 'point2';
     const pointSeriesSpec1: LineSeriesSpec = {
       chartType: 'xy_axis',
       specType: 'series',
