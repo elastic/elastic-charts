@@ -45,7 +45,7 @@ export function computeLegend(
   specs: BasicSeriesSpec[],
   defaultColor: string,
   axesSpecs: AxisSpec[],
-  deselectedDataSeries: DataSeriesColorsValues[],
+  deselectedDataSeries: DataSeriesColorsValues[] = [],
 ): Map<string, LegendItem> {
   const legendItems: Map<string, LegendItem> = new Map();
   const sortedSeriesColors = getSortedDataSeriesColorsValuesMap(seriesColor);
