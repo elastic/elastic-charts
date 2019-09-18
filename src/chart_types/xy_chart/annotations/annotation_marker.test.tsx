@@ -3,7 +3,7 @@ import * as React from 'react';
 import { AnnotationDomainType, AnnotationDomainTypes, AnnotationSpec, Position, Rotation } from '../utils/specs';
 import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../utils/themes/theme';
 import { Dimensions } from '../../../utils/dimensions';
-import { getAnnotationId, getGroupId, GroupId } from '../../../utils/ids';
+import { GroupId } from '../../../utils/ids';
 import { ScaleContinuous } from '../../../utils/scales/scale_continuous';
 import { Scale, ScaleType } from '../../../utils/scales/scales';
 import {
@@ -15,7 +15,7 @@ import {
 import { Point } from 'utils/point';
 
 describe('annotation marker', () => {
-  const groupId = getGroupId('foo-group');
+  const groupId = 'foo-group';
 
   const minRange = 0;
   const maxRange = 100;
@@ -42,8 +42,10 @@ describe('annotation marker', () => {
   test('should compute line annotation dimensions with marker if defined (y domain)', () => {
     const chartRotation: Rotation = 0;
 
-    const id = getAnnotationId('foo-line');
+    const id = 'foo-line';
     const lineAnnotation: AnnotationSpec = {
+      chartType: 'xy_axis',
+      specType: 'annotation',
       annotationType: 'line',
       id,
       domainType: AnnotationDomainTypes.YDomain,
@@ -82,10 +84,11 @@ describe('annotation marker', () => {
   test('should compute line annotation dimensions with marker if defined (y domain: 180 deg rotation)', () => {
     const chartRotation: Rotation = 180;
 
-    const annotationId = getAnnotationId('foo-line');
     const lineAnnotation: AnnotationSpec = {
+      chartType: 'xy_axis',
+      specType: 'annotation',
       annotationType: 'line',
-      id,
+      id: 'foo-line',
       domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
@@ -122,10 +125,11 @@ describe('annotation marker', () => {
   test('should compute line annotation dimensions with marker if defined (x domain)', () => {
     const chartRotation: Rotation = 0;
 
-    const annotationId = getAnnotationId('foo-line');
     const lineAnnotation: AnnotationSpec = {
+      chartType: 'xy_axis',
+      specType: 'annotation',
       annotationType: 'line',
-      id,
+      id: 'foo-line',
       domainType: AnnotationDomainTypes.XDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
       groupId,
