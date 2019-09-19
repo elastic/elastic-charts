@@ -2,16 +2,18 @@ import { Rotation } from '../../../chart_types/xy_chart/utils/specs';
 import {
   buildAreaRenderProps,
   buildBarRenderProps,
-  buildBarValueProps,
   buildLineRenderProps,
   buildPointRenderProps,
-  getBarValueClipDimensions,
-  isBarValueOverflow,
-  rotateBarValueProps,
   buildPointStyleProps,
   buildBarBorderRenderProps,
 } from './rendering_props_utils';
 import { RectBorderStyle, RectStyle } from '../../../utils/themes/theme';
+import {
+  buildBarValueProps,
+  isBarValueOverflow,
+  getBarValueClipDimensions,
+  rotateBarValueProps,
+} from '../../../chart_types/xy_chart/renderer/canvas/bar_values_utils';
 
 describe('[canvas] Area Geometries props', () => {
   test('can build area point props', () => {
