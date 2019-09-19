@@ -1,7 +1,7 @@
 import React from 'react';
 import { Group, Line } from 'react-konva';
-import { AxisLinePosition } from '../../utils/axis_utils';
-import { DEFAULT_GRID_LINE_CONFIG, GridLineConfig, mergeWithDefaultGridLineConfig } from 'utils/themes/theme';
+import { AxisLinePosition, isVerticalGrid } from '../../utils/axis_utils';
+import { GridLineConfig, mergeGridLineConfigs, Theme } from 'utils/themes/theme';
 import { Dimensions } from 'utils/dimensions';
 import { AxisId } from 'utils/ids';
 import { AxisSpec } from 'chart_types/xy_chart/utils/specs';
@@ -11,7 +11,6 @@ import { getAxisSpecsSelector } from 'chart_types/xy_chart/store/selectors/get_s
 import { computeAxisVisibleTicksSelector } from 'chart_types/xy_chart/store/selectors/compute_axis_visible_ticks';
 import { connect } from 'react-redux';
 import { getChartThemeSelector } from 'store/selectors/get_chart_theme';
-import { Theme } from '@storybook/theming';
 
 interface GridProps {
   chartTheme: Theme;
@@ -48,9 +47,7 @@ export class GridComponent extends React.PureComponent<GridProps> {
     return gridComponents;
   }
   private renderGridLine = (linePosition: AxisLinePosition, i: number, gridLineStyle?: GridLineConfig) => {
-    const config = gridLineStyle ? mergeWithDefaultGridLineConfig(gridLineStyle) : DEFAULT_GRID_LINE_CONFIG;
-
-    return <Line {...config} key={`tick-${i}`} points={linePosition} />;
+    return <Line {...gridLineStyle} key={`tick-${i}`} points={linePosition} />;
   };
 }
 
