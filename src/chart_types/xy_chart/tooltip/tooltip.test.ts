@@ -1,12 +1,11 @@
-import { getAxisId, getGroupId, getSpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
 import { AxisSpec, BarSeriesSpec, Position } from '../utils/specs';
 import { formatTooltip } from './tooltip';
 import { BarGeometry } from '../../../utils/geometry';
 
 describe('Tooltip formatting', () => {
-  const SPEC_ID_1 = getSpecId('bar_1');
-  const SPEC_GROUP_ID_1 = getGroupId('bar_group_1');
+  const SPEC_ID_1 = 'bar_1';
+  const SPEC_GROUP_ID_1 = 'bar_group_1';
   const SPEC_1: BarSeriesSpec = {
     chartType: 'xy_axis',
     specType: 'series',
@@ -27,7 +26,7 @@ describe('Tooltip formatting', () => {
   const YAXIS_SPEC: AxisSpec = {
     chartType: 'xy_axis',
     specType: 'axis',
-    id: getAxisId('axis_1'),
+    id: 'axis_1',
     groupId: SPEC_GROUP_ID_1,
     hide: false,
     position: Position.Left,
