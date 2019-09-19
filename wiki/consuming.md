@@ -57,7 +57,7 @@ Use a `.babelrc` config with the [`usebuiltins`](https://babeljs.io/docs/en/babe
 
 ### Option 2 - [`@babel/polyfill`](https://github.com/zloirock/core-js/blob/master/docs/2019-03-19-core-js-3-babel-and-a-look-into-the-future.md#babelpolyfill)
 
-Directly import polyfil and runtime.
+Directly import polyfill and runtime.
 
 ```js
 import "core-js/stable";
