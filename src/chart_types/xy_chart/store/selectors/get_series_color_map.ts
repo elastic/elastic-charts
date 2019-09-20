@@ -2,8 +2,8 @@ import createCachedSelector from 're-reselect';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { getSeriesSpecsSelector } from './get_specs';
 import { getUpdatedCustomSeriesColors } from '../utils';
-import { getSeriesColorMap } from 'chart_types/xy_chart/utils/series';
-import { getChartThemeSelector } from 'store/selectors/get_chart_theme';
+import { getSeriesColorMap } from '../../../../chart_types/xy_chart/utils/series';
+import { getChartThemeSelector } from '../../../../store/selectors/get_chart_theme';
 
 export const getSeriesColorMapSelector = createCachedSelector(
   [getSeriesSpecsSelector, computeSeriesDomainsSelector, getChartThemeSelector],

@@ -1,11 +1,11 @@
 import React from 'react';
 import { Layer } from 'react-konva';
-import { IChartStore, IChartState } from 'store/chart_store';
-import { ChartTypes } from 'chart_types';
+import { IChartStore, IChartState } from '../../../store/chart_store';
+import { ChartTypes } from '../../../chart_types';
 import { computeSeriesGeometriesSelector } from './selectors/compute_series_geometries';
 import { computeChartDimensionsSelector } from './selectors/compute_chart_dimensions';
 import { Tooltips } from '../renderer/dom/tooltips';
-import { htmlIdGenerator } from 'utils/commons';
+import { htmlIdGenerator } from '../../../utils/commons';
 import { Highlighter } from '../renderer/dom/highlighter';
 import { Crosshair } from '../renderer/dom/crosshair';
 import { Axes } from '../renderer/canvas/axis';

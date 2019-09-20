@@ -1,16 +1,16 @@
 import React from 'react';
 import { Group, Rect, Text } from 'react-konva';
 import { Rotation } from '../../utils/specs';
-import { Theme } from 'utils/themes/theme';
-import { Dimensions } from 'utils/dimensions';
-import { BarGeometry } from 'utils/geometry';
+import { Theme } from '../../../../utils/themes/theme';
+import { Dimensions } from '../../../../utils/dimensions';
+import { BarGeometry } from '../../../../utils/geometry';
 import { buildBarValueProps } from './bar_values_utils';
 import { connect } from 'react-redux';
-import { IChartState } from 'store/chart_store';
-import { getChartThemeSelector } from 'store/selectors/get_chart_theme';
-import { computeChartDimensionsSelector } from 'chart_types/xy_chart/store/selectors/compute_chart_dimensions';
-import { getChartRotationSelector } from 'store/selectors/get_chart_rotation';
-import { computeSeriesGeometriesSelector } from 'chart_types/xy_chart/store/selectors/compute_series_geometries';
+import { IChartState } from '../../../../store/chart_store';
+import { getChartThemeSelector } from '../../../../store/selectors/get_chart_theme';
+import { computeChartDimensionsSelector } from '../../../../chart_types/xy_chart/store/selectors/compute_chart_dimensions';
+import { getChartRotationSelector } from '../../../../store/selectors/get_chart_rotation';
+import { computeSeriesGeometriesSelector } from '../../../../chart_types/xy_chart/store/selectors/compute_series_geometries';
 
 interface BarValuesProps {
   theme: Theme;

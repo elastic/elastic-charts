@@ -1,13 +1,13 @@
 import createCachedSelector from 're-reselect';
-import { getSettingsSpecSelector } from 'store/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../../store/selectors/get_settings_specs';
 import { getAxisSpecsSelector, getAnnotationSpecsSelector } from './get_specs';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 import { computeAnnotationDimensions, AnnotationDimensions } from '../../annotations/annotation_utils';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
-import { AnnotationId } from 'utils/ids';
-import { IChartState } from 'store/chart_store';
+import { AnnotationId } from '../../../../utils/ids';
+import { IChartState } from '../../../../store/chart_store';
 const getChartId = (state: IChartState) => state.chartId;
 export const computeAnnotationDimensionsSelector = createCachedSelector(
   [

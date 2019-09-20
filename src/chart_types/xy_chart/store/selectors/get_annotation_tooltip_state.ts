@@ -1,7 +1,7 @@
-import { Dimensions } from 'utils/dimensions';
 import createCachedSelector from 're-reselect';
+import { Dimensions } from '../../../../utils/dimensions';
 import { computeCursorPositionSelector } from './compute_cursor_position';
-import { Point } from 'utils/point';
+import { Point } from '../../../../utils/point';
 import { TooltipValue } from '../../utils/interactions';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getAxisSpecsSelector, getAnnotationSpecsSelector } from './get_specs';
@@ -12,12 +12,12 @@ import {
   AnnotationDimensions,
 } from '../../annotations/annotation_utils';
 import { computeAnnotationDimensionsSelector } from './compute_annotations';
-import { getChartRotationSelector } from 'store/selectors/get_chart_rotation';
+import { getChartRotationSelector } from '../../../../store/selectors/get_chart_rotation';
 import { AnnotationId } from '../../../../utils/ids';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { ComputedGeometries } from '../utils';
 import { getTooltipValuesSelector } from './get_tooltip_values_highlighted_geoms';
-import { getChartIdSelector } from 'store/selectors/get_chart_id';
+import { getChartIdSelector } from '../../../../store/selectors/get_chart_id';
 
 export const getAnnotationTooltipStateSelector = createCachedSelector(
   [

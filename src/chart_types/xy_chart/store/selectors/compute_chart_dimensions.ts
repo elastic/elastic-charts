@@ -1,10 +1,10 @@
 import createCachedSelector from 're-reselect';
-import { getChartThemeSelector } from 'store/selectors/get_chart_theme';
+import { getChartThemeSelector } from '../../../../store/selectors/get_chart_theme';
 import { getAxisSpecsSelector } from './get_specs';
-import { computeChartDimensions } from 'chart_types/xy_chart/utils/dimensions';
-import { IChartState } from 'store/chart_store';
+import { computeChartDimensions } from '../../../../chart_types/xy_chart/utils/dimensions';
+import { IChartState } from '../../../../store/chart_store';
 import { computeAxisTicksDimensionsSelector } from './compute_axis_ticks_dimensions';
-import { Dimensions } from 'utils/dimensions';
+import { Dimensions } from '../../../../utils/dimensions';
 
 const getParentDimension = (state: IChartState) => state.settings.parentDimensions;
 

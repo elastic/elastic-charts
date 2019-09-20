@@ -1,6 +1,6 @@
 import createCachedSelector from 're-reselect';
 import { computeCursorPositionSelector } from './compute_cursor_position';
-import { IChartState } from 'store/chart_store';
+import { IChartState } from '../../../../store/chart_store';
 import { isBrushingEnabledSelector } from './is_brushing_enabled';
 
 const getMouseDownPositionSelector = (state: IChartState) => state.interactions.mouseDownPosition;

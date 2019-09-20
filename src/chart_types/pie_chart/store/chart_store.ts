@@ -1,6 +1,6 @@
-import { IChartStore, IChartState } from 'store/chart_store';
+import { IChartStore, IChartState } from '../../../store/chart_store';
 import { computeGeometriesSelector } from './selectors/compute_geometries';
-import { ChartTypes } from 'chart_types';
+import { ChartTypes } from '../../../chart_types';
 
 export class PieChartStore implements IChartStore {
   chartType = ChartTypes.Pie;

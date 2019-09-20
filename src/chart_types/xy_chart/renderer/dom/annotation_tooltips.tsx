@@ -8,14 +8,14 @@ import {
   AnnotationTooltipFormatter,
 } from '../../annotations/annotation_utils';
 import { connect } from 'react-redux';
-import { Dimensions } from 'utils/dimensions';
-import { IChartState } from 'store/chart_store';
-import { isInitialized } from 'store/selectors/is_initialized';
-import { getChartDimensionsSelector } from 'store/selectors/get_chart_dimensions';
-import { computeAnnotationDimensionsSelector } from 'chart_types/xy_chart/store/selectors/compute_annotations';
-import { getAnnotationSpecsSelector } from 'chart_types/xy_chart/store/selectors/get_specs';
-import { getAnnotationTooltipStateSelector } from 'chart_types/xy_chart/store/selectors/get_annotation_tooltip_state';
-import { isChartEmptySelector } from 'chart_types/xy_chart/store/selectors/is_chart_empty';
+import { Dimensions } from '../../../../utils/dimensions';
+import { IChartState } from '../../../../store/chart_store';
+import { isInitialized } from '../../../../store/selectors/is_initialized';
+import { getChartDimensionsSelector } from '../../../../store/selectors/get_chart_dimensions';
+import { computeAnnotationDimensionsSelector } from '../../../../chart_types/xy_chart/store/selectors/compute_annotations';
+import { getAnnotationSpecsSelector } from '../../../../chart_types/xy_chart/store/selectors/get_specs';
+import { getAnnotationTooltipStateSelector } from '../../../../chart_types/xy_chart/store/selectors/get_annotation_tooltip_state';
+import { isChartEmptySelector } from '../../../../chart_types/xy_chart/store/selectors/is_chart_empty';
 
 interface AnnotationTooltipProps {
   isChartEmpty: boolean;

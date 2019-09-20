@@ -1,8 +1,8 @@
-import { Dimensions } from 'utils/dimensions';
 import createCachedSelector from 're-reselect';
+import { Dimensions } from '../../../../utils/dimensions';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
-import { IChartState } from 'store/chart_store';
-import { Point } from 'utils/point';
+import { IChartState } from '../../../../store/chart_store';
+import { Point } from '../../../../utils/point';
 
 const getRawCursorPosition = (state: IChartState) => state.interactions.rawCursorPosition;
 

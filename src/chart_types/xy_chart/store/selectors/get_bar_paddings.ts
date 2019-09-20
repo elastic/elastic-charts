@@ -1,6 +1,6 @@
 import createCachedSelector from 're-reselect';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
-import { getChartThemeSelector } from 'store/selectors/get_chart_theme';
+import { getChartThemeSelector } from '../../../../store/selectors/get_chart_theme';
 
 export const getBarPaddingsSelector = createCachedSelector(
   [isHistogramModeEnabledSelector, getChartThemeSelector],

@@ -1,5 +1,5 @@
-import { getSettingsSpecSelector } from 'store/selectors/get_settings_specs';
 import createCachedSelector from 're-reselect';
+import { getSettingsSpecSelector } from '../../../../store/selectors/get_settings_specs';
 import { IChartState } from '../../../../store/chart_store';
 
 const isLegendCollapsedSelector = (state: IChartState) => state.interactions.legendCollapsed;

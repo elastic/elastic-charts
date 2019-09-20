@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React from 'react';
-import { TooltipValue, TooltipValueFormatter } from '../../utils/interactions';
 import { connect } from 'react-redux';
+import { TooltipValue, TooltipValueFormatter } from '../../utils/interactions';
 import { IChartState } from '../../../../store/chart_store';
 import { isTooltipVisibleSelector } from '../../store/selectors/is_tooltip_visible';
 import { getTooltipHeaderFormatterSelector } from '../../store/selectors/get_tooltip_header_formatter';

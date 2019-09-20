@@ -1,8 +1,8 @@
 import createCachedSelector from 're-reselect';
 import { TooltipType, TooltipValue, isTooltipType, isTooltipProps } from '../../utils/interactions';
-import { Point } from 'utils/point';
-import { IChartState } from 'store/chart_store';
-import { getSettingsSpecSelector } from 'store/selectors/get_settings_specs';
+import { Point } from '../../../../utils/point';
+import { IChartState } from '../../../../store/chart_store';
+import { getSettingsSpecSelector } from '../../../../store/selectors/get_settings_specs';
 import { computeCursorPositionSelector } from './compute_cursor_position';
 import { getTooltipValuesSelector } from './get_tooltip_values_highlighted_geoms';
 import { isBrushingSelector } from './is_brushing';

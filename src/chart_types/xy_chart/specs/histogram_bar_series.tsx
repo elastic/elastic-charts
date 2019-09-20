@@ -1,7 +1,7 @@
 import { HistogramBarSeriesSpec, DEFAULT_GLOBAL_ID } from '../utils/specs';
 import { ScaleType } from '../../../utils/scales/scales';
 import { specComponentFactory, getConnect } from '../../../store/spec_factory';
-import { ChartTypes } from 'chart_types';
+import { ChartTypes } from '../../../chart_types';
 
 const defaultProps = {
   chartType: ChartTypes.XYAxis,
