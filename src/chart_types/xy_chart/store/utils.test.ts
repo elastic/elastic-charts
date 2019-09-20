@@ -9,7 +9,7 @@ import {
 } from '../utils/specs';
 import { BARCHART_1Y0G, BARCHART_1Y1G } from '../../../utils/data_samples/test_dataset';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
-import { AxisId, getGroupId, getSpecId, SpecId } from '../../../utils/ids';
+import { SpecId } from '../../../utils/ids';
 import { ScaleContinuous } from '../../../utils/scales/scale_continuous';
 import { ScaleType } from '../../../utils/scales/scales';
 import {
@@ -28,14 +28,16 @@ import {
 } from '../store/utils';
 import { LegendItem } from '../legend/legend';
 import { IndexedGeometry, AccessorType } from '../../../utils/geometry';
+import { mergeYCustomDomainsByGroupId } from './selectors/merge_y_custom_domains';
+import { updateDeselectedDataSeries } from './utils';
 
 describe('Chart State utils', () => {
   it('should compute and format specifications for non stacked chart', () => {
     const spec1: BasicSeriesSpec = {
       chartType: 'xy_axis',
       specType: 'series',
-      id: getSpecId('spec1'),
-      groupId: getGroupId('group1'),
+      id: 'spec1',
+      groupId: 'group1',
       seriesType: 'line',
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
@@ -47,8 +49,8 @@ describe('Chart State utils', () => {
     const spec2: BasicSeriesSpec = {
       chartType: 'xy_axis',
       specType: 'series',
-      id: getSpecId('spec2'),
-      groupId: getGroupId('group2'),
+      id: 'spec2',
+      groupId: 'group2',
       seriesType: 'line',
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
@@ -57,10 +59,7 @@ describe('Chart State utils', () => {
       yScaleToDataExtent: false,
       data: BARCHART_1Y0G,
     };
-    const specs = new Map<SpecId, BasicSeriesSpec>();
-    specs.set(spec1.id, spec1);
-    specs.set(spec2.id, spec2);
-    const domains = computeSeriesDomains(specs, new Map(), undefined);
+    const domains = computeSeriesDomains([spec1, spec2], new Map(), undefined);
     expect(domains.xDomain).toEqual({
       domain: [0, 3],
       isBandScale: false,
@@ -91,8 +90,8 @@ describe('Chart State utils', () => {
     const spec1: BasicSeriesSpec = {
       chartType: 'xy_axis',
       specType: 'series',
-      id: getSpecId('spec1'),
-      groupId: getGroupId('group1'),
+      id: 'spec1',
+      groupId: 'group1',
       seriesType: 'line',
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
@@ -105,8 +104,8 @@ describe('Chart State utils', () => {
     const spec2: BasicSeriesSpec = {
       chartType: 'xy_axis',
       specType: 'series',
-      id: getSpecId('spec2'),
-      groupId: getGroupId('group2'),
+      id: 'spec2',
+      groupId: 'group2',
       seriesType: 'line',
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
@@ -117,10 +116,7 @@ describe('Chart State utils', () => {
       yScaleToDataExtent: false,
       data: BARCHART_1Y1G,
     };
-    const specs = new Map<SpecId, BasicSeriesSpec>();
-    specs.set(spec1.id, spec1);
-    specs.set(spec2.id, spec2);
-    const domains = computeSeriesDomains(specs, new Map(), undefined);
+    const domains = computeSeriesDomains([spec1, spec2], new Map(), undefined);
     expect(domains.xDomain).toEqual({
       domain: [0, 3],
       isBandScale: false,
@@ -149,17 +145,17 @@ describe('Chart State utils', () => {
   });
   it('should check if a DataSeriesColorValues item exists in a list of DataSeriesColorValues', () => {
     const dataSeriesValuesA: DataSeriesColorsValues = {
-      specId: getSpecId('a'),
+      specId: 'a',
       colorValues: ['a', 'b', 'c'],
     };
 
     const dataSeriesValuesB: DataSeriesColorsValues = {
-      specId: getSpecId('b'),
+      specId: 'b',
       colorValues: ['a', 'b', 'c'],
     };
 
     const dataSeriesValuesC: DataSeriesColorsValues = {
-      specId: getSpecId('a'),
+      specId: 'a',
       colorValues: ['a', 'b', 'd'],
     };
 
@@ -171,17 +167,17 @@ describe('Chart State utils', () => {
   });
   it('should update a list of DataSeriesColorsValues given a selected DataSeriesColorValues item', () => {
     const dataSeriesValuesA: DataSeriesColorsValues = {
-      specId: getSpecId('a'),
+      specId: 'a',
       colorValues: ['a', 'b', 'c'],
     };
 
     const dataSeriesValuesB: DataSeriesColorsValues = {
-      specId: getSpecId('b'),
+      specId: 'b',
       colorValues: ['a', 'b', 'c'],
     };
 
     const dataSeriesValuesC: DataSeriesColorsValues = {
-      specId: getSpecId('a'),
+      specId: 'a',
       colorValues: ['a', 'b', 'd'],
     };
 
@@ -197,8 +193,8 @@ describe('Chart State utils', () => {
     const spec1: BasicSeriesSpec = {
       chartType: 'xy_axis',
       specType: 'series',
-      id: getSpecId('spec1'),
-      groupId: getGroupId('group1'),
+      id: 'spec1',
+      groupId: 'group1',
       seriesType: 'line',
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
@@ -208,10 +204,7 @@ describe('Chart State utils', () => {
       data: BARCHART_1Y0G,
     };
 
-    const specs = new Map<SpecId, BasicSeriesSpec>();
-    specs.set(spec1.id, spec1);
-
-    const emptyCustomSeriesColors = getUpdatedCustomSeriesColors(specs);
+    const emptyCustomSeriesColors = getUpdatedCustomSeriesColors([spec1]);
     expect(emptyCustomSeriesColors).toEqual(new Map());
 
     const dataSeriesColorValues = {
@@ -221,7 +214,7 @@ describe('Chart State utils', () => {
     spec1.customSeriesColors = new Map();
     spec1.customSeriesColors.set(dataSeriesColorValues, 'custom_color');
 
-    const updatedCustomSeriesColors = getUpdatedCustomSeriesColors(specs);
+    const updatedCustomSeriesColors = getUpdatedCustomSeriesColors([spec1]);
     const expectedCustomSeriesColors = new Map();
     expectedCustomSeriesColors.set('specId:{spec1},colors:{bar}', 'custom_color');
 
@@ -249,8 +242,8 @@ describe('Chart State utils', () => {
     const area: AreaSeriesSpec = {
       chartType: 'xy_axis',
       specType: 'series',
-      id: getSpecId('area'),
-      groupId: getGroupId('group1'),
+      id: 'area',
+      groupId: 'group1',
       seriesType: 'area',
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
@@ -263,8 +256,8 @@ describe('Chart State utils', () => {
     const line: LineSeriesSpec = {
       chartType: 'xy_axis',
       specType: 'series',
-      id: getSpecId('line'),
-      groupId: getGroupId('group2'),
+      id: 'line',
+      groupId: 'group2',
       seriesType: 'line',
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
@@ -278,8 +271,8 @@ describe('Chart State utils', () => {
     const bar: BarSeriesSpec = {
       chartType: 'xy_axis',
       specType: 'series',
-      id: getSpecId('bar'),
-      groupId: getGroupId('group2'),
+      id: 'bar',
+      groupId: 'group2',
       seriesType: 'bar',
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
@@ -290,16 +283,16 @@ describe('Chart State utils', () => {
       yScaleToDataExtent: false,
       data: BARCHART_1Y1G,
     };
-    let seriesMap = new Map<SpecId, BasicSeriesSpec>([[area.id, area], [line.id, line], [bar.id, bar]]);
-    expect(isLineAreaOnlyChart(seriesMap)).toBe(false);
-    seriesMap = new Map<SpecId, BasicSeriesSpec>([[area.id, area], [line.id, line]]);
-    expect(isLineAreaOnlyChart(seriesMap)).toBe(true);
-    seriesMap = new Map<SpecId, BasicSeriesSpec>([[area.id, area]]);
-    expect(isLineAreaOnlyChart(seriesMap)).toBe(true);
-    seriesMap = new Map<SpecId, BasicSeriesSpec>([[line.id, line]]);
-    expect(isLineAreaOnlyChart(seriesMap)).toBe(true);
-    seriesMap = new Map<SpecId, BasicSeriesSpec>([[bar.id, bar], [getSpecId('bar2'), bar]]);
-    expect(isLineAreaOnlyChart(seriesMap)).toBe(false);
+    let series = [area, line, bar];
+    expect(isLineAreaOnlyChart(series)).toBe(false);
+    series = [area, line];
+    expect(isLineAreaOnlyChart(series)).toBe(true);
+    series = [area];
+    expect(isLineAreaOnlyChart(series)).toBe(true);
+    series = [line];
+    expect(isLineAreaOnlyChart(series)).toBe(true);
+    series = [bar, { ...bar, id: 'bar2' }];
+    expect(isLineAreaOnlyChart(series)).toBe(false);
   });
   test('can enable the chart animation if we have a valid number of elements', () => {
     const geometriesCounts = {
@@ -327,8 +320,8 @@ describe('Chart State utils', () => {
       const area: AreaSeriesSpec = {
         chartType: 'xy_axis',
         specType: 'series',
-        id: getSpecId('area'),
-        groupId: getGroupId('group1'),
+        id: 'area',
+        groupId: 'group1',
         seriesType: 'area',
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
@@ -341,8 +334,8 @@ describe('Chart State utils', () => {
       const line: LineSeriesSpec = {
         chartType: 'xy_axis',
         specType: 'series',
-        id: getSpecId('line'),
-        groupId: getGroupId('group2'),
+        id: 'line',
+        groupId: 'group2',
         seriesType: 'line',
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
@@ -356,8 +349,8 @@ describe('Chart State utils', () => {
       const bar: BarSeriesSpec = {
         chartType: 'xy_axis',
         specType: 'series',
-        id: getSpecId('bar'),
-        groupId: getGroupId('group2'),
+        id: 'bar',
+        groupId: 'group2',
         seriesType: 'bar',
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
@@ -368,8 +361,8 @@ describe('Chart State utils', () => {
         yScaleToDataExtent: false,
         data: BARCHART_1Y1G,
       };
-      const seriesSpecs = new Map<SpecId, BasicSeriesSpec>([[area.id, area], [line.id, line], [bar.id, bar]]);
-      const axesSpecs = new Map<AxisId, AxisSpec>();
+      const seriesSpecs: BasicSeriesSpec[] = [area, line, bar];
+      const axesSpecs: AxisSpec[] = [];
       const chartRotation = 0;
       const chartDimensions = { width: 100, height: 100, top: 0, left: 0 };
       const chartColors = {
@@ -402,8 +395,8 @@ describe('Chart State utils', () => {
       const line1: LineSeriesSpec = {
         chartType: 'xy_axis',
         specType: 'series',
-        id: getSpecId('line1'),
-        groupId: getGroupId('group1'),
+        id: 'line1',
+        groupId: 'group1',
         seriesType: 'line',
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Ordinal,
@@ -415,8 +408,8 @@ describe('Chart State utils', () => {
       const line2: LineSeriesSpec = {
         chartType: 'xy_axis',
         specType: 'series',
-        id: getSpecId('line2'),
-        groupId: getGroupId('group2'),
+        id: 'line2',
+        groupId: 'group2',
         seriesType: 'line',
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Ordinal,
@@ -425,8 +418,8 @@ describe('Chart State utils', () => {
         yScaleToDataExtent: false,
         data: BARCHART_1Y0G,
       };
-      const seriesSpecs = new Map<SpecId, BasicSeriesSpec>([[line1.id, line1], [line2.id, line2]]);
-      const axesSpecs = new Map<AxisId, AxisSpec>();
+      const seriesSpecs: BasicSeriesSpec[] = [line1, line2];
+      const axesSpecs: AxisSpec[] = [];
       const chartRotation = 0;
       const chartDimensions = { width: 100, height: 100, top: 0, left: 0 };
       const chartColors = {
@@ -459,8 +452,8 @@ describe('Chart State utils', () => {
       const line1: LineSeriesSpec = {
         chartType: 'xy_axis',
         specType: 'series',
-        id: getSpecId('line1'),
-        groupId: getGroupId('group1'),
+        id: 'line1',
+        groupId: 'group1',
         seriesType: 'line',
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Ordinal,
@@ -473,8 +466,8 @@ describe('Chart State utils', () => {
       const line2: LineSeriesSpec = {
         chartType: 'xy_axis',
         specType: 'series',
-        id: getSpecId('line2'),
-        groupId: getGroupId('group2'),
+        id: 'line2',
+        groupId: 'group2',
         seriesType: 'line',
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Ordinal,
@@ -484,8 +477,8 @@ describe('Chart State utils', () => {
         yScaleToDataExtent: false,
         data: BARCHART_1Y0G,
       };
-      const seriesSpecs = new Map<SpecId, BasicSeriesSpec>([[line1.id, line1], [line2.id, line2]]);
-      const axesSpecs = new Map<AxisId, AxisSpec>();
+      const seriesSpecs: BasicSeriesSpec[] = [line1, line2];
+      const axesSpecs: AxisSpec[] = [];
       const chartRotation = 0;
       const chartDimensions = { width: 100, height: 100, top: 0, left: 0 };
       const chartColors = {
@@ -518,8 +511,8 @@ describe('Chart State utils', () => {
       const area: AreaSeriesSpec = {
         chartType: 'xy_axis',
         specType: 'series',
-        id: getSpecId('area'),
-        groupId: getGroupId('group1'),
+        id: 'area',
+        groupId: 'group1',
         seriesType: 'area',
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
@@ -532,8 +525,8 @@ describe('Chart State utils', () => {
       const line: LineSeriesSpec = {
         chartType: 'xy_axis',
         specType: 'series',
-        id: getSpecId('line'),
-        groupId: getGroupId('group2'),
+        id: 'line',
+        groupId: 'group2',
         seriesType: 'line',
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
@@ -546,8 +539,8 @@ describe('Chart State utils', () => {
       const bar: BarSeriesSpec = {
         chartType: 'xy_axis',
         specType: 'series',
-        id: getSpecId('bar'),
-        groupId: getGroupId('group2'),
+        id: 'bar',
+        groupId: 'group2',
         seriesType: 'bar',
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
@@ -570,8 +563,8 @@ describe('Chart State utils', () => {
           showValueLabel: true,
         },
       };
-      const seriesSpecs = new Map<SpecId, BasicSeriesSpec>([[area.id, area], [line.id, line], [bar.id, bar]]);
-      const axesSpecs = new Map<AxisId, AxisSpec>();
+      const seriesSpecs: BasicSeriesSpec[] = [area, line, bar];
+      const axesSpecs: AxisSpec[] = [];
       const chartRotation = 0;
       const chartDimensions = { width: 100, height: 100, top: 0, left: 0 };
       const chartColors = {
@@ -604,8 +597,8 @@ describe('Chart State utils', () => {
       const line1: LineSeriesSpec = {
         chartType: 'xy_axis',
         specType: 'series',
-        id: getSpecId('line1'),
-        groupId: getGroupId('group2'),
+        id: 'line1',
+        groupId: 'group2',
         seriesType: 'line',
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
@@ -618,8 +611,8 @@ describe('Chart State utils', () => {
       const line2: LineSeriesSpec = {
         chartType: 'xy_axis',
         specType: 'series',
-        id: getSpecId('line2'),
-        groupId: getGroupId('group2'),
+        id: 'line2',
+        groupId: 'group2',
         seriesType: 'line',
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
@@ -632,8 +625,8 @@ describe('Chart State utils', () => {
       const line3: LineSeriesSpec = {
         chartType: 'xy_axis',
         specType: 'series',
-        id: getSpecId('line3'),
-        groupId: getGroupId('group2'),
+        id: 'line3',
+        groupId: 'group2',
         seriesType: 'line',
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
@@ -643,8 +636,8 @@ describe('Chart State utils', () => {
         yScaleToDataExtent: false,
         data: BARCHART_1Y1G,
       };
-      const seriesSpecs = new Map<SpecId, BasicSeriesSpec>([[line1.id, line1], [line2.id, line2], [line3.id, line3]]);
-      const axesSpecs = new Map<AxisId, AxisSpec>();
+      const seriesSpecs: BasicSeriesSpec[] = [line1, line2, line3];
+      const axesSpecs: AxisSpec[] = [];
       const chartRotation = 0;
       const chartDimensions = { width: 100, height: 100, top: 0, left: 0 };
       const chartColors = {
@@ -677,8 +670,8 @@ describe('Chart State utils', () => {
       const area1: AreaSeriesSpec = {
         chartType: 'xy_axis',
         specType: 'series',
-        id: getSpecId('area1'),
-        groupId: getGroupId('group2'),
+        id: 'area1',
+        groupId: 'group2',
         seriesType: 'area',
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
@@ -691,8 +684,8 @@ describe('Chart State utils', () => {
       const area2: AreaSeriesSpec = {
         chartType: 'xy_axis',
         specType: 'series',
-        id: getSpecId('area2'),
-        groupId: getGroupId('group2'),
+        id: 'area2',
+        groupId: 'group2',
         seriesType: 'area',
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
@@ -705,8 +698,8 @@ describe('Chart State utils', () => {
       const area3: AreaSeriesSpec = {
         chartType: 'xy_axis',
         specType: 'series',
-        id: getSpecId('area3'),
-        groupId: getGroupId('group2'),
+        id: 'area3',
+        groupId: 'group2',
         seriesType: 'area',
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
@@ -716,8 +709,8 @@ describe('Chart State utils', () => {
         yScaleToDataExtent: false,
         data: BARCHART_1Y1G,
       };
-      const seriesSpecs = new Map<SpecId, BasicSeriesSpec>([[area1.id, area1], [area2.id, area2], [area3.id, area3]]);
-      const axesSpecs = new Map<AxisId, AxisSpec>();
+      const seriesSpecs: BasicSeriesSpec[] = [area1, area2, area3];
+      const axesSpecs: AxisSpec[] = [];
       const chartRotation = 0;
       const chartDimensions = { width: 100, height: 100, top: 0, left: 0 };
       const chartColors = {
@@ -750,8 +743,8 @@ describe('Chart State utils', () => {
       const line1: LineSeriesSpec = {
         chartType: 'xy_axis',
         specType: 'series',
-        id: getSpecId('line1'),
-        groupId: getGroupId('group2'),
+        id: 'line1',
+        groupId: 'group2',
         seriesType: 'line',
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
@@ -772,8 +765,8 @@ describe('Chart State utils', () => {
       const line2: LineSeriesSpec = {
         chartType: 'xy_axis',
         specType: 'series',
-        id: getSpecId('line2'),
-        groupId: getGroupId('group2'),
+        id: 'line2',
+        groupId: 'group2',
         seriesType: 'line',
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
@@ -786,8 +779,8 @@ describe('Chart State utils', () => {
       const line3: LineSeriesSpec = {
         chartType: 'xy_axis',
         specType: 'series',
-        id: getSpecId('line3'),
-        groupId: getGroupId('group2'),
+        id: 'line3',
+        groupId: 'group2',
         seriesType: 'line',
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
@@ -797,8 +790,8 @@ describe('Chart State utils', () => {
         yScaleToDataExtent: false,
         data: BARCHART_1Y1G,
       };
-      const seriesSpecs = new Map<SpecId, BasicSeriesSpec>([[line1.id, line1], [line2.id, line2], [line3.id, line3]]);
-      const axesSpecs = new Map<AxisId, AxisSpec>();
+      const seriesSpecs: BasicSeriesSpec[] = [line1, line2, line3];
+      const axesSpecs: AxisSpec[] = [];
       const chartRotation = 0;
       const chartDimensions = { width: 100, height: 100, top: 0, left: 0 };
       const chartColors = {
@@ -839,8 +832,8 @@ describe('Chart State utils', () => {
       const area1: AreaSeriesSpec = {
         chartType: 'xy_axis',
         specType: 'series',
-        id: getSpecId('area1'),
-        groupId: getGroupId('group2'),
+        id: 'area1',
+        groupId: 'group2',
         seriesType: 'area',
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
@@ -865,8 +858,8 @@ describe('Chart State utils', () => {
       const area2: AreaSeriesSpec = {
         chartType: 'xy_axis',
         specType: 'series',
-        id: getSpecId('area2'),
-        groupId: getGroupId('group2'),
+        id: 'area2',
+        groupId: 'group2',
         seriesType: 'area',
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
@@ -879,8 +872,8 @@ describe('Chart State utils', () => {
       const area3: AreaSeriesSpec = {
         chartType: 'xy_axis',
         specType: 'series',
-        id: getSpecId('area3'),
-        groupId: getGroupId('group2'),
+        id: 'area3',
+        groupId: 'group2',
         seriesType: 'area',
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
@@ -890,8 +883,8 @@ describe('Chart State utils', () => {
         yScaleToDataExtent: false,
         data: BARCHART_1Y1G,
       };
-      const seriesSpecs = new Map<SpecId, BasicSeriesSpec>([[area1.id, area1], [area2.id, area2], [area3.id, area3]]);
-      const axesSpecs = new Map<AxisId, AxisSpec>();
+      const seriesSpecs: BasicSeriesSpec[] = [area1, area2, area3];
+      const axesSpecs: AxisSpec[] = [];
       const chartRotation = 0;
       const chartDimensions = { width: 100, height: 100, top: 0, left: 0 };
       const chartColors = {
@@ -937,8 +930,8 @@ describe('Chart State utils', () => {
       const bars1: BarSeriesSpec = {
         chartType: 'xy_axis',
         specType: 'series',
-        id: getSpecId('bars1'),
-        groupId: getGroupId('group2'),
+        id: 'bars1',
+        groupId: 'group2',
         seriesType: 'bar',
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
@@ -951,8 +944,8 @@ describe('Chart State utils', () => {
       const bars2: BarSeriesSpec = {
         chartType: 'xy_axis',
         specType: 'series',
-        id: getSpecId('bars2'),
-        groupId: getGroupId('group2'),
+        id: 'bars2',
+        groupId: 'group2',
         seriesType: 'bar',
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
@@ -965,8 +958,8 @@ describe('Chart State utils', () => {
       const bars3: BarSeriesSpec = {
         chartType: 'xy_axis',
         specType: 'series',
-        id: getSpecId('bars3'),
-        groupId: getGroupId('group2'),
+        id: 'bars3',
+        groupId: 'group2',
         seriesType: 'bar',
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
@@ -976,8 +969,8 @@ describe('Chart State utils', () => {
         yScaleToDataExtent: false,
         data: BARCHART_1Y1G,
       };
-      const seriesSpecs = new Map<SpecId, BasicSeriesSpec>([[bars1.id, bars1], [bars2.id, bars2], [bars3.id, bars3]]);
-      const axesSpecs = new Map<AxisId, AxisSpec>();
+      const seriesSpecs: BasicSeriesSpec[] = [bars1, bars2, bars3];
+      const axesSpecs: AxisSpec[] = [];
       const chartRotation = 0;
       const chartDimensions = { width: 100, height: 100, top: 0, left: 0 };
       const chartColors = {
@@ -1008,8 +1001,10 @@ describe('Chart State utils', () => {
     });
     test('can compute the bar offset in mixed charts', () => {
       const line1: LineSeriesSpec = {
-        id: getSpecId('line1'),
-        groupId: getGroupId('group2'),
+        chartType: 'xy_axis',
+        specType: 'series',
+        id: 'line1',
+        groupId: 'group2',
         seriesType: 'line',
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
@@ -1021,8 +1016,10 @@ describe('Chart State utils', () => {
       };
 
       const bar1: BarSeriesSpec = {
-        id: getSpecId('line3'),
-        groupId: getGroupId('group2'),
+        chartType: 'xy_axis',
+        specType: 'series',
+        id: 'line3',
+        groupId: 'group2',
         seriesType: 'bar',
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
@@ -1032,8 +1029,8 @@ describe('Chart State utils', () => {
         yScaleToDataExtent: false,
         data: BARCHART_1Y1G,
       };
-      const seriesSpecs = new Map<SpecId, BasicSeriesSpec>([[line1.id, line1], [bar1.id, bar1]]);
-      const axesSpecs = new Map<AxisId, AxisSpec>();
+      const seriesSpecs: BasicSeriesSpec[] = [line1, bar1];
+      const axesSpecs: AxisSpec[] = [];
       const chartRotation = 0;
       const chartDimensions = { width: 100, height: 100, top: 0, left: 0 };
       const chartColors = {
@@ -1075,7 +1072,7 @@ describe('Chart State utils', () => {
         color: '#1EA593',
         value: { x: 0, y: 5, accessor: AccessorType.Y1 },
         transform: { x: 0, y: 0 },
-        geometryId: { specId: getSpecId('line1'), seriesKey: [] },
+        geometryId: { specId: 'line1', seriesKey: [] },
       },
     ]);
     const map2 = new Map<string, IndexedGeometry[]>();
@@ -1087,7 +1084,7 @@ describe('Chart State utils', () => {
         color: '#2B70F7',
         value: { x: 0, y: 2, accessor: AccessorType.Y1 },
         transform: { x: 0, y: 0 },
-        geometryId: { specId: getSpecId('line2'), seriesKey: [] },
+        geometryId: { specId: 'line2', seriesKey: [] },
       },
     ]);
     const merged = mergeGeometriesIndexes(map1, map2);
@@ -1122,8 +1119,8 @@ describe('Chart State utils', () => {
     const area: AreaSeriesSpec = {
       chartType: 'xy_axis',
       specType: 'series',
-      id: getSpecId('area'),
-      groupId: getGroupId('group1'),
+      id: 'area',
+      groupId: 'group1',
       seriesType: 'area',
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
@@ -1136,8 +1133,8 @@ describe('Chart State utils', () => {
     const line: LineSeriesSpec = {
       chartType: 'xy_axis',
       specType: 'series',
-      id: getSpecId('line'),
-      groupId: getGroupId('group2'),
+      id: 'line',
+      groupId: 'group2',
       seriesType: 'line',
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
@@ -1151,8 +1148,8 @@ describe('Chart State utils', () => {
     const basicBar: BarSeriesSpec = {
       chartType: 'xy_axis',
       specType: 'series',
-      id: getSpecId('bar'),
-      groupId: getGroupId('group2'),
+      id: 'bar',
+      groupId: 'group2',
       seriesType: 'bar',
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
@@ -1166,8 +1163,8 @@ describe('Chart State utils', () => {
     const histogramBar: BarSeriesSpec = {
       chartType: 'xy_axis',
       specType: 'series',
-      id: getSpecId('histo'),
-      groupId: getGroupId('group2'),
+      id: 'histo',
+      groupId: 'group2',
       seriesType: 'bar',
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
@@ -1179,19 +1176,14 @@ describe('Chart State utils', () => {
       data: BARCHART_1Y1G,
       enableHistogramMode: true,
     };
-    const seriesMap = new Map<SpecId, BasicSeriesSpec>([
-      [area.id, area],
-      [line.id, line],
-      [basicBar.id, basicBar],
-      [histogramBar.id, histogramBar],
-    ]);
+    let seriesMap: BasicSeriesSpec[] = [area, line, basicBar, histogramBar];
 
     expect(isHistogramModeEnabled(seriesMap)).toBe(true);
 
-    seriesMap.delete(histogramBar.id);
+    seriesMap = [area, line, basicBar];
     expect(isHistogramModeEnabled(seriesMap)).toBe(false);
 
-    seriesMap.delete(basicBar.id);
+    seriesMap = [area, line];
     expect(isHistogramModeEnabled(seriesMap)).toBe(false);
   });
   test('can set the bar series accessors dependent on histogram mode', () => {
@@ -1201,8 +1193,8 @@ describe('Chart State utils', () => {
     const area: AreaSeriesSpec = {
       chartType: 'xy_axis',
       specType: 'series',
-      id: getSpecId('area'),
-      groupId: getGroupId('group1'),
+      id: 'area',
+      groupId: 'group1',
       seriesType: 'area',
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
@@ -1215,8 +1207,8 @@ describe('Chart State utils', () => {
     const line: LineSeriesSpec = {
       chartType: 'xy_axis',
       specType: 'series',
-      id: getSpecId('line'),
-      groupId: getGroupId('group2'),
+      id: 'line',
+      groupId: 'group2',
       seriesType: 'line',
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
@@ -1230,8 +1222,8 @@ describe('Chart State utils', () => {
     const bar: BarSeriesSpec = {
       chartType: 'xy_axis',
       specType: 'series',
-      id: getSpecId('bar'),
-      groupId: getGroupId('group2'),
+      id: 'bar',
+      groupId: 'group2',
       seriesType: 'bar',
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
@@ -1261,8 +1253,8 @@ describe('Chart State utils', () => {
     const bar2: BarSeriesSpec = {
       chartType: 'xy_axis',
       specType: 'series',
-      id: getSpecId('bar2'),
-      groupId: getGroupId('group2'),
+      id: 'bar2',
+      groupId: 'group2',
       seriesType: 'bar',
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
@@ -1283,7 +1275,7 @@ describe('Chart State utils', () => {
       key: 'specId:{bars},colors:{a}',
       color: '#1EA593',
       label: 'a',
-      value: { specId: getSpecId('bars'), colorValues: ['a'], lastValue: { y0: null, y1: 6 } },
+      value: { specId: 'bars', colorValues: ['a'], lastValue: { y0: null, y1: 6 } },
       displayValue: { raw: { y0: null, y1: 6 }, formatted: { y0: null, y1: '6.00' } },
       isSeriesVisible: false,
     });
@@ -1291,7 +1283,7 @@ describe('Chart State utils', () => {
       key: 'specId:{bars},colors:{b}',
       color: '#2B70F7',
       label: 'b',
-      value: { specId: getSpecId('bars'), colorValues: ['b'], lastValue: { y0: null, y1: 2 } },
+      value: { specId: 'bars', colorValues: ['b'], lastValue: { y0: null, y1: 2 } },
       displayValue: { raw: { y0: null, y1: 2 }, formatted: { y0: null, y1: '2.00' } },
       isSeriesVisible: false,
     });
@@ -1303,7 +1295,7 @@ describe('Chart State utils', () => {
       key: 'specId:{bars},colors:{a}',
       color: '#1EA593',
       label: 'a',
-      value: { specId: getSpecId('bars'), colorValues: ['a'], lastValue: { y0: null, y1: 6 } },
+      value: { specId: 'bars', colorValues: ['a'], lastValue: { y0: null, y1: 6 } },
       displayValue: { raw: { y0: null, y1: 6 }, formatted: { y0: null, y1: '6.00' } },
       isSeriesVisible: true,
     });
@@ -1311,7 +1303,7 @@ describe('Chart State utils', () => {
       key: 'specId:{bars},colors:{b}',
       color: '#2B70F7',
       label: 'b',
-      value: { specId: getSpecId('bars'), colorValues: ['b'], lastValue: { y0: null, y1: 2 } },
+      value: { specId: 'bars', colorValues: ['b'], lastValue: { y0: null, y1: 2 } },
       displayValue: { raw: { y0: null, y1: 2 }, formatted: { y0: null, y1: '2.00' } },
       isSeriesVisible: false,
     });
