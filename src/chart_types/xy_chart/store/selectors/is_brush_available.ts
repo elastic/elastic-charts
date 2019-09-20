@@ -1,7 +1,7 @@
 import createCachedSelector from 're-reselect';
-import { getSettingsSpecSelector } from 'store/selectors/get_settings_specs';
-import { getComputedScalesSelector } from 'chart_types/xy_chart/store/selectors/get_computed_scales';
-import { ScaleType } from 'utils/scales/scales';
+import { getSettingsSpecSelector } from '../../../../store/selectors/get_settings_specs';
+import { getComputedScalesSelector } from '../../../../chart_types/xy_chart/store/selectors/get_computed_scales';
+import { ScaleType } from '../../../../utils/scales/scales';
 
 /**
  * The brush is available only for Ordinal xScales charts and

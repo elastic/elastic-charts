@@ -11,9 +11,9 @@ import {
   ON_TOGGLE_DESELECT_SERIES,
   ON_INVERT_DESELECT_SERIES,
   InvertDeselectSeriesAction,
-} from 'store/actions/legend';
+} from '../../store/actions/legend';
 import { ON_MOUSE_DOWN, ON_MOUSE_UP, MouseDownAction, MouseUpAction } from '../actions/mouse';
-import { DataSeriesColorsValues, findDataSeriesByColorValues } from 'chart_types/xy_chart/utils/series';
+import { DataSeriesColorsValues, findDataSeriesByColorValues } from '../../chart_types/xy_chart/utils/series';
 
 export function interactionsReducer(
   state: InteractionsStore,

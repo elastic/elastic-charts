@@ -7,11 +7,11 @@ import { specsReducer } from './reducers/specs';
 import { chartSettingsReducer } from './reducers/chart_settings';
 import { interactionsReducer } from './reducers/interactions';
 import { Dimensions } from '../utils/dimensions';
-import { XYAxisChartStore } from 'chart_types/xy_chart/store/chart_store';
-import { DataSeriesColorsValues } from 'chart_types/xy_chart/utils/series';
+import { XYAxisChartStore } from '../chart_types/xy_chart/store/chart_store';
+import { DataSeriesColorsValues } from '../chart_types/xy_chart/utils/series';
 import { ChartTypes } from '../chart_types';
-import { DEFAULT_SETTINGS_SPEC } from 'specs/settings';
-import { Point } from 'utils/point';
+import { DEFAULT_SETTINGS_SPEC } from '../specs/settings';
+import { Point } from '../utils/point';
 export interface IChartStore {
   chartType: ChartType;
   render(state: IChartState): GeometriesList;

@@ -1,19 +1,19 @@
 import React, { CSSProperties } from 'react';
+import { connect } from 'react-redux';
 import { TooltipType } from '../../utils/interactions';
 import { isHorizontalRotation } from '../../store/utils';
-import { connect } from 'react-redux';
-import { Dimensions } from 'utils/dimensions';
-import { Theme } from 'utils/themes/theme';
-import { Rotation } from 'chart_types/xy_chart/utils/specs';
-import { IChartState } from 'store/chart_store';
-import { isInitialized } from 'store/selectors/is_initialized';
-import { isCrosshairVisibleSelector } from 'chart_types/xy_chart/store/selectors/is_crosshair_visible';
-import { getChartRotationSelector } from 'store/selectors/get_chart_rotation';
-import { getCursorBandPositionSelector } from 'chart_types/xy_chart/store/selectors/get_cursor_band';
-import { getCursorLinePositionSelector } from 'chart_types/xy_chart/store/selectors/get_cursor_line';
-import { getTooltipTypeSelector } from 'chart_types/xy_chart/store/selectors/get_tooltip_type';
-import { getChartThemeSelector } from 'store/selectors/get_chart_theme';
-import { LIGHT_THEME } from 'utils/themes/light_theme';
+import { Dimensions } from '../../../../utils/dimensions';
+import { Theme } from '../../../../utils/themes/theme';
+import { Rotation } from '../../../../chart_types/xy_chart/utils/specs';
+import { IChartState } from '../../../../store/chart_store';
+import { isInitialized } from '../../../../store/selectors/is_initialized';
+import { isCrosshairVisibleSelector } from '../../../../chart_types/xy_chart/store/selectors/is_crosshair_visible';
+import { getChartRotationSelector } from '../../../../store/selectors/get_chart_rotation';
+import { getCursorBandPositionSelector } from '../../../../chart_types/xy_chart/store/selectors/get_cursor_band';
+import { getCursorLinePositionSelector } from '../../../../chart_types/xy_chart/store/selectors/get_cursor_line';
+import { getTooltipTypeSelector } from '../../../../chart_types/xy_chart/store/selectors/get_tooltip_type';
+import { getChartThemeSelector } from '../../../../store/selectors/get_chart_theme';
+import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 
 interface CrosshairProps {
   theme: Theme;

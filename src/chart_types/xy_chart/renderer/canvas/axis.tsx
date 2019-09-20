@@ -11,16 +11,16 @@ import {
   isVerticalAxis,
 } from '../../utils/axis_utils';
 import { AxisSpec, Position } from '../../utils/specs';
-import { Theme } from 'utils/themes/theme';
-import { Dimensions } from 'utils/dimensions';
+import { Theme } from '../../../../utils/themes/theme';
+import { Dimensions } from '../../../../utils/dimensions';
 import { connect } from 'react-redux';
-import { IChartState } from 'store/chart_store';
-import { computeAxisVisibleTicksSelector } from 'chart_types/xy_chart/store/selectors/compute_axis_visible_ticks';
-import { getAxisSpecsSelector } from 'chart_types/xy_chart/store/selectors/get_specs';
-import { AxisId } from 'utils/ids';
-import { computeAxisTicksDimensionsSelector } from 'chart_types/xy_chart/store/selectors/compute_axis_ticks_dimensions';
-import { getChartThemeSelector } from 'store/selectors/get_chart_theme';
-import { computeChartDimensionsSelector } from 'chart_types/xy_chart/store/selectors/compute_chart_dimensions';
+import { IChartState } from '../../../../store/chart_store';
+import { computeAxisVisibleTicksSelector } from '../../../../chart_types/xy_chart/store/selectors/compute_axis_visible_ticks';
+import { getAxisSpecsSelector } from '../../../../chart_types/xy_chart/store/selectors/get_specs';
+import { AxisId } from '../../../../utils/ids';
+import { computeAxisTicksDimensionsSelector } from '../../../../chart_types/xy_chart/store/selectors/compute_axis_ticks_dimensions';
+import { getChartThemeSelector } from '../../../../store/selectors/get_chart_theme';
+import { computeChartDimensionsSelector } from '../../../../chart_types/xy_chart/store/selectors/compute_chart_dimensions';
 
 interface AxisProps {
   theme: Theme;

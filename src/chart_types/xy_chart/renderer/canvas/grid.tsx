@@ -1,16 +1,16 @@
 import React from 'react';
 import { Group, Line } from 'react-konva';
-import { AxisLinePosition, isVerticalGrid } from '../../utils/axis_utils';
-import { GridLineConfig, mergeGridLineConfigs, Theme } from 'utils/themes/theme';
-import { Dimensions } from 'utils/dimensions';
-import { AxisId } from 'utils/ids';
-import { AxisSpec } from 'chart_types/xy_chart/utils/specs';
-import { IChartState } from 'store/chart_store';
-import { computeChartDimensionsSelector } from 'chart_types/xy_chart/store/selectors/compute_chart_dimensions';
-import { getAxisSpecsSelector } from 'chart_types/xy_chart/store/selectors/get_specs';
-import { computeAxisVisibleTicksSelector } from 'chart_types/xy_chart/store/selectors/compute_axis_visible_ticks';
 import { connect } from 'react-redux';
-import { getChartThemeSelector } from 'store/selectors/get_chart_theme';
+import { AxisLinePosition, isVerticalGrid } from '../../utils/axis_utils';
+import { GridLineConfig, mergeGridLineConfigs, Theme } from '../../../../utils/themes/theme';
+import { Dimensions } from '../../../../utils/dimensions';
+import { AxisId } from '../../../../utils/ids';
+import { AxisSpec } from '../../../../chart_types/xy_chart/utils/specs';
+import { IChartState } from '../../../../store/chart_store';
+import { computeChartDimensionsSelector } from '../../../../chart_types/xy_chart/store/selectors/compute_chart_dimensions';
+import { getAxisSpecsSelector } from '../../../../chart_types/xy_chart/store/selectors/get_specs';
+import { computeAxisVisibleTicksSelector } from '../../../../chart_types/xy_chart/store/selectors/compute_axis_visible_ticks';
+import { getChartThemeSelector } from '../../../../store/selectors/get_chart_theme';
 
 interface GridProps {
   chartTheme: Theme;

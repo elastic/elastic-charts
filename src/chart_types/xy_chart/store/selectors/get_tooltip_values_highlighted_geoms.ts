@@ -1,18 +1,18 @@
 import createCachedSelector from 're-reselect';
 import { TooltipValue, isFollowTooltipType, TooltipType, TooltipValueFormatter } from '../../utils/interactions';
 import { computeCursorPositionSelector } from './compute_cursor_position';
-import { Point } from 'utils/point';
+import { Point } from '../../../../utils/point';
 import { getAxisCursorPositionSelector } from './get_axis_cursor_position';
 import { ComputedScales, getAxesSpecForSpecId } from '../utils';
 import { getComputedScalesSelector } from './get_computed_scales';
 import { getElementAtCursorPositionSelector } from './get_elements_at_cursor_pos';
-import { IndexedGeometry } from 'utils/geometry';
+import { IndexedGeometry } from '../../../../utils/geometry';
 import { getSeriesSpecsSelector, getAxisSpecsSelector } from './get_specs';
-import { BasicSeriesSpec, AxisSpec } from 'chart_types/xy_chart/utils/specs';
+import { BasicSeriesSpec, AxisSpec } from '../../../../chart_types/xy_chart/utils/specs';
 import { getTooltipTypeSelector } from './get_tooltip_type';
-import { formatTooltip } from 'chart_types/xy_chart/tooltip/tooltip';
+import { formatTooltip } from '../../../../chart_types/xy_chart/tooltip/tooltip';
 import { getTooltipHeaderFormatterSelector } from './get_tooltip_header_formatter';
-import { isPointOnGeometry } from 'chart_types/xy_chart/rendering/rendering';
+import { isPointOnGeometry } from '../../../../chart_types/xy_chart/rendering/rendering';
 
 const EMPTY_VALUES = Object.freeze({
   tooltipValues: [],

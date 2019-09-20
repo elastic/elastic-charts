@@ -1,5 +1,5 @@
-import { computeLegendSelector } from './compute_legend';
 import createCachedSelector from 're-reselect';
+import { computeLegendSelector } from './compute_legend';
 
 export const isLegendInitializedSelector = createCachedSelector(
   [computeLegendSelector],

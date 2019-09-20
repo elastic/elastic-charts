@@ -5,7 +5,7 @@ import { Dimensions } from '../utils/dimensions';
 import { UpdateParentDimensionAction, updateParentDimensions } from '../store/actions/chart_settings';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { getSettingsSpecSelector } from 'store/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../store/selectors/get_settings_specs';
 import { IChartState } from 'store/chart_store';
 
 interface ResizerProps {

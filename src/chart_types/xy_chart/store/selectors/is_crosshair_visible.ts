@@ -1,6 +1,6 @@
 import createCachedSelector from 're-reselect';
 import { TooltipType, isCrosshairTooltipType } from '../../utils/interactions';
-import { Point } from 'utils/point';
+import { Point } from '../../../../utils/point';
 import { computeCursorPositionSelector } from './compute_cursor_position';
 import { getTooltipTypeSelector } from './get_tooltip_type';
 import { isBrushingSelector } from './is_brushing';

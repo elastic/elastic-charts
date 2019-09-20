@@ -1,10 +1,10 @@
 import { arc, pie } from 'd3-shape';
 import createCachedSelector from 're-reselect';
-import { IChartState, GeometriesList, GlobalSettings } from 'store/chart_store';
-import { PieSpec } from 'specs';
+import { IChartState, GeometriesList, GlobalSettings } from '../../../../store/chart_store';
+import { PieSpec } from '../../../../specs';
 import { getPieSpecSelector } from './get_pie_spec';
-import { getChartThemeSelector } from 'store/selectors/get_chart_theme';
-import { Theme } from 'utils/themes/theme';
+import { getChartThemeSelector } from '../../../../store/selectors/get_chart_theme';
+import { Theme } from '../../../../utils/themes/theme';
 
 const getGlobalSettingsSelector = (state: IChartState) => state.settings;
 
