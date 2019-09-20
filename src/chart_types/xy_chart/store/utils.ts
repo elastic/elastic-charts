@@ -12,6 +12,7 @@ import {
   getFormattedDataseries,
   getSplittedSeries,
   RawDataSeries,
+  findDataSeriesByColorValues,
 } from '../utils/series';
 import {
   AreaSeriesSpec,
@@ -88,20 +89,20 @@ export interface SeriesDomainsAndData {
   seriesColors: Map<string, DataSeriesColorsValues>;
 }
 
-// export function updateDeselectedDataSeries(
-//   series: DataSeriesColorsValues[] | null,
-//   value: DataSeriesColorsValues,
-// ): DataSeriesColorsValues[] {
-//   const seriesIndex = findDataSeriesByColorValues(series, value);
-//   const updatedSeries = series ? [...series] : [];
+export function updateDeselectedDataSeries(
+  series: DataSeriesColorsValues[] | null,
+  value: DataSeriesColorsValues,
+): DataSeriesColorsValues[] {
+  const seriesIndex = findDataSeriesByColorValues(series, value);
+  const updatedSeries = series ? [...series] : [];
 
-//   if (seriesIndex > -1) {
-//     updatedSeries.splice(seriesIndex, 1);
-//   } else {
-//     updatedSeries.push(value);
-//   }
-//   return updatedSeries;
-// }
+  if (seriesIndex > -1) {
+    updatedSeries.splice(seriesIndex, 1);
+  } else {
+    updatedSeries.push(value);
+  }
+  return updatedSeries;
+}
 
 export function getUpdatedCustomSeriesColors(seriesSpecs: BasicSeriesSpec[]): Map<string, string> {
   const updatedCustomSeriesColors = new Map();
