@@ -3,9 +3,9 @@ import { inject, observer } from 'mobx-react';
 import { ContainerConfig } from 'konva';
 import { Layer, Rect, Stage } from 'react-konva';
 
-import { isLineAnnotation, isRectAnnotation } from '../../chart_types/xy_chart/utils/specs';
-import { LineAnnotationStyle, RectAnnotationStyle, mergeGridLineConfigs } from '../../utils/themes/theme';
 import { AnnotationId } from '../../utils/ids';
+import { isLineAnnotation, isRectAnnotation, AxisSpec } from '../../chart_types/xy_chart/utils/specs';
+import { LineAnnotationStyle, RectAnnotationStyle, mergeGridLineConfigs } from '../../utils/themes/theme';
 import {
   AnnotationDimensions,
   AnnotationLineProps,
@@ -21,7 +21,8 @@ import { Grid } from './grid';
 import { LineAnnotation } from './line_annotation';
 import { LineGeometries } from './line_geometries';
 import { RectAnnotation } from './rect_annotation';
-import { isVerticalGrid } from '../../chart_types/xy_chart/utils/axis_utils';
+import { AxisTick, AxisTicksDimensions, isVerticalGrid } from '../../chart_types/xy_chart/utils/axis_utils';
+import { Dimensions } from '../../utils/dimensions';
 
 interface ReactiveChartProps {
   chartStore?: ChartStore; // FIX until we find a better way on ts mobx
@@ -34,6 +35,14 @@ interface ReactiveChartState {
     left: number;
     top: number;
   };
+}
+
+interface AxisProps {
+  key: string;
+  axisSpec: AxisSpec;
+  axisTicksDimensions: AxisTicksDimensions;
+  axisPosition: Dimensions;
+  ticks: AxisTick[];
 }
 
 interface ReactiveChartElementIndex {
@@ -75,6 +84,10 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       top: 0,
     },
   };
+
+  componentWillUnmount() {
+    window.removeEventListener('mouseup', this.onEndBrushing);
+  }
 
   renderBarSeries = (clippings: ContainerConfig): ReactiveChartElementIndex[] => {
     const { geometries, canDataBeAnimated, chartTheme } = this.props.chartStore!;
@@ -153,40 +166,35 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       },
     ];
   };
-  renderAxes = () => {
-    const {
-      axesVisibleTicks,
-      axesSpecs,
-      axesTicksDimensions,
-      axesPositions,
-      chartTheme,
-      debug,
-      chartDimensions,
-    } = this.props.chartStore!;
 
-    const axesComponents: JSX.Element[] = [];
-    axesVisibleTicks.forEach((axisTicks, axisId) => {
-      const axisSpec = axesSpecs.get(axisId);
-      const axisTicksDimensions = axesTicksDimensions.get(axisId);
-      const axisPosition = axesPositions.get(axisId);
-      const ticks = axesVisibleTicks.get(axisId);
-      if (!ticks || !axisSpec || !axisTicksDimensions || !axisPosition) {
-        return;
-      }
-      axesComponents.push(
-        <Axis
-          key={`axis-${axisId}`}
-          axisSpec={axisSpec}
-          axisTicksDimensions={axisTicksDimensions}
-          axisPosition={axisPosition}
-          ticks={ticks}
-          chartTheme={chartTheme}
-          debug={debug}
-          chartDimensions={chartDimensions}
-        />,
+  getAxes = (): AxisProps[] => {
+    const { axesVisibleTicks, axesSpecs, axesTicksDimensions, axesPositions } = this.props.chartStore!;
+    const ids = [...axesVisibleTicks.keys()];
+
+    return ids
+      .map((id) => ({
+        key: `axis-${id}`,
+        ticks: axesVisibleTicks.get(id),
+        axisSpec: axesSpecs.get(id),
+        axisTicksDimensions: axesTicksDimensions.get(id),
+        axisPosition: axesPositions.get(id),
+      }))
+      .filter(
+        (config: Partial<AxisProps>): config is AxisProps => {
+          const { ticks, axisSpec, axisTicksDimensions, axisPosition } = config;
+
+          return Boolean(ticks && axisSpec && axisTicksDimensions && axisPosition);
+        },
       );
-    });
-    return axesComponents;
+  };
+
+  renderAxes = (): JSX.Element[] => {
+    const { chartTheme, debug, chartDimensions } = this.props.chartStore!;
+    const axes = this.getAxes();
+
+    return axes.map(({ key, ...axisProps }) => (
+      <Axis {...axisProps} key={key} chartTheme={chartTheme} debug={debug} chartDimensions={chartDimensions} />
+    ));
   };
 
   renderGrids = () => {
@@ -292,8 +300,6 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
     let y = 0;
     let width = 0;
     let height = 0;
-    // x = {chartDimensions.left + chartTransform.x};
-    // y = {chartDimensions.top + chartTransform.y};
     if (chartRotation === 0 || chartRotation === 180) {
       x = brushStart.x;
       y = chartDimensions.top + chartTransform.y;
@@ -320,12 +326,17 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
   onEndBrushing = () => {
     window.removeEventListener('mouseup', this.onEndBrushing);
     const { brushStart, brushEnd } = this.state;
-    this.props.chartStore!.onBrushEnd(brushStart, brushEnd);
-    this.setState(() => ({
-      brushing: false,
-      brushStart: { x: 0, y: 0 },
-      brushEnd: { x: 0, y: 0 },
-    }));
+
+    this.setState(
+      () => ({
+        brushing: false,
+        brushStart: { x: 0, y: 0 },
+        brushEnd: { x: 0, y: 0 },
+      }),
+      () => {
+        this.props.chartStore!.onBrushEnd(brushStart, brushEnd);
+      },
+    );
   };
   onBrushing = (event: { evt: MouseEvent }) => {
     if (!this.state.brushing) {
