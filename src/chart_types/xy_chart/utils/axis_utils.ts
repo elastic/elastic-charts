@@ -400,7 +400,7 @@ export function getAvailableTicks(
   totalBarsInCluster: number,
   enableHistogramMode: boolean,
 ): AxisTick[] {
-  const ticks = scale.ticks();
+  const ticks = axisSpec.integersOnly ? scale.ticks().filter((item) => item % 1 === 0) : scale.ticks();
   const isSingleValueScale = scale.domain[0] - scale.domain[1] === 0;
   const hasAdditionalTicks = enableHistogramMode && scale.bandwidth > 0;
 

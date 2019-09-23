@@ -94,6 +94,7 @@ storiesOf('Grids', module)
           showOverlappingTicks={true}
           showGridLines={boolean('show bottom axis grid lines', false, 'bottom axis')}
           gridLineStyle={toggleBottomAxisGridLineStyle ? bottomAxisGridLineConfig : undefined}
+          integersOnly={boolean('bottom axis show only integer values', false, 'bottom axis')}
         />
         <Axis
           id={getAxisId('left1')}
@@ -102,6 +103,7 @@ storiesOf('Grids', module)
           tickFormat={(d) => Number(d).toFixed(2)}
           showGridLines={boolean('show left axis grid lines', false, 'left axis')}
           gridLineStyle={toggleHorizontalAxisGridLineStyle ? leftAxisGridLineConfig : undefined}
+          integersOnly={boolean('left axis show only integer values', false, 'left axis')}
         />
         <Axis
           id={getAxisId('top')}
@@ -110,6 +112,7 @@ storiesOf('Grids', module)
           showOverlappingTicks={true}
           showGridLines={boolean('show top axis grid lines', false, 'top axis')}
           gridLineStyle={topAxisGridLineConfig}
+          integersOnly={boolean('top axis show only integer values', false, 'top axis')}
         />
         <Axis
           id={getAxisId('right')}
@@ -118,6 +121,7 @@ storiesOf('Grids', module)
           tickFormat={(d) => Number(d).toFixed(2)}
           showGridLines={boolean('show right axis grid lines', false, 'right axis')}
           gridLineStyle={rightAxisGridLineConfig}
+          integersOnly={boolean('right axis show only integer values', false, 'right axis')}
         />
         <BarSeries
           id={getSpecId('bars')}
