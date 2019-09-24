@@ -1370,11 +1370,11 @@ describe('Axis computational utils', () => {
   test('should expect only integers', () => {
     const yScale = getScaleForAxisSpec(verticalAxisSpec, xDomain, [yDomain], 0, 0, 100, 0);
     expect(yScale!.ticks()).toEqual([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]);
-    expect(getIntegerTicks(true, yScale!)).toEqual([0, 1]);
+    expect(getIntegerTicks(yScale!, true)).toEqual([0, 1]);
   });
   test('should not expect only integers', () => {
     const yScale = getScaleForAxisSpec(verticalAxisSpec, xDomain, [yDomain], 0, 0, 100, 0);
     expect(yScale!.ticks()).toEqual([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]);
-    expect(getIntegerTicks(false, yScale!)).toEqual([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]);
+    expect(getIntegerTicks(yScale!)).toEqual([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]);
   });
 });

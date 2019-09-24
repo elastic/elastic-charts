@@ -393,7 +393,7 @@ export function getLeftAxisMinMaxRange(chartRotation: Rotation, height: number) 
       return { minRange: 0, maxRange: height };
   }
 }
-export function getIntegerTicks(hasInteger: boolean, scale: Scale) {
+export function getIntegerTicks(scale: Scale, hasInteger: boolean = false) {
   return hasInteger ? scale.ticks().filter((item) => typeof item === 'number' && item % 1 === 0) : scale.ticks();
 }
 export function getAvailableTicks(
@@ -402,7 +402,7 @@ export function getAvailableTicks(
   totalBarsInCluster: number,
   enableHistogramMode: boolean,
 ): AxisTick[] {
-  const ticks = getIntegerTicks(axisSpec.integersOnly, scale);
+  const ticks = getIntegerTicks(scale, axisSpec.integersOnly);
   const isSingleValueScale = scale.domain[0] - scale.domain[1] === 0;
   const hasAdditionalTicks = enableHistogramMode && scale.bandwidth > 0;
 
