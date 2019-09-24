@@ -63,6 +63,24 @@ describe('Tooltip formatting', () => {
     },
     seriesStyle,
   };
+  const indexedBandedGeometry: BarGeometry = {
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    color: 'blue',
+    geometryId: {
+      specId: SPEC_ID_1,
+      seriesKey: [],
+    },
+    value: {
+      x: 1,
+      y: 10,
+      accessor: 'y1',
+    },
+    seriesStyle,
+    banded: true,
+  };
 
   test('format simple tooltip', () => {
     const tooltipValue = formatTooltip(indexedGeometry, SPEC_1, false, false, YAXIS_SPEC);
@@ -73,6 +91,52 @@ describe('Tooltip formatting', () => {
     expect(tooltipValue.isHighlighted).toBe(false);
     expect(tooltipValue.color).toBe('blue');
     expect(tooltipValue.value).toBe('10');
+  });
+  test('format banded tooltip - upper', () => {
+    const tooltipValue = formatTooltip(indexedBandedGeometry, SPEC_1, false, false, YAXIS_SPEC);
+    expect(tooltipValue.name).toBe('bar_1 - upper');
+  });
+  test('format banded tooltip - y1AccessorPostfix', () => {
+    const tooltipValue = formatTooltip(
+      indexedBandedGeometry,
+      { ...SPEC_1, y1AccessorPostfix: ' [max]' },
+      false,
+      false,
+      YAXIS_SPEC,
+    );
+    expect(tooltipValue.name).toBe('bar_1 [max]');
+  });
+  test('format banded tooltip - lower', () => {
+    const tooltipValue = formatTooltip(
+      {
+        ...indexedBandedGeometry,
+        value: {
+          ...indexedBandedGeometry.value,
+          accessor: 'y0',
+        },
+      },
+      SPEC_1,
+      false,
+      false,
+      YAXIS_SPEC,
+    );
+    expect(tooltipValue.name).toBe('bar_1 - lower');
+  });
+  test('format banded tooltip - y0AccessorPostfix', () => {
+    const tooltipValue = formatTooltip(
+      {
+        ...indexedBandedGeometry,
+        value: {
+          ...indexedBandedGeometry.value,
+          accessor: 'y0',
+        },
+      },
+      { ...SPEC_1, y0AccessorPostfix: ' [min]' },
+      false,
+      false,
+      YAXIS_SPEC,
+    );
+    expect(tooltipValue.name).toBe('bar_1 [min]');
   });
   test('format tooltip with seriesKey name', () => {
     const geometry: BarGeometry = {

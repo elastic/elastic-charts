@@ -89,6 +89,18 @@ export interface SeriesSpec {
   /** Index per series to sort by */
   sortIndex?: number;
   displayValueSettings?: DisplayValueSpec;
+  /**
+   * Postfix for y1 accesor when using `y0Accessors`
+   *
+   * @default 'upper'
+   */
+  y0AccessorPostfix?: string;
+  /**
+   * Postfix for y1 accesor when using `y0Accessors`
+   *
+   * @default 'lower'
+   */
+  y1AccessorPostfix?: string;
 }
 
 export type CustomSeriesColorsMap = Map<DataSeriesColorsValues, string>;

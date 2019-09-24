@@ -25,30 +25,28 @@ export function getSeriesTooltipValues(tooltipValues: TooltipValue[], defaultVal
 }
 
 export function formatTooltip(
-  searchIndexValue: IndexedGeometry,
-  spec: BasicSeriesSpec,
+  { color, value: { x, y, accessor }, geometryId: { seriesKey }, banded }: IndexedGeometry,
+  { id, name, y0AccessorPostfix = ' - lower', y1AccessorPostfix = ' - upper' }: BasicSeriesSpec,
   isXValue: boolean,
   isHighlighted: boolean,
   axisSpec?: AxisSpec,
 ): TooltipValue {
-  const { id } = spec;
-  const {
-    color,
-    value: { x, y, accessor },
-    geometryId: { seriesKey },
-  } = searchIndexValue;
   const seriesKeyAsString = getColorValuesAsString(seriesKey, id);
-  let name: string | undefined;
+  let displayName: string | undefined;
   if (seriesKey.length > 0) {
-    name = seriesKey.join(' - ');
+    displayName = seriesKey.join(' - ');
   } else {
-    name = spec.name || `${spec.id}`;
+    displayName = name || `${id}`;
+  }
+
+  if (banded) {
+    displayName = `${displayName}${accessor === 'y0' ? y0AccessorPostfix : y1AccessorPostfix}`;
   }
 
   const value = isXValue ? x : y;
   return {
     seriesKey: seriesKeyAsString,
-    name,
+    name: displayName,
     value: axisSpec ? axisSpec.tickFormat(value) : emptyFormatter(value),
     color,
     isHighlighted: isXValue ? false : isHighlighted,
@@ -136,6 +134,7 @@ export function getTooltipAndHighlightFromXValue(
 
     return [...acc, formattedTooltip];
   }, []);
+
   return {
     tooltipData,
     highlightedGeometries,
