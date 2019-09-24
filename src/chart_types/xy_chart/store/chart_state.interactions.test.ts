@@ -455,6 +455,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
         showOverlappingTicks: false,
         tickPadding: 0,
         tickSize: 0,
+        integersOnly: false,
       });
       store.addAxisSpec({
         hide: true,
@@ -466,6 +467,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
         showOverlappingTicks: false,
         tickPadding: 0,
         tickSize: 0,
+        integersOnly: false,
       });
     });
     test('chart 0 rotation', () => {

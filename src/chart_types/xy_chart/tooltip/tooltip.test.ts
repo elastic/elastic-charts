@@ -28,6 +28,7 @@ describe('Tooltip formatting', () => {
     tickPadding: 0,
     tickSize: 0,
     tickFormat: (d) => `${d}`,
+    integersOnly: false,
   };
   const seriesStyle = {
     rect: {

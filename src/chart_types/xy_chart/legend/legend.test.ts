@@ -59,6 +59,7 @@ const axisSpec: AxisSpec = {
   tickFormat: (value: any) => {
     return `${value}`;
   },
+  integersOnly: false,
 };
 axesSpecs.set(axisSpec.id, axisSpec);
 

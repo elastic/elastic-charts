@@ -46,6 +46,7 @@ describe('Computed chart dimensions', () => {
     tickFormat: (value: any) => {
       return `${value}`;
     },
+    integersOnly: false,
   };
   const legend: LegendStyle = {
     verticalWidth: 10,
