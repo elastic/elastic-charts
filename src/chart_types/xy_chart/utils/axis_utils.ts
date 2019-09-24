@@ -394,7 +394,7 @@ export function getLeftAxisMinMaxRange(chartRotation: Rotation, height: number) 
   }
 }
 export function getIntegerTicks(hasInteger: boolean, scale: Scale) {
-  return hasInteger ? scale.ticks().filter((item) => item % 1 === 0) : scale.ticks();
+  return hasInteger ? scale.ticks().filter((item) => typeof item === 'number' && item % 1 === 0) : scale.ticks();
 }
 export function getAvailableTicks(
   axisSpec: AxisSpec,
