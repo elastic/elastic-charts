@@ -32,6 +32,7 @@ import {
   isVerticalGrid,
   isHorizontalGrid,
   getTicks,
+  getTickLabel,
 } from './axis_utils';
 import { CanvasTextBBoxCalculator } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import { SvgTextBBoxCalculator } from '../../../utils/bbox/svg_text_bbox_calculator';
@@ -1374,5 +1375,10 @@ describe('Axis computational utils', () => {
   test('should not expect only integers', () => {
     const yScale = getScaleForAxisSpec(verticalAxisSpec, xDomain, [yDomain], 0, 0, 100, 0);
     expect(getTicks(yScale!)).toEqual([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]);
+  });
+  test('expect tick labels to be whole integers', () => {
+    const tickFormat = (d: number) => Number(d).toFixed(2);
+    expect(getTickLabel(0.0, tickFormat, true)).toEqual('0');
+    expect(getTickLabel(0.0, tickFormat, false)).toEqual('0.00');
   });
 });

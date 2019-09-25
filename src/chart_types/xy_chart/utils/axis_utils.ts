@@ -396,6 +396,9 @@ export function getLeftAxisMinMaxRange(chartRotation: Rotation, height: number) 
 export function getTicks(scale: Scale, integersOnly: boolean = false) {
   return integersOnly ? scale.ticks().filter((item) => typeof item === 'number' && item % 1 === 0) : scale.ticks();
 }
+export function getTickLabel(tick: number, tickFormat: TickFormatter, integersOnly: boolean = false): string {
+  return integersOnly ? tick.toFixed(0) : tickFormat(tick);
+}
 export function getAvailableTicks(
   axisSpec: AxisSpec,
   scale: Scale,
@@ -446,7 +449,7 @@ export function getAvailableTicks(
   return ticks.map((tick) => {
     return {
       value: tick,
-      label: axisSpec.integersOnly ? tick.toFixed(0) : axisSpec.tickFormat(tick),
+      label: getTickLabel(tick, axisSpec.tickFormat, axisSpec.integersOnly),
       position: scale.scale(tick) + offset,
     };
   });
