@@ -82,7 +82,6 @@ describe('annotation utils', () => {
     tickPadding: 10,
     tickFormat: (value: any) => value.toString(),
     showGridLines: true,
-    integersOnly: false,
   };
   const horizontalAxisSpec: AxisSpec = {
     id: getAxisId('horizontal_axis'),
@@ -95,7 +94,6 @@ describe('annotation utils', () => {
     tickPadding: 10,
     tickFormat: (value: any) => value.toString(),
     showGridLines: true,
-    integersOnly: false,
   };
 
   axesSpecs.set(verticalAxisSpec.id, verticalAxisSpec);

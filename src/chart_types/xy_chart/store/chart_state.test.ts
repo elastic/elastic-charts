@@ -85,7 +85,6 @@ describe('Chart Store', () => {
       tickSize: 30,
       tickPadding: 10,
       tickFormat: (value: any) => `${value}%`,
-      integersOnly: false,
     };
     const axis2: AxisSpec = {
       ...axis1,
@@ -241,7 +240,6 @@ describe('Chart Store', () => {
       tickSize: 30,
       tickPadding: 10,
       tickFormat: (value: any) => `value ${value}`,
-      integersOnly: false,
     };
     store.addAxisSpec(axisSpec);
     store.computeChart();
@@ -608,7 +606,6 @@ describe('Chart Store', () => {
       tickSize: 30,
       tickPadding: 10,
       tickFormat: (value: any) => `value ${value}`,
-      integersOnly: false,
     };
 
     store.addAxisSpec(axisSpec);
@@ -806,7 +803,6 @@ describe('Chart Store', () => {
         tickSize: 30,
         tickPadding: 10,
         tickFormat: (value: any) => `foo ${value}`,
-        integersOnly: false,
       };
 
       store.addAxisSpec(axisSpec);

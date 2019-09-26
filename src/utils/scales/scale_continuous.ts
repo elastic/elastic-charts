@@ -105,6 +105,8 @@ interface ScaleOptions {
   ticks: number;
   /** true if the scale was adjusted to fit one single value histogram */
   isSingleValueHistogram: boolean;
+  /** Show only integar values **/
+  integersOnly?: boolean;
 }
 const defaultScaleOptions: ScaleOptions = {
   bandwidth: 0,
@@ -114,6 +116,7 @@ const defaultScaleOptions: ScaleOptions = {
   barsPadding: 0,
   ticks: 10,
   isSingleValueHistogram: false,
+  integersOnly: false,
 };
 export class ScaleContinuous implements Scale {
   readonly bandwidth: number;
@@ -141,6 +144,7 @@ export class ScaleContinuous implements Scale {
       barsPadding,
       ticks,
       isSingleValueHistogram,
+      integersOnly,
     } = mergePartial(defaultScaleOptions, options);
 
     this.d3Scale = SCALES[type]();
@@ -188,7 +192,12 @@ export class ScaleContinuous implements Scale {
           return this.domain[0] + i * this.minInterval;
         });
       } else {
-        this.tickValues = this.d3Scale.ticks(ticks);
+        this.tickValues = integersOnly
+          ? this.d3Scale
+              .ticks(ticks)
+              .filter((item: number) => item % 1 === 0)
+              .map((item: number) => parseInt(item.toFixed(0)))
+          : this.d3Scale.ticks(ticks);
       }
     }
   }
