@@ -389,8 +389,6 @@ describe('Scale Continuous', () => {
     });
   });
   describe('ticks as integers or floats', () => {
-    // check ticks and tickValues
-    // there are ticks in terms of the number of ticks that shoud be supplied and the tickValues
     test('should expect integers for tickValues', () => {
       const domain: Domain = [0, 7];
       const minRange = 0;
