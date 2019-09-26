@@ -423,7 +423,7 @@ export function renderArea(
   seriesKey: any[],
   xScaleOffset: number,
   seriesStyle: AreaSeriesStyle,
-  isStacked: boolean = false,
+  isStacked = false,
 ): {
   areaGeometry: AreaGeometry;
   indexedGeometries: Map<any, IndexedGeometry[]>;

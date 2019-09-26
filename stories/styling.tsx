@@ -29,7 +29,7 @@ import {
 import * as TestDatasets from '../src/utils/data_samples/test_dataset';
 import { palettes } from '../src/utils/themes/colors';
 
-function range(title: string, min: number, max: number, value: number, groupId?: string, step: number = 1) {
+function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {
   return number(
     title,
     value,

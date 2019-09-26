@@ -75,7 +75,7 @@ export function computeYStackedMapValues(
 export function formatStackedDataSeriesValues(
   dataseries: RawDataSeries[],
   scaleToExtent: boolean,
-  isPercentageMode: boolean = false,
+  isPercentageMode = false,
 ): DataSeries[] {
   const yValueStackMap = getYValueStackMap(dataseries);
 
@@ -95,7 +95,7 @@ export function formatStackedDataSeriesValues(
       } else {
         y1 = data.y1;
       }
-      let y0 = isPercentageMode && data.y0 != null ? data.y0 / stack.total : data.y0;
+      const y0 = isPercentageMode && data.y0 != null ? data.y0 / stack.total : data.y0;
       let computedY0: number | null;
       if (scaleToExtent) {
         computedY0 = y0 ? y0 : y1;
