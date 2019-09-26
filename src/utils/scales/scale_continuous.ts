@@ -192,16 +192,18 @@ export class ScaleContinuous implements Scale {
           return this.domain[0] + i * this.minInterval;
         });
       } else {
-        this.tickValues = integersOnly
-          ? this.d3Scale
-              .ticks(ticks)
-              .filter((item: number) => item % 1 === 0)
-              .map((item: number) => parseInt(item.toFixed(0)))
-          : this.d3Scale.ticks(ticks);
+        this.tickValues = this.getTicks(ticks, integersOnly!);
       }
     }
   }
-
+  getTicks(ticks: number, integersOnly: boolean) {
+    return integersOnly
+      ? this.d3Scale
+          .ticks(ticks)
+          .filter((item: number) => item % 1 === 0)
+          .map((item: number) => parseInt(item.toFixed(0)))
+      : this.d3Scale.ticks(ticks);
+  }
   scale(value: any) {
     return this.d3Scale(value) + (this.bandwidthPadding / 2) * this.totalBarsInCluster;
   }
