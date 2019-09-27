@@ -84,6 +84,8 @@ storiesOf('Grids', module)
         gridLineStyle: { vertical: leftAxisThemeGridLineConfig, horizontal: bottomAxisThemeGridLineConfig },
       },
     };
+    const integersOnlyLeft = boolean('left axis show only integer values', false, 'left axis');
+    const integersOnlyRight = boolean('right axis show only intger values', false, 'right axis');
     return (
       <Chart className={'story-chart'}>
         <Settings debug={boolean('debug', false)} theme={theme} />
@@ -100,10 +102,10 @@ storiesOf('Grids', module)
           id={getAxisId('left1')}
           position={Position.Left}
           title={'Left axis 1'}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={integersOnlyLeft ? (d) => Number(d).toFixed(0) : (d) => Number(d).toFixed(2)}
           showGridLines={boolean('show left axis grid lines', false, 'left axis')}
           gridLineStyle={toggleHorizontalAxisGridLineStyle ? leftAxisGridLineConfig : undefined}
-          integersOnly={boolean('left axis show only integer values', false, 'left axis')}
+          integersOnly={integersOnlyLeft}
         />
         <Axis
           id={getAxisId('top')}
@@ -118,10 +120,10 @@ storiesOf('Grids', module)
           id={getAxisId('right')}
           title={'Right axis'}
           position={Position.Right}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={integersOnlyRight ? (d) => Number(d).toFixed(0) : (d) => Number(d).toFixed(2)}
           showGridLines={boolean('show right axis grid lines', false, 'right axis')}
           gridLineStyle={rightAxisGridLineConfig}
-          integersOnly={boolean('right axis show only integer values', false, 'right axis')}
+          integersOnly={integersOnlyRight}
         />
         <BarSeries
           id={getSpecId('bars')}
