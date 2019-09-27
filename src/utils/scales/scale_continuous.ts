@@ -199,6 +199,11 @@ export class ScaleContinuous implements Scale {
         return currentDateTime.minus({ minutes: currentOffset }).toMillis();
       });
     } else {
+      /**
+       * This case is for the xScale (minInterval is > 0) when we want to show bars (bandwidth > 0)
+       *
+       * We want to avoid displaying inner ticks between bars in a bar chart when using linear x scale
+       */
       if (minInterval > 0 && bandwidth > 0) {
         const intervalCount = Math.floor((this.domain[1] - this.domain[0]) / this.minInterval);
         this.tickValues = new Array(intervalCount + 1).fill(0).map((_, i) => {
