@@ -6,8 +6,9 @@ import {
   PointGeometry,
   getBarStyleOverrides,
   GeometryId,
+  getPointStyleOverrides,
 } from './rendering';
-import { BarSeriesStyle, SharedGeometryStyle } from '../../../utils/themes/theme';
+import { BarSeriesStyle, SharedGeometryStyle, PointStyle } from '../../../utils/themes/theme';
 import { DataSeriesDatum } from '../utils/series';
 import { RecursivePartial, mergePartial } from '../../../utils/commons';
 
@@ -272,6 +273,55 @@ describe('Rendering utils', () => {
       const styleOverrides = getBarStyleOverrides(datum, geometryId, sampleSeriesStyle, mockAccessor);
 
       expect(styleOverrides).not.toBe(sampleSeriesStyle);
+    });
+  });
+
+  describe('getPointStyleOverrides', () => {
+    let mockAccessor: jest.Mock;
+
+    const datum: DataSeriesDatum = {
+      x: 1,
+      y1: 2,
+      y0: 3,
+      initialY1: 4,
+      initialY0: 5,
+    };
+    const geometryId: GeometryId = {
+      specId: getSpecId('test'),
+      seriesKey: ['test'],
+    };
+
+    beforeEach(() => {
+      mockAccessor = jest.fn();
+    });
+
+    it('should return undefined if no pointStyleAccessor is passed', () => {
+      const styleOverrides = getPointStyleOverrides(datum, geometryId);
+
+      expect(styleOverrides).toBeUndefined();
+    });
+
+    it('should return undefined if pointStyleAccessor returns null', () => {
+      mockAccessor.mockReturnValue(null);
+      const styleOverrides = getPointStyleOverrides(datum, geometryId, mockAccessor);
+
+      expect(styleOverrides).toBeUndefined();
+    });
+
+    it('should call pointStyleAccessor with datum and geometryId', () => {
+      getPointStyleOverrides(datum, geometryId, mockAccessor);
+
+      expect(mockAccessor).toBeCalledWith(datum, geometryId);
+    });
+
+    it('should return seriesStyle with updated stroke color', () => {
+      const stroke = 'blue';
+      mockAccessor.mockReturnValue(stroke);
+      const styleOverrides = getPointStyleOverrides(datum, geometryId, mockAccessor);
+      const expectedStyles: Partial<PointStyle> = {
+        stroke,
+      };
+      expect(styleOverrides).toEqual(expectedStyles);
     });
   });
 });
