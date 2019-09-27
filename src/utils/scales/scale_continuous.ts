@@ -200,7 +200,7 @@ export class ScaleContinuous implements Scale {
     return integersOnly
       ? this.d3Scale
           .ticks(ticks)
-          .filter((item: number) => item % 1 === 0)
+          .filter((item: number) => typeof item === 'number' && item % 1 === 0)
           .map((item: number) => parseInt(item.toFixed(0)))
       : this.d3Scale.ticks(ticks);
   }
