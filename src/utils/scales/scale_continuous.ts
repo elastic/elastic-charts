@@ -105,7 +105,7 @@ interface ScaleOptions {
   ticks: number;
   /** true if the scale was adjusted to fit one single value histogram */
   isSingleValueHistogram: boolean;
-  /** Show only integar values **/
+  /** Show only integer values **/
   integersOnly?: boolean;
 }
 const defaultScaleOptions: ScaleOptions = {
