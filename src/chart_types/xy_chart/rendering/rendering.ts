@@ -220,7 +220,7 @@ export function renderPoints(
           value: {
             x: xValue,
             y: originalY,
-            accessor: hasY0Accessors && index === 0 ? 'y0' : 'y1',
+            accessor: hasY0Accessors && index === 0 ? AccessorType.Y0 : AccessorType.Y1,
           },
           transform: {
             x: shift,

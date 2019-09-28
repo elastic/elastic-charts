@@ -89,6 +89,9 @@ export interface SeriesSpec {
   /** Index per series to sort by */
   sortIndex?: number;
   displayValueSettings?: DisplayValueSpec;
+}
+
+export interface Postfixes {
   /**
    * Postfix for y1 accesor when using `y0Accessors`
    *
@@ -150,17 +153,18 @@ export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales;
 /**
  * This spec describe the dataset configuration used to display a bar series.
  */
-export type BarSeriesSpec = BasicSeriesSpec & {
-  /** @default bar */
-  seriesType: 'bar';
-  /** If true, will stack all BarSeries and align bars to ticks (instead of centered on ticks) */
-  enableHistogramMode?: boolean;
-  barSeriesStyle?: RecursivePartial<BarSeriesStyle>;
-  /**
-   * Stack each series in percentage for each point.
-   */
-  stackAsPercentage?: boolean;
-};
+export type BarSeriesSpec = BasicSeriesSpec &
+  Postfixes & {
+    /** @default bar */
+    seriesType: 'bar';
+    /** If true, will stack all BarSeries and align bars to ticks (instead of centered on ticks) */
+    enableHistogramMode?: boolean;
+    barSeriesStyle?: RecursivePartial<BarSeriesStyle>;
+    /**
+     * Stack each series in percentage for each point.
+     */
+    stackAsPercentage?: boolean;
+  };
 
 /**
  * This spec describe the dataset configuration used to display a histogram bar series.
@@ -185,7 +189,8 @@ export type LineSeriesSpec = BasicSeriesSpec &
  * This spec describe the dataset configuration used to display an area series.
  */
 export type AreaSeriesSpec = BasicSeriesSpec &
-  HistogramConfig & {
+  HistogramConfig &
+  Postfixes & {
     /** @default area */
     seriesType: 'area';
     /** The type of interpolator to be used to interpolate values between points */
