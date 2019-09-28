@@ -1,8 +1,28 @@
 import { bisectLeft } from 'd3-array';
-import { scaleLinear, scaleLog, scaleSqrt, scaleUtc } from 'd3-scale';
+import {
+  scaleLinear,
+  scaleLog,
+  scaleSqrt,
+  scaleUtc,
+  ScaleLinear,
+  ScaleLogarithmic,
+  ScalePower,
+  ScaleTime,
+} from 'd3-scale';
 import { DateTime } from 'luxon';
+
 import { clamp, mergePartial } from '../commons';
 import { ScaleContinuousType, ScaleType, Scale } from './scales';
+
+/**
+ * d3 scales excluding time scale
+ */
+type D3ScaleNonTime = ScaleLinear<any, any> | ScaleLogarithmic<any, any> | ScalePower<any, any>;
+
+/**
+ * All possible d3 scales
+ */
+type D3Scale = D3ScaleNonTime | ScaleTime<any, any>;
 
 const SCALES = {
   [ScaleType.Linear]: scaleLinear,
@@ -105,6 +125,8 @@ interface ScaleOptions {
   ticks: number;
   /** true if the scale was adjusted to fit one single value histogram */
   isSingleValueHistogram: boolean;
+  /** Show only integer values **/
+  integersOnly?: boolean;
 }
 const defaultScaleOptions: ScaleOptions = {
   bandwidth: 0,
@@ -114,6 +136,7 @@ const defaultScaleOptions: ScaleOptions = {
   barsPadding: 0,
   ticks: 10,
   isSingleValueHistogram: false,
+  integersOnly: false,
 };
 export class ScaleContinuous implements Scale {
   readonly bandwidth: number;
@@ -129,7 +152,7 @@ export class ScaleContinuous implements Scale {
   readonly timeZone: string;
   readonly barsPadding: number;
   readonly isSingleValueHistogram: boolean;
-  private readonly d3Scale: any;
+  private readonly d3Scale: D3Scale;
 
   constructor(scaleData: ScaleData, options?: Partial<ScaleOptions>) {
     const { type, domain, range } = scaleData;
@@ -141,16 +164,14 @@ export class ScaleContinuous implements Scale {
       barsPadding,
       ticks,
       isSingleValueHistogram,
+      integersOnly,
     } = mergePartial(defaultScaleOptions, options);
 
     this.d3Scale = SCALES[type]();
-    if (type === ScaleType.Log) {
-      this.domain = limitLogScaleDomain(domain);
-      this.d3Scale.domain(this.domain);
-    } else {
-      this.domain = domain;
-      this.d3Scale.domain(domain);
-    }
+    const cleanDomain = type === ScaleType.Log ? limitLogScaleDomain(domain) : domain;
+    this.domain = cleanDomain;
+    this.d3Scale.domain(cleanDomain);
+
     const safeBarPadding = clamp(barsPadding, 0, 1);
     this.barsPadding = safeBarPadding;
     this.bandwidth = bandwidth * (1 - safeBarPadding);
@@ -182,17 +203,29 @@ export class ScaleContinuous implements Scale {
         return currentDateTime.minus({ minutes: currentOffset }).toMillis();
       });
     } else {
-      if (this.minInterval > 0) {
+      /**
+       * This case is for the xScale (minInterval is > 0) when we want to show bars (bandwidth > 0)
+       *
+       * We want to avoid displaying inner ticks between bars in a bar chart when using linear x scale
+       */
+      if (minInterval > 0 && bandwidth > 0) {
         const intervalCount = Math.floor((this.domain[1] - this.domain[0]) / this.minInterval);
-        this.tickValues = new Array(intervalCount + 1).fill(0).map((d, i) => {
+        this.tickValues = new Array(intervalCount + 1).fill(0).map((_, i) => {
           return this.domain[0] + i * this.minInterval;
         });
       } else {
-        this.tickValues = this.d3Scale.ticks(ticks);
+        this.tickValues = this.getTicks(ticks, integersOnly!);
       }
     }
   }
-
+  getTicks(ticks: number, integersOnly: boolean) {
+    return integersOnly
+      ? (this.d3Scale as D3ScaleNonTime)
+          .ticks(ticks)
+          .filter((item: number) => typeof item === 'number' && item % 1 === 0)
+          .map((item: number) => parseInt(item.toFixed(0)))
+      : (this.d3Scale as D3ScaleNonTime).ticks(ticks);
+  }
   scale(value: any) {
     return this.d3Scale(value) + (this.bandwidthPadding / 2) * this.totalBarsInCluster;
   }
@@ -205,12 +238,13 @@ export class ScaleContinuous implements Scale {
   ticks() {
     return this.tickValues;
   }
-  invert(value: number) {
+  invert(value: number): number {
     let invertedValue = this.d3Scale.invert(value);
     if (this.type === ScaleType.Time) {
-      invertedValue = DateTime.fromJSDate(invertedValue).toMillis();
+      invertedValue = DateTime.fromJSDate(invertedValue as Date).toMillis();
     }
-    return invertedValue;
+
+    return invertedValue as number;
   }
   invertWithStep(
     value: number,
