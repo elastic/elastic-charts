@@ -250,6 +250,8 @@ export interface AxisSpec {
   domain?: DomainRange;
   /** Object to hold custom styling */
   style?: AxisStyle;
+  /** Show only integar values **/
+  integersOnly?: boolean;
 }
 
 export type TickFormatter = (value: any) => string;

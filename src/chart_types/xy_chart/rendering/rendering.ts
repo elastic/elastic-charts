@@ -183,13 +183,13 @@ export function renderPoints(
 } {
   const indexedGeometries: Map<any, IndexedGeometry[]> = new Map();
   const isLogScale = isLogarithmicScale(yScale);
-
   const pointGeometries = dataset.reduce(
     (acc, { x: xValue, y0, y1, initialY0, initialY1 }) => {
-      const x = xScale.scale(xValue);
-      if (x < xScale.range[0] || x > xScale.range[1]) {
+      // don't create the point if not within the xScale domain
+      if (!xScale.isValueInDomain(xValue)) {
         return acc;
       }
+      const x = xScale.scale(xValue);
       const points: PointGeometry[] = [];
       const yDatums = hasY0Accessors ? [y0, y1] : [y1];
 
@@ -207,9 +207,6 @@ export function renderPoints(
           radius = 0;
         } else {
           y = yScale.scale(yDatum);
-        }
-        if (y < yScale.range[1] || y > yScale.range[0]) {
-          return;
         }
         const originalY = hasY0Accessors && index === 0 ? initialY0 : initialY1;
         const pointGeometry: PointGeometry = {
@@ -233,7 +230,8 @@ export function renderPoints(
           banded: hasY0Accessors,
         };
         mutableIndexedGeometryMapUpsert(indexedGeometries, xValue, pointGeometry);
-        if (!isHidden) {
+        // use the geometry only if the yDatum in contained in the current yScale domain
+        if (!isHidden && yScale.isValueInDomain(yDatum)) {
           points.push(pointGeometry);
         }
       });
@@ -263,8 +261,6 @@ export function renderBars(
   indexedGeometries: Map<any, IndexedGeometry[]>;
 } {
   const indexedGeometries: Map<any, IndexedGeometry[]> = new Map();
-  const xDomain = xScale.domain;
-  const xScaleType = xScale.type;
   const barGeometries: BarGeometry[] = [];
 
   const bboxCalculator = new CanvasTextBBoxCalculator();
@@ -280,8 +276,8 @@ export function renderBars(
     if (initialY1 === null) {
       return;
     }
-    // don't create a bar if the x value is not part of the ordinal scale
-    if (xScaleType === ScaleType.Ordinal && !xDomain.includes(datum.x)) {
+    // don't create a bar if not within the xScale domain
+    if (!xScale.isValueInDomain(datum.x)) {
       return;
     }
 
@@ -394,7 +390,9 @@ export function renderLine(
   const pathGenerator = line<DataSeriesDatum>()
     .x(({ x }) => xScale.scale(x) - xScaleOffset)
     .y(({ y1 }) => yScale.scale(y1))
-    .defined(({ y1 }) => y1 !== null && !(isLogScale && y1 <= 0))
+    .defined(({ x, y1 }) => {
+      return y1 !== null && !(isLogScale && y1 <= 0) && xScale.isValueInDomain(x);
+    })
     .curve(getCurveFactory(curve));
   const y = 0;
   const x = shift;
@@ -458,7 +456,9 @@ export function renderArea(
       }
       return yScale.scale(y0);
     })
-    .defined(({ y1 }) => y1 !== null && !(isLogScale && y1 <= 0))
+    .defined(({ y1, x }) => {
+      return y1 !== null && !(isLogScale && y1 <= 0) && xScale.isValueInDomain(x);
+    })
     .curve(getCurveFactory(curve));
 
   const y1Line = pathGenerator.lineY1()(dataset);
