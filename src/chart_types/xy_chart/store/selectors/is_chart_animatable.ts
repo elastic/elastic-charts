@@ -5,7 +5,7 @@ import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 
 export const isChartAnimatableSelector = createCachedSelector(
   [computeSeriesGeometriesSelector, getSettingsSpecSelector],
-  (seriesGeometries, settingsSpec) => {
+  () => {
     console.log('--- 13 isChartAnimatableSelector ---');
     // const { geometriesCounts } = seriesGeometries;
     // temporary disabled until

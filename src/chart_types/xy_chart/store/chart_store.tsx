@@ -14,7 +14,6 @@ import { Grid } from '../renderer/canvas/grid';
 import { AnnotationTooltip } from '../renderer/dom/annotation_tooltips';
 import { isBrushAvailableSelector } from './selectors/is_brush_available';
 import { BrushTool } from '../renderer/dom/brush';
-import { LineAnnotation } from '../renderer/canvas/line_annotation';
 
 export class XYAxisChartStore implements IChartStore {
   chartType = ChartTypes.XYAxis;

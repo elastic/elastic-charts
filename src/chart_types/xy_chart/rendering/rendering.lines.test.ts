@@ -7,6 +7,7 @@ import { computeXScale, computeYScales } from '../utils/scales';
 import { LineSeriesSpec, DomainRange } from '../utils/specs';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { LineGeometry, IndexedGeometry, PointGeometry } from '../../../utils/geometry';
+import { GroupId } from 'utils/ids';
 
 const SPEC_ID = 'spec_1';
 const GROUP_ID = 'group_1';
@@ -957,6 +958,8 @@ describe('Rendering points - line', () => {
   });
   describe('Remove points datum is not in domain', () => {
     const pointSeriesSpec: LineSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
       id: SPEC_ID,
       groupId: GROUP_ID,
       seriesType: 'line',
@@ -967,18 +970,16 @@ describe('Rendering points - line', () => {
       xScaleType: ScaleType.Linear,
       yScaleType: ScaleType.Linear,
     };
-    const pointSeriesMap = new Map<SpecId, LineSeriesSpec>();
-    pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
     const customYDomain = new Map<GroupId, DomainRange>();
     customYDomain.set(GROUP_ID, {
       max: 1,
     });
-    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, customYDomain, {
+    const pointSeriesDomains = computeSeriesDomains([pointSeriesSpec], customYDomain, [], {
       max: 2,
     });
     const xScale = computeXScale({
       xDomain: pointSeriesDomains.xDomain,
-      totalBarsInCluster: pointSeriesMap.size,
+      totalBarsInCluster: 1,
       range: [0, 100],
     });
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });

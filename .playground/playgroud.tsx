@@ -2,20 +2,9 @@ import React, { Fragment } from 'react';
 import { Axis, Chart, getAxisId, getSpecId, Position, ScaleType, Settings, AreaSeries } from '../src';
 
 export class Playground extends React.Component {
-  state = {
-    data: dg.generateSimpleSeries(),
-  }
-  updateData = () => {
-    this.setState({
-      data: dg.generateSimpleSeries()
-    });
-  }
   render() {
     return (
       <Fragment>
-        <div>
-          <button onClick={this.updateData}>Update Data</button>
-        </div>
         <div className="chart">
           <Chart>
             <Settings showLegend theme={{ areaSeriesStyle: { point: { visible: true } } }} />

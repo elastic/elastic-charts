@@ -14,9 +14,9 @@ import { createStore } from 'redux';
 import uuid from 'uuid';
 import { devToolsEnhancer } from 'redux-devtools-extension';
 // import { getHighlightedGeomValuesSelector } from 'chart_types/xy_chart/store/selectors/get_tooltip_values_highlighted_geoms';
-import { isInitialized } from 'store/selectors/is_initialized';
-import { onElementOutListenerCaller } from 'chart_types/xy_chart/store/selectors/on_element_out_caller';
-import { onElementOverListenerCaller } from 'chart_types/xy_chart/store/selectors/on_element_over_caller';
+import { isInitialized } from '../store/selectors/is_initialized';
+import { onElementOutListenerCaller } from '../chart_types/xy_chart/store/selectors/on_element_out_caller';
+import { onElementOverListenerCaller } from '../chart_types/xy_chart/store/selectors/on_element_over_caller';
 
 interface ChartProps {
   /** The type of rendered

@@ -3,6 +3,7 @@ const path = require('path');
 const webpack = require('webpack');
 
 const nonce = 'Pk1rZ1XDlMuYe8ubWV3Lh0BzwrTigJQ=';
+// eslint-disable-next-line
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 const scssLoaders = [
