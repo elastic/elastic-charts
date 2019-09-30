@@ -6,6 +6,7 @@ import { SpecId, AxisId, GroupId } from '../../../utils/ids';
 import { getAxesSpecForSpecId } from '../store/utils';
 import { Scale } from '../../../utils/scales/scales';
 import { Point } from '../store/chart_state';
+import { getAccessorFormatLabel } from '../../../utils/accessor';
 
 export function getSeriesTooltipValues(tooltipValues: TooltipValue[], defaultValue?: string): Map<string, any> {
   // map from seriesKey to tooltipValue
@@ -26,7 +27,7 @@ export function getSeriesTooltipValues(tooltipValues: TooltipValue[], defaultVal
 
 export function formatTooltip(
   { color, value: { x, y, accessor }, geometryId: { seriesKey }, banded }: IndexedGeometry,
-  { id, name, y0AccessorPostfix = ' - lower', y1AccessorPostfix = ' - upper' }: BasicSeriesSpec,
+  { id, name, y0AccessorFormat = ' - lower', y1AccessorFormat = ' - upper' }: BasicSeriesSpec,
   isXValue: boolean,
   isHighlighted: boolean,
   axisSpec?: AxisSpec,
@@ -40,7 +41,8 @@ export function formatTooltip(
   }
 
   if (banded) {
-    displayName = `${displayName}${accessor === 'y0' ? y0AccessorPostfix : y1AccessorPostfix}`;
+    const formatter = accessor === 'y0' ? y0AccessorFormat : y1AccessorFormat;
+    displayName = getAccessorFormatLabel(formatter, displayName);
   }
 
   const value = isXValue ? x : y;

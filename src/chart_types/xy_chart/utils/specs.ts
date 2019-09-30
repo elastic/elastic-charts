@@ -6,7 +6,7 @@ import {
   RectAnnotationStyle,
   BarSeriesStyle,
 } from '../../../utils/themes/theme';
-import { Accessor } from '../../../utils/accessor';
+import { Accessor, AccessorFormat } from '../../../utils/accessor';
 import { Omit, RecursivePartial } from '../../../utils/commons';
 import { AnnotationId, AxisId, GroupId, SpecId } from '../../../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../../../utils/scales/scales';
@@ -90,17 +90,17 @@ export interface SeriesSpec {
   sortIndex?: number;
   displayValueSettings?: DisplayValueSpec;
   /**
-   * Postfix for y1 accesor when using `y0Accessors`
+   * Postfix string or accessor function for y1 accesor when using `y0Accessors`
    *
-   * @default 'upper'
+   * @default ' - upper'
    */
-  y0AccessorPostfix?: string;
+  y0AccessorFormat?: AccessorFormat;
   /**
-   * Postfix for y1 accesor when using `y0Accessors`
+   * Postfix string or accessor function for y1 accesor when using `y0Accessors`
    *
-   * @default 'lower'
+   * @default ' - lower'
    */
-  y1AccessorPostfix?: string;
+  y1AccessorFormat?: AccessorFormat;
 }
 
 export type CustomSeriesColorsMap = Map<DataSeriesColorsValues, string>;

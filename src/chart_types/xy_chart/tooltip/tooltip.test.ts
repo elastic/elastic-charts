@@ -96,15 +96,25 @@ describe('Tooltip formatting', () => {
     const tooltipValue = formatTooltip(indexedBandedGeometry, SPEC_1, false, false, YAXIS_SPEC);
     expect(tooltipValue.name).toBe('bar_1 - upper');
   });
-  test('format banded tooltip - y1AccessorPostfix', () => {
+  test('format banded tooltip - y1AccessorFormat', () => {
     const tooltipValue = formatTooltip(
       indexedBandedGeometry,
-      { ...SPEC_1, y1AccessorPostfix: ' [max]' },
+      { ...SPEC_1, y1AccessorFormat: ' [max]' },
       false,
       false,
       YAXIS_SPEC,
     );
     expect(tooltipValue.name).toBe('bar_1 [max]');
+  });
+  test('format banded tooltip - y1AccessorFormat as function', () => {
+    const tooltipValue = formatTooltip(
+      indexedBandedGeometry,
+      { ...SPEC_1, y1AccessorFormat: (label) => `[max] ${label}` },
+      false,
+      false,
+      YAXIS_SPEC,
+    );
+    expect(tooltipValue.name).toBe('[max] bar_1');
   });
   test('format banded tooltip - lower', () => {
     const tooltipValue = formatTooltip(
@@ -122,7 +132,7 @@ describe('Tooltip formatting', () => {
     );
     expect(tooltipValue.name).toBe('bar_1 - lower');
   });
-  test('format banded tooltip - y0AccessorPostfix', () => {
+  test('format banded tooltip - y0AccessorFormat', () => {
     const tooltipValue = formatTooltip(
       {
         ...indexedBandedGeometry,
@@ -131,12 +141,28 @@ describe('Tooltip formatting', () => {
           accessor: 'y0',
         },
       },
-      { ...SPEC_1, y0AccessorPostfix: ' [min]' },
+      { ...SPEC_1, y0AccessorFormat: ' [min]' },
       false,
       false,
       YAXIS_SPEC,
     );
     expect(tooltipValue.name).toBe('bar_1 [min]');
+  });
+  test('format banded tooltip - y0AccessorFormat as function', () => {
+    const tooltipValue = formatTooltip(
+      {
+        ...indexedBandedGeometry,
+        value: {
+          ...indexedBandedGeometry.value,
+          accessor: 'y0',
+        },
+      },
+      { ...SPEC_1, y0AccessorFormat: (label) => `[min] ${label}` },
+      false,
+      false,
+      YAXIS_SPEC,
+    );
+    expect(tooltipValue.name).toBe('[min] bar_1');
   });
   test('format tooltip with seriesKey name', () => {
     const geometry: BarGeometry = {
