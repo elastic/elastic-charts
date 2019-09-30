@@ -8,14 +8,13 @@ const getSpecs = (state: IChartState) => state.specs;
 
 export const getAxisSpecsSelector = createCachedSelector(
   [getChartIdSelector, getSpecs],
-  (chartId, specs): AxisSpec[] => {
+  (_, specs): AxisSpec[] => {
     return getSpecsFromStore<AxisSpec>(specs, 'xy_axis', 'axis');
   },
 )((state) => state.chartId);
 
 export const getSeriesSpecsSelector = createCachedSelector([getChartIdSelector, getSpecs], (chartId, specs) => {
   const seriesSpec = getSpecsFromStore<BasicSeriesSpec>(specs, 'xy_axis', 'series');
-  console.log({ seriesSpec });
   return seriesSpec;
 })((state) => state.chartId);
 

@@ -13,12 +13,17 @@ import { getTooltipTypeSelector } from './get_tooltip_type';
 import { formatTooltip } from '../../../../chart_types/xy_chart/tooltip/tooltip';
 import { getTooltipHeaderFormatterSelector } from './get_tooltip_header_formatter';
 import { isPointOnGeometry } from '../../../../chart_types/xy_chart/rendering/rendering';
+import { IChartState } from '../../../../store/chart_store';
 
 const EMPTY_VALUES = Object.freeze({
   tooltipValues: [],
   highlightedGeometries: [],
 });
 
+export interface TooltipAndHighlightedGeoms {
+  tooltipValues: TooltipValue[];
+  highlightedGeometries: IndexedGeometry[];
+}
 export const getTooltipValuesAndGeometriesSelector = createCachedSelector(
   [
     getSeriesSpecsSelector,
@@ -31,7 +36,9 @@ export const getTooltipValuesAndGeometriesSelector = createCachedSelector(
     getTooltipHeaderFormatterSelector,
   ],
   getTooltipValues,
-)((state) => state.chartId);
+)((state: IChartState) => {
+  return state.chartId;
+});
 
 function getTooltipValues(
   seriesSpecs: BasicSeriesSpec[],
@@ -40,12 +47,9 @@ function getTooltipValues(
   axisCursorPosition: Point,
   scales: ComputedScales,
   xMatchingGeoms: IndexedGeometry[],
-  tooltipType: TooltipType | undefined,
+  tooltipType: TooltipType,
   tooltipHeaderFormatter: TooltipValueFormatter | undefined,
-): {
-  tooltipValues: TooltipValue[];
-  highlightedGeometries: IndexedGeometry[];
-} {
+): TooltipAndHighlightedGeoms {
   const { x, y } = cursorPosition;
   if (x === -1 || y === -1) {
     return EMPTY_VALUES;
@@ -53,6 +57,7 @@ function getTooltipValues(
   if (axisCursorPosition.x < 0 || !scales.xScale || !scales.yScales) {
     return EMPTY_VALUES;
   }
+
   if (xMatchingGeoms.length === 0) {
     return EMPTY_VALUES;
   }
@@ -73,7 +78,7 @@ function getTooltipValues(
     const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
 
     // yScales is ensured by the enclosing if
-    const yScale = scales.yScales!.get(spec.groupId);
+    const yScale = scales.yScales.get(spec.groupId);
     if (!yScale) {
       return acc;
     }
@@ -118,6 +123,9 @@ export const getTooltipValuesSelector = createCachedSelector(
   },
 )((state) => state.chartId);
 
-export const getHighlightedGeomsSelector = createCachedSelector([getTooltipValuesAndGeometriesSelector], (values) => {
-  return values.highlightedGeometries;
-})((state) => state.chartId);
+export const getHighlightedGeomsSelector = createCachedSelector(
+  [getTooltipValuesAndGeometriesSelector],
+  (values): IndexedGeometry[] => {
+    return values.highlightedGeometries;
+  },
+)((state) => state.chartId);

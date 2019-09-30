@@ -120,7 +120,7 @@ const mapStateToProps = (state: IChartState): CrosshairProps => {
     isCrosshairVisible: isCrosshairVisibleSelector(state),
     cursorBandPosition: getCursorBandPositionSelector(state),
     cursorLinePosition: getCursorLinePositionSelector(state),
-    tooltipType: getTooltipTypeSelector(state) || TooltipType.None,
+    tooltipType: getTooltipTypeSelector(state),
   };
 };
 

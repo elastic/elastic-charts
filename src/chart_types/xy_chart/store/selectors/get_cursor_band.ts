@@ -13,6 +13,7 @@ import { getSeriesSpecsSelector } from './get_specs';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { getAxisCursorPositionSelector } from './get_axis_cursor_position';
 import { isTooltipSnapEnableSelector } from './is_tooltip_snap_enabled';
+import { getGeometriesIndexKeysSelector } from './get_geometries_index_keys';
 
 export const getCursorBandPositionSelector = createCachedSelector(
   [
@@ -23,6 +24,7 @@ export const getCursorBandPositionSelector = createCachedSelector(
     getSeriesSpecsSelector,
     countBarsInClusterSelector,
     isTooltipSnapEnableSelector,
+    getGeometriesIndexKeysSelector,
   ],
   (
     axisCursorPosition,
@@ -32,6 +34,7 @@ export const getCursorBandPositionSelector = createCachedSelector(
     seriesSpec,
     totalBarsInCluster,
     isTooltipSnapEnabled,
+    geometriesIndexKeys,
   ) => {
     return getCursorBand(
       axisCursorPosition,
@@ -41,6 +44,7 @@ export const getCursorBandPositionSelector = createCachedSelector(
       seriesSpec,
       totalBarsInCluster,
       isTooltipSnapEnabled,
+      geometriesIndexKeys,
     );
   },
 )((state) => state.chartId);
@@ -53,18 +57,20 @@ function getCursorBand(
   seriesSpecs: BasicSeriesSpec[],
   totalBarsInCluster: number,
   isTooltipSnapEnabled: boolean,
-) {
+  geometriesIndexKeys: any[],
+): Dimensions & { visible: boolean } | undefined {
   // update che cursorBandPosition based on chart configuration
   const isLineAreaOnly = isLineAreaOnlyChart(seriesSpecs);
   if (!xScale) {
     return;
   }
+  const xValue = xScale.invertWithStep(axisCursorPosition.x, geometriesIndexKeys);
   return getCursorBandPosition(
     settingsSpec.rotation,
     chartDimensions,
     axisCursorPosition,
     {
-      value: 0,
+      value: xValue.value,
       withinBandwidth: true,
     },
     isTooltipSnapEnabled,

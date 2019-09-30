@@ -27,10 +27,20 @@ export interface GlobalSettings {
   debug: boolean;
   parentDimensions: Dimensions;
 }
+export interface PointerStore {
+  down: {
+    position: Point;
+    time: number;
+  } | null;
+  up: {
+    position: Point;
+    time: number;
+  } | null;
+}
 
 export interface InteractionsStore {
   rawCursorPosition: Point;
-  mouseDownPosition: Point | null;
+  pointer: PointerStore;
   highlightedLegendItemKey: string | null;
   legendCollapsed: boolean;
   invertDeselect: boolean;
@@ -69,7 +79,10 @@ const getInitialState = (chartId: string): IChartState => ({
       x: -1,
       y: -1,
     },
-    mouseDownPosition: null,
+    pointer: {
+      down: null,
+      up: null,
+    },
     legendCollapsed: false,
     highlightedLegendItemKey: null,
     deselectedDataSeries: [],
@@ -139,7 +152,7 @@ function findMainChartType(specs: SpecList) {
 }
 
 function intializeChartStore(chartType: ChartType | null): IChartStore | null {
-  console.log(`initializing ${chartType}`);
+  // console.log(`initializing ${chartType}`);
   switch (chartType) {
     case 'pie':
       return new PieChartStore();

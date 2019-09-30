@@ -8,8 +8,6 @@ import { getChartThemeSelector } from '../../../../store/selectors/get_chart_the
 export const getSeriesColorMapSelector = createCachedSelector(
   [getSeriesSpecsSelector, computeSeriesDomainsSelector, getChartThemeSelector],
   (seriesSpecs, seriesDomainsAndData, chartTheme): Map<string, string> => {
-    console.log({ seriesDomainsAndData, chartTheme });
-
     const updatedCustomSeriesColors = getUpdatedCustomSeriesColors(seriesSpecs);
     // TODO merge with existing custom series color
     // const customSeriesColors = new Map([...this.customSeriesColors, ...updatedCustomSeriesColors]);
@@ -19,7 +17,7 @@ export const getSeriesColorMapSelector = createCachedSelector(
       chartTheme.colors,
       updatedCustomSeriesColors,
     );
-    console.log('--- 2 computeSeriesDomainsSelector ---');
+    // console.log('--- 2 computeSeriesDomainsSelector ---');
     return seriesColorMap;
   },
 )((state) => state.chartId);

@@ -6,14 +6,11 @@ import { ArcGeometries } from './arc_geometries';
 import { BarGeometries } from './bar_geometries';
 import { LineGeometries } from './line_geometries';
 import { IChartState, GeometriesList, GlobalSettings } from '../../store/chart_store';
-import { onCursorPositionChange, CursorPositionChangeAction } from '../../store/actions/cursor';
-import { onMouseDown, onMouseUp } from '../../store/actions/mouse';
-import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { getRenderedGeometriesSelector } from '../../store/selectors/get_rendered_geometries';
 import { getChartDimensionsSelector } from '../../store/selectors/get_chart_dimensions';
 import { Dimensions } from '../../utils/dimensions';
-import { isChartAnimatableSelector } from 'chart_types/xy_chart/store/selectors/is_chart_animatable';
+import { isChartAnimatableSelector } from '../../chart_types/xy_chart/store/selectors/is_chart_animatable';
 import { isInitialized } from '../../store/selectors/is_initialized';
 import { getChartRotationSelector } from '../../store/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../store/selectors/get_chart_theme';
@@ -27,15 +24,15 @@ import {
   AnnotationDimensions,
   AnnotationLineProps,
   AnnotationRectProps,
-} from 'chart_types/xy_chart/annotations/annotation_utils';
-import { LineAnnotation } from 'chart_types/xy_chart/renderer/canvas/line_annotation';
-import { RectAnnotation } from 'chart_types/xy_chart/renderer/canvas/rect_annotation';
-import { computeAnnotationDimensionsSelector } from 'chart_types/xy_chart/store/selectors/compute_annotations';
-import { getAnnotationSpecsSelector } from 'chart_types/xy_chart/store/selectors/get_specs';
-import { isChartEmptySelector } from 'chart_types/xy_chart/store/selectors/is_chart_empty';
-import { isBrushAvailableSelector } from 'chart_types/xy_chart/store/selectors/is_brush_available';
-import { getHighlightedSeriesSelector } from 'chart_types/xy_chart/store/selectors/get_highlighted_series';
-import { LegendItem } from 'chart_types/xy_chart/legend/legend';
+} from '../../chart_types/xy_chart/annotations/annotation_utils';
+import { LineAnnotation } from '../../chart_types/xy_chart/renderer/canvas/line_annotation';
+import { RectAnnotation } from '../../chart_types/xy_chart/renderer/canvas/rect_annotation';
+import { computeAnnotationDimensionsSelector } from '../../chart_types/xy_chart/store/selectors/compute_annotations';
+import { getAnnotationSpecsSelector } from '../../chart_types/xy_chart/store/selectors/get_specs';
+import { isChartEmptySelector } from '../../chart_types/xy_chart/store/selectors/is_chart_empty';
+import { isBrushAvailableSelector } from '../../chart_types/xy_chart/store/selectors/is_brush_available';
+import { getHighlightedSeriesSelector } from '../../chart_types/xy_chart/store/selectors/get_highlighted_series';
+import { LegendItem } from '../../chart_types/xy_chart/legend/legend';
 
 interface Props {
   initialized: boolean;
@@ -46,7 +43,6 @@ interface Props {
   chartTransform: Transform;
   theme: Theme;
   isChartAnimatable: boolean;
-  onCursorPositionChange(x: number, y: number): CursorPositionChangeAction;
   isChartEmpty: boolean;
   annotationDimensions: Map<AnnotationId, AnnotationDimensions>;
   annotationSpecs: AnnotationSpec[];
@@ -337,15 +333,7 @@ class Chart extends React.Component<Props> {
   };
 }
 
-const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators(
-    {
-      onCursorPositionChange,
-      onMouseDown,
-      onMouseUp,
-    },
-    dispatch,
-  );
+const mapDispatchToProps = () => ({});
 
 const mapStateToProps = (state: IChartState) => {
   if (!isInitialized(state)) {

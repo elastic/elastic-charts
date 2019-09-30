@@ -13,6 +13,10 @@ import { chartStoreReducer } from '../store/chart_store';
 import { createStore } from 'redux';
 import uuid from 'uuid';
 import { devToolsEnhancer } from 'redux-devtools-extension';
+// import { getHighlightedGeomValuesSelector } from 'chart_types/xy_chart/store/selectors/get_tooltip_values_highlighted_geoms';
+import { isInitialized } from 'store/selectors/is_initialized';
+import { onElementOutListenerCaller } from 'chart_types/xy_chart/store/selectors/on_element_out_caller';
+import { onElementOverListenerCaller } from 'chart_types/xy_chart/store/selectors/on_element_over_caller';
 
 interface ChartProps {
   /** The type of rendered
@@ -61,6 +65,15 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     //     legendPosition,
     //   });
     // });
+
+    this.chartStore.subscribe(() => {
+      const state = this.chartStore.getState();
+      if (!isInitialized(state)) {
+        return;
+      }
+      onElementOverListenerCaller(state);
+      onElementOutListenerCaller(state);
+    });
   }
 
   static getContainerStyle = (size: any): CSSProperties => {
@@ -108,6 +121,9 @@ export class Chart extends React.Component<ChartProps, ChartState> {
           data-ech-render-count={renderCount}
         >
           <Legend />
+          {/* <OnOverElementListener /> */}
+          {/* <OnOutElementListener /> */}
+          {/* <OnClickElementListener /> */}
           <SpecsParser>{this.props.children}</SpecsParser>
           <div className="echContainer">
             <ChartResizer />
