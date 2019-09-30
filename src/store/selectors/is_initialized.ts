@@ -1,3 +1,3 @@
-import { IChartState } from 'store/chart_store';
+import { IChartState } from '../chart_store';
 
 export const isInitialized = (state: IChartState) => state.initialized;

@@ -65,6 +65,6 @@ export function mergeYCustomDomainsByGroupId(axesSpecs: AxisSpec[], chartRotatio
       domainsByGroupId.set(groupId, domain);
     }
   });
-  console.log('--- 0 mergeYCustomDomains ---');
+  // console.log('--- 0 mergeYCustomDomains ---');
   return domainsByGroupId;
 }

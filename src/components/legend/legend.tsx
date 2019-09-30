@@ -62,14 +62,14 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
 
   private echLegend = createRef<HTMLDivElement>();
   componentDidMount() {
-    console.log('LEGEND DID MOUNT');
+    // console.log('LEGEND DID MOUNT');
     const { legendInitialized, showLegend } = this.props;
     if (showLegend && legendInitialized) {
       this.props.onLegendRendered();
     }
   }
   componentDidUpdate() {
-    console.log('LEGEND DID UPDATE');
+    // console.log('LEGEND DID UPDATE');
     const { chartTheme, legendPosition } = this.props;
     if (this.echLegend.current && isVerticalAxis(legendPosition) && this.state.width === undefined) {
       const buffer = chartTheme.legend.spacingBuffer;

@@ -32,7 +32,7 @@ export function interactionsReducer(
       const { x, y } = action;
 
       // allow going outside container if mouse down is pressed
-      if (Boolean(state.mouseDownPosition) && x === -1 && y === -1) {
+      if (Boolean(state.pointer.down) && x === -1 && y === -1) {
         return state;
       }
       return {
@@ -45,12 +45,24 @@ export function interactionsReducer(
     case ON_MOUSE_DOWN:
       return {
         ...state,
-        mouseDownPosition: action.point,
+        pointer: {
+          down: {
+            position: action.position,
+            time: action.time,
+          },
+          up: null,
+        },
       };
     case ON_MOUSE_UP: {
       return {
         ...state,
-        mouseDownPosition: null,
+        pointer: {
+          ...state.pointer,
+          up: {
+            position: action.position,
+            time: action.time,
+          },
+        },
       };
     }
     case ON_TOGGLE_LEGEND:

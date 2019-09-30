@@ -1,12 +1,6 @@
 {
   "compilerOptions": {
     "baseUrl": "./src",
-    "rootDirs": [
-      "./src",
-      "./stories",
-      "./.storybook",
-      "./.playground",
-    ],
     "declaration": true,
     "outDir": "./dist/",
     "noImplicitAny": true,

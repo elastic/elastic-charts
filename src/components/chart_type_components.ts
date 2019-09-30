@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { IChartState } from 'store/chart_store';
-import { isInitialized } from 'store/selectors/is_initialized';
-import { getChartTypeComponentSelector } from 'store/selectors/get_chart_type_components';
+import { IChartState } from '../store/chart_store';
+import { isInitialized } from '../store/selectors/is_initialized';
+import { getChartTypeComponentSelector } from '../store/selectors/get_chart_type_components';
 
 interface OwnProps {
   zIndex: number;

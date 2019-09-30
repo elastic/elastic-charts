@@ -5,7 +5,7 @@ import { getChartDimensionsSelector } from '../../../../store/selectors/get_char
 import { computeChartTransformSelector } from './compute_chart_transform';
 import { getChartRotationSelector } from '../../../../store/selectors/get_chart_rotation';
 
-const getMouseDownPosition = (state: IChartState) => state.interactions.mouseDownPosition;
+const getMouseDownPosition = (state: IChartState) => state.interactions.pointer.down;
 const getRawCursorPosition = (state: IChartState) => {
   return state.interactions.rawCursorPosition;
 };
@@ -23,8 +23,8 @@ export const getBrushAreaSelector = createCachedSelector(
       return null;
     }
     const brushStart = {
-      x: mouseDownPosition.x - chartDimensions.left,
-      y: mouseDownPosition.y - chartDimensions.top,
+      x: mouseDownPosition.position.x - chartDimensions.left,
+      y: mouseDownPosition.position.y - chartDimensions.top,
     };
     if (chartRotation === 0 || chartRotation === 180) {
       const area = {
