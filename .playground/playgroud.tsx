@@ -3,21 +3,10 @@ import { Axis, Chart, getAxisId, getSpecId, Position, ScaleType, BarSeries, Sett
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 
 export class Playground extends React.Component {
-  state = {
-    data: dg.generateSimpleSeries(),
-  }
-  updateData = () => {
-    this.setState({
-      data: dg.generateSimpleSeries()
-    });
-  }
   render() {
     const { data } = KIBANA_METRICS.metrics.kibana_os_load[0];
     return (
       <Fragment>
-        <div>
-          <button onClick={this.updateData}>Update Data</button>
-        </div>
         <div className="chart">
           <Chart>
             <Settings showLegend />

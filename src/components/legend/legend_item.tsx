@@ -2,16 +2,16 @@ import classNames from 'classnames';
 import React from 'react';
 import { Icon } from '../icons/icon';
 import { LegendItem as SeriesLegendItem } from '../../chart_types/xy_chart/legend/legend';
-import { LegendItemListener } from 'specs/settings';
+import { LegendItemListener } from '../../specs/settings';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
-import { IChartState } from 'store/chart_store';
-import { isInitialized } from 'store/selectors/is_initialized';
+import { IChartState } from '../../store/chart_store';
+import { isInitialized } from '../../store/selectors/is_initialized';
 import { getSettingsSpecSelector } from '../../store/selectors/get_settings_specs';
-import { onLegendItemClick, onToggleDeselectSeries } from 'store/actions/legend';
-import { isEqualSeriesKey } from 'chart_types/xy_chart/utils/series_utils';
-import { DataSeriesColorsValues } from 'chart_types/xy_chart/utils/series';
-import { Position } from 'chart_types/xy_chart/utils/specs';
+import { onLegendItemClick, onToggleDeselectSeries } from '../../store/actions/legend';
+import { isEqualSeriesKey } from '../../chart_types/xy_chart/utils/series_utils';
+import { DataSeriesColorsValues } from '../../chart_types/xy_chart/utils/series';
+import { Position } from '../../chart_types/xy_chart/utils/specs';
 
 // chartStore?: ChartStore; // FIX until we find a better way on ts mobx
 // legendItemKey: string;

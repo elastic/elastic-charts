@@ -693,3 +693,32 @@ export function isCompleteBound(domain: Partial<CompleteBoundedDomain>): domain 
 export function isBounded(domain: Partial<CompleteBoundedDomain>): domain is DomainRange {
   return domain.max != null || domain.min != null;
 }
+
+export const isDuplicateAxis = (
+  { position, title }: AxisSpec,
+  { tickLabels }: AxisTicksDimensions,
+  tickMap: Map<AxisId, AxisTicksDimensions>,
+  specMap: Map<AxisId, AxisSpec>,
+): boolean => {
+  const firstTickLabel = tickLabels[0];
+  const lastTickLabel = tickLabels.slice(-1)[0];
+
+  let hasDuplicate = false;
+  tickMap.forEach(({ tickLabels: axisTickLabels }, axisId) => {
+    if (
+      !hasDuplicate &&
+      axisTickLabels &&
+      tickLabels.length === axisTickLabels.length &&
+      firstTickLabel === axisTickLabels[0] &&
+      lastTickLabel === axisTickLabels.slice(-1)[0]
+    ) {
+      const spec = specMap.get(axisId);
+
+      if (spec && spec.position === position && title === spec.title) {
+        hasDuplicate = true;
+      }
+    }
+  });
+
+  return hasDuplicate;
+};

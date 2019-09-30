@@ -129,6 +129,7 @@ export const DEFAULT_SETTINGS_SPEC = {
   },
   legendPosition: Position.Right,
   showLegendDisplayValue: true,
+  hideDuplicateAxes: false,
   theme: LIGHT_THEME,
   hideDuplicateAxes: false,
 };

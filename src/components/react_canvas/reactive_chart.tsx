@@ -17,9 +17,9 @@ import { getChartThemeSelector } from '../../store/selectors/get_chart_theme';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 import { computeChartTransformSelector } from '../../chart_types/xy_chart/store/selectors/compute_chart_transform';
 import { Transform } from '../../chart_types/xy_chart/store/utils';
+import { Rotation, AnnotationSpec } from '../../chart_types/xy_chart/utils/specs';
 import { AnnotationId } from '../../utils/ids';
-import { isLineAnnotation, isRectAnnotation, Rotation, AnnotationSpec } from '../../chart_types/xy_chart/utils/specs';
-import { Theme, LineAnnotationStyle, RectAnnotationStyle } from '../../utils/themes/theme';
+import { isLineAnnotation, isRectAnnotation } from '../../chart_types/xy_chart/utils/specs';
 import {
   AnnotationDimensions,
   AnnotationLineProps,
@@ -33,6 +33,7 @@ import { isChartEmptySelector } from '../../chart_types/xy_chart/store/selectors
 import { isBrushAvailableSelector } from '../../chart_types/xy_chart/store/selectors/is_brush_available';
 import { getHighlightedSeriesSelector } from '../../chart_types/xy_chart/store/selectors/get_highlighted_series';
 import { LegendItem } from '../../chart_types/xy_chart/legend/legend';
+import { RectAnnotationStyle, LineAnnotationStyle, Theme } from '../../utils/themes/theme';
 
 interface Props {
   initialized: boolean;
