@@ -26,8 +26,8 @@ export function getSeriesTooltipValues(tooltipValues: TooltipValue[], defaultVal
 }
 
 export function formatTooltip(
-  { color, value: { x, y, accessor }, geometryId: { seriesKey }, banded }: IndexedGeometry,
-  { id, name, y0AccessorFormat = ' - lower', y1AccessorFormat = ' - upper' }: BasicSeriesSpec,
+  { color, value: { x, y, accessor }, geometryId: { seriesKey } }: IndexedGeometry,
+  { id, name, y0AccessorFormat = ' - lower', y1AccessorFormat = ' - upper', y0Accessors }: BasicSeriesSpec,
   isXValue: boolean,
   isHighlighted: boolean,
   axisSpec?: AxisSpec,
@@ -40,7 +40,7 @@ export function formatTooltip(
     displayName = name || `${id}`;
   }
 
-  if (banded) {
+  if (y0Accessors && y0Accessors.length > 0) {
     const formatter = accessor === AccessorType.Y0 ? y0AccessorFormat : y1AccessorFormat;
     displayName = getAccessorFormatLabel(formatter, displayName);
   }

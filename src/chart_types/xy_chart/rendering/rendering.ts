@@ -64,10 +64,6 @@ export interface PointGeometry {
   };
   geometryId: GeometryId;
   value: GeometryValue;
-  /**
-   * Is the point a pair in a banded series
-   */
-  banded: boolean;
   styleOverrides?: Partial<PointStyle>;
 }
 export interface BarGeometry {
@@ -86,12 +82,6 @@ export interface BarGeometry {
   geometryId: GeometryId;
   value: GeometryValue;
   seriesStyle: BarSeriesStyle;
-  /**
-   * Is the point a pair in a banded series
-   *
-   * TODO: Fix band bar in tooltips
-   */
-  banded?: boolean;
 }
 export interface LineGeometry {
   line: string;
@@ -253,7 +243,6 @@ export function renderPoints(
           },
           geometryId,
           styleOverrides,
-          banded: hasY0Accessors,
         };
         mutableIndexedGeometryMapUpsert(indexedGeometries, xValue, pointGeometry);
         // use the geometry only if the yDatum in contained in the current yScale domain

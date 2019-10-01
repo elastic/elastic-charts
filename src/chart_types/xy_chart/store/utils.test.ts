@@ -1012,7 +1012,6 @@ describe('Chart State utils', () => {
         value: { x: 0, y: 5, accessor: AccessorType.Y1 },
         transform: { x: 0, y: 0 },
         geometryId: { specId: getSpecId('line1'), seriesKey: [] },
-        banded: false,
       },
     ]);
     const map2 = new Map<string, IndexedGeometry[]>();
@@ -1025,7 +1024,6 @@ describe('Chart State utils', () => {
         value: { x: 0, y: 2, accessor: AccessorType.Y1 },
         transform: { x: 0, y: 0 },
         geometryId: { specId: getSpecId('line2'), seriesKey: [] },
-        banded: false,
       },
     ]);
     const merged = mergeGeometriesIndexes(map1, map2);

@@ -18,6 +18,10 @@ describe('Tooltip formatting', () => {
     yScaleType: ScaleType.Linear,
     xScaleType: ScaleType.Linear,
   };
+  const bandedSpec = {
+    ...SPEC_1,
+    y0Accessors: [1],
+  };
   const YAXIS_SPEC: AxisSpec = {
     id: getAxisId('axis_1'),
     groupId: SPEC_GROUP_ID_1,
@@ -79,7 +83,6 @@ describe('Tooltip formatting', () => {
       accessor: 'y1',
     },
     seriesStyle,
-    banded: true,
   };
 
   test('format simple tooltip', () => {
@@ -93,13 +96,13 @@ describe('Tooltip formatting', () => {
     expect(tooltipValue.value).toBe('10');
   });
   test('format banded tooltip - upper', () => {
-    const tooltipValue = formatTooltip(indexedBandedGeometry, SPEC_1, false, false, YAXIS_SPEC);
+    const tooltipValue = formatTooltip(indexedBandedGeometry, bandedSpec, false, false, YAXIS_SPEC);
     expect(tooltipValue.name).toBe('bar_1 - upper');
   });
   test('format banded tooltip - y1AccessorFormat', () => {
     const tooltipValue = formatTooltip(
       indexedBandedGeometry,
-      { ...SPEC_1, y1AccessorFormat: ' [max]' },
+      { ...bandedSpec, y1AccessorFormat: ' [max]' },
       false,
       false,
       YAXIS_SPEC,
@@ -109,7 +112,7 @@ describe('Tooltip formatting', () => {
   test('format banded tooltip - y1AccessorFormat as function', () => {
     const tooltipValue = formatTooltip(
       indexedBandedGeometry,
-      { ...SPEC_1, y1AccessorFormat: (label) => `[max] ${label}` },
+      { ...bandedSpec, y1AccessorFormat: (label) => `[max] ${label}` },
       false,
       false,
       YAXIS_SPEC,
@@ -125,7 +128,7 @@ describe('Tooltip formatting', () => {
           accessor: 'y0',
         },
       },
-      SPEC_1,
+      bandedSpec,
       false,
       false,
       YAXIS_SPEC,
@@ -141,7 +144,7 @@ describe('Tooltip formatting', () => {
           accessor: 'y0',
         },
       },
-      { ...SPEC_1, y0AccessorFormat: ' [min]' },
+      { ...bandedSpec, y0AccessorFormat: ' [min]' },
       false,
       false,
       YAXIS_SPEC,
@@ -157,7 +160,7 @@ describe('Tooltip formatting', () => {
           accessor: 'y0',
         },
       },
-      { ...SPEC_1, y0AccessorFormat: (label) => `[min] ${label}` },
+      { ...bandedSpec, y0AccessorFormat: (label) => `[min] ${label}` },
       false,
       false,
       YAXIS_SPEC,
