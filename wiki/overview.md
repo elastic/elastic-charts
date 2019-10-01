@@ -221,6 +221,11 @@ Each bar `datum` of a **Bar** data series can be assigned a custom color or styl
 
 The `styleAccessor` prop expects a callback function which will be called on _every_ `datum` in _every_ bar series with the signiture below. This callback should return a color `string` or a partial `BarSeriesStyle`, which will override any series-level styles for the respective `datum`. You are passed `geometryId` to identify the series the `datum` belongs to and the raw `datum` to derive conditions against.
 
+Return types:
+- `Color`: Color value as a `string` will set the bar `fill` to that color
+- `RecursivePartial<BarSeriesStyle>`: Style values to be merged with base bar styles
+- `null`: Keep existing bar style
+
 ```ts
 type BarStyleAccessor = (
   datum: RawDataSeriesDatum,
@@ -233,9 +238,16 @@ Each point `datum` of a **Line** or **Area** data series can be assigned a custo
 
 The `pointStyleAccessor` prop expects a callback function which will be called on _every_ `datum` in _every_ line or area series with the signiture below. This callback should return a color `string` or a partial `PointStyle`, which will override any series-level styles for the respective `datum`. You are passed `geometryId` to identify the series the `datum` belongs to and the raw `datum` to derive conditions against.
 
+Return types:
+- `Color`: Color value as a `string` will set the point `stroke` to that color
+- `RecursivePartial<PointStyle>`: Style values to be merged with base point styles
+- `null`: Keep existing point style
+
 ```ts
 type PointStyleAccessor = (
   datum: RawDataSeriesDatum,
   geometryId: GeometryId,
 ) => RecursivePartial<PointStyle> | Color | null;
 ```
+
+> Note: When overriding bar or point styles be mindful of performance and these accessor functions will be call on every bar/point is every series. Precomputing any expensive task before rendering.

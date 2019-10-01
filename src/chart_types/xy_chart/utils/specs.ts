@@ -22,7 +22,23 @@ export type Rendering = 'canvas' | 'svg';
 export type Color = string;
 export type BarStyleOverride = RecursivePartial<BarSeriesStyle> | Color | null;
 export type PointStyleOverride = RecursivePartial<PointStyle> | Color | null;
+/**
+ * Override for bar styles per datum
+ *
+ * Return types:
+ * - `Color`: Color value as a `string` will set the bar `fill` to that color
+ * - `RecursivePartial<BarSeriesStyle>`: Style values to be merged with base bar styles
+ * - `null`: Keep existing bar style
+ */
 export type BarStyleAccessor = (datum: RawDataSeriesDatum, geometryId: GeometryId) => BarStyleOverride;
+/**
+ * Override for bar styles per datum
+ *
+ * Return types:
+ * - `Color`: Color value as a `string` will set the point `stroke` to that color
+ * - `RecursivePartial<PointStyle>`: Style values to be merged with base point styles
+ * - `null`: Keep existing point style
+ */
 export type PointStyleAccessor = (datum: RawDataSeriesDatum, geometryId: GeometryId) => PointStyleOverride;
 export const DEFAULT_GLOBAL_ID = '__global__';
 
