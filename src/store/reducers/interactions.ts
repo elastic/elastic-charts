@@ -1,5 +1,5 @@
 import { CursorPositionChangeAction, ON_CURSOR_POSITION_CHANGE } from '../actions/cursor';
-import { InteractionsStore } from '../chart_store';
+import { InteractionsState } from '../chart_store';
 import {
   ToggleLegendAction,
   LegendItemOutAction,
@@ -16,7 +16,7 @@ import { ON_MOUSE_DOWN, ON_MOUSE_UP, MouseDownAction, MouseUpAction } from '../a
 import { DataSeriesColorsValues, findDataSeriesByColorValues } from '../../chart_types/xy_chart/utils/series';
 
 export function interactionsReducer(
-  state: InteractionsStore,
+  state: InteractionsState,
   action:
     | CursorPositionChangeAction
     | ToggleLegendAction
@@ -26,7 +26,7 @@ export function interactionsReducer(
     | InvertDeselectSeriesAction
     | MouseDownAction
     | MouseUpAction,
-): InteractionsStore {
+): InteractionsState {
   switch (action.type) {
     case ON_CURSOR_POSITION_CHANGE:
       const { x, y } = action;

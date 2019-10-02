@@ -14,8 +14,8 @@ import {
   getTooltipValuesAndGeometriesSelector,
 } from './selectors/get_tooltip_values_highlighted_geoms';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
-import { onElementOutListenerCaller } from './selectors/on_element_out_caller';
-import { onElementOverListenerCaller } from './selectors/on_element_over_caller';
+import { createOnElementOutCaller } from './selectors/on_element_out_caller';
+import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { getCursorBandPositionSelector } from './selectors/get_cursor_band';
 import { getSettingsSpecSelector } from '../../../store/selectors/get_settings_specs';
 
@@ -133,7 +133,8 @@ function initStore(spec: BasicSeriesSpec) {
 
 describe('Chart state pointer interactions', () => {
   let store: Store<IChartState>;
-
+  let onElementOutCaller = createOnElementOutCaller();
+  let onElementOverCaller = createOnElementOverCaller();
   beforeEach(() => {
     store = initStore(ordinalBarSeries);
   });
@@ -187,8 +188,8 @@ describe('Chart state pointer interactions', () => {
     store.dispatch(specParsed());
     // registering the out/over listener caller
     store.subscribe(() => {
-      onElementOverListenerCaller(store.getState());
-      onElementOutListenerCaller(store.getState());
+      onElementOutCaller(store.getState());
+      onElementOverCaller(store.getState());
     });
     store.dispatch(onCursorPositionChange(20, 20));
     expect(onOutListener).toBeCalledTimes(0);
@@ -263,13 +264,11 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     };
     store.dispatch(upsertSpec(settingsWithListeners));
     store.dispatch(specParsed());
-    // registering the out/over listener caller
-    onElementOverListenerCaller.resetRecomputations();
-    onElementOutListenerCaller.resetRecomputations();
+    const onElementOutCaller = createOnElementOutCaller();
+    const onElementOverCaller = createOnElementOverCaller();
     store.subscribe(() => {
-      // console.log('store update');
-      onElementOverListenerCaller(store.getState());
-      onElementOutListenerCaller(store.getState());
+      onElementOutCaller(store.getState());
+      onElementOverCaller(store.getState());
     });
     const tooltipData = getTooltipValuesAndGeometriesSelector(store.getState());
     expect(tooltipData.tooltipValues).toEqual([]);

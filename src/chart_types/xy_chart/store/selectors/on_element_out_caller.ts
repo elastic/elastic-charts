@@ -4,45 +4,52 @@ import {
   getTooltipValuesAndGeometriesSelector,
   TooltipAndHighlightedGeoms,
 } from './get_tooltip_values_highlighted_geoms';
-import { createSelectorCreator, defaultMemoize } from 'reselect';
 import { SettingsSpec } from 'specs';
-import { equalityCheck, isSettingsSpec } from './caller_utils';
+import { IChartState } from 'store/chart_store';
+import { IndexedGeometry } from 'utils/geometry';
 
-// We want to trigger an update only if the previous array contains elements and the current is empty
-const highlightedGeomsEqualityCheck = (
-  prevValue: TooltipAndHighlightedGeoms,
-  currValue: TooltipAndHighlightedGeoms,
-) => {
-  return currValue.highlightedGeometries.length > 0 || prevValue.highlightedGeometries.length === 0;
-};
+interface Props {
+  settings: SettingsSpec | undefined;
+  highlightedGeometries: IndexedGeometry[];
+}
 
-// We want to trigger a recomputation only if we have a new onElementOut listener
-const settingsEqualityCheck = (prevSettings: SettingsSpec, currentSettings: SettingsSpec) => {
-  if (currentSettings.onElementOut && currentSettings.onElementOut !== prevSettings.onElementOut) {
+function isOutElement(prevProps: Props | null, nextProps: Props | null) {
+  if (!nextProps || !prevProps) {
     return false;
   }
-  return true;
-};
+  if (!nextProps.settings || !nextProps.settings.onElementOut) {
+    return false;
+  }
+  if (prevProps.highlightedGeometries.length > 0 && nextProps.highlightedGeometries.length === 0) {
+    return true;
+  }
+  return false;
+}
 
-const onElementOutEqualityCheck = equalityCheck(isSettingsSpec, settingsEqualityCheck, highlightedGeomsEqualityCheck);
+/**
+ * Will call the onElementOut listener every time the following preconditions are met:
+ * - the onElementOut listener is available
+ * - the highlighted geometries list goes from a list of at least one object to an empty one
+ */
+export function createOnElementOutCaller(): (state: IChartState) => void {
+  let prevProps: Props | null = null;
+  const selector = createCachedSelector(
+    [getTooltipValuesAndGeometriesSelector, getSettingsSpecSelector],
+    ({ highlightedGeometries }: TooltipAndHighlightedGeoms, settings: SettingsSpec): void => {
+      const nextProps = {
+        settings,
+        highlightedGeometries,
+      };
 
-export const onElementOutListenerCaller = createCachedSelector(
-  [getTooltipValuesAndGeometriesSelector, getSettingsSpecSelector],
-  ({ highlightedGeometries }: TooltipAndHighlightedGeoms, settingsSpec: SettingsSpec): void => {
-    if (
-      // this avoids the triggering of the first computation because of an empty cache
-      onElementOutListenerCaller.recomputations() > 1 &&
-      settingsSpec.onElementOut &&
-      highlightedGeometries.length === 0
-    ) {
-      settingsSpec.onElementOut();
-    }
-  },
-)({
-  keySelector: (state) => state.chartId,
-  selectorCreator: createSelectorCreator<typeof onElementOutEqualityCheck>(
-    // @ts-ignore-next-line see https://github.com/reduxjs/reselect/issues/384
-    defaultMemoize,
-    onElementOutEqualityCheck,
-  ),
-});
+      if (isOutElement(prevProps, nextProps) && settings.onElementOut) {
+        settings.onElementOut();
+      }
+      prevProps = nextProps;
+    },
+  )({
+    keySelector: (state) => state.chartId,
+  });
+  return (state: IChartState) => {
+    selector(state);
+  };
+}
