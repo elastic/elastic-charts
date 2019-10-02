@@ -13,8 +13,9 @@ export class Playground extends React.Component {
             <Axis
               id={getAxisId('top')}
               position={Position.Bottom}
-              title={'Top axis'}
-              tickFormat={niceTimeFormatter([data[0][0], data[data.length - 1][0]])}
+              title={'Bottom axis'}
+              showOverlappingTicks={true}
+              showGridLines
             />
             <Axis id={getAxisId('left2')} title={'Left axis'} position={Position.Left} />
 

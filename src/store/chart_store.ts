@@ -12,11 +12,13 @@ import { DataSeriesColorsValues } from '../chart_types/xy_chart/utils/series';
 import { ChartTypes } from '../chart_types';
 import { DEFAULT_SETTINGS_SPEC } from '../specs/settings';
 import { Point } from '../utils/point';
+
+export type GetCustomChartComponent = (componentType: 'dom' | 'svg' | 'canvas', zIndex: number) => JSX.Element | null;
 export interface IChartStore {
   chartType: ChartType;
   render(state: IChartState): GeometriesList;
   getChartDimensions(state: IChartState): Dimensions;
-  getCustomChartComponents(zIndex: number, componentType: 'dom' | 'svg' | 'canvas'): JSX.Element | null;
+  getCustomChartComponents: GetCustomChartComponent;
   isBrushAvailable(state: IChartState): boolean;
 }
 

@@ -1,12 +1,12 @@
 import React from 'react';
-import { Layer, Rect, Stage } from 'react-konva';
 import { ContainerConfig } from 'konva';
+import { Layer, Rect, Stage } from 'react-konva';
 import { AreaGeometries } from './area_geometries';
 import { ArcGeometries } from './arc_geometries';
 import { BarGeometries } from './bar_geometries';
 import { LineGeometries } from './line_geometries';
-import { IChartState, GeometriesList, GlobalSettings } from '../../store/chart_store';
-import { connect } from 'react-redux';
+import { IChartState, GeometriesList, GlobalSettings, GetCustomChartComponent } from '../../store/chart_store';
+import { connect, Provider, ReactReduxContext } from 'react-redux';
 import { getRenderedGeometriesSelector } from '../../store/selectors/get_rendered_geometries';
 import { getChartDimensionsSelector } from '../../store/selectors/get_chart_dimensions';
 import { Dimensions } from '../../utils/dimensions';
@@ -33,7 +33,8 @@ import { isChartEmptySelector } from '../../chart_types/xy_chart/store/selectors
 import { isBrushAvailableSelector } from '../../chart_types/xy_chart/store/selectors/is_brush_available';
 import { getHighlightedSeriesSelector } from '../../chart_types/xy_chart/store/selectors/get_highlighted_series';
 import { LegendItem } from '../../chart_types/xy_chart/legend/legend';
-import { RectAnnotationStyle, LineAnnotationStyle, Theme } from '../../utils/themes/theme';
+import { getChartTypeComponentSelector } from 'store/selectors/get_chart_type_components';
+import { LineAnnotationStyle, RectAnnotationStyle, Theme } from '../../utils/themes/theme';
 
 interface Props {
   initialized: boolean;
@@ -49,6 +50,7 @@ interface Props {
   annotationSpecs: AnnotationSpec[];
   isBrushAvailable: boolean;
   highlightedLegendItem?: LegendItem;
+  getCustomChartComponents?: GetCustomChartComponent;
 }
 export interface ReactiveChartElementIndex {
   element: JSX.Element;
@@ -265,11 +267,18 @@ class Chart extends React.Component<Props> {
 
   render() {
     console.log('Rendering main chart');
-    const { initialized, globalSettings, chartRotation, chartDimensions, isChartEmpty } = this.props;
+    const {
+      initialized,
+      globalSettings,
+      chartRotation,
+      chartDimensions,
+      isChartEmpty,
+      getCustomChartComponents,
+    } = this.props;
     if (!initialized) {
       return null;
     }
-
+    console.log(getCustomChartComponents);
     const { debug, parentDimensions } = globalSettings;
     const { chartTransform } = this.props;
 
@@ -283,37 +292,42 @@ class Chart extends React.Component<Props> {
 
     const brushProps = {};
 
-    const childComponents = React.Children.toArray(this.props.children);
     return (
-      <Stage
-        width={parentDimensions.width}
-        height={parentDimensions.height}
-        style={{
-          width: '100%',
-          height: '100%',
+      <ReactReduxContext.Consumer>
+        {({ store }) => {
+          return (
+            <Stage
+              width={parentDimensions.width}
+              height={parentDimensions.height}
+              style={{
+                width: '100%',
+                height: '100%',
+              }}
+              {...brushProps}
+            >
+              <Provider store={store}>{getCustomChartComponents && getCustomChartComponents('canvas', -1)}</Provider>
+
+              <Layer
+                x={chartDimensions.left + chartTransform.x}
+                y={chartDimensions.top + chartTransform.y}
+                rotation={chartRotation}
+                hitGraphEnabled={false}
+                listening={false}
+              >
+                {this.sortAndRenderElements()}
+              </Layer>
+
+              <Provider store={store}>{getCustomChartComponents && getCustomChartComponents('canvas', 1)}</Provider>
+
+              {debug && (
+                <Layer hitGraphEnabled={false} listening={false}>
+                  {this.renderDebugChartBorders()}
+                </Layer>
+              )}
+            </Stage>
+          );
         }}
-        {...brushProps}
-      >
-        {childComponents && childComponents[0] ? childComponents[0] : null}
-
-        <Layer
-          x={chartDimensions.left + chartTransform.x}
-          y={chartDimensions.top + chartTransform.y}
-          rotation={chartRotation}
-          hitGraphEnabled={false}
-          listening={false}
-        >
-          {this.sortAndRenderElements()}
-        </Layer>
-
-        {debug && (
-          <Layer hitGraphEnabled={false} listening={false}>
-            {this.renderDebugChartBorders()}
-          </Layer>
-        )}
-
-        {childComponents && childComponents[1] ? childComponents[1] : null}
-      </Stage>
+      </ReactReduxContext.Consumer>
     );
   }
 
@@ -372,6 +386,7 @@ const mapStateToProps = (state: IChartState) => {
     annotationSpecs: getAnnotationSpecsSelector(state),
     isBrushAvailable: isBrushAvailableSelector(state),
     highlightedLegendItem: getHighlightedSeriesSelector(state),
+    getCustomChartComponents: getChartTypeComponentSelector(state),
   };
 };
 
