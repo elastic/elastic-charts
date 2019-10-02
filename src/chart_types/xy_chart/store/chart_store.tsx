@@ -25,7 +25,7 @@ export class XYAxisChartStore implements IChartStore {
   getChartDimensions(state: IChartState) {
     return computeChartDimensionsSelector(state).chartDimensions;
   }
-  getCustomChartComponents(zIndex: number, type: 'dom' | 'svg' | 'canvas') {
+  getCustomChartComponents(type: 'dom' | 'svg' | 'canvas', zIndex: number) {
     switch (type) {
       case 'dom':
         return getDomComponents(zIndex);

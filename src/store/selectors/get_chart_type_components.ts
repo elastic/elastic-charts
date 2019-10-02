@@ -1,11 +1,9 @@
-import { IChartState } from '../chart_store';
+import { IChartState, GetCustomChartComponent } from '../chart_store';
 
-export const getChartTypeComponentSelector = (zIndex: number, type: 'dom' | 'svg' | 'canvas') => (
-  state: IChartState,
-): JSX.Element | null => {
+export const getChartTypeComponentSelector = (state: IChartState): GetCustomChartComponent | undefined => {
   if (state.chartStore) {
-    return state.chartStore.getCustomChartComponents(zIndex, type);
+    return state.chartStore.getCustomChartComponents;
   } else {
-    return null;
+    return undefined;
   }
 };

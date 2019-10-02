@@ -13,6 +13,7 @@ export class Playground extends React.Component {
               position={Position.Bottom}
               title={'Bottom axis'}
               showOverlappingTicks={true}
+              showGridLines
             />
             <Axis
               id={getAxisId('left2')}

@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import { onCursorPositionChange } from '../../store/actions/cursor';
 import { ReactiveChart } from './reactive_chart';
 import { isChartEmptySelector } from '../../chart_types/xy_chart/store/selectors/is_chart_empty';
-import { IChartState } from '../../store/chart_store';
-import { ChartTypeComponents } from '../chart_type_components';
+import { IChartState, GetCustomChartComponent } from '../../store/chart_store';
 import { ChartResizer } from '../chart_resizer';
 import { isLegendInitializedSelector } from '../../chart_types/xy_chart/store/selectors/is_legend_initialized';
 import { onMouseUp, onMouseDown } from '../../store/actions/mouse';
+import { getChartTypeComponentSelector } from 'store/selectors/get_chart_type_components';
 interface ReactiveChartProps {
   legendInitialized: boolean;
   isChartEmpty: boolean;
@@ -16,6 +16,7 @@ interface ReactiveChartProps {
   onMouseUp: typeof onMouseUp;
   onMouseDown: typeof onMouseDown;
   chartCursor: string;
+  getCustomChartComponents?: GetCustomChartComponent;
 }
 
 class ChartContainerComponent extends React.Component<ReactiveChartProps> {
@@ -26,7 +27,14 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     if (!legendInitialized) {
       return null;
     }
-    const { onCursorPositionChange, isChartEmpty, chartCursor, onMouseUp, onMouseDown } = this.props;
+    const {
+      onCursorPositionChange,
+      isChartEmpty,
+      chartCursor,
+      onMouseUp,
+      onMouseDown,
+      getCustomChartComponents,
+    } = this.props;
     return (
       <div
         className="echChartCursorContainer"
@@ -70,7 +78,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
           );
         }}
       >
-        <ChartTypeComponents zIndex={-1} type={'dom'} />
+        {getCustomChartComponents && getCustomChartComponents('dom', -1)}
         <ChartResizer />
         <ReactiveChart>
           {/* <Provider store={this.chartStore}>
@@ -80,7 +88,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
             <ChartTypeComponents zIndex={1} type={'canvas'} />
           </Provider> */}
         </ReactiveChart>
-        <ChartTypeComponents zIndex={1} type={'dom'} />
+        {getCustomChartComponents && getCustomChartComponents('dom', 1)}
       </div>
     );
   }
@@ -121,6 +129,7 @@ const mapStateToProps = (state: IChartState) => {
     legendInitialized: isLegendInitializedSelector(state),
     isChartEmpty: isChartEmptySelector(state),
     chartCursor: 'pointer', //todo
+    getCustomChartComponents: getChartTypeComponentSelector(state),
   };
 };
 
