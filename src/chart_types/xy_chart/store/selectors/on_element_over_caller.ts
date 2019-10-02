@@ -4,50 +4,61 @@ import {
   getTooltipValuesAndGeometriesSelector,
   TooltipAndHighlightedGeoms,
 } from './get_tooltip_values_highlighted_geoms';
-import { createSelectorCreator, defaultMemoize } from 'reselect';
 import { SettingsSpec } from '../../../../specs';
-import { equalityCheck, isSettingsSpec } from './caller_utils';
+import { IChartState } from 'store/chart_store';
+import { IndexedGeometry } from 'utils/geometry';
 
-const highlightedGeomsEqualityCheck = (
-  prevValue: TooltipAndHighlightedGeoms,
-  currValue: TooltipAndHighlightedGeoms,
-) => {
-  if (currValue.highlightedGeometries.length !== prevValue.highlightedGeometries.length) {
+interface Props {
+  settings: SettingsSpec | undefined;
+  highlightedGeometries: IndexedGeometry[];
+}
+
+function isOverElement(prevProps: Props | null, nextProps: Props | null) {
+  if (!nextProps) {
     return false;
   }
-  const length = currValue.highlightedGeometries.length;
-  for (let i = 0; i < length; i++) {
-    if (
-      currValue.highlightedGeometries[i].value.x !== prevValue.highlightedGeometries[i].value.x ||
-      currValue.highlightedGeometries[i].value.y !== prevValue.highlightedGeometries[i].value.y ||
-      currValue.highlightedGeometries[i].value.accessor !== prevValue.highlightedGeometries[i].value.accessor
-    ) {
-      return false;
-    }
-  }
-  return true;
-};
-const settingsEqualityCheck = (prevSettings: SettingsSpec, currentSettings: SettingsSpec) => {
-  if (currentSettings.onElementOver !== prevSettings.onElementOver) {
+  if (!nextProps.settings || !nextProps.settings.onElementOver) {
     return false;
   }
-  return true;
-};
-
-const onElementOverEqualityCheck = equalityCheck(isSettingsSpec, settingsEqualityCheck, highlightedGeomsEqualityCheck);
-
-export const onElementOverListenerCaller = createCachedSelector(
-  [getTooltipValuesAndGeometriesSelector, getSettingsSpecSelector],
-  ({ highlightedGeometries }: TooltipAndHighlightedGeoms, settingsSpec: SettingsSpec): void => {
-    if (settingsSpec.onElementOver && highlightedGeometries.length > 0) {
-      settingsSpec.onElementOver(highlightedGeometries.map((d) => d.value));
+  const { highlightedGeometries: nextGeomValues } = nextProps;
+  const prevGeomValues = prevProps ? prevProps.highlightedGeometries : [];
+  if (nextGeomValues.length > 0) {
+    if (nextGeomValues.length !== prevGeomValues.length) {
+      return true;
     }
-  },
-)({
-  keySelector: (state) => state.chartId,
-  selectorCreator: createSelectorCreator<typeof onElementOverEqualityCheck>(
-    // @ts-ignore-next-line see https://github.com/reduxjs/reselect/issues/384
-    defaultMemoize,
-    onElementOverEqualityCheck,
-  ),
-});
+    return !nextGeomValues.every(({ value: next }, index) => {
+      const prev = prevGeomValues[index].value;
+      return prev && prev.x === next.x && prev.y === next.y && prev.accessor === next.accessor;
+    });
+  }
+
+  return false;
+}
+
+/**
+ * Will call the onElementOver listener every time the following preconditions are met:
+ * - the onElementOver listener is available
+ * - we have a new set of highlighted geometries on our state
+ */
+export function createOnElementOverCaller(): (state: IChartState) => void {
+  let prevProps: Props | null = null;
+  const selector = createCachedSelector(
+    [getTooltipValuesAndGeometriesSelector, getSettingsSpecSelector],
+    ({ highlightedGeometries }: TooltipAndHighlightedGeoms, settings: SettingsSpec): void => {
+      const nextProps = {
+        settings,
+        highlightedGeometries,
+      };
+
+      if (isOverElement(prevProps, nextProps) && settings.onElementOver) {
+        settings.onElementOver(highlightedGeometries.map(({ value }) => value));
+      }
+      prevProps = nextProps;
+    },
+  )({
+    keySelector: (state) => state.chartId,
+  });
+  return (state: IChartState) => {
+    selector(state);
+  };
+}

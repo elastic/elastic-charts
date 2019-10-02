@@ -27,7 +27,7 @@ export interface GlobalSettings {
   debug: boolean;
   parentDimensions: Dimensions;
 }
-export interface PointerStore {
+export interface PointerState {
   down: {
     position: Point;
     time: number;
@@ -38,9 +38,9 @@ export interface PointerStore {
   } | null;
 }
 
-export interface InteractionsStore {
+export interface InteractionsState {
   rawCursorPosition: Point;
-  pointer: PointerStore;
+  pointer: PointerState;
   highlightedLegendItemKey: string | null;
   legendCollapsed: boolean;
   invertDeselect: boolean;
@@ -61,7 +61,7 @@ export interface IChartState {
   chartType: ChartType | null;
   chartStore: IChartStore | null;
   settings: GlobalSettings;
-  interactions: InteractionsStore;
+  interactions: InteractionsState;
 }
 
 export type ChartType = typeof ChartTypes.Pie | typeof ChartTypes.XYAxis | typeof ChartTypes.Global;
