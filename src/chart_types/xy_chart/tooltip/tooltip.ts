@@ -1,7 +1,7 @@
 import { TooltipValue, isFollowTooltipType, TooltipType, TooltipValueFormatter } from '../utils/interactions';
 import { IndexedGeometry, isPointOnGeometry, AccessorType } from '../rendering/rendering';
 import { getColorValuesAsString } from '../utils/series';
-import { AxisSpec, BasicSeriesSpec, Rotation } from '../utils/specs';
+import { AxisSpec, BasicSeriesSpec, Rotation, isBandedSpec } from '../utils/specs';
 import { SpecId, AxisId, GroupId } from '../../../utils/ids';
 import { getAxesSpecForSpecId } from '../store/utils';
 import { Scale } from '../../../utils/scales/scales';
@@ -40,7 +40,7 @@ export function formatTooltip(
     displayName = name || `${id}`;
   }
 
-  if (y0Accessors && y0Accessors.length > 0) {
+  if (isBandedSpec(y0Accessors)) {
     const formatter = accessor === AccessorType.Y0 ? y0AccessorFormat : y1AccessorFormat;
     displayName = getAccessorFormatLabel(formatter, displayName);
   }
