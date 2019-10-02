@@ -133,7 +133,6 @@ const ig6: PointGeometry = {
     x: 0,
     y: 0,
   },
-  banded: false,
 };
 describe('Interaction utils', () => {
   const chartDimensions: Dimensions = {

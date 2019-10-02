@@ -76,7 +76,6 @@ describe('Rendering utils', () => {
       x: 0,
       y: 0,
       radius: 10,
-      banded: false,
     };
     expect(isPointOnGeometry(0, 0, geometry)).toBe(true);
     expect(isPointOnGeometry(10, 10, geometry)).toBe(true);
@@ -104,8 +103,14 @@ describe('Rendering utils', () => {
       isSeriesVisible: true,
       isLegendItemVisible: true,
       displayValue: {
-        raw: '',
-        formatted: '',
+        formatted: {
+          y0: null,
+          y1: null,
+        },
+        raw: {
+          y0: null,
+          y1: null,
+        },
       },
     };
 

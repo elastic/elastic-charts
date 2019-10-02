@@ -146,7 +146,6 @@ describe('Rendering points - areas', () => {
           x: 25,
           y: 0,
         },
-        banded: false,
       } as PointGeometry);
       expect(points[1]).toEqual({
         x: 50,
@@ -166,7 +165,6 @@ describe('Rendering points - areas', () => {
           x: 25,
           y: 0,
         },
-        banded: false,
       } as PointGeometry);
       expect(indexedGeometries.size).toEqual(points.length);
     });
@@ -284,7 +282,6 @@ describe('Rendering points - areas', () => {
           x: 25,
           y: 0,
         },
-        banded: false,
       } as PointGeometry);
       expect(points[1]).toEqual({
         x: 50,
@@ -304,7 +301,6 @@ describe('Rendering points - areas', () => {
           x: 25,
           y: 0,
         },
-        banded: false,
       } as PointGeometry);
       expect(indexedGeometries.size).toEqual(points.length);
     });
@@ -332,7 +328,6 @@ describe('Rendering points - areas', () => {
           x: 25,
           y: 0,
         },
-        banded: false,
       } as PointGeometry);
       expect(points[1]).toEqual({
         x: 50,
@@ -352,7 +347,6 @@ describe('Rendering points - areas', () => {
           x: 25,
           y: 0,
         },
-        banded: false,
       } as PointGeometry);
       expect(indexedGeometries.size).toEqual(points.length);
     });
@@ -430,7 +424,6 @@ describe('Rendering points - areas', () => {
           x: 0,
           y: 0,
         },
-        banded: false,
       } as PointGeometry);
       expect(points[1]).toEqual({
         x: 100,
@@ -450,7 +443,6 @@ describe('Rendering points - areas', () => {
           x: 0,
           y: 0,
         },
-        banded: false,
       } as PointGeometry);
       expect(indexedGeometries.size).toEqual(points.length);
     });
@@ -567,7 +559,6 @@ describe('Rendering points - areas', () => {
           x: 0,
           y: 0,
         },
-        banded: false,
       } as PointGeometry);
       expect(points[1]).toEqual({
         x: 100,
@@ -587,7 +578,6 @@ describe('Rendering points - areas', () => {
           x: 0,
           y: 0,
         },
-        banded: false,
       } as PointGeometry);
       expect(indexedGeometries.size).toEqual(points.length);
     });
@@ -615,7 +605,6 @@ describe('Rendering points - areas', () => {
           x: 0,
           y: 0,
         },
-        banded: false,
       } as PointGeometry);
       expect(points[1]).toEqual({
         x: 100,
@@ -635,7 +624,6 @@ describe('Rendering points - areas', () => {
           x: 0,
           y: 0,
         },
-        banded: false,
       } as PointGeometry);
       expect(indexedGeometries.size).toEqual(points.length);
     });
@@ -713,7 +701,6 @@ describe('Rendering points - areas', () => {
           x: 0,
           y: 0,
         },
-        banded: false,
       } as PointGeometry);
       expect(points[1]).toEqual({
         x: 100,
@@ -733,7 +720,6 @@ describe('Rendering points - areas', () => {
           x: 0,
           y: 0,
         },
-        banded: false,
       } as PointGeometry);
       expect(indexedGeometries.size).toEqual(points.length);
     });
@@ -835,7 +821,6 @@ describe('Rendering points - areas', () => {
           x: 0,
           y: 0,
         },
-        banded: false,
       } as PointGeometry);
       expect(points[1]).toEqual({
         x: 100,
@@ -855,7 +840,6 @@ describe('Rendering points - areas', () => {
           x: 0,
           y: 0,
         },
-        banded: false,
       } as PointGeometry);
       expect(indexedGeometries.size).toEqual(points.length);
     });
@@ -883,7 +867,6 @@ describe('Rendering points - areas', () => {
           x: 0,
           y: 0,
         },
-        banded: false,
       } as PointGeometry);
       expect(points[1]).toEqual({
         x: 100,
@@ -903,7 +886,6 @@ describe('Rendering points - areas', () => {
           x: 0,
           y: 0,
         },
-        banded: false,
       } as PointGeometry);
       expect(indexedGeometries.size).toEqual(points.length);
     });
