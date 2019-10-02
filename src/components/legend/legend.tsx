@@ -153,14 +153,14 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
   }
 
   private getItemLabel(
-    { banded, label, y1AccessorPostfix, y0AccessorPostfix }: SeriesLegendItem,
+    { banded, label, y1AccessorFormat, y0AccessorFormat }: SeriesLegendItem,
     yAccessor: AccessorType,
   ) {
     if (!banded) {
       return label;
     }
 
-    return yAccessor === AccessorType.Y1 ? `${label}${y1AccessorPostfix}` : `${label}${y0AccessorPostfix}`;
+    return yAccessor === AccessorType.Y1 ? `${label}${y1AccessorFormat}` : `${label}${y0AccessorFormat}`;
   }
 
   private renderLegendElement = (item: SeriesLegendItem) => {

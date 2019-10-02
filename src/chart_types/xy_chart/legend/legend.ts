@@ -30,10 +30,10 @@ export type LegendItem = Postfixes & {
 
 export function getPostfix(spec: BasicSeriesSpec): Postfixes {
   if (isAreaSeriesSpec(spec) || isBarSeriesSpec(spec)) {
-    const { y0AccessorPostfix = Y0_ACCESSOR_POSTFIX, y1AccessorPostfix = Y1_ACCESSOR_POSTFIX } = spec;
+    const { y0AccessorFormat = Y0_ACCESSOR_POSTFIX, y1AccessorFormat = Y1_ACCESSOR_POSTFIX } = spec;
     return {
-      y0AccessorPostfix,
-      y1AccessorPostfix,
+      y0AccessorFormat,
+      y1AccessorFormat,
     };
   }
 

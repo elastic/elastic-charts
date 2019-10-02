@@ -35,6 +35,7 @@ import {
   isLineSeriesSpec,
   LineSeriesSpec,
   Rotation,
+  isBandedSpec,
 } from '../utils/specs';
 import { ColorConfig, Theme } from '../../../utils/themes/theme';
 import { identity, mergePartial } from '../../../utils/commons';
@@ -486,10 +487,11 @@ export function renderGeometries(
         color,
         (spec as LineSeriesSpec).curve || CurveType.LINEAR,
         ds.specId,
-        Boolean(spec.y0Accessors),
+        isBandedSpec(spec.y0Accessors),
         ds.key,
         xScaleOffset,
         lineSeriesStyle,
+        spec.pointStyleAccessor,
       );
       lineGeometriesIndex = mergeGeometriesIndexes(lineGeometriesIndex, renderedLines.indexedGeometries);
       lines.push(renderedLines.lineGeometry);
@@ -511,11 +513,12 @@ export function renderGeometries(
         color,
         (spec as AreaSeriesSpec).curve || CurveType.LINEAR,
         ds.specId,
-        Boolean(spec.y0Accessors),
+        isBandedSpec(spec.y0Accessors),
         ds.key,
         xScaleOffset,
         areaSeriesStyle,
         isStacked,
+        spec.pointStyleAccessor,
       );
       areaGeometriesIndex = mergeGeometriesIndexes(areaGeometriesIndex, renderedAreas.indexedGeometries);
       areas.push(renderedAreas.areaGeometry);

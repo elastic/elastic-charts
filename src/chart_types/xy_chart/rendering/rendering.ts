@@ -17,7 +17,7 @@ import { CurveType, getCurveFactory } from '../../../utils/curves';
 import { LegendItem } from '../legend/legend';
 import { DataSeriesDatum } from '../utils/series';
 import { belongsToDataSeries } from '../utils/series_utils';
-import { DisplayValueSpec, StyleAccessor } from '../utils/specs';
+import { DisplayValueSpec, BarStyleAccessor, PointStyleAccessor } from '../utils/specs';
 import { mergePartial } from '../../../utils/commons';
 
 export interface GeometryId {
@@ -64,10 +64,7 @@ export interface PointGeometry {
   };
   geometryId: GeometryId;
   value: GeometryValue;
-  /**
-   * Is the point a pair in a banded series
-   */
-  banded: boolean;
+  styleOverrides?: Partial<PointStyle>;
 }
 export interface BarGeometry {
   x: number;
@@ -141,11 +138,31 @@ export function mutableIndexedGeometryMapUpsert(
   }
 }
 
-export function getStyleOverrides(
+export function getPointStyleOverrides(
+  datum: DataSeriesDatum,
+  geometryId: GeometryId,
+  pointStyleAccessor?: PointStyleAccessor,
+): Partial<PointStyle> | undefined {
+  const styleOverride = pointStyleAccessor && pointStyleAccessor(datum, geometryId);
+
+  if (!styleOverride) {
+    return;
+  }
+
+  if (typeof styleOverride === 'string') {
+    return {
+      stroke: styleOverride,
+    };
+  }
+
+  return styleOverride;
+}
+
+export function getBarStyleOverrides(
   datum: DataSeriesDatum,
   geometryId: GeometryId,
   seriesStyle: BarSeriesStyle,
-  styleAccessor?: StyleAccessor,
+  styleAccessor?: BarStyleAccessor,
 ): BarSeriesStyle {
   const styleOverride = styleAccessor && styleAccessor(datum, geometryId);
 
@@ -177,19 +194,21 @@ export function renderPoints(
   specId: SpecId,
   hasY0Accessors: boolean,
   seriesKey: any[],
+  styleAccessor?: PointStyleAccessor,
 ): {
   pointGeometries: PointGeometry[];
   indexedGeometries: Map<any, IndexedGeometry[]>;
 } {
   const indexedGeometries: Map<any, IndexedGeometry[]> = new Map();
   const isLogScale = isLogarithmicScale(yScale);
-
   const pointGeometries = dataset.reduce(
-    (acc, { x: xValue, y0, y1, initialY0, initialY1 }) => {
-      const x = xScale.scale(xValue);
-      if (x < xScale.range[0] || x > xScale.range[1]) {
+    (acc, datum) => {
+      const { x: xValue, y0, y1, initialY0, initialY1 } = datum;
+      // don't create the point if not within the xScale domain
+      if (!xScale.isValueInDomain(xValue)) {
         return acc;
       }
+      const x = xScale.scale(xValue);
       const points: PointGeometry[] = [];
       const yDatums = hasY0Accessors ? [y0, y1] : [y1];
 
@@ -208,10 +227,12 @@ export function renderPoints(
         } else {
           y = yScale.scale(yDatum);
         }
-        if (y < yScale.range[1] || y > yScale.range[0]) {
-          return;
-        }
         const originalY = hasY0Accessors && index === 0 ? initialY0 : initialY1;
+        const geometryId = {
+          specId,
+          seriesKey,
+        };
+        const styleOverrides = getPointStyleOverrides(datum, geometryId, styleAccessor);
         const pointGeometry: PointGeometry = {
           radius,
           x,
@@ -226,14 +247,12 @@ export function renderPoints(
             x: shift,
             y: 0,
           },
-          geometryId: {
-            specId,
-            seriesKey,
-          },
-          banded: hasY0Accessors,
+          geometryId,
+          styleOverrides,
         };
         mutableIndexedGeometryMapUpsert(indexedGeometries, xValue, pointGeometry);
-        if (!isHidden) {
+        // use the geometry only if the yDatum in contained in the current yScale domain
+        if (!isHidden && yScale.isValueInDomain(yDatum)) {
           points.push(pointGeometry);
         }
       });
@@ -257,14 +276,12 @@ export function renderBars(
   seriesKey: any[],
   sharedSeriesStyle: BarSeriesStyle,
   displayValueSettings?: DisplayValueSpec,
-  styleAccessor?: StyleAccessor,
+  styleAccessor?: BarStyleAccessor,
 ): {
   barGeometries: BarGeometry[];
   indexedGeometries: Map<any, IndexedGeometry[]>;
 } {
   const indexedGeometries: Map<any, IndexedGeometry[]> = new Map();
-  const xDomain = xScale.domain;
-  const xScaleType = xScale.type;
   const barGeometries: BarGeometry[] = [];
 
   const bboxCalculator = new CanvasTextBBoxCalculator();
@@ -280,8 +297,8 @@ export function renderBars(
     if (initialY1 === null) {
       return;
     }
-    // don't create a bar if the x value is not part of the ordinal scale
-    if (xScaleType === ScaleType.Ordinal && !xDomain.includes(datum.x)) {
+    // don't create a bar if not within the xScale domain
+    if (!xScale.isValueInDomain(datum.x)) {
       return;
     }
 
@@ -344,7 +361,7 @@ export function renderBars(
       seriesKey,
     };
 
-    const seriesStyle = getStyleOverrides(datum, geometryId, sharedSeriesStyle, styleAccessor);
+    const seriesStyle = getBarStyleOverrides(datum, geometryId, sharedSeriesStyle, styleAccessor);
 
     const barGeometry: BarGeometry = {
       displayValue,
@@ -356,7 +373,7 @@ export function renderBars(
       value: {
         x: datum.x,
         y: initialY1,
-        accessor: 'y1',
+        accessor: AccessorType.Y1,
       },
       geometryId,
       seriesStyle,
@@ -385,6 +402,7 @@ export function renderLine(
   seriesKey: any[],
   xScaleOffset: number,
   seriesStyle: LineSeriesStyle,
+  pointStyleAccessor?: PointStyleAccessor,
 ): {
   lineGeometry: LineGeometry;
   indexedGeometries: Map<any, IndexedGeometry[]>;
@@ -394,7 +412,9 @@ export function renderLine(
   const pathGenerator = line<DataSeriesDatum>()
     .x(({ x }) => xScale.scale(x) - xScaleOffset)
     .y(({ y1 }) => yScale.scale(y1))
-    .defined(({ y1 }) => y1 !== null && !(isLogScale && y1 <= 0))
+    .defined(({ x, y1 }) => {
+      return y1 !== null && !(isLogScale && y1 <= 0) && xScale.isValueInDomain(x);
+    })
     .curve(getCurveFactory(curve));
   const y = 0;
   const x = shift;
@@ -408,7 +428,9 @@ export function renderLine(
     specId,
     hasY0Accessors,
     seriesKey,
+    pointStyleAccessor,
   );
+
   const lineGeometry = {
     line: pathGenerator(dataset) || '',
     points: pointGeometries,
@@ -443,6 +465,7 @@ export function renderArea(
   xScaleOffset: number,
   seriesStyle: AreaSeriesStyle,
   isStacked: boolean = false,
+  pointStyleAccessor?: PointStyleAccessor,
 ): {
   areaGeometry: AreaGeometry;
   indexedGeometries: Map<any, IndexedGeometry[]>;
@@ -458,7 +481,9 @@ export function renderArea(
       }
       return yScale.scale(y0);
     })
-    .defined(({ y1 }) => y1 !== null && !(isLogScale && y1 <= 0))
+    .defined(({ y1, x }) => {
+      return y1 !== null && !(isLogScale && y1 <= 0) && xScale.isValueInDomain(x);
+    })
     .curve(getCurveFactory(curve));
 
   const y1Line = pathGenerator.lineY1()(dataset);
@@ -483,6 +508,7 @@ export function renderArea(
     specId,
     hasY0Accessors,
     seriesKey,
+    pointStyleAccessor,
   );
 
   const areaGeometry = {
