@@ -127,4 +127,4 @@ echo " -- upload code coverage"
 ### visual testing
 ###
 echo " -- visual testing"
-NODE_ENV=ci yarn jest:integration
+yarn jest:integration:ci

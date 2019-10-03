@@ -31,7 +31,8 @@
     "typecheck:all": "tsc -p ./tsconfig.json --noEmit",
     "playground": "cd .playground && webpack-dev-server",
     "playground:ie": "cd .playground && webpack-dev-server --host=0.0.0.0 --disable-host-check --useLocalIp",
-    "jest:integration": "JEST_PUPPETEER_CONFIG=integration/jest-puppeteer.config.js jest --rootDir=integration -c=integration/jest.config.js --runInBand"
+    "jest:integration": "JEST_PUPPETEER_CONFIG=integration/jest-puppeteer.config.js jest --rootDir=integration -c=integration/jest.config.js --runInBand",
+    "jest:integration:ci": "NODE_ENV=ci yarn jest:integration"
   },
   "files": [
     "dist/**/*",
