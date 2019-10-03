@@ -97,7 +97,7 @@ yarn add codecov --prefer-offline
 ### install dependencies
 ###
 echo " -- installing dependencies"
-yarn install
+yarn install --frozen-lockfile
 
 ###
 ### building
@@ -115,7 +115,7 @@ yarn lint
 ### testing
 ###
 echo " -- testing"
-yarn test --coverage
+yarn test --coverage --ci
 
 ###
 ### upload code coverage
