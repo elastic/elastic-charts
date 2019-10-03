@@ -23,6 +23,17 @@ export function computeChartDimensions(
   chartDimensions: Dimensions;
   leftMargin: number;
 } {
+  if (parentDimensions.width <= 0 || parentDimensions.height <= 0) {
+    return {
+      chartDimensions: {
+        width: 0,
+        height: 0,
+        left: 0,
+        top: 0,
+      },
+      leftMargin: 0,
+    };
+  }
   const { chartMargins, chartPaddings } = chartTheme;
   const { axisTitleStyle } = chartTheme.axes;
 

@@ -6,7 +6,7 @@ import { ArcGeometries } from './arc_geometries';
 import { BarGeometries } from './bar_geometries';
 import { LineGeometries } from './line_geometries';
 import { IChartState, GeometriesList, GlobalSettings, GetCustomChartComponent } from '../../store/chart_store';
-import { connect, Provider, ReactReduxContext } from 'react-redux';
+import { connect, ReactReduxContext, Provider } from 'react-redux';
 import { getRenderedGeometriesSelector } from '../../store/selectors/get_rendered_geometries';
 import { getChartDimensionsSelector } from '../../store/selectors/get_chart_dimensions';
 import { Dimensions } from '../../utils/dimensions';
@@ -14,6 +14,7 @@ import { isChartAnimatableSelector } from '../../chart_types/xy_chart/store/sele
 import { isInitialized } from '../../store/selectors/is_initialized';
 import { getChartRotationSelector } from '../../store/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../store/selectors/get_chart_theme';
+import { Theme, mergeWithDefaultAnnotationLine, mergeWithDefaultAnnotationRect } from '../../utils/themes/theme';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 import { computeChartTransformSelector } from '../../chart_types/xy_chart/store/selectors/compute_chart_transform';
 import { Transform } from '../../chart_types/xy_chart/store/utils';
@@ -33,8 +34,7 @@ import { isChartEmptySelector } from '../../chart_types/xy_chart/store/selectors
 import { isBrushAvailableSelector } from '../../chart_types/xy_chart/store/selectors/is_brush_available';
 import { getHighlightedSeriesSelector } from '../../chart_types/xy_chart/store/selectors/get_highlighted_series';
 import { LegendItem } from '../../chart_types/xy_chart/legend/legend';
-import { getChartTypeComponentSelector } from 'store/selectors/get_chart_type_components';
-import { LineAnnotationStyle, RectAnnotationStyle, Theme } from '../../utils/themes/theme';
+import { getChartTypeComponentSelector } from '../../store/selectors/get_chart_type_components';
 
 interface Props {
   initialized: boolean;
@@ -189,14 +189,9 @@ class Chart extends React.Component<Props> {
   };
 
   renderAnnotations = (): ReactiveChartElementIndex[] => {
-    const {
-      annotationDimensions,
-      annotationSpecs,
-      chartDimensions,
-      globalSettings: { debug },
-    } = this.props;
-    console.log({ annotationDimensions, annotationSpecs });
+    const { annotationDimensions, annotationSpecs } = this.props;
     const annotationElements: ReactiveChartElementIndex[] = [];
+
     annotationDimensions.forEach((annotation: AnnotationDimensions, id: AnnotationId) => {
       const spec = annotationSpecs.find((spec) => spec.id === id);
 
@@ -204,44 +199,35 @@ class Chart extends React.Component<Props> {
         return;
       }
 
-      const zIndex = spec.zIndex || 0;
-      let element;
-      console.log({ spec });
       if (isLineAnnotation(spec)) {
-        console.log({ lineAnnotatio: spec });
-        const lineStyle = spec.style as LineAnnotationStyle;
-
-        element = (
+        const lineStyle = mergeWithDefaultAnnotationLine(spec.style);
+        const element = (
           <LineAnnotation
-            key={`annotation-${id}`}
-            chartDimensions={chartDimensions}
-            debug={debug}
+            key={`line-annotation-group-${id}`}
             lines={annotation as AnnotationLineProps[]}
             lineStyle={lineStyle}
           />
         );
+        annotationElements.push({
+          element,
+          zIndex: spec.zIndex || 0,
+        });
       } else if (isRectAnnotation(spec)) {
-        console.log('is rect annotation');
-        const rectStyle = spec.style as RectAnnotationStyle;
-
-        element = (
+        const rectStyle = mergeWithDefaultAnnotationRect(spec.style);
+        const element = (
           <RectAnnotation
-            key={`annotation-${id}`}
-            chartDimensions={chartDimensions}
-            debug={debug}
+            key={`rect-annotation-group-${id}`}
             rects={annotation as AnnotationRectProps[]}
             rectStyle={rectStyle}
           />
         );
-      }
-
-      if (element) {
         annotationElements.push({
           element,
-          zIndex,
+          zIndex: spec.zIndex || 0,
         });
       }
     });
+    console.log({ annotationElements });
     return annotationElements;
   };
 
@@ -258,8 +244,7 @@ class Chart extends React.Component<Props> {
     const areas = this.renderAreaSeries(clippings);
     const lines = this.renderLineSeries(clippings);
     const arcs = this.renderArcSeries();
-    const annotations = this.renderAnnotations();
-
+    const annotations: ReactiveChartElementIndex[] = this.renderAnnotations();
     return [...bars, ...areas, ...lines, ...arcs, ...annotations]
       .sort((elemIdxA, elemIdxB) => elemIdxA.zIndex - elemIdxB.zIndex)
       .map((elemIdx) => elemIdx.element);
@@ -275,13 +260,13 @@ class Chart extends React.Component<Props> {
       isChartEmpty,
       getCustomChartComponents,
     } = this.props;
-    if (!initialized) {
+    if (!initialized || chartDimensions.width === 0 || chartDimensions.height === 0) {
       return null;
     }
-    console.log(getCustomChartComponents);
     const { debug, parentDimensions } = globalSettings;
     const { chartTransform } = this.props;
 
+    console.log('CAN RENDER', parentDimensions, chartDimensions);
     if (isChartEmpty) {
       return (
         <div className="echReactiveChart_unavailable">
@@ -306,7 +291,6 @@ class Chart extends React.Component<Props> {
               {...brushProps}
             >
               <Provider store={store}>{getCustomChartComponents && getCustomChartComponents('canvas', -1)}</Provider>
-
               <Layer
                 x={chartDimensions.left + chartTransform.x}
                 y={chartDimensions.top + chartTransform.y}
@@ -316,9 +300,7 @@ class Chart extends React.Component<Props> {
               >
                 {this.sortAndRenderElements()}
               </Layer>
-
               <Provider store={store}>{getCustomChartComponents && getCustomChartComponents('canvas', 1)}</Provider>
-
               {debug && (
                 <Layer hitGraphEnabled={false} listening={false}>
                   {this.renderDebugChartBorders()}

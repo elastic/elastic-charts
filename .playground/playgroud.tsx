@@ -1,10 +1,30 @@
 import React, { Fragment } from 'react';
 import { Axis, Chart, getAxisId, getSpecId, Position, ScaleType, Settings, AreaSeries } from '../src';
 
+const dg = new DataGenerator();
+
 export class Playground extends React.Component {
+  state = {
+    data: dg.generateSimpleSeries(50),
+    fixed: Math.floor(Math.random() * 10),
+  };
   render() {
     return (
       <Fragment>
+        <div>
+          <button
+            onClick={() => {
+              this.setState(() => {
+                return {
+                  data: dg.generateSimpleSeries(),
+                  fixed: Math.floor(Math.random() * 10),
+                };
+              });
+            }}
+          >
+            Update data
+          </button>
+        </div>
         <div className="chart">
           <Chart>
             <Settings showLegend theme={{ areaSeriesStyle: { point: { visible: true } } }} />
