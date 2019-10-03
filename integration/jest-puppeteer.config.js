@@ -9,8 +9,8 @@ const host = process.env.HOST || 'localhost';
 module.exports = {
   launch: {
     dumpio: false,
-    headless: process.env.NODE_ENV === 'production',
-    slowMo: process.env.NODE_ENV === 'production' ? 0 : 300,
+    headless: process.env.NODE_ENV === 'ci',
+    slowMo: process.env.NODE_ENV === 'ci' ? 0 : 300,
     browserUrl: `http://${host}:${port}/iframe.html`,
   },
   server: {
