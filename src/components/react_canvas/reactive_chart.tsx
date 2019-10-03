@@ -61,8 +61,8 @@ function limitPoint(value: number, min: number, max: number) {
 }
 function getPoint(event: MouseEvent, extent: BrushExtent): Point {
   const point = {
-    x: limitPoint(event.layerX, extent.minX, extent.maxX),
-    y: limitPoint(event.layerY, extent.minY, extent.maxY),
+    x: limitPoint(event.offsetX, extent.minX, extent.maxX),
+    y: limitPoint(event.offsetY, extent.minY, extent.maxY),
   };
   return point;
 }
