@@ -103,7 +103,7 @@ yarn install
 ### building
 ###
 echo " -- building"
-yarn build 
+yarn build
 
 ###
 ### run linter
@@ -122,3 +122,9 @@ yarn test --coverage
 ###
 echo " -- upload code coverage"
 ./node_modules/.bin/codecov
+
+###
+### visual testing
+###
+echo " -- visual testing"
+yarn jest:integration
