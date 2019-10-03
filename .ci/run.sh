@@ -127,4 +127,4 @@ echo " -- upload code coverage"
 ### visual testing
 ###
 echo " -- visual testing"
-yarn jest:integration:ci
+yarn jest:integration:ci --detectOpenHandles

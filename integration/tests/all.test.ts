@@ -14,8 +14,6 @@ storyGroups.forEach(({ group, encodedGroup, stories }) => {
       describe(title, () => {
         it('visually looks correct', async () => {
           await page.goto(`http://localhost:9001/iframe.html?id=${encodedGroup}--${encodedTitle}`);
-
-          debugger;
           const chart = await common.getChartScreenshot();
           expect(chart).toMatchImageSnapshot();
         });
