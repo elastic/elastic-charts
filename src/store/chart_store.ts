@@ -1,6 +1,5 @@
 import { PointGeometry, BarGeometry, AreaGeometry, LineGeometry, ArcGeometry } from '../utils/geometry';
 import { Spec } from '../specs';
-import { IChartStore } from './chart_store';
 import { SPEC_PARSED, SPEC_UNMOUNTED } from './actions/specs';
 import { PieChartStore } from '../chart_types/pie_chart/store/chart_store';
 import { specsReducer } from './reducers/specs';

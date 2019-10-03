@@ -1,19 +1,17 @@
 import React from 'react';
 import { Group, Rect } from 'react-konva';
 import { RectAnnotationStyle } from 'utils/themes/theme';
-import { Dimensions } from 'utils/dimensions';
 import { AnnotationRectProps } from '../../annotations/annotation_utils';
 
-interface RectAnnotationProps {
-  chartDimensions: Dimensions;
-  debug: boolean;
+interface Props {
   rects: AnnotationRectProps[];
   rectStyle: RectAnnotationStyle;
 }
 
-export class RectAnnotation extends React.PureComponent<RectAnnotationProps> {
+export class RectAnnotation extends React.PureComponent<Props> {
   render() {
-    return this.renderAnnotation();
+    const { rects } = this.props;
+    return <Group key={'rect_annotations'}>{rects.map(this.renderAnnotationRect)}</Group>;
   }
   private renderAnnotationRect = (props: AnnotationRectProps, i: number) => {
     const { x, y, width, height } = props.rect;
@@ -26,12 +24,6 @@ export class RectAnnotation extends React.PureComponent<RectAnnotationProps> {
       height,
     };
 
-    return <Rect {...rectProps} key={`rect-${i}`} />;
-  };
-
-  private renderAnnotation = () => {
-    const { rects } = this.props;
-
-    return <Group>{rects.map(this.renderAnnotationRect)}</Group>;
+    return <Rect {...rectProps} key={`rect-annotation-${i}`} />;
   };
 }

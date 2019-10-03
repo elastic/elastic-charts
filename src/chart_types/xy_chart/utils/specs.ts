@@ -415,8 +415,6 @@ export interface BaseAnnotationSpec extends Spec {
   groupId: GroupId; // defaults to __global__; needed for yDomain position
   /** Data values defined with coordinates and details */
   dataValues: AnnotationDatum[];
-  /** Custom annotation style */
-  style?: Partial<AnnotationStyle>;
   /** Toggles tooltip annotation visibility */
   hideTooltips?: boolean;
   /** z-index of the annotation relative to other elements in the chart

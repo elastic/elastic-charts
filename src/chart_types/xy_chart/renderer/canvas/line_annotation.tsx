@@ -1,19 +1,18 @@
 import React from 'react';
 import { Group, Line } from 'react-konva';
 import { LineAnnotationStyle } from 'utils/themes/theme';
-import { Dimensions } from 'utils/dimensions';
 import { AnnotationLineProps } from '../../annotations/annotation_utils';
 
 interface LineAnnotationProps {
-  chartDimensions: Dimensions;
-  debug: boolean;
   lines: AnnotationLineProps[];
   lineStyle: LineAnnotationStyle;
 }
 
 export class LineAnnotation extends React.PureComponent<LineAnnotationProps> {
   render() {
-    return this.renderAnnotation();
+    const { lines } = this.props;
+
+    return <Group key={'line_annotations'}>{lines.map(this.renderAnnotationLine)}</Group>;
   }
   private renderAnnotationLine = (lineConfig: AnnotationLineProps, i: number) => {
     const { line } = this.props.lineStyle;
@@ -23,14 +22,6 @@ export class LineAnnotation extends React.PureComponent<LineAnnotationProps> {
       points: position,
       ...line,
     };
-    console.log({ lineProps });
-
-    return <Line {...lineProps} key={`tick-${i}`} />;
-  };
-
-  private renderAnnotation = () => {
-    const { lines } = this.props;
-
-    return <Group>{lines.map(this.renderAnnotationLine)}</Group>;
+    return <Line {...lineProps} key={`annotation-line-${i}`} />;
   };
 }
