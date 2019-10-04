@@ -1,11 +1,11 @@
 import classNames from 'classnames';
 import React from 'react';
 import { Icon } from '../icons/icon';
-import { LegendItem as SeriesLegendItem } from '../../chart_types/xy_chart/legend/legend';
+import { LegendItem } from './legend';
 import { LegendItemListener } from '../../specs/settings';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
-import { IChartState } from '../../store/chart_store';
+import { GlobalChartState } from '../../store/chart_store';
 import { isInitialized } from '../../store/selectors/is_initialized';
 import { getSettingsSpecSelector } from '../../store/selectors/get_settings_specs';
 import { onLegendItemClick, onToggleDeselectSeries } from '../../store/actions/legend';
@@ -13,19 +13,8 @@ import { isEqualSeriesKey } from '../../chart_types/xy_chart/utils/series_utils'
 import { DataSeriesColorsValues } from '../../chart_types/xy_chart/utils/series';
 import { Position } from '../../chart_types/xy_chart/utils/specs';
 
-// chartStore?: ChartStore; // FIX until we find a better way on ts mobx
-// legendItemKey: string;
-// legendPosition: Position;
-// color: string | undefined;
-// label: string | undefined;
-// isSeriesVisible?: boolean;
-// isLegendItemVisible?: boolean;
-// displayValue: string;
-// onMouseEnter: (event: React.MouseEvent) => void;
-// onMouseLeave: () => void;
-
 interface LegendItemOwnProps {
-  legendItem: SeriesLegendItem;
+  legendItem: LegendItem;
   displayValue: string;
   label?: string;
   onMouseEnter: (event: React.MouseEvent) => void;
@@ -43,7 +32,7 @@ interface LegendItemDispatchProps {
 interface LegendItemStateProps {
   legendPosition: Position;
   showLegendDisplayValue: boolean;
-  selectedLegendItem?: SeriesLegendItem | null;
+  selectedLegendItem?: LegendItem | null;
   onLegendItemClickListener?: LegendItemListener;
 }
 
@@ -112,7 +101,7 @@ class LegendItemComponent extends React.Component<LegendItemProps, LegendItemSta
     );
   }
 
-  renderVisibilityButton = (legendItem: SeriesLegendItem, isSeriesVisible = true) => {
+  renderVisibilityButton = (legendItem: LegendItem, isSeriesVisible = true) => {
     const iconType = isSeriesVisible ? 'eye' : 'eyeClosed';
     return (
       <div className="echLegendItem__visibility">
@@ -211,7 +200,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
     dispatch,
   );
 
-const mapStateToProps = (state: IChartState): LegendItemStateProps => {
+const mapStateToProps = (state: GlobalChartState): LegendItemStateProps => {
   if (!isInitialized(state)) {
     return {
       showLegendDisplayValue: false,
@@ -230,7 +219,7 @@ const mapStateToProps = (state: IChartState): LegendItemStateProps => {
   };
 };
 
-export const LegendItem = connect(
+export const LegendListItem = connect(
   mapStateToProps,
   mapDispatchToProps,
 )(LegendItemComponent);

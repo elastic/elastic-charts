@@ -4,13 +4,13 @@ import { connect } from 'react-redux';
 import { getChartDimensionsSelector } from '../../../../store/selectors/get_chart_dimensions';
 import { Dimensions } from '../../../../utils/dimensions';
 import { isInitialized } from '../../../../store/selectors/is_initialized';
-import { computeChartTransformSelector } from '../../../../chart_types/xy_chart/store/selectors/compute_chart_transform';
-import { Transform } from '../../../../chart_types/xy_chart/store/utils';
+import { computeChartTransformSelector } from '../../state/selectors/compute_chart_transform';
+import { Transform } from '../../state/utils';
 
-import { IChartState } from '../../../../store/chart_store';
-import { getBrushAreaSelector } from '../../../../chart_types/xy_chart/store/selectors/get_brush_area';
-import { isBrushAvailableSelector } from '../../../../chart_types/xy_chart/store/selectors/is_brush_available';
-import { isBrushingEnabledSelector } from '../../../../chart_types/xy_chart/store/selectors/is_brushing_enabled';
+import { GlobalChartState } from '../../../../store/chart_store';
+import { getBrushAreaSelector } from '../../state/selectors/get_brush_area';
+import { isBrushAvailableSelector } from '../../state/selectors/is_brush_available';
+import { isBrushingEnabledSelector } from '../../state/selectors/is_brushing_enabled';
 
 interface Props {
   initialized: boolean;
@@ -58,7 +58,7 @@ class BrushToolComponent extends React.Component<Props> {
 }
 
 const mapDispatchToProps = () => ({});
-const mapStateToProps = (state: IChartState) => {
+const mapStateToProps = (state: GlobalChartState) => {
   if (!isInitialized(state)) {
     return {
       initialized: false,

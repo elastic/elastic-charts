@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
-import { Axis, Chart, getAxisId, getSpecId, Position, ScaleType, BarSeries, Settings, niceTimeFormatter } from '../src';
-import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
+import { Axis, Chart, getAxisId, getSpecId, Position, ScaleType, Settings, AreaSeries, DataGenerator } from '../src';
 
 const dg = new DataGenerator();
 

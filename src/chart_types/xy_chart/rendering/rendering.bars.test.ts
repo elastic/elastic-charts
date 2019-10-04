@@ -1,4 +1,4 @@
-import { computeSeriesDomains } from '../store/utils';
+import { computeSeriesDomains } from '../state/utils';
 import { identity } from '../../../utils/commons';
 import { ScaleType } from '../../../utils/scales/scales';
 import { renderBars } from './rendering';

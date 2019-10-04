@@ -1,14 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { isPointGeometry, IndexedGeometry } from '../../../../utils/geometry';
-import { IChartState } from '../../../../store/chart_store';
+import { GlobalChartState } from '../../../../store/chart_store';
 import { isInitialized } from '../../../../store/selectors/is_initialized';
 import { getChartDimensionsSelector } from '../../../../store/selectors/get_chart_dimensions';
-import { computeChartTransformSelector } from '../../../../chart_types/xy_chart/store/selectors/compute_chart_transform';
-import { getHighlightedGeomsSelector } from '../../../../chart_types/xy_chart/store/selectors/get_tooltip_values_highlighted_geoms';
+import { computeChartTransformSelector } from '../../state/selectors/compute_chart_transform';
+import { getHighlightedGeomsSelector } from '../../state/selectors/get_tooltip_values_highlighted_geoms';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Rotation } from '../../../../chart_types/xy_chart/utils/specs';
-import { Transform } from '../../../../chart_types/xy_chart/store/utils';
+import { Transform } from '../../state/utils';
 import { getChartRotationSelector } from '../../../../store/selectors/get_chart_rotation';
 
 interface HighlighterProps {
@@ -53,7 +53,7 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
 }
 
 const mapDispatchToProps = () => ({});
-const mapStateToProps = (state: IChartState): HighlighterProps => {
+const mapStateToProps = (state: GlobalChartState): HighlighterProps => {
   if (!isInitialized(state)) {
     return {
       initialized: false,

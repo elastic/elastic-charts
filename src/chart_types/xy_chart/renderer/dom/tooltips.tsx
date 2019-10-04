@@ -2,11 +2,11 @@ import classNames from 'classnames';
 import React from 'react';
 import { connect } from 'react-redux';
 import { TooltipValue, TooltipValueFormatter } from '../../utils/interactions';
-import { IChartState } from '../../../../store/chart_store';
-import { isTooltipVisibleSelector } from '../../store/selectors/is_tooltip_visible';
-import { getTooltipHeaderFormatterSelector } from '../../store/selectors/get_tooltip_header_formatter';
-import { getTooltipPositionSelector } from '../../store/selectors/get_tooltip_position';
-import { getTooltipValuesSelector } from '../../store/selectors/get_tooltip_values_highlighted_geoms';
+import { GlobalChartState } from '../../../../store/chart_store';
+import { isTooltipVisibleSelector } from '../../state/selectors/is_tooltip_visible';
+import { getTooltipHeaderFormatterSelector } from '../../state/selectors/get_tooltip_header_formatter';
+import { getTooltipPositionSelector } from '../../state/selectors/get_tooltip_position';
+import { getTooltipValuesSelector } from '../../state/selectors/get_tooltip_values_highlighted_geoms';
 import { isInitialized } from '../../../../store/selectors/is_initialized';
 
 interface TooltipProps {
@@ -63,7 +63,7 @@ class TooltipsComponent extends React.Component<TooltipProps> {
 }
 
 const mapDispatchToProps = () => ({});
-const mapStateToProps = (state: IChartState) => {
+const mapStateToProps = (state: GlobalChartState) => {
   if (!isInitialized(state)) {
     return {
       initialized: false,

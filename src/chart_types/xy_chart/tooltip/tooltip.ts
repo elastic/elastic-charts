@@ -1,6 +1,6 @@
 import { TooltipValue, isFollowTooltipType, TooltipType, TooltipValueFormatter } from '../utils/interactions';
 import { SpecId, GroupId } from '../../../utils/ids';
-import { getAxesSpecForSpecId } from '../store/utils';
+import { getAxesSpecForSpecId } from '../state/utils';
 import { Scale } from '../../../utils/scales/scales';
 import { getColorValuesAsString } from '../utils/series';
 import {
@@ -14,8 +14,8 @@ import {
 } from '../utils/specs';
 import { IndexedGeometry, AccessorType } from '../../../utils/geometry';
 import { isPointOnGeometry } from '../rendering/rendering';
-import { Point } from 'utils/point';
-import { getAccessorFormatLabel } from 'utils/accessor';
+import { Point } from '../../../utils/point';
+import { getAccessorFormatLabel } from '../../../utils/accessor';
 
 export interface TooltipLegendValue {
   y0: any;

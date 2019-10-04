@@ -14,7 +14,7 @@ import { LineAnnotationStyle } from '../../../utils/themes/theme';
 import { Dimensions } from '../../../utils/dimensions';
 import { AnnotationId, GroupId } from '../../../utils/ids';
 import { Scale, ScaleType } from '../../../utils/scales/scales';
-import { computeXScaleOffset, getAxesSpecForSpecId } from '../store/utils';
+import { computeXScaleOffset, getAxesSpecForSpecId } from '../state/utils';
 import { Point } from '../../../utils/point';
 import {
   computeLineAnnotationDimensions,

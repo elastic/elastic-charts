@@ -6,11 +6,11 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { BarGeometry } from '../../../../utils/geometry';
 import { buildBarValueProps } from './bar_values_utils';
 import { connect } from 'react-redux';
-import { IChartState } from '../../../../store/chart_store';
+import { GlobalChartState } from '../../../../store/chart_store';
 import { getChartThemeSelector } from '../../../../store/selectors/get_chart_theme';
-import { computeChartDimensionsSelector } from '../../../../chart_types/xy_chart/store/selectors/compute_chart_dimensions';
+import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
 import { getChartRotationSelector } from '../../../../store/selectors/get_chart_rotation';
-import { computeSeriesGeometriesSelector } from '../../../../chart_types/xy_chart/store/selectors/compute_series_geometries';
+import { computeSeriesGeometriesSelector } from '../../state/selectors/compute_series_geometries';
 
 interface BarValuesProps {
   theme: Theme;
@@ -74,7 +74,7 @@ export class BarValuesComponent extends React.PureComponent<BarValuesProps> {
 }
 
 const mapDispatchToProps = () => ({});
-const mapStateToProps = (state: IChartState): BarValuesProps => {
+const mapStateToProps = (state: GlobalChartState): BarValuesProps => {
   const geometries = computeSeriesGeometriesSelector(state);
   return {
     theme: getChartThemeSelector(state),

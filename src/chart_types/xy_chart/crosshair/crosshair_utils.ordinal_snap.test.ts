@@ -3,7 +3,7 @@ import { BasicSeriesSpec } from '../utils/specs';
 import { getGroupId, getSpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
 import { getSnapPosition } from './crosshair_utils';
-import { computeSeriesDomains } from '../store/utils';
+import { computeSeriesDomains } from '../state/utils';
 
 describe('Crosshair utils ordinal scales', () => {
   const barSeries1SpecId = getSpecId('barSeries1');

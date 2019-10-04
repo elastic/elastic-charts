@@ -6,7 +6,7 @@ import { UpdateParentDimensionAction, updateParentDimensions } from '../store/ac
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { getSettingsSpecSelector } from '../store/selectors/get_settings_specs';
-import { IChartState } from 'store/chart_store';
+import { GlobalChartState } from 'store/chart_store';
 
 interface ResizerProps {
   resizeDebounce: number;
@@ -75,7 +75,7 @@ const mapDispatchToProps = (dispatch: Dispatch<UpdateParentDimensionAction>) => 
   };
 };
 
-const mapStateToProps = (state: IChartState) => {
+const mapStateToProps = (state: GlobalChartState) => {
   return {
     resizeDebounce: getSettingsSpecSelector(state).resizeDebounce || 200,
   };

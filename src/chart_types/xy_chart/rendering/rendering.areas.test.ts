@@ -5,7 +5,7 @@ import { IndexedGeometry, PointGeometry, AreaGeometry } from '../../../utils/geo
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { computeXScale, computeYScales } from '../utils/scales';
 import { AreaSeriesSpec } from '../utils/specs';
-import { computeSeriesDomains } from '../store/utils';
+import { computeSeriesDomains } from '../state/utils';
 import { renderArea } from './rendering';
 
 const SPEC_ID = 'spec_1';

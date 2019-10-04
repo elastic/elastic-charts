@@ -16,7 +16,7 @@ import {
   isXDomain,
   getRotatedCursor,
 } from './annotation_utils';
-import { isHorizontalRotation, getAxesSpecForSpecId } from '../store/utils';
+import { isHorizontalRotation, getAxesSpecForSpecId } from '../state/utils';
 import { isHorizontalAxis } from '../utils/axis_utils';
 import { Dimensions } from '../../../utils/dimensions';
 import { Scale } from '../../../utils/scales/scales';

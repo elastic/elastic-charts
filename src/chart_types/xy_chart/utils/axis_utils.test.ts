@@ -34,7 +34,7 @@ import {
 import { CanvasTextBBoxCalculator } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import { SvgTextBBoxCalculator } from '../../../utils/bbox/svg_text_bbox_calculator';
 import { niceTimeFormatter } from '../../../utils/data/formatters';
-import { mergeYCustomDomainsByGroupId } from '../store/selectors/merge_y_custom_domains';
+import { mergeYCustomDomainsByGroupId } from '../state/selectors/merge_y_custom_domains';
 
 describe('Axis computational utils', () => {
   const mockedRect = {
@@ -129,8 +129,8 @@ describe('Axis computational utils', () => {
   const xAxisWithTime: AxisSpec = {
     chartType: 'xy_axis',
     specType: 'axis',
-    id: getAxisId('axis_1'),
-    groupId: getGroupId('group_1'),
+    id: 'axis_1',
+    groupId: 'group_1',
     title: 'v axis',
     hide: false,
     showOverlappingTicks: false,
