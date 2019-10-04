@@ -38,6 +38,12 @@
     "FAQ.md",
     "yarn.lock"
   ],
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "yarn run typecheck:all && yarn run lint && yarn run test"
+    }
+  },
   "devDependencies": {
     "@babel/core": "^7.3.4",
     "@babel/polyfill": "^7.4.4",
