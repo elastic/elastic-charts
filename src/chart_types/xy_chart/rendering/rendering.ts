@@ -82,12 +82,6 @@ export interface BarGeometry {
   geometryId: GeometryId;
   value: GeometryValue;
   seriesStyle: BarSeriesStyle;
-  /**
-   * Is the point a pair in a banded series
-   *
-   * TODO: Fix band bar in tooltips
-   */
-  banded?: boolean;
 }
 export interface LineGeometry {
   line: string;

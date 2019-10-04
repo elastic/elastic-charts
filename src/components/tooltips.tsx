@@ -21,50 +21,10 @@ class TooltipsComponent extends React.Component<TooltipProps> {
 
   render() {
     const { isTooltipVisible, tooltipData, tooltipPosition, tooltipHeaderFormatter } = this.props.chartStore!;
-    // const { tooltipPosition, tooltipHeaderFormatter } = this.props.chartStore!;
 
     if (!isTooltipVisible.get()) {
       return <div className="echTooltip echTooltip--hidden" />;
     }
-
-    // const tooltipData = [
-    //   {
-    //     seriesKey: 'specId:{area},colors:{}',
-    //     name: 'area - upper',
-    //     value: '05:46',
-    //     color: '#1EA593',
-    //     isHighlighted: false,
-    //     isXValue: true,
-    //     yAccessor: 'y1',
-    //   },
-    //   {
-    //     seriesKey: 'specId:{area},colors:{}',
-    //     name: 'area - upper',
-    //     value: '17.22',
-    //     color: '#1EA593',
-    //     isHighlighted: false,
-    //     isXValue: false,
-    //     yAccessor: 'y1',
-    //   },
-    //   {
-    //     seriesKey: 'specId:{area},colors:{}',
-    //     name: 'area - lower',
-    //     value: '3.12',
-    //     color: '#1EA593',
-    //     isHighlighted: false,
-    //     isXValue: false,
-    //     yAccessor: 'y0',
-    //   },
-    //   {
-    //     seriesKey: 'specId:{average},colors:{}',
-    //     name: 'average',
-    //     value: '9.92',
-    //     color: '#2B70F7',
-    //     isHighlighted: false,
-    //     isXValue: false,
-    //     yAccessor: 'y1',
-    //   },
-    // ];
 
     return (
       <div className="echTooltip" style={{ transform: tooltipPosition.transform }}>

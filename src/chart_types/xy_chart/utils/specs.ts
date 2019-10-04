@@ -109,13 +109,13 @@ export interface SeriesSpec {
   sortIndex?: number;
   displayValueSettings?: DisplayValueSpec;
   /**
-   * Postfix string or accessor function for y1 accesor when using `y0Accessors`
+   * Postfix string or accessor function for y1 accessor when using `y0Accessors`
    *
    * @default ' - upper'
    */
   y0AccessorFormat?: AccessorFormat;
   /**
-   * Postfix string or accessor function for y1 accesor when using `y0Accessors`
+   * Postfix string or accessor function for y1 accessor when using `y0Accessors`
    *
    * @default ' - lower'
    */
@@ -124,13 +124,13 @@ export interface SeriesSpec {
 
 export interface Postfixes {
   /**
-   * Postfix for y1 accesor when using `y0Accessors`
+   * Postfix for y1 accessor when using `y0Accessors`
    *
    * @default 'upper'
    */
   y0AccessorFormat?: string;
   /**
-   * Postfix for y1 accesor when using `y0Accessors`
+   * Postfix for y1 accessor when using `y0Accessors`
    *
    * @default 'lower'
    */
