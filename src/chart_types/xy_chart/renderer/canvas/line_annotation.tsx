@@ -1,7 +1,7 @@
 import React from 'react';
 import { Group, Line } from 'react-konva';
 import { LineAnnotationStyle } from 'utils/themes/theme';
-import { AnnotationLineProps } from '../../annotations/annotation_utils';
+import { AnnotationLineProps } from 'chart_types/xy_chart/annotations/line_annotation_tooltip';
 
 interface LineAnnotationProps {
   lines: AnnotationLineProps[];

@@ -3,7 +3,6 @@ import { isLineAnnotation, AnnotationSpec } from '../../utils/specs';
 import { AnnotationId } from 'utils/ids';
 import {
   AnnotationDimensions,
-  AnnotationLineProps,
   AnnotationTooltipState,
   AnnotationTooltipFormatter,
 } from '../../annotations/annotation_utils';
@@ -16,6 +15,7 @@ import { computeAnnotationDimensionsSelector } from '../../../../chart_types/xy_
 import { getAnnotationSpecsSelector } from '../../../../chart_types/xy_chart/store/selectors/get_specs';
 import { getAnnotationTooltipStateSelector } from '../../../../chart_types/xy_chart/store/selectors/get_annotation_tooltip_state';
 import { isChartEmptySelector } from '../../../../chart_types/xy_chart/store/selectors/is_chart_empty';
+import { AnnotationLineProps } from 'chart_types/xy_chart/annotations/line_annotation_tooltip';
 
 interface AnnotationTooltipProps {
   isChartEmpty: boolean;

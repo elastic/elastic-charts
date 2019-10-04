@@ -15,33 +15,37 @@ import { ScaleBand } from '../../../utils/scales/scale_band';
 import { ScaleContinuous } from '../../../utils/scales/scale_continuous';
 import { Scale, ScaleType } from '../../../utils/scales/scales';
 import {
-  AnnotationLinePosition,
-  AnnotationLineProps,
   computeAnnotationDimensions,
   computeAnnotationTooltipState,
   computeClusterOffset,
-  computeLineAnnotationDimensions,
-  computeLineAnnotationTooltipState,
-  computeRectAnnotationDimensions,
-  computeRectAnnotationTooltipState,
-  computeRectTooltipLeft,
-  computeRectTooltipOffset,
-  computeRectTooltipTop,
-  DEFAULT_LINE_OVERFLOW,
   getAnnotationAxis,
+  getRotatedCursor,
+  scaleAndValidateDatum,
+} from './annotation_utils';
+import {
+  AnnotationLinePosition,
+  AnnotationLineProps,
+  computeLineAnnotationDimensions,
+  getLineAnnotationTooltipStateFromCursor,
+  DEFAULT_LINE_OVERFLOW,
+  isVerticalAnnotationLine,
+  isWithinLineBounds,
   getAnnotationLineTooltipPosition,
   getAnnotationLineTooltipTransform,
   getAnnotationLineTooltipXOffset,
   getAnnotationLineTooltipYOffset,
-  getRotatedCursor,
+  toTransformString,
+} from './line_annotation_tooltip';
+import {
+  computeRectAnnotationDimensions,
+  computeRectTooltipLeft,
+  computeRectTooltipOffset,
+  computeRectTooltipTop,
   isBottomRectTooltip,
   isRightRectTooltip,
-  isVerticalAnnotationLine,
-  isWithinLineBounds,
   isWithinRectBounds,
-  scaleAndValidateDatum,
-  toTransformString,
-} from './annotation_utils';
+  getRectAnnotationTooltipStateFromCursor,
+} from './rect_annotation_tooltip';
 import { Point } from 'utils/point';
 
 describe('annotation utils', () => {
@@ -1110,7 +1114,7 @@ describe('annotation utils', () => {
     const localAxesSpecs: AxisSpec[] = [];
 
     // missing annotation axis (xDomain)
-    const missingTooltipState = computeLineAnnotationTooltipState(
+    const missingTooltipState = getLineAnnotationTooltipStateFromCursor(
       cursorPosition,
       annotationLines,
       groupId,
@@ -1132,7 +1136,7 @@ describe('annotation utils', () => {
     // add axis for xDomain annotation
     localAxesSpecs.push(horizontalAxisSpec);
 
-    const xDomainTooltipState = computeLineAnnotationTooltipState(
+    const xDomainTooltipState = getLineAnnotationTooltipStateFromCursor(
       cursorPosition,
       annotationLines,
       groupId,
@@ -1151,7 +1155,7 @@ describe('annotation utils', () => {
     expect(xDomainTooltipState).toEqual(expectedXDomainTooltipState);
 
     // rotated xDomain
-    const xDomainRotatedTooltipState = computeLineAnnotationTooltipState(
+    const xDomainRotatedTooltipState = getLineAnnotationTooltipStateFromCursor(
       { x: 9, y: 18 },
       annotationLines,
       groupId,
@@ -1172,7 +1176,7 @@ describe('annotation utils', () => {
     // add axis for yDomain annotation
     localAxesSpecs.push(verticalAxisSpec);
 
-    const yDomainTooltipState = computeLineAnnotationTooltipState(
+    const yDomainTooltipState = getLineAnnotationTooltipStateFromCursor(
       cursorPosition,
       annotationLines,
       groupId,
@@ -1190,7 +1194,7 @@ describe('annotation utils', () => {
 
     expect(yDomainTooltipState).toEqual(expectedYDomainTooltipState);
 
-    const flippedYDomainTooltipState = computeLineAnnotationTooltipState(
+    const flippedYDomainTooltipState = getLineAnnotationTooltipStateFromCursor(
       { x: 9, y: 18 },
       annotationLines,
       groupId,
@@ -1208,7 +1212,7 @@ describe('annotation utils', () => {
 
     expect(flippedYDomainTooltipState).toEqual(expectedFlippedYDomainTooltipState);
 
-    const rotatedYDomainTooltipState = computeLineAnnotationTooltipState(
+    const rotatedYDomainTooltipState = getLineAnnotationTooltipStateFromCursor(
       { x: 0, y: 10 },
       annotationLines,
       groupId,
@@ -1729,7 +1733,7 @@ describe('annotation utils', () => {
     const cursorPosition = { x: 3, y: 4 };
     const annotationRects = [{ rect: { x: 2, y: 3, width: 3, height: 5 } }];
 
-    const visibleTooltip = computeRectAnnotationTooltipState(cursorPosition, annotationRects, 0, chartDimensions);
+    const visibleTooltip = getRectAnnotationTooltipStateFromCursor(cursorPosition, annotationRects, 0, chartDimensions);
     const expectedVisibleTooltipState = {
       isVisible: true,
       transform: 'translate(0, 0)',
