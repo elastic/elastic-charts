@@ -1,9 +1,9 @@
 import { mount } from 'enzyme';
 import * as React from 'react';
-import { SpecsParser } from './specs_parser';
-import { Provider } from 'react-redux';
-import { chartStoreReducer } from '../store/chart_store';
 import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+import { SpecsParser } from './specs_parser';
+import { chartStoreReducer } from '../state/chart_state';
 
 describe('Specs parser', () => {
   test('Mount and parse specs', () => {

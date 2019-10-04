@@ -2,7 +2,7 @@ import createCachedSelector from 're-reselect';
 import { getAxisSpecsSelector } from './get_specs';
 import { isYDomain, isCompleteBound, isLowerBound, isUpperBound, isBounded } from '../../utils/axis_utils';
 import { AxisSpec, DomainRange, Rotation } from '../../utils/specs';
-import { getSettingsSpecSelector } from '../../../../store/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 
 export const mergeYCustomDomainsByGroupIdSelector = createCachedSelector(
   [getAxisSpecsSelector, getSettingsSpecSelector],

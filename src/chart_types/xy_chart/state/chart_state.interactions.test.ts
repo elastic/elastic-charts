@@ -2,11 +2,8 @@ import { createStore, Store } from 'redux';
 import { BarSeriesSpec, BasicSeriesSpec, AxisSpec, Position } from '../utils/specs';
 import { TooltipType } from '../utils/interactions';
 import { ScaleType } from '../../../utils/scales/scales';
-import { chartStoreReducer, GlobalChartState } from '../../../store/chart_store';
+import { chartStoreReducer, GlobalChartState } from '../../../state/chart_state';
 import { SettingsSpec, DEFAULT_SETTINGS_SPEC } from '../../../specs';
-import { upsertSpec, specParsed } from '../../../store/actions/specs';
-import { updateParentDimensions } from '../../../store/actions/chart_settings';
-import { onCursorPositionChange } from '../../../store/actions/cursor';
 import { computeSeriesGeometriesSelector } from './selectors/compute_series_geometries';
 import { computeCursorPositionSelector } from './selectors/compute_cursor_position';
 import {
@@ -17,7 +14,10 @@ import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
 import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { getCursorBandPositionSelector } from './selectors/get_cursor_band';
-import { getSettingsSpecSelector } from '../../../store/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../state/selectors/get_settings_specs';
+import { upsertSpec, specParsed } from '../../../state/actions/specs';
+import { updateParentDimensions } from '../../../state/actions/chart_settings';
+import { onCursorPositionChange } from '../../../state/actions/cursor';
 
 const SPEC_ID = 'spec_1';
 const GROUP_ID = 'group_1';

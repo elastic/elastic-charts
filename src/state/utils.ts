@@ -1,4 +1,4 @@
-import { SpecList, ChartType } from './chart_store';
+import { SpecList, ChartType } from './chart_state';
 import { Spec } from '../specs';
 
 export function getSpecsFromStore<U extends Spec>(specs: SpecList, chartType: ChartType, specType?: string): U[] {

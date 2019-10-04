@@ -1,8 +1,8 @@
 import createCachedSelector from 're-reselect';
-import { GlobalChartState } from '../../../../store/chart_store';
-import { getSpecsFromStore } from '../../../../store/utils';
+import { GlobalChartState } from '../../../../state/chart_state';
+import { getSpecsFromStore } from '../../../../state/utils';
 import { AxisSpec, BasicSeriesSpec, AnnotationSpec } from '../../utils/specs';
-import { getChartIdSelector } from '../../../../store/selectors/get_chart_id';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 
 const getSpecs = (state: GlobalChartState) => state.specs;
 

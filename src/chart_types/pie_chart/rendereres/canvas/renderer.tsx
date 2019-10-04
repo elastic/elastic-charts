@@ -2,21 +2,22 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Layer, Stage } from 'react-konva';
 import { ArcGeometries } from './arc_geometries';
-import { GlobalChartState, GeometriesList, GlobalSettings } from '../../../../store/chart_store';
-import { getChartDimensionsSelector } from '../../../../store/selectors/get_chart_dimensions';
+import { GlobalChartState, GlobalSettings } from '../../../../state/chart_state';
+import { getChartDimensionsSelector } from '../../../../state/selectors/get_chart_dimensions';
 import { Dimensions } from '../../../../utils/dimensions';
-import { isInitialized } from '../../../../store/selectors/is_initialized';
-import { getChartRotationSelector } from '../../../../store/selectors/get_chart_rotation';
-import { getChartThemeSelector } from '../../../../store/selectors/get_chart_theme';
+import { isInitialized } from '../../../../state/selectors/is_initialized';
+import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { Theme } from '../../../../utils/themes/theme';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { Rotation } from 'chart_types/xy_chart/utils/specs';
 import { LegendItem } from 'components/legend/legend';
 import { computeGeometriesSelector } from '../../state/selectors/compute_geometries';
+import { ArcGeometry } from 'utils/geometry';
 
 interface Props {
   initialized: boolean;
-  geometries: GeometriesList;
+  geometries: { arcs?: ArcGeometry[] };
   globalSettings: GlobalSettings;
   chartRotation: Rotation;
   chartDimensions: Dimensions;

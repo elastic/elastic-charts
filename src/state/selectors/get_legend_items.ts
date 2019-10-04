@@ -1,4 +1,4 @@
-import { GlobalChartState } from '../chart_store';
+import { GlobalChartState } from '../chart_state';
 import { LegendItem } from '../../components/legend/legend';
 
 export const getLegendItemsSelector = (state: GlobalChartState): Map<string, LegendItem> => {

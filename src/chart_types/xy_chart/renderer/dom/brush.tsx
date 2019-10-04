@@ -1,13 +1,13 @@
 import React from 'react';
 import { Layer, Rect, Stage } from 'react-konva';
 import { connect } from 'react-redux';
-import { getChartDimensionsSelector } from '../../../../store/selectors/get_chart_dimensions';
+import { getChartDimensionsSelector } from '../../../../state/selectors/get_chart_dimensions';
 import { Dimensions } from '../../../../utils/dimensions';
-import { isInitialized } from '../../../../store/selectors/is_initialized';
+import { isInitialized } from '../../../../state/selectors/is_initialized';
 import { computeChartTransformSelector } from '../../state/selectors/compute_chart_transform';
 import { Transform } from '../../state/utils';
 
-import { GlobalChartState } from '../../../../store/chart_store';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { getBrushAreaSelector } from '../../state/selectors/get_brush_area';
 import { isBrushAvailableSelector } from '../../state/selectors/is_brush_available';
 import { isBrushingEnabledSelector } from '../../state/selectors/is_brushing_enabled';

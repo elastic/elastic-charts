@@ -1,5 +1,5 @@
 import createCachedSelector from 're-reselect';
-import { getSettingsSpecSelector } from '../../../../store/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getComputedScalesSelector } from './get_computed_scales';
 import { ScaleType } from '../../../../utils/scales/scales';
 

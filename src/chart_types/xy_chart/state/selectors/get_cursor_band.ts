@@ -5,7 +5,7 @@ import { Scale } from '../../../../utils/scales/scales';
 import { isLineAreaOnlyChart } from '../utils';
 import { getCursorBandPosition } from '../../crosshair/crosshair_utils';
 import { SettingsSpec } from '../../../../specs/settings';
-import { getSettingsSpecSelector } from '../../../../store/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { BasicSeriesSpec } from 'chart_types/xy_chart/utils/specs';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';

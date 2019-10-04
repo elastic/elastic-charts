@@ -1,15 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { isPointGeometry, IndexedGeometry } from '../../../../utils/geometry';
-import { GlobalChartState } from '../../../../store/chart_store';
-import { isInitialized } from '../../../../store/selectors/is_initialized';
-import { getChartDimensionsSelector } from '../../../../store/selectors/get_chart_dimensions';
+import { GlobalChartState } from '../../../../state/chart_state';
+import { isInitialized } from '../../../../state/selectors/is_initialized';
+import { getChartDimensionsSelector } from '../../../../state/selectors/get_chart_dimensions';
 import { computeChartTransformSelector } from '../../state/selectors/compute_chart_transform';
 import { getHighlightedGeomsSelector } from '../../state/selectors/get_tooltip_values_highlighted_geoms';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Rotation } from '../../../../chart_types/xy_chart/utils/specs';
 import { Transform } from '../../state/utils';
-import { getChartRotationSelector } from '../../../../store/selectors/get_chart_rotation';
+import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 
 interface HighlighterProps {
   highlightedGeometries: IndexedGeometry[];

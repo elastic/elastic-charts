@@ -1,14 +1,14 @@
 import { LineSeriesSpec } from '../utils/specs';
 import { ScaleType } from '../../../utils/scales/scales';
 import { createStore, Store } from 'redux';
-import { chartStoreReducer, GlobalChartState } from '../../../store/chart_store';
-import { upsertSpec, specParsed } from '../../../store/actions/specs';
+import { chartStoreReducer, GlobalChartState } from '../../../state/chart_state';
+import { upsertSpec, specParsed } from '../../../state/actions/specs';
 import { SettingsSpec, DEFAULT_SETTINGS_SPEC } from '../../../specs';
 import { mergeWithDefaultTheme } from '../../../utils/themes/theme';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
-import { updateParentDimensions } from '../../../store/actions/chart_settings';
+import { updateParentDimensions } from '../../../state/actions/chart_settings';
 import { computeSeriesGeometriesSelector } from './selectors/compute_series_geometries';
-import { onCursorPositionChange } from '../../../store/actions/cursor';
+import { onCursorPositionChange } from '../../../state/actions/cursor';
 import { getTooltipValuesSelector } from './selectors/get_tooltip_values_highlighted_geoms';
 import { DateTime } from 'luxon';
 import { getComputedScalesSelector } from './selectors/get_computed_scales';

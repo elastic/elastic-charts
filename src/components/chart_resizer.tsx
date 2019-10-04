@@ -2,11 +2,11 @@ import React, { RefObject } from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
 import { debounce } from 'ts-debounce';
 import { Dimensions } from '../utils/dimensions';
-import { UpdateParentDimensionAction, updateParentDimensions } from '../store/actions/chart_settings';
+import { UpdateParentDimensionAction, updateParentDimensions } from '../state/actions/chart_settings';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { getSettingsSpecSelector } from '../store/selectors/get_settings_specs';
-import { GlobalChartState } from 'store/chart_store';
+import { getSettingsSpecSelector } from '../state/selectors/get_settings_specs';
+import { GlobalChartState } from '../state/chart_state';
 
 interface ResizerProps {
   resizeDebounce: number;

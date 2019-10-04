@@ -1,12 +1,12 @@
-import { getSettingsSpecSelector } from '../../../../store/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import createCachedSelector from 're-reselect';
 import {
   getTooltipValuesAndGeometriesSelector,
   TooltipAndHighlightedGeoms,
 } from './get_tooltip_values_highlighted_geoms';
 import { SettingsSpec } from 'specs';
-import { GlobalChartState } from 'store/chart_store';
-import { IndexedGeometry } from 'utils/geometry';
+import { GlobalChartState } from '../../../../state/chart_state';
+import { IndexedGeometry } from '../../../../utils/geometry';
 import { Selector } from 'react-redux';
 import { ChartTypes } from '../../../index';
 

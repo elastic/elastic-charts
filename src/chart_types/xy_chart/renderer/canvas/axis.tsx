@@ -14,12 +14,12 @@ import { AxisSpec, Position } from '../../utils/specs';
 import { Theme } from '../../../../utils/themes/theme';
 import { Dimensions } from '../../../../utils/dimensions';
 import { connect } from 'react-redux';
-import { GlobalChartState } from '../../../../store/chart_store';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { computeAxisVisibleTicksSelector } from '../../state/selectors/compute_axis_visible_ticks';
 import { getAxisSpecsSelector } from '../../state/selectors/get_specs';
 import { AxisId } from '../../../../utils/ids';
 import { computeAxisTicksDimensionsSelector } from '../../state/selectors/compute_axis_ticks_dimensions';
-import { getChartThemeSelector } from '../../../../store/selectors/get_chart_theme';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
 
 interface AxisProps {

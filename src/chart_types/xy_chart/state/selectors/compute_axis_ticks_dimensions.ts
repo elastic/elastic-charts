@@ -4,10 +4,10 @@ import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { CanvasTextBBoxCalculator } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { computeAxisTicksDimensions, AxisTicksDimensions } from '../../utils/axis_utils';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
-import { getChartThemeSelector } from '../../../../store/selectors/get_chart_theme';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { AxisId } from '../../../../utils/ids';
 import { getAxisSpecsSelector } from './get_specs';
-import { getSettingsSpecSelector } from '../../../../store/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getBarPaddingsSelector } from './get_bar_paddings';
 
 export const computeAxisTicksDimensionsSelector = createCachedSelector(

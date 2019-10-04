@@ -12,7 +12,7 @@ import {
   AnnotationDimensions,
 } from '../../annotations/annotation_utils';
 import { computeAnnotationDimensionsSelector } from './compute_annotations';
-import { getChartRotationSelector } from '../../../../store/selectors/get_chart_rotation';
+import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { AnnotationId } from '../../../../utils/ids';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { ComputedGeometries } from '../utils';

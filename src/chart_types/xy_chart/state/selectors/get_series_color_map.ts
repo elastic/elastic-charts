@@ -3,7 +3,7 @@ import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { getSeriesSpecsSelector } from './get_specs';
 import { getUpdatedCustomSeriesColors } from '../utils';
 import { getSeriesColorMap } from '../../utils/series';
-import { getChartThemeSelector } from '../../../../store/selectors/get_chart_theme';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 
 export const getSeriesColorMapSelector = createCachedSelector(
   [getSeriesSpecsSelector, computeSeriesDomainsSelector, getChartThemeSelector],

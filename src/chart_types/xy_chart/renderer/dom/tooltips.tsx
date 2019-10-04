@@ -2,12 +2,12 @@ import classNames from 'classnames';
 import React from 'react';
 import { connect } from 'react-redux';
 import { TooltipValue, TooltipValueFormatter } from '../../utils/interactions';
-import { GlobalChartState } from '../../../../store/chart_store';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { isTooltipVisibleSelector } from '../../state/selectors/is_tooltip_visible';
 import { getTooltipHeaderFormatterSelector } from '../../state/selectors/get_tooltip_header_formatter';
 import { getTooltipPositionSelector } from '../../state/selectors/get_tooltip_position';
 import { getTooltipValuesSelector } from '../../state/selectors/get_tooltip_values_highlighted_geoms';
-import { isInitialized } from '../../../../store/selectors/is_initialized';
+import { isInitialized } from '../../../../state/selectors/is_initialized';
 
 interface TooltipProps {
   isTooltipVisible: boolean;

@@ -1,5 +1,5 @@
 import { UpsertSpecAction, RemoveSpecAction, UPSERT_SPEC, REMOVE_SPEC, SpecParsedAction } from '../actions/specs';
-import { SpecList } from '../chart_store';
+import { SpecList } from '../chart_state';
 
 export function specsReducer(state: SpecList = {}, action: UpsertSpecAction | RemoveSpecAction | SpecParsedAction) {
   switch (action.type) {
