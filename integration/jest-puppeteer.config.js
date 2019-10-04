@@ -12,7 +12,7 @@ module.exports = {
     headless: true,
     slowMo: 0,
     browserUrl: `http://${host}:${port}/iframe.html`,
-    args: ['--font-render-hinting=medium'],
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--font-render-hinting=medium'],
   },
   server: {
     command: `RNG_SEED='elastic-charts' yarn start --port=${port}`,
