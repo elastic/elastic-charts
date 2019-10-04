@@ -127,4 +127,4 @@ yarn install --frozen-lockfile
 ### visual testing
 ###
 echo " -- visual testing"
-yarn jest:integration:ci --detectOpenHandles
+NODE_ENV=ci yarn jest:integration --ci

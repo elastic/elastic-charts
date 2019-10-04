@@ -34,6 +34,7 @@ import * as TestDatasets from '../src/utils/data_samples/test_dataset';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 
 import { TEST_DATASET_DISCOVER } from '../src/utils/data_samples/test_dataset_discover_per_30s';
+import { getRandomNumber } from '../src/utils/data_generators/simple_noise';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
 
@@ -1179,8 +1180,8 @@ storiesOf('Bar Chart', module)
     const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d: any) => {
       return {
         x: d[0],
-        max: d[1] + 4 + 4 * Math.random(),
-        min: d[1] - 4 - 4 * Math.random(),
+        max: d[1] + 4 + 4 * getRandomNumber(),
+        min: d[1] - 4 - 4 * getRandomNumber(),
       };
     });
     const lineData = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d: any) => {

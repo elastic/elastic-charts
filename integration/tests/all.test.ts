@@ -8,14 +8,16 @@ jest.mock('../../.storybook/theme_service.ts', () => ({
 
 const storyGroups = getStorybookInfo();
 
-storyGroups.forEach(({ group, encodedGroup, stories }) => {
-  describe(group, () => {
-    stories.forEach(({ title, encodedTitle }) => {
-      describe(title, () => {
-        it('visually looks correct', async () => {
-          await page.goto(`http://localhost:9001/iframe.html?id=${encodedGroup}--${encodedTitle}`);
-          const chart = await common.getChartScreenshot();
-          expect(chart).toMatchImageSnapshot();
+describe('Baseline Visual tests for all stories', () => {
+  storyGroups.forEach(({ group, encodedGroup, stories }) => {
+    describe(group, () => {
+      stories.forEach(({ title, encodedTitle }) => {
+        describe(title, () => {
+          it('visually looks correct', async () => {
+            await page.goto(`http://localhost:9001/iframe.html?id=${encodedGroup}--${encodedTitle}`);
+            const chart = await common.getChartScreenshot();
+            expect(chart).toMatchImageSnapshot();
+          });
         });
       });
     });

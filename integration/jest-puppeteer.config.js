@@ -14,7 +14,7 @@ module.exports = {
     browserUrl: `http://${host}:${port}/iframe.html`,
   },
   server: {
-    command: `yarn start --port=${port}`,
+    command: `RNG_SEED='elastic-charts' yarn start --port=${port}`,
     port,
     usedPortAction: 'ask',
     launchTimeout: 60000,
