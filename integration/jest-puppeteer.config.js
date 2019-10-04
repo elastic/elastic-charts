@@ -1,5 +1,5 @@
-const port = process.env.PORT || 9001;
-const host = process.env.HOST || 'localhost';
+const port = 9001;
+const host = 'localhost';
 
 /**
  * combined config object
@@ -9,9 +9,10 @@ const host = process.env.HOST || 'localhost';
 module.exports = {
   launch: {
     dumpio: false,
-    headless: process.env.NODE_ENV === 'ci',
-    slowMo: process.env.NODE_ENV === 'ci' ? 0 : 300,
+    headless: false,
+    slowMo: 0,
     browserUrl: `http://${host}:${port}/iframe.html`,
+    args: ['--font-render-hinting=medium'],
   },
   server: {
     command: `RNG_SEED='elastic-charts' yarn start --port=${port}`,

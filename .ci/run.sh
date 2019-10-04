@@ -127,4 +127,4 @@ yarn install --frozen-lockfile
 ### visual testing
 ###
 echo " -- visual testing"
-NODE_ENV=ci yarn jest:integration --ci
+yarn jest:integration --ci
