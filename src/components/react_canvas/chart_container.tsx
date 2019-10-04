@@ -78,16 +78,9 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
           );
         }}
       >
-        {getCustomChartComponents && getCustomChartComponents('dom', -1)}
         <ChartResizer />
-        <ReactiveChart>
-          {/* <Provider store={this.chartStore}>
-            <ChartTypeComponents zIndex={-1} type={'canvas'} />
-          </Provider>
-          <Provider store={this.chartStore}>
-            <ChartTypeComponents zIndex={1} type={'canvas'} />
-          </Provider> */}
-        </ReactiveChart>
+        {getCustomChartComponents && getCustomChartComponents('dom', -1)}
+        <ReactiveChart />
         {getCustomChartComponents && getCustomChartComponents('dom', 1)}
       </div>
     );

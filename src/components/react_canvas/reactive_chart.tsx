@@ -21,11 +21,7 @@ import { Transform } from '../../chart_types/xy_chart/store/utils';
 import { Rotation, AnnotationSpec } from '../../chart_types/xy_chart/utils/specs';
 import { AnnotationId } from '../../utils/ids';
 import { isLineAnnotation, isRectAnnotation } from '../../chart_types/xy_chart/utils/specs';
-import {
-  AnnotationDimensions,
-  AnnotationLineProps,
-  AnnotationRectProps,
-} from '../../chart_types/xy_chart/annotations/annotation_utils';
+import { AnnotationDimensions } from '../../chart_types/xy_chart/annotations/annotation_utils';
 import { LineAnnotation } from '../../chart_types/xy_chart/renderer/canvas/line_annotation';
 import { RectAnnotation } from '../../chart_types/xy_chart/renderer/canvas/rect_annotation';
 import { computeAnnotationDimensionsSelector } from '../../chart_types/xy_chart/store/selectors/compute_annotations';
@@ -35,6 +31,8 @@ import { isBrushAvailableSelector } from '../../chart_types/xy_chart/store/selec
 import { getHighlightedSeriesSelector } from '../../chart_types/xy_chart/store/selectors/get_highlighted_series';
 import { LegendItem } from '../../chart_types/xy_chart/legend/legend';
 import { getChartTypeComponentSelector } from '../../store/selectors/get_chart_type_components';
+import { AnnotationLineProps } from 'chart_types/xy_chart/annotations/line_annotation_tooltip';
+import { AnnotationRectProps } from 'chart_types/xy_chart/annotations/rect_annotation_tooltip';
 
 interface Props {
   initialized: boolean;
@@ -227,7 +225,6 @@ class Chart extends React.Component<Props> {
         });
       }
     });
-    console.log({ annotationElements });
     return annotationElements;
   };
 

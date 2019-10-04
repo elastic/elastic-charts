@@ -11,7 +11,7 @@ import {
   computeLineAnnotationDimensions,
   DEFAULT_LINE_OVERFLOW,
   isWithinLineBounds,
-} from './annotation_utils';
+} from './line_annotation_tooltip';
 import { Point } from 'utils/point';
 
 describe('annotation marker', () => {
