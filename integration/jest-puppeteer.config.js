@@ -9,7 +9,7 @@ const host = 'localhost';
 module.exports = {
   launch: {
     dumpio: false,
-    headless: false,
+    headless: true,
     slowMo: 0,
     browserUrl: `http://${host}:${port}/iframe.html`,
     args: ['--font-render-hinting=medium'],
