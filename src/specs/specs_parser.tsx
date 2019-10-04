@@ -1,7 +1,7 @@
-import { connect } from 'react-redux';
 import { useEffect } from 'react';
-import { specParsed, specUnmounted } from '../store/actions/specs';
 import { bindActionCreators, Dispatch } from 'redux';
+import { connect } from 'react-redux';
+import { specParsed, specUnmounted } from '../state/actions/specs';
 
 export const SpecsParserComponent: React.FunctionComponent<{}> = (props) => {
   const injected = props as DispatchProps;

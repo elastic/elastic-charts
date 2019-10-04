@@ -1,7 +1,7 @@
 import createCachedSelector from 're-reselect';
 import { Selector } from 'reselect';
-import { GlobalChartState, PointerState } from '../../../../store/chart_store';
-import { getSettingsSpecSelector } from '../../../../store/selectors/get_settings_specs';
+import { GlobalChartState, PointerState } from '../../../../state/chart_state';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getHighlightedGeomsSelector } from './get_tooltip_values_highlighted_geoms';
 import { SettingsSpec } from '../../../../specs';
 import { IndexedGeometry } from '../../../../utils/geometry';

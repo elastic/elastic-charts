@@ -1,4 +1,4 @@
-import { GlobalChartState } from 'store/chart_store';
+import { GlobalChartState } from '../chart_state';
 
 export const isLegendInitializedSelector = (state: GlobalChartState): boolean | undefined => {
   if (state.internalChartState) {

@@ -1,7 +1,6 @@
 import React from 'react';
-import { InternalChartState, GlobalChartState } from '../../../store/chart_store';
+import { InternalChartState, GlobalChartState } from '../../../state/chart_state';
 import { ChartTypes } from '../..';
-import { computeSeriesGeometriesSelector } from './selectors/compute_series_geometries';
 import { computeChartDimensionsSelector } from './selectors/compute_chart_dimensions';
 import { Tooltips } from '../renderer/dom/tooltips';
 import { htmlIdGenerator } from '../../../utils/commons';
@@ -19,10 +18,6 @@ import { TooltipLegendValue } from '../tooltip/tooltip';
 export class XYAxisChartState implements InternalChartState {
   chartType = ChartTypes.XYAxis;
   legendId: string = htmlIdGenerator()('legend');
-  render(globalState: GlobalChartState) {
-    const geoms = computeSeriesGeometriesSelector(globalState);
-    return geoms.geometries;
-  }
   getChartDimensions(globalState: GlobalChartState) {
     return computeChartDimensionsSelector(globalState).chartDimensions;
   }

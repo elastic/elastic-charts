@@ -1,5 +1,5 @@
 import { RectAnnotationSpec, DEFAULT_GLOBAL_ID } from '../utils/specs';
-import { specComponentFactory, getConnect } from '../../../store/spec_factory';
+import { specComponentFactory, getConnect } from '../../../state/spec_factory';
 import { DEFAULT_ANNOTATION_RECT_STYLE } from '../../../utils/themes/theme';
 import { ChartTypes } from '../../index';
 

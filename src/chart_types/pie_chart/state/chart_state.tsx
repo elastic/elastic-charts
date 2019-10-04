@@ -1,6 +1,5 @@
 import React from 'react';
-import { InternalChartState, GlobalChartState } from '../../../store/chart_store';
-import { computeGeometriesSelector } from './selectors/compute_geometries';
+import { InternalChartState, GlobalChartState } from '../../../state/chart_state';
 import { ChartTypes } from '../..';
 import { ReactiveChart } from '../rendereres/canvas/renderer';
 import { TooltipLegendValue } from 'chart_types/xy_chart/tooltip/tooltip';
@@ -29,9 +28,6 @@ legendItems.set('aaa', {
 
 export class PieChartState implements InternalChartState {
   chartType = ChartTypes.Pie;
-  render(state: GlobalChartState) {
-    return computeGeometriesSelector(state);
-  }
   getChartDimensions(state: GlobalChartState) {
     return state.settings.parentDimensions;
   }

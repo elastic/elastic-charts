@@ -1,12 +1,12 @@
 import React from 'react';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { onCursorPositionChange } from '../store/actions/cursor';
-import { GlobalChartState } from '../store/chart_store';
+import { onCursorPositionChange } from '../state/actions/cursor';
+import { GlobalChartState } from '../state/chart_state';
 import { ChartResizer } from './chart_resizer';
-import { onMouseUp, onMouseDown } from '../store/actions/mouse';
-import { getInternalChartRendererSelector } from '../store/selectors/get_chart_type_components';
-import { isInternalChartEmptySelector } from '../store/selectors/is_chart_empty';
+import { onMouseUp, onMouseDown } from '../state/actions/mouse';
+import { getInternalChartRendererSelector } from '../state/selectors/get_chart_type_components';
+import { isInternalChartEmptySelector } from '../state/selectors/is_chart_empty';
 interface ReactiveChartProps {
   initialized: boolean;
   isChartEmpty?: boolean;

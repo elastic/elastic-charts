@@ -1,6 +1,6 @@
 import createCachedSelector from 're-reselect';
 import { getCursorLinePosition } from '../../crosshair/crosshair_utils';
-import { getSettingsSpecSelector } from '../../../../store/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { computeCursorPositionSelector } from './compute_cursor_position';
 

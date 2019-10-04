@@ -1,6 +1,6 @@
 import createCachedSelector from 're-reselect';
 import { computeCursorPositionSelector } from './compute_cursor_position';
-import { GlobalChartState } from '../../../../store/chart_store';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { isBrushingEnabledSelector } from './is_brushing_enabled';
 
 const getPointerSelector = (state: GlobalChartState) => state.interactions.pointer;

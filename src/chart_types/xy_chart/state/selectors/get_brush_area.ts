@@ -1,9 +1,9 @@
 import createCachedSelector from 're-reselect';
-import { GlobalChartState } from '../../../../store/chart_store';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { Dimensions } from '../../../../utils/dimensions';
-import { getChartDimensionsSelector } from '../../../../store/selectors/get_chart_dimensions';
+import { getChartDimensionsSelector } from '../../../../state/selectors/get_chart_dimensions';
 import { computeChartTransformSelector } from './compute_chart_transform';
-import { getChartRotationSelector } from '../../../../store/selectors/get_chart_rotation';
+import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 
 const getMouseDownPosition = (state: GlobalChartState) => state.interactions.pointer.down;
 const getRawCursorPosition = (state: GlobalChartState) => {

@@ -6,11 +6,11 @@ import { GridLineConfig, mergeGridLineConfigs, Theme } from '../../../../utils/t
 import { Dimensions } from '../../../../utils/dimensions';
 import { AxisId } from '../../../../utils/ids';
 import { AxisSpec } from '../../../../chart_types/xy_chart/utils/specs';
-import { GlobalChartState } from '../../../../store/chart_store';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
 import { getAxisSpecsSelector } from '../../state/selectors/get_specs';
 import { computeAxisVisibleTicksSelector } from '../../state/selectors/compute_axis_visible_ticks';
-import { getChartThemeSelector } from '../../../../store/selectors/get_chart_theme';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 
 interface GridProps {
   chartTheme: Theme;

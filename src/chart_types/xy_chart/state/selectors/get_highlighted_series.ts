@@ -1,5 +1,5 @@
 import createCachedSelector from 're-reselect';
-import { GlobalChartState } from '../../../../store/chart_store';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { computeLegendSelector } from './compute_legend';
 import { LegendItem } from '../../../../components/legend/legend';
 

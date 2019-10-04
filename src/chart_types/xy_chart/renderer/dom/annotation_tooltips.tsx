@@ -8,9 +8,9 @@ import {
 } from '../../annotations/annotation_utils';
 import { connect } from 'react-redux';
 import { Dimensions } from '../../../../utils/dimensions';
-import { GlobalChartState } from '../../../../store/chart_store';
-import { isInitialized } from '../../../../store/selectors/is_initialized';
-import { getChartDimensionsSelector } from '../../../../store/selectors/get_chart_dimensions';
+import { GlobalChartState } from '../../../../state/chart_state';
+import { isInitialized } from '../../../../state/selectors/is_initialized';
+import { getChartDimensionsSelector } from '../../../../state/selectors/get_chart_dimensions';
 import { computeAnnotationDimensionsSelector } from '../../state/selectors/compute_annotations';
 import { getAnnotationSpecsSelector } from '../../state/selectors/get_specs';
 import { getAnnotationTooltipStateSelector } from '../../state/selectors/get_annotation_tooltip_state';

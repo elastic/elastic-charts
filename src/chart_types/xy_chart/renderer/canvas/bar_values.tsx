@@ -6,10 +6,10 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { BarGeometry } from '../../../../utils/geometry';
 import { buildBarValueProps } from './bar_values_utils';
 import { connect } from 'react-redux';
-import { GlobalChartState } from '../../../../store/chart_store';
-import { getChartThemeSelector } from '../../../../store/selectors/get_chart_theme';
+import { GlobalChartState } from '../../../../state/chart_state';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
-import { getChartRotationSelector } from '../../../../store/selectors/get_chart_rotation';
+import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { computeSeriesGeometriesSelector } from '../../state/selectors/compute_series_geometries';
 
 interface BarValuesProps {

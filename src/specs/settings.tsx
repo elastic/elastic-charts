@@ -3,7 +3,7 @@ import { PartialTheme, Theme } from '../utils/themes/theme';
 import { Domain } from '../utils/domain';
 import { TooltipType, TooltipValueFormatter } from '../chart_types/xy_chart/utils/interactions';
 import { ScaleTypes } from '../utils/scales/scales';
-import { getConnect, specComponentFactory } from '../store/spec_factory';
+import { getConnect, specComponentFactory } from '../state/spec_factory';
 import { Spec } from '.';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { ChartTypes } from '../chart_types';

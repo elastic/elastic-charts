@@ -1,8 +1,8 @@
 import createCachedSelector from 're-reselect';
-import { getChartThemeSelector } from '../../../../store/selectors/get_chart_theme';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getAxisSpecsSelector } from './get_specs';
 import { computeChartDimensions } from '../../utils/dimensions';
-import { GlobalChartState } from '../../../../store/chart_store';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { computeAxisTicksDimensionsSelector } from './compute_axis_ticks_dimensions';
 import { Dimensions } from '../../../../utils/dimensions';
 

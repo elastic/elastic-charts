@@ -1,4 +1,4 @@
-import { ChartType } from '../store/chart_store';
+import { ChartType } from '../state/chart_state';
 
 export interface Spec {
   /** Spec identifier */

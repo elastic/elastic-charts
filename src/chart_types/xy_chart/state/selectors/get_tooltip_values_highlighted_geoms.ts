@@ -13,7 +13,7 @@ import { getTooltipTypeSelector } from './get_tooltip_type';
 import { formatTooltip } from '../../tooltip/tooltip';
 import { getTooltipHeaderFormatterSelector } from './get_tooltip_header_formatter';
 import { isPointOnGeometry } from '../../rendering/rendering';
-import { GlobalChartState } from '../../../../store/chart_store';
+import { GlobalChartState } from '../../../../state/chart_state';
 
 const EMPTY_VALUES = Object.freeze({
   tooltipValues: [],

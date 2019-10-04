@@ -1,7 +1,7 @@
 import { BarSeriesSpec, DEFAULT_GLOBAL_ID } from '../utils/specs';
 import { ScaleType } from '../../../utils/scales/scales';
 import { ChartTypes } from '../../../chart_types';
-import { specComponentFactory, getConnect } from '../../../store/spec_factory';
+import { specComponentFactory, getConnect } from '../../../state/spec_factory';
 
 const defaultProps = {
   chartType: ChartTypes.XYAxis,

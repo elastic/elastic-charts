@@ -1,5 +1,5 @@
 import createCachedSelector from 're-reselect';
-import { GlobalChartState } from '../chart_store';
+import { GlobalChartState } from '../chart_state';
 import { ChartTypes } from '../../chart_types';
 import { getSpecsFromStore } from '../utils';
 import { SettingsSpec } from '../../specs/settings';

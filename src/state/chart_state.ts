@@ -9,7 +9,6 @@ import { DataSeriesColorsValues } from '../chart_types/xy_chart/utils/series';
 import { Spec } from '../specs';
 import { DEFAULT_SETTINGS_SPEC } from '../specs/settings';
 import { Dimensions } from '../utils/dimensions';
-import { PointGeometry, BarGeometry, AreaGeometry, LineGeometry, ArcGeometry } from '../utils/geometry';
 import { Point } from '../utils/point';
 import { LegendItem } from 'chart_types/xy_chart/legend/legend';
 import { TooltipLegendValue } from 'chart_types/xy_chart/tooltip/tooltip';
@@ -18,7 +17,6 @@ export type GetCustomChartComponent = (componentType: 'dom' | 'svg' | 'canvas', 
 export interface InternalChartState {
   chartType: ChartType;
   chartRenderer(globalState: GlobalChartState): JSX.Element | null;
-  render(globalState: GlobalChartState): GeometriesList;
   getChartDimensions(globalState: GlobalChartState): Dimensions;
   isBrushAvailable(globalState: GlobalChartState): boolean;
   isChartEmpty(globalState: GlobalChartState): boolean;
@@ -51,13 +49,6 @@ export interface InteractionsState {
   legendCollapsed: boolean;
   invertDeselect: boolean;
   deselectedDataSeries: DataSeriesColorsValues[];
-}
-export interface GeometriesList {
-  points?: PointGeometry[];
-  bars?: BarGeometry[];
-  areas?: AreaGeometry[];
-  lines?: LineGeometry[];
-  arcs?: ArcGeometry[];
 }
 
 export interface GlobalChartState {

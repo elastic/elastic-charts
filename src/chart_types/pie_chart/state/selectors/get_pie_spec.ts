@@ -1,6 +1,6 @@
 import createCachedSelector from 're-reselect';
-import { GlobalChartState } from 'store/chart_store';
-import { getSpecsFromStore } from '../../../../store/utils';
+import { GlobalChartState } from '../../../../state/chart_state';
+import { getSpecsFromStore } from '../../../../state/utils';
 import { PieSpec } from '../../specs/pie';
 
 const getSpecs = (state: GlobalChartState) => state.specs;

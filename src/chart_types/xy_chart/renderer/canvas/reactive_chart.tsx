@@ -23,25 +23,26 @@ import { isBrushAvailableSelector } from '../../state/selectors/is_brush_availab
 import { Transform } from '../../state/utils';
 import { Rotation, AnnotationSpec, isLineAnnotation, isRectAnnotation } from '../../utils/specs';
 import { LegendItem } from '../../../../components/legend/legend';
-import { isInitialized } from '../../../../store/selectors/is_initialized';
-import { getChartRotationSelector } from '../../../../store/selectors/get_chart_rotation';
-import { getChartThemeSelector } from '../../../../store/selectors/get_chart_theme';
-import { getRenderedGeometriesSelector } from '../../../../store/selectors/get_rendered_geometries';
-import { getChartDimensionsSelector } from '../../../../store/selectors/get_chart_dimensions';
-import {
-  GetCustomChartComponent,
-  GeometriesList,
-  GlobalSettings,
-  GlobalChartState,
-} from '../../../../store/chart_store';
+import { isInitialized } from '../../../../state/selectors/is_initialized';
+import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { getChartDimensionsSelector } from '../../../../state/selectors/get_chart_dimensions';
+import { GetCustomChartComponent, GlobalSettings, GlobalChartState } from '../../../../state/chart_state';
 import { Dimensions } from '../../../../utils/dimensions';
 import { AnnotationId } from '../../../../utils/ids';
 import { Theme, mergeWithDefaultAnnotationLine, mergeWithDefaultAnnotationRect } from '../../../../utils/themes/theme';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
+import { computeSeriesGeometriesSelector } from '../../state/selectors/compute_series_geometries';
+import { PointGeometry, BarGeometry, AreaGeometry, LineGeometry } from '../../../../utils/geometry';
 
 interface Props {
   initialized: boolean;
-  geometries: GeometriesList;
+  geometries: {
+    points?: PointGeometry[];
+    bars?: BarGeometry[];
+    areas?: AreaGeometry[];
+    lines?: LineGeometry[];
+  };
   globalSettings: GlobalSettings;
   chartRotation: Rotation;
   chartDimensions: Dimensions;
@@ -337,7 +338,7 @@ const mapStateToProps = (state: GlobalChartState) => {
   return {
     initialized: state.initialized,
     theme: getChartThemeSelector(state),
-    geometries: getRenderedGeometriesSelector(state),
+    geometries: computeSeriesGeometriesSelector(state).geometries,
     globalSettings: state.settings,
     chartRotation: getChartRotationSelector(state),
     chartDimensions: getChartDimensionsSelector(state),

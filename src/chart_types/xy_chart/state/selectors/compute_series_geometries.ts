@@ -1,9 +1,9 @@
 import createCachedSelector from 're-reselect';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
-import { getChartThemeSelector } from '../../../../store/selectors/get_chart_theme';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSeriesSpecsSelector, getAxisSpecsSelector } from './get_specs';
-import { getSettingsSpecSelector } from '../../../../store/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { computeSeriesGeometries, ComputedGeometries } from '../utils';
 import { getSeriesColorMapSelector } from './get_series_color_map';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';

@@ -1,9 +1,9 @@
 import createCachedSelector from 're-reselect';
-import { getSettingsSpecSelector } from '../../../../store/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getAxisSpecsSelector } from './get_specs';
 import { getAxisTicksPositions, AxisTick, AxisLinePosition } from '../../utils/axis_utils';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
-import { getChartThemeSelector } from '../../../../store/selectors/get_chart_theme';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { isLegendVisibleSelector } from './is_legend_visible';
 import { computeAxisTicksDimensionsSelector } from './compute_axis_ticks_dimensions';
 import { computeSeriesDomainsSelector } from './compute_series_domains';

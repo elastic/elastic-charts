@@ -1,6 +1,6 @@
 import createCachedSelector from 're-reselect';
-import { getChartDimensionsSelector } from '../../../../store/selectors/get_chart_dimensions';
-import { getSettingsSpecSelector } from '../../../../store/selectors/get_settings_specs';
+import { getChartDimensionsSelector } from '../../../../state/selectors/get_chart_dimensions';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getTooltipPosition } from '../../crosshair/crosshair_utils';
 import { computeCursorPositionSelector } from './compute_cursor_position';
 import { getComputedScalesSelector } from './get_computed_scales';

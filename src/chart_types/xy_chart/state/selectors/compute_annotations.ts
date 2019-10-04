@@ -1,5 +1,5 @@
 import createCachedSelector from 're-reselect';
-import { getSettingsSpecSelector } from '../../../../store/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getAxisSpecsSelector, getAnnotationSpecsSelector } from './get_specs';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
@@ -7,7 +7,7 @@ import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 import { computeAnnotationDimensions, AnnotationDimensions } from '../../annotations/annotation_utils';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { AnnotationId } from '../../../../utils/ids';
-import { GlobalChartState } from '../../../../store/chart_store';
+import { GlobalChartState } from '../../../../state/chart_state';
 const getChartId = (state: GlobalChartState) => state.chartId;
 export const computeAnnotationDimensionsSelector = createCachedSelector(
   [

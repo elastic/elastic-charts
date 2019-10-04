@@ -1,6 +1,6 @@
 import createCachedSelector from 're-reselect';
-import { getSettingsSpecSelector } from '../../../../store/selectors/get_settings_specs';
-import { GlobalChartState } from '../../../../store/chart_store';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { GlobalChartState } from '../../../../state/chart_state';
 
 const isLegendCollapsedSelector = (state: GlobalChartState) => state.interactions.legendCollapsed;
 
