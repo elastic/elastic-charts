@@ -33,7 +33,7 @@ import {
 } from './axis_utils';
 import { CanvasTextBBoxCalculator } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import { SvgTextBBoxCalculator } from '../../../utils/bbox/svg_text_bbox_calculator';
-import { mergeYCustomDomainsByGroupId } from '../store/selectors/merge_y_custom_domains';
+import { mergeYCustomDomainsByGroupId } from '../state/selectors/merge_y_custom_domains';
 
 describe('Axis computational utils', () => {
   const mockedRect = {

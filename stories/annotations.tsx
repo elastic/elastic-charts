@@ -22,7 +22,7 @@ import {
 import { Icon } from '../src/components/icons/icon';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 import { getChartRotationKnob } from './common';
-import { AccessorType } from 'utils/geometry';
+import { AccessorType } from '../src/utils/geometry';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
 

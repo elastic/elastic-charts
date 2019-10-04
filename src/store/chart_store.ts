@@ -1,24 +1,29 @@
-import { PointGeometry, BarGeometry, AreaGeometry, LineGeometry, ArcGeometry } from '../utils/geometry';
-import { Spec } from '../specs';
 import { SPEC_PARSED, SPEC_UNMOUNTED } from './actions/specs';
-import { PieChartStore } from '../chart_types/pie_chart/store/chart_store';
 import { specsReducer } from './reducers/specs';
 import { chartSettingsReducer } from './reducers/chart_settings';
 import { interactionsReducer } from './reducers/interactions';
-import { Dimensions } from '../utils/dimensions';
-import { XYAxisChartStore } from '../chart_types/xy_chart/store/chart_store';
-import { DataSeriesColorsValues } from '../chart_types/xy_chart/utils/series';
 import { ChartTypes } from '../chart_types';
+import { PieChartState } from '../chart_types/pie_chart/state/chart_state';
+import { XYAxisChartState } from '../chart_types/xy_chart/state/chart_state';
+import { DataSeriesColorsValues } from '../chart_types/xy_chart/utils/series';
+import { Spec } from '../specs';
 import { DEFAULT_SETTINGS_SPEC } from '../specs/settings';
+import { Dimensions } from '../utils/dimensions';
+import { PointGeometry, BarGeometry, AreaGeometry, LineGeometry, ArcGeometry } from '../utils/geometry';
 import { Point } from '../utils/point';
+import { LegendItem } from 'chart_types/xy_chart/legend/legend';
+import { TooltipLegendValue } from 'chart_types/xy_chart/tooltip/tooltip';
 
 export type GetCustomChartComponent = (componentType: 'dom' | 'svg' | 'canvas', zIndex: number) => JSX.Element | null;
-export interface IChartStore {
+export interface InternalChartState {
   chartType: ChartType;
-  render(state: IChartState): GeometriesList;
-  getChartDimensions(state: IChartState): Dimensions;
-  getCustomChartComponents: GetCustomChartComponent;
-  isBrushAvailable(state: IChartState): boolean;
+  chartRenderer(globalState: GlobalChartState): JSX.Element | null;
+  render(globalState: GlobalChartState): GeometriesList;
+  getChartDimensions(globalState: GlobalChartState): Dimensions;
+  isBrushAvailable(globalState: GlobalChartState): boolean;
+  isChartEmpty(globalState: GlobalChartState): boolean;
+  getLegendItems(globalState: GlobalChartState): Map<string, LegendItem>;
+  getLegendItemsValues(globalState: GlobalChartState): Map<string, TooltipLegendValue>;
 }
 
 export interface SpecList {
@@ -55,26 +60,26 @@ export interface GeometriesList {
   arcs?: ArcGeometry[];
 }
 
-export interface IChartState {
+export interface GlobalChartState {
   chartId: string;
   initialized: boolean;
   specs: SpecList;
   chartType: ChartType | null;
-  chartStore: IChartStore | null;
+  internalChartState: InternalChartState | null;
   settings: GlobalSettings;
   interactions: InteractionsState;
 }
 
 export type ChartType = typeof ChartTypes.Pie | typeof ChartTypes.XYAxis | typeof ChartTypes.Global;
 
-const getInitialState = (chartId: string): IChartState => ({
+const getInitialState = (chartId: string): GlobalChartState => ({
   chartId,
   initialized: false,
   specs: {
     [DEFAULT_SETTINGS_SPEC.id]: DEFAULT_SETTINGS_SPEC,
   },
   chartType: null,
-  chartStore: null,
+  internalChartState: null,
   interactions: {
     rawCursorPosition: {
       x: -1,
@@ -102,17 +107,18 @@ const getInitialState = (chartId: string): IChartState => ({
 
 export const chartStoreReducer = (chartId: string) => {
   const initialState = getInitialState(chartId);
-  return (state = initialState, action: any) => {
+  return (state = initialState, action: any): GlobalChartState => {
     switch (action.type) {
       case SPEC_PARSED:
         const chartType = findMainChartType(state.specs);
+
         if (isChartTypeChanged(state, chartType)) {
-          const chartStore = intializeChartStore(chartType);
+          const internalChartState = initInternalChartState(chartType);
           return {
             ...state,
             initialized: true,
             chartType,
-            chartStore,
+            internalChartState,
           };
         } else {
           return {
@@ -157,18 +163,18 @@ function findMainChartType(specs: SpecList) {
   }
 }
 
-function intializeChartStore(chartType: ChartType | null): IChartStore | null {
+function initInternalChartState(chartType: ChartType | null): InternalChartState | null {
   // console.log(`initializing ${chartType}`);
   switch (chartType) {
     case 'pie':
-      return new PieChartStore();
+      return new PieChartState();
     case 'xy_axis':
-      return new XYAxisChartStore();
+      return new XYAxisChartState();
     default:
       return null;
   }
 }
 
-function isChartTypeChanged(state: IChartState, newChartType: ChartType | null) {
+function isChartTypeChanged(state: GlobalChartState, newChartType: ChartType | null) {
   return state.chartType !== newChartType;
 }

@@ -6,14 +6,14 @@ import { TooltipType } from '../chart_types/xy_chart/utils/interactions';
 import { Settings, SettingsSpec } from './settings';
 import { PartialTheme } from '../utils/themes/theme';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
-import { chartStoreReducer, IChartState } from '../store/chart_store';
+import { chartStoreReducer, GlobalChartState } from '../store/chart_store';
 import { createStore, Store } from 'redux';
 import { SpecsParser } from './specs_parser';
 import { Provider } from 'react-redux';
 import { getSettingsSpecSelector } from '../store/selectors/get_settings_specs';
 import { getChartThemeSelector } from '../store/selectors/get_chart_theme';
 
-const getProxy = (chartStore: Store<IChartState>) => {
+const getProxy = (chartStore: Store<GlobalChartState>) => {
   return function SettingsProxy({ settings }: { settings?: Partial<SettingsSpec> }) {
     return (
       <Provider store={chartStore}>
@@ -25,7 +25,7 @@ const getProxy = (chartStore: Store<IChartState>) => {
   };
 };
 describe('Settings spec component', () => {
-  let chartStore: Store<IChartState>;
+  let chartStore: Store<GlobalChartState>;
   let SettingsProxy: ({ settings }: { settings?: Partial<SettingsSpec> }) => JSX.Element;
   beforeEach(() => {
     const storeReducer = chartStoreReducer('chart_id');

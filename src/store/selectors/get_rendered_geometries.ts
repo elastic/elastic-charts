@@ -1,9 +1,9 @@
 import createCachedSelector from 're-reselect';
-import { IChartState, GeometriesList } from '../chart_store';
+import { GlobalChartState, GeometriesList } from '../chart_store';
 
-const getState = (state: IChartState) => state;
-const getChartStore = (state: IChartState) => state.chartStore;
-const isInitialized = (state: IChartState) => state.initialized;
+const getState = (state: GlobalChartState) => state;
+const getChartStore = (state: GlobalChartState) => state.internalChartState;
+const isInitialized = (state: GlobalChartState) => state.initialized;
 
 export const getRenderedGeometriesSelector = createCachedSelector(
   [isInitialized, getChartStore, getState],

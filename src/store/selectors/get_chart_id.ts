@@ -1,3 +1,3 @@
-import { IChartState } from '../chart_store';
+import { GlobalChartState } from '../chart_store';
 
-export const getChartIdSelector = (state: IChartState) => state.chartId;
+export const getChartIdSelector = (state: GlobalChartState) => state.chartId;

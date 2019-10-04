@@ -1,5 +1,5 @@
 /* eslint @typescript-eslint/no-object-literal-type-assertion: off */
-import { computeSeriesDomains } from '../store/utils';
+import { computeSeriesDomains } from '../state/utils';
 import { ScaleType } from '../../../utils/scales/scales';
 import { CurveType } from '../../../utils/curves';
 import { renderArea, renderBars } from './rendering';

@@ -1,10 +1,10 @@
 import createCachedSelector from 're-reselect';
-import { IChartState } from '../chart_store';
+import { GlobalChartState } from '../chart_store';
 import { ChartTypes } from '../../chart_types';
 import { getSpecsFromStore } from '../utils';
 import { SettingsSpec } from '../../specs/settings';
 
-const getSpecs = (state: IChartState) => state.specs;
+const getSpecs = (state: GlobalChartState) => state.specs;
 
 export const getSettingsSpecSelector = createCachedSelector(
   [getSpecs],

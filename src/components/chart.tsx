@@ -4,20 +4,21 @@ import { Provider } from 'react-redux';
 import { SpecsParser } from '../specs/specs_parser';
 import { ChartResizer } from './chart_resizer';
 import { Legend } from './legend/legend';
-import { ChartContainer } from './react_canvas/chart_container';
+import { ChartContainer } from './chart_container';
 import { isHorizontalAxis } from '../chart_types/xy_chart/utils/axis_utils';
 import { Position } from '../chart_types/xy_chart/utils/specs';
 // import { CursorEvent } from '../specs/settings';
 import { ChartSize, getChartSize } from '../utils/chart_size';
-import { chartStoreReducer } from '../store/chart_store';
-import { createStore } from 'redux';
+import { chartStoreReducer, GlobalChartState } from '../store/chart_store';
+import { createStore, Store } from 'redux';
 import uuid from 'uuid';
 import { devToolsEnhancer } from 'redux-devtools-extension';
 // import { getHighlightedGeomValuesSelector } from 'chart_types/xy_chart/store/selectors/get_tooltip_values_highlighted_geoms';
 import { isInitialized } from '../store/selectors/is_initialized';
-import { createOnElementOutCaller } from '../chart_types/xy_chart/store/selectors/on_element_out_caller';
-import { createOnElementOverCaller } from '../chart_types/xy_chart/store/selectors/on_element_over_caller';
-import { createOnElementClickCaller } from 'chart_types/xy_chart/store/selectors/on_element_click_caller';
+import { createOnElementOutCaller } from '../chart_types/xy_chart/state/selectors/on_element_out_caller';
+import { createOnElementOverCaller } from '../chart_types/xy_chart/state/selectors/on_element_over_caller';
+import { createOnElementClickCaller } from 'chart_types/xy_chart/state/selectors/on_element_click_caller';
+import { ChartTypes } from 'chart_types';
 
 interface ChartProps {
   /** The type of rendered
@@ -39,7 +40,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
   static defaultProps: ChartProps = {
     renderer: 'canvas',
   };
-  private chartStore: any;
+  private chartStore: Store<GlobalChartState>;
   constructor(props: any) {
     super(props);
     // TODO remove devTools in production
@@ -71,7 +72,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     const onElementOutCaller = createOnElementOutCaller();
     this.chartStore.subscribe(() => {
       const state = this.chartStore.getState();
-      if (!isInitialized(state)) {
+      if (!isInitialized(state) && state.chartType !== ChartTypes.XYAxis) {
         return;
       }
       onElementOverCaller(state);

@@ -1,9 +1,9 @@
-import { IChartState, GetCustomChartComponent } from '../chart_store';
+import { GlobalChartState } from '../chart_store';
 
-export const getChartTypeComponentSelector = (state: IChartState): GetCustomChartComponent | undefined => {
-  if (state.chartStore) {
-    return state.chartStore.getCustomChartComponents;
+export const getInternalChartRendererSelector = (state: GlobalChartState): JSX.Element | null => {
+  if (state.internalChartState) {
+    return state.internalChartState.chartRenderer(state);
   } else {
-    return undefined;
+    return null;
   }
 };

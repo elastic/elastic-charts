@@ -1,4 +1,4 @@
-import { getAxesSpecForSpecId, LastValues } from '../store/utils';
+import { getAxesSpecForSpecId, LastValues } from '../state/utils';
 import { identity } from '../../../utils/commons';
 import {
   DataSeriesColorsValues,

@@ -2,28 +2,27 @@ import classNames from 'classnames';
 import React, { createRef } from 'react';
 import { isVerticalAxis, isHorizontalAxis } from '../../chart_types/xy_chart/utils/axis_utils';
 import { connect } from 'react-redux';
-import { LegendItem as SeriesLegendItem } from '../../chart_types/xy_chart/legend/legend';
 import { Position } from '../../chart_types/xy_chart/utils/specs';
-import { IChartState } from '../../store/chart_store';
+import { GlobalChartState } from '../../store/chart_store';
 import { isInitialized } from '../../store/selectors/is_initialized';
-import { computeLegendSelector } from '../../chart_types/xy_chart/store/selectors/compute_legend';
+import { getLegendItemsSelector } from '../../store/selectors/get_legend_items';
 import { getSettingsSpecSelector } from '../../store/selectors/get_settings_specs';
 import { getChartThemeSelector } from '../../store/selectors/get_chart_theme';
-import { isLegendInitializedSelector } from '../../chart_types/xy_chart/store/selectors/is_legend_initialized';
-import { getLegendTooltipValuesSelector } from '../../chart_types/xy_chart/store/selectors/get_legend_tooltip_values';
+import { getLegendItemsValuesSelector } from '../../store/selectors/get_legend_items_values';
 import { onToggleLegend, onLegendItemOver, onLegendItemOut, onLegendRendered } from '../../store/actions/legend';
 import { Dispatch, bindActionCreators } from 'redux';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
-import { LegendItem } from './legend_item';
+import { LegendListItem } from './legend_item';
 import { Theme } from '../../utils/themes/theme';
 import { TooltipLegendValue } from '../../chart_types/xy_chart/tooltip/tooltip';
 import { AccessorType } from 'utils/geometry';
+import { LegendItem } from 'chart_types/xy_chart/legend/legend';
 
 interface LegendProps {
   initialized: boolean;
   legendInitialized: boolean;
   isCursorOnChart: boolean; //TODO
-  legendItems: Map<string, SeriesLegendItem>;
+  legendItems: Map<string, LegendItem>;
   legendPosition: Position;
   legendItemTooltipValues: Map<string, TooltipLegendValue>;
   showLegend: boolean;
@@ -69,7 +68,7 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
     }
   }
   componentDidUpdate() {
-    // console.log('LEGEND DID UPDATE');
+    console.log('LEGEND DID UPDATE');
     const { chartTheme, legendPosition } = this.props;
     if (this.echLegend.current && isVerticalAxis(legendPosition) && this.state.width === undefined) {
       const buffer = chartTheme.legend.spacingBuffer;
@@ -167,10 +166,7 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
     return banded ? [y1, y0] : [y1];
   }
 
-  private getItemLabel(
-    { banded, label, y1AccessorFormat, y0AccessorFormat }: SeriesLegendItem,
-    yAccessor: AccessorType,
-  ) {
+  private getItemLabel({ banded, label, y1AccessorFormat, y0AccessorFormat }: LegendItem, yAccessor: AccessorType) {
     if (!banded) {
       return label;
     }
@@ -178,7 +174,7 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
     return yAccessor === AccessorType.Y1 ? `${label}${y1AccessorFormat}` : `${label}${y0AccessorFormat}`;
   }
 
-  private renderLegendElement = (item: SeriesLegendItem) => {
+  private renderLegendElement = (item: LegendItem) => {
     const { key, displayValue, banded } = item;
     const { isCursorOnChart, legendItemTooltipValues } = this.props;
     const legendValues = this.getLegendValues(legendItemTooltipValues, key, banded);
@@ -186,7 +182,7 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
     return legendValues.map((value, index) => {
       const yAccessor: AccessorType = index === 0 ? AccessorType.Y1 : AccessorType.Y0;
       return (
-        <LegendItem
+        <LegendListItem
           {...item}
           label={this.getItemLabel(item, yAccessor)}
           key={`${key}-${yAccessor}`}
@@ -211,7 +207,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
     dispatch,
   );
 
-const mapStateToProps = (state: IChartState) => {
+const mapStateToProps = (state: GlobalChartState) => {
   if (!isInitialized(state)) {
     return {
       legendInitialized: false, //TODO
@@ -227,15 +223,16 @@ const mapStateToProps = (state: IChartState) => {
     };
   }
   const settingsSpec = getSettingsSpecSelector(state);
+  const legendItems = getLegendItemsSelector(state);
   return {
-    legendInitialized: isLegendInitializedSelector(state),
+    legendInitialized: legendItems.size > 0,
+    legendItems,
     isCursorOnChart: false, //TODO
     initialized: isInitialized(state),
-    legendItems: computeLegendSelector(state),
     legendPosition: settingsSpec.legendPosition,
     showLegend: settingsSpec.showLegend,
     legendCollapsed: state.interactions.legendCollapsed,
-    legendItemTooltipValues: getLegendTooltipValuesSelector(state),
+    legendItemTooltipValues: getLegendItemsValuesSelector(state),
     debug: settingsSpec.debug,
     chartTheme: getChartThemeSelector(state),
   };

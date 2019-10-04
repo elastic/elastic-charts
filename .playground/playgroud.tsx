@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Axis, Chart, getAxisId, getSpecId, Position, ScaleType, Settings, AreaSeries } from '../src';
+import { Axis, Chart, getAxisId, getSpecId, Position, ScaleType, Settings, AreaSeries, DataGenerator } from '../src';
 
 const dg = new DataGenerator();
 
