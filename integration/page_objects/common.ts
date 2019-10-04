@@ -12,6 +12,7 @@ class CommonPage {
     const padding: number = opts && opts.padding ? opts.padding : 0;
     const path: string | undefined = opts && opts.path ? opts.path : undefined;
 
+    await page.waitForSelector(selector, { timeout: 5000 });
     const rect = await page.evaluate((selector) => {
       const element = document.querySelector(selector);
 
