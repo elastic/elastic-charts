@@ -4,16 +4,6 @@ import { computeLegend, getSeriesColorLabel } from './legend';
 import { DataSeriesColorsValues } from '../utils/series';
 import { AxisSpec, BasicSeriesSpec, Position } from '../utils/specs';
 
-const nullDisplayValue = {
-  formatted: {
-    y0: null,
-    y1: null,
-  },
-  raw: {
-    y0: null,
-    y1: null,
-  },
-};
 const colorValues1a = {
   specId: getSpecId('spec1'),
   colorValues: [],
@@ -96,7 +86,7 @@ describe('Legends', () => {
         isSeriesVisible: true,
         isLegendItemVisible: true,
         key: 'colorSeries1a',
-        displayValue: nullDisplayValue,
+        displayValue: {},
       },
     ];
     expect(Array.from(legend.values())).toEqual(expected);
@@ -113,7 +103,7 @@ describe('Legends', () => {
         isSeriesVisible: true,
         isLegendItemVisible: true,
         key: 'colorSeries1a',
-        displayValue: nullDisplayValue,
+        displayValue: {},
       },
       {
         color: 'blue',
@@ -122,7 +112,7 @@ describe('Legends', () => {
         isSeriesVisible: true,
         isLegendItemVisible: true,
         key: 'colorSeries1b',
-        displayValue: nullDisplayValue,
+        displayValue: {},
       },
     ];
     expect(Array.from(legend.values())).toEqual(expected);
@@ -139,7 +129,7 @@ describe('Legends', () => {
         isSeriesVisible: true,
         isLegendItemVisible: true,
         key: 'colorSeries1a',
-        displayValue: nullDisplayValue,
+        displayValue: {},
       },
       {
         color: 'green',
@@ -148,7 +138,7 @@ describe('Legends', () => {
         isSeriesVisible: true,
         isLegendItemVisible: true,
         key: 'colorSeries2a',
-        displayValue: nullDisplayValue,
+        displayValue: {},
       },
     ];
     expect(Array.from(legend.values())).toEqual(expected);
@@ -170,7 +160,7 @@ describe('Legends', () => {
         isSeriesVisible: true,
         isLegendItemVisible: true,
         key: 'colorSeries1a',
-        displayValue: nullDisplayValue,
+        displayValue: {},
       },
     ];
     expect(Array.from(legend.values())).toEqual(expected);

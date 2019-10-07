@@ -1,4 +1,4 @@
-import { getAxesSpecForSpecId, LastValues } from '../store/utils';
+import { getAxesSpecForSpecId } from '../store/utils';
 import { identity } from '../../../utils/commons';
 import { AxisId, SpecId } from '../../../utils/ids';
 import {
@@ -6,38 +6,19 @@ import {
   findDataSeriesByColorValues,
   getSortedDataSeriesColorsValuesMap,
 } from '../utils/series';
-import { AxisSpec, BasicSeriesSpec, Postfixes, isAreaSeriesSpec, isBarSeriesSpec } from '../utils/specs';
-import { Y0_ACCESSOR_POSTFIX, Y1_ACCESSOR_POSTFIX } from '../tooltip/tooltip';
+import { AxisSpec, BasicSeriesSpec } from '../utils/specs';
 
-export interface FormatedLastValues {
-  y0: number | string | null;
-  y1: number | string | null;
-}
-
-export type LegendItem = Postfixes & {
+export interface LegendItem {
   key: string;
   color: string;
   label: string;
   value: DataSeriesColorsValues;
   isSeriesVisible?: boolean;
-  banded?: boolean;
   isLegendItemVisible?: boolean;
   displayValue: {
-    raw: LastValues;
-    formatted: FormatedLastValues;
+    raw: any;
+    formatted: any;
   };
-};
-
-export function getPostfix(spec: BasicSeriesSpec): Postfixes {
-  if (isAreaSeriesSpec(spec) || isBarSeriesSpec(spec)) {
-    const { y0AccessorFormat = Y0_ACCESSOR_POSTFIX, y1AccessorFormat = Y1_ACCESSOR_POSTFIX } = spec;
-    return {
-      y0AccessorFormat,
-      y1AccessorFormat,
-    };
-  }
-
-  return {};
 }
 
 export function computeLegend(
@@ -52,11 +33,10 @@ export function computeLegend(
   const sortedSeriesColors = getSortedDataSeriesColorsValuesMap(seriesColor);
 
   sortedSeriesColors.forEach((series, key) => {
-    const { banded, specId, lastValue, colorValues } = series;
-    const spec = specs.get(specId);
+    const spec = specs.get(series.specId);
     const color = seriesColorMap.get(key) || defaultColor;
     const hasSingleSeries = seriesColor.size === 1;
-    const label = getSeriesColorLabel(colorValues, hasSingleSeries, spec);
+    const label = getSeriesColorLabel(series.colorValues, hasSingleSeries, spec);
     const isSeriesVisible = deselectedDataSeries ? findDataSeriesByColorValues(deselectedDataSeries, series) < 0 : true;
 
     if (!label || !spec) {
@@ -66,30 +46,21 @@ export function computeLegend(
     // Use this to get axis spec w/ tick formatter
     const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
     const formatter = yAxis ? yAxis.tickFormat : identity;
+
     const { hideInLegend } = spec;
 
-    const legendItem: LegendItem = {
+    legendItems.set(key, {
       key,
       color,
       label,
-      banded,
       value: series,
       isSeriesVisible,
       isLegendItemVisible: !hideInLegend,
       displayValue: {
-        raw: {
-          y0: lastValue && lastValue.y0 !== null ? lastValue.y0 : null,
-          y1: lastValue && lastValue.y1 !== null ? lastValue.y1 : null,
-        },
-        formatted: {
-          y0: isSeriesVisible && lastValue && lastValue.y0 !== null ? formatter(lastValue.y0) : null,
-          y1: isSeriesVisible && lastValue && lastValue.y1 !== null ? formatter(lastValue.y1) : null,
-        },
+        raw: series.lastValue,
+        formatted: isSeriesVisible ? formatter(series.lastValue) : undefined,
       },
-      ...getPostfix(spec),
-    };
-
-    legendItems.set(key, legendItem);
+    });
   });
   return legendItems;
 }

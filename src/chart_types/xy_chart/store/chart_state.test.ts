@@ -1,5 +1,5 @@
 import { LegendItem } from '../legend/legend';
-import { GeometryValue, IndexedGeometry, AccessorType } from '../rendering/rendering';
+import { GeometryValue, IndexedGeometry } from '../rendering/rendering';
 import {
   AnnotationDomainTypes,
   AnnotationSpec,
@@ -48,14 +48,8 @@ describe('Chart Store', () => {
       colorValues: [],
     },
     displayValue: {
-      raw: {
-        y1: null,
-        y0: null,
-      },
-      formatted: {
-        y1: 'formatted-last',
-        y0: null,
-      },
+      raw: 'last',
+      formatted: 'formatted-last',
     },
   };
 
@@ -68,14 +62,8 @@ describe('Chart Store', () => {
       colorValues: [],
     },
     displayValue: {
-      raw: {
-        y1: null,
-        y0: null,
-      },
-      formatted: {
-        y1: 'formatted-last',
-        y0: null,
-      },
+      raw: 'last',
+      formatted: 'formatted-last',
     },
   };
   beforeEach(() => {
@@ -1051,7 +1039,7 @@ describe('Chart Store', () => {
       isHighlighted: false,
       isXValue: true,
       seriesKey: 'headerSeries',
-      yAccessor: AccessorType.Y0,
+      yAccessor: 'y',
     };
 
     store.tooltipData.replace([headerValue]);
@@ -1064,17 +1052,13 @@ describe('Chart Store', () => {
       isHighlighted: false,
       isXValue: false,
       seriesKey: 'seriesKey',
-      yAccessor: AccessorType.Y1,
+      yAccessor: 'y',
     };
     store.tooltipData.replace([headerValue, tooltipValue]);
 
     const expectedTooltipValues = new Map();
-    expectedTooltipValues.set('seriesKey', {
-      y0: undefined,
-      y1: 123,
-    });
-    const t = store.legendItemTooltipValues.get();
-    expect(t).toEqual(expectedTooltipValues);
+    expectedTooltipValues.set('seriesKey', 123);
+    expect(store.legendItemTooltipValues.get()).toEqual(expectedTooltipValues);
   });
   describe('can determine if crosshair cursor is visible', () => {
     const brushEndListener = (): void => {
