@@ -18,7 +18,7 @@ module.exports = {
     command: `RNG_SEED='elastic-charts' yarn start --port=${port}`,
     port,
     usedPortAction: 'ask',
-    launchTimeout: 60000,
+    launchTimeout: 200000,
     debug: false,
   },
 };
