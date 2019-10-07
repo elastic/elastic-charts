@@ -1,4 +1,4 @@
-import { boolean } from '@storybook/addon-knobs';
+import { boolean, text } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import { DateTime } from 'luxon';
 import React from 'react';
@@ -431,6 +431,8 @@ storiesOf('Area Chart', module)
       return [d[0], d[1]];
     });
     const scaleToDataExtent = boolean('scale to extent', true);
+    const y0AccessorFormat = text('y0AccessorFormat', '');
+    const y1AccessorFormat = text('y1AccessorFormat', '');
     return (
       <Chart className={'story-chart'}>
         <Settings showLegend legendPosition={Position.Right} />
@@ -455,6 +457,8 @@ storiesOf('Area Chart', module)
           xAccessor={'x'}
           yAccessors={['max']}
           y0Accessors={['min']}
+          y1AccessorFormat={y1AccessorFormat || undefined}
+          y0AccessorFormat={y0AccessorFormat || undefined}
           data={data}
           yScaleToDataExtent={scaleToDataExtent}
           curve={CurveType.CURVE_MONOTONE_X}
@@ -475,12 +479,12 @@ storiesOf('Area Chart', module)
   })
   .add('stacked band area chart', () => {
     const data = KIBANA_METRICS.metrics.kibana_os_load[0].data;
-    const data2 = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d) => {
-      return [d[0], 20, 10];
-    });
+    const data2 = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d) => [d[0], 20, 10]);
     const scaleToDataExtent = boolean('scale to extent', false);
+
     return (
       <Chart className={'story-chart'}>
+        <Settings showLegend />
         <Axis
           id={getAxisId('bottom')}
           title={'timestamp per 1 minute'}
