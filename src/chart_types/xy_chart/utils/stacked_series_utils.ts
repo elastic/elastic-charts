@@ -1,4 +1,5 @@
-import { DataSeries, DataSeriesDatum, RawDataSeries } from './series';
+import { DataSeries, DataSeriesDatum, RawDataSeries, RawDataSeriesDatum } from './series';
+import { ScaleType } from '../../../utils/scales/scales';
 
 interface StackedValues {
   values: number[];
@@ -11,14 +12,23 @@ interface StackedValues {
  * ordering the stack based on the dataseries index.
  * @param dataseries
  */
-export function getYValueStackMap(dataseries: RawDataSeries[]): Map<any, number[]> {
+export function getYValueStackMap(dataseries: RawDataSeries[], xValues: Set<string | number>): Map<any, number[]> {
   const stackMap = new Map<any, number[]>();
+  const missingXValues = new Set([...xValues]);
   dataseries.forEach((ds, index) => {
     ds.data.forEach((datum) => {
       const stack = stackMap.get(datum.x) || new Array(dataseries.length).fill(0);
       stack[index] = datum.y1;
       stackMap.set(datum.x, stack);
+      if (xValues.has(datum.x)) {
+        missingXValues.delete(datum.x);
+      }
     });
+    for (let x of missingXValues.values()) {
+      const stack = stackMap.get(x) || new Array(dataseries.length).fill(0);
+      stack[index] = 0;
+      stackMap.set(x, stack);
+    }
   });
   return stackMap;
 }
@@ -75,21 +85,75 @@ export function computeYStackedMapValues(
 export function formatStackedDataSeriesValues(
   dataseries: RawDataSeries[],
   scaleToExtent: boolean,
-  isPercentageMode: boolean = false,
+  isPercentageMode: boolean,
+  xValues: Set<string | number>,
+  xScaleType: ScaleType,
 ): DataSeries[] {
-  const yValueStackMap = getYValueStackMap(dataseries);
-
+  const yValueStackMap = getYValueStackMap(dataseries, xValues);
   const stackedValues = computeYStackedMapValues(yValueStackMap, scaleToExtent);
 
   const stackedDataSeries: DataSeries[] = dataseries.map((ds, seriesIndex) => {
     const newData: DataSeriesDatum[] = [];
+    const missingXValues = new Set([...xValues]);
     ds.data.forEach((data) => {
-      const { x, datum } = data;
-      const stack = stackedValues.get(x);
-      if (!stack) {
+      const formattedSeriesDatum = getStackedFormattedSeriesDatum(
+        data,
+        stackedValues,
+        seriesIndex,
+        scaleToExtent,
+        isPercentageMode,
+      );
+      if (formattedSeriesDatum === undefined) {
         return;
       }
-      let y1: number | null = null;
+      missingXValues.delete(data.x);
+      newData.push(formattedSeriesDatum);
+    });
+    for (let x of missingXValues.values()) {
+      const filledSeriesDatum = getStackedFormattedSeriesDatum(
+        {
+          x,
+          y1: 0,
+        },
+        stackedValues,
+        seriesIndex,
+        scaleToExtent,
+        isPercentageMode,
+      );
+      if (filledSeriesDatum) {
+        newData.push(filledSeriesDatum);
+      }
+    }
+    newData.sort((a, b) => {
+      if (xScaleType === ScaleType.Ordinal || typeof a.x === 'string' || typeof b.x === 'string') {
+        return 0;
+      }
+      return a.x - b.x;
+    });
+    return {
+      specId: ds.specId,
+      key: ds.key,
+      seriesColorKey: ds.seriesColorKey,
+      data: newData,
+    };
+  });
+
+  return stackedDataSeries;
+}
+
+function getStackedFormattedSeriesDatum(
+  data: RawDataSeriesDatum,
+  stackedValues: Map<any, StackedValues>,
+  seriesIndex: number,
+  scaleToExtent: boolean,
+  isPercentageMode: boolean = false,
+): DataSeriesDatum | undefined {
+  const { x, datum } = data;
+  const stack = stackedValues.get(x);
+  if (!stack) {
+    return;
+  }
+  let y1: number | null = null;
       if (isPercentageMode) {
         y1 = data.y1 != null ? data.y1 / stack.total : null;
       } else {
@@ -105,14 +169,14 @@ export function formatStackedDataSeriesValues(
       const initialY0 = y0 == null ? null : y0;
 
       if (seriesIndex === 0) {
-        newData.push({
+        return {
           x,
           y1,
           y0: computedY0,
           initialY1: y1,
           initialY0,
           datum,
-        });
+        };
       } else {
         const stackY = isPercentageMode ? stack.percent[seriesIndex] : stack.values[seriesIndex];
         let stackedY1: number | null = null;
@@ -129,25 +193,13 @@ export function formatStackedDataSeriesValues(
             stackedY0 = null;
           }
         }
-
-        newData.push({
-          x,
-          y1: stackedY1,
-          y0: stackedY0,
-          initialY1: y1,
-          initialY0,
-          datum,
-        });
-      }
-    });
-
     return {
-      specId: ds.specId,
-      key: ds.key,
-      seriesColorKey: ds.seriesColorKey,
-      data: newData,
+      x,
+      y1: stackedY1,
+      y0: stackedY0,
+      initialY1: y1,
+      initialY0,
+      datum,
     };
-  });
-
-  return stackedDataSeries;
+  }
 }
