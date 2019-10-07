@@ -14,7 +14,7 @@ describe('Baseline Visual tests for all stories', () => {
       stories.forEach(({ title, encodedTitle }) => {
         describe(title, () => {
           it('visually looks correct', async () => {
-            await page.goto(`http://localhost:9001/iframe.html?id=${encodedGroup}--${encodedTitle}`);
+            await page.goto(`http://host.docker.internal:9001/iframe.html?id=${encodedGroup}--${encodedTitle}`);
             const chart = await common.getChartScreenshot();
             expect(chart).toMatchImageSnapshot();
           });
