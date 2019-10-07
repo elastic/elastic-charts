@@ -6,7 +6,6 @@ import { formatNonStackedDataSeriesValues } from './nonstacked_series_utils';
 import { isEqualSeriesKey } from './series_utils';
 import { BasicSeriesSpec, Datum, SeriesAccessors } from './specs';
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
-import { LastValues } from '../store/utils';
 
 export interface RawDataSeriesDatum {
   /** the x value */
@@ -60,9 +59,8 @@ export interface DataSeriesCounts {
 
 export interface DataSeriesColorsValues {
   specId: SpecId;
-  banded?: boolean;
   colorValues: any[];
-  lastValue?: LastValues;
+  lastValue?: any;
   specSortIndex?: number;
 }
 
@@ -317,13 +315,10 @@ export function getSplittedSeries(
 
     splittedSeries.set(specId, currentRawDataSeries);
 
-    const banded = spec.y0Accessors && spec.y0Accessors.length > 0;
-
     dataSeries.colorsValues.forEach((colorValues, key) => {
       seriesColors.set(key, {
         specId,
         specSortIndex: spec.sortIndex,
-        banded,
         colorValues,
       });
     });
@@ -339,16 +334,18 @@ export function getSplittedSeries(
   };
 }
 
-export function getSortIndex({ specSortIndex }: DataSeriesColorsValues, total: number): number {
-  return specSortIndex != null ? specSortIndex : total;
-}
-
 export function getSortedDataSeriesColorsValuesMap(
   colorValuesMap: Map<string, DataSeriesColorsValues>,
 ): Map<string, DataSeriesColorsValues> {
   const seriesColorsArray = [...colorValuesMap];
-  seriesColorsArray.sort(([, specA], [, specB]) => {
-    return getSortIndex(specA, colorValuesMap.size) - getSortIndex(specB, colorValuesMap.size);
+  seriesColorsArray.sort((seriesA, seriesB) => {
+    const [, colorValuesA] = seriesA;
+    const [, colorValuesB] = seriesB;
+
+    const specAIndex = colorValuesA.specSortIndex != null ? colorValuesA.specSortIndex : colorValuesMap.size;
+    const specBIndex = colorValuesB.specSortIndex != null ? colorValuesB.specSortIndex : colorValuesMap.size;
+
+    return specAIndex - specBIndex;
   });
 
   return new Map([...seriesColorsArray]);
@@ -362,11 +359,11 @@ export function getSeriesColorMap(
   const seriesColorMap = new Map<string, string>();
   let counter = 0;
 
-  seriesColors.forEach((_, key) => {
-    const customSeriesColor: string | undefined = customColors.get(key);
+  seriesColors.forEach((value: DataSeriesColorsValues, seriesColorKey: string) => {
+    const customSeriesColor: string | undefined = customColors.get(seriesColorKey);
     const color = customSeriesColor || chartColors.vizColors[counter % chartColors.vizColors.length];
 
-    seriesColorMap.set(key, color);
+    seriesColorMap.set(seriesColorKey, color);
     counter++;
   });
   return seriesColorMap;

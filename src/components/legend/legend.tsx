@@ -7,8 +7,6 @@ import { ChartStore } from '../../chart_types/xy_chart/store/chart_state';
 import { Position } from '../../chart_types/xy_chart/utils/specs';
 import { LegendItem } from './legend_item';
 import { Theme } from '../../utils/themes/theme';
-import { TooltipLegendValue } from '../../chart_types/xy_chart/tooltip/tooltip';
-import { AccessorType } from '../../chart_types/xy_chart/rendering/rendering';
 
 interface LegendProps {
   chartStore?: ChartStore; // FIX until we find a better way on ts mobx
@@ -138,55 +136,28 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
     this.props.chartStore!.onLegendItemOut();
   };
 
-  private getLegendValues(
-    tooltipValues: Map<string, TooltipLegendValue> | undefined,
-    key: string,
-    banded: boolean = false,
-  ): any[] {
-    const values = tooltipValues && tooltipValues.get(key);
-    if (values === null || values === undefined) {
-      return banded ? ['', ''] : [''];
-    }
-
-    const { y0, y1 } = values;
-    return banded ? [y1, y0] : [y1];
-  }
-
-  private getItemLabel(
-    { banded, label, y1AccessorFormat, y0AccessorFormat }: SeriesLegendItem,
-    yAccessor: AccessorType,
-  ) {
-    if (!banded) {
-      return label;
-    }
-
-    return yAccessor === AccessorType.Y1 ? `${label}${y1AccessorFormat}` : `${label}${y0AccessorFormat}`;
-  }
-
   private renderLegendElement = (item: SeriesLegendItem) => {
-    const { key, displayValue, banded } = item;
+    const { key, displayValue } = item;
     const { legendPosition, legendItemTooltipValues, isCursorOnChart } = this.props.chartStore!;
     const tooltipValues = legendItemTooltipValues.get();
-    const legendValues = this.getLegendValues(tooltipValues, key, banded);
+    let tooltipValue;
+
+    if (tooltipValues && tooltipValues.get(key)) {
+      tooltipValue = tooltipValues.get(key);
+    }
+
+    const newDisplayValue = tooltipValue != null ? tooltipValue : '';
 
     return (
-      <>
-        {legendValues.map((value, index) => {
-          const yAccessor: AccessorType = index === 0 ? AccessorType.Y1 : AccessorType.Y0;
-          return (
-            <LegendItem
-              {...item}
-              label={this.getItemLabel(item, yAccessor)}
-              key={`${key}-${yAccessor}`}
-              legendItemKey={key}
-              legendPosition={legendPosition.get()}
-              displayValue={isCursorOnChart.get() ? value : displayValue.formatted[yAccessor]}
-              onMouseEnter={this.onLegendItemMouseover(key)}
-              onMouseLeave={this.onLegendItemMouseout}
-            />
-          );
-        })}
-      </>
+      <LegendItem
+        {...item}
+        key={key}
+        legendItemKey={key}
+        legendPosition={legendPosition.get()}
+        displayValue={isCursorOnChart.get() ? newDisplayValue : displayValue.formatted}
+        onMouseEnter={this.onLegendItemMouseover(key)}
+        onMouseLeave={this.onLegendItemMouseout}
+      />
     );
   };
 }

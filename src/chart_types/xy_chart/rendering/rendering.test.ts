@@ -103,14 +103,8 @@ describe('Rendering utils', () => {
       isSeriesVisible: true,
       isLegendItemVisible: true,
       displayValue: {
-        formatted: {
-          y0: null,
-          y1: null,
-        },
-        raw: {
-          y0: null,
-          y1: null,
-        },
+        raw: '',
+        formatted: '',
       },
     };
 
