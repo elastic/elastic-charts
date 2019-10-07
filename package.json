@@ -105,6 +105,7 @@
     "jest-environment-jsdom-fourteen": "^0.1.0",
     "jest-image-snapshot": "^2.11.0",
     "jest-puppeteer": "^4.3.0",
+    "jest-puppeteer-docker": "^1.2.0",
     "lorem-ipsum": "^2.0.3",
     "merge": "^1.2.1",
     "node-sass": "^4.11.0",

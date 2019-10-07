@@ -4,7 +4,7 @@ const customConfig = { threshold: 0.01 };
 const toMatchImageSnapshot = configureToMatchImageSnapshot({
   customDiffConfig: customConfig,
   failureThreshold: 0.01,
-  failureThresholdType: 'percent',
+  failureThresholdType: 'pixel',
 });
 
 expect.extend({ toMatchImageSnapshot });

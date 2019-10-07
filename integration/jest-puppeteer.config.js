@@ -12,7 +12,6 @@ module.exports = {
     headless: true,
     slowMo: 0,
     browserUrl: `http://${host}:${port}/iframe.html`,
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--font-render-hinting=medium', '--disable-per-user-timezone'],
   },
   server: {
     command: `RNG_SEED='elastic-charts' yarn start --port=${port}`,

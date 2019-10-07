@@ -4883,6 +4883,11 @@ colors@^1.1.2:
   resolved "https://registry.yarnpkg.com/colors/-/colors-1.3.3.tgz#39e005d546afe01e01f9c4ca8fa50f686a01205d"
   integrity sha512-mmGt/1pZqYRjMxB1axhTo16/snVZ5krrKkcmMeVKxzECMMXoCgnvTPp10QgHfcbQZw8Dq2jMNG6je4JlWU0gWg==
 
+colors@^1.3.3:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/colors/-/colors-1.4.0.tgz#c50491479d4c1bdaed2c9ced32cf7c7dc2360f78"
+  integrity sha512-a+UqTh4kgZg/SlGvfbzDHpgRu7AAQOmmqRHJnxhRZICKFUT91brVhNNt58CMWU9PsBbv3PDCZUHbVxuDiH2mtA==
+
 columnify@~1.5.4:
   version "1.5.4"
   resolved "https://registry.yarnpkg.com/columnify/-/columnify-1.5.4.tgz#4737ddf1c7b69a8a7c340570782e947eec8e78bb"
@@ -5942,6 +5947,15 @@ dns-txt@^2.0.2:
   integrity sha1-uR2Ab10nGI5Ks+fRB9iBocxGQrY=
   dependencies:
     buffer-indexof "^1.0.0"
+
+docker-chromium@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/docker-chromium/-/docker-chromium-1.0.0.tgz#d9e104283627b44ce0761c9a409e46af73553023"
+  integrity sha512-nhM1J5jbF7+5V6XoTZYqBAyFhSMsDO6m1/r+cxp1gqyN3bRKGykHh/aNn8iOSRFDOInPHyudTKK38DpHjAS5gg==
+  dependencies:
+    colors "^1.3.3"
+    request "^2.88.0"
+    request-promise-native "^1.0.5"
 
 doctrine@1.5.0:
   version "1.5.0"
@@ -7034,7 +7048,7 @@ find-file-up@^0.1.2:
     fs-exists-sync "^0.1.0"
     resolve-dir "^0.1.0"
 
-find-node-modules@2.0.0:
+find-node-modules@2.0.0, find-node-modules@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/find-node-modules/-/find-node-modules-2.0.0.tgz#5db1fb9e668a3d451db3d618cd167cdd59e41b69"
   integrity sha512-8MWIBRgJi/WpjjfVXumjPKCtmQ10B+fjx6zmSA+770GMJirLhWIzg8l763rhjl9xaeaHbnxPNRQKq2mgMhr+aw==
@@ -9163,7 +9177,16 @@ jest-pnp-resolver@^1.2.1:
   resolved "https://registry.yarnpkg.com/jest-pnp-resolver/-/jest-pnp-resolver-1.2.1.tgz#ecdae604c077a7fbc70defb6d517c3c1c898923a"
   integrity sha512-pgFw2tm54fzgYvc/OHrnysABEObZCUNFnhjoRjaVOCN8NYc032/gVjPaHD4Aq6ApkSieWtfKAFQtmDKAmhupnQ==
 
-jest-puppeteer@^4.3.0:
+jest-puppeteer-docker@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/jest-puppeteer-docker/-/jest-puppeteer-docker-1.2.0.tgz#f50978c4c5d51fff7e395ade0a76c5216970a74f"
+  integrity sha512-g8tIj/gt7BaCJeX/TJCyT1BfAay88idUOH6PocgtrHbhdMdq4DquTtB0RWaa9cZ7OUoD8aOrGHcigZC1r7xchw==
+  dependencies:
+    docker-chromium "^1.0.0"
+    find-node-modules "^2.0.0"
+    jest-puppeteer "^4.1.0"
+
+jest-puppeteer@^4.1.0, jest-puppeteer@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/jest-puppeteer/-/jest-puppeteer-4.3.0.tgz#432273c2c2c75fbec40d7659b75cbcc7c4ae57ad"
   integrity sha512-WXhaWlbQl01xadZyNmdZntrtIr8uWUmgjPogDih7dOnr3G/xRr3A034SCqdjwV6fE0tqz7c5hwO8oBTyGZPRgA==
