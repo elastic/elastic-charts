@@ -19,7 +19,7 @@ const customConfig = Object.assign(
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     },
     server: {
-      command: `RNG_SEED='elastic-charts' yarn start --port=${port}`,
+      command: `RNG_SEED='elastic-charts' yarn start --port=${port} --ci --quiet`,
       port,
       usedPortAction: 'ask',
       launchTimeout: 120000,
