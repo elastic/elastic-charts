@@ -23,7 +23,6 @@ import {
   niceTimeFormatByDay,
   Position,
   RectAnnotation,
-  Rotation,
   ScaleType,
   Settings,
   timeFormatter,
@@ -35,6 +34,7 @@ import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 
 import { TEST_DATASET_DISCOVER } from '../src/utils/data_samples/test_dataset_discover_per_30s';
 import { getRandomNumber } from '../src/utils/data_generators/simple_noise';
+import { getChartRotationKnob } from './common';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
 
@@ -90,16 +90,6 @@ storiesOf('Bar Chart', module)
     };
 
     const debug = boolean('debug', true);
-    const chartRotation = select<Rotation>(
-      'chartRotation',
-      {
-        '0 deg': 0,
-        '90 deg': 90,
-        '-90 deg': -90,
-        '180 deg': 180,
-      },
-      0,
-    );
 
     const theme = {
       barSeriesStyle: {
@@ -134,7 +124,7 @@ storiesOf('Bar Chart', module)
 
     return (
       <Chart renderer="canvas" className={'story-chart'}>
-        <Settings theme={theme} debug={debug} rotation={chartRotation} />
+        <Settings theme={theme} debug={debug} rotation={getChartRotationKnob()} />
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
@@ -226,17 +216,6 @@ storiesOf('Bar Chart', module)
     );
   })
   .add('with linear x axis', () => {
-    const chartRotation = select<Rotation>(
-      'chartRotation',
-      {
-        '0 deg': 0,
-        '90 deg': 90,
-        '-90 deg': -90,
-        '180 deg': 180,
-      },
-      0,
-    );
-
     const theme = {
       ...LIGHT_THEME,
       scales: {
@@ -256,7 +235,7 @@ storiesOf('Bar Chart', module)
     };
     return (
       <Chart className={'story-chart'}>
-        <Settings rotation={chartRotation} theme={theme} />
+        <Settings rotation={getChartRotationKnob()} theme={theme} />
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
@@ -509,17 +488,6 @@ storiesOf('Bar Chart', module)
     );
   })
   .add('clustered with axis and legend', () => {
-    const chartRotation = select<Rotation>(
-      'chartRotation',
-      {
-        '0 deg': 0,
-        '90 deg': 90,
-        '-90 deg': -90,
-        '180 deg': 180,
-      },
-      0,
-    );
-
     const theme = {
       ...LIGHT_THEME,
       scales: {
@@ -540,7 +508,7 @@ storiesOf('Bar Chart', module)
 
     return (
       <Chart className={'story-chart'}>
-        <Settings showLegend={true} legendPosition={Position.Right} theme={theme} rotation={chartRotation} />
+        <Settings showLegend={true} legendPosition={Position.Right} theme={theme} rotation={getChartRotationKnob()} />
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
@@ -896,17 +864,6 @@ storiesOf('Bar Chart', module)
         }
       : undefined;
 
-    const chartRotation = select<Rotation>(
-      'chartRotation',
-      {
-        '0 deg': 0,
-        '90 deg': 90,
-        '-90 deg': -90,
-        '180 deg': 180,
-      },
-      0,
-    );
-
     const theme = {
       scales: {
         barsPadding: number('bars padding', 0.25, {
@@ -920,7 +877,7 @@ storiesOf('Bar Chart', module)
 
     return (
       <Chart className={'story-chart'}>
-        <Settings xDomain={xDomain} rotation={chartRotation} theme={theme} />
+        <Settings xDomain={xDomain} rotation={getChartRotationKnob()} theme={theme} />
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} />
         <Axis
           id={getAxisId('left2')}
@@ -945,17 +902,6 @@ storiesOf('Bar Chart', module)
     const hasCustomDomain = boolean('has custom domain', false);
     const xDomain = hasCustomDomain ? ['a', 'b'] : undefined;
 
-    const chartRotation = select<Rotation>(
-      'chartRotation',
-      {
-        '0 deg': 0,
-        '90 deg': 90,
-        '-90 deg': -90,
-        '180 deg': 180,
-      },
-      0,
-    );
-
     const theme = {
       scales: {
         barsPadding: number('bars padding', 0.25, {
@@ -969,7 +915,7 @@ storiesOf('Bar Chart', module)
 
     return (
       <Chart className={'story-chart'}>
-        <Settings xDomain={xDomain} rotation={chartRotation} theme={theme} />
+        <Settings xDomain={xDomain} rotation={getChartRotationKnob()} theme={theme} />
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} />
         <Axis
           id={getAxisId('left2')}
@@ -1444,17 +1390,6 @@ storiesOf('Bar Chart', module)
       },
     };
 
-    const chartRotation = select<Rotation>(
-      'chartRotation',
-      {
-        '0 deg': 0,
-        '90 deg': 90,
-        '-90 deg': -90,
-        '180 deg': 180,
-      },
-      0,
-    );
-
     const theme = {
       scales: {
         barsPadding: number('bars padding', 0.25, {
@@ -1511,7 +1446,7 @@ storiesOf('Bar Chart', module)
 
     return (
       <Chart className={'story-chart'}>
-        <Settings rotation={chartRotation} theme={theme} debug={boolean('debug', true)} />
+        <Settings rotation={getChartRotationKnob()} theme={theme} debug={boolean('debug', true)} />
         <LineAnnotation
           annotationId={getAnnotationId('line-annotation')}
           domainType={AnnotationDomainTypes.XDomain}
@@ -1575,18 +1510,6 @@ storiesOf('Bar Chart', module)
   })
   .add('[test] histogram mode (ordinal)', () => {
     const data = [{ x: 'a', y: 2 }, { x: 'b', y: 7 }, { x: 'c', y: 0 }, { x: 'd', y: 6 }];
-
-    const chartRotation = select<Rotation>(
-      'chartRotation',
-      {
-        '0 deg': 0,
-        '90 deg': 90,
-        '-90 deg': -90,
-        '180 deg': 180,
-      },
-      0,
-    );
-
     const theme = {
       scales: {
         barsPadding: number('bars padding', 0.25, {
@@ -1602,7 +1525,7 @@ storiesOf('Bar Chart', module)
 
     return (
       <Chart className={'story-chart'}>
-        <Settings rotation={chartRotation} theme={theme} debug={boolean('debug', true)} />
+        <Settings rotation={getChartRotationKnob()} theme={theme} debug={boolean('debug', true)} />
         <Axis id={getAxisId('discover-histogram-left-axis')} position={Position.Left} title={'left axis'} />
         <Axis id={getAxisId('discover-histogram-bottom-axis')} position={Position.Bottom} title={'bottom axis'} />
         {hasHistogramBarSeries && (
