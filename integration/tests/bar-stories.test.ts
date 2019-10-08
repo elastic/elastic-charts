@@ -1,6 +1,6 @@
-import { common } from '../../page_objects';
+import { common } from '../page_objects';
 
-describe('Bar series [test] stories', () => {
+describe('Bar series stories', () => {
   describe('[test] switch ordinal/linear x axis', () => {
     it('using ordinal x axis', async () => {
       await common.expectChartAtUrlToMatchScreenshot(
@@ -84,10 +84,48 @@ describe('Bar series [test] stories', () => {
   });
 
   describe('[test] histogram mode (ordinal)', () => {
-    describe('enableHistogramMode is true', () => {
+    describe('enableHistogramMode is false, hasHistogramBarSeries is false', () => {
       it('rotation - 0', async () => {
         await common.expectChartAtUrlToMatchScreenshot(
           'http://localhost:9001/?path=/story/bar-chart--test-histogram-mode-ordinal&knob-chartRotation=0&knob-bars padding=0.25&knob-hasHistogramBarSeries=&knob-debug=true&knob-bars-1 enableHistogramMode=true&knob-bars-2 enableHistogramMode=',
+        );
+      });
+      it('rotation - 90', async () => {
+        await common.expectChartAtUrlToMatchScreenshot(
+          'http://localhost:9001/?path=/story/bar-chart--test-histogram-mode-ordinal&knob-chartRotation=90&knob-bars padding=0.25&knob-hasHistogramBarSeries=&knob-debug=true&knob-bars-1 enableHistogramMode=true&knob-bars-2 enableHistogramMode=',
+        );
+      });
+      it('rotation - negative 90', async () => {
+        await common.expectChartAtUrlToMatchScreenshot(
+          'http://localhost:9001/?path=/story/bar-chart--test-histogram-mode-ordinal&knob-chartRotation=-90&knob-bars padding=0.25&knob-hasHistogramBarSeries=&knob-debug=true&knob-bars-1 enableHistogramMode=true&knob-bars-2 enableHistogramMode=',
+        );
+      });
+      it('rotation - 180', async () => {
+        await common.expectChartAtUrlToMatchScreenshot(
+          'http://localhost:9001/?path=/story/bar-chart--test-histogram-mode-ordinal&knob-chartRotation=180&knob-bars padding=0.25&knob-hasHistogramBarSeries=&knob-debug=true&knob-bars-1 enableHistogramMode=true&knob-bars-2 enableHistogramMode=',
+        );
+      });
+    });
+
+    describe('enableHistogramMode is true, hasHistogramBarSeries is true', () => {
+      it('rotation - 0', async () => {
+        await common.expectChartAtUrlToMatchScreenshot(
+          'http://localhost:9001/?path=/story/bar-chart--test-histogram-mode-ordinal&knob-chartRotation=0&knob-bars padding=0.25&knob-hasHistogramBarSeries=true&knob-debug=true&knob-bars-1 enableHistogramMode=true&knob-bars-2 enableHistogramMode=',
+        );
+      });
+      it('rotation - 90', async () => {
+        await common.expectChartAtUrlToMatchScreenshot(
+          'http://localhost:9001/?path=/story/bar-chart--test-histogram-mode-ordinal&knob-chartRotation=90&knob-bars padding=0.25&knob-hasHistogramBarSeries=true&knob-debug=true&knob-bars-1 enableHistogramMode=true&knob-bars-2 enableHistogramMode=',
+        );
+      });
+      it('rotation - negative 90', async () => {
+        await common.expectChartAtUrlToMatchScreenshot(
+          'http://localhost:9001/?path=/story/bar-chart--test-histogram-mode-ordinal&knob-chartRotation=-90&knob-bars padding=0.25&knob-hasHistogramBarSeries=true&knob-debug=true&knob-bars-1 enableHistogramMode=true&knob-bars-2 enableHistogramMode=',
+        );
+      });
+      it('rotation - 180', async () => {
+        await common.expectChartAtUrlToMatchScreenshot(
+          'http://localhost:9001/?path=/story/bar-chart--test-histogram-mode-ordinal&knob-chartRotation=180&knob-bars padding=0.25&knob-hasHistogramBarSeries=true&knob-debug=true&knob-bars-1 enableHistogramMode=true&knob-bars-2 enableHistogramMode=',
         );
       });
     });

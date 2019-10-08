@@ -1,8 +1,9 @@
 const getConfig = require('jest-puppeteer-docker/lib/config');
 const baseConfig = getConfig();
+const defaults = require('./defaults');
 
-const port = 9001;
-const host = '0.0.0.0';
+const port = process.env.PORT || defaults.PORT;
+const host = process.env.HOST || defaults.HOST;
 
 /**
  * combined config object
@@ -21,7 +22,7 @@ const customConfig = Object.assign(
     server: {
       command: `RNG_SEED='elastic-charts' yarn start --port=${port} --quiet`,
       port,
-      usedPortAction: 'ask',
+      usedPortAction: 'error',
       launchTimeout: 120000,
       debug: false,
     },

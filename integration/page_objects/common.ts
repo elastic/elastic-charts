@@ -1,22 +1,27 @@
 import Url from 'url';
+
 import { toMatchImageSnapshot } from '../jest-env-setup';
+// @ts-ignore
+import defaults from '../defaults';
+
+const port = process.env.PORT || defaults.PORT;
+const host = process.env.HOST || defaults.HOST;
+const baseUrl = `http://${host}:${port}/iframe.html`;
 
 expect.extend({ toMatchImageSnapshot });
-
-const baseUrl = 'http://host.docker.internal:9001/iframe.html';
 
 interface ScreenshotDOMElementOptions {
   padding?: number;
   path?: string;
 }
 
-const parseUrl = (url: string): string => {
-  const { query } = Url.parse(url);
-
-  return `${baseUrl}?${query}${query ? '&' : ''}knob-debug=false`;
-};
-
 class CommonPage {
+  static parseUrl(url: string): string {
+    const { query } = Url.parse(url);
+
+    return `${baseUrl}?${query}${query ? '&' : ''}knob-debug=false`;
+  }
+
   async getChart() {
     return page.$('echChart');
   }
@@ -66,10 +71,19 @@ class CommonPage {
    * @param url Storybook url from knobs section
    */
   async expectChartAtUrlToMatchScreenshot(url: string) {
-    const cleanUrl = parseUrl(url);
-    await page.goto(cleanUrl);
-    const chart = await this.getChartScreenshot();
-    expect(chart).toMatchImageSnapshot();
+    try {
+      const cleanUrl = CommonPage.parseUrl(url);
+      await page.goto(cleanUrl);
+      const chart = await this.getChartScreenshot();
+
+      if (!chart) {
+        throw new Error(`Error: Unable to find chart element\n\n\t${url}`);
+      }
+
+      expect(chart).toMatchImageSnapshot();
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 }
 
