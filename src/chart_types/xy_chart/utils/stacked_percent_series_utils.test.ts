@@ -307,6 +307,10 @@ describe('Stacked Series Utils', () => {
         x: 2,
         y0: 1,
         y1: 1,
+        filled: {
+          x: 2,
+          y1: 0,
+        },
       });
       expect(formattedData[1].data[2]).toEqual({
         datum: undefined,

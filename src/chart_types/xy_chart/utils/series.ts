@@ -9,6 +9,15 @@ import { formatStackedDataSeriesValues } from './stacked_series_utils';
 import { LastValues } from '../store/utils';
 import { ScaleType } from '../../../utils/scales/scales';
 
+export interface FilledValues {
+  /** the x value */
+  x: number | string;
+  /** the max y value */
+  y1: number | null;
+  /** the minimum y value */
+  y0: number | null;
+}
+
 export interface RawDataSeriesDatum {
   /** the x value */
   x: number | string;
@@ -21,6 +30,7 @@ export interface RawDataSeriesDatum {
 }
 
 export interface DataSeriesDatum {
+  /** the x value */
   x: number | string;
   /** the max y value */
   y1: number | null;
@@ -32,6 +42,8 @@ export interface DataSeriesDatum {
   initialY0: number | null;
   /** the datum */
   datum?: any;
+  /** the list of filled values because missing or nulls */
+  filled?: Partial<FilledValues>;
 }
 
 export interface DataSeries {
@@ -341,6 +353,7 @@ export function getSplittedSeries(
       xValues.add(xValue);
     }
   }
+  // keep the user order for ordinal scales
   if (!isOrdinalScale) {
     xValues = new Set([...xValues].sort());
   }

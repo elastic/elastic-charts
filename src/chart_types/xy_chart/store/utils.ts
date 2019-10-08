@@ -118,7 +118,7 @@ export function getLastValues(formattedDataSeries: {
         if (last !== null) {
           const { initialY1: y1, initialY0: y0 } = last;
 
-          if (y1 !== null || y0 !== null) {
+          if (!last.filled && (y1 !== null || y0 !== null)) {
             lastValues.set(series.seriesColorKey, { y0, y1 });
           }
         }
