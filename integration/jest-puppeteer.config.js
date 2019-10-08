@@ -22,7 +22,7 @@ const customConfig = Object.assign(
       command: `RNG_SEED='elastic-charts' yarn start --port=${port}`,
       port,
       usedPortAction: 'ask',
-      launchTimeout: 60000,
+      launchTimeout: 120000,
       debug: false,
     },
   },
