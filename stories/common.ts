@@ -9,16 +9,6 @@ export const numberSelect = <T extends number>(
   groupId?: string,
 ): T => (parseInt(select<T | string>(name, options, value, groupId) as string) as T) || value;
 
-export const myNumber = numberSelect<number>(
-  'number',
-  {
-    zero: 0,
-    one: 1,
-    two: 2,
-  },
-  0,
-);
-
 export const getChartRotationKnob = () =>
   numberSelect<Rotation>(
     'chartRotation',

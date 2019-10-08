@@ -1,7 +1,20 @@
+import Url from 'url';
+import { toMatchImageSnapshot } from '../jest-env-setup';
+
+expect.extend({ toMatchImageSnapshot });
+
+const baseUrl = 'http://host.docker.internal:9001/iframe.html';
+
 interface ScreenshotDOMElementOptions {
   padding?: number;
   path?: string;
 }
+
+const parseUrl = (url: string): string => {
+  const { query } = Url.parse(url);
+
+  return `${baseUrl}?${query}${query ? '&' : ''}knob-debug=false`;
+};
 
 class CommonPage {
   async getChart() {
@@ -38,8 +51,25 @@ class CommonPage {
     });
   }
 
-  getChartScreenshot() {
+  /**
+   * Capture screenshot or chart element only
+   */
+  async getChartScreenshot() {
     return this.screenshotDOMElement('.echChart');
+  }
+
+  /**
+   * Expect a chart given a url from storybook.
+   *
+   * - Note: No need to fix host or port. They will be set automatically.
+   *
+   * @param url Storybook url from knobs section
+   */
+  async expectChartAtUrlToMatchScreenshot(url: string) {
+    const cleanUrl = parseUrl(url);
+    await page.goto(cleanUrl);
+    const chart = await this.getChartScreenshot();
+    expect(chart).toMatchImageSnapshot();
   }
 }
 
