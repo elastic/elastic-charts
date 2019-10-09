@@ -99,7 +99,7 @@ export function computeXScale(options: XScaleOptions): Scale {
           range: [start, end],
         },
         {
-          bandwidth: totalBarsInCluster > 0 ? bandwidth / totalBarsInCluster : bandwidth / 1,
+          bandwidth: totalBarsInCluster > 0 ? bandwidth / totalBarsInCluster : bandwidth,
           minInterval,
           timeZone,
           totalBarsInCluster,
