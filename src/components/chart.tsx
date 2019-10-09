@@ -104,8 +104,8 @@ export class Chart extends React.Component<ChartProps, ChartState> {
         <div
           style={containerStyle}
           className={chartClassNames}
-          data-render-complete={renderComplete}
-          data-render-count={renderCount}
+          data-ech-render-complete={renderComplete}
+          data-ech-render-count={renderCount}
         >
           <Legend />
           <SpecsParser>{this.props.children}</SpecsParser>

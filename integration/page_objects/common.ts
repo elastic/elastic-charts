@@ -56,7 +56,7 @@ class CommonPage {
    * Capture screenshot or chart element only
    */
   async getChartScreenshot() {
-    return this.screenshotDOMElement('.echChart[data-render-complete=true]');
+    return this.screenshotDOMElement('.echChart[data-ech-render-complete=true]');
   }
 
   /**
