@@ -47,7 +47,6 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     };
 
     this.chartSpecStore.chartInitialized.observe(({ newValue, oldValue }) => {
-      debugger;
       if (newValue !== oldValue) {
         this.setState({
           renderComplete: newValue,
