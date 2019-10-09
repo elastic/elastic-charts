@@ -77,7 +77,7 @@ storiesOf('Bar Chart', module)
     );
   })
   .add('with value label', () => {
-    const showValueLabel = boolean('show value label', false);
+    const showValueLabel = boolean('show value label', true);
     const isAlternatingValueLabel = boolean('alternating value label', false);
     const isValueContainedInElement = boolean('contain value label within bar element', false);
     const hideClippedValue = boolean('hide clipped value', false);
@@ -132,7 +132,7 @@ storiesOf('Bar Chart', module)
           position={Position.Left}
           tickFormat={(d: any) => Number(d).toFixed(2)}
         />
-        <LineSeries
+        <BarSeries
           id={getSpecId('bars')}
           displayValueSettings={displayValueSettings}
           xScaleType={ScaleType.Linear}
@@ -144,7 +144,7 @@ storiesOf('Bar Chart', module)
           data={data}
           yScaleToDataExtent={false}
         />
-        <LineSeries
+        <BarSeries
           id={getSpecId('bars2')}
           displayValueSettings={displayValueSettings}
           xScaleType={ScaleType.Linear}
