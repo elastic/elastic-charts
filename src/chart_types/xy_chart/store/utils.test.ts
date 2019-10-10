@@ -1,5 +1,5 @@
 import { mergeYCustomDomainsByGroupId } from '../utils/axis_utils';
-import { IndexedGeometry, AccessorType } from '../rendering/rendering';
+import { IndexedGeometry, BandedAccessorType } from '../rendering/rendering';
 import { DataSeriesColorsValues, findDataSeriesByColorValues, getSeriesColorMap } from '../utils/series';
 import {
   AreaSeriesSpec,
@@ -1009,9 +1009,9 @@ describe('Chart State utils', () => {
         x: 0,
         y: 0,
         color: '#1EA593',
-        value: { x: 0, y: 5, accessor: AccessorType.Y1 },
+        value: { x: 0, y: 5, accessor: BandedAccessorType.Y1 },
         transform: { x: 0, y: 0 },
-        geometryId: { specId: getSpecId('line1'), seriesKey: [] },
+        seriesIdentifier: { specId: getSpecId('line1'), seriesKey: [] },
       },
     ]);
     const map2 = new Map<string, IndexedGeometry[]>();
@@ -1021,9 +1021,9 @@ describe('Chart State utils', () => {
         x: 0,
         y: 175.8,
         color: '#2B70F7',
-        value: { x: 0, y: 2, accessor: AccessorType.Y1 },
+        value: { x: 0, y: 2, accessor: BandedAccessorType.Y1 },
         transform: { x: 0, y: 0 },
-        geometryId: { specId: getSpecId('line2'), seriesKey: [] },
+        seriesIdentifier: { specId: getSpecId('line2'), seriesKey: [] },
       },
     ]);
     const merged = mergeGeometriesIndexes(map1, map2);

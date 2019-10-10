@@ -22,7 +22,7 @@ import {
 } from '../src';
 import { Icon } from '../src/components/icons/icon';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
-import { AccessorType } from '../src/chart_types/xy_chart/rendering/rendering';
+import { BandedAccessorType } from '../src/chart_types/xy_chart/rendering/rendering';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
 
@@ -372,8 +372,8 @@ storiesOf('Annotations', module)
       {
         x0: 'x0',
         x1: 'x1',
-        y0: AccessorType.Y0,
-        y1: AccessorType.Y1,
+        y0: BandedAccessorType.Y0,
+        y1: BandedAccessorType.Y1,
       },
       'x0',
     );
@@ -401,8 +401,8 @@ storiesOf('Annotations', module)
         coordinates: {
           x0: definedCoordinate === 'x0' ? 0.25 : null,
           x1: definedCoordinate === 'x1' ? 2.75 : null,
-          y0: definedCoordinate === AccessorType.Y0 ? 0.25 : null,
-          y1: definedCoordinate === AccessorType.Y1 ? 6.75 : null,
+          y0: definedCoordinate === BandedAccessorType.Y0 ? 0.25 : null,
+          y1: definedCoordinate === BandedAccessorType.Y1 ? 6.75 : null,
         },
         details: 'can have null values',
       },

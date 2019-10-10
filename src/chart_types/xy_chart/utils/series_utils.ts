@@ -1,5 +1,4 @@
-import { GeometryId } from '../rendering/rendering';
-import { DataSeriesColorsValues } from './series';
+import { DataSeriesColorsValues, SeriesIdentifier } from './series';
 
 export function isEqualSeriesKey(a: any[], b: any[]): boolean {
   if (a.length !== b.length) {
@@ -15,11 +14,14 @@ export function isEqualSeriesKey(a: any[], b: any[]): boolean {
   return true;
 }
 
-export function belongsToDataSeries(geometryValue: GeometryId, dataSeriesValues: DataSeriesColorsValues): boolean {
+export function belongsToDataSeries(
+  geometryValue: SeriesIdentifier,
+  dataSeriesValues: DataSeriesColorsValues,
+): boolean {
   const legendItemSeriesKey = dataSeriesValues.colorValues;
   const legendItemSpecId = dataSeriesValues.specId;
 
-  const geometrySeriesKey = geometryValue.seriesKey;
+  const geometrySeriesKey = geometryValue.seriesKeys;
   const geometrySpecId = geometryValue.specId;
 
   const hasSameSpecId = legendItemSpecId === geometrySpecId;

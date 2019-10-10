@@ -559,6 +559,7 @@ export class ChartStore {
       this.cursorPosition.x > -1 &&
       this.cursorPosition.y > -1 &&
       this.tooltipData.length > 0 &&
+      this.tooltipData.some(({ isVisible }) => isVisible) &&
       this.isActiveChart.get()
     );
   });

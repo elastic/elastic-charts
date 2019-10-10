@@ -57,7 +57,7 @@ describe('Rendering bars', () => {
           x: 0,
           y: 10,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
           seriesKey: [],
         },
@@ -92,7 +92,7 @@ describe('Rendering bars', () => {
           x: 1,
           y: 5,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
           seriesKey: [],
         },
@@ -241,7 +241,7 @@ describe('Rendering bars', () => {
           x: 0,
           y: 10,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: spec1Id,
           seriesKey: [],
         },
@@ -276,7 +276,7 @@ describe('Rendering bars', () => {
           x: 1,
           y: 5,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: spec1Id,
           seriesKey: [],
         },
@@ -324,7 +324,7 @@ describe('Rendering bars', () => {
           x: 0,
           y: 20,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: spec2Id,
           seriesKey: [],
         },
@@ -359,7 +359,7 @@ describe('Rendering bars', () => {
           x: 1,
           y: 10,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: spec2Id,
           seriesKey: [],
         },
@@ -429,7 +429,7 @@ describe('Rendering bars', () => {
           x: 0,
           y: 10,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
           seriesKey: [],
         },
@@ -464,7 +464,7 @@ describe('Rendering bars', () => {
           x: 1,
           y: 5,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
           seriesKey: [],
         },
@@ -549,7 +549,7 @@ describe('Rendering bars', () => {
           x: 0,
           y: 10,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: spec1Id,
           seriesKey: [],
         },
@@ -584,7 +584,7 @@ describe('Rendering bars', () => {
           x: 1,
           y: 5,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: spec1Id,
           seriesKey: [],
         },
@@ -632,7 +632,7 @@ describe('Rendering bars', () => {
           x: 0,
           y: 20,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: spec2Id,
           seriesKey: [],
         },
@@ -667,7 +667,7 @@ describe('Rendering bars', () => {
           x: 1,
           y: 10,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: spec2Id,
           seriesKey: [],
         },
@@ -752,7 +752,7 @@ describe('Rendering bars', () => {
           x: 1546300800000,
           y: 10,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: spec1Id,
           seriesKey: [],
         },
@@ -787,7 +787,7 @@ describe('Rendering bars', () => {
           x: 1546387200000,
           y: 5,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: spec1Id,
           seriesKey: [],
         },
@@ -835,7 +835,7 @@ describe('Rendering bars', () => {
           x: 1546300800000,
           y: 20,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: spec2Id,
           seriesKey: [],
         },
@@ -870,7 +870,7 @@ describe('Rendering bars', () => {
           x: 1546387200000,
           y: 10,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: spec2Id,
           seriesKey: [],
         },

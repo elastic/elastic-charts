@@ -904,7 +904,7 @@ describe('Chart Store', () => {
     };
     const geom1: IndexedGeometry = {
       color: 'red',
-      geometryId: {
+      seriesIdentifier: {
         specId: getSpecId('specId1'),
         seriesKey: [2],
       },
@@ -921,7 +921,7 @@ describe('Chart Store', () => {
     };
     const geom2: IndexedGeometry = {
       color: 'blue',
-      geometryId: {
+      seriesIdentifier: {
         specId: getSpecId('specId2'),
         seriesKey: [2],
       },
@@ -1095,7 +1095,7 @@ describe('Chart Store', () => {
       store.onBrushEndListener = brushEndListener;
       const geom1: IndexedGeometry = {
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: getSpecId('specId1'),
           seriesKey: [2],
         },

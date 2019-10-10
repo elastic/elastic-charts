@@ -1,5 +1,5 @@
 import { getSpecId } from '../../../utils/ids';
-import { GeometryId } from '../rendering/rendering';
+import { SeriesIdentifier } from '../rendering/rendering';
 import { DataSeriesColorsValues } from './series';
 import { belongsToDataSeries, isEqualSeriesKey } from './series_utils';
 
@@ -19,7 +19,7 @@ describe('Series utility functions', () => {
   });
 
   test('can determine if a geometry id belongs to a data series', () => {
-    const geometryIdA: GeometryId = {
+    const geometryIdA: SeriesIdentifier = {
       specId: getSpecId('a'),
       seriesKey: ['a', 'b', 'c'],
     };

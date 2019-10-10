@@ -56,13 +56,13 @@ describe('Rendering bands - areas', () => {
     });
     test('Render geometry but empty upper and lower lines and area paths', () => {
       const {
-        areaGeometry: { lines, area, color, geometryId, transform },
+        areaGeometry: { lines, area, color, seriesIdentifier, transform },
       } = renderedArea;
       expect(lines.length).toBe(0);
       expect(area).toBe('');
       expect(color).toBe('red');
-      expect(geometryId.seriesKey).toEqual([]);
-      expect(geometryId.specId).toEqual(SPEC_ID);
+      expect(seriesIdentifier.seriesKey).toEqual([]);
+      expect(seriesIdentifier.specId).toEqual(SPEC_ID);
       expect(transform).toEqual({ x: 25, y: 0 });
     });
   });
@@ -110,15 +110,15 @@ describe('Rendering bands - areas', () => {
     });
     test('Can render upper and lower lines and area paths', () => {
       const {
-        areaGeometry: { lines, area, color, geometryId, transform },
+        areaGeometry: { lines, area, color, seriesIdentifier, transform },
       } = renderedArea;
       expect(lines.length).toBe(2);
       expect(lines[0]).toBe('M0,0L50,50');
       expect(lines[1]).toBe('M0,80L50,70');
       expect(area).toBe('M0,0L50,50L50,70L0,80Z');
       expect(color).toBe('red');
-      expect(geometryId.seriesKey).toEqual([]);
-      expect(geometryId.specId).toEqual(SPEC_ID);
+      expect(seriesIdentifier.seriesKey).toEqual([]);
+      expect(seriesIdentifier.specId).toEqual(SPEC_ID);
       expect(transform).toEqual({ x: 25, y: 0 });
     });
 
@@ -132,7 +132,7 @@ describe('Rendering bands - areas', () => {
         y: 80,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
           seriesKey: [],
         },
@@ -153,7 +153,7 @@ describe('Rendering bands - areas', () => {
         y: 0,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
           seriesKey: [],
         },
@@ -173,7 +173,7 @@ describe('Rendering bands - areas', () => {
         y: 70,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
           seriesKey: [],
         },
@@ -192,7 +192,7 @@ describe('Rendering bands - areas', () => {
         y: 50,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
           seriesKey: [],
         },
@@ -252,15 +252,15 @@ describe('Rendering bands - areas', () => {
     });
     test('Can render upper and lower lines and area paths', () => {
       const {
-        areaGeometry: { lines, area, color, geometryId, transform },
+        areaGeometry: { lines, area, color, seriesIdentifier, transform },
       } = renderedArea;
       expect(lines.length).toBe(2);
       expect(lines[0]).toBe('M0,0ZM50,50L75,50');
       expect(lines[1]).toBe('M0,80ZM50,70L75,70');
       expect(area).toBe('M0,0L0,80ZM50,50L75,50L75,70L50,70Z');
       expect(color).toBe('red');
-      expect(geometryId.seriesKey).toEqual([]);
-      expect(geometryId.specId).toEqual(SPEC_ID);
+      expect(seriesIdentifier.seriesKey).toEqual([]);
+      expect(seriesIdentifier.specId).toEqual(SPEC_ID);
       expect(transform).toEqual({ x: 25, y: 0 });
     });
 
@@ -275,7 +275,7 @@ describe('Rendering bands - areas', () => {
         y: 80,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
           seriesKey: [],
         },
@@ -296,7 +296,7 @@ describe('Rendering bands - areas', () => {
         y: 0,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
           seriesKey: [],
         },
@@ -316,7 +316,7 @@ describe('Rendering bands - areas', () => {
         y: 70,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
           seriesKey: [],
         },
@@ -335,7 +335,7 @@ describe('Rendering bands - areas', () => {
         y: 50,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
           seriesKey: [],
         },
@@ -354,7 +354,7 @@ describe('Rendering bands - areas', () => {
         y: 70,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
           seriesKey: [],
         },
@@ -373,7 +373,7 @@ describe('Rendering bands - areas', () => {
         y: 50,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
           seriesKey: [],
         },
@@ -435,7 +435,7 @@ describe('Rendering bands - areas', () => {
           x: 0,
           y: 10,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
           seriesKey: [],
         },
@@ -470,7 +470,7 @@ describe('Rendering bands - areas', () => {
           x: 2,
           y: 5,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
           seriesKey: [],
         },
@@ -505,7 +505,7 @@ describe('Rendering bands - areas', () => {
           x: 3,
           y: 8,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
           seriesKey: [],
         },

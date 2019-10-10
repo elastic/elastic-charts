@@ -444,12 +444,10 @@ export function renderGeometries(
 
       const renderedBars = renderBars(
         shift,
-        ds.data,
+        ds,
         xScale,
         yScale,
         color,
-        ds.specId,
-        ds.key,
         barSeriesStyle,
         displayValueSettings,
         spec.styleAccessor,
@@ -469,14 +467,12 @@ export function renderGeometries(
       const renderedLines = renderLine(
         // move the point on half of the bandwidth if we have mixed bars/lines
         (xScale.bandwidth * lineShift) / 2,
-        ds.data,
+        ds,
         xScale,
         yScale,
         color,
         (spec as LineSeriesSpec).curve || CurveType.LINEAR,
-        ds.specId,
         isBandedSpec(spec.y0Accessors),
-        ds.key,
         xScaleOffset,
         lineSeriesStyle,
         spec.pointStyleAccessor,
@@ -495,14 +491,12 @@ export function renderGeometries(
       const renderedAreas = renderArea(
         // move the point on half of the bandwidth if we have mixed bars/lines
         (xScale.bandwidth * areaShift) / 2,
-        ds.data,
+        ds,
         xScale,
         yScale,
         color,
         (spec as AreaSeriesSpec).curve || CurveType.LINEAR,
-        ds.specId,
         isBandedSpec(spec.y0Accessors),
-        ds.key,
         xScaleOffset,
         areaSeriesStyle,
         isStacked,

@@ -32,18 +32,22 @@ export interface DataSeriesDatum {
   datum?: any;
 }
 
-export interface DataSeries {
+export interface SeriesIdentifier {
   specId: SpecId;
-  key: any[];
+  yAccessor: string | number;
+  splitAccessors: Map<string | number, string | number>; // does the map have a size vs making it optional
+  seriesKeys: any[];
+}
+
+export type DataSeries = SeriesIdentifier & {
   seriesColorKey: string;
   data: DataSeriesDatum[];
-}
-export interface RawDataSeries {
-  specId: SpecId;
-  key: any[];
+};
+
+export type RawDataSeries = SeriesIdentifier & {
   seriesColorKey: string;
   data: RawDataSeriesDatum[];
-}
+};
 
 export interface FormattedDataSeries {
   groupId: GroupId;
@@ -98,7 +102,7 @@ export function splitSeries(
   const xValues = new Set<any>();
 
   data.forEach((datum) => {
-    const seriesKey = getAccessorsValues(datum, splitSeriesAccessors);
+    const splitAccessors = getSplitAccessors(datum, splitSeriesAccessors);
     if (isMultipleY) {
       yAccessors.forEach((accessor, index) => {
         const colorValues = getColorValues(datum, splitSeriesAccessors, accessor);
@@ -106,7 +110,7 @@ export function splitSeries(
         colorsValues.set(colorValuesKey, colorValues);
         const cleanedDatum = cleanDatum(datum, xAccessor, accessor, y0Accessors && y0Accessors[index]);
         xValues.add(cleanedDatum.x);
-        updateSeriesMap(series, [...seriesKey, accessor], cleanedDatum, specId, colorValuesKey);
+        updateSeriesMap(series, splitAccessors, accessor, cleanedDatum, specId, colorValuesKey);
       });
     } else {
       const colorValues = getColorValues(datum, splitSeriesAccessors);
@@ -114,7 +118,7 @@ export function splitSeries(
       colorsValues.set(colorValuesKey, colorValues);
       const cleanedDatum = cleanDatum(datum, xAccessor, yAccessors[0], y0Accessors && y0Accessors[0]);
       xValues.add(cleanedDatum.x);
-      updateSeriesMap(series, [...seriesKey], cleanedDatum, specId, colorValuesKey);
+      updateSeriesMap(series, splitAccessors, null, cleanedDatum, specId, colorValuesKey);
     }
   });
   return {
@@ -130,20 +134,24 @@ export function splitSeries(
  */
 function updateSeriesMap(
   seriesMap: Map<string, RawDataSeries>,
-  seriesKey: any[],
+  splitAccessors: Map<string | number, string | number>,
+  accessor: any,
   datum: RawDataSeriesDatum,
   specId: SpecId,
   seriesColorKey: string,
 ): Map<string, RawDataSeries> {
-  const seriesKeyString = seriesKey.join('___');
+  const seriesKeys = accessor === null ? [...splitAccessors.values()] : [...splitAccessors.values(), accessor];
+  const seriesKeyString = seriesKeys.join('___');
   const series = seriesMap.get(seriesKeyString);
   if (series) {
     series.data.push(datum);
   } else {
     seriesMap.set(seriesKeyString, {
+      seriesKeys,
       specId,
+      yAccessor: accessor,
+      splitAccessors,
       seriesColorKey,
-      key: seriesKey,
       data: [datum],
     });
   }
@@ -153,19 +161,22 @@ function updateSeriesMap(
 /**
  * Get the array of values that forms a series key
  */
-function getAccessorsValues(datum: Datum, accessors: Accessor[] = []): any[] {
-  return accessors
-    .map((accessor) => {
-      return datum[accessor];
-    })
-    .filter((value) => value !== undefined);
+function getSplitAccessors(datum: Datum, accessors: Accessor[] = []): Map<string | number, string | number> {
+  const splitAccessors = new Map<string | number, string | number>();
+  accessors.forEach((accessor) => {
+    const value = datum[accessor];
+    if (value !== undefined || value !== null) {
+      splitAccessors.set(accessor, value);
+    }
+  });
+  return splitAccessors;
 }
 
 /**
  * Get the array of values that forms a series key
  */
 function getColorValues(datum: Datum, accessors: Accessor[] = [], yAccessorValue?: any): any[] {
-  const colorValues = getAccessorsValues(datum, accessors);
+  const colorValues = [...getSplitAccessors(datum, accessors).values()];
   if (yAccessorValue) {
     return [...colorValues, yAccessorValue];
   }
@@ -303,9 +314,9 @@ export function getSplittedSeries(
     if (deselectedDataSeries) {
       currentRawDataSeries = dataSeries.rawDataSeries.filter(
         (series): boolean => {
-          const seriesValues = {
+          const seriesValues: DataSeriesColorsValues = {
             specId,
-            colorValues: series.key,
+            colorValues: series.seriesKeys,
           };
 
           return findDataSeriesByColorValues(deselectedDataSeries, seriesValues) < 0;
@@ -368,3 +379,5 @@ export function getSeriesColorMap(
   });
   return seriesColorMap;
 }
+
+export function getSeriesTooltipMap() {}

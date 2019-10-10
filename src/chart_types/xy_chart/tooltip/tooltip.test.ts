@@ -56,7 +56,7 @@ describe('Tooltip formatting', () => {
     width: 0,
     height: 0,
     color: 'blue',
-    geometryId: {
+    seriesIdentifier: {
       specId: SPEC_ID_1,
       seriesKey: [],
     },
@@ -73,7 +73,7 @@ describe('Tooltip formatting', () => {
     width: 0,
     height: 0,
     color: 'blue',
-    geometryId: {
+    seriesIdentifier: {
       specId: SPEC_ID_1,
       seriesKey: [],
     },
@@ -170,7 +170,7 @@ describe('Tooltip formatting', () => {
   test('format tooltip with seriesKey name', () => {
     const geometry: BarGeometry = {
       ...indexedGeometry,
-      geometryId: {
+      seriesIdentifier: {
         specId: SPEC_ID_1,
         seriesKey: ['y1'],
       },

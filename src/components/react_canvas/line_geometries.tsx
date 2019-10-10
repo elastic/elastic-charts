@@ -76,8 +76,8 @@ export class LineGeometries extends React.PureComponent<LineGeometriesDataProps,
     const { lines, sharedStyle } = this.props;
 
     return lines.reduce<JSX.Element[]>((acc, line) => {
-      const { seriesLineStyle, seriesPointStyle, geometryId } = line;
-      const key = getGeometryIdKey(geometryId, 'line-');
+      const { seriesLineStyle, seriesPointStyle, seriesIdentifier } = line;
+      const key = getGeometryIdKey(seriesIdentifier, 'line-');
       if (seriesLineStyle.visible) {
         acc.push(this.getLineToRender(line, sharedStyle, key));
       }
@@ -92,8 +92,8 @@ export class LineGeometries extends React.PureComponent<LineGeometriesDataProps,
 
   getLineToRender(line: LineGeometry, sharedStyle: SharedGeometryStyle, key: string) {
     const { clippings } = this.props;
-    const { line: linePath, color, transform, geometryId, seriesLineStyle } = line;
-    const geometryStyle = getGeometryStyle(geometryId, this.props.highlightedLegendItem, sharedStyle);
+    const { line: linePath, color, transform, seriesIdentifier, seriesLineStyle } = line;
+    const geometryStyle = getGeometryStyle(seriesIdentifier, this.props.highlightedLegendItem, sharedStyle);
     const lineProps = buildLineRenderProps(transform.x, linePath, color, seriesLineStyle, geometryStyle);
     return (
       <Group {...clippings} key={key}>
@@ -103,8 +103,8 @@ export class LineGeometries extends React.PureComponent<LineGeometriesDataProps,
   }
 
   getPointToRender(line: LineGeometry, sharedStyle: SharedGeometryStyle, key: string) {
-    const { points, color, geometryId, seriesPointStyle } = line;
-    const geometryStyle = getGeometryStyle(geometryId, this.props.highlightedLegendItem, sharedStyle);
+    const { points, color, seriesIdentifier, seriesPointStyle } = line;
+    const geometryStyle = getGeometryStyle(seriesIdentifier, this.props.highlightedLegendItem, sharedStyle);
     const pointStyleProps = buildPointStyleProps(color, seriesPointStyle, geometryStyle);
     return this.renderPoints(points, key, pointStyleProps);
   }
