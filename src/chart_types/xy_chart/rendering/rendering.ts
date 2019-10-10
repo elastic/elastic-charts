@@ -308,9 +308,10 @@ export function renderBars(
     } else {
       y = yScale.scale(y1);
       if (yScale.isInverted) {
-        y0Scaled = y0 === null ? yScale.range[1] : yScale.scale(y0);
+        // use always zero as baseline if y0 is null
+        y0Scaled = y0 === null ? yScale.scale(0) : yScale.scale(y0);
       } else {
-        y0Scaled = y0 === null ? yScale.range[0] : yScale.scale(y0);
+        y0Scaled = y0 === null ? yScale.scale(0) : yScale.scale(y0);
       }
     }
     const height = y0Scaled - y;

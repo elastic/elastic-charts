@@ -1117,16 +1117,8 @@ storiesOf('Bar Chart', module)
     );
   })
   .add('scale to extent', () => {
-    const yScaleToDataExtent = boolean('yScaleDataToExtent', false);
-    const mixed = [
-      { x: 3, y: 1 },
-      { x: 0, y: -4 },
-      { x: 2, y: 2 },
-      { x: 1, y: -3 },
-      { x: 2, y: 2 },
-      { x: 1, y: -3 },
-      { x: 3, y: 1 },
-    ];
+    const yScaleToDataExtent = boolean('yScaleDataToExtent', true);
+    const mixed = [{ x: 0, y: -4 }, { x: 1, y: -3 }, { x: 2, y: 2 }, { x: 3, y: 1 }];
 
     const allPositive = mixed.map((datum) => ({ x: datum.x, y: Math.abs(datum.y) }));
     const allNegative = mixed.map((datum) => ({ x: datum.x, y: Math.abs(datum.y) * -1 }));
@@ -1138,7 +1130,7 @@ storiesOf('Bar Chart', module)
         allPositive: 'all positive',
         allNegative: 'all negative',
       },
-      'mixed',
+      'all negative',
     );
 
     let data = mixed;
