@@ -165,7 +165,13 @@ export function computeSeriesDomains(
   const xDomain = mergeXDomain(specsArray, xValues, customXDomain);
   const yDomain = mergeYDomain(splittedSeries, specsArray, customYDomainsByGroupId);
 
-  const formattedDataSeries = getFormattedDataseries(specsArray, splittedSeries, xValues, xDomain.scaleType);
+  const formattedDataSeries = getFormattedDataseries(
+    specsArray,
+    splittedSeries,
+    xValues,
+    xDomain.scaleType,
+    seriesSpecs,
+  );
 
   // we need to get the last values from the formatted dataseries
   // because we change the format if we are on percentage mode

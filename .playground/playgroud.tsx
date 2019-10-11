@@ -1,35 +1,55 @@
-import React, { Fragment } from 'react';
-import { Axis, Chart, getAxisId, getSpecId, Position, ScaleType, BarSeries } from '../src';
+import React from 'react';
+import { Axis, Chart, getAxisId, getSpecId, Position, ScaleType, Settings, AreaSeries, DataGenerator } from '../src';
+import { Fit } from '../src/chart_types/xy_chart/utils/specs';
+
+const dg = new DataGenerator();
+const data = dg.generateSimpleSeries(10);
+// const data = dg.generateGroupedSeries(10);
 
 export class Playground extends React.Component {
   render() {
-    const data = [{ x: 0, y: -4 }, { x: 1, y: -3 }, { x: 2, y: 2 }, { x: 3, y: 1 }];
     return (
-      <Fragment>
+      <>
         <div className="chart">
-          <Chart>
-            <Axis id={getAxisId('top')} position={Position.Bottom} title={'Top axis'} />
-            <Axis
-              id={getAxisId('left2')}
-              title={'Left axis'}
-              position={Position.Left}
-              tickFormat={(d: any) => Number(d).toFixed(2)}
+          <Chart className="story-chart">
+            <Settings
+              theme={{
+                areaSeriesStyle: {
+                  point: {
+                    visible: true,
+                  },
+                },
+              }}
             />
-
-            <BarSeries
-              id={getSpecId('bars')}
+            <Axis
+              id={getAxisId('bottom')}
+              position={Position.Bottom}
+              title={'Bottom axis'}
+              showOverlappingTicks={true}
+            />
+            <Axis id={getAxisId('left')} title={'Left axis'} position={Position.Left} />
+            <AreaSeries
+              id={getSpecId('test')}
               xScaleType={ScaleType.Linear}
               yScaleType={ScaleType.Linear}
-              xAccessor="x"
+              xAccessor={'x'}
               yAccessors={['y']}
-              splitSeriesAccessors={['g']}
-              stackAccessors={['x']}
-              data={data}
-              yScaleToDataExtent={true}
+              // splitSeriesAccessors={['g']}
+              // stackAccessors={['x']}
+              fit={Fit.Average}
+              data={data.map((d, i) => {
+                if ([4, 5].includes(i)) {
+                  return {
+                    ...d,
+                    y: null,
+                  };
+                }
+                return d;
+              })}
             />
           </Chart>
         </div>
-      </Fragment>
+      </>
     );
   }
 }

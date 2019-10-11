@@ -1,4 +1,5 @@
 import { area, line } from 'd3-shape';
+import { $Values } from 'utility-types';
 
 import { CanvasTextBBoxCalculator } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import {
@@ -33,7 +34,7 @@ export const AccessorType = Object.freeze({
   Y1: 'y1' as 'y1',
 });
 
-export type AccessorType = typeof AccessorType.Y0 | typeof AccessorType.Y1;
+export type AccessorType = $Values<typeof AccessorType>;
 
 export interface GeometryValue {
   y: any;
@@ -409,15 +410,19 @@ export function renderLine(
 
   const pathGenerator = line<DataSeriesDatum>()
     .x(({ x }) => xScale.scale(x) - xScaleOffset)
-    .y(({ y1 }) => {
-      if (y1 !== null) {
-        return yScale.scale(y1);
+    .y((datum) => {
+      const yValue = getYValue(datum);
+
+      if (yValue !== null) {
+        return yScale.scale(yValue);
       }
+
       // this should never happen thanks to the defined function
       return yScale.isInverted ? yScale.range[1] : yScale.range[0];
     })
-    .defined(({ x, y1 }) => {
-      return y1 !== null && !(isLogScale && y1 <= 0) && xScale.isValueInDomain(x);
+    .defined((datum) => {
+      const yValue = getYValue(datum);
+      return yValue !== null && !(isLogScale && yValue <= 0) && xScale.isValueInDomain(datum.x);
     })
     .curve(getCurveFactory(curve));
   const y = 0;
@@ -456,6 +461,18 @@ export function renderLine(
   };
 }
 
+const getYValue = ({ y1, filled }: DataSeriesDatum): number | null => {
+  if (y1 !== null) {
+    return y1;
+  }
+
+  if (filled && filled.y1 !== undefined) {
+    return filled.y1;
+  }
+
+  return null;
+};
+
 export function renderArea(
   shift: number,
   dataset: DataSeriesDatum[],
@@ -478,9 +495,10 @@ export function renderArea(
 
   const pathGenerator = area<DataSeriesDatum>()
     .x(({ x }) => xScale.scale(x) - xScaleOffset)
-    .y1(({ y1 }) => {
-      if (y1 !== null) {
-        return yScale.scale(y1);
+    .y1((datum) => {
+      const yValue = getYValue(datum);
+      if (yValue !== null) {
+        return yScale.scale(yValue);
       }
       // this should never happen thanks to the defined function
       return yScale.isInverted ? yScale.range[1] : yScale.range[0];
@@ -491,8 +509,9 @@ export function renderArea(
       }
       return yScale.scale(y0);
     })
-    .defined(({ y1, x }) => {
-      return y1 !== null && !(isLogScale && y1 <= 0) && xScale.isValueInDomain(x);
+    .defined((datum) => {
+      const yValue = getYValue(datum);
+      return yValue !== null && !(isLogScale && yValue <= 0) && xScale.isValueInDomain(datum.x);
     })
     .curve(getCurveFactory(curve));
 
