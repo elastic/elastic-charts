@@ -1,4 +1,4 @@
-import { $Values } from "utility-types";
+import { $Values } from 'utility-types';
 
 export interface Scale {
   domain: any[];
