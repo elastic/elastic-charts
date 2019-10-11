@@ -76,12 +76,16 @@ function getValue(
     }
   }
 
-  console.warn('No fit matched point');
-
+  // No mtching fit - should only fall here on end conditions
   return current;
 }
 
-export function fitFunction(dataSeries: DataSeries, fit: FitConfig | null, xScaleType: ScaleType): DataSeries {
+export function fitFunction(
+  dataSeries: DataSeries,
+  fit: FitConfig | null,
+  xScaleType: ScaleType,
+  sorted = false,
+): DataSeries {
   const type = (fit !== null && (typeof fit === 'string' ? fit : fit.type)) || Fit.None;
 
   if (type === Fit.None) {
@@ -125,7 +129,7 @@ export function fitFunction(dataSeries: DataSeries, fit: FitConfig | null, xScal
     };
   }
 
-  const sortedData = data.slice().sort(datumXSortPredicate(xScaleType));
+  const sortedData = sorted ? data.slice() : data.slice().sort(datumXSortPredicate(xScaleType));
   const newData: DataSeriesDatum[] = [];
   let previousNonNullDatum: FullDataSeriesDatum | null = null;
   let nextNonNullDatum: FullDataSeriesDatum | null = null;
@@ -133,15 +137,12 @@ export function fitFunction(dataSeries: DataSeries, fit: FitConfig | null, xScal
   for (let i = 0; i < sortedData.length; i++) {
     let j = i;
     const current = sortedData[i];
-    if (i === 5) debugger;
 
-    // Get next non-null value
     if (
       current.y1 === null &&
       nextNonNullDatum === null &&
       (type === Fit.Lookahead || type === Fit.Nearest || type === Fit.Average || type === Fit.Linear)
     ) {
-      if (i === 5) debugger;
       // Forward lookahead to get next non-null value
       for (j = i + 1; j < sortedData.length; j++) {
         const value = sortedData[j];
@@ -154,6 +155,8 @@ export function fitFunction(dataSeries: DataSeries, fit: FitConfig | null, xScal
     }
 
     const newValue = current.y1 === null ? getValue(current, previousNonNullDatum, nextNonNullDatum, type) : current;
+
+    // TODO and end condition check to fill end values that are still null
     newData[i] = newValue;
 
     if (current.y1 !== null && current.x !== null) {
