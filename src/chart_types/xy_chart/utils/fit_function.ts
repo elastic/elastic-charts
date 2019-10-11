@@ -61,7 +61,7 @@ function getValue(
         return {
           ...current,
           filled: {
-            y1: x1Delta > x2Delta ? y1 : y2,
+            y1: x1Delta > x2Delta ? y2 : y1,
           },
         };
       } else if (type === Fit.Linear) {
@@ -90,6 +90,18 @@ export function fitFunction(dataSeries: DataSeries, fit: FitConfig | null, xScal
 
   const { data } = dataSeries;
 
+  if (type === Fit.Zero) {
+    return {
+      ...dataSeries,
+      data: data.map((datum) => ({
+        ...datum,
+        filled: {
+          y1: datum.y1 === null ? 0 : undefined,
+        },
+      })),
+    };
+  }
+
   if (type === Fit.Explicit) {
     const value = typeof fit !== 'string' ? fit!.value : null;
 
@@ -106,7 +118,9 @@ export function fitFunction(dataSeries: DataSeries, fit: FitConfig | null, xScal
       ...dataSeries,
       data: data.map((datum) => ({
         ...datum,
-        y1: datum.y1 === null ? value : datum.y1,
+        filled: {
+          y1: datum.y1 === null ? value : undefined,
+        },
       })),
     };
   }

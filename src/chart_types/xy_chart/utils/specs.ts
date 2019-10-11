@@ -118,6 +118,15 @@ export const Fit = Object.freeze({
    */
   Linear: 'linear' as 'linear',
   /**
+   * Sets all `null` values to `0`
+   *
+   * Example:
+   * ```js
+   * [2, null, null, 8] => [2, 0, 0, 8]
+   * ```
+   */
+  Zero: 'zero' as 'zero',
+  /**
    * Specify an explicit value `X`
    *
    * Example:
