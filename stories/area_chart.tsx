@@ -1,4 +1,4 @@
-import { boolean, text } from '@storybook/addon-knobs';
+import { boolean, text, select, number } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import { DateTime } from 'luxon';
 import React from 'react';
@@ -17,6 +17,7 @@ import {
 } from '../src';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 import { getRandomNumber } from '../src/utils/data_generators/simple_noise';
+import { Fit } from '../src/chart_types/xy_chart/utils/specs';
 
 const dateFormatter = timeFormatter('HH:mm');
 
@@ -311,6 +312,59 @@ storiesOf('Area Chart', module)
           yAccessors={[1]}
           stackAccessors={[0]}
           data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
+        />
+      </Chart>
+    );
+  })
+  .add('Fitting functions - non-stacked series', () => {
+    const data = [
+      { x: 0, y: 1 },
+      { x: 1, y: 2 },
+      { x: 2, y: null },
+      { x: 4, y: null },
+      { x: 5, y: 10 },
+      { x: 6, y: 15 },
+    ];
+    const fit = select(
+      'fitting function',
+      {
+        None: Fit.None,
+        Carry: Fit.Carry,
+        Lookahead: Fit.Lookahead,
+        Nearest: Fit.Nearest,
+        Average: Fit.Average,
+        Linear: Fit.Linear,
+        Zero: Fit.Zero,
+        Explicit: Fit.Explicit,
+      },
+      Fit.None,
+    );
+    const value = number('Explicit valuve (using Fit.Explicit)', 5);
+
+    return (
+      <Chart className="story-chart">
+        <Settings
+          theme={{
+            areaSeriesStyle: {
+              point: {
+                visible: true,
+              },
+            },
+          }}
+        />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+        <Axis id={getAxisId('left')} title={'Left axis'} position={Position.Left} />
+        <AreaSeries
+          id={getSpecId('test')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor={'x'}
+          yAccessors={['y']}
+          fit={{
+            type: fit,
+            value: fit === Fit.Explicit ? value : undefined,
+          }}
+          data={data}
         />
       </Chart>
     );

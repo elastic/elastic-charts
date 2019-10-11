@@ -21,7 +21,6 @@ function getValue(
   next: FullDataSeriesDatum | null,
   type: BoundingFit,
 ): DataSeriesDatum {
-  if (current.x === 5) debugger;
   if (previous !== null && type === Fit.Carry) {
     return {
       ...current,
