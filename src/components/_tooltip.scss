@@ -2,6 +2,8 @@
   @include euiToolTipStyle;
   @include euiFontSizeXS;
   position: absolute;
+  top: 0;
+  left: 0;
   padding: 0;
   transition: opacity $euiAnimSpeedNormal;
   pointer-events: none;
