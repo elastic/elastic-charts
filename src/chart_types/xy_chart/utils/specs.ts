@@ -223,6 +223,10 @@ export type LineSeriesSpec = BasicSeriesSpec &
      * An optional functional accessor to return custom color or style for point datum
      */
     pointStyleAccessor?: PointStyleAccessor;
+    /**
+     * Stack each series in percentage for each point.
+     */
+    stackAsPercentage?: boolean;
   };
 
 /**

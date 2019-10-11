@@ -363,12 +363,9 @@ export function setBarSeriesAccessors(isHistogramMode: boolean, seriesSpecs: Map
 }
 
 export function isHistogramModeEnabled(seriesSpecs: BasicSeriesSpec[]): boolean {
-  for (const spec of seriesSpecs) {
-    if (isBarSeriesSpec(spec) && spec.enableHistogramMode) {
-      return true;
-    }
-  }
-  return false;
+  return seriesSpecs.some((spec) => {
+    return isBarSeriesSpec(spec) && spec.enableHistogramMode;
+  });
 }
 
 export function computeXScaleOffset(

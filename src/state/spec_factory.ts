@@ -9,7 +9,7 @@ export interface DispatchFromProps {
   removeSpec: (id: string) => void;
 }
 
-function usePrevious(value: string) {
+export function usePrevious(value: string) {
   const ref = useRef<string>();
   useEffect(() => {
     ref.current = value;
