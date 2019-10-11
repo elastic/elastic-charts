@@ -133,8 +133,8 @@ function initStore(spec: BasicSeriesSpec) {
 
 describe('Chart state pointer interactions', () => {
   let store: Store<GlobalChartState>;
-  let onElementOutCaller = createOnElementOutCaller();
-  let onElementOverCaller = createOnElementOverCaller();
+  const onElementOutCaller = createOnElementOutCaller();
+  const onElementOverCaller = createOnElementOverCaller();
   beforeEach(() => {
     store = initStore(ordinalBarSeries);
   });
@@ -211,7 +211,7 @@ describe('Chart state pointer interactions', () => {
     store.dispatch(upsertSpec(updatedSettings));
     store.dispatch(specParsed());
     store.dispatch(onCursorPositionChange(10, 10 + 70));
-    let tooltipData = getTooltipValuesAndGeometriesSelector(store.getState());
+    const tooltipData = getTooltipValuesAndGeometriesSelector(store.getState());
     expect(tooltipData.tooltipValues.length).toBe(2);
     expect(tooltipData.tooltipValues[0].isXValue).toBe(true);
     expect(tooltipData.tooltipValues[1].isXValue).toBe(false);

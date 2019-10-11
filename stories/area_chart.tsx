@@ -55,7 +55,7 @@ storiesOf('Area Chart', module)
           id={getAxisId('left')}
           title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
           position={Position.Left}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
         />
 
         <AreaSeries
@@ -81,7 +81,7 @@ storiesOf('Area Chart', module)
           id={getAxisId('left')}
           title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
           position={Position.Left}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
         />
 
         <AreaSeries
@@ -107,7 +107,7 @@ storiesOf('Area Chart', module)
           id={getAxisId('left')}
           title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
           position={Position.Left}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
         />
 
         <AreaSeries
@@ -137,7 +137,7 @@ storiesOf('Area Chart', module)
           id={getAxisId('left')}
           title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
           position={Position.Left}
-          tickFormat={(d) => `${Number(d).toFixed(0)}%`}
+          tickFormat={(d: any) => `${Number(d).toFixed(0)}%`}
         />
         <Axis
           id={getAxisId('top')}
@@ -149,7 +149,7 @@ storiesOf('Area Chart', module)
           id={getAxisId('right')}
           title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
           position={Position.Right}
-          tickFormat={(d) => `${Number(d).toFixed(0)} %`}
+          tickFormat={(d: any) => `${Number(d).toFixed(0)} %`}
         />
 
         <AreaSeries
@@ -178,7 +178,7 @@ storiesOf('Area Chart', module)
           id="left"
           title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
           position={Position.Left}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
         />
 
         <AreaSeries
@@ -217,7 +217,7 @@ storiesOf('Area Chart', module)
           id="left"
           title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
           position={Position.Left}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
         />
         <AreaSeries
           id={getSpecId(KIBANA_METRICS.metrics.kibana_os_load[0].metric.label)}
@@ -242,7 +242,7 @@ storiesOf('Area Chart', module)
           id={getAxisId('left2')}
           title={'Left axis'}
           position={Position.Left}
-          tickFormat={(d) => `${Number(d * 100).toFixed(0)} %`}
+          tickFormat={(d: any) => `${Number(d * 100).toFixed(0)} %`}
         />
 
         <AreaSeries
@@ -283,7 +283,7 @@ storiesOf('Area Chart', module)
           id="left"
           title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
           position={Position.Left}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
         />
         <AreaSeries
           id={getSpecId('1')}
@@ -333,7 +333,7 @@ storiesOf('Area Chart', module)
           id="left"
           title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
           position={Position.Left}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
         />
         <AreaSeries
           id={getSpecId('1')}
@@ -377,7 +377,7 @@ storiesOf('Area Chart', module)
           id={getAxisId('left')}
           title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
           position={Position.Left}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
         />
         <AreaSeries
           id={getSpecId('areas')}
@@ -410,7 +410,7 @@ storiesOf('Area Chart', module)
           id={getAxisId('left')}
           title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
           position={Position.Left}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
         />
         <AreaSeries
           id={getSpecId('data')}
@@ -451,7 +451,7 @@ storiesOf('Area Chart', module)
           id={getAxisId('left')}
           title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
           position={Position.Left}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
         />
 
         <AreaSeries
@@ -500,7 +500,7 @@ storiesOf('Area Chart', module)
           id={getAxisId('left')}
           title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
           position={Position.Left}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
         />
 
         <AreaSeries
@@ -540,7 +540,7 @@ storiesOf('Area Chart', module)
           id={getAxisId('left')}
           title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
           position={Position.Left}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
         />
         <AreaSeries
           id={getSpecId('stacked area 1')}

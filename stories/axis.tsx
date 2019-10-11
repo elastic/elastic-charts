@@ -92,7 +92,7 @@ storiesOf('Axis', module)
           id={getAxisId('left2')}
           title={'Left axis'}
           position={Position.Left}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
           style={customStyle}
           showOverlappingLabels={boolean('Left overlap labels', false, 'Left Axis')}
           showOverlappingTicks={boolean('Left overlap ticks', true, 'Left Axis')}
@@ -151,7 +151,7 @@ storiesOf('Axis', module)
             max: 90,
             step: 1,
           })}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
           style={customStyle}
           hide={boolean('hide left axis', false)}
         />
@@ -165,7 +165,7 @@ storiesOf('Axis', module)
             max: 90,
             step: 1,
           })}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
           style={customStyle}
           hide={boolean('hide top axis', false)}
         />
@@ -179,7 +179,7 @@ storiesOf('Axis', module)
             max: 90,
             step: 1,
           })}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
           style={customStyle}
           hide={boolean('hide right axis', false)}
         />
@@ -209,7 +209,7 @@ storiesOf('Axis', module)
           id={getAxisId('left')}
           title={'left'}
           position={Position.Left}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
           hide={boolean('hide left axis', false)}
         />
         <Axis
@@ -223,7 +223,7 @@ storiesOf('Axis', module)
           id={getAxisId('right')}
           title={'right'}
           position={Position.Right}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
           hide={boolean('hide right axis', false)}
         />
 
@@ -288,14 +288,14 @@ storiesOf('Axis', module)
           id={getAxisId('left')}
           title={'Bar axis'}
           position={Position.Left}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
         />
         <Axis
           id={getAxisId('right')}
           title={'Line axis'}
           groupId={getGroupId('group2')}
           position={Position.Right}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
         />
         <BarSeries
           id={getSpecId('bars')}
@@ -329,14 +329,14 @@ storiesOf('Axis', module)
           groupId={getGroupId('group1')}
           title={'Line 1'}
           position={Position.Left}
-          tickFormat={(d) => `${Number(d).toFixed(2)} %`}
+          tickFormat={(d: any) => `${Number(d).toFixed(2)} %`}
         />
         <Axis
           id={getAxisId('right')}
           title={'Line 2'}
           groupId={getGroupId('group2')}
           position={Position.Right}
-          tickFormat={(d) => `${Number(d).toFixed(2)}/s`}
+          tickFormat={(d: any) => `${Number(d).toFixed(2)}/s`}
         />
         <LineSeries
           id={getSpecId('line1')}
@@ -419,7 +419,7 @@ storiesOf('Axis', module)
           id={getAxisId('left')}
           title={'Bar axis'}
           position={Position.Left}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
           domain={leftDomain}
           hide={boolean('hide left axis', false)}
         />
@@ -428,7 +428,7 @@ storiesOf('Axis', module)
           title={'Line axis (Right 1)'}
           groupId={getGroupId('group2')}
           position={Position.Right}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
           domain={rightDomain1}
         />
         <Axis
@@ -436,7 +436,7 @@ storiesOf('Axis', module)
           title={'Line axis (Right 2)'}
           groupId={getGroupId('group2')}
           position={Position.Right}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
           domain={rightDomain2}
         />
         <BarSeries
@@ -472,7 +472,7 @@ storiesOf('Axis', module)
       max: number('right1 max', 10),
     };
 
-    const xDomain = array('xDomain', ['a', 'b', 'c', 'd', 0, 1, 2, 3]);
+    const xDomain = array('xDomain', ['a', 'b', 'c', 'd', '0', '1', '2', '3']);
 
     return (
       <Chart className={'story-chart'}>
@@ -482,7 +482,7 @@ storiesOf('Axis', module)
           id={getAxisId('left')}
           title={'Bar axis'}
           position={Position.Left}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
           domain={leftDomain}
         />
         <Axis
@@ -490,7 +490,7 @@ storiesOf('Axis', module)
           title={'Line axis'}
           groupId={getGroupId('group2')}
           position={Position.Right}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
           domain={right1Domain}
         />
         <Axis
@@ -498,7 +498,7 @@ storiesOf('Axis', module)
           title={'Line axis 2'}
           groupId={getGroupId('group2')}
           position={Position.Right}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
         />
         <BarSeries
           id={getSpecId('bars')}
@@ -539,7 +539,7 @@ storiesOf('Axis', module)
           id={getAxisId('left')}
           title={'Bar axis'}
           position={Position.Left}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
           domain={leftDomain}
         />
         <BarSeries

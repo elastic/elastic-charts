@@ -6,8 +6,8 @@ import { formatNonStackedDataSeriesValues } from './nonstacked_series_utils';
 import { isEqualSeriesKey } from './series_utils';
 import { BasicSeriesSpec, Datum, SeriesAccessors } from './specs';
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
-import { LastValues } from '../store/utils';
 import { ScaleType } from '../../../utils/scales/scales';
+import { LastValues } from '../state/utils';
 
 export interface FilledValues {
   /** the x value */

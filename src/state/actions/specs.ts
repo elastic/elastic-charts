@@ -2,8 +2,13 @@ import { Spec } from '../../specs';
 
 export const UPSERT_SPEC = 'UPSERT_SPEC';
 export const REMOVE_SPEC = 'REMOVE_SPEC';
+export const SPEC_PARSING = 'SPEC_PARSING';
 export const SPEC_PARSED = 'SPEC_PARSED';
 export const SPEC_UNMOUNTED = 'SPEC_UNMOUNTED';
+
+export interface SpecParsingAction {
+  type: typeof SPEC_PARSING;
+}
 
 export interface SpecParsedAction {
   type: typeof SPEC_PARSED;
@@ -29,6 +34,10 @@ export function upsertSpec(spec: Spec): UpsertSpecAction {
 
 export function removeSpec(id: string): RemoveSpecAction {
   return { type: REMOVE_SPEC, id };
+}
+
+export function specParsing(): SpecParsingAction {
+  return { type: SPEC_PARSING };
 }
 
 export function specParsed(): SpecParsedAction {

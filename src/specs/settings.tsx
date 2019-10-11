@@ -131,6 +131,5 @@ export const DEFAULT_SETTINGS_SPEC = {
   showLegendDisplayValue: true,
   hideDuplicateAxes: false,
   theme: LIGHT_THEME,
-  hideDuplicateAxes: false,
 };
 export const Settings = getConnect()(specComponentFactory<SettingsSpec, DefaultSettingsProps>(DEFAULT_SETTINGS_SPEC));

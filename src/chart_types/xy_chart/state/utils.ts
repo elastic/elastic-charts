@@ -34,8 +34,8 @@ import { Dimensions } from '../../../utils/dimensions';
 import { Domain } from '../../../utils/domain';
 import { GroupId, SpecId } from '../../../utils/ids';
 import { Scale } from '../../../utils/scales/scales';
-import { LegendItem } from '../../../components/legend/legend';
 import { PointGeometry, BarGeometry, AreaGeometry, LineGeometry, IndexedGeometry } from '../../../utils/geometry';
+import { LegendItem } from '../legend/legend';
 
 const MAX_ANIMATABLE_BARS = 300;
 const MAX_ANIMATABLE_LINES_AREA_POINTS = 600;

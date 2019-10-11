@@ -7,11 +7,11 @@ import {
   PointStyleProps,
   buildPointRenderProps,
 } from './utils/rendering_props_utils';
-import { LegendItem } from '../../../../components/legend/legend';
 import { getGeometryStyle, getGeometryIdKey } from '../../rendering/rendering';
 import { mergePartial } from '../../../../utils/commons';
 import { LineGeometry, PointGeometry } from '../../../../utils/geometry';
 import { SharedGeometryStyle, PointStyle } from '../../../../utils/themes/theme';
+import { LegendItem } from '../../../../chart_types/xy_chart/legend/legend';
 
 interface LineGeometriesDataProps {
   animated?: boolean;

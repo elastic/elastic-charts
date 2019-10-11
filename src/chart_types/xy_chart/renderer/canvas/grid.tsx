@@ -11,6 +11,7 @@ import { computeChartDimensionsSelector } from '../../state/selectors/compute_ch
 import { getAxisSpecsSelector } from '../../state/selectors/get_specs';
 import { computeAxisVisibleTicksSelector } from '../../state/selectors/compute_axis_visible_ticks';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 
 interface GridProps {
   chartTheme: Theme;
@@ -53,6 +54,19 @@ export class GridComponent extends React.PureComponent<GridProps> {
 
 const mapDispatchToProps = () => ({});
 const mapStateToProps = (state: GlobalChartState): GridProps => {
+  if (!state.initialized) {
+    return {
+      chartTheme: LIGHT_THEME,
+      chartDimensions: {
+        width: 0,
+        left: 0,
+        top: 0,
+        height: 0,
+      },
+      axesSpecs: [],
+      axesGridLinesPositions: new Map(),
+    };
+  }
   return {
     chartTheme: getChartThemeSelector(state),
     chartDimensions: computeChartDimensionsSelector(state).chartDimensions,

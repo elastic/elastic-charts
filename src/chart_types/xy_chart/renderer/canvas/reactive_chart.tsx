@@ -22,7 +22,6 @@ import { isChartAnimatableSelector } from '../../state/selectors/is_chart_animat
 import { isBrushAvailableSelector } from '../../state/selectors/is_brush_available';
 import { Transform } from '../../state/utils';
 import { Rotation, AnnotationSpec, isLineAnnotation, isRectAnnotation } from '../../utils/specs';
-import { LegendItem } from '../../../../components/legend/legend';
 import { isInitialized } from '../../../../state/selectors/is_initialized';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
@@ -34,6 +33,7 @@ import { Theme, mergeWithDefaultAnnotationLine, mergeWithDefaultAnnotationRect }
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { computeSeriesGeometriesSelector } from '../../state/selectors/compute_series_geometries';
 import { PointGeometry, BarGeometry, AreaGeometry, LineGeometry } from '../../../../utils/geometry';
+import { LegendItem } from '../../../../chart_types/xy_chart/legend/legend';
 
 interface Props {
   initialized: boolean;
@@ -265,6 +265,7 @@ class Chart extends React.Component<Props> {
               <Provider store={store}>
                 <Layer hitGraphEnabled={false} listening={false}>
                   <Grid />
+                  <Axes />
                 </Layer>
               </Provider>
               <Layer
@@ -278,7 +279,6 @@ class Chart extends React.Component<Props> {
               </Layer>
               <Provider store={store}>
                 <Layer hitGraphEnabled={false} listening={false}>
-                  <Axes />
                   <BarValues />
                 </Layer>
               </Provider>
@@ -321,7 +321,12 @@ const mapStateToProps = (state: GlobalChartState) => {
       geometries: {},
       globalSettings: state.settings,
       chartRotation: 0 as 0,
-      chartDimensions: getChartDimensionsSelector(state),
+      chartDimensions: {
+        width: 0,
+        height: 0,
+        left: 0,
+        top: 0,
+      },
       chartTransform: {
         x: 0,
         y: 0,

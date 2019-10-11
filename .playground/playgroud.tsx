@@ -7,6 +7,115 @@ export class Playground extends React.Component {
   state = {
     data: dg.generateSimpleSeries(50),
     fixed: Math.floor(Math.random() * 10),
+    chart: true,
+  };
+
+  renderChart1 = () => {
+    return (
+      <Chart>
+        <Settings showLegend theme={{ areaSeriesStyle: { point: { visible: true } } }} />
+        <Axis
+          id={getAxisId('bottom')}
+          position={Position.Bottom}
+          title={'Bottom axis'}
+          showOverlappingTicks={true}
+          showGridLines
+        />
+        <Axis
+          id={getAxisId('left2')}
+          title={'Left axis'}
+          position={Position.Left}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
+        />
+        <AreaSeries
+          id={getSpecId('area-chart-1a')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          stackAccessors={['x']}
+          splitSeriesAccessors={['g']}
+          // curve={CurveType.CURVE_MONOTONE_X}
+          data={[
+            { x: 0, y: 2, g: 'a' },
+            { x: 1, y: 7, g: 'a' },
+            { x: 2, y: 3, g: 'a' },
+            { x: 3, y: 6, g: 'a' },
+            { x: 0, y: 4, g: 'b' },
+            { x: 1, y: 5, g: 'b' },
+            { x: 2, y: 8, g: 'b' },
+            { x: 3, y: 2, g: 'b' },
+            { x: 4, y: 6, g: 'b' },
+            { x: 5, y: 7, g: 'a' },
+            { x: 5, y: 7, g: 'b' },
+            { x: 6, y: 7, g: 'a' },
+            { x: 6, y: 7, g: 'b' },
+          ]}
+        />
+        <AreaSeries
+          id={getSpecId('area-chart-1b')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          stackAccessors={['x']}
+          splitSeriesAccessors={['g']}
+          // curve={CurveType.CURVE_MONOTONE_X}
+          data={[
+            { x: 1, y: 7, g: 'a' },
+            { x: 2, y: 3, g: 'a' },
+            { x: 3, y: 6, g: 'a' },
+            { x: 0, y: 4, g: 'b' },
+            { x: 1, y: 5, g: 'b' },
+            { x: 2, y: 8, g: 'b' },
+            { x: 3, y: 2, g: 'b' },
+            { x: 4, y: 6, g: 'b' },
+          ]}
+        />
+      </Chart>
+    );
+  };
+
+  renderChart2 = () => {
+    return (
+      <Chart>
+        <Settings showLegend theme={{ areaSeriesStyle: { point: { visible: true } } }} />
+        <Axis
+          id={getAxisId('bottom')}
+          position={Position.Bottom}
+          title={'Bottom axis'}
+          showOverlappingTicks={true}
+          showGridLines
+        />
+        <Axis
+          id={getAxisId('left2')}
+          title={'Left axis'}
+          position={Position.Left}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
+        />
+        <AreaSeries
+          id={getSpecId('area-chart-2')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          stackAccessors={['x']}
+          splitSeriesAccessors={['g']}
+          // curve={CurveType.CURVE_MONOTONE_X}
+          data={[
+            { x: 0, y: 2, g: 'a' },
+            { x: 1, y: 7, g: 'a' },
+            { x: 2, y: 3, g: 'a' },
+
+            { x: 4, y: 6, g: 'b' },
+            { x: 5, y: 7, g: 'a' },
+            { x: 5, y: 7, g: 'b' },
+            { x: 6, y: 7, g: 'a' },
+            { x: 6, y: 7, g: 'b' },
+          ]}
+        />
+      </Chart>
+    );
   };
   render() {
     return (
@@ -18,6 +127,7 @@ export class Playground extends React.Component {
                 return {
                   data: dg.generateSimpleSeries(),
                   fixed: Math.floor(Math.random() * 10),
+                  chart: !this.state.chart,
                 };
               });
             }}
@@ -25,69 +135,7 @@ export class Playground extends React.Component {
             Update data
           </button>
         </div>
-        <div className="chart">
-          <Chart>
-            <Settings showLegend theme={{ areaSeriesStyle: { point: { visible: true } } }} />
-            <Axis
-              id={getAxisId('bottom')}
-              position={Position.Bottom}
-              title={'Bottom axis'}
-              showOverlappingTicks={true}
-              showGridLines
-            />
-            <Axis
-              id={getAxisId('left2')}
-              title={'Left axis'}
-              position={Position.Left}
-              tickFormat={(d: any) => Number(d).toFixed(2)}
-            />
-            <AreaSeries
-              id={getSpecId('bars1')}
-              xScaleType={ScaleType.Linear}
-              yScaleType={ScaleType.Linear}
-              xAccessor="x"
-              yAccessors={['y']}
-              stackAccessors={['x']}
-              splitSeriesAccessors={['g']}
-              // curve={CurveType.CURVE_MONOTONE_X}
-              data={[
-                { x: 0, y: 2, g: 'a' },
-                { x: 1, y: 7, g: 'a' },
-                { x: 2, y: 3, g: 'a' },
-                { x: 3, y: 6, g: 'a' },
-                { x: 0, y: 4, g: 'b' },
-                { x: 1, y: 5, g: 'b' },
-                { x: 2, y: 8, g: 'b' },
-                { x: 3, y: 2, g: 'b' },
-                { x: 4, y: 6, g: 'b' },
-                { x: 5, y: 7, g: 'a' },
-                { x: 5, y: 7, g: 'b' },
-                { x: 6, y: 7, g: 'a' },
-                { x: 6, y: 7, g: 'b' },
-              ]}
-            />
-            <AreaSeries
-              id={getSpecId('area2')}
-              xScaleType={ScaleType.Linear}
-              yScaleType={ScaleType.Linear}
-              xAccessor="x"
-              yAccessors={['y']}
-              stackAccessors={['x']}
-              splitSeriesAccessors={['g']}
-              // curve={CurveType.CURVE_MONOTONE_X}
-              data={[
-                { x: 1, y: 7, g: 'a' },
-                { x: 2, y: 3, g: 'a' },
-                { x: 3, y: 6, g: 'a' },
-                { x: 0, y: 4, g: 'b' },
-                { x: 1, y: 5, g: 'b' },
-                { x: 2, y: 8, g: 'b' },
-                { x: 3, y: 2, g: 'b' },
-                { x: 4, y: 6, g: 'b' },
-              ]}
-            />
-          </Chart>
-        </div>
+        <div className="chart">{this.state.chart ? this.renderChart1() : this.renderChart2()}</div>
       </Fragment>
     );
   }

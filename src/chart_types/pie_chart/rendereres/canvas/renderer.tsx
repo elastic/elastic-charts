@@ -10,10 +10,10 @@ import { getChartRotationSelector } from '../../../../state/selectors/get_chart_
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { Theme } from '../../../../utils/themes/theme';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
-import { Rotation } from 'chart_types/xy_chart/utils/specs';
-import { LegendItem } from 'components/legend/legend';
+import { Rotation } from '../../../../chart_types/xy_chart/utils/specs';
 import { computeGeometriesSelector } from '../../state/selectors/compute_geometries';
-import { ArcGeometry } from 'utils/geometry';
+import { ArcGeometry } from '../../../../utils/geometry';
+import { LegendItem } from '../../../../chart_types/xy_chart/legend/legend';
 
 interface Props {
   initialized: boolean;
