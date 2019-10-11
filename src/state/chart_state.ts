@@ -1,5 +1,4 @@
-import { SPEC_PARSED, SPEC_UNMOUNTED } from './actions/specs';
-import { specsReducer } from './reducers/specs';
+import { SPEC_PARSED, SPEC_UNMOUNTED, SPEC_PARSING, UPSERT_SPEC, REMOVE_SPEC } from './actions/specs';
 import { chartSettingsReducer } from './reducers/chart_settings';
 import { interactionsReducer } from './reducers/interactions';
 import { ChartTypes } from '../chart_types';
@@ -100,7 +99,13 @@ export const chartStoreReducer = (chartId: string) => {
   const initialState = getInitialState(chartId);
   return (state = initialState, action: any): GlobalChartState => {
     switch (action.type) {
+      case SPEC_PARSING:
+        return {
+          ...state,
+          initialized: false,
+        };
       case SPEC_PARSED:
+        console.log('SPEC PARSED');
         const chartType = findMainChartType(state.specs);
 
         if (isChartTypeChanged(state, chartType)) {
@@ -123,10 +128,27 @@ export const chartStoreReducer = (chartId: string) => {
           ...state,
           initialized: false,
         };
+      case UPSERT_SPEC:
+        return {
+          ...state,
+          initialized: false,
+          specs: {
+            ...state.specs,
+            [action.spec.id]: action.spec,
+          },
+        };
+      case REMOVE_SPEC:
+        const { [action.id]: specToRemove, ...rest } = state.specs;
+        return {
+          ...state,
+          initialized: false,
+          specs: {
+            ...rest,
+          },
+        };
       default:
         return {
           ...state,
-          specs: specsReducer(state.specs, action),
           settings: chartSettingsReducer(state.settings, action),
           interactions: interactionsReducer(state.interactions, action),
         };

@@ -16,8 +16,8 @@ import { LIGHT_THEME } from '../../utils/themes/light_theme';
 import { LegendListItem } from './legend_item';
 import { Theme } from '../../utils/themes/theme';
 import { TooltipLegendValue } from '../../chart_types/xy_chart/tooltip/tooltip';
-import { AccessorType } from 'utils/geometry';
-import { LegendItem } from 'chart_types/xy_chart/legend/legend';
+import { AccessorType } from '../../utils/geometry';
+import { LegendItem } from '../../chart_types/xy_chart/legend/legend';
 
 interface LegendProps {
   initialized: boolean;

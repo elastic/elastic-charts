@@ -1,7 +1,6 @@
 import classNames from 'classnames';
 import React from 'react';
 import { Icon } from '../icons/icon';
-import { LegendItem } from './legend';
 import { LegendItemListener } from '../../specs/settings';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
@@ -12,6 +11,7 @@ import { onLegendItemClick, onToggleDeselectSeries } from '../../state/actions/l
 import { isEqualSeriesKey } from '../../chart_types/xy_chart/utils/series_utils';
 import { DataSeriesColorsValues } from '../../chart_types/xy_chart/utils/series';
 import { Position } from '../../chart_types/xy_chart/utils/specs';
+import { LegendItem } from '../../chart_types/xy_chart/legend/legend';
 
 interface LegendItemOwnProps {
   legendItem: LegendItem;

@@ -21,6 +21,7 @@ import { AxisId } from '../../../../utils/ids';
 import { computeAxisTicksDimensionsSelector } from '../../state/selectors/compute_axis_ticks_dimensions';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
+import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 
 interface AxisProps {
   theme: Theme;
@@ -285,6 +286,22 @@ class AxesComponent extends React.PureComponent<AxesProps> {
 
 const mapDispatchToProps = () => ({});
 const mapStateToProps = (state: GlobalChartState): AxesProps => {
+  if (!state.initialized) {
+    return {
+      theme: LIGHT_THEME,
+      chartDimensions: {
+        width: 0,
+        left: 0,
+        top: 0,
+        height: 0,
+      },
+      debug: false,
+      axesSpecs: [],
+      axesPositions: new Map(),
+      axesTicksDimensions: new Map(),
+      axesVisibleTicks: new Map(),
+    };
+  }
   const axisTickPositions = computeAxisVisibleTicksSelector(state);
   return {
     theme: getChartThemeSelector(state),

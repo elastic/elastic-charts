@@ -29,7 +29,7 @@ import {
 import { IndexedGeometry, AccessorType } from '../../../utils/geometry';
 import { mergeYCustomDomainsByGroupId } from './selectors/merge_y_custom_domains';
 import { updateDeselectedDataSeries } from './utils';
-import { LegendItem } from '../../../components/legend/legend';
+import { LegendItem } from '../legend/legend';
 
 describe('Chart State utils', () => {
   it('should compute and format specifications for non stacked chart', () => {

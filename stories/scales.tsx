@@ -102,7 +102,7 @@ storiesOf('Scales', module)
           <Axis
             id={getAxisId('time')}
             position={Position.Bottom}
-            tickFormat={(d) => {
+            tickFormat={(d: any) => {
               return DateTime.fromMillis(d).toFormat('yyyy-MM-dd HH:mm:ss');
             }}
           />
@@ -135,7 +135,7 @@ storiesOf('Scales', module)
           <Axis
             id={getAxisId('time')}
             position={Position.Bottom}
-            tickFormat={(d) => {
+            tickFormat={(d: any) => {
               return DateTime.fromMillis(d)
                 .toUTC()
                 .toFormat('yyyy-MM-dd HH:mm:ss');
@@ -170,7 +170,7 @@ storiesOf('Scales', module)
           <Axis
             id={getAxisId('time')}
             position={Position.Bottom}
-            tickFormat={(d) => {
+            tickFormat={(d: any) => {
               return DateTime.fromMillis(d, { zone: 'utc-6' }).toISO();
               // return DateTime.fromMillis(d, { zone: 'utc-6' }).toISO();
             }}
@@ -209,15 +209,15 @@ storiesOf('Scales', module)
         <Chart className={'story-chart'}>
           <Settings hideDuplicateAxes={boolean('hideDuplicateAxes', true)} />
           <Axis id={getAxisId('bottom')} position={Position.Bottom} />
-          <Axis id={getAxisId('y1')} position={Position.Left} tickFormat={(d) => `${d}%`} />
-          <Axis id={getAxisId('y2')} position={Position.Left} tickFormat={(d) => `${d}%`} />
+          <Axis id={getAxisId('y1')} position={Position.Left} tickFormat={(d: any) => `${d}%`} />
+          <Axis id={getAxisId('y2')} position={Position.Left} tickFormat={(d: any) => `${d}%`} />
           <Axis
             title="Axis - Different title"
             id={getAxisId('y3')}
             position={Position.Left}
-            tickFormat={(d) => `${d}%`}
+            tickFormat={(d: any) => `${d}%`}
           />
-          <Axis domain={{ min: 0 }} id={getAxisId('y4')} position={Position.Left} tickFormat={(d) => `${d}%`} />
+          <Axis domain={{ min: 0 }} id={getAxisId('y4')} position={Position.Left} tickFormat={(d: any) => `${d}%`} />
           <LineSeries
             id={getSpecId('lines')}
             xScaleType={ScaleType.Time}

@@ -40,7 +40,7 @@ function generateTimeAnnotationData(values: any[]): LineAnnotationDatum[] {
 
 storiesOf('Annotations', module)
   .add('[line] basic xDomain continuous', () => {
-    const data = array('data values', [2.5, 7.2]);
+    const data = array('data values', ['2.5', '7.2']).map(Number);
     const dataValues = generateAnnotationData(data);
 
     const style = {
@@ -111,7 +111,7 @@ storiesOf('Annotations', module)
     );
   })
   .add('[line] basic yDomain', () => {
-    const data = array('data values', [1.5, 7.2]);
+    const data = array('data values', ['1.5', '7.2']).map(Number);
     const dataValues = generateAnnotationData(data);
 
     const isLeft = boolean('y-domain axis is Position.Left', true);

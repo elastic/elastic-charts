@@ -17,8 +17,8 @@ import { devToolsEnhancer } from 'redux-devtools-extension';
 import { isInitialized } from '../state/selectors/is_initialized';
 import { createOnElementOutCaller } from '../chart_types/xy_chart/state/selectors/on_element_out_caller';
 import { createOnElementOverCaller } from '../chart_types/xy_chart/state/selectors/on_element_over_caller';
-import { createOnElementClickCaller } from 'chart_types/xy_chart/state/selectors/on_element_click_caller';
-import { ChartTypes } from 'chart_types';
+import { createOnElementClickCaller } from '../chart_types/xy_chart/state/selectors/on_element_click_caller';
+import { ChartTypes } from '../chart_types/index';
 
 interface ChartProps {
   /** The type of rendered
@@ -72,12 +72,16 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     const onElementOutCaller = createOnElementOutCaller();
     this.chartStore.subscribe(() => {
       const state = this.chartStore.getState();
-      if (!isInitialized(state) && state.chartType !== ChartTypes.XYAxis) {
+      if (!isInitialized(state) || state.chartType !== ChartTypes.XYAxis) {
         return;
       }
       onElementOverCaller(state);
       onElementOutCaller(state);
       onElementClickCaller(state);
+      this.setState((prevState) => ({
+        renderComplete: true,
+        renderCount: prevState.renderCount + 1,
+      }));
     });
   }
 

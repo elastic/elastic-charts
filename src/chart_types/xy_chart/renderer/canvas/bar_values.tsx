@@ -11,6 +11,7 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { computeSeriesGeometriesSelector } from '../../state/selectors/compute_series_geometries';
+import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 
 interface BarValuesProps {
   theme: Theme;
@@ -75,6 +76,20 @@ export class BarValuesComponent extends React.PureComponent<BarValuesProps> {
 
 const mapDispatchToProps = () => ({});
 const mapStateToProps = (state: GlobalChartState): BarValuesProps => {
+  if (!state.initialized) {
+    return {
+      theme: LIGHT_THEME,
+      chartDimensions: {
+        width: 0,
+        left: 0,
+        top: 0,
+        height: 0,
+      },
+      chartRotation: 0,
+      debug: false,
+      bars: [],
+    };
+  }
   const geometries = computeSeriesGeometriesSelector(state);
   return {
     theme: getChartThemeSelector(state),

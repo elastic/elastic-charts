@@ -16,7 +16,6 @@ import { CurveType, getCurveFactory } from '../../../utils/curves';
 import { DataSeriesDatum } from '../utils/series';
 import { belongsToDataSeries } from '../utils/series_utils';
 import { DisplayValueSpec, PointStyleAccessor, BarStyleAccessor } from '../utils/specs';
-import { LegendItem } from '../../../components/legend/legend';
 import {
   IndexedGeometry,
   PointGeometry,
@@ -28,6 +27,7 @@ import {
   AccessorType,
 } from '../../../utils/geometry';
 import { mergePartial } from '../../../utils/commons';
+import { LegendItem } from '../legend/legend';
 
 export function mutableIndexedGeometryMapUpsert(
   mutableGeometriesIndex: Map<any, IndexedGeometry[]>,

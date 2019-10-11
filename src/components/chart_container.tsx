@@ -20,6 +20,11 @@ interface ReactiveChartProps {
 class ChartContainerComponent extends React.Component<ReactiveChartProps> {
   static displayName = 'ChartContainer';
 
+  shouldComponentUpdate(props: ReactiveChartProps) {
+    console.log('shouldComponentUpdate');
+    return props.initialized;
+  }
+
   render() {
     const { initialized } = this.props;
     if (!initialized) {
@@ -94,6 +99,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
   );
 const mapStateToProps = (state: GlobalChartState) => {
   if (!state.initialized) {
+    console.log('NOT INITIALIZED');
     return {
       initialized: false,
       isChartEmpty: true,
@@ -101,6 +107,8 @@ const mapStateToProps = (state: GlobalChartState) => {
       internalChartRenderer: null,
     };
   }
+  console.log('INITIALIZED');
+
   return {
     initialized: true,
     isChartEmpty: isInternalChartEmptySelector(state),

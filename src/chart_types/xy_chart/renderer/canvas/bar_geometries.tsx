@@ -3,10 +3,10 @@ import React from 'react';
 import { Group, Rect } from 'react-konva';
 import { animated, Spring } from 'react-spring/renderprops-konva.cjs';
 import { buildBarRenderProps, buildBarBorderRenderProps } from './utils/rendering_props_utils';
-import { LegendItem } from '../../../../components/legend/legend';
 import { getGeometryStyle } from '../../rendering/rendering';
 import { BarGeometry } from '../../../../utils/geometry';
 import { SharedGeometryStyle } from '../../../../utils/themes/theme';
+import { LegendItem } from '../../../../chart_types/xy_chart/legend/legend';
 
 interface BarGeometriesDataProps {
   animated?: boolean;
