@@ -106,7 +106,9 @@ const indexedGeom1Red: BarGeometry = {
   },
   seriesIdentifier: {
     specId: SPEC_ID,
-    seriesKey: [],
+    yAccessor: 'y1',
+    splitAccessors: new Map(),
+    seriesKeys: [],
   },
   seriesStyle: barStyle,
 };
@@ -123,7 +125,9 @@ const indexedGeom2Blue: BarGeometry = {
   },
   seriesIdentifier: {
     specId: SPEC_ID,
-    seriesKey: [],
+    yAccessor: 'y1',
+    splitAccessors: new Map(),
+    seriesKeys: [],
   },
   seriesStyle: barStyle,
 };

@@ -754,8 +754,9 @@ describe('Chart Store', () => {
       color: 'a',
       isHighlighted: false,
       isXValue: false,
-      seriesKey: 'a',
+      seriesKeys: 'a',
       yAccessor: 'y',
+      isVisible: true,
     };
     store.cursorPosition.x = -1;
     store.cursorPosition.y = 1;
@@ -864,8 +865,9 @@ describe('Chart Store', () => {
       color: 'a',
       isHighlighted: false,
       isXValue: false,
-      seriesKey: 'a',
+      seriesKeys: 'a',
       yAccessor: 'y',
+      isVisible: true,
     };
     store.xScale = new ScaleContinuous({ type: ScaleType.Linear, domain: [0, 100], range: [0, 100] });
     store.cursorPosition.x = 1;
@@ -906,7 +908,9 @@ describe('Chart Store', () => {
       color: 'red',
       seriesIdentifier: {
         specId: getSpecId('specId1'),
-        seriesKey: [2],
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: [2],
       },
       value: {
         x: 0,
@@ -923,7 +927,9 @@ describe('Chart Store', () => {
       color: 'blue',
       seriesIdentifier: {
         specId: getSpecId('specId2'),
-        seriesKey: [2],
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: [2],
       },
       value: {
         x: 0,
@@ -1001,8 +1007,9 @@ describe('Chart Store', () => {
       color: 'color',
       isHighlighted: true,
       isXValue: false,
-      seriesKey: 'foo',
+      seriesKeys: 'foo',
       yAccessor: 'y',
+      isVisible: true,
     };
     const unhighlightedTooltipValue = {
       name: 'foo',
@@ -1010,8 +1017,9 @@ describe('Chart Store', () => {
       color: 'color',
       isHighlighted: false,
       isXValue: false,
-      seriesKey: 'foo',
+      seriesKeys: 'foo',
       yAccessor: 'y',
+      isVisible: true,
     };
 
     const expectedRectTooltipState = {
@@ -1038,8 +1046,9 @@ describe('Chart Store', () => {
       color: 'a',
       isHighlighted: false,
       isXValue: true,
-      seriesKey: 'headerSeries',
+      seriesKeys: 'headerSeries',
       yAccessor: 'y',
+      isVisible: true,
     };
 
     store.tooltipData.replace([headerValue]);
@@ -1051,13 +1060,14 @@ describe('Chart Store', () => {
       color: 'a',
       isHighlighted: false,
       isXValue: false,
-      seriesKey: 'seriesKey',
+      seriesKeys: 'seriesKeys',
       yAccessor: 'y',
+      isVisible: true,
     };
     store.tooltipData.replace([headerValue, tooltipValue]);
 
     const expectedTooltipValues = new Map();
-    expectedTooltipValues.set('seriesKey', 123);
+    expectedTooltipValues.set('seriesKeys', 123);
     expect(store.legendItemTooltipValues.get()).toEqual(expectedTooltipValues);
   });
   describe('can determine if crosshair cursor is visible', () => {
@@ -1097,7 +1107,9 @@ describe('Chart Store', () => {
         color: 'red',
         seriesIdentifier: {
           specId: getSpecId('specId1'),
-          seriesKey: [2],
+          yAccessor: 'y1',
+          splitAccessors: new Map(),
+          seriesKeys: [2],
         },
         value: {
           x: 0,

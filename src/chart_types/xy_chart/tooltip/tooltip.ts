@@ -9,7 +9,7 @@ import { Point } from '../store/chart_state';
 import { getAccessorFormatLabel } from '../../../utils/accessor';
 
 export function getSeriesTooltipValues(tooltipValues: TooltipValue[], defaultValue?: string): Map<string, any> {
-  // map from seriesKey to tooltipValue
+  // map from seriesKeys to tooltipValue
   const seriesTooltipValues = new Map();
 
   // First tooltipValue is the header
@@ -18,8 +18,8 @@ export function getSeriesTooltipValues(tooltipValues: TooltipValue[], defaultVal
   }
 
   tooltipValues.slice(1).forEach((tooltipValue: TooltipValue) => {
-    const { seriesKey, value } = tooltipValue;
-    seriesTooltipValues.set(seriesKey, defaultValue ? defaultValue : value);
+    const { seriesKeys, value } = tooltipValue;
+    seriesTooltipValues.set(seriesKeys, defaultValue ? defaultValue : value);
   });
   return seriesTooltipValues;
 }
@@ -54,7 +54,7 @@ export function formatTooltip(
 
   const value = isXValue ? x : y;
   return {
-    seriesKey: seriesKeyAsString,
+    seriesKeys: seriesKeyAsString,
     name: displayName,
     value: axisSpec ? axisSpec.tickFormat(value) : emptyFormatter(value),
     color,

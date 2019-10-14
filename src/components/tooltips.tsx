@@ -30,7 +30,7 @@ class TooltipsComponent extends React.Component<TooltipProps> {
       <div className="echTooltip" style={{ transform: tooltipPosition.transform }}>
         <div className="echTooltip__header">{this.renderHeader(tooltipData[0], tooltipHeaderFormatter)}</div>
         <div className="echTooltip__list">
-          {tooltipData.slice(1).map(({ name, value, color, isHighlighted, seriesKey, yAccessor, isVisible }) => {
+          {tooltipData.slice(1).map(({ name, value, color, isHighlighted, seriesKeys, yAccessor, isVisible }) => {
             if (!isVisible) {
               return null;
             }
@@ -40,7 +40,7 @@ class TooltipsComponent extends React.Component<TooltipProps> {
             });
             return (
               <div
-                key={`${seriesKey}--${yAccessor}`}
+                key={`${seriesKeys}--${yAccessor}`}
                 className={classes}
                 style={{
                   borderLeftColor: color,

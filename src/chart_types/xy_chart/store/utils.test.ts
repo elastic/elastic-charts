@@ -1011,7 +1011,7 @@ describe('Chart State utils', () => {
         color: '#1EA593',
         value: { x: 0, y: 5, accessor: BandedAccessorType.Y1 },
         transform: { x: 0, y: 0 },
-        seriesIdentifier: { specId: getSpecId('line1'), seriesKey: [] },
+        seriesIdentifier: { specId: getSpecId('line1'), yAccessor: 'y1', splitAccessors: new Map(), seriesKeys: [] },
       },
     ]);
     const map2 = new Map<string, IndexedGeometry[]>();
@@ -1023,7 +1023,7 @@ describe('Chart State utils', () => {
         color: '#2B70F7',
         value: { x: 0, y: 2, accessor: BandedAccessorType.Y1 },
         transform: { x: 0, y: 0 },
-        seriesIdentifier: { specId: getSpecId('line2'), seriesKey: [] },
+        seriesIdentifier: { specId: getSpecId('line2'), yAccessor: 'y1', splitAccessors: new Map(), seriesKeys: [] },
       },
     ]);
     const merged = mergeGeometriesIndexes(map1, map2);

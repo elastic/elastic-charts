@@ -56,9 +56,11 @@ Array [
             "y1": 6,
           },
         ],
-        "key": Array [],
         "seriesColorKey": "specId:{spec1},colors:{}",
+        "seriesKeys": Array [],
         "specId": "spec1",
+        "splitAccessors": Map {},
+        "yAccessor": null,
       },
     ],
     "groupId": "group1",
@@ -117,9 +119,11 @@ Array [
             "y1": 6,
           },
         ],
-        "key": Array [],
         "seriesColorKey": "specId:{spec2},colors:{}",
+        "seriesKeys": Array [],
         "specId": "spec2",
+        "splitAccessors": Map {},
+        "yAccessor": null,
       },
     ],
     "groupId": "group2",
@@ -187,11 +191,15 @@ Array [
             "y1": 4,
           },
         ],
-        "key": Array [
+        "seriesColorKey": "specId:{spec2},colors:{a}",
+        "seriesKeys": Array [
           "a",
         ],
-        "seriesColorKey": "specId:{spec2},colors:{a}",
         "specId": "spec2",
+        "splitAccessors": Map {
+          "g" => "a",
+        },
+        "yAccessor": null,
       },
       Object {
         "data": Array [
@@ -244,11 +252,15 @@ Array [
             "y1": 9,
           },
         ],
-        "key": Array [
+        "seriesColorKey": "specId:{spec2},colors:{b}",
+        "seriesKeys": Array [
           "b",
         ],
-        "seriesColorKey": "specId:{spec2},colors:{b}",
         "specId": "spec2",
+        "splitAccessors": Map {
+          "g" => "b",
+        },
+        "yAccessor": null,
       },
     ],
     "groupId": "group2",
@@ -316,11 +328,15 @@ Array [
             "y1": 4,
           },
         ],
-        "key": Array [
+        "seriesColorKey": "specId:{spec1},colors:{a}",
+        "seriesKeys": Array [
           "a",
         ],
-        "seriesColorKey": "specId:{spec1},colors:{a}",
         "specId": "spec1",
+        "splitAccessors": Map {
+          "g" => "a",
+        },
+        "yAccessor": null,
       },
       Object {
         "data": Array [
@@ -373,11 +389,15 @@ Array [
             "y1": 5,
           },
         ],
-        "key": Array [
+        "seriesColorKey": "specId:{spec1},colors:{b}",
+        "seriesKeys": Array [
           "b",
         ],
-        "seriesColorKey": "specId:{spec1},colors:{b}",
         "specId": "spec1",
+        "splitAccessors": Map {
+          "g" => "b",
+        },
+        "yAccessor": null,
       },
     ],
     "groupId": "group1",

@@ -5,11 +5,10 @@ import {
   isPointOnGeometry,
   PointGeometry,
   getBarStyleOverrides,
-  SeriesIdentifier,
   getPointStyleOverrides,
 } from './rendering';
 import { BarSeriesStyle, SharedGeometryStyle, PointStyle } from '../../../utils/themes/theme';
-import { DataSeriesDatum } from '../utils/series';
+import { DataSeriesDatum, SeriesIdentifier } from '../utils/series';
 import { RecursivePartial, mergePartial } from '../../../utils/commons';
 
 describe('Rendering utils', () => {
@@ -35,8 +34,10 @@ describe('Rendering utils', () => {
     const geometry: BarGeometry = {
       color: 'red',
       seriesIdentifier: {
-        seriesKey: [],
         specId: getSpecId('id'),
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: [],
       },
       value: {
         accessor: 'y1',
@@ -61,8 +62,10 @@ describe('Rendering utils', () => {
     const geometry: PointGeometry = {
       color: 'red',
       seriesIdentifier: {
-        seriesKey: [],
         specId: getSpecId('id'),
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: [],
       },
       value: {
         accessor: 'y1',
@@ -89,8 +92,10 @@ describe('Rendering utils', () => {
 
   test('should get common geometry style dependent on legend item highlight state', () => {
     const seriesIdentifier = {
-      seriesKey: [],
       specId: getSpecId('id'),
+      yAccessor: 'y1',
+      splitAccessors: new Map(),
+      seriesKeys: [],
     };
     const highlightedLegendItem = {
       key: '',
@@ -199,7 +204,9 @@ describe('Rendering utils', () => {
     };
     const seriesIdentifier: SeriesIdentifier = {
       specId: getSpecId('test'),
-      seriesKey: ['test'],
+      yAccessor: 'test',
+      splitAccessors: new Map(),
+      seriesKeys: ['test'],
     };
 
     beforeEach(() => {
@@ -288,7 +295,9 @@ describe('Rendering utils', () => {
     };
     const seriesIdentifier: SeriesIdentifier = {
       specId: getSpecId('test'),
-      seriesKey: ['test'],
+      yAccessor: 'test',
+      splitAccessors: new Map(),
+      seriesKeys: ['test'],
     };
 
     beforeEach(() => {
