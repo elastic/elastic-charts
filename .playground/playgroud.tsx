@@ -3,8 +3,8 @@ import { Axis, Chart, getAxisId, getSpecId, Position, ScaleType, Settings, AreaS
 import { Fit } from '../src/chart_types/xy_chart/utils/specs';
 
 const dg = new DataGenerator();
-const data = dg.generateSimpleSeries(10);
-// const data = dg.generateGroupedSeries(10);
+// const data = dg.generateSimpleSeries(10);
+const data = [{ x: 0, y: 1 }, { x: 1, y: 2 }, { x: 2, y: null }, { x: 4, y: null }, { x: 5, y: 10 }, { x: 6, y: 15 }];
 
 export class Playground extends React.Component {
   render() {
@@ -37,15 +37,7 @@ export class Playground extends React.Component {
               // splitSeriesAccessors={['g']}
               // stackAccessors={['x']}
               fit={Fit.Average}
-              data={data.map((d, i) => {
-                if ([4, 5].includes(i)) {
-                  return {
-                    ...d,
-                    y: null,
-                  };
-                }
-                return d;
-              })}
+              data={data}
             />
           </Chart>
         </div>
