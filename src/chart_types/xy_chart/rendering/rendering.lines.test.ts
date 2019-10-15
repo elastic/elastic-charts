@@ -7,7 +7,7 @@ import { computeXScale, computeYScales } from '../utils/scales';
 import { LineSeriesSpec, DomainRange } from '../utils/specs';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { LineGeometry, IndexedGeometry, PointGeometry } from '../../../utils/geometry';
-import { GroupId } from 'utils/ids';
+import { GroupId } from '../../../utils/ids';
 
 const SPEC_ID = 'spec_1';
 const GROUP_ID = 'group_1';

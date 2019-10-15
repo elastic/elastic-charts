@@ -16,7 +16,7 @@ import { Theme } from '../../utils/themes/theme';
 import { TooltipLegendValue } from '../../chart_types/xy_chart/tooltip/tooltip';
 import { AccessorType } from '../../utils/geometry';
 import { LegendItem } from '../../chart_types/xy_chart/legend/legend';
-import { Dimensions } from 'utils/dimensions';
+import { Dimensions } from '../../utils/dimensions';
 
 interface LegendProps {
   legendInitialized: boolean;

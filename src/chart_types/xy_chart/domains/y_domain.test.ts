@@ -9,7 +9,7 @@ import {
   splitSpecsByGroupId,
   YBasicSeriesSpec,
 } from './y_domain';
-import { GroupId } from 'utils/ids';
+import { GroupId } from '../../../utils/ids';
 
 describe('Y Domain', () => {
   test('Should merge Y domain', () => {

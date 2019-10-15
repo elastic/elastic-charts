@@ -1,6 +1,6 @@
-import { Rotation } from 'chart_types/xy_chart/utils/specs';
-import { Dimensions } from 'utils/dimensions';
-import { DisplayValueStyle } from 'utils/themes/theme';
+import { Rotation } from '../../utils/specs';
+import { Dimensions } from '../../../../utils/dimensions';
+import { DisplayValueStyle } from '../../../../utils/themes/theme';
 
 export function rotateBarValueProps(
   chartRotation: Rotation,

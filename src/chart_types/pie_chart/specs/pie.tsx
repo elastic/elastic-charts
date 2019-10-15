@@ -1,6 +1,6 @@
 import { specComponentFactory, getConnect } from '../../../state/spec_factory';
-import { Spec } from 'specs';
-import { Accessor } from 'utils/accessor';
+import { Spec } from '../../../specs';
+import { Accessor } from '../../../utils/accessor';
 
 export interface PieSpec extends Spec {
   data: any[];

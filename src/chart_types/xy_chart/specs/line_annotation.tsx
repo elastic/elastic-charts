@@ -4,7 +4,7 @@ import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../utils/themes/theme';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { upsertSpec, removeSpec } from '../../../state/actions/specs';
-import { Spec } from 'specs';
+import { Spec } from '../../../specs';
 
 type InjectedProps = LineAnnotationSpec &
   DispatchProps &

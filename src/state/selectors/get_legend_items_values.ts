@@ -1,5 +1,5 @@
-import { TooltipLegendValue } from 'chart_types/xy_chart/tooltip/tooltip';
-import { GlobalChartState } from 'state/chart_state';
+import { TooltipLegendValue } from '../../chart_types/xy_chart/tooltip/tooltip';
+import { GlobalChartState } from '../chart_state';
 
 export const getLegendItemsValuesSelector = (state: GlobalChartState): Map<string, TooltipLegendValue> => {
   if (state.internalChartState) {

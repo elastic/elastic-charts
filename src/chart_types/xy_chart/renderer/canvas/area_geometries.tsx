@@ -12,7 +12,7 @@ import { getGeometryStyle, getGeometryIdKey } from '../../rendering/rendering';
 import { mergePartial } from '../../../../utils/commons';
 import { AreaGeometry, PointGeometry, GeometryId } from '../../../../utils/geometry';
 import { SharedGeometryStyle, PointStyle } from '../../../../utils/themes/theme';
-import { LegendItem } from 'chart_types/xy_chart/legend/legend';
+import { LegendItem } from '../../legend/legend';
 
 interface AreaGeometriesDataProps {
   animated?: boolean;

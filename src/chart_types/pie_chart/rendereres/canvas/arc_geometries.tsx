@@ -6,7 +6,7 @@ import { ArcGeometry } from '../../../../utils/geometry';
 import { SharedGeometryStyle } from '../../../../utils/themes/theme';
 import { getGeometryStyle } from '../../../../chart_types/xy_chart/rendering/rendering';
 import { buildArcRenderProps } from '../../../../chart_types/xy_chart/renderer/canvas/utils/rendering_props_utils';
-import { LegendItem } from 'chart_types/xy_chart/legend/legend';
+import { LegendItem } from '../../../xy_chart/legend/legend';
 
 interface ArcGeometriesDataProps {
   animated?: boolean;

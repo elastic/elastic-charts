@@ -158,7 +158,7 @@ storiesOf('Grids', module)
           id={getAxisId('left1')}
           title={'Left axis 1'}
           position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
           showGridLines={boolean('show left axis grid lines', false, 'left axis')}
           gridLineStyle={leftAxisGridLineConfig}
         />
@@ -167,7 +167,7 @@ storiesOf('Grids', module)
           title={'Left axis 2'}
           groupId={getGroupId('group2')}
           position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
           showGridLines={boolean('show left axis 2 grid lines', false, 'left2 axis')}
           gridLineStyle={leftAxisGridLineConfig2}
         />

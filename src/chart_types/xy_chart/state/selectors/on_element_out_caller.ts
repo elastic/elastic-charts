@@ -4,7 +4,7 @@ import {
   getTooltipValuesAndGeometriesSelector,
   TooltipAndHighlightedGeoms,
 } from './get_tooltip_values_highlighted_geoms';
-import { SettingsSpec } from 'specs';
+import { SettingsSpec } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { IndexedGeometry } from '../../../../utils/geometry';
 import { Selector } from 'react-redux';

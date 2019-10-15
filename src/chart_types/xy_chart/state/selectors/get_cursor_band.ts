@@ -1,13 +1,13 @@
-import { Dimensions } from 'utils/dimensions';
+import { Dimensions } from '../../../../utils/dimensions';
 import createCachedSelector from 're-reselect';
-import { Point } from 'utils/point';
+import { Point } from '../../../../utils/point';
 import { Scale } from '../../../../utils/scales/scales';
 import { isLineAreaOnlyChart } from '../utils';
 import { getCursorBandPosition } from '../../crosshair/crosshair_utils';
 import { SettingsSpec } from '../../../../specs/settings';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
-import { BasicSeriesSpec } from 'chart_types/xy_chart/utils/specs';
+import { BasicSeriesSpec } from '../../utils/specs';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
 import { getSeriesSpecsSelector } from './get_specs';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';

@@ -1,5 +1,5 @@
-import { DataSeriesColorsValues } from 'chart_types/xy_chart/utils/series';
-import { Dimensions } from 'utils/dimensions';
+import { DataSeriesColorsValues } from '../../chart_types/xy_chart/utils/series';
+import { Dimensions } from '../../utils/dimensions';
 
 export const ON_TOGGLE_LEGEND = 'ON_TOGGLE_LEGEND';
 export const ON_LEGEND_ITEM_OVER = 'ON_LEGEND_ITEM_OVER';
