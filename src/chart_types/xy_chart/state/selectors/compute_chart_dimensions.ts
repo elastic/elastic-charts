@@ -19,7 +19,6 @@ export const computeChartDimensionsSelector = createCachedSelector(
     chartDimensions: Dimensions;
     leftMargin: number;
   } => {
-    // console.log('--- 6 computeChartDimensions ---');
     return computeChartDimensions(parentDimensions, chartTheme, axesTicksDimensions, axesSpecs);
   },
 )((state) => state.chartId);

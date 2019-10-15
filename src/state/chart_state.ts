@@ -1,5 +1,4 @@
 import { SPEC_PARSED, SPEC_UNMOUNTED, SPEC_PARSING, UPSERT_SPEC, REMOVE_SPEC } from './actions/specs';
-import { chartSettingsReducer } from './reducers/chart_settings';
 import { interactionsReducer } from './reducers/interactions';
 import { ChartTypes } from '../chart_types';
 import { PieChartState } from '../chart_types/pie_chart/state/chart_state';
@@ -11,6 +10,10 @@ import { Dimensions } from '../utils/dimensions';
 import { Point } from '../utils/point';
 import { LegendItem } from 'chart_types/xy_chart/legend/legend';
 import { TooltipLegendValue } from 'chart_types/xy_chart/tooltip/tooltip';
+import { StateActions } from './actions';
+import { ON_LEGEND_RENDERED } from './actions/legend';
+import { CHART_RENDERED } from './actions/chart';
+import { UPDATE_PARENT_DIMENSION } from './actions/chart_settings';
 
 export type GetCustomChartComponent = (componentType: 'dom' | 'svg' | 'canvas', zIndex: number) => JSX.Element | null;
 export interface InternalChartState {
@@ -53,6 +56,9 @@ export interface InteractionsState {
 export interface GlobalChartState {
   chartId: string;
   initialized: boolean;
+  legendRendered: boolean;
+  chartRendered: boolean;
+  chartRenderedCount: number;
   specs: SpecList;
   chartType: ChartType | null;
   internalChartState: InternalChartState | null;
@@ -65,6 +71,9 @@ export type ChartType = typeof ChartTypes.Pie | typeof ChartTypes.XYAxis | typeo
 const getInitialState = (chartId: string): GlobalChartState => ({
   chartId,
   initialized: false,
+  legendRendered: false,
+  chartRendered: false,
+  chartRenderedCount: 0,
   specs: {
     [DEFAULT_SETTINGS_SPEC.id]: DEFAULT_SETTINGS_SPEC,
   },
@@ -97,15 +106,15 @@ const getInitialState = (chartId: string): GlobalChartState => ({
 
 export const chartStoreReducer = (chartId: string) => {
   const initialState = getInitialState(chartId);
-  return (state = initialState, action: any): GlobalChartState => {
+  return (state = initialState, action: StateActions): GlobalChartState => {
     switch (action.type) {
       case SPEC_PARSING:
         return {
           ...state,
           initialized: false,
+          chartRendered: false,
         };
       case SPEC_PARSED:
-        console.log('SPEC PARSED');
         const chartType = findMainChartType(state.specs);
 
         if (isChartTypeChanged(state, chartType)) {
@@ -113,6 +122,7 @@ export const chartStoreReducer = (chartId: string) => {
           return {
             ...state,
             initialized: true,
+            chartRendered: false,
             chartType,
             internalChartState,
           };
@@ -120,18 +130,31 @@ export const chartStoreReducer = (chartId: string) => {
           return {
             ...state,
             initialized: true,
+            chartRendered: false,
             chartType,
           };
         }
+      case ON_LEGEND_RENDERED:
+        return {
+          ...state,
+          legendRendered: true,
+          settings: {
+            ...state.settings,
+            parentDimensions: action.containerDimensions || state.settings.parentDimensions,
+          },
+        };
       case SPEC_UNMOUNTED:
         return {
           ...state,
           initialized: false,
+          chartRendered: false,
         };
       case UPSERT_SPEC:
         return {
           ...state,
           initialized: false,
+          legendRendered: false,
+          chartRendered: false,
           specs: {
             ...state.specs,
             [action.spec.id]: action.spec,
@@ -142,14 +165,30 @@ export const chartStoreReducer = (chartId: string) => {
         return {
           ...state,
           initialized: false,
+          legendRendered: false,
+          chartRendered: false,
           specs: {
             ...rest,
+          },
+        };
+      case CHART_RENDERED:
+        const count = state.chartRendered ? state.chartRenderedCount : state.chartRenderedCount + 1;
+        return {
+          ...state,
+          chartRendered: true,
+          chartRenderedCount: count,
+        };
+      case UPDATE_PARENT_DIMENSION:
+        return {
+          ...state,
+          settings: {
+            ...state.settings,
+            parentDimensions: action.dimensions,
           },
         };
       default:
         return {
           ...state,
-          settings: chartSettingsReducer(state.settings, action),
           interactions: interactionsReducer(state.interactions, action),
         };
     }

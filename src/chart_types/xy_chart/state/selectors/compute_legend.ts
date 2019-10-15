@@ -25,8 +25,7 @@ export const computeLegendSelector = createCachedSelector(
     axesSpecs,
     deselectedDataSeries,
   ): Map<string, LegendItem> => {
-    console.log({ seriesDomainsAndData, chartTheme });
-    console.log('--- 3 computeLegend ---');
+    // console.log('--- 3 computeLegend ---');
 
     return computeLegend(
       seriesDomainsAndData.seriesColors,

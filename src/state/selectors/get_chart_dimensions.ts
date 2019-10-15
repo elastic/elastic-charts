@@ -3,11 +3,11 @@ import { GlobalChartState } from '../chart_state';
 import { Dimensions } from '../../utils/dimensions';
 
 const getState = (state: GlobalChartState) => state;
-const getChartStore = (state: GlobalChartState) => state.internalChartState;
+const getChartState = (state: GlobalChartState) => state.internalChartState;
 const isInitialized = (state: GlobalChartState) => state.initialized;
 
 export const getChartDimensionsSelector = createCachedSelector(
-  [isInitialized, getChartStore, getState],
+  [isInitialized, getChartState, getState],
   (isInitialized, chartStore, state): Dimensions => {
     if (!isInitialized || !chartStore) {
       return {

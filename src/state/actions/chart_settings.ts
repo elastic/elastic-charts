@@ -10,3 +10,5 @@ export interface UpdateParentDimensionAction {
 export function updateParentDimensions(dimensions: Dimensions): UpdateParentDimensionAction {
   return { type: UPDATE_PARENT_DIMENSION, dimensions };
 }
+
+export type ChartSettingsActions = UpdateParentDimensionAction;

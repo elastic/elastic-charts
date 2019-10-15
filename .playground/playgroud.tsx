@@ -1,24 +1,27 @@
 import React, { Fragment } from 'react';
-import {
-  Axis,
-  Chart,
-  getAxisId,
-  getSpecId,
-  Position,
-  ScaleType,
-  Settings,
-  AreaSeries,
-  HistogramBarSeries,
-  HistogramModeAlignments,
-} from '../src';
+import { Axis, Chart, getAxisId, getSpecId, Position, ScaleType, Settings, DataGenerator, BarSeries } from '../src';
 
+const dg = new DataGenerator();
 export class Playground extends React.Component {
+  state = {
+    legendPosition: Position.Right,
+    names: 1,
+    data: dg.generateSimpleSeries(),
+  };
+  switchLegend = () => {
+    this.setState({
+      legendPosition: [Position.Right, Position.Left][Math.floor(Math.random() * 2)],
+      // names: Math.floor(Math.random() * 1000 * Math.random()),
+      data: dg.generateSimpleSeries(),
+    });
+  };
   render() {
     return (
       <Fragment>
         <div className="chart">
+          <button onClick={this.switchLegend}>Switch legend</button>
           <Chart>
-            <Settings showLegend theme={{ areaSeriesStyle: { point: { visible: true } } }} />
+            <Settings showLegend />
             <Axis
               id={getAxisId('bottom')}
               position={Position.Bottom}
@@ -31,31 +34,26 @@ export class Playground extends React.Component {
               position={Position.Left}
               tickFormat={(d: any) => Number(d).toFixed(2)}
             />
-            <AreaSeries
-              id={getSpecId('area1')}
+            {/* <BarSeries
+          id={getSpecId('bars')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          splitSeriesAccessors={['g']}
+          stackAccessors={['x']}
+          data={data}
+          yScaleToDataExtent={false}
+        /> */}
+            <BarSeries
+              id={getSpecId('bars2')}
               xScaleType={ScaleType.Linear}
               yScaleType={ScaleType.Linear}
               xAccessor="x"
               yAccessors={['y']}
-              histogramModeAlignment={HistogramModeAlignments.Start}
-              data={[{ x: 0, y: 3 }, { x: 1, y: 3 }, { x: 2, y: 1 }, { x: 3, y: 8 }]}
-            />
-            <AreaSeries
-              id={getSpecId('area2')}
-              xScaleType={ScaleType.Linear}
-              yScaleType={ScaleType.Linear}
-              xAccessor="x"
-              yAccessors={['y']}
-              histogramModeAlignment={HistogramModeAlignments.Start}
-              data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
-            />
-            <HistogramBarSeries
-              id={getSpecId('histo')}
-              xScaleType={ScaleType.Linear}
-              yScaleType={ScaleType.Linear}
-              xAccessor="x"
-              yAccessors={['y']}
-              data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
+              stackAccessors={['x']}
+              splitSeriesAccessors={['g']}
+              data={this.state.data}
             />
           </Chart>
         </div>

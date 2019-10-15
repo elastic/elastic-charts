@@ -3,10 +3,10 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { onCursorPositionChange } from '../state/actions/cursor';
 import { GlobalChartState } from '../state/chart_state';
-import { ChartResizer } from './chart_resizer';
 import { onMouseUp, onMouseDown } from '../state/actions/mouse';
 import { getInternalChartRendererSelector } from '../state/selectors/get_chart_type_components';
 import { isInternalChartEmptySelector } from '../state/selectors/is_chart_empty';
+import { isInitialized } from '../state/selectors/is_initialized';
 interface ReactiveChartProps {
   initialized: boolean;
   isChartEmpty?: boolean;
@@ -21,7 +21,6 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
   static displayName = 'ChartContainer';
 
   shouldComponentUpdate(props: ReactiveChartProps) {
-    console.log('shouldComponentUpdate');
     return props.initialized;
   }
 
@@ -81,7 +80,6 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
           );
         }}
       >
-        <ChartResizer />
         {internalChartRenderer}
       </div>
     );
@@ -98,8 +96,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
     dispatch,
   );
 const mapStateToProps = (state: GlobalChartState) => {
-  if (!state.initialized) {
-    console.log('NOT INITIALIZED');
+  if (!isInitialized(state)) {
     return {
       initialized: false,
       isChartEmpty: true,
@@ -107,7 +104,6 @@ const mapStateToProps = (state: GlobalChartState) => {
       internalChartRenderer: null,
     };
   }
-  console.log('INITIALIZED');
 
   return {
     initialized: true,

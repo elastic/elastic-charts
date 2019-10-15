@@ -17,7 +17,7 @@ export const getSeriesColorMapSelector = createCachedSelector(
       chartTheme.colors,
       updatedCustomSeriesColors,
     );
-    console.log('--- 2 computeSeriesDomainsSelector ---');
+    // console.log('--- 2 computeSeriesDomainsSelector ---');
     return seriesColorMap;
   },
 )((state) => state.chartId);

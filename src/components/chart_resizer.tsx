@@ -9,6 +9,8 @@ import { getSettingsSpecSelector } from '../state/selectors/get_settings_specs';
 import { GlobalChartState } from '../state/chart_state';
 
 interface ResizerProps {
+  legendRendered: boolean;
+  showLegend: boolean;
   resizeDebounce: number;
   updateParentDimensions(dimension: Dimensions): void;
 }
@@ -26,7 +28,12 @@ class Resizer extends React.Component<ResizerProps> {
 
   componentDidMount() {
     this.onResizeDebounced = debounce(this.onResize, this.props.resizeDebounce);
-    this.ro.observe(this.containerRef.current as Element);
+  }
+
+  componentDidUpdate() {
+    if (this.props.legendRendered) {
+      this.ro.observe(this.containerRef.current as Element);
+    }
   }
 
   componentWillUnmount() {
@@ -62,8 +69,11 @@ const mapDispatchToProps = (dispatch: Dispatch<UpdateParentDimensionAction>) => 
 };
 
 const mapStateToProps = (state: GlobalChartState) => {
+  const settings = getSettingsSpecSelector(state);
   return {
-    resizeDebounce: getSettingsSpecSelector(state).resizeDebounce || 200,
+    legendRendered: state.legendRendered,
+    showLegend: settings.showLegend,
+    resizeDebounce: settings.resizeDebounce || 200,
   };
 };
 

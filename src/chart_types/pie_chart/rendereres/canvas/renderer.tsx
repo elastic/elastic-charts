@@ -36,7 +36,6 @@ class Chart extends React.Component<Props> {
   firstRender = true;
 
   render() {
-    console.log('Rendering main chart');
     const {
       initialized,
       globalSettings: { parentDimensions },
