@@ -897,7 +897,7 @@ storiesOf('Stylings', module)
           id={getAxisId('left')}
           title={'Left axis'}
           position={Position.Left}
-          tickFormat={(d) => Number(d).toFixed(2)}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
         />
 
         <BarSeries

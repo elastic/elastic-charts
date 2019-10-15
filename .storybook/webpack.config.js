@@ -3,9 +3,6 @@ const path = require('path');
 const webpack = require('webpack');
 
 const nonce = 'Pk1rZ1XDlMuYe8ubWV3Lh0BzwrTigJQ=';
-// eslint-disable-next-line
-const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-
 const scssLoaders = [
   {
     loader: 'css-loader',
@@ -97,10 +94,6 @@ module.exports = async ({ config, mode }) => {
   });
 
   config.resolve.extensions.push('.ts', '.tsx');
-  if (!config.resolve.plugins) {
-    config.resolve.plugins = [];
-  }
-  config.resolve.plugins.push(new TsconfigPathsPlugin({}));
 
   return config;
 };
