@@ -2,7 +2,7 @@ import createCachedSelector from 're-reselect';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { CanvasTextBBoxCalculator } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { computeAxisTicksDimensions, AxisTicksDimensions } from '../../utils/axis_utils';
+import { computeAxisTicksDimensions, AxisTicksDimensions, isDuplicateAxis } from '../../utils/axis_utils';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { AxisId } from '../../../../utils/ids';
@@ -46,7 +46,10 @@ export const computeAxisTicksDimensionsSelector = createCachedSelector(
         barsPadding,
         isHistogramMode,
       );
-      if (dimensions) {
+      if (
+        dimensions &&
+        (!settingsSpec.hideDuplicateAxes || !isDuplicateAxis(axisSpec, dimensions, axesTicksDimensions, axesSpecs))
+      ) {
         axesTicksDimensions.set(id, dimensions);
       }
     });
