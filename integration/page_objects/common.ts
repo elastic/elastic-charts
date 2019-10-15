@@ -22,11 +22,11 @@ class CommonPage {
     return `${baseUrl}?${query}${query ? '&' : ''}knob-debug=false`;
   }
 
-  async screenshotDOMElement(selector: string, opts?: ScreenshotDOMElementOptions) {
+  async screenshotDOMElement(selector: string, selectorTestSubj: string, opts?: ScreenshotDOMElementOptions) {
     const padding: number = opts && opts.padding ? opts.padding : 0;
     const path: string | undefined = opts && opts.path ? opts.path : undefined;
 
-    await page.waitForSelector(selector, { timeout: 10000 });
+    await page.waitForSelector(selectorTestSubj, { timeout: 10000 });
     const rect = await page.evaluate((selector) => {
       const element = document.querySelector(selector);
 
@@ -56,7 +56,7 @@ class CommonPage {
    * Capture screenshot or chart element only
    */
   async getChartScreenshot() {
-    return this.screenshotDOMElement('.echChart[data-ech-render-complete=true]');
+    return this.screenshotDOMElement('.echChart', '.echChartState[data-ech-render-complete=true]');
   }
 
   /**

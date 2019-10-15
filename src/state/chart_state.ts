@@ -15,7 +15,6 @@ import { ON_LEGEND_RENDERED } from './actions/legend';
 import { CHART_RENDERED } from './actions/chart';
 import { UPDATE_PARENT_DIMENSION } from './actions/chart_settings';
 
-export type GetCustomChartComponent = (componentType: 'dom' | 'svg' | 'canvas', zIndex: number) => JSX.Element | null;
 export interface InternalChartState {
   chartType: ChartType;
   chartRenderer(globalState: GlobalChartState): JSX.Element | null;

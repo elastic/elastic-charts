@@ -10,7 +10,7 @@ export class Playground extends React.Component {
   };
   switchLegend = () => {
     this.setState({
-      legendPosition: [Position.Right, Position.Left][Math.floor(Math.random() * 2)],
+      legendPosition: [Position.Right, Position.Left, Position.Top, Position.Bottom][Math.floor(Math.random() * 4)],
       // names: Math.floor(Math.random() * 1000 * Math.random()),
       data: dg.generateSimpleSeries(),
     });
@@ -22,11 +22,11 @@ export class Playground extends React.Component {
         <div className="chart">
           <button onClick={this.switchLegend}>Switch legend</button>
           <Chart>
-            <Settings showLegend />
+            <Settings debug showLegend legendPosition={this.state.legendPosition} />
             <Axis
               id={getAxisId('bottom')}
               position={Position.Bottom}
-              title={'Bottom axis'}
+              title={this.state.legendPosition}
               showOverlappingTicks={true}
             />
             <Axis

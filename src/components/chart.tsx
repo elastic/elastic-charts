@@ -20,6 +20,7 @@ import { createOnElementOutCaller } from '../chart_types/xy_chart/state/selector
 import { createOnElementOverCaller } from '../chart_types/xy_chart/state/selectors/on_element_over_caller';
 import { createOnElementClickCaller } from '../chart_types/xy_chart/state/selectors/on_element_click_caller';
 import { ChartTypes } from '../chart_types/index';
+import { getSettingsSpecSelector } from '../state/selectors/get_settings_specs';
 
 interface ChartProps {
   /** The type of rendered
@@ -33,8 +34,6 @@ interface ChartProps {
 
 interface ChartState {
   legendPosition: Position;
-  renderComplete: boolean;
-  renderCount: number;
 }
 
 export class Chart extends React.Component<ChartProps, ChartState> {
@@ -49,18 +48,8 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     this.chartStore = createStore(storeReducer, devToolsEnhancer({ trace: true }));
     this.state = {
       legendPosition: Position.Right,
-      renderComplete: false,
-      renderCount: 0,
     };
-    //TODO
-    // this.chartSpecStore.chartInitialized.observe(({ newValue, oldValue }) => {
-    //   if (newValue !== oldValue) {
-    //     this.setState({
-    //       renderComplete: newValue,
-    //       renderCount: newValue ? this.state.renderCount + 1 : this.state.renderCount,
-    //     });
-    //   }
-    // });
+
     // value is set to chart_store in settings so need to watch the value
     //TODO
     // this.chartSpecStore.legendPosition.observe(({ newValue: legendPosition }) => {
@@ -73,6 +62,12 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     const onElementOutCaller = createOnElementOutCaller();
     this.chartStore.subscribe(() => {
       const state = this.chartStore.getState();
+      const settings = getSettingsSpecSelector(state);
+      if (this.state.legendPosition !== settings.legendPosition) {
+        this.setState({
+          legendPosition: settings.legendPosition,
+        });
+      }
       if (!isInitialized(state) || state.chartType !== ChartTypes.XYAxis) {
         return;
       }

@@ -22,6 +22,7 @@ import { computeAxisTicksDimensionsSelector } from '../../state/selectors/comput
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 
 interface AxisProps {
   theme: Theme;
@@ -306,7 +307,7 @@ const mapStateToProps = (state: GlobalChartState): AxesProps => {
   return {
     theme: getChartThemeSelector(state),
     chartDimensions: computeChartDimensionsSelector(state).chartDimensions,
-    debug: state.settings.debug,
+    debug: getSettingsSpecSelector(state).debug,
     axesPositions: axisTickPositions.axisPositions,
     axesSpecs: getAxisSpecsSelector(state),
     axesTicksDimensions: computeAxisTicksDimensionsSelector(state),
