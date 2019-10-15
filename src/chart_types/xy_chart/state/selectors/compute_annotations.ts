@@ -31,7 +31,7 @@ export const computeAnnotationDimensionsSelector = createCachedSelector(
     totalBarsInCluster,
     isHistogramMode,
   ): Map<AnnotationId, AnnotationDimensions> => {
-    console.log('--- 11 computeAnnotationDimensionsSelector ---', annotationSpecs);
+    // console.log('--- 11 computeAnnotationDimensionsSelector ---', annotationSpecs);
     const { yScales, xScale } = seriesGeometries.scales;
     return computeAnnotationDimensions(
       annotationSpecs,

@@ -21,3 +21,5 @@ export function onMouseDown(position: Point, time: number): MouseDownAction {
 export function onMouseUp(position: Point, time: number): MouseUpAction {
   return { type: ON_MOUSE_UP, position, time };
 }
+
+export type MouseActions = MouseDownAction | MouseUpAction;

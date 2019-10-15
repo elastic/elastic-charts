@@ -1,4 +1,5 @@
 import React from 'react';
+import { bindActionCreators, Dispatch } from 'redux';
 import { connect, ReactReduxContext, Provider } from 'react-redux';
 import { ContainerConfig } from 'konva';
 import { Layer, Rect, Stage } from 'react-konva';
@@ -22,6 +23,7 @@ import { isChartAnimatableSelector } from '../../state/selectors/is_chart_animat
 import { isBrushAvailableSelector } from '../../state/selectors/is_brush_available';
 import { Transform } from '../../state/utils';
 import { Rotation, AnnotationSpec, isLineAnnotation, isRectAnnotation } from '../../utils/specs';
+import { onChartRendered } from '../../../../state/actions/chart';
 import { isInitialized } from '../../../../state/selectors/is_initialized';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
@@ -55,6 +57,7 @@ interface Props {
   isBrushAvailable: boolean;
   highlightedLegendItem?: LegendItem;
   getCustomChartComponents?: GetCustomChartComponent;
+  onChartRendered: typeof onChartRendered;
 }
 export interface ReactiveChartElementIndex {
   element: JSX.Element;
@@ -65,6 +68,11 @@ class Chart extends React.Component<Props> {
   static displayName = 'ReactiveChart';
   firstRender = true;
 
+  componentDidUpdate() {
+    if (this.props.initialized) {
+      this.props.onChartRendered();
+    }
+  }
   renderBarSeries = (clippings: ContainerConfig): ReactiveChartElementIndex[] => {
     const { geometries, theme, isChartAnimatable, highlightedLegendItem } = this.props;
     if (!geometries) {
@@ -230,7 +238,6 @@ class Chart extends React.Component<Props> {
   }
 
   render() {
-    console.log('Rendering main chart');
     const { initialized, globalSettings, chartRotation, chartDimensions, isChartEmpty } = this.props;
     if (!initialized || chartDimensions.width === 0 || chartDimensions.height === 0) {
       return null;
@@ -238,7 +245,6 @@ class Chart extends React.Component<Props> {
     const { debug, parentDimensions } = globalSettings;
     const { chartTransform } = this.props;
 
-    console.log('CAN RENDER', parentDimensions, chartDimensions);
     if (isChartEmpty) {
       return (
         <div className="echReactiveChart_unavailable">
@@ -246,9 +252,7 @@ class Chart extends React.Component<Props> {
         </div>
       );
     }
-
     const brushProps = {};
-
     return (
       <ReactReduxContext.Consumer>
         {({ store }) => {
@@ -311,37 +315,54 @@ class Chart extends React.Component<Props> {
   };
 }
 
-const mapDispatchToProps = () => ({});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+  bindActionCreators(
+    {
+      onChartRendered,
+    },
+    dispatch,
+  );
+
+const DEFAULT_PROPS: Props = {
+  initialized: false,
+  theme: LIGHT_THEME,
+  geometries: {},
+  globalSettings: {
+    debug: false,
+    parentDimensions: {
+      width: 0,
+      height: 0,
+      left: 0,
+      top: 0,
+    },
+  },
+  chartRotation: 0 as 0,
+  chartDimensions: {
+    width: 0,
+    height: 0,
+    left: 0,
+    top: 0,
+  },
+  chartTransform: {
+    x: 0,
+    y: 0,
+    rotate: 0,
+  },
+  isChartAnimatable: false,
+  isChartEmpty: true,
+  annotationDimensions: new Map(),
+  annotationSpecs: [],
+  isBrushAvailable: false,
+  highlightedLegendItem: undefined,
+  onChartRendered,
+};
 
 const mapStateToProps = (state: GlobalChartState) => {
   if (!isInitialized(state)) {
-    return {
-      initialized: false,
-      theme: LIGHT_THEME,
-      geometries: {},
-      globalSettings: state.settings,
-      chartRotation: 0 as 0,
-      chartDimensions: {
-        width: 0,
-        height: 0,
-        left: 0,
-        top: 0,
-      },
-      chartTransform: {
-        x: 0,
-        y: 0,
-        rotate: 0,
-      },
-      isChartAnimatable: false,
-      isChartEmpty: true,
-      annotationDimensions: new Map(),
-      annotationSpecs: [],
-      isBrushAvailable: false,
-      highlightedLegendItem: undefined,
-    };
+    return DEFAULT_PROPS;
   }
   return {
-    initialized: state.initialized,
+    initialized: true,
     theme: getChartThemeSelector(state),
     geometries: computeSeriesGeometriesSelector(state).geometries,
     globalSettings: state.settings,

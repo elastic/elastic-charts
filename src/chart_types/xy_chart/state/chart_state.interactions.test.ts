@@ -646,7 +646,6 @@ function mouseOverTestSuite(scaleType: ScaleType) {
       store.dispatch(specParsed());
       store.dispatch(onCursorPositionChange(chartLeft + 0, chartTop + 89));
       const tooltipData = getTooltipValuesAndGeometriesSelector(store.getState());
-      console.log(tooltipData.tooltipValues);
       expect(tooltipData.tooltipValues[0].value).toBe('left 1');
       expect(tooltipData.tooltipValues[1].value).toBe('bottom 5');
     });

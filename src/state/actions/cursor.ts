@@ -9,3 +9,5 @@ export interface CursorPositionChangeAction {
 export function onCursorPositionChange(x: number, y: number): CursorPositionChangeAction {
   return { type: ON_CURSOR_POSITION_CHANGE, x, y };
 }
+
+export type CursorActions = CursorPositionChangeAction;

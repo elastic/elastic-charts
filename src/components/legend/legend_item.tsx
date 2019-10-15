@@ -5,7 +5,6 @@ import { LegendItemListener } from '../../specs/settings';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { GlobalChartState } from '../../state/chart_state';
-import { isInitialized } from '../../state/selectors/is_initialized';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
 import { onLegendItemClick, onToggleDeselectSeries } from '../../state/actions/legend';
 import { isEqualSeriesKey } from '../../chart_types/xy_chart/utils/series_utils';
@@ -201,7 +200,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
   );
 
 const mapStateToProps = (state: GlobalChartState): LegendItemStateProps => {
-  if (!isInitialized(state)) {
+  if (!state.initialized) {
     return {
       showLegendDisplayValue: false,
       selectedLegendItem: null,

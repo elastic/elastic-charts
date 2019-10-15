@@ -27,7 +27,6 @@ export class LineAnnotationSpecComponent extends PureComponent<LineAnnotationSpe
 
   componentDidMount() {
     const { children, upsertSpec, removeSpec, ...config } = this.props as InjectedProps;
-    console.log('ANNOTATION DID MOUNT');
     if (this.markerRef.current) {
       const { offsetWidth, offsetHeight } = this.markerRef.current;
       config.markerDimensions = {

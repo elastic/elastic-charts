@@ -44,7 +44,7 @@ export const computeAxisVisibleTicksSelector = createCachedSelector(
     isHistogramMode,
     barsPadding,
   ): AxisVisibleTicks => {
-    console.log('--- 10 computeAxisVisibleTicksSelector ---');
+    // console.log('--- 10 computeAxisVisibleTicksSelector ---');
     const { xDomain, yDomain } = seriesDomainsAndData;
     return getAxisTicksPositions(
       chartDimensions,

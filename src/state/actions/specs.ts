@@ -47,3 +47,10 @@ export function specParsed(): SpecParsedAction {
 export function specUnmounted(): SpecUnmountedAction {
   return { type: SPEC_UNMOUNTED };
 }
+
+export type SpecActions =
+  | SpecParsingAction
+  | SpecParsedAction
+  | SpecUnmountedAction
+  | UpsertSpecAction
+  | RemoveSpecAction;

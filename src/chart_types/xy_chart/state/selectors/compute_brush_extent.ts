@@ -7,7 +7,7 @@ import { computeChartTransformSelector } from './compute_chart_transform';
 export const computeBrushExtentSelector = createCachedSelector(
   [computeChartDimensionsSelector, computeChartTransformSelector, getSettingsSpecSelector],
   (chartDimensions, chartTransform, settingsSpecs): BrushExtent => {
-    console.log('--- 8 computeBrushExtentSelector ---');
+    // console.log('--- 8 computeBrushExtentSelector ---');
     return computeBrushExtent(chartDimensions.chartDimensions, settingsSpecs.rotation, chartTransform);
   },
 )((state) => state.chartId);

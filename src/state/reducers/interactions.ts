@@ -11,6 +11,7 @@ import {
   ON_TOGGLE_DESELECT_SERIES,
   ON_INVERT_DESELECT_SERIES,
   InvertDeselectSeriesAction,
+  LegendItemClickAction,
 } from '../actions/legend';
 import { ON_MOUSE_DOWN, ON_MOUSE_UP, MouseDownAction, MouseUpAction } from '../actions/mouse';
 import { DataSeriesColorsValues, findDataSeriesByColorValues } from '../../chart_types/xy_chart/utils/series';
@@ -25,7 +26,8 @@ export function interactionsReducer(
     | ToggleDeselectSeriesAction
     | InvertDeselectSeriesAction
     | MouseDownAction
-    | MouseUpAction,
+    | MouseUpAction
+    | LegendItemClickAction,
 ): InteractionsState {
   switch (action.type) {
     case ON_CURSOR_POSITION_CHANGE:

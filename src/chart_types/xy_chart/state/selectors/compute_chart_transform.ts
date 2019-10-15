@@ -6,7 +6,7 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 export const computeChartTransformSelector = createCachedSelector(
   [computeChartDimensionsSelector, getSettingsSpecSelector],
   (chartDimensions, settingsSpecs): Transform => {
-    console.log('--- 7 computeChartTransformSelector ---');
+    // console.log('--- 7 computeChartTransformSelector ---');
     return computeChartTransform(chartDimensions.chartDimensions, settingsSpecs.rotation);
   },
 )((state) => state.chartId);

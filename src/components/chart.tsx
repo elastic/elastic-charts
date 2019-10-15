@@ -9,6 +9,7 @@ import { isHorizontalAxis } from '../chart_types/xy_chart/utils/axis_utils';
 import { Position } from '../chart_types/xy_chart/utils/specs';
 // import { CursorEvent } from '../specs/settings';
 import { ChartSize, getChartSize } from '../utils/chart_size';
+import { ChartState } from './chart_state';
 import { chartStoreReducer, GlobalChartState } from '../state/chart_state';
 import { createStore, Store } from 'redux';
 import uuid from 'uuid';
@@ -78,10 +79,6 @@ export class Chart extends React.Component<ChartProps, ChartState> {
       onElementOverCaller(state);
       onElementOutCaller(state);
       onElementClickCaller(state);
-      this.setState((prevState) => ({
-        renderComplete: true,
-        renderCount: prevState.renderCount + 1,
-      }));
     });
   }
 
@@ -115,7 +112,6 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
   render() {
     const { size, className } = this.props;
-    const { renderComplete, renderCount } = this.state;
     const containerStyle = Chart.getContainerStyle(size);
     const horizontal = isHorizontalAxis(this.state.legendPosition);
     const chartClassNames = classNames('echChart', className, {
@@ -123,12 +119,8 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     });
     return (
       <Provider store={this.chartStore}>
-        <div
-          style={containerStyle}
-          className={chartClassNames}
-          data-ech-render-complete={renderComplete}
-          data-ech-render-count={renderCount}
-        >
+        <div style={containerStyle} className={chartClassNames}>
+          <ChartState />
           <Legend />
           <SpecsParser>{this.props.children}</SpecsParser>
           <div className="echContainer">

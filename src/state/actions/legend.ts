@@ -1,4 +1,5 @@
 import { DataSeriesColorsValues } from 'chart_types/xy_chart/utils/series';
+import { Dimensions } from 'utils/dimensions';
 
 export const ON_TOGGLE_LEGEND = 'ON_TOGGLE_LEGEND';
 export const ON_LEGEND_ITEM_OVER = 'ON_LEGEND_ITEM_OVER';
@@ -34,6 +35,7 @@ export interface InvertDeselectSeriesAction {
 }
 export interface LegendRenderedAction {
   type: typeof ON_LEGEND_RENDERED;
+  containerDimensions?: Dimensions;
 }
 
 export function onToggleLegend(): ToggleLegendAction {
@@ -60,6 +62,15 @@ export function onInvertDeselectSeries(legendItemId: DataSeriesColorsValues): In
   return { type: ON_INVERT_DESELECT_SERIES, legendItemId };
 }
 
-export function onLegendRendered(): LegendRenderedAction {
-  return { type: ON_LEGEND_RENDERED };
+export function onLegendRendered(containerDimensions?: Dimensions): LegendRenderedAction {
+  return { type: ON_LEGEND_RENDERED, containerDimensions };
 }
+
+export type LegendActions =
+  | ToggleLegendAction
+  | LegendItemOverAction
+  | LegendItemOutAction
+  | LegendItemClickAction
+  | ToggleDeselectSeriesAction
+  | InvertDeselectSeriesAction
+  | LegendRenderedAction;

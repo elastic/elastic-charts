@@ -61,7 +61,6 @@ export class ArcGeometries extends React.PureComponent<ArcGeometriesDataProps, A
         );
       } else {
         const areaProps = buildArcRenderProps(transform, arc, color, seriesArcStyle, geometryStyle);
-        console.log(areaProps);
         arcsToRender.push(<Path {...areaProps} key={key} />);
       }
     });
