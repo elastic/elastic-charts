@@ -2,8 +2,8 @@ import React from 'react';
 import { InternalChartState } from '../../../state/chart_state';
 import { ChartTypes } from '../..';
 import { ReactiveChart } from '../rendereres/canvas/renderer';
-import { TooltipLegendValue } from 'chart_types/xy_chart/tooltip/tooltip';
-import { LegendItem } from 'chart_types/xy_chart/legend/legend';
+import { TooltipLegendValue } from '../../xy_chart/tooltip/tooltip';
+import { LegendItem } from '../../xy_chart/legend/legend';
 
 const legendItemsValues = new Map<string, TooltipLegendValue>();
 const legendItems = new Map<string, LegendItem>();

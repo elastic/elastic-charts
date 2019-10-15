@@ -216,7 +216,7 @@ storiesOf('Stylings', module)
           id={getAxisId('left2')}
           title={withLeftTitle ? 'Left axis' : undefined}
           position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
           showGridLines={boolean('show left axis grid lines', false)}
         />
         <Axis
@@ -230,7 +230,7 @@ storiesOf('Stylings', module)
           id={getAxisId('right')}
           title={withRightTitle ? 'Right axis' : undefined}
           position={Position.Right}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
           showGridLines={boolean('show right axis grid lines', false)}
         />
         <BarSeries
@@ -284,7 +284,7 @@ storiesOf('Stylings', module)
           id={getAxisId('left2')}
           title={'Left axis'}
           position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
 
         <BarSeries
@@ -408,14 +408,14 @@ storiesOf('Stylings', module)
           id={getAxisId('left2')}
           title={'Left axis'}
           position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
         <Axis id={getAxisId('top')} position={Position.Top} title={'Top axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('right')}
           title={'Right axis'}
           position={Position.Right}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
         <BarSeries
           id={getSpecId('bars')}
@@ -466,14 +466,14 @@ storiesOf('Stylings', module)
           id={getAxisId('left2')}
           title="Left axis"
           position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
         <Axis id={getAxisId('top')} position={Position.Top} title="Top axis" showOverlappingTicks={true} />
         <Axis
           id={getAxisId('right')}
           title="Right axis"
           position={Position.Right}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
         <BarSeries
           id={getSpecId('bars')}
@@ -506,14 +506,14 @@ storiesOf('Stylings', module)
           id={getAxisId('left2')}
           title="Left axis"
           position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
         <Axis id={getAxisId('top')} position={Position.Top} title="Top axis" showOverlappingTicks={true} />
         <Axis
           id={getAxisId('right')}
           title="Right axis"
           position={Position.Right}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
         <BarSeries
           id={getSpecId('bars')}
@@ -555,14 +555,14 @@ storiesOf('Stylings', module)
             id={getAxisId('left2')}
             title="Left axis"
             position={Position.Left}
-            tickFormat={(d: any) => Number(d).toFixed(2)}
+            tickFormat={(d) => Number(d).toFixed(2)}
           />
           <Axis id={getAxisId('top')} position={Position.Top} title="Top axis" showOverlappingTicks={true} />
           <Axis
             id={getAxisId('right')}
             title="Right axis"
             position={Position.Right}
-            tickFormat={(d: any) => Number(d).toFixed(2)}
+            tickFormat={(d) => Number(d).toFixed(2)}
           />
           <BarSeries
             id={getSpecId('bars')}
@@ -612,7 +612,7 @@ storiesOf('Stylings', module)
           id={getAxisId('left2')}
           title={'Left axis'}
           position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
 
         <BarSeries
@@ -673,7 +673,7 @@ storiesOf('Stylings', module)
           id={getAxisId('left2')}
           title={'Left axis'}
           position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
 
         <BarSeries
@@ -721,7 +721,7 @@ storiesOf('Stylings', module)
           id={getAxisId('left2')}
           title={'Left axis'}
           position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
         <LineSeries
           id={getSpecId('lines1')}
@@ -787,7 +787,7 @@ storiesOf('Stylings', module)
           id={getAxisId('left2')}
           title={'Left axis'}
           position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
         <AreaSeries
           id={getSpecId('area1')}
@@ -850,7 +850,7 @@ storiesOf('Stylings', module)
           id={getAxisId('left2')}
           title={'Left axis'}
           position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
         <AreaSeries
           id={getSpecId('lines')}
@@ -897,7 +897,7 @@ storiesOf('Stylings', module)
           id={getAxisId('left')}
           title={'Left axis'}
           position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
 
         <BarSeries

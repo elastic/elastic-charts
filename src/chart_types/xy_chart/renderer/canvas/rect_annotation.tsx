@@ -1,7 +1,7 @@
 import React from 'react';
 import { Group, Rect } from 'react-konva';
-import { RectAnnotationStyle } from 'utils/themes/theme';
-import { AnnotationRectProps } from 'chart_types/xy_chart/annotations/rect_annotation_tooltip';
+import { RectAnnotationStyle } from '../../../../utils/themes/theme';
+import { AnnotationRectProps } from '../../annotations/rect_annotation_tooltip';
 
 interface Props {
   rects: AnnotationRectProps[];

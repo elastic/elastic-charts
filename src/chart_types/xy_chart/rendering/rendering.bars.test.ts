@@ -5,7 +5,7 @@ import { renderBars } from './rendering';
 import { computeXScale, computeYScales } from '../utils/scales';
 import { BarSeriesSpec, DomainRange } from '../utils/specs';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
-import { GroupId } from 'utils/ids';
+import { GroupId } from '../../../utils/ids';
 
 const SPEC_ID = 'spec_1';
 const GROUP_ID = 'group_1';

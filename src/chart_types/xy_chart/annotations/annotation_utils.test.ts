@@ -46,7 +46,7 @@ import {
   isWithinRectBounds,
   getRectAnnotationTooltipStateFromCursor,
 } from './rect_annotation_tooltip';
-import { Point } from 'utils/point';
+import { Point } from '../../../utils/point';
 
 describe('annotation utils', () => {
   const minRange = 0;

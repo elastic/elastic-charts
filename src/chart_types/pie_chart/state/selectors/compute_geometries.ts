@@ -5,8 +5,8 @@ import { PieSpec } from '../../../../specs';
 import { getPieSpecSelector } from './get_pie_spec';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { Theme } from '../../../../utils/themes/theme';
-import { ArcGeometry } from 'utils/geometry';
-import { Dimensions } from 'utils/dimensions';
+import { ArcGeometry } from '../../../../utils/geometry';
+import { Dimensions } from '../../../../utils/dimensions';
 
 const getGlobalSettingsSelector = (state: GlobalChartState) => state.parentDimensions;
 

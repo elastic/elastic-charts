@@ -74,7 +74,7 @@ storiesOf('Interactions', module)
           id={getAxisId('left2')}
           title={'Left axis'}
           position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
 
         <BarSeries
@@ -97,7 +97,7 @@ storiesOf('Interactions', module)
           id={getAxisId('left2')}
           title={'Left axis'}
           position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
 
         <AreaSeries
@@ -120,7 +120,7 @@ storiesOf('Interactions', module)
           id={getAxisId('left2')}
           title={'Left axis'}
           position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
 
         <LineSeries
@@ -143,7 +143,7 @@ storiesOf('Interactions', module)
           id={getAxisId('left2')}
           title={'Left axis'}
           position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
 
         <BarSeries
@@ -219,7 +219,7 @@ storiesOf('Interactions', module)
           id={getAxisId('left2')}
           title={'Left axis'}
           position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
           domain={yDomain}
         />
 
@@ -251,7 +251,7 @@ storiesOf('Interactions', module)
           id={getAxisId('left2')}
           title={'Left axis'}
           position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
 
         <AreaSeries
@@ -291,7 +291,7 @@ storiesOf('Interactions', module)
           id={getAxisId('left2')}
           title={'Left axis'}
           position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
 
         <LineSeries
@@ -366,7 +366,7 @@ storiesOf('Interactions', module)
           id={getAxisId('left2')}
           title={'Left axis'}
           position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
 
         <BarSeries
@@ -395,18 +395,13 @@ storiesOf('Interactions', module)
       <Chart className={'story-chart'}>
         <Settings onBrushEnd={action('onBrushEnd')} />
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'bottom'} showOverlappingTicks={true} />
-        <Axis
-          id={getAxisId('left')}
-          title={'left'}
-          position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
-        />
+        <Axis id={getAxisId('left')} title={'left'} position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
         <Axis id={getAxisId('top')} position={Position.Top} title={'top'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('right')}
           title={'right'}
           position={Position.Right}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
 
         <AreaSeries
@@ -425,18 +420,13 @@ storiesOf('Interactions', module)
       <Chart className={'story-chart'}>
         <Settings onBrushEnd={action('onBrushEnd')} />
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'bottom'} showOverlappingTicks={true} />
-        <Axis
-          id={getAxisId('left')}
-          title={'left'}
-          position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
-        />
+        <Axis id={getAxisId('left')} title={'left'} position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
         <Axis id={getAxisId('top')} position={Position.Top} title={'top'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('right')}
           title={'right'}
           position={Position.Right}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
 
         <BarSeries
@@ -472,12 +462,7 @@ storiesOf('Interactions', module)
           showOverlappingTicks={true}
           tickFormat={formatter}
         />
-        <Axis
-          id={getAxisId('left')}
-          title={'left'}
-          position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
-        />
+        <Axis id={getAxisId('left')} title={'left'} position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
         <BarSeries
           id={getSpecId('bars')}
@@ -603,7 +588,7 @@ storiesOf('Interactions', module)
             id={getAxisId('left2')}
             title={'Left axis'}
             position={Position.Left}
-            tickFormat={(d: any) => Number(d).toFixed(2)}
+            tickFormat={(d) => Number(d).toFixed(2)}
           />
 
           <BarSeries
@@ -633,7 +618,7 @@ storiesOf('Interactions', module)
             id={getAxisId('left2')}
             title={'Left axis'}
             position={Position.Left}
-            tickFormat={(d: any) => Number(d).toFixed(2)}
+            tickFormat={(d) => Number(d).toFixed(2)}
           />
 
           <BarSeries

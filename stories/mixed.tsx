@@ -26,7 +26,7 @@ storiesOf('Mixed Charts', module)
           id={getAxisId('left2')}
           title={'Left axis'}
           position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
 
         <BarSeries
@@ -57,7 +57,7 @@ storiesOf('Mixed Charts', module)
           id={getAxisId('left2')}
           title={'Left axis'}
           position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
 
         <AreaSeries
@@ -89,14 +89,14 @@ storiesOf('Mixed Charts', module)
           id={getAxisId('left2')}
           title={'Left axis'}
           position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
         <Axis id={getAxisId('top')} position={Position.Top} title={'Top axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('right')}
           title={'Right axis'}
           position={Position.Right}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
         <BarSeries
           id={getSpecId('bars')}
@@ -134,7 +134,7 @@ storiesOf('Mixed Charts', module)
           id={getAxisId('left2')}
           title={'Left axis'}
           position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
 
         <BarSeries
@@ -196,7 +196,7 @@ storiesOf('Mixed Charts', module)
           id={getAxisId('left2')}
           title={'Left axis'}
           position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
+          tickFormat={(d) => Number(d).toFixed(2)}
         />
 
         <BarSeries

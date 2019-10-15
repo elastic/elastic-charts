@@ -1,26 +1,12 @@
 import React, { Fragment } from 'react';
-import { Axis, Chart, getAxisId, getSpecId, Position, ScaleType, Settings, DataGenerator, BarSeries } from '../src';
+import { Axis, Chart, getAxisId, getSpecId, Position, ScaleType, BarSeries } from '../src';
 
-const dg = new DataGenerator();
 export class Playground extends React.Component {
-  state = {
-    legendPosition: Position.Right,
-    names: 1,
-    data: dg.generateSimpleSeries(),
-  };
-  switchLegend = () => {
-    this.setState({
-      legendPosition: [Position.Right, Position.Left, Position.Top, Position.Bottom][Math.floor(Math.random() * 4)],
-      // names: Math.floor(Math.random() * 1000 * Math.random()),
-      data: dg.generateSimpleSeries(),
-    });
-  };
   render() {
     const { data } = KIBANA_METRICS.metrics.kibana_os_load[0];
     return (
       <Fragment>
         <div className="chart">
-          <button onClick={this.switchLegend}>Switch legend</button>
           <Chart>
             <Settings debug showLegend legendPosition={this.state.legendPosition} />
             <Axis

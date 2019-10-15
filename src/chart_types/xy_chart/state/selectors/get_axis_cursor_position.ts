@@ -1,7 +1,7 @@
-import { Dimensions } from 'utils/dimensions';
+import { Dimensions } from '../../../../utils/dimensions';
 import createCachedSelector from 're-reselect';
 import { computeCursorPositionSelector } from './compute_cursor_position';
-import { Point } from 'utils/point';
+import { Point } from '../../../../utils/point';
 import { getValidXPosition, getValidYPosition } from '../../utils/interactions';
 import { SettingsSpec } from '../../../../specs/settings';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';

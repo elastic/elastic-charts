@@ -1,4 +1,4 @@
 module.exports = {
-  PORT: '9001',
+  PORT: '9009',
   HOST: 'host.docker.internal',
 };

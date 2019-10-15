@@ -1,6 +1,6 @@
 import React from 'react';
 import { isLineAnnotation, AnnotationSpec } from '../../utils/specs';
-import { AnnotationId } from 'utils/ids';
+import { AnnotationId } from '../../../../utils/ids';
 import {
   AnnotationDimensions,
   AnnotationTooltipState,

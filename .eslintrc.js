@@ -1,18 +1,19 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
-  plugins: ['import', 'react', '@typescript-eslint', 'prettier'],
+  plugins: ['@typescript-eslint'],
   extends: [
     'plugin:@typescript-eslint/recommended',
     'prettier/@typescript-eslint',
     'plugin:prettier/recommended',
     'plugin:react/recommended',
   ],
+  plugins: ['import', 'jest'],
 
   env: {
     es6: true,
     node: true,
+    mocha: true,
     browser: true,
-    jest: true,
   },
 
   parserOptions: {
@@ -69,7 +70,6 @@ module.exports = {
     'import/resolver': {
       node: {
         extensions: ['.mjs', '.js', '.json', '.ts', '.tsx'],
-        moduleDirectory: [ 'node_modules','src' ]
       },
     },
     react: {
