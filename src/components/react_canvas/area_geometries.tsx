@@ -1,6 +1,7 @@
-import { Group as KonvaGroup, ContainerConfig } from 'konva';
 import React from 'react';
+import { Group as KonvaGroup, PathConfig } from 'konva';
 import { Circle, Group, Path } from 'react-konva';
+
 import { LegendItem } from '../../chart_types/xy_chart/legend/legend';
 import {
   AreaGeometry,
@@ -16,6 +17,8 @@ import {
   buildPointRenderProps,
   PointStyleProps,
   buildLineRenderProps,
+  Clippings,
+  clipRanges,
 } from './utils/rendering_props_utils';
 import { mergePartial } from '../../utils/commons';
 
@@ -24,7 +27,7 @@ interface AreaGeometriesDataProps {
   areas: AreaGeometry[];
   sharedStyle: SharedGeometryStyle;
   highlightedLegendItem: LegendItem | null;
-  clippings: ContainerConfig;
+  clippings: Clippings;
 }
 interface AreaGeometriesDataState {
   overPoint?: PointGeometry;
@@ -70,15 +73,29 @@ export class AreaGeometries extends React.PureComponent<AreaGeometriesDataProps,
     glyph: AreaGeometry,
     sharedStyle: SharedGeometryStyle,
     highlightedLegendItem: LegendItem | null,
-    clippings: ContainerConfig,
+    clippings: Clippings,
   ): JSX.Element => {
-    const { area, color, transform, geometryId, seriesAreaStyle } = glyph;
+    const { area, color, transform, geometryId, seriesAreaStyle, clippedRanges } = glyph;
     const geometryStyle = getGeometryStyle(geometryId, highlightedLegendItem, sharedStyle);
     const key = getGeometryIdKey(geometryId, 'area-');
     const areaProps = buildAreaRenderProps(transform.x, area, color, seriesAreaStyle, geometryStyle);
+
+    if (clippedRanges === null) {
+      return (
+        <Group {...clippings} key={key}>
+          <Path {...areaProps} />
+        </Group>
+      );
+    }
+
     return (
       <Group {...clippings} key={key}>
-        <Path {...areaProps} />
+        <Group clipFunc={clipRanges(clippedRanges, clippings)}>
+          <Path {...areaProps} />
+        </Group>
+        <Group clipFunc={clipRanges(clippedRanges, clippings, true)}>
+          <Path {...areaProps} opacity={areaProps.opacity ? Number(areaProps.opacity) / 2 : 0.5} />
+        </Group>
       </Group>
     );
   };
@@ -87,19 +104,39 @@ export class AreaGeometries extends React.PureComponent<AreaGeometriesDataProps,
     areaIndex: number,
     sharedStyle: SharedGeometryStyle,
     highlightedLegendItem: LegendItem | null,
-    clippings: ContainerConfig,
+    clippings: Clippings,
   ): JSX.Element => {
-    const { lines, color, geometryId, transform, seriesAreaLineStyle } = glyph;
+    const { lines, color, geometryId, transform, seriesAreaLineStyle, clippedRanges } = glyph;
     const geometryStyle = getGeometryStyle(geometryId, highlightedLegendItem, sharedStyle);
     const groupKey = getGeometryIdKey(geometryId, `area-line-${areaIndex}`);
-    const linesElements = lines.map<JSX.Element>((linePath, lineIndex) => {
+    const linesElementProps = lines.map<{ key: string; props: PathConfig }>((linePath, lineIndex) => {
       const key = getGeometryIdKey(geometryId, `area-line-${areaIndex}-${lineIndex}`);
-      const lineProps = buildLineRenderProps(transform.x, linePath, color, seriesAreaLineStyle, geometryStyle);
-      return <Path {...lineProps} key={key} />;
+      const props = buildLineRenderProps(transform.x, linePath, color, seriesAreaLineStyle, geometryStyle);
+      return { key, props };
     });
+
+    if (clippedRanges === null) {
+      return (
+        <Group {...clippings} key={groupKey}>
+          {linesElementProps.map(({ key, props }) => (
+            <Path {...props} key={key} />
+          ))}
+        </Group>
+      );
+    }
+
     return (
       <Group {...clippings} key={groupKey}>
-        {...linesElements}
+        <Group clipFunc={clipRanges(clippedRanges, clippings)}>
+          {linesElementProps.map(({ key, props }) => (
+            <Path {...props} key={key} />
+          ))}
+        </Group>
+        <Group clipFunc={clipRanges(clippedRanges, clippings, true)}>
+          {linesElementProps.map(({ key, props }) => (
+            <Path {...props} key={key} dash={[5, 5]} dashEnabled />
+          ))}
+        </Group>
       </Group>
     );
   };

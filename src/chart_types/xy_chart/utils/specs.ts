@@ -292,18 +292,20 @@ export type HistogramBarSeriesSpec = Omit<BarSeriesSpec, 'stackAccessors'> & {
   enableHistogramMode: true;
 };
 
-export type FitConfig =
-  | Exclude<Fit, 'explicit'>
-  | {
-      /**
-       * Fit type for data with null values
-       */
-      type: Fit;
-      /**
-       * Fit value used when `type` is set to `Fit.Explicit`
-       */
-      value?: number | null;
-    };
+export type FitConfig = {
+  /**
+   * Fit type for data with null values
+   */
+  type: Fit;
+  /**
+   * Fit value used when `type` is set to `Fit.Explicit`
+   */
+  value?: number;
+  /**
+   * Value used for first and last point if fitting is not possible
+   */
+  endValue?: number;
+};
 
 /**
  * This spec describe the dataset configuration used to display a line series.
@@ -318,7 +320,7 @@ export type LineSeriesSpec = BasicSeriesSpec &
      * An optional functional accessor to return custom color or style for point datum
      */
     pointStyleAccessor?: PointStyleAccessor;
-    fit?: FitConfig;
+    fit?: Exclude<Fit, 'explicit'> | FitConfig;
   };
 
 /**
@@ -340,7 +342,7 @@ export type AreaSeriesSpec = BasicSeriesSpec &
      * An optional functional accessor to return custom color or style for point datum
      */
     pointStyleAccessor?: PointStyleAccessor;
-    fit?: FitConfig;
+    fit?: Exclude<Fit, 'explicit'> | FitConfig;
   };
 
 interface HistogramConfig {

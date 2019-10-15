@@ -36,6 +36,7 @@ import {
   LineSeriesSpec,
   Rotation,
   isBandedSpec,
+  Fit,
 } from '../utils/specs';
 import { ColorConfig, Theme } from '../../../utils/themes/theme';
 import { identity, mergePartial } from '../../../utils/commons';
@@ -525,6 +526,7 @@ export function renderGeometries(
         areaSeriesStyle,
         isStacked,
         spec.pointStyleAccessor,
+        Boolean(spec.fit && spec.fit !== Fit.None),
       );
       areaGeometriesIndex = mergeGeometriesIndexes(areaGeometriesIndex, renderedAreas.indexedGeometries);
       areas.push(renderedAreas.areaGeometry);

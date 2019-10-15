@@ -18,7 +18,7 @@ import { CurveType, getCurveFactory } from '../../../utils/curves';
 import { LegendItem } from '../legend/legend';
 import { DataSeriesDatum } from '../utils/series';
 import { belongsToDataSeries } from '../utils/series_utils';
-import { DisplayValueSpec, BarStyleAccessor, PointStyleAccessor } from '../utils/specs';
+import { DisplayValueSpec, BarStyleAccessor, PointStyleAccessor, Fit } from '../utils/specs';
 import { mergePartial } from '../../../utils/commons';
 
 export interface GeometryId {
@@ -53,6 +53,13 @@ export interface GeometryStyle {
 }
 
 export type IndexedGeometry = PointGeometry | BarGeometry;
+
+/**
+ * Array of **range** clippings [x1, x2] to be excluded during rendering
+ *
+ * Note: Must be scaled **range** values NOT domain
+ */
+export type ClippedRanges = [number, number][];
 
 export interface PointGeometry {
   x: number;
@@ -110,6 +117,7 @@ export interface AreaGeometry {
   seriesAreaLineStyle: LineStyle;
   seriesPointStyle: PointStyle;
   isStacked: boolean;
+  clippedRanges: ClippedRanges | null;
 }
 
 export function isPointGeometry(ig: IndexedGeometry): ig is PointGeometry {
@@ -487,12 +495,12 @@ export function renderArea(
   seriesStyle: AreaSeriesStyle,
   isStacked = false,
   pointStyleAccessor?: PointStyleAccessor,
+  hasFit?: boolean,
 ): {
   areaGeometry: AreaGeometry;
   indexedGeometries: Map<any, IndexedGeometry[]>;
 } {
   const isLogScale = isLogarithmicScale(yScale);
-
   const pathGenerator = area<DataSeriesDatum>()
     .x(({ x }) => xScale.scale(x) - xScaleOffset)
     .y1((datum) => {
@@ -515,8 +523,8 @@ export function renderArea(
     })
     .curve(getCurveFactory(curve));
 
+  const clippedRanges = hasFit ? getClippedRanges(dataset, xScale, xScaleOffset) : null;
   const y1Line = pathGenerator.lineY1()(dataset);
-
   const lines: string[] = [];
   if (y1Line) {
     lines.push(y1Line);
@@ -540,7 +548,7 @@ export function renderArea(
     pointStyleAccessor,
   );
 
-  const areaGeometry = {
+  const areaGeometry: AreaGeometry = {
     area: pathGenerator(dataset) || '',
     lines,
     points: pointGeometries,
@@ -557,11 +565,46 @@ export function renderArea(
     seriesAreaLineStyle: seriesStyle.line,
     seriesPointStyle: seriesStyle.point,
     isStacked,
+    clippedRanges,
   };
   return {
     areaGeometry,
     indexedGeometries,
   };
+}
+
+/**
+ * Gets clipped ranges that have been fitted to values
+ * @param dataset
+ * @param xScale
+ * @param xScaleOffset
+ */
+export function getClippedRanges(dataset: DataSeriesDatum[], xScale: Scale, xScaleOffset: number): ClippedRanges {
+  let firstNonNullX: number | null = null;
+  let hasNull = false;
+
+  return dataset.reduce<ClippedRanges>((acc, { x, y1 }) => {
+    const xValue = xScale.scale(x) - xScaleOffset;
+
+    if (y1 !== null) {
+      if (hasNull) {
+        if (firstNonNullX !== null) {
+          acc.push([firstNonNullX, xValue]);
+        } else {
+          acc.push([0, xValue]);
+        }
+        hasNull = false;
+      }
+
+      firstNonNullX = xValue;
+    } else {
+      if (xValue === xScale.range[1] && firstNonNullX !== null) {
+        acc.push([firstNonNullX, xValue]);
+      }
+      hasNull = true;
+    }
+    return acc;
+  }, []);
 }
 
 export function getGeometryStyle(

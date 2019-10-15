@@ -51,6 +51,10 @@ export interface DataSeries {
   key: any[];
   seriesColorKey: string;
   data: DataSeriesDatum[];
+  /**
+   * Ranges of [x0, x1] pairs to clip from series
+   */
+  clippedRanges?: DataSeriesDatum[];
 }
 export interface RawDataSeries {
   specId: SpecId;

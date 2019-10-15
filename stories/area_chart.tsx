@@ -317,14 +317,52 @@ storiesOf('Area Chart', module)
     );
   })
   .add('Fitting functions - non-stacked series', () => {
-    const data = [
-      { x: 0, y: 1 },
-      { x: 1, y: 2 },
-      { x: 2, y: null },
-      { x: 4, y: null },
-      { x: 5, y: 10 },
-      { x: 6, y: 15 },
-    ];
+    const dataTypes = {
+      isolated: [
+        { x: 0, y: 3 },
+        { x: 1, y: 5 },
+        { x: 2, y: null },
+        { x: 3, y: 4 },
+        { x: 4, y: null },
+        { x: 5, y: 5 },
+        { x: 6, y: null },
+        { x: 7, y: 12 },
+        { x: 8, y: null },
+        { x: 9, y: 10 },
+        { x: 10, y: 7 },
+      ],
+      successive: [
+        { x: 0, y: 3 },
+        { x: 1, y: 5 },
+        { x: 2, y: null },
+        { x: 4, y: null },
+        { x: 6, y: null },
+        { x: 8, y: null },
+        { x: 9, y: 10 },
+        { x: 10, y: 7 },
+      ],
+      endPoints: [
+        { x: 0, y: null },
+        { x: 1, y: 5 },
+        { x: 3, y: 4 },
+        { x: 5, y: 5 },
+        { x: 7, y: 12 },
+        { x: 9, y: 10 },
+        { x: 10, y: null },
+      ],
+    };
+
+    const dataKey = select<string>(
+      'dataset',
+      {
+        'Isolated Points': 'isolated',
+        'Successive null Points': 'successive',
+        'null end points': 'endPoints',
+      },
+      'isolated',
+    );
+    // @ts-ignore
+    const dataset = dataTypes[dataKey];
     const fit = select(
       'fitting function',
       {
@@ -338,6 +376,31 @@ storiesOf('Area Chart', module)
         Explicit: Fit.Explicit,
       },
       Fit.None,
+    );
+    const curve = select<CurveType>(
+      'Curve',
+      {
+        'Curve cardinal': CurveType.CURVE_CARDINAL,
+        'Curve natural': CurveType.CURVE_NATURAL,
+        'Curve monotone x': CurveType.CURVE_MONOTONE_X,
+        'Curve monotone y': CurveType.CURVE_MONOTONE_Y,
+        'Curve basis': CurveType.CURVE_BASIS,
+        'Curve catmull rom': CurveType.CURVE_CATMULL_ROM,
+        'Curve step': CurveType.CURVE_STEP,
+        'Curve step after': CurveType.CURVE_STEP_AFTER,
+        'Curve step before': CurveType.CURVE_STEP_BEFORE,
+        Linear: CurveType.LINEAR,
+      },
+      0,
+    );
+    const endValue = select<number | 'none'>(
+      'End value',
+      {
+        None: 'none',
+        '0': 0,
+        '5': 5,
+      },
+      'none',
     );
     const value = number('Explicit valuve (using Fit.Explicit)', 5);
 
@@ -360,11 +423,13 @@ storiesOf('Area Chart', module)
           yScaleType={ScaleType.Linear}
           xAccessor={'x'}
           yAccessors={['y']}
+          curve={curve}
           fit={{
             type: fit,
             value: fit === Fit.Explicit ? value : undefined,
+            endValue: endValue === 'none' ? undefined : endValue,
           }}
-          data={data}
+          data={dataset}
         />
       </Chart>
     );

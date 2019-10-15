@@ -20,6 +20,7 @@ function getValue(
   previous: FullDataSeriesDatum | null,
   next: FullDataSeriesDatum | null,
   type: BoundingFit,
+  endValue?: number,
 ): DataSeriesDatum {
   if (previous !== null && type === Fit.Carry) {
     return {
@@ -75,17 +76,53 @@ function getValue(
     }
   }
 
+  if (endValue === undefined) {
+    return current;
+  }
+
   // No mtching fit - should only fall here on end conditions
-  return current;
+  return {
+    ...current,
+    filled: {
+      y1: endValue,
+    },
+  };
+}
+
+function parseConfig(config: Exclude<Fit, 'explicit'> | FitConfig): FitConfig {
+  if (config === null) {
+    return {
+      type: Fit.None,
+    };
+  }
+
+  if (typeof config === 'string') {
+    return {
+      type: config,
+    };
+  }
+
+  if (config.type === Fit.Explicit && config.value === undefined) {
+    console.warn('Using explicit fit function requires a value');
+    return {
+      type: Fit.None,
+    };
+  }
+
+  return {
+    type: config.type,
+    value: config.type === Fit.Explicit ? config.value : undefined,
+    endValue: config.endValue,
+  };
 }
 
 export function fitFunction(
   dataSeries: DataSeries,
-  fit: FitConfig | null,
+  fitConfig: Exclude<Fit, 'explicit'> | FitConfig,
   xScaleType: ScaleType,
   sorted = false,
 ): DataSeries {
-  const type = (fit !== null && (typeof fit === 'string' ? fit : fit.type)) || Fit.None;
+  const { type, value, endValue } = parseConfig(fitConfig);
 
   if (type === Fit.None) {
     return dataSeries;
@@ -106,14 +143,7 @@ export function fitFunction(
   }
 
   if (type === Fit.Explicit) {
-    const value = typeof fit !== 'string' ? fit!.value : null;
-
     if (value === undefined) {
-      console.warn('Using explicit fit function requires a value');
-      return dataSeries;
-    }
-
-    if (value === null) {
       return dataSeries;
     }
 
@@ -153,13 +183,18 @@ export function fitFunction(
       }
     }
 
-    const newValue = current.y1 === null ? getValue(current, previousNonNullDatum, nextNonNullDatum, type) : current;
+    const newValue =
+      current.y1 === null ? getValue(current, previousNonNullDatum, nextNonNullDatum, type, endValue) : current;
 
     // TODO and end condition check to fill end values that are still null
     newData[i] = newValue;
 
     if (current.y1 !== null && current.x !== null) {
       previousNonNullDatum = current as FullDataSeriesDatum;
+    }
+
+    if (nextNonNullDatum !== null && nextNonNullDatum.x <= current.x) {
+      nextNonNullDatum = null;
     }
   }
 

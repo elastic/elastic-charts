@@ -1,4 +1,4 @@
-import { Group as KonvaGroup, ContainerConfig } from 'konva';
+import { Group as KonvaGroup } from 'konva';
 import React from 'react';
 import { Circle, Group, Path } from 'react-konva';
 import { LegendItem } from '../../chart_types/xy_chart/legend/legend';
@@ -14,6 +14,7 @@ import {
   buildPointStyleProps,
   PointStyleProps,
   buildPointRenderProps,
+  Clippings,
 } from './utils/rendering_props_utils';
 import { mergePartial } from '../../utils/commons';
 
@@ -22,7 +23,7 @@ interface LineGeometriesDataProps {
   lines: LineGeometry[];
   sharedStyle: SharedGeometryStyle;
   highlightedLegendItem: LegendItem | null;
-  clippings: ContainerConfig;
+  clippings: Clippings;
 }
 interface LineGeometriesDataState {
   overPoint?: PointGeometry;
