@@ -9,13 +9,12 @@ export interface SnappedPosition {
   band: number;
 }
 export interface TooltipPosition {
+  isHorizontalRotated: boolean;
   vPosition: {
-    isHorizontalRotated: boolean;
     bandHeight: number;
     bandTop: number;
   };
   hPosition: {
-    isHorizontalRotated: boolean;
     bandLeft: number;
     bandWidth: number;
   };
@@ -177,14 +176,9 @@ export function getTooltipPosition(
     isSingleValueXScale,
   );
   return {
-    vPosition: {
-      ...vPosition,
-      isHorizontalRotated,
-    },
-    hPosition: {
-      ...hPosition,
-      isHorizontalRotated,
-    },
+    isHorizontalRotated,
+    vPosition,
+    hPosition,
   };
 }
 
@@ -232,15 +226,15 @@ export function getVerticalTooltipPosition(
 }
 
 export function getFinalTooltipPosition(
-  chartContainerBBox: Dimensions,
-  tooltipBBox: Dimensions,
+  container: Dimensions,
+  tooltip: Dimensions,
   tooltipPosition: TooltipPosition,
   padding = 10,
 ): {
   left: string | null;
   top: string | null;
 } {
-  const { hPosition, vPosition } = tooltipPosition;
+  const { hPosition, vPosition, isHorizontalRotated } = tooltipPosition;
   const tooltipStyle: {
     left: string | null;
     top: string | null;
@@ -248,47 +242,38 @@ export function getFinalTooltipPosition(
     left: null,
     top: null,
   };
-  if (hPosition.isHorizontalRotated) {
-    if (hPosition.bandLeft + hPosition.bandWidth + tooltipBBox.width + padding > chartContainerBBox.width) {
-      const left =
-        window.scrollX + chartContainerBBox.left + tooltipPosition.hPosition.bandLeft - tooltipBBox.width - padding;
+  if (isHorizontalRotated) {
+    const leftOfBand = window.scrollX + container.left + hPosition.bandLeft;
+    if (hPosition.bandLeft + hPosition.bandWidth + tooltip.width + padding > container.width) {
+      const left = leftOfBand - tooltip.width - padding;
       tooltipStyle.left = `${left}px`;
     } else {
-      const left =
-        window.scrollX +
-        chartContainerBBox.left +
-        tooltipPosition.hPosition.bandLeft +
-        tooltipPosition.hPosition.bandWidth +
-        padding;
+      const left = leftOfBand + hPosition.bandWidth + padding;
       tooltipStyle.left = `${left}px`;
     }
-  } else {
-    if (hPosition.bandLeft + hPosition.bandWidth + tooltipBBox.width > chartContainerBBox.width) {
-      const left = window.scrollX + chartContainerBBox.left + chartContainerBBox.width - tooltipBBox.width;
-      tooltipStyle.left = `${left}px`;
-    } else {
-      const left =
-        window.scrollX +
-        chartContainerBBox.left +
-        tooltipPosition.hPosition.bandLeft +
-        tooltipPosition.hPosition.bandWidth;
-      tooltipStyle.left = `${left}px`;
-    }
-  }
-  if (hPosition.isHorizontalRotated) {
-    if (vPosition.bandTop + tooltipBBox.height > chartContainerBBox.height) {
-      const top = window.scrollY + chartContainerBBox.top + chartContainerBBox.height - tooltipBBox.height;
+    const topOfBand = window.scrollY + container.top;
+    if (vPosition.bandTop + tooltip.height > container.height) {
+      const top = topOfBand + container.height - tooltip.height;
       tooltipStyle.top = `${top}px`;
     } else {
-      const top = window.scrollY + chartContainerBBox.top + vPosition.bandTop;
+      const top = topOfBand + vPosition.bandTop;
       tooltipStyle.top = `${top}px`;
     }
   } else {
-    if (vPosition.bandTop + vPosition.bandHeight + tooltipBBox.height + padding > chartContainerBBox.height) {
-      const top = window.scrollY + chartContainerBBox.top + vPosition.bandTop - tooltipBBox.height - padding;
+    const leftOfBand = window.scrollX + container.left;
+    if (hPosition.bandLeft + hPosition.bandWidth + tooltip.width > container.width) {
+      const left = leftOfBand + container.width - tooltip.width;
+      tooltipStyle.left = `${left}px`;
+    } else {
+      const left = leftOfBand + hPosition.bandLeft + hPosition.bandWidth;
+      tooltipStyle.left = `${left}px`;
+    }
+    const topOfBand = window.scrollY + container.top + vPosition.bandTop;
+    if (vPosition.bandTop + vPosition.bandHeight + tooltip.height + padding > container.height) {
+      const top = topOfBand - tooltip.height - padding;
       tooltipStyle.top = `${top}px`;
     } else {
-      const top = window.scrollY + chartContainerBBox.top + vPosition.bandTop + vPosition.bandHeight + padding;
+      const top = topOfBand + vPosition.bandHeight + padding;
       tooltipStyle.top = `${top}px`;
     }
   }

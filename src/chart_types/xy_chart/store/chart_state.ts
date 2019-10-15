@@ -223,13 +223,12 @@ export class ChartStore {
   tooltipType = observable.box<TooltipType>(DEFAULT_TOOLTIP_TYPE);
   tooltipSnap = observable.box<boolean>(DEFAULT_TOOLTIP_SNAP);
   tooltipPosition = observable.object<TooltipPosition>({
+    isHorizontalRotated: true,
     vPosition: {
-      isHorizontalRotated: true,
       bandTop: 0,
       bandHeight: 0,
     },
     hPosition: {
-      isHorizontalRotated: true,
       bandLeft: 0,
       bandWidth: 0,
     },
