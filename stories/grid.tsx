@@ -102,7 +102,7 @@ storiesOf('Grids', module)
           id={getAxisId('left1')}
           position={Position.Left}
           title={'Left axis 1'}
-          tickFormat={integersOnlyLeft ? (d: any) => Number(d).toFixed(0) : (d: any) => Number(d).toFixed(2)}
+          tickFormat={integersOnlyLeft ? (d) => Number(d).toFixed(0) : (d) => Number(d).toFixed(2)}
           showGridLines={boolean('show left axis grid lines', false, 'left axis')}
           gridLineStyle={toggleHorizontalAxisGridLineStyle ? leftAxisGridLineConfig : undefined}
           integersOnly={integersOnlyLeft}
@@ -120,7 +120,7 @@ storiesOf('Grids', module)
           id={getAxisId('right')}
           title={'Right axis'}
           position={Position.Right}
-          tickFormat={integersOnlyRight ? (d: any) => Number(d).toFixed(0) : (d: any) => Number(d).toFixed(2)}
+          tickFormat={integersOnlyRight ? (d) => Number(d).toFixed(0) : (d) => Number(d).toFixed(2)}
           showGridLines={boolean('show right axis grid lines', false, 'right axis')}
           gridLineStyle={rightAxisGridLineConfig}
           integersOnly={integersOnlyRight}

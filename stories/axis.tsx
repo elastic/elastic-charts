@@ -472,7 +472,7 @@ storiesOf('Axis', module)
       max: number('right1 max', 10),
     };
 
-    const xDomain = array('xDomain', ['a', 'b', 'c', 'd', '0', '1', '2', '3']);
+    const xDomain = array('xDomain', ['a', 'b', 'c', 'd', 0, 1, 2, 3]);
 
     return (
       <Chart className={'story-chart'}>
