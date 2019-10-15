@@ -148,36 +148,6 @@ class Chart extends React.Component<Props> {
     ];
   };
 
-  // getAxes = (): AxisProps[] => {
-  //   const { axesVisibleTicks, axesSpecs, axesTicksDimensions, axesPositions } = this.props.chartStore!;
-  //   const ids = [...axesVisibleTicks.keys()];
-
-  //   return ids
-  //     .map((id) => ({
-  //       key: `axis-${id}`,
-  //       ticks: axesVisibleTicks.get(id),
-  //       axisSpec: axesSpecs.get(id),
-  //       axisTicksDimensions: axesTicksDimensions.get(id),
-  //       axisPosition: axesPositions.get(id),
-  //     }))
-  //     .filter(
-  //       (config: Partial<AxisProps>): config is AxisProps => {
-  //         const { ticks, axisSpec, axisTicksDimensions, axisPosition } = config;
-
-  //         return Boolean(ticks && axisSpec && axisTicksDimensions && axisPosition);
-  //       },
-  //     );
-  // };
-
-  // renderAxes = (): JSX.Element[] => {
-  //   const { chartTheme, debug, chartDimensions } = this.props.chartStore!;
-  //   const axes = this.getAxes();
-
-  //   return axes.map(({ key, ...axisProps }) => (
-  //     <Axis {...axisProps} key={key} chartTheme={chartTheme} debug={debug} chartDimensions={chartDimensions} />
-  //   ));
-  // };
-
   renderAnnotations = (): ReactiveChartElementIndex[] => {
     const { annotationDimensions, annotationSpecs } = this.props;
     const annotationElements: ReactiveChartElementIndex[] = [];
@@ -223,10 +193,10 @@ class Chart extends React.Component<Props> {
   sortAndRenderElements() {
     const { chartDimensions, chartRotation } = this.props;
     const clippings = {
-      clipX: -1,
-      clipY: -1,
-      clipWidth: ([90, -90].includes(chartRotation) ? chartDimensions.height : chartDimensions.width) + 1,
-      clipHeight: ([90, -90].includes(chartRotation) ? chartDimensions.width : chartDimensions.height) + 1,
+      clipX: 0,
+      clipY: 0,
+      clipWidth: [90, -90].includes(chartRotation) ? chartDimensions.height : chartDimensions.width,
+      clipHeight: [90, -90].includes(chartRotation) ? chartDimensions.width : chartDimensions.height,
     };
 
     const bars = this.renderBarSeries(clippings);

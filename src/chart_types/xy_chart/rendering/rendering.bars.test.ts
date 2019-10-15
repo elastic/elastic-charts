@@ -494,6 +494,47 @@ describe('Rendering bars', () => {
       });
     });
   });
+  describe('Single series bar chart - log', () => {
+    const barSeriesSpec: BarSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
+      id: SPEC_ID,
+      groupId: GROUP_ID,
+      seriesType: 'bar',
+      yScaleToDataExtent: false,
+      data: [[1, 0], [2, 1], [3, 2], [4, 3], [5, 4], [6, 5]],
+      xAccessor: 0,
+      yAccessors: [1],
+      xScaleType: ScaleType.Linear,
+      yScaleType: ScaleType.Log,
+    };
+    const barSeriesMap = [barSeriesSpec];
+    const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
+    const xScale = computeXScale({
+      xDomain: barSeriesDomains.xDomain,
+      totalBarsInCluster: barSeriesMap.length,
+      range: [0, 100],
+    });
+    const yScales = computeYScales({ yDomains: barSeriesDomains.yDomain, range: [100, 0] });
+
+    test('Can render correct bar height', () => {
+      const { barGeometries } = renderBars(
+        0,
+        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0].data,
+        xScale,
+        yScales.get(GROUP_ID)!,
+        'red',
+        SPEC_ID,
+        [],
+        LIGHT_THEME.barSeriesStyle,
+      );
+      expect(barGeometries.length).toBe(6);
+      expect(barGeometries[0].height).toBe(0);
+      expect(barGeometries[1].height).toBe(0);
+      expect(barGeometries[2].height).toBeGreaterThan(0);
+      expect(barGeometries[3].height).toBeGreaterThan(0);
+    });
+  });
   describe('Multi series bar chart - linear', () => {
     const spec1Id = 'bar1';
     const spec2Id = 'bar2';
