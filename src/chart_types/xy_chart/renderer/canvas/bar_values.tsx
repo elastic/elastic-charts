@@ -12,6 +12,7 @@ import { computeChartDimensionsSelector } from '../../state/selectors/compute_ch
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { computeSeriesGeometriesSelector } from '../../state/selectors/compute_series_geometries';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 
 interface BarValuesProps {
   theme: Theme;
@@ -95,7 +96,7 @@ const mapStateToProps = (state: GlobalChartState): BarValuesProps => {
     theme: getChartThemeSelector(state),
     chartDimensions: computeChartDimensionsSelector(state).chartDimensions,
     chartRotation: getChartRotationSelector(state),
-    debug: state.settings.debug,
+    debug: getSettingsSpecSelector(state).debug,
     bars: geometries.geometries.bars,
   };
 };

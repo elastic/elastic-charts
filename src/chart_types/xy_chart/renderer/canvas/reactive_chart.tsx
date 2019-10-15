@@ -28,7 +28,7 @@ import { isInitialized } from '../../../../state/selectors/is_initialized';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getChartDimensionsSelector } from '../../../../state/selectors/get_chart_dimensions';
-import { GetCustomChartComponent, GlobalSettings, GlobalChartState } from '../../../../state/chart_state';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { Dimensions } from '../../../../utils/dimensions';
 import { AnnotationId } from '../../../../utils/ids';
 import { Theme, mergeWithDefaultAnnotationLine, mergeWithDefaultAnnotationRect } from '../../../../utils/themes/theme';
@@ -36,6 +36,7 @@ import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { computeSeriesGeometriesSelector } from '../../state/selectors/compute_series_geometries';
 import { PointGeometry, BarGeometry, AreaGeometry, LineGeometry } from '../../../../utils/geometry';
 import { LegendItem } from '../../../../chart_types/xy_chart/legend/legend';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 
 interface Props {
   initialized: boolean;
@@ -45,7 +46,8 @@ interface Props {
     areas?: AreaGeometry[];
     lines?: LineGeometry[];
   };
-  globalSettings: GlobalSettings;
+  debug: boolean;
+  parentDimensions: Dimensions;
   chartRotation: Rotation;
   chartDimensions: Dimensions;
   chartTransform: Transform;
@@ -56,7 +58,6 @@ interface Props {
   annotationSpecs: AnnotationSpec[];
   isBrushAvailable: boolean;
   highlightedLegendItem?: LegendItem;
-  getCustomChartComponents?: GetCustomChartComponent;
   onChartRendered: typeof onChartRendered;
 }
 export interface ReactiveChartElementIndex {
@@ -238,11 +239,10 @@ class Chart extends React.Component<Props> {
   }
 
   render() {
-    const { initialized, globalSettings, chartRotation, chartDimensions, isChartEmpty } = this.props;
+    const { initialized, chartRotation, chartDimensions, isChartEmpty, debug, parentDimensions } = this.props;
     if (!initialized || chartDimensions.width === 0 || chartDimensions.height === 0) {
       return null;
     }
-    const { debug, parentDimensions } = globalSettings;
     const { chartTransform } = this.props;
 
     if (isChartEmpty) {
@@ -327,14 +327,12 @@ const DEFAULT_PROPS: Props = {
   initialized: false,
   theme: LIGHT_THEME,
   geometries: {},
-  globalSettings: {
-    debug: false,
-    parentDimensions: {
-      width: 0,
-      height: 0,
-      left: 0,
-      top: 0,
-    },
+  debug: false,
+  parentDimensions: {
+    width: 0,
+    height: 0,
+    left: 0,
+    top: 0,
   },
   chartRotation: 0 as 0,
   chartDimensions: {
@@ -365,7 +363,8 @@ const mapStateToProps = (state: GlobalChartState) => {
     initialized: true,
     theme: getChartThemeSelector(state),
     geometries: computeSeriesGeometriesSelector(state).geometries,
-    globalSettings: state.settings,
+    parentDimensions: state.settings.parentDimensions,
+    debug: getSettingsSpecSelector(state).debug,
     chartRotation: getChartRotationSelector(state),
     chartDimensions: getChartDimensionsSelector(state),
     chartTransform: computeChartTransformSelector(state),
