@@ -2,8 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Layer, Stage } from 'react-konva';
 import { ArcGeometries } from './arc_geometries';
-import { GlobalChartState, GlobalSettings } from '../../../../state/chart_state';
-import { getChartDimensionsSelector } from '../../../../state/selectors/get_chart_dimensions';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { Dimensions } from '../../../../utils/dimensions';
 import { isInitialized } from '../../../../state/selectors/is_initialized';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
@@ -18,7 +17,7 @@ import { LegendItem } from '../../../../chart_types/xy_chart/legend/legend';
 interface Props {
   initialized: boolean;
   geometries: { arcs?: ArcGeometry[] };
-  globalSettings: GlobalSettings;
+  parentDimensions: Dimensions;
   chartRotation: Rotation;
   chartDimensions: Dimensions;
   theme: Theme;
@@ -38,7 +37,7 @@ class Chart extends React.Component<Props> {
   render() {
     const {
       initialized,
-      globalSettings: { parentDimensions },
+      parentDimensions,
       chartRotation,
       chartDimensions,
       isChartEmpty,
@@ -95,9 +94,9 @@ const mapStateToProps = (state: GlobalChartState) => {
       initialized: false,
       theme: LIGHT_THEME,
       geometries: {},
-      globalSettings: state.settings,
+      parentDimensions: state.parentDimensions,
       chartRotation: 0 as 0,
-      chartDimensions: getChartDimensionsSelector(state),
+      chartDimensions: state.parentDimensions,
       isChartAnimatable: false,
       isChartEmpty: true,
       highlightedLegendItem: undefined,
@@ -107,9 +106,9 @@ const mapStateToProps = (state: GlobalChartState) => {
     initialized: state.initialized,
     theme: getChartThemeSelector(state),
     geometries: computeGeometriesSelector(state),
-    globalSettings: state.settings,
+    parentDimensions: state.parentDimensions,
     chartRotation: getChartRotationSelector(state),
-    chartDimensions: getChartDimensionsSelector(state),
+    chartDimensions: state.parentDimensions,
     isChartAnimatable: false,
     isChartEmpty: false,
   };

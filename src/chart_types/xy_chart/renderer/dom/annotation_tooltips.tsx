@@ -10,12 +10,12 @@ import { connect } from 'react-redux';
 import { Dimensions } from '../../../../utils/dimensions';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { isInitialized } from '../../../../state/selectors/is_initialized';
-import { getChartDimensionsSelector } from '../../../../state/selectors/get_chart_dimensions';
 import { computeAnnotationDimensionsSelector } from '../../state/selectors/compute_annotations';
 import { getAnnotationSpecsSelector } from '../../state/selectors/get_specs';
 import { getAnnotationTooltipStateSelector } from '../../state/selectors/get_annotation_tooltip_state';
 import { isChartEmptySelector } from '../../state/selectors/is_chart_empty';
-import { AnnotationLineProps } from 'chart_types/xy_chart/annotations/line_annotation_tooltip';
+import { AnnotationLineProps } from '../../annotations/line_annotation_tooltip';
+import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
 
 interface AnnotationTooltipProps {
   isChartEmpty: boolean;
@@ -177,7 +177,7 @@ const mapStateToProps = (state: GlobalChartState): AnnotationTooltipProps => {
   }
   return {
     isChartEmpty: isChartEmptySelector(state),
-    chartDimensions: getChartDimensionsSelector(state),
+    chartDimensions: computeChartDimensionsSelector(state).chartDimensions,
     annotationDimensions: computeAnnotationDimensionsSelector(state),
     annotationSpecs: getAnnotationSpecsSelector(state),
     tooltipState: getAnnotationTooltipStateSelector(state),

@@ -15,22 +15,27 @@ import { ON_LEGEND_RENDERED } from './actions/legend';
 import { CHART_RENDERED } from './actions/chart';
 import { UPDATE_PARENT_DIMENSION } from './actions/chart_settings';
 
+/**
+ * A set of chart-type-dependant functions that are required and called
+ * globally by the <ChartContainer> and
+ */
 export interface InternalChartState {
+  // the chart type
   chartType: ChartType;
+  // returns a JSX element with the chart rendered (lenged excluded)
   chartRenderer(globalState: GlobalChartState): JSX.Element | null;
-  getChartDimensions(globalState: GlobalChartState): Dimensions;
+  // true if the brush is available for this chart type
   isBrushAvailable(globalState: GlobalChartState): boolean;
+  // true if the chart is empty (no data displayed)
   isChartEmpty(globalState: GlobalChartState): boolean;
+  // return the list of legend items
   getLegendItems(globalState: GlobalChartState): Map<string, LegendItem>;
+  // return the list of values for each legend item
   getLegendItemsValues(globalState: GlobalChartState): Map<string, TooltipLegendValue>;
 }
 
 export interface SpecList {
   [specId: string]: Spec;
-}
-export interface GlobalSettings {
-  debug: boolean;
-  parentDimensions: Dimensions;
 }
 export interface PointerState {
   down: {
@@ -53,15 +58,25 @@ export interface InteractionsState {
 }
 
 export interface GlobalChartState {
+  // an unique ID for each chart used by re-reselect to memoize selector per chart
   chartId: string;
+  // true when all all the specs are parsed ad stored into the specs object
   initialized: boolean;
+  // true when the legend is rendered
   legendRendered: boolean;
+  // true when the chart is rendered
   chartRendered: boolean;
+  // incremental count of the number of rendering of the chart
   chartRenderedCount: number;
+  // the map of parsed specs
   specs: SpecList;
+  // the chart type depending on the used specs
   chartType: ChartType | null;
+  // a chart-type-dependant class that is used to render and share chart-type dependant functions
   internalChartState: InternalChartState | null;
-  settings: GlobalSettings;
+  // the dimensions of the parent container
+  parentDimensions: Dimensions;
+  // the state of the interactions
   interactions: InteractionsState;
 }
 
@@ -92,14 +107,11 @@ const getInitialState = (chartId: string): GlobalChartState => ({
     deselectedDataSeries: [],
     invertDeselect: false,
   },
-  settings: {
-    debug: false,
-    parentDimensions: {
-      height: 0,
-      width: 0,
-      left: 0,
-      top: 0,
-    },
+  parentDimensions: {
+    height: 0,
+    width: 0,
+    left: 0,
+    top: 0,
   },
 });
 
@@ -137,10 +149,7 @@ export const chartStoreReducer = (chartId: string) => {
         return {
           ...state,
           legendRendered: true,
-          settings: {
-            ...state.settings,
-            parentDimensions: action.containerDimensions || state.settings.parentDimensions,
-          },
+          parentDimensions: action.containerDimensions || state.parentDimensions,
         };
       case SPEC_UNMOUNTED:
         return {
@@ -180,10 +189,7 @@ export const chartStoreReducer = (chartId: string) => {
       case UPDATE_PARENT_DIMENSION:
         return {
           ...state,
-          settings: {
-            ...state.settings,
-            parentDimensions: action.dimensions,
-          },
+          parentDimensions: action.dimensions,
         };
       default:
         return {
@@ -215,7 +221,6 @@ function findMainChartType(specs: SpecList) {
 }
 
 function initInternalChartState(chartType: ChartType | null): InternalChartState | null {
-  // console.log(`initializing ${chartType}`);
   switch (chartType) {
     case 'pie':
       return new PieChartState();

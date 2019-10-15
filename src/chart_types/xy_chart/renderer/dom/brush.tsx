@@ -1,7 +1,6 @@
 import React from 'react';
 import { Layer, Rect, Stage } from 'react-konva';
 import { connect } from 'react-redux';
-import { getChartDimensionsSelector } from '../../../../state/selectors/get_chart_dimensions';
 import { Dimensions } from '../../../../utils/dimensions';
 import { isInitialized } from '../../../../state/selectors/is_initialized';
 import { computeChartTransformSelector } from '../../state/selectors/compute_chart_transform';
@@ -11,6 +10,7 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { getBrushAreaSelector } from '../../state/selectors/get_brush_area';
 import { isBrushAvailableSelector } from '../../state/selectors/is_brush_available';
 import { isBrushingEnabledSelector } from '../../state/selectors/is_brushing_enabled';
+import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
 
 interface Props {
   initialized: boolean;
@@ -81,7 +81,7 @@ const mapStateToProps = (state: GlobalChartState) => {
     initialized: state.initialized,
     brushArea: getBrushAreaSelector(state),
     isBrushAvailable: isBrushAvailableSelector(state),
-    chartDimensions: getChartDimensionsSelector(state),
+    chartDimensions: computeChartDimensionsSelector(state).chartDimensions,
     chartTransform: computeChartTransformSelector(state),
     isBrushingEnabled: isBrushingEnabledSelector(state),
   };

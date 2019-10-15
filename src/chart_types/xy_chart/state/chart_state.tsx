@@ -1,7 +1,6 @@
 import React from 'react';
 import { InternalChartState, GlobalChartState } from '../../../state/chart_state';
 import { ChartTypes } from '../..';
-import { computeChartDimensionsSelector } from './selectors/compute_chart_dimensions';
 import { Tooltips } from '../renderer/dom/tooltips';
 import { htmlIdGenerator } from '../../../utils/commons';
 import { Highlighter } from '../renderer/dom/highlighter';
@@ -18,9 +17,6 @@ import { TooltipLegendValue } from '../tooltip/tooltip';
 export class XYAxisChartState implements InternalChartState {
   chartType = ChartTypes.XYAxis;
   legendId: string = htmlIdGenerator()('legend');
-  getChartDimensions(globalState: GlobalChartState) {
-    return computeChartDimensionsSelector(globalState).chartDimensions;
-  }
   isBrushAvailable(globalState: GlobalChartState) {
     return isBrushAvailableSelector(globalState);
   }

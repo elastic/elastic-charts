@@ -1,9 +1,9 @@
 import createCachedSelector from 're-reselect';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { Dimensions } from '../../../../utils/dimensions';
-import { getChartDimensionsSelector } from '../../../../state/selectors/get_chart_dimensions';
 import { computeChartTransformSelector } from './compute_chart_transform';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
+import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 
 const getMouseDownPosition = (state: GlobalChartState) => state.interactions.pointer.down;
 const getRawCursorPosition = (state: GlobalChartState) => {
@@ -15,10 +15,10 @@ export const getBrushAreaSelector = createCachedSelector(
     getMouseDownPosition,
     getRawCursorPosition,
     getChartRotationSelector,
-    getChartDimensionsSelector,
+    computeChartDimensionsSelector,
     computeChartTransformSelector,
   ],
-  (mouseDownPosition, cursorPosition, chartRotation, chartDimensions, chartTransform): Dimensions | null => {
+  (mouseDownPosition, cursorPosition, chartRotation, { chartDimensions }, chartTransform): Dimensions | null => {
     if (!mouseDownPosition) {
       return null;
     }

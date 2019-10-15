@@ -1,19 +1,20 @@
 import { arc, pie } from 'd3-shape';
 import createCachedSelector from 're-reselect';
-import { GlobalChartState, GlobalSettings } from '../../../../state/chart_state';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { PieSpec } from '../../../../specs';
 import { getPieSpecSelector } from './get_pie_spec';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { Theme } from '../../../../utils/themes/theme';
 import { ArcGeometry } from 'utils/geometry';
+import { Dimensions } from 'utils/dimensions';
 
-const getGlobalSettingsSelector = (state: GlobalChartState) => state.settings;
+const getGlobalSettingsSelector = (state: GlobalChartState) => state.parentDimensions;
 
-function render(pieSpec: PieSpec, globalSettings: GlobalSettings, theme: Theme) {
+function render(pieSpec: PieSpec, parentDimensions: Dimensions, theme: Theme) {
   const paths = pie().value((d: any) => {
     return d[pieSpec.accessor];
   })(pieSpec.data);
-  const { width, height } = globalSettings.parentDimensions;
+  const { width, height } = parentDimensions;
   const outerRadius = width < height ? width / 2 : height / 2;
   const innerRadius = pieSpec.donut ? outerRadius / 2 : 0;
   const arcGenerator = arc();
@@ -42,10 +43,10 @@ function render(pieSpec: PieSpec, globalSettings: GlobalSettings, theme: Theme) 
 
 export const computeGeometriesSelector = createCachedSelector(
   [getPieSpecSelector, getGlobalSettingsSelector, getChartThemeSelector],
-  (pieSpec, globalSettings, theme): { arcs?: ArcGeometry[] } => {
+  (pieSpec, parentDimensions, theme): { arcs?: ArcGeometry[] } => {
     if (!pieSpec) {
       return {};
     }
-    return render(pieSpec, globalSettings, theme);
+    return render(pieSpec, parentDimensions, theme);
   },
 )((state) => state.chartId);
