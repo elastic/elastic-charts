@@ -27,7 +27,6 @@ import { onChartRendered } from '../../../../state/actions/chart';
 import { isInitialized } from '../../../../state/selectors/is_initialized';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { getChartDimensionsSelector } from '../../../../state/selectors/get_chart_dimensions';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { Dimensions } from '../../../../utils/dimensions';
 import { AnnotationId } from '../../../../utils/ids';
@@ -37,6 +36,7 @@ import { computeSeriesGeometriesSelector } from '../../state/selectors/compute_s
 import { PointGeometry, BarGeometry, AreaGeometry, LineGeometry } from '../../../../utils/geometry';
 import { LegendItem } from '../../../../chart_types/xy_chart/legend/legend';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
 
 interface Props {
   initialized: boolean;
@@ -363,10 +363,10 @@ const mapStateToProps = (state: GlobalChartState) => {
     initialized: true,
     theme: getChartThemeSelector(state),
     geometries: computeSeriesGeometriesSelector(state).geometries,
-    parentDimensions: state.settings.parentDimensions,
+    parentDimensions: state.parentDimensions,
     debug: getSettingsSpecSelector(state).debug,
     chartRotation: getChartRotationSelector(state),
-    chartDimensions: getChartDimensionsSelector(state),
+    chartDimensions: computeChartDimensionsSelector(state).chartDimensions,
     chartTransform: computeChartTransformSelector(state),
     isChartAnimatable: isChartAnimatableSelector(state),
     isChartEmpty: isChartEmptySelector(state),

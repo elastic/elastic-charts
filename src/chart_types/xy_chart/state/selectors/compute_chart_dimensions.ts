@@ -6,7 +6,7 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { computeAxisTicksDimensionsSelector } from './compute_axis_ticks_dimensions';
 import { Dimensions } from '../../../../utils/dimensions';
 
-const getParentDimension = (state: GlobalChartState) => state.settings.parentDimensions;
+const getParentDimension = (state: GlobalChartState) => state.parentDimensions;
 
 export const computeChartDimensionsSelector = createCachedSelector(
   [getParentDimension, getChartThemeSelector, computeAxisTicksDimensionsSelector, getAxisSpecsSelector],
