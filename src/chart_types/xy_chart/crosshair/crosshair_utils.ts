@@ -8,6 +8,18 @@ export interface SnappedPosition {
   position: number;
   band: number;
 }
+export interface TooltipPosition {
+  vPosition: {
+    isHorizontalRotated: boolean;
+    bandHeight: number;
+    bandTop: number;
+  };
+  hPosition: {
+    isHorizontalRotated: boolean;
+    bandLeft: number;
+    bandWidth: number;
+  };
+}
 
 export const DEFAULT_SNAP_POSITION_BAND = 1;
 
@@ -148,7 +160,7 @@ export function getTooltipPosition(
   cursorBandPosition: Dimensions,
   cursorPosition: { x: number; y: number },
   isSingleValueXScale: boolean,
-): string {
+): TooltipPosition {
   const isHorizontalRotated = isHorizontalRotation(chartRotation);
   const hPosition = getHorizontalTooltipPosition(
     cursorPosition.x,
@@ -164,9 +176,16 @@ export function getTooltipPosition(
     isHorizontalRotated,
     isSingleValueXScale,
   );
-  const xTranslation = `translateX(${hPosition.position}px) translateX(-${hPosition.offset}%)`;
-  const yTranslation = `translateY(${vPosition.position}px) translateY(-${vPosition.offset}%)`;
-  return `${xTranslation} ${yTranslation}`;
+  return {
+    vPosition: {
+      ...vPosition,
+      isHorizontalRotated,
+    },
+    hPosition: {
+      ...hPosition,
+      isHorizontalRotated,
+    },
+  };
 }
 
 export function getHorizontalTooltipPosition(
@@ -175,39 +194,17 @@ export function getHorizontalTooltipPosition(
   chartDimensions: Dimensions,
   isHorizontalRotated: boolean,
   isSingleValueXScale: boolean,
-  padding = 20,
-): { offset: number; position: number } {
+): { bandLeft: number; bandWidth: number } {
   if (isHorizontalRotated) {
-    if (isSingleValueXScale) {
-      return {
-        offset: 0,
-        position: cursorBandPosition.left,
-      };
-    }
-
-    if (cursorXPosition <= chartDimensions.width / 2) {
-      return {
-        offset: 0,
-        position: cursorBandPosition.left + cursorBandPosition.width + padding,
-      };
-    } else {
-      return {
-        offset: 100,
-        position: cursorBandPosition.left - padding,
-      };
-    }
+    return {
+      bandLeft: cursorBandPosition.left,
+      bandWidth: isSingleValueXScale ? 0 : cursorBandPosition.width,
+    };
   } else {
-    if (cursorXPosition <= chartDimensions.width / 2) {
-      return {
-        offset: 0,
-        position: chartDimensions.left + cursorXPosition,
-      };
-    } else {
-      return {
-        offset: 100,
-        position: chartDimensions.left + cursorXPosition,
-      };
-    }
+    return {
+      bandWidth: 0,
+      bandLeft: chartDimensions.left + cursorXPosition,
+    };
   }
 }
 
@@ -217,40 +214,83 @@ export function getVerticalTooltipPosition(
   chartDimensions: Dimensions,
   isHorizontalRotated: boolean,
   isSingleValueXScale: boolean,
-  padding = 20,
 ): {
-  offset: number;
-  position: number;
+  bandHeight: number;
+  bandTop: number;
 } {
   if (isHorizontalRotated) {
-    if (cursorYPosition <= chartDimensions.height / 2) {
-      return {
-        offset: 0,
-        position: cursorYPosition + chartDimensions.top,
-      };
+    return {
+      bandHeight: 0,
+      bandTop: cursorYPosition + chartDimensions.top,
+    };
+  } else {
+    return {
+      bandHeight: isSingleValueXScale ? 0 : cursorBandPosition.height,
+      bandTop: cursorBandPosition.top,
+    };
+  }
+}
+
+export function getFinalTooltipPosition(
+  chartContainerBBox: Dimensions,
+  tooltipBBox: Dimensions,
+  tooltipPosition: TooltipPosition,
+  padding = 10,
+): {
+  left: string | null;
+  top: string | null;
+} {
+  const { hPosition, vPosition } = tooltipPosition;
+  const tooltipStyle: {
+    left: string | null;
+    top: string | null;
+  } = {
+    left: null,
+    top: null,
+  };
+  if (hPosition.isHorizontalRotated) {
+    if (hPosition.bandLeft + hPosition.bandWidth + tooltipBBox.width + padding > chartContainerBBox.width) {
+      const left =
+        window.scrollX + chartContainerBBox.left + tooltipPosition.hPosition.bandLeft - tooltipBBox.width - padding;
+      tooltipStyle.left = `${left}px`;
     } else {
-      return {
-        offset: 100,
-        position: cursorYPosition + chartDimensions.top,
-      };
+      const left =
+        window.scrollX +
+        chartContainerBBox.left +
+        tooltipPosition.hPosition.bandLeft +
+        tooltipPosition.hPosition.bandWidth +
+        padding;
+      tooltipStyle.left = `${left}px`;
     }
   } else {
-    if (isSingleValueXScale) {
-      return {
-        offset: 0,
-        position: cursorBandPosition.top,
-      };
-    }
-    if (cursorYPosition <= chartDimensions.height / 2) {
-      return {
-        offset: 0,
-        position: cursorBandPosition.top + cursorBandPosition.height + padding,
-      };
+    if (hPosition.bandLeft + hPosition.bandWidth + tooltipBBox.width > chartContainerBBox.width) {
+      const left = window.scrollX + chartContainerBBox.left + chartContainerBBox.width - tooltipBBox.width;
+      tooltipStyle.left = `${left}px`;
     } else {
-      return {
-        offset: 100,
-        position: cursorBandPosition.top - padding,
-      };
+      const left =
+        window.scrollX +
+        chartContainerBBox.left +
+        tooltipPosition.hPosition.bandLeft +
+        tooltipPosition.hPosition.bandWidth;
+      tooltipStyle.left = `${left}px`;
     }
   }
+  if (hPosition.isHorizontalRotated) {
+    if (vPosition.bandTop + tooltipBBox.height > chartContainerBBox.height) {
+      const top = window.scrollY + chartContainerBBox.top + chartContainerBBox.height - tooltipBBox.height;
+      tooltipStyle.top = `${top}px`;
+    } else {
+      const top = window.scrollY + chartContainerBBox.top + vPosition.bandTop;
+      tooltipStyle.top = `${top}px`;
+    }
+  } else {
+    if (vPosition.bandTop + vPosition.bandHeight + tooltipBBox.height + padding > chartContainerBBox.height) {
+      const top = window.scrollY + chartContainerBBox.top + vPosition.bandTop - tooltipBBox.height - padding;
+      tooltipStyle.top = `${top}px`;
+    } else {
+      const top = window.scrollY + chartContainerBBox.top + vPosition.bandTop + vPosition.bandHeight + padding;
+      tooltipStyle.top = `${top}px`;
+    }
+  }
+  return tooltipStyle;
 }

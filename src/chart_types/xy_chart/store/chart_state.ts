@@ -1,4 +1,4 @@
-import { action, computed, IObservableValue, observable } from 'mobx';
+import { set, action, computed, IObservableValue, observable } from 'mobx';
 import * as uuid from 'uuid';
 
 import {
@@ -68,7 +68,12 @@ import {
   computeAnnotationDimensions,
   computeAnnotationTooltipState,
 } from '../annotations/annotation_utils';
-import { getCursorBandPosition, getCursorLinePosition, getTooltipPosition } from '../crosshair/crosshair_utils';
+import {
+  getCursorBandPosition,
+  getCursorLinePosition,
+  getTooltipPosition,
+  TooltipPosition,
+} from '../crosshair/crosshair_utils';
 import {
   BrushExtent,
   computeBrushExtent,
@@ -217,7 +222,18 @@ export class ChartStore {
   tooltipData = observable.array<TooltipValue>([], { deep: false });
   tooltipType = observable.box<TooltipType>(DEFAULT_TOOLTIP_TYPE);
   tooltipSnap = observable.box<boolean>(DEFAULT_TOOLTIP_SNAP);
-  tooltipPosition = observable.object<{ transform: string }>({ transform: '' });
+  tooltipPosition = observable.object<TooltipPosition>({
+    vPosition: {
+      isHorizontalRotated: true,
+      bandTop: 0,
+      bandHeight: 0,
+    },
+    hPosition: {
+      isHorizontalRotated: true,
+      bandLeft: 0,
+      bandWidth: 0,
+    },
+  });
   tooltipHeaderFormatter?: TooltipValueFormatter;
 
   /** cursorPosition is used by tooltip, so this is a way to expose the position for other uses */
@@ -279,7 +295,6 @@ export class ChartStore {
 
   chartCursor = computed(() => {
     const { x: xPos, y: yPos } = this.cursorPosition;
-
     if (yPos < 0 || xPos < 0) {
       return 'default';
     }
@@ -445,12 +460,15 @@ export class ChartStore {
 
     const isSingleValueXScale = this.xScale.isSingleValue();
 
-    this.tooltipPosition.transform = getTooltipPosition(
-      this.chartDimensions,
-      this.chartRotation,
-      this.cursorBandPosition,
-      this.cursorPosition,
-      isSingleValueXScale,
+    set(
+      this.tooltipPosition,
+      getTooltipPosition(
+        this.chartDimensions,
+        this.chartRotation,
+        this.cursorBandPosition,
+        this.cursorPosition,
+        isSingleValueXScale,
+      ),
     );
 
     const tooltipAndHighlight = getTooltipAndHighlightFromXValue(
