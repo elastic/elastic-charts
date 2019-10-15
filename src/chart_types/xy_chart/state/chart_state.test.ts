@@ -116,16 +116,16 @@ describe.skip('Chart Store', () => {
       maxLabelTextHeight: 1,
     };
     let tickMap: Map<AxisId, AxisTicksDimensions>;
-    let specMap: Map<AxisId, AxisSpec>;
+    let specMap: AxisSpec[];
 
     beforeEach(() => {
       tickMap = new Map<AxisId, AxisTicksDimensions>();
-      specMap = new Map<AxisId, AxisSpec>();
+      specMap = [];
     });
 
     it('should return true if axisSpecs and ticks match', () => {
       tickMap.set(AXIS_2_ID, axisTicksDimensions);
-      specMap.set(AXIS_2_ID, axis2);
+      specMap.push(axis2);
       const result = isDuplicateAxis(axis1, axisTicksDimensions, tickMap, specMap);
 
       expect(result).toBe(true);
@@ -133,7 +133,7 @@ describe.skip('Chart Store', () => {
 
     it('should return false if axisSpecs, ticks AND title match', () => {
       tickMap.set(AXIS_2_ID, axisTicksDimensions);
-      specMap.set(AXIS_2_ID, {
+      specMap.push({
         ...axis2,
         title: 'TESTING',
       });
@@ -156,7 +156,7 @@ describe.skip('Chart Store', () => {
         tickLabels: ['10'],
       };
       tickMap.set(AXIS_2_ID, newAxisTicksDimensions);
-      specMap.set(AXIS_2_ID, axis2);
+      specMap.push(axis2);
 
       const result = isDuplicateAxis(axis1, newAxisTicksDimensions, tickMap, specMap);
 
@@ -165,7 +165,7 @@ describe.skip('Chart Store', () => {
 
     it('should return false if axisSpecs and ticks match but title is different', () => {
       tickMap.set(AXIS_2_ID, axisTicksDimensions);
-      specMap.set(AXIS_2_ID, {
+      specMap.push({
         ...axis2,
         title: 'TESTING',
       });
@@ -184,7 +184,7 @@ describe.skip('Chart Store', () => {
 
     it('should return false if axisSpecs and ticks match but position is different', () => {
       tickMap.set(AXIS_2_ID, axisTicksDimensions);
-      specMap.set(AXIS_2_ID, axis2);
+      specMap.push(axis2);
       const result = isDuplicateAxis(
         {
           ...axis1,
@@ -203,7 +203,7 @@ describe.skip('Chart Store', () => {
         ...axisTicksDimensions,
         tickLabels: ['10%', '20%', '30%'],
       });
-      specMap.set(AXIS_2_ID, axis2);
+      specMap.push(axis2);
 
       const result = isDuplicateAxis(axis1, axisTicksDimensions, tickMap, specMap);
 
@@ -215,7 +215,7 @@ describe.skip('Chart Store', () => {
         ...axisTicksDimensions,
         tickLabels: ['10', '20', '25', '30'],
       });
-      specMap.set(AXIS_2_ID, axis2);
+      specMap.push(axis2);
 
       const result = isDuplicateAxis(axis1, axisTicksDimensions, tickMap, specMap);
 

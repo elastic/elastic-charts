@@ -687,7 +687,7 @@ export const isDuplicateAxis = (
   { position, title }: AxisSpec,
   { tickLabels }: AxisTicksDimensions,
   tickMap: Map<AxisId, AxisTicksDimensions>,
-  specMap: Map<AxisId, AxisSpec>,
+  specs: AxisSpec[],
 ): boolean => {
   const firstTickLabel = tickLabels[0];
   const lastTickLabel = tickLabels.slice(-1)[0];
@@ -701,7 +701,7 @@ export const isDuplicateAxis = (
       firstTickLabel === axisTickLabels[0] &&
       lastTickLabel === axisTickLabels.slice(-1)[0]
     ) {
-      const spec = specMap.get(axisId);
+      const spec = specs.find(({ id }) => id === axisId);
 
       if (spec && spec.position === position && title === spec.title) {
         hasDuplicate = true;
