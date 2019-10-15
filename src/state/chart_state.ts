@@ -1,7 +1,6 @@
 import { SPEC_PARSED, SPEC_UNMOUNTED, SPEC_PARSING, UPSERT_SPEC, REMOVE_SPEC } from './actions/specs';
 import { interactionsReducer } from './reducers/interactions';
 import { ChartTypes } from '../chart_types';
-import { PieChartState } from '../chart_types/pie_chart/state/chart_state';
 import { XYAxisChartState } from '../chart_types/xy_chart/state/chart_state';
 import { DataSeriesColorsValues } from '../chart_types/xy_chart/utils/series';
 import { Spec } from '../specs';
@@ -223,7 +222,7 @@ function findMainChartType(specs: SpecList) {
 function initInternalChartState(chartType: ChartType | null): InternalChartState | null {
   switch (chartType) {
     case 'pie':
-      return new PieChartState();
+      return null; // TODO add pie chart state
     case 'xy_axis':
       return new XYAxisChartState();
     default:
