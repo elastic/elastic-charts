@@ -9,13 +9,18 @@ export interface SnappedPosition {
   band: number;
 }
 export interface TooltipPosition {
+  // true if if the x axis is horizontal
   isRotatedHorizontal: boolean;
   vPosition: {
-    bandHeight: number;
+    // the top position of the tooltip relative to the parent
     bandTop: number;
+    // the height of the crosshair band if any
+    bandHeight: number;
   };
   hPosition: {
+    // the left position of the tooltip relative to the parent
     bandLeft: number;
+    // the width of the crosshair band if any
     bandWidth: number;
   };
 }
