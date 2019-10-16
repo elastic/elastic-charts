@@ -31,9 +31,11 @@ const seriesStyle = {
 
 const ig1: IndexedGeometry = {
   color: 'red',
-  geometryId: {
+  seriesIdentifier: {
     specId: getSpecId('ig1'),
-    seriesKey: [0, 1, 2],
+    yAccessor: 'y1',
+    splitAccessors: new Map(),
+    seriesKeys: [0, 1, 2],
   },
   value: {
     accessor: 'y1',
@@ -47,9 +49,11 @@ const ig1: IndexedGeometry = {
   seriesStyle,
 };
 const ig2: IndexedGeometry = {
-  geometryId: {
+  seriesIdentifier: {
     specId: getSpecId('ig1'),
-    seriesKey: [0, 1, 2],
+    yAccessor: 'y1',
+    splitAccessors: new Map(),
+    seriesKeys: [0, 1, 2],
   },
   value: {
     accessor: 'y1',
@@ -64,9 +68,11 @@ const ig2: IndexedGeometry = {
   seriesStyle,
 };
 const ig3: IndexedGeometry = {
-  geometryId: {
+  seriesIdentifier: {
     specId: getSpecId('ig1'),
-    seriesKey: [123, 123, 123],
+    yAccessor: 'y1',
+    splitAccessors: new Map(),
+    seriesKeys: [123, 123, 123],
   },
   value: {
     accessor: 'y1',
@@ -82,9 +88,11 @@ const ig3: IndexedGeometry = {
   seriesStyle,
 };
 const ig4: IndexedGeometry = {
-  geometryId: {
+  seriesIdentifier: {
     specId: getSpecId('ig4'),
-    seriesKey: [123, 123, 123],
+    yAccessor: 'y1',
+    splitAccessors: new Map(),
+    seriesKeys: [123, 123, 123],
   },
   value: {
     accessor: 'y1',
@@ -99,9 +107,11 @@ const ig4: IndexedGeometry = {
   seriesStyle,
 };
 const ig5: IndexedGeometry = {
-  geometryId: {
+  seriesIdentifier: {
     specId: getSpecId('ig5'),
-    seriesKey: [123, 123, 123],
+    yAccessor: 'y1',
+    splitAccessors: new Map(),
+    seriesKeys: [123, 123, 123],
   },
   value: {
     accessor: 'y1',
@@ -116,9 +126,11 @@ const ig5: IndexedGeometry = {
   seriesStyle,
 };
 const ig6: PointGeometry = {
-  geometryId: {
+  seriesIdentifier: {
     specId: getSpecId('ig5'),
-    seriesKey: [123, 123, 123],
+    yAccessor: 'y1',
+    splitAccessors: new Map(),
+    seriesKeys: [123, 123, 123],
   },
   value: {
     accessor: 'y1',

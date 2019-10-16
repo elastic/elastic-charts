@@ -1,7 +1,7 @@
 import { AxisId, getAxisId, getGroupId, getSpecId, SpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
 import { computeLegend, getSeriesColorLabel } from './legend';
-import { DataSeriesColorsValues } from '../utils/series';
+import { SeriesCollectionValue } from '../utils/series';
 import { AxisSpec, BasicSeriesSpec, Position } from '../utils/specs';
 
 const nullDisplayValue = {
@@ -73,7 +73,7 @@ const axisSpec: AxisSpec = {
 axesSpecs.set(axisSpec.id, axisSpec);
 
 describe('Legends', () => {
-  const seriesColor = new Map<string, DataSeriesColorsValues>();
+  const seriesColor = new Map<string, SeriesCollectionValue>();
   const seriesColorMap = new Map<string, string>();
   const specs = new Map<SpecId, BasicSeriesSpec>();
   specs.set(spec1.id, spec1);

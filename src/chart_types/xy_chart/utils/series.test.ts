@@ -2,7 +2,7 @@ import { ColorConfig } from '../../../utils/themes/theme';
 import { getGroupId, getSpecId, SpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
 import {
-  DataSeriesColorsValues,
+  SeriesCollectionValue,
   getFormattedDataseries,
   getSeriesColorMap,
   getSortedDataSeriesColorsValuesMap,
@@ -89,13 +89,17 @@ describe('Series', () => {
     const dataSeries: RawDataSeries[] = [
       {
         specId: getSpecId('spec1'),
-        key: ['a'],
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['a'],
         seriesColorKey: 'a',
         data: [{ x: 1, y1: 1 }, { x: 2, y1: 2 }, { x: 4, y1: 4 }],
       },
       {
         specId: getSpecId('spec1'),
-        key: ['b'],
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['b'],
         seriesColorKey: 'b',
         data: [{ x: 1, y1: 21 }, { x: 3, y1: 23 }],
       },
@@ -108,25 +112,33 @@ describe('Series', () => {
     const dataSeries: RawDataSeries[] = [
       {
         specId: getSpecId('spec1'),
-        key: ['a'],
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['a'],
         seriesColorKey: 'a',
         data: [{ x: 1, y1: 1 }, { x: 2, y1: 2 }, { x: 3, y1: 3 }, { x: 4, y1: 4 }],
       },
       {
         specId: getSpecId('spec1'),
-        key: ['b'],
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['b'],
         seriesColorKey: 'b',
         data: [{ x: 1, y1: 1 }, { x: 2, y1: 2 }, { x: 3, y1: 3 }, { x: 4, y1: 4 }],
       },
       {
         specId: getSpecId('spec1'),
-        key: ['b'],
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['b'],
         seriesColorKey: 'b',
         data: [{ x: 1, y1: 1 }, { x: 2, y1: 2 }, { x: 3, y1: 3 }, { x: 4, y1: 4 }],
       },
       {
         specId: getSpecId('spec1'),
-        key: ['b'],
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['b'],
         seriesColorKey: 'b',
         data: [{ x: 1, y1: 1 }, { x: 2, y1: 2 }, { x: 3, y1: 3 }, { x: 4, y1: 4 }],
       },
@@ -139,13 +151,17 @@ describe('Series', () => {
     const dataSeries: RawDataSeries[] = [
       {
         specId: getSpecId('spec1'),
-        key: ['a'],
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['a'],
         seriesColorKey: 'a',
         data: [{ x: 1, y1: 1 }, { x: 4, y1: 4 }, { x: 2, y1: 2 }],
       },
       {
         specId: getSpecId('spec1'),
-        key: ['b'],
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['b'],
         seriesColorKey: 'b',
         data: [{ x: 3, y1: 23 }, { x: 1, y1: 21 }],
       },
@@ -159,13 +175,17 @@ describe('Series', () => {
     const dataSeries: RawDataSeries[] = [
       {
         specId: getSpecId('spec1'),
-        key: ['a'],
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['a'],
         seriesColorKey: 'a',
         data: new Array(maxArrayItems).fill(0).map((d, i) => ({ x: i, y1: i })),
       },
       {
         specId: getSpecId('spec1'),
-        key: ['b'],
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['b'],
         seriesColorKey: 'b',
         data: new Array(maxArrayItems).fill(0).map((d, i) => ({ x: i, y1: i })),
       },
@@ -178,13 +198,17 @@ describe('Series', () => {
     const dataSeries: RawDataSeries[] = [
       {
         specId: getSpecId('spec1'),
-        key: ['a'],
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['a'],
         seriesColorKey: 'a',
         data: [{ x: 1, y1: 1 }, { x: 2, y1: 2 }, { x: 4, y1: 4 }],
       },
       {
         specId: getSpecId('spec1'),
-        key: ['b'],
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['b'],
         seriesColorKey: 'b',
         data: [{ x: 1, y1: 21 }, { x: 3, y1: 23 }],
       },
@@ -199,25 +223,33 @@ describe('Series', () => {
     const dataSeries: RawDataSeries[] = [
       {
         specId: getSpecId('spec1'),
-        key: ['a'],
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['a'],
         seriesColorKey: 'a',
         data: [{ x: 1, y1: 1 }, { x: 2, y1: 2 }, { x: 3, y1: 3 }, { x: 4, y1: 4 }],
       },
       {
         specId: getSpecId('spec1'),
-        key: ['b'],
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['b'],
         seriesColorKey: 'b',
         data: [{ x: 1, y1: 1 }, { x: 2, y1: 2 }, { x: 3, y1: 3 }, { x: 4, y1: 4 }],
       },
       {
         specId: getSpecId('spec1'),
-        key: ['b'],
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['b'],
         seriesColorKey: 'b',
         data: [{ x: 1, y1: 1 }, { x: 2, y1: 2 }, { x: 3, y1: 3 }, { x: 4, y1: 4 }],
       },
       {
         specId: getSpecId('spec1'),
-        key: ['b'],
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['b'],
         seriesColorKey: 'b',
         data: [{ x: 1, y1: 1 }, { x: 2, y1: 2 }, { x: 3, y1: 3 }, { x: 4, y1: 4 }],
       },
@@ -232,13 +264,17 @@ describe('Series', () => {
     const dataSeries: RawDataSeries[] = [
       {
         specId: getSpecId('spec1'),
-        key: ['a'],
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['a'],
         seriesColorKey: 'a',
         data: [{ x: 1, y1: 3, y0: 1 }, { x: 2, y1: 3, y0: 2 }, { x: 4, y1: 4, y0: 3 }],
       },
       {
         specId: getSpecId('spec1'),
-        key: ['b'],
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['b'],
         seriesColorKey: 'b',
         data: [{ x: 1, y1: 2, y0: 1 }, { x: 2, y1: 3, y0: 1 }, { x: 3, y1: 23, y0: 4 }, { x: 4, y1: 4, y0: 1 }],
       },
@@ -264,13 +300,17 @@ describe('Series', () => {
     const dataSeries: RawDataSeries[] = [
       {
         specId: getSpecId('spec1'),
-        key: ['a'],
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['a'],
         seriesColorKey: 'a',
         data: [{ x: 1, y1: 3, y0: 1 }, { x: 2, y1: 3, y0: 2 }, { x: 4, y1: 4, y0: 3 }],
       },
       {
         specId: getSpecId('spec1'),
-        key: ['b'],
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['b'],
         seriesColorKey: 'b',
         data: [{ x: 1, y1: 2, y0: 1 }, { x: 2, y1: 3, y0: 1 }, { x: 3, y1: 23, y0: 4 }, { x: 4, y1: 4, y0: 1 }],
       },
@@ -380,7 +420,7 @@ describe('Series', () => {
     const specs = new Map();
     specs.set(spec1.id, spec1);
 
-    const dataSeriesValuesA: DataSeriesColorsValues = {
+    const dataSeriesValuesA: SeriesCollectionValue = {
       specId: getSpecId('spec1'),
       colorValues: ['a', 'b', 'c'],
     };
@@ -434,7 +474,7 @@ describe('Series', () => {
     const emptyDeselected = getSplittedSeries(seriesSpecs, []);
     expect(emptyDeselected.splittedSeries.get(specId)!.length).toBe(2);
 
-    const deselectedDataSeries: DataSeriesColorsValues[] = [
+    const deselectedDataSeries: SeriesCollectionValue[] = [
       {
         specId,
         colorValues: ['y1'],
@@ -450,19 +490,19 @@ describe('Series', () => {
     const spec3Id = getSpecId('spec3');
 
     const colorValuesMap = new Map();
-    const dataSeriesValues1: DataSeriesColorsValues = {
+    const dataSeriesValues1: SeriesCollectionValue = {
       specId: spec1Id,
       colorValues: [],
       specSortIndex: 0,
     };
 
-    const dataSeriesValues2: DataSeriesColorsValues = {
+    const dataSeriesValues2: SeriesCollectionValue = {
       specId: spec2Id,
       colorValues: [],
       specSortIndex: 1,
     };
 
-    const dataSeriesValues3: DataSeriesColorsValues = {
+    const dataSeriesValues3: SeriesCollectionValue = {
       specId: spec3Id,
       colorValues: [],
       specSortIndex: 3,

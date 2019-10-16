@@ -7,7 +7,6 @@ import {
   getGeometryStyle,
   PointGeometry,
   getGeometryIdKey,
-  GeometryId,
 } from '../../chart_types/xy_chart/rendering/rendering';
 import { SharedGeometryStyle, PointStyle } from '../../utils/themes/theme';
 import {
@@ -18,6 +17,7 @@ import {
   buildLineRenderProps,
 } from './utils/rendering_props_utils';
 import { mergePartial } from '../../utils/commons';
+import { SeriesIdentifier } from '../../chart_types/xy_chart/utils/series';
 
 interface AreaGeometriesDataProps {
   animated?: boolean;
@@ -51,7 +51,7 @@ export class AreaGeometries extends React.PureComponent<AreaGeometriesDataProps,
   private renderAreaGeoms = (): JSX.Element[] => {
     const { sharedStyle, highlightedLegendItem, areas, clippings } = this.props;
     return areas.reduce<JSX.Element[]>((acc, glyph, i) => {
-      const { seriesAreaLineStyle, seriesAreaStyle, seriesPointStyle, geometryId } = glyph;
+      const { seriesAreaLineStyle, seriesAreaStyle, seriesPointStyle, seriesIdentifier } = glyph;
       if (seriesAreaStyle.visible) {
         acc.push(this.renderArea(glyph, sharedStyle, highlightedLegendItem, clippings));
       }
@@ -59,9 +59,9 @@ export class AreaGeometries extends React.PureComponent<AreaGeometriesDataProps,
         acc.push(this.renderAreaLines(glyph, i, sharedStyle, highlightedLegendItem, clippings));
       }
       if (seriesPointStyle.visible) {
-        const geometryStyle = getGeometryStyle(geometryId, this.props.highlightedLegendItem, sharedStyle);
+        const geometryStyle = getGeometryStyle(seriesIdentifier, this.props.highlightedLegendItem, sharedStyle);
         const pointStyleProps = buildPointStyleProps(glyph.color, seriesPointStyle, geometryStyle);
-        acc.push(...this.renderPoints(glyph.points, i, pointStyleProps, glyph.geometryId));
+        acc.push(...this.renderPoints(glyph.points, i, pointStyleProps, glyph.seriesIdentifier));
       }
       return acc;
     }, []);
@@ -72,9 +72,9 @@ export class AreaGeometries extends React.PureComponent<AreaGeometriesDataProps,
     highlightedLegendItem: LegendItem | null,
     clippings: ContainerConfig,
   ): JSX.Element => {
-    const { area, color, transform, geometryId, seriesAreaStyle } = glyph;
-    const geometryStyle = getGeometryStyle(geometryId, highlightedLegendItem, sharedStyle);
-    const key = getGeometryIdKey(geometryId, 'area-');
+    const { area, color, transform, seriesIdentifier, seriesAreaStyle } = glyph;
+    const geometryStyle = getGeometryStyle(seriesIdentifier, highlightedLegendItem, sharedStyle);
+    const key = getGeometryIdKey(seriesIdentifier, 'area-');
     const areaProps = buildAreaRenderProps(transform.x, area, color, seriesAreaStyle, geometryStyle);
     return (
       <Group {...clippings} key={key}>
@@ -89,11 +89,11 @@ export class AreaGeometries extends React.PureComponent<AreaGeometriesDataProps,
     highlightedLegendItem: LegendItem | null,
     clippings: ContainerConfig,
   ): JSX.Element => {
-    const { lines, color, geometryId, transform, seriesAreaLineStyle } = glyph;
-    const geometryStyle = getGeometryStyle(geometryId, highlightedLegendItem, sharedStyle);
-    const groupKey = getGeometryIdKey(geometryId, `area-line-${areaIndex}`);
+    const { lines, color, seriesIdentifier, transform, seriesAreaLineStyle } = glyph;
+    const geometryStyle = getGeometryStyle(seriesIdentifier, highlightedLegendItem, sharedStyle);
+    const groupKey = getGeometryIdKey(seriesIdentifier, `area-line-${areaIndex}`);
     const linesElements = lines.map<JSX.Element>((linePath, lineIndex) => {
-      const key = getGeometryIdKey(geometryId, `area-line-${areaIndex}-${lineIndex}`);
+      const key = getGeometryIdKey(seriesIdentifier, `area-line-${areaIndex}-${lineIndex}`);
       const lineProps = buildLineRenderProps(transform.x, linePath, color, seriesAreaLineStyle, geometryStyle);
       return <Path {...lineProps} key={key} />;
     });
@@ -116,11 +116,11 @@ export class AreaGeometries extends React.PureComponent<AreaGeometriesDataProps,
     areaPoints: PointGeometry[],
     areaIndex: number,
     pointStyleProps: PointStyleProps,
-    geometryId: GeometryId,
+    seriesIdentifier: SeriesIdentifier,
   ): JSX.Element[] => {
     return areaPoints.map((areaPoint, pointIndex) => {
       const { x, y, transform, styleOverrides } = areaPoint;
-      const key = getGeometryIdKey(geometryId, `area-point-${areaIndex}-${pointIndex}-`);
+      const key = getGeometryIdKey(seriesIdentifier, `area-point-${areaIndex}-${pointIndex}-`);
       const pointStyle = this.mergePointPropsWithOverrides(pointStyleProps, styleOverrides);
       const pointProps = buildPointRenderProps(transform.x + x, y, pointStyle);
       return <Circle {...pointProps} key={key} />;

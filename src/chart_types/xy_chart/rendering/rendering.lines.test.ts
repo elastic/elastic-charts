@@ -42,14 +42,12 @@ describe('Rendering points - line', () => {
     beforeEach(() => {
       renderedLine = renderLine(
         25, // adding a ideal 25px shift, generally applied by renderGeometries
-        [],
+        { ...pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0], data: [] },
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
         CurveType.LINEAR,
-        SPEC_ID,
         false,
-        [],
         0,
         LIGHT_THEME.lineSeriesStyle,
       );
@@ -58,8 +56,8 @@ describe('Rendering points - line', () => {
       const { lineGeometry } = renderedLine;
       expect(lineGeometry.line).toBe('');
       expect(lineGeometry.color).toBe('red');
-      expect(lineGeometry.geometryId.seriesKey).toEqual([]);
-      expect(lineGeometry.geometryId.specId).toEqual(SPEC_ID);
+      expect(lineGeometry.seriesIdentifier.seriesKeys).toEqual([]);
+      expect(lineGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
       expect(lineGeometry.transform).toEqual({ x: 25, y: 0 });
     });
   });
@@ -92,14 +90,12 @@ describe('Rendering points - line', () => {
     beforeEach(() => {
       renderedLine = renderLine(
         25, // adding a ideal 25px shift, generally applied by renderGeometries
-        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0].data,
+        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
         CurveType.LINEAR,
-        SPEC_ID,
         false,
-        [],
         0,
         LIGHT_THEME.lineSeriesStyle,
       );
@@ -108,8 +104,8 @@ describe('Rendering points - line', () => {
       const { lineGeometry } = renderedLine;
       expect(lineGeometry.line).toBe('M0,0L50,50');
       expect(lineGeometry.color).toBe('red');
-      expect(lineGeometry.geometryId.seriesKey).toEqual([]);
-      expect(lineGeometry.geometryId.specId).toEqual(SPEC_ID);
+      expect(lineGeometry.seriesIdentifier.seriesKeys).toEqual([]);
+      expect(lineGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
       expect(lineGeometry.transform).toEqual({ x: 25, y: 0 });
     });
     test('Can render two points', () => {
@@ -118,15 +114,18 @@ describe('Rendering points - line', () => {
         indexedGeometries,
       } = renderedLine;
 
-      expect(points[0]).toEqual({
+      expect(points[0]).toEqual(({
         x: 0,
         y: 0,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
+        styleOverrides: undefined,
         value: {
           accessor: 'y1',
           x: 0,
@@ -136,15 +135,17 @@ describe('Rendering points - line', () => {
           x: 25,
           y: 0,
         },
-      } as PointGeometry);
-      expect(points[1]).toEqual({
+      } as unknown) as PointGeometry);
+      expect(points[1]).toEqual(({
         x: 50,
         y: 50,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         value: {
           accessor: 'y1',
@@ -155,7 +156,7 @@ describe('Rendering points - line', () => {
           x: 25,
           y: 0,
         },
-      } as PointGeometry);
+      } as unknown) as PointGeometry);
       expect(indexedGeometries.size).toEqual(points.length);
     });
   });
@@ -207,27 +208,23 @@ describe('Rendering points - line', () => {
     beforeEach(() => {
       firstLine = renderLine(
         25, // adding a ideal 25px shift, generally applied by renderGeometries
-        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0].data,
+        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
         CurveType.LINEAR,
-        spec1Id,
         false,
-        [],
         0,
         LIGHT_THEME.lineSeriesStyle,
       );
       secondLine = renderLine(
         25, // adding a ideal 25px shift, generally applied by renderGeometries
-        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[1].data,
+        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[1],
         xScale,
         yScales.get(GROUP_ID)!,
         'blue',
         CurveType.LINEAR,
-        spec2Id,
         false,
-        [],
         0,
         LIGHT_THEME.lineSeriesStyle,
       );
@@ -236,14 +233,14 @@ describe('Rendering points - line', () => {
     test('Can render two ordinal lines', () => {
       expect(firstLine.lineGeometry.line).toBe('M0,50L50,75');
       expect(firstLine.lineGeometry.color).toBe('red');
-      expect(firstLine.lineGeometry.geometryId.seriesKey).toEqual([]);
-      expect(firstLine.lineGeometry.geometryId.specId).toEqual(spec1Id);
+      expect(firstLine.lineGeometry.seriesIdentifier.seriesKeys).toEqual([]);
+      expect(firstLine.lineGeometry.seriesIdentifier.specId).toEqual(spec1Id);
       expect(firstLine.lineGeometry.transform).toEqual({ x: 25, y: 0 });
 
       expect(secondLine.lineGeometry.line).toBe('M0,0L50,50');
       expect(secondLine.lineGeometry.color).toBe('blue');
-      expect(secondLine.lineGeometry.geometryId.seriesKey).toEqual([]);
-      expect(secondLine.lineGeometry.geometryId.specId).toEqual(spec2Id);
+      expect(secondLine.lineGeometry.seriesIdentifier.seriesKeys).toEqual([]);
+      expect(secondLine.lineGeometry.seriesIdentifier.specId).toEqual(spec2Id);
       expect(secondLine.lineGeometry.transform).toEqual({ x: 25, y: 0 });
     });
     test('can render first spec points', () => {
@@ -252,14 +249,16 @@ describe('Rendering points - line', () => {
         indexedGeometries,
       } = firstLine;
       expect(points.length).toEqual(2);
-      expect(points[0]).toEqual({
+      expect(points[0]).toEqual(({
         x: 0,
         y: 50,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: spec1Id,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         value: {
           accessor: 'y1',
@@ -270,15 +269,17 @@ describe('Rendering points - line', () => {
           x: 25,
           y: 0,
         },
-      } as PointGeometry);
-      expect(points[1]).toEqual({
+      } as unknown) as PointGeometry);
+      expect(points[1]).toEqual(({
         x: 50,
         y: 75,
         color: 'red',
         radius: 10,
-        geometryId: {
+        seriesIdentifier: {
           specId: spec1Id,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         value: {
           accessor: 'y1',
@@ -289,7 +290,7 @@ describe('Rendering points - line', () => {
           x: 25,
           y: 0,
         },
-      } as PointGeometry);
+      } as unknown) as PointGeometry);
       expect(indexedGeometries.size).toEqual(points.length);
     });
     test('can render second spec points', () => {
@@ -298,14 +299,16 @@ describe('Rendering points - line', () => {
         indexedGeometries,
       } = secondLine;
       expect(points.length).toEqual(2);
-      expect(points[0]).toEqual({
+      expect(points[0]).toEqual(({
         x: 0,
         y: 0,
         color: 'blue',
         radius: 10,
-        geometryId: {
+        seriesIdentifier: {
           specId: spec2Id,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         value: {
           accessor: 'y1',
@@ -316,15 +319,17 @@ describe('Rendering points - line', () => {
           x: 25,
           y: 0,
         },
-      } as PointGeometry);
-      expect(points[1]).toEqual({
+      } as unknown) as PointGeometry);
+      expect(points[1]).toEqual(({
         x: 50,
         y: 50,
         color: 'blue',
         radius: 10,
-        geometryId: {
+        seriesIdentifier: {
           specId: spec2Id,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         value: {
           accessor: 'y1',
@@ -335,7 +340,7 @@ describe('Rendering points - line', () => {
           x: 25,
           y: 0,
         },
-      } as PointGeometry);
+      } as unknown) as PointGeometry);
       expect(indexedGeometries.size).toEqual(points.length);
     });
   });
@@ -369,14 +374,12 @@ describe('Rendering points - line', () => {
     beforeEach(() => {
       renderedLine = renderLine(
         0, // not applied any shift, renderGeometries applies it only with mixed charts
-        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0].data,
+        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
         CurveType.LINEAR,
-        SPEC_ID,
         false,
-        [],
         0,
         LIGHT_THEME.lineSeriesStyle,
       );
@@ -384,8 +387,8 @@ describe('Rendering points - line', () => {
     test('Can render a linear line', () => {
       expect(renderedLine.lineGeometry.line).toBe('M0,0L100,50');
       expect(renderedLine.lineGeometry.color).toBe('red');
-      expect(renderedLine.lineGeometry.geometryId.seriesKey).toEqual([]);
-      expect(renderedLine.lineGeometry.geometryId.specId).toEqual(SPEC_ID);
+      expect(renderedLine.lineGeometry.seriesIdentifier.seriesKeys).toEqual([]);
+      expect(renderedLine.lineGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
       expect(renderedLine.lineGeometry.transform).toEqual({ x: 0, y: 0 });
     });
     test('Can render two points', () => {
@@ -393,14 +396,16 @@ describe('Rendering points - line', () => {
         lineGeometry: { points },
         indexedGeometries,
       } = renderedLine;
-      expect(points[0]).toEqual({
+      expect(points[0]).toEqual(({
         x: 0,
         y: 0,
         color: 'red',
         radius: 10,
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         value: {
           accessor: 'y1',
@@ -411,15 +416,17 @@ describe('Rendering points - line', () => {
           x: 0,
           y: 0,
         },
-      } as PointGeometry);
-      expect(points[1]).toEqual({
+      } as unknown) as PointGeometry);
+      expect(points[1]).toEqual(({
         x: 100,
         y: 50,
         color: 'red',
         radius: 10,
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         value: {
           accessor: 'y1',
@@ -430,7 +437,7 @@ describe('Rendering points - line', () => {
           x: 0,
           y: 0,
         },
-      } as PointGeometry);
+      } as unknown) as PointGeometry);
       expect(indexedGeometries.size).toEqual(points.length);
     });
   });
@@ -482,27 +489,23 @@ describe('Rendering points - line', () => {
     beforeEach(() => {
       firstLine = renderLine(
         0, // not applied any shift, renderGeometries applies it only with mixed charts
-        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0].data,
+        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
         CurveType.LINEAR,
-        spec1Id,
         false,
-        [],
         0,
         LIGHT_THEME.lineSeriesStyle,
       );
       secondLine = renderLine(
         0, // not applied any shift, renderGeometries applies it only with mixed charts
-        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[1].data,
+        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[1],
         xScale,
         yScales.get(GROUP_ID)!,
         'blue',
         CurveType.LINEAR,
-        spec2Id,
         false,
-        [],
         0,
         LIGHT_THEME.lineSeriesStyle,
       );
@@ -510,14 +513,14 @@ describe('Rendering points - line', () => {
     test('can render two linear lines', () => {
       expect(firstLine.lineGeometry.line).toBe('M0,50L100,75');
       expect(firstLine.lineGeometry.color).toBe('red');
-      expect(firstLine.lineGeometry.geometryId.seriesKey).toEqual([]);
-      expect(firstLine.lineGeometry.geometryId.specId).toEqual(spec1Id);
+      expect(firstLine.lineGeometry.seriesIdentifier.seriesKeys).toEqual([]);
+      expect(firstLine.lineGeometry.seriesIdentifier.specId).toEqual(spec1Id);
       expect(firstLine.lineGeometry.transform).toEqual({ x: 0, y: 0 });
 
       expect(secondLine.lineGeometry.line).toBe('M0,0L100,50');
       expect(secondLine.lineGeometry.color).toBe('blue');
-      expect(secondLine.lineGeometry.geometryId.seriesKey).toEqual([]);
-      expect(secondLine.lineGeometry.geometryId.specId).toEqual(spec2Id);
+      expect(secondLine.lineGeometry.seriesIdentifier.seriesKeys).toEqual([]);
+      expect(secondLine.lineGeometry.seriesIdentifier.specId).toEqual(spec2Id);
       expect(secondLine.lineGeometry.transform).toEqual({ x: 0, y: 0 });
     });
     test('can render first spec points', () => {
@@ -526,14 +529,16 @@ describe('Rendering points - line', () => {
         indexedGeometries,
       } = firstLine;
       expect(points.length).toEqual(2);
-      expect(points[0]).toEqual({
+      expect(points[0]).toEqual(({
         x: 0,
         y: 50,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: spec1Id,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         value: {
           accessor: 'y1',
@@ -544,15 +549,17 @@ describe('Rendering points - line', () => {
           x: 0,
           y: 0,
         },
-      } as PointGeometry);
-      expect(points[1]).toEqual({
+      } as unknown) as PointGeometry);
+      expect(points[1]).toEqual(({
         x: 100,
         y: 75,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: spec1Id,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         value: {
           accessor: 'y1',
@@ -563,7 +570,7 @@ describe('Rendering points - line', () => {
           x: 0,
           y: 0,
         },
-      } as PointGeometry);
+      } as unknown) as PointGeometry);
       expect(indexedGeometries.size).toEqual(points.length);
     });
     test('can render second spec points', () => {
@@ -572,14 +579,16 @@ describe('Rendering points - line', () => {
         indexedGeometries,
       } = secondLine;
       expect(points.length).toEqual(2);
-      expect(points[0]).toEqual({
+      expect(points[0]).toEqual(({
         x: 0,
         y: 0,
         color: 'blue',
         radius: 10,
-        geometryId: {
+        seriesIdentifier: {
           specId: spec2Id,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         value: {
           accessor: 'y1',
@@ -590,15 +599,17 @@ describe('Rendering points - line', () => {
           x: 0,
           y: 0,
         },
-      } as PointGeometry);
-      expect(points[1]).toEqual({
+      } as unknown) as PointGeometry);
+      expect(points[1]).toEqual(({
         x: 100,
         y: 50,
         color: 'blue',
         radius: 10,
-        geometryId: {
+        seriesIdentifier: {
           specId: spec2Id,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         value: {
           accessor: 'y1',
@@ -609,7 +620,7 @@ describe('Rendering points - line', () => {
           x: 0,
           y: 0,
         },
-      } as PointGeometry);
+      } as unknown) as PointGeometry);
       expect(indexedGeometries.size).toEqual(points.length);
     });
   });
@@ -643,14 +654,12 @@ describe('Rendering points - line', () => {
     beforeEach(() => {
       renderedLine = renderLine(
         0, // not applied any shift, renderGeometries applies it only with mixed charts
-        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0].data,
+        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
         CurveType.LINEAR,
-        SPEC_ID,
         false,
-        [],
         0,
         LIGHT_THEME.lineSeriesStyle,
       );
@@ -658,8 +667,8 @@ describe('Rendering points - line', () => {
     test('Can render a time line', () => {
       expect(renderedLine.lineGeometry.line).toBe('M0,0L100,50');
       expect(renderedLine.lineGeometry.color).toBe('red');
-      expect(renderedLine.lineGeometry.geometryId.seriesKey).toEqual([]);
-      expect(renderedLine.lineGeometry.geometryId.specId).toEqual(SPEC_ID);
+      expect(renderedLine.lineGeometry.seriesIdentifier.seriesKeys).toEqual([]);
+      expect(renderedLine.lineGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
       expect(renderedLine.lineGeometry.transform).toEqual({ x: 0, y: 0 });
     });
     test('Can render two points', () => {
@@ -667,14 +676,16 @@ describe('Rendering points - line', () => {
         lineGeometry: { points },
         indexedGeometries,
       } = renderedLine;
-      expect(points[0]).toEqual({
+      expect(points[0]).toEqual(({
         x: 0,
         y: 0,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         value: {
           accessor: 'y1',
@@ -685,15 +696,17 @@ describe('Rendering points - line', () => {
           x: 0,
           y: 0,
         },
-      } as PointGeometry);
-      expect(points[1]).toEqual({
+      } as unknown) as PointGeometry);
+      expect(points[1]).toEqual(({
         x: 100,
         y: 50,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         value: {
           accessor: 'y1',
@@ -704,7 +717,7 @@ describe('Rendering points - line', () => {
           x: 0,
           y: 0,
         },
-      } as PointGeometry);
+      } as unknown) as PointGeometry);
       expect(indexedGeometries.size).toEqual(points.length);
     });
   });
@@ -756,27 +769,23 @@ describe('Rendering points - line', () => {
     beforeEach(() => {
       firstLine = renderLine(
         0, // not applied any shift, renderGeometries applies it only with mixed charts
-        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0].data,
+        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
         CurveType.LINEAR,
-        spec1Id,
         false,
-        [],
         0,
         LIGHT_THEME.lineSeriesStyle,
       );
       secondLine = renderLine(
         0, // not applied any shift, renderGeometries applies it only with mixed charts
-        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[1].data,
+        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[1],
         xScale,
         yScales.get(GROUP_ID)!,
         'blue',
         CurveType.LINEAR,
-        spec2Id,
         false,
-        [],
         0,
         LIGHT_THEME.lineSeriesStyle,
       );
@@ -787,14 +796,16 @@ describe('Rendering points - line', () => {
         indexedGeometries,
       } = firstLine;
       expect(points.length).toEqual(2);
-      expect(points[0]).toEqual({
+      expect(points[0]).toEqual(({
         x: 0,
         y: 50,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: spec1Id,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         value: {
           accessor: 'y1',
@@ -805,15 +816,17 @@ describe('Rendering points - line', () => {
           x: 0,
           y: 0,
         },
-      } as PointGeometry);
-      expect(points[1]).toEqual({
+      } as unknown) as PointGeometry);
+      expect(points[1]).toEqual(({
         x: 100,
         y: 75,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: spec1Id,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         value: {
           accessor: 'y1',
@@ -824,7 +837,7 @@ describe('Rendering points - line', () => {
           x: 0,
           y: 0,
         },
-      } as PointGeometry);
+      } as unknown) as PointGeometry);
       expect(indexedGeometries.size).toEqual(points.length);
     });
     test('can render second spec points', () => {
@@ -833,14 +846,16 @@ describe('Rendering points - line', () => {
         indexedGeometries,
       } = secondLine;
       expect(points.length).toEqual(2);
-      expect(points[0]).toEqual({
+      expect(points[0]).toEqual(({
         x: 0,
         y: 0,
         radius: 10,
         color: 'blue',
-        geometryId: {
+        seriesIdentifier: {
           specId: spec2Id,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         value: {
           accessor: 'y1',
@@ -851,15 +866,17 @@ describe('Rendering points - line', () => {
           x: 0,
           y: 0,
         },
-      } as PointGeometry);
-      expect(points[1]).toEqual({
+      } as unknown) as PointGeometry);
+      expect(points[1]).toEqual(({
         x: 100,
         y: 50,
         radius: 10,
         color: 'blue',
-        geometryId: {
+        seriesIdentifier: {
           specId: spec2Id,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         value: {
           accessor: 'y1',
@@ -870,7 +887,7 @@ describe('Rendering points - line', () => {
           x: 0,
           y: 0,
         },
-      } as PointGeometry);
+      } as unknown) as PointGeometry);
       expect(indexedGeometries.size).toEqual(points.length);
     });
   });
@@ -904,14 +921,12 @@ describe('Rendering points - line', () => {
     beforeEach(() => {
       renderedLine = renderLine(
         0, // not applied any shift, renderGeometries applies it only with mixed charts
-        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0].data,
+        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
         CurveType.LINEAR,
-        SPEC_ID,
         false,
-        [],
         0,
         LIGHT_THEME.lineSeriesStyle,
       );
@@ -920,8 +935,8 @@ describe('Rendering points - line', () => {
       // expect(renderedLine.lineGeometry.line).toBe('ss');
       expect(renderedLine.lineGeometry.line.split('M').length - 1).toBe(3);
       expect(renderedLine.lineGeometry.color).toBe('red');
-      expect(renderedLine.lineGeometry.geometryId.seriesKey).toEqual([]);
-      expect(renderedLine.lineGeometry.geometryId.specId).toEqual(SPEC_ID);
+      expect(renderedLine.lineGeometry.seriesIdentifier.seriesKeys).toEqual([]);
+      expect(renderedLine.lineGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
       expect(renderedLine.lineGeometry.transform).toEqual({ x: 0, y: 0 });
     });
     test('Can render points', () => {
@@ -980,14 +995,12 @@ describe('Rendering points - line', () => {
     beforeEach(() => {
       renderedLine = renderLine(
         25, // adding a ideal 25px shift, generally applied by renderGeometries
-        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0].data,
+        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
         CurveType.LINEAR,
-        SPEC_ID,
         false,
-        [],
         0,
         LIGHT_THEME.lineSeriesStyle,
       );
@@ -1001,14 +1014,16 @@ describe('Rendering points - line', () => {
       expect(points.length).toBe(2);
       // will keep the 3rd point as an indexedGeometry
       expect(indexedGeometries.size).toEqual(3);
-      expect(points[0]).toEqual({
+      expect(points[0]).toEqual(({
         x: 0,
         y: 100,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         value: {
           accessor: 'y1',
@@ -1019,15 +1034,17 @@ describe('Rendering points - line', () => {
           x: 25,
           y: 0,
         },
-      } as PointGeometry);
-      expect(points[1]).toEqual({
+      } as unknown) as PointGeometry);
+      expect(points[1]).toEqual(({
         x: 50,
         y: 0,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         value: {
           accessor: 'y1',
@@ -1038,7 +1055,7 @@ describe('Rendering points - line', () => {
           x: 25,
           y: 0,
         },
-      } as PointGeometry);
+      } as unknown) as PointGeometry);
     });
   });
 });

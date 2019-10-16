@@ -12,8 +12,7 @@ import { Omit, RecursivePartial } from '../../../utils/commons';
 import { AnnotationId, AxisId, GroupId, SpecId } from '../../../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../../../utils/scales/scales';
 import { CurveType } from '../../../utils/curves';
-import { DataSeriesColorsValues, RawDataSeriesDatum } from './series';
-import { GeometryId } from '../rendering/rendering';
+import { SeriesCollectionValue, RawDataSeriesDatum, SeriesIdentifier } from './series';
 import { AnnotationTooltipFormatter } from '../annotations/annotation_utils';
 
 export type Datum = any;
@@ -30,7 +29,7 @@ export type PointStyleOverride = RecursivePartial<PointStyle> | Color | null;
  * - `RecursivePartial<BarSeriesStyle>`: Style values to be merged with base bar styles
  * - `null`: Keep existing bar style
  */
-export type BarStyleAccessor = (datum: RawDataSeriesDatum, geometryId: GeometryId) => BarStyleOverride;
+export type BarStyleAccessor = (datum: RawDataSeriesDatum, seriesIdentifier: SeriesIdentifier) => BarStyleOverride;
 /**
  * Override for bar styles per datum
  *
@@ -39,8 +38,10 @@ export type BarStyleAccessor = (datum: RawDataSeriesDatum, geometryId: GeometryI
  * - `RecursivePartial<PointStyle>`: Style values to be merged with base point styles
  * - `null`: Keep existing point style
  */
-export type PointStyleAccessor = (datum: RawDataSeriesDatum, geometryId: GeometryId) => PointStyleOverride;
+export type PointStyleAccessor = (datum: RawDataSeriesDatum, seriesIdentifier: SeriesIdentifier) => PointStyleOverride;
 export const DEFAULT_GLOBAL_ID = '__global__';
+
+export type FilterPredicate = (series: SeriesIdentifier) => boolean;
 
 interface DomainMinInterval {
   /** Custom minInterval for the domain which will affect data bucket size.
@@ -120,6 +121,8 @@ export interface SeriesSpec {
    * @default ' - lower'
    */
   y1AccessorFormat?: AccessorFormat;
+  /** Hide series in tooltip */
+  filterSeriesInTooltip?: FilterPredicate;
 }
 
 export interface Postfixes {
@@ -137,7 +140,7 @@ export interface Postfixes {
   y1AccessorFormat?: string;
 }
 
-export type CustomSeriesColorsMap = Map<DataSeriesColorsValues, string>;
+export type CustomSeriesColorsMap = Map<SeriesCollectionValue, string>;
 
 export interface SeriesAccessors {
   /** The field name of the x value on Datum object */

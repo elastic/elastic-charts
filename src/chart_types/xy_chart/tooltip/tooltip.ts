@@ -1,12 +1,12 @@
 import { TooltipValue, isFollowTooltipType, TooltipType, TooltipValueFormatter } from '../utils/interactions';
-import { IndexedGeometry, isPointOnGeometry, AccessorType } from '../rendering/rendering';
-import { getColorValuesAsString } from '../utils/series';
+import { IndexedGeometry, isPointOnGeometry, BandedAccessorType } from '../rendering/rendering';
 import { AxisSpec, BasicSeriesSpec, Rotation, isAreaSeriesSpec, isBandedSpec, isBarSeriesSpec } from '../utils/specs';
 import { SpecId, AxisId, GroupId } from '../../../utils/ids';
 import { getAxesSpecForSpecId } from '../store/utils';
 import { Scale } from '../../../utils/scales/scales';
 import { Point } from '../store/chart_state';
 import { getAccessorFormatLabel } from '../../../utils/accessor';
+import { getSeriesKey } from '../utils/series';
 
 export interface TooltipLegendValue {
   y0: any;
@@ -39,40 +39,41 @@ export function getSeriesTooltipValues(
       [yAccessor]: seriesValue,
     });
   });
-
   return seriesTooltipValues;
 }
 
 export function formatTooltip(
-  { color, value: { x, y, accessor }, geometryId: { seriesKey } }: IndexedGeometry,
+  { color, value: { x, y, accessor }, seriesIdentifier }: IndexedGeometry,
   spec: BasicSeriesSpec,
   isXValue: boolean,
   isHighlighted: boolean,
   axisSpec?: AxisSpec,
 ): TooltipValue {
-  const seriesKeyAsString = getColorValuesAsString(seriesKey, spec.id);
+  const seriesKey = getSeriesKey(seriesIdentifier);
   let displayName: string | undefined;
-  if (seriesKey.length > 0) {
-    displayName = seriesKey.join(' - ');
+  if (seriesIdentifier.seriesKeys.length > 0) {
+    displayName = seriesIdentifier.seriesKeys.join(' - ');
   } else {
     displayName = spec.name || `${spec.id}`;
   }
 
   if (isBandedSpec(spec.y0Accessors) && (isAreaSeriesSpec(spec) || isBarSeriesSpec(spec))) {
     const { y0AccessorFormat = Y0_ACCESSOR_POSTFIX, y1AccessorFormat = Y1_ACCESSOR_POSTFIX } = spec;
-    const formatter = accessor === AccessorType.Y0 ? y0AccessorFormat : y1AccessorFormat;
+    const formatter = accessor === BandedAccessorType.Y0 ? y0AccessorFormat : y1AccessorFormat;
     displayName = getAccessorFormatLabel(formatter, displayName);
   }
+  const isVisible = spec.filterSeriesInTooltip !== undefined ? spec.filterSeriesInTooltip(seriesIdentifier) : true;
 
   const value = isXValue ? x : y;
   return {
-    seriesKey: seriesKeyAsString,
+    seriesKey,
     name: displayName,
     value: axisSpec ? axisSpec.tickFormat(value) : emptyFormatter(value),
     color,
     isHighlighted: isXValue ? false : isHighlighted,
     isXValue,
     yAccessor: accessor,
+    isVisible,
   };
 }
 
@@ -115,7 +116,7 @@ export function getTooltipAndHighlightFromXValue(
     .filter(({ value: { y } }) => y !== null)
     .reduce<TooltipValue[]>((acc, indexedGeometry) => {
       const {
-        geometryId: { specId },
+        seriesIdentifier: { specId },
       } = indexedGeometry;
       const spec = seriesSpecs.get(specId);
 

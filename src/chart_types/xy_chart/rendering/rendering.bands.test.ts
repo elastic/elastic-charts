@@ -42,27 +42,25 @@ describe('Rendering bands - areas', () => {
     beforeEach(() => {
       renderedArea = renderArea(
         25, // adding a ideal 25px shift, generally applied by renderGeometries
-        [],
+        { ...pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0], data: [] },
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
         CurveType.LINEAR,
-        SPEC_ID,
         true,
-        [],
         0,
         LIGHT_THEME.areaSeriesStyle,
       );
     });
     test('Render geometry but empty upper and lower lines and area paths', () => {
       const {
-        areaGeometry: { lines, area, color, geometryId, transform },
+        areaGeometry: { lines, area, color, seriesIdentifier, transform },
       } = renderedArea;
       expect(lines.length).toBe(0);
       expect(area).toBe('');
       expect(color).toBe('red');
-      expect(geometryId.seriesKey).toEqual([]);
-      expect(geometryId.specId).toEqual(SPEC_ID);
+      expect(seriesIdentifier.seriesKeys).toEqual([]);
+      expect(seriesIdentifier.specId).toEqual(SPEC_ID);
       expect(transform).toEqual({ x: 25, y: 0 });
     });
   });
@@ -96,29 +94,27 @@ describe('Rendering bands - areas', () => {
     beforeEach(() => {
       renderedArea = renderArea(
         25, // adding a ideal 25px shift, generally applied by renderGeometries
-        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0].data,
+        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
         CurveType.LINEAR,
-        SPEC_ID,
         true,
-        [],
         0,
         LIGHT_THEME.areaSeriesStyle,
       );
     });
     test('Can render upper and lower lines and area paths', () => {
       const {
-        areaGeometry: { lines, area, color, geometryId, transform },
+        areaGeometry: { lines, area, color, seriesIdentifier, transform },
       } = renderedArea;
       expect(lines.length).toBe(2);
       expect(lines[0]).toBe('M0,0L50,50');
       expect(lines[1]).toBe('M0,80L50,70');
       expect(area).toBe('M0,0L50,50L50,70L0,80Z');
       expect(color).toBe('red');
-      expect(geometryId.seriesKey).toEqual([]);
-      expect(geometryId.specId).toEqual(SPEC_ID);
+      expect(seriesIdentifier.seriesKeys).toEqual([]);
+      expect(seriesIdentifier.specId).toEqual(SPEC_ID);
       expect(transform).toEqual({ x: 25, y: 0 });
     });
 
@@ -127,55 +123,60 @@ describe('Rendering bands - areas', () => {
         areaGeometry: { points },
       } = renderedArea;
       expect(points.length).toBe(4);
-      expect(points[0]).toEqual({
+      expect(points[0]).toEqual(({
         x: 0,
         y: 80,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
+        styleOverrides: undefined,
         value: {
           accessor: 'y0',
           x: 0,
           y: 2,
         },
-
         transform: {
           x: 25,
           y: 0,
         },
-      } as PointGeometry);
+      } as unknown) as PointGeometry);
 
-      expect(points[1]).toEqual({
+      expect(points[1]).toEqual(({
         x: 0,
         y: 0,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         value: {
           accessor: 'y1',
           x: 0,
           y: 10,
         },
-
         transform: {
           x: 25,
           y: 0,
         },
-      } as PointGeometry);
-      expect(points[2]).toEqual({
+      } as unknown) as PointGeometry);
+      expect(points[2]).toEqual(({
         x: 50,
         y: 70,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         value: {
           accessor: 'y0',
@@ -186,15 +187,17 @@ describe('Rendering bands - areas', () => {
           x: 25,
           y: 0,
         },
-      } as PointGeometry);
-      expect(points[3]).toEqual({
+      } as unknown) as PointGeometry);
+      expect(points[3]).toEqual(({
         x: 50,
         y: 50,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         value: {
           accessor: 'y1',
@@ -205,7 +208,7 @@ describe('Rendering bands - areas', () => {
           x: 25,
           y: 0,
         },
-      } as PointGeometry);
+      } as unknown) as PointGeometry);
     });
   });
   describe('Single band area chart with null values', () => {
@@ -238,29 +241,27 @@ describe('Rendering bands - areas', () => {
     beforeEach(() => {
       renderedArea = renderArea(
         25, // adding a ideal 25px shift, generally applied by renderGeometries
-        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0].data,
+        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
         CurveType.LINEAR,
-        SPEC_ID,
         true,
-        [],
         0,
         LIGHT_THEME.areaSeriesStyle,
       );
     });
     test('Can render upper and lower lines and area paths', () => {
       const {
-        areaGeometry: { lines, area, color, geometryId, transform },
+        areaGeometry: { lines, area, color, seriesIdentifier, transform },
       } = renderedArea;
       expect(lines.length).toBe(2);
       expect(lines[0]).toBe('M0,0ZM50,50L75,50');
       expect(lines[1]).toBe('M0,80ZM50,70L75,70');
       expect(area).toBe('M0,0L0,80ZM50,50L75,50L75,70L50,70Z');
       expect(color).toBe('red');
-      expect(geometryId.seriesKey).toEqual([]);
-      expect(geometryId.specId).toEqual(SPEC_ID);
+      expect(seriesIdentifier.seriesKeys).toEqual([]);
+      expect(seriesIdentifier.specId).toEqual(SPEC_ID);
       expect(transform).toEqual({ x: 25, y: 0 });
     });
 
@@ -270,55 +271,59 @@ describe('Rendering bands - areas', () => {
       } = renderedArea;
       // expect(points).toBe(6);
       expect(points.length).toBe(6);
-      expect(points[0]).toEqual({
+      expect(points[0]).toEqual(({
         x: 0,
         y: 80,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         value: {
           accessor: 'y0',
           x: 0,
           y: 2,
         },
-
         transform: {
           x: 25,
           y: 0,
         },
-      } as PointGeometry);
+      } as unknown) as PointGeometry);
 
-      expect(points[1]).toEqual({
+      expect(points[1]).toEqual(({
         x: 0,
         y: 0,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         value: {
           accessor: 'y1',
           x: 0,
           y: 10,
         },
-
         transform: {
           x: 25,
           y: 0,
         },
-      } as PointGeometry);
-      expect(points[2]).toEqual({
+      } as unknown) as PointGeometry);
+      expect(points[2]).toEqual(({
         x: 50,
         y: 70,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         value: {
           accessor: 'y0',
@@ -329,15 +334,17 @@ describe('Rendering bands - areas', () => {
           x: 25,
           y: 0,
         },
-      } as PointGeometry);
-      expect(points[3]).toEqual({
+      } as unknown) as PointGeometry);
+      expect(points[3]).toEqual(({
         x: 50,
         y: 50,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         value: {
           accessor: 'y1',
@@ -348,15 +355,17 @@ describe('Rendering bands - areas', () => {
           x: 25,
           y: 0,
         },
-      } as PointGeometry);
-      expect(points[4]).toEqual({
+      } as unknown) as PointGeometry);
+      expect(points[4]).toEqual(({
         x: 75,
         y: 70,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         value: {
           accessor: 'y0',
@@ -367,15 +376,17 @@ describe('Rendering bands - areas', () => {
           x: 25,
           y: 0,
         },
-      } as PointGeometry);
-      expect(points[5]).toEqual({
+      } as unknown) as PointGeometry);
+      expect(points[5]).toEqual(({
         x: 75,
         y: 50,
         radius: 10,
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         value: {
           accessor: 'y1',
@@ -386,7 +397,7 @@ describe('Rendering bands - areas', () => {
           x: 25,
           y: 0,
         },
-      } as PointGeometry);
+      } as unknown) as PointGeometry);
     });
   });
   describe('Single series band bar chart - ordinal', () => {
@@ -404,7 +415,7 @@ describe('Rendering bands - areas', () => {
     };
     const barSeriesMap = new Map<SpecId, BarSeriesSpec>();
     barSeriesMap.set(SPEC_ID, barSeriesSpec);
-    const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
+    const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map(), series);
     const xScale = computeXScale({
       xDomain: barSeriesDomains.xDomain,
       totalBarsInCluster: barSeriesMap.size,
@@ -415,12 +426,10 @@ describe('Rendering bands - areas', () => {
     test('Can render two bars', () => {
       const { barGeometries } = renderBars(
         0,
-        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0].data,
+        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
-        SPEC_ID,
-        [],
         LIGHT_THEME.barSeriesStyle,
       );
       expect(barGeometries.length).toBe(3);
@@ -435,9 +444,11 @@ describe('Rendering bands - areas', () => {
           x: 0,
           y: 10,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -470,9 +481,11 @@ describe('Rendering bands - areas', () => {
           x: 2,
           y: 5,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -505,9 +518,11 @@ describe('Rendering bands - areas', () => {
           x: 3,
           y: 8,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         displayValue: undefined,
         seriesStyle: {

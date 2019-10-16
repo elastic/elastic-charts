@@ -33,6 +33,7 @@ import * as TestDatasets from '../src/utils/data_samples/test_dataset';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 
 import { TEST_DATASET_DISCOVER } from '../src/utils/data_samples/test_dataset_discover_per_30s';
+import { FilterPredicate } from '../src/chart_types/xy_chart/utils/specs';
 import { getRandomNumber } from '../src/utils/data_generators/simple_noise';
 import { getChartRotationKnob } from './common';
 
@@ -803,6 +804,14 @@ storiesOf('Bar Chart', module)
     );
   })
   .add('2y2g', () => {
+    const isVisibleFunction: FilterPredicate = (series) => {
+      return series.splitAccessors.size > 0
+        ? series.specId === getSpecId('bars') &&
+            series.yAccessor === 'y1' &&
+            series.splitAccessors.get('g1') === 'cloudflare.com'
+        : series.specId === getSpecId('bars') && series.yAccessor === 'y1';
+    };
+
     return (
       <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
@@ -820,8 +829,38 @@ storiesOf('Bar Chart', module)
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y1', 'y2']}
-          splitSeriesAccessors={['g1', 'g2']}
+          splitSeriesAccessors={['g1', 'g2', 'g3']}
           data={TestDatasets.BARCHART_2Y2G}
+          filterSeriesInTooltip={isVisibleFunction}
+        />
+      </Chart>
+    );
+  })
+  .add('tooltip series visibility', () => {
+    const isVisibleFunction: FilterPredicate = (series) => {
+      return series.splitAccessors.get('g1') === 'cloudflare.com';
+    };
+
+    return (
+      <Chart className={'story-chart'}>
+        <Settings showLegend={true} legendPosition={Position.Right} />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+        <Axis
+          id={getAxisId('left2')}
+          title={'Left axis'}
+          position={Position.Left}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
+        />
+
+        <BarSeries
+          id={getSpecId('bars1')}
+          xScaleType={ScaleType.Ordinal}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y1', 'y2']}
+          splitSeriesAccessors={['g1', 'g2', 'g3']}
+          data={TestDatasets.BARCHART_2Y2G}
+          filterSeriesInTooltip={isVisibleFunction}
         />
       </Chart>
     );

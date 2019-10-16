@@ -10,7 +10,7 @@ import {
   CurveType,
   CustomSeriesColorsMap,
   DataGenerator,
-  DataSeriesColorsValues,
+  SeriesCollectionValue,
   DEFAULT_MISSING_COLOR,
   getAxisId,
   getSpecId,
@@ -582,14 +582,18 @@ storiesOf('Stylings', module)
   )
   .add('custom series colors through spec props', () => {
     const barCustomSeriesColors: CustomSeriesColorsMap = new Map();
-    const barDataSeriesColorValues: DataSeriesColorsValues = {
-      colorValues: ['cloudflare.com', 'direct-cdn', 'y2'],
+    const barDataSeriesColorValues: SeriesCollectionValue = {
+      seriesKeys: ['cloudflare.com', 'direct-cdn', 'y2'],
       specId: getSpecId('bars'),
+      yAccessor: 'y1',
+      splitAccessors: new Map(),
     };
 
     const lineCustomSeriesColors: CustomSeriesColorsMap = new Map();
-    const lineDataSeriesColorValues: DataSeriesColorsValues = {
-      colorValues: [],
+    const lineDataSeriesColorValues: SeriesCollectionValue = {
+      seriesKeys: [],
+      yAccessor: 'y1',
+      splitAccessors: new Map(),
       specId: getSpecId('lines'),
     };
 

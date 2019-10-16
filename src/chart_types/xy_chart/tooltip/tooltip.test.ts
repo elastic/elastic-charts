@@ -56,9 +56,11 @@ describe('Tooltip formatting', () => {
     width: 0,
     height: 0,
     color: 'blue',
-    geometryId: {
+    seriesIdentifier: {
       specId: SPEC_ID_1,
-      seriesKey: [],
+      yAccessor: 'y1',
+      splitAccessors: new Map(),
+      seriesKeys: [],
     },
     value: {
       x: 1,
@@ -73,9 +75,11 @@ describe('Tooltip formatting', () => {
     width: 0,
     height: 0,
     color: 'blue',
-    geometryId: {
+    seriesIdentifier: {
       specId: SPEC_ID_1,
-      seriesKey: [],
+      yAccessor: 'y1',
+      splitAccessors: new Map(),
+      seriesKeys: [],
     },
     value: {
       x: 1,
@@ -176,12 +180,14 @@ describe('Tooltip formatting', () => {
     );
     expect(tooltipValue.name).toBe('[min] bar_1');
   });
-  test('format tooltip with seriesKey name', () => {
+  test('format tooltip with seriesKeys name', () => {
     const geometry: BarGeometry = {
       ...indexedGeometry,
-      geometryId: {
+      seriesIdentifier: {
         specId: SPEC_ID_1,
-        seriesKey: ['y1'],
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['y1'],
       },
     };
     const tooltipValue = formatTooltip(geometry, SPEC_1, false, false, YAXIS_SPEC);

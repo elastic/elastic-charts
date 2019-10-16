@@ -8,7 +8,7 @@ import { Position } from '../../chart_types/xy_chart/utils/specs';
 import { LegendItem } from './legend_item';
 import { Theme } from '../../utils/themes/theme';
 import { TooltipLegendValue } from '../../chart_types/xy_chart/tooltip/tooltip';
-import { AccessorType } from '../../chart_types/xy_chart/rendering/rendering';
+import { BandedAccessorType } from '../../chart_types/xy_chart/rendering/rendering';
 
 interface LegendProps {
   chartStore?: ChartStore; // FIX until we find a better way on ts mobx
@@ -154,13 +154,13 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
 
   private getItemLabel(
     { banded, label, y1AccessorFormat, y0AccessorFormat }: SeriesLegendItem,
-    yAccessor: AccessorType,
+    yAccessor: BandedAccessorType,
   ) {
     if (!banded) {
       return label;
     }
 
-    return yAccessor === AccessorType.Y1 ? `${label}${y1AccessorFormat}` : `${label}${y0AccessorFormat}`;
+    return yAccessor === BandedAccessorType.Y1 ? `${label}${y1AccessorFormat}` : `${label}${y0AccessorFormat}`;
   }
 
   private renderLegendElement = (item: SeriesLegendItem) => {
@@ -170,7 +170,7 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
     const legendValues = this.getLegendValues(tooltipValues, key, banded);
 
     return legendValues.map((value, index) => {
-      const yAccessor: AccessorType = index === 0 ? AccessorType.Y1 : AccessorType.Y0;
+      const yAccessor: BandedAccessorType = index === 0 ? BandedAccessorType.Y1 : BandedAccessorType.Y0;
       return (
         <LegendItem
           {...item}

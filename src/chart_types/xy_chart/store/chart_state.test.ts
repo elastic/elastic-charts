@@ -1,5 +1,5 @@
 import { LegendItem } from '../legend/legend';
-import { GeometryValue, IndexedGeometry, AccessorType } from '../rendering/rendering';
+import { GeometryValue, IndexedGeometry, BandedAccessorType } from '../rendering/rendering';
 import {
   AnnotationDomainTypes,
   AnnotationSpec,
@@ -768,6 +768,7 @@ describe('Chart Store', () => {
       isXValue: false,
       seriesKey: 'a',
       yAccessor: 'y',
+      isVisible: true,
     };
     store.cursorPosition.x = -1;
     store.cursorPosition.y = 1;
@@ -878,6 +879,7 @@ describe('Chart Store', () => {
       isXValue: false,
       seriesKey: 'a',
       yAccessor: 'y',
+      isVisible: true,
     };
     store.xScale = new ScaleContinuous({ type: ScaleType.Linear, domain: [0, 100], range: [0, 100] });
     store.cursorPosition.x = 1;
@@ -916,9 +918,11 @@ describe('Chart Store', () => {
     };
     const geom1: IndexedGeometry = {
       color: 'red',
-      geometryId: {
+      seriesIdentifier: {
         specId: getSpecId('specId1'),
-        seriesKey: [2],
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: [2],
       },
       value: {
         x: 0,
@@ -933,9 +937,11 @@ describe('Chart Store', () => {
     };
     const geom2: IndexedGeometry = {
       color: 'blue',
-      geometryId: {
+      seriesIdentifier: {
         specId: getSpecId('specId2'),
-        seriesKey: [2],
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: [2],
       },
       value: {
         x: 0,
@@ -1007,7 +1013,7 @@ describe('Chart Store', () => {
     store.annotationSpecs.set(rectAnnotationSpec.annotationId, rectAnnotationSpec);
     store.annotationDimensions.set(rectAnnotationSpec.annotationId, annotationDimensions);
 
-    const highlightedTooltipValue = {
+    const highlightedTooltipValue: TooltipValue = {
       name: 'foo',
       value: 1,
       color: 'color',
@@ -1015,8 +1021,9 @@ describe('Chart Store', () => {
       isXValue: false,
       seriesKey: 'foo',
       yAccessor: 'y',
+      isVisible: true,
     };
-    const unhighlightedTooltipValue = {
+    const unhighlightedTooltipValue: TooltipValue = {
       name: 'foo',
       value: 1,
       color: 'color',
@@ -1024,6 +1031,7 @@ describe('Chart Store', () => {
       isXValue: false,
       seriesKey: 'foo',
       yAccessor: 'y',
+      isVisible: true,
     };
 
     const expectedRectTooltipState = {
@@ -1051,7 +1059,8 @@ describe('Chart Store', () => {
       isHighlighted: false,
       isXValue: true,
       seriesKey: 'headerSeries',
-      yAccessor: AccessorType.Y0,
+      isVisible: true,
+      yAccessor: BandedAccessorType.Y0,
     };
 
     store.tooltipData.replace([headerValue]);
@@ -1063,8 +1072,9 @@ describe('Chart Store', () => {
       color: 'a',
       isHighlighted: false,
       isXValue: false,
-      seriesKey: 'seriesKey',
-      yAccessor: AccessorType.Y1,
+      seriesKey: 'seriesKeys',
+      isVisible: true,
+      yAccessor: BandedAccessorType.Y1,
     };
     store.tooltipData.replace([headerValue, tooltipValue]);
 
@@ -1111,9 +1121,11 @@ describe('Chart Store', () => {
       store.onBrushEndListener = brushEndListener;
       const geom1: IndexedGeometry = {
         color: 'red',
-        geometryId: {
+        seriesIdentifier: {
           specId: getSpecId('specId1'),
-          seriesKey: [2],
+          yAccessor: 'y1',
+          splitAccessors: new Map(),
+          seriesKeys: [2],
         },
         value: {
           x: 0,

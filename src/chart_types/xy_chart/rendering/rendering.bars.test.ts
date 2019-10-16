@@ -37,12 +37,10 @@ describe('Rendering bars', () => {
     test('Can render two bars within domain', () => {
       const { barGeometries } = renderBars(
         0,
-        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0].data,
+        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
-        SPEC_ID,
-        [],
         LIGHT_THEME.barSeriesStyle,
       );
 
@@ -57,9 +55,11 @@ describe('Rendering bars', () => {
           x: 0,
           y: 10,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -92,9 +92,11 @@ describe('Rendering bars', () => {
           x: 1,
           y: 5,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -122,12 +124,10 @@ describe('Rendering bars', () => {
       const valueFormatter = identity;
       const { barGeometries } = renderBars(
         0,
-        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0].data,
+        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
-        SPEC_ID,
-        [],
         LIGHT_THEME.barSeriesStyle,
         { valueFormatter, showValueLabel: true, isAlternatingValueLabel: true },
       );
@@ -137,12 +137,10 @@ describe('Rendering bars', () => {
     test('Can hide value labels if no formatter or showValueLabels is false/undefined', () => {
       const { barGeometries } = renderBars(
         0,
-        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0].data,
+        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
-        SPEC_ID,
-        [],
         LIGHT_THEME.barSeriesStyle,
         {},
       );
@@ -153,12 +151,10 @@ describe('Rendering bars', () => {
       const valueFormatter = identity;
       const { barGeometries } = renderBars(
         0,
-        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0].data,
+        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
-        SPEC_ID,
-        [],
         LIGHT_THEME.barSeriesStyle,
         { valueFormatter, showValueLabel: true, isAlternatingValueLabel: true },
       );
@@ -170,12 +166,10 @@ describe('Rendering bars', () => {
       const valueFormatter = identity;
       const { barGeometries } = renderBars(
         0,
-        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0].data,
+        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
-        SPEC_ID,
-        [],
         LIGHT_THEME.barSeriesStyle,
         { valueFormatter, showValueLabel: true, isValueContainedInElement: true },
       );
@@ -221,12 +215,10 @@ describe('Rendering bars', () => {
     test('can render first spec bars', () => {
       const { barGeometries } = renderBars(
         0,
-        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0].data,
+        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
-        spec1Id,
-        [],
         LIGHT_THEME.barSeriesStyle,
       );
       expect(barGeometries.length).toEqual(2);
@@ -241,9 +233,11 @@ describe('Rendering bars', () => {
           x: 0,
           y: 10,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: spec1Id,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -276,9 +270,11 @@ describe('Rendering bars', () => {
           x: 1,
           y: 5,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: spec1Id,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -304,12 +300,10 @@ describe('Rendering bars', () => {
     test('can render second spec bars', () => {
       const { barGeometries } = renderBars(
         1,
-        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[1].data,
+        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[1],
         xScale,
         yScales.get(GROUP_ID)!,
         'blue',
-        spec2Id,
-        [],
         LIGHT_THEME.barSeriesStyle,
       );
       expect(barGeometries.length).toEqual(2);
@@ -324,9 +318,11 @@ describe('Rendering bars', () => {
           x: 0,
           y: 20,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: spec2Id,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -359,9 +355,11 @@ describe('Rendering bars', () => {
           x: 1,
           y: 10,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: spec2Id,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -410,12 +408,10 @@ describe('Rendering bars', () => {
     test('Can render two bars', () => {
       const { barGeometries } = renderBars(
         0,
-        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0].data,
+        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
-        SPEC_ID,
-        [],
         LIGHT_THEME.barSeriesStyle,
       );
       expect(barGeometries[0]).toEqual({
@@ -429,9 +425,11 @@ describe('Rendering bars', () => {
           x: 0,
           y: 10,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -464,9 +462,11 @@ describe('Rendering bars', () => {
           x: 1,
           y: 5,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: SPEC_ID,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -515,12 +515,10 @@ describe('Rendering bars', () => {
     test('Can render correct bar height', () => {
       const { barGeometries } = renderBars(
         0,
-        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0].data,
+        { ...barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0], data: [] },
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
-        SPEC_ID,
-        [],
         LIGHT_THEME.barSeriesStyle,
       );
       expect(barGeometries.length).toBe(6);
@@ -569,12 +567,10 @@ describe('Rendering bars', () => {
     test('can render first spec bars', () => {
       const { barGeometries } = renderBars(
         0,
-        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0].data,
+        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
-        spec1Id,
-        [],
         LIGHT_THEME.barSeriesStyle,
       );
       expect(barGeometries.length).toEqual(2);
@@ -589,9 +585,11 @@ describe('Rendering bars', () => {
           x: 0,
           y: 10,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: spec1Id,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -624,9 +622,11 @@ describe('Rendering bars', () => {
           x: 1,
           y: 5,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: spec1Id,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -652,12 +652,10 @@ describe('Rendering bars', () => {
     test('can render second spec bars', () => {
       const { barGeometries } = renderBars(
         1,
-        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[1].data,
+        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[1],
         xScale,
         yScales.get(GROUP_ID)!,
         'blue',
-        spec2Id,
-        [],
         LIGHT_THEME.barSeriesStyle,
       );
       expect(barGeometries.length).toEqual(2);
@@ -672,9 +670,11 @@ describe('Rendering bars', () => {
           x: 0,
           y: 20,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: spec2Id,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -707,9 +707,11 @@ describe('Rendering bars', () => {
           x: 1,
           y: 10,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: spec2Id,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -772,12 +774,10 @@ describe('Rendering bars', () => {
     test('can render first spec bars', () => {
       const { barGeometries } = renderBars(
         0,
-        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0].data,
+        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
-        spec1Id,
-        [],
         LIGHT_THEME.barSeriesStyle,
       );
       expect(barGeometries.length).toEqual(2);
@@ -792,9 +792,11 @@ describe('Rendering bars', () => {
           x: 1546300800000,
           y: 10,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: spec1Id,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -827,9 +829,11 @@ describe('Rendering bars', () => {
           x: 1546387200000,
           y: 5,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: spec1Id,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -855,12 +859,10 @@ describe('Rendering bars', () => {
     test('can render second spec bars', () => {
       const { barGeometries } = renderBars(
         1,
-        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[1].data,
+        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[1],
         xScale,
         yScales.get(GROUP_ID)!,
         'blue',
-        spec2Id,
-        [],
         LIGHT_THEME.barSeriesStyle,
       );
       expect(barGeometries.length).toEqual(2);
@@ -875,9 +877,11 @@ describe('Rendering bars', () => {
           x: 1546300800000,
           y: 20,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: spec2Id,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -910,9 +914,11 @@ describe('Rendering bars', () => {
           x: 1546387200000,
           y: 10,
         },
-        geometryId: {
+        seriesIdentifier: {
           specId: spec2Id,
-          seriesKey: [],
+          yAccessor: null,
+          splitAccessors: new Map(),
+          seriesKeys: [],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -967,12 +973,10 @@ describe('Rendering bars', () => {
     test('Can render 3 bars', () => {
       const { barGeometries, indexedGeometries } = renderBars(
         0,
-        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0].data,
+        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
-        SPEC_ID,
-        [],
         LIGHT_THEME.barSeriesStyle,
       );
       expect(barGeometries.length).toBe(3);

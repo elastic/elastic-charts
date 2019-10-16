@@ -141,9 +141,7 @@ export function formatStackedDataSeriesValues(
       return a.x - b.x;
     });
     return {
-      specId: ds.specId,
-      key: ds.key,
-      seriesColorKey: ds.seriesColorKey,
+      ...ds,
       data: newData,
     };
   });

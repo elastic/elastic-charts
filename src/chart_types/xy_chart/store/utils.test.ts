@@ -1,6 +1,6 @@
 import { mergeYCustomDomainsByGroupId } from '../utils/axis_utils';
-import { IndexedGeometry, AccessorType } from '../rendering/rendering';
-import { DataSeriesColorsValues, findDataSeriesByColorValues, getSeriesColorMap } from '../utils/series';
+import { IndexedGeometry, BandedAccessorType } from '../rendering/rendering';
+import { SeriesCollectionValue, findDataSeriesByColorValues, getSeriesColorMap } from '../utils/series';
 import {
   AreaSeriesSpec,
   AxisSpec,
@@ -141,18 +141,18 @@ describe('Chart State utils', () => {
     expect(domains.formattedDataSeries.stacked).toMatchSnapshot();
     expect(domains.formattedDataSeries.nonStacked).toMatchSnapshot();
   });
-  it('should check if a DataSeriesColorValues item exists in a list of DataSeriesColorValues', () => {
-    const dataSeriesValuesA: DataSeriesColorsValues = {
+  it('should check if a SeriesCollectionValue item exists in a list of SeriesCollectionValue', () => {
+    const dataSeriesValuesA: SeriesCollectionValue = {
       specId: getSpecId('a'),
       colorValues: ['a', 'b', 'c'],
     };
 
-    const dataSeriesValuesB: DataSeriesColorsValues = {
+    const dataSeriesValuesB: SeriesCollectionValue = {
       specId: getSpecId('b'),
       colorValues: ['a', 'b', 'c'],
     };
 
-    const dataSeriesValuesC: DataSeriesColorsValues = {
+    const dataSeriesValuesC: SeriesCollectionValue = {
       specId: getSpecId('a'),
       colorValues: ['a', 'b', 'd'],
     };
@@ -163,18 +163,18 @@ describe('Chart State utils', () => {
     expect(findDataSeriesByColorValues(deselectedSeries, dataSeriesValuesC)).toBe(-1);
     expect(findDataSeriesByColorValues(null, dataSeriesValuesA)).toBe(-1);
   });
-  it('should update a list of DataSeriesColorsValues given a selected DataSeriesColorValues item', () => {
-    const dataSeriesValuesA: DataSeriesColorsValues = {
+  it('should update a list of SeriesCollectionValue given a selected SeriesCollectionValue item', () => {
+    const dataSeriesValuesA: SeriesCollectionValue = {
       specId: getSpecId('a'),
       colorValues: ['a', 'b', 'c'],
     };
 
-    const dataSeriesValuesB: DataSeriesColorsValues = {
+    const dataSeriesValuesB: SeriesCollectionValue = {
       specId: getSpecId('b'),
       colorValues: ['a', 'b', 'c'],
     };
 
-    const dataSeriesValuesC: DataSeriesColorsValues = {
+    const dataSeriesValuesC: SeriesCollectionValue = {
       specId: getSpecId('a'),
       colorValues: ['a', 'b', 'd'],
     };
@@ -1009,9 +1009,9 @@ describe('Chart State utils', () => {
         x: 0,
         y: 0,
         color: '#1EA593',
-        value: { x: 0, y: 5, accessor: AccessorType.Y1 },
+        value: { x: 0, y: 5, accessor: BandedAccessorType.Y1 },
         transform: { x: 0, y: 0 },
-        geometryId: { specId: getSpecId('line1'), seriesKey: [] },
+        seriesIdentifier: { specId: getSpecId('line1'), yAccessor: 'y1', splitAccessors: new Map(), seriesKeys: [] },
       },
     ]);
     const map2 = new Map<string, IndexedGeometry[]>();
@@ -1021,9 +1021,9 @@ describe('Chart State utils', () => {
         x: 0,
         y: 175.8,
         color: '#2B70F7',
-        value: { x: 0, y: 2, accessor: AccessorType.Y1 },
+        value: { x: 0, y: 2, accessor: BandedAccessorType.Y1 },
         transform: { x: 0, y: 0 },
-        geometryId: { specId: getSpecId('line2'), seriesKey: [] },
+        seriesIdentifier: { specId: getSpecId('line2'), yAccessor: 'y1', splitAccessors: new Map(), seriesKeys: [] },
       },
     ]);
     const merged = mergeGeometriesIndexes(map1, map2);
