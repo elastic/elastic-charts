@@ -4,7 +4,21 @@ import { Fit } from '../src/chart_types/xy_chart/utils/specs';
 
 const dg = new DataGenerator();
 // const data = dg.generateSimpleSeries(10);
-const data = [{ x: 0, y: 1 }, { x: 1, y: 2 }, { x: 2, y: null }, { x: 4, y: null }, { x: 5, y: 10 }, { x: 6, y: 15 }];
+const data = [
+  { x: 0, y: null },
+  { x: 1, y: 3 },
+  { x: 2, y: 5 },
+  { x: 3, y: null },
+  { x: 4, y: 4 },
+  { x: 5, y: null },
+  { x: 6, y: 5 },
+  { x: 7, y: 6 },
+  { x: 8, y: null },
+  { x: 9, y: null },
+  { x: 10, y: null },
+  { x: 11, y: 12 },
+  { x: 12, y: null },
+];
 
 export class Playground extends React.Component {
   render() {
@@ -13,6 +27,7 @@ export class Playground extends React.Component {
         <div className="chart">
           <Chart className="story-chart">
             <Settings
+              showLegend
               theme={{
                 areaSeriesStyle: {
                   point: {
@@ -34,9 +49,13 @@ export class Playground extends React.Component {
               yScaleType={ScaleType.Linear}
               xAccessor={'x'}
               yAccessors={['y']}
+              // curve={2}
               // splitSeriesAccessors={['g']}
               // stackAccessors={['x']}
-              fit={Fit.Average}
+              fit={{
+                type: Fit.Average,
+                endValue: 0,
+              }}
               data={data}
             />
           </Chart>
