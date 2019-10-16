@@ -75,7 +75,7 @@ class CommonPage {
   async expectChartAtUrlToMatchScreenshot(url: string) {
     try {
       await this.loadChartFromURL(url);
-      await this.waitForChartRendered();
+      await this.waitForElement();
 
       const chart = await this.screenshotDOMElement();
 
@@ -99,7 +99,7 @@ class CommonPage {
   async expectChartWithMouseAtUrlToMatchScreenshot(url: string, mousePosition: { x: number; y: number }) {
     try {
       await this.loadChartFromURL(url);
-      await this.waitForChartRendered();
+      await this.waitForElement();
       await this.moveMouseRelativeToDOMElement(mousePosition);
       const chart = await this.screenshotDOMElement();
       if (!chart) {
@@ -116,7 +116,7 @@ class CommonPage {
     await page.goto(cleanUrl);
   }
 
-  async waitForChartRendered(selector = '.echChart[data-ech-render-complete=true]', timeout = 10000) {
+  async waitForElement(selector = '.echChart[data-ech-render-complete=true]', timeout = 10000) {
     await page.waitForSelector(selector, { timeout });
   }
 }
