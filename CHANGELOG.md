@@ -1,3 +1,38 @@
+## [13.5.2](https://github.com/elastic/elastic-charts/compare/v13.5.1...v13.5.2) (2019-10-10)
+
+
+### Bug Fixes
+
+* handle null y0 values on y log scale rendering ([#413](https://github.com/elastic/elastic-charts/issues/413)) ([5731c10](https://github.com/elastic/elastic-charts/commit/5731c10))
+
+## [13.5.1](https://github.com/elastic/elastic-charts/compare/v13.5.0...v13.5.1) (2019-10-09)
+
+
+### Bug Fixes
+
+* mixing bars with line or area series breaks legend toggle ([#410](https://github.com/elastic/elastic-charts/issues/410)) ([57c0e3c](https://github.com/elastic/elastic-charts/commit/57c0e3c)), closes [#399](https://github.com/elastic/elastic-charts/issues/399)
+
+# [13.5.0](https://github.com/elastic/elastic-charts/compare/v13.4.1...v13.5.0) (2019-10-09)
+
+
+### Features
+
+* **data:** fill datasets with zeros with missing points when stacked ([#409](https://github.com/elastic/elastic-charts/issues/409)) ([ef84fd4](https://github.com/elastic/elastic-charts/commit/ef84fd4)), closes [#388](https://github.com/elastic/elastic-charts/issues/388)
+
+## [13.4.1](https://github.com/elastic/elastic-charts/compare/v13.4.0...v13.4.1) (2019-10-09)
+
+
+### Bug Fixes
+
+* **tooltip:** fix spec naming ([#412](https://github.com/elastic/elastic-charts/issues/412)) ([3690cca](https://github.com/elastic/elastic-charts/commit/3690cca)), closes [#411](https://github.com/elastic/elastic-charts/issues/411)
+
+# [13.4.0](https://github.com/elastic/elastic-charts/compare/v13.3.0...v13.4.0) (2019-10-07)
+
+
+### Features
+
+* banded legend values ([#398](https://github.com/elastic/elastic-charts/issues/398) & [#408](https://github.com/elastic/elastic-charts/issues/408)) ([5c35a4d](https://github.com/elastic/elastic-charts/commit/5c35a4d)), closes [#162](https://github.com/elastic/elastic-charts/issues/162)
+
 # [13.3.0](https://github.com/elastic/elastic-charts/compare/v13.2.0...v13.3.0) (2019-10-02)
 
 

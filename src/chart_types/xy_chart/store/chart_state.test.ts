@@ -1,5 +1,5 @@
 import { LegendItem } from '../legend/legend';
-import { GeometryValue, IndexedGeometry } from '../rendering/rendering';
+import { GeometryValue, IndexedGeometry, BandedAccessorType } from '../rendering/rendering';
 import {
   AnnotationDomainTypes,
   AnnotationSpec,
@@ -48,8 +48,14 @@ describe('Chart Store', () => {
       colorValues: [],
     },
     displayValue: {
-      raw: 'last',
-      formatted: 'formatted-last',
+      raw: {
+        y1: null,
+        y0: null,
+      },
+      formatted: {
+        y1: 'formatted-last',
+        y0: null,
+      },
     },
   };
 
@@ -62,8 +68,14 @@ describe('Chart Store', () => {
       colorValues: [],
     },
     displayValue: {
-      raw: 'last',
-      formatted: 'formatted-last',
+      raw: {
+        y1: null,
+        y0: null,
+      },
+      formatted: {
+        y1: 'formatted-last',
+        y0: null,
+      },
     },
   };
   beforeEach(() => {
@@ -754,7 +766,7 @@ describe('Chart Store', () => {
       color: 'a',
       isHighlighted: false,
       isXValue: false,
-      seriesKeys: 'a',
+      seriesKey: 'a',
       yAccessor: 'y',
       isVisible: true,
     };
@@ -865,7 +877,7 @@ describe('Chart Store', () => {
       color: 'a',
       isHighlighted: false,
       isXValue: false,
-      seriesKeys: 'a',
+      seriesKey: 'a',
       yAccessor: 'y',
       isVisible: true,
     };
@@ -1001,23 +1013,23 @@ describe('Chart Store', () => {
     store.annotationSpecs.set(rectAnnotationSpec.annotationId, rectAnnotationSpec);
     store.annotationDimensions.set(rectAnnotationSpec.annotationId, annotationDimensions);
 
-    const highlightedTooltipValue = {
+    const highlightedTooltipValue: TooltipValue = {
       name: 'foo',
       value: 1,
       color: 'color',
       isHighlighted: true,
       isXValue: false,
-      seriesKeys: 'foo',
+      seriesKey: 'foo',
       yAccessor: 'y',
       isVisible: true,
     };
-    const unhighlightedTooltipValue = {
+    const unhighlightedTooltipValue: TooltipValue = {
       name: 'foo',
       value: 1,
       color: 'color',
       isHighlighted: false,
       isXValue: false,
-      seriesKeys: 'foo',
+      seriesKey: 'foo',
       yAccessor: 'y',
       isVisible: true,
     };
@@ -1046,9 +1058,9 @@ describe('Chart Store', () => {
       color: 'a',
       isHighlighted: false,
       isXValue: true,
-      seriesKeys: 'headerSeries',
-      yAccessor: 'y',
+      seriesKey: 'headerSeries',
       isVisible: true,
+      yAccessor: BandedAccessorType.Y0,
     };
 
     store.tooltipData.replace([headerValue]);
@@ -1060,15 +1072,19 @@ describe('Chart Store', () => {
       color: 'a',
       isHighlighted: false,
       isXValue: false,
-      seriesKeys: 'seriesKeys',
-      yAccessor: 'y',
+      seriesKey: 'seriesKeys',
       isVisible: true,
+      yAccessor: BandedAccessorType.Y1,
     };
     store.tooltipData.replace([headerValue, tooltipValue]);
 
     const expectedTooltipValues = new Map();
-    expectedTooltipValues.set('seriesKeys', 123);
-    expect(store.legendItemTooltipValues.get()).toEqual(expectedTooltipValues);
+    expectedTooltipValues.set('seriesKey', {
+      y0: undefined,
+      y1: 123,
+    });
+    const t = store.legendItemTooltipValues.get();
+    expect(t).toEqual(expectedTooltipValues);
   });
   describe('can determine if crosshair cursor is visible', () => {
     const brushEndListener = (): void => {

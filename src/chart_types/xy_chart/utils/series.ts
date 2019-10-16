@@ -6,6 +6,17 @@ import { formatNonStackedDataSeriesValues } from './nonstacked_series_utils';
 import { isEqualSeriesKey } from './series_utils';
 import { BasicSeriesSpec, Datum, SeriesAccessors } from './specs';
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
+import { LastValues } from '../store/utils';
+import { ScaleType } from '../../../utils/scales/scales';
+
+export interface FilledValues {
+  /** the x value */
+  x: number | string;
+  /** the max y value */
+  y1: number | null;
+  /** the minimum y value */
+  y0: number | null;
+}
 
 export interface RawDataSeriesDatum {
   /** the x value */
@@ -19,6 +30,7 @@ export interface RawDataSeriesDatum {
 }
 
 export interface DataSeriesDatum {
+  /** the x value */
   x: number | string;
   /** the max y value */
   y1: number | null;
@@ -30,6 +42,8 @@ export interface DataSeriesDatum {
   initialY0: number | null;
   /** the datum */
   datum?: any;
+  /** the list of filled values because missing or nulls */
+  filled?: Partial<FilledValues>;
 }
 
 export interface SeriesIdentifier {
@@ -63,8 +77,9 @@ export interface DataSeriesCounts {
 
 export interface DataSeriesColorsValues {
   specId: SpecId;
+  banded?: boolean;
   colorValues: any[];
-  lastValue?: any;
+  lastValue?: LastValues;
   specSortIndex?: number;
 }
 
@@ -93,13 +108,13 @@ export function splitSeries(
 ): {
   rawDataSeries: RawDataSeries[];
   colorsValues: Map<string, any[]>;
-  xValues: Set<any>;
+  xValues: Set<string | number>;
 } {
   const { xAccessor, yAccessors, y0Accessors, splitSeriesAccessors = [] } = accessors;
   const isMultipleY = yAccessors && yAccessors.length > 1;
   const series = new Map<string, RawDataSeries>();
   const colorsValues = new Map<string, any[]>();
-  const xValues = new Set<any>();
+  const xValues = new Set<string | number>();
 
   data.forEach((datum) => {
     const splitAccessors = getSplitAccessors(datum, splitSeriesAccessors);
@@ -205,6 +220,8 @@ function cleanDatum(datum: Datum, xAccessor: Accessor, yAccessor: Accessor, y0Ac
 export function getFormattedDataseries(
   specs: YBasicSeriesSpec[],
   dataSeries: Map<SpecId, RawDataSeries[]>,
+  xValues: Set<string | number>,
+  xScaleType: ScaleType,
 ): {
   stacked: FormattedDataSeries[];
   nonStacked: FormattedDataSeries[];
@@ -231,6 +248,8 @@ export function getFormattedDataseries(
       stackedDataSeries.rawDataSeries,
       false,
       isPercentageStack,
+      xValues,
+      xScaleType,
     );
     stackedFormattedDataSeries.push({
       groupId,
@@ -303,12 +322,16 @@ export function getSplittedSeries(
 ): {
   splittedSeries: Map<SpecId, RawDataSeries[]>;
   seriesColors: Map<string, DataSeriesColorsValues>;
-  xValues: Set<any>;
+  xValues: Set<string | number>;
 } {
   const splittedSeries = new Map<SpecId, RawDataSeries[]>();
   const seriesColors = new Map<string, DataSeriesColorsValues>();
-  const xValues: Set<any> = new Set();
+  let xValues: Set<string | number> = new Set();
+  let isOrdinalScale = false;
   for (const [specId, spec] of seriesSpecs) {
+    if (spec.xScaleType === ScaleType.Ordinal) {
+      isOrdinalScale = true;
+    }
     const dataSeries = splitSeries(spec.data, spec, specId);
     let currentRawDataSeries = dataSeries.rawDataSeries;
     if (deselectedDataSeries) {
@@ -326,10 +349,13 @@ export function getSplittedSeries(
 
     splittedSeries.set(specId, currentRawDataSeries);
 
+    const banded = spec.y0Accessors && spec.y0Accessors.length > 0;
+
     dataSeries.colorsValues.forEach((colorValues, key) => {
       seriesColors.set(key, {
         specId,
         specSortIndex: spec.sortIndex,
+        banded,
         colorValues,
       });
     });
@@ -338,6 +364,10 @@ export function getSplittedSeries(
       xValues.add(xValue);
     }
   }
+  // keep the user order for ordinal scales
+  if (!isOrdinalScale) {
+    xValues = new Set([...xValues].sort());
+  }
   return {
     splittedSeries,
     seriesColors,
@@ -345,18 +375,16 @@ export function getSplittedSeries(
   };
 }
 
+export function getSortIndex({ specSortIndex }: DataSeriesColorsValues, total: number): number {
+  return specSortIndex != null ? specSortIndex : total;
+}
+
 export function getSortedDataSeriesColorsValuesMap(
   colorValuesMap: Map<string, DataSeriesColorsValues>,
 ): Map<string, DataSeriesColorsValues> {
   const seriesColorsArray = [...colorValuesMap];
-  seriesColorsArray.sort((seriesA, seriesB) => {
-    const [, colorValuesA] = seriesA;
-    const [, colorValuesB] = seriesB;
-
-    const specAIndex = colorValuesA.specSortIndex != null ? colorValuesA.specSortIndex : colorValuesMap.size;
-    const specBIndex = colorValuesB.specSortIndex != null ? colorValuesB.specSortIndex : colorValuesMap.size;
-
-    return specAIndex - specBIndex;
+  seriesColorsArray.sort(([, specA], [, specB]) => {
+    return getSortIndex(specA, colorValuesMap.size) - getSortIndex(specB, colorValuesMap.size);
   });
 
   return new Map([...seriesColorsArray]);
@@ -370,14 +398,12 @@ export function getSeriesColorMap(
   const seriesColorMap = new Map<string, string>();
   let counter = 0;
 
-  seriesColors.forEach((value: DataSeriesColorsValues, seriesColorKey: string) => {
-    const customSeriesColor: string | undefined = customColors.get(seriesColorKey);
+  seriesColors.forEach((_, key) => {
+    const customSeriesColor: string | undefined = customColors.get(key);
     const color = customSeriesColor || chartColors.vizColors[counter % chartColors.vizColors.length];
 
-    seriesColorMap.set(seriesColorKey, color);
+    seriesColorMap.set(key, color);
     counter++;
   });
   return seriesColorMap;
 }
-
-export function getSeriesTooltipMap() {}

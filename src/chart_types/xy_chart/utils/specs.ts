@@ -110,19 +110,34 @@ export interface SeriesSpec {
   sortIndex?: number;
   displayValueSettings?: DisplayValueSpec;
   /**
-   * Postfix string or accessor function for y1 accesor when using `y0Accessors`
+   * Postfix string or accessor function for y1 accessor when using `y0Accessors`
    *
    * @default ' - upper'
    */
   y0AccessorFormat?: AccessorFormat;
   /**
-   * Postfix string or accessor function for y1 accesor when using `y0Accessors`
+   * Postfix string or accessor function for y1 accessor when using `y0Accessors`
    *
    * @default ' - lower'
    */
   y1AccessorFormat?: AccessorFormat;
   /** Hide series in tooltip */
   filterSeriesInTooltip?: FilterPredicate;
+}
+
+export interface Postfixes {
+  /**
+   * Postfix for y1 accessor when using `y0Accessors`
+   *
+   * @default 'upper'
+   */
+  y0AccessorFormat?: string;
+  /**
+   * Postfix for y1 accessor when using `y0Accessors`
+   *
+   * @default 'lower'
+   */
+  y1AccessorFormat?: string;
 }
 
 export type CustomSeriesColorsMap = Map<DataSeriesColorsValues, string>;
@@ -170,21 +185,22 @@ export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales;
 /**
  * This spec describe the dataset configuration used to display a bar series.
  */
-export type BarSeriesSpec = BasicSeriesSpec & {
-  /** @default bar */
-  seriesType: 'bar';
-  /** If true, will stack all BarSeries and align bars to ticks (instead of centered on ticks) */
-  enableHistogramMode?: boolean;
-  barSeriesStyle?: RecursivePartial<BarSeriesStyle>;
-  /**
-   * Stack each series in percentage for each point.
-   */
-  stackAsPercentage?: boolean;
-  /**
-   * An optional functional accessor to return custom color or style for bar datum
-   */
-  styleAccessor?: BarStyleAccessor;
-};
+export type BarSeriesSpec = BasicSeriesSpec &
+  Postfixes & {
+    /** @default bar */
+    seriesType: 'bar';
+    /** If true, will stack all BarSeries and align bars to ticks (instead of centered on ticks) */
+    enableHistogramMode?: boolean;
+    barSeriesStyle?: RecursivePartial<BarSeriesStyle>;
+    /**
+     * Stack each series in percentage for each point.
+     */
+    stackAsPercentage?: boolean;
+    /**
+     * An optional functional accessor to return custom color or style for bar datum
+     */
+    styleAccessor?: BarStyleAccessor;
+  };
 
 /**
  * This spec describe the dataset configuration used to display a histogram bar series.
@@ -213,7 +229,8 @@ export type LineSeriesSpec = BasicSeriesSpec &
  * This spec describe the dataset configuration used to display an area series.
  */
 export type AreaSeriesSpec = BasicSeriesSpec &
-  HistogramConfig & {
+  HistogramConfig &
+  Postfixes & {
     /** @default area */
     seriesType: 'area';
     /** The type of interpolator to be used to interpolate values between points */

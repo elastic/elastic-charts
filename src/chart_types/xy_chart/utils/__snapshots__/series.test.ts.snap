@@ -1368,7 +1368,7 @@ Array [
         "initialY0": null,
         "initialY1": 0,
         "x": 0,
-        "y0": 0,
+        "y0": null,
         "y1": 0,
       },
       Object {
@@ -1376,7 +1376,7 @@ Array [
         "initialY0": null,
         "initialY1": 1,
         "x": 1,
-        "y0": 0,
+        "y0": null,
         "y1": 1,
       },
       Object {
@@ -1384,7 +1384,7 @@ Array [
         "initialY0": null,
         "initialY1": 2,
         "x": 2,
-        "y0": 0,
+        "y0": null,
         "y1": 2,
       },
       Object {
@@ -1392,7 +1392,7 @@ Array [
         "initialY0": null,
         "initialY1": 3,
         "x": 3,
-        "y0": 0,
+        "y0": null,
         "y1": 3,
       },
       Object {
@@ -1400,7 +1400,7 @@ Array [
         "initialY0": null,
         "initialY1": 4,
         "x": 4,
-        "y0": 0,
+        "y0": null,
         "y1": 4,
       },
       Object {
@@ -1408,7 +1408,7 @@ Array [
         "initialY0": null,
         "initialY1": 5,
         "x": 5,
-        "y0": 0,
+        "y0": null,
         "y1": 5,
       },
       Object {
@@ -1416,7 +1416,7 @@ Array [
         "initialY0": null,
         "initialY1": 6,
         "x": 6,
-        "y0": 0,
+        "y0": null,
         "y1": 6,
       },
       Object {
@@ -1424,7 +1424,7 @@ Array [
         "initialY0": null,
         "initialY1": 7,
         "x": 7,
-        "y0": 0,
+        "y0": null,
         "y1": 7,
       },
       Object {
@@ -1432,7 +1432,7 @@ Array [
         "initialY0": null,
         "initialY1": 8,
         "x": 8,
-        "y0": 0,
+        "y0": null,
         "y1": 8,
       },
       Object {
@@ -1440,7 +1440,7 @@ Array [
         "initialY0": null,
         "initialY1": 9,
         "x": 9,
-        "y0": 0,
+        "y0": null,
         "y1": 9,
       },
       Object {
@@ -1448,7 +1448,7 @@ Array [
         "initialY0": null,
         "initialY1": 10,
         "x": 10,
-        "y0": 0,
+        "y0": null,
         "y1": 10,
       },
       Object {
@@ -1456,7 +1456,7 @@ Array [
         "initialY0": null,
         "initialY1": 11,
         "x": 11,
-        "y0": 0,
+        "y0": null,
         "y1": 11,
       },
       Object {
@@ -1464,7 +1464,7 @@ Array [
         "initialY0": null,
         "initialY1": 12,
         "x": 12,
-        "y0": 0,
+        "y0": null,
         "y1": 12,
       },
       Object {
@@ -1472,7 +1472,7 @@ Array [
         "initialY0": null,
         "initialY1": 13,
         "x": 13,
-        "y0": 0,
+        "y0": null,
         "y1": 13,
       },
       Object {
@@ -1480,7 +1480,7 @@ Array [
         "initialY0": null,
         "initialY1": 14,
         "x": 14,
-        "y0": 0,
+        "y0": null,
         "y1": 14,
       },
       Object {
@@ -1488,7 +1488,7 @@ Array [
         "initialY0": null,
         "initialY1": 15,
         "x": 15,
-        "y0": 0,
+        "y0": null,
         "y1": 15,
       },
       Object {
@@ -1496,7 +1496,7 @@ Array [
         "initialY0": null,
         "initialY1": 16,
         "x": 16,
-        "y0": 0,
+        "y0": null,
         "y1": 16,
       },
       Object {
@@ -1504,7 +1504,7 @@ Array [
         "initialY0": null,
         "initialY1": 17,
         "x": 17,
-        "y0": 0,
+        "y0": null,
         "y1": 17,
       },
       Object {
@@ -1512,7 +1512,7 @@ Array [
         "initialY0": null,
         "initialY1": 18,
         "x": 18,
-        "y0": 0,
+        "y0": null,
         "y1": 18,
       },
       Object {
@@ -1520,7 +1520,7 @@ Array [
         "initialY0": null,
         "initialY1": 19,
         "x": 19,
-        "y0": 0,
+        "y0": null,
         "y1": 19,
       },
       Object {
@@ -1528,7 +1528,7 @@ Array [
         "initialY0": null,
         "initialY1": 20,
         "x": 20,
-        "y0": 0,
+        "y0": null,
         "y1": 20,
       },
       Object {
@@ -1536,7 +1536,7 @@ Array [
         "initialY0": null,
         "initialY1": 21,
         "x": 21,
-        "y0": 0,
+        "y0": null,
         "y1": 21,
       },
       Object {
@@ -1544,7 +1544,7 @@ Array [
         "initialY0": null,
         "initialY1": 22,
         "x": 22,
-        "y0": 0,
+        "y0": null,
         "y1": 22,
       },
       Object {
@@ -1552,7 +1552,7 @@ Array [
         "initialY0": null,
         "initialY1": 23,
         "x": 23,
-        "y0": 0,
+        "y0": null,
         "y1": 23,
       },
       Object {
@@ -1560,7 +1560,7 @@ Array [
         "initialY0": null,
         "initialY1": 24,
         "x": 24,
-        "y0": 0,
+        "y0": null,
         "y1": 24,
       },
       Object {
@@ -1568,7 +1568,7 @@ Array [
         "initialY0": null,
         "initialY1": 25,
         "x": 25,
-        "y0": 0,
+        "y0": null,
         "y1": 25,
       },
       Object {
@@ -1576,7 +1576,7 @@ Array [
         "initialY0": null,
         "initialY1": 26,
         "x": 26,
-        "y0": 0,
+        "y0": null,
         "y1": 26,
       },
       Object {
@@ -1584,7 +1584,7 @@ Array [
         "initialY0": null,
         "initialY1": 27,
         "x": 27,
-        "y0": 0,
+        "y0": null,
         "y1": 27,
       },
       Object {
@@ -1592,7 +1592,7 @@ Array [
         "initialY0": null,
         "initialY1": 28,
         "x": 28,
-        "y0": 0,
+        "y0": null,
         "y1": 28,
       },
       Object {
@@ -1600,7 +1600,7 @@ Array [
         "initialY0": null,
         "initialY1": 29,
         "x": 29,
-        "y0": 0,
+        "y0": null,
         "y1": 29,
       },
       Object {
@@ -1608,7 +1608,7 @@ Array [
         "initialY0": null,
         "initialY1": 30,
         "x": 30,
-        "y0": 0,
+        "y0": null,
         "y1": 30,
       },
       Object {
@@ -1616,7 +1616,7 @@ Array [
         "initialY0": null,
         "initialY1": 31,
         "x": 31,
-        "y0": 0,
+        "y0": null,
         "y1": 31,
       },
       Object {
@@ -1624,7 +1624,7 @@ Array [
         "initialY0": null,
         "initialY1": 32,
         "x": 32,
-        "y0": 0,
+        "y0": null,
         "y1": 32,
       },
       Object {
@@ -1632,7 +1632,7 @@ Array [
         "initialY0": null,
         "initialY1": 33,
         "x": 33,
-        "y0": 0,
+        "y0": null,
         "y1": 33,
       },
       Object {
@@ -1640,7 +1640,7 @@ Array [
         "initialY0": null,
         "initialY1": 34,
         "x": 34,
-        "y0": 0,
+        "y0": null,
         "y1": 34,
       },
       Object {
@@ -1648,7 +1648,7 @@ Array [
         "initialY0": null,
         "initialY1": 35,
         "x": 35,
-        "y0": 0,
+        "y0": null,
         "y1": 35,
       },
       Object {
@@ -1656,7 +1656,7 @@ Array [
         "initialY0": null,
         "initialY1": 36,
         "x": 36,
-        "y0": 0,
+        "y0": null,
         "y1": 36,
       },
       Object {
@@ -1664,7 +1664,7 @@ Array [
         "initialY0": null,
         "initialY1": 37,
         "x": 37,
-        "y0": 0,
+        "y0": null,
         "y1": 37,
       },
       Object {
@@ -1672,7 +1672,7 @@ Array [
         "initialY0": null,
         "initialY1": 38,
         "x": 38,
-        "y0": 0,
+        "y0": null,
         "y1": 38,
       },
       Object {
@@ -1680,7 +1680,7 @@ Array [
         "initialY0": null,
         "initialY1": 39,
         "x": 39,
-        "y0": 0,
+        "y0": null,
         "y1": 39,
       },
       Object {
@@ -1688,7 +1688,7 @@ Array [
         "initialY0": null,
         "initialY1": 40,
         "x": 40,
-        "y0": 0,
+        "y0": null,
         "y1": 40,
       },
       Object {
@@ -1696,7 +1696,7 @@ Array [
         "initialY0": null,
         "initialY1": 41,
         "x": 41,
-        "y0": 0,
+        "y0": null,
         "y1": 41,
       },
       Object {
@@ -1704,7 +1704,7 @@ Array [
         "initialY0": null,
         "initialY1": 42,
         "x": 42,
-        "y0": 0,
+        "y0": null,
         "y1": 42,
       },
       Object {
@@ -1712,7 +1712,7 @@ Array [
         "initialY0": null,
         "initialY1": 43,
         "x": 43,
-        "y0": 0,
+        "y0": null,
         "y1": 43,
       },
       Object {
@@ -1720,7 +1720,7 @@ Array [
         "initialY0": null,
         "initialY1": 44,
         "x": 44,
-        "y0": 0,
+        "y0": null,
         "y1": 44,
       },
       Object {
@@ -1728,7 +1728,7 @@ Array [
         "initialY0": null,
         "initialY1": 45,
         "x": 45,
-        "y0": 0,
+        "y0": null,
         "y1": 45,
       },
       Object {
@@ -1736,7 +1736,7 @@ Array [
         "initialY0": null,
         "initialY1": 46,
         "x": 46,
-        "y0": 0,
+        "y0": null,
         "y1": 46,
       },
       Object {
@@ -1744,7 +1744,7 @@ Array [
         "initialY0": null,
         "initialY1": 47,
         "x": 47,
-        "y0": 0,
+        "y0": null,
         "y1": 47,
       },
       Object {
@@ -1752,7 +1752,7 @@ Array [
         "initialY0": null,
         "initialY1": 48,
         "x": 48,
-        "y0": 0,
+        "y0": null,
         "y1": 48,
       },
       Object {
@@ -1760,7 +1760,7 @@ Array [
         "initialY0": null,
         "initialY1": 49,
         "x": 49,
-        "y0": 0,
+        "y0": null,
         "y1": 49,
       },
       Object {
@@ -1768,7 +1768,7 @@ Array [
         "initialY0": null,
         "initialY1": 50,
         "x": 50,
-        "y0": 0,
+        "y0": null,
         "y1": 50,
       },
       Object {
@@ -1776,7 +1776,7 @@ Array [
         "initialY0": null,
         "initialY1": 51,
         "x": 51,
-        "y0": 0,
+        "y0": null,
         "y1": 51,
       },
       Object {
@@ -1784,7 +1784,7 @@ Array [
         "initialY0": null,
         "initialY1": 52,
         "x": 52,
-        "y0": 0,
+        "y0": null,
         "y1": 52,
       },
       Object {
@@ -1792,7 +1792,7 @@ Array [
         "initialY0": null,
         "initialY1": 53,
         "x": 53,
-        "y0": 0,
+        "y0": null,
         "y1": 53,
       },
       Object {
@@ -1800,7 +1800,7 @@ Array [
         "initialY0": null,
         "initialY1": 54,
         "x": 54,
-        "y0": 0,
+        "y0": null,
         "y1": 54,
       },
       Object {
@@ -1808,7 +1808,7 @@ Array [
         "initialY0": null,
         "initialY1": 55,
         "x": 55,
-        "y0": 0,
+        "y0": null,
         "y1": 55,
       },
       Object {
@@ -1816,7 +1816,7 @@ Array [
         "initialY0": null,
         "initialY1": 56,
         "x": 56,
-        "y0": 0,
+        "y0": null,
         "y1": 56,
       },
       Object {
@@ -1824,7 +1824,7 @@ Array [
         "initialY0": null,
         "initialY1": 57,
         "x": 57,
-        "y0": 0,
+        "y0": null,
         "y1": 57,
       },
       Object {
@@ -1832,7 +1832,7 @@ Array [
         "initialY0": null,
         "initialY1": 58,
         "x": 58,
-        "y0": 0,
+        "y0": null,
         "y1": 58,
       },
       Object {
@@ -1840,7 +1840,7 @@ Array [
         "initialY0": null,
         "initialY1": 59,
         "x": 59,
-        "y0": 0,
+        "y0": null,
         "y1": 59,
       },
       Object {
@@ -1848,7 +1848,7 @@ Array [
         "initialY0": null,
         "initialY1": 60,
         "x": 60,
-        "y0": 0,
+        "y0": null,
         "y1": 60,
       },
       Object {
@@ -1856,7 +1856,7 @@ Array [
         "initialY0": null,
         "initialY1": 61,
         "x": 61,
-        "y0": 0,
+        "y0": null,
         "y1": 61,
       },
       Object {
@@ -1864,7 +1864,7 @@ Array [
         "initialY0": null,
         "initialY1": 62,
         "x": 62,
-        "y0": 0,
+        "y0": null,
         "y1": 62,
       },
       Object {
@@ -1872,7 +1872,7 @@ Array [
         "initialY0": null,
         "initialY1": 63,
         "x": 63,
-        "y0": 0,
+        "y0": null,
         "y1": 63,
       },
       Object {
@@ -1880,7 +1880,7 @@ Array [
         "initialY0": null,
         "initialY1": 64,
         "x": 64,
-        "y0": 0,
+        "y0": null,
         "y1": 64,
       },
       Object {
@@ -1888,7 +1888,7 @@ Array [
         "initialY0": null,
         "initialY1": 65,
         "x": 65,
-        "y0": 0,
+        "y0": null,
         "y1": 65,
       },
       Object {
@@ -1896,7 +1896,7 @@ Array [
         "initialY0": null,
         "initialY1": 66,
         "x": 66,
-        "y0": 0,
+        "y0": null,
         "y1": 66,
       },
       Object {
@@ -1904,7 +1904,7 @@ Array [
         "initialY0": null,
         "initialY1": 67,
         "x": 67,
-        "y0": 0,
+        "y0": null,
         "y1": 67,
       },
       Object {
@@ -1912,7 +1912,7 @@ Array [
         "initialY0": null,
         "initialY1": 68,
         "x": 68,
-        "y0": 0,
+        "y0": null,
         "y1": 68,
       },
       Object {
@@ -1920,7 +1920,7 @@ Array [
         "initialY0": null,
         "initialY1": 69,
         "x": 69,
-        "y0": 0,
+        "y0": null,
         "y1": 69,
       },
       Object {
@@ -1928,7 +1928,7 @@ Array [
         "initialY0": null,
         "initialY1": 70,
         "x": 70,
-        "y0": 0,
+        "y0": null,
         "y1": 70,
       },
       Object {
@@ -1936,7 +1936,7 @@ Array [
         "initialY0": null,
         "initialY1": 71,
         "x": 71,
-        "y0": 0,
+        "y0": null,
         "y1": 71,
       },
       Object {
@@ -1944,7 +1944,7 @@ Array [
         "initialY0": null,
         "initialY1": 72,
         "x": 72,
-        "y0": 0,
+        "y0": null,
         "y1": 72,
       },
       Object {
@@ -1952,7 +1952,7 @@ Array [
         "initialY0": null,
         "initialY1": 73,
         "x": 73,
-        "y0": 0,
+        "y0": null,
         "y1": 73,
       },
       Object {
@@ -1960,7 +1960,7 @@ Array [
         "initialY0": null,
         "initialY1": 74,
         "x": 74,
-        "y0": 0,
+        "y0": null,
         "y1": 74,
       },
       Object {
@@ -1968,7 +1968,7 @@ Array [
         "initialY0": null,
         "initialY1": 75,
         "x": 75,
-        "y0": 0,
+        "y0": null,
         "y1": 75,
       },
       Object {
@@ -1976,7 +1976,7 @@ Array [
         "initialY0": null,
         "initialY1": 76,
         "x": 76,
-        "y0": 0,
+        "y0": null,
         "y1": 76,
       },
       Object {
@@ -1984,7 +1984,7 @@ Array [
         "initialY0": null,
         "initialY1": 77,
         "x": 77,
-        "y0": 0,
+        "y0": null,
         "y1": 77,
       },
       Object {
@@ -1992,7 +1992,7 @@ Array [
         "initialY0": null,
         "initialY1": 78,
         "x": 78,
-        "y0": 0,
+        "y0": null,
         "y1": 78,
       },
       Object {
@@ -2000,7 +2000,7 @@ Array [
         "initialY0": null,
         "initialY1": 79,
         "x": 79,
-        "y0": 0,
+        "y0": null,
         "y1": 79,
       },
       Object {
@@ -2008,7 +2008,7 @@ Array [
         "initialY0": null,
         "initialY1": 80,
         "x": 80,
-        "y0": 0,
+        "y0": null,
         "y1": 80,
       },
       Object {
@@ -2016,7 +2016,7 @@ Array [
         "initialY0": null,
         "initialY1": 81,
         "x": 81,
-        "y0": 0,
+        "y0": null,
         "y1": 81,
       },
       Object {
@@ -2024,7 +2024,7 @@ Array [
         "initialY0": null,
         "initialY1": 82,
         "x": 82,
-        "y0": 0,
+        "y0": null,
         "y1": 82,
       },
       Object {
@@ -2032,7 +2032,7 @@ Array [
         "initialY0": null,
         "initialY1": 83,
         "x": 83,
-        "y0": 0,
+        "y0": null,
         "y1": 83,
       },
       Object {
@@ -2040,7 +2040,7 @@ Array [
         "initialY0": null,
         "initialY1": 84,
         "x": 84,
-        "y0": 0,
+        "y0": null,
         "y1": 84,
       },
       Object {
@@ -2048,7 +2048,7 @@ Array [
         "initialY0": null,
         "initialY1": 85,
         "x": 85,
-        "y0": 0,
+        "y0": null,
         "y1": 85,
       },
       Object {
@@ -2056,7 +2056,7 @@ Array [
         "initialY0": null,
         "initialY1": 86,
         "x": 86,
-        "y0": 0,
+        "y0": null,
         "y1": 86,
       },
       Object {
@@ -2064,7 +2064,7 @@ Array [
         "initialY0": null,
         "initialY1": 87,
         "x": 87,
-        "y0": 0,
+        "y0": null,
         "y1": 87,
       },
       Object {
@@ -2072,7 +2072,7 @@ Array [
         "initialY0": null,
         "initialY1": 88,
         "x": 88,
-        "y0": 0,
+        "y0": null,
         "y1": 88,
       },
       Object {
@@ -2080,7 +2080,7 @@ Array [
         "initialY0": null,
         "initialY1": 89,
         "x": 89,
-        "y0": 0,
+        "y0": null,
         "y1": 89,
       },
       Object {
@@ -2088,7 +2088,7 @@ Array [
         "initialY0": null,
         "initialY1": 90,
         "x": 90,
-        "y0": 0,
+        "y0": null,
         "y1": 90,
       },
       Object {
@@ -2096,7 +2096,7 @@ Array [
         "initialY0": null,
         "initialY1": 91,
         "x": 91,
-        "y0": 0,
+        "y0": null,
         "y1": 91,
       },
       Object {
@@ -2104,7 +2104,7 @@ Array [
         "initialY0": null,
         "initialY1": 92,
         "x": 92,
-        "y0": 0,
+        "y0": null,
         "y1": 92,
       },
       Object {
@@ -2112,7 +2112,7 @@ Array [
         "initialY0": null,
         "initialY1": 93,
         "x": 93,
-        "y0": 0,
+        "y0": null,
         "y1": 93,
       },
       Object {
@@ -2120,7 +2120,7 @@ Array [
         "initialY0": null,
         "initialY1": 94,
         "x": 94,
-        "y0": 0,
+        "y0": null,
         "y1": 94,
       },
       Object {
@@ -2128,7 +2128,7 @@ Array [
         "initialY0": null,
         "initialY1": 95,
         "x": 95,
-        "y0": 0,
+        "y0": null,
         "y1": 95,
       },
       Object {
@@ -2136,7 +2136,7 @@ Array [
         "initialY0": null,
         "initialY1": 96,
         "x": 96,
-        "y0": 0,
+        "y0": null,
         "y1": 96,
       },
       Object {
@@ -2144,7 +2144,7 @@ Array [
         "initialY0": null,
         "initialY1": 97,
         "x": 97,
-        "y0": 0,
+        "y0": null,
         "y1": 97,
       },
       Object {
@@ -2152,7 +2152,7 @@ Array [
         "initialY0": null,
         "initialY1": 98,
         "x": 98,
-        "y0": 0,
+        "y0": null,
         "y1": 98,
       },
       Object {
@@ -2160,7 +2160,7 @@ Array [
         "initialY0": null,
         "initialY1": 99,
         "x": 99,
-        "y0": 0,
+        "y0": null,
         "y1": 99,
       },
       Object {
@@ -2168,7 +2168,7 @@ Array [
         "initialY0": null,
         "initialY1": 100,
         "x": 100,
-        "y0": 0,
+        "y0": null,
         "y1": 100,
       },
       Object {
@@ -2176,7 +2176,7 @@ Array [
         "initialY0": null,
         "initialY1": 101,
         "x": 101,
-        "y0": 0,
+        "y0": null,
         "y1": 101,
       },
       Object {
@@ -2184,7 +2184,7 @@ Array [
         "initialY0": null,
         "initialY1": 102,
         "x": 102,
-        "y0": 0,
+        "y0": null,
         "y1": 102,
       },
       Object {
@@ -2192,7 +2192,7 @@ Array [
         "initialY0": null,
         "initialY1": 103,
         "x": 103,
-        "y0": 0,
+        "y0": null,
         "y1": 103,
       },
       Object {
@@ -2200,7 +2200,7 @@ Array [
         "initialY0": null,
         "initialY1": 104,
         "x": 104,
-        "y0": 0,
+        "y0": null,
         "y1": 104,
       },
       Object {
@@ -2208,7 +2208,7 @@ Array [
         "initialY0": null,
         "initialY1": 105,
         "x": 105,
-        "y0": 0,
+        "y0": null,
         "y1": 105,
       },
       Object {
@@ -2216,7 +2216,7 @@ Array [
         "initialY0": null,
         "initialY1": 106,
         "x": 106,
-        "y0": 0,
+        "y0": null,
         "y1": 106,
       },
       Object {
@@ -2224,7 +2224,7 @@ Array [
         "initialY0": null,
         "initialY1": 107,
         "x": 107,
-        "y0": 0,
+        "y0": null,
         "y1": 107,
       },
       Object {
@@ -2232,7 +2232,7 @@ Array [
         "initialY0": null,
         "initialY1": 108,
         "x": 108,
-        "y0": 0,
+        "y0": null,
         "y1": 108,
       },
       Object {
@@ -2240,7 +2240,7 @@ Array [
         "initialY0": null,
         "initialY1": 109,
         "x": 109,
-        "y0": 0,
+        "y0": null,
         "y1": 109,
       },
       Object {
@@ -2248,7 +2248,7 @@ Array [
         "initialY0": null,
         "initialY1": 110,
         "x": 110,
-        "y0": 0,
+        "y0": null,
         "y1": 110,
       },
       Object {
@@ -2256,7 +2256,7 @@ Array [
         "initialY0": null,
         "initialY1": 111,
         "x": 111,
-        "y0": 0,
+        "y0": null,
         "y1": 111,
       },
       Object {
@@ -2264,7 +2264,7 @@ Array [
         "initialY0": null,
         "initialY1": 112,
         "x": 112,
-        "y0": 0,
+        "y0": null,
         "y1": 112,
       },
       Object {
@@ -2272,7 +2272,7 @@ Array [
         "initialY0": null,
         "initialY1": 113,
         "x": 113,
-        "y0": 0,
+        "y0": null,
         "y1": 113,
       },
       Object {
@@ -2280,7 +2280,7 @@ Array [
         "initialY0": null,
         "initialY1": 114,
         "x": 114,
-        "y0": 0,
+        "y0": null,
         "y1": 114,
       },
       Object {
@@ -2288,7 +2288,7 @@ Array [
         "initialY0": null,
         "initialY1": 115,
         "x": 115,
-        "y0": 0,
+        "y0": null,
         "y1": 115,
       },
       Object {
@@ -2296,7 +2296,7 @@ Array [
         "initialY0": null,
         "initialY1": 116,
         "x": 116,
-        "y0": 0,
+        "y0": null,
         "y1": 116,
       },
       Object {
@@ -2304,7 +2304,7 @@ Array [
         "initialY0": null,
         "initialY1": 117,
         "x": 117,
-        "y0": 0,
+        "y0": null,
         "y1": 117,
       },
       Object {
@@ -2312,7 +2312,7 @@ Array [
         "initialY0": null,
         "initialY1": 118,
         "x": 118,
-        "y0": 0,
+        "y0": null,
         "y1": 118,
       },
       Object {
@@ -2320,7 +2320,7 @@ Array [
         "initialY0": null,
         "initialY1": 119,
         "x": 119,
-        "y0": 0,
+        "y0": null,
         "y1": 119,
       },
       Object {
@@ -2328,7 +2328,7 @@ Array [
         "initialY0": null,
         "initialY1": 120,
         "x": 120,
-        "y0": 0,
+        "y0": null,
         "y1": 120,
       },
       Object {
@@ -2336,7 +2336,7 @@ Array [
         "initialY0": null,
         "initialY1": 121,
         "x": 121,
-        "y0": 0,
+        "y0": null,
         "y1": 121,
       },
       Object {
@@ -2344,7 +2344,7 @@ Array [
         "initialY0": null,
         "initialY1": 122,
         "x": 122,
-        "y0": 0,
+        "y0": null,
         "y1": 122,
       },
       Object {
@@ -2352,7 +2352,7 @@ Array [
         "initialY0": null,
         "initialY1": 123,
         "x": 123,
-        "y0": 0,
+        "y0": null,
         "y1": 123,
       },
       Object {
@@ -2360,7 +2360,7 @@ Array [
         "initialY0": null,
         "initialY1": 124,
         "x": 124,
-        "y0": 0,
+        "y0": null,
         "y1": 124,
       },
       Object {
@@ -2368,7 +2368,7 @@ Array [
         "initialY0": null,
         "initialY1": 125,
         "x": 125,
-        "y0": 0,
+        "y0": null,
         "y1": 125,
       },
       Object {
@@ -2376,7 +2376,7 @@ Array [
         "initialY0": null,
         "initialY1": 126,
         "x": 126,
-        "y0": 0,
+        "y0": null,
         "y1": 126,
       },
       Object {
@@ -2384,7 +2384,7 @@ Array [
         "initialY0": null,
         "initialY1": 127,
         "x": 127,
-        "y0": 0,
+        "y0": null,
         "y1": 127,
       },
       Object {
@@ -2392,7 +2392,7 @@ Array [
         "initialY0": null,
         "initialY1": 128,
         "x": 128,
-        "y0": 0,
+        "y0": null,
         "y1": 128,
       },
       Object {
@@ -2400,7 +2400,7 @@ Array [
         "initialY0": null,
         "initialY1": 129,
         "x": 129,
-        "y0": 0,
+        "y0": null,
         "y1": 129,
       },
       Object {
@@ -2408,7 +2408,7 @@ Array [
         "initialY0": null,
         "initialY1": 130,
         "x": 130,
-        "y0": 0,
+        "y0": null,
         "y1": 130,
       },
       Object {
@@ -2416,7 +2416,7 @@ Array [
         "initialY0": null,
         "initialY1": 131,
         "x": 131,
-        "y0": 0,
+        "y0": null,
         "y1": 131,
       },
       Object {
@@ -2424,7 +2424,7 @@ Array [
         "initialY0": null,
         "initialY1": 132,
         "x": 132,
-        "y0": 0,
+        "y0": null,
         "y1": 132,
       },
       Object {
@@ -2432,7 +2432,7 @@ Array [
         "initialY0": null,
         "initialY1": 133,
         "x": 133,
-        "y0": 0,
+        "y0": null,
         "y1": 133,
       },
       Object {
@@ -2440,7 +2440,7 @@ Array [
         "initialY0": null,
         "initialY1": 134,
         "x": 134,
-        "y0": 0,
+        "y0": null,
         "y1": 134,
       },
       Object {
@@ -2448,7 +2448,7 @@ Array [
         "initialY0": null,
         "initialY1": 135,
         "x": 135,
-        "y0": 0,
+        "y0": null,
         "y1": 135,
       },
       Object {
@@ -2456,7 +2456,7 @@ Array [
         "initialY0": null,
         "initialY1": 136,
         "x": 136,
-        "y0": 0,
+        "y0": null,
         "y1": 136,
       },
       Object {
@@ -2464,7 +2464,7 @@ Array [
         "initialY0": null,
         "initialY1": 137,
         "x": 137,
-        "y0": 0,
+        "y0": null,
         "y1": 137,
       },
       Object {
@@ -2472,7 +2472,7 @@ Array [
         "initialY0": null,
         "initialY1": 138,
         "x": 138,
-        "y0": 0,
+        "y0": null,
         "y1": 138,
       },
       Object {
@@ -2480,7 +2480,7 @@ Array [
         "initialY0": null,
         "initialY1": 139,
         "x": 139,
-        "y0": 0,
+        "y0": null,
         "y1": 139,
       },
       Object {
@@ -2488,7 +2488,7 @@ Array [
         "initialY0": null,
         "initialY1": 140,
         "x": 140,
-        "y0": 0,
+        "y0": null,
         "y1": 140,
       },
       Object {
@@ -2496,7 +2496,7 @@ Array [
         "initialY0": null,
         "initialY1": 141,
         "x": 141,
-        "y0": 0,
+        "y0": null,
         "y1": 141,
       },
       Object {
@@ -2504,7 +2504,7 @@ Array [
         "initialY0": null,
         "initialY1": 142,
         "x": 142,
-        "y0": 0,
+        "y0": null,
         "y1": 142,
       },
       Object {
@@ -2512,7 +2512,7 @@ Array [
         "initialY0": null,
         "initialY1": 143,
         "x": 143,
-        "y0": 0,
+        "y0": null,
         "y1": 143,
       },
       Object {
@@ -2520,7 +2520,7 @@ Array [
         "initialY0": null,
         "initialY1": 144,
         "x": 144,
-        "y0": 0,
+        "y0": null,
         "y1": 144,
       },
       Object {
@@ -2528,7 +2528,7 @@ Array [
         "initialY0": null,
         "initialY1": 145,
         "x": 145,
-        "y0": 0,
+        "y0": null,
         "y1": 145,
       },
       Object {
@@ -2536,7 +2536,7 @@ Array [
         "initialY0": null,
         "initialY1": 146,
         "x": 146,
-        "y0": 0,
+        "y0": null,
         "y1": 146,
       },
       Object {
@@ -2544,7 +2544,7 @@ Array [
         "initialY0": null,
         "initialY1": 147,
         "x": 147,
-        "y0": 0,
+        "y0": null,
         "y1": 147,
       },
       Object {
@@ -2552,7 +2552,7 @@ Array [
         "initialY0": null,
         "initialY1": 148,
         "x": 148,
-        "y0": 0,
+        "y0": null,
         "y1": 148,
       },
       Object {
@@ -2560,7 +2560,7 @@ Array [
         "initialY0": null,
         "initialY1": 149,
         "x": 149,
-        "y0": 0,
+        "y0": null,
         "y1": 149,
       },
       Object {
@@ -2568,7 +2568,7 @@ Array [
         "initialY0": null,
         "initialY1": 150,
         "x": 150,
-        "y0": 0,
+        "y0": null,
         "y1": 150,
       },
       Object {
@@ -2576,7 +2576,7 @@ Array [
         "initialY0": null,
         "initialY1": 151,
         "x": 151,
-        "y0": 0,
+        "y0": null,
         "y1": 151,
       },
       Object {
@@ -2584,7 +2584,7 @@ Array [
         "initialY0": null,
         "initialY1": 152,
         "x": 152,
-        "y0": 0,
+        "y0": null,
         "y1": 152,
       },
       Object {
@@ -2592,7 +2592,7 @@ Array [
         "initialY0": null,
         "initialY1": 153,
         "x": 153,
-        "y0": 0,
+        "y0": null,
         "y1": 153,
       },
       Object {
@@ -2600,7 +2600,7 @@ Array [
         "initialY0": null,
         "initialY1": 154,
         "x": 154,
-        "y0": 0,
+        "y0": null,
         "y1": 154,
       },
       Object {
@@ -2608,7 +2608,7 @@ Array [
         "initialY0": null,
         "initialY1": 155,
         "x": 155,
-        "y0": 0,
+        "y0": null,
         "y1": 155,
       },
       Object {
@@ -2616,7 +2616,7 @@ Array [
         "initialY0": null,
         "initialY1": 156,
         "x": 156,
-        "y0": 0,
+        "y0": null,
         "y1": 156,
       },
       Object {
@@ -2624,7 +2624,7 @@ Array [
         "initialY0": null,
         "initialY1": 157,
         "x": 157,
-        "y0": 0,
+        "y0": null,
         "y1": 157,
       },
       Object {
@@ -2632,7 +2632,7 @@ Array [
         "initialY0": null,
         "initialY1": 158,
         "x": 158,
-        "y0": 0,
+        "y0": null,
         "y1": 158,
       },
       Object {
@@ -2640,7 +2640,7 @@ Array [
         "initialY0": null,
         "initialY1": 159,
         "x": 159,
-        "y0": 0,
+        "y0": null,
         "y1": 159,
       },
       Object {
@@ -2648,7 +2648,7 @@ Array [
         "initialY0": null,
         "initialY1": 160,
         "x": 160,
-        "y0": 0,
+        "y0": null,
         "y1": 160,
       },
       Object {
@@ -2656,7 +2656,7 @@ Array [
         "initialY0": null,
         "initialY1": 161,
         "x": 161,
-        "y0": 0,
+        "y0": null,
         "y1": 161,
       },
       Object {
@@ -2664,7 +2664,7 @@ Array [
         "initialY0": null,
         "initialY1": 162,
         "x": 162,
-        "y0": 0,
+        "y0": null,
         "y1": 162,
       },
       Object {
@@ -2672,7 +2672,7 @@ Array [
         "initialY0": null,
         "initialY1": 163,
         "x": 163,
-        "y0": 0,
+        "y0": null,
         "y1": 163,
       },
       Object {
@@ -2680,7 +2680,7 @@ Array [
         "initialY0": null,
         "initialY1": 164,
         "x": 164,
-        "y0": 0,
+        "y0": null,
         "y1": 164,
       },
       Object {
@@ -2688,7 +2688,7 @@ Array [
         "initialY0": null,
         "initialY1": 165,
         "x": 165,
-        "y0": 0,
+        "y0": null,
         "y1": 165,
       },
       Object {
@@ -2696,7 +2696,7 @@ Array [
         "initialY0": null,
         "initialY1": 166,
         "x": 166,
-        "y0": 0,
+        "y0": null,
         "y1": 166,
       },
       Object {
@@ -2704,7 +2704,7 @@ Array [
         "initialY0": null,
         "initialY1": 167,
         "x": 167,
-        "y0": 0,
+        "y0": null,
         "y1": 167,
       },
       Object {
@@ -2712,7 +2712,7 @@ Array [
         "initialY0": null,
         "initialY1": 168,
         "x": 168,
-        "y0": 0,
+        "y0": null,
         "y1": 168,
       },
       Object {
@@ -2720,7 +2720,7 @@ Array [
         "initialY0": null,
         "initialY1": 169,
         "x": 169,
-        "y0": 0,
+        "y0": null,
         "y1": 169,
       },
       Object {
@@ -2728,7 +2728,7 @@ Array [
         "initialY0": null,
         "initialY1": 170,
         "x": 170,
-        "y0": 0,
+        "y0": null,
         "y1": 170,
       },
       Object {
@@ -2736,7 +2736,7 @@ Array [
         "initialY0": null,
         "initialY1": 171,
         "x": 171,
-        "y0": 0,
+        "y0": null,
         "y1": 171,
       },
       Object {
@@ -2744,7 +2744,7 @@ Array [
         "initialY0": null,
         "initialY1": 172,
         "x": 172,
-        "y0": 0,
+        "y0": null,
         "y1": 172,
       },
       Object {
@@ -2752,7 +2752,7 @@ Array [
         "initialY0": null,
         "initialY1": 173,
         "x": 173,
-        "y0": 0,
+        "y0": null,
         "y1": 173,
       },
       Object {
@@ -2760,7 +2760,7 @@ Array [
         "initialY0": null,
         "initialY1": 174,
         "x": 174,
-        "y0": 0,
+        "y0": null,
         "y1": 174,
       },
       Object {
@@ -2768,7 +2768,7 @@ Array [
         "initialY0": null,
         "initialY1": 175,
         "x": 175,
-        "y0": 0,
+        "y0": null,
         "y1": 175,
       },
       Object {
@@ -2776,7 +2776,7 @@ Array [
         "initialY0": null,
         "initialY1": 176,
         "x": 176,
-        "y0": 0,
+        "y0": null,
         "y1": 176,
       },
       Object {
@@ -2784,7 +2784,7 @@ Array [
         "initialY0": null,
         "initialY1": 177,
         "x": 177,
-        "y0": 0,
+        "y0": null,
         "y1": 177,
       },
       Object {
@@ -2792,7 +2792,7 @@ Array [
         "initialY0": null,
         "initialY1": 178,
         "x": 178,
-        "y0": 0,
+        "y0": null,
         "y1": 178,
       },
       Object {
@@ -2800,7 +2800,7 @@ Array [
         "initialY0": null,
         "initialY1": 179,
         "x": 179,
-        "y0": 0,
+        "y0": null,
         "y1": 179,
       },
       Object {
@@ -2808,7 +2808,7 @@ Array [
         "initialY0": null,
         "initialY1": 180,
         "x": 180,
-        "y0": 0,
+        "y0": null,
         "y1": 180,
       },
       Object {
@@ -2816,7 +2816,7 @@ Array [
         "initialY0": null,
         "initialY1": 181,
         "x": 181,
-        "y0": 0,
+        "y0": null,
         "y1": 181,
       },
       Object {
@@ -2824,7 +2824,7 @@ Array [
         "initialY0": null,
         "initialY1": 182,
         "x": 182,
-        "y0": 0,
+        "y0": null,
         "y1": 182,
       },
       Object {
@@ -2832,7 +2832,7 @@ Array [
         "initialY0": null,
         "initialY1": 183,
         "x": 183,
-        "y0": 0,
+        "y0": null,
         "y1": 183,
       },
       Object {
@@ -2840,7 +2840,7 @@ Array [
         "initialY0": null,
         "initialY1": 184,
         "x": 184,
-        "y0": 0,
+        "y0": null,
         "y1": 184,
       },
       Object {
@@ -2848,7 +2848,7 @@ Array [
         "initialY0": null,
         "initialY1": 185,
         "x": 185,
-        "y0": 0,
+        "y0": null,
         "y1": 185,
       },
       Object {
@@ -2856,7 +2856,7 @@ Array [
         "initialY0": null,
         "initialY1": 186,
         "x": 186,
-        "y0": 0,
+        "y0": null,
         "y1": 186,
       },
       Object {
@@ -2864,7 +2864,7 @@ Array [
         "initialY0": null,
         "initialY1": 187,
         "x": 187,
-        "y0": 0,
+        "y0": null,
         "y1": 187,
       },
       Object {
@@ -2872,7 +2872,7 @@ Array [
         "initialY0": null,
         "initialY1": 188,
         "x": 188,
-        "y0": 0,
+        "y0": null,
         "y1": 188,
       },
       Object {
@@ -2880,7 +2880,7 @@ Array [
         "initialY0": null,
         "initialY1": 189,
         "x": 189,
-        "y0": 0,
+        "y0": null,
         "y1": 189,
       },
       Object {
@@ -2888,7 +2888,7 @@ Array [
         "initialY0": null,
         "initialY1": 190,
         "x": 190,
-        "y0": 0,
+        "y0": null,
         "y1": 190,
       },
       Object {
@@ -2896,7 +2896,7 @@ Array [
         "initialY0": null,
         "initialY1": 191,
         "x": 191,
-        "y0": 0,
+        "y0": null,
         "y1": 191,
       },
       Object {
@@ -2904,7 +2904,7 @@ Array [
         "initialY0": null,
         "initialY1": 192,
         "x": 192,
-        "y0": 0,
+        "y0": null,
         "y1": 192,
       },
       Object {
@@ -2912,7 +2912,7 @@ Array [
         "initialY0": null,
         "initialY1": 193,
         "x": 193,
-        "y0": 0,
+        "y0": null,
         "y1": 193,
       },
       Object {
@@ -2920,7 +2920,7 @@ Array [
         "initialY0": null,
         "initialY1": 194,
         "x": 194,
-        "y0": 0,
+        "y0": null,
         "y1": 194,
       },
       Object {
@@ -2928,7 +2928,7 @@ Array [
         "initialY0": null,
         "initialY1": 195,
         "x": 195,
-        "y0": 0,
+        "y0": null,
         "y1": 195,
       },
       Object {
@@ -2936,7 +2936,7 @@ Array [
         "initialY0": null,
         "initialY1": 196,
         "x": 196,
-        "y0": 0,
+        "y0": null,
         "y1": 196,
       },
       Object {
@@ -2944,7 +2944,7 @@ Array [
         "initialY0": null,
         "initialY1": 197,
         "x": 197,
-        "y0": 0,
+        "y0": null,
         "y1": 197,
       },
       Object {
@@ -2952,7 +2952,7 @@ Array [
         "initialY0": null,
         "initialY1": 198,
         "x": 198,
-        "y0": 0,
+        "y0": null,
         "y1": 198,
       },
       Object {
@@ -2960,7 +2960,7 @@ Array [
         "initialY0": null,
         "initialY1": 199,
         "x": 199,
-        "y0": 0,
+        "y0": null,
         "y1": 199,
       },
       Object {
@@ -2968,7 +2968,7 @@ Array [
         "initialY0": null,
         "initialY1": 200,
         "x": 200,
-        "y0": 0,
+        "y0": null,
         "y1": 200,
       },
       Object {
@@ -2976,7 +2976,7 @@ Array [
         "initialY0": null,
         "initialY1": 201,
         "x": 201,
-        "y0": 0,
+        "y0": null,
         "y1": 201,
       },
       Object {
@@ -2984,7 +2984,7 @@ Array [
         "initialY0": null,
         "initialY1": 202,
         "x": 202,
-        "y0": 0,
+        "y0": null,
         "y1": 202,
       },
       Object {
@@ -2992,7 +2992,7 @@ Array [
         "initialY0": null,
         "initialY1": 203,
         "x": 203,
-        "y0": 0,
+        "y0": null,
         "y1": 203,
       },
       Object {
@@ -3000,7 +3000,7 @@ Array [
         "initialY0": null,
         "initialY1": 204,
         "x": 204,
-        "y0": 0,
+        "y0": null,
         "y1": 204,
       },
       Object {
@@ -3008,7 +3008,7 @@ Array [
         "initialY0": null,
         "initialY1": 205,
         "x": 205,
-        "y0": 0,
+        "y0": null,
         "y1": 205,
       },
       Object {
@@ -3016,7 +3016,7 @@ Array [
         "initialY0": null,
         "initialY1": 206,
         "x": 206,
-        "y0": 0,
+        "y0": null,
         "y1": 206,
       },
       Object {
@@ -3024,7 +3024,7 @@ Array [
         "initialY0": null,
         "initialY1": 207,
         "x": 207,
-        "y0": 0,
+        "y0": null,
         "y1": 207,
       },
       Object {
@@ -3032,7 +3032,7 @@ Array [
         "initialY0": null,
         "initialY1": 208,
         "x": 208,
-        "y0": 0,
+        "y0": null,
         "y1": 208,
       },
       Object {
@@ -3040,7 +3040,7 @@ Array [
         "initialY0": null,
         "initialY1": 209,
         "x": 209,
-        "y0": 0,
+        "y0": null,
         "y1": 209,
       },
       Object {
@@ -3048,7 +3048,7 @@ Array [
         "initialY0": null,
         "initialY1": 210,
         "x": 210,
-        "y0": 0,
+        "y0": null,
         "y1": 210,
       },
       Object {
@@ -3056,7 +3056,7 @@ Array [
         "initialY0": null,
         "initialY1": 211,
         "x": 211,
-        "y0": 0,
+        "y0": null,
         "y1": 211,
       },
       Object {
@@ -3064,7 +3064,7 @@ Array [
         "initialY0": null,
         "initialY1": 212,
         "x": 212,
-        "y0": 0,
+        "y0": null,
         "y1": 212,
       },
       Object {
@@ -3072,7 +3072,7 @@ Array [
         "initialY0": null,
         "initialY1": 213,
         "x": 213,
-        "y0": 0,
+        "y0": null,
         "y1": 213,
       },
       Object {
@@ -3080,7 +3080,7 @@ Array [
         "initialY0": null,
         "initialY1": 214,
         "x": 214,
-        "y0": 0,
+        "y0": null,
         "y1": 214,
       },
       Object {
@@ -3088,7 +3088,7 @@ Array [
         "initialY0": null,
         "initialY1": 215,
         "x": 215,
-        "y0": 0,
+        "y0": null,
         "y1": 215,
       },
       Object {
@@ -3096,7 +3096,7 @@ Array [
         "initialY0": null,
         "initialY1": 216,
         "x": 216,
-        "y0": 0,
+        "y0": null,
         "y1": 216,
       },
       Object {
@@ -3104,7 +3104,7 @@ Array [
         "initialY0": null,
         "initialY1": 217,
         "x": 217,
-        "y0": 0,
+        "y0": null,
         "y1": 217,
       },
       Object {
@@ -3112,7 +3112,7 @@ Array [
         "initialY0": null,
         "initialY1": 218,
         "x": 218,
-        "y0": 0,
+        "y0": null,
         "y1": 218,
       },
       Object {
@@ -3120,7 +3120,7 @@ Array [
         "initialY0": null,
         "initialY1": 219,
         "x": 219,
-        "y0": 0,
+        "y0": null,
         "y1": 219,
       },
       Object {
@@ -3128,7 +3128,7 @@ Array [
         "initialY0": null,
         "initialY1": 220,
         "x": 220,
-        "y0": 0,
+        "y0": null,
         "y1": 220,
       },
       Object {
@@ -3136,7 +3136,7 @@ Array [
         "initialY0": null,
         "initialY1": 221,
         "x": 221,
-        "y0": 0,
+        "y0": null,
         "y1": 221,
       },
       Object {
@@ -3144,7 +3144,7 @@ Array [
         "initialY0": null,
         "initialY1": 222,
         "x": 222,
-        "y0": 0,
+        "y0": null,
         "y1": 222,
       },
       Object {
@@ -3152,7 +3152,7 @@ Array [
         "initialY0": null,
         "initialY1": 223,
         "x": 223,
-        "y0": 0,
+        "y0": null,
         "y1": 223,
       },
       Object {
@@ -3160,7 +3160,7 @@ Array [
         "initialY0": null,
         "initialY1": 224,
         "x": 224,
-        "y0": 0,
+        "y0": null,
         "y1": 224,
       },
       Object {
@@ -3168,7 +3168,7 @@ Array [
         "initialY0": null,
         "initialY1": 225,
         "x": 225,
-        "y0": 0,
+        "y0": null,
         "y1": 225,
       },
       Object {
@@ -3176,7 +3176,7 @@ Array [
         "initialY0": null,
         "initialY1": 226,
         "x": 226,
-        "y0": 0,
+        "y0": null,
         "y1": 226,
       },
       Object {
@@ -3184,7 +3184,7 @@ Array [
         "initialY0": null,
         "initialY1": 227,
         "x": 227,
-        "y0": 0,
+        "y0": null,
         "y1": 227,
       },
       Object {
@@ -3192,7 +3192,7 @@ Array [
         "initialY0": null,
         "initialY1": 228,
         "x": 228,
-        "y0": 0,
+        "y0": null,
         "y1": 228,
       },
       Object {
@@ -3200,7 +3200,7 @@ Array [
         "initialY0": null,
         "initialY1": 229,
         "x": 229,
-        "y0": 0,
+        "y0": null,
         "y1": 229,
       },
       Object {
@@ -3208,7 +3208,7 @@ Array [
         "initialY0": null,
         "initialY1": 230,
         "x": 230,
-        "y0": 0,
+        "y0": null,
         "y1": 230,
       },
       Object {
@@ -3216,7 +3216,7 @@ Array [
         "initialY0": null,
         "initialY1": 231,
         "x": 231,
-        "y0": 0,
+        "y0": null,
         "y1": 231,
       },
       Object {
@@ -3224,7 +3224,7 @@ Array [
         "initialY0": null,
         "initialY1": 232,
         "x": 232,
-        "y0": 0,
+        "y0": null,
         "y1": 232,
       },
       Object {
@@ -3232,7 +3232,7 @@ Array [
         "initialY0": null,
         "initialY1": 233,
         "x": 233,
-        "y0": 0,
+        "y0": null,
         "y1": 233,
       },
       Object {
@@ -3240,7 +3240,7 @@ Array [
         "initialY0": null,
         "initialY1": 234,
         "x": 234,
-        "y0": 0,
+        "y0": null,
         "y1": 234,
       },
       Object {
@@ -3248,7 +3248,7 @@ Array [
         "initialY0": null,
         "initialY1": 235,
         "x": 235,
-        "y0": 0,
+        "y0": null,
         "y1": 235,
       },
       Object {
@@ -3256,7 +3256,7 @@ Array [
         "initialY0": null,
         "initialY1": 236,
         "x": 236,
-        "y0": 0,
+        "y0": null,
         "y1": 236,
       },
       Object {
@@ -3264,7 +3264,7 @@ Array [
         "initialY0": null,
         "initialY1": 237,
         "x": 237,
-        "y0": 0,
+        "y0": null,
         "y1": 237,
       },
       Object {
@@ -3272,7 +3272,7 @@ Array [
         "initialY0": null,
         "initialY1": 238,
         "x": 238,
-        "y0": 0,
+        "y0": null,
         "y1": 238,
       },
       Object {
@@ -3280,7 +3280,7 @@ Array [
         "initialY0": null,
         "initialY1": 239,
         "x": 239,
-        "y0": 0,
+        "y0": null,
         "y1": 239,
       },
       Object {
@@ -3288,7 +3288,7 @@ Array [
         "initialY0": null,
         "initialY1": 240,
         "x": 240,
-        "y0": 0,
+        "y0": null,
         "y1": 240,
       },
       Object {
@@ -3296,7 +3296,7 @@ Array [
         "initialY0": null,
         "initialY1": 241,
         "x": 241,
-        "y0": 0,
+        "y0": null,
         "y1": 241,
       },
       Object {
@@ -3304,7 +3304,7 @@ Array [
         "initialY0": null,
         "initialY1": 242,
         "x": 242,
-        "y0": 0,
+        "y0": null,
         "y1": 242,
       },
       Object {
@@ -3312,7 +3312,7 @@ Array [
         "initialY0": null,
         "initialY1": 243,
         "x": 243,
-        "y0": 0,
+        "y0": null,
         "y1": 243,
       },
       Object {
@@ -3320,7 +3320,7 @@ Array [
         "initialY0": null,
         "initialY1": 244,
         "x": 244,
-        "y0": 0,
+        "y0": null,
         "y1": 244,
       },
       Object {
@@ -3328,7 +3328,7 @@ Array [
         "initialY0": null,
         "initialY1": 245,
         "x": 245,
-        "y0": 0,
+        "y0": null,
         "y1": 245,
       },
       Object {
@@ -3336,7 +3336,7 @@ Array [
         "initialY0": null,
         "initialY1": 246,
         "x": 246,
-        "y0": 0,
+        "y0": null,
         "y1": 246,
       },
       Object {
@@ -3344,7 +3344,7 @@ Array [
         "initialY0": null,
         "initialY1": 247,
         "x": 247,
-        "y0": 0,
+        "y0": null,
         "y1": 247,
       },
       Object {
@@ -3352,7 +3352,7 @@ Array [
         "initialY0": null,
         "initialY1": 248,
         "x": 248,
-        "y0": 0,
+        "y0": null,
         "y1": 248,
       },
       Object {
@@ -3360,7 +3360,7 @@ Array [
         "initialY0": null,
         "initialY1": 249,
         "x": 249,
-        "y0": 0,
+        "y0": null,
         "y1": 249,
       },
       Object {
@@ -3368,7 +3368,7 @@ Array [
         "initialY0": null,
         "initialY1": 250,
         "x": 250,
-        "y0": 0,
+        "y0": null,
         "y1": 250,
       },
       Object {
@@ -3376,7 +3376,7 @@ Array [
         "initialY0": null,
         "initialY1": 251,
         "x": 251,
-        "y0": 0,
+        "y0": null,
         "y1": 251,
       },
       Object {
@@ -3384,7 +3384,7 @@ Array [
         "initialY0": null,
         "initialY1": 252,
         "x": 252,
-        "y0": 0,
+        "y0": null,
         "y1": 252,
       },
       Object {
@@ -3392,7 +3392,7 @@ Array [
         "initialY0": null,
         "initialY1": 253,
         "x": 253,
-        "y0": 0,
+        "y0": null,
         "y1": 253,
       },
       Object {
@@ -3400,7 +3400,7 @@ Array [
         "initialY0": null,
         "initialY1": 254,
         "x": 254,
-        "y0": 0,
+        "y0": null,
         "y1": 254,
       },
       Object {
@@ -3408,7 +3408,7 @@ Array [
         "initialY0": null,
         "initialY1": 255,
         "x": 255,
-        "y0": 0,
+        "y0": null,
         "y1": 255,
       },
       Object {
@@ -3416,7 +3416,7 @@ Array [
         "initialY0": null,
         "initialY1": 256,
         "x": 256,
-        "y0": 0,
+        "y0": null,
         "y1": 256,
       },
       Object {
@@ -3424,7 +3424,7 @@ Array [
         "initialY0": null,
         "initialY1": 257,
         "x": 257,
-        "y0": 0,
+        "y0": null,
         "y1": 257,
       },
       Object {
@@ -3432,7 +3432,7 @@ Array [
         "initialY0": null,
         "initialY1": 258,
         "x": 258,
-        "y0": 0,
+        "y0": null,
         "y1": 258,
       },
       Object {
@@ -3440,7 +3440,7 @@ Array [
         "initialY0": null,
         "initialY1": 259,
         "x": 259,
-        "y0": 0,
+        "y0": null,
         "y1": 259,
       },
       Object {
@@ -3448,7 +3448,7 @@ Array [
         "initialY0": null,
         "initialY1": 260,
         "x": 260,
-        "y0": 0,
+        "y0": null,
         "y1": 260,
       },
       Object {
@@ -3456,7 +3456,7 @@ Array [
         "initialY0": null,
         "initialY1": 261,
         "x": 261,
-        "y0": 0,
+        "y0": null,
         "y1": 261,
       },
       Object {
@@ -3464,7 +3464,7 @@ Array [
         "initialY0": null,
         "initialY1": 262,
         "x": 262,
-        "y0": 0,
+        "y0": null,
         "y1": 262,
       },
       Object {
@@ -3472,7 +3472,7 @@ Array [
         "initialY0": null,
         "initialY1": 263,
         "x": 263,
-        "y0": 0,
+        "y0": null,
         "y1": 263,
       },
       Object {
@@ -3480,7 +3480,7 @@ Array [
         "initialY0": null,
         "initialY1": 264,
         "x": 264,
-        "y0": 0,
+        "y0": null,
         "y1": 264,
       },
       Object {
@@ -3488,7 +3488,7 @@ Array [
         "initialY0": null,
         "initialY1": 265,
         "x": 265,
-        "y0": 0,
+        "y0": null,
         "y1": 265,
       },
       Object {
@@ -3496,7 +3496,7 @@ Array [
         "initialY0": null,
         "initialY1": 266,
         "x": 266,
-        "y0": 0,
+        "y0": null,
         "y1": 266,
       },
       Object {
@@ -3504,7 +3504,7 @@ Array [
         "initialY0": null,
         "initialY1": 267,
         "x": 267,
-        "y0": 0,
+        "y0": null,
         "y1": 267,
       },
       Object {
@@ -3512,7 +3512,7 @@ Array [
         "initialY0": null,
         "initialY1": 268,
         "x": 268,
-        "y0": 0,
+        "y0": null,
         "y1": 268,
       },
       Object {
@@ -3520,7 +3520,7 @@ Array [
         "initialY0": null,
         "initialY1": 269,
         "x": 269,
-        "y0": 0,
+        "y0": null,
         "y1": 269,
       },
       Object {
@@ -3528,7 +3528,7 @@ Array [
         "initialY0": null,
         "initialY1": 270,
         "x": 270,
-        "y0": 0,
+        "y0": null,
         "y1": 270,
       },
       Object {
@@ -3536,7 +3536,7 @@ Array [
         "initialY0": null,
         "initialY1": 271,
         "x": 271,
-        "y0": 0,
+        "y0": null,
         "y1": 271,
       },
       Object {
@@ -3544,7 +3544,7 @@ Array [
         "initialY0": null,
         "initialY1": 272,
         "x": 272,
-        "y0": 0,
+        "y0": null,
         "y1": 272,
       },
       Object {
@@ -3552,7 +3552,7 @@ Array [
         "initialY0": null,
         "initialY1": 273,
         "x": 273,
-        "y0": 0,
+        "y0": null,
         "y1": 273,
       },
       Object {
@@ -3560,7 +3560,7 @@ Array [
         "initialY0": null,
         "initialY1": 274,
         "x": 274,
-        "y0": 0,
+        "y0": null,
         "y1": 274,
       },
       Object {
@@ -3568,7 +3568,7 @@ Array [
         "initialY0": null,
         "initialY1": 275,
         "x": 275,
-        "y0": 0,
+        "y0": null,
         "y1": 275,
       },
       Object {
@@ -3576,7 +3576,7 @@ Array [
         "initialY0": null,
         "initialY1": 276,
         "x": 276,
-        "y0": 0,
+        "y0": null,
         "y1": 276,
       },
       Object {
@@ -3584,7 +3584,7 @@ Array [
         "initialY0": null,
         "initialY1": 277,
         "x": 277,
-        "y0": 0,
+        "y0": null,
         "y1": 277,
       },
       Object {
@@ -3592,7 +3592,7 @@ Array [
         "initialY0": null,
         "initialY1": 278,
         "x": 278,
-        "y0": 0,
+        "y0": null,
         "y1": 278,
       },
       Object {
@@ -3600,7 +3600,7 @@ Array [
         "initialY0": null,
         "initialY1": 279,
         "x": 279,
-        "y0": 0,
+        "y0": null,
         "y1": 279,
       },
       Object {
@@ -3608,7 +3608,7 @@ Array [
         "initialY0": null,
         "initialY1": 280,
         "x": 280,
-        "y0": 0,
+        "y0": null,
         "y1": 280,
       },
       Object {
@@ -3616,7 +3616,7 @@ Array [
         "initialY0": null,
         "initialY1": 281,
         "x": 281,
-        "y0": 0,
+        "y0": null,
         "y1": 281,
       },
       Object {
@@ -3624,7 +3624,7 @@ Array [
         "initialY0": null,
         "initialY1": 282,
         "x": 282,
-        "y0": 0,
+        "y0": null,
         "y1": 282,
       },
       Object {
@@ -3632,7 +3632,7 @@ Array [
         "initialY0": null,
         "initialY1": 283,
         "x": 283,
-        "y0": 0,
+        "y0": null,
         "y1": 283,
       },
       Object {
@@ -3640,7 +3640,7 @@ Array [
         "initialY0": null,
         "initialY1": 284,
         "x": 284,
-        "y0": 0,
+        "y0": null,
         "y1": 284,
       },
       Object {
@@ -3648,7 +3648,7 @@ Array [
         "initialY0": null,
         "initialY1": 285,
         "x": 285,
-        "y0": 0,
+        "y0": null,
         "y1": 285,
       },
       Object {
@@ -3656,7 +3656,7 @@ Array [
         "initialY0": null,
         "initialY1": 286,
         "x": 286,
-        "y0": 0,
+        "y0": null,
         "y1": 286,
       },
       Object {
@@ -3664,7 +3664,7 @@ Array [
         "initialY0": null,
         "initialY1": 287,
         "x": 287,
-        "y0": 0,
+        "y0": null,
         "y1": 287,
       },
       Object {
@@ -3672,7 +3672,7 @@ Array [
         "initialY0": null,
         "initialY1": 288,
         "x": 288,
-        "y0": 0,
+        "y0": null,
         "y1": 288,
       },
       Object {
@@ -3680,7 +3680,7 @@ Array [
         "initialY0": null,
         "initialY1": 289,
         "x": 289,
-        "y0": 0,
+        "y0": null,
         "y1": 289,
       },
       Object {
@@ -3688,7 +3688,7 @@ Array [
         "initialY0": null,
         "initialY1": 290,
         "x": 290,
-        "y0": 0,
+        "y0": null,
         "y1": 290,
       },
       Object {
@@ -3696,7 +3696,7 @@ Array [
         "initialY0": null,
         "initialY1": 291,
         "x": 291,
-        "y0": 0,
+        "y0": null,
         "y1": 291,
       },
       Object {
@@ -3704,7 +3704,7 @@ Array [
         "initialY0": null,
         "initialY1": 292,
         "x": 292,
-        "y0": 0,
+        "y0": null,
         "y1": 292,
       },
       Object {
@@ -3712,7 +3712,7 @@ Array [
         "initialY0": null,
         "initialY1": 293,
         "x": 293,
-        "y0": 0,
+        "y0": null,
         "y1": 293,
       },
       Object {
@@ -3720,7 +3720,7 @@ Array [
         "initialY0": null,
         "initialY1": 294,
         "x": 294,
-        "y0": 0,
+        "y0": null,
         "y1": 294,
       },
       Object {
@@ -3728,7 +3728,7 @@ Array [
         "initialY0": null,
         "initialY1": 295,
         "x": 295,
-        "y0": 0,
+        "y0": null,
         "y1": 295,
       },
       Object {
@@ -3736,7 +3736,7 @@ Array [
         "initialY0": null,
         "initialY1": 296,
         "x": 296,
-        "y0": 0,
+        "y0": null,
         "y1": 296,
       },
       Object {
@@ -3744,7 +3744,7 @@ Array [
         "initialY0": null,
         "initialY1": 297,
         "x": 297,
-        "y0": 0,
+        "y0": null,
         "y1": 297,
       },
       Object {
@@ -3752,7 +3752,7 @@ Array [
         "initialY0": null,
         "initialY1": 298,
         "x": 298,
-        "y0": 0,
+        "y0": null,
         "y1": 298,
       },
       Object {
@@ -3760,7 +3760,7 @@ Array [
         "initialY0": null,
         "initialY1": 299,
         "x": 299,
-        "y0": 0,
+        "y0": null,
         "y1": 299,
       },
       Object {
@@ -3768,7 +3768,7 @@ Array [
         "initialY0": null,
         "initialY1": 300,
         "x": 300,
-        "y0": 0,
+        "y0": null,
         "y1": 300,
       },
       Object {
@@ -3776,7 +3776,7 @@ Array [
         "initialY0": null,
         "initialY1": 301,
         "x": 301,
-        "y0": 0,
+        "y0": null,
         "y1": 301,
       },
       Object {
@@ -3784,7 +3784,7 @@ Array [
         "initialY0": null,
         "initialY1": 302,
         "x": 302,
-        "y0": 0,
+        "y0": null,
         "y1": 302,
       },
       Object {
@@ -3792,7 +3792,7 @@ Array [
         "initialY0": null,
         "initialY1": 303,
         "x": 303,
-        "y0": 0,
+        "y0": null,
         "y1": 303,
       },
       Object {
@@ -3800,7 +3800,7 @@ Array [
         "initialY0": null,
         "initialY1": 304,
         "x": 304,
-        "y0": 0,
+        "y0": null,
         "y1": 304,
       },
       Object {
@@ -3808,7 +3808,7 @@ Array [
         "initialY0": null,
         "initialY1": 305,
         "x": 305,
-        "y0": 0,
+        "y0": null,
         "y1": 305,
       },
       Object {
@@ -3816,7 +3816,7 @@ Array [
         "initialY0": null,
         "initialY1": 306,
         "x": 306,
-        "y0": 0,
+        "y0": null,
         "y1": 306,
       },
       Object {
@@ -3824,7 +3824,7 @@ Array [
         "initialY0": null,
         "initialY1": 307,
         "x": 307,
-        "y0": 0,
+        "y0": null,
         "y1": 307,
       },
       Object {
@@ -3832,7 +3832,7 @@ Array [
         "initialY0": null,
         "initialY1": 308,
         "x": 308,
-        "y0": 0,
+        "y0": null,
         "y1": 308,
       },
       Object {
@@ -3840,7 +3840,7 @@ Array [
         "initialY0": null,
         "initialY1": 309,
         "x": 309,
-        "y0": 0,
+        "y0": null,
         "y1": 309,
       },
       Object {
@@ -3848,7 +3848,7 @@ Array [
         "initialY0": null,
         "initialY1": 310,
         "x": 310,
-        "y0": 0,
+        "y0": null,
         "y1": 310,
       },
       Object {
@@ -3856,7 +3856,7 @@ Array [
         "initialY0": null,
         "initialY1": 311,
         "x": 311,
-        "y0": 0,
+        "y0": null,
         "y1": 311,
       },
       Object {
@@ -3864,7 +3864,7 @@ Array [
         "initialY0": null,
         "initialY1": 312,
         "x": 312,
-        "y0": 0,
+        "y0": null,
         "y1": 312,
       },
       Object {
@@ -3872,7 +3872,7 @@ Array [
         "initialY0": null,
         "initialY1": 313,
         "x": 313,
-        "y0": 0,
+        "y0": null,
         "y1": 313,
       },
       Object {
@@ -3880,7 +3880,7 @@ Array [
         "initialY0": null,
         "initialY1": 314,
         "x": 314,
-        "y0": 0,
+        "y0": null,
         "y1": 314,
       },
       Object {
@@ -3888,7 +3888,7 @@ Array [
         "initialY0": null,
         "initialY1": 315,
         "x": 315,
-        "y0": 0,
+        "y0": null,
         "y1": 315,
       },
       Object {
@@ -3896,7 +3896,7 @@ Array [
         "initialY0": null,
         "initialY1": 316,
         "x": 316,
-        "y0": 0,
+        "y0": null,
         "y1": 316,
       },
       Object {
@@ -3904,7 +3904,7 @@ Array [
         "initialY0": null,
         "initialY1": 317,
         "x": 317,
-        "y0": 0,
+        "y0": null,
         "y1": 317,
       },
       Object {
@@ -3912,7 +3912,7 @@ Array [
         "initialY0": null,
         "initialY1": 318,
         "x": 318,
-        "y0": 0,
+        "y0": null,
         "y1": 318,
       },
       Object {
@@ -3920,7 +3920,7 @@ Array [
         "initialY0": null,
         "initialY1": 319,
         "x": 319,
-        "y0": 0,
+        "y0": null,
         "y1": 319,
       },
       Object {
@@ -3928,7 +3928,7 @@ Array [
         "initialY0": null,
         "initialY1": 320,
         "x": 320,
-        "y0": 0,
+        "y0": null,
         "y1": 320,
       },
       Object {
@@ -3936,7 +3936,7 @@ Array [
         "initialY0": null,
         "initialY1": 321,
         "x": 321,
-        "y0": 0,
+        "y0": null,
         "y1": 321,
       },
       Object {
@@ -3944,7 +3944,7 @@ Array [
         "initialY0": null,
         "initialY1": 322,
         "x": 322,
-        "y0": 0,
+        "y0": null,
         "y1": 322,
       },
       Object {
@@ -3952,7 +3952,7 @@ Array [
         "initialY0": null,
         "initialY1": 323,
         "x": 323,
-        "y0": 0,
+        "y0": null,
         "y1": 323,
       },
       Object {
@@ -3960,7 +3960,7 @@ Array [
         "initialY0": null,
         "initialY1": 324,
         "x": 324,
-        "y0": 0,
+        "y0": null,
         "y1": 324,
       },
       Object {
@@ -3968,7 +3968,7 @@ Array [
         "initialY0": null,
         "initialY1": 325,
         "x": 325,
-        "y0": 0,
+        "y0": null,
         "y1": 325,
       },
       Object {
@@ -3976,7 +3976,7 @@ Array [
         "initialY0": null,
         "initialY1": 326,
         "x": 326,
-        "y0": 0,
+        "y0": null,
         "y1": 326,
       },
       Object {
@@ -3984,7 +3984,7 @@ Array [
         "initialY0": null,
         "initialY1": 327,
         "x": 327,
-        "y0": 0,
+        "y0": null,
         "y1": 327,
       },
       Object {
@@ -3992,7 +3992,7 @@ Array [
         "initialY0": null,
         "initialY1": 328,
         "x": 328,
-        "y0": 0,
+        "y0": null,
         "y1": 328,
       },
       Object {
@@ -4000,7 +4000,7 @@ Array [
         "initialY0": null,
         "initialY1": 329,
         "x": 329,
-        "y0": 0,
+        "y0": null,
         "y1": 329,
       },
       Object {
@@ -4008,7 +4008,7 @@ Array [
         "initialY0": null,
         "initialY1": 330,
         "x": 330,
-        "y0": 0,
+        "y0": null,
         "y1": 330,
       },
       Object {
@@ -4016,7 +4016,7 @@ Array [
         "initialY0": null,
         "initialY1": 331,
         "x": 331,
-        "y0": 0,
+        "y0": null,
         "y1": 331,
       },
       Object {
@@ -4024,7 +4024,7 @@ Array [
         "initialY0": null,
         "initialY1": 332,
         "x": 332,
-        "y0": 0,
+        "y0": null,
         "y1": 332,
       },
       Object {
@@ -4032,7 +4032,7 @@ Array [
         "initialY0": null,
         "initialY1": 333,
         "x": 333,
-        "y0": 0,
+        "y0": null,
         "y1": 333,
       },
       Object {
@@ -4040,7 +4040,7 @@ Array [
         "initialY0": null,
         "initialY1": 334,
         "x": 334,
-        "y0": 0,
+        "y0": null,
         "y1": 334,
       },
       Object {
@@ -4048,7 +4048,7 @@ Array [
         "initialY0": null,
         "initialY1": 335,
         "x": 335,
-        "y0": 0,
+        "y0": null,
         "y1": 335,
       },
       Object {
@@ -4056,7 +4056,7 @@ Array [
         "initialY0": null,
         "initialY1": 336,
         "x": 336,
-        "y0": 0,
+        "y0": null,
         "y1": 336,
       },
       Object {
@@ -4064,7 +4064,7 @@ Array [
         "initialY0": null,
         "initialY1": 337,
         "x": 337,
-        "y0": 0,
+        "y0": null,
         "y1": 337,
       },
       Object {
@@ -4072,7 +4072,7 @@ Array [
         "initialY0": null,
         "initialY1": 338,
         "x": 338,
-        "y0": 0,
+        "y0": null,
         "y1": 338,
       },
       Object {
@@ -4080,7 +4080,7 @@ Array [
         "initialY0": null,
         "initialY1": 339,
         "x": 339,
-        "y0": 0,
+        "y0": null,
         "y1": 339,
       },
       Object {
@@ -4088,7 +4088,7 @@ Array [
         "initialY0": null,
         "initialY1": 340,
         "x": 340,
-        "y0": 0,
+        "y0": null,
         "y1": 340,
       },
       Object {
@@ -4096,7 +4096,7 @@ Array [
         "initialY0": null,
         "initialY1": 341,
         "x": 341,
-        "y0": 0,
+        "y0": null,
         "y1": 341,
       },
       Object {
@@ -4104,7 +4104,7 @@ Array [
         "initialY0": null,
         "initialY1": 342,
         "x": 342,
-        "y0": 0,
+        "y0": null,
         "y1": 342,
       },
       Object {
@@ -4112,7 +4112,7 @@ Array [
         "initialY0": null,
         "initialY1": 343,
         "x": 343,
-        "y0": 0,
+        "y0": null,
         "y1": 343,
       },
       Object {
@@ -4120,7 +4120,7 @@ Array [
         "initialY0": null,
         "initialY1": 344,
         "x": 344,
-        "y0": 0,
+        "y0": null,
         "y1": 344,
       },
       Object {
@@ -4128,7 +4128,7 @@ Array [
         "initialY0": null,
         "initialY1": 345,
         "x": 345,
-        "y0": 0,
+        "y0": null,
         "y1": 345,
       },
       Object {
@@ -4136,7 +4136,7 @@ Array [
         "initialY0": null,
         "initialY1": 346,
         "x": 346,
-        "y0": 0,
+        "y0": null,
         "y1": 346,
       },
       Object {
@@ -4144,7 +4144,7 @@ Array [
         "initialY0": null,
         "initialY1": 347,
         "x": 347,
-        "y0": 0,
+        "y0": null,
         "y1": 347,
       },
       Object {
@@ -4152,7 +4152,7 @@ Array [
         "initialY0": null,
         "initialY1": 348,
         "x": 348,
-        "y0": 0,
+        "y0": null,
         "y1": 348,
       },
       Object {
@@ -4160,7 +4160,7 @@ Array [
         "initialY0": null,
         "initialY1": 349,
         "x": 349,
-        "y0": 0,
+        "y0": null,
         "y1": 349,
       },
       Object {
@@ -4168,7 +4168,7 @@ Array [
         "initialY0": null,
         "initialY1": 350,
         "x": 350,
-        "y0": 0,
+        "y0": null,
         "y1": 350,
       },
       Object {
@@ -4176,7 +4176,7 @@ Array [
         "initialY0": null,
         "initialY1": 351,
         "x": 351,
-        "y0": 0,
+        "y0": null,
         "y1": 351,
       },
       Object {
@@ -4184,7 +4184,7 @@ Array [
         "initialY0": null,
         "initialY1": 352,
         "x": 352,
-        "y0": 0,
+        "y0": null,
         "y1": 352,
       },
       Object {
@@ -4192,7 +4192,7 @@ Array [
         "initialY0": null,
         "initialY1": 353,
         "x": 353,
-        "y0": 0,
+        "y0": null,
         "y1": 353,
       },
       Object {
@@ -4200,7 +4200,7 @@ Array [
         "initialY0": null,
         "initialY1": 354,
         "x": 354,
-        "y0": 0,
+        "y0": null,
         "y1": 354,
       },
       Object {
@@ -4208,7 +4208,7 @@ Array [
         "initialY0": null,
         "initialY1": 355,
         "x": 355,
-        "y0": 0,
+        "y0": null,
         "y1": 355,
       },
       Object {
@@ -4216,7 +4216,7 @@ Array [
         "initialY0": null,
         "initialY1": 356,
         "x": 356,
-        "y0": 0,
+        "y0": null,
         "y1": 356,
       },
       Object {
@@ -4224,7 +4224,7 @@ Array [
         "initialY0": null,
         "initialY1": 357,
         "x": 357,
-        "y0": 0,
+        "y0": null,
         "y1": 357,
       },
       Object {
@@ -4232,7 +4232,7 @@ Array [
         "initialY0": null,
         "initialY1": 358,
         "x": 358,
-        "y0": 0,
+        "y0": null,
         "y1": 358,
       },
       Object {
@@ -4240,7 +4240,7 @@ Array [
         "initialY0": null,
         "initialY1": 359,
         "x": 359,
-        "y0": 0,
+        "y0": null,
         "y1": 359,
       },
       Object {
@@ -4248,7 +4248,7 @@ Array [
         "initialY0": null,
         "initialY1": 360,
         "x": 360,
-        "y0": 0,
+        "y0": null,
         "y1": 360,
       },
       Object {
@@ -4256,7 +4256,7 @@ Array [
         "initialY0": null,
         "initialY1": 361,
         "x": 361,
-        "y0": 0,
+        "y0": null,
         "y1": 361,
       },
       Object {
@@ -4264,7 +4264,7 @@ Array [
         "initialY0": null,
         "initialY1": 362,
         "x": 362,
-        "y0": 0,
+        "y0": null,
         "y1": 362,
       },
       Object {
@@ -4272,7 +4272,7 @@ Array [
         "initialY0": null,
         "initialY1": 363,
         "x": 363,
-        "y0": 0,
+        "y0": null,
         "y1": 363,
       },
       Object {
@@ -4280,7 +4280,7 @@ Array [
         "initialY0": null,
         "initialY1": 364,
         "x": 364,
-        "y0": 0,
+        "y0": null,
         "y1": 364,
       },
       Object {
@@ -4288,7 +4288,7 @@ Array [
         "initialY0": null,
         "initialY1": 365,
         "x": 365,
-        "y0": 0,
+        "y0": null,
         "y1": 365,
       },
       Object {
@@ -4296,7 +4296,7 @@ Array [
         "initialY0": null,
         "initialY1": 366,
         "x": 366,
-        "y0": 0,
+        "y0": null,
         "y1": 366,
       },
       Object {
@@ -4304,7 +4304,7 @@ Array [
         "initialY0": null,
         "initialY1": 367,
         "x": 367,
-        "y0": 0,
+        "y0": null,
         "y1": 367,
       },
       Object {
@@ -4312,7 +4312,7 @@ Array [
         "initialY0": null,
         "initialY1": 368,
         "x": 368,
-        "y0": 0,
+        "y0": null,
         "y1": 368,
       },
       Object {
@@ -4320,7 +4320,7 @@ Array [
         "initialY0": null,
         "initialY1": 369,
         "x": 369,
-        "y0": 0,
+        "y0": null,
         "y1": 369,
       },
       Object {
@@ -4328,7 +4328,7 @@ Array [
         "initialY0": null,
         "initialY1": 370,
         "x": 370,
-        "y0": 0,
+        "y0": null,
         "y1": 370,
       },
       Object {
@@ -4336,7 +4336,7 @@ Array [
         "initialY0": null,
         "initialY1": 371,
         "x": 371,
-        "y0": 0,
+        "y0": null,
         "y1": 371,
       },
       Object {
@@ -4344,7 +4344,7 @@ Array [
         "initialY0": null,
         "initialY1": 372,
         "x": 372,
-        "y0": 0,
+        "y0": null,
         "y1": 372,
       },
       Object {
@@ -4352,7 +4352,7 @@ Array [
         "initialY0": null,
         "initialY1": 373,
         "x": 373,
-        "y0": 0,
+        "y0": null,
         "y1": 373,
       },
       Object {
@@ -4360,7 +4360,7 @@ Array [
         "initialY0": null,
         "initialY1": 374,
         "x": 374,
-        "y0": 0,
+        "y0": null,
         "y1": 374,
       },
       Object {
@@ -4368,7 +4368,7 @@ Array [
         "initialY0": null,
         "initialY1": 375,
         "x": 375,
-        "y0": 0,
+        "y0": null,
         "y1": 375,
       },
       Object {
@@ -4376,7 +4376,7 @@ Array [
         "initialY0": null,
         "initialY1": 376,
         "x": 376,
-        "y0": 0,
+        "y0": null,
         "y1": 376,
       },
       Object {
@@ -4384,7 +4384,7 @@ Array [
         "initialY0": null,
         "initialY1": 377,
         "x": 377,
-        "y0": 0,
+        "y0": null,
         "y1": 377,
       },
       Object {
@@ -4392,7 +4392,7 @@ Array [
         "initialY0": null,
         "initialY1": 378,
         "x": 378,
-        "y0": 0,
+        "y0": null,
         "y1": 378,
       },
       Object {
@@ -4400,7 +4400,7 @@ Array [
         "initialY0": null,
         "initialY1": 379,
         "x": 379,
-        "y0": 0,
+        "y0": null,
         "y1": 379,
       },
       Object {
@@ -4408,7 +4408,7 @@ Array [
         "initialY0": null,
         "initialY1": 380,
         "x": 380,
-        "y0": 0,
+        "y0": null,
         "y1": 380,
       },
       Object {
@@ -4416,7 +4416,7 @@ Array [
         "initialY0": null,
         "initialY1": 381,
         "x": 381,
-        "y0": 0,
+        "y0": null,
         "y1": 381,
       },
       Object {
@@ -4424,7 +4424,7 @@ Array [
         "initialY0": null,
         "initialY1": 382,
         "x": 382,
-        "y0": 0,
+        "y0": null,
         "y1": 382,
       },
       Object {
@@ -4432,7 +4432,7 @@ Array [
         "initialY0": null,
         "initialY1": 383,
         "x": 383,
-        "y0": 0,
+        "y0": null,
         "y1": 383,
       },
       Object {
@@ -4440,7 +4440,7 @@ Array [
         "initialY0": null,
         "initialY1": 384,
         "x": 384,
-        "y0": 0,
+        "y0": null,
         "y1": 384,
       },
       Object {
@@ -4448,7 +4448,7 @@ Array [
         "initialY0": null,
         "initialY1": 385,
         "x": 385,
-        "y0": 0,
+        "y0": null,
         "y1": 385,
       },
       Object {
@@ -4456,7 +4456,7 @@ Array [
         "initialY0": null,
         "initialY1": 386,
         "x": 386,
-        "y0": 0,
+        "y0": null,
         "y1": 386,
       },
       Object {
@@ -4464,7 +4464,7 @@ Array [
         "initialY0": null,
         "initialY1": 387,
         "x": 387,
-        "y0": 0,
+        "y0": null,
         "y1": 387,
       },
       Object {
@@ -4472,7 +4472,7 @@ Array [
         "initialY0": null,
         "initialY1": 388,
         "x": 388,
-        "y0": 0,
+        "y0": null,
         "y1": 388,
       },
       Object {
@@ -4480,7 +4480,7 @@ Array [
         "initialY0": null,
         "initialY1": 389,
         "x": 389,
-        "y0": 0,
+        "y0": null,
         "y1": 389,
       },
       Object {
@@ -4488,7 +4488,7 @@ Array [
         "initialY0": null,
         "initialY1": 390,
         "x": 390,
-        "y0": 0,
+        "y0": null,
         "y1": 390,
       },
       Object {
@@ -4496,7 +4496,7 @@ Array [
         "initialY0": null,
         "initialY1": 391,
         "x": 391,
-        "y0": 0,
+        "y0": null,
         "y1": 391,
       },
       Object {
@@ -4504,7 +4504,7 @@ Array [
         "initialY0": null,
         "initialY1": 392,
         "x": 392,
-        "y0": 0,
+        "y0": null,
         "y1": 392,
       },
       Object {
@@ -4512,7 +4512,7 @@ Array [
         "initialY0": null,
         "initialY1": 393,
         "x": 393,
-        "y0": 0,
+        "y0": null,
         "y1": 393,
       },
       Object {
@@ -4520,7 +4520,7 @@ Array [
         "initialY0": null,
         "initialY1": 394,
         "x": 394,
-        "y0": 0,
+        "y0": null,
         "y1": 394,
       },
       Object {
@@ -4528,7 +4528,7 @@ Array [
         "initialY0": null,
         "initialY1": 395,
         "x": 395,
-        "y0": 0,
+        "y0": null,
         "y1": 395,
       },
       Object {
@@ -4536,7 +4536,7 @@ Array [
         "initialY0": null,
         "initialY1": 396,
         "x": 396,
-        "y0": 0,
+        "y0": null,
         "y1": 396,
       },
       Object {
@@ -4544,7 +4544,7 @@ Array [
         "initialY0": null,
         "initialY1": 397,
         "x": 397,
-        "y0": 0,
+        "y0": null,
         "y1": 397,
       },
       Object {
@@ -4552,7 +4552,7 @@ Array [
         "initialY0": null,
         "initialY1": 398,
         "x": 398,
-        "y0": 0,
+        "y0": null,
         "y1": 398,
       },
       Object {
@@ -4560,7 +4560,7 @@ Array [
         "initialY0": null,
         "initialY1": 399,
         "x": 399,
-        "y0": 0,
+        "y0": null,
         "y1": 399,
       },
       Object {
@@ -4568,7 +4568,7 @@ Array [
         "initialY0": null,
         "initialY1": 400,
         "x": 400,
-        "y0": 0,
+        "y0": null,
         "y1": 400,
       },
       Object {
@@ -4576,7 +4576,7 @@ Array [
         "initialY0": null,
         "initialY1": 401,
         "x": 401,
-        "y0": 0,
+        "y0": null,
         "y1": 401,
       },
       Object {
@@ -4584,7 +4584,7 @@ Array [
         "initialY0": null,
         "initialY1": 402,
         "x": 402,
-        "y0": 0,
+        "y0": null,
         "y1": 402,
       },
       Object {
@@ -4592,7 +4592,7 @@ Array [
         "initialY0": null,
         "initialY1": 403,
         "x": 403,
-        "y0": 0,
+        "y0": null,
         "y1": 403,
       },
       Object {
@@ -4600,7 +4600,7 @@ Array [
         "initialY0": null,
         "initialY1": 404,
         "x": 404,
-        "y0": 0,
+        "y0": null,
         "y1": 404,
       },
       Object {
@@ -4608,7 +4608,7 @@ Array [
         "initialY0": null,
         "initialY1": 405,
         "x": 405,
-        "y0": 0,
+        "y0": null,
         "y1": 405,
       },
       Object {
@@ -4616,7 +4616,7 @@ Array [
         "initialY0": null,
         "initialY1": 406,
         "x": 406,
-        "y0": 0,
+        "y0": null,
         "y1": 406,
       },
       Object {
@@ -4624,7 +4624,7 @@ Array [
         "initialY0": null,
         "initialY1": 407,
         "x": 407,
-        "y0": 0,
+        "y0": null,
         "y1": 407,
       },
       Object {
@@ -4632,7 +4632,7 @@ Array [
         "initialY0": null,
         "initialY1": 408,
         "x": 408,
-        "y0": 0,
+        "y0": null,
         "y1": 408,
       },
       Object {
@@ -4640,7 +4640,7 @@ Array [
         "initialY0": null,
         "initialY1": 409,
         "x": 409,
-        "y0": 0,
+        "y0": null,
         "y1": 409,
       },
       Object {
@@ -4648,7 +4648,7 @@ Array [
         "initialY0": null,
         "initialY1": 410,
         "x": 410,
-        "y0": 0,
+        "y0": null,
         "y1": 410,
       },
       Object {
@@ -4656,7 +4656,7 @@ Array [
         "initialY0": null,
         "initialY1": 411,
         "x": 411,
-        "y0": 0,
+        "y0": null,
         "y1": 411,
       },
       Object {
@@ -4664,7 +4664,7 @@ Array [
         "initialY0": null,
         "initialY1": 412,
         "x": 412,
-        "y0": 0,
+        "y0": null,
         "y1": 412,
       },
       Object {
@@ -4672,7 +4672,7 @@ Array [
         "initialY0": null,
         "initialY1": 413,
         "x": 413,
-        "y0": 0,
+        "y0": null,
         "y1": 413,
       },
       Object {
@@ -4680,7 +4680,7 @@ Array [
         "initialY0": null,
         "initialY1": 414,
         "x": 414,
-        "y0": 0,
+        "y0": null,
         "y1": 414,
       },
       Object {
@@ -4688,7 +4688,7 @@ Array [
         "initialY0": null,
         "initialY1": 415,
         "x": 415,
-        "y0": 0,
+        "y0": null,
         "y1": 415,
       },
       Object {
@@ -4696,7 +4696,7 @@ Array [
         "initialY0": null,
         "initialY1": 416,
         "x": 416,
-        "y0": 0,
+        "y0": null,
         "y1": 416,
       },
       Object {
@@ -4704,7 +4704,7 @@ Array [
         "initialY0": null,
         "initialY1": 417,
         "x": 417,
-        "y0": 0,
+        "y0": null,
         "y1": 417,
       },
       Object {
@@ -4712,7 +4712,7 @@ Array [
         "initialY0": null,
         "initialY1": 418,
         "x": 418,
-        "y0": 0,
+        "y0": null,
         "y1": 418,
       },
       Object {
@@ -4720,7 +4720,7 @@ Array [
         "initialY0": null,
         "initialY1": 419,
         "x": 419,
-        "y0": 0,
+        "y0": null,
         "y1": 419,
       },
       Object {
@@ -4728,7 +4728,7 @@ Array [
         "initialY0": null,
         "initialY1": 420,
         "x": 420,
-        "y0": 0,
+        "y0": null,
         "y1": 420,
       },
       Object {
@@ -4736,7 +4736,7 @@ Array [
         "initialY0": null,
         "initialY1": 421,
         "x": 421,
-        "y0": 0,
+        "y0": null,
         "y1": 421,
       },
       Object {
@@ -4744,7 +4744,7 @@ Array [
         "initialY0": null,
         "initialY1": 422,
         "x": 422,
-        "y0": 0,
+        "y0": null,
         "y1": 422,
       },
       Object {
@@ -4752,7 +4752,7 @@ Array [
         "initialY0": null,
         "initialY1": 423,
         "x": 423,
-        "y0": 0,
+        "y0": null,
         "y1": 423,
       },
       Object {
@@ -4760,7 +4760,7 @@ Array [
         "initialY0": null,
         "initialY1": 424,
         "x": 424,
-        "y0": 0,
+        "y0": null,
         "y1": 424,
       },
       Object {
@@ -4768,7 +4768,7 @@ Array [
         "initialY0": null,
         "initialY1": 425,
         "x": 425,
-        "y0": 0,
+        "y0": null,
         "y1": 425,
       },
       Object {
@@ -4776,7 +4776,7 @@ Array [
         "initialY0": null,
         "initialY1": 426,
         "x": 426,
-        "y0": 0,
+        "y0": null,
         "y1": 426,
       },
       Object {
@@ -4784,7 +4784,7 @@ Array [
         "initialY0": null,
         "initialY1": 427,
         "x": 427,
-        "y0": 0,
+        "y0": null,
         "y1": 427,
       },
       Object {
@@ -4792,7 +4792,7 @@ Array [
         "initialY0": null,
         "initialY1": 428,
         "x": 428,
-        "y0": 0,
+        "y0": null,
         "y1": 428,
       },
       Object {
@@ -4800,7 +4800,7 @@ Array [
         "initialY0": null,
         "initialY1": 429,
         "x": 429,
-        "y0": 0,
+        "y0": null,
         "y1": 429,
       },
       Object {
@@ -4808,7 +4808,7 @@ Array [
         "initialY0": null,
         "initialY1": 430,
         "x": 430,
-        "y0": 0,
+        "y0": null,
         "y1": 430,
       },
       Object {
@@ -4816,7 +4816,7 @@ Array [
         "initialY0": null,
         "initialY1": 431,
         "x": 431,
-        "y0": 0,
+        "y0": null,
         "y1": 431,
       },
       Object {
@@ -4824,7 +4824,7 @@ Array [
         "initialY0": null,
         "initialY1": 432,
         "x": 432,
-        "y0": 0,
+        "y0": null,
         "y1": 432,
       },
       Object {
@@ -4832,7 +4832,7 @@ Array [
         "initialY0": null,
         "initialY1": 433,
         "x": 433,
-        "y0": 0,
+        "y0": null,
         "y1": 433,
       },
       Object {
@@ -4840,7 +4840,7 @@ Array [
         "initialY0": null,
         "initialY1": 434,
         "x": 434,
-        "y0": 0,
+        "y0": null,
         "y1": 434,
       },
       Object {
@@ -4848,7 +4848,7 @@ Array [
         "initialY0": null,
         "initialY1": 435,
         "x": 435,
-        "y0": 0,
+        "y0": null,
         "y1": 435,
       },
       Object {
@@ -4856,7 +4856,7 @@ Array [
         "initialY0": null,
         "initialY1": 436,
         "x": 436,
-        "y0": 0,
+        "y0": null,
         "y1": 436,
       },
       Object {
@@ -4864,7 +4864,7 @@ Array [
         "initialY0": null,
         "initialY1": 437,
         "x": 437,
-        "y0": 0,
+        "y0": null,
         "y1": 437,
       },
       Object {
@@ -4872,7 +4872,7 @@ Array [
         "initialY0": null,
         "initialY1": 438,
         "x": 438,
-        "y0": 0,
+        "y0": null,
         "y1": 438,
       },
       Object {
@@ -4880,7 +4880,7 @@ Array [
         "initialY0": null,
         "initialY1": 439,
         "x": 439,
-        "y0": 0,
+        "y0": null,
         "y1": 439,
       },
       Object {
@@ -4888,7 +4888,7 @@ Array [
         "initialY0": null,
         "initialY1": 440,
         "x": 440,
-        "y0": 0,
+        "y0": null,
         "y1": 440,
       },
       Object {
@@ -4896,7 +4896,7 @@ Array [
         "initialY0": null,
         "initialY1": 441,
         "x": 441,
-        "y0": 0,
+        "y0": null,
         "y1": 441,
       },
       Object {
@@ -4904,7 +4904,7 @@ Array [
         "initialY0": null,
         "initialY1": 442,
         "x": 442,
-        "y0": 0,
+        "y0": null,
         "y1": 442,
       },
       Object {
@@ -4912,7 +4912,7 @@ Array [
         "initialY0": null,
         "initialY1": 443,
         "x": 443,
-        "y0": 0,
+        "y0": null,
         "y1": 443,
       },
       Object {
@@ -4920,7 +4920,7 @@ Array [
         "initialY0": null,
         "initialY1": 444,
         "x": 444,
-        "y0": 0,
+        "y0": null,
         "y1": 444,
       },
       Object {
@@ -4928,7 +4928,7 @@ Array [
         "initialY0": null,
         "initialY1": 445,
         "x": 445,
-        "y0": 0,
+        "y0": null,
         "y1": 445,
       },
       Object {
@@ -4936,7 +4936,7 @@ Array [
         "initialY0": null,
         "initialY1": 446,
         "x": 446,
-        "y0": 0,
+        "y0": null,
         "y1": 446,
       },
       Object {
@@ -4944,7 +4944,7 @@ Array [
         "initialY0": null,
         "initialY1": 447,
         "x": 447,
-        "y0": 0,
+        "y0": null,
         "y1": 447,
       },
       Object {
@@ -4952,7 +4952,7 @@ Array [
         "initialY0": null,
         "initialY1": 448,
         "x": 448,
-        "y0": 0,
+        "y0": null,
         "y1": 448,
       },
       Object {
@@ -4960,7 +4960,7 @@ Array [
         "initialY0": null,
         "initialY1": 449,
         "x": 449,
-        "y0": 0,
+        "y0": null,
         "y1": 449,
       },
       Object {
@@ -4968,7 +4968,7 @@ Array [
         "initialY0": null,
         "initialY1": 450,
         "x": 450,
-        "y0": 0,
+        "y0": null,
         "y1": 450,
       },
       Object {
@@ -4976,7 +4976,7 @@ Array [
         "initialY0": null,
         "initialY1": 451,
         "x": 451,
-        "y0": 0,
+        "y0": null,
         "y1": 451,
       },
       Object {
@@ -4984,7 +4984,7 @@ Array [
         "initialY0": null,
         "initialY1": 452,
         "x": 452,
-        "y0": 0,
+        "y0": null,
         "y1": 452,
       },
       Object {
@@ -4992,7 +4992,7 @@ Array [
         "initialY0": null,
         "initialY1": 453,
         "x": 453,
-        "y0": 0,
+        "y0": null,
         "y1": 453,
       },
       Object {
@@ -5000,7 +5000,7 @@ Array [
         "initialY0": null,
         "initialY1": 454,
         "x": 454,
-        "y0": 0,
+        "y0": null,
         "y1": 454,
       },
       Object {
@@ -5008,7 +5008,7 @@ Array [
         "initialY0": null,
         "initialY1": 455,
         "x": 455,
-        "y0": 0,
+        "y0": null,
         "y1": 455,
       },
       Object {
@@ -5016,7 +5016,7 @@ Array [
         "initialY0": null,
         "initialY1": 456,
         "x": 456,
-        "y0": 0,
+        "y0": null,
         "y1": 456,
       },
       Object {
@@ -5024,7 +5024,7 @@ Array [
         "initialY0": null,
         "initialY1": 457,
         "x": 457,
-        "y0": 0,
+        "y0": null,
         "y1": 457,
       },
       Object {
@@ -5032,7 +5032,7 @@ Array [
         "initialY0": null,
         "initialY1": 458,
         "x": 458,
-        "y0": 0,
+        "y0": null,
         "y1": 458,
       },
       Object {
@@ -5040,7 +5040,7 @@ Array [
         "initialY0": null,
         "initialY1": 459,
         "x": 459,
-        "y0": 0,
+        "y0": null,
         "y1": 459,
       },
       Object {
@@ -5048,7 +5048,7 @@ Array [
         "initialY0": null,
         "initialY1": 460,
         "x": 460,
-        "y0": 0,
+        "y0": null,
         "y1": 460,
       },
       Object {
@@ -5056,7 +5056,7 @@ Array [
         "initialY0": null,
         "initialY1": 461,
         "x": 461,
-        "y0": 0,
+        "y0": null,
         "y1": 461,
       },
       Object {
@@ -5064,7 +5064,7 @@ Array [
         "initialY0": null,
         "initialY1": 462,
         "x": 462,
-        "y0": 0,
+        "y0": null,
         "y1": 462,
       },
       Object {
@@ -5072,7 +5072,7 @@ Array [
         "initialY0": null,
         "initialY1": 463,
         "x": 463,
-        "y0": 0,
+        "y0": null,
         "y1": 463,
       },
       Object {
@@ -5080,7 +5080,7 @@ Array [
         "initialY0": null,
         "initialY1": 464,
         "x": 464,
-        "y0": 0,
+        "y0": null,
         "y1": 464,
       },
       Object {
@@ -5088,7 +5088,7 @@ Array [
         "initialY0": null,
         "initialY1": 465,
         "x": 465,
-        "y0": 0,
+        "y0": null,
         "y1": 465,
       },
       Object {
@@ -5096,7 +5096,7 @@ Array [
         "initialY0": null,
         "initialY1": 466,
         "x": 466,
-        "y0": 0,
+        "y0": null,
         "y1": 466,
       },
       Object {
@@ -5104,7 +5104,7 @@ Array [
         "initialY0": null,
         "initialY1": 467,
         "x": 467,
-        "y0": 0,
+        "y0": null,
         "y1": 467,
       },
       Object {
@@ -5112,7 +5112,7 @@ Array [
         "initialY0": null,
         "initialY1": 468,
         "x": 468,
-        "y0": 0,
+        "y0": null,
         "y1": 468,
       },
       Object {
@@ -5120,7 +5120,7 @@ Array [
         "initialY0": null,
         "initialY1": 469,
         "x": 469,
-        "y0": 0,
+        "y0": null,
         "y1": 469,
       },
       Object {
@@ -5128,7 +5128,7 @@ Array [
         "initialY0": null,
         "initialY1": 470,
         "x": 470,
-        "y0": 0,
+        "y0": null,
         "y1": 470,
       },
       Object {
@@ -5136,7 +5136,7 @@ Array [
         "initialY0": null,
         "initialY1": 471,
         "x": 471,
-        "y0": 0,
+        "y0": null,
         "y1": 471,
       },
       Object {
@@ -5144,7 +5144,7 @@ Array [
         "initialY0": null,
         "initialY1": 472,
         "x": 472,
-        "y0": 0,
+        "y0": null,
         "y1": 472,
       },
       Object {
@@ -5152,7 +5152,7 @@ Array [
         "initialY0": null,
         "initialY1": 473,
         "x": 473,
-        "y0": 0,
+        "y0": null,
         "y1": 473,
       },
       Object {
@@ -5160,7 +5160,7 @@ Array [
         "initialY0": null,
         "initialY1": 474,
         "x": 474,
-        "y0": 0,
+        "y0": null,
         "y1": 474,
       },
       Object {
@@ -5168,7 +5168,7 @@ Array [
         "initialY0": null,
         "initialY1": 475,
         "x": 475,
-        "y0": 0,
+        "y0": null,
         "y1": 475,
       },
       Object {
@@ -5176,7 +5176,7 @@ Array [
         "initialY0": null,
         "initialY1": 476,
         "x": 476,
-        "y0": 0,
+        "y0": null,
         "y1": 476,
       },
       Object {
@@ -5184,7 +5184,7 @@ Array [
         "initialY0": null,
         "initialY1": 477,
         "x": 477,
-        "y0": 0,
+        "y0": null,
         "y1": 477,
       },
       Object {
@@ -5192,7 +5192,7 @@ Array [
         "initialY0": null,
         "initialY1": 478,
         "x": 478,
-        "y0": 0,
+        "y0": null,
         "y1": 478,
       },
       Object {
@@ -5200,7 +5200,7 @@ Array [
         "initialY0": null,
         "initialY1": 479,
         "x": 479,
-        "y0": 0,
+        "y0": null,
         "y1": 479,
       },
       Object {
@@ -5208,7 +5208,7 @@ Array [
         "initialY0": null,
         "initialY1": 480,
         "x": 480,
-        "y0": 0,
+        "y0": null,
         "y1": 480,
       },
       Object {
@@ -5216,7 +5216,7 @@ Array [
         "initialY0": null,
         "initialY1": 481,
         "x": 481,
-        "y0": 0,
+        "y0": null,
         "y1": 481,
       },
       Object {
@@ -5224,7 +5224,7 @@ Array [
         "initialY0": null,
         "initialY1": 482,
         "x": 482,
-        "y0": 0,
+        "y0": null,
         "y1": 482,
       },
       Object {
@@ -5232,7 +5232,7 @@ Array [
         "initialY0": null,
         "initialY1": 483,
         "x": 483,
-        "y0": 0,
+        "y0": null,
         "y1": 483,
       },
       Object {
@@ -5240,7 +5240,7 @@ Array [
         "initialY0": null,
         "initialY1": 484,
         "x": 484,
-        "y0": 0,
+        "y0": null,
         "y1": 484,
       },
       Object {
@@ -5248,7 +5248,7 @@ Array [
         "initialY0": null,
         "initialY1": 485,
         "x": 485,
-        "y0": 0,
+        "y0": null,
         "y1": 485,
       },
       Object {
@@ -5256,7 +5256,7 @@ Array [
         "initialY0": null,
         "initialY1": 486,
         "x": 486,
-        "y0": 0,
+        "y0": null,
         "y1": 486,
       },
       Object {
@@ -5264,7 +5264,7 @@ Array [
         "initialY0": null,
         "initialY1": 487,
         "x": 487,
-        "y0": 0,
+        "y0": null,
         "y1": 487,
       },
       Object {
@@ -5272,7 +5272,7 @@ Array [
         "initialY0": null,
         "initialY1": 488,
         "x": 488,
-        "y0": 0,
+        "y0": null,
         "y1": 488,
       },
       Object {
@@ -5280,7 +5280,7 @@ Array [
         "initialY0": null,
         "initialY1": 489,
         "x": 489,
-        "y0": 0,
+        "y0": null,
         "y1": 489,
       },
       Object {
@@ -5288,7 +5288,7 @@ Array [
         "initialY0": null,
         "initialY1": 490,
         "x": 490,
-        "y0": 0,
+        "y0": null,
         "y1": 490,
       },
       Object {
@@ -5296,7 +5296,7 @@ Array [
         "initialY0": null,
         "initialY1": 491,
         "x": 491,
-        "y0": 0,
+        "y0": null,
         "y1": 491,
       },
       Object {
@@ -5304,7 +5304,7 @@ Array [
         "initialY0": null,
         "initialY1": 492,
         "x": 492,
-        "y0": 0,
+        "y0": null,
         "y1": 492,
       },
       Object {
@@ -5312,7 +5312,7 @@ Array [
         "initialY0": null,
         "initialY1": 493,
         "x": 493,
-        "y0": 0,
+        "y0": null,
         "y1": 493,
       },
       Object {
@@ -5320,7 +5320,7 @@ Array [
         "initialY0": null,
         "initialY1": 494,
         "x": 494,
-        "y0": 0,
+        "y0": null,
         "y1": 494,
       },
       Object {
@@ -5328,7 +5328,7 @@ Array [
         "initialY0": null,
         "initialY1": 495,
         "x": 495,
-        "y0": 0,
+        "y0": null,
         "y1": 495,
       },
       Object {
@@ -5336,7 +5336,7 @@ Array [
         "initialY0": null,
         "initialY1": 496,
         "x": 496,
-        "y0": 0,
+        "y0": null,
         "y1": 496,
       },
       Object {
@@ -5344,7 +5344,7 @@ Array [
         "initialY0": null,
         "initialY1": 497,
         "x": 497,
-        "y0": 0,
+        "y0": null,
         "y1": 497,
       },
       Object {
@@ -5352,7 +5352,7 @@ Array [
         "initialY0": null,
         "initialY1": 498,
         "x": 498,
-        "y0": 0,
+        "y0": null,
         "y1": 498,
       },
       Object {
@@ -5360,7 +5360,7 @@ Array [
         "initialY0": null,
         "initialY1": 499,
         "x": 499,
-        "y0": 0,
+        "y0": null,
         "y1": 499,
       },
       Object {
@@ -5368,7 +5368,7 @@ Array [
         "initialY0": null,
         "initialY1": 500,
         "x": 500,
-        "y0": 0,
+        "y0": null,
         "y1": 500,
       },
       Object {
@@ -5376,7 +5376,7 @@ Array [
         "initialY0": null,
         "initialY1": 501,
         "x": 501,
-        "y0": 0,
+        "y0": null,
         "y1": 501,
       },
       Object {
@@ -5384,7 +5384,7 @@ Array [
         "initialY0": null,
         "initialY1": 502,
         "x": 502,
-        "y0": 0,
+        "y0": null,
         "y1": 502,
       },
       Object {
@@ -5392,7 +5392,7 @@ Array [
         "initialY0": null,
         "initialY1": 503,
         "x": 503,
-        "y0": 0,
+        "y0": null,
         "y1": 503,
       },
       Object {
@@ -5400,7 +5400,7 @@ Array [
         "initialY0": null,
         "initialY1": 504,
         "x": 504,
-        "y0": 0,
+        "y0": null,
         "y1": 504,
       },
       Object {
@@ -5408,7 +5408,7 @@ Array [
         "initialY0": null,
         "initialY1": 505,
         "x": 505,
-        "y0": 0,
+        "y0": null,
         "y1": 505,
       },
       Object {
@@ -5416,7 +5416,7 @@ Array [
         "initialY0": null,
         "initialY1": 506,
         "x": 506,
-        "y0": 0,
+        "y0": null,
         "y1": 506,
       },
       Object {
@@ -5424,7 +5424,7 @@ Array [
         "initialY0": null,
         "initialY1": 507,
         "x": 507,
-        "y0": 0,
+        "y0": null,
         "y1": 507,
       },
       Object {
@@ -5432,7 +5432,7 @@ Array [
         "initialY0": null,
         "initialY1": 508,
         "x": 508,
-        "y0": 0,
+        "y0": null,
         "y1": 508,
       },
       Object {
@@ -5440,7 +5440,7 @@ Array [
         "initialY0": null,
         "initialY1": 509,
         "x": 509,
-        "y0": 0,
+        "y0": null,
         "y1": 509,
       },
       Object {
@@ -5448,7 +5448,7 @@ Array [
         "initialY0": null,
         "initialY1": 510,
         "x": 510,
-        "y0": 0,
+        "y0": null,
         "y1": 510,
       },
       Object {
@@ -5456,7 +5456,7 @@ Array [
         "initialY0": null,
         "initialY1": 511,
         "x": 511,
-        "y0": 0,
+        "y0": null,
         "y1": 511,
       },
       Object {
@@ -5464,7 +5464,7 @@ Array [
         "initialY0": null,
         "initialY1": 512,
         "x": 512,
-        "y0": 0,
+        "y0": null,
         "y1": 512,
       },
       Object {
@@ -5472,7 +5472,7 @@ Array [
         "initialY0": null,
         "initialY1": 513,
         "x": 513,
-        "y0": 0,
+        "y0": null,
         "y1": 513,
       },
       Object {
@@ -5480,7 +5480,7 @@ Array [
         "initialY0": null,
         "initialY1": 514,
         "x": 514,
-        "y0": 0,
+        "y0": null,
         "y1": 514,
       },
       Object {
@@ -5488,7 +5488,7 @@ Array [
         "initialY0": null,
         "initialY1": 515,
         "x": 515,
-        "y0": 0,
+        "y0": null,
         "y1": 515,
       },
       Object {
@@ -5496,7 +5496,7 @@ Array [
         "initialY0": null,
         "initialY1": 516,
         "x": 516,
-        "y0": 0,
+        "y0": null,
         "y1": 516,
       },
       Object {
@@ -5504,7 +5504,7 @@ Array [
         "initialY0": null,
         "initialY1": 517,
         "x": 517,
-        "y0": 0,
+        "y0": null,
         "y1": 517,
       },
       Object {
@@ -5512,7 +5512,7 @@ Array [
         "initialY0": null,
         "initialY1": 518,
         "x": 518,
-        "y0": 0,
+        "y0": null,
         "y1": 518,
       },
       Object {
@@ -5520,7 +5520,7 @@ Array [
         "initialY0": null,
         "initialY1": 519,
         "x": 519,
-        "y0": 0,
+        "y0": null,
         "y1": 519,
       },
       Object {
@@ -5528,7 +5528,7 @@ Array [
         "initialY0": null,
         "initialY1": 520,
         "x": 520,
-        "y0": 0,
+        "y0": null,
         "y1": 520,
       },
       Object {
@@ -5536,7 +5536,7 @@ Array [
         "initialY0": null,
         "initialY1": 521,
         "x": 521,
-        "y0": 0,
+        "y0": null,
         "y1": 521,
       },
       Object {
@@ -5544,7 +5544,7 @@ Array [
         "initialY0": null,
         "initialY1": 522,
         "x": 522,
-        "y0": 0,
+        "y0": null,
         "y1": 522,
       },
       Object {
@@ -5552,7 +5552,7 @@ Array [
         "initialY0": null,
         "initialY1": 523,
         "x": 523,
-        "y0": 0,
+        "y0": null,
         "y1": 523,
       },
       Object {
@@ -5560,7 +5560,7 @@ Array [
         "initialY0": null,
         "initialY1": 524,
         "x": 524,
-        "y0": 0,
+        "y0": null,
         "y1": 524,
       },
       Object {
@@ -5568,7 +5568,7 @@ Array [
         "initialY0": null,
         "initialY1": 525,
         "x": 525,
-        "y0": 0,
+        "y0": null,
         "y1": 525,
       },
       Object {
@@ -5576,7 +5576,7 @@ Array [
         "initialY0": null,
         "initialY1": 526,
         "x": 526,
-        "y0": 0,
+        "y0": null,
         "y1": 526,
       },
       Object {
@@ -5584,7 +5584,7 @@ Array [
         "initialY0": null,
         "initialY1": 527,
         "x": 527,
-        "y0": 0,
+        "y0": null,
         "y1": 527,
       },
       Object {
@@ -5592,7 +5592,7 @@ Array [
         "initialY0": null,
         "initialY1": 528,
         "x": 528,
-        "y0": 0,
+        "y0": null,
         "y1": 528,
       },
       Object {
@@ -5600,7 +5600,7 @@ Array [
         "initialY0": null,
         "initialY1": 529,
         "x": 529,
-        "y0": 0,
+        "y0": null,
         "y1": 529,
       },
       Object {
@@ -5608,7 +5608,7 @@ Array [
         "initialY0": null,
         "initialY1": 530,
         "x": 530,
-        "y0": 0,
+        "y0": null,
         "y1": 530,
       },
       Object {
@@ -5616,7 +5616,7 @@ Array [
         "initialY0": null,
         "initialY1": 531,
         "x": 531,
-        "y0": 0,
+        "y0": null,
         "y1": 531,
       },
       Object {
@@ -5624,7 +5624,7 @@ Array [
         "initialY0": null,
         "initialY1": 532,
         "x": 532,
-        "y0": 0,
+        "y0": null,
         "y1": 532,
       },
       Object {
@@ -5632,7 +5632,7 @@ Array [
         "initialY0": null,
         "initialY1": 533,
         "x": 533,
-        "y0": 0,
+        "y0": null,
         "y1": 533,
       },
       Object {
@@ -5640,7 +5640,7 @@ Array [
         "initialY0": null,
         "initialY1": 534,
         "x": 534,
-        "y0": 0,
+        "y0": null,
         "y1": 534,
       },
       Object {
@@ -5648,7 +5648,7 @@ Array [
         "initialY0": null,
         "initialY1": 535,
         "x": 535,
-        "y0": 0,
+        "y0": null,
         "y1": 535,
       },
       Object {
@@ -5656,7 +5656,7 @@ Array [
         "initialY0": null,
         "initialY1": 536,
         "x": 536,
-        "y0": 0,
+        "y0": null,
         "y1": 536,
       },
       Object {
@@ -5664,7 +5664,7 @@ Array [
         "initialY0": null,
         "initialY1": 537,
         "x": 537,
-        "y0": 0,
+        "y0": null,
         "y1": 537,
       },
       Object {
@@ -5672,7 +5672,7 @@ Array [
         "initialY0": null,
         "initialY1": 538,
         "x": 538,
-        "y0": 0,
+        "y0": null,
         "y1": 538,
       },
       Object {
@@ -5680,7 +5680,7 @@ Array [
         "initialY0": null,
         "initialY1": 539,
         "x": 539,
-        "y0": 0,
+        "y0": null,
         "y1": 539,
       },
       Object {
@@ -5688,7 +5688,7 @@ Array [
         "initialY0": null,
         "initialY1": 540,
         "x": 540,
-        "y0": 0,
+        "y0": null,
         "y1": 540,
       },
       Object {
@@ -5696,7 +5696,7 @@ Array [
         "initialY0": null,
         "initialY1": 541,
         "x": 541,
-        "y0": 0,
+        "y0": null,
         "y1": 541,
       },
       Object {
@@ -5704,7 +5704,7 @@ Array [
         "initialY0": null,
         "initialY1": 542,
         "x": 542,
-        "y0": 0,
+        "y0": null,
         "y1": 542,
       },
       Object {
@@ -5712,7 +5712,7 @@ Array [
         "initialY0": null,
         "initialY1": 543,
         "x": 543,
-        "y0": 0,
+        "y0": null,
         "y1": 543,
       },
       Object {
@@ -5720,7 +5720,7 @@ Array [
         "initialY0": null,
         "initialY1": 544,
         "x": 544,
-        "y0": 0,
+        "y0": null,
         "y1": 544,
       },
       Object {
@@ -5728,7 +5728,7 @@ Array [
         "initialY0": null,
         "initialY1": 545,
         "x": 545,
-        "y0": 0,
+        "y0": null,
         "y1": 545,
       },
       Object {
@@ -5736,7 +5736,7 @@ Array [
         "initialY0": null,
         "initialY1": 546,
         "x": 546,
-        "y0": 0,
+        "y0": null,
         "y1": 546,
       },
       Object {
@@ -5744,7 +5744,7 @@ Array [
         "initialY0": null,
         "initialY1": 547,
         "x": 547,
-        "y0": 0,
+        "y0": null,
         "y1": 547,
       },
       Object {
@@ -5752,7 +5752,7 @@ Array [
         "initialY0": null,
         "initialY1": 548,
         "x": 548,
-        "y0": 0,
+        "y0": null,
         "y1": 548,
       },
       Object {
@@ -5760,7 +5760,7 @@ Array [
         "initialY0": null,
         "initialY1": 549,
         "x": 549,
-        "y0": 0,
+        "y0": null,
         "y1": 549,
       },
       Object {
@@ -5768,7 +5768,7 @@ Array [
         "initialY0": null,
         "initialY1": 550,
         "x": 550,
-        "y0": 0,
+        "y0": null,
         "y1": 550,
       },
       Object {
@@ -5776,7 +5776,7 @@ Array [
         "initialY0": null,
         "initialY1": 551,
         "x": 551,
-        "y0": 0,
+        "y0": null,
         "y1": 551,
       },
       Object {
@@ -5784,7 +5784,7 @@ Array [
         "initialY0": null,
         "initialY1": 552,
         "x": 552,
-        "y0": 0,
+        "y0": null,
         "y1": 552,
       },
       Object {
@@ -5792,7 +5792,7 @@ Array [
         "initialY0": null,
         "initialY1": 553,
         "x": 553,
-        "y0": 0,
+        "y0": null,
         "y1": 553,
       },
       Object {
@@ -5800,7 +5800,7 @@ Array [
         "initialY0": null,
         "initialY1": 554,
         "x": 554,
-        "y0": 0,
+        "y0": null,
         "y1": 554,
       },
       Object {
@@ -5808,7 +5808,7 @@ Array [
         "initialY0": null,
         "initialY1": 555,
         "x": 555,
-        "y0": 0,
+        "y0": null,
         "y1": 555,
       },
       Object {
@@ -5816,7 +5816,7 @@ Array [
         "initialY0": null,
         "initialY1": 556,
         "x": 556,
-        "y0": 0,
+        "y0": null,
         "y1": 556,
       },
       Object {
@@ -5824,7 +5824,7 @@ Array [
         "initialY0": null,
         "initialY1": 557,
         "x": 557,
-        "y0": 0,
+        "y0": null,
         "y1": 557,
       },
       Object {
@@ -5832,7 +5832,7 @@ Array [
         "initialY0": null,
         "initialY1": 558,
         "x": 558,
-        "y0": 0,
+        "y0": null,
         "y1": 558,
       },
       Object {
@@ -5840,7 +5840,7 @@ Array [
         "initialY0": null,
         "initialY1": 559,
         "x": 559,
-        "y0": 0,
+        "y0": null,
         "y1": 559,
       },
       Object {
@@ -5848,7 +5848,7 @@ Array [
         "initialY0": null,
         "initialY1": 560,
         "x": 560,
-        "y0": 0,
+        "y0": null,
         "y1": 560,
       },
       Object {
@@ -5856,7 +5856,7 @@ Array [
         "initialY0": null,
         "initialY1": 561,
         "x": 561,
-        "y0": 0,
+        "y0": null,
         "y1": 561,
       },
       Object {
@@ -5864,7 +5864,7 @@ Array [
         "initialY0": null,
         "initialY1": 562,
         "x": 562,
-        "y0": 0,
+        "y0": null,
         "y1": 562,
       },
       Object {
@@ -5872,7 +5872,7 @@ Array [
         "initialY0": null,
         "initialY1": 563,
         "x": 563,
-        "y0": 0,
+        "y0": null,
         "y1": 563,
       },
       Object {
@@ -5880,7 +5880,7 @@ Array [
         "initialY0": null,
         "initialY1": 564,
         "x": 564,
-        "y0": 0,
+        "y0": null,
         "y1": 564,
       },
       Object {
@@ -5888,7 +5888,7 @@ Array [
         "initialY0": null,
         "initialY1": 565,
         "x": 565,
-        "y0": 0,
+        "y0": null,
         "y1": 565,
       },
       Object {
@@ -5896,7 +5896,7 @@ Array [
         "initialY0": null,
         "initialY1": 566,
         "x": 566,
-        "y0": 0,
+        "y0": null,
         "y1": 566,
       },
       Object {
@@ -5904,7 +5904,7 @@ Array [
         "initialY0": null,
         "initialY1": 567,
         "x": 567,
-        "y0": 0,
+        "y0": null,
         "y1": 567,
       },
       Object {
@@ -5912,7 +5912,7 @@ Array [
         "initialY0": null,
         "initialY1": 568,
         "x": 568,
-        "y0": 0,
+        "y0": null,
         "y1": 568,
       },
       Object {
@@ -5920,7 +5920,7 @@ Array [
         "initialY0": null,
         "initialY1": 569,
         "x": 569,
-        "y0": 0,
+        "y0": null,
         "y1": 569,
       },
       Object {
@@ -5928,7 +5928,7 @@ Array [
         "initialY0": null,
         "initialY1": 570,
         "x": 570,
-        "y0": 0,
+        "y0": null,
         "y1": 570,
       },
       Object {
@@ -5936,7 +5936,7 @@ Array [
         "initialY0": null,
         "initialY1": 571,
         "x": 571,
-        "y0": 0,
+        "y0": null,
         "y1": 571,
       },
       Object {
@@ -5944,7 +5944,7 @@ Array [
         "initialY0": null,
         "initialY1": 572,
         "x": 572,
-        "y0": 0,
+        "y0": null,
         "y1": 572,
       },
       Object {
@@ -5952,7 +5952,7 @@ Array [
         "initialY0": null,
         "initialY1": 573,
         "x": 573,
-        "y0": 0,
+        "y0": null,
         "y1": 573,
       },
       Object {
@@ -5960,7 +5960,7 @@ Array [
         "initialY0": null,
         "initialY1": 574,
         "x": 574,
-        "y0": 0,
+        "y0": null,
         "y1": 574,
       },
       Object {
@@ -5968,7 +5968,7 @@ Array [
         "initialY0": null,
         "initialY1": 575,
         "x": 575,
-        "y0": 0,
+        "y0": null,
         "y1": 575,
       },
       Object {
@@ -5976,7 +5976,7 @@ Array [
         "initialY0": null,
         "initialY1": 576,
         "x": 576,
-        "y0": 0,
+        "y0": null,
         "y1": 576,
       },
       Object {
@@ -5984,7 +5984,7 @@ Array [
         "initialY0": null,
         "initialY1": 577,
         "x": 577,
-        "y0": 0,
+        "y0": null,
         "y1": 577,
       },
       Object {
@@ -5992,7 +5992,7 @@ Array [
         "initialY0": null,
         "initialY1": 578,
         "x": 578,
-        "y0": 0,
+        "y0": null,
         "y1": 578,
       },
       Object {
@@ -6000,7 +6000,7 @@ Array [
         "initialY0": null,
         "initialY1": 579,
         "x": 579,
-        "y0": 0,
+        "y0": null,
         "y1": 579,
       },
       Object {
@@ -6008,7 +6008,7 @@ Array [
         "initialY0": null,
         "initialY1": 580,
         "x": 580,
-        "y0": 0,
+        "y0": null,
         "y1": 580,
       },
       Object {
@@ -6016,7 +6016,7 @@ Array [
         "initialY0": null,
         "initialY1": 581,
         "x": 581,
-        "y0": 0,
+        "y0": null,
         "y1": 581,
       },
       Object {
@@ -6024,7 +6024,7 @@ Array [
         "initialY0": null,
         "initialY1": 582,
         "x": 582,
-        "y0": 0,
+        "y0": null,
         "y1": 582,
       },
       Object {
@@ -6032,7 +6032,7 @@ Array [
         "initialY0": null,
         "initialY1": 583,
         "x": 583,
-        "y0": 0,
+        "y0": null,
         "y1": 583,
       },
       Object {
@@ -6040,7 +6040,7 @@ Array [
         "initialY0": null,
         "initialY1": 584,
         "x": 584,
-        "y0": 0,
+        "y0": null,
         "y1": 584,
       },
       Object {
@@ -6048,7 +6048,7 @@ Array [
         "initialY0": null,
         "initialY1": 585,
         "x": 585,
-        "y0": 0,
+        "y0": null,
         "y1": 585,
       },
       Object {
@@ -6056,7 +6056,7 @@ Array [
         "initialY0": null,
         "initialY1": 586,
         "x": 586,
-        "y0": 0,
+        "y0": null,
         "y1": 586,
       },
       Object {
@@ -6064,7 +6064,7 @@ Array [
         "initialY0": null,
         "initialY1": 587,
         "x": 587,
-        "y0": 0,
+        "y0": null,
         "y1": 587,
       },
       Object {
@@ -6072,7 +6072,7 @@ Array [
         "initialY0": null,
         "initialY1": 588,
         "x": 588,
-        "y0": 0,
+        "y0": null,
         "y1": 588,
       },
       Object {
@@ -6080,7 +6080,7 @@ Array [
         "initialY0": null,
         "initialY1": 589,
         "x": 589,
-        "y0": 0,
+        "y0": null,
         "y1": 589,
       },
       Object {
@@ -6088,7 +6088,7 @@ Array [
         "initialY0": null,
         "initialY1": 590,
         "x": 590,
-        "y0": 0,
+        "y0": null,
         "y1": 590,
       },
       Object {
@@ -6096,7 +6096,7 @@ Array [
         "initialY0": null,
         "initialY1": 591,
         "x": 591,
-        "y0": 0,
+        "y0": null,
         "y1": 591,
       },
       Object {
@@ -6104,7 +6104,7 @@ Array [
         "initialY0": null,
         "initialY1": 592,
         "x": 592,
-        "y0": 0,
+        "y0": null,
         "y1": 592,
       },
       Object {
@@ -6112,7 +6112,7 @@ Array [
         "initialY0": null,
         "initialY1": 593,
         "x": 593,
-        "y0": 0,
+        "y0": null,
         "y1": 593,
       },
       Object {
@@ -6120,7 +6120,7 @@ Array [
         "initialY0": null,
         "initialY1": 594,
         "x": 594,
-        "y0": 0,
+        "y0": null,
         "y1": 594,
       },
       Object {
@@ -6128,7 +6128,7 @@ Array [
         "initialY0": null,
         "initialY1": 595,
         "x": 595,
-        "y0": 0,
+        "y0": null,
         "y1": 595,
       },
       Object {
@@ -6136,7 +6136,7 @@ Array [
         "initialY0": null,
         "initialY1": 596,
         "x": 596,
-        "y0": 0,
+        "y0": null,
         "y1": 596,
       },
       Object {
@@ -6144,7 +6144,7 @@ Array [
         "initialY0": null,
         "initialY1": 597,
         "x": 597,
-        "y0": 0,
+        "y0": null,
         "y1": 597,
       },
       Object {
@@ -6152,7 +6152,7 @@ Array [
         "initialY0": null,
         "initialY1": 598,
         "x": 598,
-        "y0": 0,
+        "y0": null,
         "y1": 598,
       },
       Object {
@@ -6160,7 +6160,7 @@ Array [
         "initialY0": null,
         "initialY1": 599,
         "x": 599,
-        "y0": 0,
+        "y0": null,
         "y1": 599,
       },
       Object {
@@ -6168,7 +6168,7 @@ Array [
         "initialY0": null,
         "initialY1": 600,
         "x": 600,
-        "y0": 0,
+        "y0": null,
         "y1": 600,
       },
       Object {
@@ -6176,7 +6176,7 @@ Array [
         "initialY0": null,
         "initialY1": 601,
         "x": 601,
-        "y0": 0,
+        "y0": null,
         "y1": 601,
       },
       Object {
@@ -6184,7 +6184,7 @@ Array [
         "initialY0": null,
         "initialY1": 602,
         "x": 602,
-        "y0": 0,
+        "y0": null,
         "y1": 602,
       },
       Object {
@@ -6192,7 +6192,7 @@ Array [
         "initialY0": null,
         "initialY1": 603,
         "x": 603,
-        "y0": 0,
+        "y0": null,
         "y1": 603,
       },
       Object {
@@ -6200,7 +6200,7 @@ Array [
         "initialY0": null,
         "initialY1": 604,
         "x": 604,
-        "y0": 0,
+        "y0": null,
         "y1": 604,
       },
       Object {
@@ -6208,7 +6208,7 @@ Array [
         "initialY0": null,
         "initialY1": 605,
         "x": 605,
-        "y0": 0,
+        "y0": null,
         "y1": 605,
       },
       Object {
@@ -6216,7 +6216,7 @@ Array [
         "initialY0": null,
         "initialY1": 606,
         "x": 606,
-        "y0": 0,
+        "y0": null,
         "y1": 606,
       },
       Object {
@@ -6224,7 +6224,7 @@ Array [
         "initialY0": null,
         "initialY1": 607,
         "x": 607,
-        "y0": 0,
+        "y0": null,
         "y1": 607,
       },
       Object {
@@ -6232,7 +6232,7 @@ Array [
         "initialY0": null,
         "initialY1": 608,
         "x": 608,
-        "y0": 0,
+        "y0": null,
         "y1": 608,
       },
       Object {
@@ -6240,7 +6240,7 @@ Array [
         "initialY0": null,
         "initialY1": 609,
         "x": 609,
-        "y0": 0,
+        "y0": null,
         "y1": 609,
       },
       Object {
@@ -6248,7 +6248,7 @@ Array [
         "initialY0": null,
         "initialY1": 610,
         "x": 610,
-        "y0": 0,
+        "y0": null,
         "y1": 610,
       },
       Object {
@@ -6256,7 +6256,7 @@ Array [
         "initialY0": null,
         "initialY1": 611,
         "x": 611,
-        "y0": 0,
+        "y0": null,
         "y1": 611,
       },
       Object {
@@ -6264,7 +6264,7 @@ Array [
         "initialY0": null,
         "initialY1": 612,
         "x": 612,
-        "y0": 0,
+        "y0": null,
         "y1": 612,
       },
       Object {
@@ -6272,7 +6272,7 @@ Array [
         "initialY0": null,
         "initialY1": 613,
         "x": 613,
-        "y0": 0,
+        "y0": null,
         "y1": 613,
       },
       Object {
@@ -6280,7 +6280,7 @@ Array [
         "initialY0": null,
         "initialY1": 614,
         "x": 614,
-        "y0": 0,
+        "y0": null,
         "y1": 614,
       },
       Object {
@@ -6288,7 +6288,7 @@ Array [
         "initialY0": null,
         "initialY1": 615,
         "x": 615,
-        "y0": 0,
+        "y0": null,
         "y1": 615,
       },
       Object {
@@ -6296,7 +6296,7 @@ Array [
         "initialY0": null,
         "initialY1": 616,
         "x": 616,
-        "y0": 0,
+        "y0": null,
         "y1": 616,
       },
       Object {
@@ -6304,7 +6304,7 @@ Array [
         "initialY0": null,
         "initialY1": 617,
         "x": 617,
-        "y0": 0,
+        "y0": null,
         "y1": 617,
       },
       Object {
@@ -6312,7 +6312,7 @@ Array [
         "initialY0": null,
         "initialY1": 618,
         "x": 618,
-        "y0": 0,
+        "y0": null,
         "y1": 618,
       },
       Object {
@@ -6320,7 +6320,7 @@ Array [
         "initialY0": null,
         "initialY1": 619,
         "x": 619,
-        "y0": 0,
+        "y0": null,
         "y1": 619,
       },
       Object {
@@ -6328,7 +6328,7 @@ Array [
         "initialY0": null,
         "initialY1": 620,
         "x": 620,
-        "y0": 0,
+        "y0": null,
         "y1": 620,
       },
       Object {
@@ -6336,7 +6336,7 @@ Array [
         "initialY0": null,
         "initialY1": 621,
         "x": 621,
-        "y0": 0,
+        "y0": null,
         "y1": 621,
       },
       Object {
@@ -6344,7 +6344,7 @@ Array [
         "initialY0": null,
         "initialY1": 622,
         "x": 622,
-        "y0": 0,
+        "y0": null,
         "y1": 622,
       },
       Object {
@@ -6352,7 +6352,7 @@ Array [
         "initialY0": null,
         "initialY1": 623,
         "x": 623,
-        "y0": 0,
+        "y0": null,
         "y1": 623,
       },
       Object {
@@ -6360,7 +6360,7 @@ Array [
         "initialY0": null,
         "initialY1": 624,
         "x": 624,
-        "y0": 0,
+        "y0": null,
         "y1": 624,
       },
       Object {
@@ -6368,7 +6368,7 @@ Array [
         "initialY0": null,
         "initialY1": 625,
         "x": 625,
-        "y0": 0,
+        "y0": null,
         "y1": 625,
       },
       Object {
@@ -6376,7 +6376,7 @@ Array [
         "initialY0": null,
         "initialY1": 626,
         "x": 626,
-        "y0": 0,
+        "y0": null,
         "y1": 626,
       },
       Object {
@@ -6384,7 +6384,7 @@ Array [
         "initialY0": null,
         "initialY1": 627,
         "x": 627,
-        "y0": 0,
+        "y0": null,
         "y1": 627,
       },
       Object {
@@ -6392,7 +6392,7 @@ Array [
         "initialY0": null,
         "initialY1": 628,
         "x": 628,
-        "y0": 0,
+        "y0": null,
         "y1": 628,
       },
       Object {
@@ -6400,7 +6400,7 @@ Array [
         "initialY0": null,
         "initialY1": 629,
         "x": 629,
-        "y0": 0,
+        "y0": null,
         "y1": 629,
       },
       Object {
@@ -6408,7 +6408,7 @@ Array [
         "initialY0": null,
         "initialY1": 630,
         "x": 630,
-        "y0": 0,
+        "y0": null,
         "y1": 630,
       },
       Object {
@@ -6416,7 +6416,7 @@ Array [
         "initialY0": null,
         "initialY1": 631,
         "x": 631,
-        "y0": 0,
+        "y0": null,
         "y1": 631,
       },
       Object {
@@ -6424,7 +6424,7 @@ Array [
         "initialY0": null,
         "initialY1": 632,
         "x": 632,
-        "y0": 0,
+        "y0": null,
         "y1": 632,
       },
       Object {
@@ -6432,7 +6432,7 @@ Array [
         "initialY0": null,
         "initialY1": 633,
         "x": 633,
-        "y0": 0,
+        "y0": null,
         "y1": 633,
       },
       Object {
@@ -6440,7 +6440,7 @@ Array [
         "initialY0": null,
         "initialY1": 634,
         "x": 634,
-        "y0": 0,
+        "y0": null,
         "y1": 634,
       },
       Object {
@@ -6448,7 +6448,7 @@ Array [
         "initialY0": null,
         "initialY1": 635,
         "x": 635,
-        "y0": 0,
+        "y0": null,
         "y1": 635,
       },
       Object {
@@ -6456,7 +6456,7 @@ Array [
         "initialY0": null,
         "initialY1": 636,
         "x": 636,
-        "y0": 0,
+        "y0": null,
         "y1": 636,
       },
       Object {
@@ -6464,7 +6464,7 @@ Array [
         "initialY0": null,
         "initialY1": 637,
         "x": 637,
-        "y0": 0,
+        "y0": null,
         "y1": 637,
       },
       Object {
@@ -6472,7 +6472,7 @@ Array [
         "initialY0": null,
         "initialY1": 638,
         "x": 638,
-        "y0": 0,
+        "y0": null,
         "y1": 638,
       },
       Object {
@@ -6480,7 +6480,7 @@ Array [
         "initialY0": null,
         "initialY1": 639,
         "x": 639,
-        "y0": 0,
+        "y0": null,
         "y1": 639,
       },
       Object {
@@ -6488,7 +6488,7 @@ Array [
         "initialY0": null,
         "initialY1": 640,
         "x": 640,
-        "y0": 0,
+        "y0": null,
         "y1": 640,
       },
       Object {
@@ -6496,7 +6496,7 @@ Array [
         "initialY0": null,
         "initialY1": 641,
         "x": 641,
-        "y0": 0,
+        "y0": null,
         "y1": 641,
       },
       Object {
@@ -6504,7 +6504,7 @@ Array [
         "initialY0": null,
         "initialY1": 642,
         "x": 642,
-        "y0": 0,
+        "y0": null,
         "y1": 642,
       },
       Object {
@@ -6512,7 +6512,7 @@ Array [
         "initialY0": null,
         "initialY1": 643,
         "x": 643,
-        "y0": 0,
+        "y0": null,
         "y1": 643,
       },
       Object {
@@ -6520,7 +6520,7 @@ Array [
         "initialY0": null,
         "initialY1": 644,
         "x": 644,
-        "y0": 0,
+        "y0": null,
         "y1": 644,
       },
       Object {
@@ -6528,7 +6528,7 @@ Array [
         "initialY0": null,
         "initialY1": 645,
         "x": 645,
-        "y0": 0,
+        "y0": null,
         "y1": 645,
       },
       Object {
@@ -6536,7 +6536,7 @@ Array [
         "initialY0": null,
         "initialY1": 646,
         "x": 646,
-        "y0": 0,
+        "y0": null,
         "y1": 646,
       },
       Object {
@@ -6544,7 +6544,7 @@ Array [
         "initialY0": null,
         "initialY1": 647,
         "x": 647,
-        "y0": 0,
+        "y0": null,
         "y1": 647,
       },
       Object {
@@ -6552,7 +6552,7 @@ Array [
         "initialY0": null,
         "initialY1": 648,
         "x": 648,
-        "y0": 0,
+        "y0": null,
         "y1": 648,
       },
       Object {
@@ -6560,7 +6560,7 @@ Array [
         "initialY0": null,
         "initialY1": 649,
         "x": 649,
-        "y0": 0,
+        "y0": null,
         "y1": 649,
       },
       Object {
@@ -6568,7 +6568,7 @@ Array [
         "initialY0": null,
         "initialY1": 650,
         "x": 650,
-        "y0": 0,
+        "y0": null,
         "y1": 650,
       },
       Object {
@@ -6576,7 +6576,7 @@ Array [
         "initialY0": null,
         "initialY1": 651,
         "x": 651,
-        "y0": 0,
+        "y0": null,
         "y1": 651,
       },
       Object {
@@ -6584,7 +6584,7 @@ Array [
         "initialY0": null,
         "initialY1": 652,
         "x": 652,
-        "y0": 0,
+        "y0": null,
         "y1": 652,
       },
       Object {
@@ -6592,7 +6592,7 @@ Array [
         "initialY0": null,
         "initialY1": 653,
         "x": 653,
-        "y0": 0,
+        "y0": null,
         "y1": 653,
       },
       Object {
@@ -6600,7 +6600,7 @@ Array [
         "initialY0": null,
         "initialY1": 654,
         "x": 654,
-        "y0": 0,
+        "y0": null,
         "y1": 654,
       },
       Object {
@@ -6608,7 +6608,7 @@ Array [
         "initialY0": null,
         "initialY1": 655,
         "x": 655,
-        "y0": 0,
+        "y0": null,
         "y1": 655,
       },
       Object {
@@ -6616,7 +6616,7 @@ Array [
         "initialY0": null,
         "initialY1": 656,
         "x": 656,
-        "y0": 0,
+        "y0": null,
         "y1": 656,
       },
       Object {
@@ -6624,7 +6624,7 @@ Array [
         "initialY0": null,
         "initialY1": 657,
         "x": 657,
-        "y0": 0,
+        "y0": null,
         "y1": 657,
       },
       Object {
@@ -6632,7 +6632,7 @@ Array [
         "initialY0": null,
         "initialY1": 658,
         "x": 658,
-        "y0": 0,
+        "y0": null,
         "y1": 658,
       },
       Object {
@@ -6640,7 +6640,7 @@ Array [
         "initialY0": null,
         "initialY1": 659,
         "x": 659,
-        "y0": 0,
+        "y0": null,
         "y1": 659,
       },
       Object {
@@ -6648,7 +6648,7 @@ Array [
         "initialY0": null,
         "initialY1": 660,
         "x": 660,
-        "y0": 0,
+        "y0": null,
         "y1": 660,
       },
       Object {
@@ -6656,7 +6656,7 @@ Array [
         "initialY0": null,
         "initialY1": 661,
         "x": 661,
-        "y0": 0,
+        "y0": null,
         "y1": 661,
       },
       Object {
@@ -6664,7 +6664,7 @@ Array [
         "initialY0": null,
         "initialY1": 662,
         "x": 662,
-        "y0": 0,
+        "y0": null,
         "y1": 662,
       },
       Object {
@@ -6672,7 +6672,7 @@ Array [
         "initialY0": null,
         "initialY1": 663,
         "x": 663,
-        "y0": 0,
+        "y0": null,
         "y1": 663,
       },
       Object {
@@ -6680,7 +6680,7 @@ Array [
         "initialY0": null,
         "initialY1": 664,
         "x": 664,
-        "y0": 0,
+        "y0": null,
         "y1": 664,
       },
       Object {
@@ -6688,7 +6688,7 @@ Array [
         "initialY0": null,
         "initialY1": 665,
         "x": 665,
-        "y0": 0,
+        "y0": null,
         "y1": 665,
       },
       Object {
@@ -6696,7 +6696,7 @@ Array [
         "initialY0": null,
         "initialY1": 666,
         "x": 666,
-        "y0": 0,
+        "y0": null,
         "y1": 666,
       },
       Object {
@@ -6704,7 +6704,7 @@ Array [
         "initialY0": null,
         "initialY1": 667,
         "x": 667,
-        "y0": 0,
+        "y0": null,
         "y1": 667,
       },
       Object {
@@ -6712,7 +6712,7 @@ Array [
         "initialY0": null,
         "initialY1": 668,
         "x": 668,
-        "y0": 0,
+        "y0": null,
         "y1": 668,
       },
       Object {
@@ -6720,7 +6720,7 @@ Array [
         "initialY0": null,
         "initialY1": 669,
         "x": 669,
-        "y0": 0,
+        "y0": null,
         "y1": 669,
       },
       Object {
@@ -6728,7 +6728,7 @@ Array [
         "initialY0": null,
         "initialY1": 670,
         "x": 670,
-        "y0": 0,
+        "y0": null,
         "y1": 670,
       },
       Object {
@@ -6736,7 +6736,7 @@ Array [
         "initialY0": null,
         "initialY1": 671,
         "x": 671,
-        "y0": 0,
+        "y0": null,
         "y1": 671,
       },
       Object {
@@ -6744,7 +6744,7 @@ Array [
         "initialY0": null,
         "initialY1": 672,
         "x": 672,
-        "y0": 0,
+        "y0": null,
         "y1": 672,
       },
       Object {
@@ -6752,7 +6752,7 @@ Array [
         "initialY0": null,
         "initialY1": 673,
         "x": 673,
-        "y0": 0,
+        "y0": null,
         "y1": 673,
       },
       Object {
@@ -6760,7 +6760,7 @@ Array [
         "initialY0": null,
         "initialY1": 674,
         "x": 674,
-        "y0": 0,
+        "y0": null,
         "y1": 674,
       },
       Object {
@@ -6768,7 +6768,7 @@ Array [
         "initialY0": null,
         "initialY1": 675,
         "x": 675,
-        "y0": 0,
+        "y0": null,
         "y1": 675,
       },
       Object {
@@ -6776,7 +6776,7 @@ Array [
         "initialY0": null,
         "initialY1": 676,
         "x": 676,
-        "y0": 0,
+        "y0": null,
         "y1": 676,
       },
       Object {
@@ -6784,7 +6784,7 @@ Array [
         "initialY0": null,
         "initialY1": 677,
         "x": 677,
-        "y0": 0,
+        "y0": null,
         "y1": 677,
       },
       Object {
@@ -6792,7 +6792,7 @@ Array [
         "initialY0": null,
         "initialY1": 678,
         "x": 678,
-        "y0": 0,
+        "y0": null,
         "y1": 678,
       },
       Object {
@@ -6800,7 +6800,7 @@ Array [
         "initialY0": null,
         "initialY1": 679,
         "x": 679,
-        "y0": 0,
+        "y0": null,
         "y1": 679,
       },
       Object {
@@ -6808,7 +6808,7 @@ Array [
         "initialY0": null,
         "initialY1": 680,
         "x": 680,
-        "y0": 0,
+        "y0": null,
         "y1": 680,
       },
       Object {
@@ -6816,7 +6816,7 @@ Array [
         "initialY0": null,
         "initialY1": 681,
         "x": 681,
-        "y0": 0,
+        "y0": null,
         "y1": 681,
       },
       Object {
@@ -6824,7 +6824,7 @@ Array [
         "initialY0": null,
         "initialY1": 682,
         "x": 682,
-        "y0": 0,
+        "y0": null,
         "y1": 682,
       },
       Object {
@@ -6832,7 +6832,7 @@ Array [
         "initialY0": null,
         "initialY1": 683,
         "x": 683,
-        "y0": 0,
+        "y0": null,
         "y1": 683,
       },
       Object {
@@ -6840,7 +6840,7 @@ Array [
         "initialY0": null,
         "initialY1": 684,
         "x": 684,
-        "y0": 0,
+        "y0": null,
         "y1": 684,
       },
       Object {
@@ -6848,7 +6848,7 @@ Array [
         "initialY0": null,
         "initialY1": 685,
         "x": 685,
-        "y0": 0,
+        "y0": null,
         "y1": 685,
       },
       Object {
@@ -6856,7 +6856,7 @@ Array [
         "initialY0": null,
         "initialY1": 686,
         "x": 686,
-        "y0": 0,
+        "y0": null,
         "y1": 686,
       },
       Object {
@@ -6864,7 +6864,7 @@ Array [
         "initialY0": null,
         "initialY1": 687,
         "x": 687,
-        "y0": 0,
+        "y0": null,
         "y1": 687,
       },
       Object {
@@ -6872,7 +6872,7 @@ Array [
         "initialY0": null,
         "initialY1": 688,
         "x": 688,
-        "y0": 0,
+        "y0": null,
         "y1": 688,
       },
       Object {
@@ -6880,7 +6880,7 @@ Array [
         "initialY0": null,
         "initialY1": 689,
         "x": 689,
-        "y0": 0,
+        "y0": null,
         "y1": 689,
       },
       Object {
@@ -6888,7 +6888,7 @@ Array [
         "initialY0": null,
         "initialY1": 690,
         "x": 690,
-        "y0": 0,
+        "y0": null,
         "y1": 690,
       },
       Object {
@@ -6896,7 +6896,7 @@ Array [
         "initialY0": null,
         "initialY1": 691,
         "x": 691,
-        "y0": 0,
+        "y0": null,
         "y1": 691,
       },
       Object {
@@ -6904,7 +6904,7 @@ Array [
         "initialY0": null,
         "initialY1": 692,
         "x": 692,
-        "y0": 0,
+        "y0": null,
         "y1": 692,
       },
       Object {
@@ -6912,7 +6912,7 @@ Array [
         "initialY0": null,
         "initialY1": 693,
         "x": 693,
-        "y0": 0,
+        "y0": null,
         "y1": 693,
       },
       Object {
@@ -6920,7 +6920,7 @@ Array [
         "initialY0": null,
         "initialY1": 694,
         "x": 694,
-        "y0": 0,
+        "y0": null,
         "y1": 694,
       },
       Object {
@@ -6928,7 +6928,7 @@ Array [
         "initialY0": null,
         "initialY1": 695,
         "x": 695,
-        "y0": 0,
+        "y0": null,
         "y1": 695,
       },
       Object {
@@ -6936,7 +6936,7 @@ Array [
         "initialY0": null,
         "initialY1": 696,
         "x": 696,
-        "y0": 0,
+        "y0": null,
         "y1": 696,
       },
       Object {
@@ -6944,7 +6944,7 @@ Array [
         "initialY0": null,
         "initialY1": 697,
         "x": 697,
-        "y0": 0,
+        "y0": null,
         "y1": 697,
       },
       Object {
@@ -6952,7 +6952,7 @@ Array [
         "initialY0": null,
         "initialY1": 698,
         "x": 698,
-        "y0": 0,
+        "y0": null,
         "y1": 698,
       },
       Object {
@@ -6960,7 +6960,7 @@ Array [
         "initialY0": null,
         "initialY1": 699,
         "x": 699,
-        "y0": 0,
+        "y0": null,
         "y1": 699,
       },
       Object {
@@ -6968,7 +6968,7 @@ Array [
         "initialY0": null,
         "initialY1": 700,
         "x": 700,
-        "y0": 0,
+        "y0": null,
         "y1": 700,
       },
       Object {
@@ -6976,7 +6976,7 @@ Array [
         "initialY0": null,
         "initialY1": 701,
         "x": 701,
-        "y0": 0,
+        "y0": null,
         "y1": 701,
       },
       Object {
@@ -6984,7 +6984,7 @@ Array [
         "initialY0": null,
         "initialY1": 702,
         "x": 702,
-        "y0": 0,
+        "y0": null,
         "y1": 702,
       },
       Object {
@@ -6992,7 +6992,7 @@ Array [
         "initialY0": null,
         "initialY1": 703,
         "x": 703,
-        "y0": 0,
+        "y0": null,
         "y1": 703,
       },
       Object {
@@ -7000,7 +7000,7 @@ Array [
         "initialY0": null,
         "initialY1": 704,
         "x": 704,
-        "y0": 0,
+        "y0": null,
         "y1": 704,
       },
       Object {
@@ -7008,7 +7008,7 @@ Array [
         "initialY0": null,
         "initialY1": 705,
         "x": 705,
-        "y0": 0,
+        "y0": null,
         "y1": 705,
       },
       Object {
@@ -7016,7 +7016,7 @@ Array [
         "initialY0": null,
         "initialY1": 706,
         "x": 706,
-        "y0": 0,
+        "y0": null,
         "y1": 706,
       },
       Object {
@@ -7024,7 +7024,7 @@ Array [
         "initialY0": null,
         "initialY1": 707,
         "x": 707,
-        "y0": 0,
+        "y0": null,
         "y1": 707,
       },
       Object {
@@ -7032,7 +7032,7 @@ Array [
         "initialY0": null,
         "initialY1": 708,
         "x": 708,
-        "y0": 0,
+        "y0": null,
         "y1": 708,
       },
       Object {
@@ -7040,7 +7040,7 @@ Array [
         "initialY0": null,
         "initialY1": 709,
         "x": 709,
-        "y0": 0,
+        "y0": null,
         "y1": 709,
       },
       Object {
@@ -7048,7 +7048,7 @@ Array [
         "initialY0": null,
         "initialY1": 710,
         "x": 710,
-        "y0": 0,
+        "y0": null,
         "y1": 710,
       },
       Object {
@@ -7056,7 +7056,7 @@ Array [
         "initialY0": null,
         "initialY1": 711,
         "x": 711,
-        "y0": 0,
+        "y0": null,
         "y1": 711,
       },
       Object {
@@ -7064,7 +7064,7 @@ Array [
         "initialY0": null,
         "initialY1": 712,
         "x": 712,
-        "y0": 0,
+        "y0": null,
         "y1": 712,
       },
       Object {
@@ -7072,7 +7072,7 @@ Array [
         "initialY0": null,
         "initialY1": 713,
         "x": 713,
-        "y0": 0,
+        "y0": null,
         "y1": 713,
       },
       Object {
@@ -7080,7 +7080,7 @@ Array [
         "initialY0": null,
         "initialY1": 714,
         "x": 714,
-        "y0": 0,
+        "y0": null,
         "y1": 714,
       },
       Object {
@@ -7088,7 +7088,7 @@ Array [
         "initialY0": null,
         "initialY1": 715,
         "x": 715,
-        "y0": 0,
+        "y0": null,
         "y1": 715,
       },
       Object {
@@ -7096,7 +7096,7 @@ Array [
         "initialY0": null,
         "initialY1": 716,
         "x": 716,
-        "y0": 0,
+        "y0": null,
         "y1": 716,
       },
       Object {
@@ -7104,7 +7104,7 @@ Array [
         "initialY0": null,
         "initialY1": 717,
         "x": 717,
-        "y0": 0,
+        "y0": null,
         "y1": 717,
       },
       Object {
@@ -7112,7 +7112,7 @@ Array [
         "initialY0": null,
         "initialY1": 718,
         "x": 718,
-        "y0": 0,
+        "y0": null,
         "y1": 718,
       },
       Object {
@@ -7120,7 +7120,7 @@ Array [
         "initialY0": null,
         "initialY1": 719,
         "x": 719,
-        "y0": 0,
+        "y0": null,
         "y1": 719,
       },
       Object {
@@ -7128,7 +7128,7 @@ Array [
         "initialY0": null,
         "initialY1": 720,
         "x": 720,
-        "y0": 0,
+        "y0": null,
         "y1": 720,
       },
       Object {
@@ -7136,7 +7136,7 @@ Array [
         "initialY0": null,
         "initialY1": 721,
         "x": 721,
-        "y0": 0,
+        "y0": null,
         "y1": 721,
       },
       Object {
@@ -7144,7 +7144,7 @@ Array [
         "initialY0": null,
         "initialY1": 722,
         "x": 722,
-        "y0": 0,
+        "y0": null,
         "y1": 722,
       },
       Object {
@@ -7152,7 +7152,7 @@ Array [
         "initialY0": null,
         "initialY1": 723,
         "x": 723,
-        "y0": 0,
+        "y0": null,
         "y1": 723,
       },
       Object {
@@ -7160,7 +7160,7 @@ Array [
         "initialY0": null,
         "initialY1": 724,
         "x": 724,
-        "y0": 0,
+        "y0": null,
         "y1": 724,
       },
       Object {
@@ -7168,7 +7168,7 @@ Array [
         "initialY0": null,
         "initialY1": 725,
         "x": 725,
-        "y0": 0,
+        "y0": null,
         "y1": 725,
       },
       Object {
@@ -7176,7 +7176,7 @@ Array [
         "initialY0": null,
         "initialY1": 726,
         "x": 726,
-        "y0": 0,
+        "y0": null,
         "y1": 726,
       },
       Object {
@@ -7184,7 +7184,7 @@ Array [
         "initialY0": null,
         "initialY1": 727,
         "x": 727,
-        "y0": 0,
+        "y0": null,
         "y1": 727,
       },
       Object {
@@ -7192,7 +7192,7 @@ Array [
         "initialY0": null,
         "initialY1": 728,
         "x": 728,
-        "y0": 0,
+        "y0": null,
         "y1": 728,
       },
       Object {
@@ -7200,7 +7200,7 @@ Array [
         "initialY0": null,
         "initialY1": 729,
         "x": 729,
-        "y0": 0,
+        "y0": null,
         "y1": 729,
       },
       Object {
@@ -7208,7 +7208,7 @@ Array [
         "initialY0": null,
         "initialY1": 730,
         "x": 730,
-        "y0": 0,
+        "y0": null,
         "y1": 730,
       },
       Object {
@@ -7216,7 +7216,7 @@ Array [
         "initialY0": null,
         "initialY1": 731,
         "x": 731,
-        "y0": 0,
+        "y0": null,
         "y1": 731,
       },
       Object {
@@ -7224,7 +7224,7 @@ Array [
         "initialY0": null,
         "initialY1": 732,
         "x": 732,
-        "y0": 0,
+        "y0": null,
         "y1": 732,
       },
       Object {
@@ -7232,7 +7232,7 @@ Array [
         "initialY0": null,
         "initialY1": 733,
         "x": 733,
-        "y0": 0,
+        "y0": null,
         "y1": 733,
       },
       Object {
@@ -7240,7 +7240,7 @@ Array [
         "initialY0": null,
         "initialY1": 734,
         "x": 734,
-        "y0": 0,
+        "y0": null,
         "y1": 734,
       },
       Object {
@@ -7248,7 +7248,7 @@ Array [
         "initialY0": null,
         "initialY1": 735,
         "x": 735,
-        "y0": 0,
+        "y0": null,
         "y1": 735,
       },
       Object {
@@ -7256,7 +7256,7 @@ Array [
         "initialY0": null,
         "initialY1": 736,
         "x": 736,
-        "y0": 0,
+        "y0": null,
         "y1": 736,
       },
       Object {
@@ -7264,7 +7264,7 @@ Array [
         "initialY0": null,
         "initialY1": 737,
         "x": 737,
-        "y0": 0,
+        "y0": null,
         "y1": 737,
       },
       Object {
@@ -7272,7 +7272,7 @@ Array [
         "initialY0": null,
         "initialY1": 738,
         "x": 738,
-        "y0": 0,
+        "y0": null,
         "y1": 738,
       },
       Object {
@@ -7280,7 +7280,7 @@ Array [
         "initialY0": null,
         "initialY1": 739,
         "x": 739,
-        "y0": 0,
+        "y0": null,
         "y1": 739,
       },
       Object {
@@ -7288,7 +7288,7 @@ Array [
         "initialY0": null,
         "initialY1": 740,
         "x": 740,
-        "y0": 0,
+        "y0": null,
         "y1": 740,
       },
       Object {
@@ -7296,7 +7296,7 @@ Array [
         "initialY0": null,
         "initialY1": 741,
         "x": 741,
-        "y0": 0,
+        "y0": null,
         "y1": 741,
       },
       Object {
@@ -7304,7 +7304,7 @@ Array [
         "initialY0": null,
         "initialY1": 742,
         "x": 742,
-        "y0": 0,
+        "y0": null,
         "y1": 742,
       },
       Object {
@@ -7312,7 +7312,7 @@ Array [
         "initialY0": null,
         "initialY1": 743,
         "x": 743,
-        "y0": 0,
+        "y0": null,
         "y1": 743,
       },
       Object {
@@ -7320,7 +7320,7 @@ Array [
         "initialY0": null,
         "initialY1": 744,
         "x": 744,
-        "y0": 0,
+        "y0": null,
         "y1": 744,
       },
       Object {
@@ -7328,7 +7328,7 @@ Array [
         "initialY0": null,
         "initialY1": 745,
         "x": 745,
-        "y0": 0,
+        "y0": null,
         "y1": 745,
       },
       Object {
@@ -7336,7 +7336,7 @@ Array [
         "initialY0": null,
         "initialY1": 746,
         "x": 746,
-        "y0": 0,
+        "y0": null,
         "y1": 746,
       },
       Object {
@@ -7344,7 +7344,7 @@ Array [
         "initialY0": null,
         "initialY1": 747,
         "x": 747,
-        "y0": 0,
+        "y0": null,
         "y1": 747,
       },
       Object {
@@ -7352,7 +7352,7 @@ Array [
         "initialY0": null,
         "initialY1": 748,
         "x": 748,
-        "y0": 0,
+        "y0": null,
         "y1": 748,
       },
       Object {
@@ -7360,7 +7360,7 @@ Array [
         "initialY0": null,
         "initialY1": 749,
         "x": 749,
-        "y0": 0,
+        "y0": null,
         "y1": 749,
       },
       Object {
@@ -7368,7 +7368,7 @@ Array [
         "initialY0": null,
         "initialY1": 750,
         "x": 750,
-        "y0": 0,
+        "y0": null,
         "y1": 750,
       },
       Object {
@@ -7376,7 +7376,7 @@ Array [
         "initialY0": null,
         "initialY1": 751,
         "x": 751,
-        "y0": 0,
+        "y0": null,
         "y1": 751,
       },
       Object {
@@ -7384,7 +7384,7 @@ Array [
         "initialY0": null,
         "initialY1": 752,
         "x": 752,
-        "y0": 0,
+        "y0": null,
         "y1": 752,
       },
       Object {
@@ -7392,7 +7392,7 @@ Array [
         "initialY0": null,
         "initialY1": 753,
         "x": 753,
-        "y0": 0,
+        "y0": null,
         "y1": 753,
       },
       Object {
@@ -7400,7 +7400,7 @@ Array [
         "initialY0": null,
         "initialY1": 754,
         "x": 754,
-        "y0": 0,
+        "y0": null,
         "y1": 754,
       },
       Object {
@@ -7408,7 +7408,7 @@ Array [
         "initialY0": null,
         "initialY1": 755,
         "x": 755,
-        "y0": 0,
+        "y0": null,
         "y1": 755,
       },
       Object {
@@ -7416,7 +7416,7 @@ Array [
         "initialY0": null,
         "initialY1": 756,
         "x": 756,
-        "y0": 0,
+        "y0": null,
         "y1": 756,
       },
       Object {
@@ -7424,7 +7424,7 @@ Array [
         "initialY0": null,
         "initialY1": 757,
         "x": 757,
-        "y0": 0,
+        "y0": null,
         "y1": 757,
       },
       Object {
@@ -7432,7 +7432,7 @@ Array [
         "initialY0": null,
         "initialY1": 758,
         "x": 758,
-        "y0": 0,
+        "y0": null,
         "y1": 758,
       },
       Object {
@@ -7440,7 +7440,7 @@ Array [
         "initialY0": null,
         "initialY1": 759,
         "x": 759,
-        "y0": 0,
+        "y0": null,
         "y1": 759,
       },
       Object {
@@ -7448,7 +7448,7 @@ Array [
         "initialY0": null,
         "initialY1": 760,
         "x": 760,
-        "y0": 0,
+        "y0": null,
         "y1": 760,
       },
       Object {
@@ -7456,7 +7456,7 @@ Array [
         "initialY0": null,
         "initialY1": 761,
         "x": 761,
-        "y0": 0,
+        "y0": null,
         "y1": 761,
       },
       Object {
@@ -7464,7 +7464,7 @@ Array [
         "initialY0": null,
         "initialY1": 762,
         "x": 762,
-        "y0": 0,
+        "y0": null,
         "y1": 762,
       },
       Object {
@@ -7472,7 +7472,7 @@ Array [
         "initialY0": null,
         "initialY1": 763,
         "x": 763,
-        "y0": 0,
+        "y0": null,
         "y1": 763,
       },
       Object {
@@ -7480,7 +7480,7 @@ Array [
         "initialY0": null,
         "initialY1": 764,
         "x": 764,
-        "y0": 0,
+        "y0": null,
         "y1": 764,
       },
       Object {
@@ -7488,7 +7488,7 @@ Array [
         "initialY0": null,
         "initialY1": 765,
         "x": 765,
-        "y0": 0,
+        "y0": null,
         "y1": 765,
       },
       Object {
@@ -7496,7 +7496,7 @@ Array [
         "initialY0": null,
         "initialY1": 766,
         "x": 766,
-        "y0": 0,
+        "y0": null,
         "y1": 766,
       },
       Object {
@@ -7504,7 +7504,7 @@ Array [
         "initialY0": null,
         "initialY1": 767,
         "x": 767,
-        "y0": 0,
+        "y0": null,
         "y1": 767,
       },
       Object {
@@ -7512,7 +7512,7 @@ Array [
         "initialY0": null,
         "initialY1": 768,
         "x": 768,
-        "y0": 0,
+        "y0": null,
         "y1": 768,
       },
       Object {
@@ -7520,7 +7520,7 @@ Array [
         "initialY0": null,
         "initialY1": 769,
         "x": 769,
-        "y0": 0,
+        "y0": null,
         "y1": 769,
       },
       Object {
@@ -7528,7 +7528,7 @@ Array [
         "initialY0": null,
         "initialY1": 770,
         "x": 770,
-        "y0": 0,
+        "y0": null,
         "y1": 770,
       },
       Object {
@@ -7536,7 +7536,7 @@ Array [
         "initialY0": null,
         "initialY1": 771,
         "x": 771,
-        "y0": 0,
+        "y0": null,
         "y1": 771,
       },
       Object {
@@ -7544,7 +7544,7 @@ Array [
         "initialY0": null,
         "initialY1": 772,
         "x": 772,
-        "y0": 0,
+        "y0": null,
         "y1": 772,
       },
       Object {
@@ -7552,7 +7552,7 @@ Array [
         "initialY0": null,
         "initialY1": 773,
         "x": 773,
-        "y0": 0,
+        "y0": null,
         "y1": 773,
       },
       Object {
@@ -7560,7 +7560,7 @@ Array [
         "initialY0": null,
         "initialY1": 774,
         "x": 774,
-        "y0": 0,
+        "y0": null,
         "y1": 774,
       },
       Object {
@@ -7568,7 +7568,7 @@ Array [
         "initialY0": null,
         "initialY1": 775,
         "x": 775,
-        "y0": 0,
+        "y0": null,
         "y1": 775,
       },
       Object {
@@ -7576,7 +7576,7 @@ Array [
         "initialY0": null,
         "initialY1": 776,
         "x": 776,
-        "y0": 0,
+        "y0": null,
         "y1": 776,
       },
       Object {
@@ -7584,7 +7584,7 @@ Array [
         "initialY0": null,
         "initialY1": 777,
         "x": 777,
-        "y0": 0,
+        "y0": null,
         "y1": 777,
       },
       Object {
@@ -7592,7 +7592,7 @@ Array [
         "initialY0": null,
         "initialY1": 778,
         "x": 778,
-        "y0": 0,
+        "y0": null,
         "y1": 778,
       },
       Object {
@@ -7600,7 +7600,7 @@ Array [
         "initialY0": null,
         "initialY1": 779,
         "x": 779,
-        "y0": 0,
+        "y0": null,
         "y1": 779,
       },
       Object {
@@ -7608,7 +7608,7 @@ Array [
         "initialY0": null,
         "initialY1": 780,
         "x": 780,
-        "y0": 0,
+        "y0": null,
         "y1": 780,
       },
       Object {
@@ -7616,7 +7616,7 @@ Array [
         "initialY0": null,
         "initialY1": 781,
         "x": 781,
-        "y0": 0,
+        "y0": null,
         "y1": 781,
       },
       Object {
@@ -7624,7 +7624,7 @@ Array [
         "initialY0": null,
         "initialY1": 782,
         "x": 782,
-        "y0": 0,
+        "y0": null,
         "y1": 782,
       },
       Object {
@@ -7632,7 +7632,7 @@ Array [
         "initialY0": null,
         "initialY1": 783,
         "x": 783,
-        "y0": 0,
+        "y0": null,
         "y1": 783,
       },
       Object {
@@ -7640,7 +7640,7 @@ Array [
         "initialY0": null,
         "initialY1": 784,
         "x": 784,
-        "y0": 0,
+        "y0": null,
         "y1": 784,
       },
       Object {
@@ -7648,7 +7648,7 @@ Array [
         "initialY0": null,
         "initialY1": 785,
         "x": 785,
-        "y0": 0,
+        "y0": null,
         "y1": 785,
       },
       Object {
@@ -7656,7 +7656,7 @@ Array [
         "initialY0": null,
         "initialY1": 786,
         "x": 786,
-        "y0": 0,
+        "y0": null,
         "y1": 786,
       },
       Object {
@@ -7664,7 +7664,7 @@ Array [
         "initialY0": null,
         "initialY1": 787,
         "x": 787,
-        "y0": 0,
+        "y0": null,
         "y1": 787,
       },
       Object {
@@ -7672,7 +7672,7 @@ Array [
         "initialY0": null,
         "initialY1": 788,
         "x": 788,
-        "y0": 0,
+        "y0": null,
         "y1": 788,
       },
       Object {
@@ -7680,7 +7680,7 @@ Array [
         "initialY0": null,
         "initialY1": 789,
         "x": 789,
-        "y0": 0,
+        "y0": null,
         "y1": 789,
       },
       Object {
@@ -7688,7 +7688,7 @@ Array [
         "initialY0": null,
         "initialY1": 790,
         "x": 790,
-        "y0": 0,
+        "y0": null,
         "y1": 790,
       },
       Object {
@@ -7696,7 +7696,7 @@ Array [
         "initialY0": null,
         "initialY1": 791,
         "x": 791,
-        "y0": 0,
+        "y0": null,
         "y1": 791,
       },
       Object {
@@ -7704,7 +7704,7 @@ Array [
         "initialY0": null,
         "initialY1": 792,
         "x": 792,
-        "y0": 0,
+        "y0": null,
         "y1": 792,
       },
       Object {
@@ -7712,7 +7712,7 @@ Array [
         "initialY0": null,
         "initialY1": 793,
         "x": 793,
-        "y0": 0,
+        "y0": null,
         "y1": 793,
       },
       Object {
@@ -7720,7 +7720,7 @@ Array [
         "initialY0": null,
         "initialY1": 794,
         "x": 794,
-        "y0": 0,
+        "y0": null,
         "y1": 794,
       },
       Object {
@@ -7728,7 +7728,7 @@ Array [
         "initialY0": null,
         "initialY1": 795,
         "x": 795,
-        "y0": 0,
+        "y0": null,
         "y1": 795,
       },
       Object {
@@ -7736,7 +7736,7 @@ Array [
         "initialY0": null,
         "initialY1": 796,
         "x": 796,
-        "y0": 0,
+        "y0": null,
         "y1": 796,
       },
       Object {
@@ -7744,7 +7744,7 @@ Array [
         "initialY0": null,
         "initialY1": 797,
         "x": 797,
-        "y0": 0,
+        "y0": null,
         "y1": 797,
       },
       Object {
@@ -7752,7 +7752,7 @@ Array [
         "initialY0": null,
         "initialY1": 798,
         "x": 798,
-        "y0": 0,
+        "y0": null,
         "y1": 798,
       },
       Object {
@@ -7760,7 +7760,7 @@ Array [
         "initialY0": null,
         "initialY1": 799,
         "x": 799,
-        "y0": 0,
+        "y0": null,
         "y1": 799,
       },
       Object {
@@ -7768,7 +7768,7 @@ Array [
         "initialY0": null,
         "initialY1": 800,
         "x": 800,
-        "y0": 0,
+        "y0": null,
         "y1": 800,
       },
       Object {
@@ -7776,7 +7776,7 @@ Array [
         "initialY0": null,
         "initialY1": 801,
         "x": 801,
-        "y0": 0,
+        "y0": null,
         "y1": 801,
       },
       Object {
@@ -7784,7 +7784,7 @@ Array [
         "initialY0": null,
         "initialY1": 802,
         "x": 802,
-        "y0": 0,
+        "y0": null,
         "y1": 802,
       },
       Object {
@@ -7792,7 +7792,7 @@ Array [
         "initialY0": null,
         "initialY1": 803,
         "x": 803,
-        "y0": 0,
+        "y0": null,
         "y1": 803,
       },
       Object {
@@ -7800,7 +7800,7 @@ Array [
         "initialY0": null,
         "initialY1": 804,
         "x": 804,
-        "y0": 0,
+        "y0": null,
         "y1": 804,
       },
       Object {
@@ -7808,7 +7808,7 @@ Array [
         "initialY0": null,
         "initialY1": 805,
         "x": 805,
-        "y0": 0,
+        "y0": null,
         "y1": 805,
       },
       Object {
@@ -7816,7 +7816,7 @@ Array [
         "initialY0": null,
         "initialY1": 806,
         "x": 806,
-        "y0": 0,
+        "y0": null,
         "y1": 806,
       },
       Object {
@@ -7824,7 +7824,7 @@ Array [
         "initialY0": null,
         "initialY1": 807,
         "x": 807,
-        "y0": 0,
+        "y0": null,
         "y1": 807,
       },
       Object {
@@ -7832,7 +7832,7 @@ Array [
         "initialY0": null,
         "initialY1": 808,
         "x": 808,
-        "y0": 0,
+        "y0": null,
         "y1": 808,
       },
       Object {
@@ -7840,7 +7840,7 @@ Array [
         "initialY0": null,
         "initialY1": 809,
         "x": 809,
-        "y0": 0,
+        "y0": null,
         "y1": 809,
       },
       Object {
@@ -7848,7 +7848,7 @@ Array [
         "initialY0": null,
         "initialY1": 810,
         "x": 810,
-        "y0": 0,
+        "y0": null,
         "y1": 810,
       },
       Object {
@@ -7856,7 +7856,7 @@ Array [
         "initialY0": null,
         "initialY1": 811,
         "x": 811,
-        "y0": 0,
+        "y0": null,
         "y1": 811,
       },
       Object {
@@ -7864,7 +7864,7 @@ Array [
         "initialY0": null,
         "initialY1": 812,
         "x": 812,
-        "y0": 0,
+        "y0": null,
         "y1": 812,
       },
       Object {
@@ -7872,7 +7872,7 @@ Array [
         "initialY0": null,
         "initialY1": 813,
         "x": 813,
-        "y0": 0,
+        "y0": null,
         "y1": 813,
       },
       Object {
@@ -7880,7 +7880,7 @@ Array [
         "initialY0": null,
         "initialY1": 814,
         "x": 814,
-        "y0": 0,
+        "y0": null,
         "y1": 814,
       },
       Object {
@@ -7888,7 +7888,7 @@ Array [
         "initialY0": null,
         "initialY1": 815,
         "x": 815,
-        "y0": 0,
+        "y0": null,
         "y1": 815,
       },
       Object {
@@ -7896,7 +7896,7 @@ Array [
         "initialY0": null,
         "initialY1": 816,
         "x": 816,
-        "y0": 0,
+        "y0": null,
         "y1": 816,
       },
       Object {
@@ -7904,7 +7904,7 @@ Array [
         "initialY0": null,
         "initialY1": 817,
         "x": 817,
-        "y0": 0,
+        "y0": null,
         "y1": 817,
       },
       Object {
@@ -7912,7 +7912,7 @@ Array [
         "initialY0": null,
         "initialY1": 818,
         "x": 818,
-        "y0": 0,
+        "y0": null,
         "y1": 818,
       },
       Object {
@@ -7920,7 +7920,7 @@ Array [
         "initialY0": null,
         "initialY1": 819,
         "x": 819,
-        "y0": 0,
+        "y0": null,
         "y1": 819,
       },
       Object {
@@ -7928,7 +7928,7 @@ Array [
         "initialY0": null,
         "initialY1": 820,
         "x": 820,
-        "y0": 0,
+        "y0": null,
         "y1": 820,
       },
       Object {
@@ -7936,7 +7936,7 @@ Array [
         "initialY0": null,
         "initialY1": 821,
         "x": 821,
-        "y0": 0,
+        "y0": null,
         "y1": 821,
       },
       Object {
@@ -7944,7 +7944,7 @@ Array [
         "initialY0": null,
         "initialY1": 822,
         "x": 822,
-        "y0": 0,
+        "y0": null,
         "y1": 822,
       },
       Object {
@@ -7952,7 +7952,7 @@ Array [
         "initialY0": null,
         "initialY1": 823,
         "x": 823,
-        "y0": 0,
+        "y0": null,
         "y1": 823,
       },
       Object {
@@ -7960,7 +7960,7 @@ Array [
         "initialY0": null,
         "initialY1": 824,
         "x": 824,
-        "y0": 0,
+        "y0": null,
         "y1": 824,
       },
       Object {
@@ -7968,7 +7968,7 @@ Array [
         "initialY0": null,
         "initialY1": 825,
         "x": 825,
-        "y0": 0,
+        "y0": null,
         "y1": 825,
       },
       Object {
@@ -7976,7 +7976,7 @@ Array [
         "initialY0": null,
         "initialY1": 826,
         "x": 826,
-        "y0": 0,
+        "y0": null,
         "y1": 826,
       },
       Object {
@@ -7984,7 +7984,7 @@ Array [
         "initialY0": null,
         "initialY1": 827,
         "x": 827,
-        "y0": 0,
+        "y0": null,
         "y1": 827,
       },
       Object {
@@ -7992,7 +7992,7 @@ Array [
         "initialY0": null,
         "initialY1": 828,
         "x": 828,
-        "y0": 0,
+        "y0": null,
         "y1": 828,
       },
       Object {
@@ -8000,7 +8000,7 @@ Array [
         "initialY0": null,
         "initialY1": 829,
         "x": 829,
-        "y0": 0,
+        "y0": null,
         "y1": 829,
       },
       Object {
@@ -8008,7 +8008,7 @@ Array [
         "initialY0": null,
         "initialY1": 830,
         "x": 830,
-        "y0": 0,
+        "y0": null,
         "y1": 830,
       },
       Object {
@@ -8016,7 +8016,7 @@ Array [
         "initialY0": null,
         "initialY1": 831,
         "x": 831,
-        "y0": 0,
+        "y0": null,
         "y1": 831,
       },
       Object {
@@ -8024,7 +8024,7 @@ Array [
         "initialY0": null,
         "initialY1": 832,
         "x": 832,
-        "y0": 0,
+        "y0": null,
         "y1": 832,
       },
       Object {
@@ -8032,7 +8032,7 @@ Array [
         "initialY0": null,
         "initialY1": 833,
         "x": 833,
-        "y0": 0,
+        "y0": null,
         "y1": 833,
       },
       Object {
@@ -8040,7 +8040,7 @@ Array [
         "initialY0": null,
         "initialY1": 834,
         "x": 834,
-        "y0": 0,
+        "y0": null,
         "y1": 834,
       },
       Object {
@@ -8048,7 +8048,7 @@ Array [
         "initialY0": null,
         "initialY1": 835,
         "x": 835,
-        "y0": 0,
+        "y0": null,
         "y1": 835,
       },
       Object {
@@ -8056,7 +8056,7 @@ Array [
         "initialY0": null,
         "initialY1": 836,
         "x": 836,
-        "y0": 0,
+        "y0": null,
         "y1": 836,
       },
       Object {
@@ -8064,7 +8064,7 @@ Array [
         "initialY0": null,
         "initialY1": 837,
         "x": 837,
-        "y0": 0,
+        "y0": null,
         "y1": 837,
       },
       Object {
@@ -8072,7 +8072,7 @@ Array [
         "initialY0": null,
         "initialY1": 838,
         "x": 838,
-        "y0": 0,
+        "y0": null,
         "y1": 838,
       },
       Object {
@@ -8080,7 +8080,7 @@ Array [
         "initialY0": null,
         "initialY1": 839,
         "x": 839,
-        "y0": 0,
+        "y0": null,
         "y1": 839,
       },
       Object {
@@ -8088,7 +8088,7 @@ Array [
         "initialY0": null,
         "initialY1": 840,
         "x": 840,
-        "y0": 0,
+        "y0": null,
         "y1": 840,
       },
       Object {
@@ -8096,7 +8096,7 @@ Array [
         "initialY0": null,
         "initialY1": 841,
         "x": 841,
-        "y0": 0,
+        "y0": null,
         "y1": 841,
       },
       Object {
@@ -8104,7 +8104,7 @@ Array [
         "initialY0": null,
         "initialY1": 842,
         "x": 842,
-        "y0": 0,
+        "y0": null,
         "y1": 842,
       },
       Object {
@@ -8112,7 +8112,7 @@ Array [
         "initialY0": null,
         "initialY1": 843,
         "x": 843,
-        "y0": 0,
+        "y0": null,
         "y1": 843,
       },
       Object {
@@ -8120,7 +8120,7 @@ Array [
         "initialY0": null,
         "initialY1": 844,
         "x": 844,
-        "y0": 0,
+        "y0": null,
         "y1": 844,
       },
       Object {
@@ -8128,7 +8128,7 @@ Array [
         "initialY0": null,
         "initialY1": 845,
         "x": 845,
-        "y0": 0,
+        "y0": null,
         "y1": 845,
       },
       Object {
@@ -8136,7 +8136,7 @@ Array [
         "initialY0": null,
         "initialY1": 846,
         "x": 846,
-        "y0": 0,
+        "y0": null,
         "y1": 846,
       },
       Object {
@@ -8144,7 +8144,7 @@ Array [
         "initialY0": null,
         "initialY1": 847,
         "x": 847,
-        "y0": 0,
+        "y0": null,
         "y1": 847,
       },
       Object {
@@ -8152,7 +8152,7 @@ Array [
         "initialY0": null,
         "initialY1": 848,
         "x": 848,
-        "y0": 0,
+        "y0": null,
         "y1": 848,
       },
       Object {
@@ -8160,7 +8160,7 @@ Array [
         "initialY0": null,
         "initialY1": 849,
         "x": 849,
-        "y0": 0,
+        "y0": null,
         "y1": 849,
       },
       Object {
@@ -8168,7 +8168,7 @@ Array [
         "initialY0": null,
         "initialY1": 850,
         "x": 850,
-        "y0": 0,
+        "y0": null,
         "y1": 850,
       },
       Object {
@@ -8176,7 +8176,7 @@ Array [
         "initialY0": null,
         "initialY1": 851,
         "x": 851,
-        "y0": 0,
+        "y0": null,
         "y1": 851,
       },
       Object {
@@ -8184,7 +8184,7 @@ Array [
         "initialY0": null,
         "initialY1": 852,
         "x": 852,
-        "y0": 0,
+        "y0": null,
         "y1": 852,
       },
       Object {
@@ -8192,7 +8192,7 @@ Array [
         "initialY0": null,
         "initialY1": 853,
         "x": 853,
-        "y0": 0,
+        "y0": null,
         "y1": 853,
       },
       Object {
@@ -8200,7 +8200,7 @@ Array [
         "initialY0": null,
         "initialY1": 854,
         "x": 854,
-        "y0": 0,
+        "y0": null,
         "y1": 854,
       },
       Object {
@@ -8208,7 +8208,7 @@ Array [
         "initialY0": null,
         "initialY1": 855,
         "x": 855,
-        "y0": 0,
+        "y0": null,
         "y1": 855,
       },
       Object {
@@ -8216,7 +8216,7 @@ Array [
         "initialY0": null,
         "initialY1": 856,
         "x": 856,
-        "y0": 0,
+        "y0": null,
         "y1": 856,
       },
       Object {
@@ -8224,7 +8224,7 @@ Array [
         "initialY0": null,
         "initialY1": 857,
         "x": 857,
-        "y0": 0,
+        "y0": null,
         "y1": 857,
       },
       Object {
@@ -8232,7 +8232,7 @@ Array [
         "initialY0": null,
         "initialY1": 858,
         "x": 858,
-        "y0": 0,
+        "y0": null,
         "y1": 858,
       },
       Object {
@@ -8240,7 +8240,7 @@ Array [
         "initialY0": null,
         "initialY1": 859,
         "x": 859,
-        "y0": 0,
+        "y0": null,
         "y1": 859,
       },
       Object {
@@ -8248,7 +8248,7 @@ Array [
         "initialY0": null,
         "initialY1": 860,
         "x": 860,
-        "y0": 0,
+        "y0": null,
         "y1": 860,
       },
       Object {
@@ -8256,7 +8256,7 @@ Array [
         "initialY0": null,
         "initialY1": 861,
         "x": 861,
-        "y0": 0,
+        "y0": null,
         "y1": 861,
       },
       Object {
@@ -8264,7 +8264,7 @@ Array [
         "initialY0": null,
         "initialY1": 862,
         "x": 862,
-        "y0": 0,
+        "y0": null,
         "y1": 862,
       },
       Object {
@@ -8272,7 +8272,7 @@ Array [
         "initialY0": null,
         "initialY1": 863,
         "x": 863,
-        "y0": 0,
+        "y0": null,
         "y1": 863,
       },
       Object {
@@ -8280,7 +8280,7 @@ Array [
         "initialY0": null,
         "initialY1": 864,
         "x": 864,
-        "y0": 0,
+        "y0": null,
         "y1": 864,
       },
       Object {
@@ -8288,7 +8288,7 @@ Array [
         "initialY0": null,
         "initialY1": 865,
         "x": 865,
-        "y0": 0,
+        "y0": null,
         "y1": 865,
       },
       Object {
@@ -8296,7 +8296,7 @@ Array [
         "initialY0": null,
         "initialY1": 866,
         "x": 866,
-        "y0": 0,
+        "y0": null,
         "y1": 866,
       },
       Object {
@@ -8304,7 +8304,7 @@ Array [
         "initialY0": null,
         "initialY1": 867,
         "x": 867,
-        "y0": 0,
+        "y0": null,
         "y1": 867,
       },
       Object {
@@ -8312,7 +8312,7 @@ Array [
         "initialY0": null,
         "initialY1": 868,
         "x": 868,
-        "y0": 0,
+        "y0": null,
         "y1": 868,
       },
       Object {
@@ -8320,7 +8320,7 @@ Array [
         "initialY0": null,
         "initialY1": 869,
         "x": 869,
-        "y0": 0,
+        "y0": null,
         "y1": 869,
       },
       Object {
@@ -8328,7 +8328,7 @@ Array [
         "initialY0": null,
         "initialY1": 870,
         "x": 870,
-        "y0": 0,
+        "y0": null,
         "y1": 870,
       },
       Object {
@@ -8336,7 +8336,7 @@ Array [
         "initialY0": null,
         "initialY1": 871,
         "x": 871,
-        "y0": 0,
+        "y0": null,
         "y1": 871,
       },
       Object {
@@ -8344,7 +8344,7 @@ Array [
         "initialY0": null,
         "initialY1": 872,
         "x": 872,
-        "y0": 0,
+        "y0": null,
         "y1": 872,
       },
       Object {
@@ -8352,7 +8352,7 @@ Array [
         "initialY0": null,
         "initialY1": 873,
         "x": 873,
-        "y0": 0,
+        "y0": null,
         "y1": 873,
       },
       Object {
@@ -8360,7 +8360,7 @@ Array [
         "initialY0": null,
         "initialY1": 874,
         "x": 874,
-        "y0": 0,
+        "y0": null,
         "y1": 874,
       },
       Object {
@@ -8368,7 +8368,7 @@ Array [
         "initialY0": null,
         "initialY1": 875,
         "x": 875,
-        "y0": 0,
+        "y0": null,
         "y1": 875,
       },
       Object {
@@ -8376,7 +8376,7 @@ Array [
         "initialY0": null,
         "initialY1": 876,
         "x": 876,
-        "y0": 0,
+        "y0": null,
         "y1": 876,
       },
       Object {
@@ -8384,7 +8384,7 @@ Array [
         "initialY0": null,
         "initialY1": 877,
         "x": 877,
-        "y0": 0,
+        "y0": null,
         "y1": 877,
       },
       Object {
@@ -8392,7 +8392,7 @@ Array [
         "initialY0": null,
         "initialY1": 878,
         "x": 878,
-        "y0": 0,
+        "y0": null,
         "y1": 878,
       },
       Object {
@@ -8400,7 +8400,7 @@ Array [
         "initialY0": null,
         "initialY1": 879,
         "x": 879,
-        "y0": 0,
+        "y0": null,
         "y1": 879,
       },
       Object {
@@ -8408,7 +8408,7 @@ Array [
         "initialY0": null,
         "initialY1": 880,
         "x": 880,
-        "y0": 0,
+        "y0": null,
         "y1": 880,
       },
       Object {
@@ -8416,7 +8416,7 @@ Array [
         "initialY0": null,
         "initialY1": 881,
         "x": 881,
-        "y0": 0,
+        "y0": null,
         "y1": 881,
       },
       Object {
@@ -8424,7 +8424,7 @@ Array [
         "initialY0": null,
         "initialY1": 882,
         "x": 882,
-        "y0": 0,
+        "y0": null,
         "y1": 882,
       },
       Object {
@@ -8432,7 +8432,7 @@ Array [
         "initialY0": null,
         "initialY1": 883,
         "x": 883,
-        "y0": 0,
+        "y0": null,
         "y1": 883,
       },
       Object {
@@ -8440,7 +8440,7 @@ Array [
         "initialY0": null,
         "initialY1": 884,
         "x": 884,
-        "y0": 0,
+        "y0": null,
         "y1": 884,
       },
       Object {
@@ -8448,7 +8448,7 @@ Array [
         "initialY0": null,
         "initialY1": 885,
         "x": 885,
-        "y0": 0,
+        "y0": null,
         "y1": 885,
       },
       Object {
@@ -8456,7 +8456,7 @@ Array [
         "initialY0": null,
         "initialY1": 886,
         "x": 886,
-        "y0": 0,
+        "y0": null,
         "y1": 886,
       },
       Object {
@@ -8464,7 +8464,7 @@ Array [
         "initialY0": null,
         "initialY1": 887,
         "x": 887,
-        "y0": 0,
+        "y0": null,
         "y1": 887,
       },
       Object {
@@ -8472,7 +8472,7 @@ Array [
         "initialY0": null,
         "initialY1": 888,
         "x": 888,
-        "y0": 0,
+        "y0": null,
         "y1": 888,
       },
       Object {
@@ -8480,7 +8480,7 @@ Array [
         "initialY0": null,
         "initialY1": 889,
         "x": 889,
-        "y0": 0,
+        "y0": null,
         "y1": 889,
       },
       Object {
@@ -8488,7 +8488,7 @@ Array [
         "initialY0": null,
         "initialY1": 890,
         "x": 890,
-        "y0": 0,
+        "y0": null,
         "y1": 890,
       },
       Object {
@@ -8496,7 +8496,7 @@ Array [
         "initialY0": null,
         "initialY1": 891,
         "x": 891,
-        "y0": 0,
+        "y0": null,
         "y1": 891,
       },
       Object {
@@ -8504,7 +8504,7 @@ Array [
         "initialY0": null,
         "initialY1": 892,
         "x": 892,
-        "y0": 0,
+        "y0": null,
         "y1": 892,
       },
       Object {
@@ -8512,7 +8512,7 @@ Array [
         "initialY0": null,
         "initialY1": 893,
         "x": 893,
-        "y0": 0,
+        "y0": null,
         "y1": 893,
       },
       Object {
@@ -8520,7 +8520,7 @@ Array [
         "initialY0": null,
         "initialY1": 894,
         "x": 894,
-        "y0": 0,
+        "y0": null,
         "y1": 894,
       },
       Object {
@@ -8528,7 +8528,7 @@ Array [
         "initialY0": null,
         "initialY1": 895,
         "x": 895,
-        "y0": 0,
+        "y0": null,
         "y1": 895,
       },
       Object {
@@ -8536,7 +8536,7 @@ Array [
         "initialY0": null,
         "initialY1": 896,
         "x": 896,
-        "y0": 0,
+        "y0": null,
         "y1": 896,
       },
       Object {
@@ -8544,7 +8544,7 @@ Array [
         "initialY0": null,
         "initialY1": 897,
         "x": 897,
-        "y0": 0,
+        "y0": null,
         "y1": 897,
       },
       Object {
@@ -8552,7 +8552,7 @@ Array [
         "initialY0": null,
         "initialY1": 898,
         "x": 898,
-        "y0": 0,
+        "y0": null,
         "y1": 898,
       },
       Object {
@@ -8560,7 +8560,7 @@ Array [
         "initialY0": null,
         "initialY1": 899,
         "x": 899,
-        "y0": 0,
+        "y0": null,
         "y1": 899,
       },
       Object {
@@ -8568,7 +8568,7 @@ Array [
         "initialY0": null,
         "initialY1": 900,
         "x": 900,
-        "y0": 0,
+        "y0": null,
         "y1": 900,
       },
       Object {
@@ -8576,7 +8576,7 @@ Array [
         "initialY0": null,
         "initialY1": 901,
         "x": 901,
-        "y0": 0,
+        "y0": null,
         "y1": 901,
       },
       Object {
@@ -8584,7 +8584,7 @@ Array [
         "initialY0": null,
         "initialY1": 902,
         "x": 902,
-        "y0": 0,
+        "y0": null,
         "y1": 902,
       },
       Object {
@@ -8592,7 +8592,7 @@ Array [
         "initialY0": null,
         "initialY1": 903,
         "x": 903,
-        "y0": 0,
+        "y0": null,
         "y1": 903,
       },
       Object {
@@ -8600,7 +8600,7 @@ Array [
         "initialY0": null,
         "initialY1": 904,
         "x": 904,
-        "y0": 0,
+        "y0": null,
         "y1": 904,
       },
       Object {
@@ -8608,7 +8608,7 @@ Array [
         "initialY0": null,
         "initialY1": 905,
         "x": 905,
-        "y0": 0,
+        "y0": null,
         "y1": 905,
       },
       Object {
@@ -8616,7 +8616,7 @@ Array [
         "initialY0": null,
         "initialY1": 906,
         "x": 906,
-        "y0": 0,
+        "y0": null,
         "y1": 906,
       },
       Object {
@@ -8624,7 +8624,7 @@ Array [
         "initialY0": null,
         "initialY1": 907,
         "x": 907,
-        "y0": 0,
+        "y0": null,
         "y1": 907,
       },
       Object {
@@ -8632,7 +8632,7 @@ Array [
         "initialY0": null,
         "initialY1": 908,
         "x": 908,
-        "y0": 0,
+        "y0": null,
         "y1": 908,
       },
       Object {
@@ -8640,7 +8640,7 @@ Array [
         "initialY0": null,
         "initialY1": 909,
         "x": 909,
-        "y0": 0,
+        "y0": null,
         "y1": 909,
       },
       Object {
@@ -8648,7 +8648,7 @@ Array [
         "initialY0": null,
         "initialY1": 910,
         "x": 910,
-        "y0": 0,
+        "y0": null,
         "y1": 910,
       },
       Object {
@@ -8656,7 +8656,7 @@ Array [
         "initialY0": null,
         "initialY1": 911,
         "x": 911,
-        "y0": 0,
+        "y0": null,
         "y1": 911,
       },
       Object {
@@ -8664,7 +8664,7 @@ Array [
         "initialY0": null,
         "initialY1": 912,
         "x": 912,
-        "y0": 0,
+        "y0": null,
         "y1": 912,
       },
       Object {
@@ -8672,7 +8672,7 @@ Array [
         "initialY0": null,
         "initialY1": 913,
         "x": 913,
-        "y0": 0,
+        "y0": null,
         "y1": 913,
       },
       Object {
@@ -8680,7 +8680,7 @@ Array [
         "initialY0": null,
         "initialY1": 914,
         "x": 914,
-        "y0": 0,
+        "y0": null,
         "y1": 914,
       },
       Object {
@@ -8688,7 +8688,7 @@ Array [
         "initialY0": null,
         "initialY1": 915,
         "x": 915,
-        "y0": 0,
+        "y0": null,
         "y1": 915,
       },
       Object {
@@ -8696,7 +8696,7 @@ Array [
         "initialY0": null,
         "initialY1": 916,
         "x": 916,
-        "y0": 0,
+        "y0": null,
         "y1": 916,
       },
       Object {
@@ -8704,7 +8704,7 @@ Array [
         "initialY0": null,
         "initialY1": 917,
         "x": 917,
-        "y0": 0,
+        "y0": null,
         "y1": 917,
       },
       Object {
@@ -8712,7 +8712,7 @@ Array [
         "initialY0": null,
         "initialY1": 918,
         "x": 918,
-        "y0": 0,
+        "y0": null,
         "y1": 918,
       },
       Object {
@@ -8720,7 +8720,7 @@ Array [
         "initialY0": null,
         "initialY1": 919,
         "x": 919,
-        "y0": 0,
+        "y0": null,
         "y1": 919,
       },
       Object {
@@ -8728,7 +8728,7 @@ Array [
         "initialY0": null,
         "initialY1": 920,
         "x": 920,
-        "y0": 0,
+        "y0": null,
         "y1": 920,
       },
       Object {
@@ -8736,7 +8736,7 @@ Array [
         "initialY0": null,
         "initialY1": 921,
         "x": 921,
-        "y0": 0,
+        "y0": null,
         "y1": 921,
       },
       Object {
@@ -8744,7 +8744,7 @@ Array [
         "initialY0": null,
         "initialY1": 922,
         "x": 922,
-        "y0": 0,
+        "y0": null,
         "y1": 922,
       },
       Object {
@@ -8752,7 +8752,7 @@ Array [
         "initialY0": null,
         "initialY1": 923,
         "x": 923,
-        "y0": 0,
+        "y0": null,
         "y1": 923,
       },
       Object {
@@ -8760,7 +8760,7 @@ Array [
         "initialY0": null,
         "initialY1": 924,
         "x": 924,
-        "y0": 0,
+        "y0": null,
         "y1": 924,
       },
       Object {
@@ -8768,7 +8768,7 @@ Array [
         "initialY0": null,
         "initialY1": 925,
         "x": 925,
-        "y0": 0,
+        "y0": null,
         "y1": 925,
       },
       Object {
@@ -8776,7 +8776,7 @@ Array [
         "initialY0": null,
         "initialY1": 926,
         "x": 926,
-        "y0": 0,
+        "y0": null,
         "y1": 926,
       },
       Object {
@@ -8784,7 +8784,7 @@ Array [
         "initialY0": null,
         "initialY1": 927,
         "x": 927,
-        "y0": 0,
+        "y0": null,
         "y1": 927,
       },
       Object {
@@ -8792,7 +8792,7 @@ Array [
         "initialY0": null,
         "initialY1": 928,
         "x": 928,
-        "y0": 0,
+        "y0": null,
         "y1": 928,
       },
       Object {
@@ -8800,7 +8800,7 @@ Array [
         "initialY0": null,
         "initialY1": 929,
         "x": 929,
-        "y0": 0,
+        "y0": null,
         "y1": 929,
       },
       Object {
@@ -8808,7 +8808,7 @@ Array [
         "initialY0": null,
         "initialY1": 930,
         "x": 930,
-        "y0": 0,
+        "y0": null,
         "y1": 930,
       },
       Object {
@@ -8816,7 +8816,7 @@ Array [
         "initialY0": null,
         "initialY1": 931,
         "x": 931,
-        "y0": 0,
+        "y0": null,
         "y1": 931,
       },
       Object {
@@ -8824,7 +8824,7 @@ Array [
         "initialY0": null,
         "initialY1": 932,
         "x": 932,
-        "y0": 0,
+        "y0": null,
         "y1": 932,
       },
       Object {
@@ -8832,7 +8832,7 @@ Array [
         "initialY0": null,
         "initialY1": 933,
         "x": 933,
-        "y0": 0,
+        "y0": null,
         "y1": 933,
       },
       Object {
@@ -8840,7 +8840,7 @@ Array [
         "initialY0": null,
         "initialY1": 934,
         "x": 934,
-        "y0": 0,
+        "y0": null,
         "y1": 934,
       },
       Object {
@@ -8848,7 +8848,7 @@ Array [
         "initialY0": null,
         "initialY1": 935,
         "x": 935,
-        "y0": 0,
+        "y0": null,
         "y1": 935,
       },
       Object {
@@ -8856,7 +8856,7 @@ Array [
         "initialY0": null,
         "initialY1": 936,
         "x": 936,
-        "y0": 0,
+        "y0": null,
         "y1": 936,
       },
       Object {
@@ -8864,7 +8864,7 @@ Array [
         "initialY0": null,
         "initialY1": 937,
         "x": 937,
-        "y0": 0,
+        "y0": null,
         "y1": 937,
       },
       Object {
@@ -8872,7 +8872,7 @@ Array [
         "initialY0": null,
         "initialY1": 938,
         "x": 938,
-        "y0": 0,
+        "y0": null,
         "y1": 938,
       },
       Object {
@@ -8880,7 +8880,7 @@ Array [
         "initialY0": null,
         "initialY1": 939,
         "x": 939,
-        "y0": 0,
+        "y0": null,
         "y1": 939,
       },
       Object {
@@ -8888,7 +8888,7 @@ Array [
         "initialY0": null,
         "initialY1": 940,
         "x": 940,
-        "y0": 0,
+        "y0": null,
         "y1": 940,
       },
       Object {
@@ -8896,7 +8896,7 @@ Array [
         "initialY0": null,
         "initialY1": 941,
         "x": 941,
-        "y0": 0,
+        "y0": null,
         "y1": 941,
       },
       Object {
@@ -8904,7 +8904,7 @@ Array [
         "initialY0": null,
         "initialY1": 942,
         "x": 942,
-        "y0": 0,
+        "y0": null,
         "y1": 942,
       },
       Object {
@@ -8912,7 +8912,7 @@ Array [
         "initialY0": null,
         "initialY1": 943,
         "x": 943,
-        "y0": 0,
+        "y0": null,
         "y1": 943,
       },
       Object {
@@ -8920,7 +8920,7 @@ Array [
         "initialY0": null,
         "initialY1": 944,
         "x": 944,
-        "y0": 0,
+        "y0": null,
         "y1": 944,
       },
       Object {
@@ -8928,7 +8928,7 @@ Array [
         "initialY0": null,
         "initialY1": 945,
         "x": 945,
-        "y0": 0,
+        "y0": null,
         "y1": 945,
       },
       Object {
@@ -8936,7 +8936,7 @@ Array [
         "initialY0": null,
         "initialY1": 946,
         "x": 946,
-        "y0": 0,
+        "y0": null,
         "y1": 946,
       },
       Object {
@@ -8944,7 +8944,7 @@ Array [
         "initialY0": null,
         "initialY1": 947,
         "x": 947,
-        "y0": 0,
+        "y0": null,
         "y1": 947,
       },
       Object {
@@ -8952,7 +8952,7 @@ Array [
         "initialY0": null,
         "initialY1": 948,
         "x": 948,
-        "y0": 0,
+        "y0": null,
         "y1": 948,
       },
       Object {
@@ -8960,7 +8960,7 @@ Array [
         "initialY0": null,
         "initialY1": 949,
         "x": 949,
-        "y0": 0,
+        "y0": null,
         "y1": 949,
       },
       Object {
@@ -8968,7 +8968,7 @@ Array [
         "initialY0": null,
         "initialY1": 950,
         "x": 950,
-        "y0": 0,
+        "y0": null,
         "y1": 950,
       },
       Object {
@@ -8976,7 +8976,7 @@ Array [
         "initialY0": null,
         "initialY1": 951,
         "x": 951,
-        "y0": 0,
+        "y0": null,
         "y1": 951,
       },
       Object {
@@ -8984,7 +8984,7 @@ Array [
         "initialY0": null,
         "initialY1": 952,
         "x": 952,
-        "y0": 0,
+        "y0": null,
         "y1": 952,
       },
       Object {
@@ -8992,7 +8992,7 @@ Array [
         "initialY0": null,
         "initialY1": 953,
         "x": 953,
-        "y0": 0,
+        "y0": null,
         "y1": 953,
       },
       Object {
@@ -9000,7 +9000,7 @@ Array [
         "initialY0": null,
         "initialY1": 954,
         "x": 954,
-        "y0": 0,
+        "y0": null,
         "y1": 954,
       },
       Object {
@@ -9008,7 +9008,7 @@ Array [
         "initialY0": null,
         "initialY1": 955,
         "x": 955,
-        "y0": 0,
+        "y0": null,
         "y1": 955,
       },
       Object {
@@ -9016,7 +9016,7 @@ Array [
         "initialY0": null,
         "initialY1": 956,
         "x": 956,
-        "y0": 0,
+        "y0": null,
         "y1": 956,
       },
       Object {
@@ -9024,7 +9024,7 @@ Array [
         "initialY0": null,
         "initialY1": 957,
         "x": 957,
-        "y0": 0,
+        "y0": null,
         "y1": 957,
       },
       Object {
@@ -9032,7 +9032,7 @@ Array [
         "initialY0": null,
         "initialY1": 958,
         "x": 958,
-        "y0": 0,
+        "y0": null,
         "y1": 958,
       },
       Object {
@@ -9040,7 +9040,7 @@ Array [
         "initialY0": null,
         "initialY1": 959,
         "x": 959,
-        "y0": 0,
+        "y0": null,
         "y1": 959,
       },
       Object {
@@ -9048,7 +9048,7 @@ Array [
         "initialY0": null,
         "initialY1": 960,
         "x": 960,
-        "y0": 0,
+        "y0": null,
         "y1": 960,
       },
       Object {
@@ -9056,7 +9056,7 @@ Array [
         "initialY0": null,
         "initialY1": 961,
         "x": 961,
-        "y0": 0,
+        "y0": null,
         "y1": 961,
       },
       Object {
@@ -9064,7 +9064,7 @@ Array [
         "initialY0": null,
         "initialY1": 962,
         "x": 962,
-        "y0": 0,
+        "y0": null,
         "y1": 962,
       },
       Object {
@@ -9072,7 +9072,7 @@ Array [
         "initialY0": null,
         "initialY1": 963,
         "x": 963,
-        "y0": 0,
+        "y0": null,
         "y1": 963,
       },
       Object {
@@ -9080,7 +9080,7 @@ Array [
         "initialY0": null,
         "initialY1": 964,
         "x": 964,
-        "y0": 0,
+        "y0": null,
         "y1": 964,
       },
       Object {
@@ -9088,7 +9088,7 @@ Array [
         "initialY0": null,
         "initialY1": 965,
         "x": 965,
-        "y0": 0,
+        "y0": null,
         "y1": 965,
       },
       Object {
@@ -9096,7 +9096,7 @@ Array [
         "initialY0": null,
         "initialY1": 966,
         "x": 966,
-        "y0": 0,
+        "y0": null,
         "y1": 966,
       },
       Object {
@@ -9104,7 +9104,7 @@ Array [
         "initialY0": null,
         "initialY1": 967,
         "x": 967,
-        "y0": 0,
+        "y0": null,
         "y1": 967,
       },
       Object {
@@ -9112,7 +9112,7 @@ Array [
         "initialY0": null,
         "initialY1": 968,
         "x": 968,
-        "y0": 0,
+        "y0": null,
         "y1": 968,
       },
       Object {
@@ -9120,7 +9120,7 @@ Array [
         "initialY0": null,
         "initialY1": 969,
         "x": 969,
-        "y0": 0,
+        "y0": null,
         "y1": 969,
       },
       Object {
@@ -9128,7 +9128,7 @@ Array [
         "initialY0": null,
         "initialY1": 970,
         "x": 970,
-        "y0": 0,
+        "y0": null,
         "y1": 970,
       },
       Object {
@@ -9136,7 +9136,7 @@ Array [
         "initialY0": null,
         "initialY1": 971,
         "x": 971,
-        "y0": 0,
+        "y0": null,
         "y1": 971,
       },
       Object {
@@ -9144,7 +9144,7 @@ Array [
         "initialY0": null,
         "initialY1": 972,
         "x": 972,
-        "y0": 0,
+        "y0": null,
         "y1": 972,
       },
       Object {
@@ -9152,7 +9152,7 @@ Array [
         "initialY0": null,
         "initialY1": 973,
         "x": 973,
-        "y0": 0,
+        "y0": null,
         "y1": 973,
       },
       Object {
@@ -9160,7 +9160,7 @@ Array [
         "initialY0": null,
         "initialY1": 974,
         "x": 974,
-        "y0": 0,
+        "y0": null,
         "y1": 974,
       },
       Object {
@@ -9168,7 +9168,7 @@ Array [
         "initialY0": null,
         "initialY1": 975,
         "x": 975,
-        "y0": 0,
+        "y0": null,
         "y1": 975,
       },
       Object {
@@ -9176,7 +9176,7 @@ Array [
         "initialY0": null,
         "initialY1": 976,
         "x": 976,
-        "y0": 0,
+        "y0": null,
         "y1": 976,
       },
       Object {
@@ -9184,7 +9184,7 @@ Array [
         "initialY0": null,
         "initialY1": 977,
         "x": 977,
-        "y0": 0,
+        "y0": null,
         "y1": 977,
       },
       Object {
@@ -9192,7 +9192,7 @@ Array [
         "initialY0": null,
         "initialY1": 978,
         "x": 978,
-        "y0": 0,
+        "y0": null,
         "y1": 978,
       },
       Object {
@@ -9200,7 +9200,7 @@ Array [
         "initialY0": null,
         "initialY1": 979,
         "x": 979,
-        "y0": 0,
+        "y0": null,
         "y1": 979,
       },
       Object {
@@ -9208,7 +9208,7 @@ Array [
         "initialY0": null,
         "initialY1": 980,
         "x": 980,
-        "y0": 0,
+        "y0": null,
         "y1": 980,
       },
       Object {
@@ -9216,7 +9216,7 @@ Array [
         "initialY0": null,
         "initialY1": 981,
         "x": 981,
-        "y0": 0,
+        "y0": null,
         "y1": 981,
       },
       Object {
@@ -9224,7 +9224,7 @@ Array [
         "initialY0": null,
         "initialY1": 982,
         "x": 982,
-        "y0": 0,
+        "y0": null,
         "y1": 982,
       },
       Object {
@@ -9232,7 +9232,7 @@ Array [
         "initialY0": null,
         "initialY1": 983,
         "x": 983,
-        "y0": 0,
+        "y0": null,
         "y1": 983,
       },
       Object {
@@ -9240,7 +9240,7 @@ Array [
         "initialY0": null,
         "initialY1": 984,
         "x": 984,
-        "y0": 0,
+        "y0": null,
         "y1": 984,
       },
       Object {
@@ -9248,7 +9248,7 @@ Array [
         "initialY0": null,
         "initialY1": 985,
         "x": 985,
-        "y0": 0,
+        "y0": null,
         "y1": 985,
       },
       Object {
@@ -9256,7 +9256,7 @@ Array [
         "initialY0": null,
         "initialY1": 986,
         "x": 986,
-        "y0": 0,
+        "y0": null,
         "y1": 986,
       },
       Object {
@@ -9264,7 +9264,7 @@ Array [
         "initialY0": null,
         "initialY1": 987,
         "x": 987,
-        "y0": 0,
+        "y0": null,
         "y1": 987,
       },
       Object {
@@ -9272,7 +9272,7 @@ Array [
         "initialY0": null,
         "initialY1": 988,
         "x": 988,
-        "y0": 0,
+        "y0": null,
         "y1": 988,
       },
       Object {
@@ -9280,7 +9280,7 @@ Array [
         "initialY0": null,
         "initialY1": 989,
         "x": 989,
-        "y0": 0,
+        "y0": null,
         "y1": 989,
       },
       Object {
@@ -9288,7 +9288,7 @@ Array [
         "initialY0": null,
         "initialY1": 990,
         "x": 990,
-        "y0": 0,
+        "y0": null,
         "y1": 990,
       },
       Object {
@@ -9296,7 +9296,7 @@ Array [
         "initialY0": null,
         "initialY1": 991,
         "x": 991,
-        "y0": 0,
+        "y0": null,
         "y1": 991,
       },
       Object {
@@ -9304,7 +9304,7 @@ Array [
         "initialY0": null,
         "initialY1": 992,
         "x": 992,
-        "y0": 0,
+        "y0": null,
         "y1": 992,
       },
       Object {
@@ -9312,7 +9312,7 @@ Array [
         "initialY0": null,
         "initialY1": 993,
         "x": 993,
-        "y0": 0,
+        "y0": null,
         "y1": 993,
       },
       Object {
@@ -9320,7 +9320,7 @@ Array [
         "initialY0": null,
         "initialY1": 994,
         "x": 994,
-        "y0": 0,
+        "y0": null,
         "y1": 994,
       },
       Object {
@@ -9328,7 +9328,7 @@ Array [
         "initialY0": null,
         "initialY1": 995,
         "x": 995,
-        "y0": 0,
+        "y0": null,
         "y1": 995,
       },
       Object {
@@ -9336,7 +9336,7 @@ Array [
         "initialY0": null,
         "initialY1": 996,
         "x": 996,
-        "y0": 0,
+        "y0": null,
         "y1": 996,
       },
       Object {
@@ -9344,7 +9344,7 @@ Array [
         "initialY0": null,
         "initialY1": 997,
         "x": 997,
-        "y0": 0,
+        "y0": null,
         "y1": 997,
       },
       Object {
@@ -9352,7 +9352,7 @@ Array [
         "initialY0": null,
         "initialY1": 998,
         "x": 998,
-        "y0": 0,
+        "y0": null,
         "y1": 998,
       },
       Object {
@@ -9360,7 +9360,7 @@ Array [
         "initialY0": null,
         "initialY1": 999,
         "x": 999,
-        "y0": 0,
+        "y0": null,
         "y1": 999,
       },
     ],
@@ -17395,7 +17395,7 @@ Array [
         "initialY0": null,
         "initialY1": 1,
         "x": 1,
-        "y0": 0,
+        "y0": null,
         "y1": 1,
       },
       Object {
@@ -17403,7 +17403,7 @@ Array [
         "initialY0": null,
         "initialY1": 2,
         "x": 2,
-        "y0": 0,
+        "y0": null,
         "y1": 2,
       },
       Object {
@@ -17411,7 +17411,7 @@ Array [
         "initialY0": null,
         "initialY1": 3,
         "x": 3,
-        "y0": 0,
+        "y0": null,
         "y1": 3,
       },
       Object {
@@ -17419,7 +17419,7 @@ Array [
         "initialY0": null,
         "initialY1": 4,
         "x": 4,
-        "y0": 0,
+        "y0": null,
         "y1": 4,
       },
     ],
@@ -17749,7 +17749,7 @@ Array [
         "initialY0": null,
         "initialY1": 1,
         "x": 1,
-        "y0": 0,
+        "y0": null,
         "y1": 1,
       },
       Object {
@@ -17757,15 +17757,27 @@ Array [
         "initialY0": null,
         "initialY1": 2,
         "x": 2,
-        "y0": 0,
+        "y0": null,
         "y1": 2,
+      },
+      Object {
+        "datum": undefined,
+        "filled": Object {
+          "x": 3,
+          "y1": 0,
+        },
+        "initialY0": null,
+        "initialY1": 0,
+        "x": 3,
+        "y0": null,
+        "y1": 0,
       },
       Object {
         "datum": undefined,
         "initialY0": null,
         "initialY1": 4,
         "x": 4,
-        "y0": 0,
+        "y0": null,
         "y1": 4,
       },
     ],
@@ -17789,11 +17801,35 @@ Array [
       },
       Object {
         "datum": undefined,
+        "filled": Object {
+          "x": 2,
+          "y1": 0,
+        },
+        "initialY0": null,
+        "initialY1": 0,
+        "x": 2,
+        "y0": 2,
+        "y1": 2,
+      },
+      Object {
+        "datum": undefined,
         "initialY0": null,
         "initialY1": 23,
         "x": 3,
         "y0": 0,
         "y1": 23,
+      },
+      Object {
+        "datum": undefined,
+        "filled": Object {
+          "x": 4,
+          "y1": 0,
+        },
+        "initialY0": null,
+        "initialY1": 0,
+        "x": 4,
+        "y0": 4,
+        "y1": 4,
       },
     ],
     "seriesColorKey": "b",
@@ -17829,6 +17865,18 @@ Array [
       },
       Object {
         "datum": undefined,
+        "filled": Object {
+          "x": 3,
+          "y1": 0,
+        },
+        "initialY0": null,
+        "initialY1": 0,
+        "x": 3,
+        "y0": 0,
+        "y1": 0,
+      },
+      Object {
+        "datum": undefined,
         "initialY0": null,
         "initialY1": 4,
         "x": 4,
@@ -17856,11 +17904,35 @@ Array [
       },
       Object {
         "datum": undefined,
+        "filled": Object {
+          "x": 2,
+          "y1": 0,
+        },
+        "initialY0": null,
+        "initialY1": 0,
+        "x": 2,
+        "y0": 2,
+        "y1": 2,
+      },
+      Object {
+        "datum": undefined,
         "initialY0": null,
         "initialY1": 23,
         "x": 3,
         "y0": 0,
         "y1": 23,
+      },
+      Object {
+        "datum": undefined,
+        "filled": Object {
+          "x": 4,
+          "y1": 0,
+        },
+        "initialY0": null,
+        "initialY1": 0,
+        "x": 4,
+        "y0": 4,
+        "y1": 4,
       },
     ],
     "seriesColorKey": "b",
@@ -17893,6 +17965,18 @@ Array [
         "x": 2,
         "y0": 2,
         "y1": 3,
+      },
+      Object {
+        "datum": undefined,
+        "filled": Object {
+          "x": 3,
+          "y1": 0,
+        },
+        "initialY0": null,
+        "initialY1": 0,
+        "x": 3,
+        "y0": 0,
+        "y1": 0,
       },
       Object {
         "datum": undefined,
@@ -17979,6 +18063,18 @@ Array [
       },
       Object {
         "datum": undefined,
+        "filled": Object {
+          "x": 3,
+          "y1": 0,
+        },
+        "initialY0": null,
+        "initialY1": 0,
+        "x": 3,
+        "y0": 0,
+        "y1": 0,
+      },
+      Object {
+        "datum": undefined,
         "initialY0": 3,
         "initialY1": 4,
         "x": 4,
@@ -18049,24 +18145,36 @@ Array [
         "initialY0": null,
         "initialY1": 1,
         "x": 1,
-        "y0": 0,
+        "y0": null,
         "y1": 1,
-      },
-      Object {
-        "datum": undefined,
-        "initialY0": null,
-        "initialY1": 4,
-        "x": 4,
-        "y0": 0,
-        "y1": 4,
       },
       Object {
         "datum": undefined,
         "initialY0": null,
         "initialY1": 2,
         "x": 2,
-        "y0": 0,
+        "y0": null,
         "y1": 2,
+      },
+      Object {
+        "datum": undefined,
+        "filled": Object {
+          "x": 3,
+          "y1": 0,
+        },
+        "initialY0": null,
+        "initialY1": 0,
+        "x": 3,
+        "y0": null,
+        "y1": 0,
+      },
+      Object {
+        "datum": undefined,
+        "initialY0": null,
+        "initialY1": 4,
+        "x": 4,
+        "y0": null,
+        "y1": 4,
       },
     ],
     "seriesColorKey": "a",
@@ -18082,6 +18190,26 @@ Array [
       Object {
         "datum": undefined,
         "initialY0": null,
+        "initialY1": 21,
+        "x": 1,
+        "y0": 1,
+        "y1": 22,
+      },
+      Object {
+        "datum": undefined,
+        "filled": Object {
+          "x": 2,
+          "y1": 0,
+        },
+        "initialY0": null,
+        "initialY1": 0,
+        "x": 2,
+        "y0": 2,
+        "y1": 2,
+      },
+      Object {
+        "datum": undefined,
+        "initialY0": null,
         "initialY1": 23,
         "x": 3,
         "y0": 0,
@@ -18089,11 +18217,15 @@ Array [
       },
       Object {
         "datum": undefined,
+        "filled": Object {
+          "x": 4,
+          "y1": 0,
+        },
         "initialY0": null,
-        "initialY1": 21,
-        "x": 1,
-        "y0": 1,
-        "y1": 22,
+        "initialY1": 0,
+        "x": 4,
+        "y0": 4,
+        "y1": 4,
       },
     ],
     "seriesColorKey": "b",
@@ -18127,7 +18259,7 @@ Array [
             "initialY0": null,
             "initialY1": 1,
             "x": 0,
-            "y0": 0,
+            "y0": null,
             "y1": 1,
           },
           Object {
@@ -18139,7 +18271,7 @@ Array [
             "initialY0": null,
             "initialY1": 2,
             "x": 1,
-            "y0": 0,
+            "y0": null,
             "y1": 2,
           },
           Object {
@@ -18151,7 +18283,7 @@ Array [
             "initialY0": null,
             "initialY1": 1,
             "x": 2,
-            "y0": 0,
+            "y0": null,
             "y1": 1,
           },
           Object {
@@ -18163,7 +18295,7 @@ Array [
             "initialY0": null,
             "initialY1": 6,
             "x": 3,
-            "y0": 0,
+            "y0": null,
             "y1": 6,
           },
         ],
