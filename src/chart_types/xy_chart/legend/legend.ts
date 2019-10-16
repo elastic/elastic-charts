@@ -2,7 +2,7 @@ import { getAxesSpecForSpecId, LastValues } from '../store/utils';
 import { identity } from '../../../utils/commons';
 import { AxisId, SpecId } from '../../../utils/ids';
 import {
-  DataSeriesColorsValues,
+  SeriesCollectionValue,
   findDataSeriesByColorValues,
   getSortedDataSeriesColorsValuesMap,
 } from '../utils/series';
@@ -18,7 +18,7 @@ export type LegendItem = Postfixes & {
   key: string;
   color: string;
   label: string;
-  value: DataSeriesColorsValues;
+  value: SeriesCollectionValue;
   isSeriesVisible?: boolean;
   banded?: boolean;
   isLegendItemVisible?: boolean;
@@ -41,22 +41,22 @@ export function getPostfix(spec: BasicSeriesSpec): Postfixes {
 }
 
 export function computeLegend(
-  seriesColor: Map<string, DataSeriesColorsValues>,
+  seriesColor: Map<string, SeriesCollectionValue>,
   seriesColorMap: Map<string, string>,
   specs: Map<SpecId, BasicSeriesSpec>,
   defaultColor: string,
   axesSpecs: Map<AxisId, AxisSpec>,
-  deselectedDataSeries?: DataSeriesColorsValues[] | null,
+  deselectedDataSeries?: SeriesCollectionValue[] | null,
 ): Map<string, LegendItem> {
   const legendItems: Map<string, LegendItem> = new Map();
   const sortedSeriesColors = getSortedDataSeriesColorsValuesMap(seriesColor);
 
   sortedSeriesColors.forEach((series, key) => {
-    const { banded, specId, lastValue, colorValues } = series;
+    const { banded, specId, lastValue, seriesKeys } = series;
     const spec = specs.get(specId);
     const color = seriesColorMap.get(key) || defaultColor;
     const hasSingleSeries = seriesColor.size === 1;
-    const label = getSeriesColorLabel(colorValues, hasSingleSeries, spec);
+    const label = getSeriesColorLabel(seriesKeys, hasSingleSeries, spec);
     const isSeriesVisible = deselectedDataSeries ? findDataSeriesByColorValues(deselectedDataSeries, series) < 0 : true;
 
     if (!label || !spec) {

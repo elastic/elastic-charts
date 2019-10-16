@@ -2,7 +2,7 @@ import { ColorConfig } from '../../../utils/themes/theme';
 import { getGroupId, getSpecId, SpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
 import {
-  DataSeriesColorsValues,
+  SeriesCollectionValue,
   getFormattedDataseries,
   getSeriesColorMap,
   getSortedDataSeriesColorsValuesMap,
@@ -420,7 +420,7 @@ describe('Series', () => {
     const specs = new Map();
     specs.set(spec1.id, spec1);
 
-    const dataSeriesValuesA: DataSeriesColorsValues = {
+    const dataSeriesValuesA: SeriesCollectionValue = {
       specId: getSpecId('spec1'),
       colorValues: ['a', 'b', 'c'],
     };
@@ -474,7 +474,7 @@ describe('Series', () => {
     const emptyDeselected = getSplittedSeries(seriesSpecs, []);
     expect(emptyDeselected.splittedSeries.get(specId)!.length).toBe(2);
 
-    const deselectedDataSeries: DataSeriesColorsValues[] = [
+    const deselectedDataSeries: SeriesCollectionValue[] = [
       {
         specId,
         colorValues: ['y1'],
@@ -490,19 +490,19 @@ describe('Series', () => {
     const spec3Id = getSpecId('spec3');
 
     const colorValuesMap = new Map();
-    const dataSeriesValues1: DataSeriesColorsValues = {
+    const dataSeriesValues1: SeriesCollectionValue = {
       specId: spec1Id,
       colorValues: [],
       specSortIndex: 0,
     };
 
-    const dataSeriesValues2: DataSeriesColorsValues = {
+    const dataSeriesValues2: SeriesCollectionValue = {
       specId: spec2Id,
       colorValues: [],
       specSortIndex: 1,
     };
 
-    const dataSeriesValues3: DataSeriesColorsValues = {
+    const dataSeriesValues3: SeriesCollectionValue = {
       specId: spec3Id,
       colorValues: [],
       specSortIndex: 3,

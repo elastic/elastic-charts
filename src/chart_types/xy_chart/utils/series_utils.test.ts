@@ -1,5 +1,5 @@
 import { getSpecId } from '../../../utils/ids';
-import { DataSeriesColorsValues, SeriesIdentifier } from './series';
+import { SeriesCollectionValue, SeriesIdentifier } from './series';
 import { belongsToDataSeries, isEqualSeriesKey } from './series_utils';
 
 describe('Series utility functions', () => {
@@ -25,17 +25,17 @@ describe('Series utility functions', () => {
       seriesKeys: ['a', 'b', 'c'],
     };
 
-    const dataSeriesValuesA: DataSeriesColorsValues = {
+    const dataSeriesValuesA: SeriesCollectionValue = {
       specId: getSpecId('a'),
       colorValues: ['a', 'b', 'c'],
     };
 
-    const dataSeriesValuesB: DataSeriesColorsValues = {
+    const dataSeriesValuesB: SeriesCollectionValue = {
       specId: getSpecId('b'),
       colorValues: ['a', 'b', 'c'],
     };
 
-    const dataSeriesValuesC: DataSeriesColorsValues = {
+    const dataSeriesValuesC: SeriesCollectionValue = {
       specId: getSpecId('a'),
       colorValues: ['a', 'b', 'd'],
     };

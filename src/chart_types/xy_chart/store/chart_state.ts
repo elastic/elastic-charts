@@ -23,7 +23,7 @@ import {
 } from '../rendering/rendering';
 import { countBarsInCluster } from '../utils/scales';
 import {
-  DataSeriesColorsValues,
+  SeriesCollectionValue,
   findDataSeriesByColorValues,
   FormattedDataSeries,
   getSeriesColorMap,
@@ -50,7 +50,7 @@ import { compareByValueAsc } from '../../../utils/commons';
 import { computeChartDimensions } from '../utils/dimensions';
 import { Dimensions } from '../../../utils/dimensions';
 import { Domain } from '../../../utils/domain';
-import { AnnotationId, AxisId, GroupId, SpecId } from '../../../utils/ids';
+import { AnnotationId, AxisId, GroupId, SpecId, getSpecId } from '../../../utils/ids';
 import {
   areIndexedGeometryArraysEquals,
   getValidXPosition,
@@ -83,6 +83,7 @@ import {
   setBarSeriesAccessors,
   Transform,
   updateDeselectedDataSeries,
+  getSpecById,
 } from './utils';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 
@@ -98,13 +99,13 @@ export interface SeriesDomainsAndData {
     stacked: FormattedDataSeries[];
     nonStacked: FormattedDataSeries[];
   };
-  seriesColors: Map<string, DataSeriesColorsValues>;
+  seriesCollection: Map<string, SeriesCollectionValue>;
 }
 
 export type ElementClickListener = (values: GeometryValue[]) => void;
 export type ElementOverListener = (values: GeometryValue[]) => void;
 export type BrushEndListener = (min: number, max: number) => void;
-export type LegendItemListener = (dataSeriesIdentifiers: DataSeriesColorsValues | null) => void;
+export type LegendItemListener = (dataSeriesIdentifiers: SeriesCollectionValue | null) => void;
 export type CursorUpdateListener = (event?: CursorEvent) => void;
 /**
  * Listener to be called when chart render state changes
@@ -209,7 +210,7 @@ export class ChartStore {
   highlightedLegendItemKey: IObservableValue<string | null> = observable.box(null);
   selectedLegendItemKey: IObservableValue<string | null> = observable.box(null);
   // deselected/hidden data series from the legend
-  deselectedDataSeries: DataSeriesColorsValues[] | null = null;
+  deselectedDataSeries: SeriesCollectionValue[] | null = null;
   customSeriesColors: Map<string, string> = new Map();
   seriesColorMap: Map<string, string> = new Map();
   totalBarsInCluster?: number;
@@ -893,11 +894,11 @@ export class ChartStore {
 
     // merge Y custom domains specified on the axis
     const customYDomainsByGroupId = mergeYCustomDomainsByGroupId(this.axesSpecs, this.chartRotation);
-
     // compute general X and Y domains, split series based on split accessors
     // process stacked and non-stacked values series formatting the data
     this.seriesDomainsAndData = computeSeriesDomains(
       this.seriesSpecs,
+      this.seriesIdentifier,
       customYDomainsByGroupId,
       this.customXDomain,
       this.deselectedDataSeries,
@@ -908,13 +909,13 @@ export class ChartStore {
     this.customSeriesColors = new Map([...this.customSeriesColors, ...updatedCustomSeriesColors]);
 
     this.seriesColorMap = getSeriesColorMap(
-      this.seriesDomainsAndData.seriesColors,
+      this.seriesDomainsAndData.seriesCollection,
       this.chartTheme.colors,
       this.customSeriesColors,
     );
 
     this.legendItems = computeLegend(
-      this.seriesDomainsAndData.seriesColors,
+      this.seriesDomainsAndData.seriesCollection,
       this.seriesColorMap,
       this.seriesSpecs,
       this.chartTheme.colors.defaultVizColor,

@@ -12,7 +12,7 @@ import { Omit, RecursivePartial } from '../../../utils/commons';
 import { AnnotationId, AxisId, GroupId, SpecId } from '../../../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../../../utils/scales/scales';
 import { CurveType } from '../../../utils/curves';
-import { DataSeriesColorsValues, RawDataSeriesDatum, SeriesIdentifier } from './series';
+import { SeriesCollectionValue, RawDataSeriesDatum, SeriesIdentifier } from './series';
 import { AnnotationTooltipFormatter } from '../annotations/annotation_utils';
 
 export type Datum = any;
@@ -140,7 +140,7 @@ export interface Postfixes {
   y1AccessorFormat?: string;
 }
 
-export type CustomSeriesColorsMap = Map<DataSeriesColorsValues, string>;
+export type CustomSeriesColorsMap = Map<SeriesCollectionValue, string>;
 
 export interface SeriesAccessors {
   /** The field name of the x value on Datum object */

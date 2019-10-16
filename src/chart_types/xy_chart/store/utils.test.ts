@@ -1,6 +1,6 @@
 import { mergeYCustomDomainsByGroupId } from '../utils/axis_utils';
 import { IndexedGeometry, BandedAccessorType } from '../rendering/rendering';
-import { DataSeriesColorsValues, findDataSeriesByColorValues, getSeriesColorMap } from '../utils/series';
+import { SeriesCollectionValue, findDataSeriesByColorValues, getSeriesColorMap } from '../utils/series';
 import {
   AreaSeriesSpec,
   AxisSpec,
@@ -141,18 +141,18 @@ describe('Chart State utils', () => {
     expect(domains.formattedDataSeries.stacked).toMatchSnapshot();
     expect(domains.formattedDataSeries.nonStacked).toMatchSnapshot();
   });
-  it('should check if a DataSeriesColorValues item exists in a list of DataSeriesColorValues', () => {
-    const dataSeriesValuesA: DataSeriesColorsValues = {
+  it('should check if a SeriesCollectionValue item exists in a list of SeriesCollectionValue', () => {
+    const dataSeriesValuesA: SeriesCollectionValue = {
       specId: getSpecId('a'),
       colorValues: ['a', 'b', 'c'],
     };
 
-    const dataSeriesValuesB: DataSeriesColorsValues = {
+    const dataSeriesValuesB: SeriesCollectionValue = {
       specId: getSpecId('b'),
       colorValues: ['a', 'b', 'c'],
     };
 
-    const dataSeriesValuesC: DataSeriesColorsValues = {
+    const dataSeriesValuesC: SeriesCollectionValue = {
       specId: getSpecId('a'),
       colorValues: ['a', 'b', 'd'],
     };
@@ -163,18 +163,18 @@ describe('Chart State utils', () => {
     expect(findDataSeriesByColorValues(deselectedSeries, dataSeriesValuesC)).toBe(-1);
     expect(findDataSeriesByColorValues(null, dataSeriesValuesA)).toBe(-1);
   });
-  it('should update a list of DataSeriesColorsValues given a selected DataSeriesColorValues item', () => {
-    const dataSeriesValuesA: DataSeriesColorsValues = {
+  it('should update a list of SeriesCollectionValue given a selected SeriesCollectionValue item', () => {
+    const dataSeriesValuesA: SeriesCollectionValue = {
       specId: getSpecId('a'),
       colorValues: ['a', 'b', 'c'],
     };
 
-    const dataSeriesValuesB: DataSeriesColorsValues = {
+    const dataSeriesValuesB: SeriesCollectionValue = {
       specId: getSpecId('b'),
       colorValues: ['a', 'b', 'c'],
     };
 
-    const dataSeriesValuesC: DataSeriesColorsValues = {
+    const dataSeriesValuesC: SeriesCollectionValue = {
       specId: getSpecId('a'),
       colorValues: ['a', 'b', 'd'],
     };

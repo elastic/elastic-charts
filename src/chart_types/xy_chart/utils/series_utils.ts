@@ -1,4 +1,4 @@
-import { DataSeriesColorsValues, SeriesIdentifier } from './series';
+import { SeriesCollectionValue, SeriesIdentifier } from './series';
 
 export function isEqualSeriesKey(a: any[], b: any[]): boolean {
   if (a.length !== b.length) {
@@ -16,9 +16,9 @@ export function isEqualSeriesKey(a: any[], b: any[]): boolean {
 
 export function belongsToDataSeries(
   geometryValue: SeriesIdentifier,
-  dataSeriesValues: DataSeriesColorsValues,
+  dataSeriesValues: SeriesCollectionValue,
 ): boolean {
-  const legendItemSeriesKey = dataSeriesValues.colorValues;
+  const legendItemSeriesKey = dataSeriesValues.seriesKeys;
   const legendItemSpecId = dataSeriesValues.specId;
 
   const geometrySeriesKey = geometryValue.seriesKeys;

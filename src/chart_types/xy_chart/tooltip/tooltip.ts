@@ -1,12 +1,12 @@
 import { TooltipValue, isFollowTooltipType, TooltipType, TooltipValueFormatter } from '../utils/interactions';
 import { IndexedGeometry, isPointOnGeometry, BandedAccessorType } from '../rendering/rendering';
-import { getColorValuesAsString } from '../utils/series';
 import { AxisSpec, BasicSeriesSpec, Rotation, isAreaSeriesSpec, isBandedSpec, isBarSeriesSpec } from '../utils/specs';
 import { SpecId, AxisId, GroupId } from '../../../utils/ids';
 import { getAxesSpecForSpecId } from '../store/utils';
 import { Scale } from '../../../utils/scales/scales';
 import { Point } from '../store/chart_state';
 import { getAccessorFormatLabel } from '../../../utils/accessor';
+import { getSeriesKey } from '../utils/series';
 
 export interface TooltipLegendValue {
   y0: any;
@@ -49,8 +49,7 @@ export function formatTooltip(
   isHighlighted: boolean,
   axisSpec?: AxisSpec,
 ): TooltipValue {
-  // TODO fix to call getSeriesKey
-  const seriesKey = getColorValuesAsString(seriesIdentifier.seriesKeys, spec.id);
+  const seriesKey = getSeriesKey(seriesIdentifier);
   let displayName: string | undefined;
   if (seriesIdentifier.seriesKeys.length > 0) {
     displayName = seriesIdentifier.seriesKeys.join(' - ');

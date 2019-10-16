@@ -16,12 +16,13 @@ import {
 import { computeXScale, computeYScales, countBarsInCluster } from '../utils/scales';
 import {
   DataSeries,
-  DataSeriesColorsValues,
+  SeriesCollectionValue,
   findDataSeriesByColorValues,
   FormattedDataSeries,
-  getColorValuesAsString,
   getFormattedDataseries,
   getSplittedSeries,
+  getSeriesKey,
+  SeriesIdentifier,
 } from '../utils/series';
 import {
   AreaSeriesSpec,
@@ -71,9 +72,9 @@ export interface GeometriesCounts {
 }
 
 export function updateDeselectedDataSeries(
-  series: DataSeriesColorsValues[] | null,
-  value: DataSeriesColorsValues,
-): DataSeriesColorsValues[] {
+  series: SeriesCollectionValue[] | null,
+  value: SeriesCollectionValue,
+): SeriesCollectionValue[] {
   const seriesIndex = findDataSeriesByColorValues(series, value);
   const updatedSeries = series ? [...series] : [];
 
@@ -89,9 +90,9 @@ export function getUpdatedCustomSeriesColors(seriesSpecs: Map<SpecId, BasicSerie
   const updatedCustomSeriesColors = new Map();
   seriesSpecs.forEach((spec: BasicSeriesSpec) => {
     if (spec.customSeriesColors) {
-      spec.customSeriesColors.forEach((color: string, seriesColorValues: DataSeriesColorsValues) => {
-        const { colorValues, specId } = seriesColorValues;
-        const seriesLabel = getColorValuesAsString(colorValues, specId);
+      spec.customSeriesColors.forEach((color: string, seriesColorValues: SeriesCollectionValue) => {
+        const seriesLabel = getSeriesKey(seriesColorValues);
+        console.log('seriesLabel', seriesLabel);
         updatedCustomSeriesColors.set(seriesLabel, color);
       });
     }
@@ -113,13 +114,14 @@ export function getLastValues(formattedDataSeries: {
   // we need to get the latest
   formattedDataSeries.stacked.forEach((ds) => {
     ds.dataSeries.forEach((series) => {
+      const seriesKey = getSeriesKey(series as SeriesIdentifier);
       if (series.data.length > 0) {
         const last = series.data[series.data.length - 1];
         if (last !== null) {
           const { initialY1: y1, initialY0: y0 } = last;
 
           if (!last.filled && (y1 !== null || y0 !== null)) {
-            lastValues.set(series.seriesColorKey, { y0, y1 });
+            lastValues.set(seriesKey, { y0, y1 });
           }
         }
       }
@@ -127,17 +129,19 @@ export function getLastValues(formattedDataSeries: {
   });
   formattedDataSeries.nonStacked.forEach((ds) => {
     ds.dataSeries.forEach((series) => {
+      const seriesKey = getSeriesKey(series as SeriesIdentifier);
       if (series.data.length > 0) {
         const last = series.data[series.data.length - 1];
         if (last !== null) {
           const { initialY1: y1, initialY0: y0 } = last;
           if (y1 !== null || y0 !== null) {
-            lastValues.set(series.seriesColorKey, { y0, y1 });
+            lastValues.set(seriesKey, { y0, y1 });
           }
         }
       }
     });
   });
+  console.log('lastValues', lastValues);
   return lastValues;
 }
 
@@ -155,9 +159,9 @@ export function computeSeriesDomains(
   seriesSpecs: Map<SpecId, BasicSeriesSpec>,
   customYDomainsByGroupId: Map<GroupId, DomainRange>,
   customXDomain?: DomainRange | Domain,
-  deselectedDataSeries?: DataSeriesColorsValues[] | null,
+  deselectedDataSeries?: SeriesCollectionValue[] | null,
 ): SeriesDomainsAndData {
-  const { splittedSeries, xValues, seriesColors } = getSplittedSeries(seriesSpecs, deselectedDataSeries);
+  const { splittedSeries, xValues, seriesCollection } = getSplittedSeries(seriesSpecs, deselectedDataSeries);
 
   const splittedDataSeries = [...splittedSeries.values()];
   const specsArray = [...seriesSpecs.values()];
@@ -169,22 +173,22 @@ export function computeSeriesDomains(
 
   // we need to get the last values from the formatted dataseries
   // because we change the format if we are on percentage mode
-  const lastValuesMap = getLastValues(formattedDataSeries);
-  const updatedSeriesColors = new Map<string, DataSeriesColorsValues>();
-  seriesColors.forEach((value, key) => {
-    const lastValue = lastValuesMap.get(key);
-    const updatedColorSet: DataSeriesColorsValues = {
+  const lastValues = getLastValues(formattedDataSeries);
+  const updatedSeriesCollection = new Map<string, SeriesCollectionValue>();
+  seriesCollection.forEach((value, key) => {
+    const lastValue = lastValues.get(key);
+    const updatedColorSet: SeriesCollectionValue = {
       ...value,
       lastValue,
     };
-    updatedSeriesColors.set(key, updatedColorSet);
+    updatedSeriesCollection.set(key, updatedColorSet);
   });
   return {
     xDomain,
     yDomain,
     splittedDataSeries,
     formattedDataSeries,
-    seriesColors: updatedSeriesColors,
+    seriesCollection: updatedSeriesCollection,
   };
 }
 
@@ -436,7 +440,8 @@ export function renderGeometries(
     if (spec === undefined) {
       continue;
     }
-    const color = seriesColorsMap.get(ds.seriesColorKey) || defaultColor;
+
+    const color = seriesColorsMap.get(getSeriesKey(ds)) || defaultColor;
 
     if (isBarSeriesSpec(spec)) {
       const shift = isStacked ? indexOffset : indexOffset + barIndexOffset;

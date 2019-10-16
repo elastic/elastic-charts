@@ -122,7 +122,6 @@ describe('Rendering bands - areas', () => {
       const {
         areaGeometry: { points },
       } = renderedArea;
-      console.log(points[0]);
       expect(points.length).toBe(4);
       expect(points[0]).toEqual(({
         x: 0,
@@ -416,7 +415,7 @@ describe('Rendering bands - areas', () => {
     };
     const barSeriesMap = new Map<SpecId, BarSeriesSpec>();
     barSeriesMap.set(SPEC_ID, barSeriesSpec);
-    const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
+    const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map(), series);
     const xScale = computeXScale({
       xDomain: barSeriesDomains.xDomain,
       totalBarsInCluster: barSeriesMap.size,
