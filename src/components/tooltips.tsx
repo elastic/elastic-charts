@@ -20,18 +20,22 @@ class TooltipsComponent extends React.Component<TooltipProps> {
     super(props);
     this.tooltipRef = React.createRef();
   }
-  componentDidMount() {
-    const container = document.body.getElementsByClassName('echTooltipContainer')[0];
+  createPortalNode() {
+    const container = document.getElementById('echTooltipContainerPortal');
     if (container) {
       this.portalNode = container as HTMLDivElement;
     } else {
       this.portalNode = document.createElement('div');
-      this.portalNode.className = 'echTooltipContainer';
+      this.portalNode.id = 'echTooltipContainerPortal';
+      document.body.appendChild(this.portalNode);
     }
-    document.body.appendChild(this.portalNode);
+  }
+  componentDidMount() {
+    this.createPortalNode();
   }
 
   componentDidUpdate() {
+    this.createPortalNode();
     const { getChartContainerRef } = this.props;
     const { tooltipPosition } = this.props.chartStore!;
     if (!this.tooltipRef.current) {
