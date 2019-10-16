@@ -19,7 +19,7 @@ describe('Tooltip position', () => {
         container,
         tooltip,
         {
-          isHorizontalRotated: true,
+          isRotatedHorizontal: true,
           vPosition: {
             bandHeight: 0,
             bandTop: 0,
@@ -39,7 +39,7 @@ describe('Tooltip position', () => {
         container,
         tooltip,
         {
-          isHorizontalRotated: true,
+          isRotatedHorizontal: true,
           vPosition: {
             bandHeight: 0,
             bandTop: 90,
@@ -59,7 +59,7 @@ describe('Tooltip position', () => {
         container,
         tooltip,
         {
-          isHorizontalRotated: true,
+          isRotatedHorizontal: true,
           vPosition: {
             bandHeight: 0,
             bandTop: 0,
@@ -79,7 +79,7 @@ describe('Tooltip position', () => {
         container,
         tooltip,
         {
-          isHorizontalRotated: true,
+          isRotatedHorizontal: true,
           vPosition: {
             bandHeight: 0,
             bandTop: 90,
@@ -101,7 +101,7 @@ describe('Tooltip position', () => {
         container,
         tooltip,
         {
-          isHorizontalRotated: false,
+          isRotatedHorizontal: false,
           vPosition: {
             bandHeight: 0,
             bandTop: 0,
@@ -121,7 +121,7 @@ describe('Tooltip position', () => {
         container,
         tooltip,
         {
-          isHorizontalRotated: false,
+          isRotatedHorizontal: false,
           vPosition: {
             bandHeight: 0,
             bandTop: 90,
@@ -141,7 +141,7 @@ describe('Tooltip position', () => {
         container,
         tooltip,
         {
-          isHorizontalRotated: false,
+          isRotatedHorizontal: false,
           vPosition: {
             bandHeight: 0,
             bandTop: 0,
@@ -161,7 +161,7 @@ describe('Tooltip position', () => {
         container,
         tooltip,
         {
-          isHorizontalRotated: false,
+          isRotatedHorizontal: false,
           vPosition: {
             bandHeight: 0,
             bandTop: 90,

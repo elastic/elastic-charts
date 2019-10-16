@@ -9,7 +9,7 @@ export interface SnappedPosition {
   band: number;
 }
 export interface TooltipPosition {
-  isHorizontalRotated: boolean;
+  isRotatedHorizontal: boolean;
   vPosition: {
     bandHeight: number;
     bandTop: number;
@@ -176,7 +176,7 @@ export function getTooltipPosition(
     isSingleValueXScale,
   );
   return {
-    isHorizontalRotated,
+    isRotatedHorizontal: isHorizontalRotated,
     vPosition,
     hPosition,
   };
@@ -234,7 +234,7 @@ export function getFinalTooltipPosition(
   left: string | null;
   top: string | null;
 } {
-  const { hPosition, vPosition, isHorizontalRotated } = tooltipPosition;
+  const { hPosition, vPosition, isRotatedHorizontal: isHorizontalRotated } = tooltipPosition;
   const tooltipStyle: {
     left: string | null;
     top: string | null;
