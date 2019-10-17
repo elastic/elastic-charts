@@ -15,7 +15,6 @@ import { Scale, ScaleType } from '../../../utils/scales/scales';
 import { CurveType, getCurveFactory } from '../../../utils/curves';
 import { LegendItem } from '../legend/legend';
 import { DataSeriesDatum, SeriesIdentifier, DataSeries } from '../utils/series';
-import { belongsToDataSeries } from '../utils/series_utils';
 import { DisplayValueSpec, BarStyleAccessor, PointStyleAccessor } from '../utils/specs';
 import { mergePartial } from '../../../utils/commons';
 
@@ -214,6 +213,7 @@ export function renderPoints(
         }
         const originalY = hasY0Accessors && index === 0 ? initialY0 : initialY1;
         const seriesIdentifier: SeriesIdentifier = {
+          key: dataSeries.key,
           specId: dataSeries.specId,
           yAccessor: dataSeries.yAccessor,
           splitAccessors: dataSeries.splitAccessors,
@@ -347,6 +347,7 @@ export function renderBars(
         : undefined;
 
     const seriesIdentifier: SeriesIdentifier = {
+      key: dataSeries.key,
       specId: dataSeries.specId,
       yAccessor: dataSeries.yAccessor,
       splitAccessors: dataSeries.splitAccessors,
@@ -434,6 +435,7 @@ export function renderLine(
       y,
     },
     seriesIdentifier: {
+      key: dataSeries.key,
       specId: dataSeries.specId,
       yAccessor: dataSeries.yAccessor,
       splitAccessors: dataSeries.splitAccessors,
@@ -519,6 +521,7 @@ export function renderArea(
       x: shift,
     },
     seriesIdentifier: {
+      key: dataSeries.key,
       specId: dataSeries.specId,
       yAccessor: dataSeries.yAccessor,
       splitAccessors: dataSeries.splitAccessors,
@@ -544,7 +547,7 @@ export function getGeometryStyle(
   const { default: defaultStyles, highlighted, unhighlighted } = sharedGeometryStyle;
 
   if (highlightedLegendItem != null) {
-    const isPartOfHighlightedSeries = belongsToDataSeries(seriesIdentifier, highlightedLegendItem.value);
+    const isPartOfHighlightedSeries = seriesIdentifier.key === highlightedLegendItem.seriesIdentifier.key;
 
     return isPartOfHighlightedSeries ? highlighted : unhighlighted;
   }

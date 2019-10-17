@@ -17,7 +17,7 @@ import { computeXScale, computeYScales, countBarsInCluster } from '../utils/scal
 import {
   DataSeries,
   SeriesCollectionValue,
-  findDataSeriesByColorValues,
+  getSeriesIndex,
   FormattedDataSeries,
   getFormattedDataseries,
   getSplittedSeries,
@@ -71,29 +71,43 @@ export interface GeometriesCounts {
   linePoints: number;
 }
 
-export function updateDeselectedDataSeries(
-  series: SeriesCollectionValue[] | null,
-  value: SeriesCollectionValue,
-): SeriesCollectionValue[] {
-  const seriesIndex = findDataSeriesByColorValues(series, value);
+/**
+ * Adds or removes series from array or series
+ * @param series
+ * @param target
+ */
+export function updateDeselectedDataSeries(series: SeriesIdentifier[], target: SeriesIdentifier): SeriesIdentifier[] {
+  const seriesIndex = getSeriesIndex(series, target);
   const updatedSeries = series ? [...series] : [];
 
   if (seriesIndex > -1) {
     updatedSeries.splice(seriesIndex, 1);
   } else {
-    updatedSeries.push(value);
+    updatedSeries.push(target);
   }
   return updatedSeries;
 }
 
-export function getUpdatedCustomSeriesColors(seriesSpecs: Map<SpecId, BasicSeriesSpec>): Map<string, string> {
-  const updatedCustomSeriesColors = new Map();
-  seriesSpecs.forEach((spec: BasicSeriesSpec) => {
-    if (spec.customSeriesColors) {
-      spec.customSeriesColors.forEach((color: string, seriesColorValues: SeriesCollectionValue) => {
-        const seriesLabel = getSeriesKey(seriesColorValues);
-        console.log('seriesLabel', seriesLabel);
-        updatedCustomSeriesColors.set(seriesLabel, color);
+/**
+ * Return map assocition between `seriesKey` and custom colors string
+ * @param seriesSpecs
+ * @param seriesCollection
+ */
+export function getCustomSeriesColors(
+  seriesSpecs: Map<SpecId, BasicSeriesSpec>,
+  seriesCollection: Map<string, SeriesCollectionValue>,
+  seriesColorOverrides: Map<string, string>,
+): Map<string, string> {
+  const updatedCustomSeriesColors = new Map<string, string>();
+  seriesSpecs.forEach(({ seriesColorAccessor }) => {
+    if (seriesColorAccessor) {
+      seriesCollection.forEach(({ seriesIdentifier }, seriesKey) => {
+        const colorOverride = seriesColorOverrides.get(seriesKey);
+        const color = colorOverride || seriesColorAccessor(seriesIdentifier);
+
+        if (color) {
+          updatedCustomSeriesColors.set(seriesKey, color);
+        }
       });
     }
   });
@@ -158,8 +172,8 @@ export function getLastValues(formattedDataSeries: {
 export function computeSeriesDomains(
   seriesSpecs: Map<SpecId, BasicSeriesSpec>,
   customYDomainsByGroupId: Map<GroupId, DomainRange>,
+  deselectedDataSeries: SeriesIdentifier[],
   customXDomain?: DomainRange | Domain,
-  deselectedDataSeries?: SeriesCollectionValue[] | null,
 ): SeriesDomainsAndData {
   const { splittedSeries, xValues, seriesCollection } = getSplittedSeries(seriesSpecs, deselectedDataSeries);
 

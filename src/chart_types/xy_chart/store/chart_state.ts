@@ -24,10 +24,11 @@ import {
 import { countBarsInCluster } from '../utils/scales';
 import {
   SeriesCollectionValue,
-  findDataSeriesByColorValues,
+  getSeriesIndex,
   FormattedDataSeries,
-  getSeriesColorMap,
+  getSeriesColors,
   RawDataSeries,
+  SeriesIdentifier,
 } from '../utils/series';
 import {
   AnnotationSpec,
@@ -50,7 +51,7 @@ import { compareByValueAsc } from '../../../utils/commons';
 import { computeChartDimensions } from '../utils/dimensions';
 import { Dimensions } from '../../../utils/dimensions';
 import { Domain } from '../../../utils/domain';
-import { AnnotationId, AxisId, GroupId, SpecId, getSpecId } from '../../../utils/ids';
+import { AnnotationId, AxisId, GroupId, SpecId } from '../../../utils/ids';
 import {
   areIndexedGeometryArraysEquals,
   getValidXPosition,
@@ -75,7 +76,7 @@ import {
   computeChartTransform,
   computeSeriesDomains,
   computeSeriesGeometries,
-  getUpdatedCustomSeriesColors,
+  getCustomSeriesColors,
   isAllSeriesDeselected,
   isChartAnimatable,
   isHistogramModeEnabled,
@@ -83,7 +84,6 @@ import {
   setBarSeriesAccessors,
   Transform,
   updateDeselectedDataSeries,
-  getSpecById,
 } from './utils';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 
@@ -105,7 +105,7 @@ export interface SeriesDomainsAndData {
 export type ElementClickListener = (values: GeometryValue[]) => void;
 export type ElementOverListener = (values: GeometryValue[]) => void;
 export type BrushEndListener = (min: number, max: number) => void;
-export type LegendItemListener = (dataSeriesIdentifiers: SeriesCollectionValue | null) => void;
+export type LegendItemListener = (series: SeriesIdentifier | null) => void;
 export type CursorUpdateListener = (event?: CursorEvent) => void;
 /**
  * Listener to be called when chart render state changes
@@ -210,9 +210,10 @@ export class ChartStore {
   highlightedLegendItemKey: IObservableValue<string | null> = observable.box(null);
   selectedLegendItemKey: IObservableValue<string | null> = observable.box(null);
   // deselected/hidden data series from the legend
-  deselectedDataSeries: SeriesCollectionValue[] | null = null;
-  customSeriesColors: Map<string, string> = new Map();
-  seriesColorMap: Map<string, string> = new Map();
+  deselectedDataSeries: SeriesIdentifier[] = [];
+  seriesCustomColors: Map<string, string> = new Map();
+  seriesColorOverrides: Map<string, string> = new Map();
+  seriesColors: Map<string, string> = new Map();
   totalBarsInCluster?: number;
 
   tooltipData = observable.array<TooltipValue>([], { deep: false });
@@ -610,7 +611,7 @@ export class ChartStore {
 
     if (this.onLegendItemOverListener) {
       const currentLegendItem = this.highlightedLegendItem.get();
-      const listenerData = currentLegendItem ? currentLegendItem.value : null;
+      const listenerData = currentLegendItem ? currentLegendItem.seriesIdentifier : null;
       this.onLegendItemOverListener(listenerData);
     }
   });
@@ -632,7 +633,7 @@ export class ChartStore {
     // }
     if (this.onLegendItemClickListener) {
       const currentLegendItem = legendItemKey == null ? null : this.legendItems.get(legendItemKey);
-      const listenerData = currentLegendItem ? currentLegendItem.value : null;
+      const listenerData = currentLegendItem ? currentLegendItem.seriesIdentifier : null;
       this.onLegendItemClickListener(listenerData);
     }
   });
@@ -640,7 +641,7 @@ export class ChartStore {
   onLegendItemPlusClick = action(() => {
     if (this.onLegendItemPlusClickListener) {
       const currentLegendItem = this.selectedLegendItem.get();
-      const listenerData = currentLegendItem ? currentLegendItem.value : null;
+      const listenerData = currentLegendItem ? currentLegendItem.seriesIdentifier : null;
       this.onLegendItemPlusClickListener(listenerData);
     }
   });
@@ -648,7 +649,7 @@ export class ChartStore {
   onLegendItemMinusClick = action(() => {
     if (this.onLegendItemMinusClickListener) {
       const currentLegendItem = this.selectedLegendItem.get();
-      const listenerData = currentLegendItem ? currentLegendItem.value : null;
+      const listenerData = currentLegendItem ? currentLegendItem.seriesIdentifier : null;
       this.onLegendItemMinusClickListener(listenerData);
     }
   });
@@ -657,12 +658,12 @@ export class ChartStore {
     const legendItem = this.legendItems.get(legendItemKey);
 
     if (legendItem) {
-      if (findDataSeriesByColorValues(this.deselectedDataSeries, legendItem.value) > -1) {
+      if (getSeriesIndex(this.deselectedDataSeries, legendItem.seriesIdentifier) > -1) {
         this.deselectedDataSeries = [...this.legendItems.values()]
-          .filter((item: LegendItem) => item.key !== legendItemKey)
-          .map((item: LegendItem) => item.value);
+          .filter(({ key }) => key !== legendItemKey)
+          .map(({ seriesIdentifier }) => seriesIdentifier);
       } else {
-        this.deselectedDataSeries = [legendItem.value];
+        this.deselectedDataSeries = [legendItem.seriesIdentifier];
       }
 
       this.computeChart();
@@ -673,28 +674,15 @@ export class ChartStore {
     const legendItem = this.legendItems.get(legendItemKey);
 
     if (legendItem) {
-      this.deselectedDataSeries = updateDeselectedDataSeries(this.deselectedDataSeries, legendItem.value);
+      this.deselectedDataSeries = updateDeselectedDataSeries(this.deselectedDataSeries, legendItem.seriesIdentifier);
       this.computeChart();
     }
   });
 
   setSeriesColor = action((legendItemKey: string, color: string) => {
-    const legendItem = this.legendItems.get(legendItemKey);
-
-    if (legendItem) {
-      const { specId } = legendItem.value;
-
-      const spec = this.seriesSpecs.get(specId);
-      if (spec) {
-        if (spec.customSeriesColors) {
-          spec.customSeriesColors.set(legendItem.value, color);
-        } else {
-          const specCustomSeriesColors = new Map();
-          spec.customSeriesColors = specCustomSeriesColors;
-          spec.customSeriesColors.set(legendItem.value, color);
-        }
-      }
-
+    if (color) {
+      // TODO make sure this logic works when legend color picker is reintroduced
+      this.seriesColorOverrides.set(legendItemKey, color);
       this.computeChart();
     }
   });
@@ -729,7 +717,7 @@ export class ChartStore {
   }
 
   resetDeselectedDataSeries() {
-    this.deselectedDataSeries = null;
+    this.deselectedDataSeries = [];
   }
 
   setOnElementClickListener(listener: ElementClickListener) {
@@ -887,9 +875,9 @@ export class ChartStore {
       return;
     }
 
-    // When specs are not initialized, reset selectedDataSeries to null
+    // When specs are not initialized, clearn all selectedDataSeries
     if (!this.specsInitialized.get()) {
-      this.deselectedDataSeries = null;
+      this.deselectedDataSeries = [];
     }
 
     // merge Y custom domains specified on the axis
@@ -898,25 +886,28 @@ export class ChartStore {
     // process stacked and non-stacked values series formatting the data
     this.seriesDomainsAndData = computeSeriesDomains(
       this.seriesSpecs,
-      this.seriesIdentifier,
       customYDomainsByGroupId,
-      this.customXDomain,
       this.deselectedDataSeries,
+      this.customXDomain,
     );
 
     // Merge all series spec custom colors with state custom colors map
-    const updatedCustomSeriesColors = getUpdatedCustomSeriesColors(this.seriesSpecs);
-    this.customSeriesColors = new Map([...this.customSeriesColors, ...updatedCustomSeriesColors]);
+    this.seriesCustomColors = getCustomSeriesColors(
+      this.seriesSpecs,
+      this.seriesDomainsAndData.seriesCollection,
+      this.seriesColorOverrides,
+    );
+    // this.seriesCustomColors = new Map([...this.seriesCustomColors, ...updatedCustomSeriesColors]);
 
-    this.seriesColorMap = getSeriesColorMap(
+    this.seriesColors = getSeriesColors(
       this.seriesDomainsAndData.seriesCollection,
       this.chartTheme.colors,
-      this.customSeriesColors,
+      this.seriesCustomColors,
     );
 
     this.legendItems = computeLegend(
       this.seriesDomainsAndData.seriesCollection,
-      this.seriesColorMap,
+      this.seriesColors,
       this.seriesSpecs,
       this.chartTheme.colors.defaultVizColor,
       this.axesSpecs,
@@ -985,7 +976,7 @@ export class ChartStore {
       xDomain,
       yDomain,
       formattedDataSeries,
-      this.seriesColorMap,
+      this.seriesColors,
       this.chartTheme,
       this.chartDimensions,
       this.chartRotation,

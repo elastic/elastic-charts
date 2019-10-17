@@ -126,8 +126,8 @@ export interface SeriesSpec {
   data: Datum[];
   /** The type of series you are looking to render */
   seriesType: 'bar' | 'line' | 'area';
-  /** Custom colors for series */
-  customSeriesColors?: CustomSeriesColorsMap;
+  /** Set colors for specific series */
+  seriesColorAccessor?: SeriesColorAccessor;
   /** If the series should appear in the legend
    * @default false
    */

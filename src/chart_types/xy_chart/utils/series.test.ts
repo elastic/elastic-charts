@@ -4,7 +4,7 @@ import { ScaleType } from '../../../utils/scales/scales';
 import {
   SeriesCollectionValue,
   getFormattedDataseries,
-  getSeriesColorMap,
+  getSeriesColors,
   getSortedDataSeriesColorsValuesMap,
   getSplittedSeries,
   RawDataSeries,
@@ -435,7 +435,7 @@ describe('Series', () => {
 
     const emptyCustomColors = new Map();
 
-    const defaultColorMap = getSeriesColorMap(seriesColors, chartColors, emptyCustomColors);
+    const defaultColorMap = getSeriesColors(seriesColors, chartColors, emptyCustomColors);
     const expectedDefaultColorMap = new Map();
     expectedDefaultColorMap.set('spec1', 'elastic_charts_c1');
     expect(defaultColorMap).toEqual(expectedDefaultColorMap);
@@ -443,7 +443,7 @@ describe('Series', () => {
     const customColors: Map<string, string> = new Map();
     customColors.set('spec1', 'custom_color');
 
-    const customizedColorMap = getSeriesColorMap(seriesColors, chartColors, customColors);
+    const customizedColorMap = getSeriesColors(seriesColors, chartColors, customColors);
     const expectedCustomizedColorMap = new Map();
     expectedCustomizedColorMap.set('spec1', 'custom_color');
     expect(customizedColorMap).toEqual(expectedCustomizedColorMap);
@@ -489,7 +489,7 @@ describe('Series', () => {
     const spec2Id = getSpecId('spec2');
     const spec3Id = getSpecId('spec3');
 
-    const colorValuesMap = new Map();
+    const seriesCollection = new Map();
     const dataSeriesValues1: SeriesCollectionValue = {
       specId: spec1Id,
       colorValues: [],
@@ -508,16 +508,16 @@ describe('Series', () => {
       specSortIndex: 3,
     };
 
-    colorValuesMap.set(spec3Id, dataSeriesValues3);
-    colorValuesMap.set(spec1Id, dataSeriesValues1);
-    colorValuesMap.set(spec2Id, dataSeriesValues2);
+    seriesCollection.set(spec3Id, dataSeriesValues3);
+    seriesCollection.set(spec1Id, dataSeriesValues1);
+    seriesCollection.set(spec2Id, dataSeriesValues2);
 
     const descSortedColorValues = new Map();
     descSortedColorValues.set(spec1Id, dataSeriesValues1);
     descSortedColorValues.set(spec2Id, dataSeriesValues2);
     descSortedColorValues.set(spec3Id, dataSeriesValues3);
 
-    expect(getSortedDataSeriesColorsValuesMap(colorValuesMap)).toEqual(descSortedColorValues);
+    expect(getSortedDataSeriesColorsValuesMap(seriesCollection)).toEqual(descSortedColorValues);
 
     const ascSortedColorValues = new Map();
     dataSeriesValues1.specSortIndex = 2;
@@ -528,7 +528,7 @@ describe('Series', () => {
     ascSortedColorValues.set(spec2Id, dataSeriesValues2);
     ascSortedColorValues.set(spec1Id, dataSeriesValues1);
 
-    expect(getSortedDataSeriesColorsValuesMap(colorValuesMap)).toEqual(ascSortedColorValues);
+    expect(getSortedDataSeriesColorsValuesMap(seriesCollection)).toEqual(ascSortedColorValues);
 
     // Any series with undefined sort order should come last
     const undefinedSortedColorValues = new Map();
@@ -540,6 +540,6 @@ describe('Series', () => {
     undefinedSortedColorValues.set(spec1Id, dataSeriesValues1);
     undefinedSortedColorValues.set(spec2Id, dataSeriesValues2);
 
-    expect(getSortedDataSeriesColorsValuesMap(colorValuesMap)).toEqual(undefinedSortedColorValues);
+    expect(getSortedDataSeriesColorsValuesMap(seriesCollection)).toEqual(undefinedSortedColorValues);
   });
 });

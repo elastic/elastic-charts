@@ -715,7 +715,7 @@ describe('Chart Store', () => {
 
     store.setSeriesColor('other', 'foo');
     expect(computeChart).not.toBeCalled();
-    expect(store.customSeriesColors).toEqual(new Map());
+    expect(store.seriesColorAccessor).toEqual(new Map());
 
     store.setSeriesColor(firstLegendItem.key, 'foo');
     expect(computeChart).toBeCalled();
@@ -725,11 +725,11 @@ describe('Chart Store', () => {
     store.setSeriesColor(firstLegendItem.key, 'foo');
     const expectedSpecCustomColorSeries = new Map();
     expectedSpecCustomColorSeries.set(firstLegendItem.value, 'foo');
-    expect(spec.customSeriesColors).toEqual(expectedSpecCustomColorSeries);
+    expect(spec.seriesColorAccessor).toEqual(expectedSpecCustomColorSeries);
 
     store.setSeriesColor(secondLegendItem.key, 'bar');
     expectedSpecCustomColorSeries.set(secondLegendItem.value, 'bar');
-    expect(spec.customSeriesColors).toEqual(expectedSpecCustomColorSeries);
+    expect(spec.seriesColorAccessor).toEqual(expectedSpecCustomColorSeries);
   });
 
   test('can reset selectedDataSeries', () => {

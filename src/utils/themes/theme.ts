@@ -118,7 +118,7 @@ export interface Theme {
    *
    * __Note:__ This is not used to set the color of a specific series. As such, any changes to the styles will not be reflected in the tooltip, legend, etc..
    *
-   * You may use `CustomSeriesColorsMap` to assign colors to a given series or replace the `theme.colors.vizColors` colors to your desired colors.
+   * You may use `SeriesColorAccessor` to assign colors to a given series or replace the `theme.colors.vizColors` colors to your desired colors.
    */
   lineSeriesStyle: LineSeriesStyle;
   /**
@@ -126,7 +126,7 @@ export interface Theme {
    *
    * __Note:__ This is not used to set the color of a specific series. As such, any changes to the styles will not be reflected in the tooltip, legend, etc..
    *
-   * You may use `CustomSeriesColorsMap` to assign colors to a given series or replace the `theme.colors.vizColors` colors to your desired colors.
+   * You may use `SeriesColorAccessor` to assign colors to a given series or replace the `theme.colors.vizColors` colors to your desired colors.
    */
   areaSeriesStyle: AreaSeriesStyle;
   /**
@@ -134,7 +134,7 @@ export interface Theme {
    *
    * __Note:__ This is not used to set the color of a specific series. As such, any changes to the styles will not be reflected in the tooltip, legend, etc..
    *
-   * You may use `CustomSeriesColorsMap` to assign colors to a given series or replace the `theme.colors.vizColors` colors to your desired colors.
+   * You may use `SeriesColorAccessor` to assign colors to a given series or replace the `theme.colors.vizColors` colors to your desired colors.
    */
   barSeriesStyle: BarSeriesStyle;
   sharedStyle: SharedGeometryStyle;

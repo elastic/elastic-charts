@@ -8,9 +8,8 @@ import {
   BarSeries,
   Chart,
   CurveType,
-  CustomSeriesColorsMap,
+  SeriesColorAccessor,
   DataGenerator,
-  SeriesCollectionValue,
   DEFAULT_MISSING_COLOR,
   getAxisId,
   getSpecId,
@@ -581,26 +580,25 @@ storiesOf('Stylings', module)
     },
   )
   .add('custom series colors through spec props', () => {
-    const barCustomSeriesColors: CustomSeriesColorsMap = new Map();
-    const barDataSeriesColorValues: SeriesCollectionValue = {
-      seriesKeys: ['cloudflare.com', 'direct-cdn', 'y2'],
-      specId: getSpecId('bars'),
-      yAccessor: 'y1',
-      splitAccessors: new Map(),
-    };
+    const barSeriesColorAccesor: SeriesColorAccessor = ({ specId, yAccessor, splitAccessors }) => {
+      if (
+        specId === getSpecId('bars') &&
+        yAccessor === 'y1' &&
+        splitAccessors.get('g1') === 'cloudflare.com' &&
+        splitAccessors.get('g2') === 'direct-cdn'
+      ) {
+        return '#ff0';
+      }
 
-    const lineCustomSeriesColors: CustomSeriesColorsMap = new Map();
-    const lineDataSeriesColorValues: SeriesCollectionValue = {
-      seriesKeys: [],
-      yAccessor: 'y1',
-      splitAccessors: new Map(),
-      specId: getSpecId('lines'),
+      return null;
     };
+    const lineSeriesColorAccesor: SeriesColorAccessor = ({ specId, yAccessor, splitAccessors }) => {
+      if (specId === getSpecId('lines') && yAccessor === 'y1' && splitAccessors.size === 0) {
+        return '#000';
+      }
 
-    const customBarColorKnob = color('barDataSeriesColor', '#000');
-    const customLineColorKnob = color('lineDataSeriesColor', '#ff0');
-    barCustomSeriesColors.set(barDataSeriesColorValues, customBarColorKnob);
-    lineCustomSeriesColors.set(lineDataSeriesColorValues, customLineColorKnob);
+      return null;
+    };
 
     return (
       <Chart className={'story-chart'}>
@@ -625,7 +623,7 @@ storiesOf('Stylings', module)
           xAccessor="x"
           yAccessors={['y1', 'y2']}
           splitSeriesAccessors={['g1', 'g2']}
-          customSeriesColors={barCustomSeriesColors}
+          seriesColorAccessor={barSeriesColorAccesor}
           data={TestDatasets.BARCHART_2Y2G}
         />
         <LineSeries
@@ -634,7 +632,7 @@ storiesOf('Stylings', module)
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y']}
-          customSeriesColors={lineCustomSeriesColors}
+          seriesColorAccessor={lineSeriesColorAccesor}
           data={[{ x: 0, y: 3 }, { x: 1, y: 2 }, { x: 2, y: 4 }, { x: 3, y: 10 }]}
         />
       </Chart>
