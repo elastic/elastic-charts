@@ -20,6 +20,10 @@ const data = [
   { x: 12, y: null },
 ];
 
+const data1 = dg.generateSimpleSeries();
+
+console.log(data1);
+
 export class Playground extends React.Component {
   render() {
     return (
@@ -52,11 +56,13 @@ export class Playground extends React.Component {
               // curve={2}
               // splitSeriesAccessors={['g']}
               // stackAccessors={['x']}
-              fit={{
-                type: Fit.Average,
-                endValue: 0,
-              }}
-              data={data}
+              fit={Fit.Linear}
+              data={data1}
+              // fit={{
+              //   type: Fit.Average,
+              //   endValue: 0,
+              // }}
+              // data={data}
             />
           </Chart>
         </div>

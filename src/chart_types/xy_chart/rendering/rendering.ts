@@ -117,7 +117,7 @@ export interface AreaGeometry {
   seriesAreaLineStyle: LineStyle;
   seriesPointStyle: PointStyle;
   isStacked: boolean;
-  clippedRanges: ClippedRanges | null;
+  clippedRanges: ClippedRanges;
 }
 
 export function isPointGeometry(ig: IndexedGeometry): ig is PointGeometry {
@@ -523,7 +523,7 @@ export function renderArea(
     })
     .curve(getCurveFactory(curve));
 
-  const clippedRanges = hasFit ? getClippedRanges(dataset, xScale, xScaleOffset) : null;
+  const clippedRanges = hasFit ? getClippedRanges(dataset, xScale, xScaleOffset) : [];
   const y1Line = pathGenerator.lineY1()(dataset);
   const lines: string[] = [];
   if (y1Line) {

@@ -80,22 +80,22 @@ export class AreaGeometries extends React.PureComponent<AreaGeometriesDataProps,
     const key = getGeometryIdKey(geometryId, 'area-');
     const areaProps = buildAreaRenderProps(transform.x, area, color, seriesAreaStyle, geometryStyle);
 
-    if (clippedRanges === null) {
+    if (clippedRanges.length > 0) {
       return (
         <Group {...clippings} key={key}>
-          <Path {...areaProps} />
+          <Group clipFunc={clipRanges(clippedRanges, clippings)}>
+            <Path {...areaProps} />
+          </Group>
+          <Group clipFunc={clipRanges(clippedRanges, clippings, true)}>
+            <Path {...areaProps} opacity={areaProps.opacity ? Number(areaProps.opacity) / 2 : 0.5} />
+          </Group>
         </Group>
       );
     }
 
     return (
       <Group {...clippings} key={key}>
-        <Group clipFunc={clipRanges(clippedRanges, clippings)}>
-          <Path {...areaProps} />
-        </Group>
-        <Group clipFunc={clipRanges(clippedRanges, clippings, true)}>
-          <Path {...areaProps} opacity={areaProps.opacity ? Number(areaProps.opacity) / 2 : 0.5} />
-        </Group>
+        <Path {...areaProps} />
       </Group>
     );
   };
@@ -115,28 +115,28 @@ export class AreaGeometries extends React.PureComponent<AreaGeometriesDataProps,
       return { key, props };
     });
 
-    if (clippedRanges === null) {
+    if (clippedRanges.length > 0) {
       return (
         <Group {...clippings} key={groupKey}>
-          {linesElementProps.map(({ key, props }) => (
-            <Path {...props} key={key} />
-          ))}
+          <Group clipFunc={clipRanges(clippedRanges, clippings)}>
+            {linesElementProps.map(({ key, props }) => (
+              <Path {...props} key={key} />
+            ))}
+          </Group>
+          <Group clipFunc={clipRanges(clippedRanges, clippings, true)}>
+            {linesElementProps.map(({ key, props }) => (
+              <Path {...props} key={key} dash={[5, 5]} dashEnabled />
+            ))}
+          </Group>
         </Group>
       );
     }
 
     return (
       <Group {...clippings} key={groupKey}>
-        <Group clipFunc={clipRanges(clippedRanges, clippings)}>
-          {linesElementProps.map(({ key, props }) => (
-            <Path {...props} key={key} />
-          ))}
-        </Group>
-        <Group clipFunc={clipRanges(clippedRanges, clippings, true)}>
-          {linesElementProps.map(({ key, props }) => (
-            <Path {...props} key={key} dash={[5, 5]} dashEnabled />
-          ))}
-        </Group>
+        {linesElementProps.map(({ key, props }) => (
+          <Path {...props} key={key} />
+        ))}
       </Group>
     );
   };
