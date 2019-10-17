@@ -101,7 +101,7 @@ export interface SeriesSpec {
   /** The type of series you are looking to render */
   seriesType: 'bar' | 'line' | 'area';
   /** Set colors for specific series */
-  seriesColorAccessor?: SeriesColorAccessor;
+  customSeriesColors?: CustomSeriesColors;
   /** If the series should appear in the legend
    * @default false
    */
@@ -140,7 +140,9 @@ export interface Postfixes {
   y1AccessorFormat?: string;
 }
 
-export type SeriesColorAccessor = (seriesIdentifier: SeriesIdentifier) => string | null;
+export type SeriesColorsArray = string[];
+export type SeriesColorAccessorFn = (seriesIdentifier: SeriesIdentifier) => string | null;
+export type CustomSeriesColors = SeriesColorsArray | SeriesColorAccessorFn;
 
 export interface SeriesAccessors {
   /** The field name of the x value on Datum object */

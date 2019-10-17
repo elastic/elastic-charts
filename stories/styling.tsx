@@ -8,7 +8,7 @@ import {
   BarSeries,
   Chart,
   CurveType,
-  SeriesColorAccessor,
+  CustomSeriesColors,
   DataGenerator,
   DEFAULT_MISSING_COLOR,
   getAxisId,
@@ -579,22 +579,49 @@ storiesOf('Stylings', module)
       info: 'Notice that the secondary theme bar fill has no effect as the primary value takes priority',
     },
   )
-  .add('custom series colors through spec props', () => {
-    const barSeriesColorAccesor: SeriesColorAccessor = ({ specId, yAccessor, splitAccessors }) => {
+  .add('custom series colors via colors array', () => {
+    return (
+      <Chart className={'story-chart'}>
+        <Settings showLegend={true} legendPosition={Position.Right} />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+        <Axis
+          id={getAxisId('left2')}
+          title={'Left axis'}
+          position={Position.Left}
+          tickFormat={(d) => Number(d).toFixed(2)}
+        />
+
+        <BarSeries
+          id={getSpecId('bars')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y1']}
+          splitSeriesAccessors={['g1', 'g2']}
+          customSeriesColors={['red', 'orange', 'blue', 'green', 'black', 'lightgrey']}
+          data={TestDatasets.BARCHART_2Y2G}
+        />
+      </Chart>
+    );
+  })
+  .add('custom series colors via accessor function', () => {
+    const barColor = color('barSeriesColor', '#000');
+    const barSeriesColorAccesor: CustomSeriesColors = ({ specId, yAccessor, splitAccessors }) => {
       if (
         specId === getSpecId('bars') &&
         yAccessor === 'y1' &&
         splitAccessors.get('g1') === 'cloudflare.com' &&
         splitAccessors.get('g2') === 'direct-cdn'
       ) {
-        return '#ff0';
+        return barColor;
       }
 
       return null;
     };
-    const lineSeriesColorAccesor: SeriesColorAccessor = ({ specId, yAccessor, splitAccessors }) => {
+    const lineColor = color('linelineSeriesColor', '#ff0');
+    const lineSeriesColorAccesor: CustomSeriesColors = ({ specId, yAccessor, splitAccessors }) => {
       if (specId === getSpecId('lines') && yAccessor === 'y1' && splitAccessors.size === 0) {
-        return '#000';
+        return lineColor;
       }
 
       return null;
@@ -603,12 +630,7 @@ storiesOf('Stylings', module)
     return (
       <Chart className={'story-chart'}>
         <Settings showLegend={true} legendPosition={Position.Right} />
-        <Axis
-          id={getAxisId('bottom')}
-          position={Position.Bottom}
-          // title={'Bottom axis'}
-          showOverlappingTicks={true}
-        />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
           title={'Left axis'}
@@ -623,7 +645,7 @@ storiesOf('Stylings', module)
           xAccessor="x"
           yAccessors={['y1', 'y2']}
           splitSeriesAccessors={['g1', 'g2']}
-          seriesColorAccessor={barSeriesColorAccesor}
+          customSeriesColors={barSeriesColorAccesor}
           data={TestDatasets.BARCHART_2Y2G}
         />
         <LineSeries
@@ -632,7 +654,7 @@ storiesOf('Stylings', module)
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y']}
-          seriesColorAccessor={lineSeriesColorAccesor}
+          customSeriesColors={lineSeriesColorAccesor}
           data={[{ x: 0, y: 3 }, { x: 1, y: 2 }, { x: 2, y: 4 }, { x: 3, y: 10 }]}
         />
       </Chart>

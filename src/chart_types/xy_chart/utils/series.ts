@@ -80,7 +80,6 @@ export type SeriesCollectionValue = {
   lastValue?: LastValues;
   specSortIndex?: number;
   seriesIdentifier: SeriesIdentifier;
-  // seriesColorAccessor?: SeriesColorAccessor;
 };
 
 export function getSeriesIndex(series: SeriesIdentifier[], target: SeriesIdentifier): number {
@@ -343,7 +342,7 @@ export function getSplittedSeries(
         banded,
         specSortIndex: spec.sortIndex,
         seriesIdentifier: series as SeriesIdentifier,
-        // seriesColorAccessor: spec.seriesColorAccessor,
+        // customSeriesColors: spec.customSeriesColors,
       });
     });
 

@@ -99,15 +99,23 @@ export function getCustomSeriesColors(
   seriesColorOverrides: Map<string, string>,
 ): Map<string, string> {
   const updatedCustomSeriesColors = new Map<string, string>();
-  seriesSpecs.forEach(({ seriesColorAccessor }) => {
-    if (seriesColorAccessor) {
+  seriesSpecs.forEach(({ customSeriesColors }) => {
+    if (customSeriesColors) {
+      let counter = 0;
+
       seriesCollection.forEach(({ seriesIdentifier }, seriesKey) => {
         const colorOverride = seriesColorOverrides.get(seriesKey);
-        const color = colorOverride || seriesColorAccessor(seriesIdentifier);
+        const color =
+          colorOverride ||
+          (Array.isArray(customSeriesColors)
+            ? customSeriesColors[counter % customSeriesColors.length]
+            : customSeriesColors(seriesIdentifier));
 
         if (color) {
           updatedCustomSeriesColors.set(seriesKey, color);
         }
+
+        counter++;
       });
     }
   });
@@ -155,7 +163,6 @@ export function getLastValues(formattedDataSeries: {
       }
     });
   });
-  console.log('lastValues', lastValues);
   return lastValues;
 }
 

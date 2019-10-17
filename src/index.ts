@@ -17,7 +17,7 @@ export { SeriesCollectionValue } from './chart_types/xy_chart/utils/series';
 export {
   AnnotationDomainType,
   AnnotationDomainTypes,
-  SeriesColorAccessor,
+  CustomSeriesColors,
   HistogramModeAlignment,
   HistogramModeAlignments,
   LineAnnotationDatum,

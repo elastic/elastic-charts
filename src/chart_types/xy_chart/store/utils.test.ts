@@ -210,8 +210,8 @@ describe('Chart State utils', () => {
       specId: spec1.id,
       colorValues: ['bar'],
     };
-    spec1.seriesColorAccessor = new Map();
-    spec1.seriesColorAccessor.set(dataSeriesColorValues, 'custom_color');
+    spec1.customSeriesColors = new Map();
+    spec1.customSeriesColors.set(dataSeriesColorValues, 'custom_color');
 
     const updatedCustomSeriesColors = getUpdatedCustomSeriesColors(specs);
     const expectedCustomSeriesColors = new Map();
