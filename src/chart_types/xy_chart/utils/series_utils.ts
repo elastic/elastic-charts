@@ -14,10 +14,7 @@ export function isEqualSeriesKey(a: any[], b: any[]): boolean {
   return true;
 }
 
-export function belongsToDataSeries(
-  geometryValue: SeriesIdentifier,
-  dataSeriesValues: SeriesCollectionValue,
-): boolean {
+export function belongsToDataSeries(geometryValue: SeriesIdentifier, dataSeriesValues: SeriesCollectionValue): boolean {
   const legendItemSeriesKey = dataSeriesValues.seriesKeys;
   const legendItemSpecId = dataSeriesValues.specId;
 
@@ -25,7 +22,10 @@ export function belongsToDataSeries(
   const geometrySpecId = geometryValue.specId;
 
   const hasSameSpecId = legendItemSpecId === geometrySpecId;
-  const hasSameSeriesKey = isEqualSeriesKey(legendItemSeriesKey, geometrySeriesKey);
-
-  return hasSameSpecId && hasSameSeriesKey;
+  let hasSameSeriesKey;
+  if (legendItemSeriesKey) {
+    hasSameSeriesKey = isEqualSeriesKey(legendItemSeriesKey, geometrySeriesKey);
+    return hasSameSpecId && hasSameSeriesKey;
+  }
+  return hasSameSpecId;
 }

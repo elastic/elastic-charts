@@ -50,7 +50,7 @@ import { compareByValueAsc } from '../../../utils/commons';
 import { computeChartDimensions } from '../utils/dimensions';
 import { Dimensions } from '../../../utils/dimensions';
 import { Domain } from '../../../utils/domain';
-import { AnnotationId, AxisId, GroupId, SpecId, getSpecId } from '../../../utils/ids';
+import { AnnotationId, AxisId, GroupId, SpecId } from '../../../utils/ids';
 import {
   areIndexedGeometryArraysEquals,
   getValidXPosition,
@@ -83,7 +83,6 @@ import {
   setBarSeriesAccessors,
   Transform,
   updateDeselectedDataSeries,
-  getSpecById,
 } from './utils';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 
@@ -898,7 +897,6 @@ export class ChartStore {
     // process stacked and non-stacked values series formatting the data
     this.seriesDomainsAndData = computeSeriesDomains(
       this.seriesSpecs,
-      this.seriesIdentifier,
       customYDomainsByGroupId,
       this.customXDomain,
       this.deselectedDataSeries,

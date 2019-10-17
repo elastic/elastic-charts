@@ -53,7 +53,7 @@ function initStore(spec: BasicSeriesSpec) {
       stacked: [],
       nonStacked: [],
     },
-    seriesColors: new Map<string, SeriesCollectionValue>(),
+    seriesCollection: new Map<string, SeriesCollectionValue>(),
     xDomain: {
       scaleType: spec.xScaleType,
       domain: [0, 1],
@@ -109,6 +109,7 @@ const indexedGeom1Red: BarGeometry = {
     yAccessor: 'y1',
     splitAccessors: new Map(),
     seriesKeys: [],
+    key: '',
   },
   seriesStyle: barStyle,
 };
@@ -128,6 +129,7 @@ const indexedGeom2Blue: BarGeometry = {
     yAccessor: 'y1',
     splitAccessors: new Map(),
     seriesKeys: [],
+    key: '',
   },
   seriesStyle: barStyle,
 };

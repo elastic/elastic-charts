@@ -10,7 +10,7 @@ describe('Stacked Series Utils', () => {
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: [],
-      seriesColorKey: 'color-key',
+      key: 'color-key',
       specId: getSpecId('spec1'),
     },
   ];
@@ -25,7 +25,7 @@ describe('Stacked Series Utils', () => {
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: [],
-      seriesColorKey: 'color-key',
+      key: 'color-key',
       specId: getSpecId('spec1'),
     },
     {
@@ -38,7 +38,7 @@ describe('Stacked Series Utils', () => {
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: [],
-      seriesColorKey: 'color-key',
+      key: 'color-key',
       specId: getSpecId('spec2'),
     },
     {
@@ -51,7 +51,7 @@ describe('Stacked Series Utils', () => {
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: [],
-      seriesColorKey: 'color-key',
+      key: 'color-key',
       specId: getSpecId('spec3'),
     },
   ];
@@ -66,7 +66,7 @@ describe('Stacked Series Utils', () => {
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: [],
-      seriesColorKey: 'color-key',
+      key: 'color-key',
       specId: getSpecId('spec1'),
     },
     {
@@ -79,7 +79,7 @@ describe('Stacked Series Utils', () => {
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: [],
-      seriesColorKey: 'color-key',
+      key: 'color-key',
       specId: getSpecId('spec2'),
     },
     {
@@ -92,7 +92,7 @@ describe('Stacked Series Utils', () => {
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: [],
-      seriesColorKey: 'color-key',
+      key: 'color-key',
       specId: getSpecId('spec3'),
     },
   ];
@@ -108,7 +108,7 @@ describe('Stacked Series Utils', () => {
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: [],
-      seriesColorKey: 'color-key',
+      key: 'color-key',
       specId: getSpecId('spec1'),
     },
     {
@@ -122,7 +122,7 @@ describe('Stacked Series Utils', () => {
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: [],
-      seriesColorKey: 'color-key',
+      key: 'color-key',
       specId: getSpecId('spec2'),
     },
     {
@@ -136,7 +136,7 @@ describe('Stacked Series Utils', () => {
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: [],
-      seriesColorKey: 'color-key',
+      key: 'color-key',
       specId: getSpecId('spec3'),
     },
   ];
@@ -152,7 +152,7 @@ describe('Stacked Series Utils', () => {
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: [],
-      seriesColorKey: 'color-key',
+      key: 'color-key',
       specId: getSpecId('spec1'),
     },
     {
@@ -165,7 +165,7 @@ describe('Stacked Series Utils', () => {
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: [],
-      seriesColorKey: 'color-key',
+      key: 'color-key',
       specId: getSpecId('spec2'),
     },
     {
@@ -179,7 +179,7 @@ describe('Stacked Series Utils', () => {
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: [],
-      seriesColorKey: 'color-key',
+      key: 'color-key',
       specId: getSpecId('spec3'),
     },
   ];
@@ -189,7 +189,7 @@ describe('Stacked Series Utils', () => {
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: ['a'],
-      seriesColorKey: 'a',
+      key: 'a',
       data: [{ x: 1, y1: 1 }, { x: 2, y1: 2 }, { x: 4, y1: 4 }],
     },
     {
@@ -197,7 +197,7 @@ describe('Stacked Series Utils', () => {
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: ['b'],
-      seriesColorKey: 'b',
+      key: 'b',
       data: [{ x: 1, y1: 21 }, { x: 3, y1: 23 }],
     },
   ];

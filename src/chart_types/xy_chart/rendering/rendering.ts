@@ -218,6 +218,7 @@ export function renderPoints(
           yAccessor: dataSeries.yAccessor,
           splitAccessors: dataSeries.splitAccessors,
           seriesKeys: dataSeries.seriesKeys,
+          key: dataSeries.key,
         };
         const styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, styleAccessor);
         const pointGeometry: PointGeometry = {
@@ -351,6 +352,7 @@ export function renderBars(
       yAccessor: dataSeries.yAccessor,
       splitAccessors: dataSeries.splitAccessors,
       seriesKeys: dataSeries.seriesKeys,
+      key: dataSeries.key,
     };
 
     const seriesStyle = getBarStyleOverrides(datum, seriesIdentifier, sharedSeriesStyle, styleAccessor);
@@ -438,6 +440,7 @@ export function renderLine(
       yAccessor: dataSeries.yAccessor,
       splitAccessors: dataSeries.splitAccessors,
       seriesKeys: dataSeries.seriesKeys,
+      key: dataSeries.key,
     },
     seriesLineStyle: seriesStyle.line,
     seriesPointStyle: seriesStyle.point,
@@ -523,6 +526,7 @@ export function renderArea(
       yAccessor: dataSeries.yAccessor,
       splitAccessors: dataSeries.splitAccessors,
       seriesKeys: dataSeries.seriesKeys,
+      key: dataSeries.key,
     },
     seriesAreaStyle: seriesStyle.area,
     seriesAreaLineStyle: seriesStyle.line,
