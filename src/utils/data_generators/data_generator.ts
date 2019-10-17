@@ -1,10 +1,10 @@
-import { Simple1DNoise } from './simple_noise';
+import { Simple1DNoise, SeedFunction } from './simple_noise';
 
 export class DataGenerator {
   private generator: Simple1DNoise;
   private frequency: number;
-  constructor(frequency = 500) {
-    this.generator = new Simple1DNoise();
+  constructor(frequency = 500, seedFunction?: SeedFunction) {
+    this.generator = new Simple1DNoise(seedFunction);
     this.frequency = frequency;
   }
   generateSimpleSeries(totalPoints = 50, group = 1) {

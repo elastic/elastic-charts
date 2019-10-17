@@ -1,13 +1,14 @@
-import seedrandom from 'seedrandom';
-
-export const getRandomNumber = seedrandom(process.env.RNG_SEED || undefined);
+export type SeedFunction = (seed?: string) => () => number;
 
 export class Simple1DNoise {
   private maxVertices: number;
   private maxVerticesMask: number;
   private amplitude: number;
   private scale: number;
-  constructor(maxVertices = 256, amplitude = 5.1, scale = 0.6) {
+  private getRandomNumber: () => number;
+
+  constructor(seedFunction?: SeedFunction, maxVertices = 256, amplitude = 5.1, scale = 0.6) {
+    this.getRandomNumber = seedFunction ? seedFunction(process.env.RNG_SEED || undefined) : Math.random;
     this.maxVerticesMask = maxVertices - 1;
     this.amplitude = amplitude;
     this.scale = scale;
@@ -15,7 +16,7 @@ export class Simple1DNoise {
   }
 
   getValue(x: number) {
-    const r = new Array(this.maxVertices).fill(0).map(getRandomNumber);
+    const r = new Array(this.maxVertices).fill(0).map(this.getRandomNumber);
     const scaledX = x * this.scale;
     const xFloor = Math.floor(scaledX);
     const t = scaledX - xFloor;
