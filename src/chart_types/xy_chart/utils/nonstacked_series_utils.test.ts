@@ -8,7 +8,7 @@ const EMPTY_DATA_SET: RawDataSeries[] = [
     seriesKeys: [],
     yAccessor: 'y1',
     splitAccessors: new Map(),
-    seriesColorKey: 'color-key',
+    key: 'color-key',
     specId: getSpecId('spec1'),
   },
 ];
@@ -23,7 +23,7 @@ const STANDARD_DATA_SET: RawDataSeries[] = [
     seriesKeys: [],
     yAccessor: 'y1',
     splitAccessors: new Map(),
-    seriesColorKey: 'color-key',
+    key: 'color-key',
     specId: getSpecId('spec1'),
   },
   {
@@ -36,7 +36,7 @@ const STANDARD_DATA_SET: RawDataSeries[] = [
     seriesKeys: [],
     yAccessor: 'y1',
     splitAccessors: new Map(),
-    seriesColorKey: 'color-key',
+    key: 'color-key',
     specId: getSpecId('spec2'),
   },
   {
@@ -49,7 +49,7 @@ const STANDARD_DATA_SET: RawDataSeries[] = [
     seriesKeys: [],
     yAccessor: 'y1',
     splitAccessors: new Map(),
-    seriesColorKey: 'color-key',
+    key: 'color-key',
     specId: getSpecId('spec3'),
   },
 ];
@@ -64,7 +64,7 @@ const WITH_NULL_DATASET: RawDataSeries[] = [
     seriesKeys: [],
     yAccessor: 'y1',
     splitAccessors: new Map(),
-    seriesColorKey: 'color-key',
+    key: 'color-key',
     specId: getSpecId('spec1'),
   },
   {
@@ -77,7 +77,7 @@ const WITH_NULL_DATASET: RawDataSeries[] = [
     seriesKeys: [],
     yAccessor: 'y1',
     splitAccessors: new Map(),
-    seriesColorKey: 'color-key',
+    key: 'color-key',
     specId: getSpecId('spec2'),
   },
   {
@@ -90,7 +90,7 @@ const WITH_NULL_DATASET: RawDataSeries[] = [
     seriesKeys: [],
     yAccessor: 'y1',
     splitAccessors: new Map(),
-    seriesColorKey: 'color-key',
+    key: 'color-key',
     specId: getSpecId('spec3'),
   },
 ];
@@ -106,7 +106,7 @@ const STANDARD_DATA_SET_WY0: RawDataSeries[] = [
     seriesKeys: [],
     yAccessor: 'y1',
     splitAccessors: new Map(),
-    seriesColorKey: 'color-key',
+    key: 'color-key',
     specId: getSpecId('spec1'),
   },
   {
@@ -120,7 +120,7 @@ const STANDARD_DATA_SET_WY0: RawDataSeries[] = [
     seriesKeys: [],
     yAccessor: 'y1',
     splitAccessors: new Map(),
-    seriesColorKey: 'color-key',
+    key: 'color-key',
     specId: getSpecId('spec2'),
   },
   {
@@ -134,7 +134,7 @@ const STANDARD_DATA_SET_WY0: RawDataSeries[] = [
     seriesKeys: [],
     yAccessor: 'y1',
     splitAccessors: new Map(),
-    seriesColorKey: 'color-key',
+    key: 'color-key',
     specId: getSpecId('spec3'),
   },
 ];
@@ -150,7 +150,7 @@ const WITH_NULL_DATASET_WY0: RawDataSeries[] = [
     seriesKeys: [],
     yAccessor: 'y1',
     splitAccessors: new Map(),
-    seriesColorKey: 'color-key',
+    key: 'color-key',
     specId: getSpecId('spec1'),
   },
   {
@@ -163,7 +163,7 @@ const WITH_NULL_DATASET_WY0: RawDataSeries[] = [
     seriesKeys: [],
     yAccessor: 'y1',
     splitAccessors: new Map(),
-    seriesColorKey: 'color-key',
+    key: 'color-key',
     specId: getSpecId('spec2'),
   },
   {
@@ -177,7 +177,7 @@ const WITH_NULL_DATASET_WY0: RawDataSeries[] = [
     seriesKeys: [],
     yAccessor: 'y1',
     splitAccessors: new Map(),
-    seriesColorKey: 'color-key',
+    key: 'color-key',
     specId: getSpecId('spec3'),
   },
 ];
@@ -187,7 +187,7 @@ const DATA_SET_WITH_NULL_2: RawDataSeries[] = [
     yAccessor: 'y1',
     splitAccessors: new Map(),
     seriesKeys: ['a'],
-    seriesColorKey: 'a',
+    key: 'a',
     data: [{ x: 1, y1: 1 }, { x: 2, y1: 2 }, { x: 4, y1: 4 }],
   },
   {
@@ -195,7 +195,7 @@ const DATA_SET_WITH_NULL_2: RawDataSeries[] = [
     yAccessor: 'y1',
     splitAccessors: new Map(),
     seriesKeys: ['b'],
-    seriesColorKey: 'b',
+    key: 'b',
     data: [{ x: 1, y1: 21 }, { x: 3, y1: 23 }],
   },
 ];
