@@ -1,14 +1,14 @@
-export type SeedFunction = (seed?: string) => () => number;
+export type RandomNumberGenerator = () => number;
 
 export class Simple1DNoise {
   private maxVertices: number;
   private maxVerticesMask: number;
   private amplitude: number;
   private scale: number;
-  private getRandomNumber: () => number;
+  private getRandomNumber: RandomNumberGenerator;
 
-  constructor(seedFunction?: SeedFunction, maxVertices = 256, amplitude = 5.1, scale = 0.6) {
-    this.getRandomNumber = seedFunction ? seedFunction(process.env.RNG_SEED || undefined) : Math.random;
+  constructor(randomNumberGenerator?: RandomNumberGenerator, maxVertices = 256, amplitude = 5.1, scale = 0.6) {
+    this.getRandomNumber = randomNumberGenerator ? randomNumberGenerator : Math.random;
     this.maxVerticesMask = maxVertices - 1;
     this.amplitude = amplitude;
     this.scale = scale;
