@@ -499,6 +499,7 @@ export function renderGeometries(
         xScaleOffset,
         lineSeriesStyle,
         spec.pointStyleAccessor,
+        Boolean(spec.fit && spec.fit !== Fit.None),
       );
       lineGeometriesIndex = mergeGeometriesIndexes(lineGeometriesIndex, renderedLines.indexedGeometries);
       lines.push(renderedLines.lineGeometry);

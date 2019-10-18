@@ -15,6 +15,7 @@ import {
   PointStyleProps,
   buildPointRenderProps,
   Clippings,
+  clipRanges,
 } from './utils/rendering_props_utils';
 import { mergePartial } from '../../utils/commons';
 
@@ -93,9 +94,23 @@ export class LineGeometries extends React.PureComponent<LineGeometriesDataProps,
 
   getLineToRender(line: LineGeometry, sharedStyle: SharedGeometryStyle, key: string) {
     const { clippings } = this.props;
-    const { line: linePath, color, transform, geometryId, seriesLineStyle } = line;
+    const { line: linePath, color, transform, geometryId, seriesLineStyle, clippedRanges } = line;
     const geometryStyle = getGeometryStyle(geometryId, this.props.highlightedLegendItem, sharedStyle);
     const lineProps = buildLineRenderProps(transform.x, linePath, color, seriesLineStyle, geometryStyle);
+
+    if (clippedRanges.length > 0) {
+      return (
+        <Group {...clippings} key={key}>
+          <Group clipFunc={clipRanges(clippedRanges, clippings)}>
+            <Path {...lineProps} />
+          </Group>
+          <Group clipFunc={clipRanges(clippedRanges, clippings, true)}>
+            <Path {...lineProps} dash={[5, 5]} dashEnabled />
+          </Group>
+        </Group>
+      );
+    }
+
     return (
       <Group {...clippings} key={key}>
         <Path {...lineProps} />

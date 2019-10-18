@@ -102,6 +102,7 @@ export interface LineGeometry {
   geometryId: GeometryId;
   seriesLineStyle: LineStyle;
   seriesPointStyle: PointStyle;
+  clippedRanges: ClippedRanges;
 }
 export interface AreaGeometry {
   area: string;
@@ -410,6 +411,7 @@ export function renderLine(
   xScaleOffset: number,
   seriesStyle: LineSeriesStyle,
   pointStyleAccessor?: PointStyleAccessor,
+  hasFit?: boolean,
 ): {
   lineGeometry: LineGeometry;
   indexedGeometries: Map<any, IndexedGeometry[]>;
@@ -448,6 +450,7 @@ export function renderLine(
     pointStyleAccessor,
   );
 
+  const clippedRanges = hasFit && !hasY0Accessors ? getClippedRanges(dataset, xScale, xScaleOffset) : [];
   const lineGeometry = {
     line: pathGenerator(dataset) || '',
     points: pointGeometries,
@@ -462,6 +465,7 @@ export function renderLine(
     },
     seriesLineStyle: seriesStyle.line,
     seriesPointStyle: seriesStyle.point,
+    clippedRanges,
   };
   return {
     lineGeometry,
@@ -523,7 +527,7 @@ export function renderArea(
     })
     .curve(getCurveFactory(curve));
 
-  const clippedRanges = hasFit ? getClippedRanges(dataset, xScale, xScaleOffset) : [];
+  const clippedRanges = hasFit && !hasY0Accessors && !isStacked ? getClippedRanges(dataset, xScale, xScaleOffset) : [];
   const y1Line = pathGenerator.lineY1()(dataset);
   const lines: string[] = [];
   if (y1Line) {

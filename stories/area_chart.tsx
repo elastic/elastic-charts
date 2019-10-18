@@ -1,4 +1,4 @@
-import { boolean, text, select, number } from '@storybook/addon-knobs';
+import { boolean, text } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import { DateTime } from 'luxon';
 import React from 'react';
@@ -17,7 +17,6 @@ import {
 } from '../src';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 import { getRandomNumber } from '../src/utils/data_generators/simple_noise';
-import { Fit } from '../src/chart_types/xy_chart/utils/specs';
 
 const dateFormatter = timeFormatter('HH:mm');
 
@@ -312,124 +311,6 @@ storiesOf('Area Chart', module)
           yAccessors={[1]}
           stackAccessors={[0]}
           data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
-        />
-      </Chart>
-    );
-  })
-  .add('Fitting functions - non-stacked series', () => {
-    const dataTypes = {
-      isolated: [
-        { x: 0, y: 3 },
-        { x: 1, y: 5 },
-        { x: 2, y: null },
-        { x: 3, y: 4 },
-        { x: 4, y: null },
-        { x: 5, y: 5 },
-        { x: 6, y: null },
-        { x: 7, y: 12 },
-        { x: 8, y: null },
-        { x: 9, y: 10 },
-        { x: 10, y: 7 },
-      ],
-      successive: [
-        { x: 0, y: 3 },
-        { x: 1, y: 5 },
-        { x: 2, y: null },
-        { x: 4, y: null },
-        { x: 6, y: null },
-        { x: 8, y: null },
-        { x: 9, y: 10 },
-        { x: 10, y: 7 },
-      ],
-      endPoints: [
-        { x: 0, y: null },
-        { x: 1, y: 5 },
-        { x: 3, y: 4 },
-        { x: 5, y: 5 },
-        { x: 7, y: 12 },
-        { x: 9, y: 10 },
-        { x: 10, y: null },
-      ],
-    };
-
-    const dataKey = select<string>(
-      'dataset',
-      {
-        'Isolated Points': 'isolated',
-        'Successive null Points': 'successive',
-        'null end points': 'endPoints',
-      },
-      'isolated',
-    );
-    // @ts-ignore
-    const dataset = dataTypes[dataKey];
-    const fit = select(
-      'fitting function',
-      {
-        None: Fit.None,
-        Carry: Fit.Carry,
-        Lookahead: Fit.Lookahead,
-        Nearest: Fit.Nearest,
-        Average: Fit.Average,
-        Linear: Fit.Linear,
-        Zero: Fit.Zero,
-        Explicit: Fit.Explicit,
-      },
-      Fit.None,
-    );
-    const curve = select<CurveType>(
-      'Curve',
-      {
-        'Curve cardinal': CurveType.CURVE_CARDINAL,
-        'Curve natural': CurveType.CURVE_NATURAL,
-        'Curve monotone x': CurveType.CURVE_MONOTONE_X,
-        'Curve monotone y': CurveType.CURVE_MONOTONE_Y,
-        'Curve basis': CurveType.CURVE_BASIS,
-        'Curve catmull rom': CurveType.CURVE_CATMULL_ROM,
-        'Curve step': CurveType.CURVE_STEP,
-        'Curve step after': CurveType.CURVE_STEP_AFTER,
-        'Curve step before': CurveType.CURVE_STEP_BEFORE,
-        Linear: CurveType.LINEAR,
-      },
-      0,
-    );
-    const endValue = select<number | 'none'>(
-      'End value',
-      {
-        None: 'none',
-        '0': 0,
-        '5': 5,
-      },
-      'none',
-    );
-    const value = number('Explicit valuve (using Fit.Explicit)', 5);
-
-    return (
-      <Chart className="story-chart">
-        <Settings
-          theme={{
-            areaSeriesStyle: {
-              point: {
-                visible: true,
-              },
-            },
-          }}
-        />
-        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-        <Axis id={getAxisId('left')} title={'Left axis'} position={Position.Left} />
-        <AreaSeries
-          id={getSpecId('test')}
-          xScaleType={ScaleType.Linear}
-          yScaleType={ScaleType.Linear}
-          xAccessor={'x'}
-          yAccessors={['y']}
-          curve={curve}
-          fit={{
-            type: fit,
-            value: fit === Fit.Explicit ? value : undefined,
-            endValue: endValue === 'none' ? undefined : endValue,
-          }}
-          data={dataset}
         />
       </Chart>
     );

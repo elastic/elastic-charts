@@ -320,6 +320,9 @@ export type LineSeriesSpec = BasicSeriesSpec &
      * An optional functional accessor to return custom color or style for point datum
      */
     pointStyleAccessor?: PointStyleAccessor;
+    /**
+     * Fit config to fill `null` values in dataset
+     */
     fit?: Exclude<Fit, 'explicit'> | FitConfig;
   };
 
@@ -342,6 +345,9 @@ export type AreaSeriesSpec = BasicSeriesSpec &
      * An optional functional accessor to return custom color or style for point datum
      */
     pointStyleAccessor?: PointStyleAccessor;
+    /**
+     * Fit config to fill `null` values in dataset
+     */
     fit?: Exclude<Fit, 'explicit'> | FitConfig;
   };
 
