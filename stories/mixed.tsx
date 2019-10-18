@@ -255,6 +255,21 @@ storiesOf('Mixed Charts', module)
         { x: 9, y: 10 },
         { x: 10, y: null },
       ],
+      all: [
+        { x: 0, y: null },
+        { x: 1, y: 3 },
+        { x: 2, y: 5 },
+        { x: 3, y: null },
+        { x: 4, y: 4 },
+        { x: 5, y: null },
+        { x: 6, y: 5 },
+        { x: 7, y: 6 },
+        { x: 8, y: null },
+        { x: 9, y: null },
+        { x: 10, y: null },
+        { x: 11, y: 12 },
+        { x: 12, y: null },
+      ],
     };
 
     const seriesType = select<string>(
@@ -271,6 +286,7 @@ storiesOf('Mixed Charts', module)
         'Isolated Points': 'isolated',
         'Successive null Points': 'successive',
         'null end points': 'endPoints',
+        'All edge cases': 'all',
       },
       'isolated',
     );
