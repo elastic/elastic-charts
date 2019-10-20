@@ -1,5 +1,5 @@
 import { SpecId } from './ids';
-import { BarSeriesStyle, PointStyle, AreaStyle, LineStyle, ArcStyle } from './themes/theme';
+import { BarSeriesStyle, SectorSeriesStyle, PointStyle, AreaStyle, LineStyle, ArcStyle } from './themes/theme';
 
 export interface GeometryId {
   specId: SpecId;
@@ -54,6 +54,26 @@ export interface BarGeometry {
   value: GeometryValue;
   seriesStyle: BarSeriesStyle;
 }
+export interface SectorGeometry {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  angle: number;
+  rotation: number;
+  color: string;
+  displayValue?: {
+    text: any;
+    width: number;
+    height: number;
+    hideClippedValue?: boolean;
+    isValueContainedInElement?: boolean;
+  };
+  geometryId: GeometryId;
+  value: GeometryValue;
+  seriesStyle: SectorSeriesStyle;
+}
+
 export interface LineGeometry {
   line: string;
   points: PointGeometry[];

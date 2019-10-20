@@ -29,6 +29,7 @@ const SCALES = {
   [ScaleType.Log]: scaleLog,
   [ScaleType.Sqrt]: scaleSqrt,
   [ScaleType.Time]: scaleUtc,
+  [ScaleType.Polar]: scaleLinear, // todo consider [d3.scaleRadial](https://github.com/d3/d3-scale#scaleRadial)
 };
 
 export function limitToMin(value: number, positive: boolean) {

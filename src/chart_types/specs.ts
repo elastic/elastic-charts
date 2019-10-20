@@ -1,6 +1,7 @@
 export {
   AreaSeries,
   BarSeries,
+  SectorSeries,
   LineSeries,
   Axis,
   LineAnnotation,

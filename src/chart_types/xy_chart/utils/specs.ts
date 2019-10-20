@@ -5,6 +5,7 @@ import {
   LineSeriesStyle,
   RectAnnotationStyle,
   BarSeriesStyle,
+  SectorSeriesStyle,
   PointStyle,
 } from '../../../utils/themes/theme';
 import { Accessor, AccessorFormat } from '../../../utils/accessor';
@@ -23,6 +24,7 @@ export type Rotation = 0 | 90 | -90 | 180;
 export type Rendering = 'canvas' | 'svg';
 export type Color = string;
 export type BarStyleOverride = RecursivePartial<BarSeriesStyle> | Color | null;
+export type SectorStyleOverride = RecursivePartial<SectorSeriesStyle> | Color | null;
 export type PointStyleOverride = RecursivePartial<PointStyle> | Color | null;
 /**
  * Override for bar styles per datum
@@ -35,6 +37,15 @@ export type PointStyleOverride = RecursivePartial<PointStyle> | Color | null;
 export type BarStyleAccessor = (datum: RawDataSeriesDatum, geometryId: GeometryId) => BarStyleOverride;
 /**
  * Override for bar styles per datum
+ *
+ * Return types:
+ * - `Color`: Color value as a `string` will set the bar `fill` to that color
+ * - `RecursivePartial<BarSeriesStyle>`: Style values to be merged with base bar styles
+ * - `null`: Keep existing bar style
+ */
+export type SectorStyleAccessor = (datum: RawDataSeriesDatum, geometryId: GeometryId) => SectorStyleOverride;
+/**
+ * Override for point styles per datum
  *
  * Return types:
  * - `Color`: Color value as a `string` will set the point `stroke` to that color
@@ -98,7 +109,7 @@ export interface SeriesSpec extends Spec {
   /** An array of data */
   data: Datum[] | number[][];
   /** the type of series */
-  seriesType: 'bar' | 'line' | 'area';
+  seriesType: 'bar' | 'line' | 'area' | 'sector';
   /** Custom colors for series */
   customSeriesColors?: CustomSeriesColorsMap;
   /** If the series should appear in the legend
@@ -203,10 +214,38 @@ export type BarSeriesSpec = BasicSeriesSpec &
   };
 
 /**
+ * This spec describes the dataset configuration used to display a sector series.
+ */
+export type SectorSeriesSpec = BasicSeriesSpec &
+  Postfixes & {
+    /** @default sector */
+    seriesType: 'sector';
+    /** If true, will stack all BarSeries and align bars to ticks (instead of centered on ticks) */
+    enableHistogramMode?: boolean;
+    sectorSeriesStyle?: RecursivePartial<SectorSeriesStyle>;
+    /**
+     * Stack each series in percentage for each point.
+     */
+    stackAsPercentage?: boolean; // todo this will be able to go away as it's always ratio (percentage); in the tooltip and text labels, neither, either or both value and percentsge
+    /**
+     * An optional functional accessor to return custom color or style for bar datum
+     */
+    styleAccessor?: SectorStyleAccessor;
+  };
+
+/**
  * This spec describe the dataset configuration used to display a histogram bar series.
  * A histogram bar series is identical to a bar series except that stackAccessors are not allowed.
  */
 export type HistogramBarSeriesSpec = Omit<BarSeriesSpec, 'stackAccessors'> & {
+  enableHistogramMode: true;
+};
+
+/**
+ * This spec describe the dataset configuration used to display a histogram sector series.
+ * A histogram sector series is identical to a sector series except that stackAccessors are not allowed.
+ */
+export type HistogramSectorSeriesSpec = Omit<SectorSeriesSpec, 'stackAccessors'> & {
   enableHistogramMode: true;
 };
 
@@ -440,6 +479,10 @@ export function isRectAnnotation(spec: AnnotationSpec): spec is RectAnnotationSp
 
 export function isBarSeriesSpec(spec: BasicSeriesSpec): spec is BarSeriesSpec {
   return spec.seriesType === 'bar';
+}
+
+export function isSectorSeriesSpec(spec: BasicSeriesSpec): spec is SectorSeriesSpec {
+  return spec.seriesType === 'sector';
 }
 
 export function isLineSeriesSpec(spec: BasicSeriesSpec): spec is LineSeriesSpec {

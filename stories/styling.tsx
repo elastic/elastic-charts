@@ -362,6 +362,17 @@ storiesOf('Stylings', module)
           visible: boolean('bBorderVisible', true, 'bar'),
         },
       },
+      sectorSeriesStyle: {
+        rect: {
+          fill: customizeRectFill ? color('recCustomFull', 'red', 'bar') : undefined,
+          opacity: range('rectOpacity', 0, 1, 0.5, 'bar', 0.1),
+        },
+        rectBorder: {
+          stroke: color('bBorderStroke', 'white', 'bar'),
+          strokeWidth: range('bStrokeWidth', 0, 10, 1, 'bar'),
+          visible: boolean('bBorderVisible', true, 'bar'),
+        },
+      },
       sharedStyle: {
         default: {
           opacity: range('sOpacity', 0, 1, 1, 'Shared', 0.05),

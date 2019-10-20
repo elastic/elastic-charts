@@ -63,7 +63,8 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     this.chartStore.subscribe(() => {
       const state = this.chartStore.getState();
       const settings = getSettingsSpecSelector(state);
-      if (this.state.legendPosition !== settings.legendPosition) {
+      if (settings && this.state.legendPosition !== settings.legendPosition) {
+        // 1st term, `settings`, is in the condition to avoid erroring out in storybook
         this.setState({
           legendPosition: settings.legendPosition,
         });

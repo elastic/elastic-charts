@@ -140,6 +140,7 @@ export interface Theme {
    * You may use `CustomSeriesColorsMap` to assign colors to a given series or replace the `theme.colors.vizColors` colors to your desired colors.
    */
   barSeriesStyle: BarSeriesStyle;
+  sectorSeriesStyle: SectorSeriesStyle;
   arcSeriesStyle: ArcSeriesStyle;
   sharedStyle: SharedGeometryStyle;
   axes: AxisConfig;
@@ -230,6 +231,12 @@ export interface RectBorderStyle {
   strokeOpacity?: number;
 }
 export interface BarSeriesStyle {
+  rect: RectStyle;
+  rectBorder: RectBorderStyle;
+  displayValue: DisplayValueStyle;
+}
+
+export interface SectorSeriesStyle {
   rect: RectStyle;
   rectBorder: RectBorderStyle;
   displayValue: DisplayValueStyle;

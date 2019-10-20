@@ -5,6 +5,7 @@ import { ContainerConfig } from 'konva';
 import { Layer, Rect, Stage } from 'react-konva';
 import { AreaGeometries } from './area_geometries';
 import { BarGeometries } from './bar_geometries';
+import { SectorGeometries } from './sector_geometries';
 import { LineGeometries } from './line_geometries';
 import { LineAnnotation } from './line_annotation';
 import { RectAnnotation } from './rect_annotation';
@@ -33,7 +34,7 @@ import { AnnotationId } from '../../../../utils/ids';
 import { Theme, mergeWithDefaultAnnotationLine, mergeWithDefaultAnnotationRect } from '../../../../utils/themes/theme';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { computeSeriesGeometriesSelector } from '../../state/selectors/compute_series_geometries';
-import { PointGeometry, BarGeometry, AreaGeometry, LineGeometry } from '../../../../utils/geometry';
+import { PointGeometry, BarGeometry, AreaGeometry, LineGeometry, SectorGeometry } from '../../../../utils/geometry';
 import { LegendItem } from '../../../../chart_types/xy_chart/legend/legend';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
@@ -43,6 +44,7 @@ interface Props {
   geometries: {
     points?: PointGeometry[];
     bars?: BarGeometry[];
+    sectors?: SectorGeometry[];
     areas?: AreaGeometry[];
     lines?: LineGeometry[];
   };
@@ -85,6 +87,35 @@ class Chart extends React.Component<Props> {
         key={'bar-geometries'}
         animated={isChartAnimatable}
         bars={geometries.bars || []}
+        sharedStyle={theme.sharedStyle}
+        highlightedLegendItem={highlightedLegendItem}
+        clippings={clippings}
+      />
+    );
+
+    return [
+      {
+        element,
+        zIndex: 0,
+      },
+    ];
+  };
+
+  renderSectorSeries = (clippings: ContainerConfig): ReactiveChartElementIndex[] => {
+    const { geometries, theme, isChartAnimatable, highlightedLegendItem } = this.props;
+    if (!geometries) {
+      return [];
+    }
+
+    // here we still have access to original data `values` such as a semi-original y value (adding up to 1 when %)
+    // but we already have computed screenspace values for y in eg. geometries.sectors[0].y
+    console.log('In renderSectorSeries:', (geometries.sectors || []).reduce((p, sector) => p + sector.value.y, 0));
+
+    const element = (
+      <SectorGeometries
+        key={'sector-geometries'}
+        animated={isChartAnimatable}
+        sectors={geometries.sectors || []}
         sharedStyle={theme.sharedStyle}
         highlightedLegendItem={highlightedLegendItem}
         clippings={clippings}
@@ -200,10 +231,11 @@ class Chart extends React.Component<Props> {
     };
 
     const bars = this.renderBarSeries(clippings);
+    const sectors = this.renderSectorSeries(clippings);
     const areas = this.renderAreaSeries(clippings);
     const lines = this.renderLineSeries(clippings);
     const annotations: ReactiveChartElementIndex[] = this.renderAnnotations();
-    return [...bars, ...areas, ...lines, ...annotations]
+    return [...bars, ...sectors, ...areas, ...lines, ...annotations]
       .sort((elemIdxA, elemIdxB) => elemIdxA.zIndex - elemIdxB.zIndex)
       .map((elemIdx) => elemIdx.element);
   }

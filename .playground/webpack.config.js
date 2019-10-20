@@ -4,6 +4,7 @@ module.exports = {
   output: {
     filename: 'bundle.js',
     path: __dirname,
+    pathinfo: false,
   },
   module: {
     rules: [
@@ -13,6 +14,8 @@ module.exports = {
         exclude: /node_modules/,
         options: {
           configFile: 'tsconfig.json',
+          transpileOnly: true,
+          experimentalWatchApi: true,
         },
       },
       {
@@ -36,5 +39,10 @@ module.exports = {
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
+  },
+  optimization: {
+    removeAvailableModules: false,
+    removeEmptyChunks: false,
+    splitChunks: false,
   },
 };

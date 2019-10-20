@@ -1,4 +1,4 @@
-import { RectConfig, PathConfig, CircleConfig } from 'konva';
+import { ArcConfig, RectConfig, PathConfig, CircleConfig } from 'konva';
 import {
   AreaStyle,
   LineStyle,
@@ -159,6 +159,59 @@ export function buildBarRenderProps(
 }
 
 /**
+ * Return the rendering props for a sector. The color of the sector will be overwritten
+ * by the fill color of the rectStyle parameter if present
+ * @param x the x position of the rect
+ * @param y the y position of the rect
+ * @param inputWidth the width of the rect
+ * @param inputHeight the height of the rect
+ * @param inputAngle the angle of the sector, in radians
+ * @param inputRotation the start angle of the sector, in radians
+ * @param color the computed color of the rect for this series
+ * @param rectStyle the rect style
+ * @param geometryStyle the highlight geometry style
+ */
+export function buildSectorRenderProps(
+  x: number,
+  y: number,
+  inputWidth: number,
+  inputHeight: number,
+  inputAngle: number,
+  inputRotation: number,
+  color: string,
+  rectStyle: RectStyle,
+  borderStyle: RectBorderStyle,
+  geometryStyle: GeometryStyle,
+): ArcConfig {
+  const opacity = rectStyle.opacity * geometryStyle.opacity;
+  const { stroke, visible, strokeWidth, strokeOpacity = 0 } = borderStyle;
+  const offset = !visible || strokeWidth <= 0 || !stroke || strokeOpacity <= 0 || opacity <= 0 ? 0 : strokeWidth;
+
+  //const width = inputWidth - 2 * offset;
+  //const height = inputHeight - 2 * offset;
+  const tau = 2 * Math.PI;
+  const radianToDegrees = (rad: number) => (360 * rad) / tau;
+  const outerRadius = 120;
+  const innerRadius = outerRadius / 2;
+  const angle = radianToDegrees(inputAngle) - 0.5;
+  const rotation = radianToDegrees(inputRotation) - 90;
+
+  return {
+    x: x + offset,
+    y: y + offset,
+    innerRadius,
+    outerRadius,
+    angle,
+    rotation,
+    fill: rectStyle.fill || color,
+    strokeEnabled: false,
+    ...geometryStyle,
+    opacity, // want to override opactiy of geometryStyle
+    ...GlobalKonvaElementProps,
+  };
+}
+
+/**
  * Return the rendering props for a bar. The color of the bar will be overwritten
  * by the fill color of the rectStyle parameter if present
  * @param x the x position of the rect
@@ -191,6 +244,65 @@ export function buildBarBorderRenderProps(
     y: y + strokeWidth / 2,
     width: width - strokeWidth,
     height: height - strokeWidth,
+    fillEnabled: false,
+    strokeEnabled: true,
+    strokeWidth,
+    stroke,
+    ...geometryStyle,
+    opacity, // want to override opactiy of geometryStyle
+    ...GlobalKonvaElementProps,
+  };
+}
+
+/**
+ * Return the rendering props for a sector. The color of the sector will be overwritten
+ * by the fill color of the rectStyle parameter if present
+ * @param x the x position of the rect
+ * @param y the y position of the rect
+ * @param inputWidth the width of the rect
+ * @param inputHeight the height of the rect
+ * @param inputAngle the angle of the sector, in radians
+ * @param inputRotation the start angle of the sector, in radians
+ * @param color the computed color of the rect for this series
+ * @param rectStyle the rect style
+ * @param borderStyle the border rect style
+ * @param geometryStyle the highlight geometry style
+ */
+export function buildSectorBorderRenderProps(
+  x: number,
+  y: number,
+  inputWidth: number,
+  inputHeight: number,
+  inputAngle: number,
+  inputRotation: number,
+  rectStyle: RectStyle,
+  borderStyle: RectBorderStyle,
+  geometryStyle: GeometryStyle,
+): ArcConfig | null {
+  const { stroke, visible, strokeWidth, strokeOpacity = rectStyle.opacity } = borderStyle;
+  const opacity = strokeOpacity * geometryStyle.opacity;
+
+  if (!visible || strokeWidth <= 0 || !stroke || opacity <= 0) {
+    return null;
+  }
+
+  //const width = inputWidth - strokeWidth;
+  //const height = inputHeight - strokeWidth;
+
+  //const tau = 2 * Math.PI;
+  //const radianToDegrees = (rad: number) => (360 * rad) / tau;
+  const innerRadius = 0;
+  const outerRadius = 100;
+  const angle = inputAngle;
+  const rotation = inputRotation;
+
+  return {
+    x: x + strokeWidth / 2,
+    y: y + strokeWidth / 2,
+    innerRadius,
+    outerRadius,
+    angle,
+    rotation,
     fillEnabled: false,
     strokeEnabled: true,
     strokeWidth,

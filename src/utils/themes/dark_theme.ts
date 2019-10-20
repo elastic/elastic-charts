@@ -61,6 +61,24 @@ export const DARK_THEME: Theme = {
       offsetY: 0,
     },
   },
+  sectorSeriesStyle: {
+    rect: {
+      opacity: 1,
+    },
+    rectBorder: {
+      visible: false,
+      strokeWidth: 0,
+    },
+    displayValue: {
+      fontSize: 8,
+      fontStyle: 'normal',
+      fontFamily: 'sans-serif',
+      padding: 0,
+      fill: '#999',
+      offsetX: 0,
+      offsetY: 0,
+    },
+  },
   arcSeriesStyle: {
     arc: {
       visible: true,

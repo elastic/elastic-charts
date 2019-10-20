@@ -37,6 +37,7 @@ export const ScaleType = Object.freeze({
   Log: 'log' as 'log',
   Sqrt: 'sqrt' as 'sqrt',
   Time: 'time' as 'time',
+  Polar: 'polar' as 'polar',
 });
 
 export type ScaleType =
@@ -44,7 +45,8 @@ export type ScaleType =
   | typeof ScaleType.Sqrt
   | typeof ScaleType.Log
   | typeof ScaleType.Time
-  | typeof ScaleType.Ordinal;
+  | typeof ScaleType.Ordinal
+  | typeof ScaleType.Polar;
 
 export interface ScaleConfig {
   accessor: (value: any) => any;
@@ -57,6 +59,7 @@ export type ScaleContinuousType =
   | typeof ScaleType.Linear
   | typeof ScaleType.Sqrt
   | typeof ScaleType.Log
-  | typeof ScaleType.Time;
+  | typeof ScaleType.Time
+  | typeof ScaleType.Polar;
 export type ScaleOrdinalType = typeof ScaleType.Ordinal;
 export type ScaleTypes = ScaleContinuousType | ScaleOrdinalType;

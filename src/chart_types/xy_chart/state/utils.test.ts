@@ -298,6 +298,7 @@ describe('Chart State utils', () => {
     const geometriesCounts = {
       points: 0,
       bars: 0,
+      sectors: 0,
       areas: 0,
       areasPoints: 0,
       lines: 0,

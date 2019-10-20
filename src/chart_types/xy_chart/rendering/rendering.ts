@@ -8,6 +8,7 @@ import {
   BarSeriesStyle,
   GeometryStyle,
   PointStyle,
+  SectorSeriesStyle,
 } from '../../../utils/themes/theme';
 import { SpecId } from '../../../utils/ids';
 import { isLogarithmicScale } from '../../../utils/scales/scale_continuous';
@@ -15,7 +16,7 @@ import { Scale, ScaleType } from '../../../utils/scales/scales';
 import { CurveType, getCurveFactory } from '../../../utils/curves';
 import { DataSeriesDatum } from '../utils/series';
 import { belongsToDataSeries } from '../utils/series_utils';
-import { DisplayValueSpec, PointStyleAccessor, BarStyleAccessor } from '../utils/specs';
+import { DisplayValueSpec, PointStyleAccessor, BarStyleAccessor, SectorStyleAccessor } from '../utils/specs';
 import {
   IndexedGeometry,
   PointGeometry,
@@ -25,6 +26,7 @@ import {
   GeometryId,
   isPointGeometry,
   AccessorType,
+  SectorGeometry,
 } from '../../../utils/geometry';
 import { mergePartial } from '../../../utils/commons';
 import { LegendItem } from '../legend/legend';
@@ -69,6 +71,33 @@ export function getBarStyleOverrides(
   seriesStyle: BarSeriesStyle,
   styleAccessor?: BarStyleAccessor,
 ): BarSeriesStyle {
+  const styleOverride = styleAccessor && styleAccessor(datum, geometryId);
+
+  if (!styleOverride) {
+    return seriesStyle;
+  }
+
+  if (typeof styleOverride === 'string') {
+    return {
+      ...seriesStyle,
+      rect: {
+        ...seriesStyle.rect,
+        fill: styleOverride,
+      },
+    };
+  }
+
+  return mergePartial(seriesStyle, styleOverride, {
+    mergeOptionalPartialValues: true,
+  });
+}
+
+export function getSectorStyleOverrides(
+  datum: DataSeriesDatum,
+  geometryId: GeometryId,
+  seriesStyle: SectorSeriesStyle,
+  styleAccessor?: SectorStyleAccessor,
+): SectorSeriesStyle {
   const styleOverride = styleAccessor && styleAccessor(datum, geometryId);
 
   if (!styleOverride) {
@@ -295,6 +324,242 @@ export function renderBars(
 
   return {
     barGeometries,
+    indexedGeometries,
+  };
+}
+
+export function renderSectors(
+  orderIndex: number,
+  dataset: DataSeriesDatum[],
+  xScale: Scale,
+  yScale: Scale,
+  color: string,
+  specId: SpecId,
+  seriesKey: any[],
+  sharedSeriesStyle: SectorSeriesStyle,
+  displayValueSettings?: DisplayValueSpec,
+  styleAccessor?: SectorStyleAccessor,
+): {
+  sectorGeometries: SectorGeometry[];
+  indexedGeometries: Map<any, IndexedGeometry[]>;
+} {
+  const indexedGeometries: Map<any, IndexedGeometry[]> = new Map();
+  const sectorGeometries: SectorGeometry[] = [];
+
+  const bboxCalculator = new CanvasTextBBoxCalculator();
+
+  // default padding to 1 for now
+  const padding = 1;
+  const fontSize = sharedSeriesStyle.displayValue.fontSize;
+  const fontFamily = sharedSeriesStyle.displayValue.fontFamily;
+
+  dataset.forEach((datum) => {
+    const { y0, y1, initialY1, filled } = datum;
+    // don't create a sector if the initialY1 value is null.
+    if (y1 === null || initialY1 === null || (filled && filled.y1 !== undefined)) {
+      return;
+    }
+    // don't create a sector if not within the xScale domain
+    if (!xScale.isValueInDomain(datum.x)) {
+      return;
+    }
+
+    let y = 0;
+    let y0Scaled;
+    if (yScale.type === ScaleType.Polar) {
+      y = yScale.scale(y1);
+      if (yScale.isInverted) {
+        // use always zero as baseline if y0 is null
+        y0Scaled = y0 === null ? yScale.scale(0) : yScale.scale(y0);
+      } else {
+        y0Scaled = y0 === null ? yScale.scale(0) : yScale.scale(y0);
+      }
+
+      const height = y0Scaled - y;
+
+      const x = xScale.scale(datum.x) + xScale.bandwidth * orderIndex;
+      const width = xScale.bandwidth;
+      const centerX = x + width / 2;
+      //const centerY = y + height / 2;
+
+      const formattedDisplayValue =
+        displayValueSettings && displayValueSettings.valueFormatter
+          ? displayValueSettings.valueFormatter(initialY1)
+          : undefined;
+
+      // only show displayValue for even sectors if showOverlappingValue
+      const displayValueText =
+        displayValueSettings && displayValueSettings.isAlternatingValueLabel
+          ? sectorGeometries.length % 2 === 0
+            ? formattedDisplayValue
+            : undefined
+          : formattedDisplayValue;
+
+      const computedDisplayValueWidth = bboxCalculator
+        .compute(displayValueText || '', padding, fontSize, fontFamily)
+        .getOrElse({
+          width: 0,
+          height: 0,
+        }).width;
+      const displayValueWidth =
+        displayValueSettings && displayValueSettings.isValueContainedInElement ? width : computedDisplayValueWidth;
+
+      const hideClippedValue = displayValueSettings ? displayValueSettings.hideClippedValue : undefined;
+
+      const displayValue =
+        displayValueSettings && displayValueSettings.showValueLabel
+          ? {
+              text: displayValueText,
+              width: displayValueWidth,
+              height: fontSize,
+              hideClippedValue,
+              isValueContainedInElement: displayValueSettings.isValueContainedInElement,
+            }
+          : undefined;
+
+      const geometryId = {
+        specId,
+        seriesKey,
+      };
+
+      const seriesStyle = getSectorStyleOverrides(datum, geometryId, sharedSeriesStyle, styleAccessor);
+
+      const diameter = Math.min(width, height);
+      const radius = diameter / 2;
+
+      const tau = 2 * Math.PI;
+
+      const rotation0to1 = y0 || 0;
+      const angle0to1 = y1 - rotation0to1;
+      const angle = angle0to1 * tau;
+      const rotation = rotation0to1 * tau;
+
+      console.log('a, r:', angle0to1, rotation0to1);
+
+      const sectorGeometry: SectorGeometry = {
+        displayValue,
+        x: centerX,
+        y: yScale.scale(0.5), // top most value
+        width: diameter,
+        height: diameter,
+        angle,
+        rotation,
+        color,
+        value: {
+          x: datum.x,
+          y: initialY1,
+          accessor: AccessorType.Y1,
+        },
+        geometryId,
+        seriesStyle,
+      };
+
+      // this line seems to be responsible for populating data needed for hover / tooltip lookup
+      // (no tooltip or bar coloring without it)
+      mutableIndexedGeometryMapUpsert(indexedGeometries, datum.x, {
+        ...sectorGeometry,
+        x: sectorGeometry.x - radius, // fixme temporary override, put in as indexedGeometries now assumes a rectangle
+        y: sectorGeometry.y - radius, // fixme temporary override, put in as indexedGeometries now assumes a rectangle
+      });
+
+      // this line seems to be responsible for insertion of the data point into the viewModel for later rendering
+      // (data ink doesn't show up without it)
+      sectorGeometries.push(sectorGeometry);
+      return;
+    } else if (yScale.type === ScaleType.Log) {
+      y = y1 === 0 || y1 === null ? yScale.range[0] : yScale.scale(y1);
+      if (yScale.isInverted) {
+        y0Scaled = y0 === 0 || y0 === null ? yScale.range[1] : yScale.scale(y0);
+      } else {
+        y0Scaled = y0 === 0 || y0 === null ? yScale.range[0] : yScale.scale(y0);
+      }
+    } /* else if (yScale.type === ScaleType.Linear)*/ else {
+      y = yScale.scale(y1);
+      if (yScale.isInverted) {
+        // use always zero as baseline if y0 is null
+        y0Scaled = y0 === null ? yScale.scale(0) : yScale.scale(y0);
+      } else {
+        y0Scaled = y0 === null ? yScale.scale(0) : yScale.scale(y0);
+      }
+    }
+    const height = y0Scaled - y;
+
+    const x = xScale.scale(datum.x) + xScale.bandwidth * orderIndex;
+    const width = xScale.bandwidth;
+
+    const formattedDisplayValue =
+      displayValueSettings && displayValueSettings.valueFormatter
+        ? displayValueSettings.valueFormatter(initialY1)
+        : undefined;
+
+    // only show displayValue for even sectors if showOverlappingValue
+    const displayValueText =
+      displayValueSettings && displayValueSettings.isAlternatingValueLabel
+        ? sectorGeometries.length % 2 === 0
+          ? formattedDisplayValue
+          : undefined
+        : formattedDisplayValue;
+
+    const computedDisplayValueWidth = bboxCalculator
+      .compute(displayValueText || '', padding, fontSize, fontFamily)
+      .getOrElse({
+        width: 0,
+        height: 0,
+      }).width;
+    const displayValueWidth =
+      displayValueSettings && displayValueSettings.isValueContainedInElement ? width : computedDisplayValueWidth;
+
+    const hideClippedValue = displayValueSettings ? displayValueSettings.hideClippedValue : undefined;
+
+    const displayValue =
+      displayValueSettings && displayValueSettings.showValueLabel
+        ? {
+            text: displayValueText,
+            width: displayValueWidth,
+            height: fontSize,
+            hideClippedValue,
+            isValueContainedInElement: displayValueSettings.isValueContainedInElement,
+          }
+        : undefined;
+
+    const geometryId = {
+      specId,
+      seriesKey,
+    };
+
+    const seriesStyle = getSectorStyleOverrides(datum, geometryId, sharedSeriesStyle, styleAccessor);
+
+    const sectorGeometry: SectorGeometry = {
+      displayValue,
+      x,
+      y, // top most value
+      width,
+      height,
+      angle: 0, // todo placeholder or remove entire code block
+      rotation: 0, // todo placeholder or remove entire code block
+      color,
+      value: {
+        x: datum.x,
+        y: initialY1,
+        accessor: AccessorType.Y1,
+      },
+      geometryId,
+      seriesStyle,
+    };
+
+    // this line seems to be responsible for populating data needed for hover / tooltip lookup
+    // (no tooltip or bar coloring without it)
+    mutableIndexedGeometryMapUpsert(indexedGeometries, datum.x, sectorGeometry);
+
+    // this line seems to be responsible for insertion of the data point into the viewModel for later rendering
+    // (data ink doesn't show up without it)
+    sectorGeometries.push(sectorGeometry);
+  });
+
+  bboxCalculator.destroy();
+
+  return {
+    sectorGeometries,
     indexedGeometries,
   };
 }
