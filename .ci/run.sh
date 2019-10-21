@@ -95,7 +95,7 @@ yarn install --frozen-lockfile
 ### install codecov dependencies
 ###
 echo " -- installing codecov dependencies"
-yarn add codecov --prefer-offline
+yarn add codecov --prefer-offline --frozen-lockfile
 
 ###
 ### building
