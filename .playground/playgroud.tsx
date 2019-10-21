@@ -1,5 +1,5 @@
 import React from 'react';
-import { Axis, Chart, getAxisId, getSpecId, Position, ScaleType, Settings, AreaSeries, DataGenerator } from '../src';
+import { Axis, Chart, getAxisId, getSpecId, Position, ScaleType, Settings, LineSeries, DataGenerator } from '../src';
 import { Fit } from '../src/chart_types/xy_chart/utils/specs';
 
 const dg = new DataGenerator();
@@ -19,10 +19,6 @@ const data = [
   { x: 11, y: 12 },
   { x: 12, y: null },
 ];
-
-const data1 = dg.generateSimpleSeries();
-
-console.log(data1);
 
 export class Playground extends React.Component {
   render() {
@@ -47,7 +43,7 @@ export class Playground extends React.Component {
               showOverlappingTicks={true}
             />
             <Axis id={getAxisId('left')} title={'Left axis'} position={Position.Left} />
-            <AreaSeries
+            <LineSeries
               id={getSpecId('test')}
               xScaleType={ScaleType.Linear}
               yScaleType={ScaleType.Linear}
@@ -57,7 +53,7 @@ export class Playground extends React.Component {
               // splitSeriesAccessors={['g']}
               // stackAccessors={['x']}
               fit={Fit.Linear}
-              data={data1}
+              data={data}
               // fit={{
               //   type: Fit.Average,
               //   endValue: 0,

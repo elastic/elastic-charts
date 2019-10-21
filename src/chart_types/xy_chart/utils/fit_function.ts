@@ -15,7 +15,7 @@ export type BoundingFit = Exclude<Fit, 'none' | 'explicit'>;
 export type FullDataSeriesDatum = Omit<DataSeriesDatum, 'y1' | 'x'> &
   DeepNonNullable<Pick<DataSeriesDatum, 'y1' | 'x'>>;
 
-function getValue(
+export function getValue(
   current: DataSeriesDatum,
   previous: FullDataSeriesDatum | null,
   next: FullDataSeriesDatum | null,
@@ -89,8 +89,8 @@ function getValue(
   };
 }
 
-function parseConfig(config: Exclude<Fit, 'explicit'> | FitConfig): FitConfig {
-  if (config === null) {
+export function parseConfig(config?: Exclude<Fit, 'explicit'> | FitConfig): FitConfig {
+  if (!config) {
     return {
       type: Fit.None,
     };

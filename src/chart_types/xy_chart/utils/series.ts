@@ -52,7 +52,7 @@ export interface DataSeries {
   seriesColorKey: string;
   data: DataSeriesDatum[];
   /**
-   * Ranges of [x0, x1] pairs to clip from series
+   * Ranges of `[x0, x1]` pairs to clip from series
    */
   clippedRanges?: DataSeriesDatum[];
 }
