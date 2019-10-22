@@ -300,9 +300,9 @@ export interface AxisSpec {
   integersOnly?: boolean;
 }
 
-export type TickFormatterOptions = Partial<{
-  timeZone: string;
-}>;
+export type TickFormatterOptions = {
+  timeZone?: string;
+};
 export type TickFormatter = (value: any, options?: TickFormatterOptions) => string;
 
 export interface AxisStyle {

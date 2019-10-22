@@ -2,7 +2,7 @@ import { DateTime, Interval } from 'luxon';
 import { TickFormatter, TickFormatterOptions } from '../../chart_types/xy_chart/utils/specs';
 
 export function timeFormatter(format: string): TickFormatter {
-  return (value: number, options?: Partial<TickFormatterOptions>): string => {
+  return (value: number, options?: TickFormatterOptions): string => {
     const dateTimeOptions = options && options.timeZone ? { zone: options.timeZone } : undefined;
     return DateTime.fromMillis(value, dateTimeOptions).toFormat(format);
   };
