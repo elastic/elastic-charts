@@ -9,6 +9,7 @@ import {
   getSplittedSeries,
   RawDataSeries,
   splitSeries,
+  SeriesIdentifier,
 } from './series';
 import { BasicSeriesSpec } from './specs';
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
@@ -16,73 +17,62 @@ import * as TestDataset from '../../../utils/data_samples/test_dataset';
 
 describe('Series', () => {
   test('Can split dataset into 1Y0G series', () => {
-    const splittedSeries = splitSeries(
-      TestDataset.BARCHART_1Y0G,
-      {
-        xAccessor: 'x',
-        yAccessors: ['y'],
-      },
-      getSpecId('spec1'),
-    );
+    const splittedSeries = splitSeries({
+      id: getSpecId('spec1'),
+      data: TestDataset.BARCHART_1Y0G,
+      xAccessor: 'x',
+      yAccessors: ['y1'],
+      splitSeriesAccessors: ['y'],
+    });
+
     expect(splittedSeries.rawDataSeries).toMatchSnapshot();
   });
   test('Can split dataset into 1Y1G series', () => {
-    const splittedSeries = splitSeries(
-      TestDataset.BARCHART_1Y1G,
-      {
-        xAccessor: 'x',
-        yAccessors: ['y'],
-        splitSeriesAccessors: ['g'],
-      },
-      getSpecId('spec1'),
-    );
+    const splittedSeries = splitSeries({
+      id: getSpecId('spec1'),
+      data: TestDataset.BARCHART_1Y1G,
+      xAccessor: 'x',
+      yAccessors: ['y'],
+    });
     expect(splittedSeries.rawDataSeries).toMatchSnapshot();
   });
   test('Can split dataset into 1Y2G series', () => {
-    const splittedSeries = splitSeries(
-      TestDataset.BARCHART_1Y2G,
-      {
-        xAccessor: 'x',
-        yAccessors: ['y'],
-        splitSeriesAccessors: ['g1', 'g2'],
-      },
-      getSpecId('spec1'),
-    );
+    const splittedSeries = splitSeries({
+      id: getSpecId('spec1'),
+      data: TestDataset.BARCHART_1Y2G,
+      xAccessor: 'x',
+      yAccessors: ['y'],
+      splitSeriesAccessors: ['g1', 'g2'],
+    });
     expect(splittedSeries.rawDataSeries).toMatchSnapshot();
   });
   test('Can split dataset into 2Y0G series', () => {
-    const splittedSeries = splitSeries(
-      TestDataset.BARCHART_2Y0G,
-      {
-        xAccessor: 'x',
-        yAccessors: ['y1', 'y2'],
-      },
-      getSpecId('spec1'),
-    );
+    const splittedSeries = splitSeries({
+      id: getSpecId('spec1'),
+      data: TestDataset.BARCHART_2Y0G,
+      xAccessor: 'x',
+      yAccessors: ['y1', 'y2'],
+    });
     expect(splittedSeries.rawDataSeries).toMatchSnapshot();
   });
   test('Can split dataset into 2Y1G series', () => {
-    const splittedSeries = splitSeries(
-      TestDataset.BARCHART_2Y1G,
-      {
-        xAccessor: 'x',
-        yAccessors: ['y1', 'y2'],
-        splitSeriesAccessors: ['g'],
-      },
-      getSpecId('spec1'),
-    );
+    const splittedSeries = splitSeries({
+      id: getSpecId('spec1'),
+      data: TestDataset.BARCHART_2Y1G,
+      xAccessor: 'x',
+      yAccessors: ['y1', 'y2'],
+      splitSeriesAccessors: ['g'],
+    });
     expect(splittedSeries.rawDataSeries).toMatchSnapshot();
   });
   test('Can split dataset into 2Y2G series', () => {
-    const splittedSeries = splitSeries(
-      TestDataset.BARCHART_2Y2G,
-      {
-        xAccessor: 'x',
-        yAccessors: ['y1', 'y2'],
-        splitSeriesAccessors: ['g1', 'g2'],
-      },
-      getSpecId('spec1'),
-    );
+    const splittedSeries = splitSeries({
+      id: getSpecId('spec1'),
+      data: TestDataset.BARCHART_2Y2G,
+      xAccessor: 'x',
+      yAccessors: ['y1', 'y2'],
+      splitSeriesAccessors: ['g1', 'g2'],
+    });
     expect(splittedSeries.rawDataSeries).toMatchSnapshot();
   });
   test('Can stack simple dataseries', () => {
@@ -360,7 +350,7 @@ describe('Series', () => {
     };
     seriesSpecs.set(spec1.id, spec1);
     seriesSpecs.set(spec2.id, spec2);
-    const splittedDataSeries = getSplittedSeries(seriesSpecs);
+    const splittedDataSeries = getSplittedSeries(seriesSpecs, []);
     expect(splittedDataSeries.splittedSeries.get(getSpecId('spec1'))).toMatchSnapshot();
     expect(splittedDataSeries.splittedSeries.get(getSpecId('spec2'))).toMatchSnapshot();
   });
@@ -394,7 +384,7 @@ describe('Series', () => {
     const xValues = new Set([0, 1, 2, 3]);
     seriesSpecs.set(spec1.id, spec1);
     seriesSpecs.set(spec2.id, spec2);
-    const splittedDataSeries = getSplittedSeries(seriesSpecs);
+    const splittedDataSeries = getSplittedSeries(seriesSpecs, []);
     const stackedDataSeries = getFormattedDataseries(
       [spec1, spec2],
       splittedDataSeries.splittedSeries,
@@ -421,8 +411,13 @@ describe('Series', () => {
     specs.set(spec1.id, spec1);
 
     const dataSeriesValuesA: SeriesCollectionValue = {
-      specId: getSpecId('spec1'),
-      colorValues: ['a', 'b', 'c'],
+      seriesIdentifier: {
+        specId: getSpecId('spec1'),
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['a', 'b', 'c'],
+        key: '',
+      },
     };
 
     const chartColors: ColorConfig = {
@@ -468,18 +463,22 @@ describe('Series', () => {
 
     seriesSpecs.set(splitSpec.id, splitSpec);
 
-    const allSeries = getSplittedSeries(seriesSpecs, null);
+    const allSeries = getSplittedSeries(seriesSpecs, []);
     expect(allSeries.splittedSeries.get(specId)!.length).toBe(2);
 
     const emptyDeselected = getSplittedSeries(seriesSpecs, []);
     expect(emptyDeselected.splittedSeries.get(specId)!.length).toBe(2);
 
-    const deselectedDataSeries: SeriesCollectionValue[] = [
+    const deselectedDataSeries: SeriesIdentifier[] = [
       {
         specId,
-        colorValues: ['y1'],
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['y1'],
+        key: '',
       },
     ];
+
     const subsetSplit = getSplittedSeries(seriesSpecs, deselectedDataSeries);
     expect(subsetSplit.splittedSeries.get(specId)!.length).toBe(1);
   });
@@ -491,20 +490,35 @@ describe('Series', () => {
 
     const seriesCollection = new Map();
     const dataSeriesValues1: SeriesCollectionValue = {
-      specId: spec1Id,
-      colorValues: [],
+      seriesIdentifier: {
+        specId: spec1Id,
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: [],
+        key: '',
+      },
       specSortIndex: 0,
     };
 
     const dataSeriesValues2: SeriesCollectionValue = {
-      specId: spec2Id,
-      colorValues: [],
+      seriesIdentifier: {
+        specId: spec2Id,
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: [],
+        key: '',
+      },
       specSortIndex: 1,
     };
 
     const dataSeriesValues3: SeriesCollectionValue = {
-      specId: spec3Id,
-      colorValues: [],
+      seriesIdentifier: {
+        specId: spec3Id,
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: [],
+        key: '',
+      },
       specSortIndex: 3,
     };
 

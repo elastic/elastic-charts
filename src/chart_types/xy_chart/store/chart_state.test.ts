@@ -43,9 +43,12 @@ describe('Chart Store', () => {
     key: 'color1',
     color: 'foo',
     label: 'bar',
-    value: {
+    seriesIdentifier: {
       specId: SPEC_ID,
-      colorValues: [],
+      yAccessor: '',
+      splitAccessors: new Map(),
+      seriesKeys: [],
+      key: '',
     },
     displayValue: {
       raw: {
@@ -63,9 +66,12 @@ describe('Chart Store', () => {
     key: 'color2',
     color: 'baz',
     label: 'qux',
-    value: {
+    seriesIdentifier: {
       specId: SPEC_ID,
-      colorValues: [],
+      yAccessor: '',
+      splitAccessors: new Map(),
+      seriesKeys: [],
+      key: '',
     },
     displayValue: {
       raw: {
@@ -295,7 +301,7 @@ describe('Chart Store', () => {
 
     store.setOnLegendItemOverListener(legendListener);
     store.onLegendItemOver(secondLegendItem.key);
-    expect(legendListener).toBeCalledWith(secondLegendItem.value);
+    expect(legendListener).toBeCalledWith(secondLegendItem.seriesIdentifier.seriesKeys);
 
     store.onLegendItemOver(null);
     expect(legendListener).toBeCalledWith(null);
@@ -346,7 +352,7 @@ describe('Chart Store', () => {
     // store.setOnLegendItemClickListener(legendListener);
     // store.onLegendItemClick(secondLegendItem.key);
     // expect(store.selectedLegendItemKey.get()).toBe(secondLegendItem.key);
-    expect(legendListener).toBeCalledWith(secondLegendItem.value);
+    expect(legendListener).toBeCalledWith(secondLegendItem.seriesIdentifier.seriesKeys);
   });
 
   test('can respond to a legend item plus click event', () => {
@@ -369,7 +375,7 @@ describe('Chart Store', () => {
 
     store.selectedLegendItemKey.set(firstLegendItem.key);
     store.onLegendItemPlusClick();
-    expect(legendListener).toBeCalledWith(firstLegendItem.value);
+    expect(legendListener).toBeCalledWith(firstLegendItem.seriesIdentifier.seriesKeys);
   });
 
   test('can respond to a legend item minus click event', () => {
@@ -392,7 +398,7 @@ describe('Chart Store', () => {
 
     store.selectedLegendItemKey.set(firstLegendItem.key);
     store.onLegendItemMinusClick();
-    expect(legendListener).toBeCalledWith(firstLegendItem.value);
+    expect(legendListener).toBeCalledWith(firstLegendItem.seriesIdentifier.seriesKeys);
   });
 
   test('can toggle series visibility', () => {
@@ -403,19 +409,19 @@ describe('Chart Store', () => {
     );
 
     store.legendItems = new Map([[firstLegendItem.key, firstLegendItem], [secondLegendItem.key, secondLegendItem]]);
-    store.deselectedDataSeries = null;
+    store.deselectedDataSeries = [];
     store.computeChart = computeChart;
 
     store.toggleSeriesVisibility('other');
     expect(store.deselectedDataSeries).toEqual(null);
     expect(computeChart).not.toBeCalled();
 
-    store.deselectedDataSeries = [firstLegendItem.value, secondLegendItem.value];
+    store.deselectedDataSeries = [firstLegendItem.seriesIdentifier, secondLegendItem.seriesIdentifier];
     store.toggleSeriesVisibility(firstLegendItem.key);
-    expect(store.deselectedDataSeries).toEqual([secondLegendItem.value]);
+    expect(store.deselectedDataSeries).toEqual([secondLegendItem.seriesIdentifier.seriesKeys]);
     expect(computeChart).toBeCalled();
 
-    store.deselectedDataSeries = [firstLegendItem.value];
+    store.deselectedDataSeries = [firstLegendItem.seriesIdentifier];
     store.toggleSeriesVisibility(firstLegendItem.key);
     expect(store.deselectedDataSeries).toEqual([]);
   });
@@ -428,7 +434,7 @@ describe('Chart Store', () => {
     );
 
     store.legendItems = new Map([[firstLegendItem.key, firstLegendItem], [secondLegendItem.key, secondLegendItem]]);
-    store.deselectedDataSeries = null;
+    store.deselectedDataSeries = [];
     store.computeChart = computeChart;
 
     store.toggleSingleSeries('other');
@@ -436,10 +442,10 @@ describe('Chart Store', () => {
     expect(computeChart).not.toBeCalled();
 
     store.toggleSingleSeries(firstLegendItem.key);
-    expect(store.deselectedDataSeries).toEqual([firstLegendItem.value]);
+    expect(store.deselectedDataSeries).toEqual([firstLegendItem.seriesIdentifier.seriesKeys]);
 
     store.toggleSingleSeries(firstLegendItem.key);
-    expect(store.deselectedDataSeries).toEqual([secondLegendItem.value]);
+    expect(store.deselectedDataSeries).toEqual([secondLegendItem.seriesIdentifier.seriesKeys]);
   });
 
   test('can set an element click listener', () => {
@@ -715,25 +721,25 @@ describe('Chart Store', () => {
 
     store.setSeriesColor('other', 'foo');
     expect(computeChart).not.toBeCalled();
-    expect(store.customSeriesColors).toEqual(new Map());
+    expect(store.seriesColors).toEqual(new Map());
 
     store.setSeriesColor(firstLegendItem.key, 'foo');
     expect(computeChart).toBeCalled();
-    expect(store.seriesSpecs.get(firstLegendItem.value.specId)).toBeUndefined();
+    expect(store.seriesSpecs.get(firstLegendItem.seriesIdentifier.specId)).toBeUndefined();
 
     store.addSeriesSpec(spec);
     store.setSeriesColor(firstLegendItem.key, 'foo');
     const expectedSpecCustomColorSeries = new Map();
-    expectedSpecCustomColorSeries.set(firstLegendItem.value, 'foo');
+    expectedSpecCustomColorSeries.set(firstLegendItem.seriesIdentifier.seriesKeys, 'foo');
     expect(spec.customSeriesColors).toEqual(expectedSpecCustomColorSeries);
 
     store.setSeriesColor(secondLegendItem.key, 'bar');
-    expectedSpecCustomColorSeries.set(secondLegendItem.value, 'bar');
+    expectedSpecCustomColorSeries.set(secondLegendItem.seriesIdentifier.seriesKeys, 'bar');
     expect(spec.customSeriesColors).toEqual(expectedSpecCustomColorSeries);
   });
 
   test('can reset selectedDataSeries', () => {
-    store.deselectedDataSeries = [firstLegendItem.value];
+    store.deselectedDataSeries = [firstLegendItem.seriesIdentifier];
     store.resetDeselectedDataSeries();
     expect(store.deselectedDataSeries).toBe(null);
   });
@@ -923,6 +929,7 @@ describe('Chart Store', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [2],
+        key: '',
       },
       value: {
         x: 0,
@@ -942,6 +949,7 @@ describe('Chart Store', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [2],
+        key: '',
       },
       value: {
         x: 0,
@@ -1126,6 +1134,7 @@ describe('Chart Store', () => {
           yAccessor: 'y1',
           splitAccessors: new Map(),
           seriesKeys: [2],
+          key: '',
         },
         value: {
           x: 0,

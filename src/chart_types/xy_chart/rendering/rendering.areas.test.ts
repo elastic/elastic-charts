@@ -26,7 +26,7 @@ describe('Rendering points - areas', () => {
     };
     const pointSeriesMap = new Map<SpecId, AreaSeriesSpec>();
     pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
-    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
+    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map(), undefined);
     const xScale = computeXScale({
       xDomain: pointSeriesDomains.xDomain,
       totalBarsInCluster: pointSeriesMap.size,
@@ -80,7 +80,7 @@ describe('Rendering points - areas', () => {
     };
     const pointSeriesMap = new Map<SpecId, AreaSeriesSpec>();
     pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
-    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
+    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map(), undefined);
     const xScale = computeXScale({
       xDomain: pointSeriesDomains.xDomain,
       totalBarsInCluster: pointSeriesMap.size,
@@ -154,6 +154,7 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: '',
         },
         value: {
           accessor: 'y1',
@@ -196,7 +197,7 @@ describe('Rendering points - areas', () => {
     const pointSeriesMap = new Map<SpecId, AreaSeriesSpec>();
     pointSeriesMap.set(spec1Id, pointSeriesSpec1);
     pointSeriesMap.set(spec2Id, pointSeriesSpec2);
-    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
+    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map(), undefined);
     const xScale = computeXScale({
       xDomain: pointSeriesDomains.xDomain,
       totalBarsInCluster: pointSeriesMap.size,
@@ -269,6 +270,7 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: '',
         },
         value: {
           accessor: 'y1',
@@ -319,6 +321,7 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -340,6 +343,7 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: '',
         },
         value: {
           accessor: 'y1',
@@ -368,7 +372,7 @@ describe('Rendering points - areas', () => {
     };
     const pointSeriesMap = new Map<SpecId, AreaSeriesSpec>();
     pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
-    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
+    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map(), undefined);
     const xScale = computeXScale({
       xDomain: pointSeriesDomains.xDomain,
       totalBarsInCluster: pointSeriesMap.size,
@@ -438,6 +442,7 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: '',
         },
         value: {
           accessor: 'y1',
@@ -480,7 +485,7 @@ describe('Rendering points - areas', () => {
     const pointSeriesMap = new Map<SpecId, AreaSeriesSpec>();
     pointSeriesMap.set(spec1Id, pointSeriesSpec1);
     pointSeriesMap.set(spec2Id, pointSeriesSpec2);
-    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
+    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map(), undefined);
     const xScale = computeXScale({
       xDomain: pointSeriesDomains.xDomain,
       totalBarsInCluster: pointSeriesMap.size,
@@ -552,6 +557,7 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: '',
         },
         value: {
           accessor: 'y1',
@@ -573,6 +579,7 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: '',
         },
         value: {
           accessor: 'y1',
@@ -602,6 +609,7 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: '',
         },
         value: {
           accessor: 'y1',
@@ -623,6 +631,7 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: '',
         },
         value: {
           accessor: 'y1',
@@ -651,7 +660,7 @@ describe('Rendering points - areas', () => {
     };
     const pointSeriesMap = new Map<SpecId, AreaSeriesSpec>();
     pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
-    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
+    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map(), undefined);
     const xScale = computeXScale({
       xDomain: pointSeriesDomains.xDomain,
       totalBarsInCluster: pointSeriesMap.size,
@@ -700,6 +709,7 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -721,6 +731,7 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -763,7 +774,7 @@ describe('Rendering points - areas', () => {
     const pointSeriesMap = new Map<SpecId, AreaSeriesSpec>();
     pointSeriesMap.set(spec1Id, pointSeriesSpec1);
     pointSeriesMap.set(spec2Id, pointSeriesSpec2);
-    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
+    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map(), undefined);
     const xScale = computeXScale({
       xDomain: pointSeriesDomains.xDomain,
       totalBarsInCluster: pointSeriesMap.size,
@@ -820,6 +831,7 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: 'spec{point1}yAccessor{null}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -841,6 +853,7 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: 'spec{point1}yAccessor{null}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -870,6 +883,7 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: 'spec{point2}yAccessor{null}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -891,6 +905,7 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: 'spec{point2}yAccessor{null}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -919,7 +934,7 @@ describe('Rendering points - areas', () => {
     };
     const pointSeriesMap = new Map<SpecId, AreaSeriesSpec>();
     pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
-    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
+    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map(), undefined);
     const xScale = computeXScale({
       xDomain: pointSeriesDomains.xDomain,
       totalBarsInCluster: pointSeriesMap.size,

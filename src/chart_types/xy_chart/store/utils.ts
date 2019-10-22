@@ -179,11 +179,12 @@ export function getLastValues(formattedDataSeries: {
 export function computeSeriesDomains(
   seriesSpecs: Map<SpecId, BasicSeriesSpec>,
   customYDomainsByGroupId: Map<GroupId, DomainRange>,
-  deselectedDataSeries: SeriesIdentifier[],
+  deselectedDataSeries: SeriesIdentifier[] | undefined,
   customXDomain?: DomainRange | Domain,
 ): SeriesDomainsAndData {
-  const { splittedSeries, xValues, seriesCollection } = getSplittedSeries(seriesSpecs, deselectedDataSeries);
-
+  const { splittedSeries, xValues, seriesCollection } = deselectedDataSeries
+    ? getSplittedSeries(seriesSpecs, deselectedDataSeries)
+    : getSplittedSeries(seriesSpecs, []);
   const splittedDataSeries = [...splittedSeries.values()];
   const specsArray = [...seriesSpecs.values()];
 

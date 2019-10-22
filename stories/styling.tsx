@@ -606,7 +606,7 @@ storiesOf('Stylings', module)
   })
   .add('custom series colors via accessor function', () => {
     const barColor = color('barSeriesColor', '#000');
-    const barSeriesColorAccesor: CustomSeriesColors = ({ specId, yAccessor, splitAccessors }) => {
+    const barSeriesColorAccessor: CustomSeriesColors = ({ specId, yAccessor, splitAccessors }) => {
       if (
         specId === getSpecId('bars') &&
         yAccessor === 'y1' &&
@@ -615,15 +615,14 @@ storiesOf('Stylings', module)
       ) {
         return barColor;
       }
-
       return null;
     };
+
     const lineColor = color('linelineSeriesColor', '#ff0');
-    const lineSeriesColorAccesor: CustomSeriesColors = ({ specId, yAccessor, splitAccessors }) => {
+    const lineSeriesColorAccessor: CustomSeriesColors = ({ specId, yAccessor, splitAccessors }) => {
       if (specId === getSpecId('lines') && yAccessor === 'y1' && splitAccessors.size === 0) {
         return lineColor;
       }
-
       return null;
     };
 
@@ -645,7 +644,7 @@ storiesOf('Stylings', module)
           xAccessor="x"
           yAccessors={['y1', 'y2']}
           splitSeriesAccessors={['g1', 'g2']}
-          customSeriesColors={barSeriesColorAccesor}
+          customSeriesColors={barSeriesColorAccessor}
           data={TestDatasets.BARCHART_2Y2G}
         />
         <LineSeries
@@ -654,7 +653,7 @@ storiesOf('Stylings', module)
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y']}
-          customSeriesColors={lineSeriesColorAccesor}
+          customSeriesColors={lineSeriesColorAccessor}
           data={[{ x: 0, y: 3 }, { x: 1, y: 2 }, { x: 2, y: 4 }, { x: 3, y: 10 }]}
         />
       </Chart>

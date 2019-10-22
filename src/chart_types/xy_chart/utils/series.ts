@@ -102,7 +102,7 @@ export function splitSeries({
   yAccessors,
   y0Accessors,
   splitSeriesAccessors = [],
-}: BasicSeriesSpec): {
+}: Pick<BasicSeriesSpec, 'id' | 'data' | 'xAccessor' | 'yAccessors' | 'y0Accessors' | 'splitSeriesAccessors'>): {
   rawDataSeries: RawDataSeries[];
   colorsValues: Set<string>;
   xValues: Set<string | number>;
@@ -342,7 +342,6 @@ export function getSplittedSeries(
         banded,
         specSortIndex: spec.sortIndex,
         seriesIdentifier: series as SeriesIdentifier,
-        // customSeriesColors: spec.customSeriesColors,
       });
     });
 

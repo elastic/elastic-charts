@@ -27,7 +27,7 @@ describe('Rendering bands - areas', () => {
     };
     const pointSeriesMap = new Map<SpecId, AreaSeriesSpec>();
     pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
-    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
+    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map(), undefined);
     const xScale = computeXScale({
       xDomain: pointSeriesDomains.xDomain,
       totalBarsInCluster: pointSeriesMap.size,
@@ -79,7 +79,7 @@ describe('Rendering bands - areas', () => {
     };
     const pointSeriesMap = new Map<SpecId, AreaSeriesSpec>();
     pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
-    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
+    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map(), undefined);
     const xScale = computeXScale({
       xDomain: pointSeriesDomains.xDomain,
       totalBarsInCluster: pointSeriesMap.size,
@@ -133,6 +133,7 @@ describe('Rendering bands - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: '',
         },
         styleOverrides: undefined,
         value: {
@@ -156,6 +157,7 @@ describe('Rendering bands - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: '',
         },
         value: {
           accessor: 'y1',
@@ -177,6 +179,7 @@ describe('Rendering bands - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: '',
         },
         value: {
           accessor: 'y0',
@@ -198,6 +201,7 @@ describe('Rendering bands - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: '',
         },
         value: {
           accessor: 'y1',
@@ -226,7 +230,7 @@ describe('Rendering bands - areas', () => {
     };
     const pointSeriesMap = new Map<SpecId, AreaSeriesSpec>();
     pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
-    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
+    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map(), undefined);
     const xScale = computeXScale({
       xDomain: pointSeriesDomains.xDomain,
       totalBarsInCluster: pointSeriesMap.size,
@@ -281,6 +285,7 @@ describe('Rendering bands - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
         },
         value: {
           accessor: 'y0',
@@ -303,6 +308,7 @@ describe('Rendering bands - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -324,6 +330,7 @@ describe('Rendering bands - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
         },
         value: {
           accessor: 'y0',
@@ -345,6 +352,7 @@ describe('Rendering bands - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -366,6 +374,7 @@ describe('Rendering bands - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
         },
         value: {
           accessor: 'y0',
@@ -387,6 +396,7 @@ describe('Rendering bands - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -415,7 +425,7 @@ describe('Rendering bands - areas', () => {
     };
     const barSeriesMap = new Map<SpecId, BarSeriesSpec>();
     barSeriesMap.set(SPEC_ID, barSeriesSpec);
-    const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map(), series);
+    const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map(), undefined);
     const xScale = computeXScale({
       xDomain: barSeriesDomains.xDomain,
       totalBarsInCluster: barSeriesMap.size,
@@ -449,6 +459,7 @@ describe('Rendering bands - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
         },
         displayValue: undefined,
         seriesStyle: {
@@ -486,6 +497,7 @@ describe('Rendering bands - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
         },
         displayValue: undefined,
         seriesStyle: {
@@ -523,6 +535,7 @@ describe('Rendering bands - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: '',
         },
         displayValue: undefined,
         seriesStyle: {

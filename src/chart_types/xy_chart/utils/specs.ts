@@ -12,7 +12,7 @@ import { Omit, RecursivePartial } from '../../../utils/commons';
 import { AnnotationId, AxisId, GroupId, SpecId } from '../../../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../../../utils/scales/scales';
 import { CurveType } from '../../../utils/curves';
-import { SeriesCollectionValue, RawDataSeriesDatum, SeriesIdentifier } from './series';
+import { RawDataSeriesDatum, SeriesIdentifier } from './series';
 import { AnnotationTooltipFormatter } from '../annotations/annotation_utils';
 
 export type Datum = any;

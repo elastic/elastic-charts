@@ -38,6 +38,7 @@ describe('Rendering utils', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [],
+        key: '',
       },
       value: {
         accessor: 'y1',
@@ -66,6 +67,7 @@ describe('Rendering utils', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [],
+        key: '',
       },
       value: {
         accessor: 'y1',
@@ -96,14 +98,18 @@ describe('Rendering utils', () => {
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: [],
+      key: '',
     };
     const highlightedLegendItem = {
       key: '',
       color: '',
       label: '',
-      value: {
-        colorValues: [],
+      seriesIdentifier: {
+        seriesKeys: [],
         specId: getSpecId('id'),
+        key: '',
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
       },
       isSeriesVisible: true,
       isLegendItemVisible: true,
@@ -213,6 +219,7 @@ describe('Rendering utils', () => {
       yAccessor: 'test',
       splitAccessors: new Map(),
       seriesKeys: ['test'],
+      key: '',
     };
 
     beforeEach(() => {
@@ -304,6 +311,7 @@ describe('Rendering utils', () => {
       yAccessor: 'test',
       splitAccessors: new Map(),
       seriesKeys: ['test'],
+      key: '',
     };
 
     beforeEach(() => {

@@ -1,7 +1,7 @@
 import { AxisId, getAxisId, getGroupId, getSpecId, SpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
-import { computeLegend, getSeriesColorLabel } from './legend';
-import { SeriesCollectionValue } from '../utils/series';
+import { computeLegend } from './legend';
+import { SeriesCollectionValue, getSeriesLabel } from '../utils/series';
 import { AxisSpec, BasicSeriesSpec, Position } from '../utils/specs';
 
 const nullDisplayValue = {
@@ -15,20 +15,40 @@ const nullDisplayValue = {
   },
 };
 const colorValues1a = {
-  specId: getSpecId('spec1'),
-  colorValues: [],
+  seriesIdentifier: {
+    specId: getSpecId('spec1'),
+    yAccessor: 'y1',
+    splitAccessors: new Map(),
+    seriesKeys: [],
+    key: '',
+  },
 };
 const colorValues1b = {
-  specId: getSpecId('spec1'),
-  colorValues: ['a', 'b'],
+  seriesIdentifier: {
+    specId: getSpecId('spec1'),
+    yAccessor: 'y1',
+    splitAccessors: new Map(),
+    seriesKeys: ['a', 'b'],
+    key: '',
+  },
 };
 const colorValues2a = {
-  specId: getSpecId('spec2'),
-  colorValues: [],
+  seriesIdentifier: {
+    specId: getSpecId('spec2'),
+    yAccessor: 'y1',
+    splitAccessors: new Map(),
+    seriesKeys: [],
+    key: '',
+  },
 };
 const colorValues2b = {
-  specId: getSpecId('spec3'),
-  colorValues: ['c', 'd'],
+  seriesIdentifier: {
+    specId: getSpecId('spec3'),
+    yAccessor: 'y1',
+    splitAccessors: new Map(),
+    seriesKeys: ['c', 'd'],
+    key: '',
+  },
 };
 const spec1: BasicSeriesSpec = {
   id: getSpecId('spec1'),
@@ -182,9 +202,8 @@ describe('Legends', () => {
     seriesColor.set('colorSeries2b', colorValues2b);
 
     const emptyColorMap = new Map<string, string>();
-    const deselectedDataSeries = null;
 
-    const legend = computeLegend(seriesColor, emptyColorMap, specs, 'violet', axesSpecs, deselectedDataSeries);
+    const legend = computeLegend(seriesColor, emptyColorMap, specs, 'violet', axesSpecs, []);
 
     const visibility = [...legend.values()].map((item) => item.isSeriesVisible);
 
@@ -197,7 +216,7 @@ describe('Legends', () => {
     seriesColor.set('colorSeries2b', colorValues2b);
 
     const emptyColorMap = new Map<string, string>();
-    const deselectedDataSeries = [colorValues1a, colorValues1b];
+    const deselectedDataSeries = [colorValues1a.seriesIdentifier, colorValues1b.seriesIdentifier];
 
     const legend = computeLegend(seriesColor, emptyColorMap, specs, 'violet', axesSpecs, deselectedDataSeries);
 
@@ -205,62 +224,51 @@ describe('Legends', () => {
     expect(visibility).toEqual([false, false, true]);
   });
   it('returns the right series label for a color series', () => {
-    let label = getSeriesColorLabel([], true);
+    const seriesIdentifier1 = {
+      specId: getSpecId(''),
+      yAccessor: 'y1',
+      splitAccessors: new Map(),
+      seriesKeys: [],
+      key: '',
+    };
+    const seriesIdentifier2 = {
+      specId: getSpecId(''),
+      yAccessor: 'y1',
+      splitAccessors: new Map(),
+      seriesKeys: ['a', 'b'],
+      key: '',
+    };
+
+    // null removed, seriesIdentifier has to be at least an empty array
+    let label = getSeriesLabel(seriesIdentifier1, true);
     expect(label).toBeUndefined();
-    label = getSeriesColorLabel([], true, spec1);
+    label = getSeriesLabel(seriesIdentifier1, true, spec1);
     expect(label).toBe('Spec 1 title');
-    label = getSeriesColorLabel([], true, spec2);
+    label = getSeriesLabel(seriesIdentifier1, true, spec2);
     expect(label).toBe('spec2');
-    label = getSeriesColorLabel(['a', 'b'], true, spec1);
+    label = getSeriesLabel(seriesIdentifier2, true, spec1);
     expect(label).toBe('Spec 1 title');
-    label = getSeriesColorLabel(['a', 'b'], true, spec2);
+    label = getSeriesLabel(seriesIdentifier2, true, spec2);
     expect(label).toBe('spec2');
 
-    label = getSeriesColorLabel([], false);
-    expect(label).toBeUndefined();
-    label = getSeriesColorLabel([], false, spec1);
+    label = getSeriesLabel(seriesIdentifier1, false, spec1);
     expect(label).toBe('Spec 1 title');
-    label = getSeriesColorLabel([], false, spec2);
+    label = getSeriesLabel(seriesIdentifier1, false, spec2);
     expect(label).toBe('spec2');
-    label = getSeriesColorLabel(['a', 'b'], false, spec1);
+    label = getSeriesLabel(seriesIdentifier2, false, spec1);
     expect(label).toBe('a - b');
-    label = getSeriesColorLabel(['a', 'b'], false, spec2);
+    label = getSeriesLabel(seriesIdentifier2, false, spec2);
     expect(label).toBe('a - b');
 
-    label = getSeriesColorLabel([null], true);
-    expect(label).toBeUndefined();
-    label = getSeriesColorLabel([null], true, spec1);
+    label = getSeriesLabel(seriesIdentifier1, true, spec1);
     expect(label).toBe('Spec 1 title');
-    label = getSeriesColorLabel([null], true, spec2);
+    label = getSeriesLabel(seriesIdentifier1, true, spec2);
     expect(label).toBe('spec2');
-    label = getSeriesColorLabel([undefined], true);
+    label = getSeriesLabel(seriesIdentifier1, true);
     expect(label).toBeUndefined();
-    label = getSeriesColorLabel([undefined], true, spec1);
+    label = getSeriesLabel(seriesIdentifier1, true, spec1);
     expect(label).toBe('Spec 1 title');
-    label = getSeriesColorLabel([undefined], true, spec2);
+    label = getSeriesLabel(seriesIdentifier1, true, spec2);
     expect(label).toBe('spec2');
-
-    label = getSeriesColorLabel([0], true);
-    expect(label).toBeUndefined();
-    label = getSeriesColorLabel([0], true, spec1);
-    expect(label).toBe('Spec 1 title');
-
-    label = getSeriesColorLabel([null], false);
-    expect(label).toBeUndefined();
-    label = getSeriesColorLabel([null], false, spec1);
-    expect(label).toBe('Spec 1 title');
-    label = getSeriesColorLabel([null], false, spec2);
-    expect(label).toBe('spec2');
-    label = getSeriesColorLabel([undefined], false);
-    expect(label).toBeUndefined();
-    label = getSeriesColorLabel([undefined], false, spec1);
-    expect(label).toBe('Spec 1 title');
-    label = getSeriesColorLabel([undefined], false, spec2);
-    expect(label).toBe('spec2');
-
-    label = getSeriesColorLabel([0], false);
-    expect(label).toBe('0');
-    label = getSeriesColorLabel([0], false, spec1);
-    expect(label).toBe('0');
   });
 });
