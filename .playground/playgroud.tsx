@@ -20,7 +20,17 @@ const data = [
   { x: 12, y: null },
 ];
 
-export class Playground extends React.Component {
+export class Playground extends React.Component<{}, { dataLimit: boolean }> {
+  state = {
+    dataLimit: false,
+  };
+  changeData = () => {
+    this.setState((prevState) => {
+      return {
+        dataLimit: !prevState.dataLimit,
+      };
+    });
+  };
   render() {
     return (
       <>
