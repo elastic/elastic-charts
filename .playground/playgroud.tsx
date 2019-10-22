@@ -46,7 +46,7 @@ export class Playground extends React.Component<{}, { dataLimit: boolean }> {
 
             <BarSeries
               id={getSpecId('bars1')}
-              xScaleType={ScaleType.Linear}
+              xScaleType={ScaleType.Time}
               yScaleType={ScaleType.Linear}
               xAccessor="x"
               yAccessors={['y']}

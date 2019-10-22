@@ -186,6 +186,20 @@ export class ScaleContinuous implements Scale {
     this.totalBarsInCluster = totalBarsInCluster;
     this.isSingleValueHistogram = isSingleValueHistogram;
     if (type === ScaleType.Time) {
+      try {
+        console.log('testing poly');
+        // Some way to test if the polyfill/Intl works
+        // I thought we could just check if IE then load but this seams more pragmatic.
+        new Intl.DateTimeFormat('en', {
+          timeZone: 'America/Los_Angeles',
+          timeZoneName: 'long',
+        }).format(new Date());
+      } catch (error) {
+        console.log('loading poly');
+        require('date-time-format-timezone');
+      }
+
+      // Logic to correctly offset time scales to desired time zone
       const startDomain = DateTime.fromMillis(this.domain[0], { zone: this.timeZone });
       const endDomain = DateTime.fromMillis(this.domain[1], { zone: this.timeZone });
       const offset = startDomain.offset;
