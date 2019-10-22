@@ -148,6 +148,10 @@
     "ts-debounce": "^1.0.0",
     "uuid": "^3.3.2"
   },
+  "resolutions": {
+    "**/**/lodash": "^4.17.13",
+    "**/**/lodash.template": "^4.5.0"
+  },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
