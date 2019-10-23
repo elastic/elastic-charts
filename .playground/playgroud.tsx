@@ -1,9 +1,7 @@
 import React from 'react';
-import { Axis, Chart, getAxisId, getSpecId, Position, ScaleType, Settings, LineSeries, DataGenerator } from '../src';
+import { Axis, Chart, getAxisId, getSpecId, Position, ScaleType, Settings, LineSeries } from '../src';
 import { Fit } from '../src/chart_types/xy_chart/utils/specs';
 
-const dg = new DataGenerator();
-// const data = dg.generateSimpleSeries(10);
 const data = [
   { x: 0, y: null },
   { x: 1, y: 3 },

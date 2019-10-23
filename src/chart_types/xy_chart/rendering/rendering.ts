@@ -18,7 +18,7 @@ import { CurveType, getCurveFactory } from '../../../utils/curves';
 import { LegendItem } from '../legend/legend';
 import { DataSeriesDatum } from '../utils/series';
 import { belongsToDataSeries } from '../utils/series_utils';
-import { DisplayValueSpec, BarStyleAccessor, PointStyleAccessor, Fit } from '../utils/specs';
+import { DisplayValueSpec, BarStyleAccessor, PointStyleAccessor } from '../utils/specs';
 import { mergePartial } from '../../../utils/commons';
 
 export interface GeometryId {
