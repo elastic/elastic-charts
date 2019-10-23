@@ -1,7 +1,7 @@
 {
   "name": "@elastic/charts",
   "description": "Elastic-Charts data visualization library",
-  "version": "13.5.4",
+  "version": "13.5.6",
   "author": "Marco Vettorello <marco.vettorello@elastic.co>",
   "license": "Apache-2.0",
   "main": "dist/index.js",
@@ -24,7 +24,11 @@
     "storybook:build": "rm -rf .out && build-storybook -c .storybook -o .out",
     "lint": "eslint --ext .tsx,.ts,.js src/ stories/ scripts/ .storybook/ .playground/",
     "lint:fix": "yarn lint --fix",
-    "test": "jest --config jest.config.json",
+    "test": "jest --config jest.config.js",
+    "test:tz": "yarn test:tz-utc && yarn test:tz-ny && yarn test:tz-jp",
+    "test:tz-utc": "TZ=UTC jest --config=jest.tz.config.js",
+    "test:tz-ny": "TZ=America/New_York jest --config=jest.tz.config.js",
+    "test:tz-jp": "TZ=Asia/Tokyo jest --config=jest.tz.config.js",
     "watch": "yarn test --watch",
     "semantic-release": "semantic-release",
     "typecheck:src": "yarn build:ts --noEmit",
@@ -42,7 +46,7 @@
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "yarn run typecheck:all && yarn run lint && yarn run test"
+      "pre-commit": "pretty-quick --staged && yarn run typecheck:all && yarn run lint && yarn run test && yarn run test:tz"
     }
   },
   "devDependencies": {
@@ -110,6 +114,7 @@
     "node-sass": "^4.11.0",
     "postcss-cli": "^6.1.3",
     "prettier": "1.16.4",
+    "pretty-quick": "^2.0.0",
     "puppeteer": "^1.20.0",
     "react-docgen-typescript-loader": "^3.0.1",
     "react-docgen-typescript-webpack-plugin": "^1.1.0",
