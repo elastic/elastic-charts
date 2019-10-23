@@ -473,7 +473,10 @@ export function renderLine(
   };
 }
 
-const getYValue = ({ y1, filled }: DataSeriesDatum): number | null => {
+/**
+ * Returns value of `y1` or `filled.y1` or null
+ */
+export const getYValue = ({ y1, filled }: DataSeriesDatum): number | null => {
   if (y1 !== null) {
     return y1;
   }

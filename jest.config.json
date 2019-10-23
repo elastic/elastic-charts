@@ -5,7 +5,9 @@
   "preset": "ts-jest",
   "testEnvironment": "jest-environment-jsdom-fourteen",
   "setupFilesAfterEnv": [
-    "<rootDir>/scripts/setup_enzyme.ts"
+    "jest-extended",
+    "<rootDir>/scripts/setup_enzyme.ts",
+    "<rootDir>/scripts/custom_matchers.ts"
   ],
   "clearMocks": true,
   "globals": {

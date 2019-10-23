@@ -1,9 +1,16 @@
 import { MockDataSeries } from '../../../mocks';
 import { Fit } from './specs';
 import { ScaleType } from '../../../utils/scales/scales';
+import { DataSeriesDatum } from './series';
 
-jest.unmock('./fit_function');
 import * as testModule from './fit_function';
+
+/**
+ * Helper function to return array of rendered y1 values
+ */
+const getFilledNullData = (data: DataSeriesDatum[]): (number | undefined)[] => {
+  return data.filter(({ y1 }) => y1 === null).map(({ filled }) => filled && filled.y1);
+};
 
 describe('Fit Function', () => {
   describe('parseConfig', () => {
@@ -63,58 +70,73 @@ describe('Fit Function', () => {
   });
 
   describe('fitFunction', () => {
+    const dataSeries = MockDataSeries.fitFunction();
+
     beforeAll(() => {
-      testModule.parseConfig = jest.fn();
-      // jest.spyOn(testModule, 'parseConfig').mockReturnValue({
-      //   type: 'zero',
-      // });
+      jest.spyOn(testModule, 'parseConfig');
     });
 
-    describe('Config types', () => {
-      const dataSeries = MockDataSeries.fitFunction();
+    describe('allow mutliple fit config types', () => {
       it('should allow string config', () => {
         testModule.fitFunction(dataSeries, Fit.None, ScaleType.Linear);
 
         expect(testModule.parseConfig).toHaveBeenCalledWith(Fit.None);
-      });
-
-      // it('should allow object config', () => {
-      //   const fitConfig = {
-      //     type: Fit.None,
-      //   };
-      //   testModule.fitFunction(dataSeries, fitConfig, ScaleType.Linear);
-
-      //   expect(testModule.parseConfig).toHaveBeenCalledWith(fitConfig);
-      // });
-    });
-
-    describe('Config types', () => {
-      const dataSeries = MockDataSeries.fitFunction();
-      it('should allow string config', () => {
-        const actual = testModule.fitFunction(dataSeries, Fit.None, ScaleType.Linear);
-
-        expect(actual).toBe(dataSeries);
+        expect(testModule.parseConfig).toHaveBeenCalledTimes(1);
       });
 
       it('should allow object config', () => {
-        const actual = testModule.fitFunction(
-          dataSeries,
-          {
-            type: Fit.None,
-          },
-          ScaleType.Linear,
-        );
+        const fitConfig = {
+          type: Fit.None,
+        };
+        testModule.fitFunction(dataSeries, fitConfig, ScaleType.Linear);
 
-        expect(actual).toBe(dataSeries);
+        expect(testModule.parseConfig).toHaveBeenCalledWith(fitConfig);
+        expect(testModule.parseConfig).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('Fit Types', () => {
+      describe('None', () => {
+        it('should return original dataSeries', () => {
+          const actual = testModule.fitFunction(dataSeries, Fit.None, ScaleType.Linear);
+
+          expect(actual).toBe(dataSeries);
+        });
+
+        it('should return null data values without fit', () => {
+          const actual = testModule.fitFunction(dataSeries, Fit.None, ScaleType.Linear);
+
+          expect(getFilledNullData(actual.data)).toEqualArrayOf(undefined, 7);
+        });
       });
 
-      describe('Fit Types', () => {
-        describe('None', () => {
-          it('should return original dataSeries', () => {
-            const actual = testModule.fitFunction(dataSeries, Fit.None, ScaleType.Linear);
+      describe('Zero', () => {
+        it('should NOT return original dataSeries', () => {
+          const actual = testModule.fitFunction(dataSeries, Fit.Zero, ScaleType.Linear);
 
-            expect(actual).toBe(dataSeries);
-          });
+          expect(actual).not.toBe(dataSeries);
+        });
+
+        it('should return null data values with zeros', () => {
+          const actual = testModule.fitFunction(dataSeries, Fit.Zero, ScaleType.Linear);
+          const testActual = getFilledNullData(actual.data);
+
+          expect(testActual).toEqualArrayOf(0, 7);
+        });
+      });
+
+      describe('Explicit', () => {
+        it('should return original dataSeries if no value provided', () => {
+          const actual = testModule.fitFunction(dataSeries, { type: Fit.Explicit }, ScaleType.Linear);
+
+          expect(actual).toBe(dataSeries);
+        });
+
+        it('should return null data values with set value', () => {
+          const actual = testModule.fitFunction(dataSeries, { type: Fit.Explicit, value: 20 }, ScaleType.Linear);
+          const testActual = getFilledNullData(actual.data);
+
+          expect(testActual).toEqualArrayOf(20, 7);
         });
       });
     });

@@ -4,6 +4,7 @@ import { Fit, FitConfig } from './specs';
 import { DataSeries, DataSeriesDatum } from './series';
 import { datumXSortPredicate } from './stacked_series_utils';
 import { ScaleType } from '../../../utils/scales/scales';
+import { getYValue } from '../rendering/rendering';
 
 /**
  * Fit type that requires previous or next non-`null` value
@@ -15,13 +16,13 @@ export type BoundingFit = Exclude<Fit, 'none' | 'explicit'>;
 export type FullDataSeriesDatum = Omit<DataSeriesDatum, 'y1' | 'x'> &
   DeepNonNullable<Pick<DataSeriesDatum, 'y1' | 'x'>>;
 
-export function getValue(
+export const getValue = (
   current: DataSeriesDatum,
   previous: FullDataSeriesDatum | null,
   next: FullDataSeriesDatum | null,
   type: BoundingFit,
-  endValue?: number,
-): DataSeriesDatum {
+  endValue?: number | 'nearest',
+): DataSeriesDatum => {
   if (previous !== null && type === Fit.Carry) {
     return {
       ...current,
@@ -76,20 +77,20 @@ export function getValue(
     }
   }
 
-  if (endValue === undefined) {
+  if (endValue === undefined || typeof endValue === 'string') {
     return current;
   }
 
-  // No mtching fit - should only fall here on end conditions
+  // No matching fit - should only fall here on end conditions
   return {
     ...current,
     filled: {
       y1: endValue,
     },
   };
-}
+};
 
-export function parseConfig(config?: Exclude<Fit, 'explicit'> | FitConfig): FitConfig {
+export const parseConfig = (config?: Exclude<Fit, 'explicit'> | FitConfig): FitConfig => {
   if (!config) {
     return {
       type: Fit.None,
@@ -114,14 +115,14 @@ export function parseConfig(config?: Exclude<Fit, 'explicit'> | FitConfig): FitC
     value: config.type === Fit.Explicit ? config.value : undefined,
     endValue: config.endValue,
   };
-}
+};
 
-export function fitFunction(
+export const fitFunction = (
   dataSeries: DataSeries,
   fitConfig: Exclude<Fit, 'explicit'> | FitConfig,
   xScaleType: ScaleType,
   sorted = false,
-): DataSeries {
+): DataSeries => {
   const { type, value, endValue } = parseConfig(fitConfig);
 
   if (type === Fit.None) {
@@ -186,7 +187,6 @@ export function fitFunction(
     const newValue =
       current.y1 === null ? getValue(current, previousNonNullDatum, nextNonNullDatum, type, endValue) : current;
 
-    // TODO and end condition check to fill end values that are still null
     newData[i] = newValue;
 
     if (current.y1 !== null && current.x !== null) {
@@ -198,8 +198,27 @@ export function fitFunction(
     }
   }
 
+  // if (endValue === 'nearest') {
+  //   const start = dataSeries.data[0] && getYValue(dataSeries.data[0]);
+  //   const start1 = dataSeries.data[1] && getYValue(dataSeries.data[1]);
+  //   if (start === null && start1 !== null) {
+  //     dataSeries.data[0].filled = {
+  //       ...dataSeries.data[0].filled,
+  //       y1: start1,
+  //     };
+  //   }
+  //   const start = dataSeries.data[0] && getYValue(dataSeries.data[0]);
+  //   const start1 = dataSeries.data[1] && getYValue(dataSeries.data[1]);
+  //   if (start === null && start1 !== null) {
+  //     dataSeries.data[0].filled = {
+  //       ...dataSeries.data[0].filled,
+  //       y1: start1,
+  //     };
+  //   }
+  // }
+
   return {
     ...dataSeries,
     data: newData,
   };
-}
+};

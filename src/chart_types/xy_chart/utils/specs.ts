@@ -303,8 +303,10 @@ export type FitConfig = {
   value?: number;
   /**
    * Value used for first and last point if fitting is not possible
+   *
+   * `'nearest'` will set indeterminate end values to the closes _visible_ point.
    */
-  endValue?: number;
+  endValue?: number | 'nearest';
 };
 
 /**
