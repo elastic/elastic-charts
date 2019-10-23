@@ -322,10 +322,11 @@ storiesOf('Mixed Charts', module)
       },
       0,
     );
-    const endValue = select<number | 'none'>(
+    const endValue = select<number | 'none' | 'nearest'>(
       'End value',
       {
         None: 'none',
+        nearest: 'nearest',
         '0': 0,
         '2': 2,
       },

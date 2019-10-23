@@ -4,12 +4,12 @@ import { Fit, FitConfig } from './specs';
 import { DataSeries, DataSeriesDatum } from './series';
 import { datumXSortPredicate } from './stacked_series_utils';
 import { ScaleType } from '../../../utils/scales/scales';
-import { getYValue } from '../rendering/rendering';
 
 /**
- * Fit type that requires previous or next non-`null` value
+ * Fit type that requires previous and/or next `non-nullable` values
  */
 export type BoundingFit = Exclude<Fit, 'none' | 'explicit'>;
+
 /**
  * `DataSeriesDatum` with non-`null` value for `x` and `y1`
  */
@@ -75,7 +75,17 @@ export const getValue = (
         };
       }
     }
+  } else if ((previous !== null || next !== null) && (type === Fit.Nearest || endValue === 'nearest')) {
+    debugger;
+    return {
+      ...current,
+      filled: {
+        y1: previous !== null ? previous.y1 : next!.y1,
+      },
+    };
   }
+
+  debugger;
 
   if (endValue === undefined || typeof endValue === 'string') {
     return current;
@@ -159,7 +169,8 @@ export const fitFunction = (
     };
   }
 
-  const sortedData = sorted ? data.slice() : data.slice().sort(datumXSortPredicate(xScaleType));
+  const sortedData =
+    sorted || xScaleType === ScaleType.Ordinal ? data : data.slice().sort(datumXSortPredicate(xScaleType));
   const newData: DataSeriesDatum[] = [];
   let previousNonNullDatum: FullDataSeriesDatum | null = null;
   let nextNonNullDatum: FullDataSeriesDatum | null = null;
@@ -171,7 +182,11 @@ export const fitFunction = (
     if (
       current.y1 === null &&
       nextNonNullDatum === null &&
-      (type === Fit.Lookahead || type === Fit.Nearest || type === Fit.Average || type === Fit.Linear)
+      (type === Fit.Lookahead ||
+        type === Fit.Nearest ||
+        type === Fit.Average ||
+        type === Fit.Linear ||
+        endValue === 'nearest')
     ) {
       // Forward lookahead to get next non-null value
       for (j = i + 1; j < sortedData.length; j++) {
@@ -197,25 +212,6 @@ export const fitFunction = (
       nextNonNullDatum = null;
     }
   }
-
-  // if (endValue === 'nearest') {
-  //   const start = dataSeries.data[0] && getYValue(dataSeries.data[0]);
-  //   const start1 = dataSeries.data[1] && getYValue(dataSeries.data[1]);
-  //   if (start === null && start1 !== null) {
-  //     dataSeries.data[0].filled = {
-  //       ...dataSeries.data[0].filled,
-  //       y1: start1,
-  //     };
-  //   }
-  //   const start = dataSeries.data[0] && getYValue(dataSeries.data[0]);
-  //   const start1 = dataSeries.data[1] && getYValue(dataSeries.data[1]);
-  //   if (start === null && start1 !== null) {
-  //     dataSeries.data[0].filled = {
-  //       ...dataSeries.data[0].filled,
-  //       y1: start1,
-  //     };
-  //   }
-  // }
 
   return {
     ...dataSeries,
