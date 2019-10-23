@@ -29,6 +29,32 @@ describe.only('Fit Function', () => {
       expect(actual.filled!.y1).toBe(100);
     });
 
+    describe('previous is not null and fit type is Carry', () => {
+      it('should return current datum with value from next when previous is null', () => {
+        const previous = MockDataSeriesDatum.full({ x: 4, y1: 20 });
+        const current = MockDataSeriesDatum.simple({ x: 3 });
+        const actual = testModule.getValue(current, previous, null, Fit.Carry);
+
+        expect(actual).toMatchObject(current);
+        expect(actual.filled).toEqual({
+          y1: 20,
+        });
+      });
+    });
+
+    describe('next is not null and fit type is Lookahead', () => {
+      it('should return current datum with value from next when previous is null', () => {
+        const current = MockDataSeriesDatum.simple({ x: 3 });
+        const next = MockDataSeriesDatum.full({ x: 4, y1: 20 });
+        const actual = testModule.getValue(current, null, next, Fit.Lookahead);
+
+        expect(actual).toMatchObject(current);
+        expect(actual.filled).toEqual({
+          y1: 20,
+        });
+      });
+    });
+
     describe('current and previous datums are not null', () => {
       describe('Average - fit type', () => {
         it('should return current datum with average values from previous and next', () => {

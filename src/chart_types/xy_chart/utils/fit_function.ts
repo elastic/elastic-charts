@@ -76,7 +76,6 @@ export const getValue = (
       }
     }
   } else if ((previous !== null || next !== null) && (type === Fit.Nearest || endValue === 'nearest')) {
-    debugger;
     return {
       ...current,
       filled: {
@@ -84,8 +83,6 @@ export const getValue = (
       },
     };
   }
-
-  debugger;
 
   if (endValue === undefined || typeof endValue === 'string') {
     return current;

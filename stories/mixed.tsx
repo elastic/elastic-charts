@@ -255,6 +255,21 @@ storiesOf('Mixed Charts', module)
         { x: 9, y: 10 },
         { x: 10, y: null },
       ],
+      ordinal: [
+        { x: 'a', y: null },
+        { x: 'b', y: 3 },
+        { x: 'c', y: 5 },
+        { x: 'd', y: null },
+        { x: 'e', y: 4 },
+        { x: 'f', y: null },
+        { x: 'g', y: 5 },
+        { x: 'h', y: 6 },
+        { x: 'i', y: null },
+        { x: 'g', y: null },
+        { x: 'k', y: null },
+        { x: 'l', y: 12 },
+        { x: 'm', y: null },
+      ],
       all: [
         { x: 0, y: null },
         { x: 1, y: 3 },
@@ -286,6 +301,7 @@ storiesOf('Mixed Charts', module)
         'Isolated Points': 'isolated',
         'Successive null Points': 'successive',
         'null end points': 'endPoints',
+        'Ordinal x values': 'ordinal',
         'All edge cases': 'all',
       },
       'isolated',
@@ -333,6 +349,7 @@ storiesOf('Mixed Charts', module)
       'none',
     );
     const value = number('Explicit valuve (using Fit.Explicit)', 5);
+    const xScaleType = dataKey === 'ordinal' ? ScaleType.Ordinal : ScaleType.Linear;
 
     return (
       <Chart className="story-chart">
@@ -350,7 +367,7 @@ storiesOf('Mixed Charts', module)
         {seriesType === 'area' ? (
           <AreaSeries
             id={getSpecId('test')}
-            xScaleType={ScaleType.Linear}
+            xScaleType={xScaleType}
             yScaleType={ScaleType.Linear}
             xAccessor={'x'}
             yAccessors={['y']}
@@ -365,7 +382,7 @@ storiesOf('Mixed Charts', module)
         ) : (
           <LineSeries
             id={getSpecId('test')}
-            xScaleType={ScaleType.Linear}
+            xScaleType={xScaleType}
             yScaleType={ScaleType.Linear}
             xAccessor={'x'}
             yAccessors={['y']}
