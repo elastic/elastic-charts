@@ -1,0 +1,20 @@
+{
+  "roots": [
+    "<rootDir>/src"
+  ],
+  "preset": "ts-jest",
+  "testEnvironment": "jest-environment-jsdom-fourteen",
+  "testMatch": ["**/?(*.)tz.+(spec|test)?(.jp).[jt]s?(x)"],
+  "setupFilesAfterEnv": [
+    "<rootDir>/scripts/setup_enzyme.ts"
+  ],
+  "globals": {
+    "ts-jest": {
+      "tsConfig": "tsconfig.jest.json"
+    }
+  },
+  "displayName": {
+    "name": "TIMEZONE: America/Tokyo",
+    "color": "blue"
+  }
+}

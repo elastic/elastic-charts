@@ -25,6 +25,10 @@
     "lint": "eslint --ext .tsx,.ts,.js src/ stories/ scripts/ .storybook/ .playground/",
     "lint:fix": "yarn lint --fix",
     "test": "jest --config jest.config.json",
+    "test:tz": "yarn test:tz-utc && yarn test:tz-ny && yarn test:tz-jp",
+    "test:tz-utc": "TZ=UTC jest --config jest.tz.utc.config.json",
+    "test:tz-ny": "TZ=America/New_York jest --config jest.tz.ny.config.json",
+    "test:tz-jp": "TZ=Asia/Tokyo jest --config jest.tz.jp.config.json",
     "watch": "yarn test --watch",
     "semantic-release": "semantic-release",
     "typecheck:src": "yarn build:ts --noEmit",
@@ -41,7 +45,7 @@
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "yarn run typecheck:all && yarn run lint && yarn run test"
+      "pre-commit": "yarn run typecheck:all && yarn run lint && yarn run test && yarn run test:tz"
     }
   },
   "devDependencies": {
