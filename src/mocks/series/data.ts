@@ -1,4 +1,6 @@
-export const fitFunctionData = [
+import { DataSeriesDatum } from '../../chart_types/xy_chart/utils/series';
+
+export const fitFunctionData: DataSeriesDatum[] = [
   {
     x: 0,
     y1: null,

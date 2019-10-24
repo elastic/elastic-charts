@@ -4,7 +4,7 @@ import { mergePartial } from '../../utils/commons';
 import { getSpecId } from '../..';
 import { DataSeries, DataSeriesDatum } from '../../chart_types/xy_chart/utils/series';
 import { fitFunctionData } from './data';
-import { FullDataSeriesDatum } from '../../chart_types/xy_chart/utils/fit_function';
+import { FullDataSeriesDatum, WithIndex } from '../../chart_types/xy_chart/utils/fit_function';
 
 export class MockDataSeries {
   private static readonly base: DataSeries = {
@@ -18,8 +18,14 @@ export class MockDataSeries {
     return mergePartial<DataSeries>(MockDataSeries.base, partial, { mergeOptionalPartialValues: true });
   }
 
-  static fitFunction(options: { shuffle: boolean } = { shuffle: true }): DataSeries {
-    const data = options && options.shuffle ? shuffle(fitFunctionData) : fitFunctionData;
+  static fitFunction(
+    options: { shuffle?: boolean; ordinal?: boolean } = { shuffle: true, ordinal: false },
+  ): DataSeries {
+    const ordinalData = options.ordinal
+      ? fitFunctionData.map((d) => ({ ...d, x: String.fromCharCode(97 + (d.x as number)) }))
+      : fitFunctionData;
+    const data = options.shuffle && !options.ordinal ? shuffle(ordinalData) : ordinalData;
+
     return {
       ...MockDataSeries.base,
       data,
@@ -72,8 +78,16 @@ export class MockDataSeriesDatum {
    *
    * "full" - means x and y1 values are `non-nullable`
    */
-  static full(datum: Partial<FullDataSeriesDatum> & Pick<FullDataSeriesDatum, 'x' | 'y1'>): FullDataSeriesDatum {
-    return MockDataSeriesDatum.simple(datum) as FullDataSeriesDatum;
+  static full({
+    fittingIndex = 0,
+    ...datum
+  }: Partial<WithIndex<FullDataSeriesDatum>> & Pick<WithIndex<FullDataSeriesDatum>, 'x' | 'y1'>): WithIndex<
+    FullDataSeriesDatum
+  > {
+    return {
+      ...(MockDataSeriesDatum.simple(datum) as WithIndex<FullDataSeriesDatum>),
+      fittingIndex,
+    };
   }
 
   static ordinal(partial?: Partial<DataSeriesDatum>): DataSeriesDatum {

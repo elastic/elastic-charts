@@ -223,8 +223,6 @@ export const fitFunction = (
     }
   }
 
-  console.log(newData);
-
   return {
     ...dataSeries,
     data: newData,
