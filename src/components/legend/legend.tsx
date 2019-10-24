@@ -1,6 +1,8 @@
-import classNames from 'classnames';
-import { inject, observer } from 'mobx-react';
 import React, { createRef } from 'react';
+import { inject, observer } from 'mobx-react';
+import classNames from 'classnames';
+import { debounce } from 'ts-debounce';
+
 import { isVerticalAxis, isHorizontalAxis } from '../../chart_types/xy_chart/utils/axis_utils';
 import { LegendItem as SeriesLegendItem } from '../../chart_types/xy_chart/legend/legend';
 import { ChartStore } from '../../chart_types/xy_chart/store/chart_state';
@@ -34,6 +36,7 @@ interface LegendListStyle {
 
 class LegendComponent extends React.Component<LegendProps, LegendState> {
   static displayName = 'Legend';
+  legendItemCount = 0;
 
   state = {
     width: undefined,
@@ -42,20 +45,7 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
   private echLegend = createRef<HTMLDivElement>();
 
   componentDidUpdate() {
-    const { chartInitialized, chartTheme, legendPosition } = this.props.chartStore!;
-    if (
-      this.echLegend.current &&
-      isVerticalAxis(legendPosition.get()) &&
-      this.state.width === undefined &&
-      !chartInitialized.get() &&
-      this.echLegend.current.offsetWidth > 0
-    ) {
-      const buffer = chartTheme.legend.spacingBuffer;
-
-      this.setState({
-        width: this.echLegend.current.offsetWidth + buffer,
-      });
-    }
+    this.tryLegendResize();
   }
 
   render() {
@@ -91,6 +81,32 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
       </div>
     );
   }
+
+  tryLegendResize = debounce(() => {
+    const { chartTheme, legendPosition, legendItems } = this.props.chartStore!;
+    const { width } = this.state;
+
+    if (
+      this.echLegend.current &&
+      isVerticalAxis(legendPosition.get()) &&
+      width === undefined &&
+      this.echLegend.current.offsetWidth > 0
+    ) {
+      const buffer = chartTheme.legend.spacingBuffer;
+
+      this.setState({
+        width: this.echLegend.current.offsetWidth + buffer,
+      });
+    }
+
+    // Need to reset width to enable downsizing of width
+    if (width !== undefined && legendItems.size !== this.legendItemCount) {
+      this.legendItemCount = legendItems.size;
+      this.setState({
+        width: undefined,
+      });
+    }
+  }, 200);
 
   getLegendListStyle = (position: Position, { chartMargins, legend }: Theme): LegendListStyle => {
     const { top: paddingTop, bottom: paddingBottom, left: paddingLeft, right: paddingRight } = chartMargins;
