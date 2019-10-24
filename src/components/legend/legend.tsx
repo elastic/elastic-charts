@@ -47,7 +47,8 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
       this.echLegend.current &&
       isVerticalAxis(legendPosition.get()) &&
       this.state.width === undefined &&
-      !chartInitialized.get()
+      !chartInitialized.get() &&
+      this.echLegend.current.offsetWidth > 0
     ) {
       const buffer = chartTheme.legend.spacingBuffer;
 
