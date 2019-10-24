@@ -591,7 +591,7 @@ export function getClippedRanges(dataset: DataSeriesDatum[], xScale: Scale, xSca
   let hasNull = false;
 
   return dataset.reduce<ClippedRanges>((acc, { x, y1 }) => {
-    const xValue = xScale.scale(x) - xScaleOffset;
+    const xValue = xScale.scale(x) - xScaleOffset + xScale.bandwidth / 2;
 
     if (y1 !== null) {
       if (hasNull) {
@@ -605,7 +605,8 @@ export function getClippedRanges(dataset: DataSeriesDatum[], xScale: Scale, xSca
 
       firstNonNullX = xValue;
     } else {
-      if (xValue === xScale.range[1] && firstNonNullX !== null) {
+      const endXValue = xScale.range[1] - xScale.bandwidth * (2 / 3);
+      if (firstNonNullX !== null && xValue === endXValue) {
         acc.push([firstNonNullX, xValue]);
       }
       hasNull = true;

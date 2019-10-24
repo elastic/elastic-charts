@@ -265,7 +265,7 @@ storiesOf('Mixed Charts', module)
         { x: 'g', y: 5 },
         { x: 'h', y: 6 },
         { x: 'i', y: null },
-        { x: 'g', y: null },
+        { x: 'j', y: null },
         { x: 'k', y: null },
         { x: 'l', y: 12 },
         { x: 'm', y: null },
@@ -304,7 +304,7 @@ storiesOf('Mixed Charts', module)
         'Ordinal x values': 'ordinal',
         'All edge cases': 'all',
       },
-      'isolated',
+      'all',
     );
     // @ts-ignore
     const dataset = dataTypes[dataKey];
@@ -320,7 +320,7 @@ storiesOf('Mixed Charts', module)
         Zero: Fit.Zero,
         Explicit: Fit.Explicit,
       },
-      Fit.None,
+      Fit.Average,
     );
     const curve = select<CurveType>(
       'Curve',

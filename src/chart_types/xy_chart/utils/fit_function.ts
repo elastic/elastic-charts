@@ -16,10 +16,23 @@ export type BoundingFit = Exclude<Fit, 'none' | 'explicit'>;
 export type FullDataSeriesDatum = Omit<DataSeriesDatum, 'y1' | 'x'> &
   DeepNonNullable<Pick<DataSeriesDatum, 'y1' | 'x'>>;
 
+/**
+ * Embellishes `FullDataSeriesDatum` with `fittingIndex` for ordinal scales
+ */
+export type WithIndex<T> = T & { fittingIndex: number };
+
+/**
+ * Returns `[x, y1]` values for a given datum with `fittingIndex`
+ */
+export const getXYValues = ({ x, y1, fittingIndex }: WithIndex<FullDataSeriesDatum>): [number, number] => {
+  return [typeof x === 'string' ? fittingIndex : x, y1];
+};
+
 export const getValue = (
   current: DataSeriesDatum,
-  previous: FullDataSeriesDatum | null,
-  next: FullDataSeriesDatum | null,
+  currentIndex: number,
+  previous: WithIndex<FullDataSeriesDatum> | null,
+  next: WithIndex<FullDataSeriesDatum> | null,
   type: BoundingFit,
   endValue?: number | 'nearest',
 ): DataSeriesDatum => {
@@ -45,20 +58,14 @@ export const getValue = (
           y1: (previous.y1 + next.y1) / 2,
         },
       };
-    } else if (
-      current.x !== null &&
-      typeof current.x === 'number' &&
-      previous.x !== null &&
-      typeof previous.x === 'number' &&
-      next.x !== null &&
-      typeof next.x === 'number'
-    ) {
-      const { y1, x: x1 } = previous;
-      const { y1: y2, x: x2 } = next;
+    } else if (current.x !== null && previous.x !== null && next.x !== null) {
+      const [x1, y1] = getXYValues(previous);
+      const [x2, y2] = getXYValues(next);
+      const currentX = typeof current.x === 'string' ? currentIndex : current.x;
 
       if (type === Fit.Nearest) {
-        const x1Delta = Math.abs(current.x - x1);
-        const x2Delta = Math.abs(current.x - x2);
+        const x1Delta = Math.abs(currentX - x1);
+        const x2Delta = Math.abs(currentX - x2);
         return {
           ...current,
           filled: {
@@ -70,7 +77,7 @@ export const getValue = (
           ...current,
           filled: {
             // simple linear interpolation function
-            y1: previous.y1 + (current.x - x1) * ((y2 - y1) / (x2 - x1)),
+            y1: previous.y1 + (currentX - x1) * ((y2 - y1) / (x2 - x1)),
           },
         };
       }
@@ -169,8 +176,8 @@ export const fitFunction = (
   const sortedData =
     sorted || xScaleType === ScaleType.Ordinal ? data : data.slice().sort(datumXSortPredicate(xScaleType));
   const newData: DataSeriesDatum[] = [];
-  let previousNonNullDatum: FullDataSeriesDatum | null = null;
-  let nextNonNullDatum: FullDataSeriesDatum | null = null;
+  let previousNonNullDatum: WithIndex<FullDataSeriesDatum> | null = null;
+  let nextNonNullDatum: WithIndex<FullDataSeriesDatum> | null = null;
 
   for (let i = 0; i < sortedData.length; i++) {
     let j = i;
@@ -190,25 +197,33 @@ export const fitFunction = (
         const value = sortedData[j];
 
         if (value.y1 !== null && value.x !== null) {
-          nextNonNullDatum = value as FullDataSeriesDatum;
+          nextNonNullDatum = {
+            ...(value as FullDataSeriesDatum),
+            fittingIndex: j,
+          };
           break;
         }
       }
     }
 
     const newValue =
-      current.y1 === null ? getValue(current, previousNonNullDatum, nextNonNullDatum, type, endValue) : current;
+      current.y1 === null ? getValue(current, i, previousNonNullDatum, nextNonNullDatum, type, endValue) : current;
 
     newData[i] = newValue;
 
     if (current.y1 !== null && current.x !== null) {
-      previousNonNullDatum = current as FullDataSeriesDatum;
+      previousNonNullDatum = {
+        ...(current as FullDataSeriesDatum),
+        fittingIndex: i,
+      };
     }
 
     if (nextNonNullDatum !== null && nextNonNullDatum.x <= current.x) {
       nextNonNullDatum = null;
     }
   }
+
+  console.log(newData);
 
   return {
     ...dataSeries,
