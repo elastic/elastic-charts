@@ -57,6 +57,7 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: SPEC_ID,
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
@@ -94,6 +95,7 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: SPEC_ID,
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
@@ -235,6 +237,7 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: spec1Id,
+          key: 'spec{bar1}yAccessor{null}splitAccessors{}',
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
@@ -272,6 +275,7 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: spec1Id,
+          key: 'spec{bar1}yAccessor{null}splitAccessors{}',
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
@@ -320,6 +324,7 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: spec2Id,
+          key: 'spec{bar2}yAccessor{null}splitAccessors{}',
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
@@ -357,6 +362,7 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: spec2Id,
+          key: 'spec{bar2}yAccessor{null}splitAccessors{}',
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
@@ -427,6 +433,7 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: SPEC_ID,
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
@@ -464,6 +471,7 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: SPEC_ID,
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
@@ -515,7 +523,7 @@ describe('Rendering bars', () => {
     test('Can render correct bar height', () => {
       const { barGeometries } = renderBars(
         0,
-        { ...barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0], data: [] },
+        barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
@@ -587,6 +595,7 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: spec1Id,
+          key: 'spec{bar1}yAccessor{null}splitAccessors{}',
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
@@ -624,6 +633,7 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: spec1Id,
+          key: 'spec{bar1}yAccessor{null}splitAccessors{}',
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
@@ -672,6 +682,7 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: spec2Id,
+          key: 'spec{bar2}yAccessor{null}splitAccessors{}',
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
@@ -709,6 +720,7 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: spec2Id,
+          key: 'spec{bar2}yAccessor{null}splitAccessors{}',
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
@@ -794,6 +806,7 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: spec1Id,
+          key: 'spec{bar1}yAccessor{null}splitAccessors{}',
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
@@ -831,6 +844,7 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: spec1Id,
+          key: 'spec{bar1}yAccessor{null}splitAccessors{}',
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
@@ -879,6 +893,7 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: spec2Id,
+          key: 'spec{bar2}yAccessor{null}splitAccessors{}',
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
@@ -916,6 +931,7 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: spec2Id,
+          key: 'spec{bar2}yAccessor{null}splitAccessors{}',
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],

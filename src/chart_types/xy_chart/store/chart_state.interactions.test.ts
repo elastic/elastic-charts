@@ -226,7 +226,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     store = initStore(spec);
     const barSeriesMap = new Map();
     barSeriesMap.set(SPEC_ID, spec);
-    const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
+    const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map(), undefined);
     const barSeriesScale = computeXScale({
       xDomain: barSeriesDomains.xDomain,
       totalBarsInCluster: barSeriesMap.size,

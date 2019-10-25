@@ -680,7 +680,7 @@ export class ChartStore {
   });
 
   setSeriesColor = action((legendItemKey: string, color: string) => {
-    if (color) {
+    if (color && legendItemKey) {
       // TODO make sure this logic works when legend color picker is reintroduced
       this.seriesColorOverrides.set(legendItemKey, color);
       this.computeChart();

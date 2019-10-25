@@ -133,6 +133,7 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -154,7 +155,7 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
-          key: '',
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -170,8 +171,8 @@ describe('Rendering points - areas', () => {
     });
   });
   describe('Multi series area chart - ordinal', () => {
-    const spec1Id = getSpecId('point1');
-    const spec2Id = getSpecId('point2');
+    const spec1Id = getSpecId('spec_1');
+    const spec2Id = getSpecId('spec_2');
     const pointSeriesSpec1: AreaSeriesSpec = {
       id: spec1Id,
       groupId: GROUP_ID,
@@ -270,7 +271,7 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
-          key: '',
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -292,7 +293,9 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
         },
+        styleOverrides: undefined,
         value: {
           accessor: 'y1',
           x: 1,
@@ -321,7 +324,7 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
+          key: 'spec{spec_2}yAccessor{null}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -343,7 +346,7 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
-          key: '',
+          key: 'spec{spec_2}yAccessor{null}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -421,6 +424,7 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -442,8 +446,9 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
-          key: '',
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
         },
+        styleOverrides: undefined,
         value: {
           accessor: 'y1',
           x: 1,
@@ -458,8 +463,8 @@ describe('Rendering points - areas', () => {
     });
   });
   describe('Multi series area chart - linear', () => {
-    const spec1Id = getSpecId('point1');
-    const spec2Id = getSpecId('point2');
+    const spec1Id = getSpecId('spec_1');
+    const spec2Id = getSpecId('spec_2');
     const pointSeriesSpec1: AreaSeriesSpec = {
       id: spec1Id,
       groupId: GROUP_ID,
@@ -557,7 +562,7 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
-          key: '',
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -579,7 +584,7 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
-          key: '',
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -609,8 +614,9 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
-          key: '',
+          key: 'spec{spec_2}yAccessor{null}splitAccessors{}',
         },
+        styleOverrides: undefined,
         value: {
           accessor: 'y1',
           x: 0,
@@ -631,7 +637,7 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
-          key: '',
+          key: 'spec{spec_2}yAccessor{null}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -747,8 +753,8 @@ describe('Rendering points - areas', () => {
     });
   });
   describe('Multi series area chart - time', () => {
-    const spec1Id = getSpecId('point1');
-    const spec2Id = getSpecId('point2');
+    const spec1Id = getSpecId('spec_1');
+    const spec2Id = getSpecId('spec_2');
     const pointSeriesSpec1: AreaSeriesSpec = {
       id: spec1Id,
       groupId: GROUP_ID,
@@ -831,7 +837,7 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
-          key: 'spec{point1}yAccessor{null}splitAccessors{}',
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -853,7 +859,7 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
-          key: 'spec{point1}yAccessor{null}splitAccessors{}',
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -883,7 +889,7 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
-          key: 'spec{point2}yAccessor{null}splitAccessors{}',
+          key: 'spec{spec_2}yAccessor{null}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -905,7 +911,7 @@ describe('Rendering points - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
-          key: 'spec{point2}yAccessor{null}splitAccessors{}',
+          key: 'spec{spec_2}yAccessor{null}splitAccessors{}',
         },
         value: {
           accessor: 'y1',

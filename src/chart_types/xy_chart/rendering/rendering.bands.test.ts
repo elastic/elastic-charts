@@ -133,7 +133,7 @@ describe('Rendering bands - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
-          key: '',
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
         },
         styleOverrides: undefined,
         value: {
@@ -157,8 +157,9 @@ describe('Rendering bands - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
-          key: '',
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
         },
+        styleOverrides: undefined,
         value: {
           accessor: 'y1',
           x: 0,
@@ -179,13 +180,14 @@ describe('Rendering bands - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
-          key: '',
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
         },
         value: {
           accessor: 'y0',
           x: 1,
           y: 3,
         },
+        styleOverrides: undefined,
         transform: {
           x: 25,
           y: 0,
@@ -201,8 +203,9 @@ describe('Rendering bands - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
-          key: '',
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
         },
+        styleOverrides: undefined,
         value: {
           accessor: 'y1',
           x: 1,
@@ -535,7 +538,7 @@ describe('Rendering bands - areas', () => {
           yAccessor: null,
           splitAccessors: new Map(),
           seriesKeys: [],
-          key: '',
+          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
         },
         displayValue: undefined,
         seriesStyle: {

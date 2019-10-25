@@ -89,7 +89,7 @@ export function updateDeselectedDataSeries(series: SeriesIdentifier[], target: S
 }
 
 /**
- * Return map assocition between `seriesKey` and custom colors string
+ * Return map assocition between `seriesKey` and only the custom colors string
  * @param seriesSpecs
  * @param seriesCollection
  */
@@ -100,16 +100,21 @@ export function getCustomSeriesColors(
 ): Map<string, string> {
   const updatedCustomSeriesColors = new Map<string, string>();
   seriesSpecs.forEach(({ customSeriesColors }) => {
-    if (customSeriesColors) {
+    if (customSeriesColors || seriesColorOverrides.size > 0) {
       let counter = 0;
 
       seriesCollection.forEach(({ seriesIdentifier }, seriesKey) => {
-        const colorOverride = seriesColorOverrides.get(seriesKey);
-        const color =
-          colorOverride ||
-          (Array.isArray(customSeriesColors)
+        let color: string | undefined | null;
+
+        if (seriesColorOverrides.has(seriesKey)) {
+          color = seriesColorOverrides.get(seriesKey);
+        }
+
+        if (!color && customSeriesColors) {
+          color = Array.isArray(customSeriesColors)
             ? customSeriesColors[counter % customSeriesColors.length]
-            : customSeriesColors(seriesIdentifier));
+            : customSeriesColors(seriesIdentifier);
+        }
 
         if (color) {
           updatedCustomSeriesColors.set(seriesKey, color);

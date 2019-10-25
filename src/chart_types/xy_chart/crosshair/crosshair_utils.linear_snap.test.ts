@@ -59,28 +59,28 @@ describe('Crosshair utils linear scale', () => {
 
   const barSeriesMap = new Map();
   barSeriesMap.set(barSeries1SpecId, barSeries1);
-  const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
+  const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map(), undefined);
 
   const multiBarSeriesMap = new Map();
   multiBarSeriesMap.set(barSeries1SpecId, barSeries1);
   multiBarSeriesMap.set(barSeries2SpecId, barSeries2);
-  const multiBarSeriesDomains = computeSeriesDomains(multiBarSeriesMap, new Map());
+  const multiBarSeriesDomains = computeSeriesDomains(multiBarSeriesMap, new Map(), undefined);
 
   const lineSeriesMap = new Map();
   lineSeriesMap.set(lineSeries1SpecId, lineSeries1);
-  const lineSeriesDomains = computeSeriesDomains(lineSeriesMap, new Map());
+  const lineSeriesDomains = computeSeriesDomains(lineSeriesMap, new Map(), undefined);
 
   const multiLineSeriesMap = new Map();
   multiLineSeriesMap.set(lineSeries1SpecId, lineSeries1);
   multiLineSeriesMap.set(lineSeries2SpecId, lineSeries2);
-  const multiLineSeriesDomains = computeSeriesDomains(multiLineSeriesMap, new Map());
+  const multiLineSeriesDomains = computeSeriesDomains(multiLineSeriesMap, new Map(), undefined);
 
   const mixedLinesBarsMap = new Map();
   mixedLinesBarsMap.set(lineSeries1SpecId, lineSeries1);
   mixedLinesBarsMap.set(lineSeries2SpecId, lineSeries2);
   mixedLinesBarsMap.set(barSeries1SpecId, barSeries1);
   mixedLinesBarsMap.set(barSeries2SpecId, barSeries2);
-  const mixedLinesBarsSeriesDomains = computeSeriesDomains(mixedLinesBarsMap, new Map());
+  const mixedLinesBarsSeriesDomains = computeSeriesDomains(mixedLinesBarsMap, new Map(), undefined);
 
   const barSeriesScale = computeXScale({
     xDomain: barSeriesDomains.xDomain,

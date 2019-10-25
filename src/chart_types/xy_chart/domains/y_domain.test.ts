@@ -19,7 +19,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: [{ x: 1, y1: 2 }, { x: 2, y1: 2 }, { x: 3, y1: 2 }, { x: 4, y1: 5 }],
       },
       {
@@ -27,7 +27,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: [{ x: 1, y1: 2 }, { x: 4, y1: 7 }],
       },
     ];
@@ -64,7 +64,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: [{ x: 1, y1: 2 }, { x: 2, y1: 2 }, { x: 3, y1: 2 }, { x: 4, y1: 5 }],
       },
       {
@@ -72,7 +72,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: [{ x: 1, y1: 2 }, { x: 4, y1: 7 }],
       },
     ];
@@ -82,7 +82,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: [{ x: 1, y1: 10 }, { x: 2, y1: 10 }, { x: 3, y1: 2 }, { x: 4, y1: 5 }],
       },
     ];
@@ -135,7 +135,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: [{ x: 1, y1: 2 }, { x: 2, y1: 2 }, { x: 3, y1: 2 }, { x: 4, y1: 5 }],
       },
       {
@@ -143,7 +143,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: [{ x: 1, y1: 2 }, { x: 4, y1: 7 }],
       },
     ];
@@ -153,7 +153,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: [{ x: 1, y1: 10 }, { x: 2, y1: 10 }, { x: 3, y1: 2 }, { x: 4, y1: 5 }],
       },
     ];
@@ -199,7 +199,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: [{ x: 1, y1: 2 }, { x: 2, y1: 2 }, { x: 3, y1: 2 }, { x: 4, y1: 5 }],
       },
       {
@@ -207,7 +207,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: [{ x: 1, y1: 2 }, { x: 4, y1: 7 }],
       },
     ];
@@ -217,7 +217,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: [{ x: 1, y1: 10 }, { x: 2, y1: 10 }, { x: 3, y1: 2 }, { x: 4, y1: 5 }],
       },
     ];
@@ -263,7 +263,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: new Array(maxValues).fill(0).map((d, i) => ({ x: i, y1: i })),
       },
       {
@@ -271,7 +271,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: new Array(maxValues).fill(0).map((d, i) => ({ x: i, y1: i })),
       },
     ];
@@ -281,7 +281,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: new Array(maxValues).fill(0).map((d, i) => ({ x: i, y1: i })),
       },
     ];
@@ -472,7 +472,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: [{ x: 1, y1: 2 }, { x: 2, y1: 2 }, { x: 3, y1: 2 }, { x: 4, y1: 5 }],
       },
       {
@@ -480,7 +480,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: [{ x: 1, y1: 2 }, { x: 4, y1: 7 }],
       },
     ];
@@ -510,7 +510,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: [{ x: 1, y1: 2 }, { x: 2, y1: 2 }, { x: 3, y1: 2 }, { x: 4, y1: 5 }],
       },
       {
@@ -518,7 +518,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: [{ x: 1, y1: 2 }, { x: 4, y1: 7 }],
       },
     ];
@@ -560,7 +560,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: [{ x: 1, y1: 2 }, { x: 2, y1: 2 }, { x: 3, y1: 2 }, { x: 4, y1: 5 }],
       },
       {
@@ -568,7 +568,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: [{ x: 1, y1: 2 }, { x: 4, y1: 7 }],
       },
     ];
@@ -610,7 +610,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: [{ x: 1, y1: 2 }, { x: 2, y1: 2 }, { x: 3, y1: 2 }, { x: 4, y1: 5 }],
       },
       {
@@ -618,7 +618,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: [{ x: 1, y1: 2 }, { x: 4, y1: 7 }],
       },
     ];
@@ -656,7 +656,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: [{ x: 1, y1: 2 }, { x: 2, y1: 2 }, { x: 3, y1: 2 }, { x: 4, y1: 5 }],
       },
       {
@@ -664,7 +664,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: [{ x: 1, y1: 2 }, { x: 4, y1: 7 }],
       },
     ];
@@ -706,7 +706,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: [{ x: 1, y1: 2 }, { x: 2, y1: 2 }, { x: 3, y1: 2 }, { x: 4, y1: 5 }],
       },
       {
@@ -714,7 +714,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: [{ x: 1, y1: 2 }, { x: 4, y1: 7 }],
       },
     ];
@@ -750,7 +750,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: [{ x: 1, y1: 2 }, { x: 2, y1: 2 }, { x: 3, y1: 2 }, { x: 4, y1: 5 }],
       },
       {
@@ -758,7 +758,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: [{ x: 1, y1: 2 }, { x: 4, y1: 7 }],
       },
     ];
@@ -768,7 +768,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: [{ x: 1, y1: 10 }, { x: 2, y1: 10 }, { x: 3, y1: 2 }, { x: 4, y1: 5 }],
       },
     ];
@@ -816,7 +816,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: [{ x: 1, y1: 2 }, { x: 2, y1: 2 }, { x: 3, y1: 2 }, { x: 4, y1: 5 }],
       },
       {
@@ -824,7 +824,7 @@ describe('Y Domain', () => {
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
-        seriesColorKey: '',
+        key: '',
         data: [{ x: 1, y1: 2 }, { x: 4, y1: 7 }],
       },
     ];

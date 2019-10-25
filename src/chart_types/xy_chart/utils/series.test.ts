@@ -472,10 +472,10 @@ describe('Series', () => {
     const deselectedDataSeries: SeriesIdentifier[] = [
       {
         specId,
-        yAccessor: 'y1',
+        yAccessor: splitSpec.yAccessors[0],
         splitAccessors: new Map(),
-        seriesKeys: ['y1'],
-        key: '',
+        seriesKeys: [],
+        key: 'spec{splitSpec}yAccessor{y1}splitAccessors{}',
       },
     ];
 

@@ -193,7 +193,7 @@ describe('X Domain', () => {
     const specDataSeries = new Map<SpecId, BasicSeriesSpec>();
     specDataSeries.set(ds1.id, ds1);
     specDataSeries.set(ds2.id, ds2);
-    const { xValues } = getSplittedSeries(specDataSeries);
+    const { xValues } = getSplittedSeries(specDataSeries, []);
     const mergedDomain = mergeXDomain(
       [
         {
@@ -231,7 +231,7 @@ describe('X Domain', () => {
     const specDataSeries = new Map<SpecId, BasicSeriesSpec>();
     specDataSeries.set(ds1.id, ds1);
     specDataSeries.set(ds2.id, ds2);
-    const { xValues } = getSplittedSeries(specDataSeries);
+    const { xValues } = getSplittedSeries(specDataSeries, []);
     const mergedDomain = mergeXDomain(
       [
         {
@@ -269,7 +269,7 @@ describe('X Domain', () => {
     const specDataSeries = new Map<SpecId, BasicSeriesSpec>();
     specDataSeries.set(ds1.id, ds1);
     specDataSeries.set(ds2.id, ds2);
-    const { xValues } = getSplittedSeries(specDataSeries);
+    const { xValues } = getSplittedSeries(specDataSeries, []);
     const mergedDomain = mergeXDomain(
       [
         {
@@ -311,7 +311,7 @@ describe('X Domain', () => {
     const specDataSeries = new Map<SpecId, BasicSeriesSpec>();
     specDataSeries.set(ds1.id, ds1);
     specDataSeries.set(ds2.id, ds2);
-    const { xValues } = getSplittedSeries(specDataSeries);
+    const { xValues } = getSplittedSeries(specDataSeries, []);
     const mergedDomain = mergeXDomain(
       [
         {
@@ -353,7 +353,7 @@ describe('X Domain', () => {
     const specDataSeries = new Map<SpecId, BasicSeriesSpec>();
     specDataSeries.set(ds1.id, ds1);
     specDataSeries.set(ds2.id, ds2);
-    const { xValues } = getSplittedSeries(specDataSeries);
+    const { xValues } = getSplittedSeries(specDataSeries, []);
     const mergedDomain = mergeXDomain(
       [
         {
@@ -395,7 +395,7 @@ describe('X Domain', () => {
     const specDataSeries = new Map<SpecId, BasicSeriesSpec>();
     specDataSeries.set(ds1.id, ds1);
     specDataSeries.set(ds2.id, ds2);
-    const { xValues } = getSplittedSeries(specDataSeries);
+    const { xValues } = getSplittedSeries(specDataSeries, []);
     const mergedDomain = mergeXDomain(
       [
         {
@@ -437,7 +437,7 @@ describe('X Domain', () => {
     const specDataSeries = new Map<SpecId, BasicSeriesSpec>();
     specDataSeries.set(ds1.id, ds1);
     specDataSeries.set(ds2.id, ds2);
-    const { xValues } = getSplittedSeries(specDataSeries);
+    const { xValues } = getSplittedSeries(specDataSeries, []);
     const mergedDomain = mergeXDomain(
       [
         {
@@ -479,7 +479,7 @@ describe('X Domain', () => {
     const specDataSeries = new Map<SpecId, BasicSeriesSpec>();
     specDataSeries.set(ds1.id, ds1);
     specDataSeries.set(ds2.id, ds2);
-    const { xValues } = getSplittedSeries(specDataSeries);
+    const { xValues } = getSplittedSeries(specDataSeries, []);
     const mergedDomain = mergeXDomain(
       [
         {
@@ -523,7 +523,7 @@ describe('X Domain', () => {
     const specDataSeries = new Map<SpecId, BasicSeriesSpec>();
     specDataSeries.set(ds1.id, ds1);
     specDataSeries.set(ds2.id, ds2);
-    const { xValues } = getSplittedSeries(specDataSeries);
+    const { xValues } = getSplittedSeries(specDataSeries, []);
 
     const mergedDomain = mergeXDomain(
       [
