@@ -1,7 +1,6 @@
 import React, { createRef } from 'react';
 import { inject, observer } from 'mobx-react';
 import classNames from 'classnames';
-import { debounce } from 'ts-debounce';
 
 import { isVerticalAxis, isHorizontalAxis } from '../../chart_types/xy_chart/utils/axis_utils';
 import { LegendItem as SeriesLegendItem } from '../../chart_types/xy_chart/legend/legend';
@@ -82,17 +81,19 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
     );
   }
 
-  tryLegendResize = debounce(() => {
-    const { chartTheme, legendPosition, legendItems } = this.props.chartStore!;
+  tryLegendResize = () => {
+    const { chartInitialized, chartTheme, legendPosition, legendItems } = this.props.chartStore!;
     const { width } = this.state;
 
     if (
       this.echLegend.current &&
       isVerticalAxis(legendPosition.get()) &&
+      !chartInitialized.get() &&
       width === undefined &&
       this.echLegend.current.offsetWidth > 0
     ) {
       const buffer = chartTheme.legend.spacingBuffer;
+      this.legendItemCount = legendItems.size;
 
       this.setState({
         width: this.echLegend.current.offsetWidth + buffer,
@@ -102,11 +103,12 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
     // Need to reset width to enable downsizing of width
     if (width !== undefined && legendItems.size !== this.legendItemCount) {
       this.legendItemCount = legendItems.size;
+
       this.setState({
         width: undefined,
       });
     }
-  }, 200);
+  };
 
   getLegendListStyle = (position: Position, { chartMargins, legend }: Theme): LegendListStyle => {
     const { top: paddingTop, bottom: paddingBottom, left: paddingLeft, right: paddingRight } = chartMargins;
