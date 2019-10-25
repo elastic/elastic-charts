@@ -95,7 +95,7 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
       const buffer = chartTheme.legend.spacingBuffer;
       this.legendItemCount = legendItems.size;
 
-      this.setState({
+      return this.setState({
         width: this.echLegend.current.offsetWidth + buffer,
       });
     }
