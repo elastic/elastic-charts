@@ -348,6 +348,7 @@ storiesOf('Mixed Charts', module)
       },
       'none',
     );
+    const parsedEndValue: number | 'nearest' = Number.isNaN(Number(endValue)) ? 'nearest' : Number(endValue);
     const value = number('Explicit valuve (using Fit.Explicit)', 5);
     const xScaleType = dataKey === 'ordinal' ? ScaleType.Ordinal : ScaleType.Linear;
 
@@ -375,7 +376,7 @@ storiesOf('Mixed Charts', module)
             fit={{
               type: fit,
               value: fit === Fit.Explicit ? value : undefined,
-              endValue: endValue === 'none' ? undefined : endValue,
+              endValue: endValue === 'none' ? undefined : parsedEndValue,
             }}
             data={dataset}
           />
@@ -390,7 +391,7 @@ storiesOf('Mixed Charts', module)
             fit={{
               type: fit,
               value: fit === Fit.Explicit ? value : undefined,
-              endValue: endValue === 'none' ? undefined : endValue,
+              endValue: endValue === 'none' ? undefined : parsedEndValue,
             }}
             data={dataset}
           />
