@@ -11,11 +11,11 @@ import { ScaleType } from '../../../utils/scales/scales';
 
 export interface FilledValues {
   /** the x value */
-  x: number | string;
+  x?: number | string;
   /** the max y value */
-  y1: number;
+  y1?: number;
   /** the minimum y value */
-  y0: number;
+  y0?: number;
 }
 
 export interface RawDataSeriesDatum<T = any> {
@@ -43,7 +43,7 @@ export interface DataSeriesDatum<T = any> {
   /** initial datum */
   datum?: T;
   /** the list of filled values because missing or nulls */
-  filled?: Partial<FilledValues>;
+  filled?: FilledValues;
 }
 
 export interface DataSeries {

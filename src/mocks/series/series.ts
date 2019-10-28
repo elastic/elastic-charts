@@ -2,7 +2,12 @@ import { shuffle } from 'lodash';
 
 import { mergePartial } from '../../utils/commons';
 import { getSpecId } from '../..';
-import { DataSeries, DataSeriesDatum } from '../../chart_types/xy_chart/utils/series';
+import {
+  DataSeries,
+  DataSeriesDatum,
+  RawDataSeries,
+  RawDataSeriesDatum,
+} from '../../chart_types/xy_chart/utils/series';
 import { fitFunctionData } from './data';
 import { FullDataSeriesDatum, WithIndex } from '../../chart_types/xy_chart/utils/fit_function';
 
@@ -14,7 +19,7 @@ export class MockDataSeries {
     data: [],
   };
 
-  static default(partial: Partial<DataSeries>) {
+  static default(partial?: Partial<DataSeries>) {
     return mergePartial<DataSeries>(MockDataSeries.base, partial, { mergeOptionalPartialValues: true });
   }
 
@@ -35,6 +40,41 @@ export class MockDataSeries {
   static withData(data: DataSeries['data']): DataSeries {
     return {
       ...MockDataSeries.base,
+      data,
+    };
+  }
+}
+
+export class MockRawDataSeries {
+  private static readonly base: RawDataSeries = {
+    specId: getSpecId('spec1'),
+    key: ['spec1'],
+    seriesColorKey: 'spec1',
+    data: [],
+  };
+
+  static default(partial?: Partial<RawDataSeries>) {
+    return mergePartial<RawDataSeries>(MockRawDataSeries.base, partial);
+  }
+
+  static fitFunction(
+    options: { shuffle?: boolean; ordinal?: boolean } = { shuffle: true, ordinal: false },
+  ): RawDataSeries {
+    const rawData = fitFunctionData.map(({ initialY0, initialY1, filled, ...datum }) => datum);
+    const ordinalData = options.ordinal
+      ? rawData.map((d) => ({ ...d, x: String.fromCharCode(97 + (d.x as number)) }))
+      : rawData;
+    const data = options.shuffle && !options.ordinal ? shuffle(ordinalData) : ordinalData;
+
+    return {
+      ...MockRawDataSeries.base,
+      data,
+    };
+  }
+
+  static withData(data: RawDataSeries['data']): RawDataSeries {
+    return {
+      ...MockRawDataSeries.base,
       data,
     };
   }
@@ -98,6 +138,44 @@ export class MockDataSeriesDatum {
       },
       partial,
       { mergeOptionalPartialValues: true },
+    );
+  }
+}
+
+export class MockRawDataSeriesDatum {
+  private static readonly base: RawDataSeriesDatum = {
+    x: 1,
+    y1: 1,
+    y0: 1,
+    datum: {},
+  };
+
+  static default(partial?: Partial<RawDataSeriesDatum>): RawDataSeriesDatum {
+    return mergePartial<RawDataSeriesDatum>(MockRawDataSeriesDatum.base, partial);
+  }
+
+  /**
+   * Fill raw datum with minimal values, default missing required values to `null`
+   */
+  static simple({
+    x,
+    y1 = null,
+    y0 = null,
+  }: Partial<RawDataSeriesDatum> & Pick<RawDataSeriesDatum, 'x'>): RawDataSeriesDatum {
+    return {
+      x,
+      y1,
+      y0,
+    };
+  }
+
+  static ordinal(partial?: Partial<RawDataSeriesDatum>): RawDataSeriesDatum {
+    return mergePartial<RawDataSeriesDatum>(
+      {
+        ...MockRawDataSeriesDatum.base,
+        x: 'a',
+      },
+      partial,
     );
   }
 }

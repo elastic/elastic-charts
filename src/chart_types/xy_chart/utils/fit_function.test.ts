@@ -12,7 +12,7 @@ import { DataSeries } from './series';
 import * as seriesUtils from './stacked_series_utils';
 import * as testModule from './fit_function';
 
-describe.only('Fit Function', () => {
+describe('Fit Function', () => {
   describe('getValue', () => {
     describe('Non-Ordinal scale', () => {
       it('should return current datum if next and previous are null with no endValue', () => {
@@ -524,8 +524,6 @@ describe.only('Fit Function', () => {
 
       describe('EndValues', () => {
         const sortedDS = MockDataSeries.fitFunction({ ordinal, shuffle: false });
-
-        console.log(sortedDS);
 
         describe('number value', () => {
           const endValue = 100;

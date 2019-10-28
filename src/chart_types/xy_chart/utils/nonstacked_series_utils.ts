@@ -1,15 +1,14 @@
 import { DataSeries, DataSeriesDatum, RawDataSeries } from './series';
 import { fitFunction } from './fit_function';
-import { SpecId } from '../../../utils/ids';
-import { BasicSeriesSpec, isAreaSeriesSpec, isLineSeriesSpec } from './specs';
+import { isAreaSeriesSpec, isLineSeriesSpec, SeriesSpecs } from './specs';
 import { ScaleType } from '../../../utils/scales/scales';
 
-export function formatNonStackedDataSeriesValues(
+export const formatNonStackedDataSeriesValues = (
   dataseries: RawDataSeries[],
   scaleToExtent: boolean,
-  seriesSpecs: Map<SpecId, BasicSeriesSpec>,
+  seriesSpecs: SeriesSpecs,
   xScaleType: ScaleType,
-): DataSeries[] {
+): DataSeries[] => {
   const len = dataseries.length;
   const formattedValues: DataSeries[] = [];
   for (let i = 0; i < len; i++) {
@@ -29,9 +28,9 @@ export function formatNonStackedDataSeriesValues(
     }
   }
   return formattedValues;
-}
+};
 
-export function formatNonStackedDataValues(dataSeries: RawDataSeries, scaleToExtent: boolean): DataSeries {
+export const formatNonStackedDataValues = (dataSeries: RawDataSeries, scaleToExtent: boolean): DataSeries => {
   const len = dataSeries.data.length;
   const formattedValues: DataSeries = {
     key: dataSeries.key,
@@ -64,4 +63,4 @@ export function formatNonStackedDataValues(dataSeries: RawDataSeries, scaleToExt
     formattedValues.data.push(formattedValue);
   }
   return formattedValues;
-}
+};

@@ -159,7 +159,7 @@ function getStackedFormattedSeriesDatum(
   seriesIndex: number,
   scaleToExtent: boolean,
   isPercentageMode = false,
-  filled?: Partial<FilledValues>,
+  filled?: FilledValues,
 ): DataSeriesDatum | undefined {
   const { x, datum } = data;
   const stack = stackedValues.get(x);

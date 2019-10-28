@@ -264,6 +264,8 @@ export interface SeriesScales {
 
 export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales;
 
+export type SeriesSpecs<S extends BasicSeriesSpec = BasicSeriesSpec> = Map<SpecId, S>;
+
 /**
  * This spec describe the dataset configuration used to display a bar series.
  */
