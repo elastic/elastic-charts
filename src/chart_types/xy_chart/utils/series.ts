@@ -117,17 +117,23 @@ export function splitSeries({
     if (isMultipleY) {
       yAccessors.forEach((accessor, index) => {
         const cleanedDatum = cleanDatum(datum, xAccessor, accessor, y0Accessors && y0Accessors[index]);
-        xValues.add(cleanedDatum.x);
-        const seriesKey = updateSeriesMap(series, splitAccessors, accessor, cleanedDatum, specId);
-        colorsValues.add(seriesKey);
+
+        if (cleanedDatum.x !== null && cleanedDatum.x !== undefined) {
+          xValues.add(cleanedDatum.x);
+          const seriesKey = updateSeriesMap(series, splitAccessors, accessor, cleanedDatum, specId);
+          colorsValues.add(seriesKey);
+        }
       });
     } else {
       const cleanedDatum = cleanDatum(datum, xAccessor, yAccessors[0], y0Accessors && y0Accessors[0]);
-      xValues.add(cleanedDatum.x);
-      const seriesKey = updateSeriesMap(series, splitAccessors, yAccessors[0], cleanedDatum, specId);
-      colorsValues.add(seriesKey);
+      if (cleanedDatum.x !== null && cleanedDatum.x !== undefined) {
+        xValues.add(cleanedDatum.x);
+        const seriesKey = updateSeriesMap(series, splitAccessors, yAccessors[0], cleanedDatum, specId);
+        colorsValues.add(seriesKey);
+      }
     }
   });
+
   return {
     rawDataSeries: [...series.values()],
     colorsValues,
