@@ -197,6 +197,10 @@ export type BarSeriesSpec = BasicSeriesSpec &
      * An optional functional accessor to return custom color or style for bar datum
      */
     styleAccessor?: BarStyleAccessor;
+    /**
+     * An optional value to display bars with min height for highly variable data
+     */
+    minBarHeight?: number;
   };
 
 /**
