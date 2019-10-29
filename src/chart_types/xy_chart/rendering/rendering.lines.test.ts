@@ -56,7 +56,7 @@ describe('Rendering points - line', () => {
       const { lineGeometry } = renderedLine;
       expect(lineGeometry.line).toBe('');
       expect(lineGeometry.color).toBe('red');
-      expect(lineGeometry.seriesIdentifier.seriesKeys).toEqual([]);
+      expect(lineGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
       expect(lineGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
       expect(lineGeometry.transform).toEqual({ x: 25, y: 0 });
     });
@@ -104,7 +104,7 @@ describe('Rendering points - line', () => {
       const { lineGeometry } = renderedLine;
       expect(lineGeometry.line).toBe('M0,0L50,50');
       expect(lineGeometry.color).toBe('red');
-      expect(lineGeometry.seriesIdentifier.seriesKeys).toEqual([]);
+      expect(lineGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
       expect(lineGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
       expect(lineGeometry.transform).toEqual({ x: 25, y: 0 });
     });
@@ -121,10 +121,10 @@ describe('Rendering points - line', () => {
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         styleOverrides: undefined,
         value: {
@@ -144,10 +144,10 @@ describe('Rendering points - line', () => {
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         value: {
           accessor: 'y1',
@@ -235,13 +235,13 @@ describe('Rendering points - line', () => {
     test('Can render two ordinal lines', () => {
       expect(firstLine.lineGeometry.line).toBe('M0,50L50,75');
       expect(firstLine.lineGeometry.color).toBe('red');
-      expect(firstLine.lineGeometry.seriesIdentifier.seriesKeys).toEqual([]);
+      expect(firstLine.lineGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
       expect(firstLine.lineGeometry.seriesIdentifier.specId).toEqual(spec1Id);
       expect(firstLine.lineGeometry.transform).toEqual({ x: 25, y: 0 });
 
       expect(secondLine.lineGeometry.line).toBe('M0,0L50,50');
       expect(secondLine.lineGeometry.color).toBe('blue');
-      expect(secondLine.lineGeometry.seriesIdentifier.seriesKeys).toEqual([]);
+      expect(secondLine.lineGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
       expect(secondLine.lineGeometry.seriesIdentifier.specId).toEqual(spec2Id);
       expect(secondLine.lineGeometry.transform).toEqual({ x: 25, y: 0 });
     });
@@ -258,10 +258,10 @@ describe('Rendering points - line', () => {
         color: 'red',
         seriesIdentifier: {
           specId: spec1Id,
-          key: 'spec{point1}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{point1}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         value: {
           accessor: 'y1',
@@ -280,10 +280,10 @@ describe('Rendering points - line', () => {
         radius: 10,
         seriesIdentifier: {
           specId: spec1Id,
-          key: 'spec{point1}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{point1}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         value: {
           accessor: 'y1',
@@ -310,10 +310,10 @@ describe('Rendering points - line', () => {
         radius: 10,
         seriesIdentifier: {
           specId: spec2Id,
-          key: 'spec{point2}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{point2}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         value: {
           accessor: 'y1',
@@ -332,10 +332,10 @@ describe('Rendering points - line', () => {
         radius: 10,
         seriesIdentifier: {
           specId: spec2Id,
-          key: 'spec{point2}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{point2}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         value: {
           accessor: 'y1',
@@ -393,7 +393,7 @@ describe('Rendering points - line', () => {
     test('Can render a linear line', () => {
       expect(renderedLine.lineGeometry.line).toBe('M0,0L100,50');
       expect(renderedLine.lineGeometry.color).toBe('red');
-      expect(renderedLine.lineGeometry.seriesIdentifier.seriesKeys).toEqual([]);
+      expect(renderedLine.lineGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
       expect(renderedLine.lineGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
       expect(renderedLine.lineGeometry.transform).toEqual({ x: 0, y: 0 });
     });
@@ -409,10 +409,10 @@ describe('Rendering points - line', () => {
         radius: 10,
         seriesIdentifier: {
           specId: SPEC_ID,
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         value: {
           accessor: 'y1',
@@ -431,10 +431,10 @@ describe('Rendering points - line', () => {
         radius: 10,
         seriesIdentifier: {
           specId: SPEC_ID,
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         value: {
           accessor: 'y1',
@@ -521,13 +521,13 @@ describe('Rendering points - line', () => {
     test('can render two linear lines', () => {
       expect(firstLine.lineGeometry.line).toBe('M0,50L100,75');
       expect(firstLine.lineGeometry.color).toBe('red');
-      expect(firstLine.lineGeometry.seriesIdentifier.seriesKeys).toEqual([]);
+      expect(firstLine.lineGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
       expect(firstLine.lineGeometry.seriesIdentifier.specId).toEqual(spec1Id);
       expect(firstLine.lineGeometry.transform).toEqual({ x: 0, y: 0 });
 
       expect(secondLine.lineGeometry.line).toBe('M0,0L100,50');
       expect(secondLine.lineGeometry.color).toBe('blue');
-      expect(secondLine.lineGeometry.seriesIdentifier.seriesKeys).toEqual([]);
+      expect(secondLine.lineGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
       expect(secondLine.lineGeometry.seriesIdentifier.specId).toEqual(spec2Id);
       expect(secondLine.lineGeometry.transform).toEqual({ x: 0, y: 0 });
     });
@@ -544,10 +544,10 @@ describe('Rendering points - line', () => {
         color: 'red',
         seriesIdentifier: {
           specId: spec1Id,
-          key: 'spec{point1}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{point1}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         value: {
           accessor: 'y1',
@@ -566,10 +566,10 @@ describe('Rendering points - line', () => {
         color: 'red',
         seriesIdentifier: {
           specId: spec1Id,
-          key: 'spec{point1}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{point1}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         value: {
           accessor: 'y1',
@@ -596,10 +596,10 @@ describe('Rendering points - line', () => {
         radius: 10,
         seriesIdentifier: {
           specId: spec2Id,
-          key: 'spec{point2}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{point2}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         value: {
           accessor: 'y1',
@@ -618,10 +618,10 @@ describe('Rendering points - line', () => {
         radius: 10,
         seriesIdentifier: {
           specId: spec2Id,
-          key: 'spec{point2}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{point2}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         value: {
           accessor: 'y1',
@@ -679,7 +679,7 @@ describe('Rendering points - line', () => {
     test('Can render a time line', () => {
       expect(renderedLine.lineGeometry.line).toBe('M0,0L100,50');
       expect(renderedLine.lineGeometry.color).toBe('red');
-      expect(renderedLine.lineGeometry.seriesIdentifier.seriesKeys).toEqual([]);
+      expect(renderedLine.lineGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
       expect(renderedLine.lineGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
       expect(renderedLine.lineGeometry.transform).toEqual({ x: 0, y: 0 });
     });
@@ -695,10 +695,10 @@ describe('Rendering points - line', () => {
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         value: {
           accessor: 'y1',
@@ -717,10 +717,10 @@ describe('Rendering points - line', () => {
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         value: {
           accessor: 'y1',
@@ -817,10 +817,10 @@ describe('Rendering points - line', () => {
         color: 'red',
         seriesIdentifier: {
           specId: spec1Id,
-          key: 'spec{point1}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{point1}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         value: {
           accessor: 'y1',
@@ -839,10 +839,10 @@ describe('Rendering points - line', () => {
         color: 'red',
         seriesIdentifier: {
           specId: spec1Id,
-          key: 'spec{point1}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{point1}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         value: {
           accessor: 'y1',
@@ -869,10 +869,10 @@ describe('Rendering points - line', () => {
         color: 'blue',
         seriesIdentifier: {
           specId: spec2Id,
-          key: 'spec{point2}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{point2}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         value: {
           accessor: 'y1',
@@ -891,10 +891,10 @@ describe('Rendering points - line', () => {
         color: 'blue',
         seriesIdentifier: {
           specId: spec2Id,
-          key: 'spec{point2}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{point2}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         value: {
           accessor: 'y1',
@@ -953,7 +953,7 @@ describe('Rendering points - line', () => {
       // expect(renderedLine.lineGeometry.line).toBe('ss');
       expect(renderedLine.lineGeometry.line.split('M').length - 1).toBe(3);
       expect(renderedLine.lineGeometry.color).toBe('red');
-      expect(renderedLine.lineGeometry.seriesIdentifier.seriesKeys).toEqual([]);
+      expect(renderedLine.lineGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
       expect(renderedLine.lineGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
       expect(renderedLine.lineGeometry.transform).toEqual({ x: 0, y: 0 });
     });
@@ -1039,10 +1039,10 @@ describe('Rendering points - line', () => {
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         value: {
           accessor: 'y1',
@@ -1061,10 +1061,10 @@ describe('Rendering points - line', () => {
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         value: {
           accessor: 'y1',

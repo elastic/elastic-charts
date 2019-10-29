@@ -57,10 +57,10 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: SPEC_ID,
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -95,10 +95,10 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: SPEC_ID,
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -237,10 +237,10 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: spec1Id,
-          key: 'spec{bar1}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{bar1}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -275,10 +275,10 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: spec1Id,
-          key: 'spec{bar1}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{bar1}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -324,10 +324,10 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: spec2Id,
-          key: 'spec{bar2}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{bar2}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -362,10 +362,10 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: spec2Id,
-          key: 'spec{bar2}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{bar2}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -433,10 +433,10 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: SPEC_ID,
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -471,10 +471,10 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: SPEC_ID,
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -595,10 +595,10 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: spec1Id,
-          key: 'spec{bar1}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{bar1}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -633,10 +633,10 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: spec1Id,
-          key: 'spec{bar1}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{bar1}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -682,10 +682,10 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: spec2Id,
-          key: 'spec{bar2}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{bar2}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -720,10 +720,10 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: spec2Id,
-          key: 'spec{bar2}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{bar2}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -806,10 +806,10 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: spec1Id,
-          key: 'spec{bar1}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{bar1}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -844,10 +844,10 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: spec1Id,
-          key: 'spec{bar1}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{bar1}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -893,10 +893,10 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: spec2Id,
-          key: 'spec{bar2}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{bar2}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         displayValue: undefined,
         seriesStyle: {
@@ -931,10 +931,10 @@ describe('Rendering bars', () => {
         },
         seriesIdentifier: {
           specId: spec2Id,
-          key: 'spec{bar2}yAccessor{null}splitAccessors{}',
-          yAccessor: null,
+          key: 'spec{bar2}yAccessor{1}splitAccessors{}',
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
+          seriesKeys: [1],
         },
         displayValue: undefined,
         seriesStyle: {

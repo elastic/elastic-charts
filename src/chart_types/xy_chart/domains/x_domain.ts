@@ -145,7 +145,6 @@ export function convertXScaleTypes(
   isBandScale: boolean;
   timeZone?: string;
 } | null {
-  console.log('!!!!! SPECS \n\n\n\n', specs);
   const seriesTypes = new Set<string>();
   const scaleTypes = new Set<ScaleType>();
   const timeZones = new Set<string>();

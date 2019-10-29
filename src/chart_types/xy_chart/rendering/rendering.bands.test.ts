@@ -59,7 +59,7 @@ describe('Rendering bands - areas', () => {
       expect(lines.length).toBe(0);
       expect(area).toBe('');
       expect(color).toBe('red');
-      expect(seriesIdentifier.seriesKeys).toEqual([]);
+      expect(seriesIdentifier.seriesKeys).toEqual([2]);
       expect(seriesIdentifier.specId).toEqual(SPEC_ID);
       expect(transform).toEqual({ x: 25, y: 0 });
     });
@@ -113,7 +113,7 @@ describe('Rendering bands - areas', () => {
       expect(lines[1]).toBe('M0,80L50,70');
       expect(area).toBe('M0,0L50,50L50,70L0,80Z');
       expect(color).toBe('red');
-      expect(seriesIdentifier.seriesKeys).toEqual([]);
+      expect(seriesIdentifier.seriesKeys).toEqual([2]);
       expect(seriesIdentifier.specId).toEqual(SPEC_ID);
       expect(transform).toEqual({ x: 25, y: 0 });
     });
@@ -130,10 +130,10 @@ describe('Rendering bands - areas', () => {
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
-          yAccessor: null,
+          yAccessor: 2,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
+          seriesKeys: [2],
+          key: 'spec{spec_1}yAccessor{2}splitAccessors{}',
         },
         styleOverrides: undefined,
         value: {
@@ -154,10 +154,10 @@ describe('Rendering bands - areas', () => {
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
-          yAccessor: null,
+          yAccessor: 2,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
+          seriesKeys: [2],
+          key: 'spec{spec_1}yAccessor{2}splitAccessors{}',
         },
         styleOverrides: undefined,
         value: {
@@ -177,10 +177,10 @@ describe('Rendering bands - areas', () => {
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
-          yAccessor: null,
+          yAccessor: 2,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
+          seriesKeys: [2],
+          key: 'spec{spec_1}yAccessor{2}splitAccessors{}',
         },
         value: {
           accessor: 'y0',
@@ -200,10 +200,10 @@ describe('Rendering bands - areas', () => {
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
-          yAccessor: null,
+          yAccessor: 2,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
+          seriesKeys: [2],
+          key: 'spec{spec_1}yAccessor{2}splitAccessors{}',
         },
         styleOverrides: undefined,
         value: {
@@ -267,7 +267,7 @@ describe('Rendering bands - areas', () => {
       expect(lines[1]).toBe('M0,80ZM50,70L75,70');
       expect(area).toBe('M0,0L0,80ZM50,50L75,50L75,70L50,70Z');
       expect(color).toBe('red');
-      expect(seriesIdentifier.seriesKeys).toEqual([]);
+      expect(seriesIdentifier.seriesKeys).toEqual([2]);
       expect(seriesIdentifier.specId).toEqual(SPEC_ID);
       expect(transform).toEqual({ x: 25, y: 0 });
     });
@@ -285,10 +285,10 @@ describe('Rendering bands - areas', () => {
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
-          yAccessor: null,
+          yAccessor: 2,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
+          seriesKeys: [2],
+          key: 'spec{spec_1}yAccessor{2}splitAccessors{}',
         },
         value: {
           accessor: 'y0',
@@ -308,10 +308,10 @@ describe('Rendering bands - areas', () => {
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
-          yAccessor: null,
+          yAccessor: 2,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
+          seriesKeys: [2],
+          key: 'spec{spec_1}yAccessor{2}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -330,10 +330,10 @@ describe('Rendering bands - areas', () => {
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
-          yAccessor: null,
+          yAccessor: 2,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
+          seriesKeys: [2],
+          key: 'spec{spec_1}yAccessor{2}splitAccessors{}',
         },
         value: {
           accessor: 'y0',
@@ -352,10 +352,10 @@ describe('Rendering bands - areas', () => {
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
-          yAccessor: null,
+          yAccessor: 2,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
+          seriesKeys: [2],
+          key: 'spec{spec_1}yAccessor{2}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -374,10 +374,10 @@ describe('Rendering bands - areas', () => {
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
-          yAccessor: null,
+          yAccessor: 2,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
+          seriesKeys: [2],
+          key: 'spec{spec_1}yAccessor{2}splitAccessors{}',
         },
         value: {
           accessor: 'y0',
@@ -396,10 +396,10 @@ describe('Rendering bands - areas', () => {
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
-          yAccessor: null,
+          yAccessor: 2,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
+          seriesKeys: [2],
+          key: 'spec{spec_1}yAccessor{2}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -459,10 +459,10 @@ describe('Rendering bands - areas', () => {
         },
         seriesIdentifier: {
           specId: SPEC_ID,
-          yAccessor: null,
+          yAccessor: 2,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
+          seriesKeys: [2],
+          key: 'spec{spec_1}yAccessor{2}splitAccessors{}',
         },
         displayValue: undefined,
         seriesStyle: {
@@ -497,10 +497,10 @@ describe('Rendering bands - areas', () => {
         },
         seriesIdentifier: {
           specId: SPEC_ID,
-          yAccessor: null,
+          yAccessor: 2,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
+          seriesKeys: [2],
+          key: 'spec{spec_1}yAccessor{2}splitAccessors{}',
         },
         displayValue: undefined,
         seriesStyle: {
@@ -535,10 +535,10 @@ describe('Rendering bands - areas', () => {
         },
         seriesIdentifier: {
           specId: SPEC_ID,
-          yAccessor: null,
+          yAccessor: 2,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
+          seriesKeys: [2],
+          key: 'spec{spec_1}yAccessor{2}splitAccessors{}',
         },
         displayValue: undefined,
         seriesStyle: {

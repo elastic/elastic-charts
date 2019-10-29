@@ -61,7 +61,7 @@ describe('Rendering points - areas', () => {
       expect(lines.length).toBe(0);
       expect(area).toBe('');
       expect(color).toBe('red');
-      expect(seriesIdentifier.seriesKeys).toEqual([]);
+      expect(seriesIdentifier.seriesKeys).toEqual([1]);
       expect(seriesIdentifier.specId).toEqual(SPEC_ID);
       expect(transform).toEqual({ x: 25, y: 0 });
     });
@@ -112,7 +112,7 @@ describe('Rendering points - areas', () => {
       expect(lines[0]).toBe('M0,0L50,50');
       expect(area).toBe('M0,0L50,50L50,100L0,100Z');
       expect(color).toBe('red');
-      expect(seriesIdentifier.seriesKeys).toEqual([]);
+      expect(seriesIdentifier.seriesKeys).toEqual([1]);
       expect(seriesIdentifier.specId).toEqual(SPEC_ID);
       expect(transform).toEqual({ x: 25, y: 0 });
     });
@@ -130,10 +130,10 @@ describe('Rendering points - areas', () => {
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
-          yAccessor: null,
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
+          seriesKeys: [1],
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -152,10 +152,10 @@ describe('Rendering points - areas', () => {
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
-          yAccessor: null,
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
+          seriesKeys: [1],
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -244,14 +244,14 @@ describe('Rendering points - areas', () => {
       expect(firstLine.areaGeometry.lines[0]).toBe('M0,50L50,75');
       expect(firstLine.areaGeometry.area).toBe('M0,50L50,75L50,100L0,100Z');
       expect(firstLine.areaGeometry.color).toBe('red');
-      expect(firstLine.areaGeometry.seriesIdentifier.seriesKeys).toEqual([]);
+      expect(firstLine.areaGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
       expect(firstLine.areaGeometry.seriesIdentifier.specId).toEqual(spec1Id);
       expect(firstLine.areaGeometry.transform).toEqual({ x: 25, y: 0 });
 
       expect(secondLine.areaGeometry.lines[0]).toBe('M0,0L50,50');
       expect(secondLine.areaGeometry.area).toBe('M0,0L50,50L50,100L0,100Z');
       expect(secondLine.areaGeometry.color).toBe('blue');
-      expect(secondLine.areaGeometry.seriesIdentifier.seriesKeys).toEqual([]);
+      expect(secondLine.areaGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
       expect(secondLine.areaGeometry.seriesIdentifier.specId).toEqual(spec2Id);
       expect(secondLine.areaGeometry.transform).toEqual({ x: 25, y: 0 });
     });
@@ -268,10 +268,10 @@ describe('Rendering points - areas', () => {
         color: 'red',
         seriesIdentifier: {
           specId: spec1Id,
-          yAccessor: null,
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
+          seriesKeys: [1],
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -290,10 +290,10 @@ describe('Rendering points - areas', () => {
         color: 'red',
         seriesIdentifier: {
           specId: spec1Id,
-          yAccessor: null,
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
+          seriesKeys: [1],
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
         },
         styleOverrides: undefined,
         value: {
@@ -321,10 +321,10 @@ describe('Rendering points - areas', () => {
         color: 'blue',
         seriesIdentifier: {
           specId: spec2Id,
-          yAccessor: null,
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_2}yAccessor{null}splitAccessors{}',
+          seriesKeys: [1],
+          key: 'spec{spec_2}yAccessor{1}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -343,10 +343,10 @@ describe('Rendering points - areas', () => {
         color: 'blue',
         seriesIdentifier: {
           specId: spec2Id,
-          yAccessor: null,
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_2}yAccessor{null}splitAccessors{}',
+          seriesKeys: [1],
+          key: 'spec{spec_2}yAccessor{1}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -405,7 +405,7 @@ describe('Rendering points - areas', () => {
       expect(renderedArea.areaGeometry.lines[0]).toBe('M0,0L100,50');
       expect(renderedArea.areaGeometry.area).toBe('M0,0L100,50L100,100L0,100Z');
       expect(renderedArea.areaGeometry.color).toBe('red');
-      expect(renderedArea.areaGeometry.seriesIdentifier.seriesKeys).toEqual([]);
+      expect(renderedArea.areaGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
       expect(renderedArea.areaGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
       expect(renderedArea.areaGeometry.transform).toEqual({ x: 0, y: 0 });
     });
@@ -421,10 +421,10 @@ describe('Rendering points - areas', () => {
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
-          yAccessor: null,
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
+          seriesKeys: [1],
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -443,10 +443,10 @@ describe('Rendering points - areas', () => {
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
-          yAccessor: null,
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
+          seriesKeys: [1],
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
         },
         styleOverrides: undefined,
         value: {
@@ -535,14 +535,14 @@ describe('Rendering points - areas', () => {
       expect(firstLine.areaGeometry.lines[0]).toBe('M0,50L100,75');
       expect(firstLine.areaGeometry.area).toBe('M0,50L100,75L100,100L0,100Z');
       expect(firstLine.areaGeometry.color).toBe('red');
-      expect(firstLine.areaGeometry.seriesIdentifier.seriesKeys).toEqual([]);
+      expect(firstLine.areaGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
       expect(firstLine.areaGeometry.seriesIdentifier.specId).toEqual(spec1Id);
       expect(firstLine.areaGeometry.transform).toEqual({ x: 0, y: 0 });
 
       expect(secondLine.areaGeometry.lines[0]).toBe('M0,0L100,50');
       expect(secondLine.areaGeometry.area).toBe('M0,0L100,50L100,100L0,100Z');
       expect(secondLine.areaGeometry.color).toBe('blue');
-      expect(secondLine.areaGeometry.seriesIdentifier.seriesKeys).toEqual([]);
+      expect(secondLine.areaGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
       expect(secondLine.areaGeometry.seriesIdentifier.specId).toEqual(spec2Id);
       expect(secondLine.areaGeometry.transform).toEqual({ x: 0, y: 0 });
     });
@@ -559,10 +559,10 @@ describe('Rendering points - areas', () => {
         color: 'red',
         seriesIdentifier: {
           specId: spec1Id,
-          yAccessor: null,
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
+          seriesKeys: [1],
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -581,10 +581,10 @@ describe('Rendering points - areas', () => {
         color: 'red',
         seriesIdentifier: {
           specId: spec1Id,
-          yAccessor: null,
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
+          seriesKeys: [1],
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -611,10 +611,10 @@ describe('Rendering points - areas', () => {
         color: 'blue',
         seriesIdentifier: {
           specId: spec2Id,
-          yAccessor: null,
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_2}yAccessor{null}splitAccessors{}',
+          seriesKeys: [1],
+          key: 'spec{spec_2}yAccessor{1}splitAccessors{}',
         },
         styleOverrides: undefined,
         value: {
@@ -634,10 +634,10 @@ describe('Rendering points - areas', () => {
         color: 'blue',
         seriesIdentifier: {
           specId: spec2Id,
-          yAccessor: null,
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_2}yAccessor{null}splitAccessors{}',
+          seriesKeys: [1],
+          key: 'spec{spec_2}yAccessor{1}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -696,7 +696,7 @@ describe('Rendering points - areas', () => {
       expect(renderedArea.areaGeometry.lines[0]).toBe('M0,0L100,50');
       expect(renderedArea.areaGeometry.area).toBe('M0,0L100,50L100,100L0,100Z');
       expect(renderedArea.areaGeometry.color).toBe('red');
-      expect(renderedArea.areaGeometry.seriesIdentifier.seriesKeys).toEqual([]);
+      expect(renderedArea.areaGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
       expect(renderedArea.areaGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
       expect(renderedArea.areaGeometry.transform).toEqual({ x: 0, y: 0 });
     });
@@ -712,10 +712,10 @@ describe('Rendering points - areas', () => {
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
-          yAccessor: null,
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
+          seriesKeys: [1],
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -734,10 +734,10 @@ describe('Rendering points - areas', () => {
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
-          yAccessor: null,
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
+          seriesKeys: [1],
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -834,10 +834,10 @@ describe('Rendering points - areas', () => {
         color: 'red',
         seriesIdentifier: {
           specId: spec1Id,
-          yAccessor: null,
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
+          seriesKeys: [1],
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -856,10 +856,10 @@ describe('Rendering points - areas', () => {
         color: 'red',
         seriesIdentifier: {
           specId: spec1Id,
-          yAccessor: null,
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_1}yAccessor{null}splitAccessors{}',
+          seriesKeys: [1],
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -886,10 +886,10 @@ describe('Rendering points - areas', () => {
         color: 'blue',
         seriesIdentifier: {
           specId: spec2Id,
-          yAccessor: null,
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_2}yAccessor{null}splitAccessors{}',
+          seriesKeys: [1],
+          key: 'spec{spec_2}yAccessor{1}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -908,10 +908,10 @@ describe('Rendering points - areas', () => {
         color: 'blue',
         seriesIdentifier: {
           specId: spec2Id,
-          yAccessor: null,
+          yAccessor: 1,
           splitAccessors: new Map(),
-          seriesKeys: [],
-          key: 'spec{spec_2}yAccessor{null}splitAccessors{}',
+          seriesKeys: [1],
+          key: 'spec{spec_2}yAccessor{1}splitAccessors{}',
         },
         value: {
           accessor: 'y1',
@@ -971,7 +971,7 @@ describe('Rendering points - areas', () => {
       expect(renderedArea.areaGeometry.lines[0].split('M').length - 1).toBe(3);
       expect(renderedArea.areaGeometry.area.split('M').length - 1).toBe(3);
       expect(renderedArea.areaGeometry.color).toBe('red');
-      expect(renderedArea.areaGeometry.seriesIdentifier.seriesKeys).toEqual([]);
+      expect(renderedArea.areaGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
       expect(renderedArea.areaGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
       expect(renderedArea.areaGeometry.transform).toEqual({ x: 0, y: 0 });
     });

@@ -14,15 +14,16 @@ Array [
         "y1": undefined,
       },
     ],
-    "key": "spec{spec1}yAccessor{null}splitAccessors{y-1}",
+    "key": "spec{spec1}yAccessor{y1}splitAccessors{y-1}",
     "seriesKeys": Array [
       1,
+      "y1",
     ],
     "specId": "spec1",
     "splitAccessors": Map {
       "y" => 1,
     },
-    "yAccessor": null,
+    "yAccessor": "y1",
   },
   Object {
     "data": Array [
@@ -36,15 +37,16 @@ Array [
         "y1": undefined,
       },
     ],
-    "key": "spec{spec1}yAccessor{null}splitAccessors{y-2}",
+    "key": "spec{spec1}yAccessor{y1}splitAccessors{y-2}",
     "seriesKeys": Array [
       2,
+      "y1",
     ],
     "specId": "spec1",
     "splitAccessors": Map {
       "y" => 2,
     },
-    "yAccessor": null,
+    "yAccessor": "y1",
   },
   Object {
     "data": Array [
@@ -58,15 +60,16 @@ Array [
         "y1": undefined,
       },
     ],
-    "key": "spec{spec1}yAccessor{null}splitAccessors{y-10}",
+    "key": "spec{spec1}yAccessor{y1}splitAccessors{y-10}",
     "seriesKeys": Array [
       10,
+      "y1",
     ],
     "specId": "spec1",
     "splitAccessors": Map {
       "y" => 10,
     },
-    "yAccessor": null,
+    "yAccessor": "y1",
   },
   Object {
     "data": Array [
@@ -80,15 +83,16 @@ Array [
         "y1": undefined,
       },
     ],
-    "key": "spec{spec1}yAccessor{null}splitAccessors{y-6}",
+    "key": "spec{spec1}yAccessor{y1}splitAccessors{y-6}",
     "seriesKeys": Array [
       6,
+      "y1",
     ],
     "specId": "spec1",
     "splitAccessors": Map {
       "y" => 6,
     },
-    "yAccessor": null,
+    "yAccessor": "y1",
   },
 ]
 `;
@@ -178,11 +182,13 @@ Array [
         "y1": 5,
       },
     ],
-    "key": "spec{spec1}yAccessor{null}splitAccessors{}",
-    "seriesKeys": Array [],
+    "key": "spec{spec1}yAccessor{y}splitAccessors{}",
+    "seriesKeys": Array [
+      "y",
+    ],
     "specId": "spec1",
     "splitAccessors": Map {},
-    "yAccessor": null,
+    "yAccessor": "y",
   },
 ]
 `;
@@ -236,17 +242,18 @@ Array [
         "y1": 6,
       },
     ],
-    "key": "spec{spec1}yAccessor{null}splitAccessors{g1-a|g2-s}",
+    "key": "spec{spec1}yAccessor{y}splitAccessors{g1-a|g2-s}",
     "seriesKeys": Array [
       "a",
       "s",
+      "y",
     ],
     "specId": "spec1",
     "splitAccessors": Map {
       "g1" => "a",
       "g2" => "s",
     },
-    "yAccessor": null,
+    "yAccessor": "y",
   },
   Object {
     "data": Array [
@@ -295,17 +302,18 @@ Array [
         "y1": 6,
       },
     ],
-    "key": "spec{spec1}yAccessor{null}splitAccessors{g1-a|g2-p}",
+    "key": "spec{spec1}yAccessor{y}splitAccessors{g1-a|g2-p}",
     "seriesKeys": Array [
       "a",
       "p",
+      "y",
     ],
     "specId": "spec1",
     "splitAccessors": Map {
       "g1" => "a",
       "g2" => "p",
     },
-    "yAccessor": null,
+    "yAccessor": "y",
   },
   Object {
     "data": Array [
@@ -354,17 +362,18 @@ Array [
         "y1": 6,
       },
     ],
-    "key": "spec{spec1}yAccessor{null}splitAccessors{g1-b|g2-s}",
+    "key": "spec{spec1}yAccessor{y}splitAccessors{g1-b|g2-s}",
     "seriesKeys": Array [
       "b",
       "s",
+      "y",
     ],
     "specId": "spec1",
     "splitAccessors": Map {
       "g1" => "b",
       "g2" => "s",
     },
-    "yAccessor": null,
+    "yAccessor": "y",
   },
   Object {
     "data": Array [
@@ -413,17 +422,18 @@ Array [
         "y1": 6,
       },
     ],
-    "key": "spec{spec1}yAccessor{null}splitAccessors{g1-b|g2-p}",
+    "key": "spec{spec1}yAccessor{y}splitAccessors{g1-b|g2-p}",
     "seriesKeys": Array [
       "b",
       "p",
+      "y",
     ],
     "specId": "spec1",
     "splitAccessors": Map {
       "g1" => "b",
       "g2" => "p",
     },
-    "yAccessor": null,
+    "yAccessor": "y",
   },
 ]
 `;
@@ -18439,11 +18449,13 @@ Array [
         "y1": 6,
       },
     ],
-    "key": "spec{spec1}yAccessor{null}splitAccessors{}",
-    "seriesKeys": Array [],
+    "key": "spec{spec1}yAccessor{y}splitAccessors{}",
+    "seriesKeys": Array [
+      "y",
+    ],
     "specId": "spec1",
     "splitAccessors": Map {},
-    "yAccessor": null,
+    "yAccessor": "y",
   },
 ]
 `;

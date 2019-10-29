@@ -23,7 +23,7 @@ export class MockSeriesIdentifier {
     yAccessor: 'y',
     seriesKeys: ['a'],
     splitAccessors: new Map().set('g', 'a'),
-    key: 'spec{bars}yAccessor{null}splitAccessors{g-a}',
+    key: 'spec{bars}yAccessor{y}splitAccessors{g-a}',
   };
 
   static default(partial?: Partial<SeriesIdentifier>) {
