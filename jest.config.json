@@ -4,6 +4,7 @@
   ],
   "preset": "ts-jest",
   "testEnvironment": "jest-environment-jsdom-fourteen",
+  "coveragePathIgnorePatterns": ["<rootDir>/src/mocks/", "<rootDir>/node_modules/"],
   "setupFilesAfterEnv": [
     "<rootDir>/scripts/setup_enzyme.ts"
   ],

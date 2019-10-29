@@ -56,7 +56,7 @@ Array [
             "y1": 6,
           },
         ],
-        "seriesColorKey": "specId:{spec1},colors:{}",
+        "key": "spec{spec1}yAccessor{null}splitAccessors{}",
         "seriesKeys": Array [],
         "specId": "spec1",
         "splitAccessors": Map {},
@@ -119,7 +119,7 @@ Array [
             "y1": 6,
           },
         ],
-        "seriesColorKey": "specId:{spec2},colors:{}",
+        "key": "spec{spec2}yAccessor{null}splitAccessors{}",
         "seriesKeys": Array [],
         "specId": "spec2",
         "splitAccessors": Map {},
@@ -191,7 +191,7 @@ Array [
             "y1": 4,
           },
         ],
-        "seriesColorKey": "specId:{spec2},colors:{a}",
+        "key": "spec{spec2}yAccessor{null}splitAccessors{g-a}",
         "seriesKeys": Array [
           "a",
         ],
@@ -252,7 +252,7 @@ Array [
             "y1": 9,
           },
         ],
-        "seriesColorKey": "specId:{spec2},colors:{b}",
+        "key": "spec{spec2}yAccessor{null}splitAccessors{g-b}",
         "seriesKeys": Array [
           "b",
         ],
@@ -328,7 +328,7 @@ Array [
             "y1": 4,
           },
         ],
-        "seriesColorKey": "specId:{spec1},colors:{a}",
+        "key": "spec{spec1}yAccessor{null}splitAccessors{g-a}",
         "seriesKeys": Array [
           "a",
         ],
@@ -389,7 +389,7 @@ Array [
             "y1": 5,
           },
         ],
-        "seriesColorKey": "specId:{spec1},colors:{b}",
+        "key": "spec{spec1}yAccessor{null}splitAccessors{g-b}",
         "seriesKeys": Array [
           "b",
         ],

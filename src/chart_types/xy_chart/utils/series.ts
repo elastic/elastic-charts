@@ -124,7 +124,7 @@ export function splitSeries({
     } else {
       const cleanedDatum = cleanDatum(datum, xAccessor, yAccessors[0], y0Accessors && y0Accessors[0]);
       xValues.add(cleanedDatum.x);
-      const seriesKey = updateSeriesMap(series, splitAccessors, null, cleanedDatum, specId);
+      const seriesKey = updateSeriesMap(series, splitAccessors, yAccessors[0], cleanedDatum, specId);
       colorsValues.add(seriesKey);
     }
   });

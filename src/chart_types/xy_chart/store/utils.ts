@@ -99,29 +99,31 @@ export function getCustomSeriesColors(
   seriesColorOverrides: Map<string, string>,
 ): Map<string, string> {
   const updatedCustomSeriesColors = new Map<string, string>();
-  seriesSpecs.forEach(({ customSeriesColors }) => {
-    if (customSeriesColors || seriesColorOverrides.size > 0) {
-      let counter = 0;
+  const counters = new Map<SpecId, number>();
 
-      seriesCollection.forEach(({ seriesIdentifier }, seriesKey) => {
-        let color: string | undefined | null;
+  seriesCollection.forEach(({ seriesIdentifier }, seriesKey) => {
+    const spec = seriesSpecs.get(seriesIdentifier.specId);
 
-        if (seriesColorOverrides.has(seriesKey)) {
-          color = seriesColorOverrides.get(seriesKey);
-        }
+    if (!spec || !(spec.customSeriesColors || seriesColorOverrides.size > 0)) {
+      return;
+    }
 
-        if (!color && customSeriesColors) {
-          color = Array.isArray(customSeriesColors)
-            ? customSeriesColors[counter % customSeriesColors.length]
-            : customSeriesColors(seriesIdentifier);
-        }
+    let color: string | undefined | null;
 
-        if (color) {
-          updatedCustomSeriesColors.set(seriesKey, color);
-        }
+    if (seriesColorOverrides.has(seriesKey)) {
+      color = seriesColorOverrides.get(seriesKey);
+    }
 
-        counter++;
-      });
+    if (!color && spec.customSeriesColors) {
+      const counter = counters.get(seriesIdentifier.specId) || 0;
+      color = Array.isArray(spec.customSeriesColors)
+        ? spec.customSeriesColors[counter % spec.customSeriesColors.length]
+        : spec.customSeriesColors(seriesIdentifier);
+      counters.set(seriesIdentifier.specId, counter + 1);
+    }
+
+    if (color) {
+      updatedCustomSeriesColors.set(seriesKey, color);
     }
   });
   return updatedCustomSeriesColors;

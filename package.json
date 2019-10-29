@@ -146,6 +146,7 @@
     "react-spring": "^8.0.8",
     "resize-observer-polyfill": "^1.5.1",
     "ts-debounce": "^1.0.0",
+    "utility-types": "^3.9.0",
     "uuid": "^3.3.2"
   },
   "config": {

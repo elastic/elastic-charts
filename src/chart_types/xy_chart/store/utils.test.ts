@@ -8,6 +8,7 @@ import {
   BasicSeriesSpec,
   HistogramModeAlignments,
   LineSeriesSpec,
+  SeriesColorAccessorFn,
 } from '../utils/specs';
 import { BARCHART_1Y0G, BARCHART_1Y1G } from '../../../utils/data_samples/test_dataset';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
@@ -18,7 +19,6 @@ import {
   computeSeriesDomains,
   computeSeriesGeometries,
   computeXScaleOffset,
-  getUpdatedCustomSeriesColors,
   isAllSeriesDeselected,
   isChartAnimatable,
   isHistogramModeEnabled,
@@ -28,8 +28,12 @@ import {
   mergeGeometriesIndexes,
   setBarSeriesAccessors,
   updateDeselectedDataSeries,
+  getCustomSeriesColors,
 } from '../store/utils';
 import { LegendItem } from '../legend/legend';
+import { MockSeriesSpecs, MockSeriesSpec } from '../../../mocks/specs';
+import { MockSeriesCollection } from '../../../mocks/series/seriesIdentifiers';
+import { SeededDataGenerator } from '../../../mocks/utils';
 
 describe('Chart State utils', () => {
   it('should compute and format specifications for non stacked chart', () => {
@@ -143,83 +147,81 @@ describe('Chart State utils', () => {
   });
   it('should check if a SeriesCollectionValue item exists in a list of SeriesCollectionValue', () => {
     const dataSeriesValuesA: SeriesCollectionValue = {
-      specId: getSpecId('a'),
-      colorValues: ['a', 'b', 'c'],
+      seriesIdentifier: {
+        specId: getSpecId('a'),
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['a', 'b', 'c'],
+        key: 'a',
+      },
     };
-
     const dataSeriesValuesB: SeriesCollectionValue = {
-      specId: getSpecId('b'),
-      colorValues: ['a', 'b', 'c'],
+      seriesIdentifier: {
+        specId: getSpecId('b'),
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['a', 'b', 'c'],
+        key: 'b',
+      },
     };
-
     const dataSeriesValuesC: SeriesCollectionValue = {
-      specId: getSpecId('a'),
-      colorValues: ['a', 'b', 'd'],
+      seriesIdentifier: {
+        specId: getSpecId('c'),
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['a', 'b', 'd'],
+        key: 'c',
+      },
     };
-
-    const deselectedSeries = [dataSeriesValuesA, dataSeriesValuesB];
-
-    expect(getSeriesIndex(deselectedSeries, dataSeriesValuesA)).toBe(0);
-    expect(getSeriesIndex(deselectedSeries, dataSeriesValuesC)).toBe(-1);
-    expect(getSeriesIndex(null, dataSeriesValuesA)).toBe(-1);
+    const deselectedSeries = [dataSeriesValuesA.seriesIdentifier, dataSeriesValuesB.seriesIdentifier];
+    expect(getSeriesIndex(deselectedSeries, dataSeriesValuesA.seriesIdentifier)).toBe(0);
+    expect(getSeriesIndex(deselectedSeries, dataSeriesValuesC.seriesIdentifier)).toBe(-1);
+    expect(getSeriesIndex([], dataSeriesValuesA.seriesIdentifier)).toBe(-1);
   });
   it('should update a list of SeriesCollectionValue given a selected SeriesCollectionValue item', () => {
     const dataSeriesValuesA: SeriesCollectionValue = {
-      specId: getSpecId('a'),
-      colorValues: ['a', 'b', 'c'],
+      seriesIdentifier: {
+        specId: getSpecId('a'),
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['a', 'b', 'c'],
+        key: 'a',
+      },
     };
-
     const dataSeriesValuesB: SeriesCollectionValue = {
-      specId: getSpecId('b'),
-      colorValues: ['a', 'b', 'c'],
+      seriesIdentifier: {
+        specId: getSpecId('b'),
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['a', 'b', 'c'],
+        key: 'b',
+      },
     };
-
     const dataSeriesValuesC: SeriesCollectionValue = {
-      specId: getSpecId('a'),
-      colorValues: ['a', 'b', 'd'],
+      seriesIdentifier: {
+        specId: getSpecId('a'),
+        yAccessor: 'y1',
+        splitAccessors: new Map(),
+        seriesKeys: ['a', 'b', 'd'],
+        key: 'd',
+      },
     };
+    const selectedSeries = [dataSeriesValuesA.seriesIdentifier, dataSeriesValuesB.seriesIdentifier];
+    const addedSelectedSeries = [
+      dataSeriesValuesA.seriesIdentifier,
+      dataSeriesValuesB.seriesIdentifier,
+      dataSeriesValuesC.seriesIdentifier,
+    ];
+    const removedSelectedSeries = [dataSeriesValuesB.seriesIdentifier];
 
-    const selectedSeries = [dataSeriesValuesA, dataSeriesValuesB];
-    const addedSelectedSeries = [dataSeriesValuesA, dataSeriesValuesB, dataSeriesValuesC];
-    const removedSelectedSeries = [dataSeriesValuesB];
-
-    expect(updateDeselectedDataSeries(selectedSeries, dataSeriesValuesC)).toEqual(addedSelectedSeries);
-    expect(updateDeselectedDataSeries(selectedSeries, dataSeriesValuesA)).toEqual(removedSelectedSeries);
-    expect(updateDeselectedDataSeries(null, dataSeriesValuesA)).toEqual([dataSeriesValuesA]);
+    expect(updateDeselectedDataSeries(selectedSeries, dataSeriesValuesC.seriesIdentifier)).toEqual(addedSelectedSeries);
+    expect(updateDeselectedDataSeries(selectedSeries, dataSeriesValuesA.seriesIdentifier)).toEqual(
+      removedSelectedSeries,
+    );
+    expect(updateDeselectedDataSeries([], dataSeriesValuesA.seriesIdentifier)).toEqual([
+      dataSeriesValuesA.seriesIdentifier,
+    ]);
   });
-  it('should get an updated customSeriesColor based on specs', () => {
-    const spec1: BasicSeriesSpec = {
-      id: getSpecId('spec1'),
-      groupId: getGroupId('group1'),
-      seriesType: 'line',
-      yScaleType: ScaleType.Log,
-      xScaleType: ScaleType.Linear,
-      xAccessor: 'x',
-      yAccessors: ['y'],
-      yScaleToDataExtent: false,
-      data: BARCHART_1Y0G,
-    };
-
-    const specs = new Map<SpecId, BasicSeriesSpec>();
-    specs.set(spec1.id, spec1);
-
-    const emptyCustomSeriesColors = getUpdatedCustomSeriesColors(specs);
-    expect(emptyCustomSeriesColors).toEqual(new Map());
-
-    const dataSeriesColorValues = {
-      specId: spec1.id,
-      colorValues: ['bar'],
-    };
-    spec1.customSeriesColors = new Map();
-    spec1.customSeriesColors.set(dataSeriesColorValues, 'custom_color');
-
-    const updatedCustomSeriesColors = getUpdatedCustomSeriesColors(specs);
-    const expectedCustomSeriesColors = new Map();
-    expectedCustomSeriesColors.set('specId:{spec1},colors:{bar}', 'custom_color');
-
-    expect(updatedCustomSeriesColors).toEqual(expectedCustomSeriesColors);
-  });
-
   test('is horizontal chart rotation', () => {
     expect(isHorizontalRotation(0)).toBe(true);
     expect(isHorizontalRotation(180)).toBe(true);
@@ -230,7 +232,6 @@ describe('Chart State utils', () => {
     expect(isVerticalRotation(0)).toBe(false);
     expect(isVerticalRotation(180)).toBe(false);
   });
-
   test('is vertical chart rotation', () => {
     expect(isVerticalRotation(-90)).toBe(true);
     expect(isVerticalRotation(90)).toBe(true);
@@ -308,6 +309,103 @@ describe('Chart State utils', () => {
     geometriesCounts.linePoints = 301;
     expect(isChartAnimatable(geometriesCounts, true)).toBe(false);
   });
+
+  describe('getCustomSeriesColors', () => {
+    const specId1 = getSpecId('bar1');
+    const specId2 = getSpecId('bar2');
+    const dg = new SeededDataGenerator();
+    // 4 groups generated
+    const data = dg.generateGroupedSeries(50, 4);
+    const targetKey = 'spec{bar1}yAccessor{y}splitAccessors{g-b}';
+    const seriesColorOverrides = new Map([[targetKey, 'blue']]);
+
+    describe('empty series collection and specs', () => {
+      it('it should return an empty map', () => {
+        const actual = getCustomSeriesColors(MockSeriesSpecs.empty(), MockSeriesCollection.empty(), new Map());
+
+        expect(actual.size).toBe(0);
+      });
+    });
+
+    describe('series collection is not empty', () => {
+      it('it should return an empty map if no customSeriesColors', () => {
+        const barSpec1 = MockSeriesSpec.bar({ id: specId1, data });
+        const barSpec2 = MockSeriesSpec.bar({ id: specId2, data });
+        const barSeriesSpecs = MockSeriesSpecs.fromSpecs([barSpec1, barSpec2]);
+        const barSeriesCollection = MockSeriesCollection.fromSpecs(barSeriesSpecs);
+        const actual = getCustomSeriesColors(barSeriesSpecs, barSeriesCollection, new Map());
+
+        expect(actual.size).toBe(0);
+      });
+
+      describe('with customSeriesColors array', () => {
+        const customSeriesColors = ['red', 'blue', 'green'];
+        const barSpec1 = MockSeriesSpec.bar({ id: specId1, data, customSeriesColors });
+        const barSpec2 = MockSeriesSpec.bar({ id: specId2, data });
+        const barSeriesSpecs = MockSeriesSpecs.fromSpecs([barSpec1, barSpec2]);
+        const barSeriesCollection = MockSeriesCollection.fromSpecs(barSeriesSpecs);
+
+        it('it should return color from customSeriesColors array', () => {
+          const actual = getCustomSeriesColors(barSeriesSpecs, barSeriesCollection, new Map());
+
+          expect(actual.size).toBe(4);
+          barSeriesCollection.forEach(({ seriesIdentifier: { specId, key } }) => {
+            const color = actual.get(key);
+            if (specId === specId1) {
+              expect(customSeriesColors).toContainEqual(color);
+            } else {
+              expect(color).toBeUndefined();
+            }
+          });
+        });
+
+        it('it should return color from seriesColorOverrides', () => {
+          const actual = getCustomSeriesColors(barSeriesSpecs, barSeriesCollection, seriesColorOverrides);
+
+          expect(actual.size).toBe(4);
+          barSeriesCollection.forEach(({ seriesIdentifier: { specId, key } }) => {
+            const color = actual.get(key);
+            if (key === targetKey) {
+              expect(color).toBe('blue');
+            } else if (specId === specId1) {
+              expect(customSeriesColors).toContainEqual(color);
+            } else {
+              expect(color).toBeUndefined();
+            }
+          });
+        });
+      });
+
+      describe('with customSeriesColors function', () => {
+        const customSeriesColors: SeriesColorAccessorFn = ({ yAccessor, splitAccessors }) => {
+          if (yAccessor === 'y' && splitAccessors.get('g') === 'b') {
+            return 'aquamarine';
+          }
+
+          return null;
+        };
+        const barSpec1 = MockSeriesSpec.bar({ id: specId1, yAccessors: ['y'], data, customSeriesColors });
+        const barSpec2 = MockSeriesSpec.bar({ id: specId2, data });
+        const barSeriesSpecs = MockSeriesSpecs.fromSpecs([barSpec1, barSpec2]);
+        const barSeriesCollection = MockSeriesCollection.fromSpecs(barSeriesSpecs);
+
+        it('it should return color from customSeriesColors function', () => {
+          const actual = getCustomSeriesColors(barSeriesSpecs, barSeriesCollection, new Map());
+
+          expect(actual.size).toBe(1);
+          expect(actual.get(targetKey)).toBe('aquamarine');
+        });
+
+        it('it should return color from seriesColorOverrides', () => {
+          const actual = getCustomSeriesColors(barSeriesSpecs, barSeriesCollection, seriesColorOverrides);
+
+          expect(actual.size).toBe(1);
+          expect(actual.get(targetKey)).toBe('blue');
+        });
+      });
+    });
+  });
+
   describe('Geometries counts', () => {
     test('can compute stacked geometries counts', () => {
       const area: AreaSeriesSpec = {
@@ -358,8 +456,8 @@ describe('Chart State utils', () => {
       };
       const chartTheme = { ...LIGHT_THEME, colors: chartColors };
       const domainsByGroupId = mergeYCustomDomainsByGroupId(axesSpecs, chartRotation);
-      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
-      const seriesColorMap = getSeriesColors(seriesDomains.seriesColors, chartColors, new Map());
+      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId, undefined);
+      const seriesColorMap = getSeriesColors(seriesDomains.seriesCollection, chartColors, new Map());
       const geometries = computeSeriesGeometries(
         seriesSpecs,
         seriesDomains.xDomain,
@@ -411,8 +509,8 @@ describe('Chart State utils', () => {
       };
       const chartTheme = { ...LIGHT_THEME, colors: chartColors };
       const domainsByGroupId = mergeYCustomDomainsByGroupId(axesSpecs, chartRotation);
-      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
-      const seriesColorMap = getSeriesColors(seriesDomains.seriesColors, chartColors, new Map());
+      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId, undefined);
+      const seriesColorMap = getSeriesColors(seriesDomains.seriesCollection, chartColors, new Map());
       const geometries = computeSeriesGeometries(
         seriesSpecs,
         seriesDomains.xDomain,
@@ -466,8 +564,8 @@ describe('Chart State utils', () => {
       };
       const chartTheme = { ...LIGHT_THEME, colors: chartColors };
       const domainsByGroupId = mergeYCustomDomainsByGroupId(axesSpecs, chartRotation);
-      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
-      const seriesColorMap = getSeriesColors(seriesDomains.seriesColors, chartColors, new Map());
+      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId, undefined);
+      const seriesColorMap = getSeriesColors(seriesDomains.seriesCollection, chartColors, new Map());
       const geometries = computeSeriesGeometries(
         seriesSpecs,
         seriesDomains.xDomain,
@@ -546,8 +644,8 @@ describe('Chart State utils', () => {
       };
       const chartTheme = { ...LIGHT_THEME, colors: chartColors };
       const domainsByGroupId = mergeYCustomDomainsByGroupId(axesSpecs, chartRotation);
-      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
-      const seriesColorMap = getSeriesColors(seriesDomains.seriesColors, chartColors, new Map());
+      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId, undefined);
+      const seriesColorMap = getSeriesColors(seriesDomains.seriesCollection, chartColors, new Map());
       const geometries = computeSeriesGeometries(
         seriesSpecs,
         seriesDomains.xDomain,
@@ -613,8 +711,8 @@ describe('Chart State utils', () => {
       };
       const chartTheme = { ...LIGHT_THEME, colors: chartColors };
       const domainsByGroupId = mergeYCustomDomainsByGroupId(axesSpecs, chartRotation);
-      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
-      const seriesColorMap = getSeriesColors(seriesDomains.seriesColors, chartColors, new Map());
+      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId, undefined);
+      const seriesColorMap = getSeriesColors(seriesDomains.seriesCollection, chartColors, new Map());
       const geometries = computeSeriesGeometries(
         seriesSpecs,
         seriesDomains.xDomain,
@@ -680,8 +778,8 @@ describe('Chart State utils', () => {
       };
       const chartTheme = { ...LIGHT_THEME, colors: chartColors };
       const domainsByGroupId = mergeYCustomDomainsByGroupId(axesSpecs, chartRotation);
-      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
-      const seriesColorMap = getSeriesColors(seriesDomains.seriesColors, chartColors, new Map());
+      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId, undefined);
+      const seriesColorMap = getSeriesColors(seriesDomains.seriesCollection, chartColors, new Map());
       const geometries = computeSeriesGeometries(
         seriesSpecs,
         seriesDomains.xDomain,
@@ -755,8 +853,8 @@ describe('Chart State utils', () => {
       };
       const chartTheme = { ...LIGHT_THEME, colors: chartColors };
       const domainsByGroupId = mergeYCustomDomainsByGroupId(axesSpecs, chartRotation);
-      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
-      const seriesColorMap = getSeriesColors(seriesDomains.seriesColors, chartColors, new Map());
+      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId, undefined);
+      const seriesColorMap = getSeriesColors(seriesDomains.seriesCollection, chartColors, new Map());
       const geometries = computeSeriesGeometries(
         seriesSpecs,
         seriesDomains.xDomain,
@@ -842,8 +940,8 @@ describe('Chart State utils', () => {
       };
       const chartTheme = { ...LIGHT_THEME, colors: chartColors };
       const domainsByGroupId = mergeYCustomDomainsByGroupId(axesSpecs, chartRotation);
-      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
-      const seriesColorMap = getSeriesColors(seriesDomains.seriesColors, chartColors, new Map());
+      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId, undefined);
+      const seriesColorMap = getSeriesColors(seriesDomains.seriesCollection, chartColors, new Map());
       const geometries = computeSeriesGeometries(
         seriesSpecs,
         seriesDomains.xDomain,
@@ -922,8 +1020,8 @@ describe('Chart State utils', () => {
       };
       const chartTheme = { ...LIGHT_THEME, colors: chartColors };
       const domainsByGroupId = mergeYCustomDomainsByGroupId(axesSpecs, chartRotation);
-      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
-      const seriesColorMap = getSeriesColors(seriesDomains.seriesColors, chartColors, new Map());
+      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId, undefined);
+      const seriesColorMap = getSeriesColors(seriesDomains.seriesCollection, chartColors, new Map());
       const geometries = computeSeriesGeometries(
         seriesSpecs,
         seriesDomains.xDomain,
@@ -955,7 +1053,6 @@ describe('Chart State utils', () => {
         yScaleToDataExtent: false,
         data: BARCHART_1Y1G,
       };
-
       const bar1: BarSeriesSpec = {
         id: getSpecId('line3'),
         groupId: getGroupId('group2'),
@@ -984,8 +1081,8 @@ describe('Chart State utils', () => {
         },
       };
       const domainsByGroupId = mergeYCustomDomainsByGroupId(axesSpecs, chartRotation);
-      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId);
-      const seriesColorMap = getSeriesColors(seriesDomains.seriesColors, chartColors, new Map());
+      const seriesDomains = computeSeriesDomains(seriesSpecs, domainsByGroupId, undefined);
+      const seriesColorMap = getSeriesColors(seriesDomains.seriesCollection, chartColors, new Map());
       const geometries = computeSeriesGeometries(
         seriesSpecs,
         seriesDomains.xDomain,
@@ -1011,7 +1108,13 @@ describe('Chart State utils', () => {
         color: '#1EA593',
         value: { x: 0, y: 5, accessor: BandedAccessorType.Y1 },
         transform: { x: 0, y: 0 },
-        seriesIdentifier: { specId: getSpecId('line1'), yAccessor: 'y1', splitAccessors: new Map(), seriesKeys: [] },
+        seriesIdentifier: {
+          specId: getSpecId('line1'),
+          yAccessor: 'y1',
+          splitAccessors: new Map(),
+          seriesKeys: [],
+          key: '',
+        },
       },
     ]);
     const map2 = new Map<string, IndexedGeometry[]>();
@@ -1023,7 +1126,13 @@ describe('Chart State utils', () => {
         color: '#2B70F7',
         value: { x: 0, y: 2, accessor: BandedAccessorType.Y1 },
         transform: { x: 0, y: 0 },
-        seriesIdentifier: { specId: getSpecId('line2'), yAccessor: 'y1', splitAccessors: new Map(), seriesKeys: [] },
+        seriesIdentifier: {
+          specId: getSpecId('line2'),
+          yAccessor: 'y1',
+          splitAccessors: new Map(),
+          seriesKeys: [],
+          key: '',
+        },
       },
     ]);
     const merged = mergeGeometriesIndexes(map1, map2);
@@ -1045,12 +1154,9 @@ describe('Chart State utils', () => {
     );
     const histogramModeEnabled = true;
     const histogramModeDisabled = false;
-
     expect(computeXScaleOffset(scale, histogramModeDisabled)).toBe(0);
-
     // default alignment (start)
     expect(computeXScaleOffset(scale, histogramModeEnabled)).toBe(5);
-
     expect(computeXScaleOffset(scale, histogramModeEnabled, HistogramModeAlignments.Center)).toBe(0);
     expect(computeXScaleOffset(scale, histogramModeEnabled, HistogramModeAlignments.End)).toBe(-5);
   });
@@ -1113,19 +1219,15 @@ describe('Chart State utils', () => {
       [basicBar.id, basicBar],
       [histogramBar.id, histogramBar],
     ]);
-
     expect(isHistogramModeEnabled(seriesMap)).toBe(true);
-
     seriesMap.delete(histogramBar.id);
     expect(isHistogramModeEnabled(seriesMap)).toBe(false);
-
     seriesMap.delete(basicBar.id);
     expect(isHistogramModeEnabled(seriesMap)).toBe(false);
   });
   test('can set the bar series accessors dependent on histogram mode', () => {
     const isNotHistogramEnabled = false;
     const isHistogramEnabled = true;
-
     const area: AreaSeriesSpec = {
       id: getSpecId('area'),
       groupId: getGroupId('group1'),
@@ -1164,21 +1266,16 @@ describe('Chart State utils', () => {
       yScaleToDataExtent: false,
       data: BARCHART_1Y1G,
     };
-
     const seriesMap = new Map<SpecId, BasicSeriesSpec>([[area.id, area], [line.id, line]]);
-
     // should not affect area or line series
     setBarSeriesAccessors(isHistogramEnabled, seriesMap);
     expect(seriesMap).toEqual(seriesMap);
-
     // add bar series, histogram mode not enabled
     seriesMap.set(bar.id, bar);
     setBarSeriesAccessors(isNotHistogramEnabled, seriesMap);
-
     // histogram mode
     setBarSeriesAccessors(isHistogramEnabled, seriesMap);
     expect(bar.stackAccessors).toEqual(['foo', 'g']);
-
     // add another bar
     const bar2: BarSeriesSpec = {
       id: getSpecId('bar2'),
@@ -1192,7 +1289,6 @@ describe('Chart State utils', () => {
       yScaleToDataExtent: false,
       data: BARCHART_1Y1G,
     };
-
     seriesMap.set(bar2.id, bar2);
     setBarSeriesAccessors(isHistogramEnabled, seriesMap);
     expect(bar2.stackAccessors).toEqual(['y', 'bar']);
@@ -1203,7 +1299,13 @@ describe('Chart State utils', () => {
       key: 'specId:{bars},colors:{a}',
       color: '#1EA593',
       label: 'a',
-      value: { specId: getSpecId('bars'), colorValues: ['a'], lastValue: { y0: null, y1: 6 } },
+      seriesIdentifier: {
+        specId: getSpecId('bars'),
+        seriesKeys: ['a'],
+        key: '',
+        splitAccessors: new Map(),
+        yAccessor: 'y1',
+      },
       displayValue: { raw: { y0: null, y1: 6 }, formatted: { y0: null, y1: '6.00' } },
       isSeriesVisible: false,
     });
@@ -1211,7 +1313,13 @@ describe('Chart State utils', () => {
       key: 'specId:{bars},colors:{b}',
       color: '#2B70F7',
       label: 'b',
-      value: { specId: getSpecId('bars'), colorValues: ['b'], lastValue: { y0: null, y1: 2 } },
+      seriesIdentifier: {
+        specId: getSpecId('bars'),
+        seriesKeys: ['b'],
+        key: '',
+        splitAccessors: new Map(),
+        yAccessor: 'y1',
+      },
       displayValue: { raw: { y0: null, y1: 2 }, formatted: { y0: null, y1: '2.00' } },
       isSeriesVisible: false,
     });
@@ -1223,7 +1331,13 @@ describe('Chart State utils', () => {
       key: 'specId:{bars},colors:{a}',
       color: '#1EA593',
       label: 'a',
-      value: { specId: getSpecId('bars'), colorValues: ['a'], lastValue: { y0: null, y1: 6 } },
+      seriesIdentifier: {
+        specId: getSpecId('bars'),
+        seriesKeys: ['a'],
+        key: '',
+        splitAccessors: new Map(),
+        yAccessor: 'y1',
+      },
       displayValue: { raw: { y0: null, y1: 6 }, formatted: { y0: null, y1: '6.00' } },
       isSeriesVisible: true,
     });
@@ -1231,7 +1345,13 @@ describe('Chart State utils', () => {
       key: 'specId:{bars},colors:{b}',
       color: '#2B70F7',
       label: 'b',
-      value: { specId: getSpecId('bars'), colorValues: ['b'], lastValue: { y0: null, y1: 2 } },
+      seriesIdentifier: {
+        specId: getSpecId('bars'),
+        seriesKeys: ['b'],
+        key: '',
+        splitAccessors: new Map(),
+        yAccessor: 'y1',
+      },
       displayValue: { raw: { y0: null, y1: 2 }, formatted: { y0: null, y1: '2.00' } },
       isSeriesVisible: false,
     });
