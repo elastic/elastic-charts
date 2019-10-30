@@ -3,6 +3,7 @@
   width: 256px;
 }
 .echTooltip {
+  position: absolute;
   @include euiToolTipStyle;
   @include euiFontSizeXS;
   padding: 0;
