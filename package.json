@@ -23,7 +23,7 @@
     "start": "yarn storybook",
     "storybook": "start-storybook -p 9001 -c .storybook --ci",
     "storybook:build": "rm -rf .out && build-storybook -c .storybook -o .out",
-    "lint": "eslint --ext .tsx,.ts,.js src/ stories/ scripts/ .storybook/ .playground/",
+    "lint": "NODE_ENV=production eslint --ext .tsx,.ts,.js src/ stories/ scripts/ .storybook/ .playground/",
     "lint:fix": "yarn lint --fix",
     "test": "jest --config jest.config.js",
     "test:tz": "yarn test:tz-utc && yarn test:tz-ny && yarn test:tz-jp",
