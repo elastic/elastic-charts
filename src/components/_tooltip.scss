@@ -1,24 +1,23 @@
 #echTooltipContainerPortal {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
+  width: 256px;
 }
 .echTooltip {
   @include euiToolTipStyle;
   @include euiFontSizeXS;
-  position: absolute;
   padding: 0;
   transition: opacity $euiAnimSpeedNormal;
   pointer-events: none;
   user-select: none;
+  margin-bottom: $euiSizeXS;
 
   &__list {
-    margin: $euiSizeXS;
+    padding: $euiSizeXS;
   }
 
   &__header {
     @include euiToolTipTitle;
+    margin-bottom: 0;
     padding: $euiSizeXS ($euiSizeXS * 2);
   }
 
@@ -27,6 +26,7 @@
     padding: 3px;
     box-sizing: border-box;
     border-left: $euiSizeXS solid transparent;
+    min-width: 1px;
   }
 
   &__label {

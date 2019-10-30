@@ -38,19 +38,18 @@ class TooltipsComponent extends React.Component<TooltipProps> {
     this.createPortalNode();
     const { getChartContainerRef } = this.props;
     const { tooltipPosition } = this.props.chartStore!;
-    if (!this.tooltipRef.current) {
-      return;
-    }
     const chartContainerRef = getChartContainerRef();
-    if (!chartContainerRef.current) {
+
+    if (!this.tooltipRef.current || !chartContainerRef.current || !this.portalNode) {
       return;
     }
+
     const chartContainerBBox = chartContainerRef.current.getBoundingClientRect();
     const tooltipBBox = this.tooltipRef.current.getBoundingClientRect();
     const tooltipStyle = getFinalTooltipPosition(chartContainerBBox, tooltipBBox, tooltipPosition);
 
-    this.tooltipRef.current.style.left = tooltipStyle.left;
-    this.tooltipRef.current.style.top = tooltipStyle.top;
+    this.portalNode.style.left = tooltipStyle.left;
+    this.portalNode.style.top = tooltipStyle.top;
   }
 
   componentWillUnmount() {

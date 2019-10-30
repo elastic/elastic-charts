@@ -236,7 +236,7 @@ export class ChartStore {
   tooltipHeaderFormatter?: TooltipValueFormatter;
 
   /** cursorPosition is used by tooltip, so this is a way to expose the position for other uses */
-  rawCursorPosition = observable.object<{ x: number; y: number }>({ x: -1, y: -1 }, undefined, {
+  rawCursorPosition = observable.object<{ x: number; y: number }>({ x: 100, y: 100 }, undefined, {
     deep: false,
   });
 
@@ -492,7 +492,10 @@ export class ChartStore {
 
     // if there's an annotation rect tooltip & there isn't a single highlighted element, hide
     const annotationTooltip = this.annotationTooltipState.get();
-    const hasRectAnnotationToolip = annotationTooltip && annotationTooltip.annotationType === AnnotationTypes.Rectangle;
+    const hasRectAnnotationToolip =
+      annotationTooltip &&
+      annotationTooltip.isVisible &&
+      annotationTooltip.annotationType === AnnotationTypes.Rectangle;
     if (hasRectAnnotationToolip && highlightedGeometries.length === 0) {
       this.clearTooltipAndHighlighted();
       return;
@@ -558,7 +561,7 @@ export class ChartStore {
     );
 
     // If there's a highlighted chart element tooltip value, don't show annotation tooltip
-    if (tooltipState && tooltipState.annotationType === AnnotationTypes.Rectangle) {
+    if (tooltipState && tooltipState.isVisible && tooltipState.annotationType === AnnotationTypes.Rectangle) {
       for (const tooltipValue of this.tooltipData) {
         if (tooltipValue.isHighlighted) {
           return null;
@@ -1058,5 +1061,6 @@ export class ChartStore {
     // https://github.com/elastic/elastic-charts/issues/89 and https://github.com/elastic/elastic-charts/issues/41
     this.canDataBeAnimated = false;
     this.chartInitialized.set(true);
+    // this.setCursorPosition(100, 100);
   }
 }

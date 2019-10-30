@@ -9,18 +9,18 @@ export interface SnappedPosition {
   band: number;
 }
 export interface TooltipPosition {
-  // true if if the x axis is horizontal
+  /** true if if the x axis is horizontal */
   isRotatedHorizontal: boolean;
   vPosition: {
-    // the top position of the tooltip relative to the parent
+    /** the top position of the tooltip relative to the parent */
     bandTop: number;
-    // the height of the crosshair band if any
+    /** the height of the crosshair band if any */
     bandHeight: number;
   };
   hPosition: {
-    // the left position of the tooltip relative to the parent
+    /** the left position of the tooltip relative to the parent */
     bandLeft: number;
-    // the width of the crosshair band if any
+    /** the width of the crosshair band if any */
     bandWidth: number;
   };
 }
@@ -231,56 +231,51 @@ export function getVerticalTooltipPosition(
 }
 
 export function getFinalTooltipPosition(
+  /** the dimensions of the chart parent container */
   container: Dimensions,
+  /** the dimensions of the tooltip container */
   tooltip: Dimensions,
+  /** the tooltip computed position not adjusted within chart bounds */
   tooltipPosition: TooltipPosition,
+  /** the padding to add between the tooltip position and the final position */
   padding = 10,
 ): {
   left: string | null;
   top: string | null;
 } {
   const { hPosition, vPosition, isRotatedHorizontal: isHorizontalRotated } = tooltipPosition;
-  const tooltipStyle: {
-    left: string | null;
-    top: string | null;
-  } = {
-    left: null,
-    top: null,
-  };
+  let left = 0;
+  let top = 0;
   if (isHorizontalRotated) {
-    const leftOfBand = window.scrollX + container.left + hPosition.bandLeft;
+    const leftOfBand = window.pageXOffset + container.left + hPosition.bandLeft;
     if (hPosition.bandLeft + hPosition.bandWidth + tooltip.width + padding > container.width) {
-      const left = leftOfBand - tooltip.width - padding;
-      tooltipStyle.left = `${left}px`;
+      left = leftOfBand - tooltip.width - padding;
     } else {
-      const left = leftOfBand + hPosition.bandWidth + padding;
-      tooltipStyle.left = `${left}px`;
+      left = leftOfBand + hPosition.bandWidth + padding;
     }
-    const topOfBand = window.scrollY + container.top;
+    const topOfBand = window.pageYOffset + container.top;
     if (vPosition.bandTop + tooltip.height > container.height) {
-      const top = topOfBand + container.height - tooltip.height;
-      tooltipStyle.top = `${top}px`;
+      top = topOfBand + container.height - tooltip.height;
     } else {
-      const top = topOfBand + vPosition.bandTop;
-      tooltipStyle.top = `${top}px`;
+      top = topOfBand + vPosition.bandTop;
     }
   } else {
-    const leftOfBand = window.scrollX + container.left;
+    const leftOfBand = window.pageXOffset + container.left;
     if (hPosition.bandLeft + hPosition.bandWidth + tooltip.width > container.width) {
-      const left = leftOfBand + container.width - tooltip.width;
-      tooltipStyle.left = `${left}px`;
+      left = leftOfBand + container.width - tooltip.width;
     } else {
-      const left = leftOfBand + hPosition.bandLeft + hPosition.bandWidth;
-      tooltipStyle.left = `${left}px`;
+      left = leftOfBand + hPosition.bandLeft + hPosition.bandWidth;
     }
-    const topOfBand = window.scrollY + container.top + vPosition.bandTop;
+    const topOfBand = window.pageYOffset + container.top + vPosition.bandTop;
     if (vPosition.bandTop + vPosition.bandHeight + tooltip.height + padding > container.height) {
-      const top = topOfBand - tooltip.height - padding;
-      tooltipStyle.top = `${top}px`;
+      top = topOfBand - tooltip.height - padding;
     } else {
-      const top = topOfBand + vPosition.bandHeight + padding;
-      tooltipStyle.top = `${top}px`;
+      top = topOfBand + vPosition.bandHeight + padding;
     }
   }
-  return tooltipStyle;
+
+  return {
+    left: `${Math.round(left)}px`,
+    top: `${Math.round(top)}px`,
+  };
 }

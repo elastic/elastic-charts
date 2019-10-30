@@ -122,7 +122,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
             renderer === 'svg' && <ChartContainer />}
             {renderer === 'canvas' && <ChartContainer />}
             <Tooltips getChartContainerRef={this.getChartContainerRef} />
-            <AnnotationTooltip />
+            <AnnotationTooltip getChartContainerRef={this.getChartContainerRef} />
             <Highlighter />
           </div>
         </div>
