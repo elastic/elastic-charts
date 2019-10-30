@@ -83,6 +83,7 @@ export type SeriesCollectionValue = {
 };
 
 export function getSeriesIndex(series: SeriesIdentifier[], target: SeriesIdentifier): number {
+  debugger;
   if (!series) {
     return -1;
   }
@@ -167,7 +168,7 @@ function updateSeriesMap(
   datum: RawDataSeriesDatum,
   specId: SpecId,
 ): string {
-  const seriesKeys = accessor === null ? [...splitAccessors.values()] : [...splitAccessors.values(), accessor];
+  const seriesKeys = [...splitAccessors.values(), accessor];
   const seriesKey = getSeriesKey({
     specId,
     yAccessor: accessor,
@@ -373,18 +374,21 @@ export function getSeriesLabel(
   spec?: BasicSeriesSpec,
 ): string | undefined {
   let label = '';
-  if (hasSingleSeries || seriesKeys.length === 0 || seriesKeys[0] == null) {
+  const labelKeys = spec && spec.yAccessors.length === 1 ? seriesKeys.slice(0, -1) : seriesKeys;
+
+  // there is one series, the is only one yAccessor, the first part is not null
+  if (hasSingleSeries || labelKeys.length === 0 || labelKeys[0] == null) {
     if (!spec) {
       return;
     }
 
-    if (spec.splitSeriesAccessors && seriesKeys.length > 0 && seriesKeys[0] !== null) {
-      label = seriesKeys.join(' - ');
+    if (spec.splitSeriesAccessors && labelKeys.length > 0 && labelKeys[0] != null) {
+      label = labelKeys.join(' - ');
     } else {
       label = spec.name || `${spec.id}`;
     }
   } else {
-    label = seriesKeys.join(' - ');
+    label = labelKeys.join(' - ');
   }
 
   return label;

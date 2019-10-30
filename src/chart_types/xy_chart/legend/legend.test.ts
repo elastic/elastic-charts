@@ -19,7 +19,7 @@ const seriesCollectionValue1a = {
     specId: getSpecId('spec1'),
     yAccessor: 'y1',
     splitAccessors: new Map(),
-    seriesKeys: [],
+    seriesKeys: ['y1'],
     key: 'seriesCollectionValue1a',
   },
 };
@@ -28,7 +28,7 @@ const seriesCollectionValue1b = {
     specId: getSpecId('spec1'),
     yAccessor: 'y1',
     splitAccessors: new Map(),
-    seriesKeys: ['a', 'b'],
+    seriesKeys: ['a', 'b', 'y1'],
     key: 'seriesCollectionValue1b',
   },
 };
@@ -37,7 +37,7 @@ const seriesCollectionValue2a = {
     specId: getSpecId('spec2'),
     yAccessor: 'y1',
     splitAccessors: new Map(),
-    seriesKeys: [],
+    seriesKeys: ['y1'],
     key: 'seriesCollectionValue2a',
   },
 };
@@ -46,7 +46,7 @@ const seriesCollectionValue2b = {
     specId: getSpecId('spec3'),
     yAccessor: 'y1',
     splitAccessors: new Map(),
-    seriesKeys: ['c', 'd'],
+    seriesKeys: ['c', 'd', 'y1'],
     key: 'seriesCollectionValue2b',
   },
 };
@@ -113,7 +113,7 @@ describe('Legends', () => {
         color: 'red',
         label: 'Spec 1 title',
         seriesIdentifier: {
-          seriesKeys: [],
+          seriesKeys: ['y1'],
           specId: 'spec1',
           yAccessor: 'y1',
           splitAccessors: new Map(),
@@ -137,7 +137,7 @@ describe('Legends', () => {
         color: 'red',
         label: 'Spec 1 title',
         seriesIdentifier: {
-          seriesKeys: [],
+          seriesKeys: ['y1'],
           specId: 'spec1',
           yAccessor: 'y1',
           splitAccessors: new Map(),
@@ -153,7 +153,7 @@ describe('Legends', () => {
         color: 'blue',
         label: 'a - b',
         seriesIdentifier: {
-          seriesKeys: ['a', 'b'],
+          seriesKeys: ['a', 'b', 'y1'],
           specId: 'spec1',
           yAccessor: 'y1',
           splitAccessors: new Map(),
@@ -177,7 +177,7 @@ describe('Legends', () => {
         color: 'red',
         label: 'Spec 1 title',
         seriesIdentifier: {
-          seriesKeys: [],
+          seriesKeys: ['y1'],
           specId: 'spec1',
           splitAccessors: new Map(),
           yAccessor: 'y1',
@@ -193,7 +193,7 @@ describe('Legends', () => {
         color: 'green',
         label: 'spec2',
         seriesIdentifier: {
-          seriesKeys: [],
+          seriesKeys: ['y1'],
           specId: 'spec2',
           yAccessor: 'y1',
           splitAccessors: new Map(),
@@ -223,7 +223,7 @@ describe('Legends', () => {
         label: 'Spec 1 title',
         banded: undefined,
         seriesIdentifier: {
-          seriesKeys: [],
+          seriesKeys: ['y1'],
           specId: 'spec1',
           yAccessor: 'y1',
           splitAccessors: new Map(),
@@ -270,14 +270,14 @@ describe('Legends', () => {
       specId: getSpecId(''),
       yAccessor: 'y1',
       splitAccessors: new Map(),
-      seriesKeys: [],
+      seriesKeys: ['y1'],
       key: '',
     };
     const seriesIdentifier2 = {
       specId: getSpecId(''),
       yAccessor: 'y1',
       splitAccessors: new Map(),
-      seriesKeys: ['a', 'b'],
+      seriesKeys: ['a', 'b', 'y1'],
       key: '',
     };
 
@@ -318,21 +318,21 @@ describe('Legends', () => {
       specId: getSpecId(''),
       yAccessor: 'y1',
       splitAccessors: new Map(),
-      seriesKeys: [],
+      seriesKeys: ['y1'],
       key: '',
     };
     const seriesIdentifier2 = {
       specId: getSpecId(''),
       yAccessor: 'y1',
       splitAccessors: new Map(),
-      seriesKeys: ['a', 'b'],
+      seriesKeys: ['a', 'b', 'y1'],
       key: '',
     };
     const seriesIdentifier3 = {
       specId: getSpecId(''),
       yAccessor: 'y1',
       splitAccessors: new Map(),
-      seriesKeys: ['a'],
+      seriesKeys: ['a', 'y1'],
       key: '',
     };
 
