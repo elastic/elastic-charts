@@ -15,7 +15,6 @@ To use Elastic Charts code in Kibana, check if `@elastic/charts` packages is alr
 ## Using Elastic Charts in a standalone project
 
 You can consume Elastic Charts in standalone projects, such as plugins and prototypes. Elastic-Charts has a peer dependency on [moment-timezone](https://momentjs.com/timezone/). Add that dependency on your main project with:
-
 ```
 yarn add moment-timezone
 ```
@@ -64,6 +63,6 @@ Use a `.babelrc` config with the [`usebuiltins`](https://babeljs.io/docs/en/babe
 Directly import polyfill and runtime.
 
 ```js
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
+import "core-js/stable";
+import "regenerator-runtime/runtime";
 ```

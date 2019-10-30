@@ -16,12 +16,6 @@ export function getFinalAnnotationTooltipPosition(
   let left = 0;
 
   const annotationXOffset = window.pageXOffset + container.left + chartDimensions.left + tooltipAnchor.left;
-  console.log({
-    pageXOffset: window.pageXOffset,
-    containerLeft: container.left,
-    chartDimensionsLeft: chartDimensions.left,
-    tooltipAnchorLeft: tooltipAnchor.left,
-  });
   if (chartDimensions.left + tooltipAnchor.left + tooltip.width + padding >= container.width) {
     left = annotationXOffset - tooltip.width - padding;
   } else {

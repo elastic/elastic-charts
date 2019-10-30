@@ -61,7 +61,6 @@ class CommonPage {
     selector = '.echChart[data-ech-render-complete=true]',
   ) {
     const chartContainer = await this.getBoundingClientRect(selector);
-    console.log({ chartContainer });
     await page.mouse.move(chartContainer.left + mousePosition.x, chartContainer.top + mousePosition.y);
   }
 
