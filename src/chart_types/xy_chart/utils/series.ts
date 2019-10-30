@@ -83,7 +83,6 @@ export type SeriesCollectionValue = {
 };
 
 export function getSeriesIndex(series: SeriesIdentifier[], target: SeriesIdentifier): number {
-  debugger;
   if (!series) {
     return -1;
   }
