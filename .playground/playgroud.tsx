@@ -75,51 +75,53 @@ export class Playground extends React.Component<{}, State> {
   render() {
     const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 30);
     return (
-      <Fragment>
-        <div id="controls">
-          <button onClick={this.removeChart}>remove chart</button>
-          <button onClick={this.rotateChart}>rotateChart {ROTATIONS[this.state.rotation]}</button>
-          <button onClick={this.rotateVerticalAxis}>Axis to {[Position.Left, Position.Right][this.state.vAxis]}</button>
-          <button onClick={this.rotateHorizontalAxis}>
-            Axis to {[Position.Bottom, Position.Top][this.state.hAxis]}
-          </button>
-        </div>
-        <div className="chart">
-          <Chart>
-            <Settings rotation={ROTATIONS[this.state.rotation]} />
-            <Axis id={getAxisId('x')} position={[Position.Bottom, Position.Top][this.state.hAxis]} />
-            <Axis id={getAxisId('y')} position={[Position.Left, Position.Right][this.state.vAxis]} />
+      this.state.showChart1 && (
+        <Fragment>
+          <div id="controls">
+            <button onClick={this.removeChart}>remove chart</button>
+            <button onClick={this.rotateChart}>rotateChart {ROTATIONS[this.state.rotation]}</button>
+            <button onClick={this.rotateVerticalAxis}>
+              Axis to {[Position.Left, Position.Right][this.state.vAxis]}
+            </button>
+            <button onClick={this.rotateHorizontalAxis}>
+              Axis to {[Position.Bottom, Position.Top][this.state.hAxis]}
+            </button>
+          </div>
+          <div className="chart">
+            <Chart>
+              <Settings rotation={ROTATIONS[this.state.rotation]} />
+              <Axis id={getAxisId('x')} position={[Position.Bottom, Position.Top][this.state.hAxis]} />
+              <Axis id={getAxisId('y')} position={[Position.Left, Position.Right][this.state.vAxis]} />
 
-            <HistogramBarSeries
-              id={getSpecId('series bars chart')}
-              xScaleType={ScaleType.Linear}
-              yScaleType={ScaleType.Linear}
-              xAccessor={0}
-              yAccessors={[1]}
-              data={data}
-              yScaleToDataExtent={true}
-            />
-            <RectAnnotation
-              annotationId={getAnnotationId('annrec')}
-              style={{
-                fill: 'red',
-                stroke: 'red',
-                opacity: 0.3,
-              }}
-              dataValues={[
-                {
-                  coordinates: {
-                    x0: data[0][0],
-                    x1: data[10][0],
-                    y0: 14,
+              <HistogramBarSeries
+                id={getSpecId('series bars chart')}
+                xScaleType={ScaleType.Linear}
+                yScaleType={ScaleType.Linear}
+                xAccessor={0}
+                yAccessors={[1]}
+                data={data}
+                yScaleToDataExtent={true}
+              />
+              <RectAnnotation
+                annotationId={getAnnotationId('annrec')}
+                style={{
+                  fill: 'red',
+                  stroke: 'red',
+                  opacity: 0.3,
+                }}
+                dataValues={[
+                  {
+                    coordinates: {
+                      x0: data[0][0],
+                      x1: data[10][0],
+                      y0: 14,
+                    },
+                    details: RECT_ANNOTATION_TEXT,
                   },
-                  details: RECT_ANNOTATION_TEXT,
-                },
-              ]}
-            />
-          </Chart>
+                ]}
+              />
+            </Chart>
 
-          {this.state.showChart1 && (
             <Chart>
               <Settings rotation={ROTATIONS[this.state.rotation]} />
               <Axis id={getAxisId('x')} position={[Position.Bottom, Position.Top][this.state.hAxis]} />
@@ -217,9 +219,9 @@ export class Playground extends React.Component<{}, State> {
                 // marker={<div style={{ width: 40, height: 20, background: 'red', lineHeight: '20px' }}>Y ANN</div>}
               />
             </Chart>
-          )}
-        </div>
-      </Fragment>
+          </div>
+        </Fragment>
+      )
     );
   }
 }

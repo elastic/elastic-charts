@@ -53,8 +53,8 @@ class TooltipsComponent extends React.Component<TooltipProps> {
   }
 
   componentWillUnmount() {
-    if (this.portalNode) {
-      document.body.removeChild(this.portalNode);
+    if (this.portalNode && this.portalNode.parentNode) {
+      this.portalNode.parentNode.removeChild(this.portalNode);
     }
   }
 

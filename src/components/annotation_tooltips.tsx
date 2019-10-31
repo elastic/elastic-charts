@@ -72,8 +72,8 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
   }
 
   componentWillUnmount() {
-    if (this.portalNode) {
-      document.body.removeChild(this.portalNode);
+    if (this.portalNode && this.portalNode.parentNode) {
+      this.portalNode.parentNode.removeChild(this.portalNode);
     }
   }
 
