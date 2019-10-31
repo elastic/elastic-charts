@@ -7,20 +7,21 @@ export class DataGenerator {
     this.generator = new Simple1DNoise(randomNumberGenerator);
     this.frequency = frequency;
   }
-  generateSimpleSeries(totalPoints = 50, groupIndex = 1) {
-    const g = String.fromCharCode(97 + groupIndex);
+  generateSimpleSeries(totalPoints = 50, groupIndex = 1, groupPrefix = '') {
+    const group = String.fromCharCode(97 + groupIndex);
     const dataPoints = new Array(totalPoints).fill(0).map((_, i) => {
       return {
         x: i,
         y: 3 + Math.sin(i / this.frequency) + this.generator.getValue(i),
-        g,
+        g: `${groupPrefix}${group}`,
       };
     });
     return dataPoints;
   }
-  generateGroupedSeries(totalPoints = 50, totalGroups = 2) {
-    const groups = new Array(totalGroups).fill(0).map((_, i) => {
-      return this.generateSimpleSeries(totalPoints, i);
+  generateGroupedSeries(totalPoints = 50, totalGroups = 2, groupPrefix = '') {
+    const groups = new Array(totalGroups).fill(0).map((__webpack_hash__, i) => {
+      // eslint-disable-line
+      return this.generateSimpleSeries(totalPoints, i, groupPrefix);
     });
     return groups.reduce((acc, curr) => [...acc, ...curr]);
   }
