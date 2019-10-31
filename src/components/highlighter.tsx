@@ -23,7 +23,7 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
             <rect x="0" y="0" width={clipWidth} height={clipHeight} />
           </clipPath>
         </defs>
-        <g transform={`translate(${left}, ${top}) rotate(${chartRotation})`} clipPath="url(#echHighlighterClipPath)">
+        <g transform={`translate(${left}, ${top}) rotate(${chartRotation})`}>
           {highlightedGeometries.map((geom, i) => {
             const { color, x, y } = geom;
             if (isPointGeometry(geom)) {
@@ -40,7 +40,15 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
               );
             }
             return (
-              <rect key={i} x={x} y={y} width={geom.width} height={geom.height} className="echHighlighter__rect" />
+              <rect
+                key={i}
+                x={x}
+                y={y}
+                width={geom.width}
+                height={geom.height}
+                className="echHighlighter__rect"
+                clipPath="url(#echHighlighterClipPath)"
+              />
             );
           })}
         </g>
