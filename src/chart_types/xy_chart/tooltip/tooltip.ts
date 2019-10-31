@@ -60,7 +60,7 @@ export function formatTooltip(
   const seriesKey = getSeriesKey(seriesIdentifier);
   let displayName: string | undefined;
   if (seriesIdentifier.seriesKeys.length > 0) {
-    displayName = seriesIdentifier.seriesKeys.join(' - ');
+    displayName = seriesIdentifier.seriesKeys.filter((seriesKey) => seriesKey !== undefined).join(' - ');
   } else {
     displayName = spec.name || `${spec.id}`;
   }
