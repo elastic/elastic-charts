@@ -42,6 +42,12 @@ export type PointStyleAccessor = (datum: RawDataSeriesDatum, seriesIdentifier: S
 export const DEFAULT_GLOBAL_ID = '__global__';
 
 export type FilterPredicate = (series: SeriesIdentifier) => boolean;
+export type SeriesStringPredicate = (series: SeriesIdentifier, isTooltip: boolean) => string | null;
+export type SubSeriesStringPredicate = (
+  accessorLabel: string | number,
+  accessorKey: string | number | null,
+  isTooltip: boolean,
+) => string | number | null;
 
 interface DomainMinInterval {
   /** Custom minInterval for the domain which will affect data bucket size.
@@ -121,8 +127,25 @@ export interface SeriesSpec {
    * @default ' - lower'
    */
   y1AccessorFormat?: AccessorFormat;
-  /** Hide series in tooltip */
+  /**
+   * Hide series in tooltip
+   */
   filterSeriesInTooltip?: FilterPredicate;
+  /**
+   * Custom series naming predicate function. Values are unaffected by `customSubSeriesLabel` changes.
+   *
+   * This takes precedence over `customSubSeriesLabel`
+   *
+   * @param series - `SeriesIdentifier`
+   * @param isTooltip - true if tooltip label, otherwise legend label
+   */
+  customSeriesLabel?: SeriesStringPredicate;
+  /**
+   * Custom sub series naming predicate function.
+   *
+   * `customSeriesLabel` takes precedence
+   */
+  customSubSeriesLabel?: SubSeriesStringPredicate;
 }
 
 export interface Postfixes {

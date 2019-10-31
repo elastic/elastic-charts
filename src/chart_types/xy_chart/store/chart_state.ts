@@ -352,6 +352,7 @@ export class ChartStore {
       this.isActiveChart.get(),
       this.tooltipType.get(),
       this.chartRotation,
+      Boolean(this.seriesDomainsAndData && this.seriesDomainsAndData.seriesCollection.size > 1),
       this.yScales,
       this.tooltipHeaderFormatter,
     );
@@ -464,6 +465,7 @@ export class ChartStore {
       this.isActiveChart.get(),
       this.tooltipType.get(),
       this.chartRotation,
+      Boolean(this.seriesDomainsAndData && this.seriesDomainsAndData.seriesCollection.size > 1),
       this.yScales,
       this.tooltipHeaderFormatter,
     );

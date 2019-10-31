@@ -14,7 +14,7 @@ import { getAxesSpecForSpecId } from '../store/utils';
 import { Scale } from '../../../utils/scales/scales';
 import { Point } from '../store/chart_state';
 import { getAccessorFormatLabel } from '../../../utils/accessor';
-import { getSeriesKey } from '../utils/series';
+import { getSeriesKey, getSeriesLabel } from '../utils/series';
 
 export interface TooltipLegendValue {
   y0: any;
@@ -55,22 +55,19 @@ export function formatTooltip(
   spec: BasicSeriesSpec,
   isXValue: boolean,
   isHighlighted: boolean,
+  hasSingleSeries: boolean,
   axisSpec?: AxisSpec,
 ): TooltipValue {
   const seriesKey = getSeriesKey(seriesIdentifier);
-  let displayName: string | undefined;
-  if (seriesIdentifier.seriesKeys.length > 0) {
-    displayName = seriesIdentifier.seriesKeys.join(' - ');
-  } else {
-    displayName = spec.name || `${spec.id}`;
-  }
+  let displayName = getSeriesLabel(seriesIdentifier, hasSingleSeries, true, spec);
 
   if (isBandedSpec(spec.y0Accessors) && (isAreaSeriesSpec(spec) || isBarSeriesSpec(spec))) {
     const { y0AccessorFormat = Y0_ACCESSOR_POSTFIX, y1AccessorFormat = Y1_ACCESSOR_POSTFIX } = spec;
     const formatter = accessor === BandedAccessorType.Y0 ? y0AccessorFormat : y1AccessorFormat;
     displayName = getAccessorFormatLabel(formatter, displayName);
   }
-  const isVisible = spec.filterSeriesInTooltip !== undefined ? spec.filterSeriesInTooltip(seriesIdentifier) : true;
+  const isFiltered = spec.filterSeriesInTooltip !== undefined ? spec.filterSeriesInTooltip(seriesIdentifier) : true;
+  const isVisible = displayName === '' ? false : isFiltered;
 
   const value = isXValue ? x : y;
   const tickFormatOptions: TickFormatterOptions | undefined = spec.timeZone ? { timeZone: spec.timeZone } : undefined;
@@ -102,6 +99,7 @@ export function getTooltipAndHighlightFromXValue(
   isActiveChart: boolean,
   tooltipType: TooltipType,
   chartRotation: Rotation,
+  hasSingleSeries: boolean,
   yScales?: Map<GroupId, Scale>,
   tooltipHeaderFormatter?: TooltipValueFormatter,
 ):
@@ -155,13 +153,20 @@ export function getTooltipAndHighlightFromXValue(
       }
       // format the tooltip values
       const yAxisFormatSpec = [0, 180].includes(chartRotation) ? yAxis : xAxis;
-      const formattedTooltip = formatTooltip(indexedGeometry, spec, false, isHighlighted, yAxisFormatSpec);
+      const formattedTooltip = formatTooltip(
+        indexedGeometry,
+        spec,
+        false,
+        isHighlighted,
+        hasSingleSeries,
+        yAxisFormatSpec,
+      );
       // format only one time the x value
       if (!xValueInfo) {
         // if we have a tooltipHeaderFormatter, then don't pass in the xAxis as the user will define a formatter
         const xAxisFormatSpec = [0, 180].includes(chartRotation) ? xAxis : yAxis;
         const formatterAxis = tooltipHeaderFormatter ? undefined : xAxisFormatSpec;
-        xValueInfo = formatTooltip(indexedGeometry, spec, true, false, formatterAxis);
+        xValueInfo = formatTooltip(indexedGeometry, spec, true, false, hasSingleSeries, formatterAxis);
         return [xValueInfo, ...acc, formattedTooltip];
       }
 
