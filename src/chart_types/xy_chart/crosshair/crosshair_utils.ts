@@ -9,7 +9,7 @@ export interface SnappedPosition {
   band: number;
 }
 export interface TooltipPosition {
-  /** true if if the x axis is horizontal */
+  /** true if the x axis is horizontal */
   isRotatedHorizontal: boolean;
   vPosition: {
     /** the top position of the tooltip relative to the parent */
