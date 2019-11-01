@@ -118,7 +118,7 @@ export const parseConfig = (config?: Exclude<Fit, 'explicit'> | FitConfig): FitC
   }
 
   if (config.type === Fit.Explicit && config.value === undefined) {
-    console.warn('Using explicit fit function requires a value');
+    // Using explicit fit function requires a value
     return {
       type: Fit.None,
     };

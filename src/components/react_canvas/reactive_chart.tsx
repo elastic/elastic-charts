@@ -254,7 +254,6 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
         );
       } else if (isRectAnnotation(spec)) {
         const rectStyle = spec.style as RectAnnotationStyle;
-
         element = (
           <RectAnnotation
             key={`annotation-${id}`}
