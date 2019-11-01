@@ -2,7 +2,7 @@ import { getSpecId } from '../../../utils/ids';
 import { RawDataSeries } from './series';
 import { ScaleType } from '../../../utils/scales/scales';
 import { MockRawDataSeries, MockDataSeries } from '../../../mocks';
-import { MockSeriesSpecs, MockSeriesSpec } from '../../../mocks/scale copy';
+import { MockSeriesSpecs, MockSeriesSpec } from '../../../mocks/specs';
 
 import * as fitFunctionModule from './fit_function';
 import * as testModule from './nonstacked_series_utils';
