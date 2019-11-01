@@ -601,7 +601,15 @@ storiesOf('Stylings', module)
 
     return (
       <Chart className={'story-chart'}>
-        <Settings showLegend={true} legendPosition={Position.Right} />
+        <Settings
+          showLegend={true}
+          legendPosition={Position.Right}
+          colorPalette={{
+            startColor: '#FFFFE0',
+            endColor: '#1EA593',
+            step: 3,
+          }}
+        />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}

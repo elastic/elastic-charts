@@ -1,9 +1,10 @@
 import { PureComponent } from 'react';
 import { inject } from 'mobx-react';
 
-import { DomainRange, Position, Rendering, Rotation } from '../chart_types/xy_chart/utils/specs';
+import { DomainRange, Position, Rendering, Rotation, ColorPalette } from '../chart_types/xy_chart/utils/specs';
 import { mergeWithDefaultTheme, PartialTheme, Theme } from '../utils/themes/theme';
 import { Domain } from '../utils/domain';
+import { calcColorPalette } from '../utils/colors/color_palette';
 import { TooltipType, TooltipValueFormatter } from '../chart_types/xy_chart/utils/interactions';
 import {
   BrushEndListener,
@@ -16,6 +17,7 @@ import {
 } from '../chart_types/xy_chart/store/chart_state';
 import { ScaleTypes } from '../utils/scales/scales';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
+import {color} from "@storybook/addon-knobs";
 
 export const DEFAULT_TOOLTIP_TYPE = TooltipType.VerticalCursor;
 export const DEFAULT_TOOLTIP_SNAP = true;
@@ -69,6 +71,7 @@ export interface SettingSpecProps {
    * @default `LIGHT_THEME`
    */
   baseTheme?: Theme;
+  colorPalette?: ColorPalette;
   rendering: Rendering;
   rotation: Rotation;
   animateData: boolean;
@@ -137,6 +140,7 @@ function updateChartStore(props: SettingSpecProps) {
     xDomain,
     resizeDebounce,
     hideDuplicateAxes,
+    colorPalette,
   } = props;
 
   if (!chartStore) {
@@ -200,6 +204,13 @@ function updateChartStore(props: SettingSpecProps) {
   }
   if (onRenderChange) {
     chartStore.setOnRenderChangeListener(onRenderChange);
+  }
+  if (colorPalette) {
+    const { startColor, endColor, step } = colorPalette;
+    const vizColors = calcColorPalette(startColor, endColor, step);
+    chartStore.chartTheme = getTheme(chartStore.chartTheme, {
+      colors: { vizColors },
+    });
   }
 }
 

@@ -20,6 +20,11 @@ export type Datum = any;
 export type Rotation = 0 | 90 | -90 | 180;
 export type Rendering = 'canvas' | 'svg';
 export type Color = string;
+export type ColorPalette = {
+  startColor: string;
+  endColor: string;
+  step: number;
+};
 export type BarStyleOverride = RecursivePartial<BarSeriesStyle> | Color | null;
 export type PointStyleOverride = RecursivePartial<PointStyle> | Color | null;
 /**

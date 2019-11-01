@@ -635,7 +635,14 @@ storiesOf('Bar Chart', module)
     const formatter = timeFormatter(niceTimeFormatByDay(1));
     return (
       <Chart className={'story-chart'}>
-        <Settings debug={boolean('debug', false)} />
+        <Settings
+          debug={boolean('debug', false)}
+          colorPalette={{
+            startColor: '#FFFFE0',
+            endColor: '#1EA593',
+            step: 3,
+          }}
+        />
         <Axis
           id={getAxisId('bottom')}
           position={Position.Bottom}
