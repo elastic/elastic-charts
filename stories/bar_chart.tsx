@@ -10,7 +10,6 @@ import {
   BarSeries,
   Chart,
   DARK_THEME,
-  DataGenerator,
   getAnnotationId,
   getAxisId,
   getGroupId,
@@ -23,21 +22,20 @@ import {
   niceTimeFormatByDay,
   Position,
   RectAnnotation,
-  Rotation,
   ScaleType,
   Settings,
   timeFormatter,
   TooltipType,
 } from '../src';
+import { SeededDataGenerator, getRandomNumber } from '../.storybook/utils';
 import * as TestDatasets from '../src/utils/data_samples/test_dataset';
-
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
-
 import { TEST_DATASET_DISCOVER } from '../src/utils/data_samples/test_dataset_discover_per_30s';
+import { getChartRotationKnob } from './common';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
 
-const dataGen = new DataGenerator();
+const dataGen = new SeededDataGenerator();
 function generateDataWithAdditional(num: number) {
   return [...dataGen.generateSimpleSeries(num), { x: num, y: 0.25, g: 0 }, { x: num + 1, y: 8, g: 0 }];
 }
@@ -76,7 +74,7 @@ storiesOf('Bar Chart', module)
     );
   })
   .add('with value label', () => {
-    const showValueLabel = boolean('show value label', false);
+    const showValueLabel = boolean('show value label', true);
     const isAlternatingValueLabel = boolean('alternating value label', false);
     const isValueContainedInElement = boolean('contain value label within bar element', false);
     const hideClippedValue = boolean('hide clipped value', false);
@@ -88,17 +86,7 @@ storiesOf('Bar Chart', module)
       hideClippedValue,
     };
 
-    const debug = boolean('debug', true);
-    const chartRotation = select<Rotation>(
-      'chartRotation',
-      {
-        '0 deg': 0,
-        '90 deg': 90,
-        '-90 deg': -90,
-        '180 deg': 180,
-      },
-      0,
-    );
+    const debug = boolean('debug', false);
 
     const theme = {
       barSeriesStyle: {
@@ -133,7 +121,7 @@ storiesOf('Bar Chart', module)
 
     return (
       <Chart renderer="canvas" className={'story-chart'}>
-        <Settings theme={theme} debug={debug} rotation={chartRotation} />
+        <Settings theme={theme} debug={debug} rotation={getChartRotationKnob()} showLegend />
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
@@ -225,17 +213,6 @@ storiesOf('Bar Chart', module)
     );
   })
   .add('with linear x axis', () => {
-    const chartRotation = select<Rotation>(
-      'chartRotation',
-      {
-        '0 deg': 0,
-        '90 deg': 90,
-        '-90 deg': -90,
-        '180 deg': 180,
-      },
-      0,
-    );
-
     const theme = {
       ...LIGHT_THEME,
       scales: {
@@ -255,7 +232,7 @@ storiesOf('Bar Chart', module)
     };
     return (
       <Chart className={'story-chart'}>
-        <Settings rotation={chartRotation} theme={theme} />
+        <Settings rotation={getChartRotationKnob()} theme={theme} />
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
@@ -508,17 +485,6 @@ storiesOf('Bar Chart', module)
     );
   })
   .add('clustered with axis and legend', () => {
-    const chartRotation = select<Rotation>(
-      'chartRotation',
-      {
-        '0 deg': 0,
-        '90 deg': 90,
-        '-90 deg': -90,
-        '180 deg': 180,
-      },
-      0,
-    );
-
     const theme = {
       ...LIGHT_THEME,
       scales: {
@@ -539,7 +505,7 @@ storiesOf('Bar Chart', module)
 
     return (
       <Chart className={'story-chart'}>
-        <Settings showLegend={true} legendPosition={Position.Right} theme={theme} rotation={chartRotation} />
+        <Settings showLegend={true} legendPosition={Position.Right} theme={theme} rotation={getChartRotationKnob()} />
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left2')}
@@ -858,7 +824,7 @@ storiesOf('Bar Chart', module)
     );
   })
   .add('with high data volume', () => {
-    const dg = new DataGenerator();
+    const dg = new SeededDataGenerator();
     const data = dg.generateSimpleSeries(15000);
     const tooltipProps = {
       type: TooltipType.Follow,
@@ -895,17 +861,6 @@ storiesOf('Bar Chart', module)
         }
       : undefined;
 
-    const chartRotation = select<Rotation>(
-      'chartRotation',
-      {
-        '0 deg': 0,
-        '90 deg': 90,
-        '-90 deg': -90,
-        '180 deg': 180,
-      },
-      0,
-    );
-
     const theme = {
       scales: {
         barsPadding: number('bars padding', 0.25, {
@@ -919,7 +874,7 @@ storiesOf('Bar Chart', module)
 
     return (
       <Chart className={'story-chart'}>
-        <Settings xDomain={xDomain} rotation={chartRotation} theme={theme} />
+        <Settings xDomain={xDomain} rotation={getChartRotationKnob()} theme={theme} />
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} />
         <Axis
           id={getAxisId('left2')}
@@ -944,17 +899,6 @@ storiesOf('Bar Chart', module)
     const hasCustomDomain = boolean('has custom domain', false);
     const xDomain = hasCustomDomain ? ['a', 'b'] : undefined;
 
-    const chartRotation = select<Rotation>(
-      'chartRotation',
-      {
-        '0 deg': 0,
-        '90 deg': 90,
-        '-90 deg': -90,
-        '180 deg': 180,
-      },
-      0,
-    );
-
     const theme = {
       scales: {
         barsPadding: number('bars padding', 0.25, {
@@ -968,7 +912,7 @@ storiesOf('Bar Chart', module)
 
     return (
       <Chart className={'story-chart'}>
-        <Settings xDomain={xDomain} rotation={chartRotation} theme={theme} />
+        <Settings xDomain={xDomain} rotation={getChartRotationKnob()} theme={theme} />
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} />
         <Axis
           id={getAxisId('left2')}
@@ -1117,16 +1061,8 @@ storiesOf('Bar Chart', module)
     );
   })
   .add('scale to extent', () => {
-    const yScaleToDataExtent = boolean('yScaleDataToExtent', false);
-    const mixed = [
-      { x: 3, y: 1 },
-      { x: 0, y: -4 },
-      { x: 2, y: 2 },
-      { x: 1, y: -3 },
-      { x: 2, y: 2 },
-      { x: 1, y: -3 },
-      { x: 3, y: 1 },
-    ];
+    const yScaleToDataExtent = boolean('yScaleDataToExtent', true);
+    const mixed = [{ x: 0, y: -4 }, { x: 1, y: -3 }, { x: 2, y: 2 }, { x: 3, y: 1 }];
 
     const allPositive = mixed.map((datum) => ({ x: datum.x, y: Math.abs(datum.y) }));
     const allNegative = mixed.map((datum) => ({ x: datum.x, y: Math.abs(datum.y) * -1 }));
@@ -1138,7 +1074,7 @@ storiesOf('Bar Chart', module)
         allPositive: 'all positive',
         allNegative: 'all negative',
       },
-      'mixed',
+      'all negative',
     );
 
     let data = mixed;
@@ -1179,8 +1115,8 @@ storiesOf('Bar Chart', module)
     const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d: any) => {
       return {
         x: d[0],
-        max: d[1] + 4 + 4 * Math.random(),
-        min: d[1] - 4 - 4 * Math.random(),
+        max: d[1] + 4 + 4 * getRandomNumber(),
+        min: d[1] - 4 - 4 * getRandomNumber(),
       };
     });
     const lineData = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d: any) => {
@@ -1443,17 +1379,6 @@ storiesOf('Bar Chart', module)
       },
     };
 
-    const chartRotation = select<Rotation>(
-      'chartRotation',
-      {
-        '0 deg': 0,
-        '90 deg': 90,
-        '-90 deg': -90,
-        '180 deg': 180,
-      },
-      0,
-    );
-
     const theme = {
       scales: {
         barsPadding: number('bars padding', 0.25, {
@@ -1510,7 +1435,7 @@ storiesOf('Bar Chart', module)
 
     return (
       <Chart className={'story-chart'}>
-        <Settings rotation={chartRotation} theme={theme} debug={boolean('debug', true)} />
+        <Settings rotation={getChartRotationKnob()} theme={theme} debug={boolean('debug', true)} />
         <LineAnnotation
           annotationId={getAnnotationId('line-annotation')}
           domainType={AnnotationDomainTypes.XDomain}
@@ -1574,18 +1499,6 @@ storiesOf('Bar Chart', module)
   })
   .add('[test] histogram mode (ordinal)', () => {
     const data = [{ x: 'a', y: 2 }, { x: 'b', y: 7 }, { x: 'c', y: 0 }, { x: 'd', y: 6 }];
-
-    const chartRotation = select<Rotation>(
-      'chartRotation',
-      {
-        '0 deg': 0,
-        '90 deg': 90,
-        '-90 deg': -90,
-        '180 deg': 180,
-      },
-      0,
-    );
-
     const theme = {
       scales: {
         barsPadding: number('bars padding', 0.25, {
@@ -1601,7 +1514,7 @@ storiesOf('Bar Chart', module)
 
     return (
       <Chart className={'story-chart'}>
-        <Settings rotation={chartRotation} theme={theme} debug={boolean('debug', true)} />
+        <Settings rotation={getChartRotationKnob()} theme={theme} debug={boolean('debug', true)} />
         <Axis id={getAxisId('discover-histogram-left-axis')} position={Position.Left} title={'left axis'} />
         <Axis id={getAxisId('discover-histogram-bottom-axis')} position={Position.Bottom} title={'bottom axis'} />
         {hasHistogramBarSeries && (
@@ -1709,6 +1622,63 @@ storiesOf('Bar Chart', module)
       </Chart>
     );
   })
+  .add('Min Height', () => {
+    const minBarHeight = number('minBarHeight', 5);
+    const data = [[1, 100000], [2, 10000], [3, 1000], [4, 100], [5, 10], [6, 1], [7, 0], [8, 1], [9, 0]];
+    return (
+      <Chart className={'story-chart'}>
+        <Axis id={getAxisId('bottom')} title="Bottom" position={Position.Bottom} />
+        <Axis id={getAxisId('left')} title="Left" position={Position.Left} />
+        <BarSeries
+          id={getSpecId('bars')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor={0}
+          yAccessors={[1]}
+          data={data}
+          minBarHeight={minBarHeight}
+        />
+      </Chart>
+    );
+  })
+  .add('[Test] Min Height - positive and negative values', () => {
+    const minBarHeight = number('minBarHeight', 10);
+    const data = [
+      [1, -100000],
+      [2, -10000],
+      [3, -1000],
+      [4, -100],
+      [5, -10],
+      [6, -1],
+      [7, 0],
+      [8, -1],
+      [9, 0],
+      [10, 0],
+      [11, 1],
+      [12, 0],
+      [13, 1],
+      [14, 10],
+      [15, 100],
+      [16, 1000],
+      [17, 10000],
+      [18, 100000],
+    ];
+    return (
+      <Chart className={'story-chart'}>
+        <Axis id={getAxisId('bottom')} title="Bottom" position={Position.Bottom} />
+        <Axis id={getAxisId('left')} title="Left" position={Position.Left} />
+        <BarSeries
+          id={getSpecId('bars')}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor={0}
+          yAccessors={[1]}
+          data={data}
+          minBarHeight={minBarHeight}
+        />
+      </Chart>
+    );
+  })
   .add('stacked only grouped areas', () => {
     const data1 = [[1, 2], [2, 2], [3, 3], [4, 5], [5, 5], [6, 3], [7, 8], [8, 2], [9, 1]];
     const data2 = [[1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 4], [7, 3], [8, 2], [9, 4]];
@@ -1785,6 +1755,30 @@ storiesOf('Bar Chart', module)
           yAccessors={[1]}
           data={data3}
           yScaleToDataExtent={false}
+        />
+      </Chart>
+    );
+  })
+  .add('[test] tooltip and rotation', () => {
+    return (
+      <Chart className={'story-chart'}>
+        <Settings rotation={getChartRotationKnob()} />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+        <Axis
+          id={getAxisId('left2')}
+          title={'Left axis'}
+          position={Position.Left}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
+        />
+
+        <BarSeries
+          id={getSpecId('bars1')}
+          xScaleType={ScaleType.Ordinal}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y1', 'y2']}
+          splitSeriesAccessors={['g']}
+          data={TestDatasets.BARCHART_2Y1G}
         />
       </Chart>
     );

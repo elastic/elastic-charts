@@ -1,5 +1,5 @@
 import { LegendItem } from '../legend/legend';
-import { GeometryValue, IndexedGeometry } from '../rendering/rendering';
+import { GeometryValue, IndexedGeometry, AccessorType } from '../rendering/rendering';
 import {
   AnnotationDomainTypes,
   AnnotationSpec,
@@ -48,8 +48,14 @@ describe('Chart Store', () => {
       colorValues: [],
     },
     displayValue: {
-      raw: 'last',
-      formatted: 'formatted-last',
+      raw: {
+        y1: null,
+        y0: null,
+      },
+      formatted: {
+        y1: 'formatted-last',
+        y0: null,
+      },
     },
   };
 
@@ -62,8 +68,14 @@ describe('Chart Store', () => {
       colorValues: [],
     },
     displayValue: {
-      raw: 'last',
-      formatted: 'formatted-last',
+      raw: {
+        y1: null,
+        y0: null,
+      },
+      formatted: {
+        y1: 'formatted-last',
+        y0: null,
+      },
     },
   };
   beforeEach(() => {
@@ -307,6 +319,34 @@ describe('Chart Store', () => {
     store.onLegendItemOut();
 
     expect(outListener.mock.calls.length).toBe(1);
+  });
+
+  test('do nothing when mouseover an hidden series', () => {
+    const legendListener = jest.fn(
+      (): void => {
+        return;
+      },
+    );
+    store.setOnLegendItemOverListener(legendListener);
+
+    store.legendItems = new Map([[firstLegendItem.key, firstLegendItem], [secondLegendItem.key, secondLegendItem]]);
+    store.deselectedDataSeries = [];
+    store.highlightedLegendItemKey.set(null);
+
+    store.toggleSeriesVisibility(firstLegendItem.key);
+    expect(store.deselectedDataSeries).toEqual([firstLegendItem.value]);
+    expect(store.highlightedLegendItemKey.get()).toBe(null);
+    store.onLegendItemOver(firstLegendItem.key);
+    expect(store.highlightedLegendItemKey.get()).toBe(null);
+    store.onLegendItemOut();
+    store.toggleSeriesVisibility(firstLegendItem.key);
+    expect(store.highlightedLegendItemKey.get()).toEqual(firstLegendItem.key);
+    expect(store.deselectedDataSeries).toEqual([]);
+
+    store.onLegendItemOver(firstLegendItem.key);
+    expect(store.highlightedLegendItemKey.get()).toBe(firstLegendItem.key);
+
+    store.removeOnLegendItemOutListener();
   });
 
   test('can respond to legend item click event', () => {
@@ -1016,10 +1056,11 @@ describe('Chart Store', () => {
 
     const expectedRectTooltipState = {
       isVisible: true,
-      transform: 'translate(0, 0)',
       annotationType: AnnotationTypes.Rectangle,
-      top: 4,
-      left: 5,
+      anchor: {
+        top: store.rawCursorPosition.y - store.chartDimensions.top,
+        left: store.rawCursorPosition.x - store.chartDimensions.left,
+      },
     };
     store.tooltipData.push(unhighlightedTooltipValue);
     expect(store.annotationTooltipState.get()).toEqual(expectedRectTooltipState);
@@ -1039,7 +1080,7 @@ describe('Chart Store', () => {
       isHighlighted: false,
       isXValue: true,
       seriesKey: 'headerSeries',
-      yAccessor: 'y',
+      yAccessor: AccessorType.Y0,
     };
 
     store.tooltipData.replace([headerValue]);
@@ -1052,13 +1093,17 @@ describe('Chart Store', () => {
       isHighlighted: false,
       isXValue: false,
       seriesKey: 'seriesKey',
-      yAccessor: 'y',
+      yAccessor: AccessorType.Y1,
     };
     store.tooltipData.replace([headerValue, tooltipValue]);
 
     const expectedTooltipValues = new Map();
-    expectedTooltipValues.set('seriesKey', 123);
-    expect(store.legendItemTooltipValues.get()).toEqual(expectedTooltipValues);
+    expectedTooltipValues.set('seriesKey', {
+      y0: undefined,
+      y1: 123,
+    });
+    const t = store.legendItemTooltipValues.get();
+    expect(t).toEqual(expectedTooltipValues);
   });
   describe('can determine if crosshair cursor is visible', () => {
     const brushEndListener = (): void => {

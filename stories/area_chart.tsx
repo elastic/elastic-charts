@@ -16,6 +16,8 @@ import {
   timeFormatter,
 } from '../src';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
+import { getRandomNumber } from '../.storybook/utils';
+
 const dateFormatter = timeFormatter('HH:mm');
 
 storiesOf('Area Chart', module)
@@ -421,8 +423,8 @@ storiesOf('Area Chart', module)
     const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d) => {
       return {
         x: d[0],
-        max: d[1] + 4 + 4 * Math.random(),
-        min: d[1] - 4 - 4 * Math.random(),
+        max: d[1] + 4 + 4 * getRandomNumber(),
+        min: d[1] - 4 - 4 * getRandomNumber(),
       };
     });
     const lineData = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d) => {
@@ -477,12 +479,12 @@ storiesOf('Area Chart', module)
   })
   .add('stacked band area chart', () => {
     const data = KIBANA_METRICS.metrics.kibana_os_load[0].data;
-    const data2 = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d) => {
-      return [d[0], 20, 10];
-    });
+    const data2 = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d) => [d[0], 20, 10]);
     const scaleToDataExtent = boolean('scale to extent', false);
+
     return (
       <Chart className={'story-chart'}>
+        <Settings showLegend />
         <Axis
           id={getAxisId('bottom')}
           title={'timestamp per 1 minute'}

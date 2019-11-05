@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import {
   Axis,
   Chart,
@@ -6,74 +6,33 @@ import {
   getSpecId,
   Position,
   ScaleType,
+  HistogramBarSeries,
+  DARK_THEME,
   Settings,
-  BarSeries,
-  LineSeries,
-  AreaSeries,
 } from '../src';
+import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 
 export class Playground extends React.Component {
   render() {
+    const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 5);
     return (
-      <Fragment>
-        <div className="chart">
-          <Chart className="story-chart">
-            <Settings
-              theme={{
-                areaSeriesStyle: {
-                  point: {
-                    visible: true,
-                  },
-                },
-              }}
-              xDomain={{
-                max: 3.8,
-              }}
-            />
-            <Axis
-              id={getAxisId('bottom')}
-              position={Position.Bottom}
-              title={'Bottom axis'}
-              showOverlappingTicks={true}
-            />
-            <Axis
-              id={getAxisId('left')}
-              title={'Left axis'}
-              position={Position.Left}
-              domain={{
-                max: 5,
-              }}
-            />
+      <div className="chart">
+        <Chart>
+          <Settings theme={DARK_THEME} rotation={180} />
+          <Axis id={getAxisId('x')} position={Position.Bottom} />
+          <Axis id={getAxisId('y')} position={Position.Left} />
 
-            <BarSeries
-              id={getSpecId('bar')}
-              xScaleType={ScaleType.Linear}
-              yScaleType={ScaleType.Linear}
-              xAccessor={0}
-              yAccessors={[1]}
-              data={[[0, 1], [1, 2], [2, 10], [3, 4], [4, 5]]}
-            />
-
-            <LineSeries
-              id={getSpecId('line')}
-              xScaleType={ScaleType.Linear}
-              yScaleType={ScaleType.Linear}
-              xAccessor={0}
-              yAccessors={[1]}
-              data={[[0, 1], [1, 2], [2, 10], [3, 4], [4, 5]]}
-            />
-
-            <AreaSeries
-              id={getSpecId('area')}
-              xScaleType={ScaleType.Linear}
-              yScaleType={ScaleType.Linear}
-              xAccessor={0}
-              yAccessors={[1]}
-              data={[[0, 1], [1, 2], [2, 10], [3, 4], [4, 5]]}
-            />
-          </Chart>
-        </div>
-      </Fragment>
+          <HistogramBarSeries
+            id={getSpecId('series bars chart')}
+            xScaleType={ScaleType.Linear}
+            yScaleType={ScaleType.Linear}
+            xAccessor={0}
+            yAccessors={[1]}
+            data={data}
+            yScaleToDataExtent={true}
+          />
+        </Chart>
+      </div>
     );
   }
 }

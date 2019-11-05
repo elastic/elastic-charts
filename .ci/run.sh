@@ -85,25 +85,23 @@ yarn config set yarn-offline-mirror "$cacheDir/yarn-offline-cache"
 yarnGlobalDir="$(yarn global bin)"
 export PATH="$PATH:$yarnGlobalDir"
 
-
+###
+### install dependencies
+###
+echo " -- installing dependencies"
+yarn install --frozen-lockfile
 
 ###
 ### install codecov dependencies
 ###
 echo " -- installing codecov dependencies"
-yarn add codecov --prefer-offline
-
-###
-### install dependencies
-###
-echo " -- installing dependencies"
-yarn install
+yarn add codecov --prefer-offline --frozen-lockfile
 
 ###
 ### building
 ###
 echo " -- building"
-yarn build 
+yarn build
 
 ###
 ### run linter
@@ -112,13 +110,25 @@ echo " -- run linter"
 yarn lint
 
 ###
+### timezone specific testing
+###
+echo " -- tz testing"
+yarn test:tz --ci
+
+###
 ### testing
 ###
 echo " -- testing"
-yarn test --coverage
+yarn test --coverage --ci
 
 ###
 ### upload code coverage
 ###
 echo " -- upload code coverage"
 ./node_modules/.bin/codecov
+
+###
+### visual testing
+###
+echo " -- visual testing"
+yarn jest:integration --ci

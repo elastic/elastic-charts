@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, createRef } from 'react';
 import classNames from 'classnames';
 import { Provider } from 'mobx-react';
 
@@ -28,6 +28,8 @@ interface ChartProps {
 
 interface ChartState {
   legendPosition: Position;
+  renderComplete: boolean;
+  renderCount: number;
 }
 
 export class Chart extends React.Component<ChartProps, ChartState> {
@@ -35,12 +37,25 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     renderer: 'canvas',
   };
   private chartSpecStore: ChartStore;
+  private chartContainerRef: React.RefObject<HTMLDivElement>;
   constructor(props: any) {
     super(props);
+    this.chartContainerRef = createRef();
     this.chartSpecStore = new ChartStore(props.id);
     this.state = {
       legendPosition: this.chartSpecStore.legendPosition.get(),
+      renderComplete: false,
+      renderCount: 0,
     };
+
+    this.chartSpecStore.chartInitialized.observe(({ newValue, oldValue }) => {
+      if (newValue !== oldValue) {
+        this.setState({
+          renderComplete: newValue,
+          renderCount: newValue ? this.state.renderCount + 1 : this.state.renderCount,
+        });
+      }
+    });
     // value is set to chart_store in settings so need to watch the value
     this.chartSpecStore.legendPosition.observe(({ newValue: legendPosition }) => {
       this.setState({
@@ -76,9 +91,13 @@ export class Chart extends React.Component<ChartProps, ChartState> {
       }
     }
   }
+  getChartContainerRef = () => {
+    return this.chartContainerRef;
+  };
 
   render() {
     const { renderer, size, className } = this.props;
+    const { renderComplete, renderCount } = this.state;
     const containerStyle = Chart.getContainerStyle(size);
     const horizontal = isHorizontalAxis(this.state.legendPosition);
     const chartClassNames = classNames('echChart', className, {
@@ -87,7 +106,13 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
     return (
       <Provider chartStore={this.chartSpecStore}>
-        <div style={containerStyle} className={chartClassNames}>
+        <div
+          style={containerStyle}
+          className={chartClassNames}
+          data-ech-render-complete={renderComplete}
+          data-ech-render-count={renderCount}
+          ref={this.chartContainerRef}
+        >
           <Legend />
           <SpecsParser>{this.props.children}</SpecsParser>
           <div className="echContainer">
@@ -96,8 +121,8 @@ export class Chart extends React.Component<ChartProps, ChartState> {
             {// TODO reenable when SVG rendered is aligned with canvas one
             renderer === 'svg' && <ChartContainer />}
             {renderer === 'canvas' && <ChartContainer />}
-            <Tooltips />
-            <AnnotationTooltip />
+            <Tooltips getChartContainerRef={this.getChartContainerRef} />
+            <AnnotationTooltip getChartContainerRef={this.getChartContainerRef} />
             <Highlighter />
           </div>
         </div>

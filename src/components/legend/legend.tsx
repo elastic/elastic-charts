@@ -1,12 +1,15 @@
-import classNames from 'classnames';
-import { inject, observer } from 'mobx-react';
 import React, { createRef } from 'react';
+import { inject, observer } from 'mobx-react';
+import classNames from 'classnames';
+
 import { isVerticalAxis, isHorizontalAxis } from '../../chart_types/xy_chart/utils/axis_utils';
 import { LegendItem as SeriesLegendItem } from '../../chart_types/xy_chart/legend/legend';
 import { ChartStore } from '../../chart_types/xy_chart/store/chart_state';
 import { Position } from '../../chart_types/xy_chart/utils/specs';
 import { LegendItem } from './legend_item';
 import { Theme } from '../../utils/themes/theme';
+import { TooltipLegendValue } from '../../chart_types/xy_chart/tooltip/tooltip';
+import { AccessorType } from '../../chart_types/xy_chart/rendering/rendering';
 
 interface LegendProps {
   chartStore?: ChartStore; // FIX until we find a better way on ts mobx
@@ -32,6 +35,7 @@ interface LegendListStyle {
 
 class LegendComponent extends React.Component<LegendProps, LegendState> {
   static displayName = 'Legend';
+  legendItemCount = 0;
 
   state = {
     width: undefined,
@@ -40,19 +44,7 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
   private echLegend = createRef<HTMLDivElement>();
 
   componentDidUpdate() {
-    const { chartInitialized, chartTheme, legendPosition } = this.props.chartStore!;
-    if (
-      this.echLegend.current &&
-      isVerticalAxis(legendPosition.get()) &&
-      this.state.width === undefined &&
-      !chartInitialized.get()
-    ) {
-      const buffer = chartTheme.legend.spacingBuffer;
-
-      this.setState({
-        width: this.echLegend.current.offsetWidth + buffer,
-      });
-    }
+    this.tryLegendResize();
   }
 
   render() {
@@ -88,6 +80,35 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
       </div>
     );
   }
+
+  tryLegendResize = () => {
+    const { chartInitialized, chartTheme, legendPosition, legendItems } = this.props.chartStore!;
+    const { width } = this.state;
+
+    if (
+      this.echLegend.current &&
+      isVerticalAxis(legendPosition.get()) &&
+      !chartInitialized.get() &&
+      width === undefined &&
+      this.echLegend.current.offsetWidth > 0
+    ) {
+      const buffer = chartTheme.legend.spacingBuffer;
+      this.legendItemCount = legendItems.size;
+
+      return this.setState({
+        width: this.echLegend.current.offsetWidth + buffer,
+      });
+    }
+
+    // Need to reset width to enable downsizing of width
+    if (width !== undefined && legendItems.size !== this.legendItemCount) {
+      this.legendItemCount = legendItems.size;
+
+      this.setState({
+        width: undefined,
+      });
+    }
+  };
 
   getLegendListStyle = (position: Position, { chartMargins, legend }: Theme): LegendListStyle => {
     const { top: paddingTop, bottom: paddingBottom, left: paddingLeft, right: paddingRight } = chartMargins;
@@ -136,29 +157,52 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
     this.props.chartStore!.onLegendItemOut();
   };
 
-  private renderLegendElement = (item: SeriesLegendItem) => {
-    const { key, displayValue } = item;
-    const { legendPosition, legendItemTooltipValues, isCursorOnChart } = this.props.chartStore!;
-    const tooltipValues = legendItemTooltipValues.get();
-    let tooltipValue;
-
-    if (tooltipValues && tooltipValues.get(key)) {
-      tooltipValue = tooltipValues.get(key);
+  private getLegendValues(
+    tooltipValues: Map<string, TooltipLegendValue> | undefined,
+    key: string,
+    banded: boolean = false,
+  ): any[] {
+    const values = tooltipValues && tooltipValues.get(key);
+    if (values === null || values === undefined) {
+      return banded ? ['', ''] : [''];
     }
 
-    const newDisplayValue = tooltipValue != null ? tooltipValue : '';
+    const { y0, y1 } = values;
+    return banded ? [y1, y0] : [y1];
+  }
 
-    return (
-      <LegendItem
-        {...item}
-        key={key}
-        legendItemKey={key}
-        legendPosition={legendPosition.get()}
-        displayValue={isCursorOnChart.get() ? newDisplayValue : displayValue.formatted}
-        onMouseEnter={this.onLegendItemMouseover(key)}
-        onMouseLeave={this.onLegendItemMouseout}
-      />
-    );
+  private getItemLabel(
+    { banded, label, y1AccessorFormat, y0AccessorFormat }: SeriesLegendItem,
+    yAccessor: AccessorType,
+  ) {
+    if (!banded) {
+      return label;
+    }
+
+    return yAccessor === AccessorType.Y1 ? `${label}${y1AccessorFormat}` : `${label}${y0AccessorFormat}`;
+  }
+
+  private renderLegendElement = (item: SeriesLegendItem) => {
+    const { key, displayValue, banded } = item;
+    const { legendPosition, legendItemTooltipValues, isCursorOnChart } = this.props.chartStore!;
+    const tooltipValues = legendItemTooltipValues.get();
+    const legendValues = this.getLegendValues(tooltipValues, key, banded);
+
+    return legendValues.map((value, index) => {
+      const yAccessor: AccessorType = index === 0 ? AccessorType.Y1 : AccessorType.Y0;
+      return (
+        <LegendItem
+          {...item}
+          label={this.getItemLabel(item, yAccessor)}
+          key={`${key}-${yAccessor}`}
+          legendItemKey={key}
+          legendPosition={legendPosition.get()}
+          displayValue={isCursorOnChart.get() ? value : displayValue.formatted[yAccessor]}
+          onMouseEnter={this.onLegendItemMouseover(key)}
+          onMouseLeave={this.onLegendItemMouseout}
+        />
+      );
+    });
   };
 }
 

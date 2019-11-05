@@ -2,7 +2,6 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { ContainerConfig } from 'konva';
 import { Layer, Rect, Stage } from 'react-konva';
-
 import { AnnotationId } from '../../utils/ids';
 import { isLineAnnotation, isRectAnnotation, AxisSpec } from '../../chart_types/xy_chart/utils/specs';
 import { LineAnnotationStyle, RectAnnotationStyle, mergeGridLineConfigs } from '../../utils/themes/theme';
@@ -252,7 +251,6 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
         );
       } else if (isRectAnnotation(spec)) {
         const rectStyle = spec.style as RectAnnotationStyle;
-
         element = (
           <RectAnnotation
             key={`annotation-${id}`}

@@ -109,17 +109,32 @@ export interface SeriesSpec {
   sortIndex?: number;
   displayValueSettings?: DisplayValueSpec;
   /**
-   * Postfix string or accessor function for y1 accesor when using `y0Accessors`
+   * Postfix string or accessor function for y1 accessor when using `y0Accessors`
    *
    * @default ' - upper'
    */
   y0AccessorFormat?: AccessorFormat;
   /**
-   * Postfix string or accessor function for y1 accesor when using `y0Accessors`
+   * Postfix string or accessor function for y1 accessor when using `y0Accessors`
    *
    * @default ' - lower'
    */
   y1AccessorFormat?: AccessorFormat;
+}
+
+export interface Postfixes {
+  /**
+   * Postfix for y1 accessor when using `y0Accessors`
+   *
+   * @default 'upper'
+   */
+  y0AccessorFormat?: string;
+  /**
+   * Postfix for y1 accessor when using `y0Accessors`
+   *
+   * @default 'lower'
+   */
+  y1AccessorFormat?: string;
 }
 
 export type CustomSeriesColorsMap = Map<DataSeriesColorsValues, string>;
@@ -167,21 +182,30 @@ export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales;
 /**
  * This spec describe the dataset configuration used to display a bar series.
  */
-export type BarSeriesSpec = BasicSeriesSpec & {
-  /** @default bar */
-  seriesType: 'bar';
-  /** If true, will stack all BarSeries and align bars to ticks (instead of centered on ticks) */
-  enableHistogramMode?: boolean;
-  barSeriesStyle?: RecursivePartial<BarSeriesStyle>;
-  /**
-   * Stack each series in percentage for each point.
-   */
-  stackAsPercentage?: boolean;
-  /**
-   * An optional functional accessor to return custom color or style for bar datum
-   */
-  styleAccessor?: BarStyleAccessor;
-};
+export type BarSeriesSpec = BasicSeriesSpec &
+  Postfixes & {
+    /** @default bar */
+    seriesType: 'bar';
+    /** If true, will stack all BarSeries and align bars to ticks (instead of centered on ticks) */
+    enableHistogramMode?: boolean;
+    barSeriesStyle?: RecursivePartial<BarSeriesStyle>;
+    /**
+     * Stack each series in percentage for each point.
+     */
+    stackAsPercentage?: boolean;
+    /**
+     * Functional accessor to return custom color or style for bar datum
+     */
+    styleAccessor?: BarStyleAccessor;
+    /**
+     * Min height to render bars for highly variable data
+     *
+     * i.e. ranges from 100,000 to 1
+     *
+     * @units pixel
+     */
+    minBarHeight?: number;
+  };
 
 /**
  * This spec describe the dataset configuration used to display a histogram bar series.
@@ -210,7 +234,8 @@ export type LineSeriesSpec = BasicSeriesSpec &
  * This spec describe the dataset configuration used to display an area series.
  */
 export type AreaSeriesSpec = BasicSeriesSpec &
-  HistogramConfig & {
+  HistogramConfig &
+  Postfixes & {
     /** @default area */
     seriesType: 'area';
     /** The type of interpolator to be used to interpolate values between points */
@@ -283,7 +308,10 @@ export interface AxisSpec {
   integersOnly?: boolean;
 }
 
-export type TickFormatter = (value: any) => string;
+export type TickFormatterOptions = {
+  timeZone?: string;
+};
+export type TickFormatter = (value: any, options?: TickFormatterOptions) => string;
 
 export interface AxisStyle {
   /** Specifies the amount of padding on the tick label bounding box */
@@ -347,7 +375,9 @@ export type LineAnnotationSpec = BaseAnnotationSpec & {
   };
   /** Annotation lines are hidden */
   hideLines?: boolean;
-  /** Hide tooltip when hovering over the line */
+  /** Hide tooltip when hovering over the line
+   * @default true
+   */
   hideLinesTooltips?: boolean;
   /** z-index of the annotation relative to other elements in the chart
    * @default 1

@@ -1,4 +1,4 @@
-import { action, computed, IObservableValue, observable } from 'mobx';
+import { set, action, computed, IObservableValue, observable } from 'mobx';
 import * as uuid from 'uuid';
 
 import {
@@ -68,7 +68,12 @@ import {
   computeAnnotationDimensions,
   computeAnnotationTooltipState,
 } from '../annotations/annotation_utils';
-import { getCursorBandPosition, getCursorLinePosition, getTooltipPosition } from '../crosshair/crosshair_utils';
+import {
+  getCursorBandPosition,
+  getCursorLinePosition,
+  getTooltipPosition,
+  TooltipPosition,
+} from '../crosshair/crosshair_utils';
 import {
   BrushExtent,
   computeBrushExtent,
@@ -179,12 +184,12 @@ export class ChartStore {
     maxY: 0,
   };
 
-  resizeDebounce: number = 10;
+  resizeDebounce = 10;
 
   chartRotation: Rotation = 0; // updated from jsx
   chartRendering: Rendering = 'canvas'; // updated from jsx
   chartTheme: Theme = LIGHT_THEME;
-  hideDuplicateAxes: boolean = false; // updated from jsx
+  hideDuplicateAxes = false; // updated from jsx
   axesSpecs: Map<AxisId, AxisSpec> = new Map(); // readed from jsx
   axesTicksDimensions: Map<AxisId, AxisTicksDimensions> = new Map(); // computed
   axesPositions: Map<AxisId, Dimensions> = new Map(); // computed
@@ -217,11 +222,21 @@ export class ChartStore {
   tooltipData = observable.array<TooltipValue>([], { deep: false });
   tooltipType = observable.box<TooltipType>(DEFAULT_TOOLTIP_TYPE);
   tooltipSnap = observable.box<boolean>(DEFAULT_TOOLTIP_SNAP);
-  tooltipPosition = observable.object<{ transform: string }>({ transform: '' });
+  tooltipPosition = observable.object<TooltipPosition>({
+    isRotatedHorizontal: true,
+    vPosition: {
+      bandTop: 0,
+      bandHeight: 0,
+    },
+    hPosition: {
+      bandLeft: 0,
+      bandWidth: 0,
+    },
+  });
   tooltipHeaderFormatter?: TooltipValueFormatter;
 
   /** cursorPosition is used by tooltip, so this is a way to expose the position for other uses */
-  rawCursorPosition = observable.object<{ x: number; y: number }>({ x: -1, y: -1 }, undefined, {
+  rawCursorPosition = observable.object<{ x: number; y: number }>({ x: 100, y: 100 }, undefined, {
     deep: false,
   });
 
@@ -279,7 +294,6 @@ export class ChartStore {
 
   chartCursor = computed(() => {
     const { x: xPos, y: yPos } = this.cursorPosition;
-
     if (yPos < 0 || xPos < 0) {
       return 'default';
     }
@@ -445,12 +459,15 @@ export class ChartStore {
 
     const isSingleValueXScale = this.xScale.isSingleValue();
 
-    this.tooltipPosition.transform = getTooltipPosition(
-      this.chartDimensions,
-      this.chartRotation,
-      this.cursorBandPosition,
-      this.cursorPosition,
-      isSingleValueXScale,
+    set(
+      this.tooltipPosition,
+      getTooltipPosition(
+        this.chartDimensions,
+        this.chartRotation,
+        this.cursorBandPosition,
+        this.cursorPosition,
+        isSingleValueXScale,
+      ),
     );
 
     const tooltipAndHighlight = getTooltipAndHighlightFromXValue(
@@ -475,7 +492,10 @@ export class ChartStore {
 
     // if there's an annotation rect tooltip & there isn't a single highlighted element, hide
     const annotationTooltip = this.annotationTooltipState.get();
-    const hasRectAnnotationToolip = annotationTooltip && annotationTooltip.annotationType === AnnotationTypes.Rectangle;
+    const hasRectAnnotationToolip =
+      annotationTooltip &&
+      annotationTooltip.isVisible &&
+      annotationTooltip.annotationType === AnnotationTypes.Rectangle;
     if (hasRectAnnotationToolip && highlightedGeometries.length === 0) {
       this.clearTooltipAndHighlighted();
       return;
@@ -541,7 +561,7 @@ export class ChartStore {
     );
 
     // If there's a highlighted chart element tooltip value, don't show annotation tooltip
-    if (tooltipState && tooltipState.annotationType === AnnotationTypes.Rectangle) {
+    if (tooltipState && tooltipState.isVisible && tooltipState.annotationType === AnnotationTypes.Rectangle) {
       for (const tooltipValue of this.tooltipData) {
         if (tooltipValue.isHighlighted) {
           return null;
@@ -576,7 +596,7 @@ export class ChartStore {
     return (this.xScale && this.xScale.bandwidth > 0) || this.tooltipSnap.get();
   });
 
-  clearTooltipAndHighlighted = action((clearCursorBand: boolean = true) => {
+  clearTooltipAndHighlighted = action((clearCursorBand = true) => {
     // if exist any highlighted geometry, send an out element event
     if (this.onElementOutListener && this.highlightedGeometries.length > 0) {
       this.onElementOutListener();
@@ -604,8 +624,13 @@ export class ChartStore {
   });
 
   onLegendItemOver = action((legendItemKey: string | null) => {
+    if (legendItemKey) {
+      const legendItem = this.legendItems.get(legendItemKey);
+      if (legendItem && findDataSeriesByColorValues(this.deselectedDataSeries, legendItem.value) > -1) {
+        return;
+      }
+    }
     this.highlightedLegendItemKey.set(legendItemKey);
-
     if (this.onLegendItemOverListener) {
       const currentLegendItem = this.highlightedLegendItem.get();
       const listenerData = currentLegendItem ? currentLegendItem.value : null;
@@ -667,11 +692,21 @@ export class ChartStore {
     }
   });
 
+  updateHighlightedLegendItemKey = action((legendItemKey: string, deselected: boolean) => {
+    if (deselected) {
+      this.highlightedLegendItemKey.set(null);
+    } else {
+      this.highlightedLegendItemKey.set(legendItemKey);
+    }
+  });
+
   toggleSeriesVisibility = action((legendItemKey: string) => {
     const legendItem = this.legendItems.get(legendItemKey);
 
     if (legendItem) {
       this.deselectedDataSeries = updateDeselectedDataSeries(this.deselectedDataSeries, legendItem.value);
+      const deselected = findDataSeriesByColorValues(this.deselectedDataSeries, legendItem.value) > -1;
+      this.updateHighlightedLegendItemKey(legendItemKey, deselected);
       this.computeChart();
     }
   });
@@ -1041,5 +1076,6 @@ export class ChartStore {
     // https://github.com/elastic/elastic-charts/issues/89 and https://github.com/elastic/elastic-charts/issues/41
     this.canDataBeAnimated = false;
     this.chartInitialized.set(true);
+    // this.setCursorPosition(100, 100);
   }
 }

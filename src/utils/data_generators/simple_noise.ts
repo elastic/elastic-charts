@@ -1,16 +1,22 @@
+export type RandomNumberGenerator = () => number;
+
 export class Simple1DNoise {
   private maxVertices: number;
   private maxVerticesMask: number;
   private amplitude: number;
   private scale: number;
-  constructor(maxVertices = 256, amplitude = 5.1, scale = 0.6) {
+  private getRandomNumber: RandomNumberGenerator;
+
+  constructor(randomNumberGenerator?: RandomNumberGenerator, maxVertices = 256, amplitude = 5.1, scale = 0.6) {
+    this.getRandomNumber = randomNumberGenerator ? randomNumberGenerator : Math.random;
     this.maxVerticesMask = maxVertices - 1;
     this.amplitude = amplitude;
     this.scale = scale;
     this.maxVertices = maxVertices;
   }
+
   getValue(x: number) {
-    const r = new Array(this.maxVertices).fill(0).map(Math.random);
+    const r = new Array(this.maxVertices).fill(0).map(this.getRandomNumber);
     const scaledX = x * this.scale;
     const xFloor = Math.floor(scaledX);
     const t = scaledX - xFloor;
@@ -25,6 +31,7 @@ export class Simple1DNoise {
 
     return y * this.amplitude;
   }
+
   private lerp(a: number, b: number, t: number) {
     return a * (1 - t) + b * t;
   }

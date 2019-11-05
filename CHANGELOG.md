@@ -1,3 +1,115 @@
+# [13.6.0](https://github.com/elastic/elastic-charts/compare/v13.5.12...v13.6.0) (2019-11-01)
+
+
+### Features
+
+* **bar_spec:** min bar render height ([#443](https://github.com/elastic/elastic-charts/issues/443)) ([dac21c1](https://github.com/elastic/elastic-charts/commit/dac21c1))
+
+## [13.5.12](https://github.com/elastic/elastic-charts/compare/v13.5.11...v13.5.12) (2019-10-31)
+
+
+### Bug Fixes
+
+* clip bar highlighter edges  ([#447](https://github.com/elastic/elastic-charts/issues/447)) ([c9fc3e2](https://github.com/elastic/elastic-charts/commit/c9fc3e2))
+
+## [13.5.11](https://github.com/elastic/elastic-charts/compare/v13.5.10...v13.5.11) (2019-10-31)
+
+
+### Bug Fixes
+
+* **tooltip:** render tooltip on portal to avoid hidden overflows ([#418](https://github.com/elastic/elastic-charts/issues/418)) ([1c00e23](https://github.com/elastic/elastic-charts/commit/1c00e23)), closes [#375](https://github.com/elastic/elastic-charts/issues/375)
+
+## [13.5.10](https://github.com/elastic/elastic-charts/compare/v13.5.9...v13.5.10) (2019-10-31)
+
+
+### Bug Fixes
+
+* **legend:** disable fade of other charts when hiding an item ([#446](https://github.com/elastic/elastic-charts/issues/446)) ([ff4e097](https://github.com/elastic/elastic-charts/commit/ff4e097))
+
+## [13.5.9](https://github.com/elastic/elastic-charts/compare/v13.5.8...v13.5.9) (2019-10-25)
+
+
+### Bug Fixes
+
+* initial legend sizing issue ([#441](https://github.com/elastic/elastic-charts/issues/441)) ([64b9f83](https://github.com/elastic/elastic-charts/commit/64b9f83)), closes [#367](https://github.com/elastic/elastic-charts/issues/367)
+
+## [13.5.8](https://github.com/elastic/elastic-charts/compare/v13.5.7...v13.5.8) (2019-10-25)
+
+
+### Bug Fixes
+
+* xDomain to exclude undefined values ([#440](https://github.com/elastic/elastic-charts/issues/440)) ([6389356](https://github.com/elastic/elastic-charts/commit/6389356))
+
+## [13.5.7](https://github.com/elastic/elastic-charts/compare/v13.5.6...v13.5.7) (2019-10-23)
+
+
+### Bug Fixes
+
+* switch to momentjs to handle timezones ([#436](https://github.com/elastic/elastic-charts/issues/436)) ([a9f98c8](https://github.com/elastic/elastic-charts/commit/a9f98c8))
+
+## [13.5.6](https://github.com/elastic/elastic-charts/compare/v13.5.5...v13.5.6) (2019-10-22)
+
+
+### Bug Fixes
+
+* **tickformatter:** add timeZone to tickFormatter ([#430](https://github.com/elastic/elastic-charts/issues/430)) ([6256d4d](https://github.com/elastic/elastic-charts/commit/6256d4d)), closes [#427](https://github.com/elastic/elastic-charts/issues/427)
+
+## [13.5.5](https://github.com/elastic/elastic-charts/compare/v13.5.4...v13.5.5) (2019-10-22)
+
+
+### Bug Fixes
+
+* resize observer loop limit exception ([#429](https://github.com/elastic/elastic-charts/issues/429)) ([5243ef3](https://github.com/elastic/elastic-charts/commit/5243ef3))
+
+## [13.5.4](https://github.com/elastic/elastic-charts/compare/v13.5.3...v13.5.4) (2019-10-17)
+
+
+### Bug Fixes
+
+* seedrandom dependency ([#424](https://github.com/elastic/elastic-charts/issues/424)) ([2670d28](https://github.com/elastic/elastic-charts/commit/2670d28))
+
+## [13.5.3](https://github.com/elastic/elastic-charts/compare/v13.5.2...v13.5.3) (2019-10-17)
+
+
+### Bug Fixes
+
+* align series names on splitted series configuration ([#421](https://github.com/elastic/elastic-charts/issues/421)) ([bbecbcc](https://github.com/elastic/elastic-charts/commit/bbecbcc)), closes [#420](https://github.com/elastic/elastic-charts/issues/420)
+
+## [13.5.2](https://github.com/elastic/elastic-charts/compare/v13.5.1...v13.5.2) (2019-10-10)
+
+
+### Bug Fixes
+
+* handle null y0 values on y log scale rendering ([#413](https://github.com/elastic/elastic-charts/issues/413)) ([5731c10](https://github.com/elastic/elastic-charts/commit/5731c10))
+
+## [13.5.1](https://github.com/elastic/elastic-charts/compare/v13.5.0...v13.5.1) (2019-10-09)
+
+
+### Bug Fixes
+
+* mixing bars with line or area series breaks legend toggle ([#410](https://github.com/elastic/elastic-charts/issues/410)) ([57c0e3c](https://github.com/elastic/elastic-charts/commit/57c0e3c)), closes [#399](https://github.com/elastic/elastic-charts/issues/399)
+
+# [13.5.0](https://github.com/elastic/elastic-charts/compare/v13.4.1...v13.5.0) (2019-10-09)
+
+
+### Features
+
+* **data:** fill datasets with zeros with missing points when stacked ([#409](https://github.com/elastic/elastic-charts/issues/409)) ([ef84fd4](https://github.com/elastic/elastic-charts/commit/ef84fd4)), closes [#388](https://github.com/elastic/elastic-charts/issues/388)
+
+## [13.4.1](https://github.com/elastic/elastic-charts/compare/v13.4.0...v13.4.1) (2019-10-09)
+
+
+### Bug Fixes
+
+* **tooltip:** fix spec naming ([#412](https://github.com/elastic/elastic-charts/issues/412)) ([3690cca](https://github.com/elastic/elastic-charts/commit/3690cca)), closes [#411](https://github.com/elastic/elastic-charts/issues/411)
+
+# [13.4.0](https://github.com/elastic/elastic-charts/compare/v13.3.0...v13.4.0) (2019-10-07)
+
+
+### Features
+
+* banded legend values ([#398](https://github.com/elastic/elastic-charts/issues/398) & [#408](https://github.com/elastic/elastic-charts/issues/408)) ([5c35a4d](https://github.com/elastic/elastic-charts/commit/5c35a4d)), closes [#162](https://github.com/elastic/elastic-charts/issues/162)
+
 # [13.3.0](https://github.com/elastic/elastic-charts/compare/v13.2.0...v13.3.0) (2019-10-02)
 
 
