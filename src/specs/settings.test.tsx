@@ -30,7 +30,7 @@ describe('Settings spec component', () => {
   beforeEach(() => {
     const storeReducer = chartStoreReducer('chart_id');
     chartStore = createStore(storeReducer);
-    expect(chartStore.getState().initialized).toBe(false);
+    expect(chartStore.getState().specsInitialized).toBe(false);
     SettingsProxy = getProxy(chartStore);
   });
   test('should update store on mount if spec has a chart store', () => {

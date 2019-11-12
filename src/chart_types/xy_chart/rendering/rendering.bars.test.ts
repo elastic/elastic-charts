@@ -496,6 +496,8 @@ describe('Rendering bars', () => {
   });
   describe('Single series bar chart - log', () => {
     const barSeriesSpec: BarSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
       id: SPEC_ID,
       groupId: GROUP_ID,
       seriesType: 'bar',
@@ -506,12 +508,10 @@ describe('Rendering bars', () => {
       xScaleType: ScaleType.Linear,
       yScaleType: ScaleType.Log,
     };
-    const barSeriesMap = new Map<SpecId, BarSeriesSpec>();
-    barSeriesMap.set(SPEC_ID, barSeriesSpec);
-    const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
+    const barSeriesDomains = computeSeriesDomains([barSeriesSpec], new Map());
     const xScale = computeXScale({
       xDomain: barSeriesDomains.xDomain,
-      totalBarsInCluster: barSeriesMap.size,
+      totalBarsInCluster: 1,
       range: [0, 100],
     });
     const yScales = computeYScales({ yDomains: barSeriesDomains.yDomain, range: [100, 0] });

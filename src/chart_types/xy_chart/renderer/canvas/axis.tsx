@@ -287,7 +287,7 @@ class AxesComponent extends React.PureComponent<AxesProps> {
 
 const mapDispatchToProps = () => ({});
 const mapStateToProps = (state: GlobalChartState): AxesProps => {
-  if (!state.initialized) {
+  if (!state.specsInitialized) {
     return {
       theme: LIGHT_THEME,
       chartDimensions: {

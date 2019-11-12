@@ -78,7 +78,7 @@ const mapStateToProps = (state: GlobalChartState) => {
     };
   }
   return {
-    initialized: state.initialized,
+    initialized: state.specsInitialized,
     brushArea: getBrushAreaSelector(state),
     isBrushAvailable: isBrushAvailableSelector(state),
     chartDimensions: computeChartDimensionsSelector(state).chartDimensions,

@@ -1,6 +1,5 @@
 import React, { createRef } from 'react';
 import classNames from 'classnames';
-
 import { isVerticalAxis, isHorizontalAxis } from '../../chart_types/xy_chart/utils/axis_utils';
 import { connect } from 'react-redux';
 import { Position } from '../../chart_types/xy_chart/utils/specs';
@@ -9,7 +8,8 @@ import { getLegendItemsSelector } from '../../state/selectors/get_legend_items';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
 import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';
 import { getLegendItemsValuesSelector } from '../../state/selectors/get_legend_items_values';
-import { onToggleLegend, onLegendItemOver, onLegendItemOut, onLegendRendered } from '../../state/actions/legend';
+import { getLegendSizeSelector } from '../../state/selectors/get_legend_size';
+import { onToggleLegend, onLegendItemOver, onLegendItemOut } from '../../state/actions/legend';
 import { Dispatch, bindActionCreators } from 'redux';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 import { LegendListItem } from './legend_item';
@@ -17,7 +17,7 @@ import { Theme } from '../../utils/themes/theme';
 import { TooltipLegendValue } from '../../chart_types/xy_chart/tooltip/tooltip';
 import { AccessorType } from '../../utils/geometry';
 import { LegendItem } from '../../chart_types/xy_chart/legend/legend';
-import { Dimensions } from '../../utils/dimensions';
+import { BBox } from '../../utils/bbox/bbox_calculator';
 
 interface LegendProps {
   legendInitialized: boolean;
@@ -29,20 +29,17 @@ interface LegendProps {
   legendCollapsed: boolean;
   debug: boolean;
   chartTheme: Theme;
-  toggleLegend: () => void;
-  onLegendItemOut: () => void;
-  onLegendItemOver: (legendItem: string) => void;
-  onLegendRendered: (bbox?: Dimensions) => void;
-}
-
-interface LegendState {
-  width?: number;
+  legendSize: BBox;
+  toggleLegend: typeof onToggleLegend;
+  onLegendItemOut: typeof onLegendItemOut;
+  onLegendItemOver: typeof onLegendItemOver;
 }
 
 interface LegendStyle {
   maxHeight?: string;
   maxWidth?: string;
   width?: string;
+  height?: string;
 }
 
 interface LegendListStyle {
@@ -53,32 +50,18 @@ interface LegendListStyle {
   gridTemplateColumns?: string;
 }
 
-class LegendComponent extends React.Component<LegendProps, LegendState> {
+class LegendComponent extends React.Component<LegendProps> {
   static displayName = 'Legend';
   legendItemCount = 0;
 
-  state = {
-    width: undefined,
-  };
   private echLegend = createRef<HTMLDivElement>();
 
-  componentDidMount() {
-    const { legendInitialized, showLegend } = this.props;
-    if (showLegend && legendInitialized) {
-      this.props.onLegendRendered();
-    }
-  }
-  componentDidUpdate() {
-    this.tryLegendResize();
-  }
-
   render() {
-    const { legendInitialized, legendItems, legendPosition, showLegend, debug, chartTheme } = this.props;
-
+    const { legendInitialized, legendItems, legendPosition, legendSize, showLegend, debug, chartTheme } = this.props;
     if (!showLegend || !legendInitialized || legendItems.size === 0) {
       return null;
     }
-    const legendContainerStyle = this.getLegendStyle(legendPosition, chartTheme);
+    const legendContainerStyle = this.getLegendStyle(legendPosition, legendSize);
     const legendListStyle = this.getLegendListStyle(legendPosition, chartTheme);
     const legendClasses = classNames('echLegend', `echLegend--${legendPosition}`, {
       'echLegend--debug': debug,
@@ -95,36 +78,6 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
       </div>
     );
   }
-
-  tryLegendResize = () => {
-    const { legendInitialized, chartTheme, legendPosition, legendItems } = this.props;
-    const { width } = this.state;
-
-    if (
-      this.echLegend.current &&
-      isVerticalAxis(legendPosition) &&
-      !legendInitialized &&
-      width === undefined &&
-      this.echLegend.current.offsetWidth > 0
-    ) {
-      const buffer = chartTheme.legend.spacingBuffer;
-      this.legendItemCount = legendItems.size;
-
-      return this.setState({
-        width: this.echLegend.current.offsetWidth + buffer,
-      });
-      this.props.onLegendRendered();
-    }
-
-    // Need to reset width to enable downsizing of width
-    if (width !== undefined && legendItems.size !== this.legendItemCount) {
-      this.legendItemCount = legendItems.size;
-
-      this.setState({
-        width: undefined,
-      });
-    }
-  };
 
   getLegendListStyle = (position: Position, { chartMargins, legend }: Theme): LegendListStyle => {
     const { top: paddingTop, bottom: paddingBottom, left: paddingLeft, right: paddingRight } = chartMargins;
@@ -143,25 +96,18 @@ class LegendComponent extends React.Component<LegendProps, LegendState> {
     };
   };
 
-  getLegendStyle = (position: Position, { legend }: Theme): LegendStyle => {
+  getLegendStyle = (position: Position, size: BBox): LegendStyle => {
     if (isVerticalAxis(position)) {
-      if (this.state.width !== undefined) {
-        const threshold = Math.min(this.state.width!, legend.verticalWidth);
-        const width = `${threshold}px`;
-
-        return {
-          width,
-          maxWidth: width,
-        };
-      }
-
+      const width = `${size.width}px`;
       return {
-        maxWidth: `${legend.verticalWidth}px`,
+        width,
+        maxWidth: width,
       };
     }
-
+    const height = `${size.height}px`;
     return {
-      maxHeight: `${legend.horizontalHeight}px`,
+      height,
+      maxHeight: height,
     };
   };
 
@@ -223,13 +169,12 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
       toggleLegend: onToggleLegend,
       onLegendItemOut,
       onLegendItemOver,
-      onLegendRendered,
     },
     dispatch,
   );
 
 const mapStateToProps = (state: GlobalChartState) => {
-  if (!state.initialized) {
+  if (!state.specsInitialized) {
     return {
       legendInitialized: false, //TODO
       isCursorOnChart: false, //TODO
@@ -240,6 +185,7 @@ const mapStateToProps = (state: GlobalChartState) => {
       legendItemTooltipValues: new Map(),
       debug: false,
       chartTheme: LIGHT_THEME,
+      legendSize: { width: 0, height: 0 },
     };
   }
   const { legendPosition, showLegend, debug } = getSettingsSpecSelector(state);
@@ -247,13 +193,14 @@ const mapStateToProps = (state: GlobalChartState) => {
   return {
     legendInitialized: legendItems.size > 0,
     legendItems,
-    isCursorOnChart: false, //TODO
+    isCursorOnChart: true, //TODO
     legendPosition,
     showLegend,
     legendCollapsed: state.interactions.legendCollapsed,
     legendItemTooltipValues: getLegendItemsValuesSelector(state),
     debug,
     chartTheme: getChartThemeSelector(state),
+    legendSize: getLegendSizeSelector(state),
   };
 };
 

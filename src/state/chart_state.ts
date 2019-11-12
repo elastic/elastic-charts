@@ -10,7 +10,6 @@ import { Point } from '../utils/point';
 import { LegendItem } from '../chart_types/xy_chart/legend/legend';
 import { TooltipLegendValue } from '../chart_types/xy_chart/tooltip/tooltip';
 import { StateActions } from './actions';
-import { ON_LEGEND_RENDERED } from './actions/legend';
 import { CHART_RENDERED } from './actions/chart';
 import { UPDATE_PARENT_DIMENSION } from './actions/chart_settings';
 
@@ -60,12 +59,10 @@ export interface GlobalChartState {
   // an unique ID for each chart used by re-reselect to memoize selector per chart
   chartId: string;
   // true when all all the specs are parsed ad stored into the specs object
-  initialized: boolean;
-  // true when the legend is rendered
-  legendRendered: boolean;
-  // true when the chart is rendered
+  specsInitialized: boolean;
+  // true if the chart is rendered on dom
   chartRendered: boolean;
-  // incremental count of the number of rendering of the chart
+  // incremental count of the chart rendering
   chartRenderedCount: number;
   // the map of parsed specs
   specs: SpecList;
@@ -73,7 +70,7 @@ export interface GlobalChartState {
   chartType: ChartType | null;
   // a chart-type-dependant class that is used to render and share chart-type dependant functions
   internalChartState: InternalChartState | null;
-  // the dimensions of the parent container
+  // the dimensions of the parent container, including the legend
   parentDimensions: Dimensions;
   // the state of the interactions
   interactions: InteractionsState;
@@ -81,10 +78,9 @@ export interface GlobalChartState {
 
 export type ChartType = typeof ChartTypes.Pie | typeof ChartTypes.XYAxis | typeof ChartTypes.Global;
 
-const getInitialState = (chartId: string): GlobalChartState => ({
+export const getInitialState = (chartId: string): GlobalChartState => ({
   chartId,
-  initialized: false,
-  legendRendered: false,
+  specsInitialized: false,
   chartRendered: false,
   chartRenderedCount: 0,
   specs: {
@@ -121,7 +117,7 @@ export const chartStoreReducer = (chartId: string) => {
       case SPEC_PARSING:
         return {
           ...state,
-          initialized: false,
+          specsInitialized: false,
           chartRendered: false,
         };
       case SPEC_PARSED:
@@ -131,7 +127,7 @@ export const chartStoreReducer = (chartId: string) => {
           const internalChartState = initInternalChartState(chartType);
           return {
             ...state,
-            initialized: true,
+            specsInitialized: true,
             chartRendered: false,
             chartType,
             internalChartState,
@@ -139,28 +135,21 @@ export const chartStoreReducer = (chartId: string) => {
         } else {
           return {
             ...state,
-            initialized: true,
+            specsInitialized: true,
             chartRendered: false,
             chartType,
           };
         }
-      case ON_LEGEND_RENDERED:
-        return {
-          ...state,
-          legendRendered: true,
-          parentDimensions: action.containerDimensions || state.parentDimensions,
-        };
       case SPEC_UNMOUNTED:
         return {
           ...state,
-          initialized: false,
+          specsInitialized: false,
           chartRendered: false,
         };
       case UPSERT_SPEC:
         return {
           ...state,
-          initialized: false,
-          legendRendered: false,
+          specsInitialized: false,
           chartRendered: false,
           specs: {
             ...state.specs,
@@ -171,8 +160,7 @@ export const chartStoreReducer = (chartId: string) => {
         const { [action.id]: specToRemove, ...rest } = state.specs;
         return {
           ...state,
-          initialized: false,
-          legendRendered: false,
+          specsInitialized: false,
           chartRendered: false,
           specs: {
             ...rest,
@@ -212,6 +200,7 @@ function findMainChartType(specs: SpecList) {
   }, {});
   const chartTypes = Object.keys(types).filter((type) => type !== 'global');
   if (chartTypes.length > 1) {
+    // eslint-disable-next-line no-console
     console.warn('Multiple chart type on the same configuration');
     return null;
   } else {

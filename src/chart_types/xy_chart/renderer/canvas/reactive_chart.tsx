@@ -37,6 +37,7 @@ import { PointGeometry, BarGeometry, AreaGeometry, LineGeometry } from '../../..
 import { LegendItem } from '../../../../chart_types/xy_chart/legend/legend';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
+import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 
 interface Props {
   initialized: boolean;
@@ -47,7 +48,7 @@ interface Props {
     lines?: LineGeometry[];
   };
   debug: boolean;
-  parentDimensions: Dimensions;
+  chartContainerDimensions: Dimensions;
   chartRotation: Rotation;
   chartDimensions: Dimensions;
   chartTransform: Transform;
@@ -239,7 +240,7 @@ class Chart extends React.Component<Props> {
   }
 
   render() {
-    const { initialized, chartRotation, chartDimensions, isChartEmpty, debug, parentDimensions } = this.props;
+    const { initialized, chartRotation, chartDimensions, isChartEmpty, debug, chartContainerDimensions } = this.props;
     if (!initialized || chartDimensions.width === 0 || chartDimensions.height === 0) {
       return null;
     }
@@ -258,8 +259,8 @@ class Chart extends React.Component<Props> {
         {({ store }) => {
           return (
             <Stage
-              width={parentDimensions.width}
-              height={parentDimensions.height}
+              width={chartContainerDimensions.width}
+              height={chartContainerDimensions.height}
               style={{
                 width: '100%',
                 height: '100%',
@@ -328,7 +329,7 @@ const DEFAULT_PROPS: Props = {
   theme: LIGHT_THEME,
   geometries: {},
   debug: false,
-  parentDimensions: {
+  chartContainerDimensions: {
     width: 0,
     height: 0,
     left: 0,
@@ -363,7 +364,7 @@ const mapStateToProps = (state: GlobalChartState) => {
     initialized: true,
     theme: getChartThemeSelector(state),
     geometries: computeSeriesGeometriesSelector(state).geometries,
-    parentDimensions: state.parentDimensions,
+    chartContainerDimensions: getChartContainerDimensionsSelector(state),
     debug: getSettingsSpecSelector(state).debug,
     chartRotation: getChartRotationSelector(state),
     chartDimensions: computeChartDimensionsSelector(state).chartDimensions,

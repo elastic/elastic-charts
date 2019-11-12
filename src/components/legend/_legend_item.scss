@@ -30,6 +30,7 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
   &__title {
     @include euiFontSizeXS;
     @include euiTextTruncate;
+    font-family: Arial;
     flex: 1 1 auto;
 
     &:hover {

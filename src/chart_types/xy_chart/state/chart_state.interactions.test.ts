@@ -147,7 +147,6 @@ describe('Chart state pointer interactions', () => {
 
   test('can convert/limit cursor positions relative to chart dimensions', () => {
     store.dispatch(onCursorPositionChange(20, 20));
-    debugger;
     let cursorPosition = computeCursorPositionSelector(store.getState());
     expect(cursorPosition.x).toBe(10);
     expect(cursorPosition.y).toBe(10);

@@ -10,14 +10,14 @@ describe('Specs parser', () => {
     const storeReducer = chartStoreReducer('chart_id');
     const chartStore = createStore(storeReducer);
 
-    expect(chartStore.getState().initialized).toBe(false);
+    expect(chartStore.getState().specsInitialized).toBe(false);
     const component = (
       <Provider store={chartStore}>
         <SpecsParser />
       </Provider>
     );
     mount(component);
-    expect(chartStore.getState().initialized).toBe(true);
+    expect(chartStore.getState().specsInitialized).toBe(true);
   });
   test.skip('chart store initialized and computeChart on component update', () => {
     // const chartStore = new ChartStore();
@@ -42,6 +42,6 @@ describe('Specs parser', () => {
       </Provider>,
     );
     component.unmount();
-    expect(chartStore.getState().initialized).toBe(false);
+    expect(chartStore.getState().specsInitialized).toBe(false);
   });
 });

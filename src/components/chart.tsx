@@ -9,7 +9,7 @@ import { isHorizontalAxis } from '../chart_types/xy_chart/utils/axis_utils';
 import { Position } from '../chart_types/xy_chart/utils/specs';
 // import { CursorEvent } from '../specs/settings';
 import { ChartSize, getChartSize } from '../utils/chart_size';
-import { ChartState } from './chart_state';
+import { ChartStatus } from './chart_status';
 import { chartStoreReducer, GlobalChartState } from '../state/chart_state';
 import { createStore, Store } from 'redux';
 import uuid from 'uuid';
@@ -62,13 +62,16 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     const onElementOutCaller = createOnElementOutCaller();
     this.chartStore.subscribe(() => {
       const state = this.chartStore.getState();
+      if (!isInitialized(state)) {
+        return;
+      }
       const settings = getSettingsSpecSelector(state);
       if (this.state.legendPosition !== settings.legendPosition) {
         this.setState({
           legendPosition: settings.legendPosition,
         });
       }
-      if (!isInitialized(state) || state.chartType !== ChartTypes.XYAxis) {
+      if (state.chartType !== ChartTypes.XYAxis) {
         return;
       }
       onElementOverCaller(state);
@@ -115,11 +118,11 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     return (
       <Provider store={this.chartStore}>
         <div style={containerStyle} className={chartClassNames}>
-          <ChartState />
+          <ChartStatus />
+          <ChartResizer />
           <Legend />
           <SpecsParser>{this.props.children}</SpecsParser>
           <div className="echContainer">
-            <ChartResizer />
             <ChartContainer />
           </div>
         </div>

@@ -1,5 +1,4 @@
 import { DataSeriesColorsValues } from '../../chart_types/xy_chart/utils/series';
-import { Dimensions } from '../../utils/dimensions';
 
 export const ON_TOGGLE_LEGEND = 'ON_TOGGLE_LEGEND';
 export const ON_LEGEND_ITEM_OVER = 'ON_LEGEND_ITEM_OVER';
@@ -7,7 +6,6 @@ export const ON_LEGEND_ITEM_OUT = 'ON_LEGEND_ITEM_OUT';
 export const ON_LEGEND_ITEM_CLICK = 'ON_LEGEND_ITEM_CLICK';
 export const ON_TOGGLE_DESELECT_SERIES = 'ON_TOGGLE_DESELECT_SERIES';
 export const ON_INVERT_DESELECT_SERIES = 'ON_INVERT_DESELECT_SERIES';
-export const ON_LEGEND_RENDERED = 'ON_LEGEND_RENDERED';
 
 export interface ToggleLegendAction {
   type: typeof ON_TOGGLE_LEGEND;
@@ -32,10 +30,6 @@ export interface ToggleDeselectSeriesAction {
 export interface InvertDeselectSeriesAction {
   type: typeof ON_INVERT_DESELECT_SERIES;
   legendItemId: DataSeriesColorsValues;
-}
-export interface LegendRenderedAction {
-  type: typeof ON_LEGEND_RENDERED;
-  containerDimensions?: Dimensions;
 }
 
 export function onToggleLegend(): ToggleLegendAction {
@@ -62,15 +56,10 @@ export function onInvertDeselectSeries(legendItemId: DataSeriesColorsValues): In
   return { type: ON_INVERT_DESELECT_SERIES, legendItemId };
 }
 
-export function onLegendRendered(containerDimensions?: Dimensions): LegendRenderedAction {
-  return { type: ON_LEGEND_RENDERED, containerDimensions };
-}
-
 export type LegendActions =
   | ToggleLegendAction
   | LegendItemOverAction
   | LegendItemOutAction
   | LegendItemClickAction
   | ToggleDeselectSeriesAction
-  | InvertDeselectSeriesAction
-  | LegendRenderedAction;
+  | InvertDeselectSeriesAction;

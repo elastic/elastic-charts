@@ -77,7 +77,7 @@ export class BarValuesComponent extends React.PureComponent<BarValuesProps> {
 
 const mapDispatchToProps = () => ({});
 const mapStateToProps = (state: GlobalChartState): BarValuesProps => {
-  if (!state.initialized) {
+  if (!state.specsInitialized) {
     return {
       theme: LIGHT_THEME,
       chartDimensions: {

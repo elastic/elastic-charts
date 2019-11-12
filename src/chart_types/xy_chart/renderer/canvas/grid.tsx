@@ -54,7 +54,7 @@ export class GridComponent extends React.PureComponent<GridProps> {
 
 const mapDispatchToProps = () => ({});
 const mapStateToProps = (state: GlobalChartState): GridProps => {
-  if (!state.initialized) {
+  if (!state.specsInitialized) {
     return {
       chartTheme: LIGHT_THEME,
       chartDimensions: {

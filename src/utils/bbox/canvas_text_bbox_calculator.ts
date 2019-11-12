@@ -17,7 +17,7 @@ export class CanvasTextBBoxCalculator implements BBoxCalculator {
     this.attachedRoot.appendChild(this.offscreenCanvas);
     this.scaledFontSize = scaledFontSize;
   }
-  compute(text: string, padding: number, fontSize = 16, fontFamily = 'Arial'): Option<BBox> {
+  compute(text: string, padding: number, fontSize = 16, fontFamily = 'Arial', lineHeight = 1): Option<BBox> {
     if (!this.context) {
       return none;
     }
@@ -35,7 +35,7 @@ export class CanvasTextBBoxCalculator implements BBoxCalculator {
 
     return some({
       width: measure.width / scalingFactor + padding,
-      height: fontSize,
+      height: fontSize * lineHeight,
     });
   }
   destroy(): void {

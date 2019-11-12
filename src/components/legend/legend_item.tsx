@@ -200,7 +200,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
   );
 
 const mapStateToProps = (state: GlobalChartState): LegendItemStateProps => {
-  if (!state.initialized) {
+  if (!state.specsInitialized) {
     return {
       showLegendDisplayValue: false,
       selectedLegendItem: null,

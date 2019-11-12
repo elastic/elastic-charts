@@ -14,7 +14,7 @@ export function createOnChartRenderedCalled(): (
     renderComplete: boolean;
     renderCount: number;
   } => {
-    if (state.initialized && state.legendRendered && !wasRendered) {
+    if (state.specsInitialized && !wasRendered) {
       counter = counter + 1;
       wasRendered = true;
       return {
@@ -22,7 +22,7 @@ export function createOnChartRenderedCalled(): (
         renderCount: counter,
       };
     }
-    if (!state.initialized || !state.legendRendered) {
+    if (!state.specsInitialized) {
       wasRendered = false;
     }
     return {

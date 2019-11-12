@@ -2,18 +2,22 @@ import React, { RefObject } from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
 import { debounce } from 'ts-debounce';
 import { Dimensions } from '../utils/dimensions';
-import { UpdateParentDimensionAction, updateParentDimensions } from '../state/actions/chart_settings';
-import { Dispatch } from 'redux';
+import { updateParentDimensions } from '../state/actions/chart_settings';
+import { Dispatch, bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_specs';
 import { GlobalChartState } from '../state/chart_state';
 
-interface ResizerProps {
-  legendRendered: boolean;
-  showLegend: boolean;
+interface ResizerStateProps {
   resizeDebounce: number;
+}
+
+interface ResizerDispatchProps {
   updateParentDimensions(dimension: Dimensions): void;
 }
+
+type ResizerProps = ResizerStateProps & ResizerDispatchProps;
+
 class Resizer extends React.Component<ResizerProps> {
   private initialResizeComplete = false;
   private containerRef: RefObject<HTMLDivElement>;
@@ -30,12 +34,11 @@ class Resizer extends React.Component<ResizerProps> {
 
   componentDidMount() {
     this.onResizeDebounced = debounce(this.onResize, this.props.resizeDebounce);
-  }
-
-  componentDidUpdate() {
-    if (this.props.legendRendered) {
-      this.ro.observe(this.containerRef.current as Element);
+    if (this.containerRef.current) {
+      const { clientWidth, clientHeight } = this.containerRef.current;
+      this.props.updateParentDimensions({ width: clientWidth, height: clientHeight, top: 0, left: 0 });
     }
+    this.ro.observe(this.containerRef.current as Element);
   }
 
   componentWillUnmount() {
@@ -72,20 +75,20 @@ class Resizer extends React.Component<ResizerProps> {
   };
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<UpdateParentDimensionAction>) => {
-  return {
-    updateParentDimensions: (dimensions: Dimensions) => {
-      dispatch(updateParentDimensions(dimensions));
+const mapDispatchToProps = (dispatch: Dispatch) =>
+  bindActionCreators(
+    {
+      updateParentDimensions,
     },
-  };
-};
+    dispatch,
+  );
 
 const mapStateToProps = (state: GlobalChartState) => {
   const settings = getSettingsSpecSelector(state);
+  const resizeDebounce =
+    settings.resizeDebounce === undefined || settings.resizeDebounce === null ? 200 : settings.resizeDebounce;
   return {
-    legendRendered: state.legendRendered,
-    showLegend: settings.showLegend,
-    resizeDebounce: settings.resizeDebounce || 200,
+    resizeDebounce,
   };
 };
 
