@@ -57,7 +57,7 @@ export type IndexedGeometry = PointGeometry | BarGeometry;
 /**
  * Array of **range** clippings [x1, x2] to be excluded during rendering
  *
- * Note: Must be scaled **range** values NOT domain
+ * Note: Must be scaled **range** values (i.e. pixel coordinates) **NOT** domain values
  */
 export type ClippedRanges = [number, number][];
 
@@ -102,6 +102,9 @@ export interface LineGeometry {
   geometryId: GeometryId;
   seriesLineStyle: LineStyle;
   seriesPointStyle: PointStyle;
+  /**
+   * Ranges of `[x0, x1]` pairs to clip from series
+   */
   clippedRanges: ClippedRanges;
 }
 export interface AreaGeometry {
@@ -118,6 +121,9 @@ export interface AreaGeometry {
   seriesAreaLineStyle: LineStyle;
   seriesPointStyle: PointStyle;
   isStacked: boolean;
+  /**
+   * Ranges of `[x0, x1]` pairs to clip from series
+   */
   clippedRanges: ClippedRanges;
 }
 
