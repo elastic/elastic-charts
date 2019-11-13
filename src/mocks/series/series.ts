@@ -9,6 +9,7 @@ import {
   RawDataSeriesDatum,
 } from '../../chart_types/xy_chart/utils/series';
 import { fitFunctionData } from './data';
+import { FullDataSeriesDatum, WithIndex } from '../../chart_types/xy_chart/utils/fit_function';
 
 export class MockDataSeries {
   private static readonly base: DataSeries = {
@@ -113,6 +114,23 @@ export class MockDataSeriesDatum {
       initialY1: y1,
       initialY0: y0,
       ...(filled && filled),
+    };
+  }
+
+  /**
+   * returns "full" datum with minimal values, default missing required values to `null`
+   *
+   * "full" - means x and y1 values are `non-nullable`
+   */
+  static full({
+    fittingIndex = 0,
+    ...datum
+  }: Partial<WithIndex<FullDataSeriesDatum>> & Pick<WithIndex<FullDataSeriesDatum>, 'x' | 'y1'>): WithIndex<
+    FullDataSeriesDatum
+  > {
+    return {
+      ...(MockDataSeriesDatum.simple(datum) as WithIndex<FullDataSeriesDatum>),
+      fittingIndex,
     };
   }
 

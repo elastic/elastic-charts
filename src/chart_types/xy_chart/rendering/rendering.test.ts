@@ -1,15 +1,18 @@
 import { getSpecId } from '../../../utils/ids';
 import {
   BarGeometry,
-  getGeometryStyle,
+  getGeometryStateStyle,
   isPointOnGeometry,
   PointGeometry,
   getBarStyleOverrides,
   getPointStyleOverrides,
+  getClippedRanges,
 } from './rendering';
-import { BarSeriesStyle, SharedGeometryStyle, PointStyle } from '../../../utils/themes/theme';
+import { BarSeriesStyle, SharedGeometryStateStyle, PointStyle } from '../../../utils/themes/theme';
 import { DataSeriesDatum, SeriesIdentifier } from '../utils/series';
 import { RecursivePartial, mergePartial } from '../../../utils/commons';
+import { MockDataSeries } from '../../../mocks';
+import { MockScale } from '../../../mocks/scale';
 import { LegendItem } from '../legend/legend';
 
 describe('Rendering utils', () => {
@@ -128,7 +131,7 @@ describe('Rendering utils', () => {
       },
     };
 
-    const sharedThemeStyle: SharedGeometryStyle = {
+    const sharedThemeStyle: SharedGeometryStateStyle = {
       default: {
         opacity: 1,
       },
@@ -141,32 +144,36 @@ describe('Rendering utils', () => {
     };
 
     it('no highlighted elements', () => {
-      const defaultStyle = getGeometryStyle(seriesIdentifier, null, sharedThemeStyle);
+      const defaultStyle = getGeometryStateStyle(seriesIdentifier, null, sharedThemeStyle);
       expect(defaultStyle).toBe(sharedThemeStyle.default);
     });
 
     it('should equal highlighted opacity', () => {
-      const highlightedStyle = getGeometryStyle(seriesIdentifier, highlightedLegendItem, sharedThemeStyle);
+      const highlightedStyle = getGeometryStateStyle(seriesIdentifier, highlightedLegendItem, sharedThemeStyle);
       expect(highlightedStyle).toBe(sharedThemeStyle.highlighted);
     });
 
     it('should equal unhighlighted when not highlighted item', () => {
-      const unhighlightedStyle = getGeometryStyle(seriesIdentifier, unhighlightedLegendItem, sharedThemeStyle);
+      const unhighlightedStyle = getGeometryStateStyle(seriesIdentifier, unhighlightedLegendItem, sharedThemeStyle);
       expect(unhighlightedStyle).toBe(sharedThemeStyle.unhighlighted);
     });
 
     it('should equal custom spec highlighted opacity', () => {
-      const customHighlightedStyle = getGeometryStyle(seriesIdentifier, highlightedLegendItem, sharedThemeStyle);
+      const customHighlightedStyle = getGeometryStateStyle(seriesIdentifier, highlightedLegendItem, sharedThemeStyle);
       expect(customHighlightedStyle).toBe(sharedThemeStyle.highlighted);
     });
 
     it('unhighlighted elements remain unchanged with custom opacity', () => {
-      const customUnhighlightedStyle = getGeometryStyle(seriesIdentifier, unhighlightedLegendItem, sharedThemeStyle);
+      const customUnhighlightedStyle = getGeometryStateStyle(
+        seriesIdentifier,
+        unhighlightedLegendItem,
+        sharedThemeStyle,
+      );
       expect(customUnhighlightedStyle).toBe(sharedThemeStyle.unhighlighted);
     });
 
     it('has individual highlight', () => {
-      const hasIndividualHighlight = getGeometryStyle(seriesIdentifier, null, sharedThemeStyle, {
+      const hasIndividualHighlight = getGeometryStateStyle(seriesIdentifier, null, sharedThemeStyle, {
         hasHighlight: true,
         hasGeometryHover: true,
       });
@@ -174,7 +181,7 @@ describe('Rendering utils', () => {
     });
 
     it('no highlight', () => {
-      const noHighlight = getGeometryStyle(seriesIdentifier, null, sharedThemeStyle, {
+      const noHighlight = getGeometryStateStyle(seriesIdentifier, null, sharedThemeStyle, {
         hasHighlight: false,
         hasGeometryHover: true,
       });
@@ -182,7 +189,7 @@ describe('Rendering utils', () => {
     });
 
     it('no geometry hover', () => {
-      const noHover = getGeometryStyle(seriesIdentifier, null, sharedThemeStyle, {
+      const noHover = getGeometryStateStyle(seriesIdentifier, null, sharedThemeStyle, {
         hasHighlight: true,
         hasGeometryHover: false,
       });
@@ -348,6 +355,58 @@ describe('Rendering utils', () => {
         stroke,
       };
       expect(styleOverrides).toEqual(expectedStyles);
+    });
+  });
+
+  describe('getClippedRanges', () => {
+    const dataSeries = MockDataSeries.fitFunction({ shuffle: false });
+    const xScale = MockScale.default({
+      scale: jest.fn().mockImplementation((x) => x),
+      bandwidth: 0,
+      range: [dataSeries.data[0].x as number, dataSeries.data[12].x as number],
+    });
+
+    it('should return array pairs of non-null x regions with null end values', () => {
+      const actual = getClippedRanges(dataSeries.data, xScale, 0);
+
+      expect(actual).toEqual([[0, 1], [2, 4], [4, 6], [7, 11], [11, 12]]);
+    });
+
+    it('should return array pairs of non-null x regions with valid end values', () => {
+      const data = dataSeries.data.slice(1, -1);
+      const xScale = MockScale.default({
+        scale: jest.fn().mockImplementation((x) => x),
+        range: [data[0].x as number, data[10].x as number],
+      });
+      const actual = getClippedRanges(data, xScale, 0);
+
+      expect(actual).toEqual([[2, 4], [4, 6], [7, 11]]);
+    });
+
+    it('should account for bandwidth', () => {
+      const bandwidth = 2;
+      const xScale = MockScale.default({
+        scale: jest.fn().mockImplementation((x) => x),
+        bandwidth,
+        range: [dataSeries.data[0].x as number, (dataSeries.data[12].x as number) + bandwidth * (2 / 3)],
+      });
+      const actual = getClippedRanges(dataSeries.data, xScale, 0);
+
+      expect(actual).toEqual([[0, 2], [3, 5], [5, 7], [8, 12]]);
+    });
+
+    it('should account for xScaleOffset', () => {
+      const actual = getClippedRanges(dataSeries.data, xScale, 2);
+
+      expect(actual).toEqual([[0, -1], [0, 2], [2, 4], [5, 9]]);
+    });
+
+    it('should call scale to get x value for each datum', () => {
+      getClippedRanges(dataSeries.data, xScale, 0);
+
+      expect(xScale.scale).toHaveBeenNthCalledWith(1, dataSeries.data[0].x);
+      expect(xScale.scale).toHaveBeenCalledTimes(dataSeries.data.length);
+      expect(xScale.scale).toHaveBeenCalledWith(dataSeries.data[12].x);
     });
   });
 });

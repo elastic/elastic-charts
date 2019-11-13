@@ -390,6 +390,7 @@ describe('Series', () => {
       splittedDataSeries.splittedSeries,
       xValues,
       ScaleType.Linear,
+      new Map(),
     );
     expect(stackedDataSeries.stacked).toMatchSnapshot();
   });

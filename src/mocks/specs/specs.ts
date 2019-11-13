@@ -1,5 +1,6 @@
 import { mergePartial } from '../../utils/commons';
 import {
+  SeriesSpecs,
   DEFAULT_GLOBAL_ID,
   BarSeriesSpec,
   AreaSeriesSpec,
@@ -12,7 +13,6 @@ import { getSpecId, getGroupId, SpecId } from '../../utils/ids';
 import { ScaleType } from '../../utils/scales/scales';
 
 export type SeriesSpecs = Map<SpecId, BasicSeriesSpec>;
-
 export class MockSeriesSpec {
   private static readonly barBase: BarSeriesSpec = {
     id: getSpecId('spec1'),
