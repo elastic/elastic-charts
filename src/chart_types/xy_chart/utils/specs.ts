@@ -197,9 +197,17 @@ export type BarSeriesSpec = BasicSeriesSpec &
      */
     stackAsPercentage?: boolean;
     /**
-     * An optional functional accessor to return custom color or style for bar datum
+     * Functional accessor to return custom color or style for bar datum
      */
     styleAccessor?: BarStyleAccessor;
+    /**
+     * Min height to render bars for highly variable data
+     *
+     * i.e. ranges from 100,000 to 1
+     *
+     * @units pixel
+     */
+    minBarHeight?: number;
   };
 
 /**
@@ -376,7 +384,9 @@ export type LineAnnotationSpec = BaseAnnotationSpec & {
   };
   /** Annotation lines are hidden */
   hideLines?: boolean;
-  /** Hide tooltip when hovering over the line */
+  /** Hide tooltip when hovering over the line
+   * @default true
+   */
   hideLinesTooltips?: boolean;
   /** z-index of the annotation relative to other elements in the chart
    * @default 1

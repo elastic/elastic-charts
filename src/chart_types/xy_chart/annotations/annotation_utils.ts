@@ -10,33 +10,35 @@ import {
   Position,
   Rotation,
 } from '../utils/specs';
-import { LineAnnotationStyle } from '../../../utils/themes/theme';
 import { Dimensions } from '../../../utils/dimensions';
 import { AnnotationId, GroupId } from '../../../utils/ids';
 import { Scale, ScaleType } from '../../../utils/scales/scales';
-import { computeXScaleOffset, getAxesSpecForSpecId } from '../state/utils';
+import { computeXScaleOffset, getAxesSpecForSpecId, isHorizontalRotation } from '../state/utils';
 import { Point } from '../../../utils/point';
 import {
-  computeLineAnnotationDimensions,
   getLineAnnotationTooltipStateFromCursor,
   AnnotationLineProps,
+  computeLineAnnotationDimensions,
 } from './line_annotation_tooltip';
 import {
   getRectAnnotationTooltipStateFromCursor,
-  computeRectAnnotationDimensions,
   AnnotationRectProps,
+  computeRectAnnotationDimensions,
 } from './rect_annotation_tooltip';
 
 export type AnnotationTooltipFormatter = (details?: string) => JSX.Element | null;
-export interface AnnotationTooltipState {
+
+export type AnnotationTooltipState = AnnotationTooltipVisibleState | AnnotationTooltipHiddenState;
+export interface AnnotationTooltipVisibleState {
+  isVisible: true;
   annotationType: AnnotationType;
-  isVisible: boolean;
   header?: string;
   details?: string;
-  transform: string;
-  top?: number;
-  left?: number;
+  anchor: { position?: Position; top: number; left: number };
   renderTooltip?: AnnotationTooltipFormatter;
+}
+export interface AnnotationTooltipHiddenState {
+  isVisible: false;
 }
 export interface AnnotationDetails {
   headerText?: string;
@@ -45,15 +47,15 @@ export interface AnnotationDetails {
 
 export interface AnnotationMarker {
   icon: JSX.Element;
-  transform: string;
-  dimensions: { width: number; height: number };
+  position: { top: number; left: number };
+  dimension: { width: number; height: number };
   color: string;
 }
 
 // TODO: add AnnotationTextProps
 export type AnnotationDimensions = AnnotationLineProps[] | AnnotationRectProps[];
 
-export function scaleAndValidateDatum(dataValue: any, scale: Scale, alignWithTick: boolean): any | null {
+export function scaleAndValidateDatum(dataValue: any, scale: Scale, alignWithTick: boolean): number | null {
   const isContinuous = scale.type !== ScaleType.Ordinal;
   const scaledValue = scale.scale(dataValue);
   // d3.scale will return 0 for '', rendering the line incorrectly at 0
@@ -79,13 +81,14 @@ export function getAnnotationAxis(
   axesSpecs: AxisSpec[],
   groupId: GroupId,
   domainType: AnnotationDomainType,
+  chartRotation: Rotation,
 ): Position | null {
   const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, groupId);
-
+  const isHorizontalRotated = isHorizontalRotation(chartRotation);
   const isXDomainAnnotation = isXDomain(domainType);
   const annotationAxis = isXDomainAnnotation ? xAxis : yAxis;
-
-  return annotationAxis ? annotationAxis.position : null;
+  const rotatedAnnotation = isHorizontalRotated ? annotationAxis : isXDomainAnnotation ? yAxis : xAxis;
+  return rotatedAnnotation ? rotatedAnnotation.position : null;
 }
 
 export function computeClusterOffset(totalBarsInCluster: number, barsShift: number, bandwidth: number): number {
@@ -94,6 +97,30 @@ export function computeClusterOffset(totalBarsInCluster: number, barsShift: numb
   }
 
   return 0;
+}
+
+export function isXDomain(domainType: AnnotationDomainType): boolean {
+  return domainType === AnnotationDomainTypes.XDomain;
+}
+
+export function getRotatedCursor(
+  /** the cursor position relative to the projection area */
+  cursorPosition: Point,
+  chartDimensions: Dimensions,
+  chartRotation: Rotation,
+): Point {
+  const { x, y } = cursorPosition;
+  const { height, width } = chartDimensions;
+  switch (chartRotation) {
+    case 0:
+      return { x, y };
+    case 90:
+      return { x: y, y: width - x };
+    case -90:
+      return { x: height - y, y: x };
+    case 180:
+      return { x: width - x, y: height - y };
+  }
 }
 
 export function computeAnnotationDimensions(
@@ -122,12 +149,11 @@ export function computeAnnotationDimensions(
     const { id } = annotationSpec;
     if (isLineAnnotation(annotationSpec)) {
       const { groupId, domainType } = annotationSpec;
-      const annotationAxisPosition = getAnnotationAxis(axesSpecs, groupId, domainType);
+      const annotationAxisPosition = getAnnotationAxis(axesSpecs, groupId, domainType, chartRotation);
 
       if (!annotationAxisPosition) {
         return;
       }
-
       const dimensions = computeLineAnnotationDimensions(
         annotationSpec,
         chartDimensions,
@@ -160,29 +186,6 @@ export function computeAnnotationDimensions(
   return annotationDimensions;
 }
 
-export function isXDomain(domainType: AnnotationDomainType): boolean {
-  return domainType === AnnotationDomainTypes.XDomain;
-}
-
-export function getRotatedCursor(
-  rawCursorPosition: Point,
-  chartDimensions: Dimensions,
-  chartRotation: Rotation,
-): Point {
-  const { x, y } = rawCursorPosition;
-  const { height, width } = chartDimensions;
-  switch (chartRotation) {
-    case 0:
-      return { x, y };
-    case 90:
-      return { x: y, y: x };
-    case -90:
-      return { x: height - y, y: width - x };
-    case 180:
-      return { x: width - x, y: height - y };
-  }
-}
-
 export function computeAnnotationTooltipState(
   cursorPosition: Point,
   annotationDimensions: Map<AnnotationId, any>,
@@ -204,17 +207,12 @@ export function computeAnnotationTooltipState(
       if (spec.hideLines) {
         continue;
       }
-
       const lineAnnotationTooltipState = getLineAnnotationTooltipStateFromCursor(
         cursorPosition,
         annotationDimension,
         groupId,
         spec.domainType,
-        spec.style as LineAnnotationStyle, // this type is guaranteed as this has been merged with default
-        chartRotation,
-        chartDimensions,
         axesSpecs,
-        spec.hideLinesTooltips,
       );
 
       if (lineAnnotationTooltipState.isVisible) {

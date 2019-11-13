@@ -1,5 +1,5 @@
 import React from 'react';
-import { InternalChartState, GlobalChartState } from '../../../state/chart_state';
+import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
 import { ChartTypes } from '../..';
 import { Tooltips } from '../renderer/dom/tooltips';
 import { htmlIdGenerator } from '../../../utils/commons';
@@ -29,13 +29,13 @@ export class XYAxisChartState implements InternalChartState {
   getLegendItemsValues(globalState: GlobalChartState): Map<string, TooltipLegendValue> {
     return getLegendTooltipValuesSelector(globalState);
   }
-  chartRenderer() {
+  chartRenderer(containerRef: BackwardRef) {
     return (
       <React.Fragment>
         <Crosshair />
         <ReactiveChart />
-        <Tooltips />
-        <AnnotationTooltip />
+        <Tooltips getChartContainerRef={containerRef} />
+        <AnnotationTooltip getChartContainerRef={containerRef} />
         <Highlighter />
         <BrushTool />
       </React.Fragment>

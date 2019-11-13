@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, createRef } from 'react';
 import classNames from 'classnames';
 import { Provider } from 'react-redux';
 import { SpecsParser } from '../specs/specs_parser';
@@ -41,22 +41,18 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     renderer: 'canvas',
   };
   private chartStore: Store<GlobalChartState>;
+  private chartContainerRef: React.RefObject<HTMLDivElement>;
   constructor(props: any) {
     super(props);
-    // TODO remove devTools in production
+    this.chartContainerRef = createRef();
+
     const storeReducer = chartStoreReducer(uuid.v4());
+    // TODO remove devTools in production
     this.chartStore = createStore(storeReducer, devToolsEnhancer({ trace: true }));
     this.state = {
       legendPosition: Position.Right,
     };
 
-    // value is set to chart_store in settings so need to watch the value
-    //TODO
-    // this.chartSpecStore.legendPosition.observe(({ newValue: legendPosition }) => {
-    //   this.setState({
-    //     legendPosition,
-    //   });
-    // });
     const onElementClickCaller = createOnElementClickCaller();
     const onElementOverCaller = createOnElementOverCaller();
     const onElementOutCaller = createOnElementOutCaller();
@@ -71,6 +67,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
           legendPosition: settings.legendPosition,
         });
       }
+
       if (state.chartType !== ChartTypes.XYAxis) {
         return;
       }
@@ -107,6 +104,9 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     //   }
     // }
   }
+  getChartContainerRef = () => {
+    return this.chartContainerRef;
+  };
 
   render() {
     const { size, className } = this.props;
@@ -117,13 +117,13 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     });
     return (
       <Provider store={this.chartStore}>
-        <div style={containerStyle} className={chartClassNames}>
+        <div style={containerStyle} className={chartClassNames} ref={this.chartContainerRef}>
           <ChartStatus />
           <ChartResizer />
           <Legend />
           <SpecsParser>{this.props.children}</SpecsParser>
           <div className="echContainer">
-            <ChartContainer />
+            <ChartContainer getChartContainerRef={this.getChartContainerRef} />
           </div>
         </div>
       </Provider>

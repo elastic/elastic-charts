@@ -327,6 +327,34 @@ describe.skip('Chart Store', () => {
     expect(outListener.mock.calls.length).toBe(1);
   });
 
+  test.skip('do nothing when mouseover an hidden series', () => {
+    const legendListener = jest.fn(
+      (): void => {
+        return;
+      },
+    );
+    store.setOnLegendItemOverListener(legendListener);
+
+    store.legendItems = new Map([[firstLegendItem.key, firstLegendItem], [secondLegendItem.key, secondLegendItem]]);
+    store.deselectedDataSeries = [];
+    store.highlightedLegendItemKey.set(null);
+
+    store.toggleSeriesVisibility(firstLegendItem.key);
+    expect(store.deselectedDataSeries).toEqual([firstLegendItem.value]);
+    expect(store.highlightedLegendItemKey.get()).toBe(null);
+    store.onLegendItemOver(firstLegendItem.key);
+    expect(store.highlightedLegendItemKey.get()).toBe(null);
+    store.onLegendItemOut();
+    store.toggleSeriesVisibility(firstLegendItem.key);
+    expect(store.highlightedLegendItemKey.get()).toEqual(firstLegendItem.key);
+    expect(store.deselectedDataSeries).toEqual([]);
+
+    store.onLegendItemOver(firstLegendItem.key);
+    expect(store.highlightedLegendItemKey.get()).toBe(firstLegendItem.key);
+
+    store.removeOnLegendItemOutListener();
+  });
+
   test.skip('can respond to legend item click event', () => {
     const legendListener = jest.fn(
       (): void => {
@@ -1044,10 +1072,11 @@ describe.skip('Chart Store', () => {
 
     const expectedRectTooltipState = {
       isVisible: true,
-      transform: 'translate(0, 0)',
       annotationType: AnnotationTypes.Rectangle,
-      top: 4,
-      left: 5,
+      anchor: {
+        top: store.rawCursorPosition.y - store.chartDimensions.top,
+        left: store.rawCursorPosition.x - store.chartDimensions.left,
+      },
     };
     store.tooltipData.push(unhighlightedTooltipValue);
     expect(store.annotationTooltipState.get()).toEqual(expectedRectTooltipState);

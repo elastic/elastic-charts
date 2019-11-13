@@ -3,15 +3,15 @@ import React from 'react';
 import { Group, Rect } from 'react-konva';
 import { animated, Spring } from 'react-spring/renderprops-konva.cjs';
 import { buildBarRenderProps, buildBarBorderRenderProps } from './utils/rendering_props_utils';
-import { getGeometryStyle } from '../../rendering/rendering';
 import { BarGeometry } from '../../../../utils/geometry';
-import { SharedGeometryStyle } from '../../../../utils/themes/theme';
 import { LegendItem } from '../../../../chart_types/xy_chart/legend/legend';
+import { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
+import { getGeometryStateStyle } from '../../rendering/rendering';
 
 interface BarGeometriesDataProps {
   animated?: boolean;
   bars: BarGeometry[];
-  sharedStyle: SharedGeometryStyle;
+  sharedStyle: SharedGeometryStateStyle;
   highlightedLegendItem: LegendItem | null;
   clippings: ContainerConfig;
 }
@@ -53,7 +53,7 @@ export class BarGeometries extends React.PureComponent<BarGeometriesDataProps, B
         hasHighlight,
       };
 
-      const geometryStyle = getGeometryStyle(
+      const geometryStyle = getGeometryStateStyle(
         bar.geometryId,
         this.props.highlightedLegendItem,
         sharedStyle,

@@ -8,16 +8,16 @@ import {
   PointStyleProps,
   buildLineRenderProps,
 } from './utils/rendering_props_utils';
-import { getGeometryStyle, getGeometryIdKey } from '../../rendering/rendering';
+import { getGeometryIdKey, getGeometryStateStyle } from '../../rendering/rendering';
 import { mergePartial } from '../../../../utils/commons';
 import { AreaGeometry, PointGeometry, GeometryId } from '../../../../utils/geometry';
-import { SharedGeometryStyle, PointStyle } from '../../../../utils/themes/theme';
+import { PointStyle, SharedGeometryStateStyle } from '../../../../utils/themes/theme';
 import { LegendItem } from '../../legend/legend';
 
 interface AreaGeometriesDataProps {
   animated?: boolean;
   areas: AreaGeometry[];
-  sharedStyle: SharedGeometryStyle;
+  sharedStyle: SharedGeometryStateStyle;
   highlightedLegendItem: LegendItem | null;
   clippings: ContainerConfig;
 }
@@ -54,8 +54,8 @@ export class AreaGeometries extends React.PureComponent<AreaGeometriesDataProps,
         acc.push(this.renderAreaLines(glyph, i, sharedStyle, highlightedLegendItem, clippings));
       }
       if (seriesPointStyle.visible) {
-        const geometryStyle = getGeometryStyle(geometryId, this.props.highlightedLegendItem, sharedStyle);
-        const pointStyleProps = buildPointStyleProps(glyph.color, seriesPointStyle, geometryStyle);
+        const geometryStateStyle = getGeometryStateStyle(geometryId, this.props.highlightedLegendItem, sharedStyle);
+        const pointStyleProps = buildPointStyleProps(glyph.color, seriesPointStyle, geometryStateStyle);
         acc.push(...this.renderPoints(glyph.points, i, pointStyleProps, glyph.geometryId));
       }
       return acc;
@@ -63,14 +63,14 @@ export class AreaGeometries extends React.PureComponent<AreaGeometriesDataProps,
   };
   private renderArea = (
     glyph: AreaGeometry,
-    sharedStyle: SharedGeometryStyle,
+    sharedStyle: SharedGeometryStateStyle,
     highlightedLegendItem: LegendItem | null,
     clippings: ContainerConfig,
   ): JSX.Element => {
     const { area, color, transform, geometryId, seriesAreaStyle } = glyph;
-    const geometryStyle = getGeometryStyle(geometryId, highlightedLegendItem, sharedStyle);
+    const geometryStateStyle = getGeometryStateStyle(geometryId, highlightedLegendItem, sharedStyle);
     const key = getGeometryIdKey(geometryId, 'area-');
-    const areaProps = buildAreaRenderProps(transform.x, area, color, seriesAreaStyle, geometryStyle);
+    const areaProps = buildAreaRenderProps(transform.x, area, color, seriesAreaStyle, geometryStateStyle);
     return (
       <Group {...clippings} key={key}>
         <Path {...areaProps} />
@@ -80,16 +80,16 @@ export class AreaGeometries extends React.PureComponent<AreaGeometriesDataProps,
   private renderAreaLines = (
     glyph: AreaGeometry,
     areaIndex: number,
-    sharedStyle: SharedGeometryStyle,
+    sharedStyle: SharedGeometryStateStyle,
     highlightedLegendItem: LegendItem | null,
     clippings: ContainerConfig,
   ): JSX.Element => {
     const { lines, color, geometryId, transform, seriesAreaLineStyle } = glyph;
-    const geometryStyle = getGeometryStyle(geometryId, highlightedLegendItem, sharedStyle);
+    const geometryStateStyle = getGeometryStateStyle(geometryId, highlightedLegendItem, sharedStyle);
     const groupKey = getGeometryIdKey(geometryId, `area-line-${areaIndex}`);
     const linesElements = lines.map<JSX.Element>((linePath, lineIndex) => {
       const key = getGeometryIdKey(geometryId, `area-line-${areaIndex}-${lineIndex}`);
-      const lineProps = buildLineRenderProps(transform.x, linePath, color, seriesAreaLineStyle, geometryStyle);
+      const lineProps = buildLineRenderProps(transform.x, linePath, color, seriesAreaLineStyle, geometryStateStyle);
       return <Path {...lineProps} key={key} />;
     });
     return (

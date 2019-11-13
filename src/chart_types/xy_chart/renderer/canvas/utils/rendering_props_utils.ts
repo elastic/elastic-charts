@@ -7,6 +7,7 @@ import {
   RectStyle,
   ArcStyle,
   GeometryStyle,
+  GeometryStateStyle,
 } from '../../../../../utils/themes/theme';
 import { GlobalKonvaElementProps } from '../../../../../components/react_canvas/globals';
 
@@ -28,7 +29,7 @@ export interface PointStyleProps {
 export function buildPointStyleProps(
   color: string,
   pointStyle: PointStyle,
-  geometryStyle: GeometryStyle,
+  geometryStateStyle: GeometryStateStyle,
 ): PointStyleProps {
   const { strokeWidth, opacity } = pointStyle;
   const stroke = pointStyle.stroke || color;
@@ -39,8 +40,8 @@ export function buildPointStyleProps(
     strokeWidth,
     strokeEnabled: strokeWidth !== 0,
     fill: fill,
-    ...geometryStyle,
-    opacity: opacity * geometryStyle.opacity,
+    ...geometryStateStyle,
+    opacity: opacity * geometryStateStyle.opacity,
   };
 }
 
@@ -66,16 +67,16 @@ export function buildPointRenderProps(x: number, y: number, pointStyleProps: Poi
  * @param linePath the SVG line path
  * @param color the computed color of the line for this series
  * @param lineStyle the line style
- * @param geometryStyle the highlight geometry style
+ * @param geometryStateStyle the highlight geometry style
  */
 export function buildLineRenderProps(
   x: number,
   linePath: string,
   color: string,
   lineStyle: LineStyle,
-  geometryStyle: GeometryStyle,
+  geometryStateStyle: GeometryStateStyle,
 ): PathConfig {
-  const opacity = lineStyle.opacity * geometryStyle.opacity;
+  const opacity = lineStyle.opacity * geometryStateStyle.opacity;
 
   return {
     x,
@@ -84,8 +85,8 @@ export function buildLineRenderProps(
     strokeWidth: lineStyle.strokeWidth,
     lineCap: 'round',
     lineJoin: 'round',
-    ...geometryStyle,
-    opacity, // want to override opactiy of geometryStyle
+    ...geometryStateStyle,
+    opacity, // want to override opactiy of geometryStateStyle
     ...GlobalKonvaElementProps,
   };
 }
@@ -97,16 +98,16 @@ export function buildLineRenderProps(
  * @param x the horizontal offset to place the area
  * @param color the computed color of the line for this series
  * @param areaStyle the area style
- * @param geometryStyle the highlight geometry style
+ * @param geometryStateStyle the highlight geometry style
  */
 export function buildAreaRenderProps(
   xTransform: number,
   areaPath: string,
   color: string,
   areaStyle: AreaStyle,
-  geometryStyle: GeometryStyle,
+  geometryStateStyle: GeometryStateStyle,
 ): PathConfig {
-  const opacity = areaStyle.opacity * geometryStyle.opacity;
+  const opacity = areaStyle.opacity * geometryStateStyle.opacity;
 
   return {
     x: xTransform,
@@ -114,8 +115,8 @@ export function buildAreaRenderProps(
     fill: areaStyle.fill || color,
     lineCap: 'round',
     lineJoin: 'round',
-    ...geometryStyle,
-    opacity, // want to override opactiy of geometryStyle
+    ...geometryStateStyle,
+    opacity, // want to override opactiy of geometryStateStyle
     ...GlobalKonvaElementProps,
   };
 }
@@ -129,7 +130,7 @@ export function buildAreaRenderProps(
  * @param height the height of the rect
  * @param color the computed color of the rect for this series
  * @param rectStyle the rect style
- * @param geometryStyle the highlight geometry style
+ * @param geometryStateStyle the highlight geometry style
  */
 export function buildBarRenderProps(
   x: number,
@@ -139,9 +140,9 @@ export function buildBarRenderProps(
   color: string,
   rectStyle: RectStyle,
   borderStyle: RectBorderStyle,
-  geometryStyle: GeometryStyle,
+  geometryStateStyle: GeometryStateStyle,
 ): RectConfig {
-  const opacity = rectStyle.opacity * geometryStyle.opacity;
+  const opacity = rectStyle.opacity * geometryStateStyle.opacity;
   const { stroke, visible, strokeWidth, strokeOpacity = 0 } = borderStyle;
   const offset = !visible || strokeWidth <= 0 || !stroke || strokeOpacity <= 0 || opacity <= 0 ? 0 : strokeWidth;
 
@@ -152,8 +153,8 @@ export function buildBarRenderProps(
     height: height - 2 * offset,
     fill: rectStyle.fill || color,
     strokeEnabled: false,
-    ...geometryStyle,
-    opacity, // want to override opactiy of geometryStyle
+    ...geometryStateStyle,
+    opacity, // want to override opactiy of geometryStateStyle
     ...GlobalKonvaElementProps,
   };
 }
@@ -177,10 +178,10 @@ export function buildBarBorderRenderProps(
   height: number,
   rectStyle: RectStyle,
   borderStyle: RectBorderStyle,
-  geometryStyle: GeometryStyle,
+  geometryStateStyle: GeometryStateStyle,
 ): RectConfig | null {
   const { stroke, visible, strokeWidth, strokeOpacity = rectStyle.opacity } = borderStyle;
-  const opacity = strokeOpacity * geometryStyle.opacity;
+  const opacity = strokeOpacity * geometryStateStyle.opacity;
 
   if (!visible || strokeWidth <= 0 || !stroke || opacity <= 0) {
     return null;
@@ -195,8 +196,8 @@ export function buildBarBorderRenderProps(
     strokeEnabled: true,
     strokeWidth,
     stroke,
-    ...geometryStyle,
-    opacity, // want to override opactiy of geometryStyle
+    ...geometryStateStyle,
+    opacity, // want to override opactiy of geometryStateStyle
     ...GlobalKonvaElementProps,
   };
 }

@@ -2,22 +2,71 @@ import classNames from 'classnames';
 import React from 'react';
 import { connect } from 'react-redux';
 import { TooltipValue, TooltipValueFormatter } from '../../utils/interactions';
-import { GlobalChartState } from '../../../../state/chart_state';
+import { GlobalChartState, BackwardRef } from '../../../../state/chart_state';
 import { isTooltipVisibleSelector } from '../../state/selectors/is_tooltip_visible';
 import { getTooltipHeaderFormatterSelector } from '../../state/selectors/get_tooltip_header_formatter';
 import { getTooltipPositionSelector } from '../../state/selectors/get_tooltip_position';
 import { getTooltipValuesSelector } from '../../state/selectors/get_tooltip_values_highlighted_geoms';
 import { isInitialized } from '../../../../state/selectors/is_initialized';
+import { createPortal } from 'react-dom';
+import { getFinalTooltipPosition, TooltipPosition } from '../../crosshair/crosshair_utils';
 
-interface TooltipProps {
+interface TooltipStateProps {
   isTooltipVisible: boolean;
   tooltipValues: TooltipValue[];
-  tooltipPosition: { transform: string };
+  tooltipPosition: TooltipPosition | null;
   tooltipHeaderFormatter?: TooltipValueFormatter;
 }
+interface TooltipOwnProps {
+  getChartContainerRef: BackwardRef;
+}
+type TooltipProps = TooltipStateProps & TooltipOwnProps;
 
 class TooltipsComponent extends React.Component<TooltipProps> {
   static displayName = 'Tooltips';
+  portalNode: HTMLDivElement | null = null;
+  tooltipRef: React.RefObject<HTMLDivElement>;
+
+  constructor(props: TooltipProps) {
+    super(props);
+    this.tooltipRef = React.createRef();
+  }
+  createPortalNode() {
+    const container = document.getElementById('echTooltipContainerPortal');
+    if (container) {
+      this.portalNode = container as HTMLDivElement;
+    } else {
+      this.portalNode = document.createElement('div');
+      this.portalNode.id = 'echTooltipContainerPortal';
+      document.body.appendChild(this.portalNode);
+    }
+  }
+  componentDidMount() {
+    this.createPortalNode();
+  }
+
+  componentDidUpdate() {
+    this.createPortalNode();
+    const { getChartContainerRef, tooltipPosition } = this.props;
+    const chartContainerRef = getChartContainerRef();
+
+    if (!this.tooltipRef.current || !chartContainerRef.current || !this.portalNode || !tooltipPosition) {
+      return;
+    }
+
+    const chartContainerBBox = chartContainerRef.current.getBoundingClientRect();
+    const tooltipBBox = this.tooltipRef.current.getBoundingClientRect();
+    const tooltipStyle = getFinalTooltipPosition(chartContainerBBox, tooltipBBox, tooltipPosition);
+
+    this.portalNode.style.left = tooltipStyle.left;
+    this.portalNode.style.top = tooltipStyle.top;
+  }
+
+  componentWillUnmount() {
+    if (this.portalNode && this.portalNode.parentNode) {
+      this.portalNode.parentNode.removeChild(this.portalNode);
+    }
+  }
 
   renderHeader(headerData?: TooltipValue, formatter?: TooltipValueFormatter) {
     if (!headerData) {
@@ -28,37 +77,43 @@ class TooltipsComponent extends React.Component<TooltipProps> {
   }
 
   render() {
-    const { isTooltipVisible, tooltipValues, tooltipPosition, tooltipHeaderFormatter } = this.props;
-
-    if (!isTooltipVisible) {
-      return <div className="echTooltip echTooltip--hidden" />;
+    const { isTooltipVisible, tooltipValues, tooltipHeaderFormatter } = this.props;
+    if (!this.portalNode) {
+      return null;
     }
-
-    return (
-      <div className="echTooltip" style={{ transform: tooltipPosition.transform }}>
-        <div className="echTooltip__header">{this.renderHeader(tooltipValues[0], tooltipHeaderFormatter)}</div>
-        <div className="echTooltip__list">
-          {tooltipValues.slice(1).map(({ name, value, color, isHighlighted, seriesKey, yAccessor }) => {
-            const classes = classNames('echTooltip__item', {
-              /* eslint @typescript-eslint/camelcase:0 */
-              echTooltip__rowHighlighted: isHighlighted,
-            });
-            return (
-              <div
-                key={`${seriesKey}--${yAccessor}`}
-                className={classes}
-                style={{
-                  borderLeftColor: color,
-                }}
-              >
-                <span className="echTooltip__label">{name}</span>
-                <span className="echTooltip__value">{value}</span>
-              </div>
-            );
-          })}
+    const { getChartContainerRef } = this.props;
+    const chartContainerRef = getChartContainerRef();
+    let tooltip;
+    if (chartContainerRef.current === null || !isTooltipVisible) {
+      return null;
+    } else {
+      tooltip = (
+        <div className="echTooltip" ref={this.tooltipRef}>
+          <div className="echTooltip__header">{this.renderHeader(tooltipValues[0], tooltipHeaderFormatter)}</div>
+          <div className="echTooltip__list">
+            {tooltipValues.slice(1).map(({ name, value, color, isHighlighted, seriesKey, yAccessor }) => {
+              const classes = classNames('echTooltip__item', {
+                /* eslint @typescript-eslint/camelcase:0 */
+                echTooltip__rowHighlighted: isHighlighted,
+              });
+              return (
+                <div
+                  key={`${seriesKey}--${yAccessor}`}
+                  className={classes}
+                  style={{
+                    borderLeftColor: color,
+                  }}
+                >
+                  <span className="echTooltip__label">{name}</span>
+                  <span className="echTooltip__value">{value}</span>
+                </div>
+              );
+            })}
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
+    return createPortal(tooltip, this.portalNode);
   }
 }
 
@@ -66,15 +121,13 @@ const mapDispatchToProps = () => ({});
 const mapStateToProps = (state: GlobalChartState) => {
   if (!isInitialized(state)) {
     return {
-      initialized: false,
       isTooltipVisible: false,
       tooltipValues: [],
-      tooltipPosition: { transform: '' },
+      tooltipPosition: null,
       tooltipHeaderFormatter: undefined,
     };
   }
   return {
-    initialized: isInitialized(state),
     isTooltipVisible: isTooltipVisibleSelector(state),
     tooltipValues: getTooltipValuesSelector(state),
     tooltipPosition: getTooltipPositionSelector(state),

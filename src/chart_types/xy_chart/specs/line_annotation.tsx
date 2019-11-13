@@ -20,6 +20,7 @@ export class LineAnnotationSpecComponent extends PureComponent<LineAnnotationSpe
     style: DEFAULT_ANNOTATION_LINE_STYLE,
     hideLines: false,
     hideTooltips: false,
+    hideLinesTooltips: true,
     zIndex: 1,
   };
 

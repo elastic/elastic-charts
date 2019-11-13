@@ -2,20 +2,28 @@ import React from 'react';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { onCursorPositionChange } from '../state/actions/cursor';
-import { GlobalChartState } from '../state/chart_state';
+import { GlobalChartState, BackwardRef } from '../state/chart_state';
 import { onMouseUp, onMouseDown } from '../state/actions/mouse';
 import { getInternalChartRendererSelector } from '../state/selectors/get_chart_type_components';
 import { isInternalChartEmptySelector } from '../state/selectors/is_chart_empty';
 import { isInitialized } from '../state/selectors/is_initialized';
-interface ReactiveChartProps {
+interface ReactiveChartStateProps {
   initialized: boolean;
   isChartEmpty?: boolean;
   chartCursor: string;
-  internalChartRenderer: JSX.Element | null;
+  internalChartRenderer: (containerRef: BackwardRef) => JSX.Element | null;
+}
+interface ReactiveChartDispatchProps {
   onCursorPositionChange: typeof onCursorPositionChange;
   onMouseUp: typeof onMouseUp;
   onMouseDown: typeof onMouseDown;
 }
+
+interface ReactiveChartOwnProps {
+  getChartContainerRef: BackwardRef;
+}
+
+type ReactiveChartProps = ReactiveChartStateProps & ReactiveChartDispatchProps & ReactiveChartOwnProps;
 
 class ChartContainerComponent extends React.Component<ReactiveChartProps> {
   static displayName = 'ChartContainer';
@@ -80,7 +88,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
           );
         }}
       >
-        {internalChartRenderer}
+        {internalChartRenderer(this.props.getChartContainerRef)}
       </div>
     );
   }
@@ -101,7 +109,7 @@ const mapStateToProps = (state: GlobalChartState) => {
       initialized: false,
       isChartEmpty: true,
       chartCursor: 'pointer',
-      internalChartRenderer: null,
+      internalChartRenderer: () => null,
     };
   }
 

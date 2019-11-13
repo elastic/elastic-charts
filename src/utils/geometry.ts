@@ -92,9 +92,11 @@ export interface ArcGeometry {
     y: number;
   };
 }
+
 export function isPointGeometry(ig: IndexedGeometry): ig is PointGeometry {
   return ig.hasOwnProperty('radius');
 }
+
 export function isBarGeometry(ig: IndexedGeometry): ig is BarGeometry {
   return ig.hasOwnProperty('width') && ig.hasOwnProperty('height');
 }

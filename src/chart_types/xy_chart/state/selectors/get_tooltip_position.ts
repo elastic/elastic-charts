@@ -1,6 +1,6 @@
 import createCachedSelector from 're-reselect';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { getTooltipPosition } from '../../crosshair/crosshair_utils';
+import { getTooltipPosition, TooltipPosition } from '../../crosshair/crosshair_utils';
 import { computeCursorPositionSelector } from './compute_cursor_position';
 import { getComputedScalesSelector } from './get_computed_scales';
 import { getCursorBandPositionSelector } from './get_cursor_band';
@@ -14,17 +14,16 @@ export const getTooltipPositionSelector = createCachedSelector(
     computeCursorPositionSelector,
     getComputedScalesSelector,
   ],
-  ({ chartDimensions }, settings, cursorBandPosition, cursorPosition, scales): { transform: string } => {
+  ({ chartDimensions }, settings, cursorBandPosition, cursorPosition, scales): TooltipPosition | null => {
     if (!cursorBandPosition) {
-      return { transform: '' };
+      return null;
     }
-    const transform = getTooltipPosition(
+    return getTooltipPosition(
       chartDimensions,
       settings.rotation,
       cursorBandPosition,
       cursorPosition,
       scales.xScale.isSingleValue(),
     );
-    return { transform };
   },
 )((state) => state.chartId);

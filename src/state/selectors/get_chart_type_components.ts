@@ -1,9 +1,11 @@
-import { GlobalChartState } from '../chart_state';
+import { GlobalChartState, BackwardRef } from '../chart_state';
 
-export const getInternalChartRendererSelector = (state: GlobalChartState): JSX.Element | null => {
+type ChartRendererFn = (containerRef: BackwardRef) => JSX.Element | null;
+
+export const getInternalChartRendererSelector = (state: GlobalChartState): ChartRendererFn => {
   if (state.internalChartState) {
-    return state.internalChartState.chartRenderer(state);
+    return state.internalChartState.chartRenderer;
   } else {
-    return null;
+    return () => null;
   }
 };

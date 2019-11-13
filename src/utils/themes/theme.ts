@@ -24,10 +24,20 @@ export interface GeometryStyle {
   opacity: number;
 }
 
-export interface SharedGeometryStyle {
-  default: GeometryStyle;
-  highlighted: GeometryStyle;
-  unhighlighted: GeometryStyle;
+/** Shared style properties for varies geometries */
+export interface GeometryStateStyle {
+  /**
+   * Opacity multiplier
+   *
+   * if set to `0.5` all given opacities will be halfed
+   */
+  opacity: number;
+}
+
+export interface SharedGeometryStateStyle {
+  default: GeometryStateStyle;
+  highlighted: GeometryStateStyle;
+  unhighlighted: GeometryStateStyle;
 }
 
 export interface StrokeStyle {
@@ -141,7 +151,7 @@ export interface Theme {
    */
   barSeriesStyle: BarSeriesStyle;
   arcSeriesStyle: ArcSeriesStyle;
-  sharedStyle: SharedGeometryStyle;
+  sharedStyle: SharedGeometryStateStyle;
   axes: AxisConfig;
   scales: ScalesConfig;
   colors: ColorConfig;

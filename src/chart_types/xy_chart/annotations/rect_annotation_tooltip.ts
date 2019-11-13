@@ -22,24 +22,18 @@ export interface AnnotationRectProps {
 }
 
 export function getRectAnnotationTooltipStateFromCursor(
-  rawCursorPosition: Point,
+  /** the cursor position relative to the projection area */
+  cursorPosition: Point,
   annotationRects: AnnotationRectProps[],
   chartRotation: Rotation,
   chartDimensions: Dimensions,
   renderTooltip?: AnnotationTooltipFormatter,
 ): AnnotationTooltipState {
-  const cursorPosition = getRotatedCursor(rawCursorPosition, chartDimensions, chartRotation);
+  const rotatedCursorPosition = getRotatedCursor(cursorPosition, chartDimensions, chartRotation);
 
-  const annotationTooltipState: AnnotationTooltipState = {
-    isVisible: false,
-    transform: '',
-    annotationType: AnnotationTypes.Rectangle,
-  };
-
-  const isRightTooltip = isRightRectTooltip(chartRotation, cursorPosition, chartDimensions.width);
-  const isBottomTooltip = isBottomRectTooltip(chartRotation, cursorPosition, chartDimensions.height);
-
-  annotationRects.forEach((rectProps: AnnotationRectProps) => {
+  const totalAnnotationRect = annotationRects.length;
+  for (let i = 0; i < totalAnnotationRect; i++) {
+    const rectProps = annotationRects[i];
     const { rect, details } = rectProps;
     const startX = rect.x;
     const endX = startX + rect.width;
@@ -47,47 +41,23 @@ export function getRectAnnotationTooltipStateFromCursor(
     const startY = rect.y;
     const endY = startY + rect.height;
 
-    const isWithinBounds = isWithinRectBounds(cursorPosition, { startX, endX, startY, endY });
+    const isWithinBounds = isWithinRectBounds(rotatedCursorPosition, { startX, endX, startY, endY });
     if (isWithinBounds) {
-      annotationTooltipState.isVisible = true;
-      annotationTooltipState.details = details;
-
-      const tooltipLeft = computeRectTooltipLeft(
-        chartRotation,
-        isRightTooltip,
-        { startX, endX },
-        rawCursorPosition.x,
-        chartDimensions.width,
-      );
-      const tooltipTop = computeRectTooltipTop(
-        chartRotation,
-        isBottomTooltip,
-        { startX, endX },
-        rawCursorPosition.y,
-        chartDimensions.height,
-      );
-
-      const { offsetLeft, offsetTop } = computeRectTooltipOffset(isRightTooltip, isBottomTooltip, chartRotation);
-
-      annotationTooltipState.top = tooltipTop;
-      annotationTooltipState.left = tooltipLeft;
-      annotationTooltipState.transform = `translate(${offsetLeft}, ${offsetTop})`;
-      annotationTooltipState.renderTooltip = renderTooltip;
+      return {
+        isVisible: true,
+        annotationType: AnnotationTypes.Rectangle,
+        anchor: {
+          left: rotatedCursorPosition.x,
+          top: rotatedCursorPosition.y,
+        },
+        ...(details && { details }),
+        ...(renderTooltip && { renderTooltip }),
+      };
     }
-  });
-
-  return annotationTooltipState;
-}
-
-export function isRightRectTooltip(chartRotation: Rotation, cursorPosition: Point, chartWidth: number) {
-  const xPosition = isHorizontalRotation(chartRotation) ? cursorPosition.x : cursorPosition.y;
-
-  return chartRotation === -90 ? xPosition > chartWidth / 2 : xPosition < chartWidth / 2;
-}
-
-export function isBottomRectTooltip(chartRotation: Rotation, cursorPosition: Point, chartHeight: number) {
-  const yPosition = isHorizontalRotation(chartRotation) ? cursorPosition.y : cursorPosition.x;
-  return chartRotation === 180 ? yPosition > chartHeight / 2 : yPosition < chartHeight / 2;
+  }
+  return {
+    isVisible: false,
+  };
 }
 
 export function computeRectTooltipLeft(
@@ -124,6 +94,16 @@ export function computeRectTooltipOffset(
   const offsetTop = isBottomTooltip ? (chartRotation === -90 ? '-100%' : '0') : chartRotation === -90 ? '0' : '-100%';
 
   return { offsetLeft, offsetTop };
+}
+
+export function isWithinRectBounds(
+  cursorPosition: Point,
+  { startX, endX, startY, endY }: { startX: number; endX: number; startY: number; endY: number },
+): boolean {
+  const withinXBounds = cursorPosition.x >= startX && cursorPosition.x <= endX;
+  const withinYBounds = cursorPosition.y >= startY && cursorPosition.y <= endY;
+
+  return withinXBounds && withinYBounds;
 }
 
 export function computeRectAnnotationDimensions(
@@ -184,7 +164,7 @@ export function computeRectAnnotationDimensions(
     const y1Scaled = scaleAndValidateDatum(y1, yScale, false);
 
     // TODO: surface this as a warning
-    if ([x0Scaled, x1Scaled, y0Scaled, y1Scaled].includes(null)) {
+    if (x0Scaled === null || x1Scaled === null || y0Scaled === null || y1Scaled === null) {
       return;
     }
 
@@ -223,14 +203,4 @@ export function computeRectAnnotationDimensions(
   });
 
   return rectsProps;
-}
-
-export function isWithinRectBounds(
-  cursorPosition: Point,
-  { startX, endX, startY, endY }: { startX: number; endX: number; startY: number; endY: number },
-): boolean {
-  const withinXBounds = cursorPosition.x > startX && cursorPosition.x < endX;
-  const withinYBounds = cursorPosition.y > startY && cursorPosition.y < endY;
-
-  return withinXBounds && withinYBounds;
 }

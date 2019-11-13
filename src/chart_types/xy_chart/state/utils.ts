@@ -468,6 +468,7 @@ export function renderGeometries(
         barSeriesStyle,
         displayValueSettings,
         spec.styleAccessor,
+        spec.minBarHeight,
       );
       barGeometriesIndex = mergeGeometriesIndexes(barGeometriesIndex, renderedBars.indexedGeometries);
       bars.push(...renderedBars.barGeometries);

@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Axis, Chart, getAxisId, getSpecId, Position, ScaleType, Settings, LineSeries } from '../src';
+import { Axis, Chart, getAxisId, getSpecId, Position, ScaleType, Settings, LineSeries, DARK_THEME } from '../src';
 
 const data = [
   {
@@ -1949,9 +1949,9 @@ export class Playground extends React.Component {
       <Fragment>
         <div className="chart">
           <Chart>
-            <Settings showLegend legendPosition={Position.Right} />
+            <Settings showLegend legendPosition={Position.Right} theme={DARK_THEME} />
             <Axis id={getAxisId('x')} position={Position.Bottom} />
-            <Axis id={getAxisId('y')} position={Position.Left} ticks={5} />
+            <Axis id={getAxisId('y')} position={Position.Left} ticks={5} tickFormat={(d) => d.toFixed(2)} />
             <LineSeries
               id={getSpecId('legend size')}
               xScaleType={ScaleType.Time}

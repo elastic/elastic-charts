@@ -2,6 +2,15 @@ import { Rotation } from '../../utils/specs';
 import { Dimensions } from '../../../../utils/dimensions';
 import { DisplayValueStyle } from '../../../../utils/themes/theme';
 
+export interface PointStyleProps {
+  radius: number;
+  stroke: string;
+  strokeWidth: number;
+  strokeEnabled: boolean;
+  fill: string;
+  opacity: number;
+}
+
 export function rotateBarValueProps(
   chartRotation: Rotation,
   chartDimensions: Dimensions,

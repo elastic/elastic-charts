@@ -16,10 +16,12 @@ export class LineAnnotation extends React.PureComponent<LineAnnotationProps> {
   }
   private renderAnnotationLine = (lineConfig: AnnotationLineProps, i: number) => {
     const { line } = this.props.lineStyle;
-    const { position } = lineConfig;
-
+    const {
+      start: { x1, y1 },
+      end: { x2, y2 },
+    } = lineConfig.linePathPoints;
     const lineProps = {
-      points: position,
+      points: [x1, y1, x2, y2],
       ...line,
     };
     return <Line {...lineProps} key={`annotation-line-${i}`} />;

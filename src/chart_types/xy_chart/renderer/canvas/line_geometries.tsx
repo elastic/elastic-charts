@@ -7,16 +7,16 @@ import {
   PointStyleProps,
   buildPointRenderProps,
 } from './utils/rendering_props_utils';
-import { getGeometryStyle, getGeometryIdKey } from '../../rendering/rendering';
+import { getGeometryIdKey, getGeometryStateStyle } from '../../rendering/rendering';
 import { mergePartial } from '../../../../utils/commons';
 import { LineGeometry, PointGeometry } from '../../../../utils/geometry';
-import { SharedGeometryStyle, PointStyle } from '../../../../utils/themes/theme';
+import { PointStyle, SharedGeometryStateStyle } from '../../../../utils/themes/theme';
 import { LegendItem } from '../../../../chart_types/xy_chart/legend/legend';
 
 interface LineGeometriesDataProps {
   animated?: boolean;
   lines: LineGeometry[];
-  sharedStyle: SharedGeometryStyle;
+  sharedStyle: SharedGeometryStateStyle;
   highlightedLegendItem: LegendItem | null;
   clippings: ContainerConfig;
 }
@@ -86,10 +86,10 @@ export class LineGeometries extends React.PureComponent<LineGeometriesDataProps,
     }, []);
   };
 
-  getLineToRender(line: LineGeometry, sharedStyle: SharedGeometryStyle, key: string) {
+  getLineToRender(line: LineGeometry, sharedStyle: SharedGeometryStateStyle, key: string) {
     const { clippings } = this.props;
     const { line: linePath, color, transform, geometryId, seriesLineStyle } = line;
-    const geometryStyle = getGeometryStyle(geometryId, this.props.highlightedLegendItem, sharedStyle);
+    const geometryStyle = getGeometryStateStyle(geometryId, this.props.highlightedLegendItem, sharedStyle);
     const lineProps = buildLineRenderProps(transform.x, linePath, color, seriesLineStyle, geometryStyle);
     return (
       <Group {...clippings} key={key}>
@@ -98,9 +98,9 @@ export class LineGeometries extends React.PureComponent<LineGeometriesDataProps,
     );
   }
 
-  getPointToRender(line: LineGeometry, sharedStyle: SharedGeometryStyle, key: string) {
+  getPointToRender(line: LineGeometry, sharedStyle: SharedGeometryStateStyle, key: string) {
     const { points, color, geometryId, seriesPointStyle } = line;
-    const geometryStyle = getGeometryStyle(geometryId, this.props.highlightedLegendItem, sharedStyle);
+    const geometryStyle = getGeometryStateStyle(geometryId, this.props.highlightedLegendItem, sharedStyle);
     const pointStyleProps = buildPointStyleProps(color, seriesPointStyle, geometryStyle);
     return this.renderPoints(points, key, pointStyleProps);
   }

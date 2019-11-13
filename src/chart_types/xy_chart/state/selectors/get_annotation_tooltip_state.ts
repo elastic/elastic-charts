@@ -62,7 +62,7 @@ function getAnnotationTooltipState(
   );
 
   // If there's a highlighted chart element tooltip value, don't show annotation tooltip
-  if (tooltipState && tooltipState.annotationType === AnnotationTypes.Rectangle) {
+  if (tooltipState && tooltipState.isVisible && tooltipState.annotationType === AnnotationTypes.Rectangle) {
     for (const tooltipValue of tooltipValues) {
       if (tooltipValue.isHighlighted) {
         return null;
