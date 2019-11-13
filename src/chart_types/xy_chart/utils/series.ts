@@ -3,7 +3,7 @@ import { Accessor } from '../../../utils/accessor';
 import { GroupId, SpecId } from '../../../utils/ids';
 import { splitSpecsByGroupId, YBasicSeriesSpec } from '../domains/y_domain';
 import { formatNonStackedDataSeriesValues } from './nonstacked_series_utils';
-import { BasicSeriesSpec, Datum } from './specs';
+import { BasicSeriesSpec, Datum, SubSeriesStringPredicate } from './specs';
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
 import { LastValues } from '../store/utils';
 import { ScaleType } from '../../../utils/scales/scales';
@@ -366,20 +366,72 @@ export function getSplittedSeries(
 }
 
 /**
+ * Get custom  series sub-name
+ */
+const getCustomSubSeriesName = (() => {
+  const cache = new Map();
+
+  return (customSubSeriesLabel: SubSeriesStringPredicate, isTooltip: boolean) => (
+    args: [string | number | null, string | number],
+  ): string | number => {
+    const [accessorKey, accessorLabel] = args;
+    const key = [args, isTooltip].join('~~~');
+
+    if (cache.has(key)) {
+      return cache.get(key);
+    } else {
+      const label = customSubSeriesLabel(accessorLabel, accessorKey, isTooltip) || accessorLabel;
+      cache.set(key, label);
+
+      return label;
+    }
+  };
+})();
+
+const getSeriesLabelKeys = (
+  spec: BasicSeriesSpec,
+  seriesIdentifier: SeriesIdentifier,
+  isTooltip: boolean,
+): (string | number)[] => {
+  const isMultipleY = spec.yAccessors.length > 1;
+
+  if (spec.customSubSeriesLabel) {
+    const { yAccessor, splitAccessors } = seriesIdentifier;
+    const fullKeyPairs: [string | number | null, string | number][] = [...splitAccessors.entries(), [null, yAccessor]];
+    const labelKeys = fullKeyPairs.map(getCustomSubSeriesName(spec.customSubSeriesLabel, isTooltip));
+
+    return isMultipleY ? labelKeys : labelKeys.slice(0, -1);
+  }
+
+  const { seriesKeys } = seriesIdentifier;
+
+  return isMultipleY ? seriesKeys : seriesKeys.slice(0, -1);
+};
+
+/**
  * Get series label based on `SeriesIdentifier`
  */
 export function getSeriesLabel(
-  { seriesKeys }: SeriesIdentifier,
+  seriesIdentifier: SeriesIdentifier,
   hasSingleSeries: boolean,
+  isTooltip: boolean,
   spec?: BasicSeriesSpec,
-): string | undefined {
+): string {
+  if (spec && spec.customSeriesLabel) {
+    const customLabel = spec.customSeriesLabel(seriesIdentifier, isTooltip);
+
+    if (customLabel !== null) {
+      return customLabel;
+    }
+  }
+
   let label = '';
-  const labelKeys = spec && spec.yAccessors.length === 1 ? seriesKeys.slice(0, -1) : seriesKeys;
+  const labelKeys = spec ? getSeriesLabelKeys(spec, seriesIdentifier, isTooltip) : seriesIdentifier.seriesKeys;
 
   // there is one series, the is only one yAccessor, the first part is not null
   if (hasSingleSeries || labelKeys.length === 0 || labelKeys[0] == null) {
     if (!spec) {
-      return;
+      return '';
     }
 
     if (spec.splitSeriesAccessors && labelKeys.length > 0 && labelKeys[0] != null) {

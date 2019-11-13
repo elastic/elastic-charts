@@ -92,7 +92,7 @@ describe('Tooltip formatting', () => {
   };
 
   test('format simple tooltip', () => {
-    const tooltipValue = formatTooltip(indexedGeometry, SPEC_1, false, false, YAXIS_SPEC);
+    const tooltipValue = formatTooltip(indexedGeometry, SPEC_1, false, false, false, YAXIS_SPEC);
     expect(tooltipValue).toBeDefined();
     expect(tooltipValue.yAccessor).toBe('y1');
     expect(tooltipValue.name).toBe('bar_1');
@@ -103,21 +103,22 @@ describe('Tooltip formatting', () => {
   });
   it('should set name as spec name when provided', () => {
     const name = 'test - spec';
-    const tooltipValue = formatTooltip(indexedBandedGeometry, { ...SPEC_1, name }, false, false, YAXIS_SPEC);
+    const tooltipValue = formatTooltip(indexedBandedGeometry, { ...SPEC_1, name }, false, false, false, YAXIS_SPEC);
     expect(tooltipValue.name).toBe(name);
   });
   it('should set name as spec id when name is not provided', () => {
-    const tooltipValue = formatTooltip(indexedBandedGeometry, SPEC_1, false, false, YAXIS_SPEC);
+    const tooltipValue = formatTooltip(indexedBandedGeometry, SPEC_1, false, false, false, YAXIS_SPEC);
     expect(tooltipValue.name).toBe(SPEC_1.id);
   });
   test('format banded tooltip - upper', () => {
-    const tooltipValue = formatTooltip(indexedBandedGeometry, bandedSpec, false, false, YAXIS_SPEC);
+    const tooltipValue = formatTooltip(indexedBandedGeometry, bandedSpec, false, false, false, YAXIS_SPEC);
     expect(tooltipValue.name).toBe('bar_1 - upper');
   });
   test('format banded tooltip - y1AccessorFormat', () => {
     const tooltipValue = formatTooltip(
       indexedBandedGeometry,
       { ...bandedSpec, y1AccessorFormat: ' [max]' },
+      false,
       false,
       false,
       YAXIS_SPEC,
@@ -128,6 +129,7 @@ describe('Tooltip formatting', () => {
     const tooltipValue = formatTooltip(
       indexedBandedGeometry,
       { ...bandedSpec, y1AccessorFormat: (label) => `[max] ${label}` },
+      false,
       false,
       false,
       YAXIS_SPEC,
@@ -146,6 +148,7 @@ describe('Tooltip formatting', () => {
       bandedSpec,
       false,
       false,
+      false,
       YAXIS_SPEC,
     );
     expect(tooltipValue.name).toBe('bar_1 - lower');
@@ -160,6 +163,7 @@ describe('Tooltip formatting', () => {
         },
       },
       { ...bandedSpec, y0AccessorFormat: ' [min]' },
+      false,
       false,
       false,
       YAXIS_SPEC,
@@ -178,6 +182,7 @@ describe('Tooltip formatting', () => {
       { ...bandedSpec, y0AccessorFormat: (label) => `[min] ${label}` },
       false,
       false,
+      false,
       YAXIS_SPEC,
     );
     expect(tooltipValue.name).toBe('[min] bar_1');
@@ -193,10 +198,10 @@ describe('Tooltip formatting', () => {
         seriesKeys: ['y1'],
       },
     };
-    const tooltipValue = formatTooltip(geometry, SPEC_1, false, false, YAXIS_SPEC);
+    const tooltipValue = formatTooltip(geometry, SPEC_1, false, false, false, YAXIS_SPEC);
     expect(tooltipValue).toBeDefined();
     expect(tooltipValue.yAccessor).toBe('y1');
-    expect(tooltipValue.name).toBe('y1');
+    expect(tooltipValue.name).toBe('bar_1');
     expect(tooltipValue.isXValue).toBe(false);
     expect(tooltipValue.isHighlighted).toBe(false);
     expect(tooltipValue.color).toBe('blue');
@@ -210,7 +215,7 @@ describe('Tooltip formatting', () => {
         accessor: 'y0',
       },
     };
-    const tooltipValue = formatTooltip(geometry, SPEC_1, false, false, YAXIS_SPEC);
+    const tooltipValue = formatTooltip(geometry, SPEC_1, false, false, false, YAXIS_SPEC);
     expect(tooltipValue).toBeDefined();
     expect(tooltipValue.yAccessor).toBe('y0');
     expect(tooltipValue.name).toBe('bar_1');
@@ -227,7 +232,7 @@ describe('Tooltip formatting', () => {
         accessor: 'y0',
       },
     };
-    let tooltipValue = formatTooltip(geometry, SPEC_1, true, false, YAXIS_SPEC);
+    let tooltipValue = formatTooltip(geometry, SPEC_1, true, false, false, YAXIS_SPEC);
     expect(tooltipValue).toBeDefined();
     expect(tooltipValue.yAccessor).toBe('y0');
     expect(tooltipValue.name).toBe('bar_1');
@@ -236,7 +241,7 @@ describe('Tooltip formatting', () => {
     expect(tooltipValue.color).toBe('blue');
     expect(tooltipValue.value).toBe('1');
     // disable any highlight on x value
-    tooltipValue = formatTooltip(geometry, SPEC_1, true, true, YAXIS_SPEC);
+    tooltipValue = formatTooltip(geometry, SPEC_1, true, true, false, YAXIS_SPEC);
     expect(tooltipValue.isHighlighted).toBe(false);
   });
 });

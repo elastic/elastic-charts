@@ -366,6 +366,7 @@ export class ChartStore {
       this.isActiveChart.get(),
       this.tooltipType.get(),
       this.chartRotation,
+      Boolean(this.seriesDomainsAndData && this.seriesDomainsAndData.seriesCollection.size > 1),
       this.yScales,
       this.tooltipHeaderFormatter,
     );
@@ -481,6 +482,7 @@ export class ChartStore {
       this.isActiveChart.get(),
       this.tooltipType.get(),
       this.chartRotation,
+      Boolean(this.seriesDomainsAndData && this.seriesDomainsAndData.seriesCollection.size > 1),
       this.yScales,
       this.tooltipHeaderFormatter,
     );
@@ -695,8 +697,8 @@ export class ChartStore {
     }
   });
 
-  updateHighlightedLegendItemKey = action((legendItemKey: string, deselected: boolean) => {
-    if (deselected) {
+  updateHighlightedLegendItemKey = action((legendItemKey: string, isDeselected: boolean) => {
+    if (isDeselected) {
       this.highlightedLegendItemKey.set(null);
     } else {
       this.highlightedLegendItemKey.set(legendItemKey);

@@ -58,10 +58,10 @@ export function computeLegend(
     const spec = specs.get(seriesIdentifier.specId);
     const color = seriesColors.get(key) || defaultColor;
     const hasSingleSeries = seriesCollection.size === 1;
-    const label = getSeriesLabel(seriesIdentifier, hasSingleSeries, spec);
+    const label = getSeriesLabel(seriesIdentifier, hasSingleSeries, false, spec);
     const isSeriesVisible = deselectedDataSeries ? getSeriesIndex(deselectedDataSeries, seriesIdentifier) < 0 : true;
 
-    if (!label || !spec) {
+    if (label === '' || !spec) {
       return;
     }
 

@@ -30,7 +30,14 @@ import {
 import { SeededDataGenerator } from '../.storybook/utils';
 import * as TestDatasets from '../src/utils/data_samples/test_dataset';
 import { palettes } from '../src/utils/themes/colors';
-import { BarStyleAccessor, PointStyleAccessor } from '../src/chart_types/xy_chart/utils/specs';
+import {
+  BarStyleAccessor,
+  PointStyleAccessor,
+  SeriesStringPredicate,
+  SubSeriesStringPredicate,
+} from '../src/chart_types/xy_chart/utils/specs';
+import moment from 'moment';
+import { DateTime } from 'luxon';
 
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {
   return number(
@@ -840,6 +847,112 @@ storiesOf('Stylings', module)
           yAccessors={['y']}
           stackAccessors={['x']}
           data={dataset3}
+        />
+      </Chart>
+    );
+  })
+  .add('Add custom full and sub series label', () => {
+    const customSeriesLabel: SeriesStringPredicate = ({ yAccessor, splitAccessors }) => {
+      if (yAccessor === 'y1' && splitAccessors.get('g') === 'a') {
+        return 'replace full series name';
+      }
+
+      return null;
+    };
+    const customSubSeriesLabel: SubSeriesStringPredicate = (accessor, key) => {
+      if (key) {
+        // split accessor;
+        if (accessor === 'a') {
+          return 'replace a(from g)';
+        }
+      } else {
+        // y accessor;
+        if (accessor === 'y2') {
+          return 'replace y2';
+        }
+      }
+
+      return null;
+    };
+    return (
+      <Chart className={'story-chart'}>
+        <Settings showLegend={true} legendPosition={Position.Right} />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+        <Axis
+          id={getAxisId('left2')}
+          title={'Left axis'}
+          position={Position.Left}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
+        />
+
+        <BarSeries
+          id={getSpecId('bars1')}
+          xScaleType={ScaleType.Ordinal}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y1', 'y2']}
+          splitSeriesAccessors={['g']}
+          data={TestDatasets.BARCHART_2Y1G}
+          customSeriesLabel={customSeriesLabel}
+          customSubSeriesLabel={customSubSeriesLabel}
+        />
+      </Chart>
+    );
+  })
+  .add('Add custom sub-series label formatting [time/date and percent]', () => {
+    const start = DateTime.fromISO('2019-01-01T00:00:00.000', { zone: 'utc' });
+    const data = [
+      { x: 1, y: 3, percent: 0.5, time: start.plus({ month: 1 }).toMillis() },
+      { x: 2, y: 6, percent: 0.5, time: start.plus({ month: 2 }).toMillis() },
+      { x: 3, y: 20, percent: 0.5, time: start.plus({ month: 3 }).toMillis() },
+      { x: 1, y: 9, percent: 0.7, time: start.plus({ month: 1 }).toMillis() },
+      { x: 2, y: 13, percent: 0.7, time: start.plus({ month: 2 }).toMillis() },
+      { x: 3, y: 14, percent: 0.7, time: start.plus({ month: 3 }).toMillis() },
+      { x: 1, y: 15, percent: 0.1, time: start.plus({ month: 1 }).toMillis() },
+      { x: 2, y: 18, percent: 1, time: start.plus({ month: 2 }).toMillis() },
+      { x: 3, y: 7, percent: 1, time: start.plus({ month: 3 }).toMillis() },
+    ];
+    const customSubSeriesLabel: SubSeriesStringPredicate = (accessor, key, isTooltip) => {
+      if (key === 'time') {
+        // Format time group
+        if (isTooltip) {
+          // Format tooltip time to be longer
+          return moment(accessor).format('ll');
+        }
+
+        // Format legend to be shorter
+        return moment(accessor).format('M/YYYY');
+      }
+
+      if (key === 'percent') {
+        // Format percent group
+        return `${(accessor as number) * 100}%`;
+      }
+
+      // don't format yAccessor
+      return null;
+    };
+
+    return (
+      <Chart className={'story-chart'}>
+        <Settings showLegend={true} legendPosition={Position.Right} />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+        <Axis
+          id={getAxisId('left2')}
+          title={'Left axis'}
+          position={Position.Left}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
+        />
+
+        <BarSeries
+          id={getSpecId('bars1')}
+          xScaleType={ScaleType.Ordinal}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          splitSeriesAccessors={['time', 'percent']}
+          data={data}
+          customSubSeriesLabel={customSubSeriesLabel}
         />
       </Chart>
     );
