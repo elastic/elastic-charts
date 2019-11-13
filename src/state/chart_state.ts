@@ -32,6 +32,8 @@ export interface InternalChartState {
   getLegendItems(globalState: GlobalChartState): Map<string, LegendItem>;
   // return the list of values for each legend item
   getLegendItemsValues(globalState: GlobalChartState): Map<string, TooltipLegendValue>;
+  // return the CSS cursor pointer depending on the internal chart state
+  getCursorPointer(globalState: GlobalChartState): string;
 }
 
 export interface SpecList {

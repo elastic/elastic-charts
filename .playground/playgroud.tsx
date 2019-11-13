@@ -1958,7 +1958,7 @@ export class Playground extends React.Component {
               yScaleType={ScaleType.Linear}
               xAccessor={1}
               yAccessors={[0]}
-              data={data[0].datapoints}
+              data={data[0].datapoints.slice(0, 20)}
               lineSeriesStyle={{
                 point: {
                   visible: false,
@@ -1971,7 +1971,7 @@ export class Playground extends React.Component {
               yScaleType={ScaleType.Linear}
               xAccessor={1}
               yAccessors={[0]}
-              data={data[0].datapoints}
+              data={data[1].datapoints.slice(0, 20)}
               lineSeriesStyle={{
                 point: {
                   visible: false,
@@ -1984,7 +1984,7 @@ export class Playground extends React.Component {
               yScaleType={ScaleType.Linear}
               xAccessor={1}
               yAccessors={[0]}
-              data={data[0].datapoints}
+              data={data[2].datapoints.slice(0, 20)}
               lineSeriesStyle={{
                 point: {
                   visible: false,
@@ -1997,7 +1997,7 @@ export class Playground extends React.Component {
               yScaleType={ScaleType.Linear}
               xAccessor={1}
               yAccessors={[0]}
-              data={data[0].datapoints}
+              data={data[3].datapoints.slice(0, 20)}
               lineSeriesStyle={{
                 point: {
                   visible: false,

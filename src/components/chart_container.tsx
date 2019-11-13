@@ -5,6 +5,7 @@ import { onCursorPositionChange } from '../state/actions/cursor';
 import { GlobalChartState, BackwardRef } from '../state/chart_state';
 import { onMouseUp, onMouseDown } from '../state/actions/mouse';
 import { getInternalChartRendererSelector } from '../state/selectors/get_chart_type_components';
+import { getInternalCursorPointer } from '../state/selectors/get_internal_cursor_pointer';
 import { isInternalChartEmptySelector } from '../state/selectors/is_chart_empty';
 import { isInitialized } from '../state/selectors/is_initialized';
 interface ReactiveChartStateProps {
@@ -108,7 +109,7 @@ const mapStateToProps = (state: GlobalChartState) => {
     return {
       initialized: false,
       isChartEmpty: true,
-      chartCursor: 'pointer',
+      chartCursor: 'default',
       internalChartRenderer: () => null,
     };
   }
@@ -116,7 +117,7 @@ const mapStateToProps = (state: GlobalChartState) => {
   return {
     initialized: true,
     isChartEmpty: isInternalChartEmptySelector(state),
-    chartCursor: 'pointer', //todo
+    chartCursor: getInternalCursorPointer(state),
     internalChartRenderer: getInternalChartRendererSelector(state),
   };
 };
