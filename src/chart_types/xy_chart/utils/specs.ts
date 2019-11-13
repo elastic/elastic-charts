@@ -21,9 +21,9 @@ export type Rotation = 0 | 90 | -90 | 180;
 export type Rendering = 'canvas' | 'svg';
 export type Color = string;
 export type ColorPalette = {
-  startColor: string;
-  endColor: string;
-  step: number;
+  colors: string[];
+  steps?: number;
+  type: 'sequential' | 'diverging' | 'qualitative';
 };
 export type BarStyleOverride = RecursivePartial<BarSeriesStyle> | Color | null;
 export type PointStyleOverride = RecursivePartial<PointStyle> | Color | null;

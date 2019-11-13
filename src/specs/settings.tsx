@@ -17,7 +17,6 @@ import {
 } from '../chart_types/xy_chart/store/chart_state';
 import { ScaleTypes } from '../utils/scales/scales';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
-import {color} from "@storybook/addon-knobs";
 
 export const DEFAULT_TOOLTIP_TYPE = TooltipType.VerticalCursor;
 export const DEFAULT_TOOLTIP_SNAP = true;
@@ -206,8 +205,7 @@ function updateChartStore(props: SettingSpecProps) {
     chartStore.setOnRenderChangeListener(onRenderChange);
   }
   if (colorPalette) {
-    const { startColor, endColor, step } = colorPalette;
-    const vizColors = calcColorPalette(startColor, endColor, step);
+    const vizColors = calcColorPalette(colorPalette);
     chartStore.chartTheme = getTheme(chartStore.chartTheme, {
       colors: { vizColors },
     });

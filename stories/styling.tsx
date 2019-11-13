@@ -605,9 +605,9 @@ storiesOf('Stylings', module)
           showLegend={true}
           legendPosition={Position.Right}
           colorPalette={{
-            startColor: '#FFFFE0',
-            endColor: '#1EA593',
-            step: 3,
+            colors: ['#FFFFE0', '#1EA593'],
+            steps: 3,
+            type: 'sequential',
           }}
         />
         <Axis

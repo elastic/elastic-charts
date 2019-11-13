@@ -7,6 +7,7 @@ import { ChartStore } from '../chart_types/xy_chart/store/chart_state';
 import { DEFAULT_TOOLTIP_SNAP, DEFAULT_TOOLTIP_TYPE, SettingsComponent, SettingSpecProps } from './settings';
 import { PartialTheme } from '../utils/themes/theme';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
+import { SequentialPalette } from '..';
 
 describe('Settings spec component', () => {
   test('should update store on mount if spec has a chart store', () => {
@@ -196,6 +197,47 @@ describe('Settings spec component', () => {
       colors: {
         ...DARK_THEME.colors,
         ...partialTheme.colors,
+      },
+    });
+  });
+
+  test('should update the store with a color palette', () => {
+    const chartStore = new ChartStore();
+    const partialTheme: PartialTheme = {
+      colors: {
+        defaultVizColor: 'aquamarine',
+      },
+    };
+
+    expect(chartStore.chartTheme).toEqual(LIGHT_THEME);
+
+    const updatedProps: SettingSpecProps = {
+      theme: partialTheme,
+      baseTheme: DARK_THEME,
+      colorPalette: { colors: ['#FFFFE0', '#1EA593'], steps: 3, type: 'sequential' },
+      rotation: 90 as Rotation,
+      rendering: 'svg' as Rendering,
+      animateData: true,
+      showLegend: true,
+      tooltip: {
+        type: TooltipType.None,
+        snap: false,
+      },
+      legendPosition: Position.Bottom,
+      showLegendDisplayValue: false,
+      hideDuplicateAxes: false,
+      debug: true,
+      xDomain: { min: 0, max: 10 },
+    };
+
+    mount(<SettingsComponent chartStore={chartStore} {...updatedProps} />);
+    const calculatedPalette = new SequentialPalette(['#FFFFE0', '#1EA593'], 3).calcPalette();
+
+    expect(chartStore.chartTheme).toEqual({
+      ...DARK_THEME,
+      colors: {
+        defaultVizColor: 'aquamarine',
+        vizColors: calculatedPalette,
       },
     });
   });
