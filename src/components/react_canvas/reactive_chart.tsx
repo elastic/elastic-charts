@@ -25,6 +25,7 @@ import { Dimensions } from '../../utils/dimensions';
 
 interface ReactiveChartProps {
   chartStore?: ChartStore; // FIX until we find a better way on ts mobx
+  forwardRef: React.RefObject<Stage>;
 }
 interface ReactiveChartState {
   brushing: boolean;
@@ -410,6 +411,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
           height: '100%',
         }}
         {...brushProps}
+        ref={this.props.forwardRef}
       >
         <Layer hitGraphEnabled={false} listening={false}>
           {this.renderGrids()}

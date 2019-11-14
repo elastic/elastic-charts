@@ -15,6 +15,7 @@ import { isHorizontalAxis } from '../chart_types/xy_chart/utils/axis_utils';
 import { Position } from '../chart_types/xy_chart/utils/specs';
 import { CursorEvent } from '../specs/settings';
 import { ChartSize, getChartSize } from '../utils/chart_size';
+import { Stage } from 'react-konva';
 
 interface ChartProps {
   /** The type of rendered
@@ -38,9 +39,11 @@ export class Chart extends React.Component<ChartProps, ChartState> {
   };
   private chartSpecStore: ChartStore;
   private chartContainerRef: React.RefObject<HTMLDivElement>;
+  private chartStageRef: React.RefObject<Stage>;
   constructor(props: any) {
     super(props);
     this.chartContainerRef = createRef();
+    this.chartStageRef = createRef();
     this.chartSpecStore = new ChartStore(props.id);
     this.state = {
       legendPosition: this.chartSpecStore.legendPosition.get(),
@@ -91,6 +94,14 @@ export class Chart extends React.Component<ChartProps, ChartState> {
       }
     }
   }
+
+  getPNGSnapshot(): string | null {
+    if (!this.chartStageRef.current) {
+      return null;
+    }
+    return this.chartStageRef.current.getStage().toDataURL({});
+  }
+
   getChartContainerRef = () => {
     return this.chartContainerRef;
   };
@@ -119,8 +130,8 @@ export class Chart extends React.Component<ChartProps, ChartState> {
             <ChartResizer />
             <Crosshair />
             {// TODO reenable when SVG rendered is aligned with canvas one
-            renderer === 'svg' && <ChartContainer />}
-            {renderer === 'canvas' && <ChartContainer />}
+            renderer === 'svg' && <ChartContainer forwardRef={this.chartStageRef} />}
+            {renderer === 'canvas' && <ChartContainer forwardRef={this.chartStageRef} />}
             <Tooltips getChartContainerRef={this.getChartContainerRef} />
             <AnnotationTooltip getChartContainerRef={this.getChartContainerRef} />
             <Highlighter />
