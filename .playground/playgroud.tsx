@@ -11,7 +11,6 @@ import {
   Settings,
 } from '../src';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
-import { render } from 'enzyme';
 
 export class Playground extends React.Component {
   chartRef: React.RefObject<Chart> = React.createRef();
