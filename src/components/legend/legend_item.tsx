@@ -1,43 +1,103 @@
 import classNames from 'classnames';
 import React from 'react';
 import { Icon } from '../icons/icon';
-import { LegendItemListener } from '../../specs/settings';
-import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
-import { GlobalChartState } from '../../state/chart_state';
-import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
-import { onLegendItemClick, onToggleDeselectSeries } from '../../state/actions/legend';
+import { LegendItemListener, BasicListener } from '../../specs/settings';
 import { isEqualSeriesKey } from '../../chart_types/xy_chart/utils/series_utils';
 import { DataSeriesColorsValues } from '../../chart_types/xy_chart/utils/series';
 import { Position } from '../../chart_types/xy_chart/utils/specs';
 import { LegendItem } from '../../chart_types/xy_chart/legend/legend';
+import { onLegendItemClick, onLegendItemOut, onLegendItemOver } from '../../state/actions/legend';
 
-interface LegendItemOwnProps {
+interface LegendItemProps {
+  legendPosition: Position;
+  showLegendDisplayValue: boolean;
+  selectedLegendItem?: LegendItem | null;
+  onLegendItemClickListener?: LegendItemListener;
+  onLegendItemOutListener?: BasicListener;
+  onLegendItemOverListener?: LegendItemListener;
   legendItem: LegendItem;
   displayValue: string;
   label?: string;
-  onMouseEnter: (event: React.MouseEvent) => void;
-  onMouseLeave: () => void;
+  onLegendItemClick: typeof onLegendItemClick;
+  onLegendItemOut: typeof onLegendItemOut;
+  onLegendItemOver: typeof onLegendItemOver;
+  toggleSingleSeries: (legendItemId: DataSeriesColorsValues) => void;
+  toggleSeriesVisibility: (legendItemId: DataSeriesColorsValues) => void;
 }
 
 interface LegendItemState {
   isColorPickerOpen: boolean;
 }
-interface LegendItemDispatchProps {
-  onLegendItemClick: (legendItemId: DataSeriesColorsValues) => void;
-  toggleSingleSeries: (legendItemId: DataSeriesColorsValues) => void;
-  toggleSeriesVisibility: (legendItemId: DataSeriesColorsValues) => void;
-}
-interface LegendItemStateProps {
-  legendPosition: Position;
-  showLegendDisplayValue: boolean;
-  selectedLegendItem?: LegendItem | null;
-  onLegendItemClickListener?: LegendItemListener;
+
+/**
+ * Create a div for the the displayed value
+ * @param displayValue
+ * @param isSeriesVisible
+ */
+function renderDisplayValue(displayValue: string, isSeriesVisible: boolean | undefined) {
+  const displayValueClassNames = classNames('echLegendItem__displayValue', {
+    ['echLegendItem__displayValue--hidden']: !isSeriesVisible,
+  });
+  return (
+    <div className={displayValueClassNames} title={displayValue}>
+      {displayValue}
+    </div>
+  );
 }
 
-type LegendItemProps = LegendItemOwnProps & LegendItemDispatchProps & LegendItemStateProps;
+/**
+ * Create a div for the title
+ * @param title
+ * @param onTitleClick
+ * @param hasTitleClickListener
+ * @param isSelected
+ * @param showLegendDisplayValue
+ */
+function renderTitle(
+  title: string | undefined,
+  onTitleClick: (event: React.MouseEvent<Element, MouseEvent>) => void,
+  hasTitleClickListener: boolean,
+  isSelected: boolean,
+  showLegendDisplayValue: boolean,
+) {
+  // TODO add contextual menu panel on click
+  if (!title) {
+    return null;
+  }
+  const titleClassNames = classNames('echLegendItem__title', {
+    ['echLegendItem__title--hasClickListener']: hasTitleClickListener,
+    ['echLegendItem__title--selected']: isSelected,
+    ['echLegendItem__title--hasDisplayValue']: showLegendDisplayValue,
+  });
+  return (
+    <div className={titleClassNames} title={title} onClick={onTitleClick}>
+      {title}
+    </div>
+  );
+}
 
-class LegendItemComponent extends React.Component<LegendItemProps, LegendItemState> {
+/**
+ * Create a div for the color/eye icon
+ * @param color
+ * @param isSeriesVisible
+ */
+function renderColor(color?: string, isSeriesVisible = true) {
+  if (!color) {
+    return null;
+  }
+  // TODO add color picker
+  const iconType = isSeriesVisible ? 'dot' : 'eyeClosed';
+  const iconColor = isSeriesVisible ? color : undefined;
+  const title = isSeriesVisible ? 'series color' : 'series hidden';
+  const viewBox = isSeriesVisible ? undefined : '-3 -3 22 22';
+  return (
+    <div className="echLegendItem__color" aria-label={title} title={title}>
+      <Icon type={iconType} color={iconColor} viewBox={viewBox} />
+    </div>
+  );
+}
+
+export class LegendListItem extends React.PureComponent<LegendItemProps, LegendItemState> {
   static displayName = 'LegendItem';
 
   constructor(props: LegendItemProps) {
@@ -60,7 +120,7 @@ class LegendItemComponent extends React.Component<LegendItemProps, LegendItemSta
   };
 
   render() {
-    const { displayValue, legendItem, onMouseEnter, onMouseLeave, legendPosition, label } = this.props;
+    const { displayValue, legendItem, legendPosition, label } = this.props;
     const { color, isSeriesVisible, value, isLegendItemVisible } = legendItem;
     const onTitleClick = this.onVisibilityClick(legendItem.value);
 
@@ -77,25 +137,10 @@ class LegendItemComponent extends React.Component<LegendItemProps, LegendItemSta
     });
 
     return (
-      <div className={itemClasses} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-        {this.renderColor(this.toggleColorPicker, color, isSeriesVisible)}
-        {this.renderTitle(label, onTitleClick, hasTitleClickListener, isSelected, showLegendDisplayValue)}
-        {this.renderDisplayValue(displayValue, showLegendDisplayValue, isSeriesVisible)}
-      </div>
-    );
-  }
-  renderColor(colorClickAction: () => void, color?: string, isSeriesVisible = true) {
-    if (!color) {
-      return null;
-    }
-    // TODO add color picker
-    const iconType = isSeriesVisible ? 'dot' : 'eyeClosed';
-    const iconColor = isSeriesVisible ? color : undefined;
-    const title = isSeriesVisible ? 'series color' : 'series hidden';
-    const viewBox = isSeriesVisible ? undefined : '-3 -3 22 22';
-    return (
-      <div className="echLegendItem__color" aria-label={title} title={title}>
-        <Icon type={iconType} color={iconColor} onClick={colorClickAction} viewBox={viewBox} />
+      <div className={itemClasses} onMouseEnter={this.onLegendItemMouseOver} onMouseLeave={this.onLegendItemMouseOut}>
+        {renderColor(color, isSeriesVisible)}
+        {renderTitle(label, onTitleClick, hasTitleClickListener, isSelected, showLegendDisplayValue)}
+        {showLegendDisplayValue && renderDisplayValue(displayValue, isSeriesVisible)}
       </div>
     );
   }
@@ -109,45 +154,23 @@ class LegendItemComponent extends React.Component<LegendItemProps, LegendItemSta
     );
   };
 
-  renderTitle(
-    title: string | undefined,
-    onTitleClick: (event: React.MouseEvent<Element, MouseEvent>) => void,
-    hasTitleClickListener: boolean,
-    isSelected: boolean,
-    showLegendDisplayValue: boolean,
-  ) {
-    // TODO add contextual menu panel on click
-    if (!title) {
-      return null;
-    }
-    const titleClassNames = classNames('echLegendItem__title', {
-      ['echLegendItem__title--hasClickListener']: hasTitleClickListener,
-      ['echLegendItem__title--selected']: isSelected,
-      ['echLegendItem__title--hasDisplayValue']: showLegendDisplayValue,
-    });
-    return (
-      <div className={titleClassNames} title={title} onClick={onTitleClick}>
-        {title}
-      </div>
-    );
-  }
-
-  renderDisplayValue(displayValue: string, showLegendDisplayValue: boolean, isSeriesVisible: boolean | undefined) {
-    if (!showLegendDisplayValue) {
-      return;
-    }
-    const displayValueClassNames = classNames('echLegendItem__displayValue', {
-      ['echLegendItem__displayValue--hidden']: !isSeriesVisible,
-    });
-    return (
-      <div className={displayValueClassNames} title={displayValue}>
-        {displayValue}
-      </div>
-    );
-  }
-
   onLegendTitleClick = (legendItemId: DataSeriesColorsValues) => () => {
     this.props.onLegendItemClick(legendItemId);
+  };
+  onLegendItemMouseOver = () => {
+    this.props.onLegendItemOver(this.props.legendItem.key);
+  };
+
+  onLegendItemMouseOut = () => {
+    this.props.onLegendItemOut();
+  };
+
+  onVisibilityClick = (legendItemId: DataSeriesColorsValues) => (event: React.MouseEvent) => {
+    if (event.shiftKey) {
+      this.props.toggleSingleSeries(legendItemId);
+    } else {
+      this.props.toggleSeriesVisibility(legendItemId);
+    }
   };
 
   // Keeping these as reference when we have a contextual panel
@@ -179,46 +202,4 @@ class LegendItemComponent extends React.Component<LegendItemProps, LegendItemSta
   //     />
   //   );
   // }
-
-  private onVisibilityClick = (legendItemId: DataSeriesColorsValues) => (event: React.MouseEvent) => {
-    if (event.shiftKey) {
-      this.props.toggleSingleSeries(legendItemId);
-    } else {
-      this.props.toggleSeriesVisibility(legendItemId);
-    }
-  };
 }
-
-const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators(
-    {
-      onLegendItemClick,
-      toggleSingleSeries: onToggleDeselectSeries,
-      toggleSeriesVisibility: onToggleDeselectSeries,
-    },
-    dispatch,
-  );
-
-const mapStateToProps = (state: GlobalChartState): LegendItemStateProps => {
-  if (!state.specsInitialized) {
-    return {
-      showLegendDisplayValue: false,
-      selectedLegendItem: null,
-      legendPosition: Position.Right,
-    };
-  }
-  const settingsSpec = getSettingsSpecSelector(state);
-  return {
-    showLegendDisplayValue: settingsSpec.showLegendDisplayValue,
-    // Disabling the select until we implement the right contextual menu
-    // with extend possibility
-    selectedLegendItem: null,
-    onLegendItemClickListener: settingsSpec.onLegendItemClick,
-    legendPosition: settingsSpec.legendPosition,
-  };
-};
-
-export const LegendListItem = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(LegendItemComponent);

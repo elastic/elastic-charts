@@ -32,62 +32,63 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
   shouldComponentUpdate(props: ReactiveChartProps) {
     return props.initialized;
   }
+  onMouseMove = ({ nativeEvent: { offsetX, offsetY } }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const { isChartEmpty, onCursorPositionChange } = this.props;
+    if (isChartEmpty) {
+      return;
+    }
+    onCursorPositionChange(offsetX, offsetY);
+  };
+  onMouseLeave = () => {
+    const { isChartEmpty, onCursorPositionChange } = this.props;
+    if (isChartEmpty) {
+      return;
+    }
+    onCursorPositionChange(-1, -1);
+  };
+  onMouseDown = ({ nativeEvent: { offsetX, offsetY } }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const { isChartEmpty, onMouseDown } = this.props;
+    if (isChartEmpty) {
+      return;
+    }
+    onMouseDown(
+      {
+        x: offsetX,
+        y: offsetY,
+      },
+      Date.now(),
+    );
+  };
+  onMouseUp = ({ nativeEvent: { offsetX, offsetY } }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const { isChartEmpty, onMouseUp } = this.props;
+    if (isChartEmpty) {
+      return;
+    }
+    onMouseUp(
+      {
+        x: offsetX,
+        y: offsetY,
+      },
+      Date.now(),
+    );
+  };
 
   render() {
     const { initialized } = this.props;
     if (!initialized) {
       return null;
     }
-    const {
-      onCursorPositionChange,
-      isChartEmpty,
-      chartCursor,
-      onMouseUp,
-      onMouseDown,
-      internalChartRenderer,
-    } = this.props;
+    const { chartCursor, internalChartRenderer } = this.props;
     return (
       <div
         className="echChartCursorContainer"
         style={{
           cursor: chartCursor,
         }}
-        onMouseMove={({ nativeEvent: { offsetX, offsetY } }) => {
-          if (isChartEmpty) {
-            return;
-          }
-          onCursorPositionChange(offsetX, offsetY);
-        }}
-        onMouseLeave={() => {
-          if (isChartEmpty) {
-            return;
-          }
-          onCursorPositionChange(-1, -1);
-        }}
-        onMouseDown={({ nativeEvent: { offsetX, offsetY } }) => {
-          if (isChartEmpty) {
-            return;
-          }
-          onMouseDown(
-            {
-              x: offsetX,
-              y: offsetY,
-            },
-            Date.now(),
-          );
-        }}
-        onMouseUp={({ nativeEvent: { offsetX, offsetY } }) => {
-          if (isChartEmpty) {
-            return;
-          }
-          onMouseUp(
-            {
-              x: offsetX,
-              y: offsetY,
-            },
-            Date.now(),
-          );
-        }}
+        onMouseMove={this.onMouseMove}
+        onMouseLeave={this.onMouseLeave}
+        onMouseDown={this.onMouseDown}
+        onMouseUp={this.onMouseUp}
       >
         {internalChartRenderer(this.props.getChartContainerRef)}
       </div>

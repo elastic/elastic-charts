@@ -1,5 +1,17 @@
 import React, { Fragment } from 'react';
-import { Axis, Chart, getAxisId, getSpecId, Position, ScaleType, Settings, LineSeries, DARK_THEME } from '../src';
+import {
+  Axis,
+  Chart,
+  getAxisId,
+  getSpecId,
+  Position,
+  ScaleType,
+  Settings,
+  LineSeries,
+  DARK_THEME,
+  AreaSeries,
+} from '../src';
+import { LoremIpsum } from 'lorem-ipsum';
 
 const data = [
   {
@@ -1943,67 +1955,110 @@ const data = [
     ],
   },
 ];
-export class Playground extends React.Component {
+const lorem = new LoremIpsum();
+export class Playground extends React.Component<
+  {},
+  { showLegend: boolean; showValues: boolean; spec1Name: string; dataIndex: number; series: number }
+> {
+  state = {
+    showLegend: true,
+    showValues: true,
+    spec1Name: 'aaa',
+    dataIndex: 50,
+    series: 4,
+  };
+  toggleLegend = () => {
+    this.setState((prevState) => {
+      return {
+        showLegend: !prevState.showLegend,
+      };
+    });
+  };
+  toggleValues = () => {
+    this.setState((prevState) => {
+      return {
+        showValues: !prevState.showValues,
+      };
+    });
+  };
+  toggleSpecName = () => {
+    this.setState(() => {
+      return {
+        spec1Name: lorem.generateWords(1),
+      };
+    });
+  };
+  updateData = () => {
+    this.setState((prevState) => {
+      return {
+        dataIndex: prevState.dataIndex + 1,
+      };
+    });
+  };
+  updateSeries = () => {
+    this.setState((prevState) => {
+      return {
+        series: prevState.series + 1,
+      };
+    });
+  };
   render() {
     return (
       <Fragment>
         <div className="chart">
+          <button onClick={this.toggleLegend}>show/hide legend</button>
+          <br />
+          <button onClick={this.toggleValues}>show/hide values</button>
+          <br />
+          <button onClick={this.toggleSpecName}>change spec name</button>
+          <br />
+          <button onClick={this.updateData}>updateData</button>
+          <br />
+          <button onClick={this.updateSeries}>updateSeries</button>
+          <br />
           <Chart>
-            <Settings showLegend legendPosition={Position.Right} theme={DARK_THEME} />
+            <Settings
+              showLegend={this.state.showLegend}
+              legendPosition={Position.Right}
+              theme={DARK_THEME}
+              showLegendDisplayValue={this.state.showValues}
+            />
             <Axis id={getAxisId('x')} position={Position.Bottom} />
             <Axis id={getAxisId('y')} position={Position.Left} ticks={5} tickFormat={(d) => d.toFixed(2)} />
-            <LineSeries
-              id={getSpecId('legend size')}
+            <AreaSeries
+              id={getSpecId(this.state.spec1Name)}
               xScaleType={ScaleType.Time}
               yScaleType={ScaleType.Linear}
               xAccessor={1}
               yAccessors={[0]}
-              data={data[0].datapoints.slice(0, 20)}
-              lineSeriesStyle={{
+              // y0Accessors={[2]}
+              data={data[0].datapoints.slice(0, this.state.dataIndex).map((d) => {
+                return [...d, d[0] - 100];
+              })}
+              areaSeriesStyle={{
                 point: {
                   visible: false,
                 },
               }}
             />
-            <LineSeries
-              id={getSpecId('legend size2')}
-              xScaleType={ScaleType.Time}
-              yScaleType={ScaleType.Linear}
-              xAccessor={1}
-              yAccessors={[0]}
-              data={data[1].datapoints.slice(0, 20)}
-              lineSeriesStyle={{
-                point: {
-                  visible: false,
-                },
-              }}
-            />
-            <LineSeries
-              id={getSpecId('legend size3')}
-              xScaleType={ScaleType.Time}
-              yScaleType={ScaleType.Linear}
-              xAccessor={1}
-              yAccessors={[0]}
-              data={data[2].datapoints.slice(0, 20)}
-              lineSeriesStyle={{
-                point: {
-                  visible: false,
-                },
-              }}
-            />
-            <LineSeries
-              id={getSpecId('legend size4')}
-              xScaleType={ScaleType.Time}
-              yScaleType={ScaleType.Linear}
-              xAccessor={1}
-              yAccessors={[0]}
-              data={data[3].datapoints.slice(0, 20)}
-              lineSeriesStyle={{
-                point: {
-                  visible: false,
-                },
-              }}
-            />
+            {new Array(this.state.series).fill(null).map((d, i) => {
+              return (
+                <LineSeries
+                  key={i}
+                  id={getSpecId(`${this.state.spec1Name} ${lorem.generateWords(1)} ${i}`)}
+                  xScaleType={ScaleType.Time}
+                  yScaleType={ScaleType.Linear}
+                  xAccessor={1}
+                  yAccessors={[0]}
+                  data={data[1].datapoints.slice(0, this.state.dataIndex)}
+                  lineSeriesStyle={{
+                    point: {
+                      visible: false,
+                    },
+                  }}
+                />
+              );
+            })}
           </Chart>
         </div>
       </Fragment>

@@ -10,12 +10,13 @@ import { GlobalChartState } from '../chart_state';
 const getParentDimensionSelector = (state: GlobalChartState) => state.parentDimensions;
 
 const legendItemLabelsSelector = createCachedSelector(
-  [getLegendItemsSelector],
-  (legendItems): string[] => {
+  [getSettingsSpecSelector, getLegendItemsSelector],
+  (settings, legendItems): string[] => {
     const labels: string[] = [];
+    const { showLegendDisplayValue } = settings;
     legendItems.forEach((item) => {
-      const label = `${item.label} ${item.displayValue.formatted.y1}`;
-      labels.push(label);
+      labels.push(`${item.label} ${showLegendDisplayValue ? item.displayValue.formatted.y1 : ''}`);
+      labels.push(`${item.label} ${showLegendDisplayValue ? item.displayValue.formatted.y0 : ''}`);
     });
     return labels;
   },
@@ -33,7 +34,7 @@ export const getLegendSizeSelector = createCachedSelector(
     const bboxCalculator = new CanvasTextBBoxCalculator();
     const bbox = labels.reduce(
       (acc, label) => {
-        const bbox = bboxCalculator.compute(label, 2, 12, 'Arial', 1.5).getOrElse({ width: 0, height: 0 });
+        const bbox = bboxCalculator.compute(label, 10, 12, 'Arial', 1.5).getOrElse({ width: 0, height: 0 });
         if (acc.height < bbox.height) {
           acc.height = bbox.height;
         }
@@ -44,6 +45,7 @@ export const getLegendSizeSelector = createCachedSelector(
       },
       { width: 0, height: 0 },
     );
+
     bboxCalculator.destroy();
     const { showLegend, legendPosition } = settings;
     const {
