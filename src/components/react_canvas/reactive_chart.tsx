@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { ContainerConfig } from 'konva';
 import { Layer, Rect, Stage } from 'react-konva';
+
 import { AnnotationId } from '../../utils/ids';
 import { isLineAnnotation, isRectAnnotation, AxisSpec } from '../../chart_types/xy_chart/utils/specs';
 import { LineAnnotationStyle, RectAnnotationStyle, mergeGridLineConfigs } from '../../utils/themes/theme';
@@ -22,6 +22,7 @@ import { LineGeometries } from './line_geometries';
 import { RectAnnotation } from './rect_annotation';
 import { AxisTick, AxisTicksDimensions, isVerticalGrid } from '../../chart_types/xy_chart/utils/axis_utils';
 import { Dimensions } from '../../utils/dimensions';
+import { Clippings } from './utils/rendering_props_utils';
 
 interface ReactiveChartProps {
   chartStore?: ChartStore; // FIX until we find a better way on ts mobx
@@ -89,7 +90,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
     window.removeEventListener('mouseup', this.onEndBrushing);
   }
 
-  renderBarSeries = (clippings: ContainerConfig): ReactiveChartElementIndex[] => {
+  renderBarSeries = (clippings: Clippings): ReactiveChartElementIndex[] => {
     const { geometries, canDataBeAnimated, chartTheme } = this.props.chartStore!;
     if (!geometries) {
       return [];
@@ -114,7 +115,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       },
     ];
   };
-  renderLineSeries = (clippings: ContainerConfig): ReactiveChartElementIndex[] => {
+  renderLineSeries = (clippings: Clippings): ReactiveChartElementIndex[] => {
     const { geometries, canDataBeAnimated, chartTheme } = this.props.chartStore!;
     if (!geometries) {
       return [];
@@ -140,7 +141,7 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       },
     ];
   };
-  renderAreaSeries = (clippings: ContainerConfig): ReactiveChartElementIndex[] => {
+  renderAreaSeries = (clippings: Clippings): ReactiveChartElementIndex[] => {
     const { geometries, canDataBeAnimated, chartTheme } = this.props.chartStore!;
     if (!geometries) {
       return [];
@@ -353,11 +354,12 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
 
   sortAndRenderElements() {
     const { chartRotation, chartDimensions } = this.props.chartStore!;
+    const { height, width } = chartDimensions;
     const clippings = {
       clipX: 0,
       clipY: 0,
-      clipWidth: [90, -90].includes(chartRotation) ? chartDimensions.height : chartDimensions.width,
-      clipHeight: [90, -90].includes(chartRotation) ? chartDimensions.width : chartDimensions.height,
+      clipWidth: [90, -90].includes(chartRotation) ? height : width,
+      clipHeight: [90, -90].includes(chartRotation) ? width : height,
     };
 
     const bars = this.renderBarSeries(clippings);
