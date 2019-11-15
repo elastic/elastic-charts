@@ -1,3 +1,22 @@
+# [14.1.0](https://github.com/elastic/elastic-charts/compare/v14.0.0...v14.1.0) (2019-11-13)
+
+
+### Features
+
+* fit functions for null y1 values ([#416](https://github.com/elastic/elastic-charts/issues/416)) ([e083755](https://github.com/elastic/elastic-charts/commit/e083755)), closes [#450](https://github.com/elastic/elastic-charts/issues/450) [#388](https://github.com/elastic/elastic-charts/issues/388)
+
+# [14.0.0](https://github.com/elastic/elastic-charts/compare/v13.6.0...v14.0.0) (2019-11-11)
+
+
+### Code Refactoring
+
+* **typings:** prepare for upgrade TS to 3.7 ([#402](https://github.com/elastic/elastic-charts/issues/402)) ([e2700de](https://github.com/elastic/elastic-charts/commit/e2700de))
+
+
+### BREAKING CHANGES
+
+* **typings:** We have a few exported styles, used in the Theme that are changed: SharedGeometryStyle to SharedGeometryStateStyle and GeometryStyle to GeometryStateStyle
+
 # [13.6.0](https://github.com/elastic/elastic-charts/compare/v13.5.12...v13.6.0) (2019-11-01)
 
 

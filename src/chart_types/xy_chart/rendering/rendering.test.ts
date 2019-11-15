@@ -1,16 +1,19 @@
 import { getSpecId } from '../../../utils/ids';
 import {
   BarGeometry,
-  getGeometryStyle,
+  getGeometryStateStyle,
   isPointOnGeometry,
   PointGeometry,
   getBarStyleOverrides,
   GeometryId,
   getPointStyleOverrides,
+  getClippedRanges,
 } from './rendering';
-import { BarSeriesStyle, SharedGeometryStyle, PointStyle } from '../../../utils/themes/theme';
+import { BarSeriesStyle, SharedGeometryStateStyle, PointStyle } from '../../../utils/themes/theme';
 import { DataSeriesDatum } from '../utils/series';
 import { RecursivePartial, mergePartial } from '../../../utils/commons';
+import { MockDataSeries } from '../../../mocks';
+import { MockScale } from '../../../mocks/scale';
 
 describe('Rendering utils', () => {
   test('check if point is in geometry', () => {
@@ -122,7 +125,7 @@ describe('Rendering utils', () => {
       },
     };
 
-    const sharedThemeStyle: SharedGeometryStyle = {
+    const sharedThemeStyle: SharedGeometryStateStyle = {
       default: {
         opacity: 1,
       },
@@ -135,41 +138,41 @@ describe('Rendering utils', () => {
     };
 
     // no highlighted elements
-    const defaultStyle = getGeometryStyle(geometryId, null, sharedThemeStyle);
+    const defaultStyle = getGeometryStateStyle(geometryId, null, sharedThemeStyle);
     expect(defaultStyle).toBe(sharedThemeStyle.default);
 
     // should equal highlighted opacity
-    const highlightedStyle = getGeometryStyle(geometryId, highlightedLegendItem, sharedThemeStyle);
+    const highlightedStyle = getGeometryStateStyle(geometryId, highlightedLegendItem, sharedThemeStyle);
     expect(highlightedStyle).toBe(sharedThemeStyle.highlighted);
 
     // should equal unhighlighted opacity
-    const unhighlightedStyle = getGeometryStyle(geometryId, unhighlightedLegendItem, sharedThemeStyle);
+    const unhighlightedStyle = getGeometryStateStyle(geometryId, unhighlightedLegendItem, sharedThemeStyle);
     expect(unhighlightedStyle).toBe(sharedThemeStyle.unhighlighted);
 
     // should equal custom spec highlighted opacity
-    const customHighlightedStyle = getGeometryStyle(geometryId, highlightedLegendItem, sharedThemeStyle);
+    const customHighlightedStyle = getGeometryStateStyle(geometryId, highlightedLegendItem, sharedThemeStyle);
     expect(customHighlightedStyle).toBe(sharedThemeStyle.highlighted);
 
     // unhighlighted elements remain unchanged with custom opacity
-    const customUnhighlightedStyle = getGeometryStyle(geometryId, unhighlightedLegendItem, sharedThemeStyle);
+    const customUnhighlightedStyle = getGeometryStateStyle(geometryId, unhighlightedLegendItem, sharedThemeStyle);
     expect(customUnhighlightedStyle).toBe(sharedThemeStyle.unhighlighted);
 
     // has individual highlight
-    const hasIndividualHighlight = getGeometryStyle(geometryId, null, sharedThemeStyle, {
+    const hasIndividualHighlight = getGeometryStateStyle(geometryId, null, sharedThemeStyle, {
       hasHighlight: true,
       hasGeometryHover: true,
     });
     expect(hasIndividualHighlight).toBe(sharedThemeStyle.highlighted);
 
     // no highlight
-    const noHighlight = getGeometryStyle(geometryId, null, sharedThemeStyle, {
+    const noHighlight = getGeometryStateStyle(geometryId, null, sharedThemeStyle, {
       hasHighlight: false,
       hasGeometryHover: true,
     });
     expect(noHighlight).toBe(sharedThemeStyle.unhighlighted);
 
     // no geometry hover
-    const noHover = getGeometryStyle(geometryId, null, sharedThemeStyle, {
+    const noHover = getGeometryStateStyle(geometryId, null, sharedThemeStyle, {
       hasHighlight: true,
       hasGeometryHover: false,
     });
@@ -328,6 +331,58 @@ describe('Rendering utils', () => {
         stroke,
       };
       expect(styleOverrides).toEqual(expectedStyles);
+    });
+  });
+
+  describe('getClippedRanges', () => {
+    const dataSeries = MockDataSeries.fitFunction({ shuffle: false });
+    const xScale = MockScale.default({
+      scale: jest.fn().mockImplementation((x) => x),
+      bandwidth: 0,
+      range: [dataSeries.data[0].x as number, dataSeries.data[12].x as number],
+    });
+
+    it('should return array pairs of non-null x regions with null end values', () => {
+      const actual = getClippedRanges(dataSeries.data, xScale, 0);
+
+      expect(actual).toEqual([[0, 1], [2, 4], [4, 6], [7, 11], [11, 12]]);
+    });
+
+    it('should return array pairs of non-null x regions with valid end values', () => {
+      const data = dataSeries.data.slice(1, -1);
+      const xScale = MockScale.default({
+        scale: jest.fn().mockImplementation((x) => x),
+        range: [data[0].x as number, data[10].x as number],
+      });
+      const actual = getClippedRanges(data, xScale, 0);
+
+      expect(actual).toEqual([[2, 4], [4, 6], [7, 11]]);
+    });
+
+    it('should account for bandwidth', () => {
+      const bandwidth = 2;
+      const xScale = MockScale.default({
+        scale: jest.fn().mockImplementation((x) => x),
+        bandwidth,
+        range: [dataSeries.data[0].x as number, (dataSeries.data[12].x as number) + bandwidth * (2 / 3)],
+      });
+      const actual = getClippedRanges(dataSeries.data, xScale, 0);
+
+      expect(actual).toEqual([[0, 2], [3, 5], [5, 7], [8, 12]]);
+    });
+
+    it('should account for xScaleOffset', () => {
+      const actual = getClippedRanges(dataSeries.data, xScale, 2);
+
+      expect(actual).toEqual([[0, -1], [0, 2], [2, 4], [5, 9]]);
+    });
+
+    it('should call scale to get x value for each datum', () => {
+      getClippedRanges(dataSeries.data, xScale, 0);
+
+      expect(xScale.scale).toHaveBeenNthCalledWith(1, dataSeries.data[0].x);
+      expect(xScale.scale).toHaveBeenCalledTimes(dataSeries.data.length);
+      expect(xScale.scale).toHaveBeenCalledWith(dataSeries.data[12].x);
     });
   });
 });
