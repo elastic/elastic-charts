@@ -11,7 +11,7 @@ export interface Scale {
   ) => {
     value: any;
     withinBandwidth: boolean;
-  };
+  } | null;
   isSingleValue: () => boolean;
   /** Check if the passed value is within the scale domain */
   isValueInDomain: (value: any) => boolean;

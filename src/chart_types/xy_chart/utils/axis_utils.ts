@@ -430,7 +430,6 @@ export function getAvailableTicks(
       }
     }
   }
-
   const shift = totalBarsInCluster > 0 ? totalBarsInCluster : 1;
 
   const band = scale.bandwidth / (1 - scale.barsPadding);

@@ -5,18 +5,18 @@ import { getHighlightedGeomsSelector } from './get_tooltip_values_highlighted_ge
 import { GlobalChartState } from '../../../../state/chart_state';
 import { isBrushAvailableSelector } from './is_brush_available';
 
-const getRawCursorPositionSelector = (state: GlobalChartState) => state.interactions.rawCursorPosition;
+const getCurrentPointerPositionSelector = (state: GlobalChartState) => state.interactions.pointer.current.position;
 
-export const getCursorPointerSelector = createCachedSelector(
+export const getPointerCursorSelector = createCachedSelector(
   [
     getHighlightedGeomsSelector,
     getSettingsSpecSelector,
-    getRawCursorPositionSelector,
+    getCurrentPointerPositionSelector,
     computeChartDimensionsSelector,
     isBrushAvailableSelector,
   ],
-  (highlightedGeometries, settingsSpec, rawCursorPosition, { chartDimensions }, isBrushAvailable): string => {
-    const { x, y } = rawCursorPosition;
+  (highlightedGeometries, settingsSpec, currentPointerPosition, { chartDimensions }, isBrushAvailable): string => {
+    const { x, y } = currentPointerPosition;
     // get positions relative to chart
     const xPos = x - chartDimensions.left;
     const yPos = y - chartDimensions.top;

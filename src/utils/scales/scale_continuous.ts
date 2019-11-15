@@ -250,9 +250,12 @@ export class ScaleContinuous implements Scale {
     value: number,
     data: number[],
   ): {
-    value: any;
+    value: number;
     withinBandwidth: boolean;
-  } {
+  } | null {
+    if (data.length === 0) {
+      return null;
+    }
     const invertedValue = this.invert(value);
     const bisectValue = this.bandwidth === 0 ? invertedValue + this.minInterval / 2 : invertedValue;
     const leftIndex = bisectLeft(data, bisectValue);

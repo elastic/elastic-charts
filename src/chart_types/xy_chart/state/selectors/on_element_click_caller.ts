@@ -7,11 +7,11 @@ import { SettingsSpec } from '../../../../specs';
 import { IndexedGeometry } from '../../../../utils/geometry';
 import { ChartTypes } from '../../../index';
 
-const getPointerSelector = (state: GlobalChartState) => state.interactions.pointer;
+const getLastClickSelector = (state: GlobalChartState) => state.interactions.pointer.lastClick;
 
 interface Props {
   settings: SettingsSpec | undefined;
-  pointer: PointerState;
+  lastClick: PointerState | null;
   indexedGeometries: IndexedGeometry[];
 }
 
@@ -22,9 +22,13 @@ function isClicking(prevProps: Props | null, nextProps: Props | null) {
   if (!nextProps.settings || !nextProps.settings.onElementClick || nextProps.indexedGeometries.length === 0) {
     return false;
   }
-  const prevPointerUp = prevProps !== null ? prevProps.pointer.up : null;
+  const prevLastClick = prevProps !== null ? prevProps.lastClick : null;
+  const nextLastClick = nextProps !== null ? nextProps.lastClick : null;
 
-  if (prevPointerUp === null && nextProps.pointer.up !== null) {
+  if (prevLastClick === null && nextLastClick !== null) {
+    return true;
+  }
+  if (prevLastClick !== null && nextLastClick !== null && prevLastClick.time !== nextLastClick.time) {
     return true;
   }
   return false;
@@ -42,10 +46,10 @@ export function createOnElementClickCaller(): (state: GlobalChartState) => void 
   return (state: GlobalChartState) => {
     if (selector === null && state.chartType === ChartTypes.XYAxis) {
       selector = createCachedSelector(
-        [getPointerSelector, getSettingsSpecSelector, getHighlightedGeomsSelector],
-        (pointer: PointerState, settings: SettingsSpec, indexedGeometries: IndexedGeometry[]): void => {
+        [getLastClickSelector, getSettingsSpecSelector, getHighlightedGeomsSelector],
+        (lastClick: PointerState | null, settings: SettingsSpec, indexedGeometries: IndexedGeometry[]): void => {
           const nextProps = {
-            pointer,
+            lastClick,
             settings,
             indexedGeometries,
           };

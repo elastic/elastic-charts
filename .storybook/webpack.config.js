@@ -19,7 +19,7 @@ const scssLoaders = [
 
 module.exports = async ({ config, mode }) => {
   if (mode === 'DEVELOPMENT') {
-    config.devtool = 'inline-source-map';
+    config.devtool = 'eval';
   } else {
     config.devtool = 'source-map';
   }
@@ -32,6 +32,7 @@ module.exports = async ({ config, mode }) => {
     exclude: /node_modules/,
     options: {
       configFile: 'tsconfig.json',
+      transpileOnly: true,
     },
   });
   config.module.rules.push({

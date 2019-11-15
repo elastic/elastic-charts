@@ -6,14 +6,14 @@ import { getChartRotationSelector } from '../../../../state/selectors/get_chart_
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 
 const getMouseDownPosition = (state: GlobalChartState) => state.interactions.pointer.down;
-const getRawCursorPosition = (state: GlobalChartState) => {
-  return state.interactions.rawCursorPosition;
+const getCurrentPointerPosition = (state: GlobalChartState) => {
+  return state.interactions.pointer.current.position;
 };
 
 export const getBrushAreaSelector = createCachedSelector(
   [
     getMouseDownPosition,
-    getRawCursorPosition,
+    getCurrentPointerPosition,
     getChartRotationSelector,
     computeChartDimensionsSelector,
     computeChartTransformSelector,

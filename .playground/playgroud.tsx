@@ -9,11 +9,16 @@ import {
   Settings,
   LineSeries,
   DARK_THEME,
-  AreaSeries,
+  BarSeries,
 } from '../src';
 import { LoremIpsum } from 'lorem-ipsum';
+import { bisector } from 'd3-array';
+interface DataType {
+  target: string;
+  datapoints: Array<[number, number]>;
+}
 
-const data = [
+const data: Array<DataType> = [
   {
     target: 'Updates',
     datapoints: [
@@ -1958,14 +1963,24 @@ const data = [
 const lorem = new LoremIpsum();
 export class Playground extends React.Component<
   {},
-  { showLegend: boolean; showValues: boolean; spec1Name: string; dataIndex: number; series: number }
+  {
+    showLegend: boolean;
+    showValues: boolean;
+    spec1Name: string;
+    dataIndex: number;
+    series: number;
+    start: number;
+    end: number;
+  }
 > {
   state = {
     showLegend: true,
     showValues: true,
     spec1Name: 'aaa',
-    dataIndex: 50,
+    dataIndex: 60,
     series: 4,
+    start: 0,
+    end: 1,
   };
   toggleLegend = () => {
     this.setState((prevState) => {
@@ -2002,6 +2017,17 @@ export class Playground extends React.Component<
       };
     });
   };
+  onBrush = (min: number, max: number) => {
+    const bisect = bisector<[number, number], number>((d) => {
+      return d[1];
+    });
+    this.setState(() => {
+      return {
+        start: bisect.left(data[0].datapoints, min),
+        end: bisect.left(data[0].datapoints, max),
+      };
+    });
+  };
   render() {
     return (
       <Fragment>
@@ -2022,24 +2048,20 @@ export class Playground extends React.Component<
               legendPosition={Position.Right}
               theme={DARK_THEME}
               showLegendDisplayValue={this.state.showValues}
+              onBrushEnd={this.onBrush}
             />
             <Axis id={getAxisId('x')} position={Position.Bottom} />
             <Axis id={getAxisId('y')} position={Position.Left} ticks={5} tickFormat={(d) => d.toFixed(2)} />
-            <AreaSeries
+            <BarSeries
               id={getSpecId(this.state.spec1Name)}
               xScaleType={ScaleType.Time}
               yScaleType={ScaleType.Linear}
               xAccessor={1}
               yAccessors={[0]}
               // y0Accessors={[2]}
-              data={data[0].datapoints.slice(0, this.state.dataIndex).map((d) => {
+              data={data[0].datapoints.slice(this.state.start, this.state.end).map((d) => {
                 return [...d, d[0] - 100];
               })}
-              areaSeriesStyle={{
-                point: {
-                  visible: false,
-                },
-              }}
             />
             {new Array(this.state.series).fill(null).map((d, i) => {
               return (
@@ -2050,7 +2072,7 @@ export class Playground extends React.Component<
                   yScaleType={ScaleType.Linear}
                   xAccessor={1}
                   yAccessors={[0]}
-                  data={data[1].datapoints.slice(0, this.state.dataIndex)}
+                  data={data[1].datapoints.slice(this.state.start, this.state.end)}
                   lineSeriesStyle={{
                     point: {
                       visible: false,

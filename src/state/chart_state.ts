@@ -32,27 +32,33 @@ export interface InternalChartState {
   getLegendItems(globalState: GlobalChartState): Map<string, LegendItem>;
   // return the list of values for each legend item
   getLegendItemsValues(globalState: GlobalChartState): Map<string, TooltipLegendValue>;
-  // return the CSS cursor pointer depending on the internal chart state
-  getCursorPointer(globalState: GlobalChartState): string;
+  // return the CSS pointer cursor depending on the internal chart state
+  getPointerCursor(globalState: GlobalChartState): string;
 }
 
 export interface SpecList {
   [specId: string]: Spec;
 }
+
 export interface PointerState {
-  down: {
-    position: Point;
-    time: number;
-  } | null;
-  up: {
-    position: Point;
-    time: number;
-  } | null;
+  position: Point;
+  time: number;
+}
+export interface DragState {
+  start: PointerState;
+  end: PointerState;
+}
+export interface PointerStates {
+  dragging: boolean;
+  current: PointerState;
+  down: PointerState | null;
+  up: PointerState | null;
+  lastDrag: DragState | null;
+  lastClick: PointerState | null;
 }
 
 export interface InteractionsState {
-  rawCursorPosition: Point;
-  pointer: PointerState;
+  pointer: PointerStates;
   highlightedLegendItemKey: string | null;
   legendCollapsed: boolean;
   invertDeselect: boolean;
@@ -93,13 +99,19 @@ export const getInitialState = (chartId: string): GlobalChartState => ({
   chartType: null,
   internalChartState: null,
   interactions: {
-    rawCursorPosition: {
-      x: -1,
-      y: -1,
-    },
     pointer: {
+      dragging: false,
+      current: {
+        position: {
+          x: -1,
+          y: -1,
+        },
+        time: 0,
+      },
       down: null,
       up: null,
+      lastDrag: null,
+      lastClick: null,
     },
     legendCollapsed: false,
     highlightedLegendItemKey: null,

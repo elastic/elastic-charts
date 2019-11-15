@@ -4,17 +4,17 @@ import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { Point } from '../../../../utils/point';
 
-const getRawCursorPosition = (state: GlobalChartState) => state.interactions.rawCursorPosition;
+const getCurrentPointerPosition = (state: GlobalChartState) => state.interactions.pointer.current.position;
 
 export const computeCursorPositionSelector = createCachedSelector(
-  [getRawCursorPosition, computeChartDimensionsSelector],
-  (rawCursorPosition, chartDimensions): Point => {
-    return computeCursorPosition(rawCursorPosition, chartDimensions.chartDimensions);
+  [getCurrentPointerPosition, computeChartDimensionsSelector],
+  (currentPointerPosition, chartDimensions): Point => {
+    return computeCursorPosition(currentPointerPosition, chartDimensions.chartDimensions);
   },
 )((state) => state.chartId);
 
-function computeCursorPosition(rawCursorPosition: Point, chartDimensions: Dimensions) {
-  const { x, y } = rawCursorPosition;
+function computeCursorPosition(currentPointerPosition: Point, chartDimensions: Dimensions) {
+  const { x, y } = currentPointerPosition;
   // get positions relative to chart
   let xPos = x - chartDimensions.left;
   let yPos = y - chartDimensions.top;

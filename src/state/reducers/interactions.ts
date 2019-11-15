@@ -1,4 +1,3 @@
-import { CursorPositionChangeAction, ON_CURSOR_POSITION_CHANGE } from '../actions/cursor';
 import { InteractionsState } from '../chart_state';
 import {
   ToggleLegendAction,
@@ -13,13 +12,19 @@ import {
   InvertDeselectSeriesAction,
   LegendItemClickAction,
 } from '../actions/legend';
-import { ON_MOUSE_DOWN, ON_MOUSE_UP, MouseDownAction, MouseUpAction } from '../actions/mouse';
+import {
+  ON_MOUSE_DOWN,
+  ON_MOUSE_UP,
+  ON_POINTER_MOVE,
+  MouseDownAction,
+  MouseUpAction,
+  PointerMoveAction,
+} from '../actions/mouse';
 import { DataSeriesColorsValues, findDataSeriesByColorValues } from '../../chart_types/xy_chart/utils/series';
 
 export function interactionsReducer(
   state: InteractionsState,
   action:
-    | CursorPositionChangeAction
     | ToggleLegendAction
     | LegendItemOutAction
     | LegendItemOverAction
@@ -27,32 +32,37 @@ export function interactionsReducer(
     | InvertDeselectSeriesAction
     | MouseDownAction
     | MouseUpAction
+    | PointerMoveAction
     | LegendItemClickAction,
 ): InteractionsState {
   switch (action.type) {
-    case ON_CURSOR_POSITION_CHANGE:
-      const { x, y } = action;
-
-      // allow going outside container if mouse down is pressed
-      if (Boolean(state.pointer.down) && x === -1 && y === -1) {
-        return state;
-      }
+    case ON_POINTER_MOVE:
       return {
         ...state,
-        rawCursorPosition: {
-          x,
-          y,
+        pointer: {
+          ...state.pointer,
+          dragging: state.pointer.down && state.pointer.down.time < action.time ? true : false,
+          current: {
+            position: {
+              ...action.position,
+            },
+            time: action.time,
+          },
         },
       };
     case ON_MOUSE_DOWN:
       return {
         ...state,
         pointer: {
+          ...state.pointer,
+          dragging: false,
+          up: null,
           down: {
-            position: action.position,
+            position: {
+              ...action.position,
+            },
             time: action.time,
           },
-          up: null,
         },
       };
     case ON_MOUSE_UP: {
@@ -60,8 +70,38 @@ export function interactionsReducer(
         ...state,
         pointer: {
           ...state.pointer,
+          lastDrag:
+            state.pointer.down && state.pointer.dragging
+              ? {
+                  start: {
+                    position: {
+                      ...state.pointer.down.position,
+                    },
+                    time: state.pointer.down.time,
+                  },
+                  end: {
+                    position: {
+                      ...action.position,
+                    },
+                    time: action.time,
+                  },
+                }
+              : null,
+          lastClick:
+            state.pointer.down && !state.pointer.dragging
+              ? {
+                  position: {
+                    ...action.position,
+                  },
+                  time: action.time,
+                }
+              : null,
+          dragging: false,
+          down: null,
           up: {
-            position: action.position,
+            position: {
+              ...action.position,
+            },
             time: action.time,
           },
         },

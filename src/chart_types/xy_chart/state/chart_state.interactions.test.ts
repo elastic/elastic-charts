@@ -17,7 +17,7 @@ import { getCursorBandPositionSelector } from './selectors/get_cursor_band';
 import { getSettingsSpecSelector } from '../../../state/selectors/get_settings_specs';
 import { upsertSpec, specParsed } from '../../../state/actions/specs';
 import { updateParentDimensions } from '../../../state/actions/chart_settings';
-import { onCursorPositionChange } from '../../../state/actions/cursor';
+import { onPointerMove } from '../../../state/actions/mouse';
 
 const SPEC_ID = 'spec_1';
 const GROUP_ID = 'group_1';
@@ -146,32 +146,32 @@ describe('Chart state pointer interactions', () => {
   });
 
   test('can convert/limit cursor positions relative to chart dimensions', () => {
-    store.dispatch(onCursorPositionChange(20, 20));
+    store.dispatch(onPointerMove({ x: 20, y: 20 }, 0));
     let cursorPosition = computeCursorPositionSelector(store.getState());
     expect(cursorPosition.x).toBe(10);
     expect(cursorPosition.y).toBe(10);
 
-    store.dispatch(onCursorPositionChange(10, 10));
+    store.dispatch(onPointerMove({ x: 10, y: 10 }, 1));
     cursorPosition = computeCursorPositionSelector(store.getState());
     expect(cursorPosition.x).toBe(0);
     expect(cursorPosition.y).toBe(0);
-    store.dispatch(onCursorPositionChange(5, 5));
+    store.dispatch(onPointerMove({ x: 5, y: 5 }, 2));
     cursorPosition = computeCursorPositionSelector(store.getState());
     expect(cursorPosition.x).toBe(-1);
     expect(cursorPosition.y).toBe(-1);
-    store.dispatch(onCursorPositionChange(200, 20));
+    store.dispatch(onPointerMove({ x: 200, y: 20 }, 3));
     cursorPosition = computeCursorPositionSelector(store.getState());
     expect(cursorPosition.x).toBe(-1);
     expect(cursorPosition.y).toBe(10);
-    store.dispatch(onCursorPositionChange(20, 200));
+    store.dispatch(onPointerMove({ x: 20, y: 200 }, 4));
     cursorPosition = computeCursorPositionSelector(store.getState());
     expect(cursorPosition.x).toBe(10);
     expect(cursorPosition.y).toBe(-1);
-    store.dispatch(onCursorPositionChange(200, 200));
+    store.dispatch(onPointerMove({ x: 200, y: 200 }, 5));
     cursorPosition = computeCursorPositionSelector(store.getState());
     expect(cursorPosition.x).toBe(-1);
     expect(cursorPosition.y).toBe(-1);
-    store.dispatch(onCursorPositionChange(-20, -20));
+    store.dispatch(onPointerMove({ x: -20, y: -20 }, 6));
     cursorPosition = computeCursorPositionSelector(store.getState());
     expect(cursorPosition.x).toBe(-1);
     expect(cursorPosition.y).toBe(-1);
@@ -190,13 +190,13 @@ describe('Chart state pointer interactions', () => {
       onElementOutCaller(store.getState());
       onElementOverCaller(store.getState());
     });
-    store.dispatch(onCursorPositionChange(20, 20));
+    store.dispatch(onPointerMove({ x: 20, y: 20 }, 0));
     expect(onOutListener).toBeCalledTimes(0);
 
     // no more calls after the first out one outside chart
-    store.dispatch(onCursorPositionChange(5, 5));
+    store.dispatch(onPointerMove({ x: 5, y: 5 }, 1));
     expect(onOutListener).toBeCalledTimes(1);
-    store.dispatch(onCursorPositionChange(3, 3));
+    store.dispatch(onPointerMove({ x: 3, y: 3 }, 2));
     expect(onOutListener).toBeCalledTimes(1);
   });
 
@@ -209,7 +209,7 @@ describe('Chart state pointer interactions', () => {
     };
     store.dispatch(upsertSpec(updatedSettings));
     store.dispatch(specParsed());
-    store.dispatch(onCursorPositionChange(10, 10 + 70));
+    store.dispatch(onPointerMove({ x: 10, y: 10 + 70 }, 0));
     const tooltipData = getTooltipValuesAndGeometriesSelector(store.getState());
     expect(tooltipData.tooltipValues.length).toBe(2);
     expect(tooltipData.tooltipValues[0].isXValue).toBe(true);
@@ -226,7 +226,7 @@ describe('Chart state pointer interactions', () => {
     };
     store.dispatch(upsertSpec(updatedSettings));
     store.dispatch(specParsed());
-    store.dispatch(onCursorPositionChange(10, 10 + 70));
+    store.dispatch(onPointerMove({ x: 10, y: 10 + 70 }, 1));
     const { geometriesIndex } = computeSeriesGeometriesSelector(store.getState());
     expect(geometriesIndex.size).toBe(2);
     const highlightedGeometries = getHighlightedGeomsSelector(store.getState());
@@ -332,7 +332,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
   test('can hover top-left corner of the first bar', () => {
     let tooltipData = getTooltipValuesAndGeometriesSelector(store.getState());
     expect(tooltipData.tooltipValues).toEqual([]);
-    store.dispatch(onCursorPositionChange(chartLeft + 0, chartTop + 0));
+    store.dispatch(onPointerMove({ x: chartLeft + 0, y: chartTop + 0 }, 0));
     let cursorPosition = computeCursorPositionSelector(store.getState());
     expect(cursorPosition).toEqual({ x: 0, y: 0 });
     const cursorBandPosition = getCursorBandPositionSelector(store.getState());
@@ -354,7 +354,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
       },
     ]);
 
-    store.dispatch(onCursorPositionChange(chartLeft - 1, chartTop - 1));
+    store.dispatch(onPointerMove({ x: chartLeft - 1, y: chartTop - 1 }, 1));
     cursorPosition = computeCursorPositionSelector(store.getState());
     expect(cursorPosition).toEqual({ x: -1, y: -1 });
     isTooltipVisible = isTooltipVisibleSelector(store.getState());
@@ -367,7 +367,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
   });
 
   test('can hover bottom-left corner of the first bar', () => {
-    store.dispatch(onCursorPositionChange(chartLeft + 0, chartTop + 89));
+    store.dispatch(onPointerMove({ x: chartLeft + 0, y: chartTop + 89 }, 0));
     let cursorPosition = computeCursorPositionSelector(store.getState());
     expect(cursorPosition).toEqual({ x: 0, y: 89 });
     const cursorBandPosition = getCursorBandPositionSelector(store.getState());
@@ -388,7 +388,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
         accessor: 'y1',
       },
     ]);
-    store.dispatch(onCursorPositionChange(chartLeft - 1, chartTop + 89));
+    store.dispatch(onPointerMove({ x: chartLeft - 1, y: chartTop + 89 }, 1));
     cursorPosition = computeCursorPositionSelector(store.getState());
     expect(cursorPosition).toEqual({ x: -1, y: 89 });
     isTooltipVisible = isTooltipVisibleSelector(store.getState());
@@ -405,7 +405,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     if (scaleType !== ScaleType.Ordinal) {
       scaleOffset = 1;
     }
-    store.dispatch(onCursorPositionChange(chartLeft + 44 + scaleOffset, chartTop + 0));
+    store.dispatch(onPointerMove({ x: chartLeft + 44 + scaleOffset, y: chartTop + 0 }, 0));
     let cursorPosition = computeCursorPositionSelector(store.getState());
     expect(cursorPosition).toEqual({ x: 44 + scaleOffset, y: 0 });
     let cursorBandPosition = getCursorBandPositionSelector(store.getState());
@@ -427,7 +427,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
       },
     ]);
 
-    store.dispatch(onCursorPositionChange(chartLeft + 45 + scaleOffset, chartTop + 0));
+    store.dispatch(onPointerMove({ x: chartLeft + 45 + scaleOffset, y: chartTop + 0 }, 1));
     cursorPosition = computeCursorPositionSelector(store.getState());
     expect(cursorPosition).toEqual({ x: 45 + scaleOffset, y: 0 });
     cursorBandPosition = getCursorBandPositionSelector(store.getState());
@@ -448,7 +448,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     if (scaleType !== ScaleType.Ordinal) {
       scaleOffset = 1;
     }
-    store.dispatch(onCursorPositionChange(chartLeft + 44 + scaleOffset, chartTop + 89));
+    store.dispatch(onPointerMove({ x: chartLeft + 44 + scaleOffset, y: chartTop + 89 }, 0));
     let cursorPosition = computeCursorPositionSelector(store.getState());
     expect(cursorPosition).toEqual({ x: 44 + scaleOffset, y: 89 });
     let cursorBandPosition = getCursorBandPositionSelector(store.getState());
@@ -470,7 +470,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
       },
     ]);
 
-    store.dispatch(onCursorPositionChange(chartLeft + 45 + scaleOffset, chartTop + 89));
+    store.dispatch(onPointerMove({ x: chartLeft + 45 + scaleOffset, y: chartTop + 89 }, 1));
     cursorPosition = computeCursorPositionSelector(store.getState());
     expect(cursorPosition).toEqual({ x: 45 + scaleOffset, y: 89 });
     cursorBandPosition = getCursorBandPositionSelector(store.getState());
@@ -494,7 +494,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
 
     expect(onOutListener).toBeCalledTimes(0);
 
-    store.dispatch(onCursorPositionChange(chartLeft + 47 + scaleOffset, chartTop + 89));
+    store.dispatch(onPointerMove({ x: chartLeft + 47 + scaleOffset, y: chartTop + 89 }, 2));
   });
 
   test('can hover top-right corner of the chart', () => {
@@ -504,7 +504,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(tooltipData.highlightedGeometries.length).toBe(0);
     expect(tooltipData.tooltipValues.length).toBe(0);
 
-    store.dispatch(onCursorPositionChange(chartLeft + 89, chartTop + 0));
+    store.dispatch(onPointerMove({ x: chartLeft + 89, y: chartTop + 0 }, 0));
     const cursorPosition = computeCursorPositionSelector(store.getState());
     expect(cursorPosition).toEqual({ x: 89, y: 0 });
     const cursorBandPosition = getCursorBandPositionSelector(store.getState());
@@ -528,30 +528,35 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     if (scaleType !== ScaleType.Ordinal) {
       halfWidth = 46;
     }
+    let timeCounter = 0;
     for (let i = 0; i < halfWidth; i++) {
-      store.dispatch(onCursorPositionChange(chartLeft + i, chartTop + 89));
+      store.dispatch(onPointerMove({ x: chartLeft + i, y: chartTop + 89 }, timeCounter));
       expect(onOverListener).toBeCalledTimes(1);
       expect(onOutListener).toBeCalledTimes(0);
+      timeCounter++;
     }
     for (let i = halfWidth; i < 90; i++) {
-      store.dispatch(onCursorPositionChange(chartLeft + i, chartTop + 89));
+      store.dispatch(onPointerMove({ x: chartLeft + i, y: chartTop + 89 }, timeCounter));
       expect(onOverListener).toBeCalledTimes(2);
       expect(onOutListener).toBeCalledTimes(0);
+      timeCounter++;
     }
     for (let i = 0; i < halfWidth; i++) {
-      store.dispatch(onCursorPositionChange(chartLeft + i, chartTop + 0));
+      store.dispatch(onPointerMove({ x: chartLeft + i, y: chartTop + 0 }, timeCounter));
       expect(onOverListener).toBeCalledTimes(3);
       expect(onOutListener).toBeCalledTimes(0);
+      timeCounter++;
     }
     for (let i = halfWidth; i < 90; i++) {
-      store.dispatch(onCursorPositionChange(chartLeft + i, chartTop + 0));
+      store.dispatch(onPointerMove({ x: chartLeft + i, y: chartTop + 0 }, timeCounter));
       expect(onOverListener).toBeCalledTimes(3);
       expect(onOutListener).toBeCalledTimes(1);
+      timeCounter++;
     }
   });
 
   test('can hover bottom-right corner of the chart', () => {
-    store.dispatch(onCursorPositionChange(chartLeft + 89, chartTop + 89));
+    store.dispatch(onPointerMove({ x: chartLeft + 89, y: chartTop + 89 }, 0));
     const cursorPosition = computeCursorPositionSelector(store.getState());
     // store.setCursorPosition(chartLeft + 99, chartTop + 99);
     expect(cursorPosition).toEqual({ x: 89, y: 89 });
@@ -629,7 +634,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
       store.dispatch(specParsed());
     });
     test('chart 0 rotation', () => {
-      store.dispatch(onCursorPositionChange(chartLeft + 0, chartTop + 89));
+      store.dispatch(onPointerMove({ x: chartLeft + 0, y: chartTop + 89 }, 0));
       const tooltipData = getTooltipValuesAndGeometriesSelector(store.getState());
       expect(tooltipData.tooltipValues[0].value).toBe('bottom 0');
       expect(tooltipData.tooltipValues[1].value).toBe('left 10');
@@ -643,7 +648,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
       };
       store.dispatch(upsertSpec(updatedSettings));
       store.dispatch(specParsed());
-      store.dispatch(onCursorPositionChange(chartLeft + 0, chartTop + 89));
+      store.dispatch(onPointerMove({ x: chartLeft + 0, y: chartTop + 89 }, 0));
       const tooltipData = getTooltipValuesAndGeometriesSelector(store.getState());
       expect(tooltipData.tooltipValues[0].value).toBe('left 1');
       expect(tooltipData.tooltipValues[1].value).toBe('bottom 5');

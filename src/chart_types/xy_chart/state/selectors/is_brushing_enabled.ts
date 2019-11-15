@@ -9,12 +9,6 @@ export const isBrushingEnabledSelector = createCachedSelector(
       return false;
     }
 
-    const isBrushingEnabled = cursorPosition.x > -1 && cursorPosition.y > -1;
-    if (isBrushingEnabled) {
-      document.body.style.cursor = 'crosshair';
-    } else {
-      document.body.style.cursor = 'default';
-    }
-    return isBrushingEnabled;
+    return cursorPosition.x > -1 && cursorPosition.y > -1;
   },
 )((state) => state.chartId);

@@ -1014,8 +1014,8 @@ describe.skip('Chart Store', () => {
   test.skip('can compute annotation tooltip state', () => {
     const scale = new ScaleContinuous({ type: ScaleType.Linear, domain: [0, 100], range: [0, 100] });
 
-    store.rawCursorPosition.x = -1;
-    store.rawCursorPosition.y = 0;
+    store.currentPointerPosition.x = -1;
+    store.currentPointerPosition.y = 0;
 
     expect(store.annotationTooltipState.get()).toBe(null);
 
@@ -1030,12 +1030,12 @@ describe.skip('Chart Store', () => {
     store.yScales = new Map();
     store.yScales.set(GROUP_ID, scale);
 
-    store.rawCursorPosition.x = 0;
+    store.currentPointerPosition.x = 0;
     expect(store.annotationTooltipState.get()).toBe(null);
 
     // If there's a rect annotation & there's also a highlight chart element tooltip, ignore annotation tooltip
-    store.rawCursorPosition.x = 18;
-    store.rawCursorPosition.y = 9;
+    store.currentPointerPosition.x = 18;
+    store.currentPointerPosition.y = 9;
     store.chartDimensions = { width: 10, height: 20, top: 5, left: 15 };
 
     const annotationDimensions = [{ rect: { x: 2, y: 3, width: 3, height: 5 } }];
@@ -1074,8 +1074,8 @@ describe.skip('Chart Store', () => {
       isVisible: true,
       annotationType: AnnotationTypes.Rectangle,
       anchor: {
-        top: store.rawCursorPosition.y - store.chartDimensions.top,
-        left: store.rawCursorPosition.x - store.chartDimensions.left,
+        top: store.currentPointerPosition.y - store.chartDimensions.top,
+        left: store.currentPointerPosition.x - store.chartDimensions.left,
       },
     };
     store.tooltipData.push(unhighlightedTooltipValue);

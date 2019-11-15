@@ -24,7 +24,9 @@ function getElementAtCursorPosition(
   geometriesIndex: Map<any, IndexedGeometry[]>,
 ): IndexedGeometry[] {
   const xValue = scales.xScale.invertWithStep(axisCursorPosition.x, geometriesIndexKeys);
-
+  if (!xValue) {
+    return [];
+  }
   // get the elements on at this cursor position
   return geometriesIndex.get(xValue.value) || [];
 }

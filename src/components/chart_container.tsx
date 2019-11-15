@@ -1,21 +1,27 @@
 import React from 'react';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { onCursorPositionChange } from '../state/actions/cursor';
 import { GlobalChartState, BackwardRef } from '../state/chart_state';
-import { onMouseUp, onMouseDown } from '../state/actions/mouse';
+import { onMouseUp, onMouseDown, onPointerMove } from '../state/actions/mouse';
 import { getInternalChartRendererSelector } from '../state/selectors/get_chart_type_components';
-import { getInternalCursorPointer } from '../state/selectors/get_internal_cursor_pointer';
+import { getInternalPointerCursor } from '../state/selectors/get_internal_cursor_pointer';
+import { getInternalIsBrushingAvailableSelector } from '../state/selectors/get_internal_is_brushing_available';
 import { isInternalChartEmptySelector } from '../state/selectors/is_chart_empty';
 import { isInitialized } from '../state/selectors/is_initialized';
+import { getSettingsSpecSelector } from '../state/selectors/get_settings_specs';
+import { SettingsSpec } from '../specs';
+import { isBrushingSelector } from '../chart_types/xy_chart/state/selectors/is_brushing';
 interface ReactiveChartStateProps {
   initialized: boolean;
   isChartEmpty?: boolean;
-  chartCursor: string;
+  pointerCursor: string;
+  isBrushing: boolean;
+  isBrushingAvailable: boolean;
+  settings?: SettingsSpec;
   internalChartRenderer: (containerRef: BackwardRef) => JSX.Element | null;
 }
 interface ReactiveChartDispatchProps {
-  onCursorPositionChange: typeof onCursorPositionChange;
+  onPointerMove: typeof onPointerMove;
   onMouseUp: typeof onMouseUp;
   onMouseDown: typeof onMouseDown;
 }
@@ -32,34 +38,50 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
   shouldComponentUpdate(props: ReactiveChartProps) {
     return props.initialized;
   }
-  onMouseMove = ({ nativeEvent: { offsetX, offsetY } }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    const { isChartEmpty, onCursorPositionChange } = this.props;
+  handleMouseMove = ({
+    nativeEvent: { offsetX, offsetY, timeStamp },
+  }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const { isChartEmpty, onPointerMove } = this.props;
     if (isChartEmpty) {
       return;
     }
-    onCursorPositionChange(offsetX, offsetY);
+    onPointerMove(
+      {
+        x: offsetX,
+        y: offsetY,
+      },
+      timeStamp,
+    );
   };
-  onMouseLeave = () => {
-    const { isChartEmpty, onCursorPositionChange } = this.props;
+  handleMouseLeave = ({ nativeEvent: { timeStamp } }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const { isChartEmpty, onPointerMove, isBrushing } = this.props;
     if (isChartEmpty) {
       return;
     }
-    onCursorPositionChange(-1, -1);
+    if (isBrushing) {
+      return;
+    }
+    onPointerMove({ x: -1, y: -1 }, timeStamp);
   };
-  onMouseDown = ({ nativeEvent: { offsetX, offsetY } }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    const { isChartEmpty, onMouseDown } = this.props;
+  handleMouseDown = ({
+    nativeEvent: { offsetX, offsetY, timeStamp },
+  }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const { isChartEmpty, onMouseDown, isBrushingAvailable } = this.props;
     if (isChartEmpty) {
       return;
+    }
+    if (isBrushingAvailable) {
+      window.addEventListener('mouseup', this.handleBrushEnd);
     }
     onMouseDown(
       {
         x: offsetX,
         y: offsetY,
       },
-      Date.now(),
+      timeStamp,
     );
   };
-  onMouseUp = ({ nativeEvent: { offsetX, offsetY } }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  handleMouseUp = ({ nativeEvent: { offsetX, offsetY, timeStamp } }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const { isChartEmpty, onMouseUp } = this.props;
     if (isChartEmpty) {
       return;
@@ -69,8 +91,22 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
         x: offsetX,
         y: offsetY,
       },
-      Date.now(),
+      timeStamp,
     );
+  };
+  handleBrushEnd = () => {
+    const { onMouseUp } = this.props;
+
+    window.removeEventListener('mouseup', this.handleBrushEnd);
+    requestAnimationFrame(() => {
+      onMouseUp(
+        {
+          x: -1,
+          y: -1,
+        },
+        Date.now(),
+      );
+    });
   };
 
   render() {
@@ -78,17 +114,17 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     if (!initialized) {
       return null;
     }
-    const { chartCursor, internalChartRenderer } = this.props;
+    const { pointerCursor, internalChartRenderer } = this.props;
     return (
       <div
-        className="echChartCursorContainer"
+        className="echChartPointerContainer"
         style={{
-          cursor: chartCursor,
+          cursor: pointerCursor,
         }}
-        onMouseMove={this.onMouseMove}
-        onMouseLeave={this.onMouseLeave}
-        onMouseDown={this.onMouseDown}
-        onMouseUp={this.onMouseUp}
+        onMouseMove={this.handleMouseMove}
+        onMouseLeave={this.handleMouseLeave}
+        onMouseDown={this.handleMouseDown}
+        onMouseUp={this.handleMouseUp}
       >
         {internalChartRenderer(this.props.getChartContainerRef)}
       </div>
@@ -96,21 +132,23 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
   }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch) =>
+const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
   bindActionCreators(
     {
-      onCursorPositionChange,
+      onPointerMove,
       onMouseUp,
       onMouseDown,
     },
     dispatch,
   );
-const mapStateToProps = (state: GlobalChartState) => {
+const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   if (!isInitialized(state)) {
     return {
       initialized: false,
       isChartEmpty: true,
-      chartCursor: 'default',
+      pointerCursor: 'default',
+      isBrushingAvailable: false,
+      isBrushing: false,
       internalChartRenderer: () => null,
     };
   }
@@ -118,8 +156,11 @@ const mapStateToProps = (state: GlobalChartState) => {
   return {
     initialized: true,
     isChartEmpty: isInternalChartEmptySelector(state),
-    chartCursor: getInternalCursorPointer(state),
+    pointerCursor: getInternalPointerCursor(state),
+    isBrushingAvailable: getInternalIsBrushingAvailableSelector(state),
+    isBrushing: isBrushingSelector(state),
     internalChartRenderer: getInternalChartRendererSelector(state),
+    settings: getSettingsSpecSelector(state),
   };
 };
 

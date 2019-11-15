@@ -65,6 +65,9 @@ function getCursorBand(
     return;
   }
   const xValue = xScale.invertWithStep(axisCursorPosition.x, geometriesIndexKeys);
+  if (!xValue) {
+    return;
+  }
   return getCursorBandPosition(
     settingsSpec.rotation,
     chartDimensions,

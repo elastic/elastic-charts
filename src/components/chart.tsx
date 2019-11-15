@@ -21,6 +21,7 @@ import { createOnElementOverCaller } from '../chart_types/xy_chart/state/selecto
 import { createOnElementClickCaller } from '../chart_types/xy_chart/state/selectors/on_element_click_caller';
 import { ChartTypes } from '../chart_types/index';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_specs';
+import { createOnBrushEndCaller } from '../chart_types/xy_chart/state/selectors/on_brush_end_caller';
 
 interface ChartProps {
   /** The type of rendered
@@ -56,6 +57,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     const onElementClickCaller = createOnElementClickCaller();
     const onElementOverCaller = createOnElementOverCaller();
     const onElementOutCaller = createOnElementOutCaller();
+    const onBrushEndCaller = createOnBrushEndCaller();
     this.chartStore.subscribe(() => {
       const state = this.chartStore.getState();
       if (!isInitialized(state)) {
@@ -74,6 +76,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
       onElementOverCaller(state);
       onElementOutCaller(state);
       onElementClickCaller(state);
+      onBrushEndCaller(state);
     });
   }
 

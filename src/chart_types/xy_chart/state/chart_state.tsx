@@ -13,7 +13,7 @@ import { ReactiveChart } from '../renderer/canvas/reactive_chart';
 import { computeLegendSelector } from './selectors/compute_legend';
 import { getLegendTooltipValuesSelector } from './selectors/get_legend_tooltip_values';
 import { TooltipLegendValue } from '../tooltip/tooltip';
-import { getCursorPointerSelector } from './selectors/get_cursor_pointer';
+import { getPointerCursorSelector } from './selectors/get_cursor_pointer';
 
 export class XYAxisChartState implements InternalChartState {
   chartType = ChartTypes.XYAxis;
@@ -42,7 +42,7 @@ export class XYAxisChartState implements InternalChartState {
       </React.Fragment>
     );
   }
-  getCursorPointer(globalState: GlobalChartState) {
-    return getCursorPointerSelector(globalState);
+  getPointerCursor(globalState: GlobalChartState) {
+    return getPointerCursorSelector(globalState);
   }
 }

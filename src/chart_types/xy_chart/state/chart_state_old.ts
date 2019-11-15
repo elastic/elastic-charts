@@ -236,7 +236,7 @@
 //   tooltipHeaderFormatter?: TooltipValueFormatter;
 
 //   /** cursorPosition is used by tooltip, so this is a way to expose the position for other uses */
-//   rawCursorPosition = observable.object<{ x: number; y: number }>({ x: 100, y: 100 }, undefined, {
+//   currentPointerPosition = observable.object<{ x: number; y: number }>({ x: 100, y: 100 }, undefined, {
 //     deep: false,
 //   });
 
@@ -384,8 +384,8 @@
 //    */
 //   setCursorPosition = action((x: number, y: number, updateCursor: boolean = true) => {
 //     this.isCursorOnChart.set(true);
-//     this.rawCursorPosition.x = x;
-//     this.rawCursorPosition.y = y;
+//     this.currentPointerPosition.x = x;
+//     this.currentPointerPosition.y = y;
 
 //     if (!this.seriesDomainsAndData || this.tooltipType.get() === TooltipType.None) {
 //       return;
@@ -527,8 +527,8 @@
 //   });
 
 //   legendItemTooltipValues = computed(() => {
-//     const xPos = this.rawCursorPosition.x - this.chartDimensions.left;
-//     const yPos = this.rawCursorPosition.y - this.chartDimensions.top;
+//     const xPos = this.currentPointerPosition.x - this.chartDimensions.left;
+//     const yPos = this.currentPointerPosition.y - this.chartDimensions.top;
 //     if (xPos > 0 && xPos <= this.chartDimensions.width && yPos > 0 && yPos <= this.chartDimensions.height) {
 //       return getSeriesTooltipValues(this.tooltipData, '');
 //     }
@@ -538,8 +538,8 @@
 
 //   annotationTooltipState = computed(() => {
 //     // get positions relative to chart
-//     const xPos = this.rawCursorPosition.x - this.chartDimensions.left;
-//     const yPos = this.rawCursorPosition.y - this.chartDimensions.top;
+//     const xPos = this.currentPointerPosition.x - this.chartDimensions.left;
+//     const yPos = this.currentPointerPosition.y - this.chartDimensions.top;
 
 //     // only if we have a valid cursor position and the necessary scale
 //     if (!this.xScale || !this.yScales) {

@@ -5,17 +5,17 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { isInitialized } from '../../../../state/selectors/is_initialized';
 import { computeChartTransformSelector } from '../../state/selectors/compute_chart_transform';
 import { Transform } from '../../state/utils';
-
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getBrushAreaSelector } from '../../state/selectors/get_brush_area';
 import { isBrushAvailableSelector } from '../../state/selectors/is_brush_available';
-import { isBrushingEnabledSelector } from '../../state/selectors/is_brushing_enabled';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
+import { isBrushingSelector } from '../../state/selectors/is_brushing';
 
 interface Props {
   initialized: boolean;
   chartDimensions: Dimensions;
   chartTransform: Transform;
+  isBrushing: boolean | undefined;
   isBrushAvailable: boolean | undefined;
   brushArea: Dimensions | null;
 }
@@ -32,8 +32,8 @@ class BrushToolComponent extends React.Component<Props> {
   };
 
   render() {
-    const { initialized, isBrushAvailable, chartDimensions, chartTransform, brushArea } = this.props;
-    if (!initialized || !isBrushAvailable) {
+    const { initialized, isBrushAvailable, isBrushing, chartDimensions, chartTransform, brushArea } = this.props;
+    if (!initialized || !isBrushAvailable || !isBrushing) {
       return null;
     }
 
@@ -83,7 +83,7 @@ const mapStateToProps = (state: GlobalChartState) => {
     isBrushAvailable: isBrushAvailableSelector(state),
     chartDimensions: computeChartDimensionsSelector(state).chartDimensions,
     chartTransform: computeChartTransformSelector(state),
-    isBrushingEnabled: isBrushingEnabledSelector(state),
+    isBrushing: isBrushingSelector(state),
   };
 };
 

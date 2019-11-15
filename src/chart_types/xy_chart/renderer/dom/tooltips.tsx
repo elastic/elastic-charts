@@ -58,8 +58,12 @@ class TooltipsComponent extends React.Component<TooltipProps> {
     const tooltipBBox = this.tooltipRef.current.getBoundingClientRect();
     const tooltipStyle = getFinalTooltipPosition(chartContainerBBox, tooltipBBox, tooltipPosition);
 
-    this.portalNode.style.left = tooltipStyle.left;
-    this.portalNode.style.top = tooltipStyle.top;
+    if (tooltipStyle.left) {
+      this.portalNode.style.left = tooltipStyle.left;
+    }
+    if (tooltipStyle.top) {
+      this.portalNode.style.top = tooltipStyle.top;
+    }
   }
 
   componentWillUnmount() {

@@ -85,8 +85,12 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
       tooltipState.anchor,
     );
 
-    this.portalNode.style.left = tooltipStyle.left;
-    this.portalNode.style.top = tooltipStyle.top;
+    if (tooltipStyle.left) {
+      this.portalNode.style.left = tooltipStyle.left;
+    }
+    if (tooltipStyle.top) {
+      this.portalNode.style.top = tooltipStyle.top;
+    }
   }
 
   componentWillUnmount() {
