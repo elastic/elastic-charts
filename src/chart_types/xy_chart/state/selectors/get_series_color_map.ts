@@ -9,8 +9,6 @@ export const getSeriesColorMapSelector = createCachedSelector(
   [getSeriesSpecsSelector, computeSeriesDomainsSelector, getChartThemeSelector],
   (seriesSpecs, seriesDomainsAndData, chartTheme): Map<string, string> => {
     const updatedCustomSeriesColors = getUpdatedCustomSeriesColors(seriesSpecs);
-    // TODO merge with existing custom series color
-    // const customSeriesColors = new Map([...this.customSeriesColors, ...updatedCustomSeriesColors]);
 
     const seriesColorMap = getSeriesColorMap(
       seriesDomainsAndData.seriesColors,

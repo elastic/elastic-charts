@@ -51,8 +51,11 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     this.chartContainerRef = createRef();
 
     const storeReducer = chartStoreReducer(uuid.v4());
-    // TODO remove devTools in production
-    this.chartStore = createStore(storeReducer, devToolsEnhancer({ trace: true }));
+    if (process.env.NODE_ENV === 'production') {
+      this.chartStore = createStore(storeReducer);
+    } else {
+      this.chartStore = createStore(storeReducer, devToolsEnhancer({ trace: true }));
+    }
     this.state = {
       legendPosition: Position.Right,
     };

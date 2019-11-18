@@ -640,7 +640,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
       expect(tooltipData.tooltipValues[1].value).toBe('left 10');
     });
 
-    test.skip('chart 90 deg rotated', () => {
+    test('chart 90 deg rotated', () => {
       const settings = getSettingsSpecSelector(store.getState());
       const updatedSettings: SettingsSpec = {
         ...settings,
