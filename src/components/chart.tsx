@@ -22,6 +22,9 @@ import { createOnElementClickCaller } from '../chart_types/xy_chart/state/select
 import { ChartTypes } from '../chart_types/index';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_specs';
 import { createOnBrushEndCaller } from '../chart_types/xy_chart/state/selectors/on_brush_end_caller';
+import { onExternalPointerEvent } from '../state/actions/events';
+import { CursorEvent } from '../specs';
+import { createOnPointerMoveCaller } from '../chart_types/xy_chart/state/selectors/on_pointer_move_caller';
 
 interface ChartProps {
   /** The type of rendered
@@ -58,6 +61,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     const onElementOverCaller = createOnElementOverCaller();
     const onElementOutCaller = createOnElementOutCaller();
     const onBrushEndCaller = createOnBrushEndCaller();
+    const onPointerMoveCaller = createOnPointerMoveCaller();
     this.chartStore.subscribe(() => {
       const state = this.chartStore.getState();
       if (!isInitialized(state)) {
@@ -77,6 +81,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
       onElementOutCaller(state);
       onElementClickCaller(state);
       onBrushEndCaller(state);
+      onPointerMoveCaller(state);
     });
   }
 
@@ -90,8 +95,8 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     return {};
   };
 
-  dispatchExternalCursorEvent() {
-    // dispatchExternalCursorEvent(event?: CursorEvent) {
+  dispatchExternalCursorEvent(event?: CursorEvent) {
+    this.chartStore.dispatch(onExternalPointerEvent(event));
     // this.chartSpecStore.setActiveChartId(event && event.chartId);
     // const isActiveChart = this.chartSpecStore.isActiveChart.get();
     // if (!event) {

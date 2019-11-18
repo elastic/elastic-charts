@@ -1,8 +1,8 @@
 import createCachedSelector from 're-reselect';
 import { TooltipValue, isFollowTooltipType, TooltipType, TooltipValueFormatter } from '../../utils/interactions';
-import { computeCursorPositionSelector } from './compute_cursor_position';
+import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
 import { Point } from '../../../../utils/point';
-import { getAxisCursorPositionSelector } from './get_axis_cursor_position';
+import { getOrientedProjectedPointerPositionSelector } from './get_oriented_projected_pointer_position';
 import { ComputedScales, getAxesSpecForSpecId } from '../utils';
 import { getComputedScalesSelector } from './get_computed_scales';
 import { getElementAtCursorPositionSelector } from './get_elements_at_cursor_pos';
@@ -14,6 +14,8 @@ import { formatTooltip } from '../../tooltip/tooltip';
 import { getTooltipHeaderFormatterSelector } from './get_tooltip_header_formatter';
 import { isPointOnGeometry } from '../../rendering/rendering';
 import { GlobalChartState } from '../../../../state/chart_state';
+import { CursorEvent } from '../../../../specs';
+import { isValidExternalPointerEvent } from '../../../../utils/events';
 
 const EMPTY_VALUES = Object.freeze({
   tooltipValues: [],
@@ -24,15 +26,19 @@ export interface TooltipAndHighlightedGeoms {
   tooltipValues: TooltipValue[];
   highlightedGeometries: IndexedGeometry[];
 }
+
+const getExternalPointerEventStateSelector = (state: GlobalChartState) => state.externalEvents.pointer;
+
 export const getTooltipValuesAndGeometriesSelector = createCachedSelector(
   [
     getSeriesSpecsSelector,
     getAxisSpecsSelector,
-    computeCursorPositionSelector,
-    getAxisCursorPositionSelector,
+    getProjectedPointerPositionSelector,
+    getOrientedProjectedPointerPositionSelector,
     getComputedScalesSelector,
     getElementAtCursorPositionSelector,
     getTooltipTypeSelector,
+    getExternalPointerEventStateSelector,
     getTooltipHeaderFormatterSelector,
   ],
   getTooltipValues,
@@ -43,18 +49,23 @@ export const getTooltipValuesAndGeometriesSelector = createCachedSelector(
 function getTooltipValues(
   seriesSpecs: BasicSeriesSpec[],
   axesSpecs: AxisSpec[],
-  cursorPosition: Point,
-  axisCursorPosition: Point,
+  projectedPointerPosition: Point,
+  orientedProjectedPointerPosition: Point,
   scales: ComputedScales,
   xMatchingGeoms: IndexedGeometry[],
   tooltipType: TooltipType,
-  tooltipHeaderFormatter: TooltipValueFormatter | undefined,
+  externalPointerEvent: CursorEvent | null,
+  tooltipHeaderFormatter?: TooltipValueFormatter,
 ): TooltipAndHighlightedGeoms {
-  const { x, y } = cursorPosition;
-  if (x === -1 || y === -1) {
+  if (!scales.xScale || !scales.yScales) {
     return EMPTY_VALUES;
   }
-  if (axisCursorPosition.x < 0 || !scales.xScale || !scales.yScales) {
+  let x = orientedProjectedPointerPosition.x;
+  let y = orientedProjectedPointerPosition.y;
+  if (externalPointerEvent && isValidExternalPointerEvent(externalPointerEvent, scales.xScale)) {
+    x = scales.xScale.pureScale(externalPointerEvent.value);
+    y = 0;
+  } else if (projectedPointerPosition.x === -1 || projectedPointerPosition.y === -1) {
     return EMPTY_VALUES;
   }
 
@@ -85,7 +96,8 @@ function getTooltipValues(
 
     // check if the pointer is on the geometry
     let isHighlighted = false;
-    if (isPointOnGeometry(axisCursorPosition.x, axisCursorPosition.y, indexedGeometry)) {
+    // avoid checking if using external pointer event
+    if (!externalPointerEvent && isPointOnGeometry(x, y, indexedGeometry)) {
       isHighlighted = true;
       highlightedGeometries.push(indexedGeometry);
     }

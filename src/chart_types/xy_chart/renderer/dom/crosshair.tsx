@@ -7,7 +7,6 @@ import { Theme } from '../../../../utils/themes/theme';
 import { Rotation } from '../../../../chart_types/xy_chart/utils/specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { isInitialized } from '../../../../state/selectors/is_initialized';
-import { isCrosshairVisibleSelector } from '../../state/selectors/is_crosshair_visible';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getCursorBandPositionSelector } from '../../state/selectors/get_cursor_band';
 import { getCursorLinePositionSelector } from '../../state/selectors/get_cursor_line';
@@ -18,7 +17,6 @@ import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 interface CrosshairProps {
   theme: Theme;
   chartRotation: Rotation;
-  isCrosshairVisible: boolean;
   cursorBandPosition?: Dimensions;
   cursorLinePosition: Dimensions;
   tooltipType: TooltipType;
@@ -35,11 +33,6 @@ class CrosshairComponent extends React.Component<CrosshairProps> {
   static displayName = 'Crosshair';
 
   render() {
-    const { isCrosshairVisible } = this.props;
-    if (!isCrosshairVisible) {
-      return <div className="echCrosshair" />;
-    }
-
     return (
       <div className="echCrosshair">
         {this.renderBand()}
@@ -57,7 +50,7 @@ class CrosshairComponent extends React.Component<CrosshairProps> {
       tooltipType,
     } = this.props;
 
-    if (!canRenderBand(tooltipType, band.visible)) {
+    if (!cursorBandPosition || !canRenderBand(tooltipType, band.visible)) {
       return null;
     }
     const style: CSSProperties = {
@@ -78,7 +71,7 @@ class CrosshairComponent extends React.Component<CrosshairProps> {
       chartRotation,
     } = this.props;
 
-    if (!canRenderHelpLine(tooltipType, line.visible)) {
+    if (!cursorLinePosition || !canRenderHelpLine(tooltipType, line.visible)) {
       return null;
     }
     const isHorizontalRotated = isHorizontalRotation(chartRotation);
@@ -108,7 +101,6 @@ const mapStateToProps = (state: GlobalChartState): CrosshairProps => {
     return {
       theme: LIGHT_THEME,
       chartRotation: 0,
-      isCrosshairVisible: false,
       cursorBandPosition: { top: 0, left: 0, width: 0, height: 0 },
       cursorLinePosition: { top: 0, left: 0, width: 0, height: 0 },
       tooltipType: TooltipType.None,
@@ -117,7 +109,6 @@ const mapStateToProps = (state: GlobalChartState): CrosshairProps => {
   return {
     theme: getChartThemeSelector(state),
     chartRotation: getChartRotationSelector(state),
-    isCrosshairVisible: isCrosshairVisibleSelector(state),
     cursorBandPosition: getCursorBandPositionSelector(state),
     cursorLinePosition: getCursorLinePositionSelector(state),
     tooltipType: getTooltipTypeSelector(state),

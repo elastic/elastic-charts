@@ -1,29 +1,52 @@
 import createCachedSelector from 're-reselect';
 import { Point } from '../../../../utils/point';
-import { getAxisCursorPositionSelector } from './get_axis_cursor_position';
+import { getOrientedProjectedPointerPositionSelector } from './get_oriented_projected_pointer_position';
 import { ComputedScales } from '../utils';
 import { getComputedScalesSelector } from './get_computed_scales';
 import { getGeometriesIndexKeysSelector } from './get_geometries_index_keys';
 import { getGeometriesIndexSelector } from './get_geometries_index';
 import { IndexedGeometry } from '../../../../utils/geometry';
+import { CursorEvent } from '../../../../specs';
+import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { Dimensions } from '../../../../utils/dimensions';
+import { GlobalChartState } from '../../../../state/chart_state';
+import { isValidExternalPointerEvent } from '../../../../utils/events';
+
+const getExternalPointerEventStateSelector = (state: GlobalChartState) => state.externalEvents.pointer;
 
 export const getElementAtCursorPositionSelector = createCachedSelector(
   [
-    getAxisCursorPositionSelector,
+    getOrientedProjectedPointerPositionSelector,
     getComputedScalesSelector,
     getGeometriesIndexKeysSelector,
     getGeometriesIndexSelector,
+    getExternalPointerEventStateSelector,
+    computeChartDimensionsSelector,
   ],
   getElementAtCursorPosition,
 )((state) => state.chartId);
 
 function getElementAtCursorPosition(
-  axisCursorPosition: Point,
+  orientedProjectedPoinerPosition: Point,
   scales: ComputedScales,
   geometriesIndexKeys: any,
   geometriesIndex: Map<any, IndexedGeometry[]>,
+  externalPointerEvent: CursorEvent | null,
+  {
+    chartDimensions,
+  }: {
+    chartDimensions: Dimensions;
+  },
 ): IndexedGeometry[] {
-  const xValue = scales.xScale.invertWithStep(axisCursorPosition.x, geometriesIndexKeys);
+  if (externalPointerEvent && isValidExternalPointerEvent(externalPointerEvent, scales.xScale)) {
+    const x = scales.xScale.pureScale(externalPointerEvent.value);
+
+    if (x == null || x > chartDimensions.width + chartDimensions.left) {
+      return [];
+    }
+    return geometriesIndex.get(externalPointerEvent.value) || [];
+  }
+  const xValue = scales.xScale.invertWithStep(orientedProjectedPoinerPosition.x, geometriesIndexKeys);
   if (!xValue) {
     return [];
   }

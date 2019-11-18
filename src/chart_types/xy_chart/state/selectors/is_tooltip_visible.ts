@@ -3,7 +3,7 @@ import { TooltipType, TooltipValue, isTooltipType, isTooltipProps } from '../../
 import { Point } from '../../../../utils/point';
 import { GlobalChartState, PointerStates } from '../../../../state/chart_state';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { computeCursorPositionSelector } from './compute_cursor_position';
+import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
 import { getTooltipValuesSelector } from './get_tooltip_values_highlighted_geoms';
 
 const getTooltipType = (state: GlobalChartState): TooltipType | undefined => {
@@ -21,21 +21,21 @@ const getTooltipType = (state: GlobalChartState): TooltipType | undefined => {
 const getPointerSelector = (state: GlobalChartState) => state.interactions.pointer;
 
 export const isTooltipVisibleSelector = createCachedSelector(
-  [getTooltipType, getPointerSelector, computeCursorPositionSelector, getTooltipValuesSelector],
+  [getTooltipType, getPointerSelector, getProjectedPointerPositionSelector, getTooltipValuesSelector],
   isTooltipVisible,
 )((state) => state.chartId);
 
 function isTooltipVisible(
   tooltipType: TooltipType | undefined,
   pointer: PointerStates,
-  cursorPosition: Point,
+  projectedPointerPosition: Point,
   tooltipValues: TooltipValue[],
 ) {
   return (
     tooltipType !== TooltipType.None &&
     pointer.down === null &&
-    cursorPosition.x > -1 &&
-    cursorPosition.y > -1 &&
+    projectedPointerPosition.x > -1 &&
+    projectedPointerPosition.y > -1 &&
     tooltipValues.length > 0
   );
 }

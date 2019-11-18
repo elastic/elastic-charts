@@ -1,21 +1,25 @@
 import createCachedSelector from 're-reselect';
 import { TooltipType, isCrosshairTooltipType } from '../../utils/interactions';
 import { Point } from '../../../../utils/point';
-import { computeCursorPositionSelector } from './compute_cursor_position';
+import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
 import { getTooltipTypeSelector } from './get_tooltip_type';
 import { isBrushingSelector } from './is_brushing';
 
 export const isCrosshairVisibleSelector = createCachedSelector(
-  [isBrushingSelector, getTooltipTypeSelector, computeCursorPositionSelector],
+  [isBrushingSelector, getTooltipTypeSelector, getProjectedPointerPositionSelector],
   isCrosshairVisible,
 )((state) => state.chartId);
 
-function isCrosshairVisible(isBrushing: boolean, tooltipType: TooltipType | undefined, cursorPosition: Point) {
+function isCrosshairVisible(
+  isBrushing: boolean,
+  tooltipType: TooltipType | undefined,
+  projectedPointerPosition: Point,
+) {
   return (
     !isBrushing &&
     tooltipType !== undefined &&
     isCrosshairTooltipType(tooltipType) &&
-    cursorPosition.x > -1 &&
-    cursorPosition.y > -1
+    projectedPointerPosition.x > -1 &&
+    projectedPointerPosition.y > -1
   );
 }

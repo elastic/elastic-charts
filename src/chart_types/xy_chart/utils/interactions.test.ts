@@ -2,8 +2,8 @@ import { Dimensions } from '../../../utils/dimensions';
 import {
   areIndexedGeometryArraysEquals,
   areIndexedGeomsEquals,
-  getValidXPosition,
-  getValidYPosition,
+  getOrientedXPosition,
+  getOrientedYPosition,
   isCrosshairTooltipType,
   isFollowTooltipType,
   TooltipType,
@@ -144,25 +144,25 @@ describe('Interaction utils', () => {
   test('limit x position with x already relative to chart', () => {
     const xPos = 30;
     const yPos = 50;
-    let validPosition = getValidXPosition(xPos, yPos, 0, chartDimensions);
+    let validPosition = getOrientedXPosition(xPos, yPos, 0, chartDimensions);
     expect(validPosition).toBe(xPos);
-    validPosition = getValidXPosition(xPos, yPos, 180, chartDimensions);
+    validPosition = getOrientedXPosition(xPos, yPos, 180, chartDimensions);
     expect(validPosition).toBe(chartDimensions.width - xPos);
-    validPosition = getValidXPosition(xPos, yPos, 90, chartDimensions);
+    validPosition = getOrientedXPosition(xPos, yPos, 90, chartDimensions);
     expect(validPosition).toBe(yPos);
-    validPosition = getValidXPosition(xPos, yPos, -90, chartDimensions);
+    validPosition = getOrientedXPosition(xPos, yPos, -90, chartDimensions);
     expect(validPosition).toBe(chartDimensions.height - yPos);
   });
   test('limit y position with x already relative to chart', () => {
     const yPos = 30;
     const xPos = 50;
-    let validPosition = getValidYPosition(xPos, yPos, 0, chartDimensions);
+    let validPosition = getOrientedYPosition(xPos, yPos, 0, chartDimensions);
     expect(validPosition).toBe(yPos);
-    validPosition = getValidYPosition(xPos, yPos, 180, chartDimensions);
+    validPosition = getOrientedYPosition(xPos, yPos, 180, chartDimensions);
     expect(validPosition).toBe(chartDimensions.height - yPos);
-    validPosition = getValidYPosition(xPos, yPos, 90, chartDimensions);
+    validPosition = getOrientedYPosition(xPos, yPos, 90, chartDimensions);
     expect(validPosition).toBe(chartDimensions.width - xPos);
-    validPosition = getValidYPosition(xPos, yPos, -90, chartDimensions);
+    validPosition = getOrientedYPosition(xPos, yPos, -90, chartDimensions);
     expect(validPosition).toBe(xPos);
   });
   test('checks tooltip type helpers', () => {

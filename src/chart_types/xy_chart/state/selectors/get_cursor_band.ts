@@ -4,20 +4,25 @@ import { Point } from '../../../../utils/point';
 import { Scale } from '../../../../utils/scales/scales';
 import { isLineAreaOnlyChart } from '../utils';
 import { getCursorBandPosition } from '../../crosshair/crosshair_utils';
-import { SettingsSpec } from '../../../../specs/settings';
+import { SettingsSpec, CursorEvent } from '../../../../specs/settings';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { BasicSeriesSpec } from '../../utils/specs';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
 import { getSeriesSpecsSelector } from './get_specs';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
-import { getAxisCursorPositionSelector } from './get_axis_cursor_position';
+import { getOrientedProjectedPointerPositionSelector } from './get_oriented_projected_pointer_position';
 import { isTooltipSnapEnableSelector } from './is_tooltip_snap_enabled';
 import { getGeometriesIndexKeysSelector } from './get_geometries_index_keys';
+import { GlobalChartState } from '../../../../state/chart_state';
+import { isValidExternalPointerEvent } from '../../../../utils/events';
+
+const getExternalPointerEventStateSelector = (state: GlobalChartState) => state.externalEvents.pointer;
 
 export const getCursorBandPositionSelector = createCachedSelector(
   [
-    getAxisCursorPositionSelector,
+    getOrientedProjectedPointerPositionSelector,
+    getExternalPointerEventStateSelector,
     computeChartDimensionsSelector,
     getSettingsSpecSelector,
     computeSeriesGeometriesSelector,
@@ -27,7 +32,8 @@ export const getCursorBandPositionSelector = createCachedSelector(
     getGeometriesIndexKeysSelector,
   ],
   (
-    axisCursorPosition,
+    orientedProjectedPointerPosition,
+    externalPointerEvent,
     chartDimensions,
     settingsSpec,
     seriesGeometries,
@@ -37,7 +43,8 @@ export const getCursorBandPositionSelector = createCachedSelector(
     geometriesIndexKeys,
   ) => {
     return getCursorBand(
-      axisCursorPosition,
+      orientedProjectedPointerPosition,
+      externalPointerEvent,
       chartDimensions.chartDimensions,
       settingsSpec,
       seriesGeometries.scales.xScale,
@@ -50,7 +57,8 @@ export const getCursorBandPositionSelector = createCachedSelector(
 )((state) => state.chartId);
 
 function getCursorBand(
-  axisCursorPosition: Point,
+  orientedProjectedPoinerPosition: Point,
+  externalPointerEvent: CursorEvent | null,
   chartDimensions: Dimensions,
   settingsSpec: SettingsSpec,
   xScale: Scale | undefined,
@@ -64,14 +72,29 @@ function getCursorBand(
   if (!xScale) {
     return;
   }
-  const xValue = xScale.invertWithStep(axisCursorPosition.x, geometriesIndexKeys);
-  if (!xValue) {
-    return;
+  let pointerPosition = orientedProjectedPoinerPosition;
+  let xValue;
+  if (externalPointerEvent && isValidExternalPointerEvent(externalPointerEvent, xScale)) {
+    const x = xScale.pureScale(externalPointerEvent.value);
+
+    if (x == null || x > chartDimensions.width + chartDimensions.left) {
+      return;
+    }
+    pointerPosition = { x, y: 0 };
+    xValue = {
+      value: externalPointerEvent.value,
+      withinBandwidth: true,
+    };
+  } else {
+    xValue = xScale.invertWithStep(orientedProjectedPoinerPosition.x, geometriesIndexKeys);
+    if (!xValue) {
+      return;
+    }
   }
   return getCursorBandPosition(
     settingsSpec.rotation,
     chartDimensions,
-    axisCursorPosition,
+    pointerPosition,
     {
       value: xValue.value,
       withinBandwidth: true,

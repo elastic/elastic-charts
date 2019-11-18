@@ -1,6 +1,6 @@
 import createCachedSelector from 're-reselect';
 import { Dimensions } from '../../../../utils/dimensions';
-import { computeCursorPositionSelector } from './compute_cursor_position';
+import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
 import { Point } from '../../../../utils/point';
 import { TooltipValue } from '../../utils/interactions';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
@@ -20,7 +20,7 @@ import { getTooltipValuesSelector } from './get_tooltip_values_highlighted_geoms
 
 export const getAnnotationTooltipStateSelector = createCachedSelector(
   [
-    computeCursorPositionSelector,
+    getProjectedPointerPositionSelector,
     computeChartDimensionsSelector,
     computeSeriesGeometriesSelector,
     getChartRotationSelector,
@@ -33,7 +33,7 @@ export const getAnnotationTooltipStateSelector = createCachedSelector(
 )((state) => state.chartId);
 
 function getAnnotationTooltipState(
-  cursorPosition: Point,
+  projectedPointerPosition: Point,
   chartDimensions: { chartDimensions: Dimensions },
   geometries: ComputedGeometries,
   chartRotation: Rotation,
@@ -43,7 +43,7 @@ function getAnnotationTooltipState(
   tooltipValues: TooltipValue[],
 ): AnnotationTooltipState | null {
   // get positions relative to chart
-  if (cursorPosition.x < 0 || cursorPosition.y < 0) {
+  if (projectedPointerPosition.x < 0 || projectedPointerPosition.y < 0) {
     return null;
   }
   const { xScale, yScales } = geometries.scales;
@@ -53,7 +53,7 @@ function getAnnotationTooltipState(
   }
 
   const tooltipState = computeAnnotationTooltipState(
-    cursorPosition,
+    projectedPointerPosition,
     annotationDimensions,
     annotationSpecs,
     chartRotation,

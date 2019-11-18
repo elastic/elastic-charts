@@ -56,7 +56,7 @@ export interface HighlightedElement {
  * @param chartRotation the chart rotation
  * @param chartDimension the chart dimension
  */
-export function getValidXPosition(xPos: number, yPos: number, chartRotation: Rotation, chartDimension: Dimensions) {
+export function getOrientedXPosition(xPos: number, yPos: number, chartRotation: Rotation, chartDimension: Dimensions) {
   switch (chartRotation) {
     case 0:
       return xPos;
@@ -68,7 +68,7 @@ export function getValidXPosition(xPos: number, yPos: number, chartRotation: Rot
       return chartDimension.height - yPos;
   }
 }
-export function getValidYPosition(xPos: number, yPos: number, chartRotation: Rotation, chartDimension: Dimensions) {
+export function getOrientedYPosition(xPos: number, yPos: number, chartRotation: Rotation, chartDimension: Dimensions) {
   switch (chartRotation) {
     case 0:
       return yPos;

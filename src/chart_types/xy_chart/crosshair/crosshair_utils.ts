@@ -56,12 +56,12 @@ export function getSnapPosition(
 export function getCursorLinePosition(
   chartRotation: Rotation,
   chartDimensions: Dimensions,
-  cursorPosition: { x: number; y: number },
+  projectedPointerPosition: { x: number; y: number },
 ): Dimensions {
   const { left, top, width, height } = chartDimensions;
   const isHorizontalRotated = isHorizontalRotation(chartRotation);
   if (isHorizontalRotated) {
-    const crosshairTop = cursorPosition.y + top;
+    const crosshairTop = projectedPointerPosition.y + top;
     return {
       left,
       width,
@@ -69,7 +69,7 @@ export function getCursorLinePosition(
       height: 0,
     };
   } else {
-    const crosshairLeft = cursorPosition.x + left;
+    const crosshairLeft = projectedPointerPosition.x + left;
 
     return {
       top,

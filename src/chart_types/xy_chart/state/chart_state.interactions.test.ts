@@ -5,7 +5,7 @@ import { ScaleType } from '../../../utils/scales/scales';
 import { chartStoreReducer, GlobalChartState } from '../../../state/chart_state';
 import { SettingsSpec, DEFAULT_SETTINGS_SPEC } from '../../../specs';
 import { computeSeriesGeometriesSelector } from './selectors/compute_series_geometries';
-import { computeCursorPositionSelector } from './selectors/compute_cursor_position';
+import { getProjectedPointerPositionSelector } from './selectors/get_projected_pointer_position';
 import {
   getHighlightedGeomsSelector,
   getTooltipValuesAndGeometriesSelector,
@@ -145,36 +145,36 @@ describe('Chart state pointer interactions', () => {
     expect(geometries.bars.length).toBe(2);
   });
 
-  test('can convert/limit cursor positions relative to chart dimensions', () => {
+  test('can convert/limit mouse pointer positions relative to chart projection', () => {
     store.dispatch(onPointerMove({ x: 20, y: 20 }, 0));
-    let cursorPosition = computeCursorPositionSelector(store.getState());
-    expect(cursorPosition.x).toBe(10);
-    expect(cursorPosition.y).toBe(10);
+    let projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
+    expect(projectedPointerPosition.x).toBe(10);
+    expect(projectedPointerPosition.y).toBe(10);
 
     store.dispatch(onPointerMove({ x: 10, y: 10 }, 1));
-    cursorPosition = computeCursorPositionSelector(store.getState());
-    expect(cursorPosition.x).toBe(0);
-    expect(cursorPosition.y).toBe(0);
+    projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
+    expect(projectedPointerPosition.x).toBe(0);
+    expect(projectedPointerPosition.y).toBe(0);
     store.dispatch(onPointerMove({ x: 5, y: 5 }, 2));
-    cursorPosition = computeCursorPositionSelector(store.getState());
-    expect(cursorPosition.x).toBe(-1);
-    expect(cursorPosition.y).toBe(-1);
+    projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
+    expect(projectedPointerPosition.x).toBe(-1);
+    expect(projectedPointerPosition.y).toBe(-1);
     store.dispatch(onPointerMove({ x: 200, y: 20 }, 3));
-    cursorPosition = computeCursorPositionSelector(store.getState());
-    expect(cursorPosition.x).toBe(-1);
-    expect(cursorPosition.y).toBe(10);
+    projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
+    expect(projectedPointerPosition.x).toBe(-1);
+    expect(projectedPointerPosition.y).toBe(10);
     store.dispatch(onPointerMove({ x: 20, y: 200 }, 4));
-    cursorPosition = computeCursorPositionSelector(store.getState());
-    expect(cursorPosition.x).toBe(10);
-    expect(cursorPosition.y).toBe(-1);
+    projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
+    expect(projectedPointerPosition.x).toBe(10);
+    expect(projectedPointerPosition.y).toBe(-1);
     store.dispatch(onPointerMove({ x: 200, y: 200 }, 5));
-    cursorPosition = computeCursorPositionSelector(store.getState());
-    expect(cursorPosition.x).toBe(-1);
-    expect(cursorPosition.y).toBe(-1);
+    projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
+    expect(projectedPointerPosition.x).toBe(-1);
+    expect(projectedPointerPosition.y).toBe(-1);
     store.dispatch(onPointerMove({ x: -20, y: -20 }, 6));
-    cursorPosition = computeCursorPositionSelector(store.getState());
-    expect(cursorPosition.x).toBe(-1);
-    expect(cursorPosition.y).toBe(-1);
+    projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
+    expect(projectedPointerPosition.x).toBe(-1);
+    expect(projectedPointerPosition.y).toBe(-1);
   });
 
   test('call onElementOut if moving the mouse out from the chart', () => {
@@ -333,8 +333,8 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     let tooltipData = getTooltipValuesAndGeometriesSelector(store.getState());
     expect(tooltipData.tooltipValues).toEqual([]);
     store.dispatch(onPointerMove({ x: chartLeft + 0, y: chartTop + 0 }, 0));
-    let cursorPosition = computeCursorPositionSelector(store.getState());
-    expect(cursorPosition).toEqual({ x: 0, y: 0 });
+    let projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
+    expect(projectedPointerPosition).toEqual({ x: 0, y: 0 });
     const cursorBandPosition = getCursorBandPositionSelector(store.getState());
     expect(cursorBandPosition).toBeDefined();
     expect(cursorBandPosition!.left).toBe(chartLeft + 0);
@@ -355,8 +355,8 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     ]);
 
     store.dispatch(onPointerMove({ x: chartLeft - 1, y: chartTop - 1 }, 1));
-    cursorPosition = computeCursorPositionSelector(store.getState());
-    expect(cursorPosition).toEqual({ x: -1, y: -1 });
+    projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
+    expect(projectedPointerPosition).toEqual({ x: -1, y: -1 });
     isTooltipVisible = isTooltipVisibleSelector(store.getState());
     expect(isTooltipVisible).toBe(false);
     tooltipData = getTooltipValuesAndGeometriesSelector(store.getState());
@@ -368,8 +368,8 @@ function mouseOverTestSuite(scaleType: ScaleType) {
 
   test('can hover bottom-left corner of the first bar', () => {
     store.dispatch(onPointerMove({ x: chartLeft + 0, y: chartTop + 89 }, 0));
-    let cursorPosition = computeCursorPositionSelector(store.getState());
-    expect(cursorPosition).toEqual({ x: 0, y: 89 });
+    let projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
+    expect(projectedPointerPosition).toEqual({ x: 0, y: 89 });
     const cursorBandPosition = getCursorBandPositionSelector(store.getState());
     expect(cursorBandPosition).toBeDefined();
     expect(cursorBandPosition!.left).toBe(chartLeft + 0);
@@ -389,8 +389,8 @@ function mouseOverTestSuite(scaleType: ScaleType) {
       },
     ]);
     store.dispatch(onPointerMove({ x: chartLeft - 1, y: chartTop + 89 }, 1));
-    cursorPosition = computeCursorPositionSelector(store.getState());
-    expect(cursorPosition).toEqual({ x: -1, y: 89 });
+    projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
+    expect(projectedPointerPosition).toEqual({ x: -1, y: 89 });
     isTooltipVisible = isTooltipVisibleSelector(store.getState());
     expect(isTooltipVisible).toBe(false);
     tooltipData = getTooltipValuesAndGeometriesSelector(store.getState());
@@ -406,8 +406,8 @@ function mouseOverTestSuite(scaleType: ScaleType) {
       scaleOffset = 1;
     }
     store.dispatch(onPointerMove({ x: chartLeft + 44 + scaleOffset, y: chartTop + 0 }, 0));
-    let cursorPosition = computeCursorPositionSelector(store.getState());
-    expect(cursorPosition).toEqual({ x: 44 + scaleOffset, y: 0 });
+    let projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
+    expect(projectedPointerPosition).toEqual({ x: 44 + scaleOffset, y: 0 });
     let cursorBandPosition = getCursorBandPositionSelector(store.getState());
     expect(cursorBandPosition).toBeDefined();
     expect(cursorBandPosition!.left).toBe(chartLeft + 0);
@@ -428,8 +428,8 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     ]);
 
     store.dispatch(onPointerMove({ x: chartLeft + 45 + scaleOffset, y: chartTop + 0 }, 1));
-    cursorPosition = computeCursorPositionSelector(store.getState());
-    expect(cursorPosition).toEqual({ x: 45 + scaleOffset, y: 0 });
+    projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
+    expect(projectedPointerPosition).toEqual({ x: 45 + scaleOffset, y: 0 });
     cursorBandPosition = getCursorBandPositionSelector(store.getState());
     expect(cursorBandPosition).toBeDefined();
     expect(cursorBandPosition!.left).toBe(chartLeft + 45);
@@ -449,8 +449,8 @@ function mouseOverTestSuite(scaleType: ScaleType) {
       scaleOffset = 1;
     }
     store.dispatch(onPointerMove({ x: chartLeft + 44 + scaleOffset, y: chartTop + 89 }, 0));
-    let cursorPosition = computeCursorPositionSelector(store.getState());
-    expect(cursorPosition).toEqual({ x: 44 + scaleOffset, y: 89 });
+    let projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
+    expect(projectedPointerPosition).toEqual({ x: 44 + scaleOffset, y: 89 });
     let cursorBandPosition = getCursorBandPositionSelector(store.getState());
     expect(cursorBandPosition).toBeDefined();
     expect(cursorBandPosition!.left).toBe(chartLeft + 0);
@@ -471,8 +471,8 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     ]);
 
     store.dispatch(onPointerMove({ x: chartLeft + 45 + scaleOffset, y: chartTop + 89 }, 1));
-    cursorPosition = computeCursorPositionSelector(store.getState());
-    expect(cursorPosition).toEqual({ x: 45 + scaleOffset, y: 89 });
+    projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
+    expect(projectedPointerPosition).toEqual({ x: 45 + scaleOffset, y: 89 });
     cursorBandPosition = getCursorBandPositionSelector(store.getState());
     expect(cursorBandPosition).toBeDefined();
     expect(cursorBandPosition!.left).toBe(chartLeft + 45);
@@ -505,8 +505,8 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(tooltipData.tooltipValues.length).toBe(0);
 
     store.dispatch(onPointerMove({ x: chartLeft + 89, y: chartTop + 0 }, 0));
-    const cursorPosition = computeCursorPositionSelector(store.getState());
-    expect(cursorPosition).toEqual({ x: 89, y: 0 });
+    const projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
+    expect(projectedPointerPosition).toEqual({ x: 89, y: 0 });
     const cursorBandPosition = getCursorBandPositionSelector(store.getState());
     expect(cursorBandPosition).toBeDefined();
     expect(cursorBandPosition!.left).toBe(chartLeft + 45);
@@ -557,9 +557,9 @@ function mouseOverTestSuite(scaleType: ScaleType) {
 
   test('can hover bottom-right corner of the chart', () => {
     store.dispatch(onPointerMove({ x: chartLeft + 89, y: chartTop + 89 }, 0));
-    const cursorPosition = computeCursorPositionSelector(store.getState());
+    const projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
     // store.setCursorPosition(chartLeft + 99, chartTop + 99);
-    expect(cursorPosition).toEqual({ x: 89, y: 89 });
+    expect(projectedPointerPosition).toEqual({ x: 89, y: 89 });
     const cursorBandPosition = getCursorBandPositionSelector(store.getState());
     expect(cursorBandPosition).toBeDefined();
     expect(cursorBandPosition!.left).toBe(chartLeft + 45);

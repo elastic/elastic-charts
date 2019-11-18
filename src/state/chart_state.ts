@@ -4,7 +4,7 @@ import { ChartTypes } from '../chart_types';
 import { XYAxisChartState } from '../chart_types/xy_chart/state/chart_state';
 import { DataSeriesColorsValues } from '../chart_types/xy_chart/utils/series';
 import { Spec } from '../specs';
-import { DEFAULT_SETTINGS_SPEC } from '../specs/settings';
+import { DEFAULT_SETTINGS_SPEC, CursorEvent } from '../specs/settings';
 import { Dimensions } from '../utils/dimensions';
 import { Point } from '../utils/point';
 import { LegendItem } from '../chart_types/xy_chart/legend/legend';
@@ -12,6 +12,7 @@ import { TooltipLegendValue } from '../chart_types/xy_chart/tooltip/tooltip';
 import { StateActions } from './actions';
 import { CHART_RENDERED } from './actions/chart';
 import { UPDATE_PARENT_DIMENSION } from './actions/chart_settings';
+import { EXTERNAL_POINTER_EVENT } from './actions/events';
 
 export type BackwardRef = () => React.RefObject<HTMLDivElement>;
 
@@ -65,6 +66,10 @@ export interface InteractionsState {
   deselectedDataSeries: DataSeriesColorsValues[];
 }
 
+export interface ExternalEventsState {
+  pointer: CursorEvent | null;
+}
+
 export interface GlobalChartState {
   // an unique ID for each chart used by re-reselect to memoize selector per chart
   chartId: string;
@@ -84,6 +89,8 @@ export interface GlobalChartState {
   parentDimensions: Dimensions;
   // the state of the interactions
   interactions: InteractionsState;
+  // external event state
+  externalEvents: ExternalEventsState;
 }
 
 export type ChartType = typeof ChartTypes.Pie | typeof ChartTypes.XYAxis | typeof ChartTypes.Global;
@@ -117,6 +124,9 @@ export const getInitialState = (chartId: string): GlobalChartState => ({
     highlightedLegendItemKey: null,
     deselectedDataSeries: [],
     invertDeselect: false,
+  },
+  externalEvents: {
+    pointer: null,
   },
   parentDimensions: {
     height: 0,
@@ -192,7 +202,29 @@ export const chartStoreReducer = (chartId: string) => {
       case UPDATE_PARENT_DIMENSION:
         return {
           ...state,
-          parentDimensions: action.dimensions,
+          parentDimensions: {
+            ...action.dimensions,
+          },
+        };
+      case EXTERNAL_POINTER_EVENT:
+        // discard events from self if any
+        if (!action.event || action.event.chartId === state.chartId) {
+          return {
+            ...state,
+            externalEvents: {
+              ...state.externalEvents,
+              pointer: null,
+            },
+          };
+        }
+        return {
+          ...state,
+          externalEvents: {
+            ...state.externalEvents,
+            pointer: {
+              ...action.event,
+            },
+          },
         };
       default:
         return {

@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, RefObject } from 'react';
 import {
   Axis,
   Chart,
@@ -8,8 +8,8 @@ import {
   ScaleType,
   Settings,
   LineSeries,
-  DARK_THEME,
   BarSeries,
+  CursorEvent,
 } from '../src';
 import { LoremIpsum } from 'lorem-ipsum';
 import { bisector } from 'd3-array';
@@ -1980,8 +1980,10 @@ export class Playground extends React.Component<
     dataIndex: 60,
     series: 4,
     start: 0,
-    end: 1,
+    end: 5,
   };
+  chartRef1: React.RefObject<Chart> = React.createRef();
+  chartRef2: React.RefObject<Chart> = React.createRef();
   toggleLegend = () => {
     this.setState((prevState) => {
       return {
@@ -2028,27 +2030,41 @@ export class Playground extends React.Component<
       };
     });
   };
+
+  updatePointerChart1 = (event?: CursorEvent) => {
+    if (this.chartRef1.current) {
+      this.chartRef1.current.dispatchExternalCursorEvent(event);
+    }
+  };
+  updatePointerChart2 = (event?: CursorEvent) => {
+    if (this.chartRef2.current) {
+      this.chartRef2.current.dispatchExternalCursorEvent(event);
+    }
+  };
+
   render() {
     return (
       <Fragment>
+        <button onClick={this.toggleLegend}>show/hide legend</button>
+        <br />
+        <button onClick={this.toggleValues}>show/hide values</button>
+        <br />
+        <button onClick={this.toggleSpecName}>change spec name</button>
+        <br />
+        <button onClick={this.updateData}>updateData</button>
+        <br />
+        <button onClick={this.updateSeries}>updateSeries</button>
+        <br />
         <div className="chart">
-          <button onClick={this.toggleLegend}>show/hide legend</button>
-          <br />
-          <button onClick={this.toggleValues}>show/hide values</button>
-          <br />
-          <button onClick={this.toggleSpecName}>change spec name</button>
-          <br />
-          <button onClick={this.updateData}>updateData</button>
-          <br />
-          <button onClick={this.updateSeries}>updateSeries</button>
-          <br />
-          <Chart>
+          <Chart ref={this.chartRef1}>
             <Settings
               showLegend={this.state.showLegend}
               legendPosition={Position.Right}
-              theme={DARK_THEME}
+              // theme={DARK_THEME}
               showLegendDisplayValue={this.state.showValues}
               onBrushEnd={this.onBrush}
+              onCursorUpdate={this.updatePointerChart2}
+              rotation={-90}
             />
             <Axis id={getAxisId('x')} position={Position.Bottom} />
             <Axis id={getAxisId('y')} position={Position.Left} ticks={5} tickFormat={(d) => d.toFixed(2)} />
@@ -2083,6 +2099,50 @@ export class Playground extends React.Component<
             })}
           </Chart>
         </div>
+        <div className="chart">
+          <Chart ref={this.chartRef2}>
+            <Settings
+              showLegend={this.state.showLegend}
+              legendPosition={Position.Right}
+              // theme={DARK_THEME}
+              showLegendDisplayValue={this.state.showValues}
+              onBrushEnd={this.onBrush}
+              onCursorUpdate={this.updatePointerChart1}
+              rotation={90}
+            />
+            <Axis id={getAxisId('x')} position={Position.Bottom} />
+            <Axis id={getAxisId('y')} position={Position.Left} ticks={5} tickFormat={(d) => d.toFixed(2)} />
+            <BarSeries
+              id={getSpecId(this.state.spec1Name)}
+              xScaleType={ScaleType.Time}
+              yScaleType={ScaleType.Linear}
+              xAccessor={1}
+              yAccessors={[0]}
+              // y0Accessors={[2]}
+              data={data[0].datapoints.slice(this.state.start, this.state.end + 20).map((d) => {
+                return [...d, d[0] - 100];
+              })}
+            />
+            {new Array(this.state.series).fill(null).map((d, i) => {
+              return (
+                <LineSeries
+                  key={i}
+                  id={getSpecId(`${this.state.spec1Name} ${lorem.generateWords(1)} ${i}`)}
+                  xScaleType={ScaleType.Time}
+                  yScaleType={ScaleType.Linear}
+                  xAccessor={1}
+                  yAccessors={[0]}
+                  data={data[1].datapoints.slice(this.state.start, this.state.end + 20)}
+                  lineSeriesStyle={{
+                    point: {
+                      visible: false,
+                    },
+                  }}
+                />
+              );
+            })}
+          </Chart>
+        </div>{' '}
       </Fragment>
     );
   }
