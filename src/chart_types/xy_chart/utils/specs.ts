@@ -23,7 +23,7 @@ export type Color = string;
 export type ColorPalette = {
   colors: string[];
   steps?: number;
-  type: 'sequential' | 'diverging' | 'qualitative';
+  type: 'sequential';
 };
 export type BarStyleOverride = RecursivePartial<BarSeriesStyle> | Color | null;
 export type PointStyleOverride = RecursivePartial<PointStyle> | Color | null;

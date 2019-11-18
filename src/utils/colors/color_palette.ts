@@ -1,4 +1,4 @@
-import { RGBArray, hexToRgb } from './hex_to_rgb';
+import { RGBArray, hexToRgb, HexColor } from './hex_to_rgb';
 import { ColorPalette } from '../../chart_types/xy_chart/utils/specs';
 
 const DEFAULT_NUM_OF_STEPS = 10;
@@ -15,37 +15,24 @@ class Color {
   }
 }
 
-interface Palette {
-  steps: number;
-  calcPalette(): string[];
-}
-
-export class SequentialPalette implements Palette {
-  startColor: string;
-  endColor: string;
-  steps: number;
-
-  constructor(colors: string[], steps?: number) {
+export class SequentialPalette {
+  static calcPalette(colors: HexColor[], steps = DEFAULT_NUM_OF_STEPS): string[] {
     if (colors.length !== 2) {
       throw new Error('Valid number of colors for sequential palette is 1 or 2');
     }
     if (steps && steps <= 1) {
       throw new Error('Miminum number of steps is 2');
     }
-    this.startColor = colors[0];
-    this.endColor = colors.length === 2 ? colors[1] : this.startColor;
-    this.steps = steps || DEFAULT_NUM_OF_STEPS;
-  }
-
-  calcPalette(): string[] {
-    if (!isHex(this.startColor) || !isHex(this.endColor)) {
+    const startColor = colors[0];
+    const endColor = colors.length === 2 ? colors[1] : startColor;
+    if (!isHex(startColor) || !isHex(endColor)) {
       throw new Error('Please provide two valid hex color codes.');
     }
-    const count = this.steps - 1;
+    const count = steps - 1;
     const colorArray: Color[] = [];
     const hexPalette: string[] = [];
-    const startHex = hexToRgb(this.startColor); // get RGB equivalent values as array
-    const endHex = hexToRgb(this.endColor); // get RGB equivalent values as array
+    const startHex = hexToRgb(startColor); // get RGB equivalent values as array
+    const endHex = hexToRgb(endColor); // get RGB equivalent values as array
     colorArray[0] = new Color(startHex[0], startHex[1], startHex[2]); // create first color obj
     colorArray[count] = new Color(endHex[0], endHex[1], endHex[2]); // create last color obj
     const step = stepCalc(count, colorArray[0], colorArray[count]); // create array of step increments
@@ -65,43 +52,6 @@ export class SequentialPalette implements Palette {
   }
 }
 
-export class DivergingPalette implements Palette {
-  startColor: string;
-  middleColor: string;
-  endColor: string;
-  steps: number;
-
-  constructor(colors: string[], steps?: number) {
-    if (colors.length !== 3) {
-      throw new Error('Valid number of colors for diverging palette is 3');
-    }
-    this.startColor = colors[0];
-    this.middleColor = colors[1];
-    this.endColor = colors[2];
-    this.steps = steps || DEFAULT_NUM_OF_STEPS;
-  }
-
-  calcPalette(): string[] {
-    //TBD
-    return [];
-  }
-}
-
-export class QualitativePalette implements Palette {
-  colors: string[];
-  steps: number;
-
-  constructor(colors: string[], steps?: number) {
-    this.colors = colors;
-    this.steps = steps || DEFAULT_NUM_OF_STEPS;
-  }
-
-  calcPalette(): string[] {
-    //TBD
-    return [];
-  }
-}
-
 /**
  * This function takes a color palette name and returns an array of hex color
  * codes for use in UI elements such as charts.
@@ -113,12 +63,9 @@ export class QualitativePalette implements Palette {
 export function calcColorPalette(colorPalette: ColorPalette) {
   const { colors, steps, type } = colorPalette;
   if (type === 'sequential') {
-    return new SequentialPalette(colors, steps).calcPalette();
-  } else if (type === 'diverging') {
-    return new DivergingPalette(colors, steps).calcPalette();
-  } else {
-    return new QualitativePalette(colors, steps).calcPalette();
+    return SequentialPalette.calcPalette(colors, steps);
   }
+  return ['red']; // not implemented yet
 }
 
 /**

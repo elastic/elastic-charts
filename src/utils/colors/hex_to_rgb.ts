@@ -11,7 +11,7 @@ export interface RGB {
   b: number;
 }
 
-export type HEX = string;
+export type HexColor = string;
 
 // Convert hexadecimal color into an array of RGB integer values
 // Modified from https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb

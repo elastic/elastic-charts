@@ -231,7 +231,7 @@ describe('Settings spec component', () => {
     };
 
     mount(<SettingsComponent chartStore={chartStore} {...updatedProps} />);
-    const calculatedPalette = new SequentialPalette(['#FFFFE0', '#1EA593'], 3).calcPalette();
+    const calculatedPalette = SequentialPalette.calcPalette(['#FFFFE0', '#1EA593'], 3);
 
     expect(chartStore.chartTheme).toEqual({
       ...DARK_THEME,

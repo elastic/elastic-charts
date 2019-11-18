@@ -37,4 +37,4 @@ export {
   RenderChangeListener,
   BasicListener,
 } from './chart_types/xy_chart/store/chart_state';
-export { SequentialPalette, DivergingPalette, QualitativePalette } from './utils/colors/color_palette';
+export { SequentialPalette } from './utils/colors/color_palette';
