@@ -1,4 +1,4 @@
-import { boolean, color, number, select } from '@storybook/addon-knobs';
+import { boolean, color, number, select, array } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import React from 'react';
 
@@ -937,13 +937,15 @@ storiesOf('Stylings', module)
   })
   .add('custom color palette', () => {
     const formatter = timeFormatter(niceTimeFormatByDay(1));
+    const tag = 'bar chart';
+    const groupName = 'Color Palette';
     return (
       <Chart className={'story-chart'}>
         <Settings
           debug={boolean('debug', false)}
           colorPalette={{
-            colors: ['#FFFFE0', '#1EA593'],
-            steps: 3,
+            colors: array(`colorPalette.colors (${tag}`, ['#FFFFE0', '#1EA593'], ',', groupName),
+            steps: range(`colorPalette.steps (${tag})`, 2, 10, 3, groupName, 1),
             type: 'sequential',
           }}
         />
@@ -961,7 +963,6 @@ storiesOf('Stylings', module)
           position={Position.Left}
           tickFormat={(d: any) => Number(d).toFixed(2)}
         />
-
         <BarSeries
           id={getSpecId(KIBANA_METRICS.metrics.kibana_os_load[2].metric.label)}
           xScaleType={ScaleType.Time}

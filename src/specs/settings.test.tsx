@@ -7,7 +7,7 @@ import { ChartStore } from '../chart_types/xy_chart/store/chart_state';
 import { DEFAULT_TOOLTIP_SNAP, DEFAULT_TOOLTIP_TYPE, SettingsComponent, SettingSpecProps } from './settings';
 import { PartialTheme } from '../utils/themes/theme';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
-import { SequentialPalette } from '..';
+import { calcSequentialPalette } from '../utils/colors/color_palette';
 
 describe('Settings spec component', () => {
   test('should update store on mount if spec has a chart store', () => {
@@ -231,7 +231,7 @@ describe('Settings spec component', () => {
     };
 
     mount(<SettingsComponent chartStore={chartStore} {...updatedProps} />);
-    const calculatedPalette = SequentialPalette.calcPalette(['#FFFFE0', '#1EA593'], 3);
+    const calculatedPalette = calcSequentialPalette(['#FFFFE0', '#1EA593'], 3);
 
     expect(chartStore.chartTheme).toEqual({
       ...DARK_THEME,

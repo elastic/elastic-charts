@@ -37,4 +37,5 @@ export {
   RenderChangeListener,
   BasicListener,
 } from './chart_types/xy_chart/store/chart_state';
-export { SequentialPalette } from './utils/colors/color_palette';
+export { calcColorPalette } from './utils/colors/color_palette';
+export { HexColor } from './utils/colors/hex_to_rgb';
