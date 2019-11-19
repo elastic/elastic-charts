@@ -19,7 +19,7 @@ const scssLoaders = [
 
 module.exports = async ({ config, mode }) => {
   if (mode === 'DEVELOPMENT') {
-    config.devtool = 'eval';
+    config.devtool = 'inline-source-map';
   } else {
     config.devtool = 'source-map';
   }

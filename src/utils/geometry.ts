@@ -1,3 +1,4 @@
+import { $Values } from 'utility-types';
 import { SpecId } from './ids';
 import { BarSeriesStyle, PointStyle, AreaStyle, LineStyle, ArcStyle } from './themes/theme';
 
@@ -14,7 +15,7 @@ export const AccessorType = Object.freeze({
   Y1: 'y1' as 'y1',
 });
 
-export type AccessorType = typeof AccessorType.Y0 | typeof AccessorType.Y1;
+export type AccessorType = $Values<typeof AccessorType>;
 
 export interface GeometryValue {
   y: any;
@@ -23,6 +24,13 @@ export interface GeometryValue {
 }
 
 export type IndexedGeometry = PointGeometry | BarGeometry;
+
+/**
+ * Array of **range** clippings [x1, x2] to be excluded during rendering
+ *
+ * Note: Must be scaled **range** values (i.e. pixel coordinates) **NOT** domain values
+ */
+export type ClippedRanges = [number, number][];
 
 export interface PointGeometry {
   x: number;
@@ -54,6 +62,7 @@ export interface BarGeometry {
   value: GeometryValue;
   seriesStyle: BarSeriesStyle;
 }
+
 export interface LineGeometry {
   line: string;
   points: PointGeometry[];
@@ -65,7 +74,12 @@ export interface LineGeometry {
   geometryId: GeometryId;
   seriesLineStyle: LineStyle;
   seriesPointStyle: PointStyle;
+  /**
+   * Ranges of `[x0, x1]` pairs to clip from series
+   */
+  clippedRanges: ClippedRanges;
 }
+
 export interface AreaGeometry {
   area: string;
   lines: string[];
@@ -80,6 +94,10 @@ export interface AreaGeometry {
   seriesAreaLineStyle: LineStyle;
   seriesPointStyle: PointStyle;
   isStacked: boolean;
+  /**
+   * Ranges of `[x0, x1]` pairs to clip from series
+   */
+  clippedRanges: ClippedRanges;
 }
 
 export interface ArcGeometry {

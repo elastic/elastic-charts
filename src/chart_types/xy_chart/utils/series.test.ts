@@ -362,6 +362,7 @@ describe('Series', () => {
       splittedDataSeries.splittedSeries,
       xValues,
       ScaleType.Linear,
+      [],
     );
     expect(stackedDataSeries.stacked).toMatchSnapshot();
   });

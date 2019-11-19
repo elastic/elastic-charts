@@ -6,6 +6,7 @@ import { getSettingsSpecSelector } from './get_settings_specs';
 import { isVerticalAxis } from '../../chart_types/xy_chart/utils/axis_utils';
 import { getChartThemeSelector } from './get_chart_theme';
 import { GlobalChartState } from '../chart_state';
+import { getItemLabel } from '../../chart_types/xy_chart/legend/legend';
 
 const getParentDimensionSelector = (state: GlobalChartState) => state.parentDimensions;
 
@@ -15,8 +16,14 @@ const legendItemLabelsSelector = createCachedSelector(
     const labels: string[] = [];
     const { showLegendDisplayValue } = settings;
     legendItems.forEach((item) => {
-      labels.push(`${item.label} ${showLegendDisplayValue ? item.displayValue.formatted.y1 : ''}`);
-      labels.push(`${item.label} ${showLegendDisplayValue ? item.displayValue.formatted.y0 : ''}`);
+      if (item.displayValue.formatted.y1 !== null) {
+        const label = getItemLabel(item, 'y1');
+        labels.push(`${label}${showLegendDisplayValue ? item.displayValue.formatted.y1 : ''}`);
+      }
+      if (item.displayValue.formatted.y0 !== null) {
+        const label = getItemLabel(item, 'y0');
+        labels.push(`${label}${showLegendDisplayValue ? item.displayValue.formatted.y0 : ''}`);
+      }
     });
     return labels;
   },
@@ -34,7 +41,16 @@ export const getLegendSizeSelector = createCachedSelector(
     const bboxCalculator = new CanvasTextBBoxCalculator();
     const bbox = labels.reduce(
       (acc, label) => {
-        const bbox = bboxCalculator.compute(label, 10, 12, 'Arial', 1.5).getOrElse({ width: 0, height: 0 });
+        const bbox = bboxCalculator
+          .compute(
+            label,
+            1,
+            12,
+            '"Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+            1.5,
+            400,
+          )
+          .getOrElse({ width: 0, height: 0 });
         if (acc.height < bbox.height) {
           acc.height = bbox.height;
         }
@@ -47,25 +63,26 @@ export const getLegendSizeSelector = createCachedSelector(
     );
 
     bboxCalculator.destroy();
-    const { showLegend, legendPosition } = settings;
+    const { showLegend, showLegendDisplayValue, legendPosition } = settings;
     const {
-      legend: { verticalWidth },
+      legend: { verticalWidth, spacingBuffer },
     } = theme;
     if (!showLegend) {
       return { width: 0, height: 0 };
     }
-    const legendItemWidth = bbox.width + MARKER_WIDTH + MARKER_LEFT_MARGIN + VALUE_LEFT_MARGIN;
+    const legendItemWidth =
+      MARKER_WIDTH + MARKER_LEFT_MARGIN + bbox.width + (showLegendDisplayValue ? VALUE_LEFT_MARGIN : 0);
     if (isVerticalAxis(legendPosition)) {
       const legendItemHeight = bbox.height + VERTICAL_PADDING * 2;
       return {
-        width: Math.ceil(Math.min(legendItemWidth, verticalWidth)),
+        width: Math.floor(Math.min(legendItemWidth + spacingBuffer, verticalWidth)),
         height: legendItemHeight,
       };
     } else {
       const isSingleLine = (parentDimensions.width - 20) / 200 > labels.length;
       return {
         height: isSingleLine ? bbox.height + 16 : bbox.height * 2 + 24,
-        width: Math.ceil(Math.min(legendItemWidth, verticalWidth)),
+        width: Math.floor(Math.min(legendItemWidth + spacingBuffer, verticalWidth)),
       };
     }
   },

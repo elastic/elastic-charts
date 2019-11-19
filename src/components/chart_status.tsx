@@ -11,7 +11,7 @@ class ChartStatusComponent extends React.Component<ChartStatusStateProps> {
     const { chartRendered, chartRenderedCount } = this.props;
     return (
       <div
-        className="echChartState"
+        className="echChartStatus"
         data-ech-render-complete={chartRendered}
         data-ech-render-count={chartRenderedCount}
       />

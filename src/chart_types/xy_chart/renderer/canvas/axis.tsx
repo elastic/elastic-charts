@@ -258,7 +258,6 @@ class AxesComponent extends React.PureComponent<AxesProps> {
       debug,
       chartDimensions,
     } = this.props;
-
     const axesComponents: JSX.Element[] = [];
     axesVisibleTicks.forEach((axisTicks, axisId) => {
       const axisSpec = axesSpecs.find((spec) => spec.id === axisId);

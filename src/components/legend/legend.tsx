@@ -16,7 +16,7 @@ import { LegendListItem } from './legend_item';
 import { Theme } from '../../utils/themes/theme';
 import { TooltipLegendValue } from '../../chart_types/xy_chart/tooltip/tooltip';
 import { AccessorType } from '../../utils/geometry';
-import { LegendItem } from '../../chart_types/xy_chart/legend/legend';
+import { LegendItem, getItemLabel } from '../../chart_types/xy_chart/legend/legend';
 import { BBox } from '../../utils/bbox/bbox_calculator';
 import {
   onLegendItemClick,
@@ -135,14 +135,6 @@ class LegendComponent extends React.Component<LegendProps> {
     return banded ? [y1, y0] : [y1];
   }
 
-  private getItemLabel({ banded, label, y1AccessorFormat, y0AccessorFormat }: LegendItem, yAccessor: AccessorType) {
-    if (!banded) {
-      return label;
-    }
-
-    return yAccessor === AccessorType.Y1 ? `${label}${y1AccessorFormat}` : `${label}${y0AccessorFormat}`;
-  }
-
   private renderLegendElement = (item: LegendItem) => {
     if (!this.props.settings) {
       return null;
@@ -156,7 +148,7 @@ class LegendComponent extends React.Component<LegendProps> {
       return (
         <LegendListItem
           {...item}
-          label={this.getItemLabel(item, yAccessor)}
+          label={getItemLabel(item, yAccessor)}
           key={`${key}-${yAccessor}`}
           legendItem={item}
           displayValue={value !== '' ? value : displayValue.formatted[yAccessor]}

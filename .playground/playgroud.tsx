@@ -1,21 +1,22 @@
 import React from 'react';
-import { Axis, Chart, Position, ScaleType, Settings, BarSeries } from '../src';
+import { Axis, Chart, Position, ScaleType, Settings, AreaSeries } from '../src';
 
 export class Playground extends React.Component {
   render() {
     return (
       <div className="chart">
         <Chart>
-          <Settings rotation={90} />
+          <Settings showLegend />
           <Axis id="y" title={'y'} position={Position.Left} tickFormat={(value) => `y ${Number(value)}`} />
           <Axis id="x" title={'x'} position={Position.Bottom} tickFormat={(value) => `x ${Number(value)}`} />
-          <BarSeries
+          <AreaSeries
             id="bars"
-            xScaleType={ScaleType.Time}
+            xScaleType={ScaleType.Linear}
             yScaleType={ScaleType.Linear}
-            xAccessor={1}
-            yAccessors={[0]}
-            data={[[0, 10], [1, 22], [2, 33]]}
+            xAccessor={0}
+            y0Accessors={[1]}
+            yAccessors={[2]}
+            data={[[0, 10, 20], [1, 22, 33], [2, 33, 44]]}
           />
         </Chart>
       </div>

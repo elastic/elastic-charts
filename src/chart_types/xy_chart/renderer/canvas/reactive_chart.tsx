@@ -1,7 +1,6 @@
 import React from 'react';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect, ReactReduxContext, Provider } from 'react-redux';
-import { ContainerConfig } from 'konva';
 import { Layer, Rect, Stage } from 'react-konva';
 import { AreaGeometries } from './area_geometries';
 import { BarGeometries } from './bar_geometries';
@@ -38,6 +37,7 @@ import { LegendItem } from '../../../../chart_types/xy_chart/legend/legend';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
+import { Clippings } from './bar_values_utils';
 
 interface Props {
   initialized: boolean;
@@ -75,7 +75,7 @@ class Chart extends React.Component<Props> {
       this.props.onChartRendered();
     }
   }
-  renderBarSeries = (clippings: ContainerConfig): ReactiveChartElementIndex[] => {
+  renderBarSeries = (clippings: Clippings): ReactiveChartElementIndex[] => {
     const { geometries, theme, isChartAnimatable, highlightedLegendItem } = this.props;
     if (!geometries) {
       return [];
@@ -100,7 +100,7 @@ class Chart extends React.Component<Props> {
     ];
   };
 
-  renderLineSeries = (clippings: ContainerConfig): ReactiveChartElementIndex[] => {
+  renderLineSeries = (clippings: Clippings): ReactiveChartElementIndex[] => {
     const { geometries, theme, isChartAnimatable, highlightedLegendItem } = this.props;
     if (!geometries) {
       return [];
@@ -125,7 +125,7 @@ class Chart extends React.Component<Props> {
     ];
   };
 
-  renderAreaSeries = (clippings: ContainerConfig): ReactiveChartElementIndex[] => {
+  renderAreaSeries = (clippings: Clippings): ReactiveChartElementIndex[] => {
     const { geometries, theme, isChartAnimatable, highlightedLegendItem } = this.props;
     if (!geometries) {
       return [];

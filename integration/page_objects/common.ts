@@ -21,7 +21,7 @@ class CommonPage {
 
     return `${baseUrl}?${query}${query ? '&' : ''}knob-debug=false`;
   }
-  async getBoundingClientRect(selector = '.echChart[data-ech-render-complete=true]') {
+  async getBoundingClientRect(selector = '.echChart') {
     return await page.evaluate((selector) => {
       const element = document.querySelector(selector);
 
@@ -37,10 +37,7 @@ class CommonPage {
   /**
    * Capture screenshot or chart element only
    */
-  async screenshotDOMElement(
-    selector = '.echChart[data-ech-render-complete=true]',
-    opts?: ScreenshotDOMElementOptions,
-  ) {
+  async screenshotDOMElement(selector = '.echChart', opts?: ScreenshotDOMElementOptions) {
     const padding: number = opts && opts.padding ? opts.padding : 0;
     const path: string | undefined = opts && opts.path ? opts.path : undefined;
     const rect = await this.getBoundingClientRect(selector);
@@ -56,10 +53,7 @@ class CommonPage {
     });
   }
 
-  async moveMouseRelativeToDOMElement(
-    mousePosition: { x: number; y: number },
-    selector = '.echChart[data-ech-render-complete=true]',
-  ) {
+  async moveMouseRelativeToDOMElement(mousePosition: { x: number; y: number }, selector = '.echChart') {
     const chartContainer = await this.getBoundingClientRect(selector);
     await page.mouse.move(chartContainer.left + mousePosition.x, chartContainer.top + mousePosition.y);
   }
@@ -107,7 +101,7 @@ class CommonPage {
 
       expect(chart).toMatchImageSnapshot();
     } catch (error) {
-      throw new Error(error);
+      throw new Error(`${error}\n\n${url}`);
     }
   }
   async loadChartFromURL(url: string) {
@@ -115,7 +109,7 @@ class CommonPage {
     await page.goto(cleanUrl);
   }
 
-  async waitForElement(selector = '.echChart[data-ech-render-complete=true]', timeout = 10000) {
+  async waitForElement(selector = '.echChartStatus[data-ech-render-complete=true]', timeout = 10000) {
     await page.waitForSelector(selector, { timeout });
   }
 }

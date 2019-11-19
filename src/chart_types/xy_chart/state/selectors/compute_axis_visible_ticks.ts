@@ -4,7 +4,6 @@ import { getAxisSpecsSelector } from './get_specs';
 import { getAxisTicksPositions, AxisTick, AxisLinePosition } from '../../utils/axis_utils';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { isLegendVisibleSelector } from './is_legend_visible';
 import { computeAxisTicksDimensionsSelector } from './compute_axis_ticks_dimensions';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
@@ -24,7 +23,6 @@ export const computeAxisVisibleTicksSelector = createCachedSelector(
     computeChartDimensionsSelector,
     getChartThemeSelector,
     getSettingsSpecSelector,
-    isLegendVisibleSelector,
     getAxisSpecsSelector,
     computeAxisTicksDimensionsSelector,
     computeSeriesDomainsSelector,
@@ -36,7 +34,6 @@ export const computeAxisVisibleTicksSelector = createCachedSelector(
     chartDimensions,
     chartTheme,
     settingsSpec,
-    isLegendVisible,
     axesSpecs,
     axesTicksDimensions,
     seriesDomainsAndData,

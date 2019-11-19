@@ -7,6 +7,7 @@ import {
 } from '../utils/series';
 import { AxisSpec, BasicSeriesSpec, Postfixes, isAreaSeriesSpec, isBarSeriesSpec } from '../utils/specs';
 import { Y0_ACCESSOR_POSTFIX, Y1_ACCESSOR_POSTFIX } from '../tooltip/tooltip';
+import { AccessorType } from '../../../utils/geometry';
 
 export interface FormatedLastValues {
   y0: number | string | null;
@@ -37,6 +38,17 @@ export function getPostfix(spec: BasicSeriesSpec): Postfixes {
   }
 
   return {};
+}
+
+export function getItemLabel(
+  { banded, label, y1AccessorFormat, y0AccessorFormat }: LegendItem,
+  yAccessor: AccessorType,
+) {
+  if (!banded) {
+    return label;
+  }
+
+  return yAccessor === AccessorType.Y1 ? `${label}${y1AccessorFormat}` : `${label}${y0AccessorFormat}`;
 }
 
 export function computeLegend(

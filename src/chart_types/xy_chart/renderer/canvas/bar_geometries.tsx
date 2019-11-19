@@ -1,4 +1,4 @@
-import { Group as KonvaGroup, ContainerConfig } from 'konva';
+import { Group as KonvaGroup } from 'konva';
 import React from 'react';
 import { Group, Rect } from 'react-konva';
 import { animated, Spring } from 'react-spring/renderprops-konva.cjs';
@@ -7,13 +7,14 @@ import { BarGeometry } from '../../../../utils/geometry';
 import { LegendItem } from '../../../../chart_types/xy_chart/legend/legend';
 import { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
 import { getGeometryStateStyle } from '../../rendering/rendering';
+import { Clippings } from './bar_values_utils';
 
 interface BarGeometriesDataProps {
   animated?: boolean;
   bars: BarGeometry[];
   sharedStyle: SharedGeometryStateStyle;
   highlightedLegendItem: LegendItem | null;
-  clippings: ContainerConfig;
+  clippings: Clippings;
 }
 interface BarGeometriesDataState {
   overBar?: BarGeometry;

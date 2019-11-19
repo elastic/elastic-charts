@@ -1,6 +1,9 @@
+import { Required } from 'utility-types';
 import { Rotation } from '../../utils/specs';
 import { Dimensions } from '../../../../utils/dimensions';
 import { DisplayValueStyle } from '../../../../utils/themes/theme';
+import { ContainerConfig } from 'konva';
+import { ClippedRanges } from '../../../../utils/geometry';
 
 export interface PointStyleProps {
   radius: number;
@@ -10,6 +13,8 @@ export interface PointStyleProps {
   fill: string;
   opacity: number;
 }
+
+export type Clippings = Required<ContainerConfig, 'clipHeight' | 'clipWidth'>;
 
 export function rotateBarValueProps(
   chartRotation: Rotation,
@@ -223,4 +228,45 @@ export function isBarValueOverflow(
     valuePosition.y + clip.offsetY - valuePosition.offsetY < 0;
 
   return !!hideClippedValue && (isOverflowX || isOverflowY);
+}
+
+/**
+ * Creates `clipFunc` for Konva paths that have clipped ranges
+ *
+ * @param clippedRanges ranges to be clipped from rendering
+ * @param clippings konva global clippings
+ * @param negate show, rather than exclude, only selected ranges
+ */
+export function clipRanges(
+  clippedRanges: ClippedRanges,
+  clippings: Clippings,
+  negate = false,
+): (ctx: CanvasRenderingContext2D) => void {
+  const length = clippedRanges.length;
+  const { clipHeight, clipWidth } = clippings;
+
+  if (negate) {
+    return (ctx) => {
+      clippedRanges.forEach(([x0, x1]) => {
+        ctx.rect(x0, 0, x1 - x0, clippings.clipHeight);
+      });
+    };
+  }
+
+  return (ctx) => {
+    if (length > 0) {
+      ctx.rect(0, 0, clippedRanges[0][0], clipHeight);
+      const lastX = clippedRanges[length - 1][1];
+      ctx.rect(lastX, 0, clipWidth - lastX, clipHeight);
+    }
+
+    if (length > 1) {
+      for (let i = 1; i < length; i++) {
+        const [, x0] = clippedRanges[i - 1];
+        const [x1] = clippedRanges[i];
+
+        ctx.rect(x0, 0, x1 - x0, clipHeight);
+      }
+    }
+  };
 }

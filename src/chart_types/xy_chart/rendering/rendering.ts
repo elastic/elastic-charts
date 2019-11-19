@@ -25,6 +25,7 @@ import {
   GeometryId,
   isPointGeometry,
   AccessorType,
+  ClippedRanges,
 } from '../../../utils/geometry';
 import { mergePartial } from '../../../utils/commons';
 import { LegendItem } from '../legend/legend';
@@ -327,6 +328,7 @@ export function renderLine(
   xScaleOffset: number,
   seriesStyle: LineSeriesStyle,
   pointStyleAccessor?: PointStyleAccessor,
+  hasFit?: boolean,
 ): {
   lineGeometry: LineGeometry;
   indexedGeometries: Map<any, IndexedGeometry[]>;
@@ -335,15 +337,19 @@ export function renderLine(
 
   const pathGenerator = line<DataSeriesDatum>()
     .x(({ x }) => xScale.scale(x) - xScaleOffset)
-    .y(({ y1 }) => {
-      if (y1 !== null) {
-        return yScale.scale(y1);
+    .y((datum) => {
+      const yValue = getYValue(datum);
+
+      if (yValue !== null) {
+        return yScale.scale(yValue);
       }
+
       // this should never happen thanks to the defined function
       return yScale.isInverted ? yScale.range[1] : yScale.range[0];
     })
-    .defined(({ x, y1 }) => {
-      return y1 !== null && !(isLogScale && y1 <= 0) && xScale.isValueInDomain(x);
+    .defined((datum) => {
+      const yValue = getYValue(datum);
+      return yValue !== null && !(isLogScale && yValue <= 0) && xScale.isValueInDomain(datum.x);
     })
     .curve(getCurveFactory(curve));
   const y = 0;
@@ -361,6 +367,7 @@ export function renderLine(
     pointStyleAccessor,
   );
 
+  const clippedRanges = hasFit && !hasY0Accessors ? getClippedRanges(dataset, xScale, xScaleOffset) : [];
   const lineGeometry = {
     line: pathGenerator(dataset) || '',
     points: pointGeometries,
@@ -375,12 +382,28 @@ export function renderLine(
     },
     seriesLineStyle: seriesStyle.line,
     seriesPointStyle: seriesStyle.point,
+    clippedRanges,
   };
   return {
     lineGeometry,
     indexedGeometries,
   };
 }
+
+/**
+ * Returns value of `y1` or `filled.y1` or null
+ */
+export const getYValue = ({ y1, filled }: DataSeriesDatum): number | null => {
+  if (y1 !== null) {
+    return y1;
+  }
+
+  if (filled && filled.y1 !== undefined) {
+    return filled.y1;
+  }
+
+  return null;
+};
 
 export function renderArea(
   shift: number,
@@ -396,17 +419,18 @@ export function renderArea(
   seriesStyle: AreaSeriesStyle,
   isStacked = false,
   pointStyleAccessor?: PointStyleAccessor,
+  hasFit?: boolean,
 ): {
   areaGeometry: AreaGeometry;
   indexedGeometries: Map<any, IndexedGeometry[]>;
 } {
   const isLogScale = isLogarithmicScale(yScale);
-
   const pathGenerator = area<DataSeriesDatum>()
     .x(({ x }) => xScale.scale(x) - xScaleOffset)
-    .y1(({ y1 }) => {
-      if (y1 !== null) {
-        return yScale.scale(y1);
+    .y1((datum) => {
+      const yValue = getYValue(datum);
+      if (yValue !== null) {
+        return yScale.scale(yValue);
       }
       // this should never happen thanks to the defined function
       return yScale.isInverted ? yScale.range[1] : yScale.range[0];
@@ -417,13 +441,14 @@ export function renderArea(
       }
       return yScale.scale(y0);
     })
-    .defined(({ y1, x }) => {
-      return y1 !== null && !(isLogScale && y1 <= 0) && xScale.isValueInDomain(x);
+    .defined((datum) => {
+      const yValue = getYValue(datum);
+      return yValue !== null && !(isLogScale && yValue <= 0) && xScale.isValueInDomain(datum.x);
     })
     .curve(getCurveFactory(curve));
 
+  const clippedRanges = hasFit && !hasY0Accessors && !isStacked ? getClippedRanges(dataset, xScale, xScaleOffset) : [];
   const y1Line = pathGenerator.lineY1()(dataset);
-
   const lines: string[] = [];
   if (y1Line) {
     lines.push(y1Line);
@@ -447,7 +472,7 @@ export function renderArea(
     pointStyleAccessor,
   );
 
-  const areaGeometry = {
+  const areaGeometry: AreaGeometry = {
     area: pathGenerator(dataset) || '',
     lines,
     points: pointGeometries,
@@ -464,11 +489,47 @@ export function renderArea(
     seriesAreaLineStyle: seriesStyle.line,
     seriesPointStyle: seriesStyle.point,
     isStacked,
+    clippedRanges,
   };
   return {
     areaGeometry,
     indexedGeometries,
   };
+}
+
+/**
+ * Gets clipped ranges that have been fitted to values
+ * @param dataset
+ * @param xScale
+ * @param xScaleOffset
+ */
+export function getClippedRanges(dataset: DataSeriesDatum[], xScale: Scale, xScaleOffset: number): ClippedRanges {
+  let firstNonNullX: number | null = null;
+  let hasNull = false;
+
+  return dataset.reduce<ClippedRanges>((acc, { x, y1 }) => {
+    const xValue = xScale.scale(x) - xScaleOffset + xScale.bandwidth / 2;
+
+    if (y1 !== null) {
+      if (hasNull) {
+        if (firstNonNullX !== null) {
+          acc.push([firstNonNullX, xValue]);
+        } else {
+          acc.push([0, xValue]);
+        }
+        hasNull = false;
+      }
+
+      firstNonNullX = xValue;
+    } else {
+      const endXValue = xScale.range[1] - xScale.bandwidth * (2 / 3);
+      if (firstNonNullX !== null && xValue === endXValue) {
+        acc.push([firstNonNullX, xValue]);
+      }
+      hasNull = true;
+    }
+    return acc;
+  }, []);
 }
 
 export function getGeometryStateStyle(

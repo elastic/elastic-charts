@@ -1,3 +1,4 @@
+import { $Values } from 'utility-types';
 import {
   AreaSeriesStyle,
   GridLineConfig,
@@ -8,15 +9,14 @@ import {
   PointStyle,
 } from '../../../utils/themes/theme';
 import { Accessor, AccessorFormat } from '../../../utils/accessor';
-import { Omit, RecursivePartial } from '../../../utils/commons';
+import { RecursivePartial } from '../../../utils/commons';
 import { AxisId, GroupId } from '../../../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../../../utils/scales/scales';
 import { CurveType } from '../../../utils/curves';
-import { RawDataSeriesDatum } from './series';
+import { RawDataSeriesDatum, DataSeriesColorsValues } from './series';
 import { AnnotationTooltipFormatter } from '../annotations/annotation_utils';
-import { DataSeriesColorsValues } from './series';
-import { Spec } from '../../../specs';
 import { GeometryId } from '../../../utils/geometry';
+import { Spec } from '../../..';
 
 export type Datum = any;
 export type Rotation = 0 | 90 | -90 | 180;
@@ -55,6 +55,90 @@ interface DomainMinInterval {
    */
   minInterval?: number;
 }
+
+/**
+ * The fit function type
+ */
+export const Fit = Object.freeze({
+  /**
+   * Don't draw value on the graph. Slices out area between `null` values.
+   *
+   * Example:
+   * ```js
+   * [2, null, null, 8] => [2, null null, 8]
+   * ```
+   */
+  None: 'none' as 'none',
+  /**
+   * Use the previous non-`null` value
+   *
+   * Example:
+   * ```js
+   * [2, null, null, 8] => [2, 2, 2, 8]
+   * ```
+   *
+   * @opposite `Lookahead`
+   */
+  Carry: 'carry' as 'carry',
+  /**
+   * Use the next non-`null` value
+   *
+   * Example:
+   * ```js
+   * [2, null, null, 8] => [2, 8, 8, 8]
+   * ```
+   *
+   * @opposite `Carry`
+   */
+  Lookahead: 'lookahead' as 'lookahead',
+  /**
+   * Use the closest non-`null` value (before or after)
+   *
+   * Example:
+   * ```js
+   * [2, null, null, 8] => [2, 2, 8, 8]
+   * ```
+   */
+  Nearest: 'nearest' as 'nearest',
+  /**
+   * Average between the closest non-`null` values
+   *
+   * Example:
+   * ```js
+   * [2, null, null, 8] => [2, 5, 5, 8]
+   * ```
+   */
+  Average: 'average' as 'average',
+  /**
+   * Linear interpolation between the closest non-`null` values
+   *
+   * Example:
+   * ```js
+   * [2, null, null, 8] => [2, 4, 6, 8]
+   * ```
+   */
+  Linear: 'linear' as 'linear',
+  /**
+   * Sets all `null` values to `0`
+   *
+   * Example:
+   * ```js
+   * [2, null, null, 8] => [2, 0, 0, 8]
+   * ```
+   */
+  Zero: 'zero' as 'zero',
+  /**
+   * Specify an explicit value `X`
+   *
+   * Example:
+   * ```js
+   * [2, null, null, 8] => [2, X, X, 8]
+   * ```
+   */
+  Explicit: 'explicit' as 'explicit',
+});
+
+export type Fit = $Values<typeof Fit>;
 
 interface LowerBound {
   /** Lower bound of domain range */
@@ -96,7 +180,7 @@ export interface SeriesSpec extends Spec {
   /** when using a different groupId this option will allow compute in the same domain of the global domain */
   useDefaultGroupDomain?: boolean;
   /** An array of data */
-  data: Datum[] | number[][];
+  data: Datum[];
   /** the type of series */
   seriesType: 'bar' | 'line' | 'area';
   /** Custom colors for series */
@@ -182,6 +266,8 @@ export interface SeriesScales {
 
 export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales;
 
+export type SeriesSpecs<S extends BasicSeriesSpec = BasicSeriesSpec> = Array<S>;
+
 /**
  * This spec describe the dataset configuration used to display a bar series.
  */
@@ -218,6 +304,25 @@ export type HistogramBarSeriesSpec = Omit<BarSeriesSpec, 'stackAccessors'> & {
   enableHistogramMode: true;
 };
 
+export type FitConfig = {
+  /**
+   * Fit type for data with null values
+   */
+  type: Fit;
+  /**
+   * Fit value used when `type` is set to `Fit.Explicit`
+   */
+  value?: number;
+  /**
+   * Value used for first and last point if fitting is not possible
+   *
+   * `'nearest'` will set indeterminate end values to the closes _visible_ point.
+   *
+   * Note: Computed fit values will always take precedence over `endValues`
+   */
+  endValue?: number | 'nearest';
+};
+
 /**
  * This spec describe the dataset configuration used to display a line series.
  */
@@ -232,9 +337,9 @@ export type LineSeriesSpec = BasicSeriesSpec &
      */
     pointStyleAccessor?: PointStyleAccessor;
     /**
-     * Stack each series in percentage for each point.
+     * Fit config to fill `null` values in dataset
      */
-    stackAsPercentage?: boolean;
+    fit?: Exclude<Fit, 'explicit'> | FitConfig;
   };
 
 /**
@@ -256,6 +361,10 @@ export type AreaSeriesSpec = BasicSeriesSpec &
      * An optional functional accessor to return custom color or style for point datum
      */
     pointStyleAccessor?: PointStyleAccessor;
+    /**
+     * Fit config to fill `null` values in dataset
+     */
+    fit?: Exclude<Fit, 'explicit'> | FitConfig;
   };
 
 export interface HistogramConfig {
@@ -339,7 +448,7 @@ export const Position = Object.freeze({
   Right: 'right' as 'right',
 });
 
-export type Position = typeof Position.Top | typeof Position.Bottom | typeof Position.Left | typeof Position.Right;
+export type Position = $Values<typeof Position>;
 
 export const AnnotationTypes = Object.freeze({
   Line: 'line' as 'line',
@@ -347,17 +456,14 @@ export const AnnotationTypes = Object.freeze({
   Text: 'text' as 'text',
 });
 
-export type AnnotationType =
-  | typeof AnnotationTypes.Line
-  | typeof AnnotationTypes.Rectangle
-  | typeof AnnotationTypes.Text;
+export type AnnotationType = $Values<typeof AnnotationTypes>;
 
 export const AnnotationDomainTypes = Object.freeze({
   XDomain: 'xDomain' as 'xDomain',
   YDomain: 'yDomain' as 'yDomain',
 });
 
-export type AnnotationDomainType = typeof AnnotationDomainTypes.XDomain | typeof AnnotationDomainTypes.YDomain;
+export type AnnotationDomainType = $Values<typeof AnnotationDomainTypes>;
 
 export interface LineAnnotationDatum {
   dataValue: any;
