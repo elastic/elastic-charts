@@ -107,8 +107,13 @@ class CommonPage {
   async loadChartFromURL(url: string) {
     const cleanUrl = CommonPage.parseUrl(url);
     await page.goto(cleanUrl);
+    this.waitForElement();
   }
-
+  /**
+   * Wait for an element to be on the DOM
+   * @param {string} [selector] the DOM selector to wait for, default to '.echChartStatus[data-ech-render-complete=true]'
+   * @param {number} [timeout] - the timeout for the operation, default to 10000ms
+   */
   async waitForElement(selector = '.echChartStatus[data-ech-render-complete=true]', timeout = 10000) {
     await page.waitForSelector(selector, { timeout });
   }

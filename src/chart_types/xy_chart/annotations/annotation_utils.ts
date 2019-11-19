@@ -16,12 +16,12 @@ import { Scale, ScaleType } from '../../../utils/scales/scales';
 import { computeXScaleOffset, getAxesSpecForSpecId, isHorizontalRotation } from '../state/utils';
 import { Point } from '../../../utils/point';
 import {
-  getLineAnnotationTooltipStateFromCursor,
+  computeLineAnnotationTooltipState,
   AnnotationLineProps,
   computeLineAnnotationDimensions,
 } from './line_annotation_tooltip';
 import {
-  getRectAnnotationTooltipStateFromCursor,
+  computeRectAnnotationTooltipState,
   AnnotationRectProps,
   computeRectAnnotationDimensions,
 } from './rect_annotation_tooltip';
@@ -40,11 +40,17 @@ export interface AnnotationTooltipVisibleState {
 export interface AnnotationTooltipHiddenState {
   isVisible: false;
 }
+/**
+ * The header and description strings for an Annotation
+ */
 export interface AnnotationDetails {
   headerText?: string;
   detailsText?: string;
 }
 
+/**
+ * The marker for an Annotation. Usually a JSX element
+ */
 export interface AnnotationMarker {
   icon: JSX.Element;
   position: { top: number; left: number };
@@ -52,7 +58,6 @@ export interface AnnotationMarker {
   color: string;
 }
 
-// TODO: add AnnotationTextProps
 export type AnnotationDimensions = AnnotationLineProps[] | AnnotationRectProps[];
 
 export function scaleAndValidateDatum(dataValue: any, scale: Scale, alignWithTick: boolean): number | null {
@@ -207,7 +212,7 @@ export function computeAnnotationTooltipState(
       if (spec.hideLines) {
         continue;
       }
-      const lineAnnotationTooltipState = getLineAnnotationTooltipStateFromCursor(
+      const lineAnnotationTooltipState = computeLineAnnotationTooltipState(
         cursorPosition,
         annotationDimension,
         groupId,
@@ -219,7 +224,7 @@ export function computeAnnotationTooltipState(
         return lineAnnotationTooltipState;
       }
     } else if (isRectAnnotation(spec)) {
-      const rectAnnotationTooltipState = getRectAnnotationTooltipStateFromCursor(
+      const rectAnnotationTooltipState = computeRectAnnotationTooltipState(
         cursorPosition,
         annotationDimension,
         chartRotation,

@@ -2,7 +2,6 @@ import { AnnotationTypes, RectAnnotationDatum, RectAnnotationSpec, Rotation } fr
 import { Dimensions } from '../../../utils/dimensions';
 import { GroupId } from '../../../utils/ids';
 import { Scale } from '../../../utils/scales/scales';
-import { isHorizontalRotation } from '../state/utils';
 import { Point } from '../../../utils/point';
 import {
   AnnotationTooltipFormatter,
@@ -21,7 +20,7 @@ export interface AnnotationRectProps {
   details?: string;
 }
 
-export function getRectAnnotationTooltipStateFromCursor(
+export function computeRectAnnotationTooltipState(
   /** the cursor position relative to the projection area */
   cursorPosition: Point,
   annotationRects: AnnotationRectProps[],
@@ -58,42 +57,6 @@ export function getRectAnnotationTooltipStateFromCursor(
   return {
     isVisible: false,
   };
-}
-
-export function computeRectTooltipLeft(
-  chartRotation: Rotation,
-  isRightTooltip: boolean,
-  { startX, endX }: { startX: number; endX: number },
-  cursorX: number,
-  chartWidth: number,
-): number {
-  const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
-  const horizontalLeft = isRightTooltip ? endX : startX;
-  return isHorizontalChartRotation ? (chartRotation === 180 ? chartWidth - horizontalLeft : horizontalLeft) : cursorX;
-}
-
-export function computeRectTooltipTop(
-  chartRotation: Rotation,
-  isBottomTooltip: boolean,
-  { startX, endX }: { startX: number; endX: number },
-  cursorY: number,
-  chartHeight: number,
-): number {
-  const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
-  const verticalTop = isBottomTooltip ? endX : startX;
-
-  return isHorizontalChartRotation ? cursorY : chartRotation === -90 ? chartHeight - verticalTop : verticalTop;
-}
-
-export function computeRectTooltipOffset(
-  isRightTooltip: boolean,
-  isBottomTooltip: boolean,
-  chartRotation: Rotation,
-): { offsetLeft: string; offsetTop: string } {
-  const offsetLeft = isRightTooltip ? (chartRotation === 180 ? '-100%' : '0') : chartRotation === 180 ? '0' : '-100%';
-  const offsetTop = isBottomTooltip ? (chartRotation === -90 ? '-100%' : '0') : chartRotation === -90 ? '0' : '-100%';
-
-  return { offsetLeft, offsetTop };
 }
 
 export function isWithinRectBounds(

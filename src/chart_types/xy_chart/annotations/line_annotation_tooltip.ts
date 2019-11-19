@@ -26,7 +26,8 @@ import { isWithinRectBounds } from './rect_annotation_tooltip';
 
 export type AnnotationLinePosition = [number, number, number, number];
 
-export type AnnotationLinePathPoints = {
+/** Start and end points of a line annotation  */
+export interface AnnotationLinePathPoints {
   /** x1,y1 the start point anchored to the linked axis */
   start: {
     x1: number;
@@ -37,7 +38,7 @@ export type AnnotationLinePathPoints = {
     x2: number;
     y2: number;
   };
-};
+}
 
 export interface AnnotationLineProps {
   /** the position of the start point relative to the Chart */
@@ -438,7 +439,7 @@ export function isWithinLineMarkerBounds(cursorPosition: Point, marker: Annotati
   return isWithinRectBounds(cursorPosition, markerRect);
 }
 
-export function getLineAnnotationTooltipStateFromCursor(
+export function computeLineAnnotationTooltipState(
   cursorPosition: Point,
   annotationLines: AnnotationLineProps[],
   groupId: GroupId,

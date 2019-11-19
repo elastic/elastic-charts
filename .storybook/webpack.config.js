@@ -32,7 +32,6 @@ module.exports = async ({ config, mode }) => {
     exclude: /node_modules/,
     options: {
       configFile: 'tsconfig.json',
-      transpileOnly: true,
     },
   });
   config.module.rules.push({
