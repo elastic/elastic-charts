@@ -5,7 +5,7 @@ const DEFAULT_NUM_OF_STEPS = 10;
 
 export function calcSequentialPalette(colors: HexColor[], steps = DEFAULT_NUM_OF_STEPS): string[] {
   if (colors.length !== 2) {
-    throw new Error('Valid number of colors for sequential palette is 1 or 2');
+    throw new Error('Valid number of colors for sequential palette is 2');
   }
   if (steps && steps <= 1) {
     throw new Error('Miminum number of steps is 2');
