@@ -15,9 +15,8 @@ type MatcherParameters<T extends (this: any, received: any, ...args: any[]) => a
   : never;
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
+  // eslint-disable-next-line
   namespace jest {
-    // eslint-disable-line
     interface Matchers<R> {
       /**
        * Expect array to be filled with value, and optionally length

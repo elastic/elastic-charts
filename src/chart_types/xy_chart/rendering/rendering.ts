@@ -1,5 +1,4 @@
 import { area, line } from 'd3-shape';
-
 import { CanvasTextBBoxCalculator } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import {
   AreaSeriesStyle,
