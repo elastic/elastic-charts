@@ -96,7 +96,6 @@ class Chart extends React.Component<ReactiveChartProps, ReactiveChartState> {
       return [];
     }
     const highlightedLegendItem = this.getHighlightedLegendItem();
-
     const element = (
       <BarGeometries
         key={'bar-geometries'}
