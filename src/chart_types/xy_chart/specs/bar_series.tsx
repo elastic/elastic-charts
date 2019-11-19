@@ -15,6 +15,7 @@ const defaultProps = {
   yScaleToDataExtent: false,
   hideInLegend: false,
   enableHistogramMode: false,
+  stackAsPercentage: false,
 };
 
 export const BarSeries = getConnect()(
@@ -29,5 +30,6 @@ export const BarSeries = getConnect()(
     | 'yScaleToDataExtent'
     | 'hideInLegend'
     | 'enableHistogramMode'
+    | 'stackAsPercentage'
   >(defaultProps),
 );
