@@ -43,12 +43,12 @@ export const getTooltipValuesAndGeometriesSelector = createCachedSelector(
     getExternalPointerEventStateSelector,
     getTooltipHeaderFormatterSelector,
   ],
-  getTooltipValues,
+  getTooltipAndHighlightFromXValue,
 )((state: GlobalChartState) => {
   return state.chartId;
 });
 
-function getTooltipValues(
+function getTooltipAndHighlightFromXValue(
   seriesSpecs: BasicSeriesSpec[],
   axesSpecs: AxisSpec[],
   projectedPointerPosition: Point,
@@ -79,53 +79,55 @@ function getTooltipValues(
   // build the tooltip value list
   let xValueInfo: TooltipValue | null = null;
   const highlightedGeometries: IndexedGeometry[] = [];
-  const tooltipValues = xMatchingGeoms.reduce<TooltipValue[]>((acc, indexedGeometry) => {
-    const {
-      geometryId: { specId },
-    } = indexedGeometry;
-    const spec = seriesSpecs.find((spec) => spec.id === specId);
+  const tooltipValues = xMatchingGeoms
+    .filter(({ value: { y } }) => y !== null)
+    .reduce<TooltipValue[]>((acc, indexedGeometry) => {
+      const {
+        geometryId: { specId },
+      } = indexedGeometry;
+      const spec = seriesSpecs.find((spec) => spec.id === specId);
 
-    // safe guard check
-    if (!spec) {
-      return acc;
-    }
-    const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
+      // safe guard check
+      if (!spec) {
+        return acc;
+      }
+      const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
 
-    // yScales is ensured by the enclosing if
-    const yScale = scales.yScales.get(spec.groupId);
-    if (!yScale) {
-      return acc;
-    }
+      // yScales is ensured by the enclosing if
+      const yScale = scales.yScales.get(spec.groupId);
+      if (!yScale) {
+        return acc;
+      }
 
-    // check if the pointer is on the geometry
-    let isHighlighted = false;
-    // avoid checking if using external pointer event
-    if (!externalPointerEvent && isPointOnGeometry(x, y, indexedGeometry)) {
-      isHighlighted = true;
-      highlightedGeometries.push(indexedGeometry);
-    }
+      // check if the pointer is on the geometry
+      let isHighlighted = false;
+      // avoid checking if using external pointer event
+      if (!externalPointerEvent && isPointOnGeometry(x, y, indexedGeometry)) {
+        isHighlighted = true;
+        highlightedGeometries.push(indexedGeometry);
+      }
 
-    // if it's a follow tooltip, and no element is highlighted
-    // not add that element into the tooltip list
-    if (!isHighlighted && isFollowTooltipType(tooltipType)) {
-      return acc;
-    }
+      // if it's a follow tooltip, and no element is highlighted
+      // not add that element into the tooltip list
+      if (!isHighlighted && isFollowTooltipType(tooltipType)) {
+        return acc;
+      }
 
-    // format the tooltip values
-    const yAxisFormatSpec = [0, 180].includes(chartRotation) ? yAxis : xAxis;
-    const formattedTooltip = formatTooltip(indexedGeometry, spec, false, isHighlighted, yAxisFormatSpec);
+      // format the tooltip values
+      const yAxisFormatSpec = [0, 180].includes(chartRotation) ? yAxis : xAxis;
+      const formattedTooltip = formatTooltip(indexedGeometry, spec, false, isHighlighted, yAxisFormatSpec);
 
-    // format only one time the x value
-    if (!xValueInfo) {
-      // if we have a tooltipHeaderFormatter, then don't pass in the xAxis as the user will define a formatter
-      const xAxisFormatSpec = [0, 180].includes(chartRotation) ? xAxis : yAxis;
-      const formatterAxis = tooltipHeaderFormatter ? undefined : xAxisFormatSpec;
-      xValueInfo = formatTooltip(indexedGeometry, spec, true, false, formatterAxis);
-      return [xValueInfo, ...acc, formattedTooltip];
-    }
+      // format only one time the x value
+      if (!xValueInfo) {
+        // if we have a tooltipHeaderFormatter, then don't pass in the xAxis as the user will define a formatter
+        const xAxisFormatSpec = [0, 180].includes(chartRotation) ? xAxis : yAxis;
+        const formatterAxis = tooltipHeaderFormatter ? undefined : xAxisFormatSpec;
+        xValueInfo = formatTooltip(indexedGeometry, spec, true, false, formatterAxis);
+        return [xValueInfo, ...acc, formattedTooltip];
+      }
 
-    return [...acc, formattedTooltip];
-  }, []);
+      return [...acc, formattedTooltip];
+    }, []);
 
   return {
     tooltipValues,

@@ -40,6 +40,16 @@ interface ChartState {
   legendPosition: Position;
 }
 
+function getContainerStyle(size: any): CSSProperties {
+  if (size) {
+    return {
+      position: 'relative',
+      ...getChartSize(size),
+    };
+  }
+  return {};
+}
+
 export class Chart extends React.Component<ChartProps, ChartState> {
   static defaultProps: ChartProps = {
     renderer: 'canvas',
@@ -51,10 +61,10 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     this.chartContainerRef = createRef();
 
     const storeReducer = chartStoreReducer(uuid.v4());
-    if (process.env.NODE_ENV === 'production') {
-      this.chartStore = createStore(storeReducer);
-    } else {
+    if (process.env.NODE_ENV !== 'production') {
       this.chartStore = createStore(storeReducer, devToolsEnhancer({ trace: true }));
+    } else {
+      this.chartStore = createStore(storeReducer);
     }
     this.state = {
       legendPosition: Position.Right,
@@ -88,32 +98,8 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     });
   }
 
-  static getContainerStyle = (size: any): CSSProperties => {
-    if (size) {
-      return {
-        position: 'relative',
-        ...getChartSize(size),
-      };
-    }
-    return {};
-  };
-
   dispatchExternalCursorEvent(event?: CursorEvent) {
     this.chartStore.dispatch(onExternalPointerEvent(event));
-    // this.chartSpecStore.setActiveChartId(event && event.chartId);
-    // const isActiveChart = this.chartSpecStore.isActiveChart.get();
-    // if (!event) {
-    //   this.chartSpecStore.externalCursorShown.set(false);
-    //   this.chartSpecStore.isCursorOnChart.set(false);
-    // } else {
-    //   if (
-    //     !isActiveChart &&
-    //     this.chartSpecStore.xScale!.type === event.scale &&
-    //     (event.unit === undefined || event.unit === this.chartSpecStore.xScale!.unit)
-    //   ) {
-    //     this.chartSpecStore.setCursorValue(event.value);
-    //   }
-    // }
   }
   getChartContainerRef = () => {
     return this.chartContainerRef;
@@ -121,7 +107,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
   render() {
     const { size, className } = this.props;
-    const containerStyle = Chart.getContainerStyle(size);
+    const containerStyle = getContainerStyle(size);
     const horizontal = isHorizontalAxis(this.state.legendPosition);
     const chartClassNames = classNames('echChart', className, {
       'echChart--column': horizontal,
