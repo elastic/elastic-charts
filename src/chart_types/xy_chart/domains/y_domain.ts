@@ -160,6 +160,7 @@ function computeYStackedDomain(dataseries: RawDataSeries[], scaleToExtent: boole
   }
   return computeContinuousDataDomain(dataValues, identity, scaleToExtent);
 }
+
 function computeYNonStackedDomain(dataseries: RawDataSeries[], scaleToExtent: boolean) {
   const yValues = new Set<any>();
   dataseries.forEach((ds) => {
@@ -175,11 +176,15 @@ function computeYNonStackedDomain(dataseries: RawDataSeries[], scaleToExtent: bo
   }
   return computeContinuousDataDomain([...yValues.values()], identity, scaleToExtent);
 }
+
 export function splitSpecsByGroupId(specs: YBasicSeriesSpec[]) {
   const specsByGroupIds = new Map<
     GroupId,
     { isPercentageStack: boolean; stacked: YBasicSeriesSpec[]; nonStacked: YBasicSeriesSpec[] }
   >();
+  // After mobx->redux https://github.com/elastic/elastic-charts/pull/281 we keep the specs untouched on mount
+  // in MobX version, the stackAccessors was programmatically added to every histogram specs
+  // in ReduX version, we left untouched the specs, so we have to manually check that
   const isHistogramEnabled = specs.some(({ seriesType, enableHistogramMode }) => {
     return seriesType === 'bar' && enableHistogramMode;
   });
