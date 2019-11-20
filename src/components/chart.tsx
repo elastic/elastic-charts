@@ -16,6 +16,7 @@ import { Position } from '../chart_types/xy_chart/utils/specs';
 import { CursorEvent } from '../specs/settings';
 import { ChartSize, getChartSize } from '../utils/chart_size';
 import { Stage } from 'react-konva';
+import Konva from 'konva';
 
 interface ChartProps {
   /** The type of rendered
@@ -95,11 +96,53 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     }
   }
 
-  getPNGSnapshot(): string | null {
+  getPNGSnapshot(
+    options = {
+      backgroundColor: 'transparent',
+      pixelRatio: 1,
+    },
+  ): {
+    blobOrDataUrl: any;
+    browser: 'IE11' | 'other';
+  } | null {
     if (!this.chartStageRef.current) {
       return null;
     }
-    return this.chartStageRef.current.getStage().toDataURL({});
+    const stage = this.chartStageRef.current.getStage().clone();
+    const width = stage.getWidth();
+    const height = stage.getHeight();
+    const backgroundLayer = new Konva.Layer();
+    const backgroundRect = new Konva.Rect({
+      fill: options.backgroundColor,
+      x: 0,
+      y: 0,
+      width,
+      height,
+    });
+
+    backgroundLayer.add(backgroundRect);
+    stage.add(backgroundLayer);
+    backgroundLayer.moveToBottom();
+    stage.draw();
+    const canvasStage = stage.toCanvas({
+      width,
+      height,
+      callback: () => {},
+    });
+    // @ts-ignore
+    if (canvasStage.msToBlob) {
+      // @ts-ignore
+      const blobOrDataUrl = canvasStage.msToBlob();
+      return {
+        blobOrDataUrl,
+        browser: 'IE11',
+      };
+    } else {
+      return {
+        blobOrDataUrl: stage.toDataURL({ pixelRatio: options.pixelRatio }),
+        browser: 'other',
+      };
+    }
   }
 
   getChartContainerRef = () => {
