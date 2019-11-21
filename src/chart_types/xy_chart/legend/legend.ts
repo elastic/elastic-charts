@@ -93,8 +93,8 @@ export function computeLegend(
           y1: lastValue && lastValue.y1 !== null ? lastValue.y1 : null,
         },
         formatted: {
-          y0: isSeriesVisible && lastValue && lastValue.y0 !== null ? formatter(lastValue.y0) : null,
-          y1: isSeriesVisible && lastValue && lastValue.y1 !== null ? formatter(lastValue.y1) : null,
+          y0: lastValue && lastValue.y0 !== null ? formatter(lastValue.y0) : null,
+          y1: lastValue && lastValue.y1 !== null ? formatter(lastValue.y1) : null,
         },
       },
       ...getPostfix(spec),

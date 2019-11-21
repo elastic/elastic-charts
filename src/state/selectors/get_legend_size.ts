@@ -17,13 +17,19 @@ const legendItemLabelsSelector = createCachedSelector(
     const labels: string[] = [];
     const { showLegendDisplayValue } = settings;
     legendItems.forEach((item) => {
+      const labelY1 = getItemLabel(item, 'y1');
       if (item.displayValue.formatted.y1 !== null) {
-        const label = getItemLabel(item, 'y1');
-        labels.push(`${label}${showLegendDisplayValue ? item.displayValue.formatted.y1 : ''}`);
+        labels.push(`${labelY1}${showLegendDisplayValue ? item.displayValue.formatted.y1 : ''}`);
+      } else {
+        labels.push(labelY1);
       }
-      if (item.displayValue.formatted.y0 !== null) {
-        const label = getItemLabel(item, 'y0');
-        labels.push(`${label}${showLegendDisplayValue ? item.displayValue.formatted.y0 : ''}`);
+      if (item.banded) {
+        const labelY0 = getItemLabel(item, 'y0');
+        if (item.displayValue.formatted.y0 !== null) {
+          labels.push(`${labelY0}${showLegendDisplayValue ? item.displayValue.formatted.y0 : ''}`);
+        } else {
+          labels.push(labelY0);
+        }
       }
     });
     return labels;

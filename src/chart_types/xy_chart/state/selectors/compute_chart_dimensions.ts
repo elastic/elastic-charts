@@ -5,6 +5,7 @@ import { computeChartDimensions } from '../../utils/dimensions';
 import { computeAxisTicksDimensionsSelector } from './compute_axis_ticks_dimensions';
 import { Dimensions } from '../../../../utils/dimensions';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 
 export const computeChartDimensionsSelector = createCachedSelector(
   [
@@ -24,4 +25,4 @@ export const computeChartDimensionsSelector = createCachedSelector(
   } => {
     return computeChartDimensions(chartContainerDimensions, chartTheme, axesTicksDimensions, axesSpecs);
   },
-)((state) => state.chartId);
+)(getChartIdSelector);

@@ -2,9 +2,23 @@ import React from 'react';
 import { Axis, Chart, Position, ScaleType, Settings, AreaSeries, LineSeries, BarSeries } from '../src';
 
 export class Playground extends React.Component {
+  state = {
+    data: [[0, 10, 22], [1, 22, 33], [2, 13, 24]],
+  };
+
   render() {
     return (
       <div className="chart">
+        <button
+          onClick={() => {
+            const value = Math.floor(Math.random() * 10000);
+            this.setState({
+              data: [[0, 10, 22], [1, 22, 33], [2, 13, value]],
+            });
+          }}
+        >
+          click
+        </button>
         <Chart>
           <Settings showLegend />
           <Axis id="y" title={'y'} position={Position.Left} tickFormat={(value) => `y ${Number(value)}`} />
@@ -16,7 +30,7 @@ export class Playground extends React.Component {
             xAccessor={0}
             y0Accessors={[1]}
             yAccessors={[2]}
-            data={[[0, 10, 20], [1, 22, 33], [2, 13, 24]]}
+            data={this.state.data}
           />
           <LineSeries
             id="lines"
