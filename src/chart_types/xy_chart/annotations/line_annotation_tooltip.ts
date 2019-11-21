@@ -55,12 +55,6 @@ export interface AnnotationLineProps {
   marker?: AnnotationMarker;
 }
 
-interface TransformPosition {
-  xPosition: number;
-  yPosition: number;
-  xOffset: number;
-  yOffset: number;
-}
 export const DEFAULT_LINE_OVERFLOW = 0;
 
 export function computeYDomainLineAnnotationDimensions(
