@@ -19,10 +19,9 @@ import { AccessorType } from '../../utils/geometry';
 import { LegendItem, getItemLabel } from '../../chart_types/xy_chart/legend/legend';
 import { BBox } from '../../utils/bbox/bbox_calculator';
 import {
-  onLegendItemClick,
-  onToggleDeselectSeries,
-  onLegendItemOut,
-  onLegendItemOver,
+  onToggleDeselectSeriesAction,
+  onLegendItemOutAction,
+  onLegendItemOverAction,
 } from '../../state/actions/legend';
 import { SettingsSpec } from '../../specs';
 
@@ -39,10 +38,9 @@ interface LegendStateProps {
 }
 interface LegendDispatchProps {
   onToggleLegend: typeof onToggleLegend;
-  onLegendItemClick: typeof onLegendItemClick;
-  onLegendItemOut: typeof onLegendItemOut;
-  onLegendItemOver: typeof onLegendItemOver;
-  onToggleDeselectSeries: typeof onToggleDeselectSeries;
+  onLegendItemOutAction: typeof onLegendItemOutAction;
+  onLegendItemOverAction: typeof onLegendItemOverAction;
+  onToggleDeselectSeriesAction: typeof onToggleDeselectSeriesAction;
 }
 type LegendProps = LegendStateProps & LegendDispatchProps;
 
@@ -140,8 +138,8 @@ class LegendComponent extends React.Component<LegendProps> {
       return null;
     }
     const { key, displayValue, banded } = item;
-    const { legendItemTooltipValues } = this.props;
-    const { showLegendDisplayValue, legendPosition } = this.props.settings;
+    const { legendItemTooltipValues, settings } = this.props;
+    const { showLegendDisplayValue, legendPosition } = settings;
     const legendValues = this.getLegendValues(legendItemTooltipValues, key, banded);
     return legendValues.map((value, index) => {
       const yAccessor: AccessorType = index === 0 ? AccessorType.Y1 : AccessorType.Y0;
@@ -152,29 +150,27 @@ class LegendComponent extends React.Component<LegendProps> {
           key={`${key}-${yAccessor}`}
           legendItem={item}
           displayValue={value !== '' ? value : displayValue.formatted[yAccessor]}
-          onLegendItemClick={this.props.onLegendItemClick}
-          onLegendItemOut={this.props.onLegendItemOut}
-          onLegendItemOver={this.props.onLegendItemOver}
           showLegendDisplayValue={showLegendDisplayValue}
           legendPosition={legendPosition}
-          toggleSingleSeries={this.props.onToggleDeselectSeries}
-          toggleSeriesVisibility={this.props.onToggleDeselectSeries}
-          // onMouseEnter={this.onLegendItemMouseover(key)}
-          // onMouseLeave={this.onLegendItemMouseout}
+          toggleDeselectSeriesAction={this.props.onToggleDeselectSeriesAction}
+          legendItemOutAction={this.props.onLegendItemOutAction}
+          legendItemOverAction={this.props.onLegendItemOverAction}
+          onLegendItemOverListener={settings.onLegendItemOver}
+          onLegendItemOutListener={settings.onLegendItemOut}
+          onLegendItemClickListener={settings.onLegendItemClick}
         />
       );
     });
   };
 }
 
-const mapDispatchToProps = (dispatch: Dispatch) =>
+const mapDispatchToProps = (dispatch: Dispatch): LegendDispatchProps =>
   bindActionCreators(
     {
       onToggleLegend,
-      onLegendItemClick,
-      onToggleDeselectSeries,
-      onLegendItemOut,
-      onLegendItemOver,
+      onToggleDeselectSeriesAction,
+      onLegendItemOutAction,
+      onLegendItemOverAction,
     },
     dispatch,
   );

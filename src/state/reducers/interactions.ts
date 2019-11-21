@@ -10,7 +10,6 @@ import {
   ON_TOGGLE_DESELECT_SERIES,
   ON_INVERT_DESELECT_SERIES,
   InvertDeselectSeriesAction,
-  LegendItemClickAction,
 } from '../actions/legend';
 import {
   ON_MOUSE_DOWN,
@@ -32,8 +31,7 @@ export function interactionsReducer(
     | InvertDeselectSeriesAction
     | MouseDownAction
     | MouseUpAction
-    | PointerMoveAction
-    | LegendItemClickAction,
+    | PointerMoveAction,
 ): InteractionsState {
   switch (action.type) {
     case ON_POINTER_MOVE:
