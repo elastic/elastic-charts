@@ -19,7 +19,7 @@ export class Playground extends React.Component {
       return;
     }
     const snapshot = this.chartRef.current.getPNGSnapshot({
-      backgroundColor: 'red',
+      backgroundColor: 'white',
       pixelRatio: 1,
     });
     if (!snapshot) {

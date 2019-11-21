@@ -99,7 +99,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
   getPNGSnapshot(
     options = {
       backgroundColor: 'transparent',
-      pixelRatio: 1,
+      pixelRatio: 2,
     },
   ): {
     blobOrDataUrl: any;
