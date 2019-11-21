@@ -13,7 +13,7 @@ import {
 import { Dimensions } from '../../../utils/dimensions';
 import { AnnotationId, GroupId } from '../../../utils/ids';
 import { Scale, ScaleType } from '../../../utils/scales/scales';
-import { computeXScaleOffset, getAxesSpecForSpecId, isHorizontalRotation } from '../state/utils';
+import { computeXScaleOffset, getAxesSpecForSpecId, isHorizontalRotation, getSpecsById } from '../state/utils';
 import { Point } from '../../../utils/point';
 import {
   computeLineAnnotationTooltipState,
@@ -200,7 +200,7 @@ export function computeAnnotationTooltipState(
   chartDimensions: Dimensions,
 ): AnnotationTooltipState | null {
   for (const [annotationId, annotationDimension] of annotationDimensions) {
-    const spec = annotationSpecs.find((spec) => spec.id === annotationId);
+    const spec = getSpecsById<AnnotationSpec>(annotationSpecs, annotationId);
 
     if (!spec || spec.hideTooltips) {
       continue;

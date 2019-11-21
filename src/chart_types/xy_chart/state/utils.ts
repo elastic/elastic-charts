@@ -38,6 +38,7 @@ import { GroupId, SpecId } from '../../../utils/ids';
 import { Scale } from '../../../utils/scales/scales';
 import { PointGeometry, BarGeometry, AreaGeometry, LineGeometry, IndexedGeometry } from '../../../utils/geometry';
 import { LegendItem } from '../legend/legend';
+import { Spec } from '../../../specs';
 
 const MAX_ANIMATABLE_BARS = 300;
 const MAX_ANIMATABLE_LINES_AREA_POINTS = 600;
@@ -125,7 +126,7 @@ export interface LastValues {
   y1: number | null;
 }
 
-export function getLastValues(formattedDataSeries: {
+function getLastValues(formattedDataSeries: {
   stacked: FormattedDataSeries[];
   nonStacked: FormattedDataSeries[];
 }): Map<string, LastValues> {
@@ -401,7 +402,7 @@ export function computeXScaleOffset(
   }
 }
 
-export function renderGeometries(
+function renderGeometries(
   indexOffset: number,
   clusteredCount: number,
   isStacked: boolean,
@@ -443,7 +444,7 @@ export function renderGeometries(
   let barIndexOffset = 0;
   for (i = 0; i < len; i++) {
     const ds = dataSeries[i];
-    const spec = getSpecById(seriesSpecs, ds.specId);
+    const spec = getSpecsById<BasicSeriesSpec>(seriesSpecs, ds.specId);
     if (spec === undefined) {
       continue;
     }
@@ -556,8 +557,8 @@ export function renderGeometries(
   };
 }
 
-export function getSpecById(seriesSpecs: BasicSeriesSpec[], specId: SpecId) {
-  return seriesSpecs.find((spec) => spec.id === specId);
+export function getSpecsById<T extends Spec>(specs: T[], id: string): T | undefined {
+  return specs.find((spec) => spec.id === id);
 }
 
 export function getAxesSpecForSpecId(axesSpecs: AxisSpec[], groupId: GroupId) {
@@ -605,27 +606,6 @@ export function computeChartTransform(chartDimensions: Dimensions, chartRotation
       rotate: 0,
     };
   }
-}
-
-export function computeBrushExtent(
-  chartDimensions: Dimensions,
-  chartRotation: Rotation,
-  chartTransform: Transform,
-): BrushExtent {
-  const minX = [0, 180].includes(chartRotation)
-    ? chartDimensions.left + chartTransform.x
-    : chartDimensions.top + chartTransform.y;
-  const minY = [0, 180].includes(chartRotation)
-    ? chartDimensions.top + chartTransform.y
-    : chartDimensions.left + chartTransform.x;
-  const maxX = minX + chartDimensions.width;
-  const maxY = minY + chartDimensions.height;
-  return {
-    minX,
-    minY,
-    maxX,
-    maxY,
-  };
 }
 
 /**

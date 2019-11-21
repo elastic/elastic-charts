@@ -18,6 +18,7 @@ import { Dimensions, Margins } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';
 import { Scale } from '../../../utils/scales/scales';
 import { BBox, BBoxCalculator } from '../../../utils/bbox/bbox_calculator';
+import { getSpecsById } from '../state/utils';
 
 export type AxisLinePosition = [number, number, number, number];
 
@@ -374,7 +375,7 @@ export function getMinMaxRange(
   }
 }
 
-export function getBottomTopAxisMinMaxRange(chartRotation: Rotation, width: number) {
+function getBottomTopAxisMinMaxRange(chartRotation: Rotation, width: number) {
   switch (chartRotation) {
     case 0:
       // dealing with x domain
@@ -390,7 +391,7 @@ export function getBottomTopAxisMinMaxRange(chartRotation: Rotation, width: numb
       return { minRange: width, maxRange: 0 };
   }
 }
-export function getLeftAxisMinMaxRange(chartRotation: Rotation, height: number) {
+function getLeftAxisMinMaxRange(chartRotation: Rotation, height: number) {
   switch (chartRotation) {
     case 0:
       // dealing with y domain
@@ -593,7 +594,7 @@ export function getAxisTicksPositions(
   let cumRightSum = chartPaddings.right;
 
   axisDimensions.forEach((axisDim, id) => {
-    const axisSpec = axisSpecs.find((spec) => spec.id === id);
+    const axisSpec = getSpecsById<AxisSpec>(axisSpecs, id);
 
     // Consider refactoring this so this condition can be tested
     // Given some of the values that get passed around, maybe re-write as a reduce instead of forEach?
@@ -711,7 +712,7 @@ export const isDuplicateAxis = (
       firstTickLabel === axisTickLabels[0] &&
       lastTickLabel === axisTickLabels.slice(-1)[0]
     ) {
-      const spec = specs.find(({ id }) => id === axisId);
+      const spec = getSpecsById<AxisSpec>(specs, axisId);
 
       if (spec && spec.position === position && title === spec.title) {
         hasDuplicate = true;

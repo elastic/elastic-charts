@@ -4,6 +4,7 @@ import { getSeriesSpecsSelector } from './get_specs';
 import { getUpdatedCustomSeriesColors } from '../utils';
 import { getSeriesColorMap } from '../../utils/series';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 
 export const getSeriesColorMapSelector = createCachedSelector(
   [getSeriesSpecsSelector, computeSeriesDomainsSelector, getChartThemeSelector],
@@ -18,4 +19,4 @@ export const getSeriesColorMapSelector = createCachedSelector(
     // console.log('--- 2 computeSeriesDomainsSelector ---');
     return seriesColorMap;
   },
-)((state) => state.chartId);
+)(getChartIdSelector);

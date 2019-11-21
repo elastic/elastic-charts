@@ -9,6 +9,7 @@ import { AxisId } from '../../../../utils/ids';
 import { getAxisSpecsSelector } from './get_specs';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getBarPaddingsSelector } from './get_bar_paddings';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 
 export const computeAxisTicksDimensionsSelector = createCachedSelector(
   [
@@ -57,4 +58,4 @@ export const computeAxisTicksDimensionsSelector = createCachedSelector(
     // console.log('--- 5 computeAxisTickDimensions ---');
     return axesTicksDimensions;
   },
-)((state) => state.chartId);
+)(getChartIdSelector);

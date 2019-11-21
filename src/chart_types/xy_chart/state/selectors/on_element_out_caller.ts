@@ -9,6 +9,7 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { IndexedGeometry } from '../../../../utils/geometry';
 import { Selector } from 'react-redux';
 import { ChartTypes } from '../../../index';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 
 interface Props {
   settings: SettingsSpec | undefined;
@@ -52,7 +53,7 @@ export function createOnElementOutCaller(): (state: GlobalChartState) => void {
           prevProps = nextProps;
         },
       )({
-        keySelector: (state) => state.chartId,
+        keySelector: getChartIdSelector,
       });
     }
     if (selector) {

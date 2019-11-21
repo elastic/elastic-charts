@@ -7,6 +7,7 @@ import { isVerticalAxis } from '../../chart_types/xy_chart/utils/axis_utils';
 import { getChartThemeSelector } from './get_chart_theme';
 import { GlobalChartState } from '../chart_state';
 import { getItemLabel } from '../../chart_types/xy_chart/legend/legend';
+import { getChartIdSelector } from './get_chart_id';
 
 const getParentDimensionSelector = (state: GlobalChartState) => state.parentDimensions;
 
@@ -27,7 +28,7 @@ const legendItemLabelsSelector = createCachedSelector(
     });
     return labels;
   },
-)((state) => state.chartId);
+)(getChartIdSelector);
 
 const MARKER_WIDTH = 16;
 // const MARKER_HEIGHT = 16;
@@ -86,4 +87,4 @@ export const getLegendSizeSelector = createCachedSelector(
       };
     }
   },
-)((state) => state.chartId);
+)(getChartIdSelector);

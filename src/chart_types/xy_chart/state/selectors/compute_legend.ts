@@ -5,6 +5,7 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { getSeriesColorMapSelector } from './get_series_color_map';
 import { computeLegend, LegendItem } from '../../legend/legend';
 import { GlobalChartState } from '../../../../state/chart_state';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 
 const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interactions.deselectedDataSeries;
 
@@ -36,4 +37,4 @@ export const computeLegendSelector = createCachedSelector(
       deselectedDataSeries,
     );
   },
-)((state) => state.chartId);
+)(getChartIdSelector);

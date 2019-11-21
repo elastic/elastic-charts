@@ -7,6 +7,7 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { computeSeriesGeometries, ComputedGeometries } from '../utils';
 import { getSeriesColorMapSelector } from './get_series_color_map';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 
 export const computeSeriesGeometriesSelector = createCachedSelector(
   [
@@ -44,4 +45,4 @@ export const computeSeriesGeometriesSelector = createCachedSelector(
       isHistogramMode,
     );
   },
-)((state) => state.chartId);
+)(getChartIdSelector);

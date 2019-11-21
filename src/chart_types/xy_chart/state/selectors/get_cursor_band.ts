@@ -16,6 +16,7 @@ import { isTooltipSnapEnableSelector } from './is_tooltip_snap_enabled';
 import { getGeometriesIndexKeysSelector } from './get_geometries_index_keys';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { isValidExternalPointerEvent } from '../../../../utils/events';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 
 const getExternalPointerEventStateSelector = (state: GlobalChartState) => state.externalEvents.pointer;
 
@@ -54,7 +55,7 @@ export const getCursorBandPositionSelector = createCachedSelector(
       geometriesIndexKeys,
     );
   },
-)((state) => state.chartId);
+)(getChartIdSelector);
 
 function getCursorBand(
   orientedProjectedPoinerPosition: Point,

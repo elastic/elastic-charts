@@ -90,7 +90,7 @@ export function getBarStyleOverrides(
   });
 }
 
-export function renderPoints(
+function renderPoints(
   shift: number,
   dataset: DataSeriesDatum[],
   xScale: Scale,

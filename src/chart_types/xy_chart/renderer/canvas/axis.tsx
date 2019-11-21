@@ -23,6 +23,7 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { getSpecsById } from '../../state/utils';
 
 interface AxisProps {
   theme: Theme;
@@ -260,7 +261,7 @@ class AxesComponent extends React.PureComponent<AxesProps> {
     } = this.props;
     const axesComponents: JSX.Element[] = [];
     axesVisibleTicks.forEach((axisTicks, axisId) => {
-      const axisSpec = axesSpecs.find((spec) => spec.id === axisId);
+      const axisSpec = getSpecsById<AxisSpec>(axesSpecs, axisId);
       const axisTicksDimensions = axesTicksDimensions.get(axisId);
       const axisPosition = axesPositions.get(axisId);
       const ticks = axesVisibleTicks.get(axisId);

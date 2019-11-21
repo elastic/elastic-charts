@@ -1,6 +1,6 @@
 export const CHART_RENDERED = 'CHART_RENDERED';
 
-export interface ChartRenderedAction {
+interface ChartRenderedAction {
   type: typeof CHART_RENDERED;
 }
 

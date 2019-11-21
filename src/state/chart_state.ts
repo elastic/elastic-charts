@@ -1,4 +1,4 @@
-import { SPEC_PARSED, SPEC_UNMOUNTED, SPEC_PARSING, UPSERT_SPEC, REMOVE_SPEC } from './actions/specs';
+import { SPEC_PARSED, SPEC_UNMOUNTED, UPSERT_SPEC, REMOVE_SPEC } from './actions/specs';
 import { interactionsReducer } from './reducers/interactions';
 import { ChartTypes } from '../chart_types';
 import { XYAxisChartState } from '../chart_types/xy_chart/state/chart_state';
@@ -140,12 +140,6 @@ export const chartStoreReducer = (chartId: string) => {
   const initialState = getInitialState(chartId);
   return (state = initialState, action: StateActions): GlobalChartState => {
     switch (action.type) {
-      case SPEC_PARSING:
-        return {
-          ...state,
-          specsInitialized: false,
-          chartRendered: false,
-        };
       case SPEC_PARSED:
         const chartType = findMainChartType(state.specs);
 

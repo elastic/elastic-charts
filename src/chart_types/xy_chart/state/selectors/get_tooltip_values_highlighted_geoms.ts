@@ -3,7 +3,7 @@ import { TooltipValue, isFollowTooltipType, TooltipType, TooltipValueFormatter }
 import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
 import { Point } from '../../../../utils/point';
 import { getOrientedProjectedPointerPositionSelector } from './get_oriented_projected_pointer_position';
-import { ComputedScales, getAxesSpecForSpecId } from '../utils';
+import { ComputedScales, getAxesSpecForSpecId, getSpecsById } from '../utils';
 import { getComputedScalesSelector } from './get_computed_scales';
 import { getElementAtCursorPositionSelector } from './get_elements_at_cursor_pos';
 import { IndexedGeometry } from '../../../../utils/geometry';
@@ -17,6 +17,7 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { CursorEvent } from '../../../../specs';
 import { isValidExternalPointerEvent } from '../../../../utils/events';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 
 const EMPTY_VALUES = Object.freeze({
   tooltipValues: [],
@@ -85,7 +86,7 @@ function getTooltipAndHighlightFromXValue(
       const {
         geometryId: { specId },
       } = indexedGeometry;
-      const spec = seriesSpecs.find((spec) => spec.id === specId);
+      const spec = getSpecsById<BasicSeriesSpec>(seriesSpecs, specId);
 
       // safe guard check
       if (!spec) {
@@ -140,11 +141,11 @@ export const getTooltipValuesSelector = createCachedSelector(
   (values): TooltipValue[] => {
     return values.tooltipValues;
   },
-)((state) => state.chartId);
+)(getChartIdSelector);
 
 export const getHighlightedGeomsSelector = createCachedSelector(
   [getTooltipValuesAndGeometriesSelector],
   (values): IndexedGeometry[] => {
     return values.highlightedGeometries;
   },
-)((state) => state.chartId);
+)(getChartIdSelector);

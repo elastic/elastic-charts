@@ -6,11 +6,12 @@ import { getOrientedXPosition, getOrientedYPosition } from '../../utils/interact
 import { SettingsSpec } from '../../../../specs/settings';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 
 export const getOrientedProjectedPointerPositionSelector = createCachedSelector(
   [getProjectedPointerPositionSelector, computeChartDimensionsSelector, getSettingsSpecSelector],
   getOrientedProjectedPointerPosition,
-)((state) => state.chartId);
+)(getChartIdSelector);
 
 function getOrientedProjectedPointerPosition(
   projectedPointerPosition: Point,

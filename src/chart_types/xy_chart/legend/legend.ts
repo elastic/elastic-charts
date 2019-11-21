@@ -1,4 +1,4 @@
-import { getAxesSpecForSpecId, LastValues } from '../state/utils';
+import { getAxesSpecForSpecId, LastValues, getSpecsById } from '../state/utils';
 import { identity } from '../../../utils/commons';
 import {
   DataSeriesColorsValues,
@@ -9,7 +9,7 @@ import { AxisSpec, BasicSeriesSpec, Postfixes, isAreaSeriesSpec, isBarSeriesSpec
 import { Y0_ACCESSOR_POSTFIX, Y1_ACCESSOR_POSTFIX } from '../tooltip/tooltip';
 import { AccessorType } from '../../../utils/geometry';
 
-export interface FormatedLastValues {
+interface FormattedLastValues {
   y0: number | string | null;
   y1: number | string | null;
 }
@@ -24,11 +24,11 @@ export type LegendItem = Postfixes & {
   isLegendItemVisible?: boolean;
   displayValue: {
     raw: LastValues;
-    formatted: FormatedLastValues;
+    formatted: FormattedLastValues;
   };
 };
 
-export function getPostfix(spec: BasicSeriesSpec): Postfixes {
+function getPostfix(spec: BasicSeriesSpec): Postfixes {
   if (isAreaSeriesSpec(spec) || isBarSeriesSpec(spec)) {
     const { y0AccessorFormat = Y0_ACCESSOR_POSTFIX, y1AccessorFormat = Y1_ACCESSOR_POSTFIX } = spec;
     return {
@@ -64,7 +64,7 @@ export function computeLegend(
 
   sortedSeriesColors.forEach((series, key) => {
     const { banded, specId, lastValue, colorValues } = series;
-    const spec = specs.find((spec) => spec.id === specId);
+    const spec = getSpecsById<BasicSeriesSpec>(specs, specId);
     const color = seriesColorMap.get(key) || defaultColor;
     const hasSingleSeries = seriesColor.size === 1;
     const label = getSeriesColorLabel(colorValues, hasSingleSeries, spec);

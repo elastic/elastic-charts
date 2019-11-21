@@ -17,6 +17,7 @@ import { AnnotationId } from '../../../../utils/ids';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { ComputedGeometries } from '../utils';
 import { getTooltipValuesSelector } from './get_tooltip_values_highlighted_geoms';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 
 export const getAnnotationTooltipStateSelector = createCachedSelector(
   [
@@ -30,7 +31,7 @@ export const getAnnotationTooltipStateSelector = createCachedSelector(
     getTooltipValuesSelector,
   ],
   getAnnotationTooltipState,
-)((state) => state.chartId);
+)(getChartIdSelector);
 
 function getAnnotationTooltipState(
   projectedPointerPosition: Point,

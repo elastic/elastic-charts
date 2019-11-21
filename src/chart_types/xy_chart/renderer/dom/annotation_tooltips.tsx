@@ -18,6 +18,7 @@ import { AnnotationLineProps } from '../../annotations/line_annotation_tooltip';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
 import { createPortal } from 'react-dom';
 import { getFinalAnnotationTooltipPosition } from '../../annotations/annotation_tooltip';
+import { getSpecsById } from '../../state/utils';
 
 interface AnnotationTooltipStateProps {
   isChartEmpty: boolean;
@@ -159,7 +160,7 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
     const markers: JSX.Element[] = [];
 
     annotationDimensions.forEach((dimensions: AnnotationDimensions, id: AnnotationId) => {
-      const annotationSpec = annotationSpecs.find((spec) => spec.id === id);
+      const annotationSpec = getSpecsById<AnnotationSpec>(annotationSpecs, id);
       if (!annotationSpec) {
         return;
       }

@@ -3,13 +3,14 @@ import { getAxisSpecsSelector } from './get_specs';
 import { isYDomain, isCompleteBound, isLowerBound, isUpperBound, isBounded } from '../../utils/axis_utils';
 import { AxisSpec, DomainRange, Rotation } from '../../utils/specs';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 
 export const mergeYCustomDomainsByGroupIdSelector = createCachedSelector(
   [getAxisSpecsSelector, getSettingsSpecSelector],
   (axisSpecs, settingsSpec): Map<string, DomainRange> => {
     return mergeYCustomDomainsByGroupId(axisSpecs, settingsSpec ? settingsSpec.rotation : 0);
   },
-)((state) => state.chartId);
+)(getChartIdSelector);
 
 export function mergeYCustomDomainsByGroupId(axesSpecs: AxisSpec[], chartRotation: Rotation): Map<string, DomainRange> {
   const domainsByGroupId = new Map<string, DomainRange>();

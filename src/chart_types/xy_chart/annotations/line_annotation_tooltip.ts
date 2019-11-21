@@ -358,32 +358,6 @@ export function computeLineAnnotationDimensions(
   );
 }
 
-export function getAnnotationLineTooltipPosition(
-  chartRotation: Rotation,
-  linePosition: AnnotationLinePosition,
-  axisPosition: Position,
-): TransformPosition {
-  const [startX, startY, endX, endY] = linePosition;
-
-  const xPosition = axisPosition === Position.Right ? endX : startX;
-  const yPosition = axisPosition === Position.Top ? startY : endY;
-
-  const xOffset = getAnnotationLineTooltipXOffset(chartRotation, axisPosition);
-  const yOffset = getAnnotationLineTooltipYOffset(chartRotation, axisPosition);
-
-  return { xPosition, yPosition, xOffset, yOffset };
-}
-
-export function getAnnotationLineTooltipTransform(
-  chartRotation: Rotation,
-  linePosition: AnnotationLinePosition,
-  axisPosition: Position,
-): string {
-  const position = getAnnotationLineTooltipPosition(chartRotation, linePosition, axisPosition);
-
-  return toTransformString(position);
-}
-
 export function getAnnotationLineTooltipXOffset(chartRotation: Rotation, axisPosition: Position): number {
   let xOffset = 0;
   const isChartHorizontalRotation = isHorizontalRotation(chartRotation);
@@ -408,15 +382,6 @@ export function getAnnotationLineTooltipYOffset(chartRotation: Rotation, axisPos
   }
 
   return yOffset;
-}
-
-export function toTransformString(position: TransformPosition): string {
-  const { xPosition, yPosition, xOffset, yOffset } = position;
-
-  const xTranslation = `calc(${xPosition}px - ${xOffset}%)`;
-  const yTranslation = `calc(${yPosition}px - ${yOffset}%)`;
-
-  return `translate(${xTranslation},${yTranslation})`;
 }
 
 export function isVerticalAnnotationLine(isXDomainAnnotation: boolean, isHorizontalChartRotation: boolean): boolean {

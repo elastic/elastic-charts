@@ -187,7 +187,7 @@ export function getTooltipPosition(
   };
 }
 
-export function getHorizontalTooltipPosition(
+function getHorizontalTooltipPosition(
   cursorXPosition: number,
   cursorBandPosition: Dimensions,
   chartDimensions: Dimensions,
@@ -207,7 +207,7 @@ export function getHorizontalTooltipPosition(
   }
 }
 
-export function getVerticalTooltipPosition(
+function getVerticalTooltipPosition(
   cursorYPosition: number,
   cursorBandPosition: Dimensions,
   chartDimensions: Dimensions,

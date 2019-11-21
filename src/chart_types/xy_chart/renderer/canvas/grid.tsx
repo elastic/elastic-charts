@@ -12,6 +12,7 @@ import { getAxisSpecsSelector } from '../../state/selectors/get_specs';
 import { computeAxisVisibleTicksSelector } from '../../state/selectors/compute_axis_visible_ticks';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
+import { getSpecsById } from '../../state/utils';
 
 interface GridProps {
   chartTheme: Theme;
@@ -20,12 +21,12 @@ interface GridProps {
   chartDimensions: Dimensions;
 }
 
-export class GridComponent extends React.PureComponent<GridProps> {
+class GridComponent extends React.PureComponent<GridProps> {
   render() {
     const { axesGridLinesPositions, axesSpecs, chartDimensions, chartTheme } = this.props;
     const gridComponents: JSX.Element[] = [];
     axesGridLinesPositions.forEach((axisGridLinesPositions, axisId) => {
-      const axisSpec = axesSpecs.find((spec) => spec.id === axisId);
+      const axisSpec = getSpecsById<AxisSpec>(axesSpecs, axisId);
       if (axisSpec && axisGridLinesPositions.length > 0) {
         const themeConfig = isVerticalGrid(axisSpec.position)
           ? chartTheme.axes.gridLineStyle.vertical

@@ -5,8 +5,6 @@ import {
   PointStyle,
   RectBorderStyle,
   RectStyle,
-  ArcStyle,
-  GeometryStyle,
   GeometryStateStyle,
 } from '../../../../../utils/themes/theme';
 import { GlobalKonvaElementProps } from '../../../../../components/react_canvas/globals';
@@ -198,36 +196,6 @@ export function buildBarBorderRenderProps(
     stroke,
     ...geometryStateStyle,
     opacity, // want to override opactiy of geometryStateStyle
-    ...GlobalKonvaElementProps,
-  };
-}
-
-/**
- * Return the rendering props for an arc. The color of the arc will be overwritten
- * by the fill color of the arcStyle parameter if present
- * @param arcPath the SVG arc path
- * @param x the horizontal offset to place the arc
- * @param color the computed color of the line for this series
- * @param arcStyle the arc style
- * @param geometryStyle the highlight geometry style
- */
-export function buildArcRenderProps(
-  transform: { x: number; y: number },
-  arcPath: string,
-  color: string,
-  arcStyle: ArcStyle,
-  geometryStyle: GeometryStyle,
-) {
-  return {
-    x: transform.x,
-    y: transform.y,
-    data: arcPath,
-    fill: arcStyle.fill || color,
-    stroke: arcStyle.stroke,
-    strokeWidth: arcStyle.strokeWidth,
-    lineCap: 'round',
-    lineJoin: 'round',
-    ...geometryStyle,
     ...GlobalKonvaElementProps,
   };
 }

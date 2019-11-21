@@ -268,7 +268,7 @@ export function getFormattedDataseries(
   };
 }
 
-export function getRawDataSeries(
+function getRawDataSeries(
   seriesSpecs: YBasicSeriesSpec[],
   dataSeries: Map<SpecId, RawDataSeries[]>,
 ): {
@@ -372,7 +372,7 @@ export function getSplittedSeries(
   };
 }
 
-export function getSortIndex({ specSortIndex }: DataSeriesColorsValues, total: number): number {
+function getSortIndex({ specSortIndex }: DataSeriesColorsValues, total: number): number {
   return specSortIndex != null ? specSortIndex : total;
 }
 

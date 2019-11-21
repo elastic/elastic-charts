@@ -5,6 +5,7 @@ import { getProjectedPointerPositionSelector } from './get_projected_pointer_pos
 import { getComputedScalesSelector } from './get_computed_scales';
 import { getCursorBandPositionSelector } from './get_cursor_band';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 
 export const getTooltipPositionSelector = createCachedSelector(
   [
@@ -26,4 +27,4 @@ export const getTooltipPositionSelector = createCachedSelector(
       scales.xScale.isSingleValue(),
     );
   },
-)((state) => state.chartId);
+)(getChartIdSelector);

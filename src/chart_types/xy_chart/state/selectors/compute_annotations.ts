@@ -7,11 +7,10 @@ import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 import { computeAnnotationDimensions, AnnotationDimensions } from '../../annotations/annotation_utils';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { AnnotationId } from '../../../../utils/ids';
-import { GlobalChartState } from '../../../../state/chart_state';
-const getChartId = (state: GlobalChartState) => state.chartId;
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+
 export const computeAnnotationDimensionsSelector = createCachedSelector(
   [
-    getChartId,
     getAnnotationSpecsSelector,
     computeChartDimensionsSelector,
     getSettingsSpecSelector,
@@ -22,7 +21,6 @@ export const computeAnnotationDimensionsSelector = createCachedSelector(
     getAxisSpecsSelector,
   ],
   (
-    chartId,
     annotationSpecs,
     chartDimensions,
     settingsSpec,
@@ -44,4 +42,4 @@ export const computeAnnotationDimensionsSelector = createCachedSelector(
       isHistogramMode,
     );
   },
-)((state) => state.chartId);
+)(getChartIdSelector);

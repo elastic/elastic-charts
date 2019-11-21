@@ -2,7 +2,7 @@ import { Dimensions } from '../../utils/dimensions';
 
 export const UPDATE_PARENT_DIMENSION = 'UPDATE_PARENT_DIMENSION';
 
-export interface UpdateParentDimensionAction {
+interface UpdateParentDimensionAction {
   type: typeof UPDATE_PARENT_DIMENSION;
   dimensions: Dimensions;
 }

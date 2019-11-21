@@ -2,7 +2,7 @@ import { CursorEvent } from '../../specs/settings';
 
 export const EXTERNAL_POINTER_EVENT = 'EXTERNAL_POINTER_EVENT';
 
-export interface ExternalPointerEvent {
+interface ExternalPointerEvent {
   type: typeof EXTERNAL_POINTER_EVENT;
   event?: CursorEvent;
 }

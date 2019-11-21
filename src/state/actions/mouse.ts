@@ -4,18 +4,18 @@ export const ON_POINTER_MOVE = 'ON_POINTER_MOVE';
 export const ON_MOUSE_DOWN = 'ON_MOUSE_DOWN';
 export const ON_MOUSE_UP = 'ON_MOUSE_UP';
 
-export interface MouseDownAction {
+interface MouseDownAction {
   type: typeof ON_MOUSE_DOWN;
   position: Point;
   time: number;
 }
-export interface MouseUpAction {
+interface MouseUpAction {
   type: typeof ON_MOUSE_UP;
   position: Point;
   time: number;
 }
 
-export interface PointerMoveAction {
+interface PointerMoveAction {
   type: typeof ON_POINTER_MOVE;
   position: Point;
   time: number;

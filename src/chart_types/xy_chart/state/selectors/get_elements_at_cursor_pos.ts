@@ -11,6 +11,7 @@ import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { Dimensions } from '../../../../utils/dimensions';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { isValidExternalPointerEvent } from '../../../../utils/events';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 
 const getExternalPointerEventStateSelector = (state: GlobalChartState) => state.externalEvents.pointer;
 
@@ -24,7 +25,7 @@ export const getElementAtCursorPositionSelector = createCachedSelector(
     computeChartDimensionsSelector,
   ],
   getElementAtCursorPosition,
-)((state) => state.chartId);
+)(getChartIdSelector);
 
 function getElementAtCursorPosition(
   orientedProjectedPoinerPosition: Point,

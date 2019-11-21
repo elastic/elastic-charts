@@ -2,6 +2,7 @@ import createCachedSelector from 're-reselect';
 import { computeChartTransform, Transform } from '../utils';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 
 export const computeChartTransformSelector = createCachedSelector(
   [computeChartDimensionsSelector, getSettingsSpecSelector],
@@ -9,4 +10,4 @@ export const computeChartTransformSelector = createCachedSelector(
     // console.log('--- 7 computeChartTransformSelector ---');
     return computeChartTransform(chartDimensions.chartDimensions, settingsSpecs.rotation);
   },
-)((state) => state.chartId);
+)(getChartIdSelector);

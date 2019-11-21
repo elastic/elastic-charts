@@ -1,38 +1,15 @@
 import { InteractionsState } from '../chart_state';
 import {
-  ToggleLegendAction,
-  LegendItemOutAction,
-  LegendItemOverAction,
-  ToggleDeselectSeriesAction,
   ON_TOGGLE_LEGEND,
   ON_LEGEND_ITEM_OUT,
   ON_LEGEND_ITEM_OVER,
   ON_TOGGLE_DESELECT_SERIES,
-  ON_INVERT_DESELECT_SERIES,
-  InvertDeselectSeriesAction,
+  LegendActions,
 } from '../actions/legend';
-import {
-  ON_MOUSE_DOWN,
-  ON_MOUSE_UP,
-  ON_POINTER_MOVE,
-  MouseDownAction,
-  MouseUpAction,
-  PointerMoveAction,
-} from '../actions/mouse';
+import { ON_MOUSE_DOWN, ON_MOUSE_UP, ON_POINTER_MOVE, MouseActions } from '../actions/mouse';
 import { DataSeriesColorsValues, findDataSeriesByColorValues } from '../../chart_types/xy_chart/utils/series';
 
-export function interactionsReducer(
-  state: InteractionsState,
-  action:
-    | ToggleLegendAction
-    | LegendItemOutAction
-    | LegendItemOverAction
-    | ToggleDeselectSeriesAction
-    | InvertDeselectSeriesAction
-    | MouseDownAction
-    | MouseUpAction
-    | PointerMoveAction,
-): InteractionsState {
+export function interactionsReducer(state: InteractionsState, action: LegendActions | MouseActions): InteractionsState {
   switch (action.type) {
     case ON_POINTER_MOVE:
       return {
@@ -123,12 +100,6 @@ export function interactionsReducer(
     case ON_TOGGLE_DESELECT_SERIES:
       return {
         ...state,
-        deselectedDataSeries: toggleDeselectedDataSeries(action.legendItemId, state.deselectedDataSeries),
-      };
-    case ON_INVERT_DESELECT_SERIES:
-      return {
-        ...state,
-        invertDeselect: true,
         deselectedDataSeries: toggleDeselectedDataSeries(action.legendItemId, state.deselectedDataSeries),
       };
     default:

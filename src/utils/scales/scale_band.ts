@@ -76,7 +76,3 @@ export class ScaleBand implements Scale {
     return this.domain.includes(value);
   }
 }
-
-export function isOrdinalScale(scale: Scale): scale is ScaleBand {
-  return scale.type === ScaleType.Ordinal;
-}

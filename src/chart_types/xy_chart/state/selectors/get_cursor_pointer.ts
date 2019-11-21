@@ -4,6 +4,7 @@ import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getHighlightedGeomsSelector } from './get_tooltip_values_highlighted_geoms';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { isBrushAvailableSelector } from './is_brush_available';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 
 const getCurrentPointerPositionSelector = (state: GlobalChartState) => state.interactions.pointer.current.position;
 
@@ -33,4 +34,4 @@ export const getPointerCursorSelector = createCachedSelector(
     }
     return isBrushAvailable ? 'crosshair' : 'default';
   },
-)((state) => state.chartId);
+)(getChartIdSelector);

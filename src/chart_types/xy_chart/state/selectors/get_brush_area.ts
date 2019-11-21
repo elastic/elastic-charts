@@ -4,6 +4,7 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { computeChartTransformSelector } from './compute_chart_transform';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 
 const getMouseDownPosition = (state: GlobalChartState) => state.interactions.pointer.down;
 const getCurrentPointerPosition = (state: GlobalChartState) => {
@@ -43,4 +44,4 @@ export const getBrushAreaSelector = createCachedSelector(
       };
     }
   },
-)((state) => state.chartId);
+)(getChartIdSelector);

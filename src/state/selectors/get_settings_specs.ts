@@ -3,6 +3,7 @@ import { GlobalChartState } from '../chart_state';
 import { ChartTypes } from '../../chart_types';
 import { getSpecsFromStore } from '../utils';
 import { SettingsSpec } from '../../specs/settings';
+import { getChartIdSelector } from './get_chart_id';
 
 const getSpecs = (state: GlobalChartState) => state.specs;
 
@@ -15,4 +16,4 @@ export const getSettingsSpecSelector = createCachedSelector(
     }
     return settingsSpecs[0];
   },
-)((state) => state.chartId);
+)(getChartIdSelector);

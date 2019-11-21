@@ -80,6 +80,6 @@ export function formatTooltip(
   };
 }
 
-export function emptyFormatter<T>(value: T): T {
+function emptyFormatter<T>(value: T): T {
   return value;
 }

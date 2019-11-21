@@ -3,6 +3,7 @@ import { AxisSpec, Position } from './specs';
 import { Theme } from '../../../utils/themes/theme';
 import { AxisId } from '../../../utils/ids';
 import { Dimensions } from '../../../utils/dimensions';
+import { getSpecsById } from '../state/utils';
 
 /**
  * Compute the chart dimensions. It's computed removing from the parent dimensions
@@ -46,7 +47,7 @@ export function computeChartDimensions(
   let horizontalEdgeLabelOverflow = 0;
   let verticalEdgeLabelOverflow = 0;
   axisDimensions.forEach(({ maxLabelBboxWidth = 0, maxLabelBboxHeight = 0 }, id) => {
-    const axisSpec = axisSpecs.find((spec) => spec.id === id);
+    const axisSpec = getSpecsById<AxisSpec>(axisSpecs, id);
     if (!axisSpec || axisSpec.hide) {
       return;
     }

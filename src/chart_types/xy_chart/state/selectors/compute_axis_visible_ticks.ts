@@ -11,6 +11,7 @@ import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 import { getBarPaddingsSelector } from './get_bar_paddings';
 import { AxisId } from '../../../../utils/ids';
 import { Dimensions } from '../../../../utils/dimensions';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 
 interface AxisVisibleTicks {
   axisPositions: Map<AxisId, Dimensions>;
@@ -56,4 +57,4 @@ export const computeAxisVisibleTicksSelector = createCachedSelector(
       barsPadding,
     );
   },
-)((state) => state.chartId);
+)(getChartIdSelector);

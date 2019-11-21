@@ -1,6 +1,7 @@
 import createCachedSelector from 're-reselect';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { countBarsInCluster } from '../../utils/scales';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 
 export const countBarsInClusterSelector = createCachedSelector(
   [computeSeriesDomainsSelector],
@@ -11,4 +12,4 @@ export const countBarsInClusterSelector = createCachedSelector(
     // console.log('--- 4 countBarsInCluster ---');
     return totalBarsInCluster;
   },
-)((state) => state.chartId);
+)(getChartIdSelector);

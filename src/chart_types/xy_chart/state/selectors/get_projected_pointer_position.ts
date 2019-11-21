@@ -3,6 +3,7 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { Point } from '../../../../utils/point';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 
 const getCurrentPointerPosition = (state: GlobalChartState) => state.interactions.pointer.current.position;
 
@@ -11,7 +12,7 @@ export const getProjectedPointerPositionSelector = createCachedSelector(
   (currentPointerPosition, chartDimensions): Point => {
     return getProjectedPointerPosition(currentPointerPosition, chartDimensions.chartDimensions);
   },
-)((state) => state.chartId);
+)(getChartIdSelector);
 
 /**
  * Get the x and y pointer position relative to the chart projection area

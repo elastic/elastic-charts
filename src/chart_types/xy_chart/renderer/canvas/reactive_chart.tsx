@@ -20,7 +20,7 @@ import { getHighlightedSeriesSelector } from '../../state/selectors/get_highligh
 import { isChartEmptySelector } from '../../state/selectors/is_chart_empty';
 import { isChartAnimatableSelector } from '../../state/selectors/is_chart_animatable';
 import { isBrushAvailableSelector } from '../../state/selectors/is_brush_available';
-import { Transform } from '../../state/utils';
+import { Transform, getSpecsById } from '../../state/utils';
 import { Rotation, AnnotationSpec, isLineAnnotation, isRectAnnotation } from '../../utils/specs';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { isInitialized } from '../../../../state/selectors/is_initialized';
@@ -61,7 +61,7 @@ interface Props {
   highlightedLegendItem?: LegendItem;
   onChartRendered: typeof onChartRendered;
 }
-export interface ReactiveChartElementIndex {
+interface ReactiveChartElementIndex {
   element: JSX.Element;
   zIndex: number;
 }
@@ -184,7 +184,7 @@ class Chart extends React.Component<Props> {
     const annotationElements: ReactiveChartElementIndex[] = [];
 
     annotationDimensions.forEach((annotation: AnnotationDimensions, id: AnnotationId) => {
-      const spec = annotationSpecs.find((spec) => spec.id === id);
+      const spec = getSpecsById<AnnotationSpec>(annotationSpecs, id);
 
       if (!spec) {
         return;

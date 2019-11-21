@@ -4,6 +4,7 @@ import { getLegendSizeSelector } from './get_legend_size';
 import { GlobalChartState } from '../chart_state';
 import { Dimensions } from '../../utils/dimensions';
 import { isVerticalAxis } from '../../chart_types/xy_chart/utils/axis_utils';
+import { getChartIdSelector } from './get_chart_id';
 
 const getParentDimension = (state: GlobalChartState) => state.parentDimensions;
 
@@ -29,4 +30,4 @@ export const getChartContainerDimensionsSelector = createCachedSelector(
       };
     }
   },
-)((state) => state.chartId);
+)(getChartIdSelector);

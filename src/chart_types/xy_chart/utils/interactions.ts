@@ -84,9 +84,6 @@ export function isCrosshairTooltipType(type: TooltipType) {
 export function isFollowTooltipType(type: TooltipType | undefined) {
   return type === TooltipType.Follow;
 }
-export function isNoneTooltipType(type: TooltipType) {
-  return type === TooltipType.None;
-}
 
 export function areIndexedGeometryArraysEquals(arr1: IndexedGeometry[], arr2: IndexedGeometry[]) {
   if (arr1.length !== arr2.length) {
@@ -108,7 +105,7 @@ export function areIndexedGeomsEquals(ig1: IndexedGeometry, ig2: IndexedGeometry
   return false;
 }
 
-export function arePointsEqual(ig1: PointGeometry, ig2: PointGeometry) {
+function arePointsEqual(ig1: PointGeometry, ig2: PointGeometry) {
   return (
     ig1.geometryId.specId === ig2.geometryId.specId &&
     ig1.color === ig2.color &&
@@ -119,7 +116,7 @@ export function arePointsEqual(ig1: PointGeometry, ig2: PointGeometry) {
     ig1.radius === ig2.radius
   );
 }
-export function areBarEqual(ig1: BarGeometry, ig2: BarGeometry) {
+function areBarEqual(ig1: BarGeometry, ig2: BarGeometry) {
   return (
     ig1.geometryId.specId === ig2.geometryId.specId &&
     ig1.color === ig2.color &&

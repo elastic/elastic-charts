@@ -9,8 +9,7 @@ import { Point } from '../../../../utils/point';
 import { getOrientedProjectedPointerPositionSelector } from './get_oriented_projected_pointer_position';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { getGeometriesIndexKeysSelector } from './get_geometries_index_keys';
-
-const getChartIdSelector = (state: GlobalChartState) => state.chartId;
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 
 const getPointerEventSelector = createCachedSelector(
   [
@@ -27,7 +26,7 @@ const getPointerEventSelector = createCachedSelector(
       geometriesIndexKeys,
     );
   },
-)((state) => state.chartId);
+)(getChartIdSelector);
 
 function getCursorBand(
   chartId: string,
