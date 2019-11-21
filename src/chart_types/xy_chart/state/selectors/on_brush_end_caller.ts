@@ -5,8 +5,9 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { SettingsSpec } from '../../../../specs';
 import { ChartTypes } from '../../../index';
 import { getComputedScalesSelector } from './get_computed_scales';
-import { ComputedScales } from '../utils';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
+import { isBrushAvailableSelector } from './is_brush_available';
 
 const getLastDragSelector = (state: GlobalChartState) => state.interactions.pointer.lastDrag;
 
@@ -19,7 +20,7 @@ function hasDragged(prevProps: Props | null, nextProps: Props | null) {
   if (nextProps === null) {
     return false;
   }
-  if (!nextProps.settings || !nextProps.settings.onElementClick) {
+  if (!nextProps.settings || !nextProps.settings.onBrushEnd) {
     return false;
   }
   const prevLastDrag = prevProps !== null ? prevProps.lastDrag : null;
@@ -44,14 +45,20 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
   let selector: Selector<GlobalChartState, void> | null = null;
   return (state: GlobalChartState) => {
     if (selector === null && state.chartType === ChartTypes.XYAxis) {
+      if (!isBrushAvailableSelector(state)) {
+        selector = null;
+        prevProps = null;
+        return;
+      }
       selector = createCachedSelector(
-        [getLastDragSelector, getSettingsSpecSelector, getComputedScalesSelector, computeChartDimensionsSelector],
-        (
-          lastDrag: DragState | null,
-          settings: SettingsSpec,
-          computedScales: ComputedScales,
-          { chartDimensions },
-        ): void => {
+        [
+          getLastDragSelector,
+          getSettingsSpecSelector,
+          getComputedScalesSelector,
+          computeChartDimensionsSelector,
+          isHistogramModeEnabledSelector,
+        ],
+        (lastDrag, settings, computedScales, { chartDimensions }, histogramMode): void => {
           const nextProps = {
             lastDrag,
             settings,
@@ -65,8 +72,11 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
                 // if 0 size brush, avoid computing the value
                 return;
               }
-              const min = computedScales.xScale.invert(minValue - chartDimensions.left);
-              const max = computedScales.xScale!.invert(maxValue - chartDimensions.left);
+
+              const { xScale } = computedScales;
+              const offset = histogramMode ? 0 : -(xScale.bandwidth + xScale.bandwidthPadding) / 2;
+              const min = xScale.invert(minValue - chartDimensions.left + offset);
+              const max = xScale.invert(maxValue - chartDimensions.left + offset);
               settings.onBrushEnd(min, max);
             }
           }
