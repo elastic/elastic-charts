@@ -75,7 +75,7 @@ class Resizer extends React.Component<ResizerProps> {
   };
 }
 
-const mapDispatchToProps = (dispatch: Dispatch) =>
+const mapDispatchToProps = (dispatch: Dispatch): ResizerDispatchProps =>
   bindActionCreators(
     {
       updateParentDimensions,
@@ -83,7 +83,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
     dispatch,
   );
 
-const mapStateToProps = (state: GlobalChartState) => {
+const mapStateToProps = (state: GlobalChartState): ResizerStateProps => {
   const settings = getSettingsSpecSelector(state);
   const resizeDebounce =
     settings.resizeDebounce === undefined || settings.resizeDebounce === null ? 200 : settings.resizeDebounce;

@@ -69,7 +69,6 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
   }
 }
 
-const mapDispatchToProps = () => ({});
 const mapStateToProps = (state: GlobalChartState): HighlighterProps => {
   if (!isInitialized(state)) {
     return {
@@ -93,7 +92,4 @@ const mapStateToProps = (state: GlobalChartState): HighlighterProps => {
   };
 };
 
-export const Highlighter = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(HighlighterComponent);
+export const Highlighter = connect(mapStateToProps)(HighlighterComponent);

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { upsertSpec, removeSpec } from './actions/specs';
 import { Spec } from '../specs';
 
-export interface DispatchFromProps {
+export interface DispatchProps {
   upsertSpec: (spec: Spec) => void;
   removeSpec: (id: string) => void;
 }
@@ -20,7 +20,7 @@ function usePrevious(value: string) {
 export function specComponentFactory<U extends Spec, D extends keyof U>(
   defaultProps: Pick<U, D | 'chartType' | 'specType'>,
 ) {
-  const spec = (props: U & DispatchFromProps) => {
+  const spec = (props: U & DispatchProps) => {
     const prevId = usePrevious(props.id);
     const { removeSpec, upsertSpec, ...spec } = props;
     useEffect(() => {
@@ -44,7 +44,7 @@ export function specComponentFactory<U extends Spec, D extends keyof U>(
   return spec;
 }
 
-const mapDispatchToProps = (dispatch: Dispatch) =>
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
   bindActionCreators(
     {
       upsertSpec,
@@ -53,11 +53,9 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
     dispatch,
   );
 
-const mapStateToProps = () => ({});
-
 export function getConnect() {
   return connect(
-    mapStateToProps,
+    null,
     mapDispatchToProps,
   );
 }

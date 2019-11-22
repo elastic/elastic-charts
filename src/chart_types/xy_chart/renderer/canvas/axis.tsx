@@ -285,7 +285,6 @@ class AxesComponent extends React.PureComponent<AxesProps> {
   }
 }
 
-const mapDispatchToProps = () => ({});
 const mapStateToProps = (state: GlobalChartState): AxesProps => {
   if (!state.specsInitialized) {
     return {
@@ -315,7 +314,4 @@ const mapStateToProps = (state: GlobalChartState): AxesProps => {
   };
 };
 
-export const Axes = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(AxesComponent);
+export const Axes = connect(mapStateToProps)(AxesComponent);

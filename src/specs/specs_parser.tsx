@@ -22,7 +22,7 @@ interface DispatchProps {
   specUnmounted: () => void;
 }
 
-const mapDispatchToProps = (dispatch: Dispatch) =>
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
   bindActionCreators(
     {
       specParsed,
@@ -31,9 +31,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
     dispatch,
   );
 
-const mapStateToProps = () => ({});
-
 export const SpecsParser = connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps,
 )(SpecsParserComponent);

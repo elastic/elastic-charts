@@ -78,7 +78,7 @@ interface DispatchProps {
   upsertSpec: (spec: Spec) => void;
   removeSpec: (id: string) => void;
 }
-const mapDispatchToProps = (dispatch: Dispatch) =>
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
   bindActionCreators(
     {
       upsertSpec,
@@ -87,9 +87,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
     dispatch,
   );
 
-const mapStateToProps = () => ({});
-
 export const LineAnnotation = connect<{}, DispatchProps, LineAnnotationSpec>(
-  mapStateToProps,
+  null,
   mapDispatchToProps,
 )(LineAnnotationSpecComponent);

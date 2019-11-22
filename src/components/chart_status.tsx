@@ -28,9 +28,7 @@ class ChartStatusComponent extends React.Component<ChartStatusStateProps> {
   }
 }
 
-const mapDispatchToProps = () => ({});
-
-const mapStateToProps = (state: GlobalChartState) => {
+const mapStateToProps = (state: GlobalChartState): ChartStatusStateProps => {
   return {
     rendered: state.chartRendered,
     renderedCount: state.chartRenderedCount,
@@ -38,7 +36,4 @@ const mapStateToProps = (state: GlobalChartState) => {
   };
 };
 
-export const ChartStatus = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ChartStatusComponent);
+export const ChartStatus = connect(mapStateToProps)(ChartStatusComponent);

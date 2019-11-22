@@ -175,7 +175,7 @@ const mapDispatchToProps = (dispatch: Dispatch): LegendDispatchProps =>
     dispatch,
   );
 
-const mapStateToProps = (state: GlobalChartState) => {
+const mapStateToProps = (state: GlobalChartState): LegendStateProps => {
   if (!state.specsInitialized) {
     return {
       legendItems: new Map(),

@@ -57,11 +57,11 @@ class BrushToolComponent extends React.Component<Props> {
   }
 }
 
-const mapDispatchToProps = () => ({});
-const mapStateToProps = (state: GlobalChartState) => {
+const mapStateToProps = (state: GlobalChartState): Props => {
   if (!isInitialized(state)) {
     return {
       initialized: false,
+      isBrushing: false,
       isBrushAvailable: false,
       brushArea: null,
       chartDimensions: {
@@ -87,7 +87,4 @@ const mapStateToProps = (state: GlobalChartState) => {
   };
 };
 
-export const BrushTool = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(BrushToolComponent);
+export const BrushTool = connect(mapStateToProps)(BrushToolComponent);

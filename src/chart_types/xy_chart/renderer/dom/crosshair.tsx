@@ -95,7 +95,6 @@ class CrosshairComponent extends React.Component<CrosshairProps> {
   }
 }
 
-const mapDispatchToProps = () => ({});
 const mapStateToProps = (state: GlobalChartState): CrosshairProps => {
   if (!isInitialized(state)) {
     return {
@@ -115,7 +114,4 @@ const mapStateToProps = (state: GlobalChartState): CrosshairProps => {
   };
 };
 
-export const Crosshair = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(CrosshairComponent);
+export const Crosshair = connect(mapStateToProps)(CrosshairComponent);

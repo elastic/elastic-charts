@@ -229,7 +229,6 @@ function LineAnnotationTooltipRender(props: LineAnnotationTooltipProps, ref: Rea
 }
 const LineAnnotationTooltip = React.forwardRef(LineAnnotationTooltipRender);
 
-const mapDispatchToProps = () => ({});
 const mapStateToProps = (state: GlobalChartState): AnnotationTooltipStateProps => {
   if (!isInitialized(state)) {
     return {
@@ -249,7 +248,4 @@ const mapStateToProps = (state: GlobalChartState): AnnotationTooltipStateProps =
   };
 };
 
-export const AnnotationTooltip = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(AnnotationTooltipComponent);
+export const AnnotationTooltip = connect(mapStateToProps)(AnnotationTooltipComponent);

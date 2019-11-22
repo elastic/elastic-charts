@@ -75,7 +75,6 @@ export class BarValuesComponent extends React.PureComponent<BarValuesProps> {
   };
 }
 
-const mapDispatchToProps = () => ({});
 const mapStateToProps = (state: GlobalChartState): BarValuesProps => {
   if (!state.specsInitialized) {
     return {
@@ -101,7 +100,4 @@ const mapStateToProps = (state: GlobalChartState): BarValuesProps => {
   };
 };
 
-export const BarValues = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(BarValuesComponent);
+export const BarValues = connect(mapStateToProps)(BarValuesComponent);

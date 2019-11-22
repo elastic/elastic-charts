@@ -53,7 +53,6 @@ class GridComponent extends React.PureComponent<GridProps> {
   };
 }
 
-const mapDispatchToProps = () => ({});
 const mapStateToProps = (state: GlobalChartState): GridProps => {
   if (!state.specsInitialized) {
     return {
@@ -76,7 +75,4 @@ const mapStateToProps = (state: GlobalChartState): GridProps => {
   };
 };
 
-export const Grid = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(GridComponent);
+export const Grid = connect(mapStateToProps)(GridComponent);

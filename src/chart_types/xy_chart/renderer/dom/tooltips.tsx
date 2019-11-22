@@ -121,8 +121,7 @@ class TooltipsComponent extends React.Component<TooltipProps> {
   }
 }
 
-const mapDispatchToProps = () => ({});
-const mapStateToProps = (state: GlobalChartState) => {
+const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
   if (!isInitialized(state)) {
     return {
       isTooltipVisible: false,
@@ -139,7 +138,4 @@ const mapStateToProps = (state: GlobalChartState) => {
   };
 };
 
-export const Tooltips = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(TooltipsComponent);
+export const Tooltips = connect(mapStateToProps)(TooltipsComponent);
