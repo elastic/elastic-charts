@@ -13,6 +13,8 @@ import { StateActions } from './actions';
 import { CHART_RENDERED } from './actions/chart';
 import { UPDATE_PARENT_DIMENSION } from './actions/chart_settings';
 import { EXTERNAL_POINTER_EVENT } from './actions/events';
+import { RefObject } from 'react';
+import { Stage } from 'react-konva';
 
 export type BackwardRef = () => React.RefObject<HTMLDivElement>;
 
@@ -24,7 +26,7 @@ export interface InternalChartState {
   // the chart type
   chartType: ChartType;
   // returns a JSX element with the chart rendered (lenged excluded)
-  chartRenderer(containerRef: BackwardRef): JSX.Element | null;
+  chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<Stage>): JSX.Element | null;
   // true if the brush is available for this chart type
   isBrushAvailable(globalState: GlobalChartState): boolean;
   // true if the chart is empty (no data displayed)

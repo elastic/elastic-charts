@@ -23,6 +23,8 @@ import { createOnBrushEndCaller } from '../chart_types/xy_chart/state/selectors/
 import { onExternalPointerEvent } from '../state/actions/events';
 import { CursorEvent } from '../specs';
 import { createOnPointerMoveCaller } from '../chart_types/xy_chart/state/selectors/on_pointer_move_caller';
+import Konva from 'konva';
+import { Stage } from 'react-konva';
 
 interface ChartProps {
   /** The type of rendered
@@ -54,9 +56,11 @@ export class Chart extends React.Component<ChartProps, ChartState> {
   };
   private chartStore: Store<GlobalChartState>;
   private chartContainerRef: React.RefObject<HTMLDivElement>;
+  private chartStageRef: React.RefObject<Stage>;
   constructor(props: any) {
     super(props);
     this.chartContainerRef = createRef();
+    this.chartStageRef = createRef();
 
     const storeReducer = chartStoreReducer(uuid.v4());
     if (process.env.NODE_ENV !== 'production') {
@@ -99,6 +103,56 @@ export class Chart extends React.Component<ChartProps, ChartState> {
   dispatchExternalCursorEvent(event?: CursorEvent) {
     this.chartStore.dispatch(onExternalPointerEvent(event));
   }
+
+  getPNGSnapshot(
+    options = {
+      backgroundColor: 'transparent',
+      pixelRatio: 2,
+    },
+  ): {
+    blobOrDataUrl: any;
+    browser: 'IE11' | 'other';
+  } | null {
+    if (!this.chartStageRef.current) {
+      return null;
+    }
+    const stage = this.chartStageRef.current.getStage().clone();
+    const width = stage.getWidth();
+    const height = stage.getHeight();
+    const backgroundLayer = new Konva.Layer();
+    const backgroundRect = new Konva.Rect({
+      fill: options.backgroundColor,
+      x: 0,
+      y: 0,
+      width,
+      height,
+    });
+
+    backgroundLayer.add(backgroundRect);
+    stage.add(backgroundLayer);
+    backgroundLayer.moveToBottom();
+    stage.draw();
+    const canvasStage = stage.toCanvas({
+      width,
+      height,
+      callback: () => {},
+    });
+    // @ts-ignore
+    if (canvasStage.msToBlob) {
+      // @ts-ignore
+      const blobOrDataUrl = canvasStage.msToBlob();
+      return {
+        blobOrDataUrl,
+        browser: 'IE11',
+      };
+    } else {
+      return {
+        blobOrDataUrl: stage.toDataURL({ pixelRatio: options.pixelRatio }),
+        browser: 'other',
+      };
+    }
+  }
+
   getChartContainerRef = () => {
     return this.chartContainerRef;
   };
@@ -118,7 +172,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
           <Legend />
           <SpecsParser>{this.props.children}</SpecsParser>
           <div className="echContainer">
-            <ChartContainer getChartContainerRef={this.getChartContainerRef} />
+            <ChartContainer getChartContainerRef={this.getChartContainerRef} forwardStageRef={this.chartStageRef} />
           </div>
         </div>
       </Provider>

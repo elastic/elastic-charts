@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { RefObject } from 'react';
 import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
 import { ChartTypes } from '../..';
 import { Tooltips } from '../renderer/dom/tooltips';
@@ -14,6 +14,7 @@ import { computeLegendSelector } from './selectors/compute_legend';
 import { getLegendTooltipValuesSelector } from './selectors/get_legend_tooltip_values';
 import { TooltipLegendValue } from '../tooltip/tooltip';
 import { getPointerCursorSelector } from './selectors/get_cursor_pointer';
+import { Stage } from 'react-konva';
 
 export class XYAxisChartState implements InternalChartState {
   chartType = ChartTypes.XYAxis;
@@ -30,11 +31,11 @@ export class XYAxisChartState implements InternalChartState {
   getLegendItemsValues(globalState: GlobalChartState): Map<string, TooltipLegendValue> {
     return getLegendTooltipValuesSelector(globalState);
   }
-  chartRenderer(containerRef: BackwardRef) {
+  chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<Stage>) {
     return (
       <React.Fragment>
         <Crosshair />
-        <ReactiveChart />
+        <ReactiveChart forwardStageRef={forwardStageRef} />
         <Tooltips getChartContainerRef={containerRef} />
         <AnnotationTooltip getChartContainerRef={containerRef} />
         <Highlighter />

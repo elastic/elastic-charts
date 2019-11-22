@@ -1,55 +1,71 @@
 import React from 'react';
-import { Axis, Chart, Position, ScaleType, Settings, AreaSeries, LineSeries, BarSeries } from '../src';
-
+import {
+  Axis,
+  Chart,
+  getAxisId,
+  getSpecId,
+  Position,
+  ScaleType,
+  HistogramBarSeries,
+  Settings,
+  LIGHT_THEME,
+  niceTimeFormatter,
+} from '../src';
+import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 export class Playground extends React.Component {
-  state = {
-    data: [[0, 10, 22], [1, 22, 33], [2, 13, 24]],
+  chartRef: React.RefObject<Chart> = React.createRef();
+  onSnapshot = () => {
+    if (!this.chartRef.current) {
+      return;
+    }
+    const snapshot = this.chartRef.current.getPNGSnapshot({
+      backgroundColor: 'white',
+      pixelRatio: 1,
+    });
+    if (!snapshot) {
+      return;
+    }
+    const fileName = 'chart.png';
+    switch (snapshot.browser) {
+      case 'IE11':
+        return navigator.msSaveBlob(snapshot.blobOrDataUrl, fileName);
+      default:
+        const link = document.createElement('a');
+        link.download = fileName;
+        link.href = snapshot.blobOrDataUrl;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
   };
-
   render() {
+    const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 100);
+
     return (
-      <div className="chart">
-        <button
-          onClick={() => {
-            const value = Math.floor(Math.random() * 10000);
-            this.setState({
-              data: [[0, 10, 22], [1, 22, 33], [2, 13, value]],
-            });
-          }}
-        >
-          click
-        </button>
-        <Chart>
-          <Settings showLegend />
-          <Axis id="y" title={'y'} position={Position.Left} tickFormat={(value) => `y ${Number(value)}`} />
-          <Axis id="x" title={'x'} position={Position.Bottom} tickFormat={(value) => `x ${Number(value)}`} />
-          <AreaSeries
-            id="areas"
-            xScaleType={ScaleType.Linear}
-            yScaleType={ScaleType.Linear}
-            xAccessor={0}
-            y0Accessors={[1]}
-            yAccessors={[2]}
-            data={this.state.data}
-          />
-          <LineSeries
-            id="lines"
-            xScaleType={ScaleType.Linear}
-            yScaleType={ScaleType.Linear}
-            xAccessor={0}
-            yAccessors={[2]}
-            data={[[0, 10, 20], [1, 22, 33], [2, 10, 4]]}
-          />
-          <BarSeries
-            id="bars"
-            xScaleType={ScaleType.Linear}
-            yScaleType={ScaleType.Linear}
-            xAccessor={0}
-            yAccessors={[2]}
-            data={[[0, 10, 20], [1, 22, 33], [2, 33, 44]]}
-          />
-        </Chart>
-      </div>
+      <>
+        <button onClick={this.onSnapshot}>Snapshot</button>
+        <div className="chart">
+          <Chart ref={this.chartRef}>
+            <Settings theme={LIGHT_THEME} showLegend={true} />
+            <Axis
+              id={getAxisId('time')}
+              position={Position.Bottom}
+              tickFormat={niceTimeFormatter([data[0][0], data[data.length - 1][0]])}
+            />
+            <Axis id={getAxisId('count')} position={Position.Left} />
+
+            <HistogramBarSeries
+              id={getSpecId('series bars chart')}
+              xScaleType={ScaleType.Linear}
+              yScaleType={ScaleType.Linear}
+              xAccessor={0}
+              yAccessors={[1]}
+              data={data}
+              yScaleToDataExtent={true}
+            />
+          </Chart>
+        </div>
+      </>
     );
   }
 }

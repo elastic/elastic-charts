@@ -11,6 +11,8 @@ import { isInitialized } from '../state/selectors/is_initialized';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_specs';
 import { SettingsSpec } from '../specs';
 import { isBrushingSelector } from '../chart_types/xy_chart/state/selectors/is_brushing';
+import { Stage } from 'react-konva';
+
 interface ReactiveChartStateProps {
   initialized: boolean;
   isChartEmpty?: boolean;
@@ -18,7 +20,7 @@ interface ReactiveChartStateProps {
   isBrushing: boolean;
   isBrushingAvailable: boolean;
   settings?: SettingsSpec;
-  internalChartRenderer: (containerRef: BackwardRef) => JSX.Element | null;
+  internalChartRenderer: (containerRef: BackwardRef, forwardStageRef: React.RefObject<Stage>) => JSX.Element | null;
 }
 interface ReactiveChartDispatchProps {
   onPointerMove: typeof onPointerMove;
@@ -28,6 +30,7 @@ interface ReactiveChartDispatchProps {
 
 interface ReactiveChartOwnProps {
   getChartContainerRef: BackwardRef;
+  forwardStageRef: React.RefObject<Stage>;
 }
 
 type ReactiveChartProps = ReactiveChartStateProps & ReactiveChartDispatchProps & ReactiveChartOwnProps;
@@ -114,7 +117,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     if (!initialized) {
       return null;
     }
-    const { pointerCursor, internalChartRenderer } = this.props;
+    const { pointerCursor, internalChartRenderer, getChartContainerRef, forwardStageRef } = this.props;
     return (
       <div
         className="echChartPointerContainer"
@@ -126,7 +129,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
         onMouseDown={this.handleMouseDown}
         onMouseUp={this.handleMouseUp}
       >
-        {internalChartRenderer(this.props.getChartContainerRef)}
+        {internalChartRenderer(getChartContainerRef, forwardStageRef)}
       </div>
     );
   }

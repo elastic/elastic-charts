@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { RefObject } from 'react';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect, ReactReduxContext, Provider } from 'react-redux';
 import { Layer, Rect, Stage } from 'react-konva';
@@ -39,7 +39,7 @@ import { computeChartDimensionsSelector } from '../../state/selectors/compute_ch
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { Clippings } from './bar_values_utils';
 
-interface Props {
+interface ReactiveChartStateProps {
   initialized: boolean;
   geometries: {
     points?: PointGeometry[];
@@ -59,14 +59,20 @@ interface Props {
   annotationSpecs: AnnotationSpec[];
   isBrushAvailable: boolean;
   highlightedLegendItem?: LegendItem;
+}
+interface ReactiveChartDispatchProps {
   onChartRendered: typeof onChartRendered;
+}
+interface ReactiveChartOwnProps {
+  forwardStageRef: RefObject<Stage>;
 }
 interface ReactiveChartElementIndex {
   element: JSX.Element;
   zIndex: number;
 }
 
-class Chart extends React.Component<Props> {
+type ReactiveChartProps = ReactiveChartOwnProps & ReactiveChartStateProps & ReactiveChartDispatchProps;
+class Chart extends React.Component<ReactiveChartProps> {
   static displayName = 'ReactiveChart';
   firstRender = true;
 
@@ -261,6 +267,7 @@ class Chart extends React.Component<Props> {
             <Stage
               width={chartContainerDimensions.width}
               height={chartContainerDimensions.height}
+              ref={this.props.forwardStageRef}
               style={{
                 width: '100%',
                 height: '100%',
@@ -316,7 +323,7 @@ class Chart extends React.Component<Props> {
   };
 }
 
-const mapDispatchToProps = (dispatch: Dispatch) =>
+const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
   bindActionCreators(
     {
       onChartRendered,
@@ -324,7 +331,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
     dispatch,
   );
 
-const DEFAULT_PROPS: Props = {
+const DEFAULT_PROPS: ReactiveChartStateProps = {
   initialized: false,
   theme: LIGHT_THEME,
   geometries: {},
@@ -353,10 +360,9 @@ const DEFAULT_PROPS: Props = {
   annotationSpecs: [],
   isBrushAvailable: false,
   highlightedLegendItem: undefined,
-  onChartRendered,
 };
 
-const mapStateToProps = (state: GlobalChartState) => {
+const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   if (!isInitialized(state)) {
     return DEFAULT_PROPS;
   }
