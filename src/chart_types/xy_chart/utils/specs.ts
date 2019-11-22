@@ -171,6 +171,8 @@ export interface DisplayValueSpec {
 }
 
 export interface SeriesSpec extends Spec {
+  specType: 'series';
+  chartType: 'xy_axis';
   /** The name or label of the spec */
   name?: string;
   /** The ID of the spec group, generated via getGroupId method
@@ -181,7 +183,7 @@ export interface SeriesSpec extends Spec {
   useDefaultGroupDomain?: boolean;
   /** An array of data */
   data: Datum[];
-  /** the type of series */
+  /** The type of series you are looking to render */
   seriesType: 'bar' | 'line' | 'area';
   /** Custom colors for series */
   customSeriesColors?: CustomSeriesColorsMap;
@@ -204,9 +206,6 @@ export interface SeriesSpec extends Spec {
    * @default ' - lower'
    */
   y1AccessorFormat?: AccessorFormat;
-
-  specType: 'series';
-  chartType: 'xy_axis';
 }
 
 export interface Postfixes {
@@ -388,7 +387,7 @@ export type HistogramModeAlignment = 'start' | 'center' | 'end';
 export interface AxisSpec extends Spec {
   specType: 'axis';
   chartType: 'xy_axis';
-  /** The ID of the spec, generated via getSpecId method */
+  /** The ID of the spec */
   id: AxisId;
   /** Style options for grid line */
   gridLineStyle?: GridLineConfig;
@@ -535,6 +534,8 @@ export interface BaseAnnotationSpec extends Spec {
   groupId: GroupId; // defaults to __global__; needed for yDomain position
   /** Data values defined with coordinates and details */
   dataValues: AnnotationDatum[];
+  /** Custom annotation style */
+  style?: Partial<AnnotationStyle>;
   /** Toggles tooltip annotation visibility */
   hideTooltips?: boolean;
   /** z-index of the annotation relative to other elements in the chart

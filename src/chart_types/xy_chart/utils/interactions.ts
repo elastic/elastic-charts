@@ -81,7 +81,7 @@ export function getOrientedYPosition(xPos: number, yPos: number, chartRotation: 
 export function isCrosshairTooltipType(type: TooltipType) {
   return type === TooltipType.VerticalCursor || type === TooltipType.Crosshairs;
 }
-export function isFollowTooltipType(type: TooltipType | undefined) {
+export function isFollowTooltipType(type: TooltipType) {
   return type === TooltipType.Follow;
 }
 
