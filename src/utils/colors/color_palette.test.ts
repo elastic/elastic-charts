@@ -9,6 +9,22 @@ import {
 
 describe('ColorPalette', () => {
   describe('categorical', () => {
+    it('euiPalette', () => {
+      const expected = [
+        '#1ea593',
+        '#2b70f7',
+        '#ce0060',
+        '#38007e',
+        '#fca5d3',
+        '#f37020',
+        '#e49e29',
+        '#b0916F',
+        '#7b000b',
+        '#34130c',
+      ];
+      expect(getCategoricalPalette('euiPaletteColorBlind')).toEqual(expected);
+    });
+
     it('default accent palette', () => {
       const expected = ['#7fc97f', '#beaed4', '#fdc086', '#ffff99', '#386cb0', '#f0027f', '#bf5b17', '#666666'];
       expect(getCategoricalPalette('accent')).toEqual(expected);
@@ -119,6 +135,39 @@ describe('ColorPalette', () => {
         expect(getCustomSequentialPalette(['#AABBCC', '#221122'], 10)).toEqual(expected);
       });
     });
+    describe('multi-hue', () => {
+      it('calculates RdPu palette with 10 steps', () => {
+        const expected = [
+          '#fff7f3',
+          '#fde2df',
+          '#fccac8',
+          '#fbabb8',
+          '#f880aa',
+          '#ea519d',
+          '#cc238e',
+          '#a2057e',
+          '#750175',
+          '#49006a',
+        ];
+        expect(getSequentialPalette('RdPu', 10)).toEqual(expected);
+      });
+
+      it('calculates GnBu palette with 10 steps', () => {
+        const expected = [
+          '#f7fcf0',
+          '#e3f4dd',
+          '#cfecca',
+          '#b3e1bc',
+          '#8fd3be',
+          '#67c0ca',
+          '#43a5ca',
+          '#2384ba',
+          '#0c63a4',
+          '#084081',
+        ];
+        expect(getSequentialPalette('GnBu', 10)).toEqual(expected);
+      });
+    });
   });
 
   describe('cyclical color scale', () => {
@@ -136,6 +185,12 @@ describe('ColorPalette', () => {
         '#4c6edb',
       ];
       expect(getCyclicalPalette(10)).toEqual(expected);
+    });
+
+    it('throws error if number of steps less or equal than zero', () => {
+      expect(() => {
+        getCyclicalPalette(-2);
+      }).toThrow();
     });
   });
 
