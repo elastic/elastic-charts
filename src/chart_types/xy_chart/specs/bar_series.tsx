@@ -18,7 +18,10 @@ const defaultProps = {
   stackAsPercentage: false,
 };
 
-export const BarSeries = getConnect()(
+type SpecRequiredProps = Pick<BarSeriesSpec, 'id' | 'data'>;
+type SpecOptionalProps = Partial<Omit<BarSeriesSpec, 'chartType' | 'specType' | 'seriesType' | 'id' | 'data'>>;
+
+export const BarSeries: React.FunctionComponent<SpecRequiredProps & SpecOptionalProps> = getConnect()(
   specComponentFactory<
     BarSeriesSpec,
     | 'seriesType'

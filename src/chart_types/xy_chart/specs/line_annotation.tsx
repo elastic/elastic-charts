@@ -87,7 +87,19 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
     dispatch,
   );
 
-export const LineAnnotation = connect<{}, DispatchProps, LineAnnotationSpec>(
+type SpecRequiredProps = Pick<LineAnnotationSpec, 'id' | 'dataValues' | 'domainType'>;
+type SpecOptionalProps = Partial<
+  Omit<
+    LineAnnotationSpec,
+    'chartType' | 'specType' | 'seriesType' | 'id' | 'dataValues' | 'domainType' | 'annotationType'
+  >
+>;
+
+export const LineAnnotation: React.FunctionComponent<SpecRequiredProps & SpecOptionalProps> = connect<
+  {},
+  DispatchProps,
+  LineAnnotationSpec
+>(
   null,
   mapDispatchToProps,
 )(LineAnnotationSpecComponent);

@@ -17,7 +17,10 @@ const defaultProps = {
   enableHistogramMode: true as true,
 };
 
-export const HistogramBarSeries = getConnect()(
+type SpecRequiredProps = Pick<HistogramBarSeriesSpec, 'id' | 'data'>;
+type SpecOptionalProps = Partial<Omit<HistogramBarSeriesSpec, 'chartType' | 'specType' | 'seriesType' | 'id' | 'data'>>;
+
+export const HistogramBarSeries: React.FunctionComponent<SpecRequiredProps & SpecOptionalProps> = getConnect()(
   specComponentFactory<
     HistogramBarSeriesSpec,
     | 'seriesType'

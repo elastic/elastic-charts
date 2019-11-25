@@ -16,7 +16,10 @@ const defaultProps = {
   tickLabelRotation: 0,
 };
 
-export const Axis = getConnect()(
+type SpecRequired = Pick<AxisSpec, 'id'>;
+type SpecOptionals = Partial<Omit<AxisSpec, 'chartType' | 'specType' | 'seriesType' | 'id'>>;
+
+export const Axis: React.FunctionComponent<SpecRequired & SpecOptionals> = getConnect()(
   specComponentFactory<
     AxisSpec,
     | 'groupId'

@@ -17,7 +17,10 @@ const defaultProps = {
   histogramModeAlignment: HistogramModeAlignments.Center,
 };
 
-export const AreaSeries = getConnect()(
+type SpecRequiredProps = Pick<AreaSeriesSpec, 'id' | 'data'>;
+type SpecOptionalProps = Partial<Omit<AreaSeriesSpec, 'chartType' | 'specType' | 'seriesType' | 'id' | 'data'>>;
+
+export const AreaSeries: React.FunctionComponent<SpecRequiredProps & SpecOptionalProps> = getConnect()(
   specComponentFactory<
     AreaSeriesSpec,
     | 'seriesType'

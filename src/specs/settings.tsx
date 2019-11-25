@@ -132,4 +132,9 @@ export const DEFAULT_SETTINGS_SPEC = {
   hideDuplicateAxes: false,
   theme: LIGHT_THEME,
 };
-export const Settings = getConnect()(specComponentFactory<SettingsSpec, DefaultSettingsProps>(DEFAULT_SETTINGS_SPEC));
+
+type SpecProps = Partial<Omit<SettingsSpec, 'chartType' | 'specType' | 'id'>>;
+
+export const Settings: React.FunctionComponent<SpecProps> = getConnect()(
+  specComponentFactory<SettingsSpec, DefaultSettingsProps>(DEFAULT_SETTINGS_SPEC),
+);

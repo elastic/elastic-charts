@@ -16,8 +16,10 @@ const defaultProps = {
   hideInLegend: false,
   histogramModeAlignment: HistogramModeAlignments.Center,
 };
+type SpecRequiredProps = Pick<LineSeriesSpec, 'id' | 'data'>;
+type SpecOptionalProps = Partial<Omit<LineSeriesSpec, 'chartType' | 'specType' | 'seriesType' | 'id' | 'data'>>;
 
-export const LineSeries = getConnect()(
+export const LineSeries: React.FunctionComponent<SpecRequiredProps & SpecOptionalProps> = getConnect()(
   specComponentFactory<
     LineSeriesSpec,
     | 'seriesType'
