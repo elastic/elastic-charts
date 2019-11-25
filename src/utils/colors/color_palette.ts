@@ -1,7 +1,7 @@
 import * as d3ScaleChromatic from 'd3-scale-chromatic';
 import { rgb as d3Rgb, lab as d3Lab } from 'd3-color';
-import { interpolateHcl, interpolateLab, quantize } from 'd3-interpolate';
-import { scaleLinear, scaleSequential } from 'd3-scale';
+import { interpolateHcl, quantize, interpolateLab } from 'd3-interpolate';
+import { scaleSequential, scaleLinear } from 'd3-scale';
 
 export type ColorPaletteName = 'blues' | 'greens' | 'greys' | 'oranges' | 'purples' | 'reds';
 export type CategoricalSchemeName =
