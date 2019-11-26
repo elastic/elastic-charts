@@ -20,7 +20,7 @@ import { getHighlightedSeriesSelector } from '../../state/selectors/get_highligh
 import { isChartEmptySelector } from '../../state/selectors/is_chart_empty';
 import { isChartAnimatableSelector } from '../../state/selectors/is_chart_animatable';
 import { isBrushAvailableSelector } from '../../state/selectors/is_brush_available';
-import { Transform, getSpecsById } from '../../state/utils';
+import { Transform, getSpecsById, Geometries } from '../../state/utils';
 import { Rotation, AnnotationSpec, isLineAnnotation, isRectAnnotation } from '../../utils/specs';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { isInitialized } from '../../../../state/selectors/is_initialized';
@@ -32,7 +32,6 @@ import { AnnotationId } from '../../../../utils/ids';
 import { Theme, mergeWithDefaultAnnotationLine, mergeWithDefaultAnnotationRect } from '../../../../utils/themes/theme';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { computeSeriesGeometriesSelector } from '../../state/selectors/compute_series_geometries';
-import { PointGeometry, BarGeometry, AreaGeometry, LineGeometry } from '../../../../utils/geometry';
 import { LegendItem } from '../../../../chart_types/xy_chart/legend/legend';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
@@ -41,12 +40,7 @@ import { Clippings } from './bar_values_utils';
 
 interface ReactiveChartStateProps {
   initialized: boolean;
-  geometries: {
-    points?: PointGeometry[];
-    bars?: BarGeometry[];
-    areas?: AreaGeometry[];
-    lines?: LineGeometry[];
-  };
+  geometries: Geometries;
   debug: boolean;
   chartContainerDimensions: Dimensions;
   chartRotation: Rotation;
@@ -83,7 +77,7 @@ class Chart extends React.Component<ReactiveChartProps> {
   }
   renderBarSeries = (clippings: Clippings): ReactiveChartElementIndex[] => {
     const { geometries, theme, isChartAnimatable, highlightedLegendItem } = this.props;
-    if (!geometries) {
+    if (geometries.bars.length === 0) {
       return [];
     }
 
@@ -91,7 +85,7 @@ class Chart extends React.Component<ReactiveChartProps> {
       <BarGeometries
         key={'bar-geometries'}
         animated={isChartAnimatable}
-        bars={geometries.bars || []}
+        bars={geometries.bars}
         sharedStyle={theme.sharedStyle}
         highlightedLegendItem={highlightedLegendItem}
         clippings={clippings}
@@ -108,7 +102,7 @@ class Chart extends React.Component<ReactiveChartProps> {
 
   renderLineSeries = (clippings: Clippings): ReactiveChartElementIndex[] => {
     const { geometries, theme, isChartAnimatable, highlightedLegendItem } = this.props;
-    if (!geometries) {
+    if (geometries.lines.length === 0) {
       return [];
     }
 
@@ -116,7 +110,7 @@ class Chart extends React.Component<ReactiveChartProps> {
       <LineGeometries
         key={'line-geometries'}
         animated={isChartAnimatable}
-        lines={geometries.lines || []}
+        lines={geometries.lines}
         sharedStyle={theme.sharedStyle}
         highlightedLegendItem={highlightedLegendItem}
         clippings={clippings}
@@ -133,14 +127,14 @@ class Chart extends React.Component<ReactiveChartProps> {
 
   renderAreaSeries = (clippings: Clippings): ReactiveChartElementIndex[] => {
     const { geometries, theme, isChartAnimatable, highlightedLegendItem } = this.props;
-    if (!geometries) {
+    if (geometries.areas.length === 0) {
       return [];
     }
     const element = (
       <AreaGeometries
         key={'area-geometries'}
         animated={isChartAnimatable}
-        areas={geometries.areas || []}
+        areas={geometries.areas}
         sharedStyle={theme.sharedStyle}
         highlightedLegendItem={highlightedLegendItem}
         clippings={clippings}
@@ -304,7 +298,12 @@ const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
 const DEFAULT_PROPS: ReactiveChartStateProps = {
   initialized: false,
   theme: LIGHT_THEME,
-  geometries: {},
+  geometries: {
+    areas: [],
+    bars: [],
+    lines: [],
+    points: [],
+  },
   debug: false,
   chartContainerDimensions: {
     width: 0,

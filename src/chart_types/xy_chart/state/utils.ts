@@ -68,15 +68,16 @@ export interface ComputedScales {
   xScale: Scale;
   yScales: Map<GroupId, Scale>;
 }
+export interface Geometries {
+  points: PointGeometry[];
+  bars: BarGeometry[];
+  areas: AreaGeometry[];
+  lines: LineGeometry[];
+}
 
 export interface ComputedGeometries {
   scales: ComputedScales;
-  geometries: {
-    points: PointGeometry[];
-    bars: BarGeometry[];
-    areas: AreaGeometry[];
-    lines: LineGeometry[];
-  };
+  geometries: Geometries;
   geometriesIndex: Map<any, IndexedGeometry[]>;
   geometriesCounts: GeometriesCounts;
 }
