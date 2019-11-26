@@ -12,9 +12,9 @@ export class LineAnnotation extends React.PureComponent<LineAnnotationProps> {
   render() {
     const { lines } = this.props;
 
-    return <Group key={'line_annotations'}>{lines.map(this.renderAnnotationLine)}</Group>;
+    return <Group>{lines.map(this.renderAnnotationLine)}</Group>;
   }
-  private renderAnnotationLine = (lineConfig: AnnotationLineProps, i: number) => {
+  private renderAnnotationLine = (lineConfig: AnnotationLineProps, index: number) => {
     const { line } = this.props.lineStyle;
     const {
       start: { x1, y1 },
@@ -24,6 +24,6 @@ export class LineAnnotation extends React.PureComponent<LineAnnotationProps> {
       points: [x1, y1, x2, y2],
       ...line,
     };
-    return <Line {...lineProps} key={`annotation-line-${i}`} />;
+    return <Line {...lineProps} key={`annotation-line-${index}`} />;
   };
 }

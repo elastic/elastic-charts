@@ -11,9 +11,9 @@ interface Props {
 export class RectAnnotation extends React.PureComponent<Props> {
   render() {
     const { rects } = this.props;
-    return <Group key={'rect_annotations'}>{rects.map(this.renderAnnotationRect)}</Group>;
+    return <Group>{rects.map(this.renderAnnotationRect)}</Group>;
   }
-  private renderAnnotationRect = (props: AnnotationRectProps, i: number) => {
+  private renderAnnotationRect = (props: AnnotationRectProps, index: number) => {
     const { x, y, width, height } = props.rect;
 
     const rectProps = {
@@ -24,6 +24,6 @@ export class RectAnnotation extends React.PureComponent<Props> {
       height,
     };
 
-    return <Rect {...rectProps} key={`rect-annotation-${i}`} />;
+    return <Rect {...rectProps} key={`rect-annotation-${index}`} />;
   };
 }
