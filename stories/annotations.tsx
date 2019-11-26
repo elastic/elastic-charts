@@ -241,6 +241,7 @@ storiesOf('Annotations', module)
           y0: 0,
           y1: 7,
         },
+        details: 'details about this annotation',
       },
     ];
 

@@ -1,6 +1,5 @@
 import createCachedSelector from 're-reselect';
 import { Dimensions } from '../../../../utils/dimensions';
-import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
 import { Point } from '../../../../utils/point';
 import { TooltipValue } from '../../utils/interactions';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
@@ -18,10 +17,13 @@ import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { ComputedGeometries } from '../utils';
 import { getTooltipValuesSelector } from './get_tooltip_values_highlighted_geoms';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { GlobalChartState } from '../../../../state/chart_state';
+
+const getCurrentPointerPosition = (state: GlobalChartState) => state.interactions.pointer.current.position;
 
 export const getAnnotationTooltipStateSelector = createCachedSelector(
   [
-    getProjectedPointerPositionSelector,
+    getCurrentPointerPosition,
     computeChartDimensionsSelector,
     computeSeriesGeometriesSelector,
     getChartRotationSelector,
@@ -34,8 +36,12 @@ export const getAnnotationTooltipStateSelector = createCachedSelector(
 )(getChartIdSelector);
 
 function getAnnotationTooltipState(
-  projectedPointerPosition: Point,
-  chartDimensions: { chartDimensions: Dimensions },
+  { x, y }: Point,
+  {
+    chartDimensions,
+  }: {
+    chartDimensions: Dimensions;
+  },
   geometries: ComputedGeometries,
   chartRotation: Rotation,
   annotationSpecs: AnnotationSpec[],
@@ -44,7 +50,7 @@ function getAnnotationTooltipState(
   tooltipValues: TooltipValue[],
 ): AnnotationTooltipState | null {
   // get positions relative to chart
-  if (projectedPointerPosition.x < 0 || projectedPointerPosition.y < 0) {
+  if (x < 0 || y < 0) {
     return null;
   }
   const { xScale, yScales } = geometries.scales;
@@ -52,23 +58,26 @@ function getAnnotationTooltipState(
   if (!xScale || !yScales) {
     return null;
   }
-
+  // use area chart projected coordinates of the pointer
+  const chartAreaProjectedPointer = { x: x - chartDimensions.left, y: y - chartDimensions.top };
   const tooltipState = computeAnnotationTooltipState(
-    projectedPointerPosition,
+    chartAreaProjectedPointer,
     annotationDimensions,
     annotationSpecs,
     chartRotation,
     axesSpecs,
-    chartDimensions.chartDimensions,
+    chartDimensions,
   );
 
   // If there's a highlighted chart element tooltip value, don't show annotation tooltip
-  if (tooltipState && tooltipState.isVisible && tooltipState.annotationType === AnnotationTypes.Rectangle) {
-    for (const tooltipValue of tooltipValues) {
-      if (tooltipValue.isHighlighted) {
-        return null;
-      }
-    }
+  const isChartTooltipDisplayed = tooltipValues.some(({ isHighlighted }) => isHighlighted);
+  if (
+    tooltipState &&
+    tooltipState.isVisible &&
+    tooltipState.annotationType === AnnotationTypes.Rectangle &&
+    isChartTooltipDisplayed
+  ) {
+    return null;
   }
 
   return tooltipState;

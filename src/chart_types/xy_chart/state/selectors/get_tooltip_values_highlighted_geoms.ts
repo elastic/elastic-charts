@@ -100,9 +100,8 @@ function getTooltipAndHighlightFromXValue(
         return acc;
       }
 
-      // check if the pointer is on the geometry
+      // check if the pointer is on the geometry (avoid checking if using external pointer event)
       let isHighlighted = false;
-      // avoid checking if using external pointer event
       if (!externalPointerEvent && isPointOnGeometry(x, y, indexedGeometry)) {
         isHighlighted = true;
         highlightedGeometries.push(indexedGeometry);

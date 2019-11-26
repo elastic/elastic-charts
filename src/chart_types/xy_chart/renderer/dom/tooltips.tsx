@@ -10,9 +10,11 @@ import { getTooltipValuesSelector } from '../../state/selectors/get_tooltip_valu
 import { isInitialized } from '../../../../state/selectors/is_initialized';
 import { createPortal } from 'react-dom';
 import { getFinalTooltipPosition, TooltipPosition } from '../../crosshair/crosshair_utils';
+import { isAnnotationTooltipVisibleSelector } from '../../state/selectors/is_annotation_tooltip_visible';
 
 interface TooltipStateProps {
   isTooltipVisible: boolean;
+  isAnnotationTooltipVisible: boolean;
   tooltipValues: TooltipValue[];
   tooltipPosition: TooltipPosition | null;
   tooltipHeaderFormatter?: TooltipValueFormatter;
@@ -81,14 +83,14 @@ class TooltipsComponent extends React.Component<TooltipProps> {
   }
 
   render() {
-    const { isTooltipVisible, tooltipValues, tooltipHeaderFormatter } = this.props;
+    const { isTooltipVisible, tooltipValues, tooltipHeaderFormatter, isAnnotationTooltipVisible } = this.props;
     if (!this.portalNode) {
       return null;
     }
     const { getChartContainerRef } = this.props;
     const chartContainerRef = getChartContainerRef();
     let tooltip;
-    if (chartContainerRef.current === null || !isTooltipVisible) {
+    if (chartContainerRef.current === null || !isTooltipVisible || isAnnotationTooltipVisible) {
       return null;
     } else {
       tooltip = (
@@ -125,6 +127,7 @@ const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
   if (!isInitialized(state)) {
     return {
       isTooltipVisible: false,
+      isAnnotationTooltipVisible: false,
       tooltipValues: [],
       tooltipPosition: null,
       tooltipHeaderFormatter: undefined,
@@ -132,6 +135,7 @@ const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
   }
   return {
     isTooltipVisible: isTooltipVisibleSelector(state),
+    isAnnotationTooltipVisible: isAnnotationTooltipVisibleSelector(state),
     tooltipValues: getTooltipValuesSelector(state),
     tooltipPosition: getTooltipPositionSelector(state),
     tooltipHeaderFormatter: getTooltipHeaderFormatterSelector(state),

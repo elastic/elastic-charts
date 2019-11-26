@@ -24,7 +24,6 @@ function getProjectedPointerPosition(chartAreaPointerPosition: Point, chartAreaD
   // get positions relative to chart
   let xPos = x - chartAreaDimensions.left;
   let yPos = y - chartAreaDimensions.top;
-
   // limit cursorPosition to the chart area
   if (xPos < 0 || xPos >= chartAreaDimensions.width) {
     xPos = -1;
