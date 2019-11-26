@@ -1,12 +1,13 @@
 import * as React from 'react';
 
-import { AnnotationDomainTypes, AnnotationSpec, Position, Rotation } from '../utils/specs';
+import { AnnotationDomainTypes, AnnotationSpec, Position, Rotation, SpecTypes, AnnotationTypes } from '../utils/specs';
 import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../utils/themes/theme';
 import { Dimensions } from '../../../utils/dimensions';
 import { GroupId } from '../../../utils/ids';
 import { ScaleContinuous } from '../../../utils/scales/scale_continuous';
 import { Scale, ScaleType } from '../../../utils/scales/scales';
 import { computeLineAnnotationDimensions, AnnotationLineProps } from './line_annotation_tooltip';
+import { ChartTypes } from '../..';
 
 describe('annotation marker', () => {
   const groupId = 'foo-group';
@@ -38,9 +39,9 @@ describe('annotation marker', () => {
 
     const id = 'foo-line';
     const lineAnnotation: AnnotationSpec = {
-      chartType: 'xy_axis',
-      specType: 'annotation',
-      annotationType: 'line',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Annotation,
+      annotationType: AnnotationTypes.Line,
       id,
       domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -93,9 +94,9 @@ describe('annotation marker', () => {
     const chartRotation: Rotation = 180;
 
     const lineAnnotation: AnnotationSpec = {
-      chartType: 'xy_axis',
-      specType: 'annotation',
-      annotationType: 'line',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Annotation,
+      annotationType: AnnotationTypes.Line,
       id: 'foo-line',
       domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -147,9 +148,9 @@ describe('annotation marker', () => {
     const chartRotation: Rotation = 0;
 
     const lineAnnotation: AnnotationSpec = {
-      chartType: 'xy_axis',
-      specType: 'annotation',
-      annotationType: 'line',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Annotation,
+      annotationType: AnnotationTypes.Line,
       id: 'foo-line',
       domainType: AnnotationDomainTypes.XDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],

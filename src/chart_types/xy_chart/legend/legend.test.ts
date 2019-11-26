@@ -2,7 +2,8 @@ import { getAxisId, getGroupId, getSpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
 import { computeLegend, getSeriesColorLabel } from './legend';
 import { DataSeriesColorsValues } from '../utils/series';
-import { AxisSpec, BasicSeriesSpec, Position } from '../utils/specs';
+import { AxisSpec, BasicSeriesSpec, Position, SpecTypes, SeriesTypes } from '../utils/specs';
+import { ChartTypes } from '../..';
 
 const nullDisplayValue = {
   formatted: {
@@ -31,12 +32,12 @@ const colorValues2b = {
   colorValues: ['c', 'd'],
 };
 const spec1: BasicSeriesSpec = {
-  chartType: 'xy_axis',
-  specType: 'series',
+  chartType: ChartTypes.XYAxis,
+  specType: SpecTypes.Series,
   id: getSpecId('spec1'),
   name: 'Spec 1 title',
   groupId: getGroupId('group'),
-  seriesType: 'line',
+  seriesType: SeriesTypes.Line,
   yScaleType: ScaleType.Log,
   xScaleType: ScaleType.Linear,
   xAccessor: 'x',
@@ -46,11 +47,11 @@ const spec1: BasicSeriesSpec = {
   hideInLegend: false,
 };
 const spec2: BasicSeriesSpec = {
-  chartType: 'xy_axis',
-  specType: 'series',
+  chartType: ChartTypes.XYAxis,
+  specType: SpecTypes.Series,
   id: getSpecId('spec2'),
   groupId: getGroupId('group'),
-  seriesType: 'line',
+  seriesType: SeriesTypes.Line,
   yScaleType: ScaleType.Log,
   xScaleType: ScaleType.Linear,
   xAccessor: 'x',
@@ -62,8 +63,8 @@ const spec2: BasicSeriesSpec = {
 
 const axesSpecs: AxisSpec[] = [];
 const axisSpec: AxisSpec = {
-  chartType: 'xy_axis',
-  specType: 'axis',
+  chartType: ChartTypes.XYAxis,
+  specType: SpecTypes.Axis,
   id: getAxisId('axis1'),
   groupId: getGroupId('group1'),
   hide: false,

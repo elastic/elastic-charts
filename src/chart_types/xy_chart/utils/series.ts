@@ -4,7 +4,7 @@ import { GroupId, SpecId } from '../../../utils/ids';
 import { splitSpecsByGroupId, YBasicSeriesSpec } from '../domains/y_domain';
 import { formatNonStackedDataSeriesValues } from './nonstacked_series_utils';
 import { isEqualSeriesKey } from './series_utils';
-import { BasicSeriesSpec, Datum, SeriesAccessors, SeriesSpecs } from './specs';
+import { BasicSeriesSpec, Datum, SeriesAccessors, SeriesSpecs, SeriesTypes } from './specs';
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
 import { ScaleType } from '../../../utils/scales/scales';
 import { LastValues } from '../state/utils';
@@ -288,13 +288,13 @@ function getRawDataSeries(
     const { id, seriesType } = spec;
     const ds = dataSeries.get(id);
     switch (seriesType) {
-      case 'bar':
+      case SeriesTypes.Bar:
         counts.barSeries += ds ? ds.length : 0;
         break;
-      case 'line':
+      case SeriesTypes.Line:
         counts.lineSeries += ds ? ds.length : 0;
         break;
-      case 'area':
+      case SeriesTypes.Area:
         counts.areaSeries += ds ? ds.length : 0;
         break;
     }

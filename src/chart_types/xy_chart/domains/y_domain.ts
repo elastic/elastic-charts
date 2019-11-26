@@ -1,4 +1,4 @@
-import { BasicSeriesSpec, DomainRange, DEFAULT_GLOBAL_ID } from '../utils/specs';
+import { BasicSeriesSpec, DomainRange, DEFAULT_GLOBAL_ID, SeriesTypes } from '../utils/specs';
 import { GroupId, SpecId, getGroupId } from '../../../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../../../utils/scales/scales';
 import { isCompleteBound, isLowerBound, isUpperBound } from '../utils/axis_utils';
@@ -186,7 +186,7 @@ export function splitSpecsByGroupId(specs: YBasicSeriesSpec[]) {
   // in MobX version, the stackAccessors was programmatically added to every histogram specs
   // in ReduX version, we left untouched the specs, so we have to manually check that
   const isHistogramEnabled = specs.some(({ seriesType, enableHistogramMode }) => {
-    return seriesType === 'bar' && enableHistogramMode;
+    return seriesType === SeriesTypes.Bar && enableHistogramMode;
   });
   // split each specs by groupId and by stacked or not
   specs.forEach((spec) => {
@@ -197,7 +197,10 @@ export function splitSpecsByGroupId(specs: YBasicSeriesSpec[]) {
     };
     // stack every bars if using histogram mode
     // independenyly from lines and areas
-    if ((spec.seriesType === 'bar' && isHistogramEnabled) || (spec.stackAccessors && spec.stackAccessors.length > 0)) {
+    if (
+      (spec.seriesType === SeriesTypes.Bar && isHistogramEnabled) ||
+      (spec.stackAccessors && spec.stackAccessors.length > 0)
+    ) {
       group.stacked.push(spec);
     } else {
       group.nonStacked.push(spec);

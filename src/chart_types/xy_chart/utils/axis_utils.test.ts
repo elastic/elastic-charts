@@ -1,6 +1,6 @@
 import { XDomain } from '../domains/x_domain';
 import { YDomain } from '../domains/y_domain';
-import { AxisSpec, DomainRange, Position, AxisStyle } from './specs';
+import { AxisSpec, DomainRange, Position, AxisStyle, SpecTypes } from './specs';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { AxisId, GroupId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
@@ -35,6 +35,7 @@ import { CanvasTextBBoxCalculator } from '../../../utils/bbox/canvas_text_bbox_c
 import { SvgTextBBoxCalculator } from '../../../utils/bbox/svg_text_bbox_calculator';
 import { niceTimeFormatter } from '../../../utils/data/formatters';
 import { mergeYCustomDomainsByGroupId } from '../state/selectors/merge_y_custom_domains';
+import { ChartTypes } from '../..';
 
 describe('Axis computational utils', () => {
   const mockedRect = {
@@ -74,8 +75,8 @@ describe('Axis computational utils', () => {
     maxLabelTextHeight: 10,
   };
   const verticalAxisSpec: AxisSpec = {
-    chartType: 'xy_axis',
-    specType: 'axis',
+    chartType: ChartTypes.XYAxis,
+    specType: SpecTypes.Axis,
     id: 'axis_1',
     groupId: 'group_1',
     hide: false,
@@ -92,8 +93,8 @@ describe('Axis computational utils', () => {
   };
 
   const horizontalAxisSpec: AxisSpec = {
-    chartType: 'xy_axis',
-    specType: 'axis',
+    chartType: ChartTypes.XYAxis,
+    specType: SpecTypes.Axis,
     id: 'axis_2',
     groupId: 'group_1',
     hide: false,
@@ -109,8 +110,8 @@ describe('Axis computational utils', () => {
   };
 
   const verticalAxisSpecWTitle: AxisSpec = {
-    chartType: 'xy_axis',
-    specType: 'axis',
+    chartType: ChartTypes.XYAxis,
+    specType: SpecTypes.Axis,
     id: 'axis_1',
     groupId: 'group_1',
     title: 'v axis',
@@ -127,8 +128,8 @@ describe('Axis computational utils', () => {
     integersOnly: false,
   };
   const xAxisWithTime: AxisSpec = {
-    chartType: 'xy_axis',
-    specType: 'axis',
+    chartType: ChartTypes.XYAxis,
+    specType: SpecTypes.Axis,
     id: 'axis_1',
     groupId: 'group_1',
     title: 'v axis',

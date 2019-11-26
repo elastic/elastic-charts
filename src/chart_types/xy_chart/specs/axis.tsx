@@ -1,10 +1,10 @@
-import { AxisSpec, Position, DEFAULT_GLOBAL_ID } from '../utils/specs';
+import { AxisSpec, Position, DEFAULT_GLOBAL_ID, SpecTypes } from '../utils/specs';
 import { ChartTypes } from '../../../chart_types';
 import { specComponentFactory, getConnect } from '../../../state/spec_factory';
 
 const defaultProps = {
   chartType: ChartTypes.XYAxis,
-  specType: 'axis' as 'axis',
+  specType: SpecTypes.Axis,
   groupId: DEFAULT_GLOBAL_ID,
   hide: false,
   showOverlappingTicks: false,

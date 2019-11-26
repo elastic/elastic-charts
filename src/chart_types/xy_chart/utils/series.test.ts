@@ -9,9 +9,10 @@ import {
   RawDataSeries,
   splitSeries,
 } from './series';
-import { BasicSeriesSpec, LineSeriesSpec } from './specs';
+import { BasicSeriesSpec, LineSeriesSpec, SpecTypes, SeriesTypes } from './specs';
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
 import * as TestDataset from '../../../utils/data_samples/test_dataset';
+import { ChartTypes } from '../..';
 
 describe('Series', () => {
   test('Can split dataset into 1Y0G series', () => {
@@ -292,11 +293,11 @@ describe('Series', () => {
 
   test('should split an array of specs into data series', () => {
     const spec1: LineSeriesSpec = {
-      specType: 'series',
-      chartType: 'xy_axis',
+      specType: SpecTypes.Series,
+      chartType: ChartTypes.XYAxis,
       id: 'spec1',
       groupId: 'group',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -306,11 +307,11 @@ describe('Series', () => {
       hideInLegend: false,
     };
     const spec2: BasicSeriesSpec = {
-      specType: 'series',
-      chartType: 'xy_axis',
+      specType: SpecTypes.Series,
+      chartType: ChartTypes.XYAxis,
       id: 'spec2',
       groupId: 'group2',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -327,11 +328,11 @@ describe('Series', () => {
   });
   test('should compute data series for stacked specs', () => {
     const spec1: BasicSeriesSpec = {
-      specType: 'series',
-      chartType: 'xy_axis',
+      specType: SpecTypes.Series,
+      chartType: ChartTypes.XYAxis,
       id: 'spec1',
       groupId: 'group',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -341,11 +342,11 @@ describe('Series', () => {
       hideInLegend: false,
     };
     const spec2: BasicSeriesSpec = {
-      specType: 'series',
-      chartType: 'xy_axis',
+      specType: SpecTypes.Series,
+      chartType: ChartTypes.XYAxis,
       id: 'spec2',
       groupId: 'group2',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -368,11 +369,11 @@ describe('Series', () => {
   });
   test('should get series color map', () => {
     const spec1: BasicSeriesSpec = {
-      specType: 'series',
-      chartType: 'xy_axis',
+      specType: SpecTypes.Series,
+      chartType: ChartTypes.XYAxis,
       id: 'spec1',
       groupId: 'group',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -417,11 +418,11 @@ describe('Series', () => {
     const specId = 'splitSpec';
 
     const splitSpec: BasicSeriesSpec = {
-      specType: 'series',
-      chartType: 'xy_axis',
+      specType: SpecTypes.Series,
+      chartType: ChartTypes.XYAxis,
       id: specId,
       groupId: 'group',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',

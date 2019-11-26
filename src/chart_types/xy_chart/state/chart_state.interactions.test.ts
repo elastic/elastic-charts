@@ -1,5 +1,5 @@
 import { createStore, Store } from 'redux';
-import { BarSeriesSpec, BasicSeriesSpec, AxisSpec, Position } from '../utils/specs';
+import { BarSeriesSpec, BasicSeriesSpec, AxisSpec, Position, SpecTypes, SeriesTypes } from '../utils/specs';
 import { TooltipType } from '../utils/interactions';
 import { ScaleType } from '../../../utils/scales/scales';
 import { chartStoreReducer, GlobalChartState } from '../../../state/chart_state';
@@ -18,16 +18,17 @@ import { getSettingsSpecSelector } from '../../../state/selectors/get_settings_s
 import { upsertSpec, specParsed } from '../../../state/actions/specs';
 import { updateParentDimensions } from '../../../state/actions/chart_settings';
 import { onPointerMove } from '../../../state/actions/mouse';
+import { ChartTypes } from '../..';
 
 const SPEC_ID = 'spec_1';
 const GROUP_ID = 'group_1';
 
 const ordinalBarSeries: BarSeriesSpec = {
-  chartType: 'xy_axis',
-  specType: 'series',
+  chartType: ChartTypes.XYAxis,
+  specType: SpecTypes.Series,
   id: SPEC_ID,
   groupId: GROUP_ID,
-  seriesType: 'bar',
+  seriesType: SeriesTypes.Bar,
   yScaleToDataExtent: false,
   data: [[0, 10], [1, 5]],
   xAccessor: 0,
@@ -37,11 +38,11 @@ const ordinalBarSeries: BarSeriesSpec = {
   hideInLegend: false,
 };
 const linearBarSeries: BarSeriesSpec = {
-  chartType: 'xy_axis',
-  specType: 'series',
+  chartType: ChartTypes.XYAxis,
+  specType: SpecTypes.Series,
   id: SPEC_ID,
   groupId: GROUP_ID,
-  seriesType: 'bar',
+  seriesType: SeriesTypes.Bar,
   yScaleToDataExtent: false,
   data: [[0, 10], [1, 5]],
   xAccessor: 0,
@@ -604,8 +605,8 @@ function mouseOverTestSuite(scaleType: ScaleType) {
   describe('can format tooltip values on rotated chart', () => {
     beforeEach(() => {
       const leftAxis: AxisSpec = {
-        chartType: 'xy_axis',
-        specType: 'axis',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Axis,
         hide: true,
         id: 'yaxis',
         groupId: GROUP_ID,
@@ -617,8 +618,8 @@ function mouseOverTestSuite(scaleType: ScaleType) {
         tickSize: 0,
       };
       const bottomAxis: AxisSpec = {
-        chartType: 'xy_axis',
-        specType: 'axis',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Axis,
         hide: true,
         id: 'xaxis',
         groupId: GROUP_ID,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { isLineAnnotation, AnnotationSpec } from '../../utils/specs';
+import { isLineAnnotation, AnnotationSpec, AnnotationTypes } from '../../utils/specs';
 import { AnnotationId } from '../../../../utils/ids';
 import {
   AnnotationDimensions,
@@ -112,11 +112,11 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
     const { details, header } = tooltipState;
 
     switch (tooltipState.annotationType) {
-      case 'line': {
+      case AnnotationTypes.Line: {
         const props = { details, header };
         return createPortal(<LineAnnotationTooltip {...props} ref={this.tooltipRef} />, this.portalNode);
       }
-      case 'rectangle': {
+      case AnnotationTypes.Rectangle: {
         const props = { details, customTooltip: tooltipState.renderTooltip };
         return createPortal(<RectAnnotationTooltip {...props} ref={this.tooltipRef} />, this.portalNode);
       }

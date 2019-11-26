@@ -25,6 +25,8 @@ export {
   LineAnnotationSpec,
   RectAnnotationDatum,
   RectAnnotationSpec,
+  SeriesTypes,
+  SpecTypes,
 } from './chart_types/xy_chart/utils/specs';
 export { AnnotationTooltipFormatter } from './chart_types/xy_chart/annotations/annotation_utils';
 export { GeometryValue } from './utils/geometry';

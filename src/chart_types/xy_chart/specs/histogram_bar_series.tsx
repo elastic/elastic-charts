@@ -1,12 +1,12 @@
-import { HistogramBarSeriesSpec, DEFAULT_GLOBAL_ID } from '../utils/specs';
+import { HistogramBarSeriesSpec, DEFAULT_GLOBAL_ID, SpecTypes, SeriesTypes } from '../utils/specs';
 import { ScaleType } from '../../../utils/scales/scales';
 import { specComponentFactory, getConnect } from '../../../state/spec_factory';
 import { ChartTypes } from '../../../chart_types';
 
 const defaultProps = {
   chartType: ChartTypes.XYAxis,
-  specType: 'series' as 'series',
-  seriesType: 'bar' as 'bar',
+  specType: SpecTypes.Series,
+  seriesType: SeriesTypes.Bar,
   groupId: DEFAULT_GLOBAL_ID,
   xScaleType: ScaleType.Linear,
   yScaleType: ScaleType.Linear,

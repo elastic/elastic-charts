@@ -1,17 +1,18 @@
 import { ScaleType } from '../../../utils/scales/scales';
-import { AxisSpec, BarSeriesSpec, Position } from '../utils/specs';
+import { AxisSpec, BarSeriesSpec, Position, SpecTypes, SeriesTypes } from '../utils/specs';
 import { formatTooltip } from './tooltip';
 import { BarGeometry } from '../../../utils/geometry';
+import { ChartTypes } from '../..';
 
 describe('Tooltip formatting', () => {
   const SPEC_ID_1 = 'bar_1';
   const SPEC_GROUP_ID_1 = 'bar_group_1';
   const SPEC_1: BarSeriesSpec = {
-    chartType: 'xy_axis',
-    specType: 'series',
+    chartType: ChartTypes.XYAxis,
+    specType: SpecTypes.Series,
     id: SPEC_ID_1,
     groupId: SPEC_GROUP_ID_1,
-    seriesType: 'bar',
+    seriesType: SeriesTypes.Bar,
     data: [],
     xAccessor: 0,
     yAccessors: [1],
@@ -24,8 +25,8 @@ describe('Tooltip formatting', () => {
     y0Accessors: [1],
   };
   const YAXIS_SPEC: AxisSpec = {
-    chartType: 'xy_axis',
-    specType: 'axis',
+    chartType: ChartTypes.XYAxis,
+    specType: SpecTypes.Axis,
     id: 'axis_1',
     groupId: SPEC_GROUP_ID_1,
     hide: false,

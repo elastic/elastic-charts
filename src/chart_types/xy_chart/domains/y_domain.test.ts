@@ -1,6 +1,6 @@
 import { ScaleType } from '../../../utils/scales/scales';
 import { RawDataSeries } from '../utils/series';
-import { BasicSeriesSpec, DomainRange } from '../utils/specs';
+import { BasicSeriesSpec, DomainRange, SpecTypes, SeriesTypes } from '../utils/specs';
 import { BARCHART_1Y0G } from '../../../utils/data_samples/test_dataset';
 import {
   coerceYScaleTypes,
@@ -10,6 +10,7 @@ import {
   YBasicSeriesSpec,
 } from './y_domain';
 import { GroupId } from '../../../utils/ids';
+import { ChartTypes } from '../..';
 
 describe('Y Domain', () => {
   test('Should merge Y domain', () => {
@@ -33,7 +34,7 @@ describe('Y Domain', () => {
       specDataSeries,
       [
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Linear,
           groupId: 'a',
           id: 'a',
@@ -83,7 +84,7 @@ describe('Y Domain', () => {
       specDataSeries,
       [
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Linear,
           groupId: 'a',
           id: 'a',
@@ -91,7 +92,7 @@ describe('Y Domain', () => {
           yScaleToDataExtent: true,
         },
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Log,
           groupId: 'b',
           id: 'b',
@@ -148,7 +149,7 @@ describe('Y Domain', () => {
       specDataSeries,
       [
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Linear,
           groupId: 'a',
           id: 'a',
@@ -156,7 +157,7 @@ describe('Y Domain', () => {
           yScaleToDataExtent: true,
         },
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Log,
           groupId: 'a',
           id: 'b',
@@ -206,7 +207,7 @@ describe('Y Domain', () => {
       specDataSeries,
       [
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Linear,
           groupId: 'a',
           id: 'a',
@@ -214,7 +215,7 @@ describe('Y Domain', () => {
           yScaleToDataExtent: true,
         },
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Log,
           groupId: 'a',
           id: 'b',
@@ -264,7 +265,7 @@ describe('Y Domain', () => {
       specDataSeries,
       [
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Linear,
           groupId: 'a',
           id: 'a',
@@ -272,7 +273,7 @@ describe('Y Domain', () => {
           yScaleToDataExtent: true,
         },
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Log,
           groupId: 'a',
           id: 'b',
@@ -285,11 +286,11 @@ describe('Y Domain', () => {
   });
   test('Should split specs by groupId, two groups, non stacked', () => {
     const spec1: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'spec1',
       groupId: 'group1',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -298,11 +299,11 @@ describe('Y Domain', () => {
       data: BARCHART_1Y0G,
     };
     const spec2: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'spec2',
       groupId: 'group2',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -322,11 +323,11 @@ describe('Y Domain', () => {
   });
   test('Should split specs by groupId, two groups, stacked', () => {
     const spec1: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'spec1',
       groupId: 'group1',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -336,11 +337,11 @@ describe('Y Domain', () => {
       data: BARCHART_1Y0G,
     };
     const spec2: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'spec2',
       groupId: 'group2',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -361,11 +362,11 @@ describe('Y Domain', () => {
   });
   test('Should split specs by groupId, 1 group, stacked', () => {
     const spec1: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'spec1',
       groupId: 'group',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -375,11 +376,11 @@ describe('Y Domain', () => {
       data: BARCHART_1Y0G,
     };
     const spec2: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'spec2',
       groupId: 'group',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -398,11 +399,11 @@ describe('Y Domain', () => {
   });
   test('Should 3 split specs by groupId, 2 group, semi/stacked', () => {
     const spec1: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'spec1',
       groupId: 'group1',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -412,11 +413,11 @@ describe('Y Domain', () => {
       data: BARCHART_1Y0G,
     };
     const spec2: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'spec2',
       groupId: 'group1',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -426,11 +427,11 @@ describe('Y Domain', () => {
       data: BARCHART_1Y0G,
     };
     const spec3: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'spec3',
       groupId: 'group2',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -475,7 +476,7 @@ describe('Y Domain', () => {
 
     const specs: YBasicSeriesSpec[] = [
       {
-        seriesType: 'area',
+        seriesType: SeriesTypes.Area,
         yScaleType: ScaleType.Linear,
         groupId: 'a',
         id: 'a',
@@ -513,7 +514,7 @@ describe('Y Domain', () => {
       specDataSeries,
       [
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Linear,
           groupId,
           id: 'a',
@@ -559,7 +560,7 @@ describe('Y Domain', () => {
       specDataSeries,
       [
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Linear,
           groupId,
           id: 'a',
@@ -606,7 +607,7 @@ describe('Y Domain', () => {
         specDataSeries,
         [
           {
-            seriesType: 'area',
+            seriesType: SeriesTypes.Area,
             yScaleType: ScaleType.Linear,
             groupId,
             id: 'a',
@@ -647,7 +648,7 @@ describe('Y Domain', () => {
       specDataSeries,
       [
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Linear,
           groupId,
           id: 'a',
@@ -694,7 +695,7 @@ describe('Y Domain', () => {
         specDataSeries,
         [
           {
-            seriesType: 'area',
+            seriesType: SeriesTypes.Area,
             yScaleType: ScaleType.Linear,
             groupId,
             id: 'a',
@@ -739,7 +740,7 @@ describe('Y Domain', () => {
       specDataSeries,
       [
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Linear,
           groupId: 'a',
           id: 'a',
@@ -748,7 +749,7 @@ describe('Y Domain', () => {
           stackAsPercentage: true,
         },
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Log,
           groupId: 'a',
           id: 'b',
@@ -793,7 +794,7 @@ describe('Y Domain', () => {
       specDataSeries,
       [
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Linear,
           groupId,
           id: 'a',

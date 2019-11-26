@@ -1,9 +1,10 @@
 import { computeXScale } from '../utils/scales';
-import { BasicSeriesSpec } from '../utils/specs';
+import { BasicSeriesSpec, SpecTypes, SeriesTypes } from '../utils/specs';
 import { getGroupId, getSpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
 import { getSnapPosition } from './crosshair_utils';
 import { computeSeriesDomains } from '../state/utils';
+import { ChartTypes } from '../..';
 
 describe('Crosshair utils ordinal scales', () => {
   const barSeries1SpecId = getSpecId('barSeries1');
@@ -12,11 +13,11 @@ describe('Crosshair utils ordinal scales', () => {
   const lineSeries2SpecId = getSpecId('lineSeries2');
 
   const barSeries1: BasicSeriesSpec = {
-    chartType: 'xy_axis',
-    specType: 'series',
+    chartType: ChartTypes.XYAxis,
+    specType: SpecTypes.Series,
     id: barSeries1SpecId,
     groupId: getGroupId('group1'),
-    seriesType: 'bar',
+    seriesType: SeriesTypes.Bar,
     data: [['a', 0], ['b', 0], ['c', 0]],
     xAccessor: 0,
     yAccessors: [1],
@@ -25,11 +26,11 @@ describe('Crosshair utils ordinal scales', () => {
     yScaleToDataExtent: true,
   };
   const barSeries2: BasicSeriesSpec = {
-    chartType: 'xy_axis',
-    specType: 'series',
+    chartType: ChartTypes.XYAxis,
+    specType: SpecTypes.Series,
     id: barSeries2SpecId,
     groupId: getGroupId('group1'),
-    seriesType: 'bar',
+    seriesType: SeriesTypes.Bar,
     data: [['a', 2], ['b', 2], ['c', 2]],
     xAccessor: 0,
     yAccessors: [1],
@@ -38,11 +39,11 @@ describe('Crosshair utils ordinal scales', () => {
     yScaleToDataExtent: true,
   };
   const lineSeries1: BasicSeriesSpec = {
-    chartType: 'xy_axis',
-    specType: 'series',
+    chartType: ChartTypes.XYAxis,
+    specType: SpecTypes.Series,
     id: lineSeries1SpecId,
     groupId: getGroupId('group1'),
-    seriesType: 'line',
+    seriesType: SeriesTypes.Line,
     data: [['a', 0], ['b', 0], ['c', 0]],
     xAccessor: 0,
     yAccessors: [1],
@@ -51,11 +52,11 @@ describe('Crosshair utils ordinal scales', () => {
     yScaleToDataExtent: true,
   };
   const lineSeries2: BasicSeriesSpec = {
-    chartType: 'xy_axis',
-    specType: 'series',
+    chartType: ChartTypes.XYAxis,
+    specType: SpecTypes.Series,
     id: lineSeries2SpecId,
     groupId: getGroupId('group1'),
-    seriesType: 'line',
+    seriesType: SeriesTypes.Line,
     data: [['a', 2], ['b', 2], ['c', 2]],
     xAccessor: 0,
     yAccessors: [1],

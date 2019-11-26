@@ -3,9 +3,10 @@ import { CurveType } from '../../../utils/curves';
 import { IndexedGeometry, PointGeometry, AreaGeometry } from '../../../utils/geometry';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { computeXScale, computeYScales } from '../utils/scales';
-import { AreaSeriesSpec } from '../utils/specs';
+import { AreaSeriesSpec, SpecTypes, SeriesTypes } from '../utils/specs';
 import { computeSeriesDomains } from '../state/utils';
 import { renderArea } from './rendering';
+import { ChartTypes } from '../..';
 
 const SPEC_ID = 'spec_1';
 const GROUP_ID = 'group_1';
@@ -13,11 +14,11 @@ const GROUP_ID = 'group_1';
 describe('Rendering points - areas', () => {
   describe('Empty line for missing data', () => {
     const pointSeriesSpec: AreaSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       yScaleToDataExtent: false,
       data: [[0, 10], [1, 5]],
       xAccessor: 0,
@@ -70,11 +71,11 @@ describe('Rendering points - areas', () => {
   });
   describe('Single series area chart - ordinal', () => {
     const pointSeriesSpec: AreaSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       yScaleToDataExtent: false,
       data: [[0, 10], [1, 5]],
       xAccessor: 0,
@@ -174,11 +175,11 @@ describe('Rendering points - areas', () => {
     const spec1Id = 'point1';
     const spec2Id = 'point2';
     const pointSeriesSpec1: AreaSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: spec1Id,
       groupId: GROUP_ID,
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       yScaleToDataExtent: false,
       data: [[0, 10], [1, 5]],
       xAccessor: 0,
@@ -187,11 +188,11 @@ describe('Rendering points - areas', () => {
       yScaleType: ScaleType.Linear,
     };
     const pointSeriesSpec2: AreaSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: spec2Id,
       groupId: GROUP_ID,
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       yScaleToDataExtent: false,
       data: [[0, 20], [1, 10]],
       xAccessor: 0,
@@ -356,11 +357,11 @@ describe('Rendering points - areas', () => {
   });
   describe('Single series area chart - linear', () => {
     const pointSeriesSpec: AreaSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       yScaleToDataExtent: false,
       data: [[0, 10], [1, 5]],
       xAccessor: 0,
@@ -455,11 +456,11 @@ describe('Rendering points - areas', () => {
     const spec1Id = 'point1';
     const spec2Id = 'point2';
     const pointSeriesSpec1: AreaSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: spec1Id,
       groupId: GROUP_ID,
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       yScaleToDataExtent: false,
       data: [[0, 10], [1, 5]],
       xAccessor: 0,
@@ -468,11 +469,11 @@ describe('Rendering points - areas', () => {
       yScaleType: ScaleType.Linear,
     };
     const pointSeriesSpec2: AreaSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: spec2Id,
       groupId: GROUP_ID,
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       yScaleToDataExtent: false,
       data: [[0, 20], [1, 10]],
       xAccessor: 0,
@@ -636,11 +637,11 @@ describe('Rendering points - areas', () => {
   });
   describe('Single series area chart - time', () => {
     const pointSeriesSpec: AreaSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       yScaleToDataExtent: false,
       data: [[1546300800000, 10], [1546387200000, 5]],
       xAccessor: 0,
@@ -735,11 +736,11 @@ describe('Rendering points - areas', () => {
     const spec1Id = 'point1';
     const spec2Id = 'point2';
     const pointSeriesSpec1: AreaSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: spec1Id,
       groupId: GROUP_ID,
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       yScaleToDataExtent: false,
       data: [[1546300800000, 10], [1546387200000, 5]],
       xAccessor: 0,
@@ -748,11 +749,11 @@ describe('Rendering points - areas', () => {
       yScaleType: ScaleType.Linear,
     };
     const pointSeriesSpec2: AreaSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: spec2Id,
       groupId: GROUP_ID,
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       yScaleToDataExtent: false,
       data: [[1546300800000, 20], [1546387200000, 10]],
       xAccessor: 0,
@@ -901,11 +902,11 @@ describe('Rendering points - areas', () => {
   });
   describe('Single series area chart - y log', () => {
     const pointSeriesSpec: AreaSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       yScaleToDataExtent: false,
       data: [[0, 10], [1, 5], [2, null], [3, 5], [4, 5], [5, 0], [6, 10], [7, 10], [8, 10]],
       xAccessor: 0,

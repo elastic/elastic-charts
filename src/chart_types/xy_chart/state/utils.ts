@@ -29,6 +29,7 @@ import {
   isBandedSpec,
   Fit,
   FitConfig,
+  SeriesTypes,
 } from '../utils/specs';
 import { ColorConfig, Theme } from '../../../utils/themes/theme';
 import { identity, mergePartial } from '../../../utils/commons';
@@ -640,7 +641,7 @@ export function isVerticalRotation(chartRotation: Rotation) {
  */
 export function isLineAreaOnlyChart(specs: BasicSeriesSpec[]) {
   return !specs.some((spec) => {
-    return spec.seriesType === 'bar';
+    return spec.seriesType === SeriesTypes.Bar;
   });
 }
 

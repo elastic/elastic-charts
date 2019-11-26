@@ -1,18 +1,19 @@
 import { getSeriesSpecsSelector } from './get_specs';
 import { getInitialState } from '../../../../state/chart_state';
 import { ChartTypes } from '../../..';
+import { SpecTypes } from '../../utils/specs';
 
 describe('selector - get_specs', () => {
   const state = getInitialState('chartId1');
   const barSpec1 = {
     id: 'bars1',
     chartType: ChartTypes.XYAxis,
-    specType: 'series',
+    specType: SpecTypes.Series,
   };
   const barSpec2 = {
     id: 'bars2',
     chartType: ChartTypes.XYAxis,
-    specType: 'series',
+    specType: SpecTypes.Series,
   };
   beforeEach(() => {
     state.specs['bars1'] = barSpec1;

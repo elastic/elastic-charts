@@ -3,9 +3,10 @@ import { ScaleType } from '../../../utils/scales/scales';
 import { CurveType } from '../../../utils/curves';
 import { renderArea, renderBars } from './rendering';
 import { computeXScale, computeYScales } from '../utils/scales';
-import { AreaSeriesSpec, BarSeriesSpec } from '../utils/specs';
+import { AreaSeriesSpec, BarSeriesSpec, SpecTypes, SeriesTypes } from '../utils/specs';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { AreaGeometry, IndexedGeometry, PointGeometry } from '../../../utils/geometry';
+import { ChartTypes } from '../..';
 
 const SPEC_ID = 'spec_1';
 const GROUP_ID = 'group_1';
@@ -13,11 +14,11 @@ const GROUP_ID = 'group_1';
 describe('Rendering bands - areas', () => {
   describe('Empty line for missing data', () => {
     const pointSeriesSpec: AreaSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       yScaleToDataExtent: false,
       data: [[0, 2, 10], [1, 3, 5]],
       xAccessor: 0,
@@ -68,11 +69,11 @@ describe('Rendering bands - areas', () => {
   });
   describe('Single band area chart', () => {
     const pointSeriesSpec: AreaSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       yScaleToDataExtent: false,
       data: [[0, 2, 10], [1, 3, 5]],
       xAccessor: 0,
@@ -211,11 +212,11 @@ describe('Rendering bands - areas', () => {
   });
   describe('Single band area chart with null values', () => {
     const pointSeriesSpec: AreaSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       yScaleToDataExtent: false,
       data: [[0, 2, 10], [1, 2, null], [2, 3, 5], [3, 3, 5]],
       xAccessor: 0,
@@ -393,11 +394,11 @@ describe('Rendering bands - areas', () => {
   });
   describe('Single series band bar chart - ordinal', () => {
     const barSeriesSpec: BarSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: 'bar',
+      seriesType: SeriesTypes.Bar,
       yScaleToDataExtent: false,
       data: [[0, 2, 10], [1, 3, null], [2, 3, 5], [3, 4, 8]],
       xAccessor: 0,

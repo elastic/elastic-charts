@@ -1,13 +1,13 @@
-import { RectAnnotationSpec, DEFAULT_GLOBAL_ID } from '../utils/specs';
+import { RectAnnotationSpec, DEFAULT_GLOBAL_ID, SpecTypes, AnnotationTypes } from '../utils/specs';
 import { specComponentFactory, getConnect } from '../../../state/spec_factory';
 import { DEFAULT_ANNOTATION_RECT_STYLE } from '../../../utils/themes/theme';
 import { ChartTypes } from '../../index';
 
 const defaultProps = {
   chartType: ChartTypes.XYAxis,
-  specType: 'annotation' as 'annotation',
+  specType: SpecTypes.Annotation,
   groupId: DEFAULT_GLOBAL_ID,
-  annotationType: 'rectangle' as 'rectangle',
+  annotationType: AnnotationTypes.Rectangle,
   zIndex: -1,
   style: DEFAULT_ANNOTATION_RECT_STYLE,
 };

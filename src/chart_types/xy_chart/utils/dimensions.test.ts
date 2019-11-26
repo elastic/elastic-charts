@@ -1,10 +1,11 @@
 import { AxisTicksDimensions } from './axis_utils';
-import { AxisSpec, Position } from './specs';
+import { AxisSpec, Position, SpecTypes } from './specs';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { LegendStyle } from '../../../utils/themes/theme';
 import { computeChartDimensions } from './dimensions';
 import { AxisId } from '../../../utils/ids';
 import { Margins } from '../../../utils/dimensions';
+import { ChartTypes } from '../..';
 
 describe('Computed chart dimensions', () => {
   const parentDim = {
@@ -35,8 +36,8 @@ describe('Computed chart dimensions', () => {
     maxLabelTextHeight: 10,
   };
   const axisLeftSpec: AxisSpec = {
-    chartType: 'xy_axis',
-    specType: 'axis',
+    chartType: ChartTypes.XYAxis,
+    specType: SpecTypes.Axis,
     id: 'axis_1',
     groupId: 'group_1',
     hide: false,

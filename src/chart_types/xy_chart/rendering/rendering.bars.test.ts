@@ -3,9 +3,10 @@ import { identity } from '../../../utils/commons';
 import { ScaleType } from '../../../utils/scales/scales';
 import { renderBars } from './rendering';
 import { computeXScale, computeYScales } from '../utils/scales';
-import { BarSeriesSpec, DomainRange } from '../utils/specs';
+import { BarSeriesSpec, DomainRange, SpecTypes, SeriesTypes } from '../utils/specs';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { GroupId } from '../../../utils/ids';
+import { ChartTypes } from '../..';
 
 const SPEC_ID = 'spec_1';
 const GROUP_ID = 'group_1';
@@ -13,11 +14,11 @@ const GROUP_ID = 'group_1';
 describe('Rendering bars', () => {
   describe('Single series bar chart - ordinal', () => {
     const barSeriesSpec: BarSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: 'bar',
+      seriesType: SeriesTypes.Bar,
       yScaleToDataExtent: false,
       data: [[-200, 0], [0, 10], [1, 5]], // first datum should be skipped as it's out of domain
       xAccessor: 0,
@@ -187,11 +188,11 @@ describe('Rendering bars', () => {
     const spec1Id = 'bar1';
     const spec2Id = 'bar2';
     const barSeriesSpec1: BarSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: spec1Id,
       groupId: GROUP_ID,
-      seriesType: 'bar',
+      seriesType: SeriesTypes.Bar,
       yScaleToDataExtent: false,
       data: [[0, 10], [1, 5]],
       xAccessor: 0,
@@ -200,11 +201,11 @@ describe('Rendering bars', () => {
       yScaleType: ScaleType.Linear,
     };
     const barSeriesSpec2: BarSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: spec2Id,
       groupId: GROUP_ID,
-      seriesType: 'bar',
+      seriesType: SeriesTypes.Bar,
       yScaleToDataExtent: false,
       data: [[0, 20], [1, 10]],
       xAccessor: 0,
@@ -390,11 +391,11 @@ describe('Rendering bars', () => {
   });
   describe('Single series bar chart - linear', () => {
     const barSeriesSpec: BarSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: 'bar',
+      seriesType: SeriesTypes.Bar,
       yScaleToDataExtent: false,
       data: [[0, 10], [1, 5]],
       xAccessor: 0,
@@ -496,11 +497,11 @@ describe('Rendering bars', () => {
   });
   describe('Single series bar chart - log', () => {
     const barSeriesSpec: BarSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: 'bar',
+      seriesType: SeriesTypes.Bar,
       yScaleToDataExtent: false,
       data: [[1, 0], [2, 1], [3, 2], [4, 3], [5, 4], [6, 5]],
       xAccessor: 0,
@@ -538,11 +539,11 @@ describe('Rendering bars', () => {
     const spec1Id = 'bar1';
     const spec2Id = 'bar2';
     const barSeriesSpec1: BarSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: spec1Id,
       groupId: GROUP_ID,
-      seriesType: 'bar',
+      seriesType: SeriesTypes.Bar,
       yScaleToDataExtent: false,
       data: [[0, 10], [1, 5]],
       xAccessor: 0,
@@ -551,11 +552,11 @@ describe('Rendering bars', () => {
       yScaleType: ScaleType.Linear,
     };
     const barSeriesSpec2: BarSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: spec2Id,
       groupId: GROUP_ID,
-      seriesType: 'bar',
+      seriesType: SeriesTypes.Bar,
       yScaleToDataExtent: false,
       data: [[0, 20], [1, 10]],
       xAccessor: 0,
@@ -743,11 +744,11 @@ describe('Rendering bars', () => {
     const spec1Id = 'bar1';
     const spec2Id = 'bar2';
     const barSeriesSpec1: BarSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: spec1Id,
       groupId: GROUP_ID,
-      seriesType: 'bar',
+      seriesType: SeriesTypes.Bar,
       yScaleToDataExtent: false,
       data: [[1546300800000, 10], [1546387200000, 5]],
       xAccessor: 0,
@@ -756,11 +757,11 @@ describe('Rendering bars', () => {
       yScaleType: ScaleType.Linear,
     };
     const barSeriesSpec2: BarSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: spec2Id,
       groupId: GROUP_ID,
-      seriesType: 'bar',
+      seriesType: SeriesTypes.Bar,
       yScaleToDataExtent: false,
       data: [[1546300800000, 20], [1546387200000, 10]],
       xAccessor: 0,
@@ -946,11 +947,11 @@ describe('Rendering bars', () => {
   });
   describe('Remove points datum is not in domain', () => {
     const barSeriesSpec: BarSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: 'bar',
+      seriesType: SeriesTypes.Bar,
       yScaleToDataExtent: false,
       data: [[0, 0], [1, 1], [2, 10], [3, 3]],
       xAccessor: 0,
@@ -1012,11 +1013,11 @@ describe('Rendering bars', () => {
       [18, 100000],
     ];
     const barSeriesSpec: BarSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: 'bar',
+      seriesType: SeriesTypes.Bar,
       yScaleToDataExtent: false,
       data,
       xAccessor: 0,

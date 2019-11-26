@@ -24,7 +24,7 @@ export type BackwardRef = () => React.RefObject<HTMLDivElement>;
  */
 export interface InternalChartState {
   // the chart type
-  chartType: ChartType;
+  chartType: ChartTypes;
   // returns a JSX element with the chart rendered (lenged excluded)
   chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<Stage>): JSX.Element | null;
   // true if the brush is available for this chart type
@@ -84,7 +84,7 @@ export interface GlobalChartState {
   // the map of parsed specs
   specs: SpecList;
   // the chart type depending on the used specs
-  chartType: ChartType | null;
+  chartType: ChartTypes | null;
   // a chart-type-dependant class that is used to render and share chart-type dependant functions
   internalChartState: InternalChartState | null;
   // the dimensions of the parent container, including the legend
@@ -94,8 +94,6 @@ export interface GlobalChartState {
   // external event state
   externalEvents: ExternalEventsState;
 }
-
-export type ChartType = typeof ChartTypes.Pie | typeof ChartTypes.XYAxis | typeof ChartTypes.Global;
 
 export const getInitialState = (chartId: string): GlobalChartState => ({
   chartId,
@@ -231,38 +229,43 @@ export const chartStoreReducer = (chartId: string) => {
   };
 };
 
-function findMainChartType(specs: SpecList) {
-  const types = Object.keys(specs).reduce<{
-    [chartType: string]: number;
-  }>((acc, specId) => {
-    const { chartType } = specs[specId];
-    if (!acc[chartType]) {
-      acc[chartType] = 0;
-    }
-    acc[chartType] = acc[chartType] + 1;
-    return acc;
-  }, {});
-  const chartTypes = Object.keys(types).filter((type) => type !== 'global');
+function findMainChartType(specs: SpecList): ChartTypes | null {
+  const types: Partial<Record<ChartTypes, number>> = Object.keys(specs).reduce<Partial<Record<ChartTypes, number>>>(
+    (acc, specId) => {
+      const { chartType } = specs[specId];
+      let accumulator = acc[chartType];
+      if (accumulator === undefined) {
+        accumulator = 0;
+      } else {
+        accumulator += 1;
+      }
+      acc[chartType] = accumulator;
+      return acc;
+    },
+    {},
+  );
+  // https://stackoverflow.com/questions/55012174/why-doesnt-object-keys-return-a-keyof-type-in-typescript
+  const chartTypes = Object.keys(types).filter((type) => type !== ChartTypes.Global);
   if (chartTypes.length > 1) {
     // eslint-disable-next-line no-console
     console.warn('Multiple chart type on the same configuration');
     return null;
   } else {
-    return chartTypes[0] as ChartType;
+    return chartTypes[0] as ChartTypes;
   }
 }
 
-function initInternalChartState(chartType: ChartType | null): InternalChartState | null {
+function initInternalChartState(chartType: ChartTypes | null): InternalChartState | null {
   switch (chartType) {
-    case 'pie':
+    case ChartTypes.Pie:
       return null; // TODO add pie chart state
-    case 'xy_axis':
+    case ChartTypes.XYAxis:
       return new XYAxisChartState();
     default:
       return null;
   }
 }
 
-function isChartTypeChanged(state: GlobalChartState, newChartType: ChartType | null) {
+function isChartTypeChanged(state: GlobalChartState, newChartType: ChartTypes | null) {
   return state.chartType !== newChartType;
 }

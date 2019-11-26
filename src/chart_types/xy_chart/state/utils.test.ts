@@ -6,6 +6,8 @@ import {
   BasicSeriesSpec,
   HistogramModeAlignments,
   LineSeriesSpec,
+  SpecTypes,
+  SeriesTypes,
 } from '../utils/specs';
 import { BARCHART_1Y0G, BARCHART_1Y1G } from '../../../utils/data_samples/test_dataset';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
@@ -30,15 +32,16 @@ import { IndexedGeometry, AccessorType } from '../../../utils/geometry';
 import { mergeYCustomDomainsByGroupId } from './selectors/merge_y_custom_domains';
 import { updateDeselectedDataSeries } from './utils';
 import { LegendItem } from '../legend/legend';
+import { ChartTypes } from '../..';
 
 describe('Chart State utils', () => {
   it('should compute and format specifications for non stacked chart', () => {
     const spec1: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'spec1',
       groupId: 'group1',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -47,11 +50,11 @@ describe('Chart State utils', () => {
       data: BARCHART_1Y0G,
     };
     const spec2: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'spec2',
       groupId: 'group2',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -88,11 +91,11 @@ describe('Chart State utils', () => {
   });
   it('should compute and format specifications for stacked chart', () => {
     const spec1: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'spec1',
       groupId: 'group1',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -102,11 +105,11 @@ describe('Chart State utils', () => {
       data: BARCHART_1Y1G,
     };
     const spec2: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'spec2',
       groupId: 'group2',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -191,11 +194,11 @@ describe('Chart State utils', () => {
   });
   it('should get an updated customSeriesColor based on specs', () => {
     const spec1: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'spec1',
       groupId: 'group1',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -240,11 +243,11 @@ describe('Chart State utils', () => {
   });
   test('is an area or line only map', () => {
     const area: AreaSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'area',
       groupId: 'group1',
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -254,11 +257,11 @@ describe('Chart State utils', () => {
       data: BARCHART_1Y1G,
     };
     const line: LineSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'line',
       groupId: 'group2',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -269,11 +272,11 @@ describe('Chart State utils', () => {
       data: BARCHART_1Y1G,
     };
     const bar: BarSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'bar',
       groupId: 'group2',
-      seriesType: 'bar',
+      seriesType: SeriesTypes.Bar,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -318,11 +321,11 @@ describe('Chart State utils', () => {
   describe('Geometries counts', () => {
     test('can compute stacked geometries counts', () => {
       const area: AreaSeriesSpec = {
-        chartType: 'xy_axis',
-        specType: 'series',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Series,
         id: 'area',
         groupId: 'group1',
-        seriesType: 'area',
+        seriesType: SeriesTypes.Area,
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
         xAccessor: 'x',
@@ -332,11 +335,11 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y1G,
       };
       const line: LineSeriesSpec = {
-        chartType: 'xy_axis',
-        specType: 'series',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Series,
         id: 'line',
         groupId: 'group2',
-        seriesType: 'line',
+        seriesType: SeriesTypes.Line,
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
         xAccessor: 'x',
@@ -347,11 +350,11 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y1G,
       };
       const bar: BarSeriesSpec = {
-        chartType: 'xy_axis',
-        specType: 'series',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Series,
         id: 'bar',
         groupId: 'group2',
-        seriesType: 'bar',
+        seriesType: SeriesTypes.Bar,
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
         xAccessor: 'x',
@@ -393,11 +396,11 @@ describe('Chart State utils', () => {
     });
     test('can compute non stacked geometries indexes', () => {
       const line1: LineSeriesSpec = {
-        chartType: 'xy_axis',
-        specType: 'series',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Series,
         id: 'line1',
         groupId: 'group1',
-        seriesType: 'line',
+        seriesType: SeriesTypes.Line,
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Ordinal,
         xAccessor: 'x',
@@ -406,11 +409,11 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y0G,
       };
       const line2: LineSeriesSpec = {
-        chartType: 'xy_axis',
-        specType: 'series',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Series,
         id: 'line2',
         groupId: 'group2',
-        seriesType: 'line',
+        seriesType: SeriesTypes.Line,
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Ordinal,
         xAccessor: 'x',
@@ -450,11 +453,11 @@ describe('Chart State utils', () => {
     });
     test('can compute stacked geometries indexes', () => {
       const line1: LineSeriesSpec = {
-        chartType: 'xy_axis',
-        specType: 'series',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Series,
         id: 'line1',
         groupId: 'group1',
-        seriesType: 'line',
+        seriesType: SeriesTypes.Line,
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Ordinal,
         xAccessor: 'x',
@@ -464,11 +467,11 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y0G,
       };
       const line2: LineSeriesSpec = {
-        chartType: 'xy_axis',
-        specType: 'series',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Series,
         id: 'line2',
         groupId: 'group2',
-        seriesType: 'line',
+        seriesType: SeriesTypes.Line,
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Ordinal,
         xAccessor: 'x',
@@ -509,11 +512,11 @@ describe('Chart State utils', () => {
     });
     test('can compute non stacked geometries counts', () => {
       const area: AreaSeriesSpec = {
-        chartType: 'xy_axis',
-        specType: 'series',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Series,
         id: 'area',
         groupId: 'group1',
-        seriesType: 'area',
+        seriesType: SeriesTypes.Area,
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
         xAccessor: 'x',
@@ -523,11 +526,11 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y1G,
       };
       const line: LineSeriesSpec = {
-        chartType: 'xy_axis',
-        specType: 'series',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Series,
         id: 'line',
         groupId: 'group2',
-        seriesType: 'line',
+        seriesType: SeriesTypes.Line,
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
         xAccessor: 'x',
@@ -537,11 +540,11 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y1G,
       };
       const bar: BarSeriesSpec = {
-        chartType: 'xy_axis',
-        specType: 'series',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Series,
         id: 'bar',
         groupId: 'group2',
-        seriesType: 'bar',
+        seriesType: SeriesTypes.Bar,
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
         xAccessor: 'x',
@@ -595,11 +598,11 @@ describe('Chart State utils', () => {
     });
     test('can compute line geometries counts', () => {
       const line1: LineSeriesSpec = {
-        chartType: 'xy_axis',
-        specType: 'series',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Series,
         id: 'line1',
         groupId: 'group2',
-        seriesType: 'line',
+        seriesType: SeriesTypes.Line,
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
         xAccessor: 'x',
@@ -609,11 +612,11 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y1G,
       };
       const line2: LineSeriesSpec = {
-        chartType: 'xy_axis',
-        specType: 'series',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Series,
         id: 'line2',
         groupId: 'group2',
-        seriesType: 'line',
+        seriesType: SeriesTypes.Line,
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
         xAccessor: 'x',
@@ -623,11 +626,11 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y1G,
       };
       const line3: LineSeriesSpec = {
-        chartType: 'xy_axis',
-        specType: 'series',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Series,
         id: 'line3',
         groupId: 'group2',
-        seriesType: 'line',
+        seriesType: SeriesTypes.Line,
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
         xAccessor: 'x',
@@ -668,11 +671,11 @@ describe('Chart State utils', () => {
     });
     test('can compute area geometries counts', () => {
       const area1: AreaSeriesSpec = {
-        chartType: 'xy_axis',
-        specType: 'series',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Series,
         id: 'area1',
         groupId: 'group2',
-        seriesType: 'area',
+        seriesType: SeriesTypes.Area,
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
         xAccessor: 'x',
@@ -682,11 +685,11 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y1G,
       };
       const area2: AreaSeriesSpec = {
-        chartType: 'xy_axis',
-        specType: 'series',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Series,
         id: 'area2',
         groupId: 'group2',
-        seriesType: 'area',
+        seriesType: SeriesTypes.Area,
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
         xAccessor: 'x',
@@ -696,11 +699,11 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y1G,
       };
       const area3: AreaSeriesSpec = {
-        chartType: 'xy_axis',
-        specType: 'series',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Series,
         id: 'area3',
         groupId: 'group2',
-        seriesType: 'area',
+        seriesType: SeriesTypes.Area,
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
         xAccessor: 'x',
@@ -741,11 +744,11 @@ describe('Chart State utils', () => {
     });
     test('can compute line geometries with custom style', () => {
       const line1: LineSeriesSpec = {
-        chartType: 'xy_axis',
-        specType: 'series',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Series,
         id: 'line1',
         groupId: 'group2',
-        seriesType: 'line',
+        seriesType: SeriesTypes.Line,
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
         xAccessor: 'x',
@@ -763,11 +766,11 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y1G,
       };
       const line2: LineSeriesSpec = {
-        chartType: 'xy_axis',
-        specType: 'series',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Series,
         id: 'line2',
         groupId: 'group2',
-        seriesType: 'line',
+        seriesType: SeriesTypes.Line,
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
         xAccessor: 'x',
@@ -777,11 +780,11 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y1G,
       };
       const line3: LineSeriesSpec = {
-        chartType: 'xy_axis',
-        specType: 'series',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Series,
         id: 'line3',
         groupId: 'group2',
-        seriesType: 'line',
+        seriesType: SeriesTypes.Line,
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
         xAccessor: 'x',
@@ -830,11 +833,11 @@ describe('Chart State utils', () => {
     });
     test('can compute area geometries with custom style', () => {
       const area1: AreaSeriesSpec = {
-        chartType: 'xy_axis',
-        specType: 'series',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Series,
         id: 'area1',
         groupId: 'group2',
-        seriesType: 'area',
+        seriesType: SeriesTypes.Area,
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
         xAccessor: 'x',
@@ -856,11 +859,11 @@ describe('Chart State utils', () => {
         },
       };
       const area2: AreaSeriesSpec = {
-        chartType: 'xy_axis',
-        specType: 'series',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Series,
         id: 'area2',
         groupId: 'group2',
-        seriesType: 'area',
+        seriesType: SeriesTypes.Area,
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
         xAccessor: 'x',
@@ -870,11 +873,11 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y1G,
       };
       const area3: AreaSeriesSpec = {
-        chartType: 'xy_axis',
-        specType: 'series',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Series,
         id: 'area3',
         groupId: 'group2',
-        seriesType: 'area',
+        seriesType: SeriesTypes.Area,
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
         xAccessor: 'x',
@@ -928,11 +931,11 @@ describe('Chart State utils', () => {
     });
     test('can compute bars geometries counts', () => {
       const bars1: BarSeriesSpec = {
-        chartType: 'xy_axis',
-        specType: 'series',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Series,
         id: 'bars1',
         groupId: 'group2',
-        seriesType: 'bar',
+        seriesType: SeriesTypes.Bar,
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
         xAccessor: 'x',
@@ -942,11 +945,11 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y1G,
       };
       const bars2: BarSeriesSpec = {
-        chartType: 'xy_axis',
-        specType: 'series',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Series,
         id: 'bars2',
         groupId: 'group2',
-        seriesType: 'bar',
+        seriesType: SeriesTypes.Bar,
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
         xAccessor: 'x',
@@ -956,11 +959,11 @@ describe('Chart State utils', () => {
         data: BARCHART_1Y1G,
       };
       const bars3: BarSeriesSpec = {
-        chartType: 'xy_axis',
-        specType: 'series',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Series,
         id: 'bars3',
         groupId: 'group2',
-        seriesType: 'bar',
+        seriesType: SeriesTypes.Bar,
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
         xAccessor: 'x',
@@ -1001,11 +1004,11 @@ describe('Chart State utils', () => {
     });
     test('can compute the bar offset in mixed charts', () => {
       const line1: LineSeriesSpec = {
-        chartType: 'xy_axis',
-        specType: 'series',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Series,
         id: 'line1',
         groupId: 'group2',
-        seriesType: 'line',
+        seriesType: SeriesTypes.Line,
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
         xAccessor: 'x',
@@ -1016,11 +1019,11 @@ describe('Chart State utils', () => {
       };
 
       const bar1: BarSeriesSpec = {
-        chartType: 'xy_axis',
-        specType: 'series',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Series,
         id: 'line3',
         groupId: 'group2',
-        seriesType: 'bar',
+        seriesType: SeriesTypes.Bar,
         yScaleType: ScaleType.Log,
         xScaleType: ScaleType.Linear,
         xAccessor: 'x',
@@ -1117,11 +1120,11 @@ describe('Chart State utils', () => {
   });
   test('can determine if histogram mode is enabled', () => {
     const area: AreaSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'area',
       groupId: 'group1',
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -1131,11 +1134,11 @@ describe('Chart State utils', () => {
       data: BARCHART_1Y1G,
     };
     const line: LineSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'line',
       groupId: 'group2',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -1146,11 +1149,11 @@ describe('Chart State utils', () => {
       data: BARCHART_1Y1G,
     };
     const basicBar: BarSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'bar',
       groupId: 'group2',
-      seriesType: 'bar',
+      seriesType: SeriesTypes.Bar,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -1161,11 +1164,11 @@ describe('Chart State utils', () => {
       data: BARCHART_1Y1G,
     };
     const histogramBar: BarSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'histo',
       groupId: 'group2',
-      seriesType: 'bar',
+      seriesType: SeriesTypes.Bar,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -1191,11 +1194,11 @@ describe('Chart State utils', () => {
     const isHistogramEnabled = true;
 
     const area: AreaSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'area',
       groupId: 'group1',
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -1205,11 +1208,11 @@ describe('Chart State utils', () => {
       data: BARCHART_1Y1G,
     };
     const line: LineSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'line',
       groupId: 'group2',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -1220,11 +1223,11 @@ describe('Chart State utils', () => {
       data: BARCHART_1Y1G,
     };
     const bar: BarSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'bar',
       groupId: 'group2',
-      seriesType: 'bar',
+      seriesType: SeriesTypes.Bar,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -1251,11 +1254,11 @@ describe('Chart State utils', () => {
 
     // add another bar
     const bar2: BarSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'bar2',
       groupId: 'group2',
-      seriesType: 'bar',
+      seriesType: SeriesTypes.Bar,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',

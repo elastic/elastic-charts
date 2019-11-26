@@ -1,12 +1,12 @@
-import { AreaSeriesSpec, HistogramModeAlignments, DEFAULT_GLOBAL_ID } from '../utils/specs';
+import { AreaSeriesSpec, HistogramModeAlignments, DEFAULT_GLOBAL_ID, SpecTypes, SeriesTypes } from '../utils/specs';
 import { ScaleType } from '../../../utils/scales/scales';
 import { specComponentFactory, getConnect } from '../../../state/spec_factory';
 import { ChartTypes } from '../../../chart_types';
 
 const defaultProps = {
   chartType: ChartTypes.XYAxis,
-  specType: 'series' as 'series',
-  seriesType: 'area' as 'area',
+  specType: SpecTypes.Series,
+  seriesType: SeriesTypes.Area,
   groupId: DEFAULT_GLOBAL_ID,
   xScaleType: ScaleType.Ordinal,
   yScaleType: ScaleType.Linear,

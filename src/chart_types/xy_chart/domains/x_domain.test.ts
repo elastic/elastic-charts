@@ -1,7 +1,8 @@
 import { ScaleType } from '../../../utils/scales/scales';
 import { getSplittedSeries } from '../utils/series';
-import { BasicSeriesSpec } from '../utils/specs';
+import { BasicSeriesSpec, SpecTypes, SeriesTypes } from '../utils/specs';
 import { convertXScaleTypes, findMinInterval, mergeXDomain } from './x_domain';
+import { ChartTypes } from '../..';
 
 describe('X Domain', () => {
   test('Should return null when missing specs or specs types', () => {
@@ -19,7 +20,7 @@ describe('X Domain', () => {
   test('Should return correct scale type with single bar', () => {
     const seriesSpecs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>[] = [
       {
-        seriesType: 'bar',
+        seriesType: SeriesTypes.Bar,
         xScaleType: ScaleType.Linear,
       },
     ];
@@ -33,7 +34,7 @@ describe('X Domain', () => {
   test('Should return correct scale type with single bar with Ordinal', () => {
     const seriesSpecs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>[] = [
       {
-        seriesType: 'bar',
+        seriesType: SeriesTypes.Bar,
         xScaleType: ScaleType.Ordinal,
       },
     ];
@@ -47,7 +48,7 @@ describe('X Domain', () => {
   test('Should return correct scale type with single area', () => {
     const seriesSpecs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>[] = [
       {
-        seriesType: 'area',
+        seriesType: SeriesTypes.Area,
         xScaleType: ScaleType.Linear,
       },
     ];
@@ -60,7 +61,7 @@ describe('X Domain', () => {
   test('Should return correct scale type with single line (time)', () => {
     const seriesSpecs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType' | 'timeZone'>[] = [
       {
-        seriesType: 'line',
+        seriesType: SeriesTypes.Line,
         xScaleType: ScaleType.Time,
         timeZone: 'utc-3',
       },
@@ -75,12 +76,12 @@ describe('X Domain', () => {
   test('Should return correct scale type with multi line with same scale types (time) same tz', () => {
     const seriesSpecs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType' | 'timeZone'>[] = [
       {
-        seriesType: 'line',
+        seriesType: SeriesTypes.Line,
         xScaleType: ScaleType.Time,
         timeZone: 'UTC-3',
       },
       {
-        seriesType: 'line',
+        seriesType: SeriesTypes.Line,
         xScaleType: ScaleType.Time,
         timeZone: 'utc-3',
       },
@@ -95,12 +96,12 @@ describe('X Domain', () => {
   test('Should return correct scale type with multi line with same scale types (time) coerce to UTC', () => {
     const seriesSpecs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType' | 'timeZone'>[] = [
       {
-        seriesType: 'line',
+        seriesType: SeriesTypes.Line,
         xScaleType: ScaleType.Time,
         timeZone: 'utc-3',
       },
       {
-        seriesType: 'line',
+        seriesType: SeriesTypes.Line,
         xScaleType: ScaleType.Time,
         timeZone: 'utc+3',
       },
@@ -116,11 +117,11 @@ describe('X Domain', () => {
   test('Should return correct scale type with multi line with different scale types (linear, ordinal)', () => {
     const seriesSpecs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>[] = [
       {
-        seriesType: 'line',
+        seriesType: SeriesTypes.Line,
         xScaleType: ScaleType.Linear,
       },
       {
-        seriesType: 'line',
+        seriesType: SeriesTypes.Line,
         xScaleType: ScaleType.Ordinal,
       },
     ];
@@ -133,11 +134,11 @@ describe('X Domain', () => {
   test('Should return correct scale type with multi bar, area with different scale types (linear, ordinal)', () => {
     const seriesSpecs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>[] = [
       {
-        seriesType: 'bar',
+        seriesType: SeriesTypes.Bar,
         xScaleType: ScaleType.Linear,
       },
       {
-        seriesType: 'area',
+        seriesType: SeriesTypes.Area,
         xScaleType: ScaleType.Ordinal,
       },
     ];
@@ -150,11 +151,11 @@ describe('X Domain', () => {
   test('Should return correct scale type with multi bar, area with same scale types (linear, linear)', () => {
     const seriesSpecs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType' | 'timeZone'>[] = [
       {
-        seriesType: 'bar',
+        seriesType: SeriesTypes.Bar,
         xScaleType: ScaleType.Linear,
       },
       {
-        seriesType: 'area',
+        seriesType: SeriesTypes.Area,
         xScaleType: ScaleType.Time,
         timeZone: 'utc+3',
       },
@@ -168,11 +169,11 @@ describe('X Domain', () => {
 
   test('Should merge line series correctly', () => {
     const ds1: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'ds1',
       groupId: 'g1',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       xAccessor: 'x',
       yAccessors: ['y'],
       xScaleType: ScaleType.Linear,
@@ -181,11 +182,11 @@ describe('X Domain', () => {
       data: [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 5, y: 0 }],
     };
     const ds2: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'ds2',
       groupId: 'g1',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       xAccessor: 'x',
       yAccessors: ['y'],
       xScaleType: ScaleType.Linear,
@@ -198,7 +199,7 @@ describe('X Domain', () => {
     const mergedDomain = mergeXDomain(
       [
         {
-          seriesType: 'line',
+          seriesType: SeriesTypes.Line,
           xScaleType: ScaleType.Linear,
         },
       ],
@@ -208,11 +209,11 @@ describe('X Domain', () => {
   });
   test('Should merge bar series correctly', () => {
     const ds1: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'ds1',
       groupId: 'g1',
-      seriesType: 'bar',
+      seriesType: SeriesTypes.Bar,
       xAccessor: 'x',
       yAccessors: ['y'],
       xScaleType: ScaleType.Linear,
@@ -221,11 +222,11 @@ describe('X Domain', () => {
       data: [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 5, y: 0 }],
     };
     const ds2: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'ds2',
       groupId: 'g1',
-      seriesType: 'bar',
+      seriesType: SeriesTypes.Bar,
       xAccessor: 'x',
       yAccessors: ['y'],
       xScaleType: ScaleType.Linear,
@@ -239,7 +240,7 @@ describe('X Domain', () => {
     const mergedDomain = mergeXDomain(
       [
         {
-          seriesType: 'bar',
+          seriesType: SeriesTypes.Bar,
           xScaleType: ScaleType.Linear,
         },
       ],
@@ -249,11 +250,11 @@ describe('X Domain', () => {
   });
   test('Should merge multi bar series correctly', () => {
     const ds1: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'ds1',
       groupId: 'g1',
-      seriesType: 'bar',
+      seriesType: SeriesTypes.Bar,
       xAccessor: 'x',
       yAccessors: ['y'],
       xScaleType: ScaleType.Linear,
@@ -262,11 +263,11 @@ describe('X Domain', () => {
       data: [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 5, y: 0 }],
     };
     const ds2: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'ds2',
       groupId: 'g2',
-      seriesType: 'bar',
+      seriesType: SeriesTypes.Bar,
       xAccessor: 'x',
       yAccessors: ['y'],
       xScaleType: ScaleType.Linear,
@@ -280,11 +281,11 @@ describe('X Domain', () => {
     const mergedDomain = mergeXDomain(
       [
         {
-          seriesType: 'bar',
+          seriesType: SeriesTypes.Bar,
           xScaleType: ScaleType.Linear,
         },
         {
-          seriesType: 'bar',
+          seriesType: SeriesTypes.Bar,
           xScaleType: ScaleType.Linear,
         },
       ],
@@ -294,11 +295,11 @@ describe('X Domain', () => {
   });
   test('Should merge multi bar series correctly', () => {
     const ds1: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'ds1',
       groupId: 'g1',
-      seriesType: 'bar',
+      seriesType: SeriesTypes.Bar,
       xAccessor: 'x',
       yAccessors: ['y'],
       xScaleType: ScaleType.Linear,
@@ -307,11 +308,11 @@ describe('X Domain', () => {
       data: [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 5, y: 0 }],
     };
     const ds2: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'ds2',
       groupId: 'g2',
-      seriesType: 'bar',
+      seriesType: SeriesTypes.Bar,
       xAccessor: 'x',
       yAccessors: ['y'],
       xScaleType: ScaleType.Linear,
@@ -325,11 +326,11 @@ describe('X Domain', () => {
     const mergedDomain = mergeXDomain(
       [
         {
-          seriesType: 'bar',
+          seriesType: SeriesTypes.Bar,
           xScaleType: ScaleType.Linear,
         },
         {
-          seriesType: 'bar',
+          seriesType: SeriesTypes.Bar,
           xScaleType: ScaleType.Linear,
         },
       ],
@@ -339,11 +340,11 @@ describe('X Domain', () => {
   });
   test('Should merge multi bar linear/bar ordinal series correctly', () => {
     const ds1: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'ds1',
       groupId: 'g1',
-      seriesType: 'bar',
+      seriesType: SeriesTypes.Bar,
       xAccessor: 'x',
       yAccessors: ['y'],
       xScaleType: ScaleType.Linear,
@@ -352,11 +353,11 @@ describe('X Domain', () => {
       data: [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 5, y: 0 }],
     };
     const ds2: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'ds2',
       groupId: 'g2',
-      seriesType: 'bar',
+      seriesType: SeriesTypes.Bar,
       xAccessor: 'x',
       yAccessors: ['y'],
       xScaleType: ScaleType.Ordinal,
@@ -370,11 +371,11 @@ describe('X Domain', () => {
     const mergedDomain = mergeXDomain(
       [
         {
-          seriesType: 'bar',
+          seriesType: SeriesTypes.Bar,
           xScaleType: ScaleType.Linear,
         },
         {
-          seriesType: 'bar',
+          seriesType: SeriesTypes.Bar,
           xScaleType: ScaleType.Ordinal,
         },
       ],
@@ -384,11 +385,11 @@ describe('X Domain', () => {
   });
   test('Should merge multi bar/line ordinal series correctly', () => {
     const ds1: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'ds1',
       groupId: 'g1',
-      seriesType: 'bar',
+      seriesType: SeriesTypes.Bar,
       xAccessor: 'x',
       yAccessors: ['y'],
       xScaleType: ScaleType.Linear,
@@ -397,11 +398,11 @@ describe('X Domain', () => {
       data: [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 5, y: 0 }],
     };
     const ds2: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'ds2',
       groupId: 'g2',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       xAccessor: 'x',
       yAccessors: ['y'],
       xScaleType: ScaleType.Ordinal,
@@ -415,11 +416,11 @@ describe('X Domain', () => {
     const mergedDomain = mergeXDomain(
       [
         {
-          seriesType: 'bar',
+          seriesType: SeriesTypes.Bar,
           xScaleType: ScaleType.Linear,
         },
         {
-          seriesType: 'line',
+          seriesType: SeriesTypes.Line,
           xScaleType: ScaleType.Ordinal,
         },
       ],
@@ -429,11 +430,11 @@ describe('X Domain', () => {
   });
   test('Should merge multi bar/line time series correctly', () => {
     const ds1: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'ds1',
       groupId: 'g1',
-      seriesType: 'bar',
+      seriesType: SeriesTypes.Bar,
       xAccessor: 'x',
       yAccessors: ['y'],
       xScaleType: ScaleType.Ordinal,
@@ -442,11 +443,11 @@ describe('X Domain', () => {
       data: [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 5, y: 0 }],
     };
     const ds2: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'ds2',
       groupId: 'g2',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       xAccessor: 'x',
       yAccessors: ['y'],
       xScaleType: ScaleType.Time,
@@ -460,11 +461,11 @@ describe('X Domain', () => {
     const mergedDomain = mergeXDomain(
       [
         {
-          seriesType: 'bar',
+          seriesType: SeriesTypes.Bar,
           xScaleType: ScaleType.Ordinal,
         },
         {
-          seriesType: 'line',
+          seriesType: SeriesTypes.Line,
           xScaleType: ScaleType.Time,
         },
       ],
@@ -474,11 +475,11 @@ describe('X Domain', () => {
   });
   test('Should merge multi lines series correctly', () => {
     const ds1: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'ds1',
       groupId: 'g1',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       xAccessor: 'x',
       yAccessors: ['y'],
       xScaleType: ScaleType.Ordinal,
@@ -487,11 +488,11 @@ describe('X Domain', () => {
       data: [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 5, y: 0 }],
     };
     const ds2: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'ds2',
       groupId: 'g2',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       xAccessor: 'x',
       yAccessors: ['y'],
       xScaleType: ScaleType.Linear,
@@ -505,11 +506,11 @@ describe('X Domain', () => {
     const mergedDomain = mergeXDomain(
       [
         {
-          seriesType: 'line',
+          seriesType: SeriesTypes.Line,
           xScaleType: ScaleType.Ordinal,
         },
         {
-          seriesType: 'line',
+          seriesType: SeriesTypes.Line,
           xScaleType: ScaleType.Linear,
         },
       ],
@@ -521,11 +522,11 @@ describe('X Domain', () => {
   test('Should merge X multi high volume of data', () => {
     const maxValues = 10000;
     const ds1: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'ds1',
       groupId: 'g1',
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       xAccessor: 'x',
       yAccessors: ['y'],
       xScaleType: ScaleType.Linear,
@@ -534,11 +535,11 @@ describe('X Domain', () => {
       data: new Array(maxValues).fill(0).map((d, i) => ({ x: i, y: i })),
     };
     const ds2: BasicSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: 'ds2',
       groupId: 'g2',
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       xAccessor: 'x',
       yAccessors: ['y'],
       xScaleType: ScaleType.Ordinal,
@@ -553,11 +554,11 @@ describe('X Domain', () => {
     const mergedDomain = mergeXDomain(
       [
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           xScaleType: ScaleType.Linear,
         },
         {
-          seriesType: 'line',
+          seriesType: SeriesTypes.Line,
           xScaleType: ScaleType.Ordinal,
         },
       ],
@@ -597,7 +598,7 @@ describe('X Domain', () => {
     const xValues = new Set([1, 2, 3, 4, 5]);
     const xDomain = { min: 0, max: 3 };
     const specs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>[] = [
-      { seriesType: 'line', xScaleType: ScaleType.Linear },
+      { seriesType: SeriesTypes.Line, xScaleType: ScaleType.Linear },
     ];
 
     const basicMergedDomain = mergeXDomain(specs, xValues, xDomain);
@@ -621,7 +622,7 @@ describe('X Domain', () => {
     const xValues = new Set([1, 2, 3, 4, 5]);
     const xDomain = { min: 0 };
     const specs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>[] = [
-      { seriesType: 'line', xScaleType: ScaleType.Linear },
+      { seriesType: SeriesTypes.Line, xScaleType: ScaleType.Linear },
     ];
 
     const mergedDomain = mergeXDomain(specs, xValues, xDomain);
@@ -638,7 +639,7 @@ describe('X Domain', () => {
     const xValues = new Set([1, 2, 3, 4, 5]);
     const xDomain = { max: 3 };
     const specs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>[] = [
-      { seriesType: 'line', xScaleType: ScaleType.Linear },
+      { seriesType: SeriesTypes.Line, xScaleType: ScaleType.Linear },
     ];
 
     const mergedDomain = mergeXDomain(specs, xValues, xDomain);
@@ -655,7 +656,7 @@ describe('X Domain', () => {
     const xValues = new Set(['a', 'b', 'c', 'd']);
     const xDomain = ['a', 'b', 'c'];
     const specs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>[] = [
-      { seriesType: 'bar', xScaleType: ScaleType.Ordinal },
+      { seriesType: SeriesTypes.Bar, xScaleType: ScaleType.Ordinal },
     ];
     const basicMergedDomain = mergeXDomain(specs, xValues, xDomain);
     expect(basicMergedDomain.domain).toEqual(['a', 'b', 'c']);
@@ -671,7 +672,7 @@ describe('X Domain', () => {
   describe('should account for custom minInterval', () => {
     const xValues = new Set([1, 2, 3, 4, 5]);
     const specs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>[] = [
-      { seriesType: 'bar', xScaleType: ScaleType.Linear },
+      { seriesType: SeriesTypes.Bar, xScaleType: ScaleType.Linear },
     ];
 
     test('with valid minInterval', () => {

@@ -3,10 +3,11 @@ import { ScaleType } from '../../../utils/scales/scales';
 import { CurveType } from '../../../utils/curves';
 import { renderLine } from './rendering';
 import { computeXScale, computeYScales } from '../utils/scales';
-import { LineSeriesSpec, DomainRange } from '../utils/specs';
+import { LineSeriesSpec, DomainRange, SpecTypes, SeriesTypes } from '../utils/specs';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { LineGeometry, IndexedGeometry, PointGeometry } from '../../../utils/geometry';
 import { GroupId } from '../../../utils/ids';
+import { ChartTypes } from '../..';
 
 const SPEC_ID = 'spec_1';
 const GROUP_ID = 'group_1';
@@ -14,11 +15,11 @@ const GROUP_ID = 'group_1';
 describe('Rendering points - line', () => {
   describe('Empty line for missing data', () => {
     const pointSeriesSpec: LineSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleToDataExtent: false,
       data: [[0, 10], [1, 5]],
       xAccessor: 0,
@@ -65,11 +66,11 @@ describe('Rendering points - line', () => {
   });
   describe('Single series line chart - ordinal', () => {
     const pointSeriesSpec: LineSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleToDataExtent: false,
       data: [[0, 10], [1, 5]],
       xAccessor: 0,
@@ -164,11 +165,11 @@ describe('Rendering points - line', () => {
     const spec1Id = 'point1';
     const spec2Id = 'point2';
     const pointSeriesSpec1: LineSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: spec1Id,
       groupId: GROUP_ID,
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleToDataExtent: false,
       data: [[0, 10], [1, 5]],
       xAccessor: 0,
@@ -177,11 +178,11 @@ describe('Rendering points - line', () => {
       yScaleType: ScaleType.Linear,
     };
     const pointSeriesSpec2: LineSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: spec2Id,
       groupId: GROUP_ID,
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleToDataExtent: false,
       data: [[0, 20], [1, 10]],
       xAccessor: 0,
@@ -344,11 +345,11 @@ describe('Rendering points - line', () => {
   });
   describe('Single series line chart - linear', () => {
     const pointSeriesSpec: LineSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleToDataExtent: false,
       data: [[0, 10], [1, 5]],
       xAccessor: 0,
@@ -442,11 +443,11 @@ describe('Rendering points - line', () => {
     const spec1Id = 'point1';
     const spec2Id = 'point2';
     const pointSeriesSpec1: LineSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: spec1Id,
       groupId: GROUP_ID,
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleToDataExtent: false,
       data: [[0, 10], [1, 5]],
       xAccessor: 0,
@@ -455,11 +456,11 @@ describe('Rendering points - line', () => {
       yScaleType: ScaleType.Linear,
     };
     const pointSeriesSpec2: LineSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: spec2Id,
       groupId: GROUP_ID,
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleToDataExtent: false,
       data: [[0, 20], [1, 10]],
       xAccessor: 0,
@@ -621,11 +622,11 @@ describe('Rendering points - line', () => {
   });
   describe('Single series line chart - time', () => {
     const pointSeriesSpec: LineSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleToDataExtent: false,
       data: [[1546300800000, 10], [1546387200000, 5]],
       xAccessor: 0,
@@ -719,11 +720,11 @@ describe('Rendering points - line', () => {
     const spec1Id = 'point1';
     const spec2Id = 'point2';
     const pointSeriesSpec1: LineSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: spec1Id,
       groupId: GROUP_ID,
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleToDataExtent: false,
       data: [[1546300800000, 10], [1546387200000, 5]],
       xAccessor: 0,
@@ -732,11 +733,11 @@ describe('Rendering points - line', () => {
       yScaleType: ScaleType.Linear,
     };
     const pointSeriesSpec2: LineSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: spec2Id,
       groupId: GROUP_ID,
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleToDataExtent: false,
       data: [[1546300800000, 20], [1546387200000, 10]],
       xAccessor: 0,
@@ -885,11 +886,11 @@ describe('Rendering points - line', () => {
   });
   describe('Single series line chart - y log', () => {
     const pointSeriesSpec: LineSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleToDataExtent: false,
       data: [[0, 10], [1, 5], [2, null], [3, 5], [4, 5], [5, 0], [6, 10], [7, 10], [8, 10]],
       xAccessor: 0,
@@ -957,11 +958,11 @@ describe('Rendering points - line', () => {
   });
   describe('Remove points datum is not in domain', () => {
     const pointSeriesSpec: LineSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: 'line',
+      seriesType: SeriesTypes.Line,
       yScaleToDataExtent: false,
       data: [[0, 0], [1, 1], [2, 10], [3, 3]],
       xAccessor: 0,

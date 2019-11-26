@@ -1,4 +1,4 @@
-import { DomainRange, Position, Rendering, Rotation } from '../chart_types/xy_chart/utils/specs';
+import { DomainRange, Position, Rendering, Rotation, SpecTypes } from '../chart_types/xy_chart/utils/specs';
 import { PartialTheme, Theme } from '../utils/themes/theme';
 import { Domain } from '../utils/domain';
 import { TooltipType, TooltipValueFormatter } from '../chart_types/xy_chart/utils/interactions';
@@ -115,7 +115,7 @@ export const DEFAULT_TOOLTIP_SNAP = true;
 export const DEFAULT_SETTINGS_SPEC = {
   id: '__global__settings___',
   chartType: ChartTypes.Global,
-  specType: 'settings',
+  specType: SpecTypes.Settings,
   rendering: 'canvas' as 'canvas',
   rotation: 0 as 0,
   animateData: true,

@@ -8,16 +8,19 @@ import {
   HistogramBarSeriesSpec,
   LineSeriesSpec,
   BasicSeriesSpec,
+  SpecTypes,
+  SeriesTypes,
 } from '../../chart_types/xy_chart/utils/specs';
 import { getSpecId, getGroupId } from '../../utils/ids';
 import { ScaleType } from '../../utils/scales/scales';
+import { ChartTypes } from '../../chart_types';
 
 export class MockSeriesSpec {
   private static readonly barBase: BarSeriesSpec = {
-    chartType: 'xy_axis',
-    specType: 'series',
+    chartType: ChartTypes.XYAxis,
+    specType: SpecTypes.Series,
     id: getSpecId('spec1'),
-    seriesType: 'bar',
+    seriesType: SeriesTypes.Bar,
     groupId: getGroupId(DEFAULT_GLOBAL_ID),
     xScaleType: ScaleType.Ordinal,
     yScaleType: ScaleType.Linear,
@@ -31,10 +34,10 @@ export class MockSeriesSpec {
   };
 
   private static readonly histogramBarBase: HistogramBarSeriesSpec = {
-    chartType: 'xy_axis',
-    specType: 'series',
+    chartType: ChartTypes.XYAxis,
+    specType: SpecTypes.Series,
     id: getSpecId('spec1'),
-    seriesType: 'bar',
+    seriesType: SeriesTypes.Bar,
     groupId: getGroupId(DEFAULT_GLOBAL_ID),
     xScaleType: ScaleType.Ordinal,
     yScaleType: ScaleType.Linear,
@@ -47,10 +50,10 @@ export class MockSeriesSpec {
   };
 
   private static readonly areaBase: AreaSeriesSpec = {
-    chartType: 'xy_axis',
-    specType: 'series',
+    chartType: ChartTypes.XYAxis,
+    specType: SpecTypes.Series,
     id: getSpecId('spec1'),
-    seriesType: 'area',
+    seriesType: SeriesTypes.Area,
     groupId: getGroupId(DEFAULT_GLOBAL_ID),
     xScaleType: ScaleType.Ordinal,
     yScaleType: ScaleType.Linear,
@@ -63,10 +66,10 @@ export class MockSeriesSpec {
   };
 
   private static readonly lineBase: LineSeriesSpec = {
-    chartType: 'xy_axis',
-    specType: 'series',
+    chartType: ChartTypes.XYAxis,
+    specType: SpecTypes.Series,
     id: getSpecId('spec1'),
-    seriesType: 'line',
+    seriesType: SeriesTypes.Line,
     groupId: getGroupId(DEFAULT_GLOBAL_ID),
     xScaleType: ScaleType.Ordinal,
     yScaleType: ScaleType.Linear,

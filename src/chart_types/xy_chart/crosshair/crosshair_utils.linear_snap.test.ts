@@ -1,10 +1,11 @@
 import { computeXScale } from '../utils/scales';
-import { BasicSeriesSpec } from '../utils/specs';
+import { BasicSeriesSpec, SpecTypes, SeriesTypes } from '../utils/specs';
 import { Dimensions } from '../../../utils/dimensions';
 import { getGroupId, getSpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
 import { getCursorBandPosition, getSnapPosition } from './crosshair_utils';
 import { computeSeriesDomains } from '../state/utils';
+import { ChartTypes } from '../..';
 
 describe('Crosshair utils linear scale', () => {
   const barSeries1SpecId = getSpecId('barSeries1');
@@ -13,11 +14,11 @@ describe('Crosshair utils linear scale', () => {
   const lineSeries2SpecId = getSpecId('lineSeries2');
 
   const barSeries1: BasicSeriesSpec = {
-    chartType: 'xy_axis',
-    specType: 'series',
+    chartType: ChartTypes.XYAxis,
+    specType: SpecTypes.Series,
     id: barSeries1SpecId,
     groupId: getGroupId('group1'),
-    seriesType: 'bar',
+    seriesType: SeriesTypes.Bar,
     data: [[0, 0], [1, 0], [2, 0]],
     xAccessor: 0,
     yAccessors: [1],
@@ -26,11 +27,11 @@ describe('Crosshair utils linear scale', () => {
     yScaleToDataExtent: true,
   };
   const barSeries2: BasicSeriesSpec = {
-    chartType: 'xy_axis',
-    specType: 'series',
+    chartType: ChartTypes.XYAxis,
+    specType: SpecTypes.Series,
     id: barSeries2SpecId,
     groupId: getGroupId('group1'),
-    seriesType: 'bar',
+    seriesType: SeriesTypes.Bar,
     data: [[0, 2], [1, 2], [2, 2]],
     xAccessor: 0,
     yAccessors: [1],
@@ -39,11 +40,11 @@ describe('Crosshair utils linear scale', () => {
     yScaleToDataExtent: true,
   };
   const lineSeries1: BasicSeriesSpec = {
-    chartType: 'xy_axis',
-    specType: 'series',
+    chartType: ChartTypes.XYAxis,
+    specType: SpecTypes.Series,
     id: lineSeries1SpecId,
     groupId: getGroupId('group1'),
-    seriesType: 'line',
+    seriesType: SeriesTypes.Line,
     data: [[0, 0], [1, 0], [2, 0]],
     xAccessor: 0,
     yAccessors: [1],
@@ -52,11 +53,11 @@ describe('Crosshair utils linear scale', () => {
     yScaleToDataExtent: true,
   };
   const lineSeries2: BasicSeriesSpec = {
-    chartType: 'xy_axis',
-    specType: 'series',
+    chartType: ChartTypes.XYAxis,
+    specType: SpecTypes.Series,
     id: lineSeries2SpecId,
     groupId: getGroupId('group1'),
-    seriesType: 'line',
+    seriesType: SeriesTypes.Line,
     data: [[0, 2], [1, 2], [2, 2]],
     xAccessor: 0,
     yAccessors: [1],

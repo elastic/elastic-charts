@@ -6,6 +6,8 @@ import {
   BarSeriesSpec,
   Position,
   RectAnnotationSpec,
+  SpecTypes,
+  SeriesTypes,
 } from '../utils/specs';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { mergeWithDefaultTheme } from '../../../utils/themes/theme';
@@ -18,6 +20,7 @@ import { IndexedGeometry, GeometryValue, AccessorType } from '../../../utils/geo
 import { AxisTicksDimensions, isDuplicateAxis } from '../utils/axis_utils';
 import { AxisId } from '../../../utils/ids';
 import { LegendItem } from '../legend/legend';
+import { ChartTypes } from '../..';
 
 describe.skip('Chart Store', () => {
   let store: any = null; //
@@ -27,11 +30,11 @@ describe.skip('Chart Store', () => {
   const GROUP_ID = 'group_1';
 
   const spec: BarSeriesSpec = {
-    chartType: 'xy_axis',
-    specType: 'series',
+    chartType: ChartTypes.XYAxis,
+    specType: SpecTypes.Series,
     id: SPEC_ID,
     groupId: GROUP_ID,
-    seriesType: 'bar',
+    seriesType: SeriesTypes.Bar,
     yScaleToDataExtent: false,
     data: [{ x: 1, y: 1, g: 0 }, { x: 2, y: 2, g: 1 }, { x: 3, y: 3, g: 3 }],
     xAccessor: 'x',
@@ -90,8 +93,8 @@ describe.skip('Chart Store', () => {
     const AXIS_1_ID = 'spec_1';
     const AXIS_2_ID = 'spec_1';
     const axis1: AxisSpec = {
-      chartType: 'xy_axis',
-      specType: 'axis',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Axis,
       id: AXIS_1_ID,
       groupId: 'group_1',
       hide: false,
@@ -247,8 +250,8 @@ describe.skip('Chart Store', () => {
   test.skip('can add an axis', () => {
     store.addSeriesSpec(spec);
     const axisSpec: AxisSpec = {
-      chartType: 'xy_axis',
-      specType: 'axis',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Axis,
       id: AXIS_ID,
       groupId: GROUP_ID,
       hide: false,
@@ -643,8 +646,8 @@ describe.skip('Chart Store', () => {
 
   test.skip('can remove an axis spec', () => {
     const axisSpec: AxisSpec = {
-      chartType: 'xy_axis',
-      specType: 'axis',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Axis,
       id: AXIS_ID,
       groupId: GROUP_ID,
       hide: false,
@@ -681,9 +684,9 @@ describe.skip('Chart Store', () => {
     };
 
     const lineAnnotation: AnnotationSpec = {
-      chartType: 'xy_axis',
-      specType: 'annotation',
-      annotationType: 'line',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Annotation,
+      annotationType: AnnotationTypes.Line,
       id: annotationId,
       domainType: AnnotationDomainTypes.YDomain,
       dataValues: [{ dataValue: 2, details: 'foo' }],
@@ -702,11 +705,11 @@ describe.skip('Chart Store', () => {
     expect(store.annotationSpecs).toEqual(new Map());
 
     const rectAnnotation: RectAnnotationSpec = {
-      chartType: 'xy_axis',
-      specType: 'annotation',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Annotation,
       id: 'rect',
       groupId: GROUP_ID,
-      annotationType: 'rectangle',
+      annotationType: AnnotationTypes.Rectangle,
       dataValues: [{ coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } }],
     };
     store.addAnnotationSpec(rectAnnotation);
@@ -846,8 +849,8 @@ describe.skip('Chart Store', () => {
 
     beforeEach(() => {
       const axisSpec: AxisSpec = {
-        chartType: 'xy_axis',
-        specType: 'axis',
+        chartType: ChartTypes.XYAxis,
+        specType: SpecTypes.Axis,
         id: AXIS_ID,
         groupId: spec.groupId,
         hide: true,
@@ -1040,11 +1043,11 @@ describe.skip('Chart Store', () => {
 
     const annotationDimensions = [{ rect: { x: 2, y: 3, width: 3, height: 5 } }];
     const rectAnnotationSpec: RectAnnotationSpec = {
-      chartType: 'xy_axis',
-      specType: 'annotation',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Annotation,
       id: 'rect',
       groupId: GROUP_ID,
-      annotationType: 'rectangle',
+      annotationType: AnnotationTypes.Rectangle,
       dataValues: [{ coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } }],
     };
 
@@ -1195,11 +1198,11 @@ describe.skip('Chart Store', () => {
   });
   test.skip('should set tooltip type to follow when single value x scale', () => {
     const singleValueSpec: BarSeriesSpec = {
-      chartType: 'xy_axis',
-      specType: 'series',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: 'bar',
+      seriesType: SeriesTypes.Bar,
       yScaleToDataExtent: false,
       data: [{ x: 1, y: 1, g: 0 }],
       xAccessor: 'x',
