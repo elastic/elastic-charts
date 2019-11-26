@@ -1,5 +1,4 @@
-import { none, Option, some } from 'fp-ts/lib/Option';
-import { BBox, BBoxCalculator } from './bbox_calculator';
+import { BBox, BBoxCalculator, DEFAULT_EMPTY_BBOX } from './bbox_calculator';
 
 export class CanvasTextBBoxCalculator implements BBoxCalculator {
   private attachedRoot: HTMLElement;
@@ -15,16 +14,9 @@ export class CanvasTextBBoxCalculator implements BBoxCalculator {
     this.attachedRoot = rootElement || document.documentElement;
     this.attachedRoot.appendChild(this.offscreenCanvas);
   }
-  compute(
-    text: string,
-    padding: number,
-    fontSize = 16,
-    fontFamily = 'Arial',
-    lineHeight = 1,
-    fontWeight = 400,
-  ): Option<BBox> {
+  compute(text: string, padding: number, fontSize = 16, fontFamily = 'Arial', lineHeight = 1, fontWeight = 400): BBox {
     if (!this.context) {
-      return none;
+      return DEFAULT_EMPTY_BBOX;
     }
     // Padding should be at least one to avoid browser measureText inconsistencies
     if (padding < 1) {
@@ -33,10 +25,10 @@ export class CanvasTextBBoxCalculator implements BBoxCalculator {
     this.context.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
     const measure = this.context.measureText(text);
 
-    return some({
+    return {
       width: measure.width + padding,
       height: fontSize * lineHeight,
-    });
+    };
   }
   destroy(): void {
     this.attachedRoot.removeChild(this.offscreenCanvas);

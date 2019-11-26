@@ -48,16 +48,14 @@ export const getLegendSizeSelector = createCachedSelector(
     const bboxCalculator = new CanvasTextBBoxCalculator();
     const bbox = labels.reduce(
       (acc, label) => {
-        const bbox = bboxCalculator
-          .compute(
-            label,
-            1,
-            12,
-            '"Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
-            1.5,
-            400,
-          )
-          .getOrElse({ width: 0, height: 0 });
+        const bbox = bboxCalculator.compute(
+          label,
+          1,
+          12,
+          '"Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+          1.5,
+          400,
+        );
         if (acc.height < bbox.height) {
           acc.height = bbox.height;
         }

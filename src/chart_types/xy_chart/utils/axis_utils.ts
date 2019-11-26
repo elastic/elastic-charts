@@ -185,10 +185,7 @@ export const getMaxBboxDimensions = (
   maxLabelTextWidth: number;
   maxLabelTextHeight: number;
 } => {
-  const bbox = bboxCalculator.compute(tickLabel, tickLabelPadding, fontSize, fontFamily).getOrElse({
-    width: 0,
-    height: 0,
-  });
+  const bbox = bboxCalculator.compute(tickLabel, tickLabelPadding, fontSize, fontFamily);
 
   const rotatedBbox = computeRotatedLabelDimensions(bbox, tickLabelRotation);
 

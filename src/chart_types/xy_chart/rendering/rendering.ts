@@ -258,12 +258,8 @@ export function renderBars(
           : undefined
         : formattedDisplayValue;
 
-    const computedDisplayValueWidth = bboxCalculator
-      .compute(displayValueText || '', padding, fontSize, fontFamily)
-      .getOrElse({
-        width: 0,
-        height: 0,
-      }).width;
+    const computedDisplayValueWidth = bboxCalculator.compute(displayValueText || '', padding, fontSize, fontFamily)
+      .width;
     const displayValueWidth =
       displayValueSettings && displayValueSettings.isValueContainedInElement ? width : computedDisplayValueWidth;
 
