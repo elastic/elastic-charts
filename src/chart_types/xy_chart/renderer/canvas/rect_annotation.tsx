@@ -13,8 +13,8 @@ export class RectAnnotation extends React.PureComponent<Props> {
     const { rects } = this.props;
     return <Group>{rects.map(this.renderAnnotationRect)}</Group>;
   }
-  private renderAnnotationRect = (props: AnnotationRectProps, index: number) => {
-    const { x, y, width, height } = props.rect;
+  private renderAnnotationRect = ({ rect }: AnnotationRectProps, index: number) => {
+    const { x, y, width, height } = rect;
 
     const rectProps = {
       ...this.props.rectStyle,
