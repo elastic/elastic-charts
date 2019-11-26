@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, createRef } from 'react';
 import classNames from 'classnames';
 import { Provider } from 'mobx-react';
 
@@ -15,6 +15,8 @@ import { isHorizontalAxis } from '../chart_types/xy_chart/utils/axis_utils';
 import { Position } from '../chart_types/xy_chart/utils/specs';
 import { CursorEvent } from '../specs/settings';
 import { ChartSize, getChartSize } from '../utils/chart_size';
+import { Stage } from 'react-konva';
+import Konva from 'konva';
 
 interface ChartProps {
   /** The type of rendered
@@ -37,8 +39,12 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     renderer: 'canvas',
   };
   private chartSpecStore: ChartStore;
+  private chartContainerRef: React.RefObject<HTMLDivElement>;
+  private chartStageRef: React.RefObject<Stage>;
   constructor(props: any) {
     super(props);
+    this.chartContainerRef = createRef();
+    this.chartStageRef = createRef();
     this.chartSpecStore = new ChartStore(props.id);
     this.state = {
       legendPosition: this.chartSpecStore.legendPosition.get(),
@@ -90,6 +96,59 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     }
   }
 
+  getPNGSnapshot(
+    options = {
+      backgroundColor: 'transparent',
+      pixelRatio: 2,
+    },
+  ): {
+    blobOrDataUrl: any;
+    browser: 'IE11' | 'other';
+  } | null {
+    if (!this.chartStageRef.current) {
+      return null;
+    }
+    const stage = this.chartStageRef.current.getStage().clone();
+    const width = stage.getWidth();
+    const height = stage.getHeight();
+    const backgroundLayer = new Konva.Layer();
+    const backgroundRect = new Konva.Rect({
+      fill: options.backgroundColor,
+      x: 0,
+      y: 0,
+      width,
+      height,
+    });
+
+    backgroundLayer.add(backgroundRect);
+    stage.add(backgroundLayer);
+    backgroundLayer.moveToBottom();
+    stage.draw();
+    const canvasStage = stage.toCanvas({
+      width,
+      height,
+      callback: () => {},
+    });
+    // @ts-ignore
+    if (canvasStage.msToBlob) {
+      // @ts-ignore
+      const blobOrDataUrl = canvasStage.msToBlob();
+      return {
+        blobOrDataUrl,
+        browser: 'IE11',
+      };
+    } else {
+      return {
+        blobOrDataUrl: stage.toDataURL({ pixelRatio: options.pixelRatio }),
+        browser: 'other',
+      };
+    }
+  }
+
+  getChartContainerRef = () => {
+    return this.chartContainerRef;
+  };
+
   render() {
     const { renderer, size, className } = this.props;
     const { renderComplete, renderCount } = this.state;
@@ -106,6 +165,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
           className={chartClassNames}
           data-ech-render-complete={renderComplete}
           data-ech-render-count={renderCount}
+          ref={this.chartContainerRef}
         >
           <Legend />
           <SpecsParser>{this.props.children}</SpecsParser>
@@ -113,10 +173,10 @@ export class Chart extends React.Component<ChartProps, ChartState> {
             <ChartResizer />
             <Crosshair />
             {// TODO reenable when SVG rendered is aligned with canvas one
-            renderer === 'svg' && <ChartContainer />}
-            {renderer === 'canvas' && <ChartContainer />}
-            <Tooltips />
-            <AnnotationTooltip />
+            renderer === 'svg' && <ChartContainer forwardRef={this.chartStageRef} />}
+            {renderer === 'canvas' && <ChartContainer forwardRef={this.chartStageRef} />}
+            <Tooltips getChartContainerRef={this.getChartContainerRef} />
+            <AnnotationTooltip getChartContainerRef={this.getChartContainerRef} />
             <Highlighter />
           </div>
         </div>
