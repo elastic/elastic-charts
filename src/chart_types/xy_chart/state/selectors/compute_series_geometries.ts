@@ -30,7 +30,6 @@ export const computeSeriesGeometriesSelector = createCachedSelector(
     axesSpecs,
     isHistogramMode,
   ): ComputedGeometries => {
-    // console.log('--- 9 computeSeriesGeometriesSelector ---');
     const { xDomain, yDomain, formattedDataSeries } = seriesDomainsAndData;
     return computeSeriesGeometries(
       seriesSpecs,

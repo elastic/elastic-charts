@@ -24,16 +24,13 @@ export function specComponentFactory<U extends Spec, D extends keyof U>(
     const prevId = usePrevious(props.id);
     const { removeSpec, upsertSpec, ...spec } = props;
     useEffect(() => {
-      // console.log('updating specs');
       if (prevId && prevId !== props.id) {
-        // console.log('remove existing specs, ', prevId);
         removeSpec(prevId);
       }
       upsertSpec(spec);
     });
     useEffect(
       () => () => {
-        // console.log('remove spec on unmount', props.id);
         removeSpec(props.id);
       },
       [],

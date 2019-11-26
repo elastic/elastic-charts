@@ -55,7 +55,6 @@ export const computeAxisTicksDimensionsSelector = createCachedSelector(
       }
     });
     bboxCalculator.destroy();
-    // console.log('--- 5 computeAxisTickDimensions ---');
     return axesTicksDimensions;
   },
 )(getChartIdSelector);

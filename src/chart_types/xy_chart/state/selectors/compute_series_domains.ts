@@ -12,7 +12,6 @@ const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interacti
 export const computeSeriesDomainsSelector = createCachedSelector(
   [getSeriesSpecsSelector, mergeYCustomDomainsByGroupIdSelector, getDeselectedSeriesSelector, getSettingsSpecSelector],
   (seriesSpecs, customYDomainsByGroupId, deselectedDataSeries, settingsSpec): SeriesDomainsAndData => {
-    // console.log('--- 1 computeSeriesDomainsSelector ---', seriesSpecs);
     const domains = computeSeriesDomains(
       seriesSpecs,
       customYDomainsByGroupId,

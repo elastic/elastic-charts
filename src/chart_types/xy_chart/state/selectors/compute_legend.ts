@@ -26,8 +26,6 @@ export const computeLegendSelector = createCachedSelector(
     axesSpecs,
     deselectedDataSeries,
   ): Map<string, LegendItem> => {
-    // console.log('--- 3 computeLegend ---');
-
     return computeLegend(
       seriesDomainsAndData.seriesColors,
       seriesColorMap,

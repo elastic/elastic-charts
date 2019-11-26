@@ -9,7 +9,6 @@ export const countBarsInClusterSelector = createCachedSelector(
     const { formattedDataSeries } = seriesDomainsAndData;
 
     const { totalBarsInCluster } = countBarsInCluster(formattedDataSeries.stacked, formattedDataSeries.nonStacked);
-    // console.log('--- 4 countBarsInCluster ---');
     return totalBarsInCluster;
   },
 )(getChartIdSelector);
