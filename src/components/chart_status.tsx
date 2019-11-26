@@ -11,17 +11,17 @@ interface ChartStatusStateProps {
 }
 class ChartStatusComponent extends React.Component<ChartStatusStateProps> {
   componentDidMount() {
-    const { onRenderChange, rendered } = this.props;
-    if (onRenderChange) {
-      onRenderChange(rendered);
-    }
+    this.dispatchRenderChange();
   }
   componentDidUpdate() {
+    this.dispatchRenderChange();
+  }
+  dispatchRenderChange = () => {
     const { onRenderChange, rendered } = this.props;
     if (onRenderChange) {
       onRenderChange(rendered);
     }
-  }
+  };
   render() {
     const { rendered, renderedCount } = this.props;
     return <div className="echChartStatus" data-ech-render-complete={rendered} data-ech-render-count={renderedCount} />;

@@ -7,7 +7,6 @@ import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 export const isChartAnimatableSelector = createCachedSelector(
   [computeSeriesGeometriesSelector, getSettingsSpecSelector],
   () => {
-    // console.log('--- 13 isChartAnimatableSelector ---');
     // const { geometriesCounts } = seriesGeometries;
     // temporary disabled until
     // https://github.com/elastic/elastic-charts/issues/89 and https://github.com/elastic/elastic-charts/issues/41
