@@ -8,6 +8,7 @@ import {
   AnnotationTooltipState,
   getRotatedCursor,
   scaleAndValidateDatum,
+  Bounds,
 } from './annotation_utils';
 
 export interface AnnotationRectProps {
@@ -40,7 +41,9 @@ export function computeRectAnnotationTooltipState(
     const startY = rect.y;
     const endY = startY + rect.height;
 
-    const isWithinBounds = isWithinRectBounds(rotatedCursorPosition, { startX, endX, startY, endY });
+    const bounds: Bounds = { startX, endX, startY, endY };
+
+    const isWithinBounds = isWithinRectBounds(rotatedCursorPosition, bounds);
     if (isWithinBounds) {
       return {
         isVisible: true,
@@ -59,12 +62,9 @@ export function computeRectAnnotationTooltipState(
   };
 }
 
-export function isWithinRectBounds(
-  cursorPosition: Point,
-  { startX, endX, startY, endY }: { startX: number; endX: number; startY: number; endY: number },
-): boolean {
-  const withinXBounds = cursorPosition.x >= startX && cursorPosition.x <= endX;
-  const withinYBounds = cursorPosition.y >= startY && cursorPosition.y <= endY;
+export function isWithinRectBounds({ x, y }: Point, { startX, endX, startY, endY }: Bounds): boolean {
+  const withinXBounds = x >= startX && x <= endX;
+  const withinYBounds = y >= startY && y <= endY;
 
   return withinXBounds && withinYBounds;
 }

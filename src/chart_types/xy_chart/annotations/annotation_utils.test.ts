@@ -25,6 +25,7 @@ import {
   scaleAndValidateDatum,
   AnnotationDimensions,
   AnnotationTooltipState,
+  Bounds,
 } from './annotation_utils';
 import {
   AnnotationLineProps,
@@ -1524,11 +1525,11 @@ describe('annotation utils', () => {
   test('should determine if a point is within a rectangle annotation', () => {
     const cursorPosition = { x: 3, y: 4 };
 
-    const outOfXBounds = { startX: 4, endX: 5, startY: 3, endY: 5 };
-    const outOfYBounds = { startX: 2, endX: 4, startY: 5, endY: 6 };
-    const withinBounds = { startX: 2, endX: 4, startY: 3, endY: 5 };
-    const withinBoundsReverseXScale = { startX: 4, endX: 2, startY: 3, endY: 5 };
-    const withinBoundsReverseYScale = { startX: 2, endX: 4, startY: 5, endY: 3 };
+    const outOfXBounds: Bounds = { startX: 4, endX: 5, startY: 3, endY: 5 };
+    const outOfYBounds: Bounds = { startX: 2, endX: 4, startY: 5, endY: 6 };
+    const withinBounds: Bounds = { startX: 2, endX: 4, startY: 3, endY: 5 };
+    const withinBoundsReverseXScale: Bounds = { startX: 4, endX: 2, startY: 3, endY: 5 };
+    const withinBoundsReverseYScale: Bounds = { startX: 2, endX: 4, startY: 5, endY: 3 };
 
     // chart rotation 0
     expect(isWithinRectBounds(cursorPosition, outOfXBounds)).toBe(false);

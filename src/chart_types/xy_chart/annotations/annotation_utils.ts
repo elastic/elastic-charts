@@ -60,6 +60,8 @@ export interface AnnotationMarker {
 
 export type AnnotationDimensions = AnnotationLineProps[] | AnnotationRectProps[];
 
+export type Bounds = { startX: number; endX: number; startY: number; endY: number };
+
 export function scaleAndValidateDatum(dataValue: any, scale: Scale, alignWithTick: boolean): number | null {
   const isContinuous = scale.type !== ScaleType.Ordinal;
   const scaledValue = scale.scale(dataValue);

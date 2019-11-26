@@ -14,6 +14,7 @@ import {
   AnnotationMarker,
   scaleAndValidateDatum,
   isXDomain,
+  Bounds,
 } from './annotation_utils';
 import { isHorizontalRotation, getAxesSpecForSpecId } from '../state/utils';
 import { isHorizontalAxis } from '../utils/axis_utils';
@@ -359,7 +360,11 @@ export function getAnnotationLineTooltipXOffset(chartRotation: Rotation, axisPos
   if (isHorizontalAxis(axisPosition)) {
     xOffset = isChartHorizontalRotation ? 50 : 0;
   } else {
-    xOffset = isChartHorizontalRotation ? (axisPosition === Position.Right ? 100 : 0) : 50;
+    if (isChartHorizontalRotation) {
+      xOffset = axisPosition === Position.Right ? 100 : 0;
+    } else {
+      xOffset = 50;
+    }
   }
 
   return xOffset;
@@ -370,7 +375,11 @@ export function getAnnotationLineTooltipYOffset(chartRotation: Rotation, axisPos
   const isChartHorizontalRotation = isHorizontalRotation(chartRotation);
 
   if (isHorizontalAxis(axisPosition)) {
-    yOffset = isChartHorizontalRotation ? (axisPosition === Position.Top ? 0 : 100) : 50;
+    if (isChartHorizontalRotation) {
+      yOffset = axisPosition === Position.Top ? 0 : 100;
+    } else {
+      yOffset = 50;
+    }
   } else {
     yOffset = isChartHorizontalRotation ? 50 : 100;
   }
@@ -394,7 +403,7 @@ export function isVerticalAnnotationLine(isXDomainAnnotation: boolean, isHorizon
 export function isWithinLineMarkerBounds(cursorPosition: Point, marker: AnnotationMarker): boolean {
   const { top, left } = marker.position;
   const { width, height } = marker.dimension;
-  const markerRect = { startX: left, startY: top, endX: left + width, endY: top + height };
+  const markerRect: Bounds = { startX: left, startY: top, endX: left + width, endY: top + height };
   return isWithinRectBounds(cursorPosition, markerRect);
 }
 
