@@ -155,36 +155,6 @@ class Chart extends React.Component<ReactiveChartProps> {
     ];
   };
 
-  // getAxes = (): AxisProps[] => {
-  //   const { axesVisibleTicks, axesSpecs, axesTicksDimensions, axesPositions } = this.props.chartStore!;
-  //   const ids = [...axesVisibleTicks.keys()];
-
-  //   return ids
-  //     .map((id) => ({
-  //       key: `axis-${id}`,
-  //       ticks: axesVisibleTicks.get(id),
-  //       axisSpec: axesSpecs.get(id),
-  //       axisTicksDimensions: axesTicksDimensions.get(id),
-  //       axisPosition: axesPositions.get(id),
-  //     }))
-  //     .filter(
-  //       (config: Partial<AxisProps>): config is AxisProps => {
-  //         const { ticks, axisSpec, axisTicksDimensions, axisPosition } = config;
-
-  //         return Boolean(ticks && axisSpec && axisTicksDimensions && axisPosition);
-  //       },
-  //     );
-  // };
-
-  // renderAxes = (): JSX.Element[] => {
-  //   const { chartTheme, debug, chartDimensions } = this.props.chartStore!;
-  //   const axes = this.getAxes();
-
-  //   return axes.map(({ key, ...axisProps }) => (
-  //     <Axis {...axisProps} key={key} chartTheme={chartTheme} debug={debug} chartDimensions={chartDimensions} />
-  //   ));
-  // };
-
   renderAnnotations = (): ReactiveChartElementIndex[] => {
     const { annotationDimensions, annotationSpecs } = this.props;
     const annotationElements: ReactiveChartElementIndex[] = [];
