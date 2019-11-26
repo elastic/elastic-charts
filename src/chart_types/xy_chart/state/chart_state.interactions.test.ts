@@ -281,54 +281,51 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(seriesGeoms.scales.yScales).not.toBeUndefined();
   });
 
-  // test('set cursor from external source', () => {
-  //   store.setCursorValue(0);
-  //   expect(store.externalCursorShown.get()).toBe(true);
-  //   expect(store.cursorBandPosition).toEqual({
-  //     height: 100,
-  //     left: 10,
-  //     top: 10,
-  //     visible: true,
-  //     width: 50,
-  //   });
-
-  //   store.setCursorValue(1);
-  //   expect(store.externalCursorShown.get()).toBe(true);
-  //   expect(store.cursorBandPosition).toEqual({
-  //     height: 100,
-  //     left: 60,
-  //     top: 10,
-  //     visible: true,
-  //     width: 50,
-  //   });
-
-  //   store.setCursorValue(2);
-  //   expect(store.externalCursorShown.get()).toBe(true);
-  //   // equal to the latest except the visiblility
-  //   expect(store.cursorBandPosition).toEqual({
-  //     height: 100,
-  //     left: 60,
-  //     top: 10,
-  //     visible: false,
-  //     width: 50,
-  //   });
-  // });
-  // test('can determine which tooltip to display if chart & annotation tooltips possible', () => {
-  //   const annotationDimensions = [{ rect: { x: 49, y: -1, width: 3, height: 99 } }];
-  //   const rectAnnotationSpec: RectAnnotationSpec = {
-  //     id: 'rect',
-  //     groupId: GROUP_ID,
-  //     annotationType: 'rectangle',
-  //     dataValues: [{ coordinates: { x0: 1, x1: 1.5, y0: 0.5, y1: 10 } }],
-  //   };
-
-  //   store.annotationSpecs.set(rectAnnotationSpec.annotationId, rectAnnotationSpec);
-  //   store.annotationDimensions.set(rectAnnotationSpec.annotationId, annotationDimensions);
-  //   debugger;
-  //   // isHighlighted false, chart tooltip true; should show annotationTooltip only
-  //   store.setCursorPosition(chartLeft + 51, chartTop + 1);
-  //   expect(store.isTooltipVisible.get()).toBe(false);
-  // });
+  test.skip('set cursor from external source', () => {
+    // store.setCursorValue(0);
+    // expect(store.externalCursorShown.get()).toBe(true);
+    // expect(store.cursorBandPosition).toEqual({
+    //   height: 100,
+    //   left: 10,
+    //   top: 10,
+    //   visible: true,
+    //   width: 50,
+    // });
+    // store.setCursorValue(1);
+    // expect(store.externalCursorShown.get()).toBe(true);
+    // expect(store.cursorBandPosition).toEqual({
+    //   height: 100,
+    //   left: 60,
+    //   top: 10,
+    //   visible: true,
+    //   width: 50,
+    // });
+    // store.setCursorValue(2);
+    // expect(store.externalCursorShown.get()).toBe(true);
+    // // equal to the latest except the visiblility
+    // expect(store.cursorBandPosition).toEqual({
+    //   height: 100,
+    //   left: 60,
+    //   top: 10,
+    //   visible: false,
+    //   width: 50,
+    // });
+  });
+  test.skip('can determine which tooltip to display if chart & annotation tooltips possible', () => {
+    // const annotationDimensions = [{ rect: { x: 49, y: -1, width: 3, height: 99 } }];
+    // const rectAnnotationSpec: RectAnnotationSpec = {
+    //   id: 'rect',
+    //   groupId: GROUP_ID,
+    //   annotationType: 'rectangle',
+    //   dataValues: [{ coordinates: { x0: 1, x1: 1.5, y0: 0.5, y1: 10 } }],
+    // };
+    // store.annotationSpecs.set(rectAnnotationSpec.annotationId, rectAnnotationSpec);
+    // store.annotationDimensions.set(rectAnnotationSpec.annotationId, annotationDimensions);
+    // debugger;
+    // // isHighlighted false, chart tooltip true; should show annotationTooltip only
+    // store.setCursorPosition(chartLeft + 51, chartTop + 1);
+    // expect(store.isTooltipVisible.get()).toBe(false);
+  });
 
   test('can hover top-left corner of the first bar', () => {
     let tooltipData = getTooltipValuesAndGeometriesSelector(store.getState());
@@ -581,27 +578,27 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(onOutListener).toBeCalledTimes(0);
   });
 
-  // describe('can position tooltip within chart when xScale is a single value scale', () => {
-  //   beforeEach(() => {
-  //     const singleValueScale =
-  //       store.xScale!.type === ScaleType.Ordinal
-  //         ? new ScaleBand(['a'], [0, 0])
-  //         : new ScaleContinuous({ type: ScaleType.Linear, domain: [1, 1], range: [0, 0] });
-  //     store.xScale = singleValueScale;
-  //   });
-  //   test('horizontal chart rotation', () => {
-  //     store.setCursorPosition(chartLeft + 99, chartTop + 99);
-  //     const expectedTransform = `translateX(${chartLeft}px) translateX(-0%) translateY(109px) translateY(-100%)`;
-  //     expect(store.tooltipPosition.transform).toBe(expectedTransform);
-  //   });
+  describe.skip('can position tooltip within chart when xScale is a single value scale', () => {
+    beforeEach(() => {
+      // const singleValueScale =
+      //   store.xScale!.type === ScaleType.Ordinal
+      //     ? new ScaleBand(['a'], [0, 0])
+      //     : new ScaleContinuous({ type: ScaleType.Linear, domain: [1, 1], range: [0, 0] });
+      // store.xScale = singleValueScale;
+    });
+    test.skip('horizontal chart rotation', () => {
+      // store.setCursorPosition(chartLeft + 99, chartTop + 99);
+      // const expectedTransform = `translateX(${chartLeft}px) translateX(-0%) translateY(109px) translateY(-100%)`;
+      // expect(store.tooltipPosition.transform).toBe(expectedTransform);
+    });
 
-  //   test('vertical chart rotation', () => {
-  //     store.chartRotation = 90;
-  //     store.setCursorPosition(chartLeft + 99, chartTop + 99);
-  //     const expectedTransform = `translateX(109px) translateX(-100%) translateY(${chartTop}px) translateY(-0%)`;
-  //     expect(store.tooltipPosition.transform).toBe(expectedTransform);
-  //   });
-  // });
+    test.skip('vertical chart rotation', () => {
+      // store.chartRotation = 90;
+      // store.setCursorPosition(chartLeft + 99, chartTop + 99);
+      // const expectedTransform = `translateX(109px) translateX(-100%) translateY(${chartTop}px) translateY(-0%)`;
+      // expect(store.tooltipPosition.transform).toBe(expectedTransform);
+    });
+  });
   describe('can format tooltip values on rotated chart', () => {
     beforeEach(() => {
       const leftAxis: AxisSpec = {
