@@ -72,6 +72,10 @@ export interface AxisConfig {
     vertical: GridLineConfig;
   };
 }
+
+export interface ZeroAxisConfig {
+  lineStyle: StrokeStyle;
+}
 export interface GridLineConfig {
   visible?: boolean;
   stroke?: string;
@@ -153,6 +157,7 @@ export interface Theme {
   arcSeriesStyle: ArcSeriesStyle;
   sharedStyle: SharedGeometryStateStyle;
   axes: AxisConfig;
+  zeroAxes: ZeroAxisConfig;
   scales: ScalesConfig;
   colors: ColorConfig;
   legend: LegendStyle;

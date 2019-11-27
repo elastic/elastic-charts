@@ -317,6 +317,28 @@ describe('Theme', () => {
       });
     });
 
+    it('should merge partial theme: zeroAxes', () => {
+      const partialTheme: PartialTheme = {
+        zeroAxes: {
+          lineStyle: {
+            strokeWidth: 2,
+            stroke: 'elastic_charts',
+          },
+        },
+      };
+      const mergedTheme = mergeWithDefaultTheme(partialTheme, DARK_THEME);
+      expect(mergedTheme).toEqual({
+        ...DARK_THEME,
+        zeroAxes: {
+          ...DARK_THEME.zeroAxes,
+          lineStyle: {
+            ...DARK_THEME.zeroAxes.lineStyle,
+            ...partialTheme!.zeroAxes!.lineStyle,
+          },
+        },
+      });
+    });
+
     it('should merge partial theme: colors', () => {
       const partialTheme: PartialTheme = {
         colors: {

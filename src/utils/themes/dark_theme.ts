@@ -115,6 +115,12 @@ export const DARK_THEME: Theme = {
       },
     },
   },
+  zeroAxes: {
+    lineStyle: {
+      stroke: '#D4D4D4',
+      strokeWidth: 1,
+    },
+  },
   colors: {
     vizColors: palettes.echPaletteColorBlind.colors,
     defaultVizColor: DEFAULT_MISSING_COLOR,

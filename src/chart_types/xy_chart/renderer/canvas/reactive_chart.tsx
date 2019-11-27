@@ -21,7 +21,7 @@ import { isChartEmptySelector } from '../../state/selectors/is_chart_empty';
 import { isChartAnimatableSelector } from '../../state/selectors/is_chart_animatable';
 import { isBrushAvailableSelector } from '../../state/selectors/is_brush_available';
 import { Transform, getSpecsById, Geometries } from '../../state/utils';
-import { Rotation, AnnotationSpec, isLineAnnotation, isRectAnnotation } from '../../utils/specs';
+import { Rotation, AnnotationSpec, isLineAnnotation, isRectAnnotation, ZeroAxisSpec } from '../../utils/specs';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { isInitialized } from '../../../../state/selectors/is_initialized';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
@@ -37,6 +37,8 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { Clippings } from './bar_values_utils';
+import { ZeroAxis } from '../../../../components/react_canvas/zero_axis';
+import { computeZeroAxesSelector } from '../../state/selectors/compute_zero_axes';
 
 interface ReactiveChartStateProps {
   initialized: boolean;
@@ -49,6 +51,7 @@ interface ReactiveChartStateProps {
   theme: Theme;
   isChartAnimatable: boolean;
   isChartEmpty: boolean;
+  zeroAxes: ZeroAxisSpec[];
   annotationDimensions: Map<AnnotationId, AnnotationDimensions>;
   annotationSpecs: AnnotationSpec[];
   isBrushAvailable: boolean;
@@ -191,6 +194,13 @@ class Chart extends React.Component<ReactiveChartProps> {
     return annotationElements;
   };
 
+  renderZeroAxes = (): JSX.Element[] => {
+    const { zeroAxes, chartDimensions, theme } = this.props;
+    return zeroAxes.map(({ groupId, points }) => (
+      <ZeroAxis key={`${groupId}`} theme={theme} chartDimensions={chartDimensions} points={points} />
+    ));
+  };
+
   sortAndRenderElements() {
     const { chartDimensions, chartRotation } = this.props;
     const clippings = {
@@ -256,6 +266,9 @@ class Chart extends React.Component<ReactiveChartProps> {
               <Provider store={store}>
                 <Layer hitGraphEnabled={false} listening={false}>
                   <BarValues />
+                </Layer>
+                <Layer hitGraphEnabled={false} listening={false}>
+                  {this.renderZeroAxes()}
                 </Layer>
               </Provider>
               {debug && (
@@ -325,6 +338,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   },
   isChartAnimatable: false,
   isChartEmpty: true,
+  zeroAxes: [],
   annotationDimensions: new Map(),
   annotationSpecs: [],
   isBrushAvailable: false,
@@ -350,6 +364,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     annotationSpecs: getAnnotationSpecsSelector(state),
     isBrushAvailable: isBrushAvailableSelector(state),
     highlightedLegendItem: getHighlightedSeriesSelector(state),
+    zeroAxes: computeZeroAxesSelector(state),
   };
 };
 

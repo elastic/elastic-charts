@@ -553,4 +553,50 @@ storiesOf('Axis', module)
         />
       </Chart>
     );
-  });
+  })
+  .add(
+    'with zero axis',
+    () => {
+      const hideZeroAxes = boolean('hideZeroAxes', false);
+      const data = [
+        [2, -10000],
+        [3, -1000],
+        [4, -100],
+        [5, -10],
+        [6, -1],
+        [7, 0],
+        [8, -1],
+        [9, 0],
+        [10, 0],
+        [11, 1],
+        [12, 0],
+        [13, 1],
+        [14, 10],
+        [15, 100],
+        [16, 1000],
+        [17, 30000],
+      ];
+      return (
+        <Chart className={'story-chart'}>
+          <Settings hideZeroAxes={hideZeroAxes} />
+          <Axis id={getAxisId('bottom')} title="Bottom" position={Position.Bottom} />
+          <Axis id={getAxisId('left')} title="Left" position={Position.Left} />
+          <BarSeries
+            id={getSpecId('bars')}
+            xScaleType={ScaleType.Linear}
+            yScaleType={ScaleType.Linear}
+            xAccessor={0}
+            yAccessors={[1]}
+            data={data}
+            minBarHeight={10}
+          />
+        </Chart>
+      );
+    },
+    {
+      info: {
+        text:
+          'Zero axis serves as a point of reference if there are both positive and negative values in the chart. `hideZeroAxes` prop allows to show or hide the axis.',
+      },
+    },
+  );

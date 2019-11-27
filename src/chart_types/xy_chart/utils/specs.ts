@@ -454,6 +454,14 @@ export interface AxisStyle {
   tickLabelPadding?: number;
 }
 
+export interface ZeroAxisSpec {
+  /** The ID of the axis group, generated via getGroupId method
+   * @default __global__
+   */
+  groupId: GroupId;
+  points: number[];
+}
+
 /**
  * The position of the axis relative to the chart.
  * A left or right positioned axis is a vertical axis.

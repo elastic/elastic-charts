@@ -63,6 +63,9 @@ describe('Computed chart dimensions', () => {
     axes: {
       ...defaultTheme.axes,
     },
+    zeroAxes: {
+      ...defaultTheme.zeroAxes,
+    },
     ...legend,
   };
   chartTheme.axes.axisTitleStyle.fontSize = 10;

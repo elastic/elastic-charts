@@ -114,6 +114,12 @@ export const LIGHT_THEME: Theme = {
       },
     },
   },
+  zeroAxes: {
+    lineStyle: {
+      stroke: '#eaeaea',
+      strokeWidth: 1,
+    },
+  },
   colors: {
     vizColors: palettes.echPaletteColorBlind.colors,
     defaultVizColor: DEFAULT_MISSING_COLOR,

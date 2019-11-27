@@ -78,6 +78,7 @@ export interface SettingsSpec extends Spec {
    * Compares title, position and first & last tick labels
    */
   hideDuplicateAxes: boolean;
+  hideZeroAxes: boolean;
   onElementClick?: ElementClickListener;
   onElementOver?: ElementOverListener;
   onElementOut?: BasicListener;
@@ -107,7 +108,8 @@ export type DefaultSettingsProps =
   | 'showLegendDisplayValue'
   | 'theme'
   | 'legendPosition'
-  | 'hideDuplicateAxes';
+  | 'hideDuplicateAxes'
+  | 'hideZeroAxes';
 
 export const DEFAULT_TOOLTIP_TYPE = TooltipType.VerticalCursor;
 export const DEFAULT_TOOLTIP_SNAP = true;
@@ -130,6 +132,7 @@ export const DEFAULT_SETTINGS_SPEC = {
   legendPosition: Position.Right,
   showLegendDisplayValue: true,
   hideDuplicateAxes: false,
+  hideZeroAxes: false,
   theme: LIGHT_THEME,
 };
 
