@@ -27,7 +27,7 @@ import {
   BarSeriesStyle,
   PointStyle,
 } from '../src/';
-import { SeededDataGenerator } from '../.storybook/utils';
+import { SeededDataGenerator } from '../src/mocks/utils';
 import * as TestDatasets from '../src/utils/data_samples/test_dataset';
 import { palettes } from '../src/utils/themes/colors';
 import {

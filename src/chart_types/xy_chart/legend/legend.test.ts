@@ -1,8 +1,9 @@
-import { AxisId, getAxisId, getGroupId, getSpecId, SpecId } from '../../../utils/ids';
+import { getAxisId, getGroupId, getSpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
 import { computeLegend } from './legend';
 import { SeriesCollectionValue, getSeriesLabel } from '../utils/series';
-import { AxisSpec, BasicSeriesSpec, Position } from '../utils/specs';
+import { AxisSpec, BasicSeriesSpec, Position, SpecTypes, SeriesTypes } from '../utils/specs';
+import { ChartTypes } from '../..';
 
 const nullDisplayValue = {
   formatted: {
@@ -51,10 +52,12 @@ const seriesCollectionValue2b = {
   },
 };
 const spec1: BasicSeriesSpec = {
+  chartType: ChartTypes.XYAxis,
+  specType: SpecTypes.Series,
   id: getSpecId('spec1'),
   name: 'Spec 1 title',
   groupId: getGroupId('group'),
-  seriesType: 'line',
+  seriesType: SeriesTypes.Line,
   yScaleType: ScaleType.Log,
   xScaleType: ScaleType.Linear,
   xAccessor: 'x',
@@ -64,9 +67,11 @@ const spec1: BasicSeriesSpec = {
   hideInLegend: false,
 };
 const spec2: BasicSeriesSpec = {
+  chartType: ChartTypes.XYAxis,
+  specType: SpecTypes.Series,
   id: getSpecId('spec2'),
   groupId: getGroupId('group'),
-  seriesType: 'line',
+  seriesType: SeriesTypes.Line,
   yScaleType: ScaleType.Log,
   xScaleType: ScaleType.Linear,
   xAccessor: 'x',
@@ -76,8 +81,10 @@ const spec2: BasicSeriesSpec = {
   hideInLegend: false,
 };
 
-const axesSpecs = new Map<AxisId, AxisSpec>();
+const axesSpecs: AxisSpec[] = [];
 const axisSpec: AxisSpec = {
+  chartType: ChartTypes.XYAxis,
+  specType: SpecTypes.Axis,
   id: getAxisId('axis1'),
   groupId: getGroupId('group1'),
   hide: false,
@@ -90,14 +97,12 @@ const axisSpec: AxisSpec = {
     return `${value}`;
   },
 };
-axesSpecs.set(axisSpec.id, axisSpec);
+axesSpecs.push(axisSpec);
 
 describe('Legends', () => {
   const seriesCollection = new Map<string, SeriesCollectionValue>();
   const seriesCollectionMap = new Map<string, string>();
-  const specs = new Map<SpecId, BasicSeriesSpec>();
-  specs.set(spec1.id, spec1);
-  specs.set(spec2.id, spec2);
+  const specs = [spec1, spec2];
   seriesCollectionMap.set('seriesCollectionValue1a', 'red');
   seriesCollectionMap.set('seriesCollectionValue1b', 'blue');
   seriesCollectionMap.set('seriesCollectionValue2a', 'green');
@@ -245,7 +250,7 @@ describe('Legends', () => {
 
     const emptyColorMap = new Map<string, string>();
 
-    const legend = computeLegend(seriesCollection, emptyColorMap, specs, 'violet', axesSpecs, []);
+    const legend = computeLegend(seriesCollection, emptyColorMap, specs, 'violet', axesSpecs);
 
     const visibility = [...legend.values()].map((item) => item.isSeriesVisible);
 

@@ -1,4 +1,3 @@
-import { getSpecId } from '../../../utils/ids';
 import { RawDataSeries } from './series';
 import { computeYStackedMapValues, formatStackedDataSeriesValues, getYValueStackMap } from './stacked_series_utils';
 import { ScaleType } from '../../../utils/scales/scales';
@@ -11,7 +10,7 @@ describe('Stacked Series Utils', () => {
       splitAccessors: new Map(),
       seriesKeys: [],
       key: 'color-key',
-      specId: getSpecId('spec1'),
+      specId: 'spec1',
     },
   ];
   const STANDARD_DATA_SET: RawDataSeries[] = [
@@ -26,7 +25,7 @@ describe('Stacked Series Utils', () => {
       splitAccessors: new Map(),
       seriesKeys: [],
       key: 'color-key',
-      specId: getSpecId('spec1'),
+      specId: 'spec1',
     },
     {
       data: [
@@ -39,7 +38,7 @@ describe('Stacked Series Utils', () => {
       splitAccessors: new Map(),
       seriesKeys: [],
       key: 'color-key',
-      specId: getSpecId('spec2'),
+      specId: 'spec2',
     },
     {
       data: [
@@ -52,7 +51,7 @@ describe('Stacked Series Utils', () => {
       splitAccessors: new Map(),
       seriesKeys: [],
       key: 'color-key',
-      specId: getSpecId('spec3'),
+      specId: 'spec3',
     },
   ];
   const WITH_NULL_DATASET: RawDataSeries[] = [
@@ -67,7 +66,7 @@ describe('Stacked Series Utils', () => {
       splitAccessors: new Map(),
       seriesKeys: [],
       key: 'color-key',
-      specId: getSpecId('spec1'),
+      specId: 'spec1',
     },
     {
       data: [
@@ -80,7 +79,7 @@ describe('Stacked Series Utils', () => {
       splitAccessors: new Map(),
       seriesKeys: [],
       key: 'color-key',
-      specId: getSpecId('spec2'),
+      specId: 'spec2',
     },
     {
       data: [
@@ -93,7 +92,7 @@ describe('Stacked Series Utils', () => {
       splitAccessors: new Map(),
       seriesKeys: [],
       key: 'color-key',
-      specId: getSpecId('spec3'),
+      specId: 'spec3',
     },
   ];
   const STANDARD_DATA_SET_WY0: RawDataSeries[] = [
@@ -109,7 +108,7 @@ describe('Stacked Series Utils', () => {
       splitAccessors: new Map(),
       seriesKeys: [],
       key: 'color-key',
-      specId: getSpecId('spec1'),
+      specId: 'spec1',
     },
     {
       data: [
@@ -123,7 +122,7 @@ describe('Stacked Series Utils', () => {
       splitAccessors: new Map(),
       seriesKeys: [],
       key: 'color-key',
-      specId: getSpecId('spec2'),
+      specId: 'spec2',
     },
     {
       data: [
@@ -137,7 +136,7 @@ describe('Stacked Series Utils', () => {
       splitAccessors: new Map(),
       seriesKeys: [],
       key: 'color-key',
-      specId: getSpecId('spec3'),
+      specId: 'spec3',
     },
   ];
   const WITH_NULL_DATASET_WY0: RawDataSeries[] = [
@@ -153,7 +152,7 @@ describe('Stacked Series Utils', () => {
       splitAccessors: new Map(),
       seriesKeys: [],
       key: 'color-key',
-      specId: getSpecId('spec1'),
+      specId: 'spec1',
     },
     {
       data: [
@@ -166,7 +165,7 @@ describe('Stacked Series Utils', () => {
       splitAccessors: new Map(),
       seriesKeys: [],
       key: 'color-key',
-      specId: getSpecId('spec2'),
+      specId: 'spec2',
     },
     {
       data: [
@@ -180,12 +179,12 @@ describe('Stacked Series Utils', () => {
       splitAccessors: new Map(),
       seriesKeys: [],
       key: 'color-key',
-      specId: getSpecId('spec3'),
+      specId: 'spec3',
     },
   ];
   const DATA_SET_WITH_NULL_2: RawDataSeries[] = [
     {
-      specId: getSpecId('spec1'),
+      specId: 'spec1',
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: ['a'],
@@ -193,7 +192,7 @@ describe('Stacked Series Utils', () => {
       data: [{ x: 1, y1: 1 }, { x: 2, y1: 2 }, { x: 4, y1: 4 }],
     },
     {
-      specId: getSpecId('spec1'),
+      specId: 'spec1',
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: ['b'],

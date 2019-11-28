@@ -1,16 +1,14 @@
-import { getSpecId } from '../../../utils/ids';
 import {
-  BarGeometry,
   getGeometryStateStyle,
   isPointOnGeometry,
-  PointGeometry,
   getBarStyleOverrides,
   getPointStyleOverrides,
   getClippedRanges,
 } from './rendering';
 import { BarSeriesStyle, SharedGeometryStateStyle, PointStyle } from '../../../utils/themes/theme';
 import { DataSeriesDatum, SeriesIdentifier } from '../utils/series';
-import { RecursivePartial, mergePartial } from '../../../utils/commons';
+import { mergePartial, RecursivePartial } from '../../../utils/commons';
+import { BarGeometry, PointGeometry } from '../../../utils/geometry';
 import { MockDataSeries } from '../../../mocks';
 import { MockScale } from '../../../mocks/scale';
 import { LegendItem } from '../legend/legend';
@@ -38,7 +36,7 @@ describe('Rendering utils', () => {
     const geometry: BarGeometry = {
       color: 'red',
       seriesIdentifier: {
-        specId: getSpecId('id'),
+        specId: 'id',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [],
@@ -67,7 +65,7 @@ describe('Rendering utils', () => {
     const geometry: PointGeometry = {
       color: 'red',
       seriesIdentifier: {
-        specId: getSpecId('id'),
+        specId: 'id',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [],
@@ -98,7 +96,7 @@ describe('Rendering utils', () => {
 
   describe('should get common geometry style dependent on legend item highlight state', () => {
     const seriesIdentifier: SeriesIdentifier = {
-      specId: getSpecId('id'),
+      specId: 'id',
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: [],
@@ -225,7 +223,7 @@ describe('Rendering utils', () => {
       initialY0: 5,
     };
     const seriesIdentifier: SeriesIdentifier = {
-      specId: getSpecId('test'),
+      specId: 'test',
       yAccessor: 'test',
       splitAccessors: new Map(),
       seriesKeys: ['test'],
@@ -317,7 +315,7 @@ describe('Rendering utils', () => {
       initialY0: 5,
     };
     const seriesIdentifier: SeriesIdentifier = {
-      specId: getSpecId('test'),
+      specId: 'test',
       yAccessor: 'test',
       splitAccessors: new Map(),
       seriesKeys: ['test'],

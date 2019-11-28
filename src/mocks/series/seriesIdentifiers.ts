@@ -1,5 +1,5 @@
 import { BasicSeriesSpec } from '../../chart_types/xy_chart/utils/specs';
-import { getSpecId, SpecId } from '../..';
+import { getSpecId } from '../..';
 import { SeriesCollectionValue, getSplittedSeries, SeriesIdentifier } from '../../chart_types/xy_chart/utils/series';
 import { mergePartial } from '../../utils/commons';
 
@@ -10,7 +10,7 @@ export class MockSeriesCollection {
     return new Map();
   }
 
-  static fromSpecs(seriesSpecs: Map<SpecId, BasicSeriesSpec>) {
+  static fromSpecs(seriesSpecs: BasicSeriesSpec[]) {
     const { seriesCollection } = getSplittedSeries(seriesSpecs, []);
 
     return seriesCollection;

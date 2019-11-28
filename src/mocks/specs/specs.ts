@@ -8,16 +8,19 @@ import {
   HistogramBarSeriesSpec,
   LineSeriesSpec,
   BasicSeriesSpec,
+  SpecTypes,
+  SeriesTypes,
 } from '../../chart_types/xy_chart/utils/specs';
-import { getSpecId, getGroupId, SpecId } from '../../utils/ids';
+import { getSpecId, getGroupId } from '../../utils/ids';
 import { ScaleType } from '../../utils/scales/scales';
-
-export type SeriesSpecs = Map<SpecId, BasicSeriesSpec>;
+import { ChartTypes } from '../../chart_types';
 
 export class MockSeriesSpec {
   private static readonly barBase: BarSeriesSpec = {
+    chartType: ChartTypes.XYAxis,
+    specType: SpecTypes.Series,
     id: getSpecId('spec1'),
-    seriesType: 'bar',
+    seriesType: SeriesTypes.Bar,
     groupId: getGroupId(DEFAULT_GLOBAL_ID),
     xScaleType: ScaleType.Ordinal,
     yScaleType: ScaleType.Linear,
@@ -28,12 +31,14 @@ export class MockSeriesSpec {
     hideInLegend: false,
     enableHistogramMode: false,
     stackAsPercentage: false,
-    data: [],
+    data: [] as any[],
   };
 
   private static readonly histogramBarBase: HistogramBarSeriesSpec = {
+    chartType: ChartTypes.XYAxis,
+    specType: SpecTypes.Series,
     id: getSpecId('spec1'),
-    seriesType: 'bar',
+    seriesType: SeriesTypes.Bar,
     groupId: getGroupId(DEFAULT_GLOBAL_ID),
     xScaleType: ScaleType.Ordinal,
     yScaleType: ScaleType.Linear,
@@ -46,8 +51,10 @@ export class MockSeriesSpec {
   };
 
   private static readonly areaBase: AreaSeriesSpec = {
+    chartType: ChartTypes.XYAxis,
+    specType: SpecTypes.Series,
     id: getSpecId('spec1'),
-    seriesType: 'area',
+    seriesType: SeriesTypes.Area,
     groupId: getGroupId(DEFAULT_GLOBAL_ID),
     xScaleType: ScaleType.Ordinal,
     yScaleType: ScaleType.Linear,
@@ -60,8 +67,10 @@ export class MockSeriesSpec {
   };
 
   private static readonly lineBase: LineSeriesSpec = {
+    chartType: ChartTypes.XYAxis,
+    specType: SpecTypes.Series,
     id: getSpecId('spec1'),
-    seriesType: 'line',
+    seriesType: SeriesTypes.Line,
     groupId: getGroupId(DEFAULT_GLOBAL_ID),
     xScaleType: ScaleType.Ordinal,
     yScaleType: ScaleType.Linear,
@@ -110,21 +119,17 @@ export class MockSeriesSpec {
 
 export class MockSeriesSpecs {
   static fromSpecs(specs: BasicSeriesSpec[]): SeriesSpecs {
-    const specsMap: [SpecId, BasicSeriesSpec][] = specs.map((spec) => [spec.id, spec]);
-    return new Map(specsMap);
+    return specs;
   }
 
   static fromPartialSpecs(specs: Partial<BasicSeriesSpec>[]): SeriesSpecs {
-    const specsMap: [SpecId, BasicSeriesSpec][] = specs.map(({ seriesType, ...spec }) => {
+    return specs.map(({ seriesType, ...spec }) => {
       const base = MockSeriesSpec.byType(seriesType);
-      const mergedSpec = mergePartial<BasicSeriesSpec>(base, spec, { mergeOptionalPartialValues: true });
-
-      return [mergedSpec.id, mergedSpec];
+      return mergePartial<BasicSeriesSpec>(base, spec, { mergeOptionalPartialValues: true });
     });
-    return new Map(specsMap);
   }
 
   static empty(): SeriesSpecs {
-    return new Map();
+    return [];
   }
 }

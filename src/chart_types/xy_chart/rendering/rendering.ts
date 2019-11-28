@@ -2,9 +2,7 @@ import { area, line } from 'd3-shape';
 import { CanvasTextBBoxCalculator } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import {
   AreaSeriesStyle,
-  AreaStyle,
   LineSeriesStyle,
-  LineStyle,
   PointStyle,
   SharedGeometryStateStyle,
   BarSeriesStyle,
@@ -13,108 +11,20 @@ import {
 import { isLogarithmicScale } from '../../../utils/scales/scale_continuous';
 import { Scale, ScaleType } from '../../../utils/scales/scales';
 import { CurveType, getCurveFactory } from '../../../utils/curves';
-import { LegendItem } from '../legend/legend';
 import { DataSeriesDatum, SeriesIdentifier, DataSeries } from '../utils/series';
-import { DisplayValueSpec, BarStyleAccessor, PointStyleAccessor } from '../utils/specs';
+import { DisplayValueSpec, PointStyleAccessor, BarStyleAccessor } from '../utils/specs';
+import {
+  IndexedGeometry,
+  PointGeometry,
+  BarGeometry,
+  AreaGeometry,
+  LineGeometry,
+  isPointGeometry,
+  ClippedRanges,
+  BandedAccessorType,
+} from '../../../utils/geometry';
 import { mergePartial } from '../../../utils/commons';
-
-/**
- * The accessor type
- */
-export const BandedAccessorType = Object.freeze({
-  Y0: 'y0' as 'y0',
-  Y1: 'y1' as 'y1',
-});
-
-export type BandedAccessorType = typeof BandedAccessorType.Y0 | typeof BandedAccessorType.Y1;
-
-export interface GeometryValue {
-  y: any;
-  x: any;
-  accessor: BandedAccessorType;
-}
-
-export type IndexedGeometry = PointGeometry | BarGeometry;
-
-/**
- * Array of **range** clippings [x1, x2] to be excluded during rendering
- *
- * Note: Must be scaled **range** values (i.e. pixel coordinates) **NOT** domain values
- */
-export type ClippedRanges = [number, number][];
-
-export interface PointGeometry {
-  x: number;
-  y: number;
-  radius: number;
-  color: string;
-  transform: {
-    x: number;
-    y: number;
-  };
-  seriesIdentifier: SeriesIdentifier;
-  value: GeometryValue;
-  styleOverrides?: Partial<PointStyle>;
-}
-export interface BarGeometry {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  color: string;
-  displayValue?: {
-    text: any;
-    width: number;
-    height: number;
-    hideClippedValue?: boolean;
-    isValueContainedInElement?: boolean;
-  };
-  seriesIdentifier: SeriesIdentifier;
-  value: GeometryValue;
-  seriesStyle: BarSeriesStyle;
-}
-export interface LineGeometry {
-  line: string;
-  points: PointGeometry[];
-  color: string;
-  transform: {
-    x: number;
-    y: number;
-  };
-  seriesIdentifier: SeriesIdentifier;
-  seriesLineStyle: LineStyle;
-  seriesPointStyle: PointStyle;
-  /**
-   * Ranges of `[x0, x1]` pairs to clip from series
-   */
-  clippedRanges: ClippedRanges;
-}
-export interface AreaGeometry {
-  area: string;
-  lines: string[];
-  points: PointGeometry[];
-  color: string;
-  transform: {
-    x: number;
-    y: number;
-  };
-  seriesIdentifier: SeriesIdentifier;
-  seriesAreaStyle: AreaStyle;
-  seriesAreaLineStyle: LineStyle;
-  seriesPointStyle: PointStyle;
-  isStacked: boolean;
-  /**
-   * Ranges of `[x0, x1]` pairs to clip from series
-   */
-  clippedRanges: ClippedRanges;
-}
-
-export function isPointGeometry(ig: IndexedGeometry): ig is PointGeometry {
-  return ig.hasOwnProperty('radius');
-}
-export function isBarGeometry(ig: IndexedGeometry): ig is BarGeometry {
-  return ig.hasOwnProperty('width') && ig.hasOwnProperty('height');
-}
+import { LegendItem } from '../legend/legend';
 
 export function mutableIndexedGeometryMapUpsert(
   mutableGeometriesIndex: Map<any, IndexedGeometry[]>,
@@ -177,7 +87,7 @@ export function getBarStyleOverrides(
   });
 }
 
-export function renderPoints(
+function renderPoints(
   shift: number,
   dataSeries: DataSeries,
   xScale: Scale,
@@ -344,12 +254,8 @@ export function renderBars(
           : undefined
         : formattedDisplayValue;
 
-    const computedDisplayValueWidth = bboxCalculator
-      .compute(displayValueText || '', padding, fontSize, fontFamily)
-      .getOrElse({
-        width: 0,
-        height: 0,
-      }).width;
+    const computedDisplayValueWidth = bboxCalculator.compute(displayValueText || '', padding, fontSize, fontFamily)
+      .width;
     const displayValueWidth =
       displayValueSettings && displayValueSettings.isValueContainedInElement ? width : computedDisplayValueWidth;
 
@@ -663,6 +569,6 @@ export function isPointOnGeometry(
   return yCoordinate >= y && yCoordinate <= y + height && xCoordinate >= x && xCoordinate <= x + width;
 }
 
-export function getGeometryIdKey(seriesIdentifier: SeriesIdentifier, prefix?: string, postfix?: string) {
-  return `${prefix || ''}spec:${seriesIdentifier.specId}_${seriesIdentifier.seriesKeys.join('::-::')}${postfix || ''}`;
+export function getSeriesIdentifierPrefixedKey(seriesIdentifier: SeriesIdentifier, prefix?: string, postfix?: string) {
+  return `${prefix || ''}${seriesIdentifier.key}${postfix || ''}`;
 }

@@ -1,22 +1,24 @@
-/* eslint @typescript-eslint/no-object-literal-type-assertion: off */
-import { computeSeriesDomains } from '../store/utils';
-import { getGroupId, getSpecId, SpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
 import { CurveType } from '../../../utils/curves';
-import { AreaGeometry, IndexedGeometry, PointGeometry, renderArea } from './rendering';
-import { computeXScale, computeYScales } from '../utils/scales';
-import { AreaSeriesSpec } from '../utils/specs';
+import { IndexedGeometry, PointGeometry, AreaGeometry } from '../../../utils/geometry';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
+import { computeXScale, computeYScales } from '../utils/scales';
+import { AreaSeriesSpec, SpecTypes, SeriesTypes } from '../utils/specs';
+import { computeSeriesDomains } from '../state/utils';
+import { renderArea } from './rendering';
+import { ChartTypes } from '../..';
 
-const SPEC_ID = getSpecId('spec_1');
-const GROUP_ID = getGroupId('group_1');
+const SPEC_ID = 'spec_1';
+const GROUP_ID = 'group_1';
 
 describe('Rendering points - areas', () => {
   describe('Empty line for missing data', () => {
     const pointSeriesSpec: AreaSeriesSpec = {
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       yScaleToDataExtent: false,
       data: [[0, 10], [1, 5]],
       xAccessor: 0,
@@ -24,12 +26,11 @@ describe('Rendering points - areas', () => {
       xScaleType: ScaleType.Ordinal,
       yScaleType: ScaleType.Linear,
     };
-    const pointSeriesMap = new Map<SpecId, AreaSeriesSpec>();
-    pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
-    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map(), undefined);
+    const pointSeriesMap = [pointSeriesSpec];
+    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
     const xScale = computeXScale({
       xDomain: pointSeriesDomains.xDomain,
-      totalBarsInCluster: pointSeriesMap.size,
+      totalBarsInCluster: pointSeriesMap.length,
       range: [0, 100],
     });
     const yScales = computeYScales({
@@ -68,9 +69,11 @@ describe('Rendering points - areas', () => {
   });
   describe('Single series area chart - ordinal', () => {
     const pointSeriesSpec: AreaSeriesSpec = {
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       yScaleToDataExtent: false,
       data: [[0, 10], [1, 5]],
       xAccessor: 0,
@@ -78,12 +81,11 @@ describe('Rendering points - areas', () => {
       xScaleType: ScaleType.Ordinal,
       yScaleType: ScaleType.Linear,
     };
-    const pointSeriesMap = new Map<SpecId, AreaSeriesSpec>();
-    pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
-    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map(), undefined);
+    const pointSeriesMap = [pointSeriesSpec];
+    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
     const xScale = computeXScale({
       xDomain: pointSeriesDomains.xDomain,
-      totalBarsInCluster: pointSeriesMap.size,
+      totalBarsInCluster: pointSeriesMap.length,
       range: [0, 100],
     });
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
@@ -135,6 +137,7 @@ describe('Rendering points - areas', () => {
           seriesKeys: [1],
           key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
         },
+        styleOverrides: undefined,
         value: {
           accessor: 'y1',
           x: 0,
@@ -157,6 +160,7 @@ describe('Rendering points - areas', () => {
           seriesKeys: [1],
           key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
         },
+        styleOverrides: undefined,
         value: {
           accessor: 'y1',
           x: 1,
@@ -171,12 +175,14 @@ describe('Rendering points - areas', () => {
     });
   });
   describe('Multi series area chart - ordinal', () => {
-    const spec1Id = getSpecId('spec_1');
-    const spec2Id = getSpecId('spec_2');
+    const spec1Id = 'spec_1';
+    const spec2Id = 'spec_2';
     const pointSeriesSpec1: AreaSeriesSpec = {
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: spec1Id,
       groupId: GROUP_ID,
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       yScaleToDataExtent: false,
       data: [[0, 10], [1, 5]],
       xAccessor: 0,
@@ -185,9 +191,11 @@ describe('Rendering points - areas', () => {
       yScaleType: ScaleType.Linear,
     };
     const pointSeriesSpec2: AreaSeriesSpec = {
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: spec2Id,
       groupId: GROUP_ID,
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       yScaleToDataExtent: false,
       data: [[0, 20], [1, 10]],
       xAccessor: 0,
@@ -195,13 +203,11 @@ describe('Rendering points - areas', () => {
       xScaleType: ScaleType.Ordinal,
       yScaleType: ScaleType.Linear,
     };
-    const pointSeriesMap = new Map<SpecId, AreaSeriesSpec>();
-    pointSeriesMap.set(spec1Id, pointSeriesSpec1);
-    pointSeriesMap.set(spec2Id, pointSeriesSpec2);
-    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map(), undefined);
+    const pointSeriesMap = [pointSeriesSpec1, pointSeriesSpec2];
+    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
     const xScale = computeXScale({
       xDomain: pointSeriesDomains.xDomain,
-      totalBarsInCluster: pointSeriesMap.size,
+      totalBarsInCluster: pointSeriesMap.length,
       range: [0, 100],
     });
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
@@ -273,6 +279,7 @@ describe('Rendering points - areas', () => {
           seriesKeys: [1],
           key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
         },
+        styleOverrides: undefined,
         value: {
           accessor: 'y1',
           x: 0,
@@ -326,6 +333,7 @@ describe('Rendering points - areas', () => {
           seriesKeys: [1],
           key: 'spec{spec_2}yAccessor{1}splitAccessors{}',
         },
+        styleOverrides: undefined,
         value: {
           accessor: 'y1',
           x: 0,
@@ -348,6 +356,7 @@ describe('Rendering points - areas', () => {
           seriesKeys: [1],
           key: 'spec{spec_2}yAccessor{1}splitAccessors{}',
         },
+        styleOverrides: undefined,
         value: {
           accessor: 'y1',
           x: 1,
@@ -363,9 +372,11 @@ describe('Rendering points - areas', () => {
   });
   describe('Single series area chart - linear', () => {
     const pointSeriesSpec: AreaSeriesSpec = {
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       yScaleToDataExtent: false,
       data: [[0, 10], [1, 5]],
       xAccessor: 0,
@@ -373,12 +384,11 @@ describe('Rendering points - areas', () => {
       xScaleType: ScaleType.Linear,
       yScaleType: ScaleType.Linear,
     };
-    const pointSeriesMap = new Map<SpecId, AreaSeriesSpec>();
-    pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
-    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map(), undefined);
+    const pointSeriesMap = [pointSeriesSpec];
+    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
     const xScale = computeXScale({
       xDomain: pointSeriesDomains.xDomain,
-      totalBarsInCluster: pointSeriesMap.size,
+      totalBarsInCluster: pointSeriesMap.length,
       range: [0, 100],
     });
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
@@ -426,6 +436,7 @@ describe('Rendering points - areas', () => {
           seriesKeys: [1],
           key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
         },
+        styleOverrides: undefined,
         value: {
           accessor: 'y1',
           x: 0,
@@ -463,12 +474,14 @@ describe('Rendering points - areas', () => {
     });
   });
   describe('Multi series area chart - linear', () => {
-    const spec1Id = getSpecId('spec_1');
-    const spec2Id = getSpecId('spec_2');
+    const spec1Id = 'spec_1';
+    const spec2Id = 'spec_2';
     const pointSeriesSpec1: AreaSeriesSpec = {
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: spec1Id,
       groupId: GROUP_ID,
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       yScaleToDataExtent: false,
       data: [[0, 10], [1, 5]],
       xAccessor: 0,
@@ -477,9 +490,11 @@ describe('Rendering points - areas', () => {
       yScaleType: ScaleType.Linear,
     };
     const pointSeriesSpec2: AreaSeriesSpec = {
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: spec2Id,
       groupId: GROUP_ID,
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       yScaleToDataExtent: false,
       data: [[0, 20], [1, 10]],
       xAccessor: 0,
@@ -487,13 +502,11 @@ describe('Rendering points - areas', () => {
       xScaleType: ScaleType.Linear,
       yScaleType: ScaleType.Linear,
     };
-    const pointSeriesMap = new Map<SpecId, AreaSeriesSpec>();
-    pointSeriesMap.set(spec1Id, pointSeriesSpec1);
-    pointSeriesMap.set(spec2Id, pointSeriesSpec2);
-    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map(), undefined);
+    const pointSeriesMap = [pointSeriesSpec1, pointSeriesSpec2];
+    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
     const xScale = computeXScale({
       xDomain: pointSeriesDomains.xDomain,
-      totalBarsInCluster: pointSeriesMap.size,
+      totalBarsInCluster: pointSeriesMap.length,
       range: [0, 100],
     });
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
@@ -564,6 +577,7 @@ describe('Rendering points - areas', () => {
           seriesKeys: [1],
           key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
         },
+        styleOverrides: undefined,
         value: {
           accessor: 'y1',
           x: 0,
@@ -586,6 +600,7 @@ describe('Rendering points - areas', () => {
           seriesKeys: [1],
           key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
         },
+        styleOverrides: undefined,
         value: {
           accessor: 'y1',
           x: 1,
@@ -639,6 +654,7 @@ describe('Rendering points - areas', () => {
           seriesKeys: [1],
           key: 'spec{spec_2}yAccessor{1}splitAccessors{}',
         },
+        styleOverrides: undefined,
         value: {
           accessor: 'y1',
           x: 1,
@@ -654,9 +670,11 @@ describe('Rendering points - areas', () => {
   });
   describe('Single series area chart - time', () => {
     const pointSeriesSpec: AreaSeriesSpec = {
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       yScaleToDataExtent: false,
       data: [[1546300800000, 10], [1546387200000, 5]],
       xAccessor: 0,
@@ -664,12 +682,11 @@ describe('Rendering points - areas', () => {
       xScaleType: ScaleType.Time,
       yScaleType: ScaleType.Linear,
     };
-    const pointSeriesMap = new Map<SpecId, AreaSeriesSpec>();
-    pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
-    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map(), undefined);
+    const pointSeriesMap = [pointSeriesSpec];
+    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
     const xScale = computeXScale({
       xDomain: pointSeriesDomains.xDomain,
-      totalBarsInCluster: pointSeriesMap.size,
+      totalBarsInCluster: pointSeriesMap.length,
       range: [0, 100],
     });
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
@@ -717,6 +734,7 @@ describe('Rendering points - areas', () => {
           seriesKeys: [1],
           key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
         },
+        styleOverrides: undefined,
         value: {
           accessor: 'y1',
           x: 1546300800000,
@@ -739,6 +757,7 @@ describe('Rendering points - areas', () => {
           seriesKeys: [1],
           key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
         },
+        styleOverrides: undefined,
         value: {
           accessor: 'y1',
           x: 1546387200000,
@@ -753,12 +772,14 @@ describe('Rendering points - areas', () => {
     });
   });
   describe('Multi series area chart - time', () => {
-    const spec1Id = getSpecId('spec_1');
-    const spec2Id = getSpecId('spec_2');
+    const spec1Id = 'spec_1';
+    const spec2Id = 'spec_2';
     const pointSeriesSpec1: AreaSeriesSpec = {
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: spec1Id,
       groupId: GROUP_ID,
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       yScaleToDataExtent: false,
       data: [[1546300800000, 10], [1546387200000, 5]],
       xAccessor: 0,
@@ -767,9 +788,11 @@ describe('Rendering points - areas', () => {
       yScaleType: ScaleType.Linear,
     };
     const pointSeriesSpec2: AreaSeriesSpec = {
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: spec2Id,
       groupId: GROUP_ID,
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       yScaleToDataExtent: false,
       data: [[1546300800000, 20], [1546387200000, 10]],
       xAccessor: 0,
@@ -777,13 +800,11 @@ describe('Rendering points - areas', () => {
       xScaleType: ScaleType.Time,
       yScaleType: ScaleType.Linear,
     };
-    const pointSeriesMap = new Map<SpecId, AreaSeriesSpec>();
-    pointSeriesMap.set(spec1Id, pointSeriesSpec1);
-    pointSeriesMap.set(spec2Id, pointSeriesSpec2);
-    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map(), undefined);
+    const pointSeriesMap = [pointSeriesSpec1, pointSeriesSpec2];
+    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
     const xScale = computeXScale({
       xDomain: pointSeriesDomains.xDomain,
-      totalBarsInCluster: pointSeriesMap.size,
+      totalBarsInCluster: pointSeriesMap.length,
       range: [0, 100],
     });
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
@@ -839,6 +860,7 @@ describe('Rendering points - areas', () => {
           seriesKeys: [1],
           key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
         },
+        styleOverrides: undefined,
         value: {
           accessor: 'y1',
           x: 1546300800000,
@@ -861,6 +883,7 @@ describe('Rendering points - areas', () => {
           seriesKeys: [1],
           key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
         },
+        styleOverrides: undefined,
         value: {
           accessor: 'y1',
           x: 1546387200000,
@@ -891,6 +914,7 @@ describe('Rendering points - areas', () => {
           seriesKeys: [1],
           key: 'spec{spec_2}yAccessor{1}splitAccessors{}',
         },
+        styleOverrides: undefined,
         value: {
           accessor: 'y1',
           x: 1546300800000,
@@ -913,6 +937,7 @@ describe('Rendering points - areas', () => {
           seriesKeys: [1],
           key: 'spec{spec_2}yAccessor{1}splitAccessors{}',
         },
+        styleOverrides: undefined,
         value: {
           accessor: 'y1',
           x: 1546387200000,
@@ -928,9 +953,11 @@ describe('Rendering points - areas', () => {
   });
   describe('Single series area chart - y log', () => {
     const pointSeriesSpec: AreaSeriesSpec = {
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: 'area',
+      seriesType: SeriesTypes.Area,
       yScaleToDataExtent: false,
       data: [[0, 10], [1, 5], [2, null], [3, 5], [4, 5], [5, 0], [6, 10], [7, 10], [8, 10]],
       xAccessor: 0,
@@ -938,12 +965,11 @@ describe('Rendering points - areas', () => {
       xScaleType: ScaleType.Linear,
       yScaleType: ScaleType.Log,
     };
-    const pointSeriesMap = new Map<SpecId, AreaSeriesSpec>();
-    pointSeriesMap.set(SPEC_ID, pointSeriesSpec);
-    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map(), undefined);
+    const pointSeriesMap = [pointSeriesSpec];
+    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
     const xScale = computeXScale({
       xDomain: pointSeriesDomains.xDomain,
-      totalBarsInCluster: pointSeriesMap.size,
+      totalBarsInCluster: pointSeriesMap.length,
       range: [0, 90],
     });
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });

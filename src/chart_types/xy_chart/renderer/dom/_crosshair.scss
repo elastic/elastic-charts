@@ -1,0 +1,10 @@
+.echCrosshair,
+.echCrosshair__band,
+.echCrosshair__line {
+  position: absolute;
+  pointer-events: none;
+}
+
+.echCrosshair__line {
+  z-index: $euiZLevel8;
+}

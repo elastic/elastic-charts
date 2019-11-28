@@ -1,7 +1,6 @@
-import { getGroupId, getSpecId, GroupId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
 import { RawDataSeries } from '../utils/series';
-import { BasicSeriesSpec, DomainRange } from '../utils/specs';
+import { BasicSeriesSpec, DomainRange, SpecTypes, SeriesTypes } from '../utils/specs';
 import { BARCHART_1Y0G } from '../../../utils/data_samples/test_dataset';
 import {
   coerceYScaleTypes,
@@ -10,12 +9,14 @@ import {
   splitSpecsByGroupId,
   YBasicSeriesSpec,
 } from './y_domain';
+import { GroupId } from '../../../utils/ids';
+import { ChartTypes } from '../..';
 
 describe('Y Domain', () => {
   test('Should merge Y domain', () => {
     const dataSeries: RawDataSeries[] = [
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -23,7 +24,7 @@ describe('Y Domain', () => {
         data: [{ x: 1, y1: 2 }, { x: 2, y1: 2 }, { x: 3, y1: 2 }, { x: 4, y1: 5 }],
       },
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -32,15 +33,15 @@ describe('Y Domain', () => {
       },
     ];
     const specDataSeries = new Map();
-    specDataSeries.set(getSpecId('a'), dataSeries);
+    specDataSeries.set('a', dataSeries);
     const mergedDomain = mergeYDomain(
       specDataSeries,
       [
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Linear,
-          groupId: getGroupId('a'),
-          id: getSpecId('a'),
+          groupId: 'a',
+          id: 'a',
           stackAccessors: ['a'],
           yScaleToDataExtent: true,
         },
@@ -60,7 +61,7 @@ describe('Y Domain', () => {
   test('Should merge Y domain different group', () => {
     const dataSeries1: RawDataSeries[] = [
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -68,7 +69,7 @@ describe('Y Domain', () => {
         data: [{ x: 1, y1: 2 }, { x: 2, y1: 2 }, { x: 3, y1: 2 }, { x: 4, y1: 5 }],
       },
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -78,7 +79,7 @@ describe('Y Domain', () => {
     ];
     const dataSeries2: RawDataSeries[] = [
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -87,24 +88,24 @@ describe('Y Domain', () => {
       },
     ];
     const specDataSeries = new Map();
-    specDataSeries.set(getSpecId('a'), dataSeries1);
-    specDataSeries.set(getSpecId('b'), dataSeries2);
+    specDataSeries.set('a', dataSeries1);
+    specDataSeries.set('b', dataSeries2);
     const mergedDomain = mergeYDomain(
       specDataSeries,
       [
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Linear,
-          groupId: getGroupId('a'),
-          id: getSpecId('a'),
+          groupId: 'a',
+          id: 'a',
           stackAccessors: ['a'],
           yScaleToDataExtent: true,
         },
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Log,
-          groupId: getGroupId('b'),
-          id: getSpecId('b'),
+          groupId: 'b',
+          id: 'b',
           stackAccessors: ['a'],
           yScaleToDataExtent: true,
         },
@@ -131,7 +132,7 @@ describe('Y Domain', () => {
   test('Should merge Y domain same group all stacked', () => {
     const dataSeries1: RawDataSeries[] = [
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -139,7 +140,7 @@ describe('Y Domain', () => {
         data: [{ x: 1, y1: 2 }, { x: 2, y1: 2 }, { x: 3, y1: 2 }, { x: 4, y1: 5 }],
       },
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -149,7 +150,7 @@ describe('Y Domain', () => {
     ];
     const dataSeries2: RawDataSeries[] = [
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -158,24 +159,24 @@ describe('Y Domain', () => {
       },
     ];
     const specDataSeries = new Map();
-    specDataSeries.set(getSpecId('a'), dataSeries1);
-    specDataSeries.set(getSpecId('b'), dataSeries2);
+    specDataSeries.set('a', dataSeries1);
+    specDataSeries.set('b', dataSeries2);
     const mergedDomain = mergeYDomain(
       specDataSeries,
       [
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Linear,
-          groupId: getGroupId('a'),
-          id: getSpecId('a'),
+          groupId: 'a',
+          id: 'a',
           stackAccessors: ['a'],
           yScaleToDataExtent: true,
         },
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Log,
-          groupId: getGroupId('a'),
-          id: getSpecId('b'),
+          groupId: 'a',
+          id: 'b',
           stackAccessors: ['a'],
           yScaleToDataExtent: true,
         },
@@ -195,7 +196,7 @@ describe('Y Domain', () => {
   test('Should merge Y domain same group partially stacked', () => {
     const dataSeries1: RawDataSeries[] = [
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -203,7 +204,7 @@ describe('Y Domain', () => {
         data: [{ x: 1, y1: 2 }, { x: 2, y1: 2 }, { x: 3, y1: 2 }, { x: 4, y1: 5 }],
       },
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -213,7 +214,7 @@ describe('Y Domain', () => {
     ];
     const dataSeries2: RawDataSeries[] = [
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -222,24 +223,24 @@ describe('Y Domain', () => {
       },
     ];
     const specDataSeries = new Map();
-    specDataSeries.set(getSpecId('a'), dataSeries1);
-    specDataSeries.set(getSpecId('b'), dataSeries2);
+    specDataSeries.set('a', dataSeries1);
+    specDataSeries.set('b', dataSeries2);
     const mergedDomain = mergeYDomain(
       specDataSeries,
       [
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Linear,
-          groupId: getGroupId('a'),
-          id: getSpecId('a'),
+          groupId: 'a',
+          id: 'a',
           stackAccessors: ['a'],
           yScaleToDataExtent: true,
         },
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Log,
-          groupId: getGroupId('a'),
-          id: getSpecId('b'),
+          groupId: 'a',
+          id: 'b',
           yScaleToDataExtent: true,
         },
       ],
@@ -259,7 +260,7 @@ describe('Y Domain', () => {
     const maxValues = 10000;
     const dataSeries1: RawDataSeries[] = [
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -267,7 +268,7 @@ describe('Y Domain', () => {
         data: new Array(maxValues).fill(0).map((d, i) => ({ x: i, y1: i })),
       },
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -277,7 +278,7 @@ describe('Y Domain', () => {
     ];
     const dataSeries2: RawDataSeries[] = [
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -286,24 +287,24 @@ describe('Y Domain', () => {
       },
     ];
     const specDataSeries = new Map();
-    specDataSeries.set(getSpecId('a'), dataSeries1);
-    specDataSeries.set(getSpecId('b'), dataSeries2);
+    specDataSeries.set('a', dataSeries1);
+    specDataSeries.set('b', dataSeries2);
     const mergedDomain = mergeYDomain(
       specDataSeries,
       [
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Linear,
-          groupId: getGroupId('a'),
-          id: getSpecId('a'),
+          groupId: 'a',
+          id: 'a',
           stackAccessors: ['a'],
           yScaleToDataExtent: true,
         },
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Log,
-          groupId: getGroupId('a'),
-          id: getSpecId('b'),
+          groupId: 'a',
+          id: 'b',
           yScaleToDataExtent: true,
         },
       ],
@@ -313,9 +314,11 @@ describe('Y Domain', () => {
   });
   test('Should split specs by groupId, two groups, non stacked', () => {
     const spec1: BasicSeriesSpec = {
-      id: getSpecId('spec1'),
-      groupId: getGroupId('group1'),
-      seriesType: 'line',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
+      id: 'spec1',
+      groupId: 'group1',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -324,9 +327,11 @@ describe('Y Domain', () => {
       data: BARCHART_1Y0G,
     };
     const spec2: BasicSeriesSpec = {
-      id: getSpecId('spec2'),
-      groupId: getGroupId('group2'),
-      seriesType: 'line',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
+      id: 'spec2',
+      groupId: 'group2',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -346,9 +351,11 @@ describe('Y Domain', () => {
   });
   test('Should split specs by groupId, two groups, stacked', () => {
     const spec1: BasicSeriesSpec = {
-      id: getSpecId('spec1'),
-      groupId: getGroupId('group1'),
-      seriesType: 'line',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
+      id: 'spec1',
+      groupId: 'group1',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -358,9 +365,11 @@ describe('Y Domain', () => {
       data: BARCHART_1Y0G,
     };
     const spec2: BasicSeriesSpec = {
-      id: getSpecId('spec2'),
-      groupId: getGroupId('group2'),
-      seriesType: 'line',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
+      id: 'spec2',
+      groupId: 'group2',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -381,9 +390,11 @@ describe('Y Domain', () => {
   });
   test('Should split specs by groupId, 1 group, stacked', () => {
     const spec1: BasicSeriesSpec = {
-      id: getSpecId('spec1'),
-      groupId: getGroupId('group'),
-      seriesType: 'line',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
+      id: 'spec1',
+      groupId: 'group',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -393,9 +404,11 @@ describe('Y Domain', () => {
       data: BARCHART_1Y0G,
     };
     const spec2: BasicSeriesSpec = {
-      id: getSpecId('spec2'),
-      groupId: getGroupId('group'),
-      seriesType: 'line',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
+      id: 'spec2',
+      groupId: 'group',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -414,9 +427,11 @@ describe('Y Domain', () => {
   });
   test('Should 3 split specs by groupId, 2 group, semi/stacked', () => {
     const spec1: BasicSeriesSpec = {
-      id: getSpecId('spec1'),
-      groupId: getGroupId('group1'),
-      seriesType: 'line',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
+      id: 'spec1',
+      groupId: 'group1',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -426,9 +441,11 @@ describe('Y Domain', () => {
       data: BARCHART_1Y0G,
     };
     const spec2: BasicSeriesSpec = {
-      id: getSpecId('spec2'),
-      groupId: getGroupId('group1'),
-      seriesType: 'line',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
+      id: 'spec2',
+      groupId: 'group1',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -438,9 +455,11 @@ describe('Y Domain', () => {
       data: BARCHART_1Y0G,
     };
     const spec3: BasicSeriesSpec = {
-      id: getSpecId('spec3'),
-      groupId: getGroupId('group2'),
-      seriesType: 'line',
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
+      id: 'spec3',
+      groupId: 'group2',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -468,7 +487,7 @@ describe('Y Domain', () => {
   test('Should getDataSeriesOnGroup for matching specs', () => {
     const dataSeries: RawDataSeries[] = [
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -476,7 +495,7 @@ describe('Y Domain', () => {
         data: [{ x: 1, y1: 2 }, { x: 2, y1: 2 }, { x: 3, y1: 2 }, { x: 4, y1: 5 }],
       },
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -485,14 +504,14 @@ describe('Y Domain', () => {
       },
     ];
     const specDataSeries = new Map();
-    specDataSeries.set(getSpecId('b'), dataSeries);
+    specDataSeries.set('b', dataSeries);
 
     const specs: YBasicSeriesSpec[] = [
       {
-        seriesType: 'area',
+        seriesType: SeriesTypes.Area,
         yScaleType: ScaleType.Linear,
-        groupId: getGroupId('a'),
-        id: getSpecId('a'),
+        groupId: 'a',
+        id: 'a',
         stackAccessors: ['a'],
         yScaleToDataExtent: true,
       },
@@ -502,11 +521,11 @@ describe('Y Domain', () => {
     expect(rawDataSeries).toEqual([]);
   });
   test('Should merge Y domain accounting for custom domain limits: complete bounded domain', () => {
-    const groupId = getGroupId('a');
+    const groupId = 'a';
 
     const dataSeries: RawDataSeries[] = [
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -514,7 +533,7 @@ describe('Y Domain', () => {
         data: [{ x: 1, y1: 2 }, { x: 2, y1: 2 }, { x: 3, y1: 2 }, { x: 4, y1: 5 }],
       },
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -523,7 +542,7 @@ describe('Y Domain', () => {
       },
     ];
     const specDataSeries = new Map();
-    specDataSeries.set(getSpecId('a'), dataSeries);
+    specDataSeries.set('a', dataSeries);
     const domainsByGroupId = new Map<GroupId, DomainRange>();
     domainsByGroupId.set(groupId, { min: 0, max: 20 });
 
@@ -531,10 +550,10 @@ describe('Y Domain', () => {
       specDataSeries,
       [
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Linear,
           groupId,
-          id: getSpecId('a'),
+          id: 'a',
           stackAccessors: ['a'],
           yScaleToDataExtent: true,
         },
@@ -552,11 +571,11 @@ describe('Y Domain', () => {
     ]);
   });
   test('Should merge Y domain accounting for custom domain limits: partial lower bounded domain', () => {
-    const groupId = getGroupId('a');
+    const groupId = 'a';
 
     const dataSeries: RawDataSeries[] = [
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -564,7 +583,7 @@ describe('Y Domain', () => {
         data: [{ x: 1, y1: 2 }, { x: 2, y1: 2 }, { x: 3, y1: 2 }, { x: 4, y1: 5 }],
       },
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -573,7 +592,7 @@ describe('Y Domain', () => {
       },
     ];
     const specDataSeries = new Map();
-    specDataSeries.set(getSpecId('a'), dataSeries);
+    specDataSeries.set('a', dataSeries);
     const domainsByGroupId = new Map<GroupId, DomainRange>();
     domainsByGroupId.set(groupId, { min: 0 });
 
@@ -581,10 +600,10 @@ describe('Y Domain', () => {
       specDataSeries,
       [
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Linear,
           groupId,
-          id: getSpecId('a'),
+          id: 'a',
           stackAccessors: ['a'],
           yScaleToDataExtent: true,
         },
@@ -602,11 +621,11 @@ describe('Y Domain', () => {
     ]);
   });
   test('Should not merge Y domain with invalid custom domain limits: partial lower bounded domain', () => {
-    const groupId = getGroupId('a');
+    const groupId = 'a';
 
     const dataSeries: RawDataSeries[] = [
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -614,7 +633,7 @@ describe('Y Domain', () => {
         data: [{ x: 1, y1: 2 }, { x: 2, y1: 2 }, { x: 3, y1: 2 }, { x: 4, y1: 5 }],
       },
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -623,7 +642,7 @@ describe('Y Domain', () => {
       },
     ];
     const specDataSeries = new Map();
-    specDataSeries.set(getSpecId('a'), dataSeries);
+    specDataSeries.set('a', dataSeries);
     const domainsByGroupId = new Map<GroupId, DomainRange>();
     domainsByGroupId.set(groupId, { min: 20 });
 
@@ -632,10 +651,10 @@ describe('Y Domain', () => {
         specDataSeries,
         [
           {
-            seriesType: 'area',
+            seriesType: SeriesTypes.Area,
             yScaleType: ScaleType.Linear,
             groupId,
-            id: getSpecId('a'),
+            id: 'a',
             stackAccessors: ['a'],
             yScaleToDataExtent: true,
           },
@@ -648,11 +667,11 @@ describe('Y Domain', () => {
     expect(attemptToMerge).toThrowError(errorMessage);
   });
   test('Should merge Y domain accounting for custom domain limits: partial upper bounded domain', () => {
-    const groupId = getGroupId('a');
+    const groupId = 'a';
 
     const dataSeries: RawDataSeries[] = [
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -660,7 +679,7 @@ describe('Y Domain', () => {
         data: [{ x: 1, y1: 2 }, { x: 2, y1: 2 }, { x: 3, y1: 2 }, { x: 4, y1: 5 }],
       },
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -669,7 +688,7 @@ describe('Y Domain', () => {
       },
     ];
     const specDataSeries = new Map();
-    specDataSeries.set(getSpecId('a'), dataSeries);
+    specDataSeries.set('a', dataSeries);
     const domainsByGroupId = new Map<GroupId, DomainRange>();
     domainsByGroupId.set(groupId, { max: 20 });
 
@@ -677,10 +696,10 @@ describe('Y Domain', () => {
       specDataSeries,
       [
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Linear,
           groupId,
-          id: getSpecId('a'),
+          id: 'a',
           stackAccessors: ['a'],
           yScaleToDataExtent: true,
         },
@@ -698,11 +717,11 @@ describe('Y Domain', () => {
     ]);
   });
   test('Should not merge Y domain with invalid custom domain limits: partial upper bounded domain', () => {
-    const groupId = getGroupId('a');
+    const groupId = 'a';
 
     const dataSeries: RawDataSeries[] = [
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -710,7 +729,7 @@ describe('Y Domain', () => {
         data: [{ x: 1, y1: 2 }, { x: 2, y1: 2 }, { x: 3, y1: 2 }, { x: 4, y1: 5 }],
       },
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -719,7 +738,7 @@ describe('Y Domain', () => {
       },
     ];
     const specDataSeries = new Map();
-    specDataSeries.set(getSpecId('a'), dataSeries);
+    specDataSeries.set('a', dataSeries);
     const domainsByGroupId = new Map<GroupId, DomainRange>();
     domainsByGroupId.set(groupId, { max: -1 });
 
@@ -728,10 +747,10 @@ describe('Y Domain', () => {
         specDataSeries,
         [
           {
-            seriesType: 'area',
+            seriesType: SeriesTypes.Area,
             yScaleType: ScaleType.Linear,
             groupId,
-            id: getSpecId('a'),
+            id: 'a',
             stackAccessors: ['a'],
             yScaleToDataExtent: true,
           },
@@ -746,7 +765,7 @@ describe('Y Domain', () => {
   test('Should merge Y domain with stacked as percentage', () => {
     const dataSeries1: RawDataSeries[] = [
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -754,7 +773,7 @@ describe('Y Domain', () => {
         data: [{ x: 1, y1: 2 }, { x: 2, y1: 2 }, { x: 3, y1: 2 }, { x: 4, y1: 5 }],
       },
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -764,7 +783,7 @@ describe('Y Domain', () => {
     ];
     const dataSeries2: RawDataSeries[] = [
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -773,25 +792,25 @@ describe('Y Domain', () => {
       },
     ];
     const specDataSeries = new Map();
-    specDataSeries.set(getSpecId('a'), dataSeries1);
-    specDataSeries.set(getSpecId('b'), dataSeries2);
+    specDataSeries.set('a', dataSeries1);
+    specDataSeries.set('b', dataSeries2);
     const mergedDomain = mergeYDomain(
       specDataSeries,
       [
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Linear,
-          groupId: getGroupId('a'),
-          id: getSpecId('a'),
+          groupId: 'a',
+          id: 'a',
           stackAccessors: ['a'],
           yScaleToDataExtent: true,
           stackAsPercentage: true,
         },
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Log,
-          groupId: getGroupId('a'),
-          id: getSpecId('b'),
+          groupId: 'a',
+          id: 'b',
           yScaleToDataExtent: true,
         },
       ],
@@ -808,11 +827,11 @@ describe('Y Domain', () => {
     ]);
   });
   test('Should merge Y domain with as percentage regadless of custom domains', () => {
-    const groupId = getGroupId('a');
+    const groupId = 'a';
 
     const dataSeries: RawDataSeries[] = [
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -820,7 +839,7 @@ describe('Y Domain', () => {
         data: [{ x: 1, y1: 2 }, { x: 2, y1: 2 }, { x: 3, y1: 2 }, { x: 4, y1: 5 }],
       },
       {
-        specId: getSpecId('a'),
+        specId: 'a',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [''],
@@ -829,7 +848,7 @@ describe('Y Domain', () => {
       },
     ];
     const specDataSeries = new Map();
-    specDataSeries.set(getSpecId('a'), dataSeries);
+    specDataSeries.set('a', dataSeries);
     const domainsByGroupId = new Map<GroupId, DomainRange>();
     domainsByGroupId.set(groupId, { min: 2, max: 20 });
 
@@ -837,10 +856,10 @@ describe('Y Domain', () => {
       specDataSeries,
       [
         {
-          seriesType: 'area',
+          seriesType: SeriesTypes.Area,
           yScaleType: ScaleType.Linear,
           groupId,
-          id: getSpecId('a'),
+          id: 'a',
           stackAccessors: ['a'],
           yScaleToDataExtent: true,
           stackAsPercentage: true,

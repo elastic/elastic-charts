@@ -21,9 +21,10 @@ import {
   TooltipType,
   TooltipValue,
   TooltipValueFormatter,
+  HistogramBarSeries,
 } from '../src/';
 
-import { array, boolean, number, select } from '@storybook/addon-knobs';
+import { array, boolean, number, select, button } from '@storybook/addon-knobs';
 import { DateTime } from 'luxon';
 import { switchTheme } from '../.storybook/theme_service';
 import { BARCHART_2Y2G } from '../src/utils/data_samples/test_dataset';
@@ -470,6 +471,62 @@ storiesOf('Interactions', module)
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y']}
+          timeZone={'Europe/Rome'}
+          data={[
+            { x: now, y: 2 },
+            { x: now + oneDay, y: 7 },
+            { x: now + oneDay * 2, y: 3 },
+            { x: now + oneDay * 5, y: 6 },
+          ]}
+        />
+        <LineSeries
+          id={getSpecId('baras')}
+          xScaleType={ScaleType.Time}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          timeZone={'Europe/Rome'}
+          data={[
+            { x: now, y: 2 },
+            { x: now + oneDay, y: 7 },
+            { x: now + oneDay * 2, y: 3 },
+            { x: now + oneDay * 5, y: 6 },
+          ]}
+        />
+      </Chart>
+    );
+  })
+  .add('brush selection tool on histogram time charts', () => {
+    const now = DateTime.fromISO('2019-01-11T00:00:00.000')
+      .setZone('utc+1')
+      .toMillis();
+    const oneDay = 1000 * 60 * 60 * 24;
+    const formatter = niceTimeFormatter([now, now + oneDay * 5]);
+    return (
+      <Chart className={'story-chart'}>
+        <Settings
+          debug={boolean('debug', false)}
+          onBrushEnd={(start, end) => {
+            action('onBrushEnd')(formatter(start), formatter(end));
+          }}
+          onElementClick={action('onElementClick')}
+        />
+        <Axis
+          id={getAxisId('bottom')}
+          position={Position.Bottom}
+          title={'bottom'}
+          showOverlappingTicks={true}
+          tickFormat={formatter}
+        />
+        <Axis id={getAxisId('left')} title={'left'} position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
+
+        <HistogramBarSeries
+          id={getSpecId('bars')}
+          xScaleType={ScaleType.Time}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          timeZone={'Europe/Rome'}
           data={[
             { x: now, y: 2 },
             { x: now + oneDay, y: 7 },
@@ -634,5 +691,69 @@ storiesOf('Interactions', module)
     },
     {
       info: 'Sends an event every time the cursor changes. This is provided to sync cursors between multiple charts.',
+    },
+  )
+  .add(
+    'PNG export action',
+    () => {
+      /**
+       * The handler section of this story demonstrates the PNG export functionality
+       */
+      const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 100);
+      const label = 'Export PNG';
+      const chartRef: React.RefObject<Chart> = React.createRef();
+      const handler = () => {
+        if (!chartRef.current) {
+          return;
+        }
+        const snapshot = chartRef.current.getPNGSnapshot({
+          // you can set the background and pixel ratio for the PNG export
+          backgroundColor: 'white',
+          pixelRatio: 2,
+        });
+        if (!snapshot) {
+          return;
+        }
+        // will save as chart.png
+        const fileName = 'chart.png';
+        switch (snapshot.browser) {
+          case 'IE11':
+            return navigator.msSaveBlob(snapshot.blobOrDataUrl, fileName);
+          default:
+            const link = document.createElement('a');
+            link.download = fileName;
+            link.href = snapshot.blobOrDataUrl;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+      };
+      const groupId = 'PNG-1';
+      button(label, handler, groupId);
+      return (
+        <Chart className={'story-chart'} ref={chartRef}>
+          <Settings showLegend={true} />
+          <Axis
+            id={getAxisId('time')}
+            position={Position.Bottom}
+            tickFormat={niceTimeFormatter([data[0][0], data[data.length - 1][0]])}
+          />
+          <Axis id={getAxisId('count')} position={Position.Left} />
+
+          <BarSeries
+            id={getSpecId('series bars chart')}
+            xScaleType={ScaleType.Linear}
+            yScaleType={ScaleType.Linear}
+            xAccessor={0}
+            yAccessors={[1]}
+            data={data}
+            yScaleToDataExtent={true}
+          />
+        </Chart>
+      );
+    },
+    {
+      info:
+        'Generate a PNG of the chart by clicking on the Export PNG button in the knobs section. In this example, the button handler is setting the PNG background to white with a pixel ratio of 2. If the browser is detected to be IE11, msSaveBlob will be used instead of a PNG capture.',
     },
   );

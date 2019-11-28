@@ -10,7 +10,6 @@ import {
   BarSeries,
   Chart,
   DARK_THEME,
-  getAnnotationId,
   getAxisId,
   getGroupId,
   getSpecId,
@@ -27,7 +26,7 @@ import {
   timeFormatter,
   TooltipType,
 } from '../src';
-import { SeededDataGenerator, getRandomNumber } from '../.storybook/utils';
+import { SeededDataGenerator, getRandomNumber } from '../src/mocks/utils';
 import * as TestDatasets from '../src/utils/data_samples/test_dataset';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 import { TEST_DATASET_DISCOVER } from '../src/utils/data_samples/test_dataset_discover_per_30s';
@@ -1476,7 +1475,7 @@ storiesOf('Bar Chart', module)
       <Chart className={'story-chart'}>
         <Settings rotation={getChartRotationKnob()} theme={theme} debug={boolean('debug', true)} />
         <LineAnnotation
-          annotationId={getAnnotationId('line-annotation')}
+          id={'line-annotation'}
           domainType={AnnotationDomainTypes.XDomain}
           dataValues={[{ dataValue: 2 }, { dataValue: 2.5 }, { dataValue: 3.5 }]}
           style={lineAnnotationStyle}
@@ -1497,7 +1496,7 @@ storiesOf('Bar Chart', module)
               details: 'rect annotation',
             },
           ]}
-          annotationId={getAnnotationId('rect')}
+          id={'rect'}
         />
         <Axis id={getAxisId('discover-histogram-left-axis')} position={Position.Left} title={'left axis'} />
         <Axis id={getAxisId('discover-histogram-bottom-axis')} position={Position.Bottom} title={'bottom axis'} />

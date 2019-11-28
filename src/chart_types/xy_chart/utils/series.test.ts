@@ -1,5 +1,4 @@
 import { ColorConfig } from '../../../utils/themes/theme';
-import { getGroupId, getSpecId, SpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
 import {
   SeriesCollectionValue,
@@ -11,14 +10,15 @@ import {
   splitSeries,
   SeriesIdentifier,
 } from './series';
-import { BasicSeriesSpec } from './specs';
+import { BasicSeriesSpec, LineSeriesSpec, SpecTypes, SeriesTypes } from './specs';
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
 import * as TestDataset from '../../../utils/data_samples/test_dataset';
+import { ChartTypes } from '../..';
 
 describe('Series', () => {
   test('Can split dataset into 1Y0G series', () => {
     const splittedSeries = splitSeries({
-      id: getSpecId('spec1'),
+      id: 'spec1',
       data: TestDataset.BARCHART_1Y0G,
       xAccessor: 'x',
       yAccessors: ['y1'],
@@ -29,7 +29,7 @@ describe('Series', () => {
   });
   test('Can split dataset into 1Y1G series', () => {
     const splittedSeries = splitSeries({
-      id: getSpecId('spec1'),
+      id: 'spec1',
       data: TestDataset.BARCHART_1Y1G,
       xAccessor: 'x',
       yAccessors: ['y'],
@@ -38,7 +38,7 @@ describe('Series', () => {
   });
   test('Can split dataset into 1Y2G series', () => {
     const splittedSeries = splitSeries({
-      id: getSpecId('spec1'),
+      id: 'spec1',
       data: TestDataset.BARCHART_1Y2G,
       xAccessor: 'x',
       yAccessors: ['y'],
@@ -48,7 +48,7 @@ describe('Series', () => {
   });
   test('Can split dataset into 2Y0G series', () => {
     const splittedSeries = splitSeries({
-      id: getSpecId('spec1'),
+      id: 'spec1',
       data: TestDataset.BARCHART_2Y0G,
       xAccessor: 'x',
       yAccessors: ['y1', 'y2'],
@@ -57,7 +57,7 @@ describe('Series', () => {
   });
   test('Can split dataset into 2Y1G series', () => {
     const splittedSeries = splitSeries({
-      id: getSpecId('spec1'),
+      id: 'spec1',
       data: TestDataset.BARCHART_2Y1G,
       xAccessor: 'x',
       yAccessors: ['y1', 'y2'],
@@ -67,7 +67,7 @@ describe('Series', () => {
   });
   test('Can split dataset into 2Y2G series', () => {
     const splittedSeries = splitSeries({
-      id: getSpecId('spec1'),
+      id: 'spec1',
       data: TestDataset.BARCHART_2Y2G,
       xAccessor: 'x',
       yAccessors: ['y1', 'y2'],
@@ -78,7 +78,7 @@ describe('Series', () => {
   test('Can stack simple dataseries', () => {
     const dataSeries: RawDataSeries[] = [
       {
-        specId: getSpecId('spec1'),
+        specId: 'spec1',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['a'],
@@ -86,7 +86,7 @@ describe('Series', () => {
         data: [{ x: 1, y1: 1 }, { x: 2, y1: 2 }, { x: 4, y1: 4 }],
       },
       {
-        specId: getSpecId('spec1'),
+        specId: 'spec1',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['b'],
@@ -101,7 +101,7 @@ describe('Series', () => {
   test('Can stack multiple dataseries', () => {
     const dataSeries: RawDataSeries[] = [
       {
-        specId: getSpecId('spec1'),
+        specId: 'spec1',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['a'],
@@ -109,7 +109,7 @@ describe('Series', () => {
         data: [{ x: 1, y1: 1 }, { x: 2, y1: 2 }, { x: 3, y1: 3 }, { x: 4, y1: 4 }],
       },
       {
-        specId: getSpecId('spec1'),
+        specId: 'spec1',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['b'],
@@ -117,7 +117,7 @@ describe('Series', () => {
         data: [{ x: 1, y1: 1 }, { x: 2, y1: 2 }, { x: 3, y1: 3 }, { x: 4, y1: 4 }],
       },
       {
-        specId: getSpecId('spec1'),
+        specId: 'spec1',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['b'],
@@ -125,7 +125,7 @@ describe('Series', () => {
         data: [{ x: 1, y1: 1 }, { x: 2, y1: 2 }, { x: 3, y1: 3 }, { x: 4, y1: 4 }],
       },
       {
-        specId: getSpecId('spec1'),
+        specId: 'spec1',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['b'],
@@ -140,7 +140,7 @@ describe('Series', () => {
   test('Can stack unsorted dataseries', () => {
     const dataSeries: RawDataSeries[] = [
       {
-        specId: getSpecId('spec1'),
+        specId: 'spec1',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['a'],
@@ -148,7 +148,7 @@ describe('Series', () => {
         data: [{ x: 1, y1: 1 }, { x: 4, y1: 4 }, { x: 2, y1: 2 }],
       },
       {
-        specId: getSpecId('spec1'),
+        specId: 'spec1',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['b'],
@@ -164,7 +164,7 @@ describe('Series', () => {
     const maxArrayItems = 1000;
     const dataSeries: RawDataSeries[] = [
       {
-        specId: getSpecId('spec1'),
+        specId: 'spec1',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['a'],
@@ -172,7 +172,7 @@ describe('Series', () => {
         data: new Array(maxArrayItems).fill(0).map((d, i) => ({ x: i, y1: i })),
       },
       {
-        specId: getSpecId('spec1'),
+        specId: 'spec1',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['b'],
@@ -187,7 +187,7 @@ describe('Series', () => {
   test('Can stack simple dataseries with scale to extent', () => {
     const dataSeries: RawDataSeries[] = [
       {
-        specId: getSpecId('spec1'),
+        specId: 'spec1',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['a'],
@@ -195,7 +195,7 @@ describe('Series', () => {
         data: [{ x: 1, y1: 1 }, { x: 2, y1: 2 }, { x: 4, y1: 4 }],
       },
       {
-        specId: getSpecId('spec1'),
+        specId: 'spec1',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['b'],
@@ -212,7 +212,7 @@ describe('Series', () => {
   test('Can stack multiple dataseries with scale to extent', () => {
     const dataSeries: RawDataSeries[] = [
       {
-        specId: getSpecId('spec1'),
+        specId: 'spec1',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['a'],
@@ -220,7 +220,7 @@ describe('Series', () => {
         data: [{ x: 1, y1: 1 }, { x: 2, y1: 2 }, { x: 3, y1: 3 }, { x: 4, y1: 4 }],
       },
       {
-        specId: getSpecId('spec1'),
+        specId: 'spec1',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['b'],
@@ -228,7 +228,7 @@ describe('Series', () => {
         data: [{ x: 1, y1: 1 }, { x: 2, y1: 2 }, { x: 3, y1: 3 }, { x: 4, y1: 4 }],
       },
       {
-        specId: getSpecId('spec1'),
+        specId: 'spec1',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['b'],
@@ -236,7 +236,7 @@ describe('Series', () => {
         data: [{ x: 1, y1: 1 }, { x: 2, y1: 2 }, { x: 3, y1: 3 }, { x: 4, y1: 4 }],
       },
       {
-        specId: getSpecId('spec1'),
+        specId: 'spec1',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['b'],
@@ -253,7 +253,7 @@ describe('Series', () => {
   test('Can stack simple dataseries with y0', () => {
     const dataSeries: RawDataSeries[] = [
       {
-        specId: getSpecId('spec1'),
+        specId: 'spec1',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['a'],
@@ -261,7 +261,7 @@ describe('Series', () => {
         data: [{ x: 1, y1: 3, y0: 1 }, { x: 2, y1: 3, y0: 2 }, { x: 4, y1: 4, y0: 3 }],
       },
       {
-        specId: getSpecId('spec1'),
+        specId: 'spec1',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['b'],
@@ -289,7 +289,7 @@ describe('Series', () => {
   test('Can stack simple dataseries with scale to extent with y0', () => {
     const dataSeries: RawDataSeries[] = [
       {
-        specId: getSpecId('spec1'),
+        specId: 'spec1',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['a'],
@@ -297,7 +297,7 @@ describe('Series', () => {
         data: [{ x: 1, y1: 3, y0: 1 }, { x: 2, y1: 3, y0: 2 }, { x: 4, y1: 4, y0: 3 }],
       },
       {
-        specId: getSpecId('spec1'),
+        specId: 'spec1',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['b'],
@@ -322,11 +322,12 @@ describe('Series', () => {
   });
 
   test('should split an array of specs into data series', () => {
-    const seriesSpecs = new Map<SpecId, BasicSeriesSpec>();
-    const spec1: BasicSeriesSpec = {
-      id: getSpecId('spec1'),
-      groupId: getGroupId('group'),
-      seriesType: 'line',
+    const spec1: LineSeriesSpec = {
+      specType: SpecTypes.Series,
+      chartType: ChartTypes.XYAxis,
+      id: 'spec1',
+      groupId: 'group',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -336,9 +337,11 @@ describe('Series', () => {
       hideInLegend: false,
     };
     const spec2: BasicSeriesSpec = {
-      id: getSpecId('spec2'),
-      groupId: getGroupId('group2'),
-      seriesType: 'line',
+      specType: SpecTypes.Series,
+      chartType: ChartTypes.XYAxis,
+      id: 'spec2',
+      groupId: 'group2',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -348,18 +351,18 @@ describe('Series', () => {
       data: TestDataset.BARCHART_2Y0G,
       hideInLegend: false,
     };
-    seriesSpecs.set(spec1.id, spec1);
-    seriesSpecs.set(spec2.id, spec2);
-    const splittedDataSeries = getSplittedSeries(seriesSpecs, []);
-    expect(splittedDataSeries.splittedSeries.get(getSpecId('spec1'))).toMatchSnapshot();
-    expect(splittedDataSeries.splittedSeries.get(getSpecId('spec2'))).toMatchSnapshot();
+
+    const splittedDataSeries = getSplittedSeries([spec1, spec2]);
+    expect(splittedDataSeries.splittedSeries.get('spec1')).toMatchSnapshot();
+    expect(splittedDataSeries.splittedSeries.get('spec2')).toMatchSnapshot();
   });
   test('should compute data series for stacked specs', () => {
-    const seriesSpecs = new Map<SpecId, BasicSeriesSpec>();
     const spec1: BasicSeriesSpec = {
-      id: getSpecId('spec1'),
-      groupId: getGroupId('group'),
-      seriesType: 'line',
+      specType: SpecTypes.Series,
+      chartType: ChartTypes.XYAxis,
+      id: 'spec1',
+      groupId: 'group',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -369,9 +372,11 @@ describe('Series', () => {
       hideInLegend: false,
     };
     const spec2: BasicSeriesSpec = {
-      id: getSpecId('spec2'),
-      groupId: getGroupId('group2'),
-      seriesType: 'line',
+      specType: SpecTypes.Series,
+      chartType: ChartTypes.XYAxis,
+      id: 'spec2',
+      groupId: 'group2',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -382,23 +387,23 @@ describe('Series', () => {
       hideInLegend: false,
     };
     const xValues = new Set([0, 1, 2, 3]);
-    seriesSpecs.set(spec1.id, spec1);
-    seriesSpecs.set(spec2.id, spec2);
-    const splittedDataSeries = getSplittedSeries(seriesSpecs, []);
+    const splittedDataSeries = getSplittedSeries([spec1, spec2]);
     const stackedDataSeries = getFormattedDataseries(
       [spec1, spec2],
       splittedDataSeries.splittedSeries,
       xValues,
       ScaleType.Linear,
-      new Map(),
+      [],
     );
     expect(stackedDataSeries.stacked).toMatchSnapshot();
   });
   test('should get series color map', () => {
     const spec1: BasicSeriesSpec = {
-      id: getSpecId('spec1'),
-      groupId: getGroupId('group'),
-      seriesType: 'line',
+      specType: SpecTypes.Series,
+      chartType: ChartTypes.XYAxis,
+      id: 'spec1',
+      groupId: 'group',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -413,7 +418,7 @@ describe('Series', () => {
 
     const dataSeriesValuesA: SeriesCollectionValue = {
       seriesIdentifier: {
-        specId: getSpecId('spec1'),
+        specId: 'spec1',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['a', 'b', 'c'],
@@ -445,13 +450,14 @@ describe('Series', () => {
     expect(customizedColorMap).toEqual(expectedCustomizedColorMap);
   });
   test('should only include deselectedDataSeries when splitting series if deselectedDataSeries is defined', () => {
-    const seriesSpecs = new Map<SpecId, BasicSeriesSpec>();
-    const specId = getSpecId('splitSpec');
+    const specId = 'splitSpec';
 
     const splitSpec: BasicSeriesSpec = {
+      specType: SpecTypes.Series,
+      chartType: ChartTypes.XYAxis,
       id: specId,
-      groupId: getGroupId('group'),
-      seriesType: 'line',
+      groupId: 'group',
+      seriesType: SeriesTypes.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -462,12 +468,10 @@ describe('Series', () => {
       hideInLegend: false,
     };
 
-    seriesSpecs.set(splitSpec.id, splitSpec);
-
-    const allSeries = getSplittedSeries(seriesSpecs, []);
+    const allSeries = getSplittedSeries([splitSpec]);
     expect(allSeries.splittedSeries.get(specId)!.length).toBe(2);
 
-    const emptyDeselected = getSplittedSeries(seriesSpecs, []);
+    const emptyDeselected = getSplittedSeries([splitSpec]);
     expect(emptyDeselected.splittedSeries.get(specId)!.length).toBe(2);
 
     const deselectedDataSeries: SeriesIdentifier[] = [
@@ -479,15 +483,14 @@ describe('Series', () => {
         key: 'spec{splitSpec}yAccessor{y1}splitAccessors{}',
       },
     ];
-
-    const subsetSplit = getSplittedSeries(seriesSpecs, deselectedDataSeries);
+    const subsetSplit = getSplittedSeries([splitSpec], deselectedDataSeries);
     expect(subsetSplit.splittedSeries.get(specId)!.length).toBe(1);
   });
 
   test('should sort series color by series spec sort index', () => {
-    const spec1Id = getSpecId('spec1');
-    const spec2Id = getSpecId('spec2');
-    const spec3Id = getSpecId('spec3');
+    const spec1Id = 'spec1';
+    const spec2Id = 'spec2';
+    const spec3Id = 'spec3';
 
     const seriesCollection = new Map();
     const dataSeriesValues1: SeriesCollectionValue = {
