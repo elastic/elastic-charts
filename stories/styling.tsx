@@ -976,7 +976,7 @@ storiesOf('Stylings', module)
       <Chart className={'story-chart'}>
         <Settings theme={theme} debug={boolean('debug', true)} />
         <Axis
-          id={getAxisId('bottom')}
+          id="bottom"
           position={Position.Bottom}
           title={'Bottom axis'}
           showOverlappingTicks={true}
