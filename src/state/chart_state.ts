@@ -15,6 +15,7 @@ import { UPDATE_PARENT_DIMENSION } from './actions/chart_settings';
 import { EXTERNAL_POINTER_EVENT } from './actions/events';
 import { RefObject } from 'react';
 import { Stage } from 'react-konva';
+import { PieChartState } from '../chart_types/pie_chart/state/chart_state';
 
 export type BackwardRef = () => React.RefObject<HTMLDivElement>;
 
@@ -29,6 +30,8 @@ export interface InternalChartState {
   chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<Stage>): JSX.Element | null;
   // true if the brush is available for this chart type
   isBrushAvailable(globalState: GlobalChartState): boolean;
+  // true if the brush is available for this chart type
+  isBrushing(globalState: GlobalChartState): boolean;
   // true if the chart is empty (no data displayed)
   isChartEmpty(globalState: GlobalChartState): boolean;
   // return the list of legend items
@@ -258,7 +261,7 @@ function findMainChartType(specs: SpecList): ChartTypes | null {
 function initInternalChartState(chartType: ChartTypes | null): InternalChartState | null {
   switch (chartType) {
     case ChartTypes.Pie:
-      return null; // TODO add pie chart state
+      return new PieChartState();
     case ChartTypes.XYAxis:
       return new XYAxisChartState();
     default:

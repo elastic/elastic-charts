@@ -1,22 +1,12 @@
 import React from 'react';
-import {
-  Axis,
-  Chart,
-  getAxisId,
-  getSpecId,
-  Position,
-  ScaleType,
-  Settings,
-  LIGHT_THEME,
-  niceTimeFormatter,
-  LineAnnotation,
-  AnnotationDomainTypes,
-  BarSeries,
-  RectAnnotation,
-} from '../src';
-import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
-export class Playground extends React.Component {
+import { Chart, BarSeries } from '../src';
+
+import { Pie } from '../src/chart_types/pie_chart/specs/pie';
+export class Playground extends React.Component<{}, { isPieShown: boolean }> {
   chartRef: React.RefObject<Chart> = React.createRef();
+  state = {
+    isPieShown: false,
+  };
   onSnapshot = () => {
     if (!this.chartRef.current) {
       return;
@@ -41,51 +31,38 @@ export class Playground extends React.Component {
         document.body.removeChild(link);
     }
   };
-  render() {
-    const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 7);
+  switchSpec = () => {
+    this.setState((prevState) => {
+      return {
+        isPieShown: !prevState.isPieShown,
+      };
+    });
+  };
 
+  render() {
+    const Spec = this.state.isPieShown ? Pie : BarSeries;
     return (
       <>
         <button onClick={this.onSnapshot}>Snapshot</button>
+        <button onClick={this.switchSpec}>Switch Pie - Bar </button>
         <div className="chart">
           <Chart ref={this.chartRef}>
-            <Settings theme={LIGHT_THEME} showLegend={true} />
-            <Axis
-              id={getAxisId('time')}
-              position={Position.Bottom}
-              tickFormat={niceTimeFormatter([data[0][0], data[data.length - 1][0]])}
-            />
-            <Axis id={getAxisId('count')} position={Position.Left} />
-            <LineAnnotation
-              id="line annotation"
-              dataValues={[
+            <Spec
+              id={'test'}
+              data={[
                 {
-                  dataValue: data[5][0],
-                  details: 'hello tooltip',
+                  x: 1,
+                  y: 10,
+                },
+                {
+                  x: 2,
+                  y: 20,
+                },
+                {
+                  x: 3,
+                  y: 30,
                 },
               ]}
-              domainType={AnnotationDomainTypes.XDomain}
-              marker={<div style={{ width: 10, height: 10, background: 'red' }} />}
-            />
-            <RectAnnotation
-              id="rect annotation"
-              dataValues={[
-                {
-                  coordinates: {
-                    x1: data[3][0],
-                  },
-                  details: 'hello',
-                },
-              ]}
-            />
-            <BarSeries
-              id={getSpecId('series bars chart')}
-              xScaleType={ScaleType.Linear}
-              yScaleType={ScaleType.Linear}
-              xAccessor={0}
-              yAccessors={[1]}
-              data={data}
-              yScaleToDataExtent={true}
             />
           </Chart>
         </div>
