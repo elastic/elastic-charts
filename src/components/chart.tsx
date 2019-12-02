@@ -63,9 +63,10 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     this.chartContainerRef = createRef();
     this.chartStageRef = createRef();
 
-    const storeReducer = chartStoreReducer(uuid.v4());
+    const id = uuid.v4();
+    const storeReducer = chartStoreReducer(id);
     const enhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-      ? (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ trace: true, name: '@elastic/charts' })()
+      ? (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ trace: true, name: `@elastic/charts (id: ${id})` })()
       : undefined;
 
     this.chartStore = createStore(storeReducer, enhancers);
