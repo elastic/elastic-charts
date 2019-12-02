@@ -24,18 +24,18 @@ addParameters({
 });
 
 addDecorator(withKnobs);
-addDecorator(
-  withInfo({
-    inline: true,
-    source: true,
-    styles: {
-      infoBody: {
-        marginTop: 0,
-        marginBottom: 0,
-      },
-    },
-  }),
-);
+// addDecorator(
+//   withInfo({
+//     inline: true,
+//     source: true,
+//     styles: {
+//       infoBody: {
+//         marginTop: 0,
+//         marginBottom: 0,
+//       },
+//     },
+//   }),
+// );
 
 function loadStories() {
   require('../stories/bar_chart.tsx');
