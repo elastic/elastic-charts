@@ -19,7 +19,8 @@ export class DataGenerator {
     return dataPoints;
   }
   generateGroupedSeries(totalPoints = 50, totalGroups = 2, groupPrefix = '') {
-    const groups = new Array(totalGroups).fill(0).map((__webpack_hash__, i) => { // eslint-disable-line
+    const groups = new Array(totalGroups).fill(0).map((group, i) => {
+      // eslint-disable-line
       return this.generateSimpleSeries(totalPoints, i, groupPrefix);
     });
     return groups.reduce((acc, curr) => [...acc, ...curr]);
