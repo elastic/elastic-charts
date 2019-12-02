@@ -6,6 +6,7 @@ import {
   getCategoricalPalette,
   getDivergingPalette,
 } from './color_palette';
+import * as d3ScaleChromatic from 'd3-scale-chromatic';
 
 describe('ColorPalette', () => {
   describe('categorical', () => {
@@ -28,6 +29,11 @@ describe('ColorPalette', () => {
     it('default accent palette', () => {
       const expected = ['#7fc97f', '#beaed4', '#fdc086', '#ffff99', '#386cb0', '#f0027f', '#bf5b17', '#666666'];
       expect(getCategoricalPalette('accent')).toEqual(expected);
+    });
+
+    it('falls back to default categorical palette if invalid name supplied', () => {
+      // @ts-ignore
+      expect(getCategoricalPalette('nonExistent')).toEqual(d3ScaleChromatic.schemeCategory10);
     });
 
     it('custom palette with two different colors', () => {
@@ -85,7 +91,6 @@ describe('ColorPalette', () => {
         const expected = ['#f7fcf5', '#73c378', '#00441b'];
         expect(getSequentialPalette(name, 3)).toEqual(expected);
       });
-
       it('calculates greens palette with 5 steps', () => {
         const expected = ['#f7fcf5', '#c6e8bf', '#73c378', '#228b45', '#00441b'];
         expect(getSequentialPalette(name, 5)).toEqual(expected);
@@ -122,14 +127,14 @@ describe('ColorPalette', () => {
       it('creates a custom palette with 2 colors', () => {
         const expected = [
           '#dcedff',
-          '#c1d0df',
-          '#a6b3c0',
-          '#8d97a2',
-          '#747c85',
-          '#5c6269',
-          '#454a4e',
-          '#2f3235',
-          '#1b1c1e',
+          '#c0ccde',
+          '#a4acbd',
+          '#898c9e',
+          '#6f6e80',
+          '#565163',
+          '#3f3647',
+          '#281d2d',
+          '#140016',
           '#000000',
         ];
         expect(getCustomSequentialPalette(['#AABBCC', '#221122'], 10)).toEqual(expected);
@@ -168,10 +173,16 @@ describe('ColorPalette', () => {
         expect(getSequentialPalette('GnBu', 10)).toEqual(expected);
       });
     });
+    it('throws if invalid palette specified', () => {
+      expect(() => {
+        // @ts-ignore
+        getSequentialPalette('nonExistentName', 5);
+      }).toThrow();
+    });
   });
 
   describe('cyclical color scale', () => {
-    it('calculates cyclical palette for a given number of steps', () => {
+    it('calculates cyclical rainbow palette for a given number of steps', () => {
       const expected = [
         '#6e40aa',
         '#bf3caf',
@@ -184,18 +195,34 @@ describe('ColorPalette', () => {
         '#23abd8',
         '#4c6edb',
       ];
-      expect(getCyclicalPalette(10)).toEqual(expected);
+      expect(getCyclicalPalette('rainbow', 10)).toEqual(expected);
+    });
+
+    it('calculates cyclical sinebow palette for a given number of steps', () => {
+      const expected = [
+        '#ff4040',
+        '#e78d0b',
+        '#a7d503',
+        '#58fc2a',
+        '#18f472',
+        '#00bfbf',
+        '#1872f4',
+        '#582afc',
+        '#a703d5',
+        '#e70b8d',
+      ];
+      expect(getCyclicalPalette('sinebow', 10)).toEqual(expected);
     });
 
     it('throws error if number of steps less or equal than zero', () => {
       expect(() => {
-        getCyclicalPalette(-2);
+        getCyclicalPalette('rainbow', -2);
       }).toThrow();
     });
   });
 
   describe('diverging color scale', () => {
-    it('calculates diverging palette for a given number of steps', () => {
+    it('calculates diverging palette with RdYlGn interpolator for a given number of steps', () => {
       const expected = [
         '#a50026',
         '#d8382d',
@@ -207,6 +234,21 @@ describe('ColorPalette', () => {
         '#73c364',
         '#289b51',
         '#006837',
+      ];
+      expect(getDivergingPalette(10, 'RdYlGn')).toEqual(expected);
+    });
+    it('calculates diverging palette with default interpolator for a given number of steps', () => {
+      const expected = [
+        '#9e0142',
+        '#d6424b',
+        '#f47d4d',
+        '#fdbe70',
+        '#feeda1',
+        '#f0f8a9',
+        '#bee5a0',
+        '#77c6a7',
+        '#438fb4',
+        '#5e4fa2',
       ];
       expect(getDivergingPalette(10)).toEqual(expected);
     });
