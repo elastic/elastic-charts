@@ -19,7 +19,7 @@ const scssLoaders = [
 
 module.exports = async ({ config, mode }) => {
   if (mode === 'DEVELOPMENT') {
-    config.devtool = 'inline-source-map';
+    config.devtool = 'none'; //'inline-source-map';
   } else {
     config.devtool = 'source-map';
   }
@@ -32,13 +32,16 @@ module.exports = async ({ config, mode }) => {
     exclude: /node_modules/,
     options: {
       configFile: 'tsconfig.json',
+      transpileOnly: true,
     },
   });
+  /*
   config.module.rules.push({
     test: /\.tsx?$/,
     loader: require.resolve('react-docgen-typescript-loader'),
     exclude: /node_modules/,
   });
+*/
 
   // Replace default css rules with nonce
   config.module.rules = config.module.rules.filter(({ test }) => !test.test('.css'));
