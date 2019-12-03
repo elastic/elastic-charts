@@ -21,7 +21,7 @@ function render(pieSpec: PieSpec, parentDimensions: Dimensions, theme: Theme) {
   const outerRadius = width < height ? width / 2 : height / 2;
   const innerRadius = pieSpec.donut ? outerRadius / 2 : 0;
   const arcGenerator = arc();
-  const arcs = paths.map((path, i) => {
+  const arcs = paths.map<ArcGeometry>((path, i) => {
     const arc = arcGenerator({
       ...path,
       innerRadius: innerRadius,
@@ -34,11 +34,14 @@ function render(pieSpec: PieSpec, parentDimensions: Dimensions, theme: Theme) {
         x: width / 2,
         y: height / 2,
       },
-      geometryId: {
-        specId: pieSpec.id,
-        seriesKey: [],
-      },
       seriesArcStyle: theme.arcSeriesStyle.arc,
+      seriesIdentifier: {
+        key: '',
+        specId: pieSpec.id,
+        yAccessor: 0,
+        splitAccessors: new Map(),
+        seriesKeys: [],
+      },
     };
   });
   return { arcs };
