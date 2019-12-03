@@ -8,12 +8,12 @@ import { Spec } from '.';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { ChartTypes } from '../chart_types';
 import { GeometryValue } from '../utils/geometry';
-import { DataSeriesColorsValues } from '../chart_types/xy_chart/utils/series';
+import { SeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 
 export type ElementClickListener = (values: GeometryValue[]) => void;
 export type ElementOverListener = (values: GeometryValue[]) => void;
 export type BrushEndListener = (min: number, max: number) => void;
-export type LegendItemListener = (dataSeriesIdentifiers: DataSeriesColorsValues | null) => void;
+export type LegendItemListener = (series: SeriesIdentifier | null) => void;
 export type CursorUpdateListener = (event?: CursorEvent) => void;
 /**
  * Listener to be called when chart render state changes
@@ -133,8 +133,8 @@ export const DEFAULT_SETTINGS_SPEC = {
   theme: LIGHT_THEME,
 };
 
-type SpecProps = Partial<Omit<SettingsSpec, 'chartType' | 'specType' | 'id'>>;
+export type SettingsSpecProps = Partial<Omit<SettingsSpec, 'chartType' | 'specType' | 'id'>>;
 
-export const Settings: React.FunctionComponent<SpecProps> = getConnect()(
+export const Settings: React.FunctionComponent<SettingsSpecProps> = getConnect()(
   specComponentFactory<SettingsSpec, DefaultSettingsProps>(DEFAULT_SETTINGS_SPEC),
 );
