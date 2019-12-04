@@ -29,9 +29,9 @@ interface ReactiveChartElementIndex {
   zIndex: number;
 }
 
-type PieChartProps = ReactiveChartOwnProps & ReactiveChartStateProps & ReactiveChartDispatchProps;
-class PieChartComponent extends React.Component<PieChartProps> {
-  static displayName = 'PieChart';
+type SunburstProps = ReactiveChartOwnProps & ReactiveChartStateProps & ReactiveChartDispatchProps;
+class SunburstComponent extends React.Component<SunburstProps> {
+  static displayName = 'Sunburst';
   firstRender = true;
 
   componentDidUpdate() {
@@ -39,7 +39,7 @@ class PieChartComponent extends React.Component<PieChartProps> {
       this.props.onChartRendered();
     }
   }
-  renderPie = () => {
+  renderSunburst = () => {
     const { geometries } = this.props;
     if (!geometries.arcs) {
       return null;
@@ -71,7 +71,7 @@ class PieChartComponent extends React.Component<PieChartProps> {
         }}
       >
         <Layer hitGraphEnabled={false} listening={false}>
-          {this.renderPie()}
+          {this.renderSunburst()}
         </Layer>
       </Stage>
     );
@@ -112,7 +112,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   };
 };
 
-export const PieChart = connect(
+export const Sunburst = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(PieChartComponent);
+)(SunburstComponent);

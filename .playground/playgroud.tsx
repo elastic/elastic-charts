@@ -1,11 +1,11 @@
 import React from 'react';
 import { Chart, BarSeries } from '../src';
 
-import { Pie } from '../src/chart_types/hierarchical_chart/specs/pie';
-export class Playground extends React.Component<{}, { isPieShown: boolean }> {
+import { Sunburst } from '../src/chart_types/hierarchical_chart/specs/sunburst';
+export class Playground extends React.Component<{}, { isSunburstShown: boolean }> {
   chartRef: React.RefObject<Chart> = React.createRef();
   state = {
-    isPieShown: false,
+    isSunburstShown: false,
   };
   onSnapshot = () => {
     if (!this.chartRef.current) {
@@ -34,17 +34,17 @@ export class Playground extends React.Component<{}, { isPieShown: boolean }> {
   switchSpec = () => {
     this.setState((prevState) => {
       return {
-        isPieShown: !prevState.isPieShown,
+        isSunburstShown: !prevState.isSunburstShown,
       };
     });
   };
 
   render() {
-    const Spec = this.state.isPieShown ? Pie : BarSeries;
+    const Spec = this.state.isSunburstShown ? Sunburst : BarSeries;
     return (
       <>
         <button onClick={this.onSnapshot}>Snapshot</button>
-        <button onClick={this.switchSpec}>Switch Pie - Bar </button>
+        <button onClick={this.switchSpec}>Switch Sunburst - Bar </button>
         <div className="chart">
           <Chart ref={this.chartRef}>
             <Spec

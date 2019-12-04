@@ -2,11 +2,11 @@ import React, { RefObject } from 'react';
 import { InternalChartState, BackwardRef } from '../../../state/chart_state';
 import { ChartTypes } from '../..';
 import { Stage } from 'react-konva';
-import { PieChart } from '../renderer/canvas/pie_chart';
+import { Sunburst } from '../renderer/canvas/sunburst';
 
 const EMPTY_MAP = new Map();
-export class PieChartState implements InternalChartState {
-  chartType = ChartTypes.Pie;
+export class SunburstState implements InternalChartState {
+  chartType = ChartTypes.Sunburst;
   isBrushAvailable() {
     return false;
   }
@@ -25,7 +25,7 @@ export class PieChartState implements InternalChartState {
   chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<Stage>) {
     return (
       <React.Fragment>
-        <PieChart forwardStageRef={forwardStageRef} />
+        <Sunburst forwardStageRef={forwardStageRef} />
       </React.Fragment>
     );
   }
