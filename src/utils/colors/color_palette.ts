@@ -62,42 +62,6 @@ export type DivergingInterpolatorName =
 
 type d3ScaleChromaticProp = keyof typeof d3ScaleChromatic;
 
-function euiColorPalette(name: CategoricalSchemeName): string[] {
-  switch (name) {
-    case 'euiPaletteColorBlind':
-      return [
-        '#1ea593',
-        '#2b70f7',
-        '#ce0060',
-        '#38007e',
-        '#fca5d3',
-        '#f37020',
-        '#e49e29',
-        '#b0916F',
-        '#7b000b',
-        '#34130c',
-      ];
-    case 'euiPaletteForLightBackground':
-      return ['#006bb4', '#017d73', '#f5a700', '#bd271e', '#dd0a73'];
-    case 'euiPaletteForDarkBackground':
-      return ['#1ba9F5', '#7de2d1', '#f990c0', '#f66', '#fFce7a'];
-    case 'euiPaletteForStatus':
-      return [
-        '#58ba6d',
-        '#6ece67',
-        '#a5e26a',
-        '#d2e26a',
-        '#ebdF61',
-        '#ebd361',
-        '#ebc461',
-        '#d99d4c',
-        '#d97e4c',
-        '#d75949',
-      ];
-    default:
-      throw new Error('Unsupported EUI palette name');
-  }
-}
 function transformSchemeName(schemeName: CategoricalSchemeName): string {
   const schemeNameCapitalized = schemeName.charAt(0).toUpperCase() + schemeName.slice(1);
   return `scheme${schemeNameCapitalized}`;
@@ -136,9 +100,6 @@ function getInterpolatorOrThrow(
 }
 
 export function getCategoricalPalette(name: CategoricalSchemeName): ReadonlyArray<string> {
-  if (name.startsWith('eui')) {
-    return euiColorPalette(name);
-  }
   const schemeName: d3ScaleChromaticProp = transformSchemeName(name) as d3ScaleChromaticProp;
   if (isValidColorPaletteName(schemeName)) {
     return getProperty(d3ScaleChromatic, schemeName) as ReadonlyArray<string>;

@@ -9,22 +9,6 @@ import * as d3ScaleChromatic from 'd3-scale-chromatic';
 
 describe('ColorPalette', () => {
   describe('categorical', () => {
-    it('euiPalette', () => {
-      const expected = [
-        '#1ea593',
-        '#2b70f7',
-        '#ce0060',
-        '#38007e',
-        '#fca5d3',
-        '#f37020',
-        '#e49e29',
-        '#b0916F',
-        '#7b000b',
-        '#34130c',
-      ];
-      expect(getCategoricalPalette('euiPaletteColorBlind')).toEqual(expected);
-    });
-
     it('default accent palette', () => {
       const expected = ['#7fc97f', '#beaed4', '#fdc086', '#ffff99', '#386cb0', '#f0027f', '#bf5b17', '#666666'];
       expect(getCategoricalPalette('accent')).toEqual(expected);
