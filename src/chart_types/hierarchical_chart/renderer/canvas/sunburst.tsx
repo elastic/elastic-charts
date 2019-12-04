@@ -14,7 +14,7 @@ import { computeGeometriesSelector } from '../../state/selectors/compute_geometr
 
 interface ReactiveChartStateProps {
   initialized: boolean;
-  geometries: { arcs?: ArcGeometry[] };
+  geometries: { arcs: ArcGeometry[] };
   chartContainerDimensions: Dimensions;
   theme: Theme;
 }
@@ -39,20 +39,13 @@ class SunburstComponent extends React.Component<SunburstProps> {
       this.props.onChartRendered();
     }
   }
-  renderSunburst = () => {
-    const { geometries } = this.props;
-    if (!geometries.arcs) {
-      return null;
-    }
-
-    return (
-      <Group>
-        {geometries.arcs.map((arc, i) => {
-          return <Path key={i} data={arc.arc} fill={arc.color} x={arc.transform.x} y={arc.transform.y} />;
-        })}
-      </Group>
-    );
-  };
+  renderSunburst = () => (
+    <Group>
+      {this.props.geometries.arcs.map((arc, i) => {
+        return <Path key={i} data={arc.arc} fill={arc.color} x={arc.transform.x} y={arc.transform.y} />;
+      })}
+    </Group>
+  );
 
   render() {
     const { initialized, chartContainerDimensions } = this.props;
