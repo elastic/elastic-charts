@@ -1,6 +1,5 @@
 import {
   getCustomSequentialPalette,
-  getCustomCategoricalPalette,
   getSequentialPalette,
   getCyclicalPalette,
   getCategoricalPalette,
@@ -34,38 +33,6 @@ describe('ColorPalette', () => {
     it('falls back to default categorical palette if invalid name supplied', () => {
       // @ts-ignore
       expect(getCategoricalPalette('nonExistent')).toEqual(d3ScaleChromatic.schemeCategory10);
-    });
-
-    it('custom palette with two different colors', () => {
-      const expected = [
-        '#007aff',
-        '#9072ff',
-        '#d566f4',
-        '#ff58da',
-        '#ff56b7',
-        '#ff6990',
-        '#ff8969',
-        '#ffae43',
-        '#ffd317',
-        '#fff500',
-      ];
-      expect(getCustomCategoricalPalette(['#007AFF', '#FFF500'], 10)).toEqual(expected);
-    });
-
-    it('calculates custom palette with two similar colors', () => {
-      const expected = [
-        '#aabbcc',
-        '#98a6b9',
-        '#8891a5',
-        '#787d92',
-        '#68697f',
-        '#59566c',
-        '#4b4459',
-        '#3d3246',
-        '#2f2134',
-        '#221122',
-      ];
-      expect(getCustomCategoricalPalette(['#AABBCC', '#221122'], 10)).toEqual(expected);
     });
   });
 
@@ -138,6 +105,22 @@ describe('ColorPalette', () => {
           '#000000',
         ];
         expect(getCustomSequentialPalette(['#AABBCC', '#221122'], 10)).toEqual(expected);
+      });
+
+      it('creates a custom palette with 2 different colors', () => {
+        const expected = [
+          '#65a8ff',
+          '#87aaff',
+          '#9cadf5',
+          '#abafd5',
+          '#b6b2b5',
+          '#beb595',
+          '#c3b874',
+          '#c6bc50',
+          '#c8bf19',
+          '#c9c200',
+        ];
+        expect(getCustomSequentialPalette(['#007AFF', '#FFF500'], 10)).toEqual(expected);
       });
     });
     describe('multi-hue', () => {

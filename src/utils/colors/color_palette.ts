@@ -1,6 +1,6 @@
 import * as d3ScaleChromatic from 'd3-scale-chromatic';
 import { rgb as d3Rgb, lab as d3Lab, RGBColor } from 'd3-color';
-import { interpolateHcl, interpolateLab, quantize } from 'd3-interpolate';
+import { interpolateLab } from 'd3-interpolate';
 import { scaleLinear, scaleSequential } from 'd3-scale';
 
 export type SequentialColorPaletteName =
@@ -146,16 +146,7 @@ export function getCategoricalPalette(name: CategoricalSchemeName): ReadonlyArra
   return d3ScaleChromatic.schemeCategory10;
 }
 
-export function getCustomCategoricalPalette(colors: string[], steps: number) {
-  const paletteColors = [];
-  const scale = quantize(interpolateHcl(colors[0], colors[1]), steps);
-  for (let i = 0; i < steps; i++) {
-    paletteColors.push(d3Rgb(scale[i]).hex());
-  }
-  return paletteColors;
-}
-
-export function getSequentialPalette(name: SequentialColorPaletteName, steps: number) {
+export function getSequentialPalette(name: SequentialColorPaletteName, steps: number): ReadonlyArray<string> {
   const interpolator = getInterpolatorOrThrow(name);
   const paletteColors = [];
   const scale = scaleSequential(interpolator).domain([1, steps]);
@@ -165,7 +156,7 @@ export function getSequentialPalette(name: SequentialColorPaletteName, steps: nu
   return paletteColors;
 }
 
-export function getCustomSequentialPalette(colors: string[], steps: number) {
+export function getCustomSequentialPalette(colors: string[], steps: number): ReadonlyArray<string> {
   const startingColor = d3Lab(colors[0]).brighter();
   const endingColor = d3Lab(colors[1]).darker();
   const paletteColors = [];
@@ -179,7 +170,7 @@ export function getCustomSequentialPalette(colors: string[], steps: number) {
   return paletteColors;
 }
 
-export function getCyclicalPalette(name: CyclicalPaletteName, steps: number) {
+export function getCyclicalPalette(name: CyclicalPaletteName, steps: number): ReadonlyArray<string> {
   if (steps <= 0) {
     throw new Error('Number of steps should be a positive integer');
   }
@@ -191,8 +182,11 @@ export function getCyclicalPalette(name: CyclicalPaletteName, steps: number) {
   return paletteColors;
 }
 
-export function getDivergingPalette(steps: number, interpolatorName?: DivergingInterpolatorName) {
-  const interpolator = getInterpolatorOrThrow(interpolatorName ? interpolatorName : 'spectral');
+export function getDivergingPalette(
+  steps: number,
+  interpolatorName: DivergingInterpolatorName = 'spectral',
+): ReadonlyArray<string> {
+  const interpolator = getInterpolatorOrThrow(interpolatorName);
   const scale = scaleSequential(interpolator).domain([1, steps]);
   const paletteColors = [];
   for (let i = 1; i <= steps; i++) {
