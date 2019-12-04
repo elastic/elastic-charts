@@ -42,7 +42,7 @@ function changeNumbers(stringArray: string[]): (string | number)[] {
   const newArray: (string | number)[] = [];
   stringArray.forEach((element: string) => {
     // eslint-disable-next-line no-unused-expressions
-    !isNaN(parseInt(element)) ? newArray.push(parseInt(element)) : newArray.push(element);
+    !isNaN(parseFloat(element)) ? newArray.push(parseFloat(element)) : newArray.push(element);
   });
   return newArray;
 }
