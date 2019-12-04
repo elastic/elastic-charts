@@ -475,9 +475,17 @@ storiesOf('Axis', module)
 
     const xDomain = array('xDomain', ['a', 'b', 'c', 'd', '0', '1', '2', '3']);
 
+    function changeNumbers(stringArray: string[]): (string | number)[] {
+      const newArray: (string | number)[] = [];
+      stringArray.forEach((element: string) => {
+        // eslint-disable-next-line no-unused-expressions
+        !isNaN(parseInt(element)) ? newArray.push(parseInt(element)) : newArray.push(element);
+      });
+      return newArray;
+    }
     return (
       <Chart className={'story-chart'}>
-        <Settings showLegend={false} xDomain={xDomain} />
+        <Settings showLegend={false} xDomain={changeNumbers(xDomain)} />
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left')}

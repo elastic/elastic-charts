@@ -38,10 +38,19 @@ function generateTimeAnnotationData(values: any[]): LineAnnotationDatum[] {
   }));
 }
 
+function changeNumbers(stringArray: string[]): (string | number)[] {
+  const newArray: (string | number)[] = [];
+  stringArray.forEach((element: string) => {
+    // eslint-disable-next-line no-unused-expressions
+    !isNaN(parseInt(element)) ? newArray.push(parseInt(element)) : newArray.push(element);
+  });
+  return newArray;
+}
+
 storiesOf('Annotations', module)
   .add('[line] basic xDomain continuous', () => {
     const data = array('data values', ['2.5', '7.2']);
-    const dataValues = generateAnnotationData(data);
+    const dataValues = generateAnnotationData(changeNumbers(data));
 
     const style = {
       line: {
@@ -112,7 +121,7 @@ storiesOf('Annotations', module)
   })
   .add('[line] basic yDomain', () => {
     const data = array('data values', ['1.5', '7.2']);
-    const dataValues = generateAnnotationData(data);
+    const dataValues = generateAnnotationData(changeNumbers(data));
 
     const isLeft = boolean('y-domain axis is Position.Left', true);
     const axisTitle = isLeft ? 'y-domain axis (left)' : 'y-domain axis (right)';
