@@ -15,7 +15,7 @@ import { UPDATE_PARENT_DIMENSION } from './actions/chart_settings';
 import { EXTERNAL_POINTER_EVENT } from './actions/events';
 import { RefObject } from 'react';
 import { Stage } from 'react-konva';
-import { PieChartState } from '../chart_types/pie_chart/state/chart_state';
+import { PieChartState } from '../chart_types/hierarchical_chart/state/chart_state';
 
 export type BackwardRef = () => React.RefObject<HTMLDivElement>;
 

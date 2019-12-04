@@ -1,7 +1,7 @@
 import React from 'react';
 import { Chart, BarSeries } from '../src';
 
-import { Pie } from '../src/chart_types/pie_chart/specs/pie';
+import { Pie } from '../src/chart_types/hierarchical_chart/specs/pie';
 export class Playground extends React.Component<{}, { isPieShown: boolean }> {
   chartRef: React.RefObject<Chart> = React.createRef();
   state = {
