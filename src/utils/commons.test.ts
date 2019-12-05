@@ -157,6 +157,36 @@ describe('commons utilities', () => {
     beforeAll(() => {
       baseClone = JSON.parse(JSON.stringify(base)) as TestType;
     });
+    // skipped until we fix https://github.com/elastic/elastic-charts/issues/479
+    test.skip('should override union types', () => {
+      type TestObject = { string1?: string; string2?: string };
+      interface TestUnionType {
+        union: 'val1' | 'val2' | TestObject;
+      }
+      expect(
+        mergePartial<TestUnionType>(
+          { union: 'val2' },
+          { union: { string1: 'other' } },
+          { mergeOptionalPartialValues: true },
+        ),
+      ).toEqual({
+        union: { string1: 'other' },
+      });
+    });
+    // skipped until we fix https://github.com/elastic/elastic-charts/issues/479
+    test.skip('should override union types', () => {
+      type TestObject = { string1?: string; string2?: string };
+      interface TestUnionType {
+        union: 'val1' | 'val2' | TestObject;
+      }
+      expect(
+        mergePartial<TestUnionType>(
+          { union: { string1: 'other' } },
+          { union: 'val2' },
+          { mergeOptionalPartialValues: true },
+        ),
+      ).toEqual({ union: 'val2' });
+    });
 
     test('should allow partial to be undefined', () => {
       expect(mergePartial('test')).toBe('test');
