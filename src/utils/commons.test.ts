@@ -7,7 +7,7 @@ import {
   RecursivePartial,
   getPartialValue,
   getAllKeys,
-  simpleClone,
+  shallowClone,
 } from './commons';
 
 describe('commons utilities', () => {
@@ -129,34 +129,34 @@ describe('commons utilities', () => {
     });
   });
 
-  describe('simpleClone', () => {
+  describe('shallowClone', () => {
     const obj = { value: 'test' };
     const arr = ['test'];
 
     it('should clone object', () => {
-      const result = simpleClone(obj);
+      const result = shallowClone(obj);
 
       expect(result).toEqual(obj);
       expect(result).not.toBe(obj);
     });
 
     it('should clone array', () => {
-      const result = simpleClone(arr);
+      const result = shallowClone(arr);
 
       expect(result).toEqual(arr);
       expect(result).not.toBe(arr);
     });
 
     it('should return simple values', () => {
-      expect(simpleClone(false)).toBe(false);
-      expect(simpleClone(true)).toBe(true);
-      expect(simpleClone('string')).toBe('string');
-      expect(simpleClone(10)).toBe(10);
-      expect(simpleClone(undefined)).toBeUndefined();
+      expect(shallowClone(false)).toBe(false);
+      expect(shallowClone(true)).toBe(true);
+      expect(shallowClone('string')).toBe('string');
+      expect(shallowClone(10)).toBe(10);
+      expect(shallowClone(undefined)).toBeUndefined();
     });
 
     it('should return null', () => {
-      expect(simpleClone(null)).toBeNull();
+      expect(shallowClone(null)).toBeNull();
     });
   });
 

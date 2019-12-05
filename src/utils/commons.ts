@@ -97,7 +97,7 @@ export function hasPartialObjectToMerge<T>(
   return false;
 }
 
-export function simpleClone(value: any) {
+export function shallowClone(value: any) {
   if (Array.isArray(value)) {
     return [...value];
   }
@@ -125,7 +125,7 @@ export function mergePartial<T>(
   options: MergeOptions = {},
   additionalPartials: RecursivePartial<T>[] = [],
 ): T {
-  const baseClone = simpleClone(base);
+  const baseClone = shallowClone(base);
 
   if (hasPartialObjectToMerge(base, partial, additionalPartials)) {
     if (partial !== undefined && options.mergeOptionalPartialValues) {
