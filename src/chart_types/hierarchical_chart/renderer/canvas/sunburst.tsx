@@ -1,7 +1,7 @@
 import React, { RefObject } from 'react';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { Layer, Stage, Path, Group } from 'react-konva';
+import { Layer, Stage, Path, Line, Group, Text } from 'react-konva';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { isInitialized } from '../../../../state/selectors/is_initialized';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
@@ -9,12 +9,14 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Theme } from '../../../../utils/themes/theme';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
-import { ArcGeometry } from '../../../../utils/geometry';
 import { computeGeometriesSelector } from '../../state/selectors/compute_geometries';
+import { ShapeViewModel } from '../../layout/circline/types/ViewModelTypes';
+import { config } from '../../layout/circline/config/config';
+import { tau } from '../../layout/circline/utils/math';
 
 interface ReactiveChartStateProps {
   initialized: boolean;
-  geometries: { arcs: ArcGeometry[] };
+  geometries: ShapeViewModel;
   chartContainerDimensions: Dimensions;
   theme: Theme;
 }
@@ -39,13 +41,68 @@ class SunburstComponent extends React.Component<SunburstProps> {
       this.props.onChartRendered();
     }
   }
-  renderSunburst = () => (
-    <Group>
-      {this.props.geometries.arcs.map((arc, i) => {
-        return <Path key={i} data={arc.arc} fill={arc.color} x={arc.transform.x} y={arc.transform.y} />;
-      })}
-    </Group>
-  );
+  renderSunburst = () => {
+    const shapeViewModel = this.props.geometries;
+    return (
+      <Group x={shapeViewModel.diskCenter.x} y={shapeViewModel.diskCenter.y}>
+        <Group>
+          {shapeViewModel.sectorViewModel.map(({ strokeWidth, fillColor, arcPath }, i) => {
+            return <Path key={i} data={arcPath} fill={fillColor} stroke={'white'} strokeWidth={strokeWidth} />;
+          })}
+        </Group>
+        <Group>
+          {shapeViewModel.rowSets.map(
+            (
+              { rows, rotation, fontFamily, fontSize, fillTextColor, fontStyle /*, fillTextWeight, fontVariant*/ },
+              i,
+            ) => {
+              return (
+                <Group key={i}>
+                  {rows.map((currentRow, i) => {
+                    const crx = currentRow.rowCentroidX - (Math.cos(rotation) * currentRow.length) / 2;
+                    const cry = -currentRow.rowCentroidY + (Math.sin(rotation) * currentRow.length) / 2;
+                    return (
+                      <Group key={i} x={crx} y={cry - 10} rotation={(-rotation / tau) * 360}>
+                        {currentRow.rowWords.map(({ text, width, wordBeginning }, i) => {
+                          return (
+                            <Text
+                              key={i}
+                              text={text}
+                              x={wordBeginning}
+                              y={2}
+                              fontSize={fontSize}
+                              fontFamily={fontFamily}
+                              fontStyle={fontStyle}
+                              /*fontWeight={fillTextWeight}*/
+                              /*fontVariant={fontVariant}*/
+                              align={'center'}
+                              width={width}
+                              verticalAlign={'middle'}
+                              fill={fillTextColor}
+                              rotation={0}
+                            />
+                          );
+                        })}
+                      </Group>
+                    );
+                  })}
+                </Group>
+              );
+            },
+          )}
+        </Group>
+        <Group>
+          {shapeViewModel.linkLabelViewModels.map(({ link, translate: [x, y] /*, textAlign, text */ }, i) => {
+            return (
+              <Group key={i} x={x} y={y}>
+                <Line points={([] as number[]).concat(...link)} stroke={'black'} strokeWidth={100} />
+              </Group>
+            );
+          })}
+        </Group>
+      </Group>
+    );
+  };
 
   render() {
     const { initialized, chartContainerDimensions } = this.props;
@@ -79,12 +136,19 @@ const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
     dispatch,
   );
 
+export const nullSectorViewModel = (): ShapeViewModel => ({
+  config,
+  sectorViewModel: [],
+  rowSets: [],
+  linkLabelViewModels: [],
+  outsideLinksViewModel: [],
+  diskCenter: { x: 0, y: 0 },
+});
+
 const DEFAULT_PROPS: ReactiveChartStateProps = {
   initialized: false,
   theme: LIGHT_THEME,
-  geometries: {
-    arcs: [],
-  },
+  geometries: nullSectorViewModel(),
   chartContainerDimensions: {
     width: 0,
     height: 0,

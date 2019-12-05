@@ -38,6 +38,7 @@ addDecorator(
 );
 
 function loadStories() {
+  require('../stories/sunburst.tsx');
   require('../stories/bar_chart.tsx');
   require('../stories/line_chart.tsx');
   require('../stories/area_chart.tsx');

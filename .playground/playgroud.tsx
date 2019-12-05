@@ -2,6 +2,8 @@ import React from 'react';
 import { Chart, BarSeries } from '../src';
 
 import { Sunburst } from '../src/chart_types/hierarchical_chart/specs/sunburst';
+import { mocks } from '../src/chart_types/hierarchical_chart/layout/mocks/mocks';
+
 export class Playground extends React.Component<{}, { isSunburstShown: boolean }> {
   chartRef: React.RefObject<Chart> = React.createRef();
   state = {
@@ -43,29 +45,13 @@ export class Playground extends React.Component<{}, { isSunburstShown: boolean }
     const Spec = this.state.isSunburstShown ? Sunburst : BarSeries;
     return (
       <>
-        <button onClick={this.onSnapshot}>Snapshot</button>
-        <button onClick={this.switchSpec}>Switch Sunburst - Bar </button>
         <div className="chart">
           <Chart ref={this.chartRef}>
-            <Spec
-              id={'test'}
-              data={[
-                {
-                  x: 1,
-                  y: 10,
-                },
-                {
-                  x: 2,
-                  y: 20,
-                },
-                {
-                  x: 3,
-                  y: 30,
-                },
-              ]}
-            />
+            <Spec id={'test'} donut={false} data={mocks.miniSunburst} />
           </Chart>
         </div>
+        <button onClick={this.onSnapshot}>Snapshot</button>
+        <button onClick={this.switchSpec}>Switch Sunburst - Bar </button>
       </>
     );
   }

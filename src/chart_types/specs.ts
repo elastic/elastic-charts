@@ -7,3 +7,5 @@ export {
   RectAnnotation,
   HistogramBarSeries,
 } from './xy_chart/specs';
+
+export { Sunburst } from './hierarchical_chart/specs';
