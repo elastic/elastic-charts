@@ -22,7 +22,7 @@ import { Icon } from '../src/components/icons/icon';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 import { getChartRotationKnob } from './common';
 import { BandedAccessorType } from '../src/utils/geometry';
-import { Position } from '../src/chart_types/xy_chart/utils/specs';
+import { Position, changeNumbers } from '../src/chart_types/xy_chart/utils/specs';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
 
@@ -36,15 +36,6 @@ function generateTimeAnnotationData(values: any[]): LineAnnotationDatum[] {
     details: `detail-${index}`,
     header: dateFormatter(value),
   }));
-}
-
-function changeNumbers(stringArray: string[]): (string | number)[] {
-  const newArray: (string | number)[] = [];
-  stringArray.forEach((element: string) => {
-    // eslint-disable-next-line no-unused-expressions
-    !isNaN(parseFloat(element)) ? newArray.push(parseFloat(element)) : newArray.push(element);
-  });
-  return newArray;
 }
 
 storiesOf('Annotations', module)

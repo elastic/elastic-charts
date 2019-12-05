@@ -22,12 +22,20 @@ addParameters({
     panelPosition: 'right',
     sidebarAnimations: true,
   },
+  info: {
+    inline: true,
+    source: true,
+    styles: {
+      infoBody: {
+        marginTop: 0,
+        marginBottom: 0,
+      },
+    },
+  },
 });
 
 addDecorator(withKnobs);
 addDecorator(withInfo({
-  inline: true,
-  source: true,
   styles: {
     infoBody: {
       marginTop: 0,

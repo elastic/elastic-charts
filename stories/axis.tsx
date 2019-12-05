@@ -21,6 +21,7 @@ import {
 } from '../src/';
 import { SeededDataGenerator } from '../src/mocks/utils';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
+import { changeNumbers } from '../src/chart_types/xy_chart/utils/specs';
 
 function createThemeAction(title: string, min: number, max: number, value: number) {
   return number(
@@ -475,14 +476,6 @@ storiesOf('Axis', module)
 
     const xDomain = array('xDomain', ['a', 'b', 'c', 'd', '0', '1', '2', '3']);
 
-    function changeNumbers(stringArray: string[]): (string | number)[] {
-      const newArray: (string | number)[] = [];
-      stringArray.forEach((element: string) => {
-        // eslint-disable-next-line no-unused-expressions
-        !isNaN(parseFloat(element)) ? newArray.push(parseFloat(element)) : newArray.push(element);
-      });
-      return newArray;
-    }
     return (
       <Chart className={'story-chart'}>
         <Settings showLegend={false} xDomain={changeNumbers(xDomain)} />
