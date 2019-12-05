@@ -5,7 +5,7 @@ import { Sunburst } from '../src/chart_types/hierarchical_chart/specs/sunburst';
 export class Playground extends React.Component<{}, { isSunburstShown: boolean }> {
   chartRef: React.RefObject<Chart> = React.createRef();
   state = {
-    isSunburstShown: false,
+    isSunburstShown: true,
   };
   onSnapshot = () => {
     if (!this.chartRef.current) {
