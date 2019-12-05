@@ -623,7 +623,7 @@ export function isBandedSpec(y0Accessors: SeriesAccessors['y0Accessors']): boole
 
 export function changeNumbers(stringArray: string[]): (string | number)[] {
   const newArray: (string | number)[] = [];
-  stringArray.forEach((element: string) => {
+  stringArray.map((element: string) => {
     // eslint-disable-next-line no-unused-expressions
     !isNaN(parseFloat(element)) ? newArray.push(parseFloat(element)) : newArray.push(element);
   });

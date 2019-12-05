@@ -2764,6 +2764,11 @@
     pretty-hrtime "^1.0.3"
     regenerator-runtime "^0.12.1"
 
+"@storybook/preset-typescript@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@storybook/preset-typescript/-/preset-typescript-1.1.0.tgz#59821cee902d4c1bcda07e0276c958c495d330e4"
+  integrity sha512-V4Acf3XGzCFZQuX+91IL8LUbOC0Hs5/ZDZeo6YsuF6vTCIfzuX18PDw7Ph/0xJyL9yE45m8Fr7RA+c7JIwql1g==
+
 "@storybook/react@5.2.8", "@storybook/react@^5.2.0":
   version "5.2.8"
   resolved "https://registry.yarnpkg.com/@storybook/react/-/react-5.2.8.tgz#8d44c2d34caa1d7d748ec1fc9cf0fe2a88b001f9"
@@ -13662,10 +13667,10 @@ react-dev-utils@^9.0.0:
     strip-ansi "5.2.0"
     text-table "0.2.0"
 
-react-docgen-typescript-loader@^3.0.1:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/react-docgen-typescript-loader/-/react-docgen-typescript-loader-3.3.0.tgz#c1f5c1db9a2b6a6bca220bc50fee0a071bc75499"
-  integrity sha512-gC0TeWTz7s7OMyeABppQGbbrtSNi0yl/gBgZJElBtaBFNSJlHH1sfgQybHZmlZqFcn4UBa+8DOGT6wEJKWTV6g==
+react-docgen-typescript-loader@^3.6.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/react-docgen-typescript-loader/-/react-docgen-typescript-loader-3.6.0.tgz#5515f03f869e66d49e287c5f1e7ec10f2084f7bb"
+  integrity sha512-+uEsM3VYCdlcBGxF3tBqI5XWL1phvrh8dkiIfdpciKlM1BDHW+d82kKJI9hX6zk9H8TL+3Th/j/JAEaKb5FFNw==
   dependencies:
     "@webpack-contrib/schema-utils" "^1.0.0-beta.0"
     loader-utils "^1.2.3"
@@ -16280,7 +16285,7 @@ ts-jest@^24.1.0:
     semver "^5.5"
     yargs-parser "10.x"
 
-ts-loader@^6.1.2:
+ts-loader@^6.2.1:
   version "6.2.1"
   resolved "https://registry.yarnpkg.com/ts-loader/-/ts-loader-6.2.1.tgz#67939d5772e8a8c6bdaf6277ca023a4812da02ef"
   integrity sha512-Dd9FekWuABGgjE1g0TlQJ+4dFUfYGbYcs52/HQObE0ZmUNjQlmLAS7xXsSzy23AMaMwipsx5sNHvoEpT2CZq1g==
