@@ -33,7 +33,7 @@ export class Playground extends React.Component {
         <button onClick={this.onSnapshot}>Snapshot</button>
         <div className="chart">
           <Chart>
-            <Settings tooltip={{ type: TooltipType.Follow }} showLegend />
+            <Settings tooltip={{ type: TooltipType.Crosshairs }} showLegend />
             <LineSeries
               id="lines"
               xAccessor={0}
