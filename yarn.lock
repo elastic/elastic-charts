@@ -13810,9 +13810,9 @@ selfsigned@^1.10.7:
     node-forge "0.9.0"
 
 semantic-release-slack-bot@^1.3.5:
-  version "1.3.5"
-  resolved "https://registry.yarnpkg.com/semantic-release-slack-bot/-/semantic-release-slack-bot-1.3.5.tgz#06620afbda210da4d7e2637fc76102dc8bd05540"
-  integrity sha512-Wn0/WMWvHepcGfoExLKJiKWKhMxSX5qCoHfgiOCHyCMLVuif7VAS3OBfIxFhJqwIOrkZYTioYklypNMhC0xbvg==
+  version "1.3.6"
+  resolved "https://registry.yarnpkg.com/semantic-release-slack-bot/-/semantic-release-slack-bot-1.3.6.tgz#d7e639e59f64aa0fd146ddfb0ff2837394965ea8"
+  integrity sha512-tf8r/gxyOXvqyYHmxL4oyzYdgQBVcxB7gw/pqnXcoB9y1zD6E5t1oC5a5Yiqgog0Prt33+WyOQEaa/zy3UrglA==
   dependencies:
     "@semantic-release/error" "^2.2.0"
     node-fetch "^2.3.0"
