@@ -3,10 +3,11 @@ import { Config } from '../types/ConfigTypes';
 import { tau, trueBearingToStandardPositionAngle } from '../utils/math';
 import { LinkLabelVM, SectorTreeNode } from '../types/ViewModelTypes';
 import { meanAngle } from '../geometry';
+import { TextMeasure } from '../types/Types';
 
 // todo modularize this large function
 export const linkTextLayout = (
-  measure: Function, // todo improve typing
+  measure: TextMeasure,
   config: Config,
   nodesWithoutRoom: SectorTreeNode[],
   currentY: Distance[],

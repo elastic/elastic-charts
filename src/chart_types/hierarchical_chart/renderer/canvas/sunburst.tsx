@@ -1,7 +1,7 @@
 import React, { RefObject } from 'react';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { Layer, Stage, Path, Line, Group, Text } from 'react-konva';
+import { Group, Layer, Line, Path, Stage, Text } from 'react-konva';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { isInitialized } from '../../../../state/selectors/is_initialized';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
@@ -63,22 +63,19 @@ class SunburstComponent extends React.Component<SunburstProps> {
                     const crx = currentRow.rowCentroidX - (Math.cos(rotation) * currentRow.length) / 2;
                     const cry = -currentRow.rowCentroidY + (Math.sin(rotation) * currentRow.length) / 2;
                     return (
-                      <Group key={i} x={crx} y={cry - 10} rotation={(-rotation / tau) * 360}>
-                        {currentRow.rowWords.map(({ text, width, wordBeginning }, i) => {
+                      <Group key={i} x={crx} y={cry} rotation={(-rotation / tau) * 360}>
+                        {currentRow.rowWords.map(({ text, wordBeginning, verticalOffset }, i) => {
                           return (
                             <Text
                               key={i}
                               text={text}
                               x={wordBeginning}
-                              y={2}
+                              y={verticalOffset}
                               fontSize={fontSize}
                               fontFamily={fontFamily}
                               fontStyle={fontStyle}
                               /*fontWeight={fillTextWeight}*/
                               /*fontVariant={fontVariant}*/
-                              align={'center'}
-                              width={width}
-                              verticalAlign={'middle'}
                               fill={fillTextColor}
                               rotation={0}
                             />

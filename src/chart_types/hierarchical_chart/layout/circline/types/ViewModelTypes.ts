@@ -14,6 +14,7 @@ export type LinkLabelVM = {
 export interface RowBox {
   text: string;
   width: Distance;
+  verticalOffset: Distance;
   wordBeginning: Distance;
 }
 

@@ -5,7 +5,7 @@ import { logarithm, tau, trueBearingToStandardPositionAngle } from '../utils/mat
 import { RowBox, RowSet, SectorTreeNode } from '../types/ViewModelTypes';
 // @ts-ignore
 import parse from 'parse-color';
-import { FontWeight } from '../types/Types';
+import { FontWeight, TextMeasure } from '../types/Types';
 
 const ringSectorStartAngle = (d: SectorTreeNode): Radian => trueBearingToStandardPositionAngle(d.x0);
 
@@ -129,7 +129,7 @@ const rowSetComplete = (rowSet: RowSet, measuredBoxes: RowBox[]) =>
 
 // todo modularize this large function
 export const fillTextLayout = (
-  measure: Function, // todo improve typing
+  measure: TextMeasure, // todo improve typing
   getRawText: Function, // todo improve typing
   getRawValue: Function, // todo improve typing
   valueFormatter: Function,
@@ -201,10 +201,14 @@ export const fillTextLayout = (
 
       // model text pieces, obtaining their width at the current font size
       const measurements = measure(fontSize + 'px ' + fontFamily, allBoxes);
-      const allMeasuredBoxes = measurements.map((measure: RowBox, i: number) => ({
-        width: measure.width,
-        text: allBoxes[i],
-      }));
+      const allMeasuredBoxes: RowBox[] = measurements.map(
+        ({ width, emHeightDescent, emHeightAscent }: TextMetrics, i: number) => ({
+          width,
+          verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`,
+          text: allBoxes[i],
+          wordBeginning: NaN,
+        }),
+      );
       const linePitch = fontSize;
 
       // rowSet building starts
