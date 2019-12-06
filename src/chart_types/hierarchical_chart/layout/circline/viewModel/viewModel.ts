@@ -282,7 +282,14 @@ export const shapeViewModel = (
         return !(foundInFillText && foundInFillText.rows.length !== 0);
       });
 
-  const linkLabelViewModels = linkTextLayout(config, nodesWithoutRoom, currentY, outerRadius, rawTextGetter);
+  const linkLabelViewModels = linkTextLayout(
+    textMeasure,
+    config,
+    nodesWithoutRoom,
+    currentY,
+    outerRadius,
+    rawTextGetter,
+  );
 
   // combined viewModel
   return {

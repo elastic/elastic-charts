@@ -43,6 +43,7 @@ class SunburstComponent extends React.Component<SunburstProps> {
   }
   renderSunburst = () => {
     const shapeViewModel = this.props.geometries;
+    const config = shapeViewModel.config;
     return (
       <Group x={shapeViewModel.diskCenter.x} y={shapeViewModel.diskCenter.y}>
         <Group>
@@ -92,38 +93,33 @@ class SunburstComponent extends React.Component<SunburstProps> {
           )}
         </Group>
         <Group>
-          {shapeViewModel.linkLabelViewModels.map(({ link, text, translate: [x, y], textAlign }, i) => {
-            return (
-              <Group key={i}>
-                <Group scaleY={-1}>
-                  <Line
-                    points={([] as number[]).concat(...link)}
-                    stroke={config.linkLabel.textColor}
-                    strokeWidth={config.linkLabel.lineWidth}
-                  />
+          {shapeViewModel.linkLabelViewModels.map(
+            ({ link, text, translate: [x, y], textAlign, width, verticalOffset }, i) => {
+              return (
+                <Group key={i}>
+                  <Group scaleY={-1}>
+                    <Line
+                      points={([] as number[]).concat(...link)}
+                      stroke={config.linkLabel.textColor}
+                      strokeWidth={config.linkLabel.lineWidth}
+                    />
+                  </Group>
+                  <Group>
+                    <Text
+                      text={text}
+                      x={x - width * { start: 0, left: 0, center: 0.5, right: 1, end: 1 }[textAlign]}
+                      y={-y + verticalOffset}
+                      width={width}
+                      wrap={'none'}
+                      strokeEnabled={false}
+                      fontSize={config.linkLabel.fontSize}
+                      fontFamily={config.fontFamily}
+                    />
+                  </Group>
                 </Group>
-                <Group scaleY={1}>
-                  <Text
-                    text={text}
-                    /*x={wordBeginning}*/
-                    x={x - (i === 0 ? 216 : 120)}
-                    y={-y - 6}
-                    align={textAlign}
-                    /*width={100}*/
-                    /*fontSize={fontSize}*/
-                    /*fontFamily={fontFamily}*/
-                    /*fontStyle={fontStyle}*/
-                    /*fontWeight={fillTextWeight}*/
-                    /*fontVariant={fontVariant}*/
-                    /*width={width}*/
-                    /*verticalAlign={'middle'}*/
-                    /*fill={fillTextColor}*/
-                    /*rotation={0}*/
-                  />
-                </Group>
-              </Group>
-            );
-          })}
+              );
+            },
+          )}
         </Group>
       </Group>
     );

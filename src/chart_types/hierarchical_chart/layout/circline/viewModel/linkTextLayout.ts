@@ -6,6 +6,7 @@ import { meanAngle } from '../geometry';
 
 // todo modularize this large function
 export const linkTextLayout = (
+  measure: Function, // todo improve typing
   config: Config,
   nodesWithoutRoom: SectorTreeNode[],
   currentY: Distance[],
@@ -47,6 +48,10 @@ export const linkTextLayout = (
       const stemFromY = y;
       const stemToX = x + north * west * cy - west * relativeY;
       const stemToY = cy;
+      const text = rawTextGetter(node);
+      const { width, emHeightAscent, emHeightDescent } = measure(linkLabel.fontSize + 'px ' + config.fontFamily, [
+        text,
+      ])[0];
       return {
         link: [
           [x0, y0],
@@ -56,7 +61,9 @@ export const linkTextLayout = (
         ],
         translate: [stemToX + west * (linkLabel.horizontalStemLength + linkLabel.gap), stemToY],
         textAlign: side ? 'left' : 'right',
-        text: rawTextGetter(node),
+        text,
+        width,
+        verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`
       };
     });
 };

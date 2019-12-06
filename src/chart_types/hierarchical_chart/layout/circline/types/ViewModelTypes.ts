@@ -7,6 +7,8 @@ export type LinkLabelVM = {
   translate: [number, number];
   textAlign: CanvasTextAlign;
   text: string;
+  width: Distance;
+  verticalOffset: Distance;
 };
 
 export interface RowBox {
