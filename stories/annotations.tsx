@@ -20,9 +20,9 @@ import {
 } from '../src';
 import { Icon } from '../src/components/icons/icon';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
-import { getChartRotationKnob } from './common';
+import { getChartRotationKnob, arrayKnobs } from './common';
 import { BandedAccessorType } from '../src/utils/geometry';
-import { Position, changeNumbers } from '../src/chart_types/xy_chart/utils/specs';
+import { Position } from '../src/chart_types/xy_chart/utils/specs';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
 
@@ -40,8 +40,8 @@ function generateTimeAnnotationData(values: any[]): LineAnnotationDatum[] {
 
 storiesOf('Annotations', module)
   .add('[line] basic xDomain continuous', () => {
-    const data = array('data values', ['2.5', '7.2']);
-    const dataValues = generateAnnotationData(changeNumbers(data));
+    const data = arrayKnobs('data values', [2.5, 7.2]);
+    const dataValues = generateAnnotationData(data);
 
     const style = {
       line: {
@@ -111,8 +111,8 @@ storiesOf('Annotations', module)
     );
   })
   .add('[line] basic yDomain', () => {
-    const data = array('data values', ['1.5', '7.2']);
-    const dataValues = generateAnnotationData(changeNumbers(data));
+    const data = arrayKnobs('data values', [1.5, 7.2]);
+    const dataValues = generateAnnotationData(data);
 
     const isLeft = boolean('y-domain axis is Position.Left', true);
     const axisTitle = isLeft ? 'y-domain axis (left)' : 'y-domain axis (right)';

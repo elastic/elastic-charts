@@ -1,4 +1,4 @@
-import { array, boolean, number } from '@storybook/addon-knobs';
+import { boolean, number } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import React from 'react';
 
@@ -21,7 +21,7 @@ import {
 } from '../src/';
 import { SeededDataGenerator } from '../src/mocks/utils';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
-import { changeNumbers } from '../src/chart_types/xy_chart/utils/specs';
+import { arrayKnobs } from './common';
 
 function createThemeAction(title: string, min: number, max: number, value: number) {
   return number(
@@ -474,11 +474,11 @@ storiesOf('Axis', module)
       max: number('right1 max', 10),
     };
 
-    const xDomain = array('xDomain', ['a', 'b', 'c', 'd', '0', '1', '2', '3']);
+    const xDomain = arrayKnobs('xDomain', ['a', 'b', 'c', 'd', 0, 1, 2, 3]);
 
     return (
       <Chart className={'story-chart'}>
-        <Settings showLegend={false} xDomain={changeNumbers(xDomain)} />
+        <Settings showLegend={false} xDomain={xDomain} />
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
         <Axis
           id={getAxisId('left')}

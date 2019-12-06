@@ -35,14 +35,7 @@ addParameters({
 });
 
 addDecorator(withKnobs);
-addDecorator(withInfo({
-  styles: {
-    infoBody: {
-      marginTop: 0,
-      marginBottom: 0,
-    },
-  },
-}) as any);
+addDecorator(withInfo);
 
 function loadStories() {
   require('../stories/bar_chart.tsx');
