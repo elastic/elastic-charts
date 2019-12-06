@@ -92,10 +92,35 @@ class SunburstComponent extends React.Component<SunburstProps> {
           )}
         </Group>
         <Group>
-          {shapeViewModel.linkLabelViewModels.map(({ link, translate: [x, y] /*, textAlign, text */ }, i) => {
+          {shapeViewModel.linkLabelViewModels.map(({ link, text, translate: [x, y], textAlign }, i) => {
             return (
-              <Group key={i} x={x} y={y}>
-                <Line points={([] as number[]).concat(...link)} stroke={'black'} strokeWidth={100} />
+              <Group key={i}>
+                <Group scaleY={-1}>
+                  <Line
+                    points={([] as number[]).concat(...link)}
+                    stroke={config.linkLabel.textColor}
+                    strokeWidth={config.linkLabel.lineWidth}
+                  />
+                </Group>
+                <Group scaleY={1}>
+                  <Text
+                    text={text}
+                    /*x={wordBeginning}*/
+                    x={x - (i === 0 ? 216 : 120)}
+                    y={-y - 6}
+                    align={textAlign}
+                    /*width={100}*/
+                    /*fontSize={fontSize}*/
+                    /*fontFamily={fontFamily}*/
+                    /*fontStyle={fontStyle}*/
+                    /*fontWeight={fillTextWeight}*/
+                    /*fontVariant={fontVariant}*/
+                    /*width={width}*/
+                    /*verticalAlign={'middle'}*/
+                    /*fill={fillTextColor}*/
+                    /*rotation={0}*/
+                  />
+                </Group>
               </Group>
             );
           })}

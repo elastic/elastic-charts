@@ -16,9 +16,6 @@ export const computeGeometriesSelector = createCachedSelector(
   [getSpecs, getParentDimensionsSelector, getChartThemeSelector],
   (specs, parentDimensions, theme): ShapeViewModel => {
     const pieSpecs = getSpecsFromStore<SunburstSpec>(specs, ChartTypes.Sunburst, SpecTypes.Series);
-    if (pieSpecs.length !== 1) {
-      return nullSectorViewModel();
-    }
-    return render(pieSpecs[0], parentDimensions, theme);
+    return pieSpecs.length === 1 ? render(pieSpecs[0], parentDimensions, theme) : nullSectorViewModel();
   },
 )((state) => state.chartId);
