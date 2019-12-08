@@ -1,15 +1,10 @@
 import { Distance, Pixels, Radian, Radius, Ratio, SizeRatio, TimeMs } from './GeometryTypes';
-import { AdditiveAggregation, Color, FieldName, FontWeight, MasterDataLookup } from './Types';
+import { Color, FontWeight } from './Types';
 
 export interface ViewQuery {
   // terminology: https://en.wikipedia.org/wiki/Star_schema
   name: string;
   factsQuerySQL: string;
-  valueField: FieldName;
-  aggregator: AdditiveAggregation;
-  order: 'ascending' | 'descending';
-  groupByFields: Array<string>;
-  dimensions: MasterDataLookup;
 }
 
 // todo switch to `io-ts` style, generic way of combining static and runtime type info

@@ -1,4 +1,4 @@
-import { ArrayEntry, childrenAccessor, HierarchyOfArrays } from './groupBy';
+import { ArrayEntry, childrenAccessor, HierarchyOfArrays } from './groupByRollup';
 import { Origin, Part } from '../types/Types';
 
 export const sunburst = (

@@ -5,6 +5,11 @@ module.exports = {
     filename: 'bundle.js',
     path: __dirname,
   },
+  devServer: {
+    hot: false,
+    inline: false,
+    liveReload: false,
+  },
   module: {
     rules: [
       {

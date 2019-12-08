@@ -6,6 +6,7 @@ import { RowBox, RowSet, SectorTreeNode } from '../types/ViewModelTypes';
 // @ts-ignore
 import parse from 'parse-color';
 import { FontWeight, TextMeasure } from '../types/Types';
+import { aggregateKey } from '../utils/groupByRollup';
 
 const ringSectorStartAngle = (d: SectorTreeNode): Radian => trueBearingToStandardPositionAngle(d.x0);
 
@@ -131,7 +132,6 @@ const rowSetComplete = (rowSet: RowSet, measuredBoxes: RowBox[]) =>
 export const fillTextLayout = (
   measure: TextMeasure, // todo improve typing
   getRawText: Function, // todo improve typing
-  getRawValue: Function, // todo improve typing
   valueFormatter: Function,
   childNodes: SectorTreeNode[],
   textFillOrigins: [number, number][],
@@ -175,7 +175,7 @@ export const fillTextLayout = (
 
     const allBoxes = getRawText(node)
       .split(' ')
-      .concat(valueFormatter(getRawValue(node)).split(' '));
+      .concat(valueFormatter(node[aggregateKey]).split(' '));
     const ringSector = ringSectorConstruction(
       config,
       innerRadius + node.inRingIndex * config.shear,

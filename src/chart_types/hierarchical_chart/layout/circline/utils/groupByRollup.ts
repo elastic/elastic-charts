@@ -34,7 +34,7 @@ export const childrenAccessor = (n: ArrayEntry) => entryValue(n)[childrenKey];
 const ascending: Sorter = (a, b) => a - b;
 const descending: Sorter = (a, b) => b - a;
 
-export const groupBy = (
+export const groupByRollup = (
   keyAccessors: Array<(a: Tuple) => Key>,
   valueAccessor: Function,
   {

@@ -12,9 +12,9 @@ import { sunburst } from '../utils/sunburst';
 import {
   OutsideLinksViewModel,
   RowSet,
+  SectorTreeNode,
   SectorViewModel,
   ShapeViewModel,
-  SectorTreeNode,
   TreeNode,
 } from '../types/ViewModelTypes';
 import {
@@ -26,19 +26,20 @@ import {
   depthAccessor,
   entryKey,
   entryValue,
-  groupBy,
+  groupByRollup,
   mapEntryValue,
   mapsToArrays,
-} from '../utils/groupBy';
+} from '../utils/groupByRollup';
 import {
-  ringSectorInnerRadius,
-  ringSectorMiddleRadius,
-  ringSectorOuterRadius,
   arcMaker,
   fromRGB,
   makeColorScale,
+  ringSectorInnerRadius,
+  ringSectorMiddleRadius,
+  ringSectorOuterRadius,
   toRGB,
 } from '../utils/d3utils';
+import { AccessorFn } from '../../../../../utils/accessor';
 
 export const makeSectorViewModel = (
   ringSectorPaths: SVGPathString[],
@@ -80,18 +81,17 @@ export const makeOutsideLinksViewModel = (
 
 const straighteningInfinityRadius = 5e4;
 
-type DataPoint = any; // todo refine this
-
 // todo break up this long function
 export const shapeViewModel = (
   textMeasure: TextMeasure,
   config: Config,
   facts: Relation,
   rawTextGetter: Function, // todo improve typing
-  rawValueGetter: Function, // todo improve typing
+  valueAccessor: AccessorFn,
+  valueFormatter: AccessorFn,
+  groupByRollupAccessors: AccessorFn[],
 ): ShapeViewModel => {
   const {
-    viewQuery: { groupByFields, aggregator, order, valueField },
     width,
     height,
     margin,
@@ -100,7 +100,6 @@ export const shapeViewModel = (
     colors,
     palettes,
     fillOutside,
-    fillLabel: { formatter: valueFormatter },
     linkLabel,
     rotation,
     fromAngle,
@@ -121,10 +120,8 @@ export const shapeViewModel = (
   // By introducing `scale`, we no longer need to deal with the dichotomy of
   // size as data value vs size as number of pixels in the rectangle
 
-  const valueAccessor = (d: DataPoint) => d[valueField];
-  const groupByAccessors = [() => null, ...groupByFields.map((f: string) => (d: DataPoint) => d[f])];
-  const hierarchyMap = groupBy(groupByAccessors, valueAccessor, aggregators[aggregator], facts);
-  const hierarchy = mapsToArrays(hierarchyMap, aggregateComparator(mapEntryValue, childOrders[order]));
+  const hierarchyMap = groupByRollup(groupByRollupAccessors, valueAccessor, aggregators.sum, facts);
+  const hierarchy = mapsToArrays(hierarchyMap, aggregateComparator(mapEntryValue, childOrders.descending));
 
   const totalValue = hierarchy.reduce((p: number, n: ArrayEntry): number => p + mapEntryValue(n), 0);
 
@@ -253,7 +250,6 @@ export const shapeViewModel = (
   const rowSets: RowSet[] = fillTextLayout(
     textMeasure,
     rawTextGetter,
-    rawValueGetter,
     valueFormatter,
     nodesWithRoom.map((n: SectorTreeNode) =>
       Object.assign({}, n, {

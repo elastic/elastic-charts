@@ -2,7 +2,7 @@ import { Ratio } from '../types/GeometryTypes';
 import { RgbTuple } from './d3utils';
 import { SectorTreeNode } from '../types/ViewModelTypes';
 
-export const getOpacity = (d: SectorTreeNode) => [0, 0.75, 0.5, 0.3][d.depth];
+export const getOpacity = (d: SectorTreeNode) => [0, 0.8, 0.7, 0.6][d.depth];
 
 export const cyclicalHueInterpolator = (colors: RgbTuple[]) => (d: number) => {
   // const cyclicalHueInterpolator = d3.interpolateRainbow
@@ -53,3 +53,5 @@ export const deepTween = (target: object, source: object, ratio: Ratio) => {
   });
   return target;
 };
+export const arrayToLookup = (keyFun: Function, array: Array<any>) =>
+  Object.assign({}, ...array.map((d) => ({ [keyFun(d)]: d })));

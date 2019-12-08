@@ -24,11 +24,6 @@ export const pieMockConfig: ViewQuery = {
         having exportVal <> 0
            and exportVal > 10000000000
          order by exportVal desc`,
-  valueField: 'exportVal',
-  aggregator: 'sum',
-  order: 'descending',
-  groupByFields: ['sitc1'],
-  dimensions: ['sitc1'],
 };
 export const manyPieMockConfig: ViewQuery = {
   name: 'manyPie',
@@ -39,12 +34,8 @@ export const manyPieMockConfig: ViewQuery = {
       group by origin
         having exportVal <> 0
          order by exportVal desc`,
-  valueField: 'exportVal',
-  aggregator: 'sum',
-  order: 'descending',
-  groupByFields: ['origin'],
-  dimensions: ['countries'],
 };
+
 export const sunburstMockConfig: ViewQuery = {
   name: 'sunburst',
   factsQuerySQL: `select left(sitc4, 1) as sitc1, dest, sum(export_val) as exportVal
@@ -56,12 +47,8 @@ export const sunburstMockConfig: ViewQuery = {
         having exportVal <> 0
            and exportVal > 10000000000
          order by exportVal desc`,
-  valueField: 'exportVal',
-  aggregator: 'sum',
-  order: 'descending',
-  groupByFields: ['sitc1', 'dest'],
-  dimensions: ['sitc1', 'countries'],
 };
+
 const playgroundConfig010 = (): Config =>
   Object.assign({}, config, {
     viewQuery: pieMockConfig,

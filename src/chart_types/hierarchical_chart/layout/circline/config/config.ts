@@ -2,7 +2,7 @@ import { palettes } from './palettes';
 import { fonts } from './fonts';
 import { Config, Numeric } from '../types/ConfigTypes';
 import { goldenRatio, tau } from '../utils/math';
-import { childOrders } from '../utils/groupBy';
+import { childOrders } from '../utils/groupByRollup';
 
 // todo add more structure to the config (like `linkLabel`, which is already nested)
 // todo add more configurability, eg. font weight

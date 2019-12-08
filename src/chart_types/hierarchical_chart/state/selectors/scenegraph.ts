@@ -2,9 +2,9 @@ import { SunburstSpec } from '../../specs/sunburst_spec';
 import { Dimensions } from '../../../../utils/dimensions';
 import { shapeViewModel } from '../../layout/circline/viewModel/viewModel';
 import { measureText } from '../../layout/circline/utils/measure';
-import { dimensionValues, rawTextGetterFn, rawValueGetterFn } from '../../layout/dataProcessing';
-import { ShapeViewModel } from '../../layout/circline/types/ViewModelTypes';
+import { SectorTreeNode, ShapeViewModel } from '../../layout/circline/types/ViewModelTypes';
 import { Theme } from '../../../../utils/themes/theme';
+import { depthKey } from '../../layout/circline/utils/groupByRollup';
 
 export function render(sunburstSpec: SunburstSpec, parentDimensions: Dimensions, theme: Theme): ShapeViewModel {
   const { width, height } = parentDimensions;
@@ -14,14 +14,17 @@ export function render(sunburstSpec: SunburstSpec, parentDimensions: Dimensions,
   const textMeasurer = document.createElement('canvas');
   const textMeasurerCtx = textMeasurer.getContext('2d');
   const myConfig = { ...sunburstSpec.config, width, height };
+  const layers = sunburstSpec.layers;
   const viewModel =
     textMeasurerCtx &&
     shapeViewModel(
       measureText(textMeasurerCtx),
       myConfig,
       facts,
-      rawTextGetterFn(dimensionValues(myConfig.viewQuery)),
-      rawValueGetterFn(/*dimensionValues(myConfig.viewQuery)*/),
+      (node: SectorTreeNode) => layers[node[depthKey] - 1].nodeLabel(node.data.name),
+      sunburstSpec.valueAccessor,
+      sunburstSpec.valueFormatter,
+      [() => null, ...layers.map(({ groupByRollup }) => groupByRollup)],
     );
   const sectorViewModel = viewModel ? viewModel.sectorViewModel : [];
   const rowSets = viewModel ? viewModel.rowSets : [];

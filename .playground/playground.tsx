@@ -5,6 +5,13 @@ import { Sunburst } from '../src/chart_types/hierarchical_chart/specs/sunburst';
 import { mocks } from '../src/chart_types/hierarchical_chart/layout/mocks/mocks';
 import { config } from '../src/chart_types/hierarchical_chart/layout/circline/config/config';
 import { sunburstMockConfig } from '../src/chart_types/hierarchical_chart/layout/mocks/mockConfigs';
+import {
+  countryDimension,
+  productDimension,
+  regionDimension,
+} from '../src/chart_types/hierarchical_chart/layout/mocks/dimensionCodes';
+import { arrayToLookup } from '../src/chart_types/hierarchical_chart/layout/circline/utils/calcs';
+import { Datum } from '../src/chart_types/xy_chart/utils/specs';
 
 export class Playground extends React.Component<{}, { isSunburstShown: boolean }> {
   chartRef: React.RefObject<Chart> = React.createRef();
@@ -45,12 +52,32 @@ export class Playground extends React.Component<{}, { isSunburstShown: boolean }
 
   render() {
     const Spec = this.state.isSunburstShown ? Sunburst : BarSeries;
+    const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
+    const regionLookup = arrayToLookup((d: Datum) => d.region, regionDimension);
+    const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
     return (
       <>
         <div className="chart">
           <Chart ref={this.chartRef}>
             <Spec
               id={'test'}
+              data={mocks.miniSunburst}
+              valueAccessor={(d: Datum) => d.exportVal as number}
+              valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+              layers={[
+                {
+                  groupByRollup: (d: Datum) => d.sitc1,
+                  nodeLabel: (d: Datum) => productLookup[d].name,
+                },
+                {
+                  groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.substr(0, 2),
+                  nodeLabel: (d: Datum) => regionLookup[d].regionName,
+                },
+                {
+                  groupByRollup: (d: Datum) => d.dest,
+                  nodeLabel: (d: Datum) => countryLookup[d].name,
+                },
+              ]}
               config={Object.assign({}, config, {
                 viewQuery: sunburstMockConfig,
                 colors: 'CET2s',
@@ -60,7 +87,6 @@ export class Playground extends React.Component<{}, { isSunburstShown: boolean }
                 }),
                 fontFamily: 'Arial',
                 fillLabel: Object.assign({}, config.fillLabel, {
-                  formatter: (d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
                   fontStyle: 'italic',
                 }),
                 margin: Object.assign({}, config.margin, { top: 0, bottom: 0, left: 0, right: 0 }),
@@ -71,7 +97,6 @@ export class Playground extends React.Component<{}, { isSunburstShown: boolean }
                 circlePadding: 4,
                 backgroundColor: 'rgba(229,229,229,1)',
               })}
-              data={mocks.miniSunburst}
             />
           </Chart>
         </div>
