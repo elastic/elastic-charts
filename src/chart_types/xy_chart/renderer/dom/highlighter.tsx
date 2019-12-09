@@ -61,7 +61,7 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
                 width={geom.width}
                 height={geom.height}
                 className="echHighlighter__rect"
-                clipPath={`url(${clipPathId})`}
+                clipPath={`url(#${clipPathId})`}
               />
             );
           })}

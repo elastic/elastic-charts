@@ -32,6 +32,23 @@ export class Playground extends React.Component {
       <>
         <button onClick={this.onSnapshot}>Snapshot</button>
         <div className="chart">
+          <Chart size={[200, 100]}>
+            <Settings tooltip={{ type: TooltipType.Crosshairs }} showLegend />
+            <BarSeries
+              id="lines"
+              xAccessor={0}
+              yAccessors={[1]}
+              data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 5)}
+            />
+            <BarSeries
+              id="lines2"
+              xAccessor={0}
+              yAccessors={[1]}
+              data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 5)}
+            />
+          </Chart>
+        </div>
+        <div className="chart">
           <Chart>
             <Settings tooltip={{ type: TooltipType.Crosshairs }} showLegend />
             <BarSeries
@@ -46,22 +63,6 @@ export class Playground extends React.Component {
               xAccessor={0}
               yAccessors={[1]}
               stackAccessors={[0]}
-              data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 5)}
-            />
-          </Chart>
-
-          <Chart size={[200, 200]}>
-            <Settings tooltip={{ type: TooltipType.Crosshairs }} showLegend />
-            <BarSeries
-              id="lines"
-              xAccessor={0}
-              yAccessors={[1]}
-              data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 5)}
-            />
-            <BarSeries
-              id="lines2"
-              xAccessor={0}
-              yAccessors={[1]}
               data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 5)}
             />
           </Chart>
