@@ -1,4 +1,5 @@
-import { AnnotationTypes, RectAnnotationDatum, RectAnnotationSpec, Rotation } from '../utils/specs';
+import { AnnotationTypes, RectAnnotationDatum, RectAnnotationSpec } from '../utils/specs';
+import { Rotation } from '../../../utils/commons';
 import { Dimensions } from '../../../utils/dimensions';
 import { GroupId } from '../../../utils/ids';
 import { Scale } from '../../../utils/scales/scales';

@@ -6,13 +6,12 @@ import {
   CompleteBoundedDomain,
   DomainRange,
   LowerBoundedDomain,
-  Position,
-  Rotation,
   TickFormatter,
   UpperBoundedDomain,
   AxisStyle,
   TickFormatterOptions,
 } from './specs';
+import { Position, Rotation } from '../../../utils/commons';
 import { AxisConfig, Theme } from '../../../utils/themes/theme';
 import { Dimensions, Margins } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';

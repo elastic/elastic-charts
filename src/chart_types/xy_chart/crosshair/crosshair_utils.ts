@@ -1,4 +1,4 @@
-import { Rotation } from '../utils/specs';
+import { Rotation } from '../../../utils/commons';
 import { Dimensions } from '../../../utils/dimensions';
 import { Scale } from '../../../utils/scales/scales';
 import { isHorizontalRotation } from '../state/utils';

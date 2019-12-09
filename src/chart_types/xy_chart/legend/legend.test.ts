@@ -2,7 +2,8 @@ import { getAxisId, getGroupId, getSpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
 import { computeLegend } from './legend';
 import { SeriesCollectionValue, getSeriesLabel } from '../utils/series';
-import { AxisSpec, BasicSeriesSpec, Position, SeriesTypes } from '../utils/specs';
+import { AxisSpec, BasicSeriesSpec, SeriesTypes } from '../utils/specs';
+import { Position } from '../../../utils/commons';
 import { ChartTypes } from '../..';
 import { SpecTypes } from '../../../specs/settings';
 

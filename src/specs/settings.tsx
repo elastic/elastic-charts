@@ -1,5 +1,5 @@
 import { $Values } from 'utility-types';
-import { DomainRange, Position, Rendering, Rotation } from '../chart_types/xy_chart/utils/specs';
+import { DomainRange } from '../chart_types/xy_chart/utils/specs';
 import { PartialTheme, Theme } from '../utils/themes/theme';
 import { Domain } from '../utils/domain';
 import { TooltipType, TooltipValueFormatter } from '../chart_types/xy_chart/utils/interactions';
@@ -10,6 +10,7 @@ import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { ChartTypes } from '../chart_types';
 import { GeometryValue } from '../utils/geometry';
 import { SeriesIdentifier } from '../chart_types/xy_chart/utils/series';
+import { Position, Rendering, Rotation } from '../utils/commons';
 
 export type ElementClickListener = (elements: Array<[GeometryValue, SeriesIdentifier]>) => void;
 export type ElementOverListener = (elements: Array<[GeometryValue, SeriesIdentifier]>) => void;

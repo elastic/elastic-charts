@@ -7,7 +7,7 @@ import { BasicSeriesSpec, SubSeriesStringPredicate, SeriesTypes, SeriesSpecs } f
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
 import { ScaleType } from '../../../utils/scales/scales';
 import { LastValues } from '../state/utils';
-import { Datum } from '../../../utils/domain';
+import { Datum } from '../../../utils/commons';
 
 export interface FilledValues {
   /** the x value */

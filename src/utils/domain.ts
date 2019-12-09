@@ -110,5 +110,3 @@ export function computeStackedContinuousDomain(
   const cumulativeSumAccessor = (d: any) => d.value;
   return computeContinuousDataDomain(groups, cumulativeSumAccessor, scaleToExtent);
 }
-
-export type Datum = any;

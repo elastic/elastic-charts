@@ -26,14 +26,13 @@ import {
   isBarSeriesSpec,
   isLineSeriesSpec,
   LineSeriesSpec,
-  Rotation,
   isBandedSpec,
   Fit,
   FitConfig,
   SeriesTypes,
 } from '../utils/specs';
 import { ColorConfig, Theme } from '../../../utils/themes/theme';
-import { identity, mergePartial } from '../../../utils/commons';
+import { identity, mergePartial, Rotation } from '../../../utils/commons';
 import { Dimensions } from '../../../utils/dimensions';
 import { Domain } from '../../../utils/domain';
 import { GroupId, SpecId } from '../../../utils/ids';

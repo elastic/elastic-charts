@@ -1,5 +1,6 @@
 import { createStore, Store } from 'redux';
-import { BarSeriesSpec, BasicSeriesSpec, AxisSpec, Position, SeriesTypes } from '../utils/specs';
+import { BarSeriesSpec, BasicSeriesSpec, AxisSpec, SeriesTypes } from '../utils/specs';
+import { Position } from '../../../utils/commons';
 import { TooltipType } from '../utils/interactions';
 import { ScaleType } from '../../../utils/scales/scales';
 import { chartStoreReducer, GlobalChartState } from '../../../state/chart_state';

@@ -4,11 +4,10 @@ import {
   AnnotationSpec,
   AxisSpec,
   LineAnnotationSpec,
-  Position,
   RectAnnotationSpec,
-  Rotation,
   AnnotationTypes,
 } from '../utils/specs';
+import { Position, Rotation } from '../../../utils/commons';
 import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../utils/themes/theme';
 import { Dimensions } from '../../../utils/dimensions';
 import { getAxisId, getGroupId, GroupId, AnnotationId } from '../../../utils/ids';

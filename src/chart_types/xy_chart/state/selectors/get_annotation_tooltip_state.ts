@@ -4,7 +4,8 @@ import { Point } from '../../../../utils/point';
 import { TooltipValue } from '../../utils/interactions';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getAxisSpecsSelector, getAnnotationSpecsSelector } from './get_specs';
-import { AxisSpec, AnnotationSpec, Rotation, AnnotationTypes } from '../../utils/specs';
+import { AxisSpec, AnnotationSpec, AnnotationTypes } from '../../utils/specs';
+import { Rotation } from '../../../../utils/commons';
 import {
   computeAnnotationTooltipState,
   AnnotationTooltipState,

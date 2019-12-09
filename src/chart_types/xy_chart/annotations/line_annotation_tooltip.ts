@@ -2,12 +2,11 @@ import {
   AnnotationDomainType,
   AnnotationDomainTypes,
   AnnotationTypes,
-  Position,
-  Rotation,
   LineAnnotationSpec,
   LineAnnotationDatum,
   AxisSpec,
 } from '../utils/specs';
+import { Position, Rotation } from '../../../utils/commons';
 import {
   AnnotationTooltipState,
   AnnotationDetails,

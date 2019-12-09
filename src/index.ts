@@ -14,7 +14,8 @@ import 'path2d-polyfill';
 export { DataGenerator } from './utils/data_generators/data_generator';
 export { SeriesCollectionValue } from './chart_types/xy_chart/utils/series';
 export { ChartTypes } from './chart_types';
-export { Position, Rendering, Rotation, TickFormatter } from './chart_types/xy_chart/utils/specs';
+export { Datum, Position, Rendering, Rotation } from './utils/commons';
+export { TickFormatter } from './chart_types/xy_chart/utils/specs';
 export { TooltipType, TooltipValue, TooltipValueFormatter } from './chart_types/xy_chart/utils/interactions';
 export { SeriesIdentifier } from './chart_types/xy_chart/utils/series';
 export {

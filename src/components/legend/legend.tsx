@@ -2,7 +2,7 @@ import React, { createRef } from 'react';
 import classNames from 'classnames';
 import { isVerticalAxis, isHorizontalAxis } from '../../chart_types/xy_chart/utils/axis_utils';
 import { connect } from 'react-redux';
-import { Position } from '../../chart_types/xy_chart/utils/specs';
+import { Position } from '../../utils/commons';
 import { GlobalChartState } from '../../state/chart_state';
 import { getLegendItemsSelector } from '../../state/selectors/get_legend_items';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
