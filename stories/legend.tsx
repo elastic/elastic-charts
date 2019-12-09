@@ -1,4 +1,4 @@
-import { array, boolean, select, number } from '@storybook/addon-knobs';
+import { boolean, select, number } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import React from 'react';
 import {
@@ -17,6 +17,7 @@ import {
 } from '../src/';
 import * as TestDatasets from '../src/utils/data_samples/test_dataset';
 import { TSVB_DATASET } from '../src/utils/data_samples/test_dataset_tsvb';
+import { arrayKnobs } from './common';
 
 storiesOf('Legend', module)
   .add('right', () => {
@@ -197,10 +198,12 @@ storiesOf('Legend', module)
 
     const tsvbSeries = TSVB_DATASET.series;
 
-    const namesArray = array('series names (in sort order)', ['jpg', 'php', 'png', 'css', 'gif']);
+    const namesArray = arrayKnobs('series names (in sort order)', ['jpg', 'php', 'png', 'css', 'gif']);
 
     const seriesComponents = tsvbSeries.map((series: any) => {
-      const nameIndex = namesArray.findIndex((name: string) => name === series.label);
+      const nameIndex = namesArray.findIndex((name) => {
+        return name === series.label;
+      });
       const sortIndex = nameIndex > -1 ? nameIndex : undefined;
 
       return (

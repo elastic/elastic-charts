@@ -620,12 +620,3 @@ export function isAreaSeriesSpec(spec: BasicSeriesSpec): spec is AreaSeriesSpec 
 export function isBandedSpec(y0Accessors: SeriesAccessors['y0Accessors']): boolean {
   return Boolean(y0Accessors && y0Accessors.length > 0);
 }
-
-export function changeNumbers(stringArray: string[]): (string | number)[] {
-  const newArray: (string | number)[] = [];
-  stringArray.map((element: string) => {
-    // eslint-disable-next-line no-unused-expressions
-    !isNaN(parseFloat(element)) ? newArray.push(parseFloat(element)) : newArray.push(element);
-  });
-  return newArray;
-}

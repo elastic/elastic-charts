@@ -1,4 +1,4 @@
-import { array, boolean, color, number, select } from '@storybook/addon-knobs';
+import { boolean, color, number, select } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import React from 'react';
 import {
@@ -85,7 +85,7 @@ storiesOf('Annotations', module)
     );
   })
   .add('[line] basic xDomain ordinal', () => {
-    const dataValues = generateAnnotationData(array('annotation values', ['a', 'c']));
+    const dataValues = generateAnnotationData(arrayKnobs('annotation values', ['a', 'c']));
 
     return (
       <Chart className={'story-chart'}>
