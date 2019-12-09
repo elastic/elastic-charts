@@ -10,7 +10,7 @@ import {
 } from '../utils/specs';
 import { Dimensions } from '../../../utils/dimensions';
 import { AnnotationId, GroupId } from '../../../utils/ids';
-import { Scale, ScaleType } from '../../../utils/scales/scales';
+import { Scale, ScaleType } from '../../../scales';
 import { computeXScaleOffset, getAxesSpecForSpecId, isHorizontalRotation, getSpecsById } from '../state/utils';
 import { Point } from '../../../utils/point';
 import {

@@ -9,9 +9,7 @@ import {
 } from '../utils/specs';
 import { Position } from '../../../utils/commons';
 import { TooltipType, TooltipValue } from '../utils/interactions';
-import { ScaleBand } from '../../../utils/scales/scale_band';
-import { ScaleContinuous } from '../../../utils/scales/scale_continuous';
-import { ScaleType } from '../../../utils/scales/scales';
+import { ScaleType, ScaleContinuous, ScaleBand } from '../../../scales';
 import { IndexedGeometry, GeometryValue, BandedAccessorType } from '../../../utils/geometry';
 import { AxisTicksDimensions, isDuplicateAxis } from '../utils/axis_utils';
 import { AxisId } from '../../../utils/ids';

@@ -36,7 +36,7 @@ import { identity, mergePartial, Rotation } from '../../../utils/commons';
 import { Dimensions } from '../../../utils/dimensions';
 import { Domain } from '../../../utils/domain';
 import { GroupId, SpecId } from '../../../utils/ids';
-import { Scale } from '../../../utils/scales/scales';
+import { Scale } from '../../../scales';
 import { PointGeometry, BarGeometry, AreaGeometry, LineGeometry, IndexedGeometry } from '../../../utils/geometry';
 import { LegendItem } from '../legend/legend';
 import { Spec } from '../../../specs';

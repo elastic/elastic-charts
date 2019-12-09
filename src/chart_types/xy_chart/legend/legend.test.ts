@@ -1,5 +1,5 @@
 import { getAxisId, getGroupId, getSpecId } from '../../../utils/ids';
-import { ScaleType } from '../../../utils/scales/scales';
+import { ScaleType } from '../../../scales';
 import { computeLegend } from './legend';
 import { SeriesCollectionValue, getSeriesLabel } from '../utils/series';
 import { AxisSpec, BasicSeriesSpec, SeriesTypes } from '../utils/specs';

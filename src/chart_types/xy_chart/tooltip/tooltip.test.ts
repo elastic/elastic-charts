@@ -1,4 +1,4 @@
-import { ScaleType } from '../../../utils/scales/scales';
+import { ScaleType } from '../../../scales';
 import { AxisSpec, BarSeriesSpec, SeriesTypes } from '../utils/specs';
 import { Position } from '../../../utils/commons';
 import { formatTooltip } from './tooltip';

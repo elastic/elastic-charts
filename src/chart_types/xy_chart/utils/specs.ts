@@ -11,7 +11,7 @@ import {
 import { Accessor, AccessorFormat } from '../../../utils/accessor';
 import { RecursivePartial, Color, Position, Datum } from '../../../utils/commons';
 import { AxisId, GroupId } from '../../../utils/ids';
-import { ScaleContinuousType, ScaleType } from '../../../utils/scales/scales';
+import { ScaleContinuousType, ScaleType } from '../../../scales';
 import { CurveType } from '../../../utils/curves';
 import { RawDataSeriesDatum, SeriesIdentifier } from './series';
 import { AnnotationTooltipFormatter } from '../annotations/annotation_utils';

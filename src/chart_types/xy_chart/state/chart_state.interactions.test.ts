@@ -2,7 +2,7 @@ import { createStore, Store } from 'redux';
 import { BarSeriesSpec, BasicSeriesSpec, AxisSpec, SeriesTypes } from '../utils/specs';
 import { Position } from '../../../utils/commons';
 import { TooltipType } from '../utils/interactions';
-import { ScaleType } from '../../../utils/scales/scales';
+import { ScaleType } from '../../../scales';
 import { chartStoreReducer, GlobalChartState } from '../../../state/chart_state';
 import { SettingsSpec, DEFAULT_SETTINGS_SPEC, SpecTypes } from '../../../specs';
 import { computeSeriesGeometriesSelector } from './selectors/compute_series_geometries';

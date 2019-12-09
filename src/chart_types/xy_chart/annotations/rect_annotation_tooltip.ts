@@ -2,7 +2,7 @@ import { AnnotationTypes, RectAnnotationDatum, RectAnnotationSpec } from '../uti
 import { Rotation } from '../../../utils/commons';
 import { Dimensions } from '../../../utils/dimensions';
 import { GroupId } from '../../../utils/ids';
-import { Scale } from '../../../utils/scales/scales';
+import { Scale } from '../../../scales';
 import { Point } from '../../../utils/point';
 import {
   AnnotationTooltipFormatter,
