@@ -8,7 +8,7 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Theme } from '../../../../utils/themes/theme';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
-import { sunburstGeometries } from '../../state/selectors/compute_geometries';
+import { sunburstGeometries } from '../../state/selectors/geometries';
 import { nullSectorViewModel, ShapeViewModel } from '../../layout/circline/types/ViewModelTypes';
 import { renderSunburstCanvas2d } from './canvasRenderers';
 
