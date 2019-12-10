@@ -9,8 +9,7 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { Theme } from '../../../../utils/themes/theme';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { computeGeometriesSelector } from '../../state/selectors/compute_geometries';
-import { ShapeViewModel } from '../../layout/circline/types/ViewModelTypes';
-import { config } from '../../layout/circline/config/config';
+import { nullSectorViewModel, ShapeViewModel } from '../../layout/circline/types/ViewModelTypes';
 import { renderSunburstCanvas2d } from './canvasRenderers';
 
 interface ReactiveChartStateProps {
@@ -97,15 +96,6 @@ const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
     },
     dispatch,
   );
-
-export const nullSectorViewModel = (): ShapeViewModel => ({
-  config,
-  sectorViewModel: [],
-  rowSets: [],
-  linkLabelViewModels: [],
-  outsideLinksViewModel: [],
-  diskCenter: { x: 0, y: 0 },
-});
 
 const DEFAULT_PROPS: ReactiveChartStateProps = {
   initialized: false,

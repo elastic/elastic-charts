@@ -1,6 +1,7 @@
 import { Config } from './ConfigTypes';
 import { Coordinate, Distance, PointObject, PointTuple, Radian } from './GeometryTypes';
 import { Color, FontWeight } from './Types';
+import { config } from '../config/config';
 
 export type LinkLabelVM = {
   link: [PointTuple, ...PointTuple[]]; // at least one point
@@ -57,6 +58,14 @@ export type ShapeViewModel = {
   diskCenter: PointObject;
 };
 
+export const nullSectorViewModel = (): ShapeViewModel => ({
+  config,
+  sectorViewModel: [],
+  rowSets: [],
+  linkLabelViewModels: [],
+  outsideLinksViewModel: [],
+  diskCenter: { x: 0, y: 0 },
+});
 type TreeLevel = number;
 
 export interface TreeNode {

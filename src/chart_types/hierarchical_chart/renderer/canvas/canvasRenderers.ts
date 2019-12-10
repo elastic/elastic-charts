@@ -1,4 +1,5 @@
 import { Coordinate, Pixels } from '../../layout/circline/types/GeometryTypes';
+import { addOpacity } from '../../layout/circline/utils/calcs';
 import {
   LinkLabelVM,
   OutsideLinksViewModel,
@@ -7,7 +8,6 @@ import {
   ShapeViewModel,
   TextRow,
 } from '../../layout/circline/types/ViewModelTypes';
-import { addOpacity } from '../../layout/circline/utils/calcs';
 
 // withContext abstracts out the otherwise error-prone save/restore pairing; it can be nested and/or put into sequence
 // The idea is that you just set what's needed for the enclosed snippet, which may temporarily override values in the
@@ -22,7 +22,7 @@ const withContext = (ctx: CanvasRenderingContext2D, fun: (ctx: CanvasRenderingCo
 const clearCanvas = (ctx: CanvasRenderingContext2D, width: Coordinate, height: Coordinate, backgroundColor: string) =>
   withContext(ctx, (ctx) => {
     // two steps, as the backgroundColor may have a non-one opacity
-    // we could avoid `fillRect` by setting the <canvas> element background via CSS
+    // todo we should avoid `fillRect` by setting the <canvas> element background via CSS
     ctx.clearRect(-width, -height, 2 * width, 2 * height); // remove past contents
     ctx.fillStyle = backgroundColor;
     ctx.fillRect(-width, -height, 2 * width, 2 * height); // new background

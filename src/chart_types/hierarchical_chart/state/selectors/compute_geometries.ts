@@ -6,8 +6,7 @@ import { getSpecsFromStore } from '../../../../state/utils';
 import { ChartTypes } from '../../..';
 import { SpecTypes } from '../../../xy_chart/utils/specs';
 import { render } from './scenegraph';
-import { nullSectorViewModel } from '../../renderer/canvas/sunburst';
-import { ShapeViewModel } from '../../layout/circline/types/ViewModelTypes';
+import { nullSectorViewModel, ShapeViewModel } from '../../layout/circline/types/ViewModelTypes';
 
 const getSpecs = (state: GlobalChartState) => state.specs;
 const getParentDimensionsSelector = (state: GlobalChartState) => state.parentDimensions;
