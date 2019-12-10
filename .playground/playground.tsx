@@ -1,7 +1,6 @@
 import React from 'react';
-import { BarSeries, Chart } from '../src';
+import { BarSeries, Chart, Sunburst } from '../src';
 
-import { Sunburst } from '../src/chart_types/hierarchical_chart/specs/sunburst';
 import { mocks } from '../src/chart_types/hierarchical_chart/layout/mocks/mocks';
 import { config } from '../src/chart_types/hierarchical_chart/layout/circline/config/config';
 import { sunburstMockConfig } from '../src/chart_types/hierarchical_chart/layout/mocks/mockConfigs';
