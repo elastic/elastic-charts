@@ -13,6 +13,7 @@ import { computeGeometriesSelector } from '../../state/selectors/compute_geometr
 import { ShapeViewModel } from '../../layout/circline/types/ViewModelTypes';
 import { config } from '../../layout/circline/config/config';
 import { tau } from '../../layout/circline/utils/math';
+import { renderSunburstCanvas2d } from './canvasRenderers';
 
 interface ReactiveChartStateProps {
   initialized: boolean;
@@ -109,6 +110,25 @@ const renderSunburst = (geometries: ShapeViewModel) => {
   );
 };
 
+const canvasFrag = (width: number, height: number, dpi: number, canvasRef: React.RefObject<HTMLCanvasElement>) => (
+  <canvas
+    ref={canvasRef}
+    width={width * dpi}
+    height={height * dpi}
+    style={{
+      padding: 0,
+      margin: 0,
+      border: 0,
+      background: 'transparent',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width,
+      height,
+    }}
+  />
+);
+
 const konvaFrag = (width: number, height: number, geometries: ShapeViewModel, forwardStageRef: RefObject<Stage>) => (
   <Stage
     width={width}
@@ -125,40 +145,40 @@ const konvaFrag = (width: number, height: number, geometries: ShapeViewModel, fo
   </Stage>
 );
 
+const nativeCanvas2d = false;
+
 const renderFrag = (
   width: number,
   height: number,
+  dpi: number,
   geometries: ShapeViewModel,
   canvasRef: React.RefObject<HTMLCanvasElement>,
   forwardStageRef: RefObject<Stage>,
-) => (
-  <>
-    {konvaFrag(width, height, geometries, forwardStageRef)}
-    <canvas
-      ref={canvasRef}
-      style={{
-        padding: 0,
-        margin: 0,
-        border: 0,
-        background: 'transparent',
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width,
-        height,
-      }}
-    />
-  </>
-);
+) =>
+  nativeCanvas2d ? canvasFrag(width, height, dpi, canvasRef) : konvaFrag(width, height, geometries, forwardStageRef);
+
+const canvasRender = (
+  ctx: CanvasRenderingContext2D,
+  devicePixelRatio: number,
+  { width, height }: Dimensions,
+  shapeViewModel: ShapeViewModel,
+) => {
+  renderSunburstCanvas2d(ctx, devicePixelRatio, {
+    ...shapeViewModel,
+    config: { ...shapeViewModel.config, width, height },
+  });
+};
 
 type SunburstProps = ReactiveChartOwnProps & ReactiveChartStateProps & ReactiveChartDispatchProps;
 class SunburstComponent extends React.Component<SunburstProps> {
   static displayName = 'Sunburst';
-  firstRender = true;
+  firstRender = true; // this'll be useful for stable resizing of treemaps
   private readonly canvasRef: React.RefObject<HTMLCanvasElement>;
+  private readonly devicePixelRatio: number; // fixme this be no constant: multi-monitor window drag may necessitate modifying the `<canvas>` dimensions
   constructor(props: Readonly<SunburstProps>) {
     super(props);
     this.canvasRef = React.createRef();
+    this.devicePixelRatio = window.devicePixelRatio;
   }
 
   componentDidUpdate() {
@@ -168,10 +188,15 @@ class SunburstComponent extends React.Component<SunburstProps> {
   }
 
   componentDidMount() {
-    const canvas = this.canvasRef.current;
-    const ctx = canvas && canvas.getContext('2d');
-    // eslint-disable-next-line no-console
-    console.log(ctx);
+    // the DOM element has just been appended, and getContext('2d') is always non-null,
+    // so we could use a couple of ! non-null assertions but no big plus
+    if (nativeCanvas2d) {
+      const canvas = this.canvasRef.current;
+      const ctx = canvas && canvas.getContext('2d');
+      if (ctx) {
+        canvasRender(ctx, this.devicePixelRatio, this.props.chartContainerDimensions, this.props.geometries);
+      }
+    }
   }
 
   render() {
@@ -183,6 +208,7 @@ class SunburstComponent extends React.Component<SunburstProps> {
     return renderFrag(
       chartContainerDimensions.width,
       chartContainerDimensions.height,
+      this.devicePixelRatio,
       this.props.geometries,
       this.canvasRef,
       this.props.forwardStageRef,

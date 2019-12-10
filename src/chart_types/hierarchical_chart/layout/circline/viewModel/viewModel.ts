@@ -5,7 +5,7 @@ import { Config } from '../types/ConfigTypes';
 import { tau, trueBearingToStandardPositionAngle } from '../utils/math';
 import { cyclicalHueInterpolator, getOpacity } from '../utils/calcs';
 import { Distance, Pixels, Radian, Radius } from '../types/GeometryTypes';
-import { lineWidthMult } from '../utils/canvasRenderers';
+import { lineWidthMult } from '../../../renderer/canvas/canvasRenderers';
 import { diffAngle, meanAngle } from '../geometry';
 import { treemap as squarifiedTreemap } from '../utils/treemap';
 import { sunburst } from '../utils/sunburst';

@@ -114,7 +114,7 @@ storiesOf('Sunburst', module)
               formatter: (d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
               fontStyle: 'italic',
             }),
-            margin: Object.assign({}, config.margin, { top: 0, bottom: 0, left: 0, right: 0 }),
+            margin: Object.assign({}, config.margin, { top: 0, bottom: 0, left: 0.2, right: 0 }),
             minFontSize: 1,
             idealFontSizeJump: 1.1,
             outerSizeRatio: 0.9, // - 0.5 * Math.random(),

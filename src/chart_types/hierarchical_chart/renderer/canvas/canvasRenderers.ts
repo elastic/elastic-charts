@@ -1,4 +1,4 @@
-import { Coordinate, Pixels } from '../types/GeometryTypes';
+import { Coordinate, Pixels } from '../../layout/circline/types/GeometryTypes';
 import {
   LinkLabelVM,
   OutsideLinksViewModel,
@@ -6,8 +6,8 @@ import {
   SectorViewModel,
   ShapeViewModel,
   TextRow,
-} from '../types/ViewModelTypes';
-import { addOpacity } from './calcs';
+} from '../../layout/circline/types/ViewModelTypes';
+import { addOpacity } from '../../layout/circline/utils/calcs';
 
 // withContext abstracts out the otherwise error-prone save/restore pairing; it can be nested and/or put into sequence
 // The idea is that you just set what's needed for the enclosed snippet, which may temporarily override values in the
@@ -119,7 +119,7 @@ const renderLinkLabels = (
     });
   });
 
-export const renderShape = (
+export const renderSunburstCanvas2d = (
   ctx: CanvasRenderingContext2D,
   dpr: number,
   { config, sectorViewModel, rowSets, outsideLinksViewModel, linkLabelViewModels, diskCenter }: ShapeViewModel,
@@ -182,34 +182,3 @@ export const renderShape = (
     ]);
   });
 };
-
-/*
-// for debug use
-export const drawCircline = (
-  ctx: CanvasRenderingContext2D,
-  {
-    x,
-    y,
-    r,
-    inside,
-    valid,
-    from,
-    to,
-  }: { x: number; y: number; r: number; inside: number; valid: number; from: number; to: number },
-  {
-    fillStyle,
-    strokeStyle,
-    lineWidth,
-  }: { fillStyle?: string; strokeStyle?: string; lineWidth?: number } = {}
-) => {
-  ctx.save();
-  ctx.beginPath();
-  ctx.strokeStyle = strokeStyle || 'red';
-  ctx.fillStyle = fillStyle || 'red';
-  ctx.lineWidth = lineWidth === void 0 ? 1 : lineWidth;
-  ctx.arc(x, y, r === void 1 ? 3 : r, from === void 0 ? 0 : from, to === void 0 ? tau : to);
-  if (1 || inside === void 0) ctx.stroke();
-  else ctx.fill();
-  ctx.restore();
-};
-*/
