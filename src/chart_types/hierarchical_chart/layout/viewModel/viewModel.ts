@@ -7,15 +7,14 @@ import { cyclicalHueInterpolator, getOpacity } from '../utils/calcs';
 import { Distance, Pixels, Radian, Radius } from '../types/GeometryTypes';
 import { lineWidthMult } from '../../renderer/canvas/canvasRenderers';
 import { diffAngle, meanAngle } from '../geometry';
-import { treemap as squarifiedTreemap } from '../utils/treemap';
 import { sunburst } from '../utils/sunburst';
+import { AccessorFn } from '../../../../utils/accessor';
 import {
   OutsideLinksViewModel,
   RowSet,
   SectorTreeNode,
   SectorViewModel,
   ShapeViewModel,
-  TreeNode,
 } from '../types/ViewModelTypes';
 import {
   aggregateAccessor,
@@ -39,7 +38,6 @@ import {
   ringSectorOuterRadius,
   toRGB,
 } from '../utils/d3utils';
-import { AccessorFn } from '../../../../utils/accessor';
 
 export const makeSectorViewModel = (
   ringSectorPaths: SVGPathString[],
@@ -110,7 +108,6 @@ export const shapeViewModel = (
     clockwiseSectors,
     specialFirstInnermostSector,
     minFontSize,
-    treemap,
   } = config;
 
   const innerWidth = width * (1 - Math.min(1, margin.left + margin.right));
@@ -124,8 +121,6 @@ export const shapeViewModel = (
   const hierarchy = mapsToArrays(hierarchyMap, aggregateComparator(mapEntryValue, childOrders.descending));
 
   const totalValue = hierarchy.reduce((p: number, n: ArrayEntry): number => p + mapEntryValue(n), 0);
-
-  const paddingAccessor = () => 0;
 
   const angularRange = tau;
   const sunburstValueToAreaScale = angularRange / totalValue;
@@ -143,18 +138,6 @@ export const shapeViewModel = (
         specialFirstInnermostSector,
       )
     : [];
-
-  const treemapInnerArea = 1; // assuming 1 x 1 unit square
-  const treemapValueToAreaScale = treemapInnerArea / totalValue;
-  const treemapAreaAccessor = (e: ArrayEntry) => treemapValueToAreaScale * mapEntryValue(e);
-  const treemapViewModel = squarifiedTreemap(hierarchy, treemapAreaAccessor, paddingAccessor, {
-    x0: 0,
-    y0: 0,
-    width: 1,
-    height: 1,
-  })
-    .slice(1)
-    .map((d: TreeNode) => Object.assign(d, { x0: d.x0 * tau, x1: d.x1 * tau }));
 
   const treeHeight = sunburstViewModel.reduce((p: number, n: any) => Math.max(p, entryValue(n.node).depth), 0); // 1: pie, 2: two-ring donut etc.
 
@@ -180,21 +163,15 @@ export const shapeViewModel = (
   const appliedFromAngle = fromAngle + straighteningAngleDifference;
   const appliedToAngle = toAngle - straighteningAngleDifference;
   const rawChildNodes = sunburstViewModel; // gets rid of the root node
-  const treeMapChildren = treemapViewModel; // treeMap.descendants().slice(1); // gets rid of the root node
   const childNodes = rawChildNodes.map<SectorTreeNode>((n: any, index: number) => {
-    // this block blends pie chart and treemap x/y values
-    const nX0 = n.x0 * (1 - treemap) + treeMapChildren[index].x0 * treemap;
-    const nX1 = n.x1 * (1 - treemap) + treeMapChildren[index].x1 * treemap;
-    const y0 = n.y0 * (1 - treemap) + treeMapChildren[index].y0 * treemap;
-    const y1 = n.y1 * (1 - treemap) + treeMapChildren[index].y1 * treemap;
-    // in case of the pie - er, d3.partition -  {y0: 0, y1: 1} corresponds to the root node so we bump for compat, fixme
-    const y0px = innerRadius + y0 * ringThickness + index * shear;
-    const y1px = innerRadius + y1 * ringThickness + index * shear;
-    const yMidPx = innerRadius + ((y0 + y1) / 2) * ringThickness + index * shear;
+    // in case of the pie, {y0: 0, y1: 1} corresponds to the root node so we bump for compat, fixme
+    const y0px = innerRadius + n.y0 * ringThickness + index * shear;
+    const y1px = innerRadius + n.y1 * ringThickness + index * shear;
+    const yMidPx = innerRadius + ((n.y0 + n.y1) / 2) * ringThickness + index * shear;
 
     const scale = (x: Radian) => appliedFromAngle + (x * (appliedToAngle - appliedFromAngle)) / tau;
-    const nx0 = nX0 * (1 - collapse);
-    const nx1 = nX1 - collapse * nX0;
+    const nx0 = n.x0 * (1 - collapse);
+    const nx1 = n.x1 - collapse * n.x0;
     const xA = scale(Math.min(nx0, nx1));
     const xB = scale(Math.max(nx0, nx1));
     const x0 = xA + rotation;
@@ -206,8 +183,8 @@ export const shapeViewModel = (
       value: aggregateAccessor(node),
       x0,
       x1,
-      y0,
-      y1,
+      y0: n.y0,
+      y1: n.y1,
       y0px,
       y1px,
       yMidPx,
@@ -234,7 +211,7 @@ export const shapeViewModel = (
   const textFillOrigins: [number, number][] = nodesWithRoom.map((node: SectorTreeNode) => {
     const midAngle = meanAngle(node.x0 * (1 - collapse), node.x1 - node.x0 * collapse);
     const divider = 10;
-    const innerBias = fillOutside ? 9 : 1 + treemap * 8;
+    const innerBias = fillOutside ? 9 : 1;
     const outerBias = divider - innerBias;
     // prettier-ignore
     const radius =

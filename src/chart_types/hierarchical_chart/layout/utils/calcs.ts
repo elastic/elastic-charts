@@ -53,5 +53,6 @@ export const deepTween = (target: object, source: object, ratio: Ratio) => {
   });
   return target;
 };
+
 export const arrayToLookup = (keyFun: Function, array: Array<any>) =>
   Object.assign({}, ...array.map((d) => ({ [keyFun(d)]: d })));
