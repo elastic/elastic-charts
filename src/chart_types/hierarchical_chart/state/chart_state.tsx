@@ -1,7 +1,6 @@
-import React, { RefObject } from 'react';
-import { InternalChartState, BackwardRef } from '../../../state/chart_state';
+import React from 'react';
+import { InternalChartState } from '../../../state/chart_state';
 import { ChartTypes } from '../..';
-import { Stage } from 'react-konva';
 import { Sunburst } from '../renderer/canvas/sunburst';
 
 const EMPTY_MAP = new Map();
@@ -22,10 +21,10 @@ export class SunburstState implements InternalChartState {
   getLegendItemsValues() {
     return EMPTY_MAP;
   }
-  chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<Stage>) {
+  chartRenderer() {
     return (
       <React.Fragment>
-        <Sunburst forwardStageRef={forwardStageRef} />
+        <Sunburst />
       </React.Fragment>
     );
   }
