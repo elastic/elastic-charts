@@ -9,10 +9,11 @@ import { nullSectorViewModel, ShapeViewModel } from '../../layout/circline/types
 import { SunburstSpec } from '../../specs/index';
 
 const getSpecs = (state: GlobalChartState) => state.specs;
-const getParentDimensionsSelector = (state: GlobalChartState) => state.parentDimensions;
 
-export const computeGeometriesSelector = createCachedSelector(
-  [getSpecs, getParentDimensionsSelector, getChartThemeSelector],
+const getParentDimensions = (state: GlobalChartState) => state.parentDimensions;
+
+export const sunburstGeometries = createCachedSelector(
+  [getSpecs, getParentDimensions, getChartThemeSelector],
   (specs, parentDimensions, theme): ShapeViewModel => {
     const pieSpecs = getSpecsFromStore<SunburstSpec>(specs, ChartTypes.Sunburst, SpecTypes.Series);
     return pieSpecs.length === 1 ? render(pieSpecs[0], parentDimensions, theme) : nullSectorViewModel();
