@@ -1,5 +1,5 @@
-import { Coordinate, Pixels } from '../../layout/circline/types/GeometryTypes';
-import { addOpacity } from '../../layout/circline/utils/calcs';
+import { Coordinate, Pixels } from '../../layout/types/GeometryTypes';
+import { addOpacity } from '../../layout/utils/calcs';
 import {
   LinkLabelVM,
   OutsideLinksViewModel,
@@ -7,7 +7,7 @@ import {
   SectorViewModel,
   ShapeViewModel,
   TextRow,
-} from '../../layout/circline/types/ViewModelTypes';
+} from '../../layout/types/ViewModelTypes';
 
 // withContext abstracts out the otherwise error-prone save/restore pairing; it can be nested and/or put into sequence
 // The idea is that you just set what's needed for the enclosed snippet, which may temporarily override values in the

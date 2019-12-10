@@ -1,9 +1,9 @@
 import React from 'react';
 import { BarSeries, Chart, Sunburst } from '../src';
 import { mocks } from '../src/mocks/hierarchical/index';
-import { config } from '../src/chart_types/hierarchical_chart/layout/circline/config/config';
+import { config } from '../src/chart_types/hierarchical_chart/layout/config/config';
 import { countryDimension, productDimension, regionDimension } from '../src/mocks/hierarchical/dimensionCodes';
-import { arrayToLookup } from '../src/chart_types/hierarchical_chart/layout/circline/utils/calcs';
+import { arrayToLookup } from '../src/chart_types/hierarchical_chart/layout/utils/calcs';
 import { Datum } from '../src/chart_types/xy_chart/utils/specs';
 
 export class Playground extends React.Component<{}, { isSunburstShown: boolean }> {

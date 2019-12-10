@@ -9,7 +9,7 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { Theme } from '../../../../utils/themes/theme';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { sunburstGeometries } from '../../state/selectors/geometries';
-import { nullSectorViewModel, ShapeViewModel } from '../../layout/circline/types/ViewModelTypes';
+import { nullSectorViewModel, ShapeViewModel } from '../../layout/types/ViewModelTypes';
 import { renderSunburstCanvas2d } from './canvasRenderers';
 
 interface ReactiveChartStateProps {

@@ -1,11 +1,11 @@
 import { ChartTypes } from '../../index';
 import { Datum, SpecTypes } from '../../xy_chart/utils/specs';
-import { config } from '../layout/circline/config/config';
+import { config } from '../layout/config/config';
 import { FunctionComponent } from 'react';
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
 import { AccessorFn } from '../../../utils/accessor';
 import { Spec } from '../../../specs/index';
-import { Config } from '../layout/circline/types/ConfigTypes';
+import { Config } from '../layout/types/ConfigTypes';
 
 interface Layer {
   groupByRollup: AccessorFn;
