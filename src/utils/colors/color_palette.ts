@@ -2,6 +2,22 @@ import * as d3ScaleChromatic from 'd3-scale-chromatic';
 import { rgb as d3Rgb, lab as d3Lab, RGBColor } from 'd3-color';
 import { interpolateLab } from 'd3-interpolate';
 import { scaleLinear, scaleSequential } from 'd3-scale';
+import { palettes } from '../themes/colors';
+
+export type ColorPaletteName =
+  | 'categorical'
+  | 'colorBlind'
+  | 'grayscale'
+  | 'status'
+  | 'temperature'
+  | 'warm'
+  | 'cool'
+  | 'complimentary';
+
+export type ColorPalette = {
+  name: ColorPaletteName;
+  steps?: number;
+};
 
 export type SequentialColorPaletteName =
   | 'blues'
@@ -62,6 +78,8 @@ export type DivergingInterpolatorName =
 
 type d3ScaleChromaticProp = keyof typeof d3ScaleChromatic;
 
+export const euiColorBlindPalette = palettes.echPaletteColorBlind.colors;
+
 function transformSchemeName(schemeName: CategoricalSchemeName): string {
   const schemeNameCapitalized = schemeName.charAt(0).toUpperCase() + schemeName.slice(1);
   return `scheme${schemeNameCapitalized}`;
@@ -107,9 +125,12 @@ export function getCategoricalPalette(name: CategoricalSchemeName): ReadonlyArra
   return d3ScaleChromatic.schemeCategory10;
 }
 
-export function getSequentialPalette(name: SequentialColorPaletteName, steps: number): ReadonlyArray<string> {
+export function getSequentialPalette(name: SequentialColorPaletteName, steps?: number): ReadonlyArray<string> {
   const interpolator = getInterpolatorOrThrow(name);
   const paletteColors = [];
+  if (!steps || steps < 2) {
+    throw new Error(`Number of steps for ${name} palette needs to be defined and greater or equal to 2`);
+  }
   const scale = scaleSequential(interpolator).domain([1, steps]);
   for (let i = 1; i <= steps; i++) {
     paletteColors.push(d3Rgb(scale(i)).hex());
@@ -131,23 +152,14 @@ export function getCustomSequentialPalette(colors: string[], steps: number): Rea
   return paletteColors;
 }
 
-export function getCyclicalPalette(name: CyclicalPaletteName, steps: number): ReadonlyArray<string> {
-  if (steps <= 0) {
-    throw new Error('Number of steps should be a positive integer');
-  }
-  const interpolator = getInterpolatorOrThrow(name);
-  const paletteColors = [];
-  for (let i = 0; i < steps; i++) {
-    paletteColors.push(d3Rgb(interpolator(i / steps)).hex());
-  }
-  return paletteColors;
-}
-
 export function getDivergingPalette(
-  steps: number,
-  interpolatorName: DivergingInterpolatorName = 'spectral',
+  interpolatorName: DivergingInterpolatorName,
+  steps?: number,
 ): ReadonlyArray<string> {
   const interpolator = getInterpolatorOrThrow(interpolatorName);
+  if (!steps || steps < 2) {
+    throw new Error(`Number of steps for ${interpolatorName} palette needs to be defined and greater or equal to 2`);
+  }
   const scale = scaleSequential(interpolator).domain([1, steps]);
   const paletteColors = [];
   for (let i = 1; i <= steps; i++) {

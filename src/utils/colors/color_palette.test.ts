@@ -1,7 +1,6 @@
 import {
   getCustomSequentialPalette,
   getSequentialPalette,
-  getCyclicalPalette,
   getCategoricalPalette,
   getDivergingPalette,
 } from './color_palette';
@@ -148,46 +147,6 @@ describe('ColorPalette', () => {
     });
   });
 
-  describe('cyclical color scale', () => {
-    it('calculates cyclical rainbow palette for a given number of steps', () => {
-      const expected = [
-        '#6e40aa',
-        '#bf3caf',
-        '#fe4b83',
-        '#ff7847',
-        '#e2b72f',
-        '#aff05b',
-        '#52f667',
-        '#1ddfa3',
-        '#23abd8',
-        '#4c6edb',
-      ];
-      expect(getCyclicalPalette('rainbow', 10)).toEqual(expected);
-    });
-
-    it('calculates cyclical sinebow palette for a given number of steps', () => {
-      const expected = [
-        '#ff4040',
-        '#e78d0b',
-        '#a7d503',
-        '#58fc2a',
-        '#18f472',
-        '#00bfbf',
-        '#1872f4',
-        '#582afc',
-        '#a703d5',
-        '#e70b8d',
-      ];
-      expect(getCyclicalPalette('sinebow', 10)).toEqual(expected);
-    });
-
-    it('throws error if number of steps less or equal than zero', () => {
-      expect(() => {
-        getCyclicalPalette('rainbow', -2);
-      }).toThrow();
-    });
-  });
-
   describe('diverging color scale', () => {
     it('calculates diverging palette with RdYlGn interpolator for a given number of steps', () => {
       const expected = [
@@ -202,22 +161,22 @@ describe('ColorPalette', () => {
         '#289b51',
         '#006837',
       ];
-      expect(getDivergingPalette(10, 'RdYlGn')).toEqual(expected);
+      expect(getDivergingPalette('RdYlGn', 10)).toEqual(expected);
     });
-    it('calculates diverging palette with default interpolator for a given number of steps', () => {
+    it('calculates diverging palette with RdYlBu interpolator for a given number of steps', () => {
       const expected = [
-        '#9e0142',
-        '#d6424b',
-        '#f47d4d',
-        '#fdbe70',
-        '#feeda1',
-        '#f0f8a9',
-        '#bee5a0',
-        '#77c6a7',
-        '#438fb4',
-        '#5e4fa2',
+        '#a50026',
+        '#d8382d',
+        '#f47c4a',
+        '#fdbe72',
+        '#feeda5',
+        '#edf7dd',
+        '#bce1ed',
+        '#81b6d6',
+        '#4d7ab7',
+        '#313695',
       ];
-      expect(getDivergingPalette(10)).toEqual(expected);
+      expect(getDivergingPalette('RdYlBu', 10)).toEqual(expected);
     });
   });
 });

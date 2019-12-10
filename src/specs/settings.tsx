@@ -9,6 +9,7 @@ import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { ChartTypes } from '../chart_types';
 import { GeometryValue } from '../utils/geometry';
 import { SeriesIdentifier } from '../chart_types/xy_chart/utils/series';
+import { ColorPalette } from '../utils/colors/color_palette';
 
 export type ElementClickListener = (values: GeometryValue[]) => void;
 export type ElementOverListener = (values: GeometryValue[]) => void;
@@ -91,6 +92,7 @@ export interface SettingsSpec extends Spec {
   onRenderChange?: RenderChangeListener;
   xDomain?: Domain | DomainRange;
   resizeDebounce?: number;
+  colorPalette?: ColorPalette;
 }
 
 export type DefaultSettingsProps =

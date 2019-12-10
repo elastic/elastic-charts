@@ -38,6 +38,8 @@ import {
 } from '../src/chart_types/xy_chart/utils/specs';
 import moment from 'moment';
 import { DateTime } from 'luxon';
+import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
+import { ColorPaletteName } from '../src/utils/colors/color_palette';
 
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {
   return number(
@@ -1064,6 +1066,71 @@ storiesOf('Stylings', module)
           yAccessors={['y']}
           pointStyleAccessor={hasThreshold ? pointStyleAccessor : undefined}
           data={[{ x: 0, y: 0.5 }, { x: 1, y: 4 }, { x: 2, y: 1 }, { x: 3, y: 4 }]}
+        />
+      </Chart>
+    );
+  })
+  .add('custom color palette', () => {
+    const tag = 'bar chart';
+    const groupName = 'Color Palette';
+    const options: Array<ColorPaletteName> = [
+      'categorical',
+      'colorBlind',
+      'grayscale',
+      'status',
+      'temperature',
+      'warm',
+      'cool',
+    ];
+    return (
+      <Chart className={'story-chart'}>
+        <Settings
+          debug={boolean('debug', false)}
+          colorPalette={{
+            name: select(`colorPalette.name (${tag})`, options, 'temperature', groupName),
+            steps: range(`colorPalette.steps (${tag})`, 2, 10, 3, groupName, 1),
+          }}
+        />
+        <Axis
+          id={getAxisId('bottom')}
+          position={Position.Bottom}
+          title={'Bottom axis'}
+          showOverlappingTicks={boolean('showOverlappingTicks bottom axis', false)}
+          showOverlappingLabels={boolean('showOverlappingLabels bottom axis', false)}
+          tickFormat={(d) => Number(d).toFixed(2)}
+        />
+        <Axis
+          id={getAxisId('left2')}
+          title={'Left axis'}
+          position={Position.Left}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
+        />
+        <BarSeries
+          id={getSpecId(KIBANA_METRICS.metrics.kibana_os_load[2].metric.label)}
+          xScaleType={ScaleType.Time}
+          yScaleType={ScaleType.Linear}
+          xAccessor={0}
+          yAccessors={[1]}
+          stackAccessors={[0]}
+          data={KIBANA_METRICS.metrics.kibana_os_load[2].data.slice(0, 20)}
+        />
+        <BarSeries
+          id={getSpecId(KIBANA_METRICS.metrics.kibana_os_load[1].metric.label)}
+          xScaleType={ScaleType.Time}
+          yScaleType={ScaleType.Linear}
+          xAccessor={0}
+          yAccessors={[1]}
+          stackAccessors={[0]}
+          data={KIBANA_METRICS.metrics.kibana_os_load[1].data.slice(0, 20)}
+        />
+        <BarSeries
+          id={getSpecId(KIBANA_METRICS.metrics.kibana_os_load[0].metric.label)}
+          xScaleType={ScaleType.Time}
+          yScaleType={ScaleType.Linear}
+          xAccessor={0}
+          yAccessors={[1]}
+          stackAccessors={[0]}
+          data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 20)}
         />
       </Chart>
     );
