@@ -1,17 +1,8 @@
 import { Distance, Pixels, Radian, Radius, Ratio, SizeRatio, TimeMs } from './GeometryTypes';
 import { Color, FontWeight } from './Types';
 
-export interface ViewQuery {
-  // terminology: https://en.wikipedia.org/wiki/Star_schema
-  name: string;
-  factsQuerySQL: string;
-}
-
 // todo switch to `io-ts` style, generic way of combining static and runtime type info
 export interface StaticConfig {
-  // view query
-  viewQuery: ViewQuery;
-
   // shape geometry
   width: number;
   height: number;

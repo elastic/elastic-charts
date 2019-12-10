@@ -1,18 +1,12 @@
 import { boolean } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
-import React from 'react';
-
 import { Chart, getSpecId, Sunburst } from '../src';
-import { mocks } from '../src/chart_types/hierarchical_chart/layout/mocks/mocks';
+import { mocks } from '../src/mocks/hierarchical/index';
 import { config } from '../src/chart_types/hierarchical_chart/layout/circline/config/config';
-import { pieMockConfig, sunburstMockConfig } from '../src/chart_types/hierarchical_chart/layout/mocks/mockConfigs';
 import { arrayToLookup } from '../src/chart_types/hierarchical_chart/layout/circline/utils/calcs';
 import { Datum } from '../src/chart_types/xy_chart/utils/specs';
-import {
-  countryDimension,
-  productDimension,
-  regionDimension,
-} from '../src/chart_types/hierarchical_chart/layout/mocks/dimensionCodes';
+import { countryDimension, productDimension, regionDimension } from '../src/mocks/hierarchical/dimensionCodes';
+import React from 'react';
 
 const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
 const regionLookup = arrayToLookup((d: Datum) => d.region, regionDimension);
@@ -61,7 +55,6 @@ storiesOf('Sunburst', module)
             },
           ]}
           config={Object.assign({}, config, {
-            viewQuery: pieMockConfig,
             colors: 'CET2s',
             linkLabel: Object.assign({}, config.linkLabel, {
               maxCount: 32,
@@ -103,7 +96,6 @@ storiesOf('Sunburst', module)
             },
           ]}
           config={Object.assign({}, config, {
-            viewQuery: pieMockConfig,
             colors: 'CET2s',
             linkLabel: Object.assign({}, config.linkLabel, {
               maxCount: 32,
@@ -153,7 +145,6 @@ storiesOf('Sunburst', module)
             },
           ]}
           config={Object.assign({}, config, {
-            viewQuery: sunburstMockConfig,
             colors: 'CET2s',
             linkLabel: Object.assign({}, config.linkLabel, {
               maxCount: 0,

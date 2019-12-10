@@ -2,7 +2,6 @@ import { palettes } from './palettes';
 import { fonts } from './fonts';
 import { Config, Numeric } from '../types/ConfigTypes';
 import { goldenRatio, tau } from '../utils/math';
-import { childOrders } from '../utils/groupByRollup';
 
 // todo add more structure to the config (like `linkLabel`, which is already nested)
 // todo add more configurability, eg. font weight
@@ -33,19 +32,6 @@ const defaultFormatter = (d: any): string =>
     : String(d);
 
 export const configMetadata = {
-  // data view
-  viewQuery: {
-    type: 'group',
-    values: {
-      //name: { dflt: 'pie', type: 'string', values: Object.keys(mocks) },
-      factsQuerySQL: { dflt: 'type your SQL', type: 'string' },
-      //valueField: { dflt: '', type: 'string' },
-      aggregator: { dflt: 'sum', type: 'string', values: ['sum', 'count'] },
-      order: { dflt: 'descending', type: 'string', values: Object.keys(childOrders) },
-      //groupByFields: {},
-      //dimensions: {},
-    },
-  },
   // shape geometry
   width: { dflt: 300, min: 0, max: 1024, type: 'number', reconfigurable: false },
   height: { dflt: 150, min: 0, max: 1024, type: 'number', reconfigurable: false },

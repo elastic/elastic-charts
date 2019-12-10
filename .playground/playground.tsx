@@ -1,14 +1,8 @@
 import React from 'react';
 import { BarSeries, Chart, Sunburst } from '../src';
-
-import { mocks } from '../src/chart_types/hierarchical_chart/layout/mocks/mocks';
+import { mocks } from '../src/mocks/hierarchical/index';
 import { config } from '../src/chart_types/hierarchical_chart/layout/circline/config/config';
-import { sunburstMockConfig } from '../src/chart_types/hierarchical_chart/layout/mocks/mockConfigs';
-import {
-  countryDimension,
-  productDimension,
-  regionDimension,
-} from '../src/chart_types/hierarchical_chart/layout/mocks/dimensionCodes';
+import { countryDimension, productDimension, regionDimension } from '../src/mocks/hierarchical/dimensionCodes';
 import { arrayToLookup } from '../src/chart_types/hierarchical_chart/layout/circline/utils/calcs';
 import { Datum } from '../src/chart_types/xy_chart/utils/specs';
 
@@ -78,7 +72,6 @@ export class Playground extends React.Component<{}, { isSunburstShown: boolean }
                 },
               ]}
               config={Object.assign({}, config, {
-                viewQuery: sunburstMockConfig,
                 colors: 'CET2s',
                 linkLabel: Object.assign({}, config.linkLabel, {
                   maxCount: 32,
