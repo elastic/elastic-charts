@@ -61,6 +61,7 @@
     "@storybook/addon-info": "5.1.9",
     "@storybook/addon-knobs": "5.1.9",
     "@storybook/react": "5.1.9",
+    "@storybook/theming": "5.1.9",
     "@types/classnames": "^2.2.7",
     "@types/d3-array": "^1.2.6",
     "@types/d3-collection": "^1.0.8",
