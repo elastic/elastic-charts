@@ -20,7 +20,9 @@ export interface PointObject {
 
 export type PointTuple = [Coordinate, Coordinate];
 
-export interface Circline extends PointObject {
+export interface Circline {
+  x: Coordinate;
+  y: Coordinate;
   r: Radius;
 }
 
