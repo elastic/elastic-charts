@@ -11,10 +11,10 @@ export const linkTextLayout = (
   config: Config,
   nodesWithoutRoom: SectorTreeNode[],
   currentY: Distance[],
-  baseAnchorRadius: Distance,
+  anchorRadius: Distance,
   rawTextGetter: Function,
 ): LinkLabelVM[] => {
-  const { linkLabel, shear } = config;
+  const { linkLabel } = config;
   const maxDepth = nodesWithoutRoom.reduce((p: number, n: SectorTreeNode) => Math.max(p, n.depth), 0);
   const yRelativeIncrement = Math.sin(linkLabel.stemAngle) * linkLabel.minimumStemLength;
   const rowPitch = linkLabel.fontSize + linkLabel.spacing;
@@ -36,7 +36,6 @@ export const linkTextLayout = (
       const west = side ? 1 : -1;
       const cos = Math.cos(midAngle);
       const sin = Math.sin(midAngle);
-      const anchorRadius = baseAnchorRadius + node.inRingIndex * shear;
       const x0 = cos * anchorRadius;
       const y0 = sin * anchorRadius;
       const x = cos * (anchorRadius + linkLabel.radiusPadding);

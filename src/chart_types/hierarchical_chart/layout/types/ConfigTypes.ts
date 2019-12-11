@@ -1,5 +1,13 @@
 import { Distance, Pixels, Radian, Radius, Ratio, SizeRatio, TimeMs } from './GeometryTypes';
 import { Color, FontWeight } from './Types';
+import { $Values as Values } from 'utility-types';
+
+export const HierarchicalLayouts = Object.freeze({
+  sunburst: 'sunburst',
+  treemap: 'treemap',
+});
+
+export type HierarchicalLayout = Values<typeof HierarchicalLayouts>; // could use ValuesType<typeof HierarchicalChartTypes>
 
 // todo switch to `io-ts` style, generic way of combining static and runtime type info
 export interface StaticConfig {
@@ -9,15 +17,9 @@ export interface StaticConfig {
   margin: { left: SizeRatio; right: SizeRatio; top: SizeRatio; bottom: SizeRatio };
   emptySizeRatio: SizeRatio;
   outerSizeRatio: SizeRatio;
-  rotation: Radian;
-  fromAngle: Radian;
-  toAngle: Radian;
   clockwiseSectors: boolean;
   specialFirstInnermostSector: boolean;
-  straightening: Ratio;
-  shear: Distance;
-  collapse: Ratio;
-  treemap: Ratio;
+  hierarchicalLayout: HierarchicalLayout;
 
   // overall data ink layout
   colors: string;

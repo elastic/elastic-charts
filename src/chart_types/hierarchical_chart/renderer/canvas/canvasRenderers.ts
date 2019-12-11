@@ -3,12 +3,13 @@ import { addOpacity } from '../../layout/utils/calcs';
 import {
   LinkLabelVM,
   OutsideLinksViewModel,
+  QuadViewModel,
   RowSet,
-  SectorViewModel,
   ShapeViewModel,
   TextRow,
 } from '../../layout/types/ViewModelTypes';
 import { tau } from '../../layout/utils/math';
+import { HierarchicalLayouts } from '../../layout/types/ConfigTypes';
 
 // withContext abstracts out the otherwise error-prone save/restore pairing; it can be nested and/or put into sequence
 // The idea is that you just set what's needed for the enclosed snippet, which may temporarily override values in the
@@ -20,13 +21,17 @@ const withContext = (ctx: CanvasRenderingContext2D, fun: (ctx: CanvasRenderingCo
   ctx.restore();
 };
 
-const clearCanvas = (ctx: CanvasRenderingContext2D, width: Coordinate, height: Coordinate, backgroundColor: string) =>
+const clearCanvas = (
+  ctx: CanvasRenderingContext2D,
+  width: Coordinate,
+  height: Coordinate /*, backgroundColor: string*/,
+) =>
   withContext(ctx, (ctx) => {
     // two steps, as the backgroundColor may have a non-one opacity
     // todo we should avoid `fillRect` by setting the <canvas> element background via CSS
     ctx.clearRect(-width, -height, 2 * width, 2 * height); // remove past contents
-    ctx.fillStyle = backgroundColor;
-    ctx.fillRect(-width, -height, 2 * width, 2 * height); // new background
+    // ctx.fillStyle = backgroundColor;
+    // ctx.fillRect(-width, -height, 2 * width, 2 * height); // new background
   });
 
 const renderTextRow = (
@@ -53,14 +58,15 @@ const renderRowSets = (ctx: CanvasRenderingContext2D, rowSets: RowSet[]) =>
 
 export const lineWidthMult = /*0.15 || */ 12;
 
-const renderSectors = (ctx: CanvasRenderingContext2D, sectorViewModel: SectorViewModel[]) => {
+const renderSectors = (ctx: CanvasRenderingContext2D, quadViewModel: QuadViewModel[]) => {
   withContext(ctx, (ctx) => {
     ctx.scale(1, -1); // D3 and Canvas2d use a left-handed coordinate system (+y = down) but the ViewModel uses +y = up, so we must locally invert Y
-    sectorViewModel.forEach(({ strokeWidth, fillColor, x0, x1, y0px, y1px }) => {
+    quadViewModel.forEach(({ strokeWidth, fillColor, x0, x1, y0px, y1px }) => {
       const X0 = x0 - tau / 4;
       const X1 = x1 - tau / 4;
       ctx.fillStyle = fillColor;
       ctx.beginPath();
+      // only draw circular arcs if it would be distinguishable from a straight line ie. angle is not very small
       ctx.arc(0, 0, y0px, X0, X0);
       ctx.arc(0, 0, y1px, X0, X1, false);
       ctx.arc(0, 0, y0px, X1, X0, true);
@@ -69,6 +75,30 @@ const renderSectors = (ctx: CanvasRenderingContext2D, sectorViewModel: SectorVie
         // Canvas2d stroke ignores an exact zero line width
         ctx.lineWidth = strokeWidth;
         ctx.stroke();
+      }
+    });
+  });
+};
+
+const renderRectangles = (ctx: CanvasRenderingContext2D, quadViewModel: QuadViewModel[]) => {
+  withContext(ctx, (ctx) => {
+    ctx.scale(1, -1); // D3 and Canvas2d use a left-handed coordinate system (+y = down) but the ViewModel uses +y = up, so we must locally invert Y
+    quadViewModel.forEach(({ strokeWidth, fillColor, x0, x1, y0px, y1px }) => {
+      // only draw a shape if it would show up at all
+      if (x1 - x0 >= 1 && y1px - y0px >= 1) {
+        ctx.fillStyle = fillColor;
+        ctx.beginPath();
+        ctx.moveTo(x0, y0px);
+        ctx.lineTo(x0, y1px);
+        ctx.lineTo(x1, y1px);
+        ctx.lineTo(x1, y0px);
+        ctx.lineTo(x0, y0px);
+        ctx.fill();
+        if (strokeWidth > 0.001) {
+          // Canvas2d stroke ignores an exact zero line width
+          ctx.lineWidth = strokeWidth;
+          ctx.stroke();
+        }
       }
     });
   });
@@ -128,9 +158,9 @@ const renderLinkLabels = (
 export const renderSunburstCanvas2d = (
   ctx: CanvasRenderingContext2D,
   dpr: number,
-  { config, sectorViewModel, rowSets, outsideLinksViewModel, linkLabelViewModels, diskCenter }: ShapeViewModel,
+  { config, quadViewModel, rowSets, outsideLinksViewModel, linkLabelViewModels, diskCenter }: ShapeViewModel,
 ) => {
-  const { sectorLineWidth, linkLabel, fontFamily, backgroundColor } = config;
+  const { sectorLineWidth, linkLabel, fontFamily /*, backgroundColor*/ } = config;
 
   const linkLabelTextColor = addOpacity(linkLabel.textColor, linkLabel.textOpacity);
 
@@ -163,10 +193,13 @@ export const renderSunburstCanvas2d = (
     // The layers are callbacks, because of the need to not bake in the `ctx`, it feels more composable and uncoupled this way.
     renderLayers(ctx, [
       // clear the canvas
-      (ctx: CanvasRenderingContext2D) => clearCanvas(ctx, 200000, 200000, backgroundColor),
+      (ctx: CanvasRenderingContext2D) => clearCanvas(ctx, 200000, 200000 /*, backgroundColor*/),
 
       // bottom layer: sectors (pie slices, ring sectors etc.)
-      (ctx: CanvasRenderingContext2D) => renderSectors(ctx, sectorViewModel),
+      (ctx: CanvasRenderingContext2D) =>
+        config.hierarchicalLayout === HierarchicalLayouts.treemap
+          ? renderRectangles(ctx, quadViewModel)
+          : renderSectors(ctx, quadViewModel),
 
       // all the fill-based, potentially multirow text, whether inside or outside the sector
       (ctx: CanvasRenderingContext2D) => renderRowSets(ctx, rowSets),

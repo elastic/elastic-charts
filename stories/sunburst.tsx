@@ -7,6 +7,7 @@ import { arrayToLookup } from '../src/chart_types/hierarchical_chart/layout/util
 import { Datum } from '../src/chart_types/xy_chart/utils/specs';
 import { countryDimension, productDimension, regionDimension } from '../src/mocks/hierarchical/dimensionCodes';
 import React from 'react';
+import { HierarchicalLayouts } from '../src/chart_types/hierarchical_chart/layout/types/ConfigTypes';
 
 const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
 const regionLookup = arrayToLookup((d: Datum) => d.region, regionDimension);
@@ -31,7 +32,7 @@ storiesOf('Sunburst', module)
               nodeLabel: (d: Datum) => productLookup[d].name,
             },
           ]}
-          config={config}
+          config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
         />
       </Chart>
     );
@@ -39,7 +40,7 @@ storiesOf('Sunburst', module)
   .add('Pie chart with fill labels', () => {
     const darkMode = boolean('darkMode', false);
     const className = darkMode ? 'story-chart-dark' : 'story-chart';
-    const specId = 'pie1';
+    const specId = 'pie2';
 
     return (
       <Chart className={className}>
@@ -55,6 +56,7 @@ storiesOf('Sunburst', module)
             },
           ]}
           config={Object.assign({}, config, {
+            hierarchicalLayout: HierarchicalLayouts.sunburst,
             colors: 'CET2s',
             linkLabel: Object.assign({}, config.linkLabel, {
               maxCount: 32,
@@ -80,7 +82,7 @@ storiesOf('Sunburst', module)
   .add('Donut chart with fill labels', () => {
     const darkMode = boolean('darkMode', false);
     const className = darkMode ? 'story-chart-dark' : 'story-chart';
-    const specId = 'pie1';
+    const specId = 'donut1';
 
     return (
       <Chart className={className}>
@@ -96,6 +98,7 @@ storiesOf('Sunburst', module)
             },
           ]}
           config={Object.assign({}, config, {
+            hierarchicalLayout: HierarchicalLayouts.sunburst,
             colors: 'CET2s',
             linkLabel: Object.assign({}, config.linkLabel, {
               maxCount: 32,
@@ -145,6 +148,7 @@ storiesOf('Sunburst', module)
             },
           ]}
           config={Object.assign({}, config, {
+            hierarchicalLayout: HierarchicalLayouts.sunburst,
             colors: 'CET2s',
             linkLabel: Object.assign({}, config.linkLabel, {
               maxCount: 0,
@@ -163,6 +167,35 @@ storiesOf('Sunburst', module)
             circlePadding: 4,
             backgroundColor: 'rgba(229,229,229,1)',
           })}
+        />
+      </Chart>
+    );
+  })
+  .add('Most basic treemap', () => {
+    const darkMode = boolean('darkMode', false);
+    const className = darkMode ? 'story-chart-dark' : 'story-chart';
+    const specId = 'treemap1';
+
+    return (
+      <Chart className={className}>
+        <Sunburst
+          id={getSpecId(specId)}
+          data={mocks.pie}
+          valueAccessor={(d: Datum) => d.exportVal as number}
+          valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+          layers={[
+            {
+              groupByRollup: (d: Datum) => d.sitc1,
+              nodeLabel: (d: Datum) => productLookup[d].name,
+            },
+          ]}
+          config={{
+            ...config,
+            hierarchicalLayout: HierarchicalLayouts.treemap,
+            minFontSize: 8,
+            maxFontSize: 36,
+            idealFontSizeJump: Math.sqrt(1.618),
+          }}
         />
       </Chart>
     );

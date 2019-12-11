@@ -26,10 +26,17 @@ export function render(sunburstSpec: SunburstSpec, parentDimensions: Dimensions,
       sunburstSpec.valueFormatter,
       [() => null, ...layers.map(({ groupByRollup }) => groupByRollup)],
     );
-  const sectorViewModel = viewModel ? viewModel.sectorViewModel : [];
+  const sectorViewModel = viewModel ? viewModel.quadViewModel : [];
   const rowSets = viewModel ? viewModel.rowSets : [];
   const linkLabelViewModels = viewModel ? viewModel.linkLabelViewModels : [];
   const outsideLinksViewModel = viewModel ? viewModel.outsideLinksViewModel : [];
   const diskCenter = viewModel ? viewModel.diskCenter : { x: width / 2, y: height / 2 };
-  return { config: myConfig, sectorViewModel, rowSets, linkLabelViewModels, outsideLinksViewModel, diskCenter };
+  return {
+    config: myConfig,
+    quadViewModel: sectorViewModel,
+    rowSets,
+    linkLabelViewModels,
+    outsideLinksViewModel,
+    diskCenter,
+  };
 }

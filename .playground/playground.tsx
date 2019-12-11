@@ -2,7 +2,7 @@ import React from 'react';
 import { BarSeries, Chart, Sunburst } from '../src';
 import { mocks } from '../src/mocks/hierarchical/index';
 import { config } from '../src/chart_types/hierarchical_chart/layout/config/config';
-import { countryDimension, productDimension, regionDimension } from '../src/mocks/hierarchical/dimensionCodes';
+import { productDimension } from '../src/mocks/hierarchical/dimensionCodes';
 import { arrayToLookup } from '../src/chart_types/hierarchical_chart/layout/utils/calcs';
 import { Datum } from '../src/chart_types/xy_chart/utils/specs';
 
@@ -46,8 +46,8 @@ export class Playground extends React.Component<{}, { isSunburstShown: boolean }
   render() {
     const Spec = this.state.isSunburstShown ? Sunburst : BarSeries;
     const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
-    const regionLookup = arrayToLookup((d: Datum) => d.region, regionDimension);
-    const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
+    // const regionLookup = arrayToLookup((d: Datum) => d.region, regionDimension);
+    // const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
     return (
       <>
         <div className="chart">
@@ -62,32 +62,35 @@ export class Playground extends React.Component<{}, { isSunburstShown: boolean }
                   groupByRollup: (d: Datum) => d.sitc1,
                   nodeLabel: (d: Datum) => productLookup[d].name,
                 },
-                {
+                /*                {
                   groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.substr(0, 2),
                   nodeLabel: (d: Datum) => regionLookup[d].regionName,
                 },
                 {
                   groupByRollup: (d: Datum) => d.dest,
                   nodeLabel: (d: Datum) => countryLookup[d].name,
-                },
+                },*/
               ]}
               config={Object.assign({}, config, {
                 colors: 'CET2s',
                 linkLabel: Object.assign({}, config.linkLabel, {
-                  maxCount: 32,
+                  maxCount: 0,
                   fontSize: 14,
+                  maximumSection: 0,
                 }),
-                fontFamily: 'Arial',
+                fontFamily: 'Helvetica Neue',
                 fillLabel: Object.assign({}, config.fillLabel, {
-                  fontStyle: 'italic',
+                  fontStyle: 'normal',
                 }),
                 margin: Object.assign({}, config.margin, { top: 0, bottom: 0, left: 0, right: 0 }),
-                minFontSize: 1,
-                idealFontSizeJump: 1.1,
-                outerSizeRatio: 0.9, // - 0.5 * Math.random(),
+                minFontSize: 12,
+                maxFontSize: 36,
+                idealFontSizeJump: 1.03,
+                outerSizeRatio: 0.6, // - 0.5 * Math.random(),
                 emptySizeRatio: 0,
                 circlePadding: 4,
-                backgroundColor: 'rgba(229,229,229,1)',
+                treemap: 1,
+                /*backgroundColor: 'rgba(229,229,229,1)',*/
               })}
             />
           </Chart>

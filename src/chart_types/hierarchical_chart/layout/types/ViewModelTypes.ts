@@ -39,7 +39,7 @@ export interface RowSet {
   rotation: Radian;
 }
 
-export interface SectorViewModel extends RingSectorGeometry {
+export interface QuadViewModel extends RingSectorGeometry {
   strokeWidth: number;
   fillColor: string;
 }
@@ -50,7 +50,7 @@ export interface OutsideLinksViewModel {
 
 export type ShapeViewModel = {
   config: Config;
-  sectorViewModel: SectorViewModel[];
+  quadViewModel: QuadViewModel[];
   rowSets: RowSet[];
   linkLabelViewModels: LinkLabelVM[];
   outsideLinksViewModel: OutsideLinksViewModel[];
@@ -59,7 +59,7 @@ export type ShapeViewModel = {
 
 export const nullSectorViewModel = (): ShapeViewModel => ({
   config,
-  sectorViewModel: [],
+  quadViewModel: [],
   rowSets: [],
   linkLabelViewModels: [],
   outsideLinksViewModel: [],
@@ -77,7 +77,6 @@ export interface TreeNode extends AngleFromTo {
   x1: Radian;
   y0: TreeLevel;
   y1: TreeLevel;
-  y0unsheared?: TreeLevel; // todo remove or mandate unsheared; other optionals here are a red herring too
   fill?: Color;
 }
 

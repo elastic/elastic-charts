@@ -1,21 +1,17 @@
-import { Relation, TextMeasure } from '../types/Types';
-import { fillTextLayout, nodeId } from './fillTextLayout';
+import { Part, Relation, TextMeasure } from '../types/Types';
+import { fillTextLayoutRectangle, fillTextLayoutSector, nodeId } from './fillTextLayout';
 import { linkTextLayout } from './linkTextLayout';
-import { Config } from '../types/ConfigTypes';
+import { Config, HierarchicalLayouts } from '../types/ConfigTypes';
 import { tau, trueBearingToStandardPositionAngle } from '../utils/math';
 import { cyclicalHueInterpolator, getOpacity } from '../utils/calcs';
-import { Distance, Pixels, Radian, Radius } from '../types/GeometryTypes';
+import { Distance, Pixels, Radius } from '../types/GeometryTypes';
 import { lineWidthMult } from '../../renderer/canvas/canvasRenderers';
 import { diffAngle, meanAngle } from '../geometry';
+import { squarifiedTreemap } from '../utils/treemap';
 import { sunburst } from '../utils/sunburst';
 import { AccessorFn } from '../../../../utils/accessor';
-import {
-  OutsideLinksViewModel,
-  RowSet,
-  SectorTreeNode,
-  SectorViewModel,
-  ShapeViewModel,
-} from '../types/ViewModelTypes';
+import { ColorScale, fromRGB, makeColorScale, toRGB } from '../utils/d3utils';
+import { OutsideLinksViewModel, QuadViewModel, RowSet, SectorTreeNode, ShapeViewModel } from '../types/ViewModelTypes';
 import {
   aggregateAccessor,
   aggregateComparator,
@@ -29,13 +25,12 @@ import {
   mapEntryValue,
   mapsToArrays,
 } from '../utils/groupByRollup';
-import { ColorScale, fromRGB, makeColorScale, toRGB } from '../utils/d3utils';
 
 export const makeSectorViewModel = (
   childNodes: SectorTreeNode[],
   colorScale: ColorScale,
   sectorLineWidth: Pixels,
-): Array<SectorViewModel> =>
+): Array<QuadViewModel> =>
   childNodes.map((d) => {
     const opacityMultiplier = getOpacity(d);
     // while (d.depth > 1) d = d.parent;
@@ -71,8 +66,6 @@ export const makeOutsideLinksViewModel = (
     })
     .filter(({ points }: OutsideLinksViewModel) => points.length > 1);
 
-const straighteningInfinityRadius = 5e4;
-
 // todo break up this long function
 export const shapeViewModel = (
   textMeasure: TextMeasure,
@@ -93,15 +86,10 @@ export const shapeViewModel = (
     palettes,
     fillOutside,
     linkLabel,
-    rotation,
-    fromAngle,
-    toAngle,
-    straightening,
-    shear,
-    collapse,
     clockwiseSectors,
     specialFirstInnermostSector,
     minFontSize,
+    hierarchicalLayout,
   } = config;
 
   const innerWidth = width * (1 - Math.min(1, margin.left + margin.right));
@@ -116,12 +104,34 @@ export const shapeViewModel = (
 
   const totalValue = hierarchy.reduce((p: number, n: ArrayEntry): number => p + mapEntryValue(n), 0);
 
+  const paddingAccessor = () => 0;
+
   const angularRange = tau;
   const sunburstValueToAreaScale = angularRange / totalValue;
   const sunburstAreaAccessor = (e: ArrayEntry) => sunburstValueToAreaScale * mapEntryValue(e);
-  const children = entryValue(hierarchy[0]).children;
-  const sunburstViewModel = children
-    ? sunburst(
+  const children = entryValue(hierarchy[0]).children || [];
+  const treemapLayout = hierarchicalLayout === HierarchicalLayouts.treemap;
+  const treemapInnerArea = treemapLayout ? width * height : 1; // assuming 1 x 1 unit square
+  const treemapValueToAreaScale = treemapInnerArea / totalValue;
+  const treemapAreaAccessor = (e: ArrayEntry) => treemapValueToAreaScale * mapEntryValue(e);
+
+  const rawChildNodes: Array<Part> = treemapLayout
+    ? squarifiedTreemap(hierarchy, treemapAreaAccessor, paddingAccessor, {
+        x0: 0,
+        y0: 0,
+        width: treemapLayout ? width : 1,
+        height: treemapLayout ? height : 1,
+      })
+        .slice(1)
+        .map<Part>((d: Part) =>
+          Object.assign(d, {
+            x0: treemapLayout ? d.x0 - width / 2 : d.x0 * tau,
+            x1: treemapLayout ? d.x1 - width / 2 : d.x1 * tau,
+            y0: treemapLayout ? d.y0 - height / 2 : d.y0,
+            y1: treemapLayout ? d.y1 - height / 2 : d.y1,
+          }),
+        )
+    : sunburst(
         children,
         sunburstAreaAccessor,
         {
@@ -130,61 +140,39 @@ export const shapeViewModel = (
         },
         clockwiseSectors,
         specialFirstInnermostSector,
-      )
-    : [];
-
-  const treeHeight = sunburstViewModel.reduce((p: number, n: any) => Math.max(p, entryValue(n.node).depth), 0); // 1: pie, 2: two-ring donut etc.
+      );
 
   // use the smaller of the two sizes, as a circle fits into a square
   const circleMaximumSize = Math.min(innerWidth, innerHeight);
-
-  const unstraightenedOuterRadius: Radius = (outerSizeRatio * circleMaximumSize) / 2;
-  const straighteningOffsetY = Math.pow(straightening, 5) * straighteningInfinityRadius;
-  const center = {
-    x: width * margin.left + innerWidth / 2,
-    y: height * margin.top + innerHeight / 2 - straighteningOffsetY,
-  };
-  const outerRadius: Radius = unstraightenedOuterRadius + straighteningOffsetY;
-  const innerRadius: Radius = outerRadius - (1 - emptySizeRatio) * unstraightenedOuterRadius;
+  const outerRadius: Radius = (outerSizeRatio * circleMaximumSize) / 2;
+  const innerRadius: Radius = outerRadius - (1 - emptySizeRatio) * outerRadius;
+  const treeHeight = rawChildNodes.reduce((p: number, n: any) => Math.max(p, entryValue(n.node).depth), 0); // 1: pie, 2: two-ring donut etc.
   const ringThickness = (outerRadius - innerRadius) / treeHeight;
 
-  // style calcs
-  const colorMaker = cyclicalHueInterpolator(palettes[colors]);
-  const colorScale = makeColorScale(colorMaker, sunburstViewModel.length + 1);
-
-  const targetAngleRange = (toAngle - fromAngle) * (unstraightenedOuterRadius / outerRadius);
-  const straighteningAngleDifference = (toAngle - fromAngle - targetAngleRange) / 2;
-  const appliedFromAngle = fromAngle + straighteningAngleDifference;
-  const appliedToAngle = toAngle - straighteningAngleDifference;
-  const rawChildNodes = sunburstViewModel; // gets rid of the root node
-  const childNodes = rawChildNodes.map<SectorTreeNode>((n: any, index: number) => {
-    // in case of the pie, {y0: 0, y1: 1} corresponds to the root node so we bump for compat, fixme
-    const y0px = innerRadius + n.y0 * ringThickness + index * shear;
-    const y1px = innerRadius + n.y1 * ringThickness + index * shear;
-    const yMidPx = innerRadius + ((n.y0 + n.y1) / 2) * ringThickness + index * shear;
-
-    const scale = (x: Radian) => appliedFromAngle + (x * (appliedToAngle - appliedFromAngle)) / tau;
-    const nx0 = n.x0 * (1 - collapse);
-    const nx1 = n.x1 - collapse * n.x0;
-    const xA = scale(Math.min(nx0, nx1));
-    const xB = scale(Math.max(nx0, nx1));
-    const x0 = xA + rotation;
-    const x1 = xB + rotation;
-    const node = n.node;
+  const childNodes = rawChildNodes.map((n: any, index: number) => {
     return {
-      data: { name: entryKey(node) },
-      depth: depthAccessor(node),
-      value: aggregateAccessor(node),
-      x0,
-      x1,
+      data: { name: entryKey(n.node) },
+      depth: depthAccessor(n.node),
+      value: aggregateAccessor(n.node),
+      x0: n.x0,
+      x1: n.x1,
       y0: n.y0,
       y1: n.y1,
-      y0px,
-      y1px,
-      yMidPx,
+      y0px: treemapLayout ? n.y0 : innerRadius + n.y0 * ringThickness,
+      y1px: treemapLayout ? n.y1 : innerRadius + n.y1 * ringThickness,
+      yMidPx: treemapLayout ? (n.y0 + n.y1) / 2 : innerRadius + ((n.y0 + n.y1) / 2) * ringThickness,
       inRingIndex: index,
     };
   });
+
+  const center = {
+    x: width * margin.left + innerWidth / 2,
+    y: height * margin.top + innerHeight / 2,
+  };
+
+  // style calcs
+  const colorMaker = cyclicalHueInterpolator(palettes[colors]);
+  const colorScale = makeColorScale(colorMaker, rawChildNodes.length + 1);
 
   // ring sector paths
   const sectorViewModel = makeSectorViewModel(childNodes, colorScale, config.sectorLineWidth);
@@ -192,17 +180,18 @@ export const shapeViewModel = (
   // fill text
   const roomCondition = (n: SectorTreeNode) => {
     const diff = diffAngle(n.x1, n.x0); // todo check why it can be negative, eg. larger than tau/2 arc?
-    const result =
-      (diff < 0 ? tau + diff : diff) * ringSectorMiddleRadius(n) > Math.max(minFontSize, linkLabel.maximumSection);
+    const result = treemapLayout
+      ? n.x1 - n.x0 > minFontSize && n.y1px - n.y0px > minFontSize
+      : (diff < 0 ? tau + diff : diff) * ringSectorMiddleRadius(n) > Math.max(minFontSize, linkLabel.maximumSection);
     return result;
   };
 
   const nodesWithRoom = childNodes.filter(roomCondition);
 
-  const outsideFillNodes = fillOutside ? nodesWithRoom : [];
+  const outsideFillNodes = fillOutside && !treemapLayout ? nodesWithRoom : [];
 
   const textFillOrigins: [number, number][] = nodesWithRoom.map((node: SectorTreeNode) => {
-    const midAngle = meanAngle(node.x0 * (1 - collapse), node.x1 - node.x0 * collapse);
+    const midAngle = meanAngle(node.x0, node.x1);
     const divider = 10;
     const innerBias = fillOutside ? 9 : 1;
     const outerBias = divider - innerBias;
@@ -217,21 +206,22 @@ export const shapeViewModel = (
     return [cx, cy];
   });
 
+  const fillTextLayout = treemapLayout ? fillTextLayoutRectangle : fillTextLayoutSector;
+
   const rowSets: RowSet[] = fillTextLayout(
     textMeasure,
     rawTextGetter,
     valueFormatter,
     nodesWithRoom.map((n: SectorTreeNode) =>
       Object.assign({}, n, {
-        y0: n.y0 + n.inRingIndex * shear,
-        y0unsheared: n.y0,
+        y0: n.y0,
         fill: sectorViewModel[n.inRingIndex].fillColor, // todo roll a proper join, as this current thing assumes 1:1 between sectors and sector VMs (in the future we may elide small, invisible sector VMs(
       }),
     ),
+    config,
     textFillOrigins,
     innerRadius,
     ringThickness,
-    config,
   );
 
   const outsideLinksViewModel = makeOutsideLinksViewModel(outsideFillNodes, rowSets, linkLabel.radiusPadding);
@@ -239,14 +229,15 @@ export const shapeViewModel = (
   // linked text
   const currentY = [-height, -height, -height, -height];
 
-  const nodesWithoutRoom = fillOutside
-    ? [] // outsideFillNodes and linkLabels are in inherent conflict due to very likely overlaps
-    : childNodes.filter((n: SectorTreeNode) => {
-        const id = nodeId(n);
-        const foundInFillText = rowSets.find((r: RowSet) => r.id === id);
-        // successful text render if found, and has some row(s)
-        return !(foundInFillText && foundInFillText.rows.length !== 0);
-      });
+  const nodesWithoutRoom =
+    fillOutside || treemapLayout
+      ? [] // outsideFillNodes and linkLabels are in inherent conflict due to very likely overlaps
+      : childNodes.filter((n: SectorTreeNode) => {
+          const id = nodeId(n);
+          const foundInFillText = rowSets.find((r: RowSet) => r.id === id);
+          // successful text render if found, and has some row(s)
+          return !(foundInFillText && foundInFillText.rows.length !== 0);
+        });
 
   const linkLabelViewModels = linkTextLayout(
     textMeasure,
@@ -261,7 +252,7 @@ export const shapeViewModel = (
   return {
     config,
     diskCenter: center,
-    sectorViewModel,
+    quadViewModel: sectorViewModel,
     rowSets,
     linkLabelViewModels,
     outsideLinksViewModel,

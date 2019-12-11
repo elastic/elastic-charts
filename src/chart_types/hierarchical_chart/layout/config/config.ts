@@ -1,6 +1,6 @@
 import { palettes } from './palettes';
 import { fonts } from './fonts';
-import { Config, Numeric } from '../types/ConfigTypes';
+import { Config, HierarchicalLayouts, Numeric } from '../types/ConfigTypes';
 import { goldenRatio, tau } from '../utils/math';
 
 // todo add more structure to the config (like `linkLabel`, which is already nested)
@@ -59,43 +59,6 @@ export const configMetadata = {
     reconfigurable: true,
     documentation: 'The diameter of the inner circle, relative to `outerSizeRatio`',
   }), // todo switch to `io-ts` style, generic way of combining static and runtime type info
-  rotation: { dflt: 0, min: -tau, max: tau, type: 'number' },
-  fromAngle: { dflt: 0, min: 0, max: tau / 2, type: 'number' },
-  toAngle: { dflt: tau, min: tau / 2, max: tau, type: 'number' },
-  straightening: {
-    dflt: 0,
-    min: 0,
-    max: 1,
-    type: 'number',
-    reconfigurable: true,
-    documentation:
-      '0: no straightening; 1: full straightening; anything in between: perceptually linear degree of straightening',
-  },
-  shear: {
-    dflt: 0,
-    min: -32,
-    max: 32,
-    type: 'number',
-    reconfigurable: true,
-    documentation: 'Pixel shear of sectors',
-  },
-  collapse: {
-    dflt: 0,
-    min: 0,
-    max: 1,
-    type: 'number',
-    reconfigurable: true,
-    documentation: 'When zero, collapses all sectors to the angular origin',
-  },
-  treemap: {
-    dflt: 0,
-    min: 0,
-    max: 1,
-    type: 'number',
-    reconfigurable: true,
-    documentation: 'When one, morphs the pie chart into a treemap',
-  },
-
   clockwiseSectors: {
     dflt: true,
     type: 'boolean',
@@ -123,6 +86,11 @@ export const configMetadata = {
     max: goldenRatio,
     type: 'number',
     reconfigurable: false, // there's no real reason to reconfigure it; finding the largest possible font is good for readability
+  },
+  hierarchicalLayout: {
+    dflt: HierarchicalLayouts.sunburst,
+    type: 'string',
+    values: Object.keys(HierarchicalLayouts),
   },
 
   // fill text layout config
