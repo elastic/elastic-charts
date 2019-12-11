@@ -8,6 +8,7 @@ import {
   ShapeViewModel,
   TextRow,
 } from '../../layout/types/ViewModelTypes';
+import { tau } from '../../layout/utils/math';
 
 // withContext abstracts out the otherwise error-prone save/restore pairing; it can be nested and/or put into sequence
 // The idea is that you just set what's needed for the enclosed snippet, which may temporarily override values in the
@@ -55,14 +56,19 @@ export const lineWidthMult = /*0.15 || */ 12;
 const renderSectors = (ctx: CanvasRenderingContext2D, sectorViewModel: SectorViewModel[]) => {
   withContext(ctx, (ctx) => {
     ctx.scale(1, -1); // D3 and Canvas2d use a left-handed coordinate system (+y = down) but the ViewModel uses +y = up, so we must locally invert Y
-    sectorViewModel.forEach(({ strokeWidth, fillColor, arcPath }) => {
-      const path = new Path2D(arcPath);
+    sectorViewModel.forEach(({ strokeWidth, fillColor, x0, x1, y0px, y1px }) => {
+      const X0 = x0 - tau / 4;
+      const X1 = x1 - tau / 4;
       ctx.fillStyle = fillColor;
-      ctx.fill(path);
+      ctx.beginPath();
+      ctx.arc(0, 0, y0px, X0, X0);
+      ctx.arc(0, 0, y1px, X0, X1, false);
+      ctx.arc(0, 0, y0px, X1, X0, true);
+      ctx.fill();
       if (strokeWidth > 0.001) {
         // Canvas2d stroke ignores an exact zero line width
         ctx.lineWidth = strokeWidth;
-        ctx.stroke(path);
+        ctx.stroke();
       }
     });
   });

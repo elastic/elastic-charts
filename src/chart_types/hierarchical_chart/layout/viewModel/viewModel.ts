@@ -1,4 +1,4 @@
-import { ColorScale, Relation, SVGPathString, TextMeasure } from '../types/Types';
+import { Relation, TextMeasure } from '../types/Types';
 import { fillTextLayout, nodeId } from './fillTextLayout';
 import { linkTextLayout } from './linkTextLayout';
 import { Config } from '../types/ConfigTypes';
@@ -29,33 +29,27 @@ import {
   mapEntryValue,
   mapsToArrays,
 } from '../utils/groupByRollup';
-import {
-  arcMaker,
-  fromRGB,
-  makeColorScale,
-  ringSectorInnerRadius,
-  ringSectorMiddleRadius,
-  ringSectorOuterRadius,
-  toRGB,
-} from '../utils/d3utils';
+import { ColorScale, fromRGB, makeColorScale, toRGB } from '../utils/d3utils';
 
 export const makeSectorViewModel = (
-  ringSectorPaths: SVGPathString[],
   childNodes: SectorTreeNode[],
   colorScale: ColorScale,
   sectorLineWidth: Pixels,
 ): Array<SectorViewModel> =>
-  ringSectorPaths.map((arcPath: string, i: number) => {
-    const d = childNodes[i];
+  childNodes.map((d) => {
     const opacityMultiplier = getOpacity(d);
     // while (d.depth > 1) d = d.parent;
     const { r, g, b, opacity } = toRGB(colorScale(d.data.name));
     const fillColor = fromRGB(r, g, b, opacity * opacityMultiplier).toString();
     const proxy = Math.abs(d.x1 - d.x0);
     const strokeWidth = Math.min(sectorLineWidth, lineWidthMult * proxy);
-    return { strokeWidth, fillColor, arcPath };
+    const { x0, x1, y0px, y1px } = d;
+    return { strokeWidth, fillColor, x0, x1, y0px, y1px };
   });
 
+export const ringSectorInnerRadius = (d: SectorTreeNode): Radius => d.y0px;
+export const ringSectorOuterRadius = (d: SectorTreeNode): Radius => d.y1px;
+export const ringSectorMiddleRadius = (d: SectorTreeNode): Radius => d.yMidPx;
 export const makeOutsideLinksViewModel = (
   outsideFillNodes: SectorTreeNode[],
   rowSets: RowSet[],
@@ -193,8 +187,7 @@ export const shapeViewModel = (
   });
 
   // ring sector paths
-  const ringSectorPaths = childNodes.map(arcMaker);
-  const sectorViewModel = makeSectorViewModel(ringSectorPaths, childNodes, colorScale, config.sectorLineWidth);
+  const sectorViewModel = makeSectorViewModel(childNodes, colorScale, config.sectorLineWidth);
 
   // fill text
   const roomCondition = (n: SectorTreeNode) => {

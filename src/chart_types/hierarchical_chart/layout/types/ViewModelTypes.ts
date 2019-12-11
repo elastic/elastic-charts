@@ -39,10 +39,9 @@ export interface RowSet {
   rotation: Radian;
 }
 
-export interface SectorViewModel {
+export interface SectorViewModel extends RingSectorGeometry {
   strokeWidth: number;
   fillColor: string;
-  arcPath: string;
 }
 
 export interface OutsideLinksViewModel {
@@ -68,7 +67,12 @@ export const nullSectorViewModel = (): ShapeViewModel => ({
 });
 type TreeLevel = number;
 
-export interface TreeNode {
+interface AngleFromTo {
+  x0: Radian;
+  x1: Radian;
+}
+
+export interface TreeNode extends AngleFromTo {
   x0: Radian;
   x1: Radian;
   y0: TreeLevel;
@@ -77,9 +81,14 @@ export interface TreeNode {
   fill?: Color;
 }
 
-export interface SectorTreeNode extends TreeNode {
+interface SectorGeomSpecY {
   y0px: Distance;
   y1px: Distance;
+}
+
+export interface RingSectorGeometry extends AngleFromTo, SectorGeomSpecY {}
+
+export interface SectorTreeNode extends TreeNode, SectorGeomSpecY {
   yMidPx: Distance;
   depth: number;
   inRingIndex: number;

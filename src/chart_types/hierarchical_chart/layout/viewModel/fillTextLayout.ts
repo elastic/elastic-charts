@@ -1,4 +1,4 @@
-import { conjunctiveConstraint, wrapToTau } from '../geometry';
+import { wrapToTau } from '../geometry';
 import { Coordinate, Distance, Pixels, Radian, Radius, RingSector } from '../types/GeometryTypes';
 import { Config } from '../types/ConfigTypes';
 import { logarithm, tau, trueBearingToStandardPositionAngle } from '../utils/math';
@@ -7,6 +7,7 @@ import { RowBox, RowSet, SectorTreeNode } from '../types/ViewModelTypes';
 import parse from 'parse-color';
 import { FontWeight, TextMeasure } from '../types/Types';
 import { aggregateKey } from '../utils/groupByRollup';
+import { conjunctiveConstraint } from '../circlineGeometry';
 
 const ringSectorStartAngle = (d: SectorTreeNode): Radian => trueBearingToStandardPositionAngle(d.x0);
 

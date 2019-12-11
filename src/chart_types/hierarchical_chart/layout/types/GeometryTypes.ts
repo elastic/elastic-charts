@@ -20,10 +20,10 @@ export interface PointObject {
 
 export type PointTuple = [Coordinate, Coordinate];
 
-export interface Circline {
-  x: Coordinate;
-  y: Coordinate;
-  r: Radius;
+export class Circline {
+  x: Coordinate = NaN;
+  y: Coordinate = NaN;
+  r: Radius = NaN;
 }
 
 export interface CirclinePredicate extends Circline {

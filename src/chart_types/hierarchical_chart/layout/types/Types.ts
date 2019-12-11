@@ -1,19 +1,4 @@
-import { RgbObject } from '../utils/d3utils';
-import { ArrayEntry, PrimitiveValue } from '../utils/groupByRollup';
-
-interface ElasticsearchRowResponseColumn {
-  name: string;
-  type: string;
-}
-
-export type ElasticsearchRowResponse = {
-  columns: Array<ElasticsearchRowResponseColumn>;
-  rows: Array<Array<PrimitiveValue>>;
-};
-
-export type SVGPathString = string;
-
-export type ColorScale = (value: any) => RgbObject;
+import { ArrayEntry } from '../utils/groupByRollup';
 
 export type Color = string; // todo refine later (union type)
 
