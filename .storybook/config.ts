@@ -32,6 +32,7 @@ addParameters({
       },
     },
   },
+  docs: {},
 });
 
 addDecorator(withKnobs);

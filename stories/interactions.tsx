@@ -638,25 +638,32 @@ storiesOf('Interactions', module)
     'Render change action',
     () => {
       return (
-        <Chart className={'story-chart'}>
-          <Settings showLegend={true} legendPosition={Position.Right} onRenderChange={onRenderChange} />
-          <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-          <Axis
-            id={getAxisId('left2')}
-            title={'Left axis'}
-            position={Position.Left}
-            tickFormat={(d) => Number(d).toFixed(2)}
-          />
+        <div id="story-root">
+          <Chart className={'story-chart'}>
+            <Settings showLegend={true} legendPosition={Position.Right} onRenderChange={onRenderChange} />
+            <Axis
+              id={getAxisId('bottom')}
+              position={Position.Bottom}
+              title={'Bottom axis'}
+              showOverlappingTicks={true}
+            />
+            <Axis
+              id={getAxisId('left2')}
+              title={'Left axis'}
+              position={Position.Left}
+              tickFormat={(d) => Number(d).toFixed(2)}
+            />
 
-          <BarSeries
-            id={getSpecId('bars')}
-            xScaleType={ScaleType.Linear}
-            yScaleType={ScaleType.Linear}
-            xAccessor="x"
-            yAccessors={['y']}
-            data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
-          />
-        </Chart>
+            <BarSeries
+              id={getSpecId('bars')}
+              xScaleType={ScaleType.Linear}
+              yScaleType={ScaleType.Linear}
+              xAccessor="x"
+              yAccessors={['y']}
+              data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
+            />
+          </Chart>
+        </div>
       );
     },
     {
@@ -668,25 +675,32 @@ storiesOf('Interactions', module)
     'Cursor update action',
     () => {
       return (
-        <Chart className={'story-chart'}>
-          <Settings showLegend={true} legendPosition={Position.Right} onCursorUpdate={onCursorUpdate} />
-          <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-          <Axis
-            id={getAxisId('left2')}
-            title={'Left axis'}
-            position={Position.Left}
-            tickFormat={(d) => Number(d).toFixed(2)}
-          />
+        <div id="story-root">
+          <Chart className={'story-chart'}>
+            <Settings showLegend={true} legendPosition={Position.Right} onCursorUpdate={onCursorUpdate} />
+            <Axis
+              id={getAxisId('bottom')}
+              position={Position.Bottom}
+              title={'Bottom axis'}
+              showOverlappingTicks={true}
+            />
+            <Axis
+              id={getAxisId('left2')}
+              title={'Left axis'}
+              position={Position.Left}
+              tickFormat={(d) => Number(d).toFixed(2)}
+            />
 
-          <BarSeries
-            id={getSpecId('bars')}
-            xScaleType={ScaleType.Linear}
-            yScaleType={ScaleType.Linear}
-            xAccessor="x"
-            yAccessors={['y']}
-            data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
-          />
-        </Chart>
+            <BarSeries
+              id={getSpecId('bars')}
+              xScaleType={ScaleType.Linear}
+              yScaleType={ScaleType.Linear}
+              xAccessor="x"
+              yAccessors={['y']}
+              data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
+            />
+          </Chart>
+        </div>
       );
     },
     {
@@ -728,28 +742,30 @@ storiesOf('Interactions', module)
             document.body.removeChild(link);
         }
       };
-      const groupId = 'PNG-1';
+      const groupId = '';
       button(label, handler, groupId);
       return (
-        <Chart className={'story-chart'} ref={chartRef}>
-          <Settings showLegend={true} />
-          <Axis
-            id={getAxisId('time')}
-            position={Position.Bottom}
-            tickFormat={niceTimeFormatter([data[0][0], data[data.length - 1][0]])}
-          />
-          <Axis id={getAxisId('count')} position={Position.Left} />
+        <div id="story-root">
+          <Chart className={'story-chart'} ref={chartRef}>
+            <Settings showLegend={true} />
+            <Axis
+              id={getAxisId('time')}
+              position={Position.Bottom}
+              tickFormat={niceTimeFormatter([data[0][0], data[data.length - 1][0]])}
+            />
+            <Axis id={getAxisId('count')} position={Position.Left} />
 
-          <BarSeries
-            id={getSpecId('series bars chart')}
-            xScaleType={ScaleType.Linear}
-            yScaleType={ScaleType.Linear}
-            xAccessor={0}
-            yAccessors={[1]}
-            data={data}
-            yScaleToDataExtent={true}
-          />
-        </Chart>
+            <BarSeries
+              id={getSpecId('series bars chart')}
+              xScaleType={ScaleType.Linear}
+              yScaleType={ScaleType.Linear}
+              xAccessor={0}
+              yAccessors={[1]}
+              data={data}
+              yScaleToDataExtent={true}
+            />
+          </Chart>
+        </div>
       );
     },
     {
