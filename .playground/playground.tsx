@@ -5,6 +5,7 @@ import { config } from '../src/chart_types/hierarchical_chart/layout/config/conf
 import { productDimension } from '../src/mocks/hierarchical/dimensionCodes';
 import { arrayToLookup } from '../src/chart_types/hierarchical_chart/layout/utils/calcs';
 import { Datum } from '../src/chart_types/xy_chart/utils/specs';
+import { HierarchicalLayouts } from '../src/chart_types/hierarchical_chart/layout/types/ConfigTypes';
 
 export class Playground extends React.Component<{}, { isSunburstShown: boolean }> {
   chartRef: React.RefObject<Chart> = React.createRef();
@@ -89,7 +90,7 @@ export class Playground extends React.Component<{}, { isSunburstShown: boolean }
                 outerSizeRatio: 0.6, // - 0.5 * Math.random(),
                 emptySizeRatio: 0,
                 circlePadding: 4,
-                treemap: 1,
+                hierarchicalLayout: HierarchicalLayouts.treemap,
                 /*backgroundColor: 'rgba(229,229,229,1)',*/
               })}
             />
