@@ -6,6 +6,8 @@ import { Theme } from '../../../../utils/themes/theme';
 import { depthKey } from '../../layout/utils/groupByRollup';
 import { SunburstSpec } from '../../specs/index';
 
+const identity = (d: any) => d;
+
 export function render(sunburstSpec: SunburstSpec, parentDimensions: Dimensions, theme: Theme): ShapeViewModel {
   const { width, height } = parentDimensions;
   // eslint-disable-next-line no-console
@@ -21,7 +23,7 @@ export function render(sunburstSpec: SunburstSpec, parentDimensions: Dimensions,
       measureText(textMeasurerCtx),
       myConfig,
       facts,
-      (node: SectorTreeNode) => layers[node[depthKey] - 1].nodeLabel(node.data.name),
+      (node: SectorTreeNode) => (layers[node[depthKey] - 1].nodeLabel || identity)(node.data.name),
       sunburstSpec.valueAccessor,
       sunburstSpec.valueFormatter,
       [() => null, ...layers.map(({ groupByRollup }) => groupByRollup)],

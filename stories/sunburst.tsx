@@ -119,7 +119,7 @@ const stories = {
         layers={[
           {
             groupByRollup: (d: Datum) => d.sitc1,
-            nodeLabel: (d: Datum) => d,
+            // nodeLabel: (d: Datum) => d,
           },
         ]}
         config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
@@ -358,7 +358,7 @@ const stories = {
       />
     </Chart>
   ),
-  'Too many slices': (
+  'Hundreds of slices, vanishing & tapering borders': (
     <Chart className={'story-chart'}>
       <Sunburst
         id={getSpecId('spec_' + getRandomNumber())}

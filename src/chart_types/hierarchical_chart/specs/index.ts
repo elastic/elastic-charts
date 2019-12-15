@@ -9,7 +9,7 @@ import { Config } from '../layout/types/ConfigTypes';
 
 interface Layer {
   groupByRollup: AccessorFn;
-  nodeLabel: AccessorFn;
+  nodeLabel?: AccessorFn;
 }
 
 const defaultProps = {
