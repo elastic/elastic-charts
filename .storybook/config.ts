@@ -38,7 +38,6 @@ addDecorator(
 );
 
 function loadStories() {
-  require('../stories/sunburst.tsx');
   require('../stories/bar_chart.tsx');
   require('../stories/line_chart.tsx');
   require('../stories/area_chart.tsx');
@@ -51,6 +50,7 @@ function loadStories() {
   require('../stories/grid.tsx');
   require('../stories/annotations.tsx');
   require('../stories/scales.tsx');
+  require('../stories/sunburst.tsx');
 }
 
 configure(loadStories, module);

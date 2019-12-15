@@ -5,7 +5,6 @@ import { Config, HierarchicalLayouts } from '../types/ConfigTypes';
 import { tau, trueBearingToStandardPositionAngle } from '../utils/math';
 import { cyclicalHueInterpolator, getOpacity } from '../utils/calcs';
 import { Distance, Pixels, Radius } from '../types/GeometryTypes';
-import { lineWidthMult } from '../../renderer/canvas/canvasRenderers';
 import { diffAngle, meanAngle } from '../geometry';
 import { squarifiedTreemap } from '../utils/treemap';
 import { sunburst } from '../utils/sunburst';
@@ -36,8 +35,7 @@ export const makeSectorViewModel = (
     // while (d.depth > 1) d = d.parent;
     const { r, g, b, opacity } = toRGB(colorScale(d.data.name));
     const fillColor = fromRGB(r, g, b, opacity * opacityMultiplier).toString();
-    const proxy = Math.abs(d.x1 - d.x0);
-    const strokeWidth = Math.min(sectorLineWidth, lineWidthMult * proxy);
+    const strokeWidth = sectorLineWidth;
     const { x0, x1, y0px, y1px } = d;
     return { strokeWidth, fillColor, x0, x1, y0px, y1px };
   });

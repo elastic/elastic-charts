@@ -11,6 +11,10 @@ import {
 import { tau } from '../../layout/utils/math';
 import { HierarchicalLayouts } from '../../layout/types/ConfigTypes';
 
+// the burnout avoidance in the center of the pie
+const lineWidthMult = 10; // border can be a maximum 1/lineWidthMult - th of the sector angle, otherwise the border would dominate
+const taperOffLimit = 50; // taper off within a radius of taperOffLimit to avoid burnout in the middle of the pie when there are hundreds of pies
+
 // withContext abstracts out the otherwise error-prone save/restore pairing; it can be nested and/or put into sequence
 // The idea is that you just set what's needed for the enclosed snippet, which may temporarily override values in the
 // outer withContext. Example: we use a +y = top convention, so when doing text rendering, y has to be flipped (ctx.scale)
@@ -56,12 +60,11 @@ const renderTextRows = (ctx: CanvasRenderingContext2D, rowSet: RowSet) =>
 const renderRowSets = (ctx: CanvasRenderingContext2D, rowSets: RowSet[]) =>
   rowSets.forEach((rowSet: RowSet) => renderTextRows(ctx, rowSet));
 
-export const lineWidthMult = /*0.15 || */ 12;
-
 const renderSectors = (ctx: CanvasRenderingContext2D, quadViewModel: QuadViewModel[]) => {
   withContext(ctx, (ctx) => {
     ctx.scale(1, -1); // D3 and Canvas2d use a left-handed coordinate system (+y = down) but the ViewModel uses +y = up, so we must locally invert Y
     quadViewModel.forEach(({ strokeWidth, fillColor, x0, x1, y0px, y1px }) => {
+      if (x0 === x1) return; // no slice will be drawn, and it avoids some division by zero as well
       const X0 = x0 - tau / 4;
       const X1 = x1 - tau / 4;
       ctx.fillStyle = fillColor;
@@ -72,9 +75,29 @@ const renderSectors = (ctx: CanvasRenderingContext2D, quadViewModel: QuadViewMod
       ctx.arc(0, 0, y0px, X1, X0, true);
       ctx.fill();
       if (strokeWidth > 0.001) {
-        // Canvas2d stroke ignores an exact zero line width
+        // canvas2d uses a default of 1 if the lineWidth is assigned 0, so we use a small value to test, to avoid it
+        // outer arc
         ctx.lineWidth = strokeWidth;
+        ctx.beginPath();
+        ctx.arc(0, 0, y1px, X0, X1, false);
         ctx.stroke();
+
+        // inner arc
+        ctx.beginPath();
+        ctx.arc(0, 0, y0px, X1, X0, true);
+        ctx.stroke();
+
+        ctx.fillStyle = 'white';
+
+        // each side (radial 'line') is modeled as a triangle or quad
+        ctx.beginPath();
+        const yThreshold = Math.max(taperOffLimit, (lineWidthMult * strokeWidth) / (X1 - X0));
+        const beta = strokeWidth / yThreshold; // angle where strokeWidth equals the lineWidthMult limit at a radius of yThreshold
+        ctx.arc(0, 0, y0px, X0, X0 + beta * (yThreshold / y0px));
+        ctx.arc(0, 0, yThreshold, X0 + beta, X0 + beta);
+        ctx.arc(0, 0, y1px, X0 + beta * (yThreshold / y1px), X0, true);
+        ctx.arc(0, 0, y0px, X0, X0);
+        ctx.fill();
       }
     });
   });

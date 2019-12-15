@@ -173,6 +173,162 @@ const stories = {
       />
     </Chart>
   ),
+  'Pie chart with two slices': (
+    <Chart className={'story-chart'}>
+      <Sunburst
+        id={getSpecId('spec_' + getRandomNumber())}
+        data={mocks.pie.slice(0, 2)}
+        valueAccessor={(d: Datum) => d.exportVal as number}
+        valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+        layers={[
+          {
+            groupByRollup: (d: Datum) => d.sitc1,
+            nodeLabel: (d: Datum) => productLookup[d].name,
+          },
+        ]}
+        config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
+      />
+    </Chart>
+  ),
+  'Pie chart with a single slice': (
+    <Chart className={'story-chart'}>
+      <Sunburst
+        id={getSpecId('spec_' + getRandomNumber())}
+        data={mocks.pie.slice(0, 1)}
+        valueAccessor={(d: Datum) => d.exportVal as number}
+        valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+        layers={[
+          {
+            groupByRollup: (d: Datum) => d.sitc1,
+            nodeLabel: (d: Datum) => productLookup[d].name,
+          },
+        ]}
+        config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
+      />
+    </Chart>
+  ),
+  'Pie chart with no slices': (
+    <Chart className={'story-chart'}>
+      <Sunburst
+        id={getSpecId('spec_' + getRandomNumber())}
+        data={[]}
+        valueAccessor={(d: Datum) => d.exportVal as number}
+        valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+        layers={[
+          {
+            groupByRollup: (d: Datum) => d.sitc1,
+            nodeLabel: (d: Datum) => productLookup[d].name,
+          },
+        ]}
+        config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
+      />
+    </Chart>
+  ),
+  'Too many slices': (
+    <Chart className={'story-chart'}>
+      <Sunburst
+        id={getSpecId('spec_' + getRandomNumber())}
+        data={mocks.manyPie}
+        valueAccessor={(d: Datum) => d.exportVal as number}
+        valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+        layers={[
+          {
+            groupByRollup: (d: Datum) => d.origin,
+            nodeLabel: (d: Datum) => countryLookup[d].name,
+          },
+        ]}
+        config={{
+          ...config,
+          hierarchicalLayout: HierarchicalLayouts.sunburst,
+          linkLabel: { ...config.linkLabel, maxCount: 15 },
+        }}
+      />
+    </Chart>
+  ),
+  'Counterclockwise, special 1st': (
+    <Chart className={'story-chart'}>
+      <Sunburst
+        id={getSpecId('spec_' + getRandomNumber())}
+        data={mocks.pie}
+        valueAccessor={(d: Datum) => d.exportVal as number}
+        valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+        layers={[
+          {
+            groupByRollup: (d: Datum) => d.sitc1,
+            nodeLabel: (d: Datum) => productLookup[d].name,
+          },
+        ]}
+        config={{
+          ...config,
+          hierarchicalLayout: HierarchicalLayouts.sunburst,
+          clockwiseSectors: false,
+        }}
+      />
+    </Chart>
+  ),
+  'Clockwise, non-special 1st': (
+    <Chart className={'story-chart'}>
+      <Sunburst
+        id={getSpecId('spec_' + getRandomNumber())}
+        data={mocks.pie}
+        valueAccessor={(d: Datum) => d.exportVal as number}
+        valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+        layers={[
+          {
+            groupByRollup: (d: Datum) => d.sitc1,
+            nodeLabel: (d: Datum) => productLookup[d].name,
+          },
+        ]}
+        config={{
+          ...config,
+          hierarchicalLayout: HierarchicalLayouts.sunburst,
+          specialFirstInnermostSector: false,
+        }}
+      />
+    </Chart>
+  ),
+  'Linked labels only': (
+    <Chart className={'story-chart'}>
+      <Sunburst
+        id={getSpecId('spec_' + getRandomNumber())}
+        data={mocks.pie}
+        valueAccessor={(d: Datum) => d.exportVal as number}
+        valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+        layers={[
+          {
+            groupByRollup: (d: Datum) => d.sitc1,
+            nodeLabel: (d: Datum) => productLookup[d].name,
+          },
+        ]}
+        config={{
+          ...config,
+          hierarchicalLayout: HierarchicalLayouts.sunburst,
+          linkLabel: { ...config.linkLabel, maximumSection: Infinity },
+        }}
+      />
+    </Chart>
+  ),
+  'No labels at all': (
+    <Chart className={'story-chart'}>
+      <Sunburst
+        id={getSpecId('spec_' + getRandomNumber())}
+        data={mocks.pie}
+        valueAccessor={(d: Datum) => d.exportVal as number}
+        valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+        layers={[
+          {
+            groupByRollup: (d: Datum) => d.sitc1,
+            nodeLabel: (d: Datum) => productLookup[d].name,
+          },
+        ]}
+        config={{
+          ...config,
+          hierarchicalLayout: HierarchicalLayouts.sunburst,
+          linkLabel: { ...config.linkLabel, maximumSection: Infinity, maxCount: 0 },
+        }}
+      />
+    </Chart>
+  ),
 };
 
 addStories(stories);
