@@ -93,11 +93,34 @@ export const shapeViewModel = (
   const innerWidth = width * (1 - Math.min(1, margin.left + margin.right));
   const innerHeight = height * (1 - Math.min(1, margin.top + margin.bottom));
 
+  const center = {
+    x: width * margin.left + innerWidth / 2,
+    y: height * margin.top + innerHeight / 2,
+  };
+
+  const aggregator = aggregators.sum;
+
+  // don't render anything if there are no tuples, or some are negative, or the total is not positive
+  if (
+    facts.length === 0 ||
+    facts.some((n) => valueAccessor(n) < 0) ||
+    facts.reduce((p: number, n) => aggregator.reducer(p, valueAccessor(n)), aggregator.identity()) <= 0
+  ) {
+    return {
+      config,
+      diskCenter: center,
+      quadViewModel: [],
+      rowSets: [],
+      linkLabelViewModels: [],
+      outsideLinksViewModel: [],
+    };
+  }
+
   // We can precompute things invariant of how the rectangle is divvied up.
   // By introducing `scale`, we no longer need to deal with the dichotomy of
   // size as data value vs size as number of pixels in the rectangle
 
-  const hierarchyMap = groupByRollup(groupByRollupAccessors, valueAccessor, aggregators.sum, facts);
+  const hierarchyMap = groupByRollup(groupByRollupAccessors, valueAccessor, aggregator, facts);
   const hierarchy = mapsToArrays(hierarchyMap, aggregateComparator(mapEntryValue, childOrders.descending));
 
   const totalValue = hierarchy.reduce((p: number, n: ArrayEntry): number => p + mapEntryValue(n), 0);
@@ -163,11 +186,6 @@ export const shapeViewModel = (
     };
   });
 
-  const center = {
-    x: width * margin.left + innerWidth / 2,
-    y: height * margin.top + innerHeight / 2,
-  };
-
   // style calcs
   const colorMaker = cyclicalHueInterpolator(palettes[colors]);
   const colorScale = makeColorScale(colorMaker, rawChildNodes.length + 1);
@@ -189,7 +207,7 @@ export const shapeViewModel = (
   const outsideFillNodes = fillOutside && !treemapLayout ? nodesWithRoom : [];
 
   const textFillOrigins: [number, number][] = nodesWithRoom.map((node: SectorTreeNode) => {
-    const midAngle = meanAngle(node.x0, node.x1);
+    const midAngle = (node.x0 + node.x1) / 2;
     const divider = 10;
     const innerBias = fillOutside ? 9 : 1;
     const outerBias = divider - innerBias;

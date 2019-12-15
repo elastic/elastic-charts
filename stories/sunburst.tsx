@@ -106,6 +106,46 @@ const stories = {
       />
     </Chart>
   ),
+  'Pie chart with direct text labels instead of dimension lookup': (
+    <Chart className={'story-chart'}>
+      <Sunburst
+        id={getSpecId('spec_' + getRandomNumber())}
+        data={[
+          { sitc1: 'Machinery and transport equipment', exportVal: 5 },
+          { sitc1: 'Mineral fuels, lubricants and related materials', exportVal: 4 },
+        ]}
+        valueAccessor={(d: Datum) => d.exportVal as number}
+        valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d))}`}
+        layers={[
+          {
+            groupByRollup: (d: Datum) => d.sitc1,
+            nodeLabel: (d: Datum) => d,
+          },
+        ]}
+        config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
+      />
+    </Chart>
+  ),
+  'Some slices has a zero value': (
+    <Chart className={'story-chart'}>
+      <Sunburst
+        id={getSpecId('spec_' + getRandomNumber())}
+        data={mocks.pie
+          .slice(0, 2)
+          .concat(mocks.pie.slice(2, 4).map((s) => ({ ...s, exportVal: 0 })))
+          .concat(mocks.pie.slice(4))}
+        valueAccessor={(d: Datum) => d.exportVal as number}
+        valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+        layers={[
+          {
+            groupByRollup: (d: Datum) => d.sitc1,
+            nodeLabel: (d: Datum) => productLookup[d].name,
+          },
+        ]}
+        config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
+      />
+    </Chart>
+  ),
   'Sunburst with fill labels': (
     <Chart className={'story-chart'}>
       <Sunburst
@@ -150,11 +190,11 @@ const stories = {
       />
     </Chart>
   ),
-  'Most basic treemap': (
+  'Pie chart with two slices': (
     <Chart className={'story-chart'}>
       <Sunburst
         id={getSpecId('spec_' + getRandomNumber())}
-        data={mocks.pie}
+        data={mocks.pie.slice(0, 2)}
         valueAccessor={(d: Datum) => d.exportVal as number}
         valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
         layers={[
@@ -163,23 +203,80 @@ const stories = {
             nodeLabel: (d: Datum) => productLookup[d].name,
           },
         ]}
+        config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
+      />
+    </Chart>
+  ),
+  'Pie chart with one large and one small slice': (
+    <Chart className={'story-chart'}>
+      <Sunburst
+        id={getSpecId('spec_' + getRandomNumber())}
+        data={[
+          { sitc1: 'Machinery and transport equipment', exportVal: 280 },
+          { sitc1: 'Mineral fuels, lubricants and related materials', exportVal: 80 },
+        ]}
+        valueAccessor={(d: Datum) => d.exportVal as number}
+        valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d))}`}
+        layers={[
+          {
+            groupByRollup: (d: Datum) => d.sitc1,
+            nodeLabel: (d: Datum) => d,
+          },
+        ]}
         config={{
           ...config,
-          hierarchicalLayout: HierarchicalLayouts.treemap,
-          minFontSize: 8,
-          maxFontSize: 36,
-          idealFontSizeJump: Math.sqrt(1.618),
+          hierarchicalLayout: HierarchicalLayouts.sunburst,
+          clockwiseSectors: true,
+          specialFirstInnermostSector: false,
+          outerSizeRatio: 1,
         }}
       />
     </Chart>
   ),
-  'Pie chart with two slices': (
+  'Pie chart with one very large and one very small slice': (
     <Chart className={'story-chart'}>
       <Sunburst
         id={getSpecId('spec_' + getRandomNumber())}
-        data={mocks.pie.slice(0, 2)}
+        data={[
+          { sitc1: 'Machinery and transport equipment', exportVal: 9 },
+          { sitc1: 'Mineral fuels, lubricants and related materials', exportVal: 1 },
+        ]}
         valueAccessor={(d: Datum) => d.exportVal as number}
-        valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+        valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d))}`}
+        layers={[
+          {
+            groupByRollup: (d: Datum) => d.sitc1,
+            nodeLabel: (d: Datum) => d,
+          },
+        ]}
+        config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
+      />
+    </Chart>
+  ),
+  'Pie chart with one near-full and one near-zero slice': (
+    <Chart className={'story-chart'}>
+      <Sunburst
+        id={getSpecId('spec_' + getRandomNumber())}
+        data={[{ sitc1: '7', exportVal: 999999 }, { sitc1: '3', exportVal: 1 }]}
+        valueAccessor={(d: Datum) => d.exportVal as number}
+        valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d))}`}
+        layers={[
+          {
+            groupByRollup: (d: Datum) => d.sitc1,
+            nodeLabel: (d: Datum) => productLookup[d].name,
+          },
+        ]}
+        config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
+      />
+    </Chart>
+  ),
+  'Pie chart with one full and one zero slices': (
+    <Chart className={'story-chart'}>
+      <Sunburst
+        id={getSpecId('spec_' + getRandomNumber())}
+        data={[{ sitc1: '7', exportVal: 1000000 }, { sitc1: '3', exportVal: 0 }]}
+        valueAccessor={(d: Datum) => d.exportVal as number}
+        valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d))}`}
         layers={[
           {
             groupByRollup: (d: Datum) => d.sitc1,
@@ -207,11 +304,48 @@ const stories = {
       />
     </Chart>
   ),
-  'Pie chart with no slices': (
+  'No pie chart if no slices': (
     <Chart className={'story-chart'}>
       <Sunburst
         id={getSpecId('spec_' + getRandomNumber())}
         data={[]}
+        valueAccessor={(d: Datum) => d.exportVal as number}
+        valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+        layers={[
+          {
+            groupByRollup: (d: Datum) => d.sitc1,
+            nodeLabel: (d: Datum) => productLookup[d].name,
+          },
+        ]}
+        config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
+      />
+    </Chart>
+  ),
+  'No pie chart if some slices are negative': (
+    <Chart className={'story-chart'}>
+      <Sunburst
+        id={getSpecId('spec_' + getRandomNumber())}
+        data={mocks.pie
+          .slice(0, 2)
+          .concat(mocks.pie.slice(2, 3).map((s) => ({ ...s, exportVal: -0.1 })))
+          .concat(mocks.pie.slice(3))}
+        valueAccessor={(d: Datum) => d.exportVal as number}
+        valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+        layers={[
+          {
+            groupByRollup: (d: Datum) => d.sitc1,
+            nodeLabel: (d: Datum) => productLookup[d].name,
+          },
+        ]}
+        config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
+      />
+    </Chart>
+  ),
+  'No pie chart if total is zero': (
+    <Chart className={'story-chart'}>
+      <Sunburst
+        id={getSpecId('spec_' + getRandomNumber())}
+        data={mocks.pie.map((s) => ({ ...s, exportVal: 0 }))}
         valueAccessor={(d: Datum) => d.exportVal as number}
         valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
         layers={[
@@ -325,6 +459,29 @@ const stories = {
           ...config,
           hierarchicalLayout: HierarchicalLayouts.sunburst,
           linkLabel: { ...config.linkLabel, maximumSection: Infinity, maxCount: 0 },
+        }}
+      />
+    </Chart>
+  ),
+  'Most basic treemap': (
+    <Chart className={'story-chart'}>
+      <Sunburst
+        id={getSpecId('spec_' + getRandomNumber())}
+        data={mocks.pie}
+        valueAccessor={(d: Datum) => d.exportVal as number}
+        valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+        layers={[
+          {
+            groupByRollup: (d: Datum) => d.sitc1,
+            nodeLabel: (d: Datum) => productLookup[d].name,
+          },
+        ]}
+        config={{
+          ...config,
+          hierarchicalLayout: HierarchicalLayouts.treemap,
+          minFontSize: 8,
+          maxFontSize: 36,
+          idealFontSizeJump: 1.01,
         }}
       />
     </Chart>

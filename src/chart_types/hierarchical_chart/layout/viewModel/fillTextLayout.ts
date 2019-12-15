@@ -3,15 +3,18 @@ import { Coordinate, Distance, Pixels, Radian, Radius, RingSector } from '../typ
 import { Config } from '../types/ConfigTypes';
 import { logarithm, tau, trueBearingToStandardPositionAngle } from '../utils/math';
 import { RowBox, RowSet, SectorTreeNode } from '../types/ViewModelTypes';
-// @ts-ignore
-import parse from 'parse-color';
 import { FontWeight, TextMeasure } from '../types/Types';
 import { aggregateKey } from '../utils/groupByRollup';
 import { conjunctiveConstraint } from '../circlineGeometry';
+// @ts-ignore
+import parse from 'parse-color';
 
-const ringSectorStartAngle = (d: SectorTreeNode): Radian => trueBearingToStandardPositionAngle(d.x0);
+const ringSectorStartAngle = (d: SectorTreeNode): Radian => {
+  return trueBearingToStandardPositionAngle(d.x0 + Math.max(0, d.x1 - d.x0 - tau / 2) / 2);
+};
 
-const ringSectorEndAngle = (d: SectorTreeNode): Radian => trueBearingToStandardPositionAngle(d.x1);
+const ringSectorEndAngle = (d: SectorTreeNode): Radian =>
+  trueBearingToStandardPositionAngle(d.x1 - Math.max(0, d.x1 - d.x0 - tau / 2) / 2);
 
 const ringSectorInnerRadius = (innerRadius: Radian, ringThickness: Distance) => (d: SectorTreeNode): Radius =>
   innerRadius + (d.y0 as number) * ringThickness;

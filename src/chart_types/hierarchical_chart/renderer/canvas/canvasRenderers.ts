@@ -89,7 +89,7 @@ const renderSectors = (ctx: CanvasRenderingContext2D, quadViewModel: QuadViewMod
 
         ctx.fillStyle = 'white';
 
-        // each side (radial 'line') is modeled as a triangle or quad
+        // each side (radial 'line') is modeled as a pentagon (some lines can be short arcs though)
         ctx.beginPath();
         const yThreshold = Math.max(taperOffLimit, (lineWidthMult * strokeWidth) / (X1 - X0));
         const beta = strokeWidth / yThreshold; // angle where strokeWidth equals the lineWidthMult limit at a radius of yThreshold
@@ -128,7 +128,6 @@ const renderRectangles = (ctx: CanvasRenderingContext2D, quadViewModel: QuadView
 };
 
 // order of rendering is important; determined by the order of layers in the array
-// todo unify with that of svg `renderLayers` (same code, different types)
 const renderLayers = (ctx: CanvasRenderingContext2D, layers: Array<(ctx: CanvasRenderingContext2D) => void>) =>
   layers.forEach((renderLayer) => renderLayer(ctx));
 
