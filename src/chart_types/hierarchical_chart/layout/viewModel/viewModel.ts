@@ -5,7 +5,7 @@ import { Config, HierarchicalLayouts } from '../types/ConfigTypes';
 import { tau, trueBearingToStandardPositionAngle } from '../utils/math';
 import { cyclicalHueInterpolator, getOpacity } from '../utils/calcs';
 import { Distance, Pixels, Radius } from '../types/GeometryTypes';
-import { diffAngle, meanAngle } from '../geometry';
+import { meanAngle } from '../geometry';
 import { squarifiedTreemap } from '../utils/treemap';
 import { sunburst } from '../utils/sunburst';
 import { AccessorFn } from '../../../../utils/accessor';
@@ -195,7 +195,7 @@ export const shapeViewModel = (
 
   // fill text
   const roomCondition = (n: SectorTreeNode) => {
-    const diff = diffAngle(n.x1, n.x0); // todo check why it can be negative, eg. larger than tau/2 arc?
+    const diff = n.x1 - n.x0;
     const result = treemapLayout
       ? n.x1 - n.x0 > minFontSize && n.y1px - n.y0px > minFontSize
       : (diff < 0 ? tau + diff : diff) * ringSectorMiddleRadius(n) > Math.max(minFontSize, linkLabel.maximumSection);
