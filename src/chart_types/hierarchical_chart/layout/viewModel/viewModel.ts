@@ -3,13 +3,13 @@ import { fillTextLayoutRectangle, fillTextLayoutSector, nodeId } from './fillTex
 import { linkTextLayout } from './linkTextLayout';
 import { Config, HierarchicalLayouts } from '../types/ConfigTypes';
 import { tau, trueBearingToStandardPositionAngle } from '../utils/math';
-import { cyclicalHueInterpolator, getOpacity } from '../utils/calcs';
+import { getOpacity } from '../utils/calcs';
 import { Distance, Pixels, Radius } from '../types/GeometryTypes';
 import { meanAngle } from '../geometry';
 import { squarifiedTreemap } from '../utils/treemap';
 import { sunburst } from '../utils/sunburst';
 import { AccessorFn } from '../../../../utils/accessor';
-import { ColorScale, fromRGB, makeColorScale, toRGB } from '../utils/d3utils';
+import { fromRGB, toRGB } from '../utils/d3utils';
 import { OutsideLinksViewModel, QuadViewModel, RowSet, SectorTreeNode, ShapeViewModel } from '../types/ViewModelTypes';
 import {
   aggregateAccessor,
@@ -28,16 +28,19 @@ import { Layer } from '../../specs/index';
 
 export const makeQuadViewModel = (
   childNodes: SectorTreeNode[],
-  colorScale: ColorScale,
+  layers: Layer[],
   sectorLineWidth: Pixels,
 ): Array<QuadViewModel> =>
-  childNodes.map((d) => {
-    const opacityMultiplier = getOpacity(d);
-    // while (d.depth > 1) d = d.parent;
-    const { r, g, b, opacity } = toRGB(colorScale(d.data.name));
+  childNodes.map((node, index, a) => {
+    const opacityMultiplier = getOpacity(node);
+    const layer = layers[node.depth - 1];
+    const fillColorSpec = layer && layer.shape && layer.shape.fillColor;
+    const fill = fillColorSpec || 'rgba(128,0,0,0.5)';
+    const shapeFillColor = typeof fill === 'function' ? fill(node, index, a) : fill;
+    const { r, g, b, opacity } = toRGB(shapeFillColor);
     const fillColor = fromRGB(r, g, b, opacity * opacityMultiplier).toString();
     const strokeWidth = sectorLineWidth;
-    const { x0, x1, y0px, y1px } = d;
+    const { x0, x1, y0px, y1px } = node;
     return { strokeWidth, fillColor, x0, x1, y0px, y1px };
   });
 
@@ -82,8 +85,6 @@ export const shapeViewModel = (
     margin,
     emptySizeRatio,
     outerSizeRatio,
-    colors,
-    palettes,
     fillOutside,
     linkLabel,
     clockwiseSectors,
@@ -128,7 +129,7 @@ export const shapeViewModel = (
   const totalValue = hierarchy.reduce((p: number, n: ArrayEntry): number => p + mapEntryValue(n), 0);
 
   const paddingAccessor = (n: any) => {
-    return [0, 10, 1][n[1].depth];
+    return [0, 2, 1][n[1].depth];
   };
 
   const angularRange = tau;
@@ -190,12 +191,8 @@ export const shapeViewModel = (
     };
   });
 
-  // style calcs
-  const colorMaker = cyclicalHueInterpolator(palettes[colors]);
-  const colorScale = makeColorScale(colorMaker, rawChildNodes.length + 1);
-
   // ring sector paths
-  const sectorViewModel = makeQuadViewModel(childNodes, colorScale, config.sectorLineWidth);
+  const quadViewModel = makeQuadViewModel(childNodes, layers, config.sectorLineWidth);
 
   // fill text
   const roomCondition = (n: SectorTreeNode) => {
@@ -235,7 +232,7 @@ export const shapeViewModel = (
     nodesWithRoom.map((n: SectorTreeNode) =>
       Object.assign({}, n, {
         y0: n.y0,
-        fill: sectorViewModel[n.inRingIndex].fillColor, // todo roll a proper join, as this current thing assumes 1:1 between sectors and sector VMs (in the future we may elide small, invisible sector VMs(
+        fill: quadViewModel[n.inRingIndex].fillColor, // todo roll a proper join, as this current thing assumes 1:1 between sectors and sector VMs (in the future we may elide small, invisible sector VMs(
       }),
     ),
     config,
@@ -273,7 +270,7 @@ export const shapeViewModel = (
   return {
     config,
     diskCenter: center,
-    quadViewModel: sectorViewModel,
+    quadViewModel: quadViewModel,
     rowSets,
     linkLabelViewModels,
     outsideLinksViewModel,

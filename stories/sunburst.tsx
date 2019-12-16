@@ -2,12 +2,14 @@ import { storiesOf, Story } from '@storybook/react';
 import { Chart, getSpecId, Sunburst } from '../src';
 import { mocks } from '../src/mocks/hierarchical/index';
 import { config } from '../src/chart_types/hierarchical_chart/layout/config/config';
-import { arrayToLookup } from '../src/chart_types/hierarchical_chart/layout/utils/calcs';
+import { arrayToLookup, cyclicalHueInterpolator } from '../src/chart_types/hierarchical_chart/layout/utils/calcs';
 import { Datum } from '../src/chart_types/xy_chart/utils/specs';
 import { countryDimension, productDimension, regionDimension } from '../src/mocks/hierarchical/dimensionCodes';
 import React, { CElement, Component } from 'react';
 import { HierarchicalLayouts } from '../src/chart_types/hierarchical_chart/layout/types/ConfigTypes';
 import { getRandomNumber } from '../src/mocks/utils';
+// @ts-ignore
+import parse from 'parse-color';
 
 const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
 const regionLookup = arrayToLookup((d: Datum) => d.region, regionDimension);
@@ -15,6 +17,11 @@ const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
 
 const addStories = (stories: { [s: string]: CElement<Chart, Component<Chart>> }) =>
   Object.entries(stories).reduce((p: Story, [k, v]) => p.add(k, () => v), storiesOf('Sunburst', module));
+
+// style calcs
+const interpolatorCET2s = cyclicalHueInterpolator(config.palettes.CET2s);
+const interpolatorTurbo = cyclicalHueInterpolator(config.palettes.turbo);
+const defaultFillColor = (colorMaker: any) => (d: any, i: number, a: any[]) => colorMaker(i / (a.length + 1));
 
 const stories = {
   'Most basic pie chart': (
@@ -28,6 +35,9 @@ const stories = {
           {
             groupByRollup: (d: Datum) => d.sitc1,
             nodeLabel: (d: Datum) => productLookup[d].name,
+            shape: {
+              fillColor: defaultFillColor(interpolatorTurbo),
+            },
           },
         ]}
         config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
@@ -45,6 +55,9 @@ const stories = {
           {
             groupByRollup: (d: Datum) => d.sitc1,
             nodeLabel: (d: Datum) => productLookup[d].name,
+            shape: {
+              fillColor: defaultFillColor(interpolatorCET2s),
+            },
           },
         ]}
         config={Object.assign({}, config, {
@@ -81,6 +94,9 @@ const stories = {
           {
             groupByRollup: (d: Datum) => d.sitc1,
             nodeLabel: (d: Datum) => productLookup[d].name,
+            shape: {
+              fillColor: defaultFillColor(interpolatorCET2s),
+            },
           },
         ]}
         config={Object.assign({}, config, {
@@ -120,6 +136,9 @@ const stories = {
           {
             groupByRollup: (d: Datum) => d.sitc1,
             // nodeLabel: (d: Datum) => d,
+            shape: {
+              fillColor: defaultFillColor(interpolatorCET2s),
+            },
           },
         ]}
         config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
@@ -140,13 +159,66 @@ const stories = {
           {
             groupByRollup: (d: Datum) => d.sitc1,
             nodeLabel: (d: Datum) => productLookup[d].name,
+            shape: {
+              fillColor: defaultFillColor(interpolatorCET2s),
+            },
           },
         ]}
         config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
       />
     </Chart>
   ),
-  'Sunburst with fill labels': (
+  'Sunburst with two layers': (
+    <Chart className={'story-chart'}>
+      <Sunburst
+        id={getSpecId('spec_' + getRandomNumber())}
+        data={mocks.sunburst}
+        valueAccessor={(d: Datum) => d.exportVal as number}
+        valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+        layers={[
+          {
+            groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.substr(0, 2),
+            nodeLabel: (d: any) => regionLookup[d].regionName,
+            fillLabel: {
+              fontFamily: 'Impact',
+              formatter: (d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000000))}\xa0Tn`,
+            },
+            shape: {
+              fillColor: defaultFillColor(interpolatorCET2s),
+            },
+          },
+          {
+            groupByRollup: (d: Datum) => d.dest,
+            nodeLabel: (d: any) => countryLookup[d].name,
+            shape: {
+              fillColor: defaultFillColor(interpolatorCET2s),
+            },
+          },
+        ]}
+        config={Object.assign({}, config, {
+          hierarchicalLayout: HierarchicalLayouts.sunburst,
+          colors: 'CET2s',
+          linkLabel: Object.assign({}, config.linkLabel, {
+            maxCount: 0,
+            fontSize: 14,
+          }),
+          fontFamily: 'Arial',
+          fillLabel: Object.assign({}, config.fillLabel, {
+            formatter: (d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
+            fontStyle: 'italic',
+          }),
+          margin: Object.assign({}, config.margin, { top: 0, bottom: 0, left: 0, right: 0 }),
+          minFontSize: 1,
+          idealFontSizeJump: 1.1,
+          outerSizeRatio: 1,
+          emptySizeRatio: 0,
+          circlePadding: 4,
+          backgroundColor: 'rgba(229,229,229,1)',
+        })}
+      />
+    </Chart>
+  ),
+  'Sunburst with three layers': (
     <Chart className={'story-chart'}>
       <Sunburst
         id={getSpecId('spec_' + getRandomNumber())}
@@ -157,14 +229,23 @@ const stories = {
           {
             groupByRollup: (d: Datum) => d.sitc1,
             nodeLabel: (d: any) => productLookup[d].name,
+            shape: {
+              fillColor: defaultFillColor(interpolatorCET2s),
+            },
           },
           {
             groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.substr(0, 2),
             nodeLabel: (d: any) => regionLookup[d].regionName,
+            shape: {
+              fillColor: defaultFillColor(interpolatorCET2s),
+            },
           },
           {
             groupByRollup: (d: Datum) => d.dest,
             nodeLabel: (d: any) => countryLookup[d].name,
+            shape: {
+              fillColor: defaultFillColor(interpolatorCET2s),
+            },
           },
         ]}
         config={Object.assign({}, config, {
@@ -201,6 +282,9 @@ const stories = {
           {
             groupByRollup: (d: Datum) => d.sitc1,
             nodeLabel: (d: Datum) => productLookup[d].name,
+            shape: {
+              fillColor: defaultFillColor(interpolatorCET2s),
+            },
           },
         ]}
         config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
@@ -221,6 +305,9 @@ const stories = {
           {
             groupByRollup: (d: Datum) => d.sitc1,
             nodeLabel: (d: Datum) => d,
+            shape: {
+              fillColor: defaultFillColor(interpolatorCET2s),
+            },
           },
         ]}
         config={{
@@ -247,6 +334,9 @@ const stories = {
           {
             groupByRollup: (d: Datum) => d.sitc1,
             nodeLabel: (d: Datum) => d,
+            shape: {
+              fillColor: defaultFillColor(interpolatorCET2s),
+            },
           },
         ]}
         config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
@@ -264,13 +354,16 @@ const stories = {
           {
             groupByRollup: (d: Datum) => d.sitc1,
             nodeLabel: (d: Datum) => productLookup[d].name,
+            shape: {
+              fillColor: defaultFillColor(interpolatorCET2s),
+            },
           },
         ]}
         config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
       />
     </Chart>
   ),
-  'Pie chart with one full and one zero slices': (
+  'Pie chart with one full and one zero slice': (
     <Chart className={'story-chart'}>
       <Sunburst
         id={getSpecId('spec_' + getRandomNumber())}
@@ -281,6 +374,9 @@ const stories = {
           {
             groupByRollup: (d: Datum) => d.sitc1,
             nodeLabel: (d: Datum) => productLookup[d].name,
+            shape: {
+              fillColor: defaultFillColor(interpolatorCET2s),
+            },
           },
         ]}
         config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
@@ -298,6 +394,9 @@ const stories = {
           {
             groupByRollup: (d: Datum) => d.sitc1,
             nodeLabel: (d: Datum) => productLookup[d].name,
+            shape: {
+              fillColor: defaultFillColor(interpolatorCET2s),
+            },
           },
         ]}
         config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
@@ -315,6 +414,9 @@ const stories = {
           {
             groupByRollup: (d: Datum) => d.sitc1,
             nodeLabel: (d: Datum) => productLookup[d].name,
+            shape: {
+              fillColor: defaultFillColor(interpolatorCET2s),
+            },
           },
         ]}
         config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
@@ -335,6 +437,9 @@ const stories = {
           {
             groupByRollup: (d: Datum) => d.sitc1,
             nodeLabel: (d: Datum) => productLookup[d].name,
+            shape: {
+              fillColor: defaultFillColor(interpolatorCET2s),
+            },
           },
         ]}
         config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
@@ -352,6 +457,9 @@ const stories = {
           {
             groupByRollup: (d: Datum) => d.sitc1,
             nodeLabel: (d: Datum) => productLookup[d].name,
+            shape: {
+              fillColor: defaultFillColor(interpolatorCET2s),
+            },
           },
         ]}
         config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
@@ -369,6 +477,9 @@ const stories = {
           {
             groupByRollup: (d: Datum) => d.origin,
             nodeLabel: (d: Datum) => countryLookup[d].name,
+            shape: {
+              fillColor: defaultFillColor(interpolatorCET2s),
+            },
           },
         ]}
         config={{
@@ -390,6 +501,9 @@ const stories = {
           {
             groupByRollup: (d: Datum) => d.sitc1,
             nodeLabel: (d: Datum) => productLookup[d].name,
+            shape: {
+              fillColor: defaultFillColor(interpolatorCET2s),
+            },
           },
         ]}
         config={{
@@ -411,6 +525,9 @@ const stories = {
           {
             groupByRollup: (d: Datum) => d.sitc1,
             nodeLabel: (d: Datum) => productLookup[d].name,
+            shape: {
+              fillColor: defaultFillColor(interpolatorCET2s),
+            },
           },
         ]}
         config={{
@@ -432,6 +549,9 @@ const stories = {
           {
             groupByRollup: (d: Datum) => d.sitc1,
             nodeLabel: (d: Datum) => productLookup[d].name,
+            shape: {
+              fillColor: defaultFillColor(interpolatorCET2s),
+            },
           },
         ]}
         config={{
@@ -453,6 +573,9 @@ const stories = {
           {
             groupByRollup: (d: Datum) => d.sitc1,
             nodeLabel: (d: Datum) => productLookup[d].name,
+            shape: {
+              fillColor: defaultFillColor(interpolatorCET2s),
+            },
           },
         ]}
         config={{
@@ -474,6 +597,9 @@ const stories = {
           {
             groupByRollup: (d: Datum) => d.sitc1,
             nodeLabel: (d: Datum) => productLookup[d].name,
+            shape: {
+              fillColor: defaultFillColor(interpolatorCET2s),
+            },
           },
         ]}
         config={{
@@ -499,11 +625,13 @@ const stories = {
             nodeLabel: (d: any) => productLookup[d].name.toUpperCase(),
             fillLabel: Object.assign({}, config.fillLabel, {
               formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
-              textColor: 'rgb(255,192,255)',
+              fontFamily: 'Arial Narrow',
+              textColor: 'rgb(255,255,255)',
               textInvertible: false,
               textWeight: 900,
               fontStyle: 'small-caps',
             }),
+            shape: { fillColor: 'rgba(255, 229, 180,0.25)' },
           },
           {
             groupByRollup: (d: Datum) => d.dest,
@@ -511,11 +639,19 @@ const stories = {
             fillLabel: Object.assign({}, config.fillLabel, {
               formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
               textColor: 'black',
-              textInvertible: true,
-              textWeight: 100,
+              textInvertible: false,
+              textWeight: 300,
               fontStyle: 'normal',
+              fontFamily: 'Helvetica',
               fontVariant: 'normal',
             }),
+            shape: {
+              fillColor: (d: any, i: any, a: any) => {
+                const color = defaultFillColor(interpolatorCET2s)(d, i, a);
+                const [r, g, b] = parse(color).rgb;
+                return `rgb(${Math.round(r * 0.75)}, ${Math.round(g * 0.75)}, ${Math.round(b * 0.75)})`;
+              },
+            },
           },
         ]}
         config={Object.assign({}, config, {

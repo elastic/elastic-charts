@@ -11,6 +11,7 @@ export interface Layer {
   groupByRollup: AccessorFn;
   nodeLabel?: AccessorFn;
   fillLabel?: Partial<FillLabel>;
+  shape?: { fillColor: any };
 }
 
 const defaultProps = {

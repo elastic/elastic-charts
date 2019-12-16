@@ -6,9 +6,9 @@ import { RowBox, RowSet, SectorTreeNode } from '../types/ViewModelTypes';
 import { FontWeight, TextMeasure } from '../types/Types';
 import { aggregateKey } from '../utils/groupByRollup';
 import { conjunctiveConstraint } from '../circlineGeometry';
+import { Layer } from '../../specs/index';
 // @ts-ignore
 import parse from 'parse-color';
-import { Layer } from '../../specs/index';
 
 const ringSectorStartAngle = (d: SectorTreeNode): Radian => {
   return trueBearingToStandardPositionAngle(d.x0 + Math.max(0, d.x1 - d.x0 - tau / 2) / 2);
@@ -178,6 +178,7 @@ const getWordSpacing = (fontSize: number) => fontSize / 4;
 
 const fillSector = (
   config: Config,
+  layers: Layer[],
   fontSizes: string | any[],
   textFillOrigins: any[],
   measure: { (font: string, texts: string[]): TextMetrics[]; (arg0: string, arg1: any): any },
@@ -185,17 +186,20 @@ const fillSector = (
   valueFormatter: Function,
   innerRadius: number,
   ringThickness: number,
-  tr: number,
-  tg: number,
-  tb: number,
 ) => (node: SectorTreeNode, i: number) => {
-  const {
-    fontFamily,
-    maxRowCount,
-    fillLabel: { textColor, textInvertible, textWeight, fontStyle, fontVariant },
-    horizontalTextEnforcer,
-    horizontalTextAngleThreshold,
-  } = config;
+  const { maxRowCount, fillLabel, horizontalTextEnforcer, horizontalTextAngleThreshold } = config;
+
+  // generic block
+  const { textColor, textInvertible, textWeight, fontStyle, fontVariant, fontFamily, formatter } = Object.assign(
+    {},
+    { fontFamily: config.fontFamily, formatter: valueFormatter },
+    fillLabel,
+    layers[node.depth - 1] && layers[node.depth - 1].fillLabel,
+  );
+
+  // generic block
+  const [tr, tg, tb] = parse(textColor).rgb;
+
   // generic block
   let fontSizeIndex = fontSizes.length - 1;
   const textFillOrigin = textFillOrigins[i];
@@ -203,7 +207,7 @@ const fillSector = (
   const cy = textFillOrigin[1];
 
   // generic block
-  const allBoxes = getAllBoxes(getRawText, valueFormatter, node);
+  const allBoxes = getAllBoxes(getRawText, formatter, node);
   let rowSet = identityRowSet();
   let completed = false;
 
@@ -335,11 +339,27 @@ const fillRectangle = (
   measure: { (font: string, texts: string[]): TextMetrics[]; (arg0: string, arg1: any): any },
   getRawText: Function,
   valueFormatter: Function,
-) => (node: SectorTreeNode) => {
-  const { fontFamily, maxRowCount, fillLabel } = config;
-  const { textColor, textInvertible, textWeight, fontStyle, fontVariant } = layers[node.depth - 1]
-    ? Object.assign({}, fillLabel, layers[node.depth - 1].fillLabel)
-    : fillLabel;
+) => (node: SectorTreeNode, index: number, a: SectorTreeNode[]) => {
+  const { maxRowCount, fillLabel } = config;
+
+  // generic block
+  const {
+    textColor,
+    textInvertible,
+    textWeight,
+    fontStyle,
+    fontVariant,
+    fontFamily,
+    formatter,
+    fillColor,
+  } = Object.assign(
+    { fontFamily: config.fontFamily, formatter: valueFormatter, fillColor: node.fill },
+    fillLabel,
+    layers[node.depth - 1] && layers[node.depth - 1].fillLabel,
+    layers[node.depth - 1] && layers[node.depth - 1].shape,
+  );
+
+  const shapeFillColor = typeof fillColor === 'function' ? fillColor(node, index, a) : fillColor;
 
   // generic block
   const [tr, tg, tb] = parse(textColor).rgb;
@@ -348,7 +368,7 @@ const fillRectangle = (
   let fontSizeIndex = fontSizes.length - 1;
 
   // generic block
-  const allBoxes = getAllBoxes(getRawText, valueFormatter, node);
+  const allBoxes = getAllBoxes(getRawText, formatter, node);
   let rowSet = identityRowSet();
   let completed = false;
 
@@ -382,7 +402,7 @@ const fillRectangle = (
     while (++targetRowCount <= maxRowCount && !innerCompleted) {
       // generic block
       measuredBoxes = allMeasuredBoxes.slice();
-      const [r, g, b] = parse(node.fill).rgb;
+      const [r, g, b] = parse(shapeFillColor).rgb;
       const inverseForContrast = textInvertible && r * 0.299 + g * 0.587 + b * 0.114 < 120; // or 150?
       rowSet = {
         id: nodeId(node),
@@ -479,19 +499,13 @@ export const fillTextLayoutSector = (
   valueFormatter: Function,
   childNodes: SectorTreeNode[],
   config: Config,
-  _layers: Layer[],
+  layers: Layer[],
   textFillOrigins: [number, number][],
   innerRadius: Radius,
   ringThickness: Distance,
 ) => {
-  const {
-    minFontSize,
-    maxFontSize,
-    idealFontSizeJump,
-    fillLabel: { textColor },
-  } = config;
+  const { minFontSize, maxFontSize, idealFontSizeJump } = config;
 
-  const [tr, tg, tb] = parse(textColor).rgb;
   const fontSizeMagnification = maxFontSize / minFontSize;
   const fontSizeJumpCount = Math.round(logarithm(idealFontSizeJump, fontSizeMagnification));
   const realFontSizeJump = Math.pow(fontSizeMagnification, 1 / fontSizeJumpCount);
@@ -506,6 +520,7 @@ export const fillTextLayoutSector = (
   return childNodes.map(
     fillSector(
       config,
+      layers,
       fontSizes,
       textFillOrigins,
       measure,
@@ -513,9 +528,6 @@ export const fillTextLayoutSector = (
       valueFormatter,
       innerRadius,
       ringThickness,
-      tr,
-      tg,
-      tb,
     ),
   );
 };

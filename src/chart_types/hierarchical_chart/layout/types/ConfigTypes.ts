@@ -16,6 +16,7 @@ export interface FillLabel {
   fontStyle: string;
   fontVariant: string;
   formatter: Function;
+  fontFamily?: string;
 }
 
 // todo switch to `io-ts` style, generic way of combining static and runtime type info
