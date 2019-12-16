@@ -8,6 +8,7 @@ import { aggregateKey } from '../utils/groupByRollup';
 import { conjunctiveConstraint } from '../circlineGeometry';
 // @ts-ignore
 import parse from 'parse-color';
+import { Layer } from '../../specs/index';
 
 const ringSectorStartAngle = (d: SectorTreeNode): Radian => {
   return trueBearingToStandardPositionAngle(d.x0 + Math.max(0, d.x1 - d.x0 - tau / 2) / 2);
@@ -329,19 +330,20 @@ const fillSector = (
 
 const fillRectangle = (
   config: Config,
+  layers: Layer[],
   fontSizes: string | any[],
   measure: { (font: string, texts: string[]): TextMetrics[]; (arg0: string, arg1: any): any },
   getRawText: Function,
   valueFormatter: Function,
-  tr: number,
-  tg: number,
-  tb: number,
 ) => (node: SectorTreeNode) => {
-  const {
-    fontFamily,
-    maxRowCount,
-    fillLabel: { textColor, textInvertible, textWeight, fontStyle, fontVariant },
-  } = config;
+  const { fontFamily, maxRowCount, fillLabel } = config;
+  const { textColor, textInvertible, textWeight, fontStyle, fontVariant } = layers[node.depth - 1]
+    ? Object.assign({}, fillLabel, layers[node.depth - 1].fillLabel)
+    : fillLabel;
+
+  // generic block
+  const [tr, tg, tb] = parse(textColor).rgb;
+
   // generic block
   let fontSizeIndex = fontSizes.length - 1;
 
@@ -381,7 +383,7 @@ const fillRectangle = (
       // generic block
       measuredBoxes = allMeasuredBoxes.slice();
       const [r, g, b] = parse(node.fill).rgb;
-      const inverseForContrast = textInvertible && r * 0.299 + g * 0.587 + b * 0.114 < 150;
+      const inverseForContrast = textInvertible && r * 0.299 + g * 0.587 + b * 0.114 < 120; // or 150?
       rowSet = {
         id: nodeId(node),
         fontSize,
@@ -477,6 +479,7 @@ export const fillTextLayoutSector = (
   valueFormatter: Function,
   childNodes: SectorTreeNode[],
   config: Config,
+  _layers: Layer[],
   textFillOrigins: [number, number][],
   innerRadius: Radius,
   ringThickness: Distance,
@@ -523,15 +526,10 @@ export const fillTextLayoutRectangle = (
   valueFormatter: Function,
   childNodes: SectorTreeNode[],
   config: Config,
+  layers: Layer[],
 ) => {
-  const {
-    minFontSize,
-    maxFontSize,
-    idealFontSizeJump,
-    fillLabel: { textColor },
-  } = config;
+  const { minFontSize, maxFontSize, idealFontSizeJump } = config;
 
-  const [tr, tg, tb] = parse(textColor).rgb;
   const fontSizeMagnification = maxFontSize / minFontSize;
   const fontSizeJumpCount = Math.round(logarithm(idealFontSizeJump, fontSizeMagnification));
   const realFontSizeJump = Math.pow(fontSizeMagnification, 1 / fontSizeJumpCount);
@@ -543,5 +541,5 @@ export const fillTextLayoutRectangle = (
     }
   }
 
-  return childNodes.map(fillRectangle(config, fontSizes, measure, getRawText, valueFormatter, tr, tg, tb));
+  return childNodes.map(fillRectangle(config, layers, fontSizes, measure, getRawText, valueFormatter));
 };

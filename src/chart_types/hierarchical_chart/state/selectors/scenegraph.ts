@@ -22,6 +22,7 @@ export function render(sunburstSpec: SunburstSpec, parentDimensions: Dimensions,
     shapeViewModel(
       measureText(textMeasurerCtx),
       myConfig,
+      layers,
       facts,
       (node: SectorTreeNode) => (layers[node[depthKey] - 1].nodeLabel || identity)(node.data.name),
       sunburstSpec.valueAccessor,

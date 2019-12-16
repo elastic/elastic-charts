@@ -5,11 +5,12 @@ import { FunctionComponent } from 'react';
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
 import { AccessorFn } from '../../../utils/accessor';
 import { Spec } from '../../../specs/index';
-import { Config } from '../layout/types/ConfigTypes';
+import { Config, FillLabel } from '../layout/types/ConfigTypes';
 
-interface Layer {
+export interface Layer {
   groupByRollup: AccessorFn;
   nodeLabel?: AccessorFn;
+  fillLabel?: Partial<FillLabel>;
 }
 
 const defaultProps = {
@@ -22,6 +23,7 @@ const defaultProps = {
     {
       groupByRollup: (d: Datum) => d,
       nodeLabel: (d: Datum) => d,
+      fillLabel: {},
     },
   ],
 };

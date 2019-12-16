@@ -463,7 +463,7 @@ const stories = {
       />
     </Chart>
   ),
-  'Most basic treemap': (
+  'One-layer, resizing treemap': (
     <Chart className={'story-chart'}>
       <Sunburst
         id={getSpecId('spec_' + getRandomNumber())}
@@ -479,10 +479,63 @@ const stories = {
         config={{
           ...config,
           hierarchicalLayout: HierarchicalLayouts.treemap,
-          minFontSize: 8,
+          minFontSize: 1,
           maxFontSize: 36,
           idealFontSizeJump: 1.01,
         }}
+      />
+    </Chart>
+  ),
+  'Two-layer treemap stress test': (
+    <Chart className={'story-chart'}>
+      <Sunburst
+        id={getSpecId('spec_' + getRandomNumber())}
+        data={mocks.sunburst}
+        valueAccessor={(d: Datum) => d.exportVal as number}
+        valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+        layers={[
+          {
+            groupByRollup: (d: Datum) => d.sitc1,
+            nodeLabel: (d: any) => productLookup[d].name.toUpperCase(),
+            fillLabel: Object.assign({}, config.fillLabel, {
+              formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
+              textColor: 'rgb(255,192,255)',
+              textInvertible: false,
+              textWeight: 900,
+              fontStyle: 'small-caps',
+            }),
+          },
+          {
+            groupByRollup: (d: Datum) => d.dest,
+            nodeLabel: (d: any) => countryLookup[d].name,
+            fillLabel: Object.assign({}, config.fillLabel, {
+              formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
+              textColor: 'black',
+              textInvertible: true,
+              textWeight: 100,
+              fontStyle: 'normal',
+              fontVariant: 'normal',
+            }),
+          },
+        ]}
+        config={Object.assign({}, config, {
+          hierarchicalLayout: HierarchicalLayouts.treemap,
+          colors: 'turbo',
+          linkLabel: Object.assign({}, config.linkLabel, { maxCount: 0 }),
+          fontFamily: 'Helvetica Neue',
+          fillLabel: Object.assign({}, config.fillLabel, {
+            formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
+            textColor: 'white',
+            textInvertible: true,
+            textWeight: 500,
+            fontStyle: 'normal',
+          }),
+          margin: Object.assign({}, config.margin, { top: 0, bottom: 0, left: 0, right: 0 }),
+          minFontSize: 4,
+          maxFontSize: 84,
+          idealFontSizeJump: 1.2,
+          outerSizeRatio: 1,
+        })}
       />
     </Chart>
   ),

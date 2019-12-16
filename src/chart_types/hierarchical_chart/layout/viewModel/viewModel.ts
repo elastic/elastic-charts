@@ -24,8 +24,9 @@ import {
   mapEntryValue,
   mapsToArrays,
 } from '../utils/groupByRollup';
+import { Layer } from '../../specs/index';
 
-export const makeSectorViewModel = (
+export const makeQuadViewModel = (
   childNodes: SectorTreeNode[],
   colorScale: ColorScale,
   sectorLineWidth: Pixels,
@@ -68,6 +69,7 @@ export const makeOutsideLinksViewModel = (
 export const shapeViewModel = (
   textMeasure: TextMeasure,
   config: Config,
+  layers: Layer[],
   facts: Relation,
   rawTextGetter: Function, // todo improve typing
   valueAccessor: AccessorFn,
@@ -125,7 +127,9 @@ export const shapeViewModel = (
 
   const totalValue = hierarchy.reduce((p: number, n: ArrayEntry): number => p + mapEntryValue(n), 0);
 
-  const paddingAccessor = () => 0;
+  const paddingAccessor = (n: any) => {
+    return [0, 10, 1][n[1].depth];
+  };
 
   const angularRange = tau;
   const sunburstValueToAreaScale = angularRange / totalValue;
@@ -191,7 +195,7 @@ export const shapeViewModel = (
   const colorScale = makeColorScale(colorMaker, rawChildNodes.length + 1);
 
   // ring sector paths
-  const sectorViewModel = makeSectorViewModel(childNodes, colorScale, config.sectorLineWidth);
+  const sectorViewModel = makeQuadViewModel(childNodes, colorScale, config.sectorLineWidth);
 
   // fill text
   const roomCondition = (n: SectorTreeNode) => {
@@ -235,6 +239,7 @@ export const shapeViewModel = (
       }),
     ),
     config,
+    layers,
     textFillOrigins,
     innerRadius,
     ringThickness,

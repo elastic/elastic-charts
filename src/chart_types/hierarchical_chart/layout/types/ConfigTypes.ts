@@ -9,6 +9,15 @@ export const HierarchicalLayouts = Object.freeze({
 
 export type HierarchicalLayout = Values<typeof HierarchicalLayouts>; // could use ValuesType<typeof HierarchicalChartTypes>
 
+export interface FillLabel {
+  textColor: Color;
+  textInvertible: boolean;
+  textWeight: FontWeight;
+  fontStyle: string;
+  fontVariant: string;
+  formatter: Function;
+}
+
 // todo switch to `io-ts` style, generic way of combining static and runtime type info
 export interface StaticConfig {
   // shape geometry
@@ -43,14 +52,7 @@ export interface StaticConfig {
   radiusOutside: Radius;
   fillRectangleWidth: number;
   fillRectangleHeight: number;
-  fillLabel: {
-    textColor: Color;
-    textInvertible: boolean;
-    textWeight: FontWeight;
-    fontStyle: string;
-    fontVariant: string;
-    formatter: Function;
-  };
+  fillLabel: FillLabel;
 
   // linked labels (primarily: single-line)
   linkLabel: {
