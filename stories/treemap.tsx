@@ -50,6 +50,74 @@ const stories = {
       />
     </Chart>
   ),
+  'Midsize two-layer treemap': (
+    <Chart
+      className={'story-chart'}
+      size={
+        {
+          /*height: 800*/
+        }
+      }
+    >
+      <Sunburst
+        id={getSpecId('spec_' + getRandomNumber())}
+        data={mocks.sunburst}
+        valueAccessor={(d: Datum) => d.exportVal as number}
+        valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+        layers={[
+          {
+            groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.substr(0, 2),
+            nodeLabel: (d: any) => regionLookup[d].regionName,
+            fillLabel: Object.assign({}, config.fillLabel, {
+              formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
+              fontFamily: 'Phosphate-Inline',
+              textColor: 'white',
+              textInvertible: false,
+            }),
+            shape: { fillColor: 'rgba(255, 229, 180,0.25)' },
+          },
+          {
+            groupByRollup: (d: Datum) => d.dest,
+            nodeLabel: (d: any) => countryLookup[d].name,
+            fillLabel: Object.assign({}, config.fillLabel, {
+              formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
+              textColor: 'black',
+              textInvertible: false,
+              textWeight: 200,
+              fontStyle: 'normal',
+              fontFamily: 'Helvetica',
+              fontVariant: 'normal',
+            }),
+            shape: {
+              fillColor: (d: any, i: any, a: any) => {
+                const color = defaultFillColor(interpolatorTurbo)(d, i, a);
+                const [r, g, b] = parse(color).rgb;
+                return `rgb(${Math.round(r * 0.75)}, ${Math.round(g * 0.75)}, ${Math.round(b * 0.75)})`;
+              },
+            },
+          },
+        ]}
+        config={Object.assign({}, config, {
+          hierarchicalLayout: HierarchicalLayouts.treemap,
+          colors: 'turbo',
+          linkLabel: Object.assign({}, config.linkLabel, { maxCount: 0 }),
+          fontFamily: 'Helvetica Neue',
+          fillLabel: Object.assign({}, config.fillLabel, {
+            formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
+            textColor: 'white',
+            textInvertible: true,
+            textWeight: 500,
+            fontStyle: 'normal',
+          }),
+          margin: Object.assign({}, config.margin, { top: 0, bottom: 0, left: 0, right: 0 }),
+          minFontSize: 4,
+          maxFontSize: 84,
+          idealFontSizeJump: 1.05,
+          outerSizeRatio: 1,
+        })}
+      />
+    </Chart>
+  ),
   'Two-layer treemap stress test': (
     <Chart
       className={'story-chart'}
