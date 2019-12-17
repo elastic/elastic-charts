@@ -101,19 +101,10 @@ const stories = {
         config={Object.assign({}, config, {
           hierarchicalLayout: PartitionLayouts.treemap,
           colors: 'turbo',
-          linkLabel: Object.assign({}, config.linkLabel, { maxCount: 0 }),
-          fontFamily: 'Helvetica Neue',
-          fillLabel: Object.assign({}, config.fillLabel, {
-            formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
-            textColor: 'white',
-            textInvertible: true,
-            textWeight: 500,
-            fontStyle: 'normal',
-          }),
           margin: Object.assign({}, config.margin, { top: 0, bottom: 0, left: 0, right: 0 }),
           minFontSize: 4,
           maxFontSize: 84,
-          idealFontSizeJump: 1.05,
+          idealFontSizeJump: 1.15,
           outerSizeRatio: 1,
         })}
       />
@@ -169,18 +160,122 @@ const stories = {
         config={Object.assign({}, config, {
           hierarchicalLayout: PartitionLayouts.treemap,
           colors: 'turbo',
-          linkLabel: Object.assign({}, config.linkLabel, { maxCount: 0 }),
-          fontFamily: 'Helvetica Neue',
-          fillLabel: Object.assign({}, config.fillLabel, {
-            formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
-            textColor: 'white',
-            textInvertible: true,
-            textWeight: 500,
-            fontStyle: 'normal',
-          }),
           margin: Object.assign({}, config.margin, { top: 0, bottom: 0, left: 0, right: 0 }),
           minFontSize: 4,
           maxFontSize: 84,
+          idealFontSizeJump: 1.35,
+          outerSizeRatio: 1,
+        })}
+      />
+    </Chart>
+  ),
+  'Each color identifies a region in a (future) legend': (
+    <Chart
+      className={'story-chart'}
+      size={
+        {
+          /*height: 800*/
+        }
+      }
+    >
+      <Partition
+        id={getSpecId('spec_' + getRandomNumber())}
+        data={mocks.sunburst}
+        valueAccessor={(d: Datum) => d.exportVal as number}
+        valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+        layers={[
+          {
+            groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.substr(0, 2),
+            nodeLabel: () => '',
+            fillLabel: Object.assign({}, config.fillLabel, {
+              formatter: () => '',
+            }),
+            shape: {
+              fillColor: (d: any, i: any, a: any) => {
+                const color = defaultFillColor(interpolatorCET2s)(d, i, a);
+                const [r, g, b] = parse(color).rgb;
+                return `rgba(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}, 0.5)`;
+              },
+            },
+          },
+          {
+            groupByRollup: (d: Datum) => d.dest,
+            nodeLabel: (d: any) => countryLookup[d].name,
+            fillLabel: Object.assign({}, config.fillLabel, {
+              formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
+              textColor: 'rgb(60,60,60,1)',
+              textInvertible: false,
+              textWeight: 100,
+              fontStyle: 'normal',
+              fontFamily: 'Din Condensed',
+              fontVariant: 'normal',
+            }),
+            shape: {
+              fillColor: 'rgba(0,0,0,0)',
+            },
+          },
+        ]}
+        config={Object.assign({}, config, {
+          hierarchicalLayout: PartitionLayouts.treemap,
+          margin: Object.assign({}, config.margin, { top: 0, bottom: 0, left: 0, right: 0 }),
+          minFontSize: 4,
+          maxFontSize: 84,
+          idealFontSizeJump: 1.05,
+          outerSizeRatio: 1,
+        })}
+      />
+    </Chart>
+  ),
+  'Custom style': (
+    <Chart
+      className={'story-chart'}
+      size={
+        {
+          /*height: 800*/
+        }
+      }
+    >
+      <Partition
+        id={getSpecId('spec_' + getRandomNumber())}
+        data={mocks.sunburst}
+        valueAccessor={(d: Datum) => d.exportVal as number}
+        valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+        layers={[
+          {
+            groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.substr(0, 2),
+            nodeLabel: () => '',
+            fillLabel: Object.assign({}, config.fillLabel, {
+              formatter: () => '',
+            }),
+            shape: {
+              fillColor: (d: any, i: any, a: any) => {
+                const shade = Math.pow(0.3 + 0.5 * (i / (a.length - 1)), 1 / 3);
+                return `rgb(${Math.round(255 * shade)},${Math.round(255 * shade)},${Math.round(255 * shade)})`;
+              },
+            },
+          },
+          {
+            groupByRollup: (d: Datum) => d.dest,
+            nodeLabel: (d: any) => countryLookup[d].name,
+            fillLabel: Object.assign({}, config.fillLabel, {
+              formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
+              textColor: 'rgb(60,60,60,1)',
+              textInvertible: false,
+              textWeight: 600,
+              fontStyle: 'normal',
+              fontFamily: 'Courier New',
+              fontVariant: 'normal',
+            }),
+            shape: {
+              fillColor: 'rgba(0,0,0,0)',
+            },
+          },
+        ]}
+        config={Object.assign({}, config, {
+          hierarchicalLayout: PartitionLayouts.treemap,
+          margin: Object.assign({}, config.margin, { top: 0, bottom: 0, left: 0, right: 0 }),
+          minFontSize: 8,
+          maxFontSize: 14,
           idealFontSizeJump: 1.05,
           outerSizeRatio: 1,
         })}
