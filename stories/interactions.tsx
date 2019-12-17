@@ -638,73 +638,63 @@ storiesOf('Interactions', module)
     'Render change action',
     () => {
       return (
-        <div id="story-root">
-          <Chart className={'story-chart'}>
-            <Settings showLegend={true} legendPosition={Position.Right} onRenderChange={onRenderChange} />
-            <Axis
-              id={getAxisId('bottom')}
-              position={Position.Bottom}
-              title={'Bottom axis'}
-              showOverlappingTicks={true}
-            />
-            <Axis
-              id={getAxisId('left2')}
-              title={'Left axis'}
-              position={Position.Left}
-              tickFormat={(d) => Number(d).toFixed(2)}
-            />
+        <Chart className={'story-chart'}>
+          <Settings showLegend={true} legendPosition={Position.Right} onRenderChange={onRenderChange} />
+          <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+          <Axis
+            id={getAxisId('left2')}
+            title={'Left axis'}
+            position={Position.Left}
+            tickFormat={(d) => Number(d).toFixed(2)}
+          />
 
-            <BarSeries
-              id={getSpecId('bars')}
-              xScaleType={ScaleType.Linear}
-              yScaleType={ScaleType.Linear}
-              xAccessor="x"
-              yAccessors={['y']}
-              data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
-            />
-          </Chart>
-        </div>
+          <BarSeries
+            id={getSpecId('bars')}
+            xScaleType={ScaleType.Linear}
+            yScaleType={ScaleType.Linear}
+            xAccessor="x"
+            yAccessors={['y']}
+            data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
+          />
+        </Chart>
       );
     },
     {
-      info:
-        'Sends an event every time the chart render state changes. This is provided to bind attributes to the chart for visulaization loading checks.',
+      info: {
+        text:
+          'Sends an event every time the chart render state changes. This is provided to bind attributes to the chart for visulaization loading checks.',
+      },
     },
   )
   .add(
     'Cursor update action',
     () => {
       return (
-        <div id="story-root">
-          <Chart className={'story-chart'}>
-            <Settings showLegend={true} legendPosition={Position.Right} onCursorUpdate={onCursorUpdate} />
-            <Axis
-              id={getAxisId('bottom')}
-              position={Position.Bottom}
-              title={'Bottom axis'}
-              showOverlappingTicks={true}
-            />
-            <Axis
-              id={getAxisId('left2')}
-              title={'Left axis'}
-              position={Position.Left}
-              tickFormat={(d) => Number(d).toFixed(2)}
-            />
+        <Chart className={'story-chart'}>
+          <Settings showLegend={true} legendPosition={Position.Right} onCursorUpdate={onCursorUpdate} />
+          <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+          <Axis
+            id={getAxisId('left2')}
+            title={'Left axis'}
+            position={Position.Left}
+            tickFormat={(d) => Number(d).toFixed(2)}
+          />
 
-            <BarSeries
-              id={getSpecId('bars')}
-              xScaleType={ScaleType.Linear}
-              yScaleType={ScaleType.Linear}
-              xAccessor="x"
-              yAccessors={['y']}
-              data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
-            />
-          </Chart>
-        </div>
+          <BarSeries
+            id={getSpecId('bars')}
+            xScaleType={ScaleType.Linear}
+            yScaleType={ScaleType.Linear}
+            xAccessor="x"
+            yAccessors={['y']}
+            data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
+          />
+        </Chart>
       );
     },
     {
-      info: 'Sends an event every time the cursor changes. This is provided to sync cursors between multiple charts.',
+      info: {
+        text: 'Sends an event every time the cursor changes. This is provided to sync cursors between multiple charts.',
+      },
     },
   )
   .add(
@@ -745,31 +735,31 @@ storiesOf('Interactions', module)
       const groupId = '';
       button(label, handler, groupId);
       return (
-        <div id="story-root">
-          <Chart className={'story-chart'} ref={chartRef}>
-            <Settings showLegend={true} />
-            <Axis
-              id={getAxisId('time')}
-              position={Position.Bottom}
-              tickFormat={niceTimeFormatter([data[0][0], data[data.length - 1][0]])}
-            />
-            <Axis id={getAxisId('count')} position={Position.Left} />
+        <Chart className={'story-chart'} ref={chartRef}>
+          <Settings showLegend={true} />
+          <Axis
+            id={getAxisId('time')}
+            position={Position.Bottom}
+            tickFormat={niceTimeFormatter([data[0][0], data[data.length - 1][0]])}
+          />
+          <Axis id={getAxisId('count')} position={Position.Left} />
 
-            <BarSeries
-              id={getSpecId('series bars chart')}
-              xScaleType={ScaleType.Linear}
-              yScaleType={ScaleType.Linear}
-              xAccessor={0}
-              yAccessors={[1]}
-              data={data}
-              yScaleToDataExtent={true}
-            />
-          </Chart>
-        </div>
+          <BarSeries
+            id={getSpecId('series bars chart')}
+            xScaleType={ScaleType.Linear}
+            yScaleType={ScaleType.Linear}
+            xAccessor={0}
+            yAccessors={[1]}
+            data={data}
+            yScaleToDataExtent={true}
+          />
+        </Chart>
       );
     },
     {
-      info:
-        'Generate a PNG of the chart by clicking on the Export PNG button in the knobs section. In this example, the button handler is setting the PNG background to white with a pixel ratio of 2. If the browser is detected to be IE11, msSaveBlob will be used instead of a PNG capture.',
+      info: {
+        text:
+          'Generate a PNG of the chart by clicking on the Export PNG button in the knobs section. In this example, the button handler is setting the PNG background to white with a pixel ratio of 2. If the browser is detected to be IE11, msSaveBlob will be used instead of a PNG capture.',
+      },
     },
   );
