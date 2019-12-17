@@ -1,5 +1,6 @@
 import { ArrayEntry, childrenKey, entryValue, HierarchyOfArrays } from './groupByRollup';
 import { Part } from '../types/Types';
+import { goldenRatio } from './math';
 
 const maxPaddingRatio = 0.0256197; // this limits area distortion to <10% (which occurs due to pixel padding) with very small rectangles
 
@@ -78,7 +79,8 @@ export const squarifiedTreemap = (
   { x0, y0, width, height }: { x0: number; y0: number; width: number; height: number },
 ): Array<Part> => {
   if (nodes.length === 0) return [];
-  const vertical = width <= height;
+  // some bias toward horizontal rectangles with a golden ratio of width to height
+  const vertical = width / goldenRatio <= height;
   const independentSize = vertical ? width : height;
   const vectorElements = bestVector(nodes, independentSize, areaAccessor);
   const vector = vectorNodeCoordinates(vectorElements, x0, y0, vertical);
