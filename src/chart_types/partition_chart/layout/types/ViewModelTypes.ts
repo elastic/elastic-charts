@@ -87,7 +87,7 @@ interface SectorGeomSpecY {
 
 export interface RingSectorGeometry extends AngleFromTo, SectorGeomSpecY {}
 
-export interface SectorTreeNode extends TreeNode, SectorGeomSpecY {
+export interface QuadTreeNode extends TreeNode, SectorGeomSpecY {
   yMidPx: Distance;
   depth: number;
   inRingIndex: number;

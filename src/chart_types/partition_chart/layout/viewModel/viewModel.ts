@@ -10,7 +10,7 @@ import { squarifiedTreemap } from '../utils/treemap';
 import { sunburst } from '../utils/sunburst';
 import { AccessorFn } from '../../../../utils/accessor';
 import { fromRGB, toRGB } from '../utils/d3utils';
-import { OutsideLinksViewModel, QuadViewModel, RowSet, SectorTreeNode, ShapeViewModel } from '../types/ViewModelTypes';
+import { OutsideLinksViewModel, QuadViewModel, RowSet, QuadTreeNode, ShapeViewModel } from '../types/ViewModelTypes';
 import {
   aggregateAccessor,
   aggregateComparator,
@@ -27,7 +27,7 @@ import {
 import { Layer } from '../../specs/index';
 
 export const makeQuadViewModel = (
-  childNodes: SectorTreeNode[],
+  childNodes: QuadTreeNode[],
   layers: Layer[],
   sectorLineWidth: Pixels,
 ): Array<QuadViewModel> =>
@@ -44,11 +44,11 @@ export const makeQuadViewModel = (
     return { strokeWidth, fillColor, x0, x1, y0px, y1px };
   });
 
-export const ringSectorInnerRadius = (d: SectorTreeNode): Radius => d.y0px;
-export const ringSectorOuterRadius = (d: SectorTreeNode): Radius => d.y1px;
-export const ringSectorMiddleRadius = (d: SectorTreeNode): Radius => d.yMidPx;
+export const ringSectorInnerRadius = (d: QuadTreeNode): Radius => d.y0px;
+export const ringSectorOuterRadius = (d: QuadTreeNode): Radius => d.y1px;
+export const ringSectorMiddleRadius = (d: QuadTreeNode): Radius => d.yMidPx;
 export const makeOutsideLinksViewModel = (
-  outsideFillNodes: SectorTreeNode[],
+  outsideFillNodes: QuadTreeNode[],
   rowSets: RowSet[],
   linkLabelRadiusPadding: Distance,
 ): OutsideLinksViewModel[] =>
@@ -195,7 +195,7 @@ export const shapeViewModel = (
   const quadViewModel = makeQuadViewModel(childNodes, layers, config.sectorLineWidth);
 
   // fill text
-  const roomCondition = (n: SectorTreeNode) => {
+  const roomCondition = (n: QuadTreeNode) => {
     const diff = n.x1 - n.x0;
     const result = treemapLayout
       ? n.x1 - n.x0 > minFontSize && n.y1px - n.y0px > minFontSize
@@ -207,7 +207,7 @@ export const shapeViewModel = (
 
   const outsideFillNodes = fillOutside && !treemapLayout ? nodesWithRoom : [];
 
-  const textFillOrigins: [number, number][] = nodesWithRoom.map((node: SectorTreeNode) => {
+  const getSectorFillOrigins = (node: QuadTreeNode): [number, number] => {
     const midAngle = (node.x0 + node.x1) / 2;
     const divider = 10;
     const innerBias = fillOutside ? 9 : 1;
@@ -221,7 +221,16 @@ export const shapeViewModel = (
     const cx = Math.cos(trueBearingToStandardPositionAngle(midAngle)) * radius;
     const cy = Math.sin(trueBearingToStandardPositionAngle(midAngle)) * radius;
     return [cx, cy];
-  });
+  };
+
+  const getRectangleFillOrigins = (node: QuadTreeNode): [number, number] => [
+    (node.x0 + node.x1) / 2,
+    (node.y0 + node.y1) / 2,
+  ];
+
+  const textFillOrigins: [number, number][] = nodesWithRoom.map(
+    treemapLayout ? getRectangleFillOrigins : getSectorFillOrigins,
+  );
 
   const fillTextLayout = treemapLayout ? fillTextLayoutRectangle : fillTextLayoutSector;
 
@@ -229,7 +238,7 @@ export const shapeViewModel = (
     textMeasure,
     rawTextGetter,
     valueFormatter,
-    nodesWithRoom.map((n: SectorTreeNode) =>
+    nodesWithRoom.map((n: QuadTreeNode) =>
       Object.assign({}, n, {
         y0: n.y0,
         fill: quadViewModel[n.inRingIndex].fillColor, // todo roll a proper join, as this current thing assumes 1:1 between sectors and sector VMs (in the future we may elide small, invisible sector VMs(
@@ -250,7 +259,7 @@ export const shapeViewModel = (
   const nodesWithoutRoom =
     fillOutside || treemapLayout
       ? [] // outsideFillNodes and linkLabels are in inherent conflict due to very likely overlaps
-      : childNodes.filter((n: SectorTreeNode) => {
+      : childNodes.filter((n: QuadTreeNode) => {
           const id = nodeId(n);
           const foundInFillText = rowSets.find((r: RowSet) => r.id === id);
           // successful text render if found, and has some row(s)

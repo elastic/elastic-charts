@@ -1,7 +1,7 @@
 import { Dimensions } from '../../../../utils/dimensions';
 import { shapeViewModel } from '../../layout/viewModel/viewModel';
 import { measureText } from '../../layout/utils/measure';
-import { SectorTreeNode, ShapeViewModel } from '../../layout/types/ViewModelTypes';
+import { QuadTreeNode, ShapeViewModel } from '../../layout/types/ViewModelTypes';
 import { Theme } from '../../../../utils/themes/theme';
 import { depthKey } from '../../layout/utils/groupByRollup';
 import { PartitionSpec } from '../../specs/index';
@@ -24,7 +24,7 @@ export function render(partitionSpec: PartitionSpec, parentDimensions: Dimension
       myConfig,
       layers,
       facts,
-      (node: SectorTreeNode) => (layers[node[depthKey] - 1].nodeLabel || identity)(node.data.name),
+      (node: QuadTreeNode) => (layers[node[depthKey] - 1].nodeLabel || identity)(node.data.name),
       partitionSpec.valueAccessor,
       partitionSpec.valueFormatter,
       [() => null, ...layers.map(({ groupByRollup }) => groupByRollup)],
