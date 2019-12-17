@@ -15,7 +15,7 @@ export interface Layer {
 }
 
 const defaultProps = {
-  chartType: ChartTypes.Sunburst,
+  chartType: ChartTypes.Partition,
   specType: SpecTypes.Series,
   config,
   valueAccessor: (d: Datum) => d,
@@ -29,9 +29,9 @@ const defaultProps = {
   ],
 };
 
-export interface SunburstSpec extends Spec {
+export interface PartitionSpec extends Spec {
   specType: typeof SpecTypes.Series;
-  chartType: typeof ChartTypes.Sunburst;
+  chartType: typeof ChartTypes.Partition;
   config: Config;
   data: Datum[];
   valueAccessor: AccessorFn;
@@ -39,9 +39,9 @@ export interface SunburstSpec extends Spec {
   layers: Layer[];
 }
 
-type SpecRequiredProps = Pick<SunburstSpec, 'id' | 'data'>;
-type SpecOptionalProps = Partial<Omit<SunburstSpec, 'chartType' | 'specType' | 'id' | 'data'>>;
+type SpecRequiredProps = Pick<PartitionSpec, 'id' | 'data'>;
+type SpecOptionalProps = Partial<Omit<PartitionSpec, 'chartType' | 'specType' | 'id' | 'data'>>;
 
-export const Sunburst: FunctionComponent<SpecRequiredProps & SpecOptionalProps> = getConnect()(
-  specComponentFactory<SunburstSpec, 'valueAccessor' | 'valueFormatter' | 'layers' | 'config'>(defaultProps),
+export const Partition: FunctionComponent<SpecRequiredProps & SpecOptionalProps> = getConnect()(
+  specComponentFactory<PartitionSpec, 'valueAccessor' | 'valueFormatter' | 'layers' | 'config'>(defaultProps),
 );

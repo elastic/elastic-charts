@@ -1,13 +1,13 @@
 import { storiesOf, Story } from '@storybook/react';
-import { Chart, getSpecId, Sunburst } from '../src';
+import { Chart, getSpecId, Partition } from '../src';
 import { mocks } from '../src/mocks/hierarchical/index';
-import { config } from '../src/chart_types/hierarchical_chart/layout/config/config';
-import { arrayToLookup, cyclicalHueInterpolator } from '../src/chart_types/hierarchical_chart/layout/utils/calcs';
+import { config } from '../src/chart_types/partition_chart/layout/config/config';
+import { arrayToLookup, cyclicalHueInterpolator } from '../src/chart_types/partition_chart/layout/utils/calcs';
 import { Datum } from '../src/chart_types/xy_chart/utils/specs';
 import { countryDimension, productDimension, regionDimension } from '../src/mocks/hierarchical/dimensionCodes';
 import React, { CElement, Component } from 'react';
-import { HierarchicalLayouts } from '../src/chart_types/hierarchical_chart/layout/types/ConfigTypes';
-import { getRandomNumber } from '../src/mocks/utils';
+import { PartitionLayouts } from '../src/chart_types/partition_chart/layout/types/ConfigTypes';
+import { getRandomNumber } from '../src/mocks/utils'; // @ts-ignore
 // @ts-ignore
 import parse from 'parse-color';
 
@@ -26,7 +26,7 @@ const addStories = (folderName: string, stories: { [s: string]: CElement<Chart, 
 const stories = {
   'One-layer, resizing treemap': (
     <Chart className={'story-chart'}>
-      <Sunburst
+      <Partition
         id={getSpecId('spec_' + getRandomNumber())}
         data={mocks.pie}
         valueAccessor={(d: Datum) => d.exportVal as number}
@@ -35,6 +35,7 @@ const stories = {
           {
             groupByRollup: (d: Datum) => d.sitc1,
             nodeLabel: (d: Datum) => productLookup[d].name,
+            fillLabel: { formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn` },
             shape: {
               fillColor: defaultFillColor(interpolatorCET2s),
             },
@@ -42,7 +43,7 @@ const stories = {
         ]}
         config={{
           ...config,
-          hierarchicalLayout: HierarchicalLayouts.treemap,
+          hierarchicalLayout: PartitionLayouts.treemap,
           minFontSize: 1,
           maxFontSize: 36,
           idealFontSizeJump: 1.01,
@@ -59,7 +60,7 @@ const stories = {
         }
       }
     >
-      <Sunburst
+      <Partition
         id={getSpecId('spec_' + getRandomNumber())}
         data={mocks.sunburst}
         valueAccessor={(d: Datum) => d.exportVal as number}
@@ -98,7 +99,7 @@ const stories = {
           },
         ]}
         config={Object.assign({}, config, {
-          hierarchicalLayout: HierarchicalLayouts.treemap,
+          hierarchicalLayout: PartitionLayouts.treemap,
           colors: 'turbo',
           linkLabel: Object.assign({}, config.linkLabel, { maxCount: 0 }),
           fontFamily: 'Helvetica Neue',
@@ -127,7 +128,7 @@ const stories = {
         }
       }
     >
-      <Sunburst
+      <Partition
         id={getSpecId('spec_' + getRandomNumber())}
         data={mocks.sunburst}
         valueAccessor={(d: Datum) => d.exportVal as number}
@@ -166,7 +167,7 @@ const stories = {
           },
         ]}
         config={Object.assign({}, config, {
-          hierarchicalLayout: HierarchicalLayouts.treemap,
+          hierarchicalLayout: PartitionLayouts.treemap,
           colors: 'turbo',
           linkLabel: Object.assign({}, config.linkLabel, { maxCount: 0 }),
           fontFamily: 'Helvetica Neue',

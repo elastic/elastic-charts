@@ -2,12 +2,12 @@ import { Distance, Pixels, Radian, Radius, Ratio, SizeRatio, TimeMs } from './Ge
 import { Color, FontWeight } from './Types';
 import { $Values as Values } from 'utility-types';
 
-export const HierarchicalLayouts = Object.freeze({
+export const PartitionLayouts = Object.freeze({
   sunburst: 'sunburst',
   treemap: 'treemap',
 });
 
-export type HierarchicalLayout = Values<typeof HierarchicalLayouts>; // could use ValuesType<typeof HierarchicalChartTypes>
+export type HierarchicalLayout = Values<typeof PartitionLayouts>; // could use ValuesType<typeof HierarchicalChartTypes>
 
 export interface FillLabel {
   textColor: Color;

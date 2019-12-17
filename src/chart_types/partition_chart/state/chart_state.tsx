@@ -1,11 +1,11 @@
 import React from 'react';
 import { InternalChartState } from '../../../state/chart_state';
 import { ChartTypes } from '../..';
-import { Sunburst } from '../renderer/canvas/sunburst';
+import { Partition } from '../renderer/canvas/partition';
 
 const EMPTY_MAP = new Map();
-export class SunburstState implements InternalChartState {
-  chartType = ChartTypes.Sunburst;
+export class PartitionState implements InternalChartState {
+  chartType = ChartTypes.Partition;
   isBrushAvailable() {
     return false;
   }
@@ -24,7 +24,7 @@ export class SunburstState implements InternalChartState {
   chartRenderer() {
     return (
       <React.Fragment>
-        <Sunburst />
+        <Partition />
       </React.Fragment>
     );
   }

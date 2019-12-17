@@ -8,4 +8,4 @@ export {
   HistogramBarSeries,
 } from './xy_chart/specs';
 
-export { Sunburst } from './hierarchical_chart/specs';
+export { Partition } from './partition_chart/specs';

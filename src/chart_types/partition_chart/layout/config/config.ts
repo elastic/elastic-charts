@@ -1,6 +1,6 @@
 import { palettes } from './palettes';
 import { fonts } from './fonts';
-import { Config, HierarchicalLayouts, Numeric } from '../types/ConfigTypes';
+import { Config, PartitionLayouts, Numeric } from '../types/ConfigTypes';
 import { goldenRatio, tau } from '../utils/math';
 
 // todo add more structure to the config (like `linkLabel`, which is already nested)
@@ -88,9 +88,9 @@ export const configMetadata = {
     reconfigurable: false, // there's no real reason to reconfigure it; finding the largest possible font is good for readability
   },
   hierarchicalLayout: {
-    dflt: HierarchicalLayouts.sunburst,
+    dflt: PartitionLayouts.sunburst,
     type: 'string',
-    values: Object.keys(HierarchicalLayouts),
+    values: Object.keys(PartitionLayouts),
   },
 
   // fill text layout config

@@ -9,7 +9,7 @@ import {
   TextRow,
 } from '../../layout/types/ViewModelTypes';
 import { tau } from '../../layout/utils/math';
-import { HierarchicalLayouts } from '../../layout/types/ConfigTypes';
+import { PartitionLayouts } from '../../layout/types/ConfigTypes';
 
 // the burnout avoidance in the center of the pie
 const lineWidthMult = 10; // border can be a maximum 1/lineWidthMult - th of the sector angle, otherwise the border would dominate
@@ -178,7 +178,7 @@ const renderLinkLabels = (
     });
   });
 
-export const renderSunburstCanvas2d = (
+export const renderPartitionCanvas2d = (
   ctx: CanvasRenderingContext2D,
   dpr: number,
   { config, quadViewModel, rowSets, outsideLinksViewModel, linkLabelViewModels, diskCenter }: ShapeViewModel,
@@ -220,7 +220,7 @@ export const renderSunburstCanvas2d = (
 
       // bottom layer: sectors (pie slices, ring sectors etc.)
       (ctx: CanvasRenderingContext2D) =>
-        config.hierarchicalLayout === HierarchicalLayouts.treemap
+        config.hierarchicalLayout === PartitionLayouts.treemap
           ? renderRectangles(ctx, quadViewModel)
           : renderSectors(ctx, quadViewModel),
 

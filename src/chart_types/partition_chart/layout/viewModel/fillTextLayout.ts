@@ -65,10 +65,11 @@ const ringSectorConstruction = (
   const sectorEndCircle = angleToCircline(midRadius, beta + radialPadding, 1);
   const RRx = fillRectangleWidth / 2;
   const RRy = fillRectangleHeight / 2;
+  const fullCircle = ringSector.x0 === 0 && ringSector.x1 === tau;
   const sectorCirclines = [
-    ...(innerRadius ? [innerCircline] : []),
+    ...(fullCircle && innerRadius === 0 ? [] : [innerCircline]),
     outerCircline,
-    ...(alpha > 0 && beta < tau ? [sectorStartCircle, sectorEndCircle] : []),
+    ...(fullCircle ? [] : [sectorStartCircle, sectorEndCircle]),
   ];
   const rectangleCirclines =
     RRx === Infinity && RRy === Infinity

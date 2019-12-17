@@ -15,7 +15,7 @@ import { UPDATE_PARENT_DIMENSION } from './actions/chart_settings';
 import { EXTERNAL_POINTER_EVENT } from './actions/events';
 import { RefObject } from 'react';
 import { Stage } from 'react-konva';
-import { SunburstState } from '../chart_types/hierarchical_chart/state/chart_state';
+import { PartitionState } from '../chart_types/partition_chart/state/chart_state';
 
 export type BackwardRef = () => React.RefObject<HTMLDivElement>;
 
@@ -260,8 +260,8 @@ function findMainChartType(specs: SpecList): ChartTypes | null {
 
 function initInternalChartState(chartType: ChartTypes | null): InternalChartState | null {
   switch (chartType) {
-    case ChartTypes.Sunburst:
-      return new SunburstState();
+    case ChartTypes.Partition:
+      return new PartitionState();
     case ChartTypes.XYAxis:
       return new XYAxisChartState();
     default:

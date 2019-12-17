@@ -1,7 +1,7 @@
 import { Part, Relation, TextMeasure } from '../types/Types';
 import { fillTextLayoutRectangle, fillTextLayoutSector, nodeId } from './fillTextLayout';
 import { linkTextLayout } from './linkTextLayout';
-import { Config, HierarchicalLayouts } from '../types/ConfigTypes';
+import { Config, PartitionLayouts } from '../types/ConfigTypes';
 import { tau, trueBearingToStandardPositionAngle } from '../utils/math';
 import { getOpacity } from '../utils/calcs';
 import { Distance, Pixels, Radius } from '../types/GeometryTypes';
@@ -136,7 +136,7 @@ export const shapeViewModel = (
   const sunburstValueToAreaScale = angularRange / totalValue;
   const sunburstAreaAccessor = (e: ArrayEntry) => sunburstValueToAreaScale * mapEntryValue(e);
   const children = entryValue(hierarchy[0]).children || [];
-  const treemapLayout = hierarchicalLayout === HierarchicalLayouts.treemap;
+  const treemapLayout = hierarchicalLayout === PartitionLayouts.treemap;
   const treemapInnerArea = treemapLayout ? width * height : 1; // assuming 1 x 1 unit square
   const treemapValueToAreaScale = treemapInnerArea / totalValue;
   const treemapAreaAccessor = (e: ArrayEntry) => treemapValueToAreaScale * mapEntryValue(e);

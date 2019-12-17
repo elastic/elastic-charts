@@ -8,9 +8,9 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Theme } from '../../../../utils/themes/theme';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
-import { sunburstGeometries } from '../../state/selectors/geometries';
+import { partitionGeometries } from '../../state/selectors/geometries';
 import { nullSectorViewModel, ShapeViewModel } from '../../layout/types/ViewModelTypes';
-import { renderSunburstCanvas2d } from './canvasRenderers';
+import { renderPartitionCanvas2d } from './canvasRenderers';
 
 interface ReactiveChartStateProps {
   initialized: boolean;
@@ -23,14 +23,14 @@ interface ReactiveChartDispatchProps {
   onChartRendered: typeof onChartRendered;
 }
 
-type SunburstProps = ReactiveChartStateProps & ReactiveChartDispatchProps;
-class SunburstComponent extends React.Component<SunburstProps> {
-  static displayName = 'Sunburst';
+type PartitionProps = ReactiveChartStateProps & ReactiveChartDispatchProps;
+class PartitionComponent extends React.Component<PartitionProps> {
+  static displayName = 'Partition';
   // firstRender = true; // this'll be useful for stable resizing of treemaps
   private readonly canvasRef: React.RefObject<HTMLCanvasElement>;
   private ctx: CanvasRenderingContext2D | null;
   private readonly devicePixelRatio: number; // fixme this be no constant: multi-monitor window drag may necessitate modifying the `<canvas>` dimensions
-  constructor(props: Readonly<SunburstProps>) {
+  constructor(props: Readonly<PartitionProps>) {
     super(props);
     this.canvasRef = React.createRef();
     this.ctx = null;
@@ -40,7 +40,7 @@ class SunburstComponent extends React.Component<SunburstProps> {
   private drawCanvas() {
     if (this.ctx) {
       const { width, height }: Dimensions = this.props.chartContainerDimensions;
-      renderSunburstCanvas2d(this.ctx, this.devicePixelRatio, {
+      renderPartitionCanvas2d(this.ctx, this.devicePixelRatio, {
         ...this.props.geometries,
         config: { ...this.props.geometries.config, width, height },
       });
@@ -116,12 +116,12 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   return {
     initialized: true,
     theme: getChartThemeSelector(state),
-    geometries: sunburstGeometries(state),
+    geometries: partitionGeometries(state),
     chartContainerDimensions: state.parentDimensions,
   };
 };
 
-export const Sunburst = connect(
+export const Partition = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(SunburstComponent);
+)(PartitionComponent);

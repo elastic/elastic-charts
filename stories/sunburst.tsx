@@ -1,12 +1,12 @@
 import { storiesOf, Story } from '@storybook/react';
-import { Chart, getSpecId, Sunburst } from '../src';
+import { Chart, getSpecId, Partition } from '../src';
 import { mocks } from '../src/mocks/hierarchical/index';
-import { config } from '../src/chart_types/hierarchical_chart/layout/config/config';
-import { arrayToLookup, cyclicalHueInterpolator } from '../src/chart_types/hierarchical_chart/layout/utils/calcs';
+import { config } from '../src/chart_types/partition_chart/layout/config/config';
+import { arrayToLookup, cyclicalHueInterpolator } from '../src/chart_types/partition_chart/layout/utils/calcs';
 import { Datum } from '../src/chart_types/xy_chart/utils/specs';
 import { countryDimension, productDimension, regionDimension } from '../src/mocks/hierarchical/dimensionCodes';
 import React, { CElement, Component } from 'react';
-import { HierarchicalLayouts } from '../src/chart_types/hierarchical_chart/layout/types/ConfigTypes';
+import { PartitionLayouts } from '../src/chart_types/partition_chart/layout/types/ConfigTypes';
 import { getRandomNumber } from '../src/mocks/utils';
 
 const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
@@ -24,7 +24,7 @@ const defaultFillColor = (colorMaker: any) => (d: any, i: number, a: any[]) => c
 const stories = {
   'Most basic pie chart': (
     <Chart className={'story-chart'}>
-      <Sunburst
+      <Partition
         id={getSpecId('spec_' + getRandomNumber())}
         data={mocks.pie}
         valueAccessor={(d: Datum) => d.exportVal as number}
@@ -38,13 +38,13 @@ const stories = {
             },
           },
         ]}
-        config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
+        config={{ ...config, hierarchicalLayout: PartitionLayouts.sunburst }}
       />
     </Chart>
   ),
   'Pie chart with fill labels': (
     <Chart className={'story-chart'}>
-      <Sunburst
+      <Partition
         id={getSpecId('spec_' + getRandomNumber())}
         data={mocks.pie}
         valueAccessor={(d: Datum) => d.exportVal as number}
@@ -59,7 +59,7 @@ const stories = {
           },
         ]}
         config={Object.assign({}, config, {
-          hierarchicalLayout: HierarchicalLayouts.sunburst,
+          hierarchicalLayout: PartitionLayouts.sunburst,
           colors: 'CET2s',
           linkLabel: Object.assign({}, config.linkLabel, {
             maxCount: 32,
@@ -83,7 +83,7 @@ const stories = {
   ),
   'Donut chart with fill labels': (
     <Chart className={'story-chart'}>
-      <Sunburst
+      <Partition
         id={getSpecId('spec_' + getRandomNumber())}
         data={mocks.pie}
         valueAccessor={(d: Datum) => d.exportVal as number}
@@ -98,7 +98,7 @@ const stories = {
           },
         ]}
         config={Object.assign({}, config, {
-          hierarchicalLayout: HierarchicalLayouts.sunburst,
+          hierarchicalLayout: PartitionLayouts.sunburst,
           colors: 'CET2s',
           linkLabel: Object.assign({}, config.linkLabel, {
             maxCount: 32,
@@ -122,7 +122,7 @@ const stories = {
   ),
   'Pie chart with direct text labels instead of dimension lookup': (
     <Chart className={'story-chart'}>
-      <Sunburst
+      <Partition
         id={getSpecId('spec_' + getRandomNumber())}
         data={[
           { sitc1: 'Machinery and transport equipment', exportVal: 5 },
@@ -139,13 +139,13 @@ const stories = {
             },
           },
         ]}
-        config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
+        config={{ ...config, hierarchicalLayout: PartitionLayouts.sunburst }}
       />
     </Chart>
   ),
   'Some slices has a zero value': (
     <Chart className={'story-chart'}>
-      <Sunburst
+      <Partition
         id={getSpecId('spec_' + getRandomNumber())}
         data={mocks.pie
           .slice(0, 2)
@@ -162,13 +162,13 @@ const stories = {
             },
           },
         ]}
-        config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
+        config={{ ...config, hierarchicalLayout: PartitionLayouts.sunburst }}
       />
     </Chart>
   ),
   'Sunburst with two layers': (
     <Chart className={'story-chart'}>
-      <Sunburst
+      <Partition
         id={getSpecId('spec_' + getRandomNumber())}
         data={mocks.sunburst}
         valueAccessor={(d: Datum) => d.exportVal as number}
@@ -194,7 +194,7 @@ const stories = {
           },
         ]}
         config={Object.assign({}, config, {
-          hierarchicalLayout: HierarchicalLayouts.sunburst,
+          hierarchicalLayout: PartitionLayouts.sunburst,
           colors: 'CET2s',
           linkLabel: Object.assign({}, config.linkLabel, {
             maxCount: 0,
@@ -218,7 +218,7 @@ const stories = {
   ),
   'Sunburst with three layers': (
     <Chart className={'story-chart'}>
-      <Sunburst
+      <Partition
         id={getSpecId('spec_' + getRandomNumber())}
         data={mocks.miniSunburst}
         valueAccessor={(d: Datum) => d.exportVal as number}
@@ -247,7 +247,7 @@ const stories = {
           },
         ]}
         config={Object.assign({}, config, {
-          hierarchicalLayout: HierarchicalLayouts.sunburst,
+          hierarchicalLayout: PartitionLayouts.sunburst,
           colors: 'CET2s',
           linkLabel: Object.assign({}, config.linkLabel, {
             maxCount: 0,
@@ -271,7 +271,7 @@ const stories = {
   ),
   'Pie chart with two slices': (
     <Chart className={'story-chart'}>
-      <Sunburst
+      <Partition
         id={getSpecId('spec_' + getRandomNumber())}
         data={mocks.pie.slice(0, 2)}
         valueAccessor={(d: Datum) => d.exportVal as number}
@@ -285,13 +285,13 @@ const stories = {
             },
           },
         ]}
-        config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
+        config={{ ...config, hierarchicalLayout: PartitionLayouts.sunburst }}
       />
     </Chart>
   ),
   'Pie chart with one large and one small slice': (
     <Chart className={'story-chart'}>
-      <Sunburst
+      <Partition
         id={getSpecId('spec_' + getRandomNumber())}
         data={[
           { sitc1: 'Machinery and transport equipment', exportVal: 280 },
@@ -310,7 +310,7 @@ const stories = {
         ]}
         config={{
           ...config,
-          hierarchicalLayout: HierarchicalLayouts.sunburst,
+          hierarchicalLayout: PartitionLayouts.sunburst,
           clockwiseSectors: true,
           specialFirstInnermostSector: false,
           outerSizeRatio: 1,
@@ -320,7 +320,7 @@ const stories = {
   ),
   'Pie chart with one very large and one very small slice': (
     <Chart className={'story-chart'}>
-      <Sunburst
+      <Partition
         id={getSpecId('spec_' + getRandomNumber())}
         data={[
           { sitc1: 'Machinery and transport equipment', exportVal: 9 },
@@ -337,13 +337,13 @@ const stories = {
             },
           },
         ]}
-        config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
+        config={{ ...config, hierarchicalLayout: PartitionLayouts.sunburst }}
       />
     </Chart>
   ),
   'Pie chart with one near-full and one near-zero slice': (
     <Chart className={'story-chart'}>
-      <Sunburst
+      <Partition
         id={getSpecId('spec_' + getRandomNumber())}
         data={[{ sitc1: '7', exportVal: 999999 }, { sitc1: '3', exportVal: 1 }]}
         valueAccessor={(d: Datum) => d.exportVal as number}
@@ -357,13 +357,13 @@ const stories = {
             },
           },
         ]}
-        config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
+        config={{ ...config, hierarchicalLayout: PartitionLayouts.sunburst }}
       />
     </Chart>
   ),
   'Pie chart with one full and one zero slice': (
     <Chart className={'story-chart'}>
-      <Sunburst
+      <Partition
         id={getSpecId('spec_' + getRandomNumber())}
         data={[{ sitc1: '7', exportVal: 1000000 }, { sitc1: '3', exportVal: 0 }]}
         valueAccessor={(d: Datum) => d.exportVal as number}
@@ -377,13 +377,13 @@ const stories = {
             },
           },
         ]}
-        config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
+        config={{ ...config, hierarchicalLayout: PartitionLayouts.sunburst }}
       />
     </Chart>
   ),
   'Pie chart with a single slice': (
     <Chart className={'story-chart'}>
-      <Sunburst
+      <Partition
         id={getSpecId('spec_' + getRandomNumber())}
         data={mocks.pie.slice(0, 1)}
         valueAccessor={(d: Datum) => d.exportVal as number}
@@ -397,13 +397,13 @@ const stories = {
             },
           },
         ]}
-        config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
+        config={{ ...config, hierarchicalLayout: PartitionLayouts.sunburst }}
       />
     </Chart>
   ),
   'No pie chart if no slices': (
     <Chart className={'story-chart'}>
-      <Sunburst
+      <Partition
         id={getSpecId('spec_' + getRandomNumber())}
         data={[]}
         valueAccessor={(d: Datum) => d.exportVal as number}
@@ -417,13 +417,13 @@ const stories = {
             },
           },
         ]}
-        config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
+        config={{ ...config, hierarchicalLayout: PartitionLayouts.sunburst }}
       />
     </Chart>
   ),
   'No pie chart if some slices are negative': (
     <Chart className={'story-chart'}>
-      <Sunburst
+      <Partition
         id={getSpecId('spec_' + getRandomNumber())}
         data={mocks.pie
           .slice(0, 2)
@@ -440,13 +440,13 @@ const stories = {
             },
           },
         ]}
-        config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
+        config={{ ...config, hierarchicalLayout: PartitionLayouts.sunburst }}
       />
     </Chart>
   ),
   'No pie chart if total is zero': (
     <Chart className={'story-chart'}>
-      <Sunburst
+      <Partition
         id={getSpecId('spec_' + getRandomNumber())}
         data={mocks.pie.map((s) => ({ ...s, exportVal: 0 }))}
         valueAccessor={(d: Datum) => d.exportVal as number}
@@ -460,13 +460,13 @@ const stories = {
             },
           },
         ]}
-        config={{ ...config, hierarchicalLayout: HierarchicalLayouts.sunburst }}
+        config={{ ...config, hierarchicalLayout: PartitionLayouts.sunburst }}
       />
     </Chart>
   ),
   'Hundreds of slices, vanishing & tapering borders': (
     <Chart className={'story-chart'}>
-      <Sunburst
+      <Partition
         id={getSpecId('spec_' + getRandomNumber())}
         data={mocks.manyPie}
         valueAccessor={(d: Datum) => d.exportVal as number}
@@ -482,7 +482,7 @@ const stories = {
         ]}
         config={{
           ...config,
-          hierarchicalLayout: HierarchicalLayouts.sunburst,
+          hierarchicalLayout: PartitionLayouts.sunburst,
           linkLabel: { ...config.linkLabel, maxCount: 15 },
         }}
       />
@@ -490,7 +490,7 @@ const stories = {
   ),
   'Counterclockwise, special 1st': (
     <Chart className={'story-chart'}>
-      <Sunburst
+      <Partition
         id={getSpecId('spec_' + getRandomNumber())}
         data={mocks.pie}
         valueAccessor={(d: Datum) => d.exportVal as number}
@@ -506,7 +506,7 @@ const stories = {
         ]}
         config={{
           ...config,
-          hierarchicalLayout: HierarchicalLayouts.sunburst,
+          hierarchicalLayout: PartitionLayouts.sunburst,
           clockwiseSectors: false,
         }}
       />
@@ -514,7 +514,7 @@ const stories = {
   ),
   'Clockwise, non-special 1st': (
     <Chart className={'story-chart'}>
-      <Sunburst
+      <Partition
         id={getSpecId('spec_' + getRandomNumber())}
         data={mocks.pie}
         valueAccessor={(d: Datum) => d.exportVal as number}
@@ -530,7 +530,7 @@ const stories = {
         ]}
         config={{
           ...config,
-          hierarchicalLayout: HierarchicalLayouts.sunburst,
+          hierarchicalLayout: PartitionLayouts.sunburst,
           specialFirstInnermostSector: false,
         }}
       />
@@ -538,7 +538,7 @@ const stories = {
   ),
   'Linked labels only': (
     <Chart className={'story-chart'}>
-      <Sunburst
+      <Partition
         id={getSpecId('spec_' + getRandomNumber())}
         data={mocks.pie}
         valueAccessor={(d: Datum) => d.exportVal as number}
@@ -554,7 +554,7 @@ const stories = {
         ]}
         config={{
           ...config,
-          hierarchicalLayout: HierarchicalLayouts.sunburst,
+          hierarchicalLayout: PartitionLayouts.sunburst,
           linkLabel: { ...config.linkLabel, maximumSection: Infinity },
         }}
       />
@@ -562,7 +562,7 @@ const stories = {
   ),
   'No labels at all': (
     <Chart className={'story-chart'}>
-      <Sunburst
+      <Partition
         id={getSpecId('spec_' + getRandomNumber())}
         data={mocks.pie}
         valueAccessor={(d: Datum) => d.exportVal as number}
@@ -578,7 +578,7 @@ const stories = {
         ]}
         config={{
           ...config,
-          hierarchicalLayout: HierarchicalLayouts.sunburst,
+          hierarchicalLayout: PartitionLayouts.sunburst,
           linkLabel: { ...config.linkLabel, maximumSection: Infinity, maxCount: 0 },
         }}
       />

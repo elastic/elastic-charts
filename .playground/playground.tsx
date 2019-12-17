@@ -1,103 +1,94 @@
 import React from 'react';
-import { BarSeries, Chart, Sunburst } from '../src';
+import { Chart, getSpecId, Partition } from '../src';
 import { mocks } from '../src/mocks/hierarchical/index';
-import { config } from '../src/chart_types/hierarchical_chart/layout/config/config';
-import { productDimension } from '../src/mocks/hierarchical/dimensionCodes';
-import { arrayToLookup } from '../src/chart_types/hierarchical_chart/layout/utils/calcs';
+import { config } from '../src/chart_types/partition_chart/layout/config/config';
+import { countryDimension, regionDimension } from '../src/mocks/hierarchical/dimensionCodes';
+import { arrayToLookup, cyclicalHueInterpolator } from '../src/chart_types/partition_chart/layout/utils/calcs';
 import { Datum } from '../src/chart_types/xy_chart/utils/specs';
-import { HierarchicalLayouts } from '../src/chart_types/hierarchical_chart/layout/types/ConfigTypes';
+import { PartitionLayouts } from '../src/chart_types/partition_chart/layout/types/ConfigTypes';
+import { getRandomNumber } from '../src/mocks/utils';
+// @ts-ignore
+import parse from 'parse-color';
+
+// const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
+const regionLookup = arrayToLookup((d: Datum) => d.region, regionDimension);
+const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
+
+// style calcs
+// const interpolatorCET2s = cyclicalHueInterpolator(config.palettes.CET2s);
+const interpolatorTurbo = cyclicalHueInterpolator(config.palettes.turbo);
+const defaultFillColor = (colorMaker: any) => (d: any, i: number, a: any[]) => colorMaker(i / (a.length + 1));
 
 export class Playground extends React.Component<{}, { isSunburstShown: boolean }> {
   chartRef: React.RefObject<Chart> = React.createRef();
   state = {
     isSunburstShown: true,
   };
-  onSnapshot = () => {
-    if (!this.chartRef.current) {
-      return;
-    }
-    const snapshot = this.chartRef.current.getPNGSnapshot({
-      backgroundColor: 'white',
-      pixelRatio: 1,
-    });
-    if (!snapshot) {
-      return;
-    }
-    const fileName = 'chart.png';
-    switch (snapshot.browser) {
-      case 'IE11':
-        return navigator.msSaveBlob(snapshot.blobOrDataUrl, fileName);
-      default:
-        const link = document.createElement('a');
-        link.download = fileName;
-        link.href = snapshot.blobOrDataUrl;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-  };
-  switchSpec = () => {
-    this.setState((prevState) => {
-      return {
-        isSunburstShown: !prevState.isSunburstShown,
-      };
-    });
-  };
 
   render() {
-    const Spec = this.state.isSunburstShown ? Sunburst : BarSeries;
-    const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
-    // const regionLookup = arrayToLookup((d: Datum) => d.region, regionDimension);
-    // const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
     return (
       <>
         <div className="chart">
-          <Chart ref={this.chartRef}>
-            <Spec
-              id={'test'}
-              data={mocks.miniSunburst}
+          <Chart ref={this.chartRef} size={{ height: 800, width: 800 * 1.618 }}>
+            <Partition
+              id={getSpecId('spec_' + getRandomNumber())}
+              data={mocks.sunburst}
               valueAccessor={(d: Datum) => d.exportVal as number}
               valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
               layers={[
                 {
-                  groupByRollup: (d: Datum) => d.sitc1,
-                  nodeLabel: (d: Datum) => productLookup[d].name,
-                },
-                /*                {
                   groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.substr(0, 2),
-                  nodeLabel: (d: Datum) => regionLookup[d].regionName,
+                  nodeLabel: (d: any) => regionLookup[d].regionName,
+                  fillLabel: Object.assign({}, config.fillLabel, {
+                    formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
+                    fontFamily: 'Phosphate-Inline',
+                    textColor: 'white',
+                    textInvertible: false,
+                  }),
+                  shape: { fillColor: 'white' },
                 },
                 {
                   groupByRollup: (d: Datum) => d.dest,
-                  nodeLabel: (d: Datum) => countryLookup[d].name,
-                },*/
+                  nodeLabel: (d: any) => countryLookup[d].name,
+                  fillLabel: Object.assign({}, config.fillLabel, {
+                    formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
+                    textColor: 'black',
+                    textInvertible: false,
+                    textWeight: 200,
+                    fontStyle: 'normal',
+                    fontFamily: 'Helvetica',
+                    fontVariant: 'normal',
+                  }),
+                  shape: {
+                    fillColor: (d: any, i: any, a: any) => {
+                      const color = defaultFillColor(interpolatorTurbo)(d, i, a);
+                      const [r, g, b] = parse(color).rgb;
+                      return `rgb(${Math.round(r * 0.75)}, ${Math.round(g * 0.75)}, ${Math.round(b * 0.75)})`;
+                    },
+                  },
+                },
               ]}
               config={Object.assign({}, config, {
-                colors: 'CET2s',
-                linkLabel: Object.assign({}, config.linkLabel, {
-                  maxCount: 0,
-                  fontSize: 14,
-                  maximumSection: 0,
-                }),
+                hierarchicalLayout: PartitionLayouts.treemap,
+                colors: 'turbo',
+                linkLabel: Object.assign({}, config.linkLabel, { maxCount: 0 }),
                 fontFamily: 'Helvetica Neue',
                 fillLabel: Object.assign({}, config.fillLabel, {
+                  formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
+                  textColor: 'white',
+                  textInvertible: true,
+                  textWeight: 500,
                   fontStyle: 'normal',
                 }),
                 margin: Object.assign({}, config.margin, { top: 0, bottom: 0, left: 0, right: 0 }),
-                minFontSize: 12,
-                maxFontSize: 36,
-                idealFontSizeJump: 1.03,
-                outerSizeRatio: 0.6, // - 0.5 * Math.random(),
-                emptySizeRatio: 0,
-                circlePadding: 4,
-                hierarchicalLayout: HierarchicalLayouts.treemap,
-                /*backgroundColor: 'rgba(229,229,229,1)',*/
+                minFontSize: 4,
+                maxFontSize: 84,
+                idealFontSizeJump: 1.05,
+                outerSizeRatio: 1,
               })}
             />
           </Chart>
         </div>
-        <button onClick={this.onSnapshot}>Snapshot</button>
-        <button onClick={this.switchSpec}>Switch Sunburst - Bar </button>
       </>
     );
   }
