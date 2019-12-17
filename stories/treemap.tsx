@@ -72,7 +72,7 @@ const stories = {
             fillLabel: Object.assign({}, config.fillLabel, {
               formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
               fontFamily: 'Phosphate-Inline',
-              textColor: 'white',
+              textColor: 'yellow',
               textInvertible: false,
             }),
             shape: { fillColor: 'rgba(255, 229, 180,0.25)' },

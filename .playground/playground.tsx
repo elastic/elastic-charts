@@ -29,7 +29,7 @@ export class Playground extends React.Component<{}, { isSunburstShown: boolean }
     return (
       <>
         <div className="chart">
-          <Chart ref={this.chartRef} size={{ height: 800, width: 800 * 1.618 }}>
+          <Chart ref={this.chartRef} size={{ height: 900, width: 800 * 1.618 }}>
             <Partition
               id={getSpecId('spec_' + getRandomNumber())}
               data={mocks.sunburst}
@@ -40,9 +40,9 @@ export class Playground extends React.Component<{}, { isSunburstShown: boolean }
                   groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.substr(0, 2),
                   nodeLabel: (d: any) => regionLookup[d].regionName,
                   fillLabel: Object.assign({}, config.fillLabel, {
-                    formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
+                    formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}`,
                     fontFamily: 'Phosphate-Inline',
-                    textColor: 'white',
+                    textColor: 'rgba(255,255,0,0.9)',
                     textInvertible: false,
                   }),
                   shape: { fillColor: 'white' },
@@ -51,7 +51,7 @@ export class Playground extends React.Component<{}, { isSunburstShown: boolean }
                   groupByRollup: (d: Datum) => d.dest,
                   nodeLabel: (d: any) => countryLookup[d].name,
                   fillLabel: Object.assign({}, config.fillLabel, {
-                    formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
+                    formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}`,
                     textColor: 'black',
                     textInvertible: false,
                     textWeight: 200,
@@ -82,8 +82,9 @@ export class Playground extends React.Component<{}, { isSunburstShown: boolean }
                 }),
                 margin: Object.assign({}, config.margin, { top: 0, bottom: 0, left: 0, right: 0 }),
                 minFontSize: 4,
-                maxFontSize: 84,
-                idealFontSizeJump: 1.05,
+                maxFontSize: 200,
+                idealFontSizeJump: 1.01,
+                maxRowCount: 4,
                 outerSizeRatio: 1,
               })}
             />
