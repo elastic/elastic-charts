@@ -19,9 +19,16 @@ export interface RowBox {
   wordBeginning: Distance;
 }
 
-export interface TextRow {
+interface RowCentroid {
   rowCentroidX: Coordinate;
   rowCentroidY: Coordinate;
+}
+
+export interface RowSpace extends RowCentroid {
+  maximumRowLength: Distance;
+}
+
+export interface TextRow extends RowCentroid {
   length: number;
   maximumLength: number;
   rowWords: Array<RowBox>;

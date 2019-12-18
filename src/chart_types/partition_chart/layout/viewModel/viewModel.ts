@@ -1,5 +1,13 @@
 import { Part, Relation, TextMeasure } from '../types/Types';
-import { fillTextLayoutRectangle, fillTextLayoutSector, nodeId } from './fillTextLayout';
+import {
+  fillTextLayoutShape,
+  getRectangleRowGeometry,
+  getRotation,
+  getSectorRowGeometry,
+  nodeId,
+  rectangleConstruction,
+  ringSectorConstruction,
+} from './fillTextLayout';
 import { linkTextLayout } from './linkTextLayout';
 import { Config, PartitionLayouts } from '../types/ConfigTypes';
 import { tau, trueBearingToStandardPositionAngle } from '../utils/math';
@@ -10,7 +18,7 @@ import { squarifiedTreemap } from '../utils/treemap';
 import { sunburst } from '../utils/sunburst';
 import { AccessorFn } from '../../../../utils/accessor';
 import { fromRGB, toRGB } from '../utils/d3utils';
-import { OutsideLinksViewModel, QuadViewModel, RowSet, QuadTreeNode, ShapeViewModel } from '../types/ViewModelTypes';
+import { OutsideLinksViewModel, QuadTreeNode, QuadViewModel, RowSet, ShapeViewModel } from '../types/ViewModelTypes';
 import {
   aggregateAccessor,
   aggregateComparator,
@@ -232,9 +240,7 @@ export const shapeViewModel = (
     treemapLayout ? getRectangleFillOrigins : getSectorFillOrigins,
   );
 
-  const fillTextLayout = treemapLayout ? fillTextLayoutRectangle : fillTextLayoutSector;
-
-  const rowSets: RowSet[] = fillTextLayout(
+  const rowSets: RowSet[] = fillTextLayoutShape(
     textMeasure,
     rawTextGetter,
     valueFormatter,
@@ -247,8 +253,9 @@ export const shapeViewModel = (
     config,
     layers,
     textFillOrigins,
-    innerRadius,
-    ringThickness,
+    treemapLayout ? rectangleConstruction : ringSectorConstruction(config, innerRadius, ringThickness),
+    treemapLayout ? getRectangleRowGeometry : getSectorRowGeometry,
+    treemapLayout ? () => 0 : getRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
   );
 
   const outsideLinksViewModel = makeOutsideLinksViewModel(outsideFillNodes, rowSets, linkLabel.radiusPadding);

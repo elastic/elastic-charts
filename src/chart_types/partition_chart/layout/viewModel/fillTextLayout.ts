@@ -2,7 +2,7 @@ import { wrapToTau } from '../geometry';
 import { Coordinate, Distance, Pixels, Radian, Radius, RingSector } from '../types/GeometryTypes';
 import { Config } from '../types/ConfigTypes';
 import { logarithm, tau, trueBearingToStandardPositionAngle } from '../utils/math';
-import { RowBox, RowSet, QuadTreeNode } from '../types/ViewModelTypes';
+import { RowBox, RowSet, QuadTreeNode, RowSpace } from '../types/ViewModelTypes';
 import { FontWeight, TextMeasure } from '../types/Types';
 import { aggregateKey } from '../utils/groupByRollup';
 import { conjunctiveConstraint } from '../circlineGeometry';
@@ -42,9 +42,14 @@ const angleToCircline = (
 // todo pick a better unique key for the slices (D3 doesn't keep track of an index)
 export const nodeId = (node: QuadTreeNode): string => node.x0 + '|' + node.y0;
 
-const rectangleConstruction = (node: QuadTreeNode) => ({ x0: node.x0, y0: node.y0px, x1: node.x1, y1: node.y1px });
+export const rectangleConstruction = (node: QuadTreeNode) => ({
+  x0: node.x0,
+  y0: node.y0px,
+  x1: node.x1,
+  y1: node.y1px,
+});
 
-const ringSectorConstruction = (config: Config, innerRadius: Radius, ringThickness: Distance) => (
+export const ringSectorConstruction = (config: Config, innerRadius: Radius, ringThickness: Distance) => (
   ringSector: QuadTreeNode,
 ): RingSector => {
   const { circlePadding, radialPadding, fillOutside, radiusOutside, fillRectangleWidth, fillRectangleHeight } = config;
@@ -101,7 +106,7 @@ const makeRowCircline = (
   return circline;
 };
 
-const getSectorRowGeometry = (
+export const getSectorRowGeometry = (
   ringSector: RingSector,
   cx: Coordinate,
   cy: Coordinate,
@@ -110,7 +115,7 @@ const getSectorRowGeometry = (
   rowIndex: number,
   fontSize: Pixels,
   rotation: Radian,
-) => {
+): RowSpace => {
   // prettier-ignore
   const offset =
       (totalRowCount / 2) * fontSize
@@ -135,7 +140,7 @@ const getSectorRowGeometry = (
   return { rowCentroidX, rowCentroidY, maximumRowLength };
 };
 
-const getRectangleRowGeometry = (
+export const getRectangleRowGeometry = (
   container: any,
   cx: number,
   cy: number,
@@ -143,7 +148,7 @@ const getRectangleRowGeometry = (
   linePitch: Pixels,
   rowIndex: number,
   fontSize: Pixels,
-) => {
+): RowSpace => {
   const wordSpacing = getWordSpacing(fontSize);
   const x0 = container.x0 + wordSpacing;
   const y0 = container.y0 + linePitch / 2;
@@ -194,14 +199,13 @@ const fill = (
   measure: { (font: string, texts: string[]): TextMetrics[]; (arg0: string, arg1: any): any },
   getRawText: Function,
   valueFormatter: Function,
-  shapeConstructor: (n: QuadTreeNode) => any,
-  getShapeRowGeometry: Function,
-  getRotation: Function,
   textFillOrigins: any[],
+  shapeConstructor: (n: QuadTreeNode) => any,
+  getShapeRowGeometry: (...args: any[]) => RowSpace,
+  getRotation: Function,
 ) => (node: QuadTreeNode, index: number, a: QuadTreeNode[]) => {
   const { maxRowCount, fillLabel } = config;
 
-  // generic block
   const {
     textColor,
     textInvertible,
@@ -219,27 +223,20 @@ const fill = (
   );
 
   const shapeFillColor = typeof fillColor === 'function' ? fillColor(node, index, a) : fillColor;
-
-  // generic block
   const [tr, tg, tb] = parse(textColor).rgb;
-
-  // generic block
   let fontSizeIndex = fontSizes.length - 1;
   const allBoxes = getAllBoxes(getRawText, formatter, node);
   let rowSet = identityRowSet();
   let completed = false;
   const rotation = getRotation(node);
   const container = shapeConstructor(node);
-
   const [cx, cy] = textFillOrigins[index];
 
   while (!completed && fontSizeIndex >= 0) {
-    // generic block
     const fontSize = fontSizes[fontSizeIndex];
     const wordSpacing = getWordSpacing(fontSize);
 
     // model text pieces, obtaining their width at the current font size
-    // generic block
     const measurements = measure(fontSize + 'px ' + fontFamily, allBoxes);
     const allMeasuredBoxes: RowBox[] = measurements.map(
       ({ width, emHeightDescent, emHeightAscent }: TextMetrics, i: number) => ({
@@ -252,13 +249,11 @@ const fill = (
     const linePitch = fontSize;
 
     // rowSet building starts
-    // generic block
     let targetRowCount = 0;
     let measuredBoxes = allMeasuredBoxes.slice();
     let innerCompleted = false;
 
     while (++targetRowCount <= maxRowCount && !innerCompleted) {
-      // generic block
       measuredBoxes = allMeasuredBoxes.slice();
       const [r, g, b] = parse(shapeFillColor).rgb;
       const inverseForContrast = textInvertible && r * 0.299 + g * 0.587 + b * 0.114 < 150;
@@ -283,14 +278,12 @@ const fill = (
         })),
       };
 
-      // generic block
       let currentRowIndex = 0;
       while (currentRowIndex < targetRowCount) {
         const currentRow = rowSet.rows[currentRowIndex];
         const currentRowWords = currentRow.rowWords;
 
         // current row geometries
-        // circline-specific block
         const { maximumRowLength, rowCentroidX, rowCentroidY } = getShapeRowGeometry(
           container,
           cx,
@@ -302,18 +295,15 @@ const fill = (
           rotation,
         );
 
-        // generic block
         currentRow.rowCentroidX = rowCentroidX;
         currentRow.rowCentroidY = rowCentroidY;
         currentRow.maximumLength = maximumRowLength;
 
         // row building starts
-        // generic block
         let currentRowLength = 0;
         let rowHasRoom = true;
 
         // keep adding words while there's room
-        // generic block
         while (measuredBoxes.length && rowHasRoom) {
           // adding box to row
           const currentBox = measuredBoxes[0];
@@ -347,56 +337,17 @@ const fill = (
   return rowSet;
 };
 
-export const fillTextLayoutSector = (
-  measure: TextMeasure, // todo improve typing
-  getRawText: Function, // todo improve typing
-  valueFormatter: Function,
-  childNodes: QuadTreeNode[],
-  config: Config,
-  layers: Layer[],
-  textFillOrigins: [number, number][],
-  innerRadius: Radius,
-  ringThickness: Distance,
+export const getRotation = (horizontalTextEnforcer: number, horizontalTextAngleThreshold: number) => (
+  node: QuadTreeNode,
 ) => {
-  const { minFontSize, maxFontSize, idealFontSizeJump } = config;
-
-  const fontSizeMagnification = maxFontSize / minFontSize;
-  const fontSizeJumpCount = Math.round(logarithm(idealFontSizeJump, fontSizeMagnification));
-  const realFontSizeJump = Math.pow(fontSizeMagnification, 1 / fontSizeJumpCount);
-  const fontSizes: Pixels[] = [];
-  for (let i = 0; i <= fontSizeJumpCount; i++) {
-    const fontSize = Math.round(minFontSize * Math.pow(realFontSizeJump, i));
-    if (fontSizes.indexOf(fontSize) === -1) {
-      fontSizes.push(fontSize);
-    }
-  }
-
-  const getRotation = (node: QuadTreeNode) => {
-    let rotation = trueBearingToStandardPositionAngle((node.x0 + node.x1) / 2);
-    const { horizontalTextEnforcer, horizontalTextAngleThreshold } = config;
-    if (Math.abs(node.x1 - node.x0) > horizontalTextAngleThreshold && horizontalTextEnforcer > 0)
-      rotation = rotation * (1 - horizontalTextEnforcer);
-    if (tau / 4 < rotation && rotation < (3 * tau) / 4) rotation = wrapToTau(rotation - tau / 2);
-    return rotation;
-  };
-
-  return childNodes.map(
-    fill(
-      config,
-      layers,
-      fontSizes,
-      measure,
-      getRawText,
-      valueFormatter,
-      ringSectorConstruction(config, innerRadius, ringThickness),
-      getSectorRowGeometry,
-      getRotation,
-      textFillOrigins,
-    ),
-  );
+  let rotation = trueBearingToStandardPositionAngle((node.x0 + node.x1) / 2);
+  if (Math.abs(node.x1 - node.x0) > horizontalTextAngleThreshold && horizontalTextEnforcer > 0)
+    rotation = rotation * (1 - horizontalTextEnforcer);
+  if (tau / 4 < rotation && rotation < (3 * tau) / 4) rotation = wrapToTau(rotation - tau / 2);
+  return rotation;
 };
 
-export const fillTextLayoutRectangle = (
+export const fillTextLayoutShape = (
   measure: TextMeasure, // todo improve typing
   getRawText: Function, // todo improve typing
   valueFormatter: Function,
@@ -404,6 +355,9 @@ export const fillTextLayoutRectangle = (
   config: Config,
   layers: Layer[],
   textFillOrigins: [number, number][],
+  shapeConstructor: (n: QuadTreeNode) => any,
+  getShapeRowGeometry: (...args: any[]) => RowSpace,
+  getRotation: Function,
 ) => {
   const { minFontSize, maxFontSize, idealFontSizeJump } = config;
 
@@ -426,10 +380,10 @@ export const fillTextLayoutRectangle = (
       measure,
       getRawText,
       valueFormatter,
-      rectangleConstruction,
-      getRectangleRowGeometry,
-      () => 0,
       textFillOrigins,
+      shapeConstructor,
+      getShapeRowGeometry,
+      getRotation,
     ),
   );
 };
