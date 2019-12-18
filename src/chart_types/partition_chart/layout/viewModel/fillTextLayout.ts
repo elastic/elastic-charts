@@ -337,7 +337,7 @@ const fill = (
   return rowSet;
 };
 
-export const getRotation = (horizontalTextEnforcer: number, horizontalTextAngleThreshold: number) => (
+export const inSectorRotation = (horizontalTextEnforcer: number, horizontalTextAngleThreshold: number) => (
   node: QuadTreeNode,
 ) => {
   let rotation = trueBearingToStandardPositionAngle((node.x0 + node.x1) / 2);
@@ -347,8 +347,8 @@ export const getRotation = (horizontalTextEnforcer: number, horizontalTextAngleT
   return rotation;
 };
 
-export const fillTextLayoutShape = (
-  measure: TextMeasure, // todo improve typing
+export const fillTextLayout = (
+  measure: TextMeasure,
   getRawText: Function, // todo improve typing
   valueFormatter: Function,
   childNodes: QuadTreeNode[],
@@ -360,7 +360,6 @@ export const fillTextLayoutShape = (
   getRotation: Function,
 ) => {
   const { minFontSize, maxFontSize, idealFontSizeJump } = config;
-
   const fontSizeMagnification = maxFontSize / minFontSize;
   const fontSizeJumpCount = Math.round(logarithm(idealFontSizeJump, fontSizeMagnification));
   const realFontSizeJump = Math.pow(fontSizeMagnification, 1 / fontSizeJumpCount);

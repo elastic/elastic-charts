@@ -1,24 +1,25 @@
 import { Part, Relation, TextMeasure } from '../types/Types';
-import {
-  fillTextLayoutShape,
-  getRectangleRowGeometry,
-  getRotation,
-  getSectorRowGeometry,
-  nodeId,
-  rectangleConstruction,
-  ringSectorConstruction,
-} from './fillTextLayout';
 import { linkTextLayout } from './linkTextLayout';
 import { Config, PartitionLayouts } from '../types/ConfigTypes';
 import { tau, trueBearingToStandardPositionAngle } from '../utils/math';
 import { getOpacity } from '../utils/calcs';
 import { Distance, Pixels, Radius } from '../types/GeometryTypes';
 import { meanAngle } from '../geometry';
-import { squarifiedTreemap } from '../utils/treemap';
+import { treemap } from '../utils/treemap';
 import { sunburst } from '../utils/sunburst';
 import { AccessorFn } from '../../../../utils/accessor';
 import { fromRGB, toRGB } from '../utils/d3utils';
 import { OutsideLinksViewModel, QuadTreeNode, QuadViewModel, RowSet, ShapeViewModel } from '../types/ViewModelTypes';
+import { Layer } from '../../specs/index';
+import {
+  fillTextLayout,
+  getRectangleRowGeometry,
+  getSectorRowGeometry,
+  inSectorRotation,
+  nodeId,
+  rectangleConstruction,
+  ringSectorConstruction,
+} from './fillTextLayout';
 import {
   aggregateAccessor,
   aggregateComparator,
@@ -32,7 +33,30 @@ import {
   mapEntryValue,
   mapsToArrays,
 } from '../utils/groupByRollup';
-import { Layer } from '../../specs/index';
+
+const angularRange = tau;
+const paddingAccessor = (n: ArrayEntry) => (entryValue(n).depth > 1 ? 1 : [0, 2][entryValue(n).depth]);
+
+const rectangleFillOrigins = (node: QuadTreeNode): [number, number] => [
+  (node.x0 + node.x1) / 2,
+  (node.y0 + node.y1) / 2,
+];
+
+const sectorFillOrigins = (fillOutside: boolean) => (node: QuadTreeNode): [number, number] => {
+  const midAngle = (node.x0 + node.x1) / 2;
+  const divider = 10;
+  const innerBias = fillOutside ? 9 : 1;
+  const outerBias = divider - innerBias;
+  // prettier-ignore
+  const radius =
+    (  innerBias * ringSectorInnerRadius(node)
+      + outerBias * ringSectorOuterRadius(node)
+    )
+    / divider;
+  const cx = Math.cos(trueBearingToStandardPositionAngle(midAngle)) * radius;
+  const cy = Math.sin(trueBearingToStandardPositionAngle(midAngle)) * radius;
+  return [cx, cy];
+};
 
 export const makeQuadViewModel = (
   childNodes: QuadTreeNode[],
@@ -55,6 +79,7 @@ export const makeQuadViewModel = (
 export const ringSectorInnerRadius = (d: QuadTreeNode): Radius => d.y0px;
 export const ringSectorOuterRadius = (d: QuadTreeNode): Radius => d.y1px;
 export const ringSectorMiddleRadius = (d: QuadTreeNode): Radius => d.yMidPx;
+
 export const makeOutsideLinksViewModel = (
   outsideFillNodes: QuadTreeNode[],
   rowSets: RowSet[],
@@ -132,49 +157,21 @@ export const shapeViewModel = (
   // size as data value vs size as number of pixels in the rectangle
 
   const hierarchyMap = groupByRollup(groupByRollupAccessors, valueAccessor, aggregator, facts);
-  const hierarchy = mapsToArrays(hierarchyMap, aggregateComparator(mapEntryValue, childOrders.descending));
+  const tree = mapsToArrays(hierarchyMap, aggregateComparator(mapEntryValue, childOrders.descending));
 
-  const totalValue = hierarchy.reduce((p: number, n: ArrayEntry): number => p + mapEntryValue(n), 0);
+  const totalValue = tree.reduce((p: number, n: ArrayEntry): number => p + mapEntryValue(n), 0);
 
-  const paddingAccessor = (n: any) => {
-    return [0, 2, 1][n[1].depth];
-  };
-
-  const angularRange = tau;
   const sunburstValueToAreaScale = angularRange / totalValue;
   const sunburstAreaAccessor = (e: ArrayEntry) => sunburstValueToAreaScale * mapEntryValue(e);
-  const children = entryValue(hierarchy[0]).children || [];
+  const children = entryValue(tree[0]).children || [];
   const treemapLayout = hierarchicalLayout === PartitionLayouts.treemap;
   const treemapInnerArea = treemapLayout ? width * height : 1; // assuming 1 x 1 unit square
   const treemapValueToAreaScale = treemapInnerArea / totalValue;
   const treemapAreaAccessor = (e: ArrayEntry) => treemapValueToAreaScale * mapEntryValue(e);
 
   const rawChildNodes: Array<Part> = treemapLayout
-    ? squarifiedTreemap(hierarchy, treemapAreaAccessor, paddingAccessor, {
-        x0: 0,
-        y0: 0,
-        width: treemapLayout ? width : 1,
-        height: treemapLayout ? height : 1,
-      })
-        .slice(1)
-        .map<Part>((d: Part) =>
-          Object.assign(d, {
-            x0: treemapLayout ? d.x0 - width / 2 : d.x0 * tau,
-            x1: treemapLayout ? d.x1 - width / 2 : d.x1 * tau,
-            y0: treemapLayout ? d.y0 - height / 2 : d.y0,
-            y1: treemapLayout ? d.y1 - height / 2 : d.y1,
-          }),
-        )
-    : sunburst(
-        children,
-        sunburstAreaAccessor,
-        {
-          x0: 0,
-          y0: 0,
-        },
-        clockwiseSectors,
-        specialFirstInnermostSector,
-      );
+    ? treemap(tree, treemapAreaAccessor, paddingAccessor, { x0: -width / 2, y0: -height / 2, width, height }).slice(1)
+    : sunburst(children, sunburstAreaAccessor, { x0: 0, y0: 0 }, clockwiseSectors, specialFirstInnermostSector);
 
   // use the smaller of the two sizes, as a circle fits into a square
   const circleMaximumSize = Math.min(innerWidth, innerHeight);
@@ -205,42 +202,17 @@ export const shapeViewModel = (
   // fill text
   const roomCondition = (n: QuadTreeNode) => {
     const diff = n.x1 - n.x0;
-    const result = treemapLayout
+    return treemapLayout
       ? n.x1 - n.x0 > minFontSize && n.y1px - n.y0px > minFontSize
       : (diff < 0 ? tau + diff : diff) * ringSectorMiddleRadius(n) > Math.max(minFontSize, linkLabel.maximumSection);
-    return result;
   };
 
   const nodesWithRoom = childNodes.filter(roomCondition);
-
   const outsideFillNodes = fillOutside && !treemapLayout ? nodesWithRoom : [];
 
-  const getSectorFillOrigins = (node: QuadTreeNode): [number, number] => {
-    const midAngle = (node.x0 + node.x1) / 2;
-    const divider = 10;
-    const innerBias = fillOutside ? 9 : 1;
-    const outerBias = divider - innerBias;
-    // prettier-ignore
-    const radius =
-      (  innerBias * ringSectorInnerRadius(node)
-        + outerBias * ringSectorOuterRadius(node)
-      )
-      / divider;
-    const cx = Math.cos(trueBearingToStandardPositionAngle(midAngle)) * radius;
-    const cy = Math.sin(trueBearingToStandardPositionAngle(midAngle)) * radius;
-    return [cx, cy];
-  };
+  const textFillOrigins = nodesWithRoom.map(treemapLayout ? rectangleFillOrigins : sectorFillOrigins(fillOutside));
 
-  const getRectangleFillOrigins = (node: QuadTreeNode): [number, number] => [
-    (node.x0 + node.x1) / 2,
-    (node.y0 + node.y1) / 2,
-  ];
-
-  const textFillOrigins: [number, number][] = nodesWithRoom.map(
-    treemapLayout ? getRectangleFillOrigins : getSectorFillOrigins,
-  );
-
-  const rowSets: RowSet[] = fillTextLayoutShape(
+  const rowSets: RowSet[] = fillTextLayout(
     textMeasure,
     rawTextGetter,
     valueFormatter,
@@ -255,7 +227,7 @@ export const shapeViewModel = (
     textFillOrigins,
     treemapLayout ? rectangleConstruction : ringSectorConstruction(config, innerRadius, ringThickness),
     treemapLayout ? getRectangleRowGeometry : getSectorRowGeometry,
-    treemapLayout ? () => 0 : getRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
+    treemapLayout ? () => 0 : inSectorRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
   );
 
   const outsideLinksViewModel = makeOutsideLinksViewModel(outsideFillNodes, rowSets, linkLabel.radiusPadding);

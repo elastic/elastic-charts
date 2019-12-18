@@ -72,7 +72,7 @@ const vectorNodeCoordinates = (vectorLayout: LayoutElement, x0Base: number, y0Ba
   });
 };
 
-export const squarifiedTreemap = (
+export const treemap = (
   nodes: HierarchyOfArrays,
   areaAccessor: (e: ArrayEntry) => number,
   paddingAccessor: (e: ArrayEntry) => number,
@@ -95,7 +95,7 @@ export const squarifiedTreemap = (
         const innerWidth = width - 2 * padding;
         const innerHeight = height - 2 * padding;
         return childrenNodes && childrenNodes.length
-          ? squarifiedTreemap(
+          ? treemap(
               childrenNodes,
               (d) => ((innerWidth * innerHeight) / (width * height)) * areaAccessor(d),
               paddingAccessor,
@@ -110,7 +110,7 @@ export const squarifiedTreemap = (
       }),
     )
     .concat(
-      squarifiedTreemap(
+      treemap(
         nodes.slice(vector.length),
         areaAccessor,
         paddingAccessor,
