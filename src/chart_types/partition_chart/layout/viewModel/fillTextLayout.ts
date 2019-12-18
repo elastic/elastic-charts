@@ -2,7 +2,7 @@ import { wrapToTau } from '../geometry';
 import { Coordinate, Distance, Pixels, Radian, Radius, RingSector } from '../types/GeometryTypes';
 import { Config } from '../types/ConfigTypes';
 import { logarithm, tau, trueBearingToStandardPositionAngle } from '../utils/math';
-import { RowBox, RowSet, QuadTreeNode, RowSpace } from '../types/ViewModelTypes';
+import { RowBox, RowSet, ShapeTreeNode, RowSpace } from '../types/ViewModelTypes';
 import { FontWeight, TextMeasure } from '../types/Types';
 import { aggregateKey } from '../utils/groupByRollup';
 import { conjunctiveConstraint } from '../circlineGeometry';
@@ -10,17 +10,17 @@ import { Layer } from '../../specs/index';
 // @ts-ignore
 import parse from 'parse-color';
 
-const ringSectorStartAngle = (d: QuadTreeNode): Radian => {
+const ringSectorStartAngle = (d: ShapeTreeNode): Radian => {
   return trueBearingToStandardPositionAngle(d.x0 + Math.max(0, d.x1 - d.x0 - tau / 2) / 2);
 };
 
-const ringSectorEndAngle = (d: QuadTreeNode): Radian =>
+const ringSectorEndAngle = (d: ShapeTreeNode): Radian =>
   trueBearingToStandardPositionAngle(d.x1 - Math.max(0, d.x1 - d.x0 - tau / 2) / 2);
 
-const ringSectorInnerRadius = (innerRadius: Radian, ringThickness: Distance) => (d: QuadTreeNode): Radius =>
+const ringSectorInnerRadius = (innerRadius: Radian, ringThickness: Distance) => (d: ShapeTreeNode): Radius =>
   innerRadius + (d.y0 as number) * ringThickness;
 
-const ringSectorOuterRadius = (innerRadius: Radian, ringThickness: Distance) => (d: QuadTreeNode): Radius =>
+const ringSectorOuterRadius = (innerRadius: Radian, ringThickness: Distance) => (d: ShapeTreeNode): Radius =>
   innerRadius + ((d.y0 as number) + 1) * ringThickness;
 
 const infinityRadius = 1e4; // far enough for a sub-2px precision on a 4k screen, good enough for text bounds; 64 bit floats still work well with it
@@ -40,9 +40,9 @@ const angleToCircline = (
 };
 
 // todo pick a better unique key for the slices (D3 doesn't keep track of an index)
-export const nodeId = (node: QuadTreeNode): string => node.x0 + '|' + node.y0;
+export const nodeId = (node: ShapeTreeNode): string => node.x0 + '|' + node.y0;
 
-export const rectangleConstruction = (node: QuadTreeNode) => ({
+export const rectangleConstruction = (node: ShapeTreeNode) => ({
   x0: node.x0,
   y0: node.y0px,
   x1: node.x1,
@@ -50,7 +50,7 @@ export const rectangleConstruction = (node: QuadTreeNode) => ({
 });
 
 export const ringSectorConstruction = (config: Config, innerRadius: Radius, ringThickness: Distance) => (
-  ringSector: QuadTreeNode,
+  ringSector: ShapeTreeNode,
 ): RingSector => {
   const { circlePadding, radialPadding, fillOutside, radiusOutside, fillRectangleWidth, fillRectangleHeight } = config;
   const r =
@@ -185,7 +185,7 @@ const identityRowSet = (): RowSet => ({
   rotation: NaN,
 });
 
-const getAllBoxes = (getRawText: Function, valueFormatter: Function, node: QuadTreeNode) =>
+const getAllBoxes = (getRawText: Function, valueFormatter: Function, node: ShapeTreeNode) =>
   getRawText(node)
     .split(' ')
     .concat(valueFormatter(node[aggregateKey]).split(' '));
@@ -200,10 +200,10 @@ const fill = (
   getRawText: Function,
   valueFormatter: Function,
   textFillOrigins: any[],
-  shapeConstructor: (n: QuadTreeNode) => any,
+  shapeConstructor: (n: ShapeTreeNode) => any,
   getShapeRowGeometry: (...args: any[]) => RowSpace,
   getRotation: Function,
-) => (node: QuadTreeNode, index: number, a: QuadTreeNode[]) => {
+) => (node: ShapeTreeNode, index: number, a: ShapeTreeNode[]) => {
   const { maxRowCount, fillLabel } = config;
 
   const {
@@ -338,7 +338,7 @@ const fill = (
 };
 
 export const inSectorRotation = (horizontalTextEnforcer: number, horizontalTextAngleThreshold: number) => (
-  node: QuadTreeNode,
+  node: ShapeTreeNode,
 ) => {
   let rotation = trueBearingToStandardPositionAngle((node.x0 + node.x1) / 2);
   if (Math.abs(node.x1 - node.x0) > horizontalTextAngleThreshold && horizontalTextEnforcer > 0)
@@ -351,11 +351,11 @@ export const fillTextLayout = (
   measure: TextMeasure,
   getRawText: Function, // todo improve typing
   valueFormatter: Function,
-  childNodes: QuadTreeNode[],
+  childNodes: ShapeTreeNode[],
   config: Config,
   layers: Layer[],
   textFillOrigins: [number, number][],
-  shapeConstructor: (n: QuadTreeNode) => any,
+  shapeConstructor: (n: ShapeTreeNode) => any,
   getShapeRowGeometry: (...args: any[]) => RowSpace,
   getRotation: Function,
 ) => {
