@@ -25,8 +25,10 @@ addParameters({
   info: {
     inline: true,
     source: true,
+    propTables: false,
     styles: {
       infoBody: {
+        fontSize: '14px',
         marginTop: 0,
         marginBottom: 0,
       },
