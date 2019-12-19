@@ -1,5 +1,5 @@
 import { Dimensions } from '../../../../utils/dimensions';
-import { shapeViewModel } from '../../layout/viewModel/viewmodel';
+import { shapeViewModel } from '../../layout/viewmodel/viewmodel';
 import { measureText } from '../../layout/utils/measure';
 import { ShapeTreeNode, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { Theme } from '../../../../utils/themes/theme';
