@@ -1,4 +1,4 @@
-import { TextMeasure } from '../types/Types';
+import { TextMeasure } from '../types/types';
 
 export const measureText = (ctx: CanvasRenderingContext2D): TextMeasure => (
   font: string,

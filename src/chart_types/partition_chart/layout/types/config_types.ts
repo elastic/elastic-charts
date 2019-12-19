@@ -1,5 +1,5 @@
-import { Distance, Pixels, Radian, Radius, Ratio, SizeRatio, TimeMs } from './GeometryTypes';
-import { Color, FontWeight } from './Types';
+import { Distance, Pixels, Radian, Radius, Ratio, SizeRatio, TimeMs } from './geometry_types';
+import { Color, FontWeight } from './types';
 import { $Values as Values } from 'utility-types';
 
 export const PartitionLayouts = Object.freeze({

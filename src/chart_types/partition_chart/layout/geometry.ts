@@ -1,4 +1,4 @@
-import { Radian } from './types/GeometryTypes';
+import { Radian } from './types/geometry_types';
 import { tau } from './utils/math';
 
 export const wrapToTau = (a: Radian) => {

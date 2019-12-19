@@ -1,6 +1,6 @@
-import { Config } from './ConfigTypes';
-import { Coordinate, Distance, PointObject, PointTuple, Radian } from './GeometryTypes';
-import { Color, FontWeight } from './Types';
+import { Config } from './config_types';
+import { Coordinate, Distance, PointObject, PointTuple, Radian } from './geometry_types';
+import { Color, FontWeight } from './types';
 import { config } from '../config/config';
 
 export type LinkLabelVM = {

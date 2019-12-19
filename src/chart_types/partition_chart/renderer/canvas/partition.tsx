@@ -9,8 +9,8 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { Theme } from '../../../../utils/themes/theme';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { partitionGeometries } from '../../state/selectors/geometries';
-import { nullSectorViewModel, ShapeViewModel } from '../../layout/types/ViewModelTypes';
-import { renderPartitionCanvas2d } from './canvasRenderers';
+import { nullSectorViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { renderPartitionCanvas2d } from './canvas_renderers';
 
 interface ReactiveChartStateProps {
   initialized: boolean;

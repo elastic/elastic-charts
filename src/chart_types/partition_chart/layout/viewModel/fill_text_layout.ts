@@ -1,11 +1,11 @@
 import { wrapToTau } from '../geometry';
-import { Coordinate, Distance, Pixels, Radian, Radius, RingSector } from '../types/GeometryTypes';
-import { Config } from '../types/ConfigTypes';
+import { Coordinate, Distance, Pixels, Radian, Radius, RingSector } from '../types/geometry_types';
+import { Config } from '../types/config_types';
 import { logarithm, tau, trueBearingToStandardPositionAngle } from '../utils/math';
-import { RowBox, RowSet, ShapeTreeNode, RowSpace } from '../types/ViewModelTypes';
-import { FontWeight, TextMeasure } from '../types/Types';
-import { aggregateKey } from '../utils/groupByRollup';
-import { conjunctiveConstraint } from '../circlineGeometry';
+import { RowBox, RowSet, ShapeTreeNode, RowSpace } from '../types/viewmodel_types';
+import { FontWeight, TextMeasure } from '../types/types';
+import { aggregateKey } from '../utils/group_by_rollup';
+import { conjunctiveConstraint } from '../circline_geometry';
 import { Layer } from '../../specs/index';
 // @ts-ignore
 import parse from 'parse-color';

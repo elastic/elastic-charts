@@ -1,9 +1,9 @@
 import { Dimensions } from '../../../../utils/dimensions';
-import { shapeViewModel } from '../../layout/viewModel/viewModel';
+import { shapeViewModel } from '../../layout/viewModel/viewmodel';
 import { measureText } from '../../layout/utils/measure';
-import { ShapeTreeNode, ShapeViewModel } from '../../layout/types/ViewModelTypes';
+import { ShapeTreeNode, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { Theme } from '../../../../utils/themes/theme';
-import { depthKey } from '../../layout/utils/groupByRollup';
+import { depthKey } from '../../layout/utils/group_by_rollup';
 import { PartitionSpec } from '../../specs/index';
 
 const identity = (d: any) => d;

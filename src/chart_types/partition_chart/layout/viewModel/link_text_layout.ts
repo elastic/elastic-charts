@@ -1,9 +1,9 @@
-import { Distance } from '../types/GeometryTypes';
-import { Config } from '../types/ConfigTypes';
+import { Distance } from '../types/geometry_types';
+import { Config } from '../types/config_types';
 import { tau, trueBearingToStandardPositionAngle } from '../utils/math';
-import { LinkLabelVM, ShapeTreeNode } from '../types/ViewModelTypes';
+import { LinkLabelVM, ShapeTreeNode } from '../types/viewmodel_types';
 import { meanAngle } from '../geometry';
-import { TextMeasure } from '../types/Types';
+import { TextMeasure } from '../types/types';
 
 // todo modularize this large function
 export const linkTextLayout = (

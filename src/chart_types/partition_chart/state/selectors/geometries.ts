@@ -5,7 +5,7 @@ import { getSpecsFromStore } from '../../../../state/utils';
 import { ChartTypes } from '../../..';
 import { SpecTypes } from '../../../xy_chart/utils/specs';
 import { render } from './scenegraph';
-import { nullSectorViewModel, ShapeViewModel } from '../../layout/types/ViewModelTypes';
+import { nullSectorViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { PartitionSpec } from '../../specs/index';
 
 const getSpecs = (state: GlobalChartState) => state.specs;

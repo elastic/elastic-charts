@@ -1,5 +1,5 @@
-import { ArrayEntry, childrenAccessor, HierarchyOfArrays } from './groupByRollup';
-import { Origin, Part } from '../types/Types';
+import { ArrayEntry, childrenAccessor, HierarchyOfArrays } from './group_by_rollup';
+import { Origin, Part } from '../types/types';
 
 export const sunburst = (
   nodes: HierarchyOfArrays,

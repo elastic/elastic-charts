@@ -1,6 +1,6 @@
-import { Ratio } from '../types/GeometryTypes';
-import { RgbTuple } from './d3utils';
-import { ShapeTreeNode } from '../types/ViewModelTypes';
+import { Ratio } from '../types/geometry_types';
+import { RgbTuple } from './d3_utils';
+import { ShapeTreeNode } from '../types/viewmodel_types';
 
 export const getOpacity = (d: ShapeTreeNode) => [0, 0.8, 0.7, 0.6][d.depth];
 

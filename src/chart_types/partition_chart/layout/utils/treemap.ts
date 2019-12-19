@@ -1,5 +1,5 @@
-import { ArrayEntry, childrenKey, entryValue, HierarchyOfArrays } from './groupByRollup';
-import { Part } from '../types/Types';
+import { ArrayEntry, childrenKey, entryValue, HierarchyOfArrays } from './group_by_rollup';
+import { Part } from '../types/types';
 import { goldenRatio } from './math';
 
 const maxPaddingRatio = 0.0256197; // this limits area distortion to <10% (which occurs due to pixel padding) with very small rectangles

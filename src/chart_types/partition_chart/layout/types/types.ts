@@ -1,4 +1,4 @@
-import { ArrayEntry } from '../utils/groupByRollup';
+import { ArrayEntry } from '../utils/group_by_rollup';
 
 export type Color = string; // todo refine later (union type)
 

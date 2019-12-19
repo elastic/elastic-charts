@@ -1,4 +1,4 @@
-import { CirclArc, Circline, CirclinePredicate, Distance, PointObject, RingSector } from './types/GeometryTypes';
+import { CirclArc, Circline, CirclinePredicate, Distance, PointObject, RingSector } from './types/geometry_types';
 import { tau } from './utils/math';
 
 const euclideanDistance = ({ x: X, y: Y }: PointObject, { x, y }: PointObject): Distance =>

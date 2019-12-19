@@ -5,7 +5,7 @@ import { FunctionComponent } from 'react';
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
 import { AccessorFn } from '../../../utils/accessor';
 import { Spec } from '../../../specs/index';
-import { Config, FillLabel } from '../layout/types/ConfigTypes';
+import { Config, FillLabel } from '../layout/types/config_types';
 
 export interface Layer {
   groupByRollup: AccessorFn;

@@ -4,9 +4,9 @@ import { mocks } from '../src/mocks/hierarchical/index';
 import { config } from '../src/chart_types/partition_chart/layout/config/config';
 import { arrayToLookup, cyclicalHueInterpolator } from '../src/chart_types/partition_chart/layout/utils/calcs';
 import { Datum } from '../src/chart_types/xy_chart/utils/specs';
-import { countryDimension, productDimension, regionDimension } from '../src/mocks/hierarchical/dimensionCodes';
+import { countryDimension, productDimension, regionDimension } from '../src/mocks/hierarchical/dimension_codes';
 import React, { CElement, Component } from 'react';
-import { PartitionLayouts } from '../src/chart_types/partition_chart/layout/types/ConfigTypes';
+import { PartitionLayouts } from '../src/chart_types/partition_chart/layout/types/config_types';
 import { getRandomNumber } from '../src/mocks/utils';
 
 const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);

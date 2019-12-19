@@ -1,4 +1,4 @@
-import { Relation } from '../types/Types';
+import { Relation } from '../types/types';
 
 export const aggregateKey = 'value'; // todo later switch back to 'aggregate'
 export const depthKey = 'depth';

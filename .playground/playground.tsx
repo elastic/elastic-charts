@@ -2,10 +2,10 @@ import React from 'react';
 import { Chart, getSpecId, Partition } from '../src';
 import { mocks } from '../src/mocks/hierarchical/index';
 import { config } from '../src/chart_types/partition_chart/layout/config/config';
-import { countryDimension, regionDimension } from '../src/mocks/hierarchical/dimensionCodes';
+import { countryDimension, regionDimension } from '../src/mocks/hierarchical/dimension_codes';
 import { arrayToLookup, cyclicalHueInterpolator } from '../src/chart_types/partition_chart/layout/utils/calcs';
 import { Datum } from '../src/chart_types/xy_chart/utils/specs';
-import { PartitionLayouts } from '../src/chart_types/partition_chart/layout/types/ConfigTypes';
+import { PartitionLayouts } from '../src/chart_types/partition_chart/layout/types/config_types';
 import { getRandomNumber } from '../src/mocks/utils';
 // @ts-ignore
 import parse from 'parse-color';

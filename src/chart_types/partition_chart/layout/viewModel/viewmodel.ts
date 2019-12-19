@@ -1,15 +1,15 @@
-import { Part, Relation, TextMeasure } from '../types/Types';
-import { linkTextLayout } from './linkTextLayout';
-import { Config, PartitionLayouts } from '../types/ConfigTypes';
+import { Part, Relation, TextMeasure } from '../types/types';
+import { linkTextLayout } from './link_text_layout';
+import { Config, PartitionLayouts } from '../types/config_types';
 import { tau, trueBearingToStandardPositionAngle } from '../utils/math';
 import { getOpacity } from '../utils/calcs';
-import { Distance, Pixels, Radius } from '../types/GeometryTypes';
+import { Distance, Pixels, Radius } from '../types/geometry_types';
 import { meanAngle } from '../geometry';
 import { treemap } from '../utils/treemap';
 import { sunburst } from '../utils/sunburst';
 import { AccessorFn } from '../../../../utils/accessor';
-import { fromRGB, toRGB } from '../utils/d3utils';
-import { OutsideLinksViewModel, ShapeTreeNode, QuadViewModel, RowSet, ShapeViewModel } from '../types/ViewModelTypes';
+import { fromRGB, toRGB } from '../utils/d3_utils';
+import { OutsideLinksViewModel, ShapeTreeNode, QuadViewModel, RowSet, ShapeViewModel } from '../types/viewmodel_types';
 import { Layer } from '../../specs/index';
 import {
   fillTextLayout,
@@ -19,7 +19,7 @@ import {
   nodeId,
   rectangleConstruction,
   ringSectorConstruction,
-} from './fillTextLayout';
+} from './fill_text_layout';
 import {
   aggregateAccessor,
   aggregateComparator,
@@ -32,7 +32,7 @@ import {
   groupByRollup,
   mapEntryValue,
   mapsToArrays,
-} from '../utils/groupByRollup';
+} from '../utils/group_by_rollup';
 
 const angularRange = tau;
 const paddingAccessor = (n: ArrayEntry) => (entryValue(n).depth > 1 ? 1 : [0, 2][entryValue(n).depth]);

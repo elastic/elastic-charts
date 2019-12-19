@@ -1,7 +1,7 @@
 import { pieMock } from './pie';
 import { sunburstMock } from './sunburst';
-import { miniSunburstMock } from './miniSunburst';
-import { manyPieMock } from './manyPie';
+import { miniSunburstMock } from './mini_sunburst';
+import { manyPieMock } from './many_pie';
 
 export const mocks = {
   pie: pieMock,

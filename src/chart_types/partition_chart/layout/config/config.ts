@@ -1,6 +1,5 @@
-import { palettes } from './palettes';
-import { fonts } from './fonts';
-import { Config, PartitionLayouts, Numeric } from '../types/ConfigTypes';
+import { palettes } from '../../../../mocks/hierarchical/palettes';
+import { Config, PartitionLayouts, Numeric } from '../types/config_types';
 import { goldenRatio, tau } from '../utils/math';
 
 // todo add more structure to the config (like `linkLabel`, which is already nested)
@@ -74,7 +73,6 @@ export const configMetadata = {
   fontFamily: {
     dflt: 'Sans-Serif',
     type: 'string',
-    values: fonts,
   },
 
   // fill text config

@@ -1,4 +1,4 @@
-import { Coordinate, Pixels } from '../../layout/types/GeometryTypes';
+import { Coordinate, Pixels } from '../../layout/types/geometry_types';
 import { addOpacity } from '../../layout/utils/calcs';
 import {
   LinkLabelVM,
@@ -7,9 +7,9 @@ import {
   RowSet,
   ShapeViewModel,
   TextRow,
-} from '../../layout/types/ViewModelTypes';
+} from '../../layout/types/viewmodel_types';
 import { tau } from '../../layout/utils/math';
-import { PartitionLayouts } from '../../layout/types/ConfigTypes';
+import { PartitionLayouts } from '../../layout/types/config_types';
 
 // the burnout avoidance in the center of the pie
 const lineWidthMult = 10; // border can be a maximum 1/lineWidthMult - th of the sector angle, otherwise the border would dominate
