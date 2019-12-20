@@ -3,11 +3,8 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { isInitialized } from '../../../../state/selectors/is_initialized';
-import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { Dimensions } from '../../../../utils/dimensions';
-import { Theme } from '../../../../utils/themes/theme';
-import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { partitionGeometries } from '../../state/selectors/geometries';
 import { nullSectorViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { renderPartitionCanvas2d } from './canvas_renderers';
@@ -16,7 +13,6 @@ interface ReactiveChartStateProps {
   initialized: boolean;
   geometries: ShapeViewModel;
   chartContainerDimensions: Dimensions;
-  theme: Theme;
 }
 
 interface ReactiveChartDispatchProps {
@@ -29,6 +25,7 @@ class PartitionComponent extends React.Component<PartitionProps> {
   // firstRender = true; // this'll be useful for stable resizing of treemaps
   private readonly canvasRef: React.RefObject<HTMLCanvasElement>;
   private ctx: CanvasRenderingContext2D | null;
+  // see example https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#Example
   private readonly devicePixelRatio: number; // fixme this be no constant: multi-monitor window drag may necessitate modifying the `<canvas>` dimensions
   constructor(props: Readonly<PartitionProps>) {
     super(props);
@@ -96,7 +93,6 @@ const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
 
 const DEFAULT_PROPS: ReactiveChartStateProps = {
   initialized: false,
-  theme: LIGHT_THEME,
   geometries: nullSectorViewModel(),
   chartContainerDimensions: {
     width: 0,
@@ -112,7 +108,6 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   }
   return {
     initialized: true,
-    theme: getChartThemeSelector(state),
     geometries: partitionGeometries(state),
     chartContainerDimensions: state.parentDimensions,
   };
