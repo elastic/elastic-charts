@@ -63,26 +63,23 @@ class PartitionComponent extends React.Component<PartitionProps> {
   }
 
   render() {
-    const { initialized, chartContainerDimensions } = this.props;
-    if (!initialized || chartContainerDimensions.width === 0 || chartContainerDimensions.height === 0) {
+    const {
+      initialized,
+      chartContainerDimensions: { width, height },
+    } = this.props;
+    if (!initialized || width === 0 || height === 0) {
       return null;
     }
 
     return (
       <canvas
         ref={this.canvasRef}
-        width={chartContainerDimensions.width * this.devicePixelRatio}
-        height={chartContainerDimensions.height * this.devicePixelRatio}
+        className="echCanvasRenderer"
+        width={width * this.devicePixelRatio}
+        height={height * this.devicePixelRatio}
         style={{
-          padding: 0,
-          margin: 0,
-          border: 0,
-          background: 'transparent',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: chartContainerDimensions.width,
-          height: chartContainerDimensions.height,
+          width,
+          height,
         }}
       />
     );
