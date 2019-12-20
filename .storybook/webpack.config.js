@@ -17,13 +17,7 @@ const scssLoaders = [
   'sass-loader',
 ];
 
-module.exports = async ({ config, mode }) => {
-  if (mode === 'DEVELOPMENT') {
-    config.devtool = 'none'; //'inline-source-map';
-  } else {
-    config.devtool = 'source-map';
-  }
-
+module.exports = async ({ config }) => {
   config.plugins.push(new webpack.EnvironmentPlugin({ RNG_SEED: null }));
 
   config.module.rules.push({
@@ -35,13 +29,12 @@ module.exports = async ({ config, mode }) => {
       transpileOnly: true,
     },
   });
-  /*
+
   config.module.rules.push({
     test: /\.tsx?$/,
     loader: require.resolve('react-docgen-typescript-loader'),
     exclude: /node_modules/,
   });
-*/
 
   // Replace default css rules with nonce
   config.module.rules = config.module.rules.filter(({ test }) => !test.test('.css'));
