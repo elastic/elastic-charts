@@ -15,8 +15,8 @@ export interface FillLabel {
   textWeight: FontWeight;
   fontStyle: string;
   fontVariant: string;
-  formatter: Function;
   fontFamily?: string;
+  formatter: Function;
 }
 
 // todo switch to `io-ts` style, generic way of combining static and runtime type info

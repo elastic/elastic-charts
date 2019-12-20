@@ -2,7 +2,7 @@ import { wrapToTau } from '../geometry';
 import { Coordinate, Distance, Pixels, Radian, Radius, RingSector } from '../types/geometry_types';
 import { Config } from '../types/config_types';
 import { logarithm, tau, trueBearingToStandardPositionAngle } from '../utils/math';
-import { RowBox, RowSet, ShapeTreeNode, RowSpace } from '../types/viewmodel_types';
+import { RowBox, RowSet, ShapeTreeNode, RowSpace, RawTextGetter } from '../types/viewmodel_types';
 import { FontWeight, TextMeasure } from '../types/types';
 import { aggregateKey } from '../utils/group_by_rollup';
 import { conjunctiveConstraint } from '../circline_geometry';
@@ -173,169 +173,181 @@ export const getRectangleRowGeometry = (
 const rowSetComplete = (rowSet: RowSet, measuredBoxes: RowBox[]) =>
   !rowSet.rows.some((r) => isNaN(r.length)) && !measuredBoxes.length;
 
-const identityRowSet = (): RowSet => ({
-  id: '',
-  rows: [],
-  fontFamily: '',
-  fontStyle: '',
-  fontVariant: '',
-  fontSize: NaN,
-  fillTextColor: '',
-  fillTextWeight: 400,
-  rotation: NaN,
-});
+function identityRowSet(): RowSet {
+  return {
+    id: '',
+    rows: [],
+    fontFamily: '',
+    fontStyle: '',
+    fontVariant: '',
+    fontSize: NaN,
+    fillTextColor: '',
+    fillTextWeight: 400,
+    rotation: NaN,
+  };
+}
 
-const getAllBoxes = (getRawText: Function, valueFormatter: Function, node: ShapeTreeNode) =>
-  getRawText(node)
+function getAllBoxes(
+  rawTextGetter: RawTextGetter,
+  valueFormatter: (value: number) => string,
+  node: ShapeTreeNode,
+): string[] {
+  return rawTextGetter(node)
     .split(' ')
-    .concat(valueFormatter(node[aggregateKey]).split(' '));
+    .concat(valueFormatter(node[aggregateKey]));
+}
 
-const getWordSpacing = (fontSize: number) => fontSize / 4;
+function getWordSpacing(fontSize: number) {
+  return fontSize / 4;
+}
 
-const fill = (
+function fill(
   config: Config,
   layers: Layer[],
   fontSizes: string | any[],
   measure: { (font: string, texts: string[]): TextMetrics[]; (arg0: string, arg1: any): any },
-  getRawText: Function,
-  valueFormatter: Function,
+  rawTextGetter: RawTextGetter,
+  valueFormatter: (value: number) => string,
   textFillOrigins: any[],
   shapeConstructor: (n: ShapeTreeNode) => any,
   getShapeRowGeometry: (...args: any[]) => RowSpace,
   getRotation: Function,
-) => (node: ShapeTreeNode, index: number, a: ShapeTreeNode[]) => {
-  const { maxRowCount, fillLabel } = config;
+) {
+  return (node: ShapeTreeNode, index: number, a: ShapeTreeNode[]) => {
+    const { maxRowCount, fillLabel } = config;
 
-  const {
-    textColor,
-    textInvertible,
-    textWeight,
-    fontStyle,
-    fontVariant,
-    fontFamily,
-    formatter,
-    fillColor,
-  } = Object.assign(
-    { fontFamily: config.fontFamily, formatter: valueFormatter, fillColor: node.fill },
-    fillLabel,
-    layers[node.depth - 1] && layers[node.depth - 1].fillLabel,
-    layers[node.depth - 1] && layers[node.depth - 1].shape,
-  );
-
-  const shapeFillColor = typeof fillColor === 'function' ? fillColor(node, index, a) : fillColor;
-  const [tr, tg, tb] = parse(textColor).rgb;
-  let fontSizeIndex = fontSizes.length - 1;
-  const allBoxes = getAllBoxes(getRawText, formatter, node);
-  let rowSet = identityRowSet();
-  let completed = false;
-  const rotation = getRotation(node);
-  const container = shapeConstructor(node);
-  const [cx, cy] = textFillOrigins[index];
-
-  while (!completed && fontSizeIndex >= 0) {
-    const fontSize = fontSizes[fontSizeIndex];
-    const wordSpacing = getWordSpacing(fontSize);
-
-    // model text pieces, obtaining their width at the current font size
-    const measurements = measure(fontSize + 'px ' + fontFamily, allBoxes);
-    const allMeasuredBoxes: RowBox[] = measurements.map(
-      ({ width, emHeightDescent, emHeightAscent }: TextMetrics, i: number) => ({
-        width,
-        verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`,
-        text: allBoxes[i],
-        wordBeginning: NaN,
-      }),
+    const {
+      textColor,
+      textInvertible,
+      textWeight,
+      fontStyle,
+      fontVariant,
+      fontFamily,
+      formatter,
+      fillColor,
+    } = Object.assign(
+      { fontFamily: config.fontFamily, fillColor: node.fill },
+      fillLabel,
+      layers[node.depth - 1] && layers[node.depth - 1].fillLabel,
+      layers[node.depth - 1] && layers[node.depth - 1].shape,
+      { formatter: valueFormatter },
     );
-    const linePitch = fontSize;
 
-    // rowSet building starts
-    let targetRowCount = 0;
-    let measuredBoxes = allMeasuredBoxes.slice();
-    let innerCompleted = false;
+    const shapeFillColor = typeof fillColor === 'function' ? fillColor(node, index, a) : fillColor;
+    const [tr, tg, tb] = parse(textColor).rgb;
+    let fontSizeIndex = fontSizes.length - 1;
+    const allBoxes = getAllBoxes(rawTextGetter, formatter, node);
+    let rowSet = identityRowSet();
+    let completed = false;
+    const rotation = getRotation(node);
+    const container = shapeConstructor(node);
+    const [cx, cy] = textFillOrigins[index];
 
-    while (++targetRowCount <= maxRowCount && !innerCompleted) {
-      measuredBoxes = allMeasuredBoxes.slice();
-      const [r, g, b] = parse(shapeFillColor).rgb;
-      const inverseForContrast = textInvertible && r * 0.299 + g * 0.587 + b * 0.114 < 150;
-      rowSet = {
-        id: nodeId(node),
-        fontSize,
-        fontFamily,
-        fontStyle,
-        fontVariant,
-        // fontWeight must be a multiple of 100 for non-variable width fonts, otherwise weird things happen due to
-        // https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight#Fallback_weights - Fallback weights
-        // todo factor out the discretization into a => FontWeight function
-        fillTextWeight: (Math.round(textWeight / 100) * 100) as FontWeight,
-        fillTextColor: inverseForContrast ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})` : textColor,
-        rotation,
-        rows: [...Array(targetRowCount)].map(() => ({
-          rowWords: [],
-          rowCentroidX: NaN,
-          rowCentroidY: NaN,
-          maximumLength: NaN,
-          length: NaN,
-        })),
-      };
+    while (!completed && fontSizeIndex >= 0) {
+      const fontSize = fontSizes[fontSizeIndex];
+      const wordSpacing = getWordSpacing(fontSize);
 
-      let currentRowIndex = 0;
-      while (currentRowIndex < targetRowCount) {
-        const currentRow = rowSet.rows[currentRowIndex];
-        const currentRowWords = currentRow.rowWords;
+      // model text pieces, obtaining their width at the current font size
+      const measurements = measure(fontSize + 'px ' + fontFamily, allBoxes);
+      const allMeasuredBoxes: RowBox[] = measurements.map(
+        ({ width, emHeightDescent, emHeightAscent }: TextMetrics, i: number) => ({
+          width,
+          verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`,
+          text: allBoxes[i],
+          wordBeginning: NaN,
+        }),
+      );
+      const linePitch = fontSize;
 
-        // current row geometries
-        const { maximumRowLength, rowCentroidX, rowCentroidY } = getShapeRowGeometry(
-          container,
-          cx,
-          cy,
-          targetRowCount,
-          linePitch,
-          currentRowIndex,
+      // rowSet building starts
+      let targetRowCount = 0;
+      let measuredBoxes = allMeasuredBoxes.slice();
+      let innerCompleted = false;
+
+      while (++targetRowCount <= maxRowCount && !innerCompleted) {
+        measuredBoxes = allMeasuredBoxes.slice();
+        const [r, g, b] = parse(shapeFillColor).rgb;
+        const inverseForContrast = textInvertible && r * 0.299 + g * 0.587 + b * 0.114 < 150;
+        rowSet = {
+          id: nodeId(node),
           fontSize,
+          fontFamily,
+          fontStyle,
+          fontVariant,
+          // fontWeight must be a multiple of 100 for non-variable width fonts, otherwise weird things happen due to
+          // https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight#Fallback_weights - Fallback weights
+          // todo factor out the discretization into a => FontWeight function
+          fillTextWeight: (Math.round(textWeight / 100) * 100) as FontWeight,
+          fillTextColor: inverseForContrast ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})` : textColor,
           rotation,
-        );
+          rows: [...Array(targetRowCount)].map(() => ({
+            rowWords: [],
+            rowCentroidX: NaN,
+            rowCentroidY: NaN,
+            maximumLength: NaN,
+            length: NaN,
+          })),
+        };
 
-        currentRow.rowCentroidX = rowCentroidX;
-        currentRow.rowCentroidY = rowCentroidY;
-        currentRow.maximumLength = maximumRowLength;
+        let currentRowIndex = 0;
+        while (currentRowIndex < targetRowCount) {
+          const currentRow = rowSet.rows[currentRowIndex];
+          const currentRowWords = currentRow.rowWords;
 
-        // row building starts
-        let currentRowLength = 0;
-        let rowHasRoom = true;
+          // current row geometries
+          const { maximumRowLength, rowCentroidX, rowCentroidY } = getShapeRowGeometry(
+            container,
+            cx,
+            cy,
+            targetRowCount,
+            linePitch,
+            currentRowIndex,
+            fontSize,
+            rotation,
+          );
 
-        // keep adding words while there's room
-        while (measuredBoxes.length && rowHasRoom) {
-          // adding box to row
-          const currentBox = measuredBoxes[0];
+          currentRow.rowCentroidX = rowCentroidX;
+          currentRow.rowCentroidY = rowCentroidY;
+          currentRow.maximumLength = maximumRowLength;
 
-          const wordBeginning = currentRowLength;
-          currentRowLength += currentBox.width + wordSpacing;
+          // row building starts
+          let currentRowLength = 0;
+          let rowHasRoom = true;
 
-          if (currentRowLength <= currentRow.maximumLength) {
-            currentRowWords.push(Object.assign({}, currentBox, { wordBeginning }));
-            currentRow.length = currentRowLength;
-            measuredBoxes.shift();
-          } else {
-            rowHasRoom = false;
+          // keep adding words while there's room
+          while (measuredBoxes.length && rowHasRoom) {
+            // adding box to row
+            const currentBox = measuredBoxes[0];
+
+            const wordBeginning = currentRowLength;
+            currentRowLength += currentBox.width + wordSpacing;
+
+            if (currentRowLength <= currentRow.maximumLength) {
+              currentRowWords.push(Object.assign({}, currentBox, { wordBeginning }));
+              currentRow.length = currentRowLength;
+              measuredBoxes.shift();
+            } else {
+              rowHasRoom = false;
+            }
           }
+
+          currentRowIndex++;
         }
 
-        currentRowIndex++;
+        innerCompleted = rowSetComplete(rowSet, measuredBoxes);
       }
-
-      innerCompleted = rowSetComplete(rowSet, measuredBoxes);
-    }
-    {
-      // row building conditions
-      completed = !measuredBoxes.length;
-      if (!completed) {
-        fontSizeIndex -= 1;
+      {
+        // row building conditions
+        completed = !measuredBoxes.length;
+        if (!completed) {
+          fontSizeIndex -= 1;
+        }
       }
     }
-  }
-  rowSet.rows = rowSet.rows.filter((r) => !isNaN(r.length));
-  return rowSet;
-};
+    rowSet.rows = rowSet.rows.filter((r) => !isNaN(r.length));
+    return rowSet;
+  };
+}
 
 export const inSectorRotation = (horizontalTextEnforcer: number, horizontalTextAngleThreshold: number) => (
   node: ShapeTreeNode,
@@ -347,10 +359,10 @@ export const inSectorRotation = (horizontalTextEnforcer: number, horizontalTextA
   return rotation;
 };
 
-export const fillTextLayout = (
+export function fillTextLayout(
   measure: TextMeasure,
-  getRawText: Function, // todo improve typing
-  valueFormatter: Function,
+  rawTextGetter: RawTextGetter,
+  valueFormatter: (value: number) => string,
   childNodes: ShapeTreeNode[],
   config: Config,
   layers: Layer[],
@@ -358,7 +370,7 @@ export const fillTextLayout = (
   shapeConstructor: (n: ShapeTreeNode) => any,
   getShapeRowGeometry: (...args: any[]) => RowSpace,
   getRotation: Function,
-) => {
+) {
   const { minFontSize, maxFontSize, idealFontSizeJump } = config;
   const fontSizeMagnification = maxFontSize / minFontSize;
   const fontSizeJumpCount = Math.round(logarithm(idealFontSizeJump, fontSizeMagnification));
@@ -377,7 +389,7 @@ export const fillTextLayout = (
       layers,
       fontSizes,
       measure,
-      getRawText,
+      rawTextGetter,
       valueFormatter,
       textFillOrigins,
       shapeConstructor,
@@ -385,4 +397,4 @@ export const fillTextLayout = (
       getRotation,
     ),
   );
-};
+}

@@ -101,3 +101,5 @@ export interface ShapeTreeNode extends TreeNode, SectorGeomSpecY {
   data: { name: any; value?: any }; // todo remove optionality
   value: number;
 }
+
+export type RawTextGetter = (node: ShapeTreeNode) => string;

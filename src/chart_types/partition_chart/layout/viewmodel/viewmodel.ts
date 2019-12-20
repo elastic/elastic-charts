@@ -9,7 +9,14 @@ import { treemap } from '../utils/treemap';
 import { sunburst } from '../utils/sunburst';
 import { AccessorFn } from '../../../../utils/accessor';
 import { fromRGB, toRGB } from '../utils/d3_utils';
-import { OutsideLinksViewModel, ShapeTreeNode, QuadViewModel, RowSet, ShapeViewModel } from '../types/viewmodel_types';
+import {
+  OutsideLinksViewModel,
+  ShapeTreeNode,
+  QuadViewModel,
+  RowSet,
+  ShapeViewModel,
+  RawTextGetter,
+} from '../types/viewmodel_types';
 import { Layer } from '../../specs/index';
 import {
   fillTextLayout,
@@ -97,16 +104,16 @@ export const makeOutsideLinksViewModel = (
     .filter(({ points }: OutsideLinksViewModel) => points.length > 1);
 
 // todo break up this long function
-export const shapeViewModel = (
+export function shapeViewModel(
   textMeasure: TextMeasure,
   config: Config,
   layers: Layer[],
   facts: Relation,
-  rawTextGetter: Function, // todo improve typing
+  rawTextGetter: RawTextGetter,
   valueAccessor: AccessorFn,
-  valueFormatter: AccessorFn,
+  valueFormatter: (value: number) => string,
   groupByRollupAccessors: AccessorFn[],
-): ShapeViewModel => {
+): ShapeViewModel {
   const {
     width,
     height,
@@ -124,7 +131,7 @@ export const shapeViewModel = (
   const innerWidth = width * (1 - Math.min(1, margin.left + margin.right));
   const innerHeight = height * (1 - Math.min(1, margin.top + margin.bottom));
 
-  const center = {
+  const diskCenter = {
     x: width * margin.left + innerWidth / 2,
     y: height * margin.top + innerHeight / 2,
   };
@@ -139,7 +146,7 @@ export const shapeViewModel = (
   ) {
     return {
       config,
-      diskCenter: center,
+      diskCenter,
       quadViewModel: [],
       rowSets: [],
       linkLabelViewModels: [],
@@ -252,10 +259,10 @@ export const shapeViewModel = (
   // combined viewModel
   return {
     config,
-    diskCenter: center,
+    diskCenter,
     quadViewModel: quadViewModel,
     rowSets,
     linkLabelViewModels,
     outsideLinksViewModel,
   };
-};
+}
