@@ -1,24 +1,6 @@
 import React from 'react';
-import { Chart, getSpecId, Partition } from '../src';
-import { mocks } from '../src/mocks/hierarchical/index';
-import { config } from '../src/chart_types/partition_chart/layout/config/config';
-import { countryDimension, regionDimension } from '../src/mocks/hierarchical/dimension_codes';
-import { arrayToLookup, cyclicalHueInterpolator } from '../src/chart_types/partition_chart/layout/utils/calcs';
+import { Chart, Partition } from '../src';
 import { Datum } from '../src/chart_types/xy_chart/utils/specs';
-import { PartitionLayouts } from '../src/chart_types/partition_chart/layout/types/config_types';
-import { getRandomNumber } from '../src/mocks/utils';
-// @ts-ignore
-import parse from 'parse-color';
-
-// const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
-const regionLookup = arrayToLookup((d: Datum) => d.region, regionDimension);
-const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
-
-// style calcs
-// const interpolatorCET2s = cyclicalHueInterpolator(config.palettes.CET2s);
-const interpolatorTurbo = cyclicalHueInterpolator(config.palettes.turbo);
-const defaultFillColor = (colorMaker: any) => (d: any, i: number, a: any[]) => colorMaker(i / (a.length + 1));
-
 export class Playground extends React.Component<{}, { isSunburstShown: boolean }> {
   chartRef: React.RefObject<Chart> = React.createRef();
   state = {
@@ -29,64 +11,12 @@ export class Playground extends React.Component<{}, { isSunburstShown: boolean }
     return (
       <>
         <div className="chart">
-          <Chart ref={this.chartRef} size={{ height: 900, width: 800 * 1.618 }}>
+          <Chart ref={this.chartRef}>
             <Partition
-              id={getSpecId('spec_' + getRandomNumber())}
-              data={mocks.sunburst}
-              valueAccessor={(d: Datum) => d.exportVal as number}
-              valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
-              layers={[
-                {
-                  groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.substr(0, 2),
-                  nodeLabel: (d: any) => regionLookup[d].regionName,
-                  fillLabel: Object.assign({}, config.fillLabel, {
-                    formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}`,
-                    fontFamily: 'Phosphate-Inline',
-                    textColor: 'rgba(255,255,0,0.9)',
-                    textInvertible: false,
-                  }),
-                  shape: { fillColor: 'white' },
-                },
-                {
-                  groupByRollup: (d: Datum) => d.dest,
-                  nodeLabel: (d: any) => countryLookup[d].name,
-                  fillLabel: Object.assign({}, config.fillLabel, {
-                    formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}`,
-                    textColor: 'black',
-                    textInvertible: false,
-                    textWeight: 200,
-                    fontStyle: 'normal',
-                    fontFamily: 'Helvetica',
-                    fontVariant: 'normal',
-                  }),
-                  shape: {
-                    fillColor: (d: any, i: any, a: any) => {
-                      const color = defaultFillColor(interpolatorTurbo)(d, i, a);
-                      const [r, g, b] = parse(color).rgb;
-                      return `rgb(${Math.round(r * 0.75)}, ${Math.round(g * 0.75)}, ${Math.round(b * 0.75)})`;
-                    },
-                  },
-                },
-              ]}
-              config={Object.assign({}, config, {
-                hierarchicalLayout: PartitionLayouts.treemap,
-                colors: 'turbo',
-                linkLabel: Object.assign({}, config.linkLabel, { maxCount: 0 }),
-                fontFamily: 'Helvetica Neue',
-                fillLabel: Object.assign({}, config.fillLabel, {
-                  formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
-                  textColor: 'white',
-                  textInvertible: true,
-                  textWeight: 500,
-                  fontStyle: 'normal',
-                }),
-                margin: Object.assign({}, config.margin, { top: 0, bottom: 0, left: 0, right: 0 }),
-                minFontSize: 4,
-                maxFontSize: 200,
-                idealFontSizeJump: 1.01,
-                maxRowCount: 4,
-                outerSizeRatio: 1,
-              })}
+              id={'piechart'}
+              data={[[10], [20], [30]]}
+              valueAccessor={(d: Datum) => d[0]}
+              valueFormatter={(d) => `${d}%`}
             />
           </Chart>
         </div>

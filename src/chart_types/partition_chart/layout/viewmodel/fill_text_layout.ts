@@ -7,8 +7,7 @@ import { FontWeight, TextMeasure } from '../types/types';
 import { aggregateKey } from '../utils/group_by_rollup';
 import { conjunctiveConstraint } from '../circline_geometry';
 import { Layer } from '../../specs/index';
-// @ts-ignore
-import parse from 'parse-color';
+import { toRGB } from '../utils/d3_utils';
 
 function ringSectorStartAngle(d: ShapeTreeNode): Radian {
   return trueBearingToStandardPositionAngle(d.x0 + Math.max(0, d.x1 - d.x0 - tau / 2) / 2);
@@ -248,7 +247,7 @@ function fill(
     );
 
     const shapeFillColor = typeof fillColor === 'function' ? fillColor(node, index, a) : fillColor;
-    const [tr, tg, tb] = parse(textColor).rgb;
+    const { r: tr, g: tg, b: tb } = toRGB(textColor) || { r: 255, g: 0, b: 0 };
     let fontSizeIndex = fontSizes.length - 1;
     const allBoxes = getAllBoxes(rawTextGetter, formatter, node);
     let rowSet = identityRowSet();
@@ -280,7 +279,7 @@ function fill(
 
       while (++targetRowCount <= maxRowCount && !innerCompleted) {
         measuredBoxes = allMeasuredBoxes.slice();
-        const [r, g, b] = parse(shapeFillColor).rgb;
+        const { r, g, b } = toRGB(shapeFillColor) || { r: 255, g: 0, b: 0 };
         const inverseForContrast = textInvertible && r * 0.299 + g * 0.587 + b * 0.114 < 150;
         rowSet = {
           id: nodeId(node),
