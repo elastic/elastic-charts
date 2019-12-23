@@ -1,13 +1,13 @@
 import { ArrayEntry, childrenAccessor, HierarchyOfArrays } from './group_by_rollup';
 import { Origin, Part } from '../types/types';
 
-export const sunburst = (
+export function sunburst(
   nodes: HierarchyOfArrays,
   areaAccessor: (e: ArrayEntry) => number,
   { x0, y0 }: Origin,
   clockwiseSectors: boolean,
   specialFirstInnermostSector: boolean,
-): Array<Part> => {
+): Array<Part> {
   const result: Array<Part> = [];
   const laySubtree = (nodes: HierarchyOfArrays, { x0, y0 }: Origin) => {
     let currentOffsetX = x0;
@@ -27,4 +27,4 @@ export const sunburst = (
   };
   laySubtree(nodes, { x0, y0 });
   return result;
-};
+}

@@ -2,28 +2,33 @@ import { Ratio } from '../types/geometry_types';
 import { RgbTuple } from './d3_utils';
 import { ShapeTreeNode } from '../types/viewmodel_types';
 
-export const getOpacity = (d: ShapeTreeNode) => [0, 0.8, 0.7, 0.6][d.depth];
+export function getOpacity(d: ShapeTreeNode) {
+  return [0, 0.8, 0.7, 0.6][d.depth];
+}
 
-export const cyclicalHueInterpolator = (colors: RgbTuple[]) => (d: number) => {
-  // const cyclicalHueInterpolator = d3.interpolateRainbow
-  const index = Math.round(d * 255);
-  const [r, g, b] = colors[index];
-  return `rgb(${r},${g},${b})`;
-};
+export function cyclicalHueInterpolator(colors: RgbTuple[]) {
+  return (d: number) => {
+    // const cyclicalHueInterpolator = d3.interpolateRainbow
+    const index = Math.round(d * 255);
+    const [r, g, b] = colors[index];
+    return `rgb(${r},${g},${b})`;
+  };
+}
 
-export const addOpacity = (hexColorString: string, opacity: Ratio) =>
+export function addOpacity(hexColorString: string, opacity: Ratio) {
   // this is a super imperfect multiplicative alpha blender that assumes a "#rrggbb" or "#rrggbbaa" hexColorString
   // todo roll some proper utility that can handle "rgb(...)", "rgba(...)", "red", {r, g, b} etc.
-  opacity === 1
+  return opacity === 1
     ? hexColorString
     : hexColorString.slice(0, 7) +
-      (hexColorString.slice(7).length === 0 || parseInt(hexColorString.slice(7, 2), 16) === 255
-        ? ('00' + Math.round(opacity * 255).toString(16)).substr(-2) // color was of full opacity
-        : ('00' + Math.round((parseInt(hexColorString.slice(7, 2), 16) / 255) * opacity * 255).toString(16)).substr(
-            -2,
-          ));
+        (hexColorString.slice(7).length === 0 || parseInt(hexColorString.slice(7, 2), 16) === 255
+          ? ('00' + Math.round(opacity * 255).toString(16)).substr(-2) // color was of full opacity
+          : ('00' + Math.round((parseInt(hexColorString.slice(7, 2), 16) / 255) * opacity * 255).toString(16)).substr(
+              -2,
+            ));
+}
 
-export const objectAssign = (target: object, ...sources: object[]) => {
+export function objectAssign(target: object, ...sources: object[]) {
   sources.forEach((source) => {
     Object.keys(source).forEach((key) => {
       // @ts-ignore
@@ -35,9 +40,9 @@ export const objectAssign = (target: object, ...sources: object[]) => {
     });
   });
   return target;
-};
+}
 
-export const deepTween = (target: object, source: object, ratio: Ratio) => {
+export function deepTween(target: object, source: object, ratio: Ratio) {
   Object.keys(source).forEach((key) => {
     // @ts-ignore
     const sVal = source[key];
@@ -52,7 +57,8 @@ export const deepTween = (target: object, source: object, ratio: Ratio) => {
         : sVal;
   });
   return target;
-};
+}
 
-export const arrayToLookup = (keyFun: Function, array: Array<any>) =>
-  Object.assign({}, ...array.map((d) => ({ [keyFun(d)]: d })));
+export function arrayToLookup(keyFun: Function, array: Array<any>) {
+  return Object.assign({}, ...array.map((d) => ({ [keyFun(d)]: d })));
+}

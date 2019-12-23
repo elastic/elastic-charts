@@ -11,11 +11,11 @@ interface LayoutElement {
   sectionOffsets: number[];
 }
 
-const layVector = (
+function layVector(
   nodes: HierarchyOfArrays,
   independentSize: number,
   areaAccessor: (e: ArrayEntry) => number,
-): LayoutElement => {
+): LayoutElement {
   const area = nodes.reduce((p, n) => p + areaAccessor(n), 0);
   const dependentSize = area / independentSize; // here we lose a bit of accuracy
   let currentOffset = 0;
@@ -27,10 +27,11 @@ const layVector = (
   });
 
   return { nodes, dependentSize, sectionSizes, sectionOffsets }; // descriptor for a vector (column or row) of elements (nodes)
-};
+}
 
-export const leastSquarishAspectRatio = ({ sectionSizes, dependentSize }: LayoutElement) =>
-  sectionSizes.reduce((p, n) => Math.min(p, n / dependentSize, dependentSize / n), 1);
+export function leastSquarishAspectRatio({ sectionSizes, dependentSize }: LayoutElement) {
+  return sectionSizes.reduce((p, n) => Math.min(p, n / dependentSize, dependentSize / n), 1);
+}
 
 const NullLayoutElement: LayoutElement = {
   nodes: [],
@@ -39,11 +40,7 @@ const NullLayoutElement: LayoutElement = {
   sectionOffsets: [],
 };
 
-const bestVector = (
-  nodes: HierarchyOfArrays,
-  height: number,
-  areaAccessor: (e: ArrayEntry) => number,
-): LayoutElement => {
+function bestVector(nodes: HierarchyOfArrays, height: number, areaAccessor: (e: ArrayEntry) => number): LayoutElement {
   let previousWorstAspectRatio = -1;
   let currentWorstAspectRatio = 0;
 
@@ -59,9 +56,9 @@ const bestVector = (
   } while (currentCount++ < nodes.length && currentWorstAspectRatio > previousWorstAspectRatio);
 
   return currentWorstAspectRatio >= previousWorstAspectRatio ? currentVectorLayout : previousVectorLayout;
-};
+}
 
-const vectorNodeCoordinates = (vectorLayout: LayoutElement, x0Base: number, y0Base: number, vertical: boolean) => {
+function vectorNodeCoordinates(vectorLayout: LayoutElement, x0Base: number, y0Base: number, vertical: boolean) {
   const { nodes, dependentSize, sectionSizes, sectionOffsets } = vectorLayout;
   return nodes.map((e: ArrayEntry, i: number) => {
     const x0 = vertical ? x0Base + sectionOffsets[i] : x0Base;
@@ -70,14 +67,14 @@ const vectorNodeCoordinates = (vectorLayout: LayoutElement, x0Base: number, y0Ba
     const y1 = vertical ? y0 + dependentSize : y0 + sectionSizes[i];
     return { node: e, x0, y0, x1, y1 };
   });
-};
+}
 
-export const treemap = (
+export function treemap(
   nodes: HierarchyOfArrays,
   areaAccessor: (e: ArrayEntry) => number,
   paddingAccessor: (e: ArrayEntry) => number,
   { x0, y0, width, height }: { x0: number; y0: number; width: number; height: number },
-): Array<Part> => {
+): Array<Part> {
   if (nodes.length === 0) return [];
   // some bias toward horizontal rectangles with a golden ratio of width to height
   const vertical = width / goldenRatio <= height;
@@ -119,4 +116,4 @@ export const treemap = (
           : { x0: x0 + dependentSize, y0, width: width - dependentSize, height },
       ),
     );
-};
+}

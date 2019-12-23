@@ -1,13 +1,18 @@
 import { CirclArc, Circline, CirclinePredicate, Distance, PointObject, RingSector } from './types/geometry_types';
 import { tau } from './utils/math';
 
-const euclideanDistance = ({ x: X, y: Y }: PointObject, { x, y }: PointObject): Distance =>
-  Math.sqrt(Math.pow(X - x, 2) + Math.pow(Y - y, 2));
+function euclideanDistance({ x: X, y: Y }: PointObject, { x, y }: PointObject): Distance {
+  return Math.sqrt(Math.pow(X - x, 2) + Math.pow(Y - y, 2));
+}
 
-const fullyContained = (C: Circline, c: Circline): boolean => euclideanDistance(C, c) + c.r <= C.r;
-const noOverlap = (C: Circline, c: Circline): boolean => euclideanDistance(C, c) >= C.r + c.r;
+function fullyContained(C: Circline, c: Circline): boolean {
+  return euclideanDistance(C, c) + c.r <= C.r;
+}
+function noOverlap(C: Circline, c: Circline): boolean {
+  return euclideanDistance(C, c) >= C.r + c.r;
+}
 
-const circlineIntersect = (c1: Circline, c2: Circline): PointObject[] => {
+function circlineIntersect(c1: Circline, c2: Circline): PointObject[] {
   const D = Math.sqrt((c1.x - c2.x) * (c1.x - c2.x) + (c1.y - c2.y) * (c1.y - c2.y));
   if (c1.r + c2.r >= D && D >= Math.abs(c1.r - c2.r)) {
     const a1 = D + c1.r + c2.r;
@@ -30,9 +35,9 @@ const circlineIntersect = (c1: Circline, c2: Circline): PointObject[] => {
   } else {
     return [];
   }
-};
+}
 
-const circlineValidSectors = (C: CirclinePredicate, c: CirclArc): CirclArc[] => {
+function circlineValidSectors(C: CirclinePredicate, c: CirclArc): CirclArc[] {
   const { inside } = C;
   const { x, y, r, from, to } = c;
   const fullContainment = fullyContained(C, c);
@@ -83,9 +88,9 @@ const circlineValidSectors = (C: CirclinePredicate, c: CirclArc): CirclArc[] => 
     if (predicate(C, { x: xx, y: yy, r: 0 })) result.push({ x, y, r, from, to });
   }
   return result;
-};
+}
 
-export const conjunctiveConstraint = (constraints: RingSector, c: CirclArc): CirclArc[] => {
+export function conjunctiveConstraint(constraints: RingSector, c: CirclArc): CirclArc[] {
   // imperative, slightly optimized buildup of `valids` as it's in the hot loop:
   let valids = [c];
   for (let i = 0; i < constraints.length; i++) {
@@ -99,4 +104,4 @@ export const conjunctiveConstraint = (constraints: RingSector, c: CirclArc): Cir
     valids = nextValids;
   }
   return valids;
-};
+}

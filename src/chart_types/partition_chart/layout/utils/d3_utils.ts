@@ -10,5 +10,6 @@ export type ColorScale = (value: any) => RgbObject;
 export const toRGB: ColorScale = d3Color;
 export const fromRGB = d3Rgb;
 
-export const keyValuesToNameChildren = (d: any) =>
-  d.key && d.values ? { name: d.key, children: d.values.map(keyValuesToNameChildren) } : d;
+export function keyValuesToNameChildren(d: any) {
+  return d.key && d.values ? { name: d.key, children: d.values.map(keyValuesToNameChildren) } : d;
+}

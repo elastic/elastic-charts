@@ -28,13 +28,19 @@ type NodeSorter = (a: ArrayEntry, b: ArrayEntry) => number;
 export type Tuple = Record<string, any>; // this is a row like {country: 'US', gdp: 20392090, ...} from ES; we don't know its properties, todo
 export const entryKey = ([key]: ArrayEntry) => key;
 export const entryValue = ([, value]: ArrayEntry) => value;
-export const depthAccessor = (n: ArrayEntry) => entryValue(n)[depthKey];
-export const aggregateAccessor = (n: ArrayEntry) => entryValue(n)[aggregateKey];
-export const childrenAccessor = (n: ArrayEntry) => entryValue(n)[childrenKey];
+export function depthAccessor(n: ArrayEntry) {
+  return entryValue(n)[depthKey];
+}
+export function aggregateAccessor(n: ArrayEntry) {
+  return entryValue(n)[aggregateKey];
+}
+export function childrenAccessor(n: ArrayEntry) {
+  return entryValue(n)[childrenKey];
+}
 const ascending: Sorter = (a, b) => a - b;
 const descending: Sorter = (a, b) => b - a;
 
-export const groupByRollup = (
+export function groupByRollup(
   keyAccessors: Array<(a: Tuple) => Key>,
   valueAccessor: Function,
   {
@@ -45,7 +51,7 @@ export const groupByRollup = (
     identity: Function;
   },
   factTable: Relation,
-) => {
+) {
   const reductionMap = factTable.reduce((p: HierarchyOfMaps, n) => {
     const keyCount = keyAccessors.length;
     let pointer: HierarchyOfMaps = p;
@@ -70,9 +76,9 @@ export const groupByRollup = (
     return p;
   }, new Map());
   return reductionMap;
-};
+}
 
-export const mapsToArrays = (root: HierarchyOfMaps, sorter: NodeSorter): HierarchyOfArrays => {
+export function mapsToArrays(root: HierarchyOfMaps, sorter: NodeSorter): HierarchyOfArrays {
   const groupByMap = (node: HierarchyOfMaps) =>
     Array.from(
       node,
@@ -87,12 +93,15 @@ export const mapsToArrays = (root: HierarchyOfMaps, sorter: NodeSorter): Hierarc
       },
     ).sort(sorter); // with the current algo, decreasing order is important
   return groupByMap(root);
-};
+}
 
-export const mapEntryValue = (entry: ArrayEntry) => entryValue(entry)[aggregateKey];
+export function mapEntryValue(entry: ArrayEntry) {
+  return entryValue(entry)[aggregateKey];
+}
 
-export const aggregateComparator = (accessor: Function, sorter: Sorter): NodeSorter => (a, b) =>
-  sorter(accessor(a), accessor(b));
+export function aggregateComparator(accessor: Function, sorter: Sorter): NodeSorter {
+  return (a, b) => sorter(accessor(a), accessor(b));
+}
 
 export const childOrders = {
   ascending,

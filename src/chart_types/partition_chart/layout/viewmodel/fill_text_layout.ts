@@ -10,26 +10,28 @@ import { Layer } from '../../specs/index';
 // @ts-ignore
 import parse from 'parse-color';
 
-const ringSectorStartAngle = (d: ShapeTreeNode): Radian => {
+function ringSectorStartAngle(d: ShapeTreeNode): Radian {
   return trueBearingToStandardPositionAngle(d.x0 + Math.max(0, d.x1 - d.x0 - tau / 2) / 2);
-};
+}
 
-const ringSectorEndAngle = (d: ShapeTreeNode): Radian =>
-  trueBearingToStandardPositionAngle(d.x1 - Math.max(0, d.x1 - d.x0 - tau / 2) / 2);
+function ringSectorEndAngle(d: ShapeTreeNode): Radian {
+  return trueBearingToStandardPositionAngle(d.x1 - Math.max(0, d.x1 - d.x0 - tau / 2) / 2);
+}
 
-const ringSectorInnerRadius = (innerRadius: Radian, ringThickness: Distance) => (d: ShapeTreeNode): Radius =>
-  innerRadius + (d.y0 as number) * ringThickness;
-
-const ringSectorOuterRadius = (innerRadius: Radian, ringThickness: Distance) => (d: ShapeTreeNode): Radius =>
-  innerRadius + ((d.y0 as number) + 1) * ringThickness;
+function ringSectorInnerRadius(innerRadius: Radian, ringThickness: Distance) {
+  return (d: ShapeTreeNode): Radius => innerRadius + (d.y0 as number) * ringThickness;
+}
+function ringSectorOuterRadius(innerRadius: Radian, ringThickness: Distance) {
+  return (d: ShapeTreeNode): Radius => innerRadius + ((d.y0 as number) + 1) * ringThickness;
+}
 
 const infinityRadius = 1e4; // far enough for a sub-2px precision on a 4k screen, good enough for text bounds; 64 bit floats still work well with it
 
-const angleToCircline = (
+function angleToCircline(
   midRadius: Radius,
   alpha: Radian,
   direction: 1 | -1 /* 1 for clockwise and -1 for anticlockwise circline */,
-) => {
+) {
   const sectorRadiusLineX = Math.cos(alpha) * midRadius;
   const sectorRadiusLineY = Math.sin(alpha) * midRadius;
   const normalAngle = alpha + (direction * Math.PI) / 2;
@@ -37,64 +39,75 @@ const angleToCircline = (
   const y = sectorRadiusLineY + infinityRadius * Math.sin(normalAngle);
   const sectorRadiusCircline = { x, y, r: infinityRadius, inside: false, from: 0, to: tau };
   return sectorRadiusCircline;
-};
+}
 
 // todo pick a better unique key for the slices (D3 doesn't keep track of an index)
-export const nodeId = (node: ShapeTreeNode): string => node.x0 + '|' + node.y0;
+export function nodeId(node: ShapeTreeNode): string {
+  return node.x0 + '|' + node.y0;
+}
 
-export const rectangleConstruction = (node: ShapeTreeNode) => ({
-  x0: node.x0,
-  y0: node.y0px,
-  x1: node.x1,
-  y1: node.y1px,
-});
+export function rectangleConstruction(node: ShapeTreeNode) {
+  return {
+    x0: node.x0,
+    y0: node.y0px,
+    x1: node.x1,
+    y1: node.y1px,
+  };
+}
 
-export const ringSectorConstruction = (config: Config, innerRadius: Radius, ringThickness: Distance) => (
-  ringSector: ShapeTreeNode,
-): RingSector => {
-  const { circlePadding, radialPadding, fillOutside, radiusOutside, fillRectangleWidth, fillRectangleHeight } = config;
-  const r =
-    (fillOutside ? ringSectorOuterRadius : ringSectorInnerRadius)(innerRadius, ringThickness)(ringSector) +
-    circlePadding * 2;
-  const R = Math.max(
-    r,
-    ringSectorOuterRadius(innerRadius, ringThickness)(ringSector) - circlePadding + (fillOutside ? radiusOutside : 0),
-  );
-  const alpha = ringSectorStartAngle(ringSector);
-  const beta = ringSectorEndAngle(ringSector);
-  const innerCircline = { x: 0, y: 0, r: r, inside: true, from: 0, to: tau };
-  const outerCircline = { x: 0, y: 0, r: R, inside: false, from: 0, to: tau };
-  const midRadius = (r + R) / 2;
-  const sectorStartCircle = angleToCircline(midRadius, alpha - radialPadding, -1);
-  const sectorEndCircle = angleToCircline(midRadius, beta + radialPadding, 1);
-  const RRx = fillRectangleWidth / 2;
-  const RRy = fillRectangleHeight / 2;
-  const fullCircle = ringSector.x0 === 0 && ringSector.x1 === tau;
-  const sectorCirclines = [
-    ...(fullCircle && innerRadius === 0 ? [] : [innerCircline]),
-    outerCircline,
-    ...(fullCircle ? [] : [sectorStartCircle, sectorEndCircle]),
-  ];
-  const rectangleCirclines =
-    RRx === Infinity && RRy === Infinity
-      ? []
-      : [
-          { x: infinityRadius - RRx, y: 0, r: infinityRadius, inside: true },
-          { x: -infinityRadius + RRx, y: 0, r: infinityRadius, inside: true },
-          { x: 0, y: infinityRadius - RRy, r: infinityRadius, inside: true },
-          { x: 0, y: -infinityRadius + RRy, r: infinityRadius, inside: true },
-        ];
-  return [...sectorCirclines, ...rectangleCirclines];
-};
+export function ringSectorConstruction(config: Config, innerRadius: Radius, ringThickness: Distance) {
+  return (ringSector: ShapeTreeNode): RingSector => {
+    const {
+      circlePadding,
+      radialPadding,
+      fillOutside,
+      radiusOutside,
+      fillRectangleWidth,
+      fillRectangleHeight,
+    } = config;
+    const r =
+      (fillOutside ? ringSectorOuterRadius : ringSectorInnerRadius)(innerRadius, ringThickness)(ringSector) +
+      circlePadding * 2;
+    const R = Math.max(
+      r,
+      ringSectorOuterRadius(innerRadius, ringThickness)(ringSector) - circlePadding + (fillOutside ? radiusOutside : 0),
+    );
+    const alpha = ringSectorStartAngle(ringSector);
+    const beta = ringSectorEndAngle(ringSector);
+    const innerCircline = { x: 0, y: 0, r: r, inside: true, from: 0, to: tau };
+    const outerCircline = { x: 0, y: 0, r: R, inside: false, from: 0, to: tau };
+    const midRadius = (r + R) / 2;
+    const sectorStartCircle = angleToCircline(midRadius, alpha - radialPadding, -1);
+    const sectorEndCircle = angleToCircline(midRadius, beta + radialPadding, 1);
+    const RRx = fillRectangleWidth / 2;
+    const RRy = fillRectangleHeight / 2;
+    const fullCircle = ringSector.x0 === 0 && ringSector.x1 === tau;
+    const sectorCirclines = [
+      ...(fullCircle && innerRadius === 0 ? [] : [innerCircline]),
+      outerCircline,
+      ...(fullCircle ? [] : [sectorStartCircle, sectorEndCircle]),
+    ];
+    const rectangleCirclines =
+      RRx === Infinity && RRy === Infinity
+        ? []
+        : [
+            { x: infinityRadius - RRx, y: 0, r: infinityRadius, inside: true },
+            { x: -infinityRadius + RRx, y: 0, r: infinityRadius, inside: true },
+            { x: 0, y: infinityRadius - RRy, r: infinityRadius, inside: true },
+            { x: 0, y: -infinityRadius + RRy, r: infinityRadius, inside: true },
+          ];
+    return [...sectorCirclines, ...rectangleCirclines];
+  };
+}
 
-const makeRowCircline = (
+function makeRowCircline(
   cx: Coordinate,
   cy: Coordinate,
   radialOffset: Distance,
   rotation: Radian,
   fontSize: number,
   offsetSign: -1 | 0 | 1,
-) => {
+) {
   const rowCentroidY = cy;
   const r = infinityRadius;
   const offset = (offsetSign * fontSize) / 2;
@@ -104,9 +117,9 @@ const makeRowCircline = (
   const y = cy + anotherR * Math.cos(-rotation + tau / 2);
   const circline = { r: r + radialOffset, x, y };
   return circline;
-};
+}
 
-export const getSectorRowGeometry = (
+export function getSectorRowGeometry(
   ringSector: RingSector,
   cx: Coordinate,
   cy: Coordinate,
@@ -115,7 +128,7 @@ export const getSectorRowGeometry = (
   rowIndex: number,
   fontSize: Pixels,
   rotation: Radian,
-): RowSpace => {
+): RowSpace {
   // prettier-ignore
   const offset =
       (totalRowCount / 2) * fontSize
@@ -138,9 +151,9 @@ export const getSectorRowGeometry = (
   const rowCentroidY = midCircline.r * Math.sin(midAngle) + midCircline.y;
   const maximumRowLength = cheapTangent * infinityRadius;
   return { rowCentroidX, rowCentroidY, maximumRowLength };
-};
+}
 
-export const getRectangleRowGeometry = (
+export function getRectangleRowGeometry(
   container: any,
   cx: number,
   cy: number,
@@ -148,7 +161,7 @@ export const getRectangleRowGeometry = (
   linePitch: Pixels,
   rowIndex: number,
   fontSize: Pixels,
-): RowSpace => {
+): RowSpace {
   const wordSpacing = getWordSpacing(fontSize);
   const x0 = container.x0 + wordSpacing;
   const y0 = container.y0 + linePitch / 2;
@@ -168,10 +181,11 @@ export const getRectangleRowGeometry = (
     rowCentroidY: -rowCentroidY,
     maximumRowLength: rowCentroidY - linePitch / 2 < y0 || rowCentroidY + linePitch / 2 > y1 ? 0 : x1 - x0,
   };
-};
+}
 
-const rowSetComplete = (rowSet: RowSet, measuredBoxes: RowBox[]) =>
-  !rowSet.rows.some((r) => isNaN(r.length)) && !measuredBoxes.length;
+function rowSetComplete(rowSet: RowSet, measuredBoxes: RowBox[]) {
+  return !rowSet.rows.some((r) => isNaN(r.length)) && !measuredBoxes.length;
+}
 
 function identityRowSet(): RowSet {
   return {
@@ -349,15 +363,15 @@ function fill(
   };
 }
 
-export const inSectorRotation = (horizontalTextEnforcer: number, horizontalTextAngleThreshold: number) => (
-  node: ShapeTreeNode,
-) => {
-  let rotation = trueBearingToStandardPositionAngle((node.x0 + node.x1) / 2);
-  if (Math.abs(node.x1 - node.x0) > horizontalTextAngleThreshold && horizontalTextEnforcer > 0)
-    rotation = rotation * (1 - horizontalTextEnforcer);
-  if (tau / 4 < rotation && rotation < (3 * tau) / 4) rotation = wrapToTau(rotation - tau / 2);
-  return rotation;
-};
+export function inSectorRotation(horizontalTextEnforcer: number, horizontalTextAngleThreshold: number) {
+  return (node: ShapeTreeNode) => {
+    let rotation = trueBearingToStandardPositionAngle((node.x0 + node.x1) / 2);
+    if (Math.abs(node.x1 - node.x0) > horizontalTextAngleThreshold && horizontalTextEnforcer > 0)
+      rotation = rotation * (1 - horizontalTextEnforcer);
+    if (tau / 4 < rotation && rotation < (3 * tau) / 4) rotation = wrapToTau(rotation - tau / 2);
+    return rotation;
+  };
+}
 
 export function fillTextLayout(
   measure: TextMeasure,

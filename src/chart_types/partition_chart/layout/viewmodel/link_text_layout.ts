@@ -6,14 +6,14 @@ import { meanAngle } from '../geometry';
 import { TextMeasure } from '../types/types';
 
 // todo modularize this large function
-export const linkTextLayout = (
+export function linkTextLayout(
   measure: TextMeasure,
   config: Config,
   nodesWithoutRoom: ShapeTreeNode[],
   currentY: Distance[],
   anchorRadius: Distance,
   rawTextGetter: Function,
-): LinkLabelVM[] => {
+): LinkLabelVM[] {
   const { linkLabel } = config;
   const maxDepth = nodesWithoutRoom.reduce((p: number, n: ShapeTreeNode) => Math.max(p, n.depth), 0);
   const yRelativeIncrement = Math.sin(linkLabel.stemAngle) * linkLabel.minimumStemLength;
@@ -66,4 +66,4 @@ export const linkTextLayout = (
         verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`
       };
     });
-};
+}

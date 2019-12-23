@@ -41,35 +41,42 @@ import {
   mapsToArrays,
 } from '../utils/group_by_rollup';
 
-const angularRange = tau;
-const paddingAccessor = (n: ArrayEntry) => (entryValue(n).depth > 1 ? 1 : [0, 2][entryValue(n).depth]);
-const rectangleFillOrigins = (n: ShapeTreeNode): [number, number] => [(n.x0 + n.x1) / 2, (n.y0 + n.y1) / 2];
+function paddingAccessor(n: ArrayEntry) {
+  return entryValue(n).depth > 1 ? 1 : [0, 2][entryValue(n).depth];
+}
+function rectangleFillOrigins(n: ShapeTreeNode): [number, number] {
+  return [(n.x0 + n.x1) / 2, (n.y0 + n.y1) / 2];
+}
 export const ringSectorInnerRadius = (n: ShapeTreeNode): Radius => n.y0px;
+
 export const ringSectorOuterRadius = (n: ShapeTreeNode): Radius => n.y1px;
+
 export const ringSectorMiddleRadius = (n: ShapeTreeNode): Radius => n.yMidPx;
 
-const sectorFillOrigins = (fillOutside: boolean) => (node: ShapeTreeNode): [number, number] => {
-  const midAngle = (node.x0 + node.x1) / 2;
-  const divider = 10;
-  const innerBias = fillOutside ? 9 : 1;
-  const outerBias = divider - innerBias;
-  // prettier-ignore
-  const radius =
+function sectorFillOrigins(fillOutside: boolean) {
+  return (node: ShapeTreeNode): [number, number] => {
+    const midAngle = (node.x0 + node.x1) / 2;
+    const divider = 10;
+    const innerBias = fillOutside ? 9 : 1;
+    const outerBias = divider - innerBias;
+    // prettier-ignore
+    const radius =
     (  innerBias * ringSectorInnerRadius(node)
       + outerBias * ringSectorOuterRadius(node)
     )
     / divider;
-  const cx = Math.cos(trueBearingToStandardPositionAngle(midAngle)) * radius;
-  const cy = Math.sin(trueBearingToStandardPositionAngle(midAngle)) * radius;
-  return [cx, cy];
-};
+    const cx = Math.cos(trueBearingToStandardPositionAngle(midAngle)) * radius;
+    const cy = Math.sin(trueBearingToStandardPositionAngle(midAngle)) * radius;
+    return [cx, cy];
+  };
+}
 
-export const makeQuadViewModel = (
+export function makeQuadViewModel(
   childNodes: ShapeTreeNode[],
   layers: Layer[],
   sectorLineWidth: Pixels,
-): Array<QuadViewModel> =>
-  childNodes.map((node, index, a) => {
+): Array<QuadViewModel> {
+  return childNodes.map((node, index, a) => {
     const opacityMultiplier = getOpacity(node);
     const layer = layers[node.depth - 1];
     const fillColorSpec = layer && layer.shape && layer.shape.fillColor;
@@ -81,13 +88,14 @@ export const makeQuadViewModel = (
     const { x0, x1, y0px, y1px } = node;
     return { strokeWidth, fillColor, x0, x1, y0px, y1px };
   });
+}
 
-export const makeOutsideLinksViewModel = (
+export function makeOutsideLinksViewModel(
   outsideFillNodes: ShapeTreeNode[],
   rowSets: RowSet[],
   linkLabelRadiusPadding: Distance,
-): OutsideLinksViewModel[] =>
-  outsideFillNodes
+): OutsideLinksViewModel[] {
+  return outsideFillNodes
     .map<OutsideLinksViewModel>((node, i: number) => {
       const rowSet = rowSets[i];
       if (!rowSet.rows.reduce((p, row) => p + row.rowWords.length, 0)) return { points: [] };
@@ -102,7 +110,7 @@ export const makeOutsideLinksViewModel = (
       return { points: [[x0, y0], [x, y]] };
     })
     .filter(({ points }: OutsideLinksViewModel) => points.length > 1);
-
+}
 // todo break up this long function
 export function shapeViewModel(
   textMeasure: TextMeasure,
@@ -163,7 +171,7 @@ export function shapeViewModel(
 
   const totalValue = tree.reduce((p: number, n: ArrayEntry): number => p + mapEntryValue(n), 0);
 
-  const sunburstValueToAreaScale = angularRange / totalValue;
+  const sunburstValueToAreaScale = tau / totalValue;
   const sunburstAreaAccessor = (e: ArrayEntry) => sunburstValueToAreaScale * mapEntryValue(e);
   const children = entryValue(tree[0]).children || [];
   const treemapLayout = hierarchicalLayout === PartitionLayouts.treemap;

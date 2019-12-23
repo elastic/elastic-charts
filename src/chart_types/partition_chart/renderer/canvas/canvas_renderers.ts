@@ -19,17 +19,17 @@ const taperOffLimit = 50; // taper off within a radius of taperOffLimit to avoid
 // The idea is that you just set what's needed for the enclosed snippet, which may temporarily override values in the
 // outer withContext. Example: we use a +y = top convention, so when doing text rendering, y has to be flipped (ctx.scale)
 // otherwise the text will render upside down.
-const withContext = (ctx: CanvasRenderingContext2D, fun: (ctx: CanvasRenderingContext2D) => void) => {
+function withContext(ctx: CanvasRenderingContext2D, fun: (ctx: CanvasRenderingContext2D) => void) {
   ctx.save();
   fun(ctx);
   ctx.restore();
-};
+}
 
-const clearCanvas = (
+function clearCanvas(
   ctx: CanvasRenderingContext2D,
   width: Coordinate,
   height: Coordinate /*, backgroundColor: string*/,
-) =>
+) {
   withContext(ctx, (ctx) => {
     // two steps, as the backgroundColor may have a non-one opacity
     // todo we should avoid `fillRect` by setting the <canvas> element background via CSS
@@ -37,30 +37,35 @@ const clearCanvas = (
     // ctx.fillStyle = backgroundColor;
     // ctx.fillRect(-width, -height, 2 * width, 2 * height); // new background
   });
+}
 
-const renderTextRow = (
+function renderTextRow(
   ctx: CanvasRenderingContext2D,
   { fontFamily, fontSize, fillTextColor, fillTextWeight, fontStyle, fontVariant, rotation }: RowSet,
-) => (currentRow: TextRow) => {
-  const crx = currentRow.rowCentroidX - (Math.cos(rotation) * currentRow.length) / 2;
-  const cry = -currentRow.rowCentroidY + (Math.sin(rotation) * currentRow.length) / 2;
-  withContext(ctx, (ctx) => {
-    ctx.scale(1, -1);
-    ctx.translate(crx, cry);
-    ctx.rotate(-rotation);
-    ctx.font = fontStyle + ' ' + fontVariant + ' ' + fillTextWeight + ' ' + fontSize + 'px ' + fontFamily;
-    ctx.fillStyle = fillTextColor;
-    currentRow.rowWords.forEach((box) => ctx.fillText(box.text, box.width / 2 + box.wordBeginning, 0));
-  });
-};
+) {
+  return (currentRow: TextRow) => {
+    const crx = currentRow.rowCentroidX - (Math.cos(rotation) * currentRow.length) / 2;
+    const cry = -currentRow.rowCentroidY + (Math.sin(rotation) * currentRow.length) / 2;
+    withContext(ctx, (ctx) => {
+      ctx.scale(1, -1);
+      ctx.translate(crx, cry);
+      ctx.rotate(-rotation);
+      ctx.font = fontStyle + ' ' + fontVariant + ' ' + fillTextWeight + ' ' + fontSize + 'px ' + fontFamily;
+      ctx.fillStyle = fillTextColor;
+      currentRow.rowWords.forEach((box) => ctx.fillText(box.text, box.width / 2 + box.wordBeginning, 0));
+    });
+  };
+}
 
-const renderTextRows = (ctx: CanvasRenderingContext2D, rowSet: RowSet) =>
+function renderTextRows(ctx: CanvasRenderingContext2D, rowSet: RowSet) {
   rowSet.rows.forEach(renderTextRow(ctx, rowSet));
+}
 
-const renderRowSets = (ctx: CanvasRenderingContext2D, rowSets: RowSet[]) =>
+function renderRowSets(ctx: CanvasRenderingContext2D, rowSets: RowSet[]) {
   rowSets.forEach((rowSet: RowSet) => renderTextRows(ctx, rowSet));
+}
 
-const renderSectors = (ctx: CanvasRenderingContext2D, quadViewModel: QuadViewModel[]) => {
+function renderSectors(ctx: CanvasRenderingContext2D, quadViewModel: QuadViewModel[]) {
   withContext(ctx, (ctx) => {
     ctx.scale(1, -1); // D3 and Canvas2d use a left-handed coordinate system (+y = down) but the ViewModel uses +y = up, so we must locally invert Y
     quadViewModel.forEach(({ strokeWidth, fillColor, x0, x1, y0px, y1px }) => {
@@ -102,9 +107,9 @@ const renderSectors = (ctx: CanvasRenderingContext2D, quadViewModel: QuadViewMod
       }
     });
   });
-};
+}
 
-const renderRectangles = (ctx: CanvasRenderingContext2D, quadViewModel: QuadViewModel[]) => {
+function renderRectangles(ctx: CanvasRenderingContext2D, quadViewModel: QuadViewModel[]) {
   withContext(ctx, (ctx) => {
     ctx.scale(1, -1); // D3 and Canvas2d use a left-handed coordinate system (+y = down) but the ViewModel uses +y = up, so we must locally invert Y
     quadViewModel.forEach(({ strokeWidth, fillColor, x0, x1, y0px, y1px }) => {
@@ -126,18 +131,19 @@ const renderRectangles = (ctx: CanvasRenderingContext2D, quadViewModel: QuadView
       }
     });
   });
-};
+}
 
 // order of rendering is important; determined by the order of layers in the array
-const renderLayers = (ctx: CanvasRenderingContext2D, layers: Array<(ctx: CanvasRenderingContext2D) => void>) =>
+function renderLayers(ctx: CanvasRenderingContext2D, layers: Array<(ctx: CanvasRenderingContext2D) => void>) {
   layers.forEach((renderLayer) => renderLayer(ctx));
+}
 
-const renderFillOutsideLinks = (
+function renderFillOutsideLinks(
   ctx: CanvasRenderingContext2D,
   outsideLinksViewModel: OutsideLinksViewModel[],
   linkLabelTextColor: string,
   linkLabelLineWidth: Pixels,
-) =>
+) {
   withContext(ctx, (ctx) => {
     ctx.lineWidth = linkLabelLineWidth;
     ctx.strokeStyle = linkLabelTextColor;
@@ -150,15 +156,16 @@ const renderFillOutsideLinks = (
       ctx.stroke();
     });
   });
+}
 
-const renderLinkLabels = (
+function renderLinkLabels(
   ctx: CanvasRenderingContext2D,
   linkLabelFontSize: Pixels,
   linkLabelLineWidth: Pixels,
   fontFamily: string,
   linkLabelTextColor: string,
   viewModels: LinkLabelVM[],
-) =>
+) {
   withContext(ctx, (ctx) => {
     ctx.lineWidth = linkLabelLineWidth;
     ctx.strokeStyle = linkLabelTextColor;
@@ -177,12 +184,13 @@ const renderLinkLabels = (
       });
     });
   });
+}
 
-export const renderPartitionCanvas2d = (
+export function renderPartitionCanvas2d(
   ctx: CanvasRenderingContext2D,
   dpr: number,
   { config, quadViewModel, rowSets, outsideLinksViewModel, linkLabelViewModels, diskCenter }: ShapeViewModel,
-) => {
+) {
   const { sectorLineWidth, linkLabel, fontFamily /*, backgroundColor*/ } = config;
 
   const linkLabelTextColor = addOpacity(linkLabel.textColor, linkLabel.textOpacity);
@@ -243,4 +251,4 @@ export const renderPartitionCanvas2d = (
         ),
     ]);
   });
-};
+}

@@ -10,15 +10,15 @@ import { goldenRatio, tau } from '../utils/math';
 // todo use preexisting types for describing fonts, paint styles etc.
 
 const log10 = Math.log(10);
-const significantDigitCount = (d: number): number => {
+function significantDigitCount(d: number): number {
   let n = Math.abs(parseFloat(String(d).replace('.', ''))); //remove decimal and make positive
   if (n == 0) return 0;
   while (n != 0 && n % 10 == 0) n /= 10;
   return Math.floor(Math.log(n) / log10) + 1;
-};
+}
 
-const defaultFormatter = (d: any): string =>
-  typeof d === 'string'
+function defaultFormatter(d: any): string {
+  return typeof d === 'string'
     ? d
     : typeof d === 'number'
     ? Math.abs(d) >= 10000000 || Math.abs(d) < 0.001
@@ -29,6 +29,7 @@ const defaultFormatter = (d: any): string =>
           useGrouping: true,
         })
     : String(d);
+}
 
 export const configMetadata = {
   // shape geometry
@@ -177,7 +178,7 @@ export const configMetadata = {
 };
 
 // todo switch to `io-ts` style, generic way of combining static and runtime type info
-const configMap = (mapper: Function, configMetadata: any): Config => {
+function configMap(mapper: Function, configMetadata: any): Config {
   const result: Config = Object.assign(
     {},
     ...Object.entries(configMetadata).map(([k, v]: [string, any]) => {
@@ -189,6 +190,6 @@ const configMap = (mapper: Function, configMetadata: any): Config => {
     }),
   ) as Config;
   return result;
-};
+}
 
 export const config: Config = configMap((item: any) => item.dflt, configMetadata);
