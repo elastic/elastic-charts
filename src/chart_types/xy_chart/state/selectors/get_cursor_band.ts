@@ -4,7 +4,7 @@ import { Point } from '../../../../utils/point';
 import { Scale } from '../../../../utils/scales/scales';
 import { isLineAreaOnlyChart } from '../utils';
 import { getCursorBandPosition } from '../../crosshair/crosshair_utils';
-import { SettingsSpec, PointerEvent, isPointerOverEvent } from '../../../../specs/settings';
+import { SettingsSpec, PointerEvent } from '../../../../specs/settings';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { BasicSeriesSpec } from '../../utils/specs';
@@ -75,11 +75,7 @@ function getCursorBand(
   }
   let pointerPosition = orientedProjectedPoinerPosition;
   let xValue;
-  if (
-    externalPointerEvent &&
-    isPointerOverEvent(externalPointerEvent) &&
-    isValidPointerOverEvent(externalPointerEvent, xScale)
-  ) {
+  if (isValidPointerOverEvent(xScale, externalPointerEvent)) {
     const x = xScale.pureScale(externalPointerEvent.value);
 
     if (x == null || x > chartDimensions.width + chartDimensions.left) {

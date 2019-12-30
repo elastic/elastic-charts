@@ -14,7 +14,7 @@ import { formatTooltip } from '../../tooltip/tooltip';
 import { getTooltipHeaderFormatterSelector } from './get_tooltip_header_formatter';
 import { isPointOnGeometry } from '../../rendering/rendering';
 import { GlobalChartState } from '../../../../state/chart_state';
-import { PointerEvent, isPointerOverEvent, isPointerOutEvent } from '../../../../specs';
+import { PointerEvent, isPointerOutEvent } from '../../../../specs';
 import { isValidPointerOverEvent } from '../../../../utils/events';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
@@ -72,11 +72,7 @@ function getTooltipAndHighlightFromXValue(
   }
   let x = orientedProjectedPointerPosition.x;
   let y = orientedProjectedPointerPosition.y;
-  if (
-    externalPointerEvent &&
-    isPointerOverEvent(externalPointerEvent) &&
-    isValidPointerOverEvent(externalPointerEvent, scales.xScale)
-  ) {
+  if (isValidPointerOverEvent(scales.xScale, externalPointerEvent)) {
     x = scales.xScale.pureScale(externalPointerEvent.value);
     y = 0;
   } else if (projectedPointerPosition.x === -1 || projectedPointerPosition.y === -1) {

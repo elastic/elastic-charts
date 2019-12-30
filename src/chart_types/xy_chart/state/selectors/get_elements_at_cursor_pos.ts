@@ -6,7 +6,7 @@ import { getComputedScalesSelector } from './get_computed_scales';
 import { getGeometriesIndexKeysSelector } from './get_geometries_index_keys';
 import { getGeometriesIndexSelector } from './get_geometries_index';
 import { IndexedGeometry } from '../../../../utils/geometry';
-import { PointerEvent, isPointerOverEvent } from '../../../../specs';
+import { PointerEvent } from '../../../../specs';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { Dimensions } from '../../../../utils/dimensions';
 import { GlobalChartState } from '../../../../state/chart_state';
@@ -39,11 +39,7 @@ function getElementAtCursorPosition(
     chartDimensions: Dimensions;
   },
 ): IndexedGeometry[] {
-  if (
-    externalPointerEvent &&
-    isPointerOverEvent(externalPointerEvent) &&
-    isValidPointerOverEvent(externalPointerEvent, scales.xScale)
-  ) {
+  if (isValidPointerOverEvent(scales.xScale, externalPointerEvent)) {
     const x = scales.xScale.pureScale(externalPointerEvent.value);
 
     if (x == null || x > chartDimensions.width + chartDimensions.left) {

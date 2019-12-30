@@ -156,10 +156,10 @@ export const Settings: React.FunctionComponent<SettingsSpecProps> = getConnect()
   specComponentFactory<SettingsSpec, DefaultSettingsProps>(DEFAULT_SETTINGS_SPEC),
 );
 
-export function isPointerOutEvent(event: PointerEvent): event is PointerOutEvent {
-  return event.type === PointerEventType.Out;
+export function isPointerOutEvent(event: PointerEvent | null | undefined): event is PointerOutEvent {
+  return event !== null && event !== undefined && event.type === PointerEventType.Out;
 }
 
-export function isPointerOverEvent(event: PointerEvent): event is PointerOverEvent {
-  return event.type === PointerEventType.Over;
+export function isPointerOverEvent(event: PointerEvent | null | undefined): event is PointerOverEvent {
+  return event !== null && event !== undefined && event.type === PointerEventType.Over;
 }
