@@ -34,14 +34,12 @@ addParameters({
       },
     },
   },
-  docs: {},
 });
 
 addDecorator(withKnobs);
 addDecorator(withInfo);
 
 function loadStories() {
-  require('../stories/bar_chart.tsx');
   require('../stories/line_chart.tsx');
   require('../stories/area_chart.tsx');
   require('../stories/axis.tsx');
@@ -53,6 +51,7 @@ function loadStories() {
   require('../stories/grid.tsx');
   require('../stories/annotations.tsx');
   require('../stories/scales.tsx');
+  return [require('../stories/bar_chart.tsx')];
 }
 
 configure(loadStories, module);
