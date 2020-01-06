@@ -1,7 +1,7 @@
 {
   "name": "@elastic/charts",
   "description": "Elastic-Charts data visualization library",
-  "version": "15.0.5",
+  "version": "16.0.2",
   "author": "Marco Vettorello <marco.vettorello@elastic.co>",
   "license": "Apache-2.0",
   "main": "dist/index.js",
@@ -160,6 +160,7 @@
     "reselect": "^4.0.0",
     "resize-observer-polyfill": "^1.5.1",
     "ts-debounce": "^1.0.0",
+    "utility-types": "^3.9.0",
     "uuid": "^3.3.2"
   },
   "peerDependencies": {

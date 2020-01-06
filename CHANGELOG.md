@@ -1,3 +1,30 @@
+## [16.0.2](https://github.com/elastic/elastic-charts/compare/v16.0.1...v16.0.2) (2020-01-03)
+
+
+### Bug Fixes
+
+* add utility-types as dependency ([#509](https://github.com/elastic/elastic-charts/issues/509)) ([26b4d9c](https://github.com/elastic/elastic-charts/commit/26b4d9c545bcd139b3e0850ce48c83051db1bd3b))
+
+## [16.0.1](https://github.com/elastic/elastic-charts/compare/v16.0.0...v16.0.1) (2020-01-03)
+
+
+### Bug Fixes
+
+* **specs:** shows a chart message without series specified ([#506](https://github.com/elastic/elastic-charts/issues/506)) ([ba1a67b](https://github.com/elastic/elastic-charts/commit/ba1a67b5c59396fa38dc87516487403e53d30405))
+
+# [16.0.0](https://github.com/elastic/elastic-charts/compare/v15.0.5...v16.0.0) (2020-01-02)
+
+
+### Bug Fixes
+
+* **external pointer:** avoid recursive-loops on pointer events ([#503](https://github.com/elastic/elastic-charts/issues/503)) ([c170f0d](https://github.com/elastic/elastic-charts/commit/c170f0ddfade407d4c2b2e7d1b1d72a8142b59b8)), closes [#504](https://github.com/elastic/elastic-charts/issues/504)
+
+
+### BREAKING CHANGES
+
+* **external pointer:** The `onCursorUpdate` Settings property is changed to a more generic
+`onPointerUpdate`. The same apply for the event type `CursorEvent` that is now `PointerEvent` and can assume a `PointerOverEvent` or `PointOutEvent` shape (see TS types)
+
 ## [15.0.5](https://github.com/elastic/elastic-charts/compare/v15.0.4...v15.0.5) (2019-12-12)
 
 
