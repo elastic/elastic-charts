@@ -239,11 +239,10 @@ function fill(
       formatter,
       fillColor,
     } = Object.assign(
-      { fontFamily: config.fontFamily, fillColor: node.fill },
+      { fontFamily: config.fontFamily, formatter: valueFormatter, fillColor: node.fill },
       fillLabel,
       layers[node.depth - 1] && layers[node.depth - 1].fillLabel,
       layers[node.depth - 1] && layers[node.depth - 1].shape,
-      { formatter: valueFormatter },
     );
 
     const shapeFillColor = typeof fillColor === 'function' ? fillColor(node, index, a) : fillColor;
