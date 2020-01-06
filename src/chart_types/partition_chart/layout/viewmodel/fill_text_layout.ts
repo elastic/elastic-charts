@@ -207,7 +207,7 @@ function getAllBoxes(
 ): string[] {
   return rawTextGetter(node)
     .split(' ')
-    .concat(valueFormatter(node[aggregateKey]));
+    .concat(valueFormatter(node[aggregateKey]).split(' '));
 }
 
 function getWordSpacing(fontSize: number) {
