@@ -7,7 +7,7 @@ import { Distance, Pixels, Radius } from '../types/geometry_types';
 import { meanAngle } from '../geometry';
 import { treemap } from '../utils/treemap';
 import { sunburst } from '../utils/sunburst';
-import { AccessorFn } from '../../../../utils/accessor';
+import { AccessorFn, IndexedAccessorFn } from '../../../../utils/accessor';
 import { fromRGB, toRGB } from '../utils/d3_utils';
 import {
   OutsideLinksViewModel,
@@ -120,7 +120,7 @@ export function shapeViewModel(
   rawTextGetter: RawTextGetter,
   valueAccessor: AccessorFn,
   valueFormatter: (value: number) => string,
-  groupByRollupAccessors: AccessorFn[],
+  groupByRollupAccessors: IndexedAccessorFn[],
 ): ShapeViewModel {
   const {
     width,

@@ -41,7 +41,7 @@ const ascending: Sorter = (a, b) => a - b;
 const descending: Sorter = (a, b) => b - a;
 
 export function groupByRollup(
-  keyAccessors: Array<(a: Tuple) => Key>,
+  keyAccessors: Array<((a: Tuple) => Key) | ((a: Tuple, i: number) => Key)>,
   valueAccessor: Function,
   {
     reducer,
@@ -52,11 +52,11 @@ export function groupByRollup(
   },
   factTable: Relation,
 ) {
-  const reductionMap = factTable.reduce((p: HierarchyOfMaps, n) => {
+  const reductionMap = factTable.reduce((p: HierarchyOfMaps, n, index) => {
     const keyCount = keyAccessors.length;
     let pointer: HierarchyOfMaps = p;
     keyAccessors.forEach((keyAccessor, i) => {
-      const key = keyAccessor(n);
+      const key = keyAccessor(n, index);
       const keyExists = pointer.has(key);
       const last = i === keyCount - 1;
       const node = keyExists && pointer.get(key);

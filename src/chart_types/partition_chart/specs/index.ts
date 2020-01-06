@@ -3,12 +3,12 @@ import { Datum, SpecTypes } from '../../xy_chart/utils/specs';
 import { config } from '../layout/config/config';
 import { FunctionComponent } from 'react';
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
-import { AccessorFn } from '../../../utils/accessor';
+import { AccessorFn, IndexedAccessorFn } from '../../../utils/accessor';
 import { Spec } from '../../../specs/index';
 import { Config, FillLabel } from '../layout/types/config_types';
 
 export interface Layer {
-  groupByRollup: AccessorFn;
+  groupByRollup: IndexedAccessorFn;
   nodeLabel?: AccessorFn;
   fillLabel?: Partial<FillLabel>;
   shape?: { fillColor: any };
@@ -22,7 +22,7 @@ const defaultProps = {
   valueFormatter: (d: any) => d,
   layers: [
     {
-      groupByRollup: (d: Datum) => d,
+      groupByRollup: (d: Datum, i: number) => i,
       nodeLabel: (d: Datum) => d,
       fillLabel: {},
     },
