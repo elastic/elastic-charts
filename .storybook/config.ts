@@ -34,6 +34,7 @@ addParameters({
       },
     },
   },
+  docs: {},
 });
 
 addDecorator(withKnobs);
