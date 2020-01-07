@@ -9,7 +9,7 @@ import { Config, FillLabel } from '../layout/types/config_types';
 
 export interface Layer {
   groupByRollup: IndexedAccessorFn;
-  nodeLabel?: AccessorFn;
+  nodeLabel?: (datum: Datum) => string;
   fillLabel?: Partial<FillLabel>;
   shape?: { fillColor: any };
 }

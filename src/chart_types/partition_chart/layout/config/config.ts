@@ -106,7 +106,7 @@ export const configMetadata = {
     type: 'group',
     values: {
       textColor: { dflt: '#000000', type: 'color' },
-      textInvertible: { dflt: true, type: 'boolean' },
+      textInvertible: { dflt: false, type: 'boolean' },
       textWeight: { dflt: 400, min: 100, max: 900, type: 'number' },
       fontStyle: {
         dflt: 'normal',
@@ -151,7 +151,7 @@ export const configMetadata = {
         documentation: 'Limits the total count of linked labels. The first N largest slices are kept.',
       },
       textColor: { dflt: '#000000', type: 'color' },
-      textInvertible: { dflt: true, type: 'boolean' },
+      textInvertible: { dflt: false, type: 'boolean' },
       textOpacity: { dflt: 1, min: 0, max: 1, type: 'number' },
       minimumStemLength: {
         dflt: 0,
