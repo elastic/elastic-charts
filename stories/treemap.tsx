@@ -1,7 +1,7 @@
 import { Chart, getSpecId, Partition } from '../src';
 import { mocks } from '../src/mocks/hierarchical/index';
 import { config } from '../src/chart_types/partition_chart/layout/config/config';
-import { arrayToLookup, cyclicalHueInterpolator } from '../src/chart_types/partition_chart/layout/utils/calcs';
+import { arrayToLookup, hueInterpolator } from '../src/chart_types/partition_chart/layout/utils/calcs';
 import { Datum } from '../src/chart_types/xy_chart/utils/specs';
 import { countryDimension, productDimension, regionDimension } from '../src/mocks/hierarchical/dimension_codes';
 import React from 'react';
@@ -14,8 +14,8 @@ const regionLookup = arrayToLookup((d: Datum) => d.region, regionDimension);
 const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
 
 // style calcs
-const interpolatorCET2s = cyclicalHueInterpolator(config.palettes.CET2s);
-const interpolatorTurbo = cyclicalHueInterpolator(config.palettes.turbo);
+const interpolatorCET2s = hueInterpolator(config.palettes.CET2s);
+const interpolatorTurbo = hueInterpolator(config.palettes.turbo);
 const defaultFillColor = (colorMaker: any) => (d: any, i: number, a: any[]) => colorMaker(i / (a.length + 1));
 
 export default {

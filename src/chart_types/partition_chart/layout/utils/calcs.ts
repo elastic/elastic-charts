@@ -1,14 +1,8 @@
 import { Ratio } from '../types/geometry_types';
 import { RgbTuple } from './d3_utils';
-import { ShapeTreeNode } from '../types/viewmodel_types';
 
-export function getOpacity(d: ShapeTreeNode) {
-  return [0, 0.8, 0.7, 0.6][d.depth];
-}
-
-export function cyclicalHueInterpolator(colors: RgbTuple[]) {
+export function hueInterpolator(colors: RgbTuple[]) {
   return (d: number) => {
-    // const cyclicalHueInterpolator = d3.interpolateRainbow
     const index = Math.round(d * 255);
     const [r, g, b] = colors[index];
     return `rgb(${r},${g},${b})`;

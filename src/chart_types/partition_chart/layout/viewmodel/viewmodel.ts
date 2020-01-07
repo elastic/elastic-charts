@@ -2,7 +2,6 @@ import { Part, Relation, TextMeasure } from '../types/types';
 import { linkTextLayout } from './link_text_layout';
 import { Config, PartitionLayouts } from '../types/config_types';
 import { tau, trueBearingToStandardPositionAngle } from '../utils/math';
-import { getOpacity } from '../utils/calcs';
 import { Distance, Pixels, Radius } from '../types/geometry_types';
 import { meanAngle } from '../geometry';
 import { treemap } from '../utils/treemap';
@@ -77,7 +76,7 @@ export function makeQuadViewModel(
   sectorLineWidth: Pixels,
 ): Array<QuadViewModel> {
   return childNodes.map((node, index, a) => {
-    const opacityMultiplier = getOpacity(node);
+    const opacityMultiplier = 1; // could alter in the future, eg. in response to interactions
     const layer = layers[node.depth - 1];
     const fillColorSpec = layer && layer.shape && layer.shape.fillColor;
     const fill = fillColorSpec || 'rgba(128,0,0,0.5)';
