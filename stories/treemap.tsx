@@ -7,7 +7,7 @@ import { countryDimension, productDimension, regionDimension } from '../src/mock
 import React from 'react';
 import { PartitionLayouts } from '../src/chart_types/partition_chart/layout/types/config_types';
 import { getRandomNumber } from '../src/mocks/utils'; // @ts-ignore
-import { toRGB } from '../src/chart_types/partition_chart/layout/utils/d3_utils';
+import { stringToRGB } from '../src/chart_types/partition_chart/layout/utils/d3_utils';
 
 const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
 const regionLookup = arrayToLookup((d: Datum) => d.region, regionDimension);
@@ -99,7 +99,7 @@ export const MidTwoLayers = () => (
           shape: {
             fillColor: (d: any, i: any, a: any) => {
               const color = defaultFillColor(interpolatorTurbo)(d, i, a);
-              const { r, g, b } = toRGB(color) || { r: 255, g: 0, b: 0 };
+              const { r, g, b } = stringToRGB(color);
               return `rgb(${Math.round(r * 0.75)}, ${Math.round(g * 0.75)}, ${Math.round(b * 0.75)})`;
             },
           },
@@ -161,7 +161,7 @@ export const TwoLayersStressTest = () => (
           shape: {
             fillColor: (d: any, i: any, a: any) => {
               const color = defaultFillColor(interpolatorCET2s)(d, i, a);
-              const { r, g, b } = toRGB(color) || { r: 255, g: 0, b: 0 };
+              const { r, g, b } = stringToRGB(color);
               return `rgb(${Math.round(r * 0.75)}, ${Math.round(g * 0.75)}, ${Math.round(b * 0.75)})`;
             },
           },
@@ -207,7 +207,7 @@ export const MultiColor = () => (
           shape: {
             fillColor: (d: any, i: any, a: any) => {
               const color = defaultFillColor(interpolatorCET2s)(d, i, a);
-              const { r, g, b } = toRGB(color) || { r: 255, g: 0, b: 0 };
+              const { r, g, b } = stringToRGB(color);
               return `rgba(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}, 0.5)`;
             },
           },
