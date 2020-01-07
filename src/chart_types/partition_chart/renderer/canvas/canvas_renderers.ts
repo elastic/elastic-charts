@@ -65,46 +65,58 @@ function renderRowSets(ctx: CanvasRenderingContext2D, rowSets: RowSet[]) {
   rowSets.forEach((rowSet: RowSet) => renderTextRows(ctx, rowSet));
 }
 
+function renderTaperedBorder(
+  ctx: CanvasRenderingContext2D,
+  { strokeWidth, fillColor, x0, x1, y0px, y1px }: QuadViewModel,
+) {
+  const X0 = x0 - tau / 4;
+  const X1 = x1 - tau / 4;
+  ctx.fillStyle = fillColor;
+  ctx.beginPath();
+  // only draw circular arcs if it would be distinguishable from a straight line ie. angle is not very small
+  ctx.arc(0, 0, y0px, X0, X0);
+  ctx.arc(0, 0, y1px, X0, X1, false);
+  ctx.arc(0, 0, y0px, X1, X0, true);
+  ctx.fill();
+  if (strokeWidth > 0.001 && !(x0 === 0 && x1 === tau)) {
+    // canvas2d uses a default of 1 if the lineWidth is assigned 0, so we use a small value to test, to avoid it
+    // ... and also don't draw a separator if we have a single sector that's the full ring (eg. single-fact-row pie)
+    // outer arc
+    ctx.lineWidth = strokeWidth;
+    const tapered = x1 - x0 < (15 * tau) / 360; // burnout seems visible, and tapering invisible, with less than 15deg
+    if (tapered) {
+      ctx.beginPath();
+      ctx.arc(0, 0, y1px, X0, X1, false);
+      ctx.stroke();
+
+      // inner arc
+      ctx.beginPath();
+      ctx.arc(0, 0, y0px, X1, X0, true);
+      ctx.stroke();
+
+      ctx.fillStyle = 'white';
+
+      // each side (radial 'line') is modeled as a pentagon (some lines can be short arcs though)
+      ctx.beginPath();
+      const yThreshold = Math.max(taperOffLimit, (lineWidthMult * strokeWidth) / (X1 - X0));
+      const beta = strokeWidth / yThreshold; // angle where strokeWidth equals the lineWidthMult limit at a radius of yThreshold
+      ctx.arc(0, 0, y0px, X0, X0 + beta * (yThreshold / y0px));
+      ctx.arc(0, 0, yThreshold, X0 + beta, X0 + beta);
+      ctx.arc(0, 0, y1px, X0 + beta * (yThreshold / y1px), X0, true);
+      ctx.arc(0, 0, y0px, X0, X0);
+      ctx.fill();
+    } else {
+      ctx.stroke();
+    }
+  }
+}
+
 function renderSectors(ctx: CanvasRenderingContext2D, quadViewModel: QuadViewModel[]) {
   withContext(ctx, (ctx) => {
     ctx.scale(1, -1); // D3 and Canvas2d use a left-handed coordinate system (+y = down) but the ViewModel uses +y = up, so we must locally invert Y
-    quadViewModel.forEach(({ strokeWidth, fillColor, x0, x1, y0px, y1px }) => {
-      if (x0 === x1) return; // no slice will be drawn, and it avoids some division by zero as well
-      const X0 = x0 - tau / 4;
-      const X1 = x1 - tau / 4;
-      ctx.fillStyle = fillColor;
-      ctx.beginPath();
-      // only draw circular arcs if it would be distinguishable from a straight line ie. angle is not very small
-      ctx.arc(0, 0, y0px, X0, X0);
-      ctx.arc(0, 0, y1px, X0, X1, false);
-      ctx.arc(0, 0, y0px, X1, X0, true);
-      ctx.fill();
-      if (strokeWidth > 0.001 && !(x0 === 0 && x1 === tau)) {
-        // canvas2d uses a default of 1 if the lineWidth is assigned 0, so we use a small value to test, to avoid it
-        // ... and also don't draw a separator if we have a single sector that's the full ring (eg. single-fact-row pie)
-        // outer arc
-        ctx.lineWidth = strokeWidth;
-        ctx.beginPath();
-        ctx.arc(0, 0, y1px, X0, X1, false);
-        ctx.stroke();
-
-        // inner arc
-        ctx.beginPath();
-        ctx.arc(0, 0, y0px, X1, X0, true);
-        ctx.stroke();
-
-        ctx.fillStyle = 'white';
-
-        // each side (radial 'line') is modeled as a pentagon (some lines can be short arcs though)
-        ctx.beginPath();
-        const yThreshold = Math.max(taperOffLimit, (lineWidthMult * strokeWidth) / (X1 - X0));
-        const beta = strokeWidth / yThreshold; // angle where strokeWidth equals the lineWidthMult limit at a radius of yThreshold
-        ctx.arc(0, 0, y0px, X0, X0 + beta * (yThreshold / y0px));
-        ctx.arc(0, 0, yThreshold, X0 + beta, X0 + beta);
-        ctx.arc(0, 0, y1px, X0 + beta * (yThreshold / y1px), X0, true);
-        ctx.arc(0, 0, y0px, X0, X0);
-        ctx.fill();
-      }
+    quadViewModel.forEach((quad: QuadViewModel) => {
+      if (quad.x0 === quad.x1) return; // no slice will be drawn, and it avoids some division by zero as well
+      renderTaperedBorder(ctx, quad);
     });
   });
 }
