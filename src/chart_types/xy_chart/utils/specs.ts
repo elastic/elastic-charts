@@ -42,8 +42,9 @@ export type BarStyleAccessor = (datum: RawDataSeriesDatum, geometryId: GeometryI
 export type PointStyleAccessor = (datum: RawDataSeriesDatum, geometryId: GeometryId) => PointStyleOverride;
 export const DEFAULT_GLOBAL_ID = '__global__';
 
-interface DomainMinInterval {
-  /** Custom minInterval for the domain which will affect data bucket size.
+interface DomainBase {
+  /**
+   * Custom minInterval for the domain which will affect data bucket size.
    * The minInterval cannot be greater than the computed minimum interval between any two adjacent data points.
    * Further, if you specify a custom numeric minInterval for a timeseries, please note that due to the restriction
    * above, the specified numeric minInterval will be interpreted as a fixed interval.
@@ -52,22 +53,32 @@ interface DomainMinInterval {
    * be a valid interval because it is greater than the computed minInterval of 365 days betwen the other years.
    */
   minInterval?: number;
+  /**
+   * Whether to fit the domain to the data. ONLY applies to `yDomains`
+   *
+   * Setting `max` or `min` will override this functionality.
+   */
+  fit?: boolean;
 }
 
 interface LowerBound {
-  /** Lower bound of domain range */
+  /**
+   * Lower bound of domain range
+   */
   min: number;
 }
 
 interface UpperBound {
-  /** Upper bound of domain range */
+  /**
+   * Upper bound of domain range
+   */
   max: number;
 }
 
-export type LowerBoundedDomain = DomainMinInterval & LowerBound;
-export type UpperBoundedDomain = DomainMinInterval & UpperBound;
-export type CompleteBoundedDomain = DomainMinInterval & LowerBound & UpperBound;
-export type UnboundedDomainWithInterval = DomainMinInterval;
+export type LowerBoundedDomain = DomainBase & LowerBound;
+export type UpperBoundedDomain = DomainBase & UpperBound;
+export type CompleteBoundedDomain = DomainBase & LowerBound & UpperBound;
+export type UnboundedDomainWithInterval = DomainBase;
 
 export type DomainRange = LowerBoundedDomain | UpperBoundedDomain | CompleteBoundedDomain | UnboundedDomainWithInterval;
 
