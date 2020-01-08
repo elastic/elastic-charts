@@ -94,7 +94,11 @@ describe('utils/domain', () => {
   });
 
   test('should compute stacked data domain: data scaled to extent', () => {
-    const data = [{ y: 12, x: 'a' }, { y: 6, x: 'b' }, { y: 8, x: 'a' }];
+    const data = [
+      { y: 12, x: 'a' },
+      { y: 6, x: 'b' },
+      { y: 8, x: 'a' },
+    ];
     const yAccessor: AccessorFn = (datum: any) => datum.y;
     const xAccessor: AccessorFn = (datum: any) => datum.x;
     const scaleToExtent = true;
@@ -107,7 +111,11 @@ describe('utils/domain', () => {
   });
 
   test('should compute stacked data domain: data not scaled to extent', () => {
-    const data = [{ y: 12, x: 'a' }, { y: 6, x: 'b' }, { y: 8, x: 'a' }];
+    const data = [
+      { y: 12, x: 'a' },
+      { y: 6, x: 'b' },
+      { y: 8, x: 'a' },
+    ];
     const yAccessor: AccessorFn = (datum: any) => datum.y;
     const xAccessor: AccessorFn = (datum: any) => datum.x;
 

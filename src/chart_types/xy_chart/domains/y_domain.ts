@@ -130,13 +130,10 @@ export function getDataSeriesOnGroup(
   dataSeries: Map<SpecId, RawDataSeries[]>,
   specs: YBasicSeriesSpec[],
 ): RawDataSeries[] {
-  return specs.reduce(
-    (acc, spec) => {
-      const ds = dataSeries.get(spec.id) || [];
-      return [...acc, ...ds];
-    },
-    [] as RawDataSeries[],
-  );
+  return specs.reduce((acc, spec) => {
+    const ds = dataSeries.get(spec.id) || [];
+    return [...acc, ...ds];
+  }, [] as RawDataSeries[]);
 }
 
 function computeYStackedDomain(dataseries: RawDataSeries[], scaleToExtent: boolean): number[] {
