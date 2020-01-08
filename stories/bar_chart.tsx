@@ -64,7 +64,12 @@ export const basic = () => {
   const darkmode = boolean('darkmode', false);
   const className = darkmode ? 'story-chart-dark' : 'story-chart';
   const toggleSpec = boolean('toggle bar spec', true);
-  const data1 = [{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }];
+  const data1 = [
+    { x: 0, y: 2 },
+    { x: 1, y: 7 },
+    { x: 2, y: 3 },
+    { x: 3, y: 6 },
+  ];
   const data2 = data1.map((datum) => ({ ...datum, y: datum.y - 1 }));
   const data = toggleSpec ? data1 : data2;
   const specId = toggleSpec ? 'bars1' : 'bars2';
@@ -207,7 +212,12 @@ export const withaxis = () => {
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
-        data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
+        data={[
+          { x: 0, y: 2 },
+          { x: 1, y: 7 },
+          { x: 2, y: 3 },
+          { x: 3, y: 6 },
+        ]}
       />
     </Chart>
   );
@@ -233,7 +243,12 @@ export const withordinalxaxis = () => {
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
-        data={[{ x: 'a', y: 2 }, { x: 'b', y: 7 }, { x: 'c', y: 3 }, { x: 'd', y: 6 }]}
+        data={[
+          { x: 'a', y: 2 },
+          { x: 'b', y: 7 },
+          { x: 'c', y: 3 },
+          { x: 'd', y: 6 },
+        ]}
       />
     </Chart>
   );
@@ -277,7 +292,12 @@ export const withlinearxaxis = () => {
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
-        data={[{ x: 1, y: 2 }, { x: 2, y: 7 }, { x: 4, y: 3 }, { x: 9, y: 6 }]}
+        data={[
+          { x: 1, y: 2 },
+          { x: 2, y: 7 },
+          { x: 4, y: 3 },
+          { x: 9, y: 6 },
+        ]}
       />
     </Chart>
   );
@@ -455,7 +475,12 @@ export const withaxisandlegend = () => {
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
-        data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
+        data={[
+          { x: 0, y: 2 },
+          { x: 1, y: 7 },
+          { x: 2, y: 3 },
+          { x: 3, y: 6 },
+        ]}
       />
     </Chart>
   );
@@ -615,7 +640,12 @@ export const clusteredmultipleseriesspecs = () => {
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
-        data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
+        data={[
+          { x: 0, y: 2 },
+          { x: 1, y: 7 },
+          { x: 2, y: 3 },
+          { x: 3, y: 6 },
+        ]}
       />
       <BarSeries
         id={getSpecId('bar series 2')}
@@ -623,7 +653,12 @@ export const clusteredmultipleseriesspecs = () => {
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
-        data={[{ x: 0, y: 1 }, { x: 1, y: 2 }, { x: 2, y: 3 }, { x: 3, y: 4 }]}
+        data={[
+          { x: 0, y: 1 },
+          { x: 1, y: 2 },
+          { x: 2, y: 3 },
+          { x: 3, y: 4 },
+        ]}
       />
       <BarSeries
         id={getSpecId('bar series 3')}
@@ -1101,7 +1136,12 @@ export const singledataclusteredchart = () => {
         xAccessor="x"
         yAccessors={['y']}
         splitSeriesAccessors={['g']}
-        data={[{ x: 1, y: 10, g: 'a' }, { x: 1, y: 5, g: 'b' }, { x: 1, y: 3, g: 'c' }, { x: 1, y: 10, g: 'd' }]}
+        data={[
+          { x: 1, y: 10, g: 'a' },
+          { x: 1, y: 5, g: 'b' },
+          { x: 1, y: 3, g: 'c' },
+          { x: 1, y: 10, g: 'd' },
+        ]}
       />
     </Chart>
   );
@@ -1129,7 +1169,12 @@ export const singledatastackedchart = () => {
         yAccessors={['y']}
         splitSeriesAccessors={['g']}
         stackAccessors={['x']}
-        data={[{ x: 1, y: 10, g: 'a' }, { x: 1, y: 5, g: 'b' }, { x: 1, y: 3, g: 'c' }, { x: 1, y: 10, g: 'd' }]}
+        data={[
+          { x: 1, y: 10, g: 'a' },
+          { x: 1, y: 5, g: 'b' },
+          { x: 1, y: 3, g: 'c' },
+          { x: 1, y: 10, g: 'd' },
+        ]}
       />
     </Chart>
   );
@@ -1157,7 +1202,11 @@ export const singldedatachartstackedtoextent = () => {
         yAccessors={['y']}
         splitSeriesAccessors={['g']}
         stackAccessors={['x']}
-        data={[{ x: 0, y: 10, g: 'a' }, { x: 0, y: 20, g: 'b' }, { x: 0, y: 30, g: 'c' }]}
+        data={[
+          { x: 0, y: 10, g: 'a' },
+          { x: 0, y: 20, g: 'b' },
+          { x: 0, y: 30, g: 'c' },
+        ]}
         yScaleToDataExtent={true}
       />
     </Chart>
@@ -1185,7 +1234,11 @@ export const singledataclusteredchartscaletoextent = () => {
         xAccessor="x"
         yAccessors={['y']}
         splitSeriesAccessors={['g']}
-        data={[{ x: 0, y: 10, g: 'a' }, { x: 0, y: 20, g: 'b' }, { x: 0, y: 30, g: 'c' }]}
+        data={[
+          { x: 0, y: 10, g: 'a' },
+          { x: 0, y: 20, g: 'b' },
+          { x: 0, y: 30, g: 'c' },
+        ]}
         yScaleToDataExtent={true}
       />
     </Chart>
@@ -1233,7 +1286,12 @@ negativeandpositivexvalues.story = {
 
 export const scaletoextent = () => {
   const yScaleToDataExtent = boolean('yScaleDataToExtent', true);
-  const mixed = [{ x: 0, y: -4 }, { x: 1, y: -3 }, { x: 2, y: 2 }, { x: 3, y: 1 }];
+  const mixed = [
+    { x: 0, y: -4 },
+    { x: 1, y: -3 },
+    { x: 2, y: 2 },
+    { x: 3, y: 1 },
+  ];
 
   const allPositive = mixed.map((datum) => ({ x: datum.x, y: Math.abs(datum.y) }));
   const allNegative = mixed.map((datum) => ({ x: datum.x, y: Math.abs(datum.y) * -1 }));
@@ -1343,7 +1401,17 @@ bandbarchart.story = {
 };
 
 export const testlinear = () => {
-  const data = [[1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 4], [7, 3], [8, 2], [9, 1]];
+  const data = [
+    [1, 1],
+    [2, 2],
+    [3, 3],
+    [4, 4],
+    [5, 5],
+    [6, 4],
+    [7, 3],
+    [8, 2],
+    [9, 1],
+  ];
   return (
     <Chart className={'story-chart'}>
       <Axis id={getAxisId('bottom')} title={'index'} position={Position.Bottom} />
@@ -1406,7 +1474,17 @@ testtime.story = {
 };
 
 export const testlinearclustered = () => {
-  const data9 = [[1, 1, 3], [2, 2, 4], [3, 3, 5], [4, 4, 6], [5, 5, 7], [6, 4, 6], [7, 3, 5], [8, 2, 4], [9, 1, 3]];
+  const data9 = [
+    [1, 1, 3],
+    [2, 2, 4],
+    [3, 3, 5],
+    [4, 4, 6],
+    [5, 5, 7],
+    [6, 4, 6],
+    [7, 3, 5],
+    [8, 2, 4],
+    [9, 1, 3],
+  ];
   return (
     <Chart className={'story-chart'}>
       <Axis id={getAxisId('bottom')} title={'index'} position={Position.Bottom} />
@@ -1565,7 +1643,12 @@ export const testswitchordinallinearaxis = () => {
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
-        data={[{ x: 0, y: 2 }, { x: 1, y: 7 }, { x: 2, y: 3 }, { x: 3, y: 6 }]}
+        data={[
+          { x: 0, y: 2 },
+          { x: 1, y: 7 },
+          { x: 2, y: 3 },
+          { x: 3, y: 6 },
+        ]}
       />
     </Chart>
   );
@@ -1707,7 +1790,12 @@ testhistogrammodelinear.story = {
 };
 
 export const testhistogrammodeordinal = () => {
-  const data = [{ x: 'a', y: 2 }, { x: 'b', y: 7 }, { x: 'c', y: 0 }, { x: 'd', y: 6 }];
+  const data = [
+    { x: 'a', y: 2 },
+    { x: 'b', y: 7 },
+    { x: 'c', y: 0 },
+    { x: 'd', y: 6 },
+  ];
   const theme = {
     scales: {
       barsPadding: number('bars padding', 0.25, {
@@ -1843,7 +1931,17 @@ testsinglehistogrambarchart.story = {
 
 export const MinHeight = () => {
   const minBarHeight = number('minBarHeight', 5);
-  const data = [[1, 100000], [2, 10000], [3, 1000], [4, 100], [5, 10], [6, 1], [7, 0], [8, 1], [9, 0]];
+  const data = [
+    [1, 100000],
+    [2, 10000],
+    [3, 1000],
+    [4, 100],
+    [5, 10],
+    [6, 1],
+    [7, 0],
+    [8, 1],
+    [9, 0],
+  ];
   return (
     <Chart className={'story-chart'}>
       <Axis id={getAxisId('bottom')} title="Bottom" position={Position.Bottom} />
@@ -1907,11 +2005,61 @@ testminheightpositiveandnegativevalues.story = {
 };
 
 export const stackedonlygroupedareas = () => {
-  const data1 = [[1, 2], [2, 2], [3, 3], [4, 5], [5, 5], [6, 3], [7, 8], [8, 2], [9, 1]];
-  const data2 = [[1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 4], [7, 3], [8, 2], [9, 4]];
-  const data3 = [[1, 6], [2, 6], [3, 3], [4, 2], [5, 1], [6, 1], [7, 5], [8, 6], [9, 7]];
-  const data4 = [[1, 2], [2, 6], [3, 2], [4, 9], [5, 2], [6, 3], [7, 1], [8, 2], [9, 7]];
-  const data5 = [[1, 1], [2, 7], [3, 5], [4, 6], [5, 5], [6, 4], [7, 2], [8, 4], [9, 8]];
+  const data1 = [
+    [1, 2],
+    [2, 2],
+    [3, 3],
+    [4, 5],
+    [5, 5],
+    [6, 3],
+    [7, 8],
+    [8, 2],
+    [9, 1],
+  ];
+  const data2 = [
+    [1, 1],
+    [2, 2],
+    [3, 3],
+    [4, 4],
+    [5, 5],
+    [6, 4],
+    [7, 3],
+    [8, 2],
+    [9, 4],
+  ];
+  const data3 = [
+    [1, 6],
+    [2, 6],
+    [3, 3],
+    [4, 2],
+    [5, 1],
+    [6, 1],
+    [7, 5],
+    [8, 6],
+    [9, 7],
+  ];
+  const data4 = [
+    [1, 2],
+    [2, 6],
+    [3, 2],
+    [4, 9],
+    [5, 2],
+    [6, 3],
+    [7, 1],
+    [8, 2],
+    [9, 7],
+  ];
+  const data5 = [
+    [1, 1],
+    [2, 7],
+    [3, 5],
+    [4, 6],
+    [5, 5],
+    [6, 4],
+    [7, 2],
+    [8, 4],
+    [9, 8],
+  ];
   return (
     <Chart renderer="canvas" className={'story-chart'}>
       <Axis id={getAxisId('bottom')} title={'index'} position={Position.Bottom} />
