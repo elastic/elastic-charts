@@ -790,7 +790,7 @@ timestackedusingvariousspecs.story = {
   name: 'time stacked using various specs',
 };
 
-export const BarChart1y0g = () => {
+export const barchart1y0g = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} />
@@ -813,11 +813,11 @@ export const BarChart1y0g = () => {
     </Chart>
   );
 };
-BarChart1y0g.story = {
+barchart1y0g.story = {
   name: '1y0g',
 };
 
-export const BarChart1y1g = () => {
+export const barchart1y1g = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} />
@@ -841,11 +841,11 @@ export const BarChart1y1g = () => {
     </Chart>
   );
 };
-BarChart1y1g.story = {
+barchart1y1g.story = {
   name: '1y1g',
 };
 
-export const BarChart1y2g = () => {
+export const barchart1y2g = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} />
@@ -869,11 +869,11 @@ export const BarChart1y2g = () => {
     </Chart>
   );
 };
-BarChart1y2g.story = {
+barchart1y2g.story = {
   name: '1y2g',
 };
 
-export const BarChart2y0g = () => {
+export const barchart2y0g = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} />
@@ -896,11 +896,11 @@ export const BarChart2y0g = () => {
     </Chart>
   );
 };
-BarChart2y0g.story = {
+barchart2y0g.story = {
   name: '2y0g',
 };
 
-export const BarChart2y1g = () => {
+export const barchart2y1g = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} />
@@ -924,11 +924,11 @@ export const BarChart2y1g = () => {
     </Chart>
   );
 };
-BarChart2y1g.story = {
+barchart2y1g.story = {
   name: '2y1g',
 };
 
-export const BarChart2y2g = () => {
+export const barchart2y2g = () => {
   const isVisibleFunction: FilterPredicate = (series) => {
     return series.splitAccessors.size > 0
       ? series.specId === getSpecId('bars') &&
@@ -961,7 +961,7 @@ export const BarChart2y2g = () => {
     </Chart>
   );
 };
-BarChart2y2g.story = {
+barchart2y2g.story = {
   name: '2y2g',
 };
 
