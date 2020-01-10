@@ -1,7 +1,6 @@
 import { boolean, color, number, select } from '@storybook/addon-knobs';
-// import { storiesOf } from '@storybook/react';
 // @ts-ignore
-import { DocsPage, DocsContainer } from '@storybook/addon-docs';
+import { DocsContainer } from '@storybook/addon-docs/blocks'; // Meta, Story, Preview
 import { DateTime } from 'luxon';
 import React from 'react';
 
@@ -90,9 +89,15 @@ export const basic = () => {
 basic.story = {
   name: 'basic',
   parameters: {
+    componentSubtitle: 'Handy status label',
     docs: {
+      // eslint-disable-next-line react/display-name
+      page: () => (
+        <>
+          <p>Test</p>
+        </>
+      ),
       container: DocsContainer,
-      page: DocsPage,
     },
   },
 };
