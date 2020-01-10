@@ -1,3 +1,10 @@
+## [13.5.13](https://github.com/elastic/elastic-charts/compare/v13.5.12...v13.5.13) (2020-01-10)
+
+
+### Bug Fixes
+
+* add domain fitting for tsvb regression ([#511](https://github.com/elastic/elastic-charts/issues/511)) ([bcd08b7](https://github.com/elastic/elastic-charts/commit/bcd08b7)), closes [#510](https://github.com/elastic/elastic-charts/issues/510)
+
 ## [13.5.12](https://github.com/elastic/elastic-charts/compare/v13.5.11...v13.5.12) (2019-10-31)
 
 
