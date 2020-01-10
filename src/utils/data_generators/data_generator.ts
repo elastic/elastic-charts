@@ -7,6 +7,15 @@ export class DataGenerator {
     this.generator = new Simple1DNoise(randomNumberGenerator);
     this.frequency = frequency;
   }
+  generateBasicSeries(totalPoints = 50, offset = 0, amplitude = 1) {
+    const dataPoints = new Array(totalPoints).fill(0).map((_, i) => {
+      return {
+        x: i,
+        y: (this.generator.getValue(i) + offset) * amplitude,
+      };
+    });
+    return dataPoints;
+  }
   generateSimpleSeries(totalPoints = 50, group = 1, groupPrefix = '') {
     const dataPoints = new Array(totalPoints).fill(0).map((_, i) => {
       return {
