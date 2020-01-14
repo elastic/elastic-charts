@@ -7,7 +7,7 @@ import { meanAngle } from '../geometry';
 import { treemap } from '../utils/treemap';
 import { sunburst } from '../utils/sunburst';
 import { AccessorFn, IndexedAccessorFn } from '../../../../utils/accessor';
-import { argsToRGB, stringToRGB } from '../utils/d3_utils';
+import { argsToRGBString, stringToRGB } from '../utils/d3_utils';
 import {
   OutsideLinksViewModel,
   ShapeTreeNode,
@@ -82,7 +82,7 @@ export function makeQuadViewModel(
     const fill = fillColorSpec || 'rgba(128,0,0,0.5)';
     const shapeFillColor = typeof fill === 'function' ? fill(node, index, a) : fill;
     const { r, g, b, opacity } = stringToRGB(shapeFillColor) || { r: 255, g: 0, b: 0, opacity: 1 };
-    const fillColor = argsToRGB(r, g, b, opacity * opacityMultiplier).toString();
+    const fillColor = argsToRGBString(r, g, b, opacity * opacityMultiplier);
     const strokeWidth = sectorLineWidth;
     const { x0, x1, y0px, y1px } = node;
     return { strokeWidth, fillColor, x0, x1, y0px, y1px };
