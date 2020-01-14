@@ -19,7 +19,7 @@ const defaultProps = {
   specType: SpecTypes.Series,
   config,
   valueAccessor: (d: Datum) => d,
-  valueFormatter: (d: any) => d,
+  valueFormatter: (d: any): string => String(d),
   layers: [
     {
       groupByRollup: (d: Datum, i: number) => i,

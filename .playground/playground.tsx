@@ -23,7 +23,11 @@ export class Playground extends React.Component<{}, { isSunburstShown: boolean }
               valueFormatter={(d: Datum) => `${d}%`}
               layers={[
                 { groupByRollup: (d: Datum) => d.g, nodeLabel: (d: Datum) => `Group ${d}` },
-                { groupByRollup: (d: Datum) => d.id, nodeLabel: (d: Datum) => d },
+                {
+                  groupByRollup: (d: Datum) => d.id,
+                  nodeLabel: (d: Datum) => d,
+                  fillLabel: { formatter: (d: Datum) => `${d} pct` },
+                },
               ]}
             />
           </Chart>
