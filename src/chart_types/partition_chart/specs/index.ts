@@ -11,7 +11,7 @@ export interface Layer {
   groupByRollup: IndexedAccessorFn;
   nodeLabel?: (datum: Datum) => string;
   fillLabel?: Partial<FillLabel>;
-  shape?: { fillColor: any };
+  shape?: { fillColor: string | Function };
 }
 
 const defaultProps = {
