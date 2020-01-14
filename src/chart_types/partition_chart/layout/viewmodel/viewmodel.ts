@@ -191,7 +191,7 @@ export function shapeViewModel(
 
   const childNodes = rawChildNodes.map((n: any, index: number) => {
     return {
-      data: { name: entryKey(n.node) },
+      dataName: entryKey(n.node),
       depth: depthAccessor(n.node),
       value: aggregateAccessor(n.node),
       x0: n.x0,

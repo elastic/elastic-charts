@@ -10,7 +10,7 @@ import { identity } from '../../../../utils/commons';
 function rawTextGetter(layers: Layer[]): RawTextGetter {
   return (node: ShapeTreeNode) => {
     const accessorFn = layers[node[depthKey] - 1].nodeLabel || identity;
-    return `${accessorFn(node.data.name)}`;
+    return `${accessorFn(node.dataName)}`;
   };
 }
 

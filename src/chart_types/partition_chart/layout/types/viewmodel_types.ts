@@ -98,7 +98,7 @@ export interface ShapeTreeNode extends TreeNode, SectorGeomSpecY {
   yMidPx: Distance;
   depth: number;
   inRingIndex: number;
-  data: { name: any; value?: any }; // todo remove optionality
+  dataName: any;
   value: number;
 }
 
