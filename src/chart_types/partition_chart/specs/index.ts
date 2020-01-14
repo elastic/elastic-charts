@@ -6,6 +6,7 @@ import { getConnect, specComponentFactory } from '../../../state/spec_factory';
 import { AccessorFn, IndexedAccessorFn } from '../../../utils/accessor';
 import { Spec } from '../../../specs/index';
 import { Config, FillLabel } from '../layout/types/config_types';
+import { RecursivePartial } from '../../../utils/commons';
 
 export interface Layer {
   groupByRollup: IndexedAccessorFn;
@@ -32,7 +33,7 @@ const defaultProps = {
 export interface PartitionSpec extends Spec {
   specType: typeof SpecTypes.Series;
   chartType: typeof ChartTypes.Partition;
-  config: Config;
+  config: RecursivePartial<Config>;
   data: Datum[];
   valueAccessor: AccessorFn;
   valueFormatter: AccessorFn;

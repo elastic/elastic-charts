@@ -5,7 +5,9 @@ import { ShapeTreeNode, ShapeViewModel, RawTextGetter } from '../../layout/types
 import { Theme } from '../../../../utils/themes/theme';
 import { depthKey } from '../../layout/utils/group_by_rollup';
 import { PartitionSpec, Layer } from '../../specs/index';
-import { identity } from '../../../../utils/commons';
+import { identity, mergePartial, RecursivePartial } from '../../../../utils/commons';
+import { config as defaultConfig } from '../../layout/config/config';
+import { Config } from '../../layout/types/config_types';
 
 function rawTextGetter(layers: Layer[]): RawTextGetter {
   return (node: ShapeTreeNode) => {
@@ -21,7 +23,8 @@ export function render(partitionSpec: PartitionSpec, parentDimensions: Dimension
   const { layers, data: facts, config: specConfig } = partitionSpec;
   const textMeasurer = document.createElement('canvas');
   const textMeasurerCtx = textMeasurer.getContext('2d');
-  const config = { ...specConfig, width, height };
+  const partialConfig: RecursivePartial<Config> = { ...specConfig, width, height };
+  const config: Config = mergePartial(defaultConfig, partialConfig);
   if (!textMeasurerCtx) {
     return {
       config,

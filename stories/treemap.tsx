@@ -105,15 +105,15 @@ export const MidTwoLayers = () => (
           },
         },
       ]}
-      config={Object.assign({}, config, {
+      config={{
         hierarchicalLayout: PartitionLayouts.treemap,
         colors: 'turbo',
-        margin: Object.assign({}, config.margin, { top: 0, bottom: 0, left: 0, right: 0 }),
+        margin: { top: 0, bottom: 0, left: 0, right: 0 },
         minFontSize: 4,
         maxFontSize: 84,
         idealFontSizeJump: 1.15,
         outerSizeRatio: 1,
-      })}
+      }}
     />
   </Chart>
 );
@@ -167,15 +167,15 @@ export const TwoLayersStressTest = () => (
           },
         },
       ]}
-      config={Object.assign({}, config, {
+      config={{
         hierarchicalLayout: PartitionLayouts.treemap,
         colors: 'turbo',
-        margin: Object.assign({}, config.margin, { top: 0, bottom: 0, left: 0, right: 0 }),
+        margin: { top: 0, bottom: 0, left: 0, right: 0 },
         minFontSize: 4,
         maxFontSize: 84,
         idealFontSizeJump: 1.35,
         outerSizeRatio: 1,
-      })}
+      }}
     />
   </Chart>
 );
@@ -229,14 +229,14 @@ export const MultiColor = () => (
           },
         },
       ]}
-      config={Object.assign({}, config, {
+      config={{
         hierarchicalLayout: PartitionLayouts.treemap,
-        margin: Object.assign({}, config.margin, { top: 0, bottom: 0, left: 0, right: 0 }),
+        margin: { top: 0, bottom: 0, left: 0, right: 0 },
         minFontSize: 4,
         maxFontSize: 84,
         idealFontSizeJump: 1.05,
         outerSizeRatio: 1,
-      })}
+      }}
     />
   </Chart>
 );
@@ -289,14 +289,14 @@ export const CustomStyle = () => (
           },
         },
       ]}
-      config={Object.assign({}, config, {
+      config={{
         hierarchicalLayout: PartitionLayouts.treemap,
-        margin: Object.assign({}, config.margin, { top: 0, bottom: 0, left: 0, right: 0 }),
+        margin: { top: 0, bottom: 0, left: 0, right: 0 },
         minFontSize: 8,
         maxFontSize: 14,
         idealFontSizeJump: 1.05,
         outerSizeRatio: 1,
-      })}
+      }}
     />
   </Chart>
 );
