@@ -81,7 +81,7 @@ export function makeQuadViewModel(
     const fillColorSpec = layer && layer.shape && layer.shape.fillColor;
     const fill = fillColorSpec || 'rgba(128,0,0,0.5)';
     const shapeFillColor = typeof fill === 'function' ? fill(node, index, a) : fill;
-    const { r, g, b, opacity } = stringToRGB(shapeFillColor) || { r: 255, g: 0, b: 0, opacity: 1 };
+    const { r, g, b, opacity } = stringToRGB(shapeFillColor);
     const fillColor = argsToRGBString(r, g, b, opacity * opacityMultiplier);
     const strokeWidth = sectorLineWidth;
     const { x0, x1, y0px, y1px } = node;
