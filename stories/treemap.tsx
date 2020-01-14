@@ -38,7 +38,10 @@ export const OneLayer = () => (
         {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: Datum) => productLookup[d].name,
-          fillLabel: { formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn` },
+          fillLabel: {
+            textInvertible: true,
+            formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
+          },
           shape: {
             fillColor: defaultFillColor(interpolatorCET2s),
           },
