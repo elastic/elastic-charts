@@ -195,9 +195,9 @@ export const MultiColor = () => (
         {
           groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.substr(0, 2),
           nodeLabel: () => '',
-          fillLabel: Object.assign({}, config.fillLabel, {
+          fillLabel: {
             formatter: () => '',
-          }),
+          },
           shape: {
             fillColor: defaultFillColor(interpolatorCET2s),
           },
@@ -205,7 +205,7 @@ export const MultiColor = () => (
         {
           groupByRollup: (d: Datum) => d.dest,
           nodeLabel: (d: any) => countryLookup[d].name,
-          fillLabel: Object.assign({}, config.fillLabel, {
+          fillLabel: {
             formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
             textColor: 'rgb(60,60,60,1)',
             textInvertible: false,
@@ -213,7 +213,7 @@ export const MultiColor = () => (
             fontStyle: 'normal',
             fontFamily: 'Din Condensed',
             fontVariant: 'normal',
-          }),
+          },
           shape: {
             fillColor: 'rgba(0,0,0,0)',
           },
@@ -252,9 +252,9 @@ export const CustomStyle = () => (
         {
           groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.substr(0, 2),
           nodeLabel: () => '',
-          fillLabel: Object.assign({}, config.fillLabel, {
+          fillLabel: {
             formatter: () => '',
-          }),
+          },
           shape: {
             fillColor: (d: any, i: any, a: any) => {
               const shade = Math.pow(0.3 + 0.5 * (i / (a.length - 1)), 1 / 3);
@@ -265,7 +265,7 @@ export const CustomStyle = () => (
         {
           groupByRollup: (d: Datum) => d.dest,
           nodeLabel: (d: any) => countryLookup[d].name,
-          fillLabel: Object.assign({}, config.fillLabel, {
+          fillLabel: {
             formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
             textColor: 'rgb(60,60,60,1)',
             textInvertible: false,
@@ -273,7 +273,7 @@ export const CustomStyle = () => (
             fontStyle: 'normal',
             fontFamily: 'Courier New',
             fontVariant: 'normal',
-          }),
+          },
           shape: {
             fillColor: 'rgba(0,0,0,0)',
           },
