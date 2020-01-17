@@ -80,18 +80,18 @@ export const MidTwoLayers = () => (
         {
           groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.substr(0, 2),
           nodeLabel: (d: any) => regionLookup[d].regionName,
-          fillLabel: Object.assign({}, config.fillLabel, {
+          fillLabel: {
             formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
             fontFamily: 'Phosphate-Inline',
             textColor: 'yellow',
             textInvertible: false,
-          }),
+          },
           shape: { fillColor: 'rgba(255, 229, 180,0.25)' },
         },
         {
           groupByRollup: (d: Datum) => d.dest,
           nodeLabel: (d: any) => countryLookup[d].name,
-          fillLabel: Object.assign({}, config.fillLabel, {
+          fillLabel: {
             formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
             textColor: 'black',
             textInvertible: false,
@@ -99,7 +99,7 @@ export const MidTwoLayers = () => (
             fontStyle: 'normal',
             fontFamily: 'Helvetica',
             fontVariant: 'normal',
-          }),
+          },
           shape: {
             fillColor: defaultFillColor(interpolatorTurbo),
           },
@@ -137,18 +137,18 @@ export const TwoLayersStressTest = () => (
         {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: any) => productLookup[d].name.toUpperCase(),
-          fillLabel: Object.assign({}, config.fillLabel, {
+          fillLabel: {
             formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
             fontFamily: 'Phosphate-Inline',
             textColor: 'white',
             textInvertible: false,
-          }),
+          },
           shape: { fillColor: 'rgba(255, 229, 180,0.25)' },
         },
         {
           groupByRollup: (d: Datum) => d.dest,
           nodeLabel: (d: any) => countryLookup[d].name,
-          fillLabel: Object.assign({}, config.fillLabel, {
+          fillLabel: {
             formatter: (d: number) => `${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
             textColor: 'black',
             textInvertible: false,
@@ -156,7 +156,7 @@ export const TwoLayersStressTest = () => (
             fontStyle: 'normal',
             fontFamily: 'Helvetica',
             fontVariant: 'normal',
-          }),
+          },
           shape: {
             fillColor: defaultFillColor(interpolatorCET2s),
           },
