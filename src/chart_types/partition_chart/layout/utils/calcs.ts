@@ -1,11 +1,11 @@
 import { Ratio } from '../types/geometry_types';
-import { RgbTuple } from './d3_utils';
+import { RgbTuple, stringToRGB } from './d3_utils';
 
 export function hueInterpolator(colors: RgbTuple[]) {
   return (d: number) => {
     const index = Math.round(d * 255);
-    const [r, g, b] = colors[index];
-    return `rgb(${r},${g},${b})`;
+    const [r, g, b, a] = colors[index];
+    return colors[index].length === 3 ? `rgb(${r},${g},${b})` : `rgba(${r},${g},${b},${a})`;
   };
 }
 
@@ -55,4 +55,12 @@ export function deepTween(target: object, source: object, ratio: Ratio) {
 
 export function arrayToLookup(keyFun: Function, array: Array<any>) {
   return Object.assign({}, ...array.map((d) => ({ [keyFun(d)]: d })));
+}
+
+export function colorIsDark(color: string) {
+  // fixme this assumes a white or very light background
+  const rgba = stringToRGB(color);
+  const { r, g, b, opacity } = rgba;
+  const a = rgba.hasOwnProperty('opacity') ? opacity : 1;
+  return r * 0.299 + g * 0.587 + b * 0.114 < a * 150;
 }

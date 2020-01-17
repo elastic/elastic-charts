@@ -23,8 +23,8 @@ export default {
 };
 
 // style calcs
-const interpolatorCET2s = hueInterpolator(palettes.CET2s);
-const interpolatorTurbo = hueInterpolator(palettes.turbo);
+const interpolatorCET2s = hueInterpolator(palettes.CET2s.map(([r, g, b]) => [r, g, b, 0.8]));
+const interpolatorTurbo = hueInterpolator(palettes.turbo.map(([r, g, b]) => [r, g, b, 0.8]));
 
 const defaultFillColor = (colorMaker: any) => (d: any, i: number, a: any[]) => colorMaker(i / (a.length + 1));
 
@@ -111,6 +111,7 @@ export const DonutChartWithFillLabels = () => (
         {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: Datum) => productLookup[d].name,
+          fillLabel: { textInvertible: true },
           shape: {
             fillColor: defaultFillColor(interpolatorCET2s),
           },
@@ -156,6 +157,7 @@ export const PieChartLabels = () => (
         {
           groupByRollup: (d: Datum) => d.sitc1,
           // nodeLabel: (d: Datum) => d,
+          fillLabel: { textInvertible: true },
           shape: {
             fillColor: defaultFillColor(interpolatorCET2s),
           },
@@ -183,6 +185,7 @@ export const SomeZeroValueSlice = () => (
         {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: Datum) => productLookup[d].name,
+          fillLabel: { textInvertible: true },
           shape: {
             fillColor: defaultFillColor(interpolatorCET2s),
           },
@@ -209,6 +212,7 @@ export const SunburstTwoLayers = () => (
           nodeLabel: (d: any) => regionLookup[d].regionName,
           fillLabel: {
             fontFamily: 'Impact',
+            textInvertible: true,
             formatter: (d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000000))}\xa0Tn`,
           },
           shape: {
@@ -261,6 +265,7 @@ export const SunburstThreeLayers = () => (
         {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: any) => productLookup[d].name,
+          fillLabel: { textInvertible: true },
           shape: {
             fillColor: defaultFillColor(interpolatorCET2s),
           },
@@ -268,6 +273,7 @@ export const SunburstThreeLayers = () => (
         {
           groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.substr(0, 2),
           nodeLabel: (d: any) => regionLookup[d].regionName,
+          fillLabel: { textInvertible: true },
           shape: {
             fillColor: defaultFillColor(interpolatorCET2s),
           },
@@ -275,6 +281,7 @@ export const SunburstThreeLayers = () => (
         {
           groupByRollup: (d: Datum) => d.dest,
           nodeLabel: (d: any) => countryLookup[d].name,
+          fillLabel: { textInvertible: true },
           shape: {
             fillColor: defaultFillColor(interpolatorCET2s),
           },
@@ -317,6 +324,7 @@ export const TwoSlicesPieChart = () => (
         {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: Datum) => productLookup[d].name,
+          fillLabel: { textInvertible: true },
           shape: {
             fillColor: defaultFillColor(interpolatorCET2s),
           },
@@ -344,6 +352,7 @@ export const LargeSmallPieChart = () => (
         {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: Datum) => d,
+          fillLabel: { textInvertible: true },
           shape: {
             fillColor: defaultFillColor(interpolatorCET2s),
           },
@@ -376,6 +385,7 @@ export const VeryLargeSmallPieChart = () => (
         {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: Datum) => d,
+          fillLabel: { textInvertible: true },
           shape: {
             fillColor: defaultFillColor(interpolatorCET2s),
           },
@@ -403,6 +413,7 @@ export const BigEmptyPieChart = () => (
         {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: Datum) => productLookup[d].name,
+          fillLabel: { textInvertible: true },
           shape: {
             fillColor: defaultFillColor(interpolatorCET2s),
           },
@@ -430,6 +441,7 @@ export const FullZeroSlicePieChart = () => (
         {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: Datum) => productLookup[d].name,
+          fillLabel: { textInvertible: true },
           shape: {
             fillColor: defaultFillColor(interpolatorCET2s),
           },
@@ -453,6 +465,7 @@ export const SingleSlicePieChart = () => (
         {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: Datum) => productLookup[d].name,
+          fillLabel: { textInvertible: true },
           shape: {
             fillColor: defaultFillColor(interpolatorCET2s),
           },
@@ -476,6 +489,7 @@ export const NoSliceNoPie = () => (
         {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: Datum) => productLookup[d].name,
+          fillLabel: { textInvertible: true },
           shape: {
             fillColor: defaultFillColor(interpolatorCET2s),
           },
@@ -502,6 +516,7 @@ export const NegativeNoPie = () => (
         {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: Datum) => productLookup[d].name,
+          fillLabel: { textInvertible: true },
           shape: {
             fillColor: defaultFillColor(interpolatorCET2s),
           },
@@ -525,6 +540,7 @@ export const TotalZeroNoPie = () => (
         {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: Datum) => productLookup[d].name,
+          fillLabel: { textInvertible: true },
           shape: {
             fillColor: defaultFillColor(interpolatorCET2s),
           },
@@ -549,6 +565,7 @@ export const HighNumberOfSlice = () => (
         {
           groupByRollup: (d: Datum) => d.origin,
           nodeLabel: (d: Datum) => countryLookup[d].name,
+          fillLabel: { textInvertible: true },
           shape: {
             fillColor: defaultFillColor(interpolatorCET2s),
           },
@@ -577,6 +594,7 @@ export const CounterClockwiseSpecial = () => (
         {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: Datum) => productLookup[d].name,
+          fillLabel: { textInvertible: true },
           shape: {
             fillColor: defaultFillColor(interpolatorCET2s),
           },
@@ -605,6 +623,7 @@ export const ClockwiseNoSpecial = () => (
         {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: Datum) => productLookup[d].name,
+          fillLabel: { textInvertible: true },
           shape: {
             fillColor: defaultFillColor(interpolatorCET2s),
           },
@@ -633,6 +652,7 @@ export const LinkedLabelsOnly = () => (
         {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: Datum) => productLookup[d].name,
+          fillLabel: { textInvertible: true },
           shape: {
             fillColor: defaultFillColor(interpolatorCET2s),
           },
@@ -660,6 +680,7 @@ export const NoLabels = () => (
         {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: Datum) => productLookup[d].name,
+          fillLabel: { textInvertible: true },
           shape: {
             fillColor: defaultFillColor(interpolatorCET2s),
           },

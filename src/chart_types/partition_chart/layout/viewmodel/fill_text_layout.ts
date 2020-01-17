@@ -2,12 +2,13 @@ import { wrapToTau } from '../geometry';
 import { Coordinate, Distance, Pixels, Radian, Radius, RingSector } from '../types/geometry_types';
 import { Config } from '../types/config_types';
 import { logarithm, tau, trueBearingToStandardPositionAngle } from '../utils/math';
-import { RowBox, RowSet, ShapeTreeNode, RowSpace, RawTextGetter } from '../types/viewmodel_types';
+import { RawTextGetter, RowBox, RowSet, RowSpace, ShapeTreeNode } from '../types/viewmodel_types';
 import { FontWeight, TextMeasure } from '../types/types';
 import { aggregateKey } from '../utils/group_by_rollup';
 import { conjunctiveConstraint } from '../circline_geometry';
 import { Layer } from '../../specs/index';
 import { stringToRGB } from '../utils/d3_utils';
+import { colorIsDark } from '../utils/calcs';
 
 function ringSectorStartAngle(d: ShapeTreeNode): Radian {
   return trueBearingToStandardPositionAngle(d.x0 + Math.max(0, d.x1 - d.x0 - tau / 2) / 2);
@@ -246,6 +247,7 @@ function fill(
       layers[node.depth - 1] && layers[node.depth - 1].shape,
     );
 
+    const specifiedTextColorIsDark = colorIsDark(textColor);
     const shapeFillColor = typeof fillColor === 'function' ? fillColor(node, index, a) : fillColor;
     const { r: tr, g: tg, b: tb } = stringToRGB(textColor);
     let fontSizeIndex = fontSizes.length - 1;
@@ -279,8 +281,8 @@ function fill(
 
       while (++targetRowCount <= maxRowCount && !innerCompleted) {
         measuredBoxes = allMeasuredBoxes.slice();
-        const { r, g, b } = stringToRGB(shapeFillColor);
-        const inverseForContrast = textInvertible && r * 0.299 + g * 0.587 + b * 0.114 < 150;
+        const backgroundIsDark = colorIsDark(shapeFillColor);
+        const inverseForContrast = textInvertible && specifiedTextColorIsDark === backgroundIsDark;
         rowSet = {
           id: nodeId(node),
           fontSize,

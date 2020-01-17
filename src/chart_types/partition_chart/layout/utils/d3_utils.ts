@@ -2,7 +2,7 @@ import { rgb as d3Rgb } from 'd3-color';
 
 type RGB = number;
 type A = number;
-export type RgbTuple = [RGB, RGB, RGB];
+export type RgbTuple = [RGB, RGB, RGB, RGB?];
 export type RgbObject = { r: RGB; g: RGB; b: RGB; opacity: A };
 
 export function stringToRGB(cssColorSpecifier: string): RgbObject {

@@ -7,7 +7,6 @@ import { countryDimension, productDimension, regionDimension } from '../src/mock
 import React from 'react';
 import { PartitionLayouts } from '../src/chart_types/partition_chart/layout/types/config_types';
 import { getRandomNumber } from '../src/mocks/utils'; // @ts-ignore
-import { stringToRGB } from '../src/chart_types/partition_chart/layout/utils/d3_utils';
 import { palettes } from '../src/mocks/hierarchical/palettes';
 
 const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
@@ -15,8 +14,9 @@ const regionLookup = arrayToLookup((d: Datum) => d.region, regionDimension);
 const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
 
 // style calcs
-const interpolatorCET2s = hueInterpolator(palettes.CET2s);
-const interpolatorTurbo = hueInterpolator(palettes.turbo);
+const interpolatorCET2s = hueInterpolator(palettes.CET2s.map(([r, g, b]) => [r, g, b, 0.7]));
+const interpolatorTurbo = hueInterpolator(palettes.turbo.map(([r, g, b]) => [r, g, b, 0.7]));
+
 const defaultFillColor = (colorMaker: any) => (d: any, i: number, a: any[]) => colorMaker(i / (a.length + 1));
 
 export default {
@@ -101,11 +101,7 @@ export const MidTwoLayers = () => (
             fontVariant: 'normal',
           }),
           shape: {
-            fillColor: (d: any, i: any, a: any) => {
-              const color = defaultFillColor(interpolatorTurbo)(d, i, a);
-              const { r, g, b } = stringToRGB(color);
-              return `rgb(${Math.round(r * 0.75)}, ${Math.round(g * 0.75)}, ${Math.round(b * 0.75)})`;
-            },
+            fillColor: defaultFillColor(interpolatorTurbo),
           },
         },
       ]}
@@ -162,11 +158,7 @@ export const TwoLayersStressTest = () => (
             fontVariant: 'normal',
           }),
           shape: {
-            fillColor: (d: any, i: any, a: any) => {
-              const color = defaultFillColor(interpolatorCET2s)(d, i, a);
-              const { r, g, b } = stringToRGB(color);
-              return `rgb(${Math.round(r * 0.75)}, ${Math.round(g * 0.75)}, ${Math.round(b * 0.75)})`;
-            },
+            fillColor: defaultFillColor(interpolatorCET2s),
           },
         },
       ]}
@@ -207,11 +199,7 @@ export const MultiColor = () => (
             formatter: () => '',
           }),
           shape: {
-            fillColor: (d: any, i: any, a: any) => {
-              const color = defaultFillColor(interpolatorCET2s)(d, i, a);
-              const { r, g, b } = stringToRGB(color);
-              return `rgba(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}, 0.5)`;
-            },
+            fillColor: defaultFillColor(interpolatorCET2s),
           },
         },
         {
