@@ -15,7 +15,7 @@ export interface FillLabel {
   textWeight: FontWeight;
   fontStyle: string;
   fontVariant: string;
-  fontFamily?: string;
+  fontFamily: string;
   formatter: Function;
 }
 

@@ -73,25 +73,25 @@ export const PieChartWithFillLabels = () => (
           },
         },
       ]}
-      config={Object.assign({}, config, {
+      config={{
         hierarchicalLayout: PartitionLayouts.sunburst,
-        linkLabel: Object.assign({}, config.linkLabel, {
+        linkLabel: {
           maxCount: 32,
           fontSize: 14,
-        }),
+        },
         fontFamily: 'Arial',
         fillLabel: Object.assign({}, config.fillLabel, {
           formatter: (d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
           fontStyle: 'italic',
         }),
-        margin: Object.assign({}, config.margin, { top: 0, bottom: 0, left: 0, right: 0 }),
+        margin: { top: 0, bottom: 0, left: 0, right: 0 },
         minFontSize: 1,
         idealFontSizeJump: 1.1,
         outerSizeRatio: 0.9, // - 0.5 * Math.random(),
         emptySizeRatio: 0,
         circlePadding: 4,
         backgroundColor: 'rgba(229,229,229,1)',
-      })}
+      }}
     />
   </Chart>
 );
@@ -117,25 +117,25 @@ export const DonutChartWithFillLabels = () => (
           },
         },
       ]}
-      config={Object.assign({}, config, {
+      config={{
         hierarchicalLayout: PartitionLayouts.sunburst,
-        linkLabel: Object.assign({}, config.linkLabel, {
+        linkLabel: {
           maxCount: 32,
           fontSize: 14,
-        }),
+        },
         fontFamily: 'Arial',
         fillLabel: Object.assign({}, config.fillLabel, {
           formatter: (d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
           fontStyle: 'italic',
         }),
-        margin: Object.assign({}, config.margin, { top: 0, bottom: 0, left: 0.2, right: 0 }),
+        margin: { top: 0, bottom: 0, left: 0.2, right: 0 },
         minFontSize: 1,
         idealFontSizeJump: 1.1,
         outerSizeRatio: 0.9, // - 0.5 * Math.random(),
         emptySizeRatio: 0.4,
         circlePadding: 4,
         backgroundColor: 'rgba(229,229,229,1)',
-      })}
+      }}
     />
   </Chart>
 );
@@ -227,25 +227,25 @@ export const SunburstTwoLayers = () => (
           },
         },
       ]}
-      config={Object.assign({}, config, {
+      config={{
         hierarchicalLayout: PartitionLayouts.sunburst,
-        linkLabel: Object.assign({}, config.linkLabel, {
+        linkLabel: {
           maxCount: 0,
           fontSize: 14,
-        }),
+        },
         fontFamily: 'Arial',
         fillLabel: Object.assign({}, config.fillLabel, {
           formatter: (d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
           fontStyle: 'italic',
         }),
-        margin: Object.assign({}, config.margin, { top: 0, bottom: 0, left: 0, right: 0 }),
+        margin: { top: 0, bottom: 0, left: 0, right: 0 },
         minFontSize: 1,
         idealFontSizeJump: 1.1,
         outerSizeRatio: 1,
         emptySizeRatio: 0,
         circlePadding: 4,
         backgroundColor: 'rgba(229,229,229,1)',
-      })}
+      }}
     />
   </Chart>
 );
@@ -287,25 +287,25 @@ export const SunburstThreeLayers = () => (
           },
         },
       ]}
-      config={Object.assign({}, config, {
+      config={{
         hierarchicalLayout: PartitionLayouts.sunburst,
-        linkLabel: Object.assign({}, config.linkLabel, {
+        linkLabel: {
           maxCount: 0,
           fontSize: 14,
-        }),
+        },
         fontFamily: 'Arial',
         fillLabel: Object.assign({}, config.fillLabel, {
           formatter: (d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
           fontStyle: 'italic',
         }),
-        margin: Object.assign({}, config.margin, { top: 0, bottom: 0, left: 0, right: 0 }),
+        margin: { top: 0, bottom: 0, left: 0, right: 0 },
         minFontSize: 1,
         idealFontSizeJump: 1.1,
         outerSizeRatio: 1,
         emptySizeRatio: 0,
         circlePadding: 4,
         backgroundColor: 'rgba(229,229,229,1)',
-      })}
+      }}
     />
   </Chart>
 );
