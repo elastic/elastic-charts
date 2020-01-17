@@ -113,7 +113,4 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   };
 };
 
-export const Partition = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(PartitionComponent);
+export const Partition = connect(mapStateToProps, mapDispatchToProps)(PartitionComponent);

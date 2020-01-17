@@ -31,10 +31,6 @@ export interface StaticConfig {
   specialFirstInnermostSector: boolean;
   hierarchicalLayout: HierarchicalLayout;
 
-  // overall data ink layout
-  colors: string;
-  palettes: { [k: string]: Array<any> };
-
   // general text config
   fontFamily: string;
 

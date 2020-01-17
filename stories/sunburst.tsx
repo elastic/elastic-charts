@@ -7,6 +7,7 @@ import { productDimension, regionDimension, countryDimension } from '../src/mock
 import React from 'react';
 import { PartitionLayouts } from '../src/chart_types/partition_chart/layout/types/config_types';
 import { getRandomNumber } from '../src/mocks/utils';
+import { palettes } from '../src/mocks/hierarchical/palettes';
 
 const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
 const regionLookup = arrayToLookup((d: Datum) => d.region, regionDimension);
@@ -22,8 +23,9 @@ export default {
 };
 
 // style calcs
-const interpolatorCET2s = hueInterpolator(config.palettes.CET2s);
-const interpolatorTurbo = hueInterpolator(config.palettes.turbo);
+const interpolatorCET2s = hueInterpolator(palettes.CET2s);
+const interpolatorTurbo = hueInterpolator(palettes.turbo);
+
 const defaultFillColor = (colorMaker: any) => (d: any, i: number, a: any[]) => colorMaker(i / (a.length + 1));
 
 export const SimplePieChart = () => (
@@ -37,6 +39,7 @@ export const SimplePieChart = () => (
         {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: Datum) => productLookup[d].name,
+          fillLabel: { textInvertible: true },
           shape: {
             fillColor: defaultFillColor(interpolatorTurbo),
           },
@@ -64,6 +67,7 @@ export const PieChartWithFillLabels = () => (
         {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: Datum) => productLookup[d].name,
+          fillLabel: { textInvertible: true },
           shape: {
             fillColor: defaultFillColor(interpolatorCET2s),
           },
@@ -71,7 +75,6 @@ export const PieChartWithFillLabels = () => (
       ]}
       config={Object.assign({}, config, {
         hierarchicalLayout: PartitionLayouts.sunburst,
-        colors: 'CET2s',
         linkLabel: Object.assign({}, config.linkLabel, {
           maxCount: 32,
           fontSize: 14,
@@ -94,7 +97,7 @@ export const PieChartWithFillLabels = () => (
 );
 
 PieChartWithFillLabels.story = {
-  name: 'PieChart with fill labels',
+  name: 'Pie chart with fill labels',
 };
 
 export const DonutChartWithFillLabels = () => (
@@ -115,7 +118,6 @@ export const DonutChartWithFillLabels = () => (
       ]}
       config={Object.assign({}, config, {
         hierarchicalLayout: PartitionLayouts.sunburst,
-        colors: 'CET2s',
         linkLabel: Object.assign({}, config.linkLabel, {
           maxCount: 32,
           fontSize: 14,
@@ -223,7 +225,6 @@ export const SunburstTwoLayers = () => (
       ]}
       config={Object.assign({}, config, {
         hierarchicalLayout: PartitionLayouts.sunburst,
-        colors: 'CET2s',
         linkLabel: Object.assign({}, config.linkLabel, {
           maxCount: 0,
           fontSize: 14,
@@ -281,7 +282,6 @@ export const SunburstThreeLayers = () => (
       ]}
       config={Object.assign({}, config, {
         hierarchicalLayout: PartitionLayouts.sunburst,
-        colors: 'CET2s',
         linkLabel: Object.assign({}, config.linkLabel, {
           maxCount: 0,
           fontSize: 14,
@@ -393,7 +393,10 @@ export const BigEmptyPieChart = () => (
   <Chart className={'story-chart'}>
     <Partition
       id={getSpecId('spec_' + getRandomNumber())}
-      data={[{ sitc1: '7', exportVal: 999999 }, { sitc1: '3', exportVal: 1 }]}
+      data={[
+        { sitc1: '7', exportVal: 999999 },
+        { sitc1: '3', exportVal: 1 },
+      ]}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d))}`}
       layers={[
@@ -417,7 +420,10 @@ export const FullZeroSlicePieChart = () => (
   <Chart className={'story-chart'}>
     <Partition
       id={getSpecId('spec_' + getRandomNumber())}
-      data={[{ sitc1: '7', exportVal: 1000000 }, { sitc1: '3', exportVal: 0 }]}
+      data={[
+        { sitc1: '7', exportVal: 1000000 },
+        { sitc1: '3', exportVal: 0 },
+      ]}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d))}`}
       layers={[

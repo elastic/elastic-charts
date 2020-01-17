@@ -106,7 +106,12 @@ export function makeOutsideLinksViewModel(
       const y0 = sin * radius;
       const x = cos * (radius + linkLabelRadiusPadding);
       const y = sin * (radius + linkLabelRadiusPadding);
-      return { points: [[x0, y0], [x, y]] };
+      return {
+        points: [
+          [x0, y0],
+          [x, y],
+        ],
+      };
     })
     .filter(({ points }: OutsideLinksViewModel) => points.length > 1);
 }

@@ -8,14 +8,15 @@ import React from 'react';
 import { PartitionLayouts } from '../src/chart_types/partition_chart/layout/types/config_types';
 import { getRandomNumber } from '../src/mocks/utils'; // @ts-ignore
 import { stringToRGB } from '../src/chart_types/partition_chart/layout/utils/d3_utils';
+import { palettes } from '../src/mocks/hierarchical/palettes';
 
 const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
 const regionLookup = arrayToLookup((d: Datum) => d.region, regionDimension);
 const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
 
 // style calcs
-const interpolatorCET2s = hueInterpolator(config.palettes.CET2s);
-const interpolatorTurbo = hueInterpolator(config.palettes.turbo);
+const interpolatorCET2s = hueInterpolator(palettes.CET2s);
+const interpolatorTurbo = hueInterpolator(palettes.turbo);
 const defaultFillColor = (colorMaker: any) => (d: any, i: number, a: any[]) => colorMaker(i / (a.length + 1));
 
 export default {
@@ -110,7 +111,6 @@ export const MidTwoLayers = () => (
       ]}
       config={{
         hierarchicalLayout: PartitionLayouts.treemap,
-        colors: 'turbo',
         margin: { top: 0, bottom: 0, left: 0, right: 0 },
         minFontSize: 4,
         maxFontSize: 84,
@@ -172,7 +172,6 @@ export const TwoLayersStressTest = () => (
       ]}
       config={{
         hierarchicalLayout: PartitionLayouts.treemap,
-        colors: 'turbo',
         margin: { top: 0, bottom: 0, left: 0, right: 0 },
         minFontSize: 4,
         maxFontSize: 84,

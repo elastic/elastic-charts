@@ -31,7 +31,10 @@ function circlineIntersect(c1: Circline, c2: Circline): PointObject[] {
     const y1 = yAux1 - yAux2;
     const y2 = yAux1 + yAux2;
 
-    return [{ x: x1, y: y1 }, { x: x2, y: y2 }];
+    return [
+      { x: x1, y: y1 },
+      { x: x2, y: y2 },
+    ];
   } else {
     return [];
   }
