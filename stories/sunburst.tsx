@@ -80,10 +80,10 @@ export const PieChartWithFillLabels = () => (
           fontSize: 14,
         },
         fontFamily: 'Arial',
-        fillLabel: Object.assign({}, config.fillLabel, {
+        fillLabel: {
           formatter: (d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
           fontStyle: 'italic',
-        }),
+        },
         margin: { top: 0, bottom: 0, left: 0, right: 0 },
         minFontSize: 1,
         idealFontSizeJump: 1.1,
@@ -124,10 +124,10 @@ export const DonutChartWithFillLabels = () => (
           fontSize: 14,
         },
         fontFamily: 'Arial',
-        fillLabel: Object.assign({}, config.fillLabel, {
+        fillLabel: {
           formatter: (d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
           fontStyle: 'italic',
-        }),
+        },
         margin: { top: 0, bottom: 0, left: 0.2, right: 0 },
         minFontSize: 1,
         idealFontSizeJump: 1.1,
@@ -234,10 +234,10 @@ export const SunburstTwoLayers = () => (
           fontSize: 14,
         },
         fontFamily: 'Arial',
-        fillLabel: Object.assign({}, config.fillLabel, {
+        fillLabel: {
           formatter: (d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
           fontStyle: 'italic',
-        }),
+        },
         margin: { top: 0, bottom: 0, left: 0, right: 0 },
         minFontSize: 1,
         idealFontSizeJump: 1.1,
@@ -294,10 +294,10 @@ export const SunburstThreeLayers = () => (
           fontSize: 14,
         },
         fontFamily: 'Arial',
-        fillLabel: Object.assign({}, config.fillLabel, {
+        fillLabel: {
           formatter: (d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
           fontStyle: 'italic',
-        }),
+        },
         margin: { top: 0, bottom: 0, left: 0, right: 0 },
         minFontSize: 1,
         idealFontSizeJump: 1.1,
