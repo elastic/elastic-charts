@@ -86,24 +86,29 @@ export function treemap(
     .concat(
       ...vector.map(({ node, x0, y0, x1, y1 }) => {
         const childrenNodes = entryValue(node)[CHILDREN_KEY];
-        const width = x1 - x0;
-        const height = y1 - y0;
-        const padding = Math.min(paddingAccessor(node), width * MAX_PADDING_RATIO * 2, height * MAX_PADDING_RATIO * 2);
-        const innerWidth = width - 2 * padding;
-        const innerHeight = height - 2 * padding;
-        return childrenNodes && childrenNodes.length
-          ? treemap(
-              childrenNodes,
-              (d) => ((innerWidth * innerHeight) / (width * height)) * areaAccessor(d),
-              paddingAccessor,
-              {
-                x0: x0 + padding,
-                y0: y0 + padding,
-                width: innerWidth,
-                height: innerHeight,
-              },
-            )
-          : [];
+        if (!childrenNodes || !childrenNodes.length) {
+          return [];
+        }
+        const fullWidth = x1 - x0;
+        const fullHeight = y1 - y0;
+        const padding = Math.min(
+          paddingAccessor(node),
+          fullWidth * MAX_PADDING_RATIO * 2,
+          fullHeight * MAX_PADDING_RATIO * 2,
+        );
+        const width = fullWidth - 2 * padding;
+        const height = fullHeight - 2 * padding;
+        return treemap(
+          childrenNodes,
+          (d) => ((width * height) / (fullWidth * fullHeight)) * areaAccessor(d),
+          paddingAccessor,
+          {
+            x0: x0 + padding,
+            y0: y0 + padding,
+            width,
+            height,
+          },
+        );
       }),
     )
     .concat(
