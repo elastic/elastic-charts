@@ -6,13 +6,15 @@ export type FontWeight = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900; //
 
 export type TextMeasure = (font: string, texts: string[]) => TextMetrics[];
 
-// Part-to-whole visualizations such as treemap, sunburst, pie hinge on an aggregation
-// function such that the value is independent of the order of how the constituents are aggregated
-// https://en.wikipedia.org/wiki/Associative_property
-// Hierarchical, space-filling part-to-whole visualizations also need that the
-// the value of a node is equal to the sum of the values of its children
-// https://mboehm7.github.io/teaching/ss19_dbs/04_RelationalAlgebra.pdf p21
-// It's now `count` and `sum` but subject to change
+/**
+ * Part-to-whole visualizations such as treemap, sunburst, pie hinge on an aggregation
+ * function such that the value is independent of the order of how the constituents are aggregated
+ * https://en.wikipedia.org/wiki/Associative_property
+ * Hierarchical, space-filling part-to-whole visualizations also need that the
+ * the value of a node is equal to the sum of the values of its children
+ * https://mboehm7.github.io/teaching/ss19_dbs/04_RelationalAlgebra.pdf p21
+ * It's now `count` and `sum` but subject to change
+ */
 export type AdditiveAggregation = 'count' | 'sum';
 
 export type Relation = Array<object>;
