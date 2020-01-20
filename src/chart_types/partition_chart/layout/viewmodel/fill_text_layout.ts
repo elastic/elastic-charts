@@ -108,13 +108,11 @@ function makeRowCircline(
   fontSize: number,
   offsetSign: -1 | 0 | 1,
 ) {
-  const rowCentroidY = cy;
   const r = INFINITY_RADIUS;
   const offset = (offsetSign * fontSize) / 2;
-  const anotherOffset = rowCentroidY - cy + offset;
-  const anotherR = r - anotherOffset;
-  const x = cx + anotherR * Math.cos(-rotation + TAU / 4);
-  const y = cy + anotherR * Math.cos(-rotation + TAU / 2);
+  const topRadius = r - offset;
+  const x = cx + topRadius * Math.cos(-rotation + TAU / 4);
+  const y = cy + topRadius * Math.cos(-rotation + TAU / 2);
   const circline = { r: r + radialOffset, x, y };
   return circline;
 }
