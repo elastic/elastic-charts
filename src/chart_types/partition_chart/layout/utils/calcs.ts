@@ -22,37 +22,6 @@ export function addOpacity(hexColorString: string, opacity: Ratio) {
             ));
 }
 
-export function objectAssign(target: object, ...sources: object[]) {
-  sources.forEach((source) => {
-    Object.keys(source).forEach((key) => {
-      // @ts-ignore
-      const s = source[key];
-      // @ts-ignore
-      const t = target[key];
-      // @ts-ignore
-      target[key] = t && s && typeof t === 'object' && typeof s === 'object' ? objectAssign(t, s) : s;
-    });
-  });
-  return target;
-}
-
-export function deepTween(target: object, source: object, ratio: Ratio) {
-  Object.keys(source).forEach((key) => {
-    // @ts-ignore
-    const sVal = source[key];
-    // @ts-ignore
-    const tVal = target[key];
-    // @ts-ignore
-    target[key] =
-      tVal && sVal && typeof tVal === 'object' && typeof sVal === 'object'
-        ? deepTween(tVal, sVal, ratio)
-        : typeof sVal === 'number' && typeof tVal === 'number'
-        ? tVal + (sVal - tVal) * ratio
-        : sVal;
-  });
-  return target;
-}
-
 export function arrayToLookup(keyFun: Function, array: Array<any>) {
   return Object.assign({}, ...array.map((d) => ({ [keyFun(d)]: d })));
 }
