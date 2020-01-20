@@ -22,11 +22,7 @@ export class PartitionState implements InternalChartState {
     return EMPTY_MAP;
   }
   chartRenderer() {
-    return (
-      <React.Fragment>
-        <Partition />
-      </React.Fragment>
-    );
+    return <Partition />;
   }
   getPointerCursor() {
     return 'default';
