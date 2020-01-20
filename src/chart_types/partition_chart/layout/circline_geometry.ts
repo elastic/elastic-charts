@@ -1,33 +1,34 @@
 import { CirclArc, Circline, CirclinePredicate, Distance, PointObject, RingSector } from './types/geometry_types';
 import { tau } from './utils/math';
 
-function euclideanDistance({ x: X, y: Y }: PointObject, { x, y }: PointObject): Distance {
-  return Math.sqrt(Math.pow(X - x, 2) + Math.pow(Y - y, 2));
+function euclideanDistance({ x: x1, y: y1 }: PointObject, { x: x2, y: y2 }: PointObject): Distance {
+  return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
 }
 
-function fullyContained(C: Circline, c: Circline): boolean {
-  return euclideanDistance(C, c) + c.r <= C.r;
+function fullyContained(c1: Circline, c2: Circline): boolean {
+  return euclideanDistance(c1, c2) + c2.r <= c1.r;
 }
-function noOverlap(C: Circline, c: Circline): boolean {
-  return euclideanDistance(C, c) >= C.r + c.r;
+
+function noOverlap(c1: Circline, c2: Circline): boolean {
+  return euclideanDistance(c1, c2) >= c1.r + c2.r;
 }
 
 function circlineIntersect(c1: Circline, c2: Circline): PointObject[] {
-  const D = Math.sqrt((c1.x - c2.x) * (c1.x - c2.x) + (c1.y - c2.y) * (c1.y - c2.y));
-  if (c1.r + c2.r >= D && D >= Math.abs(c1.r - c2.r)) {
-    const a1 = D + c1.r + c2.r;
-    const a2 = D + c1.r - c2.r;
-    const a3 = D - c1.r + c2.r;
-    const a4 = -D + c1.r + c2.r;
+  const d = Math.sqrt((c1.x - c2.x) * (c1.x - c2.x) + (c1.y - c2.y) * (c1.y - c2.y));
+  if (c1.r + c2.r >= d && d >= Math.abs(c1.r - c2.r)) {
+    const a1 = d + c1.r + c2.r;
+    const a2 = d + c1.r - c2.r;
+    const a3 = d - c1.r + c2.r;
+    const a4 = -d + c1.r + c2.r;
     const area = Math.sqrt(a1 * a2 * a3 * a4) / 4;
 
-    const xAux1 = (c1.x + c2.x) / 2 + ((c2.x - c1.x) * (c1.r * c1.r - c2.r * c2.r)) / (2 * D * D);
-    const xAux2 = (2 * (c1.y - c2.y) * area) / (D * D);
+    const xAux1 = (c1.x + c2.x) / 2 + ((c2.x - c1.x) * (c1.r * c1.r - c2.r * c2.r)) / (2 * d * d);
+    const xAux2 = (2 * (c1.y - c2.y) * area) / (d * d);
     const x1 = xAux1 + xAux2;
     const x2 = xAux1 - xAux2;
 
-    const yAux1 = (c1.y + c2.y) / 2 + ((c2.y - c1.y) * (c1.r * c1.r - c2.r * c2.r)) / (2 * D * D);
-    const yAux2 = (2 * (c1.x - c2.x) * area) / (D * D);
+    const yAux1 = (c1.y + c2.y) / 2 + ((c2.y - c1.y) * (c1.r * c1.r - c2.r * c2.r)) / (2 * d * d);
+    const yAux2 = (2 * (c1.x - c2.x) * area) / (d * d);
     const y1 = yAux1 - yAux2;
     const y2 = yAux1 + yAux2;
 
@@ -40,11 +41,11 @@ function circlineIntersect(c1: Circline, c2: Circline): PointObject[] {
   }
 }
 
-function circlineValidSectors(C: CirclinePredicate, c: CirclArc): CirclArc[] {
-  const { inside } = C;
+function circlineValidSectors(refC: CirclinePredicate, c: CirclArc): CirclArc[] {
+  const { inside } = refC;
   const { x, y, r, from, to } = c;
-  const fullContainment = fullyContained(C, c);
-  const fullyOutside = noOverlap(C, c) || fullyContained(c, C);
+  const fullContainment = fullyContained(refC, c);
+  const fullyOutside = noOverlap(refC, c) || fullyContained(c, refC);
 
   // handle clear cases
 
@@ -59,7 +60,7 @@ function circlineValidSectors(C: CirclinePredicate, c: CirclArc): CirclArc[] {
   }
 
   // now we know there's intersection and we're supposed to get back two distinct points
-  const circlineIntersections = circlineIntersect(C, c);
+  const circlineIntersections = circlineIntersect(refC, c);
   // These conditions don't happen; kept for documentation purposes:
   // if (circlineIntersections.length !== 2) throw new Error('Problem in intersection calculation.')
   // if (from > to) throw new Error('From/to problem in intersection calculation.')
@@ -88,7 +89,7 @@ function circlineValidSectors(C: CirclinePredicate, c: CirclArc): CirclArc[] {
     const midAngle = (from + to) / 2; // no winding clip ie. `meanAngle()` would be wrong here
     const xx = x + r * Math.cos(midAngle);
     const yy = y + r * Math.sin(midAngle);
-    if (predicate(C, { x: xx, y: yy, r: 0 })) result.push({ x, y, r, from, to });
+    if (predicate(refC, { x: xx, y: yy, r: 0 })) result.push({ x, y, r, from, to });
   }
   return result;
 }
@@ -97,11 +98,11 @@ export function conjunctiveConstraint(constraints: RingSector, c: CirclArc): Cir
   // imperative, slightly optimized buildup of `valids` as it's in the hot loop:
   let valids = [c];
   for (let i = 0; i < constraints.length; i++) {
-    const C = constraints[i];
+    const refC = constraints[i]; // reference circle
     const nextValids: CirclArc[] = [];
     for (let j = 0; j < valids.length; j++) {
       const cc = valids[j];
-      const currentValids = circlineValidSectors(C, cc);
+      const currentValids = circlineValidSectors(refC, cc);
       nextValids.push(...currentValids);
     }
     valids = nextValids;
