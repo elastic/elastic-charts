@@ -1,16 +1,16 @@
 import { Radian } from './types/geometry_types';
-import { tau } from './utils/math';
+import { TAU } from './utils/math';
 
 export function wrapToTau(a: Radian) {
-  if (0 <= a && a <= tau) return a; // efficient shortcut
-  if (a < 0) a -= tau * Math.floor(a / tau);
-  return a > tau ? a % tau : a;
+  if (0 <= a && a <= TAU) return a; // efficient shortcut
+  if (a < 0) a -= TAU * Math.floor(a / TAU);
+  return a > TAU ? a % TAU : a;
 }
 
 export function diffAngle(a: Radian, b: Radian) {
-  return ((a - b + Math.PI + tau) % tau) - Math.PI;
+  return ((a - b + Math.PI + TAU) % TAU) - Math.PI;
 }
 
 export function meanAngle(a: Radian, b: Radian) {
-  return (tau + b + diffAngle(a, b) / 2) % tau;
+  return (TAU + b + diffAngle(a, b) / 2) % TAU;
 }

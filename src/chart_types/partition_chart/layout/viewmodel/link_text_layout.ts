@@ -1,6 +1,6 @@
 import { Distance } from '../types/geometry_types';
 import { Config } from '../types/config_types';
-import { tau, trueBearingToStandardPositionAngle } from '../utils/math';
+import { TAU, trueBearingToStandardPositionAngle } from '../utils/math';
 import { LinkLabelVM, ShapeTreeNode } from '../types/viewmodel_types';
 import { meanAngle } from '../geometry';
 import { TextMeasure } from '../types/types';
@@ -25,14 +25,14 @@ export function linkTextLayout(
     .sort((n1: ShapeTreeNode, n2: ShapeTreeNode) => {
       const mid1 = meanAngle(n1.x0, n1.x1);
       const mid2 = meanAngle(n2.x0, n2.x1);
-      const dist1 = Math.min(Math.abs(mid1 - tau / 4), Math.abs(mid1 - (3 * tau) / 4));
-      const dist2 = Math.min(Math.abs(mid2 - tau / 4), Math.abs(mid2 - (3 * tau) / 4));
+      const dist1 = Math.min(Math.abs(mid1 - TAU / 4), Math.abs(mid1 - (3 * TAU) / 4));
+      const dist2 = Math.min(Math.abs(mid2 - TAU / 4), Math.abs(mid2 - (3 * TAU) / 4));
       return dist1 - dist2;
     })
     .map((node: ShapeTreeNode) => {
       const midAngle = trueBearingToStandardPositionAngle(meanAngle(node.x0, node.x1));
-      const north = midAngle < tau / 2 ? 1 : -1;
-      const side = tau / 4 < midAngle && midAngle < (3 * tau) / 4 ? 0 : 1;
+      const north = midAngle < TAU / 2 ? 1 : -1;
+      const side = TAU / 4 < midAngle && midAngle < (3 * TAU) / 4 ? 0 : 1;
       const west = side ? 1 : -1;
       const cos = Math.cos(midAngle);
       const sin = Math.sin(midAngle);

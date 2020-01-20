@@ -3,7 +3,7 @@ import { shapeViewModel } from '../../layout/viewmodel/viewmodel';
 import { measureText } from '../../layout/utils/measure';
 import { ShapeTreeNode, ShapeViewModel, RawTextGetter } from '../../layout/types/viewmodel_types';
 import { Theme } from '../../../../utils/themes/theme';
-import { depthKey } from '../../layout/utils/group_by_rollup';
+import { DEPTH_KEY } from '../../layout/utils/group_by_rollup';
 import { PartitionSpec, Layer } from '../../specs/index';
 import { identity, mergePartial, RecursivePartial } from '../../../../utils/commons';
 import { config as defaultConfig } from '../../layout/config/config';
@@ -11,7 +11,7 @@ import { Config } from '../../layout/types/config_types';
 
 function rawTextGetter(layers: Layer[]): RawTextGetter {
   return (node: ShapeTreeNode) => {
-    const accessorFn = layers[node[depthKey] - 1].nodeLabel || identity;
+    const accessorFn = layers[node[DEPTH_KEY] - 1].nodeLabel || identity;
     return `${accessorFn(node.dataName)}`;
   };
 }

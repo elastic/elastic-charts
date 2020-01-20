@@ -1,21 +1,23 @@
 import { wrapToTau } from '../geometry';
 import { Coordinate, Distance, Pixels, Radian, Radius, RingSector } from '../types/geometry_types';
 import { Config } from '../types/config_types';
-import { logarithm, tau, trueBearingToStandardPositionAngle } from '../utils/math';
+import { logarithm, TAU, trueBearingToStandardPositionAngle } from '../utils/math';
 import { RawTextGetter, RowBox, RowSet, RowSpace, ShapeTreeNode } from '../types/viewmodel_types';
 import { FontWeight, TextMeasure } from '../types/types';
-import { aggregateKey } from '../utils/group_by_rollup';
+import { AGGREGATE_KEY } from '../utils/group_by_rollup';
 import { conjunctiveConstraint } from '../circline_geometry';
 import { Layer } from '../../specs/index';
 import { stringToRGB } from '../utils/d3_utils';
 import { colorIsDark } from '../utils/calcs';
 
+const INFINITY_RADIUS = 1e4; // far enough for a sub-2px precision on a 4k screen, good enough for text bounds; 64 bit floats still work well with it
+
 function ringSectorStartAngle(d: ShapeTreeNode): Radian {
-  return trueBearingToStandardPositionAngle(d.x0 + Math.max(0, d.x1 - d.x0 - tau / 2) / 2);
+  return trueBearingToStandardPositionAngle(d.x0 + Math.max(0, d.x1 - d.x0 - TAU / 2) / 2);
 }
 
 function ringSectorEndAngle(d: ShapeTreeNode): Radian {
-  return trueBearingToStandardPositionAngle(d.x1 - Math.max(0, d.x1 - d.x0 - tau / 2) / 2);
+  return trueBearingToStandardPositionAngle(d.x1 - Math.max(0, d.x1 - d.x0 - TAU / 2) / 2);
 }
 
 function ringSectorInnerRadius(innerRadius: Radian, ringThickness: Distance) {
@@ -25,8 +27,6 @@ function ringSectorOuterRadius(innerRadius: Radian, ringThickness: Distance) {
   return (d: ShapeTreeNode): Radius => innerRadius + ((d.y0 as number) + 1) * ringThickness;
 }
 
-const infinityRadius = 1e4; // far enough for a sub-2px precision on a 4k screen, good enough for text bounds; 64 bit floats still work well with it
-
 function angleToCircline(
   midRadius: Radius,
   alpha: Radian,
@@ -35,9 +35,9 @@ function angleToCircline(
   const sectorRadiusLineX = Math.cos(alpha) * midRadius;
   const sectorRadiusLineY = Math.sin(alpha) * midRadius;
   const normalAngle = alpha + (direction * Math.PI) / 2;
-  const x = sectorRadiusLineX + infinityRadius * Math.cos(normalAngle);
-  const y = sectorRadiusLineY + infinityRadius * Math.sin(normalAngle);
-  const sectorRadiusCircline = { x, y, r: infinityRadius, inside: false, from: 0, to: tau };
+  const x = sectorRadiusLineX + INFINITY_RADIUS * Math.cos(normalAngle);
+  const y = sectorRadiusLineY + INFINITY_RADIUS * Math.sin(normalAngle);
+  const sectorRadiusCircline = { x, y, r: INFINITY_RADIUS, inside: false, from: 0, to: TAU };
   return sectorRadiusCircline;
 }
 
@@ -74,14 +74,14 @@ export function ringSectorConstruction(config: Config, innerRadius: Radius, ring
     );
     const alpha = ringSectorStartAngle(ringSector);
     const beta = ringSectorEndAngle(ringSector);
-    const innerCircline = { x: 0, y: 0, r: r, inside: true, from: 0, to: tau };
-    const outerCircline = { x: 0, y: 0, r: R, inside: false, from: 0, to: tau };
+    const innerCircline = { x: 0, y: 0, r: r, inside: true, from: 0, to: TAU };
+    const outerCircline = { x: 0, y: 0, r: R, inside: false, from: 0, to: TAU };
     const midRadius = (r + R) / 2;
     const sectorStartCircle = angleToCircline(midRadius, alpha - radialPadding, -1);
     const sectorEndCircle = angleToCircline(midRadius, beta + radialPadding, 1);
     const RRx = fillRectangleWidth / 2;
     const RRy = fillRectangleHeight / 2;
-    const fullCircle = ringSector.x0 === 0 && ringSector.x1 === tau;
+    const fullCircle = ringSector.x0 === 0 && ringSector.x1 === TAU;
     const sectorCirclines = [
       ...(fullCircle && innerRadius === 0 ? [] : [innerCircline]),
       outerCircline,
@@ -91,10 +91,10 @@ export function ringSectorConstruction(config: Config, innerRadius: Radius, ring
       RRx === Infinity && RRy === Infinity
         ? []
         : [
-            { x: infinityRadius - RRx, y: 0, r: infinityRadius, inside: true },
-            { x: -infinityRadius + RRx, y: 0, r: infinityRadius, inside: true },
-            { x: 0, y: infinityRadius - RRy, r: infinityRadius, inside: true },
-            { x: 0, y: -infinityRadius + RRy, r: infinityRadius, inside: true },
+            { x: INFINITY_RADIUS - RRx, y: 0, r: INFINITY_RADIUS, inside: true },
+            { x: -INFINITY_RADIUS + RRx, y: 0, r: INFINITY_RADIUS, inside: true },
+            { x: 0, y: INFINITY_RADIUS - RRy, r: INFINITY_RADIUS, inside: true },
+            { x: 0, y: -INFINITY_RADIUS + RRy, r: INFINITY_RADIUS, inside: true },
           ];
     return [...sectorCirclines, ...rectangleCirclines];
   };
@@ -109,12 +109,12 @@ function makeRowCircline(
   offsetSign: -1 | 0 | 1,
 ) {
   const rowCentroidY = cy;
-  const r = infinityRadius;
+  const r = INFINITY_RADIUS;
   const offset = (offsetSign * fontSize) / 2;
   const anotherOffset = rowCentroidY - cy + offset;
   const anotherR = r - anotherOffset;
-  const x = cx + anotherR * Math.cos(-rotation + tau / 4);
-  const y = cy + anotherR * Math.cos(-rotation + tau / 2);
+  const x = cx + anotherR * Math.cos(-rotation + TAU / 4);
+  const y = cy + anotherR * Math.cos(-rotation + TAU / 2);
   const circline = { r: r + radialOffset, x, y };
   return circline;
 }
@@ -139,9 +139,9 @@ export function getSectorRowGeometry(
   const bottomCircline = makeRowCircline(cx, cy, offset, rotation, fontSize, -1);
   const midCircline = makeRowCircline(cx, cy, offset, rotation, 0, 0);
 
-  const valid1 = conjunctiveConstraint(ringSector, Object.assign({}, topCircline, { from: 0, to: tau }))[0];
+  const valid1 = conjunctiveConstraint(ringSector, Object.assign({}, topCircline, { from: 0, to: TAU }))[0];
   if (!valid1) return { rowCentroidX: cx, rowCentroidY: cy, maximumRowLength: 0 };
-  const valid2 = conjunctiveConstraint(ringSector, Object.assign({}, bottomCircline, { from: 0, to: tau }))[0];
+  const valid2 = conjunctiveConstraint(ringSector, Object.assign({}, bottomCircline, { from: 0, to: TAU }))[0];
   if (!valid2) return { rowCentroidX: cx, rowCentroidY: cy, maximumRowLength: 0 };
   const from = Math.max(valid1.from, valid2.from);
   const to = Math.min(valid1.to, valid2.to);
@@ -149,7 +149,7 @@ export function getSectorRowGeometry(
   const cheapTangent = Math.max(0, to - from); /* Math.tan(Math.max(0, to - from)) */ // https://en.wikipedia.org/wiki/Small-angle_approximation
   const rowCentroidX = midCircline.r * Math.cos(midAngle) + midCircline.x;
   const rowCentroidY = midCircline.r * Math.sin(midAngle) + midCircline.y;
-  const maximumRowLength = cheapTangent * infinityRadius;
+  const maximumRowLength = cheapTangent * INFINITY_RADIUS;
   return { rowCentroidX, rowCentroidY, maximumRowLength };
 }
 
@@ -208,7 +208,7 @@ function getAllBoxes(
 ): string[] {
   return rawTextGetter(node)
     .split(' ')
-    .concat(valueFormatter(node[aggregateKey]).split(' '));
+    .concat(valueFormatter(node[AGGREGATE_KEY]).split(' '));
 }
 
 function getWordSpacing(fontSize: number) {
@@ -369,7 +369,7 @@ export function inSectorRotation(horizontalTextEnforcer: number, horizontalTextA
     let rotation = trueBearingToStandardPositionAngle((node.x0 + node.x1) / 2);
     if (Math.abs(node.x1 - node.x0) > horizontalTextAngleThreshold && horizontalTextEnforcer > 0)
       rotation = rotation * (1 - horizontalTextEnforcer);
-    if (tau / 4 < rotation && rotation < (3 * tau) / 4) rotation = wrapToTau(rotation - tau / 2);
+    if (TAU / 4 < rotation && rotation < (3 * TAU) / 4) rotation = wrapToTau(rotation - TAU / 2);
     return rotation;
   };
 }

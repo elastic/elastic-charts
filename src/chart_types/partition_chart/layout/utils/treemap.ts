@@ -1,8 +1,8 @@
-import { ArrayEntry, childrenKey, entryValue, HierarchyOfArrays } from './group_by_rollup';
+import { ArrayEntry, CHILDREN_KEY, entryValue, HierarchyOfArrays } from './group_by_rollup';
 import { Part } from '../types/types';
-import { goldenRatio } from './math';
+import { GOLDEN_RATIO } from './math';
 
-const maxPaddingRatio = 0.0256197; // this limits area distortion to <10% (which occurs due to pixel padding) with very small rectangles
+const MAX_PADDING_RATIO = 0.0256197; // this limits area distortion to <10% (which occurs due to pixel padding) with very small rectangles
 
 interface LayoutElement {
   nodes: HierarchyOfArrays;
@@ -77,7 +77,7 @@ export function treemap(
 ): Array<Part> {
   if (nodes.length === 0) return [];
   // some bias toward horizontal rectangles with a golden ratio of width to height
-  const vertical = width / goldenRatio <= height;
+  const vertical = width / GOLDEN_RATIO <= height;
   const independentSize = vertical ? width : height;
   const vectorElements = bestVector(nodes, independentSize, areaAccessor);
   const vector = vectorNodeCoordinates(vectorElements, x0, y0, vertical);
@@ -85,10 +85,10 @@ export function treemap(
   return vector
     .concat(
       ...vector.map(({ node, x0, y0, x1, y1 }) => {
-        const childrenNodes = entryValue(node)[childrenKey];
+        const childrenNodes = entryValue(node)[CHILDREN_KEY];
         const width = x1 - x0;
         const height = y1 - y0;
-        const padding = Math.min(paddingAccessor(node), width * maxPaddingRatio * 2, height * maxPaddingRatio * 2);
+        const padding = Math.min(paddingAccessor(node), width * MAX_PADDING_RATIO * 2, height * MAX_PADDING_RATIO * 2);
         const innerWidth = width - 2 * padding;
         const innerHeight = height - 2 * padding;
         return childrenNodes && childrenNodes.length

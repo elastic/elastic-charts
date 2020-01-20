@@ -1,11 +1,11 @@
 import { wrapToTau } from '../geometry';
 
-export const rightAngle = Math.PI / 2;
-export const goldenRatio = 1.618;
-export const tau = 2 * Math.PI;
+export const TAU = 2 * Math.PI;
+export const RIGHT_ANGLE = TAU / 4;
+export const GOLDEN_RATIO = 1.618;
 
 export function trueBearingToStandardPositionAngle(alphaIn: number) {
-  return wrapToTau(rightAngle - alphaIn);
+  return wrapToTau(RIGHT_ANGLE - alphaIn);
 }
 
 export function logarithm(base: number, y: number) {

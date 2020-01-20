@@ -1,5 +1,5 @@
 import { CirclArc, Circline, CirclinePredicate, Distance, PointObject, RingSector } from './types/geometry_types';
-import { tau } from './utils/math';
+import { TAU } from './utils/math';
 
 function euclideanDistance({ x: x1, y: y1 }: PointObject, { x: x2, y: y2 }: PointObject): Distance {
   return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
@@ -68,10 +68,10 @@ function circlineValidSectors(refC: CirclinePredicate, c: CirclArc): CirclArc[] 
   const [p1, p2] = circlineIntersections;
   const aPre1 = Math.atan2(p1.y - c.y, p1.x - c.x);
   const aPre2 = Math.atan2(p2.y - c.y, p2.x - c.x);
-  const a1p = Math.max(from, Math.min(to, aPre1 < 0 ? aPre1 + tau : aPre1));
-  const a2p = Math.max(from, Math.min(to, aPre2 < 0 ? aPre2 + tau : aPre2));
+  const a1p = Math.max(from, Math.min(to, aPre1 < 0 ? aPre1 + TAU : aPre1));
+  const a2p = Math.max(from, Math.min(to, aPre2 < 0 ? aPre2 + TAU : aPre2));
   const a1 = Math.min(a1p, a2p);
-  const a2 = a1p === a2p ? tau : Math.max(a1p, a2p); // make a2 drop out in next step
+  const a2 = a1p === a2p ? TAU : Math.max(a1p, a2p); // make a2 drop out in next step
 
   // imperative, slightly optimized buildup of `breakpoints` as it's in the hot loop:
   const breakpoints = [from];

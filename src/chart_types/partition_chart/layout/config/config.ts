@@ -1,13 +1,6 @@
 import { palettes } from '../../../../mocks/hierarchical/palettes';
 import { Config, PartitionLayouts, Numeric } from '../types/config_types';
-import { goldenRatio, tau } from '../utils/math';
-
-// todo add more structure to the config (like `linkLabel`, which is already nested)
-// todo add more configurability, eg. font weight
-// todo allow an option for direct coloring of the slices if the caller desires so
-// todo separate the concept of real min/max values from the concept of min/max range for playground style randomization
-// todo abstract out types for tuple-like things (eg. font descriptions have family, size, style...)
-// todo use preexisting types for describing fonts, paint styles etc.
+import { GOLDEN_RATIO, TAU } from '../utils/math';
 
 const log10 = Math.log(10);
 function significantDigitCount(d: number): number {
@@ -45,7 +38,7 @@ export const configMetadata = {
     },
   },
   outerSizeRatio: new Numeric({
-    dflt: 1 / goldenRatio,
+    dflt: 1 / GOLDEN_RATIO,
     min: 0.25,
     max: 1,
     reconfigurable: true,
@@ -82,7 +75,7 @@ export const configMetadata = {
   idealFontSizeJump: {
     dflt: 1.05, // Math.pow(goldenRatio, 1 / 3),
     min: 1.05,
-    max: goldenRatio,
+    max: GOLDEN_RATIO,
     type: 'number',
     reconfigurable: false, // there's no real reason to reconfigure it; finding the largest possible font is good for readability
   },
@@ -94,8 +87,8 @@ export const configMetadata = {
 
   // fill text layout config
   circlePadding: { dflt: 2, min: 0, max: 8, type: 'number' },
-  radialPadding: { dflt: tau / 360, min: 0.0, max: 0.035, type: 'number' },
-  horizontalTextAngleThreshold: { dflt: tau / 12, min: 0, max: tau, type: 'number' },
+  radialPadding: { dflt: TAU / 360, min: 0.0, max: 0.035, type: 'number' },
+  horizontalTextAngleThreshold: { dflt: TAU / 12, min: 0, max: TAU, type: 'number' },
   horizontalTextEnforcer: { dflt: 1, min: 0, max: 1, type: 'number' },
   maxRowCount: { dflt: 12, min: 1, max: 16, type: 'number' },
   fillOutside: { dflt: false, type: 'boolean' },
@@ -161,9 +154,9 @@ export const configMetadata = {
         reconfigurable: false, // currently only 0 is reliable
       },
       stemAngle: {
-        dflt: tau / 8,
+        dflt: TAU / 8,
         min: 0,
-        max: tau,
+        max: TAU,
         type: 'number',
         reconfigurable: false, // currently only tau / 8 is reliable
       },

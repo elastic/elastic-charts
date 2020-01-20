@@ -1,23 +1,23 @@
 import { Relation } from '../types/types';
 
-export const aggregateKey = 'value'; // todo later switch back to 'aggregate'
-export const depthKey = 'depth';
-export const childrenKey = 'children';
+export const AGGREGATE_KEY = 'value'; // todo later switch back to 'aggregate'
+export const DEPTH_KEY = 'depth';
+export const CHILDREN_KEY = 'children';
 
 interface NodeDescriptor {
-  [aggregateKey]: number;
-  [depthKey]: number;
+  [AGGREGATE_KEY]: number;
+  [DEPTH_KEY]: number;
 }
 
 export type ArrayEntry = [Key, ArrayNode];
 export type HierarchyOfArrays = Array<ArrayEntry>;
 interface ArrayNode extends NodeDescriptor {
-  [childrenKey]?: HierarchyOfArrays;
+  [CHILDREN_KEY]?: HierarchyOfArrays;
 }
 
 type HierarchyOfMaps = Map<Key, MapNode>;
 interface MapNode extends NodeDescriptor {
-  [childrenKey]?: HierarchyOfMaps;
+  [CHILDREN_KEY]?: HierarchyOfMaps;
 }
 
 export type PrimitiveValue = string | number | null; // there could be more but sufficient for now
@@ -29,13 +29,13 @@ export type Tuple = Record<string, any>; // this is a row like {country: 'US', g
 export const entryKey = ([key]: ArrayEntry) => key;
 export const entryValue = ([, value]: ArrayEntry) => value;
 export function depthAccessor(n: ArrayEntry) {
-  return entryValue(n)[depthKey];
+  return entryValue(n)[DEPTH_KEY];
 }
 export function aggregateAccessor(n: ArrayEntry) {
-  return entryValue(n)[aggregateKey];
+  return entryValue(n)[AGGREGATE_KEY];
 }
 export function childrenAccessor(n: ArrayEntry) {
-  return entryValue(n)[childrenKey];
+  return entryValue(n)[CHILDREN_KEY];
 }
 const ascending: Sorter = (a, b) => a - b;
 const descending: Sorter = (a, b) => b - a;
@@ -60,13 +60,13 @@ export function groupByRollup(
       const keyExists = pointer.has(key);
       const last = i === keyCount - 1;
       const node = keyExists && pointer.get(key);
-      const childrenMap = node ? node[childrenKey] : new Map();
-      const aggregate = node ? node[aggregateKey] : identity();
+      const childrenMap = node ? node[CHILDREN_KEY] : new Map();
+      const aggregate = node ? node[AGGREGATE_KEY] : identity();
       const reductionValue = reducer(aggregate, valueAccessor(n));
       pointer.set(key, {
-        [aggregateKey]: reductionValue,
-        [depthKey]: i,
-        ...(!last && { [childrenKey]: childrenMap }),
+        [AGGREGATE_KEY]: reductionValue,
+        [DEPTH_KEY]: i,
+        ...(!last && { [CHILDREN_KEY]: childrenMap }),
       });
       if (childrenMap) {
         // will always be true except when exiting from forEach, ie. upon encountering the leaf node
@@ -83,11 +83,11 @@ export function mapsToArrays(root: HierarchyOfMaps, sorter: NodeSorter): Hierarc
     Array.from(
       node,
       ([key, value]: [Key, MapNode]): ArrayEntry => {
-        const valueElement = value[childrenKey];
+        const valueElement = value[CHILDREN_KEY];
         const newValue: ArrayNode = Object.assign(
           {},
           value,
-          valueElement && { [childrenKey]: groupByMap(valueElement) },
+          valueElement && { [CHILDREN_KEY]: groupByMap(valueElement) },
         );
         return [key, newValue];
       },
@@ -96,7 +96,7 @@ export function mapsToArrays(root: HierarchyOfMaps, sorter: NodeSorter): Hierarc
 }
 
 export function mapEntryValue(entry: ArrayEntry) {
-  return entryValue(entry)[aggregateKey];
+  return entryValue(entry)[AGGREGATE_KEY];
 }
 
 export function aggregateComparator(accessor: Function, sorter: Sorter): NodeSorter {

@@ -1,7 +1,7 @@
 import { Part, Relation, TextMeasure } from '../types/types';
 import { linkTextLayout } from './link_text_layout';
 import { Config, PartitionLayouts } from '../types/config_types';
-import { tau, trueBearingToStandardPositionAngle } from '../utils/math';
+import { TAU, trueBearingToStandardPositionAngle } from '../utils/math';
 import { Distance, Pixels, Radius } from '../types/geometry_types';
 import { meanAngle } from '../geometry';
 import { treemap } from '../utils/treemap';
@@ -175,7 +175,7 @@ export function shapeViewModel(
 
   const totalValue = tree.reduce((p: number, n: ArrayEntry): number => p + mapEntryValue(n), 0);
 
-  const sunburstValueToAreaScale = tau / totalValue;
+  const sunburstValueToAreaScale = TAU / totalValue;
   const sunburstAreaAccessor = (e: ArrayEntry) => sunburstValueToAreaScale * mapEntryValue(e);
   const children = entryValue(tree[0]).children || [];
   const treemapLayout = hierarchicalLayout === PartitionLayouts.treemap;
@@ -218,7 +218,7 @@ export function shapeViewModel(
     const diff = n.x1 - n.x0;
     return treemapLayout
       ? n.x1 - n.x0 > minFontSize && n.y1px - n.y0px > minFontSize
-      : (diff < 0 ? tau + diff : diff) * ringSectorMiddleRadius(n) > Math.max(minFontSize, linkLabel.maximumSection);
+      : (diff < 0 ? TAU + diff : diff) * ringSectorMiddleRadius(n) > Math.max(minFontSize, linkLabel.maximumSection);
   };
 
   const nodesWithRoom = childNodes.filter(roomCondition);
