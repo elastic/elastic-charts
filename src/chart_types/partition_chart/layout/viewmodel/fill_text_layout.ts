@@ -65,22 +65,22 @@ export function ringSectorConstruction(config: Config, innerRadius: Radius, ring
       fillRectangleWidth,
       fillRectangleHeight,
     } = config;
-    const r =
+    const innerR =
       (fillOutside ? ringSectorOuterRadius : ringSectorInnerRadius)(innerRadius, ringThickness)(ringSector) +
       circlePadding * 2;
-    const R = Math.max(
-      r,
+    const outerR = Math.max(
+      innerR,
       ringSectorOuterRadius(innerRadius, ringThickness)(ringSector) - circlePadding + (fillOutside ? radiusOutside : 0),
     );
-    const alpha = ringSectorStartAngle(ringSector);
-    const beta = ringSectorEndAngle(ringSector);
-    const innerCircline = { x: 0, y: 0, r: r, inside: true, from: 0, to: TAU };
-    const outerCircline = { x: 0, y: 0, r: R, inside: false, from: 0, to: TAU };
-    const midRadius = (r + R) / 2;
-    const sectorStartCircle = angleToCircline(midRadius, alpha - radialPadding, -1);
-    const sectorEndCircle = angleToCircline(midRadius, beta + radialPadding, 1);
-    const RRx = fillRectangleWidth / 2;
-    const RRy = fillRectangleHeight / 2;
+    const startAngle = ringSectorStartAngle(ringSector);
+    const endAngle = ringSectorEndAngle(ringSector);
+    const innerCircline = { x: 0, y: 0, r: innerR, inside: true, from: 0, to: TAU };
+    const outerCircline = { x: 0, y: 0, r: outerR, inside: false, from: 0, to: TAU };
+    const midRadius = (innerR + outerR) / 2;
+    const sectorStartCircle = angleToCircline(midRadius, startAngle - radialPadding, -1);
+    const sectorEndCircle = angleToCircline(midRadius, endAngle + radialPadding, 1);
+    const outerRadiusFromRectangleWidth = fillRectangleWidth / 2;
+    const outerRadiusFromRectanglHeight = fillRectangleHeight / 2;
     const fullCircle = ringSector.x0 === 0 && ringSector.x1 === TAU;
     const sectorCirclines = [
       ...(fullCircle && innerRadius === 0 ? [] : [innerCircline]),
@@ -88,13 +88,13 @@ export function ringSectorConstruction(config: Config, innerRadius: Radius, ring
       ...(fullCircle ? [] : [sectorStartCircle, sectorEndCircle]),
     ];
     const rectangleCirclines =
-      RRx === Infinity && RRy === Infinity
+      outerRadiusFromRectangleWidth === Infinity && outerRadiusFromRectanglHeight === Infinity
         ? []
         : [
-            { x: INFINITY_RADIUS - RRx, y: 0, r: INFINITY_RADIUS, inside: true },
-            { x: -INFINITY_RADIUS + RRx, y: 0, r: INFINITY_RADIUS, inside: true },
-            { x: 0, y: INFINITY_RADIUS - RRy, r: INFINITY_RADIUS, inside: true },
-            { x: 0, y: -INFINITY_RADIUS + RRy, r: INFINITY_RADIUS, inside: true },
+            { x: INFINITY_RADIUS - outerRadiusFromRectangleWidth, y: 0, r: INFINITY_RADIUS, inside: true },
+            { x: -INFINITY_RADIUS + outerRadiusFromRectangleWidth, y: 0, r: INFINITY_RADIUS, inside: true },
+            { x: 0, y: INFINITY_RADIUS - outerRadiusFromRectanglHeight, r: INFINITY_RADIUS, inside: true },
+            { x: 0, y: -INFINITY_RADIUS + outerRadiusFromRectanglHeight, r: INFINITY_RADIUS, inside: true },
           ];
     return [...sectorCirclines, ...rectangleCirclines];
   };

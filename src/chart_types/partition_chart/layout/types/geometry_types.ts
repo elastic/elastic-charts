@@ -30,7 +30,7 @@ export interface CirclinePredicate extends Circline {
   inside: boolean;
 }
 
-export interface CirclArc extends Circline {
+export interface CirclineArc extends Circline {
   from: Radian;
   to: Radian;
 }

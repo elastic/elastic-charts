@@ -1,4 +1,4 @@
-import { CirclArc, Circline, CirclinePredicate, Distance, PointObject, RingSector } from './types/geometry_types';
+import { CirclineArc, Circline, CirclinePredicate, Distance, PointObject, RingSector } from './types/geometry_types';
 import { TAU } from './utils/math';
 
 function euclideanDistance({ x: x1, y: y1 }: PointObject, { x: x2, y: y2 }: PointObject): Distance {
@@ -41,7 +41,7 @@ function circlineIntersect(c1: Circline, c2: Circline): PointObject[] {
   }
 }
 
-function circlineValidSectors(refC: CirclinePredicate, c: CirclArc): CirclArc[] {
+function circlineValidSectors(refC: CirclinePredicate, c: CirclineArc): CirclineArc[] {
   const { inside } = refC;
   const { x, y, r, from, to } = c;
   const fullContainment = fullyContained(refC, c);
@@ -94,12 +94,12 @@ function circlineValidSectors(refC: CirclinePredicate, c: CirclArc): CirclArc[] 
   return result;
 }
 
-export function conjunctiveConstraint(constraints: RingSector, c: CirclArc): CirclArc[] {
+export function conjunctiveConstraint(constraints: RingSector, c: CirclineArc): CirclineArc[] {
   // imperative, slightly optimized buildup of `valids` as it's in the hot loop:
   let valids = [c];
   for (let i = 0; i < constraints.length; i++) {
     const refC = constraints[i]; // reference circle
-    const nextValids: CirclArc[] = [];
+    const nextValids: CirclineArc[] = [];
     for (let j = 0; j < valids.length; j++) {
       const cc = valids[j];
       const currentValids = circlineValidSectors(refC, cc);
