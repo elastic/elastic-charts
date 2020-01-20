@@ -45,7 +45,6 @@ export const SimplePieChart = () => (
           },
         },
       ]}
-      config={{ ...config, hierarchicalLayout: PartitionLayouts.sunburst }}
     />
   </Chart>
 );
@@ -163,7 +162,7 @@ export const PieChartLabels = () => (
           },
         },
       ]}
-      config={{ ...config, hierarchicalLayout: PartitionLayouts.sunburst }}
+      config={{ hierarchicalLayout: PartitionLayouts.sunburst }}
     />
   </Chart>
 );
@@ -191,7 +190,7 @@ export const SomeZeroValueSlice = () => (
           },
         },
       ]}
-      config={{ ...config, hierarchicalLayout: PartitionLayouts.sunburst }}
+      config={{ hierarchicalLayout: PartitionLayouts.sunburst }}
     />
   </Chart>
 );
@@ -330,7 +329,7 @@ export const TwoSlicesPieChart = () => (
           },
         },
       ]}
-      config={{ ...config, hierarchicalLayout: PartitionLayouts.sunburst }}
+      config={{ hierarchicalLayout: PartitionLayouts.sunburst }}
     />
   </Chart>
 );
@@ -359,7 +358,6 @@ export const LargeSmallPieChart = () => (
         },
       ]}
       config={{
-        ...config,
         hierarchicalLayout: PartitionLayouts.sunburst,
         clockwiseSectors: true,
         specialFirstInnermostSector: false,
@@ -391,7 +389,7 @@ export const VeryLargeSmallPieChart = () => (
           },
         },
       ]}
-      config={{ ...config, hierarchicalLayout: PartitionLayouts.sunburst }}
+      config={{ hierarchicalLayout: PartitionLayouts.sunburst }}
     />
   </Chart>
 );
@@ -419,7 +417,7 @@ export const BigEmptyPieChart = () => (
           },
         },
       ]}
-      config={{ ...config, hierarchicalLayout: PartitionLayouts.sunburst }}
+      config={{ hierarchicalLayout: PartitionLayouts.sunburst }}
     />
   </Chart>
 );
@@ -447,7 +445,7 @@ export const FullZeroSlicePieChart = () => (
           },
         },
       ]}
-      config={{ ...config, hierarchicalLayout: PartitionLayouts.sunburst }}
+      config={{ hierarchicalLayout: PartitionLayouts.sunburst }}
     />
   </Chart>
 );
@@ -471,7 +469,7 @@ export const SingleSlicePieChart = () => (
           },
         },
       ]}
-      config={{ ...config, hierarchicalLayout: PartitionLayouts.sunburst }}
+      config={{ hierarchicalLayout: PartitionLayouts.sunburst }}
     />
   </Chart>
 );
@@ -495,7 +493,7 @@ export const NoSliceNoPie = () => (
           },
         },
       ]}
-      config={{ ...config, hierarchicalLayout: PartitionLayouts.sunburst }}
+      config={{ hierarchicalLayout: PartitionLayouts.sunburst }}
     />
   </Chart>
 );
@@ -522,7 +520,7 @@ export const NegativeNoPie = () => (
           },
         },
       ]}
-      config={{ ...config, hierarchicalLayout: PartitionLayouts.sunburst }}
+      config={{ hierarchicalLayout: PartitionLayouts.sunburst }}
     />
   </Chart>
 );
@@ -546,7 +544,7 @@ export const TotalZeroNoPie = () => (
           },
         },
       ]}
-      config={{ ...config, hierarchicalLayout: PartitionLayouts.sunburst }}
+      config={{ hierarchicalLayout: PartitionLayouts.sunburst }}
     />
   </Chart>
 );
@@ -572,9 +570,8 @@ export const HighNumberOfSlice = () => (
         },
       ]}
       config={{
-        ...config,
         hierarchicalLayout: PartitionLayouts.sunburst,
-        linkLabel: { ...config.linkLabel, maxCount: 15 },
+        linkLabel: { maxCount: 15 },
       }}
     />
   </Chart>
@@ -601,7 +598,6 @@ export const CounterClockwiseSpecial = () => (
         },
       ]}
       config={{
-        ...config,
         hierarchicalLayout: PartitionLayouts.sunburst,
         clockwiseSectors: false,
       }}
@@ -630,7 +626,6 @@ export const ClockwiseNoSpecial = () => (
         },
       ]}
       config={{
-        ...config,
         hierarchicalLayout: PartitionLayouts.sunburst,
         specialFirstInnermostSector: false,
       }}
@@ -659,9 +654,8 @@ export const LinkedLabelsOnly = () => (
         },
       ]}
       config={{
-        ...config,
         hierarchicalLayout: PartitionLayouts.sunburst,
-        linkLabel: { ...config.linkLabel, maximumSection: Infinity },
+        linkLabel: { maximumSection: Infinity },
       }}
     />
   </Chart>
@@ -687,9 +681,8 @@ export const NoLabels = () => (
         },
       ]}
       config={{
-        ...config,
         hierarchicalLayout: PartitionLayouts.sunburst,
-        linkLabel: { ...config.linkLabel, maximumSection: Infinity, maxCount: 0 },
+        linkLabel: { maximumSection: Infinity, maxCount: 0 },
       }}
     />
   </Chart>

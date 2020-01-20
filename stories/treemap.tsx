@@ -49,11 +49,7 @@ export const OneLayer = () => (
         },
       ]}
       config={{
-        ...config,
         hierarchicalLayout: PartitionLayouts.treemap,
-        minFontSize: 1,
-        maxFontSize: 36,
-        idealFontSizeJump: 1.01,
       }}
     />
   </Chart>
