@@ -1,4 +1,4 @@
-import { Chart, getSpecId, Partition } from '../src';
+import { Chart, Partition } from '../src';
 import { mocks } from '../src/mocks/hierarchical/index';
 import { config } from '../src/chart_types/partition_chart/layout/config/config';
 import { arrayToLookup, hueInterpolator } from '../src/chart_types/partition_chart/layout/utils/calcs';
@@ -31,7 +31,7 @@ export default {
 export const OneLayer = () => (
   <Chart className={'story-chart'}>
     <Partition
-      id={getSpecId('spec_' + getRandomNumber())}
+      id={'spec_' + getRandomNumber()}
       data={mocks.pie}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
@@ -68,7 +68,7 @@ export const MidTwoLayers = () => (
     }
   >
     <Partition
-      id={getSpecId('spec_' + getRandomNumber())}
+      id={'spec_' + getRandomNumber()}
       data={mocks.sunburst}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
@@ -125,7 +125,7 @@ export const TwoLayersStressTest = () => (
     }
   >
     <Partition
-      id={getSpecId('spec_' + getRandomNumber())}
+      id={'spec_' + getRandomNumber()}
       data={mocks.sunburst}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
@@ -183,7 +183,7 @@ export const MultiColor = () => (
     }
   >
     <Partition
-      id={getSpecId('spec_' + getRandomNumber())}
+      id={'spec_' + getRandomNumber()}
       data={mocks.sunburst}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
@@ -240,7 +240,7 @@ export const CustomStyle = () => (
     }
   >
     <Partition
-      id={getSpecId('spec_' + getRandomNumber())}
+      id={'spec_' + getRandomNumber()}
       data={mocks.sunburst}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}

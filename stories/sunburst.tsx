@@ -1,4 +1,4 @@
-import { Chart, getSpecId, Partition } from '../src';
+import { Chart, Partition } from '../src';
 import { mocks } from '../src/mocks/hierarchical/index';
 import { config } from '../src/chart_types/partition_chart/layout/config/config';
 import { arrayToLookup, hueInterpolator } from '../src/chart_types/partition_chart/layout/utils/calcs';
@@ -31,7 +31,7 @@ const defaultFillColor = (colorMaker: any) => (d: any, i: number, a: any[]) => c
 export const SimplePieChart = () => (
   <Chart className={'story-chart'}>
     <Partition
-      id={getSpecId('spec_' + getRandomNumber())}
+      id={'spec_' + getRandomNumber()}
       data={mocks.pie}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
@@ -58,7 +58,7 @@ SimplePieChart.story = {
 export const PieChartWithFillLabels = () => (
   <Chart className={'story-chart'}>
     <Partition
-      id={getSpecId('spec_' + getRandomNumber())}
+      id={'spec_' + getRandomNumber()}
       data={mocks.pie}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
@@ -102,7 +102,7 @@ PieChartWithFillLabels.story = {
 export const DonutChartWithFillLabels = () => (
   <Chart className={'story-chart'}>
     <Partition
-      id={getSpecId('spec_' + getRandomNumber())}
+      id={'spec_' + getRandomNumber()}
       data={mocks.pie}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
@@ -145,7 +145,7 @@ DonutChartWithFillLabels.story = {
 export const PieChartLabels = () => (
   <Chart className={'story-chart'}>
     <Partition
-      id={getSpecId('spec_' + getRandomNumber())}
+      id={'spec_' + getRandomNumber()}
       data={[
         { sitc1: 'Machinery and transport equipment', exportVal: 5 },
         { sitc1: 'Mineral fuels, lubricants and related materials', exportVal: 4 },
@@ -173,7 +173,7 @@ PieChartLabels.story = {
 export const SomeZeroValueSlice = () => (
   <Chart className={'story-chart'}>
     <Partition
-      id={getSpecId('spec_' + getRandomNumber())}
+      id={'spec_' + getRandomNumber()}
       data={mocks.pie
         .slice(0, 2)
         .concat(mocks.pie.slice(2, 4).map((s) => ({ ...s, exportVal: 0 })))
@@ -201,7 +201,7 @@ SomeZeroValueSlice.story = {
 export const SunburstTwoLayers = () => (
   <Chart className={'story-chart'}>
     <Partition
-      id={getSpecId('spec_' + getRandomNumber())}
+      id={'spec_' + getRandomNumber()}
       data={mocks.sunburst}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
@@ -256,7 +256,7 @@ SunburstTwoLayers.story = {
 export const SunburstThreeLayers = () => (
   <Chart className={'story-chart'}>
     <Partition
-      id={getSpecId('spec_' + getRandomNumber())}
+      id={'spec_' + getRandomNumber()}
       data={mocks.miniSunburst}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
@@ -315,7 +315,7 @@ SunburstThreeLayers.story = {
 export const TwoSlicesPieChart = () => (
   <Chart className={'story-chart'}>
     <Partition
-      id={getSpecId('spec_' + getRandomNumber())}
+      id={'spec_' + getRandomNumber()}
       data={mocks.pie.slice(0, 2)}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
@@ -340,7 +340,7 @@ TwoSlicesPieChart.story = {
 export const LargeSmallPieChart = () => (
   <Chart className={'story-chart'}>
     <Partition
-      id={getSpecId('spec_' + getRandomNumber())}
+      id={'spec_' + getRandomNumber()}
       data={[
         { sitc1: 'Machinery and transport equipment', exportVal: 280 },
         { sitc1: 'Mineral fuels, lubricants and related materials', exportVal: 80 },
@@ -372,7 +372,7 @@ LargeSmallPieChart.story = {
 export const VeryLargeSmallPieChart = () => (
   <Chart className={'story-chart'}>
     <Partition
-      id={getSpecId('spec_' + getRandomNumber())}
+      id={'spec_' + getRandomNumber()}
       data={[
         { sitc1: 'Machinery and transport equipment', exportVal: 9 },
         { sitc1: 'Mineral fuels, lubricants and related materials', exportVal: 1 },
@@ -400,7 +400,7 @@ VeryLargeSmallPieChart.story = {
 export const BigEmptyPieChart = () => (
   <Chart className={'story-chart'}>
     <Partition
-      id={getSpecId('spec_' + getRandomNumber())}
+      id={'spec_' + getRandomNumber()}
       data={[
         { sitc1: '7', exportVal: 999999 },
         { sitc1: '3', exportVal: 1 },
@@ -428,7 +428,7 @@ BigEmptyPieChart.story = {
 export const FullZeroSlicePieChart = () => (
   <Chart className={'story-chart'}>
     <Partition
-      id={getSpecId('spec_' + getRandomNumber())}
+      id={'spec_' + getRandomNumber()}
       data={[
         { sitc1: '7', exportVal: 1000000 },
         { sitc1: '3', exportVal: 0 },
@@ -455,7 +455,7 @@ FullZeroSlicePieChart.story = {
 export const SingleSlicePieChart = () => (
   <Chart className={'story-chart'}>
     <Partition
-      id={getSpecId('spec_' + getRandomNumber())}
+      id={'spec_' + getRandomNumber()}
       data={mocks.pie.slice(0, 1)}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
@@ -479,7 +479,7 @@ SingleSlicePieChart.story = {
 export const NoSliceNoPie = () => (
   <Chart className={'story-chart'}>
     <Partition
-      id={getSpecId('spec_' + getRandomNumber())}
+      id={'spec_' + getRandomNumber()}
       data={[]}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
@@ -503,7 +503,7 @@ NoSliceNoPie.story = {
 export const NegativeNoPie = () => (
   <Chart className={'story-chart'}>
     <Partition
-      id={getSpecId('spec_' + getRandomNumber())}
+      id={'spec_' + getRandomNumber()}
       data={mocks.pie
         .slice(0, 2)
         .concat(mocks.pie.slice(2, 3).map((s) => ({ ...s, exportVal: -0.1 })))
@@ -530,7 +530,7 @@ NegativeNoPie.story = {
 export const TotalZeroNoPie = () => (
   <Chart className={'story-chart'}>
     <Partition
-      id={getSpecId('spec_' + getRandomNumber())}
+      id={'spec_' + getRandomNumber()}
       data={mocks.pie.map((s) => ({ ...s, exportVal: 0 }))}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
@@ -555,7 +555,7 @@ TotalZeroNoPie.story = {
 export const HighNumberOfSlice = () => (
   <Chart className={'story-chart'}>
     <Partition
-      id={getSpecId('spec_' + getRandomNumber())}
+      id={'spec_' + getRandomNumber()}
       data={mocks.manyPie}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
@@ -583,7 +583,7 @@ HighNumberOfSlice.story = {
 export const CounterClockwiseSpecial = () => (
   <Chart className={'story-chart'}>
     <Partition
-      id={getSpecId('spec_' + getRandomNumber())}
+      id={'spec_' + getRandomNumber()}
       data={mocks.pie}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
@@ -611,7 +611,7 @@ CounterClockwiseSpecial.story = {
 export const ClockwiseNoSpecial = () => (
   <Chart className={'story-chart'}>
     <Partition
-      id={getSpecId('spec_' + getRandomNumber())}
+      id={'spec_' + getRandomNumber()}
       data={mocks.pie}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
@@ -639,7 +639,7 @@ ClockwiseNoSpecial.story = {
 export const LinkedLabelsOnly = () => (
   <Chart className={'story-chart'}>
     <Partition
-      id={getSpecId('spec_' + getRandomNumber())}
+      id={'spec_' + getRandomNumber()}
       data={mocks.pie}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
@@ -666,7 +666,7 @@ LinkedLabelsOnly.story = {
 export const NoLabels = () => (
   <Chart className={'story-chart'}>
     <Partition
-      id={getSpecId('spec_' + getRandomNumber())}
+      id={'spec_' + getRandomNumber()}
       data={mocks.pie}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
