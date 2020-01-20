@@ -7,7 +7,7 @@ export const PartitionLayouts = Object.freeze({
   treemap: 'treemap',
 });
 
-export type HierarchicalLayout = Values<typeof PartitionLayouts>; // could use ValuesType<typeof HierarchicalChartTypes>
+export type PartitionLayouts = Values<typeof PartitionLayouts>; // could use ValuesType<typeof HierarchicalChartTypes>
 
 export interface FillLabel {
   textColor: Color;
@@ -29,7 +29,7 @@ export interface StaticConfig {
   outerSizeRatio: SizeRatio;
   clockwiseSectors: boolean;
   specialFirstInnermostSector: boolean;
-  hierarchicalLayout: HierarchicalLayout;
+  hierarchicalLayout: PartitionLayouts;
 
   // general text config
   fontFamily: string;
