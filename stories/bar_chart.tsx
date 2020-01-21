@@ -95,37 +95,41 @@ basic.story = {
       page: () => {
         const toggleSpec = boolean('toggle bar spec', true);
         const specId = toggleSpec ? 'bars1' : 'bars2';
+        const styling = {
+          border: '1px solid black',
+          padding: '15px',
+        };
         return (
           <>
             <p>Basic Bar Chart Documentation</p>
             <br />
-            <table id="basic-bar-chart">
+            <table id="basic-bar-chart" style={styling}>
               <tbody>
-                <th>Bar Series Prop Names</th>
-                <th>Basic Bar Chart Values</th>
-                <tr>
-                  <td>specId</td>
-                  <td>{getSpecId(specId)}</td>
+                <th style={styling}>Bar Series Prop Names</th>
+                <th style={styling}>Basic Bar Chart Values</th>
+                <tr style={styling}>
+                  <td style={styling}>specId</td>
+                  <td style={styling}>{getSpecId(specId)}</td>
                 </tr>
-                <tr>
-                  <td>name</td>
-                  <td>Simple Bar Series</td>
+                <tr style={styling}>
+                  <td style={styling}>name</td>
+                  <td style={styling}>&apos;Simple bar series&apos;</td>
                 </tr>
-                <tr>
-                  <td>xScaleType</td>
-                  <td>{ScaleType.Linear}</td>
+                <tr style={styling}>
+                  <td style={styling}>xScaleType</td>
+                  <td style={styling}>{ScaleType.Linear}</td>
                 </tr>
-                <tr>
-                  <td>yScaleType</td>
-                  <td>{ScaleType.Linear}</td>
+                <tr style={styling}>
+                  <td style={styling}>yScaleType</td>
+                  <td style={styling}>{ScaleType.Linear}</td>
                 </tr>
-                <tr>
-                  <td>xAccessor</td>
-                  <td>&apos;x&apos;</td>
+                <tr style={styling}>
+                  <td style={styling}>xAccessor</td>
+                  <td style={styling}>&apos;x&apos;</td>
                 </tr>
-                <tr>
-                  <td>yAccessors</td>
-                  <td>[&apos;y&apos;]</td>
+                <tr style={styling}>
+                  <td style={styling}>yAccessors</td>
+                  <td style={styling}>[&apos;y&apos;]</td>
                 </tr>
               </tbody>
             </table>
