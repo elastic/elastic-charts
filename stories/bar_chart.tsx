@@ -92,11 +92,46 @@ basic.story = {
     componentSubtitle: 'Handy status label',
     docs: {
       // eslint-disable-next-line react/display-name
-      page: () => (
-        <>
-          <p>Test</p>
-        </>
-      ),
+      page: () => {
+        const toggleSpec = boolean('toggle bar spec', true);
+        const specId = toggleSpec ? 'bars1' : 'bars2';
+        return (
+          <>
+            <p>Basic Bar Chart Documentation</p>
+            <br />
+            <table id="basic-bar-chart">
+              <tbody>
+                <th>Bar Series Prop Names</th>
+                <th>Basic Bar Chart Values</th>
+                <tr>
+                  <td>specId</td>
+                  <td>{getSpecId(specId)}</td>
+                </tr>
+                <tr>
+                  <td>name</td>
+                  <td>Simple Bar Series</td>
+                </tr>
+                <tr>
+                  <td>xScaleType</td>
+                  <td>{ScaleType.Linear}</td>
+                </tr>
+                <tr>
+                  <td>yScaleType</td>
+                  <td>{ScaleType.Linear}</td>
+                </tr>
+                <tr>
+                  <td>xAccessor</td>
+                  <td>&apos;x&apos;</td>
+                </tr>
+                <tr>
+                  <td>yAccessors</td>
+                  <td>[&apos;y&apos;]</td>
+                </tr>
+              </tbody>
+            </table>
+          </>
+        );
+      },
       container: DocsContainer,
     },
   },
