@@ -1,4 +1,4 @@
-import { Datum } from '../chart_types/xy_chart/utils/specs';
+import { Datum } from './domain';
 
 type UnaryAccessorFn = (datum: Datum) => any;
 type BinaryAccessorFn = (datum: Datum, index: number) => any;

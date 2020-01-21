@@ -20,7 +20,6 @@ export {
   AnnotationDomainType,
   AnnotationDomainTypes,
   CustomSeriesColors,
-  Datum,
   SeriesColorsArray,
   SeriesColorAccessorFn,
   HistogramModeAlignment,
@@ -41,3 +40,4 @@ export {
 } from './chart_types/partition_chart/layout/types/config_types';
 export { Layer as PartitionLayer } from './chart_types/partition_chart/specs/index';
 export { AccessorFn, IndexedAccessorFn } from './utils/accessor';
+export { Datum } from './utils/domain';

@@ -1,6 +1,5 @@
 import React from 'react';
-import { Chart, Partition } from '../src';
-import { Datum } from '../src/chart_types/xy_chart/utils/specs';
+import { Chart, Datum, Partition } from '../src';
 export class Playground extends React.Component<{}, { isSunburstShown: boolean }> {
   chartRef: React.RefObject<Chart> = React.createRef();
   state = {

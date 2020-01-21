@@ -1,12 +1,12 @@
 import { $Values } from 'utility-types';
 import {
   AreaSeriesStyle,
+  BarSeriesStyle,
   GridLineConfig,
   LineAnnotationStyle,
   LineSeriesStyle,
-  RectAnnotationStyle,
-  BarSeriesStyle,
   PointStyle,
+  RectAnnotationStyle,
 } from '../../../utils/themes/theme';
 import { Accessor, AccessorFormat } from '../../../utils/accessor';
 import { RecursivePartial } from '../../../utils/commons';
@@ -17,8 +17,8 @@ import { RawDataSeriesDatum, SeriesIdentifier } from './series';
 import { AnnotationTooltipFormatter } from '../annotations/annotation_utils';
 import { Spec } from '../../..';
 import { ChartTypes } from '../..';
+import { Datum } from '../../../utils/domain';
 
-export type Datum = any;
 export type Rotation = 0 | 90 | -90 | 180;
 export type Rendering = 'canvas' | 'svg';
 export type Color = string;
