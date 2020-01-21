@@ -2,12 +2,11 @@ import { Chart, Partition } from '../src';
 import { mocks } from '../src/mocks/hierarchical/index';
 import { config } from '../src/chart_types/partition_chart/layout/config/config';
 import { arrayToLookup, hueInterpolator } from '../src/chart_types/partition_chart/layout/utils/calcs';
-import { Datum } from '../src/chart_types/xy_chart/utils/specs';
+import { Datum, PartitionLayouts } from '../src/index';
 import { countryDimension, productDimension, regionDimension } from '../src/mocks/hierarchical/dimension_codes';
-import React from 'react';
-import { PartitionLayouts } from '../src/chart_types/partition_chart/layout/types/config_types';
-import { getRandomNumber } from '../src/mocks/utils'; // @ts-ignore
+import { getRandomNumber } from '../src/mocks/utils';
 import { palettes } from '../src/mocks/hierarchical/palettes';
+import React from 'react';
 
 const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
 const regionLookup = arrayToLookup((d: Datum) => d.region, regionDimension);

@@ -20,6 +20,7 @@ export {
   AnnotationDomainType,
   AnnotationDomainTypes,
   CustomSeriesColors,
+  Datum,
   SeriesColorsArray,
   SeriesColorAccessorFn,
   HistogramModeAlignment,
@@ -33,3 +34,10 @@ export {
 } from './chart_types/xy_chart/utils/specs';
 export { AnnotationTooltipFormatter } from './chart_types/xy_chart/annotations/annotation_utils';
 export { GeometryValue } from './utils/geometry';
+export {
+  Config as PartitionConfig,
+  FillLabel as PartitionFillLabel,
+  PartitionLayouts,
+} from './chart_types/partition_chart/layout/types/config_types';
+export { Layer as PartitionLayer } from './chart_types/partition_chart/specs/index';
+export { AccessorFn, IndexedAccessorFn } from './utils/accessor';
