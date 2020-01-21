@@ -1,10 +1,9 @@
 import { ChartTypes } from '../../index';
-import { SpecTypes } from '../../xy_chart/utils/specs';
 import { config } from '../layout/config/config';
 import { FunctionComponent } from 'react';
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
 import { AccessorFn, IndexedAccessorFn } from '../../../utils/accessor';
-import { Spec } from '../../../specs/index';
+import { Spec, SpecTypes } from '../../../specs/index';
 import { Config, FillLabel } from '../layout/types/config_types';
 import { RecursivePartial } from '../../../utils/commons';
 import { Datum } from '../../../utils/domain';

@@ -29,7 +29,6 @@ export {
   RectAnnotationDatum,
   RectAnnotationSpec,
   SeriesTypes,
-  SpecTypes,
 } from './chart_types/xy_chart/utils/specs';
 export { AnnotationTooltipFormatter } from './chart_types/xy_chart/annotations/annotation_utils';
 export { GeometryValue } from './utils/geometry';
@@ -41,3 +40,4 @@ export {
 export { Layer as PartitionLayer } from './chart_types/partition_chart/specs/index';
 export { AccessorFn, IndexedAccessorFn } from './utils/accessor';
 export { Datum } from './utils/domain';
+export { SpecTypes } from './specs/settings';

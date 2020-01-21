@@ -3,10 +3,10 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSpecsFromStore } from '../../../../state/utils';
 import { ChartTypes } from '../../..';
-import { SpecTypes } from '../../../xy_chart/utils/specs';
 import { render } from './scenegraph';
 import { nullSectorViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { PartitionSpec } from '../../specs/index';
+import { SpecTypes } from '../../../../specs/settings';
 
 const getSpecs = (state: GlobalChartState) => state.specs;
 

@@ -15,7 +15,7 @@ import { ScaleContinuousType, ScaleType } from '../../../utils/scales/scales';
 import { CurveType } from '../../../utils/curves';
 import { RawDataSeriesDatum, SeriesIdentifier } from './series';
 import { AnnotationTooltipFormatter } from '../annotations/annotation_utils';
-import { Spec } from '../../..';
+import { Spec, SpecTypes } from '../../..';
 import { ChartTypes } from '../..';
 import { Datum } from '../../../utils/domain';
 
@@ -32,15 +32,6 @@ export const SeriesTypes = Object.freeze({
 });
 
 export type SeriesTypes = $Values<typeof SeriesTypes>;
-
-export const SpecTypes = Object.freeze({
-  Series: 'series' as 'series',
-  Axis: 'axis' as 'axis',
-  Annotation: 'annotation' as 'annotation',
-  Settings: 'settings' as 'settings',
-});
-
-export type SpecTypes = $Values<typeof SpecTypes>;
 
 /**
  * Override for bar styles per datum
