@@ -1,4 +1,4 @@
-import { Chart, Datum, Partition, PartitionLayouts } from '../src';
+import { Chart, Datum, Partition, PartitionLayout } from '../src';
 import { mocks } from '../src/mocks/hierarchical/index';
 import { config } from '../src/chart_types/partition_chart/layout/config/config';
 import { arrayToLookup, hueInterpolator } from '../src/chart_types/partition_chart/layout/utils/calcs';
@@ -47,7 +47,7 @@ export const OneLayer = () => (
         },
       ]}
       config={{
-        hierarchicalLayout: PartitionLayouts.treemap,
+        partitionLayout: PartitionLayout.treemap,
       }}
     />
   </Chart>
@@ -100,7 +100,7 @@ export const MidTwoLayers = () => (
         },
       ]}
       config={{
-        hierarchicalLayout: PartitionLayouts.treemap,
+        partitionLayout: PartitionLayout.treemap,
         margin: { top: 0, bottom: 0, left: 0, right: 0 },
         minFontSize: 4,
         maxFontSize: 84,
@@ -157,7 +157,7 @@ export const TwoLayersStressTest = () => (
         },
       ]}
       config={{
-        hierarchicalLayout: PartitionLayouts.treemap,
+        partitionLayout: PartitionLayout.treemap,
         margin: { top: 0, bottom: 0, left: 0, right: 0 },
         minFontSize: 4,
         maxFontSize: 84,
@@ -214,7 +214,7 @@ export const MultiColor = () => (
         },
       ]}
       config={{
-        hierarchicalLayout: PartitionLayouts.treemap,
+        partitionLayout: PartitionLayout.treemap,
         margin: { top: 0, bottom: 0, left: 0, right: 0 },
         minFontSize: 4,
         maxFontSize: 84,
@@ -274,7 +274,7 @@ export const CustomStyle = () => (
         },
       ]}
       config={{
-        hierarchicalLayout: PartitionLayouts.treemap,
+        partitionLayout: PartitionLayout.treemap,
         margin: { top: 0, bottom: 0, left: 0, right: 0 },
         minFontSize: 8,
         maxFontSize: 14,

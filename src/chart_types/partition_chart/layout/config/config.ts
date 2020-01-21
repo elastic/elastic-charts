@@ -1,5 +1,5 @@
 import { palettes } from '../../../../mocks/hierarchical/palettes';
-import { Config, PartitionLayouts, Numeric } from '../types/config_types';
+import { Config, PartitionLayout, Numeric } from '../types/config_types';
 import { GOLDEN_RATIO, TAU } from '../utils/math';
 
 const log10 = Math.log(10);
@@ -79,10 +79,10 @@ export const configMetadata = {
     type: 'number',
     reconfigurable: false, // there's no real reason to reconfigure it; finding the largest possible font is good for readability
   },
-  hierarchicalLayout: {
-    dflt: PartitionLayouts.sunburst,
+  partitionLayout: {
+    dflt: PartitionLayout.sunburst,
     type: 'string',
-    values: Object.keys(PartitionLayouts),
+    values: Object.keys(PartitionLayout),
   },
 
   // fill text layout config

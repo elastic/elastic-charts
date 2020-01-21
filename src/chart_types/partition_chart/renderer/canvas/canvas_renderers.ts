@@ -9,7 +9,7 @@ import {
   TextRow,
 } from '../../layout/types/viewmodel_types';
 import { TAU } from '../../layout/utils/math';
-import { PartitionLayouts } from '../../layout/types/config_types';
+import { PartitionLayout } from '../../layout/types/config_types';
 
 // the burnout avoidance in the center of the pie
 const LINE_WIDTH_MULT = 10; // border can be a maximum 1/LINE_WIDTH_MULT - th of the sector angle, otherwise the border would dominate
@@ -240,7 +240,7 @@ export function renderPartitionCanvas2d(
 
       // bottom layer: sectors (pie slices, ring sectors etc.)
       (ctx: CanvasRenderingContext2D) =>
-        config.hierarchicalLayout === PartitionLayouts.treemap
+        config.partitionLayout === PartitionLayout.treemap
           ? renderRectangles(ctx, quadViewModel)
           : renderSectors(ctx, quadViewModel),
 

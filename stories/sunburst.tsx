@@ -1,4 +1,4 @@
-import { Chart, Datum, Partition, PartitionLayouts } from '../src';
+import { Chart, Datum, Partition, PartitionLayout } from '../src';
 import { mocks } from '../src/mocks/hierarchical/index';
 import { config } from '../src/chart_types/partition_chart/layout/config/config';
 import { arrayToLookup, hueInterpolator } from '../src/chart_types/partition_chart/layout/utils/calcs';
@@ -71,7 +71,7 @@ export const PieChartWithFillLabels = () => (
         },
       ]}
       config={{
-        hierarchicalLayout: PartitionLayouts.sunburst,
+        partitionLayout: PartitionLayout.sunburst,
         linkLabel: {
           maxCount: 32,
           fontSize: 14,
@@ -115,7 +115,7 @@ export const DonutChartWithFillLabels = () => (
         },
       ]}
       config={{
-        hierarchicalLayout: PartitionLayouts.sunburst,
+        partitionLayout: PartitionLayout.sunburst,
         linkLabel: {
           maxCount: 32,
           fontSize: 14,
@@ -160,7 +160,7 @@ export const PieChartLabels = () => (
           },
         },
       ]}
-      config={{ hierarchicalLayout: PartitionLayouts.sunburst }}
+      config={{ partitionLayout: PartitionLayout.sunburst }}
     />
   </Chart>
 );
@@ -188,7 +188,7 @@ export const SomeZeroValueSlice = () => (
           },
         },
       ]}
-      config={{ hierarchicalLayout: PartitionLayouts.sunburst }}
+      config={{ partitionLayout: PartitionLayout.sunburst }}
     />
   </Chart>
 );
@@ -225,7 +225,7 @@ export const SunburstTwoLayers = () => (
         },
       ]}
       config={{
-        hierarchicalLayout: PartitionLayouts.sunburst,
+        partitionLayout: PartitionLayout.sunburst,
         linkLabel: {
           maxCount: 0,
           fontSize: 14,
@@ -285,7 +285,7 @@ export const SunburstThreeLayers = () => (
         },
       ]}
       config={{
-        hierarchicalLayout: PartitionLayouts.sunburst,
+        partitionLayout: PartitionLayout.sunburst,
         linkLabel: {
           maxCount: 0,
           fontSize: 14,
@@ -327,7 +327,7 @@ export const TwoSlicesPieChart = () => (
           },
         },
       ]}
-      config={{ hierarchicalLayout: PartitionLayouts.sunburst }}
+      config={{ partitionLayout: PartitionLayout.sunburst }}
     />
   </Chart>
 );
@@ -356,7 +356,7 @@ export const LargeSmallPieChart = () => (
         },
       ]}
       config={{
-        hierarchicalLayout: PartitionLayouts.sunburst,
+        partitionLayout: PartitionLayout.sunburst,
         clockwiseSectors: true,
         specialFirstInnermostSector: false,
         outerSizeRatio: 1,
@@ -387,7 +387,7 @@ export const VeryLargeSmallPieChart = () => (
           },
         },
       ]}
-      config={{ hierarchicalLayout: PartitionLayouts.sunburst }}
+      config={{ partitionLayout: PartitionLayout.sunburst }}
     />
   </Chart>
 );
@@ -415,7 +415,7 @@ export const BigEmptyPieChart = () => (
           },
         },
       ]}
-      config={{ hierarchicalLayout: PartitionLayouts.sunburst }}
+      config={{ partitionLayout: PartitionLayout.sunburst }}
     />
   </Chart>
 );
@@ -443,7 +443,7 @@ export const FullZeroSlicePieChart = () => (
           },
         },
       ]}
-      config={{ hierarchicalLayout: PartitionLayouts.sunburst }}
+      config={{ partitionLayout: PartitionLayout.sunburst }}
     />
   </Chart>
 );
@@ -467,7 +467,7 @@ export const SingleSlicePieChart = () => (
           },
         },
       ]}
-      config={{ hierarchicalLayout: PartitionLayouts.sunburst }}
+      config={{ partitionLayout: PartitionLayout.sunburst }}
     />
   </Chart>
 );
@@ -491,7 +491,7 @@ export const NoSliceNoPie = () => (
           },
         },
       ]}
-      config={{ hierarchicalLayout: PartitionLayouts.sunburst }}
+      config={{ partitionLayout: PartitionLayout.sunburst }}
     />
   </Chart>
 );
@@ -518,7 +518,7 @@ export const NegativeNoPie = () => (
           },
         },
       ]}
-      config={{ hierarchicalLayout: PartitionLayouts.sunburst }}
+      config={{ partitionLayout: PartitionLayout.sunburst }}
     />
   </Chart>
 );
@@ -542,7 +542,7 @@ export const TotalZeroNoPie = () => (
           },
         },
       ]}
-      config={{ hierarchicalLayout: PartitionLayouts.sunburst }}
+      config={{ partitionLayout: PartitionLayout.sunburst }}
     />
   </Chart>
 );
@@ -568,7 +568,7 @@ export const HighNumberOfSlice = () => (
         },
       ]}
       config={{
-        hierarchicalLayout: PartitionLayouts.sunburst,
+        partitionLayout: PartitionLayout.sunburst,
         linkLabel: { maxCount: 15 },
       }}
     />
@@ -596,7 +596,7 @@ export const CounterClockwiseSpecial = () => (
         },
       ]}
       config={{
-        hierarchicalLayout: PartitionLayouts.sunburst,
+        partitionLayout: PartitionLayout.sunburst,
         clockwiseSectors: false,
       }}
     />
@@ -624,7 +624,7 @@ export const ClockwiseNoSpecial = () => (
         },
       ]}
       config={{
-        hierarchicalLayout: PartitionLayouts.sunburst,
+        partitionLayout: PartitionLayout.sunburst,
         specialFirstInnermostSector: false,
       }}
     />
@@ -652,7 +652,7 @@ export const LinkedLabelsOnly = () => (
         },
       ]}
       config={{
-        hierarchicalLayout: PartitionLayouts.sunburst,
+        partitionLayout: PartitionLayout.sunburst,
         linkLabel: { maximumSection: Infinity },
       }}
     />
@@ -679,7 +679,7 @@ export const NoLabels = () => (
         },
       ]}
       config={{
-        hierarchicalLayout: PartitionLayouts.sunburst,
+        partitionLayout: PartitionLayout.sunburst,
         linkLabel: { maximumSection: Infinity, maxCount: 0 },
       }}
     />

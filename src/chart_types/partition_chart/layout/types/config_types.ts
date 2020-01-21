@@ -2,12 +2,12 @@ import { Distance, Pixels, Radian, Radius, Ratio, SizeRatio, TimeMs } from './ge
 import { Color, FontWeight } from './types';
 import { $Values as Values } from 'utility-types';
 
-export const PartitionLayouts = Object.freeze({
+export const PartitionLayout = Object.freeze({
   sunburst: 'sunburst',
   treemap: 'treemap',
 });
 
-export type PartitionLayouts = Values<typeof PartitionLayouts>; // could use ValuesType<typeof HierarchicalChartTypes>
+export type PartitionLayout = Values<typeof PartitionLayout>; // could use ValuesType<typeof HierarchicalChartTypes>
 
 export interface FillLabel {
   textColor: Color;
@@ -29,7 +29,7 @@ export interface StaticConfig {
   outerSizeRatio: SizeRatio;
   clockwiseSectors: boolean;
   specialFirstInnermostSector: boolean;
-  hierarchicalLayout: PartitionLayouts;
+  partitionLayout: PartitionLayout;
 
   // general text config
   fontFamily: string;

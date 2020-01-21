@@ -1,6 +1,6 @@
 import { Part, Relation, TextMeasure } from '../types/types';
 import { linkTextLayout } from './link_text_layout';
-import { Config, PartitionLayouts } from '../types/config_types';
+import { Config, PartitionLayout } from '../types/config_types';
 import { TAU, trueBearingToStandardPositionAngle } from '../utils/math';
 import { Distance, Pixels, Radius } from '../types/geometry_types';
 import { meanAngle } from '../geometry';
@@ -137,7 +137,7 @@ export function shapeViewModel(
     clockwiseSectors,
     specialFirstInnermostSector,
     minFontSize,
-    hierarchicalLayout,
+    partitionLayout,
   } = config;
 
   const innerWidth = width * (1 - Math.min(1, margin.left + margin.right));
@@ -178,7 +178,7 @@ export function shapeViewModel(
   const sunburstValueToAreaScale = TAU / totalValue;
   const sunburstAreaAccessor = (e: ArrayEntry) => sunburstValueToAreaScale * mapEntryValue(e);
   const children = entryValue(tree[0]).children || [];
-  const treemapLayout = hierarchicalLayout === PartitionLayouts.treemap;
+  const treemapLayout = partitionLayout === PartitionLayout.treemap;
   const treemapInnerArea = treemapLayout ? width * height : 1; // assuming 1 x 1 unit square
   const treemapValueToAreaScale = treemapInnerArea / totalValue;
   const treemapAreaAccessor = (e: ArrayEntry) => treemapValueToAreaScale * mapEntryValue(e);
