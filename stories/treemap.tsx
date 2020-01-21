@@ -1,8 +1,7 @@
-import { Chart, Partition } from '../src';
+import { Chart, Datum, Partition, PartitionLayouts } from '../src';
 import { mocks } from '../src/mocks/hierarchical/index';
 import { config } from '../src/chart_types/partition_chart/layout/config/config';
 import { arrayToLookup, hueInterpolator } from '../src/chart_types/partition_chart/layout/utils/calcs';
-import { Datum, PartitionLayouts } from '../src/index';
 import { countryDimension, productDimension, regionDimension } from '../src/mocks/hierarchical/dimension_codes';
 import { getRandomNumber } from '../src/mocks/utils';
 import { palettes } from '../src/mocks/hierarchical/palettes';
