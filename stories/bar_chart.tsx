@@ -1,6 +1,6 @@
 import { boolean, color, number, select } from '@storybook/addon-knobs';
 // @ts-ignore
-import { DocsContainer } from '@storybook/addon-docs/blocks'; // Meta, Story, Preview
+import { DocsContainer, Preview } from '@storybook/addon-docs/blocks'; // Meta, Story
 import { DateTime } from 'luxon';
 import React from 'react';
 
@@ -89,19 +89,28 @@ export const basic = () => {
 basic.story = {
   name: 'basic',
   parameters: {
-    componentSubtitle: 'Handy status label',
     docs: {
       // eslint-disable-next-line react/display-name
       page: () => {
+        const darkmode = boolean('darkmode', false);
+        const className = darkmode ? 'story-chart-dark' : 'story-chart';
         const toggleSpec = boolean('toggle bar spec', true);
         const specId = toggleSpec ? 'bars1' : 'bars2';
+        const data1 = [
+          { x: 0, y: 2 },
+          { x: 1, y: 7 },
+          { x: 2, y: 3 },
+          { x: 3, y: 6 },
+        ];
+        const data2 = data1.map((datum) => ({ ...datum, y: datum.y - 1 }));
+        const data = toggleSpec ? data1 : data2;
         const styling = {
           border: '1px solid black',
           padding: '15px',
         };
         return (
           <>
-            <p>Basic Bar Chart Documentation</p>
+            <h1>Basic Bar Chart Documentation</h1>
             <br />
             <table id="basic-bar-chart" style={styling}>
               <tbody>
@@ -133,6 +142,23 @@ basic.story = {
                 </tr>
               </tbody>
             </table>
+            <br />
+            <h1>Story Source</h1>
+            <Preview withSource="open">
+              {/* <Story name="bar_chart.basic"> */}
+              <Chart className={className}>
+                <BarSeries
+                  id={getSpecId(specId)}
+                  name={'Simple bar series'}
+                  xScaleType={ScaleType.Linear}
+                  yScaleType={ScaleType.Linear}
+                  xAccessor="x"
+                  yAccessors={['y']}
+                  data={data}
+                />
+              </Chart>
+              {/* </Story> */}
+            </Preview>
           </>
         );
       },
