@@ -28,10 +28,10 @@ function defaultFormatter(d: any): string {
 const valueFont = {
   type: 'group',
   values: {
-    /*    fontFamily: {
-      dflt: null,
+    fontFamily: {
+      dflt: undefined,
       type: 'string',
-    },*/
+    },
     fontWeight: { dflt: 400, min: 100, max: 900, type: 'number' },
     fontStyle: {
       dflt: 'normal',

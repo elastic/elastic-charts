@@ -251,6 +251,7 @@ function fill(
 
     const valueFont = Object.assign(
       { fontFamily: config.fontFamily, fontWeight: 'normal' },
+      config.fillLabel && config.fillLabel.valueFont,
       fillLabel,
       fillLabel.valueFont,
       layer.fillLabel,

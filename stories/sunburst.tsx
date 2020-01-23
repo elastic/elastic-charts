@@ -26,6 +26,9 @@ const interpolatorTurbo = hueInterpolator(palettes.turbo.map(([r, g, b]) => [r, 
 
 const defaultFillColor = (colorMaker: any) => (d: any, i: number, a: any[]) => colorMaker(i / (a.length + 1));
 
+const decreasingOpacityCET2 = (opacity: number) => (d: any, i: number, a: any[]) =>
+  hueInterpolator(palettes.CET2s.map(([r, g, b]) => [r, g, b, opacity]))(i / (a.length + 1));
+
 export const SimplePieChart = () => (
   <Chart className={'story-chart'}>
     <Partition
@@ -289,7 +292,7 @@ SunburstTwoLayers.story = {
 };
 
 export const SunburstThreeLayers = () => (
-  <Chart className={'story-chart'}>
+  <Chart className={'story-chart'} size={{ width: 1200, height: 800 }}>
     <Partition
       id={'spec_' + getRandomNumber()}
       data={mocks.miniSunburst}
@@ -299,25 +302,22 @@ export const SunburstThreeLayers = () => (
         {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: any) => productLookup[d].name,
-          fillLabel: { textInvertible: true },
           shape: {
-            fillColor: defaultFillColor(interpolatorCET2s),
+            fillColor: decreasingOpacityCET2(0.8),
           },
         },
         {
           groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.substr(0, 2),
           nodeLabel: (d: any) => regionLookup[d].regionName,
-          fillLabel: { textInvertible: true },
           shape: {
-            fillColor: defaultFillColor(interpolatorCET2s),
+            fillColor: decreasingOpacityCET2(0.65),
           },
         },
         {
           groupByRollup: (d: Datum) => d.dest,
           nodeLabel: (d: any) => countryLookup[d].name,
-          fillLabel: { textInvertible: true },
           shape: {
-            fillColor: defaultFillColor(interpolatorCET2s),
+            fillColor: decreasingOpacityCET2(0.5),
           },
         },
       ]}
@@ -331,6 +331,13 @@ export const SunburstThreeLayers = () => (
         fillLabel: {
           valueFormatter: (d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`,
           fontStyle: 'italic',
+          textInvertible: true,
+          fontWeight: 900,
+          valueFont: {
+            fontFamily: 'Menlo',
+            fontStyle: 'normal',
+            fontWeight: 100,
+          },
         },
         margin: { top: 0, bottom: 0, left: 0, right: 0 },
         minFontSize: 1,
