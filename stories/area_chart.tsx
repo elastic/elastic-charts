@@ -16,7 +16,7 @@ import {
 } from '../src';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 import { getRandomNumber } from '../src/mocks/utils';
-import { stackedonlygroupedareas } from './bar_chart';
+import { stackedOnlyGroupedAreas } from './bar_chart';
 
 const dateFormatter = timeFormatter('HH:mm');
 
@@ -677,6 +677,6 @@ export const stackdonlygroupedareas = () => {
     </Chart>
   );
 };
-stackedonlygroupedareas.story = {
+stackedOnlyGroupedAreas.story = {
   name: 'stacked only grouped areas',
 };

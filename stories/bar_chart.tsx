@@ -1,6 +1,4 @@
 import { boolean, color, number, select } from '@storybook/addon-knobs';
-// @ts-ignore
-import { DocsContainer, Preview } from '@storybook/addon-docs/blocks'; // Meta, Story
 import { DateTime } from 'luxon';
 import React from 'react';
 
@@ -88,86 +86,9 @@ export const basic = () => {
 };
 basic.story = {
   name: 'basic',
-  parameters: {
-    docs: {
-      // eslint-disable-next-line react/display-name
-      page: () => {
-        const darkmode = boolean('darkmode', false);
-        const className = darkmode ? 'story-chart-dark' : 'story-chart';
-        const toggleSpec = boolean('toggle bar spec', true);
-        const specId = toggleSpec ? 'bars1' : 'bars2';
-        const data1 = [
-          { x: 0, y: 2 },
-          { x: 1, y: 7 },
-          { x: 2, y: 3 },
-          { x: 3, y: 6 },
-        ];
-        const data2 = data1.map((datum) => ({ ...datum, y: datum.y - 1 }));
-        const data = toggleSpec ? data1 : data2;
-        const styling = {
-          border: '1px solid black',
-          padding: '15px',
-        };
-        return (
-          <>
-            <h1>Basic Bar Chart Documentation</h1>
-            <br />
-            <table id="basic-bar-chart" style={styling}>
-              <tbody>
-                <th style={styling}>Bar Series Prop Names</th>
-                <th style={styling}>Basic Bar Chart Values</th>
-                <tr style={styling}>
-                  <td style={styling}>specId</td>
-                  <td style={styling}>{getSpecId(specId)}</td>
-                </tr>
-                <tr style={styling}>
-                  <td style={styling}>name</td>
-                  <td style={styling}>&apos;Simple bar series&apos;</td>
-                </tr>
-                <tr style={styling}>
-                  <td style={styling}>xScaleType</td>
-                  <td style={styling}>{ScaleType.Linear}</td>
-                </tr>
-                <tr style={styling}>
-                  <td style={styling}>yScaleType</td>
-                  <td style={styling}>{ScaleType.Linear}</td>
-                </tr>
-                <tr style={styling}>
-                  <td style={styling}>xAccessor</td>
-                  <td style={styling}>&apos;x&apos;</td>
-                </tr>
-                <tr style={styling}>
-                  <td style={styling}>yAccessors</td>
-                  <td style={styling}>[&apos;y&apos;]</td>
-                </tr>
-              </tbody>
-            </table>
-            <br />
-            <h1>Story Source</h1>
-            <Preview withSource="open">
-              {/* <Story name="bar_chart.basic"> */}
-              <Chart className={className}>
-                <BarSeries
-                  id={getSpecId(specId)}
-                  name={'Simple bar series'}
-                  xScaleType={ScaleType.Linear}
-                  yScaleType={ScaleType.Linear}
-                  xAccessor="x"
-                  yAccessors={['y']}
-                  data={data}
-                />
-              </Chart>
-              {/* </Story> */}
-            </Preview>
-          </>
-        );
-      },
-      container: DocsContainer,
-    },
-  },
 };
 
-export const withvaluelabel = () => {
+export const withValueLabel = () => {
   const showValueLabel = boolean('show value label', true);
   const isAlternatingValueLabel = boolean('alternating value label', false);
   const isValueContainedInElement = boolean('contain value label within bar element', false);
@@ -257,11 +178,11 @@ export const withvaluelabel = () => {
     </Chart>
   );
 };
-withvaluelabel.story = {
+withValueLabel.story = {
   name: 'with value label',
 };
 
-export const withaxis = () => {
+export const withAxis = () => {
   const darkmode = boolean('darkmode', false);
   const className = darkmode ? 'story-chart-dark' : 'story-chart';
   const defaultTheme = darkmode ? DARK_THEME : LIGHT_THEME;
@@ -292,11 +213,11 @@ export const withaxis = () => {
     </Chart>
   );
 };
-withaxis.story = {
+withAxis.story = {
   name: 'with axis',
 };
 
-export const withordinalxaxis = () => {
+export const withOrdinalXAxis = () => {
   return (
     <Chart className={'story-chart'}>
       <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
@@ -323,11 +244,11 @@ export const withordinalxaxis = () => {
     </Chart>
   );
 };
-withordinalxaxis.story = {
+withOrdinalXAxis.story = {
   name: 'with ordinal x axis',
 };
 
-export const withlinearxaxis = () => {
+export const withLinearXAxis = () => {
   const theme = {
     ...LIGHT_THEME,
     scales: {
@@ -372,11 +293,11 @@ export const withlinearxaxis = () => {
     </Chart>
   );
 };
-withlinearxaxis.story = {
+withLinearXAxis.story = {
   name: 'with linear x axis',
 };
 
-export const withlinearxaxisnolinearinterval = () => (
+export const withLinearXAxisNoLinearInterval = () => (
   <Chart className={'story-chart'}>
     <Settings xDomain={{ max: 100 }} />
     <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
@@ -405,11 +326,11 @@ export const withlinearxaxisnolinearinterval = () => (
     />
   </Chart>
 );
-withlinearxaxisnolinearinterval.story = {
+withLinearXAxisNoLinearInterval.story = {
   name: 'with linear x axis no linear interval',
 };
 
-export const withtimexaxis = () => {
+export const withTimeXAxis = () => {
   const formatter = timeFormatter(niceTimeFormatByDay(1));
   return (
     <Chart className={'story-chart'}>
@@ -440,11 +361,11 @@ export const withtimexaxis = () => {
     </Chart>
   );
 };
-withtimexaxis.story = {
+withTimeXAxis.story = {
   name: 'with time x axis',
 };
 
-export const withlogyaxis = () => {
+export const withLogYAxis = () => {
   return (
     <Chart className={'story-chart'}>
       <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
@@ -476,11 +397,11 @@ export const withlogyaxis = () => {
     </Chart>
   );
 };
-withlogyaxis.story = {
+withLogYAxis.story = {
   name: 'with log y axis',
 };
 
-export const withstackedlogyaxis = () => {
+export const withStackedLogYAxis = () => {
   return (
     <Chart className={'story-chart'}>
       <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
@@ -522,11 +443,11 @@ export const withstackedlogyaxis = () => {
     </Chart>
   );
 };
-withstackedlogyaxis.story = {
+withStackedLogYAxis.story = {
   name: 'with stacked log y axis',
 };
 
-export const withaxisandlegend = () => {
+export const withAxisAndLegend = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} />
@@ -555,11 +476,11 @@ export const withaxisandlegend = () => {
     </Chart>
   );
 };
-withaxisandlegend.story = {
+withAxisAndLegend.story = {
   name: 'with axis and legend',
 };
 
-export const stackedwithaxisandlegend = () => {
+export const stackedWithAxisAndLegend = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} />
@@ -593,11 +514,11 @@ export const stackedwithaxisandlegend = () => {
     </Chart>
   );
 };
-stackedwithaxisandlegend.story = {
+stackedWithAxisAndLegend.story = {
   name: 'stacked with axis and legend',
 };
 
-export const stackedaspercentage = () => {
+export const stackedAsPercentage = () => {
   const stackedAsPercentage = boolean('stacked as percentage', true);
   const clusterBars = boolean('cluster', true);
   return (
@@ -634,11 +555,11 @@ export const stackedaspercentage = () => {
     </Chart>
   );
 };
-stackedaspercentage.story = {
+stackedAsPercentage.story = {
   name: 'stacked as percentage',
 };
 
-export const clusteredwithaxisandlegend = () => {
+export const clusteredWithAxisAndLegend = () => {
   const theme = {
     ...LIGHT_THEME,
     scales: {
@@ -688,11 +609,11 @@ export const clusteredwithaxisandlegend = () => {
     </Chart>
   );
 };
-clusteredwithaxisandlegend.story = {
+clusteredWithAxisAndLegend.story = {
   name: 'clustered with axis and legend',
 };
 
-export const clusteredmultipleseriesspecs = () => {
+export const clusteredMultipleSeriesSpecs = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} />
@@ -751,11 +672,11 @@ export const clusteredmultipleseriesspecs = () => {
     </Chart>
   );
 };
-clusteredmultipleseriesspecs.story = {
+clusteredMultipleSeriesSpecs.story = {
   name: 'clustered multiple series specs',
 };
 
-export const timeclusteredusingvariousspecs = () => {
+export const timeClusteredUsingVariousSpecs = () => {
   const formatter = timeFormatter(niceTimeFormatByDay(1));
   return (
     <Chart className={'story-chart'}>
@@ -802,11 +723,11 @@ export const timeclusteredusingvariousspecs = () => {
     </Chart>
   );
 };
-timeclusteredusingvariousspecs.story = {
+timeClusteredUsingVariousSpecs.story = {
   name: 'time clustered using various specs',
 };
 
-export const timestackedusingvariousspecs = () => {
+export const timeStackedUsingVariousSpecs = () => {
   const formatter = timeFormatter(niceTimeFormatByDay(1));
   return (
     <Chart className={'story-chart'}>
@@ -856,11 +777,11 @@ export const timestackedusingvariousspecs = () => {
     </Chart>
   );
 };
-timestackedusingvariousspecs.story = {
+timeStackedUsingVariousSpecs.story = {
   name: 'time stacked using various specs',
 };
 
-export const barchart1y0g = () => {
+export const barChart1y0g = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} />
@@ -883,11 +804,11 @@ export const barchart1y0g = () => {
     </Chart>
   );
 };
-barchart1y0g.story = {
+barChart1y0g.story = {
   name: '1y0g',
 };
 
-export const barchart1y1g = () => {
+export const barChart1y1g = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} />
@@ -911,11 +832,11 @@ export const barchart1y1g = () => {
     </Chart>
   );
 };
-barchart1y1g.story = {
+barChart1y1g.story = {
   name: '1y1g',
 };
 
-export const barchart1y2g = () => {
+export const barChart1y2g = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} />
@@ -939,11 +860,11 @@ export const barchart1y2g = () => {
     </Chart>
   );
 };
-barchart1y2g.story = {
+barChart1y2g.story = {
   name: '1y2g',
 };
 
-export const barchart2y0g = () => {
+export const barChart2y0g = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} />
@@ -966,11 +887,11 @@ export const barchart2y0g = () => {
     </Chart>
   );
 };
-barchart2y0g.story = {
+barChart2y0g.story = {
   name: '2y0g',
 };
 
-export const barchart2y1g = () => {
+export const barChart2y1g = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} />
@@ -994,11 +915,11 @@ export const barchart2y1g = () => {
     </Chart>
   );
 };
-barchart2y1g.story = {
+barChart2y1g.story = {
   name: '2y1g',
 };
 
-export const barchart2y2g = () => {
+export const barChart2y2g = () => {
   const isVisibleFunction: FilterPredicate = (series) => {
     return series.splitAccessors.size > 0
       ? series.specId === getSpecId('bars') &&
@@ -1031,11 +952,11 @@ export const barchart2y2g = () => {
     </Chart>
   );
 };
-barchart2y2g.story = {
+barChart2y2g.story = {
   name: '2y2g',
 };
 
-export const tooltipseriesvisibility = () => {
+export const tooltipSeriesVisibility = () => {
   const isVisibleFunction: FilterPredicate = (series) => {
     return series.splitAccessors.get('g1') === 'cloudflare.com';
   };
@@ -1063,11 +984,11 @@ export const tooltipseriesvisibility = () => {
     </Chart>
   );
 };
-tooltipseriesvisibility.story = {
+tooltipSeriesVisibility.story = {
   name: 'tooltip series visibility',
 };
 
-export const withhighdatavolume = () => {
+export const withHighDataVolume = () => {
   const dg = new SeededDataGenerator();
   const data = dg.generateSimpleSeries(15000);
   const tooltipProps = {
@@ -1096,14 +1017,14 @@ export const withhighdatavolume = () => {
     </Chart>
   );
 };
-withhighdatavolume.story = {
+withHighDataVolume.story = {
   name: 'with high data volume',
   info: {
     source: false,
   },
 };
 
-export const singledatachartlinear = () => {
+export const singleDataChartLinear = () => {
   const hasCustomDomain = boolean('has custom domain', false);
   const xDomain = hasCustomDomain
     ? {
@@ -1144,11 +1065,11 @@ export const singledatachartlinear = () => {
     </Chart>
   );
 };
-singledatachartlinear.story = {
+singleDataChartLinear.story = {
   name: 'single data chart [linear]',
 };
 
-export const singledatachartordinal = () => {
+export const singleDataChartOrdinal = () => {
   const hasCustomDomain = boolean('has custom domain', false);
   const xDomain = hasCustomDomain ? ['a', 'b'] : undefined;
 
@@ -1184,11 +1105,11 @@ export const singledatachartordinal = () => {
     </Chart>
   );
 };
-singledatachartordinal.story = {
+singleDataChartOrdinal.story = {
   name: 'single data chart [ordinal]',
 };
 
-export const singledataclusteredchart = () => {
+export const singleDataClusteredChart = () => {
   return (
     <Chart className={'story-chart'}>
       <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} />
@@ -1216,11 +1137,11 @@ export const singledataclusteredchart = () => {
     </Chart>
   );
 };
-singledataclusteredchart.story = {
+singleDataClusteredChart.story = {
   name: 'single data clusterd chart',
 };
 
-export const singledatastackedchart = () => {
+export const singleDataStackedChart = () => {
   return (
     <Chart className={'story-chart'}>
       <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} />
@@ -1249,7 +1170,7 @@ export const singledatastackedchart = () => {
     </Chart>
   );
 };
-singledatastackedchart.story = {
+singleDataStackedChart.story = {
   name: 'single data stacked chart',
 };
 
@@ -1286,7 +1207,7 @@ singldedatachartstackedtoextent.story = {
   name: 'single data stacked chart scale to extent',
 };
 
-export const singledataclusteredchartscaletoextent = () => {
+export const singleDataClusteredChartScaleToExtent = () => {
   return (
     <Chart className={'story-chart'}>
       <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} />
@@ -1314,11 +1235,11 @@ export const singledataclusteredchartscaletoextent = () => {
     </Chart>
   );
 };
-singledataclusteredchartscaletoextent.story = {
+singleDataClusteredChartScaleToExtent.story = {
   name: 'single data clustered chart scale to extent',
 };
 
-export const negativeandpositivexvalues = () => {
+export const negativeAndPositiveXValues = () => {
   return (
     <Chart className={'story-chart'}>
       <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} />
@@ -1350,11 +1271,11 @@ export const negativeandpositivexvalues = () => {
     </Chart>
   );
 };
-negativeandpositivexvalues.story = {
+negativeAndPositiveXValues.story = {
   name: 'negative and positive x values',
 };
 
-export const scaletoextent = () => {
+export const scaleToExtent = () => {
   const yScaleToDataExtent = boolean('yScaleDataToExtent', true);
   const mixed = [
     { x: 0, y: -4 },
@@ -1409,11 +1330,11 @@ export const scaletoextent = () => {
     </Chart>
   );
 };
-scaletoextent.story = {
+scaleToExtent.story = {
   name: 'scale to extent',
 };
 
-export const bandbarchart = () => {
+export const bandBarChart = () => {
   const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d: any) => {
     return {
       x: d[0],
@@ -1466,11 +1387,11 @@ export const bandbarchart = () => {
     </Chart>
   );
 };
-bandbarchart.story = {
+bandBarChart.story = {
   name: 'band bar chart',
 };
 
-export const testlinear = () => {
+export const testLinear = () => {
   const data = [
     [1, 1],
     [2, 2],
@@ -1502,11 +1423,11 @@ export const testlinear = () => {
     </Chart>
   );
 };
-testlinear.story = {
+testLinear.story = {
   name: '[test] - linear',
 };
 
-export const testtime = () => {
+export const testTime = () => {
   const start = DateTime.fromISO('2019-01-01T00:00:00.000', { zone: 'utc' });
   const data = [
     [start.toMillis(), 1],
@@ -1539,11 +1460,11 @@ export const testtime = () => {
     </Chart>
   );
 };
-testtime.story = {
+testTime.story = {
   name: '[test] - time',
 };
 
-export const testlinearclustered = () => {
+export const testLinearClustered = () => {
   const data9 = [
     [1, 1, 3],
     [2, 2, 4],
@@ -1575,11 +1496,11 @@ export const testlinearclustered = () => {
     </Chart>
   );
 };
-testlinearclustered.story = {
+testLinearClustered.story = {
   name: '[test] - linear clustered',
 };
 
-export const testtimeclustered = () => {
+export const testTimeClustered = () => {
   const start = DateTime.fromISO('2019-01-01T00:00:00.000', { zone: 'utc' });
   const data = [
     [start.toMillis(), 1, 4],
@@ -1612,11 +1533,11 @@ export const testtimeclustered = () => {
     </Chart>
   );
 };
-testtimeclustered.story = {
+testTimeClustered.story = {
   name: '[test] - time clustered',
 };
 
-export const testclusteredbarchartwithnullbars = () => {
+export const testClusteredBarChartWithNullBars = () => {
   const data = [
     [1, 1, 3, 'a'],
     [2, null, 4, 'a'],
@@ -1648,11 +1569,11 @@ export const testclusteredbarchartwithnullbars = () => {
     </Chart>
   );
 };
-testclusteredbarchartwithnullbars.story = {
+testClusteredBarChartWithNullBars.story = {
   name: '[test] - clustered bar chart with null bars',
 };
 
-export const teststackedbarchartwithnullbars = () => {
+export const testStackedBarChartWithNullBars = () => {
   const data = [
     [1, 1, 3, 'a'],
     [2, null, 4, 'a'],
@@ -1685,11 +1606,11 @@ export const teststackedbarchartwithnullbars = () => {
     </Chart>
   );
 };
-teststackedbarchartwithnullbars.story = {
+testStackedBarChartWithNullBars.story = {
   name: '[test] - stacked bar chart with null bars',
 };
 
-export const testswitchordinallinearaxis = () => {
+export const testSwitchOrdinalLinearAxis = () => {
   return (
     <Chart className={'story-chart'}>
       <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
@@ -1723,11 +1644,11 @@ export const testswitchordinallinearaxis = () => {
     </Chart>
   );
 };
-testswitchordinallinearaxis.story = {
+testSwitchOrdinalLinearAxis.story = {
   name: '[test] switch ordinal/linear x axis',
 };
 
-export const testhistogrammodelinear = () => {
+export const testHistogramModeLinear = () => {
   const data = TestDatasets.BARCHART_2Y1G;
 
   const lineAnnotationStyle = {
@@ -1855,11 +1776,11 @@ export const testhistogrammodelinear = () => {
     </Chart>
   );
 };
-testhistogrammodelinear.story = {
+testHistogramModeLinear.story = {
   name: '[test] histogram mode (linear)',
 };
 
-export const testhistogrammodeordinal = () => {
+export const testHistogramModeOrdinal = () => {
   const data = [
     { x: 'a', y: 2 },
     { x: 'b', y: 7 },
@@ -1916,11 +1837,11 @@ export const testhistogrammodeordinal = () => {
     </Chart>
   );
 };
-testhistogrammodeordinal.story = {
+testHistogramModeOrdinal.story = {
   name: '[test] histogram mode (ordinal)',
 };
 
-export const testdiscover = () => {
+export const testDiscover = () => {
   const data = TEST_DATASET_DISCOVER.series[0].values;
 
   const formatter = timeFormatter(niceTimeFormatByDay(1));
@@ -1958,11 +1879,11 @@ export const testdiscover = () => {
     </Chart>
   );
 };
-testdiscover.story = {
+testDiscover.story = {
   name: '[test] discover',
 };
 
-export const testsinglehistogrambarchart = () => {
+export const testSingleHistogramBarChart = () => {
   const formatter = timeFormatter(niceTimeFormatByDay(1));
 
   const xDomain = {
@@ -1995,7 +1916,7 @@ export const testsinglehistogrambarchart = () => {
     </Chart>
   );
 };
-testsinglehistogrambarchart.story = {
+testSingleHistogramBarChart.story = {
   name: '[test] single histogram bar chart',
 };
 
@@ -2032,7 +1953,7 @@ MinHeight.story = {
   name: 'Min Height',
 };
 
-export const testminheightpositiveandnegativevalues = () => {
+export const testMinHeightPositiveAndNegativeValues = () => {
   const minBarHeight = number('minBarHeight', 10);
   const data = [
     [1, -100000],
@@ -2070,11 +1991,11 @@ export const testminheightpositiveandnegativevalues = () => {
     </Chart>
   );
 };
-testminheightpositiveandnegativevalues.story = {
+testMinHeightPositiveAndNegativeValues.story = {
   name: '[Test] Min Height - positive and negative values',
 };
 
-export const stackedonlygroupedareas = () => {
+export const stackedOnlyGroupedAreas = () => {
   const data1 = [
     [1, 2],
     [2, 2],
@@ -2204,11 +2125,11 @@ export const stackedonlygroupedareas = () => {
     </Chart>
   );
 };
-stackedonlygroupedareas.story = {
+stackedOnlyGroupedAreas.story = {
   name: 'stacked only grouped areas',
 };
 
-export const testtooltipandrotation = () => {
+export const testTooltipAndRotation = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings rotation={getChartRotationKnob()} />
@@ -2232,6 +2153,6 @@ export const testtooltipandrotation = () => {
     </Chart>
   );
 };
-testtooltipandrotation.story = {
+testTooltipAndRotation.story = {
   name: '[test] tooltip and rotation',
 };
