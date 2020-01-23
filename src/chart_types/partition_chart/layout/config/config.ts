@@ -112,7 +112,7 @@ export const configMetadata = {
         type: 'string',
         values: FONT_VARIANTS,
       },
-      formatter: {
+      valueFormatter: {
         dflt: defaultFormatter,
         type: 'function',
       },

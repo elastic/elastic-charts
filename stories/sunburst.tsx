@@ -32,7 +32,7 @@ export const SimplePieChart = () => (
       id={'spec_' + getRandomNumber()}
       data={mocks.pie}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
@@ -59,7 +59,7 @@ export const PieChartWithFillLabels = () => (
       id={'spec_' + getRandomNumber()}
       data={mocks.pie}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
@@ -78,7 +78,7 @@ export const PieChartWithFillLabels = () => (
         },
         fontFamily: 'Arial',
         fillLabel: {
-          formatter: (d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
+          valueFormatter: (d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`,
           fontStyle: 'italic',
         },
         margin: { top: 0, bottom: 0, left: 0, right: 0 },
@@ -103,7 +103,7 @@ export const DonutChartWithFillLabels = () => (
       id={'spec_' + getRandomNumber()}
       data={mocks.pie}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
@@ -122,7 +122,7 @@ export const DonutChartWithFillLabels = () => (
         },
         fontFamily: 'Arial',
         fillLabel: {
-          formatter: (d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
+          valueFormatter: (d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`,
           fontStyle: 'italic',
         },
         margin: { top: 0, bottom: 0, left: 0.2, right: 0 },
@@ -149,7 +149,7 @@ export const PieChartLabels = () => (
         { sitc1: 'Mineral fuels, lubricants and related materials', exportVal: 4 },
       ]}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d))}`}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d))}`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
@@ -177,7 +177,7 @@ export const SomeZeroValueSlice = () => (
         .concat(mocks.pie.slice(2, 4).map((s) => ({ ...s, exportVal: 0 })))
         .concat(mocks.pie.slice(4))}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
@@ -202,7 +202,7 @@ export const SunburstTwoLayers = () => (
       id={'spec_' + getRandomNumber()}
       data={mocks.sunburst}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.substr(0, 2),
@@ -210,7 +210,7 @@ export const SunburstTwoLayers = () => (
           fillLabel: {
             fontFamily: 'Impact',
             textInvertible: true,
-            formatter: (d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000000))}\xa0Tn`,
+            valueFormatter: (d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000000))}\xa0Tn`,
           },
           shape: {
             fillColor: defaultFillColor(interpolatorCET2s),
@@ -232,7 +232,7 @@ export const SunburstTwoLayers = () => (
         },
         fontFamily: 'Arial',
         fillLabel: {
-          formatter: (d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
+          valueFormatter: (d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`,
           fontStyle: 'italic',
         },
         margin: { top: 0, bottom: 0, left: 0, right: 0 },
@@ -257,7 +257,7 @@ export const SunburstThreeLayers = () => (
       id={'spec_' + getRandomNumber()}
       data={mocks.miniSunburst}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
@@ -292,7 +292,7 @@ export const SunburstThreeLayers = () => (
         },
         fontFamily: 'Arial',
         fillLabel: {
-          formatter: (d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`,
+          valueFormatter: (d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`,
           fontStyle: 'italic',
         },
         margin: { top: 0, bottom: 0, left: 0, right: 0 },
@@ -316,7 +316,7 @@ export const TwoSlicesPieChart = () => (
       id={'spec_' + getRandomNumber()}
       data={mocks.pie.slice(0, 2)}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
@@ -344,7 +344,7 @@ export const LargeSmallPieChart = () => (
         { sitc1: 'Mineral fuels, lubricants and related materials', exportVal: 80 },
       ]}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d))}`}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d))}`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
@@ -376,7 +376,7 @@ export const VeryLargeSmallPieChart = () => (
         { sitc1: 'Mineral fuels, lubricants and related materials', exportVal: 1 },
       ]}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d))}`}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d))}`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
@@ -404,7 +404,7 @@ export const BigEmptyPieChart = () => (
         { sitc1: '3', exportVal: 1 },
       ]}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d))}`}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d))}`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
@@ -432,7 +432,7 @@ export const FullZeroSlicePieChart = () => (
         { sitc1: '3', exportVal: 0 },
       ]}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d))}`}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d))}`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
@@ -456,7 +456,7 @@ export const SingleSlicePieChart = () => (
       id={'spec_' + getRandomNumber()}
       data={mocks.pie.slice(0, 1)}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
@@ -480,7 +480,7 @@ export const NoSliceNoPie = () => (
       id={'spec_' + getRandomNumber()}
       data={[]}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
@@ -507,7 +507,7 @@ export const NegativeNoPie = () => (
         .concat(mocks.pie.slice(2, 3).map((s) => ({ ...s, exportVal: -0.1 })))
         .concat(mocks.pie.slice(3))}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
@@ -531,7 +531,7 @@ export const TotalZeroNoPie = () => (
       id={'spec_' + getRandomNumber()}
       data={mocks.pie.map((s) => ({ ...s, exportVal: 0 }))}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
@@ -556,7 +556,7 @@ export const HighNumberOfSlice = () => (
       id={'spec_' + getRandomNumber()}
       data={mocks.manyPie}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.origin,
@@ -584,7 +584,7 @@ export const CounterClockwiseSpecial = () => (
       id={'spec_' + getRandomNumber()}
       data={mocks.pie}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
@@ -612,7 +612,7 @@ export const ClockwiseNoSpecial = () => (
       id={'spec_' + getRandomNumber()}
       data={mocks.pie}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
@@ -640,7 +640,7 @@ export const LinkedLabelsOnly = () => (
       id={'spec_' + getRandomNumber()}
       data={mocks.pie}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
@@ -667,7 +667,7 @@ export const NoLabels = () => (
       id={'spec_' + getRandomNumber()}
       data={mocks.pie}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.formatter(Math.round(d / 1000000000))}\xa0Bn`}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,

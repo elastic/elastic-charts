@@ -221,7 +221,7 @@ function fill(
   fontSizes: string | any[],
   measure: TextMeasure,
   rawTextGetter: RawTextGetter,
-  valueFormatter: (value: number) => string,
+  formatter: (value: number) => string,
   textFillOrigins: any[],
   shapeConstructor: (n: ShapeTreeNode) => any,
   getShapeRowGeometry: (...args: any[]) => RowSpace,
@@ -237,12 +237,12 @@ function fill(
       fontVariant,
       fontFamily,
       fontWeight,
-      formatter,
+      valueFormatter,
       fillColor,
     } = Object.assign(
       { fontFamily: config.fontFamily, fontWeight: 'normal', fillColor: node.fill },
       fillLabel,
-      { formatter: valueFormatter },
+      { valueFormatter: formatter },
       layers[node.depth - 1] && layers[node.depth - 1].fillLabel,
       layers[node.depth - 1] && layers[node.depth - 1].shape,
     );
@@ -257,7 +257,7 @@ function fill(
       fontWeight,
       fontFamily,
     };
-    const allBoxes = getAllBoxes(rawTextGetter, formatter, sizeInvariantFont, node);
+    const allBoxes = getAllBoxes(rawTextGetter, valueFormatter, sizeInvariantFont, node);
     let rowSet = identityRowSet();
     let completed = false;
     const rotation = getRotation(node);

@@ -13,7 +13,7 @@ interface LabelConfig extends Font {
   textColor: Color;
   textInvertible: boolean;
   textOpacity: Ratio;
-  formatter: (x: number) => string;
+  valueFormatter: (x: number) => string;
 }
 
 export type FillLabelConfig = LabelConfig;
