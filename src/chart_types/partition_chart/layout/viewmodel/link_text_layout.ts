@@ -49,8 +49,8 @@ export function linkTextLayout(
       const stemToX = x + north * west * cy - west * relativeY;
       const stemToY = cy;
       const text = rawTextGetter(node);
-      const { width, emHeightAscent, emHeightDescent } = measure(linkLabel.fontSize + 'px ' + config.fontFamily, [
-        text,
+      const { width, emHeightAscent, emHeightDescent } = measure(linkLabel.fontSize, [
+        { fontFamily: config.fontFamily, ...linkLabel, text },
       ])[0];
       return {
         link: [

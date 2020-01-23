@@ -1,6 +1,7 @@
 import { palettes } from '../../../../mocks/hierarchical/palettes';
 import { Config, PartitionLayout, Numeric } from '../types/config_types';
 import { GOLDEN_RATIO, TAU } from '../utils/math';
+import { FONT_STYLES, FONT_VARIANTS } from '../types/types';
 
 const log10 = Math.log(10);
 function significantDigitCount(d: number): number {
@@ -100,16 +101,16 @@ export const configMetadata = {
     values: {
       textColor: { dflt: '#000000', type: 'color' },
       textInvertible: { dflt: false, type: 'boolean' },
-      textWeight: { dflt: 400, min: 100, max: 900, type: 'number' },
+      fontWeight: { dflt: 400, min: 100, max: 900, type: 'number' },
       fontStyle: {
         dflt: 'normal',
         type: 'string',
-        values: ['normal', 'italic', 'oblique', 'inherit', 'initial', 'unset'],
+        values: FONT_STYLES,
       },
       fontVariant: {
         dflt: 'normal',
         type: 'string',
-        values: ['normal', 'small-caps'],
+        values: FONT_VARIANTS,
       },
       formatter: {
         dflt: defaultFormatter,

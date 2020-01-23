@@ -1,8 +1,9 @@
-import { TextMeasure } from '../types/types';
+import { Box, TextMeasure } from '../types/types';
 
 export function measureText(ctx: CanvasRenderingContext2D): TextMeasure {
-  return (font: string, texts: string[]): TextMetrics[] => {
-    ctx.font = font;
-    return texts.map((text) => ctx.measureText(text));
-  };
+  return (fontSize: number, boxes: Box[]): TextMetrics[] =>
+    boxes.map(({ fontStyle, fontVariant, fontWeight, fontFamily, text }: Box) => {
+      ctx.font = `${fontStyle} ${fontVariant} ${fontWeight} ${fontSize}px ${fontFamily}`;
+      return ctx.measureText(text);
+    });
 }

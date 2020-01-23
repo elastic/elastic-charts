@@ -3,7 +3,7 @@ import { Coordinate, Distance, Pixels, Radian, Radius, RingSector } from '../typ
 import { Config } from '../types/config_types';
 import { logarithm, TAU, trueBearingToStandardPositionAngle } from '../utils/math';
 import { RawTextGetter, RowBox, RowSet, RowSpace, ShapeTreeNode } from '../types/viewmodel_types';
-import { FontWeight, TextMeasure } from '../types/types';
+import { Box, Font, NumericFontWeight, TextMeasure } from '../types/types';
 import { AGGREGATE_KEY } from '../utils/group_by_rollup';
 import { conjunctiveConstraint } from '../circline_geometry';
 import { Layer } from '../../specs/index';
@@ -194,7 +194,7 @@ function identityRowSet(): RowSet {
     fontVariant: '',
     fontSize: NaN,
     fillTextColor: '',
-    fillTextWeight: 400,
+    fillFontWeight: 400,
     rotation: NaN,
   };
 }
@@ -202,11 +202,13 @@ function identityRowSet(): RowSet {
 function getAllBoxes(
   rawTextGetter: RawTextGetter,
   valueFormatter: (value: number) => string,
+  sizeInvariantFontShorthand: Font,
   node: ShapeTreeNode,
-): string[] {
+): Box[] {
   return rawTextGetter(node)
     .split(' ')
-    .concat(valueFormatter(node[AGGREGATE_KEY]).split(' '));
+    .concat(valueFormatter(node[AGGREGATE_KEY]).split(' '))
+    .map((text) => ({ text, ...sizeInvariantFontShorthand }));
 }
 
 function getWordSpacing(fontSize: number) {
@@ -217,7 +219,7 @@ function fill(
   config: Config,
   layers: Layer[],
   fontSizes: string | any[],
-  measure: { (font: string, texts: string[]): TextMetrics[]; (arg0: string, arg1: any): any },
+  measure: TextMeasure,
   rawTextGetter: RawTextGetter,
   valueFormatter: (value: number) => string,
   textFillOrigins: any[],
@@ -231,14 +233,14 @@ function fill(
     const {
       textColor,
       textInvertible,
-      textWeight,
       fontStyle,
       fontVariant,
       fontFamily,
+      fontWeight,
       formatter,
       fillColor,
     } = Object.assign(
-      { fontFamily: config.fontFamily, fillColor: node.fill },
+      { fontFamily: config.fontFamily, fontWeight: 'normal', fillColor: node.fill },
       fillLabel,
       { formatter: valueFormatter },
       layers[node.depth - 1] && layers[node.depth - 1].fillLabel,
@@ -249,7 +251,13 @@ function fill(
     const shapeFillColor = typeof fillColor === 'function' ? fillColor(node, index, a) : fillColor;
     const { r: tr, g: tg, b: tb } = stringToRGB(textColor);
     let fontSizeIndex = fontSizes.length - 1;
-    const allBoxes = getAllBoxes(rawTextGetter, formatter, node);
+    const sizeInvariantFont: Font = {
+      fontStyle,
+      fontVariant,
+      fontWeight,
+      fontFamily,
+    };
+    const allBoxes = getAllBoxes(rawTextGetter, formatter, sizeInvariantFont, node);
     let rowSet = identityRowSet();
     let completed = false;
     const rotation = getRotation(node);
@@ -261,13 +269,14 @@ function fill(
       const wordSpacing = getWordSpacing(fontSize);
 
       // model text pieces, obtaining their width at the current font size
-      const measurements = measure(fontSize + 'px ' + fontFamily, allBoxes);
+      const measurements = measure(fontSize, allBoxes);
       const allMeasuredBoxes: RowBox[] = measurements.map(
         ({ width, emHeightDescent, emHeightAscent }: TextMetrics, i: number) => ({
           width,
           verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`,
-          text: allBoxes[i],
           wordBeginning: NaN,
+          ...allBoxes[i],
+          fontSize, // iterated fontSize overrides a possible more global fontSize
         }),
       );
       const linePitch = fontSize;
@@ -290,7 +299,7 @@ function fill(
           // fontWeight must be a multiple of 100 for non-variable width fonts, otherwise weird things happen due to
           // https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight#Fallback_weights - Fallback weights
           // todo factor out the discretization into a => FontWeight function
-          fillTextWeight: (Math.round(textWeight / 100) * 100) as FontWeight,
+          fillFontWeight: (Math.round(fontWeight / 100) * 100) as NumericFontWeight,
           fillTextColor: inverseForContrast ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})` : textColor,
           rotation,
           rows: [...Array(targetRowCount)].map(() => ({

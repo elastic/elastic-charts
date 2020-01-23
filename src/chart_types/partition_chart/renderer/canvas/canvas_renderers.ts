@@ -41,7 +41,7 @@ function clearCanvas(
 
 function renderTextRow(
   ctx: CanvasRenderingContext2D,
-  { fontFamily, fontSize, fillTextColor, fillTextWeight, fontStyle, fontVariant, rotation }: RowSet,
+  { fontFamily, fontSize, fillTextColor, fillFontWeight, fontStyle, fontVariant, rotation }: RowSet,
 ) {
   return (currentRow: TextRow) => {
     const crx = currentRow.rowCentroidX - (Math.cos(rotation) * currentRow.length) / 2;
@@ -50,7 +50,7 @@ function renderTextRow(
       ctx.scale(1, -1);
       ctx.translate(crx, cry);
       ctx.rotate(-rotation);
-      ctx.font = fontStyle + ' ' + fontVariant + ' ' + fillTextWeight + ' ' + fontSize + 'px ' + fontFamily;
+      ctx.font = fontStyle + ' ' + fontVariant + ' ' + fillFontWeight + ' ' + fontSize + 'px ' + fontFamily;
       ctx.fillStyle = fillTextColor;
       currentRow.rowWords.forEach((box) => ctx.fillText(box.text, box.width / 2 + box.wordBeginning, 0));
     });

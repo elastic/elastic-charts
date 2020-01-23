@@ -4,14 +4,14 @@ import { FunctionComponent } from 'react';
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
 import { AccessorFn, IndexedAccessorFn } from '../../../utils/accessor';
 import { Spec, SpecTypes } from '../../../specs/index';
-import { Config, FillLabel } from '../layout/types/config_types';
+import { Config, FillLabelConfig } from '../layout/types/config_types';
 import { RecursivePartial } from '../../../utils/commons';
 import { Datum } from '../../../utils/domain';
 
 export interface Layer {
   groupByRollup: IndexedAccessorFn;
   nodeLabel?: (datum: Datum) => string;
-  fillLabel?: Partial<FillLabel>;
+  fillLabel?: Partial<FillLabelConfig>;
   shape?: { fillColor: string | Function };
 }
 

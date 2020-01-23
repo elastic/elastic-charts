@@ -332,7 +332,7 @@ export const TwoSlicesPieChart = () => (
   </Chart>
 );
 TwoSlicesPieChart.story = {
-  name: 'Pie Chart with two slices',
+  name: 'Pie chart with two slices',
 };
 
 export const LargeSmallPieChart = () => (
