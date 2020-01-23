@@ -22,6 +22,7 @@
     "build:watch": "yarn build:clean && yarn build:sass && yarn autoprefix:css && yarn concat:sass && yarn build:ts -w ",
     "start": "yarn storybook",
     "storybook": "start-storybook -p 9001 -c .storybook --ci",
+    "start-docs": "start-storybook -p 8001 -c .storybook-docs --ci",
     "storybook:build": "rm -rf .out && build-storybook -c .storybook -o .out",
     "lint": "NODE_ENV=production eslint --ext .tsx,.ts,.js .",
     "lint:fix": "yarn lint --fix",
