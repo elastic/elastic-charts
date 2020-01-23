@@ -3,7 +3,7 @@ import { Coordinate, Distance, Pixels, Radian, Radius, RingSector } from '../typ
 import { Config } from '../types/config_types';
 import { logarithm, TAU, trueBearingToStandardPositionAngle } from '../utils/math';
 import { RawTextGetter, RowBox, RowSet, RowSpace, ShapeTreeNode } from '../types/viewmodel_types';
-import { Box, Font, NumericFontWeight, TextMeasure } from '../types/types';
+import { Box, Font, PartialFont, TextMeasure } from '../types/types';
 import { AGGREGATE_KEY } from '../utils/group_by_rollup';
 import { conjunctiveConstraint } from '../circline_geometry';
 import { Layer } from '../../specs/index';
@@ -189,12 +189,8 @@ function identityRowSet(): RowSet {
   return {
     id: '',
     rows: [],
-    fontFamily: '',
-    fontStyle: '',
-    fontVariant: '',
     fontSize: NaN,
     fillTextColor: '',
-    fillFontWeight: 400,
     rotation: NaN,
   };
 }
@@ -203,12 +199,17 @@ function getAllBoxes(
   rawTextGetter: RawTextGetter,
   valueFormatter: (value: number) => string,
   sizeInvariantFontShorthand: Font,
+  valueFont: PartialFont,
   node: ShapeTreeNode,
 ): Box[] {
   return rawTextGetter(node)
     .split(' ')
-    .concat(valueFormatter(node[AGGREGATE_KEY]).split(' '))
-    .map((text) => ({ text, ...sizeInvariantFontShorthand }));
+    .map((text) => ({ text, ...sizeInvariantFontShorthand }))
+    .concat(
+      valueFormatter(node[AGGREGATE_KEY])
+        .split(' ')
+        .map((text) => ({ text, ...sizeInvariantFontShorthand, ...valueFont })),
+    );
 }
 
 function getWordSpacing(fontSize: number) {
@@ -230,6 +231,7 @@ function fill(
   return (node: ShapeTreeNode, index: number, a: ShapeTreeNode[]) => {
     const { maxRowCount, fillLabel } = config;
 
+    const layer = layers[node.depth - 1] || {};
     const {
       textColor,
       textInvertible,
@@ -243,8 +245,16 @@ function fill(
       { fontFamily: config.fontFamily, fontWeight: 'normal', fillColor: node.fill },
       fillLabel,
       { valueFormatter: formatter },
-      layers[node.depth - 1] && layers[node.depth - 1].fillLabel,
-      layers[node.depth - 1] && layers[node.depth - 1].shape,
+      layer.fillLabel,
+      layer.shape,
+    );
+
+    const valueFont = Object.assign(
+      { fontFamily: config.fontFamily, fontWeight: 'normal' },
+      fillLabel,
+      fillLabel.valueFont,
+      layer.fillLabel,
+      layer.fillLabel && layer.fillLabel.valueFont,
     );
 
     const specifiedTextColorIsDark = colorIsDark(textColor);
@@ -257,7 +267,7 @@ function fill(
       fontWeight,
       fontFamily,
     };
-    const allBoxes = getAllBoxes(rawTextGetter, valueFormatter, sizeInvariantFont, node);
+    const allBoxes = getAllBoxes(rawTextGetter, valueFormatter, sizeInvariantFont, valueFont, node);
     let rowSet = identityRowSet();
     let completed = false;
     const rotation = getRotation(node);
@@ -293,13 +303,9 @@ function fill(
         rowSet = {
           id: nodeId(node),
           fontSize,
-          fontFamily,
-          fontStyle,
-          fontVariant,
           // fontWeight must be a multiple of 100 for non-variable width fonts, otherwise weird things happen due to
           // https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight#Fallback_weights - Fallback weights
           // todo factor out the discretization into a => FontWeight function
-          fillFontWeight: (Math.round(fontWeight / 100) * 100) as NumericFontWeight,
           fillTextColor: inverseForContrast ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})` : textColor,
           rotation,
           rows: [...Array(targetRowCount)].map(() => ({

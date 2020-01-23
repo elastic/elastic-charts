@@ -1,6 +1,6 @@
 import { Config } from './config_types';
 import { Coordinate, Distance, PointObject, PointTuple, Radian } from './geometry_types';
-import { Color, NumericFontWeight } from './types';
+import { Color, Font } from './types';
 import { config } from '../config/config';
 
 export type LinkLabelVM = {
@@ -12,7 +12,7 @@ export type LinkLabelVM = {
   verticalOffset: Distance;
 };
 
-export interface RowBox {
+export interface RowBox extends Font {
   text: string;
   width: Distance;
   verticalOffset: Distance;
@@ -38,10 +38,6 @@ export interface RowSet {
   id: string;
   rows: Array<TextRow>;
   fillTextColor: string;
-  fillFontWeight: NumericFontWeight;
-  fontFamily: string;
-  fontStyle: string;
-  fontVariant: string;
   fontSize: number;
   rotation: Radian;
 }

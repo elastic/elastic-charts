@@ -25,6 +25,27 @@ function defaultFormatter(d: any): string {
     : String(d);
 }
 
+const valueFont = {
+  type: 'group',
+  values: {
+    /*    fontFamily: {
+      dflt: null,
+      type: 'string',
+    },*/
+    fontWeight: { dflt: 400, min: 100, max: 900, type: 'number' },
+    fontStyle: {
+      dflt: 'normal',
+      type: 'string',
+      values: FONT_STYLES,
+    },
+    fontVariant: {
+      dflt: 'normal',
+      type: 'string',
+      values: FONT_VARIANTS,
+    },
+  },
+};
+
 export const configMetadata = {
   // shape geometry
   width: { dflt: 300, min: 0, max: 1024, type: 'number', reconfigurable: false },
@@ -116,6 +137,7 @@ export const configMetadata = {
         dflt: defaultFormatter,
         type: 'function',
       },
+      valueFont,
     },
   },
 
@@ -161,6 +183,7 @@ export const configMetadata = {
         type: 'number',
         reconfigurable: false, // currently only tau / 8 is reliable
       },
+      valueFont,
     },
   },
 

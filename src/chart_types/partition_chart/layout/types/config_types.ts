@@ -1,5 +1,5 @@
 import { Distance, Pixels, Radian, Radius, Ratio, SizeRatio, TimeMs } from './geometry_types';
-import { Color, Font, FontFamily } from './types';
+import { Color, Font, FontFamily, PartialFont } from './types';
 import { $Values as Values } from 'utility-types';
 
 export const PartitionLayout = Object.freeze({
@@ -14,6 +14,7 @@ interface LabelConfig extends Font {
   textInvertible: boolean;
   textOpacity: Ratio;
   valueFormatter: (x: number) => string;
+  valueFont: PartialFont;
 }
 
 export type FillLabelConfig = LabelConfig;

@@ -47,7 +47,44 @@ export const SimplePieChart = () => (
   </Chart>
 );
 SimplePieChart.story = {
-  name: 'Most basic PieChart',
+  name: 'Most basic pie chart',
+  info: {
+    source: false,
+  },
+};
+
+export const ValueFormattedPieChart = () => (
+  <Chart className={'story-chart'}>
+    <Partition
+      id={'spec_' + getRandomNumber()}
+      data={mocks.pie}
+      valueAccessor={(d: Datum) => d.exportVal as number}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
+      layers={[
+        {
+          groupByRollup: (d: Datum) => d.sitc1,
+          nodeLabel: (d: Datum) => productLookup[d].name,
+          fillLabel: {
+            textInvertible: true,
+            fontWeight: 100,
+            fontStyle: 'italic',
+            valueFont: {
+              fontFamily: 'Menlo',
+              fontStyle: 'normal',
+              fontWeight: 900,
+            },
+          },
+          shape: {
+            fillColor: defaultFillColor(interpolatorTurbo),
+          },
+        },
+      ]}
+      config={{ outerSizeRatio: 0.9 }}
+    />
+  </Chart>
+);
+ValueFormattedPieChart.story = {
+  name: 'Value formatted pie chart',
   info: {
     source: false,
   },

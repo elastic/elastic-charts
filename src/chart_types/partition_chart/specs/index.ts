@@ -8,11 +8,13 @@ import { Config, FillLabelConfig } from '../layout/types/config_types';
 import { RecursivePartial } from '../../../utils/commons';
 import { Datum } from '../../../utils/domain';
 
+type ColorAccessor = (d: Datum, index: number, array: Datum[]) => string;
+
 export interface Layer {
   groupByRollup: IndexedAccessorFn;
   nodeLabel?: (datum: Datum) => string;
   fillLabel?: Partial<FillLabelConfig>;
-  shape?: { fillColor: string | Function };
+  shape?: { fillColor: string | ColorAccessor };
 }
 
 const defaultProps = {
