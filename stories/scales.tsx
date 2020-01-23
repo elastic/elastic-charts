@@ -34,7 +34,7 @@ export default {
   },
 };
 
-export const linechartwithdifferenttimezones = () => {
+export const lineChartWithDifferentTimezones = () => {
   const timezones = {
     utc: 'utc',
     local: 'local',
@@ -102,11 +102,11 @@ export const linechartwithdifferenttimezones = () => {
     </Chart>
   );
 };
-linechartwithdifferenttimezones.story = {
+lineChartWithDifferentTimezones.story = {
   name: 'line chart with different timezones',
 };
 
-export const xscaleUTCtimezonelocaltooltip = () => {
+export const xScaleUTCTimezoneLocalTooltip = () => {
   return (
     <Chart className={'story-chart'}>
       <Axis
@@ -129,7 +129,7 @@ export const xscaleUTCtimezonelocaltooltip = () => {
     </Chart>
   );
 };
-xscaleUTCtimezonelocaltooltip.story = {
+xScaleUTCTimezoneLocalTooltip.story = {
   name: 'x scale: UTC Time zone - local tooltip',
 };
 //   {
@@ -141,7 +141,7 @@ xscaleUTCtimezonelocaltooltip.story = {
 //   },
 // )
 
-export const xscaleUTCtimezoneUTCtooltip = () => {
+export const xScaleUTCTimezoneUTCTooltip = () => {
   return (
     <Chart className={'story-chart'}>
       <Axis
@@ -166,7 +166,7 @@ export const xscaleUTCtimezoneUTCtooltip = () => {
     </Chart>
   );
 };
-xscaleUTCtimezoneUTCtooltip.story = {
+xScaleUTCTimezoneUTCTooltip.story = {
   name: 'x scale: UTC Time zone - UTC tooltip',
 };
 //     {
@@ -178,7 +178,7 @@ xscaleUTCtimezoneUTCtooltip.story = {
 //     },
 //   )
 
-export const xscaleyearscalecustomtimezonesamezonetooltip = () => {
+export const xScaleYearScaleCustomTimezoneSameToneTooltip = () => {
   return (
     <Chart className={'story-chart'}>
       <Axis
@@ -208,7 +208,7 @@ export const xscaleyearscalecustomtimezonesamezonetooltip = () => {
     </Chart>
   );
 };
-xscaleyearscalecustomtimezonesamezonetooltip.story = {
+xScaleYearScaleCustomTimezoneSameToneTooltip.story = {
   name: 'x scale year scale: custom timezone - same zone tooltip',
 };
 //     {
@@ -220,7 +220,7 @@ xscaleyearscalecustomtimezonesamezonetooltip.story = {
 //     },
 //   )
 
-export const removeduplicatescales = () => {
+export const removeDuplicateScales = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings hideDuplicateAxes={boolean('hideDuplicateAxes', true)} />
@@ -247,7 +247,7 @@ export const removeduplicatescales = () => {
     </Chart>
   );
 };
-removeduplicatescales.story = {
+removeDuplicateScales.story = {
   name: 'Remove duplicate scales',
 };
 //     {

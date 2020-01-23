@@ -56,7 +56,7 @@ export default {
   },
 };
 
-export const barclicksandhovers = () => {
+export const barClicksAndHovers = () => {
   const headerFormatter: TooltipValueFormatter = (tooltipData: TooltipValue) => {
     if (tooltipData.value % 2 === 0) {
       return (
@@ -101,11 +101,11 @@ export const barclicksandhovers = () => {
     </Chart>
   );
 };
-barclicksandhovers.story = {
+barClicksAndHovers.story = {
   name: 'bar clicks and hovers',
 };
 
-export const areapointclicksandhovers = () => {
+export const areaPointClicksAndHovers = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} {...onElementListeners} />
@@ -133,11 +133,11 @@ export const areapointclicksandhovers = () => {
     </Chart>
   );
 };
-areapointclicksandhovers.story = {
+areaPointClicksAndHovers.story = {
   name: 'area point clicks and hovers',
 };
 
-export const linepointclicksandhovers = () => {
+export const linePointClicksAndHovers = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} {...onElementListeners} />
@@ -165,11 +165,11 @@ export const linepointclicksandhovers = () => {
     </Chart>
   );
 };
-linepointclicksandhovers.story = {
+linePointClicksAndHovers.story = {
   name: 'line point clicks and hovers',
 };
 
-export const lineareabarpointclicksandhovers = () => {
+export const lineAreaBarPointClicksAndHovers = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} {...onElementListeners} />
@@ -224,11 +224,11 @@ export const lineareabarpointclicksandhovers = () => {
     </Chart>
   );
 };
-lineareabarpointclicksandhovers.story = {
+lineAreaBarPointClicksAndHovers.story = {
   name: 'line area bar point clicks and hovers',
 };
 
-export const clickshoversonlegenditemsbarchart = () => {
+export const clicksHoversOnLegendItemsBarChart = () => {
   const notSpecChange = 'not spec change';
   const specChange = 'spec change';
 
@@ -290,11 +290,11 @@ export const clickshoversonlegenditemsbarchart = () => {
     </Chart>
   );
 };
-clickshoversonlegenditemsbarchart.story = {
+clicksHoversOnLegendItemsBarChart.story = {
   name: 'click/hovers on legend items [bar chart]',
 };
 
-export const clickhoversonlegenditemsareachart = () => {
+export const clickHoversOnLegendItemsAreaChart = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings
@@ -334,11 +334,11 @@ export const clickhoversonlegenditemsareachart = () => {
     </Chart>
   );
 };
-clickhoversonlegenditemsareachart.story = {
+clickHoversOnLegendItemsAreaChart.story = {
   name: 'click/hovers on legend items [area chart]',
 };
 
-export const clickhoversonlegenditemslinechart = () => {
+export const clickHoversOnLegendItemsLineChart = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings
@@ -443,11 +443,11 @@ export const clickhoversonlegenditemslinechart = () => {
     </Chart>
   );
 };
-clickhoversonlegenditemslinechart.story = {
+clickHoversOnLegendItemsLineChart.story = {
   name: 'click/hovers on legend items [line chart]',
 };
 
-export const clickhoversonlegenditemsmixedchart = () => {
+export const clickHoversOnLegendItemsMixedChart = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings
@@ -496,11 +496,11 @@ export const clickhoversonlegenditemsmixedchart = () => {
     </Chart>
   );
 };
-clickhoversonlegenditemsmixedchart.story = {
+clickHoversOnLegendItemsMixedChart.story = {
   name: 'click/hovers on legend items [mixed chart]',
 };
 
-export const brushselectiontoolonlinear = () => {
+export const brushSelectionToolOnLinear = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings onBrushEnd={action('onBrushEnd')} />
@@ -530,11 +530,11 @@ export const brushselectiontoolonlinear = () => {
     </Chart>
   );
 };
-brushselectiontoolonlinear.story = {
+brushSelectionToolOnLinear.story = {
   name: 'brush selection tool on linear',
 };
 
-export const brushselectiontoolonbarchartlinear = () => {
+export const brushSelectionToolOnBarChartLinear = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings onBrushEnd={action('onBrushEnd')} />
@@ -563,11 +563,11 @@ export const brushselectiontoolonbarchartlinear = () => {
     </Chart>
   );
 };
-brushselectiontoolonbarchartlinear.story = {
+brushSelectionToolOnBarChartLinear.story = {
   name: 'brush selection tool on bar chart linear',
 };
 
-export const brushselectiontoolontimecharts = () => {
+export const brushSelectionToolOnTimeCharts = () => {
   const now = DateTime.fromISO('2019-01-11T00:00:00.000')
     .setZone('utc+1')
     .toMillis();
@@ -622,11 +622,11 @@ export const brushselectiontoolontimecharts = () => {
     </Chart>
   );
 };
-brushselectiontoolontimecharts.story = {
+brushSelectionToolOnTimeCharts.story = {
   name: 'brush selection tool on time charts',
 };
 
-export const brushselectiontoolonhistogramtimecharts = () => {
+export const brushSelectionToolOnHistogramTimeCharts = () => {
   const now = DateTime.fromISO('2019-01-11T00:00:00.000')
     .setZone('utc+1')
     .toMillis();
@@ -667,11 +667,11 @@ export const brushselectiontoolonhistogramtimecharts = () => {
     </Chart>
   );
 };
-brushselectiontoolonhistogramtimecharts.story = {
+brushSelectionToolOnHistogramTimeCharts.story = {
   name: 'brush selection tool on histogram time charts',
 };
 
-export const brushdisabledonordinalxaxis = () => {
+export const brushDisabledOnOrdinalXAxis = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings onBrushEnd={action('onBrushEnd')} />
@@ -693,11 +693,11 @@ export const brushdisabledonordinalxaxis = () => {
     </Chart>
   );
 };
-brushdisabledonordinalxaxis.story = {
+brushDisabledOnOrdinalXAxis.story = {
   name: 'brush disabled on ordinal x axis',
 };
 
-export const crosshairwithtimeaxis = () => {
+export const crosshairWithTimeAxis = () => {
   const hideBars = boolean('hideBars', false);
   const formatter = timeFormatter(niceTimeFormatByDay(1));
   const darkmode = boolean('darkmode', false);
@@ -772,11 +772,11 @@ export const crosshairwithtimeaxis = () => {
     </Chart>
   );
 };
-crosshairwithtimeaxis.story = {
+crosshairWithTimeAxis.story = {
   name: 'crosshair with time axis',
 };
 
-export const renderchangeaction = () => {
+export const renderChangeAction = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} onRenderChange={onRenderChange} />
@@ -804,7 +804,7 @@ export const renderchangeaction = () => {
     </Chart>
   );
 };
-renderchangeaction.story = {
+renderChangeAction.story = {
   name: 'Render change action',
 };
 // info: {
@@ -812,7 +812,7 @@ renderchangeaction.story = {
 //     'Sends an event every time the chart render state changes. This is provided to bind attributes to the chart for visulaization loading checks.',
 // },
 
-export const cursorupdateaction = () => {
+export const cursorUpdateAction = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} onPointerUpdate={onPointerUpdate} />
@@ -840,14 +840,14 @@ export const cursorupdateaction = () => {
     </Chart>
   );
 };
-cursorupdateaction.story = {
+cursorUpdateAction.story = {
   name: 'Cursor update action',
   // info: {
   //   text: 'Sends an event every time the cursor changes. This is provided to sync cursors between multiple charts.',
   // },
 };
 
-export const pngexportaction = () => {
+export const pngExportAction = () => {
   /**
    * The handler section of this story demonstrates the PNG export functionality
    */
@@ -904,7 +904,7 @@ export const pngexportaction = () => {
     </Chart>
   );
 };
-pngexportaction.story = {
+pngExportAction.story = {
   name: 'PNG export action',
 };
 // {

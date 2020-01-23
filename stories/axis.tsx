@@ -133,7 +133,7 @@ basic.story = {
   name: 'basic',
 };
 
-export const ticklabelrotation = () => {
+export const tickLabelRotation = () => {
   const customStyle = {
     tickLabelPadding: number('Tick Label Padding', 0),
   };
@@ -213,7 +213,7 @@ export const ticklabelrotation = () => {
     </Chart>
   );
 };
-ticklabelrotation.story = {
+tickLabelRotation.story = {
   name: 'tick label rotation',
 };
 
@@ -269,7 +269,7 @@ axis4axes.story = {
   name: '4 axes',
 };
 
-export const withmultiaxis = () => {
+export const withMultiAxis = () => {
   const theme: PartialTheme = {
     chartMargins: {
       left: createThemeAction('margin left', 0, 50, 0),
@@ -315,11 +315,11 @@ export const withmultiaxis = () => {
     </Chart>
   );
 };
-withmultiaxis.story = {
+withMultiAxis.story = {
   parameter: 'with multi axis',
 };
 
-export const withmultiaxisbarlines = () => {
+export const withMultiAxisBarLines = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={false} />
@@ -369,11 +369,11 @@ export const withmultiaxisbarlines = () => {
     </Chart>
   );
 };
-withmultiaxisbarlines.story = {
+withMultiAxisBarLines.story = {
   name: 'with multi axis bar/lines',
 };
 
-export const withmultiaxisdifferenttooltipformats = () => {
+export const withMultiAxisDifferentTooltipFormats = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={false} />
@@ -427,11 +427,11 @@ export const withmultiaxisdifferenttooltipformats = () => {
     </Chart>
   );
 };
-withmultiaxisdifferenttooltipformats.story = {
+withMultiAxisDifferentTooltipFormats.story = {
   name: 'with multi axis different tooltip formats',
 };
 
-export const wmanyticklabels = () => {
+export const wManyTickLabels = () => {
   const dg = new SeededDataGenerator();
   const data = dg.generateSimpleSeries(31);
   const customStyle = {
@@ -459,11 +459,11 @@ export const wmanyticklabels = () => {
     </Chart>
   );
 };
-wmanyticklabels.story = {
+wManyTickLabels.story = {
   name: 'w many tick labels',
 };
 
-export const customizingdomainlimits = () => {
+export const customizingDomainLimits = () => {
   const leftDomain = {
     min: number('left min', 0),
     max: number('left max', 7),
@@ -543,11 +543,11 @@ export const customizingdomainlimits = () => {
     </Chart>
   );
 };
-customizingdomainlimits.story = {
+customizingDomainLimits.story = {
   name: 'customizing domain limits [mixed linear chart]',
 };
 
-export const customizingdomainlimitsmixedordinallinearxdomain = () => {
+export const customizingDomainLimitsMixedOrdinalLinearXDomain = () => {
   const leftDomain = {
     min: number('left min', 0),
     max: number('left max', 7),
@@ -618,11 +618,11 @@ export const customizingdomainlimitsmixedordinallinearxdomain = () => {
     </Chart>
   );
 };
-customizingdomainlimitsmixedordinallinearxdomain.story = {
+customizingDomainLimitsMixedOrdinalLinearXDomain.story = {
   name: 'customizing domain limits [mixed ordinal & linear x domain]',
 };
 
-export const customizingdomainlimitsonlyonebounddefined = () => {
+export const customizingDomainLimitsOnlyOneBoundDefined = () => {
   const leftDomain = {
     min: number('left min', 0),
   };
@@ -658,11 +658,11 @@ export const customizingdomainlimitsonlyonebounddefined = () => {
     </Chart>
   );
 };
-customizingdomainlimitsonlyonebounddefined.story = {
+customizingDomainLimitsOnlyOneBoundDefined.story = {
   name: 'customizing domain limits [only one bound defined]',
 };
 
-export const fitdomaintoextentinyaxis = () => {
+export const fitDomainToExtentInYAxis = () => {
   const dg = new SeededDataGenerator();
   const base = dg.generateBasicSeries(100, 0, 50);
   const positive = base.map(({ x, y }) => ({ x, y: y + 1000 }));
@@ -709,6 +709,6 @@ export const fitdomaintoextentinyaxis = () => {
     </Chart>
   );
 };
-fitdomaintoextentinyaxis.story = {
+fitDomainToExtentInYAxis.story = {
   name: 'fit domain to extent in y axis',
 };

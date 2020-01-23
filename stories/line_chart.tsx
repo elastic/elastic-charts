@@ -51,7 +51,8 @@ export const basic = () => {
 basic.story = {
   name: 'basic',
 };
-export const waxis = () => {
+
+export const wAxis = () => {
   return (
     <Chart className={'story-chart'}>
       <Axis
@@ -77,11 +78,11 @@ export const waxis = () => {
     </Chart>
   );
 };
-waxis.story = {
+wAxis.story = {
   name: 'w axis',
 };
 
-export const ordinalwaxis = () => {
+export const ordinalWAxis = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings rotation={getChartRotationKnob()} />
@@ -108,11 +109,11 @@ export const ordinalwaxis = () => {
     </Chart>
   );
 };
-ordinalwaxis.story = {
+ordinalWAxis.story = {
   name: 'ordinal w axis',
 };
 
-export const linearwaxis = () => {
+export const linearWAxis = () => {
   return (
     <Chart className={'story-chart'}>
       <Axis
@@ -138,11 +139,11 @@ export const linearwaxis = () => {
     </Chart>
   );
 };
-linearwaxis.story = {
+linearWAxis.story = {
   name: 'linear w axis',
 };
 
-export const waxisandlegend = () => {
+export const wAxisAndLegend = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} />
@@ -169,7 +170,7 @@ export const waxisandlegend = () => {
     </Chart>
   );
 };
-waxisandlegend.story = {
+wAxisAndLegend.story = {
   name: 'w axis and legend',
 };
 

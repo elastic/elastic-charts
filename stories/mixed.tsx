@@ -27,7 +27,7 @@ export default {
   },
 };
 
-export const barsandlines = () => {
+export const barsAndLines = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} />
@@ -68,11 +68,11 @@ export const barsandlines = () => {
     </Chart>
   );
 };
-barsandlines.story = {
+barsAndLines.story = {
   name: 'bar and lines',
 };
 
-export const linesandareas = () => {
+export const linesAndAreas = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} />
@@ -114,11 +114,11 @@ export const linesandareas = () => {
     </Chart>
   );
 };
-linesandareas.story = {
+linesAndAreas.story = {
   name: 'lines and areas',
 };
 
-export const areasandbars = () => {
+export const areasAndBars = () => {
   return (
     <Chart renderer="canvas" className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} />
@@ -170,11 +170,11 @@ export const areasandbars = () => {
     </Chart>
   );
 };
-areasandbars.story = {
+areasAndBars.story = {
   name: 'areas and bars',
 };
 
-export const testbarlineslinear = () => {
+export const testBarLinesLinear = () => {
   const data1 = [
     [1, 1],
     [2, 2],
@@ -228,11 +228,11 @@ export const testbarlineslinear = () => {
     </Chart>
   );
 };
-testbarlineslinear.story = {
+testBarLinesLinear.story = {
   name: '[test] - bar/lines linear',
 };
 
-export const testbarlinestime = () => {
+export const testBarLinesTime = () => {
   const start = DateTime.fromISO('2019-01-01T00:00:00.000', { zone: 'utc' });
   const data1 = [
     [start.toMillis(), 1, 4],
@@ -294,11 +294,11 @@ export const testbarlinestime = () => {
     </Chart>
   );
 };
-testbarlinestime.story = {
+testBarLinesTime.story = {
   name: '[test] - bar/lines time',
 };
 
-export const fittingfunctionsnonstackedseries = () => {
+export const fittingFunctionsNonStackedSeries = () => {
   const dataTypes = {
     isolated: [
       { x: 0, y: 3 },
@@ -476,6 +476,6 @@ export const fittingfunctionsnonstackedseries = () => {
     </Chart>
   );
 };
-fittingfunctionsnonstackedseries.story = {
+fittingFunctionsNonStackedSeries.story = {
   name: 'Fitting functions - non-stacked series',
 };

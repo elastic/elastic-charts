@@ -13,37 +13,37 @@ describe('Axis stories', () => {
   });
   it('should render ticks with varied rotations', async () => {
     await common.expectChartAtUrlToMatchScreenshot(
-      'http://localhost:9001/?path=/story/axis--ticklabelrotation&knob-Tick Label Padding=0&knob-bottom axis tick label rotation=47&knob-hide bottom axis=&knob-left axis tick label rotation=-56&knob-hide left axis=&knob-top axis tick label rotation=-59&knob-hide top axis=&knob-right axis tick label rotation=30&knob-hide right axis=&knob-debug=',
+      'http://localhost:9001/?path=/story/axis--tick-label-rotation&knob-Tick Label Padding=0&knob-bottom axis tick label rotation=47&knob-hide bottom axis=&knob-left axis tick label rotation=-56&knob-hide left axis=&knob-top axis tick label rotation=-59&knob-hide top axis=&knob-right axis tick label rotation=30&knob-hide right axis=&knob-debug=',
     );
   });
   it('should hide bottom axis', async () => {
     await common.expectChartAtUrlToMatchScreenshot(
-      'http://localhost:9001/?path=/story/axis--ticklabelrotation&knob-Tick Label Padding=0&knob-bottom axis tick label rotation=47&knob-hide bottom axis=true&knob-left axis tick label rotation=-56&knob-hide left axis=&knob-top axis tick label rotation=-59&knob-hide top axis=&knob-right axis tick label rotation=30&knob-hide right axis=&knob-debug=',
+      'http://localhost:9001/?path=/story/axis--tick-label-rotation&knob-Tick Label Padding=0&knob-bottom axis tick label rotation=47&knob-hide bottom axis=true&knob-left axis tick label rotation=-56&knob-hide left axis=&knob-top axis tick label rotation=-59&knob-hide top axis=&knob-right axis tick label rotation=30&knob-hide right axis=&knob-debug=',
     );
   });
   it('should hide top axis', async () => {
     await common.expectChartAtUrlToMatchScreenshot(
-      'http://localhost:9001/?path=/story/axis--ticklabelrotation&knob-Tick Label Padding=0&knob-bottom axis tick label rotation=47&knob-hide bottom axis=&knob-left axis tick label rotation=-56&knob-hide left axis=&knob-top axis tick label rotation=-59&knob-hide top axis=true&knob-right axis tick label rotation=30&knob-hide right axis=&knob-debug=',
+      'http://localhost:9001/?path=/story/axis--tick-label-rotation&knob-Tick Label Padding=0&knob-bottom axis tick label rotation=47&knob-hide bottom axis=&knob-left axis tick label rotation=-56&knob-hide left axis=&knob-top axis tick label rotation=-59&knob-hide top axis=true&knob-right axis tick label rotation=30&knob-hide right axis=&knob-debug=',
     );
   });
   it('should hide left axis', async () => {
     await common.expectChartAtUrlToMatchScreenshot(
-      'http://localhost:9001/?path=/story/axis--ticklabelrotation&knob-Tick Label Padding=0&knob-bottom axis tick label rotation=47&knob-hide bottom axis=&knob-left axis tick label rotation=-56&knob-hide left axis=true&knob-top axis tick label rotation=-59&knob-hide top axis=&knob-right axis tick label rotation=30&knob-hide right axis=&knob-debug=',
+      'http://localhost:9001/?path=/story/axis--tick-label-rotation&knob-Tick Label Padding=0&knob-bottom axis tick label rotation=47&knob-hide bottom axis=&knob-left axis tick label rotation=-56&knob-hide left axis=true&knob-top axis tick label rotation=-59&knob-hide top axis=&knob-right axis tick label rotation=30&knob-hide right axis=&knob-debug=',
     );
   });
   it('should hide right axis', async () => {
     await common.expectChartAtUrlToMatchScreenshot(
-      'http://localhost:9001/?path=/story/axis--ticklabelrotation&knob-Tick Label Padding=0&knob-bottom axis tick label rotation=47&knob-hide bottom axis=&knob-left axis tick label rotation=-56&knob-hide left axis=&knob-top axis tick label rotation=-59&knob-hide top axis=&knob-right axis tick label rotation=30&knob-hide right axis=true&knob-debug=',
+      'http://localhost:9001/?path=/story/axis--tick-label-rotation&knob-Tick Label Padding=0&knob-bottom axis tick label rotation=47&knob-hide bottom axis=&knob-left axis tick label rotation=-56&knob-hide left axis=&knob-top axis tick label rotation=-59&knob-hide top axis=&knob-right axis tick label rotation=30&knob-hide right axis=true&knob-debug=',
     );
   });
   it('should render tick padding', async () => {
     await common.expectChartAtUrlToMatchScreenshot(
-      'http://localhost:9001/?path=/story/axis--wmanyticklabels&knob-Tick Label Padding=60',
+      'http://localhost:9001/?path=/story/axis--w-many-tick-labels&knob-Tick Label Padding=60',
     );
   });
   it('should render with domain constraints', async () => {
     await common.expectChartAtUrlToMatchScreenshot(
-      'http://localhost:9001/?path=/story/axis--customizingdomainlimitsonlyonebounddefined&knob-left min=2&knob-xDomain max=2',
+      'http://localhost:9001/?path=/story/axis--customizing-domain-limits-only-one-bound-defined&knob-left min=2&knob-xDomain max=2',
     );
   });
 });

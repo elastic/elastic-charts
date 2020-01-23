@@ -16,7 +16,6 @@ import {
 } from '../src';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 import { getRandomNumber } from '../src/mocks/utils';
-import { stackedOnlyGroupedAreas } from './bar_chart';
 
 const dateFormatter = timeFormatter('HH:mm');
 
@@ -53,7 +52,7 @@ basic.story = {
   name: 'basic',
 };
 
-export const withtimexaxis = () => {
+export const withTimeXAxis = () => {
   return (
     <Chart className={'story-chart'}>
       <Axis
@@ -81,11 +80,11 @@ export const withtimexaxis = () => {
     </Chart>
   );
 };
-withtimexaxis.story = {
+withTimeXAxis.story = {
   name: 'with time x axis',
 };
 
-export const withlinearxaxis = () => {
+export const withLinearXAxis = () => {
   const start = KIBANA_METRICS.metrics.kibana_os_load[0].data[0][0];
   const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 20).map((d) => {
     return [(d[0] - start) / 30000, d[1]];
@@ -112,11 +111,11 @@ export const withlinearxaxis = () => {
     </Chart>
   );
 };
-withlinearxaxis.story = {
+withLinearXAxis.story = {
   name: 'with linear x axis',
 };
 
-export const withlogyaxis = () => {
+export const withLogYAxis = () => {
   const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d) => {
     return d[1] < 7 ? [d[0], null] : [d[0], d[1] - 10];
   });
@@ -142,11 +141,11 @@ export const withlogyaxis = () => {
     </Chart>
   );
 };
-withlogyaxis.story = {
+withLogYAxis.story = {
   name: 'with log y axis',
 };
 
-export const with4axes = () => {
+export const with4Axes = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings debug={false} />
@@ -187,11 +186,11 @@ export const with4axes = () => {
     </Chart>
   );
 };
-with4axes.story = {
+with4Axes.story = {
   name: 'with 4 axes',
 };
 
-export const waxisandlegend = () => {
+export const wAxisAndLegend = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} />
@@ -220,10 +219,11 @@ export const waxisandlegend = () => {
     </Chart>
   );
 };
-waxisandlegend.story = {
+wAxisAndLegend.story = {
   name: 'w axis and legend',
 };
-export const stackedwaxisandlegend = () => {
+
+export const stackedWAxisAndLegend = () => {
   const data1 = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d) => {
     return [...d, KIBANA_METRICS.metrics.kibana_os_load[0].metric.label];
   });
@@ -263,11 +263,11 @@ export const stackedwaxisandlegend = () => {
     </Chart>
   );
 };
-stackedwaxisandlegend.story = {
+stackedWAxisAndLegend.story = {
   name: 'stacked w axis and legend',
 };
 
-export const stackedaspercentage = () => {
+export const stackedAsPercentage = () => {
   const stackedAsPercentage = boolean('stacked as percentage', true);
   return (
     <Chart className={'story-chart'}>
@@ -303,11 +303,11 @@ export const stackedaspercentage = () => {
     </Chart>
   );
 };
-stackedaspercentage.story = {
+stackedAsPercentage.story = {
   name: 'stacked as percentage',
 };
 
-export const stackedwithseparatedspecs = () => {
+export const stackedWithSeparatedSpecs = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} />
@@ -357,11 +357,11 @@ export const stackedwithseparatedspecs = () => {
     </Chart>
   );
 };
-stackedwithseparatedspecs.story = {
+stackedWithSeparatedSpecs.story = {
   name: 'stacked with separated specs',
 };
 
-export const stackedwithseparatedsecssamenaming = () => {
+export const stackedWithSeparatedSpecsSameNaming = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} />
@@ -411,11 +411,11 @@ export const stackedwithseparatedsecssamenaming = () => {
     </Chart>
   );
 };
-stackedwithseparatedsecssamenaming.story = {
+stackedWithSeparatedSpecsSameNaming.story = {
   name: 'stacked with separated specs - same naming',
 };
 
-export const testlinear = () => {
+export const testLinear = () => {
   const data = [
     [1, 1],
     [2, 2],
@@ -447,11 +447,11 @@ export const testlinear = () => {
     </Chart>
   );
 };
-testlinear.story = {
+testLinear.story = {
   name: '[test] - linear',
 };
 
-export const testtime = () => {
+export const testTime = () => {
   const start = DateTime.fromISO('2019-01-01T00:00:00.000', { zone: 'utc' });
   const data = [
     [start.toMillis(), 1],
@@ -484,11 +484,11 @@ export const testtime = () => {
     </Chart>
   );
 };
-testtime.story = {
+testTime.story = {
   name: '[test] - time',
 };
 
-export const bandareachart = () => {
+export const bandAreaChart = () => {
   const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d) => {
     return {
       x: d[0],
@@ -546,11 +546,11 @@ export const bandareachart = () => {
     </Chart>
   );
 };
-bandareachart.story = {
+bandAreaChart.story = {
   name: 'band area chart',
 };
 
-export const stackedbandareachart = () => {
+export const stackedBandAreaChart = () => {
   const data = KIBANA_METRICS.metrics.kibana_os_load[0].data;
   const data2 = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d) => [d[0], 20, 10]);
   const scaleToDataExtent = boolean('scale to extent', false);
@@ -598,11 +598,11 @@ export const stackedbandareachart = () => {
     </Chart>
   );
 };
-stackedbandareachart.story = {
+stackedBandAreaChart.story = {
   name: 'stacked band area chart',
 };
 
-export const stackdonlygroupedareas = () => {
+export const stackedOnlyGroupedAreas = () => {
   const data1 = [
     [1, 2],
     [2, 2],

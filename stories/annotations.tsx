@@ -46,7 +46,7 @@ export default {
   },
 };
 
-export const linebasicxDomaincontinous = () => {
+export const lineBasicXDomainContinous = () => {
   const data = arrayKnobs('data values', [2.5, 7.2]);
   const dataValues = generateAnnotationData(data);
 
@@ -95,11 +95,11 @@ export const linebasicxDomaincontinous = () => {
     </Chart>
   );
 };
-linebasicxDomaincontinous.story = {
+lineBasicXDomainContinous.story = {
   name: '[line] basic xDomain continuous',
 };
 
-export const linebasicxDomainordinal = () => {
+export const lineBasicXDomainOrdinal = () => {
   const dataValues = generateAnnotationData(arrayKnobs('annotation values', ['a', 'c']));
 
   return (
@@ -130,11 +130,11 @@ export const linebasicxDomainordinal = () => {
     </Chart>
   );
 };
-linebasicxDomainordinal.story = {
+lineBasicXDomainOrdinal.story = {
   name: '[line] basic xDomain ordinal',
 };
 
-export const linebasicyDomain = () => {
+export const lineBasicYDomain = () => {
   const data = arrayKnobs('data values', [1.5, 7.2]);
   const dataValues = generateAnnotationData(data);
 
@@ -169,11 +169,11 @@ export const linebasicyDomain = () => {
     </Chart>
   );
 };
-linebasicyDomain.story = {
+lineBasicYDomain.story = {
   name: '[line] basic yDomain',
 };
 
-export const linetimeseries = () => {
+export const lineTimeSeries = () => {
   const dataValues = generateTimeAnnotationData([
     1551438150000,
     1551438180000,
@@ -204,11 +204,11 @@ export const linetimeseries = () => {
     </Chart>
   );
 };
-linetimeseries.story = {
+lineTimeSeries.story = {
   name: '[line] time series',
 };
 
-export const linestyling = () => {
+export const lineStyling = () => {
   const data = [2.5, 7.2];
   const dataValues = generateAnnotationData(data);
 
@@ -273,11 +273,11 @@ export const linestyling = () => {
     </Chart>
   );
 };
-linestyling.story = {
+lineStyling.story = {
   name: '[line] styling',
 };
 
-export const rectbasicannotionlinearbar = () => {
+export const rectBasicAnnotationLinearBar = () => {
   const dataValues = [
     {
       coordinates: {
@@ -311,11 +311,11 @@ export const rectbasicannotionlinearbar = () => {
     </Chart>
   );
 };
-rectbasicannotionlinearbar.story = {
+rectBasicAnnotationLinearBar.story = {
   name: '[rect] basic annotation (linear bar)',
 };
 
-export const rectbasicannotionordinalbar = () => {
+export const rectBasicAnnotationOrdinalBar = () => {
   const dataValues = [
     {
       coordinates: {
@@ -348,11 +348,11 @@ export const rectbasicannotionordinalbar = () => {
     </Chart>
   );
 };
-rectbasicannotionordinalbar.story = {
+rectBasicAnnotationOrdinalBar.story = {
   name: '[rect] basic annotation (ordinal bar)',
 };
 
-export const rectbasicannotionline = () => {
+export const rectBasicAnnotationLine = () => {
   const definedCoordinate = select(
     'defined coordinate',
     {
@@ -423,11 +423,11 @@ export const rectbasicannotionline = () => {
     </Chart>
   );
 };
-rectbasicannotionline.story = {
+rectBasicAnnotationLine.story = {
   name: '[rect] basic annotation (line)',
 };
 
-export const rectstyling = () => {
+export const rectStyling = () => {
   const dataValues = [
     {
       coordinates: {
@@ -527,11 +527,11 @@ export const rectstyling = () => {
     </Chart>
   );
 };
-rectstyling.story = {
+rectStyling.story = {
   name: '[rect] styling',
 };
 
-export const testlineannotionsinglevaluehistogram = () => {
+export const testLineAnnotationSingleValueHistogram = () => {
   const dataValues = [
     {
       dataValue: 3.5,
@@ -575,11 +575,11 @@ export const testlineannotionsinglevaluehistogram = () => {
     </Chart>
   );
 };
-testlineannotionsinglevaluehistogram.story = {
+testLineAnnotationSingleValueHistogram.story = {
   name: '[test] line annotation single value histogram',
 };
 
-export const recttooltipvisilibitydependentoncontent = () => {
+export const rectTooltipVisilibityDependentOnContent = () => {
   const tooltipOptions = {
     'default formatter, details defined': 'default_defined',
     'default formatter, details undefined': 'default_undefined',
@@ -638,6 +638,6 @@ export const recttooltipvisilibitydependentoncontent = () => {
     </Chart>
   );
 };
-recttooltipvisilibitydependentoncontent.story = {
+rectTooltipVisilibityDependentOnContent.story = {
   name: '[rect] tooltip visibility dependent on content',
 };

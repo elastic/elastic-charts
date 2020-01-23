@@ -11,7 +11,7 @@ export default {
   },
 };
 
-export const withordinalaxis = () => {
+export const withOrdinalAxis = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings
@@ -69,11 +69,11 @@ export const withordinalaxis = () => {
     </Chart>
   );
 };
-withordinalaxis.story = {
+withOrdinalAxis.story = {
   name: 'with ordinal axis',
 };
 
-export const negative90degreeordinal = () => {
+export const negative90DegreeOrdinal = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} rotation={-90} />
@@ -97,11 +97,11 @@ export const negative90degreeordinal = () => {
     </Chart>
   );
 };
-negative90degreeordinal.story = {
+negative90DegreeOrdinal.story = {
   name: 'negative 90 deg ordinal',
 };
 
-export const rotations0degordinal = () => {
+export const rotations0DegOrdinal = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} rotation={0} />
@@ -125,11 +125,11 @@ export const rotations0degordinal = () => {
     </Chart>
   );
 };
-rotations0degordinal.story = {
+rotations0DegOrdinal.story = {
   name: '0 deg ordinal',
 };
 
-export const rotations90degordinal = () => {
+export const rotations90DegOrdinal = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} rotation={90} />
@@ -153,11 +153,11 @@ export const rotations90degordinal = () => {
     </Chart>
   );
 };
-rotations90degordinal.story = {
+rotations90DegOrdinal.story = {
   name: '90 deg ordinal',
 };
 
-export const rotations180degordinal = () => {
+export const rotations180DegOrdinal = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} rotation={180} />
@@ -181,11 +181,11 @@ export const rotations180degordinal = () => {
     </Chart>
   );
 };
-rotations180degordinal.story = {
+rotations180DegOrdinal.story = {
   name: '180 deg ordinal',
 };
 
-export const negative90deglinear = () => {
+export const negative90DegLinear = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} rotation={-90} />
@@ -209,11 +209,11 @@ export const negative90deglinear = () => {
     </Chart>
   );
 };
-negative90deglinear.story = {
+negative90DegLinear.story = {
   name: 'negative 90 deg linear',
 };
 
-export const rotations0deglinear = () => {
+export const rotations0DegLinear = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} rotation={0} />
@@ -237,11 +237,11 @@ export const rotations0deglinear = () => {
     </Chart>
   );
 };
-rotations0deglinear.story = {
+rotations0DegLinear.story = {
   name: '0 deg linear',
 };
 
-export const rotations90deglinear = () => {
+export const rotations90DegLinear = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} rotation={90} />
@@ -265,11 +265,11 @@ export const rotations90deglinear = () => {
     </Chart>
   );
 };
-rotations90deglinear.story = {
+rotations90DegLinear.story = {
   name: '90 deg linear',
 };
 
-export const rotations180deglinear = () => {
+export const rotations180DegLinear = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} rotation={180} />
@@ -293,6 +293,6 @@ export const rotations180deglinear = () => {
     </Chart>
   );
 };
-rotations180deglinear.story = {
+rotations180DegLinear.story = {
   name: '180 deg linear',
 };

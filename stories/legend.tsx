@@ -143,7 +143,7 @@ top.story = {
   name: 'top',
 };
 
-export const changingspecs = () => {
+export const changingSpecs = () => {
   const splitSeries = boolean('split series', true) ? ['g1', 'g2'] : undefined;
   return (
     <Chart className={'story-chart'}>
@@ -168,11 +168,11 @@ export const changingspecs = () => {
     </Chart>
   );
 };
-changingspecs.story = {
+changingSpecs.story = {
   name: 'changing specs',
 };
 
-export const hidelegenditemsbyseries = () => {
+export const hideLegendItemsBySeries = () => {
   const hideBarSeriesInLegend = boolean('hide bar series in legend', false);
   const hideLineSeriesInLegend = boolean('hide line series in legend', false);
 
@@ -220,11 +220,11 @@ export const hidelegenditemsbyseries = () => {
     </Chart>
   );
 };
-hidelegenditemsbyseries.story = {
+hideLegendItemsBySeries.story = {
   name: 'hide legend items by series',
 };
 
-export const displayvaluesinlegendelements = () => {
+export const displayValuesInLegendElements = () => {
   const showLegendDisplayValue = boolean('show display value in legend', true);
   const legendPosition = select(
     'legendPosition',
@@ -276,11 +276,11 @@ export const displayvaluesinlegendelements = () => {
     </Chart>
   );
 };
-displayvaluesinlegendelements.story = {
+displayValuesInLegendElements.story = {
   name: 'display values in legend elements',
 };
 
-export const legendspacingBuffer = () => {
+export const legendSpacingBuffer = () => {
   const theme: PartialTheme = {
     legend: {
       spacingBuffer: number('legend buffer value', 80),
@@ -327,7 +327,7 @@ export const legendspacingBuffer = () => {
     </Chart>
   );
 };
-legendspacingBuffer.story = {
+legendSpacingBuffer.story = {
   name: 'legend spacingBuffer',
 };
 //   {

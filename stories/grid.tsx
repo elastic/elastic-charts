@@ -168,7 +168,7 @@ basic.story = {
   name: 'basic',
 };
 
-export const multipleaxeswiththesameposition = () => {
+export const multipleAxesWithTheSamePosition = () => {
   const leftAxisGridLineConfig = generateGridLineConfig(Position.Left);
   const leftAxisGridLineConfig2 = generateGridLineConfig(`${Position.Left}2`);
 
@@ -224,6 +224,6 @@ export const multipleaxeswiththesameposition = () => {
     </Chart>
   );
 };
-multipleaxeswiththesameposition.story = {
+multipleAxesWithTheSamePosition.story = {
   name: 'multiple axes with the same position',
 };

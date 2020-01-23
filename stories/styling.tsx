@@ -124,7 +124,7 @@ export default {
   },
 };
 
-export const chartsize = () => {
+export const chartSize = () => {
   const theme: RecursivePartial<Theme> = {
     chartMargins: {
       bottom: 0,
@@ -193,11 +193,11 @@ export const chartsize = () => {
     </div>
   );
 };
-chartsize.story = {
+chartSize.story = {
   name: 'chart size',
 };
 
-export const marginsandpaddings = () => {
+export const marginsAndPaddings = () => {
   const theme: PartialTheme = {
     chartMargins: {
       left: range('margin left', 0, 50, 10),
@@ -266,7 +266,7 @@ export const marginsandpaddings = () => {
     </Chart>
   );
 };
-marginsandpaddings.story = {
+marginsAndPaddings.story = {
   name: 'margins and paddings',
 };
 
@@ -333,7 +333,7 @@ axis.story = {
   name: 'axis',
 };
 
-export const themestyle = () => {
+export const themeStyle = () => {
   const customizeLineStroke = boolean('customizeLineStroke', false, 'line');
   const customizePointStroke = boolean('customizeLinePointStroke', false, 'line');
   const customizeAreaFill = boolean('customizeAreaFill', false, 'area');
@@ -483,11 +483,11 @@ export const themestyle = () => {
     </Chart>
   );
 };
-themestyle.story = {
+themeStyle.story = {
   name: 'theme/style',
 };
 
-export const partialcustomtheme = () => {
+export const partialCustomTheme = () => {
   const customPartialTheme: PartialTheme = {
     barSeriesStyle: {
       rectBorder: {
@@ -527,11 +527,11 @@ export const partialcustomtheme = () => {
     </Chart>
   );
 };
-partialcustomtheme.story = {
+partialCustomTheme.story = {
   name: 'partial custom theme',
 };
 
-export const partialcustomthemewithbaseTheme = () => {
+export const partialCustomThemeWithBaseTheme = () => {
   const customPartialTheme: PartialTheme = {
     barSeriesStyle: {
       rectBorder: {
@@ -571,11 +571,11 @@ export const partialcustomthemewithbaseTheme = () => {
     </Chart>
   );
 };
-partialcustomthemewithbaseTheme.story = {
+partialCustomThemeWithBaseTheme.story = {
   name: 'partial custom theme with baseTheme',
 };
 
-export const multiplecustompartialthemes = () => {
+export const multipleCustomPartialThemes = () => {
   const primaryTheme: PartialTheme = {
     barSeriesStyle: {
       rect: {
@@ -622,7 +622,7 @@ export const multiplecustompartialthemes = () => {
     </Chart>
   );
 };
-multiplecustompartialthemes.story = {
+multipleCustomPartialThemes.story = {
   name: 'multiple custom partial themes',
 };
 //   {
@@ -632,7 +632,7 @@ multiplecustompartialthemes.story = {
 //   },
 // )
 
-export const customseriescolorsviacolorsarray = () => {
+export const customSeriesColorsViaColorsArray = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings showLegend={true} legendPosition={Position.Right} />
@@ -657,11 +657,11 @@ export const customseriescolorsviacolorsarray = () => {
     </Chart>
   );
 };
-customseriescolorsviacolorsarray.story = {
+customSeriesColorsViaColorsArray.story = {
   name: 'custom series colors via colors array',
 };
 
-export const customseriescolorsviaaccessorfunction = () => {
+export const customSeriesColorsViaAccessorFunction = () => {
   const barColor = color('barSeriesColor', '#000');
   const barSeriesColorAccessor: CustomSeriesColors = ({ specId, yAccessor, splitAccessors }) => {
     if (
@@ -724,11 +724,11 @@ export const customseriescolorsviaaccessorfunction = () => {
     </Chart>
   );
 };
-customseriescolorsviaaccessorfunction.story = {
+customSeriesColorsViaAccessorFunction.story = {
   name: 'custom series colors via accessor function',
 };
 
-export const customseriesstylesbars = () => {
+export const customSeriesStylesBars = () => {
   const applyBarStyle = boolean('apply bar style (bar 1 series)', true, 'Chart Global Theme');
 
   const barSeriesStyle = {
@@ -791,11 +791,11 @@ export const customseriesstylesbars = () => {
     </Chart>
   );
 };
-customseriesstylesbars.story = {
+customSeriesStylesBars.story = {
   name: 'custom series styles: bars',
 };
 
-export const customseriesstyleslines = () => {
+export const customSeriesStylesLines = () => {
   const applyLineStyles = boolean('apply line series style', true, 'Chart Global Theme');
   const lineSeriesStyle1 = generateLineSeriesStyleKnobs('Line 1 style', 'line1', 'lime', 'green', 4, 10, 6);
   const lineSeriesStyle2 = generateLineSeriesStyleKnobs('Line 2 style', 'line2', 'blue', 'violet', 2, 5, 4);
@@ -855,11 +855,11 @@ export const customseriesstyleslines = () => {
     </Chart>
   );
 };
-customseriesstyleslines.story = {
+customSeriesStylesLines.story = {
   name: 'custom series styles: lines',
 };
 
-export const customseriesstylesarea = () => {
+export const customSeriesStylesArea = () => {
   const applyLineStyles = boolean('apply line series style', true, 'Chart Global Theme');
 
   const chartTheme = {
@@ -920,11 +920,11 @@ export const customseriesstylesarea = () => {
     </Chart>
   );
 };
-customseriesstylesarea.story = {
+customSeriesStylesArea.story = {
   name: 'custom series styles: area',
 };
 
-export const addcustomfullandsubserieslabel = () => {
+export const addCustomFullAndSubSeriesLabel = () => {
   const customSeriesLabel: SeriesStringPredicate = ({ yAccessor, splitAccessors }) => {
     // eslint-disable-next-line react/prop-types
     if (yAccessor === 'y1' && splitAccessors.get('g') === 'a') {
@@ -973,11 +973,11 @@ export const addcustomfullandsubserieslabel = () => {
     </Chart>
   );
 };
-addcustomfullandsubserieslabel.story = {
+addCustomFullAndSubSeriesLabel.story = {
   name: 'Add custom full and sub series label',
 };
 
-export const addcustomsubserieslabelformatting = () => {
+export const addCustomSubSeriesLabelFormatting = () => {
   const start = DateTime.fromISO('2019-01-01T00:00:00.000', { zone: 'utc' });
   const data = [
     { x: 1, y: 3, percent: 0.5, time: start.plus({ month: 1 }).toMillis() },
@@ -1035,11 +1035,11 @@ export const addcustomsubserieslabelformatting = () => {
     </Chart>
   );
 };
-addcustomfullandsubserieslabel.story = {
+addCustomFullAndSubSeriesLabel.story = {
   name: 'Add custom sub-series label formatting [time/date and percent]',
 };
 
-export const ticklabelpaddingbothpropandtheme = () => {
+export const tickLabelPaddingBothPropAndTheme = () => {
   const theme: PartialTheme = {
     axes: {
       tickLabelStyle: {
@@ -1086,11 +1086,11 @@ export const ticklabelpaddingbothpropandtheme = () => {
     </Chart>
   );
 };
-ticklabelpaddingbothpropandtheme.story = {
+tickLabelPaddingBothPropAndTheme.story = {
   name: 'tickLabelPadding both prop and theme',
 };
 
-export const styleaccessoroverrides = () => {
+export const styleAccessorOverrides = () => {
   const hasThreshold = boolean('threshold', true);
   const threshold = number('min threshold', 3);
   const barStyle: RecursivePartial<BarSeriesStyle> = {
@@ -1174,6 +1174,6 @@ export const styleaccessoroverrides = () => {
     </Chart>
   );
 };
-styleaccessoroverrides.story = {
+styleAccessorOverrides.story = {
   name: 'Style Accessor Overrides',
 };
