@@ -2,7 +2,7 @@ import { wrapToTau } from '../geometry';
 import { Coordinate, Distance, Pixels, Radian, Radius, RingSector } from '../types/geometry_types';
 import { Config } from '../types/config_types';
 import { logarithm, TAU, trueBearingToStandardPositionAngle } from '../utils/math';
-import { RawTextGetter, RowBox, RowSet, RowSpace, ShapeTreeNode } from '../types/viewmodel_types';
+import { RawTextGetter, RowBox, RowSet, RowSpace, ShapeTreeNode, ValueFormatter } from '../types/viewmodel_types';
 import { Box, Font, PartialFont, TextMeasure } from '../types/types';
 import { AGGREGATE_KEY } from '../utils/group_by_rollup';
 import { conjunctiveConstraint } from '../circline_geometry';
@@ -197,7 +197,7 @@ function identityRowSet(): RowSet {
 
 function getAllBoxes(
   rawTextGetter: RawTextGetter,
-  valueFormatter: (value: number) => string,
+  valueFormatter: ValueFormatter,
   sizeInvariantFontShorthand: Font,
   valueFont: PartialFont,
   node: ShapeTreeNode,
@@ -373,7 +373,7 @@ function fill(
         }
       }
     }
-    rowSet.rows = rowSet.rows.filter((r) => !isNaN(r.length));
+    rowSet.rows = rowSet.rows.filter((r) => completed && !isNaN(r.length));
     return rowSet;
   };
 }

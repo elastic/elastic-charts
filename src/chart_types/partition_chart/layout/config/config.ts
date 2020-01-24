@@ -28,10 +28,13 @@ function defaultFormatter(d: any): string {
 const valueFont = {
   type: 'group',
   values: {
+    /*
+    // Object.assign interprets the extant `undefined` as legit, so commenting it out till moving away from Object.assign in `const valueFont = ...`
     fontFamily: {
       dflt: undefined,
       type: 'string',
     },
+   */
     fontWeight: { dflt: 400, min: 100, max: 900, type: 'number' },
     fontStyle: {
       dflt: 'normal',

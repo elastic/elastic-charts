@@ -244,6 +244,7 @@ export function shapeViewModel(
     treemapLayout ? () => 0 : inSectorRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
   );
 
+  // whiskers (ie. just lines, no text) for fill text outside the outer radius
   const outsideLinksViewModel = makeOutsideLinksViewModel(outsideFillNodes, rowSets, linkLabel.radiusPadding);
 
   // linked text
@@ -266,6 +267,7 @@ export function shapeViewModel(
     currentY,
     outerRadius,
     rawTextGetter,
+    valueFormatter,
   );
 
   // combined viewModel

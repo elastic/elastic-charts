@@ -183,7 +183,7 @@ function renderLinkLabels(
     ctx.strokeStyle = linkLabelTextColor;
     ctx.fillStyle = linkLabelTextColor;
     ctx.font = `${400} ${linkLabelFontSize}px ${fontFamily}`;
-    viewModels.forEach(({ link, translate, textAlign, text }: LinkLabelVM) => {
+    viewModels.forEach(({ link, translate, textAlign, text, valueText }: LinkLabelVM) => {
       ctx.beginPath();
       ctx.moveTo(...link[0]);
       link.slice(1).forEach((point) => ctx.lineTo(...point));
@@ -192,7 +192,8 @@ function renderLinkLabels(
         ctx.translate(...translate);
         ctx.scale(1, -1); // flip for text rendering not to be upside down
         ctx.textAlign = textAlign;
-        ctx.fillText(text, 0, 0);
+        // only use a colon if both text and valueText are non-zero length strings
+        ctx.fillText(text + (text && valueText ? ': ' : '') + valueText, 0, 0);
       });
     });
   });

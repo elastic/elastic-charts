@@ -411,6 +411,7 @@ export const LargeSmallPieChart = () => (
 LargeSmallPieChart.story = {
   name: 'Pie chart with one large and one small slice',
 };
+
 export const VeryLargeSmallPieChart = () => (
   <Chart className={'story-chart'}>
     <Partition
@@ -494,6 +495,7 @@ export const FullZeroSlicePieChart = () => (
 FullZeroSlicePieChart.story = {
   name: 'Pie chart with one full and one zero slice',
 };
+
 export const SingleSlicePieChart = () => (
   <Chart className={'story-chart'}>
     <Partition
@@ -518,6 +520,57 @@ export const SingleSlicePieChart = () => (
 SingleSlicePieChart.story = {
   name: 'Pie chart with a single slice',
 };
+
+export const SingleSmallSlicePieChart = () => (
+  <Chart className={'story-chart'}>
+    <Partition
+      id={'spec_' + getRandomNumber()}
+      data={mocks.pie.slice(0, 1)}
+      valueAccessor={(d: Datum) => d.exportVal as number}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
+      layers={[
+        {
+          groupByRollup: (d: Datum) => d.sitc1,
+          nodeLabel: (d: Datum) => productLookup[d].name,
+          fillLabel: { textInvertible: true },
+          shape: {
+            fillColor: defaultFillColor(interpolatorCET2s),
+          },
+        },
+      ]}
+      config={{ partitionLayout: PartitionLayout.sunburst, outerSizeRatio: 0.15 }}
+    />
+  </Chart>
+);
+SingleSmallSlicePieChart.story = {
+  name: 'Small pie chart with a single slice',
+};
+
+export const SingleVerySmallSlicePieChart = () => (
+  <Chart className={'story-chart'}>
+    <Partition
+      id={'spec_' + getRandomNumber()}
+      data={mocks.pie.slice(0, 1)}
+      valueAccessor={(d: Datum) => d.exportVal as number}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
+      layers={[
+        {
+          groupByRollup: (d: Datum) => d.sitc1,
+          nodeLabel: (d: Datum) => productLookup[d].name,
+          fillLabel: { textInvertible: true },
+          shape: {
+            fillColor: defaultFillColor(interpolatorCET2s),
+          },
+        },
+      ]}
+      config={{ partitionLayout: PartitionLayout.sunburst, outerSizeRatio: 0.03 }}
+    />
+  </Chart>
+);
+SingleVerySmallSlicePieChart.story = {
+  name: 'Very small pie chart with a single slice',
+};
+
 export const NoSliceNoPie = () => (
   <Chart className={'story-chart'}>
     <Partition
@@ -542,6 +595,7 @@ export const NoSliceNoPie = () => (
 NoSliceNoPie.story = {
   name: 'No pie chart if no slices',
 };
+
 export const NegativeNoPie = () => (
   <Chart className={'story-chart'}>
     <Partition
@@ -569,6 +623,7 @@ export const NegativeNoPie = () => (
 NegativeNoPie.story = {
   name: 'No pie chart if some slices are negative',
 };
+
 export const TotalZeroNoPie = () => (
   <Chart className={'story-chart'}>
     <Partition
@@ -705,6 +760,7 @@ export const LinkedLabelsOnly = () => (
 LinkedLabelsOnly.story = {
   name: 'Linked labels only',
 };
+
 export const NoLabels = () => (
   <Chart className={'story-chart'}>
     <Partition

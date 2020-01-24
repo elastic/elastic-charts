@@ -8,6 +8,7 @@ export type LinkLabelVM = {
   translate: [number, number];
   textAlign: CanvasTextAlign;
   text: string;
+  valueText: string;
   width: Distance;
   verticalOffset: Distance;
 };
@@ -99,3 +100,4 @@ export interface ShapeTreeNode extends TreeNode, SectorGeomSpecY {
 }
 
 export type RawTextGetter = (node: ShapeTreeNode) => string;
+export type ValueFormatter = (value: number) => string;
