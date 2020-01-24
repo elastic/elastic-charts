@@ -1,6 +1,8 @@
-// eslint-disable-next-line
 const path = require('path');
-const webpack = require('webpack');
+// const webpack = require('webpack');
+// eslint-disable-next-line
+
+const createCompiler = require('@storybook/addon-docs/mdx-compiler-plugin');
 
 const nonce = 'Pk1rZ1XDlMuYe8ubWV3Lh0BzwrTigJQ=';
 const scssLoaders = [
@@ -18,23 +20,7 @@ const scssLoaders = [
 ];
 
 module.exports = async ({ config }) => {
-  config.plugins.push(new webpack.EnvironmentPlugin({ RNG_SEED: null }));
-
-  config.module.rules.push({
-    test: /\.tsx?$/,
-    loader: 'ts-loader',
-    exclude: /node_modules/,
-    options: {
-      configFile: 'tsconfig.json',
-      transpileOnly: true,
-    },
-  });
-
-  config.module.rules.push({
-    test: /\.tsx?$/,
-    loader: require.resolve('react-docgen-typescript-loader'),
-    exclude: /node_modules/,
-  });
+  //config.plugins.push(new webpack.EnvironmentPlugin({ RNG_SEED: null }));
 
   // Replace default css rules with nonce
   config.module.rules = config.module.rules.filter(({ test }) => !test.test('.css'));
@@ -89,7 +75,51 @@ module.exports = async ({ config }) => {
     ],
   });
 
-  config.resolve.extensions.push('.ts', '.tsx');
+  config.module.rules.push({
+    test: /\.(ts|tsx|mdx)$/,
+    use: [
+      {
+        loader: require.resolve('babel-loader'),
+        options: {
+          presets: [['react-app', { flow: false, typescript: true }]],
+        },
+      },
+      {
+        loader: 'ts-loader',
+        options: {
+          configFile: 'tsconfig.json',
+          transpileOnly: true,
+        },
+      },
+      {
+        loader: require.resolve('react-docgen-typescript-loader'),
+      },
+    ],
+  });
+  config.module.rules.push({
+    test: /\.mdx$/,
+    use: [
+      {
+        loader: 'babel-loader',
+        options: {
+          presets: [['react-app', { flow: false, typescript: true }]],
+        },
+      },
+      {
+        loader: '@mdx-js/loader',
+        options: {
+          compilers: [createCompiler({})],
+        },
+      },
+    ],
+  });
+  config.module.rules.push({
+    test: /\.tsx?$/,
+    loader: require.resolve('@storybook/source-loader'),
+    exclude: [/node_modules/],
+    enforce: 'pre',
+  });
+  config.resolve.extensions.push('.ts', '.tsx', '.mdx');
 
   return config;
 };

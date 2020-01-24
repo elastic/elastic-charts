@@ -1,18 +1,17 @@
 import { boolean } from '@storybook/addon-knobs';
+
+import { Chart, BarSeries, getSpecId, ScaleType } from '../src';
+
 import React from 'react';
 
-import { BarSeries, Chart, getSpecId, ScaleType } from '../src';
+// @ts-ignore
 
 export default {
-  title: 'Bar Chart',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
+  title: 'Demo/Basic',
+  includeStories: [],
 };
 
-export const basic = () => {
+export const Basic = () => {
   const darkmode = boolean('darkmode', false);
   const className = darkmode ? 'story-chart-dark' : 'story-chart';
   const toggleSpec = boolean('toggle bar spec', true);
@@ -39,6 +38,10 @@ export const basic = () => {
     </Chart>
   );
 };
-basic.story = {
+Basic.story = {
   name: 'basic',
+  // @ts-ignore
+  parameters: {
+    foo: 'bar',
+  },
 };

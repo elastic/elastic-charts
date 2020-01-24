@@ -1,8 +1,10 @@
 import { withInfo } from '@storybook/addon-info';
 import { withKnobs } from '@storybook/addon-knobs';
 import { addDecorator, configure, addParameters } from '@storybook/react';
+// @ts-ignore
+import { DocsPage, DocsContainer } from '@storybook/addon-docs/blocks';
 
-import { switchTheme } from '../.storybook/theme_service';
+import { switchTheme } from '../.storybook-docs/theme_service';
 
 switchTheme('light');
 
@@ -34,10 +36,13 @@ addParameters({
       },
     },
   },
-  docs: {},
+  docs: {
+    container: DocsContainer,
+    page: DocsPage,
+  },
 });
 
 addDecorator(withKnobs);
 addDecorator(withInfo);
 
-configure(require.context('../docs', true, /\.tsx$/), module);
+configure(require.context('../docs', true, /\.(ts|tsx|mdx)$/), module);
