@@ -90,8 +90,6 @@ interface SectorGeomSpecY {
   y1px: Distance;
 }
 
-export interface RingSectorGeometry extends AngleFromTo, SectorGeomSpecY {}
-
 export interface ShapeTreeNode extends TreeNode, SectorGeomSpecY {
   yMidPx: Distance;
   depth: number;
@@ -99,7 +97,6 @@ export interface ShapeTreeNode extends TreeNode, SectorGeomSpecY {
   dataName: any;
   value: number;
   parent: ArrayNode;
-  children: ShapeTreeNode[];
 }
 
 export type RawTextGetter = (node: ShapeTreeNode) => string;
