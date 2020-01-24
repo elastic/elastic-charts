@@ -6,6 +6,8 @@ import { countryDimension, productDimension, regionDimension } from '../src/mock
 import { getRandomNumber } from '../src/mocks/utils';
 import { palettes } from '../src/mocks/hierarchical/palettes';
 import React from 'react';
+import { ShapeTreeNode } from '../src/chart_types/partition_chart/layout/types/viewmodel_types';
+import { categoricalFillColor, colorBrewerCategoricalPastel12 } from './utils/utils';
 
 const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
 const regionLookup = arrayToLookup((d: Datum) => d.region, regionDimension);
@@ -56,6 +58,39 @@ OneLayer.story = {
   name: 'One-layer, resizing treemap',
 };
 
+export const OneLayer2 = () => (
+  <Chart className={'story-chart'}>
+    <Partition
+      id={'spec_' + getRandomNumber()}
+      data={mocks.pie}
+      valueAccessor={(d: Datum) => d.exportVal as number}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
+      layers={[
+        {
+          groupByRollup: (d: Datum) => d.sitc1,
+          nodeLabel: (d: Datum) => productLookup[d].name,
+          fillLabel: {
+            textInvertible: true,
+            valueFormatter: (d: number) => `${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`,
+            valueFont: {
+              fontWeight: 100,
+            },
+          },
+          shape: {
+            fillColor: (d: ShapeTreeNode) => categoricalFillColor(colorBrewerCategoricalPastel12)(d.sortIndex),
+          },
+        },
+      ]}
+      config={{
+        partitionLayout: PartitionLayout.treemap,
+      }}
+    />
+  </Chart>
+);
+OneLayer2.story = {
+  name: 'One-layer, ColorBrewer treemap',
+};
+
 export const MidTwoLayers = () => (
   <Chart
     className={'story-chart'}
@@ -80,7 +115,7 @@ export const MidTwoLayers = () => (
             textColor: 'yellow',
             textInvertible: false,
           },
-          shape: { fillColor: 'rgba(255, 229, 180,0.25)' },
+          shape: { fillColor: 'rgba(0,0,0,0)' },
         },
         {
           groupByRollup: (d: Datum) => d.dest,
@@ -92,10 +127,16 @@ export const MidTwoLayers = () => (
             fontWeight: 200,
             fontStyle: 'normal',
             fontFamily: 'Helvetica',
-            fontVariant: 'normal',
+            fontVariant: 'small-caps',
+            valueFont: { fontWeight: 400, fontStyle: 'italic' },
           },
           shape: {
-            fillColor: defaultFillColor(interpolatorTurbo),
+            fillColor: (d: ShapeTreeNode) => {
+              // primarily, pick color based on parent's index, but then perturb by the index within the parent
+              return interpolatorTurbo(
+                (d.parent.sortIndex + d.sortIndex / d.parent.children.length) / (d.parent.parent.children.length + 1),
+              );
+            },
           },
         },
       ]}
@@ -113,14 +154,13 @@ export const MidTwoLayers = () => (
 MidTwoLayers.story = {
   name: 'Midsize two-layer treemap',
 };
+
 export const TwoLayersStressTest = () => (
   <Chart
     className={'story-chart'}
-    size={
-      {
-        /*height: 800*/
-      }
-    }
+    size={{
+      height: 800,
+    }}
   >
     <Partition
       id={'spec_' + getRandomNumber()}
@@ -132,12 +172,17 @@ export const TwoLayersStressTest = () => (
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: any) => productLookup[d].name.toUpperCase(),
           fillLabel: {
-            valueFormatter: (d: number) => `${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`,
+            valueFormatter: () => '',
             fontFamily: 'Phosphate-Inline',
-            textColor: 'white',
-            textInvertible: false,
+            textColor: 'rgba(255,255,0, 0.6)',
+            textInvertible: true,
           },
-          shape: { fillColor: 'rgba(255, 229, 180,0.25)' },
+          shape: {
+            fillColor: (d: ShapeTreeNode) => {
+              // primarily, pick color based on parent's index, but then perturb by the index within the parent
+              return interpolatorTurbo(d.sortIndex / (d.parent.children.length + 1));
+            },
+          },
         },
         {
           groupByRollup: (d: Datum) => d.dest,
@@ -145,14 +190,22 @@ export const TwoLayersStressTest = () => (
           fillLabel: {
             valueFormatter: (d: number) => `${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`,
             textColor: 'black',
-            textInvertible: false,
-            fontWeight: 200,
+            textInvertible: true,
+            fontWeight: 900,
             fontStyle: 'normal',
             fontFamily: 'Helvetica',
             fontVariant: 'normal',
+            valueFont: {
+              fontWeight: 100,
+            },
           },
           shape: {
-            fillColor: defaultFillColor(interpolatorCET2s),
+            fillColor: (d: ShapeTreeNode) => {
+              // primarily, pick color based on parent's index, but then perturb by the index within the parent
+              return interpolatorTurbo(
+                (d.parent.sortIndex + d.sortIndex / d.parent.children.length) / (d.parent.parent.children.length + 1),
+              );
+            },
           },
         },
       ]}

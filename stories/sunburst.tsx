@@ -1,15 +1,20 @@
 import { Chart, Datum, Partition, PartitionLayout } from '../src';
 import { mocks } from '../src/mocks/hierarchical/index';
 import { config } from '../src/chart_types/partition_chart/layout/config/config';
-import { arrayToLookup, hueInterpolator } from '../src/chart_types/partition_chart/layout/utils/calcs';
-import { productDimension, regionDimension, countryDimension } from '../src/mocks/hierarchical/dimension_codes';
 import { getRandomNumber } from '../src/mocks/utils';
-import { palettes } from '../src/mocks/hierarchical/palettes';
 import React from 'react';
-
-const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
-const regionLookup = arrayToLookup((d: Datum) => d.region, regionDimension);
-const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
+import { ShapeTreeNode } from '../src/chart_types/partition_chart/layout/types/viewmodel_types';
+import {
+  categoricalFillColor,
+  colorBrewerCategoricalPastel12,
+  colorBrewerCategoricalStark9,
+  countryLookup,
+  indexInterpolatedFillColor,
+  interpolatorCET2s,
+  interpolatorTurbo,
+  productLookup,
+  regionLookup,
+} from './utils/utils';
 
 export default {
   title: 'Sunburst',
@@ -19,15 +24,6 @@ export default {
     },
   },
 };
-
-// style calcs
-const interpolatorCET2s = hueInterpolator(palettes.CET2s.map(([r, g, b]) => [r, g, b, 0.8]));
-const interpolatorTurbo = hueInterpolator(palettes.turbo.map(([r, g, b]) => [r, g, b, 0.8]));
-
-const defaultFillColor = (colorMaker: any) => (d: any, i: number, a: any[]) => colorMaker(i / (a.length + 1));
-
-const decreasingOpacityCET2 = (opacity: number) => (d: any, i: number, a: any[]) =>
-  hueInterpolator(palettes.CET2s.map(([r, g, b]) => [r, g, b, opacity]))(i / (a.length + 1));
 
 export const SimplePieChart = () => (
   <Chart className={'story-chart'}>
@@ -42,7 +38,7 @@ export const SimplePieChart = () => (
           nodeLabel: (d: Datum) => productLookup[d].name,
           fillLabel: { textInvertible: true },
           shape: {
-            fillColor: defaultFillColor(interpolatorTurbo),
+            fillColor: indexInterpolatedFillColor(interpolatorCET2s),
           },
         },
       ]}
@@ -78,7 +74,7 @@ export const ValueFormattedPieChart = () => (
             },
           },
           shape: {
-            fillColor: defaultFillColor(interpolatorTurbo),
+            fillColor: indexInterpolatedFillColor(interpolatorTurbo),
           },
         },
       ]}
@@ -88,6 +84,43 @@ export const ValueFormattedPieChart = () => (
 );
 ValueFormattedPieChart.story = {
   name: 'Value formatted pie chart',
+  info: {
+    source: false,
+  },
+};
+
+export const ValueFormattedPieChart2 = () => (
+  <Chart className={'story-chart'}>
+    <Partition
+      id={'spec_' + getRandomNumber()}
+      data={mocks.pie}
+      valueAccessor={(d: Datum) => d.exportVal as number}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
+      layers={[
+        {
+          groupByRollup: (d: Datum) => d.sitc1,
+          nodeLabel: (d: Datum) => productLookup[d].name,
+          fillLabel: {
+            textInvertible: true,
+            fontWeight: 100,
+            fontStyle: 'italic',
+            valueFont: {
+              fontFamily: 'Menlo',
+              fontStyle: 'normal',
+              fontWeight: 900,
+            },
+          },
+          shape: {
+            fillColor: (d: ShapeTreeNode) => categoricalFillColor(colorBrewerCategoricalPastel12)(d.sortIndex),
+          },
+        },
+      ]}
+      config={{ outerSizeRatio: 0.9 }}
+    />
+  </Chart>
+);
+ValueFormattedPieChart2.story = {
+  name: 'Value formatted pie chart with categorical color palette',
   info: {
     source: false,
   },
@@ -106,7 +139,7 @@ export const PieChartWithFillLabels = () => (
           nodeLabel: (d: Datum) => productLookup[d].name,
           fillLabel: { textInvertible: true },
           shape: {
-            fillColor: defaultFillColor(interpolatorCET2s),
+            fillColor: indexInterpolatedFillColor(interpolatorCET2s),
           },
         },
       ]}
@@ -150,7 +183,7 @@ export const DonutChartWithFillLabels = () => (
           nodeLabel: (d: Datum) => productLookup[d].name,
           fillLabel: { textInvertible: true },
           shape: {
-            fillColor: defaultFillColor(interpolatorCET2s),
+            fillColor: indexInterpolatedFillColor(interpolatorCET2s),
           },
         },
       ]}
@@ -196,7 +229,7 @@ export const PieChartLabels = () => (
           // nodeLabel: (d: Datum) => d,
           fillLabel: { textInvertible: true },
           shape: {
-            fillColor: defaultFillColor(interpolatorCET2s),
+            fillColor: indexInterpolatedFillColor(interpolatorCET2s),
           },
         },
       ]}
@@ -224,7 +257,7 @@ export const SomeZeroValueSlice = () => (
           nodeLabel: (d: Datum) => productLookup[d].name,
           fillLabel: { textInvertible: true },
           shape: {
-            fillColor: defaultFillColor(interpolatorCET2s),
+            fillColor: indexInterpolatedFillColor(interpolatorCET2s),
           },
         },
       ]}
@@ -233,7 +266,7 @@ export const SomeZeroValueSlice = () => (
   </Chart>
 );
 SomeZeroValueSlice.story = {
-  name: 'Some slices has a zero value',
+  name: 'Some slices have a zero value',
 };
 
 export const SunburstTwoLayers = () => (
@@ -249,18 +282,23 @@ export const SunburstTwoLayers = () => (
           nodeLabel: (d: any) => regionLookup[d].regionName,
           fillLabel: {
             fontFamily: 'Impact',
-            textInvertible: true,
             valueFormatter: (d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000000))}\xa0Tn`,
           },
           shape: {
-            fillColor: defaultFillColor(interpolatorCET2s),
+            fillColor: (d) => {
+              // pick color from color palette based on mean angle - rather distinct colors in the inner ring
+              return indexInterpolatedFillColor(interpolatorCET2s)(d, (d.x0 + d.x1) / 2 / (2 * Math.PI), []);
+            },
           },
         },
         {
           groupByRollup: (d: Datum) => d.dest,
           nodeLabel: (d: any) => countryLookup[d].name,
           shape: {
-            fillColor: defaultFillColor(interpolatorCET2s),
+            fillColor: (d) => {
+              // pick color from color palette based on mean angle - related yet distinct colors in the outer ring
+              return indexInterpolatedFillColor(interpolatorCET2s)(d, (d.x0 + d.x1) / 2 / (2 * Math.PI), []);
+            },
           },
         },
       ]}
@@ -272,13 +310,14 @@ export const SunburstTwoLayers = () => (
         },
         fontFamily: 'Arial',
         fillLabel: {
+          textInvertible: true,
           valueFormatter: (d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`,
           fontStyle: 'italic',
         },
         margin: { top: 0, bottom: 0, left: 0, right: 0 },
         minFontSize: 1,
         idealFontSizeJump: 1.1,
-        outerSizeRatio: 1,
+        outerSizeRatio: 0.95,
         emptySizeRatio: 0,
         circlePadding: 4,
         backgroundColor: 'rgba(229,229,229,1)',
@@ -286,9 +325,8 @@ export const SunburstTwoLayers = () => (
     />
   </Chart>
 );
-
 SunburstTwoLayers.story = {
-  name: 'Sunburst with two layers',
+  name: 'Sunburst with two layers, angle color',
 };
 
 export const SunburstThreeLayers = () => (
@@ -303,21 +341,27 @@ export const SunburstThreeLayers = () => (
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: any) => productLookup[d].name,
           shape: {
-            fillColor: decreasingOpacityCET2(0.8),
+            fillColor: (d: ShapeTreeNode) => {
+              return categoricalFillColor(colorBrewerCategoricalStark9, 0.7)(d.sortIndex);
+            },
           },
         },
         {
           groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.substr(0, 2),
           nodeLabel: (d: any) => regionLookup[d].regionName,
           shape: {
-            fillColor: decreasingOpacityCET2(0.65),
+            fillColor: (d: ShapeTreeNode) => {
+              return categoricalFillColor(colorBrewerCategoricalStark9, 0.5)(d.parent.sortIndex);
+            },
           },
         },
         {
           groupByRollup: (d: Datum) => d.dest,
           nodeLabel: (d: any) => countryLookup[d].name,
           shape: {
-            fillColor: decreasingOpacityCET2(0.5),
+            fillColor: (d: ShapeTreeNode) => {
+              return categoricalFillColor(colorBrewerCategoricalStark9, 0.3)(d.parent.parent.sortIndex);
+            },
           },
         },
       ]}
@@ -351,7 +395,7 @@ export const SunburstThreeLayers = () => (
   </Chart>
 );
 SunburstThreeLayers.story = {
-  name: 'Sunburst with three layers',
+  name: 'Sunburst with three layers, ColorBrewer, fade',
 };
 
 export const TwoSlicesPieChart = () => (
@@ -367,7 +411,7 @@ export const TwoSlicesPieChart = () => (
           nodeLabel: (d: Datum) => productLookup[d].name,
           fillLabel: { textInvertible: true },
           shape: {
-            fillColor: defaultFillColor(interpolatorCET2s),
+            fillColor: indexInterpolatedFillColor(interpolatorCET2s),
           },
         },
       ]}
@@ -395,7 +439,7 @@ export const LargeSmallPieChart = () => (
           nodeLabel: (d: Datum) => d,
           fillLabel: { textInvertible: true },
           shape: {
-            fillColor: defaultFillColor(interpolatorCET2s),
+            fillColor: indexInterpolatedFillColor(interpolatorCET2s),
           },
         },
       ]}
@@ -428,7 +472,7 @@ export const VeryLargeSmallPieChart = () => (
           nodeLabel: (d: Datum) => d,
           fillLabel: { textInvertible: true },
           shape: {
-            fillColor: defaultFillColor(interpolatorCET2s),
+            fillColor: indexInterpolatedFillColor(interpolatorCET2s),
           },
         },
       ]}
@@ -456,7 +500,7 @@ export const BigEmptyPieChart = () => (
           nodeLabel: (d: Datum) => productLookup[d].name,
           fillLabel: { textInvertible: true },
           shape: {
-            fillColor: defaultFillColor(interpolatorCET2s),
+            fillColor: indexInterpolatedFillColor(interpolatorCET2s),
           },
         },
       ]}
@@ -484,7 +528,7 @@ export const FullZeroSlicePieChart = () => (
           nodeLabel: (d: Datum) => productLookup[d].name,
           fillLabel: { textInvertible: true },
           shape: {
-            fillColor: defaultFillColor(interpolatorCET2s),
+            fillColor: indexInterpolatedFillColor(interpolatorCET2s),
           },
         },
       ]}
@@ -509,7 +553,7 @@ export const SingleSlicePieChart = () => (
           nodeLabel: (d: Datum) => productLookup[d].name,
           fillLabel: { textInvertible: true },
           shape: {
-            fillColor: defaultFillColor(interpolatorCET2s),
+            fillColor: indexInterpolatedFillColor(interpolatorCET2s),
           },
         },
       ]}
@@ -534,7 +578,7 @@ export const SingleSmallSlicePieChart = () => (
           nodeLabel: (d: Datum) => productLookup[d].name,
           fillLabel: { textInvertible: true },
           shape: {
-            fillColor: defaultFillColor(interpolatorCET2s),
+            fillColor: indexInterpolatedFillColor(interpolatorCET2s),
           },
         },
       ]}
@@ -559,7 +603,7 @@ export const SingleVerySmallSlicePieChart = () => (
           nodeLabel: (d: Datum) => productLookup[d].name,
           fillLabel: { textInvertible: true },
           shape: {
-            fillColor: defaultFillColor(interpolatorCET2s),
+            fillColor: indexInterpolatedFillColor(interpolatorCET2s),
           },
         },
       ]}
@@ -584,7 +628,7 @@ export const NoSliceNoPie = () => (
           nodeLabel: (d: Datum) => productLookup[d].name,
           fillLabel: { textInvertible: true },
           shape: {
-            fillColor: defaultFillColor(interpolatorCET2s),
+            fillColor: indexInterpolatedFillColor(interpolatorCET2s),
           },
         },
       ]}
@@ -612,7 +656,7 @@ export const NegativeNoPie = () => (
           nodeLabel: (d: Datum) => productLookup[d].name,
           fillLabel: { textInvertible: true },
           shape: {
-            fillColor: defaultFillColor(interpolatorCET2s),
+            fillColor: indexInterpolatedFillColor(interpolatorCET2s),
           },
         },
       ]}
@@ -637,7 +681,7 @@ export const TotalZeroNoPie = () => (
           nodeLabel: (d: Datum) => productLookup[d].name,
           fillLabel: { textInvertible: true },
           shape: {
-            fillColor: defaultFillColor(interpolatorCET2s),
+            fillColor: indexInterpolatedFillColor(interpolatorCET2s),
           },
         },
       ]}
@@ -662,7 +706,7 @@ export const HighNumberOfSlice = () => (
           nodeLabel: (d: Datum) => countryLookup[d].name,
           fillLabel: { textInvertible: true },
           shape: {
-            fillColor: defaultFillColor(interpolatorCET2s),
+            fillColor: indexInterpolatedFillColor(interpolatorCET2s),
           },
         },
       ]}
@@ -690,7 +734,7 @@ export const CounterClockwiseSpecial = () => (
           nodeLabel: (d: Datum) => productLookup[d].name,
           fillLabel: { textInvertible: true },
           shape: {
-            fillColor: defaultFillColor(interpolatorCET2s),
+            fillColor: indexInterpolatedFillColor(interpolatorCET2s),
           },
         },
       ]}
@@ -718,7 +762,7 @@ export const ClockwiseNoSpecial = () => (
           nodeLabel: (d: Datum) => productLookup[d].name,
           fillLabel: { textInvertible: true },
           shape: {
-            fillColor: defaultFillColor(interpolatorCET2s),
+            fillColor: indexInterpolatedFillColor(interpolatorCET2s),
           },
         },
       ]}
@@ -746,7 +790,7 @@ export const LinkedLabelsOnly = () => (
           nodeLabel: (d: Datum) => productLookup[d].name,
           fillLabel: { textInvertible: true },
           shape: {
-            fillColor: defaultFillColor(interpolatorCET2s),
+            fillColor: indexInterpolatedFillColor(interpolatorCET2s),
           },
         },
       ]}
@@ -774,7 +818,7 @@ export const NoLabels = () => (
           nodeLabel: (d: Datum) => productLookup[d].name,
           fillLabel: { textInvertible: true },
           shape: {
-            fillColor: defaultFillColor(interpolatorCET2s),
+            fillColor: indexInterpolatedFillColor(interpolatorCET2s),
           },
         },
       ]}

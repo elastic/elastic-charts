@@ -2,6 +2,7 @@ import { Config } from './config_types';
 import { Coordinate, Distance, PointObject, PointTuple, Radian } from './geometry_types';
 import { Color, Font } from './types';
 import { config } from '../config/config';
+import { ArrayNode } from '../utils/group_by_rollup';
 
 export type LinkLabelVM = {
   link: [PointTuple, ...PointTuple[]]; // at least one point
@@ -43,7 +44,7 @@ export interface RowSet {
   rotation: Radian;
 }
 
-export interface QuadViewModel extends RingSectorGeometry {
+export interface QuadViewModel extends ShapeTreeNode {
   strokeWidth: number;
   fillColor: string;
 }
@@ -94,9 +95,11 @@ export interface RingSectorGeometry extends AngleFromTo, SectorGeomSpecY {}
 export interface ShapeTreeNode extends TreeNode, SectorGeomSpecY {
   yMidPx: Distance;
   depth: number;
-  inRingIndex: number;
+  sortIndex: number;
   dataName: any;
   value: number;
+  parent: ArrayNode;
+  children: ShapeTreeNode[];
 }
 
 export type RawTextGetter = (node: ShapeTreeNode) => string;
