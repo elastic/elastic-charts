@@ -1,5 +1,6 @@
 import createCachedSelector from 're-reselect';
 import { Selector } from 'reselect';
+import { Element } from '../../../../specs/settings';
 import { GlobalChartState, PointerState } from '../../../../state/chart_state';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getHighlightedGeomsSelector } from './get_tooltip_values_highlighted_geoms';
@@ -56,7 +57,11 @@ export function createOnElementClickCaller(): (state: GlobalChartState) => void 
 
           if (isClicking(prevProps, nextProps)) {
             if (settings && settings.onElementClick) {
-              settings.onElementClick(indexedGeometries.map(({ value }) => value));
+              const elements = indexedGeometries.map<Element>(({ value, seriesIdentifier: seriesId }) => ({
+                value,
+                seriesId,
+              }));
+              settings.onElementClick(elements);
             }
           }
           prevProps = nextProps;

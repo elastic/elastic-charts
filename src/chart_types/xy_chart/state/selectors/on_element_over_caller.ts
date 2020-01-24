@@ -57,7 +57,11 @@ export function createOnElementOverCaller(): (state: GlobalChartState) => void {
           };
 
           if (isOverElement(prevProps, nextProps) && settings.onElementOver) {
-            settings.onElementOver(highlightedGeometries.map(({ value }) => value));
+            const elements = highlightedGeometries.map(({ value, seriesIdentifier: seriesId }) => ({
+              value,
+              seriesId,
+            }));
+            settings.onElementOver(elements);
           }
           prevProps = nextProps;
         },
