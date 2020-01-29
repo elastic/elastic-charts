@@ -401,11 +401,20 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(onOverListener).toBeCalledTimes(1);
     expect(onOutListener).toBeCalledTimes(0);
     expect(onOverListener.mock.calls[0][0]).toEqual([
-      {
-        x: 0,
-        y: 10,
-        accessor: 'y1',
-      },
+      [
+        {
+          x: 0,
+          y: 10,
+          accessor: 'y1',
+        },
+        {
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          seriesKeys: [1],
+          specId: 'spec_1',
+          splitAccessors: new Map(),
+          yAccessor: 1,
+        },
+      ],
     ]);
 
     store.dispatch(onPointerMove({ x: chartLeft - 1, y: chartTop - 1 }, 1));
@@ -436,11 +445,20 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(onOverListener).toBeCalledTimes(1);
     expect(onOutListener).toBeCalledTimes(0);
     expect(onOverListener.mock.calls[0][0]).toEqual([
-      {
-        x: 0,
-        y: 10,
-        accessor: 'y1',
-      },
+      [
+        {
+          x: 0,
+          y: 10,
+          accessor: 'y1',
+        },
+        {
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          seriesKeys: [1],
+          specId: 'spec_1',
+          splitAccessors: new Map(),
+          yAccessor: 1,
+        },
+      ],
     ]);
     store.dispatch(onPointerMove({ x: chartLeft - 1, y: chartTop + 89 }, 1));
     projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
@@ -474,11 +492,20 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(onOverListener).toBeCalledTimes(1);
     expect(onOutListener).toBeCalledTimes(0);
     expect(onOverListener.mock.calls[0][0]).toEqual([
-      {
-        x: 0,
-        y: 10,
-        accessor: 'y1',
-      },
+      [
+        {
+          x: 0,
+          y: 10,
+          accessor: 'y1',
+        },
+        {
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          seriesKeys: [1],
+          specId: 'spec_1',
+          splitAccessors: new Map(),
+          yAccessor: 1,
+        },
+      ],
     ]);
 
     store.dispatch(onPointerMove({ x: chartLeft + 45 + scaleOffset, y: chartTop + 0 }, 1));
@@ -517,11 +544,20 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(onOverListener).toBeCalledTimes(1);
     expect(onOutListener).toBeCalledTimes(0);
     expect(onOverListener.mock.calls[0][0]).toEqual([
-      {
-        x: spec.data[0][0],
-        y: spec.data[0][1],
-        accessor: 'y1',
-      },
+      [
+        {
+          x: spec.data[0][0],
+          y: spec.data[0][1],
+          accessor: 'y1',
+        },
+        {
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          seriesKeys: [1],
+          specId: 'spec_1',
+          splitAccessors: new Map(),
+          yAccessor: 1,
+        },
+      ],
     ]);
 
     store.dispatch(onPointerMove({ x: chartLeft + 45 + scaleOffset, y: chartTop + 89 }, 1));
@@ -539,11 +575,20 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(tooltipData.highlightedGeometries.length).toBe(1);
     expect(onOverListener).toBeCalledTimes(2);
     expect(onOverListener.mock.calls[1][0]).toEqual([
-      {
-        x: spec.data[1][0],
-        y: spec.data[1][1],
-        accessor: 'y1',
-      },
+      [
+        {
+          x: spec.data[1][0],
+          y: spec.data[1][1],
+          accessor: 'y1',
+        },
+        {
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          seriesKeys: [1],
+          specId: 'spec_1',
+          splitAccessors: new Map(),
+          yAccessor: 1,
+        },
+      ],
     ]);
 
     expect(onOutListener).toBeCalledTimes(0);
@@ -625,11 +670,20 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(tooltipData.tooltipValues.length).toBe(2);
     expect(onOverListener).toBeCalledTimes(1);
     expect(onOverListener.mock.calls[0][0]).toEqual([
-      {
-        x: 1,
-        y: 5,
-        accessor: 'y1',
-      },
+      [
+        {
+          x: 1,
+          y: 5,
+          accessor: 'y1',
+        },
+        {
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          seriesKeys: [1],
+          specId: 'spec_1',
+          splitAccessors: new Map(),
+          yAccessor: 1,
+        },
+      ],
     ]);
     expect(onOutListener).toBeCalledTimes(0);
   });
