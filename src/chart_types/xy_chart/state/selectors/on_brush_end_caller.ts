@@ -74,22 +74,24 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
                 endPos = lastDrag.end.position.y - chartDimensions.top;
                 chartMax = chartDimensions.height;
               }
-              const minValue = Math.max(Math.min(startPos, endPos), 0);
-              const maxValue = Math.min(Math.max(startPos, endPos), chartMax);
-              if (maxValue === minValue) {
+              let minPos = Math.max(Math.min(startPos, endPos), 0);
+              let maxPos = Math.min(Math.max(startPos, endPos), chartMax);
+              if (settings.rotation === -90 || settings.rotation === 180) {
+                minPos = chartMax - minPos;
+                maxPos = chartMax - maxPos;
+              }
+              if (maxPos === minPos) {
                 // if 0 size brush, avoid computing the value
                 return;
               }
-
               const { xScale } = computedScales;
               const offset = histogramMode ? 0 : -(xScale.bandwidth + xScale.bandwidthPadding) / 2;
-              const min = Math.max(xScale.invert(minValue + offset), xScale.domain[0]);
+              const minPosScaled = xScale.invert(minPos + offset);
+              const maxPosScaled = xScale.invert(maxPos + offset);
+              const minValue = Math.max(Math.min(minPosScaled, maxPosScaled), xScale.domain[0]);
+              const maxValue = Math.min(Math.max(minPosScaled, maxPosScaled), xScale.domain[1]);
 
-              const max = Math.min(
-                xScale.invert(maxValue + offset),
-                histogramMode ? xScale.domain[1] + xScale.bandwidth + xScale.bandwidthPadding : xScale.domain[1],
-              );
-              settings.onBrushEnd(min, max);
+              settings.onBrushEnd(minValue, maxValue);
             }
           }
           prevProps = nextProps;
