@@ -158,9 +158,13 @@ MidTwoLayers.story = {
 export const TwoLayersStressTest = () => (
   <Chart
     className={'story-chart'}
-    size={{
+    size={
+      {
+        /*
       height: 800,
-    }}
+        */
+      }
+    }
   >
     <Partition
       id={'spec_' + getRandomNumber()}

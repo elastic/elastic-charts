@@ -330,7 +330,7 @@ SunburstTwoLayers.story = {
 };
 
 export const SunburstThreeLayers = () => (
-  <Chart className={'story-chart'} size={{ width: 1200, height: 800 }}>
+  <Chart className={'story-chart'} /*size={{ width: 1200, height: 800 }}*/>
     <Partition
       id={'spec_' + getRandomNumber()}
       data={mocks.miniSunburst}
