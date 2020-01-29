@@ -1,12 +1,12 @@
 import createCachedSelector from 're-reselect';
 import { Selector } from 'reselect';
-import { Element } from '../../../../specs/settings';
 import { GlobalChartState, PointerState } from '../../../../state/chart_state';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getHighlightedGeomsSelector } from './get_tooltip_values_highlighted_geoms';
 import { SettingsSpec } from '../../../../specs';
-import { IndexedGeometry } from '../../../../utils/geometry';
+import { IndexedGeometry, GeometryValue } from '../../../../utils/geometry';
 import { ChartTypes } from '../../../index';
+import { SeriesIdentifier } from '../../utils/series';
 
 const getLastClickSelector = (state: GlobalChartState) => state.interactions.pointer.lastClick;
 
@@ -57,10 +57,9 @@ export function createOnElementClickCaller(): (state: GlobalChartState) => void 
 
           if (isClicking(prevProps, nextProps)) {
             if (settings && settings.onElementClick) {
-              const elements = indexedGeometries.map<Element>(({ value, seriesIdentifier: seriesId }) => ({
-                value,
-                seriesId,
-              }));
+              const elements = indexedGeometries.map<[GeometryValue, SeriesIdentifier]>(
+                ({ value, seriesIdentifier }) => [value, seriesIdentifier],
+              );
               settings.onElementClick(elements);
             }
           }

@@ -6,10 +6,11 @@ import {
 } from './get_tooltip_values_highlighted_geoms';
 import { SettingsSpec } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
-import { IndexedGeometry } from '../../../../utils/geometry';
+import { IndexedGeometry, GeometryValue } from '../../../../utils/geometry';
 import { Selector } from 'react-redux';
 import { ChartTypes } from '../../../index';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { SeriesIdentifier } from '../../utils/series';
 
 interface Props {
   settings: SettingsSpec | undefined;
@@ -57,10 +58,9 @@ export function createOnElementOverCaller(): (state: GlobalChartState) => void {
           };
 
           if (isOverElement(prevProps, nextProps) && settings.onElementOver) {
-            const elements = highlightedGeometries.map(({ value, seriesIdentifier: seriesId }) => ({
-              value,
-              seriesId,
-            }));
+            const elements = highlightedGeometries.map<[GeometryValue, SeriesIdentifier]>(
+              ({ value, seriesIdentifier }) => [value, seriesIdentifier],
+            );
             settings.onElementOver(elements);
           }
           prevProps = nextProps;
