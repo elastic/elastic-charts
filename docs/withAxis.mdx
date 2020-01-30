@@ -1,0 +1,69 @@
+import { Meta, Story } from "@storybook/addon-docs/blocks";
+import {
+  Chart,
+  BarSeries,
+  getSpecId,
+  ScaleType,
+  DARK_THEME,
+  LIGHT_THEME,
+  Settings,
+  Axis,
+  getAxisId,
+  Position,
+} from '../src';
+
+<Meta title="Bar Chart/With Axis" />
+
+# Bar chart with axis 
+
+This chart now includes x and y axes. 
+
+<Chart className={'story-chart'}>
+    <Settings theme={LIGHT_THEME} />
+    <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+    <Axis
+    id={getAxisId('left2')}
+    title={'Left axis'}
+    position={Position.Left}
+    tickFormat={(d) => Number(d).toFixed(2)}
+    />
+    <BarSeries
+    id={getSpecId('bars')}
+    xScaleType={ScaleType.Linear}
+    yScaleType={ScaleType.Linear}
+    xAccessor="x"
+    yAccessors={['y']}
+    data={[
+        { x: 0, y: 2 },
+        { x: 1, y: 7 },
+        { x: 2, y: 3 },
+        { x: 3, y: 6 },
+    ]}
+    />
+</Chart>
+
+***
+Code for component
+    <Chart className={'story-chart'}>
+        <Settings theme={LIGHT_THEME} />
+        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+        <Axis
+        id={getAxisId('left2')}
+        title={'Left axis'}
+        position={Position.Left}
+        tickFormat={(d) => Number(d).toFixed(2)}
+        />
+        <BarSeries
+        id={getSpecId('bars')}
+        xScaleType={ScaleType.Linear}
+        yScaleType={ScaleType.Linear}
+        xAccessor="x"
+        yAccessors={['y']}
+        data={[
+            { x: 0, y: 2 },
+            { x: 1, y: 7 },
+            { x: 2, y: 3 },
+            { x: 3, y: 6 },
+        ]}
+        />
+    </Chart>

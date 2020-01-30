@@ -1,6 +1,7 @@
 .story-chart {
   box-sizing: border-box;
   background: white;
+  height: 350px;
 }
 .story-chart-dark {
   box-sizing: border-box;
@@ -29,4 +30,8 @@
 }
 .Pane.vertical.Pane1 {
   background: red;
+}
+
+canvas {
+  height: 350px;
 }
