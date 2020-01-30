@@ -4,7 +4,7 @@ import { Chart, BarSeries, getSpecId, ScaleType } from '../src';
 <Meta title="Bar Chart/Basic" />
 
 # Basic Bar Chart
-I can write a `story` here or a description using markdown syntax
+Below is a very basic bar chart from Elastic Charts
 
 <Chart className={'story-chart'}>
     <BarSeries
@@ -23,8 +23,11 @@ I can write a `story` here or a description using markdown syntax
     />
 </Chart>
 
+
 ***
-Code for component 
+
+
+## Code for the basic bar chart 
     <Chart className={'story-chart'}>
        <BarSeries
        id={getSpecId('bars1')}
@@ -43,15 +46,14 @@ Code for component
     </Chart>
 
 ***
-### Basic Bar Chart Prop Table
-
+## Prop Table for the basic bar chart
 
 | Prop | Type | Default | Note |
 |:------|:------:|:---------:|:------|
-| id  `(required)` | `AxisId or string` | N/A | The id of the spec |
-| name | `string` | N/A | The name or label of the spec |
-| xScaleType `(required)`| `ScaleType (ScaleType.Ordinal | ScaleType.Linear | ScaleType.Time)` | ScaleType.Ordinal | The x axis scale type |
+| id  `(required)` | `AxisId or string` |  | The id of the spec |
+| name | `string` | | The name or label of the spec |
+| xScaleType `(required)`| `ScaleType (ScaleType.Ordinal or ScaleType.Linear or ScaleType.Time)` | `ScaleType.Ordinal` | The x axis scale type |
 | yScaleType `(required)`| string[] scaleContinuousType | `ScaleType.Linear` | The y axis scale type |
-| xAccessor `(required)`| Accessor | N/A | The field name of the x value on Datum object |
-| yAccessors `(required)`| Accessor[] | N/A | An array of field names one per y metric value |
-| data `(required)` | datum[] | N/A | An array of data |
+| xAccessor `(required)`| Accessor |  | The field name of the x value on Datum object |
+| yAccessors `(required)`| Accessor[] |  | An array of field names one per y metric value |
+| data `(required)` | datum[] |  | An array of data |

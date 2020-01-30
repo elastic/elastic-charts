@@ -7,7 +7,7 @@ import React from 'react';
 // @ts-ignore
 
 export default {
-  title: 'Bar Chart',
+  title: 'Introduction',
   includeStories: [],
 };
 
@@ -40,8 +40,4 @@ export const Basic = () => {
 };
 Basic.story = {
   name: 'basic',
-  // @ts-ignore
-  parameters: {
-    foo: 'bar',
-  },
 };
