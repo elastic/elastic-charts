@@ -11,13 +11,14 @@ import {
   getTooltipValuesAndGeometriesSelector,
 } from './selectors/get_tooltip_values_highlighted_geoms';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
+import { createOnBrushEndCaller } from './selectors/on_brush_end_caller';
 import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { getCursorBandPositionSelector } from './selectors/get_cursor_band';
 import { getSettingsSpecSelector } from '../../../state/selectors/get_settings_specs';
 import { upsertSpec, specParsed } from '../../../state/actions/specs';
 import { updateParentDimensions } from '../../../state/actions/chart_settings';
-import { onPointerMove } from '../../../state/actions/mouse';
+import { onPointerMove, onMouseDown, onMouseUp } from '../../../state/actions/mouse';
 import { ChartTypes } from '../..';
 import { createOnPointerMoveCaller } from './selectors/on_pointer_move_caller';
 import { onExternalPointerEvent } from '../../../state/actions/events';
@@ -400,11 +401,20 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(onOverListener).toBeCalledTimes(1);
     expect(onOutListener).toBeCalledTimes(0);
     expect(onOverListener.mock.calls[0][0]).toEqual([
-      {
-        x: 0,
-        y: 10,
-        accessor: 'y1',
-      },
+      [
+        {
+          x: 0,
+          y: 10,
+          accessor: 'y1',
+        },
+        {
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          seriesKeys: [1],
+          specId: 'spec_1',
+          splitAccessors: new Map(),
+          yAccessor: 1,
+        },
+      ],
     ]);
 
     store.dispatch(onPointerMove({ x: chartLeft - 1, y: chartTop - 1 }, 1));
@@ -435,11 +445,20 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(onOverListener).toBeCalledTimes(1);
     expect(onOutListener).toBeCalledTimes(0);
     expect(onOverListener.mock.calls[0][0]).toEqual([
-      {
-        x: 0,
-        y: 10,
-        accessor: 'y1',
-      },
+      [
+        {
+          x: 0,
+          y: 10,
+          accessor: 'y1',
+        },
+        {
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          seriesKeys: [1],
+          specId: 'spec_1',
+          splitAccessors: new Map(),
+          yAccessor: 1,
+        },
+      ],
     ]);
     store.dispatch(onPointerMove({ x: chartLeft - 1, y: chartTop + 89 }, 1));
     projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
@@ -473,11 +492,20 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(onOverListener).toBeCalledTimes(1);
     expect(onOutListener).toBeCalledTimes(0);
     expect(onOverListener.mock.calls[0][0]).toEqual([
-      {
-        x: 0,
-        y: 10,
-        accessor: 'y1',
-      },
+      [
+        {
+          x: 0,
+          y: 10,
+          accessor: 'y1',
+        },
+        {
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          seriesKeys: [1],
+          specId: 'spec_1',
+          splitAccessors: new Map(),
+          yAccessor: 1,
+        },
+      ],
     ]);
 
     store.dispatch(onPointerMove({ x: chartLeft + 45 + scaleOffset, y: chartTop + 0 }, 1));
@@ -516,11 +544,20 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(onOverListener).toBeCalledTimes(1);
     expect(onOutListener).toBeCalledTimes(0);
     expect(onOverListener.mock.calls[0][0]).toEqual([
-      {
-        x: spec.data[0][0],
-        y: spec.data[0][1],
-        accessor: 'y1',
-      },
+      [
+        {
+          x: spec.data[0][0],
+          y: spec.data[0][1],
+          accessor: 'y1',
+        },
+        {
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          seriesKeys: [1],
+          specId: 'spec_1',
+          splitAccessors: new Map(),
+          yAccessor: 1,
+        },
+      ],
     ]);
 
     store.dispatch(onPointerMove({ x: chartLeft + 45 + scaleOffset, y: chartTop + 89 }, 1));
@@ -538,11 +575,20 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(tooltipData.highlightedGeometries.length).toBe(1);
     expect(onOverListener).toBeCalledTimes(2);
     expect(onOverListener.mock.calls[1][0]).toEqual([
-      {
-        x: spec.data[1][0],
-        y: spec.data[1][1],
-        accessor: 'y1',
-      },
+      [
+        {
+          x: spec.data[1][0],
+          y: spec.data[1][1],
+          accessor: 'y1',
+        },
+        {
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          seriesKeys: [1],
+          specId: 'spec_1',
+          splitAccessors: new Map(),
+          yAccessor: 1,
+        },
+      ],
     ]);
 
     expect(onOutListener).toBeCalledTimes(0);
@@ -624,11 +670,20 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(tooltipData.tooltipValues.length).toBe(2);
     expect(onOverListener).toBeCalledTimes(1);
     expect(onOverListener.mock.calls[0][0]).toEqual([
-      {
-        x: 1,
-        y: 5,
-        accessor: 'y1',
-      },
+      [
+        {
+          x: 1,
+          y: 5,
+          accessor: 'y1',
+        },
+        {
+          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          seriesKeys: [1],
+          specId: 'spec_1',
+          splitAccessors: new Map(),
+          yAccessor: 1,
+        },
+      ],
     ]);
     expect(onOutListener).toBeCalledTimes(0);
   });
@@ -705,6 +760,176 @@ function mouseOverTestSuite(scaleType: ScaleType) {
       const tooltipData = getTooltipValuesAndGeometriesSelector(store.getState());
       expect(tooltipData.tooltipValues[0].value).toBe('left 1');
       expect(tooltipData.tooltipValues[1].value).toBe('bottom 5');
+    });
+  });
+  describe('brush', () => {
+    test('can respond to a brush end event', () => {
+      const brushEndListener = jest.fn<void, [number, number]>((): void => {
+        return;
+      });
+      const onBrushCaller = createOnBrushEndCaller();
+      store.subscribe(() => {
+        onBrushCaller(store.getState());
+      });
+      const settings = getSettingsSpecSelector(store.getState());
+      const updatedSettings: SettingsSpec = {
+        ...settings,
+        theme: {
+          ...settings.theme,
+          chartMargins: {
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: 0,
+          },
+        },
+        onBrushEnd: brushEndListener,
+      };
+      store.dispatch(upsertSpec(updatedSettings));
+      store.dispatch(
+        upsertSpec({
+          ...spec,
+          data: [
+            [0, 1],
+            [1, 1],
+            [2, 2],
+            [3, 3],
+          ],
+        } as BarSeriesSpec),
+      );
+      store.dispatch(specParsed());
+
+      const start1 = { x: 0, y: 0 };
+      const end1 = { x: 75, y: 0 };
+
+      store.dispatch(onMouseDown(start1, 0));
+      store.dispatch(onPointerMove(end1, 1));
+      store.dispatch(onMouseUp(end1, 3));
+      if (scaleType === ScaleType.Ordinal) {
+        expect(brushEndListener).not.toBeCalled();
+      } else {
+        expect(brushEndListener).toBeCalled();
+        expect(brushEndListener.mock.calls[0][0]).toBe(0);
+        expect(brushEndListener.mock.calls[0][1]).toBe(2.5);
+      }
+      const start2 = { x: 75, y: 0 };
+      const end2 = { x: 100, y: 0 };
+
+      store.dispatch(onMouseDown(start2, 4));
+      store.dispatch(onPointerMove(end2, 5));
+      store.dispatch(onMouseUp(end2, 6));
+      if (scaleType === ScaleType.Ordinal) {
+        expect(brushEndListener).not.toBeCalled();
+      } else {
+        expect(brushEndListener).toBeCalled();
+        expect(brushEndListener.mock.calls[1][0]).toBe(2.5);
+        expect(brushEndListener.mock.calls[1][1]).toBe(3);
+      }
+
+      const start3 = { x: 75, y: 0 };
+      const end3 = { x: 250, y: 0 };
+      store.dispatch(onMouseDown(start3, 7));
+      store.dispatch(onPointerMove(end3, 8));
+      store.dispatch(onMouseUp(end3, 9));
+      if (scaleType === ScaleType.Ordinal) {
+        expect(brushEndListener).not.toBeCalled();
+      } else {
+        expect(brushEndListener).toBeCalled();
+        expect(brushEndListener.mock.calls[2][0]).toBe(2.5);
+        expect(brushEndListener.mock.calls[2][1]).toBe(3);
+      }
+
+      const start4 = { x: 25, y: 0 };
+      const end4 = { x: -20, y: 0 };
+      store.dispatch(onMouseDown(start4, 10));
+      store.dispatch(onPointerMove(end4, 11));
+      store.dispatch(onMouseUp(end4, 12));
+      if (scaleType === ScaleType.Ordinal) {
+        expect(brushEndListener).not.toBeCalled();
+      } else {
+        expect(brushEndListener).toBeCalled();
+        expect(brushEndListener.mock.calls[3][0]).toBe(0);
+        expect(brushEndListener.mock.calls[3][1]).toBe(0.5);
+      }
+    });
+    test('can respond to a brush end event on rotated chart', () => {
+      const brushEndListener = jest.fn<void, [number, number]>((): void => {
+        return;
+      });
+      const onBrushCaller = createOnBrushEndCaller();
+      store.subscribe(() => {
+        onBrushCaller(store.getState());
+      });
+      const settings = getSettingsSpecSelector(store.getState());
+      const updatedSettings: SettingsSpec = {
+        ...settings,
+        rotation: 90,
+        theme: {
+          ...settings.theme,
+          chartMargins: {
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: 0,
+          },
+        },
+        onBrushEnd: brushEndListener,
+      };
+      store.dispatch(upsertSpec(updatedSettings));
+      store.dispatch(specParsed());
+
+      const start1 = { x: 0, y: 25 };
+      const end1 = { x: 0, y: 75 };
+
+      store.dispatch(onMouseDown(start1, 0));
+      store.dispatch(onPointerMove(end1, 1));
+      store.dispatch(onMouseUp(end1, 3));
+      if (scaleType === ScaleType.Ordinal) {
+        expect(brushEndListener).not.toBeCalled();
+      } else {
+        expect(brushEndListener).toBeCalled();
+        expect(brushEndListener.mock.calls[0][0]).toBe(0);
+        expect(brushEndListener.mock.calls[0][1]).toBe(1);
+      }
+      const start2 = { x: 0, y: 75 };
+      const end2 = { x: 0, y: 100 };
+
+      store.dispatch(onMouseDown(start2, 4));
+      store.dispatch(onPointerMove(end2, 5));
+      store.dispatch(onMouseUp(end2, 6));
+      if (scaleType === ScaleType.Ordinal) {
+        expect(brushEndListener).not.toBeCalled();
+      } else {
+        expect(brushEndListener).toBeCalled();
+        expect(brushEndListener.mock.calls[1][0]).toBe(1);
+        expect(brushEndListener.mock.calls[1][1]).toBe(1);
+      }
+
+      const start3 = { x: 0, y: 75 };
+      const end3 = { x: 0, y: 200 };
+      store.dispatch(onMouseDown(start3, 7));
+      store.dispatch(onPointerMove(end3, 8));
+      store.dispatch(onMouseUp(end3, 9));
+      if (scaleType === ScaleType.Ordinal) {
+        expect(brushEndListener).not.toBeCalled();
+      } else {
+        expect(brushEndListener).toBeCalled();
+        expect(brushEndListener.mock.calls[2][0]).toBe(1);
+        expect(brushEndListener.mock.calls[2][1]).toBe(1); // max of chart
+      }
+
+      const start4 = { x: 0, y: 25 };
+      const end4 = { x: 0, y: -20 };
+      store.dispatch(onMouseDown(start4, 10));
+      store.dispatch(onPointerMove(end4, 11));
+      store.dispatch(onMouseUp(end4, 12));
+      if (scaleType === ScaleType.Ordinal) {
+        expect(brushEndListener).not.toBeCalled();
+      } else {
+        expect(brushEndListener).toBeCalled();
+        expect(brushEndListener.mock.calls[3][0]).toBe(0);
+        expect(brushEndListener.mock.calls[3][1]).toBe(0);
+      }
     });
   });
 }
