@@ -113,12 +113,7 @@ module.exports = async ({ config }) => {
       },
     ],
   });
-  config.module.rules.push({
-    test: /\.tsx?$/,
-    loader: require.resolve('@storybook/source-loader'),
-    exclude: [/node_modules/],
-    enforce: 'pre',
-  });
+
   config.resolve.extensions.push('.ts', '.tsx', '.mdx');
 
   return config;

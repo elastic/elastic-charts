@@ -1,7 +1,58 @@
 import { Meta, Story } from "@storybook/addon-docs/blocks";
-import Basic from "./bar_chart.tsx";
+import BasicBar from "./bar_chart.tsx";
+import { Chart, BarSeries, getSpecId, ScaleType } from '../src';
 
-<Meta title="Demo Basic" component={Basic} />
+<Meta title="Bar Chart/Basic" />
 
-# Basic
-I can write a story here
+<h1> Basic Bar Chart</h1>
+I can write a `story` here or a description using markdown syntax
+
+<Chart className={'story-chart'}>
+    <BarSeries
+    id={getSpecId('bars1')}
+    name={'Simple bar series'}
+    xScaleType={ScaleType.Linear}
+    yScaleType={ScaleType.Linear}
+    xAccessor="x"
+    yAccessors={['y']}
+    data={[
+    { x: 0, y: 2 },
+    { x: 1, y: 7 },
+    { x: 2, y: 3 },
+    { x: 3, y: 6 },
+    ]}
+    />
+</Chart>
+
+***
+Code for component 
+    <Chart className={'story-chart'}>
+       <BarSeries
+       id={getSpecId('bars1')}
+       name={'Simple bar series'}
+       xScaleType={ScaleType.Linear}
+       yScaleType={ScaleType.Linear}
+       xAccessor="x"
+       yAccessors={['y']}
+       data={[
+       { x: 0, y: 2 },
+       { x: 1, y: 7 },
+       { x: 2, y: 3 },
+       { x: 3, y: 6 },
+       ]}
+       />
+    </Chart>
+
+***
+### Basic Bar Chart Prop Table
+
+
+| Prop | Type | Default | Note |
+|:------|:------:|:---------:|:------|
+| id  `(required)` | `AxisId or string` | N/A | The id of the spec |
+| name | `string` | N/A | The name or label of the spec |
+| xScaleType `(required)`| `ScaleType (ScaleType.Ordinal | ScaleType.Linear | ScaleType.Time)` | ScaleType.Ordinal | The x axis scale type |
+| yScaleType `(required)`| string[] scaleContinuousType | `ScaleType.Linear` | The y axis scale type |
+| xAccessor `(required)`| Accessor | N/A | The field name of the x value on Datum object |
+| yAccessors `(required)`| Accessor[] | N/A | An array of field names one per y metric value |
+| data `(required)` | datum[] | N/A | An array of data |
