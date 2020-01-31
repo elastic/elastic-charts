@@ -1,4 +1,5 @@
 import { Meta, Story } from "@storybook/addon-docs/blocks";
+import { boolean, color, number, select } from '@storybook/addon-knobs';
 import {
   Chart,
   BarSeries,
@@ -10,13 +11,16 @@ import {
   Axis,
   getAxisId,
   Position,
+  timeFormatter,
+  niceTimeFormatByDay,
 } from '../src';
+import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 
-<Meta title="Bar Chart/With Axis" />
+<Meta title="Bar Charts/With Axis" />
 
 # Bar chart with axis 
 
-This chart now includes x and y axes. These axes can be ordinal, linear, or time. 
+This chart now includes x and y axes. These axes can be `linear`, `ordinal` or `time`. 
 
 <Chart className={'story-chart'}>
     <Settings theme={LIGHT_THEME} />
@@ -51,7 +55,7 @@ This chart now includes x and y axes. These axes can be ordinal, linear, or time
         id={getAxisId('left2')}
         title={'Left axis'}
         position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
+        tickFormat={(d:any) => Number(d).toFixed(2)}
         />
         <BarSeries
         id={getSpecId('bars')}
@@ -67,6 +71,64 @@ This chart now includes x and y axes. These axes can be ordinal, linear, or time
         ]}
         />
     </Chart>
+
+And below is an example of an ordinal x axis bar chart
+```
+<Chart className={'story-chart'}>
+    <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+    <Axis
+    id={getAxisId('left2')}
+    title={'Left axis'}
+    position={Position.Left}
+    tickFormat={(d) => Number(d).toFixed(2)}
+    />
+
+    <BarSeries
+    id={getSpecId('bars')}
+    xScaleType={ScaleType.Ordinal}
+    yScaleType={ScaleType.Linear}
+    xAccessor="x"
+    yAccessors={['y']}
+    <pre>
+    data={[
+        { x: 'a', y: 2 },
+        { x: 'b', y: 7 },
+        { x: 'c', y: 3 },
+        { x: 'd', y: 6 },
+    ]}
+    />
+</Chart>
+```
+
+Here is an example of a time x axis
+```
+<Chart className={'story-chart'}>
+    <Settings debug={boolean('debug', false)} />
+    <Axis
+        id={getAxisId('bottom')}
+        position={Position.Bottom}
+        title={'Bottom axis'}
+        showOverlappingTicks={boolean('showOverlappingTicks bottom axis', false)}
+        showOverlappingLabels={boolean('showOverlappingLabels bottom axis', false)}
+        tickFormat={timeFormatter(niceTimeFormatByDay(1))}
+    />
+    <Axis
+        id={getAxisId('left2')}
+        title={'Left axis'}
+        position={Position.Left}
+        tickFormat={(d) => Number(d).toFixed(2)}
+    />
+
+    <BarSeries
+        id={getSpecId('bars')}
+        xScaleType={ScaleType.Time}
+        yScaleType={ScaleType.Linear}
+        xAccessor={0}
+        yAccessors={[1]}
+        data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
+    />
+</Chart>
+```
 
 ***
 ## Prop Table for the basic bar chart with axis 
