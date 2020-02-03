@@ -25,7 +25,7 @@ import { Position } from '../src/chart_types/xy_chart/utils/specs';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
 
-export function generateAnnotationData(values: any[]): LineAnnotationDatum[] {
+function generateAnnotationData(values: any[]): LineAnnotationDatum[] {
   return values.map((value, index) => ({ dataValue: value, details: `detail-${index}` }));
 }
 

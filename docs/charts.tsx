@@ -13,12 +13,12 @@ import {
   AnnotationDomainTypes,
   Axis,
   getAxisId,
+  LineAnnotationDatum,
 } from '../src';
 
 import React from 'react';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 import { arrayKnobs, getChartRotationKnob } from '../stories/common';
-import { generateAnnotationData } from '../stories/annotations';
 import { Icon } from '../src/components/icons/icon';
 
 export default {
@@ -80,6 +80,10 @@ export const AreaBasic = () => {
 AreaBasic.story = {
   name: 'area basic',
 };
+
+function generateAnnotationData(values: any[]): LineAnnotationDatum[] {
+  return values.map((value, index) => ({ dataValue: value, details: `detail-${index}` }));
+}
 
 export const lineBasicXDomainContinous = () => {
   const data = arrayKnobs('data values', [2.5, 7.2]);
