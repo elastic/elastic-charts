@@ -12,14 +12,27 @@ import {
   ScaleType,
   Settings,
   timeFormatter,
-} from '../src';
-import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
-import { getRandomNumber } from '../src/mocks/utils';
+} from '../../src';
+import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
+import { getRandomNumber } from '../../src/mocks/utils';
 
-<Meta title="Area Charts/Basic" />
+<Meta title="Types of charts/Area Charts/Basic and with axes" />
 
 # Basic Area Chart
 Below is a very basic area chart from Elastic Charts
+
+<Chart className={'story-chart'}>
+  <AreaSeries
+    id={getSpecId('areas1')}
+    xScaleType={ScaleType.Time}
+    yScaleType={ScaleType.Linear}
+    xAccessor={0}
+    yAccessors={[1]}
+    data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
+  />
+</Chart>
+
+Here is the same chart including axes
 
 <Chart className={'story-chart'}>
   <Axis
@@ -29,37 +42,55 @@ Below is a very basic area chart from Elastic Charts
         showOverlappingTicks={true}
         tickFormat={timeFormatter('HH:mm')}
       />
-      <Axis
-        id={getAxisId('left')}
-        title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
-        position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
-    <AreaSeries
-    id={getSpecId('area')}
-    xScaleType={ScaleType.Time}
-    yScaleType={ScaleType.Linear}
-    xAccessor={0}
-    yAccessors={[1]}
-    data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
-    />
+  <Axis
+    id={getAxisId('left')}
+    title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
+    position={Position.Left}
+    tickFormat={(d) => Number(d).toFixed(2)}
+  />
+  <AreaSeries
+  id={getSpecId('area')}
+  xScaleType={ScaleType.Time}
+  yScaleType={ScaleType.Linear}
+  xAccessor={0}
+  yAccessors={[1]}
+  data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
+  />
 </Chart>
 
 
 ***
 
 
-## Code for the basic area chart 
-    <Chart className={'story-chart'}>
-      <AreaSeries
-        id={getSpecId(specId)}
-        xScaleType={ScaleType.Time}
-        yScaleType={ScaleType.Linear}
-        xAccessor={0}
-        yAccessors={[1]}
-        data={data}
-      />
-    </Chart>
+## Code for the area chart with axes
+
+To only have an area chart without axes, do not include the `<Axis/>` components.
+
+```
+<Chart className={'story-chart'}>
+  <Axis
+    id={getAxisId('bottom')}
+    title={'timestamp per 1 minute'}
+    position={Position.Bottom}
+    showOverlappingTicks={true}
+    tickFormat={timeFormatter('HH:mm')}
+  />
+  <Axis
+    id={getAxisId('left')}
+    title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
+    position={Position.Left}
+    tickFormat={(d) => Number(d).toFixed(2)}
+  />
+  <AreaSeries
+    id={getSpecId('area')}
+    xScaleType={ScaleType.Time}
+    yScaleType={ScaleType.Linear}
+    xAccessor={0}
+    yAccessors={[1]}
+    data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
+  />
+</Chart>
+```
 
 ***
 ## Prop Table for the basic area chart
