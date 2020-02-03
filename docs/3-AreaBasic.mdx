@@ -7,6 +7,7 @@ import {
   getAxisId,
   getSpecId,
   LineSeries,
+  LIGHT_THEME,
   Position,
   ScaleType,
   Settings,
@@ -21,20 +22,19 @@ import { getRandomNumber } from '../src/mocks/utils';
 Below is a very basic area chart from Elastic Charts
 
 <Chart className={'story-chart'}>
-    <Axis
-    id={getAxisId('bottom')}
-    title={'timestamp per 1 minute'}
-    position={Position.Bottom}
-    showOverlappingTicks={true}
-    tickFormat={timeFormatter('HH:mm')}
-    />
-    <Axis
-    id={getAxisId('left')}
-    title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
-    position={Position.Left}
-    tickFormat={(d) => Number(d).toFixed(2)}
-    />
-
+  <Axis
+        id={getAxisId('bottom')}
+        title={'timestamp per 1 minute'}
+        position={Position.Bottom}
+        showOverlappingTicks={true}
+        tickFormat={timeFormatter('HH:mm')}
+      />
+      <Axis
+        id={getAxisId('left')}
+        title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
+        position={Position.Left}
+        tickFormat={(d) => Number(d).toFixed(2)}
+      />
     <AreaSeries
     id={getSpecId('area')}
     xScaleType={ScaleType.Time}
