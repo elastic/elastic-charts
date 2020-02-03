@@ -19,3 +19,60 @@ import { TSVB_DATASET } from '../../src/utils/data_samples/test_dataset_tsvb';
 <Meta title="Customizations/Legends" />
 
 # Including legends with charts
+
+Here is a chart with a legend on the `right`
+
+<Chart className={'story-chart'}>
+    <Settings showLegend={true} legendPosition={Position.Right} />
+    <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+    <Axis
+    id={getAxisId('left2')}
+    title={'Left axis'}
+    position={Position.Left}
+    tickFormat={(d) => Number(d).toFixed(2)}
+    />
+    <BarSeries
+    id={getSpecId('bars')}
+    xScaleType={ScaleType.Linear}
+    yScaleType={ScaleType.Linear}
+    xAccessor="x"
+    yAccessors={['y1', 'y2']}
+    splitSeriesAccessors={['g1', 'g2']}
+    data={TestDatasets.BARCHART_2Y2G}
+    hideInLegend={false}
+    />
+</Chart>
+
+***
+
+## The above chart's sample code is given below
+
+What you should pay attention to:
+* Legend specific props are included in the `<Settings/>` component
+    * `showLegend={true}`
+    * `legendPosition={Position.Right}`
+* the tick tickFormat prop within the `<Axis/>` component 
+
+
+```
+<Chart className={'story-chart'}>
+    <Settings showLegend={true} legendPosition={Position.Right} />
+    <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+    <Axis
+    id={getAxisId('left2')}
+    title={'Left axis'}
+    position={Position.Left}
+    tickFormat={(d) => Number(d).toFixed(2)}
+    />
+    <BarSeries
+    id={getSpecId('bars')}
+    xScaleType={ScaleType.Linear}
+    yScaleType={ScaleType.Linear}
+    xAccessor="x"
+    yAccessors={['y1', 'y2']}
+    splitSeriesAccessors={['g1', 'g2']}
+    data={TestDatasets.BARCHART_2Y2G}
+    hideInLegend={false}
+    />
+</Chart>
+```

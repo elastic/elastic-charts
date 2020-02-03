@@ -1,9 +1,25 @@
 import { boolean } from '@storybook/addon-knobs';
 
-import { Chart, BarSeries, getSpecId, ScaleType, AreaSeries } from '../src';
+import {
+  Chart,
+  BarSeries,
+  getSpecId,
+  ScaleType,
+  AreaSeries,
+  Position,
+  Settings,
+  LineAnnotation,
+  getAnnotationId,
+  AnnotationDomainTypes,
+  Axis,
+  getAxisId,
+} from '../src';
 
 import React from 'react';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
+import { arrayKnobs, getChartRotationKnob } from '../stories/common';
+import { generateAnnotationData } from '../stories/annotations';
+import { Icon } from '../src/components/icons/icon';
 
 export default {
   title: 'Introduction',
@@ -63,4 +79,92 @@ export const AreaBasic = () => {
 };
 AreaBasic.story = {
   name: 'area basic',
+};
+
+export const lineBasicXDomainContinous = () => {
+  const data = arrayKnobs('data values', [2.5, 7.2]);
+  const dataValues = generateAnnotationData(data);
+
+  const style = {
+    line: {
+      strokeWidth: 3,
+      stroke: '#f00',
+      opacity: 1,
+    },
+    details: {
+      fontSize: 12,
+      fontFamily: 'Arial',
+      fontStyle: 'bold',
+      fill: 'gray',
+      padding: 0,
+    },
+  };
+
+  const isBottom = boolean('x domain axis is bottom', true);
+  const axisPosition = isBottom ? Position.Bottom : Position.Top;
+
+  return (
+    <Chart className={'story-chart'}>
+      <Settings showLegend debug={boolean('debug', false)} rotation={getChartRotationKnob()} />
+      <LineAnnotation
+        id={getAnnotationId('anno_1')}
+        domainType={AnnotationDomainTypes.XDomain}
+        dataValues={dataValues}
+        style={style}
+        marker={<Icon type="alert" />}
+      />
+      <Axis id={getAxisId('horizontal')} position={axisPosition} title={'x-domain axis'} />
+      <Axis id={getAxisId('vertical')} title={'y-domain axis'} position={Position.Left} />
+      <BarSeries
+        id={getSpecId('bars')}
+        xScaleType={ScaleType.Linear}
+        yScaleType={ScaleType.Linear}
+        xAccessor="x"
+        yAccessors={['y']}
+        data={[
+          { x: 0, y: 2 },
+          { x: 1, y: 7 },
+          { x: 3, y: 6 },
+        ]}
+      />
+    </Chart>
+  );
+};
+lineBasicXDomainContinous.story = {
+  name: '[line] basic xDomain continuous',
+};
+
+export const lineBasicXDomainOrdinal = () => {
+  const dataValues = generateAnnotationData(arrayKnobs('annotation values', ['a', 'c']));
+
+  return (
+    <Chart className={'story-chart'}>
+      <Settings debug={boolean('debug', false)} rotation={getChartRotationKnob()} />
+      <LineAnnotation
+        id={'anno_1'}
+        domainType={AnnotationDomainTypes.XDomain}
+        dataValues={dataValues}
+        marker={<Icon type="alert" />}
+      />
+      <Axis id={getAxisId('top')} position={Position.Top} title={'x-domain axis (top)'} />
+      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'x-domain axis (bottom)'} />
+      <Axis id={getAxisId('left')} title={'y-domain axis'} position={Position.Left} />
+      <BarSeries
+        id={getSpecId('bars')}
+        xScaleType={ScaleType.Ordinal}
+        yScaleType={ScaleType.Linear}
+        xAccessor="x"
+        yAccessors={['y']}
+        data={[
+          { x: 'a', y: 2 },
+          { x: 'b', y: 7 },
+          { x: 'c', y: 3 },
+          { x: 'd', y: 6 },
+        ]}
+      />
+    </Chart>
+  );
+};
+lineBasicXDomainOrdinal.story = {
+  name: '[line] basic xDomain ordinal',
 };

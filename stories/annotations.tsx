@@ -25,7 +25,7 @@ import { Position } from '../src/chart_types/xy_chart/utils/specs';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
 
-function generateAnnotationData(values: any[]): LineAnnotationDatum[] {
+export function generateAnnotationData(values: any[]): LineAnnotationDatum[] {
   return values.map((value, index) => ({ dataValue: value, details: `detail-${index}` }));
 }
 
@@ -101,7 +101,6 @@ lineBasicXDomainContinous.story = {
 
 export const lineBasicXDomainOrdinal = () => {
   const dataValues = generateAnnotationData(arrayKnobs('annotation values', ['a', 'c']));
-
   return (
     <Chart className={'story-chart'}>
       <Settings debug={boolean('debug', false)} rotation={getChartRotationKnob()} />
