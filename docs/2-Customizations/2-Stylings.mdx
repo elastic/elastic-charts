@@ -1,0 +1,28 @@
+import { boolean, color, number, select } from '@storybook/addon-knobs';
+import {
+  AnnotationDomainTypes,
+  AnnotationTooltipFormatter,
+  Axis,
+  BarSeries,
+  Chart,
+  getAnnotationId,
+  getAxisId,
+  getSpecId,
+  LineAnnotation,
+  LineAnnotationDatum,
+  LineSeries,
+  RectAnnotation,
+  ScaleType,
+  Settings,
+  timeFormatter,
+} from '../../src';
+import { Icon } from '../../src/components/icons/icon';
+import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
+import { BandedAccessorType } from '../../src/utils/geometry';
+import { Position } from '../../src/chart_types/xy_chart/utils/specs';
+import { getChartRotationKnob, generateAnnotationData, arrayKnobs } from '../../docs/charts'
+
+<Meta title="Customizations/Stylings" />
+
+# Styling charts
+
