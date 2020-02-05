@@ -15,7 +15,6 @@ import {
   niceTimeFormatByDay,
 } from '../../src';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
-import Highlight, {defaultProps} from 'prism-react-renderer';
 
 <Meta title="Types of charts/Bar Charts/Basic and with axes" />
 
@@ -47,6 +46,8 @@ Bar charts provide a visual presentation of categorical data. Categorical data i
 
 
 ## Code for the basic bar chart 
+<details>
+
 ``` js
 <Chart className={'story-chart'}>
     <BarSeries
@@ -65,6 +66,8 @@ Bar charts provide a visual presentation of categorical data. Categorical data i
     />
 </Chart>
 ```
+
+</details>
 
 ***
 ## Prop Table for the basic bar chart
@@ -112,6 +115,8 @@ This chart now includes x and y axes. These axes can be `linear`, `ordinal` or `
 
 ***
 ## Code for the bar chart with axes
+<details>
+
 ```js
 <Chart className={'story-chart'}>
     <Settings theme={LIGHT_THEME} />
@@ -137,6 +142,7 @@ This chart now includes x and y axes. These axes can be `linear`, `ordinal` or `
     />
 </Chart>
 ```
+</details>
 
 And below is an example of an `ordinal` x axis bar chart
 <Chart className={'story-chart'}>
@@ -161,6 +167,8 @@ And below is an example of an `ordinal` x axis bar chart
     ]}
     />
 </Chart>
+
+<details> 
 
 ```js
 <Chart className={'story-chart'}>
@@ -187,6 +195,7 @@ And below is an example of an `ordinal` x axis bar chart
     />
 </Chart>
 ```
+</details>
 
 Here is an example of a `time` x axis
 <Chart className={'story-chart'}>
@@ -215,6 +224,8 @@ Here is an example of a `time` x axis
     />
 </Chart>
 
+<details>
+
 ```js
 <Chart className={'story-chart'}>
     <Settings debug={boolean('debug', false)} />
@@ -242,4 +253,4 @@ Here is an example of a `time` x axis
     />
 </Chart>
 ```
-
+</details>
