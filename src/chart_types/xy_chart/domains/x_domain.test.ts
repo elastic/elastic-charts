@@ -168,47 +168,6 @@ describe('X Domain', () => {
     });
   });
 
-  test('Should return empty domain when there is no data', () => {
-    const ds1: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
-      specType: SpecTypes.Series,
-      id: 'ds1',
-      groupId: 'g1',
-      seriesType: SeriesTypes.Line,
-      xAccessor: 'x',
-      yAccessors: ['y'],
-      xScaleType: ScaleType.Ordinal,
-      yScaleType: ScaleType.Linear,
-      yScaleToDataExtent: false,
-      data: [],
-    };
-    const ds2: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
-      specType: SpecTypes.Series,
-      id: 'ds2',
-      groupId: 'g1',
-      seriesType: SeriesTypes.Line,
-      xAccessor: 'x',
-      yAccessors: ['y'],
-      xScaleType: ScaleType.Ordinal,
-      yScaleType: ScaleType.Linear,
-      yScaleToDataExtent: false,
-      data: [],
-    };
-    const specDataSeries: BasicSeriesSpec[] = [ds1, ds2];
-    const { xValues } = getSplittedSeries(specDataSeries);
-    const mergedDomain = mergeXDomain(
-      [
-        {
-          seriesType: SeriesTypes.Line,
-          xScaleType: ScaleType.Linear,
-        },
-      ],
-      xValues,
-    );
-    expect(mergedDomain.domain).toEqual([0, 0]);
-  });
-
   test('Should merge line series correctly', () => {
     const ds1: BasicSeriesSpec = {
       chartType: ChartTypes.XYAxis,

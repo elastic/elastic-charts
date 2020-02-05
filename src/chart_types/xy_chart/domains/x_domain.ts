@@ -93,11 +93,6 @@ export function mergeXDomain(
     minInterval = customMinInterval || computedMinInterval;
   }
 
-  // TODO: Check for empty data before computing domain
-  if (seriesXComputedDomains.length === 0) {
-    seriesXComputedDomains = [0, 0];
-  }
-
   return {
     type: 'xDomain',
     scaleType: mainXScaleType.scaleType,
