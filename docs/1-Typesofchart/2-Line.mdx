@@ -111,38 +111,3 @@ Notice how the `<Axis position={Position.Left}/>` includes a tickFormat prop to 
 </Chart>
 ```
 
-***
-
-## Prop Table for line charts
-
-| Prop | Type | Default | Note |
-|:------|:------:|:---------:|:------|
-| id `(required)`|`getSpecId(string) or string` ||The id of the spec |
-| chartType | `typeof ChartTypes.XYAxis` | ChartTypes.XYAxis  |  |
-| specType  | `typeof SpecTypes.Series` | SpecTypes.Series  |  |    
-| seriesTypes  | | SeriesTypes.Line |  |
-| groupId  || DEFAULT_GROUP_ID |The ID of the line, generated via getGroupId method|
-| xScaleType `(required)`| `ScaleType (ScaleType.Ordinal or ScaleType.Linear or ScaleType.Time)`|ScaleType.Ordinal | The x axis scale type |
-| yScaleType `(required)`| `ScaleType (ScaleType.Ordinal or ScaleType.Linear or ScaleType.Time)`| ScaleType.Linear | The y axis scale type |
-| xAccessor `(required)` | Accessor | 'x' | the field name of the x value on the Datum object|
-| yAccessors `(required)`||['y'] | An array of field names one per y metric value |
-| yScaleToDataExtent || false ||
-| hideInLegend | boolean | false | If the series should appear in the legend|
-| histogramModeAlignment | `Start or Center or End` | histogramModeAlignment.Center | Determines how points in the series will align to bands in histogram mode |
-| data `(required)` | datum[] |  | An array of data |
-
-### Axis Prop Table 
-
-| Prop | Type | Default | Note |
-|:------|:------:|:---------:|:------|
-| chartType `(required)` | `typeof ChartTypes.XYAxis` | ChartTypes.XYAxis  |  |
-| specType `(required)` | `typeof SpecTypes.Axis` |  |  |
-| groupId`(required)` | GroupId | `__global__`  | The ID of the axis group, generated via getGroupId method  |
-| hide `(required)` |boolean  | false  | Hide this axis |
-| showOverlappingTicks `(required)` | boolean | false  | Shows all ticks, also the one from the overlapping labels   |
-| showOverlappingLabels`(required)` | boolean  | false  | Shows all labels, also the overlapping ones |
-| position `(required)`|  | Position.Left | Where the axis appear on the chart |
-| tickSize  `(required)`| number | 10 | The length of the tick line |
-| tickPadding `(required)`| number | 10 | The padding between the label and the tick |
-| tickFormat `(required)`| `function` | `(tick: any) => ${tick}`| A function called to format each single tick label|
-| tickLabelRotation `(required)`| number | `0`| The degrees of rotation of the tick labels|

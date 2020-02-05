@@ -108,31 +108,5 @@ To only have an area chart without axes, do not include the `<Axis/>` components
 ```
 
 ***
-## Prop Table for the basic area chart
 
-| Prop | Type | Default | Note |
-|:------|:------:|:---------:|:------|
-| id  `(required)` | `getSpecId(string) or string` |  | The id of the spec |
-| name | `string` | | The name or label of the spec |
-| xScaleType `(required)`| `ScaleType (ScaleType.Ordinal or ScaleType.Linear or ScaleType.Time)` | `ScaleType.Ordinal` | The x axis scale type |
-| yScaleType `(required)`| string[] scaleContinuousType | `ScaleType.Linear` | The y axis scale type |
-| xAccessor `(required)`| Accessor |  | The field name of the x value on Datum object |
-| yAccessors `(required)`| Accessor[] |  | An array of field names one per y metric value |
-| data `(required)` | datum[] |  | An array of data |
-
-
-### Axis Prop Table 
-
-| Prop | Type | Default | Note |
-|:------|:------:|:---------:|:------|
-| chartType `(required)` | `typeof ChartTypes.XYAxis` | ChartTypes.XYAxis  |  |
-| specType `(required)` | `typeof SpecTypes.Axis` |  |  |
-| groupId`(required)` | GroupId | `__global__`  | The ID of the axis group, generated via getGroupId method  |
-| hide `(required)` |boolean  | false  | Hide this axis |
-| showOverlappingTicks `(required)` | boolean | false  | Shows all ticks, also the one from the overlapping labels   |
-| showOverlappingLabels`(required)` | boolean  | false  | Shows all labels, also the overlapping ones |
-| position `(required)`|  | Position.Left | Where the axis appear on the chart |
-| tickSize  `(required)`| number | 10 | The length of the tick line |
-| tickPadding `(required)`| number | 10 | The padding between the label and the tick |
-| tickFormat `(required)`| `function` | `(tick: any) => ${tick}`| A function called to format each single tick label|
-| tickLabelRotation `(required)`| number | `0`| The degrees of rotation of the tick labels|
+Prop tables can be found in `Chart References > Prop Tables`
