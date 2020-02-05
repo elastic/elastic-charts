@@ -59,7 +59,7 @@ The stackAccessors prop is an array of fields that indicates the stack membershi
 </Chart>
 
 The code for the chart above can be found below. 
-```
+```js
 <Chart className={'story-chart'}>
   <Settings showLegend={true} legendPosition={Position.Right} />
   <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
@@ -140,7 +140,7 @@ The code for the chart above can be found below.
   />
 </Chart>
 
-```
+```js
 <Chart className={'story-chart'}>
   <Settings showLegend={true} legendPosition={Position.Right}/>
   <Axis
@@ -222,7 +222,7 @@ The code for the chart above can be found below.
   />
 </Chart>
 
-```
+```js
 <Chart className={'story-chart'}>
   <Settings showLegend />
   <Axis id={getAxisId('bottom')} title={'timestamp per 1 minute'} position={Position.Bottom} showOverlappingTicks={true} tickFormat={timeFormatter('HH:mm')}/>
@@ -326,7 +326,7 @@ The code for the chart above can be found below.
   />
 </Chart>
 
-```
+```js
 <Chart renderer="canvas" className={'story-chart'}>
   <Axis id={getAxisId('bottom')} title={'index'} position={Position.Bottom} />
   <Axis
@@ -494,7 +494,7 @@ Compare the above chart with the following below. The difference between the two
   />
 </Chart>
 
-```
+```js
 <Chart className={'story-chart'}>
     <Settings showLegend={true} legendPosition={Position.Right} />
   <Axis

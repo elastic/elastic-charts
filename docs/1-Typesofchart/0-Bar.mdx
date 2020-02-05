@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/addon-docs/blocks";
+import { Meta, Story, Preview } from "@storybook/addon-docs/blocks";
 import { boolean, color, number, select } from '@storybook/addon-knobs';
 import {
   Chart,
@@ -15,11 +15,15 @@ import {
   niceTimeFormatByDay,
 } from '../../src';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
+import Highlight, {defaultProps} from 'prism-react-renderer';
 
 <Meta title="Types of charts/Bar Charts/Basic and with axes" />
 
 # Basic Bar Chart
-Below is a very basic bar chart from Elastic Charts
+Below is a very basic bar chart from Elastic Charts. A bar chart is a chart with rectangular bars with lengths proportional to the values that they represent.  One axis of the chart shows the specific categories being compared, and the other axis represents a discrete value.
+Bar charts provide a visual presentation of categorical data. Categorical data is a grouping of data into discrete groups, such as months of the year, age group, shoe sizes, and animals. These categories are usually qualitative. Bars on the chart may be arranged in any order.
+
+[source](https://datavizproject.com/data-type/bar-chart/)
 
 <Chart className={'story-chart'}>
     <BarSeries
@@ -43,22 +47,24 @@ Below is a very basic bar chart from Elastic Charts
 
 
 ## Code for the basic bar chart 
-    <Chart className={'story-chart'}>
-       <BarSeries
-       id={getSpecId('bars1')}
-       name={'Simple bar series'}
-       xScaleType={ScaleType.Linear}
-       yScaleType={ScaleType.Linear}
-       xAccessor="x"
-       yAccessors={['y']}
-       data={[
-       { x: 0, y: 2 },
-       { x: 1, y: 7 },
-       { x: 2, y: 3 },
-       { x: 3, y: 6 },
-       ]}
-       />
-    </Chart>
+``` js
+<Chart className={'story-chart'}>
+    <BarSeries
+    id={getSpecId('bars1')}
+    name={'Simple bar series'}
+    xScaleType={ScaleType.Linear}
+    yScaleType={ScaleType.Linear}
+    xAccessor="x"
+    yAccessors={['y']}
+    data={[
+    { x: 0, y: 2 },
+    { x: 1, y: 7 },
+    { x: 2, y: 3 },
+    { x: 3, y: 6 },
+    ]}
+    />
+</Chart>
+```
 
 ***
 ## Prop Table for the basic bar chart
@@ -106,29 +112,31 @@ This chart now includes x and y axes. These axes can be `linear`, `ordinal` or `
 
 ***
 ## Code for the bar chart with axes
-    <Chart className={'story-chart'}>
-        <Settings theme={LIGHT_THEME} />
-        <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-        <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
-        position={Position.Left}
-        tickFormat={(d:any) => Number(d).toFixed(2)}
-        />
-        <BarSeries
-        id={getSpecId('bars')}
-        xScaleType={ScaleType.Linear}
-        yScaleType={ScaleType.Linear}
-        xAccessor="x"
-        yAccessors={['y']}
-        data={[
-            { x: 0, y: 2 },
-            { x: 1, y: 7 },
-            { x: 2, y: 3 },
-            { x: 3, y: 6 },
-        ]}
-        />
-    </Chart>
+```js
+<Chart className={'story-chart'}>
+    <Settings theme={LIGHT_THEME} />
+    <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+    <Axis
+    id={getAxisId('left2')}
+    title={'Left axis'}
+    position={Position.Left}
+    tickFormat={(d:any) => Number(d).toFixed(2)}
+    />
+    <BarSeries
+    id={getSpecId('bars')}
+    xScaleType={ScaleType.Linear}
+    yScaleType={ScaleType.Linear}
+    xAccessor="x"
+    yAccessors={['y']}
+    data={[
+        { x: 0, y: 2 },
+        { x: 1, y: 7 },
+        { x: 2, y: 3 },
+        { x: 3, y: 6 },
+    ]}
+    />
+</Chart>
+```
 
 And below is an example of an `ordinal` x axis bar chart
 <Chart className={'story-chart'}>
@@ -154,7 +162,7 @@ And below is an example of an `ordinal` x axis bar chart
     />
 </Chart>
 
-```
+```js
 <Chart className={'story-chart'}>
     <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
     <Axis
@@ -207,7 +215,7 @@ Here is an example of a `time` x axis
     />
 </Chart>
 
-```
+```js
 <Chart className={'story-chart'}>
     <Settings debug={boolean('debug', false)} />
     <Axis
