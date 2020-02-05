@@ -1,8 +1,10 @@
-import React, { createRef, CSSProperties, PureComponent } from 'react';
-import { LineAnnotationSpec, DEFAULT_GLOBAL_ID, SpecTypes, AnnotationTypes } from '../utils/specs';
-import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../utils/themes/theme';
+import React, { createRef, CSSProperties, Component } from 'react';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
+import deepEqual from 'fast-deep-equal/es6/react';
+
+import { LineAnnotationSpec, DEFAULT_GLOBAL_ID, SpecTypes, AnnotationTypes } from '../utils/specs';
+import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../utils/themes/theme';
 import { upsertSpec, removeSpec } from '../../../state/actions/specs';
 import { Spec } from '../../../specs';
 import { ChartTypes } from '../..';
@@ -12,7 +14,7 @@ type InjectedProps = LineAnnotationSpec &
   Readonly<{
     children?: React.ReactNode;
   }>;
-export class LineAnnotationSpecComponent extends PureComponent<LineAnnotationSpec> {
+export class LineAnnotationSpecComponent extends Component<LineAnnotationSpec> {
   static defaultProps: Partial<LineAnnotationSpec> = {
     chartType: ChartTypes.XYAxis,
     specType: SpecTypes.Annotation,
@@ -38,6 +40,11 @@ export class LineAnnotationSpecComponent extends PureComponent<LineAnnotationSpe
     }
     upsertSpec({ ...config });
   }
+
+  shouldComponentUpdate(nextProps: LineAnnotationSpec) {
+    return !deepEqual(this.props, nextProps);
+  }
+
   componentDidUpdate() {
     const { upsertSpec, removeSpec, children, ...config } = this.props as InjectedProps;
     if (this.markerRef.current) {
