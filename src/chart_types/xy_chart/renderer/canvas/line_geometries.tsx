@@ -22,10 +22,8 @@ interface LineGeometriesDataProps {
   highlightedLegendItem: LegendItem | null;
   clippings: Clippings;
 }
-interface LineGeometriesDataState {
-  overPoint?: PointGeometry;
-}
-export class LineGeometries extends React.Component<LineGeometriesDataProps, LineGeometriesDataState> {
+
+export class LineGeometries extends React.Component<LineGeometriesDataProps> {
   static defaultProps: Partial<LineGeometriesDataProps> = {
     animated: false,
   };
@@ -38,8 +36,8 @@ export class LineGeometries extends React.Component<LineGeometriesDataProps, Lin
     };
   }
 
-  shouldComponentUpdate(nextProps: LineGeometriesDataProps, nextState: LineGeometriesDataState) {
-    return !deepEqual(this.props, nextProps) || !deepEqual(this.state, nextState);
+  shouldComponentUpdate(nextProps: LineGeometriesDataProps) {
+    return !deepEqual(this.props, nextProps);
   }
 
   render() {

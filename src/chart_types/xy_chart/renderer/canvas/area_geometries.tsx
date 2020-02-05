@@ -25,10 +25,8 @@ interface AreaGeometriesDataProps {
   highlightedLegendItem: LegendItem | null;
   clippings: Clippings;
 }
-interface AreaGeometriesDataState {
-  overPoint?: PointGeometry;
-}
-export class AreaGeometries extends React.Component<AreaGeometriesDataProps, AreaGeometriesDataState> {
+
+export class AreaGeometries extends React.Component<AreaGeometriesDataProps> {
   static defaultProps: Partial<AreaGeometriesDataProps> = {
     animated: false,
   };
@@ -36,13 +34,10 @@ export class AreaGeometries extends React.Component<AreaGeometriesDataProps, Are
   constructor(props: AreaGeometriesDataProps) {
     super(props);
     this.barSeriesRef = React.createRef();
-    this.state = {
-      overPoint: undefined,
-    };
   }
 
-  shouldComponentUpdate(nextProps: AreaGeometriesDataProps, nextState: AreaGeometriesDataState) {
-    return !deepEqual(this.props, nextProps) || !deepEqual(this.state, nextState);
+  shouldComponentUpdate(nextProps: AreaGeometriesDataProps) {
+    return !deepEqual(this.props, nextProps);
   }
 
   render() {

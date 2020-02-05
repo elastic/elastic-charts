@@ -17,10 +17,8 @@ interface BarGeometriesDataProps {
   highlightedLegendItem: LegendItem | null;
   clippings: Clippings;
 }
-interface BarGeometriesDataState {
-  overBar?: BarGeometry;
-}
-export class BarGeometries extends React.Component<BarGeometriesDataProps, BarGeometriesDataState> {
+
+export class BarGeometries extends React.Component<BarGeometriesDataProps> {
   static defaultProps: Partial<BarGeometriesDataProps> = {
     animated: false,
   };
@@ -28,13 +26,10 @@ export class BarGeometries extends React.Component<BarGeometriesDataProps, BarGe
   constructor(props: BarGeometriesDataProps) {
     super(props);
     this.barSeriesRef = React.createRef();
-    this.state = {
-      overBar: undefined,
-    };
   }
 
-  shouldComponentUpdate(nextProps: BarGeometriesDataProps, nextState: BarGeometriesDataState) {
-    return !deepEqual(this.props, nextProps) || !deepEqual(this.state, nextState);
+  shouldComponentUpdate(nextProps: BarGeometriesDataProps) {
+    return !deepEqual(this.props, nextProps);
   }
 
   render() {
@@ -47,25 +42,11 @@ export class BarGeometries extends React.Component<BarGeometriesDataProps, BarGe
   }
 
   private renderBarGeoms = (bars: BarGeometry[]): JSX.Element[] => {
-    const { overBar } = this.state;
     const { sharedStyle } = this.props;
     return bars.map((bar, index) => {
       const { x, y, width, height, color, seriesStyle } = bar;
 
-      // Properties to determine if we need to highlight individual bars depending on hover state
-      const hasGeometryHover = overBar != null;
-      const hasHighlight = overBar === bar;
-      const individualHighlight = {
-        hasGeometryHover,
-        hasHighlight,
-      };
-
-      const geometryStyle = getGeometryStateStyle(
-        bar.seriesIdentifier,
-        this.props.highlightedLegendItem,
-        sharedStyle,
-        individualHighlight,
-      );
+      const geometryStyle = getGeometryStateStyle(bar.seriesIdentifier, this.props.highlightedLegendItem, sharedStyle);
       const key = `bar-${index}`;
 
       if (this.props.animated) {
