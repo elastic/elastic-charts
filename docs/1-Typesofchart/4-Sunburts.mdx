@@ -39,7 +39,7 @@ import {
 </Chart>
 
 The code sample can be found within the details below. 
- 
+
 <details>
 
 ```js
@@ -70,8 +70,13 @@ These props are for the `<Partition/>` component as seen in the code snippet abo
 
 | Prop | Type | Default | Note |
 |:------|:------:|:---------:|:------|
-| id  `(required)` | `string` |  | The id of the spec |
+| id  `(required)` | `string` |  'spec_' + getRandomNumber() | The id of the spec |
 | data `(required)` | |  | |
 | valueAccessor |  | |  |
 | valueFormatter| |  |  |
 | layers | Array |  |  |
+| groupByRollup| function | | |
+| nodeLabel | function | | |
+| fillLabel | object { textInvertible : boolean} | | |
+| shape | object { fillColor: indexInterpolatedFillColor(interpolatorCET2s) }
+
