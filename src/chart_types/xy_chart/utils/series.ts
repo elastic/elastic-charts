@@ -3,11 +3,12 @@ import { Accessor } from '../../../utils/accessor';
 import { GroupId, SpecId } from '../../../utils/ids';
 import { splitSpecsByGroupId, YBasicSeriesSpec } from '../domains/y_domain';
 import { formatNonStackedDataSeriesValues } from './nonstacked_series_utils';
-import { BasicSeriesSpec, SubSeriesStringPredicate, SeriesTypes, SeriesSpecs } from './specs';
+import { BasicSeriesSpec, SubSeriesLabelAccessor, SeriesTypes, SeriesSpecs } from './specs';
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
 import { ScaleType } from '../../../utils/scales/scales';
 import { LastValues } from '../state/utils';
 import { Datum } from '../../../utils/domain';
+import { SeriesLabelSettings } from '../../../specs';
 
 export interface FilledValues {
   /** the x value */
@@ -385,7 +386,7 @@ export function getSplittedSeries(
 const getCustomSubSeriesName = (() => {
   const cache = new Map();
 
-  return (customSubSeriesLabel: SubSeriesStringPredicate, isTooltip: boolean) => (
+  return (customLabelAccessor: SubSeriesLabelAccessor, isTooltip: boolean) => (
     args: [string | number | null, string | number],
   ): string | number => {
     const [accessorKey, accessorLabel] = args;
@@ -394,7 +395,14 @@ const getCustomSubSeriesName = (() => {
     if (cache.has(key)) {
       return cache.get(key);
     } else {
-      const label = customSubSeriesLabel(accessorLabel, accessorKey, isTooltip) || accessorLabel;
+      let label: string | number | null;
+
+      if (typeof customLabelAccessor === 'function') {
+        label = customLabelAccessor(accessorLabel, accessorKey, isTooltip) ?? accessorLabel;
+      } else {
+        label = customLabelAccessor.get(accessorLabel) ?? accessorLabel;
+      }
+
       cache.set(key, label);
 
       return label;
@@ -406,6 +414,7 @@ const getSeriesLabelKeys = (
   spec: BasicSeriesSpec,
   seriesIdentifier: SeriesIdentifier,
   isTooltip: boolean,
+  showSimpleLabel?: boolean,
 ): (string | number)[] => {
   const isMultipleY = spec.yAccessors.length > 1;
 
@@ -414,12 +423,12 @@ const getSeriesLabelKeys = (
     const fullKeyPairs: [string | number | null, string | number][] = [...splitAccessors.entries(), [null, yAccessor]];
     const labelKeys = fullKeyPairs.map(getCustomSubSeriesName(spec.customSubSeriesLabel, isTooltip));
 
-    return isMultipleY ? labelKeys : labelKeys.slice(0, -1);
+    return isMultipleY || !showSimpleLabel ? labelKeys : labelKeys.slice(0, -1);
   }
 
   const { seriesKeys } = seriesIdentifier;
 
-  return isMultipleY ? seriesKeys : seriesKeys.slice(0, -1);
+  return isMultipleY || !showSimpleLabel ? seriesKeys : seriesKeys.slice(0, -1);
 };
 
 /**
@@ -430,6 +439,7 @@ export function getSeriesLabel(
   hasSingleSeries: boolean,
   isTooltip: boolean,
   spec?: BasicSeriesSpec,
+  labelSettings?: SeriesLabelSettings,
 ): string {
   if (spec && spec.customSeriesLabel) {
     const customLabel = spec.customSeriesLabel(seriesIdentifier, isTooltip);
@@ -440,7 +450,10 @@ export function getSeriesLabel(
   }
 
   let label = '';
-  const labelKeys = spec ? getSeriesLabelKeys(spec, seriesIdentifier, isTooltip) : seriesIdentifier.seriesKeys;
+  const labelKeys = spec
+    ? getSeriesLabelKeys(spec, seriesIdentifier, isTooltip, labelSettings?.full !== true)
+    : seriesIdentifier.seriesKeys;
+  const delimiter = labelSettings?.delimiter ?? ' - ';
 
   // there is one series, the is only one yAccessor, the first part is not null
   if (hasSingleSeries || labelKeys.length === 0 || labelKeys[0] == null) {
@@ -449,12 +462,12 @@ export function getSeriesLabel(
     }
 
     if (spec.splitSeriesAccessors && labelKeys.length > 0 && labelKeys[0] != null) {
-      label = labelKeys.join(' - ');
+      label = labelKeys.join(delimiter);
     } else {
       label = spec.name || `${spec.id}`;
     }
   } else {
-    label = labelKeys.join(' - ');
+    label = labelKeys.join(delimiter);
   }
 
   return label;

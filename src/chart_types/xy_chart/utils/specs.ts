@@ -55,11 +55,14 @@ export const DEFAULT_GLOBAL_ID = '__global__';
 
 export type FilterPredicate = (series: SeriesIdentifier) => boolean;
 export type SeriesStringPredicate = (series: SeriesIdentifier, isTooltip: boolean) => string | null;
-export type SubSeriesStringPredicate = (
+export type SubSeriesLabel = string | number | null;
+export type SubSeriesLabelPredicate = (
   accessorLabel: string | number,
   accessorKey: string | number | null,
   isTooltip: boolean,
-) => string | number | null;
+) => SubSeriesLabel;
+export type SubSeriesLabelMap = Map<string | number, SubSeriesLabel>;
+export type SubSeriesLabelAccessor = SubSeriesLabelPredicate | SubSeriesLabelMap;
 
 /**
  * The fit function type
@@ -252,7 +255,7 @@ export interface SeriesSpec extends Spec {
    *
    * `customSeriesLabel` takes precedence
    */
-  customSubSeriesLabel?: SubSeriesStringPredicate;
+  customSubSeriesLabel?: SubSeriesLabelAccessor;
 }
 
 export interface Postfixes {

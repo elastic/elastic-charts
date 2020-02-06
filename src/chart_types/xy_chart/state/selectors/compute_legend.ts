@@ -6,6 +6,7 @@ import { getSeriesColorsSelector } from './get_series_color_map';
 import { computeLegend, LegendItem } from '../../legend/legend';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { getLabelSettingsSelector } from './get_label_settings';
 
 const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interactions.deselectedDataSeries;
 
@@ -17,6 +18,7 @@ export const computeLegendSelector = createCachedSelector(
     getSeriesColorsSelector,
     getAxisSpecsSelector,
     getDeselectedSeriesSelector,
+    getLabelSettingsSelector,
   ],
   (
     seriesSpecs,
@@ -25,6 +27,7 @@ export const computeLegendSelector = createCachedSelector(
     seriesColors,
     axesSpecs,
     deselectedDataSeries,
+    labelSettings,
   ): Map<string, LegendItem> => {
     return computeLegend(
       seriesDomainsAndData.seriesCollection,
@@ -33,6 +36,7 @@ export const computeLegendSelector = createCachedSelector(
       chartTheme.colors.defaultVizColor,
       axesSpecs,
       deselectedDataSeries,
+      labelSettings,
     );
   },
 )(getChartIdSelector);

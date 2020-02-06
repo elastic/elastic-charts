@@ -1,4 +1,4 @@
-import { boolean, color, number, select } from '@storybook/addon-knobs';
+import { boolean, color, number, select, text } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { switchTheme } from '../.storybook/theme_service';
@@ -33,7 +33,7 @@ import {
   BarStyleAccessor,
   PointStyleAccessor,
   SeriesStringPredicate,
-  SubSeriesStringPredicate,
+  SubSeriesLabelAccessor,
 } from '../src/chart_types/xy_chart/utils/specs';
 import moment from 'moment';
 import { DateTime } from 'luxon';
@@ -933,7 +933,7 @@ export const addCustomFullAndSubSeriesLabel = () => {
 
     return null;
   };
-  const customSubSeriesLabel: SubSeriesStringPredicate = (accessor, key) => {
+  const customSubSeriesLabel: SubSeriesLabelAccessor = (accessor, key) => {
     if (key) {
       // split accessor;
       if (accessor === 'a') {
@@ -990,7 +990,7 @@ export const addCustomSubSeriesLabelFormatting = () => {
     { x: 2, y: 18, percent: 1, time: start.plus({ month: 2 }).toMillis() },
     { x: 3, y: 7, percent: 1, time: start.plus({ month: 3 }).toMillis() },
   ];
-  const customSubSeriesLabel: SubSeriesStringPredicate = (accessor, key, isTooltip) => {
+  const customSubSeriesLabel: SubSeriesLabelAccessor = (accessor, key, isTooltip) => {
     if (key === 'time') {
       // Format time group
       if (isTooltip) {
@@ -1037,6 +1037,36 @@ export const addCustomSubSeriesLabelFormatting = () => {
 };
 addCustomFullAndSubSeriesLabel.story = {
   name: 'Add custom sub-series label formatting [time/date and percent]',
+};
+
+export const seriesLabelSettings = () => {
+  const dg = new SeededDataGenerator();
+  const delimiter = text('Delimiter', ' ~~ ');
+  const full = boolean('Show full label series', false);
+  const showMultiple = boolean('Show multiple yAccessors', false);
+  const data = dg.generateGroupedSeries(10, 2).map((item) => ({
+    ...item,
+    y1: item.y + 10,
+  }));
+
+  return (
+    <Chart className={'story-chart'}>
+      <Settings showLegend seriesLabels={{ delimiter, full }} />
+      <Axis id="y1" tickFormat={(d) => Number(d).toFixed(2)} position={Position.Left} title={'y1'} />
+      <Axis id="x" position={Position.Bottom} title={'x'} />
+      <LineSeries
+        id="line1"
+        xScaleType={ScaleType.Linear}
+        xAccessor={'x'}
+        yAccessors={showMultiple ? ['y', 'y1'] : ['y']}
+        splitSeriesAccessors={['g']}
+        data={data}
+      />
+    </Chart>
+  );
+};
+seriesLabelSettings.story = {
+  name: 'Series label settings',
 };
 
 export const tickLabelPaddingBothPropAndTheme = () => {

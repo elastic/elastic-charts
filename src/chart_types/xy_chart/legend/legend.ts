@@ -10,6 +10,7 @@ import {
 import { AxisSpec, BasicSeriesSpec, Postfixes, isAreaSeriesSpec, isBarSeriesSpec } from '../utils/specs';
 import { Y0_ACCESSOR_POSTFIX, Y1_ACCESSOR_POSTFIX } from '../tooltip/tooltip';
 import { BandedAccessorType } from '../../../utils/geometry';
+import { SeriesLabelSettings } from '../../../specs';
 
 interface FormattedLastValues {
   y0: number | string | null;
@@ -60,6 +61,7 @@ export function computeLegend(
   defaultColor: string,
   axesSpecs: AxisSpec[],
   deselectedDataSeries: SeriesIdentifier[] = [],
+  labelSettings?: SeriesLabelSettings,
 ): Map<string, LegendItem> {
   const legendItems: Map<string, LegendItem> = new Map();
   const sortedCollection = getSortedDataSeriesColorsValuesMap(seriesCollection);
@@ -69,7 +71,7 @@ export function computeLegend(
     const spec = getSpecsById<BasicSeriesSpec>(specs, seriesIdentifier.specId);
     const color = seriesColors.get(key) || defaultColor;
     const hasSingleSeries = seriesCollection.size === 1;
-    const label = getSeriesLabel(seriesIdentifier, hasSingleSeries, false, spec);
+    const label = getSeriesLabel(seriesIdentifier, hasSingleSeries, false, spec, labelSettings);
     const isSeriesVisible = deselectedDataSeries ? getSeriesIndex(deselectedDataSeries, seriesIdentifier) < 0 : true;
 
     if (label === '' || !spec) {

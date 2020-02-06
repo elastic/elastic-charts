@@ -63,6 +63,17 @@ interface TooltipProps {
   unit?: string;
 }
 
+export interface SeriesLabelSettings {
+  /**
+   * Displays full series label even with single `yAccessor`
+   */
+  full?: boolean;
+  /**
+   * Delimiter used to join subSeries labels
+   */
+  delimiter?: string;
+}
+
 export interface SettingsSpec extends Spec {
   /**
    * Partial theme to be merged with base
@@ -109,6 +120,7 @@ export interface SettingsSpec extends Spec {
   onRenderChange?: RenderChangeListener;
   xDomain?: Domain | DomainRange;
   resizeDebounce?: number;
+  seriesLabels?: SeriesLabelSettings;
 }
 
 export type DefaultSettingsProps =
