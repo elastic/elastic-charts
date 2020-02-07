@@ -1,4 +1,5 @@
 import React, { RefObject } from 'react';
+import deepEqual from 'fast-deep-equal/es6';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { onChartRendered } from '../../../../state/actions/chart';
@@ -82,6 +83,9 @@ class XYChartComponent extends React.Component<XYChartProps> {
   private tryCanvasContext() {
     const canvas = this.props.forwardStageRef.current;
     this.ctx = canvas && canvas.getContext('2d');
+  }
+  shouldComponentUpdate(nextProps: ReactiveChartStateProps) {
+    return !deepEqual(this.props, nextProps);
   }
 
   componentDidUpdate() {

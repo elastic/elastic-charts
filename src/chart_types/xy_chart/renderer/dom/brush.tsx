@@ -2,8 +2,6 @@ import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import { Dimensions } from '../../../../utils/dimensions';
 import { isInitialized } from '../../../../state/selectors/is_initialized';
-import { computeChartTransformSelector } from '../../state/selectors/compute_chart_transform';
-import { Transform } from '../../state/utils';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getBrushAreaSelector } from '../../state/selectors/get_brush_area';
 import { isBrushAvailableSelector } from '../../state/selectors/is_brush_available';
@@ -17,7 +15,6 @@ interface Props {
   initialized: boolean;
   chartDimensions: Dimensions;
   chartContainerDimensions: Dimensions;
-  chartTransform: Transform;
   isBrushing: boolean | undefined;
   isBrushAvailable: boolean | undefined;
   brushArea: Dimensions | null;
@@ -136,11 +133,6 @@ const mapStateToProps = (state: GlobalChartState): Props => {
         width: 0,
         height: 0,
       },
-      chartTransform: {
-        x: 0,
-        y: 0,
-        rotate: 0,
-      },
     };
   }
   return {
@@ -149,7 +141,6 @@ const mapStateToProps = (state: GlobalChartState): Props => {
     brushArea: getBrushAreaSelector(state),
     isBrushAvailable: isBrushAvailableSelector(state),
     chartDimensions: computeChartDimensionsSelector(state).chartDimensions,
-    chartTransform: computeChartTransformSelector(state),
     isBrushing: isBrushingSelector(state),
   };
 };
