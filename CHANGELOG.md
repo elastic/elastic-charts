@@ -1,3 +1,17 @@
+## [17.0.3](https://github.com/elastic/elastic-charts/compare/v17.0.2...v17.0.3) (2020-02-10)
+
+
+### Bug Fixes
+
+* **ie11:** replace fast-deep-equal with an internal copy IE11 safe ([#542](https://github.com/elastic/elastic-charts/issues/542)) ([2a02d7d](https://github.com/elastic/elastic-charts/commit/2a02d7d0692c6c43f6fce529bd9555552aeb093a))
+
+## [17.0.2](https://github.com/elastic/elastic-charts/compare/v17.0.1...v17.0.2) (2020-02-05)
+
+
+### Bug Fixes
+
+* empty domain error for ordinal x scale ([#536](https://github.com/elastic/elastic-charts/issues/536)) ([ce4e84f](https://github.com/elastic/elastic-charts/commit/ce4e84fac8b51861cde377303ecaf9038611158b))
+
 ## [17.0.1](https://github.com/elastic/elastic-charts/compare/v17.0.0...v17.0.1) (2020-02-05)
 
 
