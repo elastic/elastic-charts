@@ -1,4 +1,4 @@
-import webdriver from 'selenium-webdriver';
+import webdriver, { By } from 'selenium-webdriver';
 import assert from 'assert';
 import path from 'path';
 jest.setTimeout(30000);
@@ -48,15 +48,8 @@ describe('smoke tests', () => {
     await driver.get('http://localhost:8080');
     await driver.sleep(5000);
 
-    const browserLog = await driver
-      .manage()
-      .logs()
-      .get('browser');
+    const elements = await driver.findElements(By.className('echChart'));
 
-    if (browserLog.length > 0) {
-      console.log('log: ' + JSON.stringify(browserLog, null, 2));
-    }
-
-    assert.equal(await driver.getTitle(), 'Google');
+    expect(elements.length).toBeGreaterThan(0);
   });
 });
