@@ -139,7 +139,7 @@ class LegendComponent extends React.Component<LegendProps> {
     }
     const { key, displayValue, banded } = item;
     const { legendItemTooltipValues, settings } = this.props;
-    const { showLegendDisplayValue, legendPosition } = settings;
+    const { showLegendDisplayValue, legendPosition, renderColorPicker } = settings;
     const legendValues = this.getLegendValues(legendItemTooltipValues, key, banded);
     return legendValues.map((value, index) => {
       const yAccessor: BandedAccessorType = index === 0 ? BandedAccessorType.Y1 : BandedAccessorType.Y0;
@@ -149,6 +149,7 @@ class LegendComponent extends React.Component<LegendProps> {
           label={getItemLabel(item, yAccessor)}
           key={`${key}-${yAccessor}`}
           legendItem={item}
+          renderColorPicker={renderColorPicker}
           displayValue={value !== '' ? value : displayValue.formatted[yAccessor]}
           showLegendDisplayValue={showLegendDisplayValue}
           legendPosition={legendPosition}

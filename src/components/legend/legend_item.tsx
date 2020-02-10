@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React from 'react';
+import React, { PureComponent, ReactNode } from 'react';
 import deepEqual from 'fast-deep-equal/es6/react';
 import { Icon } from '../icons/icon';
 import { LegendItemListener, BasicListener } from '../../specs/settings';
@@ -8,6 +8,13 @@ import { onLegendItemOutAction, onLegendItemOverAction } from '../../state/actio
 import { Position } from '../../chart_types/xy_chart/utils/specs';
 import { SeriesIdentifier } from '../../chart_types/xy_chart/utils/series';
 
+export type RenderColorPicker = (
+  onChange: (color: string) => void,
+  onClose: () => void,
+  isOpen: boolean,
+  button: NonNullable<ReactNode>,
+) => ReactNode;
+
 interface LegendItemProps {
   selectedLegendItem?: LegendItem | null;
   legendItem: LegendItem;
@@ -15,6 +22,7 @@ interface LegendItemProps {
   label?: string;
   legendPosition: Position;
   showLegendDisplayValue: boolean;
+  renderColorPicker?: RenderColorPicker;
   onLegendItemClickListener?: LegendItemListener;
   onLegendItemOutListener?: BasicListener;
   onLegendItemOverListener?: LegendItemListener;
@@ -67,36 +75,61 @@ function renderTitle(
   );
 }
 
-/**
- * Create a div for the color/eye icon
- * @param color
- * @param isSeriesVisible
- */
-function renderColor(color: string, isSeriesVisible = true) {
-  // TODO add color picker
-  if (isSeriesVisible) {
-    return (
-      <div className="echLegendItem__color" aria-label="series color" title="series color">
-        <Icon type="dot" color={color} />
-      </div>
-    );
-  }
-  // changing the default viewBox for the eyeClosed icon to keep the same dimensions
-  return (
-    <div className="echLegendItem__color" aria-label="series hidden" title="series hidden">
-      <Icon type="eyeClosed" viewBox="-3 -3 22 22" />
-    </div>
-  );
+interface LegendItemState {
+  isOpen: boolean;
 }
 
-export class LegendListItem extends React.Component<LegendItemProps> {
+export class LegendListItem extends PureComponent<LegendItemProps, LegendItemState> {
   static displayName = 'LegendItem';
 
-  shouldComponentUpdate(nextProps: LegendItemProps) {
-    return !deepEqual(this.props, nextProps);
+  state: LegendItemState = {
+    isOpen: false,
+  };
+
+  shouldComponentUpdate(nextProps: LegendItemProps, nextState: LegendItemState) {
+    return !deepEqual(this.props, nextProps) || !deepEqual(this.state, nextState);
   }
 
-  render() {
+  /**
+   * Create a div for the color/eye icon
+   * @param color
+   * @param isSeriesVisible
+   */
+  renderColor = (color: string, isSeriesVisible = true) => {
+    if (isSeriesVisible) {
+      const changable = Boolean(this.props.renderColorPicker);
+      const colorClasses = classNames('echLegendItem__color', {
+        'echLegendItem__color--changable': changable,
+      });
+
+      return (
+        <div
+          onClick={
+            changable
+              ? (e) => {
+                  e.nativeEvent.stopPropagation();
+                  this.setToggleIsOpen();
+                }
+              : undefined
+          }
+          className={colorClasses}
+          aria-label="series color"
+          title="series color"
+        >
+          <Icon type="dot" color={color} />
+        </div>
+      );
+    }
+
+    // changing the default viewBox for the eyeClosed icon to keep the same dimensions
+    return (
+      <div className="echLegendItem__color" aria-label="series hidden" title="series hidden">
+        <Icon type="eyeClosed" viewBox="-3 -3 22 22" />
+      </div>
+    );
+  };
+
+  renderItem = () => {
     const { displayValue, legendItem, legendPosition, label } = this.props;
     const { color, isSeriesVisible, seriesIdentifier, isLegendItemVisible } = legendItem;
     const onTitleClick = this.onVisibilityClick(seriesIdentifier);
@@ -106,18 +139,36 @@ export class LegendListItem extends React.Component<LegendItemProps> {
       selectedLegendItem == null ? false : selectedLegendItem.seriesIdentifier.key === seriesIdentifier.key;
     const hasTitleClickListener = Boolean(onLegendItemClickListener);
     const itemClasses = classNames('echLegendItem', `echLegendItem--${legendPosition}`, {
-      'echLegendItem-isHidden': !isSeriesVisible,
+      'echLegendItem--hidden': !isSeriesVisible,
       'echLegendItem__displayValue--hidden': !isLegendItemVisible,
     });
 
     return (
       <div className={itemClasses} onMouseEnter={this.onLegendItemMouseOver} onMouseLeave={this.onLegendItemMouseOut}>
-        {color && renderColor(color, isSeriesVisible)}
+        {color && this.renderColor(color, isSeriesVisible)}
         {label && renderTitle(label, onTitleClick, hasTitleClickListener, isSelected, showLegendDisplayValue)}
         {showLegendDisplayValue && renderDisplayValue(displayValue, isSeriesVisible)}
       </div>
     );
+  };
+
+  render() {
+    const { renderColorPicker } = this.props;
+    if (renderColorPicker && this.state.isOpen) {
+      return renderColorPicker(this.onColorChange, this.setToggleIsOpen, this.state.isOpen, this.renderItem());
+    }
+
+    return this.renderItem();
   }
+
+  setToggleIsOpen = () => {
+    this.setState({ isOpen: !this.state.isOpen });
+  };
+
+  onColorChange = (color: string) => {
+    this.setToggleIsOpen();
+    console.log(color);
+  };
 
   onLegendItemMouseOver = () => {
     const { onLegendItemOverListener, legendItemOverAction, legendItem } = this.props;

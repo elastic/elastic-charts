@@ -10,6 +10,7 @@ import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { ChartTypes } from '../chart_types';
 import { GeometryValue } from '../utils/geometry';
 import { SeriesIdentifier } from '../chart_types/xy_chart/utils/series';
+import { RenderColorPicker } from '../components/legend/legend_item';
 
 export type ElementClickListener = (elements: Array<[GeometryValue, SeriesIdentifier]>) => void;
 export type ElementOverListener = (elements: Array<[GeometryValue, SeriesIdentifier]>) => void;
@@ -109,6 +110,7 @@ export interface SettingsSpec extends Spec {
   onRenderChange?: RenderChangeListener;
   xDomain?: Domain | DomainRange;
   resizeDebounce?: number;
+  renderColorPicker?: RenderColorPicker;
 }
 
 export type DefaultSettingsProps =
