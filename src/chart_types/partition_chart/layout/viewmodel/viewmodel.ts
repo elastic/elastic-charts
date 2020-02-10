@@ -268,7 +268,15 @@ export function shapeViewModel(
   );
 
   const pickQuads: PickFunction = (x, y) => {
-    return treemapLayout ? quadViewModel.filter(({ x0, y0, x1, y1 }) => x0 <= x && x <= x1 && y0 <= y && y <= y1) : [];
+    return quadViewModel.filter(
+      treemapLayout
+        ? ({ x0, y0, x1, y1 }) => x0 <= x && x <= x1 && y0 <= y && y <= y1
+        : ({ x0, y0px, x1, y1px }) => {
+            const angleX = (Math.atan2(y, x) + TAU / 4 + TAU) % TAU;
+            const yPx = Math.sqrt(x * x + y * y);
+            return x0 <= angleX && angleX <= x1 && y0px <= yPx && yPx <= y1px;
+          },
+    );
   };
 
   // combined viewModel

@@ -80,7 +80,7 @@ class PartitionComponent extends React.Component<PartitionProps> {
     const x = e.clientX - box.left - diskCenter.x;
     const y = e.clientY - box.top - diskCenter.y;
     const pickedShapes: Array<QuadViewModel> = picker(x, y);
-    // console.log(pickedShapes.map((s) => s.value));
+    // console.log(pickedShapes.map((s) => s.value)); // placeholder
     return pickedShapes; // placeholder
   }
 
