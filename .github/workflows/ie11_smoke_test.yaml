@@ -13,6 +13,6 @@ jobs:
           node-version: 12
       - run: yarn install
       - run: nuget install Selenium.WebDriver.IEDriver -Version 3.150.0
-      - run: yarn jest browsers\browsers.test.ts
+      - run: yarn test:browsers
         env:
           BROWSER: ie
