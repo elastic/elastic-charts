@@ -10,12 +10,18 @@ import {
   splitSeries,
   SeriesIdentifier,
   cleanDatum,
+  getSeriesLabel,
 } from './series';
 import { BasicSeriesSpec, LineSeriesSpec, SeriesTypes } from './specs';
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
 import * as TestDataset from '../../../utils/data_samples/test_dataset';
 import { ChartTypes } from '../..';
 import { SpecTypes } from '../../../specs/settings';
+import { MockSeriesSpec } from '../../../mocks/specs';
+import { SeededDataGenerator } from '../../../mocks/utils';
+import { MockSeriesIdentifier } from '../../../mocks/series/seriesIdentifiers';
+
+const dg = new SeededDataGenerator();
 
 describe('Series', () => {
   test('Can split dataset into 1Y0G series', () => {
@@ -660,5 +666,82 @@ describe('Series', () => {
     datum = cleanDatum([0, 'invalid', 'invalid'], 0, 1, 2);
     expect(datum.y1).toBe(null);
     expect(datum.y0).toBe(null);
+  });
+  describe('#getSeriesLabelKeys', () => {
+    const data = dg.generateGroupedSeries(50, 2).map((d) => ({ ...d, y2: d.y }));
+    const spec = MockSeriesSpec.area({
+      data,
+      yAccessors: ['y', 'y2'],
+      splitSeriesAccessors: ['g'],
+    });
+    const indentifiers = MockSeriesIdentifier.fromSpecs([spec]);
+
+    it('should get series label from spec', () => {
+      const [identifier] = indentifiers;
+      const actual = getSeriesLabel(identifier, false, false, spec);
+      expect(actual).toBe('a - y');
+    });
+
+    describe('Custom labeling', () => {
+      it('should replace full label', () => {
+        const label = 'My custom new label';
+        const [identifier] = indentifiers;
+        const actual = getSeriesLabel(identifier, false, false, {
+          ...spec,
+          customSeriesLabel: ({ yAccessor, splitAccessors }) =>
+            yAccessor === identifier.yAccessor && splitAccessors.get('g') === 'a' ? label : null,
+        });
+        expect(actual).toBe(label);
+      });
+
+      it('should replace full label with customSubSeriesLabel defined', () => {
+        const label = 'My custom new label';
+        const [identifier] = indentifiers;
+        const actual = getSeriesLabel(identifier, false, false, {
+          ...spec,
+          customSeriesLabel: ({ yAccessor, splitAccessors }) =>
+            yAccessor === identifier.yAccessor && splitAccessors.get('g') === 'a' ? label : null,
+          customSubSeriesLabel: new Map([['a', 'Apple']]),
+        });
+        expect(actual).toBe(label);
+      });
+
+      it('should replace yAccessor sub label with function', () => {
+        const [identifier] = indentifiers;
+        const actual = getSeriesLabel(identifier, false, false, {
+          ...spec,
+          customSubSeriesLabel: (label) => (label === 'y' ? 'Yuuuuup' : null),
+        });
+        expect(actual).toBe('a - Yuuuuup');
+      });
+
+      it('should replace splitAccessor sub label with function', () => {
+        const [identifier] = indentifiers;
+        const actual = getSeriesLabel(identifier, false, false, {
+          ...spec,
+          customSubSeriesLabel: (label, key) => (key === 'g' && label === 'a' ? 'Apple' : null),
+        });
+
+        expect(actual).toBe('Apple - y');
+      });
+
+      it('should replace yAccessor sub label with map', () => {
+        const [identifier] = indentifiers;
+        const actual = getSeriesLabel(identifier, false, false, {
+          ...spec,
+          customSubSeriesLabel: new Map([['y', 'Yuuuup']]),
+        });
+        expect(actual).toBe('a - Yuuuup');
+      });
+
+      it('should replace splitAccessor sub label with map', () => {
+        const [identifier] = indentifiers;
+        const actual = getSeriesLabel(identifier, false, false, {
+          ...spec,
+          customSubSeriesLabel: new Map([['a', 'Apple']]),
+        });
+        expect(actual).toBe('Apple - y');
+      });
+    });
   });
 });

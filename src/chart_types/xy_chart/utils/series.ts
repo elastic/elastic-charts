@@ -383,32 +383,21 @@ export function getSplittedSeries(
 /**
  * Get custom  series sub-name
  */
-const getCustomSubSeriesName = (() => {
-  const cache = new Map();
+const getCustomSubSeriesName = (customLabelAccessor: SubSeriesLabelAccessor, isTooltip: boolean) => (
+  args: [string | number | null, string | number],
+): string | number => {
+  const [accessorKey, accessorLabel] = args;
 
-  return (customLabelAccessor: SubSeriesLabelAccessor, isTooltip: boolean) => (
-    args: [string | number | null, string | number],
-  ): string | number => {
-    const [accessorKey, accessorLabel] = args;
-    const key = [args, isTooltip].join('~~~');
+  let label: string | number;
 
-    if (cache.has(key)) {
-      return cache.get(key);
-    } else {
-      let label: string | number | null;
+  if (typeof customLabelAccessor === 'function') {
+    label = customLabelAccessor(accessorLabel, accessorKey, isTooltip) ?? accessorLabel;
+  } else {
+    label = customLabelAccessor.get(accessorLabel) ?? accessorLabel;
+  }
 
-      if (typeof customLabelAccessor === 'function') {
-        label = customLabelAccessor(accessorLabel, accessorKey, isTooltip) ?? accessorLabel;
-      } else {
-        label = customLabelAccessor.get(accessorLabel) ?? accessorLabel;
-      }
-
-      cache.set(key, label);
-
-      return label;
-    }
-  };
-})();
+  return label;
+};
 
 const getSeriesLabelKeys = (
   spec: BasicSeriesSpec,
