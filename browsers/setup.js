@@ -5,20 +5,17 @@ const config = require(path.join(__dirname, '..', '.playground', 'webpack.config
 
 module.exports = async () => {
   return new Promise((resolve, reject) => {
-    // eslint-disable-next-line no-console
-    console.log('Starting the dev web server...', __dirname);
+    const compiler = webpack(config);
+    const server = new WebpackDevServer(compiler);
+    compiler.hooks.done.tap('done', () => {
+      resolve();
+      global.__WP_SERVER__ = server;
+    });
 
-    const port = 8080;
-
-    const server = new WebpackDevServer(webpack(config));
-
-    server.listen(port, 'localhost', function(err) {
+    server.listen(8080, 'localhost', function(err) {
       if (err) {
         reject(err);
       }
-      resolve();
-      console.log('WebpackDevServer listening at localhost:', port);
-      global.__WP_SERVER__ = server;
     });
   });
 };

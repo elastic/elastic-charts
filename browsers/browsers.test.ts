@@ -1,5 +1,4 @@
 import webdriver, { By } from 'selenium-webdriver';
-import assert from 'assert';
 import path from 'path';
 jest.setTimeout(30000);
 
@@ -44,7 +43,7 @@ describe('smoke tests', () => {
     await driver.quit();
   });
 
-  test('Google', async () => {
+  test('elastic-chart element smoke test', async () => {
     await driver.get('http://localhost:8080');
     await driver.sleep(5000);
 

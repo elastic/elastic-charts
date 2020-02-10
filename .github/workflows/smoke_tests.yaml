@@ -1,9 +1,9 @@
-name: xbrowser
+name: Smoke Tests
 
 on: [push, pull_request]
 
 jobs:
-  e2e-ie:
+  browser-ie:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v1
