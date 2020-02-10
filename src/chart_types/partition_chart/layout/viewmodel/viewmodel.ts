@@ -267,8 +267,8 @@ export function shapeViewModel(
     valueFormatter,
   );
 
-  const pickQuads: PickFunction = () => {
-    return [];
+  const pickQuads: PickFunction = (x, y) => {
+    return treemapLayout ? quadViewModel.filter(({ x0, y0, x1, y1 }) => x0 <= x && x <= x1 && y0 <= y && y <= y1) : [];
   };
 
   // combined viewModel

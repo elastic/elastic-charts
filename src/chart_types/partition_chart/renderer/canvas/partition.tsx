@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MouseEvent } from 'react';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { onChartRendered } from '../../../../state/actions/chart';
@@ -6,7 +6,7 @@ import { isInitialized } from '../../../../state/selectors/is_initialized';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { Dimensions } from '../../../../utils/dimensions';
 import { partitionGeometries } from '../../state/selectors/geometries';
-import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { nullShapeViewModel, QuadViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { renderPartitionCanvas2d } from './canvas_renderers';
 
 interface ReactiveChartStateProps {
@@ -66,6 +66,24 @@ class PartitionComponent extends React.Component<PartitionProps> {
     this.drawCanvas();
   }
 
+  handleMouseMove(e: MouseEvent<HTMLCanvasElement>) {
+    const {
+      initialized,
+      chartContainerDimensions: { width, height },
+    } = this.props;
+    if (!this.canvasRef.current || !this.ctx || !initialized || width === 0 || height === 0) {
+      return;
+    }
+    const picker = this.props.geometries.pickQuads;
+    const box = this.canvasRef.current.getBoundingClientRect();
+    const diskCenter = this.props.geometries.diskCenter;
+    const x = e.clientX - box.left - diskCenter.x;
+    const y = e.clientY - box.top - diskCenter.y;
+    const pickedShapes: Array<QuadViewModel> = picker(x, y);
+    // console.log(pickedShapes.map((s) => s.value));
+    return pickedShapes; // placeholder
+  }
+
   render() {
     const {
       initialized,
@@ -81,6 +99,7 @@ class PartitionComponent extends React.Component<PartitionProps> {
         className="echCanvasRenderer"
         width={width * this.devicePixelRatio}
         height={height * this.devicePixelRatio}
+        onMouseMove={this.handleMouseMove.bind(this)}
         style={{
           width,
           height,
