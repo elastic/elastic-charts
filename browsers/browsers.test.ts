@@ -45,7 +45,18 @@ describe('smoke tests', () => {
   });
 
   test('Google', async () => {
-    await driver.get('http://google.com');
+    await driver.get('http://localhost:8080');
+    await driver.sleep(5000);
+
+    const browserLog = await driver
+      .manage()
+      .logs()
+      .get('browser');
+
+    if (browserLog.length > 0) {
+      console.log('log: ' + JSON.stringify(browserLog, null, 2));
+    }
+
     assert.equal(await driver.getTitle(), 'Google');
   });
 });
