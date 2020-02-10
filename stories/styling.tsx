@@ -1,4 +1,4 @@
-import { boolean, color, number, select, text } from '@storybook/addon-knobs';
+import { boolean, color, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { switchTheme } from '../.storybook/theme_service';
