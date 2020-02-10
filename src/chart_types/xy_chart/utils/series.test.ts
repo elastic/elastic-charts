@@ -12,7 +12,7 @@ import {
   cleanDatum,
   getSeriesLabel,
 } from './series';
-import { BasicSeriesSpec, LineSeriesSpec, SeriesTypes } from './specs';
+import { BasicSeriesSpec, LineSeriesSpec, SeriesTypes, AreaSeriesSpec } from './specs';
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
 import * as TestDataset from '../../../utils/data_samples/test_dataset';
 import { ChartTypes } from '../..';
@@ -682,6 +682,17 @@ describe('Series', () => {
       expect(actual).toBe('a - y');
     });
 
+    it('should not show y value with single yAccessor', () => {
+      const specSingleY: AreaSeriesSpec = {
+        ...spec,
+        yAccessors: ['y'],
+      };
+      const [identifier] = MockSeriesIdentifier.fromSpecs([spec]);
+      const actual = getSeriesLabel(identifier, false, false, specSingleY);
+
+      expect(actual).toBe('a');
+    });
+
     describe('Custom labeling', () => {
       it('should replace full label', () => {
         const label = 'My custom new label';
@@ -691,7 +702,20 @@ describe('Series', () => {
           customSeriesLabel: ({ yAccessor, splitAccessors }) =>
             yAccessor === identifier.yAccessor && splitAccessors.get('g') === 'a' ? label : null,
         });
+
         expect(actual).toBe(label);
+      });
+
+      it('should have access to all accessors with single y', () => {
+        const specSingleY: AreaSeriesSpec = {
+          ...spec,
+          yAccessors: ['y'],
+          customSeriesLabel: ({ seriesKeys }) => seriesKeys.join(' - '),
+        };
+        const [identifier] = MockSeriesIdentifier.fromSpecs([spec]);
+        const actual = getSeriesLabel(identifier, false, false, specSingleY);
+
+        expect(actual).toBe('a - y');
       });
 
       it('should replace full label with customSubSeriesLabel defined', () => {
@@ -701,7 +725,7 @@ describe('Series', () => {
           ...spec,
           customSeriesLabel: ({ yAccessor, splitAccessors }) =>
             yAccessor === identifier.yAccessor && splitAccessors.get('g') === 'a' ? label : null,
-          customSubSeriesLabel: new Map([['a', 'Apple']]),
+          customSubSeriesLabel: { a: 'Apple' },
         });
         expect(actual).toBe(label);
       });
@@ -729,7 +753,7 @@ describe('Series', () => {
         const [identifier] = indentifiers;
         const actual = getSeriesLabel(identifier, false, false, {
           ...spec,
-          customSubSeriesLabel: new Map([['y', 'Yuuuup']]),
+          customSubSeriesLabel: { y: 'Yuuuup' },
         });
         expect(actual).toBe('a - Yuuuup');
       });
@@ -738,9 +762,26 @@ describe('Series', () => {
         const [identifier] = indentifiers;
         const actual = getSeriesLabel(identifier, false, false, {
           ...spec,
-          customSubSeriesLabel: new Map([['a', 'Apple']]),
+          customSubSeriesLabel: { a: 'Apple' },
         });
         expect(actual).toBe('Apple - y');
+      });
+
+      it('should replace yAccessor sub label with map for single yAccessor', () => {
+        const specSingleY: AreaSeriesSpec = {
+          ...spec,
+          yAccessors: ['y'],
+          customSubSeriesLabel: [
+            {
+              y: 'Yuuuup',
+            },
+            true,
+          ],
+        };
+        const [identifier] = MockSeriesIdentifier.fromSpecs([spec]);
+        const actual = getSeriesLabel(identifier, false, false, specSingleY);
+
+        expect(actual).toBe('a - Yuuuup');
       });
     });
   });

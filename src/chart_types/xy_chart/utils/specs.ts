@@ -61,8 +61,9 @@ export type SubSeriesLabelPredicate = (
   accessorKey: string | number | null,
   isTooltip: boolean,
 ) => SubSeriesLabel;
-export type SubSeriesLabelMap = Map<string | number, SubSeriesLabel>;
-export type SubSeriesLabelAccessor = SubSeriesLabelPredicate | SubSeriesLabelMap;
+export type SubSeriesLabelMap = Record<string | number, SubSeriesLabel>;
+// When using map the y label will be dropped when there is a single y, this is to bypass that.
+export type SubSeriesLabelAccessor = SubSeriesLabelPredicate | SubSeriesLabelMap | [SubSeriesLabelMap, boolean];
 
 /**
  * The fit function type

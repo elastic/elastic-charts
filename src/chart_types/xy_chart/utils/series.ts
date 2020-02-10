@@ -8,7 +8,6 @@ import { formatStackedDataSeriesValues } from './stacked_series_utils';
 import { ScaleType } from '../../../utils/scales/scales';
 import { LastValues } from '../state/utils';
 import { Datum } from '../../../utils/domain';
-import { SeriesLabelSettings } from '../../../specs';
 
 export interface FilledValues {
   /** the x value */
@@ -393,7 +392,8 @@ const getCustomSubSeriesName = (customLabelAccessor: SubSeriesLabelAccessor, isT
   if (typeof customLabelAccessor === 'function') {
     label = customLabelAccessor(accessorLabel, accessorKey, isTooltip) ?? accessorLabel;
   } else {
-    label = customLabelAccessor.get(accessorLabel) ?? accessorLabel;
+    const map = Array.isArray(customLabelAccessor) ? customLabelAccessor[0] : customLabelAccessor;
+    label = map[accessorLabel] ?? accessorLabel;
   }
 
   return label;
@@ -403,21 +403,22 @@ const getSeriesLabelKeys = (
   spec: BasicSeriesSpec,
   seriesIdentifier: SeriesIdentifier,
   isTooltip: boolean,
-  showSimpleLabel?: boolean,
 ): (string | number)[] => {
   const isMultipleY = spec.yAccessors.length > 1;
+  const alwaysShowYLabel = Array.isArray(spec.customSubSeriesLabel) ? spec.customSubSeriesLabel[1] : false;
+  const showFullLabel = isMultipleY || alwaysShowYLabel;
 
   if (spec.customSubSeriesLabel) {
     const { yAccessor, splitAccessors } = seriesIdentifier;
     const fullKeyPairs: [string | number | null, string | number][] = [...splitAccessors.entries(), [null, yAccessor]];
     const labelKeys = fullKeyPairs.map(getCustomSubSeriesName(spec.customSubSeriesLabel, isTooltip));
 
-    return isMultipleY || !showSimpleLabel ? labelKeys : labelKeys.slice(0, -1);
+    return showFullLabel ? labelKeys : labelKeys.slice(0, -1);
   }
 
   const { seriesKeys } = seriesIdentifier;
 
-  return isMultipleY || !showSimpleLabel ? seriesKeys : seriesKeys.slice(0, -1);
+  return showFullLabel ? seriesKeys : seriesKeys.slice(0, -1);
 };
 
 /**
@@ -428,7 +429,6 @@ export function getSeriesLabel(
   hasSingleSeries: boolean,
   isTooltip: boolean,
   spec?: BasicSeriesSpec,
-  labelSettings?: SeriesLabelSettings,
 ): string {
   if (spec && spec.customSeriesLabel) {
     const customLabel = spec.customSeriesLabel(seriesIdentifier, isTooltip);
@@ -439,10 +439,8 @@ export function getSeriesLabel(
   }
 
   let label = '';
-  const labelKeys = spec
-    ? getSeriesLabelKeys(spec, seriesIdentifier, isTooltip, labelSettings?.full !== true)
-    : seriesIdentifier.seriesKeys;
-  const delimiter = labelSettings?.delimiter ?? ' - ';
+  const delimiter = ' - ';
+  const labelKeys = spec ? getSeriesLabelKeys(spec, seriesIdentifier, isTooltip) : seriesIdentifier.seriesKeys;
 
   // there is one series, the is only one yAccessor, the first part is not null
   if (hasSingleSeries || labelKeys.length === 0 || labelKeys[0] == null) {

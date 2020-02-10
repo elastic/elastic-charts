@@ -1039,36 +1039,6 @@ addCustomFullAndSubSeriesLabel.story = {
   name: 'Add custom sub-series label formatting [time/date and percent]',
 };
 
-export const seriesLabelSettings = () => {
-  const dg = new SeededDataGenerator();
-  const delimiter = text('Delimiter', ' ~~ ');
-  const full = boolean('Show full label series', false);
-  const showMultiple = boolean('Show multiple yAccessors', false);
-  const data = dg.generateGroupedSeries(10, 2).map((item) => ({
-    ...item,
-    y1: item.y + 10,
-  }));
-
-  return (
-    <Chart className={'story-chart'}>
-      <Settings showLegend seriesLabels={{ delimiter, full }} />
-      <Axis id="y1" tickFormat={(d) => Number(d).toFixed(2)} position={Position.Left} title={'y1'} />
-      <Axis id="x" position={Position.Bottom} title={'x'} />
-      <LineSeries
-        id="line1"
-        xScaleType={ScaleType.Linear}
-        xAccessor={'x'}
-        yAccessors={showMultiple ? ['y', 'y1'] : ['y']}
-        splitSeriesAccessors={['g']}
-        data={data}
-      />
-    </Chart>
-  );
-};
-seriesLabelSettings.story = {
-  name: 'Series label settings',
-};
-
 export const tickLabelPaddingBothPropAndTheme = () => {
   const theme: PartialTheme = {
     axes: {

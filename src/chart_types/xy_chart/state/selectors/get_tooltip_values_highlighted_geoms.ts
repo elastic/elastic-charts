@@ -14,12 +14,11 @@ import { formatTooltip } from '../../tooltip/tooltip';
 import { getTooltipHeaderFormatterSelector } from './get_tooltip_header_formatter';
 import { isPointOnGeometry } from '../../rendering/rendering';
 import { GlobalChartState } from '../../../../state/chart_state';
-import { PointerEvent, isPointerOutEvent, SeriesLabelSettings } from '../../../../specs';
+import { PointerEvent, isPointerOutEvent } from '../../../../specs';
 import { isValidPointerOverEvent } from '../../../../utils/events';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { hasSingleSeriesSelector } from './has_single_series';
-import { getLabelSettingsSelector } from './get_label_settings';
 
 const EMPTY_VALUES = Object.freeze({
   tooltipValues: [],
@@ -46,7 +45,6 @@ export const getTooltipValuesAndGeometriesSelector = createCachedSelector(
     getTooltipTypeSelector,
     getExternalPointerEventStateSelector,
     getTooltipHeaderFormatterSelector,
-    getLabelSettingsSelector,
   ],
   getTooltipAndHighlightFromXValue,
 )((state: GlobalChartState) => {
@@ -65,7 +63,6 @@ function getTooltipAndHighlightFromXValue(
   tooltipType: TooltipType,
   externalPointerEvent: PointerEvent | null,
   tooltipHeaderFormatter?: TooltipValueFormatter,
-  labelSettings?: SeriesLabelSettings,
 ): TooltipAndHighlightedGeoms {
   if (!scales.xScale || !scales.yScales) {
     return EMPTY_VALUES;
@@ -134,7 +131,6 @@ function getTooltipAndHighlightFromXValue(
         isHighlighted,
         hasSingleSeries,
         yAxisFormatSpec,
-        labelSettings,
       );
 
       // format only one time the x value
@@ -142,7 +138,7 @@ function getTooltipAndHighlightFromXValue(
         // if we have a tooltipHeaderFormatter, then don't pass in the xAxis as the user will define a formatter
         const xAxisFormatSpec = [0, 180].includes(chartRotation) ? xAxis : yAxis;
         const formatterAxis = tooltipHeaderFormatter ? undefined : xAxisFormatSpec;
-        xValueInfo = formatTooltip(indexedGeometry, spec, true, false, hasSingleSeries, formatterAxis, labelSettings);
+        xValueInfo = formatTooltip(indexedGeometry, spec, true, false, hasSingleSeries, formatterAxis);
         return [xValueInfo, ...acc, formattedTooltip];
       }
 

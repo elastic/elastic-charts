@@ -27,7 +27,6 @@ export const computeLegendSelector = createCachedSelector(
     seriesColors,
     axesSpecs,
     deselectedDataSeries,
-    labelSettings,
   ): Map<string, LegendItem> => {
     return computeLegend(
       seriesDomainsAndData.seriesCollection,
@@ -36,7 +35,6 @@ export const computeLegendSelector = createCachedSelector(
       chartTheme.colors.defaultVizColor,
       axesSpecs,
       deselectedDataSeries,
-      labelSettings,
     );
   },
 )(getChartIdSelector);
