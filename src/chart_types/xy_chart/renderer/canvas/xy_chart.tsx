@@ -1,5 +1,4 @@
 import React, { RefObject } from 'react';
-import deepEqual from 'fast-deep-equal/es6';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { onChartRendered } from '../../../../state/actions/chart';
@@ -28,6 +27,7 @@ import { AxisLinePosition, AxisTicksDimensions } from '../../utils/axis_utils';
 import { AxisSpec, Rotation, AnnotationSpec } from '../../utils/specs';
 import { renderXYChartCanvas2d } from './renderers';
 import { isChartEmptySelector } from '../../state/selectors/is_chart_empty';
+import { deepEqual } from '../../../../utils/fast_deep_equal';
 
 export interface ReactiveChartStateProps {
   initialized: boolean;
