@@ -6,7 +6,7 @@ import { isInitialized } from '../../../../state/selectors/is_initialized';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { Dimensions } from '../../../../utils/dimensions';
 import { partitionGeometries } from '../../state/selectors/geometries';
-import { nullSectorViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { renderPartitionCanvas2d } from './canvas_renderers';
 
 interface ReactiveChartStateProps {
@@ -100,7 +100,7 @@ const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
 
 const DEFAULT_PROPS: ReactiveChartStateProps = {
   initialized: false,
-  geometries: nullSectorViewModel(),
+  geometries: nullShapeViewModel(),
   chartContainerDimensions: {
     width: 0,
     height: 0,

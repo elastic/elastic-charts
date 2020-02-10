@@ -9,7 +9,9 @@ import { sunburst } from '../utils/sunburst';
 import { AccessorFn, IndexedAccessorFn } from '../../../../utils/accessor';
 import { argsToRGBString, stringToRGB } from '../utils/d3_utils';
 import {
+  nullShapeViewModel,
   OutsideLinksViewModel,
+  PickFunction,
   QuadViewModel,
   RawTextGetter,
   RowSet,
@@ -116,7 +118,7 @@ export function makeOutsideLinksViewModel(
     })
     .filter(({ points }: OutsideLinksViewModel) => points.length > 1);
 }
-// todo break up this long function
+
 export function shapeViewModel(
   textMeasure: TextMeasure,
   config: Config,
@@ -157,14 +159,7 @@ export function shapeViewModel(
     facts.some((n) => valueAccessor(n) < 0) ||
     facts.reduce((p: number, n) => aggregator.reducer(p, valueAccessor(n)), aggregator.identity()) <= 0
   ) {
-    return {
-      config,
-      diskCenter,
-      quadViewModel: [],
-      rowSets: [],
-      linkLabelViewModels: [],
-      outsideLinksViewModel: [],
-    };
+    return nullShapeViewModel(config, diskCenter);
   }
 
   // We can precompute things invariant of how the rectangle is divvied up.
@@ -272,6 +267,10 @@ export function shapeViewModel(
     valueFormatter,
   );
 
+  const pickQuads: PickFunction = () => {
+    return [];
+  };
+
   // combined viewModel
   return {
     config,
@@ -280,5 +279,6 @@ export function shapeViewModel(
     rowSets,
     linkLabelViewModels,
     outsideLinksViewModel,
+    pickQuads,
   };
 }
