@@ -1,3 +1,10 @@
+## [16.1.2](https://github.com/elastic/elastic-charts/compare/v16.1.1...v16.1.2) (2020-02-10)
+
+
+### Bug Fixes
+
+* **ie11:** replace fast-deep-equal an IE11 safe ver ([#542](https://github.com/elastic/elastic-charts/issues/542)) ([#546](https://github.com/elastic/elastic-charts/issues/546)) ([0c334ca](https://github.com/elastic/elastic-charts/commit/0c334ca2dcd7f24d1e87f750e202a42216b0afe1))
+
 ## [16.1.1](https://github.com/elastic/elastic-charts/compare/v16.1.0...v16.1.1) (2020-02-05)
 
 
