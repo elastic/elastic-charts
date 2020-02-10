@@ -1,8 +1,8 @@
 import React, { createRef, CSSProperties, Component } from 'react';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import deepEqual from 'fast-deep-equal/es6/react';
 
+import { deepEqual } from '../../../utils/fast_deep_equal';
 import { LineAnnotationSpec, DEFAULT_GLOBAL_ID, SpecTypes, AnnotationTypes } from '../utils/specs';
 import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../utils/themes/theme';
 import { upsertSpec, removeSpec } from '../../../state/actions/specs';
