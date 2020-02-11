@@ -1,117 +1,42 @@
 import React from 'react';
-import { Chart, LineSeries, ScaleType, Settings, Position, Axis, BarSeries, HistogramBarSeries } from '../src';
-export class Playground extends React.Component<{}, { isSunburstShown: boolean }> {
-  chartRef: React.RefObject<Chart> = React.createRef();
-  state = {
-    isSunburstShown: true,
-  };
-  onBrushEnd = (min: number, max: number) => {
-    // eslint-disable-next-line no-console
-    console.log({ min, max });
-  };
+import { Chart, ScaleType, Settings, BarSeries, DataGenerator } from '../src';
+import { RenderColorPicker } from '../src/components/legend/legend_item';
 
+export class Playground extends React.Component<{}, { isSunburstShown: boolean }> {
   render() {
+    const dg = new DataGenerator();
+    const data = dg.generateGroupedSeries(10, 4, 'split');
+    const renderColorPicker: RenderColorPicker = (onChange, onClose, isOpen, button) =>
+      isOpen ? (
+        <div id="colorPicker">
+          <span>Custom Color Picker</span>
+          <button id="change" onClick={() => onChange('#0c7b93')}>
+            #0c7b93
+          </button>
+          <button id="close" onClick={onClose}>
+            close
+          </button>
+          {button}
+        </div>
+      ) : (
+        { button }
+      );
+
     return (
-      <>
-        <div className="chart">
-          <Chart ref={this.chartRef}>
-            <Settings rotation={90} onBrushEnd={this.onBrushEnd} />
-            <Axis id="y" position={Position.Left} title={'y'} />
-            <Axis id="x" position={Position.Bottom} title={'x'} />
-            <LineSeries
-              id={'aaa'}
-              xScaleType={ScaleType.Linear}
-              xAccessor={0}
-              yAccessors={[1]}
-              data={[
-                [0, 1],
-                [1, 2],
-                [2, 5],
-                [3, 5],
-                [4, 2],
-                [5, 6],
-              ]}
-            />
-          </Chart>
-        </div>
-        <div className="chart">
-          <Chart ref={this.chartRef}>
-            <Settings rotation={0} onBrushEnd={this.onBrushEnd} theme={{ chartMargins: { left: 30 } }} />
-            <Axis id="x" position={Position.Bottom} title={'x'} />
-            <Axis id="y" position={Position.Left} title={'y'} />
-            <LineSeries
-              id={'aaa'}
-              xScaleType={ScaleType.Linear}
-              xAccessor={0}
-              yAccessors={[1]}
-              data={[
-                [0, 1],
-                [1, 2],
-                [2, 5],
-                [3, 5],
-                [4, 2],
-                [5, 6],
-              ]}
-            />
-          </Chart>
-        </div>
-        <div className="chart">
-          <Chart ref={this.chartRef}>
-            <Settings rotation={90} onBrushEnd={this.onBrushEnd} theme={{ chartMargins: { left: 30 } }} />
-            <Axis id="x" position={Position.Bottom} title={'x'} />
-            <Axis id="y" position={Position.Left} title={'y'} />
-            <BarSeries
-              id={'aaa'}
-              xScaleType={ScaleType.Linear}
-              xAccessor={0}
-              yAccessors={[1]}
-              data={[
-                [0, 1],
-                [1, 2],
-                [2, 5],
-                [3, 5],
-                // [4, 2],
-                [5, 6],
-              ]}
-            />
-            <LineSeries
-              id={'aaa1'}
-              xScaleType={ScaleType.Linear}
-              xAccessor={0}
-              yAccessors={[1]}
-              data={[
-                [0, 1],
-                [1, 2],
-                [2, 5],
-                [3, 5],
-                // [4, 2],
-                [5, 6],
-              ]}
-            />
-          </Chart>
-        </div>
-        <div className="chart">
-          <Chart ref={this.chartRef}>
-            <Settings rotation={90} onBrushEnd={this.onBrushEnd} theme={{ chartMargins: { left: 30 } }} />
-            <Axis id="x" position={Position.Bottom} title={'x'} />
-            <Axis id="y" position={Position.Left} title={'y'} />
-            <HistogramBarSeries
-              id={'aaa'}
-              xScaleType={ScaleType.Linear}
-              xAccessor={0}
-              yAccessors={[1]}
-              data={[
-                [0, 1],
-                [1, 2],
-                [2, 5],
-                [3, 5],
-                [4, 2],
-                [5, 6],
-              ]}
-            />
-          </Chart>
-        </div>
-      </>
+      <div className="chart">
+        <Chart>
+          <Settings showLegend renderColorPicker={renderColorPicker} />
+          <BarSeries
+            id="areas"
+            xScaleType={ScaleType.Linear}
+            yScaleType={ScaleType.Linear}
+            xAccessor={'x'}
+            yAccessors={['y']}
+            splitSeriesAccessors={['g']}
+            data={data}
+          />
+        </Chart>
+      </div>
     );
   }
 }

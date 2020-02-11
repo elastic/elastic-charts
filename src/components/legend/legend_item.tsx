@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { PureComponent, ReactNode } from 'react';
+import React, { Component, ReactNode } from 'react';
 import deepEqual from 'fast-deep-equal/es6/react';
 import { Icon } from '../icons/icon';
 import { LegendItemListener, BasicListener } from '../../specs/settings';
@@ -80,7 +80,7 @@ interface LegendItemState {
   color?: string;
 }
 
-export class LegendListItem extends PureComponent<LegendItemProps, LegendItemState> {
+export class LegendListItem extends Component<LegendItemProps, LegendItemState> {
   static displayName = 'LegendItem';
 
   state: LegendItemState = {
@@ -108,7 +108,7 @@ export class LegendListItem extends PureComponent<LegendItemProps, LegendItemSta
           onClick={
             changable
               ? (e) => {
-                  e.nativeEvent.stopPropagation();
+                  e.stopPropagation();
                   this.setToggleIsOpen();
                 }
               : undefined
