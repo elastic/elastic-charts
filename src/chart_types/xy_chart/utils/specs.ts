@@ -54,16 +54,60 @@ export type PointStyleAccessor = (datum: RawDataSeriesDatum, seriesIdentifier: S
 export const DEFAULT_GLOBAL_ID = '__global__';
 
 export type FilterPredicate = (series: SeriesIdentifier) => boolean;
-export type SeriesStringPredicate = (series: SeriesIdentifier, isTooltip: boolean) => string | null;
-export type SubSeriesLabel = string | number | null;
-export type SubSeriesLabelPredicate = (
-  accessorLabel: string | number,
-  accessorKey: string | number | null,
-  isTooltip: boolean,
-) => SubSeriesLabel;
-export type SubSeriesLabelMap = Record<string | number, SubSeriesLabel>;
-// When using map the y label will be dropped when there is a single y, this is to bypass that.
-export type SubSeriesLabelAccessor = SubSeriesLabelPredicate | SubSeriesLabelMap | [SubSeriesLabelMap, boolean];
+export type SeriesLabel = string | number | null;
+/**
+ * Function to create custom series label for a given series
+ */
+export type SeriesLabelFn = (series: SeriesIdentifier, isTooltip: boolean) => SeriesLabel;
+/**
+ * Accessor mapping to replace labels
+ */
+export interface SeriesLabelMapping {
+  /**
+   * accessor key (i.e. `seriesSlittAccessors`)
+   *
+   * ignored for `yAccessor`
+   */
+  accessor?: string;
+  /**
+   * Accessor value/label (i.e. `yAccessors` or values from `seriesSlittAccessors`)
+   */
+  value: string | number;
+  /**
+   * New Accessor value/label to use in series label
+   *
+   * If not provided, the original value will be used
+   */
+  newValue?: string | number;
+  /**
+   * Sort order of label, overrides order listed in array.
+   *
+   * lower values - front most
+   * higher values - end most
+   */
+  sortIndex?: number;
+}
+export interface SeriesLabelMappingOptions {
+  /**
+   * Array of accessor mappings to replace labels.
+   *
+   * Only provided mappings will be included
+   * (i.e. if you only provide a single mapping for `yAccessor`, all other series accessor labels will be ignored)
+   *
+   * The order of mappings is the order in which the resulting labels will
+   * be joined, if no `sortIndex` is specified.
+   *
+   * If no values are found for a giving mapping in a series, the mapping will be ignored.
+   */
+  mappings: SeriesLabelMapping[];
+  /**
+   * Delimiter to join values/labels
+   *
+   * @default ' - '
+   */
+  delimiter?: string;
+}
+export type SeriesLabelAccessor = SeriesLabelFn | SeriesLabelMappingOptions;
 
 /**
  * The fit function type
@@ -243,20 +287,12 @@ export interface SeriesSpec extends Spec {
    */
   filterSeriesInTooltip?: FilterPredicate;
   /**
-   * Custom series naming predicate function. Values are unaffected by `customSubSeriesLabel` changes.
-   *
-   * This takes precedence over `customSubSeriesLabel`
+   * Mechanism to provide custom series labels.
    *
    * @param series - `SeriesIdentifier`
    * @param isTooltip - true if tooltip label, otherwise legend label
    */
-  customSeriesLabel?: SeriesStringPredicate;
-  /**
-   * Custom sub series naming predicate function.
-   *
-   * `customSeriesLabel` takes precedence
-   */
-  customSubSeriesLabel?: SubSeriesLabelAccessor;
+  customSeriesLabel?: SeriesLabelAccessor;
 }
 
 export interface Postfixes {

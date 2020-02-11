@@ -3,7 +3,7 @@ import { Accessor } from '../../../utils/accessor';
 import { GroupId, SpecId } from '../../../utils/ids';
 import { splitSpecsByGroupId, YBasicSeriesSpec } from '../domains/y_domain';
 import { formatNonStackedDataSeriesValues } from './nonstacked_series_utils';
-import { BasicSeriesSpec, SubSeriesLabelAccessor, SeriesTypes, SeriesSpecs } from './specs';
+import { BasicSeriesSpec, SeriesTypes, SeriesSpecs, SeriesLabelMappingOptions } from './specs';
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
 import { ScaleType } from '../../../utils/scales/scales';
 import { LastValues } from '../state/utils';
@@ -379,47 +379,26 @@ export function getSplittedSeries(
   };
 }
 
-/**
- * Get custom  series sub-name
- */
-const getCustomSubSeriesName = (customLabelAccessor: SubSeriesLabelAccessor, isTooltip: boolean) => (
-  args: [string | number | null, string | number],
-): string | number => {
-  const [accessorKey, accessorLabel] = args;
+const getSeriesLabelFromOptions = (
+  options: SeriesLabelMappingOptions,
+  { yAccessor, splitAccessors }: SeriesIdentifier,
+) =>
+  options.mappings
+    .sort(({ sortIndex: a = Infinity }, { sortIndex: b = Infinity }) => a - b)
+    .map(({ accessor, value, newValue }) => {
+      const accessorValue = accessor ? splitAccessors.get(accessor) : null;
+      if (accessorValue === value) {
+        return newValue ?? value;
+      }
 
-  let label: string | number;
-
-  if (typeof customLabelAccessor === 'function') {
-    label = customLabelAccessor(accessorLabel, accessorKey, isTooltip) ?? accessorLabel;
-  } else {
-    const map = Array.isArray(customLabelAccessor) ? customLabelAccessor[0] : customLabelAccessor;
-    label = map[accessorLabel] ?? accessorLabel;
-  }
-
-  return label;
-};
-
-const getSeriesLabelKeys = (
-  spec: BasicSeriesSpec,
-  seriesIdentifier: SeriesIdentifier,
-  isTooltip: boolean,
-): (string | number)[] => {
-  const isMultipleY = spec.yAccessors.length > 1;
-  const alwaysShowYLabel = Array.isArray(spec.customSubSeriesLabel) ? spec.customSubSeriesLabel[1] : false;
-  const showFullLabel = isMultipleY || alwaysShowYLabel;
-
-  if (spec.customSubSeriesLabel) {
-    const { yAccessor, splitAccessors } = seriesIdentifier;
-    const fullKeyPairs: [string | number | null, string | number][] = [...splitAccessors.entries(), [null, yAccessor]];
-    const labelKeys = fullKeyPairs.map(getCustomSubSeriesName(spec.customSubSeriesLabel, isTooltip));
-
-    return showFullLabel ? labelKeys : labelKeys.slice(0, -1);
-  }
-
-  const { seriesKeys } = seriesIdentifier;
-
-  return showFullLabel ? seriesKeys : seriesKeys.slice(0, -1);
-};
+      if (yAccessor === value) {
+        return newValue ?? value;
+      }
+      return null;
+    })
+    .filter((d) => Boolean(d) || d === 0)
+    .slice()
+    .join(options.delimiter ?? ' - ');
 
 /**
  * Get series label based on `SeriesIdentifier`
@@ -431,16 +410,23 @@ export function getSeriesLabel(
   spec?: BasicSeriesSpec,
 ): string {
   if (spec && spec.customSeriesLabel) {
-    const customLabel = spec.customSeriesLabel(seriesIdentifier, isTooltip);
+    let customLabel: string | number | null = null;
+    if (typeof spec.customSeriesLabel === 'function') {
+      customLabel = spec.customSeriesLabel(seriesIdentifier, isTooltip);
+    } else {
+      const customMappingLabel = getSeriesLabelFromOptions(spec.customSeriesLabel, seriesIdentifier);
+      customLabel = customMappingLabel === '' ? null : customMappingLabel;
+    }
 
     if (customLabel !== null) {
-      return customLabel;
+      return customLabel.toString();
     }
   }
 
   let label = '';
   const delimiter = ' - ';
-  const labelKeys = spec ? getSeriesLabelKeys(spec, seriesIdentifier, isTooltip) : seriesIdentifier.seriesKeys;
+  const labelKeys =
+    spec && spec.yAccessors.length > 1 ? seriesIdentifier.seriesKeys : seriesIdentifier.seriesKeys.slice(0, -1);
 
   // there is one series, the is only one yAccessor, the first part is not null
   if (hasSingleSeries || labelKeys.length === 0 || labelKeys[0] == null) {

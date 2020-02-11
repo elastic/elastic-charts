@@ -718,70 +718,167 @@ describe('Series', () => {
         expect(actual).toBe('a - y');
       });
 
-      it('should replace full label with customSubSeriesLabel defined', () => {
-        const label = 'My custom new label';
-        const [identifier] = indentifiers;
-        const actual = getSeriesLabel(identifier, false, false, {
-          ...spec,
-          customSeriesLabel: ({ yAccessor, splitAccessors }) =>
-            yAccessor === identifier.yAccessor && splitAccessors.get('g') === 'a' ? label : null,
-          customSubSeriesLabel: { a: 'Apple' },
-        });
-        expect(actual).toBe(label);
-      });
-
-      it('should replace yAccessor sub label with function', () => {
-        const [identifier] = indentifiers;
-        const actual = getSeriesLabel(identifier, false, false, {
-          ...spec,
-          customSubSeriesLabel: (label) => (label === 'y' ? 'Yuuuuup' : null),
-        });
-        expect(actual).toBe('a - Yuuuuup');
-      });
-
-      it('should replace splitAccessor sub label with function', () => {
-        const [identifier] = indentifiers;
-        const actual = getSeriesLabel(identifier, false, false, {
-          ...spec,
-          customSubSeriesLabel: (label, key) => (key === 'g' && label === 'a' ? 'Apple' : null),
-        });
-
-        expect(actual).toBe('Apple - y');
-      });
-
       it('should replace yAccessor sub label with map', () => {
         const [identifier] = indentifiers;
         const actual = getSeriesLabel(identifier, false, false, {
           ...spec,
-          customSubSeriesLabel: { y: 'Yuuuup' },
+          customSeriesLabel: {
+            mappings: [
+              {
+                accessor: 'g',
+                value: 'a',
+              },
+              {
+                value: 'y',
+                newValue: 'Yuuuup',
+              },
+            ],
+          },
         });
         expect(actual).toBe('a - Yuuuup');
+      });
+
+      it('should join with custom delimiter', () => {
+        const [identifier] = indentifiers;
+        const actual = getSeriesLabel(identifier, false, false, {
+          ...spec,
+          customSeriesLabel: {
+            mappings: [
+              {
+                accessor: 'g',
+                value: 'a',
+              },
+              {
+                value: 'y',
+              },
+            ],
+            delimiter: ' ¯\\_(ツ)_/¯ ',
+          },
+        });
+        expect(actual).toBe('a ¯\\_(ツ)_/¯ y');
       });
 
       it('should replace splitAccessor sub label with map', () => {
         const [identifier] = indentifiers;
         const actual = getSeriesLabel(identifier, false, false, {
           ...spec,
-          customSubSeriesLabel: { a: 'Apple' },
+          customSeriesLabel: {
+            mappings: [
+              {
+                accessor: 'g',
+                value: 'a',
+                newValue: 'Apple',
+              },
+              {
+                value: 'y',
+              },
+            ],
+          },
         });
         expect(actual).toBe('Apple - y');
       });
 
-      it('should replace yAccessor sub label with map for single yAccessor', () => {
-        const specSingleY: AreaSeriesSpec = {
+      it('should mind order of mappings', () => {
+        const [identifier] = indentifiers;
+        const actual = getSeriesLabel(identifier, false, false, {
           ...spec,
-          yAccessors: ['y'],
-          customSubSeriesLabel: [
-            {
-              y: 'Yuuuup',
-            },
-            true,
-          ],
-        };
-        const [identifier] = MockSeriesIdentifier.fromSpecs([spec]);
-        const actual = getSeriesLabel(identifier, false, false, specSingleY);
+          customSeriesLabel: {
+            mappings: [
+              {
+                value: 'y',
+                newValue: 'Yuuum',
+              },
+              {
+                accessor: 'g',
+                value: 'a',
+                newValue: 'Apple',
+              },
+            ],
+          },
+        });
+        expect(actual).toBe('Yuuum - Apple');
+      });
 
-        expect(actual).toBe('a - Yuuuup');
+      it('should mind sortIndex of mappings', () => {
+        const [identifier] = indentifiers;
+        const actual = getSeriesLabel(identifier, false, false, {
+          ...spec,
+          customSeriesLabel: {
+            mappings: [
+              {
+                value: 'y',
+                newValue: 'Yuuum',
+                sortIndex: 2,
+              },
+              {
+                accessor: 'g',
+                value: 'a',
+                newValue: 'Apple',
+                sortIndex: 0,
+              },
+            ],
+          },
+        });
+        expect(actual).toBe('Apple - Yuuum');
+      });
+
+      it('should allow undefined sortIndex', () => {
+        const [identifier] = indentifiers;
+        const actual = getSeriesLabel(identifier, false, false, {
+          ...spec,
+          customSeriesLabel: {
+            mappings: [
+              {
+                value: 'y',
+                newValue: 'Yuuum',
+              },
+              {
+                accessor: 'g',
+                value: 'a',
+                newValue: 'Apple',
+                sortIndex: 0,
+              },
+            ],
+          },
+        });
+        expect(actual).toBe('Apple - Yuuum');
+      });
+
+      it('should ignore missing mappings', () => {
+        const [identifier] = indentifiers;
+        const actual = getSeriesLabel(identifier, false, false, {
+          ...spec,
+          customSeriesLabel: {
+            mappings: [
+              {
+                accessor: 'g',
+                value: 'a',
+                newValue: 'Apple',
+              },
+              {
+                accessor: 'g',
+                value: 'Not a mapping',
+                newValue: 'No Value',
+              },
+              {
+                value: 'y',
+                newValue: 'Yuuum',
+              },
+            ],
+          },
+        });
+        expect(actual).toBe('Apple - Yuuum');
+      });
+
+      it('should return fallback label if empty string', () => {
+        const [identifier] = indentifiers;
+        const actual = getSeriesLabel(identifier, false, false, {
+          ...spec,
+          customSeriesLabel: {
+            mappings: [],
+          },
+        });
+        expect(actual).toBe('a - y');
       });
     });
   });
