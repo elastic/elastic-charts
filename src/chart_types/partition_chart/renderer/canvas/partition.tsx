@@ -8,6 +8,7 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { partitionGeometries } from '../../state/selectors/geometries';
 import { nullShapeViewModel, QuadViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { renderPartitionCanvas2d } from './canvas_renderers';
+import { INPUT_KEY } from '../../layout/utils/group_by_rollup';
 
 interface ReactiveChartStateProps {
   initialized: boolean;
@@ -80,7 +81,21 @@ class PartitionComponent extends React.Component<PartitionProps> {
     const x = e.clientX - box.left - diskCenter.x;
     const y = e.clientY - box.top - diskCenter.y;
     const pickedShapes: Array<QuadViewModel> = picker(x, y);
-    // console.log(pickedShapes.map((s) => s.value)); // placeholder
+    const datumIndices = new Set();
+    pickedShapes.forEach((shape) => {
+      const node = shape.parent;
+      const shapeNode = node.children.find(([key]) => key === shape.dataName);
+      if (shapeNode) {
+        const indices = shapeNode[1][INPUT_KEY] || [];
+        indices.forEach((i) => datumIndices.add(i));
+      }
+    });
+    /*
+    console.log(
+      pickedShapes.map((s) => s.value),
+      [...datumIndices.values()],
+    );
+    */
     return pickedShapes; // placeholder
   }
 

@@ -832,3 +832,30 @@ export const NoLabels = () => (
 NoLabels.story = {
   name: 'No labels at all',
 };
+
+export const MultipleDatumsForTooltip = () => (
+  <Chart className={'story-chart'}>
+    <Partition
+      id={'spec_' + getRandomNumber()}
+      data={mocks.pie.concat(mocks.pie).concat(mocks.pie)}
+      valueAccessor={(d: Datum) => d.exportVal as number}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
+      layers={[
+        {
+          groupByRollup: (d: Datum) => d.sitc1,
+          nodeLabel: (d: Datum) => productLookup[d].name,
+          fillLabel: { textInvertible: true },
+          shape: {
+            fillColor: indexInterpolatedFillColor(interpolatorCET2s),
+          },
+        },
+      ]}
+    />
+  </Chart>
+);
+MultipleDatumsForTooltip.story = {
+  name: 'Multiple datums per slice in tooltip',
+  info: {
+    source: false,
+  },
+};
