@@ -6,8 +6,6 @@ import {
   BarSeries,
   Chart,
   getAnnotationId,
-  getAxisId,
-  getSpecId,
   LineAnnotation,
   LineAnnotationDatum,
   LineSeries,
@@ -50,10 +48,10 @@ Here is a basic `line` annotation with `x domain continuous`
       padding: 0,
     },}}
     />
-    <Axis id={getAxisId('horizontal')} position={Position.Bottom} title={'x-domain axis'} />
-    <Axis id={getAxisId('vertical')} title={'y-domain axis'} position={Position.Left} />
+    <Axis id={'horizontal'} position={Position.Bottom} title={'x-domain axis'} />
+    <Axis id={'vertical'} title={'y-domain axis'} position={Position.Left} />
     <BarSeries
-    id={getSpecId('bars')}
+    id={'bars'}
     xScaleType={ScaleType.Linear}
     yScaleType={ScaleType.Linear}
     xAccessor="x"
@@ -93,10 +91,10 @@ The code sample for the above chart is shown below in the details. What you shou
       padding: 0,
     },}}
     />
-    <Axis id={getAxisId('horizontal')} position={Position.Bottom} title={'x-domain axis'} />
-    <Axis id={getAxisId('vertical')} title={'y-domain axis'} position={Position.Left} />
+    <Axis id={'horizontal'} position={Position.Bottom} title={'x-domain axis'} />
+    <Axis id={'vertical'} title={'y-domain axis'} position={Position.Left} />
     <BarSeries
-    id={getSpecId('bars')}
+    id={'bars'}
     xScaleType={ScaleType.Linear}
     yScaleType={ScaleType.Linear}
     xAccessor="x"
@@ -121,11 +119,11 @@ Instead of `continuous` you can use `ordinal` annotations
     dataValues={[{dataValue: 'a', details: 'detail-0'}, {dataValue: 'c', details:'details-1'}]}
     marker={<Icon type="alert" />}
     />
-    <Axis id={getAxisId('top')} position={Position.Top} title={'x-domain axis (top)'} />
-    <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'x-domain axis (bottom)'} />
-    <Axis id={getAxisId('left')} title={'y-domain axis'} position={Position.Left} />
+    <Axis id={'top'} position={Position.Top} title={'x-domain axis (top)'} />
+    <Axis id={'bottom'} position={Position.Bottom} title={'x-domain axis (bottom)'} />
+    <Axis id={'left'} title={'y-domain axis'} position={Position.Left} />
     <BarSeries
-    id={getSpecId('bars')}
+    id={'bars'}
     xScaleType={ScaleType.Ordinal}
     yScaleType={ScaleType.Linear}
     xAccessor="x"
@@ -151,11 +149,11 @@ The code sample for the above chart can be seen below.
     dataValues={[{dataValue: 'a', details: 'detail-0'}, {dataValue: 'c', details:'details-1'}]}
     marker={<Icon type="alert" />}
     />
-    <Axis id={getAxisId('top')} position={Position.Top} title={'x-domain axis (top)'} />
-    <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'x-domain axis (bottom)'} />
-    <Axis id={getAxisId('left')} title={'y-domain axis'} position={Position.Left} />
+    <Axis id={'top'} position={Position.Top} title={'x-domain axis (top)'} />
+    <Axis id={'bottom'} position={Position.Bottom} title={'x-domain axis (bottom)'} />
+    <Axis id={'left'} title={'y-domain axis'} position={Position.Left} />
     <BarSeries
-    id={getSpecId('bars')}
+    id={'bars'}
     xScaleType={ScaleType.Ordinal}
     yScaleType={ScaleType.Linear}
     xAccessor="x"

@@ -5,14 +5,12 @@ import {
   Chart,
   CurveType,
   BarSeries,
-  getSpecId,
   ScaleType,
   DARK_THEME,
   LIGHT_THEME,
   LineSeries,
   Settings,
   Axis,
-  getAxisId,
   Position,
   timeFormatter,
   niceTimeFormatByDay,
@@ -30,15 +28,15 @@ The stackAccessors prop is an array of fields that indicates the stack membershi
 ## Stacked bar chart examples 
 <Chart className={'story-chart'}>
   <Settings showLegend={true} legendPosition={Position.Right} />
-  <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+  <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
   <Axis
-    id={getAxisId('left2')}
+    id={'left2'}
     title={'Left axis'}
     position={Position.Left}
     tickFormat={(d) => Number(d).toFixed(2)}
   />
   <BarSeries
-    id={getSpecId('bars')}
+    id={'bars'}
     xScaleType={ScaleType.Linear}
     yScaleType={ScaleType.Linear}
     xAccessor="x"
@@ -64,15 +62,15 @@ The code for the chart above can be found below.
 ```js
 <Chart className={'story-chart'}>
   <Settings showLegend={true} legendPosition={Position.Right} />
-  <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+  <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
   <Axis
-    id={getAxisId('left2')}
+    id={'left2'}
     title={'Left axis'}
     position={Position.Left}
     tickFormat={(d) => Number(d).toFixed(2)}
   />
   <BarSeries
-    id={getSpecId('bars')}
+    id={'bars'}
     xScaleType={ScaleType.Linear}
     yScaleType={ScaleType.Linear}
     xAccessor="x"
@@ -100,20 +98,20 @@ The code for the chart above can be found below.
 <Chart className={'story-chart'}>
   <Settings showLegend={true} legendPosition={Position.Right}/>
   <Axis
-  id={getAxisId('bottom')}
+  id={'bottom'}
   position={Position.Bottom}
   showOverlappingTicks={true}
   tickFormat={timeFormatter(niceTimeFormatByDay(1))}
   title={'timestamp per 1 minute'}
   />
   <Axis
-  id={getAxisId('left')}
+  id={'left'}
   title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
   position={Position.Left}
   tickFormat={(d) => Number(d).toFixed(2)}
   /> 
   <AreaSeries
-  id={getSpecId('1')}
+  id={'1'}
   name={KIBANA_METRICS.metrics.kibana_os_load[2].metric.label}
   xScaleType={ScaleType.Time}
   yScaleType={ScaleType.Linear}
@@ -123,7 +121,7 @@ The code for the chart above can be found below.
   data={KIBANA_METRICS.metrics.kibana_os_load[2].data}
   />
   <AreaSeries
-  id={getSpecId('2')}
+  id={'2'}
   name={KIBANA_METRICS.metrics.kibana_os_load[1].metric.label}
   xScaleType={ScaleType.Time}
   yScaleType={ScaleType.Linear}
@@ -133,7 +131,7 @@ The code for the chart above can be found below.
   data={KIBANA_METRICS.metrics.kibana_os_load[1].data}
   />
   <AreaSeries
-  id={getSpecId('3')}
+  id={'3'}
   name={KIBANA_METRICS.metrics.kibana_os_load[0].metric.label}
   xScaleType={ScaleType.Time}
   yScaleType={ScaleType.Linear}
@@ -150,20 +148,20 @@ The code for the chart above can be found below.
 <Chart className={'story-chart'}>
   <Settings showLegend={true} legendPosition={Position.Right}/>
   <Axis
-    id={getAxisId('bottom')}
+    id={'bottom'}
     position={Position.Bottom}
     showOverlappingTicks={true}
     tickFormat={timeFormatter(niceTimeFormatByDay(1))}
     title={'timestamp per 1 minute'}
   />
   <Axis
-    id={getAxisId('left')}
+    id={'left'}
     title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
     position={Position.Left}
     tickFormat={(d) => Number(d).toFixed(2)}
   /> 
   <AreaSeries
-    id={getSpecId('1')}
+    id={'1'}
     name={KIBANA_METRICS.metrics.kibana_os_load[2].metric.label}
     xScaleType={ScaleType.Time}
     yScaleType={ScaleType.Linear}
@@ -173,7 +171,7 @@ The code for the chart above can be found below.
     data={KIBANA_METRICS.metrics.kibana_os_load[2].data}
   />
   <AreaSeries
-    id={getSpecId('2')}
+    id={'2'}
     name={KIBANA_METRICS.metrics.kibana_os_load[1].metric.label}
     xScaleType={ScaleType.Time}
     yScaleType={ScaleType.Linear}
@@ -183,7 +181,7 @@ The code for the chart above can be found below.
     data={KIBANA_METRICS.metrics.kibana_os_load[1].data}
   />
   <AreaSeries
-    id={getSpecId('3')}
+    id={'3'}
     name={KIBANA_METRICS.metrics.kibana_os_load[0].metric.label}
     xScaleType={ScaleType.Time}
     yScaleType={ScaleType.Linear}
@@ -198,15 +196,15 @@ The code for the chart above can be found below.
 
 <Chart className={'story-chart'}>
   <Settings showLegend />
-  <Axis id={getAxisId('bottom')} title={'timestamp per 1 minute'} position={Position.Bottom} showOverlappingTicks={true} tickFormat={timeFormatter('HH:mm')}/>
+  <Axis id={'bottom'} title={'timestamp per 1 minute'} position={Position.Bottom} showOverlappingTicks={true} tickFormat={timeFormatter('HH:mm')}/>
   <Axis
-  id={getAxisId('left')}
+  id={'left'}
   title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
   position={Position.Left}
   tickFormat={(d) => Number(d).toFixed(2)}
   />
   <AreaSeries
-  id={getSpecId('area')}
+  id={'area'}
   xScaleType={ScaleType.Time}
   yScaleType={ScaleType.Linear}
   xAccessor={0}
@@ -217,7 +215,7 @@ The code for the chart above can be found below.
   yScaleToDataExtent={boolean('scale to extent', false)}
   />
   <AreaSeries
-  id={getSpecId('fixed band')}
+  id={'fixed band'}
   xScaleType={ScaleType.Time}
   yScaleType={ScaleType.Linear}
   xAccessor={0}
@@ -233,15 +231,15 @@ The code for the chart above can be found below.
 ```js
 <Chart className={'story-chart'}>
   <Settings showLegend />
-  <Axis id={getAxisId('bottom')} title={'timestamp per 1 minute'} position={Position.Bottom} showOverlappingTicks={true} tickFormat={timeFormatter('HH:mm')}/>
+  <Axis id={'bottom'} title={'timestamp per 1 minute'} position={Position.Bottom} showOverlappingTicks={true} tickFormat={timeFormatter('HH:mm')}/>
   <Axis
-    id={getAxisId('left')}
+    id={'left'}
     title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
     position={Position.Left}
     tickFormat={(d) => Number(d).toFixed(2)}
   />
   <AreaSeries
-    id={getSpecId('area')}
+    id={'area'}
     xScaleType={ScaleType.Time}
     yScaleType={ScaleType.Linear}
     xAccessor={0}
@@ -252,7 +250,7 @@ The code for the chart above can be found below.
     yScaleToDataExtent={boolean('scale to extent', false)}
   />
   <AreaSeries
-    id={getSpecId('fixed band')}
+    id={'fixed band'}
     xScaleType={ScaleType.Time}
     yScaleType={ScaleType.Linear}
     xAccessor={0}
@@ -267,15 +265,15 @@ The code for the chart above can be found below.
 </details>
 
 <Chart renderer="canvas" className={'story-chart'}>
-  <Axis id={getAxisId('bottom')} title={'index'} position={Position.Bottom} />
+  <Axis id={'bottom'} title={'index'} position={Position.Bottom} />
   <Axis
-    id={getAxisId('left')}
+    id={'left'}
     title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
     position={Position.Left}
     tickFormat={(d) => Number(d).toFixed(2)}
   />
   <AreaSeries
-    id={getSpecId('stacked area 1')}
+    id={'stacked area 1'}
     xScaleType={ScaleType.Linear}
     yScaleType={ScaleType.Linear}
     xAccessor={0}
@@ -295,7 +293,7 @@ The code for the chart above can be found below.
     yScaleToDataExtent={false}
   />
   <AreaSeries
-    id={getSpecId('stacked area 2')}
+    id={'stacked area 2'}
     xScaleType={ScaleType.Linear}
     yScaleType={ScaleType.Linear}
     xAccessor={0}
@@ -315,7 +313,7 @@ The code for the chart above can be found below.
     yScaleToDataExtent={false}
   />
   <AreaSeries
-    id={getSpecId('non stacked area')}
+    id={'non stacked area'}
     xScaleType={ScaleType.Linear}
     yScaleType={ScaleType.Linear}
     xAccessor={0}
@@ -339,15 +337,15 @@ The code for the chart above can be found below.
 
 ```js
 <Chart renderer="canvas" className={'story-chart'}>
-  <Axis id={getAxisId('bottom')} title={'index'} position={Position.Bottom} />
+  <Axis id={'bottom'} title={'index'} position={Position.Bottom} />
   <Axis
-    id={getAxisId('left')}
+    id={'left'}
     title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
     position={Position.Left}
     tickFormat={(d) => Number(d).toFixed(2)}
   />
   <AreaSeries
-    id={getSpecId('stacked area 1')}
+    id={'stacked area 1'}
     xScaleType={ScaleType.Linear}
     yScaleType={ScaleType.Linear}
     xAccessor={0}
@@ -367,7 +365,7 @@ The code for the chart above can be found below.
     yScaleToDataExtent={false}
   />
   <AreaSeries
-    id={getSpecId('stacked area 2')}
+    id={'stacked area 2'}
     xScaleType={ScaleType.Linear}
     yScaleType={ScaleType.Linear}
     xAccessor={0}
@@ -387,7 +385,7 @@ The code for the chart above can be found below.
     yScaleToDataExtent={false}
   />
   <AreaSeries
-    id={getSpecId('non stacked area')}
+    id={'non stacked area'}
     xScaleType={ScaleType.Linear}
     yScaleType={ScaleType.Linear}
     xAccessor={0}
@@ -418,19 +416,19 @@ This chart shows multiple line series with an axis and legend.
 <Chart className={'story-chart'}>
   <Settings showLegend={true} legendPosition={Position.Right} />
   <Axis
-    id={getAxisId('bottom')}
+    id={'bottom'}
     position={Position.Bottom}
     showOverlappingTicks={true}
     tickFormat={timeFormatter(niceTimeFormatByDay(1))}
   />
   <Axis
-    id={getAxisId('left')}
+    id={'left'}
     title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
     position={Position.Left}
     tickFormat={(d) => `${Number(d).toFixed(0)}%`}
   />
   <LineSeries
-    id={getSpecId(KIBANA_METRICS.metrics.kibana_os_load[0].metric.label)}
+    id={KIBANA_METRICS.metrics.kibana_os_load[0].metric.label}
     xScaleType={ScaleType.Time}
     yScaleType={ScaleType.Linear}
     xAccessor={0}
@@ -439,7 +437,7 @@ This chart shows multiple line series with an axis and legend.
     curve={CurveType.LINEAR}
   />
   <LineSeries
-    id={getSpecId(KIBANA_METRICS.metrics.kibana_os_load[1].metric.label)}
+    id={KIBANA_METRICS.metrics.kibana_os_load[1].metric.label}
     xScaleType={ScaleType.Time}
     yScaleType={ScaleType.Linear}
     xAccessor={0}
@@ -448,7 +446,7 @@ This chart shows multiple line series with an axis and legend.
     curve={CurveType.LINEAR}
   />
   <LineSeries
-    id={getSpecId(KIBANA_METRICS.metrics.kibana_os_load[2].metric.label)}
+    id={KIBANA_METRICS.metrics.kibana_os_load[2].metric.label}
     xScaleType={ScaleType.Time}
     yScaleType={ScaleType.Linear}
     xAccessor={0}
@@ -463,19 +461,19 @@ Compare the above chart with the following below. The difference between the two
 <Chart className={'story-chart'}>
     <Settings showLegend={true} legendPosition={Position.Right} />
   <Axis
-    id={getAxisId('bottom')}
+    id={'bottom'}
     position={Position.Bottom}
     showOverlappingTicks={true}
     tickFormat={timeFormatter(niceTimeFormatByDay(1))}
   />
   <Axis
-    id={getAxisId('left')}
+    id={'left'}
     title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
     position={Position.Left}
     tickFormat={(d) => `${Number(d).toFixed(0)}%`}
   />
   <LineSeries
-    id={getSpecId(KIBANA_METRICS.metrics.kibana_os_load[0].metric.label)}
+    id={KIBANA_METRICS.metrics.kibana_os_load[0].metric.label}
     xScaleType={ScaleType.Time}
     yScaleType={ScaleType.Linear}
     xAccessor={0}
@@ -485,7 +483,7 @@ Compare the above chart with the following below. The difference between the two
     stackAccessors={[0]}
   />
   <LineSeries
-    id={getSpecId(KIBANA_METRICS.metrics.kibana_os_load[1].metric.label)}
+    id={KIBANA_METRICS.metrics.kibana_os_load[1].metric.label}
     xScaleType={ScaleType.Time}
     yScaleType={ScaleType.Linear}
     xAccessor={0}
@@ -495,7 +493,7 @@ Compare the above chart with the following below. The difference between the two
     stackAccessors={[0]}
   />
   <LineSeries
-    id={getSpecId(KIBANA_METRICS.metrics.kibana_os_load[2].metric.label)}
+    id={KIBANA_METRICS.metrics.kibana_os_load[2].metric.label}
     xScaleType={ScaleType.Time}
     yScaleType={ScaleType.Linear}
     xAccessor={0}
@@ -512,19 +510,19 @@ Compare the above chart with the following below. The difference between the two
 <Chart className={'story-chart'}>
     <Settings showLegend={true} legendPosition={Position.Right} />
   <Axis
-    id={getAxisId('bottom')}
+    id={'bottom'}
     position={Position.Bottom}
     showOverlappingTicks={true}
     tickFormat={timeFormatter(niceTimeFormatByDay(1))}
   />
   <Axis
-    id={getAxisId('left')}
+    id={'left'}
     title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
     position={Position.Left}
     tickFormat={(d) => `${Number(d).toFixed(0)}%`}
   />
   <LineSeries
-    id={getSpecId(KIBANA_METRICS.metrics.kibana_os_load[0].metric.label)}
+    id={KIBANA_METRICS.metrics.kibana_os_load[0].metric.label}
     xScaleType={ScaleType.Time}
     yScaleType={ScaleType.Linear}
     xAccessor={0}
@@ -534,7 +532,7 @@ Compare the above chart with the following below. The difference between the two
     stackAccessors={[0]}
   />
   <LineSeries
-    id={getSpecId(KIBANA_METRICS.metrics.kibana_os_load[1].metric.label)}
+    id={KIBANA_METRICS.metrics.kibana_os_load[1].metric.label}
     xScaleType={ScaleType.Time}
     yScaleType={ScaleType.Linear}
     xAccessor={0}
@@ -544,7 +542,7 @@ Compare the above chart with the following below. The difference between the two
     stackAccessors={[0]}
   />
   <LineSeries
-    id={getSpecId(KIBANA_METRICS.metrics.kibana_os_load[2].metric.label)}
+    id={KIBANA_METRICS.metrics.kibana_os_load[2].metric.label}
     xScaleType={ScaleType.Time}
     yScaleType={ScaleType.Linear}
     xAccessor={0}

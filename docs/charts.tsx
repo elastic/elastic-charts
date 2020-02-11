@@ -1,9 +1,7 @@
 import { boolean } from '@storybook/addon-knobs';
-
 import {
   Chart,
   BarSeries,
-  getSpecId,
   ScaleType,
   AreaSeries,
   Position,
@@ -12,10 +10,8 @@ import {
   getAnnotationId,
   AnnotationDomainTypes,
   Axis,
-  getAxisId,
   LineAnnotationDatum,
 } from '../src';
-
 import React from 'react';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 import { arrayKnobs, getChartRotationKnob } from '../stories/common';
@@ -42,7 +38,7 @@ export const Basic = () => {
   return (
     <Chart className={className}>
       <BarSeries
-        id={getSpecId(specId)}
+        id={specId}
         name={'Simple bar series'}
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
@@ -67,7 +63,7 @@ export const AreaBasic = () => {
   return (
     <Chart className={'story-chart'}>
       <AreaSeries
-        id={getSpecId(specId)}
+        id={specId}
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
@@ -117,10 +113,10 @@ export const lineBasicXDomainContinous = () => {
         style={style}
         marker={<Icon type="alert" />}
       />
-      <Axis id={getAxisId('horizontal')} position={axisPosition} title={'x-domain axis'} />
-      <Axis id={getAxisId('vertical')} title={'y-domain axis'} position={Position.Left} />
+      <Axis id={'horizontal'} position={axisPosition} title={'x-domain axis'} />
+      <Axis id={'vertical'} title={'y-domain axis'} position={Position.Left} />
       <BarSeries
-        id={getSpecId('bars')}
+        id={'bars'}
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -150,11 +146,11 @@ export const lineBasicXDomainOrdinal = () => {
         dataValues={dataValues}
         marker={<Icon type="alert" />}
       />
-      <Axis id={getAxisId('top')} position={Position.Top} title={'x-domain axis (top)'} />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'x-domain axis (bottom)'} />
-      <Axis id={getAxisId('left')} title={'y-domain axis'} position={Position.Left} />
+      <Axis id={'top'} position={Position.Top} title={'x-domain axis (top)'} />
+      <Axis id={'bottom'} position={Position.Bottom} title={'x-domain axis (bottom)'} />
+      <Axis id={'left'} title={'y-domain axis'} position={Position.Left} />
       <BarSeries
-        id={getSpecId('bars')}
+        id={'bars'}
         xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor="x"

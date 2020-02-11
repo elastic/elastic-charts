@@ -1,32 +1,30 @@
-import { Meta, Story, Preview } from "@storybook/addon-docs/blocks";
+import { Meta, Description, Story, Preview } from "@storybook/addon-docs/blocks";
 import { boolean, color, number, select } from '@storybook/addon-knobs';
 import {
   Chart,
   BarSeries,
-  getSpecId,
   ScaleType,
   DARK_THEME,
   LIGHT_THEME,
   Settings,
   Axis,
-  getAxisId,
   Position,
   timeFormatter,
   niceTimeFormatByDay,
 } from '../../src';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
+import BarSeriesPropsTable from '../2-ChartPropTables/9-BarProps.md';
+import BarWAxisPropsTable from '../2-ChartPropTables/10-BarWAxisProps.md';
 
 <Meta title="Types of charts/Bar Charts/Basic and with axes" />
 
 # Basic Bar Chart
-Below is a very basic bar chart from Elastic Charts. A bar chart is a chart with rectangular bars with lengths proportional to the values that they represent.  One axis of the chart shows the specific categories being compared, and the other axis represents a discrete value.
-Bar charts provide a visual presentation of categorical data. Categorical data is a grouping of data into discrete groups, such as months of the year, age group, shoe sizes, and animals. These categories are usually qualitative. Bars on the chart may be arranged in any order.
 
 [source](https://datavizproject.com/data-type/bar-chart/)
 
 <Chart className={'story-chart'}>
     <BarSeries
-    id={getSpecId('bars1')}
+    id={'bars1'}
     name={'Simple bar series'}
     xScaleType={ScaleType.Linear}
     yScaleType={ScaleType.Linear}
@@ -42,16 +40,15 @@ Bar charts provide a visual presentation of categorical data. Categorical data i
 </Chart>
 
 
-***
-
-
-## Code for the basic bar chart 
 <details>
+
+Below is a very basic bar chart from Elastic Charts. A bar chart is a chart with rectangular bars with lengths proportional to the values that they represent.  One axis of the chart shows the specific categories being compared, and the other axis represents a discrete value.
+Bar charts provide a visual presentation of categorical data. Categorical data is a grouping of data into discrete groups, such as months of the year, age group, shoe sizes, and animals. These categories are usually qualitative. Bars on the chart may be arranged in any order.
 
 ``` js
 <Chart className={'story-chart'}>
     <BarSeries
-    id={getSpecId('bars1')}
+    id={'bars1'}
     name={'Simple bar series'}
     xScaleType={ScaleType.Linear}
     yScaleType={ScaleType.Linear}
@@ -66,21 +63,10 @@ Bar charts provide a visual presentation of categorical data. Categorical data i
     />
 </Chart>
 ```
-
 </details>
 
 ***
-## Prop Table for the basic bar chart
-
-| Prop | Type | Default | Note |
-|:------|:------:|:---------:|:------|
-| id  `(required)` | `AxisId or string` |  | The id of the spec |
-| name | `string` | | The name or label of the spec (ie: `'Simple bar series'`) |
-| xScaleType `(required)`| `ScaleType (ScaleType.Ordinal or ScaleType.Linear or ScaleType.Time)` | `ScaleType.Ordinal` | The x axis scale type |
-| yScaleType `(required)`| string[] scaleContinuousType | `ScaleType.Linear` | The y axis scale type |
-| xAccessor `(required)`| Accessor |  | The field name of the x value on Datum object |
-| yAccessors `(required)`| Accessor[] |  | An array of field names one per y metric value |
-| data `(required)` | datum[] |  | An array of data |
+<Description markdown={BarSeriesPropsTable} />
 
 Additonal prop tables for the following bar charts can be found in `Chart References > Prop Tables`
 ***
@@ -91,15 +77,15 @@ This chart now includes x and y axes. These axes can be `linear`, `ordinal` or `
 
 <Chart className={'story-chart'}>
     <Settings theme={LIGHT_THEME} />
-    <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+    <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
     <Axis
-    id={getAxisId('left2')}
+    id={'left2'}
     title={'Left axis'}
     position={Position.Left}
     tickFormat={(d) => Number(d).toFixed(2)}
     />
     <BarSeries
-    id={getSpecId('bars')}
+    id={'bars'}
     xScaleType={ScaleType.Linear}
     yScaleType={ScaleType.Linear}
     xAccessor="x"
@@ -115,20 +101,21 @@ This chart now includes x and y axes. These axes can be `linear`, `ordinal` or `
 
 ***
 ## Code for the bar chart with axes
+
 <details>
 
 ```js
 <Chart className={'story-chart'}>
     <Settings theme={LIGHT_THEME} />
-    <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+    <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
     <Axis
-    id={getAxisId('left2')}
+    id={'left2'}
     title={'Left axis'}
     position={Position.Left}
     tickFormat={(d:any) => Number(d).toFixed(2)}
     />
     <BarSeries
-    id={getSpecId('bars')}
+    id={'bars'}
     xScaleType={ScaleType.Linear}
     yScaleType={ScaleType.Linear}
     xAccessor="x"
@@ -144,17 +131,20 @@ This chart now includes x and y axes. These axes can be `linear`, `ordinal` or `
 ```
 </details>
 
+<Description markdown={BarWAxisPropsTable} />
+
 And below is an example of an `ordinal` x axis bar chart
+
 <Chart className={'story-chart'}>
-    <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+    <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
     <Axis
-    id={getAxisId('left2')}
+    id={'left2'}
     title={'Left axis'}
     position={Position.Left}
     tickFormat={(d) => Number(d).toFixed(2)}
     />
     <BarSeries
-    id={getSpecId('bars')}
+    id={'bars'}
     xScaleType={ScaleType.Ordinal}
     yScaleType={ScaleType.Linear}
     xAccessor="x"
@@ -171,17 +161,18 @@ And below is an example of an `ordinal` x axis bar chart
 <details> 
 
 ```js
+
 <Chart className={'story-chart'}>
-    <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+    <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
     <Axis
-    id={getAxisId('left2')}
+    id={'left2'}
     title={'Left axis'}
     position={Position.Left}
     tickFormat={(d) => Number(d).toFixed(2)}
     />
 
     <BarSeries
-    id={getSpecId('bars')}
+    id={'bars'}
     xScaleType={ScaleType.Ordinal}
     yScaleType={ScaleType.Linear}
     xAccessor="x"
@@ -195,13 +186,14 @@ And below is an example of an `ordinal` x axis bar chart
     />
 </Chart>
 ```
+
 </details>
 
 Here is an example of a `time` x axis
 <Chart className={'story-chart'}>
     <Settings debug={boolean('debug', false)} />
     <Axis
-        id={getAxisId('bottom')}
+        id={'bottom'}
         position={Position.Bottom}
         title={'Bottom axis'}
         showOverlappingTicks={boolean('showOverlappingTicks bottom axis', false)}
@@ -209,13 +201,13 @@ Here is an example of a `time` x axis
         tickFormat={timeFormatter(niceTimeFormatByDay(1))}
     />
     <Axis
-        id={getAxisId('left2')}
+        id={'left2'}
         title={'Left axis'}
         position={Position.Left}
         tickFormat={(d) => Number(d).toFixed(2)}
     />
     <BarSeries
-        id={getSpecId('bars')}
+        id={'bars'}
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
@@ -230,7 +222,7 @@ Here is an example of a `time` x axis
 <Chart className={'story-chart'}>
     <Settings debug={boolean('debug', false)} />
     <Axis
-        id={getAxisId('bottom')}
+        id={'bottom'}
         position={Position.Bottom}
         title={'Bottom axis'}
         showOverlappingTicks={boolean('showOverlappingTicks bottom axis', false)}
@@ -238,13 +230,13 @@ Here is an example of a `time` x axis
         tickFormat={timeFormatter(niceTimeFormatByDay(1))}
     />
     <Axis
-        id={getAxisId('left2')}
+        id={'left2'}
         title={'Left axis'}
         position={Position.Left}
         tickFormat={(d) => Number(d).toFixed(2)}
     />
     <BarSeries
-        id={getSpecId('bars')}
+        id={'bars'}
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
