@@ -328,11 +328,10 @@ describe('Chart State utils', () => {
     // 4 groups generated
     const data = dg.generateGroupedSeries(50, 4);
     const targetKey = 'spec{bar1}yAccessor{y}splitAccessors{g-b}';
-    const seriesColorOverrides = new Map([[targetKey, 'blue']]);
 
     describe('empty series collection and specs', () => {
       it('it should return an empty map', () => {
-        const actual = getCustomSeriesColors(MockSeriesSpecs.empty(), MockSeriesCollection.empty(), new Map());
+        const actual = getCustomSeriesColors(MockSeriesSpecs.empty(), MockSeriesCollection.empty());
 
         expect(actual.size).toBe(0);
       });
@@ -344,7 +343,7 @@ describe('Chart State utils', () => {
         const barSpec2 = MockSeriesSpec.bar({ id: specId2, data });
         const barSeriesSpecs = MockSeriesSpecs.fromSpecs([barSpec1, barSpec2]);
         const barSeriesCollection = MockSeriesCollection.fromSpecs(barSeriesSpecs);
-        const actual = getCustomSeriesColors(barSeriesSpecs, barSeriesCollection, new Map());
+        const actual = getCustomSeriesColors(barSeriesSpecs, barSeriesCollection);
 
         expect(actual.size).toBe(0);
       });
@@ -357,28 +356,12 @@ describe('Chart State utils', () => {
         const barSeriesCollection = MockSeriesCollection.fromSpecs(barSeriesSpecs);
 
         it('it should return color from customSeriesColors array', () => {
-          const actual = getCustomSeriesColors(barSeriesSpecs, barSeriesCollection, new Map());
+          const actual = getCustomSeriesColors(barSeriesSpecs, barSeriesCollection);
 
           expect(actual.size).toBe(4);
           barSeriesCollection.forEach(({ seriesIdentifier: { specId, key } }) => {
             const color = actual.get(key);
             if (specId === specId1) {
-              expect(customSeriesColors).toContainEqual(color);
-            } else {
-              expect(color).toBeUndefined();
-            }
-          });
-        });
-
-        it('it should return color from seriesColorOverrides', () => {
-          const actual = getCustomSeriesColors(barSeriesSpecs, barSeriesCollection, seriesColorOverrides);
-
-          expect(actual.size).toBe(4);
-          barSeriesCollection.forEach(({ seriesIdentifier: { specId, key } }) => {
-            const color = actual.get(key);
-            if (key === targetKey) {
-              expect(color).toBe('blue');
-            } else if (specId === specId1) {
               expect(customSeriesColors).toContainEqual(color);
             } else {
               expect(color).toBeUndefined();
@@ -401,17 +384,10 @@ describe('Chart State utils', () => {
         const barSeriesCollection = MockSeriesCollection.fromSpecs(barSeriesSpecs);
 
         it('it should return color from customSeriesColors function', () => {
-          const actual = getCustomSeriesColors(barSeriesSpecs, barSeriesCollection, new Map());
+          const actual = getCustomSeriesColors(barSeriesSpecs, barSeriesCollection);
 
           expect(actual.size).toBe(1);
           expect(actual.get(targetKey)).toBe('aquamarine');
-        });
-
-        it('it should return color from seriesColorOverrides', () => {
-          const actual = getCustomSeriesColors(barSeriesSpecs, barSeriesCollection, seriesColorOverrides);
-
-          expect(actual.size).toBe(1);
-          expect(actual.get(targetKey)).toBe('blue');
         });
       });
     });

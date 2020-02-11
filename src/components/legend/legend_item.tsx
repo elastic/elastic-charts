@@ -77,6 +77,7 @@ function renderTitle(
 
 interface LegendItemState {
   isOpen: boolean;
+  color?: string;
 }
 
 export class LegendListItem extends PureComponent<LegendItemProps, LegendItemState> {
@@ -145,7 +146,7 @@ export class LegendListItem extends PureComponent<LegendItemProps, LegendItemSta
 
     return (
       <div className={itemClasses} onMouseEnter={this.onLegendItemMouseOver} onMouseLeave={this.onLegendItemMouseOut}>
-        {color && this.renderColor(color, isSeriesVisible)}
+        {color && this.renderColor(this.state.color ?? color, isSeriesVisible)}
         {label && renderTitle(label, onTitleClick, hasTitleClickListener, isSelected, showLegendDisplayValue)}
         {showLegendDisplayValue && renderDisplayValue(displayValue, isSeriesVisible)}
       </div>
@@ -166,8 +167,10 @@ export class LegendListItem extends PureComponent<LegendItemProps, LegendItemSta
   };
 
   onColorChange = (color: string) => {
-    this.setToggleIsOpen();
-    console.log(color);
+    this.setState({
+      color,
+      isOpen: !this.state.isOpen,
+    });
   };
 
   onLegendItemMouseOver = () => {

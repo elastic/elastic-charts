@@ -121,7 +121,6 @@ export function updateDeselectedDataSeries(series: SeriesIdentifier[], target: S
 export function getCustomSeriesColors(
   seriesSpecs: BasicSeriesSpec[],
   seriesCollection: Map<string, SeriesCollectionValue>,
-  seriesColorOverrides: Map<string, string> = new Map(),
 ): Map<string, string> {
   const updatedCustomSeriesColors = new Map<string, string>();
   const counters = new Map<SpecId, number>();
@@ -129,15 +128,11 @@ export function getCustomSeriesColors(
   seriesCollection.forEach(({ seriesIdentifier }, seriesKey) => {
     const spec = getSpecsById(seriesSpecs, seriesIdentifier.specId);
 
-    if (!spec || !(spec.customSeriesColors || seriesColorOverrides.size > 0)) {
+    if (!spec || !spec.customSeriesColors) {
       return;
     }
 
     let color: string | undefined | null;
-
-    if (seriesColorOverrides.has(seriesKey)) {
-      color = seriesColorOverrides.get(seriesKey);
-    }
 
     if (!color && spec.customSeriesColors) {
       const counter = counters.get(seriesIdentifier.specId) || 0;
