@@ -3,11 +3,11 @@ import { mount, ReactWrapper } from 'enzyme';
 import { Chart } from '../chart';
 import { Settings, BarSeries } from '../../specs';
 import { ScaleType } from '../../utils/scales/scales';
-import { DataGenerator } from '../../utils/data_generators/data_generator';
 import { Legend } from './legend';
 import { LegendListItem, RenderColorPicker } from './legend_item';
+import { SeededDataGenerator } from '../../mocks/utils';
 
-const dg = new DataGenerator();
+const dg = new SeededDataGenerator();
 
 describe('Legend', () => {
   it('shall render the all the series names', () => {
