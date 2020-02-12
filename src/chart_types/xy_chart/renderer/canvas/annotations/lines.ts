@@ -10,12 +10,15 @@ export function renderLineAnnotations(
   lineStyle: LineAnnotationStyle,
 ) {
   const lines = annotations.map<Line>((annotation) => {
-    const { start, end } = annotation.linePathPoints;
+    const {
+      start: { x1, y1 },
+      end: { x2, y2 },
+    } = annotation.linePathPoints;
     return {
-      x1: start.x1,
-      y1: start.y1,
-      x2: end.x2,
-      y2: end.y2,
+      x1,
+      y1,
+      x2,
+      y2,
     };
   });
   const strokeColor = stringToRGB(lineStyle.line.stroke);

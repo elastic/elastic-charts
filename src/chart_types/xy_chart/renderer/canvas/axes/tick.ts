@@ -30,12 +30,11 @@ function renderVerticalTick(
   tickStyle: TickStyle,
 ) {
   const isLeftAxis = position === Position.Left;
-  const y = tickPosition;
   const x1 = isLeftAxis ? axisWidth : 0;
   const x2 = isLeftAxis ? axisWidth - tickSize : tickSize;
   renderLine(
     ctx,
-    { x1, y1: y, x2, y2: y },
+    { x1, y1: tickPosition, x2, y2: tickPosition },
     {
       color: stringToRGB(tickStyle.stroke),
       width: tickStyle.strokeWidth,
@@ -52,13 +51,12 @@ function renderHorizontalTick(
   tickStyle: TickStyle,
 ) {
   const isTopAxis = position === Position.Top;
-  const x = tickPosition;
   const y1 = isTopAxis ? axisHeight - tickSize : 0;
   const y2 = isTopAxis ? axisHeight : tickSize;
 
   renderLine(
     ctx,
-    { x1: x, y1, x2: x, y2 },
+    { x1: tickPosition, y1, x2: tickPosition, y2 },
     {
       color: stringToRGB(tickStyle.stroke),
       width: tickStyle.strokeWidth,

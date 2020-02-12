@@ -17,24 +17,9 @@ export function renderXYChartCanvas2d(
   clippings: Rect,
   props: ReactiveChartStateProps,
 ) {
-  // debugger;
   withContext(ctx, (ctx) => {
-    // set some defaults for the overall rendering
-
     // let's set the devicePixelRatio once and for all; then we'll never worry about it again
     ctx.scale(dpr, dpr);
-
-    // all texts are currently center-aligned because
-    //     - the calculations manually compute and lay out text (word) boxes, so we can choose whatever
-    //     - but center/middle has mathematical simplicity and the most unassuming thing
-    //     - due to using the math x/y convention (+y is up) while Canvas uses screen convention (+y is down)
-    //         text rendering must be y-flipped, which is a bit easier this way
-
-    // this applies the mathematical x/y conversion (+y is North) which is easier when developing geometry
-    // functions - also, all renderers have flexibility (eg. SVG scale) and WebGL NDC is also +y up
-    // - in any case, it's possible to refactor for a -y = North convention if that's deemed preferable
-    // ctx.scale(1, -1);
-
     const {
       chartDimensions,
       chartTransform,
@@ -81,6 +66,7 @@ export function renderXYChartCanvas2d(
           chartTheme: theme,
         });
       },
+      // rendering background annotations
       (ctx: CanvasRenderingContext2D) => {
         withContext(ctx, (ctx) => {
           ctx.translate(transform.x, transform.y);
@@ -96,7 +82,7 @@ export function renderXYChartCanvas2d(
         });
       },
 
-      // bottom layer: sectors (pie slices, ring sectors etc.)
+      // rendering bars/areas/lines
       (ctx: CanvasRenderingContext2D) => {
         withContext(ctx, (ctx) => {
           ctx.translate(transform.x, transform.y);
@@ -141,6 +127,7 @@ export function renderXYChartCanvas2d(
           });
         });
       },
+      // rendering foreground annotations
       (ctx: CanvasRenderingContext2D) => {
         withContext(ctx, (ctx) => {
           ctx.translate(transform.x, transform.y);

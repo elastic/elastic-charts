@@ -37,20 +37,8 @@ export function renderTickLabel(ctx: CanvasRenderingContext2D, tick: AxisTick, p
 
   const { maxLabelTextWidth, maxLabelTextHeight } = axisTicksDimensions;
 
-  // const centeredRectProps = centerRotationOrigin(axisTicksDimensions, {
-  //   x: tickLabelProps.x,
-  //   y: tickLabelProps.y,
-  // });
-
-  // const textProps = {
-  //   width: maxLabelTextWidth,
-  //   height: maxLabelTextHeight,
-  //   rotation: tickLabelRotation,
-  //   ...tickLabelProps,
-  //   // ...centeredRectProps,
-  // };
   const { x, y, offsetX, offsetY, align, verticalAlign } = tickLabelProps;
-  // const { offsetX, offsetY } = centeredRectProps;
+
   if (debug) {
     renderDebugRectCenterRotated(
       ctx,
