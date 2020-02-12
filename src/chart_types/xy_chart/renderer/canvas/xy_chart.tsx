@@ -102,7 +102,10 @@ class XYChartComponent extends React.Component<XYChartProps> {
     // the DOM element has just been appended, and getContext('2d') is always non-null,
     // so we could use a couple of ! non-null assertions but no big plus
     this.tryCanvasContext();
-    this.drawCanvas();
+    if (this.props.initialized) {
+      this.drawCanvas();
+      this.props.onChartRendered();
+    }
   }
 
   render() {
