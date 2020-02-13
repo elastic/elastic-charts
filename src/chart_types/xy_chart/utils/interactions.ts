@@ -37,16 +37,6 @@ export interface TooltipProps {
 
 export type TooltipValueFormatter = (data: TooltipValue) => JSX.Element | string;
 
-export interface HighlightedElement {
-  position: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    type: 'rect' | 'circle';
-  };
-  value: Datum;
-}
 /**
  * Get the cursor position depending on the chart rotation
  * @param xPos x position relative to chart
