@@ -7,7 +7,7 @@ module.exports = {
     'plugin:prettier/recommended',
     'plugin:react/recommended',
   ],
-  plugins: ['import', 'jest'],
+  plugins: ['import', 'jest', 'filenames'],
 
   env: {
     es6: true,
@@ -51,6 +51,7 @@ module.exports = {
         ignoreRestSiblings: true,
       },
     ],
+    'filenames/match-regex': [2, '^[a-z_]+$', true],
     'sort-keys': 'off',
     'import/no-unresolved': 'error',
     'no-irregular-whitespace': 'error',
@@ -63,6 +64,7 @@ module.exports = {
     '@typescript-eslint/no-use-before-define': 'off',
     '@typescript-eslint/ban-ts-ignore': 'off',
     '@typescript-eslint/no-inferrable-types': 'off',
+    // '@typescript-eslint/snake_case': ['error', { allow: ['^[a-z_]+$'] }],
   },
   settings: {
     'import/resolver': {
