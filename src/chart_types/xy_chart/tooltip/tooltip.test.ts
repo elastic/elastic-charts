@@ -102,7 +102,6 @@ describe('Tooltip formatting', () => {
     expect(tooltipValue).toBeDefined();
     expect(tooltipValue.yAccessor).toBe('y1');
     expect(tooltipValue.name).toBe('bar_1');
-    expect(tooltipValue.isXValue).toBe(false);
     expect(tooltipValue.isHighlighted).toBe(false);
     expect(tooltipValue.color).toBe('blue');
     expect(tooltipValue.value).toBe('10');
@@ -208,7 +207,6 @@ describe('Tooltip formatting', () => {
     expect(tooltipValue).toBeDefined();
     expect(tooltipValue.yAccessor).toBe('y1');
     expect(tooltipValue.name).toBe('bar_1');
-    expect(tooltipValue.isXValue).toBe(false);
     expect(tooltipValue.isHighlighted).toBe(false);
     expect(tooltipValue.color).toBe('blue');
     expect(tooltipValue.value).toBe('10');
@@ -225,7 +223,6 @@ describe('Tooltip formatting', () => {
     expect(tooltipValue).toBeDefined();
     expect(tooltipValue.yAccessor).toBe('y0');
     expect(tooltipValue.name).toBe('bar_1');
-    expect(tooltipValue.isXValue).toBe(false);
     expect(tooltipValue.isHighlighted).toBe(false);
     expect(tooltipValue.color).toBe('blue');
     expect(tooltipValue.value).toBe('10');
@@ -242,7 +239,6 @@ describe('Tooltip formatting', () => {
     expect(tooltipValue).toBeDefined();
     expect(tooltipValue.yAccessor).toBe('y0');
     expect(tooltipValue.name).toBe('bar_1');
-    expect(tooltipValue.isXValue).toBe(true);
     expect(tooltipValue.isHighlighted).toBe(false);
     expect(tooltipValue.color).toBe('blue');
     expect(tooltipValue.value).toBe('1');

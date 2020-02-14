@@ -43,7 +43,7 @@ export function getSeriesTooltipValues(
 export function formatTooltip(
   { color, value: { x, y, accessor }, seriesIdentifier }: IndexedGeometry,
   spec: BasicSeriesSpec,
-  isXValue: boolean,
+  isHeader: boolean,
   isHighlighted: boolean,
   hasSingleSeries: boolean,
   axisSpec?: AxisSpec,
@@ -59,15 +59,14 @@ export function formatTooltip(
   const isFiltered = spec.filterSeriesInTooltip !== undefined ? spec.filterSeriesInTooltip(seriesIdentifier) : true;
   const isVisible = displayName === '' ? false : isFiltered;
 
-  const value = isXValue ? x : y;
+  const value = isHeader ? x : y;
   const tickFormatOptions: TickFormatterOptions | undefined = spec.timeZone ? { timeZone: spec.timeZone } : undefined;
   return {
     seriesKey,
     name: displayName,
     value: axisSpec ? axisSpec.tickFormat(value, tickFormatOptions) : emptyFormatter(value),
     color,
-    isHighlighted: isXValue ? false : isHighlighted,
-    isXValue,
+    isHighlighted: isHeader ? false : isHighlighted,
     yAccessor: accessor,
     isVisible,
   };

@@ -24,7 +24,6 @@ export interface TooltipValue {
   value: any;
   color: string;
   isHighlighted: boolean;
-  isXValue: boolean;
   seriesKey: string;
   yAccessor: Accessor;
   isVisible: boolean;
