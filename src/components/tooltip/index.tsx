@@ -1,16 +1,19 @@
 import classNames from 'classnames';
 import React from 'react';
 import { connect } from 'react-redux';
-import { TooltipValue, TooltipValueFormatter } from '../../utils/interactions';
-import { GlobalChartState, BackwardRef } from '../../../../state/chart_state';
-import { isTooltipVisibleSelector } from '../../state/selectors/is_tooltip_visible';
-import { getTooltipHeaderFormatterSelector } from '../../state/selectors/get_tooltip_header_formatter';
-import { getTooltipPositionSelector } from '../../state/selectors/get_tooltip_position';
-import { getTooltipValuesSelector, TooltipData } from '../../state/selectors/get_tooltip_values_highlighted_geoms';
-import { isInitialized } from '../../../../state/selectors/is_initialized';
+import { TooltipValue, TooltipValueFormatter } from '../../chart_types/xy_chart/utils/interactions';
+import { GlobalChartState, BackwardRef } from '../../state/chart_state';
+import { isTooltipVisibleSelector } from '../../chart_types/xy_chart/state/selectors/is_tooltip_visible';
+import { getTooltipHeaderFormatterSelector } from '../../chart_types/xy_chart/state/selectors/get_tooltip_header_formatter';
+import { getTooltipPositionSelector } from '../../chart_types/xy_chart/state/selectors/get_tooltip_position';
+import {
+  getTooltipValuesSelector,
+  TooltipData,
+} from '../../chart_types/xy_chart/state/selectors/get_tooltip_values_highlighted_geoms';
+import { isInitialized } from '../../state/selectors/is_initialized';
 import { createPortal } from 'react-dom';
-import { getFinalTooltipPosition, TooltipPosition } from '../../crosshair/crosshair_utils';
-import { isAnnotationTooltipVisibleSelector } from '../../state/selectors/is_annotation_tooltip_visible';
+import { getFinalTooltipPosition, TooltipPosition } from '../../chart_types/xy_chart/crosshair/crosshair_utils';
+import { isAnnotationTooltipVisibleSelector } from '../../chart_types/xy_chart/state/selectors/is_annotation_tooltip_visible';
 
 interface TooltipStateProps {
   isTooltipVisible: boolean;
@@ -24,7 +27,7 @@ interface TooltipOwnProps {
 }
 type TooltipProps = TooltipStateProps & TooltipOwnProps;
 
-class TooltipsComponent extends React.Component<TooltipProps> {
+class TooltipComponent extends React.Component<TooltipProps> {
   static displayName = 'Tooltips';
   portalNode: HTMLDivElement | null = null;
   tooltipRef: React.RefObject<HTMLDivElement>;
@@ -148,4 +151,4 @@ const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
   };
 };
 
-export const Tooltips = connect(mapStateToProps)(TooltipsComponent);
+export const Tooltip = connect(mapStateToProps)(TooltipComponent);

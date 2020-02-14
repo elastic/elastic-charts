@@ -1,7 +1,7 @@
 import React, { RefObject } from 'react';
 import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
 import { ChartTypes } from '../..';
-import { Tooltips } from '../renderer/dom/tooltips';
+import { Tooltip } from '../../../components/tooltip';
 import { htmlIdGenerator } from '../../../utils/commons';
 import { Highlighter } from '../renderer/dom/highlighter';
 import { Crosshair } from '../renderer/dom/crosshair';
@@ -39,7 +39,7 @@ export class XYAxisChartState implements InternalChartState {
       <React.Fragment>
         <Crosshair />
         <XYChart forwardStageRef={forwardStageRef} />
-        <Tooltips getChartContainerRef={containerRef} />
+        <Tooltip getChartContainerRef={containerRef} />
         <AnnotationTooltip getChartContainerRef={containerRef} />
         <Highlighter />
         <BrushTool />
