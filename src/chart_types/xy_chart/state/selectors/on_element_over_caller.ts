@@ -10,7 +10,7 @@ import { IndexedGeometry, GeometryValue } from '../../../../utils/geometry';
 import { Selector } from 'react-redux';
 import { ChartTypes } from '../../../index';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { SeriesIdentifier } from '../../utils/series';
+import { XYChartSeriesIdentifier } from '../../utils/series';
 
 interface Props {
   settings: SettingsSpec | undefined;
@@ -58,7 +58,7 @@ export function createOnElementOverCaller(): (state: GlobalChartState) => void {
           };
 
           if (isOverElement(prevProps, nextProps) && settings.onElementOver) {
-            const elements = highlightedGeometries.map<[GeometryValue, SeriesIdentifier]>(
+            const elements = highlightedGeometries.map<[GeometryValue, XYChartSeriesIdentifier]>(
               ({ value, seriesIdentifier }) => [value, seriesIdentifier],
             );
             settings.onElementOver(elements);

@@ -2,7 +2,7 @@ import { SPEC_PARSED, SPEC_UNMOUNTED, UPSERT_SPEC, REMOVE_SPEC, SPEC_PARSING } f
 import { interactionsReducer } from './reducers/interactions';
 import { ChartTypes } from '../chart_types';
 import { XYAxisChartState } from '../chart_types/xy_chart/state/chart_state';
-import { SeriesIdentifier } from '../chart_types/xy_chart/utils/series';
+import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import { Spec, PointerEvent } from '../specs';
 import { DEFAULT_SETTINGS_SPEC } from '../specs/settings';
 import { Dimensions } from '../utils/dimensions';
@@ -67,7 +67,7 @@ export interface InteractionsState {
   highlightedLegendItemKey: string | null;
   legendCollapsed: boolean;
   invertDeselect: boolean;
-  deselectedDataSeries: SeriesIdentifier[];
+  deselectedDataSeries: XYChartSeriesIdentifier[];
 }
 
 export interface ExternalEventsState {

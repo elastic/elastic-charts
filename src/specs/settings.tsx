@@ -8,14 +8,14 @@ import { Spec } from '.';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { ChartTypes } from '../chart_types';
 import { GeometryValue } from '../utils/geometry';
-import { SeriesIdentifier } from '../chart_types/xy_chart/utils/series';
+import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import { Position, Rendering, Rotation } from '../utils/commons';
 import { ScaleContinuousType, ScaleOrdinalType } from '../scales';
 
-export type ElementClickListener = (elements: Array<[GeometryValue, SeriesIdentifier]>) => void;
-export type ElementOverListener = (elements: Array<[GeometryValue, SeriesIdentifier]>) => void;
+export type ElementClickListener = (elements: Array<[GeometryValue, XYChartSeriesIdentifier]>) => void;
+export type ElementOverListener = (elements: Array<[GeometryValue, XYChartSeriesIdentifier]>) => void;
 export type BrushEndListener = (min: number, max: number) => void;
-export type LegendItemListener = (series: SeriesIdentifier | null) => void;
+export type LegendItemListener = (series: XYChartSeriesIdentifier | null) => void;
 export type PointerUpdateListener = (event: PointerEvent) => void;
 /**
  * Listener to be called when chart render state changes

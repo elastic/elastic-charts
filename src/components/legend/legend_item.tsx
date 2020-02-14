@@ -6,7 +6,7 @@ import { LegendItemListener, BasicListener } from '../../specs/settings';
 import { LegendItem } from '../../chart_types/xy_chart/legend/legend';
 import { onLegendItemOutAction, onLegendItemOverAction } from '../../state/actions/legend';
 import { Position } from '../../utils/commons';
-import { SeriesIdentifier } from '../../chart_types/xy_chart/utils/series';
+import { XYChartSeriesIdentifier } from '../../chart_types/xy_chart/utils/series';
 
 interface LegendItemProps {
   selectedLegendItem?: LegendItem | null;
@@ -20,7 +20,7 @@ interface LegendItemProps {
   onLegendItemOverListener?: LegendItemListener;
   legendItemOutAction: typeof onLegendItemOutAction;
   legendItemOverAction: typeof onLegendItemOverAction;
-  toggleDeselectSeriesAction: (legendItemId: SeriesIdentifier) => void;
+  toggleDeselectSeriesAction: (legendItemId: XYChartSeriesIdentifier) => void;
 }
 
 /**
@@ -138,7 +138,7 @@ export class LegendListItem extends React.Component<LegendItemProps> {
   };
 
   // TODO handle shift key
-  onVisibilityClick = (legendItemId: SeriesIdentifier) => () => {
+  onVisibilityClick = (legendItemId: XYChartSeriesIdentifier) => () => {
     const { onLegendItemClickListener, toggleDeselectSeriesAction } = this.props;
     if (onLegendItemClickListener) {
       onLegendItemClickListener(legendItemId);
