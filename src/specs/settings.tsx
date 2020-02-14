@@ -90,7 +90,10 @@ export interface SettingsSpec extends Spec {
   tooltip: TooltipType | TooltipProps;
   debug: boolean;
   legendPosition: Position;
-  showLegendDisplayValue: boolean;
+  /**
+   * Show an extra parameter on each legend item defined by the chart type
+   */
+  showLegendExtra: boolean;
   /**
    * Removes duplicate axes
    *
@@ -123,7 +126,7 @@ export type DefaultSettingsProps =
   | 'showLegend'
   | 'debug'
   | 'tooltip'
-  | 'showLegendDisplayValue'
+  | 'showLegendExtra'
   | 'theme'
   | 'legendPosition'
   | 'hideDuplicateAxes';
@@ -155,7 +158,7 @@ export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
     snap: DEFAULT_TOOLTIP_SNAP,
   },
   legendPosition: Position.Right,
-  showLegendDisplayValue: true,
+  showLegendExtra: true,
   hideDuplicateAxes: false,
   theme: LIGHT_THEME,
 };

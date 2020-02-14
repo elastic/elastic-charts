@@ -42,7 +42,7 @@ describe('Legend', () => {
   it('shall render the all the series names without the data value', () => {
     const wrapper = mount(
       <Chart>
-        <Settings showLegend showLegendDisplayValue={false} />
+        <Settings showLegend showLegendExtra={false} />
         <BarSeries
           id="areas"
           name="area"
@@ -127,7 +127,7 @@ describe('Legend', () => {
     expect(legendItems).toHaveLength(4);
     legendItems.forEach((legendItem, i) => {
       // the click is only enabled on the title
-      legendItem.find('.echLegendItem__title').simulate('click');
+      legendItem.find('.echLegendItem__label').simulate('click');
       expect(onLegendItemClick).toBeCalledTimes(i + 1);
     });
   });

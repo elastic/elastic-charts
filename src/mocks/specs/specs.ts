@@ -149,7 +149,7 @@ export class MockGlobalSpec {
       snap: true,
     },
     legendPosition: Position.Right,
-    showLegendDisplayValue: true,
+    showLegendExtra: true,
     hideDuplicateAxes: false,
     theme: LIGHT_THEME,
   };
