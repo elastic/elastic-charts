@@ -63,7 +63,6 @@ module.exports = {
     '@typescript-eslint/no-use-before-define': 'off',
     '@typescript-eslint/ban-ts-ignore': 'off',
     '@typescript-eslint/no-inferrable-types': 'off',
-    // '@typescript-eslint/snake_case': ['error', { allow: ['^[a-z_]+$'] }],
   },
   settings: {
     'import/resolver': {
