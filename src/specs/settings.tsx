@@ -57,7 +57,7 @@ export interface PointerOutEvent extends BasePointerEvent {
 
 export type PointerEvent = PointerOverEvent | PointerOutEvent;
 
-interface TooltipProps {
+export interface TooltipProps {
   type?: TooltipType;
   snap?: boolean;
   headerFormatter?: TooltipValueFormatter;

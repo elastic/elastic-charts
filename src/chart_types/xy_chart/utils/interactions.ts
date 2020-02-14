@@ -1,8 +1,9 @@
 import { $Values } from 'utility-types';
-import { Datum, Rotation } from '../../../utils/commons';
+import { Rotation } from '../../../utils/commons';
 import { Dimensions } from '../../../utils/dimensions';
 import { Accessor } from '../../../utils/accessor';
 import { BarGeometry, PointGeometry, IndexedGeometry, isPointGeometry, isBarGeometry } from '../../../utils/geometry';
+import { TooltipProps } from '../../../specs';
 
 /** The type of tooltip to use */
 export const TooltipType = Object.freeze({
@@ -27,12 +28,6 @@ export interface TooltipValue {
   seriesKey: string;
   yAccessor: Accessor;
   isVisible: boolean;
-}
-
-export interface TooltipProps {
-  type?: TooltipType;
-  snap?: boolean;
-  headerFormatter?: TooltipValueFormatter;
 }
 
 export type TooltipValueFormatter = (data: TooltipValue) => JSX.Element | string;
