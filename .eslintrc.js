@@ -1,13 +1,12 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint'],
   extends: [
     'plugin:@typescript-eslint/recommended',
     'prettier/@typescript-eslint',
     'plugin:prettier/recommended',
     'plugin:react/recommended',
   ],
-  plugins: ['import', 'jest', 'filenames'],
+  plugins: ['@typescript-eslint', 'import', 'jest', 'filenames'],
 
   env: {
     es6: true,
@@ -51,7 +50,7 @@ module.exports = {
         ignoreRestSiblings: true,
       },
     ],
-    'filenames/match-regex': [2, '^[a-z_]+$', true],
+    'filenames/match-exported': [2, 'snake'],
     'sort-keys': 'off',
     'import/no-unresolved': 'error',
     'no-irregular-whitespace': 'error',
@@ -78,6 +77,12 @@ module.exports = {
     },
   },
   overrides: [
+    {
+      files: ['jest-puppeteer.config.js'],
+      rules: {
+        'filenames/match-exported': 0,
+      },
+    },
     {
       files: ['*.js', '*test.ts'],
       rules: {
