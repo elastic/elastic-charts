@@ -18,7 +18,7 @@ import { ComputedGeometries } from '../utils';
 import { getTooltipValuesSelector } from './get_tooltip_values_highlighted_geoms';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { GlobalChartState } from '../../../../state/chart_state';
-import { TooltipData } from '../../../../components/tooltip/types';
+import { TooltipInfo } from '../../../../components/tooltip/types';
 
 const getCurrentPointerPosition = (state: GlobalChartState) => state.interactions.pointer.current.position;
 
@@ -48,7 +48,7 @@ function getAnnotationTooltipState(
   annotationSpecs: AnnotationSpec[],
   axesSpecs: AxisSpec[],
   annotationDimensions: Map<AnnotationId, AnnotationDimensions>,
-  tooltip: TooltipData,
+  tooltip: TooltipInfo,
 ): AnnotationTooltipState | null {
   // get positions relative to chart
   if (x < 0 || y < 0) {

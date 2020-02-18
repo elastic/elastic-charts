@@ -8,7 +8,7 @@ import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getTooltipType } from './get_tooltip_type';
 import { TooltipType } from '../../../../specs';
 import { isAnnotationTooltipVisibleSelector } from './is_annotation_tooltip_visible';
-import { TooltipData } from '../../../../components/tooltip/types';
+import { TooltipInfo } from '../../../../components/tooltip/types';
 
 const hasTooltipTypeDefinedSelector = (state: GlobalChartState): TooltipType | undefined => {
   return getTooltipType(getSettingsSpecSelector(state));
@@ -31,7 +31,7 @@ function isTooltipVisible(
   tooltipType: TooltipType | undefined,
   pointer: PointerStates,
   projectedPointerPosition: Point,
-  tooltip: TooltipData,
+  tooltip: TooltipInfo,
   isAnnotationTooltipVisible: boolean,
 ) {
   return (

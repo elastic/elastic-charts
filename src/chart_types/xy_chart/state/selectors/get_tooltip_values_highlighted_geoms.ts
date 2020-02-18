@@ -26,7 +26,7 @@ import { isValidPointerOverEvent } from '../../../../utils/events';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { hasSingleSeriesSelector } from './has_single_series';
-import { TooltipData } from '../../../../components/tooltip/types';
+import { TooltipInfo } from '../../../../components/tooltip/types';
 
 const EMPTY_VALUES = Object.freeze({
   tooltip: {
@@ -37,7 +37,7 @@ const EMPTY_VALUES = Object.freeze({
 });
 
 export interface TooltipAndHighlightedGeoms {
-  tooltip: TooltipData;
+  tooltip: TooltipInfo;
   highlightedGeometries: IndexedGeometry[];
 }
 
@@ -166,7 +166,7 @@ function getTooltipAndHighlightFromXValue(
 
 export const getTooltipValuesSelector = createCachedSelector(
   [getTooltipValuesAndGeometriesSelector],
-  ({ tooltip }): TooltipData => {
+  ({ tooltip }): TooltipInfo => {
     return tooltip;
   },
 )(getChartIdSelector);
