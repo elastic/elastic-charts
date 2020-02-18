@@ -39,6 +39,8 @@ export interface InternalChartState {
   getLegendItemsValues(globalState: GlobalChartState): Map<string, TooltipLegendValue>;
   // return the CSS pointer cursor depending on the internal chart state
   getPointerCursor(globalState: GlobalChartState): string;
+  // true if the tooltip is visible, false otherwise
+  isTooltipVisible(globalState: GlobalChartState): boolean;
 }
 
 export interface SpecList {

@@ -5,8 +5,8 @@ import { connect } from 'react-redux';
 import { TooltipValueFormatter, TooltipValue } from '../../specs';
 import { GlobalChartState, BackwardRef } from '../../state/chart_state';
 import { isInitialized } from '../../state/selectors/is_initialized';
+import { getInternalIsTooltipVisibleSelector } from '../../state/selectors/get_internal_is_tooltip_visible';
 import { getTooltipHeaderFormatterSelector } from '../../state/selectors/get_tooltip_header_formatter';
-import { isTooltipVisibleSelector } from '../../chart_types/xy_chart/state/selectors/is_tooltip_visible';
 import { getTooltipPositionSelector } from '../../chart_types/xy_chart/state/selectors/get_tooltip_position';
 import { getTooltipValuesSelector } from '../../chart_types/xy_chart/state/selectors/get_tooltip_values_highlighted_geoms';
 import { getFinalTooltipPosition, TooltipPosition } from '../../chart_types/xy_chart/crosshair/crosshair_utils';
@@ -140,7 +140,7 @@ const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
     };
   }
   return {
-    isTooltipVisible: isTooltipVisibleSelector(state),
+    isTooltipVisible: getInternalIsTooltipVisibleSelector(state),
     tooltip: getTooltipValuesSelector(state),
     tooltipPosition: getTooltipPositionSelector(state),
     tooltipHeaderFormatter: getTooltipHeaderFormatterSelector(state),

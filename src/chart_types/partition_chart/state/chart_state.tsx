@@ -27,4 +27,7 @@ export class PartitionState implements InternalChartState {
   getPointerCursor() {
     return 'default';
   }
+  isTooltipVisible() {
+    return false;
+  }
 }
