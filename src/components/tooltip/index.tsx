@@ -13,11 +13,9 @@ import {
   TooltipData,
 } from '../../chart_types/xy_chart/state/selectors/get_tooltip_values_highlighted_geoms';
 import { getFinalTooltipPosition, TooltipPosition } from '../../chart_types/xy_chart/crosshair/crosshair_utils';
-import { isAnnotationTooltipVisibleSelector } from '../../chart_types/xy_chart/state/selectors/is_annotation_tooltip_visible';
 
 interface TooltipStateProps {
   isTooltipVisible: boolean;
-  isAnnotationTooltipVisible: boolean;
   tooltip: TooltipData;
   tooltipPosition: TooltipPosition | null;
   tooltipHeaderFormatter?: TooltipValueFormatter;
@@ -28,7 +26,7 @@ interface TooltipOwnProps {
 type TooltipProps = TooltipStateProps & TooltipOwnProps;
 
 class TooltipComponent extends React.Component<TooltipProps> {
-  static displayName = 'Tooltips';
+  static displayName = 'Tooltip';
   portalNode: HTMLDivElement | null = null;
   tooltipRef: React.RefObject<HTMLDivElement>;
 
@@ -86,14 +84,14 @@ class TooltipComponent extends React.Component<TooltipProps> {
   }
 
   render() {
-    const { isTooltipVisible, tooltip, tooltipHeaderFormatter, isAnnotationTooltipVisible } = this.props;
+    const { isTooltipVisible, tooltip, tooltipHeaderFormatter } = this.props;
     if (!this.portalNode) {
       return null;
     }
     const { getChartContainerRef } = this.props;
     const chartContainerRef = getChartContainerRef();
     let tooltipComponent;
-    if (chartContainerRef.current === null || !isTooltipVisible || isAnnotationTooltipVisible) {
+    if (chartContainerRef.current === null || !isTooltipVisible) {
       return null;
     } else {
       tooltipComponent = (
@@ -135,7 +133,6 @@ const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
   if (!isInitialized(state)) {
     return {
       isTooltipVisible: false,
-      isAnnotationTooltipVisible: false,
       tooltip: {
         header: null,
         values: [],
@@ -146,7 +143,6 @@ const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
   }
   return {
     isTooltipVisible: isTooltipVisibleSelector(state),
-    isAnnotationTooltipVisible: isAnnotationTooltipVisibleSelector(state),
     tooltip: getTooltipValuesSelector(state),
     tooltipPosition: getTooltipPositionSelector(state),
     tooltipHeaderFormatter: getTooltipHeaderFormatterSelector(state),
