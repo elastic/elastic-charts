@@ -1,9 +1,10 @@
 import { $Values } from 'utility-types';
 import { Rotation } from '../../../utils/commons';
 import { Dimensions } from '../../../utils/dimensions';
-import { Accessor } from '../../../utils/accessor';
 import { BarGeometry, PointGeometry, IndexedGeometry, isPointGeometry, isBarGeometry } from '../../../utils/geometry';
 import { TooltipProps } from '../../../specs';
+import { SeriesIdentifier } from './series';
+import { Accessor } from '../../../utils/accessor';
 
 /** The type of tooltip to use */
 export const TooltipType = Object.freeze({
@@ -20,13 +21,34 @@ export const TooltipType = Object.freeze({
 export type TooltipType = $Values<typeof TooltipType>;
 
 export interface TooltipValue {
-  name: string;
+  /**
+   * The label of the tooltip value
+   */
+  label: string;
+  /**
+   * The value to display
+   */
   value: any;
+  /**
+   * The color of the graphic mark (by default the color of the series)
+   */
   color: string;
+  /**
+   * True if the mouse is over the graphic mark connected to the tooltip
+   */
   isHighlighted: boolean;
-  seriesKey: string;
-  yAccessor: Accessor;
+  /**
+   * True if the tooltip is visible, false otherwise
+   */
   isVisible: boolean;
+  /**
+   * The idenfitier of the related series
+   */
+  seriesIdentifier: SeriesIdentifier;
+  /**
+   * The accessor linked to the current tooltip value
+   */
+  valueAccessor: Accessor;
 }
 
 export type TooltipValueFormatter = (data: TooltipValue) => JSX.Element | string;

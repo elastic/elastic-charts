@@ -772,12 +772,15 @@ describe.skip('Chart Store', () => {
 
   test.skip('can update the tooltip visibility', () => {
     const tooltipValue: TooltipValue = {
-      name: 'a',
+      label: 'a',
       value: 'a',
       color: 'a',
       isHighlighted: false,
-      seriesKey: 'a',
-      yAccessor: 'y',
+      seriesIdentifier: {
+        specId: 'a',
+        key: 'a',
+      },
+      valueAccessor: 'y',
       isVisible: true,
     };
     store.cursorPosition.x = -1;
@@ -885,12 +888,15 @@ describe.skip('Chart Store', () => {
     store.addSeriesSpec(spec);
     store.setOnBrushEndListener(() => ({}));
     const tooltipValue: TooltipValue = {
-      name: 'a',
+      label: 'a',
       value: 'a',
       color: 'a',
       isHighlighted: false,
-      seriesKey: 'a',
-      yAccessor: 'y',
+      seriesIdentifier: {
+        specId: 'a',
+        key: 'a',
+      },
+      valueAccessor: 'y',
       isVisible: true,
     };
     store.xScale = new ScaleContinuous({ type: ScaleType.Linear, domain: [0, 100], range: [0, 100] });
@@ -1028,21 +1034,27 @@ describe.skip('Chart Store', () => {
     store.annotationDimensions.set(rectAnnotationSpec.id, annotationDimensions);
 
     const highlightedTooltipValue: TooltipValue = {
-      name: 'foo',
+      label: 'foo',
       value: 1,
       color: 'color',
       isHighlighted: true,
-      seriesKey: 'foo',
-      yAccessor: 'y',
+      seriesIdentifier: {
+        specId: 'a',
+        key: 'a',
+      },
+      valueAccessor: 'y',
       isVisible: true,
     };
     const unhighlightedTooltipValue: TooltipValue = {
-      name: 'foo',
+      label: 'foo',
       value: 1,
       color: 'color',
       isHighlighted: false,
-      seriesKey: 'foo',
-      yAccessor: 'y',
+      seriesIdentifier: {
+        specId: 'foo',
+        key: 'foo',
+      },
+      valueAccessor: 'y',
       isVisible: true,
     };
 
@@ -1066,26 +1078,32 @@ describe.skip('Chart Store', () => {
     expect(store.legendItemTooltipValues.get()).toEqual(new Map());
 
     const headerValue: TooltipValue = {
-      name: 'header',
+      label: 'header',
       value: 'foo',
       color: 'a',
       isHighlighted: false,
-      seriesKey: 'headerSeries',
+      seriesIdentifier: {
+        specId: 'headerSeries',
+        key: 'headerSeries',
+      },
+      valueAccessor: BandedAccessorType.Y0,
       isVisible: true,
-      yAccessor: BandedAccessorType.Y0,
     };
 
     store.tooltipData.replace([headerValue]);
     expect(store.legendItemTooltipValues.get()).toEqual(new Map());
 
     const tooltipValue: TooltipValue = {
-      name: 'a',
+      label: 'a',
       value: 123,
       color: 'a',
       isHighlighted: false,
-      seriesKey: 'seriesKeys',
+      seriesIdentifier: {
+        specId: 'seriesKeys',
+        key: 'seriesKeys',
+      },
+      valueAccessor: BandedAccessorType.Y1,
       isVisible: true,
-      yAccessor: BandedAccessorType.Y1,
     };
     store.tooltipData.replace([headerValue, tooltipValue]);
 

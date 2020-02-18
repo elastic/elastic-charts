@@ -100,27 +100,29 @@ class TooltipComponent extends React.Component<TooltipProps> {
         <div className="echTooltip" ref={this.tooltipRef}>
           <div className="echTooltip__header">{this.renderHeader(tooltip.header, tooltipHeaderFormatter)}</div>
           <div className="echTooltip__list">
-            {tooltip.values.map(({ name, value, color, isHighlighted, seriesKey, yAccessor, isVisible }) => {
-              if (!isVisible) {
-                return null;
-              }
-              const classes = classNames('echTooltip__item', {
-                /* eslint @typescript-eslint/camelcase:0 */
-                echTooltip__rowHighlighted: isHighlighted,
-              });
-              return (
-                <div
-                  key={`${seriesKey}--${yAccessor}`}
-                  className={classes}
-                  style={{
-                    borderLeftColor: color,
-                  }}
-                >
-                  <span className="echTooltip__label">{name}</span>
-                  <span className="echTooltip__value">{value}</span>
-                </div>
-              );
-            })}
+            {tooltip.values.map(
+              ({ seriesIdentifier, valueAccessor, label, value, color, isHighlighted, isVisible }) => {
+                if (!isVisible) {
+                  return null;
+                }
+                const classes = classNames('echTooltip__item', {
+                  /* eslint @typescript-eslint/camelcase:0 */
+                  echTooltip__rowHighlighted: isHighlighted,
+                });
+                return (
+                  <div
+                    key={`${seriesIdentifier.key}__${valueAccessor}`}
+                    className={classes}
+                    style={{
+                      borderLeftColor: color,
+                    }}
+                  >
+                    <span className="echTooltip__label">{label}</span>
+                    <span className="echTooltip__value">{value}</span>
+                  </div>
+                );
+              },
+            )}
           </div>
         </div>
       );

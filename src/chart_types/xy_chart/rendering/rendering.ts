@@ -564,11 +564,3 @@ export function isPointOnGeometry(
   const { width, height } = indexedGeometry;
   return yCoordinate >= y && yCoordinate <= y + height && xCoordinate >= x && xCoordinate <= x + width;
 }
-
-export function getSeriesIdentifierPrefixedKey(
-  seriesIdentifier: XYChartSeriesIdentifier,
-  prefix?: string,
-  postfix?: string,
-) {
-  return `${prefix || ''}${seriesIdentifier.key}${postfix || ''}`;
-}
