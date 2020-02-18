@@ -14,6 +14,7 @@ import { getLegendTooltipValuesSelector } from './selectors/get_legend_tooltip_v
 import { getPointerCursorSelector } from './selectors/get_cursor_pointer';
 import { isBrushingSelector } from './selectors/is_brushing';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
+import { getTooltipInfoSelector } from './selectors/get_tooltip_values_highlighted_geoms';
 import { htmlIdGenerator } from '../../../utils/commons';
 import { Tooltip } from '../../../components/tooltip';
 
@@ -52,5 +53,8 @@ export class XYAxisChartState implements InternalChartState {
   }
   isTooltipVisible(globalState: GlobalChartState) {
     return isTooltipVisibleSelector(globalState);
+  }
+  getTooltipInfo(globalState: GlobalChartState) {
+    return getTooltipInfoSelector(globalState);
   }
 }

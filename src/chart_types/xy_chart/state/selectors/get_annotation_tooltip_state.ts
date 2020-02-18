@@ -15,7 +15,7 @@ import { getChartRotationSelector } from '../../../../state/selectors/get_chart_
 import { AnnotationId } from '../../../../utils/ids';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { ComputedGeometries } from '../utils';
-import { getTooltipValuesSelector } from './get_tooltip_values_highlighted_geoms';
+import { getTooltipInfoSelector } from './get_tooltip_values_highlighted_geoms';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { TooltipInfo } from '../../../../components/tooltip/types';
@@ -31,7 +31,7 @@ export const getAnnotationTooltipStateSelector = createCachedSelector(
     getAnnotationSpecsSelector,
     getAxisSpecsSelector,
     computeAnnotationDimensionsSelector,
-    getTooltipValuesSelector,
+    getTooltipInfoSelector,
   ],
   getAnnotationTooltipState,
 )(getChartIdSelector);

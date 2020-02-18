@@ -3,7 +3,7 @@ import { Point } from '../../../../utils/point';
 import { GlobalChartState, PointerStates } from '../../../../state/chart_state';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
-import { getTooltipValuesSelector } from './get_tooltip_values_highlighted_geoms';
+import { getTooltipInfoSelector } from './get_tooltip_values_highlighted_geoms';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getTooltipType } from './get_tooltip_type';
 import { TooltipType } from '../../../../specs';
@@ -21,7 +21,7 @@ export const isTooltipVisibleSelector = createCachedSelector(
     hasTooltipTypeDefinedSelector,
     getPointerSelector,
     getProjectedPointerPositionSelector,
-    getTooltipValuesSelector,
+    getTooltipInfoSelector,
     isAnnotationTooltipVisibleSelector,
   ],
   isTooltipVisible,

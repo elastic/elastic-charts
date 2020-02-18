@@ -8,14 +8,14 @@ import { isInitialized } from '../../state/selectors/is_initialized';
 import { getInternalIsTooltipVisibleSelector } from '../../state/selectors/get_internal_is_tooltip_visible';
 import { getTooltipHeaderFormatterSelector } from '../../state/selectors/get_tooltip_header_formatter';
 import { getTooltipPositionSelector } from '../../chart_types/xy_chart/state/selectors/get_tooltip_position';
-import { getTooltipValuesSelector } from '../../chart_types/xy_chart/state/selectors/get_tooltip_values_highlighted_geoms';
 import { getFinalTooltipPosition, TooltipPosition } from '../../chart_types/xy_chart/crosshair/crosshair_utils';
 import { TooltipInfo } from './types';
+import { getInternalTooltipInfoSelector } from '../../state/selectors/get_internal_tooltip_info';
 
 interface TooltipStateProps {
   isVisible: boolean;
-  info: TooltipInfo;
   position: TooltipPosition | null;
+  info?: TooltipInfo;
   headerFormatter?: TooltipValueFormatter;
 }
 interface TooltipOwnProps {
@@ -84,7 +84,7 @@ class TooltipComponent extends React.Component<TooltipProps> {
   render() {
     const { isVisible, info, headerFormatter, getChartContainerRef } = this.props;
     const chartContainerRef = getChartContainerRef();
-    if (!this.portalNode || chartContainerRef.current === null || !isVisible) {
+    if (!this.portalNode || chartContainerRef.current === null || !isVisible || !info) {
       return null;
     }
     const tooltipComponent = (
@@ -119,21 +119,20 @@ class TooltipComponent extends React.Component<TooltipProps> {
   }
 }
 
+const HIDDEN_TOOLTIP_PROPS = {
+  isVisible: false,
+  info: undefined,
+  position: null,
+  headerFormatter: undefined,
+};
+
 const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
   if (!isInitialized(state)) {
-    return {
-      isVisible: false,
-      info: {
-        header: null,
-        values: [],
-      },
-      position: null,
-      headerFormatter: undefined,
-    };
+    return HIDDEN_TOOLTIP_PROPS;
   }
   return {
     isVisible: getInternalIsTooltipVisibleSelector(state),
-    info: getTooltipValuesSelector(state),
+    info: getInternalTooltipInfoSelector(state),
     position: getTooltipPositionSelector(state),
     headerFormatter: getTooltipHeaderFormatterSelector(state),
   };

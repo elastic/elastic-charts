@@ -15,6 +15,7 @@ import { UPDATE_PARENT_DIMENSION } from './actions/chart_settings';
 import { EXTERNAL_POINTER_EVENT } from './actions/events';
 import { RefObject } from 'react';
 import { PartitionState } from '../chart_types/partition_chart/state/chart_state';
+import { TooltipInfo } from '../components/tooltip/types';
 
 export type BackwardRef = () => React.RefObject<HTMLDivElement>;
 
@@ -23,24 +24,56 @@ export type BackwardRef = () => React.RefObject<HTMLDivElement>;
  * globally by the <ChartContainer> and
  */
 export interface InternalChartState {
-  // the chart type
+  /**
+   * the chart type
+   */
   chartType: ChartTypes;
-  // returns a JSX element with the chart rendered (lenged excluded)
+  /**
+   * returns a JSX element with the chart rendered (lenged excluded)
+   * @param containerRef
+   * @param forwardStageRef
+   */
   chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>): JSX.Element | null;
-  // true if the brush is available for this chart type
+  /**
+   * true if the brush is available for this chart type
+   * @param globalState
+   */
   isBrushAvailable(globalState: GlobalChartState): boolean;
-  // true if the brush is available for this chart type
+  /**
+   * true if the brush is available for this chart type
+   * @param globalState
+   */
   isBrushing(globalState: GlobalChartState): boolean;
-  // true if the chart is empty (no data displayed)
+  /**
+   * true if the chart is empty (no data displayed)
+   * @param globalState
+   */
   isChartEmpty(globalState: GlobalChartState): boolean;
-  // return the list of legend items
+  /**
+   * return the list of legend items
+   * @param globalState
+   */
   getLegendItems(globalState: GlobalChartState): Map<string, LegendItem>;
-  // return the list of values for each legend item
+  /**
+   * return the list of values for each legend item
+   * @param globalState
+   */
   getLegendItemsValues(globalState: GlobalChartState): Map<string, TooltipLegendValue>;
-  // return the CSS pointer cursor depending on the internal chart state
+  /**
+   * return the CSS pointer cursor depending on the internal chart state
+   * @param globalState
+   */
   getPointerCursor(globalState: GlobalChartState): string;
-  // true if the tooltip is visible, false otherwise
+  /**
+   * true if the tooltip is visible, false otherwise
+   * @param globalState
+   */
   isTooltipVisible(globalState: GlobalChartState): boolean;
+  /**
+   * get the tooltip information to display
+   * @param globalState the GlobalChartState
+   */
+  getTooltipInfo(globalState: GlobalChartState): TooltipInfo | undefined;
 }
 
 export interface SpecList {

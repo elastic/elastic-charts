@@ -43,7 +43,7 @@ export interface TooltipAndHighlightedGeoms {
 
 const getExternalPointerEventStateSelector = (state: GlobalChartState) => state.externalEvents.pointer;
 
-export const getTooltipValuesAndGeometriesSelector = createCachedSelector(
+export const getTooltipInfoAndGeometriesSelector = createCachedSelector(
   [
     getSeriesSpecsSelector,
     getAxisSpecsSelector,
@@ -95,9 +95,9 @@ function getTooltipAndHighlightFromXValue(
   }
 
   // build the tooltip value list
-  let tooltipHeader: TooltipValue | null = null;
+  let header: TooltipValue | null = null;
   const highlightedGeometries: IndexedGeometry[] = [];
-  const tooltipValues = xMatchingGeoms
+  const values = xMatchingGeoms
     .filter(({ value: { y } }) => y !== null)
     .reduce<TooltipValue[]>((acc, indexedGeometry) => {
       const {
@@ -145,11 +145,11 @@ function getTooltipAndHighlightFromXValue(
       );
 
       // format only one time the x value
-      if (!tooltipHeader) {
+      if (!header) {
         // if we have a tooltipHeaderFormatter, then don't pass in the xAxis as the user will define a formatter
         const xAxisFormatSpec = [0, 180].includes(chartRotation) ? xAxis : yAxis;
         const formatterAxis = tooltipHeaderFormatter ? undefined : xAxisFormatSpec;
-        tooltipHeader = formatTooltip(indexedGeometry, spec, true, false, hasSingleSeries, formatterAxis);
+        header = formatTooltip(indexedGeometry, spec, true, false, hasSingleSeries, formatterAxis);
       }
 
       return [...acc, formattedTooltip];
@@ -157,22 +157,22 @@ function getTooltipAndHighlightFromXValue(
 
   return {
     tooltip: {
-      header: tooltipHeader,
-      values: tooltipValues,
+      header,
+      values,
     },
     highlightedGeometries,
   };
 }
 
-export const getTooltipValuesSelector = createCachedSelector(
-  [getTooltipValuesAndGeometriesSelector],
+export const getTooltipInfoSelector = createCachedSelector(
+  [getTooltipInfoAndGeometriesSelector],
   ({ tooltip }): TooltipInfo => {
     return tooltip;
   },
 )(getChartIdSelector);
 
 export const getHighlightedGeomsSelector = createCachedSelector(
-  [getTooltipValuesAndGeometriesSelector],
+  [getTooltipInfoAndGeometriesSelector],
   (values): IndexedGeometry[] => {
     return values.highlightedGeometries;
   },
