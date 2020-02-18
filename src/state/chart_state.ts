@@ -1,4 +1,4 @@
-import { SPEC_PARSED, SPEC_UNMOUNTED, UPSERT_SPEC, REMOVE_SPEC } from './actions/specs';
+import { SPEC_PARSED, SPEC_UNMOUNTED, UPSERT_SPEC, REMOVE_SPEC, SPEC_PARSING } from './actions/specs';
 import { interactionsReducer } from './reducers/interactions';
 import { ChartTypes } from '../chart_types';
 import { XYAxisChartState } from '../chart_types/xy_chart/state/chart_state';
@@ -14,7 +14,6 @@ import { CHART_RENDERED } from './actions/chart';
 import { UPDATE_PARENT_DIMENSION } from './actions/chart_settings';
 import { EXTERNAL_POINTER_EVENT } from './actions/events';
 import { RefObject } from 'react';
-import { Stage } from 'react-konva';
 import { PartitionState } from '../chart_types/partition_chart/state/chart_state';
 
 export type BackwardRef = () => React.RefObject<HTMLDivElement>;
@@ -27,7 +26,7 @@ export interface InternalChartState {
   // the chart type
   chartType: ChartTypes;
   // returns a JSX element with the chart rendered (lenged excluded)
-  chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<Stage>): JSX.Element | null;
+  chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>): JSX.Element | null;
   // true if the brush is available for this chart type
   isBrushAvailable(globalState: GlobalChartState): boolean;
   // true if the brush is available for this chart type
@@ -143,6 +142,15 @@ export const chartStoreReducer = (chartId: string) => {
   const initialState = getInitialState(chartId);
   return (state = initialState, action: StateActions): GlobalChartState => {
     switch (action.type) {
+      case SPEC_PARSING:
+        return {
+          ...state,
+          specsInitialized: false,
+          chartRendered: false,
+          specs: {
+            [DEFAULT_SETTINGS_SPEC.id]: DEFAULT_SETTINGS_SPEC,
+          },
+        };
       case SPEC_PARSED:
         const chartType = findMainChartType(state.specs);
 
@@ -151,7 +159,6 @@ export const chartStoreReducer = (chartId: string) => {
           return {
             ...state,
             specsInitialized: true,
-            chartRendered: false,
             chartType,
             internalChartState,
           };
@@ -159,7 +166,6 @@ export const chartStoreReducer = (chartId: string) => {
           return {
             ...state,
             specsInitialized: true,
-            chartRendered: false,
             chartType,
           };
         }
@@ -172,8 +178,6 @@ export const chartStoreReducer = (chartId: string) => {
       case UPSERT_SPEC:
         return {
           ...state,
-          specsInitialized: false,
-          chartRendered: false,
           specs: {
             ...state.specs,
             [action.spec.id]: action.spec,
@@ -183,8 +187,6 @@ export const chartStoreReducer = (chartId: string) => {
         const { [action.id]: specToRemove, ...rest } = state.specs;
         return {
           ...state,
-          specsInitialized: false,
-          chartRendered: false,
           specs: {
             ...rest,
           },

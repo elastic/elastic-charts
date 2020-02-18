@@ -1,5 +1,5 @@
 import { AreaSeriesSpec, HistogramModeAlignments, DEFAULT_GLOBAL_ID, SeriesTypes } from '../utils/specs';
-import { ScaleType } from '../../../utils/scales/scales';
+import { ScaleType } from '../../../scales';
 import { specComponentFactory, getConnect } from '../../../state/spec_factory';
 import { ChartTypes } from '../../../chart_types';
 import { SpecTypes } from '../../../specs/settings';
@@ -9,7 +9,7 @@ const defaultProps = {
   specType: SpecTypes.Series,
   seriesType: SeriesTypes.Area,
   groupId: DEFAULT_GLOBAL_ID,
-  xScaleType: ScaleType.Ordinal,
+  xScaleType: ScaleType.Linear,
   yScaleType: ScaleType.Linear,
   xAccessor: 'x',
   yAccessors: ['y'],

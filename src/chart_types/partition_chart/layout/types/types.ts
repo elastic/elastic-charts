@@ -1,7 +1,5 @@
 import { ArrayEntry } from '../utils/group_by_rollup';
 
-export type Color = string; // todo refine later (union type)
-
 export const FONT_VARIANTS = Object.freeze(['normal', 'small-caps'] as const);
 export type FontVariant = typeof FONT_VARIANTS[number];
 
@@ -29,6 +27,19 @@ export interface Font {
 }
 
 export type PartialFont = Partial<Font>;
+
+export const TEXT_ALIGNS = Object.freeze(['start', 'end', 'left', 'right', 'center'] as const);
+export type TextAlign = typeof TEXT_ALIGNS[number];
+
+export const TEXT_BASELINE = Object.freeze([
+  'top',
+  'hanging',
+  'middle',
+  'alphabetic',
+  'ideographic',
+  'bottom',
+] as const);
+export type TextBaseline = typeof TEXT_BASELINE[number];
 
 export interface Box extends Font {
   text: string;

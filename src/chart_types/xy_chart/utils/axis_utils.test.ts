@@ -1,9 +1,10 @@
 import { XDomain } from '../domains/x_domain';
 import { YDomain } from '../domains/y_domain';
-import { AxisSpec, DomainRange, Position, AxisStyle } from './specs';
+import { AxisSpec, DomainRange, AxisStyle } from './specs';
+import { Position } from '../../../utils/commons';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { AxisId, GroupId } from '../../../utils/ids';
-import { ScaleType } from '../../../utils/scales/scales';
+import { ScaleType } from '../../../scales';
 import {
   AxisTick,
   AxisTicksDimensions,
@@ -644,7 +645,11 @@ describe('Axis computational utils', () => {
       top: 0,
       left: 0,
       width: 100,
-      height: 100,
+      height: 10,
+    };
+    const axisDimensions = {
+      maxLabelBboxWidth: 100,
+      maxLabelBboxHeight: 100,
     };
     const unrotatedLabelProps = getTickLabelProps(
       tickLabelRotation,
@@ -653,12 +658,14 @@ describe('Axis computational utils', () => {
       tickPosition,
       Position.Left,
       axisPosition,
-      axis1Dims,
+      axisDimensions,
     );
 
     expect(unrotatedLabelProps).toEqual({
-      x: 75,
-      y: -5,
+      offsetX: -50,
+      offsetY: 0,
+      x: 85,
+      y: 0,
       align: 'right',
       verticalAlign: 'middle',
     });
@@ -671,12 +678,14 @@ describe('Axis computational utils', () => {
       tickPosition,
       Position.Left,
       axisPosition,
-      axis1Dims,
+      axisDimensions,
     );
 
     expect(rotatedLabelProps).toEqual({
-      x: 75,
-      y: -5,
+      offsetX: -50,
+      offsetY: 0,
+      x: 85,
+      y: 0,
       align: 'center',
       verticalAlign: 'middle',
     });
@@ -688,12 +697,14 @@ describe('Axis computational utils', () => {
       tickPosition,
       Position.Right,
       axisPosition,
-      axis1Dims,
+      axisDimensions,
     );
 
     expect(rightRotatedLabelProps).toEqual({
+      offsetX: 50,
+      offsetY: 0,
       x: 15,
-      y: -5,
+      y: 0,
       align: 'center',
       verticalAlign: 'middle',
     });
@@ -706,12 +717,14 @@ describe('Axis computational utils', () => {
       tickPosition,
       Position.Right,
       axisPosition,
-      axis1Dims,
+      axisDimensions,
     );
 
     expect(rightUnrotatedLabelProps).toEqual({
+      offsetX: 50,
+      offsetY: 0,
       x: 15,
-      y: -5,
+      y: 0,
       align: 'left',
       verticalAlign: 'middle',
     });
@@ -726,9 +739,12 @@ describe('Axis computational utils', () => {
       top: 0,
       left: 0,
       width: 100,
-      height: 100,
+      height: 10,
     };
-
+    const axisDimensions = {
+      maxLabelBboxWidth: 100,
+      maxLabelBboxHeight: 100,
+    };
     const unrotatedLabelProps = getTickLabelProps(
       tickLabelRotation,
       tickSize,
@@ -736,12 +752,14 @@ describe('Axis computational utils', () => {
       tickPosition,
       Position.Top,
       axisPosition,
-      axis1Dims,
+      axisDimensions,
     );
 
     expect(unrotatedLabelProps).toEqual({
-      x: -5,
-      y: 75,
+      offsetX: 0,
+      offsetY: -50,
+      x: 0,
+      y: -5,
       align: 'center',
       verticalAlign: 'bottom',
     });
@@ -754,12 +772,14 @@ describe('Axis computational utils', () => {
       tickPosition,
       Position.Top,
       axisPosition,
-      axis1Dims,
+      axisDimensions,
     );
 
     expect(rotatedLabelProps).toEqual({
-      x: -5,
-      y: 75,
+      offsetX: 0,
+      offsetY: -50,
+      x: 0,
+      y: -5,
       align: 'center',
       verticalAlign: 'middle',
     });
@@ -771,11 +791,13 @@ describe('Axis computational utils', () => {
       tickPosition,
       Position.Bottom,
       axisPosition,
-      axis1Dims,
+      axisDimensions,
     );
 
     expect(bottomRotatedLabelProps).toEqual({
-      x: -5,
+      offsetX: 0,
+      offsetY: 50,
+      x: 0,
       y: 15,
       align: 'center',
       verticalAlign: 'middle',
@@ -789,11 +811,13 @@ describe('Axis computational utils', () => {
       tickPosition,
       Position.Bottom,
       axisPosition,
-      axis1Dims,
+      axisDimensions,
     );
 
     expect(bottomUnrotatedLabelProps).toEqual({
-      x: -5,
+      offsetX: 0,
+      offsetY: 50,
+      x: 0,
       y: 15,
       align: 'center',
       verticalAlign: 'top',

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Chart, LineSeries, ScaleType, Position, Settings, Axis } from '../src';
+import { Chart, LineSeries, ScaleType, Position, Axis } from '../src';
 import { SeededDataGenerator } from '../src/mocks/utils';
 
 export class Playground extends React.Component<{}, { isSunburstShown: boolean }> {
@@ -15,7 +15,6 @@ export class Playground extends React.Component<{}, { isSunburstShown: boolean }
       <>
         <div className="chart">
           <Chart>
-            <Settings seriesLabels={{ delimiter: ': ', full: true }} />
             <Axis id="y1" position={Position.Left} title={'y1'} />
             <Axis id="y2" domain={{ fit: true }} groupId="g2" position={Position.Right} title={'y2'} />
             <Axis id="x" position={Position.Bottom} title={'x'} />

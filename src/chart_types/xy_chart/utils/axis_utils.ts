@@ -6,17 +6,16 @@ import {
   CompleteBoundedDomain,
   DomainRange,
   LowerBoundedDomain,
-  Position,
-  Rotation,
   TickFormatter,
   UpperBoundedDomain,
   AxisStyle,
   TickFormatterOptions,
 } from './specs';
+import { Position, Rotation } from '../../../utils/commons';
 import { AxisConfig, Theme } from '../../../utils/themes/theme';
 import { Dimensions, Margins } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';
-import { Scale } from '../../../utils/scales/scales';
+import { Scale } from '../../../scales';
 import { BBox, BBoxCalculator } from '../../../utils/bbox/bbox_calculator';
 import { getSpecsById } from '../state/utils';
 
@@ -40,6 +39,8 @@ export interface AxisTicksDimensions {
 export interface TickLabelProps {
   x: number;
   y: number;
+  offsetX: number;
+  offsetY: number;
   align: string;
   verticalAlign: string;
 }
@@ -286,39 +287,33 @@ export function getTickLabelProps(
   tickPosition: number,
   position: Position,
   axisPosition: Dimensions,
-  axisTicksDimensions: AxisTicksDimensions,
+  axisTickDimensions: Pick<AxisTicksDimensions, 'maxLabelBboxWidth' | 'maxLabelBboxHeight'>,
 ): TickLabelProps {
-  const { maxLabelBboxWidth, maxLabelBboxHeight } = axisTicksDimensions;
+  const { maxLabelBboxWidth, maxLabelBboxHeight } = axisTickDimensions;
   const isRotated = tickLabelRotation !== 0;
-  let align = 'center';
-  let verticalAlign = 'middle';
-
   if (isVerticalAxis(position)) {
     const isLeftAxis = position === Position.Left;
-
-    if (!isRotated) {
-      align = isLeftAxis ? 'right' : 'left';
-    }
-
+    const x = isLeftAxis ? axisPosition.width - tickSize - tickPadding : tickSize + tickPadding;
+    const offsetX = isLeftAxis ? -maxLabelBboxWidth / 2 : maxLabelBboxWidth / 2;
     return {
-      x: isLeftAxis ? axisPosition.width - tickSize - tickPadding - maxLabelBboxWidth : tickSize + tickPadding,
-      y: tickPosition - maxLabelBboxHeight / 2,
-      align,
-      verticalAlign,
+      x,
+      y: tickPosition,
+      offsetX,
+      offsetY: 0,
+      align: isRotated ? 'center' : isLeftAxis ? 'right' : 'left',
+      verticalAlign: 'middle',
     };
   }
 
   const isAxisTop = position === Position.Top;
 
-  if (!isRotated) {
-    verticalAlign = isAxisTop ? 'bottom' : 'top';
-  }
-
   return {
-    x: tickPosition - maxLabelBboxWidth / 2,
-    y: isAxisTop ? axisPosition.height - tickSize - tickPadding - maxLabelBboxHeight : tickSize + tickPadding,
-    align,
-    verticalAlign,
+    x: tickPosition,
+    y: isAxisTop ? axisPosition.height - tickSize - tickPadding : tickSize + tickPadding,
+    offsetX: 0,
+    offsetY: isAxisTop ? -maxLabelBboxHeight / 2 : maxLabelBboxHeight / 2,
+    align: 'center',
+    verticalAlign: isRotated ? 'middle' : isAxisTop ? 'bottom' : 'top',
   };
 }
 
