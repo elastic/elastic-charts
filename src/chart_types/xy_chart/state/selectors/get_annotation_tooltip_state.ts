@@ -15,9 +15,10 @@ import { getChartRotationSelector } from '../../../../state/selectors/get_chart_
 import { AnnotationId } from '../../../../utils/ids';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { ComputedGeometries } from '../utils';
-import { getTooltipValuesSelector, TooltipData } from './get_tooltip_values_highlighted_geoms';
+import { getTooltipValuesSelector } from './get_tooltip_values_highlighted_geoms';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { GlobalChartState } from '../../../../state/chart_state';
+import { TooltipData } from '../../../../components/tooltip/types';
 
 const getCurrentPointerPosition = (state: GlobalChartState) => state.interactions.pointer.current.position;
 

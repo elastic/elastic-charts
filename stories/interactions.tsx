@@ -57,17 +57,17 @@ export default {
 };
 
 export const barClicksAndHovers = () => {
-  const headerFormatter: TooltipValueFormatter = (tooltipData: TooltipValue) => {
-    if (tooltipData.value % 2 === 0) {
+  const headerFormatter: TooltipValueFormatter = (tooltip: TooltipValue) => {
+    if (tooltip.value % 2 === 0) {
       return (
         <div>
           <p>special header for even x values</p>
-          <p>{tooltipData.value}</p>
+          <p>{tooltip.value}</p>
         </div>
       );
     }
 
-    return tooltipData.value;
+    return tooltip.value;
   };
 
   const tooltipProps = {
