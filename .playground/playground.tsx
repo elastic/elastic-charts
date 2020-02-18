@@ -1,6 +1,14 @@
 import React from 'react';
-
-import { Chart, LineSeries, ScaleType, Position, Axis } from '../src';
+import {
+  Chart,
+  ScaleType,
+  Position,
+  Axis,
+  LineSeries,
+  LineAnnotation,
+  RectAnnotation,
+  AnnotationDomainTypes,
+} from '../src';
 import { SeededDataGenerator } from '../src/mocks/utils';
 
 export class Playground extends React.Component<{}, { isSunburstShown: boolean }> {
@@ -35,6 +43,8 @@ export class Playground extends React.Component<{}, { isSunburstShown: boolean }
               splitSeriesAccessors={['g']}
               data={data}
             />
+            <LineAnnotation id="sss" dataValues={[{ dataValue: 321321 }]} domainType={AnnotationDomainTypes.XDomain} />
+            <RectAnnotation id="111" dataValues={[{ coordinates: { x1: 100 } }]} />
           </Chart>
         </div>
       </>

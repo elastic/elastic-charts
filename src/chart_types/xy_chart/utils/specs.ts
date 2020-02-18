@@ -540,13 +540,9 @@ export interface LineAnnotationDatum {
   header?: string;
 }
 
-export type LineAnnotationSpec = BaseAnnotationSpec & {
+export type LineAnnotationSpec = BaseAnnotationSpec<LineAnnotationDatum, LineAnnotationStyle> & {
   annotationType: typeof AnnotationTypes.Line;
   domainType: AnnotationDomainType;
-  /** Data values defined with value, details, and header */
-  dataValues: LineAnnotationDatum[];
-  /** Custom line styles */
-  style?: Partial<LineAnnotationStyle>;
   /** Custom marker */
   marker?: JSX.Element;
   /**
@@ -579,21 +575,20 @@ export interface RectAnnotationDatum {
   details?: string;
 }
 
-export type RectAnnotationSpec = BaseAnnotationSpec & {
+export type RectAnnotationSpec = BaseAnnotationSpec<RectAnnotationDatum, RectAnnotationStyle> & {
   annotationType: typeof AnnotationTypes.Rectangle;
   /** Custom rendering function for tooltip */
   renderTooltip?: AnnotationTooltipFormatter;
-  /** Data values defined with coordinates and details */
-  dataValues: RectAnnotationDatum[];
-  /** Custom annotation style */
-  style?: Partial<RectAnnotationStyle>;
   /** z-index of the annotation relative to other elements in the chart
    * @default -1
    */
   zIndex?: number;
 };
 
-export interface BaseAnnotationSpec extends Spec {
+export interface BaseAnnotationSpec<
+  D extends RectAnnotationDatum | LineAnnotationDatum,
+  S extends RectAnnotationStyle | LineAnnotationStyle
+> extends Spec {
   chartType: ChartTypes;
   specType: typeof SpecTypes.Annotation;
   /** Annotation type: line, rectangle, text */
@@ -603,9 +598,9 @@ export interface BaseAnnotationSpec extends Spec {
    */
   groupId: GroupId; // defaults to __global__; needed for yDomain position
   /** Data values defined with coordinates and details */
-  dataValues: AnnotationDatum[];
+  dataValues: D[];
   /** Custom annotation style */
-  style?: Partial<AnnotationStyle>;
+  style?: Partial<S>;
   /** Toggles tooltip annotation visibility */
   hideTooltips?: boolean;
   /** z-index of the annotation relative to other elements in the chart
@@ -614,10 +609,6 @@ export interface BaseAnnotationSpec extends Spec {
   zIndex?: number;
 }
 
-export type AnnotationDatum = LineAnnotationDatum | RectAnnotationDatum;
-export type AnnotationStyle = LineAnnotationStyle | RectAnnotationStyle;
-
-// TODO:  TextAnnotationSpec
 export type AnnotationSpec = LineAnnotationSpec | RectAnnotationSpec;
 
 export function isLineAnnotation(spec: AnnotationSpec): spec is LineAnnotationSpec {
