@@ -33,4 +33,7 @@ export class PartitionState implements InternalChartState {
   getTooltipInfo() {
     return undefined;
   }
+  getTooltipAnchor() {
+    return null;
+  }
 }

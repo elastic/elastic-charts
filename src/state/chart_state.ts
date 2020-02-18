@@ -16,6 +16,7 @@ import { EXTERNAL_POINTER_EVENT } from './actions/events';
 import { RefObject } from 'react';
 import { PartitionState } from '../chart_types/partition_chart/state/chart_state';
 import { TooltipInfo } from '../components/tooltip/types';
+import { TooltipAnchorPosition } from '../components/tooltip/utils';
 
 export type BackwardRef = () => React.RefObject<HTMLDivElement>;
 
@@ -70,10 +71,16 @@ export interface InternalChartState {
    */
   isTooltipVisible(globalState: GlobalChartState): boolean;
   /**
-   * get the tooltip information to display
+   * Get the tooltip information to display
    * @param globalState the GlobalChartState
    */
   getTooltipInfo(globalState: GlobalChartState): TooltipInfo | undefined;
+
+  /**
+   * Get the tooltip anchor position
+   * @param globalState
+   */
+  getTooltipAnchor(globalState: GlobalChartState): TooltipAnchorPosition | null;
 }
 
 export interface SpecList {

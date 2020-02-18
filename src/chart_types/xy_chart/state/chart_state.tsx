@@ -17,6 +17,7 @@ import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
 import { getTooltipInfoSelector } from './selectors/get_tooltip_values_highlighted_geoms';
 import { htmlIdGenerator } from '../../../utils/commons';
 import { Tooltip } from '../../../components/tooltip';
+import { getTooltipAnchorPositionSelector } from './selectors/get_tooltip_position';
 
 export class XYAxisChartState implements InternalChartState {
   chartType = ChartTypes.XYAxis;
@@ -56,5 +57,8 @@ export class XYAxisChartState implements InternalChartState {
   }
   getTooltipInfo(globalState: GlobalChartState) {
     return getTooltipInfoSelector(globalState);
+  }
+  getTooltipAnchor(globalState: GlobalChartState) {
+    return getTooltipAnchorPositionSelector(globalState);
   }
 }

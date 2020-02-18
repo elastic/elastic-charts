@@ -2,25 +2,26 @@ import classNames from 'classnames';
 import React from 'react';
 import { createPortal } from 'react-dom';
 import { connect } from 'react-redux';
+import { getFinalTooltipPosition, TooltipAnchorPosition } from './utils';
+import { TooltipInfo } from './types';
 import { TooltipValueFormatter, TooltipValue } from '../../specs';
 import { GlobalChartState, BackwardRef } from '../../state/chart_state';
 import { isInitialized } from '../../state/selectors/is_initialized';
 import { getInternalIsTooltipVisibleSelector } from '../../state/selectors/get_internal_is_tooltip_visible';
 import { getTooltipHeaderFormatterSelector } from '../../state/selectors/get_tooltip_header_formatter';
-import { getTooltipPositionSelector } from '../../chart_types/xy_chart/state/selectors/get_tooltip_position';
-import { getFinalTooltipPosition, TooltipPosition } from '../../chart_types/xy_chart/crosshair/crosshair_utils';
-import { TooltipInfo } from './types';
 import { getInternalTooltipInfoSelector } from '../../state/selectors/get_internal_tooltip_info';
+import { getInternalTooltipAnchorPositionSelector } from '../../state/selectors/get_internal_tooltip_anchor_position';
 
 interface TooltipStateProps {
   isVisible: boolean;
-  position: TooltipPosition | null;
+  position: TooltipAnchorPosition | null;
   info?: TooltipInfo;
   headerFormatter?: TooltipValueFormatter;
 }
 interface TooltipOwnProps {
   getChartContainerRef: BackwardRef;
 }
+
 type TooltipProps = TooltipStateProps & TooltipOwnProps;
 
 class TooltipComponent extends React.Component<TooltipProps> {
@@ -133,7 +134,7 @@ const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
   return {
     isVisible: getInternalIsTooltipVisibleSelector(state),
     info: getInternalTooltipInfoSelector(state),
-    position: getTooltipPositionSelector(state),
+    position: getInternalTooltipAnchorPositionSelector(state),
     headerFormatter: getTooltipHeaderFormatterSelector(state),
   };
 };
