@@ -54,27 +54,25 @@ export type SeriesLabel = string | number | null;
 /**
  * Function to create custom series label for a given series
  */
-export type SeriesLabelFn = (series: SeriesIdentifier, isTooltip: boolean) => SeriesLabel;
+export type SeriesNameFn = (series: SeriesIdentifier, isTooltip: boolean) => SeriesLabel;
 /**
  * Accessor mapping to replace labels
  */
-export interface SeriesLabelMapping {
+export interface SeriesNameConfig {
   /**
-   * accessor key (i.e. `seriesSlittAccessors`)
-   *
-   * ignored for `yAccessor`
+   * accessor key (i.e. `yAccessors` and `seriesSplitAccessors`)
    */
-  accessor?: string;
+  accessor: string;
   /**
-   * Accessor value/label (i.e. `yAccessors` or values from `seriesSlittAccessors`)
+   * Accessor value (i.e. values from `seriesSplitAccessors`)
    */
-  value: string | number;
+  value?: string | number;
   /**
-   * New Accessor value/label to use in series label
+   * New name for Accessor value
    *
    * If not provided, the original value will be used
    */
-  newValue?: string | number;
+  name?: string | number;
   /**
    * Sort order of label, overrides order listed in array.
    *
@@ -83,19 +81,19 @@ export interface SeriesLabelMapping {
    */
   sortIndex?: number;
 }
-export interface SeriesLabelMappingOptions {
+export interface SeriesNameConfigOptions {
   /**
-   * Array of accessor mappings to replace labels.
+   * Array of accessor naming configs to replace series names
    *
-   * Only provided mappings will be included
+   * Only provided configs will be included
    * (i.e. if you only provide a single mapping for `yAccessor`, all other series accessor labels will be ignored)
    *
-   * The order of mappings is the order in which the resulting labels will
+   * The order of configs is the order in which the resulting labels will
    * be joined, if no `sortIndex` is specified.
    *
    * If no values are found for a giving mapping in a series, the mapping will be ignored.
    */
-  mappings: SeriesLabelMapping[];
+  names?: SeriesNameConfig[];
   /**
    * Delimiter to join values/labels
    *
@@ -103,7 +101,7 @@ export interface SeriesLabelMappingOptions {
    */
   delimiter?: string;
 }
-export type SeriesLabelAccessor = SeriesLabelFn | SeriesLabelMappingOptions;
+export type SeriesNameAccessor = string | SeriesNameFn | SeriesNameConfigOptions;
 
 /**
  * The fit function type
@@ -245,8 +243,10 @@ export interface DisplayValueSpec {
 export interface SeriesSpec extends Spec {
   specType: typeof SpecTypes.Series;
   chartType: typeof ChartTypes.XYAxis;
-  /** The name or label of the spec */
-  name?: string;
+  /**
+   * The name of the spec. Also a mechanism to provide custom series names.
+   */
+  name?: SeriesNameAccessor;
   /** The ID of the spec group, generated via getGroupId method
    * @default __global__
    */
@@ -282,13 +282,6 @@ export interface SeriesSpec extends Spec {
    * Hide series in tooltip
    */
   filterSeriesInTooltip?: FilterPredicate;
-  /**
-   * Mechanism to provide custom series labels.
-   *
-   * @param series - `SeriesIdentifier`
-   * @param isTooltip - true if tooltip label, otherwise legend label
-   */
-  customSeriesLabel?: SeriesLabelAccessor;
 }
 
 export interface Postfixes {

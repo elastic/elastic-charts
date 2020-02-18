@@ -3,7 +3,7 @@ import { Accessor } from '../../../utils/accessor';
 import { GroupId, SpecId } from '../../../utils/ids';
 import { splitSpecsByGroupId, YBasicSeriesSpec } from '../domains/y_domain';
 import { formatNonStackedDataSeriesValues } from './nonstacked_series_utils';
-import { BasicSeriesSpec, SeriesTypes, SeriesSpecs, SeriesLabelMappingOptions } from './specs';
+import { BasicSeriesSpec, SeriesTypes, SeriesSpecs, SeriesNameConfigOptions } from './specs';
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
 import { ScaleType } from '../../../scales';
 import { LastValues } from '../state/utils';
@@ -359,10 +359,11 @@ export function getSplittedSeries(
     const banded = spec.y0Accessors && spec.y0Accessors.length > 0;
 
     dataSeries.rawDataSeries.forEach((series) => {
+      const { data, ...seriesIdentifier } = series;
       seriesCollection.set(series.key, {
         banded,
         specSortIndex: spec.sortIndex,
-        seriesIdentifier: series as SeriesIdentifier,
+        seriesIdentifier,
       });
     });
 
@@ -379,43 +380,52 @@ export function getSplittedSeries(
   };
 }
 
-const getSeriesLabelFromOptions = (
-  options: SeriesLabelMappingOptions,
+const getSeriesNameFromOptions = (
+  options: SeriesNameConfigOptions,
   { yAccessor, splitAccessors }: SeriesIdentifier,
-) =>
-  options.mappings
-    .sort(({ sortIndex: a = Infinity }, { sortIndex: b = Infinity }) => a - b)
-    .map(({ accessor, value, newValue }) => {
-      const accessorValue = accessor ? splitAccessors.get(accessor) : null;
-      if (accessorValue === value) {
-        return newValue ?? value;
-      }
+  delimiter: string,
+) => {
+  if (!options.names) {
+    return null;
+  }
 
-      if (yAccessor === value) {
-        return newValue ?? value;
-      }
-      return null;
-    })
-    .filter((d) => Boolean(d) || d === 0)
-    .slice()
-    .join(options.delimiter ?? ' - ');
+  return (
+    options.names
+      .sort(({ sortIndex: a = Infinity }, { sortIndex: b = Infinity }) => a - b)
+      .map(({ accessor, value, name }) => {
+        const accessorValue = (accessor ? splitAccessors.get(accessor) : null) ?? null;
+        if (accessorValue === value) {
+          return name ?? value;
+        }
+
+        if (yAccessor === accessor) {
+          return name ?? accessor;
+        }
+        return null;
+      })
+      .filter((d) => Boolean(d) || d === 0)
+      .slice()
+      .join(delimiter) || null
+  );
+};
 
 /**
- * Get series label based on `SeriesIdentifier`
+ * Get series name based on `SeriesIdentifier`
  */
-export function getSeriesLabel(
+export function getSeriesName(
   seriesIdentifier: SeriesIdentifier,
   hasSingleSeries: boolean,
   isTooltip: boolean,
   spec?: BasicSeriesSpec,
 ): string {
-  if (spec && spec.customSeriesLabel) {
+  let delimiter = ' - ';
+  if (spec && spec.name && typeof spec.name !== 'string') {
     let customLabel: string | number | null = null;
-    if (typeof spec.customSeriesLabel === 'function') {
-      customLabel = spec.customSeriesLabel(seriesIdentifier, isTooltip);
+    if (typeof spec.name === 'function') {
+      customLabel = spec.name(seriesIdentifier, isTooltip);
     } else {
-      const customMappingLabel = getSeriesLabelFromOptions(spec.customSeriesLabel, seriesIdentifier);
-      customLabel = customMappingLabel === '' ? null : customMappingLabel;
+      delimiter = spec.name.delimiter ?? delimiter;
+      customLabel = getSeriesNameFromOptions(spec.name, seriesIdentifier, delimiter);
     }
 
     if (customLabel !== null) {
@@ -423,27 +433,26 @@ export function getSeriesLabel(
     }
   }
 
-  let label = '';
-  const delimiter = ' - ';
-  const labelKeys =
+  let name = '';
+  const nameKeys =
     spec && spec.yAccessors.length > 1 ? seriesIdentifier.seriesKeys : seriesIdentifier.seriesKeys.slice(0, -1);
 
   // there is one series, the is only one yAccessor, the first part is not null
-  if (hasSingleSeries || labelKeys.length === 0 || labelKeys[0] == null) {
+  if (hasSingleSeries || nameKeys.length === 0 || nameKeys[0] == null) {
     if (!spec) {
       return '';
     }
 
-    if (spec.splitSeriesAccessors && labelKeys.length > 0 && labelKeys[0] != null) {
-      label = labelKeys.join(delimiter);
+    if (spec.splitSeriesAccessors && nameKeys.length > 0 && nameKeys[0] != null) {
+      name = nameKeys.join(delimiter);
     } else {
-      label = spec.name || `${spec.id}`;
+      name = typeof spec.name === 'string' ? spec.name : `${spec.id}`;
     }
   } else {
-    label = labelKeys.join(delimiter);
+    name = nameKeys.join(delimiter);
   }
 
-  return label;
+  return name;
 }
 
 function getSortIndex({ specSortIndex }: SeriesCollectionValue, total: number): number {

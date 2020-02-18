@@ -32,8 +32,8 @@ import { palettes } from '../src/utils/themes/colors';
 import {
   BarStyleAccessor,
   PointStyleAccessor,
-  SeriesLabelMappingOptions,
-  SeriesLabelFn,
+  SeriesNameConfigOptions,
+  SeriesNameFn,
 } from '../src/chart_types/xy_chart/utils/specs';
 import moment from 'moment';
 import { DateTime } from 'luxon';
@@ -925,7 +925,7 @@ customSeriesStylesArea.story = {
 };
 
 export const addCustomFullAndSubSeriesLabel = () => {
-  const customSeriesLabelFn: SeriesLabelFn = ({ yAccessor, splitAccessors }) => {
+  const customSeriesNamingFn: SeriesNameFn = ({ yAccessor, splitAccessors }) => {
     // eslint-disable-next-line react/prop-types
     if (yAccessor === 'y1' && splitAccessors.get('g') === 'a') {
       return 'Custom full series name';
@@ -953,7 +953,7 @@ export const addCustomFullAndSubSeriesLabel = () => {
         yAccessors={['y1', 'y2']}
         splitSeriesAccessors={['g']}
         data={TestDatasets.BARCHART_2Y1G}
-        customSeriesLabel={customSeriesLabelFn}
+        name={customSeriesNamingFn}
       />
     </Chart>
   );
@@ -962,19 +962,19 @@ addCustomFullAndSubSeriesLabel.story = {
   name: 'Add custom series label',
 };
 
-export const customSeriesLabelMappings = () => {
-  const customSeriesLabelOptions: SeriesLabelMappingOptions = {
-    mappings: [
+export const customSeriesNamingConfig = () => {
+  const customSeriesNameOptions: SeriesNameConfigOptions = {
+    names: [
       {
         // replace split accessor;
         accessor: 'g',
         value: 'a',
-        newValue: 'replace a(from g)',
+        name: 'replace a(from g)',
       },
       {
         // replace y accessor;
-        value: 'y2',
-        newValue: 'replace y2',
+        accessor: 'y2',
+        name: 'replace y2',
       },
     ],
     delimiter: ' | ',
@@ -998,13 +998,13 @@ export const customSeriesLabelMappings = () => {
         yAccessors={['y1', 'y2']}
         splitSeriesAccessors={['g']}
         data={TestDatasets.BARCHART_2Y1G}
-        customSeriesLabel={customSeriesLabelOptions}
+        name={customSeriesNameOptions}
       />
     </Chart>
   );
 };
-customSeriesLabelMappings.story = {
-  name: 'Add custom series label mappings and delimeter',
+customSeriesNamingConfig.story = {
+  name: 'Add custom series naming and delimeter',
 };
 
 export const addCustomSeriesLabelFormatting = () => {
@@ -1020,7 +1020,7 @@ export const addCustomSeriesLabelFormatting = () => {
     { x: 2, y: 18, percent: 1, time: start.plus({ month: 2 }).toMillis() },
     { x: 3, y: 7, percent: 1, time: start.plus({ month: 3 }).toMillis() },
   ];
-  const customSeriesLabelFn: SeriesLabelFn = ({ yAccessor, splitAccessors }, isTooltip) =>
+  const customSeriesNamingFn: SeriesNameFn = ({ yAccessor, splitAccessors }, isTooltip) =>
     [
       ...[...splitAccessors.entries()].map(([key, value]) => {
         if (key === 'time') {
@@ -1064,7 +1064,7 @@ export const addCustomSeriesLabelFormatting = () => {
         yAccessors={['y']}
         splitSeriesAccessors={['time', 'percent']}
         data={data}
-        customSeriesLabel={customSeriesLabelFn}
+        name={customSeriesNamingFn}
       />
     </Chart>
   );
