@@ -7,12 +7,10 @@ import {
   HistogramModeAlignments,
   isLineAnnotation,
   isRectAnnotation,
-  Position,
-  Rotation,
 } from '../utils/specs';
 import { Dimensions } from '../../../utils/dimensions';
 import { AnnotationId, GroupId } from '../../../utils/ids';
-import { Scale, ScaleType } from '../../../utils/scales/scales';
+import { Scale, ScaleType } from '../../../scales';
 import { computeXScaleOffset, getAxesSpecForSpecId, isHorizontalRotation, getSpecsById } from '../state/utils';
 import { Point } from '../../../utils/point';
 import {
@@ -25,6 +23,7 @@ import {
   AnnotationRectProps,
   computeRectAnnotationDimensions,
 } from './rect_annotation_tooltip';
+import { Rotation, Position } from '../../../utils/commons';
 
 export type AnnotationTooltipFormatter = (details?: string) => JSX.Element | null;
 
@@ -151,7 +150,6 @@ export function computeAnnotationDimensions(
 
   // Annotations should always align with the axis line in histogram mode
   const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, HistogramModeAlignments.Start);
-
   annotations.forEach((annotationSpec) => {
     const { id } = annotationSpec;
     if (isLineAnnotation(annotationSpec)) {
@@ -195,7 +193,7 @@ export function computeAnnotationDimensions(
 
 export function computeAnnotationTooltipState(
   cursorPosition: Point,
-  annotationDimensions: Map<AnnotationId, any>,
+  annotationDimensions: Map<AnnotationId, AnnotationDimensions>,
   annotationSpecs: AnnotationSpec[],
   chartRotation: Rotation,
   axesSpecs: AxisSpec[],
@@ -216,7 +214,7 @@ export function computeAnnotationTooltipState(
       }
       const lineAnnotationTooltipState = computeLineAnnotationTooltipState(
         cursorPosition,
-        annotationDimension,
+        annotationDimension as AnnotationLineProps[],
         groupId,
         spec.domainType,
         axesSpecs,
@@ -228,7 +226,7 @@ export function computeAnnotationTooltipState(
     } else if (isRectAnnotation(spec)) {
       const rectAnnotationTooltipState = computeRectAnnotationTooltipState(
         cursorPosition,
-        annotationDimension,
+        annotationDimension as AnnotationRectProps[],
         chartRotation,
         chartDimensions,
         spec.renderTooltip,

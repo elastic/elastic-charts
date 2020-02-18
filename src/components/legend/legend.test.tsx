@@ -2,7 +2,7 @@ import React from 'react';
 import { mount, ReactWrapper } from 'enzyme';
 import { Chart } from '../chart';
 import { Settings, BarSeries } from '../../specs';
-import { ScaleType } from '../../utils/scales/scales';
+import { ScaleType } from '../../scales';
 import { Legend } from './legend';
 import { LegendListItem, RenderColorPicker } from './legend_item';
 import { SeededDataGenerator } from '../../mocks/utils';
