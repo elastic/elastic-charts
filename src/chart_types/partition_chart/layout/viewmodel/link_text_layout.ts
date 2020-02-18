@@ -1,7 +1,7 @@
 import { Distance } from '../types/geometry_types';
 import { Config } from '../types/config_types';
 import { TAU, trueBearingToStandardPositionAngle } from '../utils/math';
-import { LinkLabelVM, ShapeTreeNode } from '../types/viewmodel_types';
+import { LinkLabelVM, ShapeTreeNode, ValueFormatter, ValueGetter } from '../types/viewmodel_types';
 import { meanAngle } from '../geometry';
 import { TextMeasure } from '../types/types';
 import { AGGREGATE_KEY } from '../utils/group_by_rollup';
@@ -15,6 +15,7 @@ export function linkTextLayout(
   currentY: Distance[],
   anchorRadius: Distance,
   rawTextGetter: Function,
+  valueGetter: ValueGetter,
   valueFormatter: ValueFormatter,
 ): LinkLabelVM[] {
   const { linkLabel } = config;
@@ -65,7 +66,7 @@ export function linkTextLayout(
         translate: [stemToX + west * (linkLabel.horizontalStemLength + linkLabel.gap), stemToY],
         textAlign: side ? 'left' : 'right',
         text,
-        valueText: valueFormatter(node[AGGREGATE_KEY]),
+        valueText: valueFormatter(valueGetter(node)),
         width,
         verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`
       };

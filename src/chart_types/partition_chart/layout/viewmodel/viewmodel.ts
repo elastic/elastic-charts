@@ -17,6 +17,8 @@ import {
   RowSet,
   ShapeTreeNode,
   ShapeViewModel,
+  ValueFormatter,
+  ValueGetter,
 } from '../types/viewmodel_types';
 import { Layer } from '../../specs/index';
 import {
@@ -127,7 +129,8 @@ export function shapeViewModel(
   facts: Relation,
   rawTextGetter: RawTextGetter,
   valueAccessor: ValueAccessor,
-  valueFormatter: (value: number) => string,
+  valueFormatter: ValueFormatter,
+  valueGetter: ValueGetter,
   groupByRollupAccessors: IndexedAccessorFn[],
 ): ShapeViewModel {
   const {
@@ -232,6 +235,7 @@ export function shapeViewModel(
   const rowSets: RowSet[] = fillTextLayout(
     textMeasure,
     rawTextGetter,
+    valueGetter,
     valueFormatter,
     nodesWithRoom,
     config,
@@ -265,6 +269,7 @@ export function shapeViewModel(
     currentY,
     outerRadius,
     rawTextGetter,
+    valueGetter,
     valueFormatter,
   );
 

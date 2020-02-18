@@ -5,6 +5,8 @@ import { getConnect, specComponentFactory } from '../../../state/spec_factory';
 import { IndexedAccessorFn } from '../../../utils/accessor';
 import { Spec, SpecTypes } from '../../../specs/index';
 import { Config, FillLabelConfig } from '../layout/types/config_types';
+import { ShapeTreeNode, ValueGetter } from '../layout/types/viewmodel_types';
+import { AGGREGATE_KEY } from '../layout/utils/group_by_rollup';
 import { Datum, LabelAccessor, RecursivePartial, ValueAccessor, ValueFormatter } from '../../../utils/commons';
 import { NodeColorAccessor } from '../layout/types/viewmodel_types';
 import { PrimitiveValue } from '../layout/utils/group_by_rollup';
@@ -21,6 +23,7 @@ const defaultProps = {
   specType: SpecTypes.Series,
   config,
   valueAccessor: (d: Datum) => (typeof d === 'number' ? d : 0),
+  valueGetter: (n: ShapeTreeNode): number => n[AGGREGATE_KEY],
   valueFormatter: (d: number): string => String(d),
   layers: [
     {
@@ -38,6 +41,7 @@ export interface PartitionSpec extends Spec {
   data: Datum[];
   valueAccessor: ValueAccessor;
   valueFormatter: ValueFormatter;
+  valueGetter: ValueGetter;
   layers: Layer[];
 }
 
@@ -45,5 +49,7 @@ type SpecRequiredProps = Pick<PartitionSpec, 'id' | 'data'>;
 type SpecOptionalProps = Partial<Omit<PartitionSpec, 'chartType' | 'specType' | 'id' | 'data'>>;
 
 export const Partition: FunctionComponent<SpecRequiredProps & SpecOptionalProps> = getConnect()(
-  specComponentFactory<PartitionSpec, 'valueAccessor' | 'valueFormatter' | 'layers' | 'config'>(defaultProps),
+  specComponentFactory<PartitionSpec, 'valueAccessor' | 'valueGetter' | 'valueFormatter' | 'layers' | 'config'>(
+    defaultProps,
+  ),
 );

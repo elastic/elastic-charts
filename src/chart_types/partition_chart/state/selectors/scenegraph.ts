@@ -33,6 +33,7 @@ export function render(partitionSpec: PartitionSpec, parentDimensions: Dimension
     rawTextGetter(layers),
     partitionSpec.valueAccessor,
     partitionSpec.valueFormatter,
+    partitionSpec.valueGetter,
     [() => null, ...layers.map(({ groupByRollup }) => groupByRollup)],
   );
 }

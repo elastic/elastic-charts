@@ -2,9 +2,17 @@ import { wrapToTau } from '../geometry';
 import { Coordinate, Distance, Pixels, Radian, Radius, RingSector } from '../types/geometry_types';
 import { Config } from '../types/config_types';
 import { logarithm, TAU, trueBearingToStandardPositionAngle } from '../utils/math';
-import { QuadViewModel, RawTextGetter, RowBox, RowSet, RowSpace, ShapeTreeNode } from '../types/viewmodel_types';
+import {
+  QuadViewModel,
+  RawTextGetter,
+  RowBox,
+  RowSet,
+  RowSpace,
+  ShapeTreeNode,
+  ValueFormatter,
+  ValueGetter,
+} from '../types/viewmodel_types';
 import { Box, Font, PartialFont, TextMeasure } from '../types/types';
-import { AGGREGATE_KEY } from '../utils/group_by_rollup';
 import { conjunctiveConstraint } from '../circline_geometry';
 import { Layer } from '../../specs/index';
 import { stringToRGB } from '../utils/d3_utils';
@@ -198,6 +206,7 @@ function identityRowSet(): RowSet {
 
 function getAllBoxes(
   rawTextGetter: RawTextGetter,
+  valueGetter: ValueGetter,
   valueFormatter: ValueFormatter,
   sizeInvariantFontShorthand: Font,
   valueFont: PartialFont,
@@ -207,7 +216,7 @@ function getAllBoxes(
     .split(' ')
     .map((text) => ({ text, ...sizeInvariantFontShorthand }))
     .concat(
-      valueFormatter(node[AGGREGATE_KEY])
+      valueFormatter(valueGetter(node))
         .split(' ')
         .map((text) => ({ text, ...sizeInvariantFontShorthand, ...valueFont })),
     );
@@ -223,7 +232,8 @@ function fill(
   fontSizes: string | any[],
   measure: TextMeasure,
   rawTextGetter: RawTextGetter,
-  formatter: (value: number) => string,
+  valueGetter: ValueGetter,
+  formatter: ValueFormatter,
   textFillOrigins: any[],
   shapeConstructor: (n: ShapeTreeNode) => any,
   getShapeRowGeometry: (...args: any[]) => RowSpace,
@@ -260,7 +270,7 @@ function fill(
       fontWeight,
       fontFamily,
     };
-    const allBoxes = getAllBoxes(rawTextGetter, valueFormatter, sizeInvariantFont, valueFont, node);
+    const allBoxes = getAllBoxes(rawTextGetter, valueGetter, valueFormatter, sizeInvariantFont, valueFont, node);
     let rowSet = identityRowSet();
     let completed = false;
     const rotation = getRotation(node);
@@ -387,7 +397,8 @@ export function inSectorRotation(horizontalTextEnforcer: number, horizontalTextA
 export function fillTextLayout(
   measure: TextMeasure,
   rawTextGetter: RawTextGetter,
-  valueFormatter: (value: number) => string,
+  valueGetter: ValueGetter,
+  valueFormatter: ValueFormatter,
   childNodes: QuadViewModel[],
   config: Config,
   layers: Layer[],
@@ -415,6 +426,7 @@ export function fillTextLayout(
       fontSizes,
       measure,
       rawTextGetter,
+      valueGetter,
       valueFormatter,
       textFillOrigins,
       shapeConstructor,

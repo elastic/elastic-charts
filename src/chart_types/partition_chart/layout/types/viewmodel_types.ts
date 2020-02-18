@@ -106,4 +106,6 @@ export interface ShapeTreeNode extends TreeNode, SectorGeomSpecY {
 }
 
 export type RawTextGetter = (node: ShapeTreeNode) => string;
+export type ValueGetter = (node: ShapeTreeNode) => number;
+export type ValueFormatter = (value: number) => string;
 export type NodeColorAccessor = (d: ShapeTreeNode, index: number, array: HierarchyOfArrays) => string;

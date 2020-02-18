@@ -2,6 +2,8 @@ import { palettes } from '../../../../mocks/hierarchical/palettes';
 import { Config, PartitionLayout, Numeric } from '../types/config_types';
 import { GOLDEN_RATIO, TAU } from '../utils/math';
 import { FONT_STYLES, FONT_VARIANTS } from '../types/types';
+import { ShapeTreeNode } from '../types/viewmodel_types';
+import { AGGREGATE_KEY, STATISTICS_KEY } from '../utils/group_by_rollup';
 
 const log10 = Math.log(10);
 function significantDigitCount(d: number): number {
@@ -9,6 +11,14 @@ function significantDigitCount(d: number): number {
   if (n == 0) return 0;
   while (n != 0 && n % 10 == 0) n /= 10;
   return Math.floor(Math.log(n) / log10) + 1;
+}
+
+function defaultValueGetter(node: ShapeTreeNode): number {
+  return node[AGGREGATE_KEY];
+}
+
+export function percentValueGetter(node: ShapeTreeNode): number {
+  return node[AGGREGATE_KEY] / node.parent[STATISTICS_KEY].globalAggregate;
 }
 
 function defaultFormatter(d: any): string {
@@ -135,6 +145,10 @@ export const configMetadata = {
         dflt: 'normal',
         type: 'string',
         values: FONT_VARIANTS,
+      },
+      valueGetter: {
+        dflt: defaultValueGetter,
+        type: 'function',
       },
       valueFormatter: {
         dflt: defaultFormatter,
