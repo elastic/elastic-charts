@@ -1,5 +1,4 @@
 import createCachedSelector from 're-reselect';
-import { TooltipValue, isFollowTooltipType, TooltipType, TooltipValueFormatter } from '../../utils/interactions';
 import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
 import { Point } from '../../../../utils/point';
 import { getOrientedProjectedPointerPositionSelector } from './get_oriented_projected_pointer_position';
@@ -12,10 +11,17 @@ import { BasicSeriesSpec, AxisSpec } from '../../utils/specs';
 import { Rotation } from '../../../../utils/commons';
 import { getTooltipTypeSelector } from './get_tooltip_type';
 import { formatTooltip } from '../../tooltip/tooltip';
-import { getTooltipHeaderFormatterSelector } from './get_tooltip_header_formatter';
+import { getTooltipHeaderFormatterSelector } from '../../../../state/selectors/get_tooltip_header_formatter';
 import { isPointOnGeometry } from '../../rendering/rendering';
 import { GlobalChartState } from '../../../../state/chart_state';
-import { PointerEvent, isPointerOutEvent } from '../../../../specs';
+import {
+  PointerEvent,
+  isPointerOutEvent,
+  TooltipValue,
+  TooltipType,
+  TooltipValueFormatter,
+  isFollowTooltipType,
+} from '../../../../specs';
 import { isValidPointerOverEvent } from '../../../../utils/events';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
@@ -68,7 +74,7 @@ function getTooltipAndHighlightFromXValue(
   hasSingleSeries: boolean,
   scales: ComputedScales,
   xMatchingGeoms: IndexedGeometry[],
-  tooltipType: TooltipType,
+  tooltipType: TooltipType = TooltipType.VerticalCursor,
   externalPointerEvent: PointerEvent | null,
   tooltipHeaderFormatter?: TooltipValueFormatter,
 ): TooltipAndHighlightedGeoms {

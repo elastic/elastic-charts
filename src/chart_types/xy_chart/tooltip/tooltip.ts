@@ -1,4 +1,3 @@
-import { TooltipValue } from '../utils/interactions';
 import {
   AxisSpec,
   BasicSeriesSpec,
@@ -10,6 +9,7 @@ import {
 import { IndexedGeometry, BandedAccessorType } from '../../../utils/geometry';
 import { getAccessorFormatLabel } from '../../../utils/accessor';
 import { getSeriesLabel } from '../utils/series';
+import { TooltipValue } from '../../../specs';
 
 export interface TooltipLegendValue {
   y0: any;

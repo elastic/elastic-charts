@@ -5,7 +5,7 @@ import { MockSeriesSpec, MockGlobalSpec } from '../../../mocks/specs';
 import { updateParentDimensions } from '../../../state/actions/chart_settings';
 import { getTooltipValuesAndGeometriesSelector } from './selectors/get_tooltip_values_highlighted_geoms';
 import { onPointerMove } from '../../../state/actions/mouse';
-import { TooltipType } from '../utils/interactions';
+import { TooltipType } from '../../../specs';
 
 describe('XYChart - State tooltips', () => {
   let store: Store<GlobalChartState>;
