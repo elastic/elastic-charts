@@ -6,11 +6,14 @@ export default {
   title: 'Scales/xScale Year Scale Custom Timezone Same Tone Tooltip',
   parameters: {
     info: {
-      source: false,
+      text: `<pre>${`You can visualize data in a different timezone than your local or UTC zones.
+               Specify the \`timeZone={'utc-6'}\` property with the correct timezone and
+               remember to apply the same timezone also to each formatted tick in \`tickFormat\``}</pre>`,
     },
   },
 };
-export const xScaleYearScaleCustomTimezoneSameToneTooltip = () => {
+
+export const example3 = () => {
   return (
     <Chart className={'story-chart'}>
       <Axis
@@ -18,7 +21,6 @@ export const xScaleYearScaleCustomTimezoneSameToneTooltip = () => {
         position={Position.Bottom}
         tickFormat={(d) => {
           return DateTime.fromMillis(d, { zone: 'utc-6' }).toISO();
-          // return DateTime.fromMillis(d, { zone: 'utc-6' }).toISO();
         }}
       />
       <Axis id={getAxisId('y')} position={Position.Left} />
@@ -40,14 +42,6 @@ export const xScaleYearScaleCustomTimezoneSameToneTooltip = () => {
     </Chart>
   );
 };
-xScaleYearScaleCustomTimezoneSameToneTooltip.story = {
+example3.story = {
   name: 'x scale year scale: custom timezone - same zone tooltip',
 };
-//     {
-//       info: {
-//         text: `You can visualize data in a different timezone than your local or UTC zones.
-//         Specify the \`timeZone={'utc-6'}\` property with the correct timezone and
-//         remember to apply the same timezone also to each formatted tick in \`tickFormat\` `,
-//       },
-//     },
-//   )

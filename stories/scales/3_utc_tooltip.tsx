@@ -12,12 +12,14 @@ export default {
   title: 'Scales/XScale UTC Timezone UTC Tooltip',
   parameters: {
     info: {
-      source: false,
+      text: `<pre>${`The default timezone is UTC. If you want to visualize data in UTC,
+                 but you are in a different timezone, remember to format the millis from \`tickFormat\`
+                 to UTC. In this example be able to see the first value on \`2019-01-01  00:00:00.000 \``}</pre>`,
     },
   },
 };
 
-export const xScaleUTCTimezoneUTCTooltip = () => {
+export const example2 = () => {
   return (
     <Chart className={'story-chart'}>
       <Axis
@@ -42,14 +44,6 @@ export const xScaleUTCTimezoneUTCTooltip = () => {
     </Chart>
   );
 };
-xScaleUTCTimezoneUTCTooltip.story = {
+example2.story = {
   name: 'x scale: UTC Time zone - UTC tooltip',
 };
-//     {
-//       info: {
-//         text: `The default timezone is UTC. If you want to visualize data in UTC,
-//         but you are in a different timezone, remember to format the millis from \`tickFormat\`
-//         to UTC. In this example be able to see the first value on \`2019-01-01  00:00:00.000 \``,
-//       },
-//     },
-//   )

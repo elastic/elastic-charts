@@ -6,7 +6,7 @@ export default {
   title: 'Scales/Remove duplicate scales',
   parameters: {
     info: {
-      source: false,
+      text: `<pre>${`hideDuplicateAxes will remove redundant axes that have the same min and max labels and position`}</pre>`,
     },
   },
 };

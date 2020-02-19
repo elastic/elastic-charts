@@ -24,7 +24,7 @@ addParameters({
   },
   info: {
     inline: true,
-    source: true,
+    source: false,
     propTables: false,
     styles: {
       infoBody: {

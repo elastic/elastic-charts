@@ -34,7 +34,7 @@ export default {
   },
 };
 
-export const lineChartWithDifferentTimezones = () => {
+export const example0 = () => {
   const timezones = {
     utc: 'utc',
     local: 'local',
@@ -102,6 +102,6 @@ export const lineChartWithDifferentTimezones = () => {
     </Chart>
   );
 };
-lineChartWithDifferentTimezones.story = {
+example0.story = {
   name: 'line chart with different timezones',
 };
