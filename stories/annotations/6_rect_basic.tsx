@@ -5,7 +5,7 @@ import { getChartRotationKnob } from '../common';
 import { Position } from '../../src/utils/commons';
 
 export default {
-  title: 'Annotations',
+  title: 'Annotations/Rect Basic Annotations',
   parameters: {
     info: {
       source: false,
