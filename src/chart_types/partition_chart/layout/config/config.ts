@@ -18,6 +18,10 @@ function defaultValueGetter(node: ShapeTreeNode): number {
 }
 
 export function percentValueGetter(node: ShapeTreeNode): number {
+  return (100 * node[AGGREGATE_KEY]) / node.parent[STATISTICS_KEY].globalAggregate;
+}
+
+export function ratioValueGetter(node: ShapeTreeNode): number {
   return node[AGGREGATE_KEY] / node.parent[STATISTICS_KEY].globalAggregate;
 }
 
