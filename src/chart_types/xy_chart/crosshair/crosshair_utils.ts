@@ -180,41 +180,39 @@ function getHorizontalTooltipPosition(
   cursorXPosition: number,
   cursorBandPosition: Dimensions,
   chartDimensions: Dimensions,
-  isHorizontalRotated: boolean,
+  isRotated: boolean,
   isSingleValueXScale: boolean,
 ): { x0: number; x1: number } {
-  if (isHorizontalRotated) {
+  if (!isRotated) {
     return {
       x0: cursorBandPosition.left,
       x1: cursorBandPosition.left + (isSingleValueXScale ? 0 : cursorBandPosition.width),
     };
-  } else {
-    return {
-      x0: 0,
-      x1: chartDimensions.left + cursorXPosition,
-    };
   }
+  return {
+    x0: 0,
+    x1: chartDimensions.left + cursorXPosition,
+  };
 }
 
 function getVerticalTooltipPosition(
   cursorYPosition: number,
   cursorBandPosition: Dimensions,
   chartDimensions: Dimensions,
-  isHorizontalRotated: boolean,
+  isRotated: boolean,
   isSingleValueXScale: boolean,
 ): {
   y0: number;
   y1: number;
 } {
-  if (isHorizontalRotated) {
+  if (!isRotated) {
     return {
       y0: cursorYPosition + chartDimensions.top,
       y1: cursorYPosition + chartDimensions.top,
     };
-  } else {
-    return {
-      y0: cursorBandPosition.top,
-      y1: (isSingleValueXScale ? 0 : cursorBandPosition.height) + cursorBandPosition.top,
-    };
   }
+  return {
+    y0: cursorBandPosition.top,
+    y1: (isSingleValueXScale ? 0 : cursorBandPosition.height) + cursorBandPosition.top,
+  };
 }
