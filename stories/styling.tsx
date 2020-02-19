@@ -924,7 +924,7 @@ customSeriesStylesArea.story = {
   name: 'custom series styles: area',
 };
 
-export const addCustomFullAndSubSeriesLabel = () => {
+export const addCustomSeriesLabel = () => {
   const customSeriesNamingFn: SeriesNameFn = ({ yAccessor, splitAccessors }) => {
     // eslint-disable-next-line react/prop-types
     if (yAccessor === 'y1' && splitAccessors.get('g') === 'a') {
@@ -958,7 +958,7 @@ export const addCustomFullAndSubSeriesLabel = () => {
     </Chart>
   );
 };
-addCustomFullAndSubSeriesLabel.story = {
+addCustomSeriesLabel.story = {
   name: 'Add custom series label',
 };
 
