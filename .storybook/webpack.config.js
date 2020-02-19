@@ -32,6 +32,18 @@ module.exports = async ({ config }) => {
 
   config.module.rules.push({
     test: /\.tsx?$/,
+    include: [path.resolve(__dirname, '../stories', 'scales')],
+    loaders: [
+      {
+        loader: require.resolve('@storybook/source-loader'),
+        options: { parser: 'typescript' },
+      },
+    ],
+    enforce: 'pre',
+  });
+
+  config.module.rules.push({
+    test: /\.tsx?$/,
     loader: require.resolve('react-docgen-typescript-loader'),
     exclude: /node_modules/,
   });
