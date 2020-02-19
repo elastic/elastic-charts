@@ -32,7 +32,7 @@ module.exports = async ({ config }) => {
 
   config.module.rules.push({
     test: /\.tsx?$/,
-    include: [path.resolve(__dirname, '../stories', 'scales')],
+    include: [path.resolve(__dirname, '../stories')],
     loaders: [
       {
         loader: require.resolve('@storybook/source-loader'),
