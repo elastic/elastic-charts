@@ -15,7 +15,8 @@ export const clickHoversOnLegendItemsMixedChart = () => {
   return (
     <Chart className={'story-chart'}>
       <Settings
-        showLegend={true}
+        showLegend
+        showLegendExtra
         legendPosition={Position.Right}
         onLegendItemClick={action('onLegendItemClick')}
         onLegendItemOver={action('onLegendItemOver')}

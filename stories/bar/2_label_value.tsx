@@ -75,7 +75,7 @@ export const withValueLabel = () => {
   const stackAccessors = isStackedSeries ? ['x'] : undefined;
   return (
     <Chart renderer="canvas" className={'story-chart'}>
-      <Settings theme={theme} debug={debug} rotation={getChartRotationKnob()} showLegend />
+      <Settings theme={theme} debug={debug} rotation={getChartRotationKnob()} showLegend showLegendExtra />
       <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
       <Axis id={'left2'} title={'Left axis'} position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
       <BarSeries

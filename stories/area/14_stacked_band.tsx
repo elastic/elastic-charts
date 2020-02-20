@@ -21,7 +21,7 @@ export const stackedBandAreaChart = () => {
 
   return (
     <Chart className={'story-chart'}>
-      <Settings showLegend />
+      <Settings showLegend showLegendExtra />
       <Axis
         id={getAxisId('bottom')}
         title={'timestamp per 1 minute'}

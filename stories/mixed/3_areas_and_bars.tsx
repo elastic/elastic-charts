@@ -25,7 +25,7 @@ export default {
 export const areasAndBars = () => {
   return (
     <Chart renderer="canvas" className={'story-chart'}>
-      <Settings showLegend={true} legendPosition={Position.Right} />
+      <Settings showLegend showLegendExtra legendPosition={Position.Right} />
       <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
       <Axis
         id={getAxisId('left2')}

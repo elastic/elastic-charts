@@ -16,7 +16,7 @@ export default {
 export const renderChangeAction = () => {
   return (
     <Chart className={'story-chart'}>
-      <Settings showLegend={true} legendPosition={Position.Right} onRenderChange={onRenderChange} />
+      <Settings showLegend showLegendExtra legendPosition={Position.Right} onRenderChange={onRenderChange} />
       <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
       <Axis
         id={getAxisId('left2')}

@@ -14,7 +14,7 @@ export default {
 export const barsAndLines = () => {
   return (
     <Chart className={'story-chart'}>
-      <Settings showLegend={true} legendPosition={Position.Right} />
+      <Settings showLegend showLegendExtra legendPosition={Position.Right} />
       <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} />
       <Axis
         id={getAxisId('left2')}

@@ -14,7 +14,7 @@ export default {
 export const bottom = () => {
   return (
     <Chart className={'story-chart'}>
-      <Settings showLegend={true} legendPosition={Position.Bottom} />
+      <Settings showLegend showLegendExtra legendPosition={Position.Bottom} />
       <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
       <Axis
         id={getAxisId('left2')}

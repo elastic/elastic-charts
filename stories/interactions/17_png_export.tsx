@@ -60,7 +60,7 @@ export const pngExportAction = () => {
   button(label, handler, groupId);
   return (
     <Chart className={'story-chart'} ref={chartRef}>
-      <Settings showLegend={true} />
+      <Settings showLegend showLegendExtra />
       <Axis
         id={getAxisId('time')}
         position={Position.Bottom}

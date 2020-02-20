@@ -33,7 +33,13 @@ export const clusteredWithAxisAndLegend = () => {
   };
   return (
     <Chart className={'story-chart'}>
-      <Settings showLegend={true} legendPosition={Position.Right} theme={theme} rotation={getChartRotationKnob()} />
+      <Settings
+        showLegend
+        showLegendExtra
+        legendPosition={Position.Right}
+        theme={theme}
+        rotation={getChartRotationKnob()}
+      />
       <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
       <Axis id={'left2'} title={'Left axis'} position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 

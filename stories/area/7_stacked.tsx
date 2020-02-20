@@ -26,7 +26,7 @@ export const stackedWAxisAndLegend = () => {
   const allMetrics = [...data3, ...data2, ...data1];
   return (
     <Chart className={'story-chart'}>
-      <Settings showLegend={true} legendPosition={Position.Right} />
+      <Settings showLegend showLegendExtra legendPosition={Position.Right} />
       <Axis
         id={getAxisId('bottom')}
         position={Position.Bottom}

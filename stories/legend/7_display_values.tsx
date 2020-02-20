@@ -53,7 +53,7 @@ export const displayValuesInLegendElements = () => {
   });
   return (
     <Chart className={'story-chart'}>
-      <Settings showLegend={true} legendPosition={legendPosition} showLegendDisplayValue={showLegendDisplayValue} />
+      <Settings showLegend={true} legendPosition={legendPosition} showLegendExtra={showLegendDisplayValue} />
       <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
       <Axis
         id={getAxisId('left2')}

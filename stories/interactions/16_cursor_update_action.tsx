@@ -16,7 +16,7 @@ export default {
 export const cursorUpdateAction = () => {
   return (
     <Chart className={'story-chart'}>
-      <Settings showLegend={true} legendPosition={Position.Right} onPointerUpdate={onPointerUpdate} />
+      <Settings showLegend showLegendExtra legendPosition={Position.Right} onPointerUpdate={onPointerUpdate} />
       <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
       <Axis
         id={getAxisId('left2')}

@@ -43,7 +43,7 @@ export const bandAreaChart = () => {
   const y1AccessorFormat = text('y1AccessorFormat', '');
   return (
     <Chart className={'story-chart'}>
-      <Settings showLegend legendPosition={Position.Right} />
+      <Settings showLegend showLegendExtra legendPosition={Position.Right} />
       <Axis
         id={getAxisId('bottom')}
         title={'timestamp per 1 minute'}

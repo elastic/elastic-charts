@@ -20,7 +20,7 @@ export const legendSpacingBuffer = () => {
 
   return (
     <Chart className={'story-chart'}>
-      <Settings theme={theme} showLegend={true} legendPosition={Position.Right} />
+      <Settings theme={theme} showLegend showLegendExtra legendPosition={Position.Right} />
       <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
       <Axis
         id={getAxisId('left2')}

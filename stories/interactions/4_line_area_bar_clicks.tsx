@@ -31,7 +31,7 @@ export default {
 export const lineAreaBarPointClicksAndHovers = () => {
   return (
     <Chart className={'story-chart'}>
-      <Settings showLegend={true} legendPosition={Position.Right} {...onElementListeners} />
+      <Settings showLegend showLegendExtra legendPosition={Position.Right} {...onElementListeners} />
       <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
       <Axis
         id={getAxisId('left2')}

@@ -17,7 +17,7 @@ export const stackedAsPercentage = () => {
   const clusterBars = boolean('cluster', true);
   return (
     <Chart className={'story-chart'}>
-      <Settings showLegend={true} legendPosition={Position.Right} />
+      <Settings showLegend showLegendExtra legendPosition={Position.Right} />
       <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
       <Axis
         id={'left2'}

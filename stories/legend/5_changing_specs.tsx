@@ -16,7 +16,7 @@ export const changingSpecs = () => {
   const splitSeries = boolean('split series', true) ? ['g1', 'g2'] : undefined;
   return (
     <Chart className={'story-chart'}>
-      <Settings showLegend={true} legendPosition={Position.Top} />
+      <Settings showLegend showLegendExtra legendPosition={Position.Top} />
       <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
       <Axis
         id={getAxisId('left2')}
