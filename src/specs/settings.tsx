@@ -139,6 +139,7 @@ export interface SettingsSpec extends Spec {
   legendPosition: Position;
   /**
    * Show an extra parameter on each legend item defined by the chart type
+   * @default false
    */
   showLegendExtra: boolean;
   /**
@@ -205,7 +206,7 @@ export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
     snap: DEFAULT_TOOLTIP_SNAP,
   },
   legendPosition: Position.Right,
-  showLegendExtra: true,
+  showLegendExtra: false,
   hideDuplicateAxes: false,
   theme: LIGHT_THEME,
 };
