@@ -9,6 +9,8 @@ import { ScaleType } from '../../../scales';
 import { LastValues } from '../state/utils';
 import { Datum } from '../../../utils/commons';
 
+export const SERIES_DELIMITER = ' - ';
+
 export interface FilledValues {
   /** the x value */
   x?: number | string;
@@ -380,11 +382,11 @@ export function getSplittedSeries(
   };
 }
 
-const getSeriesNameFromOptions = (
+export function getSeriesNameFromOptions(
   options: SeriesNameConfigOptions,
   { yAccessor, splitAccessors }: SeriesIdentifier,
   delimiter: string,
-) => {
+) {
   if (!options.names) {
     return null;
   }
@@ -393,7 +395,7 @@ const getSeriesNameFromOptions = (
     options.names
       .sort(({ sortIndex: a = Infinity }, { sortIndex: b = Infinity }) => a - b)
       .map(({ accessor, value, name }) => {
-        const accessorValue = (accessor ? splitAccessors.get(accessor) : null) ?? null;
+        const accessorValue = splitAccessors.get(accessor) ?? null;
         if (accessorValue === value) {
           return name ?? value;
         }
@@ -404,10 +406,9 @@ const getSeriesNameFromOptions = (
         return null;
       })
       .filter((d) => Boolean(d) || d === 0)
-      .slice()
       .join(delimiter) || null
   );
-};
+}
 
 /**
  * Get series name based on `SeriesIdentifier`
@@ -418,7 +419,7 @@ export function getSeriesName(
   isTooltip: boolean,
   spec?: BasicSeriesSpec,
 ): string {
-  let delimiter = ' - ';
+  let delimiter = SERIES_DELIMITER;
   if (spec && spec.name && typeof spec.name !== 'string') {
     let customLabel: string | number | null = null;
     if (typeof spec.name === 'function') {

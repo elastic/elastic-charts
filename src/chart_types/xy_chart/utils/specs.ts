@@ -50,19 +50,19 @@ export type PointStyleAccessor = (datum: RawDataSeriesDatum, seriesIdentifier: S
 export const DEFAULT_GLOBAL_ID = '__global__';
 
 export type FilterPredicate = (series: SeriesIdentifier) => boolean;
-export type SeriesLabel = string | number | null;
+export type SeriesName = string | number | null;
 /**
- * Function to create custom series label for a given series
+ * Function to create custom series name for a given series
  */
-export type SeriesNameFn = (series: SeriesIdentifier, isTooltip: boolean) => SeriesLabel;
+export type SeriesNameFn = (series: SeriesIdentifier, isTooltip: boolean) => SeriesName;
 /**
- * Accessor mapping to replace labels
+ * Accessor mapping to replace names
  */
 export interface SeriesNameConfig {
   /**
    * accessor key (i.e. `yAccessors` and `seriesSplitAccessors`)
    */
-  accessor: string;
+  accessor: string | number;
   /**
    * Accessor value (i.e. values from `seriesSplitAccessors`)
    */
@@ -74,10 +74,10 @@ export interface SeriesNameConfig {
    */
   name?: string | number;
   /**
-   * Sort order of label, overrides order listed in array.
+   * Sort order of name, overrides order listed in array.
    *
-   * lower values - front most
-   * higher values - end most
+   * lower values - left-most
+   * higher values - right-most
    */
   sortIndex?: number;
 }
@@ -86,16 +86,16 @@ export interface SeriesNameConfigOptions {
    * Array of accessor naming configs to replace series names
    *
    * Only provided configs will be included
-   * (i.e. if you only provide a single mapping for `yAccessor`, all other series accessor labels will be ignored)
+   * (i.e. if you only provide a single mapping for `yAccessor`, all other series accessor names will be ignored)
    *
-   * The order of configs is the order in which the resulting labels will
+   * The order of configs is the order in which the resulting names will
    * be joined, if no `sortIndex` is specified.
    *
    * If no values are found for a giving mapping in a series, the mapping will be ignored.
    */
   names?: SeriesNameConfig[];
   /**
-   * Delimiter to join values/labels
+   * Delimiter to join values/names
    *
    * @default ' - '
    */

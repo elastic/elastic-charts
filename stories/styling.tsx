@@ -924,7 +924,7 @@ customSeriesStylesArea.story = {
   name: 'custom series styles: area',
 };
 
-export const addCustomSeriesLabel = () => {
+export const addCustomSeriesName = () => {
   const customSeriesNamingFn: SeriesNameFn = ({ yAccessor, splitAccessors }) => {
     // eslint-disable-next-line react/prop-types
     if (yAccessor === 'y1' && splitAccessors.get('g') === 'a') {
@@ -958,8 +958,8 @@ export const addCustomSeriesLabel = () => {
     </Chart>
   );
 };
-addCustomSeriesLabel.story = {
-  name: 'Add custom series label',
+addCustomSeriesName.story = {
+  name: 'Add custom series name',
 };
 
 export const customSeriesNamingConfig = () => {
@@ -1007,7 +1007,7 @@ customSeriesNamingConfig.story = {
   name: 'Add custom series naming and delimeter',
 };
 
-export const addCustomSeriesLabelFormatting = () => {
+export const addCustomSeriesNameFormatting = () => {
   const start = DateTime.fromISO('2019-01-01T00:00:00.000', { zone: 'utc' });
   const data = [
     { x: 1, y: 3, percent: 0.5, time: start.plus({ month: 1 }).toMillis() },
@@ -1069,8 +1069,8 @@ export const addCustomSeriesLabelFormatting = () => {
     </Chart>
   );
 };
-addCustomSeriesLabelFormatting.story = {
-  name: 'Add custom series label formatting (legend/tooltip) [time/date and percent]',
+addCustomSeriesNameFormatting.story = {
+  name: 'Add custom series name formatting (legend/tooltip) [time/date and percent]',
 };
 
 export const tickLabelPaddingBothPropAndTheme = () => {
