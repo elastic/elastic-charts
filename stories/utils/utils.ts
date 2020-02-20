@@ -1,11 +1,10 @@
 import { arrayToLookup, hueInterpolator } from '../../src/chart_types/partition_chart/layout/utils/calcs';
 import { palettes } from '../../src/mocks/hierarchical/palettes';
-import { Datum } from '../../src/utils/commons';
 import { countryDimension, productDimension, regionDimension } from '../../src/mocks/hierarchical/dimension_codes';
 
-export const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
-export const regionLookup = arrayToLookup((d: Datum) => d.region, regionDimension);
-export const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
+export const productLookup = arrayToLookup((d: any) => d.sitc1, productDimension);
+export const regionLookup = arrayToLookup((d: any) => d.region, regionDimension);
+export const countryLookup = arrayToLookup((d: any) => d.country, countryDimension);
 
 type ColorMaker = (x: number) => string;
 

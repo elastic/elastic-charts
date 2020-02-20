@@ -1,5 +1,5 @@
 import { ColorConfig } from '../../../utils/themes/theme';
-import { Accessor, getAccessorValue, AccessorFn } from '../../../utils/accessor';
+import { Accessor, AccessorFn } from '../../../utils/accessor';
 import { GroupId, SpecId } from '../../../utils/ids';
 import { splitSpecsByGroupId, YBasicSeriesSpec } from '../domains/y_domain';
 import { formatNonStackedDataSeriesValues } from './nonstacked_series_utils';
@@ -123,7 +123,7 @@ export function splitSeries({
       yAccessors.forEach((accessor, index) => {
         const cleanedDatum = cleanDatum(datum, xAccessor, accessor, y0Accessors && y0Accessors[index]);
 
-        if (cleanedDatum.x !== null && cleanedDatum.x !== undefined) {
+        if (cleanedDatum !== null && cleanedDatum.x !== null && cleanedDatum.x !== undefined) {
           xValues.add(cleanedDatum.x);
           const seriesKey = updateSeriesMap(series, splitAccessors, accessor, cleanedDatum, specId);
           colorsValues.add(seriesKey);
@@ -131,7 +131,7 @@ export function splitSeries({
       });
     } else {
       const cleanedDatum = cleanDatum(datum, xAccessor, yAccessors[0], y0Accessors && y0Accessors[0]);
-      if (cleanedDatum.x !== null && cleanedDatum.x !== undefined) {
+      if (cleanedDatum !== null && cleanedDatum.x !== null && cleanedDatum.x !== undefined) {
         xValues.add(cleanedDatum.x);
         const seriesKey = updateSeriesMap(series, splitAccessors, yAccessors[0], cleanedDatum, specId);
         colorsValues.add(seriesKey);
@@ -199,12 +199,14 @@ function updateSeriesMap(
  */
 function getSplitAccessors(datum: Datum, accessors: Accessor[] = []): Map<string | number, string | number> {
   const splitAccessors = new Map<string | number, string | number>();
-  accessors.forEach((accessor) => {
-    const value = datum[accessor];
-    if (value !== undefined || value !== null) {
-      splitAccessors.set(accessor, value);
-    }
-  });
+  if (typeof datum === 'object' && datum !== null) {
+    accessors.forEach((accessor: Accessor) => {
+      const value = datum[accessor as keyof typeof datum];
+      if (typeof value === 'string' || typeof value === 'number') {
+        splitAccessors.set(accessor, value);
+      }
+    });
+  }
   return splitAccessors;
 }
 
@@ -216,12 +218,16 @@ export function cleanDatum(
   xAccessor: Accessor | AccessorFn,
   yAccessor: Accessor,
   y0Accessor?: Accessor,
-): RawDataSeriesDatum {
-  const x = getAccessorValue(datum, xAccessor);
-  const y1 = castToNumber(datum[yAccessor]);
+): RawDataSeriesDatum | null {
+  if (typeof datum !== 'object' || datum === null) {
+    return null;
+  }
+  const rawX = datum[xAccessor as keyof typeof datum];
+  const x = typeof rawX === 'string' || typeof rawX === 'number' ? rawX : NaN;
+  const y1 = castToNumber(datum[yAccessor as keyof typeof datum]);
   const cleanedDatum: RawDataSeriesDatum = { x, y1, datum, y0: null };
   if (y0Accessor) {
-    cleanedDatum.y0 = castToNumber(datum[y0Accessor]);
+    cleanedDatum.y0 = castToNumber(datum[y0Accessor as keyof typeof datum]);
   }
   return cleanedDatum;
 }

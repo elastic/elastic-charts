@@ -20,7 +20,7 @@ const defaultProps = {
   chartType: ChartTypes.Partition,
   specType: SpecTypes.Series,
   config,
-  valueAccessor: (d: Datum) => d,
+  valueAccessor: () => 0,
   valueFormatter: (d: number): string => String(d),
   layers: [
     {

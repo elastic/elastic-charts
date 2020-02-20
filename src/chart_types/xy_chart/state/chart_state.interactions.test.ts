@@ -546,8 +546,8 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(onOverListener.mock.calls[0][0]).toEqual([
       [
         {
-          x: spec.data[0][0],
-          y: spec.data[0][1],
+          x: (spec.data[0] as Array<any>)[0],
+          y: (spec.data[0] as Array<any>)[1],
           accessor: 'y1',
         },
         {
@@ -577,8 +577,8 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     expect(onOverListener.mock.calls[1][0]).toEqual([
       [
         {
-          x: spec.data[1][0],
-          y: spec.data[1][1],
+          x: (spec.data[1] as Array<any>)[0],
+          y: (spec.data[1] as Array<any>)[1],
           accessor: 'y1',
         },
         {
