@@ -2,7 +2,7 @@ import { v1 as uuidV1 } from 'uuid';
 import { $Values } from 'utility-types';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 
-export type Datum = unknown;
+export type Datum = any; // unknown;
 export type Rotation = 0 | 90 | -90 | 180;
 export type Rendering = 'canvas' | 'svg';
 export type Color = string;
