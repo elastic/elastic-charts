@@ -14,7 +14,7 @@ const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
 const interpolatorTurbo = hueInterpolator(palettes.turbo.map(([r, g, b]) => [r, g, b, 0.7]));
 
 export default {
-  title: 'Treemap/Two Layers Stres Test',
+  title: 'Treemap/Two Layers Stress Test',
   parameters: {
     info: {
       source: false,

@@ -5,7 +5,7 @@ import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana
 const dateFormatter = timeFormatter('HH:mm');
 
 export default {
-  title: 'Area Chart',
+  title: 'Area Chart/Stacked with Axis and Legend',
   parameters: {
     info: {
       source: false,
