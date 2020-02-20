@@ -18,7 +18,7 @@ import {
   ShapeTreeNode,
   ShapeViewModel,
   ValueFormatter,
-  ValueGetter,
+  ValueGetterFunction,
 } from '../types/viewmodel_types';
 import { Layer } from '../../specs/index';
 import {
@@ -130,7 +130,7 @@ export function shapeViewModel(
   rawTextGetter: RawTextGetter,
   valueAccessor: ValueAccessor,
   valueFormatter: ValueFormatter,
-  valueGetter: ValueGetter,
+  valueGetter: ValueGetterFunction,
   groupByRollupAccessors: IndexedAccessorFn[],
 ): ShapeViewModel {
   const {

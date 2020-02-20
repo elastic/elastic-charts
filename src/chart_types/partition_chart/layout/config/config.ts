@@ -25,6 +25,9 @@ export function ratioValueGetter(node: ShapeTreeNode): number {
   return node[AGGREGATE_KEY] / node.parent[STATISTICS_KEY].globalAggregate;
 }
 
+export const VALUE_GETTERS = Object.freeze({ percent: percentValueGetter, ratio: ratioValueGetter } as const);
+export type ValueGetterName = keyof typeof VALUE_GETTERS;
+
 function defaultFormatter(d: any): string {
   return typeof d === 'string'
     ? d

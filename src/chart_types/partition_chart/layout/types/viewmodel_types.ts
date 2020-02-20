@@ -1,7 +1,7 @@
 import { Config } from './config_types';
 import { Coordinate, Distance, Pixels, PointObject, PointTuple, Radian } from './geometry_types';
 import { Font } from './types';
-import { config } from '../config/config';
+import { config, ValueGetterName } from '../config/config';
 import { ArrayNode, HierarchyOfArrays } from '../utils/group_by_rollup';
 import { Color } from '../../../../utils/commons';
 
@@ -106,6 +106,7 @@ export interface ShapeTreeNode extends TreeNode, SectorGeomSpecY {
 }
 
 export type RawTextGetter = (node: ShapeTreeNode) => string;
-export type ValueGetter = (node: ShapeTreeNode) => number;
+export type ValueGetterFunction = (node: ShapeTreeNode) => number;
+export type ValueGetter = ValueGetterFunction | ValueGetterName;
 export type ValueFormatter = (value: number) => string;
 export type NodeColorAccessor = (d: ShapeTreeNode, index: number, array: HierarchyOfArrays) => string;

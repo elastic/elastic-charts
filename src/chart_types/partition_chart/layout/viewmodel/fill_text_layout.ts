@@ -10,7 +10,7 @@ import {
   RowSpace,
   ShapeTreeNode,
   ValueFormatter,
-  ValueGetter,
+  ValueGetterFunction,
 } from '../types/viewmodel_types';
 import { Box, Font, PartialFont, TextMeasure } from '../types/types';
 import { conjunctiveConstraint } from '../circline_geometry';
@@ -206,7 +206,7 @@ function identityRowSet(): RowSet {
 
 function getAllBoxes(
   rawTextGetter: RawTextGetter,
-  valueGetter: ValueGetter,
+  valueGetter: ValueGetterFunction,
   valueFormatter: ValueFormatter,
   sizeInvariantFontShorthand: Font,
   valueFont: PartialFont,
@@ -232,7 +232,7 @@ function fill(
   fontSizes: string | any[],
   measure: TextMeasure,
   rawTextGetter: RawTextGetter,
-  valueGetter: ValueGetter,
+  valueGetter: ValueGetterFunction,
   formatter: ValueFormatter,
   textFillOrigins: any[],
   shapeConstructor: (n: ShapeTreeNode) => any,
@@ -397,7 +397,7 @@ export function inSectorRotation(horizontalTextEnforcer: number, horizontalTextA
 export function fillTextLayout(
   measure: TextMeasure,
   rawTextGetter: RawTextGetter,
-  valueGetter: ValueGetter,
+  valueGetter: ValueGetterFunction,
   valueFormatter: ValueFormatter,
   childNodes: QuadViewModel[],
   config: Config,

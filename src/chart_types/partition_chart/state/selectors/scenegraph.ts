@@ -5,7 +5,7 @@ import { ShapeTreeNode, ShapeViewModel, RawTextGetter, nullShapeViewModel } from
 import { DEPTH_KEY } from '../../layout/utils/group_by_rollup';
 import { PartitionSpec, Layer } from '../../specs/index';
 import { identity, mergePartial, RecursivePartial } from '../../../../utils/commons';
-import { config as defaultConfig } from '../../layout/config/config';
+import { config as defaultConfig, VALUE_GETTERS } from '../../layout/config/config';
 import { Config } from '../../layout/types/config_types';
 
 function rawTextGetter(layers: Layer[]): RawTextGetter {
@@ -25,6 +25,10 @@ export function render(partitionSpec: PartitionSpec, parentDimensions: Dimension
   if (!textMeasurerCtx) {
     return nullShapeViewModel(config, { x: width / 2, y: height / 2 });
   }
+  const valueGetter =
+    typeof partitionSpec.valueGetter === 'function'
+      ? partitionSpec.valueGetter
+      : VALUE_GETTERS[partitionSpec.valueGetter];
   return shapeViewModel(
     measureText(textMeasurerCtx),
     config,
@@ -33,7 +37,7 @@ export function render(partitionSpec: PartitionSpec, parentDimensions: Dimension
     rawTextGetter(layers),
     partitionSpec.valueAccessor,
     partitionSpec.valueFormatter,
-    partitionSpec.valueGetter,
+    valueGetter,
     [() => null, ...layers.map(({ groupByRollup }) => groupByRollup)],
   );
 }
