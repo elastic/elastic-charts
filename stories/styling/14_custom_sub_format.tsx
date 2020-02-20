@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Axis, BarSeries, Chart, getAxisId, getSpecId, Position, ScaleType, Settings } from '../../src/';
+import { Axis, BarSeries, Chart, getAxisId, getSpecId, Position, ScaleType, Settings } from '../../src';
 import { SubSeriesStringPredicate } from '../../src/chart_types/xy_chart/utils/specs';
 import moment from 'moment';
 import { DateTime } from 'luxon';

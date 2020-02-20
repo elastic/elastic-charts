@@ -43,7 +43,7 @@ describe('Axis stories', () => {
   });
   it('should render with domain constraints', async () => {
     await common.expectChartAtUrlToMatchScreenshot(
-      'http://localhost:9001/?path=/story/axis-customizing-domain-limits-mixed-ordinal-linear-xdomain--customizing-domain-limits-mixed-ordinal-linear-x-domain&knob-left min=2&knob-xDomain max=2',
+      'http://localhost:9001/?path=/story/axis-mixed-ordinal-linear--customizing-domain-limits-mixed-ordinal-linear-x-domain&knob-left min=2&knob-xDomain max=2',
     );
   });
 });

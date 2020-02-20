@@ -16,7 +16,7 @@ import {
 import { arrayKnobs } from '../common';
 
 export default {
-  title: 'Axis/Customizing Domain Limits Mixed Ordinal Linear xDomain',
+  title: 'Axis/Mixed Ordinal Linear',
   parameters: {
     info: {
       source: false,

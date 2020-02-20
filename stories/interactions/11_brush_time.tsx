@@ -11,7 +11,7 @@ import {
   Position,
   ScaleType,
   Settings,
-} from '../../src/';
+} from '../../src';
 
 import { boolean } from '@storybook/addon-knobs';
 import { DateTime } from 'luxon';

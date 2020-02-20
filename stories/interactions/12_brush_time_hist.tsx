@@ -10,14 +10,14 @@ import {
   ScaleType,
   Settings,
   HistogramBarSeries,
-} from '../../src/';
+} from '../../src';
 
 import { boolean } from '@storybook/addon-knobs';
 import { DateTime } from 'luxon';
 import { getChartRotationKnob } from '../common';
 
 export default {
-  title: 'Interactions/Brush Selection Tool on Histogram Time Charts',
+  title: 'Interactions/Brush Select on Time Histogram',
   parameters: {
     info: {
       source: false,
