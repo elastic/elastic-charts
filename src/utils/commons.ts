@@ -1,5 +1,6 @@
 import { v1 as uuidV1 } from 'uuid';
 import { $Values } from 'utility-types';
+import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 
 export type Datum = any;
 export type Rotation = 0 | 90 | -90 | 180;
@@ -171,3 +172,7 @@ export function mergePartial<T>(
 export function isNumberArray(value: unknown): value is number[] {
   return Array.isArray(value) && value.every((element) => typeof element === 'number');
 }
+
+export type ValueFormatter = (value: number) => string;
+export type ValueAccessor = (d: Datum) => number;
+export type LabelAccessor = (value: PrimitiveValue) => string;

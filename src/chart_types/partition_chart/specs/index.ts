@@ -5,15 +5,15 @@ import { getConnect, specComponentFactory } from '../../../state/spec_factory';
 import { IndexedAccessorFn } from '../../../utils/accessor';
 import { Spec, SpecTypes } from '../../../specs/index';
 import { Config, FillLabelConfig } from '../layout/types/config_types';
-import { Datum, RecursivePartial } from '../../../utils/commons';
-import { ColorAccessor, NodeLabelAccessor, ValueAccessor, ValueFormatter } from '../layout/types/viewmodel_types';
+import { Datum, LabelAccessor, RecursivePartial, ValueAccessor, ValueFormatter } from '../../../utils/commons';
+import { NodeColorAccessor } from '../layout/types/viewmodel_types';
 import { PrimitiveValue } from '../layout/utils/group_by_rollup';
 
 export interface Layer {
   groupByRollup: IndexedAccessorFn;
-  nodeLabel?: NodeLabelAccessor;
+  nodeLabel?: LabelAccessor;
   fillLabel?: Partial<FillLabelConfig>;
-  shape?: { fillColor: string | ColorAccessor };
+  shape?: { fillColor: string | NodeColorAccessor };
 }
 
 const defaultProps = {

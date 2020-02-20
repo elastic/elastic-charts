@@ -41,6 +41,7 @@ import {
   parentAccessor,
   sortIndexAccessor,
 } from '../utils/group_by_rollup';
+import { ValueAccessor } from '../../../../utils/commons';
 
 function paddingAccessor(n: ArrayEntry) {
   return entryValue(n).depth > 1 ? 1 : [0, 2][entryValue(n).depth];

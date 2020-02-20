@@ -2,8 +2,8 @@ import { Config } from './config_types';
 import { Coordinate, Distance, PointObject, PointTuple, Radian } from './geometry_types';
 import { Font } from './types';
 import { config } from '../config/config';
-import { ArrayNode, HierarchyOfArrays, PrimitiveValue } from '../utils/group_by_rollup';
-import { Color, Datum } from '../../../../utils/commons';
+import { ArrayNode, HierarchyOfArrays } from '../utils/group_by_rollup';
+import { Color } from '../../../../utils/commons';
 
 export type LinkLabelVM = {
   link: [PointTuple, ...PointTuple[]]; // at least one point
@@ -101,7 +101,4 @@ export interface ShapeTreeNode extends TreeNode, SectorGeomSpecY {
 }
 
 export type RawTextGetter = (node: ShapeTreeNode) => string;
-export type ValueFormatter = (value: number) => string;
-export type ValueAccessor = (d: Datum) => number;
-export type ColorAccessor = (d: ShapeTreeNode, index: number, array: HierarchyOfArrays) => string;
-export type NodeLabelAccessor = (value: PrimitiveValue) => string;
+export type NodeColorAccessor = (d: ShapeTreeNode, index: number, array: HierarchyOfArrays) => string;
