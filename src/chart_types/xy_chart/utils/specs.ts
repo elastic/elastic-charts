@@ -13,7 +13,7 @@ import { RecursivePartial, Color, Position, Datum } from '../../../utils/commons
 import { AxisId, GroupId } from '../../../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../../../scales';
 import { CurveType } from '../../../utils/curves';
-import { RawDataSeriesDatum, SeriesIdentifier } from './series';
+import { RawDataSeriesDatum, XYChartSeriesIdentifier } from './series';
 import { AnnotationTooltipFormatter } from '../annotations/annotation_utils';
 import { Spec, SpecTypes } from '../../..';
 import { ChartTypes } from '../..';
@@ -37,7 +37,10 @@ export type SeriesTypes = $Values<typeof SeriesTypes>;
  * - `RecursivePartial<BarSeriesStyle>`: Style values to be merged with base bar styles
  * - `null`: Keep existing bar style
  */
-export type BarStyleAccessor = (datum: RawDataSeriesDatum, seriesIdentifier: SeriesIdentifier) => BarStyleOverride;
+export type BarStyleAccessor = (
+  datum: RawDataSeriesDatum,
+  seriesIdentifier: XYChartSeriesIdentifier,
+) => BarStyleOverride;
 /**
  * Override for bar styles per datum
  *
@@ -46,15 +49,18 @@ export type BarStyleAccessor = (datum: RawDataSeriesDatum, seriesIdentifier: Ser
  * - `RecursivePartial<PointStyle>`: Style values to be merged with base point styles
  * - `null`: Keep existing point style
  */
-export type PointStyleAccessor = (datum: RawDataSeriesDatum, seriesIdentifier: SeriesIdentifier) => PointStyleOverride;
+export type PointStyleAccessor = (
+  datum: RawDataSeriesDatum,
+  seriesIdentifier: XYChartSeriesIdentifier,
+) => PointStyleOverride;
 export const DEFAULT_GLOBAL_ID = '__global__';
 
-export type FilterPredicate = (series: SeriesIdentifier) => boolean;
+export type FilterPredicate = (series: XYChartSeriesIdentifier) => boolean;
 export type SeriesName = string | number | null;
 /**
  * Function to create custom series name for a given series
  */
-export type SeriesNameFn = (series: SeriesIdentifier, isTooltip: boolean) => SeriesName;
+export type SeriesNameFn = (series: XYChartSeriesIdentifier, isTooltip: boolean) => SeriesName;
 /**
  * Accessor mapping to replace names
  */
@@ -300,7 +306,7 @@ export interface Postfixes {
 }
 
 export type SeriesColorsArray = string[];
-export type SeriesColorAccessorFn = (seriesIdentifier: SeriesIdentifier) => string | null;
+export type SeriesColorAccessorFn = (seriesIdentifier: XYChartSeriesIdentifier) => string | null;
 export type CustomSeriesColors = SeriesColorsArray | SeriesColorAccessorFn;
 
 export interface SeriesAccessors {

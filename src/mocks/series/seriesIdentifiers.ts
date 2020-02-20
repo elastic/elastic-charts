@@ -1,5 +1,9 @@
 import { BasicSeriesSpec } from '../../chart_types/xy_chart/utils/specs';
-import { SeriesCollectionValue, getSplittedSeries, SeriesIdentifier } from '../../chart_types/xy_chart/utils/series';
+import {
+  SeriesCollectionValue,
+  getSplittedSeries,
+  XYChartSeriesIdentifier,
+} from '../../chart_types/xy_chart/utils/series';
 import { mergePartial } from '../../utils/commons';
 
 type SeriesCollection = Map<string, SeriesCollectionValue>;
@@ -17,7 +21,7 @@ export class MockSeriesCollection {
 }
 
 export class MockSeriesIdentifier {
-  private static readonly base: SeriesIdentifier = {
+  private static readonly base: XYChartSeriesIdentifier = {
     specId: 'bars',
     yAccessor: 'y',
     seriesKeys: ['a'],
@@ -25,11 +29,13 @@ export class MockSeriesIdentifier {
     key: 'spec{bars}yAccessor{y}splitAccessors{g-a}',
   };
 
-  static default(partial?: Partial<SeriesIdentifier>) {
-    return mergePartial<SeriesIdentifier>(MockSeriesIdentifier.base, partial, { mergeOptionalPartialValues: true });
+  static default(partial?: Partial<XYChartSeriesIdentifier>) {
+    return mergePartial<XYChartSeriesIdentifier>(MockSeriesIdentifier.base, partial, {
+      mergeOptionalPartialValues: true,
+    });
   }
 
-  static fromSpecs(specs: BasicSeriesSpec[]): SeriesIdentifier[] {
+  static fromSpecs(specs: BasicSeriesSpec[]): XYChartSeriesIdentifier[] {
     const { seriesCollection } = getSplittedSeries(specs);
 
     return [...seriesCollection.values()].map(({ seriesIdentifier }) => seriesIdentifier);

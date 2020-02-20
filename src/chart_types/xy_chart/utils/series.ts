@@ -47,21 +47,23 @@ export interface DataSeriesDatum<T = any> {
   /** the list of filled values because missing or nulls */
   filled?: FilledValues;
 }
-
-export interface SeriesIdentifier {
+export type SeriesIdentifier = {
   specId: SpecId;
+  key: string;
+};
+
+export interface XYChartSeriesIdentifier extends SeriesIdentifier {
   yAccessor: string | number;
   splitAccessors: Map<string | number, string | number>; // does the map have a size vs making it optional
   seriesKeys: (string | number)[];
-  key: string;
 }
 
-export type DataSeries = SeriesIdentifier & {
+export type DataSeries = XYChartSeriesIdentifier & {
   // seriesColorKey: string;
   data: DataSeriesDatum[];
 };
 
-export type RawDataSeries = SeriesIdentifier & {
+export type RawDataSeries = XYChartSeriesIdentifier & {
   // seriesColorKey: string;
   data: RawDataSeriesDatum[];
 };
@@ -82,10 +84,10 @@ export type SeriesCollectionValue = {
   banded?: boolean;
   lastValue?: LastValues;
   specSortIndex?: number;
-  seriesIdentifier: SeriesIdentifier;
+  seriesIdentifier: XYChartSeriesIdentifier;
 };
 
-export function getSeriesIndex(series: SeriesIdentifier[], target: SeriesIdentifier): number {
+export function getSeriesIndex(series: XYChartSeriesIdentifier[], target: XYChartSeriesIdentifier): number {
   if (!series) {
     return -1;
   }
@@ -151,7 +153,7 @@ export function getSeriesKey({
   specId,
   yAccessor,
   splitAccessors,
-}: Pick<SeriesIdentifier, 'specId' | 'yAccessor' | 'splitAccessors'>): string {
+}: Pick<XYChartSeriesIdentifier, 'specId' | 'yAccessor' | 'splitAccessors'>): string {
   const joinedAccessors = [...splitAccessors.entries()]
     .sort(([a], [b]) => (a > b ? 1 : -1))
     .map(([key, value]) => `${key}-${value}`)
@@ -334,7 +336,7 @@ function getRawDataSeries(
  */
 export function getSplittedSeries(
   seriesSpecs: BasicSeriesSpec[],
-  deselectedDataSeries: SeriesIdentifier[] = [],
+  deselectedDataSeries: XYChartSeriesIdentifier[] = [],
 ): {
   splittedSeries: Map<SpecId, RawDataSeries[]>;
   seriesCollection: Map<string, SeriesCollectionValue>;
@@ -384,7 +386,7 @@ export function getSplittedSeries(
 
 export function getSeriesNameFromOptions(
   options: SeriesNameConfigOptions,
-  { yAccessor, splitAccessors }: SeriesIdentifier,
+  { yAccessor, splitAccessors }: XYChartSeriesIdentifier,
   delimiter: string,
 ) {
   if (!options.names) {
@@ -414,7 +416,7 @@ export function getSeriesNameFromOptions(
  * Get series name based on `SeriesIdentifier`
  */
 export function getSeriesName(
-  seriesIdentifier: SeriesIdentifier,
+  seriesIdentifier: XYChartSeriesIdentifier,
   hasSingleSeries: boolean,
   isTooltip: boolean,
   spec?: BasicSeriesSpec,
