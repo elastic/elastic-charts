@@ -32,7 +32,13 @@ module.exports = async ({ config }) => {
 
   config.module.rules.push({
     test: /\.tsx?$/,
-    include: [path.resolve(__dirname, '../stories/*')],
+    loader: require.resolve('react-docgen-typescript-loader'),
+    exclude: /node_modules/,
+  });
+
+  config.module.rules.push({
+    test: /\.tsx?$/,
+    include: [path.resolve(__dirname, '../stories/', 'annotations')],
     loaders: [
       {
         loader: require.resolve('@storybook/source-loader'),
@@ -44,8 +50,158 @@ module.exports = async ({ config }) => {
 
   config.module.rules.push({
     test: /\.tsx?$/,
-    loader: require.resolve('react-docgen-typescript-loader'),
-    exclude: /node_modules/,
+    include: [path.resolve(__dirname, '../stories/', 'area')],
+    loaders: [
+      {
+        loader: require.resolve('@storybook/source-loader'),
+        options: { parser: 'typescript' },
+      },
+    ],
+    enforce: 'pre',
+  });
+
+  config.module.rules.push({
+    test: /\.tsx?$/,
+    include: [path.resolve(__dirname, '../stories/', 'axis')],
+    loaders: [
+      {
+        loader: require.resolve('@storybook/source-loader'),
+        options: { parser: 'typescript' },
+      },
+    ],
+    enforce: 'pre',
+  });
+
+  config.module.rules.push({
+    test: /\.tsx?$/,
+    include: [path.resolve(__dirname, '../stories/', 'bar')],
+    loaders: [
+      {
+        loader: require.resolve('@storybook/source-loader'),
+        options: { parser: 'typescript' },
+      },
+    ],
+    enforce: 'pre',
+  });
+
+  config.module.rules.push({
+    test: /\.tsx?$/,
+    include: [path.resolve(__dirname, '../stories/', 'grid')],
+    loaders: [
+      {
+        loader: require.resolve('@storybook/source-loader'),
+        options: { parser: 'typescript' },
+      },
+    ],
+    enforce: 'pre',
+  });
+
+  config.module.rules.push({
+    test: /\.tsx?$/,
+    include: [path.resolve(__dirname, '../stories/', 'interactions')],
+    loaders: [
+      {
+        loader: require.resolve('@storybook/source-loader'),
+        options: { parser: 'typescript' },
+      },
+    ],
+    enforce: 'pre',
+  });
+
+  config.module.rules.push({
+    test: /\.tsx?$/,
+    include: [path.resolve(__dirname, '../stories/', 'legend')],
+    loaders: [
+      {
+        loader: require.resolve('@storybook/source-loader'),
+        options: { parser: 'typescript' },
+      },
+    ],
+    enforce: 'pre',
+  });
+
+  config.module.rules.push({
+    test: /\.tsx?$/,
+    include: [path.resolve(__dirname, '../stories/', 'line')],
+    loaders: [
+      {
+        loader: require.resolve('@storybook/source-loader'),
+        options: { parser: 'typescript' },
+      },
+    ],
+    enforce: 'pre',
+  });
+
+  config.module.rules.push({
+    test: /\.tsx?$/,
+    include: [path.resolve(__dirname, '../stories/', 'mixed')],
+    loaders: [
+      {
+        loader: require.resolve('@storybook/source-loader'),
+        options: { parser: 'typescript' },
+      },
+    ],
+    enforce: 'pre',
+  });
+
+  config.module.rules.push({
+    test: /\.tsx?$/,
+    include: [path.resolve(__dirname, '../stories/', 'rotations')],
+    loaders: [
+      {
+        loader: require.resolve('@storybook/source-loader'),
+        options: { parser: 'typescript' },
+      },
+    ],
+    enforce: 'pre',
+  });
+
+  config.module.rules.push({
+    test: /\.tsx?$/,
+    include: [path.resolve(__dirname, '../stories/', 'scales')],
+    loaders: [
+      {
+        loader: require.resolve('@storybook/source-loader'),
+        options: { parser: 'typescript' },
+      },
+    ],
+    enforce: 'pre',
+  });
+
+  config.module.rules.push({
+    test: /\.tsx?$/,
+    include: [path.resolve(__dirname, '../stories/', 'styling')],
+    loaders: [
+      {
+        loader: require.resolve('@storybook/source-loader'),
+        options: { parser: 'typescript' },
+      },
+    ],
+    enforce: 'pre',
+  });
+
+  config.module.rules.push({
+    test: /\.tsx?$/,
+    include: [path.resolve(__dirname, '../stories/', 'sunburst')],
+    loaders: [
+      {
+        loader: require.resolve('@storybook/source-loader'),
+        options: { parser: 'typescript' },
+      },
+    ],
+    enforce: 'pre',
+  });
+
+  config.module.rules.push({
+    test: /\.tsx?$/,
+    include: [path.resolve(__dirname, '../stories/', 'treemap')],
+    loaders: [
+      {
+        loader: require.resolve('@storybook/source-loader'),
+        options: { parser: 'typescript' },
+      },
+    ],
+    enforce: 'pre',
   });
 
   // Replace default css rules with nonce

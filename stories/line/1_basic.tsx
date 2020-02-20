@@ -4,7 +4,7 @@ import { Chart, getSpecId, LineSeries, ScaleType } from '../../src/';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
 
 export default {
-  title: 'Line Chart',
+  title: 'Line Chart/Basic',
   parameters: {
     info: {
       source: false,
