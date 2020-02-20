@@ -28,7 +28,7 @@ describe('Axis stories', () => {
   });
   it('should hide left axis', async () => {
     await common.expectChartAtUrlToMatchScreenshot(
-      'http://localhost:9001/?path=/story/http://localhost:9001/?path=/story/axis-tick-label-rotation--tick-label-rotation&knob-Tick Label Padding=0&knob-bottom axis tick label rotation=47&knob-hide bottom axis=&knob-left axis tick label rotation=-56&knob-hide left axis=true&knob-top axis tick label rotation=-59&knob-hide top axis=&knob-right axis tick label rotation=30&knob-hide right axis=&knob-debug=',
+      'http://localhost:9001/?path=/story/axis-tick-label-rotation--tick-label-rotation&knob-Tick Label Padding=0&knob-bottom axis tick label rotation=47&knob-hide bottom axis=&knob-left axis tick label rotation=-56&knob-hide left axis=true&knob-top axis tick label rotation=-59&knob-hide top axis=&knob-right axis tick label rotation=30&knob-hide right axis=&knob-debug=',
     );
   });
   it('should hide right axis', async () => {
