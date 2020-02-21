@@ -8,10 +8,9 @@ import {
   BarSeriesStyle,
   GeometryStateStyle,
 } from '../../../utils/themes/theme';
-import { isLogarithmicScale } from '../../../utils/scales/scale_continuous';
-import { Scale, ScaleType } from '../../../utils/scales/scales';
+import { Scale, ScaleType, isLogarithmicScale } from '../../../scales';
 import { CurveType, getCurveFactory } from '../../../utils/curves';
-import { DataSeriesDatum, SeriesIdentifier, DataSeries } from '../utils/series';
+import { DataSeriesDatum, DataSeries, XYChartSeriesIdentifier } from '../utils/series';
 import { DisplayValueSpec, PointStyleAccessor, BarStyleAccessor } from '../utils/specs';
 import {
   IndexedGeometry,
@@ -42,7 +41,7 @@ export function mutableIndexedGeometryMapUpsert(
 
 export function getPointStyleOverrides(
   datum: DataSeriesDatum,
-  seriesIdentifier: SeriesIdentifier,
+  seriesIdentifier: XYChartSeriesIdentifier,
   pointStyleAccessor?: PointStyleAccessor,
 ): Partial<PointStyle> | undefined {
   const styleOverride = pointStyleAccessor && pointStyleAccessor(datum, seriesIdentifier);
@@ -62,7 +61,7 @@ export function getPointStyleOverrides(
 
 export function getBarStyleOverrides(
   datum: DataSeriesDatum,
-  seriesIdentifier: SeriesIdentifier,
+  seriesIdentifier: XYChartSeriesIdentifier,
   seriesStyle: BarSeriesStyle,
   styleAccessor?: BarStyleAccessor,
 ): BarSeriesStyle {
@@ -126,7 +125,7 @@ function renderPoints(
         y = yScale.scale(yDatum);
       }
       const originalY = hasY0Accessors && index === 0 ? initialY0 : initialY1;
-      const seriesIdentifier: SeriesIdentifier = {
+      const seriesIdentifier: XYChartSeriesIdentifier = {
         key: dataSeries.key,
         specId: dataSeries.specId,
         yAccessor: dataSeries.yAccessor,
@@ -269,7 +268,7 @@ export function renderBars(
           }
         : undefined;
 
-    const seriesIdentifier: SeriesIdentifier = {
+    const seriesIdentifier: XYChartSeriesIdentifier = {
       key: dataSeries.key,
       specId: dataSeries.specId,
       yAccessor: dataSeries.yAccessor,
@@ -523,7 +522,7 @@ export function getClippedRanges(dataset: DataSeriesDatum[], xScale: Scale, xSca
 }
 
 export function getGeometryStateStyle(
-  seriesIdentifier: SeriesIdentifier,
+  seriesIdentifier: XYChartSeriesIdentifier,
   highlightedLegendItem: LegendItem | null,
   sharedGeometryStyle: SharedGeometryStateStyle,
   individualHighlight?: { [key: string]: boolean },
@@ -564,8 +563,4 @@ export function isPointOnGeometry(
   }
   const { width, height } = indexedGeometry;
   return yCoordinate >= y && yCoordinate <= y + height && xCoordinate >= x && xCoordinate <= x + width;
-}
-
-export function getSeriesIdentifierPrefixedKey(seriesIdentifier: SeriesIdentifier, prefix?: string, postfix?: string) {
-  return `${prefix || ''}${seriesIdentifier.key}${postfix || ''}`;
 }

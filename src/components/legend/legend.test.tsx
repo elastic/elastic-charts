@@ -2,7 +2,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 import { Chart } from '../chart';
 import { Settings, BarSeries } from '../../specs';
-import { ScaleType } from '../../utils/scales/scales';
+import { ScaleType } from '../../scales';
 import { DataGenerator } from '../../utils/data_generators/data_generator';
 import { Legend } from './legend';
 import { LegendListItem } from './legend_item';
@@ -11,7 +11,7 @@ describe('Legend', () => {
   it('shall render the all the series names', () => {
     const wrapper = mount(
       <Chart>
-        <Settings showLegend />
+        <Settings showLegend showLegendExtra />
         <BarSeries
           id="areas"
           name="area"
@@ -42,7 +42,7 @@ describe('Legend', () => {
   it('shall render the all the series names without the data value', () => {
     const wrapper = mount(
       <Chart>
-        <Settings showLegend showLegendDisplayValue={false} />
+        <Settings showLegend showLegendExtra={false} />
         <BarSeries
           id="areas"
           name="area"
@@ -78,7 +78,7 @@ describe('Legend', () => {
     const data = dg.generateGroupedSeries(10, numberOfSeries, 'split');
     const wrapper = mount(
       <Chart>
-        <Settings showLegend onLegendItemOver={onLegendItemOver} onLegendItemOut={onLegendItemOut} />
+        <Settings showLegend showLegendExtra onLegendItemOver={onLegendItemOver} onLegendItemOut={onLegendItemOut} />
         <BarSeries
           id="areas"
           xScaleType={ScaleType.Linear}
@@ -108,7 +108,7 @@ describe('Legend', () => {
     const data = dg.generateGroupedSeries(10, numberOfSeries, 'split');
     const wrapper = mount(
       <Chart>
-        <Settings showLegend onLegendItemClick={onLegendItemClick} />
+        <Settings showLegend showLegendExtra onLegendItemClick={onLegendItemClick} />
         <BarSeries
           id="areas"
           xScaleType={ScaleType.Linear}
@@ -127,7 +127,7 @@ describe('Legend', () => {
     expect(legendItems).toHaveLength(4);
     legendItems.forEach((legendItem, i) => {
       // the click is only enabled on the title
-      legendItem.find('.echLegendItem__title').simulate('click');
+      legendItem.find('.echLegendItem__label').simulate('click');
       expect(onLegendItemClick).toBeCalledTimes(i + 1);
     });
   });

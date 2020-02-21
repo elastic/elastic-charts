@@ -21,7 +21,7 @@ import { Icon } from '../src/components/icons/icon';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 import { getChartRotationKnob, arrayKnobs } from './common';
 import { BandedAccessorType } from '../src/utils/geometry';
-import { Position } from '../src/chart_types/xy_chart/utils/specs';
+import { Position } from '../src/utils/commons';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
 
@@ -70,7 +70,7 @@ export const lineBasicXDomainContinous = () => {
 
   return (
     <Chart className={'story-chart'}>
-      <Settings showLegend debug={boolean('debug', false)} rotation={getChartRotationKnob()} />
+      <Settings showLegend showLegendExtra debug={boolean('debug', false)} rotation={getChartRotationKnob()} />
       <LineAnnotation
         id={getAnnotationId('anno_1')}
         domainType={AnnotationDomainTypes.XDomain}

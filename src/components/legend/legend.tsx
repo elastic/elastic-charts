@@ -1,8 +1,8 @@
 import React, { createRef } from 'react';
 import classNames from 'classnames';
-import { isVerticalAxis, isHorizontalAxis } from '../../chart_types/xy_chart/utils/axis_utils';
+import { Dispatch, bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Position } from '../../chart_types/xy_chart/utils/specs';
+import { Position } from '../../utils/commons';
 import { GlobalChartState } from '../../state/chart_state';
 import { getLegendItemsSelector } from '../../state/selectors/get_legend_items';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
@@ -10,7 +10,6 @@ import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';
 import { getLegendItemsValuesSelector } from '../../state/selectors/get_legend_items_values';
 import { getLegendSizeSelector } from '../../state/selectors/get_legend_size';
 import { onToggleLegend } from '../../state/actions/legend';
-import { Dispatch, bindActionCreators } from 'redux';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 import { LegendListItem } from './legend_item';
 import { Theme } from '../../utils/themes/theme';
@@ -90,7 +89,7 @@ class LegendComponent extends React.Component<LegendProps> {
   getLegendListStyle = (position: Position, { chartMargins, legend }: Theme): LegendListStyle => {
     const { top: paddingTop, bottom: paddingBottom, left: paddingLeft, right: paddingRight } = chartMargins;
 
-    if (isHorizontalAxis(position)) {
+    if (position === Position.Bottom || position === Position.Top) {
       return {
         paddingLeft,
         paddingRight,
@@ -105,7 +104,7 @@ class LegendComponent extends React.Component<LegendProps> {
   };
 
   getLegendStyle = (position: Position, size: BBox): LegendStyle => {
-    if (isVerticalAxis(position)) {
+    if (position === Position.Left || position === Position.Right) {
       const width = `${size.width}px`;
       return {
         width,
@@ -139,19 +138,18 @@ class LegendComponent extends React.Component<LegendProps> {
     }
     const { key, displayValue, banded } = item;
     const { legendItemTooltipValues, settings } = this.props;
-    const { showLegendDisplayValue, legendPosition } = settings;
+    const { showLegendExtra, legendPosition } = settings;
     const legendValues = this.getLegendValues(legendItemTooltipValues, key, banded);
     return legendValues.map((value, index) => {
       const yAccessor: BandedAccessorType = index === 0 ? BandedAccessorType.Y1 : BandedAccessorType.Y0;
       return (
         <LegendListItem
-          {...item}
-          label={getItemLabel(item, yAccessor)}
           key={`${key}-${yAccessor}`}
-          legendItem={item}
-          displayValue={value !== '' ? value : displayValue.formatted[yAccessor]}
-          showLegendDisplayValue={showLegendDisplayValue}
           legendPosition={legendPosition}
+          legendItem={item}
+          label={getItemLabel(item, yAccessor)}
+          extra={value !== '' ? value : displayValue.formatted[yAccessor]}
+          showExtra={showLegendExtra}
           toggleDeselectSeriesAction={this.props.onToggleDeselectSeriesAction}
           legendItemOutAction={this.props.onLegendItemOutAction}
           legendItemOverAction={this.props.onLegendItemOverAction}
@@ -175,31 +173,23 @@ const mapDispatchToProps = (dispatch: Dispatch): LegendDispatchProps =>
     dispatch,
   );
 
+const EMPTY_DEFAULT_STATE = {
+  legendItems: new Map(),
+  legendPosition: Position.Right,
+  showLegend: false,
+  legendCollapsed: false,
+  legendItemTooltipValues: new Map(),
+  debug: false,
+  chartTheme: LIGHT_THEME,
+  legendSize: { width: 0, height: 0 },
+};
 const mapStateToProps = (state: GlobalChartState): LegendStateProps => {
   if (!state.specsInitialized) {
-    return {
-      legendItems: new Map(),
-      legendPosition: Position.Right,
-      showLegend: false,
-      legendCollapsed: false,
-      legendItemTooltipValues: new Map(),
-      debug: false,
-      chartTheme: LIGHT_THEME,
-      legendSize: { width: 0, height: 0 },
-    };
+    return EMPTY_DEFAULT_STATE;
   }
   const { legendPosition, showLegend, debug } = getSettingsSpecSelector(state);
   if (!showLegend) {
-    return {
-      legendItems: new Map(),
-      legendPosition: Position.Right,
-      showLegend: false,
-      legendCollapsed: false,
-      legendItemTooltipValues: new Map(),
-      debug: false,
-      chartTheme: LIGHT_THEME,
-      legendSize: { width: 0, height: 0 },
-    };
+    return EMPTY_DEFAULT_STATE;
   }
   const legendItems = getLegendItemsSelector(state);
   return {

@@ -9,19 +9,15 @@ import {
   RectAnnotationStyle,
 } from '../../../utils/themes/theme';
 import { Accessor, AccessorFormat } from '../../../utils/accessor';
-import { RecursivePartial } from '../../../utils/commons';
+import { RecursivePartial, Color, Position, Datum } from '../../../utils/commons';
 import { AxisId, GroupId } from '../../../utils/ids';
-import { ScaleContinuousType, ScaleType } from '../../../utils/scales/scales';
+import { ScaleContinuousType, ScaleType } from '../../../scales';
 import { CurveType } from '../../../utils/curves';
-import { RawDataSeriesDatum, SeriesIdentifier } from './series';
+import { RawDataSeriesDatum, XYChartSeriesIdentifier } from './series';
 import { AnnotationTooltipFormatter } from '../annotations/annotation_utils';
 import { Spec, SpecTypes } from '../../..';
 import { ChartTypes } from '../..';
-import { Datum } from '../../../utils/domain';
 
-export type Rotation = 0 | 90 | -90 | 180;
-export type Rendering = 'canvas' | 'svg';
-export type Color = string;
 export type BarStyleOverride = RecursivePartial<BarSeriesStyle> | Color | null;
 export type PointStyleOverride = RecursivePartial<PointStyle> | Color | null;
 
@@ -41,7 +37,10 @@ export type SeriesTypes = $Values<typeof SeriesTypes>;
  * - `RecursivePartial<BarSeriesStyle>`: Style values to be merged with base bar styles
  * - `null`: Keep existing bar style
  */
-export type BarStyleAccessor = (datum: RawDataSeriesDatum, seriesIdentifier: SeriesIdentifier) => BarStyleOverride;
+export type BarStyleAccessor = (
+  datum: RawDataSeriesDatum,
+  seriesIdentifier: XYChartSeriesIdentifier,
+) => BarStyleOverride;
 /**
  * Override for bar styles per datum
  *
@@ -50,11 +49,14 @@ export type BarStyleAccessor = (datum: RawDataSeriesDatum, seriesIdentifier: Ser
  * - `RecursivePartial<PointStyle>`: Style values to be merged with base point styles
  * - `null`: Keep existing point style
  */
-export type PointStyleAccessor = (datum: RawDataSeriesDatum, seriesIdentifier: SeriesIdentifier) => PointStyleOverride;
+export type PointStyleAccessor = (
+  datum: RawDataSeriesDatum,
+  seriesIdentifier: XYChartSeriesIdentifier,
+) => PointStyleOverride;
 export const DEFAULT_GLOBAL_ID = '__global__';
 
-export type FilterPredicate = (series: SeriesIdentifier) => boolean;
-export type SeriesStringPredicate = (series: SeriesIdentifier, isTooltip: boolean) => string | null;
+export type FilterPredicate = (series: XYChartSeriesIdentifier) => boolean;
+export type SeriesStringPredicate = (series: XYChartSeriesIdentifier, isTooltip: boolean) => string | null;
 export type SubSeriesStringPredicate = (
   accessorLabel: string | number,
   accessorKey: string | number | null,
@@ -243,7 +245,7 @@ export interface SeriesSpec extends Spec {
    *
    * This takes precedence over `customSubSeriesLabel`
    *
-   * @param series - `SeriesIdentifier`
+   * @param series - `XYChartSeriesIdentifier`
    * @param isTooltip - true if tooltip label, otherwise legend label
    */
   customSeriesLabel?: SeriesStringPredicate;
@@ -271,7 +273,7 @@ export interface Postfixes {
 }
 
 export type SeriesColorsArray = string[];
-export type SeriesColorAccessorFn = (seriesIdentifier: SeriesIdentifier) => string | null;
+export type SeriesColorAccessorFn = (seriesIdentifier: XYChartSeriesIdentifier) => string | null;
 export type CustomSeriesColors = SeriesColorsArray | SeriesColorAccessorFn;
 
 export interface SeriesAccessors {
@@ -483,20 +485,6 @@ export interface AxisStyle {
   /** Specifies the amount of padding on the tick label bounding box */
   tickLabelPadding?: number;
 }
-
-/**
- * The position of the axis relative to the chart.
- * A left or right positioned axis is a vertical axis.
- * A top or bottom positioned axis is an horizontal axis.
- */
-export const Position = Object.freeze({
-  Top: 'top' as 'top',
-  Bottom: 'bottom' as 'bottom',
-  Left: 'left' as 'left',
-  Right: 'right' as 'right',
-});
-
-export type Position = $Values<typeof Position>;
 
 export const AnnotationTypes = Object.freeze({
   Line: 'line' as 'line',

@@ -1,4 +1,4 @@
-import { mergePartial } from '../../utils/commons';
+import { mergePartial, Position } from '../../utils/commons';
 import {
   SeriesSpecs,
   DEFAULT_GLOBAL_ID,
@@ -9,13 +9,11 @@ import {
   LineSeriesSpec,
   BasicSeriesSpec,
   SeriesTypes,
-  Position,
 } from '../../chart_types/xy_chart/utils/specs';
 import { getSpecId, getGroupId } from '../../utils/ids';
-import { ScaleType } from '../../utils/scales/scales';
+import { ScaleType } from '../../scales';
 import { ChartTypes } from '../../chart_types';
-import { SettingsSpec, SpecTypes } from '../../specs';
-import { TooltipType } from '../../chart_types/xy_chart/utils/interactions';
+import { SettingsSpec, SpecTypes, TooltipType } from '../../specs';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 
 export class MockSeriesSpec {
@@ -150,7 +148,7 @@ export class MockGlobalSpec {
       snap: true,
     },
     legendPosition: Position.Right,
-    showLegendDisplayValue: true,
+    showLegendExtra: true,
     hideDuplicateAxes: false,
     theme: LIGHT_THEME,
   };
