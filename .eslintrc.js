@@ -51,6 +51,7 @@ module.exports = {
       },
     ],
     'filenames/match-exported': [2, 'snake'],
+    'filenames/match-regex': [2, '^[a-z_\\.test\\.tz0-9]+$'],
     'sort-keys': 'off',
     'import/no-unresolved': 'error',
     'no-irregular-whitespace': 'error',
@@ -79,7 +80,19 @@ module.exports = {
     {
       files: ['jest-puppeteer.config.js'],
       rules: {
+        'filenames/match-regex': 0,
+      },
+    },
+    {
+      files: ['jest-puppeteer.config.js'],
+      rules: {
         'filenames/match-exported': 0,
+      },
+    },
+    {
+      files: ['jest-env-setup.ts'],
+      rules: {
+        'filenames/match-regex': 0,
       },
     },
     {
