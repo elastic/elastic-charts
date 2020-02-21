@@ -1,3 +1,10 @@
+## [16.1.3](https://github.com/elastic/elastic-charts/compare/v16.1.2...v16.1.3) (2020-02-21)
+
+
+### Bug Fixes
+
+* redux connect memo issue related to spec upserting ([#565](https://github.com/elastic/elastic-charts/issues/565)) ([0888cd9](https://github.com/elastic/elastic-charts/commit/0888cd95073f0af9cb1daf286e4736314b05eb71))
+
 ## [16.1.2](https://github.com/elastic/elastic-charts/compare/v16.1.1...v16.1.2) (2020-02-10)
 
 
