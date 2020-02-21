@@ -12,8 +12,8 @@ import {
   getFormattedDataseries,
   getSplittedSeries,
   getSeriesKey,
-  SeriesIdentifier,
   RawDataSeries,
+  XYChartSeriesIdentifier,
 } from '../utils/series';
 import {
   AreaSeriesSpec,
@@ -99,7 +99,10 @@ export interface SeriesDomainsAndData {
  * @param series
  * @param target
  */
-export function updateDeselectedDataSeries(series: SeriesIdentifier[], target: SeriesIdentifier): SeriesIdentifier[] {
+export function updateDeselectedDataSeries(
+  series: XYChartSeriesIdentifier[],
+  target: XYChartSeriesIdentifier,
+): XYChartSeriesIdentifier[] {
   const seriesIndex = getSeriesIndex(series, target);
   const updatedSeries = series ? [...series] : [];
 
@@ -162,7 +165,7 @@ function getLastValues(formattedDataSeries: {
   // we need to get the latest
   formattedDataSeries.stacked.forEach((ds) => {
     ds.dataSeries.forEach((series) => {
-      const seriesKey = getSeriesKey(series as SeriesIdentifier);
+      const seriesKey = getSeriesKey(series as XYChartSeriesIdentifier);
       if (series.data.length > 0) {
         const last = series.data[series.data.length - 1];
         if (last !== null) {
@@ -177,7 +180,7 @@ function getLastValues(formattedDataSeries: {
   });
   formattedDataSeries.nonStacked.forEach((ds) => {
     ds.dataSeries.forEach((series) => {
-      const seriesKey = getSeriesKey(series as SeriesIdentifier);
+      const seriesKey = getSeriesKey(series as XYChartSeriesIdentifier);
       if (series.data.length > 0) {
         const last = series.data[series.data.length - 1];
         if (last !== null) {
@@ -205,7 +208,7 @@ function getLastValues(formattedDataSeries: {
 export function computeSeriesDomains(
   seriesSpecs: BasicSeriesSpec[],
   customYDomainsByGroupId: Map<GroupId, DomainRange> = new Map(),
-  deselectedDataSeries: SeriesIdentifier[] = [],
+  deselectedDataSeries: XYChartSeriesIdentifier[] = [],
   customXDomain?: DomainRange | Domain,
 ): SeriesDomainsAndData {
   const { splittedSeries, xValues, seriesCollection } = deselectedDataSeries
