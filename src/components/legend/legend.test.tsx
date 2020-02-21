@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { mount, ReactWrapper } from 'enzyme';
 import { Chart } from '../chart';
-import { Settings, BarSeries } from '../../specs';
+import { Settings, BarSeries, LegendColorPickerFn } from '../../specs';
 import { ScaleType } from '../../scales';
 import { Legend } from './legend';
-import { LegendListItem, RenderColorPicker } from './legend_item';
+import { LegendListItem } from './legend_item';
 import { SeededDataGenerator } from '../../mocks/utils';
 
 const dg = new SeededDataGenerator();
@@ -132,42 +132,67 @@ describe('Legend', () => {
     });
   });
 
-  describe('#renderColorPicker', () => {
+  describe('#legendColorPicker', () => {
+    class LegendColorPickerMock extends Component<
+      { onLegendItemClick: () => void; customColor: string },
+      { colors: string[] }
+    > {
+      state = {
+        colors: ['red'],
+      };
+
+      pickerElement = document.createElement('div');
+      data = dg.generateGroupedSeries(10, 4, 'split');
+
+      legendColorPickerFn: LegendColorPickerFn = (anchor, onClose) => {
+        return (
+          <div id="colorPicker">
+            <span>Custom Color Picker</span>
+            <button
+              id="change"
+              onClick={() => {
+                this.setState<any>({ colors: [this.props.customColor] });
+                onClose();
+              }}
+            >
+              {this.props.customColor}
+            </button>
+            <button id="close" onClick={onClose}>
+              close
+            </button>
+          </div>
+        );
+      };
+
+      render() {
+        return (
+          <Chart>
+            <Settings
+              showLegend
+              onLegendItemClick={this.props.onLegendItemClick}
+              legendColorPicker={this.legendColorPickerFn}
+            />
+            <BarSeries
+              id="areas"
+              xScaleType={ScaleType.Linear}
+              yScaleType={ScaleType.Linear}
+              xAccessor={'x'}
+              yAccessors={['y']}
+              splitSeriesAccessors={['g']}
+              customSeriesColors={this.state.colors}
+              data={this.data}
+            />
+          </Chart>
+        );
+      }
+    }
+
     let wrapper: ReactWrapper;
     const customColor = '#0c7b93';
     const onLegendItemClick = jest.fn();
-    const data = dg.generateGroupedSeries(10, 4, 'split');
-    const renderColorPicker: RenderColorPicker = (onChange, onClose, isOpen, button) =>
-      isOpen ? (
-        <div id="colorPicker">
-          <span>Custom Color Picker</span>
-          <button id="change" onClick={() => onChange(customColor)}>
-            {customColor}
-          </button>
-          <button id="close" onClick={onClose}>
-            close
-          </button>
-          {button}
-        </div>
-      ) : (
-        { button }
-      );
 
     beforeEach(() => {
-      wrapper = mount(
-        <Chart>
-          <Settings showLegend onLegendItemClick={onLegendItemClick} renderColorPicker={renderColorPicker} />
-          <BarSeries
-            id="areas"
-            xScaleType={ScaleType.Linear}
-            yScaleType={ScaleType.Linear}
-            xAccessor={'x'}
-            yAccessors={['y']}
-            splitSeriesAccessors={['g']}
-            data={data}
-          />
-        </Chart>,
-      );
+      wrapper = mount(<LegendColorPickerMock customColor={customColor} onLegendItemClick={onLegendItemClick} />);
     });
 
     const clickFirstColor = () => {
@@ -243,7 +268,7 @@ describe('Legend', () => {
       expect(legendItems).toHaveLength(4);
       legendItems.forEach((legendItem, i) => {
         // toggle click is only enabled on the title
-        legendItem.find('.echLegendItem__title').simulate('click');
+        legendItem.find('.echLegendItem__label').simulate('click');
         expect(onLegendItemClick).toBeCalledTimes(i + 1);
       });
     });

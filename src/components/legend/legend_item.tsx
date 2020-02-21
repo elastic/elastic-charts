@@ -1,27 +1,20 @@
 import classNames from 'classnames';
-import React, { Component, ReactNode } from 'react';
+import React, { Component, createRef } from 'react';
 import { deepEqual } from '../../utils/fast_deep_equal';
 import { Icon } from '../icons/icon';
-import { LegendItemListener, BasicListener } from '../../specs/settings';
+import { LegendItemListener, BasicListener, LegendColorPickerFn } from '../../specs/settings';
 import { LegendItem } from '../../chart_types/xy_chart/legend/legend';
 import { onLegendItemOutAction, onLegendItemOverAction } from '../../state/actions/legend';
 import { Position } from '../../utils/commons';
 import { XYChartSeriesIdentifier } from '../../chart_types/xy_chart/utils/series';
-
-export type RenderColorPicker = (
-  onChange: (color: string) => void,
-  onClose: () => void,
-  isOpen: boolean,
-  button: NonNullable<ReactNode>,
-) => ReactNode;
 
 interface LegendItemProps {
   legendItem: LegendItem;
   extra: string;
   label?: string;
   legendPosition: Position;
-  renderColorPicker?: RenderColorPicker;
   showExtra: boolean;
+  legendColorPicker?: LegendColorPickerFn;
   onLegendItemClickListener?: LegendItemListener;
   onLegendItemOutListener?: BasicListener;
   onLegendItemOverListener?: LegendItemListener;
@@ -72,11 +65,11 @@ function renderLabel(
 
 interface LegendItemState {
   isOpen: boolean;
-  color?: string;
 }
 
 export class LegendListItem extends Component<LegendItemProps, LegendItemState> {
   static displayName = 'LegendItem';
+  ref = createRef<HTMLDivElement>();
 
   state: LegendItemState = {
     isOpen: false,
@@ -97,7 +90,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
     }
 
     if (isSeriesVisible) {
-      const changable = Boolean(this.props.renderColorPicker);
+      const changable = Boolean(this.props.legendColorPicker);
       const colorClasses = classNames('echLegendItem__color', {
         'echLegendItem__color--changable': changable,
       });
@@ -108,7 +101,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
             changable
               ? (e) => {
                   e.stopPropagation();
-                  this.setToggleIsOpen();
+                  this.toggleIsOpen();
                 }
               : undefined
           }
@@ -129,48 +122,43 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
     );
   };
 
-  renderItem = () => {
+  renderColorPicker() {
+    const { legendColorPicker } = this.props;
+    if (legendColorPicker && this.state.isOpen && this.ref.current) {
+      return legendColorPicker(this.ref.current, this.toggleIsOpen);
+    }
+  }
+
+  render() {
     const { extra, legendItem, legendPosition, label, showExtra, onLegendItemClickListener } = this.props;
     const { color, isSeriesVisible, seriesIdentifier, isLegendItemVisible } = legendItem;
     const onLabelClick = this.onVisibilityClick(seriesIdentifier);
     const hasLabelClickListener = Boolean(onLegendItemClickListener);
 
     const itemClassNames = classNames('echLegendItem', `echLegendItem--${legendPosition}`, {
-      'echLegendItem--isHidden': !isSeriesVisible,
+      'echLegendItem--hidden': !isSeriesVisible,
       'echLegendItem__extra--hidden': !isLegendItemVisible,
     });
 
     return (
-      <div
-        className={itemClassNames}
-        onMouseEnter={this.onLegendItemMouseOver}
-        onMouseLeave={this.onLegendItemMouseOut}
-      >
-        {this.renderColor(this.state.color ?? color, isSeriesVisible)}
-        {renderLabel(onLabelClick, hasLabelClickListener, label)}
-        {showExtra && renderExtra(extra, isSeriesVisible)}
-      </div>
+      <>
+        <div
+          ref={this.ref}
+          className={itemClassNames}
+          onMouseEnter={this.onLegendItemMouseOver}
+          onMouseLeave={this.onLegendItemMouseOut}
+        >
+          {this.renderColor(color, isSeriesVisible)}
+          {renderLabel(onLabelClick, hasLabelClickListener, label)}
+          {showExtra && renderExtra(extra, isSeriesVisible)}
+        </div>
+        {this.renderColorPicker()}
+      </>
     );
-  };
-
-  render() {
-    const { renderColorPicker } = this.props;
-    if (renderColorPicker && this.state.isOpen) {
-      return renderColorPicker(this.onColorChange, this.setToggleIsOpen, this.state.isOpen, this.renderItem());
-    }
-
-    return this.renderItem();
   }
 
-  setToggleIsOpen = () => {
-    this.setState({ isOpen: !this.state.isOpen });
-  };
-
-  onColorChange = (color: string) => {
-    this.setState({
-      color,
-      isOpen: !this.state.isOpen,
-    });
+  toggleIsOpen = () => {
+    this.setState(({ isOpen }) => ({ isOpen: !isOpen }));
   };
 
   onLegendItemMouseOver = () => {

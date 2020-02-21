@@ -7,11 +7,11 @@ import { Spec } from '.';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { ChartTypes } from '../chart_types';
 import { GeometryValue } from '../utils/geometry';
-import { RenderColorPicker } from '../components/legend/legend_item';
 import { XYChartSeriesIdentifier, SeriesIdentifier } from '../chart_types/xy_chart/utils/series';
+import { Accessor } from '../utils/accessor';
 import { Position, Rendering, Rotation } from '../utils/commons';
 import { ScaleContinuousType, ScaleOrdinalType } from '../scales';
-import { Accessor } from '../utils/accessor';
+import { ReactNode } from 'react';
 
 export type ElementClickListener = (elements: Array<[GeometryValue, XYChartSeriesIdentifier]>) => void;
 export type ElementOverListener = (elements: Array<[GeometryValue, XYChartSeriesIdentifier]>) => void;
@@ -112,6 +112,8 @@ export interface TooltipProps {
   unit?: string;
 }
 
+export type LegendColorPickerFn = (anchor: HTMLDivElement, onClose: () => void) => ReactNode;
+
 export interface SettingsSpec extends Spec {
   /**
    * Partial theme to be merged with base
@@ -162,7 +164,7 @@ export interface SettingsSpec extends Spec {
   onRenderChange?: RenderChangeListener;
   xDomain?: Domain | DomainRange;
   resizeDebounce?: number;
-  renderColorPicker?: RenderColorPicker;
+  legendColorPicker?: LegendColorPickerFn;
 }
 
 export type DefaultSettingsProps =
