@@ -240,3 +240,17 @@ export function isCrosshairTooltipType(type: TooltipType) {
 export function isFollowTooltipType(type: TooltipType) {
   return type === TooltipType.Follow;
 }
+
+export function getTooltipType(settings: SettingsSpec): TooltipType | undefined {
+  const { tooltip } = settings;
+  if (tooltip === undefined || tooltip === null) {
+    return undefined;
+  }
+  if (isTooltipType(tooltip)) {
+    return tooltip;
+  }
+  if (isTooltipProps(tooltip)) {
+    return tooltip.type || undefined;
+  }
+  return undefined;
+}
