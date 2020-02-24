@@ -1,32 +1,18 @@
 import { action } from '@storybook/addon-actions';
 import React from 'react';
-import { Axis, BarSeries, Chart, getAxisId, getSpecId, Position, ScaleType, Settings } from '../../src/';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src/';
 
 const onPointerUpdate = action('onPointerUpdate');
 
-export default {
-  title: 'Interactions/Cursor Update Action',
-  parameters: {
-    info: {
-      text: `<pre>${'Sends an event every time the cursor changes. This is provided to sync cursors between multiple charts.'}</pre>`,
-    },
-  },
-};
-
-export const cursorUpdateAction = () => {
+export const example = () => {
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings showLegend showLegendExtra legendPosition={Position.Right} onPointerUpdate={onPointerUpdate} />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-      <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
-        position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
       <BarSeries
-        id={getSpecId('bars')}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -41,6 +27,10 @@ export const cursorUpdateAction = () => {
     </Chart>
   );
 };
-cursorUpdateAction.story = {
-  name: 'Cursor update action',
+example.story = {
+  parameters: {
+    info: {
+      text: `Sends an event every time the cursor changes. This is provided to sync cursors between multiple charts.`,
+    },
+  },
 };

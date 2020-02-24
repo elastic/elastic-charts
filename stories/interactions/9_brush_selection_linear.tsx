@@ -1,34 +1,20 @@
 import { action } from '@storybook/addon-actions';
 import React from 'react';
-import { AreaSeries, Axis, Chart, getAxisId, getSpecId, Position, ScaleType, Settings } from '../../src/';
+import { AreaSeries, Axis, Chart, Position, ScaleType, Settings } from '../../src/';
 
 import { getChartRotationKnob } from '../common';
 
-export default {
-  title: 'Interactions/Brush Selection Tool on Linear',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const brushSelectionToolOnLinear = () => {
+export const example = () => {
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings onBrushEnd={action('onBrushEnd')} rotation={getChartRotationKnob()} />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'bottom'} showOverlappingTicks={true} />
-      <Axis id={getAxisId('left')} title={'left'} position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
-      <Axis id={getAxisId('top')} position={Position.Top} title={'top'} showOverlappingTicks={true} />
-      <Axis
-        id={getAxisId('right')}
-        title={'right'}
-        position={Position.Right}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
+      <Axis id="bottom" position={Position.Bottom} title="bottom" showOverlappingTicks={true} />
+      <Axis id="left" title="left" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
+      <Axis id="top" position={Position.Top} title="top" showOverlappingTicks={true} />
+      <Axis id="right" title="right" position={Position.Right} tickFormat={(d) => Number(d).toFixed(2)} />
 
       <AreaSeries
-        id={getSpecId('lines')}
+        id="lines"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -42,7 +28,4 @@ export const brushSelectionToolOnLinear = () => {
       />
     </Chart>
   );
-};
-brushSelectionToolOnLinear.story = {
-  name: 'brush selection tool on linear',
 };

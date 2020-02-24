@@ -1,29 +1,10 @@
 import React from 'react';
-import {
-  Axis,
-  BarSeries,
-  Chart,
-  getAxisId,
-  getSpecId,
-  niceTimeFormatter,
-  Position,
-  ScaleType,
-  Settings,
-} from '../../src/';
+import { Axis, BarSeries, Chart, niceTimeFormatter, Position, ScaleType, Settings } from '../../src/';
 
 import { button } from '@storybook/addon-knobs';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
 
-export default {
-  title: 'Interactions/PNG Export Action',
-  parameters: {
-    info: {
-      text: `<pre>${'Generate a PNG of the chart by clicking on the Export PNG button in the knobs section. In this example, the button handler is setting the PNG background to white with a pixel ratio of 2. If the browser is detected to be IE11, msSaveBlob will be used instead of a PNG capture.'}</pre>`,
-    },
-  },
-};
-
-export const pngExportAction = () => {
+export const example = () => {
   /**
    * The handler section of this story demonstrates the PNG export functionality
    */
@@ -59,17 +40,17 @@ export const pngExportAction = () => {
   const groupId = '';
   button(label, handler, groupId);
   return (
-    <Chart className={'story-chart'} ref={chartRef}>
+    <Chart className="story-chart" ref={chartRef}>
       <Settings showLegend showLegendExtra />
       <Axis
-        id={getAxisId('time')}
+        id="time"
         position={Position.Bottom}
         tickFormat={niceTimeFormatter([data[0][0], data[data.length - 1][0]])}
       />
-      <Axis id={getAxisId('count')} position={Position.Left} />
+      <Axis id="count" position={Position.Left} />
 
       <BarSeries
-        id={getSpecId('series bars chart')}
+        id="series bars chart"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
@@ -80,6 +61,10 @@ export const pngExportAction = () => {
     </Chart>
   );
 };
-pngExportAction.story = {
-  name: 'PNG export action',
+example.story = {
+  parameters: {
+    info: {
+      text: `Generate a PNG of the chart by clicking on the Export PNG button in the knobs section. In this example, the button handler is setting the PNG background to white with a pixel ratio of 2. If the browser is detected to be IE11, msSaveBlob will be used instead of a PNG capture.`,
+    },
+  },
 };

@@ -1,26 +1,17 @@
 import { action } from '@storybook/addon-actions';
 import React from 'react';
-import { Axis, Chart, getAxisId, getSpecId, LineSeries, Position, ScaleType, Settings } from '../../src/';
+import { Axis, Chart, LineSeries, Position, ScaleType, Settings } from '../../src/';
 
 import { getChartRotationKnob } from '../common';
 
-export default {
-  title: 'Interactions/Brush Disabled on Ordinal xAxis',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const brushDisabledOnOrdinalXAxis = () => {
+export const example = () => {
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings onBrushEnd={action('onBrushEnd')} rotation={getChartRotationKnob()} />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'bottom'} showOverlappingTicks={true} />
-      <Axis id={getAxisId('left')} title={'left'} position={Position.Left} />
+      <Axis id="bottom" position={Position.Bottom} title="bottom" showOverlappingTicks={true} />
+      <Axis id="left" title="left" position={Position.Left} />
       <LineSeries
-        id={getSpecId('lines')}
+        id="lines"
         xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -34,7 +25,4 @@ export const brushDisabledOnOrdinalXAxis = () => {
       />
     </Chart>
   );
-};
-brushDisabledOnOrdinalXAxis.story = {
-  name: 'brush disabled on ordinal x axis',
 };

@@ -1,19 +1,10 @@
 import { action } from '@storybook/addon-actions';
 import React from 'react';
-import { Axis, BarSeries, Chart, getAxisId, getSpecId, LineSeries, Position, ScaleType, Settings } from '../../src/';
+import { Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings } from '../../src/';
 
-export default {
-  title: 'Interactions/Clicks and Hovers on Legend Items Mixed',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const clickHoversOnLegendItemsMixedChart = () => {
+export const example = () => {
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings
         showLegend
         showLegendExtra
@@ -22,16 +13,11 @@ export const clickHoversOnLegendItemsMixedChart = () => {
         onLegendItemOver={action('onLegendItemOver')}
         onLegendItemOut={action('onLegendItemOut')}
       />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-      <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
-        position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
       <BarSeries
-        id={getSpecId('bars')}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -44,7 +30,7 @@ export const clickHoversOnLegendItemsMixedChart = () => {
         ]}
       />
       <LineSeries
-        id={getSpecId('lines')}
+        id="lines"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -60,7 +46,4 @@ export const clickHoversOnLegendItemsMixedChart = () => {
       />
     </Chart>
   );
-};
-clickHoversOnLegendItemsMixedChart.story = {
-  name: 'click/hovers on legend items [mixed chart]',
 };

@@ -1,17 +1,6 @@
 import { action } from '@storybook/addon-actions';
 import React from 'react';
-import {
-  AreaSeries,
-  Axis,
-  BarSeries,
-  Chart,
-  getAxisId,
-  getSpecId,
-  LineSeries,
-  Position,
-  ScaleType,
-  Settings,
-} from '../../src/';
+import { AreaSeries, Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings } from '../../src/';
 
 const onElementListeners = {
   onElementClick: action('onElementClick'),
@@ -19,29 +8,15 @@ const onElementListeners = {
   onElementOut: action('onElementOut'),
 };
 
-export default {
-  title: 'Interactions/Line Area Bar Point Clicks and Hovers',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const lineAreaBarPointClicksAndHovers = () => {
+export const example = () => {
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings showLegend showLegendExtra legendPosition={Position.Right} {...onElementListeners} />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-      <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
-        position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
       <BarSeries
-        id={getSpecId('bars')}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -55,7 +30,7 @@ export const lineAreaBarPointClicksAndHovers = () => {
         ]}
       />
       <LineSeries
-        id={getSpecId('line')}
+        id="line"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -68,7 +43,7 @@ export const lineAreaBarPointClicksAndHovers = () => {
         ]}
       />
       <AreaSeries
-        id={getSpecId('area')}
+        id="area"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -82,7 +57,4 @@ export const lineAreaBarPointClicksAndHovers = () => {
       />
     </Chart>
   );
-};
-lineAreaBarPointClicksAndHovers.story = {
-  name: 'line area bar point clicks and hovers',
 };

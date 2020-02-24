@@ -1,19 +1,10 @@
 import { action } from '@storybook/addon-actions';
 import React from 'react';
-import { Axis, Chart, CurveType, getAxisId, getSpecId, LineSeries, Position, ScaleType, Settings } from '../../src/';
+import { Axis, Chart, CurveType, LineSeries, Position, ScaleType, Settings } from '../../src/';
 
-export default {
-  title: 'Interactions/Clicks and Hovers on Legend Items Line',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const clickHoversOnLegendItemsLineChart = () => {
+export const example = () => {
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings
         showLegend
         showLegendExtra
@@ -22,16 +13,11 @@ export const clickHoversOnLegendItemsLineChart = () => {
         onLegendItemOver={action('onLegendItemOver')}
         onLegendItemOut={action('onLegendItemOut')}
       />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-      <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
-        position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
       <LineSeries
-        id={getSpecId('lines1')}
+        id="lines1"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -45,7 +31,7 @@ export const clickHoversOnLegendItemsLineChart = () => {
         ]}
       />
       <LineSeries
-        id={getSpecId('lines2')}
+        id="lines2"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -59,7 +45,7 @@ export const clickHoversOnLegendItemsLineChart = () => {
         ]}
       />
       <LineSeries
-        id={getSpecId('lines3')}
+        id="lines3"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -73,7 +59,7 @@ export const clickHoversOnLegendItemsLineChart = () => {
         ]}
       />
       <LineSeries
-        id={getSpecId('lines4')}
+        id="lines4"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -87,7 +73,7 @@ export const clickHoversOnLegendItemsLineChart = () => {
         ]}
       />
       <LineSeries
-        id={getSpecId('lines5')}
+        id="lines5"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -101,7 +87,7 @@ export const clickHoversOnLegendItemsLineChart = () => {
         ]}
       />
       <LineSeries
-        id={getSpecId('lines6')}
+        id="lines6"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -116,7 +102,4 @@ export const clickHoversOnLegendItemsLineChart = () => {
       />
     </Chart>
   );
-};
-clickHoversOnLegendItemsLineChart.story = {
-  name: 'click/hovers on legend items [line chart]',
 };

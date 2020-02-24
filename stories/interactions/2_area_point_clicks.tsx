@@ -1,6 +1,6 @@
 import { action } from '@storybook/addon-actions';
 import React from 'react';
-import { AreaSeries, Axis, Chart, getAxisId, getSpecId, Position, ScaleType, Settings } from '../../src/';
+import { AreaSeries, Axis, Chart, Position, ScaleType, Settings } from '../../src/';
 
 const onElementListeners = {
   onElementClick: action('onElementClick'),
@@ -8,29 +8,15 @@ const onElementListeners = {
   onElementOut: action('onElementOut'),
 };
 
-export default {
-  title: 'Interactions/Area Point Clicks And Hovers',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const areaPointClicksAndHovers = () => {
+export const example = () => {
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings showLegend showLegendExtra legendPosition={Position.Right} {...onElementListeners} />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-      <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
-        position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
       <AreaSeries
-        id={getSpecId('area')}
+        id="area"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -44,7 +30,4 @@ export const areaPointClicksAndHovers = () => {
       />
     </Chart>
   );
-};
-areaPointClicksAndHovers.story = {
-  name: 'area point clicks and hovers',
 };

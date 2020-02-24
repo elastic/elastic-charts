@@ -1,6 +1,6 @@
 import { action } from '@storybook/addon-actions';
 import React from 'react';
-import { Axis, BarSeries, Chart, getAxisId, getSpecId, Position, ScaleType, Settings } from '../../src/';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src/';
 
 import { array, boolean, number, select } from '@storybook/addon-knobs';
 import { BARCHART_2Y2G } from '../../src/utils/data_samples/test_dataset';
@@ -13,16 +13,7 @@ const onLegendItemListeners = {
   onLegendItemMinusClick: action('onLegendItemMinusClick'),
 };
 
-export default {
-  title: 'Interactions/Clicks and Hovers on Legend Items in Bar Charts',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const clicksHoversOnLegendItemsBarChart = () => {
+export const example = () => {
   const notSpecChange = 'not spec change';
   const specChange = 'spec change';
 
@@ -60,7 +51,7 @@ export const clicksHoversOnLegendItemsBarChart = () => {
   const data = hasAdditionalG1Value ? [...seriesData, additionalG1Value] : seriesData;
 
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings
         showLegend
         showLegendExtra
@@ -68,17 +59,17 @@ export const clicksHoversOnLegendItemsBarChart = () => {
         {...onLegendItemListeners}
         xDomain={xDomain}
       />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
       <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
+        id="left2"
+        title="Left axis"
         position={Position.Left}
         tickFormat={(d) => Number(d).toFixed(2)}
         domain={yDomain}
       />
 
       <BarSeries
-        id={getSpecId('bars')}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={yScaleType}
         xAccessor={xAccessor}
@@ -89,7 +80,4 @@ export const clicksHoversOnLegendItemsBarChart = () => {
       />
     </Chart>
   );
-};
-clicksHoversOnLegendItemsBarChart.story = {
-  name: 'click/hovers on legend items [bar chart]',
 };

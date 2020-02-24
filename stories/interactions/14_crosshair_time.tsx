@@ -4,8 +4,6 @@ import {
   BarSeries,
   Chart,
   DARK_THEME,
-  getAxisId,
-  getSpecId,
   LIGHT_THEME,
   LineSeries,
   niceTimeFormatByDay,
@@ -21,16 +19,7 @@ import { switchTheme } from '../../.storybook/theme_service';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
 import { getChartRotationKnob } from '../common';
 
-export default {
-  title: 'Interactions/Crosshair with Time Axis',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const crosshairWithTimeAxis = () => {
+export const example = () => {
   const hideBars = boolean('hideBars', false);
   const formatter = timeFormatter(niceTimeFormatByDay(1));
   const darkmode = boolean('darkmode', false);
@@ -60,20 +49,20 @@ export const crosshairWithTimeAxis = () => {
     <Chart className={className}>
       <Settings debug={boolean('debug', false)} tooltip={tooltipProps} theme={defaultTheme} rotation={chartRotation} />
       <Axis
-        id={getAxisId('bottom')}
+        id="bottom"
         position={Position.Bottom}
-        title={'Bottom axis'}
+        title="Bottom axis"
         tickFormat={[0, 180].includes(chartRotation) ? formatter : numberFormatter}
       />
       <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
+        id="left2"
+        title="Left axis"
         position={Position.Left}
         tickFormat={[0, 180].includes(chartRotation) ? numberFormatter : formatter}
       />
       {!hideBars && (
         <BarSeries
-          id={getSpecId('data 1')}
+          id="data 1"
           xScaleType={ScaleType.Time}
           yScaleType={ScaleType.Linear}
           xAccessor={0}
@@ -84,7 +73,7 @@ export const crosshairWithTimeAxis = () => {
       )}
       {!hideBars && (
         <BarSeries
-          id={getSpecId('data 2')}
+          id="data 2"
           xScaleType={ScaleType.Time}
           yScaleType={ScaleType.Linear}
           xAccessor={0}
@@ -94,7 +83,7 @@ export const crosshairWithTimeAxis = () => {
         />
       )}
       <LineSeries
-        id={getSpecId('data 3')}
+        id="data 3"
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
@@ -104,7 +93,4 @@ export const crosshairWithTimeAxis = () => {
       />
     </Chart>
   );
-};
-crosshairWithTimeAxis.story = {
-  name: 'crosshair with time axis',
 };

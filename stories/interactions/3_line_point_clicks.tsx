@@ -1,6 +1,6 @@
 import { action } from '@storybook/addon-actions';
 import React from 'react';
-import { Axis, Chart, getAxisId, getSpecId, LineSeries, Position, ScaleType, Settings } from '../../src/';
+import { Axis, Chart, LineSeries, Position, ScaleType, Settings } from '../../src/';
 
 const onElementListeners = {
   onElementClick: action('onElementClick'),
@@ -8,29 +8,15 @@ const onElementListeners = {
   onElementOut: action('onElementOut'),
 };
 
-export default {
-  title: 'Interactions/Line Point Clicks and Hovers',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const linePointClicksAndHovers = () => {
+export const example = () => {
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings showLegend showLegendExtra legendPosition={Position.Right} {...onElementListeners} />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-      <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
-        position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
       <LineSeries
-        id={getSpecId('line')}
+        id="line"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -44,7 +30,4 @@ export const linePointClicksAndHovers = () => {
       />
     </Chart>
   );
-};
-linePointClicksAndHovers.story = {
-  name: 'line point clicks and hovers',
 };

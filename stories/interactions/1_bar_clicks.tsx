@@ -1,17 +1,6 @@
 import { action } from '@storybook/addon-actions';
 import React from 'react';
-import {
-  Axis,
-  BarSeries,
-  Chart,
-  getAxisId,
-  getSpecId,
-  Position,
-  ScaleType,
-  Settings,
-  TooltipValue,
-  TooltipValueFormatter,
-} from '../../src/';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings, TooltipValue, TooltipValueFormatter } from '../../src/';
 
 const onElementListeners = {
   onElementClick: action('onElementClick'),
@@ -19,16 +8,7 @@ const onElementListeners = {
   onElementOut: action('onElementOut'),
 };
 
-export default {
-  title: 'Interactions/Bar Clicks and Hovers',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const barClicksAndHovers = () => {
+export const example = () => {
   const headerFormatter: TooltipValueFormatter = (tooltip: TooltipValue) => {
     if (tooltip.value % 2 === 0) {
       return (
@@ -47,7 +27,7 @@ export const barClicksAndHovers = () => {
   };
 
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings
         showLegend
         showLegendExtra
@@ -55,16 +35,11 @@ export const barClicksAndHovers = () => {
         {...onElementListeners}
         tooltip={tooltipProps}
       />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-      <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
-        position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
       <BarSeries
-        id={getSpecId('bars')}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -78,7 +53,4 @@ export const barClicksAndHovers = () => {
       />
     </Chart>
   );
-};
-barClicksAndHovers.story = {
-  name: 'bar clicks and hovers',
 };

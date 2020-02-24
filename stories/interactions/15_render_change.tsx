@@ -1,32 +1,18 @@
 import { action } from '@storybook/addon-actions';
 import React from 'react';
-import { Axis, BarSeries, Chart, getAxisId, getSpecId, Position, ScaleType, Settings } from '../../src/';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src/';
 
 const onRenderChange = action('onRenderChange');
 
-export default {
-  title: 'Interactions/Render Change Action',
-  parameters: {
-    info: {
-      text: `<pre>${'Sends an event every time the chart render state changes. This is provided to bind attributes to the chart for visulaization loading checks.'}</pre>`,
-    },
-  },
-};
-
-export const renderChangeAction = () => {
+export const example = () => {
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings showLegend showLegendExtra legendPosition={Position.Right} onRenderChange={onRenderChange} />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-      <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
-        position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
       <BarSeries
-        id={getSpecId('bars')}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -41,6 +27,10 @@ export const renderChangeAction = () => {
     </Chart>
   );
 };
-renderChangeAction.story = {
-  name: 'Render change action',
+example.story = {
+  parameters: {
+    info: {
+      text: `Sends an event every time the chart render state changes. This is provided to bind attributes to the chart for visulaization loading checks.`,
+    },
+  },
 };
