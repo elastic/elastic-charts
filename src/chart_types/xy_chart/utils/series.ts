@@ -388,13 +388,14 @@ export function getSeriesNameFromOptions(
   options: SeriesNameConfigOptions,
   { yAccessor, splitAccessors }: XYChartSeriesIdentifier,
   delimiter: string,
-) {
+): string | null {
   if (!options.names) {
     return null;
   }
 
   return (
     options.names
+      .slice()
       .sort(({ sortIndex: a = Infinity }, { sortIndex: b = Infinity }) => a - b)
       .map(({ accessor, value, name }) => {
         const accessorValue = splitAccessors.get(accessor) ?? null;
