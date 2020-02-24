@@ -4,8 +4,8 @@ export default {
 
 export { example as basic } from './1_basic';
 export { example as withAxis } from './2_w_axis';
-export { example as ordinalWAxis } from './3_ordinal';
-export { example as linearWAxis } from './4_linear';
+export { example as ordinalWithAxis } from './3_ordinal';
+export { example as linearWithAxis } from './4_linear';
 export { example as withAxisAndLegend } from './5_w_axis_and_legend';
 export { example as curvedWithAxisAndLegend } from './6_curved';
 export { example as multipleWithAxisAndLegend } from './7_multiple';

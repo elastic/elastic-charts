@@ -1,5 +1,5 @@
 export default {
-  title: 'Mixed',
+  title: 'Mixed Charts',
 };
 
 export { example as barsAndLines } from './1_bars_and_lines';

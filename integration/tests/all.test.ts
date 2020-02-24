@@ -11,7 +11,6 @@ const storyGroups = getStorybookInfo();
 describe('Baseline Visual tests for all stories', () => {
   storyGroups.forEach(({ group, encodedGroup, stories }) => {
     describe(group, () => {
-      console.log(stories);
       stories.forEach(({ title, encodedTitle }) => {
         describe(title, () => {
           it('visually looks correct', async () => {
