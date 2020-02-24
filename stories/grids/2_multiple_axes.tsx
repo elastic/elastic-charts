@@ -1,18 +1,6 @@
 import { boolean, color, number } from '@storybook/addon-knobs';
 import React from 'react';
-import {
-  Axis,
-  BarSeries,
-  Chart,
-  getAxisId,
-  getGroupId,
-  getSpecId,
-  GridLineConfig,
-  LineSeries,
-  Position,
-  ScaleType,
-  Settings,
-} from '../../src/';
+import { Axis, BarSeries, Chart, GridLineConfig, LineSeries, Position, ScaleType, Settings } from '../../src';
 
 function generateGridLineConfig(group: string, gridColor = 'purple'): GridLineConfig {
   const groupId = `${group} axis`;
@@ -68,41 +56,32 @@ function generateGridLineConfig(group: string, gridColor = 'purple'): GridLineCo
   };
 }
 
-export default {
-  title: 'Grids/Multiple Axes With the Same Position',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const multipleAxesWithTheSamePosition = () => {
+export const example = () => {
   const leftAxisGridLineConfig = generateGridLineConfig(Position.Left);
   const leftAxisGridLineConfig2 = generateGridLineConfig(`${Position.Left}2`);
 
   return (
-    <Chart size={[500, 300]} className={'story-chart'}>
+    <Chart size={[500, 300]} className="story-chart">
       <Settings debug={boolean('debug', false)} />
       <Axis
-        id={getAxisId('left1')}
-        title={'Left axis 1'}
+        id="left1"
+        title="Left axis 1"
         position={Position.Left}
         tickFormat={(d) => Number(d).toFixed(2)}
         showGridLines={boolean('show left axis grid lines', false, 'left axis')}
         gridLineStyle={leftAxisGridLineConfig}
       />
       <Axis
-        id={getAxisId('left2')}
-        title={'Left axis 2'}
-        groupId={getGroupId('group2')}
+        id="left2"
+        title="Left axis 2"
+        groupId="group2"
         position={Position.Left}
         tickFormat={(d) => Number(d).toFixed(2)}
         showGridLines={boolean('show left axis 2 grid lines', false, 'left2 axis')}
         gridLineStyle={leftAxisGridLineConfig2}
       />
       <BarSeries
-        id={getSpecId('bars')}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -115,10 +94,10 @@ export const multipleAxesWithTheSamePosition = () => {
         ]}
       />
       <LineSeries
-        id={getSpecId('lines')}
+        id="lines"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
-        groupId={getGroupId('group2')}
+        groupId="group2"
         xAccessor="x"
         yAccessors={['y']}
         stackAccessors={['x']}
@@ -132,7 +111,4 @@ export const multipleAxesWithTheSamePosition = () => {
       />
     </Chart>
   );
-};
-multipleAxesWithTheSamePosition.story = {
-  name: 'multiple axes with the same position',
 };
