@@ -3,16 +3,7 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType } from '../../src';
 
-export default {
-  title: 'Bar Chart/Scale to Extent',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const scaleToExtent = () => {
+export const example = () => {
   const yScaleToDataExtent = boolean('yScaleDataToExtent', true);
   const mixed = [
     { x: 0, y: -4 },
@@ -44,12 +35,12 @@ export const scaleToExtent = () => {
       break;
   }
   return (
-    <Chart className={'story-chart'}>
-      <Axis id={'top'} position={Position.Top} title={'Top axis'} />
-      <Axis id={'left2'} title={'Left axis'} position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
+    <Chart className="story-chart">
+      <Axis id="top" position={Position.Top} title="Top axis" />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
       <BarSeries
-        id={'bars'}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -61,7 +52,4 @@ export const scaleToExtent = () => {
       />
     </Chart>
   );
-};
-scaleToExtent.story = {
-  name: 'scale to extent',
 };

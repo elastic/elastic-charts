@@ -2,25 +2,16 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src';
 
-export default {
-  title: 'Bar Chart/With Axis and Legend',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const withAxisAndLegend = () => {
+export const example = () => {
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings showLegend showLegendExtra legendPosition={Position.Right} />
-      <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-      <Axis id={'left2'} title={'Left axis'} position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
       <BarSeries
-        id={'bars'}
-        name={'Simple bar series'}
+        id="bars"
+        name="Simple bar series"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -34,7 +25,4 @@ export const withAxisAndLegend = () => {
       />
     </Chart>
   );
-};
-withAxisAndLegend.story = {
-  name: 'with axis and legend',
 };

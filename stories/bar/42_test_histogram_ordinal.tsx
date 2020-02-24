@@ -4,16 +4,7 @@ import React from 'react';
 import { Axis, BarSeries, Chart, HistogramBarSeries, Position, ScaleType, Settings } from '../../src';
 import { getChartRotationKnob } from '../common';
 
-export default {
-  title: 'Bar Chart/Test Histogram Mode Ordinal',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const testHistogramModeOrdinal = () => {
+export const example = () => {
   const data = [
     { x: 'a', y: 2 },
     { x: 'b', y: 7 },
@@ -33,33 +24,33 @@ export const testHistogramModeOrdinal = () => {
 
   const hasHistogramBarSeries = boolean('hasHistogramBarSeries', false);
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings rotation={getChartRotationKnob()} theme={theme} debug={boolean('debug', true)} />
-      <Axis id={'discover-histogram-left-axis'} position={Position.Left} title={'left axis'} />
-      <Axis id={'discover-histogram-bottom-axis'} position={Position.Bottom} title={'bottom axis'} />
+      <Axis id="discover-histogram-left-axis" position={Position.Left} title="left axis" />
+      <Axis id="discover-histogram-bottom-axis" position={Position.Bottom} title="bottom axis" />
       {hasHistogramBarSeries && (
         <HistogramBarSeries
-          id={'histo'}
+          id="histo"
           xScaleType={ScaleType.Ordinal}
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y']}
           data={data}
-          name={'histogram'}
+          name="histogram"
         />
       )}
       <BarSeries
-        id={'bars-1'}
+        id="bars-1"
         xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
         data={data}
-        name={'bars 1'}
+        name="bars 1"
         enableHistogramMode={boolean('bars-1 enableHistogramMode', false)}
       />
       <BarSeries
-        id={'bars-2'}
+        id="bars-2"
         xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -69,7 +60,4 @@ export const testHistogramModeOrdinal = () => {
       />
     </Chart>
   );
-};
-testHistogramModeOrdinal.story = {
-  name: '[test] histogram mode (ordinal)',
 };

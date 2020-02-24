@@ -2,23 +2,14 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType } from '../../src';
 
-export default {
-  title: 'Bar Chart/Single Data Clustered Chart',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const singleDataClusteredChart = () => {
+export const example = () => {
   return (
-    <Chart className={'story-chart'}>
-      <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} />
-      <Axis id={'left2'} title={'Left axis'} position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
+    <Chart className="story-chart">
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
       <BarSeries
-        id={'bars'}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -33,7 +24,4 @@ export const singleDataClusteredChart = () => {
       />
     </Chart>
   );
-};
-singleDataClusteredChart.story = {
-  name: 'single data clusterd chart',
 };

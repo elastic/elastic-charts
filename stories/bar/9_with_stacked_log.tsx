@@ -2,23 +2,14 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType } from '../../src';
 
-export default {
-  title: 'Bar Chart/With Stacked Log YAxis',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const withStackedLogYAxis = () => {
+export const example = () => {
   return (
-    <Chart className={'story-chart'}>
-      <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-      <Axis id={'left2'} title={'Left axis'} position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
+    <Chart className="story-chart">
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
       <BarSeries
-        id={'bars'}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Log}
         xAccessor="x"
@@ -47,7 +38,4 @@ export const withStackedLogYAxis = () => {
       />
     </Chart>
   );
-};
-withStackedLogYAxis.story = {
-  name: 'with stacked log y axis',
 };

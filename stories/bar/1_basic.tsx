@@ -3,16 +3,7 @@ import React from 'react';
 
 import { BarSeries, Chart, ScaleType } from '../../src';
 
-export default {
-  title: 'Bar Chart/Basic',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const basic = () => {
+export const example = () => {
   const darkmode = boolean('darkmode', false);
   const className = darkmode ? 'story-chart-dark' : 'story-chart';
   const toggleSpec = boolean('toggle bar spec', true);
@@ -29,7 +20,7 @@ export const basic = () => {
     <Chart className={className}>
       <BarSeries
         id={specId}
-        name={'Simple bar series'}
+        name="Simple bar series"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -38,7 +29,4 @@ export const basic = () => {
       />
     </Chart>
   );
-};
-basic.story = {
-  name: 'basic',
 };

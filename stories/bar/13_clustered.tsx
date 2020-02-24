@@ -4,16 +4,7 @@ import React from 'react';
 import { Axis, BarSeries, Chart, LIGHT_THEME, Position, ScaleType, Settings } from '../../src';
 import { getChartRotationKnob } from '../common';
 
-export default {
-  title: 'Bar Chart/Clustered With Axis and Legend',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const clusteredWithAxisAndLegend = () => {
+export const example = () => {
   const theme = {
     ...LIGHT_THEME,
     scales: {
@@ -32,7 +23,7 @@ export const clusteredWithAxisAndLegend = () => {
     },
   };
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings
         showLegend
         showLegendExtra
@@ -40,11 +31,11 @@ export const clusteredWithAxisAndLegend = () => {
         theme={theme}
         rotation={getChartRotationKnob()}
       />
-      <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-      <Axis id={'left2'} title={'Left axis'} position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
       <BarSeries
-        id={'bars'}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -63,7 +54,4 @@ export const clusteredWithAxisAndLegend = () => {
       />
     </Chart>
   );
-};
-clusteredWithAxisAndLegend.story = {
-  name: 'clustered with axis and legend',
 };

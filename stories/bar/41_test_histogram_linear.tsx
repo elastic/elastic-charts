@@ -19,16 +19,7 @@ import {
 import * as TestDatasets from '../../src/utils/data_samples/test_dataset';
 import { getChartRotationKnob } from '../common';
 
-export default {
-  title: 'Bar Chart/Test Histogram Mode Linear',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const testHistogramModeLinear = () => {
+export const example = () => {
   const data = TestDatasets.BARCHART_2Y1G;
 
   const lineAnnotationStyle = {
@@ -71,7 +62,7 @@ export const testHistogramModeLinear = () => {
   const otherSeries =
     otherSeriesSelection === 'line' ? (
       <LineSeries
-        id={'other-series'}
+        id="other-series"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -81,7 +72,7 @@ export const testHistogramModeLinear = () => {
       />
     ) : (
       <AreaSeries
-        id={'other-series'}
+        id="other-series"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -93,10 +84,10 @@ export const testHistogramModeLinear = () => {
 
   const hasHistogramBarSeries = boolean('hasHistogramBarSeries', false);
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings rotation={getChartRotationKnob()} theme={theme} debug={boolean('debug', true)} />
       <LineAnnotation
-        id={'line-annotation'}
+        id="line-annotation"
         domainType={AnnotationDomainTypes.XDomain}
         dataValues={[{ dataValue: 2 }, { dataValue: 2.5 }, { dataValue: 3.5 }]}
         style={lineAnnotationStyle}
@@ -117,33 +108,33 @@ export const testHistogramModeLinear = () => {
             details: 'rect annotation',
           },
         ]}
-        id={'rect'}
+        id="rect"
       />
-      <Axis id={'discover-histogram-left-axis'} position={Position.Left} title={'left axis'} />
-      <Axis id={'discover-histogram-bottom-axis'} position={Position.Bottom} title={'bottom axis'} />
+      <Axis id="discover-histogram-left-axis" position={Position.Left} title="left axis" />
+      <Axis id="discover-histogram-bottom-axis" position={Position.Bottom} title="bottom axis" />
       {hasHistogramBarSeries && (
         <HistogramBarSeries
-          id={'histo'}
+          id="histo"
           xScaleType={ScaleType.Time}
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y']}
           data={pointData}
-          name={'histogram'}
+          name="histogram"
         />
       )}
       <BarSeries
-        id={'bars-1'}
+        id="bars-1"
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
         data={pointData}
-        name={'bars 1'}
+        name="bars 1"
         enableHistogramMode={boolean('bars-1 enableHistogramMode', false)}
       />
       <BarSeries
-        id={'bars-2'}
+        id="bars-2"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -155,7 +146,4 @@ export const testHistogramModeLinear = () => {
       {otherSeries}
     </Chart>
   );
-};
-testHistogramModeLinear.story = {
-  name: '[test] histogram mode (linear)',
 };

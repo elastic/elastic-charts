@@ -2,24 +2,15 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src';
 
-export default {
-  title: 'Bar Chart/Clustered Multiple Series Specs',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const clusteredMultipleSeriesSpecs = () => {
+export const example = () => {
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings showLegend showLegendExtra legendPosition={Position.Right} />
-      <Axis id={'bottom'} position={Position.Bottom} title={'elements'} showOverlappingTicks={true} />
-      <Axis id={'left2'} title={'count'} position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
+      <Axis id="bottom" position={Position.Bottom} title="elements" showOverlappingTicks={true} />
+      <Axis id="left2" title="count" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
       <BarSeries
-        id={'bar series 1'}
+        id="bar series 1"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -32,7 +23,7 @@ export const clusteredMultipleSeriesSpecs = () => {
         ]}
       />
       <BarSeries
-        id={'bar series 2'}
+        id="bar series 2"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -45,7 +36,7 @@ export const clusteredMultipleSeriesSpecs = () => {
         ]}
       />
       <BarSeries
-        id={'bar series 3'}
+        id="bar series 3"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -64,7 +55,4 @@ export const clusteredMultipleSeriesSpecs = () => {
       />
     </Chart>
   );
-};
-clusteredMultipleSeriesSpecs.story = {
-  name: 'clustered multiple series specs',
 };

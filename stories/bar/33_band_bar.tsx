@@ -5,18 +5,9 @@ import { Axis, BarSeries, Chart, LineSeries, Position, ScaleType, timeFormatter 
 import { getRandomNumberGenerator } from '../../src/mocks/utils';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
 
-export default {
-  title: 'Bar Chart/Band Bar Chart',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
 const dateFormatter = timeFormatter('HH:mm:ss');
 
-export const bandBarChart = () => {
+export const example = () => {
   const getRandomNumber = getRandomNumberGenerator();
   const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d: any) => {
     return {
@@ -69,7 +60,4 @@ export const bandBarChart = () => {
       />
     </Chart>
   );
-};
-bandBarChart.story = {
-  name: 'band bar chart',
 };

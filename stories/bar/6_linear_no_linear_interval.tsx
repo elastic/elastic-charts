@@ -2,23 +2,14 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src';
 
-export default {
-  title: 'Bar Chart/With Linear xAxis No Linear Interval',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const withLinearXAxisNoLinearInterval = () => (
-  <Chart className={'story-chart'}>
+export const example = () => (
+  <Chart className="story-chart">
     <Settings xDomain={{ max: 100 }} />
-    <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-    <Axis id={'left2'} title={'Left axis'} position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
+    <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+    <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
     <BarSeries
-      id={'bars'}
+      id="bars"
       xScaleType={ScaleType.Linear}
       yScaleType={ScaleType.Linear}
       xAccessor="x"
@@ -35,6 +26,3 @@ export const withLinearXAxisNoLinearInterval = () => (
     />
   </Chart>
 );
-withLinearXAxisNoLinearInterval.story = {
-  name: 'with linear x axis no linear interval',
-};

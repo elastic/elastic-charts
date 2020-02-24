@@ -3,16 +3,7 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType } from '../../src';
 
-export default {
-  title: 'Bar Chart/Min Height',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const MinHeight = () => {
+export const example = () => {
   const minBarHeight = number('minBarHeight', 5);
   const data = [
     [1, 100000],
@@ -26,11 +17,11 @@ export const MinHeight = () => {
     [9, 0],
   ];
   return (
-    <Chart className={'story-chart'}>
-      <Axis id={'bottom'} title="Bottom" position={Position.Bottom} />
-      <Axis id={'left'} title="Left" position={Position.Left} />
+    <Chart className="story-chart">
+      <Axis id="bottom" title="Bottom" position={Position.Bottom} />
+      <Axis id="left" title="Left" position={Position.Left} />
       <BarSeries
-        id={'bars'}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
@@ -40,7 +31,4 @@ export const MinHeight = () => {
       />
     </Chart>
   );
-};
-MinHeight.story = {
-  name: 'Min Height',
 };

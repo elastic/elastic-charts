@@ -3,16 +3,7 @@ import React from 'react';
 import { Axis, BarSeries, Chart, Position, ScaleType } from '../../src';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
 
-export default {
-  title: 'Bar Chart/Stacked Only Grouped Areas',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const stackedOnlyGroupedAreas = () => {
+export const example = () => {
   const data1 = [
     [1, 2],
     [2, 2],
@@ -69,18 +60,18 @@ export const stackedOnlyGroupedAreas = () => {
     [9, 8],
   ];
   return (
-    <Chart renderer="canvas" className={'story-chart'}>
-      <Axis id={'bottom'} title={'index'} position={Position.Bottom} />
+    <Chart renderer="canvas" className="story-chart">
+      <Axis id="bottom" title="index" position={Position.Bottom} />
       <Axis
-        id={'left'}
+        id="left"
         title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
         position={Position.Left}
         tickFormat={(d: any) => Number(d).toFixed(2)}
         domain={{ min: 0, max: 15 }}
       />
       <Axis
-        id={'left group b'}
-        groupId={'gb'}
+        id="left group b"
+        groupId="gb"
         title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
         position={Position.Left}
         tickFormat={(d: any) => Number(d).toFixed(2)}
@@ -88,7 +79,7 @@ export const stackedOnlyGroupedAreas = () => {
         domain={{ min: 0, max: 15 }}
       />
       <BarSeries
-        id={'stacked bar 1'}
+        id="stacked bar 1"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
@@ -98,7 +89,7 @@ export const stackedOnlyGroupedAreas = () => {
         yScaleToDataExtent={false}
       />
       <BarSeries
-        id={'stacked bar 2'}
+        id="stacked bar 2"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
@@ -109,8 +100,8 @@ export const stackedOnlyGroupedAreas = () => {
       />
 
       <BarSeries
-        id={'stacked bar A'}
-        groupId={'gb'}
+        id="stacked bar A"
+        groupId="gb"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
@@ -120,8 +111,8 @@ export const stackedOnlyGroupedAreas = () => {
         yScaleToDataExtent={false}
       />
       <BarSeries
-        id={'stacked bar B'}
-        groupId={'gb'}
+        id="stacked bar B"
+        groupId="gb"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
@@ -131,7 +122,7 @@ export const stackedOnlyGroupedAreas = () => {
         yScaleToDataExtent={false}
       />
       <BarSeries
-        id={'non stacked bar'}
+        id="non stacked bar"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
@@ -141,7 +132,4 @@ export const stackedOnlyGroupedAreas = () => {
       />
     </Chart>
   );
-};
-stackedOnlyGroupedAreas.story = {
-  name: 'stacked only grouped areas',
 };

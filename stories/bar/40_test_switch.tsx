@@ -3,23 +3,14 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType } from '../../src';
 
-export default {
-  title: 'Bar Chart/Test Switch Ordinal Linear Axis',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const testSwitchOrdinalLinearAxis = () => {
+export const example = () => {
   return (
-    <Chart className={'story-chart'}>
-      <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-      <Axis id={'left2'} title={'Left axis'} position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
+    <Chart className="story-chart">
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
       <BarSeries
-        id={'bars'}
+        id="bars"
         xScaleType={select(
           'scaleType',
           {
@@ -40,7 +31,4 @@ export const testSwitchOrdinalLinearAxis = () => {
       />
     </Chart>
   );
-};
-testSwitchOrdinalLinearAxis.story = {
-  name: '[test] switch ordinal/linear x axis',
 };

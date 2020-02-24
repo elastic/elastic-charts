@@ -3,31 +3,22 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src';
 
-export default {
-  title: 'Bar Chart/Stacked as Percentage',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const stackedAsPercentage = () => {
+export const example = () => {
   const stackedAsPercentage = boolean('stacked as percentage', true);
   const clusterBars = boolean('cluster', true);
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings showLegend showLegendExtra legendPosition={Position.Right} />
-      <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
       <Axis
-        id={'left2'}
-        title={'Left axis'}
+        id="left2"
+        title="Left axis"
         position={Position.Left}
         tickFormat={(d: any) => (stackedAsPercentage && !clusterBars ? `${Number(d * 100).toFixed(0)} %` : d)}
       />
 
       <BarSeries
-        id={'bars'}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -48,7 +39,4 @@ export const stackedAsPercentage = () => {
       />
     </Chart>
   );
-};
-stackedAsPercentage.story = {
-  name: 'stacked as percentage',
 };

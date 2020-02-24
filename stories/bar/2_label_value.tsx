@@ -19,16 +19,7 @@ const frozenData: { [key: string]: any[] } = {
   h: frozenDataHighVolume,
 };
 
-export default {
-  title: 'Bar Chart/With Label Value',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const withValueLabel = () => {
+export const example = () => {
   const showValueLabel = boolean('show value label', true);
   const isAlternatingValueLabel = boolean('alternating value label', false);
   const isValueContainedInElement = boolean('contain value label within bar element', false);
@@ -74,12 +65,12 @@ export const withValueLabel = () => {
   const splitSeriesAccessors = isSplitSeries ? ['g'] : undefined;
   const stackAccessors = isStackedSeries ? ['x'] : undefined;
   return (
-    <Chart renderer="canvas" className={'story-chart'}>
+    <Chart renderer="canvas" className="story-chart">
       <Settings theme={theme} debug={debug} rotation={getChartRotationKnob()} showLegend showLegendExtra />
-      <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-      <Axis id={'left2'} title={'Left axis'} position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
       <BarSeries
-        id={'bars'}
+        id="bars"
         displayValueSettings={displayValueSettings}
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
@@ -91,7 +82,7 @@ export const withValueLabel = () => {
         yScaleToDataExtent={false}
       />
       <BarSeries
-        id={'bars2'}
+        id="bars2"
         displayValueSettings={displayValueSettings}
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
@@ -112,7 +103,4 @@ export const withValueLabel = () => {
       />
     </Chart>
   );
-};
-withValueLabel.story = {
-  name: 'with value label',
 };

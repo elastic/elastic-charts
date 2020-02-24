@@ -3,16 +3,7 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType } from '../../src';
 
-export default {
-  title: 'Bar Chart/Test Min Height',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const testMinHeightPositiveAndNegativeValues = () => {
+export const example = () => {
   const minBarHeight = number('minBarHeight', 10);
   const data = [
     [1, -100000],
@@ -35,11 +26,11 @@ export const testMinHeightPositiveAndNegativeValues = () => {
     [18, 100000],
   ];
   return (
-    <Chart className={'story-chart'}>
-      <Axis id={'bottom'} title="Bottom" position={Position.Bottom} />
-      <Axis id={'left'} title="Left" position={Position.Left} />
+    <Chart className="story-chart">
+      <Axis id="bottom" title="Bottom" position={Position.Bottom} />
+      <Axis id="left" title="Left" position={Position.Left} />
       <BarSeries
-        id={'bars'}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
@@ -49,7 +40,4 @@ export const testMinHeightPositiveAndNegativeValues = () => {
       />
     </Chart>
   );
-};
-testMinHeightPositiveAndNegativeValues.story = {
-  name: '[Test] Min Height - positive and negative values',
 };

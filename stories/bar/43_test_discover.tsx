@@ -13,16 +13,7 @@ import {
 } from '../../src';
 import { TEST_DATASET_DISCOVER } from '../../src/utils/data_samples/test_dataset_discover_per_30s';
 
-export default {
-  title: 'Bar Chart/Test Discover',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const testDiscover = () => {
+export const example = () => {
   const data = TEST_DATASET_DISCOVER.series[0].values;
 
   const formatter = timeFormatter(niceTimeFormatByDay(1));
@@ -33,29 +24,26 @@ export const testDiscover = () => {
 
   const useCustomMinInterval = boolean('use custom minInterval of 30s', true);
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings xDomain={useCustomMinInterval ? xDomain : undefined} />
-      <Axis id={'discover-histogram-left-axis'} position={Position.Left} title={TEST_DATASET_DISCOVER.yAxisLabel} />
+      <Axis id="discover-histogram-left-axis" position={Position.Left} title={TEST_DATASET_DISCOVER.yAxisLabel} />
       <Axis
-        id={'discover-histogram-bottom-axis'}
+        id="discover-histogram-bottom-axis"
         position={Position.Bottom}
         title={TEST_DATASET_DISCOVER.xAxisLabel}
         tickFormat={formatter}
       />
 
       <HistogramBarSeries
-        id={'discover-histogram'}
+        id="discover-histogram"
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
         data={data}
-        timeZone={'local'}
-        name={'Count'}
+        timeZone="local"
+        name="Count"
       />
     </Chart>
   );
-};
-testDiscover.story = {
-  name: '[test] discover',
 };

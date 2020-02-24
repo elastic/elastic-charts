@@ -4,16 +4,7 @@ import React from 'react';
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src';
 import { getChartRotationKnob } from '../common';
 
-export default {
-  title: 'Bar Chart/Single Data Chart Linear',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const singleDataChartLinear = () => {
+export const example = () => {
   const hasCustomDomain = boolean('has custom domain', false);
   const xDomain = hasCustomDomain
     ? {
@@ -32,13 +23,13 @@ export const singleDataChartLinear = () => {
     },
   };
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings xDomain={xDomain} rotation={getChartRotationKnob()} theme={theme} />
-      <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} />
-      <Axis id={'left2'} title={'Left axis'} position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
       <BarSeries
-        id={'bars'}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -48,7 +39,4 @@ export const singleDataChartLinear = () => {
       />
     </Chart>
   );
-};
-singleDataChartLinear.story = {
-  name: 'single data chart [linear]',
 };

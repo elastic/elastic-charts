@@ -4,16 +4,7 @@ import React from 'react';
 import { Axis, BarSeries, Chart, LIGHT_THEME, Position, ScaleType, Settings } from '../../src';
 import { getChartRotationKnob } from '../common';
 
-export default {
-  title: 'Bar Chart/With Linear xAxis',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const withLinearXAxis = () => {
+export const example = () => {
   const theme = {
     ...LIGHT_THEME,
     scales: {
@@ -32,13 +23,13 @@ export const withLinearXAxis = () => {
     },
   };
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings rotation={getChartRotationKnob()} theme={theme} />
-      <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-      <Axis id={'left2'} title={'Left axis'} position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
       <BarSeries
-        id={'bars'}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -52,7 +43,4 @@ export const withLinearXAxis = () => {
       />
     </Chart>
   );
-};
-withLinearXAxis.story = {
-  name: 'with linear x axis',
 };

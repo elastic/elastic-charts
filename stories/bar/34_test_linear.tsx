@@ -3,16 +3,7 @@ import React from 'react';
 import { Axis, BarSeries, Chart, Position, ScaleType } from '../../src';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
 
-export default {
-  title: 'Bar Chart/Test Linear',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const testLinear = () => {
+export const example = () => {
   const data = [
     [1, 1],
     [2, 2],
@@ -25,16 +16,16 @@ export const testLinear = () => {
     [9, 1],
   ];
   return (
-    <Chart className={'story-chart'}>
-      <Axis id={'bottom'} title={'index'} position={Position.Bottom} />
+    <Chart className="story-chart">
+      <Axis id="bottom" title="index" position={Position.Bottom} />
       <Axis
-        id={'left'}
+        id="left"
         title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
         position={Position.Left}
         tickFormat={(d: any) => Number(d).toFixed(2)}
       />
       <BarSeries
-        id={'lines'}
+        id="lines"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
@@ -43,7 +34,4 @@ export const testLinear = () => {
       />
     </Chart>
   );
-};
-testLinear.story = {
-  name: '[test] - linear',
 };
