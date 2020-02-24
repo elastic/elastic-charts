@@ -1,30 +1,16 @@
 import React from 'react';
 
-import { Axis, BarSeries, Chart, getAxisId, getSpecId, LineSeries, Position, ScaleType, Settings } from '../../src/';
+import { Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings } from '../../src/';
 
-export default {
-  title: 'Mixed Charts/Bars and Lines',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const barsAndLines = () => {
+export const example = () => {
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings showLegend showLegendExtra legendPosition={Position.Right} />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} />
-      <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
-        position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
       <BarSeries
-        id={getSpecId('bars')}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -37,7 +23,7 @@ export const barsAndLines = () => {
         ]}
       />
       <LineSeries
-        id={getSpecId('line')}
+        id="line"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -51,7 +37,4 @@ export const barsAndLines = () => {
       />
     </Chart>
   );
-};
-barsAndLines.story = {
-  name: 'bar and lines',
 };

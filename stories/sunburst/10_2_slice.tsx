@@ -4,16 +4,7 @@ import { config } from '../../src/chart_types/partition_chart/layout/config/conf
 import React from 'react';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 
-export default {
-  title: 'Sunburst/Pie Chart with Two Slices',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const TwoSlicesPieChart = () => (
+export const example = () => (
   <Chart className="story-chart">
     <Partition
       id="spec_1"
@@ -34,6 +25,3 @@ export const TwoSlicesPieChart = () => (
     />
   </Chart>
 );
-TwoSlicesPieChart.story = {
-  name: 'Pie chart with two slices',
-};

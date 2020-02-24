@@ -4,16 +4,7 @@ import { config } from '../../src/chart_types/partition_chart/layout/config/conf
 import React from 'react';
 import { countryLookup, indexInterpolatedFillColor, interpolatorCET2s, regionLookup } from '../utils/utils';
 
-export default {
-  title: 'Sunburst/Two Layers',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const SunburstTwoLayers = () => (
+export const example = () => (
   <Chart className="story-chart">
     <Partition
       id="spec_1"
@@ -69,6 +60,3 @@ export const SunburstTwoLayers = () => (
     />
   </Chart>
 );
-SunburstTwoLayers.story = {
-  name: 'Sunburst with two layers, angle color',
-};

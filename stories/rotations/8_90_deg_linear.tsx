@@ -1,25 +1,16 @@
 import React from 'react';
-import { Axis, BarSeries, Chart, getAxisId, getSpecId, Position, ScaleType, Settings } from '../../src/';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src/';
 
-export default {
-  title: 'Rotations/90 Deg Linear',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const rotations90DegLinear = () => {
+export const example = () => {
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings showLegend showLegendExtra legendPosition={Position.Right} rotation={90} />
-      <Axis id={getAxisId('y top')} position={Position.Top} title={'y top axis'} />
-      <Axis id={getAxisId('x right')} title={'x right axis'} position={Position.Right} />
-      <Axis id={getAxisId('y bottom')} position={Position.Bottom} title={'y bottom axis'} />
-      <Axis id={getAxisId('x left')} title={'x left axis'} position={Position.Left} />
+      <Axis id="y top" position={Position.Top} title="y top axis" />
+      <Axis id="x right" title="x right axis" position={Position.Right} />
+      <Axis id="y bottom" position={Position.Bottom} title="y bottom axis" />
+      <Axis id="x left" title="x left axis" position={Position.Left} />
       <BarSeries
-        id={getSpecId('bars')}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -33,7 +24,4 @@ export const rotations90DegLinear = () => {
       />
     </Chart>
   );
-};
-rotations90DegLinear.story = {
-  name: '90 deg linear',
 };

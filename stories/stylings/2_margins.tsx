@@ -1,7 +1,7 @@
 import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, getAxisId, getSpecId, PartialTheme, Position, ScaleType, Settings } from '../../src/';
+import { Axis, BarSeries, Chart, PartialTheme, Position, ScaleType, Settings } from '../../src';
 
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {
   return number(
@@ -17,16 +17,7 @@ function range(title: string, min: number, max: number, value: number, groupId?:
   );
 }
 
-export default {
-  title: 'Stylings/Margins and Paddings',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const marginsAndPaddings = () => {
+export const example = () => {
   const theme: PartialTheme = {
     chartMargins: {
       left: range('margin left', 0, 50, 10),
@@ -49,7 +40,7 @@ export const marginsAndPaddings = () => {
   const withRightTitle = boolean('right axis with title', true);
   const withTopTitle = boolean('top axis with title', true);
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings
         theme={theme}
         debug={boolean('debug', true)}
@@ -58,35 +49,35 @@ export const marginsAndPaddings = () => {
         legendPosition={Position.Right}
       />
       <Axis
-        id={getAxisId('bottom')}
+        id="bottom"
         position={Position.Bottom}
         title={withBottomTitle ? 'Bottom axis' : undefined}
         showOverlappingTicks={true}
         showGridLines={boolean('show bottom axis grid lines', false)}
       />
       <Axis
-        id={getAxisId('left2')}
+        id="left2"
         title={withLeftTitle ? 'Left axis' : undefined}
         position={Position.Left}
         tickFormat={(d) => Number(d).toFixed(2)}
         showGridLines={boolean('show left axis grid lines', false)}
       />
       <Axis
-        id={getAxisId('top')}
+        id="top"
         position={Position.Top}
         title={withTopTitle ? 'Top axis' : undefined}
         showOverlappingTicks={true}
         showGridLines={boolean('show top axis grid lines', false)}
       />
       <Axis
-        id={getAxisId('right')}
+        id="right"
         title={withRightTitle ? 'Right axis' : undefined}
         position={Position.Right}
         tickFormat={(d) => Number(d).toFixed(2)}
         showGridLines={boolean('show right axis grid lines', false)}
       />
       <BarSeries
-        id={getSpecId('bars')}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -100,7 +91,4 @@ export const marginsAndPaddings = () => {
       />
     </Chart>
   );
-};
-marginsAndPaddings.story = {
-  name: 'margins and paddings',
 };

@@ -6,8 +6,6 @@ import {
   Axis,
   BarSeries,
   Chart,
-  getAxisId,
-  getSpecId,
   LineSeries,
   Position,
   ScaleType,
@@ -15,19 +13,10 @@ import {
   RecursivePartial,
   BarSeriesStyle,
   PointStyle,
-} from '../../src/';
+} from '../../src';
 import { BarStyleAccessor, PointStyleAccessor } from '../../src/chart_types/xy_chart/utils/specs';
 
-export default {
-  title: 'Stylings/Style Accessor Overrides',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const styleAccessorOverrides = () => {
+export const example = () => {
   const hasThreshold = boolean('threshold', true);
   const threshold = number('min threshold', 3);
   const barStyle: RecursivePartial<BarSeriesStyle> = {
@@ -40,10 +29,9 @@ export const styleAccessorOverrides = () => {
     fill: 'red',
     radius: 10,
   };
-  const barStyleAccessor: BarStyleAccessor = (d, g) =>
-    g.specId === getSpecId('bar') && d.y1! > threshold ? barStyle : null;
+  const barStyleAccessor: BarStyleAccessor = (d, g) => (g.specId === 'bar' && d.y1! > threshold ? barStyle : null);
   const pointStyleAccessor: PointStyleAccessor = (d, g) =>
-    (g.specId === getSpecId('line') || g.specId === getSpecId('area')) && d.y1! > threshold ? pointStyle : null;
+    (g.specId === 'line' || g.specId === 'area') && d.y1! > threshold ? pointStyle : null;
 
   return (
     <Chart className="story-chart">
@@ -56,16 +44,11 @@ export const styleAccessorOverrides = () => {
           },
         }}
       />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-      <Axis
-        id={getAxisId('left')}
-        title={'Left axis'}
-        position={Position.Left}
-        tickFormat={(d: any) => Number(d).toFixed(2)}
-      />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Axis id="left" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
       <BarSeries
-        id={getSpecId('bar')}
+        id="bar"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -80,7 +63,7 @@ export const styleAccessorOverrides = () => {
       />
 
       <LineSeries
-        id={getSpecId('line')}
+        id="line"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -95,7 +78,7 @@ export const styleAccessorOverrides = () => {
       />
 
       <AreaSeries
-        id={getSpecId('area')}
+        id="area"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -110,7 +93,4 @@ export const styleAccessorOverrides = () => {
       />
     </Chart>
   );
-};
-styleAccessorOverrides.story = {
-  name: 'Style Accessor Overrides',
 };

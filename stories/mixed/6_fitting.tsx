@@ -1,30 +1,10 @@
 import { select, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {
-  AreaSeries,
-  Axis,
-  Chart,
-  CurveType,
-  getAxisId,
-  getSpecId,
-  LineSeries,
-  Position,
-  ScaleType,
-  Settings,
-} from '../../src/';
+import { AreaSeries, Axis, Chart, CurveType, LineSeries, Position, ScaleType, Settings } from '../../src/';
 import { Fit, SeriesTypes } from '../../src/chart_types/xy_chart/utils/specs';
 
-export default {
-  title: 'Mixed Charts/Fitting Functions',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const fittingFunctionsNonStackedSeries = () => {
+export const example = () => {
   const dataTypes = {
     isolated: [
       { x: 0, y: 3 },
@@ -166,14 +146,14 @@ export const fittingFunctionsNonStackedSeries = () => {
           },
         }}
       />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-      <Axis id={getAxisId('left')} title={'Left axis'} position={Position.Left} />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Axis id="left" title="Left axis" position={Position.Left} />
       {seriesType === SeriesTypes.Area ? (
         <AreaSeries
-          id={getSpecId('test')}
+          id="test"
           xScaleType={xScaleType}
           yScaleType={ScaleType.Linear}
-          xAccessor={'x'}
+          xAccessor="x"
           yAccessors={['y']}
           curve={curve}
           fit={{
@@ -185,10 +165,10 @@ export const fittingFunctionsNonStackedSeries = () => {
         />
       ) : (
         <LineSeries
-          id={getSpecId('test')}
+          id="test"
           xScaleType={xScaleType}
           yScaleType={ScaleType.Linear}
-          xAccessor={'x'}
+          xAccessor="x"
           yAccessors={['y']}
           curve={curve}
           fit={{
@@ -201,7 +181,4 @@ export const fittingFunctionsNonStackedSeries = () => {
       )}
     </Chart>
   );
-};
-fittingFunctionsNonStackedSeries.story = {
-  name: 'Fitting functions - non-stacked series',
 };

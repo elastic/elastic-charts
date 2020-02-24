@@ -1,7 +1,7 @@
 import { boolean, color, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, getAxisId, getSpecId, PartialTheme, Position, ScaleType, Settings } from '../../src/';
+import { Axis, BarSeries, Chart, PartialTheme, Position, ScaleType, Settings } from '../../src';
 
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {
   return number(
@@ -17,16 +17,7 @@ function range(title: string, min: number, max: number, value: number, groupId?:
   );
 }
 
-export default {
-  title: 'Stylings/Axis',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const axis = () => {
+export const example = () => {
   const theme: PartialTheme = {
     axes: {
       axisTitleStyle: {
@@ -55,22 +46,17 @@ export const axis = () => {
     },
   };
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings
         theme={theme}
         debug={boolean('debug', true)}
         rotation={select('rotation', { '0': 0, '90': 90, '-90': -90, '180': 180 }, 0)}
       />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-      <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
-        position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
       <BarSeries
-        id={getSpecId('bars')}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -84,7 +70,4 @@ export const axis = () => {
       />
     </Chart>
   );
-};
-axis.story = {
-  name: 'axis',
 };

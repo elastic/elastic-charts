@@ -13,16 +13,7 @@ const interpolatorCET2s = hueInterpolator(palettes.CET2s.map(([r, g, b]) => [r, 
 
 const defaultFillColor = (colorMaker: any) => (d: any, i: number, a: any[]) => colorMaker(i / (a.length + 1));
 
-export default {
-  title: 'Treemap/OneLayer',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const OneLayer = () => (
+export const example = () => (
   <Chart className="story-chart">
     <Partition
       id="spec_1"
@@ -48,6 +39,3 @@ export const OneLayer = () => (
     />
   </Chart>
 );
-OneLayer.story = {
-  name: 'One-layer, resizing treemap',
-};

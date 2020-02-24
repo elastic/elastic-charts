@@ -12,16 +12,7 @@ const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
 
 const interpolatorTurbo = hueInterpolator(palettes.turbo.map(([r, g, b]) => [r, g, b, 0.7]));
 
-export default {
-  title: 'Treemap/Mid Two Layers',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const MidTwoLayers = () => (
+export const example = () => (
   <Chart
     className="story-chart"
     size={
@@ -81,6 +72,3 @@ export const MidTwoLayers = () => (
     />
   </Chart>
 );
-MidTwoLayers.story = {
-  name: 'Midsize two-layer treemap',
-};

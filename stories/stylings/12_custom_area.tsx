@@ -1,17 +1,7 @@
 import { boolean, color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {
-  AreaSeries,
-  Axis,
-  Chart,
-  getAxisId,
-  getSpecId,
-  Position,
-  ScaleType,
-  Settings,
-  LineSeriesStyle,
-} from '../../src/';
+import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, LineSeriesStyle } from '../../src';
 
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {
   return number(
@@ -85,16 +75,7 @@ function generateAreaSeriesStyleKnobs(
   };
 }
 
-export default {
-  title: 'Stylings/Custom Series Styles Area',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const customSeriesStylesArea = () => {
+export const example = () => {
   const applyLineStyles = boolean('apply line series style', true, 'Chart Global Theme');
 
   const chartTheme = {
@@ -114,17 +95,12 @@ export const customSeriesStylesArea = () => {
   const areaStyle2 = generateAreaSeriesStyleKnobs('Area 2 Style', 'area2', 'blue', 'violet', 2, 5, 4, undefined, 'red');
 
   return (
-    <Chart renderer="canvas" className={'story-chart'}>
+    <Chart renderer="canvas" className="story-chart">
       <Settings showLegend showLegendExtra legendPosition={Position.Right} theme={chartTheme} />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-      <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
-        position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
       <AreaSeries
-        id={getSpecId('area1')}
+        id="area1"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -134,7 +110,7 @@ export const customSeriesStylesArea = () => {
         areaSeriesStyle={applyLineStyles ? areaStyle1 : undefined}
       />
       <AreaSeries
-        id={getSpecId('area2')}
+        id="area2"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -144,7 +120,7 @@ export const customSeriesStylesArea = () => {
         areaSeriesStyle={applyLineStyles ? areaStyle2 : undefined}
       />
       <AreaSeries
-        id={getSpecId('area3')}
+        id="area3"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -154,7 +130,4 @@ export const customSeriesStylesArea = () => {
       />
     </Chart>
   );
-};
-customSeriesStylesArea.story = {
-  name: 'custom series styles: area',
 };

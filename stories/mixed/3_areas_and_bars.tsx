@@ -1,47 +1,17 @@
 import React from 'react';
 
-import {
-  AreaSeries,
-  Axis,
-  BarSeries,
-  Chart,
-  CurveType,
-  getAxisId,
-  getSpecId,
-  Position,
-  ScaleType,
-  Settings,
-} from '../../src/';
+import { AreaSeries, Axis, BarSeries, Chart, CurveType, Position, ScaleType, Settings } from '../../src/';
 
-export default {
-  title: 'Mixed Charts/Areas and Bars',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const areasAndBars = () => {
+export const example = () => {
   return (
-    <Chart renderer="canvas" className={'story-chart'}>
+    <Chart renderer="canvas" className="story-chart">
       <Settings showLegend showLegendExtra legendPosition={Position.Right} />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-      <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
-        position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
-      <Axis id={getAxisId('top')} position={Position.Top} title={'Top axis'} showOverlappingTicks={true} />
-      <Axis
-        id={getAxisId('right')}
-        title={'Right axis'}
-        position={Position.Right}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
+      <Axis id="top" position={Position.Top} title="Top axis" showOverlappingTicks={true} />
+      <Axis id="right" title="Right axis" position={Position.Right} tickFormat={(d) => Number(d).toFixed(2)} />
       <BarSeries
-        id={getSpecId('bars')}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -57,7 +27,7 @@ export const areasAndBars = () => {
         yScaleToDataExtent={false}
       />
       <AreaSeries
-        id={getSpecId('areas')}
+        id="areas"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -73,7 +43,4 @@ export const areasAndBars = () => {
       />
     </Chart>
   );
-};
-areasAndBars.story = {
-  name: 'areas and bars',
 };

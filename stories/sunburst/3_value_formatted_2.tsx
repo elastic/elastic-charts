@@ -5,16 +5,7 @@ import React from 'react';
 import { ShapeTreeNode } from '../../src/chart_types/partition_chart/layout/types/viewmodel_types';
 import { categoricalFillColor, colorBrewerCategoricalPastel12, productLookup } from '../utils/utils';
 
-export default {
-  title: 'Sunburst/Value Formatted Pie Chart 2',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const ValueFormattedPieChart2 = () => (
+export const example = () => (
   <Chart className="story-chart">
     <Partition
       id="spec_1"
@@ -44,9 +35,3 @@ export const ValueFormattedPieChart2 = () => (
     />
   </Chart>
 );
-ValueFormattedPieChart2.story = {
-  name: 'Value formatted pie chart with categorical color palette',
-  info: {
-    source: false,
-  },
-};

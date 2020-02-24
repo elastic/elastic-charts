@@ -12,24 +12,24 @@ export class Playground extends React.Component {
     return (
       <>
         <div className="chart">
-          <Chart className={'story-chart'}>
+          <Chart className="story-chart">
             <Settings showLegend={true} />
             <Axis
-              id={getAxisId('bottom')}
-              title={'timestamp per 1 minute'}
+              id="bottom"
+              title="timestamp per 1 minute"
               position={Position.Bottom}
               showOverlappingTicks={true}
               tickFormat={timeFormatter('HH:mm')}
             />
             <Axis
-              id={getAxisId('left')}
+              id="left"
               title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
               position={Position.Left}
               tickFormat={(d) => Number(d).toFixed(2)}
             />
 
             <AreaSeries
-              id={getSpecId('area')}
+              id="area"
               xScaleType={ScaleType.Time}
               yScaleType={ScaleType.Linear}
               xAccessor={0}

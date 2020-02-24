@@ -9,8 +9,6 @@ import {
   Chart,
   CurveType,
   DEFAULT_MISSING_COLOR,
-  getAxisId,
-  getSpecId,
   LineSeries,
   PartialTheme,
   Position,
@@ -18,7 +16,7 @@ import {
   Settings,
   LIGHT_THEME,
   DARK_THEME,
-} from '../../src/';
+} from '../../src';
 import { SeededDataGenerator } from '../../src/mocks/utils';
 import { palettes } from '../../src/utils/themes/colors';
 
@@ -41,16 +39,7 @@ const data1 = dg.generateGroupedSeries(40, 4);
 const data2 = dg.generateSimpleSeries(40);
 const data3 = dg.generateSimpleSeries(40);
 
-export default {
-  title: 'Stylings/Theme Styling',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const themeStyle = () => {
+export const example = () => {
   const customizeLineStroke = boolean('customizeLineStroke', false, 'line');
   const customizePointStroke = boolean('customizeLinePointStroke', false, 'line');
   const customizeAreaFill = boolean('customizeAreaFill', false, 'area');
@@ -156,22 +145,12 @@ export const themeStyle = () => {
         showLegendExtra
         legendPosition={Position.Right}
       />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-      <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
-        position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
-      <Axis id={getAxisId('top')} position={Position.Top} title={'Top axis'} showOverlappingTicks={true} />
-      <Axis
-        id={getAxisId('right')}
-        title={'Right axis'}
-        position={Position.Right}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
+      <Axis id="top" position={Position.Top} title="Top axis" showOverlappingTicks={true} />
+      <Axis id="right" title="Right axis" position={Position.Right} tickFormat={(d) => Number(d).toFixed(2)} />
       <BarSeries
-        id={getSpecId('bars')}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -181,7 +160,7 @@ export const themeStyle = () => {
         data={data1}
       />
       <LineSeries
-        id={getSpecId('lines')}
+        id="lines"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -190,7 +169,7 @@ export const themeStyle = () => {
         data={data2}
       />
       <AreaSeries
-        id={getSpecId('areas')}
+        id="areas"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -200,7 +179,4 @@ export const themeStyle = () => {
       />
     </Chart>
   );
-};
-themeStyle.story = {
-  name: 'theme/style',
 };

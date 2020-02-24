@@ -1,30 +1,16 @@
 import React from 'react';
 
-import { AreaSeries, Axis, Chart, getAxisId, getSpecId, LineSeries, Position, ScaleType, Settings } from '../../src/';
+import { AreaSeries, Axis, Chart, LineSeries, Position, ScaleType, Settings } from '../../src/';
 
-export default {
-  title: 'Mixed Charts/Lines and Areas',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const linesAndAreas = () => {
+export const example = () => {
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings showLegend showLegendExtra legendPosition={Position.Right} />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-      <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
-        position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
       <AreaSeries
-        id={getSpecId('areas')}
+        id="areas"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -37,7 +23,7 @@ export const linesAndAreas = () => {
         ]}
       />
       <LineSeries
-        id={getSpecId('lines')}
+        id="lines"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -52,7 +38,4 @@ export const linesAndAreas = () => {
       />
     </Chart>
   );
-};
-linesAndAreas.story = {
-  name: 'lines and areas',
 };

@@ -7,16 +7,7 @@ import React from 'react';
 
 const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
 
-export default {
-  title: 'Treemap/Custom Style',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const CustomStyle = () => (
+export const example = () => (
   <Chart
     className="story-chart"
     size={
@@ -72,6 +63,3 @@ export const CustomStyle = () => (
     />
   </Chart>
 );
-CustomStyle.story = {
-  name: 'Custom style',
-};

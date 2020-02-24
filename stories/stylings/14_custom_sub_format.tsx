@@ -1,20 +1,11 @@
 import React from 'react';
 
-import { Axis, BarSeries, Chart, getAxisId, getSpecId, Position, ScaleType, Settings } from '../../src';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src';
 import { SubSeriesStringPredicate } from '../../src/chart_types/xy_chart/utils/specs';
 import moment from 'moment';
 import { DateTime } from 'luxon';
 
-export default {
-  title: 'Stylings/Add Custom SubSeries Label Formatting',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const addCustomSubSeriesLabelFormatting = () => {
+export const example = () => {
   const start = DateTime.fromISO('2019-01-01T00:00:00.000', { zone: 'utc' });
   const data = [
     { x: 1, y: 3, percent: 0.5, time: start.plus({ month: 1 }).toMillis() },
@@ -49,18 +40,13 @@ export const addCustomSubSeriesLabelFormatting = () => {
   };
 
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings showLegend showLegendExtra legendPosition={Position.Right} />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-      <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
-        position={Position.Left}
-        tickFormat={(d: any) => Number(d).toFixed(2)}
-      />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
       <BarSeries
-        id={getSpecId('bars1')}
+        id="bars1"
         xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -71,7 +57,4 @@ export const addCustomSubSeriesLabelFormatting = () => {
       />
     </Chart>
   );
-};
-addCustomSubSeriesLabelFormatting.story = {
-  name: 'Add custom sub-series label formatting [time/date and percent]',
 };

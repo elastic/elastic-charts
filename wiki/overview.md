@@ -48,10 +48,10 @@ A spec can be something like the following:
 ```jsx
 <Chart renderer={renderer}>
   <Settings rotation={rotation} animateData={true} />
-  <Axis id={getAxisId('bottom')} position={AxisPosition.Bottom} title={`Rendering test`} />
-  <Axis id={getAxisId('left')} position={AxisPosition.Left} />
+  <Axis id={('bottom')} position={AxisPosition.Bottom} title={`Rendering test`} />
+  <Axis id={('left')} position={AxisPosition.Left} />
   <LineSeries
-    id={getSpecId('1')}
+    id={('1')}
     yScaleType={ScaleType.Linear}
     xScaleType={ScaleType.Linear}
     xAccessor="x"
@@ -59,7 +59,7 @@ A spec can be something like the following:
     data={BARCHART_1Y0G}
   />
   <BarSeries
-    id={getSpecId('2')}
+    id={('2')}
     yScaleType={ScaleType.Linear}
     xScaleType={ScaleType.Linear}
     xAccessor="x"

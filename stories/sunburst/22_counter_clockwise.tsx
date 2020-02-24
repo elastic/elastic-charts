@@ -4,16 +4,7 @@ import { config } from '../../src/chart_types/partition_chart/layout/config/conf
 import React from 'react';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 
-export default {
-  title: 'Sunburst/Counter Clockwise Special',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const CounterClockwiseSpecial = () => (
+export const example = () => (
   <Chart className="story-chart">
     <Partition
       id="spec_1"
@@ -37,6 +28,3 @@ export const CounterClockwiseSpecial = () => (
     />
   </Chart>
 );
-CounterClockwiseSpecial.story = {
-  name: 'Counterclockwise, special 1st',
-};

@@ -9,16 +9,7 @@ import { categoricalFillColor, colorBrewerCategoricalPastel12 } from '../utils/u
 
 const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
 
-export default {
-  title: 'Treemap/One Layer 2',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const OneLayer2 = () => (
+export const example = () => (
   <Chart className="story-chart">
     <Partition
       id="spec_1"
@@ -47,6 +38,3 @@ export const OneLayer2 = () => (
     />
   </Chart>
 );
-OneLayer2.story = {
-  name: 'One-layer, ColorBrewer treemap',
-};

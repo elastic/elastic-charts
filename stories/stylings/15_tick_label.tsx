@@ -1,7 +1,7 @@
 import { boolean, color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { AreaSeries, Axis, Chart, getAxisId, getSpecId, PartialTheme, Position, ScaleType, Settings } from '../../src/';
+import { AreaSeries, Axis, Chart, PartialTheme, Position, ScaleType, Settings } from '../../src';
 
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {
   return number(
@@ -17,16 +17,7 @@ function range(title: string, min: number, max: number, value: number, groupId?:
   );
 }
 
-export default {
-  title: 'Stylings/Tick Label Padding both prop and theme',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const tickLabelPaddingBothPropAndTheme = () => {
+export const example = () => {
   const theme: PartialTheme = {
     axes: {
       tickLabelStyle: {
@@ -42,23 +33,18 @@ export const tickLabelPaddingBothPropAndTheme = () => {
     tickLabelPadding: number('Tick Label Padding Axis Spec', 0),
   };
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings theme={theme} debug={boolean('debug', true)} />
       <Axis
         id="bottom"
         position={Position.Bottom}
-        title={'Bottom axis'}
+        title="Bottom axis"
         showOverlappingTicks={true}
         style={customStyle}
       />
-      <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
-        position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
       <AreaSeries
-        id={getSpecId('lines')}
+        id="lines"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -72,7 +58,4 @@ export const tickLabelPaddingBothPropAndTheme = () => {
       />
     </Chart>
   );
-};
-tickLabelPaddingBothPropAndTheme.story = {
-  name: 'tickLabelPadding both prop and theme',
 };

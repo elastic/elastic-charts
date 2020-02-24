@@ -4,16 +4,7 @@ import { config } from '../../src/chart_types/partition_chart/layout/config/conf
 import React from 'react';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 
-export default {
-  title: 'Sunburst/Total Zero No Pie',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const TotalZeroNoPie = () => (
+export const example = () => (
   <Chart className="story-chart">
     <Partition
       id="spec_1"
@@ -34,6 +25,3 @@ export const TotalZeroNoPie = () => (
     />
   </Chart>
 );
-TotalZeroNoPie.story = {
-  name: 'No pie chart if total is zero',
-};

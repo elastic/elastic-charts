@@ -1,19 +1,10 @@
 import { DateTime } from 'luxon';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, getAxisId, getSpecId, LineSeries, Position, ScaleType, Settings } from '../../src/';
+import { Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings } from '../../src/';
 import { timeFormatter } from '../../src/utils/data/formatters';
 
-export default {
-  title: 'Mixed Charts/Test Bar Lines Time',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const testBarLinesTime = () => {
+export const example = () => {
   const start = DateTime.fromISO('2019-01-01T00:00:00.000', { zone: 'utc' });
   const data1 = [
     [start.toMillis(), 1, 4],
@@ -40,24 +31,19 @@ export const testBarLinesTime = () => {
   const dateFormatter = timeFormatter('HH:mm:ss');
 
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings showLegend showLegendExtra legendPosition={Position.Right} />
       <Axis
-        id={getAxisId('bottom')}
+        id="bottom"
         position={Position.Bottom}
-        title={'Bottom axis'}
+        title="Bottom axis"
         showOverlappingTicks={true}
         tickFormat={dateFormatter}
       />
-      <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
-        position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
       <BarSeries
-        id={getSpecId('data1')}
+        id="data1"
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
@@ -65,7 +51,7 @@ export const testBarLinesTime = () => {
         data={data1}
       />
       <LineSeries
-        id={getSpecId('data2')}
+        id="data2"
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
@@ -74,7 +60,4 @@ export const testBarLinesTime = () => {
       />
     </Chart>
   );
-};
-testBarLinesTime.story = {
-  name: '[test] - bar/lines time',
 };

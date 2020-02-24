@@ -1,34 +1,14 @@
 import { color } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {
-  Axis,
-  BarSeries,
-  Chart,
-  CustomSeriesColors,
-  getAxisId,
-  getSpecId,
-  LineSeries,
-  Position,
-  ScaleType,
-  Settings,
-} from '../../src/';
+import { Axis, BarSeries, Chart, CustomSeriesColors, LineSeries, Position, ScaleType, Settings } from '../../src';
 import * as TestDatasets from '../../src/utils/data_samples/test_dataset';
 
-export default {
-  title: 'Stylings/Custom Series Colors via Accessor Function',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const customSeriesColorsViaAccessorFunction = () => {
+export const example = () => {
   const barColor = color('barSeriesColor', '#000');
   const barSeriesColorAccessor: CustomSeriesColors = ({ specId, yAccessor, splitAccessors }) => {
     if (
-      specId === getSpecId('bars') &&
+      specId === 'bars' &&
       yAccessor === 'y1' &&
       // eslint-disable-next-line react/prop-types
       splitAccessors.get('g1') === 'cloudflare.com' &&
@@ -43,25 +23,20 @@ export const customSeriesColorsViaAccessorFunction = () => {
   const lineColor = color('linelineSeriesColor', '#ff0');
   const lineSeriesColorAccessor: CustomSeriesColors = ({ specId, yAccessor, splitAccessors }) => {
     // eslint-disable-next-line react/prop-types
-    if (specId === getSpecId('lines') && yAccessor === 'y1' && splitAccessors.size === 0) {
+    if (specId === 'lines' && yAccessor === 'y1' && splitAccessors.size === 0) {
       return lineColor;
     }
     return null;
   };
 
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings showLegend showLegendExtra legendPosition={Position.Right} />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-      <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
-        position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
       <BarSeries
-        id={getSpecId('bars')}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -71,7 +46,7 @@ export const customSeriesColorsViaAccessorFunction = () => {
         data={TestDatasets.BARCHART_2Y2G}
       />
       <LineSeries
-        id={getSpecId('lines')}
+        id="lines"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -86,7 +61,4 @@ export const customSeriesColorsViaAccessorFunction = () => {
       />
     </Chart>
   );
-};
-customSeriesColorsViaAccessorFunction.story = {
-  name: 'custom series colors via accessor function',
 };

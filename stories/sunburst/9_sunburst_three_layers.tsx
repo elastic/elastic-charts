@@ -11,16 +11,7 @@ import {
   regionLookup,
 } from '../utils/utils';
 
-export default {
-  title: 'Sunburst/Sunburst Three Layers',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const SunburstThreeLayers = () => (
+export const example = () => (
   <Chart className="story-chart" /*size={{ width: 1200, height: 800 }}*/>
     <Partition
       id="spec_1"
@@ -85,6 +76,3 @@ export const SunburstThreeLayers = () => (
     />
   </Chart>
 );
-SunburstThreeLayers.story = {
-  name: 'Sunburst with three layers, ColorBrewer, fade',
-};

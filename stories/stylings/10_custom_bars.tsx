@@ -1,7 +1,7 @@
 import { boolean, color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, getAxisId, getSpecId, Position, ScaleType, Settings } from '../../src/';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src';
 import * as TestDatasets from '../../src/utils/data_samples/test_dataset';
 
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {
@@ -18,16 +18,7 @@ function range(title: string, min: number, max: number, value: number, groupId?:
   );
 }
 
-export default {
-  title: 'Stylings/Custom Series Styles Bars',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const customSeriesStylesBars = () => {
+export const example = () => {
   const applyBarStyle = boolean('apply bar style (bar 1 series)', true, 'Chart Global Theme');
 
   const barSeriesStyle = {
@@ -56,18 +47,13 @@ export const customSeriesStylesBars = () => {
   };
 
   return (
-    <Chart renderer="canvas" className={'story-chart'}>
+    <Chart renderer="canvas" className="story-chart">
       <Settings showLegend showLegendExtra legendPosition={Position.Right} theme={theme} />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} showOverlappingTicks={true} />
-      <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
-        position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
+      <Axis id="bottom" position={Position.Bottom} showOverlappingTicks={true} />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
       <BarSeries
-        id={getSpecId('bar 1')}
+        id="bar 1"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -75,21 +61,18 @@ export const customSeriesStylesBars = () => {
         data={TestDatasets.BARCHART_1Y0G}
         yScaleToDataExtent={false}
         barSeriesStyle={applyBarStyle ? barSeriesStyle : undefined}
-        name={'bars 1'}
+        name="bars 1"
       />
       <BarSeries
-        id={getSpecId('bar 2')}
+        id="bar 2"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
         data={TestDatasets.BARCHART_1Y0G}
         yScaleToDataExtent={false}
-        name={'bars 2'}
+        name="bars 2"
       />
     </Chart>
   );
-};
-customSeriesStylesBars.story = {
-  name: 'custom series styles: bars',
 };

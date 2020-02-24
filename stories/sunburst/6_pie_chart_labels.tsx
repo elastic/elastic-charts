@@ -3,16 +3,7 @@ import { config } from '../../src/chart_types/partition_chart/layout/config/conf
 import React from 'react';
 import { indexInterpolatedFillColor, interpolatorCET2s } from '../utils/utils';
 
-export default {
-  title: 'Sunburst/Pie Chart Labels',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const PieChartLabels = () => (
+export const example = () => (
   <Chart className="story-chart">
     <Partition
       id="spec_1"
@@ -36,6 +27,3 @@ export const PieChartLabels = () => (
     />
   </Chart>
 );
-PieChartLabels.story = {
-  name: 'Pie chart with direct text labels instead of dimensions lookup',
-};

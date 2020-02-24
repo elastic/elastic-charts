@@ -4,16 +4,7 @@ import { config } from '../../src/chart_types/partition_chart/layout/config/conf
 import React from 'react';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 
-export default {
-  title: 'Sunburst/Some Zero Value Slice',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const SomeZeroValueSlice = () => (
+export const example = () => (
   <Chart className="story-chart">
     <Partition
       id="spec_1"
@@ -37,6 +28,3 @@ export const SomeZeroValueSlice = () => (
     />
   </Chart>
 );
-SomeZeroValueSlice.story = {
-  name: 'Some slices have a zero value',
-};

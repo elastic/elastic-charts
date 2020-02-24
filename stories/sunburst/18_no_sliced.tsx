@@ -3,16 +3,7 @@ import { config } from '../../src/chart_types/partition_chart/layout/config/conf
 import React from 'react';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 
-export default {
-  title: 'Sunburst/No Slice No Pie',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const NoSliceNoPie = () => (
+export const example = () => (
   <Chart className="story-chart">
     <Partition
       id="spec_1"
@@ -33,6 +24,3 @@ export const NoSliceNoPie = () => (
     />
   </Chart>
 );
-NoSliceNoPie.story = {
-  name: 'No pie chart if no slices',
-};

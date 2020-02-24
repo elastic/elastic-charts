@@ -1,21 +1,12 @@
 import React from 'react';
 
-import { BarSeries, Chart, getSpecId, ScaleType, Settings, TooltipType, RecursivePartial, Theme } from '../../src/';
+import { BarSeries, Chart, ScaleType, Settings, TooltipType, RecursivePartial, Theme } from '../../src';
 import { SeededDataGenerator } from '../../src/mocks/utils';
 
 const dg = new SeededDataGenerator();
 const data2 = dg.generateSimpleSeries(40);
 
-export default {
-  title: 'Stylings/Chart Size',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const chartSize = () => {
+export const example = () => {
   const theme: RecursivePartial<Theme> = {
     chartMargins: {
       bottom: 0,
@@ -26,10 +17,10 @@ export const chartSize = () => {
   };
   return (
     <div>
-      <Chart className={'story-chart'} size={{ width: 100, height: 50 }}>
+      <Chart className="story-chart" size={{ width: 100, height: 50 }}>
         <Settings tooltip={TooltipType.None} theme={theme} />
         <BarSeries
-          id={getSpecId('bars')}
+          id="bars"
           xScaleType={ScaleType.Linear}
           yScaleType={ScaleType.Linear}
           xAccessor="x"
@@ -37,10 +28,10 @@ export const chartSize = () => {
           data={data2}
         />
       </Chart>
-      <Chart className={'story-chart'} size={{ height: 50 }}>
+      <Chart className="story-chart" size={{ height: 50 }}>
         <Settings tooltip={TooltipType.None} theme={theme} />
         <BarSeries
-          id={getSpecId('bars')}
+          id="bars"
           xScaleType={ScaleType.Linear}
           yScaleType={ScaleType.Linear}
           xAccessor="x"
@@ -48,10 +39,10 @@ export const chartSize = () => {
           data={data2}
         />
       </Chart>
-      <Chart className={'story-chart'} size={['50%', 50]}>
+      <Chart className="story-chart" size={['50%', 50]}>
         <Settings tooltip={TooltipType.None} theme={theme} />
         <BarSeries
-          id={getSpecId('bars')}
+          id="bars"
           xScaleType={ScaleType.Linear}
           yScaleType={ScaleType.Linear}
           xAccessor="x"
@@ -59,10 +50,10 @@ export const chartSize = () => {
           data={data2}
         />
       </Chart>
-      <Chart className={'story-chart'} size={[undefined, 50]}>
+      <Chart className="story-chart" size={[undefined, 50]}>
         <Settings tooltip={TooltipType.None} theme={theme} />
         <BarSeries
-          id={getSpecId('bars')}
+          id="bars"
           xScaleType={ScaleType.Linear}
           yScaleType={ScaleType.Linear}
           xAccessor="x"
@@ -70,10 +61,10 @@ export const chartSize = () => {
           data={data2}
         />
       </Chart>
-      <Chart className={'story-chart'} size={50}>
+      <Chart className="story-chart" size={50}>
         <Settings tooltip={TooltipType.None} theme={theme} />
         <BarSeries
-          id={getSpecId('bars')}
+          id="bars"
           xScaleType={ScaleType.Linear}
           yScaleType={ScaleType.Linear}
           xAccessor="x"
@@ -83,7 +74,4 @@ export const chartSize = () => {
       </Chart>
     </div>
   );
-};
-chartSize.story = {
-  name: 'chart size',
 };

@@ -13,16 +13,7 @@ const interpolatorCET2s = hueInterpolator(palettes.CET2s.map(([r, g, b]) => [r, 
 
 const defaultFillColor = (colorMaker: any) => (d: any, i: number, a: any[]) => colorMaker(i / (a.length + 1));
 
-export default {
-  title: 'Treemap/Mutlicolor',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const MultiColor = () => (
+export const example = () => (
   <Chart
     className="story-chart"
     size={
@@ -75,6 +66,3 @@ export const MultiColor = () => (
     />
   </Chart>
 );
-MultiColor.story = {
-  name: 'Each color identifies a region in a (future) legend',
-};

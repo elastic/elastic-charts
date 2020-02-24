@@ -1,17 +1,7 @@
 import { boolean, color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {
-  Axis,
-  Chart,
-  getAxisId,
-  getSpecId,
-  LineSeries,
-  Position,
-  ScaleType,
-  Settings,
-  LineSeriesStyle,
-} from '../../src/';
+import { Axis, Chart, LineSeries, Position, ScaleType, Settings, LineSeriesStyle } from '../../src';
 
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {
   return number(
@@ -55,16 +45,7 @@ function generateLineSeriesStyleKnobs(
   };
 }
 
-export default {
-  title: 'Stylings/Custom Series Styles Lines',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const customSeriesStylesLines = () => {
+export const example = () => {
   const applyLineStyles = boolean('apply line series style', true, 'Chart Global Theme');
   const lineSeriesStyle1 = generateLineSeriesStyleKnobs('Line 1 style', 'line1', 'lime', 'green', 4, 10, 6);
   const lineSeriesStyle2 = generateLineSeriesStyleKnobs('Line 2 style', 'line2', 'blue', 'violet', 2, 5, 4);
@@ -83,17 +64,12 @@ export const customSeriesStylesLines = () => {
   const dataset3 = dataset1.map((datum) => ({ ...datum, y: datum.y - 2 }));
 
   return (
-    <Chart renderer="canvas" className={'story-chart'}>
+    <Chart renderer="canvas" className="story-chart">
       <Settings showLegend showLegendExtra legendPosition={Position.Right} theme={chartTheme} />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} showOverlappingTicks={true} />
-      <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
-        position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
+      <Axis id="bottom" position={Position.Bottom} showOverlappingTicks={true} />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
       <LineSeries
-        id={getSpecId('lines1')}
+        id="lines1"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -103,7 +79,7 @@ export const customSeriesStylesLines = () => {
         lineSeriesStyle={applyLineStyles ? lineSeriesStyle1 : undefined}
       />
       <LineSeries
-        id={getSpecId('lines2')}
+        id="lines2"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -113,7 +89,7 @@ export const customSeriesStylesLines = () => {
         lineSeriesStyle={applyLineStyles ? lineSeriesStyle2 : undefined}
       />
       <LineSeries
-        id={getSpecId('lines3')}
+        id="lines3"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -123,7 +99,4 @@ export const customSeriesStylesLines = () => {
       />
     </Chart>
   );
-};
-customSeriesStylesLines.story = {
-  name: 'custom series styles: lines',
 };

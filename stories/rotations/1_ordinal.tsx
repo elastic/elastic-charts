@@ -1,19 +1,10 @@
 import { boolean, select } from '@storybook/addon-knobs';
 import React from 'react';
-import { Axis, BarSeries, Chart, getAxisId, getSpecId, Position, ScaleType, Settings } from '../../src/';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src/';
 
-export default {
-  title: 'Rotations/With Ordinal Axis',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const withOrdinalAxis = () => {
+export const example = () => {
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings
         debug={boolean('Debug', true)}
         showLegend={boolean('Legend', true)}
@@ -40,22 +31,22 @@ export const withOrdinalAxis = () => {
         )}
       />
       <Axis
-        id={getAxisId('bottom')}
+        id="bottom"
         position={Position.Bottom}
-        title={'Bottom axis'}
+        title="Bottom axis"
         showOverlappingTicks={true}
         showOverlappingLabels={boolean('bottom show overlapping labels', false)}
       />
       <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
+        id="left2"
+        title="Left axis"
         position={Position.Left}
         showOverlappingTicks={true}
         showOverlappingLabels={boolean('left show overlapping labels', false)}
       />
 
       <BarSeries
-        id={getSpecId('bars')}
+        id="bars"
         xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -69,7 +60,4 @@ export const withOrdinalAxis = () => {
       />
     </Chart>
   );
-};
-withOrdinalAxis.story = {
-  name: 'with ordinal axis',
 };

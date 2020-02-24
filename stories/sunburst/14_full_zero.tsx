@@ -3,16 +3,7 @@ import { config } from '../../src/chart_types/partition_chart/layout/config/conf
 import React from 'react';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 
-export default {
-  title: 'Sunburst/Full Zero Slice Pie Chart',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const FullZeroSlicePieChart = () => (
+export const example = () => (
   <Chart className="story-chart">
     <Partition
       id="spec_1"
@@ -36,6 +27,3 @@ export const FullZeroSlicePieChart = () => (
     />
   </Chart>
 );
-FullZeroSlicePieChart.story = {
-  name: 'Pie chart with one full and one zero slice',
-};

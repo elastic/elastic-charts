@@ -4,16 +4,7 @@ import { config } from '../../src/chart_types/partition_chart/layout/config/conf
 import React from 'react';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 
-export default {
-  title: 'Sunburst/Single Very Small Slice Pie Chart',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const SingleVerySmallSlicePieChart = () => (
+export const example = () => (
   <Chart className="story-chart">
     <Partition
       id="spec_1"
@@ -34,6 +25,3 @@ export const SingleVerySmallSlicePieChart = () => (
     />
   </Chart>
 );
-SingleVerySmallSlicePieChart.story = {
-  name: 'Very small pie chart with a single slice',
-};
