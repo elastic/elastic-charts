@@ -1,31 +1,22 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
-import { AreaSeries, Axis, Chart, getAxisId, getSpecId, Position, ScaleType, Settings } from '../../src';
+import { AreaSeries, Axis, Chart, Position, ScaleType, Settings } from '../../src';
 
-export default {
-  title: 'Area Chart/Stacked as a Percentage',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const stackedAsPercentage = () => {
+export const example = () => {
   const stackedAsPercentage = boolean('stacked as percentage', true);
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings showLegend showLegendExtra legendPosition={Position.Right} />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
       <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
+        id="left2"
+        title="Left axis"
         position={Position.Left}
         tickFormat={(d) => `${Number(d * 100).toFixed(0)} %`}
       />
 
       <AreaSeries
-        id={getSpecId('areas')}
+        id="areas"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -46,7 +37,4 @@ export const stackedAsPercentage = () => {
       />
     </Chart>
   );
-};
-stackedAsPercentage.story = {
-  name: 'stacked as percentage',
 };

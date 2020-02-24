@@ -1,17 +1,8 @@
 import React from 'react';
-import { AreaSeries, Axis, Chart, getAxisId, getSpecId, Position, ScaleType } from '../../src';
+import { AreaSeries, Axis, Chart, Position, ScaleType } from '../../src';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
 
-export default {
-  title: 'Area Chart/Stacked Only Grouped Areas',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const stackedOnlyGroupedAreas = () => {
+export const example = () => {
   const data1 = [
     [1, 2],
     [2, 2],
@@ -46,16 +37,16 @@ export const stackedOnlyGroupedAreas = () => {
     [9, 7],
   ];
   return (
-    <Chart renderer="canvas" className={'story-chart'}>
-      <Axis id={getAxisId('bottom')} title={'index'} position={Position.Bottom} />
+    <Chart renderer="canvas" className="story-chart">
+      <Axis id="bottom" title="index" position={Position.Bottom} />
       <Axis
-        id={getAxisId('left')}
+        id="left"
         title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
         position={Position.Left}
         tickFormat={(d) => Number(d).toFixed(2)}
       />
       <AreaSeries
-        id={getSpecId('stacked area 1')}
+        id="stacked area 1"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
@@ -65,7 +56,7 @@ export const stackedOnlyGroupedAreas = () => {
         yScaleToDataExtent={false}
       />
       <AreaSeries
-        id={getSpecId('stacked area 2')}
+        id="stacked area 2"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
@@ -75,7 +66,7 @@ export const stackedOnlyGroupedAreas = () => {
         yScaleToDataExtent={false}
       />
       <AreaSeries
-        id={getSpecId('non stacked area')}
+        id="non stacked area"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
@@ -85,7 +76,4 @@ export const stackedOnlyGroupedAreas = () => {
       />
     </Chart>
   );
-};
-stackedOnlyGroupedAreas.story = {
-  name: 'stacked only grouped areas',
 };

@@ -1,20 +1,11 @@
 import { DateTime } from 'luxon';
 import React from 'react';
-import { AreaSeries, Axis, Chart, getAxisId, getSpecId, Position, ScaleType, timeFormatter } from '../../src';
+import { AreaSeries, Axis, Chart, Position, ScaleType, timeFormatter } from '../../src';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
 
 const dateFormatter = timeFormatter('HH:mm');
 
-export default {
-  title: 'Area Chart/Test Time',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const testTime = () => {
+export const example = () => {
   const start = DateTime.fromISO('2019-01-01T00:00:00.000', { zone: 'utc' });
   const data = [
     [start.toMillis(), 1],
@@ -28,16 +19,16 @@ export const testTime = () => {
     [start.plus({ minute: 8 }).toMillis(), 1],
   ];
   return (
-    <Chart className={'story-chart'}>
-      <Axis id={getAxisId('bottom')} title={'index'} position={Position.Bottom} tickFormat={dateFormatter} />
+    <Chart className="story-chart">
+      <Axis id="bottom" title="index" position={Position.Bottom} tickFormat={dateFormatter} />
       <Axis
-        id={getAxisId('left')}
+        id="left"
         title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
         position={Position.Left}
         tickFormat={(d) => Number(d).toFixed(2)}
       />
       <AreaSeries
-        id={getSpecId('data')}
+        id="data"
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
@@ -46,7 +37,4 @@ export const testTime = () => {
       />
     </Chart>
   );
-};
-testTime.story = {
-  name: '[test] - time',
 };

@@ -5,8 +5,6 @@ import {
   Axis,
   Chart,
   CurveType,
-  getAxisId,
-  getSpecId,
   LineSeries,
   Position,
   ScaleType,
@@ -18,16 +16,7 @@ import { getRandomNumber } from '../../src/mocks/utils';
 
 const dateFormatter = timeFormatter('HH:mm');
 
-export default {
-  title: 'Area Chart/Band Area Chart',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const bandAreaChart = () => {
+export const example = () => {
   const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d) => {
     return {
       x: d[0],
@@ -42,27 +31,27 @@ export const bandAreaChart = () => {
   const y0AccessorFormat = text('y0AccessorFormat', '');
   const y1AccessorFormat = text('y1AccessorFormat', '');
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings showLegend showLegendExtra legendPosition={Position.Right} />
       <Axis
-        id={getAxisId('bottom')}
-        title={'timestamp per 1 minute'}
+        id="bottom"
+        title="timestamp per 1 minute"
         position={Position.Bottom}
         showOverlappingTicks={true}
         tickFormat={dateFormatter}
       />
       <Axis
-        id={getAxisId('left')}
+        id="left"
         title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
         position={Position.Left}
         tickFormat={(d) => Number(d).toFixed(2)}
       />
 
       <AreaSeries
-        id={getSpecId('area')}
+        id="area"
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
-        xAccessor={'x'}
+        xAccessor="x"
         yAccessors={['max']}
         y0Accessors={['min']}
         y1AccessorFormat={y1AccessorFormat || undefined}
@@ -73,7 +62,7 @@ export const bandAreaChart = () => {
       />
 
       <LineSeries
-        id={getSpecId('average')}
+        id="average"
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
@@ -84,7 +73,4 @@ export const bandAreaChart = () => {
       />
     </Chart>
   );
-};
-bandAreaChart.story = {
-  name: 'band area chart',
 };
