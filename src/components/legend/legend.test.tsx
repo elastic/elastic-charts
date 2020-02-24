@@ -210,7 +210,12 @@ describe('Legend', () => {
     it('should render colorPicker when color is clicked', () => {
       clickFirstColor();
       expect(wrapper.find('#colorPicker').html()).toMatchSnapshot();
-      expect(wrapper.find(Legend).html()).toMatchSnapshot();
+      expect(
+        wrapper
+          .find(LegendListItem)
+          .map((e) => e.html())
+          .join(''),
+      ).toMatchSnapshot();
     });
 
     it('should match snapshot after onChange is called', () => {
