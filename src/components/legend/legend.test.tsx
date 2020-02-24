@@ -220,7 +220,12 @@ describe('Legend', () => {
         .simulate('click')
         .first();
 
-      expect(wrapper.find(Legend).html()).toMatchSnapshot();
+      expect(
+        wrapper
+          .find(LegendListItem)
+          .map((e) => e.html())
+          .join(''),
+      ).toMatchSnapshot();
     });
 
     it('should set isOpen to false after onChange is called', () => {
@@ -248,7 +253,12 @@ describe('Legend', () => {
         .find('#close')
         .simulate('click')
         .first();
-      expect(wrapper.find(Legend).html()).toMatchSnapshot();
+      expect(
+        wrapper
+          .find(LegendListItem)
+          .map((e) => e.html())
+          .join(''),
+      ).toMatchSnapshot();
     });
 
     it('should set isOpen to false after onClose is called', () => {
