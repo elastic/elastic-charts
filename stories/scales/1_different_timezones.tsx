@@ -1,7 +1,7 @@
 import { select } from '@storybook/addon-knobs';
 import { DateTime } from 'luxon';
 import React from 'react';
-import { Axis, Chart, getAxisId, getSpecId, LineSeries, Position, ScaleType } from '../../src';
+import { Axis, Chart, LineSeries, Position, ScaleType } from '../../src';
 
 const today = new Date().getTime();
 const UTC_DATE = DateTime.fromISO('2019-01-01T00:00:00.000Z').toMillis();
@@ -25,16 +25,7 @@ const OTHER_MINUS8_TIMEZONE_DATASET = new Array(10).fill(0).map((d, i) => {
   return [UTC_MINUS8_DATE + DAY_INCREMENT_1 * i, i % 5];
 });
 
-export default {
-  title: 'Scales/line chart with different timezones',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const example0 = () => {
+export const example = () => {
   const timezones = {
     utc: 'utc',
     local: 'local',
@@ -88,10 +79,10 @@ export const example0 = () => {
   }
   return (
     <Chart className={'story-chart'}>
-      <Axis id={getAxisId('time')} position={Position.Bottom} tickFormat={tooltipFn} />
-      <Axis id={getAxisId('y')} position={Position.Left} />
+      <Axis id={'time'} position={Position.Bottom} tickFormat={tooltipFn} />
+      <Axis id={'y'} position={Position.Left} />
       <LineSeries
-        id={getSpecId('lines')}
+        id={'lines'}
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         timeZone={tooltipSelected}
@@ -101,7 +92,4 @@ export const example0 = () => {
       />
     </Chart>
   );
-};
-example0.story = {
-  name: 'line chart with different timezones',
 };

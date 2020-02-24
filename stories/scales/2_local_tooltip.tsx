@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon';
 import React from 'react';
-import { Axis, Chart, getAxisId, getSpecId, LineSeries, Position, ScaleType } from '../../src';
+import { Axis, Chart, LineSeries, Position, ScaleType } from '../../src';
 
 const UTC_DATE = DateTime.fromISO('2019-01-01T00:00:00.000Z').toMillis();
 const DAY_INCREMENT_1 = 1000 * 60 * 60 * 24;
@@ -8,30 +8,19 @@ const UTC_DATASET = new Array(10).fill(0).map((d, i) => {
   return [UTC_DATE + DAY_INCREMENT_1 * i, i % 5];
 });
 
-export default {
-  title: 'Scales/xScale UTC Timezone Local Tooltip',
-  parameters: {
-    info: {
-      text: `<pre>${`If your data is in UTC timezone, your tooltip and axis labels can
-               be configured to visualize the time translated to your local timezone. You should
-               be able to see the first value on \`2019-01-01  01:00:00.000 \``}</pre>`,
-    },
-  },
-};
-
-export const example1 = () => {
+export const example = () => {
   return (
     <Chart className={'story-chart'}>
       <Axis
-        id={getAxisId('time')}
+        id={'time'}
         position={Position.Bottom}
         tickFormat={(d) => {
           return DateTime.fromMillis(d).toFormat('yyyy-MM-dd HH:mm:ss');
         }}
       />
-      <Axis id={getAxisId('y')} position={Position.Left} />
+      <Axis id={'y'} position={Position.Left} />
       <LineSeries
-        id={getSpecId('lines')}
+        id={'lines'}
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         timeZone={'local'}
@@ -42,6 +31,14 @@ export const example1 = () => {
     </Chart>
   );
 };
-example1.story = {
-  name: 'x scale: UTC Time zone - local tooltip',
+
+example.story = {
+  parameters: {
+    options: { selectedPanel: 'storybook/source-loader/panel' },
+    info: {
+      text: `If your data is in UTC timezone, your tooltip and axis labels can be configured 
+      to visualize the time translated to your local timezone. You should be able to see the 
+      first value on \`2019-01-01  01:00:00.000 \``,
+    },
+  },
 };

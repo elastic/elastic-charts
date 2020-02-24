@@ -40,4 +40,4 @@ addParameters({
 addDecorator(withKnobs);
 addDecorator(withInfo);
 
-configure(require.context('../stories', true, /\.tsx$/), module);
+configure(require.context('../stories', true, /\.stories\.tsx?$/), module);

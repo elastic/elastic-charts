@@ -1,31 +1,20 @@
 import { DateTime } from 'luxon';
 import React from 'react';
-import { Axis, Chart, getAxisId, getSpecId, LineSeries, Position, ScaleType } from '../../src';
+import { Axis, Chart, LineSeries, Position, ScaleType } from '../../src';
 
-export default {
-  title: 'Scales/xScale Year Scale Custom Timezone Same Tone Tooltip',
-  parameters: {
-    info: {
-      text: `<pre>${`You can visualize data in a different timezone than your local or UTC zones.
-               Specify the \`timeZone={'utc-6'}\` property with the correct timezone and
-               remember to apply the same timezone also to each formatted tick in \`tickFormat\``}</pre>`,
-    },
-  },
-};
-
-export const example3 = () => {
+export const example = () => {
   return (
     <Chart className={'story-chart'}>
       <Axis
-        id={getAxisId('time')}
+        id={'time'}
         position={Position.Bottom}
         tickFormat={(d) => {
           return DateTime.fromMillis(d, { zone: 'utc-6' }).toISO();
         }}
       />
-      <Axis id={getAxisId('y')} position={Position.Left} />
+      <Axis id={'y'} position={Position.Left} />
       <LineSeries
-        id={getSpecId('lines')}
+        id={'lines'}
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         xAccessor={1}
@@ -42,6 +31,14 @@ export const example3 = () => {
     </Chart>
   );
 };
-example3.story = {
-  name: 'x scale year scale: custom timezone - same zone tooltip',
+
+example.story = {
+  parameters: {
+    options: { selectedPanel: 'storybook/source-loader/panel' },
+    info: {
+      text: `You can visualize data in a different timezone than your local or UTC zones.
+      Specify the \`timeZone={'utc-6'}\` property with the correct timezone and
+      remember to apply the same timezone also to each formatted tick in \`tickFormat\``,
+    },
+  },
 };
