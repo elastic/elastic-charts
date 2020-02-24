@@ -1,33 +1,19 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
-import { Axis, BarSeries, Chart, getAxisId, getSpecId, LineSeries, Position, ScaleType, Settings } from '../../src/';
+import { Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings } from '../../src/';
 
-export default {
-  title: 'Legend/Hide Legend Items By Series',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const hideLegendItemsBySeries = () => {
+export const example = () => {
   const hideBarSeriesInLegend = boolean('hide bar series in legend', false);
   const hideLineSeriesInLegend = boolean('hide line series in legend', false);
 
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings showLegend showLegendExtra legendPosition={Position.Right} />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-      <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
-        position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
       <BarSeries
-        id={getSpecId('bars')}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -41,7 +27,7 @@ export const hideLegendItemsBySeries = () => {
         hideInLegend={hideBarSeriesInLegend}
       />
       <LineSeries
-        id={getSpecId('lines')}
+        id="lines"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -58,7 +44,4 @@ export const hideLegendItemsBySeries = () => {
       />
     </Chart>
   );
-};
-hideLegendItemsBySeries.story = {
-  name: 'hide legend items by series',
 };

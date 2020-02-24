@@ -1,33 +1,19 @@
 import React from 'react';
-import { Axis, BarSeries, Chart, getAxisId, getSpecId, Position, ScaleType, Settings } from '../../src/';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src/';
 import * as TestDatasets from '../../src/utils/data_samples/test_dataset';
 
-export default {
-  title: 'Legend/Right',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const right = () => {
+export const example = () => {
   const yAccessors = ['y1', 'y2'];
   const splitSeriesAccessors = ['g1', 'g2'];
 
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings showLegend showLegendExtra legendPosition={Position.Right} />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-      <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
-        position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
       <BarSeries
-        id={getSpecId('bars')}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -38,7 +24,4 @@ export const right = () => {
       />
     </Chart>
   );
-};
-right.story = {
-  name: 'right',
 };

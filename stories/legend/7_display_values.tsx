@@ -1,19 +1,10 @@
 import { boolean, select } from '@storybook/addon-knobs';
 import React from 'react';
-import { AreaSeries, Axis, Chart, CurveType, getAxisId, getSpecId, Position, ScaleType, Settings } from '../../src/';
+import { AreaSeries, Axis, Chart, CurveType, Position, ScaleType, Settings } from '../../src/';
 import { TSVB_DATASET } from '../../src/utils/data_samples/test_dataset_tsvb';
 import { arrayKnobs } from '../common';
 
-export default {
-  title: 'Legend/Display Values In Legend Elements',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const displayValuesInLegendElements = () => {
+export const example = () => {
   const showLegendDisplayValue = boolean('show display value in legend', true);
   const legendPosition = select(
     'legendPosition',
@@ -39,7 +30,7 @@ export const displayValuesInLegendElements = () => {
     return (
       <AreaSeries
         key={`${series.id}-${series.label}`}
-        id={getSpecId(`${series.id}-${series.label}`)}
+        id={`${series.id}-${series.label}`}
         name={series.label}
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
@@ -52,19 +43,11 @@ export const displayValuesInLegendElements = () => {
     );
   });
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings showLegend={true} legendPosition={legendPosition} showLegendExtra={showLegendDisplayValue} />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-      <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
-        position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
       {seriesComponents}
     </Chart>
   );
-};
-displayValuesInLegendElements.story = {
-  name: 'display values in legend elements',
 };

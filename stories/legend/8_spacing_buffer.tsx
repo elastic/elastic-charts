@@ -1,17 +1,8 @@
 import { number } from '@storybook/addon-knobs';
 import React from 'react';
-import { Axis, BarSeries, Chart, getAxisId, getSpecId, Position, ScaleType, Settings, PartialTheme } from '../../src/';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings, PartialTheme } from '../../src/';
 
-export default {
-  title: 'Legend/Legend Spacing Buffer',
-  parameters: {
-    info: {
-      text: `<pre>${'For high variability in values it may be necessary to increase the `spacingBuffer` to account for larger numbers.'}</pre>`,
-    },
-  },
-};
-
-export const legendSpacingBuffer = () => {
+export const example = () => {
   const theme: PartialTheme = {
     legend: {
       spacingBuffer: number('legend buffer value', 80),
@@ -19,18 +10,13 @@ export const legendSpacingBuffer = () => {
   };
 
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings theme={theme} showLegend showLegendExtra legendPosition={Position.Right} />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
-      <Axis
-        id={getAxisId('left2')}
-        title={'Left axis'}
-        position={Position.Left}
-        tickFormat={(d: any) => Number(d).toFixed(2)}
-      />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
       <BarSeries
-        id={getSpecId('bars 1')}
+        id="bars 1"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -43,7 +29,7 @@ export const legendSpacingBuffer = () => {
         ]}
       />
       <BarSeries
-        id={getSpecId('bars 2')}
+        id="bars 2"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -57,7 +43,4 @@ export const legendSpacingBuffer = () => {
       />
     </Chart>
   );
-};
-legendSpacingBuffer.story = {
-  name: 'legend spacingBuffer',
 };
