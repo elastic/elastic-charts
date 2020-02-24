@@ -1,19 +1,10 @@
 import { boolean, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, Chart, getAxisId, getSpecId, LineSeries, Position, ScaleType } from '../../src/';
+import { Axis, Chart, LineSeries, Position, ScaleType } from '../../src';
 import { SeededDataGenerator } from '../../src/mocks/utils';
 
-export default {
-  title: 'Axis/Fit Domain to Extent in Axis',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const fitDomainToExtentInYAxis = () => {
+export const example = () => {
   const dg = new SeededDataGenerator();
   const base = dg.generateBasicSeries(100, 0, 50);
   const positive = base.map(({ x, y }) => ({ x, y: y + 1000 }));
@@ -25,7 +16,7 @@ export const fitDomainToExtentInYAxis = () => {
     both,
     negative,
   };
-  const dataKey = select<string>(
+  const dataKey = select<'positive' | 'negative' | 'both'>(
     'dataset',
     {
       'Positive values only': 'positive',
@@ -34,23 +25,23 @@ export const fitDomainToExtentInYAxis = () => {
     },
     'both',
   );
-  // @ts-ignore
+
   const dataset = dataTypes[dataKey];
   const fit = boolean('fit domain to data', true);
 
   return (
-    <Chart className={'story-chart'}>
-      <Axis id={getAxisId('bottom')} title={'index'} position={Position.Bottom} />
+    <Chart className="story-chart">
+      <Axis id="bottom" title="index" position={Position.Bottom} />
       <Axis
         domain={{ fit }}
-        id={getAxisId('left')}
+        id="left"
         title="Value"
         position={Position.Left}
         tickFormat={(d) => Number(d).toFixed(2)}
       />
 
       <LineSeries
-        id={getSpecId('lines')}
+        id="lines"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -59,7 +50,4 @@ export const fitDomainToExtentInYAxis = () => {
       />
     </Chart>
   );
-};
-fitDomainToExtentInYAxis.story = {
-  name: 'fit domain to extent in y axis',
 };

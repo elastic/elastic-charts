@@ -1,38 +1,29 @@
 import React from 'react';
 
-import { Axis, Chart, getAxisId, getGroupId, getSpecId, LineSeries, Position, ScaleType, Settings } from '../../src/';
+import { Axis, Chart, LineSeries, Position, ScaleType, Settings } from '../../src';
 
-export default {
-  title: 'Axis/With Multiple Axis, Different Tooltip Formats',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const withMultiAxisDifferentTooltipFormats = () => {
+export const example = () => {
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings showLegend={false} />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
       <Axis
-        id={getAxisId('left')}
-        groupId={getGroupId('group1')}
-        title={'Line 1'}
+        id="left"
+        groupId="group1"
+        title="Line 1"
         position={Position.Left}
         tickFormat={(d) => `${Number(d).toFixed(2)} %`}
       />
       <Axis
-        id={getAxisId('right')}
-        title={'Line 2'}
-        groupId={getGroupId('group2')}
+        id="right"
+        title="Line 2"
+        groupId="group2"
         position={Position.Right}
         tickFormat={(d) => `${Number(d).toFixed(2)}/s`}
       />
       <LineSeries
-        id={getSpecId('line1')}
-        groupId={getGroupId('group1')}
+        id="line1"
+        groupId="group1"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -47,8 +38,8 @@ export const withMultiAxisDifferentTooltipFormats = () => {
         ]}
       />
       <LineSeries
-        id={getSpecId('line2')}
-        groupId={getGroupId('group2')}
+        id="line2"
+        groupId="group2"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -64,7 +55,4 @@ export const withMultiAxisDifferentTooltipFormats = () => {
       />
     </Chart>
   );
-};
-withMultiAxisDifferentTooltipFormats.story = {
-  name: 'with multi axis different tooltip formats',
 };

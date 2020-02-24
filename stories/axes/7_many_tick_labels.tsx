@@ -1,19 +1,10 @@
 import { number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { AreaSeries, Axis, Chart, getAxisId, getSpecId, Position, ScaleType, Settings } from '../../src/';
+import { AreaSeries, Axis, Chart, Position, ScaleType, Settings } from '../../src';
 import { SeededDataGenerator } from '../../src/mocks/utils';
 
-export default {
-  title: 'Axis/With Many Tick Labels',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const wManyTickLabels = () => {
+export const example = () => {
   const dg = new SeededDataGenerator();
   const data = dg.generateSimpleSeries(31);
   const customStyle = {
@@ -21,17 +12,17 @@ export const wManyTickLabels = () => {
   };
 
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings debug={true} />
       <Axis
-        id={getAxisId('bottom')}
+        id="bottom"
         position={Position.Bottom}
-        title={'Bottom axis'}
+        title="Bottom axis"
         showOverlappingTicks={true}
         style={customStyle}
       />
       <AreaSeries
-        id={getSpecId('lines')}
+        id="lines"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -40,7 +31,4 @@ export const wManyTickLabels = () => {
       />
     </Chart>
   );
-};
-wManyTickLabels.story = {
-  name: 'w many tick labels',
 };

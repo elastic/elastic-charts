@@ -3,7 +3,6 @@ import { mocks } from '../../src/mocks/hierarchical/index';
 import { config } from '../../src/chart_types/partition_chart/layout/config/config';
 import { arrayToLookup, hueInterpolator } from '../../src/chart_types/partition_chart/layout/utils/calcs';
 import { countryDimension } from '../../src/mocks/hierarchical/dimension_codes';
-import { getRandomNumber } from '../../src/mocks/utils';
 import { palettes } from '../../src/mocks/hierarchical/palettes';
 import React from 'react';
 
@@ -25,7 +24,7 @@ export default {
 
 export const MultiColor = () => (
   <Chart
-    className={'story-chart'}
+    className="story-chart"
     size={
       {
         /*height: 800*/
@@ -33,7 +32,7 @@ export const MultiColor = () => (
     }
   >
     <Partition
-      id={'spec_' + getRandomNumber()}
+      id="spec_1"
       data={mocks.sunburst}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}

@@ -3,7 +3,6 @@ import { mocks } from '../../src/mocks/hierarchical/index';
 import { config } from '../../src/chart_types/partition_chart/layout/config/config';
 import { arrayToLookup } from '../../src/chart_types/partition_chart/layout/utils/calcs';
 import { countryDimension } from '../../src/mocks/hierarchical/dimension_codes';
-import { getRandomNumber } from '../../src/mocks/utils';
 import React from 'react';
 
 const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
@@ -19,7 +18,7 @@ export default {
 
 export const CustomStyle = () => (
   <Chart
-    className={'story-chart'}
+    className="story-chart"
     size={
       {
         /*height: 800*/
@@ -27,7 +26,7 @@ export const CustomStyle = () => (
     }
   >
     <Partition
-      id={'spec_' + getRandomNumber()}
+      id="spec_1"
       data={mocks.sunburst}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}

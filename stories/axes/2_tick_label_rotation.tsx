@@ -1,28 +1,19 @@
 import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { AreaSeries, Axis, Chart, getAxisId, getSpecId, Position, ScaleType, Settings } from '../../src/';
+import { AreaSeries, Axis, Chart, Position, ScaleType, Settings } from '../../src';
 
-export default {
-  title: 'Axis/Tick Label Rotation',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const tickLabelRotation = () => {
+export const example = () => {
   const customStyle = {
     tickLabelPadding: number('Tick Label Padding', 0),
   };
 
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Axis
-        id={getAxisId('bottom')}
+        id="bottom"
         position={Position.Bottom}
-        title={'Bottom axis'}
+        title="Bottom axis"
         showOverlappingTicks={true}
         tickLabelRotation={number('bottom axis tick label rotation', 0, {
           range: true,
@@ -34,8 +25,8 @@ export const tickLabelRotation = () => {
         style={customStyle}
       />
       <Axis
-        id={getAxisId('left')}
-        title={'Bar axis'}
+        id="left"
+        title="Bar axis"
         position={Position.Left}
         tickLabelRotation={number('left axis tick label rotation', 0, {
           range: true,
@@ -48,8 +39,8 @@ export const tickLabelRotation = () => {
         hide={boolean('hide left axis', false)}
       />
       <Axis
-        id={getAxisId('top')}
-        title={'Bar axis'}
+        id="top"
+        title="Bar axis"
         position={Position.Top}
         tickLabelRotation={number('top axis tick label rotation', 0, {
           range: true,
@@ -62,8 +53,8 @@ export const tickLabelRotation = () => {
         hide={boolean('hide top axis', false)}
       />
       <Axis
-        id={getAxisId('right')}
-        title={'Bar axis'}
+        id="right"
+        title="Bar axis"
         position={Position.Right}
         tickLabelRotation={number('right axis tick label rotation', 0, {
           range: true,
@@ -76,7 +67,7 @@ export const tickLabelRotation = () => {
         hide={boolean('hide right axis', false)}
       />
       <AreaSeries
-        id={getSpecId('lines')}
+        id="lines"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -91,7 +82,4 @@ export const tickLabelRotation = () => {
       <Settings debug={boolean('debug', false)} />
     </Chart>
   );
-};
-tickLabelRotation.story = {
-  name: 'tick label rotation',
 };

@@ -1,6 +1,5 @@
 import { Chart, Datum, Partition, PartitionLayout } from '../../src';
 import { config } from '../../src/chart_types/partition_chart/layout/config/config';
-import { getRandomNumber } from '../../src/mocks/utils';
 import React from 'react';
 import { indexInterpolatedFillColor, interpolatorCET2s } from '../utils/utils';
 
@@ -14,9 +13,9 @@ export default {
 };
 
 export const VeryLargeSmallPieChart = () => (
-  <Chart className={'story-chart'}>
+  <Chart className="story-chart">
     <Partition
-      id={'spec_' + getRandomNumber()}
+      id="spec_1"
       data={[
         { sitc1: 'Machinery and transport equipment', exportVal: 9 },
         { sitc1: 'Mineral fuels, lubricants and related materials', exportVal: 1 },

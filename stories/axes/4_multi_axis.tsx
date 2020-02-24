@@ -5,15 +5,13 @@ import {
   Axis,
   BarSeries,
   Chart,
-  getAxisId,
-  getSpecId,
   LIGHT_THEME,
   mergeWithDefaultTheme,
   PartialTheme,
   Position,
   ScaleType,
   Settings,
-} from '../../src/';
+} from '../../src';
 
 function createThemeAction(title: string, min: number, max: number, value: number) {
   return number(
@@ -39,7 +37,7 @@ function renderAxisWithOptions(position: Position, seriesGroup: string, show: bo
   }
 
   const axisProps = {
-    id: getAxisId(axisTitle),
+    id: axisTitle,
     position,
     title: axisTitle,
     showOverlappingTicks: true,
@@ -48,16 +46,7 @@ function renderAxisWithOptions(position: Position, seriesGroup: string, show: bo
   return <Axis {...axisProps} />;
 }
 
-export default {
-  title: 'Axis/With Multi Axis',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const withMultiAxis = () => {
+export const example = () => {
   const theme: PartialTheme = {
     chartMargins: {
       left: createThemeAction('margin left', 0, 50, 0),
@@ -77,7 +66,7 @@ export const withMultiAxis = () => {
   const seriesGroup1 = 'group1';
   const seriesGroup2 = 'group2';
   return (
-    <Chart size={[500, 300]} className={'story-chart'}>
+    <Chart size={[500, 300]} className="story-chart">
       <Settings showLegend={false} theme={customTheme} debug={boolean('debug', true)} />
       {renderAxisWithOptions(Position.Top, seriesGroup1, false)}
       {renderAxisWithOptions(Position.Top, seriesGroup2, true)}
@@ -88,7 +77,7 @@ export const withMultiAxis = () => {
       {renderAxisWithOptions(Position.Right, seriesGroup1, false)}
       {renderAxisWithOptions(Position.Right, seriesGroup2, true)}
       <BarSeries
-        id={getSpecId('barseries1')}
+        id="barseries1"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -102,7 +91,4 @@ export const withMultiAxis = () => {
       />
     </Chart>
   );
-};
-withMultiAxis.story = {
-  parameter: 'with multi axis',
 };

@@ -3,7 +3,7 @@ import { mocks } from '../../src/mocks/hierarchical/index';
 import { config } from '../../src/chart_types/partition_chart/layout/config/config';
 import { arrayToLookup, hueInterpolator } from '../../src/chart_types/partition_chart/layout/utils/calcs';
 import { countryDimension, productDimension } from '../../src/mocks/hierarchical/dimension_codes';
-import { getRandomNumber } from '../../src/mocks/utils';
+
 import { palettes } from '../../src/mocks/hierarchical/palettes';
 import React from 'react';
 import { ShapeTreeNode } from '../../src/chart_types/partition_chart/layout/types/viewmodel_types';
@@ -24,7 +24,7 @@ export default {
 
 export const TwoLayersStressTest = () => (
   <Chart
-    className={'story-chart'}
+    className="story-chart"
     size={
       {
         /*
@@ -34,7 +34,7 @@ export const TwoLayersStressTest = () => (
     }
   >
     <Partition
-      id={'spec_' + getRandomNumber()}
+      id="spec_1"
       data={mocks.sunburst}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}

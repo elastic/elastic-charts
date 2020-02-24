@@ -1,18 +1,9 @@
 import { number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, getAxisId, getSpecId, Position, ScaleType, Settings } from '../../src/';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src';
 
-export default {
-  title: 'Axis/Customizing Domain Limits Only One Bound Defined',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const customizingDomainLimitsOnlyOneBoundDefined = () => {
+export const example = () => {
   const leftDomain = {
     min: number('left min', 0),
   };
@@ -22,18 +13,18 @@ export const customizingDomainLimitsOnlyOneBoundDefined = () => {
   };
 
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings showLegend={false} xDomain={xDomain} />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
       <Axis
-        id={getAxisId('left')}
-        title={'Bar axis'}
+        id="left"
+        title="Bar axis"
         position={Position.Left}
         tickFormat={(d) => Number(d).toFixed(2)}
         domain={leftDomain}
       />
       <BarSeries
-        id={getSpecId('bars')}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -47,7 +38,4 @@ export const customizingDomainLimitsOnlyOneBoundDefined = () => {
       />
     </Chart>
   );
-};
-customizingDomainLimitsOnlyOneBoundDefined.story = {
-  name: 'customizing domain limits [only one bound defined]',
 };

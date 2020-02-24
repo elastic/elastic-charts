@@ -1,30 +1,10 @@
 import { number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {
-  Axis,
-  BarSeries,
-  Chart,
-  getAxisId,
-  getGroupId,
-  getSpecId,
-  LineSeries,
-  Position,
-  ScaleType,
-  Settings,
-} from '../../src/';
+import { Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings } from '../../src';
 import { arrayKnobs } from '../common';
 
-export default {
-  title: 'Axis/Mixed Ordinal Linear',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const customizingDomainLimitsMixedOrdinalLinearXDomain = () => {
+export const example = () => {
   const leftDomain = {
     min: number('left min', 0),
     max: number('left max', 7),
@@ -38,33 +18,33 @@ export const customizingDomainLimitsMixedOrdinalLinearXDomain = () => {
   const xDomain = arrayKnobs('xDomain', ['a', 'b', 'c', 'd', 0, 1, 2, 3]);
 
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings showLegend={false} xDomain={xDomain} />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
       <Axis
-        id={getAxisId('left')}
-        title={'Bar axis'}
+        id="left"
+        title="Bar axis"
         position={Position.Left}
         tickFormat={(d) => Number(d).toFixed(2)}
         domain={leftDomain}
       />
       <Axis
-        id={getAxisId('right')}
-        title={'Line axis'}
-        groupId={getGroupId('group2')}
+        id="right"
+        title="Line axis"
+        groupId="group2"
         position={Position.Right}
         tickFormat={(d) => Number(d).toFixed(2)}
         domain={right1Domain}
       />
       <Axis
-        id={getAxisId('right 2')}
-        title={'Line axis 2'}
-        groupId={getGroupId('group2')}
+        id="right 2"
+        title="Line axis 2"
+        groupId="group2"
         position={Position.Right}
         tickFormat={(d) => Number(d).toFixed(2)}
       />
       <BarSeries
-        id={getSpecId('bars')}
+        id="bars"
         xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -77,10 +57,10 @@ export const customizingDomainLimitsMixedOrdinalLinearXDomain = () => {
         ]}
       />
       <LineSeries
-        id={getSpecId('lines')}
+        id="lines"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
-        groupId={getGroupId('group2')}
+        groupId="group2"
         xAccessor="x"
         yAccessors={['y']}
         stackAccessors={['x']}
@@ -94,7 +74,4 @@ export const customizingDomainLimitsMixedOrdinalLinearXDomain = () => {
       />
     </Chart>
   );
-};
-customizingDomainLimitsMixedOrdinalLinearXDomain.story = {
-  name: 'customizing domain limits [mixed ordinal & linear x domain]',
 };

@@ -1,7 +1,6 @@
 import { Chart, Datum, Partition, PartitionLayout } from '../../src';
 import { mocks } from '../../src/mocks/hierarchical/index';
 import { config } from '../../src/chart_types/partition_chart/layout/config/config';
-import { getRandomNumber } from '../../src/mocks/utils';
 import React from 'react';
 import { ShapeTreeNode } from '../../src/chart_types/partition_chart/layout/types/viewmodel_types';
 import {
@@ -22,9 +21,9 @@ export default {
 };
 
 export const SunburstThreeLayers = () => (
-  <Chart className={'story-chart'} /*size={{ width: 1200, height: 800 }}*/>
+  <Chart className="story-chart" /*size={{ width: 1200, height: 800 }}*/>
     <Partition
-      id={'spec_' + getRandomNumber()}
+      id="spec_1"
       data={mocks.miniSunburst}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
