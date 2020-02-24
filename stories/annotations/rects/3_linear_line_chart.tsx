@@ -1,20 +1,14 @@
 import { boolean, select } from '@storybook/addon-knobs';
 import React from 'react';
-import { Axis, Chart, getAxisId, getSpecId, LineSeries, RectAnnotation, ScaleType, Settings } from '../../src';
-import { getChartRotationKnob } from '../common';
-import { BandedAccessorType } from '../../src/utils/geometry';
-import { Position } from '../../src/utils/commons';
+import { Axis, Chart, LineSeries, RectAnnotation, ScaleType, Settings } from '../../../src';
+import { getChartRotationKnob } from '../../common';
+import { BandedAccessorType } from '../../../src/utils/geometry';
+import { Position } from '../../../src/utils/commons';
 
-export default {
-  title: 'Annotations/Rect Basic Annotation Line',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
+export const example = () => {
+  const debug = boolean('debug', false);
+  const rotation = getChartRotationKnob();
 
-export const rectBasicAnnotationLine = () => {
   const definedCoordinate = select(
     'defined coordinate',
     {
@@ -65,16 +59,16 @@ export const rectBasicAnnotationLine = () => {
   const xAxisPosition = isBottom ? Position.Bottom : Position.Top;
 
   return (
-    <Chart className={'story-chart'}>
-      <Settings debug={boolean('debug', false)} rotation={getChartRotationKnob()} />
-      <RectAnnotation dataValues={dataValues} id={'rect'} />
-      <Axis id={getAxisId('bottom')} position={xAxisPosition} title={xAxisTitle} />
-      <Axis id={getAxisId('left')} title={yAxisTitle} position={yAxisPosition} />
+    <Chart className="story-chart">
+      <Settings debug={debug} rotation={rotation} />
+      <RectAnnotation dataValues={dataValues} id="rect" />
+      <Axis id="bottom" position={xAxisPosition} title={xAxisTitle} />
+      <Axis id="left" title={yAxisTitle} position={yAxisPosition} />
       <LineSeries
-        id={getSpecId('lines')}
+        id="lines"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
-        xAccessor={'x'}
+        xAccessor="x"
         yAccessors={['y']}
         data={[
           { x: 0, y: 2 },
@@ -84,7 +78,4 @@ export const rectBasicAnnotationLine = () => {
       />
     </Chart>
   );
-};
-rectBasicAnnotationLine.story = {
-  name: '[rect] basic annotation (line)',
 };

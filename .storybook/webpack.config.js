@@ -37,7 +37,7 @@ module.exports = async ({ config }) => {
   });
 
   config.module.rules.push({
-    test: /\.tsx?$/,
+    test: /\.stories\.tsx?$/,
     include: [path.resolve(__dirname, '../stories/')],
     loaders: [
       {

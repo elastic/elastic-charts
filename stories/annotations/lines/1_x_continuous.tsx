@@ -5,32 +5,22 @@ import {
   Axis,
   BarSeries,
   Chart,
-  getAnnotationId,
-  getAxisId,
-  getSpecId,
   LineAnnotation,
   LineAnnotationDatum,
   ScaleType,
   Settings,
-} from '../../src';
-import { Icon } from '../../src/components/icons/icon';
-import { getChartRotationKnob, arrayKnobs } from '../common';
-import { Position } from '../../src/utils/commons';
+} from '../../../src';
+import { Icon } from '../../../src/components/icons/icon';
+import { getChartRotationKnob, arrayKnobs } from '../../common';
+import { Position } from '../../../src/utils/commons';
 
 function generateAnnotationData(values: any[]): LineAnnotationDatum[] {
   return values.map((value, index) => ({ dataValue: value, details: `detail-${index}` }));
 }
 
-export default {
-  title: 'Annotations/Line Basic xDomain Continuous',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const example0 = () => {
+export const example = () => {
+  const debug = boolean('debug', false);
+  const rotation = getChartRotationKnob();
   const data = arrayKnobs('data values', [2.5, 7.2]);
   const dataValues = generateAnnotationData(data);
 
@@ -53,19 +43,19 @@ export const example0 = () => {
   const axisPosition = isBottom ? Position.Bottom : Position.Top;
 
   return (
-    <Chart className={'story-chart'}>
-      <Settings showLegend showLegendExtra debug={boolean('debug', false)} rotation={getChartRotationKnob()} />
+    <Chart className="story-chart">
+      <Settings showLegend showLegendExtra debug={debug} rotation={rotation} />
       <LineAnnotation
-        id={getAnnotationId('anno_1')}
+        id="annotation_1"
         domainType={AnnotationDomainTypes.XDomain}
         dataValues={dataValues}
         style={style}
         marker={<Icon type="alert" />}
       />
-      <Axis id={getAxisId('horizontal')} position={axisPosition} title={'x-domain axis'} />
-      <Axis id={getAxisId('vertical')} title={'y-domain axis'} position={Position.Left} />
+      <Axis id="horizontal" position={axisPosition} title="x-domain axis" />
+      <Axis id="vertical" title="y-domain axis" position={Position.Left} />
       <BarSeries
-        id={getSpecId('bars')}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -78,7 +68,4 @@ export const example0 = () => {
       />
     </Chart>
   );
-};
-example0.story = {
-  name: '[line] basic xDomain continuous',
 };

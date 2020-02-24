@@ -1,27 +1,9 @@
 import { select } from '@storybook/addon-knobs';
 import React from 'react';
-import {
-  AnnotationTooltipFormatter,
-  Axis,
-  BarSeries,
-  Chart,
-  getAxisId,
-  getSpecId,
-  ScaleType,
-  RectAnnotation,
-} from '../../src';
-import { Position } from '../../src/utils/commons';
+import { AnnotationTooltipFormatter, Axis, BarSeries, Chart, ScaleType, RectAnnotation } from '../../../src';
+import { Position } from '../../../src/utils/commons';
 
-export default {
-  title: 'Annotations/Rect Tooltip Visibility',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
-
-export const rectTooltipVisilibityDependentOnContent = () => {
+export const example = () => {
   const tooltipOptions = {
     'default formatter, details defined': 'default_defined',
     'default formatter, details undefined': 'default_undefined',
@@ -57,19 +39,19 @@ export const rectTooltipVisilibityDependentOnContent = () => {
   const isCustomTooltip = tooltipFormat.includes('custom');
 
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <RectAnnotation
         dataValues={dataValues}
-        id={'rect'}
+        id="rect"
         renderTooltip={isCustomTooltip ? tooltipFormatter : undefined}
       />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'x-domain axis'} />
-      <Axis id={getAxisId('left')} title={'y-domain axis'} position={Position.Left} />
+      <Axis id="bottom" position={Position.Bottom} title="x-domain axis" />
+      <Axis id="left" title="y-domain axis" position={Position.Left} />
       <BarSeries
-        id={getSpecId('bars')}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
-        xAccessor={'x'}
+        xAccessor="x"
         yAccessors={['y']}
         data={[
           { x: 0, y: 2 },
@@ -79,7 +61,4 @@ export const rectTooltipVisilibityDependentOnContent = () => {
       />
     </Chart>
   );
-};
-rectTooltipVisilibityDependentOnContent.story = {
-  name: '[rect] tooltip visibility dependent on content',
 };

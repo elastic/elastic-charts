@@ -1,20 +1,14 @@
 import { boolean, color, number } from '@storybook/addon-knobs';
 import React from 'react';
-import { Axis, Chart, getAxisId, getSpecId, LineSeries, RectAnnotation, ScaleType, Settings } from '../../src';
-import { Icon } from '../../src/components/icons/icon';
-import { getChartRotationKnob } from '../common';
-import { Position } from '../../src/utils/commons';
+import { Axis, Chart, LineSeries, RectAnnotation, ScaleType, Settings } from '../../../src';
+import { Icon } from '../../../src/components/icons/icon';
+import { getChartRotationKnob } from '../../common';
+import { Position } from '../../../src/utils/commons';
 
-export default {
-  title: 'Annotations/Rect Styling',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
+export const example = () => {
+  const debug = boolean('debug', false);
+  const rotation = getChartRotationKnob();
 
-export const rectStyling = () => {
   const dataValues = [
     {
       coordinates: {
@@ -85,25 +79,26 @@ export const rectStyling = () => {
   const isBottom = boolean('x-domain axis is Position.Bottom', true);
   const xAxisTitle = isBottom ? 'x-domain axis (botttom)' : 'x-domain axis (top)';
   const xAxisPosition = isBottom ? Position.Bottom : Position.Top;
+  const hideTooltips = boolean('hide tooltips', false);
 
   return (
-    <Chart className={'story-chart'}>
-      <Settings debug={boolean('debug', false)} rotation={getChartRotationKnob()} />
+    <Chart className="story-chart">
+      <Settings debug={debug} rotation={rotation} />
       <RectAnnotation
         dataValues={dataValues}
-        id={'rect'}
+        id="rect"
         style={style}
         renderTooltip={renderTooltip}
         zIndex={zIndex}
-        hideTooltips={boolean('hide tooltips', false)}
+        hideTooltips={hideTooltips}
       />
-      <Axis id={getAxisId('bottom')} position={xAxisPosition} title={xAxisTitle} />
-      <Axis id={getAxisId('left')} title={yAxisTitle} position={yAxisPosition} />
+      <Axis id="bottom" position={xAxisPosition} title={xAxisTitle} />
+      <Axis id="left" title={yAxisTitle} position={yAxisPosition} />
       <LineSeries
-        id={getSpecId('lines')}
+        id="lines"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
-        xAccessor={'x'}
+        xAccessor="x"
         yAccessors={['y']}
         data={[
           { x: 0, y: 2 },
@@ -113,7 +108,4 @@ export const rectStyling = () => {
       />
     </Chart>
   );
-};
-rectStyling.story = {
-  name: '[rect] styling',
 };

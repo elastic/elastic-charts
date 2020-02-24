@@ -5,31 +5,23 @@ import {
   Axis,
   BarSeries,
   Chart,
-  getAxisId,
-  getSpecId,
   LineAnnotation,
   LineAnnotationDatum,
   ScaleType,
   Settings,
-} from '../../src';
-import { Icon } from '../../src/components/icons/icon';
-import { getChartRotationKnob, arrayKnobs } from '../common';
-import { Position } from '../../src/utils/commons';
+} from '../../../src';
+import { Icon } from '../../../src/components/icons/icon';
+import { getChartRotationKnob, arrayKnobs } from '../../common';
+import { Position } from '../../../src/utils/commons';
 
 function generateAnnotationData(values: any[]): LineAnnotationDatum[] {
   return values.map((value, index) => ({ dataValue: value, details: `detail-${index}` }));
 }
 
-export default {
-  title: 'Annotations/Line Basic yDomain',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
+export const example = () => {
+  const debug = boolean('debug', false);
+  const rotation = getChartRotationKnob();
 
-export const lineBasicYDomain = () => {
   const data = arrayKnobs('data values', [1.5, 7.2]);
   const dataValues = generateAnnotationData(data);
 
@@ -38,18 +30,18 @@ export const lineBasicYDomain = () => {
   const axisPosition = isLeft ? Position.Left : Position.Right;
 
   return (
-    <Chart className={'story-chart'}>
-      <Settings debug={boolean('debug', false)} rotation={getChartRotationKnob()} />
+    <Chart className="story-chart">
+      <Settings debug={debug} rotation={rotation} />
       <LineAnnotation
-        id={'anno_'}
+        id="annotation_1"
         domainType={AnnotationDomainTypes.YDomain}
         dataValues={dataValues}
         marker={<Icon type="alert" />}
       />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'x-domain axis'} />
-      <Axis id={getAxisId('left')} title={axisTitle} position={axisPosition} />
+      <Axis id="bottom" position={Position.Bottom} title="x-domain axis" />
+      <Axis id="left" title={axisTitle} position={axisPosition} />
       <BarSeries
-        id={getSpecId('bars')}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -63,7 +55,4 @@ export const lineBasicYDomain = () => {
       />
     </Chart>
   );
-};
-lineBasicYDomain.story = {
-  name: '[line] basic yDomain',
 };

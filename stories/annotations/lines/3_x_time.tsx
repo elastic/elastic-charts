@@ -5,18 +5,16 @@ import {
   Axis,
   BarSeries,
   Chart,
-  getAxisId,
-  getSpecId,
   LineAnnotation,
   LineAnnotationDatum,
   ScaleType,
   Settings,
   timeFormatter,
-} from '../../src';
-import { Icon } from '../../src/components/icons/icon';
-import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
-import { getChartRotationKnob } from '../common';
-import { Position } from '../../src/utils/commons';
+} from '../../../src';
+import { Icon } from '../../../src/components/icons/icon';
+import { KIBANA_METRICS } from '../../../src/utils/data_samples/test_dataset_kibana';
+import { getChartRotationKnob } from '../../common';
+import { Position } from '../../../src/utils/commons';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
 
@@ -28,16 +26,10 @@ function generateTimeAnnotationData(values: any[]): LineAnnotationDatum[] {
   }));
 }
 
-export default {
-  title: 'Annotations/Line Time Series',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
+export const example = () => {
+  const debug = boolean('debug', false);
+  const rotation = getChartRotationKnob();
 
-export const lineTimeSeries = () => {
   const dataValues = generateTimeAnnotationData([
     1551438150000,
     1551438180000,
@@ -47,19 +39,19 @@ export const lineTimeSeries = () => {
   ]);
 
   return (
-    <Chart className={'story-chart'}>
-      <Settings debug={boolean('debug', false)} rotation={getChartRotationKnob()} />
+    <Chart className="story-chart">
+      <Settings debug={debug} rotation={rotation} />
       <LineAnnotation
-        id={'anno_1'}
+        id="annotation_1"
         domainType={AnnotationDomainTypes.XDomain}
         dataValues={dataValues}
         marker={<Icon type="alert" />}
       />
-      <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'x-domain axis'} tickFormat={dateFormatter} />
-      <Axis id={getAxisId('left')} title={'y-domain axis'} position={Position.Left} />
+      <Axis id="bottom" position={Position.Bottom} title="x-domain axis" tickFormat={dateFormatter} />
+      <Axis id="left" title="y-domain axis" position={Position.Left} />
       <BarSeries
-        id={getSpecId('bars')}
-        xScaleType={ScaleType.Linear}
+        id="bars"
+        xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
         yAccessors={[1]}
@@ -67,7 +59,4 @@ export const lineTimeSeries = () => {
       />
     </Chart>
   );
-};
-lineTimeSeries.story = {
-  name: '[line] time series',
 };

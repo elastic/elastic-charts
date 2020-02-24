@@ -5,31 +5,23 @@ import {
   Axis,
   BarSeries,
   Chart,
-  getAxisId,
-  getSpecId,
   LineAnnotation,
   LineAnnotationDatum,
   ScaleType,
   Settings,
-} from '../../src';
-import { Icon } from '../../src/components/icons/icon';
-import { getChartRotationKnob } from '../common';
-import { Position } from '../../src/utils/commons';
+} from '../../../src';
+import { Icon } from '../../../src/components/icons/icon';
+import { getChartRotationKnob } from '../../common';
+import { Position } from '../../../src/utils/commons';
 
 function generateAnnotationData(values: any[]): LineAnnotationDatum[] {
   return values.map((value, index) => ({ dataValue: value, details: `detail-${index}` }));
 }
 
-export default {
-  title: 'Annotations/Line Stylings',
-  parameters: {
-    info: {
-      source: false,
-    },
-  },
-};
+export const example = () => {
+  const debug = boolean('debug', false);
+  const rotation = getChartRotationKnob();
 
-export const lineStyling = () => {
   const data = [2.5, 7.2];
   const dataValues = generateAnnotationData(data);
 
@@ -66,10 +58,10 @@ export const lineStyling = () => {
   const hideTooltips = boolean('annotation tooltips hidden', false);
 
   return (
-    <Chart className={'story-chart'}>
-      <Settings debug={boolean('debug', false)} rotation={getChartRotationKnob()} />
+    <Chart className="story-chart">
+      <Settings debug={debug} rotation={rotation} />
       <LineAnnotation
-        id={'anno_1'}
+        id="annotation_1"
         domainType={AnnotationDomainTypes.XDomain}
         dataValues={dataValues}
         style={style}
@@ -77,10 +69,10 @@ export const lineStyling = () => {
         hideLines={hideLines}
         hideTooltips={hideTooltips}
       />
-      <Axis id={getAxisId('horizontal')} position={axisPosition} title={'x-domain axis'} />
-      <Axis id={getAxisId('vertical')} title={'y-domain axis'} position={Position.Left} />
+      <Axis id="horizontal" position={axisPosition} title="x-domain axis" />
+      <Axis id="vertical" title="y-domain axis" position={Position.Left} />
       <BarSeries
-        id={getSpecId('bars')}
+        id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -93,7 +85,4 @@ export const lineStyling = () => {
       />
     </Chart>
   );
-};
-lineStyling.story = {
-  name: '[line] styling',
 };
