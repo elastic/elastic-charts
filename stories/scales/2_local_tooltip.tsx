@@ -10,20 +10,20 @@ const UTC_DATASET = new Array(10).fill(0).map((d, i) => {
 
 export const example = () => {
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Axis
-        id={'time'}
+        id="time"
         position={Position.Bottom}
         tickFormat={(d) => {
           return DateTime.fromMillis(d).toFormat('yyyy-MM-dd HH:mm:ss');
         }}
       />
-      <Axis id={'y'} position={Position.Left} />
+      <Axis id="y" position={Position.Left} />
       <LineSeries
-        id={'lines'}
+        id="lines"
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
-        timeZone={'local'}
+        timeZone="local"
         xAccessor={0}
         yAccessors={[1]}
         data={UTC_DATASET}

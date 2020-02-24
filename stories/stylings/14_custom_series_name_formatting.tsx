@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src';
-import { SubSeriesStringPredicate } from '../../src/chart_types/xy_chart/utils/specs';
+import { SeriesNameFn } from '../../src/chart_types/xy_chart/utils/specs';
 import moment from 'moment';
 import { DateTime } from 'luxon';
 
@@ -18,26 +18,30 @@ export const example = () => {
     { x: 2, y: 18, percent: 1, time: start.plus({ month: 2 }).toMillis() },
     { x: 3, y: 7, percent: 1, time: start.plus({ month: 3 }).toMillis() },
   ];
-  const customSubSeriesLabel: SubSeriesStringPredicate = (accessor, key, isTooltip) => {
-    if (key === 'time') {
-      // Format time group
-      if (isTooltip) {
-        // Format tooltip time to be longer
-        return moment(accessor).format('ll');
-      }
+  const customSeriesNamingFn: SeriesNameFn = ({ yAccessor, splitAccessors }, isTooltip) =>
+    [
+      ...[...splitAccessors.entries()].map(([key, value]) => {
+        if (key === 'time') {
+          // Format time group
+          if (isTooltip) {
+            // Format tooltip time to be longer
+            return moment(value).format('ll');
+          }
 
-      // Format legend to be shorter
-      return moment(accessor).format('M/YYYY');
-    }
+          // Format legend to be shorter
+          return moment(value).format('M/YYYY');
+        }
 
-    if (key === 'percent') {
-      // Format percent group
-      return `${(accessor as number) * 100}%`;
-    }
+        if (key === 'percent') {
+          // Format percent group
+          return `${(value as number) * 100}%`;
+        }
 
-    // don't format yAccessor
-    return null;
-  };
+        return value;
+      }),
+      // don't format yAccessor
+      yAccessor,
+    ].join(' - ');
 
   return (
     <Chart className="story-chart">
@@ -53,7 +57,7 @@ export const example = () => {
         yAccessors={['y']}
         splitSeriesAccessors={['time', 'percent']}
         data={data}
-        customSubSeriesLabel={customSubSeriesLabel}
+        name={customSeriesNamingFn}
       />
     </Chart>
   );

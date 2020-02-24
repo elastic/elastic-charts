@@ -4,20 +4,20 @@ import { Axis, Chart, LineSeries, Position, ScaleType, Settings } from '../../sr
 
 export const example = () => {
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Settings hideDuplicateAxes={boolean('hideDuplicateAxes', true)} />
-      <Axis id={'bottom'} position={Position.Bottom} />
-      <Axis id={'y1'} position={Position.Left} tickFormat={(d) => `${d}%`} />
-      <Axis id={'y2'} position={Position.Left} tickFormat={(d) => `${d}%`} />
-      <Axis title="Axis - Different title" id={'y3'} position={Position.Left} tickFormat={(d) => `${d}%`} />
-      <Axis domain={{ min: 0 }} id={'y4'} position={Position.Left} tickFormat={(d) => `${d}%`} />
+      <Axis id="bottom" position={Position.Bottom} />
+      <Axis id="y1" position={Position.Left} tickFormat={(d) => `${d}%`} />
+      <Axis id="y2" position={Position.Left} tickFormat={(d) => `${d}%`} />
+      <Axis title="Axis - Different title" id="y3" position={Position.Left} tickFormat={(d) => `${d}%`} />
+      <Axis domain={{ min: 0 }} id="y4" position={Position.Left} tickFormat={(d) => `${d}%`} />
       <LineSeries
-        id={'lines'}
+        id="lines"
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
         yAccessors={[1]}
-        timeZone={'utc-6'}
+        timeZone="utc-6"
         data={[
           [1, 62],
           [2, 56],

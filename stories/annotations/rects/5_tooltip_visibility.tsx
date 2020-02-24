@@ -33,7 +33,7 @@ export const example = () => {
       return null;
     }
 
-    return <div>{'custom formatter'}</div>;
+    return <div>custom formatter</div>;
   };
 
   const isCustomTooltip = tooltipFormat.includes('custom');

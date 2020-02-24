@@ -78,11 +78,11 @@ export const example = () => {
       break;
   }
   return (
-    <Chart className={'story-chart'}>
-      <Axis id={'time'} position={Position.Bottom} tickFormat={tooltipFn} />
-      <Axis id={'y'} position={Position.Left} />
+    <Chart className="story-chart">
+      <Axis id="time" position={Position.Bottom} tickFormat={tooltipFn} />
+      <Axis id="y" position={Position.Left} />
       <LineSeries
-        id={'lines'}
+        id="lines"
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         timeZone={tooltipSelected}

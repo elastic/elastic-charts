@@ -15,7 +15,8 @@ export { example as customSeriesColorsViaAccessorFunction } from './9_custom_ser
 export { example as customSeriesStylesBars } from './10_custom_bars';
 export { example as customSeriesStylesLines } from './11_custom_lines';
 export { example as customSeriesStylesArea } from './12_custom_area';
-export { example as addCustomFullAndSubSeriesLabel } from './13_custom_series_label';
-export { example as addCustomSubSeriesLabelFormatting } from './14_custom_sub_format';
+export { example as customSeriesName } from './13_custom_series_name';
+export { example as customSeriesNameConfig } from './13_custom_series_name_config';
+export { example as customSeriesNameFormatting } from './14_custom_series_name_formatting';
 export { example as tickLabelPaddingBothPropAndTheme } from './15_tick_label';
 export { example as styleAccessorOverrides } from './16_style_accessor';

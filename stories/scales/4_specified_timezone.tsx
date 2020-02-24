@@ -4,22 +4,22 @@ import { Axis, Chart, LineSeries, Position, ScaleType } from '../../src';
 
 export const example = () => {
   return (
-    <Chart className={'story-chart'}>
+    <Chart className="story-chart">
       <Axis
-        id={'time'}
+        id="time"
         position={Position.Bottom}
         tickFormat={(d) => {
           return DateTime.fromMillis(d, { zone: 'utc-6' }).toISO();
         }}
       />
-      <Axis id={'y'} position={Position.Left} />
+      <Axis id="y" position={Position.Left} />
       <LineSeries
-        id={'lines'}
+        id="lines"
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         xAccessor={1}
         yAccessors={[2]}
-        timeZone={'utc-6'}
+        timeZone="utc-6"
         data={[
           ['2014-01-01T00:00:00.000-06:00', 1388556000000, 6206],
           ['2015-01-01T00:00:00.000-06:00', 1420092000000, 5674],
