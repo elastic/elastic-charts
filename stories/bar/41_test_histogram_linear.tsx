@@ -18,6 +18,7 @@ import {
 } from '../../src';
 import * as TestDatasets from '../../src/utils/data_samples/test_dataset';
 import { getChartRotationKnob } from '../utils/knobs';
+import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 // for testing purposes only
 export const example = () => {
@@ -152,6 +153,6 @@ export const example = () => {
 // storybook configuration
 example.story = {
   parameters: {
-    options: { selectedPanel: 'storybook/source-loader/panel' },
+    options: { selectedPanel: SB_SOURCE_PANEL },
   },
 };

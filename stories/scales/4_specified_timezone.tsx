@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon';
 import React from 'react';
 import { Axis, Chart, LineSeries, Position, ScaleType } from '../../src';
+import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const example = () => {
   return (
@@ -34,7 +35,7 @@ export const example = () => {
 
 example.story = {
   parameters: {
-    options: { selectedPanel: 'storybook/source-loader/panel' },
+    options: { selectedPanel: SB_SOURCE_PANEL },
     info: {
       text: `You can visualize data in a different timezone than your local or UTC zones.
       Specify the \`timeZone={'utc-6'}\` property with the correct timezone and

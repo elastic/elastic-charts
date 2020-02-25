@@ -3,6 +3,7 @@ import React from 'react';
 
 import { AreaSeries, Axis, Chart, CurveType, LineSeries, Position, ScaleType, Settings } from '../../src/';
 import { Fit, SeriesTypes } from '../../src/chart_types/xy_chart/utils/specs';
+import { SB_KNOBS_PANEL } from '../utils/storybook';
 
 export const example = () => {
   const dataTypes = {
@@ -186,6 +187,6 @@ export const example = () => {
 // storybook configuration
 example.story = {
   parameters: {
-    options: { selectedPanel: 'storybookjs/knobs/panel' },
+    options: { selectedPanel: SB_KNOBS_PANEL },
   },
 };

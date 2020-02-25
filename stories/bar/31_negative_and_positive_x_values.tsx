@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType } from '../../src';
+import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const example = () => {
   return (
@@ -33,6 +34,6 @@ export const example = () => {
 // storybook configuration
 example.story = {
   parameters: {
-    options: { selectedPanel: 'storybook/source-loader/panel' },
+    options: { selectedPanel: SB_SOURCE_PANEL },
   },
 };

@@ -1,7 +1,9 @@
+import { SB_ACTION_PANEL } from '../utils/storybook';
+
 export default {
   title: 'Interactions',
   parameters: {
-    options: { selectedPanel: 'storybook/actions/panel' },
+    options: { selectedPanel: SB_ACTION_PANEL },
   },
 };
 

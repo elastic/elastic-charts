@@ -4,6 +4,7 @@ import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src
 import { SeriesNameFn } from '../../src/chart_types/xy_chart/utils/specs';
 import moment from 'moment';
 import { DateTime } from 'luxon';
+import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const example = () => {
   const start = DateTime.fromISO('2019-01-01T00:00:00.000', { zone: 'utc' });
@@ -66,6 +67,6 @@ export const example = () => {
 // storybook configuration
 example.story = {
   parameters: {
-    options: { selectedPanel: 'storybook/source-loader/panel' },
+    options: { selectedPanel: SB_SOURCE_PANEL },
   },
 };

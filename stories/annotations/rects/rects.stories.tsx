@@ -1,7 +1,9 @@
+import { SB_KNOBS_PANEL } from '../../utils/storybook';
+
 export default {
   title: 'Annotations/Rects',
   parameters: {
-    options: { selectedPanel: 'storybookjs/knobs/panel' },
+    options: { selectedPanel: SB_KNOBS_PANEL },
   },
 };
 

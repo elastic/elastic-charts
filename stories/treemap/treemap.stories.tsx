@@ -1,7 +1,9 @@
+import { SB_SOURCE_PANEL } from '../utils/storybook';
+
 export default {
   title: 'Treemap',
   parameters: {
-    options: { selectedPanel: 'storybook/source-loader/panel' },
+    options: { selectedPanel: SB_SOURCE_PANEL },
   },
 };
 

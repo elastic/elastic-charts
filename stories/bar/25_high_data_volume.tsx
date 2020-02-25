@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings, TooltipType } from '../../src';
 import { SeededDataGenerator } from '../../src/mocks/utils';
+import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const example = () => {
   const dg = new SeededDataGenerator();
@@ -31,6 +32,6 @@ export const example = () => {
 // storybook configuration
 example.story = {
   parameters: {
-    options: { selectedPanel: 'storybook/source-loader/panel' },
+    options: { selectedPanel: SB_SOURCE_PANEL },
   },
 };

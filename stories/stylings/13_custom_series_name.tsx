@@ -3,6 +3,7 @@ import React from 'react';
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src';
 import * as TestDatasets from '../../src/utils/data_samples/test_dataset';
 import { SeriesNameFn } from '../../src/chart_types/xy_chart/utils/specs';
+import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const example = () => {
   const customSeriesNamingFn: SeriesNameFn = ({ yAccessor, splitAccessors }) => {
@@ -37,6 +38,6 @@ export const example = () => {
 // storybook configuration
 example.story = {
   parameters: {
-    options: { selectedPanel: 'storybook/source-loader/panel' },
+    options: { selectedPanel: SB_SOURCE_PANEL },
   },
 };

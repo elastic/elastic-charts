@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon';
 import React from 'react';
 import { Axis, Chart, LineSeries, Position, ScaleType } from '../../src';
+import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const UTC_DATE = DateTime.fromISO('2019-01-01T00:00:00.000Z').toMillis();
 const DAY_INCREMENT_1 = 1000 * 60 * 60 * 24;
@@ -36,7 +37,7 @@ export const example = () => {
 
 example.story = {
   parameters: {
-    options: { selectedPanel: 'storybook/source-loader/panel' },
+    options: { selectedPanel: SB_SOURCE_PANEL },
     info: {
       text: `The default timezone is UTC. If you want to visualize data in UTC,
       but you are in a different timezone, remember to format the millis from \`tickFormat\`

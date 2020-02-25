@@ -1,3 +1,5 @@
+import { SB_KNOBS_PANEL } from '../utils/storybook';
+
 import React from 'react';
 import {
   Axis,
@@ -98,6 +100,6 @@ export const example = () => {
 // storybook configuration
 example.story = {
   parameters: {
-    options: { selectedPanel: 'storybookjs/knobs/panel' },
+    options: { selectedPanel: SB_KNOBS_PANEL },
   },
 };

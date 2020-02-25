@@ -1,6 +1,7 @@
 import React from 'react';
 import { Axis, Chart, LineSeries, niceTimeFormatByDay, Position, ScaleType, timeFormatter } from '../../src/';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
+import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const dateFormatter = timeFormatter(niceTimeFormatByDay(1));
 
@@ -29,6 +30,6 @@ export const example = () => {
 // storybook configuration
 example.story = {
   parameters: {
-    options: { selectedPanel: 'storybook/source-loader/panel' },
+    options: { selectedPanel: SB_SOURCE_PANEL },
   },
 };

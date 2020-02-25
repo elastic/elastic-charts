@@ -12,6 +12,7 @@ import {
   timeFormatter,
 } from '../../src';
 import { TEST_DATASET_DISCOVER } from '../../src/utils/data_samples/test_dataset_discover_per_30s';
+import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 // for testing purposes only
 export const example = () => {
@@ -52,6 +53,6 @@ export const example = () => {
 // storybook configuration
 example.story = {
   parameters: {
-    options: { selectedPanel: 'storybook/source-loader/panel' },
+    options: { selectedPanel: SB_SOURCE_PANEL },
   },
 };
