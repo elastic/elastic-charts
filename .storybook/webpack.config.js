@@ -37,8 +37,9 @@ module.exports = async ({ config }) => {
   });
 
   config.module.rules.push({
-    test: /\.stories\.tsx?$/,
+    test: /\.tsx?$/,
     include: [path.resolve(__dirname, '../stories/')],
+    exclude: [path.resolve(__dirname, '../stories/utils')],
     loaders: [
       {
         loader: require.resolve('@storybook/source-loader'),

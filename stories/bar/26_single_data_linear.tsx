@@ -2,7 +2,7 @@ import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src';
-import { getChartRotationKnob } from '../common';
+import { getChartRotationKnob } from '../utils/knobs';
 
 export const example = () => {
   const hasCustomDomain = boolean('has custom domain', false);

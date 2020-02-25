@@ -3,7 +3,7 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src';
 import { SeededDataGenerator } from '../../src/mocks/utils';
-import { getChartRotationKnob } from '../common';
+import { getChartRotationKnob } from '../utils/knobs';
 
 const dataGen = new SeededDataGenerator();
 function generateDataWithAdditional(num: number) {

@@ -2,7 +2,7 @@ import { action } from '@storybook/addon-actions';
 import React from 'react';
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src/';
 
-import { getChartRotationKnob } from '../common';
+import { getChartRotationKnob } from '../utils/knobs';
 
 export const example = () => {
   return (

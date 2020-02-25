@@ -4,7 +4,7 @@ import { Axis, Chart, niceTimeFormatter, Position, ScaleType, Settings, Histogra
 
 import { boolean } from '@storybook/addon-knobs';
 import { DateTime } from 'luxon';
-import { getChartRotationKnob } from '../common';
+import { getChartRotationKnob } from '../utils/knobs';
 
 export const example = () => {
   const now = DateTime.fromISO('2019-01-11T00:00:00.000')

@@ -1,6 +1,6 @@
 import { select, array } from '@storybook/addon-knobs';
 
-import { Rotation } from '../src';
+import { Rotation } from '../../src';
 
 export const numberSelect = <T extends number>(
   name: string,

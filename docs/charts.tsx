@@ -14,7 +14,7 @@ import {
 } from '../src';
 import React from 'react';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
-import { arrayKnobs, getChartRotationKnob } from '../stories/common';
+import { arrayKnobs, getChartRotationKnob } from '../stories/utils/knobs';
 import { Icon } from '../src/components/icons/icon';
 
 export default {

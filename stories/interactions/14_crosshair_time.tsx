@@ -17,7 +17,7 @@ import {
 import { boolean, select } from '@storybook/addon-knobs';
 import { switchTheme } from '../../.storybook/theme_service';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
-import { getChartRotationKnob } from '../common';
+import { getChartRotationKnob } from '../utils/knobs';
 
 export const example = () => {
   const hideBars = boolean('hideBars', false);

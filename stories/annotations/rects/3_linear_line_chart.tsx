@@ -1,7 +1,7 @@
 import { boolean, select } from '@storybook/addon-knobs';
 import React from 'react';
 import { Axis, Chart, LineSeries, RectAnnotation, ScaleType, Settings } from '../../../src';
-import { getChartRotationKnob } from '../../common';
+import { getChartRotationKnob } from '../../utils/knobs';
 import { BandedAccessorType } from '../../../src/utils/geometry';
 import { Position } from '../../../src/utils/commons';
 

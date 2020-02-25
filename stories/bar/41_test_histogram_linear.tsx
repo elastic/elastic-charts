@@ -17,7 +17,7 @@ import {
   Settings,
 } from '../../src';
 import * as TestDatasets from '../../src/utils/data_samples/test_dataset';
-import { getChartRotationKnob } from '../common';
+import { getChartRotationKnob } from '../utils/knobs';
 
 export const example = () => {
   const data = TestDatasets.BARCHART_2Y1G;

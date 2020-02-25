@@ -2,7 +2,7 @@ import { number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings } from '../../src';
-import { arrayKnobs } from '../common';
+import { arrayKnobs } from '../utils/knobs';
 
 export const example = () => {
   const leftDomain = {

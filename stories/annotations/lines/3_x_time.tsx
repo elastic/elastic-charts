@@ -13,7 +13,7 @@ import {
 } from '../../../src';
 import { Icon } from '../../../src/components/icons/icon';
 import { KIBANA_METRICS } from '../../../src/utils/data_samples/test_dataset_kibana';
-import { getChartRotationKnob } from '../../common';
+import { getChartRotationKnob } from '../../utils/knobs';
 import { Position } from '../../../src/utils/commons';
 
 const dateFormatter = timeFormatter('HH:mm:ss');

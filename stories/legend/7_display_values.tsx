@@ -2,7 +2,7 @@ import { boolean, select } from '@storybook/addon-knobs';
 import React from 'react';
 import { AreaSeries, Axis, Chart, CurveType, Position, ScaleType, Settings } from '../../src/';
 import { TSVB_DATASET } from '../../src/utils/data_samples/test_dataset_tsvb';
-import { arrayKnobs } from '../common';
+import { arrayKnobs } from '../utils/knobs';
 
 export const example = () => {
   const showLegendDisplayValue = boolean('show display value in legend', true);
