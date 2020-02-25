@@ -39,3 +39,17 @@ export function getAccessorFormatLabel(accessor: AccessorFormat, label: string):
 
   return accessor(label);
 }
+
+/**
+ * Helper function to get accessor value from string, number or function
+ *
+ * @param  {Datum} datum
+ * @param  {AccessorString|AccessorFn} accessor
+ */
+export function getAccessorValue(datum: Datum, accessor: AccessorString | AccessorFn) {
+  if (typeof accessor === 'function') {
+    return accessor(datum);
+  }
+
+  return datum[accessor];
+}
