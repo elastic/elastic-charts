@@ -44,7 +44,7 @@ export class Playground extends React.Component<{}, { isSunburstShown: boolean }
               id="areas"
               xScaleType={ScaleType.Linear}
               yScaleType={ScaleType.Linear}
-              xAccessor={'x'}
+              xAccessor="x"
               yAccessors={['y']}
               splitSeriesAccessors={['g']}
               customSeriesColors={this.state.colors}

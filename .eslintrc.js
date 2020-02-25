@@ -1,13 +1,12 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint'],
   extends: [
     'plugin:@typescript-eslint/recommended',
     'prettier/@typescript-eslint',
     'plugin:prettier/recommended',
     'plugin:react/recommended',
   ],
-  plugins: ['import', 'jest'],
+  plugins: ['@typescript-eslint', 'import', 'jest', 'unicorn'],
 
   env: {
     es6: true,
@@ -51,6 +50,12 @@ module.exports = {
         ignoreRestSiblings: true,
       },
     ],
+    'unicorn/filename-case': [
+      'error',
+      {
+        case: 'snakeCase',
+      },
+    ],
     'sort-keys': 'off',
     'import/no-unresolved': 'error',
     'no-irregular-whitespace': 'error',
@@ -63,6 +68,7 @@ module.exports = {
     '@typescript-eslint/no-use-before-define': 'off',
     '@typescript-eslint/ban-ts-ignore': 'off',
     '@typescript-eslint/no-inferrable-types': 'off',
+    'react/jsx-curly-brace-presence': ['error', { props: 'never', children: 'never' }],
   },
   settings: {
     'import/resolver': {
