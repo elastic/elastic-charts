@@ -6,7 +6,7 @@ module.exports = {
     'plugin:prettier/recommended',
     'plugin:react/recommended',
   ],
-  plugins: ['@typescript-eslint', 'import', 'jest', 'filenames'],
+  plugins: ['@typescript-eslint', 'import', 'jest', 'unicorn'],
 
   env: {
     es6: true,
@@ -50,8 +50,12 @@ module.exports = {
         ignoreRestSiblings: true,
       },
     ],
-    'filenames/match-exported': [2, 'snake'],
-    'filenames/match-regex': [2, '^[a-z_\\.test\\.tz0-9]+$'],
+    'unicorn/filename-case': [
+      'error',
+      {
+        case: 'snakeCase',
+      },
+    ],
     'sort-keys': 'off',
     'import/no-unresolved': 'error',
     'no-irregular-whitespace': 'error',
@@ -77,24 +81,6 @@ module.exports = {
     },
   },
   overrides: [
-    {
-      files: ['jest-puppeteer.config.js'],
-      rules: {
-        'filenames/match-regex': 0,
-      },
-    },
-    {
-      files: ['jest-puppeteer.config.js'],
-      rules: {
-        'filenames/match-exported': 0,
-      },
-    },
-    {
-      files: ['jest-env-setup.ts'],
-      rules: {
-        'filenames/match-regex': 0,
-      },
-    },
     {
       files: ['*.js', '*test.ts'],
       rules: {
