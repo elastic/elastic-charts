@@ -3,6 +3,7 @@ import React from 'react';
 import { Axis, BarSeries, Chart, Position, ScaleType } from '../../src';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
 
+// for testing purposes only
 export const example = () => {
   const data9 = [
     [1, 1, 3],
@@ -34,4 +35,11 @@ export const example = () => {
       />
     </Chart>
   );
+};
+
+// storybook configuration
+example.story = {
+  parameters: {
+    options: { selectedPanel: 'storybook/source-loader/panel' },
+  },
 };

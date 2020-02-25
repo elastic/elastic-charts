@@ -1,5 +1,8 @@
 export default {
   title: 'Sunburst',
+  parameters: {
+    options: { selectedPanel: 'storybook/source-loader/panel' },
+  },
 };
 
 export { example as mostBasic } from './1_simple';

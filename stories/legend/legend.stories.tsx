@@ -1,5 +1,8 @@
 export default {
   title: 'Legend',
+  parameters: {
+    options: { selectedPanel: 'storybookjs/knobs/panel' },
+  },
 };
 
 export { example as right } from './1_legend_right';

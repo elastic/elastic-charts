@@ -1,5 +1,8 @@
 export default {
   title: 'Stylings',
+  parameters: {
+    options: { selectedPanel: 'storybookjs/knobs/panel' },
+  },
 };
 
 export { example as chartSize } from './1_chart_size';

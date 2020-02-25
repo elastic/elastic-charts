@@ -6,6 +6,7 @@ import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana
 
 const dateFormatter = timeFormatter('HH:mm:ss');
 
+// for testing purposes only
 export const example = () => {
   const start = DateTime.fromISO('2019-01-01T00:00:00.000', { zone: 'utc' });
   const data = [
@@ -38,4 +39,11 @@ export const example = () => {
       />
     </Chart>
   );
+};
+
+// storybook configuration
+example.story = {
+  parameters: {
+    options: { selectedPanel: 'storybook/source-loader/panel' },
+  },
 };

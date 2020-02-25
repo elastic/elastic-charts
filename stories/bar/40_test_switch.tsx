@@ -3,6 +3,7 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType } from '../../src';
 
+// for testing purposes only
 export const example = () => {
   return (
     <Chart className="story-chart">
@@ -31,4 +32,11 @@ export const example = () => {
       />
     </Chart>
   );
+};
+
+// storybook configuration
+example.story = {
+  parameters: {
+    options: { selectedPanel: 'storybook/source-loader/panel' },
+  },
 };

@@ -75,3 +75,10 @@ export const example = () => {
     </div>
   );
 };
+
+// storybook configuration
+example.story = {
+  parameters: {
+    options: { selectedPanel: 'storybook/source-loader/panel' },
+  },
+};

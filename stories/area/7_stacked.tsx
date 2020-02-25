@@ -44,3 +44,10 @@ export const example = () => {
     </Chart>
   );
 };
+
+// storybook configuration
+example.story = {
+  parameters: {
+    options: { selectedPanel: 'storybook/source-loader/panel' },
+  },
+};

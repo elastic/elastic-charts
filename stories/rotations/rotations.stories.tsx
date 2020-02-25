@@ -1,5 +1,8 @@
 export default {
   title: 'Rotations',
+  parameters: {
+    options: { selectedPanel: 'storybook/source-loader/panel' },
+  },
 };
 
 export { example as withOrdinalAxis } from './1_ordinal';

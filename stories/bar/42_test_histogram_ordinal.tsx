@@ -4,6 +4,7 @@ import React from 'react';
 import { Axis, BarSeries, Chart, HistogramBarSeries, Position, ScaleType, Settings } from '../../src';
 import { getChartRotationKnob } from '../utils/knobs';
 
+// for testing purposes only
 export const example = () => {
   const data = [
     { x: 'a', y: 2 },
@@ -60,4 +61,11 @@ export const example = () => {
       />
     </Chart>
   );
+};
+
+// storybook configuration
+example.story = {
+  parameters: {
+    options: { selectedPanel: 'storybook/source-loader/panel' },
+  },
 };

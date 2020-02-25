@@ -12,6 +12,7 @@ import {
 } from '../../src';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
 
+// for testing purposes only
 export const example = () => {
   const formatter = timeFormatter(niceTimeFormatByDay(1));
 
@@ -40,4 +41,11 @@ export const example = () => {
       />
     </Chart>
   );
+};
+
+// storybook configuration
+example.story = {
+  parameters: {
+    options: { selectedPanel: 'storybook/source-loader/panel' },
+  },
 };

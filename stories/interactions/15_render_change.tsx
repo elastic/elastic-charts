@@ -27,6 +27,7 @@ export const example = () => {
     </Chart>
   );
 };
+
 example.story = {
   parameters: {
     info: {

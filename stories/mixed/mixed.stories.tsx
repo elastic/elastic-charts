@@ -1,5 +1,8 @@
 export default {
   title: 'Mixed Charts',
+  parameters: {
+    options: { selectedPanel: 'storybook/source-loader/panel' },
+  },
 };
 
 export { example as barsAndLines } from './1_bars_and_lines';

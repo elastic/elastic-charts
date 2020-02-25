@@ -3,6 +3,7 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType } from '../../src';
 
+// for testing purposes only
 export const example = () => {
   const minBarHeight = number('minBarHeight', 10);
   const data = [
@@ -40,4 +41,11 @@ export const example = () => {
       />
     </Chart>
   );
+};
+
+// storybook configuration
+example.story = {
+  parameters: {
+    options: { selectedPanel: 'storybook/source-loader/panel' },
+  },
 };

@@ -1,5 +1,8 @@
 export default {
   title: 'Treemap',
+  parameters: {
+    options: { selectedPanel: 'storybook/source-loader/panel' },
+  },
 };
 
 export { example as oneLayer } from './1_one_layer';

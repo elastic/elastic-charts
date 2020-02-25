@@ -13,6 +13,7 @@ import {
 } from '../../src';
 import { TEST_DATASET_DISCOVER } from '../../src/utils/data_samples/test_dataset_discover_per_30s';
 
+// for testing purposes only
 export const example = () => {
   const data = TEST_DATASET_DISCOVER.series[0].values;
 
@@ -46,4 +47,11 @@ export const example = () => {
       />
     </Chart>
   );
+};
+
+// storybook configuration
+example.story = {
+  parameters: {
+    options: { selectedPanel: 'storybook/source-loader/panel' },
+  },
 };

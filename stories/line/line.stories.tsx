@@ -1,5 +1,8 @@
 export default {
   title: 'Line Chart',
+  parameters: {
+    options: { selectedPanel: 'storybook/source-loader/panel' },
+  },
 };
 
 export { example as basic } from './1_basic';

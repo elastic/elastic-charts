@@ -15,8 +15,9 @@ export { example as stacked } from './7_stacked';
 export { example as stackedPercentage } from './8_stacked_percentage';
 export { example as stackedSeparateSpecs } from './9_stacked_separate_specs';
 export { example as stackedSameNaming } from './10_stacked_same_naming';
-export { example as testLinear } from './11_test_linear';
-export { example as testTime } from './12_test_time';
 export { example as bandArea } from './13_band_area';
 export { example as stackedBand } from './14_stacked_band';
 export { example as stackedGrouped } from './15_stacked_grouped';
+
+export { example as testLinear } from './11_test_linear';
+export { example as testTime } from './12_test_time';

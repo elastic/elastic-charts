@@ -19,6 +19,7 @@ import {
 import * as TestDatasets from '../../src/utils/data_samples/test_dataset';
 import { getChartRotationKnob } from '../utils/knobs';
 
+// for testing purposes only
 export const example = () => {
   const data = TestDatasets.BARCHART_2Y1G;
 
@@ -146,4 +147,11 @@ export const example = () => {
       {otherSeries}
     </Chart>
   );
+};
+
+// storybook configuration
+example.story = {
+  parameters: {
+    options: { selectedPanel: 'storybook/source-loader/panel' },
+  },
 };

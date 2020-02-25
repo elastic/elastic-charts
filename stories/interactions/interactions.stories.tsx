@@ -1,5 +1,8 @@
 export default {
   title: 'Interactions',
+  parameters: {
+    options: { selectedPanel: 'storybook/actions/panel' },
+  },
 };
 
 export { example as barClicksAndHovers } from './1_bar_clicks';

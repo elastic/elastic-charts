@@ -182,3 +182,10 @@ export const example = () => {
     </Chart>
   );
 };
+
+// storybook configuration
+example.story = {
+  parameters: {
+    options: { selectedPanel: 'storybookjs/knobs/panel' },
+  },
+};

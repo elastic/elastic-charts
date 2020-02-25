@@ -4,6 +4,7 @@ import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src
 import * as TestDatasets from '../../src/utils/data_samples/test_dataset';
 import { getChartRotationKnob } from '../utils/knobs';
 
+// for testing purposes only
 export const example = () => {
   return (
     <Chart className="story-chart">
@@ -22,4 +23,11 @@ export const example = () => {
       />
     </Chart>
   );
+};
+
+// storybook configuration
+example.story = {
+  parameters: {
+    options: { selectedPanel: 'storybook/source-loader/panel' },
+  },
 };

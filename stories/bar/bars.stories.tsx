@@ -40,19 +40,20 @@ export { example as stackedToExtent } from './30_stacked_to_extent';
 export { example as negativeAndPositiveXValues } from './31_negative_and_positive_x_values';
 export { example as scaleToExtent } from './32_scale_to_extent';
 export { example as bandBarChart } from './33_band_bar';
+export { example as minHeight } from './45_min_height';
+export { example as stackedOnlyGroupedAreas } from './47_stacked_only_grouped';
+
+// for testing purposes only
 export { example as testLinear } from './34_test_linear';
 export { example as testTime } from './35_test_time';
 export { example as testLinearClustered } from './36_test_linear_clustered';
 export { example as testTimeClustered } from './37_test_time_clustered';
 export { example as testClusteredBarChartWithNullBars } from './38_test_clustered_null_bars';
 export { example as testStackedBarChartWithNullBars } from './39_test_stacked_null';
-
 export { example as testSwitchOrdinalLinearAxis } from './40_test_switch';
 export { example as testHistogramModeLinear } from './41_test_histogram_linear';
 export { example as testHistogramModeOrdinal } from './42_test_histogram_ordinal';
 export { example as testDiscover } from './43_test_discover';
 export { example as testSingleHistogramBarChart } from './44_test_single_histogram';
-export { example as minHeight } from './45_min_height';
 export { example as testMinHeightPositiveAndNegativeValues } from './46_test_min_height';
-export { example as stackedOnlyGroupedAreas } from './47_stacked_only_grouped';
 export { example as testTooltipAndRotation } from './48_test_tooltip';
