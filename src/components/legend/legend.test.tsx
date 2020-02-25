@@ -141,7 +141,6 @@ describe('Legend', () => {
         colors: ['red'],
       };
 
-      pickerElement = document.createElement('div');
       data = dg.generateGroupedSeries(10, 4, 'split');
 
       legendColorPickerFn: LegendColorPickerFn = (anchor, onClose) => {

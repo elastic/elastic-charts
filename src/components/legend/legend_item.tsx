@@ -79,6 +79,14 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
     return !deepEqual(this.props, nextProps) || !deepEqual(this.state, nextState);
   }
 
+  handleColorClick = (changable: boolean) =>
+    changable
+      ? (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+          event.stopPropagation();
+          this.toggleIsOpen();
+        }
+      : undefined;
+
   /**
    * Create a div for the color/eye icon
    * @param color
@@ -89,35 +97,28 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
       return null;
     }
 
-    if (isSeriesVisible) {
-      const changable = Boolean(this.props.legendColorPicker);
-      const colorClasses = classNames('echLegendItem__color', {
-        'echLegendItem__color--changable': changable,
-      });
-
+    if (!isSeriesVisible) {
       return (
-        <div
-          onClick={
-            changable
-              ? (e) => {
-                  e.stopPropagation();
-                  this.toggleIsOpen();
-                }
-              : undefined
-          }
-          className={colorClasses}
-          aria-label="series color"
-          title="series color"
-        >
-          <Icon type="dot" color={color} />
+        <div className="echLegendItem__color" aria-label="series hidden" title="series hidden">
+          {/* changing the default viewBox for the eyeClosed icon to keep the same dimensions */}
+          <Icon type="eyeClosed" viewBox="-3 -3 22 22" />
         </div>
       );
     }
 
-    // changing the default viewBox for the eyeClosed icon to keep the same dimensions
+    const changable = Boolean(this.props.legendColorPicker);
+    const colorClasses = classNames('echLegendItem__color', {
+      'echLegendItem__color--changable': changable,
+    });
+
     return (
-      <div className="echLegendItem__color" aria-label="series hidden" title="series hidden">
-        <Icon type="eyeClosed" viewBox="-3 -3 22 22" />
+      <div
+        onClick={this.handleColorClick(changable)}
+        className={colorClasses}
+        aria-label="series color"
+        title="series color"
+      >
+        <Icon type="dot" color={color} />
       </div>
     );
   };

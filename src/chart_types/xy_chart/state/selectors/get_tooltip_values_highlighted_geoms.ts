@@ -36,10 +36,6 @@ const EMPTY_VALUES = Object.freeze({
   highlightedGeometries: [],
 });
 
-export interface TooltipData {
-  header: TooltipValue | null;
-  values: TooltipValue[];
-}
 export interface TooltipAndHighlightedGeoms {
   tooltip: TooltipInfo;
   highlightedGeometries: IndexedGeometry[];

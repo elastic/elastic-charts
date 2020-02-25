@@ -15,10 +15,6 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
     }
   }
 
-  &__label:hover {
-    text-decoration: underline;
-  }
-
   &__color {
     margin-right: $euiSizeXS;
   }
@@ -38,6 +34,7 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
 
     &:hover {
       cursor: pointer;
+      text-decoration: underline;
     }
   }
 
