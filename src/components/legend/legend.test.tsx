@@ -178,7 +178,7 @@ describe('Legend', () => {
               xAccessor="x"
               yAccessors={['y']}
               splitSeriesAccessors={['g']}
-              customSeriesColors={this.state.colors}
+              color={this.state.colors}
               data={this.data}
             />
           </Chart>

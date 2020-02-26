@@ -8,7 +8,7 @@ import {
   PointStyle,
   RectAnnotationStyle,
 } from '../../../utils/themes/theme';
-import { Accessor, AccessorFormat } from '../../../utils/accessor';
+import { Accessor, AccessorFormat, AccessorFn } from '../../../utils/accessor';
 import { RecursivePartial, Color, Position, Datum } from '../../../utils/commons';
 import { AxisId, GroupId } from '../../../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../../../scales';
@@ -264,7 +264,7 @@ export interface SeriesSpec extends Spec {
   /** The type of series you are looking to render */
   seriesType: SeriesTypes;
   /** Set colors for specific series */
-  customSeriesColors?: CustomSeriesColors;
+  color?: SeriesColorAccessor;
   /** If the series should appear in the legend
    * @default false
    */
@@ -307,11 +307,11 @@ export interface Postfixes {
 
 export type SeriesColorsArray = string[];
 export type SeriesColorAccessorFn = (seriesIdentifier: XYChartSeriesIdentifier) => string | null;
-export type CustomSeriesColors = SeriesColorsArray | SeriesColorAccessorFn;
+export type SeriesColorAccessor = string | SeriesColorsArray | SeriesColorAccessorFn;
 
 export interface SeriesAccessors {
   /** The field name of the x value on Datum object */
-  xAccessor: Accessor;
+  xAccessor: Accessor | AccessorFn;
   /** An array of field names one per y metric value */
   yAccessors: Accessor[];
   /** An optional accessor of the y0 value: base point for area/bar charts  */

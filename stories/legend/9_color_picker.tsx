@@ -51,7 +51,7 @@ export const example = () => {
         yAccessors={['y']}
         splitSeriesAccessors={['g']}
         data={BARCHART_1Y1G}
-        customSeriesColors={({ key }) => colors[key] ?? null}
+        color={({ key }) => colors[key] ?? null}
       />
     </Chart>
   );

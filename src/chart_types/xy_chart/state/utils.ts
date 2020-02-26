@@ -131,18 +131,20 @@ export function getCustomSeriesColors(
   seriesCollection.forEach(({ seriesIdentifier }, seriesKey) => {
     const spec = getSpecsById(seriesSpecs, seriesIdentifier.specId);
 
-    if (!spec || !spec.customSeriesColors) {
+    if (!spec || !spec.color) {
       return;
     }
 
     let color: string | undefined | null;
 
-    if (!color && spec.customSeriesColors) {
-      const counter = counters.get(seriesIdentifier.specId) || 0;
-      color = Array.isArray(spec.customSeriesColors)
-        ? spec.customSeriesColors[counter % spec.customSeriesColors.length]
-        : spec.customSeriesColors(seriesIdentifier);
-      counters.set(seriesIdentifier.specId, counter + 1);
+    if (!color && spec.color) {
+      if (typeof spec.color === 'string') {
+        color = spec.color;
+      } else {
+        const counter = counters.get(seriesIdentifier.specId) || 0;
+        color = Array.isArray(spec.color) ? spec.color[counter % spec.color.length] : spec.color(seriesIdentifier);
+        counters.set(seriesIdentifier.specId, counter + 1);
+      }
     }
 
     if (color) {

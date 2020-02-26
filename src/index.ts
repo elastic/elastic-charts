@@ -20,7 +20,7 @@ export { SeriesIdentifier, XYChartSeriesIdentifier } from './chart_types/xy_char
 export {
   AnnotationDomainType,
   AnnotationDomainTypes,
-  CustomSeriesColors,
+  SeriesColorAccessor,
   SeriesColorsArray,
   SeriesColorAccessorFn,
   HistogramModeAlignment,
@@ -30,6 +30,11 @@ export {
   RectAnnotationDatum,
   RectAnnotationSpec,
   SeriesTypes,
+  SeriesName,
+  SeriesNameFn,
+  SeriesNameAccessor,
+  SeriesNameConfig,
+  SeriesNameConfigOptions,
 } from './chart_types/xy_chart/utils/specs';
 export { AnnotationTooltipFormatter } from './chart_types/xy_chart/annotations/annotation_utils';
 export { GeometryValue } from './utils/geometry';
