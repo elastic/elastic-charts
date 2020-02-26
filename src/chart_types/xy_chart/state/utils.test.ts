@@ -371,7 +371,7 @@ describe('Chart State utils', () => {
         const barSeriesSpecs = MockSeriesSpecs.fromSpecs([barSpec1, barSpec2]);
         const barSeriesCollection = MockSeriesCollection.fromSpecs(barSeriesSpecs);
 
-        it('it should return color from customSeriesColors array', () => {
+        it('it should return color from color array', () => {
           const actual = getCustomSeriesColors(barSeriesSpecs, barSeriesCollection);
 
           expect(actual.size).toBe(4);
@@ -399,7 +399,7 @@ describe('Chart State utils', () => {
         const barSeriesSpecs = MockSeriesSpecs.fromSpecs([barSpec1, barSpec2]);
         const barSeriesCollection = MockSeriesCollection.fromSpecs(barSeriesSpecs);
 
-        it('it should return color from customSeriesColors function', () => {
+        it('it should return color from color function', () => {
           const actual = getCustomSeriesColors(barSeriesSpecs, barSeriesCollection);
 
           expect(actual.size).toBe(1);
