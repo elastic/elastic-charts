@@ -22,7 +22,7 @@ import { config, percentFormatter } from '../layout/config/config';
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
 import { IndexedAccessorFn } from '../../../utils/accessor';
 import { Spec, SpecTypes } from '../../../specs/index';
-import { Config, FillLabelConfig } from '../layout/types/config_types';
+import { Config, FillFontSizeRange, FillLabelConfig } from '../layout/types/config_types';
 import { ShapeTreeNode, ValueGetter } from '../layout/types/viewmodel_types';
 import { AGGREGATE_KEY } from '../layout/utils/group_by_rollup';
 import {
@@ -36,10 +36,12 @@ import {
 import { NodeColorAccessor } from '../layout/types/viewmodel_types';
 import { PrimitiveValue } from '../layout/utils/group_by_rollup';
 
+interface ExtendedFillLabelConfig extends FillLabelConfig, FillFontSizeRange {}
+
 export interface Layer {
   groupByRollup: IndexedAccessorFn;
   nodeLabel?: LabelAccessor;
-  fillLabel?: Partial<FillLabelConfig>;
+  fillLabel?: Partial<ExtendedFillLabelConfig>;
   showAccessor?: ShowAccessor;
   shape?: { fillColor: string | NodeColorAccessor };
 }
