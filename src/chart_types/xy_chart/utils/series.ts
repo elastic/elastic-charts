@@ -8,6 +8,7 @@ import { formatStackedDataSeriesValues } from './stacked_series_utils';
 import { ScaleType } from '../../../scales';
 import { LastValues } from '../state/utils';
 import { Datum } from '../../../utils/commons';
+import { ColorOverrides } from '../../../state/chart_state';
 
 export const SERIES_DELIMITER = ' - ';
 
@@ -477,17 +478,55 @@ export function getSortedDataSeriesColorsValuesMap(
   return new Map([...seriesColorsArray]);
 }
 
+/**
+ * Helper function to get highest override color.
+ *
+ * from highest to lowest: `temporary`, `customSeriesColors` then `persisted`
+ *
+ * @param key
+ * @param customColors
+ * @param overrides
+ */
+function getHighestOverride(
+  key: string,
+  customColors: Map<SeriesKey, string>,
+  overrides: ColorOverrides,
+): string | undefined {
+  let color: string | undefined = overrides.temporary[key];
+
+  if (color) {
+    return color;
+  }
+
+  color = customColors.get(key);
+
+  if (color) {
+    return color;
+  }
+
+  return overrides.persisted[key];
+}
+
+/**
+ * Returns color for a series given all color hierarchies
+ *
+ * @param seriesCollection
+ * @param chartColors
+ * @param customColors
+ * @param overrides
+ */
 export function getSeriesColors(
   seriesCollection: Map<SeriesKey, SeriesCollectionValue>,
   chartColors: ColorConfig,
   customColors: Map<SeriesKey, string>,
+  overrides: ColorOverrides,
 ): Map<SeriesKey, string> {
   const seriesColorMap = new Map<SeriesKey, string>();
   let counter = 0;
 
   seriesCollection.forEach((_, seriesKey) => {
-    const customSeriesColor: string | undefined = customColors.get(seriesKey);
-    const color = customSeriesColor || chartColors.vizColors[counter % chartColors.vizColors.length];
+    const colorOverride = getHighestOverride(seriesKey, customColors, overrides);
+    const color = colorOverride || chartColors.vizColors[counter % chartColors.vizColors.length];
 
     seriesColorMap.set(seriesKey, color);
     counter++;

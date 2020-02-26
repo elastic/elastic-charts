@@ -6,7 +6,7 @@ import { LegendItemListener, BasicListener, LegendColorPicker } from '../../spec
 import { LegendItem } from '../../chart_types/xy_chart/legend/legend';
 import { onLegendItemOutAction, onLegendItemOverAction } from '../../state/actions/legend';
 import { Position } from '../../utils/commons';
-import { XYChartSeriesIdentifier } from '../../chart_types/xy_chart/utils/series';
+import { XYChartSeriesIdentifier, SeriesKey } from '../../chart_types/xy_chart/utils/series';
 
 interface LegendItemProps {
   legendItem: LegendItem;
@@ -20,6 +20,9 @@ interface LegendItemProps {
   onLegendItemOverListener?: LegendItemListener;
   legendItemOutAction: typeof onLegendItemOutAction;
   legendItemOverAction: typeof onLegendItemOverAction;
+  clearTemporaryColors: () => void;
+  setTemporaryColor: (key: SeriesKey, color: string) => void;
+  setPersistedColor: (key: SeriesKey, color: string) => void;
   toggleDeselectSeriesAction: (legendItemId: XYChartSeriesIdentifier) => void;
 }
 
@@ -124,14 +127,28 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
   };
 
   renderColorPicker() {
-    const { legendColorPicker: ColorPicker, legendItem } = this.props;
+    const {
+      legendColorPicker: ColorPicker,
+      legendItem,
+      clearTemporaryColors,
+      setTemporaryColor,
+      setPersistedColor,
+    } = this.props;
     const { seriesIdentifier, color } = legendItem;
+
+    const handleClose = () => {
+      setPersistedColor(seriesIdentifier.key, color);
+      clearTemporaryColors();
+      this.toggleIsOpen();
+    };
+
     if (ColorPicker && this.state.isOpen && this.ref.current) {
       return (
         <ColorPicker
           anchor={this.ref.current}
           color={color}
-          onClose={this.toggleIsOpen}
+          onClose={handleClose}
+          onChange={(color: string) => setTemporaryColor(seriesIdentifier.key, color)}
           seriesIdentifier={seriesIdentifier}
         />
       );

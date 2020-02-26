@@ -1,4 +1,5 @@
 import { SPEC_PARSED, SPEC_UNMOUNTED, UPSERT_SPEC, REMOVE_SPEC, SPEC_PARSING } from './actions/specs';
+import { SET_PERSISTED_COLOR, SET_TEMPORARY_COLOR, CLEAR_TEMPORARY_COLORS } from './actions/colors';
 import { interactionsReducer } from './reducers/interactions';
 import { ChartTypes } from '../chart_types';
 import { XYAxisChartState } from '../chart_types/xy_chart/state/chart_state';
@@ -116,6 +117,11 @@ export interface ExternalEventsState {
   pointer: PointerEvent | null;
 }
 
+export interface ColorOverrides {
+  temporary: Record<SeriesKey, string>;
+  persisted: Record<SeriesKey, string>;
+}
+
 export interface GlobalChartState {
   /**
    * a unique ID for each chart used by re-reselect to memoize selector per chart
@@ -157,6 +163,10 @@ export interface GlobalChartState {
    * external event state
    */
   externalEvents: ExternalEventsState;
+  /**
+   * Color map used to persist color picker changes
+   */
+  colors: ColorOverrides;
 }
 
 export const getInitialState = (chartId: string): GlobalChartState => ({
@@ -166,6 +176,10 @@ export const getInitialState = (chartId: string): GlobalChartState => ({
   chartRenderedCount: 0,
   specs: {
     [DEFAULT_SETTINGS_SPEC.id]: DEFAULT_SETTINGS_SPEC,
+  },
+  colors: {
+    temporary: {},
+    persisted: {},
   },
   chartType: null,
   internalChartState: null,
@@ -284,6 +298,36 @@ export const chartStoreReducer = (chartId: string) => {
             ...state.externalEvents,
             pointer: {
               ...action.event,
+            },
+          },
+        };
+      case CLEAR_TEMPORARY_COLORS:
+        return {
+          ...state,
+          colors: {
+            ...state.colors,
+            temporary: {},
+          },
+        };
+      case SET_TEMPORARY_COLOR:
+        return {
+          ...state,
+          colors: {
+            ...state.colors,
+            temporary: {
+              ...state.colors.temporary,
+              [action.key]: action.color,
+            },
+          },
+        };
+      case SET_PERSISTED_COLOR:
+        return {
+          ...state,
+          colors: {
+            ...state.colors,
+            persisted: {
+              ...state.colors.persisted,
+              [action.key]: action.color,
             },
           },
         };

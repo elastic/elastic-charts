@@ -5,16 +5,22 @@ import { getSeriesColors, SeriesKey } from '../../utils/series';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getCustomSeriesColors } from '../utils';
+import { GlobalChartState } from '../../../../state/chart_state';
+
+function getColorOverrides({ colors }: GlobalChartState) {
+  return colors;
+}
 
 export const getSeriesColorsSelector = createCachedSelector(
-  [getSeriesSpecsSelector, computeSeriesDomainsSelector, getChartThemeSelector],
-  (seriesSpecs, seriesDomainsAndData, chartTheme): Map<SeriesKey, string> => {
+  [getSeriesSpecsSelector, computeSeriesDomainsSelector, getChartThemeSelector, getColorOverrides],
+  (seriesSpecs, seriesDomainsAndData, chartTheme, colorOverrides): Map<SeriesKey, string> => {
     const updatedCustomSeriesColors = getCustomSeriesColors(seriesSpecs, seriesDomainsAndData.seriesCollection);
 
     const seriesColorMap = getSeriesColors(
       seriesDomainsAndData.seriesCollection,
       chartTheme.colors,
       updatedCustomSeriesColors,
+      colorOverrides,
     );
     return seriesColorMap;
   },

@@ -114,9 +114,25 @@ export interface TooltipProps {
 }
 
 export interface LegendColorPickerProps {
+  /**
+   * Anchor used to position picker
+   */
   anchor: HTMLDivElement;
+  /**
+   * Current color of the given series
+   */
   color: string;
+  /**
+   * Callback to close color picker and set persistent color
+   */
   onClose: () => void;
+  /**
+   * Callback to update temporary color state
+   */
+  onChange: (color: string) => void;
+  /**
+   * Series id for the active series
+   */
   seriesIdentifier: XYChartSeriesIdentifier;
 }
 export type LegendColorPicker = ComponentType<LegendColorPickerProps>;

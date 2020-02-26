@@ -1,40 +1,45 @@
 import React, { useState } from 'react';
-import { number } from '@storybook/addon-knobs';
+import { action } from '@storybook/addon-actions';
 
-import { EuiColorPicker, EuiWrappingPopover } from '@elastic/eui';
+import { EuiColorPicker, EuiWrappingPopover, EuiButton, EuiSpacer } from '@elastic/eui';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings, PartialTheme, LegendColorPicker } from '../../src/';
-import { SeededDataGenerator } from '../../src/mocks/utils';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings, LegendColorPicker } from '../../src/';
+import { BARCHART_1Y1G } from '../../src/utils/data_samples/test_dataset';
+import { SeriesKey } from '../../src/chart_types/xy_chart/utils/series';
 
-const dg = new SeededDataGenerator();
+const onChangeAction = action('onChange');
+const onCloseAction = action('onClose');
 
 export const example = () => {
-  const theme: PartialTheme = {
-    legend: {
-      spacingBuffer: number('legend buffer value', 80),
-    },
-  };
-  const data = dg.generateGroupedSeries(5, 2);
-  const [colors, setColors] = useState<Record<string, string>>({});
+  const [colors, setColors] = useState<Record<SeriesKey, string>>({});
 
-  const renderColorPicker: LegendColorPicker = ({ anchor, color, onClose, seriesIdentifier }) => {
-    const handleChange = (color: string) => {
+  const renderColorPicker: LegendColorPicker = ({ anchor, color, onClose, seriesIdentifier, onChange }) => {
+    const handleClose = () => {
       onClose();
+      onCloseAction();
       setColors({
         ...colors,
         [seriesIdentifier.key]: color,
       });
     };
+    const handleChange = (color: string) => {
+      onChangeAction(color);
+      onChange(color);
+    };
     return (
-      <EuiWrappingPopover isOpen button={anchor} closePopover={onClose}>
-        <EuiColorPicker color={color} onChange={handleChange}></EuiColorPicker>
+      <EuiWrappingPopover isOpen button={anchor} closePopover={handleClose}>
+        <EuiColorPicker display="inline" color={color} onChange={handleChange}></EuiColorPicker>
+        <EuiSpacer size="m" />
+        <EuiButton fullWidth size="s" onClick={handleClose}>
+          Done
+        </EuiButton>
       </EuiWrappingPopover>
     );
   };
 
   return (
     <Chart className="story-chart">
-      <Settings theme={theme} showLegend legendColorPicker={renderColorPicker} />
+      <Settings showLegend legendColorPicker={renderColorPicker} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
@@ -45,7 +50,7 @@ export const example = () => {
         xAccessor="x"
         yAccessors={['y']}
         splitSeriesAccessors={['g']}
-        data={data}
+        data={BARCHART_1Y1G}
         customSeriesColors={({ key }) => colors[key] ?? null}
       />
     </Chart>

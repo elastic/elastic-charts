@@ -21,6 +21,7 @@ import {
   onLegendItemOutAction,
   onLegendItemOverAction,
 } from '../../state/actions/legend';
+import { clearTemporaryColors, setTemporaryColor, setPersistedColor } from '../../state/actions/colors';
 import { SettingsSpec } from '../../specs';
 import { BandedAccessorType } from '../../utils/geometry';
 import { SeriesKey } from '../../chart_types/xy_chart/utils/series';
@@ -41,6 +42,9 @@ interface LegendDispatchProps {
   onLegendItemOutAction: typeof onLegendItemOutAction;
   onLegendItemOverAction: typeof onLegendItemOverAction;
   onToggleDeselectSeriesAction: typeof onToggleDeselectSeriesAction;
+  clearTemporaryColors: typeof clearTemporaryColors;
+  setTemporaryColor: typeof setTemporaryColor;
+  setPersistedColor: typeof setPersistedColor;
 }
 type LegendProps = LegendStateProps & LegendDispatchProps;
 
@@ -155,6 +159,9 @@ class LegendComponent extends React.Component<LegendProps> {
           toggleDeselectSeriesAction={this.props.onToggleDeselectSeriesAction}
           legendItemOutAction={this.props.onLegendItemOutAction}
           legendItemOverAction={this.props.onLegendItemOverAction}
+          clearTemporaryColors={this.props.clearTemporaryColors}
+          setTemporaryColor={this.props.setTemporaryColor}
+          setPersistedColor={this.props.setPersistedColor}
           onLegendItemOverListener={settings.onLegendItemOver}
           onLegendItemOutListener={settings.onLegendItemOut}
           onLegendItemClickListener={settings.onLegendItemClick}
@@ -171,6 +178,9 @@ const mapDispatchToProps = (dispatch: Dispatch): LegendDispatchProps =>
       onToggleDeselectSeriesAction,
       onLegendItemOutAction,
       onLegendItemOverAction,
+      clearTemporaryColors,
+      setTemporaryColor,
+      setPersistedColor,
     },
     dispatch,
   );
