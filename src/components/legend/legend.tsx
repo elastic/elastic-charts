@@ -23,9 +23,10 @@ import {
 } from '../../state/actions/legend';
 import { SettingsSpec } from '../../specs';
 import { BandedAccessorType } from '../../utils/geometry';
+import { SeriesKey } from '../../chart_types/xy_chart/utils/series';
 
 interface LegendStateProps {
-  legendItems: Map<string, LegendItem>;
+  legendItems: Map<SeriesKey, LegendItem>;
   legendPosition: Position;
   legendItemTooltipValues: Map<string, TooltipLegendValue>;
   showLegend: boolean;
@@ -119,8 +120,8 @@ class LegendComponent extends React.Component<LegendProps> {
   };
 
   private getLegendValues(
-    tooltipValues: Map<string, TooltipLegendValue> | undefined,
-    key: string,
+    tooltipValues: Map<SeriesKey, TooltipLegendValue> | undefined,
+    key: SeriesKey,
     banded: boolean = false,
   ): any[] {
     const values = tooltipValues && tooltipValues.get(key);

@@ -2,7 +2,7 @@ import { SPEC_PARSED, SPEC_UNMOUNTED, UPSERT_SPEC, REMOVE_SPEC, SPEC_PARSING } f
 import { interactionsReducer } from './reducers/interactions';
 import { ChartTypes } from '../chart_types';
 import { XYAxisChartState } from '../chart_types/xy_chart/state/chart_state';
-import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
+import { XYChartSeriesIdentifier, SeriesKey } from '../chart_types/xy_chart/utils/series';
 import { Spec, PointerEvent } from '../specs';
 import { DEFAULT_SETTINGS_SPEC } from '../specs/settings';
 import { Dimensions } from '../utils/dimensions';
@@ -54,12 +54,12 @@ export interface InternalChartState {
    * return the list of legend items
    * @param globalState
    */
-  getLegendItems(globalState: GlobalChartState): Map<string, LegendItem>;
+  getLegendItems(globalState: GlobalChartState): Map<SeriesKey, LegendItem>;
   /**
    * return the list of values for each legend item
    * @param globalState
    */
-  getLegendItemsValues(globalState: GlobalChartState): Map<string, TooltipLegendValue>;
+  getLegendItemsValues(globalState: GlobalChartState): Map<SeriesKey, TooltipLegendValue>;
   /**
    * return the CSS pointer cursor depending on the internal chart state
    * @param globalState
@@ -117,25 +117,45 @@ export interface ExternalEventsState {
 }
 
 export interface GlobalChartState {
-  // an unique ID for each chart used by re-reselect to memoize selector per chart
+  /**
+   * a unique ID for each chart used by re-reselect to memoize selector per chart
+   */
   chartId: string;
-  // true when all all the specs are parsed ad stored into the specs object
+  /**
+   * true when all all the specs are parsed ad stored into the specs object
+   */
   specsInitialized: boolean;
-  // true if the chart is rendered on dom
+  /**
+   * true if the chart is rendered on dom
+   */
   chartRendered: boolean;
-  // incremental count of the chart rendering
+  /**
+   * incremental count of the chart rendering
+   */
   chartRenderedCount: number;
-  // the map of parsed specs
+  /**
+   * the map of parsed specs
+   */
   specs: SpecList;
-  // the chart type depending on the used specs
+  /**
+   * the chart type depending on the used specs
+   */
   chartType: ChartTypes | null;
-  // a chart-type-dependant class that is used to render and share chart-type dependant functions
+  /**
+   * a chart-type-dependant class that is used to render and share chart-type dependant functions
+   */
   internalChartState: InternalChartState | null;
-  // the dimensions of the parent container, including the legend
+  /**
+   * the dimensions of the parent container, including the legend
+   */
   parentDimensions: Dimensions;
-  // the state of the interactions
+  /**
+   * the state of the interactions
+   */
   interactions: InteractionsState;
-  // external event state
+  /**
+   * external event state
+   */
   externalEvents: ExternalEventsState;
 }
 

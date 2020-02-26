@@ -14,6 +14,7 @@ import {
   getSeriesKey,
   RawDataSeries,
   XYChartSeriesIdentifier,
+  SeriesKey,
 } from '../utils/series';
 import {
   AreaSeriesSpec,
@@ -91,7 +92,7 @@ export interface SeriesDomainsAndData {
     stacked: FormattedDataSeries[];
     nonStacked: FormattedDataSeries[];
   };
-  seriesCollection: Map<string, SeriesCollectionValue>;
+  seriesCollection: Map<SeriesKey, SeriesCollectionValue>;
 }
 
 /**
@@ -122,9 +123,9 @@ export function updateDeselectedDataSeries(
  */
 export function getCustomSeriesColors(
   seriesSpecs: BasicSeriesSpec[],
-  seriesCollection: Map<string, SeriesCollectionValue>,
-): Map<string, string> {
-  const updatedCustomSeriesColors = new Map<string, string>();
+  seriesCollection: Map<SeriesKey, SeriesCollectionValue>,
+): Map<SeriesKey, string> {
+  const updatedCustomSeriesColors = new Map<SeriesKey, string>();
   const counters = new Map<SpecId, number>();
 
   seriesCollection.forEach(({ seriesIdentifier }, seriesKey) => {
@@ -159,8 +160,8 @@ export interface LastValues {
 function getLastValues(formattedDataSeries: {
   stacked: FormattedDataSeries[];
   nonStacked: FormattedDataSeries[];
-}): Map<string, LastValues> {
-  const lastValues = new Map<string, LastValues>();
+}): Map<SeriesKey, LastValues> {
+  const lastValues = new Map<SeriesKey, LastValues>();
 
   // we need to get the latest
   formattedDataSeries.stacked.forEach((ds) => {
@@ -231,7 +232,7 @@ export function computeSeriesDomains(
   // we need to get the last values from the formatted dataseries
   // because we change the format if we are on percentage mode
   const lastValues = getLastValues(formattedDataSeries);
-  const updatedSeriesCollection = new Map<string, SeriesCollectionValue>();
+  const updatedSeriesCollection = new Map<SeriesKey, SeriesCollectionValue>();
   seriesCollection.forEach((value, key) => {
     const lastValue = lastValues.get(key);
     const updatedColorSet: SeriesCollectionValue = {
@@ -257,7 +258,7 @@ export function computeSeriesGeometries(
     stacked: FormattedDataSeries[];
     nonStacked: FormattedDataSeries[];
   },
-  seriesColorMap: Map<string, string>,
+  seriesColorMap: Map<SeriesKey, string>,
   chartTheme: Theme,
   chartDims: Dimensions,
   chartRotation: Rotation,
@@ -443,7 +444,7 @@ function renderGeometries(
   xScale: Scale,
   yScale: Scale,
   seriesSpecs: BasicSeriesSpec[],
-  seriesColorsMap: Map<string, string>,
+  seriesColorsMap: Map<SeriesKey, string>,
   defaultColor: string,
   axesSpecs: AxisSpec[],
   chartTheme: Theme,

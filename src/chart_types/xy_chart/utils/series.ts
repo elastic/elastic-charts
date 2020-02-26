@@ -47,9 +47,12 @@ export interface DataSeriesDatum<T = any> {
   /** the list of filled values because missing or nulls */
   filled?: FilledValues;
 }
+
+export type SeriesKey = string;
+
 export type SeriesIdentifier = {
   specId: SpecId;
-  key: string;
+  key: SeriesKey;
 };
 
 export interface XYChartSeriesIdentifier extends SeriesIdentifier {
@@ -113,7 +116,7 @@ export function splitSeries({
   xValues: Set<string | number>;
 } {
   const isMultipleY = yAccessors && yAccessors.length > 1;
-  const series = new Map<string, RawDataSeries>();
+  const series = new Map<SeriesKey, RawDataSeries>();
   const colorsValues = new Set<string>();
   const xValues = new Set<string | number>();
 
@@ -166,7 +169,7 @@ export function getSeriesKey({
  * along with the series key
  */
 function updateSeriesMap(
-  seriesMap: Map<string, RawDataSeries>,
+  seriesMap: Map<SeriesKey, RawDataSeries>,
   splitAccessors: Map<string | number, string | number>,
   accessor: any,
   datum: RawDataSeriesDatum,
@@ -339,11 +342,11 @@ export function getSplittedSeries(
   deselectedDataSeries: XYChartSeriesIdentifier[] = [],
 ): {
   splittedSeries: Map<SpecId, RawDataSeries[]>;
-  seriesCollection: Map<string, SeriesCollectionValue>;
+  seriesCollection: Map<SeriesKey, SeriesCollectionValue>;
   xValues: Set<string | number>;
 } {
   const splittedSeries = new Map<SpecId, RawDataSeries[]>();
-  const seriesCollection = new Map<string, SeriesCollectionValue>();
+  const seriesCollection = new Map<SeriesKey, SeriesCollectionValue>();
   const xValues: Set<any> = new Set();
   let isOrdinalScale = false;
   for (const spec of seriesSpecs) {
@@ -464,8 +467,8 @@ function getSortIndex({ specSortIndex }: SeriesCollectionValue, total: number): 
 }
 
 export function getSortedDataSeriesColorsValuesMap(
-  seriesCollection: Map<string, SeriesCollectionValue>,
-): Map<string, SeriesCollectionValue> {
+  seriesCollection: Map<SeriesKey, SeriesCollectionValue>,
+): Map<SeriesKey, SeriesCollectionValue> {
   const seriesColorsArray = [...seriesCollection];
   seriesColorsArray.sort(([, specA], [, specB]) => {
     return getSortIndex(specA, seriesCollection.size) - getSortIndex(specB, seriesCollection.size);
@@ -475,11 +478,11 @@ export function getSortedDataSeriesColorsValuesMap(
 }
 
 export function getSeriesColors(
-  seriesCollection: Map<string, SeriesCollectionValue>,
+  seriesCollection: Map<SeriesKey, SeriesCollectionValue>,
   chartColors: ColorConfig,
-  customColors: Map<string, string>,
-): Map<string, string> {
-  const seriesColorMap = new Map<string, string>();
+  customColors: Map<SeriesKey, string>,
+): Map<SeriesKey, string> {
+  const seriesColorMap = new Map<SeriesKey, string>();
   let counter = 0;
 
   seriesCollection.forEach((_, seriesKey) => {
