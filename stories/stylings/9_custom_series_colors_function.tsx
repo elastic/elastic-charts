@@ -1,12 +1,12 @@
 import { color } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, CustomSeriesColors, LineSeries, Position, ScaleType, Settings } from '../../src';
+import { Axis, BarSeries, Chart, SeriesColorAccessor, LineSeries, Position, ScaleType, Settings } from '../../src';
 import * as TestDatasets from '../../src/utils/data_samples/test_dataset';
 
 export const example = () => {
   const barColor = color('barSeriesColor', '#000');
-  const barSeriesColorAccessor: CustomSeriesColors = ({ specId, yAccessor, splitAccessors }) => {
+  const barSeriesColorAccessor: SeriesColorAccessor = ({ specId, yAccessor, splitAccessors }) => {
     if (
       specId === 'bars' &&
       yAccessor === 'y1' &&
@@ -21,7 +21,7 @@ export const example = () => {
   };
 
   const lineColor = color('linelineSeriesColor', '#ff0');
-  const lineSeriesColorAccessor: CustomSeriesColors = ({ specId, yAccessor, splitAccessors }) => {
+  const lineSeriesColorAccessor: SeriesColorAccessor = ({ specId, yAccessor, splitAccessors }) => {
     // eslint-disable-next-line react/prop-types
     if (specId === 'lines' && yAccessor === 'y1' && splitAccessors.size === 0) {
       return lineColor;
