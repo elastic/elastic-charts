@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import React, { Component, createRef } from 'react';
 import { deepEqual } from '../../utils/fast_deep_equal';
 import { Icon } from '../icons/icon';
-import { LegendItemListener, BasicListener, LegendColorPickerFn } from '../../specs/settings';
+import { LegendItemListener, BasicListener, LegendColorPicker } from '../../specs/settings';
 import { LegendItem } from '../../chart_types/xy_chart/legend/legend';
 import { onLegendItemOutAction, onLegendItemOverAction } from '../../state/actions/legend';
 import { Position } from '../../utils/commons';
@@ -14,7 +14,7 @@ interface LegendItemProps {
   label?: string;
   legendPosition: Position;
   showExtra: boolean;
-  legendColorPicker?: LegendColorPickerFn;
+  legendColorPicker?: LegendColorPicker;
   onLegendItemClickListener?: LegendItemListener;
   onLegendItemOutListener?: BasicListener;
   onLegendItemOverListener?: LegendItemListener;
@@ -124,9 +124,17 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
   };
 
   renderColorPicker() {
-    const { legendColorPicker } = this.props;
-    if (legendColorPicker && this.state.isOpen && this.ref.current) {
-      return legendColorPicker(this.ref.current, this.toggleIsOpen);
+    const { legendColorPicker: ColorPicker, legendItem } = this.props;
+    const { seriesIdentifier, color } = legendItem;
+    if (ColorPicker && this.state.isOpen && this.ref.current) {
+      return (
+        <ColorPicker
+          anchor={this.ref.current}
+          color={color}
+          onClose={this.toggleIsOpen}
+          seriesIdentifier={seriesIdentifier}
+        />
+      );
     }
   }
 

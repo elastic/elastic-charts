@@ -1,4 +1,6 @@
+import { ComponentType } from 'react';
 import { $Values } from 'utility-types';
+
 import { DomainRange } from '../chart_types/xy_chart/utils/specs';
 import { PartialTheme, Theme } from '../utils/themes/theme';
 import { Domain } from '../utils/domain';
@@ -11,7 +13,6 @@ import { XYChartSeriesIdentifier, SeriesIdentifier } from '../chart_types/xy_cha
 import { Accessor } from '../utils/accessor';
 import { Position, Rendering, Rotation } from '../utils/commons';
 import { ScaleContinuousType, ScaleOrdinalType } from '../scales';
-import { ReactNode } from 'react';
 
 export type ElementClickListener = (elements: Array<[GeometryValue, XYChartSeriesIdentifier]>) => void;
 export type ElementOverListener = (elements: Array<[GeometryValue, XYChartSeriesIdentifier]>) => void;
@@ -112,7 +113,13 @@ export interface TooltipProps {
   unit?: string;
 }
 
-export type LegendColorPickerFn = (anchor: HTMLDivElement, onClose: () => void) => ReactNode;
+export interface LegendColorPickerProps {
+  anchor: HTMLDivElement;
+  color: string;
+  onClose: () => void;
+  seriesIdentifier: XYChartSeriesIdentifier;
+}
+export type LegendColorPicker = ComponentType<LegendColorPickerProps>;
 
 export interface SettingsSpec extends Spec {
   /**
@@ -164,7 +171,7 @@ export interface SettingsSpec extends Spec {
   onRenderChange?: RenderChangeListener;
   xDomain?: Domain | DomainRange;
   resizeDebounce?: number;
-  legendColorPicker?: LegendColorPickerFn;
+  legendColorPicker?: LegendColorPicker;
 }
 
 export type DefaultSettingsProps =

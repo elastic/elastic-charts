@@ -1,54 +1,39 @@
 import React from 'react';
-import { Chart, ScaleType, Settings, BarSeries, DataGenerator, LegendColorPickerFn, Axis } from '../src';
 
-const dg = new DataGenerator();
+import { Chart, LineSeries, ScaleType, Position, Axis } from '../src';
+import { SeededDataGenerator } from '../src/mocks/utils';
 
 export class Playground extends React.Component<{}, { isSunburstShown: boolean }> {
-  state: any = {
-    colors: ['red'],
-  };
-
-  data = dg.generateGroupedSeries(10, 4, 'split');
-  customColor = '#0c7b93';
-  container?: HTMLDivElement;
-
-  legendColorPickerFn: LegendColorPickerFn = (anchor, onClose) => {
-    return (
-      <div id="colorPicker">
-        <span>Custom Color Picker</span>
-        <button
-          id="change"
-          onClick={() => {
-            this.setState<any>({ colors: [this.customColor] });
-            onClose();
-          }}
-        >
-          {this.customColor}
-        </button>
-        <button id="close" onClick={onClose}>
-          close
-        </button>
-      </div>
-    );
-  };
-
   render() {
+    const dg = new SeededDataGenerator();
+    const data = dg.generateGroupedSeries(10, 2).map((item) => ({
+      ...item,
+      y1: item.y + 100,
+    }));
+
     return (
       <>
         <div className="chart">
           <Chart>
-            <Axis id="bottom" position="bottom" />
-            <Axis id="left" position="left" />
-            <Settings showLegend legendColorPicker={this.legendColorPickerFn} />
-            <BarSeries
-              id="areas"
+            <Axis id="y1" position={Position.Left} title="y1" />
+            <Axis id="y2" domain={{ fit: true }} groupId="g2" position={Position.Right} title="y2" />
+            <Axis id="x" position={Position.Bottom} title="x" />
+            <LineSeries
+              id="line1"
               xScaleType={ScaleType.Linear}
-              yScaleType={ScaleType.Linear}
               xAccessor="x"
               yAccessors={['y']}
               splitSeriesAccessors={['g']}
-              customSeriesColors={this.state.colors}
-              data={this.data}
+              data={data}
+            />
+            <LineSeries
+              id="line2"
+              groupId="g2"
+              xScaleType={ScaleType.Linear}
+              xAccessor="x"
+              yAccessors={['y1']}
+              splitSeriesAccessors={['g']}
+              data={data}
             />
           </Chart>
         </div>

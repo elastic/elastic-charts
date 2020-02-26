@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { mount, ReactWrapper } from 'enzyme';
 import { Chart } from '../chart';
-import { Settings, BarSeries, LegendColorPickerFn } from '../../specs';
+import { Settings, BarSeries, LegendColorPicker } from '../../specs';
 import { ScaleType } from '../../scales';
 import { Legend } from './legend';
 import { LegendListItem } from './legend_item';
@@ -143,7 +143,7 @@ describe('Legend', () => {
 
       data = dg.generateGroupedSeries(10, 4, 'split');
 
-      legendColorPickerFn: LegendColorPickerFn = (anchor, onClose) => {
+      legendColorPickerFn: LegendColorPicker = ({ onClose }) => {
         return (
           <div id="colorPicker">
             <span>Custom Color Picker</span>
