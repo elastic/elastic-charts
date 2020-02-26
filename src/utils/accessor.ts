@@ -5,8 +5,8 @@ type BinaryAccessorFn = (datum: Datum, index: number) => any;
 
 export type AccessorFn = UnaryAccessorFn;
 export type IndexedAccessorFn = UnaryAccessorFn | BinaryAccessorFn;
-export type AccessorObjectKey = string;
-export type AccessorArrayIndex = number;
+type AccessorObjectKey = string;
+type AccessorArrayIndex = number;
 export type Accessor = AccessorObjectKey | AccessorArrayIndex;
 
 /**
