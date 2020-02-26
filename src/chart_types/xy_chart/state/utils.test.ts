@@ -32,7 +32,7 @@ import { updateDeselectedDataSeries } from './utils';
 import { LegendItem } from '../legend/legend';
 import { ChartTypes } from '../..';
 import { MockSeriesSpecs, MockSeriesSpec } from '../../../mocks/specs';
-import { MockSeriesCollection } from '../../../mocks/series/seriesIdentifiers';
+import { MockSeriesCollection } from '../../../mocks/series/series_identifiers';
 import { SeededDataGenerator } from '../../../mocks/utils';
 import { SeriesCollectionValue, getSeriesIndex, getSeriesColors } from '../utils/series';
 import { SpecTypes } from '../../../specs/settings';
@@ -1390,7 +1390,7 @@ describe('Chart State utils', () => {
     legendItems1.set('specId:{bars},colors:{a}', {
       key: 'specId:{bars},colors:{a}',
       color: '#1EA593',
-      label: 'a',
+      name: 'a',
       seriesIdentifier: {
         specId: 'bars',
         seriesKeys: ['a'],
@@ -1404,7 +1404,7 @@ describe('Chart State utils', () => {
     legendItems1.set('specId:{bars},colors:{b}', {
       key: 'specId:{bars},colors:{b}',
       color: '#2B70F7',
-      label: 'b',
+      name: 'b',
       seriesIdentifier: {
         specId: 'bars',
         seriesKeys: ['b'],
@@ -1422,7 +1422,7 @@ describe('Chart State utils', () => {
     legendItems2.set('specId:{bars},colors:{a}', {
       key: 'specId:{bars},colors:{a}',
       color: '#1EA593',
-      label: 'a',
+      name: 'a',
       seriesIdentifier: {
         specId: 'bars',
         seriesKeys: ['a'],
@@ -1436,7 +1436,7 @@ describe('Chart State utils', () => {
     legendItems2.set('specId:{bars},colors:{b}', {
       key: 'specId:{bars},colors:{b}',
       color: '#2B70F7',
-      label: 'b',
+      name: 'b',
       seriesIdentifier: {
         specId: 'bars',
         seriesKeys: ['b'],
