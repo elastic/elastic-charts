@@ -8,6 +8,8 @@ module.exports = Object.assign(
       'ts-jest': {
         tsConfig: '<rootDir>/tsconfig.json',
       },
+      window: {},
+      HTMLElement: {},
     },
   },
   jestPuppeteerDocker,

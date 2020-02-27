@@ -30,6 +30,10 @@ type ScreenshotElementAtUrlOptions = ScreenshotDOMElementOptions & {
    * Selector used to wait on DOM element
    */
   waitSelector?: string;
+  /**
+   * Delay to take screenshot after element is visiable
+   */
+  delay?: number;
 };
 
 class CommonPage {
@@ -129,6 +133,10 @@ class CommonPage {
 
       if (options?.action) {
         await options.action();
+      }
+
+      if (options?.delay) {
+        await page.waitFor(options.delay);
       }
 
       const element = await this.screenshotDOMElement(selector, options);
