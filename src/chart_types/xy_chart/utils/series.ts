@@ -1,5 +1,5 @@
 import { ColorConfig } from '../../../utils/themes/theme';
-import { Accessor, AccessorFn } from '../../../utils/accessor';
+import { Accessor, AccessorFn, getAccessorValue } from '../../../utils/accessor';
 import { GroupId, SpecId } from '../../../utils/ids';
 import { splitSpecsByGroupId, YBasicSeriesSpec } from '../domains/y_domain';
 import { formatNonStackedDataSeriesValues } from './nonstacked_series_utils';
@@ -222,8 +222,11 @@ export function cleanDatum(
   if (typeof datum !== 'object' || datum === null) {
     return null;
   }
-  const rawX = datum[xAccessor as keyof typeof datum];
-  const x = typeof rawX === 'string' || typeof rawX === 'number' ? rawX : NaN;
+  const x = getAccessorValue(datum, xAccessor);
+  if (typeof x !== 'string' && typeof x !== 'number') {
+    return null;
+  }
+
   const y1 = castToNumber(datum[yAccessor as keyof typeof datum]);
   const cleanedDatum: RawDataSeriesDatum = { x, y1, datum, y0: null };
   if (y0Accessor) {
