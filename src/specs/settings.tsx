@@ -11,7 +11,7 @@ import { ChartTypes } from '../chart_types';
 import { GeometryValue } from '../utils/geometry';
 import { XYChartSeriesIdentifier, SeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import { Accessor } from '../utils/accessor';
-import { Position, Rendering, Rotation } from '../utils/commons';
+import { Position, Rendering, Rotation, Color } from '../utils/commons';
 import { ScaleContinuousType, ScaleOrdinalType } from '../scales';
 
 export type ElementClickListener = (elements: Array<[GeometryValue, XYChartSeriesIdentifier]>) => void;
@@ -85,7 +85,7 @@ export interface TooltipValue {
   /**
    * The color of the graphic mark (by default the color of the series)
    */
-  color: string;
+  color: Color;
   /**
    * True if the mouse is over the graphic mark connected to the tooltip
    */
@@ -121,7 +121,7 @@ export interface LegendColorPickerProps {
   /**
    * Current color of the given series
    */
-  color: string;
+  color: Color;
   /**
    * Callback to close color picker and set persistent color
    */
@@ -129,7 +129,7 @@ export interface LegendColorPickerProps {
   /**
    * Callback to update temporary color state
    */
-  onChange: (color: string) => void;
+  onChange: (color: Color) => void;
   /**
    * Series id for the active series
    */

@@ -18,6 +18,7 @@ import { RefObject } from 'react';
 import { PartitionState } from '../chart_types/partition_chart/state/chart_state';
 import { TooltipInfo } from '../components/tooltip/types';
 import { TooltipAnchorPosition } from '../components/tooltip/utils';
+import { Color } from '../utils/commons';
 
 export type BackwardRef = () => React.RefObject<HTMLDivElement>;
 
@@ -118,8 +119,8 @@ export interface ExternalEventsState {
 }
 
 export interface ColorOverrides {
-  temporary: Record<SeriesKey, string>;
-  persisted: Record<SeriesKey, string>;
+  temporary: Record<SeriesKey, Color>;
+  persisted: Record<SeriesKey, Color>;
 }
 
 export interface GlobalChartState {

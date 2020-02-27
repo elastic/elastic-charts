@@ -6,6 +6,7 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getCustomSeriesColors } from '../utils';
 import { GlobalChartState } from '../../../../state/chart_state';
+import { Color } from '../../../../utils/commons';
 
 function getColorOverrides({ colors }: GlobalChartState) {
   return colors;
@@ -13,7 +14,7 @@ function getColorOverrides({ colors }: GlobalChartState) {
 
 export const getSeriesColorsSelector = createCachedSelector(
   [getSeriesSpecsSelector, computeSeriesDomainsSelector, getChartThemeSelector, getColorOverrides],
-  (seriesSpecs, seriesDomainsAndData, chartTheme, colorOverrides): Map<SeriesKey, string> => {
+  (seriesSpecs, seriesDomainsAndData, chartTheme, colorOverrides): Map<SeriesKey, Color> => {
     const updatedCustomSeriesColors = getCustomSeriesColors(seriesSpecs, seriesDomainsAndData.seriesCollection);
 
     const seriesColorMap = getSeriesColors(

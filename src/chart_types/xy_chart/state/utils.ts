@@ -33,7 +33,7 @@ import {
   SeriesTypes,
 } from '../utils/specs';
 import { ColorConfig, Theme } from '../../../utils/themes/theme';
-import { identity, mergePartial, Rotation } from '../../../utils/commons';
+import { identity, mergePartial, Rotation, Color } from '../../../utils/commons';
 import { Dimensions } from '../../../utils/dimensions';
 import { Domain } from '../../../utils/domain';
 import { GroupId, SpecId } from '../../../utils/ids';
@@ -124,8 +124,8 @@ export function updateDeselectedDataSeries(
 export function getCustomSeriesColors(
   seriesSpecs: BasicSeriesSpec[],
   seriesCollection: Map<SeriesKey, SeriesCollectionValue>,
-): Map<SeriesKey, string> {
-  const updatedCustomSeriesColors = new Map<SeriesKey, string>();
+): Map<SeriesKey, Color> {
+  const updatedCustomSeriesColors = new Map<SeriesKey, Color>();
   const counters = new Map<SpecId, number>();
 
   seriesCollection.forEach(({ seriesIdentifier }, seriesKey) => {
@@ -135,7 +135,7 @@ export function getCustomSeriesColors(
       return;
     }
 
-    let color: string | undefined | null;
+    let color: Color | undefined | null;
 
     if (!color && spec.color) {
       if (typeof spec.color === 'string') {
@@ -260,7 +260,7 @@ export function computeSeriesGeometries(
     stacked: FormattedDataSeries[];
     nonStacked: FormattedDataSeries[];
   },
-  seriesColorMap: Map<SeriesKey, string>,
+  seriesColorMap: Map<SeriesKey, Color>,
   chartTheme: Theme,
   chartDims: Dimensions,
   chartRotation: Rotation,
@@ -446,7 +446,7 @@ function renderGeometries(
   xScale: Scale,
   yScale: Scale,
   seriesSpecs: BasicSeriesSpec[],
-  seriesColorsMap: Map<SeriesKey, string>,
+  seriesColorsMap: Map<SeriesKey, Color>,
   defaultColor: string,
   axesSpecs: AxisSpec[],
   chartTheme: Theme,

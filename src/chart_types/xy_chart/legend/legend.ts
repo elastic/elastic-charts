@@ -1,5 +1,5 @@
 import { getAxesSpecForSpecId, LastValues, getSpecsById } from '../state/utils';
-import { identity } from '../../../utils/commons';
+import { identity, Color } from '../../../utils/commons';
 import {
   SeriesCollectionValue,
   getSeriesIndex,
@@ -19,7 +19,7 @@ interface FormattedLastValues {
 
 export type LegendItem = Postfixes & {
   key: SeriesKey;
-  color: string;
+  color: Color;
   name: string;
   seriesIdentifier: XYChartSeriesIdentifier;
   isSeriesVisible?: boolean;
@@ -56,7 +56,7 @@ export function getItemLabel(
 
 export function computeLegend(
   seriesCollection: Map<SeriesKey, SeriesCollectionValue>,
-  seriesColors: Map<SeriesKey, string>,
+  seriesColors: Map<SeriesKey, Color>,
   specs: BasicSeriesSpec[],
   defaultColor: string,
   axesSpecs: AxisSpec[],

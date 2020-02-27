@@ -5,8 +5,9 @@ import { Icon } from '../icons/icon';
 import { LegendItemListener, BasicListener, LegendColorPicker } from '../../specs/settings';
 import { LegendItem } from '../../chart_types/xy_chart/legend/legend';
 import { onLegendItemOutAction, onLegendItemOverAction } from '../../state/actions/legend';
-import { Position } from '../../utils/commons';
-import { XYChartSeriesIdentifier, SeriesKey } from '../../chart_types/xy_chart/utils/series';
+import { Position, Color } from '../../utils/commons';
+import { XYChartSeriesIdentifier } from '../../chart_types/xy_chart/utils/series';
+import { clearTemporaryColors, setTemporaryColor, setPersistedColor } from '../../state/actions/colors';
 
 interface LegendItemProps {
   legendItem: LegendItem;
@@ -20,9 +21,9 @@ interface LegendItemProps {
   onLegendItemOverListener?: LegendItemListener;
   legendItemOutAction: typeof onLegendItemOutAction;
   legendItemOverAction: typeof onLegendItemOverAction;
-  clearTemporaryColors: () => void;
-  setTemporaryColor: (key: SeriesKey, color: string) => void;
-  setPersistedColor: (key: SeriesKey, color: string) => void;
+  clearTemporaryColors: typeof clearTemporaryColors;
+  setTemporaryColor: typeof setTemporaryColor;
+  setPersistedColor: typeof setPersistedColor;
   toggleDeselectSeriesAction: (legendItemId: XYChartSeriesIdentifier) => void;
 }
 
@@ -148,7 +149,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
           anchor={this.ref.current}
           color={color}
           onClose={handleClose}
-          onChange={(color: string) => setTemporaryColor(seriesIdentifier.key, color)}
+          onChange={(color: Color) => setTemporaryColor(seriesIdentifier.key, color)}
           seriesIdentifier={seriesIdentifier}
         />
       );

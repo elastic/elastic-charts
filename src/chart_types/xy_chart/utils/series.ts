@@ -7,7 +7,7 @@ import { BasicSeriesSpec, SeriesTypes, SeriesSpecs, SeriesNameConfigOptions } fr
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
 import { ScaleType } from '../../../scales';
 import { LastValues } from '../state/utils';
-import { Datum } from '../../../utils/commons';
+import { Datum, Color } from '../../../utils/commons';
 import { ColorOverrides } from '../../../state/chart_state';
 
 export const SERIES_DELIMITER = ' - ';
@@ -481,7 +481,7 @@ export function getSortedDataSeriesColorsValuesMap(
 /**
  * Helper function to get highest override color.
  *
- * from highest to lowest: `temporary`, `customSeriesColors` then `persisted`
+ * from highest to lowest: `temporary`, `seriesSpec.color` then `persisted`
  *
  * @param key
  * @param customColors
@@ -489,10 +489,10 @@ export function getSortedDataSeriesColorsValuesMap(
  */
 function getHighestOverride(
   key: string,
-  customColors: Map<SeriesKey, string>,
+  customColors: Map<SeriesKey, Color>,
   overrides: ColorOverrides,
-): string | undefined {
-  let color: string | undefined = overrides.temporary[key];
+): Color | undefined {
+  let color: Color | undefined = overrides.temporary[key];
 
   if (color) {
     return color;
@@ -518,10 +518,10 @@ function getHighestOverride(
 export function getSeriesColors(
   seriesCollection: Map<SeriesKey, SeriesCollectionValue>,
   chartColors: ColorConfig,
-  customColors: Map<SeriesKey, string>,
+  customColors: Map<SeriesKey, Color>,
   overrides: ColorOverrides,
-): Map<SeriesKey, string> {
-  const seriesColorMap = new Map<SeriesKey, string>();
+): Map<SeriesKey, Color> {
+  const seriesColorMap = new Map<SeriesKey, Color>();
   let counter = 0;
 
   seriesCollection.forEach((_, seriesKey) => {
