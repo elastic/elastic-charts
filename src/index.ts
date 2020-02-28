@@ -5,8 +5,7 @@ export { ChartTypes } from './chart_types';
 export { Chart } from './components/chart';
 export { ChartSize, ChartSizeArray, ChartSizeObject } from './utils/chart_size';
 
-// DEPRECATED: we will remove these types soon
-export { SpecId, GroupId, AxisId, AnnotationId, getAxisId, getGroupId, getSpecId, getAnnotationId } from './utils/ids';
+export { SpecId, GroupId, AxisId, AnnotationId } from './utils/ids';
 
 // Everything related to the specs types and react-components
 export * from './specs';

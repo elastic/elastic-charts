@@ -253,7 +253,7 @@ export interface SeriesSpec extends Spec {
    * The name of the spec. Also a mechanism to provide custom series names.
    */
   name?: SeriesNameAccessor;
-  /** The ID of the spec group, generated via getGroupId method
+  /** The ID of the spec group
    * @default __global__
    */
   groupId: string;
@@ -475,7 +475,7 @@ export interface AxisSpec extends Spec {
   id: AxisId;
   /** Style options for grid line */
   gridLineStyle?: GridLineConfig;
-  /** The ID of the axis group, generated via getGroupId method
+  /** The ID of the axis group
    * @default __global__
    */
   groupId: GroupId;
@@ -636,7 +636,7 @@ export interface BaseAnnotationSpec<
    */
   annotationType: T;
   /**
-   * The ID of the axis group, generated via getGroupId method
+   * The ID of the axis group
    * @default __global__
    */
   groupId: GroupId; // defaults to __global__; needed for yDomain position
