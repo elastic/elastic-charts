@@ -101,7 +101,7 @@ export interface TooltipValue {
   /**
    * The accessor linked to the current tooltip value
    */
-  valueAccessor: Accessor;
+  valueAccessor?: Accessor;
 }
 
 export type TooltipValueFormatter = (data: TooltipValue) => JSX.Element | string;

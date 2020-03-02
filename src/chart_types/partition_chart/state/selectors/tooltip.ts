@@ -9,20 +9,34 @@ import { SpecTypes } from '../../../../specs';
 import { getSpecsFromStore } from '../../../../state/utils';
 import { PartitionSpec } from '../../specs';
 
-const getCurrentPointerPosition = (state: GlobalChartState) => state.interactions.pointer.current.position;
+function getCurrentPointerPosition(state: GlobalChartState) {
+  return state.interactions.pointer.current.position;
+}
 
-const getValueFormatter = (state: GlobalChartState) => {
+function getPieSpecOrNull(state: GlobalChartState): PartitionSpec | null {
   const pieSpecs = getSpecsFromStore<PartitionSpec>(state.specs, ChartTypes.Partition, SpecTypes.Series);
-  return pieSpecs[0].valueFormatter;
-};
+  return pieSpecs.length > 0 ? pieSpecs[0] : null;
+}
 
-const getLabelFormatters = (state: GlobalChartState) => {
-  const pieSpecs = getSpecsFromStore<PartitionSpec>(state.specs, ChartTypes.Partition, SpecTypes.Series);
-  return pieSpecs[0].layers;
-};
+function getValueFormatter(state: GlobalChartState) {
+  return getPieSpecOrNull(state)?.valueFormatter;
+}
+
+function getLabelFormatters(state: GlobalChartState) {
+  return getPieSpecOrNull(state)?.layers;
+}
+
+const EMPTY_TOOLTIP = Object.freeze({
+  header: null,
+  values: [],
+});
+
 export const getTooltipInfoSelector = createCachedSelector(
-  [partitionGeometries, getCurrentPointerPosition, getValueFormatter, getLabelFormatters],
-  (geoms, pointerPosition, valueFormatter, labelFormatters): TooltipInfo => {
+  [getPieSpecOrNull, partitionGeometries, getCurrentPointerPosition, getValueFormatter, getLabelFormatters],
+  (pieSpec, geoms, pointerPosition, valueFormatter, labelFormatters): TooltipInfo => {
+    if (!pieSpec || !valueFormatter || !labelFormatters) {
+      return EMPTY_TOOLTIP;
+    }
     const picker = geoms.pickQuads;
     const diskCenter = geoms.diskCenter;
     const x = pointerPosition.x - diskCenter.x;
@@ -33,7 +47,7 @@ export const getTooltipInfoSelector = createCachedSelector(
       header: null,
       values: [],
     };
-    pickedShapes.forEach((shape, i) => {
+    pickedShapes.forEach((shape) => {
       const node = shape.parent;
       const formatter = labelFormatters[shape.depth - 1] && labelFormatters[shape.depth - 1].nodeLabel;
 
@@ -43,11 +57,10 @@ export const getTooltipInfoSelector = createCachedSelector(
         isHighlighted: false,
         isVisible: true,
         seriesIdentifier: {
-          specId: '1',
-          key: `${i}`,
+          specId: pieSpec.id,
+          key: pieSpec.id,
         },
         value: valueFormatter(shape.value),
-        valueAccessor: 'a',
       });
       const shapeNode = node.children.find(([key]) => key === shape.dataName);
       if (shapeNode) {
