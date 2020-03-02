@@ -47,11 +47,11 @@ A spec can be something like the following:
 
 ```jsx
 <Chart renderer={renderer}>
-  <Settings rotation={rotation} animateData={true} />
-  <Axis id={getAxisId('bottom')} position={AxisPosition.Bottom} title={`Rendering test`} />
-  <Axis id={getAxisId('left')} position={AxisPosition.Left} />
+  <Settings rotation={rotation} />
+  <Axis id="bottom" position={AxisPosition.Bottom} title="Rendering test" />
+  <Axis id="left" position={AxisPosition.Left} />
   <LineSeries
-    id={getSpecId('1')}
+    id="1"
     yScaleType={ScaleType.Linear}
     xScaleType={ScaleType.Linear}
     xAccessor="x"
@@ -59,7 +59,7 @@ A spec can be something like the following:
     data={BARCHART_1Y0G}
   />
   <BarSeries
-    id={getSpecId('2')}
+    id="2"
     yScaleType={ScaleType.Linear}
     xScaleType={ScaleType.Linear}
     xAccessor="x"
@@ -114,11 +114,11 @@ These datasets can be used as input for any type of chart specification. These a
 
 ```ts
 export interface SeriesSpec {
-  /** The ID of the spec, generated via getSpecId method */
+  /** The ID of the spec */
   id: SpecId;
   /** The name or label of the spec */
   name?: string;
-  /** The ID of the spec group, generated via getGroupId method
+  /** The ID of the spec group
    * @default __global__
    */
   groupId: GroupId;
@@ -127,7 +127,7 @@ export interface SeriesSpec {
   /** The type of series you are looking to render */
   seriesType: SeriesTypes;
   /** Set colors for specific series */
-  customSeriesColors?: CustomSeriesColors;
+  color?: SeriesColorAccessor;
   /** If the series should appear in the legend
    * @default false
    */

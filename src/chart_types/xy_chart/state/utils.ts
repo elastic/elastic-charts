@@ -14,6 +14,7 @@ import {
   getSeriesKey,
   RawDataSeries,
   XYChartSeriesIdentifier,
+  SeriesKey,
 } from '../utils/series';
 import {
   AreaSeriesSpec,
@@ -32,7 +33,7 @@ import {
   SeriesTypes,
 } from '../utils/specs';
 import { ColorConfig, Theme } from '../../../utils/themes/theme';
-import { identity, mergePartial, Rotation } from '../../../utils/commons';
+import { identity, mergePartial, Rotation, Color } from '../../../utils/commons';
 import { Dimensions } from '../../../utils/dimensions';
 import { Domain } from '../../../utils/domain';
 import { GroupId, SpecId } from '../../../utils/ids';
@@ -91,7 +92,7 @@ export interface SeriesDomainsAndData {
     stacked: FormattedDataSeries[];
     nonStacked: FormattedDataSeries[];
   };
-  seriesCollection: Map<string, SeriesCollectionValue>;
+  seriesCollection: Map<SeriesKey, SeriesCollectionValue>;
 }
 
 /**
@@ -122,31 +123,28 @@ export function updateDeselectedDataSeries(
  */
 export function getCustomSeriesColors(
   seriesSpecs: BasicSeriesSpec[],
-  seriesCollection: Map<string, SeriesCollectionValue>,
-  seriesColorOverrides: Map<string, string> = new Map(),
-): Map<string, string> {
-  const updatedCustomSeriesColors = new Map<string, string>();
+  seriesCollection: Map<SeriesKey, SeriesCollectionValue>,
+): Map<SeriesKey, Color> {
+  const updatedCustomSeriesColors = new Map<SeriesKey, Color>();
   const counters = new Map<SpecId, number>();
 
   seriesCollection.forEach(({ seriesIdentifier }, seriesKey) => {
     const spec = getSpecsById(seriesSpecs, seriesIdentifier.specId);
 
-    if (!spec || !(spec.customSeriesColors || seriesColorOverrides.size > 0)) {
+    if (!spec || !spec.color) {
       return;
     }
 
-    let color: string | undefined | null;
+    let color: Color | undefined | null;
 
-    if (seriesColorOverrides.has(seriesKey)) {
-      color = seriesColorOverrides.get(seriesKey);
-    }
-
-    if (!color && spec.customSeriesColors) {
-      const counter = counters.get(seriesIdentifier.specId) || 0;
-      color = Array.isArray(spec.customSeriesColors)
-        ? spec.customSeriesColors[counter % spec.customSeriesColors.length]
-        : spec.customSeriesColors(seriesIdentifier);
-      counters.set(seriesIdentifier.specId, counter + 1);
+    if (!color && spec.color) {
+      if (typeof spec.color === 'string') {
+        color = spec.color;
+      } else {
+        const counter = counters.get(seriesIdentifier.specId) || 0;
+        color = Array.isArray(spec.color) ? spec.color[counter % spec.color.length] : spec.color(seriesIdentifier);
+        counters.set(seriesIdentifier.specId, counter + 1);
+      }
     }
 
     if (color) {
@@ -164,8 +162,8 @@ export interface LastValues {
 function getLastValues(formattedDataSeries: {
   stacked: FormattedDataSeries[];
   nonStacked: FormattedDataSeries[];
-}): Map<string, LastValues> {
-  const lastValues = new Map<string, LastValues>();
+}): Map<SeriesKey, LastValues> {
+  const lastValues = new Map<SeriesKey, LastValues>();
 
   // we need to get the latest
   formattedDataSeries.stacked.forEach((ds) => {
@@ -236,7 +234,7 @@ export function computeSeriesDomains(
   // we need to get the last values from the formatted dataseries
   // because we change the format if we are on percentage mode
   const lastValues = getLastValues(formattedDataSeries);
-  const updatedSeriesCollection = new Map<string, SeriesCollectionValue>();
+  const updatedSeriesCollection = new Map<SeriesKey, SeriesCollectionValue>();
   seriesCollection.forEach((value, key) => {
     const lastValue = lastValues.get(key);
     const updatedColorSet: SeriesCollectionValue = {
@@ -262,7 +260,7 @@ export function computeSeriesGeometries(
     stacked: FormattedDataSeries[];
     nonStacked: FormattedDataSeries[];
   },
-  seriesColorMap: Map<string, string>,
+  seriesColorMap: Map<SeriesKey, Color>,
   chartTheme: Theme,
   chartDims: Dimensions,
   chartRotation: Rotation,
@@ -448,7 +446,7 @@ function renderGeometries(
   xScale: Scale,
   yScale: Scale,
   seriesSpecs: BasicSeriesSpec[],
-  seriesColorsMap: Map<string, string>,
+  seriesColorsMap: Map<SeriesKey, Color>,
   defaultColor: string,
   axesSpecs: AxisSpec[],
   chartTheme: Theme,

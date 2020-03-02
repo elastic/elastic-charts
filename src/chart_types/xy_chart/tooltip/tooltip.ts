@@ -8,7 +8,7 @@ import {
 } from '../utils/specs';
 import { IndexedGeometry, BandedAccessorType } from '../../../utils/geometry';
 import { getAccessorFormatLabel } from '../../../utils/accessor';
-import { getSeriesLabel } from '../utils/series';
+import { getSeriesName, SeriesKey } from '../utils/series';
 import { TooltipValue } from '../../../specs';
 
 export interface TooltipLegendValue {
@@ -22,9 +22,9 @@ export const Y1_ACCESSOR_POSTFIX = ' - upper';
 export function getSeriesTooltipValues(
   tooltipValues: TooltipValue[],
   defaultValue?: string,
-): Map<string, TooltipLegendValue> {
+): Map<SeriesKey, TooltipLegendValue> {
   // map from seriesKey to TooltipLegendValue
-  const seriesTooltipValues = new Map<string, TooltipLegendValue>();
+  const seriesTooltipValues = new Map<SeriesKey, TooltipLegendValue>();
 
   tooltipValues.forEach(({ value, seriesIdentifier, valueAccessor }) => {
     const seriesValue = defaultValue ? defaultValue : value;
@@ -48,7 +48,7 @@ export function formatTooltip(
   hasSingleSeries: boolean,
   axisSpec?: AxisSpec,
 ): TooltipValue {
-  let label = getSeriesLabel(seriesIdentifier, hasSingleSeries, true, spec);
+  let label = getSeriesName(seriesIdentifier, hasSingleSeries, true, spec);
 
   if (isBandedSpec(spec.y0Accessors) && (isAreaSeriesSpec(spec) || isBarSeriesSpec(spec))) {
     const { y0AccessorFormat = Y0_ACCESSOR_POSTFIX, y1AccessorFormat = Y1_ACCESSOR_POSTFIX } = spec;

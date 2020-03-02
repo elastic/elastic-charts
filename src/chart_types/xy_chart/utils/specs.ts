@@ -8,7 +8,7 @@ import {
   PointStyle,
   RectAnnotationStyle,
 } from '../../../utils/themes/theme';
-import { Accessor, AccessorFormat } from '../../../utils/accessor';
+import { Accessor, AccessorFormat, AccessorFn } from '../../../utils/accessor';
 import { RecursivePartial, Color, Position, Datum } from '../../../utils/commons';
 import { AxisId, GroupId } from '../../../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../../../scales';
@@ -56,12 +56,58 @@ export type PointStyleAccessor = (
 export const DEFAULT_GLOBAL_ID = '__global__';
 
 export type FilterPredicate = (series: XYChartSeriesIdentifier) => boolean;
-export type SeriesStringPredicate = (series: XYChartSeriesIdentifier, isTooltip: boolean) => string | null;
-export type SubSeriesStringPredicate = (
-  accessorLabel: string | number,
-  accessorKey: string | number | null,
-  isTooltip: boolean,
-) => string | number | null;
+export type SeriesName = string | number | null;
+/**
+ * Function to create custom series name for a given series
+ */
+export type SeriesNameFn = (series: XYChartSeriesIdentifier, isTooltip: boolean) => SeriesName;
+/**
+ * Accessor mapping to replace names
+ */
+export interface SeriesNameConfig {
+  /**
+   * accessor key (i.e. `yAccessors` and `seriesSplitAccessors`)
+   */
+  accessor: string | number;
+  /**
+   * Accessor value (i.e. values from `seriesSplitAccessors`)
+   */
+  value?: string | number;
+  /**
+   * New name for Accessor value
+   *
+   * If not provided, the original value will be used
+   */
+  name?: string | number;
+  /**
+   * Sort order of name, overrides order listed in array.
+   *
+   * lower values - left-most
+   * higher values - right-most
+   */
+  sortIndex?: number;
+}
+export interface SeriesNameConfigOptions {
+  /**
+   * Array of accessor naming configs to replace series names
+   *
+   * Only provided configs will be included
+   * (i.e. if you only provide a single mapping for `yAccessor`, all other series accessor names will be ignored)
+   *
+   * The order of configs is the order in which the resulting names will
+   * be joined, if no `sortIndex` is specified.
+   *
+   * If no values are found for a giving mapping in a series, the mapping will be ignored.
+   */
+  names?: SeriesNameConfig[];
+  /**
+   * Delimiter to join values/names
+   *
+   * @default ' - '
+   */
+  delimiter?: string;
+}
+export type SeriesNameAccessor = string | SeriesNameFn | SeriesNameConfigOptions;
 
 /**
  * The fit function type
@@ -203,9 +249,11 @@ export interface DisplayValueSpec {
 export interface SeriesSpec extends Spec {
   specType: typeof SpecTypes.Series;
   chartType: typeof ChartTypes.XYAxis;
-  /** The name or label of the spec */
-  name?: string;
-  /** The ID of the spec group, generated via getGroupId method
+  /**
+   * The name of the spec. Also a mechanism to provide custom series names.
+   */
+  name?: SeriesNameAccessor;
+  /** The ID of the spec group
    * @default __global__
    */
   groupId: string;
@@ -216,7 +264,7 @@ export interface SeriesSpec extends Spec {
   /** The type of series you are looking to render */
   seriesType: SeriesTypes;
   /** Set colors for specific series */
-  customSeriesColors?: CustomSeriesColors;
+  color?: SeriesColorAccessor;
   /** If the series should appear in the legend
    * @default false
    */
@@ -240,21 +288,6 @@ export interface SeriesSpec extends Spec {
    * Hide series in tooltip
    */
   filterSeriesInTooltip?: FilterPredicate;
-  /**
-   * Custom series naming predicate function. Values are unaffected by `customSubSeriesLabel` changes.
-   *
-   * This takes precedence over `customSubSeriesLabel`
-   *
-   * @param series - `XYChartSeriesIdentifier`
-   * @param isTooltip - true if tooltip label, otherwise legend label
-   */
-  customSeriesLabel?: SeriesStringPredicate;
-  /**
-   * Custom sub series naming predicate function.
-   *
-   * `customSeriesLabel` takes precedence
-   */
-  customSubSeriesLabel?: SubSeriesStringPredicate;
 }
 
 export interface Postfixes {
@@ -274,11 +307,11 @@ export interface Postfixes {
 
 export type SeriesColorsArray = string[];
 export type SeriesColorAccessorFn = (seriesIdentifier: XYChartSeriesIdentifier) => string | null;
-export type CustomSeriesColors = SeriesColorsArray | SeriesColorAccessorFn;
+export type SeriesColorAccessor = string | SeriesColorsArray | SeriesColorAccessorFn;
 
 export interface SeriesAccessors {
   /** The field name of the x value on Datum object */
-  xAccessor: Accessor;
+  xAccessor: Accessor | AccessorFn;
   /** An array of field names one per y metric value */
   yAccessors: Accessor[];
   /** An optional accessor of the y0 value: base point for area/bar charts  */
@@ -442,7 +475,7 @@ export interface AxisSpec extends Spec {
   id: AxisId;
   /** Style options for grid line */
   gridLineStyle?: GridLineConfig;
-  /** The ID of the axis group, generated via getGroupId method
+  /** The ID of the axis group
    * @default __global__
    */
   groupId: GroupId;
@@ -501,19 +534,30 @@ export const AnnotationDomainTypes = Object.freeze({
 
 export type AnnotationDomainType = $Values<typeof AnnotationDomainTypes>;
 
+/**
+ * The descriptive object of a line annotation
+ */
 export interface LineAnnotationDatum {
+  /**
+   * The value on the x or y axis accordingly to the domainType configured
+   */
   dataValue: any;
+  /**
+   * A textual description of the annotation
+   */
   details?: string;
+  /**
+   * An header of the annotation. If undefined, than the formatted dataValue will be used
+   */
   header?: string;
 }
 
-export type LineAnnotationSpec = BaseAnnotationSpec & {
-  annotationType: typeof AnnotationTypes.Line;
+export type LineAnnotationSpec = BaseAnnotationSpec<
+  typeof AnnotationTypes.Line,
+  LineAnnotationDatum,
+  LineAnnotationStyle
+> & {
   domainType: AnnotationDomainType;
-  /** Data values defined with value, details, and header */
-  dataValues: LineAnnotationDatum[];
-  /** Custom line styles */
-  style?: Partial<LineAnnotationStyle>;
   /** Custom marker */
   marker?: JSX.Element;
   /**
@@ -536,55 +580,85 @@ export type LineAnnotationSpec = BaseAnnotationSpec & {
   zIndex?: number;
 };
 
+/**
+ * The descriptive object of a rectangular annotation
+ */
 export interface RectAnnotationDatum {
+  /**
+   * The coordinates for the 4 rectangle points.
+   */
   coordinates: {
+    /**
+     * The minuimum value on the x axis. If undefined, the minuimum value of the x domain will be used.
+     */
     x0?: any;
+    /**
+     * The maximum value on the x axis. If undefined, the maximum value of the x domain will be used.
+     */
     x1?: any;
+    /**
+     * The minimum value on the y axis. If undefined, the minimum value of the y domain will be used.
+     */
     y0?: any;
+    /**
+     * The maximum value on the y axis. If undefined, the maximum value of the y domain will be used.
+     */
     y1?: any;
   };
+  /**
+   * A textual description of the annotation
+   */
   details?: string;
 }
 
-export type RectAnnotationSpec = BaseAnnotationSpec & {
-  annotationType: typeof AnnotationTypes.Rectangle;
+export type RectAnnotationSpec = BaseAnnotationSpec<
+  typeof AnnotationTypes.Rectangle,
+  RectAnnotationDatum,
+  RectAnnotationStyle
+> & {
   /** Custom rendering function for tooltip */
   renderTooltip?: AnnotationTooltipFormatter;
-  /** Data values defined with coordinates and details */
-  dataValues: RectAnnotationDatum[];
-  /** Custom annotation style */
-  style?: Partial<RectAnnotationStyle>;
   /** z-index of the annotation relative to other elements in the chart
    * @default -1
    */
   zIndex?: number;
 };
 
-export interface BaseAnnotationSpec extends Spec {
+export interface BaseAnnotationSpec<
+  T extends typeof AnnotationTypes.Rectangle | typeof AnnotationTypes.Line,
+  D extends RectAnnotationDatum | LineAnnotationDatum,
+  S extends RectAnnotationStyle | LineAnnotationStyle
+> extends Spec {
   chartType: ChartTypes;
   specType: typeof SpecTypes.Annotation;
-  /** Annotation type: line, rectangle, text */
-  annotationType: AnnotationType;
-  /** The ID of the axis group, generated via getGroupId method
+  /**
+   * Annotation type: line, rectangle, text
+   */
+  annotationType: T;
+  /**
+   * The ID of the axis group
    * @default __global__
    */
   groupId: GroupId; // defaults to __global__; needed for yDomain position
-  /** Data values defined with coordinates and details */
-  dataValues: AnnotationDatum[];
-  /** Custom annotation style */
-  style?: Partial<AnnotationStyle>;
-  /** Toggles tooltip annotation visibility */
+  /**
+   * Data values defined with coordinates and details
+   */
+  dataValues: D[];
+  /**
+   * Custom annotation style
+   */
+  style?: Partial<S>;
+  /**
+   * Toggles tooltip annotation visibility
+   */
   hideTooltips?: boolean;
-  /** z-index of the annotation relative to other elements in the chart
+  /**
+   * z-index of the annotation relative to other elements in the chart
    * Default specified per specific annotation spec.
    */
   zIndex?: number;
 }
 
-export type AnnotationDatum = LineAnnotationDatum | RectAnnotationDatum;
-export type AnnotationStyle = LineAnnotationStyle | RectAnnotationStyle;
-
-// TODO:  TextAnnotationSpec
 export type AnnotationSpec = LineAnnotationSpec | RectAnnotationSpec;
 
 export function isLineAnnotation(spec: AnnotationSpec): spec is LineAnnotationSpec {

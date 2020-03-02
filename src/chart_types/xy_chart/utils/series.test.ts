@@ -10,12 +10,19 @@ import {
   splitSeries,
   XYChartSeriesIdentifier,
   cleanDatum,
+  getSeriesName,
 } from './series';
-import { BasicSeriesSpec, LineSeriesSpec, SeriesTypes } from './specs';
+import { BasicSeriesSpec, LineSeriesSpec, SeriesTypes, AreaSeriesSpec } from './specs';
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
 import * as TestDataset from '../../../utils/data_samples/test_dataset';
 import { ChartTypes } from '../..';
 import { SpecTypes } from '../../../specs/settings';
+import { MockSeriesSpec } from '../../../mocks/specs';
+import { SeededDataGenerator } from '../../../mocks/utils';
+import { MockSeriesIdentifier } from '../../../mocks/series/series_identifiers';
+import { AccessorFn } from '../../../utils/accessor';
+
+const dg = new SeededDataGenerator();
 
 describe('Series', () => {
   test('Can split dataset into 1Y0G series', () => {
@@ -478,32 +485,16 @@ describe('Series', () => {
     );
     expect(stackedDataSeries.stacked).toMatchSnapshot();
   });
-  test('should get series color map', () => {
-    const spec1: BasicSeriesSpec = {
-      specType: SpecTypes.Series,
-      chartType: ChartTypes.XYAxis,
-      id: 'spec1',
-      groupId: 'group',
-      seriesType: SeriesTypes.Line,
-      yScaleType: ScaleType.Log,
-      xScaleType: ScaleType.Linear,
-      xAccessor: 'x',
-      yAccessors: ['y'],
-      yScaleToDataExtent: false,
-      data: TestDataset.BARCHART_1Y0G,
-      hideInLegend: false,
-    };
 
-    const specs = new Map();
-    specs.set(spec1.id, spec1);
-
-    const dataSeriesValuesA: SeriesCollectionValue = {
+  describe('#getSeriesColors', () => {
+    const seriesKey = 'mock_series_key';
+    const mockSeries: SeriesCollectionValue = {
       seriesIdentifier: {
         specId: 'spec1',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['a', 'b', 'c'],
-        key: '',
+        key: seriesKey,
       },
     };
 
@@ -513,22 +504,53 @@ describe('Series', () => {
     };
 
     const seriesColors = new Map();
-    seriesColors.set('spec1', dataSeriesValuesA);
+    seriesColors.set(seriesKey, mockSeries);
 
     const emptyCustomColors = new Map();
-
-    const defaultColorMap = getSeriesColors(seriesColors, chartColors, emptyCustomColors);
-    const expectedDefaultColorMap = new Map();
-    expectedDefaultColorMap.set('spec1', 'elastic_charts_c1');
-    expect(defaultColorMap).toEqual(expectedDefaultColorMap);
-
+    const persistedColor = 'persisted_color';
+    const customColor = 'custom_color';
     const customColors: Map<string, string> = new Map();
-    customColors.set('spec1', 'custom_color');
+    customColors.set(seriesKey, customColor);
+    const emptyColorOverrides = {
+      persisted: {},
+      temporary: {},
+    };
+    const persistedOverrides = {
+      persisted: { [seriesKey]: persistedColor },
+      temporary: {},
+    };
 
-    const customizedColorMap = getSeriesColors(seriesColors, chartColors, customColors);
-    const expectedCustomizedColorMap = new Map();
-    expectedCustomizedColorMap.set('spec1', 'custom_color');
-    expect(customizedColorMap).toEqual(expectedCustomizedColorMap);
+    it('should return deafult color', () => {
+      const result = getSeriesColors(seriesColors, chartColors, emptyCustomColors, emptyColorOverrides);
+      const expected = new Map();
+      expected.set(seriesKey, 'elastic_charts_c1');
+      expect(result).toEqual(expected);
+    });
+
+    it('should return persisted color', () => {
+      const result = getSeriesColors(seriesColors, chartColors, emptyCustomColors, persistedOverrides);
+      const expected = new Map();
+      expected.set(seriesKey, persistedColor);
+      expect(result).toEqual(expected);
+    });
+
+    it('should return custom color', () => {
+      const result = getSeriesColors(seriesColors, chartColors, customColors, persistedOverrides);
+      const expected = new Map();
+      expected.set(seriesKey, customColor);
+      expect(result).toEqual(expected);
+    });
+
+    it('should return temporary color', () => {
+      const temporaryColor = 'persisted-color';
+      const result = getSeriesColors(seriesColors, chartColors, customColors, {
+        ...persistedOverrides,
+        temporary: { [seriesKey]: temporaryColor },
+      });
+      const expected = new Map();
+      expected.set(seriesKey, temporaryColor);
+      expect(result).toEqual(expected);
+    });
   });
   test('should only include deselectedDataSeries when splitting series if deselectedDataSeries is defined', () => {
     const specId = 'splitSpec';
@@ -550,10 +572,10 @@ describe('Series', () => {
     };
 
     const allSeries = getSplittedSeries([splitSpec]);
-    expect(allSeries.splittedSeries.get(specId)!.length).toBe(2);
+    expect(allSeries.splittedSeries.get(specId)?.length).toBe(2);
 
     const emptyDeselected = getSplittedSeries([splitSpec]);
-    expect(emptyDeselected.splittedSeries.get(specId)!.length).toBe(2);
+    expect(emptyDeselected.splittedSeries.get(specId)?.length).toBe(2);
 
     const deselectedDataSeries: XYChartSeriesIdentifier[] = [
       {
@@ -565,7 +587,7 @@ describe('Series', () => {
       },
     ];
     const subsetSplit = getSplittedSeries([splitSpec], deselectedDataSeries);
-    expect(subsetSplit.splittedSeries.get(specId)!.length).toBe(1);
+    expect(subsetSplit.splittedSeries.get(specId)?.length).toBe(1);
   });
 
   test('should sort series color by series spec sort index', () => {
@@ -643,22 +665,269 @@ describe('Series', () => {
   });
   test('clean datum shall parse string as number for y values', () => {
     let datum = cleanDatum([0, 1, 2], 0, 1, 2);
-    expect(datum.y1).toBe(1);
-    expect(datum.y0).toBe(2);
+    expect(datum).toBeDefined();
+    expect(datum?.y1).toBe(1);
+    expect(datum?.y0).toBe(2);
     datum = cleanDatum([0, '1', 2], 0, 1, 2);
-    expect(datum.y1).toBe(1);
-    expect(datum.y0).toBe(2);
+    expect(datum).toBeDefined();
+    expect(datum?.y1).toBe(1);
+    expect(datum?.y0).toBe(2);
 
     datum = cleanDatum([0, '1', '2'], 0, 1, 2);
-    expect(datum.y1).toBe(1);
-    expect(datum.y0).toBe(2);
+    expect(datum).toBeDefined();
+    expect(datum?.y1).toBe(1);
+    expect(datum?.y0).toBe(2);
 
     datum = cleanDatum([0, 1, '2'], 0, 1, 2);
-    expect(datum.y1).toBe(1);
-    expect(datum.y0).toBe(2);
+    expect(datum).toBeDefined();
+    expect(datum?.y1).toBe(1);
+    expect(datum?.y0).toBe(2);
 
     datum = cleanDatum([0, 'invalid', 'invalid'], 0, 1, 2);
-    expect(datum.y1).toBe(null);
-    expect(datum.y0).toBe(null);
+    expect(datum).toBeDefined();
+    expect(datum?.y1).toBe(null);
+    expect(datum?.y0).toBe(null);
+  });
+  describe('#getSeriesNameKeys', () => {
+    const data = dg.generateGroupedSeries(50, 2).map((d) => ({ ...d, y2: d.y }));
+    const spec = MockSeriesSpec.area({
+      data,
+      yAccessors: ['y', 'y2'],
+      splitSeriesAccessors: ['g'],
+    });
+    const indentifiers = MockSeriesIdentifier.fromSpecs([spec]);
+
+    it('should get series label from spec', () => {
+      const [identifier] = indentifiers;
+      const actual = getSeriesName(identifier, false, false, spec);
+      expect(actual).toBe('a - y');
+    });
+
+    it('should not show y value with single yAccessor', () => {
+      const specSingleY: AreaSeriesSpec = {
+        ...spec,
+        yAccessors: ['y'],
+      };
+      const [identifier] = MockSeriesIdentifier.fromSpecs([spec]);
+      const actual = getSeriesName(identifier, false, false, specSingleY);
+
+      expect(actual).toBe('a');
+    });
+
+    describe('Custom labeling', () => {
+      it('should replace full label', () => {
+        const label = 'My custom new label';
+        const [identifier] = indentifiers;
+        const actual = getSeriesName(identifier, false, false, {
+          ...spec,
+          name: ({ yAccessor, splitAccessors }) =>
+            yAccessor === identifier.yAccessor && splitAccessors.get('g') === 'a' ? label : null,
+        });
+
+        expect(actual).toBe(label);
+      });
+
+      it('should have access to all accessors with single y', () => {
+        const specSingleY: AreaSeriesSpec = {
+          ...spec,
+          yAccessors: ['y'],
+          name: ({ seriesKeys }) => seriesKeys.join(' - '),
+        };
+        const [identifier] = MockSeriesIdentifier.fromSpecs([spec]);
+        const actual = getSeriesName(identifier, false, false, specSingleY);
+
+        expect(actual).toBe('a - y');
+      });
+
+      it('should replace yAccessor sub label with map', () => {
+        const [identifier] = indentifiers;
+        const actual = getSeriesName(identifier, false, false, {
+          ...spec,
+          name: {
+            names: [
+              {
+                accessor: 'g',
+                value: 'a',
+              },
+              {
+                accessor: 'y',
+                name: 'Yuuuup',
+              },
+            ],
+          },
+        });
+        expect(actual).toBe('a - Yuuuup');
+      });
+
+      it('should join with custom delimiter', () => {
+        const [identifier] = indentifiers;
+        const actual = getSeriesName(identifier, false, false, {
+          ...spec,
+          name: {
+            names: [
+              {
+                accessor: 'g',
+                value: 'a',
+              },
+              {
+                accessor: 'y',
+              },
+            ],
+            delimiter: ' ¯\\_(ツ)_/¯ ',
+          },
+        });
+        expect(actual).toBe('a ¯\\_(ツ)_/¯ y');
+      });
+
+      it('should replace splitAccessor sub label with map', () => {
+        const [identifier] = indentifiers;
+        const actual = getSeriesName(identifier, false, false, {
+          ...spec,
+          name: {
+            names: [
+              {
+                accessor: 'g',
+                value: 'a',
+                name: 'Apple',
+              },
+              {
+                accessor: 'y',
+              },
+            ],
+          },
+        });
+        expect(actual).toBe('Apple - y');
+      });
+
+      it('should mind order of names', () => {
+        const [identifier] = indentifiers;
+        const actual = getSeriesName(identifier, false, false, {
+          ...spec,
+          name: {
+            names: [
+              {
+                accessor: 'y',
+                name: 'Yuuum',
+              },
+              {
+                accessor: 'g',
+                value: 'a',
+                name: 'Apple',
+              },
+            ],
+          },
+        });
+        expect(actual).toBe('Yuuum - Apple');
+      });
+
+      it('should mind sortIndex of names', () => {
+        const [identifier] = indentifiers;
+        const actual = getSeriesName(identifier, false, false, {
+          ...spec,
+          name: {
+            names: [
+              {
+                accessor: 'y',
+                name: 'Yuuum',
+                sortIndex: 2,
+              },
+              {
+                accessor: 'g',
+                value: 'a',
+                name: 'Apple',
+                sortIndex: 0,
+              },
+            ],
+          },
+        });
+        expect(actual).toBe('Apple - Yuuum');
+      });
+
+      it('should allow undefined sortIndex', () => {
+        const [identifier] = indentifiers;
+        const actual = getSeriesName(identifier, false, false, {
+          ...spec,
+          name: {
+            names: [
+              {
+                accessor: 'y',
+                name: 'Yuuum',
+              },
+              {
+                accessor: 'g',
+                value: 'a',
+                name: 'Apple',
+                sortIndex: 0,
+              },
+            ],
+          },
+        });
+        expect(actual).toBe('Apple - Yuuum');
+      });
+
+      it('should ignore missing names', () => {
+        const [identifier] = indentifiers;
+        const actual = getSeriesName(identifier, false, false, {
+          ...spec,
+          name: {
+            names: [
+              {
+                accessor: 'g',
+                value: 'a',
+                name: 'Apple',
+              },
+              {
+                accessor: 'g',
+                value: 'Not a mapping',
+                name: 'No Value',
+              },
+              {
+                accessor: 'y',
+                name: 'Yuuum',
+              },
+            ],
+          },
+        });
+        expect(actual).toBe('Apple - Yuuum');
+      });
+
+      it('should return fallback label if empty string', () => {
+        const [identifier] = indentifiers;
+        const actual = getSeriesName(identifier, false, false, {
+          ...spec,
+          name: {
+            names: [],
+          },
+        });
+        expect(actual).toBe('a - y');
+      });
+    });
+  });
+
+  describe('functional accessors', () => {
+    test('Can split dataset into 2Y2G series', () => {
+      const xAccessor: AccessorFn = (d) => d.x;
+      const splittedSeries = splitSeries({
+        id: 'spec1',
+        data: TestDataset.BARCHART_2Y2G,
+        xAccessor,
+        yAccessors: ['y1', 'y2'],
+        splitSeriesAccessors: ['g1', 'g2'],
+      });
+      expect(splittedSeries.rawDataSeries.length).toBe(8);
+      expect(splittedSeries.rawDataSeries).toMatchSnapshot();
+    });
+
+    test('Can split dataset with custom _all xAccessor', () => {
+      const xAccessor: AccessorFn = () => '_all';
+      const splittedSeries = splitSeries({
+        id: 'spec1',
+        data: TestDataset.BARCHART_2Y2G,
+        xAccessor,
+        yAccessors: ['y1'],
+      });
+      expect(splittedSeries.rawDataSeries.length).toBe(1);
+      expect(splittedSeries.rawDataSeries).toMatchSnapshot();
+    });
   });
 });

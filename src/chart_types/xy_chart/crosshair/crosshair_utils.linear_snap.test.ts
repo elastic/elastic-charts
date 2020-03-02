@@ -1,7 +1,6 @@
 import { computeXScale } from '../utils/scales';
 import { BasicSeriesSpec, SeriesTypes } from '../utils/specs';
 import { Dimensions } from '../../../utils/dimensions';
-import { getGroupId, getSpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../scales';
 import { getCursorBandPosition, getSnapPosition } from './crosshair_utils';
 import { computeSeriesDomains } from '../state/utils';
@@ -9,16 +8,16 @@ import { ChartTypes } from '../..';
 import { SpecTypes } from '../../../specs/settings';
 
 describe('Crosshair utils linear scale', () => {
-  const barSeries1SpecId = getSpecId('barSeries1');
-  const barSeries2SpecId = getSpecId('barSeries2');
-  const lineSeries1SpecId = getSpecId('lineSeries1');
-  const lineSeries2SpecId = getSpecId('lineSeries2');
+  const barSeries1SpecId = 'barSeries1';
+  const barSeries2SpecId = 'barSeries2';
+  const lineSeries1SpecId = 'lineSeries1';
+  const lineSeries2SpecId = 'lineSeries2';
 
   const barSeries1: BasicSeriesSpec = {
     chartType: ChartTypes.XYAxis,
     specType: SpecTypes.Series,
     id: barSeries1SpecId,
-    groupId: getGroupId('group1'),
+    groupId: 'group1',
     seriesType: SeriesTypes.Bar,
     data: [
       [0, 0],
@@ -35,7 +34,7 @@ describe('Crosshair utils linear scale', () => {
     chartType: ChartTypes.XYAxis,
     specType: SpecTypes.Series,
     id: barSeries2SpecId,
-    groupId: getGroupId('group1'),
+    groupId: 'group1',
     seriesType: SeriesTypes.Bar,
     data: [
       [0, 2],
@@ -52,7 +51,7 @@ describe('Crosshair utils linear scale', () => {
     chartType: ChartTypes.XYAxis,
     specType: SpecTypes.Series,
     id: lineSeries1SpecId,
-    groupId: getGroupId('group1'),
+    groupId: 'group1',
     seriesType: SeriesTypes.Line,
     data: [
       [0, 0],
@@ -69,7 +68,7 @@ describe('Crosshair utils linear scale', () => {
     chartType: ChartTypes.XYAxis,
     specType: SpecTypes.Series,
     id: lineSeries2SpecId,
-    groupId: getGroupId('group1'),
+    groupId: 'group1',
     seriesType: SeriesTypes.Line,
     data: [
       [0, 2],
@@ -130,33 +129,33 @@ describe('Crosshair utils linear scale', () => {
    */
   test('can snap position on linear scale (line/area)', () => {
     let snappedPosition = getSnapPosition(0, lineSeriesScale);
-    expect(snappedPosition!.band).toEqual(1);
-    expect(snappedPosition!.position).toEqual(0);
+    expect(snappedPosition?.band).toEqual(1);
+    expect(snappedPosition?.position).toEqual(0);
 
     snappedPosition = getSnapPosition(1, lineSeriesScale);
-    expect(snappedPosition!.band).toEqual(1);
-    expect(snappedPosition!.position).toEqual(60);
+    expect(snappedPosition?.band).toEqual(1);
+    expect(snappedPosition?.position).toEqual(60);
 
     snappedPosition = getSnapPosition(2, lineSeriesScale);
-    expect(snappedPosition!.band).toEqual(1);
-    expect(snappedPosition!.position).toEqual(120);
+    expect(snappedPosition?.band).toEqual(1);
+    expect(snappedPosition?.position).toEqual(120);
 
     // TODO uncomment this when we will limit the scale function to domain values.
     // snappedPosition = getSnapPosition(3, singleScale);
-    // expect(snappedPosition!.band).toEqual(1);
-    // expect(snappedPosition!.position).toBeUndefined();
+    // expect(snappedPosition?.band).toEqual(1);
+    // expect(snappedPosition?.position).toBeUndefined();
 
     snappedPosition = getSnapPosition(0, multiLineSeriesScale, 2);
-    expect(snappedPosition!.band).toEqual(1);
-    expect(snappedPosition!.position).toEqual(0);
+    expect(snappedPosition?.band).toEqual(1);
+    expect(snappedPosition?.position).toEqual(0);
 
     snappedPosition = getSnapPosition(1, multiLineSeriesScale, 2);
-    expect(snappedPosition!.band).toEqual(1);
-    expect(snappedPosition!.position).toEqual(60);
+    expect(snappedPosition?.band).toEqual(1);
+    expect(snappedPosition?.position).toEqual(60);
 
     snappedPosition = getSnapPosition(2, multiLineSeriesScale, 2);
-    expect(snappedPosition!.band).toEqual(1);
-    expect(snappedPosition!.position).toEqual(120);
+    expect(snappedPosition?.band).toEqual(1);
+    expect(snappedPosition?.position).toEqual(120);
   });
 
   /**
@@ -165,34 +164,34 @@ describe('Crosshair utils linear scale', () => {
    */
   test('can snap position on linear scale (bar)', () => {
     let snappedPosition = getSnapPosition(0, barSeriesScale);
-    expect(snappedPosition!.band).toEqual(40);
-    expect(snappedPosition!.position).toEqual(0);
+    expect(snappedPosition?.band).toEqual(40);
+    expect(snappedPosition?.position).toEqual(0);
 
     snappedPosition = getSnapPosition(1, barSeriesScale);
-    expect(snappedPosition!.band).toEqual(40);
-    expect(snappedPosition!.position).toEqual(40);
+    expect(snappedPosition?.band).toEqual(40);
+    expect(snappedPosition?.position).toEqual(40);
 
     snappedPosition = getSnapPosition(2, barSeriesScale);
-    expect(snappedPosition!.band).toEqual(40);
-    expect(snappedPosition!.position).toEqual(80);
+    expect(snappedPosition?.band).toEqual(40);
+    expect(snappedPosition?.position).toEqual(80);
 
     // TODO uncomment this when we will limit the scale function to domain values.
     // snappedPosition = getSnapPosition(3, singleScale);
-    // expect(snappedPosition!.band).toEqual(40);
-    // expect(snappedPosition!.position).toBeUndefined();
+    // expect(snappedPosition?.band).toEqual(40);
+    // expect(snappedPosition?.position).toBeUndefined();
 
     // test a scale with a value of totalBarsInCluster > 1
     snappedPosition = getSnapPosition(0, multiBarSeriesScale, 2);
-    expect(snappedPosition!.band).toEqual(40);
-    expect(snappedPosition!.position).toEqual(0);
+    expect(snappedPosition?.band).toEqual(40);
+    expect(snappedPosition?.position).toEqual(0);
 
     snappedPosition = getSnapPosition(1, multiBarSeriesScale, 2);
-    expect(snappedPosition!.band).toEqual(40);
-    expect(snappedPosition!.position).toEqual(40);
+    expect(snappedPosition?.band).toEqual(40);
+    expect(snappedPosition?.position).toEqual(40);
 
     snappedPosition = getSnapPosition(2, multiBarSeriesScale, 2);
-    expect(snappedPosition!.band).toEqual(40);
-    expect(snappedPosition!.position).toEqual(80);
+    expect(snappedPosition?.band).toEqual(40);
+    expect(snappedPosition?.position).toEqual(80);
   });
 
   /**
@@ -201,16 +200,16 @@ describe('Crosshair utils linear scale', () => {
    */
   test('can snap position on linear scale (mixed bars and lines)', () => {
     let snappedPosition = getSnapPosition(0, mixedLinesBarsSeriesScale, 4);
-    expect(snappedPosition!.band).toEqual(40);
-    expect(snappedPosition!.position).toEqual(0);
+    expect(snappedPosition?.band).toEqual(40);
+    expect(snappedPosition?.position).toEqual(0);
 
     snappedPosition = getSnapPosition(1, mixedLinesBarsSeriesScale, 4);
-    expect(snappedPosition!.band).toEqual(40);
-    expect(snappedPosition!.position).toEqual(40);
+    expect(snappedPosition?.band).toEqual(40);
+    expect(snappedPosition?.position).toEqual(40);
 
     snappedPosition = getSnapPosition(2, mixedLinesBarsSeriesScale, 4);
-    expect(snappedPosition!.band).toEqual(40);
-    expect(snappedPosition!.position).toEqual(80);
+    expect(snappedPosition?.band).toEqual(40);
+    expect(snappedPosition?.position).toEqual(80);
   });
   test('safeguard cursor band position', () => {
     const chartDimensions: Dimensions = { top: 0, left: 0, width: 120, height: 100 };

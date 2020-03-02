@@ -1,11 +1,12 @@
 import { getAxesSpecForSpecId, LastValues, getSpecsById } from '../state/utils';
-import { identity } from '../../../utils/commons';
+import { identity, Color } from '../../../utils/commons';
 import {
   SeriesCollectionValue,
   getSeriesIndex,
   getSortedDataSeriesColorsValuesMap,
-  getSeriesLabel,
+  getSeriesName,
   XYChartSeriesIdentifier,
+  SeriesKey,
 } from '../utils/series';
 import { AxisSpec, BasicSeriesSpec, Postfixes, isAreaSeriesSpec, isBarSeriesSpec } from '../utils/specs';
 import { Y0_ACCESSOR_POSTFIX, Y1_ACCESSOR_POSTFIX } from '../tooltip/tooltip';
@@ -17,9 +18,9 @@ interface FormattedLastValues {
 }
 
 export type LegendItem = Postfixes & {
-  key: string;
-  color: string;
-  label: string;
+  key: SeriesKey;
+  color: Color;
+  name: string;
   seriesIdentifier: XYChartSeriesIdentifier;
   isSeriesVisible?: boolean;
   banded?: boolean;
@@ -43,25 +44,25 @@ function getPostfix(spec: BasicSeriesSpec): Postfixes {
 }
 
 export function getItemLabel(
-  { banded, label, y1AccessorFormat, y0AccessorFormat }: LegendItem,
+  { banded, name, y1AccessorFormat, y0AccessorFormat }: LegendItem,
   yAccessor: BandedAccessorType,
 ) {
   if (!banded) {
-    return label;
+    return name;
   }
 
-  return yAccessor === BandedAccessorType.Y1 ? `${label}${y1AccessorFormat}` : `${label}${y0AccessorFormat}`;
+  return yAccessor === BandedAccessorType.Y1 ? `${name}${y1AccessorFormat}` : `${name}${y0AccessorFormat}`;
 }
 
 export function computeLegend(
-  seriesCollection: Map<string, SeriesCollectionValue>,
-  seriesColors: Map<string, string>,
+  seriesCollection: Map<SeriesKey, SeriesCollectionValue>,
+  seriesColors: Map<SeriesKey, Color>,
   specs: BasicSeriesSpec[],
   defaultColor: string,
   axesSpecs: AxisSpec[],
   deselectedDataSeries: XYChartSeriesIdentifier[] = [],
-): Map<string, LegendItem> {
-  const legendItems: Map<string, LegendItem> = new Map();
+): Map<SeriesKey, LegendItem> {
+  const legendItems: Map<SeriesKey, LegendItem> = new Map();
   const sortedCollection = getSortedDataSeriesColorsValuesMap(seriesCollection);
 
   sortedCollection.forEach((series, key) => {
@@ -69,10 +70,10 @@ export function computeLegend(
     const spec = getSpecsById<BasicSeriesSpec>(specs, seriesIdentifier.specId);
     const color = seriesColors.get(key) || defaultColor;
     const hasSingleSeries = seriesCollection.size === 1;
-    const label = getSeriesLabel(seriesIdentifier, hasSingleSeries, false, spec);
+    const name = getSeriesName(seriesIdentifier, hasSingleSeries, false, spec);
     const isSeriesVisible = deselectedDataSeries ? getSeriesIndex(deselectedDataSeries, seriesIdentifier) < 0 : true;
 
-    if (label === '' || !spec) {
+    if (name === '' || !spec) {
       return;
     }
 
@@ -84,7 +85,7 @@ export function computeLegend(
     const legendItem: LegendItem = {
       key,
       color,
-      label,
+      name,
       banded,
       seriesIdentifier,
       isSeriesVisible,

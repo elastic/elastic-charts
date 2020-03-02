@@ -1,13 +1,16 @@
 import { ColorConfig } from '../../../utils/themes/theme';
-import { Accessor } from '../../../utils/accessor';
+import { Accessor, AccessorFn, getAccessorValue } from '../../../utils/accessor';
 import { GroupId, SpecId } from '../../../utils/ids';
 import { splitSpecsByGroupId, YBasicSeriesSpec } from '../domains/y_domain';
 import { formatNonStackedDataSeriesValues } from './nonstacked_series_utils';
-import { BasicSeriesSpec, SubSeriesStringPredicate, SeriesTypes, SeriesSpecs } from './specs';
+import { BasicSeriesSpec, SeriesTypes, SeriesSpecs, SeriesNameConfigOptions } from './specs';
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
 import { ScaleType } from '../../../scales';
 import { LastValues } from '../state/utils';
-import { Datum } from '../../../utils/commons';
+import { Datum, Color } from '../../../utils/commons';
+import { ColorOverrides } from '../../../state/chart_state';
+
+export const SERIES_DELIMITER = ' - ';
 
 export interface FilledValues {
   /** the x value */
@@ -45,9 +48,12 @@ export interface DataSeriesDatum<T = any> {
   /** the list of filled values because missing or nulls */
   filled?: FilledValues;
 }
+
+export type SeriesKey = string;
+
 export type SeriesIdentifier = {
   specId: SpecId;
-  key: string;
+  key: SeriesKey;
 };
 
 export interface XYChartSeriesIdentifier extends SeriesIdentifier {
@@ -111,7 +117,7 @@ export function splitSeries({
   xValues: Set<string | number>;
 } {
   const isMultipleY = yAccessors && yAccessors.length > 1;
-  const series = new Map<string, RawDataSeries>();
+  const series = new Map<SeriesKey, RawDataSeries>();
   const colorsValues = new Set<string>();
   const xValues = new Set<string | number>();
 
@@ -121,7 +127,7 @@ export function splitSeries({
       yAccessors.forEach((accessor, index) => {
         const cleanedDatum = cleanDatum(datum, xAccessor, accessor, y0Accessors && y0Accessors[index]);
 
-        if (cleanedDatum.x !== null && cleanedDatum.x !== undefined) {
+        if (cleanedDatum !== null && cleanedDatum.x !== null && cleanedDatum.x !== undefined) {
           xValues.add(cleanedDatum.x);
           const seriesKey = updateSeriesMap(series, splitAccessors, accessor, cleanedDatum, specId);
           colorsValues.add(seriesKey);
@@ -129,7 +135,7 @@ export function splitSeries({
       });
     } else {
       const cleanedDatum = cleanDatum(datum, xAccessor, yAccessors[0], y0Accessors && y0Accessors[0]);
-      if (cleanedDatum.x !== null && cleanedDatum.x !== undefined) {
+      if (cleanedDatum !== null && cleanedDatum.x !== null && cleanedDatum.x !== undefined) {
         xValues.add(cleanedDatum.x);
         const seriesKey = updateSeriesMap(series, splitAccessors, yAccessors[0], cleanedDatum, specId);
         colorsValues.add(seriesKey);
@@ -164,7 +170,7 @@ export function getSeriesKey({
  * along with the series key
  */
 function updateSeriesMap(
-  seriesMap: Map<string, RawDataSeries>,
+  seriesMap: Map<SeriesKey, RawDataSeries>,
   splitAccessors: Map<string | number, string | number>,
   accessor: any,
   datum: RawDataSeriesDatum,
@@ -197,12 +203,14 @@ function updateSeriesMap(
  */
 function getSplitAccessors(datum: Datum, accessors: Accessor[] = []): Map<string | number, string | number> {
   const splitAccessors = new Map<string | number, string | number>();
-  accessors.forEach((accessor) => {
-    const value = datum[accessor];
-    if (value !== undefined || value !== null) {
-      splitAccessors.set(accessor, value);
-    }
-  });
+  if (typeof datum === 'object' && datum !== null) {
+    accessors.forEach((accessor: Accessor) => {
+      const value = datum[accessor as keyof typeof datum];
+      if (typeof value === 'string' || typeof value === 'number') {
+        splitAccessors.set(accessor, value);
+      }
+    });
+  }
   return splitAccessors;
 }
 
@@ -211,15 +219,22 @@ function getSplitAccessors(datum: Datum, accessors: Accessor[] = []): Map<string
  */
 export function cleanDatum(
   datum: Datum,
-  xAccessor: Accessor,
+  xAccessor: Accessor | AccessorFn,
   yAccessor: Accessor,
   y0Accessor?: Accessor,
-): RawDataSeriesDatum {
-  const x = datum[xAccessor];
-  const y1 = castToNumber(datum[yAccessor]);
+): RawDataSeriesDatum | null {
+  if (typeof datum !== 'object' || datum === null) {
+    return null;
+  }
+  const x = getAccessorValue(datum, xAccessor);
+  if (typeof x !== 'string' && typeof x !== 'number') {
+    return null;
+  }
+
+  const y1 = castToNumber(datum[yAccessor as keyof typeof datum]);
   const cleanedDatum: RawDataSeriesDatum = { x, y1, datum, y0: null };
   if (y0Accessor) {
-    cleanedDatum.y0 = castToNumber(datum[y0Accessor]);
+    cleanedDatum.y0 = castToNumber(datum[y0Accessor as keyof typeof datum]);
   }
   return cleanedDatum;
 }
@@ -337,11 +352,11 @@ export function getSplittedSeries(
   deselectedDataSeries: XYChartSeriesIdentifier[] = [],
 ): {
   splittedSeries: Map<SpecId, RawDataSeries[]>;
-  seriesCollection: Map<string, SeriesCollectionValue>;
+  seriesCollection: Map<SeriesKey, SeriesCollectionValue>;
   xValues: Set<string | number>;
 } {
   const splittedSeries = new Map<SpecId, RawDataSeries[]>();
-  const seriesCollection = new Map<string, SeriesCollectionValue>();
+  const seriesCollection = new Map<SeriesKey, SeriesCollectionValue>();
   const xValues: Set<any> = new Set();
   let isOrdinalScale = false;
   for (const spec of seriesSpecs) {
@@ -361,10 +376,11 @@ export function getSplittedSeries(
     const banded = spec.y0Accessors && spec.y0Accessors.length > 0;
 
     dataSeries.rawDataSeries.forEach((series) => {
+      const { data, ...seriesIdentifier } = series;
       seriesCollection.set(series.key, {
         banded,
         specSortIndex: spec.sortIndex,
-        seriesIdentifier: series as XYChartSeriesIdentifier,
+        seriesIdentifier,
       });
     });
 
@@ -381,85 +397,79 @@ export function getSplittedSeries(
   };
 }
 
-/**
- * Get custom  series sub-name
- */
-const getCustomSubSeriesName = (() => {
-  const cache = new Map();
-
-  return (customSubSeriesLabel: SubSeriesStringPredicate, isTooltip: boolean) => (
-    args: [string | number | null, string | number],
-  ): string | number => {
-    const [accessorKey, accessorLabel] = args;
-    const key = [args, isTooltip].join('~~~');
-
-    if (cache.has(key)) {
-      return cache.get(key);
-    } else {
-      const label = customSubSeriesLabel(accessorLabel, accessorKey, isTooltip) || accessorLabel;
-      cache.set(key, label);
-
-      return label;
-    }
-  };
-})();
-
-const getSeriesLabelKeys = (
-  spec: BasicSeriesSpec,
-  seriesIdentifier: XYChartSeriesIdentifier,
-  isTooltip: boolean,
-): (string | number)[] => {
-  const isMultipleY = spec.yAccessors.length > 1;
-
-  if (spec.customSubSeriesLabel) {
-    const { yAccessor, splitAccessors } = seriesIdentifier;
-    const fullKeyPairs: [string | number | null, string | number][] = [...splitAccessors.entries(), [null, yAccessor]];
-    const labelKeys = fullKeyPairs.map(getCustomSubSeriesName(spec.customSubSeriesLabel, isTooltip));
-
-    return isMultipleY ? labelKeys : labelKeys.slice(0, -1);
+export function getSeriesNameFromOptions(
+  options: SeriesNameConfigOptions,
+  { yAccessor, splitAccessors }: XYChartSeriesIdentifier,
+  delimiter: string,
+): string | null {
+  if (!options.names) {
+    return null;
   }
 
-  const { seriesKeys } = seriesIdentifier;
+  return (
+    options.names
+      .slice()
+      .sort(({ sortIndex: a = Infinity }, { sortIndex: b = Infinity }) => a - b)
+      .map(({ accessor, value, name }) => {
+        const accessorValue = splitAccessors.get(accessor) ?? null;
+        if (accessorValue === value) {
+          return name ?? value;
+        }
 
-  return isMultipleY ? seriesKeys : seriesKeys.slice(0, -1);
-};
+        if (yAccessor === accessor) {
+          return name ?? accessor;
+        }
+        return null;
+      })
+      .filter((d) => Boolean(d) || d === 0)
+      .join(delimiter) || null
+  );
+}
 
 /**
- * Get series label based on `SeriesIdentifier`
+ * Get series name based on `SeriesIdentifier`
  */
-export function getSeriesLabel(
+export function getSeriesName(
   seriesIdentifier: XYChartSeriesIdentifier,
   hasSingleSeries: boolean,
   isTooltip: boolean,
   spec?: BasicSeriesSpec,
 ): string {
-  if (spec && spec.customSeriesLabel) {
-    const customLabel = spec.customSeriesLabel(seriesIdentifier, isTooltip);
+  let delimiter = SERIES_DELIMITER;
+  if (spec && spec.name && typeof spec.name !== 'string') {
+    let customLabel: string | number | null = null;
+    if (typeof spec.name === 'function') {
+      customLabel = spec.name(seriesIdentifier, isTooltip);
+    } else {
+      delimiter = spec.name.delimiter ?? delimiter;
+      customLabel = getSeriesNameFromOptions(spec.name, seriesIdentifier, delimiter);
+    }
 
     if (customLabel !== null) {
-      return customLabel;
+      return customLabel.toString();
     }
   }
 
-  let label = '';
-  const labelKeys = spec ? getSeriesLabelKeys(spec, seriesIdentifier, isTooltip) : seriesIdentifier.seriesKeys;
+  let name = '';
+  const nameKeys =
+    spec && spec.yAccessors.length > 1 ? seriesIdentifier.seriesKeys : seriesIdentifier.seriesKeys.slice(0, -1);
 
   // there is one series, the is only one yAccessor, the first part is not null
-  if (hasSingleSeries || labelKeys.length === 0 || labelKeys[0] == null) {
+  if (hasSingleSeries || nameKeys.length === 0 || nameKeys[0] == null) {
     if (!spec) {
       return '';
     }
 
-    if (spec.splitSeriesAccessors && labelKeys.length > 0 && labelKeys[0] != null) {
-      label = labelKeys.join(' - ');
+    if (spec.splitSeriesAccessors && nameKeys.length > 0 && nameKeys[0] != null) {
+      name = nameKeys.join(delimiter);
     } else {
-      label = spec.name || `${spec.id}`;
+      name = typeof spec.name === 'string' ? spec.name : `${spec.id}`;
     }
   } else {
-    label = labelKeys.join(' - ');
+    name = nameKeys.join(delimiter);
   }
 
-  return label;
+  return name;
 }
 
 function getSortIndex({ specSortIndex }: SeriesCollectionValue, total: number): number {
@@ -467,8 +477,8 @@ function getSortIndex({ specSortIndex }: SeriesCollectionValue, total: number): 
 }
 
 export function getSortedDataSeriesColorsValuesMap(
-  seriesCollection: Map<string, SeriesCollectionValue>,
-): Map<string, SeriesCollectionValue> {
+  seriesCollection: Map<SeriesKey, SeriesCollectionValue>,
+): Map<SeriesKey, SeriesCollectionValue> {
   const seriesColorsArray = [...seriesCollection];
   seriesColorsArray.sort(([, specA], [, specB]) => {
     return getSortIndex(specA, seriesCollection.size) - getSortIndex(specB, seriesCollection.size);
@@ -477,17 +487,55 @@ export function getSortedDataSeriesColorsValuesMap(
   return new Map([...seriesColorsArray]);
 }
 
+/**
+ * Helper function to get highest override color.
+ *
+ * from highest to lowest: `temporary`, `seriesSpec.color` then `persisted`
+ *
+ * @param key
+ * @param customColors
+ * @param overrides
+ */
+function getHighestOverride(
+  key: string,
+  customColors: Map<SeriesKey, Color>,
+  overrides: ColorOverrides,
+): Color | undefined {
+  let color: Color | undefined = overrides.temporary[key];
+
+  if (color) {
+    return color;
+  }
+
+  color = customColors.get(key);
+
+  if (color) {
+    return color;
+  }
+
+  return overrides.persisted[key];
+}
+
+/**
+ * Returns color for a series given all color hierarchies
+ *
+ * @param seriesCollection
+ * @param chartColors
+ * @param customColors
+ * @param overrides
+ */
 export function getSeriesColors(
-  seriesCollection: Map<string, SeriesCollectionValue>,
+  seriesCollection: Map<SeriesKey, SeriesCollectionValue>,
   chartColors: ColorConfig,
-  customColors: Map<string, string>,
-): Map<string, string> {
-  const seriesColorMap = new Map<string, string>();
+  customColors: Map<SeriesKey, Color>,
+  overrides: ColorOverrides,
+): Map<SeriesKey, Color> {
+  const seriesColorMap = new Map<SeriesKey, Color>();
   let counter = 0;
 
   seriesCollection.forEach((_, seriesKey) => {
-    const customSeriesColor: string | undefined = customColors.get(seriesKey);
-    const color = customSeriesColor || chartColors.vizColors[counter % chartColors.vizColors.length];
+    const colorOverride = getHighestOverride(seriesKey, customColors, overrides);
+    const color = colorOverride || chartColors.vizColors[counter % chartColors.vizColors.length];
 
     seriesColorMap.set(seriesKey, color);
     counter++;

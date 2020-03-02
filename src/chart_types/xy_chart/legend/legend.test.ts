@@ -1,7 +1,6 @@
-import { getAxisId, getGroupId, getSpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../scales';
 import { computeLegend } from './legend';
-import { SeriesCollectionValue, getSeriesLabel } from '../utils/series';
+import { SeriesCollectionValue, getSeriesName } from '../utils/series';
 import { AxisSpec, BasicSeriesSpec, SeriesTypes } from '../utils/specs';
 import { Position } from '../../../utils/commons';
 import { ChartTypes } from '../..';
@@ -19,7 +18,7 @@ const nullDisplayValue = {
 };
 const seriesCollectionValue1a = {
   seriesIdentifier: {
-    specId: getSpecId('spec1'),
+    specId: 'spec1',
     yAccessor: 'y1',
     splitAccessors: new Map(),
     seriesKeys: ['y1'],
@@ -28,7 +27,7 @@ const seriesCollectionValue1a = {
 };
 const seriesCollectionValue1b = {
   seriesIdentifier: {
-    specId: getSpecId('spec1'),
+    specId: 'spec1',
     yAccessor: 'y1',
     splitAccessors: new Map(),
     seriesKeys: ['a', 'b', 'y1'],
@@ -37,7 +36,7 @@ const seriesCollectionValue1b = {
 };
 const seriesCollectionValue2a = {
   seriesIdentifier: {
-    specId: getSpecId('spec2'),
+    specId: 'spec2',
     yAccessor: 'y1',
     splitAccessors: new Map(),
     seriesKeys: ['y1'],
@@ -46,7 +45,7 @@ const seriesCollectionValue2a = {
 };
 const seriesCollectionValue2b = {
   seriesIdentifier: {
-    specId: getSpecId('spec3'),
+    specId: 'spec3',
     yAccessor: 'y1',
     splitAccessors: new Map(),
     seriesKeys: ['c', 'd', 'y1'],
@@ -56,9 +55,9 @@ const seriesCollectionValue2b = {
 const spec1: BasicSeriesSpec = {
   chartType: ChartTypes.XYAxis,
   specType: SpecTypes.Series,
-  id: getSpecId('spec1'),
+  id: 'spec1',
   name: 'Spec 1 title',
-  groupId: getGroupId('group'),
+  groupId: 'group',
   seriesType: SeriesTypes.Line,
   yScaleType: ScaleType.Log,
   xScaleType: ScaleType.Linear,
@@ -71,8 +70,8 @@ const spec1: BasicSeriesSpec = {
 const spec2: BasicSeriesSpec = {
   chartType: ChartTypes.XYAxis,
   specType: SpecTypes.Series,
-  id: getSpecId('spec2'),
-  groupId: getGroupId('group'),
+  id: 'spec2',
+  groupId: 'group',
   seriesType: SeriesTypes.Line,
   yScaleType: ScaleType.Log,
   xScaleType: ScaleType.Linear,
@@ -87,8 +86,8 @@ const axesSpecs: AxisSpec[] = [];
 const axisSpec: AxisSpec = {
   chartType: ChartTypes.XYAxis,
   specType: SpecTypes.Axis,
-  id: getAxisId('axis1'),
-  groupId: getGroupId('group1'),
+  id: 'axis1',
+  groupId: 'group1',
   hide: false,
   showOverlappingTicks: false,
   showOverlappingLabels: false,
@@ -118,7 +117,7 @@ describe('Legends', () => {
     const expected = [
       {
         color: 'red',
-        label: 'Spec 1 title',
+        name: 'Spec 1 title',
         seriesIdentifier: {
           seriesKeys: ['y1'],
           specId: 'spec1',
@@ -142,7 +141,7 @@ describe('Legends', () => {
     const expected = [
       {
         color: 'red',
-        label: 'Spec 1 title',
+        name: 'Spec 1 title',
         seriesIdentifier: {
           seriesKeys: ['y1'],
           specId: 'spec1',
@@ -158,7 +157,7 @@ describe('Legends', () => {
       },
       {
         color: 'blue',
-        label: 'a - b',
+        name: 'a - b',
         seriesIdentifier: {
           seriesKeys: ['a', 'b', 'y1'],
           specId: 'spec1',
@@ -182,7 +181,7 @@ describe('Legends', () => {
     const expected = [
       {
         color: 'red',
-        label: 'Spec 1 title',
+        name: 'Spec 1 title',
         seriesIdentifier: {
           seriesKeys: ['y1'],
           specId: 'spec1',
@@ -198,7 +197,7 @@ describe('Legends', () => {
       },
       {
         color: 'green',
-        label: 'spec2',
+        name: 'spec2',
         seriesIdentifier: {
           seriesKeys: ['y1'],
           specId: 'spec2',
@@ -227,7 +226,7 @@ describe('Legends', () => {
     const expected = [
       {
         color: 'violet',
-        label: 'Spec 1 title',
+        name: 'Spec 1 title',
         banded: undefined,
         seriesIdentifier: {
           seriesKeys: ['y1'],
@@ -272,16 +271,16 @@ describe('Legends', () => {
     const visibility = [...legend.values()].map((item) => item.isSeriesVisible);
     expect(visibility).toEqual([false, false, true]);
   });
-  it('returns the right series label for a color series', () => {
+  it('returns the right series name for a color series', () => {
     const seriesIdentifier1 = {
-      specId: getSpecId(''),
+      specId: '',
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: ['y1'],
       key: '',
     };
     const seriesIdentifier2 = {
-      specId: getSpecId(''),
+      specId: '',
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: ['a', 'b', 'y1'],
@@ -289,54 +288,54 @@ describe('Legends', () => {
     };
 
     // null removed, seriesIdentifier has to be at least an empty array
-    let label = getSeriesLabel(seriesIdentifier1, true, false);
-    expect(label).toBe('');
-    label = getSeriesLabel(seriesIdentifier1, true, false, spec1);
-    expect(label).toBe('Spec 1 title');
-    label = getSeriesLabel(seriesIdentifier1, true, false, spec2);
-    expect(label).toBe('spec2');
-    label = getSeriesLabel(seriesIdentifier2, true, false, spec1);
-    expect(label).toBe('Spec 1 title');
-    label = getSeriesLabel(seriesIdentifier2, true, false, spec2);
-    expect(label).toBe('spec2');
+    let name = getSeriesName(seriesIdentifier1, true, false);
+    expect(name).toBe('');
+    name = getSeriesName(seriesIdentifier1, true, false, spec1);
+    expect(name).toBe('Spec 1 title');
+    name = getSeriesName(seriesIdentifier1, true, false, spec2);
+    expect(name).toBe('spec2');
+    name = getSeriesName(seriesIdentifier2, true, false, spec1);
+    expect(name).toBe('Spec 1 title');
+    name = getSeriesName(seriesIdentifier2, true, false, spec2);
+    expect(name).toBe('spec2');
 
-    label = getSeriesLabel(seriesIdentifier1, false, false, spec1);
-    expect(label).toBe('Spec 1 title');
-    label = getSeriesLabel(seriesIdentifier1, false, false, spec2);
-    expect(label).toBe('spec2');
-    label = getSeriesLabel(seriesIdentifier2, false, false, spec1);
-    expect(label).toBe('a - b');
-    label = getSeriesLabel(seriesIdentifier2, false, false, spec2);
-    expect(label).toBe('a - b');
+    name = getSeriesName(seriesIdentifier1, false, false, spec1);
+    expect(name).toBe('Spec 1 title');
+    name = getSeriesName(seriesIdentifier1, false, false, spec2);
+    expect(name).toBe('spec2');
+    name = getSeriesName(seriesIdentifier2, false, false, spec1);
+    expect(name).toBe('a - b');
+    name = getSeriesName(seriesIdentifier2, false, false, spec2);
+    expect(name).toBe('a - b');
 
-    label = getSeriesLabel(seriesIdentifier1, true, false, spec1);
-    expect(label).toBe('Spec 1 title');
-    label = getSeriesLabel(seriesIdentifier1, true, false, spec2);
-    expect(label).toBe('spec2');
-    label = getSeriesLabel(seriesIdentifier1, true, false);
-    expect(label).toBe('');
-    label = getSeriesLabel(seriesIdentifier1, true, false, spec1);
-    expect(label).toBe('Spec 1 title');
-    label = getSeriesLabel(seriesIdentifier1, true, false, spec2);
-    expect(label).toBe('spec2');
+    name = getSeriesName(seriesIdentifier1, true, false, spec1);
+    expect(name).toBe('Spec 1 title');
+    name = getSeriesName(seriesIdentifier1, true, false, spec2);
+    expect(name).toBe('spec2');
+    name = getSeriesName(seriesIdentifier1, true, false);
+    expect(name).toBe('');
+    name = getSeriesName(seriesIdentifier1, true, false, spec1);
+    expect(name).toBe('Spec 1 title');
+    name = getSeriesName(seriesIdentifier1, true, false, spec2);
+    expect(name).toBe('spec2');
   });
-  it('use the splitted value as label if has a single series and splitSeries is used', () => {
+  it('use the splitted value as name if has a single series and splitSeries is used', () => {
     const seriesIdentifier1 = {
-      specId: getSpecId(''),
+      specId: '',
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: ['y1'],
       key: '',
     };
     const seriesIdentifier2 = {
-      specId: getSpecId(''),
+      specId: '',
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: ['a', 'b', 'y1'],
       key: '',
     };
     const seriesIdentifier3 = {
-      specId: getSpecId(''),
+      specId: '',
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: ['a', 'y1'],
@@ -347,22 +346,22 @@ describe('Legends', () => {
       ...spec1,
       splitSeriesAccessors: ['g'],
     };
-    let label = getSeriesLabel(seriesIdentifier1, true, false, specWithSplit);
-    expect(label).toBe('Spec 1 title');
+    let name = getSeriesName(seriesIdentifier1, true, false, specWithSplit);
+    expect(name).toBe('Spec 1 title');
 
-    label = getSeriesLabel(seriesIdentifier3, true, false, specWithSplit);
-    expect(label).toBe('a');
+    name = getSeriesName(seriesIdentifier3, true, false, specWithSplit);
+    expect(name).toBe('a');
 
     // happens when we have multiple values in splitSeriesAccessor
     // or we have also multiple yAccessors
-    label = getSeriesLabel(seriesIdentifier2, true, false, specWithSplit);
-    expect(label).toBe('a - b');
+    name = getSeriesName(seriesIdentifier2, true, false, specWithSplit);
+    expect(name).toBe('a - b');
 
     // happens when the value of a splitSeriesAccessor is null
-    label = getSeriesLabel(seriesIdentifier1, true, false, specWithSplit);
-    expect(label).toBe('Spec 1 title');
+    name = getSeriesName(seriesIdentifier1, true, false, specWithSplit);
+    expect(name).toBe('Spec 1 title');
 
-    label = getSeriesLabel(seriesIdentifier1, false, false, specWithSplit);
-    expect(label).toBe('Spec 1 title');
+    name = getSeriesName(seriesIdentifier1, false, false, specWithSplit);
+    expect(name).toBe('Spec 1 title');
   });
 });
