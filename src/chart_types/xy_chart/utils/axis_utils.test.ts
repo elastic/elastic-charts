@@ -38,7 +38,7 @@ import { niceTimeFormatter } from '../../../utils/data/formatters';
 import { mergeYCustomDomainsByGroupId } from '../state/selectors/merge_y_custom_domains';
 import { ChartTypes } from '../..';
 import { SpecTypes } from '../../../specs/settings';
-import { DateTime } from 'luxon';
+import { DateTime, Settings } from 'luxon';
 
 describe('Axis computational utils', () => {
   const mockedRect = {
@@ -541,17 +541,18 @@ describe('Axis computational utils', () => {
       1547020800000,
     ];
     const tickLabels = [
-      '2019-01-01 00:00:00',
-      '2019-01-02 00:00:00',
-      '2019-01-03 00:00:00',
-      '2019-01-04 00:00:00',
-      '2019-01-05 00:00:00',
-      '2019-01-06 00:00:00',
-      '2019-01-07 00:00:00',
-      '2019-01-08 00:00:00',
-      '2019-01-09 00:00:00',
+      '2019-01-01 08:00:00',
+      '2019-01-02 08:00:00',
+      '2019-01-03 08:00:00',
+      '2019-01-04 08:00:00',
+      '2019-01-05 08:00:00',
+      '2019-01-06 08:00:00',
+      '2019-01-07 08:00:00',
+      '2019-01-08 08:00:00',
+      '2019-01-09 08:00:00',
     ];
     const tickFormat = (d: number) => {
+      Settings.defaultZoneName = 'utc';
       return DateTime.fromMillis(d).toFormat('yyyy-MM-dd HH:mm:ss');
     };
 
