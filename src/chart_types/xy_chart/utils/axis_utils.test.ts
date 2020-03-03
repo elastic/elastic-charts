@@ -30,6 +30,7 @@ import {
   getAxisTickLabelPadding,
   isVerticalGrid,
   isHorizontalGrid,
+  removeDupeTickLabels,
 } from './axis_utils';
 import { CanvasTextBBoxCalculator } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import { SvgTextBBoxCalculator } from '../../../utils/bbox/svg_text_bbox_calculator';
@@ -37,6 +38,7 @@ import { niceTimeFormatter } from '../../../utils/data/formatters';
 import { mergeYCustomDomainsByGroupId } from '../state/selectors/merge_y_custom_domains';
 import { ChartTypes } from '../..';
 import { SpecTypes } from '../../../specs/settings';
+import { DateTime } from 'luxon';
 
 describe('Axis computational utils', () => {
   const mockedRect = {
@@ -522,6 +524,38 @@ describe('Axis computational utils', () => {
       { label: '0', position: 100, value: 0 },
     ];
     expect(visibleOverlappingTicksAndLabels).toEqual(expectedVisibleOverlappingTicksAndLabels);
+  });
+  test('should remove duplicate tick labels when tick values repeat', () => {
+    const tickValues = [
+      1546329600000,
+      1546329600000,
+      1546329600000,
+      1546329600000,
+      1546416000000,
+      1546502400000,
+      1546588800000,
+      1546675200000,
+      1546761600000,
+      1546848000000,
+      1546934400000,
+      1547020800000,
+    ];
+    const tickLabels = [
+      '2019-01-01 00:00:00',
+      '2019-01-02 00:00:00',
+      '2019-01-03 00:00:00',
+      '2019-01-04 00:00:00',
+      '2019-01-05 00:00:00',
+      '2019-01-06 00:00:00',
+      '2019-01-07 00:00:00',
+      '2019-01-08 00:00:00',
+      '2019-01-09 00:00:00',
+    ];
+    const tickFormat = (d: number) => {
+      return DateTime.fromMillis(d).toFormat('yyyy-MM-dd HH:mm:ss');
+    };
+
+    expect(removeDupeTickLabels(tickValues, tickFormat)).toEqual(tickLabels);
   });
   test('should compute min max range for on 0 deg bottom', () => {
     const minMax = getMinMaxRange(Position.Bottom, 0, {

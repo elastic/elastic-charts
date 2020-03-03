@@ -69,7 +69,6 @@ export function computeAxisTicksDimensions(
   if (axisSpec.hide) {
     return null;
   }
-
   const scale = getScaleForAxisSpec(
     axisSpec,
     xDomain,
@@ -207,7 +206,7 @@ export const getMaxBboxDimensions = (
   };
 };
 
-function computeTickDimensions(
+export function computeTickDimensions(
   scale: Scale,
   tickFormat: TickFormatter,
   bboxCalculator: BBoxCalculator,
@@ -217,10 +216,7 @@ function computeTickDimensions(
   tickFormatOptions?: TickFormatterOptions,
 ) {
   const tickValues = scale.ticks();
-  const tickLabels = tickValues.map((d) => {
-    return tickFormat(d, tickFormatOptions);
-  });
-
+  const tickLabels = removeDupeTickLabels(tickValues, tickFormat, tickFormatOptions);
   const {
     tickLabelStyle: { fontFamily, fontSize },
   } = axisConfig;
@@ -234,7 +230,6 @@ function computeTickDimensions(
     getMaxBboxDimensions(bboxCalculator, fontSize, fontFamily, tickLabelRotation, tickLabelPadding),
     { maxLabelBboxWidth: 0, maxLabelBboxHeight: 0, maxLabelTextWidth: 0, maxLabelTextHeight: 0 },
   );
-
   return {
     tickValues,
     tickLabels,
@@ -243,6 +238,21 @@ function computeTickDimensions(
     maxLabelTextWidth,
     maxLabelTextHeight,
   };
+}
+
+export function removeDupeTickLabels(
+  tickValues: Array<number | string>,
+  tickFormat: TickFormatter,
+  tickFormatOptions?: TickFormatterOptions,
+) {
+  return (
+    tickValues
+      // @ts-ignore
+      .filter((value: any, index: number) => tickValues.indexOf(value) === index)
+      .map((d: any) => {
+        return tickFormat(d, tickFormatOptions);
+      })
+  );
 }
 
 /**
