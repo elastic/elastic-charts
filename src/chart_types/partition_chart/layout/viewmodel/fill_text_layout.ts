@@ -9,7 +9,6 @@ import {
   RowSet,
   RowSpace,
   ShapeTreeNode,
-  ValueFormatter,
   ValueGetterFunction,
 } from '../types/viewmodel_types';
 import { Box, Font, PartialFont, TextMeasure } from '../types/types';

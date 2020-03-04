@@ -17,7 +17,6 @@ import {
   RowSet,
   ShapeTreeNode,
   ShapeViewModel,
-  ValueFormatter,
   ValueGetterFunction,
 } from '../types/viewmodel_types';
 import { Layer } from '../../specs/index';
@@ -45,7 +44,7 @@ import {
   parentAccessor,
   sortIndexAccessor,
 } from '../utils/group_by_rollup';
-import { ValueAccessor } from '../../../../utils/commons';
+import { ValueAccessor, ValueFormatter } from '../../../../utils/commons';
 
 function paddingAccessor(n: ArrayEntry) {
   return entryValue(n).depth > 1 ? 1 : [0, 2][entryValue(n).depth];
