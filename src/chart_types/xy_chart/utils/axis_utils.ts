@@ -245,14 +245,11 @@ export function removeDupeTickLabels(
   tickFormat: TickFormatter,
   tickFormatOptions?: TickFormatterOptions,
 ) {
-  return (
-    tickValues
-      // @ts-ignore
-      .filter((value: any, index: number) => tickValues.indexOf(value) === index)
-      .map((d: any) => {
-        return tickFormat(d, tickFormatOptions);
-      })
-  );
+  return tickValues
+    .filter((value: number | string, index: number) => tickValues.indexOf(value) === index)
+    .map((d) => {
+      return tickFormat(d, tickFormatOptions);
+    });
 }
 
 /**
