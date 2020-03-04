@@ -83,6 +83,8 @@ export interface InternalChartState {
    * @param globalState
    */
   getTooltipAnchor(globalState: GlobalChartState): TooltipAnchorPosition | null;
+
+  eventCallbacks(globalState: GlobalChartState): void;
 }
 
 export interface SpecList {

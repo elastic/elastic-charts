@@ -1,7 +1,7 @@
 import { $Values } from 'utility-types';
 import { BarSeriesStyle, PointStyle, AreaStyle, LineStyle, ArcStyle } from './themes/theme';
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
-import { Color } from './commons';
+import { Color, Datum } from './commons';
 
 /**
  * The accessor type
@@ -19,7 +19,9 @@ export interface GeometryValue {
   accessor: BandedAccessorType;
 }
 
-export type IndexedGeometry = PointGeometry | BarGeometry;
+export type IndexedGeometry = (PointGeometry | BarGeometry) & {
+  datum?: Datum;
+};
 
 /**
  * Array of **range** clippings [x1, x2] to be excluded during rendering

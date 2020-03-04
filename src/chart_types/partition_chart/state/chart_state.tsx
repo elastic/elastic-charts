@@ -5,9 +5,15 @@ import { Partition } from '../renderer/canvas/partition';
 import { isTooltipVisibleSelector } from '../state/selectors/is_tooltip_visible';
 import { getTooltipInfoSelector } from '../state/selectors/tooltip';
 import { Tooltip } from '../../../components/tooltip';
+import { createOnElementClickCaller } from './selectors/on_element_click_caller';
 
 const EMPTY_MAP = new Map();
 export class PartitionState implements InternalChartState {
+  onElementClickCaller: (state: GlobalChartState) => void;
+
+  constructor() {
+    this.onElementClickCaller = createOnElementClickCaller();
+  }
   chartType = ChartTypes.Partition;
   isBrushAvailable() {
     return false;
@@ -48,5 +54,8 @@ export class PartitionState implements InternalChartState {
       x1: position.x,
       y1: position.y,
     };
+  }
+  eventCallbacks(globalState: GlobalChartState) {
+    this.onElementClickCaller(globalState);
   }
 }
