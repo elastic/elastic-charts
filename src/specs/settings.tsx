@@ -13,7 +13,12 @@ import { XYChartSeriesIdentifier, SeriesIdentifier } from '../chart_types/xy_cha
 import { Accessor } from '../utils/accessor';
 import { Position, Rendering, Rotation, Color } from '../utils/commons';
 import { ScaleContinuousType, ScaleOrdinalType } from '../scales';
-import { LayerValue } from '../chart_types/partition_chart/specs';
+import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
+
+export interface LayerValue {
+  groupByRollup: PrimitiveValue;
+  value: number;
+}
 
 export type XYChartElementEvent = [GeometryValue, XYChartSeriesIdentifier];
 export type PartitionElementEvent = [Array<LayerValue>, SeriesIdentifier];

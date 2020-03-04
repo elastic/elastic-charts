@@ -16,10 +16,6 @@ export interface Layer {
   shape?: { fillColor: string | NodeColorAccessor };
 }
 
-export interface LayerValue {
-  groupByRollup: PrimitiveValue;
-  value: number;
-}
 const defaultProps = {
   chartType: ChartTypes.Partition,
   specType: SpecTypes.Series,

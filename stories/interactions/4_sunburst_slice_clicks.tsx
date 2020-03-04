@@ -27,6 +27,7 @@ const pieData: Array<PieDatum> = [
   ['PK', 43, 'FR', 2],
   ['PK', 43, 'PK', 2],
 ];
+
 export const example = () => {
   return (
     <Chart className="story-chart">

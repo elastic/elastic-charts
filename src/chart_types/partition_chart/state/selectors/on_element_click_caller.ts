@@ -2,13 +2,12 @@ import createCachedSelector from 're-reselect';
 import { Selector } from 'reselect';
 import { GlobalChartState, PointerState } from '../../../../state/chart_state';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { SettingsSpec } from '../../../../specs';
+import { SettingsSpec, LayerValue } from '../../../../specs';
 import { QuadViewModel } from '../../layout/types/viewmodel_types';
 import { getPickedShapes } from './picked_shapes';
 import { getPieSpecOrNull } from './pie_spec';
 import { ChartTypes } from '../../..';
 import { PARENT_KEY, DEPTH_KEY, SORT_INDEX_KEY, AGGREGATE_KEY, CHILDREN_KEY } from '../../layout/utils/group_by_rollup';
-import { LayerValue } from '../../specs';
 import { SeriesIdentifier } from '../../../xy_chart/utils/series';
 
 const getLastClickSelector = (state: GlobalChartState) => state.interactions.pointer.lastClick;
