@@ -93,6 +93,7 @@ export function computeAxisTicksDimensions(
     axisConfig,
     tickLabelPadding,
     axisSpec.tickLabelRotation,
+    axisSpec.duplicateTicks,
     {
       timeZone: xDomain.timeZone,
     },
@@ -138,6 +139,7 @@ export function getScaleForAxisSpec(
       range,
       ticks: axisSpec.ticks,
       integersOnly: axisSpec.integersOnly,
+      duplicateTicks: axisSpec.duplicateTicks,
     });
     if (yScales.has(axisSpec.groupId)) {
       return yScales.get(axisSpec.groupId)!;
@@ -152,6 +154,7 @@ export function getScaleForAxisSpec(
       enableHistogramMode,
       ticks: axisSpec.ticks,
       integersOnly: axisSpec.integersOnly,
+      duplicateTicks: axisSpec.duplicateTicks,
     });
   }
 }
@@ -213,10 +216,16 @@ export function computeTickDimensions(
   axisConfig: AxisConfig,
   tickLabelPadding: number,
   tickLabelRotation = 0,
+  duplicateTicks: boolean = false,
   tickFormatOptions?: TickFormatterOptions,
 ) {
   const tickValues = scale.ticks();
-  const tickLabels = removeDupeTickLabels(tickValues, tickFormat, tickFormatOptions);
+  const duplicateTickLabels = tickValues.map((d) => {
+    return tickFormat(d, tickFormatOptions);
+  });
+  const tickLabels = duplicateTicks
+    ? duplicateTickLabels
+    : duplicateTickLabels.filter((value, index) => duplicateTickLabels.indexOf(value) === index);
   const {
     tickLabelStyle: { fontFamily, fontSize },
   } = axisConfig;
@@ -238,18 +247,6 @@ export function computeTickDimensions(
     maxLabelTextWidth,
     maxLabelTextHeight,
   };
-}
-
-export function removeDupeTickLabels(
-  tickValues: Array<number | string>,
-  tickFormat: TickFormatter,
-  tickFormatOptions?: TickFormatterOptions,
-) {
-  return tickValues
-    .filter((value: number | string, index: number) => tickValues.indexOf(value) === index)
-    .map((d) => {
-      return tickFormat(d, tickFormatOptions);
-    });
 }
 
 /**

@@ -60,6 +60,7 @@ interface XScaleOptions {
   enableHistogramMode?: boolean;
   ticks?: number;
   integersOnly?: boolean;
+  duplicateTicks?: boolean;
 }
 
 /**
@@ -122,6 +123,7 @@ interface YScaleOptions {
   range: [number, number];
   ticks?: number;
   integersOnly?: boolean;
+  duplicateTicks?: boolean;
 }
 /**
  * Compute the y scales, one per groupId for the y axis.
