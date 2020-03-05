@@ -13,7 +13,7 @@ function significantDigitCount(d: number): number {
   return Math.floor(Math.log(n) / log10) + 1;
 }
 
-function defaultValueGetter(node: ShapeTreeNode): number {
+export function sumValueGetter(node: ShapeTreeNode): number {
   return node[AGGREGATE_KEY];
 }
 
@@ -154,7 +154,7 @@ export const configMetadata = {
         values: FONT_VARIANTS,
       },
       valueGetter: {
-        dflt: defaultValueGetter,
+        dflt: sumValueGetter,
         type: 'function',
       },
       valueFormatter: {

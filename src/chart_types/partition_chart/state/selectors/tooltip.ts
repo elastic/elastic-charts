@@ -8,6 +8,7 @@ import { ChartTypes } from '../../..';
 import { SpecTypes } from '../../../../specs';
 import { getSpecsFromStore } from '../../../../state/utils';
 import { PartitionSpec } from '../../specs';
+import { valueGetterFunction } from './scenegraph';
 
 function getCurrentPointerPosition(state: GlobalChartState) {
   return state.interactions.pointer.current.position;
@@ -22,6 +23,10 @@ function getValueFormatter(state: GlobalChartState) {
   return getPieSpecOrNull(state)?.valueFormatter;
 }
 
+function getValueGetter(state: GlobalChartState) {
+  return getPieSpecOrNull(state)?.valueGetter || (() => NaN);
+}
+
 function getLabelFormatters(state: GlobalChartState) {
   return getPieSpecOrNull(state)?.layers;
 }
@@ -32,8 +37,15 @@ const EMPTY_TOOLTIP = Object.freeze({
 });
 
 export const getTooltipInfoSelector = createCachedSelector(
-  [getPieSpecOrNull, partitionGeometries, getCurrentPointerPosition, getValueFormatter, getLabelFormatters],
-  (pieSpec, geoms, pointerPosition, valueFormatter, labelFormatters): TooltipInfo => {
+  [
+    getPieSpecOrNull,
+    partitionGeometries,
+    getCurrentPointerPosition,
+    getValueGetter,
+    getValueFormatter,
+    getLabelFormatters,
+  ],
+  (pieSpec, geoms, pointerPosition, valueGetter, valueFormatter, labelFormatters): TooltipInfo => {
     if (!pieSpec || !valueFormatter || !labelFormatters) {
       return EMPTY_TOOLTIP;
     }
@@ -47,6 +59,7 @@ export const getTooltipInfoSelector = createCachedSelector(
       header: null,
       values: [],
     };
+    const valueGetterFun = valueGetterFunction(valueGetter);
     pickedShapes.forEach((shape) => {
       const node = shape.parent;
       const formatter = labelFormatters[shape.depth - 1] && labelFormatters[shape.depth - 1].nodeLabel;
@@ -60,7 +73,7 @@ export const getTooltipInfoSelector = createCachedSelector(
           specId: pieSpec.id,
           key: pieSpec.id,
         },
-        value: valueFormatter(shape.value),
+        value: valueFormatter(valueGetterFun(shape)),
       });
       const shapeNode = node.children.find(([key]) => key === shape.dataName);
       if (shapeNode) {
