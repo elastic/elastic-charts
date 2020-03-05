@@ -1,6 +1,6 @@
 import { Chart, Datum, Partition, PartitionLayout } from '../../src';
 import { mocks } from '../../src/mocks/hierarchical/index';
-import { percentValueGetter } from '../../src/chart_types/partition_chart/layout/config/config';
+import { config, percentValueGetter } from '../../src/chart_types/partition_chart/layout/config/config';
 import { arrayToLookup, hueInterpolator } from '../../src/chart_types/partition_chart/layout/utils/calcs';
 import { countryDimension, regionDimension } from '../../src/mocks/hierarchical/dimension_codes';
 import { palettes } from '../../src/mocks/hierarchical/palettes';
@@ -26,7 +26,7 @@ export const example = () => (
       data={mocks.sunburst}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueGetter={percentValueGetter}
-      valueFormatter={(d: number) => `${Math.round(d)}%`}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.substr(0, 2),

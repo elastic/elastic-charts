@@ -9,6 +9,7 @@ import {
   productLookup,
   regionLookup,
 } from '../utils/utils';
+import { config } from '../../src/chart_types/partition_chart/layout/config/config';
 
 export const example = () => (
   <Chart className="story-chart">
@@ -17,7 +18,7 @@ export const example = () => (
       data={mocks.miniSunburst}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueGetter="percent"
-      valueFormatter={(d: number) => `${Math.round(d)}%`}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,

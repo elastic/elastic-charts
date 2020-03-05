@@ -45,6 +45,7 @@ import {
   sortIndexAccessor,
 } from '../utils/group_by_rollup';
 import { ValueAccessor, ValueFormatter } from '../../../../utils/commons';
+import { percentFormatter, percentValueGetter } from '../config/config';
 
 function paddingAccessor(n: ArrayEntry) {
   return entryValue(n).depth > 1 ? 1 : [0, 2][entryValue(n).depth];
@@ -128,7 +129,7 @@ export function shapeViewModel(
   facts: Relation,
   rawTextGetter: RawTextGetter,
   valueAccessor: ValueAccessor,
-  valueFormatter: ValueFormatter,
+  specifiedValueFormatter: ValueFormatter,
   valueGetter: ValueGetterFunction,
   groupByRollupAccessors: IndexedAccessorFn[],
 ): ShapeViewModel {
@@ -230,6 +231,8 @@ export function shapeViewModel(
   const outsideFillNodes = fillOutside && !treemapLayout ? nodesWithRoom : [];
 
   const textFillOrigins = nodesWithRoom.map(treemapLayout ? rectangleFillOrigins : sectorFillOrigins(fillOutside));
+
+  const valueFormatter = valueGetter === percentValueGetter ? percentFormatter : specifiedValueFormatter;
 
   const rowSets: RowSet[] = fillTextLayout(
     textMeasure,

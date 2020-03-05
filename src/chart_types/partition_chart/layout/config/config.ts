@@ -28,18 +28,18 @@ export function ratioValueGetter(node: ShapeTreeNode): number {
 export const VALUE_GETTERS = Object.freeze({ percent: percentValueGetter, ratio: ratioValueGetter } as const);
 export type ValueGetterName = keyof typeof VALUE_GETTERS;
 
-function defaultFormatter(d: any): string {
-  return typeof d === 'string'
-    ? d
-    : typeof d === 'number'
-    ? Math.abs(d) >= 10000000 || Math.abs(d) < 0.001
-      ? d.toExponential(Math.min(2, Math.max(0, significantDigitCount(d) - 1)))
-      : d.toLocaleString(void 0, {
-          maximumSignificantDigits: 4,
-          maximumFractionDigits: 3,
-          useGrouping: true,
-        })
-    : String(d);
+function defaultFormatter(d: number): string {
+  return Math.abs(d) >= 10000000 || Math.abs(d) < 0.001
+    ? d.toExponential(Math.min(2, Math.max(0, significantDigitCount(d) - 1)))
+    : d.toLocaleString(void 0, {
+        maximumSignificantDigits: 4,
+        maximumFractionDigits: 3,
+        useGrouping: true,
+      });
+}
+
+export function percentFormatter(d: number): string {
+  return Math.round(d) + '%';
 }
 
 const valueFont = {
