@@ -74,6 +74,7 @@ export const getTooltipInfoSelector = createCachedSelector(
           key: pieSpec.id,
         },
         value: valueFormatter(valueGetterFun(shape)),
+        valueAccessor: shape.depth,
       });
       const shapeNode = node.children.find(([key]) => key === shape.dataName);
       if (shapeNode) {
