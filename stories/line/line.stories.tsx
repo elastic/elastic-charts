@@ -16,3 +16,4 @@ export { example as curvedWithAxisAndLegend } from './6_curved';
 export { example as multipleWithAxisAndLegend } from './7_multiple';
 export { example as stackedWithAxisAndLegend } from './8_stacked';
 export { example as multiSeriesWithLogValues } from './9_multi_series';
+export { example as duplicateTicksDates } from './10_duplicate_ticks';

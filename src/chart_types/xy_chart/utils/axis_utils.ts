@@ -229,7 +229,6 @@ export function computeTickDimensions(
   const {
     tickLabelStyle: { fontFamily, fontSize },
   } = axisConfig;
-
   const {
     maxLabelBboxWidth,
     maxLabelBboxHeight,
