@@ -46,6 +46,8 @@
   "files": [
     "dist/**/*",
     "FAQ.md",
+    "LICENSE.txt",
+    "NOTICE.txt",
     "yarn.lock"
   ],
   "devDependencies": {
