@@ -1,3 +1,21 @@
+/*
+ * Licensed to Elasticsearch B.V. under one or more contributor
+ * license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Elasticsearch B.V. licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License. */
+
 import { XDomain } from '../domains/x_domain';
 import { YDomain } from '../domains/y_domain';
 import { computeXScale, computeYScales } from './scales';
@@ -243,31 +261,6 @@ function computeTickDimensions(
     maxLabelTextWidth,
     maxLabelTextHeight,
   };
-}
-
-/**
- * The Konva api sets the top right corner of a shape as the default origin of rotation.
- * In order to apply rotation to tick labels while preserving their relative position to the axis,
- * we compute offsets to apply to the Text element as well as adjust the x/y coordinates to adjust
- * for these offsets.
- */
-export function centerRotationOrigin(
-  axisTicksDimensions: {
-    maxLabelBboxWidth: number;
-    maxLabelBboxHeight: number;
-    maxLabelTextWidth: number;
-    maxLabelTextHeight: number;
-  },
-  coordinates: { x: number; y: number },
-): { x: number; y: number; offsetX: number; offsetY: number } {
-  const { maxLabelBboxWidth, maxLabelBboxHeight, maxLabelTextWidth, maxLabelTextHeight } = axisTicksDimensions;
-
-  const offsetX = maxLabelTextWidth / 2;
-  const offsetY = maxLabelTextHeight / 2;
-  const x = coordinates.x + maxLabelBboxWidth / 2;
-  const y = coordinates.y + maxLabelBboxHeight / 2;
-
-  return { offsetX, offsetY, x, y };
 }
 
 /**

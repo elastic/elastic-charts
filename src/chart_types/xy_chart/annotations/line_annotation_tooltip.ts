@@ -1,3 +1,21 @@
+/*
+ * Licensed to Elasticsearch B.V. under one or more contributor
+ * license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Elasticsearch B.V. licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License. */
+
 import {
   AnnotationDomainType,
   AnnotationDomainTypes,
@@ -57,7 +75,7 @@ export interface AnnotationLineProps {
 
 export const DEFAULT_LINE_OVERFLOW = 0;
 
-export function computeYDomainLineAnnotationDimensions(
+function computeYDomainLineAnnotationDimensions(
   dataValues: LineAnnotationDatum[],
   yScale: Scale,
   chartRotation: Rotation,
@@ -180,7 +198,7 @@ export function computeYDomainLineAnnotationDimensions(
   return lineProps;
 }
 
-export function computeXDomainLineAnnotationDimensions(
+function computeXDomainLineAnnotationDimensions(
   dataValues: LineAnnotationDatum[],
   xScale: Scale,
   chartRotation: Rotation,
@@ -399,7 +417,7 @@ export function isVerticalAnnotationLine(isXDomainAnnotation: boolean, isHorizon
  * @param cursorPosition the cursor position relative to the projected area
  * @param marker the line annotation marker
  */
-export function isWithinLineMarkerBounds(cursorPosition: Point, marker: AnnotationMarker): boolean {
+function isWithinLineMarkerBounds(cursorPosition: Point, marker: AnnotationMarker): boolean {
   const { top, left } = marker.position;
   const { width, height } = marker.dimension;
   const markerRect: Bounds = { startX: left, startY: top, endX: left + width, endY: top + height };

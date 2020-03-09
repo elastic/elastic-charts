@@ -1,3 +1,21 @@
+/*
+ * Licensed to Elasticsearch B.V. under one or more contributor
+ * license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Elasticsearch B.V. licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License. */
+
 import { XDomain } from '../domains/x_domain';
 import { YDomain } from '../domains/y_domain';
 import { AxisSpec, DomainRange, AxisStyle } from './specs';
@@ -8,7 +26,6 @@ import { ScaleType } from '../../../scales';
 import {
   AxisTick,
   AxisTicksDimensions,
-  centerRotationOrigin,
   computeAxisGridLinePositions,
   computeAxisTicksDimensions,
   computeRotatedLabelDimensions,
@@ -598,42 +615,6 @@ describe('Axis computational utils', () => {
       maxLabelTextHeight: 100,
     };
     expect(reducer(accWithGreaterValues, 'foo')).toEqual(accWithGreaterValues);
-  });
-
-  test('should compute coordinates and offsets to anchor rotation origin from the center', () => {
-    const simpleCenteredProps = centerRotationOrigin(
-      {
-        maxLabelBboxWidth: 10,
-        maxLabelBboxHeight: 20,
-        maxLabelTextWidth: 10,
-        maxLabelTextHeight: 20,
-      },
-      { x: 0, y: 0 },
-    );
-
-    expect(simpleCenteredProps).toEqual({
-      offsetX: 5,
-      offsetY: 10,
-      x: 5,
-      y: 10,
-    });
-
-    const rotatedCenteredProps = centerRotationOrigin(
-      {
-        maxLabelBboxWidth: 10,
-        maxLabelBboxHeight: 20,
-        maxLabelTextWidth: 20,
-        maxLabelTextHeight: 10,
-      },
-      { x: 30, y: 40 },
-    );
-
-    expect(rotatedCenteredProps).toEqual({
-      offsetX: 10,
-      offsetY: 5,
-      x: 35,
-      y: 50,
-    });
   });
 
   test('should compute positions and alignment of tick labels along a vertical axis', () => {
