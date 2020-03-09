@@ -168,10 +168,7 @@ function renderPoints(
         seriesIdentifier,
         styleOverrides,
       };
-      mutableIndexedGeometryMapUpsert(indexedGeometries, xValue, {
-        ...pointGeometry,
-        datum: datum.datum,
-      });
+      mutableIndexedGeometryMapUpsert(indexedGeometries, xValue, pointGeometry);
       // use the geometry only if the yDatum in contained in the current yScale domain
       const isHidden = yDatum === null || (isLogScale && yDatum <= 0);
       if (!isHidden && yScale.isValueInDomain(yDatum)) {
@@ -314,10 +311,7 @@ export function renderBars(
       seriesIdentifier,
       seriesStyle,
     };
-    mutableIndexedGeometryMapUpsert(indexedGeometries, datum.x, {
-      ...barGeometry,
-      datum: datum.datum,
-    });
+    mutableIndexedGeometryMapUpsert(indexedGeometries, datum.x, barGeometry);
     barGeometries.push(barGeometry);
   });
 
