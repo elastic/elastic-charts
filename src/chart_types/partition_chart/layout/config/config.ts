@@ -39,7 +39,7 @@ function defaultFormatter(d: number): string {
 }
 
 export function percentFormatter(d: number): string {
-  return Math.round(d) + '%';
+  return `${Math.round(d)} %`;
 }
 
 const valueFont = {
