@@ -27,7 +27,7 @@ export const example = () => {
     .setZone('utc+1')
     .toMillis();
   const oneDay = 1000 * 60 * 60 * 24;
-  const formatter = niceTimeFormatter([now, now + oneDay * 10]);
+  const formatter = niceTimeFormatter([now, now + oneDay * 31]);
   const duplicateTicksInAxis = boolean('Hide duplicate ticks in x axis', false);
   return (
     <Chart className="story-chart">
