@@ -21,11 +21,9 @@ import { Selector } from 'reselect';
 import { GlobalChartState, PointerState } from '../../../../state/chart_state';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { SettingsSpec, LayerValue } from '../../../../specs';
-import { QuadViewModel } from '../../layout/types/viewmodel_types';
-import { getPickedShapes } from './picked_shapes';
+import { getPickedShapesLayerValues } from './picked_shapes';
 import { getPieSpecOrNull } from './pie_spec';
 import { ChartTypes } from '../../..';
-import { PARENT_KEY, DEPTH_KEY, SORT_INDEX_KEY, AGGREGATE_KEY, CHILDREN_KEY } from '../../layout/utils/group_by_rollup';
 import { SeriesIdentifier } from '../../../xy_chart/utils/series';
 import { isClicking } from '../../../../state/utils';
 import { getLastClickSelector } from '../../../../state/selectors/get_last_click';
@@ -42,32 +40,20 @@ export function createOnElementClickCaller(): (state: GlobalChartState) => void 
   return (state: GlobalChartState) => {
     if (selector === null && state.chartType === ChartTypes.Partition) {
       selector = createCachedSelector(
-        [getPieSpecOrNull, getLastClickSelector, getSettingsSpecSelector, getPickedShapes],
-        (pieSpec, lastClick: PointerState | null, settings: SettingsSpec, pickedShapes: QuadViewModel[]): void => {
+        [getPieSpecOrNull, getLastClickSelector, getSettingsSpecSelector, getPickedShapesLayerValues],
+        (pieSpec, lastClick: PointerState | null, settings: SettingsSpec, pickedShapes): void => {
           if (!pieSpec) {
             return;
           }
+          if (!settings.onElementClick) {
+            return;
+          }
           const nextPickedShapesLength = pickedShapes.length;
-          if (nextPickedShapesLength > 0 && isClicking(prevClick, lastClick, settings)) {
+          if (nextPickedShapesLength > 0 && isClicking(prevClick, lastClick)) {
             if (settings && settings.onElementClick) {
-              const elements = pickedShapes.map<[Array<LayerValue>, SeriesIdentifier]>((model) => {
-                const values: Array<LayerValue> = [];
-                values.push({
-                  groupByRollup: model.dataName,
-                  value: model.value,
-                });
-                let parent = model.parent;
-                let index = model.parent.sortIndex;
-                while (parent[DEPTH_KEY] > 0) {
-                  const value = parent[AGGREGATE_KEY];
-                  const dataName = parent[PARENT_KEY][CHILDREN_KEY][index][0];
-                  values.push({ groupByRollup: dataName, value });
-
-                  parent = parent[PARENT_KEY];
-                  index = parent[SORT_INDEX_KEY];
-                }
+              const elements = pickedShapes.map<[Array<LayerValue>, SeriesIdentifier]>((values) => {
                 return [
-                  values.reverse(),
+                  values,
                   {
                     specId: pieSpec.id,
                     key: `spec{${pieSpec.id}}`,

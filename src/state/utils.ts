@@ -17,7 +17,7 @@
  * under the License. */
 
 import { SpecList, PointerState } from './chart_state';
-import { Spec, SettingsSpec } from '../specs';
+import { Spec } from '../specs';
 import { ChartTypes } from '../chart_types';
 
 export function getSpecsFromStore<U extends Spec>(specs: SpecList, chartType: ChartTypes, specType?: string): U[] {
@@ -33,11 +33,7 @@ export function getSpecsFromStore<U extends Spec>(specs: SpecList, chartType: Ch
     });
 }
 
-export function isClicking(prevClick: PointerState | null, lastClick: PointerState | null, settings: SettingsSpec) {
-  if (!settings.onElementClick) {
-    return false;
-  }
-
+export function isClicking(prevClick: PointerState | null, lastClick: PointerState | null) {
   if (prevClick === null && lastClick !== null) {
     return true;
   }

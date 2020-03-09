@@ -24,13 +24,19 @@ import { isTooltipVisibleSelector } from '../state/selectors/is_tooltip_visible'
 import { getTooltipInfoSelector } from '../state/selectors/tooltip';
 import { Tooltip } from '../../../components/tooltip';
 import { createOnElementClickCaller } from './selectors/on_element_click_caller';
+import { createOnElementOverCaller } from './selectors/on_element_over_caller';
+import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 
 const EMPTY_MAP = new Map();
 export class PartitionState implements InternalChartState {
   onElementClickCaller: (state: GlobalChartState) => void;
+  onElementOverCaller: (state: GlobalChartState) => void;
+  onElementOutCaller: (state: GlobalChartState) => void;
 
   constructor() {
     this.onElementClickCaller = createOnElementClickCaller();
+    this.onElementOverCaller = createOnElementOverCaller();
+    this.onElementOutCaller = createOnElementOutCaller();
   }
   chartType = ChartTypes.Partition;
   isBrushAvailable() {
@@ -74,6 +80,8 @@ export class PartitionState implements InternalChartState {
     };
   }
   eventCallbacks(globalState: GlobalChartState) {
+    this.onElementOverCaller(globalState);
+    this.onElementOutCaller(globalState);
     this.onElementClickCaller(globalState);
   }
 }

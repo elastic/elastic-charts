@@ -42,7 +42,10 @@ export function createOnElementClickCaller(): (state: GlobalChartState) => void 
       selector = createCachedSelector(
         [getLastClickSelector, getSettingsSpecSelector, getHighlightedGeomsSelector],
         (lastClick: PointerState | null, settings: SettingsSpec, indexedGeometries: IndexedGeometry[]): void => {
-          if (indexedGeometries.length > 0 && isClicking(prevClick, lastClick, settings)) {
+          if (!settings.onElementClick) {
+            return;
+          }
+          if (indexedGeometries.length > 0 && isClicking(prevClick, lastClick)) {
             if (settings && settings.onElementClick) {
               const elements = indexedGeometries.map<[GeometryValue, XYChartSeriesIdentifier]>(
                 ({ value, seriesIdentifier }) => [value, seriesIdentifier],
