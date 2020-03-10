@@ -443,10 +443,9 @@ export function getAvailableTicks(
 
     return [firstTick, lastTick];
   }
-
-  // want to go through the distinct tick labels and populate a tick for each of them
   return getDuplicateTicks(axisSpec, scale, offset, tickFormatOptions);
 }
+
 export function getDuplicateTicks(
   axisSpec: AxisSpec,
   scale: Scale,
@@ -464,8 +463,7 @@ export function getDuplicateTicks(
   });
 
   if (axisSpec.duplicateTicks === false) {
-    // eslint-disable-next-line prefer-const
-    let uniqueTickLabels: { value: any; label: string; position: number }[] = [];
+    const uniqueTickLabels: { value: any; label: string; position: number }[] = [];
     allTicks.filter((value, index) => {
       for (let i = 0; i < labels.length; i++) {
         if (labels[i] === allTicks[index].label) {

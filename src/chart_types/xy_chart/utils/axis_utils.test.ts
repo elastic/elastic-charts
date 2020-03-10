@@ -541,39 +541,6 @@ describe('Axis computational utils', () => {
     ];
     expect(visibleOverlappingTicksAndLabels).toEqual(expectedVisibleOverlappingTicksAndLabels);
   });
-  // test('should remove duplicate tick labels when tick values repeat', () => {
-  //   const tickValues = [
-  //     1546329600000,
-  //     1546329600000,
-  //     1546329600000,
-  //     1546329600000,
-  //     1546416000000,
-  //     1546502400000,
-  //     1546588800000,
-  //     1546675200000,
-  //     1546761600000,
-  //     1546848000000,
-  //     1546934400000,
-  //     1547020800000,
-  //   ];
-  //   const tickLabels = [
-  //     '2019-01-01 08:00:00',
-  //     '2019-01-02 08:00:00',
-  //     '2019-01-03 08:00:00',
-  //     '2019-01-04 08:00:00',
-  //     '2019-01-05 08:00:00',
-  //     '2019-01-06 08:00:00',
-  //     '2019-01-07 08:00:00',
-  //     '2019-01-08 08:00:00',
-  //     '2019-01-09 08:00:00',
-  //   ];
-  //   const tickFormat = (d: number) => {
-  //     Settings.defaultZoneName = 'utc';
-  //     return DateTime.fromMillis(d).toFormat('yyyy-MM-dd HH:mm:ss');
-  //   };
-
-  //   expect(removeDupeTickLabels(tickValues, tickFormat)).toEqual(tickLabels);
-  // });
   test('should compute min max range for on 0 deg bottom', () => {
     const minMax = getMinMaxRange(Position.Bottom, 0, {
       width: 100,
