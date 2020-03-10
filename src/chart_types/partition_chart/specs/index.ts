@@ -17,7 +17,7 @@
  * under the License. */
 
 import { ChartTypes } from '../../index';
-import { config } from '../layout/config/config';
+import { config, percentFormatter } from '../layout/config/config';
 import { FunctionComponent } from 'react';
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
 import { IndexedAccessorFn } from '../../../utils/accessor';
@@ -43,6 +43,7 @@ const defaultProps = {
   valueAccessor: (d: Datum) => (typeof d === 'number' ? d : 0),
   valueGetter: (n: ShapeTreeNode): number => n[AGGREGATE_KEY],
   valueFormatter: (d: number): string => String(d),
+  percentFormatter,
   layers: [
     {
       groupByRollup: (d: Datum, i: number) => i,
@@ -60,6 +61,7 @@ export interface PartitionSpec extends Spec {
   valueAccessor: ValueAccessor;
   valueFormatter: ValueFormatter;
   valueGetter: ValueGetter;
+  percentFormatter: ValueFormatter;
   layers: Layer[];
 }
 
@@ -67,7 +69,8 @@ type SpecRequiredProps = Pick<PartitionSpec, 'id' | 'data'>;
 type SpecOptionalProps = Partial<Omit<PartitionSpec, 'chartType' | 'specType' | 'id' | 'data'>>;
 
 export const Partition: FunctionComponent<SpecRequiredProps & SpecOptionalProps> = getConnect()(
-  specComponentFactory<PartitionSpec, 'valueAccessor' | 'valueGetter' | 'valueFormatter' | 'layers' | 'config'>(
-    defaultProps,
-  ),
+  specComponentFactory<
+    PartitionSpec,
+    'valueAccessor' | 'valueGetter' | 'valueFormatter' | 'layers' | 'config' | 'percentFormatter'
+  >(defaultProps),
 );

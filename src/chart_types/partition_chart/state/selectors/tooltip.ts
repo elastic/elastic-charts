@@ -27,7 +27,7 @@ import { SpecTypes } from '../../../../specs';
 import { getSpecsFromStore } from '../../../../state/utils';
 import { PartitionSpec } from '../../specs';
 import { valueGetterFunction } from './scenegraph';
-import { percentFormatter, percentValueGetter, sumValueGetter } from '../../layout/config/config';
+import { percentValueGetter, sumValueGetter } from '../../layout/config/config';
 
 function getCurrentPointerPosition(state: GlobalChartState) {
   return state.interactions.pointer.current.position;
@@ -94,7 +94,9 @@ export const getTooltipInfoSelector = createCachedSelector(
           specId: pieSpec.id,
           key: pieSpec.id,
         },
-        value: `${valueFormatter(primaryValueGetterFun(shape))} (${percentFormatter(percentValueGetter(shape))})`,
+        value: `${valueFormatter(primaryValueGetterFun(shape))} (${pieSpec.percentFormatter(
+          percentValueGetter(shape),
+        )})`,
         valueAccessor: shape.depth,
       });
       const shapeNode = node.children.find(([key]) => key === shape.dataName);

@@ -37,6 +37,7 @@ export const example = () => (
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueGetter="percent"
       valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
+      percentFormatter={(d: number) => `${Math.round((d + Number.EPSILON) * 100) / 100}%`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
