@@ -111,7 +111,6 @@ export function computeAxisTicksDimensions(
     axisConfig,
     tickLabelPadding,
     axisSpec.tickLabelRotation,
-    axisSpec.duplicateTicks,
     {
       timeZone: xDomain.timeZone,
     },
@@ -234,16 +233,13 @@ export function computeTickDimensions(
   axisConfig: AxisConfig,
   tickLabelPadding: number,
   tickLabelRotation = 0,
-  duplicateTicks: boolean = false,
+  // duplicateTicks: boolean = false,
   tickFormatOptions?: TickFormatterOptions,
 ) {
   const tickValues = scale.ticks();
-  const duplicateTickLabels = tickValues.map((d) => {
+  const tickLabels = tickValues.map((d) => {
     return tickFormat(d, tickFormatOptions);
   });
-  const tickLabels = duplicateTicks
-    ? duplicateTickLabels
-    : duplicateTickLabels.filter((value, index) => duplicateTickLabels.indexOf(value) === index);
   const {
     tickLabelStyle: { fontFamily, fontSize },
   } = axisConfig;
@@ -447,14 +443,44 @@ export function getAvailableTicks(
 
     return [firstTick, lastTick];
   }
-  return ticks.map((tick) => {
+
+  // want to go through the distinct tick labels and populate a tick for each of them
+  return getDuplicateTicks(axisSpec, scale, offset, tickFormatOptions);
+}
+export function getDuplicateTicks(
+  axisSpec: AxisSpec,
+  scale: Scale,
+  offset: number,
+  tickFormatOptions?: TickFormatterOptions,
+) {
+  const ticks = scale.ticks();
+  const labels = [...new Set(ticks.map((tick) => axisSpec.tickFormat(tick, tickFormatOptions)))];
+  const allTicks = ticks.map((tick) => {
     return {
       value: tick,
       label: axisSpec.tickFormat(tick, tickFormatOptions),
       position: scale.scale(tick) + offset,
     };
   });
+
+  if (axisSpec.duplicateTicks === false) {
+    // eslint-disable-next-line prefer-const
+    let uniqueTickLabels: { value: any; label: string; position: number }[] = [];
+    allTicks.filter((value, index) => {
+      for (let i = 0; i < labels.length; i++) {
+        if (labels[i] === allTicks[index].label) {
+          uniqueTickLabels.push(allTicks[index]);
+          // once uniqueTickLabels has the unique label, remove the label from the labels array so it doesnt create a duplicate
+          labels.splice(i, 1);
+        }
+      }
+    });
+    return uniqueTickLabels;
+  } else {
+    return allTicks;
+  }
 }
+
 export function getVisibleTicks(allTicks: AxisTick[], axisSpec: AxisSpec, axisDim: AxisTicksDimensions): AxisTick[] {
   // We sort the ticks by position so that we can incrementally compute previousOccupiedSpace
   allTicks.sort((a: AxisTick, b: AxisTick) => a.position - b.position);

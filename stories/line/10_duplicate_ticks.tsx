@@ -28,7 +28,7 @@ export const example = () => {
     .toMillis();
   const oneDay = 1000 * 60 * 60 * 24;
   const formatter = niceTimeFormatter([now, now + oneDay * 31]);
-  const duplicateTicksInAxis = boolean('Hide duplicate ticks in x axis', false);
+  const duplicateTicksInAxis = boolean('Show duplicate ticks in x axis', false);
   return (
     <Chart className="story-chart">
       <Axis id="bottom" position={Position.Bottom} tickFormat={formatter} duplicateTicks={duplicateTicksInAxis} />
