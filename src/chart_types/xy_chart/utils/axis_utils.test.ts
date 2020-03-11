@@ -1468,52 +1468,15 @@ describe('Axis computational utils', () => {
       scaleType: ScaleType.Time,
     };
     const scale: Scale = computeXScale({ xDomain: xDomainTime, totalBarsInCluster: 0, range: [0, 603.5] });
-    // xDomain: { type: 'xDomain', scaleType: 'time', isBandScale: false },
-    //
-    // minInterval:
-    // timeZone: undefined,
-    // totalBarsInCluster: 0,
-    // range: [0, 603.5],
-    // barsPadding: 0.25,
-    // enableHistogramMode: false,
-    // ticks: undefined,
-    // integersOnly: undefined,
-    // duplicateTicks: false,
-    // = {
-    //   domain: [],
-    //   barsPadding: 0.25,
-    //   bandwidth: 0,
-    //   type: 'time',
-    //   range: [0, 603.5],
-    //   minInterval: 86400000,
-    //   isInverted: false,
-    //   tickValues: [
-    //     1547208000000,
-    //     1547251200000,
-    //     1547294400000,
-    //     1547337600000,
-    //     1547380800000,
-    //     1547424000000,
-    //     1547467200000,
-    //     1547510400000,
-    //     1547553600000,
-    //     1547596800000,
-    //   ],
-    //   isSingleValue: () => false,
-    //   totalBarsInCluster: 0,
-    //   bandwidthPadding: 0,
-    //   step: 0,
-    //   timeZone: 'utc',
-    //   isSingleValueHistogram: false,
-    // };
     const offset = 0;
-    const tickFormatOption = { timeZone: undefined };
+    const tickFormatOption = { timeZone: 'utc+1' };
     expect(getDuplicateTicks(axisSpec, scale, offset, tickFormatOption)).toEqual([
       { value: 1547208000000, label: '2019-01-11', position: 25.145833333333332 },
-      { value: 1547294400000, label: '2019-01-12', position: 145.84583333333333 },
-      { value: 1547380800000, label: '2019-01-13', position: 266.54583333333335 },
-      { value: 1547467200000, label: '2019-01-14', position: 387.24583333333334 },
-      { value: 1547553600000, label: '2019-01-15', position: 507.9458333333333 },
+      { value: 1547251200000, label: '2019-01-12', position: 85.49583333333334 },
+      { value: 1547337600000, label: '2019-01-13', position: 206.19583333333333 },
+      { value: 1547424000000, label: '2019-01-14', position: 326.8958333333333 },
+      { value: 1547510400000, label: '2019-01-15', position: 447.59583333333336 },
+      { value: 1547596800000, label: '2019-01-16', position: 568.2958333333333 },
     ]);
   });
   test('should show duplicate tick labels if duplicateTicks is set to true', () => {
@@ -1546,18 +1509,18 @@ describe('Axis computational utils', () => {
     };
     const scale: Scale = computeXScale({ xDomain: xDomainTime, totalBarsInCluster: 0, range: [0, 603.5] });
     const offset = 0;
-    const tickFormatOption = { timeZone: undefined };
+    const tickFormatOption = { timeZone: 'utc+1' };
     expect(getDuplicateTicks(axisSpec, scale, offset, tickFormatOption)).toEqual([
       { value: 1547208000000, label: '2019-01-11', position: 25.145833333333332 },
-      { value: 1547251200000, label: '2019-01-11', position: 85.49583333333334 },
+      { value: 1547251200000, label: '2019-01-12', position: 85.49583333333334 },
       { value: 1547294400000, label: '2019-01-12', position: 145.84583333333333 },
-      { value: 1547337600000, label: '2019-01-12', position: 206.19583333333333 },
+      { value: 1547337600000, label: '2019-01-13', position: 206.19583333333333 },
       { value: 1547380800000, label: '2019-01-13', position: 266.54583333333335 },
-      { value: 1547424000000, label: '2019-01-13', position: 326.8958333333333 },
+      { value: 1547424000000, label: '2019-01-14', position: 326.8958333333333 },
       { value: 1547467200000, label: '2019-01-14', position: 387.24583333333334 },
-      { value: 1547510400000, label: '2019-01-14', position: 447.59583333333336 },
+      { value: 1547510400000, label: '2019-01-15', position: 447.59583333333336 },
       { value: 1547553600000, label: '2019-01-15', position: 507.9458333333333 },
-      { value: 1547596800000, label: '2019-01-15', position: 568.2958333333333 },
+      { value: 1547596800000, label: '2019-01-16', position: 568.2958333333333 },
     ]);
   });
 });
