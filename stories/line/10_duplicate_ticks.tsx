@@ -57,6 +57,7 @@ export const example = () => {
           { x: now + oneDay * 4, y: 8 },
           { x: now + oneDay * 5, y: 6 },
         ]}
+        timeZone="local"
       />
     </Chart>
   );
