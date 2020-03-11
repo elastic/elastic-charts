@@ -48,7 +48,7 @@ import {
   getAxisTickLabelPadding,
   isVerticalGrid,
   isHorizontalGrid,
-  getDuplicateTicks,
+  enableDuplicatedTicks,
 } from './axis_utils';
 import { CanvasTextBBoxCalculator } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import { SvgTextBBoxCalculator } from '../../../utils/bbox/svg_text_bbox_calculator';
@@ -1448,7 +1448,7 @@ describe('Axis computational utils', () => {
     const axisSpec: AxisSpec = {
       id: 'bottom',
       position: 'bottom',
-      duplicateTicks: false,
+      enableDuplicatedTicks: false,
       chartType: 'xy_axis',
       specType: 'axis',
       groupId: '__global__',
@@ -1470,7 +1470,7 @@ describe('Axis computational utils', () => {
     const scale: Scale = computeXScale({ xDomain: xDomainTime, totalBarsInCluster: 0, range: [0, 603.5] });
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
-    expect(getDuplicateTicks(axisSpec, scale, offset, tickFormatOption)).toEqual([
+    expect(enableDuplicatedTicks(axisSpec, scale, offset, tickFormatOption)).toEqual([
       { value: 1547208000000, label: '2019-01-11', position: 25.145833333333332 },
       { value: 1547251200000, label: '2019-01-12', position: 85.49583333333334 },
       { value: 1547337600000, label: '2019-01-13', position: 206.19583333333333 },
@@ -1488,7 +1488,7 @@ describe('Axis computational utils', () => {
     const axisSpec: AxisSpec = {
       id: 'bottom',
       position: 'bottom',
-      duplicateTicks: true,
+      enableDuplicatedTicks: true,
       chartType: 'xy_axis',
       specType: 'axis',
       groupId: '__global__',
@@ -1510,7 +1510,7 @@ describe('Axis computational utils', () => {
     const scale: Scale = computeXScale({ xDomain: xDomainTime, totalBarsInCluster: 0, range: [0, 603.5] });
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
-    expect(getDuplicateTicks(axisSpec, scale, offset, tickFormatOption)).toEqual([
+    expect(enableDuplicatedTicks(axisSpec, scale, offset, tickFormatOption)).toEqual([
       { value: 1547208000000, label: '2019-01-11', position: 25.145833333333332 },
       { value: 1547251200000, label: '2019-01-12', position: 85.49583333333334 },
       { value: 1547294400000, label: '2019-01-12', position: 145.84583333333333 },

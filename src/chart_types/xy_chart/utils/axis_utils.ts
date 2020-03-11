@@ -156,7 +156,6 @@ export function getScaleForAxisSpec(
       range,
       ticks: axisSpec.ticks,
       integersOnly: axisSpec.integersOnly,
-      duplicateTicks: axisSpec.duplicateTicks,
     });
     if (yScales.has(axisSpec.groupId)) {
       return yScales.get(axisSpec.groupId)!;
@@ -171,7 +170,6 @@ export function getScaleForAxisSpec(
       enableHistogramMode,
       ticks: axisSpec.ticks,
       integersOnly: axisSpec.integersOnly,
-      duplicateTicks: axisSpec.duplicateTicks,
     });
   }
 }
@@ -233,7 +231,6 @@ export function computeTickDimensions(
   axisConfig: AxisConfig,
   tickLabelPadding: number,
   tickLabelRotation = 0,
-  // duplicateTicks: boolean = false,
   tickFormatOptions?: TickFormatterOptions,
 ) {
   const tickValues = scale.ticks();
@@ -443,10 +440,10 @@ export function getAvailableTicks(
 
     return [firstTick, lastTick];
   }
-  return getDuplicateTicks(axisSpec, scale, offset, tickFormatOptions);
+  return enableDuplicatedTicks(axisSpec, scale, offset, tickFormatOptions);
 }
 
-export function getDuplicateTicks(
+export function enableDuplicatedTicks(
   axisSpec: AxisSpec,
   scale: Scale,
   offset: number,
@@ -462,7 +459,7 @@ export function getDuplicateTicks(
     };
   });
 
-  if (axisSpec.duplicateTicks === false) {
+  if (axisSpec.enableDuplicatedTicks === false) {
     const uniqueTickLabels: { value: any; label: string; position: number }[] = [];
     allTicks.filter((value, index) => {
       for (let i = 0; i < labels.length; i++) {

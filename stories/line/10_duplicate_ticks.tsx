@@ -31,7 +31,12 @@ export const example = () => {
   const duplicateTicksInAxis = boolean('Show duplicate ticks in x axis', false);
   return (
     <Chart className="story-chart">
-      <Axis id="bottom" position={Position.Bottom} tickFormat={formatter} duplicateTicks={duplicateTicksInAxis} />
+      <Axis
+        id="bottom"
+        position={Position.Bottom}
+        tickFormat={formatter}
+        enableDuplicatedTicks={duplicateTicksInAxis}
+      />
       <Axis
         id="left"
         title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}

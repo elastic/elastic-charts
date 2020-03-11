@@ -139,8 +139,6 @@ interface ScaleOptions {
   isSingleValueHistogram: boolean;
   /** Show only integer values **/
   integersOnly?: boolean;
-  /** Show duplicate tick values default to false */
-  duplicateTicks?: boolean;
 }
 const defaultScaleOptions: ScaleOptions = {
   bandwidth: 0,
@@ -151,7 +149,6 @@ const defaultScaleOptions: ScaleOptions = {
   ticks: 10,
   isSingleValueHistogram: false,
   integersOnly: false,
-  duplicateTicks: false,
 };
 export class ScaleContinuous implements Scale {
   readonly bandwidth: number;
