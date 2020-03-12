@@ -450,7 +450,6 @@ export function enableDuplicatedTicks(
   tickFormatOptions?: TickFormatterOptions,
 ) {
   const ticks = scale.ticks();
-  const labels = [...new Set(ticks.map((tick) => axisSpec.tickFormat(tick, tickFormatOptions)))];
   const allTicks = ticks.map((tick) => {
     return {
       value: tick,
@@ -459,21 +458,20 @@ export function enableDuplicatedTicks(
     };
   });
 
-  if (axisSpec.enableDuplicatedTicks === false) {
-    const uniqueTickLabels: { value: any; label: string; position: number }[] = [];
-    allTicks.filter((value, index) => {
-      for (let i = 0; i < labels.length; i++) {
-        if (labels[i] === allTicks[index].label) {
-          uniqueTickLabels.push(allTicks[index]);
-          // once uniqueTickLabels has the unique label, remove the label from the labels array so it doesnt create a duplicate
-          labels.splice(i, 1);
-        }
-      }
-    });
-    return uniqueTickLabels;
-  } else {
+  if (axisSpec.enableDuplicatedTicks === true) {
     return allTicks;
   }
+
+  const uniqueTickLabels: Set<string> = new Set();
+  return allTicks.filter((value) => {
+    const { label } = value;
+    if (uniqueTickLabels.has(label)) {
+      return false;
+    } else {
+      uniqueTickLabels.add(label);
+      return true;
+    }
+  });
 }
 
 export function getVisibleTicks(allTicks: AxisTick[], axisSpec: AxisSpec, axisDim: AxisTicksDimensions): AxisTick[] {
