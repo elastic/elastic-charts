@@ -16,13 +16,19 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { $Values } from 'utility-types';
+// In preparation of nominal types in future TS versions
+// https://github.com/microsoft/TypeScript/pull/33038
+// eg. to avoid adding angles and coordinates and similar inconsistent number/number ops.
+// could in theory be three-valued (in,on,out)
+// It also serves as documentation.
 
-export const ChartTypes = Object.freeze({
-  Global: 'global' as 'global',
-  Goal: 'goal' as 'goal',
-  Partition: 'partition' as 'partition',
-  XYAxis: 'xy_axis' as 'xy_axis',
-});
+export type Pixels = number;
+export type Ratio = number;
+export type SizeRatio = Ratio;
+type Cartesian = number;
+export type Coordinate = Cartesian;
 
-export type ChartTypes = $Values<typeof ChartTypes>;
+export interface PointObject {
+  x: Coordinate;
+  y: Coordinate;
+}

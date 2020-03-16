@@ -16,13 +16,6 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { $Values } from 'utility-types';
-
-export const ChartTypes = Object.freeze({
-  Global: 'global' as 'global',
-  Goal: 'goal' as 'goal',
-  Partition: 'partition' as 'partition',
-  XYAxis: 'xy_axis' as 'xy_axis',
-});
-
-export type ChartTypes = $Values<typeof ChartTypes>;
+// fixme DRY this with partition constant
+export const GOLDEN_RATIO = 1.618;
+export const TAU = 2 * Math.PI;

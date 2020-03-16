@@ -16,13 +16,17 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { $Values } from 'utility-types';
+import { Box, Font, TextMeasure } from '../types/types';
+import { Pixels } from '../types/geometry_types';
 
-export const ChartTypes = Object.freeze({
-  Global: 'global' as 'global',
-  Goal: 'goal' as 'goal',
-  Partition: 'partition' as 'partition',
-  XYAxis: 'xy_axis' as 'xy_axis',
-});
+export function cssFontShorthand({ fontStyle, fontVariant, fontWeight, fontFamily }: Font, fontSize: Pixels) {
+  return `${fontStyle} ${fontVariant} ${fontWeight} ${fontSize}px ${fontFamily}`;
+}
 
-export type ChartTypes = $Values<typeof ChartTypes>;
+export function measureText(ctx: CanvasRenderingContext2D): TextMeasure {
+  return (fontSize: number, boxes: Box[]): TextMetrics[] =>
+    boxes.map((box: Box) => {
+      ctx.font = cssFontShorthand(box, fontSize);
+      return ctx.measureText(box.text);
+    });
+}
