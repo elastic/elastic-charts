@@ -63,6 +63,10 @@ export interface TickLabelProps {
   verticalAlign: string;
 }
 
+export interface Duplicates {
+  filteredTicks: any[];
+  uniqueValues: Set<string>;
+}
 /**
  * Compute the ticks values and identify max width and height of the labels
  * so we can compute the max space occupied by the axis component.
@@ -461,23 +465,29 @@ export function enableDuplicatedTicks(
   if (axisSpec.showDuplicatedTicks === true) {
     return allTicks;
   }
+  return getUniqueValues(
+    allTicks,
+    allTicks.map((tick) => tick.label),
+  );
+}
 
-  return allTicks.reduce<{
-    filteredTicks: AxisTick[];
-    uniqueTickLabels: Set<string>;
-  }>(
+function getUniqueValues(fullArray: any[], uniqueProperty: (string | number)[]) {
+  return fullArray.reduce<Duplicates>(
     (acc, currentValue) => {
-      const { label } = currentValue;
-      if (acc.uniqueTickLabels.has(label)) {
+      // need to find the correct value from currentValue (uniqueProperty points to the value in fullArray not the key)
+      const oneObject = Object.values(fullArray)[0];
+      const uniqueKey = Object.keys(oneObject).find((key) => oneObject[key] === uniqueProperty[0]);
+      const uniqueProp: string = currentValue[uniqueKey!];
+      if (acc.uniqueValues.has(uniqueProp)) {
         return acc;
       }
-      acc.uniqueTickLabels.add(label);
+      acc.uniqueValues.add(uniqueProp);
       acc.filteredTicks.push(currentValue);
       return acc;
     },
     {
       filteredTicks: [],
-      uniqueTickLabels: new Set(),
+      uniqueValues: new Set(),
     },
   ).filteredTicks;
 }
