@@ -21,13 +21,14 @@ import { Axis, Chart, LineSeries, Position, ScaleType, niceTimeFormatter } from 
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
 import { boolean } from '@storybook/addon-knobs';
 import { DateTime } from 'luxon';
+import moment from 'moment-timezone';
 
 export const example = () => {
   const now = DateTime.fromISO('2019-01-11T00:00:00.000')
     .setZone('utc+1')
     .toMillis();
-  const oneDay = 1000 * 60 * 60 * 24;
-  const formatter = niceTimeFormatter([now, now + oneDay * 31]);
+  const oneDay = moment.duration(1, 'day');
+  const formatter = niceTimeFormatter([now, oneDay.add(now).asMilliseconds() * 31]);
   const duplicateTicksInAxis = boolean('Show duplicate ticks in x axis', false);
   return (
     <Chart className="story-chart">
@@ -51,11 +52,11 @@ export const example = () => {
         yAccessors={['y']}
         data={[
           { x: now, y: 2 },
-          { x: now + oneDay, y: 3 },
-          { x: now + oneDay * 2, y: 3 },
-          { x: now + oneDay * 3, y: 4 },
-          { x: now + oneDay * 4, y: 8 },
-          { x: now + oneDay * 5, y: 6 },
+          { x: oneDay.add(now).asMilliseconds(), y: 3 },
+          { x: oneDay.add(now).asMilliseconds() * 2, y: 3 },
+          { x: oneDay.add(now).asMilliseconds() * 3, y: 4 },
+          { x: oneDay.add(now).asMilliseconds() * 4, y: 8 },
+          { x: oneDay.add(now).asMilliseconds() * 5, y: 6 },
         ]}
         timeZone="local"
       />

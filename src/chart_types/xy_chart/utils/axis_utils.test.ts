@@ -58,6 +58,7 @@ import { ChartTypes } from '../..';
 import { SpecTypes } from '../../../specs/settings';
 import { DateTime } from 'luxon';
 import { computeXScale } from './scales';
+import moment from 'moment-timezone';
 
 describe('Axis computational utils', () => {
   const mockedRect = {
@@ -1443,8 +1444,8 @@ describe('Axis computational utils', () => {
     const now = DateTime.fromISO('2019-01-11T00:00:00.000')
       .setZone('utc+1')
       .toMillis();
-    const oneDay = 1000 * 60 * 60 * 24;
-    const formatter = niceTimeFormatter([now, now + oneDay * 31]);
+    const oneDay = moment.duration(1, 'day');
+    const formatter = niceTimeFormatter([now, oneDay.add(now).asMilliseconds() * 31]);
     const axisSpec: AxisSpec = {
       id: 'bottom',
       position: 'bottom',
@@ -1483,8 +1484,8 @@ describe('Axis computational utils', () => {
     const now = DateTime.fromISO('2019-01-11T00:00:00.000')
       .setZone('utc+1')
       .toMillis();
-    const oneDay = 1000 * 60 * 60 * 24;
-    const formatter = niceTimeFormatter([now, now + oneDay * 31]);
+    const oneDay = moment.duration(1, 'day');
+    const formatter = niceTimeFormatter([now, oneDay.add(now).asMilliseconds() * 31]);
     const axisSpec: AxisSpec = {
       id: 'bottom',
       position: 'bottom',
