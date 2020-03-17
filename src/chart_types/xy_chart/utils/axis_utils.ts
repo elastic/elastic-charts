@@ -458,7 +458,7 @@ export function enableDuplicatedTicks(
     };
   });
 
-  if (axisSpec.enableDuplicatedTicks === true) {
+  if (axisSpec.showDuplicatedTicks === true) {
     return allTicks;
   }
 

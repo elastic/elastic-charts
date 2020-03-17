@@ -526,7 +526,7 @@ export interface AxisSpec extends Spec {
   /** Show only integar values **/
   integersOnly?: boolean;
   /** Remove duplicate ticks, default is false*/
-  enableDuplicatedTicks?: boolean;
+  showDuplicatedTicks?: boolean;
 }
 
 export type TickFormatterOptions = {

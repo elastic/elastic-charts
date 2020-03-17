@@ -1449,7 +1449,7 @@ describe('Axis computational utils', () => {
     const axisSpec: AxisSpec = {
       id: 'bottom',
       position: 'bottom',
-      enableDuplicatedTicks: false,
+      showDuplicatedTicks: false,
       chartType: 'xy_axis',
       specType: 'axis',
       groupId: '__global__',
@@ -1489,7 +1489,7 @@ describe('Axis computational utils', () => {
     const axisSpec: AxisSpec = {
       id: 'bottom',
       position: 'bottom',
-      enableDuplicatedTicks: true,
+      showDuplicatedTicks: true,
       chartType: 'xy_axis',
       specType: 'axis',
       groupId: '__global__',
