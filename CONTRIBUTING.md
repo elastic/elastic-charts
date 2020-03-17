@@ -67,7 +67,7 @@ Notice that you would need to repeat all these steps for any changes in charts t
 
 #### Uninstalling
 1. Reset changes to `package.json`.
-1. Run `yarn kbn bootstrap` †. Or `yarn install --force`
+1. Run `yarn kbn bootstrap` ☈. Or `yarn install --force`
 
 ### Symlink the library and build in watch mode
 
