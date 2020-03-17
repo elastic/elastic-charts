@@ -29,8 +29,11 @@ export const example = () => {
   const now = DateTime.fromISO('2019-01-11T00:00:00.000')
     .setZone('utc+1')
     .toMillis();
-  const oneDay = moment.duration(1, 'day');
-  const formatter = niceTimeFormatter([now, oneDay.add(now).asMilliseconds() * 5]);
+  const oneDay = 1000 * 60 * 60 * 24;
+  const oneDays = moment.duration(1, 'd');
+  const twoDays = moment.duration(2, 'd');
+  const fiveDays = moment.duration(5, 'd');
+  const formatter = niceTimeFormatter([now, fiveDays.add(now).asMilliseconds()]);
   return (
     <Chart className="story-chart">
       <Settings
@@ -53,9 +56,9 @@ export const example = () => {
         timeZone="Europe/Rome"
         data={[
           { x: now, y: 2 },
-          { x: oneDay.add(now).asMilliseconds(), y: 7 },
-          { x: oneDay.add(now).asMilliseconds() * 2, y: 3 },
-          { x: oneDay.add(now).asMilliseconds() * 5, y: 6 },
+          { x: oneDays.add(now).asMilliseconds(), y: 7 },
+          { x: twoDays.add(now).asMilliseconds(), y: 3 },
+          { x: now + oneDay * 5, y: 6 },
         ]}
       />
       <LineSeries
@@ -67,9 +70,9 @@ export const example = () => {
         timeZone="Europe/Rome"
         data={[
           { x: now, y: 2 },
-          { x: oneDay.add(now).asMilliseconds(), y: 7 },
-          { x: oneDay.add(now).asMilliseconds() * 2, y: 3 },
-          { x: oneDay.add(now).asMilliseconds() * 5, y: 6 },
+          { x: now + oneDay, y: 7 },
+          { x: now + oneDay * 2, y: 3 },
+          { x: now + oneDay * 5, y: 6 },
         ]}
       />
     </Chart>
