@@ -207,15 +207,21 @@ export function shapeViewModel(
     ? treemap(tree, treemapAreaAccessor, paddingAccessor, { x0: -width / 2, y0: -height / 2, width, height })
     : sunburst(tree, sunburstAreaAccessor, { x0: 0, y0: -1 }, clockwiseSectors, specialFirstInnermostSector);
 
+  const shownChildNodes = rawChildNodes.filter((n: Part) => {
+    const layerIndex = entryValue(n.node).depth - 1;
+    const layer = layers[layerIndex];
+    return !layer || !layer.showAccessor || layer.showAccessor(entryKey(n.node));
+  });
+
   // use the smaller of the two sizes, as a circle fits into a square
   const circleMaximumSize = Math.min(innerWidth, innerHeight);
   const outerRadius: Radius = (outerSizeRatio * circleMaximumSize) / 2;
   const innerRadius: Radius = outerRadius - (1 - emptySizeRatio) * outerRadius;
-  const treeHeight = rawChildNodes.reduce((p: number, n: any) => Math.max(p, entryValue(n.node).depth), 0); // 1: pie, 2: two-ring donut etc.
+  const treeHeight = shownChildNodes.reduce((p: number, n: any) => Math.max(p, entryValue(n.node).depth), 0); // 1: pie, 2: two-ring donut etc.
   const ringThickness = (outerRadius - innerRadius) / treeHeight;
 
   const quadViewModel = makeQuadViewModel(
-    rawChildNodes.slice(1).map(
+    shownChildNodes.slice(1).map(
       (n: Part): ShapeTreeNode => {
         const node: ArrayEntry = n.node;
         return {
