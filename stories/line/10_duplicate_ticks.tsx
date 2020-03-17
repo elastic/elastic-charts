@@ -27,8 +27,13 @@ export const example = () => {
   const now = DateTime.fromISO('2019-01-11T00:00:00.000')
     .setZone('utc+1')
     .toMillis();
-  const oneDay = moment.duration(1, 'day');
-  const formatter = niceTimeFormatter([now, oneDay.add(now).asMilliseconds() * 31]);
+  const oneDay = moment.duration(1, 'd');
+  const twoDays = moment.duration(2, 'd');
+  const oneMonth = moment.duration(31, 'd');
+  const threeDays = moment.duration(3, 'd');
+  const fourDays = moment.duration(4, 'd');
+  const fiveDays = moment.duration(5, 'd');
+  const formatter = niceTimeFormatter([now, oneMonth.add(now).asMilliseconds()]);
   const duplicateTicksInAxis = boolean('Show duplicate ticks in x axis', false);
   return (
     <Chart className="story-chart">
@@ -48,10 +53,10 @@ export const example = () => {
         data={[
           { x: now, y: 2 },
           { x: oneDay.add(now).asMilliseconds(), y: 3 },
-          { x: oneDay.add(now).asMilliseconds() * 2, y: 3 },
-          { x: oneDay.add(now).asMilliseconds() * 3, y: 4 },
-          { x: oneDay.add(now).asMilliseconds() * 4, y: 8 },
-          { x: oneDay.add(now).asMilliseconds() * 5, y: 6 },
+          { x: twoDays.add(now).asMilliseconds(), y: 3 },
+          { x: threeDays.add(now).asMilliseconds(), y: 4 },
+          { x: fourDays.add(now).asMilliseconds(), y: 8 },
+          { x: fiveDays.add(now).asMilliseconds(), y: 6 },
         ]}
         timeZone="local"
       />
