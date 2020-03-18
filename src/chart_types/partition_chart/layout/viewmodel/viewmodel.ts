@@ -144,7 +144,7 @@ export function shapeViewModel(
   textMeasure: TextMeasure,
   config: Config,
   layers: Layer[],
-  facts: Relation,
+  rawFacts: Relation,
   rawTextGetter: RawTextGetter,
   valueAccessor: ValueAccessor,
   specifiedValueFormatter: ValueFormatter,
@@ -176,13 +176,13 @@ export function shapeViewModel(
 
   const aggregator = aggregators.sum;
 
-  // don't render anything if there are no tuples, or some are negative, or the total is not positive
+  const facts = rawFacts.filter((n) => {
+    const value = valueAccessor(n);
+    return Number.isFinite(value) && value >= 0;
+  });
+
+  // don't render anything if the total, the width or height is not positive
   if (
-    facts.length === 0 ||
-    facts.some((n) => {
-      const value = valueAccessor(n);
-      return !isFinite(value) || value < 0;
-    }) ||
     facts.reduce((p: number, n) => aggregator.reducer(p, valueAccessor(n)), aggregator.identity()) <= 0 ||
     !(width > 0) ||
     !(height > 0)
