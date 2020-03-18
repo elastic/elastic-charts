@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License. */
-
+import React from 'react';
 import { SPEC_PARSED, SPEC_UNMOUNTED, UPSERT_SPEC, REMOVE_SPEC, SPEC_PARSING } from './actions/specs';
 import { SET_PERSISTED_COLOR, SET_TEMPORARY_COLOR, CLEAR_TEMPORARY_COLORS } from './actions/colors';
 import { interactionsReducer } from './reducers/interactions';
