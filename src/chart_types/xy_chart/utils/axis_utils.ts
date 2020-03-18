@@ -224,7 +224,7 @@ export const getMaxBboxDimensions = (
   };
 };
 
-export function computeTickDimensions(
+function computeTickDimensions(
   scale: Scale,
   tickFormat: TickFormatter,
   bboxCalculator: BBoxCalculator,
