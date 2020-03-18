@@ -17,7 +17,7 @@
  * under the License. */
 
 import React from 'react';
-import { Axis, Chart, LineSeries, Position, ScaleType, niceTimeFormatter } from '../../src/';
+import { Axis, Chart, LineSeries, Position, ScaleType, niceTimeFormatter } from '../../src';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
 import { boolean } from '@storybook/addon-knobs';
 import { DateTime } from 'luxon';
