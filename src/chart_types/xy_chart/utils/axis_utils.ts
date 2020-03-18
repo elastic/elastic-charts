@@ -29,7 +29,7 @@ import {
   AxisStyle,
   TickFormatterOptions,
 } from './specs';
-import { Position, Rotation } from '../../../utils/commons';
+import { Position, Rotation, getUniqueValues } from '../../../utils/commons';
 import { AxisConfig, Theme } from '../../../utils/themes/theme';
 import { Dimensions, Margins } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';
@@ -63,10 +63,6 @@ export interface TickLabelProps {
   verticalAlign: string;
 }
 
-export interface Duplicates {
-  filteredTicks: any[];
-  uniqueValues: Set<string>;
-}
 /**
  * Compute the ticks values and identify max width and height of the labels
  * so we can compute the max space occupied by the axis component.
@@ -447,6 +443,7 @@ export function getAvailableTicks(
   return enableDuplicatedTicks(axisSpec, scale, offset, tickFormatOptions);
 }
 
+/** @internal */
 export function enableDuplicatedTicks(
   axisSpec: AxisSpec,
   scale: Scale,
@@ -465,31 +462,7 @@ export function enableDuplicatedTicks(
   if (axisSpec.showDuplicatedTicks === true) {
     return allTicks;
   }
-  return getUniqueValues(
-    allTicks,
-    allTicks.map((tick) => tick.label),
-  );
-}
-
-function getUniqueValues(fullArray: any[], uniqueProperty: (string | number)[]) {
-  return fullArray.reduce<Duplicates>(
-    (acc, currentValue) => {
-      // need to find the correct value from currentValue (uniqueProperty points to the value in fullArray not the key)
-      const oneObject = Object.values(fullArray)[0];
-      const uniqueKey = Object.keys(oneObject).find((key) => oneObject[key] === uniqueProperty[0]);
-      const uniqueProp: string = currentValue[uniqueKey!];
-      if (acc.uniqueValues.has(uniqueProp)) {
-        return acc;
-      }
-      acc.uniqueValues.add(uniqueProp);
-      acc.filteredTicks.push(currentValue);
-      return acc;
-    },
-    {
-      filteredTicks: [],
-      uniqueValues: new Set(),
-    },
-  ).filteredTicks;
+  return getUniqueValues(allTicks, 'label');
 }
 
 export function getVisibleTicks(allTicks: AxisTick[], axisSpec: AxisSpec, axisDim: AxisTicksDimensions): AxisTick[] {
