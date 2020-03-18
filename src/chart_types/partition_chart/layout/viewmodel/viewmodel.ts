@@ -179,8 +179,13 @@ export function shapeViewModel(
   // don't render anything if there are no tuples, or some are negative, or the total is not positive
   if (
     facts.length === 0 ||
-    facts.some((n) => valueAccessor(n) < 0) ||
-    facts.reduce((p: number, n) => aggregator.reducer(p, valueAccessor(n)), aggregator.identity()) <= 0
+    facts.some((n) => {
+      const value = valueAccessor(n);
+      return !isFinite(value) || value < 0;
+    }) ||
+    facts.reduce((p: number, n) => aggregator.reducer(p, valueAccessor(n)), aggregator.identity()) <= 0 ||
+    !(width > 0) ||
+    !(height > 0)
   ) {
     return nullShapeViewModel(config, diskCenter);
   }
