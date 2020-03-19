@@ -23,7 +23,7 @@ Add any [Kibana](https://github.com/elastic/kibana) related issues/feature reque
 
 **Checklist**
 
-Delete any items that are not applicable to this PR.
+Delete any items that are not applicable to this feature request.
 
 - [ ] this request is checked against already exist requests
 - [ ] every related Kibana issue is listed under `Kibana Cross Issues` list
