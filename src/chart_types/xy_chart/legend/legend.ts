@@ -16,40 +16,24 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { getAxesSpecForSpecId, LastValues, getSpecsById } from '../state/utils';
+import { getAxesSpecForSpecId, getSpecsById } from '../state/utils';
 import { identity, Color } from '../../../utils/commons';
 import {
   SeriesCollectionValue,
   getSeriesIndex,
   getSortedDataSeriesColorsValuesMap,
   getSeriesName,
-  XYChartSeriesIdentifier,
-  SeriesKey,
-  SeriesIdentifier,
 } from '../utils/series';
+import { SeriesKey, SeriesIdentifier } from '../../../commons/series_id';
 import { AxisSpec, BasicSeriesSpec, Postfixes, isAreaSeriesSpec, isBarSeriesSpec } from '../utils/specs';
 import { Y0_ACCESSOR_POSTFIX, Y1_ACCESSOR_POSTFIX } from '../tooltip/tooltip';
 import { BandedAccessorType } from '../../../utils/geometry';
+import { LegendItem } from '../../../commons/legend';
 
-interface FormattedLastValues {
+export interface FormattedLastValues {
   y0: number | string | null;
   y1: number | string | null;
 }
-
-/** @internal */
-export type LegendItem = Postfixes & {
-  key: SeriesKey;
-  color: Color;
-  name: string;
-  seriesIdentifier: XYChartSeriesIdentifier;
-  isSeriesVisible?: boolean;
-  banded?: boolean;
-  isLegendItemVisible?: boolean;
-  displayValue: {
-    raw: LastValues;
-    formatted: FormattedLastValues;
-  };
-};
 
 function getPostfix(spec: BasicSeriesSpec): Postfixes {
   if (isAreaSeriesSpec(spec) || isBarSeriesSpec(spec)) {
@@ -105,7 +89,6 @@ export function computeLegend(
     const { hideInLegend } = spec;
 
     const legendItem: LegendItem = {
-      key,
       color,
       name,
       banded,

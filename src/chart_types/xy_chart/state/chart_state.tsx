@@ -36,7 +36,7 @@ import { getTooltipInfoSelector } from './selectors/get_tooltip_values_highlight
 import { htmlIdGenerator } from '../../../utils/commons';
 import { Tooltip } from '../../../components/tooltip';
 import { getTooltipAnchorPositionSelector } from './selectors/get_tooltip_position';
-import { SeriesKey } from '../utils/series';
+import { SeriesKey } from '../../../commons/series_id';
 import { createOnElementClickCaller } from './selectors/on_element_click_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { createOnElementOutCaller } from './selectors/on_element_out_caller';

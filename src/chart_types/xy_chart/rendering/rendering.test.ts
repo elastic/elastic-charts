@@ -29,7 +29,7 @@ import { mergePartial, RecursivePartial } from '../../../utils/commons';
 import { BarGeometry, PointGeometry } from '../../../utils/geometry';
 import { MockDataSeries } from '../../../mocks';
 import { MockScale } from '../../../mocks/scale';
-import { LegendItem } from '../legend/legend';
+import { LegendItem } from '../../../commons/legend';
 
 describe('Rendering utils', () => {
   test('check if point is in geometry', () => {
@@ -121,7 +121,6 @@ describe('Rendering utils', () => {
       key: 'somekey',
     };
     const highlightedLegendItem: LegendItem = {
-      key: 'somekey',
       color: '',
       name: '',
       seriesIdentifier,

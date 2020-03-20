@@ -32,7 +32,8 @@ import { LIGHT_THEME } from '../../utils/themes/light_theme';
 import { LegendListItem } from './legend_item';
 import { Theme } from '../../utils/themes/theme';
 import { TooltipLegendValue } from '../../chart_types/xy_chart/tooltip/tooltip';
-import { LegendItem, getItemLabel } from '../../chart_types/xy_chart/legend/legend';
+import { getItemLabel } from '../../chart_types/xy_chart/legend/legend';
+import { LegendItem } from '../../commons/legend';
 import { BBox } from '../../utils/bbox/bbox_calculator';
 import {
   onToggleDeselectSeriesAction,
@@ -42,7 +43,7 @@ import {
 import { clearTemporaryColors, setTemporaryColor, setPersistedColor } from '../../state/actions/colors';
 import { SettingsSpec } from '../../specs';
 import { BandedAccessorType } from '../../utils/geometry';
-import { SeriesKey } from '../../chart_types/xy_chart/utils/series';
+import { SeriesKey } from '../../commons/series_id';
 
 interface LegendStateProps {
   legendItems: Map<SeriesKey, LegendItem>;
@@ -159,15 +160,15 @@ class LegendComponent extends React.Component<LegendProps> {
     if (!this.props.settings) {
       return null;
     }
-    const { key, displayValue, banded } = item;
+    const { seriesIdentifier, displayValue, banded } = item;
     const { legendItemTooltipValues, settings } = this.props;
     const { showLegendExtra, legendPosition, legendColorPicker } = settings;
-    const legendValues = this.getLegendValues(legendItemTooltipValues, key, banded);
+    const legendValues = this.getLegendValues(legendItemTooltipValues, seriesIdentifier.key, banded);
     return legendValues.map((value, index) => {
       const yAccessor: BandedAccessorType = index === 0 ? BandedAccessorType.Y1 : BandedAccessorType.Y0;
       return (
         <LegendListItem
-          key={`${key}-${yAccessor}`}
+          key={`${seriesIdentifier.key}-${yAccessor}`}
           legendItem={item}
           legendColorPicker={legendColorPicker}
           legendPosition={legendPosition}

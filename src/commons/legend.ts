@@ -16,21 +16,22 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import createCachedSelector from 're-reselect';
-import { GlobalChartState } from '../../../../state/chart_state';
-import { computeLegendSelector } from './compute_legend';
-import { LegendItem } from '../../../../commons/legend';
-import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-
-const getHighlightedLegendItemKey = (state: GlobalChartState) => state.interactions.highlightedLegendItemKey;
+import { LastValues } from '../chart_types/xy_chart/state/utils';
+import { Color } from '../utils/commons';
+import { SeriesIdentifier } from './series_id';
+import { Postfixes } from '../chart_types/xy_chart/utils/specs';
+import { FormattedLastValues } from '../chart_types/xy_chart/legend/legend';
 
 /** @internal */
-export const getHighlightedSeriesSelector = createCachedSelector(
-  [getHighlightedLegendItemKey, computeLegendSelector],
-  (highlightedLegendItemKey, legendItems): LegendItem | undefined => {
-    if (!highlightedLegendItemKey) {
-      return undefined;
-    }
-    return legendItems.get(highlightedLegendItemKey);
-  },
-)(getChartIdSelector);
+export type LegendItem = Postfixes & {
+  seriesIdentifier: SeriesIdentifier;
+  color: Color;
+  name: string;
+  isSeriesVisible?: boolean;
+  banded?: boolean;
+  isLegendItemVisible?: boolean;
+  displayValue: {
+    raw: LastValues;
+    formatted: FormattedLastValues;
+  };
+};

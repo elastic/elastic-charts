@@ -30,7 +30,7 @@ import { ScaleType, ScaleContinuous, ScaleBand } from '../../../scales';
 import { IndexedGeometry, GeometryValue, BandedAccessorType } from '../../../utils/geometry';
 import { AxisTicksDimensions, isDuplicateAxis } from '../utils/axis_utils';
 import { AxisId } from '../../../utils/ids';
-import { LegendItem } from '../legend/legend';
+import { LegendItem } from '../../../commons/legend';
 import { ChartTypes } from '../..';
 import { SpecTypes, TooltipValue, TooltipType } from '../../../specs/settings';
 
@@ -61,14 +61,10 @@ describe.skip('Chart Store', () => {
   };
 
   const firstLegendItem: LegendItem = {
-    key: 'color1',
     color: 'foo',
     name: 'bar',
     seriesIdentifier: {
       specId: SPEC_ID,
-      yAccessor: 'y1',
-      splitAccessors: new Map(),
-      seriesKeys: [],
       key: 'color1',
     },
     displayValue: {
@@ -84,14 +80,10 @@ describe.skip('Chart Store', () => {
   };
 
   const secondLegendItem: LegendItem = {
-    key: 'color2',
     color: 'baz',
     name: 'qux',
     seriesIdentifier: {
       specId: SPEC_ID,
-      yAccessor: '',
-      splitAccessors: new Map(),
-      seriesKeys: [],
       key: 'color2',
     },
     displayValue: {
@@ -303,14 +295,14 @@ describe.skip('Chart Store', () => {
 
   test.skip('can get highlighted legend item', () => {
     store.legendItems = new Map([
-      [firstLegendItem.key, firstLegendItem],
-      [secondLegendItem.key, secondLegendItem],
+      [firstLegendItem.seriesIdentifier.key, firstLegendItem],
+      [secondLegendItem.seriesIdentifier.key, secondLegendItem],
     ]);
 
     store.highlightedLegendItemKey.set(null);
     expect(store.highlightedLegendItem.get()).toBe(null);
 
-    store.highlightedLegendItemKey.set(secondLegendItem.key);
+    store.highlightedLegendItemKey.set(secondLegendItem.seriesIdentifier.key);
     expect(store.highlightedLegendItem.get()).toEqual(secondLegendItem);
   });
 
@@ -320,16 +312,16 @@ describe.skip('Chart Store', () => {
     });
 
     store.legendItems = new Map([
-      [firstLegendItem.key, firstLegendItem],
-      [secondLegendItem.key, secondLegendItem],
+      [firstLegendItem.seriesIdentifier.key, firstLegendItem],
+      [secondLegendItem.seriesIdentifier.key, secondLegendItem],
     ]);
     store.highlightedLegendItemKey.set(null);
 
-    store.onLegendItemOver(firstLegendItem.key);
-    expect(store.highlightedLegendItemKey.get()).toBe(firstLegendItem.key);
+    store.onLegendItemOver(firstLegendItem.seriesIdentifier.key);
+    expect(store.highlightedLegendItemKey.get()).toBe(firstLegendItem.seriesIdentifier.key);
 
     store.setOnLegendItemOverListener(legendListener);
-    store.onLegendItemOver(secondLegendItem.key);
+    store.onLegendItemOver(secondLegendItem.seriesIdentifier.key);
     expect(legendListener).toBeCalledWith(secondLegendItem.seriesIdentifier);
 
     store.onLegendItemOver(null);
@@ -342,7 +334,7 @@ describe.skip('Chart Store', () => {
   test.skip('can respond to legend item mouseout event', () => {
     const outListener = jest.fn((): undefined => undefined);
 
-    store.highlightedLegendItemKey.set(firstLegendItem.key);
+    store.highlightedLegendItemKey.set(firstLegendItem.seriesIdentifier.key);
 
     store.setOnLegendItemOutListener(outListener);
 
@@ -363,24 +355,24 @@ describe.skip('Chart Store', () => {
     store.setOnLegendItemOverListener(legendListener);
 
     store.legendItems = new Map([
-      [firstLegendItem.key, firstLegendItem],
-      [secondLegendItem.key, secondLegendItem],
+      [firstLegendItem.seriesIdentifier.key, firstLegendItem],
+      [secondLegendItem.seriesIdentifier.key, secondLegendItem],
     ]);
     store.deselectedDataSeries = [];
     store.highlightedLegendItemKey.set(null);
 
-    store.toggleSeriesVisibility(firstLegendItem.key);
+    store.toggleSeriesVisibility(firstLegendItem.seriesIdentifier.key);
     expect(store.deselectedDataSeries).toEqual([firstLegendItem.seriesIdentifier]);
     expect(store.highlightedLegendItemKey.get()).toBe(null);
-    store.onLegendItemOver(firstLegendItem.key);
+    store.onLegendItemOver(firstLegendItem.seriesIdentifier.key);
     expect(store.highlightedLegendItemKey.get()).toBe(null);
     store.onLegendItemOut();
-    store.toggleSeriesVisibility(firstLegendItem.key);
-    expect(store.highlightedLegendItemKey.get()).toEqual(firstLegendItem.key);
+    store.toggleSeriesVisibility(firstLegendItem.seriesIdentifier.key);
+    expect(store.highlightedLegendItemKey.get()).toEqual(firstLegendItem.seriesIdentifier.key);
     expect(store.deselectedDataSeries).toEqual([]);
 
-    store.onLegendItemOver(firstLegendItem.key);
-    expect(store.highlightedLegendItemKey.get()).toBe(firstLegendItem.key);
+    store.onLegendItemOver(firstLegendItem.seriesIdentifier.key);
+    expect(store.highlightedLegendItemKey.get()).toBe(firstLegendItem.seriesIdentifier.key);
 
     store.removeOnLegendItemOutListener();
   });
@@ -391,26 +383,26 @@ describe.skip('Chart Store', () => {
     });
 
     store.legendItems = new Map([
-      [firstLegendItem.key, firstLegendItem],
-      [secondLegendItem.key, secondLegendItem],
+      [firstLegendItem.seriesIdentifier.key, firstLegendItem],
+      [secondLegendItem.seriesIdentifier.key, secondLegendItem],
     ]);
     store.selectedLegendItemKey.set(null);
     store.onLegendItemClickListener = undefined;
 
-    store.onLegendItemClick(firstLegendItem.key);
+    store.onLegendItemClick(firstLegendItem.seriesIdentifier.key);
     // TODO reenable this after re-configuring onLegendItemClick
-    // expect(store.selectedLegendItemKey.get()).toBe(firstLegendItem.key);
+    // expect(store.selectedLegendItemKey.get()).toBe(firstLegendItem.seriesIdentifier.key);
     expect(legendListener).not.toBeCalled();
 
     store.setOnLegendItemClickListener(legendListener);
-    store.onLegendItemClick(firstLegendItem.key);
+    store.onLegendItemClick(firstLegendItem.seriesIdentifier.key);
     // TODO reenable this after re-configuring onLegendItemClick
     // expect(store.selectedLegendItemKey.get()).toBe(null);
     // expect(legendListener).toBeCalledWith(null);
 
     // store.setOnLegendItemClickListener(legendListener);
-    // store.onLegendItemClick(secondLegendItem.key);
-    // expect(store.selectedLegendItemKey.get()).toBe(secondLegendItem.key);
+    // store.onLegendItemClick(secondLegendItem.seriesIdentifier.key);
+    // expect(store.selectedLegendItemKey.get()).toBe(secondLegendItem.seriesIdentifier.key);
     expect(legendListener).toBeCalledWith(firstLegendItem.seriesIdentifier);
   });
 
@@ -420,8 +412,8 @@ describe.skip('Chart Store', () => {
     });
 
     store.legendItems = new Map([
-      [firstLegendItem.key, firstLegendItem],
-      [secondLegendItem.key, secondLegendItem],
+      [firstLegendItem.seriesIdentifier.key, firstLegendItem],
+      [secondLegendItem.seriesIdentifier.key, secondLegendItem],
     ]);
     store.selectedLegendItemKey.set(null);
     store.onLegendItemPlusClickListener = undefined;
@@ -433,7 +425,7 @@ describe.skip('Chart Store', () => {
     store.onLegendItemPlusClick();
     expect(legendListener).toBeCalledWith(null);
 
-    store.selectedLegendItemKey.set(firstLegendItem.key);
+    store.selectedLegendItemKey.set(firstLegendItem.seriesIdentifier.key);
     store.onLegendItemPlusClick();
     expect(legendListener).toBeCalledWith(firstLegendItem.seriesIdentifier);
   });
@@ -444,8 +436,8 @@ describe.skip('Chart Store', () => {
     });
 
     store.legendItems = new Map([
-      [firstLegendItem.key, firstLegendItem],
-      [secondLegendItem.key, secondLegendItem],
+      [firstLegendItem.seriesIdentifier.key, firstLegendItem],
+      [secondLegendItem.seriesIdentifier.key, secondLegendItem],
     ]);
     store.selectedLegendItemKey.set(null);
     store.onLegendItemMinusClickListener = undefined;
@@ -457,7 +449,7 @@ describe.skip('Chart Store', () => {
     store.onLegendItemMinusClick();
     expect(legendListener).toBeCalledWith(null);
 
-    store.selectedLegendItemKey.set(firstLegendItem.key);
+    store.selectedLegendItemKey.set(firstLegendItem.seriesIdentifier.key);
     store.onLegendItemMinusClick();
     expect(legendListener).toBeCalledWith(firstLegendItem.seriesIdentifier);
   });
@@ -468,8 +460,8 @@ describe.skip('Chart Store', () => {
     });
 
     store.legendItems = new Map([
-      [firstLegendItem.key, firstLegendItem],
-      [secondLegendItem.key, secondLegendItem],
+      [firstLegendItem.seriesIdentifier.key, firstLegendItem],
+      [secondLegendItem.seriesIdentifier.key, secondLegendItem],
     ]);
     store.deselectedDataSeries = [];
     store.computeChart = computeChart;
@@ -479,12 +471,12 @@ describe.skip('Chart Store', () => {
     expect(computeChart).not.toBeCalled();
 
     store.deselectedDataSeries = [firstLegendItem.seriesIdentifier, secondLegendItem.seriesIdentifier];
-    store.toggleSeriesVisibility(firstLegendItem.key);
+    store.toggleSeriesVisibility(firstLegendItem.seriesIdentifier.key);
     expect(store.deselectedDataSeries).toEqual([secondLegendItem.seriesIdentifier]);
     expect(computeChart).toBeCalled();
 
     store.deselectedDataSeries = [firstLegendItem.seriesIdentifier];
-    store.toggleSeriesVisibility(firstLegendItem.key);
+    store.toggleSeriesVisibility(firstLegendItem.seriesIdentifier.key);
     expect(store.deselectedDataSeries).toEqual([]);
   });
 
@@ -494,8 +486,8 @@ describe.skip('Chart Store', () => {
     });
 
     store.legendItems = new Map([
-      [firstLegendItem.key, firstLegendItem],
-      [secondLegendItem.key, secondLegendItem],
+      [firstLegendItem.seriesIdentifier.key, firstLegendItem],
+      [secondLegendItem.seriesIdentifier.key, secondLegendItem],
     ]);
     store.deselectedDataSeries = [];
     store.computeChart = computeChart;
@@ -504,10 +496,10 @@ describe.skip('Chart Store', () => {
     expect(store.deselectedDataSeries).toEqual([]);
     expect(computeChart).not.toBeCalled();
 
-    store.toggleSingleSeries(firstLegendItem.key);
+    store.toggleSingleSeries(firstLegendItem.seriesIdentifier.key);
     expect(store.deselectedDataSeries).toEqual([firstLegendItem.seriesIdentifier]);
 
-    store.toggleSingleSeries(firstLegendItem.key);
+    store.toggleSingleSeries(firstLegendItem.seriesIdentifier.key);
     expect(store.deselectedDataSeries).toEqual([secondLegendItem.seriesIdentifier]);
   });
 
@@ -736,27 +728,27 @@ describe.skip('Chart Store', () => {
     beforeEach(() => {
       store.computeChart = jest.fn();
       store.legendItems = new Map([
-        [firstLegendItem.key, firstLegendItem],
-        [secondLegendItem.key, secondLegendItem],
+        [firstLegendItem.seriesIdentifier.key, firstLegendItem],
+        [secondLegendItem.seriesIdentifier.key, secondLegendItem],
       ]);
     });
 
     it('should set color override', () => {
-      store.setSeriesColor(firstLegendItem.key, 'red');
+      store.setSeriesColor(firstLegendItem.seriesIdentifier.key, 'red');
       expect(store.computeChart).toBeCalled();
-      expect(store.seriesColorOverrides.get(firstLegendItem.key)).toBe('red');
+      expect(store.seriesColorOverrides.get(firstLegendItem.seriesIdentifier.key)).toBe('red');
     });
 
     it('should not set color override with empty color', () => {
-      store.setSeriesColor(firstLegendItem.key, '');
+      store.setSeriesColor(firstLegendItem.seriesIdentifier.key, '');
       expect(store.computeChart).not.toBeCalled();
-      expect(store.seriesColorOverrides.get(firstLegendItem.key)).toBeUndefined();
+      expect(store.seriesColorOverrides.get(firstLegendItem.seriesIdentifier.key)).toBeUndefined();
     });
 
     it('should not set color override with empty key', () => {
       store.setSeriesColor('', 'red');
       expect(store.computeChart).not.toBeCalled();
-      expect(store.seriesColorOverrides.get(firstLegendItem.key)).toBeUndefined();
+      expect(store.seriesColorOverrides.get(firstLegendItem.seriesIdentifier.key)).toBeUndefined();
     });
   });
 
@@ -874,8 +866,8 @@ describe.skip('Chart Store', () => {
       });
 
       store.legendItems = new Map([
-        [firstLegendItem.key, firstLegendItem],
-        [secondLegendItem.key, secondLegendItem],
+        [firstLegendItem.seriesIdentifier.key, firstLegendItem],
+        [secondLegendItem.seriesIdentifier.key, secondLegendItem],
       ]);
       store.selectedLegendItemKey.set(null);
       store.onCursorUpdateListener = undefined;

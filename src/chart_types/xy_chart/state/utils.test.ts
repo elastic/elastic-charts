@@ -47,7 +47,7 @@ import {
 import { IndexedGeometry, BandedAccessorType } from '../../../utils/geometry';
 import { mergeYCustomDomainsByGroupId } from './selectors/merge_y_custom_domains';
 import { updateDeselectedDataSeries } from './utils';
-import { LegendItem } from '../legend/legend';
+import { LegendItem } from '../../../commons/legend';
 import { ChartTypes } from '../..';
 import { MockSeriesSpecs, MockSeriesSpec } from '../../../mocks/specs';
 import { MockSeriesCollection } from '../../../mocks/series/series_identifiers';
@@ -1438,29 +1438,21 @@ describe('Chart State utils', () => {
   test('displays no data availble if chart is empty', () => {
     const legendItems1 = new Map<string, LegendItem>();
     legendItems1.set('specId:{bars},colors:{a}', {
-      key: 'specId:{bars},colors:{a}',
       color: '#1EA593',
       name: 'a',
       seriesIdentifier: {
+        key: 'specId:{bars},colors:{a}',
         specId: 'bars',
-        seriesKeys: ['a'],
-        key: '',
-        splitAccessors: new Map(),
-        yAccessor: 'y1',
       },
       displayValue: { raw: { y0: null, y1: 6 }, formatted: { y0: null, y1: '6.00' } },
       isSeriesVisible: false,
     });
     legendItems1.set('specId:{bars},colors:{b}', {
-      key: 'specId:{bars},colors:{b}',
       color: '#2B70F7',
       name: 'b',
       seriesIdentifier: {
+        key: 'specId:{bars},colors:{b}',
         specId: 'bars',
-        seriesKeys: ['b'],
-        key: '',
-        splitAccessors: new Map(),
-        yAccessor: 'y1',
       },
       displayValue: { raw: { y0: null, y1: 2 }, formatted: { y0: null, y1: '2.00' } },
       isSeriesVisible: false,
@@ -1470,29 +1462,21 @@ describe('Chart State utils', () => {
   test('displays data availble if chart is not empty', () => {
     const legendItems2 = new Map<string, LegendItem>();
     legendItems2.set('specId:{bars},colors:{a}', {
-      key: 'specId:{bars},colors:{a}',
       color: '#1EA593',
       name: 'a',
       seriesIdentifier: {
+        key: 'specId:{bars},colors:{a}',
         specId: 'bars',
-        seriesKeys: ['a'],
-        key: '',
-        splitAccessors: new Map(),
-        yAccessor: 'y1',
       },
       displayValue: { raw: { y0: null, y1: 6 }, formatted: { y0: null, y1: '6.00' } },
       isSeriesVisible: true,
     });
     legendItems2.set('specId:{bars},colors:{b}', {
-      key: 'specId:{bars},colors:{b}',
       color: '#2B70F7',
       name: 'b',
       seriesIdentifier: {
+        key: 'specId:{bars},colors:{b}',
         specId: 'bars',
-        seriesKeys: ['b'],
-        key: '',
-        splitAccessors: new Map(),
-        yAccessor: 'y1',
       },
       displayValue: { raw: { y0: null, y1: 2 }, formatted: { y0: null, y1: '2.00' } },
       isSeriesVisible: false,

@@ -16,21 +16,23 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import createCachedSelector from 're-reselect';
-import { GlobalChartState } from '../../../../state/chart_state';
-import { computeLegendSelector } from './compute_legend';
-import { LegendItem } from '../../../../commons/legend';
-import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { SpecId } from '../utils/ids';
 
-const getHighlightedLegendItemKey = (state: GlobalChartState) => state.interactions.highlightedLegendItemKey;
+/**
+ * A string key used to uniquely identify a series
+ */
+export type SeriesKey = string;
 
-/** @internal */
-export const getHighlightedSeriesSelector = createCachedSelector(
-  [getHighlightedLegendItemKey, computeLegendSelector],
-  (highlightedLegendItemKey, legendItems): LegendItem | undefined => {
-    if (!highlightedLegendItemKey) {
-      return undefined;
-    }
-    return legendItems.get(highlightedLegendItemKey);
-  },
-)(getChartIdSelector);
+/**
+ * A series identifier
+ */
+export type SeriesIdentifier = {
+  /**
+   * The SpecId, used to identify the spec
+   */
+  specId: SpecId;
+  /**
+   * A string key used to uniquely identify a series
+   */
+  key: SeriesKey;
+};

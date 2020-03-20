@@ -17,8 +17,8 @@
  * under the License. */
 
 import { GlobalChartState } from '../chart_state';
-import { LegendItem } from '../../chart_types/xy_chart/legend/legend';
-import { SeriesKey } from '../../chart_types/xy_chart/utils/series';
+import { LegendItem } from '../../commons/legend';
+import { SeriesKey } from '../../commons/series_id';
 
 const EMPTY_LEGEND_LIST = new Map<SeriesKey, LegendItem>();
 

@@ -18,7 +18,7 @@
 
 import { TooltipLegendValue } from '../../chart_types/xy_chart/tooltip/tooltip';
 import { GlobalChartState } from '../chart_state';
-import { SeriesKey } from '../../chart_types/xy_chart/utils/series';
+import { SeriesKey } from '../../commons/series_id';
 
 const EMPTY_ITEM_LIST = new Map<SeriesKey, TooltipLegendValue>();
 

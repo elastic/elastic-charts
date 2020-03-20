@@ -21,10 +21,10 @@ import React, { Component, createRef } from 'react';
 import { deepEqual } from '../../utils/fast_deep_equal';
 import { Icon } from '../icons/icon';
 import { LegendItemListener, BasicListener, LegendColorPicker } from '../../specs/settings';
-import { LegendItem } from '../../chart_types/xy_chart/legend/legend';
+import { LegendItem } from '../../commons/legend';
 import { onLegendItemOutAction, onLegendItemOverAction } from '../../state/actions/legend';
 import { Position, Color } from '../../utils/commons';
-import { XYChartSeriesIdentifier, SeriesIdentifier } from '../../chart_types/xy_chart/utils/series';
+import { SeriesIdentifier } from '../../commons/series_id';
 import { clearTemporaryColors, setTemporaryColor, setPersistedColor } from '../../state/actions/colors';
 
 interface LegendItemProps {
@@ -213,7 +213,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
     if (onLegendItemOverListener) {
       onLegendItemOverListener(legendItem.seriesIdentifier);
     }
-    legendItemOverAction(legendItem.key);
+    legendItemOverAction(legendItem.seriesIdentifier.key);
   };
 
   onLegendItemMouseOut = () => {
@@ -226,7 +226,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
   };
 
   // TODO handle shift key
-  onVisibilityClick = (legendItemId: XYChartSeriesIdentifier) => () => {
+  onVisibilityClick = (legendItemId: SeriesIdentifier) => () => {
     const { onLegendItemClickListener, toggleDeselectSeriesAction } = this.props;
     if (onLegendItemClickListener) {
       onLegendItemClickListener(legendItemId);

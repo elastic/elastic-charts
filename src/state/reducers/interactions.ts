@@ -25,7 +25,8 @@ import {
   LegendActions,
 } from '../actions/legend';
 import { ON_MOUSE_DOWN, ON_MOUSE_UP, ON_POINTER_MOVE, MouseActions } from '../actions/mouse';
-import { getSeriesIndex, SeriesIdentifier } from '../../chart_types/xy_chart/utils/series';
+import { getSeriesIndex } from '../../chart_types/xy_chart/utils/series';
+import { SeriesIdentifier } from '../../commons/series_id';
 
 /** @internal */
 export function interactionsReducer(state: InteractionsState, action: LegendActions | MouseActions): InteractionsState {

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { SeriesIdentifier } from '../../chart_types/xy_chart/utils/series';
+import { SeriesIdentifier } from '../../commons/series_id';
 
 /** @internal */
 export const ON_TOGGLE_LEGEND = 'ON_TOGGLE_LEGEND';

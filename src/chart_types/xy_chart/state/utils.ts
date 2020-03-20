@@ -32,9 +32,8 @@ import {
   getSeriesKey,
   RawDataSeries,
   XYChartSeriesIdentifier,
-  SeriesKey,
-  SeriesIdentifier,
 } from '../utils/series';
+import { SeriesKey, SeriesIdentifier } from '../../../commons/series_id';
 import {
   AreaSeriesSpec,
   AxisSpec,
@@ -58,7 +57,7 @@ import { Domain } from '../../../utils/domain';
 import { GroupId, SpecId } from '../../../utils/ids';
 import { Scale } from '../../../scales';
 import { PointGeometry, BarGeometry, AreaGeometry, LineGeometry, IndexedGeometry } from '../../../utils/geometry';
-import { LegendItem } from '../legend/legend';
+import { LegendItem } from '../../../commons/legend';
 import { Spec } from '../../../specs';
 
 const MAX_ANIMATABLE_BARS = 300;

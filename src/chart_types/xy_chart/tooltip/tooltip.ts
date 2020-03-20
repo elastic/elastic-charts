@@ -26,7 +26,8 @@ import {
 } from '../utils/specs';
 import { IndexedGeometry, BandedAccessorType } from '../../../utils/geometry';
 import { getAccessorFormatLabel } from '../../../utils/accessor';
-import { getSeriesName, SeriesKey } from '../utils/series';
+import { getSeriesName } from '../utils/series';
+import { SeriesKey } from '../../../commons/series_id';
 import { TooltipValue } from '../../../specs';
 
 export interface TooltipLegendValue {

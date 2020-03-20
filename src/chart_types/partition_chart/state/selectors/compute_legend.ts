@@ -18,8 +18,8 @@
 
 import createCachedSelector from 're-reselect';
 import { getTree } from './tree';
-import { SeriesKey } from '../../../xy_chart/utils/series';
-import { LegendItem } from '../../../xy_chart/legend/legend';
+import { SeriesKey } from '../../../../commons/series_id';
+import { LegendItem } from '../../../../commons/legend';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getPieSpecOrNull } from './pie_spec';
 import { HierarchyOfArrays, CHILDREN_KEY, PrimitiveValue } from '../../layout/utils/group_by_rollup';
@@ -29,7 +29,7 @@ export const computeLegendSelector = createCachedSelector(
   [getPieSpecOrNull, getTree],
   (pieSpec, tree): Map<SeriesKey, LegendItem> => {
     // console.log(tree, flatSlicesNames(tree, [], []));
-    // const legendItems = flatSlicesNames(tree);
+    flatSlicesNames(tree);
 
     // legendItems.map<LegendItem>((d) => {
     //   return {

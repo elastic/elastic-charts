@@ -20,7 +20,7 @@ import createCachedSelector from 're-reselect';
 import { getSeriesTooltipValues, TooltipLegendValue } from '../../tooltip/tooltip';
 import { getTooltipInfoSelector } from './get_tooltip_values_highlighted_geoms';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { SeriesKey } from '../../utils/series';
+import { SeriesKey } from '../../../../commons/series_id';
 
 /** @internal */
 export const getLegendTooltipValuesSelector = createCachedSelector(

@@ -21,12 +21,12 @@ import { SET_PERSISTED_COLOR, SET_TEMPORARY_COLOR, CLEAR_TEMPORARY_COLORS } from
 import { interactionsReducer } from './reducers/interactions';
 import { ChartTypes } from '../chart_types';
 import { XYAxisChartState } from '../chart_types/xy_chart/state/chart_state';
-import { SeriesKey, SeriesIdentifier } from '../chart_types/xy_chart/utils/series';
+import { SeriesKey, SeriesIdentifier } from '../commons/series_id';
 import { Spec, PointerEvent } from '../specs';
 import { DEFAULT_SETTINGS_SPEC } from '../specs/settings';
 import { Dimensions } from '../utils/dimensions';
 import { Point } from '../utils/point';
-import { LegendItem } from '../chart_types/xy_chart/legend/legend';
+import { LegendItem } from '../commons/legend';
 import { TooltipLegendValue } from '../chart_types/xy_chart/tooltip/tooltip';
 import { StateActions } from './actions';
 import { CHART_RENDERED } from './actions/chart';

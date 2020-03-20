@@ -27,7 +27,8 @@ import { Spec } from '.';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { ChartTypes } from '../chart_types';
 import { GeometryValue } from '../utils/geometry';
-import { XYChartSeriesIdentifier, SeriesIdentifier } from '../chart_types/xy_chart/utils/series';
+import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
+import { SeriesIdentifier } from '../commons/series_id';
 import { Accessor } from '../utils/accessor';
 import { Position, Rendering, Rotation, Color } from '../utils/commons';
 import { ScaleContinuousType, ScaleOrdinalType } from '../scales';
@@ -160,7 +161,7 @@ export interface LegendColorPickerProps {
   /**
    * Series id for the active series
    */
-  seriesIdentifier: XYChartSeriesIdentifier;
+  seriesIdentifier: SeriesIdentifier;
 }
 export type LegendColorPicker = ComponentType<LegendColorPickerProps>;
 

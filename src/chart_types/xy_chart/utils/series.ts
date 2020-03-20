@@ -27,6 +27,7 @@ import { ScaleType } from '../../../scales';
 import { LastValues } from '../state/utils';
 import { Datum, Color } from '../../../utils/commons';
 import { ColorOverrides } from '../../../state/chart_state';
+import { SeriesIdentifier, SeriesKey } from '../../../commons/series_id';
 
 export const SERIES_DELIMITER = ' - ';
 
@@ -66,13 +67,6 @@ export interface DataSeriesDatum<T = any> {
   /** the list of filled values because missing or nulls */
   filled?: FilledValues;
 }
-
-export type SeriesKey = string;
-
-export type SeriesIdentifier = {
-  specId: SpecId;
-  key: SeriesKey;
-};
 
 export interface XYChartSeriesIdentifier extends SeriesIdentifier {
   yAccessor: string | number;
