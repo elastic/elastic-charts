@@ -21,7 +21,7 @@ import { SET_PERSISTED_COLOR, SET_TEMPORARY_COLOR, CLEAR_TEMPORARY_COLORS } from
 import { interactionsReducer } from './reducers/interactions';
 import { ChartTypes } from '../chart_types';
 import { XYAxisChartState } from '../chart_types/xy_chart/state/chart_state';
-import { XYChartSeriesIdentifier, SeriesKey } from '../chart_types/xy_chart/utils/series';
+import { SeriesKey, SeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import { Spec, PointerEvent } from '../specs';
 import { DEFAULT_SETTINGS_SPEC } from '../specs/settings';
 import { Dimensions } from '../utils/dimensions';
@@ -137,7 +137,7 @@ export interface InteractionsState {
   highlightedLegendItemKey: string | null;
   legendCollapsed: boolean;
   invertDeselect: boolean;
-  deselectedDataSeries: XYChartSeriesIdentifier[];
+  deselectedDataSeries: SeriesIdentifier[];
 }
 
 /** @internal */

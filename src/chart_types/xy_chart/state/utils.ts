@@ -33,6 +33,7 @@ import {
   RawDataSeries,
   XYChartSeriesIdentifier,
   SeriesKey,
+  SeriesIdentifier,
 } from '../utils/series';
 import {
   AreaSeriesSpec,
@@ -240,7 +241,7 @@ function getLastValues(formattedDataSeries: {
 export function computeSeriesDomains(
   seriesSpecs: BasicSeriesSpec[],
   customYDomainsByGroupId: Map<GroupId, DomainRange> = new Map(),
-  deselectedDataSeries: XYChartSeriesIdentifier[] = [],
+  deselectedDataSeries: SeriesIdentifier[] = [],
   customXDomain?: DomainRange | Domain,
 ): SeriesDomainsAndData {
   const { splittedSeries, xValues, seriesCollection } = deselectedDataSeries

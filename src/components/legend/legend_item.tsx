@@ -24,7 +24,7 @@ import { LegendItemListener, BasicListener, LegendColorPicker } from '../../spec
 import { LegendItem } from '../../chart_types/xy_chart/legend/legend';
 import { onLegendItemOutAction, onLegendItemOverAction } from '../../state/actions/legend';
 import { Position, Color } from '../../utils/commons';
-import { XYChartSeriesIdentifier } from '../../chart_types/xy_chart/utils/series';
+import { XYChartSeriesIdentifier, SeriesIdentifier } from '../../chart_types/xy_chart/utils/series';
 import { clearTemporaryColors, setTemporaryColor, setPersistedColor } from '../../state/actions/colors';
 
 interface LegendItemProps {
@@ -42,7 +42,7 @@ interface LegendItemProps {
   clearTemporaryColors: typeof clearTemporaryColors;
   setTemporaryColor: typeof setTemporaryColor;
   setPersistedColor: typeof setPersistedColor;
-  toggleDeselectSeriesAction: (legendItemId: XYChartSeriesIdentifier) => void;
+  toggleDeselectSeriesAction: (legendItemId: SeriesIdentifier) => void;
 }
 
 /**

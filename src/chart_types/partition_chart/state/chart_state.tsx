@@ -26,6 +26,7 @@ import { Tooltip } from '../../../components/tooltip';
 import { createOnElementClickCaller } from './selectors/on_element_click_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { createOnElementOutCaller } from './selectors/on_element_out_caller';
+import { computeLegendSelector } from './selectors/compute_legend';
 
 const EMPTY_MAP = new Map();
 
@@ -50,8 +51,8 @@ export class PartitionState implements InternalChartState {
   isChartEmpty() {
     return false;
   }
-  getLegendItems() {
-    return EMPTY_MAP;
+  getLegendItems(globalState: GlobalChartState) {
+    return computeLegendSelector(globalState);
   }
   getLegendItemsValues() {
     return EMPTY_MAP;

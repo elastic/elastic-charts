@@ -25,6 +25,7 @@ import {
   getSeriesName,
   XYChartSeriesIdentifier,
   SeriesKey,
+  SeriesIdentifier,
 } from '../utils/series';
 import { AxisSpec, BasicSeriesSpec, Postfixes, isAreaSeriesSpec, isBarSeriesSpec } from '../utils/specs';
 import { Y0_ACCESSOR_POSTFIX, Y1_ACCESSOR_POSTFIX } from '../tooltip/tooltip';
@@ -81,7 +82,7 @@ export function computeLegend(
   specs: BasicSeriesSpec[],
   defaultColor: string,
   axesSpecs: AxisSpec[],
-  deselectedDataSeries: XYChartSeriesIdentifier[] = [],
+  deselectedDataSeries: SeriesIdentifier[] = [],
 ): Map<SeriesKey, LegendItem> {
   const legendItems: Map<SeriesKey, LegendItem> = new Map();
   const sortedCollection = getSortedDataSeriesColorsValuesMap(seriesCollection);

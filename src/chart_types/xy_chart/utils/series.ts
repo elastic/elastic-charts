@@ -112,7 +112,7 @@ export type SeriesCollectionValue = {
 };
 
 /** @internal */
-export function getSeriesIndex(series: XYChartSeriesIdentifier[], target: XYChartSeriesIdentifier): number {
+export function getSeriesIndex(series: SeriesIdentifier[], target: SeriesIdentifier): number {
   if (!series) {
     return -1;
   }
@@ -376,7 +376,7 @@ function getRawDataSeries(
  */
 export function getSplittedSeries(
   seriesSpecs: BasicSeriesSpec[],
-  deselectedDataSeries: XYChartSeriesIdentifier[] = [],
+  deselectedDataSeries: SeriesIdentifier[] = [],
 ): {
   splittedSeries: Map<SpecId, RawDataSeries[]>;
   seriesCollection: Map<SeriesKey, SeriesCollectionValue>;

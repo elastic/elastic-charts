@@ -17,16 +17,7 @@
  * under the License. */
 
 import React from 'react';
-import {
-  Chart,
-  ScaleType,
-  Position,
-  Axis,
-  Settings,
-  PartitionElementEvent,
-  XYChartElementEvent,
-  BarSeries,
-} from '../src';
+import { Chart, Partition, PartitionElementEvent, XYChartElementEvent, Settings } from '../src';
 
 export class Playground extends React.Component<{}, { isSunburstShown: boolean }> {
   onClick = (elements: Array<PartitionElementEvent | XYChartElementEvent>) => {
@@ -38,40 +29,25 @@ export class Playground extends React.Component<{}, { isSunburstShown: boolean }
       <>
         <div className="chart">
           <Chart size={[300, 200]}>
-            <Settings
-              onElementClick={this.onClick}
-              rotation={90}
-              theme={{
-                barSeriesStyle: {
-                  displayValue: {
-                    fontSize: 15,
-                    fill: 'black',
-                    offsetX: 5,
-                    offsetY: -8,
-                  },
-                },
-              }}
-            />
-            <Axis id="y1" position={Position.Left} />
-            <BarSeries
+            <Settings showLegend />
+            <Partition
               id="amount"
-              xScaleType={ScaleType.Ordinal}
-              xAccessor="x"
-              yAccessors={['y']}
               data={[
-                { x: 'trousers', y: 390, val: 1222 },
-                { x: 'watches', y: 0, val: 1222 },
-                { x: 'bags', y: 750, val: 1222 },
-                { x: 'cocktail dresses', y: 854, val: 1222 },
+                { x: 'trousers', y: 390, g: 'a', val: 1222 },
+                { x: 'watches', y: 0, g: 'a', val: 1222 },
+                { x: 'bags', y: 750, g: 'a', val: 1222 },
+                { x: 'cocktail dresses', y: 854, g: 'a', val: 1222 },
+                { x: 'cocktail dresses', y: 854, g: 'b', val: 1222 },
               ]}
-              displayValueSettings={{
-                showValueLabel: true,
-                isValueContainedInElement: true,
-                hideClippedValue: true,
-                valueFormatter: (d) => {
-                  return `${d} $`;
+              valueAccessor={(d) => d.y}
+              layers={[
+                {
+                  groupByRollup: (d: any) => d.x,
                 },
-              }}
+                {
+                  groupByRollup: (d: any) => d.g,
+                },
+              ]}
             />
           </Chart>
         </div>

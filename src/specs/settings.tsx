@@ -44,7 +44,7 @@ export type PartitionElementEvent = [Array<LayerValue>, SeriesIdentifier];
 export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent>) => void;
 export type ElementOverListener = (elements: Array<XYChartElementEvent | PartitionElementEvent>) => void;
 export type BrushEndListener = (min: number, max: number) => void;
-export type LegendItemListener = (series: XYChartSeriesIdentifier | null) => void;
+export type LegendItemListener = (series: SeriesIdentifier | null) => void;
 export type PointerUpdateListener = (event: PointerEvent) => void;
 /**
  * Listener to be called when chart render state changes

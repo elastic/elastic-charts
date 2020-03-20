@@ -20,21 +20,22 @@ import createCachedSelector from 're-reselect';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getSpecsFromStore } from '../../../../state/utils';
 import { ChartTypes } from '../../..';
-import { render } from './scenegraph';
-import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { PartitionSpec } from '../../specs/index';
 import { SpecTypes } from '../../../../specs/settings';
-import { getTree } from './tree';
+import { getHierarchyOfArrays } from '../../layout/viewmodel/hierarchy_of_arrays';
+import { HierarchyOfArrays } from '../../layout/utils/group_by_rollup';
 
 const getSpecs = (state: GlobalChartState) => state.specs;
 
-const getParentDimensions = (state: GlobalChartState) => state.parentDimensions;
-
 /** @internal */
-export const partitionGeometries = createCachedSelector(
-  [getSpecs, getParentDimensions, getTree],
-  (specs, parentDimensions, tree): ShapeViewModel => {
+export const getTree = createCachedSelector(
+  [getSpecs],
+  (specs): HierarchyOfArrays => {
     const pieSpecs = getSpecsFromStore<PartitionSpec>(specs, ChartTypes.Partition, SpecTypes.Series);
-    return pieSpecs.length === 1 ? render(pieSpecs[0], parentDimensions, tree) : nullShapeViewModel();
+    if (pieSpecs.length !== 1) {
+      return [];
+    }
+    const { data, valueAccessor, layers } = pieSpecs[0];
+    return getHierarchyOfArrays(data, valueAccessor, [() => null, ...layers.map(({ groupByRollup }) => groupByRollup)]);
   },
 )((state) => state.chartId);
