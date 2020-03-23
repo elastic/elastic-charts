@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { scaleBand, scaleQuantize, ScaleQuantize } from 'd3-scale';
+import { scaleBand, scaleQuantize, ScaleQuantize, ScaleBand as D3ScaleBand } from 'd3-scale';
 import { clamp } from '../utils/commons';
 import { ScaleType, Scale } from '.';
 
@@ -31,7 +31,7 @@ export class ScaleBand implements Scale {
   readonly invertedScale: ScaleQuantize<number>;
   readonly minInterval: number;
   readonly barsPadding: number;
-  private readonly d3Scale: any;
+  private readonly d3Scale: D3ScaleBand<string | number>;
 
   constructor(
     domain: any[],
@@ -45,7 +45,7 @@ export class ScaleBand implements Scale {
     barsPadding = 0,
   ) {
     this.type = ScaleType.Ordinal;
-    this.d3Scale = scaleBand();
+    this.d3Scale = scaleBand<string | number>();
     this.d3Scale.domain(domain);
     this.d3Scale.range(range);
     const safeBarPadding = clamp(barsPadding, 0, 1);
@@ -68,28 +68,45 @@ export class ScaleBand implements Scale {
     this.minInterval = 0;
   }
 
-  scale(value: any) {
-    return this.d3Scale(value);
+  scale(value: string | number) {
+    const scaleValue = this.d3Scale(value);
+
+    if (typeof scaleValue !== 'number') {
+      throw new Error(`The value (${value}) was not scalable`);
+    }
+
+    return scaleValue;
   }
-  pureScale(value: any) {
-    return this.d3Scale(value);
+
+  pureScale(value: string | number) {
+    const scaleValue = this.d3Scale(value);
+
+    if (typeof scaleValue !== 'number') {
+      throw new Error(`The value (${value}) was not scalable`);
+    }
+
+    return scaleValue;
   }
 
   ticks() {
     return this.domain;
   }
+
   invert(value: any) {
     return this.invertedScale(value);
   }
+
   invertWithStep(value: any) {
     return {
       value: this.invertedScale(value),
       withinBandwidth: true,
     };
   }
+
   isSingleValue() {
     return this.domain.length < 2;
   }
+
   isValueInDomain(value: any) {
     return this.domain.includes(value);
   }

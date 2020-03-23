@@ -17,57 +17,74 @@
  * under the License. */
 
 import React from 'react';
-import {
-  Chart,
-  ScaleType,
-  Position,
-  Axis,
-  LineSeries,
-  LineAnnotation,
-  RectAnnotation,
-  AnnotationDomainTypes,
-  LineAnnotationDatum,
-  RectAnnotationDatum,
-} from '../src';
-import { SeededDataGenerator } from '../src/mocks/utils';
 
-export class Playground extends React.Component<{}, { isSunburstShown: boolean }> {
+import { Delaunay } from 'd3-delaunay';
+import { getRandomNumberGenerator } from '../src/mocks/utils';
+
+export class Playground extends React.Component<{}, { ready: boolean }> {
+  private readonly canvasRef: React.RefObject<HTMLCanvasElement>;
+  private ctx: CanvasRenderingContext2D | null;
+  private delaunay: Delaunay<any> | null;
+  private points: number[][] = [];
+
+  constructor(props: any) {
+    super(props);
+    this.canvasRef = React.createRef();
+    this.ctx = null;
+    this.delaunay = null;
+
+    this.state = { ready: false };
+  }
+
+  componentDidMount() {
+    if (!this.ctx) {
+      this.tryCanvasContext();
+      this.setState({ ready: true });
+    }
+  }
+
+  tryCanvasContext() {
+    const canvas = this.canvasRef.current;
+    const ctx = canvas && canvas.getContext('2d');
+
+    if (ctx) {
+      const rng = getRandomNumberGenerator();
+      this.ctx = ctx;
+
+      this.points = new Array(10).fill(1).map(() => [rng(0, 100), rng(0, 100)]);
+      console.table(this.points);
+
+      this.delaunay = Delaunay.from(this.points);
+      const voronoi = this.delaunay.voronoi();
+
+      this.ctx.beginPath();
+      voronoi.render(this.ctx);
+      this.ctx.lineWidth = 2;
+      this.ctx.strokeStyle = 'blue';
+      this.ctx.stroke();
+    }
+  }
+
+  handleHover = (event: React.MouseEvent) => {
+    if (this.delaunay) {
+      const index = this.delaunay.find(event.nativeEvent.offsetX, event.nativeEvent.offsetY);
+
+      console.log(this.points[index]);
+    }
+  };
+
   render() {
-    const dg = new SeededDataGenerator();
-    const data = dg.generateGroupedSeries(10, 2).map((item) => ({
-      ...item,
-      y1: item.y + 100,
-    }));
-    const lineDatum: LineAnnotationDatum[] = [{ dataValue: 321321 }];
-    const rectDatum: RectAnnotationDatum[] = [{ coordinates: { x1: 100 } }];
-
     return (
       <>
         <div className="chart">
-          <Chart>
-            <Axis id="y1" position={Position.Left} title="y1" />
-            <Axis id="y2" domain={{ fit: true }} groupId="g2" position={Position.Right} title="y2" />
-            <Axis id="x" position={Position.Bottom} title="x" />
-            <LineSeries
-              id="line1"
-              xScaleType={ScaleType.Linear}
-              xAccessor="x"
-              yAccessors={['y']}
-              splitSeriesAccessors={['g']}
-              data={data}
-            />
-            <LineSeries
-              id="line2"
-              groupId="g2"
-              xScaleType={ScaleType.Linear}
-              xAccessor="x"
-              yAccessors={['y1']}
-              splitSeriesAccessors={['g']}
-              data={data}
-            />
-            <LineAnnotation id="sss" dataValues={lineDatum} domainType={AnnotationDomainTypes.XDomain} />
-            <RectAnnotation id="111" dataValues={rectDatum} />
-          </Chart>
+          <canvas
+            onMouseMove={this.handleHover}
+            style={{
+              height: '100%',
+              width: '100%',
+            }}
+            ref={this.canvasRef}
+          ></canvas>
         </div>
       </>
     );

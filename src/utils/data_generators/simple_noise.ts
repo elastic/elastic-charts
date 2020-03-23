@@ -34,7 +34,7 @@ export class Simple1DNoise {
   }
 
   getValue(x: number) {
-    const r = new Array(this.maxVertices).fill(0).map(this.getRandomNumber);
+    const r = new Array(this.maxVertices).fill(0).map(() => this.getRandomNumber());
     const scaledX = x * this.scale;
     const xFloor = Math.floor(scaledX);
     const t = scaledX - xFloor;

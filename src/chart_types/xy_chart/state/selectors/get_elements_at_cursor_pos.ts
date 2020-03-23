@@ -30,6 +30,7 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { isValidPointerOverEvent } from '../../../../utils/events';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { IndexedGeometryMap } from '../indexed_map';
 
 const getExternalPointerEventStateSelector = (state: GlobalChartState) => state.externalEvents.pointer;
 
@@ -49,7 +50,7 @@ function getElementAtCursorPosition(
   orientedProjectedPoinerPosition: Point,
   scales: ComputedScales,
   geometriesIndexKeys: any,
-  geometriesIndex: Map<any, IndexedGeometry[]>,
+  geometriesIndex: IndexedGeometryMap,
   externalPointerEvent: PointerEvent | null,
   {
     chartDimensions,
@@ -63,12 +64,10 @@ function getElementAtCursorPosition(
     if (x == null || x > chartDimensions.width + chartDimensions.left) {
       return [];
     }
-    return geometriesIndex.get(externalPointerEvent.value) || [];
+    // TODO: Handle external event with spatial points
+    return geometriesIndex.find(externalPointerEvent.value, { x: -1, y: -1 }, true);
   }
   const xValue = scales.xScale.invertWithStep(orientedProjectedPoinerPosition.x, geometriesIndexKeys);
-  if (!xValue) {
-    return [];
-  }
-  // get the elements on at this cursor position
-  return geometriesIndex.get(xValue.value) || [];
+  // get the elements at cursor position
+  return geometriesIndex.find(xValue?.value, orientedProjectedPoinerPosition, true);
 }

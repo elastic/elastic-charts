@@ -40,7 +40,7 @@ import {
   isHorizontalRotation,
   isLineAreaOnlyChart,
   isVerticalRotation,
-  mergeGeometriesIndexes,
+  mergeGeometriesIndices,
   setBarSeriesAccessors,
   getCustomSeriesColors,
 } from './utils';
@@ -1260,7 +1260,7 @@ describe('Chart State utils', () => {
         },
       },
     ]);
-    const merged = mergeGeometriesIndexes(map1, map2);
+    const merged = mergeGeometriesIndices(map1, map2);
     expect(merged.get('a')).toBeDefined();
     expect(merged.get('a')?.length).toBe(2);
   });

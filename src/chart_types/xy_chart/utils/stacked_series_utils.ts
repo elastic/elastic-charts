@@ -144,6 +144,7 @@ export function formatStackedDataSeriesValues(
           x,
           // filling as 0 value
           y1: 0,
+          dot: null,
         },
         stackedValues,
         seriesIndex,
@@ -177,7 +178,7 @@ function getStackedFormattedSeriesDatum(
   isPercentageMode = false,
   filled?: FilledValues,
 ): DataSeriesDatum | undefined {
-  const { x, datum } = data;
+  const { x, dot, datum } = data;
   const stack = stackedValues.get(x);
   if (!stack) {
     return;
@@ -204,6 +205,7 @@ function getStackedFormattedSeriesDatum(
       y0: computedY0,
       initialY1: y1,
       initialY0,
+      dot,
       datum,
       ...(filled && { filled }),
     };
@@ -230,6 +232,7 @@ function getStackedFormattedSeriesDatum(
       y0: stackedY0,
       initialY1: y1,
       initialY0,
+      dot,
       datum,
       ...(filled && { filled }),
     };

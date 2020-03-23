@@ -20,7 +20,7 @@ import { isVerticalAxis } from '../utils/axis_utils';
 import { CurveType } from '../../../utils/curves';
 import { mergeXDomain, XDomain } from '../domains/x_domain';
 import { mergeYDomain, YDomain } from '../domains/y_domain';
-import { mutableIndexedGeometryMapUpsert, renderArea, renderBars, renderLine } from '../rendering/rendering';
+import { renderArea, renderBars, renderLine } from '../rendering/rendering';
 import { computeXScale, computeYScales, countBarsInCluster } from '../utils/scales';
 import {
   DataSeries,
@@ -56,9 +56,11 @@ import { Dimensions } from '../../../utils/dimensions';
 import { Domain } from '../../../utils/domain';
 import { GroupId, SpecId } from '../../../utils/ids';
 import { Scale } from '../../../scales';
-import { PointGeometry, BarGeometry, AreaGeometry, LineGeometry, IndexedGeometry } from '../../../utils/geometry';
+import { PointGeometry, BarGeometry, AreaGeometry, LineGeometry } from '../../../utils/geometry';
 import { LegendItem } from '../legend/legend';
 import { Spec } from '../../../specs';
+import { IndexedGeometryMap } from './indexed_map';
+import { Point } from '../../../utils/point';
 
 const MAX_ANIMATABLE_BARS = 300;
 const MAX_ANIMATABLE_LINES_AREA_POINTS = 600;
@@ -98,7 +100,7 @@ export interface Geometries {
 export interface ComputedGeometries {
   scales: ComputedScales;
   geometries: Geometries;
-  geometriesIndex: Map<any, IndexedGeometry[]>;
+  geometriesIndex: IndexedGeometryMap;
   geometriesCounts: GeometriesCounts;
 }
 
@@ -261,6 +263,7 @@ export function computeSeriesDomains(
     };
     updatedSeriesCollection.set(key, updatedColorSet);
   });
+
   return {
     xDomain,
     yDomain,
@@ -307,8 +310,7 @@ export function computeSeriesGeometries(
   const areas: AreaGeometry[] = [];
   const bars: BarGeometry[] = [];
   const lines: LineGeometry[] = [];
-  let stackedGeometriesIndex: Map<any, IndexedGeometry[]> = new Map();
-  let nonStackedGeometriesIndex: Map<any, IndexedGeometry[]> = new Map();
+  const geometriesIndex = new IndexedGeometryMap();
   let orderIndex = 0;
   const geometriesCounts = {
     points: 0,
@@ -344,7 +346,7 @@ export function computeSeriesGeometries(
     lines.push(...geometries.lines);
     bars.push(...geometries.bars);
     points.push(...geometries.points);
-    stackedGeometriesIndex = mergeGeometriesIndexes(stackedGeometriesIndex, geometries.geometriesIndex);
+    geometriesIndex.merge(geometries.indexedGeometryMap);
     // update counts
     geometriesCounts.points += geometries.geometriesCounts.points;
     geometriesCounts.bars += geometries.geometriesCounts.bars;
@@ -379,7 +381,7 @@ export function computeSeriesGeometries(
     bars.push(...geometries.bars);
     points.push(...geometries.points);
 
-    nonStackedGeometriesIndex = mergeGeometriesIndexes(nonStackedGeometriesIndex, geometries.geometriesIndex);
+    geometriesIndex.merge(geometries.indexedGeometryMap);
     // update counts
     geometriesCounts.points += geometries.geometriesCounts.points;
     geometriesCounts.bars += geometries.geometriesCounts.bars;
@@ -388,7 +390,6 @@ export function computeSeriesGeometries(
     geometriesCounts.lines += geometries.geometriesCounts.lines;
     geometriesCounts.linePoints += geometries.geometriesCounts.linePoints;
   });
-  const geometriesIndex = mergeGeometriesIndexes(stackedGeometriesIndex, nonStackedGeometriesIndex);
   return {
     scales: {
       xScale,
@@ -474,7 +475,7 @@ function renderGeometries(
   bars: BarGeometry[];
   areas: AreaGeometry[];
   lines: LineGeometry[];
-  geometriesIndex: Map<any, IndexedGeometry[]>;
+  indexedGeometryMap: IndexedGeometryMap;
   geometriesCounts: GeometriesCounts;
 } {
   const len = dataSeries.length;
@@ -483,10 +484,7 @@ function renderGeometries(
   const bars: BarGeometry[] = [];
   const areas: AreaGeometry[] = [];
   const lines: LineGeometry[] = [];
-  const pointGeometriesIndex: Map<any, IndexedGeometry[]> = new Map();
-  let barGeometriesIndex: Map<any, IndexedGeometry[]> = new Map();
-  let lineGeometriesIndex: Map<any, IndexedGeometry[]> = new Map();
-  let areaGeometriesIndex: Map<any, IndexedGeometry[]> = new Map();
+  const indexedGeometryMap = new IndexedGeometryMap();
   const geometriesCounts = {
     points: 0,
     bars: 0,
@@ -532,7 +530,7 @@ function renderGeometries(
         spec.styleAccessor,
         spec.minBarHeight,
       );
-      barGeometriesIndex = mergeGeometriesIndexes(barGeometriesIndex, renderedBars.indexedGeometries);
+      indexedGeometryMap.merge(renderedBars.indexedGeometryMap);
       bars.push(...renderedBars.barGeometries);
       geometriesCounts.bars += renderedBars.barGeometries.length;
       barIndexOffset += 1;
@@ -557,8 +555,9 @@ function renderGeometries(
         lineSeriesStyle,
         spec.pointStyleAccessor,
         Boolean(spec.fit && ((spec.fit as FitConfig).type || spec.fit) !== Fit.None),
+        chartTheme.radiusRatio,
       );
-      lineGeometriesIndex = mergeGeometriesIndexes(lineGeometriesIndex, renderedLines.indexedGeometries);
+      indexedGeometryMap.merge(renderedLines.indexedGeometryMap);
       lines.push(renderedLines.lineGeometry);
       geometriesCounts.linePoints += renderedLines.lineGeometry.points.length;
       geometriesCounts.lines += 1;
@@ -571,7 +570,6 @@ function renderGeometries(
       const renderedAreas = renderArea(
         // move the point on half of the bandwidth if we have mixed bars/lines
         (xScale.bandwidth * areaShift) / 2,
-
         ds,
         xScale,
         yScale,
@@ -583,25 +581,21 @@ function renderGeometries(
         isStacked,
         spec.pointStyleAccessor,
         Boolean(spec.fit && ((spec.fit as FitConfig).type || spec.fit) !== Fit.None),
+        chartTheme.radiusRatio,
       );
-      areaGeometriesIndex = mergeGeometriesIndexes(areaGeometriesIndex, renderedAreas.indexedGeometries);
+      indexedGeometryMap.merge(renderedAreas.indexedGeometryMap);
       areas.push(renderedAreas.areaGeometry);
       geometriesCounts.areasPoints += renderedAreas.areaGeometry.points.length;
       geometriesCounts.areas += 1;
     }
   }
-  const geometriesIndex = mergeGeometriesIndexes(
-    pointGeometriesIndex,
-    lineGeometriesIndex,
-    areaGeometriesIndex,
-    barGeometriesIndex,
-  );
+
   return {
     points,
     bars,
     areas,
     lines,
-    geometriesIndex,
+    indexedGeometryMap,
     geometriesCounts,
   };
 }
@@ -657,23 +651,6 @@ export function computeChartTransform(chartDimensions: Dimensions, chartRotation
   }
 }
 
-/**
- * Merge multiple geometry indexes maps together.
- * @param iterables a set of maps to be merged
- * @returns a new Map where each element with the same key are concatenated on a single
- * IndexedGemoetry array for that key
- */
-export function mergeGeometriesIndexes(...iterables: Map<any, IndexedGeometry[]>[]) {
-  const geometriesIndex: Map<any, IndexedGeometry[]> = new Map();
-
-  for (const iterable of iterables) {
-    for (const item of iterable) {
-      mutableIndexedGeometryMapUpsert(geometriesIndex, item[0], item[1]);
-    }
-  }
-  return geometriesIndex;
-}
-
 export function isHorizontalRotation(chartRotation: Rotation) {
   return chartRotation === 0 || chartRotation === 180;
 }
@@ -709,4 +686,8 @@ export function isAllSeriesDeselected(legendItems: Map<string, LegendItem>): boo
     }
   }
   return true;
+}
+
+export function getDistance(a: Point, b: Point) {
+  return Math.sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2);
 }

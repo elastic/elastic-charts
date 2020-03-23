@@ -26,8 +26,8 @@ import {
   PointStyle,
   RectAnnotationStyle,
 } from '../../../utils/themes/theme';
-import { Accessor, AccessorFormat, AccessorFn } from '../../../utils/accessor';
 import { RecursivePartial, Color, Position, Datum } from '../../../utils/commons';
+import { Accessor, AccessorFormat, AccessorFn } from '../../../utils/accessor';
 import { AxisId, GroupId } from '../../../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../../../scales';
 import { CurveType } from '../../../utils/curves';
@@ -338,6 +338,8 @@ export interface SeriesAccessors {
   splitSeriesAccessors?: Accessor[];
   /** An array of fields thats indicates the stack membership */
   stackAccessors?: Accessor[];
+  /** Field name of dot size metric on `Datum` */
+  dotAccessor: Accessor | AccessorFn;
 }
 
 export interface SeriesScales {

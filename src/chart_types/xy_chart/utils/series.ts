@@ -44,8 +44,10 @@ export interface RawDataSeriesDatum<T = any> {
   x: number | string;
   /** the main y metric */
   y1: number | null;
-  /** the optional y0 metric, used for bars or area with a lower bound */
+  /** the optional y0 metric, used for bars and area with a lower bound */
   y0?: number | null;
+  /** the optional dot metric, used for lines and area series */
+  dot: number | null;
   /** the datum */
   datum?: T;
 }
@@ -61,6 +63,8 @@ export interface DataSeriesDatum<T = any> {
   initialY1: number | null;
   /** initial y0 value, non stacked */
   initialY0: number | null;
+  /** the optional dot metric, used for lines and area series */
+  dot: number | null;
   /** initial datum */
   datum?: T;
   /** the list of filled values because missing or nulls */
@@ -128,8 +132,12 @@ export function splitSeries({
   xAccessor,
   yAccessors,
   y0Accessors,
+  dotAccessor,
   splitSeriesAccessors = [],
-}: Pick<BasicSeriesSpec, 'id' | 'data' | 'xAccessor' | 'yAccessors' | 'y0Accessors' | 'splitSeriesAccessors'>): {
+}: Pick<
+  BasicSeriesSpec,
+  'id' | 'data' | 'xAccessor' | 'yAccessors' | 'y0Accessors' | 'splitSeriesAccessors' | 'dotAccessor'
+>): {
   rawDataSeries: RawDataSeries[];
   colorsValues: Set<string>;
   xValues: Set<string | number>;
@@ -143,7 +151,7 @@ export function splitSeries({
     const splitAccessors = getSplitAccessors(datum, splitSeriesAccessors);
     if (isMultipleY) {
       yAccessors.forEach((accessor, index) => {
-        const cleanedDatum = cleanDatum(datum, xAccessor, accessor, y0Accessors && y0Accessors[index]);
+        const cleanedDatum = cleanDatum(datum, xAccessor, accessor, y0Accessors && y0Accessors[index], dotAccessor);
 
         if (cleanedDatum !== null && cleanedDatum.x !== null && cleanedDatum.x !== undefined) {
           xValues.add(cleanedDatum.x);
@@ -152,7 +160,7 @@ export function splitSeries({
         }
       });
     } else {
-      const cleanedDatum = cleanDatum(datum, xAccessor, yAccessors[0], y0Accessors && y0Accessors[0]);
+      const cleanedDatum = cleanDatum(datum, xAccessor, yAccessors[0], y0Accessors && y0Accessors[0], dotAccessor);
       if (cleanedDatum !== null && cleanedDatum.x !== null && cleanedDatum.x !== undefined) {
         xValues.add(cleanedDatum.x);
         const seriesKey = updateSeriesMap(series, splitAccessors, yAccessors[0], cleanedDatum, specId);
@@ -240,17 +248,21 @@ export function cleanDatum(
   xAccessor: Accessor | AccessorFn,
   yAccessor: Accessor,
   y0Accessor?: Accessor,
+  dotAccessor?: Accessor | AccessorFn,
 ): RawDataSeriesDatum | null {
   if (typeof datum !== 'object' || datum === null) {
     return null;
   }
+
   const x = getAccessorValue(datum, xAccessor);
+
   if (typeof x !== 'string' && typeof x !== 'number') {
     return null;
   }
 
-  const y1 = castToNumber(datum[yAccessor as keyof typeof datum]);
-  const cleanedDatum: RawDataSeriesDatum = { x, y1, datum, y0: null };
+  const dot = dotAccessor === undefined ? null : getAccessorValue(datum, dotAccessor);
+  const y1 = castToNumber(datum[yAccessor]);
+  const cleanedDatum: RawDataSeriesDatum = { x, y1, datum, y0: null, dot };
   if (y0Accessor) {
     cleanedDatum.y0 = castToNumber(datum[y0Accessor as keyof typeof datum]);
   }

@@ -175,6 +175,12 @@ export interface Theme {
   colors: ColorConfig;
   legend: LegendStyle;
   crosshair: CrosshairStyle;
+  /**
+   * Used to scale radius with `dotAccessor`
+   *
+   * value from 1 to 100
+   */
+  radiusRatio?: number;
 }
 
 export type PartialTheme = RecursivePartial<Theme>;

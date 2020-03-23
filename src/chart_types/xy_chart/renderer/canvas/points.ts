@@ -19,7 +19,7 @@
 import { PointGeometry } from '../../../../utils/geometry';
 import { PointStyle, GeometryStateStyle } from '../../../../utils/themes/theme';
 import { renderCircle } from './primitives/arc';
-import { Circle } from '../../../../geoms/types';
+import { Circle, Stroke, Fill } from '../../../../geoms/types';
 import { buildPointStyles } from './styles/point';
 
 export function renderPoints(
@@ -28,16 +28,24 @@ export function renderPoints(
   themeStyle: PointStyle,
   geometryStateStyle: GeometryStateStyle,
 ) {
-  return points.map((point) => {
-    const { x, y, color, transform, styleOverrides } = point;
-    const { fill, stroke, radius } = buildPointStyles(color, themeStyle, geometryStateStyle, styleOverrides);
+  return points
+    .map<[Circle, Fill, Stroke]>((point) => {
+      const { x, y, color, radius, transform, styleOverrides } = point;
+      const { fill, stroke, radius: radiusOverride } = buildPointStyles(
+        color,
+        themeStyle,
+        geometryStateStyle,
+        styleOverrides,
+      );
 
-    const circle: Circle = {
-      x: x + transform.x,
-      y,
-      radius,
-    };
+      const circle: Circle = {
+        x: x + transform.x,
+        y,
+        radius: radius || radiusOverride,
+      };
 
-    renderCircle(ctx, circle, fill, stroke);
-  });
+      return [circle, fill, stroke];
+    })
+    .sort(([{ radius: a }], [{ radius: b }]) => b - a)
+    .map((args) => renderCircle(ctx, ...args));
 }

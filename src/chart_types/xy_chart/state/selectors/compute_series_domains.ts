@@ -35,6 +35,7 @@ export const computeSeriesDomainsSelector = createCachedSelector(
       deselectedDataSeries,
       settingsSpec.xDomain,
     );
+
     return domains;
   },
 )(getChartIdSelector);
