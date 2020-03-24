@@ -70,8 +70,27 @@ export function linkTextLayout(
       const stemToX = x + north * west * cy - west * relativeY;
       const stemToY = cy;
       const text = rawTextGetter(node);
+      const valueText = valueFormatter(valueGetter(node));
       const { width, emHeightAscent, emHeightDescent } = measure(linkLabel.fontSize, [
-        { fontFamily: config.fontFamily, ...linkLabel, text },
+        {
+          fontStyle: 'normal',
+          fontVariant: 'normal',
+          fontFamily: config.fontFamily,
+          fontWeight: 'normal',
+          ...linkLabel,
+          text,
+        },
+      ])[0];
+      const { width: valueWidth } = measure(linkLabel.fontSize, [
+        {
+          fontStyle: 'normal',
+          fontVariant: 'normal',
+          fontFamily: config.fontFamily,
+          fontWeight: 900,
+          ...linkLabel,
+          ...linkLabel.valueFont,
+          text: valueText,
+        },
       ])[0];
       return {
         link: [
@@ -83,9 +102,11 @@ export function linkTextLayout(
         translate: [stemToX + west * (linkLabel.horizontalStemLength + linkLabel.gap), stemToY],
         textAlign: side ? 'left' : 'right',
         text,
-        valueText: valueFormatter(valueGetter(node)),
+        valueText,
         width,
+        valueWidth,
         verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`
+        valueFont: linkLabel.valueFont,
       };
     });
 }

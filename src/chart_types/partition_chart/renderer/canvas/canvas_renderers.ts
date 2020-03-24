@@ -169,12 +169,16 @@ function renderLinkLabels(
   linkLabelTextColor: string,
   viewModels: LinkLabelVM[],
 ) {
+  const labelValueGap = linkLabelFontSize / 2; // one en space
   withContext(ctx, (ctx) => {
     ctx.lineWidth = linkLabelLineWidth;
     ctx.strokeStyle = linkLabelTextColor;
     ctx.fillStyle = linkLabelTextColor;
-    ctx.font = `${400} ${linkLabelFontSize}px ${fontFamily}`;
-    viewModels.forEach(({ link, translate, textAlign, text, valueText }: LinkLabelVM) => {
+    viewModels.forEach(({ link, translate, textAlign, text, valueText, width, valueWidth, valueFont }: LinkLabelVM) => {
+      const valueFontStyle = valueFont.fontStyle || 'normal';
+      const valueFontVariant = valueFont.fontVariant || 'normal';
+      const valueFontWeight = valueFont.fontWeight || 'normal';
+      const valueFontFamily = valueFont.fontFamily || fontFamily;
       ctx.beginPath();
       ctx.moveTo(...link[0]);
       link.slice(1).forEach((point) => ctx.lineTo(...point));
@@ -183,8 +187,10 @@ function renderLinkLabels(
         ctx.translate(...translate);
         ctx.scale(1, -1); // flip for text rendering not to be upside down
         ctx.textAlign = textAlign;
-        // only use a colon if both text and valueText are non-zero length strings
-        ctx.fillText(text + (text && valueText ? ' ' : '') + valueText, 0, 0);
+        ctx.font = `${linkLabelFontSize}px ${fontFamily}`;
+        ctx.fillText(text, textAlign === 'right' ? -valueWidth - labelValueGap : 0, 0);
+        ctx.font = `${valueFontStyle} ${valueFontVariant} ${valueFontWeight} ${linkLabelFontSize}px ${valueFontFamily}`;
+        ctx.fillText(valueText, textAlign === 'left' ? width + labelValueGap : 0, 0);
       });
     });
   });
