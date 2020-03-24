@@ -233,6 +233,7 @@ export const configMetadata = {
   // other
   backgroundColor: { dflt: '#ffffff', type: 'color' },
   sectorLineWidth: { dflt: 1, min: 0, max: 4, type: 'number' },
+  sectorLineStroke: { dflt: 'white', type: 'string' },
   colors: { dflt: 'turbo', type: 'palette', values: Object.keys(palettes) },
   palettes: { dflt: palettes, type: 'palettes', reconfigurable: false },
 };

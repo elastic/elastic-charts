@@ -55,3 +55,4 @@ export { example as noLabels } from './25_no_labels';
 export { example as percentage } from './26_percentage';
 export { example as heterogeneous } from './27_heterogeneous_depth';
 export { example as notANumber } from './28_not_a_number';
+export { example as customStroke } from './29_custom_stroke';

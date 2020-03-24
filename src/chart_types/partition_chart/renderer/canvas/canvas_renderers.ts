@@ -62,7 +62,7 @@ function renderRowSets(ctx: CanvasRenderingContext2D, rowSets: RowSet[]) {
 
 function renderTaperedBorder(
   ctx: CanvasRenderingContext2D,
-  { strokeWidth, fillColor, x0, x1, y0px, y1px }: QuadViewModel,
+  { strokeWidth, strokeStyle, fillColor, x0, x1, y0px, y1px }: QuadViewModel,
 ) {
   const X0 = x0 - TAU / 4;
   const X1 = x1 - TAU / 4;
@@ -89,7 +89,7 @@ function renderTaperedBorder(
       ctx.arc(0, 0, y0px, X1, X0, true);
       ctx.stroke();
 
-      ctx.fillStyle = 'white';
+      ctx.fillStyle = strokeStyle;
 
       // each side (radial 'line') is modeled as a pentagon (some lines can be short arcs though)
       ctx.beginPath();
@@ -101,6 +101,7 @@ function renderTaperedBorder(
       ctx.arc(0, 0, y0px, X0, X0);
       ctx.fill();
     } else {
+      ctx.strokeStyle = strokeStyle;
       ctx.stroke();
     }
   }
@@ -195,7 +196,7 @@ export function renderPartitionCanvas2d(
   dpr: number,
   { config, quadViewModel, rowSets, outsideLinksViewModel, linkLabelViewModels, diskCenter }: ShapeViewModel,
 ) {
-  const { sectorLineWidth, linkLabel, fontFamily /*, backgroundColor*/ } = config;
+  const { sectorLineWidth, sectorLineStroke, linkLabel, fontFamily /*, backgroundColor*/ } = config;
 
   const linkLabelTextColor = addOpacity(linkLabel.textColor, linkLabel.textOpacity);
 
@@ -219,7 +220,7 @@ export function renderPartitionCanvas2d(
     ctx.scale(1, -1);
 
     ctx.lineJoin = 'round';
-    ctx.strokeStyle = 'white'; // todo make it configurable just like sectorLineWidth
+    ctx.strokeStyle = sectorLineStroke;
     ctx.lineWidth = sectorLineWidth;
 
     // painter's algorithm, like that of SVG: the sequence determines what overdraws what; first element of the array is drawn first

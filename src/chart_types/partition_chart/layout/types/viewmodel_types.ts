@@ -65,6 +65,7 @@ export interface RowSet {
 
 export interface QuadViewModel extends ShapeTreeNode {
   strokeWidth: number;
+  strokeStyle: string;
   fillColor: string;
 }
 
