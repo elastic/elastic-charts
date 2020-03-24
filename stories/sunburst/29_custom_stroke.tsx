@@ -42,7 +42,7 @@ export const example = () => (
       config={{
         partitionLayout: PartitionLayout.sunburst,
         linkLabel: { maxCount: 15, textColor: 'white' },
-        sectorLineStroke: 'black',
+        sectorLineStroke: 'rgb(26, 27, 32)', // same as the dark theme
         sectorLineWidth: 1.2,
       }}
     />
