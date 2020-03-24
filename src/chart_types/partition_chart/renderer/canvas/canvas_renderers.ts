@@ -184,7 +184,7 @@ function renderLinkLabels(
         ctx.scale(1, -1); // flip for text rendering not to be upside down
         ctx.textAlign = textAlign;
         // only use a colon if both text and valueText are non-zero length strings
-        ctx.fillText(text + (text && valueText ? ': ' : '') + valueText, 0, 0);
+        ctx.fillText(text + (text && valueText ? ' ' : '') + valueText, 0, 0);
       });
     });
   });
