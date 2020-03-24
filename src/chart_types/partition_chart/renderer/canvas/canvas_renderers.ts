@@ -29,7 +29,7 @@ import {
 import { TAU } from '../../layout/utils/math';
 import { PartitionLayout } from '../../layout/types/config_types';
 import { cssFontShorthand } from '../../layout/utils/measure';
-import { withContext, renderLayers, clearCanvas } from '../../../../renderers/canvas';
+import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
 
 // the burnout avoidance in the center of the pie
 const LINE_WIDTH_MULT = 10; // border can be a maximum 1/LINE_WIDTH_MULT - th of the sector angle, otherwise the border would dominate
@@ -96,7 +96,7 @@ function renderTaperedBorder(
       const yThreshold = Math.max(TAPER_OFF_LIMIT, (LINE_WIDTH_MULT * strokeWidth) / (X1 - X0));
       const beta = strokeWidth / yThreshold; // angle where strokeWidth equals the lineWidthMult limit at a radius of yThreshold
       ctx.arc(0, 0, y0px, X0, X0 + beta * (yThreshold / y0px));
-      ctx.arc(0, 0, yThreshold, X0 + beta, X0 + beta);
+      ctx.arc(0, 0, Math.min(yThreshold, y1px), X0 + beta, X0 + beta);
       ctx.arc(0, 0, y1px, X0 + beta * (yThreshold / y1px), X0, true);
       ctx.arc(0, 0, y0px, X0, X0);
       ctx.fill();
