@@ -168,6 +168,7 @@ export function shapeViewModel(
     specialFirstInnermostSector,
     minFontSize,
     partitionLayout,
+    sectorLineWidth,
   } = config;
 
   const innerWidth = width * (1 - Math.min(1, margin.left + margin.right));
@@ -224,7 +225,7 @@ export function shapeViewModel(
 
   // use the smaller of the two sizes, as a circle fits into a square
   const circleMaximumSize = Math.min(innerWidth, innerHeight);
-  const outerRadius: Radius = (outerSizeRatio * circleMaximumSize) / 2;
+  const outerRadius: Radius = Math.min(outerSizeRatio * circleMaximumSize, circleMaximumSize - sectorLineWidth) / 2;
   const innerRadius: Radius = outerRadius - (1 - emptySizeRatio) * outerRadius;
   const treeHeight = shownChildNodes.reduce((p: number, n: any) => Math.max(p, entryValue(n.node).depth), 0); // 1: pie, 2: two-ring donut etc.
   const ringThickness = (outerRadius - innerRadius) / treeHeight;
