@@ -23,7 +23,7 @@ import React from 'react';
 import { countryLookup, indexInterpolatedFillColor, interpolatorCET2s } from '../utils/utils';
 
 export const example = () => (
-  <Chart className="story-chart">
+  <Chart className="story-chart-dark">
     <Partition
       id="spec_1"
       data={mocks.manyPie}
@@ -41,8 +41,8 @@ export const example = () => (
       ]}
       config={{
         partitionLayout: PartitionLayout.sunburst,
-        linkLabel: { maxCount: 15 },
-        sectorLineStroke: 'blanchedalmond',
+        linkLabel: { maxCount: 15, textColor: 'white' },
+        sectorLineStroke: 'black',
         sectorLineWidth: 1.2,
       }}
     />
