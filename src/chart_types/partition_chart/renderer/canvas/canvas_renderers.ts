@@ -165,7 +165,6 @@ function renderLinkLabels(
   ctx: CanvasRenderingContext2D,
   linkLabelFontSize: Pixels,
   linkLabelLineWidth: Pixels,
-  fontFamily: string,
   linkLabelTextColor: string,
   viewModels: LinkLabelVM[],
 ) {
@@ -174,25 +173,33 @@ function renderLinkLabels(
     ctx.lineWidth = linkLabelLineWidth;
     ctx.strokeStyle = linkLabelTextColor;
     ctx.fillStyle = linkLabelTextColor;
-    viewModels.forEach(({ link, translate, textAlign, text, valueText, width, valueWidth, valueFont }: LinkLabelVM) => {
-      const valueFontStyle = valueFont.fontStyle || 'normal';
-      const valueFontVariant = valueFont.fontVariant || 'normal';
-      const valueFontWeight = valueFont.fontWeight || 'normal';
-      const valueFontFamily = valueFont.fontFamily || fontFamily;
-      ctx.beginPath();
-      ctx.moveTo(...link[0]);
-      link.slice(1).forEach((point) => ctx.lineTo(...point));
-      ctx.stroke();
-      withContext(ctx, (ctx) => {
-        ctx.translate(...translate);
-        ctx.scale(1, -1); // flip for text rendering not to be upside down
-        ctx.textAlign = textAlign;
-        ctx.font = `${linkLabelFontSize}px ${fontFamily}`;
-        ctx.fillText(text, textAlign === 'right' ? -valueWidth - labelValueGap : 0, 0);
-        ctx.font = `${valueFontStyle} ${valueFontVariant} ${valueFontWeight} ${linkLabelFontSize}px ${valueFontFamily}`;
-        ctx.fillText(valueText, textAlign === 'left' ? width + labelValueGap : 0, 0);
-      });
-    });
+    viewModels.forEach(
+      ({
+        link,
+        translate,
+        textAlign,
+        text,
+        valueText,
+        width,
+        labelFontSpec,
+        valueFontSpec,
+        valueWidth,
+      }: LinkLabelVM) => {
+        ctx.beginPath();
+        ctx.moveTo(...link[0]);
+        link.slice(1).forEach((point) => ctx.lineTo(...point));
+        ctx.stroke();
+        withContext(ctx, (ctx) => {
+          ctx.translate(...translate);
+          ctx.scale(1, -1); // flip for text rendering not to be upside down
+          ctx.textAlign = textAlign;
+          ctx.font = `${labelFontSpec.fontStyle} ${labelFontSpec.fontVariant} ${labelFontSpec.fontWeight} ${linkLabelFontSize}px ${labelFontSpec.fontFamily}`;
+          ctx.fillText(text, textAlign === 'right' ? -valueWidth - labelValueGap : 0, 0);
+          ctx.font = `${valueFontSpec.fontStyle} ${valueFontSpec.fontVariant} ${valueFontSpec.fontWeight} ${linkLabelFontSize}px ${valueFontSpec.fontFamily}`;
+          ctx.fillText(valueText, textAlign === 'left' ? width + labelValueGap : 0, 0);
+        });
+      },
+    );
   });
 }
 
@@ -202,7 +209,7 @@ export function renderPartitionCanvas2d(
   dpr: number,
   { config, quadViewModel, rowSets, outsideLinksViewModel, linkLabelViewModels, diskCenter }: ShapeViewModel,
 ) {
-  const { sectorLineWidth, sectorLineStroke, linkLabel, fontFamily /*, backgroundColor*/ } = config;
+  const { sectorLineWidth, sectorLineStroke, linkLabel /*, backgroundColor*/ } = config;
 
   const linkLabelTextColor = addOpacity(linkLabel.textColor, linkLabel.textOpacity);
 
@@ -252,14 +259,7 @@ export function renderPartitionCanvas2d(
 
       // all the text and link lines for single-row outside texts
       (ctx: CanvasRenderingContext2D) =>
-        renderLinkLabels(
-          ctx,
-          linkLabel.fontSize,
-          linkLabel.lineWidth,
-          fontFamily,
-          linkLabelTextColor,
-          linkLabelViewModels,
-        ),
+        renderLinkLabels(ctx, linkLabel.fontSize, linkLabel.lineWidth, linkLabelTextColor, linkLabelViewModels),
     ]);
   });
 }

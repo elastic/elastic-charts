@@ -18,7 +18,7 @@
 
 import { Config } from './config_types';
 import { Coordinate, Distance, Pixels, PointObject, PointTuple, Radian } from './geometry_types';
-import { Font, PartialFont } from './types';
+import { Font } from './types';
 import { config, ValueGetterName } from '../config/config';
 import { ArrayNode, HierarchyOfArrays } from '../utils/group_by_rollup';
 import { Color } from '../../../../utils/commons';
@@ -32,7 +32,8 @@ export type LinkLabelVM = {
   width: Distance;
   valueWidth: Distance;
   verticalOffset: Distance;
-  valueFont: PartialFont;
+  labelFontSpec: Font;
+  valueFontSpec: Font;
 };
 
 export interface RowBox extends Font {

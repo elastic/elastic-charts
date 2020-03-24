@@ -71,27 +71,25 @@ export function linkTextLayout(
       const stemToY = cy;
       const text = rawTextGetter(node);
       const valueText = valueFormatter(valueGetter(node));
-      const { width, emHeightAscent, emHeightDescent } = measure(linkLabel.fontSize, [
-        {
-          fontStyle: 'normal',
-          fontVariant: 'normal',
-          fontFamily: config.fontFamily,
-          fontWeight: 'normal',
-          ...linkLabel,
-          text,
-        },
-      ])[0];
-      const { width: valueWidth } = measure(linkLabel.fontSize, [
-        {
-          fontStyle: 'normal',
-          fontVariant: 'normal',
-          fontFamily: config.fontFamily,
-          fontWeight: 900,
-          ...linkLabel,
-          ...linkLabel.valueFont,
-          text: valueText,
-        },
-      ])[0];
+      const labelFontSpec = {
+        fontStyle: 'normal',
+        fontVariant: 'normal',
+        fontFamily: config.fontFamily,
+        fontWeight: 'normal',
+        ...linkLabel,
+        text,
+      };
+      const valueFontSpec = {
+        fontStyle: 'normal',
+        fontVariant: 'normal',
+        fontFamily: config.fontFamily,
+        fontWeight: 'normal',
+        ...linkLabel,
+        ...linkLabel.valueFont,
+        text: valueText,
+      };
+      const { width, emHeightAscent, emHeightDescent } = measure(linkLabel.fontSize, [labelFontSpec])[0];
+      const { width: valueWidth } = measure(linkLabel.fontSize, [valueFontSpec])[0];
       return {
         link: [
           [x0, y0],
@@ -106,7 +104,8 @@ export function linkTextLayout(
         width,
         valueWidth,
         verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`
-        valueFont: linkLabel.valueFont,
+        labelFontSpec,
+        valueFontSpec,
       };
     });
 }
