@@ -43,9 +43,9 @@ function LineAnnotationChart(props: { chartStore: Store<GlobalChartState> }) {
           yAccessors={[1]}
         />
         <LineAnnotation
-          id="threashold"
+          id="threshold"
           domainType={AnnotationDomainTypes.YDomain}
-          dataValues={[{ dataValue: 120, details: 'threashold' }]}
+          dataValues={[{ dataValue: 120, details: 'threshold' }]}
         />
       </SpecsParser>
     </Provider>
@@ -57,8 +57,8 @@ describe('Line annotation', () => {
     const storeReducer = chartStoreReducer('chart_id');
     const chartStore = createStore(storeReducer);
     const wrapper = mount(<LineAnnotationChart chartStore={chartStore} />);
-    expect(chartStore.getState().specs['threashold']).toBeDefined();
+    expect(chartStore.getState().specs['threshold']).toBeDefined();
     wrapper.setProps({});
-    expect(chartStore.getState().specs['threashold']).toBeDefined();
+    expect(chartStore.getState().specs['threshold']).toBeDefined();
   });
 });
