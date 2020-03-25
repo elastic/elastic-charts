@@ -61,10 +61,6 @@ export class LineAnnotationSpecComponent extends Component<LineAnnotationSpec> {
     upsertSpec(spec);
   }
 
-  // shouldComponentUpdate(nextProps: LineAnnotationSpec) {
-  //   return !deepEqual(this.props, nextProps);
-  // }
-
   componentDidUpdate() {
     const { upsertSpec, removeSpec, children, ...config } = this.props as InjectedProps;
     if (this.markerRef.current) {
