@@ -41,6 +41,8 @@ export { example as third } from './14_one_third';
 export { example as halfCircle } from './15_half_circle';
 export { example as twoThirds } from './16_two_thirds';
 export { example as threeQuarters } from './17_three_quarters';
+export { example as fullCircle } from './17_total_circle';
+export { example as smallGap } from './17_very_small_gap';
 export { example as sideGauge } from './18_side_gauge';
 export { example as horizontalNegative } from './19_horizontal_negative';
 export { example as verticalNegative } from './20_vertical_negative';
