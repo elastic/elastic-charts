@@ -38,6 +38,8 @@ export interface BandFillColorAccessorInput {
   aboveBaseCount: number;
   belowBaseCount: number;
 }
+
+/** @alpha */
 type BandFillColorAccessor = (input: BandFillColorAccessorInput) => Color;
 
 const defaultProps = {
@@ -47,6 +49,7 @@ const defaultProps = {
   config,
 };
 
+/** @alpha */
 export interface GoalSpec extends Spec {
   specType: typeof SpecTypes.Series;
   chartType: typeof ChartTypes.Goal;
@@ -68,6 +71,7 @@ export interface GoalSpec extends Spec {
 type SpecRequiredProps = Pick<GoalSpec, 'id' | 'actual'>;
 type SpecOptionalProps = Partial<Omit<GoalSpec, 'chartType' | 'specType' | 'id' | 'data'>>;
 
+/** @alpha */
 export const Goal: FunctionComponent<SpecRequiredProps & SpecOptionalProps> = getConnect()(
   specComponentFactory<
     GoalSpec,

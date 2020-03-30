@@ -159,4 +159,5 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   };
 };
 
+/** @internal */
 export const Goal = connect(mapStateToProps, mapDispatchToProps)(Component);

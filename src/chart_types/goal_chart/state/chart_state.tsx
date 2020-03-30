@@ -28,6 +28,8 @@ import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 
 const EMPTY_MAP = new Map();
+
+/** @internal */
 export class GoalState implements InternalChartState {
   onElementClickCaller: (state: GlobalChartState) => void;
   onElementOverCaller: (state: GlobalChartState) => void;

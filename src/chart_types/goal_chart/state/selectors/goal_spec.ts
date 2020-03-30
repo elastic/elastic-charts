@@ -22,6 +22,7 @@ import { GoalSpec } from '../../specs';
 import { ChartTypes } from '../../..';
 import { SpecTypes } from '../../../../specs';
 
+/** @internal */
 export function getSpecOrNull(state: GlobalChartState): GoalSpec | null {
   const specs = getSpecsFromStore<GoalSpec>(state.specs, ChartTypes.Goal, SpecTypes.Series);
   return specs.length > 0 ? specs[0] : null;

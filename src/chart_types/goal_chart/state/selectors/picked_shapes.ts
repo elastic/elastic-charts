@@ -26,6 +26,7 @@ function getCurrentPointerPosition(state: GlobalChartState) {
   return state.interactions.pointer.current.position;
 }
 
+/** @internal */
 export const getPickedShapes = createCachedSelector(
   [geometries, getCurrentPointerPosition],
   (geoms, pointerPosition): BulletViewModel[] => {
@@ -37,6 +38,7 @@ export const getPickedShapes = createCachedSelector(
   },
 )((state) => state.chartId);
 
+/** @internal */
 export const getPickedShapesLayerValues = createCachedSelector(
   [getPickedShapes],
   (pickedShapes): Array<Array<LayerValue>> => {
