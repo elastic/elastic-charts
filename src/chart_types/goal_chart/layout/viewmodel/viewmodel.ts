@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { TextMeasure } from '../types/types';
+import { TextMeasure } from '../../../partition_chart/layout/types/types';
 import { Config } from '../types/config_types';
 import { BulletViewModel, PickFunction, ShapeViewModel } from '../types/viewmodel_types';
 import { GoalSpec } from '../../specs/index';

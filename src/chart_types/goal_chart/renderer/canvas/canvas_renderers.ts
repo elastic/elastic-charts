@@ -17,9 +17,9 @@
  * under the License. */
 
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
-import { cssFontShorthand } from '../../layout/utils/measure';
+import { cssFontShorthand } from '../../../partition_chart/layout/utils/measure';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
-import { GOLDEN_RATIO } from '../../layout/utils/math';
+import { GOLDEN_RATIO } from '../../../partition_chart/layout/utils/math';
 
 // fixme turn these into config, or capitalize as constants
 const referenceCircularSizeCap = 360; // goal/gauge won't be bigger even if there's ample room: it'd be a waste of space

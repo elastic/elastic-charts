@@ -17,7 +17,7 @@
  * under the License. */
 
 import { Config } from '../types/config_types';
-import { TAU } from '../utils/math';
+import { TAU } from '../../../partition_chart/layout/utils/math';
 
 export const configMetadata = {
   angleStart: { dflt: Math.PI + Math.PI / 4, min: -TAU, max: TAU, type: 'number' },

@@ -18,7 +18,7 @@
 
 import { Dimensions } from '../../../../utils/dimensions';
 import { shapeViewModel } from '../../layout/viewmodel/viewmodel';
-import { measureText } from '../../layout/utils/measure';
+import { measureText } from '../../../partition_chart/layout/utils/measure';
 import { ShapeViewModel, nullShapeViewModel } from '../../layout/types/viewmodel_types';
 import { GoalSpec } from '../../specs/index';
 import { mergePartial, RecursivePartial } from '../../../../utils/commons';

@@ -16,8 +16,8 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { Pixels, SizeRatio } from './geometry_types';
-import { FontFamily } from './types';
+import { Pixels, SizeRatio } from '../../../partition_chart/layout/types/geometry_types';
+import { FontFamily } from '../../../partition_chart/layout/types/types';
 import { Color } from '../../../../utils/commons';
 
 // todo switch to `io-ts` style, generic way of combining static and runtime type info
