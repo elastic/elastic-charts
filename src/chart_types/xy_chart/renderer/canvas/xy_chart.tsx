@@ -47,12 +47,14 @@ import { renderXYChartCanvas2d } from './renderers';
 import { isChartEmptySelector } from '../../state/selectors/is_chart_empty';
 import { deepEqual } from '../../../../utils/fast_deep_equal';
 import { Rotation } from '../../../../utils/commons';
+import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
 
 export interface ReactiveChartStateProps {
   initialized: boolean;
   debug: boolean;
   isChartEmpty: boolean;
   geometries: Geometries;
+  geometriesIndex: IndexedGeometryMap;
   theme: Theme;
   chartContainerDimensions: Dimensions;
   chartRotation: Rotation;
@@ -180,6 +182,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     lines: [],
     points: [],
   },
+  geometriesIndex: new IndexedGeometryMap(),
   theme: LIGHT_THEME,
   chartContainerDimensions: {
     width: 0,
@@ -222,6 +225,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     isChartEmpty: isChartEmptySelector(state),
     debug: getSettingsSpecSelector(state).debug,
     geometries: computeSeriesGeometriesSelector(state).geometries,
+    geometriesIndex: computeSeriesGeometriesSelector(state).geometriesIndex,
     theme: getChartThemeSelector(state),
     chartContainerDimensions: getChartContainerDimensionsSelector(state),
     highlightedLegendItem: getHighlightedSeriesSelector(state),

@@ -43,6 +43,7 @@ export function renderXYChartCanvas2d(
       chartTransform,
       chartRotation,
       geometries,
+      geometriesIndex,
       theme,
       highlightedLegendItem,
       annotationDimensions,
@@ -160,18 +161,21 @@ export function renderXYChartCanvas2d(
           );
         });
       },
+      // rendering debugger
       (ctx: CanvasRenderingContext2D) => {
         if (!debug) {
           return;
         }
         withContext(ctx, (ctx) => {
+          const { left, top, width, height } = chartDimensions;
+
           renderDebugRect(
             ctx,
             {
-              x: chartDimensions.left,
-              y: chartDimensions.top,
-              width: chartDimensions.width,
-              height: chartDimensions.height,
+              x: left,
+              y: top,
+              width,
+              height,
             },
             {
               color: stringToRGB('transparent'),
@@ -182,6 +186,18 @@ export function renderXYChartCanvas2d(
               dash: [4, 4],
             },
           );
+
+          const voronoi = geometriesIndex.voronoi([0, 0, width, height]);
+
+          if (voronoi) {
+            ctx.beginPath();
+            ctx.translate(left, top);
+            ctx.setLineDash([5, 5]);
+            voronoi.render(ctx);
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = 'blue';
+            ctx.stroke();
+          }
         });
       },
     ]);

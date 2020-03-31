@@ -31,7 +31,30 @@ export const forcedType = <T extends object>(obj: Partial<T>): T => {
   return obj as T;
 };
 
-export const getRandomNumberGenerator = (seed = process.env.RNG_SEED) => seedrandom(seed);
+/**
+ * Return rng function with optional `min`, `max` and `fractionDigits` params
+ *
+ * @param string process.env.RNG_SEED
+ */
+export const getRandomNumberGenerator = (seed = process.env.RNG_SEED) => {
+  const rng = seedrandom(seed);
+
+  /**
+   * Random number generator
+   *
+   * @param  {} min=0
+   * @param  {} max=1
+   * @param  {} fractionDigits=0
+   */
+  return function randomNumberGenerator(min = 0, max = 1, fractionDigits = 0) {
+    const num = rng() * (max - min) + min;
+
+    if (fractionDigits === 0) return Math.floor(num);
+
+    const factor = 10 ** fractionDigits;
+    return Math.round((num + Number.EPSILON) * factor) / factor;
+  };
+};
 
 export class SeededDataGenerator extends DataGenerator {
   constructor(frequency = 500) {

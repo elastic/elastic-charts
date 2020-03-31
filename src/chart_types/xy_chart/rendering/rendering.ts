@@ -31,7 +31,6 @@ import { CurveType, getCurveFactory } from '../../../utils/curves';
 import { DataSeriesDatum, DataSeries, XYChartSeriesIdentifier } from '../utils/series';
 import { DisplayValueSpec, PointStyleAccessor, BarStyleAccessor } from '../utils/specs';
 import {
-  IndexedGeometry,
   PointGeometry,
   BarGeometry,
   AreaGeometry,
@@ -42,20 +41,11 @@ import {
 } from '../../../utils/geometry';
 import { mergePartial, Color } from '../../../utils/commons';
 import { LegendItem } from '../legend/legend';
+import { IndexedGeometryMap, GeometryType } from '../utils/indexed_geometry_map';
+import { getDistance } from '../state/utils';
+import { PointBuffer } from '../../../specs';
 
-export function mutableIndexedGeometryMapUpsert(
-  mutableGeometriesIndex: Map<any, IndexedGeometry[]>,
-  key: any,
-  geometry: IndexedGeometry | IndexedGeometry[],
-) {
-  const existing = mutableGeometriesIndex.get(key);
-  const upsertGeometry: IndexedGeometry[] = Array.isArray(geometry) ? geometry : [geometry];
-  if (existing === undefined) {
-    mutableGeometriesIndex.set(key, upsertGeometry);
-  } else {
-    mutableGeometriesIndex.set(key, [...upsertGeometry, ...existing]);
-  }
-}
+export const DEFAULT_HIGHLIGHT_PADDING = 10;
 
 export function getPointStyleOverrides(
   datum: DataSeriesDatum,
@@ -104,22 +94,60 @@ export function getBarStyleOverrides(
   });
 }
 
+/**
+ * Get radius function form ratio and min/max dot sixe
+ *
+ * @todo add continuous/non-stepped function
+ *
+ * @param  {Datum[]} radii
+ * @param  {number} lineWidth
+ * @param  {number=50} radiusRatio - 1 to 100
+ */
+function getRadiusFn(data: DataSeriesDatum[], lineWidth: number, radiusRatio: number = 50) {
+  if (data.length === 0) {
+    return () => 0;
+  }
+  const { min, max } = data.reduce(
+    (acc, { dot }) =>
+      dot === null
+        ? acc
+        : {
+            min: Math.min(acc.min, dot / 2),
+            max: Math.max(acc.max, dot / 2),
+          },
+    { min: Infinity, max: -Infinity },
+  );
+  const radiusStep = (max - min || max * 100) / Math.pow(radiusRatio, 2);
+  return function getRadius(dot: number | null, defaultRadius = 0): number {
+    if (dot === null) {
+      return defaultRadius;
+    }
+    const circleRadius = (dot / 2 - min) / radiusStep;
+    const baseMagicNumber = 2;
+    const base = circleRadius ? Math.sqrt(circleRadius + baseMagicNumber) + lineWidth : lineWidth;
+    return base;
+  };
+}
+
 function renderPoints(
   shift: number,
   dataSeries: DataSeries,
   xScale: Scale,
   yScale: Scale,
   color: Color,
+  lineWidth: number,
   hasY0Accessors: boolean,
   styleAccessor?: PointStyleAccessor,
+  radiusRatio?: number,
 ): {
   pointGeometries: PointGeometry[];
-  indexedGeometries: Map<any, IndexedGeometry[]>;
+  indexedGeometryMap: IndexedGeometryMap;
 } {
-  const indexedGeometries: Map<any, IndexedGeometry[]> = new Map();
+  const indexedGeometryMap = new IndexedGeometryMap();
   const isLogScale = isLogarithmicScale(yScale);
+  const getRadius = getRadiusFn(dataSeries.data, lineWidth, radiusRatio);
   const pointGeometries = dataSeries.data.reduce((acc, datum) => {
-    const { x: xValue, y0, y1, initialY0, initialY1, filled } = datum;
+    const { x: xValue, y0, y1, initialY0, initialY1, filled, dot } = datum;
     // don't create the point if not within the xScale domain or it that point was filled
     if (!xScale.isValueInDomain(xValue) || (filled && filled.y1 !== undefined)) {
       return acc;
@@ -134,7 +162,7 @@ function renderPoints(
         return;
       }
       let y;
-      let radius = 10;
+      let radius = getRadius(dot);
       // we fix 0 and negative values at y = 0
       if (yDatum === null || (isLogScale && yDatum <= 0)) {
         y = yScale.range[0];
@@ -159,6 +187,7 @@ function renderPoints(
         value: {
           x: xValue,
           y: originalY,
+          dot,
           accessor: hasY0Accessors && index === 0 ? BandedAccessorType.Y0 : BandedAccessorType.Y1,
         },
         transform: {
@@ -168,7 +197,8 @@ function renderPoints(
         seriesIdentifier,
         styleOverrides,
       };
-      mutableIndexedGeometryMapUpsert(indexedGeometries, xValue, pointGeometry);
+      const geometryType = dot === null ? GeometryType.linear : GeometryType.spatial;
+      indexedGeometryMap.set(pointGeometry, geometryType);
       // use the geometry only if the yDatum in contained in the current yScale domain
       const isHidden = yDatum === null || (isLogScale && yDatum <= 0);
       if (!isHidden && yScale.isValueInDomain(yDatum)) {
@@ -179,7 +209,7 @@ function renderPoints(
   }, [] as PointGeometry[]);
   return {
     pointGeometries,
-    indexedGeometries,
+    indexedGeometryMap,
   };
 }
 
@@ -195,9 +225,9 @@ export function renderBars(
   minBarHeight?: number,
 ): {
   barGeometries: BarGeometry[];
-  indexedGeometries: Map<any, IndexedGeometry[]>;
+  indexedGeometryMap: IndexedGeometryMap;
 } {
-  const indexedGeometries: Map<any, IndexedGeometry[]> = new Map();
+  const indexedGeometryMap = new IndexedGeometryMap();
   const barGeometries: BarGeometry[] = [];
 
   const bboxCalculator = new CanvasTextBBoxCalculator();
@@ -306,12 +336,13 @@ export function renderBars(
       value: {
         x: datum.x,
         y: initialY1,
+        dot: null,
         accessor: BandedAccessorType.Y1,
       },
       seriesIdentifier,
       seriesStyle,
     };
-    mutableIndexedGeometryMapUpsert(indexedGeometries, datum.x, barGeometry);
+    indexedGeometryMap.set(barGeometry);
     barGeometries.push(barGeometry);
   });
 
@@ -319,7 +350,7 @@ export function renderBars(
 
   return {
     barGeometries,
-    indexedGeometries,
+    indexedGeometryMap,
   };
 }
 
@@ -335,9 +366,10 @@ export function renderLine(
   seriesStyle: LineSeriesStyle,
   pointStyleAccessor?: PointStyleAccessor,
   hasFit?: boolean,
+  radiusRatio?: number,
 ): {
   lineGeometry: LineGeometry;
-  indexedGeometries: Map<any, IndexedGeometry[]>;
+  indexedGeometryMap: IndexedGeometryMap;
 } {
   const isLogScale = isLogarithmicScale(yScale);
 
@@ -361,14 +393,16 @@ export function renderLine(
   const y = 0;
   const x = shift;
 
-  const { pointGeometries, indexedGeometries } = renderPoints(
+  const { pointGeometries, indexedGeometryMap } = renderPoints(
     shift - xScaleOffset,
     dataSeries,
     xScale,
     yScale,
     color,
+    seriesStyle.line.strokeWidth,
     hasY0Accessors,
     pointStyleAccessor,
+    radiusRatio,
   );
 
   const clippedRanges = hasFit && !hasY0Accessors ? getClippedRanges(dataSeries.data, xScale, xScaleOffset) : [];
@@ -393,7 +427,7 @@ export function renderLine(
   };
   return {
     lineGeometry,
-    indexedGeometries,
+    indexedGeometryMap,
   };
 }
 
@@ -425,9 +459,10 @@ export function renderArea(
   isStacked = false,
   pointStyleAccessor?: PointStyleAccessor,
   hasFit?: boolean,
+  radiusRatio?: number,
 ): {
   areaGeometry: AreaGeometry;
-  indexedGeometries: Map<any, IndexedGeometry[]>;
+  indexedGeometryMap: IndexedGeometryMap;
 } {
   const isLogScale = isLogarithmicScale(yScale);
   const pathGenerator = area<DataSeriesDatum>()
@@ -466,14 +501,16 @@ export function renderArea(
     }
   }
 
-  const { pointGeometries, indexedGeometries } = renderPoints(
+  const { pointGeometries, indexedGeometryMap } = renderPoints(
     shift - xScaleOffset,
     dataSeries,
     xScale,
     yScale,
     color,
+    seriesStyle.line.strokeWidth,
     hasY0Accessors,
     pointStyleAccessor,
+    radiusRatio,
   );
 
   const areaGeometry: AreaGeometry = {
@@ -500,7 +537,7 @@ export function renderArea(
   };
   return {
     areaGeometry,
-    indexedGeometries,
+    indexedGeometryMap,
   };
 }
 
@@ -568,16 +605,23 @@ export function isPointOnGeometry(
   xCoordinate: number,
   yCoordinate: number,
   indexedGeometry: BarGeometry | PointGeometry,
+  buffer: PointBuffer = DEFAULT_HIGHLIGHT_PADDING,
 ) {
   const { x, y } = indexedGeometry;
   if (isPointGeometry(indexedGeometry)) {
     const { radius, transform } = indexedGeometry;
-    return (
-      yCoordinate >= y - radius &&
-      yCoordinate <= y + radius &&
-      xCoordinate >= x + transform.x - radius &&
-      xCoordinate <= x + transform.x + radius
+    const distance = getDistance(
+      {
+        x: xCoordinate,
+        y: yCoordinate,
+      },
+      {
+        x: x + transform.x,
+        y,
+      },
     );
+    const radiusBuffer = typeof buffer === 'number' ? buffer : buffer(radius);
+    return distance <= radius + radiusBuffer;
   }
   const { width, height } = indexedGeometry;
   return yCoordinate >= y && yCoordinate <= y + height && xCoordinate >= x && xCoordinate <= x + width;

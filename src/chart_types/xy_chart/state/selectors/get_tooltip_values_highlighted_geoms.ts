@@ -39,12 +39,14 @@ import {
   TooltipType,
   TooltipValueFormatter,
   isFollowTooltipType,
+  SettingsSpec,
 } from '../../../../specs';
 import { isValidPointerOverEvent } from '../../../../utils/events';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { hasSingleSeriesSelector } from './has_single_series';
 import { TooltipInfo } from '../../../../components/tooltip/types';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 
 const EMPTY_VALUES = Object.freeze({
   tooltip: {
@@ -65,6 +67,7 @@ export const getTooltipInfoAndGeometriesSelector = createCachedSelector(
   [
     getSeriesSpecsSelector,
     getAxisSpecsSelector,
+    getSettingsSpecSelector,
     getProjectedPointerPositionSelector,
     getOrientedProjectedPointerPositionSelector,
     getChartRotationSelector,
@@ -75,20 +78,21 @@ export const getTooltipInfoAndGeometriesSelector = createCachedSelector(
     getExternalPointerEventStateSelector,
     getTooltipHeaderFormatterSelector,
   ],
-  getTooltipAndHighlightFromXValue,
+  getTooltipAndHighlightFromValue,
 )((state: GlobalChartState) => {
   return state.chartId;
 });
 
-function getTooltipAndHighlightFromXValue(
+function getTooltipAndHighlightFromValue(
   seriesSpecs: BasicSeriesSpec[],
   axesSpecs: AxisSpec[],
+  settings: SettingsSpec,
   projectedPointerPosition: Point,
   orientedProjectedPointerPosition: Point,
   chartRotation: Rotation,
   hasSingleSeries: boolean,
   scales: ComputedScales,
-  xMatchingGeoms: IndexedGeometry[],
+  matchingGeoms: IndexedGeometry[],
   tooltipType: TooltipType = TooltipType.VerticalCursor,
   externalPointerEvent: PointerEvent | null,
   tooltipHeaderFormatter?: TooltipValueFormatter,
@@ -108,14 +112,14 @@ function getTooltipAndHighlightFromXValue(
     return EMPTY_VALUES;
   }
 
-  if (xMatchingGeoms.length === 0) {
+  if (matchingGeoms.length === 0) {
     return EMPTY_VALUES;
   }
 
   // build the tooltip value list
   let header: TooltipValue | null = null;
   const highlightedGeometries: IndexedGeometry[] = [];
-  const values = xMatchingGeoms
+  const values = matchingGeoms
     .filter(({ value: { y } }) => y !== null)
     .reduce<TooltipValue[]>((acc, indexedGeometry) => {
       const {
@@ -139,7 +143,7 @@ function getTooltipAndHighlightFromXValue(
       let isHighlighted = false;
       if (
         (!externalPointerEvent || isPointerOutEvent(externalPointerEvent)) &&
-        isPointOnGeometry(x, y, indexedGeometry)
+        isPointOnGeometry(x, y, indexedGeometry, settings.pointBuffer)
       ) {
         isHighlighted = true;
         highlightedGeometries.push(indexedGeometry);

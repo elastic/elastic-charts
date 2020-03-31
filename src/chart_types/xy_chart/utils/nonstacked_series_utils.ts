@@ -57,7 +57,7 @@ export const formatNonStackedDataValues = (dataSeries: RawDataSeries, scaleToExt
   };
   for (let i = 0; i < len; i++) {
     const data = dataSeries.data[i];
-    const { x, y1, datum } = data;
+    const { x, y1, dot, datum } = data;
     let y0: number | null;
     if (y1 === null) {
       y0 = null;
@@ -75,6 +75,7 @@ export const formatNonStackedDataValues = (dataSeries: RawDataSeries, scaleToExt
       y0,
       initialY1: y1,
       initialY0: data.y0 == null || y1 === null ? null : data.y0,
+      dot,
       datum,
     };
     formattedValues.data.push(formattedValue);
