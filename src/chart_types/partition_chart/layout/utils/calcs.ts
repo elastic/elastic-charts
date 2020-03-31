@@ -49,66 +49,22 @@ export function arrayToLookup(keyFun: Function, array: Array<any>) {
   return Object.assign({}, ...array.map((d) => ({ [keyFun(d)]: d })));
 }
 
-// /** @internal */
-// function computeRelativeLuminosity(rgb: string) {
-//   return colorJS(rgb).luminosity();
-// }
-
 /** @internal */
 function computeContrast(rgb1: string, rgb2: string) {
   return colorJS(rgb1).contrast(colorJS(rgb2));
 }
 
-// /** @internal */
-// function getAAARelativeLum(bgColor: string, fgColor: string, ratio = 7) {
-//   const relLum1 = computeRelativeLuminosity(bgColor);
-//   const relLum2 = computeRelativeLuminosity(fgColor);
-//   if (relLum1 > relLum2) {
-//     // relLum1 is brighter, relLum2 is darker
-//     return (relLum1 + 0.05 - ratio * 0.05) / ratio;
-//   } else {
-//     // relLum1 is darker, relLum2 is brighter
-//     return Math.min(ratio * (relLum1 + 0.05) - 0.05, 1);
-//   }
-// }
-
-// /** @internal */
-// function getGrayFromRelLum(relLum: number) {
-//   if (relLum <= 0.0031308) {
-//     return relLum * 12.92;
-//   } else {
-//     return (1.0 + 0.055) * Math.pow(relLum, 1.0 / 2.4) - 0.055;
-//   }
-// }
-
-// /** @internal */
-// function getGrayRGBfromGray(gray: number) {
-//   const g = Math.round(gray * 255);
-//   return `rgb(${g},${g},${g})`;
-// }
-
-// /** @internal */
-// function findBestContrastColor(bgColor: string, lightFgColor: string, darkFgColor: string, ratio = 4.5) {
-//   const lc = computeContrast(bgColor, lightFgColor);
-//   const dc = computeContrast(bgColor, darkFgColor);
-//   if (lc >= dc) {
-//     if (lc >= ratio) {
-//       return lightFgColor;
-//     }
-//     return getAAAGray(bgColor, lightFgColor, ratio);
-//   }
-//   if (dc >= ratio) {
-//     return darkFgColor;
-//   }
-//   return getAAAGray(bgColor, darkFgColor, ratio);
-// }
-
 /** @internal */
 export function colorIsDark(textColor: Color, bgColor: Color) {
   // compute the contrast of the two colors
   const currentContrast = computeContrast(textColor, bgColor);
-  const color = currentContrast >= 4.5 ? textColor : textColor === '#000000' ? '#ffffff' : '#000000';
-  // if the contrast isn't 4.5 or greater, adjust the textColor until it is
-  // determine if the text color should be black or white fff or 000
-  return color;
+  // if the contrast isn't at least 4.5 we need to manipulate the textColor
+  // some textColors are not black or white
+  if (textColor === '#ffffff' || textColor === '#000000') {
+    return currentContrast >= 4.5 ? textColor : textColor === '#ffffff' ? '#000000' : '#ffffff';
+  } else {
+    const newTextColor =
+      computeContrast(textColor, '#000000') > computeContrast(textColor, '#ffffff') ? '#ffffff' : '#000000';
+    return currentContrast >= 4.5 ? newTextColor : newTextColor === '#ffffff' ? '#000000' : '#ffffff';
+  }
 }
