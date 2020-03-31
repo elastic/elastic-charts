@@ -30,18 +30,19 @@ export function renderPoints(
 ) {
   points
     .map<[Circle, Fill, Stroke]>((point) => {
-      const { x, y, color, radius, transform, styleOverrides } = point;
-      const { fill, stroke, radius: radiusOverride } = buildPointStyles(
+      const { x, y, color, radius: pointRadius, transform, styleOverrides } = point;
+      const { fill, stroke, radius } = buildPointStyles(
         color,
         themeStyle,
         geometryStateStyle,
+        pointRadius,
         styleOverrides,
       );
 
       const circle: Circle = {
         x: x + transform.x,
         y,
-        radius: radius || radiusOverride,
+        radius,
       };
 
       return [circle, fill, stroke];
