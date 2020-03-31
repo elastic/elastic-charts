@@ -26,8 +26,7 @@ import { Spec, PointerEvent } from '../specs';
 import { DEFAULT_SETTINGS_SPEC } from '../specs/settings';
 import { Dimensions } from '../utils/dimensions';
 import { Point } from '../utils/point';
-import { LegendItem } from '../commons/legend';
-import { TooltipLegendValue } from '../chart_types/xy_chart/tooltip/tooltip';
+import { LegendItem, LegendItemExtraValues } from '../commons/legend';
 import { StateActions } from './actions';
 import { CHART_RENDERED } from './actions/chart';
 import { UPDATE_PARENT_DIMENSION } from './actions/chart_settings';
@@ -70,16 +69,23 @@ export interface InternalChartState {
    * @param globalState
    */
   isChartEmpty(globalState: GlobalChartState): boolean;
+
   /**
    * return the list of legend items
    * @param globalState
    */
-  getLegendItems(globalState: GlobalChartState): Map<SeriesKey, LegendItem>;
+  getLegendItemsLabels(globalState: GlobalChartState): string[];
+
+  /**
+   * return the list of legend items
+   * @param globalState
+   */
+  getLegendItems(globalState: GlobalChartState): LegendItem[];
   /**
    * return the list of values for each legend item
    * @param globalState
    */
-  getLegendItemsValues(globalState: GlobalChartState): Map<SeriesKey, TooltipLegendValue>;
+  getLegendExtraValues(globalState: GlobalChartState): Map<SeriesKey, LegendItemExtraValues>;
   /**
    * return the CSS pointer cursor depending on the internal chart state
    * @param globalState

@@ -16,16 +16,10 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { GlobalChartState } from '../chart_state';
-import { LegendItem } from '../../commons/legend';
-
-const EMPTY_LEGEND_LIST: LegendItem[] = [];
-
-/** @internal */
-export const getLegendItemsSelector = (state: GlobalChartState): LegendItem[] => {
-  if (state.internalChartState) {
-    return state.internalChartState.getLegendItems(state);
-  } else {
-    return EMPTY_LEGEND_LIST;
-  }
-};
+export interface LegendItem2 {
+  id: string;
+  label: string;
+  color: string;
+  shape: 'circle';
+  children: LegendItem2[];
+}

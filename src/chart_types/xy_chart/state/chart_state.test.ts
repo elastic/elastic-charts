@@ -62,39 +62,27 @@ describe.skip('Chart Store', () => {
 
   const firstLegendItem: LegendItem = {
     color: 'foo',
-    name: 'bar',
+    label: 'bar',
     seriesIdentifier: {
       specId: SPEC_ID,
       key: 'color1',
     },
-    displayValue: {
-      raw: {
-        y1: null,
-        y0: null,
-      },
-      formatted: {
-        y1: 'formatted-last',
-        y0: null,
-      },
+    defaultExtra: {
+      raw: null,
+      formatted: 'formatted-last',
     },
   };
 
   const secondLegendItem: LegendItem = {
     color: 'baz',
-    name: 'qux',
+    label: 'qux',
     seriesIdentifier: {
       specId: SPEC_ID,
       key: 'color2',
     },
-    displayValue: {
-      raw: {
-        y1: null,
-        y0: null,
-      },
-      formatted: {
-        y1: 'formatted-last',
-        y0: null,
-      },
+    defaultExtra: {
+      raw: null,
+      formatted: 'formatted-last',
     },
   };
   beforeEach(() => {

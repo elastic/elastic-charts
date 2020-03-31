@@ -17,45 +17,69 @@
  * under the License. */
 
 import createCachedSelector from 're-reselect';
-import { getTree } from './tree';
-import { SeriesKey } from '../../../../commons/series_id';
 import { LegendItem } from '../../../../commons/legend';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getPieSpecOrNull } from './pie_spec';
-import { HierarchyOfArrays, CHILDREN_KEY, PrimitiveValue } from '../../layout/utils/group_by_rollup';
+import { partitionGeometries } from './geometries';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 
 /** @internal */
 export const computeLegendSelector = createCachedSelector(
-  [getPieSpecOrNull, getTree],
-  (pieSpec, tree): Map<SeriesKey, LegendItem> => {
-    // console.log(tree, flatSlicesNames(tree, [], []));
-    flatSlicesNames(tree);
+  [getPieSpecOrNull, getSettingsSpecSelector, partitionGeometries],
+  (pieSpec, settings, geoms): LegendItem[] => {
+    if (!pieSpec) {
+      return [];
+    }
+    const { id, layers: labelFormatters } = pieSpec;
 
-    // legendItems.map<LegendItem>((d) => {
-    //   return {
-    //     key: d,
-    //     color: 'red',
-    //     name: d,
-    //     seriesIdentifier: {},
-    //   };
-    // });
+    const uniqueNames = geoms.quadViewModel.reduce<Record<string, number>>((acc, { dataName, fillColor }) => {
+      const key = [dataName, fillColor].join('---');
+      if (!acc[key]) {
+        acc[key] = 0;
+      }
+      acc[key] += 1;
+      return acc;
+    }, {});
 
-    return new Map();
+    const { flatLegend, legendMaxDepth } = settings;
+    const excluded: Set<string> = new Set();
+    let items = geoms.quadViewModel.filter(({ depth, dataName, fillColor }) => {
+      if (legendMaxDepth != null) {
+        return depth <= legendMaxDepth;
+      }
+      if (flatLegend) {
+        const key = [dataName, fillColor].join('---');
+        if (uniqueNames[key] > 1 && excluded.has(key)) {
+          return false;
+        }
+        excluded.add(key);
+        return true;
+      }
+      return true;
+    });
+
+    if (flatLegend) {
+      items = items.sort((a, b) => {
+        return a.depth - b.depth;
+      });
+    }
+
+    return items.map(({ dataName, fillColor, depth }) => {
+      const labelFormatter = labelFormatters[depth - 1];
+      const formatter = labelFormatter?.nodeLabel;
+
+      return {
+        color: fillColor,
+        label: formatter ? formatter(dataName) : dataName,
+        dataName,
+        childId: dataName,
+        depth: flatLegend ? 0 : depth - 1,
+        isLegendItemVisible: true,
+        seriesIdentifier: {
+          key: id,
+          specId: id,
+        },
+      };
+    });
   },
 )(getChartIdSelector);
-
-function flatSlicesNames(tree: HierarchyOfArrays, parent: PrimitiveValue[] = [], keys: string[] = []) {
-  if (tree.length === 0) {
-    keys.push(parent.filter(Boolean).join(' - '));
-    return;
-  }
-  for (let i = 0; i < tree.length; i++) {
-    const arrayNode = tree[i][1];
-    const key = tree[i][0];
-    parent.push(key);
-    const children = arrayNode[CHILDREN_KEY];
-    flatSlicesNames(children, parent, keys);
-    parent.pop();
-  }
-  return keys;
-}

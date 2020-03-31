@@ -145,7 +145,7 @@ export interface LegendColorPickerProps {
   /**
    * Anchor used to position picker
    */
-  anchor: HTMLDivElement;
+  anchor: HTMLElement;
   /**
    * Current color of the given series
    */
@@ -196,6 +196,14 @@ export interface SettingsSpec extends Spec {
    * @default false
    */
   showLegendExtra: boolean;
+  /**
+   * Limit the legend to a max depth when showing a hierarchical legend
+   */
+  legendMaxDepth?: number;
+  /**
+   * Display the legend as a flat hierarchy
+   */
+  flatLegend?: boolean;
   /**
    * Removes duplicate axes
    *

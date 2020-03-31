@@ -16,21 +16,13 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import createCachedSelector from 're-reselect';
-import { GlobalChartState } from '../../../../state/chart_state';
-import { computeLegendSelector } from './compute_legend';
-import { LegendItem } from '../../../../commons/legend';
-import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-
-const getHighlightedLegendItemKey = (state: GlobalChartState) => state.interactions.highlightedLegendItemKey;
+import { GlobalChartState } from '../chart_state';
 
 /** @internal */
-export const getHighlightedSeriesSelector = createCachedSelector(
-  [getHighlightedLegendItemKey, computeLegendSelector],
-  (highlightedLegendItemKey, legendItems): LegendItem | undefined => {
-    if (!highlightedLegendItemKey) {
-      return undefined;
-    }
-    return legendItems.find(({ seriesIdentifier: { key } }) => key === highlightedLegendItemKey);
-  },
-)(getChartIdSelector);
+export const getLegendItemsLabelsSelector = (state: GlobalChartState): string[] => {
+  if (state.internalChartState) {
+    return state.internalChartState.getLegendItemsLabels(state);
+  } else {
+    return [];
+  }
+};

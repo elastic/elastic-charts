@@ -16,16 +16,21 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { GlobalChartState } from '../chart_state';
-import { LegendItem } from '../../commons/legend';
+import React from 'react';
+import classNames from 'classnames';
 
-const EMPTY_LEGEND_LIST: LegendItem[] = [];
-
-/** @internal */
-export const getLegendItemsSelector = (state: GlobalChartState): LegendItem[] => {
-  if (state.internalChartState) {
-    return state.internalChartState.getLegendItems(state);
-  } else {
-    return EMPTY_LEGEND_LIST;
-  }
-};
+/**
+ * @internal
+ * @param extra
+ * @param isSeriesVisible
+ */
+export function renderExtra(extra: string | number, isSeriesVisible?: boolean) {
+  const extraClassNames = classNames('echLegendItem__extra', {
+    ['echLegendItem__extra--hidden']: !isSeriesVisible,
+  });
+  return (
+    <div className={extraClassNames} title={`${extra}`}>
+      {extra}
+    </div>
+  );
+}

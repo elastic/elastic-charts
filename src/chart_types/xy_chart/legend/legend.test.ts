@@ -23,16 +23,11 @@ import { AxisSpec, BasicSeriesSpec, SeriesTypes } from '../utils/specs';
 import { Position } from '../../../utils/commons';
 import { ChartTypes } from '../..';
 import { SpecTypes } from '../../../specs/settings';
+import { LegendItem } from '../../../commons/legend';
 
 const nullDisplayValue = {
-  formatted: {
-    y0: null,
-    y1: null,
-  },
-  raw: {
-    y0: null,
-    y1: null,
-  },
+  formatted: null,
+  raw: null,
 };
 const seriesCollectionValue1a = {
   seriesIdentifier: {
@@ -132,21 +127,15 @@ describe('Legends', () => {
   it('compute legend for a single series', () => {
     seriesCollection.set('seriesCollectionValue1a', seriesCollectionValue1a);
     const legend = computeLegend(seriesCollection, seriesCollectionMap, specs, 'violet', axesSpecs);
-    const expected = [
+    const expected: LegendItem[] = [
       {
         color: 'red',
-        name: 'Spec 1 title',
-        seriesIdentifier: {
-          seriesKeys: ['y1'],
-          specId: 'spec1',
-          yAccessor: 'y1',
-          splitAccessors: new Map(),
-          key: 'seriesCollectionValue1a',
-        },
+        label: 'Spec 1 title',
+        childId: 'y1',
+        seriesIdentifier: seriesCollectionValue1a.seriesIdentifier,
         isSeriesVisible: true,
         isLegendItemVisible: true,
-        displayValue: nullDisplayValue,
-        banded: undefined,
+        defaultExtra: nullDisplayValue,
       },
     ];
     expect(Array.from(legend.values())).toEqual(expected);
@@ -155,36 +144,24 @@ describe('Legends', () => {
     seriesCollection.set('seriesCollectionValue1a', seriesCollectionValue1a);
     seriesCollection.set('seriesCollectionValue1b', seriesCollectionValue1b);
     const legend = computeLegend(seriesCollection, seriesCollectionMap, specs, 'violet', axesSpecs);
-    const expected = [
+    const expected: LegendItem[] = [
       {
         color: 'red',
-        name: 'Spec 1 title',
-        seriesIdentifier: {
-          seriesKeys: ['y1'],
-          specId: 'spec1',
-          yAccessor: 'y1',
-          splitAccessors: new Map(),
-          key: 'seriesCollectionValue1a',
-        },
+        label: 'Spec 1 title',
+        seriesIdentifier: seriesCollectionValue1a.seriesIdentifier,
+        childId: 'y1',
         isSeriesVisible: true,
         isLegendItemVisible: true,
-        displayValue: nullDisplayValue,
-        banded: undefined,
+        defaultExtra: nullDisplayValue,
       },
       {
         color: 'blue',
-        name: 'a - b',
-        seriesIdentifier: {
-          seriesKeys: ['a', 'b', 'y1'],
-          specId: 'spec1',
-          yAccessor: 'y1',
-          splitAccessors: new Map(),
-          key: 'seriesCollectionValue1b',
-        },
+        label: 'a - b',
+        seriesIdentifier: seriesCollectionValue1b.seriesIdentifier,
+        childId: 'y1',
         isSeriesVisible: true,
         isLegendItemVisible: true,
-        displayValue: nullDisplayValue,
-        banded: undefined,
+        defaultExtra: nullDisplayValue,
       },
     ];
     expect(Array.from(legend.values())).toEqual(expected);
@@ -193,36 +170,24 @@ describe('Legends', () => {
     seriesCollection.set('seriesCollectionValue1a', seriesCollectionValue1a);
     seriesCollection.set('seriesCollectionValue2a', seriesCollectionValue2a);
     const legend = computeLegend(seriesCollection, seriesCollectionMap, specs, 'violet', axesSpecs);
-    const expected = [
+    const expected: LegendItem[] = [
       {
         color: 'red',
-        name: 'Spec 1 title',
-        seriesIdentifier: {
-          seriesKeys: ['y1'],
-          specId: 'spec1',
-          splitAccessors: new Map(),
-          yAccessor: 'y1',
-          key: 'seriesCollectionValue1a',
-        },
+        label: 'Spec 1 title',
+        childId: 'y1',
+        seriesIdentifier: seriesCollectionValue1a.seriesIdentifier,
         isSeriesVisible: true,
         isLegendItemVisible: true,
-        displayValue: nullDisplayValue,
-        banded: undefined,
+        defaultExtra: nullDisplayValue,
       },
       {
         color: 'green',
-        name: 'spec2',
-        seriesIdentifier: {
-          seriesKeys: ['y1'],
-          specId: 'spec2',
-          yAccessor: 'y1',
-          splitAccessors: new Map(),
-          key: 'seriesCollectionValue2a',
-        },
+        label: 'spec2',
+        childId: 'y1',
+        seriesIdentifier: seriesCollectionValue2a.seriesIdentifier,
         isSeriesVisible: true,
         isLegendItemVisible: true,
-        displayValue: nullDisplayValue,
-        banded: undefined,
+        defaultExtra: nullDisplayValue,
       },
     ];
     expect(Array.from(legend.values())).toEqual(expected);
@@ -230,27 +195,21 @@ describe('Legends', () => {
   it('empty legend for missing spec', () => {
     seriesCollection.set('seriesCollectionValue2b', seriesCollectionValue2b);
     const legend = computeLegend(seriesCollection, seriesCollectionMap, specs, 'violet', axesSpecs);
-    expect(legend.size).toEqual(0);
+    expect(legend.length).toEqual(0);
   });
   it('compute legend with default color for missing series color', () => {
     seriesCollection.set('seriesCollectionValue1a', seriesCollectionValue1a);
     const emptyColorMap = new Map<string, string>();
     const legend = computeLegend(seriesCollection, emptyColorMap, specs, 'violet', axesSpecs);
-    const expected = [
+    const expected: LegendItem[] = [
       {
         color: 'violet',
-        name: 'Spec 1 title',
-        banded: undefined,
-        seriesIdentifier: {
-          seriesKeys: ['y1'],
-          specId: 'spec1',
-          yAccessor: 'y1',
-          splitAccessors: new Map(),
-          key: 'seriesCollectionValue1a',
-        },
+        label: 'Spec 1 title',
+        childId: 'y1',
+        seriesIdentifier: seriesCollectionValue1a.seriesIdentifier,
         isSeriesVisible: true,
         isLegendItemVisible: true,
-        displayValue: nullDisplayValue,
+        defaultExtra: nullDisplayValue,
       },
     ];
     expect(Array.from(legend.values())).toEqual(expected);

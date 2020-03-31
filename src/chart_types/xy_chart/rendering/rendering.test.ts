@@ -122,19 +122,13 @@ describe('Rendering utils', () => {
     };
     const highlightedLegendItem: LegendItem = {
       color: '',
-      name: '',
+      label: '',
       seriesIdentifier,
       isSeriesVisible: true,
       isLegendItemVisible: true,
-      displayValue: {
-        formatted: {
-          y0: null,
-          y1: null,
-        },
-        raw: {
-          y0: null,
-          y1: null,
-        },
+      defaultExtra: {
+        formatted: null,
+        raw: null,
       },
     };
 

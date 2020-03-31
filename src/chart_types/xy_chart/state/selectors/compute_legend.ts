@@ -25,7 +25,6 @@ import { computeLegend } from '../../legend/legend';
 import { LegendItem } from '../../../../commons/legend';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { SeriesKey } from '../../../../commons/series_id';
 
 const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interactions.deselectedDataSeries;
 
@@ -39,14 +38,7 @@ export const computeLegendSelector = createCachedSelector(
     getAxisSpecsSelector,
     getDeselectedSeriesSelector,
   ],
-  (
-    seriesSpecs,
-    seriesDomainsAndData,
-    chartTheme,
-    seriesColors,
-    axesSpecs,
-    deselectedDataSeries,
-  ): Map<SeriesKey, LegendItem> => {
+  (seriesSpecs, seriesDomainsAndData, chartTheme, seriesColors, axesSpecs, deselectedDataSeries): LegendItem[] => {
     return computeLegend(
       seriesDomainsAndData.seriesCollection,
       seriesColors,

@@ -15,17 +15,26 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License. */
+import { LegendItemExtraValues, LegendItem } from '../../commons/legend';
 
-import { GlobalChartState } from '../chart_state';
-import { LegendItem } from '../../commons/legend';
-
-const EMPTY_LEGEND_LIST: LegendItem[] = [];
-
-/** @internal */
-export const getLegendItemsSelector = (state: GlobalChartState): LegendItem[] => {
-  if (state.internalChartState) {
-    return state.internalChartState.getLegendItems(state);
-  } else {
-    return EMPTY_LEGEND_LIST;
+export function getExtra(extraValues: Map<string, LegendItemExtraValues>, item: LegendItem, totalItems: number) {
+  const {
+    seriesIdentifier: { key },
+    defaultExtra,
+    childId,
+  } = item;
+  if (extraValues.size === 0) {
+    return defaultExtra?.formatted ?? '';
   }
-};
+  const itemExtraValues = extraValues.get(key);
+  const actionExtra = (childId && itemExtraValues?.get(childId)) ?? null;
+  if (extraValues.size !== totalItems) {
+    if (actionExtra != null) {
+      return actionExtra;
+    } else {
+      return '';
+    }
+  } else {
+    return actionExtra !== null ? actionExtra : defaultExtra?.formatted ?? '';
+  }
+}

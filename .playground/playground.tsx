@@ -17,7 +17,8 @@
  * under the License. */
 
 import React from 'react';
-import { Chart, Partition, PartitionElementEvent, XYChartElementEvent, Settings } from '../src';
+import { Chart, Partition, PartitionElementEvent, XYChartElementEvent, Settings, BarSeries, ScaleType } from '../src';
+import { indexInterpolatedFillColor, interpolatorCET2s } from '../stories/utils/utils';
 
 export class Playground extends React.Component<{}, { isSunburstShown: boolean }> {
   onClick = (elements: Array<PartitionElementEvent | XYChartElementEvent>) => {
@@ -28,7 +29,7 @@ export class Playground extends React.Component<{}, { isSunburstShown: boolean }
     return (
       <>
         <div className="chart">
-          <Chart size={[300, 200]}>
+          <Chart>
             <Settings showLegend />
             <Partition
               id="amount"
@@ -43,10 +44,48 @@ export class Playground extends React.Component<{}, { isSunburstShown: boolean }
               layers={[
                 {
                   groupByRollup: (d: any) => d.x,
+                  shape: {
+                    fillColor: (d) => {
+                      // pick color from color palette based on mean angle - rather distinct colors in the inner ring
+                      return indexInterpolatedFillColor(interpolatorCET2s)(d, (d.x0 + d.x1) / 2 / (2 * Math.PI), []);
+                    },
+                  },
                 },
                 {
                   groupByRollup: (d: any) => d.g,
+                  shape: {
+                    fillColor: () => {
+                      // pick color from color palette based on mean angle - rather distinct colors in the inner ring
+                      return 'red';
+                    },
+                  },
                 },
+              ]}
+            />
+          </Chart>
+        </div>
+        <div className="chart">
+          <Chart>
+            <Settings showLegend showLegendExtra />
+            <BarSeries
+              id="areas"
+              name="area"
+              xScaleType={ScaleType.Linear}
+              yScaleType={ScaleType.Linear}
+              xAccessor={0}
+              yAccessors={[1]}
+              splitSeriesAccessors={[2]}
+              data={[
+                [0, 123, 'group0'],
+                [0, 122, 'group1'],
+                [0, 123, 'group2'],
+                [0, 123, 'group3'],
+                [1, 145, 'group0'],
+                [1, 112, 'group1'],
+                [2, 1, 'group0'],
+                [2, 2, 'group1'],
+                [2, 3, 'group2'],
+                [2, 4, 'group3'],
               ]}
             />
           </Chart>

@@ -16,22 +16,27 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { LastValues } from '../chart_types/xy_chart/state/utils';
 import { Color } from '../utils/commons';
 import { SeriesIdentifier } from './series_id';
-import { Postfixes } from '../chart_types/xy_chart/utils/specs';
-import { FormattedLastValues } from '../chart_types/xy_chart/legend/legend';
+import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
+/** @internal */
+export type LegendItemChildId = string;
 
 /** @internal */
-export type LegendItem = Postfixes & {
+export type LegendItem = {
   seriesIdentifier: SeriesIdentifier;
+  childId?: LegendItemChildId;
+  childs?: LegendItem[];
+  depth?: number;
   color: Color;
-  name: string;
+  label: string;
   isSeriesVisible?: boolean;
-  banded?: boolean;
   isLegendItemVisible?: boolean;
-  displayValue: {
-    raw: LastValues;
-    formatted: FormattedLastValues;
+  defaultExtra?: {
+    raw: number | null;
+    formatted: number | string | null;
   };
 };
+
+/** @internal */
+export type LegendItemExtraValues = Map<LegendItemChildId, PrimitiveValue>;

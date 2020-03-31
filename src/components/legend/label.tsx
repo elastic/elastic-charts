@@ -16,16 +16,26 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { GlobalChartState } from '../chart_state';
-import { LegendItem } from '../../commons/legend';
+import React from 'react';
+import classNames from 'classnames';
 
-const EMPTY_LEGEND_LIST: LegendItem[] = [];
-
-/** @internal */
-export const getLegendItemsSelector = (state: GlobalChartState): LegendItem[] => {
-  if (state.internalChartState) {
-    return state.internalChartState.getLegendItems(state);
-  } else {
-    return EMPTY_LEGEND_LIST;
-  }
-};
+/**
+ * @internal
+ * @param label
+ * @param onLabelClick
+ * @param hasLabelClickListener
+ */
+export function renderLabel(
+  label: string,
+  onLabelClick: (event: React.MouseEvent<Element, MouseEvent>) => void,
+  hasLabelClickListener: boolean,
+) {
+  const labelClassNames = classNames('echLegendItem__label', {
+    ['echLegendItem__label--hasClickListener']: hasLabelClickListener,
+  });
+  return (
+    <div className={labelClassNames} title={label} onClick={onLabelClick}>
+      {label}
+    </div>
+  );
+}

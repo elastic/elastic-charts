@@ -182,6 +182,7 @@ export function getCustomSeriesColors(
   return updatedCustomSeriesColors;
 }
 
+/** @internal */
 export interface LastValues {
   y0: number | null;
   y1: number | null;
@@ -731,8 +732,9 @@ export function isChartAnimatable(geometriesCounts: GeometriesCounts, animationE
 }
 
 /** @internal */
-export function isAllSeriesDeselected(legendItems: Map<string, LegendItem>): boolean {
-  for (const [, legendItem] of legendItems) {
+export function isAllSeriesDeselected(legendItems: LegendItem[]): boolean {
+  // return legendItems.some(({ isSeriesVisible }) => !isSeriesVisible);
+  for (const legendItem of legendItems) {
     if (legendItem.isSeriesVisible) {
       return false;
     }
