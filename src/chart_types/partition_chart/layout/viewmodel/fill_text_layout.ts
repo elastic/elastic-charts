@@ -32,7 +32,6 @@ import {
 import { Box, Font, PartialFont, TextMeasure } from '../types/types';
 import { conjunctiveConstraint } from '../circline_geometry';
 import { Layer } from '../../specs/index';
-import { stringToRGB } from '../utils/d3_utils';
 import { colorIsDark } from '../utils/calcs';
 import { ValueFormatter } from '../../../../utils/commons';
 
@@ -265,14 +264,13 @@ function fill(
     const { maxRowCount, fillLabel } = config;
 
     const layer = layers[node.depth - 1] || {};
-    const { textColor, textInvertible, fontStyle, fontVariant, fontFamily, fontWeight, valueFormatter } = Object.assign(
+    const { textColor, fontStyle, fontVariant, fontFamily, fontWeight, valueFormatter } = Object.assign(
       { fontFamily: config.fontFamily, fontWeight: 'normal' },
       fillLabel,
       { valueFormatter: formatter },
       layer.fillLabel,
       layer.shape,
     );
-
     const valueFont = Object.assign(
       { fontFamily: config.fontFamily, fontWeight: 'normal' },
       config.fillLabel && config.fillLabel.valueFont,
@@ -282,10 +280,9 @@ function fill(
       layer.fillLabel && layer.fillLabel.valueFont,
     );
 
-    const specifiedTextColorIsDark = colorIsDark(textColor);
+    // need to compare the contrast from the shapeFillColor to the textColor and change the textColor if the contrast isn't enough
     const shapeFillColor = node.fillColor;
-    const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(textColor);
-    let fontSizeIndex = fontSizes.length - 1;
+    const textColorWithContrast = colorIsDark(textColor, shapeFillColor);
     const sizeInvariantFont: Font = {
       fontStyle,
       fontVariant,
@@ -299,6 +296,7 @@ function fill(
     const container = shapeConstructor(node);
     const [cx, cy] = textFillOrigins[index];
 
+    let fontSizeIndex = fontSizes.length - 1;
     while (!completed && fontSizeIndex >= 0) {
       const fontSize = fontSizes[fontSizeIndex];
       const wordSpacing = getWordSpacing(fontSize);
@@ -323,19 +321,15 @@ function fill(
 
       while (++targetRowCount <= maxRowCount && !innerCompleted) {
         measuredBoxes = allMeasuredBoxes.slice();
-        const backgroundIsDark = colorIsDark(shapeFillColor);
-        const inverseForContrast = textInvertible && specifiedTextColorIsDark === backgroundIsDark;
         rowSet = {
           id: nodeId(node),
           fontSize,
           // fontWeight must be a multiple of 100 for non-variable width fonts, otherwise weird things happen due to
           // https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight#Fallback_weights - Fallback weights
           // todo factor out the discretization into a => FontWeight function
-          fillTextColor: inverseForContrast
-            ? to === undefined
-              ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`
-              : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
-            : textColor,
+
+          // this is where the textColor is defined for the relevant pie slices
+          fillTextColor: textColorWithContrast,
           rotation,
           rows: [...Array(targetRowCount)].map(() => ({
             rowWords: [],

@@ -17,10 +17,8 @@
  * under the License. */
 
 import { Ratio } from '../types/geometry_types';
-import { RgbTuple, stringToRGB } from './d3_utils';
+import { RgbTuple } from './d3_utils';
 import { Color } from '../../../../utils/commons';
-import { DARK_THEME } from '../../../../utils/themes/dark_theme';
-import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import colorJS from 'color';
 
 /** @internal */
@@ -51,87 +49,66 @@ export function arrayToLookup(keyFun: Function, array: Array<any>) {
   return Object.assign({}, ...array.map((d) => ({ [keyFun(d)]: d })));
 }
 
-/** @internal */
-function computeRelativeLuminosity(rgb: string) {
-  return colorJS(rgb).luminosity();
-}
+// /** @internal */
+// function computeRelativeLuminosity(rgb: string) {
+//   return colorJS(rgb).luminosity();
+// }
 
 /** @internal */
 function computeContrast(rgb1: string, rgb2: string) {
   return colorJS(rgb1).contrast(colorJS(rgb2));
 }
 
-/** @internal */
-function getAAARelativeLum(bgColor: string, fgColor: string, ratio = 7) {
-  const relLum1 = computeRelativeLuminosity(bgColor);
-  const relLum2 = computeRelativeLuminosity(fgColor);
-  if (relLum1 > relLum2) {
-    // relLum1 is brighter, relLum2 is darker
-    return (relLum1 + 0.05 - ratio * 0.05) / ratio;
-  } else {
-    // relLum1 is darker, relLum2 is brighter
-    return Math.min(ratio * (relLum1 + 0.05) - 0.05, 1);
-  }
-}
+// /** @internal */
+// function getAAARelativeLum(bgColor: string, fgColor: string, ratio = 7) {
+//   const relLum1 = computeRelativeLuminosity(bgColor);
+//   const relLum2 = computeRelativeLuminosity(fgColor);
+//   if (relLum1 > relLum2) {
+//     // relLum1 is brighter, relLum2 is darker
+//     return (relLum1 + 0.05 - ratio * 0.05) / ratio;
+//   } else {
+//     // relLum1 is darker, relLum2 is brighter
+//     return Math.min(ratio * (relLum1 + 0.05) - 0.05, 1);
+//   }
+// }
+
+// /** @internal */
+// function getGrayFromRelLum(relLum: number) {
+//   if (relLum <= 0.0031308) {
+//     return relLum * 12.92;
+//   } else {
+//     return (1.0 + 0.055) * Math.pow(relLum, 1.0 / 2.4) - 0.055;
+//   }
+// }
+
+// /** @internal */
+// function getGrayRGBfromGray(gray: number) {
+//   const g = Math.round(gray * 255);
+//   return `rgb(${g},${g},${g})`;
+// }
+
+// /** @internal */
+// function findBestContrastColor(bgColor: string, lightFgColor: string, darkFgColor: string, ratio = 4.5) {
+//   const lc = computeContrast(bgColor, lightFgColor);
+//   const dc = computeContrast(bgColor, darkFgColor);
+//   if (lc >= dc) {
+//     if (lc >= ratio) {
+//       return lightFgColor;
+//     }
+//     return getAAAGray(bgColor, lightFgColor, ratio);
+//   }
+//   if (dc >= ratio) {
+//     return darkFgColor;
+//   }
+//   return getAAAGray(bgColor, darkFgColor, ratio);
+// }
 
 /** @internal */
-function getGrayFromRelLum(relLum: number) {
-  if (relLum <= 0.0031308) {
-    return relLum * 12.92;
-  } else {
-    return (1.0 + 0.055) * Math.pow(relLum, 1.0 / 2.4) - 0.055;
-  }
-}
-
-/** @internal */
-function getGrayRGBfromGray(gray: number) {
-  const g = Math.round(gray * 255);
-  return `rgb(${g},${g},${g})`;
-}
-
-/** @internal */
-function getAAAGray(bgColor: string, fgColor: string, ratio = 7) {
-  const relLum = getAAARelativeLum(bgColor, fgColor, ratio);
-  const gray = getGrayFromRelLum(relLum);
-  return getGrayRGBfromGray(gray);
-}
-
-/** @internal */
-function findBestContrastColor(bgColor: string, lightFgColor: string, darkFgColor: string, ratio = 4.5) {
-  const lc = computeContrast(bgColor, lightFgColor);
-  const dc = computeContrast(bgColor, darkFgColor);
-  if (lc >= dc) {
-    if (lc >= ratio) {
-      return lightFgColor;
-    }
-    return getAAAGray(bgColor, lightFgColor, ratio);
-  }
-  if (dc >= ratio) {
-    return darkFgColor;
-  }
-  return getAAAGray(bgColor, darkFgColor, ratio);
-}
-
-/** @internal */
-export function colorIsDark(bgColor: Color) {
-  const color = findBestContrastColor(
-    bgColor,
-    LIGHT_THEME.axes.axisTitleStyle.fill,
-    DARK_THEME.axes.axisTitleStyle.fill,
-  );
-  return stringToRGB(color);
-  // fixme this assumes a white or very light background
-  // const rgba = stringToRGB(color);
-  // const { r, g, b, opacity } = rgba;
-  // const a = rgba.hasOwnProperty('opacity') ? opacity : 1;
-  // return r * 0.299 + g * 0.587 + b * 0.114 < a * 150;
-}
-
-/** @internal */
-export function getChartClasses(bgColor?: string) {
-  if (typeof bgColor !== 'string') {
-    return;
-  }
-  const bgLuminosity = computeRelativeLuminosity(bgColor);
-  return bgLuminosity <= 0.179 ? DARK_THEME : LIGHT_THEME;
+export function colorIsDark(textColor: Color, bgColor: Color) {
+  // compute the contrast of the two colors
+  const currentContrast = computeContrast(textColor, bgColor);
+  const color = currentContrast >= 4.5 ? textColor : textColor === '#000000' ? '#ffffff' : '#000000';
+  // if the contrast isn't 4.5 or greater, adjust the textColor until it is
+  // determine if the text color should be black or white fff or 000
+  return color;
 }
