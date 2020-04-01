@@ -24,11 +24,10 @@ export class IndexedGeometryLinearMap {
   set(geometry: IndexedGeometry) {
     const { x } = geometry.value;
     const existing = this.map.get(x);
-    const upsertGeometry: IndexedGeometry[] = Array.isArray(geometry) ? geometry : [geometry];
     if (existing === undefined) {
-      this.map.set(x, upsertGeometry);
+      this.map.set(x, [geometry]);
     } else {
-      this.map.set(x, [...upsertGeometry, ...existing]);
+      this.map.set(x, [geometry, ...existing]);
     }
   }
 
