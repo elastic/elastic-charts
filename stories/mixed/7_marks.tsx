@@ -41,7 +41,7 @@ export const example = () => {
     onElementOver: action('onElementOver'),
     onElementOut: action('onElementOut'),
   };
-  const radiusRatio = number('radiusRatio', 30, {
+  const markSizeRatio = number('markSizeRatio', 30, {
     range: true,
     min: 1,
     max: 100,
@@ -58,7 +58,7 @@ export const example = () => {
     <Chart className="story-chart">
       <Settings
         theme={{
-          radiusRatio,
+          markSizeRatio,
           areaSeriesStyle: {
             point: {
               visible: true,

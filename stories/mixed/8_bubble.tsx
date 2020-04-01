@@ -36,7 +36,7 @@ export const example = () => {
     onElementOver: action('onElementOver'),
     onElementOut: action('onElementOut'),
   };
-  const radiusRatio = number('radiusRatio', 50, {
+  const markSizeRatio = number('markSizeRatio', 30, {
     range: true,
     min: 1,
     max: 100,
@@ -57,7 +57,7 @@ export const example = () => {
           snap: false,
         }}
         theme={{
-          radiusRatio,
+          markSizeRatio,
           lineSeriesStyle: {
             line: {
               visible: false,

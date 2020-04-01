@@ -553,9 +553,12 @@ function renderGeometries(
         isBandedSpec(spec.y0Accessors),
         xScaleOffset,
         lineSeriesStyle,
+        {
+          enabled: (spec as LineSeriesSpec).markSizeAccessor !== undefined,
+          ratio: chartTheme.markSizeRatio,
+        },
         spec.pointStyleAccessor,
         Boolean(spec.fit && ((spec.fit as FitConfig).type || spec.fit) !== Fit.None),
-        chartTheme.radiusRatio,
       );
       indexedGeometryMap.merge(renderedLines.indexedGeometryMap);
       lines.push(renderedLines.lineGeometry);
@@ -579,9 +582,12 @@ function renderGeometries(
         xScaleOffset,
         areaSeriesStyle,
         isStacked,
+        {
+          enabled: (spec as LineSeriesSpec).markSizeAccessor !== undefined,
+          ratio: chartTheme.markSizeRatio,
+        },
         spec.pointStyleAccessor,
         Boolean(spec.fit && ((spec.fit as FitConfig).type || spec.fit) !== Fit.None),
-        chartTheme.radiusRatio,
       );
       indexedGeometryMap.merge(renderedAreas.indexedGeometryMap);
       areas.push(renderedAreas.areaGeometry);

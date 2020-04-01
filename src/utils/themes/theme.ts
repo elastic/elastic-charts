@@ -180,7 +180,7 @@ export interface Theme {
    *
    * value from 1 to 100
    */
-  radiusRatio?: number;
+  markSizeRatio?: number;
 }
 
 export type PartialTheme = RecursivePartial<Theme>;

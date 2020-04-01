@@ -48,6 +48,11 @@ import { MarkBuffer } from '../../../specs';
 
 export const DEFAULT_HIGHLIGHT_PADDING = 10;
 
+export interface MarkSizeOptions {
+  enabled: boolean;
+  ratio?: number;
+}
+
 export function getPointStyleOverrides(
   datum: DataSeriesDatum,
   seriesIdentifier: XYChartSeriesIdentifier,
@@ -102,9 +107,9 @@ export function getBarStyleOverrides(
  *
  * @param  {Datum[]} radii
  * @param  {number} lineWidth
- * @param  {number=50} radiusRatio - 1 to 100
+ * @param  {number=50} markSizeRatio - 1 to 100
  */
-function getRadiusFn(data: DataSeriesDatum[], lineWidth: number, radiusRatio: number = 50) {
+function getRadiusFn(data: DataSeriesDatum[], lineWidth: number, markSizeRatio: number = 50) {
   if (data.length === 0) {
     return () => 0;
   }
@@ -118,7 +123,7 @@ function getRadiusFn(data: DataSeriesDatum[], lineWidth: number, radiusRatio: nu
           },
     { min: Infinity, max: -Infinity },
   );
-  const radiusStep = (max - min || max * 100) / Math.pow(radiusRatio, 2);
+  const radiusStep = (max - min || max * 100) / Math.pow(markSizeRatio, 2);
   return function getRadius(mark: number | null, defaultRadius = 0): number {
     if (mark === null) {
       return defaultRadius;
@@ -138,15 +143,17 @@ function renderPoints(
   color: Color,
   lineStyle: LineStyle,
   hasY0Accessors: boolean,
+  markSizeOptions: MarkSizeOptions,
   styleAccessor?: PointStyleAccessor,
-  radiusRatio?: number,
 ): {
   pointGeometries: PointGeometry[];
   indexedGeometryMap: IndexedGeometryMap;
 } {
   const indexedGeometryMap = new IndexedGeometryMap();
   const isLogScale = isLogarithmicScale(yScale);
-  const getRadius = getRadiusFn(dataSeries.data, lineStyle.strokeWidth, radiusRatio);
+  const getRadius = markSizeOptions.enabled
+    ? getRadiusFn(dataSeries.data, lineStyle.strokeWidth, markSizeOptions.ratio)
+    : () => 0;
   const pointGeometries = dataSeries.data.reduce((acc, datum) => {
     const { x: xValue, y0, y1, initialY0, initialY1, filled, mark } = datum;
     // don't create the point if not within the xScale domain or it that point was filled
@@ -366,9 +373,9 @@ export function renderLine(
   hasY0Accessors: boolean,
   xScaleOffset: number,
   seriesStyle: LineSeriesStyle,
+  markSizeOptions: MarkSizeOptions,
   pointStyleAccessor?: PointStyleAccessor,
   hasFit?: boolean,
-  radiusRatio?: number,
 ): {
   lineGeometry: LineGeometry;
   indexedGeometryMap: IndexedGeometryMap;
@@ -403,8 +410,8 @@ export function renderLine(
     color,
     seriesStyle.line,
     hasY0Accessors,
+    markSizeOptions,
     pointStyleAccessor,
-    radiusRatio,
   );
 
   const clippedRanges = hasFit && !hasY0Accessors ? getClippedRanges(dataSeries.data, xScale, xScaleOffset) : [];
@@ -459,9 +466,9 @@ export function renderArea(
   xScaleOffset: number,
   seriesStyle: AreaSeriesStyle,
   isStacked = false,
+  markSizeOptions: MarkSizeOptions,
   pointStyleAccessor?: PointStyleAccessor,
   hasFit?: boolean,
-  radiusRatio?: number,
 ): {
   areaGeometry: AreaGeometry;
   indexedGeometryMap: IndexedGeometryMap;
@@ -511,8 +518,8 @@ export function renderArea(
     color,
     seriesStyle.line,
     hasY0Accessors,
+    markSizeOptions,
     pointStyleAccessor,
-    radiusRatio,
   );
 
   const areaGeometry: AreaGeometry = {
