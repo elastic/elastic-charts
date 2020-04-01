@@ -695,7 +695,7 @@ export function isAllSeriesDeselected(legendItems: Map<string, LegendItem>): boo
 }
 
 export function getDistance(a: Point, b: Point) {
-  return Math.sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2);
+  return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
 }
 
 /**
