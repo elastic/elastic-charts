@@ -25,6 +25,7 @@ import {
   SharedGeometryStateStyle,
   BarSeriesStyle,
   GeometryStateStyle,
+  LineStyle,
 } from '../../../utils/themes/theme';
 import { Scale, ScaleType, isLogarithmicScale } from '../../../scales';
 import { CurveType, getCurveFactory } from '../../../utils/curves';
@@ -135,7 +136,7 @@ function renderPoints(
   xScale: Scale,
   yScale: Scale,
   color: Color,
-  lineWidth: number,
+  lineStyle: LineStyle,
   hasY0Accessors: boolean,
   styleAccessor?: PointStyleAccessor,
   radiusRatio?: number,
@@ -145,7 +146,7 @@ function renderPoints(
 } {
   const indexedGeometryMap = new IndexedGeometryMap();
   const isLogScale = isLogarithmicScale(yScale);
-  const getRadius = getRadiusFn(dataSeries.data, lineWidth, radiusRatio);
+  const getRadius = getRadiusFn(dataSeries.data, lineStyle.strokeWidth, radiusRatio);
   const pointGeometries = dataSeries.data.reduce((acc, datum) => {
     const { x: xValue, y0, y1, initialY0, initialY1, filled, dot } = datum;
     // don't create the point if not within the xScale domain or it that point was filled
@@ -197,7 +198,8 @@ function renderPoints(
         seriesIdentifier,
         styleOverrides,
       };
-      const geometryType = dot === null ? GeometryType.linear : GeometryType.spatial;
+      // TODO: Use spatial for all points after tooltip re-design
+      const geometryType = dot === null || lineStyle.visible ? GeometryType.linear : GeometryType.spatial;
       indexedGeometryMap.set(pointGeometry, geometryType);
       // use the geometry only if the yDatum in contained in the current yScale domain
       const isHidden = yDatum === null || (isLogScale && yDatum <= 0);
@@ -399,7 +401,7 @@ export function renderLine(
     xScale,
     yScale,
     color,
-    seriesStyle.line.strokeWidth,
+    seriesStyle.line,
     hasY0Accessors,
     pointStyleAccessor,
     radiusRatio,
@@ -507,7 +509,7 @@ export function renderArea(
     xScale,
     yScale,
     color,
-    seriesStyle.line.strokeWidth,
+    seriesStyle.line,
     hasY0Accessors,
     pointStyleAccessor,
     radiusRatio,

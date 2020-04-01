@@ -136,12 +136,6 @@ class TooltipComponent extends React.Component<TooltipProps> {
     );
   };
 
-  isComplexTooltip(info: TooltipInfo) {
-    // TODO: fix after changes to tooltip info
-    // check for multiple x values in info array
-    return info.values.every(({ value }) => value);
-  }
-
   render() {
     const { isVisible, info, getChartContainerRef } = this.props;
     const chartContainerRef = getChartContainerRef();

@@ -691,3 +691,33 @@ export function isAllSeriesDeselected(legendItems: Map<string, LegendItem>): boo
 export function getDistance(a: Point, b: Point) {
   return Math.sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2);
 }
+
+/**
+ * Determines if an array has all unique values
+ *
+ * examples:
+ * ```ts
+ * isUniqueArray([1, 2]) // => true
+ * isUniqueArray([1, 1, 2]) // => false
+ * isUniqueArray([{ n: 1 }, { n: 1 }, { n: 2 }], ({ n }) => n) // => false
+ * ```
+ *
+ * @param  {B[]} arr
+ * @param  {(d:B)=>T} extractor? extract the value from B
+ */
+export function isUniqueArray<B, T>(arr: B[], extractor?: (value: B) => T) {
+  const values = new Set<B | T>();
+
+  return (function() {
+    return arr.every((v) => {
+      const value = extractor ? extractor(v) : v;
+
+      if (values.has(value)) {
+        return false;
+      }
+
+      values.add(value);
+      return true;
+    });
+  })();
+}

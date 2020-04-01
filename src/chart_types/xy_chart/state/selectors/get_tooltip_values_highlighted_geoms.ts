@@ -20,7 +20,7 @@ import createCachedSelector from 're-reselect';
 import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
 import { Point } from '../../../../utils/point';
 import { getOrientedProjectedPointerPositionSelector } from './get_oriented_projected_pointer_position';
-import { ComputedScales, getAxesSpecForSpecId, getSpecsById } from '../utils';
+import { ComputedScales, getAxesSpecForSpecId, getSpecsById, isUniqueArray } from '../utils';
 import { getComputedScalesSelector } from './get_computed_scales';
 import { getElementAtCursorPositionSelector } from './get_elements_at_cursor_pos';
 import { IndexedGeometry } from '../../../../utils/geometry';
@@ -119,63 +119,64 @@ function getTooltipAndHighlightFromValue(
   // build the tooltip value list
   let header: TooltipValue | null = null;
   const highlightedGeometries: IndexedGeometry[] = [];
-  const values = matchingGeoms
-    .filter(({ value: { y } }) => y !== null)
-    .reduce<TooltipValue[]>((acc, indexedGeometry) => {
-      const {
-        seriesIdentifier: { specId },
-      } = indexedGeometry;
-      const spec = getSpecsById<BasicSeriesSpec>(seriesSpecs, specId);
+  const filteredGeoms = matchingGeoms.filter(({ value: { y } }) => y !== null);
+  const hasMultipleX = filteredGeoms.length > 1 && isUniqueArray(filteredGeoms, ({ x }) => x);
 
-      // safe guard check
-      if (!spec) {
-        return acc;
-      }
-      const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
+  const values = filteredGeoms.reduce<TooltipValue[]>((acc, indexedGeometry) => {
+    const {
+      seriesIdentifier: { specId },
+    } = indexedGeometry;
+    const spec = getSpecsById<BasicSeriesSpec>(seriesSpecs, specId);
 
-      // yScales is ensured by the enclosing if
-      const yScale = scales.yScales.get(spec.groupId);
-      if (!yScale) {
-        return acc;
-      }
+    // safe guard check
+    if (!spec) {
+      return acc;
+    }
+    const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
 
-      // check if the pointer is on the geometry (avoid checking if using external pointer event)
-      let isHighlighted = false;
-      if (
-        (!externalPointerEvent || isPointerOutEvent(externalPointerEvent)) &&
-        isPointOnGeometry(x, y, indexedGeometry, settings.pointBuffer)
-      ) {
-        isHighlighted = true;
-        highlightedGeometries.push(indexedGeometry);
-      }
+    // yScales is ensured by the enclosing if
+    const yScale = scales.yScales.get(spec.groupId);
+    if (!yScale) {
+      return acc;
+    }
 
-      // if it's a follow tooltip, and no element is highlighted
-      // do _not_ add element into tooltip list
-      if (!isHighlighted && isFollowTooltipType(tooltipType)) {
-        return acc;
-      }
+    // check if the pointer is on the geometry (avoid checking if using external pointer event)
+    let isHighlighted = false;
+    if (
+      (!externalPointerEvent || isPointerOutEvent(externalPointerEvent)) &&
+      isPointOnGeometry(x, y, indexedGeometry, settings.pointBuffer)
+    ) {
+      isHighlighted = true;
+      highlightedGeometries.push(indexedGeometry);
+    }
 
-      // format the tooltip values
-      const yAxisFormatSpec = [0, 180].includes(chartRotation) ? yAxis : xAxis;
-      const formattedTooltip = formatTooltip(
-        indexedGeometry,
-        spec,
-        false,
-        isHighlighted,
-        hasSingleSeries,
-        yAxisFormatSpec,
-      );
+    // if it's a follow tooltip, and no element is highlighted
+    // do _not_ add element into tooltip list
+    if (!isHighlighted && isFollowTooltipType(tooltipType)) {
+      return acc;
+    }
 
-      // format only one time the x value
-      if (!header) {
-        // if we have a tooltipHeaderFormatter, then don't pass in the xAxis as the user will define a formatter
-        const xAxisFormatSpec = [0, 180].includes(chartRotation) ? xAxis : yAxis;
-        const formatterAxis = tooltipHeaderFormatter ? undefined : xAxisFormatSpec;
-        header = formatTooltip(indexedGeometry, spec, true, false, hasSingleSeries, formatterAxis);
-      }
+    // format the tooltip values
+    const yAxisFormatSpec = [0, 180].includes(chartRotation) ? yAxis : xAxis;
+    const formattedTooltip = formatTooltip(
+      indexedGeometry,
+      spec,
+      false,
+      isHighlighted,
+      hasSingleSeries,
+      yAxisFormatSpec,
+    );
 
-      return [...acc, formattedTooltip];
-    }, []);
+    // format only one time the x value
+    if (!hasMultipleX && !header) {
+      // if we have a tooltipHeaderFormatter, then don't pass in the xAxis as the user will define a formatter
+      const xAxisFormatSpec = [0, 180].includes(chartRotation) ? xAxis : yAxis;
+      const formatterAxis = tooltipHeaderFormatter ? undefined : xAxisFormatSpec;
+      header = formatTooltip(indexedGeometry, spec, true, false, hasSingleSeries, formatterAxis);
+    }
+
+    return [...acc, formattedTooltip];
+  }, []);
 
   return {
     tooltip: {

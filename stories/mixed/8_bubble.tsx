@@ -19,17 +19,12 @@
 import React from 'react';
 import { number, boolean } from '@storybook/addon-knobs';
 
-import { AreaSeries, Axis, Chart, LineSeries, Position, ScaleType, Settings } from '../../src';
+import { Axis, Chart, LineSeries, Position, ScaleType, Settings, TooltipType } from '../../src';
 import { getRandomNumberGenerator } from '../../src/mocks/utils';
 import { action } from '@storybook/addon-actions';
 
 const getRandomNumber = getRandomNumberGenerator();
-const data1 = new Array(100).fill(0).map((_, x) => ({
-  x,
-  y: getRandomNumber(0, 100),
-  z: getRandomNumber(0, 50),
-}));
-const data2 = new Array(100).fill(0).map((_, x) => ({
+const data = new Array(100).fill(0).map((_, x) => ({
   x,
   y: getRandomNumber(0, 100),
   z: getRandomNumber(0, 50),
@@ -41,7 +36,7 @@ export const example = () => {
     onElementOver: action('onElementOver'),
     onElementOut: action('onElementOut'),
   };
-  const radiusRatio = number('radiusRatio', 30, {
+  const radiusRatio = number('radiusRatio', 50, {
     range: true,
     min: 1,
     max: 100,
@@ -57,11 +52,15 @@ export const example = () => {
   return (
     <Chart className="story-chart">
       <Settings
+        tooltip={{
+          type: TooltipType.Follow,
+          snap: false,
+        }}
         theme={{
           radiusRatio,
-          areaSeriesStyle: {
-            point: {
-              visible: true,
+          lineSeriesStyle: {
+            line: {
+              visible: false,
             },
           },
         }}
@@ -72,23 +71,14 @@ export const example = () => {
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
-      <AreaSeries
-        id="area"
-        xScaleType={ScaleType.Linear}
-        yScaleType={ScaleType.Linear}
-        xAccessor="x"
-        yAccessors={['y']}
-        dotAccessor="z"
-        data={data1.slice(0, size)}
-      />
       <LineSeries
-        id="line"
+        id="bubbles"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
         dotAccessor="z"
-        data={data2.slice(0, size)}
+        data={data.slice(0, size)}
       />
     </Chart>
   );

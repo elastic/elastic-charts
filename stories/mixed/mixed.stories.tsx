@@ -32,3 +32,4 @@ export { example as testBarLinesLinear } from './4_test_bar';
 export { example as testBarLinesTime } from './5_test_bar_time';
 export { example as fittingFunctionsNonStackedSeries } from './6_fitting';
 export { example as dotAccessor } from './7_dots';
+export { example as bubbleChart } from './8_bubble';
