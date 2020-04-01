@@ -86,7 +86,7 @@ export function formatTooltip(
     valueAccessor: accessor,
     label,
     value: axisSpec ? axisSpec.tickFormat(value, tickFormatOptions) : emptyFormatter(value),
-    dotValue: isHeader ? null : dotValue,
+    dotValue: isHeader || dot === null ? null : dotValue,
     color,
     isHighlighted: isHeader ? false : isHighlighted,
     isVisible,
