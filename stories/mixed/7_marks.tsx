@@ -78,7 +78,7 @@ export const example = () => {
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
-        dotAccessor="z"
+        markSizeAccessor="z"
         data={data1.slice(0, size)}
       />
       <LineSeries
@@ -87,7 +87,7 @@ export const example = () => {
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
-        dotAccessor="z"
+        markSizeAccessor="z"
         data={data2.slice(0, size)}
       />
     </Chart>

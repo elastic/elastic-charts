@@ -71,7 +71,7 @@ export function renderAreas(ctx: CanvasRenderingContext2D, props: AreaGeometries
             renderPoints(ctx, area.points, seriesPointStyle, geometryStateStyle);
           },
           // TODO: add padding over clipping
-          area.points[0]?.value.dot !== null,
+          area.points[0]?.value.mark !== null,
         );
       }
     });

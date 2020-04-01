@@ -34,7 +34,7 @@ export type BandedAccessorType = $Values<typeof BandedAccessorType>;
 export interface GeometryValue {
   y: any;
   x: any;
-  dot: number | null;
+  mark: number | null;
   accessor: BandedAccessorType;
 }
 

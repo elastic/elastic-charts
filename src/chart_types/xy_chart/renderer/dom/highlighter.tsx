@@ -69,7 +69,7 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
                   stroke={color}
                   strokeWidth={4}
                   fill="transparent"
-                  clipPath={geom.value.dot !== null ? `url(#${clipPathId})` : undefined}
+                  clipPath={geom.value.mark !== null ? `url(#${clipPathId})` : undefined}
                 />
               );
             }

@@ -44,7 +44,7 @@ import { mergePartial, Color } from '../../../utils/commons';
 import { LegendItem } from '../legend/legend';
 import { IndexedGeometryMap, GeometryType } from '../utils/indexed_geometry_map';
 import { getDistance } from '../state/utils';
-import { PointBuffer } from '../../../specs';
+import { MarkBuffer } from '../../../specs';
 
 export const DEFAULT_HIGHLIGHT_PADDING = 10;
 
@@ -96,7 +96,7 @@ export function getBarStyleOverrides(
 }
 
 /**
- * Get radius function form ratio and min/max dot sixe
+ * Get radius function form ratio and min/max mark sixe
  *
  * @todo add continuous/non-stepped function
  *
@@ -109,21 +109,21 @@ function getRadiusFn(data: DataSeriesDatum[], lineWidth: number, radiusRatio: nu
     return () => 0;
   }
   const { min, max } = data.reduce(
-    (acc, { dot }) =>
-      dot === null
+    (acc, { mark }) =>
+      mark === null
         ? acc
         : {
-            min: Math.min(acc.min, dot / 2),
-            max: Math.max(acc.max, dot / 2),
+            min: Math.min(acc.min, mark / 2),
+            max: Math.max(acc.max, mark / 2),
           },
     { min: Infinity, max: -Infinity },
   );
   const radiusStep = (max - min || max * 100) / Math.pow(radiusRatio, 2);
-  return function getRadius(dot: number | null, defaultRadius = 0): number {
-    if (dot === null) {
+  return function getRadius(mark: number | null, defaultRadius = 0): number {
+    if (mark === null) {
       return defaultRadius;
     }
-    const circleRadius = (dot / 2 - min) / radiusStep;
+    const circleRadius = (mark / 2 - min) / radiusStep;
     const baseMagicNumber = 2;
     const base = circleRadius ? Math.sqrt(circleRadius + baseMagicNumber) + lineWidth : lineWidth;
     return base;
@@ -148,7 +148,7 @@ function renderPoints(
   const isLogScale = isLogarithmicScale(yScale);
   const getRadius = getRadiusFn(dataSeries.data, lineStyle.strokeWidth, radiusRatio);
   const pointGeometries = dataSeries.data.reduce((acc, datum) => {
-    const { x: xValue, y0, y1, initialY0, initialY1, filled, dot } = datum;
+    const { x: xValue, y0, y1, initialY0, initialY1, filled, mark } = datum;
     // don't create the point if not within the xScale domain or it that point was filled
     if (!xScale.isValueInDomain(xValue) || (filled && filled.y1 !== undefined)) {
       return acc;
@@ -163,7 +163,7 @@ function renderPoints(
         return;
       }
       let y;
-      let radius = getRadius(dot);
+      let radius = getRadius(mark);
       // we fix 0 and negative values at y = 0
       if (yDatum === null || (isLogScale && yDatum <= 0)) {
         y = yScale.range[0];
@@ -188,7 +188,7 @@ function renderPoints(
         value: {
           x: xValue,
           y: originalY,
-          dot,
+          mark,
           accessor: hasY0Accessors && index === 0 ? BandedAccessorType.Y0 : BandedAccessorType.Y1,
         },
         transform: {
@@ -199,7 +199,7 @@ function renderPoints(
         styleOverrides,
       };
       // TODO: Use spatial for all points after tooltip re-design
-      const geometryType = dot === null || lineStyle.visible ? GeometryType.linear : GeometryType.spatial;
+      const geometryType = mark === null || lineStyle.visible ? GeometryType.linear : GeometryType.spatial;
       indexedGeometryMap.set(pointGeometry, geometryType);
       // use the geometry only if the yDatum in contained in the current yScale domain
       const isHidden = yDatum === null || (isLogScale && yDatum <= 0);
@@ -338,7 +338,7 @@ export function renderBars(
       value: {
         x: datum.x,
         y: initialY1,
-        dot: null,
+        mark: null,
         accessor: BandedAccessorType.Y1,
       },
       seriesIdentifier,
@@ -607,7 +607,7 @@ export function isPointOnGeometry(
   xCoordinate: number,
   yCoordinate: number,
   indexedGeometry: BarGeometry | PointGeometry,
-  buffer: PointBuffer = DEFAULT_HIGHLIGHT_PADDING,
+  buffer: MarkBuffer = DEFAULT_HIGHLIGHT_PADDING,
 ) {
   const { x, y } = indexedGeometry;
   if (isPointGeometry(indexedGeometry)) {

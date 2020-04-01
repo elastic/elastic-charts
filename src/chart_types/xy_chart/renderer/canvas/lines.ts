@@ -55,7 +55,7 @@ export function renderLines(ctx: CanvasRenderingContext2D, props: LineGeometries
             renderPoints(ctx, line.points, line.seriesPointStyle, geometryStyle);
           },
           // TODO: add padding over clipping
-          line.points[0]?.value.dot !== null,
+          line.points[0]?.value.mark !== null,
         );
       }
     });

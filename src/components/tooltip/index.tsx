@@ -107,7 +107,7 @@ class TooltipComponent extends React.Component<TooltipProps> {
         {this.renderHeader(info.header, headerFormatter)}
         <div className="echTooltip__list">
           {info.values.map(
-            ({ seriesIdentifier, valueAccessor, label, value, dotValue, color, isHighlighted, isVisible }, index) => {
+            ({ seriesIdentifier, valueAccessor, label, value, markValue, color, isHighlighted, isVisible }, index) => {
               if (!isVisible) {
                 return null;
               }
@@ -126,7 +126,7 @@ class TooltipComponent extends React.Component<TooltipProps> {
                 >
                   <span className="echTooltip__label">{label}</span>
                   <span className="echTooltip__value">{value}</span>
-                  {dotValue && <span className="echTooltip__dotValue">&nbsp;({dotValue})</span>}
+                  {markValue && <span className="echTooltip__markValue">&nbsp;({markValue})</span>}
                 </div>
               );
             },

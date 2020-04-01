@@ -176,7 +176,7 @@ export interface Theme {
   legend: LegendStyle;
   crosshair: CrosshairStyle;
   /**
-   * Used to scale radius with `dotAccessor`
+   * Used to scale radius with `markSizeAccessor`
    *
    * value from 1 to 100
    */

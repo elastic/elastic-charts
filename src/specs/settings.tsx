@@ -101,9 +101,9 @@ export interface TooltipValue {
    */
   value: any;
   /**
-   * The dot value to display
+   * The mark value to display
    */
-  dotValue: any;
+  markValue: any;
   /**
    * The color of the graphic mark (by default the color of the series)
    */
@@ -162,7 +162,7 @@ export type LegendColorPicker = ComponentType<LegendColorPickerProps>;
 /**
  * Buffer between cursor and point to trigger interaction
  */
-export type PointBuffer = number | ((radius: number) => number);
+export type MarkBuffer = number | ((radius: number) => number);
 
 export interface SettingsSpec extends Spec {
   /**
@@ -204,7 +204,7 @@ export interface SettingsSpec extends Spec {
   onElementClick?: ElementClickListener;
   onElementOver?: ElementOverListener;
   onElementOut?: BasicListener;
-  pointBuffer?: PointBuffer;
+  pointBuffer?: MarkBuffer;
   onBrushEnd?: BrushEndListener;
   onLegendItemOver?: LegendItemListener;
   onLegendItemOut?: BasicListener;
