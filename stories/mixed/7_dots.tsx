@@ -71,7 +71,10 @@ export const example = () => {
   return (
     <Chart className="story-chart">
       <Settings
-        tooltip={TooltipType.Follow}
+        tooltip={{
+          type: TooltipType.Follow,
+          snap: false,
+        }}
         theme={{
           radiusRatio,
           lineSeriesStyle: {
@@ -85,7 +88,7 @@ export const example = () => {
             },
           },
         }}
-        debug={boolean('debug', true)}
+        debug={boolean('debug', false)}
         pointBuffer={(r) => 20 / r}
         {...onElementListeners}
       />

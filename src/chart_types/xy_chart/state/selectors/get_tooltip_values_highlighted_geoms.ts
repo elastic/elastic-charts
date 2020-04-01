@@ -150,7 +150,7 @@ function getTooltipAndHighlightFromValue(
       }
 
       // if it's a follow tooltip, and no element is highlighted
-      // not add that element into the tooltip list
+      // do _not_ add element into tooltip list
       if (!isHighlighted && isFollowTooltipType(tooltipType)) {
         return acc;
       }

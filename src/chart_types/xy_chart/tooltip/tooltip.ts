@@ -41,7 +41,6 @@ export function getSeriesTooltipValues(
   tooltipValues: TooltipValue[],
   defaultValue?: string,
 ): Map<SeriesKey, TooltipLegendValue> {
-  // map from seriesKey to TooltipLegendValue
   const seriesTooltipValues = new Map<SeriesKey, TooltipLegendValue>();
 
   tooltipValues.forEach(({ value, seriesIdentifier, valueAccessor }) => {
@@ -61,7 +60,7 @@ export function getSeriesTooltipValues(
 }
 
 export function formatTooltip(
-  { color, value: { x, y, accessor }, seriesIdentifier }: IndexedGeometry,
+  { color, value: { x, y, dot, accessor }, seriesIdentifier }: IndexedGeometry,
   spec: BasicSeriesSpec,
   isHeader: boolean,
   isHighlighted: boolean,
@@ -80,11 +79,14 @@ export function formatTooltip(
 
   const value = isHeader ? x : y;
   const tickFormatOptions: TickFormatterOptions | undefined = spec.timeZone ? { timeZone: spec.timeZone } : undefined;
+  const dotValue = axisSpec ? axisSpec.tickFormat(dot, tickFormatOptions) : emptyFormatter(dot);
+
   return {
     seriesIdentifier,
     valueAccessor: accessor,
     label,
     value: axisSpec ? axisSpec.tickFormat(value, tickFormatOptions) : emptyFormatter(value),
+    dotValue: isHeader ? null : dotValue,
     color,
     isHighlighted: isHeader ? false : isHighlighted,
     isVisible,

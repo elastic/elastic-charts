@@ -101,6 +101,10 @@ export interface TooltipValue {
    */
   value: any;
   /**
+   * The dot value to display
+   */
+  dotValue: any;
+  /**
    * The color of the graphic mark (by default the color of the series)
    */
   color: Color;
