@@ -33,30 +33,12 @@ interface HighlighterProps {
   radius: number;
 }
 
+const EPSILON = 1e-6;
+
 function getShapeFromValues(x: number, y: number, r: number, a0: number, a1: number, ccw: number): string {
-  const dx = r * Math.cos(a0);
-  const dy = r * Math.sin(a0);
-  const x0 = x + dx;
-  const y0 = y + dy;
   const cw = 1 ^ ccw;
-  let da = ccw ? a0 - a1 : a1 - a0;
-  const path: string[] = [];
-  path.push(`M${x0},${y0}`);
-
-  if (!r) return '';
-  if (da < 0) {
-    da = (da % TAU) + TAU;
-  }
-  if (da > TAU - 1e-6) {
-    path.push(`A${r},${r},0,1,${cw},${x - dx},${y - dy}A${r},${r},0,1,${cw},${x0},${y0}`);
-  }
-
-  // Is this arc non-empty? Draw an arc!
-  else if (da > 1e-6) {
-    path.push(`A${r},${r},0,${+(da >= Math.PI)},${cw},${x + r * Math.cos(a1)},${y + r * Math.sin(a1)}`);
-  }
-  path.push(`L${x},${y}Z`);
-  return path.join('');
+  const da = ccw ? a0 - a1 : a1 - a0;
+  return `A${r},${r},0,${+(da >= Math.PI)},${cw},${x + r * Math.cos(a1)},${y + r * Math.sin(a1)}`;
 }
 
 class HighlighterComponent extends React.Component<HighlighterProps> {
@@ -73,13 +55,27 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
           <mask id="echHighlighterMask">
             <rect x={0} y={0} width="1500" height="1500" fill="white" /> */}
         {geometries.map(({ x0, x1, y0px, y1px }, index) => {
+          if ((Math.abs(x0 - x1) + TAU) % TAU < EPSILON) {
+            return (
+              <circle
+                transform={`translate(${diskCenter.x}, ${diskCenter.y})`}
+                key={index}
+                r={(y0px + y1px) / 2}
+                fill="none"
+                stroke="rgba(255,0,255,0.5)"
+                strokeWidth={y1px - y0px}
+              />
+            );
+          }
           const X0 = x0 - TAU / 4;
           const X1 = x1 - TAU / 4;
           const path = [
-            getShapeFromValues(0, 0, y0px, X0, X0, 0),
-            getShapeFromValues(0, 0, y1px, X0, X1, 0),
-            getShapeFromValues(0, 0, y0px, X1, X0, 1),
-          ].join('');
+            `M${y0px * Math.cos(X0)},${y0px * Math.sin(X0)}`,
+            getShapeFromValues(0, 0, y0px, X0, X1, 0),
+            `L${y1px * Math.cos(X1)},${y1px * Math.sin(X1)}`,
+            getShapeFromValues(0, 0, y1px, X1, X0, 1),
+            'Z',
+          ].join(' ');
           return <path key={index} d={path} transform={`translate(${diskCenter.x}, ${diskCenter.y})`} fill="black" />;
         })}
         {/* </mask>
