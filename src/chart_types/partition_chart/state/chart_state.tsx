@@ -28,6 +28,7 @@ import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { computeLegendSelector } from './selectors/compute_legend';
 import { getLegendItemsLabels } from './selectors/get_legend_items_labels';
+import { Highlighter } from '../renderer/canvas/highlighter';
 
 const EMPTY_MAP = new Map();
 
@@ -66,6 +67,7 @@ export class PartitionState implements InternalChartState {
       <>
         <Tooltip getChartContainerRef={containerRef} />
         <Partition />
+        <Highlighter />
       </>
     );
   }

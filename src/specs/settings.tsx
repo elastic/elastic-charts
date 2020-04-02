@@ -261,7 +261,7 @@ export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
   rendering: 'canvas' as 'canvas',
   rotation: 0 as 0,
   animateData: true,
-  showLegend: false,
+  showLegend: true,
   resizeDebounce: 10,
   debug: false,
   tooltip: {

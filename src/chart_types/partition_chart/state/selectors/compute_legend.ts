@@ -76,7 +76,7 @@ export const computeLegendSelector = createCachedSelector(
         depth: flatLegend ? 0 : depth - 1,
         isLegendItemVisible: true,
         seriesIdentifier: {
-          key: id,
+          key: dataName,
           specId: id,
         },
       };

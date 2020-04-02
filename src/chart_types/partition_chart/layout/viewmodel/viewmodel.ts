@@ -301,5 +301,6 @@ export function shapeViewModel(
     linkLabelViewModels,
     outsideLinksViewModel,
     pickQuads,
+    outerRadius,
   };
 }
