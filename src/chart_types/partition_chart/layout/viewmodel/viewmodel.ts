@@ -57,7 +57,7 @@ import {
   sortIndexAccessor,
   HierarchyOfArrays,
 } from '../utils/group_by_rollup';
-import { ValueFormatter } from '../../../../utils/commons';
+import { StrokeStyle, ValueFormatter } from '../../../../utils/commons';
 import { percentValueGetter } from '../config/config';
 
 function paddingAccessor(n: ArrayEntry) {
@@ -94,6 +94,7 @@ export function makeQuadViewModel(
   childNodes: ShapeTreeNode[],
   layers: Layer[],
   sectorLineWidth: Pixels,
+  sectorLineStroke: StrokeStyle,
 ): Array<QuadViewModel> {
   return childNodes.map((node) => {
     const opacityMultiplier = 1; // could alter in the future, eg. in response to interactions
@@ -104,7 +105,8 @@ export function makeQuadViewModel(
     const { r, g, b, opacity } = stringToRGB(shapeFillColor);
     const fillColor = argsToRGBString(r, g, b, opacity * opacityMultiplier);
     const strokeWidth = sectorLineWidth;
-    return { strokeWidth, fillColor, ...node };
+    const strokeStyle = sectorLineStroke;
+    return { strokeWidth, strokeStyle, fillColor, ...node };
   });
 }
 
@@ -159,6 +161,7 @@ export function shapeViewModel(
     specialFirstInnermostSector,
     minFontSize,
     partitionLayout,
+    sectorLineWidth,
   } = config;
 
   const innerWidth = width * (1 - Math.min(1, margin.left + margin.right));
@@ -195,7 +198,7 @@ export function shapeViewModel(
 
   // use the smaller of the two sizes, as a circle fits into a square
   const circleMaximumSize = Math.min(innerWidth, innerHeight);
-  const outerRadius: Radius = (outerSizeRatio * circleMaximumSize) / 2;
+  const outerRadius: Radius = Math.min(outerSizeRatio * circleMaximumSize, circleMaximumSize - sectorLineWidth) / 2;
   const innerRadius: Radius = outerRadius - (1 - emptySizeRatio) * outerRadius;
   const treeHeight = shownChildNodes.reduce((p: number, n: any) => Math.max(p, entryValue(n.node).depth), 0); // 1: pie, 2: two-ring donut etc.
   const ringThickness = (outerRadius - innerRadius) / treeHeight;
@@ -222,6 +225,7 @@ export function shapeViewModel(
     ),
     layers,
     config.sectorLineWidth,
+    config.sectorLineStroke,
   );
 
   // fill text
