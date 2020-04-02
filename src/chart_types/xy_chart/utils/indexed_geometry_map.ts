@@ -48,22 +48,20 @@ export class IndexedGeometryMap {
   }
 
   set(geometry: IndexedGeometry, type: GeometryType = GeometryType.linear) {
-    if (type === GeometryType.spatial) {
-      if (!isPointGeometry(geometry)) {
-        throw new Error('Spatial geometry must be PointGeometry');
-      }
+    if (type === GeometryType.spatial && isPointGeometry(geometry)) {
+      // TODO: Add dev error here when attempting spatial upset with non-point
       this.spatialMap.set([geometry]);
     } else {
       this.linearMap.set(geometry);
     }
   }
 
-  find(x: number | string | null, point: Point, neighbors = true): IndexedGeometry[] {
+  find(x: number | string | null, point: Point): IndexedGeometry[] {
     if (x === null) {
       return [];
     }
 
-    return [...this.linearMap.find(x), ...this.spatialMap.find(x, point, neighbors)];
+    return [...this.linearMap.find(x), ...this.spatialMap.find(x, point)];
   }
 
   getMergeData() {
