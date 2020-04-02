@@ -53,7 +53,7 @@ export class IndexedGeometrySpatialMap {
     }
   }
 
-  voronoi = (bounds?: Delaunay.Bounds) => {
+  triangulation = (bounds?: Delaunay.Bounds) => {
     return this.map?.voronoi(bounds);
   };
 

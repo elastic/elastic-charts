@@ -187,13 +187,13 @@ export function renderXYChartCanvas2d(
             },
           );
 
-          const voronoi = geometriesIndex.voronoi([0, 0, width, height]);
+          const triangulation = geometriesIndex.triangulation([0, 0, width, height]);
 
-          if (voronoi) {
+          if (triangulation) {
             ctx.beginPath();
             ctx.translate(left, top);
             ctx.setLineDash([5, 5]);
-            voronoi.render(ctx);
+            triangulation.render(ctx);
             ctx.lineWidth = 1;
             ctx.strokeStyle = 'blue';
             ctx.stroke();

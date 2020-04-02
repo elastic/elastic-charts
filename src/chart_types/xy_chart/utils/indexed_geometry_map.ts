@@ -35,12 +35,12 @@ export class IndexedGeometryMap {
   private spatialMap = new IndexedGeometrySpatialMap();
 
   /**
-   * Renterns voronoi instance to render voronoi grid
+   * Returns triangulation instance to render spatial grid
    *
    * @param bounds
    */
-  voronoi(bounds?: Delaunay.Bounds) {
-    return this.spatialMap.voronoi(bounds);
+  triangulation(bounds?: Delaunay.Bounds) {
+    return this.spatialMap.triangulation(bounds);
   }
 
   keys(): Array<number> {

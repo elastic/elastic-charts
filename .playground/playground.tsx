@@ -55,10 +55,10 @@ export class Playground extends React.Component<{}, { ready: boolean }> {
       console.table(this.points);
 
       this.delaunay = Delaunay.from(this.points);
-      const voronoi = this.delaunay.voronoi();
+      const triangulation = this.delaunay.voronoi();
 
       this.ctx.beginPath();
-      voronoi.render(this.ctx);
+      triangulation.render(this.ctx);
       this.ctx.lineWidth = 2;
       this.ctx.strokeStyle = 'blue';
       this.ctx.stroke();
