@@ -24,8 +24,6 @@ import { TooltipType, getTooltipType } from '../../../../specs';
 import { getTooltipInfoSelector } from './tooltip';
 
 /**
- * The brush is available only for Ordinal xScales charts and
- * if we have configured an onBrushEnd listener
  * @internal
  */
 export const isTooltipVisibleSelector = createCachedSelector(
