@@ -42,8 +42,8 @@ export function createOnElementClickCaller(): (state: GlobalChartState) => void 
     if (selector === null && state.chartType === ChartTypes.Goal) {
       selector = createCachedSelector(
         [getSpecOrNull, getLastClickSelector, getSettingsSpecSelector, getPickedShapesLayerValues],
-        (pieSpec, lastClick: PointerState | null, settings: SettingsSpec, pickedShapes): void => {
-          if (!pieSpec) {
+        (spec, lastClick: PointerState | null, settings: SettingsSpec, pickedShapes): void => {
+          if (!spec) {
             return;
           }
           if (!settings.onElementClick) {
@@ -56,8 +56,8 @@ export function createOnElementClickCaller(): (state: GlobalChartState) => void 
                 return [
                   values,
                   {
-                    specId: pieSpec.id,
-                    key: `spec{${pieSpec.id}}`,
+                    specId: spec.id,
+                    key: `spec{${spec.id}}`,
                   },
                 ];
               });
