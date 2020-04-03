@@ -21,6 +21,7 @@ import { Config } from '../types/config_types';
 import { BulletViewModel, PickFunction, ShapeViewModel } from '../types/viewmodel_types';
 import { GoalSpec } from '../../specs/index';
 
+/** @internal */
 export function shapeViewModel(textMeasure: TextMeasure, spec: GoalSpec, config: Config): ShapeViewModel {
   const { width, height, margin } = config;
 

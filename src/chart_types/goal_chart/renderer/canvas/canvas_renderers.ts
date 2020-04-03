@@ -37,6 +37,7 @@ function get<T>(o: { [k: string]: any }, name: string, dflt: T) {
   return name in o ? o[name] || dflt : dflt;
 }
 
+/** @internal */
 export function renderCanvas2d(
   ctx: CanvasRenderingContext2D,
   dpr: number,

@@ -25,6 +25,7 @@ import { mergePartial, RecursivePartial } from '../../../../utils/commons';
 import { config as defaultConfig } from '../../layout/config/config';
 import { Config } from '../../layout/types/config_types';
 
+/** @internal */
 export function render(spec: GoalSpec, parentDimensions: Dimensions): ShapeViewModel {
   const { width, height } = parentDimensions;
   const { config: specConfig } = spec;
