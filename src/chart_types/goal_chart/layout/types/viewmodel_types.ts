@@ -101,7 +101,7 @@ export const nullGoalViewModel = {
   centralMinor: '',
   highestValue: 100,
   lowestValue: 0,
-  aboveBaseCount: 3,
+  aboveBaseCount: 0,
   belowBaseCount: 0,
 };
 
