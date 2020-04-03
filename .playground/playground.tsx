@@ -27,7 +27,6 @@ import {
   XYChartElementEvent,
   BarSeries,
 } from '../src';
-import { example } from '../stories/bar/39_test_stacked_null';
 
 export class Playground extends React.Component<{}, { isSunburstShown: boolean }> {
   onClick = (elements: Array<PartitionElementEvent | XYChartElementEvent>) => {
@@ -37,11 +36,11 @@ export class Playground extends React.Component<{}, { isSunburstShown: boolean }
   render() {
     return (
       <>
-        <div className="chart">{example()}</div>
         <div className="chart">
           <Chart size={[300, 200]}>
             <Settings
               onElementClick={this.onClick}
+              rotation={90}
               theme={{
                 barSeriesStyle: {
                   displayValue: {
@@ -56,17 +55,15 @@ export class Playground extends React.Component<{}, { isSunburstShown: boolean }
             <Axis id="y1" position={Position.Left} />
             <BarSeries
               id="amount"
-              xScaleType={ScaleType.Linear}
-              xAccessor="0"
-              yAccessors={[1]}
+              xScaleType={ScaleType.Ordinal}
+              xAccessor="x"
+              yAccessors={['y']}
               data={[
-                [1546300800000, null, 'a'],
-                [1546387200000, 5, 'a'],
-                [1546300800000, 3, 'b'],
-                [1546387200000, null, 'b'],
+                { x: 'trousers', y: 390, val: 1222 },
+                { x: 'watches', y: 0, val: 1222 },
+                { x: 'bags', y: 750, val: 1222 },
+                { x: 'cocktail dresses', y: 854, val: 1222 },
               ]}
-              stackAccessors={['a']}
-              splitSeriesAccessors={[2]}
               displayValueSettings={{
                 showValueLabel: true,
                 isValueContainedInElement: true,
