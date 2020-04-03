@@ -40,7 +40,7 @@ export interface BandFillColorAccessorInput {
 }
 
 /** @alpha */
-type BandFillColorAccessor = (input: BandFillColorAccessorInput) => Color;
+export type BandFillColorAccessor = (input: BandFillColorAccessorInput) => Color;
 
 const defaultProps = {
   chartType: ChartTypes.Goal,
