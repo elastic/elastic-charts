@@ -20,6 +20,8 @@ import { palettes } from '../../../../mocks/hierarchical/palettes';
 import { Config, PartitionLayout, Numeric } from '../types/config_types';
 import { GOLDEN_RATIO, TAU } from '../utils/math';
 import { FONT_STYLES, FONT_VARIANTS } from '../types/types';
+import { ShapeTreeNode } from '../types/viewmodel_types';
+import { AGGREGATE_KEY, STATISTICS_KEY } from '../utils/group_by_rollup';
 
 const log10 = Math.log(10);
 function significantDigitCount(d: number): number {
@@ -29,19 +31,53 @@ function significantDigitCount(d: number): number {
   return Math.floor(Math.log(n) / log10) + 1;
 }
 
-function defaultFormatter(d: any): string {
-  return typeof d === 'string'
-    ? d
-    : typeof d === 'number'
-    ? Math.abs(d) >= 10000000 || Math.abs(d) < 0.001
-      ? d.toExponential(Math.min(2, Math.max(0, significantDigitCount(d) - 1)))
-      : d.toLocaleString(void 0, {
-          maximumSignificantDigits: 4,
-          maximumFractionDigits: 3,
-          useGrouping: true,
-        })
-    : String(d);
+export function sumValueGetter(node: ShapeTreeNode): number {
+  return node[AGGREGATE_KEY];
 }
+
+export function percentValueGetter(node: ShapeTreeNode): number {
+  return (100 * node[AGGREGATE_KEY]) / node.parent[STATISTICS_KEY].globalAggregate;
+}
+
+export function ratioValueGetter(node: ShapeTreeNode): number {
+  return node[AGGREGATE_KEY] / node.parent[STATISTICS_KEY].globalAggregate;
+}
+
+export const VALUE_GETTERS = Object.freeze({ percent: percentValueGetter, ratio: ratioValueGetter } as const);
+export type ValueGetterName = keyof typeof VALUE_GETTERS;
+
+function defaultFormatter(d: number): string {
+  return Math.abs(d) >= 10000000 || Math.abs(d) < 0.001
+    ? d.toExponential(Math.min(2, Math.max(0, significantDigitCount(d) - 1)))
+    : d.toLocaleString(void 0, {
+        maximumSignificantDigits: 4,
+        maximumFractionDigits: 3,
+        useGrouping: true,
+      });
+}
+
+export function percentFormatter(d: number): string {
+  return `${Math.round(d)}%`;
+}
+
+const fontSettings = {
+  fontFamily: {
+    dflt: 'Sans-Serif',
+    type: 'string',
+  },
+  fontSize: { dflt: 12, min: 4, max: 32, type: 'number' },
+  fontStyle: {
+    dflt: 'normal',
+    type: 'string',
+    values: FONT_STYLES,
+  },
+  fontVariant: {
+    dflt: 'normal',
+    type: 'string',
+    values: FONT_VARIANTS,
+  },
+  fontWeight: { dflt: 400, min: 100, max: 900, type: 'number' },
+};
 
 const valueFont = {
   type: 'group',
@@ -53,20 +89,13 @@ const valueFont = {
       type: 'string',
     },
    */
-    fontWeight: { dflt: 400, min: 100, max: 900, type: 'number' },
-    fontStyle: {
-      dflt: 'normal',
-      type: 'string',
-      values: FONT_STYLES,
-    },
-    fontVariant: {
-      dflt: 'normal',
-      type: 'string',
-      values: FONT_VARIANTS,
-    },
+    fontWeight: fontSettings.fontWeight,
+    fontStyle: fontSettings.fontStyle,
+    fontVariant: fontSettings.fontVariant,
   },
 };
 
+/** @internal */
 export const configMetadata = {
   // shape geometry
   width: { dflt: 300, min: 0, max: 1024, type: 'number', reconfigurable: false },
@@ -143,16 +172,10 @@ export const configMetadata = {
     values: {
       textColor: { dflt: '#000000', type: 'color' },
       textInvertible: { dflt: false, type: 'boolean' },
-      fontWeight: { dflt: 400, min: 100, max: 900, type: 'number' },
-      fontStyle: {
-        dflt: 'normal',
-        type: 'string',
-        values: FONT_STYLES,
-      },
-      fontVariant: {
-        dflt: 'normal',
-        type: 'string',
-        values: FONT_VARIANTS,
+      ...fontSettings,
+      valueGetter: {
+        dflt: sumValueGetter,
+        type: 'function',
       },
       valueFormatter: {
         dflt: defaultFormatter,
@@ -174,7 +197,7 @@ export const configMetadata = {
         reconfigurable: true,
         documentation: 'Uses linked labels below this limit of the outer sector arc length (in pixels)',
       },
-      fontSize: { dflt: 12, min: 4, max: 32, type: 'number' },
+      ...fontSettings,
       gap: { dflt: 10, min: 6, max: 16, type: 'number' },
       spacing: { dflt: 2, min: 0, max: 16, type: 'number' },
       horizontalStemLength: { dflt: 10, min: 6, max: 16, type: 'number' },
@@ -211,6 +234,7 @@ export const configMetadata = {
   // other
   backgroundColor: { dflt: '#ffffff', type: 'color' },
   sectorLineWidth: { dflt: 1, min: 0, max: 4, type: 'number' },
+  sectorLineStroke: { dflt: 'white', type: 'string' },
   colors: { dflt: 'turbo', type: 'palette', values: Object.keys(palettes) },
   palettes: { dflt: palettes, type: 'palettes', reconfigurable: false },
 };

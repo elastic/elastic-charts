@@ -19,13 +19,12 @@
 import { Distance } from '../types/geometry_types';
 import { Config } from '../types/config_types';
 import { TAU, trueBearingToStandardPositionAngle } from '../utils/math';
-import { LinkLabelVM, ShapeTreeNode } from '../types/viewmodel_types';
+import { LinkLabelVM, ShapeTreeNode, ValueGetterFunction } from '../types/viewmodel_types';
 import { meanAngle } from '../geometry';
 import { TextMeasure } from '../types/types';
-import { AGGREGATE_KEY } from '../utils/group_by_rollup';
 import { ValueFormatter } from '../../../../utils/commons';
 
-// todo modularize this large function
+/** @internal */
 export function linkTextLayout(
   measure: TextMeasure,
   config: Config,
@@ -33,6 +32,7 @@ export function linkTextLayout(
   currentY: Distance[],
   anchorRadius: Distance,
   rawTextGetter: Function,
+  valueGetter: ValueGetterFunction,
   valueFormatter: ValueFormatter,
 ): LinkLabelVM[] {
   const { linkLabel } = config;
@@ -70,9 +70,26 @@ export function linkTextLayout(
       const stemToX = x + north * west * cy - west * relativeY;
       const stemToY = cy;
       const text = rawTextGetter(node);
-      const { width, emHeightAscent, emHeightDescent } = measure(linkLabel.fontSize, [
-        { fontFamily: config.fontFamily, ...linkLabel, text },
-      ])[0];
+      const valueText = valueFormatter(valueGetter(node));
+      const labelFontSpec = {
+        fontStyle: 'normal',
+        fontVariant: 'normal',
+        fontFamily: config.fontFamily,
+        fontWeight: 'normal',
+        ...linkLabel,
+        text,
+      };
+      const valueFontSpec = {
+        fontStyle: 'normal',
+        fontVariant: 'normal',
+        fontFamily: config.fontFamily,
+        fontWeight: 'normal',
+        ...linkLabel,
+        ...linkLabel.valueFont,
+        text: valueText,
+      };
+      const { width, emHeightAscent, emHeightDescent } = measure(linkLabel.fontSize, [labelFontSpec])[0];
+      const { width: valueWidth } = measure(linkLabel.fontSize, [valueFontSpec])[0];
       return {
         link: [
           [x0, y0],
@@ -83,9 +100,12 @@ export function linkTextLayout(
         translate: [stemToX + west * (linkLabel.horizontalStemLength + linkLabel.gap), stemToY],
         textAlign: side ? 'left' : 'right',
         text,
-        valueText: valueFormatter(node[AGGREGATE_KEY]),
+        valueText,
         width,
+        valueWidth,
         verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`
+        labelFontSpec,
+        valueFontSpec,
       };
     });
 }

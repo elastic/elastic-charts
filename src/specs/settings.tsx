@@ -31,9 +31,18 @@ import { XYChartSeriesIdentifier, SeriesIdentifier } from '../chart_types/xy_cha
 import { Accessor } from '../utils/accessor';
 import { Position, Rendering, Rotation, Color } from '../utils/commons';
 import { ScaleContinuousType, ScaleOrdinalType } from '../scales';
+import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 
-export type ElementClickListener = (elements: Array<[GeometryValue, XYChartSeriesIdentifier]>) => void;
-export type ElementOverListener = (elements: Array<[GeometryValue, XYChartSeriesIdentifier]>) => void;
+export interface LayerValue {
+  groupByRollup: PrimitiveValue;
+  value: number;
+}
+
+export type XYChartElementEvent = [GeometryValue, XYChartSeriesIdentifier];
+export type PartitionElementEvent = [Array<LayerValue>, SeriesIdentifier];
+
+export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent>) => void;
+export type ElementOverListener = (elements: Array<XYChartElementEvent | PartitionElementEvent>) => void;
 export type BrushEndListener = (min: number, max: number) => void;
 export type LegendItemListener = (series: XYChartSeriesIdentifier | null) => void;
 export type PointerUpdateListener = (event: PointerEvent) => void;
@@ -272,30 +281,37 @@ export const Settings: React.FunctionComponent<SettingsSpecProps> = getConnect()
   specComponentFactory<SettingsSpec, DefaultSettingsProps>(DEFAULT_SETTINGS_SPEC),
 );
 
+/** @internal */
 export function isPointerOutEvent(event: PointerEvent | null | undefined): event is PointerOutEvent {
   return event !== null && event !== undefined && event.type === PointerEventType.Out;
 }
 
+/** @internal */
 export function isPointerOverEvent(event: PointerEvent | null | undefined): event is PointerOverEvent {
   return event !== null && event !== undefined && event.type === PointerEventType.Over;
 }
 
+/** @internal */
 export function isTooltipProps(config: TooltipType | TooltipProps): config is TooltipProps {
   return typeof config === 'object';
 }
 
+/** @internal */
 export function isTooltipType(config: TooltipType | TooltipProps): config is TooltipType {
   return typeof config === 'string';
 }
 
+/** @internal */
 export function isCrosshairTooltipType(type: TooltipType) {
   return type === TooltipType.VerticalCursor || type === TooltipType.Crosshairs;
 }
 
+/** @internal */
 export function isFollowTooltipType(type: TooltipType) {
   return type === TooltipType.Follow;
 }
 
+/** @internal */
 export function getTooltipType(settings: SettingsSpec): TooltipType | undefined {
   const { tooltip } = settings;
   if (tooltip === undefined || tooltip === null) {

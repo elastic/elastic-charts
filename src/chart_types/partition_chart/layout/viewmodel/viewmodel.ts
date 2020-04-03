@@ -35,6 +35,7 @@ import {
   RowSet,
   ShapeTreeNode,
   ShapeViewModel,
+  ValueGetterFunction,
 } from '../types/viewmodel_types';
 import { Layer } from '../../specs/index';
 import {
@@ -61,7 +62,8 @@ import {
   parentAccessor,
   sortIndexAccessor,
 } from '../utils/group_by_rollup';
-import { ValueAccessor } from '../../../../utils/commons';
+import { StrokeStyle, ValueAccessor, ValueFormatter } from '../../../../utils/commons';
+import { percentValueGetter } from '../config/config';
 
 function paddingAccessor(n: ArrayEntry) {
   return entryValue(n).depth > 1 ? 1 : [0, 2][entryValue(n).depth];
@@ -97,6 +99,7 @@ export function makeQuadViewModel(
   childNodes: ShapeTreeNode[],
   layers: Layer[],
   sectorLineWidth: Pixels,
+  sectorLineStroke: StrokeStyle,
 ): Array<QuadViewModel> {
   return childNodes.map((node) => {
     const opacityMultiplier = 1; // could alter in the future, eg. in response to interactions
@@ -107,10 +110,12 @@ export function makeQuadViewModel(
     const { r, g, b, opacity } = stringToRGB(shapeFillColor);
     const fillColor = argsToRGBString(r, g, b, opacity * opacityMultiplier);
     const strokeWidth = sectorLineWidth;
-    return { strokeWidth, fillColor, ...node };
+    const strokeStyle = sectorLineStroke;
+    return { strokeWidth, strokeStyle, fillColor, ...node };
   });
 }
 
+/** @internal */
 export function makeOutsideLinksViewModel(
   outsideFillNodes: ShapeTreeNode[],
   rowSets: RowSet[],
@@ -138,14 +143,17 @@ export function makeOutsideLinksViewModel(
     .filter(({ points }: OutsideLinksViewModel) => points.length > 1);
 }
 
+/** @internal */
 export function shapeViewModel(
   textMeasure: TextMeasure,
   config: Config,
   layers: Layer[],
-  facts: Relation,
+  rawFacts: Relation,
   rawTextGetter: RawTextGetter,
   valueAccessor: ValueAccessor,
-  valueFormatter: (value: number) => string,
+  specifiedValueFormatter: ValueFormatter,
+  specifiedPercentFormatter: ValueFormatter,
+  valueGetter: ValueGetterFunction,
   groupByRollupAccessors: IndexedAccessorFn[],
 ): ShapeViewModel {
   const {
@@ -160,6 +168,7 @@ export function shapeViewModel(
     specialFirstInnermostSector,
     minFontSize,
     partitionLayout,
+    sectorLineWidth,
   } = config;
 
   const innerWidth = width * (1 - Math.min(1, margin.left + margin.right));
@@ -172,11 +181,16 @@ export function shapeViewModel(
 
   const aggregator = aggregators.sum;
 
-  // don't render anything if there are no tuples, or some are negative, or the total is not positive
+  const facts = rawFacts.filter((n) => {
+    const value = valueAccessor(n);
+    return Number.isFinite(value) && value >= 0;
+  });
+
+  // don't render anything if the total, the width or height is not positive
   if (
-    facts.length === 0 ||
-    facts.some((n) => valueAccessor(n) < 0) ||
-    facts.reduce((p: number, n) => aggregator.reducer(p, valueAccessor(n)), aggregator.identity()) <= 0
+    facts.reduce((p: number, n) => aggregator.reducer(p, valueAccessor(n)), aggregator.identity()) <= 0 ||
+    !(width > 0) ||
+    !(height > 0)
   ) {
     return nullShapeViewModel(config, diskCenter);
   }
@@ -203,15 +217,21 @@ export function shapeViewModel(
     ? treemap(tree, treemapAreaAccessor, paddingAccessor, { x0: -width / 2, y0: -height / 2, width, height })
     : sunburst(tree, sunburstAreaAccessor, { x0: 0, y0: -1 }, clockwiseSectors, specialFirstInnermostSector);
 
+  const shownChildNodes = rawChildNodes.filter((n: Part) => {
+    const layerIndex = entryValue(n.node).depth - 1;
+    const layer = layers[layerIndex];
+    return !layer || !layer.showAccessor || layer.showAccessor(entryKey(n.node));
+  });
+
   // use the smaller of the two sizes, as a circle fits into a square
   const circleMaximumSize = Math.min(innerWidth, innerHeight);
-  const outerRadius: Radius = (outerSizeRatio * circleMaximumSize) / 2;
+  const outerRadius: Radius = Math.min(outerSizeRatio * circleMaximumSize, circleMaximumSize - sectorLineWidth) / 2;
   const innerRadius: Radius = outerRadius - (1 - emptySizeRatio) * outerRadius;
-  const treeHeight = rawChildNodes.reduce((p: number, n: any) => Math.max(p, entryValue(n.node).depth), 0); // 1: pie, 2: two-ring donut etc.
+  const treeHeight = shownChildNodes.reduce((p: number, n: any) => Math.max(p, entryValue(n.node).depth), 0); // 1: pie, 2: two-ring donut etc.
   const ringThickness = (outerRadius - innerRadius) / treeHeight;
 
   const quadViewModel = makeQuadViewModel(
-    rawChildNodes.slice(1).map(
+    shownChildNodes.slice(1).map(
       (n: Part): ShapeTreeNode => {
         const node: ArrayEntry = n.node;
         return {
@@ -232,6 +252,7 @@ export function shapeViewModel(
     ),
     layers,
     config.sectorLineWidth,
+    config.sectorLineStroke,
   );
 
   // fill text
@@ -247,9 +268,12 @@ export function shapeViewModel(
 
   const textFillOrigins = nodesWithRoom.map(treemapLayout ? rectangleFillOrigins : sectorFillOrigins(fillOutside));
 
+  const valueFormatter = valueGetter === percentValueGetter ? specifiedPercentFormatter : specifiedValueFormatter;
+
   const rowSets: RowSet[] = fillTextLayout(
     textMeasure,
     rawTextGetter,
+    valueGetter,
     valueFormatter,
     nodesWithRoom,
     config,
@@ -283,6 +307,7 @@ export function shapeViewModel(
     currentY,
     outerRadius,
     rawTextGetter,
+    valueGetter,
     valueFormatter,
   );
 

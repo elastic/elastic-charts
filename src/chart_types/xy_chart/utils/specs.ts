@@ -527,11 +527,14 @@ export interface AxisSpec extends Spec {
   style?: AxisStyle;
   /** Show only integar values **/
   integersOnly?: boolean;
+  /** Show duplicated ticks, default is false*/
+  showDuplicatedTicks?: boolean;
 }
 
 export type TickFormatterOptions = {
   timeZone?: string;
 };
+
 export type TickFormatter = (value: any, options?: TickFormatterOptions) => string;
 
 export interface AxisStyle {

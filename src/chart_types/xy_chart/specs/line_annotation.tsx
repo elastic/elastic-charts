@@ -17,7 +17,6 @@
  * under the License. */
 
 import React, { createRef, CSSProperties, Component } from 'react';
-import { deepEqual } from '../../../utils/fast_deep_equal';
 import { LineAnnotationSpec, DEFAULT_GLOBAL_ID, AnnotationTypes } from '../utils/specs';
 import { DEFAULT_ANNOTATION_LINE_STYLE, mergeWithDefaultAnnotationLine } from '../../../utils/themes/theme';
 import { bindActionCreators, Dispatch } from 'redux';
@@ -31,6 +30,8 @@ type InjectedProps = LineAnnotationSpec &
   Readonly<{
     children?: React.ReactNode;
   }>;
+
+/** @internal */
 export class LineAnnotationSpecComponent extends Component<LineAnnotationSpec> {
   static defaultProps: Partial<LineAnnotationSpec> = {
     chartType: ChartTypes.XYAxis,
@@ -58,10 +59,6 @@ export class LineAnnotationSpecComponent extends Component<LineAnnotationSpec> {
     const style = mergeWithDefaultAnnotationLine(config.style);
     const spec = { ...config, style };
     upsertSpec(spec);
-  }
-
-  shouldComponentUpdate(nextProps: LineAnnotationSpec) {
-    return !deepEqual(this.props, nextProps);
   }
 
   componentDidUpdate() {

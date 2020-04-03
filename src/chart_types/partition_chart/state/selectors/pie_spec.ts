@@ -15,3 +15,15 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License. */
+
+import { GlobalChartState } from '../../../../state/chart_state';
+import { getSpecsFromStore } from '../../../../state/utils';
+import { PartitionSpec } from '../../specs';
+import { ChartTypes } from '../../..';
+import { SpecTypes } from '../../../../specs';
+
+/** @internal */
+export function getPieSpecOrNull(state: GlobalChartState): PartitionSpec | null {
+  const pieSpecs = getSpecsFromStore<PartitionSpec>(state.specs, ChartTypes.Partition, SpecTypes.Series);
+  return pieSpecs.length > 0 ? pieSpecs[0] : null;
+}

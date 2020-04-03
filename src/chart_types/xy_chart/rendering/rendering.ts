@@ -53,6 +53,7 @@ export interface MarkSizeOptions {
   ratio?: number;
 }
 
+/** @internal */
 export function getPointStyleOverrides(
   datum: DataSeriesDatum,
   seriesIdentifier: XYChartSeriesIdentifier,
@@ -73,6 +74,7 @@ export function getPointStyleOverrides(
   return styleOverride;
 }
 
+/** @internal */
 export function getBarStyleOverrides(
   datum: DataSeriesDatum,
   seriesIdentifier: XYChartSeriesIdentifier,
@@ -222,6 +224,7 @@ function renderPoints(
   };
 }
 
+/** @internal */
 export function renderBars(
   orderIndex: number,
   dataSeries: DataSeries,
@@ -363,6 +366,7 @@ export function renderBars(
   };
 }
 
+/** @internal */
 export function renderLine(
   shift: number,
   dataSeries: DataSeries,
@@ -442,6 +446,7 @@ export function renderLine(
 
 /**
  * Returns value of `y1` or `filled.y1` or null
+ * @internal
  */
 export const getYValue = ({ y1, filled }: DataSeriesDatum): number | null => {
   if (y1 !== null) {
@@ -455,6 +460,7 @@ export const getYValue = ({ y1, filled }: DataSeriesDatum): number | null => {
   return null;
 };
 
+/** @internal */
 export function renderArea(
   shift: number,
   dataSeries: DataSeries,
@@ -555,6 +561,7 @@ export function renderArea(
  * @param dataset
  * @param xScale
  * @param xScaleOffset
+ * @internal
  */
 export function getClippedRanges(dataset: DataSeriesDatum[], xScale: Scale, xScaleOffset: number): ClippedRanges {
   let firstNonNullX: number | null = null;
@@ -585,6 +592,7 @@ export function getClippedRanges(dataset: DataSeriesDatum[], xScale: Scale, xSca
   }, []);
 }
 
+/** @internal */
 export function getGeometryStateStyle(
   seriesIdentifier: XYChartSeriesIdentifier,
   highlightedLegendItem: LegendItem | null,
@@ -610,6 +618,7 @@ export function getGeometryStateStyle(
   return defaultStyles;
 }
 
+/** @internal */
 export function isPointOnGeometry(
   xCoordinate: number,
   yCoordinate: number,

@@ -48,7 +48,7 @@ export const example = () => (
           },
         },
       ]}
-      config={{ outerSizeRatio: 0.9 }}
+      config={{ outerSizeRatio: 0.9, linkLabel: { fontStyle: 'italic', valueFont: { fontWeight: 900 } } }}
     />
   </Chart>
 );

@@ -116,4 +116,5 @@ const mapStateToProps = (state: GlobalChartState): HighlighterProps => {
   };
 };
 
+/** @internal */
 export const Highlighter = connect(mapStateToProps)(HighlighterComponent);

@@ -1,3 +1,56 @@
+# [18.2.0](https://github.com/elastic/elastic-charts/compare/v18.1.0...v18.2.0) (2020-03-26)
+
+
+### Bug Fixes
+
+* **line_annotation:** keep the spec in state after chart rerender ([#605](https://github.com/elastic/elastic-charts/issues/605)) ([43c13f1](https://github.com/elastic/elastic-charts/commit/43c13f1a9652e9a50b7f9cf25a84a7a772695f81)), closes [#604](https://github.com/elastic/elastic-charts/issues/604)
+
+
+### Features
+
+* **partition:** stroke configuration and linked label value font format ([#602](https://github.com/elastic/elastic-charts/issues/602)) ([7dce0a3](https://github.com/elastic/elastic-charts/commit/7dce0a3598d4c4e59087bcb086a5d520381485cb))
+
+# [18.1.0](https://github.com/elastic/elastic-charts/compare/v18.0.0...v18.1.0) (2020-03-18)
+
+
+### Bug Fixes
+
+* add unicorn eslint as dev dependency ([#591](https://github.com/elastic/elastic-charts/issues/591)) ([30fd07c](https://github.com/elastic/elastic-charts/commit/30fd07c15399551ae12441145744b3fd6f617bd7))
+
+
+### Features
+
+* remove duplicate tick labels from axis ([#577](https://github.com/elastic/elastic-charts/issues/577)) ([e8c89ec](https://github.com/elastic/elastic-charts/commit/e8c89ec0588f829acdbdf169a223f96dffb067a2)), closes [#445](https://github.com/elastic/elastic-charts/issues/445)
+* **api:** cleanup exposed types ([#593](https://github.com/elastic/elastic-charts/issues/593)) ([544b7cc](https://github.com/elastic/elastic-charts/commit/544b7cc3825d9f277b4c4cacf51c10cb96fbc142))
+* **partition:** general sunburst via slice show control ([#592](https://github.com/elastic/elastic-charts/issues/592)) ([5e6a30b](https://github.com/elastic/elastic-charts/commit/5e6a30b41f38d1991c991c7003da3f6bf5bc0575))
+
+# [18.0.0](https://github.com/elastic/elastic-charts/compare/v17.1.1...v18.0.0) (2020-03-17)
+
+
+### Code Refactoring
+
+* clean up TS types ([#554](https://github.com/elastic/elastic-charts/issues/554)) ([22f7635](https://github.com/elastic/elastic-charts/commit/22f7635f0a1c8564b8f59b311079224f500522b9)), closes [#547](https://github.com/elastic/elastic-charts/issues/547) [#547](https://github.com/elastic/elastic-charts/issues/547)
+* decouple tooltip from XY chart ([#553](https://github.com/elastic/elastic-charts/issues/553)) ([e70792e](https://github.com/elastic/elastic-charts/commit/e70792ea437c851dafc8f0f58e2faf3fb03143ae)), closes [#246](https://github.com/elastic/elastic-charts/issues/246)
+
+
+### Features
+
+* cleaner color API on SeriesSpec ([#571](https://github.com/elastic/elastic-charts/issues/571)) ([f769f7c](https://github.com/elastic/elastic-charts/commit/f769f7c0a7e15fab793f84befbf0661e3deb75c6))
+* **legend:** allow color picker component render prop ([#545](https://github.com/elastic/elastic-charts/issues/545)) ([90f4b95](https://github.com/elastic/elastic-charts/commit/90f4b95656ac2704693c87211a3c63993251ead4))
+* **partition:** add element click, over and out events ([#578](https://github.com/elastic/elastic-charts/issues/578)) ([103df02](https://github.com/elastic/elastic-charts/commit/103df026981c396eae16c406d77731ad3fe4bcec))
+* **partition:** add tooltip ([#544](https://github.com/elastic/elastic-charts/issues/544)) ([6bf9a69](https://github.com/elastic/elastic-charts/commit/6bf9a69b12d3075330a5728b7bdb4443e6244985)), closes [#246](https://github.com/elastic/elastic-charts/issues/246)
+* percentage display in partitioning charts ([#558](https://github.com/elastic/elastic-charts/issues/558)) ([d6aa8d7](https://github.com/elastic/elastic-charts/commit/d6aa8d72db1411a1967a37b5940020dc2f8037ec))
+* specify series name with a function on SeriesSpec ([#539](https://github.com/elastic/elastic-charts/issues/539)) ([358455a](https://github.com/elastic/elastic-charts/commit/358455aea73591965401f43ae4bfa4525c3d2953))
+* xAccessor can be a function accessor ([#574](https://github.com/elastic/elastic-charts/issues/574)) ([bcc3d63](https://github.com/elastic/elastic-charts/commit/bcc3d63bb126dc1714a8bf2a94d072a0c92a0231))
+
+
+### BREAKING CHANGES
+
+* The `getSpecId`, `getGroupId`, `getAxisId` and `getAnnotationId` are no longer available. Use a simple `string` instead.
+* `customSeriesColors` prop on `SeriesSpec` is now `color`. The `CustomSeriesColors` type is  replaced with `SeriesColorAccessor`.
+* Remove `customSubSeriesName` prop on series specs in favor of cleaner api using just the `name` prop on `SeriesSpec`. The types `SeriesStringPredicate`, `SubSeriesStringPredicate` have been removed.
+* the `SeriesIdentifier` type is generalized into a simplified object with two values in common: `specId` and `key`. A specialized `XYChartSeriesIdentifier` extends now the base `SeriesIdentifier`. The `SettingsSpec` prop `showLegendDisplayValue` is renamed to `showLegendExtra` and its default value is now `false` hiding the current/last value on the legend by default.
+
 ## [17.1.1](https://github.com/elastic/elastic-charts/compare/v17.1.0...v17.1.1) (2020-02-21)
 
 

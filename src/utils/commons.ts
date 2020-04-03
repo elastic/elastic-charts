@@ -24,6 +24,7 @@ export type Datum = any; // unknown;
 export type Rotation = 0 | 90 | -90 | 180;
 export type Rendering = 'canvas' | 'svg';
 export type Color = string;
+export type StrokeStyle = Color; // now narrower than string | CanvasGradient | CanvasPattern
 
 export const Position = Object.freeze({
   Top: 'top' as 'top',
@@ -34,14 +35,17 @@ export const Position = Object.freeze({
 
 export type Position = $Values<typeof Position>;
 
+/** @internal */
 export function identity<T>(value: T): T {
   return value;
 }
 
-export function compareByValueAsc(firstEl: number | string, secondEl: number | string): number {
-  return firstEl > secondEl ? 1 : -1;
+/** @internal */
+export function compareByValueAsc(a: number | string, b: number | string): number {
+  return a > b ? 1 : -1;
 }
 
+/** @internal */
 export function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
 }
@@ -52,6 +56,7 @@ export function clamp(value: number, min: number, max: number): number {
  * with their inputs. It takes an optional prefix as a parameter. If you don't
  * specify it, it generates a random id prefix. If you specify a custom prefix
  * it should begin with an letter to be HTML4 compliant.
+ * @internal
  */
 export function htmlIdGenerator(idPrefix?: string) {
   const prefix = idPrefix || `i${uuidV1()}`;
@@ -91,6 +96,7 @@ export interface MergeOptions {
   mergeOptionalPartialValues?: boolean;
 }
 
+/** @internal */
 export function getPartialValue<T>(base: T, partial?: RecursivePartial<T>, partials: RecursivePartial<T>[] = []): T {
   const partialWithValue = partial !== undefined ? partial : partials.find((v) => v !== undefined);
   return partialWithValue !== undefined ? (partialWithValue as T) : base;
@@ -100,6 +106,7 @@ export function getPartialValue<T>(base: T, partial?: RecursivePartial<T>, parti
  * Returns all top-level keys from one or more objects
  * @param object - first object to get keys
  * @param objects
+ * @internal
  */
 export function getAllKeys(object: any, objects: any[] = []): string[] {
   return objects.reduce((keys: any[], obj) => {
@@ -111,6 +118,7 @@ export function getAllKeys(object: any, objects: any[] = []): string[] {
   }, Object.keys(object));
 }
 
+/** @internal */
 export function hasPartialObjectToMerge<T>(
   base: T,
   partial?: RecursivePartial<T>,
@@ -131,6 +139,7 @@ export function hasPartialObjectToMerge<T>(
   return false;
 }
 
+/** @internal */
 export function shallowClone(value: any) {
   if (Array.isArray(value)) {
     return [...value];
@@ -187,10 +196,34 @@ export function mergePartial<T>(
   return getPartialValue<T>(baseClone, partial, additionalPartials);
 }
 
+/** @internal */
 export function isNumberArray(value: unknown): value is number[] {
   return Array.isArray(value) && value.every((element) => typeof element === 'number');
+}
+
+/** @internal */
+export function getUniqueValues<T>(fullArray: T[], uniqueProperty: keyof T): T[] {
+  return fullArray.reduce<{
+    filtered: T[];
+    uniqueValues: Set<T[keyof T]>;
+  }>(
+    (acc, currentValue) => {
+      const uniqueValue = currentValue[uniqueProperty];
+      if (acc.uniqueValues.has(uniqueValue)) {
+        return acc;
+      }
+      acc.uniqueValues.add(uniqueValue);
+      acc.filtered.push(currentValue);
+      return acc;
+    },
+    {
+      filtered: [],
+      uniqueValues: new Set(),
+    },
+  ).filtered;
 }
 
 export type ValueFormatter = (value: number) => string;
 export type ValueAccessor = (d: Datum) => number;
 export type LabelAccessor = (value: PrimitiveValue) => string;
+export type ShowAccessor = (value: PrimitiveValue) => boolean;

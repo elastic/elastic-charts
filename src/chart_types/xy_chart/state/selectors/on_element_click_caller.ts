@@ -25,55 +25,28 @@ import { SettingsSpec } from '../../../../specs';
 import { IndexedGeometry, GeometryValue } from '../../../../utils/geometry';
 import { ChartTypes } from '../../../index';
 import { XYChartSeriesIdentifier } from '../../utils/series';
-
-const getLastClickSelector = (state: GlobalChartState) => state.interactions.pointer.lastClick;
-
-interface Props {
-  settings: SettingsSpec | undefined;
-  lastClick: PointerState | null;
-  indexedGeometries: IndexedGeometry[];
-}
-
-function isClicking(prevProps: Props | null, nextProps: Props | null) {
-  if (nextProps === null) {
-    return false;
-  }
-  if (!nextProps.settings || !nextProps.settings.onElementClick || nextProps.indexedGeometries.length === 0) {
-    return false;
-  }
-  const prevLastClick = prevProps !== null ? prevProps.lastClick : null;
-  const nextLastClick = nextProps !== null ? nextProps.lastClick : null;
-
-  if (prevLastClick === null && nextLastClick !== null) {
-    return true;
-  }
-  if (prevLastClick !== null && nextLastClick !== null && prevLastClick.time !== nextLastClick.time) {
-    return true;
-  }
-  return false;
-}
+import { isClicking } from '../../../../state/utils';
+import { getLastClickSelector } from '../../../../state/selectors/get_last_click';
 
 /**
  * Will call the onElementClick listener every time the following preconditions are met:
  * - the onElementClick listener is available
  * - we have at least one highlighted geometry
  * - the pointer state goes from down state to up state
+ * @internal
  */
 export function createOnElementClickCaller(): (state: GlobalChartState) => void {
-  let prevProps: Props | null = null;
+  let prevClick: PointerState | null = null;
   let selector: Selector<GlobalChartState, void> | null = null;
   return (state: GlobalChartState) => {
     if (selector === null && state.chartType === ChartTypes.XYAxis) {
       selector = createCachedSelector(
         [getLastClickSelector, getSettingsSpecSelector, getHighlightedGeomsSelector],
         (lastClick: PointerState | null, settings: SettingsSpec, indexedGeometries: IndexedGeometry[]): void => {
-          const nextProps = {
-            lastClick,
-            settings,
-            indexedGeometries,
-          };
-
-          if (isClicking(prevProps, nextProps)) {
+          if (!settings.onElementClick) {
+            return;
+          }
+          if (indexedGeometries.length > 0 && isClicking(prevClick, lastClick)) {
             if (settings && settings.onElementClick) {
               const elements = indexedGeometries.map<[GeometryValue, XYChartSeriesIdentifier]>(
                 ({ value, seriesIdentifier }) => [value, seriesIdentifier],
@@ -81,7 +54,7 @@ export function createOnElementClickCaller(): (state: GlobalChartState) => void 
               settings.onElementClick(elements);
             }
           }
-          prevProps = nextProps;
+          prevClick = lastClick;
         },
       )({
         keySelector: (state: GlobalChartState) => state.chartId,

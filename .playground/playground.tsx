@@ -17,74 +17,63 @@
  * under the License. */
 
 import React from 'react';
+import {
+  Chart,
+  ScaleType,
+  Position,
+  Axis,
+  Settings,
+  PartitionElementEvent,
+  XYChartElementEvent,
+  BarSeries,
+} from '../src';
 
-import { Delaunay } from 'd3-delaunay';
-import { getRandomNumberGenerator } from '../src/mocks/utils';
-
-export class Playground extends React.Component<{}, { ready: boolean }> {
-  private readonly canvasRef: React.RefObject<HTMLCanvasElement>;
-  private ctx: CanvasRenderingContext2D | null;
-  private delaunay: Delaunay<any> | null;
-  private points: number[][] = [];
-
-  constructor(props: any) {
-    super(props);
-    this.canvasRef = React.createRef();
-    this.ctx = null;
-    this.delaunay = null;
-
-    this.state = { ready: false };
-  }
-
-  componentDidMount() {
-    if (!this.ctx) {
-      this.tryCanvasContext();
-      this.setState({ ready: true });
-    }
-  }
-
-  tryCanvasContext() {
-    const canvas = this.canvasRef.current;
-    const ctx = canvas && canvas.getContext('2d');
-
-    if (ctx) {
-      const rng = getRandomNumberGenerator();
-      this.ctx = ctx;
-
-      this.points = new Array(10).fill(1).map(() => [rng(0, 100), rng(0, 100)]);
-      console.table(this.points);
-
-      this.delaunay = Delaunay.from(this.points);
-      const triangulation = this.delaunay.voronoi();
-
-      this.ctx.beginPath();
-      triangulation.render(this.ctx);
-      this.ctx.lineWidth = 2;
-      this.ctx.strokeStyle = 'blue';
-      this.ctx.stroke();
-    }
-  }
-
-  handleHover = (event: React.MouseEvent) => {
-    if (this.delaunay) {
-      const index = this.delaunay.find(event.nativeEvent.offsetX, event.nativeEvent.offsetY);
-
-      console.log(this.points[index]);
-    }
+export class Playground extends React.Component<{}, { isSunburstShown: boolean }> {
+  onClick = (elements: Array<PartitionElementEvent | XYChartElementEvent>) => {
+    // eslint-disable-next-line no-console
+    console.log(elements[0]);
   };
-
   render() {
     return (
       <>
         <div className="chart">
-          <canvas
-            onMouseMove={this.handleHover}
-            style={{
-              height: '100%',
-              width: '100%',
-            }}
-            ref={this.canvasRef}
-          ></canvas>
+          <Chart size={[300, 200]}>
+            <Settings
+              onElementClick={this.onClick}
+              rotation={90}
+              theme={{
+                barSeriesStyle: {
+                  displayValue: {
+                    fontSize: 15,
+                    fill: 'black',
+                    offsetX: 5,
+                    offsetY: -8,
+                  },
+                },
+              }}
+            />
+            <Axis id="y1" position={Position.Left} />
+            <BarSeries
+              id="amount"
+              xScaleType={ScaleType.Ordinal}
+              xAccessor="x"
+              yAccessors={['y']}
+              data={[
+                { x: 'trousers', y: 390, val: 1222 },
+                { x: 'watches', y: 0, val: 1222 },
+                { x: 'bags', y: 750, val: 1222 },
+                { x: 'cocktail dresses', y: 854, val: 1222 },
+              ]}
+              displayValueSettings={{
+                showValueLabel: true,
+                isValueContainedInElement: true,
+                hideClippedValue: true,
+                valueFormatter: (d) => {
+                  return `${d} $`;
+                },
+              }}
+            />
+          </Chart>
         </div>
       </>
     );

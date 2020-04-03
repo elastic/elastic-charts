@@ -21,6 +21,7 @@ import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
 
+/** @internal */
 export const getGeometriesIndexSelector = createCachedSelector(
   [computeSeriesGeometriesSelector],
   (geometries): IndexedGeometryMap => {

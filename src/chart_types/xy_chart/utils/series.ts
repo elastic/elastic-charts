@@ -94,12 +94,14 @@ export type RawDataSeries = XYChartSeriesIdentifier & {
   data: RawDataSeriesDatum[];
 };
 
+/** @internal */
 export interface FormattedDataSeries {
   groupId: GroupId;
   dataSeries: DataSeries[];
   counts: DataSeriesCounts;
 }
 
+/** @internal */
 export interface DataSeriesCounts {
   barSeries: number;
   lineSeries: number;
@@ -113,6 +115,7 @@ export type SeriesCollectionValue = {
   seriesIdentifier: XYChartSeriesIdentifier;
 };
 
+/** @internal */
 export function getSeriesIndex(series: XYChartSeriesIdentifier[], target: XYChartSeriesIdentifier): number {
   if (!series) {
     return -1;
@@ -124,7 +127,7 @@ export function getSeriesIndex(series: XYChartSeriesIdentifier[], target: XYChar
 /**
  * Split a dataset into multiple series depending on the accessors.
  * Each series is then associated with a key thats belong to its configuration.
- *
+ *  @internal
  */
 export function splitSeries({
   id: specId,
@@ -184,6 +187,7 @@ export function splitSeries({
 
 /**
  * Gets global series key to id any series as a string
+ * @internal
  */
 export function getSeriesKey({
   specId,
@@ -200,6 +204,7 @@ export function getSeriesKey({
 /**
  * Mutate the passed map adding or updating the DataSeries stored
  * along with the series key
+ * @internal
  */
 function updateSeriesMap(
   seriesMap: Map<SeriesKey, RawDataSeries>,
@@ -232,6 +237,7 @@ function updateSeriesMap(
 
 /**
  * Get the array of values that forms a series key
+ * @internal
  */
 function getSplitAccessors(datum: Datum, accessors: Accessor[] = []): Map<string | number, string | number> {
   const splitAccessors = new Map<string | number, string | number>();
@@ -248,6 +254,7 @@ function getSplitAccessors(datum: Datum, accessors: Accessor[] = []): Map<string
 
 /**
  * Reformat the datum having only the required x and y property.
+ * @internal
  */
 export function cleanDatum(
   datum: Datum,
@@ -283,6 +290,7 @@ function castToNumber(value: any): number | null {
   return isNaN(num) ? null : num;
 }
 
+/** @internal */
 export function getFormattedDataseries(
   specs: YBasicSeriesSpec[],
   dataSeries: Map<SpecId, RawDataSeries[]>,
@@ -382,6 +390,7 @@ function getRawDataSeries(
  *
  * @param seriesSpecs the map for all the series spec
  * @param deselectedDataSeries the array of deselected/hidden data series
+ * @internal
  */
 export function getSplittedSeries(
   seriesSpecs: BasicSeriesSpec[],
@@ -464,6 +473,7 @@ function getSeriesNameFromOptions(
 
 /**
  * Get series name based on `SeriesIdentifier`
+ * @internal
  */
 export function getSeriesName(
   seriesIdentifier: XYChartSeriesIdentifier,
@@ -512,6 +522,7 @@ function getSortIndex({ specSortIndex }: SeriesCollectionValue, total: number): 
   return specSortIndex != null ? specSortIndex : total;
 }
 
+/** @internal */
 export function getSortedDataSeriesColorsValuesMap(
   seriesCollection: Map<SeriesKey, SeriesCollectionValue>,
 ): Map<SeriesKey, SeriesCollectionValue> {
@@ -559,6 +570,7 @@ function getHighestOverride(
  * @param chartColors
  * @param customColors
  * @param overrides
+ * @internal
  */
 export function getSeriesColors(
   seriesCollection: Map<SeriesKey, SeriesCollectionValue>,

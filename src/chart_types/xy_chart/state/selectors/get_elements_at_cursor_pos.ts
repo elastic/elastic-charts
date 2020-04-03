@@ -34,6 +34,7 @@ import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
 
 const getExternalPointerEventStateSelector = (state: GlobalChartState) => state.externalEvents.pointer;
 
+/** @internal */
 export const getElementAtCursorPositionSelector = createCachedSelector(
   [
     getOrientedProjectedPointerPositionSelector,

@@ -23,6 +23,7 @@ import { arrayToLookup, hueInterpolator } from '../../src/chart_types/partition_
 import { countryDimension } from '../../src/mocks/hierarchical/dimension_codes';
 import { palettes } from '../../src/mocks/hierarchical/palettes';
 import React from 'react';
+import { regionLookup } from '../utils/utils';
 
 const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
 
@@ -48,9 +49,10 @@ export const example = () => (
       layers={[
         {
           groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.substr(0, 2),
-          nodeLabel: () => '',
+          nodeLabel: (d: any) => regionLookup[d].regionName,
           fillLabel: {
             valueFormatter: () => '',
+            textColor: 'rgba(0,0,0,0)',
           },
           shape: {
             fillColor: defaultFillColor(interpolatorCET2s),
