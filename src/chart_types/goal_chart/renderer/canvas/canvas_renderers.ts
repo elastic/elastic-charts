@@ -20,6 +20,7 @@ import { ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { cssFontShorthand } from '../../../partition_chart/layout/utils/measure';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
 import { GOLDEN_RATIO } from '../../../partition_chart/layout/utils/math';
+import { GOAL_SUBTYPES } from '../../specs/index';
 
 // fixme turn these into config, or capitalize as constants
 const referenceCircularSizeCap = 360; // goal/gauge won't be bigger even if there's ample room: it'd be a waste of space
@@ -77,8 +78,8 @@ export function renderCanvas2d(
       centralMinor,
     } = bulletViewModel;
 
-    const circular = subtype === 'goal';
-    const vertical = subtype === 'verticalBullet';
+    const circular = subtype === GOAL_SUBTYPES[0];
+    const vertical = subtype === GOAL_SUBTYPES[2];
 
     const domain = [lowestValue, highestValue];
 

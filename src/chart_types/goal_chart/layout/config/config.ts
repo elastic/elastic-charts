@@ -51,4 +51,4 @@ export const configMetadata = {
   sectorLineWidth: { dflt: 1, min: 0, max: 4, type: 'number' },
 };
 
-export const config: Config = configMap((item: any) => item.dflt, configMetadata);
+export const config: Config = configMap<Config>((item: any) => item.dflt, configMetadata);
