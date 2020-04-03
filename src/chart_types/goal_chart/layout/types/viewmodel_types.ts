@@ -33,6 +33,7 @@ interface TickViewModel {
   text: string;
 }
 
+/** @internal */
 export interface BulletViewModel {
   subtype: string;
   base: number;
@@ -50,8 +51,10 @@ export interface BulletViewModel {
   belowBaseCount: number;
 }
 
+/** @internal */
 export type PickFunction = (x: Pixels, y: Pixels) => Array<BulletViewModel>;
 
+/** @internal */
 export type ShapeViewModel = {
   config: Config;
   bulletViewModel: BulletViewModel;
@@ -68,6 +71,7 @@ const commonDefaults = {
   ticks: [0, 25, 50, 75, 100],
 };
 
+/** @internal */
 export const defaultGoalSpec = {
   ...commonDefaults,
   bands: [50, 75, 100],
@@ -86,6 +90,7 @@ export const defaultGoalSpec = {
   centralMinor: ({ target }: BandFillColorAccessorInput) => String(target),
 };
 
+/** @internal */
 export const nullGoalViewModel = {
   ...commonDefaults,
   bands: [],
@@ -100,6 +105,7 @@ export const nullGoalViewModel = {
   belowBaseCount: 0,
 };
 
+/** @internal */
 export const nullShapeViewModel = (specifiedConfig?: Config, chartCenter?: PointObject): ShapeViewModel => ({
   config: specifiedConfig || config,
   bulletViewModel: nullGoalViewModel,
