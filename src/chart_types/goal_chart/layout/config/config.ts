@@ -18,6 +18,7 @@
 
 import { Config } from '../types/config_types';
 import { TAU } from '../../../partition_chart/layout/utils/math';
+import { configMap } from '../../../partition_chart/layout/config/config';
 
 export const configMetadata = {
   angleStart: { dflt: Math.PI + Math.PI / 4, min: -TAU, max: TAU, type: 'number' },
@@ -49,20 +50,5 @@ export const configMetadata = {
   backgroundColor: { dflt: '#ffffff', type: 'color' },
   sectorLineWidth: { dflt: 1, min: 0, max: 4, type: 'number' },
 };
-
-// todo switch to `io-ts` style, generic way of combining static and runtime type info
-function configMap(mapper: Function, configMetadata: any): Config {
-  const result: Config = Object.assign(
-    {},
-    ...Object.entries(configMetadata).map(([k, v]: [string, any]) => {
-      if (v.type === 'group') {
-        return { [k]: configMap(mapper, v.values) };
-      } else {
-        return { [k]: mapper(v) };
-      }
-    }),
-  ) as Config;
-  return result;
-}
 
 export const config: Config = configMap((item: any) => item.dflt, configMetadata);
