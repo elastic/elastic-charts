@@ -106,6 +106,7 @@ export class MockDataSeriesDatum {
     x: 1,
     y1: 1,
     y0: 1,
+    mark: null,
     initialY1: 1,
     initialY0: 1,
     datum: {},
@@ -128,6 +129,7 @@ export class MockDataSeriesDatum {
       x,
       y1,
       y0,
+      mark: null,
       initialY1: y1,
       initialY0: y0,
       ...(filled && filled),
@@ -168,6 +170,7 @@ export class MockRawDataSeriesDatum {
     x: 1,
     y1: 1,
     y0: 1,
+    mark: null,
     datum: {},
   };
 
@@ -187,6 +190,7 @@ export class MockRawDataSeriesDatum {
       x,
       y1,
       y0,
+      mark: null,
     };
   }
 

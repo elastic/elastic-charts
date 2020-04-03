@@ -49,7 +49,7 @@ export const getElementAtCursorPositionSelector = createCachedSelector(
 function getElementAtCursorPosition(
   orientedProjectedPoinerPosition: Point,
   scales: ComputedScales,
-  geometriesIndexKeys: any,
+  geometriesIndexKeys: (string | number)[],
   geometriesIndex: IndexedGeometryMap,
   externalPointerEvent: PointerEvent | null,
   {
@@ -65,12 +65,12 @@ function getElementAtCursorPosition(
       return [];
     }
     // TODO: Handle external event with spatial points
-    return geometriesIndex.find(externalPointerEvent.value, { x: -1, y: -1 }, true);
+    return geometriesIndex.find(externalPointerEvent.value, { x: -1, y: -1 });
   }
   const xValue = scales.xScale.invertWithStep(orientedProjectedPoinerPosition.x, geometriesIndexKeys);
   if (!xValue) {
     return [];
   }
   // get the elements at cursor position
-  return geometriesIndex.find(xValue?.value, orientedProjectedPoinerPosition, true);
+  return geometriesIndex.find(xValue?.value, orientedProjectedPoinerPosition);
 }

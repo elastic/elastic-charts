@@ -35,8 +35,8 @@ export class IndexedGeometryLinearMap {
     return [...this.map.values()];
   }
 
-  keys(): Array<number> {
-    return [...this.map.keys()].filter((key): key is number => typeof key === 'number');
+  keys(): Array<number | string> {
+    return [...this.map.keys()];
   }
 
   find(x: number | string | null): IndexedGeometry[] {

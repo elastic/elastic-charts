@@ -43,7 +43,7 @@ export class IndexedGeometryMap {
     return this.spatialMap.triangulation(bounds);
   }
 
-  keys(): Array<number> {
+  keys(): Array<number | string> {
     return [...this.linearMap.keys(), ...this.spatialMap.keys()];
   }
 

@@ -72,8 +72,7 @@ export class ScaleBand implements Scale {
     const scaleValue = this.d3Scale(value);
 
     if (typeof scaleValue !== 'number') {
-      console.error(`The value (${value}) was not scalable`);
-      return 0;
+      throw new Error(`The value (${value}) was not scalable`);
     }
 
     return scaleValue;
@@ -83,8 +82,7 @@ export class ScaleBand implements Scale {
     const scaleValue = this.d3Scale(value);
 
     if (typeof scaleValue !== 'number') {
-      console.error(`The value (${value}) was not scalable`);
-      return 0;
+      throw new Error(`The value (${value}) was not scalable`);
     }
 
     return scaleValue;

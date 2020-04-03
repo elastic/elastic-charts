@@ -120,7 +120,7 @@ function getTooltipAndHighlightFromValue(
   let header: TooltipValue | null = null;
   const highlightedGeometries: IndexedGeometry[] = [];
   const filteredGeoms = matchingGeoms.filter(({ value: { y } }) => y !== null);
-  const hasMultipleX = filteredGeoms.length > 1 && isUniqueArray(filteredGeoms, ({ x }) => x);
+  const hasMultipleX = filteredGeoms.length > 1 && isUniqueArray(filteredGeoms, ({ value: { x } }) => x);
 
   const values = filteredGeoms.reduce<TooltipValue[]>((acc, indexedGeometry) => {
     const {

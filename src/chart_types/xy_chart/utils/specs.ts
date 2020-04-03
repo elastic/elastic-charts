@@ -339,7 +339,7 @@ export interface SeriesAccessors {
   /** An array of fields thats indicates the stack membership */
   stackAccessors?: Accessor[];
   /** Field name of mark size metric on `Datum` */
-  markSizeAccessor: Accessor | AccessorFn;
+  markSizeAccessor?: Accessor | AccessorFn;
 }
 
 export interface SeriesScales {

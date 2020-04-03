@@ -49,7 +49,7 @@ export const getRandomNumberGenerator = (seed = process.env.RNG_SEED) => {
   return function randomNumberGenerator(min = 0, max = 1, fractionDigits = 0) {
     const num = rng() * (max - min) + min;
 
-    if (fractionDigits === 0) return Math.floor(num);
+    if (fractionDigits === undefined) return num;
 
     const factor = 10 ** fractionDigits;
     return Math.round((num + Number.EPSILON) * factor) / factor;

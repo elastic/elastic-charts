@@ -38,8 +38,8 @@ export function identity<T>(value: T): T {
   return value;
 }
 
-export function compareByValueAsc(firstEl: number, secondEl: number): number {
-  return firstEl - secondEl;
+export function compareByValueAsc(firstEl: number | string, secondEl: number | string): number {
+  return firstEl > secondEl ? 1 : -1;
 }
 
 export function clamp(value: number, min: number, max: number): number {

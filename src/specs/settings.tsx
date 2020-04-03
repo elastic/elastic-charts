@@ -103,7 +103,7 @@ export interface TooltipValue {
   /**
    * The mark value to display
    */
-  markValue: any;
+  markValue?: any;
   /**
    * The color of the graphic mark (by default the color of the series)
    */
