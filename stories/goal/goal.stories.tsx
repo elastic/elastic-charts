@@ -19,7 +19,7 @@
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export default {
-  title: 'Goal',
+  title: 'Goal (@alpha)',
   parameters: {
     options: { selectedPanel: SB_SOURCE_PANEL },
   },
