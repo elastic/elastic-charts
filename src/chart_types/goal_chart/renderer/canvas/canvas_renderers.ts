@@ -84,7 +84,7 @@ export function renderCanvas2d(
 
     const data = {
       base: { value: base },
-      ...Object.assign({}, ...bands.map((b, i) => ({ [`qualitative_${i}`]: { value: b.value } }))),
+      ...Object.fromEntries(bands.map(({ value }, index) => [`qualitative_${index}`, { value }])),
       target: { value: target },
       actual: { value: actual },
       labelMajor: { value: domain[circular || !vertical ? 0 : 1], text: labelMajor },

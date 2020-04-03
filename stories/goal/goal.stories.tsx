@@ -28,8 +28,8 @@ export default {
 export { example as gaugeWithTarget } from './2_gauge_with_target';
 export { example as horizontalBullet } from './3_horizontal_bullet';
 export { example as verticalBullet } from './4_vertical_bullet';
-export { example as spartanGoal } from './5_spartan';
-export { example as spartanHorizontal } from './6_spartan_horizontal';
+export { example as minimalGoal } from './5_minimal';
+export { example as minimalHorizontal } from './6_minimal_horizontal';
 export { example as horizontalBar } from './7_horizontal_bar';
 export { example as irregularTicks } from './8_irregular_ticks';
 export { example as minimalBand } from './9_minimal_band';
