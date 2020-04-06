@@ -26,9 +26,11 @@ import { partitionGeometries } from '../../state/selectors/geometries';
 import { PointObject } from '../../layout/types/geometry_types';
 import { getHighlightedSectorsSelector } from '../../state/selectors/get_highlighted_shapes';
 import { getPickedShapes } from '../../state/selectors/picked_shapes';
+import { PartitionLayout } from '../../layout/types/config_types';
 
 interface HighlighterProps {
   initialized: boolean;
+  type: PartitionLayout;
   geometries: QuadViewModel[];
   diskCenter: PointObject;
   radius: number;
@@ -43,34 +45,60 @@ function getShapeFromValues(x: number, y: number, r: number, a0: number, a1: num
   return `A${r},${r},0,${+(da >= Math.PI)},${cw},${x + r * Math.cos(a1)},${y + r * Math.sin(a1)}`;
 }
 
-function renderGeometries(geometries: QuadViewModel[], fillColor = 'black') {
-  return geometries.map(({ x0, x1, y0px, y1px }, index) => {
-    if ((Math.abs(x0 - x1) + TAU) % TAU < EPSILON) {
-      return <circle key={index} r={(y0px + y1px) / 2} fill="none" stroke="black" strokeWidth={y1px - y0px} />;
-    }
-    const X0 = x0 - TAU / 4;
-    const X1 = x1 - TAU / 4;
-    const path = [
-      `M${y0px * Math.cos(X0)},${y0px * Math.sin(X0)}`,
-      getShapeFromValues(0, 0, y0px, X0, X1, 0),
-      `L${y1px * Math.cos(X1)},${y1px * Math.sin(X1)}`,
-      getShapeFromValues(0, 0, y1px, X1, X0, 1),
-      'Z',
-    ].join(' ');
-    return <path key={index} d={path} fill={fillColor} />;
-  });
+function renderRectangles(geometry: QuadViewModel, key: string, fillColor = 'black') {
+  const { x0, x1, y0px, y1px } = geometry;
+  return <rect key={key} x={x0} y={y0px} width={Math.abs(x1 - x0)} height={Math.abs(y1px - y0px)} fill={fillColor} />;
+}
+function renderSector(geometry: QuadViewModel, key: string, fillColor = 'black') {
+  const { x0, x1, y0px, y1px } = geometry;
+  if ((Math.abs(x0 - x1) + TAU) % TAU < EPSILON) {
+    return <circle key={key} r={(y0px + y1px) / 2} fill="none" stroke="black" strokeWidth={y1px - y0px} />;
+  }
+  const X0 = x0 - TAU / 4;
+  const X1 = x1 - TAU / 4;
+  const path = [
+    `M${y0px * Math.cos(X0)},${y0px * Math.sin(X0)}`,
+    getShapeFromValues(0, 0, y0px, X0, X1, 0),
+    `L${y1px * Math.cos(X1)},${y1px * Math.sin(X1)}`,
+    getShapeFromValues(0, 0, y1px, X1, X0, 1),
+    'Z',
+  ].join(' ');
+  return <path key={key} d={path} fill={fillColor} />;
+}
+
+function renderGeometries(geometries: QuadViewModel[], type: PartitionLayout, fillColor = 'black') {
+  let maxDepth = -1;
+  if (type === PartitionLayout.treemap) {
+    maxDepth = geometries.reduce((acc, geom) => {
+      return Math.max(acc, geom.depth);
+    }, 0);
+  }
+  return geometries
+    .filter((geometry) => {
+      if (maxDepth !== -1) {
+        return geometry.depth >= maxDepth;
+      }
+      return true;
+    })
+    .map((geometry, index) => {
+      if (type === PartitionLayout.sunburst) {
+        return renderSector(geometry, `${index}`, fillColor);
+      }
+
+      return renderRectangles(geometry, `${index}`, fillColor);
+    });
 }
 
 class HighlighterComponent extends React.Component<HighlighterProps> {
   static displayName = 'Highlighter';
   renderMask() {
-    const { geometries, diskCenter, radius } = this.props;
+    const { geometries, diskCenter, radius, type } = this.props;
     return (
       <>
         <defs>
           <mask id="echHighlighterMask">
             <rect x={0} y={0} width="1500" height="1500" fill="white" />
-            <g transform={`translate(${diskCenter.x}, ${diskCenter.y})`}>{renderGeometries(geometries)}</g>
+            <g transform={`translate(${diskCenter.x}, ${diskCenter.y})`}>{renderGeometries(geometries, type)}</g>
           </mask>
         </defs>
 
@@ -86,10 +114,10 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
     );
   }
   renderInverted() {
-    const { geometries, diskCenter } = this.props;
+    const { geometries, diskCenter, type } = this.props;
     return (
       <g transform={`translate(${diskCenter.x}, ${diskCenter.y})`}>
-        {renderGeometries(geometries, 'rgba(255, 255, 255, 0.35')}
+        {renderGeometries(geometries, type, 'rgba(255, 255, 255, 0.35')}
       </g>
     );
   }
@@ -116,6 +144,7 @@ const DEFAULT_PROPS: HighlighterProps = {
   },
   radius: 10,
   inverted: false,
+  type: PartitionLayout.sunburst,
 };
 
 const legendMapStateToProps = (state: GlobalChartState): HighlighterProps => {
@@ -129,6 +158,7 @@ const legendMapStateToProps = (state: GlobalChartState): HighlighterProps => {
     diskCenter: model.diskCenter,
     radius: model.outerRadius,
     inverted: false,
+    type: model.config.partitionLayout,
   };
 };
 
@@ -140,12 +170,15 @@ const hoverMapStateToProps = (state: GlobalChartState): HighlighterProps => {
     return DEFAULT_PROPS;
   }
   const model = partitionGeometries(state);
+  const geometries = getPickedShapes(state);
+  const type = model.config.partitionLayout;
   return {
     initialized: true,
-    geometries: getPickedShapes(state),
+    geometries,
     diskCenter: model.diskCenter,
     radius: model.outerRadius,
     inverted: true,
+    type,
   };
 };
 

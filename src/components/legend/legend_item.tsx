@@ -58,7 +58,12 @@ export interface LegendItemProps {
  * @param item
  * @param props
  */
-export function renderLegendItem(item: LegendItem, props: Omit<LegendItemProps, 'item'>, totalItems: number) {
+export function renderLegendItem(
+  item: LegendItem,
+  props: Omit<LegendItemProps, 'item'>,
+  totalItems: number,
+  index: number,
+) {
   const {
     seriesIdentifier: { key },
     childId,
@@ -66,7 +71,7 @@ export function renderLegendItem(item: LegendItem, props: Omit<LegendItemProps, 
 
   return (
     <LegendListItem
-      key={`${key}-${childId}`}
+      key={`${key}-${childId}-${index}`}
       item={item}
       totalItems={totalItems}
       position={props.position}
