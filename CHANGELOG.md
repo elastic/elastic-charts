@@ -1,3 +1,10 @@
+## [18.1.2](https://github.com/elastic/elastic-charts/compare/v18.1.1...v18.1.2) (2020-04-06)
+
+
+### Bug Fixes
+
+* stack as percentage with 0 or null values ([#618](https://github.com/elastic/elastic-charts/issues/618)) ([#619](https://github.com/elastic/elastic-charts/issues/619)) ([65634a7](https://github.com/elastic/elastic-charts/commit/65634a780a09efe449b8a442e85dc040072ec187)), closes [#617](https://github.com/elastic/elastic-charts/issues/617)
+
 ## [18.1.1](https://github.com/elastic/elastic-charts/compare/v18.1.0...v18.1.1) (2020-03-26)
 
 
