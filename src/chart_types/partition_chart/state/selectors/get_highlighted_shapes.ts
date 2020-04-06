@@ -18,7 +18,6 @@
 
 import createCachedSelector from 're-reselect';
 import { GlobalChartState } from '../../../../state/chart_state';
-import { computeLegendSelector } from './compute_legend';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { partitionGeometries } from './geometries';
 import { QuadViewModel } from '../../layout/types/viewmodel_types';
@@ -27,8 +26,8 @@ const getHighlightedLegendItemKey = (state: GlobalChartState) => state.interacti
 
 /** @internal */
 export const getHighlightedSectorsSelector = createCachedSelector(
-  [getHighlightedLegendItemKey, computeLegendSelector, partitionGeometries],
-  (highlightedLegendItemKey, legendItems, geoms): QuadViewModel[] => {
+  [getHighlightedLegendItemKey, partitionGeometries],
+  (highlightedLegendItemKey, geoms): QuadViewModel[] => {
     if (!highlightedLegendItemKey) {
       return [];
     }

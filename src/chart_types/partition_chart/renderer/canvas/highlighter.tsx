@@ -25,12 +25,14 @@ import { TAU } from '../../layout/utils/math';
 import { partitionGeometries } from '../../state/selectors/geometries';
 import { PointObject } from '../../layout/types/geometry_types';
 import { getHighlightedSectorsSelector } from '../../state/selectors/get_highlighted_shapes';
+import { getPickedShapes } from '../../state/selectors/picked_shapes';
 
 interface HighlighterProps {
   initialized: boolean;
   geometries: QuadViewModel[];
   diskCenter: PointObject;
   radius: number;
+  inverted: boolean;
 }
 
 const EPSILON = 1e-6;
@@ -41,44 +43,35 @@ function getShapeFromValues(x: number, y: number, r: number, a0: number, a1: num
   return `A${r},${r},0,${+(da >= Math.PI)},${cw},${x + r * Math.cos(a1)},${y + r * Math.sin(a1)}`;
 }
 
+function renderGeometries(geometries: QuadViewModel[], fillColor = 'black') {
+  return geometries.map(({ x0, x1, y0px, y1px }, index) => {
+    if ((Math.abs(x0 - x1) + TAU) % TAU < EPSILON) {
+      return <circle key={index} r={(y0px + y1px) / 2} fill="none" stroke="black" strokeWidth={y1px - y0px} />;
+    }
+    const X0 = x0 - TAU / 4;
+    const X1 = x1 - TAU / 4;
+    const path = [
+      `M${y0px * Math.cos(X0)},${y0px * Math.sin(X0)}`,
+      getShapeFromValues(0, 0, y0px, X0, X1, 0),
+      `L${y1px * Math.cos(X1)},${y1px * Math.sin(X1)}`,
+      getShapeFromValues(0, 0, y1px, X1, X0, 1),
+      'Z',
+    ].join(' ');
+    return <path key={index} d={path} fill={fillColor} />;
+  });
+}
+
 class HighlighterComponent extends React.Component<HighlighterProps> {
   static displayName = 'Highlighter';
-
-  render() {
+  renderMask() {
     const { geometries, diskCenter, radius } = this.props;
-    if (geometries.length === 0) {
-      return null;
-    }
     return (
-      <svg className="echHighlighter" width="100%" height="100%">
-        {/* <defs>
+      <>
+        <defs>
           <mask id="echHighlighterMask">
-            <rect x={0} y={0} width="1500" height="1500" fill="white" /> */}
-        {geometries.map(({ x0, x1, y0px, y1px }, index) => {
-          if ((Math.abs(x0 - x1) + TAU) % TAU < EPSILON) {
-            return (
-              <circle
-                transform={`translate(${diskCenter.x}, ${diskCenter.y})`}
-                key={index}
-                r={(y0px + y1px) / 2}
-                fill="none"
-                stroke="rgba(255,0,255,0.5)"
-                strokeWidth={y1px - y0px}
-              />
-            );
-          }
-          const X0 = x0 - TAU / 4;
-          const X1 = x1 - TAU / 4;
-          const path = [
-            `M${y0px * Math.cos(X0)},${y0px * Math.sin(X0)}`,
-            getShapeFromValues(0, 0, y0px, X0, X1, 0),
-            `L${y1px * Math.cos(X1)},${y1px * Math.sin(X1)}`,
-            getShapeFromValues(0, 0, y1px, X1, X0, 1),
-            'Z',
-          ].join(' ');
-          return <path key={index} d={path} transform={`translate(${diskCenter.x}, ${diskCenter.y})`} fill="black" />;
-        })}
-        {/* </mask>
+            <rect x={0} y={0} width="1500" height="1500" fill="white" />
+            <g transform={`translate(${diskCenter.x}, ${diskCenter.y})`}>{renderGeometries(geometries)}</g>
+          </mask>
         </defs>
 
         <circle
@@ -88,7 +81,27 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
           mask="url(#echHighlighterMask)"
           opacity="0.75"
           fill="white"
-        /> */}
+        />
+      </>
+    );
+  }
+  renderInverted() {
+    const { geometries, diskCenter } = this.props;
+    return (
+      <g transform={`translate(${diskCenter.x}, ${diskCenter.y})`}>
+        {renderGeometries(geometries, 'rgba(255, 255, 255, 0.35')}
+      </g>
+    );
+  }
+  render() {
+    const { geometries, inverted } = this.props;
+    if (geometries.length === 0) {
+      return null;
+    }
+    const elements = inverted ? this.renderInverted() : this.renderMask();
+    return (
+      <svg className="echHighlighter" width="100%" height="100%">
+        {elements}
       </svg>
     );
   }
@@ -102,9 +115,10 @@ const DEFAULT_PROPS: HighlighterProps = {
     y: 0,
   },
   radius: 10,
+  inverted: false,
 };
 
-const mapStateToProps = (state: GlobalChartState): HighlighterProps => {
+const legendMapStateToProps = (state: GlobalChartState): HighlighterProps => {
   if (!isInitialized(state)) {
     return DEFAULT_PROPS;
   }
@@ -114,8 +128,26 @@ const mapStateToProps = (state: GlobalChartState): HighlighterProps => {
     geometries: getHighlightedSectorsSelector(state),
     diskCenter: model.diskCenter,
     radius: model.outerRadius,
+    inverted: false,
   };
 };
 
 /** @internal */
-export const Highlighter = connect(mapStateToProps)(HighlighterComponent);
+export const HighlighterFromLegend = connect(legendMapStateToProps)(HighlighterComponent);
+
+const hoverMapStateToProps = (state: GlobalChartState): HighlighterProps => {
+  if (!isInitialized(state)) {
+    return DEFAULT_PROPS;
+  }
+  const model = partitionGeometries(state);
+  return {
+    initialized: true,
+    geometries: getPickedShapes(state),
+    diskCenter: model.diskCenter,
+    radius: model.outerRadius,
+    inverted: true,
+  };
+};
+
+/** @internal */
+export const HighlighterFromHover = connect(hoverMapStateToProps)(HighlighterComponent);
