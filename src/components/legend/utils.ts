@@ -17,6 +17,7 @@
  * under the License. */
 import { LegendItemExtraValues, LegendItem } from '../../commons/legend';
 
+/** @internal */
 export function getExtra(extraValues: Map<string, LegendItemExtraValues>, item: LegendItem, totalItems: number) {
   const {
     seriesIdentifier: { key },
