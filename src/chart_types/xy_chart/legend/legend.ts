@@ -30,6 +30,7 @@ import { Y0_ACCESSOR_POSTFIX, Y1_ACCESSOR_POSTFIX } from '../tooltip/tooltip';
 import { BandedAccessorType } from '../../../utils/geometry';
 import { LegendItem } from '../../../commons/legend';
 
+/** @internal */
 export interface FormattedLastValues {
   y0: number | string | null;
   y1: number | string | null;

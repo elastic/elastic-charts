@@ -29,8 +29,10 @@ import { Datum, Color } from '../../../utils/commons';
 import { ColorOverrides } from '../../../state/chart_state';
 import { SeriesIdentifier, SeriesKey } from '../../../commons/series_id';
 
+/** @internal */
 export const SERIES_DELIMITER = ' - ';
 
+/** @internal */
 export interface FilledValues {
   /** the x value */
   x?: number | string;
@@ -51,6 +53,7 @@ export interface RawDataSeriesDatum<T = any> {
   datum?: T;
 }
 
+/** @internal */
 export interface DataSeriesDatum<T = any> {
   /** the x value */
   x: number | string;
@@ -74,11 +77,13 @@ export interface XYChartSeriesIdentifier extends SeriesIdentifier {
   seriesKeys: (string | number)[];
 }
 
+/** @internal */
 export type DataSeries = XYChartSeriesIdentifier & {
   // seriesColorKey: string;
   data: DataSeriesDatum[];
 };
 
+/** @internal */
 export type RawDataSeries = XYChartSeriesIdentifier & {
   // seriesColorKey: string;
   data: RawDataSeriesDatum[];
@@ -98,6 +103,7 @@ export interface DataSeriesCounts {
   areaSeries: number;
 }
 
+/** @internal */
 export type SeriesCollectionValue = {
   banded?: boolean;
   lastValue?: LastValues;
