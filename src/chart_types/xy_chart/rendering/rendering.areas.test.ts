@@ -1104,10 +1104,10 @@ describe('Rendering points - areas', () => {
       expect(points.length).toBe(7);
       // all the points expect null geometries
       expect(indexedGeometryMap.size).toEqual(8);
-      const nullIndexdGeometry = indexedGeometryMap.get(2)!;
+      const nullIndexdGeometry = indexedGeometryMap.find(2)!;
       expect(nullIndexdGeometry).toBeUndefined();
 
-      const zeroValueIndexdGeometry = indexedGeometryMap.get(5)!;
+      const zeroValueIndexdGeometry = indexedGeometryMap.find(5)!;
       expect(zeroValueIndexdGeometry).toBeDefined();
       expect(zeroValueIndexdGeometry.length).toBe(1);
       // moved to the bottom of the chart

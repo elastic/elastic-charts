@@ -41,6 +41,7 @@ const STANDARD_DATA_SET: RawDataSeries[] = [
       {
         x: 0,
         y1: 10,
+        mark: null,
       },
     ],
     seriesKeys: [],
@@ -54,6 +55,7 @@ const STANDARD_DATA_SET: RawDataSeries[] = [
       {
         x: 0,
         y1: 20,
+        mark: null,
       },
     ],
     seriesKeys: [],
@@ -67,6 +69,7 @@ const STANDARD_DATA_SET: RawDataSeries[] = [
       {
         x: 0,
         y1: 30,
+        mark: null,
       },
     ],
     seriesKeys: [],
@@ -82,6 +85,7 @@ const WITH_NULL_DATASET: RawDataSeries[] = [
       {
         x: 0,
         y1: 10,
+        mark: null,
       },
     ],
     seriesKeys: [],
@@ -95,6 +99,7 @@ const WITH_NULL_DATASET: RawDataSeries[] = [
       {
         x: 0,
         y1: null,
+        mark: null,
       },
     ],
     seriesKeys: [],
@@ -108,6 +113,7 @@ const WITH_NULL_DATASET: RawDataSeries[] = [
       {
         x: 0,
         y1: 30,
+        mark: null,
       },
     ],
     seriesKeys: [],
@@ -124,6 +130,7 @@ const STANDARD_DATA_SET_WY0: RawDataSeries[] = [
         x: 0,
         y0: 2,
         y1: 10,
+        mark: null,
       },
     ],
     seriesKeys: [],
@@ -138,6 +145,7 @@ const STANDARD_DATA_SET_WY0: RawDataSeries[] = [
         x: 0,
         y0: 4,
         y1: 20,
+        mark: null,
       },
     ],
     seriesKeys: [],
@@ -152,6 +160,7 @@ const STANDARD_DATA_SET_WY0: RawDataSeries[] = [
         x: 0,
         y0: 6,
         y1: 30,
+        mark: null,
       },
     ],
     seriesKeys: [],
@@ -168,6 +177,7 @@ const WITH_NULL_DATASET_WY0: RawDataSeries[] = [
         x: 0,
         y0: 2,
         y1: 10,
+        mark: null,
       },
     ],
     seriesKeys: [],
@@ -181,6 +191,7 @@ const WITH_NULL_DATASET_WY0: RawDataSeries[] = [
       {
         x: 0,
         y1: null,
+        mark: null,
       },
     ],
     seriesKeys: [],
@@ -195,6 +206,7 @@ const WITH_NULL_DATASET_WY0: RawDataSeries[] = [
         x: 0,
         y0: 6,
         y1: 30,
+        mark: null,
       },
     ],
     seriesKeys: [],
@@ -212,9 +224,9 @@ const DATA_SET_WITH_NULL_2: RawDataSeries[] = [
     seriesKeys: ['a'],
     key: 'a',
     data: [
-      { x: 1, y1: 1 },
-      { x: 2, y1: 2 },
-      { x: 4, y1: 4 },
+      { x: 1, y1: 1, mark: null },
+      { x: 2, y1: 2, mark: null },
+      { x: 4, y1: 4, mark: null },
     ],
   },
   {
@@ -224,8 +236,8 @@ const DATA_SET_WITH_NULL_2: RawDataSeries[] = [
     seriesKeys: ['b'],
     key: 'b',
     data: [
-      { x: 1, y1: 21 },
-      { x: 3, y1: 23 },
+      { x: 1, y1: 21, mark: null },
+      { x: 3, y1: 23, mark: null },
     ],
   },
 ];

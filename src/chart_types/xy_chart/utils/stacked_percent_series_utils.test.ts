@@ -27,6 +27,7 @@ describe('Stacked Series Utils', () => {
         {
           x: 0,
           y1: 10,
+          mark: null,
         },
       ],
       yAccessor: 'y1',
@@ -40,6 +41,7 @@ describe('Stacked Series Utils', () => {
         {
           x: 0,
           y1: 20,
+          mark: null,
         },
       ],
       yAccessor: 'y1',
@@ -53,6 +55,7 @@ describe('Stacked Series Utils', () => {
         {
           x: 0,
           y1: 70,
+          mark: null,
         },
       ],
       yAccessor: 'y1',
@@ -68,6 +71,7 @@ describe('Stacked Series Utils', () => {
         {
           x: 0,
           y1: 10,
+          mark: null,
         },
       ],
       yAccessor: 'y1',
@@ -81,6 +85,7 @@ describe('Stacked Series Utils', () => {
         {
           x: 0,
           y1: null,
+          mark: null,
         },
       ],
       yAccessor: 'y1',
@@ -94,6 +99,7 @@ describe('Stacked Series Utils', () => {
         {
           x: 0,
           y1: 30,
+          mark: null,
         },
       ],
       yAccessor: 'y1',
@@ -110,6 +116,7 @@ describe('Stacked Series Utils', () => {
           x: 0,
           y0: 2,
           y1: 10,
+          mark: null,
         },
       ],
       yAccessor: 'y1',
@@ -124,6 +131,7 @@ describe('Stacked Series Utils', () => {
           x: 0,
           y0: 4,
           y1: 20,
+          mark: null,
         },
       ],
       yAccessor: 'y1',
@@ -138,6 +146,7 @@ describe('Stacked Series Utils', () => {
           x: 0,
           y0: 6,
           y1: 70,
+          mark: null,
         },
       ],
       yAccessor: 'y1',
@@ -154,6 +163,7 @@ describe('Stacked Series Utils', () => {
           x: 0,
           y0: 2,
           y1: 10,
+          mark: null,
         },
       ],
       yAccessor: 'y1',
@@ -167,6 +177,7 @@ describe('Stacked Series Utils', () => {
         {
           x: 0,
           y1: null,
+          mark: null,
         },
       ],
       yAccessor: 'y1',
@@ -181,6 +192,7 @@ describe('Stacked Series Utils', () => {
           x: 0,
           y0: 6,
           y1: 90,
+          mark: null,
         },
       ],
       yAccessor: 'y1',
@@ -198,9 +210,9 @@ describe('Stacked Series Utils', () => {
       seriesKeys: ['a'],
       key: 'a',
       data: [
-        { x: 1, y1: 10 },
-        { x: 2, y1: 20 },
-        { x: 4, y1: 40 },
+        { x: 1, y1: 10, mark: null },
+        { x: 2, y1: 20, mark: null },
+        { x: 4, y1: 40, mark: null },
       ],
     },
     {
@@ -210,8 +222,8 @@ describe('Stacked Series Utils', () => {
       seriesKeys: ['b'],
       key: 'b',
       data: [
-        { x: 1, y1: 90 },
-        { x: 3, y1: 30 },
+        { x: 1, y1: 90, mark: null },
+        { x: 3, y1: 30, mark: null },
       ],
     },
   ];

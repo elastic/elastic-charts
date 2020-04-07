@@ -1052,7 +1052,7 @@ describe('Rendering bars', () => {
     const yScales = computeYScales({ yDomains: barSeriesDomains.yDomain, range: [100, 0] });
 
     test('Can render 3 bars', () => {
-      const { barGeometries, indexedGeometries } = renderBars(
+      const { barGeometries, indexedGeometryMap } = renderBars(
         0,
         barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
@@ -1063,7 +1063,7 @@ describe('Rendering bars', () => {
       expect(barGeometries.length).toBe(3);
       // will be cut by the clipping areas in the rendering component
       expect(barGeometries[2].height).toBe(1000);
-      expect(indexedGeometries.size).toBe(3);
+      expect(indexedGeometryMap.size).toBe(3);
     });
   });
   describe('Renders minBarHeight', () => {

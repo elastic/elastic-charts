@@ -23,9 +23,10 @@ import { renderArea, renderBars } from './rendering';
 import { computeXScale, computeYScales } from '../utils/scales';
 import { AreaSeriesSpec, BarSeriesSpec, SeriesTypes } from '../utils/specs';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
-import { AreaGeometry, IndexedGeometry, PointGeometry } from '../../../utils/geometry';
+import { AreaGeometry, PointGeometry } from '../../../utils/geometry';
 import { ChartTypes } from '../..';
 import { SpecTypes } from '../../../specs/settings';
+import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
 
 const SPEC_ID = 'spec_1';
 const GROUP_ID = 'group_1';
@@ -59,7 +60,7 @@ describe('Rendering bands - areas', () => {
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
     let renderedArea: {
       areaGeometry: AreaGeometry;
-      indexedGeometries: Map<any, IndexedGeometry[]>;
+      indexedGeometryMap: IndexedGeometryMap;
     };
 
     beforeEach(() => {
@@ -73,6 +74,9 @@ describe('Rendering bands - areas', () => {
         true,
         0,
         LIGHT_THEME.areaSeriesStyle,
+        {
+          enabled: false,
+        },
       );
     });
     test('Render geometry but empty upper and lower lines and area paths', () => {
@@ -115,7 +119,7 @@ describe('Rendering bands - areas', () => {
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
     let renderedArea: {
       areaGeometry: AreaGeometry;
-      indexedGeometries: Map<any, IndexedGeometry[]>;
+      indexedGeometryMap: IndexedGeometryMap;
     };
 
     beforeEach(() => {
@@ -129,6 +133,9 @@ describe('Rendering bands - areas', () => {
         true,
         0,
         LIGHT_THEME.areaSeriesStyle,
+        {
+          enabled: false,
+        },
       );
     });
     test('Can render upper and lower lines and area paths', () => {
@@ -275,7 +282,7 @@ describe('Rendering bands - areas', () => {
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
     let renderedArea: {
       areaGeometry: AreaGeometry;
-      indexedGeometries: Map<any, IndexedGeometry[]>;
+      indexedGeometryMap: IndexedGeometryMap;
     };
 
     beforeEach(() => {
@@ -289,6 +296,9 @@ describe('Rendering bands - areas', () => {
         true,
         0,
         LIGHT_THEME.areaSeriesStyle,
+        {
+          enabled: false,
+        },
       );
     });
     test('Can render upper and lower lines and area paths', () => {

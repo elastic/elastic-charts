@@ -23,10 +23,11 @@ import { renderLine } from './rendering';
 import { computeXScale, computeYScales } from '../utils/scales';
 import { LineSeriesSpec, DomainRange, SeriesTypes } from '../utils/specs';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
-import { LineGeometry, IndexedGeometry, PointGeometry } from '../../../utils/geometry';
+import { LineGeometry, PointGeometry } from '../../../utils/geometry';
 import { GroupId } from '../../../utils/ids';
 import { ChartTypes } from '../..';
 import { SpecTypes } from '../../../specs/settings';
+import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
 
 const SPEC_ID = 'spec_1';
 const GROUP_ID = 'group_1';
@@ -59,7 +60,7 @@ describe('Rendering points - line', () => {
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
     let renderedLine: {
       lineGeometry: LineGeometry;
-      indexedGeometries: Map<any, IndexedGeometry[]>;
+      indexedGeometryMap: IndexedGeometryMap;
     };
 
     beforeEach(() => {
@@ -73,6 +74,9 @@ describe('Rendering points - line', () => {
         false,
         0,
         LIGHT_THEME.lineSeriesStyle,
+        {
+          enabled: false,
+        },
       );
     });
     test('Can render the geometry without a line', () => {
@@ -111,7 +115,7 @@ describe('Rendering points - line', () => {
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
     let renderedLine: {
       lineGeometry: LineGeometry;
-      indexedGeometries: Map<any, IndexedGeometry[]>;
+      indexedGeometryMap: IndexedGeometryMap;
     };
 
     beforeEach(() => {
@@ -125,6 +129,9 @@ describe('Rendering points - line', () => {
         false,
         0,
         LIGHT_THEME.lineSeriesStyle,
+        {
+          enabled: false,
+        },
       );
     });
     test('Can render a line', () => {
@@ -138,7 +145,7 @@ describe('Rendering points - line', () => {
     test('Can render two points', () => {
       const {
         lineGeometry: { points },
-        indexedGeometries,
+        indexedGeometryMap,
       } = renderedLine;
 
       expect(points[0]).toEqual(({
@@ -186,7 +193,7 @@ describe('Rendering points - line', () => {
           y: 0,
         },
       } as unknown) as PointGeometry);
-      expect(indexedGeometries.size).toEqual(points.length);
+      expect(indexedGeometryMap.size).toEqual(points.length);
     });
   });
   describe('Multi series line chart - ordinal', () => {
@@ -235,11 +242,11 @@ describe('Rendering points - line', () => {
 
     let firstLine: {
       lineGeometry: LineGeometry;
-      indexedGeometries: Map<any, IndexedGeometry[]>;
+      indexedGeometryMap: IndexedGeometryMap;
     };
     let secondLine: {
       lineGeometry: LineGeometry;
-      indexedGeometries: Map<any, IndexedGeometry[]>;
+      indexedGeometryMap: IndexedGeometryMap;
     };
 
     beforeEach(() => {
@@ -253,6 +260,9 @@ describe('Rendering points - line', () => {
         false,
         0,
         LIGHT_THEME.lineSeriesStyle,
+        {
+          enabled: false,
+        },
       );
       secondLine = renderLine(
         25, // adding a ideal 25px shift, generally applied by renderGeometries
@@ -264,6 +274,9 @@ describe('Rendering points - line', () => {
         false,
         0,
         LIGHT_THEME.lineSeriesStyle,
+        {
+          enabled: false,
+        },
       );
     });
 
@@ -283,7 +296,7 @@ describe('Rendering points - line', () => {
     test('can render first spec points', () => {
       const {
         lineGeometry: { points },
-        indexedGeometries,
+        indexedGeometryMap,
       } = firstLine;
       expect(points.length).toEqual(2);
       expect(points[0]).toEqual(({
@@ -330,12 +343,12 @@ describe('Rendering points - line', () => {
           y: 0,
         },
       } as unknown) as PointGeometry);
-      expect(indexedGeometries.size).toEqual(points.length);
+      expect(indexedGeometryMap.size).toEqual(points.length);
     });
     test('can render second spec points', () => {
       const {
         lineGeometry: { points },
-        indexedGeometries,
+        indexedGeometryMap,
       } = secondLine;
       expect(points.length).toEqual(2);
       expect(points[0]).toEqual(({
@@ -382,7 +395,7 @@ describe('Rendering points - line', () => {
           y: 0,
         },
       } as unknown) as PointGeometry);
-      expect(indexedGeometries.size).toEqual(points.length);
+      expect(indexedGeometryMap.size).toEqual(points.length);
     });
   });
   describe('Single series line chart - linear', () => {
@@ -413,7 +426,7 @@ describe('Rendering points - line', () => {
 
     let renderedLine: {
       lineGeometry: LineGeometry;
-      indexedGeometries: Map<any, IndexedGeometry[]>;
+      indexedGeometryMap: IndexedGeometryMap;
     };
 
     beforeEach(() => {
@@ -427,6 +440,9 @@ describe('Rendering points - line', () => {
         false,
         0,
         LIGHT_THEME.lineSeriesStyle,
+        {
+          enabled: false,
+        },
       );
     });
     test('Can render a linear line', () => {
@@ -439,7 +455,7 @@ describe('Rendering points - line', () => {
     test('Can render two points', () => {
       const {
         lineGeometry: { points },
-        indexedGeometries,
+        indexedGeometryMap,
       } = renderedLine;
       expect(points[0]).toEqual(({
         x: 0,
@@ -485,7 +501,7 @@ describe('Rendering points - line', () => {
           y: 0,
         },
       } as unknown) as PointGeometry);
-      expect(indexedGeometries.size).toEqual(points.length);
+      expect(indexedGeometryMap.size).toEqual(points.length);
     });
   });
   describe('Multi series line chart - linear', () => {
@@ -534,11 +550,11 @@ describe('Rendering points - line', () => {
 
     let firstLine: {
       lineGeometry: LineGeometry;
-      indexedGeometries: Map<any, IndexedGeometry[]>;
+      indexedGeometryMap: IndexedGeometryMap;
     };
     let secondLine: {
       lineGeometry: LineGeometry;
-      indexedGeometries: Map<any, IndexedGeometry[]>;
+      indexedGeometryMap: IndexedGeometryMap;
     };
 
     beforeEach(() => {
@@ -552,6 +568,9 @@ describe('Rendering points - line', () => {
         false,
         0,
         LIGHT_THEME.lineSeriesStyle,
+        {
+          enabled: false,
+        },
       );
       secondLine = renderLine(
         0, // not applied any shift, renderGeometries applies it only with mixed charts
@@ -563,6 +582,9 @@ describe('Rendering points - line', () => {
         false,
         0,
         LIGHT_THEME.lineSeriesStyle,
+        {
+          enabled: false,
+        },
       );
     });
     test('can render two linear lines', () => {
@@ -581,7 +603,7 @@ describe('Rendering points - line', () => {
     test('can render first spec points', () => {
       const {
         lineGeometry: { points },
-        indexedGeometries,
+        indexedGeometryMap,
       } = firstLine;
       expect(points.length).toEqual(2);
       expect(points[0]).toEqual(({
@@ -628,12 +650,12 @@ describe('Rendering points - line', () => {
           y: 0,
         },
       } as unknown) as PointGeometry);
-      expect(indexedGeometries.size).toEqual(points.length);
+      expect(indexedGeometryMap.size).toEqual(points.length);
     });
     test('can render second spec points', () => {
       const {
         lineGeometry: { points },
-        indexedGeometries,
+        indexedGeometryMap,
       } = secondLine;
       expect(points.length).toEqual(2);
       expect(points[0]).toEqual(({
@@ -680,7 +702,7 @@ describe('Rendering points - line', () => {
           y: 0,
         },
       } as unknown) as PointGeometry);
-      expect(indexedGeometries.size).toEqual(points.length);
+      expect(indexedGeometryMap.size).toEqual(points.length);
     });
   });
   describe('Single series line chart - time', () => {
@@ -711,7 +733,7 @@ describe('Rendering points - line', () => {
 
     let renderedLine: {
       lineGeometry: LineGeometry;
-      indexedGeometries: Map<any, IndexedGeometry[]>;
+      indexedGeometryMap: IndexedGeometryMap;
     };
 
     beforeEach(() => {
@@ -725,6 +747,9 @@ describe('Rendering points - line', () => {
         false,
         0,
         LIGHT_THEME.lineSeriesStyle,
+        {
+          enabled: false,
+        },
       );
     });
     test('Can render a time line', () => {
@@ -737,7 +762,7 @@ describe('Rendering points - line', () => {
     test('Can render two points', () => {
       const {
         lineGeometry: { points },
-        indexedGeometries,
+        indexedGeometryMap,
       } = renderedLine;
       expect(points[0]).toEqual(({
         x: 0,
@@ -783,7 +808,7 @@ describe('Rendering points - line', () => {
           y: 0,
         },
       } as unknown) as PointGeometry);
-      expect(indexedGeometries.size).toEqual(points.length);
+      expect(indexedGeometryMap.size).toEqual(points.length);
     });
   });
   describe('Multi series line chart - time', () => {
@@ -832,11 +857,11 @@ describe('Rendering points - line', () => {
 
     let firstLine: {
       lineGeometry: LineGeometry;
-      indexedGeometries: Map<any, IndexedGeometry[]>;
+      indexedGeometryMap: IndexedGeometryMap;
     };
     let secondLine: {
       lineGeometry: LineGeometry;
-      indexedGeometries: Map<any, IndexedGeometry[]>;
+      indexedGeometryMap: IndexedGeometryMap;
     };
 
     beforeEach(() => {
@@ -850,6 +875,9 @@ describe('Rendering points - line', () => {
         false,
         0,
         LIGHT_THEME.lineSeriesStyle,
+        {
+          enabled: false,
+        },
       );
       secondLine = renderLine(
         0, // not applied any shift, renderGeometries applies it only with mixed charts
@@ -861,12 +889,15 @@ describe('Rendering points - line', () => {
         false,
         0,
         LIGHT_THEME.lineSeriesStyle,
+        {
+          enabled: false,
+        },
       );
     });
     test('can render first spec points', () => {
       const {
         lineGeometry: { points },
-        indexedGeometries,
+        indexedGeometryMap,
       } = firstLine;
       expect(points.length).toEqual(2);
       expect(points[0]).toEqual(({
@@ -913,12 +944,12 @@ describe('Rendering points - line', () => {
           y: 0,
         },
       } as unknown) as PointGeometry);
-      expect(indexedGeometries.size).toEqual(points.length);
+      expect(indexedGeometryMap.size).toEqual(points.length);
     });
     test('can render second spec points', () => {
       const {
         lineGeometry: { points },
-        indexedGeometries,
+        indexedGeometryMap,
       } = secondLine;
       expect(points.length).toEqual(2);
       expect(points[0]).toEqual(({
@@ -965,7 +996,7 @@ describe('Rendering points - line', () => {
           y: 0,
         },
       } as unknown) as PointGeometry);
-      expect(indexedGeometries.size).toEqual(points.length);
+      expect(indexedGeometryMap.size).toEqual(points.length);
     });
   });
   describe('Single series line chart - y log', () => {
@@ -1003,7 +1034,7 @@ describe('Rendering points - line', () => {
 
     let renderedLine: {
       lineGeometry: LineGeometry;
-      indexedGeometries: Map<any, IndexedGeometry[]>;
+      indexedGeometryMap: IndexedGeometryMap;
     };
 
     beforeEach(() => {
@@ -1017,6 +1048,9 @@ describe('Rendering points - line', () => {
         false,
         0,
         LIGHT_THEME.lineSeriesStyle,
+        {
+          enabled: false,
+        },
       );
     });
     test('Can render a splitted line', () => {
@@ -1030,16 +1064,16 @@ describe('Rendering points - line', () => {
     test('Can render points', () => {
       const {
         lineGeometry: { points },
-        indexedGeometries,
+        indexedGeometryMap,
       } = renderedLine;
       // all the points minus the undefined ones on a log scale
       expect(points.length).toBe(7);
       // all the points expect null geometries
-      expect(indexedGeometries.size).toEqual(8);
-      const nullIndexdGeometry = indexedGeometries.get(2)!;
+      expect(indexedGeometryMap.size).toEqual(8);
+      const nullIndexdGeometry = indexedGeometryMap.find(2)!;
       expect(nullIndexdGeometry).toBeUndefined();
 
-      const zeroValueIndexdGeometry = indexedGeometries.get(5)!;
+      const zeroValueIndexdGeometry = indexedGeometryMap.find(5)!;
       expect(zeroValueIndexdGeometry).toBeDefined();
       expect(zeroValueIndexdGeometry.length).toBe(1);
       // moved to the bottom of the chart
@@ -1082,7 +1116,7 @@ describe('Rendering points - line', () => {
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
     let renderedLine: {
       lineGeometry: LineGeometry;
-      indexedGeometries: Map<any, IndexedGeometry[]>;
+      indexedGeometryMap: IndexedGeometryMap;
     };
 
     beforeEach(() => {
@@ -1096,17 +1130,20 @@ describe('Rendering points - line', () => {
         false,
         0,
         LIGHT_THEME.lineSeriesStyle,
+        {
+          enabled: false,
+        },
       );
     });
     test('Can render two points', () => {
       const {
         lineGeometry: { points },
-        indexedGeometries,
+        indexedGeometryMap,
       } = renderedLine;
       // will not render the 3rd point that is out of y domain
       expect(points.length).toBe(2);
       // will keep the 3rd point as an indexedGeometry
-      expect(indexedGeometries.size).toEqual(3);
+      expect(indexedGeometryMap.size).toEqual(3);
       expect(points[0]).toEqual(({
         x: 0,
         y: 100,

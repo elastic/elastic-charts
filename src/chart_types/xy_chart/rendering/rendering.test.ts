@@ -64,6 +64,7 @@ describe('Rendering utils', () => {
         accessor: 'y1',
         x: 0,
         y: 0,
+        mark: null,
       },
       x: 0,
       y: 0,
@@ -93,6 +94,7 @@ describe('Rendering utils', () => {
         accessor: 'y1',
         x: 0,
         y: 0,
+        mark: null,
       },
       transform: {
         x: 0,
@@ -239,6 +241,7 @@ describe('Rendering utils', () => {
       y0: 3,
       initialY1: 4,
       initialY0: 5,
+      mark: null,
     };
     const seriesIdentifier: XYChartSeriesIdentifier = {
       specId: 'test',
@@ -331,6 +334,7 @@ describe('Rendering utils', () => {
       y0: 3,
       initialY1: 4,
       initialY0: 5,
+      mark: null,
     };
     const seriesIdentifier: XYChartSeriesIdentifier = {
       specId: 'test',
