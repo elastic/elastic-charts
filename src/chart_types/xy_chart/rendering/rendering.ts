@@ -407,27 +407,12 @@ export function renderLine(
   const isLogScale = isLogarithmicScale(yScale);
 
   const pathGenerator = line<DataSeriesDatum>()
-    .x(({ x }) => {
-      const xScaled = xScale.scale(x);
-
-      if (xScaled === null) {
-        // fallback case - should never throw
-        throw new Error(`Unable to scale x value: ${x})`);
-      }
-
-      return xScaled - xScaleOffset;
-    })
+    .x(({ x }) => xScale.scaleOrThrow(x) - xScaleOffset)
     .y((datum) => {
       const yValue = getYValue(datum);
 
       if (yValue !== null) {
-        const yScaled = yScale.scale(yValue);
-
-        if (yScaled === null) {
-          // fallback case - should never throw
-          throw new Error(`Unable to scale y value: ${yValue})`);
-        }
-        return yScaled;
+        return yScale.scaleOrThrow(yValue);
       }
 
       // this should never happen thanks to the defined function
@@ -454,8 +439,17 @@ export function renderLine(
   );
 
   const clippedRanges = hasFit && !hasY0Accessors ? getClippedRanges(dataSeries.data, xScale, xScaleOffset) : [];
+  let linePath: string;
+
+  try {
+    linePath = pathGenerator(dataSeries.data) || '';
+  } catch (e) {
+    // When values are not scalable
+    linePath = '';
+  }
+
   const lineGeometry = {
-    line: pathGenerator(dataSeries.data) || '',
+    line: linePath,
     points: pointGeometries,
     color,
     transform: {
@@ -516,26 +510,11 @@ export function renderArea(
 } {
   const isLogScale = isLogarithmicScale(yScale);
   const pathGenerator = area<DataSeriesDatum>()
-    .x(({ x }) => {
-      const xScaled = xScale.scale(x);
-      if (xScaled === null) {
-        // fallback case - should never throw
-        throw new Error(`Unable to scale x value: ${x})`);
-      }
-
-      return xScaled - xScaleOffset;
-    })
+    .x(({ x }) => xScale.scaleOrThrow(x) - xScaleOffset)
     .y1((datum) => {
       const yValue = getYValue(datum);
       if (yValue !== null) {
-        const yScaled = yScale.scale(yValue);
-
-        if (yScaled === null) {
-          // fallback case - should never throw
-          throw new Error(`Unable to scale y value: ${yValue})`);
-        }
-
-        return yScaled;
+        return yScale.scaleOrThrow(yValue);
       }
       // this should never happen thanks to the defined function
       return yScale.isInverted ? yScale.range[1] : yScale.range[0];
@@ -545,14 +524,7 @@ export function renderArea(
         return yScale.range[0];
       }
 
-      const y0Scaled = yScale.scale(y0);
-
-      if (y0Scaled === null) {
-        // fallback case - should never throw
-        throw new Error(`Unable to scale y value: ${y0})`);
-      }
-
-      return y0Scaled;
+      return yScale.scaleOrThrow(y0);
     })
     .defined((datum) => {
       const yValue = getYValue(datum);
@@ -562,13 +534,28 @@ export function renderArea(
 
   const clippedRanges =
     hasFit && !hasY0Accessors && !isStacked ? getClippedRanges(dataSeries.data, xScale, xScaleOffset) : [];
-  const y1Line = pathGenerator.lineY1()(dataSeries.data);
+  let y1Line: string | null;
+
+  try {
+    y1Line = pathGenerator.lineY1()(dataSeries.data);
+  } catch (e) {
+    // When values are not scalable
+    y1Line = null;
+  }
+
   const lines: string[] = [];
   if (y1Line) {
     lines.push(y1Line);
   }
   if (hasY0Accessors) {
-    const y0Line = pathGenerator.lineY0()(dataSeries.data);
+    let y0Line: string | null;
+
+    try {
+      y0Line = pathGenerator.lineY0()(dataSeries.data);
+    } catch (e) {
+      // When values are not scalable
+      y0Line = null;
+    }
     if (y0Line) {
       lines.push(y0Line);
     }
@@ -586,8 +573,17 @@ export function renderArea(
     pointStyleAccessor,
   );
 
+  let areaPath: string;
+
+  try {
+    areaPath = pathGenerator(dataSeries.data) || '';
+  } catch (e) {
+    // When values are not scalable
+    areaPath = '';
+  }
+
   const areaGeometry: AreaGeometry = {
-    area: pathGenerator(dataSeries.data) || '',
+    area: areaPath,
     lines,
     points: pointGeometries,
     color,

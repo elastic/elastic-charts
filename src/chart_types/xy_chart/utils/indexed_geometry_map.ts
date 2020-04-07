@@ -60,12 +60,14 @@ export class IndexedGeometryMap {
     }
   }
 
-  find(x: number | string | null, point: Point): IndexedGeometry[] {
+  find(x: number | string | null, point?: Point): IndexedGeometry[] {
     if (x === null) {
       return [];
     }
 
-    return [...this.linearMap.find(x), ...this.spatialMap.find(x, point)];
+    const spatialValues = point === undefined ? [] : this.spatialMap.find(x, point);
+
+    return [...this.linearMap.find(x), ...spatialValues];
   }
 
   getMergeData() {

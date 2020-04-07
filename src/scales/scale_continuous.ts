@@ -29,18 +29,19 @@ import {
 } from 'd3-scale';
 
 import { clamp, mergePartial } from '../utils/commons';
-import { ScaleContinuousType, ScaleType, Scale, ScaleValue } from '.';
+import { ScaleContinuousType, ScaleType, Scale } from '.';
 import { getMomentWithTz } from '../utils/data/date_time';
+import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 
 /**
  * d3 scales excluding time scale
  */
-type D3ScaleNonTime = ScaleLinear<any, any> | ScaleLogarithmic<any, any> | ScalePower<any, any>;
+type D3ScaleNonTime<R = PrimitiveValue, O = number> = ScaleLinear<R, O> | ScaleLogarithmic<R, O> | ScalePower<R, O>;
 
 /**
  * All possible d3 scales
  */
-type D3Scale = D3ScaleNonTime | ScaleTime<any, any>;
+type D3Scale<R = PrimitiveValue, O = number> = D3ScaleNonTime<R, O> | ScaleTime<R, O>;
 
 const SCALES = {
   [ScaleType.Linear]: scaleLinear,
@@ -237,7 +238,7 @@ export class ScaleContinuous implements Scale {
     }
   }
 
-  private getScaledValue(value?: ScaleValue): number | null {
+  private getScaledValue(value?: PrimitiveValue): number | null {
     if (typeof value !== 'number' || isNaN(value)) {
       return null;
     }
@@ -248,6 +249,8 @@ export class ScaleContinuous implements Scale {
   }
 
   getTicks(ticks: number, integersOnly: boolean) {
+    // TODO: cleanup types for ticks btw time and non-time scales
+    // This is forcing a return type of number[] but is really (number|Date)[]
     return integersOnly
       ? (this.d3Scale as D3ScaleNonTime)
           .ticks(ticks)
@@ -256,13 +259,23 @@ export class ScaleContinuous implements Scale {
       : (this.d3Scale as D3ScaleNonTime).ticks(ticks);
   }
 
-  scale(value?: ScaleValue) {
+  scaleOrThrow(value?: PrimitiveValue): number {
+    const scaleValue = this.getScaledValue(value);
+
+    if (scaleValue === null) {
+      throw new Error(`Unable to scale value: ${scaleValue})`);
+    }
+
+    return scaleValue;
+  }
+
+  scale(value?: PrimitiveValue) {
     const scaledValue = this.getScaledValue(value);
 
     return scaledValue === null ? null : scaledValue + (this.bandwidthPadding / 2) * this.totalBarsInCluster;
   }
 
-  pureScale(value?: ScaleValue) {
+  pureScale(value?: PrimitiveValue) {
     if (this.bandwidth === 0) {
       return this.getScaledValue(value);
     }

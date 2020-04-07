@@ -61,6 +61,7 @@ import { LegendItem } from '../legend/legend';
 import { Spec } from '../../../specs';
 import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
 import { Point } from '../../../utils/point';
+import { PrimitiveValue } from '../../partition_chart/layout/utils/group_by_rollup';
 
 const MAX_ANIMATABLE_BARS = 300;
 const MAX_ANIMATABLE_LINES_AREA_POINTS = 600;
@@ -728,7 +729,7 @@ export function getDistance(a: Point, b: Point) {
 }
 
 /** @internal */
-export function strigifyValue(value?: { toString(): string } | null): string {
+export function strigifyValue(value?: PrimitiveValue): string | number {
   if (value === undefined) {
     return 'undefined';
   }
@@ -737,7 +738,7 @@ export function strigifyValue(value?: { toString(): string } | null): string {
     return 'null';
   }
 
-  return value.toString();
+  return value;
 }
 
 /**

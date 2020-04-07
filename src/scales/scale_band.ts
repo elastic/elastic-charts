@@ -19,8 +19,9 @@
 import { scaleBand, scaleQuantize, ScaleQuantize, ScaleBand as D3ScaleBand } from 'd3-scale';
 
 import { clamp } from '../utils/commons';
-import { ScaleType, Scale, ScaleValue } from '.';
+import { ScaleType, Scale } from '.';
 import { strigifyValue } from '../chart_types/xy_chart/state/utils';
+import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 
 /**
  * Categorical scale
@@ -37,7 +38,7 @@ export class ScaleBand implements Scale {
   readonly invertedScale: ScaleQuantize<number>;
   readonly minInterval: number;
   readonly barsPadding: number;
-  private readonly d3Scale: D3ScaleBand<NonNullable<ScaleValue>>;
+  private readonly d3Scale: D3ScaleBand<NonNullable<PrimitiveValue>>;
 
   constructor(
     domain: any[],
@@ -51,7 +52,7 @@ export class ScaleBand implements Scale {
     barsPadding = 0,
   ) {
     this.type = ScaleType.Ordinal;
-    this.d3Scale = scaleBand<NonNullable<ScaleValue>>();
+    this.d3Scale = scaleBand<NonNullable<PrimitiveValue>>();
     this.d3Scale.domain(domain);
     this.d3Scale.range(range);
     const safeBarPadding = clamp(barsPadding, 0, 1);
@@ -74,7 +75,7 @@ export class ScaleBand implements Scale {
     this.minInterval = 0;
   }
 
-  private getScaledValue = (value?: ScaleValue): number | null => {
+  private getScaledValue(value?: PrimitiveValue): number | null {
     const scaleValue = this.d3Scale(strigifyValue(value));
 
     if (scaleValue === undefined || isNaN(scaleValue)) {
@@ -82,13 +83,23 @@ export class ScaleBand implements Scale {
     }
 
     return scaleValue;
-  };
+  }
 
-  scale(value?: ScaleValue) {
+  scaleOrThrow(value?: PrimitiveValue): number {
+    const scaleValue = this.getScaledValue(value);
+
+    if (scaleValue === null) {
+      throw new Error(`Unable to scale value: ${scaleValue})`);
+    }
+
+    return scaleValue;
+  }
+
+  scale(value?: PrimitiveValue) {
     return this.getScaledValue(value);
   }
 
-  pureScale(value?: ScaleValue) {
+  pureScale(value?: PrimitiveValue) {
     return this.getScaledValue(value);
   }
 
