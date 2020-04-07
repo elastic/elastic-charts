@@ -25,6 +25,7 @@ import { getChartThemeSelector } from './get_chart_theme';
 import { GlobalChartState } from '../chart_state';
 import { getChartIdSelector } from './get_chart_id';
 import { getLegendItemsLabelsSelector } from './get_legend_items_labels';
+import { LEGEND_HIERARCHY_MARGIN } from '../../components/legend/legend_item';
 
 const getParentDimensionSelector = (state: GlobalChartState) => state.parentDimensions;
 
@@ -40,7 +41,7 @@ export const getLegendSizeSelector = createCachedSelector(
   (settings, theme, parentDimensions, labels): BBox => {
     const bboxCalculator = new CanvasTextBBoxCalculator();
     const bbox = labels.reduce(
-      (acc, label) => {
+      (acc, { label, depth }) => {
         const bbox = bboxCalculator.compute(
           label,
           1,
@@ -49,6 +50,7 @@ export const getLegendSizeSelector = createCachedSelector(
           1.5,
           400,
         );
+        bbox.width += depth * LEGEND_HIERARCHY_MARGIN;
         if (acc.height < bbox.height) {
           acc.height = bbox.height;
         }

@@ -19,7 +19,13 @@
 import { GlobalChartState } from '../chart_state';
 
 /** @internal */
-export const getLegendItemsLabelsSelector = (state: GlobalChartState): string[] => {
+export interface LegendItemLabel {
+  label: string;
+  depth: number;
+}
+
+/** @internal */
+export const getLegendItemsLabelsSelector = (state: GlobalChartState): LegendItemLabel[] => {
   if (state.internalChartState) {
     return state.internalChartState.getLegendItemsLabels(state);
   } else {

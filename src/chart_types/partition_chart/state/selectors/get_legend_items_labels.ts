@@ -22,19 +22,28 @@ import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getPieSpecOrNull } from './pie_spec';
 import { HierarchyOfArrays, CHILDREN_KEY } from '../../layout/utils/group_by_rollup';
 import { Layer } from '../../specs';
+import { LegendItemLabel } from '../../../../state/selectors/get_legend_items_labels';
 
 /** @internal */
-export const getLegendItemsLabels = createCachedSelector([getPieSpecOrNull, getTree], (pieSpec, tree): string[] => {
-  if (!pieSpec) {
-    return [];
-  }
-  const { layers } = pieSpec;
+export const getLegendItemsLabels = createCachedSelector(
+  [getPieSpecOrNull, getTree],
+  (pieSpec, tree): LegendItemLabel[] => {
+    if (!pieSpec) {
+      return [];
+    }
+    const { layers } = pieSpec;
 
-  const values = flatSlicesNames(layers, 0, tree);
-  return values;
-})(getChartIdSelector);
+    const values = flatSlicesNames(layers, 0, tree);
+    return values;
+  },
+)(getChartIdSelector);
 
-function flatSlicesNames(layers: Layer[], depth: number, tree: HierarchyOfArrays, keys: Set<string> = new Set()) {
+function flatSlicesNames(
+  layers: Layer[],
+  depth: number,
+  tree: HierarchyOfArrays,
+  keys: Map<string, number> = new Map(),
+): LegendItemLabel[] {
   if (tree.length === 0) {
     return [];
   }
@@ -49,9 +58,16 @@ function flatSlicesNames(layers: Layer[], depth: number, tree: HierarchyOfArrays
     if (key != null) {
       formattedValue = formatter ? formatter(key) : `${key}`;
     }
-    keys.add(formattedValue);
+
+    keys.set(formattedValue, Math.max(depth, keys.get(formattedValue) ?? 0));
+
     const children = arrayNode[CHILDREN_KEY];
     flatSlicesNames(layers, depth + 1, children, keys);
   }
-  return [...keys.values()];
+  return [...keys.keys()].map((k) => {
+    return {
+      label: k,
+      depth: keys.get(k) ?? 0,
+    };
+  });
 }

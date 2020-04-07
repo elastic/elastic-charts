@@ -35,6 +35,9 @@ import { renderLabel } from './label';
 import { renderExtra } from './extra';
 
 /** @internal */
+export const LEGEND_HIERARCHY_MARGIN = 10;
+
+/** @internal */
 export interface LegendItemProps {
   item: LegendItem;
   totalItems: number;
@@ -154,7 +157,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
     const extra = getExtra(extraValues, item, totalItems);
     const style = item.depth
       ? {
-          marginLeft: 10 * (item.depth ?? 0),
+          marginLeft: LEGEND_HIERARCHY_MARGIN * (item.depth ?? 0),
         }
       : undefined;
     return (

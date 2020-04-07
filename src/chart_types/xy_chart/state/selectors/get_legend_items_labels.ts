@@ -20,16 +20,17 @@ import createCachedSelector from 're-reselect';
 import { computeLegendSelector } from './compute_legend';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { LegendItemLabel } from '../../../../state/selectors/get_legend_items_labels';
 
 /** @internal */
 export const getLegendItemsLabelsSelector = createCachedSelector(
   [computeLegendSelector, getSettingsSpecSelector],
-  (legendItems, { showLegendExtra }): string[] => {
-    return legendItems.map<string>(({ label, defaultExtra }) => {
+  (legendItems, { showLegendExtra }): LegendItemLabel[] => {
+    return legendItems.map(({ label, defaultExtra }) => {
       if (defaultExtra?.formatted != null) {
-        return `${label}${showLegendExtra ? defaultExtra.formatted : ''}`;
+        return { label: `${label}${showLegendExtra ? defaultExtra.formatted : ''}`, depth: 0 };
       } else {
-        return label;
+        return { label, depth: 0 };
       }
     });
   },

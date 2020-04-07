@@ -36,6 +36,7 @@ import { PartitionState } from '../chart_types/partition_chart/state/chart_state
 import { TooltipInfo } from '../components/tooltip/types';
 import { TooltipAnchorPosition } from '../components/tooltip/utils';
 import { Color } from '../utils/commons';
+import { LegendItemLabel } from './selectors/get_legend_items_labels';
 
 export type BackwardRef = () => React.RefObject<HTMLDivElement>;
 
@@ -74,7 +75,7 @@ export interface InternalChartState {
    * return the list of legend items
    * @param globalState
    */
-  getLegendItemsLabels(globalState: GlobalChartState): string[];
+  getLegendItemsLabels(globalState: GlobalChartState): LegendItemLabel[];
 
   /**
    * return the list of legend items
