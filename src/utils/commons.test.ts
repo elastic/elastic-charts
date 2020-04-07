@@ -52,9 +52,8 @@ describe('commons utilities', () => {
   });
 
   test('compareByValueAsc', () => {
-    expect(compareByValueAsc(10, 20)).toBeLessThan(0);
-    expect(compareByValueAsc(20, 10)).toBeGreaterThan(0);
-    expect(compareByValueAsc(10, 10)).toBe(0);
+    expect([2, 1, 4, 3].sort(compareByValueAsc)).toEqual([1, 2, 3, 4]);
+    expect(['b', 'a', 'd', 'c'].sort(compareByValueAsc)).toEqual(['a', 'b', 'c', 'd']);
   });
 
   describe('getPartialValue', () => {

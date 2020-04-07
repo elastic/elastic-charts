@@ -160,7 +160,7 @@ describe('Rendering bands - areas', () => {
       expect(points[0]).toEqual(({
         x: 0,
         y: 80,
-        radius: 10,
+        radius: 0,
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
@@ -174,6 +174,7 @@ describe('Rendering bands - areas', () => {
           accessor: 'y0',
           x: 0,
           y: 2,
+          mark: null,
         },
         transform: {
           x: 25,
@@ -184,7 +185,7 @@ describe('Rendering bands - areas', () => {
       expect(points[1]).toEqual(({
         x: 0,
         y: 0,
-        radius: 10,
+        radius: 0,
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
@@ -198,6 +199,7 @@ describe('Rendering bands - areas', () => {
           accessor: 'y1',
           x: 0,
           y: 10,
+          mark: null,
         },
         transform: {
           x: 25,
@@ -207,7 +209,7 @@ describe('Rendering bands - areas', () => {
       expect(points[2]).toEqual(({
         x: 50,
         y: 70,
-        radius: 10,
+        radius: 0,
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
@@ -220,6 +222,7 @@ describe('Rendering bands - areas', () => {
           accessor: 'y0',
           x: 1,
           y: 3,
+          mark: null,
         },
         styleOverrides: undefined,
         transform: {
@@ -230,7 +233,7 @@ describe('Rendering bands - areas', () => {
       expect(points[3]).toEqual(({
         x: 50,
         y: 50,
-        radius: 10,
+        radius: 0,
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
@@ -244,6 +247,7 @@ describe('Rendering bands - areas', () => {
           accessor: 'y1',
           x: 1,
           y: 5,
+          mark: null,
         },
         transform: {
           x: 25,
@@ -324,7 +328,7 @@ describe('Rendering bands - areas', () => {
       expect(points[0]).toEqual(({
         x: 0,
         y: 80,
-        radius: 10,
+        radius: 0,
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
@@ -337,6 +341,7 @@ describe('Rendering bands - areas', () => {
           accessor: 'y0',
           x: 0,
           y: 2,
+          mark: null,
         },
         transform: {
           x: 25,
@@ -347,7 +352,7 @@ describe('Rendering bands - areas', () => {
       expect(points[1]).toEqual(({
         x: 0,
         y: 0,
-        radius: 10,
+        radius: 0,
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
@@ -360,6 +365,7 @@ describe('Rendering bands - areas', () => {
           accessor: 'y1',
           x: 0,
           y: 10,
+          mark: null,
         },
         transform: {
           x: 25,
@@ -369,7 +375,7 @@ describe('Rendering bands - areas', () => {
       expect(points[2]).toEqual(({
         x: 50,
         y: 70,
-        radius: 10,
+        radius: 0,
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
@@ -382,6 +388,7 @@ describe('Rendering bands - areas', () => {
           accessor: 'y0',
           x: 2,
           y: 3,
+          mark: null,
         },
         transform: {
           x: 25,
@@ -391,7 +398,7 @@ describe('Rendering bands - areas', () => {
       expect(points[3]).toEqual(({
         x: 50,
         y: 50,
-        radius: 10,
+        radius: 0,
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
@@ -404,6 +411,7 @@ describe('Rendering bands - areas', () => {
           accessor: 'y1',
           x: 2,
           y: 5,
+          mark: null,
         },
         transform: {
           x: 25,
@@ -413,7 +421,7 @@ describe('Rendering bands - areas', () => {
       expect(points[4]).toEqual(({
         x: 75,
         y: 70,
-        radius: 10,
+        radius: 0,
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
@@ -426,6 +434,7 @@ describe('Rendering bands - areas', () => {
           accessor: 'y0',
           x: 3,
           y: 3,
+          mark: null,
         },
         transform: {
           x: 25,
@@ -435,7 +444,7 @@ describe('Rendering bands - areas', () => {
       expect(points[5]).toEqual(({
         x: 75,
         y: 50,
-        radius: 10,
+        radius: 0,
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
@@ -448,6 +457,7 @@ describe('Rendering bands - areas', () => {
           accessor: 'y1',
           x: 3,
           y: 5,
+          mark: null,
         },
         transform: {
           x: 25,
@@ -505,6 +515,7 @@ describe('Rendering bands - areas', () => {
           accessor: 'y1',
           x: 0,
           y: 10,
+          mark: null,
         },
         seriesIdentifier: {
           specId: SPEC_ID,
@@ -543,6 +554,7 @@ describe('Rendering bands - areas', () => {
           accessor: 'y1',
           x: 2,
           y: 5,
+          mark: null,
         },
         seriesIdentifier: {
           specId: SPEC_ID,
@@ -581,6 +593,7 @@ describe('Rendering bands - areas', () => {
           accessor: 'y1',
           x: 3,
           y: 8,
+          mark: null,
         },
         seriesIdentifier: {
           specId: SPEC_ID,

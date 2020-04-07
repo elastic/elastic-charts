@@ -266,6 +266,7 @@ describe('Non-Stacked Series Utils', () => {
         x: 0,
         y0: 0,
         y1: 10,
+        mark: null,
       });
       expect(formattedData[1].data[0]).toEqual({
         datum: undefined,
@@ -274,6 +275,7 @@ describe('Non-Stacked Series Utils', () => {
         x: 0,
         y0: 0,
         y1: 20,
+        mark: null,
       });
       expect(formattedData[2].data[0]).toEqual({
         datum: undefined,
@@ -282,6 +284,7 @@ describe('Non-Stacked Series Utils', () => {
         x: 0,
         y0: 0,
         y1: 30,
+        mark: null,
       });
       formattedData = testModule.formatNonStackedDataSeriesValues(
         STANDARD_DATA_SET,
@@ -296,6 +299,7 @@ describe('Non-Stacked Series Utils', () => {
         x: 0,
         y0: 10,
         y1: 10,
+        mark: null,
       });
       expect(formattedData[1].data[0]).toEqual({
         datum: undefined,
@@ -304,6 +308,7 @@ describe('Non-Stacked Series Utils', () => {
         x: 0,
         y0: 20,
         y1: 20,
+        mark: null,
       });
       expect(formattedData[2].data[0]).toEqual({
         datum: undefined,
@@ -312,6 +317,7 @@ describe('Non-Stacked Series Utils', () => {
         x: 0,
         y0: 30,
         y1: 30,
+        mark: null,
       });
     });
     test('format data with nulls', () => {
@@ -328,6 +334,7 @@ describe('Non-Stacked Series Utils', () => {
         x: 0,
         y1: null,
         y0: null,
+        mark: null,
       });
     });
     test('format data without nulls with y0 values', () => {
@@ -344,6 +351,7 @@ describe('Non-Stacked Series Utils', () => {
         x: 0,
         y0: 2,
         y1: 10,
+        mark: null,
       });
       expect(formattedData[1].data[0]).toEqual({
         datum: undefined,
@@ -352,6 +360,7 @@ describe('Non-Stacked Series Utils', () => {
         x: 0,
         y0: 4,
         y1: 20,
+        mark: null,
       });
       expect(formattedData[2].data[0]).toEqual({
         datum: undefined,
@@ -360,6 +369,7 @@ describe('Non-Stacked Series Utils', () => {
         x: 0,
         y0: 6,
         y1: 30,
+        mark: null,
       });
     });
     test('format data with nulls', () => {
@@ -376,6 +386,7 @@ describe('Non-Stacked Series Utils', () => {
         x: 0,
         y0: 2,
         y1: 10,
+        mark: null,
       });
       expect(formattedData[1].data[0]).toEqual({
         datum: undefined,
@@ -384,6 +395,7 @@ describe('Non-Stacked Series Utils', () => {
         x: 0,
         y1: null,
         y0: null,
+        mark: null,
       });
       expect(formattedData[2].data[0]).toEqual({
         datum: undefined,
@@ -392,6 +404,7 @@ describe('Non-Stacked Series Utils', () => {
         x: 0,
         y0: 6,
         y1: 30,
+        mark: null,
       });
     });
     test('format data without nulls on second series', () => {
@@ -412,6 +425,7 @@ describe('Non-Stacked Series Utils', () => {
         x: 1,
         y0: 0,
         y1: 1,
+        mark: null,
       });
       expect(formattedData[0].data[1]).toEqual({
         datum: undefined,
@@ -420,6 +434,7 @@ describe('Non-Stacked Series Utils', () => {
         x: 2,
         y0: 0,
         y1: 2,
+        mark: null,
       });
       expect(formattedData[0].data[2]).toEqual({
         datum: undefined,
@@ -428,6 +443,7 @@ describe('Non-Stacked Series Utils', () => {
         x: 4,
         y0: 0,
         y1: 4,
+        mark: null,
       });
       expect(formattedData[1].data[0]).toEqual({
         datum: undefined,
@@ -436,6 +452,7 @@ describe('Non-Stacked Series Utils', () => {
         x: 1,
         y0: 0,
         y1: 21,
+        mark: null,
       });
       expect(formattedData[1].data[1]).toEqual({
         datum: undefined,
@@ -444,6 +461,7 @@ describe('Non-Stacked Series Utils', () => {
         x: 3,
         y0: 0,
         y1: 23,
+        mark: null,
       });
     });
   });

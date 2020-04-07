@@ -79,6 +79,7 @@ describe('Rendering bars', () => {
           accessor: 'y1',
           x: 0,
           y: 10,
+          mark: null,
         },
         seriesIdentifier: {
           specId: SPEC_ID,
@@ -117,6 +118,7 @@ describe('Rendering bars', () => {
           accessor: 'y1',
           x: 1,
           y: 5,
+          mark: null,
         },
         seriesIdentifier: {
           specId: SPEC_ID,
@@ -267,6 +269,7 @@ describe('Rendering bars', () => {
           accessor: 'y1',
           x: 0,
           y: 10,
+          mark: null,
         },
         seriesIdentifier: {
           specId: spec1Id,
@@ -305,6 +308,7 @@ describe('Rendering bars', () => {
           accessor: 'y1',
           x: 1,
           y: 5,
+          mark: null,
         },
         seriesIdentifier: {
           specId: spec1Id,
@@ -354,6 +358,7 @@ describe('Rendering bars', () => {
           accessor: 'y1',
           x: 0,
           y: 20,
+          mark: null,
         },
         seriesIdentifier: {
           specId: spec2Id,
@@ -392,6 +397,7 @@ describe('Rendering bars', () => {
           accessor: 'y1',
           x: 1,
           y: 10,
+          mark: null,
         },
         seriesIdentifier: {
           specId: spec2Id,
@@ -467,6 +473,7 @@ describe('Rendering bars', () => {
           accessor: 'y1',
           x: 0,
           y: 10,
+          mark: null,
         },
         seriesIdentifier: {
           specId: SPEC_ID,
@@ -505,6 +512,7 @@ describe('Rendering bars', () => {
           accessor: 'y1',
           x: 1,
           y: 5,
+          mark: null,
         },
         seriesIdentifier: {
           specId: SPEC_ID,
@@ -644,6 +652,7 @@ describe('Rendering bars', () => {
           accessor: 'y1',
           x: 0,
           y: 10,
+          mark: null,
         },
         seriesIdentifier: {
           specId: spec1Id,
@@ -682,6 +691,7 @@ describe('Rendering bars', () => {
           accessor: 'y1',
           x: 1,
           y: 5,
+          mark: null,
         },
         seriesIdentifier: {
           specId: spec1Id,
@@ -731,6 +741,7 @@ describe('Rendering bars', () => {
           accessor: 'y1',
           x: 0,
           y: 20,
+          mark: null,
         },
         seriesIdentifier: {
           specId: spec2Id,
@@ -769,6 +780,7 @@ describe('Rendering bars', () => {
           accessor: 'y1',
           x: 1,
           y: 10,
+          mark: null,
         },
         seriesIdentifier: {
           specId: spec2Id,
@@ -863,6 +875,7 @@ describe('Rendering bars', () => {
           accessor: 'y1',
           x: 1546300800000,
           y: 10,
+          mark: null,
         },
         seriesIdentifier: {
           specId: spec1Id,
@@ -901,6 +914,7 @@ describe('Rendering bars', () => {
           accessor: 'y1',
           x: 1546387200000,
           y: 5,
+          mark: null,
         },
         seriesIdentifier: {
           specId: spec1Id,
@@ -950,6 +964,7 @@ describe('Rendering bars', () => {
           accessor: 'y1',
           x: 1546300800000,
           y: 20,
+          mark: null,
         },
         seriesIdentifier: {
           specId: spec2Id,
@@ -988,6 +1003,7 @@ describe('Rendering bars', () => {
           accessor: 'y1',
           x: 1546387200000,
           y: 10,
+          mark: null,
         },
         seriesIdentifier: {
           specId: spec2Id,

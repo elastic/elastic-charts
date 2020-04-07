@@ -151,7 +151,7 @@ describe('Rendering points - line', () => {
       expect(points[0]).toEqual(({
         x: 0,
         y: 0,
-        radius: 10,
+        radius: 0,
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
@@ -165,6 +165,7 @@ describe('Rendering points - line', () => {
           accessor: 'y1',
           x: 0,
           y: 10,
+          mark: null,
         },
         transform: {
           x: 25,
@@ -174,7 +175,7 @@ describe('Rendering points - line', () => {
       expect(points[1]).toEqual(({
         x: 50,
         y: 50,
-        radius: 10,
+        radius: 0,
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
@@ -187,6 +188,7 @@ describe('Rendering points - line', () => {
           accessor: 'y1',
           x: 1,
           y: 5,
+          mark: null,
         },
         transform: {
           x: 25,
@@ -302,7 +304,7 @@ describe('Rendering points - line', () => {
       expect(points[0]).toEqual(({
         x: 0,
         y: 50,
-        radius: 10,
+        radius: 0,
         color: 'red',
         seriesIdentifier: {
           specId: spec1Id,
@@ -315,6 +317,7 @@ describe('Rendering points - line', () => {
           accessor: 'y1',
           x: 0,
           y: 10,
+          mark: null,
         },
         transform: {
           x: 25,
@@ -325,7 +328,7 @@ describe('Rendering points - line', () => {
         x: 50,
         y: 75,
         color: 'red',
-        radius: 10,
+        radius: 0,
         seriesIdentifier: {
           specId: spec1Id,
           key: 'spec{point1}yAccessor{1}splitAccessors{}',
@@ -337,6 +340,7 @@ describe('Rendering points - line', () => {
           accessor: 'y1',
           x: 1,
           y: 5,
+          mark: null,
         },
         transform: {
           x: 25,
@@ -355,7 +359,7 @@ describe('Rendering points - line', () => {
         x: 0,
         y: 0,
         color: 'blue',
-        radius: 10,
+        radius: 0,
         seriesIdentifier: {
           specId: spec2Id,
           key: 'spec{point2}yAccessor{1}splitAccessors{}',
@@ -367,6 +371,7 @@ describe('Rendering points - line', () => {
           accessor: 'y1',
           x: 0,
           y: 20,
+          mark: null,
         },
         transform: {
           x: 25,
@@ -377,7 +382,7 @@ describe('Rendering points - line', () => {
         x: 50,
         y: 50,
         color: 'blue',
-        radius: 10,
+        radius: 0,
         seriesIdentifier: {
           specId: spec2Id,
           key: 'spec{point2}yAccessor{1}splitAccessors{}',
@@ -389,6 +394,7 @@ describe('Rendering points - line', () => {
           accessor: 'y1',
           x: 1,
           y: 10,
+          mark: null,
         },
         transform: {
           x: 25,
@@ -461,7 +467,7 @@ describe('Rendering points - line', () => {
         x: 0,
         y: 0,
         color: 'red',
-        radius: 10,
+        radius: 0,
         seriesIdentifier: {
           specId: SPEC_ID,
           key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
@@ -473,6 +479,7 @@ describe('Rendering points - line', () => {
           accessor: 'y1',
           x: 0,
           y: 10,
+          mark: null,
         },
         transform: {
           x: 0,
@@ -483,7 +490,7 @@ describe('Rendering points - line', () => {
         x: 100,
         y: 50,
         color: 'red',
-        radius: 10,
+        radius: 0,
         seriesIdentifier: {
           specId: SPEC_ID,
           key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
@@ -495,6 +502,7 @@ describe('Rendering points - line', () => {
           accessor: 'y1',
           x: 1,
           y: 5,
+          mark: null,
         },
         transform: {
           x: 0,
@@ -609,7 +617,7 @@ describe('Rendering points - line', () => {
       expect(points[0]).toEqual(({
         x: 0,
         y: 50,
-        radius: 10,
+        radius: 0,
         color: 'red',
         seriesIdentifier: {
           specId: spec1Id,
@@ -622,6 +630,7 @@ describe('Rendering points - line', () => {
           accessor: 'y1',
           x: 0,
           y: 10,
+          mark: null,
         },
         transform: {
           x: 0,
@@ -631,7 +640,7 @@ describe('Rendering points - line', () => {
       expect(points[1]).toEqual(({
         x: 100,
         y: 75,
-        radius: 10,
+        radius: 0,
         color: 'red',
         seriesIdentifier: {
           specId: spec1Id,
@@ -644,6 +653,7 @@ describe('Rendering points - line', () => {
           accessor: 'y1',
           x: 1,
           y: 5,
+          mark: null,
         },
         transform: {
           x: 0,
@@ -662,7 +672,7 @@ describe('Rendering points - line', () => {
         x: 0,
         y: 0,
         color: 'blue',
-        radius: 10,
+        radius: 0,
         seriesIdentifier: {
           specId: spec2Id,
           key: 'spec{point2}yAccessor{1}splitAccessors{}',
@@ -674,6 +684,7 @@ describe('Rendering points - line', () => {
           accessor: 'y1',
           x: 0,
           y: 20,
+          mark: null,
         },
         transform: {
           x: 0,
@@ -684,7 +695,7 @@ describe('Rendering points - line', () => {
         x: 100,
         y: 50,
         color: 'blue',
-        radius: 10,
+        radius: 0,
         seriesIdentifier: {
           specId: spec2Id,
           key: 'spec{point2}yAccessor{1}splitAccessors{}',
@@ -696,6 +707,7 @@ describe('Rendering points - line', () => {
           accessor: 'y1',
           x: 1,
           y: 10,
+          mark: null,
         },
         transform: {
           x: 0,
@@ -767,7 +779,7 @@ describe('Rendering points - line', () => {
       expect(points[0]).toEqual(({
         x: 0,
         y: 0,
-        radius: 10,
+        radius: 0,
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
@@ -780,6 +792,7 @@ describe('Rendering points - line', () => {
           accessor: 'y1',
           x: 1546300800000,
           y: 10,
+          mark: null,
         },
         transform: {
           x: 0,
@@ -789,7 +802,7 @@ describe('Rendering points - line', () => {
       expect(points[1]).toEqual(({
         x: 100,
         y: 50,
-        radius: 10,
+        radius: 0,
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
@@ -802,6 +815,7 @@ describe('Rendering points - line', () => {
           accessor: 'y1',
           x: 1546387200000,
           y: 5,
+          mark: null,
         },
         transform: {
           x: 0,
@@ -903,7 +917,7 @@ describe('Rendering points - line', () => {
       expect(points[0]).toEqual(({
         x: 0,
         y: 50,
-        radius: 10,
+        radius: 0,
         color: 'red',
         seriesIdentifier: {
           specId: spec1Id,
@@ -916,6 +930,7 @@ describe('Rendering points - line', () => {
           accessor: 'y1',
           x: 1546300800000,
           y: 10,
+          mark: null,
         },
         transform: {
           x: 0,
@@ -925,7 +940,7 @@ describe('Rendering points - line', () => {
       expect(points[1]).toEqual(({
         x: 100,
         y: 75,
-        radius: 10,
+        radius: 0,
         color: 'red',
         seriesIdentifier: {
           specId: spec1Id,
@@ -938,6 +953,7 @@ describe('Rendering points - line', () => {
           accessor: 'y1',
           x: 1546387200000,
           y: 5,
+          mark: null,
         },
         transform: {
           x: 0,
@@ -955,7 +971,7 @@ describe('Rendering points - line', () => {
       expect(points[0]).toEqual(({
         x: 0,
         y: 0,
-        radius: 10,
+        radius: 0,
         color: 'blue',
         seriesIdentifier: {
           specId: spec2Id,
@@ -968,6 +984,7 @@ describe('Rendering points - line', () => {
           accessor: 'y1',
           x: 1546300800000,
           y: 20,
+          mark: null,
         },
         transform: {
           x: 0,
@@ -977,7 +994,7 @@ describe('Rendering points - line', () => {
       expect(points[1]).toEqual(({
         x: 100,
         y: 50,
-        radius: 10,
+        radius: 0,
         color: 'blue',
         seriesIdentifier: {
           specId: spec2Id,
@@ -990,6 +1007,7 @@ describe('Rendering points - line', () => {
           accessor: 'y1',
           x: 1546387200000,
           y: 10,
+          mark: null,
         },
         transform: {
           x: 0,
@@ -1071,7 +1089,7 @@ describe('Rendering points - line', () => {
       // all the points expect null geometries
       expect(indexedGeometryMap.size).toEqual(8);
       const nullIndexdGeometry = indexedGeometryMap.find(2)!;
-      expect(nullIndexdGeometry).toBeUndefined();
+      expect(nullIndexdGeometry).toEqual([]);
 
       const zeroValueIndexdGeometry = indexedGeometryMap.find(5)!;
       expect(zeroValueIndexdGeometry).toBeDefined();
@@ -1147,7 +1165,7 @@ describe('Rendering points - line', () => {
       expect(points[0]).toEqual(({
         x: 0,
         y: 100,
-        radius: 10,
+        radius: 0,
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
@@ -1160,6 +1178,7 @@ describe('Rendering points - line', () => {
           accessor: 'y1',
           x: 0,
           y: 0,
+          mark: null,
         },
         transform: {
           x: 25,
@@ -1169,7 +1188,7 @@ describe('Rendering points - line', () => {
       expect(points[1]).toEqual(({
         x: 50,
         y: 0,
-        radius: 10,
+        radius: 0,
         color: 'red',
         seriesIdentifier: {
           specId: SPEC_ID,
@@ -1182,6 +1201,7 @@ describe('Rendering points - line', () => {
           accessor: 'y1',
           x: 1,
           y: 1,
+          mark: null,
         },
         transform: {
           x: 25,

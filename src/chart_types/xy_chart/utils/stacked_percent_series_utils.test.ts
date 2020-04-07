@@ -262,6 +262,7 @@ describe('Stacked Series Utils', () => {
         x: 0,
         y1: null,
         y0: 0.25,
+        mark: null,
       });
 
       const data2 = formattedData[2].data[0];
@@ -339,6 +340,7 @@ describe('Stacked Series Utils', () => {
         x: 1,
         y0: null,
         y1: 0.1,
+        mark: null,
       });
       expect(formattedData[0].data[1]).toEqual({
         datum: undefined,
@@ -347,6 +349,7 @@ describe('Stacked Series Utils', () => {
         x: 2,
         y0: null,
         y1: 1,
+        mark: null,
       });
       expect(formattedData[0].data[3]).toEqual({
         datum: undefined,
@@ -355,6 +358,7 @@ describe('Stacked Series Utils', () => {
         x: 4,
         y0: null,
         y1: 1,
+        mark: null,
       });
       expect(formattedData[1].data[0]).toEqual({
         datum: undefined,
@@ -363,6 +367,7 @@ describe('Stacked Series Utils', () => {
         x: 1,
         y0: 0.1,
         y1: 1,
+        mark: null,
       });
       expect(formattedData[1].data[1]).toEqual({
         datum: undefined,
@@ -371,6 +376,7 @@ describe('Stacked Series Utils', () => {
         x: 2,
         y0: 1,
         y1: 1,
+        mark: null,
         filled: {
           x: 2,
           y1: 0,
@@ -383,6 +389,7 @@ describe('Stacked Series Utils', () => {
         x: 3,
         y0: 0,
         y1: 1,
+        mark: null,
       });
     });
   });

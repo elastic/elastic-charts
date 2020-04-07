@@ -308,6 +308,7 @@ describe('Stacked Series Utils', () => {
         x: 0,
         y0: null,
         y1: 10,
+        mark: null,
       });
       expect(formattedData[1].data[0]).toEqual({
         datum: undefined,
@@ -316,6 +317,7 @@ describe('Stacked Series Utils', () => {
         x: 0,
         y0: 10,
         y1: 30,
+        mark: null,
       });
       expect(formattedData[2].data[0]).toEqual({
         datum: undefined,
@@ -324,6 +326,7 @@ describe('Stacked Series Utils', () => {
         x: 0,
         y0: 30,
         y1: 60,
+        mark: null,
       });
     });
     test('format data with nulls', () => {
@@ -335,6 +338,7 @@ describe('Stacked Series Utils', () => {
         x: 0,
         y1: null,
         y0: null,
+        mark: null,
       });
     });
     test('format data without nulls with y0 values', () => {
@@ -352,6 +356,7 @@ describe('Stacked Series Utils', () => {
         x: 0,
         y0: 2,
         y1: 10,
+        mark: null,
       });
       expect(formattedData[1].data[0]).toEqual({
         datum: undefined,
@@ -360,6 +365,7 @@ describe('Stacked Series Utils', () => {
         x: 0,
         y0: 14,
         y1: 30,
+        mark: null,
       });
       expect(formattedData[2].data[0]).toEqual({
         datum: undefined,
@@ -368,6 +374,7 @@ describe('Stacked Series Utils', () => {
         x: 0,
         y0: 36,
         y1: 60,
+        mark: null,
       });
     });
     test('format data with nulls', () => {
@@ -385,6 +392,7 @@ describe('Stacked Series Utils', () => {
         x: 0,
         y0: 2,
         y1: 10,
+        mark: null,
       });
       expect(formattedData[1].data[0]).toEqual({
         datum: undefined,
@@ -393,6 +401,7 @@ describe('Stacked Series Utils', () => {
         x: 0,
         y1: null,
         y0: null,
+        mark: null,
       });
       expect(formattedData[2].data[0]).toEqual({
         datum: undefined,
@@ -401,6 +410,7 @@ describe('Stacked Series Utils', () => {
         x: 0,
         y0: 16,
         y1: 40,
+        mark: null,
       });
     });
     test('format data without nulls on second series', () => {
@@ -422,6 +432,7 @@ describe('Stacked Series Utils', () => {
         x: 1,
         y0: null,
         y1: 1,
+        mark: null,
       });
       expect(formattedData[0].data[1]).toEqual({
         datum: undefined,
@@ -430,6 +441,7 @@ describe('Stacked Series Utils', () => {
         x: 2,
         y0: null,
         y1: 2,
+        mark: null,
       });
       expect(formattedData[0].data[3]).toEqual({
         datum: undefined,
@@ -438,6 +450,7 @@ describe('Stacked Series Utils', () => {
         x: 4,
         y0: null,
         y1: 4,
+        mark: null,
       });
       expect(formattedData[1].data[0]).toEqual({
         datum: undefined,
@@ -446,6 +459,7 @@ describe('Stacked Series Utils', () => {
         x: 1,
         y0: 1,
         y1: 22,
+        mark: null,
       });
       expect(formattedData[1].data[2]).toEqual({
         datum: undefined,
@@ -454,6 +468,7 @@ describe('Stacked Series Utils', () => {
         x: 3,
         y0: 0,
         y1: 23,
+        mark: null,
       });
     });
   });
@@ -472,6 +487,7 @@ describe('Stacked Series Utils', () => {
       x: 1,
       y0: null,
       y1: null,
+      mark: null,
     });
   });
 });
