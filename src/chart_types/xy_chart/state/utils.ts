@@ -601,11 +601,11 @@ function renderGeometries(
         isBandedSpec(spec.y0Accessors),
         xScaleOffset,
         areaSeriesStyle,
-        isStacked,
         {
           enabled: (spec as LineSeriesSpec).markSizeAccessor !== undefined,
           ratio: chartTheme.markSizeRatio,
         },
+        isStacked,
         spec.pointStyleAccessor,
         Boolean(spec.fit && ((spec.fit as FitConfig).type || spec.fit) !== Fit.None),
       );
@@ -722,8 +722,22 @@ export function isAllSeriesDeselected(legendItems: Map<string, LegendItem>): boo
   return true;
 }
 
+/** @internal */
 export function getDistance(a: Point, b: Point) {
   return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
+}
+
+/** @internal */
+export function strigifyValue(value?: { toString(): string } | null): string {
+  if (value === undefined) {
+    return 'undefined';
+  }
+
+  if (value === null) {
+    return 'null';
+  }
+
+  return value.toString();
 }
 
 /**

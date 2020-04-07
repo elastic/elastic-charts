@@ -17,8 +17,11 @@
  * under the License. */
 
 import { scaleBand, scaleQuantize, ScaleQuantize, ScaleBand as D3ScaleBand } from 'd3-scale';
+
 import { clamp } from '../utils/commons';
-import { ScaleType, Scale } from '.';
+import { ScaleType, Scale, ScaleValue } from '.';
+import { strigifyValue } from '../chart_types/xy_chart/state/utils';
+
 /**
  * Categorical scale
  * @internal
@@ -34,7 +37,7 @@ export class ScaleBand implements Scale {
   readonly invertedScale: ScaleQuantize<number>;
   readonly minInterval: number;
   readonly barsPadding: number;
-  private readonly d3Scale: D3ScaleBand<string | number>;
+  private readonly d3Scale: D3ScaleBand<NonNullable<ScaleValue>>;
 
   constructor(
     domain: any[],
@@ -48,7 +51,7 @@ export class ScaleBand implements Scale {
     barsPadding = 0,
   ) {
     this.type = ScaleType.Ordinal;
-    this.d3Scale = scaleBand<string | number>();
+    this.d3Scale = scaleBand<NonNullable<ScaleValue>>();
     this.d3Scale.domain(domain);
     this.d3Scale.range(range);
     const safeBarPadding = clamp(barsPadding, 0, 1);
@@ -63,7 +66,7 @@ export class ScaleBand implements Scale {
       this.bandwidth = overrideBandwidth * (1 - safeBarPadding);
     }
     this.bandwidthPadding = this.bandwidth;
-    // TO FIX: we are assiming that it's ordered
+    // TO FIX: we are assuming that it's ordered
     this.isInverted = this.domain[0] > this.domain[1];
     this.invertedScale = scaleQuantize()
       .domain(range)
@@ -71,24 +74,22 @@ export class ScaleBand implements Scale {
     this.minInterval = 0;
   }
 
-  scale(value: string | number) {
-    const scaleValue = this.d3Scale(value);
+  private getScaledValue = (value?: ScaleValue): number | null => {
+    const scaleValue = this.d3Scale(strigifyValue(value));
 
-    if (typeof scaleValue !== 'number') {
-      throw new Error(`The value (${value}) was not scalable`);
+    if (scaleValue === undefined || isNaN(scaleValue)) {
+      return null;
     }
 
     return scaleValue;
+  };
+
+  scale(value?: ScaleValue) {
+    return this.getScaledValue(value);
   }
 
-  pureScale(value: string | number) {
-    const scaleValue = this.d3Scale(value);
-
-    if (typeof scaleValue !== 'number') {
-      throw new Error(`The value (${value}) was not scalable`);
-    }
-
-    return scaleValue;
+  pureScale(value?: ScaleValue) {
+    return this.getScaledValue(value);
   }
 
   ticks() {

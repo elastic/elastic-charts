@@ -108,7 +108,13 @@ function getTooltipAndHighlightFromValue(
   let x = orientedProjectedPointerPosition.x;
   let y = orientedProjectedPointerPosition.y;
   if (isValidPointerOverEvent(scales.xScale, externalPointerEvent)) {
-    x = scales.xScale.pureScale(externalPointerEvent.value);
+    const scaledX = scales.xScale.pureScale(externalPointerEvent.value);
+
+    if (scaledX === null) {
+      return EMPTY_VALUES;
+    }
+
+    x = scaledX;
     y = 0;
   } else if (projectedPointerPosition.x === -1 || projectedPointerPosition.y === -1) {
     return EMPTY_VALUES;

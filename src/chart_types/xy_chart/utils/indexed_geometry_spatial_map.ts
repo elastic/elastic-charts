@@ -35,6 +35,10 @@ export class IndexedGeometrySpatialMap {
     this.set(points);
   }
 
+  get size() {
+    return this.points.length;
+  }
+
   isSpatial() {
     return this.pointGeometries.length > 0;
   }

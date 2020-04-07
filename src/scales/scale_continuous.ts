@@ -29,7 +29,7 @@ import {
 } from 'd3-scale';
 
 import { clamp, mergePartial } from '../utils/commons';
-import { ScaleContinuousType, ScaleType, Scale } from '.';
+import { ScaleContinuousType, ScaleType, Scale, ScaleValue } from '.';
 import { getMomentWithTz } from '../utils/data/date_time';
 
 /**
@@ -236,6 +236,17 @@ export class ScaleContinuous implements Scale {
       }
     }
   }
+
+  private getScaledValue(value?: ScaleValue): number | null {
+    if (typeof value !== 'number' || isNaN(value)) {
+      return null;
+    }
+
+    const scaledValue = this.d3Scale(value);
+
+    return isNaN(scaledValue) ? null : scaledValue;
+  }
+
   getTicks(ticks: number, integersOnly: boolean) {
     return integersOnly
       ? (this.d3Scale as D3ScaleNonTime)
@@ -244,18 +255,29 @@ export class ScaleContinuous implements Scale {
           .map((item: number) => parseInt(item.toFixed(0)))
       : (this.d3Scale as D3ScaleNonTime).ticks(ticks);
   }
-  scale(value: any) {
-    return this.d3Scale(value) + (this.bandwidthPadding / 2) * this.totalBarsInCluster;
+
+  scale(value?: ScaleValue) {
+    const scaledValue = this.getScaledValue(value);
+
+    return scaledValue === null ? null : scaledValue + (this.bandwidthPadding / 2) * this.totalBarsInCluster;
   }
-  pureScale(value: any) {
+
+  pureScale(value?: ScaleValue) {
     if (this.bandwidth === 0) {
-      return this.d3Scale(value);
+      return this.getScaledValue(value);
     }
-    return this.d3Scale(value + this.minInterval / 2);
+
+    if (typeof value !== 'number' || isNaN(value)) {
+      return null;
+    }
+
+    return this.getScaledValue(value + this.minInterval / 2);
   }
+
   ticks() {
     return this.tickValues;
   }
+
   invert(value: number): number {
     let invertedValue = this.d3Scale.invert(value);
     if (this.type === ScaleType.Time) {
@@ -264,6 +286,7 @@ export class ScaleContinuous implements Scale {
 
     return invertedValue as number;
   }
+
   invertWithStep(
     value: number,
     data: number[],
@@ -312,6 +335,7 @@ export class ScaleContinuous implements Scale {
       withinBandwidth: false,
     };
   }
+
   isSingleValue() {
     if (this.isSingleValueHistogram) {
       return true;
@@ -324,6 +348,7 @@ export class ScaleContinuous implements Scale {
     const max = this.domain[this.domain.length - 1];
     return max === min;
   }
+
   isValueInDomain(value: number) {
     return value >= this.domain[0] && value <= this.domain[1];
   }

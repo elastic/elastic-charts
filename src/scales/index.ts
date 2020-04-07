@@ -18,6 +18,8 @@
 
 import { $Values } from 'utility-types';
 
+export type ScaleValue = string | number | null;
+
 /**
  * A `Scale` interface. A scale can map an input value within a specified domain
  * to an output value from a specified range.
@@ -28,8 +30,8 @@ export interface Scale {
   domain: any[];
   range: number[];
   ticks: () => any[];
-  scale: (value: string | number) => number;
-  pureScale: (value: any) => number;
+  scale: (value?: ScaleValue) => number | null;
+  pureScale: (value?: ScaleValue) => number | null;
   invert: (value: number) => any;
   invertWithStep: (
     value: number,

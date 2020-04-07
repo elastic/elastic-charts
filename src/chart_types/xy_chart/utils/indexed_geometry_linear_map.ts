@@ -21,6 +21,10 @@ import { IndexedGeometry } from '../../../utils/geometry';
 export class IndexedGeometryLinearMap {
   private map = new Map<string | number, IndexedGeometry[]>();
 
+  get size() {
+    return this.map.size;
+  }
+
   set(geometry: IndexedGeometry) {
     const { x } = geometry.value;
     const existing = this.map.get(x);

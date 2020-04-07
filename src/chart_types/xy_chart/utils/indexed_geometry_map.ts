@@ -47,6 +47,10 @@ export class IndexedGeometryMap {
     return [...this.linearMap.keys(), ...this.spatialMap.keys()];
   }
 
+  get size(): number {
+    return this.linearMap.size + this.spatialMap.size;
+  }
+
   set(geometry: IndexedGeometry, type: GeometryType = GeometryType.linear) {
     if (type === GeometryType.spatial && isPointGeometry(geometry)) {
       // TODO: Add dev error here when attempting spatial upset with non-point

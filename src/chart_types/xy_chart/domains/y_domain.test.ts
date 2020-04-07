@@ -41,10 +41,10 @@ describe('Y Domain', () => {
         seriesKeys: [''],
         key: '',
         data: [
-          { x: 1, y1: 2 },
-          { x: 2, y1: 2 },
-          { x: 3, y1: 2 },
-          { x: 4, y1: 5 },
+          { x: 1, y1: 2, mark: null },
+          { x: 2, y1: 2, mark: null },
+          { x: 3, y1: 2, mark: null },
+          { x: 4, y1: 5, mark: null },
         ],
       },
       {
@@ -54,8 +54,8 @@ describe('Y Domain', () => {
         seriesKeys: [''],
         key: '',
         data: [
-          { x: 1, y1: 2 },
-          { x: 4, y1: 7 },
+          { x: 1, y1: 2, mark: null },
+          { x: 4, y1: 7, mark: null },
         ],
       },
     ];
@@ -94,10 +94,10 @@ describe('Y Domain', () => {
         seriesKeys: [''],
         key: '',
         data: [
-          { x: 1, y1: 2 },
-          { x: 2, y1: 2 },
-          { x: 3, y1: 2 },
-          { x: 4, y1: 5 },
+          { x: 1, y1: 2, mark: null },
+          { x: 2, y1: 2, mark: null },
+          { x: 3, y1: 2, mark: null },
+          { x: 4, y1: 5, mark: null },
         ],
       },
       {
@@ -107,8 +107,8 @@ describe('Y Domain', () => {
         seriesKeys: [''],
         key: '',
         data: [
-          { x: 1, y1: 2 },
-          { x: 4, y1: 7 },
+          { x: 1, y1: 2, mark: null },
+          { x: 4, y1: 7, mark: null },
         ],
       },
     ];
@@ -120,10 +120,10 @@ describe('Y Domain', () => {
         seriesKeys: [''],
         key: '',
         data: [
-          { x: 1, y1: 10 },
-          { x: 2, y1: 10 },
-          { x: 3, y1: 2 },
-          { x: 4, y1: 5 },
+          { x: 1, y1: 10, mark: null },
+          { x: 2, y1: 10, mark: null },
+          { x: 3, y1: 2, mark: null },
+          { x: 4, y1: 5, mark: null },
         ],
       },
     ];
@@ -178,10 +178,10 @@ describe('Y Domain', () => {
         seriesKeys: [''],
         key: '',
         data: [
-          { x: 1, y1: 2 },
-          { x: 2, y1: 2 },
-          { x: 3, y1: 2 },
-          { x: 4, y1: 5 },
+          { x: 1, y1: 2, mark: null },
+          { x: 2, y1: 2, mark: null },
+          { x: 3, y1: 2, mark: null },
+          { x: 4, y1: 5, mark: null },
         ],
       },
       {
@@ -191,8 +191,8 @@ describe('Y Domain', () => {
         seriesKeys: [''],
         key: '',
         data: [
-          { x: 1, y1: 2 },
-          { x: 4, y1: 7 },
+          { x: 1, y1: 2, mark: null },
+          { x: 4, y1: 7, mark: null },
         ],
       },
     ];
@@ -204,10 +204,10 @@ describe('Y Domain', () => {
         seriesKeys: [''],
         key: '',
         data: [
-          { x: 1, y1: 10 },
-          { x: 2, y1: 10 },
-          { x: 3, y1: 2 },
-          { x: 4, y1: 5 },
+          { x: 1, y1: 10, mark: null },
+          { x: 2, y1: 10, mark: null },
+          { x: 3, y1: 2, mark: null },
+          { x: 4, y1: 5, mark: null },
         ],
       },
     ];
@@ -255,10 +255,10 @@ describe('Y Domain', () => {
         seriesKeys: [''],
         key: '',
         data: [
-          { x: 1, y1: 2 },
-          { x: 2, y1: 2 },
-          { x: 3, y1: 2 },
-          { x: 4, y1: 5 },
+          { x: 1, y1: 2, mark: null },
+          { x: 2, y1: 2, mark: null },
+          { x: 3, y1: 2, mark: null },
+          { x: 4, y1: 5, mark: null },
         ],
       },
       {
@@ -268,8 +268,8 @@ describe('Y Domain', () => {
         seriesKeys: [''],
         key: '',
         data: [
-          { x: 1, y1: 2 },
-          { x: 4, y1: 7 },
+          { x: 1, y1: 2, mark: null },
+          { x: 4, y1: 7, mark: null },
         ],
       },
     ];
@@ -281,10 +281,10 @@ describe('Y Domain', () => {
         seriesKeys: [''],
         key: '',
         data: [
-          { x: 1, y1: 10 },
-          { x: 2, y1: 10 },
-          { x: 3, y1: 2 },
-          { x: 4, y1: 5 },
+          { x: 1, y1: 10, mark: null },
+          { x: 2, y1: 10, mark: null },
+          { x: 3, y1: 2, mark: null },
+          { x: 4, y1: 5, mark: null },
         ],
       },
     ];
@@ -331,7 +331,7 @@ describe('Y Domain', () => {
         splitAccessors: new Map(),
         seriesKeys: [''],
         key: '',
-        data: new Array(maxValues).fill(0).map((d, i) => ({ x: i, y1: i })),
+        data: new Array(maxValues).fill(0).map((d, i) => ({ x: i, y1: i, mark: null })),
       },
       {
         specId: 'a',
@@ -339,7 +339,7 @@ describe('Y Domain', () => {
         splitAccessors: new Map(),
         seriesKeys: [''],
         key: '',
-        data: new Array(maxValues).fill(0).map((d, i) => ({ x: i, y1: i })),
+        data: new Array(maxValues).fill(0).map((d, i) => ({ x: i, y1: i, mark: null })),
       },
     ];
     const dataSeries2: RawDataSeries[] = [
@@ -349,7 +349,7 @@ describe('Y Domain', () => {
         splitAccessors: new Map(),
         seriesKeys: [''],
         key: '',
-        data: new Array(maxValues).fill(0).map((d, i) => ({ x: i, y1: i })),
+        data: new Array(maxValues).fill(0).map((d, i) => ({ x: i, y1: i, mark: null })),
       },
     ];
     const specDataSeries = new Map();
@@ -559,10 +559,10 @@ describe('Y Domain', () => {
         seriesKeys: [''],
         key: '',
         data: [
-          { x: 1, y1: 2 },
-          { x: 2, y1: 2 },
-          { x: 3, y1: 2 },
-          { x: 4, y1: 5 },
+          { x: 1, y1: 2, mark: null },
+          { x: 2, y1: 2, mark: null },
+          { x: 3, y1: 2, mark: null },
+          { x: 4, y1: 5, mark: null },
         ],
       },
       {
@@ -572,8 +572,8 @@ describe('Y Domain', () => {
         seriesKeys: [''],
         key: '',
         data: [
-          { x: 1, y1: 2 },
-          { x: 4, y1: 7 },
+          { x: 1, y1: 2, mark: null },
+          { x: 4, y1: 7, mark: null },
         ],
       },
     ];
@@ -605,10 +605,10 @@ describe('Y Domain', () => {
         seriesKeys: [''],
         key: '',
         data: [
-          { x: 1, y1: 2 },
-          { x: 2, y1: 2 },
-          { x: 3, y1: 2 },
-          { x: 4, y1: 5 },
+          { x: 1, y1: 2, mark: null },
+          { x: 2, y1: 2, mark: null },
+          { x: 3, y1: 2, mark: null },
+          { x: 4, y1: 5, mark: null },
         ],
       },
       {
@@ -618,8 +618,8 @@ describe('Y Domain', () => {
         seriesKeys: [''],
         key: '',
         data: [
-          { x: 1, y1: 2 },
-          { x: 4, y1: 7 },
+          { x: 1, y1: 2, mark: null },
+          { x: 4, y1: 7, mark: null },
         ],
       },
     ];
@@ -663,10 +663,10 @@ describe('Y Domain', () => {
         seriesKeys: [''],
         key: '',
         data: [
-          { x: 1, y1: 2 },
-          { x: 2, y1: 2 },
-          { x: 3, y1: 2 },
-          { x: 4, y1: 5 },
+          { x: 1, y1: 2, mark: null },
+          { x: 2, y1: 2, mark: null },
+          { x: 3, y1: 2, mark: null },
+          { x: 4, y1: 5, mark: null },
         ],
       },
       {
@@ -676,8 +676,8 @@ describe('Y Domain', () => {
         seriesKeys: [''],
         key: '',
         data: [
-          { x: 1, y1: 2 },
-          { x: 4, y1: 7 },
+          { x: 1, y1: 2, mark: null },
+          { x: 4, y1: 7, mark: null },
         ],
       },
     ];
@@ -721,10 +721,10 @@ describe('Y Domain', () => {
         seriesKeys: [''],
         key: '',
         data: [
-          { x: 1, y1: 2 },
-          { x: 2, y1: 2 },
-          { x: 3, y1: 2 },
-          { x: 4, y1: 5 },
+          { x: 1, y1: 2, mark: null },
+          { x: 2, y1: 2, mark: null },
+          { x: 3, y1: 2, mark: null },
+          { x: 4, y1: 5, mark: null },
         ],
       },
       {
@@ -734,8 +734,8 @@ describe('Y Domain', () => {
         seriesKeys: [''],
         key: '',
         data: [
-          { x: 1, y1: 2 },
-          { x: 4, y1: 7 },
+          { x: 1, y1: 2, mark: null },
+          { x: 4, y1: 7, mark: null },
         ],
       },
     ];
@@ -775,10 +775,10 @@ describe('Y Domain', () => {
         seriesKeys: [''],
         key: '',
         data: [
-          { x: 1, y1: 2 },
-          { x: 2, y1: 2 },
-          { x: 3, y1: 2 },
-          { x: 4, y1: 5 },
+          { x: 1, y1: 2, mark: null },
+          { x: 2, y1: 2, mark: null },
+          { x: 3, y1: 2, mark: null },
+          { x: 4, y1: 5, mark: null },
         ],
       },
       {
@@ -788,8 +788,8 @@ describe('Y Domain', () => {
         seriesKeys: [''],
         key: '',
         data: [
-          { x: 1, y1: 2 },
-          { x: 4, y1: 7 },
+          { x: 1, y1: 2, mark: null },
+          { x: 4, y1: 7, mark: null },
         ],
       },
     ];
@@ -833,10 +833,10 @@ describe('Y Domain', () => {
         seriesKeys: [''],
         key: '',
         data: [
-          { x: 1, y1: 2 },
-          { x: 2, y1: 2 },
-          { x: 3, y1: 2 },
-          { x: 4, y1: 5 },
+          { x: 1, y1: 2, mark: null },
+          { x: 2, y1: 2, mark: null },
+          { x: 3, y1: 2, mark: null },
+          { x: 4, y1: 5, mark: null },
         ],
       },
       {
@@ -846,8 +846,8 @@ describe('Y Domain', () => {
         seriesKeys: [''],
         key: '',
         data: [
-          { x: 1, y1: 2 },
-          { x: 4, y1: 7 },
+          { x: 1, y1: 2, mark: null },
+          { x: 4, y1: 7, mark: null },
         ],
       },
     ];
@@ -885,10 +885,10 @@ describe('Y Domain', () => {
         seriesKeys: [''],
         key: '',
         data: [
-          { x: 1, y1: 2 },
-          { x: 2, y1: 2 },
-          { x: 3, y1: 2 },
-          { x: 4, y1: 5 },
+          { x: 1, y1: 2, mark: null },
+          { x: 2, y1: 2, mark: null },
+          { x: 3, y1: 2, mark: null },
+          { x: 4, y1: 5, mark: null },
         ],
       },
       {
@@ -898,8 +898,8 @@ describe('Y Domain', () => {
         seriesKeys: [''],
         key: '',
         data: [
-          { x: 1, y1: 2 },
-          { x: 4, y1: 7 },
+          { x: 1, y1: 2, mark: null },
+          { x: 4, y1: 7, mark: null },
         ],
       },
     ];
@@ -911,10 +911,10 @@ describe('Y Domain', () => {
         seriesKeys: [''],
         key: '',
         data: [
-          { x: 1, y1: 10 },
-          { x: 2, y1: 10 },
-          { x: 3, y1: 2 },
-          { x: 4, y1: 5 },
+          { x: 1, y1: 10, mark: null },
+          { x: 2, y1: 10, mark: null },
+          { x: 3, y1: 2, mark: null },
+          { x: 4, y1: 5, mark: null },
         ],
       },
     ];
@@ -964,10 +964,10 @@ describe('Y Domain', () => {
         seriesKeys: [''],
         key: '',
         data: [
-          { x: 1, y1: 2 },
-          { x: 2, y1: 2 },
-          { x: 3, y1: 2 },
-          { x: 4, y1: 5 },
+          { x: 1, y1: 2, mark: null },
+          { x: 2, y1: 2, mark: null },
+          { x: 3, y1: 2, mark: null },
+          { x: 4, y1: 5, mark: null },
         ],
       },
       {
@@ -977,8 +977,8 @@ describe('Y Domain', () => {
         seriesKeys: [''],
         key: '',
         data: [
-          { x: 1, y1: 2 },
-          { x: 4, y1: 7 },
+          { x: 1, y1: 2, mark: null },
+          { x: 4, y1: 7, mark: null },
         ],
       },
     ];
