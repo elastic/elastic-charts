@@ -46,13 +46,14 @@ export const getRandomNumberGenerator = (seed = process.env.RNG_SEED) => {
    * @param  {} max=1
    * @param  {} fractionDigits=0
    */
-  return function randomNumberGenerator(min = 0, max = 1, fractionDigits = 0) {
-    const num = rng() * (max - min) + min;
+  return function randomNumberGenerator(min = 0, max = 1, fractionDigits = 0, inclusive = true) {
+    const precision = Math.pow(10, Math.max(fractionDigits, 0));
+    const scaledMax = max * precision;
+    const scaledMin = min * precision;
+    const offset = inclusive ? 1 : 0;
+    const num = Math.floor(rng() * (scaledMax - scaledMin + offset)) + scaledMin;
 
-    if (fractionDigits === undefined) return num;
-
-    const factor = 10 ** fractionDigits;
-    return Math.round((num + Number.EPSILON) * factor) / factor;
+    return num / precision;
   };
 };
 
