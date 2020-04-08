@@ -16,11 +16,10 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { Delaunay } from 'd3-delaunay';
-
 import { IndexedGeometry, PointGeometry } from '../../../utils/geometry';
 import { Point } from '../../../utils/point';
 import { getDistance } from '../state/utils';
+import { Delaunay } from '../../../utils/d3-delaunay';
 
 export type IndexedGeometrySpatialMapPoint = [number, number];
 

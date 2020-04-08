@@ -16,13 +16,13 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { Delaunay } from 'd3-delaunay';
 import { $Values } from 'utility-types';
 
 import { IndexedGeometry, isPointGeometry } from '../../../utils/geometry';
 import { Point } from '../../../utils/point';
 import { IndexedGeometryLinearMap } from './indexed_geometry_linear_map';
 import { IndexedGeometrySpatialMap } from './indexed_geometry_spatial_map';
+import { Delaunay } from '../../../utils/d3-delaunay';
 
 export const GeometryType = Object.freeze({
   linear: 'linear' as 'linear',
