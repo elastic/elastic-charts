@@ -152,8 +152,10 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
   }
 
   render() {
-    const { renderAsOverlay } = this.props;
-
+    const { geometries, renderAsOverlay } = this.props;
+    if (geometries.length === 0) {
+      return null;
+    }
     return (
       <svg className="echHighlighter" width="100%" height="100%">
         {renderAsOverlay ? this.renderAsOverlay() : this.renderAsMask()}
