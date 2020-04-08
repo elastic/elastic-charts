@@ -102,6 +102,8 @@ export function getBarStyleOverrides(
   });
 }
 
+type GetRadiusFnReturn = (mark: number | null, defaultRadius: number) => number;
+
 /**
  * Get radius function form ratio and min/max mark sixe
  *
@@ -111,7 +113,7 @@ export function getBarStyleOverrides(
  * @param  {number} lineWidth
  * @param  {number=50} markSizeRatio - 1 to 100
  */
-function getRadiusFn(data: DataSeriesDatum[], lineWidth: number, markSizeRatio: number = 50) {
+function getRadiusFn(data: DataSeriesDatum[], lineWidth: number, markSizeRatio: number = 50): GetRadiusFnReturn {
   if (data.length === 0) {
     return () => 0;
   }
@@ -126,7 +128,7 @@ function getRadiusFn(data: DataSeriesDatum[], lineWidth: number, markSizeRatio: 
     { min: Infinity, max: -Infinity },
   );
   const radiusStep = (max - min || max * 100) / Math.pow(markSizeRatio, 2);
-  return function getRadius(mark: number | null, defaultRadius = 0): number {
+  return function getRadius(mark, defaultRadius = 0): number {
     if (mark === null) {
       return defaultRadius;
     }
