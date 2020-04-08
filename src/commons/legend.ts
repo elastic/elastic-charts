@@ -26,7 +26,6 @@ export type LegendItemChildId = string;
 export type LegendItem = {
   seriesIdentifier: SeriesIdentifier;
   childId?: LegendItemChildId;
-  childs?: LegendItem[];
   depth?: number;
   color: Color;
   label: string;
