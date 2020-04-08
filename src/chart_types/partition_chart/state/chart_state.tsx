@@ -28,7 +28,7 @@ import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { computeLegendSelector } from './selectors/compute_legend';
 import { getLegendItemsLabels } from './selectors/get_legend_items_labels';
-import { HighlighterFromHover, HighlighterFromLegend } from '../renderer/canvas/highlighter';
+import { HighlighterFromHover, HighlighterFromLegend } from '../renderer/dom/highlighter';
 
 const EMPTY_MAP = new Map();
 
