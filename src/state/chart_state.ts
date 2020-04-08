@@ -15,6 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License. */
+
 import React from 'react';
 import { SPEC_PARSED, SPEC_UNMOUNTED, UPSERT_SPEC, REMOVE_SPEC, SPEC_PARSING } from './actions/specs';
 import { SET_PERSISTED_COLOR, SET_TEMPORARY_COLOR, CLEAR_TEMPORARY_COLORS } from './actions/colors';
@@ -41,59 +42,60 @@ import { LegendItemLabel } from './selectors/get_legend_items_labels';
 export type BackwardRef = () => React.RefObject<HTMLDivElement>;
 
 /**
- * A set of chart-type-dependant functions that required by all char types
+ * A set of chart-type-dependant functions that required by all chart type
  * @internal
  */
 export interface InternalChartState {
   /**
-   * the chart type
+   * The chart type
    */
   chartType: ChartTypes;
   /**
-   * returns a JSX element with the chart rendered (lenged excluded)
+   * Returns a JSX element with the chart rendered (lenged excluded)
    * @param containerRef
    * @param forwardStageRef
    */
   chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>): JSX.Element | null;
   /**
-   * true if the brush is available for this chart type
+   * `true` if the brush is available for this chart type
    * @param globalState
    */
   isBrushAvailable(globalState: GlobalChartState): boolean;
   /**
-   * true if the brush is available for this chart type
+   * `true` if the brush is available for this chart type
    * @param globalState
    */
   isBrushing(globalState: GlobalChartState): boolean;
   /**
-   * true if the chart is empty (no data displayed)
+   * `true` if the chart is empty (no data displayed)
    * @param globalState
    */
   isChartEmpty(globalState: GlobalChartState): boolean;
 
   /**
-   * return the list of legend items
+   * Returns the list of legend items labels. Mainly used to compute the legend size
+   * based on labels and their hierarchy depth.
    * @param globalState
    */
   getLegendItemsLabels(globalState: GlobalChartState): LegendItemLabel[];
 
   /**
-   * return the list of legend items
+   * Returns the list of legend items.
    * @param globalState
    */
   getLegendItems(globalState: GlobalChartState): LegendItem[];
   /**
-   * return the list of values for each legend item
+   * Returns the list of extra values for each legend item
    * @param globalState
    */
   getLegendExtraValues(globalState: GlobalChartState): Map<SeriesKey, LegendItemExtraValues>;
   /**
-   * return the CSS pointer cursor depending on the internal chart state
+   * Returns the CSS pointer cursor depending on the internal chart state
    * @param globalState
    */
   getPointerCursor(globalState: GlobalChartState): string;
   /**
-   * true if the tooltip is visible, false otherwise
+   * `true` if the tooltip is visible, `false` otherwise
    * @param globalState
    */
   isTooltipVisible(globalState: GlobalChartState): boolean;
@@ -109,6 +111,10 @@ export interface InternalChartState {
    */
   getTooltipAnchor(globalState: GlobalChartState): TooltipAnchorPosition | null;
 
+  /**
+   * Called on every state change to activate any event callback
+   * @param globalState
+   */
   eventCallbacks(globalState: GlobalChartState): void;
 }
 
