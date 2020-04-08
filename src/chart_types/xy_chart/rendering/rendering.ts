@@ -102,7 +102,7 @@ export function getBarStyleOverrides(
   });
 }
 
-type GetRadiusFnReturn = (mark: number | null, defaultRadius: number) => number;
+type GetRadiusFnReturn = (mark: number | null, defaultRadius?: number) => number;
 
 /**
  * Get radius function form ratio and min/max mark sixe
