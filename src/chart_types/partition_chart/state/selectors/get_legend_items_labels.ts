@@ -31,10 +31,7 @@ export const getLegendItemsLabels = createCachedSelector(
     if (!pieSpec) {
       return [];
     }
-    const { layers } = pieSpec;
-
-    const values = flatSlicesNames(layers, 0, tree);
-    return values;
+    return flatSlicesNames(pieSpec.layers, 0, tree);
   },
 )(getChartIdSelector);
 
@@ -51,7 +48,8 @@ function flatSlicesNames(
     const branch = tree[i];
     const arrayNode = branch[1];
     const key = branch[0];
-    //format
+
+    // format the key with the layer formatter
     const layer = layers[depth - 1];
     const formatter = layer?.nodeLabel;
     let formattedValue = '';
@@ -59,6 +57,7 @@ function flatSlicesNames(
       formattedValue = formatter ? formatter(key) : `${key}`;
     }
 
+    // save only the max depth, so we can compute the the max extension of the legend
     keys.set(formattedValue, Math.max(depth, keys.get(formattedValue) ?? 0));
 
     const children = arrayNode[CHILDREN_KEY];

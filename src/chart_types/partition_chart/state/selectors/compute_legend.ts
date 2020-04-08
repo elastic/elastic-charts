@@ -53,7 +53,6 @@ export const computeLegendSelector = createCachedSelector(
           return false;
         }
         excluded.add(key);
-        return true;
       }
       return true;
     });
