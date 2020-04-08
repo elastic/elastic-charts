@@ -27,10 +27,13 @@ import { PointObject } from '../../layout/types/geometry_types';
 import { getHighlightedSectorsSelector } from '../../state/selectors/get_highlighted_shapes';
 import { getPickedShapes } from '../../state/selectors/picked_shapes';
 import { PartitionLayout } from '../../layout/types/config_types';
+import { Dimensions } from '../../../../utils/dimensions';
+import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 
 interface HighlighterProps {
   chartId: string;
   initialized: boolean;
+  canvasDimension: Dimensions;
   partitionLayout: PartitionLayout;
   geometries: QuadViewModel[];
   diskCenter: PointObject;
@@ -117,27 +120,38 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
   static displayName = 'Highlighter';
 
   renderAsMask() {
-    const { geometries, diskCenter, outerRadius, partitionLayout, chartId } = this.props;
+    const {
+      geometries,
+      diskCenter,
+      outerRadius,
+      partitionLayout,
+      chartId,
+      canvasDimension: { width, height },
+    } = this.props;
     const maskId = `echHighlighterMask__${chartId}`;
     return (
       <>
         <defs>
-          <mask id="echHighlighterMask">
-            <rect x={0} y={0} width="1500" height="1500" fill="white" />
+          <mask id={maskId}>
+            <rect x={0} y={0} width={width} height={height} fill="white" />
             <g transform={`translate(${diskCenter.x}, ${diskCenter.y})`}>
               {renderGeometries(geometries, partitionLayout)}
             </g>
           </mask>
         </defs>
-
-        <circle
-          cx={diskCenter.x}
-          cy={diskCenter.y}
-          r={outerRadius}
-          mask={`url(#${maskId})`}
-          opacity="0.75"
-          fill="white"
-        />
+        {partitionLayout === PartitionLayout.sunburst && (
+          <circle
+            cx={diskCenter.x}
+            cy={diskCenter.y}
+            r={outerRadius}
+            mask={`url(#${maskId})`}
+            opacity="0.75"
+            fill="white"
+          />
+        )}
+        {partitionLayout === PartitionLayout.treemap && (
+          <rect x={0} y={0} width={width} height={height} opacity="0.75" mask={`url(#${maskId})`} fill="white" />
+        )}
       </>
     );
   }
@@ -167,6 +181,12 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
 const DEFAULT_PROPS: HighlighterProps = {
   chartId: 'empty',
   initialized: false,
+  canvasDimension: {
+    width: 0,
+    height: 0,
+    left: 0,
+    top: 0,
+  },
   geometries: [],
   diskCenter: {
     x: 0,
@@ -190,10 +210,12 @@ const legendMapStateToProps = (state: GlobalChartState): HighlighterProps => {
   } = partitionGeometries(state);
 
   const geometries = getHighlightedSectorsSelector(state);
+  const canvasDimension = getChartContainerDimensionsSelector(state);
   return {
     chartId,
     initialized: true,
     renderAsOverlay: false,
+    canvasDimension,
     geometries,
     diskCenter,
     outerRadius,
@@ -214,10 +236,12 @@ const hoverMapStateToProps = (state: GlobalChartState): HighlighterProps => {
   } = partitionGeometries(state);
 
   const geometries = getPickedShapes(state);
+  const canvasDimension = getChartContainerDimensionsSelector(state);
   return {
     chartId,
     initialized: true,
     renderAsOverlay: true,
+    canvasDimension,
     diskCenter,
     outerRadius,
     geometries,
