@@ -49,18 +49,10 @@ function getPostfix(spec: BasicSeriesSpec): Postfixes {
 }
 
 /** @internal */
-export function getItemLabel(
-  name: string,
-  yAccessor: BandedAccessorType,
-  banded?: boolean,
-  y1AccessorFormat?: string,
-  y0AccessorFormat?: string,
-) {
-  if (!banded) {
-    return name;
-  }
-
-  return yAccessor === BandedAccessorType.Y1 ? `${name}${y1AccessorFormat}` : `${name}${y0AccessorFormat}`;
+export function getBandedLegendItemLabel(name: string, yAccessor: BandedAccessorType, postfixes: Postfixes) {
+  return yAccessor === BandedAccessorType.Y1
+    ? `${name}${postfixes.y1AccessorFormat}`
+    : `${name}${postfixes.y0AccessorFormat}`;
 }
 
 /** @internal */
@@ -87,13 +79,7 @@ export function computeLegend(
       return;
     }
     const postFixes = getPostfix(spec);
-    const labelY1 = getItemLabel(
-      name,
-      BandedAccessorType.Y1,
-      banded,
-      postFixes.y1AccessorFormat,
-      postFixes.y0AccessorFormat,
-    );
+    const labelY1 = banded ? getBandedLegendItemLabel(name, BandedAccessorType.Y1, postFixes) : name;
 
     // Use this to get axis spec w/ tick formatter
     const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
@@ -106,27 +92,21 @@ export function computeLegend(
       seriesIdentifier,
       childId: BandedAccessorType.Y1,
       isSeriesVisible,
-      isLegendItemVisible: !hideInLegend,
+      isItemHidden: hideInLegend,
       defaultExtra: {
         raw: lastValue && lastValue.y1 !== null ? lastValue.y1 : null,
         formatted: lastValue && lastValue.y1 !== null ? formatter(lastValue.y1) : null,
       },
     });
     if (banded) {
-      const labelY0 = getItemLabel(
-        name,
-        BandedAccessorType.Y0,
-        banded,
-        postFixes.y1AccessorFormat,
-        postFixes.y0AccessorFormat,
-      );
+      const labelY0 = getBandedLegendItemLabel(name, BandedAccessorType.Y0, postFixes);
       legendItems.push({
         color,
         label: labelY0,
         seriesIdentifier,
         childId: BandedAccessorType.Y0,
         isSeriesVisible,
-        isLegendItemVisible: !hideInLegend,
+        isItemHidden: hideInLegend,
         defaultExtra: {
           raw: lastValue && lastValue.y0 !== null ? lastValue.y0 : null,
           formatted: lastValue && lastValue.y0 !== null ? formatter(lastValue.y0) : null,

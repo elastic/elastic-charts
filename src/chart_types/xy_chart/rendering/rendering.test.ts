@@ -125,7 +125,6 @@ describe('Rendering utils', () => {
       label: '',
       seriesIdentifier,
       isSeriesVisible: true,
-      isLegendItemVisible: true,
       defaultExtra: {
         formatted: null,
         raw: null,

@@ -31,11 +31,6 @@ import { SeriesKey } from '../../../commons/series_id';
 import { TooltipValue } from '../../../specs';
 import { LegendItemExtraValues } from '../../../commons/legend';
 
-export interface CurrentValues {
-  [BandedAccessorType.Y0]: any;
-  [BandedAccessorType.Y1]: any;
-}
-
 export const Y0_ACCESSOR_POSTFIX = ' - lower';
 export const Y1_ACCESSOR_POSTFIX = ' - upper';
 
@@ -44,18 +39,19 @@ export function getHighligthedValues(
   tooltipValues: TooltipValue[],
   defaultValue?: string,
 ): Map<SeriesKey, LegendItemExtraValues> {
-  // map from seriesKey to TooltipLegendValue
+  // map from seriesKey to LegendItemExtraValues
   const seriesTooltipValues = new Map<SeriesKey, LegendItemExtraValues>();
 
   tooltipValues.forEach(({ value, seriesIdentifier, valueAccessor }) => {
     const seriesValue = defaultValue ? defaultValue : value;
     const current: LegendItemExtraValues = seriesTooltipValues.get(seriesIdentifier.key) ?? new Map();
-
-    if (defaultValue && !current.has(BandedAccessorType.Y0)) {
-      current.set(BandedAccessorType.Y0, defaultValue);
-    }
-    if (defaultValue && !current.has(BandedAccessorType.Y1)) {
-      current.set(BandedAccessorType.Y1, defaultValue);
+    if (defaultValue) {
+      if (!current.has(BandedAccessorType.Y0)) {
+        current.set(BandedAccessorType.Y0, defaultValue);
+      }
+      if (!current.has(BandedAccessorType.Y1)) {
+        current.set(BandedAccessorType.Y1, defaultValue);
+      }
     }
 
     if (valueAccessor != null && (valueAccessor === BandedAccessorType.Y0 || valueAccessor === BandedAccessorType.Y1)) {

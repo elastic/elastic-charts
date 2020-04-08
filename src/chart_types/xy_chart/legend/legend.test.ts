@@ -133,8 +133,8 @@ describe('Legends', () => {
         label: 'Spec 1 title',
         childId: 'y1',
         seriesIdentifier: seriesCollectionValue1a.seriesIdentifier,
+        isItemHidden: false,
         isSeriesVisible: true,
-        isLegendItemVisible: true,
         defaultExtra: nullDisplayValue,
       },
     ];
@@ -150,8 +150,8 @@ describe('Legends', () => {
         label: 'Spec 1 title',
         seriesIdentifier: seriesCollectionValue1a.seriesIdentifier,
         childId: 'y1',
+        isItemHidden: false,
         isSeriesVisible: true,
-        isLegendItemVisible: true,
         defaultExtra: nullDisplayValue,
       },
       {
@@ -159,8 +159,8 @@ describe('Legends', () => {
         label: 'a - b',
         seriesIdentifier: seriesCollectionValue1b.seriesIdentifier,
         childId: 'y1',
+        isItemHidden: false,
         isSeriesVisible: true,
-        isLegendItemVisible: true,
         defaultExtra: nullDisplayValue,
       },
     ];
@@ -176,8 +176,8 @@ describe('Legends', () => {
         label: 'Spec 1 title',
         childId: 'y1',
         seriesIdentifier: seriesCollectionValue1a.seriesIdentifier,
+        isItemHidden: false,
         isSeriesVisible: true,
-        isLegendItemVisible: true,
         defaultExtra: nullDisplayValue,
       },
       {
@@ -185,8 +185,8 @@ describe('Legends', () => {
         label: 'spec2',
         childId: 'y1',
         seriesIdentifier: seriesCollectionValue2a.seriesIdentifier,
+        isItemHidden: false,
         isSeriesVisible: true,
-        isLegendItemVisible: true,
         defaultExtra: nullDisplayValue,
       },
     ];
@@ -207,8 +207,8 @@ describe('Legends', () => {
         label: 'Spec 1 title',
         childId: 'y1',
         seriesIdentifier: seriesCollectionValue1a.seriesIdentifier,
+        isItemHidden: false,
         isSeriesVisible: true,
-        isLegendItemVisible: true,
         defaultExtra: nullDisplayValue,
       },
     ];

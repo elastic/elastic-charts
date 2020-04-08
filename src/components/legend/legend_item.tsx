@@ -143,13 +143,13 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
 
   render() {
     const { extraValues, item, showExtra, onLegendItemClickListener, colorPicker, position, totalItems } = this.props;
-    const { color, isSeriesVisible, isLegendItemVisible, seriesIdentifier, label } = item;
+    const { color, isSeriesVisible, isItemHidden, seriesIdentifier, label } = item;
     const onLabelClick = this.onVisibilityClick(seriesIdentifier);
     const hasLabelClickListener = Boolean(onLegendItemClickListener);
 
     const itemClassNames = classNames('echLegendItem', `echLegendItem--${position}`, {
       'echLegendItem--hidden': !isSeriesVisible,
-      'echLegendItem__extra--hidden': !isLegendItemVisible,
+      'echLegendItem__extra--hidden': isItemHidden,
     });
 
     const hasColorPicker = Boolean(colorPicker);

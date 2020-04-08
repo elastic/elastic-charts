@@ -63,7 +63,7 @@ export const computeLegendSelector = createCachedSelector(
       });
     }
 
-    return items.map(({ dataName, fillColor, depth }) => {
+    return items.map<LegendItem>(({ dataName, fillColor, depth }) => {
       const labelFormatter = labelFormatters[depth - 1];
       const formatter = labelFormatter?.nodeLabel;
 
@@ -73,7 +73,6 @@ export const computeLegendSelector = createCachedSelector(
         dataName,
         childId: dataName,
         depth: flatLegend ? 0 : depth - 1,
-        isLegendItemVisible: true,
         seriesIdentifier: {
           key: dataName,
           specId: id,
