@@ -86,7 +86,7 @@ export class ScaleBand implements Scale {
   }
 
   scaleOrThrow(value?: PrimitiveValue): number {
-    const scaleValue = this.getScaledValue(value);
+    const scaleValue = this.scale(value);
 
     if (scaleValue === null) {
       throw new Error(`Unable to scale value: ${scaleValue})`);
