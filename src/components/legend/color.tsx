@@ -24,17 +24,17 @@ import { Icon } from '../icons/icon';
  * Render a colored dot for the item
  * @internal
  * @param color
- * @param isSeriesVisible
+ * @param isSeriesHidden
  * @param hasColorPicker
  * @param handleColorClick
  */
 export function renderColor(
   color: string,
-  isSeriesVisible = true,
+  isSeriesHidden = false,
   hasColorPicker: boolean,
   handleColorClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void,
 ) {
-  if (!isSeriesVisible) {
+  if (isSeriesHidden) {
     return (
       <div className="echLegendItem__color" aria-label="series hidden" title="series hidden">
         {/* changing the default viewBox for the eyeClosed icon to keep the same dimensions */}

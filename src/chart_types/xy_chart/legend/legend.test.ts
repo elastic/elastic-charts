@@ -134,7 +134,7 @@ describe('Legends', () => {
         childId: 'y1',
         seriesIdentifier: seriesCollectionValue1a.seriesIdentifier,
         isItemHidden: false,
-        isSeriesVisible: true,
+        isSeriesHidden: false,
         defaultExtra: nullDisplayValue,
       },
     ];
@@ -151,7 +151,7 @@ describe('Legends', () => {
         seriesIdentifier: seriesCollectionValue1a.seriesIdentifier,
         childId: 'y1',
         isItemHidden: false,
-        isSeriesVisible: true,
+        isSeriesHidden: false,
         defaultExtra: nullDisplayValue,
       },
       {
@@ -160,7 +160,7 @@ describe('Legends', () => {
         seriesIdentifier: seriesCollectionValue1b.seriesIdentifier,
         childId: 'y1',
         isItemHidden: false,
-        isSeriesVisible: true,
+        isSeriesHidden: false,
         defaultExtra: nullDisplayValue,
       },
     ];
@@ -177,7 +177,7 @@ describe('Legends', () => {
         childId: 'y1',
         seriesIdentifier: seriesCollectionValue1a.seriesIdentifier,
         isItemHidden: false,
-        isSeriesVisible: true,
+        isSeriesHidden: false,
         defaultExtra: nullDisplayValue,
       },
       {
@@ -186,7 +186,7 @@ describe('Legends', () => {
         childId: 'y1',
         seriesIdentifier: seriesCollectionValue2a.seriesIdentifier,
         isItemHidden: false,
-        isSeriesVisible: true,
+        isSeriesHidden: false,
         defaultExtra: nullDisplayValue,
       },
     ];
@@ -208,7 +208,7 @@ describe('Legends', () => {
         childId: 'y1',
         seriesIdentifier: seriesCollectionValue1a.seriesIdentifier,
         isItemHidden: false,
-        isSeriesVisible: true,
+        isSeriesHidden: false,
         defaultExtra: nullDisplayValue,
       },
     ];
@@ -224,7 +224,7 @@ describe('Legends', () => {
 
     const legend = computeLegend(seriesCollection, emptyColorMap, specs, 'violet', axesSpecs);
 
-    const visibility = [...legend.values()].map((item) => item.isSeriesVisible);
+    const visibility = [...legend.values()].map((item) => !item.isSeriesHidden);
 
     expect(visibility).toEqual([true, true, true]);
   });
@@ -239,7 +239,7 @@ describe('Legends', () => {
 
     const legend = computeLegend(seriesCollection, emptyColorMap, specs, 'violet', axesSpecs, deselectedDataSeries);
 
-    const visibility = [...legend.values()].map((item) => item.isSeriesVisible);
+    const visibility = [...legend.values()].map((item) => !item.isSeriesHidden);
     expect(visibility).toEqual([false, false, true]);
   });
   it('returns the right series name for a color series', () => {

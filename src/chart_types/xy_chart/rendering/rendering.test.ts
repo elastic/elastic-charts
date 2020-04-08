@@ -124,7 +124,7 @@ describe('Rendering utils', () => {
       color: '',
       label: '',
       seriesIdentifier,
-      isSeriesVisible: true,
+      isSeriesHidden: false,
       defaultExtra: {
         formatted: null,
         raw: null,

@@ -733,9 +733,8 @@ export function isChartAnimatable(geometriesCounts: GeometriesCounts, animationE
 
 /** @internal */
 export function isAllSeriesDeselected(legendItems: LegendItem[]): boolean {
-  // return legendItems.some(({ isSeriesVisible }) => !isSeriesVisible);
   for (const legendItem of legendItems) {
-    if (legendItem.isSeriesVisible) {
+    if (!legendItem.isSeriesHidden) {
       return false;
     }
   }

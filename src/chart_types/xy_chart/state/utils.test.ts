@@ -54,6 +54,7 @@ import { SeededDataGenerator } from '../../../mocks/utils';
 import { SeriesCollectionValue, getSeriesIndex, getSeriesColors } from '../utils/series';
 import { SpecTypes } from '../../../specs/settings';
 import { ColorOverrides } from '../../../state/chart_state';
+import { LegendItem } from '../../../commons/legend';
 
 describe('Chart State utils', () => {
   const emptySeriesOverrides: ColorOverrides = {
@@ -1435,7 +1436,7 @@ describe('Chart State utils', () => {
     expect(bar2.stackAccessors).toEqual(['y', 'bar']);
   });
   test('displays no data availble if chart is empty', () => {
-    const legendItems1 = [
+    const legendItems1: LegendItem[] = [
       {
         color: '#1EA593',
         label: 'a',
@@ -1444,7 +1445,7 @@ describe('Chart State utils', () => {
           specId: 'bars',
         },
         defaultExtra: { raw: 6, formatted: '6.00' },
-        isSeriesVisible: false,
+        isSeriesHidden: true,
       },
       {
         color: '#2B70F7',
@@ -1454,13 +1455,13 @@ describe('Chart State utils', () => {
           specId: 'bars',
         },
         defaultExtra: { raw: 2, formatted: '2.00' },
-        isSeriesVisible: false,
+        isSeriesHidden: true,
       },
     ];
     expect(isAllSeriesDeselected(legendItems1)).toBe(true);
   });
   test('displays data availble if chart is not empty', () => {
-    const legendItems2 = [
+    const legendItems2: LegendItem[] = [
       {
         color: '#1EA593',
         label: 'a',
@@ -1469,7 +1470,7 @@ describe('Chart State utils', () => {
           specId: 'bars',
         },
         defaultExtra: { raw: 6, formatted: '6.00' },
-        isSeriesVisible: true,
+        isSeriesHidden: false,
       },
       {
         color: '#2B70F7',
@@ -1479,7 +1480,7 @@ describe('Chart State utils', () => {
           specId: 'bars',
         },
         defaultExtra: { raw: 2, formatted: '2.00' },
-        isSeriesVisible: false,
+        isSeriesHidden: true,
       },
     ];
     expect(isAllSeriesDeselected(legendItems2)).toBe(false);

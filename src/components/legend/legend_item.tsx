@@ -143,12 +143,12 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
 
   render() {
     const { extraValues, item, showExtra, onLegendItemClickListener, colorPicker, position, totalItems } = this.props;
-    const { color, isSeriesVisible, isItemHidden, seriesIdentifier, label } = item;
+    const { color, isSeriesHidden, isItemHidden, seriesIdentifier, label } = item;
     const onLabelClick = this.onVisibilityClick(seriesIdentifier);
     const hasLabelClickListener = Boolean(onLegendItemClickListener);
 
     const itemClassNames = classNames('echLegendItem', `echLegendItem--${position}`, {
-      'echLegendItem--hidden': !isSeriesVisible,
+      'echLegendItem--hidden': isSeriesHidden,
       'echLegendItem__extra--hidden': isItemHidden,
     });
 
@@ -169,9 +169,9 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
           onMouseLeave={this.onLegendItemMouseOut}
           style={style}
         >
-          {renderColor(color, isSeriesVisible, hasColorPicker, colorClick)}
+          {renderColor(color, isSeriesHidden, hasColorPicker, colorClick)}
           {renderLabel(label, onLabelClick, hasLabelClickListener)}
-          {showExtra && extra != null && renderExtra(extra, isSeriesVisible)}
+          {showExtra && extra != null && renderExtra(extra, isSeriesHidden)}
         </li>
         {this.renderColorPicker()}
       </>

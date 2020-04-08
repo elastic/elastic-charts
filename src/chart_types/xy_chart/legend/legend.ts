@@ -73,7 +73,7 @@ export function computeLegend(
     const color = seriesColors.get(key) || defaultColor;
     const hasSingleSeries = seriesCollection.size === 1;
     const name = getSeriesName(seriesIdentifier, hasSingleSeries, false, spec);
-    const isSeriesVisible = deselectedDataSeries ? getSeriesIndex(deselectedDataSeries, seriesIdentifier) < 0 : true;
+    const isSeriesHidden = deselectedDataSeries ? getSeriesIndex(deselectedDataSeries, seriesIdentifier) >= 0 : false;
 
     if (name === '' || !spec) {
       return;
@@ -91,7 +91,7 @@ export function computeLegend(
       label: labelY1,
       seriesIdentifier,
       childId: BandedAccessorType.Y1,
-      isSeriesVisible,
+      isSeriesHidden,
       isItemHidden: hideInLegend,
       defaultExtra: {
         raw: lastValue && lastValue.y1 !== null ? lastValue.y1 : null,
@@ -105,7 +105,7 @@ export function computeLegend(
         label: labelY0,
         seriesIdentifier,
         childId: BandedAccessorType.Y0,
-        isSeriesVisible,
+        isSeriesHidden,
         isItemHidden: hideInLegend,
         defaultExtra: {
           raw: lastValue && lastValue.y0 !== null ? lastValue.y0 : null,

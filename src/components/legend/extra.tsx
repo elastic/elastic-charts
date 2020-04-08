@@ -22,11 +22,11 @@ import classNames from 'classnames';
 /**
  * @internal
  * @param extra
- * @param isSeriesVisible
+ * @param isSeriesHidden
  */
-export function renderExtra(extra: string | number, isSeriesVisible?: boolean) {
+export function renderExtra(extra: string | number, isSeriesHidden?: boolean) {
   const extraClassNames = classNames('echLegendItem__extra', {
-    ['echLegendItem__extra--hidden']: !isSeriesVisible,
+    ['echLegendItem__extra--hidden']: isSeriesHidden,
   });
   return (
     <div className={extraClassNames} title={`${extra}`}>

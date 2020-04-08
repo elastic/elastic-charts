@@ -30,7 +30,7 @@ export type LegendItem = {
   depth?: number;
   color: Color;
   label: string;
-  isSeriesVisible?: boolean;
+  isSeriesHidden?: boolean;
   isItemHidden?: boolean;
   defaultExtra?: {
     raw: number | null;
