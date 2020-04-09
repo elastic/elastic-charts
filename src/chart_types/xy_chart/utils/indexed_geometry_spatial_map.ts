@@ -44,11 +44,19 @@ export class IndexedGeometrySpatialMap {
   }
 
   set(points: PointGeometry[]) {
-    // TODO: handle coincident points
     this.maxRadius = Math.max(this.maxRadius, ...points.map(({ radius }) => radius));
     this.pointGeometries.push(...points);
     this.points.push(
-      ...points.map<IndexedGeometrySpatialMapPoint>(({ x, y }) => [x, y]),
+      ...points.map<IndexedGeometrySpatialMapPoint>(({ x, y }) => {
+        // TODO: handle coincident points better
+        // This nonce is used to slightly offset every point such that each point
+        // has a unique poition in the index. This number is only used in the index.
+        // The other option would be to find the point(s) near a Point and add logic
+        // to account for multiple values in the pointGeometries array. This would be
+        // a very comutationally expensive approach having to repeat for every point.
+        const nonce = Math.random() * 0.000001;
+        return [x + nonce, y];
+      }),
     );
 
     if (this.points.length > 0) {
