@@ -43,6 +43,11 @@ interface HighlighterProps {
 
 const EPSILON = 1e-6;
 
+interface SVGStyle {
+  fill?: string;
+  className?: string;
+}
+
 /**
  * This function return an SVG arc path from the same parameters of the canvas.arc function call
  * @param x The horizontal coordinate of the arc's center
@@ -64,9 +69,9 @@ function getSectorShapeFromCanvasArc(x: number, y: number, r: number, a0: number
  * @param key the key to apply to the react element
  * @param fillColor the optional fill color
  */
-function renderRectangles(geometry: QuadViewModel, key: string, fillColor = 'black') {
+function renderRectangles(geometry: QuadViewModel, key: string, style: SVGStyle) {
   const { x0, x1, y0px, y1px } = geometry;
-  return <rect key={key} x={x0} y={y0px} width={Math.abs(x1 - x0)} height={Math.abs(y1px - y0px)} fill={fillColor} />;
+  return <rect key={key} x={x0} y={y0px} width={Math.abs(x1 - x0)} height={Math.abs(y1px - y0px)} {...style} />;
 }
 
 /**
@@ -75,7 +80,7 @@ function renderRectangles(geometry: QuadViewModel, key: string, fillColor = 'bla
  * @param key the key to apply to the react element
  * @param fillColor the optional fill color
  */
-function renderSector(geometry: QuadViewModel, key: string, fillColor = 'black') {
+function renderSector(geometry: QuadViewModel, key: string, style: SVGStyle) {
   const { x0, x1, y0px, y1px } = geometry;
   if ((Math.abs(x0 - x1) + TAU) % TAU < EPSILON) {
     return <circle key={key} r={(y0px + y1px) / 2} fill="none" stroke="black" strokeWidth={y1px - y0px} />;
@@ -89,10 +94,10 @@ function renderSector(geometry: QuadViewModel, key: string, fillColor = 'black')
     getSectorShapeFromCanvasArc(0, 0, y1px, X1, X0, 1),
     'Z',
   ].join(' ');
-  return <path key={key} d={path} fill={fillColor} />;
+  return <path key={key} d={path} {...style} />;
 }
 
-function renderGeometries(geometries: QuadViewModel[], partitionLayout: PartitionLayout, fillColor = 'black') {
+function renderGeometries(geometries: QuadViewModel[], partitionLayout: PartitionLayout, style: SVGStyle) {
   let maxDepth = -1;
   // we should render only the deepest geometries of the tree to avoid overlaying highlighted geometries
   if (partitionLayout === PartitionLayout.treemap) {
@@ -109,10 +114,10 @@ function renderGeometries(geometries: QuadViewModel[], partitionLayout: Partitio
     })
     .map((geometry, index) => {
       if (partitionLayout === PartitionLayout.sunburst) {
-        return renderSector(geometry, `${index}`, fillColor);
+        return renderSector(geometry, `${index}`, style);
       }
 
-      return renderRectangles(geometry, `${index}`, fillColor);
+      return renderRectangles(geometry, `${index}`, style);
     });
 }
 
@@ -135,7 +140,7 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
           <mask id={maskId}>
             <rect x={0} y={0} width={width} height={height} fill="white" />
             <g transform={`translate(${diskCenter.x}, ${diskCenter.y})`}>
-              {renderGeometries(geometries, partitionLayout)}
+              {renderGeometries(geometries, partitionLayout, { fill: 'black' })}
             </g>
           </mask>
         </defs>
@@ -145,12 +150,11 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
             cy={diskCenter.y}
             r={outerRadius}
             mask={`url(#${maskId})`}
-            opacity="0.75"
-            fill="white"
+            className="echHighlighter__mask"
           />
         )}
         {partitionLayout === PartitionLayout.treemap && (
-          <rect x={0} y={0} width={width} height={height} opacity="0.75" mask={`url(#${maskId})`} fill="white" />
+          <rect x={0} y={0} width={width} height={height} mask={`url(#${maskId})`} className="echHighlighter__mask" />
         )}
       </>
     );
@@ -160,7 +164,7 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
     const { geometries, diskCenter, partitionLayout } = this.props;
     return (
       <g transform={`translate(${diskCenter.x}, ${diskCenter.y})`}>
-        {renderGeometries(geometries, partitionLayout, 'rgba(255, 255, 255, 0.35')}
+        {renderGeometries(geometries, partitionLayout, { className: 'echHighlighter__rect' })}
       </g>
     );
   }

@@ -25,6 +25,7 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { PrimitiveValue } from '../../layout/utils/group_by_rollup';
 import { QuadViewModel } from '../../layout/types/viewmodel_types';
 import { getFlatHierarchy } from './get_flat_hierarchy';
+import { Position } from '../../../../utils/commons';
 
 /** @internal */
 export const computeLegendSelector = createCachedSelector(
@@ -44,13 +45,15 @@ export const computeLegendSelector = createCachedSelector(
       return acc;
     }, {});
 
-    const { flatLegend, legendMaxDepth } = settings;
+    const { flatLegend, legendMaxDepth, legendPosition } = settings;
+    const forceFlatLegend = flatLegend || legendPosition === Position.Bottom || legendPosition === Position.Top;
+
     const excluded: Set<string> = new Set();
     let items = geoms.quadViewModel.filter(({ depth, dataName, fillColor }) => {
       if (legendMaxDepth != null) {
         return depth <= legendMaxDepth;
       }
-      if (flatLegend) {
+      if (forceFlatLegend) {
         const key = [dataName, fillColor].join('---');
         if (uniqueNames[key] > 1 && excluded.has(key)) {
           return false;
@@ -60,7 +63,7 @@ export const computeLegendSelector = createCachedSelector(
       return true;
     });
 
-    if (flatLegend) {
+    if (forceFlatLegend) {
       items = items.sort((a, b) => {
         return a.depth - b.depth;
       });
@@ -81,7 +84,7 @@ export const computeLegendSelector = createCachedSelector(
           label: formatter ? formatter(dataName) : dataName,
           dataName,
           childId: dataName,
-          depth: flatLegend ? 0 : depth - 1,
+          depth: forceFlatLegend ? 0 : depth - 1,
           seriesIdentifier: {
             key: dataName,
             specId: id,

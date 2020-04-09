@@ -13,3 +13,7 @@
 .echHighlighter__rect {
   fill: transparentize($euiColorGhost, 0.8);
 }
+
+.echHighlighter__mask {
+  fill: transparentize($euiColorEmptyShade, 0.5);
+}
