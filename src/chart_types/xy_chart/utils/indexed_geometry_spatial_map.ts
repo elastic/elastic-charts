@@ -19,6 +19,7 @@
 import { IndexedGeometry, PointGeometry } from '../../../utils/geometry';
 import { Point } from '../../../utils/point';
 import { getDistance } from '../state/utils';
+// @ts-ignore
 import { Delaunay } from '../../../utils/d3-delaunay';
 
 export type IndexedGeometrySpatialMapPoint = [number, number];

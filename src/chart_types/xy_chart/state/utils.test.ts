@@ -329,6 +329,8 @@ describe('Chart State utils', () => {
       areasPoints: 0,
       lines: 0,
       linePoints: 0,
+      bubbles: 0,
+      bubblePoints: 0,
     };
     expect(isChartAnimatable(geometriesCounts, false)).toBe(false);
     expect(isChartAnimatable(geometriesCounts, true)).toBe(true);

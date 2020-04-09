@@ -27,6 +27,7 @@ import {
   LineSeriesSpec,
   BasicSeriesSpec,
   SeriesTypes,
+  BubbleSeriesSpec,
 } from '../../chart_types/xy_chart/utils/specs';
 import { ScaleType } from '../../scales';
 import { ChartTypes } from '../../chart_types';
@@ -101,6 +102,21 @@ export class MockSeriesSpec {
     data: [],
   };
 
+  private static readonly bubbleBase: BubbleSeriesSpec = {
+    chartType: ChartTypes.XYAxis,
+    specType: SpecTypes.Series,
+    id: 'spec1',
+    seriesType: SeriesTypes.Bubble,
+    groupId: DEFAULT_GLOBAL_ID,
+    xScaleType: ScaleType.Ordinal,
+    yScaleType: ScaleType.Linear,
+    xAccessor: 'x',
+    yAccessors: ['y'],
+    yScaleToDataExtent: false,
+    hideInLegend: false,
+    data: [],
+  };
+
   static bar(partial?: Partial<BarSeriesSpec>): BarSeriesSpec {
     return mergePartial<BarSeriesSpec>(MockSeriesSpec.barBase, partial as RecursivePartial<BarSeriesSpec>, {
       mergeOptionalPartialValues: true,
@@ -129,14 +145,16 @@ export class MockSeriesSpec {
     });
   }
 
-  static byType(type?: 'line' | 'bar' | 'area'): BasicSeriesSpec {
+  static byType(type?: SeriesTypes): BasicSeriesSpec {
     switch (type) {
-      case 'line':
+      case SeriesTypes.Line:
         return MockSeriesSpec.lineBase;
-      case 'bar':
+      case SeriesTypes.Bar:
         return MockSeriesSpec.barBase;
-      case 'area':
+      case SeriesTypes.Area:
         return MockSeriesSpec.areaBase;
+      case SeriesTypes.Bubble:
+        return MockSeriesSpec.bubbleBase;
       default:
         return MockSeriesSpec.barBase;
     }

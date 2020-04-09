@@ -182,6 +182,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     bars: [],
     lines: [],
     points: [],
+    bubbles: [],
   },
   geometriesIndex: new IndexedGeometryMap(),
   theme: LIGHT_THEME,

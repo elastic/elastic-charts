@@ -20,7 +20,7 @@ import { isVerticalAxis } from '../utils/axis_utils';
 import { CurveType } from '../../../utils/curves';
 import { mergeXDomain, XDomain } from '../domains/x_domain';
 import { mergeYDomain, YDomain } from '../domains/y_domain';
-import { renderArea, renderBars, renderLine } from '../rendering/rendering';
+import { renderArea, renderBars, renderLine, renderBubble } from '../rendering/rendering';
 import { computeXScale, computeYScales, countBarsInCluster } from '../utils/scales';
 import {
   DataSeries,
@@ -49,6 +49,7 @@ import {
   Fit,
   FitConfig,
   SeriesTypes,
+  isBubbleSeriesSpec,
 } from '../utils/specs';
 import { ColorConfig, Theme } from '../../../utils/themes/theme';
 import { identity, mergePartial, Rotation, Color } from '../../../utils/commons';
@@ -56,7 +57,7 @@ import { Dimensions } from '../../../utils/dimensions';
 import { Domain } from '../../../utils/domain';
 import { GroupId, SpecId } from '../../../utils/ids';
 import { Scale } from '../../../scales';
-import { PointGeometry, BarGeometry, AreaGeometry, LineGeometry } from '../../../utils/geometry';
+import { PointGeometry, BarGeometry, AreaGeometry, LineGeometry, BubbleGeometry } from '../../../utils/geometry';
 import { LegendItem } from '../legend/legend';
 import { Spec } from '../../../specs';
 import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
@@ -89,6 +90,8 @@ export interface GeometriesCounts {
   areasPoints: number;
   lines: number;
   linePoints: number;
+  bubbles: number;
+  bubblePoints: number;
 }
 
 /** @internal */
@@ -102,6 +105,7 @@ export interface Geometries {
   bars: BarGeometry[];
   areas: AreaGeometry[];
   lines: LineGeometry[];
+  bubbles: BubbleGeometry[];
 }
 
 /** @internal */
@@ -328,15 +332,18 @@ export function computeSeriesGeometries(
   const areas: AreaGeometry[] = [];
   const bars: BarGeometry[] = [];
   const lines: LineGeometry[] = [];
+  const bubbles: BubbleGeometry[] = [];
   const geometriesIndex = new IndexedGeometryMap();
   let orderIndex = 0;
-  const geometriesCounts = {
+  const geometriesCounts: GeometriesCounts = {
     points: 0,
     bars: 0,
     areas: 0,
     areasPoints: 0,
     lines: 0,
     linePoints: 0,
+    bubbles: 0,
+    bubblePoints: 0,
   };
   formattedDataSeries.stacked.forEach((dataSeriesGroup) => {
     const { groupId, dataSeries, counts } = dataSeriesGroup;
@@ -363,6 +370,7 @@ export function computeSeriesGeometries(
     areas.push(...geometries.areas);
     lines.push(...geometries.lines);
     bars.push(...geometries.bars);
+    bubbles.push(...geometries.bubbles);
     points.push(...geometries.points);
     geometriesIndex.merge(geometries.indexedGeometryMap);
     // update counts
@@ -372,6 +380,8 @@ export function computeSeriesGeometries(
     geometriesCounts.areasPoints += geometries.geometriesCounts.areasPoints;
     geometriesCounts.lines += geometries.geometriesCounts.lines;
     geometriesCounts.linePoints += geometries.geometriesCounts.linePoints;
+    geometriesCounts.bubbles += geometries.geometriesCounts.bubbles;
+    geometriesCounts.bubblePoints += geometries.geometriesCounts.bubblePoints;
   });
   formattedDataSeries.nonStacked.map((dataSeriesGroup) => {
     const { groupId, dataSeries } = dataSeriesGroup;
@@ -397,6 +407,7 @@ export function computeSeriesGeometries(
     areas.push(...geometries.areas);
     lines.push(...geometries.lines);
     bars.push(...geometries.bars);
+    bubbles.push(...geometries.bubbles);
     points.push(...geometries.points);
 
     geometriesIndex.merge(geometries.indexedGeometryMap);
@@ -407,6 +418,8 @@ export function computeSeriesGeometries(
     geometriesCounts.areasPoints += geometries.geometriesCounts.areasPoints;
     geometriesCounts.lines += geometries.geometriesCounts.lines;
     geometriesCounts.linePoints += geometries.geometriesCounts.linePoints;
+    geometriesCounts.bubbles += geometries.geometriesCounts.bubbles;
+    geometriesCounts.bubblePoints += geometries.geometriesCounts.bubblePoints;
   });
   return {
     scales: {
@@ -418,6 +431,7 @@ export function computeSeriesGeometries(
       areas,
       bars,
       lines,
+      bubbles,
     },
     geometriesIndex,
     geometriesCounts,
@@ -496,6 +510,7 @@ function renderGeometries(
   bars: BarGeometry[];
   areas: AreaGeometry[];
   lines: LineGeometry[];
+  bubbles: BubbleGeometry[];
   indexedGeometryMap: IndexedGeometryMap;
   geometriesCounts: GeometriesCounts;
 } {
@@ -505,14 +520,17 @@ function renderGeometries(
   const bars: BarGeometry[] = [];
   const areas: AreaGeometry[] = [];
   const lines: LineGeometry[] = [];
+  const bubbles: BubbleGeometry[] = [];
   const indexedGeometryMap = new IndexedGeometryMap();
-  const geometriesCounts = {
+  const geometriesCounts: GeometriesCounts = {
     points: 0,
     bars: 0,
     areas: 0,
     areasPoints: 0,
     lines: 0,
     linePoints: 0,
+    bubbles: 0,
+    bubblePoints: 0,
   };
   let barIndexOffset = 0;
   for (i = 0; i < len; i++) {
@@ -555,6 +573,27 @@ function renderGeometries(
       bars.push(...renderedBars.barGeometries);
       geometriesCounts.bars += renderedBars.barGeometries.length;
       barIndexOffset += 1;
+    } else if (isBubbleSeriesSpec(spec)) {
+      const bubbleSeriesStyle = spec.bubbleSeriesStyle
+        ? mergePartial(chartTheme.bubbleSeriesStyle, spec.bubbleSeriesStyle, { mergeOptionalPartialValues: true })
+        : chartTheme.bubbleSeriesStyle;
+      const renderedBubbles = renderBubble(
+        ds,
+        xScale,
+        yScale,
+        color,
+        isBandedSpec(spec.y0Accessors),
+        bubbleSeriesStyle,
+        {
+          enabled: spec.markSizeAccessor !== undefined,
+          ratio: chartTheme.markSizeRatio,
+        },
+        spec.pointStyleAccessor,
+      );
+      indexedGeometryMap.merge(renderedBubbles.indexedGeometryMap);
+      bubbles.push(renderedBubbles.bubbleGeometry);
+      geometriesCounts.bubblePoints += renderedBubbles.bubbleGeometry.points.length;
+      geometriesCounts.bubbles += 1;
     } else if (isLineSeriesSpec(spec)) {
       const lineShift = clusteredCount > 0 ? clusteredCount : 1;
       const lineSeriesStyle = spec.lineSeriesStyle
@@ -622,6 +661,7 @@ function renderGeometries(
     bars,
     areas,
     lines,
+    bubbles,
     indexedGeometryMap,
     geometriesCounts,
   };

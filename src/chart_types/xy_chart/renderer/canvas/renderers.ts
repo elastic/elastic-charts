@@ -28,6 +28,7 @@ import { renderBarValues } from './values/bar';
 import { renderDebugRect } from './utils/debug';
 import { stringToRGB } from '../../../partition_chart/layout/utils/d3_utils';
 import { Rect } from '../../../../geoms/types';
+import { renderBubbles } from './bubbles';
 
 /** @internal */
 export function renderXYChartCanvas2d(
@@ -102,7 +103,7 @@ export function renderXYChartCanvas2d(
         });
       },
 
-      // rendering bars/areas/lines
+      // rendering bars
       (ctx: CanvasRenderingContext2D) => {
         withContext(ctx, (ctx) => {
           ctx.translate(transform.x, transform.y);
@@ -110,6 +111,7 @@ export function renderXYChartCanvas2d(
           renderBars(ctx, geometries.bars, theme.sharedStyle, clippings, highlightedLegendItem);
         });
       },
+      // rendering areas
       (ctx: CanvasRenderingContext2D) => {
         withContext(ctx, (ctx) => {
           ctx.translate(transform.x, transform.y);
@@ -122,12 +124,26 @@ export function renderXYChartCanvas2d(
           });
         });
       },
+      // rendering lines
       (ctx: CanvasRenderingContext2D) => {
         withContext(ctx, (ctx) => {
           ctx.translate(transform.x, transform.y);
           ctx.rotate((chartRotation * Math.PI) / 180);
           renderLines(ctx, {
             lines: geometries.lines,
+            clippings,
+            highlightedLegendItem: highlightedLegendItem || null,
+            sharedStyle: theme.sharedStyle,
+          });
+        });
+      },
+      // rendering bubbles
+      (ctx: CanvasRenderingContext2D) => {
+        withContext(ctx, (ctx) => {
+          ctx.translate(transform.x, transform.y);
+          ctx.rotate((chartRotation * Math.PI) / 180);
+          renderBubbles(ctx, {
+            bubbles: geometries.bubbles,
             clippings,
             highlightedLegendItem: highlightedLegendItem || null,
             sharedStyle: theme.sharedStyle,

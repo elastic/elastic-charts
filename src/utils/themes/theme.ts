@@ -168,6 +168,14 @@ export interface Theme {
    * You may use `SeriesColorAccessor` to assign colors to a given series or replace the `theme.colors.vizColors` colors to your desired colors.
    */
   barSeriesStyle: BarSeriesStyle;
+  /**
+   * Global bubble styles.
+   *
+   * __Note:__ This is not used to set the color of a specific series. As such, any changes to the styles will not be reflected in the tooltip, legend, etc..
+   *
+   * You may use `SeriesColorAccessor` to assign colors to a given series or replace the `theme.colors.vizColors` colors to your desired colors.
+   */
+  bubbleSeriesStyle: BubbleSeriesStyle;
   arcSeriesStyle: ArcSeriesStyle;
   sharedStyle: SharedGeometryStateStyle;
   axes: AxisConfig;
@@ -269,6 +277,10 @@ export interface BarSeriesStyle {
   rect: RectStyle;
   rectBorder: RectBorderStyle;
   displayValue: DisplayValueStyle;
+}
+
+export interface BubbleSeriesStyle {
+  point: PointStyle;
 }
 
 export interface LineSeriesStyle {

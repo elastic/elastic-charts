@@ -25,6 +25,7 @@ import {
   LineSeriesStyle,
   PointStyle,
   RectAnnotationStyle,
+  BubbleSeriesStyle,
 } from '../../../utils/themes/theme';
 import { RecursivePartial, Color, Position, Datum } from '../../../utils/commons';
 import { Accessor, AccessorFormat, AccessorFn } from '../../../utils/accessor';
@@ -43,8 +44,8 @@ export const SeriesTypes = Object.freeze({
   Area: 'area' as 'area',
   Bar: 'bar' as 'bar',
   Line: 'line' as 'line',
+  Bubble: 'bubble' as 'bubble',
 });
-
 export type SeriesTypes = $Values<typeof SeriesTypes>;
 
 /**
@@ -446,6 +447,19 @@ export type LineSeriesSpec = BasicSeriesSpec &
   };
 
 /**
+ * This spec describe the dataset configuration used to display a line series.
+ */
+export type BubbleSeriesSpec = BasicSeriesSpec & {
+  /** @default bubble */
+  seriesType: typeof SeriesTypes.Bubble;
+  bubbleSeriesStyle?: RecursivePartial<BubbleSeriesStyle>;
+  /**
+   * An optional functional accessor to return custom color or style for point datum
+   */
+  pointStyleAccessor?: PointStyleAccessor;
+};
+
+/**
  * This spec describe the dataset configuration used to display an area series.
  */
 export type AreaSeriesSpec = BasicSeriesSpec &
@@ -694,6 +708,10 @@ export function isRectAnnotation(spec: AnnotationSpec): spec is RectAnnotationSp
 
 export function isBarSeriesSpec(spec: BasicSeriesSpec): spec is BarSeriesSpec {
   return spec.seriesType === SeriesTypes.Bar;
+}
+
+export function isBubbleSeriesSpec(spec: BasicSeriesSpec): spec is BubbleSeriesSpec {
+  return spec.seriesType === SeriesTypes.Bubble;
 }
 
 export function isLineSeriesSpec(spec: BasicSeriesSpec): spec is LineSeriesSpec {

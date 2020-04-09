@@ -26,6 +26,7 @@ import {
   BarSeriesStyle,
   GeometryStateStyle,
   LineStyle,
+  BubbleSeriesStyle,
 } from '../../../utils/themes/theme';
 import { Scale, ScaleType, isLogarithmicScale } from '../../../scales';
 import { CurveType, getCurveFactory } from '../../../utils/curves';
@@ -39,6 +40,7 @@ import {
   isPointGeometry,
   ClippedRanges,
   BandedAccessorType,
+  BubbleGeometry,
 } from '../../../utils/geometry';
 import { mergePartial, Color } from '../../../utils/commons';
 import { LegendItem } from '../legend/legend';
@@ -149,6 +151,7 @@ function renderPoints(
   hasY0Accessors: boolean,
   markSizeOptions: MarkSizeOptions,
   styleAccessor?: PointStyleAccessor,
+  spatial = false,
 ): {
   pointGeometries: PointGeometry[];
   indexedGeometryMap: IndexedGeometryMap;
@@ -158,6 +161,7 @@ function renderPoints(
   const getRadius = markSizeOptions.enabled
     ? getRadiusFn(dataSeries.data, lineStyle.strokeWidth, markSizeOptions.ratio)
     : () => 0;
+  const geometryType = spatial ? GeometryType.spatial : GeometryType.linear;
   const pointGeometries = dataSeries.data.reduce((acc, datum) => {
     const { x: xValue, y0, y1, initialY0, initialY1, filled, mark } = datum;
     // don't create the point if not within the xScale domain or it that point was filled
@@ -219,8 +223,6 @@ function renderPoints(
         seriesIdentifier,
         styleOverrides,
       };
-      // TODO: Use spatial for all points after tooltip re-design
-      const geometryType = mark === null || lineStyle.visible ? GeometryType.linear : GeometryType.spatial;
       indexedGeometryMap.set(pointGeometry, geometryType);
       // use the geometry only if the yDatum in contained in the current yScale domain
       const isHidden = yDatum === null || (isLogScale && yDatum <= 0);
@@ -471,6 +473,51 @@ export function renderLine(
   };
   return {
     lineGeometry,
+    indexedGeometryMap,
+  };
+}
+
+/** @internal */
+export function renderBubble(
+  dataSeries: DataSeries,
+  xScale: Scale,
+  yScale: Scale,
+  color: Color,
+  hasY0Accessors: boolean,
+  seriesStyle: BubbleSeriesStyle,
+  markSizeOptions: MarkSizeOptions,
+  pointStyleAccessor?: PointStyleAccessor,
+): {
+  bubbleGeometry: BubbleGeometry;
+  indexedGeometryMap: IndexedGeometryMap;
+} {
+  const { pointGeometries, indexedGeometryMap } = renderPoints(
+    0,
+    dataSeries,
+    xScale,
+    yScale,
+    color,
+    seriesStyle.point,
+    hasY0Accessors,
+    markSizeOptions,
+    pointStyleAccessor,
+    true,
+  );
+
+  const bubbleGeometry = {
+    points: pointGeometries,
+    color,
+    seriesIdentifier: {
+      key: dataSeries.key,
+      specId: dataSeries.specId,
+      yAccessor: dataSeries.yAccessor,
+      splitAccessors: dataSeries.splitAccessors,
+      seriesKeys: dataSeries.seriesKeys,
+    },
+    seriesPointStyle: seriesStyle.point,
+  };
+  return {
+    bubbleGeometry,
     indexedGeometryMap,
   };
 }
