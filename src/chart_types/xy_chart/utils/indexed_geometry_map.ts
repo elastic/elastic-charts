@@ -22,8 +22,7 @@ import { IndexedGeometry, isPointGeometry } from '../../../utils/geometry';
 import { Point } from '../../../utils/point';
 import { IndexedGeometryLinearMap } from './indexed_geometry_linear_map';
 import { IndexedGeometrySpatialMap } from './indexed_geometry_spatial_map';
-// @ts-ignore
-import { Delaunay } from '../../../utils/d3-delaunay';
+import { Bounds } from '../../../utils/d3-delaunay';
 
 export const GeometryType = Object.freeze({
   linear: 'linear' as 'linear',
@@ -40,7 +39,7 @@ export class IndexedGeometryMap {
    *
    * @param bounds
    */
-  triangulation(bounds?: Delaunay.Bounds) {
+  triangulation(bounds?: Bounds) {
     return this.spatialMap.triangulation(bounds);
   }
 
