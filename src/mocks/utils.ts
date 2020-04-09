@@ -31,12 +31,19 @@ export const forcedType = <T extends object>(obj: Partial<T>): T => {
   return obj as T;
 };
 
+export type RandomNumberGenerator = (
+  min?: number,
+  max?: number,
+  fractionDigits?: number,
+  inclusive?: boolean,
+) => number;
+
 /**
  * Return rng function with optional `min`, `max` and `fractionDigits` params
  *
  * @param string process.env.RNG_SEED
  */
-export const getRandomNumberGenerator = (seed = process.env.RNG_SEED) => {
+export const getRandomNumberGenerator = (seed = process.env.RNG_SEED): RandomNumberGenerator => {
   const rng = seedrandom(seed);
 
   /**

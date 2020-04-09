@@ -38,6 +38,11 @@ const defaultProps = {
 type SpecRequiredProps = Pick<BubbleSeriesSpec, 'id' | 'data'>;
 type SpecOptionalProps = Partial<Omit<BubbleSeriesSpec, 'chartType' | 'specType' | 'seriesType' | 'id' | 'data'>>;
 
+/**
+ * @note This series type uses a spatial index that is incompatible with other series types.
+ * Nothing will break, just the tooltip values will be combined across linear and spatial values.
+ * Please avoid mixed series types until this is resolved.
+ */
 export const BubbleSeries: React.FunctionComponent<SpecRequiredProps & SpecOptionalProps> = getConnect()(
   specComponentFactory<
     BubbleSeriesSpec,

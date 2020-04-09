@@ -19,16 +19,12 @@
 import React from 'react';
 import { number, boolean } from '@storybook/addon-knobs';
 
-import { Axis, Chart, LineSeries, Position, ScaleType, Settings, TooltipType } from '../../src';
-import { getRandomNumberGenerator } from '../../src/mocks/utils';
+import { Axis, Chart, BubbleSeries, Position, ScaleType, Settings, TooltipType } from '../../src';
+import { SeededDataGenerator } from '../../src/mocks/utils';
 import { action } from '@storybook/addon-actions';
 
-const getRandomNumber = getRandomNumberGenerator();
-const data = new Array(100).fill(0).map((_, x) => ({
-  x,
-  y: getRandomNumber(0, 100),
-  z: getRandomNumber(0, 50),
-}));
+const dg = new SeededDataGenerator();
+const data = dg.generateRandomGroupedSeries(10, 4);
 
 export const example = () => {
   const onElementListeners = {
@@ -42,27 +38,17 @@ export const example = () => {
     max: 100,
     step: 1,
   });
-  const size = number('data size', 20, {
-    range: true,
-    min: 10,
-    max: 100,
-    step: 10,
-  });
 
   return (
     <Chart className="story-chart">
       <Settings
+        showLegend
         tooltip={{
           type: TooltipType.Follow,
           snap: false,
         }}
         theme={{
           markSizeRatio,
-          lineSeriesStyle: {
-            line: {
-              visible: false,
-            },
-          },
         }}
         debug={boolean('debug', false)}
         pointBuffer={(r) => 20 / r}
@@ -71,14 +57,15 @@ export const example = () => {
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
-      <LineSeries
+      <BubbleSeries
         id="bubbles"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
+        splitSeriesAccessors={['g']}
         markSizeAccessor="z"
-        data={data.slice(0, size)}
+        data={data}
       />
     </Chart>
   );
