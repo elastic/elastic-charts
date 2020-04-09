@@ -1166,10 +1166,10 @@ describe('Rendering points - areas', () => {
       {
         datum: [1546300800000, 0],
         initialY0: null,
-        initialY1: null,
+        initialY1: 0,
         x: 1546300800000,
         y0: null,
-        y1: null,
+        y1: 0,
         mark: null,
       },
       {
