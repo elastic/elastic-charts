@@ -22,11 +22,14 @@ import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getPieSpecOrNull } from './pie_spec';
 import { partitionGeometries } from './geometries';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { PrimitiveValue } from '../../layout/utils/group_by_rollup';
+import { QuadViewModel } from '../../layout/types/viewmodel_types';
+import { getFlatHierarchy } from './get_flat_hierarchy';
 
 /** @internal */
 export const computeLegendSelector = createCachedSelector(
-  [getPieSpecOrNull, getSettingsSpecSelector, partitionGeometries],
-  (pieSpec, settings, geoms): LegendItem[] => {
+  [getPieSpecOrNull, getSettingsSpecSelector, partitionGeometries, getFlatHierarchy],
+  (pieSpec, settings, geoms, sortedItems): LegendItem[] => {
     if (!pieSpec) {
       return [];
     }
@@ -63,21 +66,33 @@ export const computeLegendSelector = createCachedSelector(
       });
     }
 
-    return items.map<LegendItem>(({ dataName, fillColor, depth }) => {
-      const labelFormatter = labelFormatters[depth - 1];
-      const formatter = labelFormatter?.nodeLabel;
+    return items
+      .sort((a, b) => {
+        const aIndex = findIndex(sortedItems, a);
+        const bIndex = findIndex(sortedItems, b);
+        return aIndex - bIndex;
+      })
+      .map<LegendItem>(({ dataName, fillColor, depth }) => {
+        const labelFormatter = labelFormatters[depth - 1];
+        const formatter = labelFormatter?.nodeLabel;
 
-      return {
-        color: fillColor,
-        label: formatter ? formatter(dataName) : dataName,
-        dataName,
-        childId: dataName,
-        depth: flatLegend ? 0 : depth - 1,
-        seriesIdentifier: {
-          key: dataName,
-          specId: id,
-        },
-      };
-    });
+        return {
+          color: fillColor,
+          label: formatter ? formatter(dataName) : dataName,
+          dataName,
+          childId: dataName,
+          depth: flatLegend ? 0 : depth - 1,
+          seriesIdentifier: {
+            key: dataName,
+            specId: id,
+          },
+        };
+      });
   },
 )(getChartIdSelector);
+
+function findIndex(items: Array<[PrimitiveValue, number, PrimitiveValue]>, child: QuadViewModel) {
+  return items.findIndex((item) => {
+    return item[0] === child.dataName && item[1] === child.depth && item[2] === child.value;
+  });
+}
