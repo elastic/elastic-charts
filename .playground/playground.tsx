@@ -17,61 +17,36 @@
  * under the License. */
 
 import React from 'react';
-import {
-  Chart,
-  ScaleType,
-  Position,
-  Axis,
-  Settings,
-  PartitionElementEvent,
-  XYChartElementEvent,
-  BarSeries,
-} from '../src';
+import { Chart, ScaleType, Position, Axis, Settings, BarSeries, DataGenerator } from '../src';
 
-export class Playground extends React.Component<{}, { isSunburstShown: boolean }> {
-  onClick = (elements: Array<PartitionElementEvent | XYChartElementEvent>) => {
-    // eslint-disable-next-line no-console
-    console.log(elements[0]);
-  };
+export class Playground extends React.Component {
   render() {
+    const dg = new DataGenerator();
+    const data = dg.generateBasicSeries(10);
+    const data2 = dg.generateBasicSeries(10);
+
     return (
       <>
         <div className="chart">
-          <Chart size={[300, 200]}>
+          <Chart>
             <Settings
-              onElementClick={this.onClick}
-              rotation={90}
-              theme={{
-                barSeriesStyle: {
-                  displayValue: {
-                    fontSize: 15,
-                    fill: 'black',
-                    offsetX: 5,
-                    offsetY: -8,
-                  },
-                },
+              brushAxis="both"
+              onBrushEnd={(values) => {
+                // eslint-disable-next-line no-console
+                console.log(values);
               }}
             />
+            <Axis id="x" position={Position.Bottom} />
             <Axis id="y1" position={Position.Left} />
+            <Axis id="y2" groupId="aaa" position={Position.Right} />
+            <BarSeries id="amount" xScaleType={ScaleType.Linear} xAccessor="x" yAccessors={['y']} data={data} />
             <BarSeries
-              id="amount"
-              xScaleType={ScaleType.Ordinal}
+              id="amount2"
+              groupId="aaa"
+              xScaleType={ScaleType.Linear}
               xAccessor="x"
               yAccessors={['y']}
-              data={[
-                { x: 'trousers', y: 390, val: 1222 },
-                { x: 'watches', y: 0, val: 1222 },
-                { x: 'bags', y: 750, val: 1222 },
-                { x: 'cocktail dresses', y: 854, val: 1222 },
-              ]}
-              displayValueSettings={{
-                showValueLabel: true,
-                isValueContainedInElement: true,
-                hideClippedValue: true,
-                valueFormatter: (d) => {
-                  return `${d} $`;
-                },
-              }}
+              data={data2}
             />
           </Chart>
         </div>

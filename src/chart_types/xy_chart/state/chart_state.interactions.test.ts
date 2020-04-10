@@ -21,7 +21,7 @@ import { BarSeriesSpec, BasicSeriesSpec, AxisSpec, SeriesTypes } from '../utils/
 import { Position } from '../../../utils/commons';
 import { ScaleType } from '../../../scales';
 import { chartStoreReducer, GlobalChartState } from '../../../state/chart_state';
-import { SettingsSpec, DEFAULT_SETTINGS_SPEC, SpecTypes, TooltipType } from '../../../specs';
+import { SettingsSpec, DEFAULT_SETTINGS_SPEC, SpecTypes, TooltipType, XYBrushArea } from '../../../specs';
 import { computeSeriesGeometriesSelector } from './selectors/compute_series_geometries';
 import { getProjectedPointerPositionSelector } from './selectors/get_projected_pointer_position';
 import {
@@ -782,7 +782,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
   });
   describe('brush', () => {
     test('can respond to a brush end event', () => {
-      const brushEndListener = jest.fn<void, [number, number]>((): void => {
+      const brushEndListener = jest.fn<void, [XYBrushArea]>((): void => {
         return;
       });
       const onBrushCaller = createOnBrushEndCaller();
@@ -827,8 +827,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
         expect(brushEndListener).not.toBeCalled();
       } else {
         expect(brushEndListener).toBeCalled();
-        expect(brushEndListener.mock.calls[0][0]).toBe(0);
-        expect(brushEndListener.mock.calls[0][1]).toBe(2.5);
+        expect(brushEndListener.mock.calls[0][0]).toEqual({ x: [0, 2.5] });
       }
       const start2 = { x: 75, y: 0 };
       const end2 = { x: 100, y: 0 };
@@ -840,8 +839,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
         expect(brushEndListener).not.toBeCalled();
       } else {
         expect(brushEndListener).toBeCalled();
-        expect(brushEndListener.mock.calls[1][0]).toBe(2.5);
-        expect(brushEndListener.mock.calls[1][1]).toBe(3);
+        expect(brushEndListener.mock.calls[1][0]).toEqual({ x: [2.5, 3] });
       }
 
       const start3 = { x: 75, y: 0 };
@@ -853,8 +851,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
         expect(brushEndListener).not.toBeCalled();
       } else {
         expect(brushEndListener).toBeCalled();
-        expect(brushEndListener.mock.calls[2][0]).toBe(2.5);
-        expect(brushEndListener.mock.calls[2][1]).toBe(3);
+        expect(brushEndListener.mock.calls[2][0]).toEqual({ x: [2.5, 3] });
       }
 
       const start4 = { x: 25, y: 0 };
@@ -866,12 +863,11 @@ function mouseOverTestSuite(scaleType: ScaleType) {
         expect(brushEndListener).not.toBeCalled();
       } else {
         expect(brushEndListener).toBeCalled();
-        expect(brushEndListener.mock.calls[3][0]).toBe(0);
-        expect(brushEndListener.mock.calls[3][1]).toBe(0.5);
+        expect(brushEndListener.mock.calls[3][0]).toEqual({ x: [0, 0.5] });
       }
     });
     test('can respond to a brush end event on rotated chart', () => {
-      const brushEndListener = jest.fn<void, [number, number]>((): void => {
+      const brushEndListener = jest.fn<void, [XYBrushArea]>((): void => {
         return;
       });
       const onBrushCaller = createOnBrushEndCaller();
@@ -906,8 +902,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
         expect(brushEndListener).not.toBeCalled();
       } else {
         expect(brushEndListener).toBeCalled();
-        expect(brushEndListener.mock.calls[0][0]).toBe(0);
-        expect(brushEndListener.mock.calls[0][1]).toBe(1);
+        expect(brushEndListener.mock.calls[0][0]).toEqual({ x: [0, 1] });
       }
       const start2 = { x: 0, y: 75 };
       const end2 = { x: 0, y: 100 };
@@ -919,8 +914,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
         expect(brushEndListener).not.toBeCalled();
       } else {
         expect(brushEndListener).toBeCalled();
-        expect(brushEndListener.mock.calls[1][0]).toBe(1);
-        expect(brushEndListener.mock.calls[1][1]).toBe(1);
+        expect(brushEndListener.mock.calls[1][0]).toEqual({ x: [1, 1] });
       }
 
       const start3 = { x: 0, y: 75 };
@@ -932,8 +926,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
         expect(brushEndListener).not.toBeCalled();
       } else {
         expect(brushEndListener).toBeCalled();
-        expect(brushEndListener.mock.calls[2][0]).toBe(1);
-        expect(brushEndListener.mock.calls[2][1]).toBe(1); // max of chart
+        expect(brushEndListener.mock.calls[2][0]).toEqual({ x: [1, 1] }); // max of chart
       }
 
       const start4 = { x: 0, y: 25 };
@@ -945,8 +938,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
         expect(brushEndListener).not.toBeCalled();
       } else {
         expect(brushEndListener).toBeCalled();
-        expect(brushEndListener.mock.calls[3][0]).toBe(0);
-        expect(brushEndListener.mock.calls[3][1]).toBe(0);
+        expect(brushEndListener.mock.calls[3][0]).toEqual({ x: [0, 0] });
       }
     });
   });

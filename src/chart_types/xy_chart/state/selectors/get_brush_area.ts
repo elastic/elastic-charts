@@ -22,6 +22,10 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { BrushAxis } from '../../../../specs';
+import { Rotation } from '../../../../utils/commons';
+import { Point } from '../../../../utils/point';
 
 const getMouseDownPosition = (state: GlobalChartState) => state.interactions.pointer.down;
 const getCurrentPointerPosition = (state: GlobalChartState) => {
@@ -30,8 +34,14 @@ const getCurrentPointerPosition = (state: GlobalChartState) => {
 
 /** @internal */
 export const getBrushAreaSelector = createCachedSelector(
-  [getMouseDownPosition, getCurrentPointerPosition, getChartRotationSelector, computeChartDimensionsSelector],
-  (mouseDownPosition, cursorPosition, chartRotation, { chartDimensions }): Dimensions | null => {
+  [
+    getMouseDownPosition,
+    getCurrentPointerPosition,
+    getChartRotationSelector,
+    computeChartDimensionsSelector,
+    getSettingsSpecSelector,
+  ],
+  (mouseDownPosition, cursorPosition, chartRotation, { chartDimensions }, { brushAxis }): Dimensions | null => {
     if (!mouseDownPosition) {
       return null;
     }
@@ -39,22 +49,73 @@ export const getBrushAreaSelector = createCachedSelector(
       x: mouseDownPosition.position.x,
       y: mouseDownPosition.position.y,
     };
-    if (chartRotation === 0 || chartRotation === 180) {
-      const area = {
-        left: brushStart.x - chartDimensions.left,
-        width: cursorPosition.x - brushStart.x,
-        top: 0,
-        height: chartDimensions.height,
-      };
-      return area;
-    } else {
-      const area = {
-        left: 0,
-        width: chartDimensions.width,
-        top: brushStart.y - chartDimensions.top,
-        height: cursorPosition.y - brushStart.y,
-      };
-      return area;
+    switch (brushAxis) {
+      case BrushAxis.Y:
+        return getBrushForYAxis(chartDimensions, chartRotation, cursorPosition, brushStart);
+      case BrushAxis.Both:
+        return getBrushForBothAxis(chartDimensions, cursorPosition, brushStart);
+      case BrushAxis.X:
+      default:
+        return getBrushForXAxis(chartDimensions, chartRotation, cursorPosition, brushStart);
     }
   },
 )(getChartIdSelector);
+
+function getBrushForXAxis(
+  chartDimensions: Dimensions,
+  chartRotation: Rotation,
+  cursorPosition: Point,
+  brushStart: Point,
+) {
+  if (chartRotation === 0 || chartRotation === 180) {
+    const area = {
+      left: brushStart.x - chartDimensions.left,
+      width: cursorPosition.x - brushStart.x,
+      top: 0,
+      height: chartDimensions.height,
+    };
+    return area;
+  } else {
+    const area = {
+      left: 0,
+      width: chartDimensions.width,
+      top: brushStart.y - chartDimensions.top,
+      height: cursorPosition.y - brushStart.y,
+    };
+    return area;
+  }
+}
+
+function getBrushForYAxis(
+  chartDimensions: Dimensions,
+  chartRotation: Rotation,
+  cursorPosition: Point,
+  brushStart: Point,
+) {
+  if (chartRotation === -90 || chartRotation === 90) {
+    const area = {
+      left: brushStart.x - chartDimensions.left,
+      width: cursorPosition.x - brushStart.x,
+      top: 0,
+      height: chartDimensions.height,
+    };
+    return area;
+  } else {
+    const area = {
+      left: 0,
+      width: chartDimensions.width,
+      top: brushStart.y - chartDimensions.top,
+      height: cursorPosition.y - brushStart.y,
+    };
+    return area;
+  }
+}
+
+function getBrushForBothAxis(chartDimensions: Dimensions, cursorPosition: Point, brushStart: Point) {
+  return {
+    left: brushStart.x - chartDimensions.left,
+    width: cursorPosition.x - brushStart.x,
+    top: brushStart.y - chartDimensions.top,
+    height: cursorPosition.y - brushStart.y,
+  };
+}
