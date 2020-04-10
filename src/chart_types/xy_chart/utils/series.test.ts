@@ -969,5 +969,19 @@ describe('Series', () => {
       expect(splittedSeries.rawDataSeries.length).toBe(2);
       expect(splittedSeries.rawDataSeries).toMatchSnapshot();
     });
+    test('Should ignore series if splitSeriesAccessors are defined but not contained in any datum', () => {
+      const spec = MockSeriesSpec.bar({
+        data: [
+          [0, 1],
+          [1, 1],
+          [2, 1],
+        ],
+        xAccessor: 0,
+        yAccessors: [1],
+        splitSeriesAccessors: [2],
+      });
+      const splittedSeries = splitSeries(spec);
+      expect(splittedSeries.rawDataSeries.length).toBe(0);
+    });
   });
 });
