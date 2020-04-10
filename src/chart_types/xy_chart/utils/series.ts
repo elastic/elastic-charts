@@ -144,6 +144,10 @@ export function splitSeries({
 
   data.forEach((datum) => {
     const splitAccessors = getSplitAccessors(datum, splitSeriesAccessors);
+    // we should have the same amount of valid values from the datum in the splitAccessors array length
+    if (splitSeriesAccessors.length !== splitAccessors.size) {
+      return;
+    }
     if (isMultipleY) {
       yAccessors.forEach((accessor, index) => {
         const cleanedDatum = cleanDatum(datum, xAccessor, accessor, y0Accessors && y0Accessors[index]);
