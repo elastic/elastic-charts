@@ -49,6 +49,11 @@ export function arrayToLookup(keyFun: Function, array: Array<any>) {
   return Object.assign({}, ...array.map((d) => ({ [keyFun(d)]: d })));
 }
 
+// /** @internal */
+// function computeRelativeLuminosity(rgb: string) {
+//   return colorJS(rgb).luminosity();
+// }
+
 /** @internal */
 function computeContrast(rgb1: string, rgb2: string) {
   return colorJS(rgb1).contrast(colorJS(rgb2));
@@ -56,15 +61,12 @@ function computeContrast(rgb1: string, rgb2: string) {
 
 /** @internal */
 export function colorIsDark(textColor: Color, bgColor: Color) {
-  // compute the contrast of the two colors
   const currentContrast = computeContrast(textColor, bgColor);
-  // if the contrast isn't at least 4.5 we need to manipulate the textColor
-  // some textColors are not black or white
   if (textColor === '#ffffff' || textColor === '#000000') {
-    return currentContrast >= 4.5 ? textColor : textColor === '#ffffff' ? '#000000' : '#ffffff';
+    return currentContrast > 4.5 ? textColor : textColor === '#ffffff' ? '#000000' : '#ffffff';
   } else {
     const newTextColor =
       computeContrast(textColor, '#000000') > computeContrast(textColor, '#ffffff') ? '#ffffff' : '#000000';
-    return currentContrast >= 4.5 ? newTextColor : newTextColor === '#ffffff' ? '#000000' : '#ffffff';
+    return currentContrast > 4.5 ? newTextColor : newTextColor === '#ffffff' ? '#000000' : '#ffffff';
   }
 }

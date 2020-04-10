@@ -115,6 +115,9 @@ export interface ColorConfig {
   vizColors: string[];
   defaultVizColor: string;
 }
+export interface BackgroundStyles {
+  color: string;
+}
 export interface LegendStyle {
   /**
    * Max width used for left/right legend
@@ -175,6 +178,7 @@ export interface Theme {
   colors: ColorConfig;
   legend: LegendStyle;
   crosshair: CrosshairStyle;
+  background: BackgroundStyles;
 }
 
 export type PartialTheme = RecursivePartial<Theme>;

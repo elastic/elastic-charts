@@ -153,4 +153,7 @@ export const LIGHT_THEME: Theme = {
       visible: true,
     },
   },
+  background: {
+    color: 'transparent',
+  },
 };

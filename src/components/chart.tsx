@@ -34,6 +34,8 @@ import { isInitialized } from '../state/selectors/is_initialized';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_specs';
 import { onExternalPointerEvent } from '../state/actions/events';
 import { PointerEvent } from '../specs';
+import { BackgroundStyles } from '../utils/themes/theme';
+import { getChartThemeSelector } from '../state/selectors/get_chart_theme';
 
 interface ChartProps {
   /** The type of rendered
@@ -47,16 +49,16 @@ interface ChartProps {
 
 interface ChartState {
   legendPosition: Position;
+  backgroundStyles?: BackgroundStyles;
 }
 
-function getContainerStyle(size: any): CSSProperties {
-  if (size) {
-    return {
-      position: 'relative',
-      ...getChartSize(size),
-    };
-  }
-  return {};
+function getContainerStyle(size: any, styles?: BackgroundStyles): CSSProperties {
+  return {
+    ...(styles && {
+      backgroundColor: styles.color,
+    }),
+    ...getChartSize(size),
+  };
 }
 
 export class Chart extends React.Component<ChartProps, ChartState> {
@@ -84,7 +86,6 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     this.state = {
       legendPosition: Position.Right,
     };
-
     this.unsubscribeToStore = this.chartStore.subscribe(() => {
       const state = this.chartStore.getState();
       if (!isInitialized(state)) {
@@ -100,6 +101,9 @@ export class Chart extends React.Component<ChartProps, ChartState> {
       if (state.internalChartState) {
         state.internalChartState.eventCallbacks(state);
       }
+      this.setState({
+        backgroundStyles: getChartThemeSelector(state).background,
+      });
     });
   }
 
@@ -157,7 +161,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
   render() {
     const { size, className } = this.props;
-    const containerStyle = getContainerStyle(size);
+    const containerStyle = getContainerStyle(size, this.state.backgroundStyles);
     const horizontal = isHorizontalAxis(this.state.legendPosition);
     const chartClassNames = classNames('echChart', className, {
       'echChart--column': horizontal,

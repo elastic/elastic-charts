@@ -33,6 +33,9 @@ export const example = () => {
         visible: true,
       },
     },
+    background: {
+      color: color('COLORS', 'blue'),
+    },
   };
 
   return (

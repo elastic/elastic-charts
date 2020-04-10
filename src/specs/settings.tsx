@@ -224,6 +224,7 @@ export interface SettingsSpec extends Spec {
   xDomain?: Domain | DomainRange;
   resizeDebounce?: number;
   legendColorPicker?: LegendColorPicker;
+  backgroundColor?: string;
 }
 
 export type DefaultSettingsProps =
@@ -272,6 +273,7 @@ export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
   showLegendExtra: false,
   hideDuplicateAxes: false,
   theme: LIGHT_THEME,
+  backgroundColor: '#000',
 };
 
 export type SettingsSpecProps = Partial<Omit<SettingsSpec, 'chartType' | 'specType' | 'id'>>;

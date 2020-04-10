@@ -16,6 +16,8 @@
  * specific language governing permissions and limitations
  * under the License. */
 
+import { CSSProperties } from 'react';
+
 export type ChartSizeArray = [number | string | undefined, number | string | undefined];
 export interface ChartSizeObject {
   width?: number | string;
@@ -25,20 +27,26 @@ export interface ChartSizeObject {
 export type ChartSize = number | string | ChartSizeArray | ChartSizeObject;
 
 /** @internal */
-export function getChartSize(size: ChartSize) {
+export function getChartSize(size?: ChartSize): CSSProperties {
+  if (size === undefined) {
+    return {};
+  }
   if (Array.isArray(size)) {
     return {
+      position: 'relative',
       width: size[0] === undefined ? '100%' : size[0],
       height: size[1] === undefined ? '100%' : size[1],
     };
   } else if (typeof size === 'object') {
     return {
+      position: 'relative',
       width: size.width === undefined ? '100%' : size.width,
       height: size.height === undefined ? '100%' : size.height,
     };
   }
   const sameSize = size === undefined ? '100%' : size;
   return {
+    position: 'relative',
     width: sameSize,
     height: sameSize,
   };

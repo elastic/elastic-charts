@@ -154,4 +154,7 @@ export const DARK_THEME: Theme = {
       visible: true,
     },
   },
+  background: {
+    color: 'transparent',
+  },
 };
