@@ -20,7 +20,7 @@ import { scaleBand, scaleQuantize, ScaleQuantize, ScaleBand as D3ScaleBand } fro
 
 import { clamp } from '../utils/commons';
 import { ScaleType, Scale } from '.';
-import { strigifyValue } from '../chart_types/xy_chart/state/utils';
+import { stringifyNullsUndefined } from '../chart_types/xy_chart/state/utils';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 
 /**
@@ -76,7 +76,7 @@ export class ScaleBand implements Scale {
   }
 
   private getScaledValue(value?: PrimitiveValue): number | null {
-    const scaleValue = this.d3Scale(strigifyValue(value));
+    const scaleValue = this.d3Scale(stringifyNullsUndefined(value));
 
     if (scaleValue === undefined || isNaN(scaleValue)) {
       return null;

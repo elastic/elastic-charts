@@ -222,12 +222,15 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   if (!isInitialized(state)) {
     return DEFAULT_PROPS;
   }
+
+  const { geometries, geometriesIndex } = computeSeriesGeometriesSelector(state);
+
   return {
     initialized: true,
     isChartEmpty: isChartEmptySelector(state),
     debug: getSettingsSpecSelector(state).debug,
-    geometries: computeSeriesGeometriesSelector(state).geometries,
-    geometriesIndex: computeSeriesGeometriesSelector(state).geometriesIndex,
+    geometries,
+    geometriesIndex,
     theme: getChartThemeSelector(state),
     chartContainerDimensions: getChartContainerDimensionsSelector(state),
     highlightedLegendItem: getHighlightedSeriesSelector(state),

@@ -769,7 +769,7 @@ export function getDistance(a: Point, b: Point) {
 }
 
 /** @internal */
-export function strigifyValue(value?: PrimitiveValue): string | number {
+export function stringifyNullsUndefined(value?: PrimitiveValue): string | number {
   if (value === undefined) {
     return 'undefined';
   }

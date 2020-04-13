@@ -24,7 +24,7 @@ import { withContext, withClip } from '../../../../renderers/canvas';
 import { renderPoints } from './points';
 import { Rect } from '../../../../geoms/types';
 
-interface LineGeometriesDataProps {
+interface BubbleGeometriesDataProps {
   animated?: boolean;
   bubbles: BubbleGeometry[];
   sharedStyle: SharedGeometryStateStyle;
@@ -33,7 +33,7 @@ interface LineGeometriesDataProps {
 }
 
 /** @internal */
-export function renderBubbles(ctx: CanvasRenderingContext2D, props: LineGeometriesDataProps) {
+export function renderBubbles(ctx: CanvasRenderingContext2D, props: BubbleGeometriesDataProps) {
   withContext(ctx, (ctx) => {
     const { bubbles, sharedStyle, highlightedLegendItem, clippings } = props;
 
