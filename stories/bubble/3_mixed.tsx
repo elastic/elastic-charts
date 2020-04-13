@@ -50,6 +50,11 @@ export const example = () => {
       <Settings
         theme={{
           markSizeRatio,
+          bubbleSeriesStyle: {
+            point: {
+              fill: 'transparent',
+            },
+          },
         }}
         debug={boolean('debug', false)}
         pointBuffer={(r) => 20 / r}

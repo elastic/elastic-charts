@@ -38,7 +38,7 @@ export const example = () => {
     max: 100,
     step: 1,
   });
-  const size = number('data size', 20, {
+  const size = number('total points', 20, {
     range: true,
     min: 10,
     max: 100,

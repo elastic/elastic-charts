@@ -18,11 +18,12 @@
 
 import { getGeometryStateStyle } from '../../rendering/rendering';
 import { BubbleGeometry } from '../../../../utils/geometry';
-import { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
+import { SharedGeometryStateStyle, GeometryStateStyle, PointStyle } from '../../../../utils/themes/theme';
 import { LegendItem } from '../../legend/legend';
 import { withContext, withClip } from '../../../../renderers/canvas';
-import { renderPoints } from './points';
+import { renderPointGroup } from './points';
 import { Rect } from '../../../../geoms/types';
+import { SeriesKey } from '../../utils/series';
 
 interface BubbleGeometriesDataProps {
   animated?: boolean;
@@ -36,18 +37,25 @@ interface BubbleGeometriesDataProps {
 export function renderBubbles(ctx: CanvasRenderingContext2D, props: BubbleGeometriesDataProps) {
   withContext(ctx, (ctx) => {
     const { bubbles, sharedStyle, highlightedLegendItem, clippings } = props;
+    const geometryStyles: Record<SeriesKey, GeometryStateStyle> = {};
+    const pointStyles: Record<SeriesKey, PointStyle> = {};
 
-    bubbles.forEach(({ seriesIdentifier, seriesPointStyle, points }) => {
-      withClip(
-        ctx,
-        clippings,
-        (ctx) => {
-          const geometryStyle = getGeometryStateStyle(seriesIdentifier, highlightedLegendItem, sharedStyle);
-          renderPoints(ctx, points, seriesPointStyle, geometryStyle);
-        },
-        // TODO: add padding over clipping
-        points[0]?.value.mark !== null,
-      );
+    const allPoints = bubbles.flatMap(({ seriesIdentifier, seriesPointStyle, points }) => {
+      const geometryStyle = getGeometryStateStyle(seriesIdentifier, highlightedLegendItem, sharedStyle);
+      geometryStyles[seriesIdentifier.key] = geometryStyle;
+      pointStyles[seriesIdentifier.key] = seriesPointStyle;
+
+      return points;
     });
+
+    withClip(
+      ctx,
+      clippings,
+      (ctx) => {
+        renderPointGroup(ctx, allPoints, pointStyles, geometryStyles);
+      },
+      // TODO: add padding over clipping
+      allPoints[0]?.value.mark !== null,
+    );
   });
 }

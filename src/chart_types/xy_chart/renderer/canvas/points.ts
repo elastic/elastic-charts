@@ -21,8 +21,13 @@ import { PointStyle, GeometryStateStyle } from '../../../../utils/themes/theme';
 import { renderCircle } from './primitives/arc';
 import { Circle, Stroke, Fill } from '../../../../geoms/types';
 import { buildPointStyles } from './styles/point';
+import { SeriesKey } from '../../utils/series';
 
-/** @internal */
+/**
+ * Renders points from single series
+ *
+ * @internal
+ */
 export function renderPoints(
   ctx: CanvasRenderingContext2D,
   points: PointGeometry[],
@@ -36,6 +41,48 @@ export function renderPoints(
         color,
         themeStyle,
         geometryStateStyle,
+        pointRadius,
+        styleOverrides,
+      );
+
+      const circle: Circle = {
+        x: x + transform.x,
+        y,
+        radius,
+      };
+
+      return [circle, fill, stroke];
+    })
+    .sort(([{ radius: a }], [{ radius: b }]) => b - a)
+    .forEach((args) => renderCircle(ctx, ...args));
+}
+
+/**
+ * Renders points in group from multiple series on a single layer
+ *
+ * @internal
+ */
+export function renderPointGroup(
+  ctx: CanvasRenderingContext2D,
+  points: PointGeometry[],
+  themeStyles: Record<SeriesKey, PointStyle>,
+  geometryStateStyles: Record<SeriesKey, GeometryStateStyle>,
+) {
+  points
+    .map<[Circle, Fill, Stroke]>((point) => {
+      const {
+        x,
+        y,
+        color,
+        radius: pointRadius,
+        transform,
+        styleOverrides,
+        seriesIdentifier: { key },
+      } = point;
+      const { fill, stroke, radius } = buildPointStyles(
+        color,
+        themeStyles[key],
+        geometryStateStyles[key],
         pointRadius,
         styleOverrides,
       );

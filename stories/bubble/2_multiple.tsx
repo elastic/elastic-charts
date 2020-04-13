@@ -24,7 +24,6 @@ import { SeededDataGenerator } from '../../src/mocks/utils';
 import { action } from '@storybook/addon-actions';
 
 const dg = new SeededDataGenerator();
-const data = dg.generateRandomGroupedSeries(10, 4);
 
 export const example = () => {
   const onElementListeners = {
@@ -38,6 +37,13 @@ export const example = () => {
     max: 100,
     step: 1,
   });
+  const size = number('total points', 20, {
+    range: true,
+    min: 10,
+    max: 50,
+    step: 5,
+  });
+  const data = dg.generateRandomGroupedSeries(size, 4);
 
   return (
     <Chart className="story-chart">
