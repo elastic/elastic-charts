@@ -448,6 +448,8 @@ export type LineSeriesSpec = BasicSeriesSpec &
 
 /**
  * This spec describe the dataset configuration used to display a line series.
+ *
+ * @alpha
  */
 export type BubbleSeriesSpec = BasicSeriesSpec & {
   /** @default bubble */

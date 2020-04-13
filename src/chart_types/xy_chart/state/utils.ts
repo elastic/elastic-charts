@@ -522,6 +522,7 @@ function renderGeometries(
   const lines: LineGeometry[] = [];
   const bubbles: BubbleGeometry[] = [];
   const indexedGeometryMap = new IndexedGeometryMap();
+  const isMixedChart = isUniqueArray(seriesSpecs, ({ seriesType }) => seriesType) && seriesSpecs.length > 1;
   const geometriesCounts: GeometriesCounts = {
     points: 0,
     bars: 0,
@@ -588,6 +589,7 @@ function renderGeometries(
           enabled: spec.markSizeAccessor !== undefined,
           ratio: chartTheme.markSizeRatio,
         },
+        isMixedChart,
         spec.pointStyleAccessor,
       );
       indexedGeometryMap.merge(renderedBubbles.indexedGeometryMap);
@@ -764,7 +766,7 @@ export function isAllSeriesDeselected(legendItems: Map<string, LegendItem>): boo
 }
 
 /** @internal */
-export function getDistance(a: Point, b: Point) {
+export function getDistance(a: Point, b: Point): number {
   return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
 }
 
@@ -791,6 +793,7 @@ export function stringifyNullsUndefined(value?: PrimitiveValue): string | number
  * isUniqueArray([{ n: 1 }, { n: 1 }, { n: 2 }], ({ n }) => n) // => false
  * ```
  *
+ * @internal
  * @param  {B[]} arr
  * @param  {(d:B)=>T} extractor? extract the value from B
  */

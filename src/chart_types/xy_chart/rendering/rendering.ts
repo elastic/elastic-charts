@@ -486,6 +486,7 @@ export function renderBubble(
   hasY0Accessors: boolean,
   seriesStyle: BubbleSeriesStyle,
   markSizeOptions: MarkSizeOptions,
+  isMixedChart: boolean,
   pointStyleAccessor?: PointStyleAccessor,
 ): {
   bubbleGeometry: BubbleGeometry;
@@ -501,7 +502,7 @@ export function renderBubble(
     hasY0Accessors,
     markSizeOptions,
     pointStyleAccessor,
-    true,
+    !isMixedChart,
   );
 
   const bubbleGeometry = {
@@ -746,6 +747,11 @@ export function isPointOnGeometry(
       },
     );
     const radiusBuffer = typeof buffer === 'number' ? buffer : buffer(radius);
+
+    if (radiusBuffer === Infinity) {
+      return distance <= radius + DEFAULT_HIGHLIGHT_PADDING;
+    }
+
     return distance <= radius + radiusBuffer;
   }
   const { width, height } = indexedGeometry;

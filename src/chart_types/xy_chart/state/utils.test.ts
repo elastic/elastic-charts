@@ -42,6 +42,7 @@ import {
   isVerticalRotation,
   setBarSeriesAccessors,
   getCustomSeriesColors,
+  isUniqueArray,
 } from './utils';
 import { IndexedGeometry, BandedAccessorType } from '../../../utils/geometry';
 import { mergeYCustomDomainsByGroupId } from './selectors/merge_y_custom_domains';
@@ -1499,5 +1500,23 @@ describe('Chart State utils', () => {
       isSeriesVisible: false,
     });
     expect(isAllSeriesDeselected(legendItems2)).toBe(false);
+  });
+
+  describe('#isUniqueArray', () => {
+    it('should return true for simple unique values', () => {
+      expect(isUniqueArray([1, 2])).toBe(true);
+    });
+
+    it('should return true for complex unique values', () => {
+      expect(isUniqueArray([{ n: 1 }, { n: 2 }], ({ n }) => n)).toBe(true);
+    });
+
+    it('should return false for simple duplicated values', () => {
+      expect(isUniqueArray([1, 1, 2])).toBe(false);
+    });
+
+    it('should return false for complex duplicated values', () => {
+      expect(isUniqueArray([{ n: 1 }, { n: 1 }, { n: 2 }], ({ n }) => n)).toBe(false);
+    });
   });
 });
