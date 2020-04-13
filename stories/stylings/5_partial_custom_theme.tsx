@@ -34,7 +34,7 @@ export const example = () => {
       },
     },
     background: {
-      color: color('COLORS', 'blue'),
+      color: color('Change background container color', 'white'),
     },
   };
 

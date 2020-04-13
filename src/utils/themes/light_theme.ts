@@ -154,6 +154,6 @@ export const LIGHT_THEME: Theme = {
     },
   },
   background: {
-    color: 'transparent',
+    color: 'white',
   },
 };
