@@ -57,8 +57,8 @@ interface SVGStyle {
  * @param a1 The angle at which the arc ends in radians, measured from the positive x-axis
  * @param ccw If 1, draws the arc counter-clockwise between the start and end angles
  */
-function getSectorShapeFromCanvasArc(x: number, y: number, r: number, a0: number, a1: number, ccw: number): string {
-  const cw = 1 ^ ccw;
+function getSectorShapeFromCanvasArc(x: number, y: number, r: number, a0: number, a1: number, ccw: boolean): string {
+  const cw = Number(!ccw);
   const da = ccw ? a0 - a1 : a1 - a0;
   return `A${r},${r},0,${+(da >= Math.PI)},${cw},${x + r * Math.cos(a1)},${y + r * Math.sin(a1)}`;
 }
@@ -89,9 +89,9 @@ function renderSector(geometry: QuadViewModel, key: string, style: SVGStyle) {
   const X1 = x1 - TAU / 4;
   const path = [
     `M${y0px * Math.cos(X0)},${y0px * Math.sin(X0)}`,
-    getSectorShapeFromCanvasArc(0, 0, y0px, X0, X1, 0),
+    getSectorShapeFromCanvasArc(0, 0, y0px, X0, X1, false),
     `L${y1px * Math.cos(X1)},${y1px * Math.sin(X1)}`,
-    getSectorShapeFromCanvasArc(0, 0, y1px, X1, X0, 1),
+    getSectorShapeFromCanvasArc(0, 0, y1px, X1, X0, true),
     'Z',
   ].join(' ');
   return <path key={key} d={path} {...style} />;
