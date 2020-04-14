@@ -30,8 +30,8 @@ import {
   setPersistedColor as setPersistedColorAction,
 } from '../../state/actions/colors';
 import { getExtra } from './utils';
-import { renderColor } from './color';
-import { renderLabel } from './label';
+import { Color as ItemColor } from './color';
+import { Label as ItemLabel } from './label';
 import { renderExtra } from './extra';
 
 /** @internal */
@@ -45,14 +45,14 @@ export interface LegendItemProps {
   extraValues: Map<string, LegendItemExtraValues>;
   showExtra: boolean;
   colorPicker?: LegendColorPicker;
-  onLegendItemClickListener?: LegendItemListener;
-  onLegendItemOutListener?: BasicListener;
-  onLegendItemOverListener?: LegendItemListener;
-  legendItemOutAction: typeof onLegendItemOutAction;
-  legendItemOverAction: typeof onLegendItemOverAction;
-  clearTemporaryColors: typeof clearTemporaryColorsAction;
-  setTemporaryColor: typeof setTemporaryColorAction;
-  setPersistedColor: typeof setPersistedColorAction;
+  onClick?: LegendItemListener;
+  onMouseOut?: BasicListener;
+  onMouseOver?: LegendItemListener;
+  mouseOutAction: typeof onLegendItemOutAction;
+  mouseOverAction: typeof onLegendItemOverAction;
+  clearTemporaryColorsAction: typeof clearTemporaryColorsAction;
+  setTemporaryColorAction: typeof setTemporaryColorAction;
+  setPersistedColorAction: typeof setPersistedColorAction;
   toggleDeselectSeriesAction: (legendItemId: SeriesIdentifier) => void;
 }
 
@@ -82,14 +82,14 @@ export function renderLegendItem(
       extraValues={props.extraValues}
       showExtra={props.showExtra}
       toggleDeselectSeriesAction={props.toggleDeselectSeriesAction}
-      legendItemOutAction={props.legendItemOutAction}
-      legendItemOverAction={props.legendItemOverAction}
-      clearTemporaryColors={props.clearTemporaryColors}
-      setTemporaryColor={props.setTemporaryColor}
-      setPersistedColor={props.setPersistedColor}
-      onLegendItemOverListener={props.onLegendItemOverListener}
-      onLegendItemOutListener={props.onLegendItemOutListener}
-      onLegendItemClickListener={props.onLegendItemClickListener}
+      mouseOutAction={props.mouseOutAction}
+      mouseOverAction={props.mouseOverAction}
+      clearTemporaryColorsAction={props.clearTemporaryColorsAction}
+      setTemporaryColorAction={props.setTemporaryColorAction}
+      setPersistedColorAction={props.setPersistedColorAction}
+      onMouseOver={props.onMouseOver}
+      onMouseOut={props.onMouseOut}
+      onClick={props.onClick}
     />
   );
 }
@@ -120,12 +120,18 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
       : undefined;
 
   renderColorPicker() {
-    const { colorPicker: ColorPicker, item, clearTemporaryColors, setTemporaryColor, setPersistedColor } = this.props;
+    const {
+      colorPicker: ColorPicker,
+      item,
+      clearTemporaryColorsAction,
+      setTemporaryColorAction,
+      setPersistedColorAction,
+    } = this.props;
     const { seriesIdentifier, color } = item;
 
     const handleClose = () => {
-      setPersistedColor(seriesIdentifier.key, color);
-      clearTemporaryColors();
+      setPersistedColorAction(seriesIdentifier.key, color);
+      clearTemporaryColorsAction();
       this.toggleIsOpen();
     };
     if (ColorPicker && this.state.isOpen && this.ref.current) {
@@ -134,7 +140,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
           anchor={this.ref.current}
           color={color}
           onClose={handleClose}
-          onChange={(color: Color) => setTemporaryColor(seriesIdentifier.key, color)}
+          onChange={(color: Color) => setTemporaryColorAction(seriesIdentifier.key, color)}
           seriesIdentifier={seriesIdentifier}
         />
       );
@@ -142,10 +148,10 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
   }
 
   render() {
-    const { extraValues, item, showExtra, onLegendItemClickListener, colorPicker, position, totalItems } = this.props;
+    const { extraValues, item, showExtra, onClick, colorPicker, position, totalItems } = this.props;
     const { color, isSeriesHidden, isItemHidden, seriesIdentifier, label } = item;
     const onLabelClick = this.onVisibilityClick(seriesIdentifier);
-    const hasLabelClickListener = Boolean(onLegendItemClickListener);
+    const hasLabelClickListener = Boolean(onClick);
 
     const itemClassNames = classNames('echLegendItem', `echLegendItem--${position}`, {
       'echLegendItem--hidden': isSeriesHidden,
@@ -169,8 +175,13 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
           onMouseLeave={this.onLegendItemMouseOut}
           style={style}
         >
-          {renderColor(color, isSeriesHidden, hasColorPicker, colorClick)}
-          {renderLabel(label, onLabelClick, hasLabelClickListener)}
+          <ItemColor
+            color={color}
+            isSeriesHidden={isSeriesHidden}
+            hasColorPicker={hasColorPicker}
+            onColorClick={colorClick}
+          />
+          <ItemLabel label={label} onLabelClick={onLabelClick} hasLabelClickListener={hasLabelClickListener} />
           {showExtra && extra != null && renderExtra(extra, isSeriesHidden)}
         </li>
         {this.renderColorPicker()}
@@ -183,28 +194,28 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
   };
 
   onLegendItemMouseOver = () => {
-    const { onLegendItemOverListener, legendItemOverAction, item } = this.props;
+    const { onMouseOver, mouseOverAction, item } = this.props;
     // call the settings listener directly if available
-    if (onLegendItemOverListener) {
-      onLegendItemOverListener(item.seriesIdentifier);
+    if (onMouseOver) {
+      onMouseOver(item.seriesIdentifier);
     }
-    legendItemOverAction(item.seriesIdentifier.key);
+    mouseOverAction(item.seriesIdentifier.key);
   };
 
   onLegendItemMouseOut = () => {
-    const { onLegendItemOutListener, legendItemOutAction } = this.props;
+    const { onMouseOut, mouseOutAction } = this.props;
     // call the settings listener directly if available
-    if (onLegendItemOutListener) {
-      onLegendItemOutListener();
+    if (onMouseOut) {
+      onMouseOut();
     }
-    legendItemOutAction();
+    mouseOutAction();
   };
 
   // TODO handle shift key
   onVisibilityClick = (legendItemId: SeriesIdentifier) => () => {
-    const { onLegendItemClickListener, toggleDeselectSeriesAction } = this.props;
-    if (onLegendItemClickListener) {
-      onLegendItemClickListener(legendItemId);
+    const { onClick, toggleDeselectSeriesAction } = this.props;
+    if (onClick) {
+      onClick(legendItemId);
     }
     toggleDeselectSeriesAction(legendItemId);
   };

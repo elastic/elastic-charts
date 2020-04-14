@@ -19,17 +19,16 @@
 import React from 'react';
 import classNames from 'classnames';
 
+interface LabelProps {
+  label: string;
+  onLabelClick: (event: React.MouseEvent<Element, MouseEvent>) => void;
+  hasLabelClickListener: boolean;
+}
 /**
+ * Label component used to display text in legend item
  * @internal
- * @param label
- * @param onLabelClick
- * @param hasLabelClickListener
  */
-export function renderLabel(
-  label: string,
-  onLabelClick: (event: React.MouseEvent<Element, MouseEvent>) => void,
-  hasLabelClickListener: boolean,
-) {
+export function Label({ label, onLabelClick, hasLabelClickListener }: LabelProps) {
   const labelClassNames = classNames('echLegendItem__label', {
     ['echLegendItem__label--hasClickListener']: hasLabelClickListener,
   });

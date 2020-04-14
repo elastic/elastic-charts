@@ -20,20 +20,17 @@ import React from 'react';
 import classNames from 'classnames';
 import { Icon } from '../icons/icon';
 
+interface ColorProps {
+  color: string;
+  isSeriesHidden?: boolean;
+  hasColorPicker: boolean;
+  onColorClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+}
 /**
- * Render a colored dot for the item
+ * Color component used by the legend item
  * @internal
- * @param color
- * @param isSeriesHidden
- * @param hasColorPicker
- * @param handleColorClick
  */
-export function renderColor(
-  color: string,
-  isSeriesHidden = false,
-  hasColorPicker: boolean,
-  handleColorClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void,
-) {
+export function Color({ color, isSeriesHidden = false, hasColorPicker, onColorClick }: ColorProps) {
   if (isSeriesHidden) {
     return (
       <div className="echLegendItem__color" aria-label="series hidden" title="series hidden">
@@ -48,7 +45,7 @@ export function renderColor(
   });
 
   return (
-    <div onClick={handleColorClick} className={colorClasses} aria-label="series color" title="series color">
+    <div onClick={onColorClick} className={colorClasses} aria-label="series color" title="series color">
       <Icon type="dot" color={color} />
     </div>
   );

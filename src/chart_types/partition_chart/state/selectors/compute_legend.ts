@@ -64,9 +64,7 @@ export const computeLegendSelector = createCachedSelector(
     });
 
     if (forceFlatLegend) {
-      items = items.sort((a, b) => {
-        return a.depth - b.depth;
-      });
+      items = items.sort(({ depth: a }, { depth: b }) => a - b);
     }
 
     return items
@@ -95,7 +93,7 @@ export const computeLegendSelector = createCachedSelector(
 )(getChartIdSelector);
 
 function findIndex(items: Array<[PrimitiveValue, number, PrimitiveValue]>, child: QuadViewModel) {
-  return items.findIndex((item) => {
-    return item[0] === child.dataName && item[1] === child.depth && item[2] === child.value;
+  return items.findIndex(([dataName, depth, value]) => {
+    return dataName === child.dataName && depth === child.depth && value === child.value;
   });
 }
