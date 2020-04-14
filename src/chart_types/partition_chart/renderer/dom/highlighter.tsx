@@ -17,20 +17,14 @@
  * under the License. */
 
 import React from 'react';
-import { connect } from 'react-redux';
-import { GlobalChartState } from '../../../../state/chart_state';
-import { isInitialized } from '../../../../state/selectors/is_initialized';
 import { QuadViewModel } from '../../layout/types/viewmodel_types';
 import { TAU } from '../../layout/utils/math';
-import { partitionGeometries } from '../../state/selectors/geometries';
 import { PointObject } from '../../layout/types/geometry_types';
-import { getHighlightedSectorsSelector } from '../../state/selectors/get_highlighted_shapes';
-import { getPickedShapes } from '../../state/selectors/picked_shapes';
 import { PartitionLayout } from '../../layout/types/config_types';
 import { Dimensions } from '../../../../utils/dimensions';
-import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 
-interface HighlighterProps {
+/** @internal */
+export interface HighlighterProps {
   chartId: string;
   initialized: boolean;
   canvasDimension: Dimensions;
@@ -125,7 +119,8 @@ function renderGeometries(geometries: QuadViewModel[], partitionLayout: Partitio
     });
 }
 
-class HighlighterComponent extends React.Component<HighlighterProps> {
+/** @internal */
+export class HighlighterComponent extends React.Component<HighlighterProps> {
   static displayName = 'Highlighter';
 
   renderAsMask() {
@@ -189,7 +184,8 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
   }
 }
 
-const DEFAULT_PROPS: HighlighterProps = {
+/** @internal */
+export const DEFAULT_PROPS: HighlighterProps = {
   chartId: 'empty',
   initialized: false,
   canvasDimension: {
@@ -207,67 +203,3 @@ const DEFAULT_PROPS: HighlighterProps = {
   renderAsOverlay: false,
   partitionLayout: PartitionLayout.sunburst,
 };
-
-const legendMapStateToProps = (state: GlobalChartState): HighlighterProps => {
-  if (!isInitialized(state)) {
-    return DEFAULT_PROPS;
-  }
-
-  const { chartId } = state;
-  const {
-    outerRadius,
-    diskCenter,
-    config: { partitionLayout },
-  } = partitionGeometries(state);
-
-  const geometries = getHighlightedSectorsSelector(state);
-  const canvasDimension = getChartContainerDimensionsSelector(state);
-  return {
-    chartId,
-    initialized: true,
-    renderAsOverlay: false,
-    canvasDimension,
-    geometries,
-    diskCenter,
-    outerRadius,
-    partitionLayout,
-  };
-};
-
-const hoverMapStateToProps = (state: GlobalChartState): HighlighterProps => {
-  if (!isInitialized(state)) {
-    return DEFAULT_PROPS;
-  }
-
-  const { chartId } = state;
-  const {
-    outerRadius,
-    diskCenter,
-    config: { partitionLayout },
-  } = partitionGeometries(state);
-
-  const geometries = getPickedShapes(state);
-  const canvasDimension = getChartContainerDimensionsSelector(state);
-  return {
-    chartId,
-    initialized: true,
-    renderAsOverlay: true,
-    canvasDimension,
-    diskCenter,
-    outerRadius,
-    geometries,
-    partitionLayout,
-  };
-};
-
-/**
- * Partition chart highlighter from legend events
- * @internal
- */
-export const HighlighterFromLegend = connect(legendMapStateToProps)(HighlighterComponent);
-
-/**
- * Partition chart highlighter from mouse hover events
- * @internal
- */
-export const HighlighterFromHover = connect(hoverMapStateToProps)(HighlighterComponent);
