@@ -23,12 +23,13 @@ import { getPieSpecOrNull } from './pie_spec';
 import { HierarchyOfArrays, CHILDREN_KEY } from '../../layout/utils/group_by_rollup';
 import { Layer } from '../../specs';
 import { LegendItemLabel } from '../../../../state/selectors/get_legend_items_labels';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 
 /** @internal */
 export const getLegendItemsLabels = createCachedSelector(
-  [getPieSpecOrNull, getTree],
-  (pieSpec, tree): LegendItemLabel[] => {
-    if (!pieSpec) {
+  [getPieSpecOrNull, getSettingsSpecSelector, getTree],
+  (pieSpec, { legendMaxDepth }, tree): LegendItemLabel[] => {
+    if (!pieSpec || (typeof legendMaxDepth === 'number' && legendMaxDepth <= 0)) {
       return [];
     }
     return flatSlicesNames(pieSpec.layers, 0, tree);
