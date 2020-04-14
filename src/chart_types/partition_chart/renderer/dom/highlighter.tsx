@@ -44,8 +44,9 @@ interface HighlighterProps {
 const EPSILON = 1e-6;
 
 interface SVGStyle {
-  fill?: string;
-  className?: string;
+  color?: string;
+  fillClassName?: string;
+  strokeClassName?: string;
 }
 
 /**
@@ -71,7 +72,8 @@ function getSectorShapeFromCanvasArc(x: number, y: number, r: number, a0: number
  */
 function renderRectangles(geometry: QuadViewModel, key: string, style: SVGStyle) {
   const { x0, x1, y0px, y1px } = geometry;
-  return <rect key={key} x={x0} y={y0px} width={Math.abs(x1 - x0)} height={Math.abs(y1px - y0px)} {...style} />;
+  const props = style.color ? { fill: style.color } : { className: style.fillClassName };
+  return <rect key={key} x={x0} y={y0px} width={Math.abs(x1 - x0)} height={Math.abs(y1px - y0px)} {...props} />;
 }
 
 /**
@@ -83,7 +85,8 @@ function renderRectangles(geometry: QuadViewModel, key: string, style: SVGStyle)
 function renderSector(geometry: QuadViewModel, key: string, style: SVGStyle) {
   const { x0, x1, y0px, y1px } = geometry;
   if ((Math.abs(x0 - x1) + TAU) % TAU < EPSILON) {
-    return <circle key={key} r={(y0px + y1px) / 2} fill="none" stroke="black" strokeWidth={y1px - y0px} />;
+    const props = style.color ? { stroke: style.color } : { className: style.strokeClassName };
+    return <circle key={key} r={(y0px + y1px) / 2} {...props} fill="none" strokeWidth={y1px - y0px} />;
   }
   const X0 = x0 - TAU / 4;
   const X1 = x1 - TAU / 4;
@@ -94,7 +97,8 @@ function renderSector(geometry: QuadViewModel, key: string, style: SVGStyle) {
     getSectorShapeFromCanvasArc(0, 0, y1px, X1, X0, true),
     'Z',
   ].join(' ');
-  return <path key={key} d={path} {...style} />;
+  const props = style.color ? { fill: style.color } : { className: style.fillClassName };
+  return <path key={key} d={path} {...props} />;
 }
 
 function renderGeometries(geometries: QuadViewModel[], partitionLayout: PartitionLayout, style: SVGStyle) {
@@ -140,7 +144,7 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
           <mask id={maskId}>
             <rect x={0} y={0} width={width} height={height} fill="white" />
             <g transform={`translate(${diskCenter.x}, ${diskCenter.y})`}>
-              {renderGeometries(geometries, partitionLayout, { fill: 'black' })}
+              {renderGeometries(geometries, partitionLayout, { color: 'black' })}
             </g>
           </mask>
         </defs>
@@ -164,7 +168,10 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
     const { geometries, diskCenter, partitionLayout } = this.props;
     return (
       <g transform={`translate(${diskCenter.x}, ${diskCenter.y})`}>
-        {renderGeometries(geometries, partitionLayout, { className: 'echHighlighter__rect' })}
+        {renderGeometries(geometries, partitionLayout, {
+          fillClassName: 'echHighlighterOverlay__fill',
+          strokeClassName: 'echHighlighterOverlay__stroke',
+        })}
       </g>
     );
   }
