@@ -39,13 +39,13 @@ export interface LayerValue {
   value: number;
 }
 
-export interface XYBrushYValues {
+export interface GroupBrushExtent {
   groupId: GroupId;
-  values: [number, number];
+  extent: [number, number];
 }
 export interface XYBrushArea {
   x?: [number, number];
-  y?: Array<XYBrushYValues>;
+  y?: Array<GroupBrushExtent>;
 }
 
 export type XYChartElementEvent = [GeometryValue, XYChartSeriesIdentifier];

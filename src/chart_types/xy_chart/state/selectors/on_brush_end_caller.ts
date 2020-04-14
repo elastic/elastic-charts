@@ -20,7 +20,7 @@ import createCachedSelector from 're-reselect';
 import { Selector } from 'reselect';
 import { GlobalChartState, DragState } from '../../../../state/chart_state';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { BrushAxis, XYBrushArea, XYBrushYValues, BrushEndListener } from '../../../../specs';
+import { BrushAxis, XYBrushArea, GroupBrushExtent, BrushEndListener } from '../../../../specs';
 import { ChartTypes } from '../../../index';
 import { getComputedScalesSelector } from './get_computed_scales';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
@@ -30,6 +30,7 @@ import { Scale } from '../../../../scales';
 import { Dimensions } from '../../../../utils/dimensions';
 import { GroupId } from '../../../../utils/ids';
 import { Rotation } from '../../../../utils/commons';
+import { getLeftPoint, getTopPoint, isRotated } from './get_brush_area';
 
 const getLastDragSelector = (state: GlobalChartState) => state.interactions.pointer.lastDrag;
 
@@ -93,10 +94,10 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
               const { yScales, xScale } = computedScales;
 
               if (brushAxis === BrushAxis.X || brushAxis === BrushAxis.Both) {
-                brushArea.x = getValuesForXBrush(chartDimensions, lastDrag, rotation, histogramMode, xScale);
+                brushArea.x = getXBrushExtent(chartDimensions, lastDrag, rotation, histogramMode, xScale);
               }
               if (brushAxis === BrushAxis.Y || brushAxis === BrushAxis.Both) {
-                brushArea.y = getValuesForYBrush(chartDimensions, lastDrag, rotation, yScales);
+                brushArea.y = getYBrushExtents(chartDimensions, lastDrag, rotation, yScales);
               }
               if (brushArea.x !== undefined || brushArea.y !== undefined) {
                 onBrushEnd(brushArea);
@@ -115,21 +116,23 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
   };
 }
 
-function getValuesForXBrush(
+function getXBrushExtent(
   chartDimensions: Dimensions,
   lastDrag: DragState,
   rotation: Rotation,
   histogramMode: boolean,
   xScale: Scale,
 ): [number, number] | undefined {
-  let startPos = lastDrag.start.position.x - chartDimensions.left;
-  let endPos = lastDrag.end.position.x - chartDimensions.left;
+  let startPos = getLeftPoint(chartDimensions, lastDrag.start.position);
+  let endPos = getLeftPoint(chartDimensions, lastDrag.end.position);
   let chartMax = chartDimensions.width;
-  if (rotation === -90 || rotation === 90) {
-    startPos = lastDrag.start.position.y - chartDimensions.top;
-    endPos = lastDrag.end.position.y - chartDimensions.top;
+
+  if (isRotated(rotation)) {
+    startPos = getTopPoint(chartDimensions, lastDrag.start.position);
+    endPos = getTopPoint(chartDimensions, lastDrag.end.position);
     chartMax = chartDimensions.height;
   }
+
   let minPos = Math.max(Math.min(startPos, endPos), 0);
   let maxPos = Math.min(Math.max(startPos, endPos), chartMax);
   if (rotation === -90 || rotation === 180) {
@@ -149,20 +152,20 @@ function getValuesForXBrush(
   return [minValue, maxValue];
 }
 
-function getValuesForYBrush(
+function getYBrushExtents(
   chartDimensions: Dimensions,
   lastDrag: DragState,
   rotation: Rotation,
   yScales: Map<GroupId, Scale>,
-): XYBrushYValues[] | undefined {
-  const yValues: XYBrushYValues[] = [];
-  yScales.forEach((yScale, key) => {
-    let startPos = lastDrag.start.position.y - chartDimensions.top;
-    let endPos = lastDrag.end.position.y - chartDimensions.top;
+): GroupBrushExtent[] | undefined {
+  const yValues: GroupBrushExtent[] = [];
+  yScales.forEach((yScale, groupId) => {
+    let startPos = getTopPoint(chartDimensions, lastDrag.start.position);
+    let endPos = getTopPoint(chartDimensions, lastDrag.end.position);
     let chartMax = chartDimensions.height;
-    if (rotation === -90 || rotation === 90) {
-      startPos = lastDrag.start.position.x - chartDimensions.left;
-      endPos = lastDrag.end.position.y - chartDimensions.left;
+    if (isRotated(rotation)) {
+      startPos = getLeftPoint(chartDimensions, lastDrag.start.position);
+      endPos = getLeftPoint(chartDimensions, lastDrag.end.position);
       chartMax = chartDimensions.width;
     }
     let minPos = Math.max(Math.min(startPos, endPos), 0);
@@ -180,7 +183,7 @@ function getValuesForYBrush(
     const maxPosScaled = yScale.invert(maxPos);
     const minValue = Math.max(Math.min(minPosScaled, maxPosScaled), yScale.domain[0]);
     const maxValue = Math.min(Math.max(minPosScaled, maxPosScaled), yScale.domain[1]);
-    yValues.push({ values: [minValue, maxValue], groupId: key });
+    yValues.push({ extent: [minValue, maxValue], groupId });
   });
   return yValues.length === 0 ? undefined : yValues;
 }
