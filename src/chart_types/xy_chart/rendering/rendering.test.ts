@@ -32,7 +32,7 @@ import { MockScale } from '../../../mocks/scale';
 import { LegendItem } from '../legend/legend';
 
 describe('Rendering utils', () => {
-  test('check if point is in geometry', () => {
+  test('check if point is on geometry', () => {
     const seriesStyle = {
       rect: {
         opacity: 1,
@@ -80,7 +80,7 @@ describe('Rendering utils', () => {
     expect(isPointOnGeometry(-11, 0, geometry)).toBe(false);
     expect(isPointOnGeometry(11, 11, geometry)).toBe(false);
   });
-  test('check if point is in point geometry', () => {
+  test('check if point is on point geometry', () => {
     const geometry: PointGeometry = {
       color: 'red',
       seriesIdentifier: {
@@ -104,14 +104,18 @@ describe('Rendering utils', () => {
       y: 0,
       radius: 10,
     };
-    expect(isPointOnGeometry(0, 0, geometry)).toBe(true);
-    expect(isPointOnGeometry(10, 10, geometry)).toBe(true);
-    expect(isPointOnGeometry(0, 10, geometry)).toBe(true);
-    expect(isPointOnGeometry(10, 0, geometry)).toBe(true);
-    // expect(isPointOnGeometry(11, 11, geometry)).toBe(false);
-    expect(isPointOnGeometry(-10, 0, geometry)).toBe(true);
-    // expect(isPointOnGeometry(-11, 0, geometry)).toBe(false);
-    // expect(isPointOnGeometry(11, 11, geometry)).toBe(false);
+    // with buffer
+    expect(isPointOnGeometry(10, 10, geometry, 10)).toBe(true);
+    expect(isPointOnGeometry(20, 20, geometry, 5)).toBe(false);
+
+    // without buffer
+    expect(isPointOnGeometry(0, 0, geometry, 0)).toBe(true);
+    expect(isPointOnGeometry(0, 10, geometry, 0)).toBe(true);
+    expect(isPointOnGeometry(10, 0, geometry, 0)).toBe(true);
+    expect(isPointOnGeometry(11, 11, geometry, 0)).toBe(false);
+    expect(isPointOnGeometry(-10, 0, geometry, 0)).toBe(true);
+    expect(isPointOnGeometry(-11, 0, geometry, 0)).toBe(false);
+    expect(isPointOnGeometry(11, 11, geometry, 0)).toBe(false);
   });
 
   describe('should get common geometry style dependent on legend item highlight state', () => {
