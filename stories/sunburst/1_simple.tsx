@@ -16,22 +16,15 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { Chart, Datum, Partition, Settings, PartialTheme } from '../../src';
+import { Chart, Datum, Partition } from '../../src';
 import { mocks } from '../../src/mocks/hierarchical/index';
 import { config } from '../../src/chart_types/partition_chart/layout/config/config';
 import React from 'react';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
-import { color } from '@storybook/addon-knobs';
 
 export const example = () => {
-  const partialColorTheme: PartialTheme = {
-    background: {
-      color: color('Color of the background container', '#ffffff'),
-    },
-  };
   return (
     <Chart className="story-chart">
-      <Settings theme={partialColorTheme} />
       <Partition
         id="spec_1"
         data={mocks.pie}
