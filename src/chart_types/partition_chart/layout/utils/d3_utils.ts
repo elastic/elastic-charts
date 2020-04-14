@@ -27,8 +27,27 @@ const defaultColor: RgbObject = { r: 255, g: 0, b: 0, opacity: 1 };
 const defaultD3Color: D3RGBColor = d3Rgb(defaultColor.r, defaultColor.g, defaultColor.b, defaultColor.opacity);
 
 /** @internal */
-export function stringToRGB(cssColorSpecifier: string): RgbObject {
-  return d3Rgb(cssColorSpecifier) || defaultColor;
+export type OpacityFn = (colorOpacity: number) => number;
+
+/** @internal */
+export function stringToRGB(cssColorSpecifier: string, opacity?: number | OpacityFn): RgbObject {
+  if (cssColorSpecifier === 'transparent') {
+    return {
+      ...defaultColor,
+      opacity: 0,
+    };
+  }
+  const color = d3Rgb(cssColorSpecifier) || defaultColor;
+
+  if (opacity === undefined) {
+    return color;
+  }
+
+  const finalOpacity = typeof opacity === 'number' ? opacity : opacity(color.opacity);
+  return {
+    ...color,
+    opacity: finalOpacity,
+  };
 }
 
 function argsToRGB(r: number, g: number, b: number, opacity: number): D3RGBColor {
