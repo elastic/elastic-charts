@@ -178,6 +178,11 @@ describe('commons utilities', () => {
   });
 
   describe('hasPartialObjectToMerge', () => {
+    it('should return false if base is null', () => {
+      const result = hasPartialObjectToMerge(null);
+      expect(result).toBe(false);
+    });
+
     it('should return false if base is an array', () => {
       const result = hasPartialObjectToMerge([]);
       expect(result).toBe(false);
@@ -186,6 +191,11 @@ describe('commons utilities', () => {
     it('should return true if base and partial are objects', () => {
       const result = hasPartialObjectToMerge({}, {});
       expect(result).toBe(true);
+    });
+
+    it('should return false if base is object and patial is null', () => {
+      const result = hasPartialObjectToMerge({}, null as any);
+      expect(result).toBe(false);
     });
 
     it('should return true if base and any additionalPartials are objects', () => {

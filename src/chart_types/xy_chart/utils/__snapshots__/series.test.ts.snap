@@ -19923,7 +19923,7 @@ Array [
         "y1": 2,
       },
       Object {
-        "datum": undefined,
+        "datum": null,
         "filled": Object {
           "x": 3,
           "y1": 0,
@@ -19965,7 +19965,7 @@ Array [
         "y1": 22,
       },
       Object {
-        "datum": undefined,
+        "datum": null,
         "filled": Object {
           "x": 2,
           "y1": 0,
@@ -19987,7 +19987,7 @@ Array [
         "y1": 23,
       },
       Object {
-        "datum": undefined,
+        "datum": null,
         "filled": Object {
           "x": 4,
           "y1": 0,
@@ -20034,7 +20034,7 @@ Array [
         "y1": 2,
       },
       Object {
-        "datum": undefined,
+        "datum": null,
         "filled": Object {
           "x": 3,
           "y1": 0,
@@ -20076,7 +20076,7 @@ Array [
         "y1": 22,
       },
       Object {
-        "datum": undefined,
+        "datum": null,
         "filled": Object {
           "x": 2,
           "y1": 0,
@@ -20098,7 +20098,7 @@ Array [
         "y1": 23,
       },
       Object {
-        "datum": undefined,
+        "datum": null,
         "filled": Object {
           "x": 4,
           "y1": 0,
@@ -20145,7 +20145,7 @@ Array [
         "y1": 3,
       },
       Object {
-        "datum": undefined,
+        "datum": null,
         "filled": Object {
           "x": 3,
           "y1": 0,
@@ -20248,7 +20248,7 @@ Array [
         "y1": 3,
       },
       Object {
-        "datum": undefined,
+        "datum": null,
         "filled": Object {
           "x": 3,
           "y1": 0,
@@ -20351,7 +20351,7 @@ Array [
         "y1": 2,
       },
       Object {
-        "datum": undefined,
+        "datum": null,
         "filled": Object {
           "x": 3,
           "y1": 0,
@@ -20393,7 +20393,7 @@ Array [
         "y1": 22,
       },
       Object {
-        "datum": undefined,
+        "datum": null,
         "filled": Object {
           "x": 2,
           "y1": 0,
@@ -20415,7 +20415,7 @@ Array [
         "y1": 23,
       },
       Object {
-        "datum": undefined,
+        "datum": null,
         "filled": Object {
           "x": 4,
           "y1": 0,

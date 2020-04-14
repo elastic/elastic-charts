@@ -246,6 +246,7 @@ describe('Rendering utils', () => {
       initialY1: 4,
       initialY0: 5,
       mark: null,
+      datum: null,
     };
     const seriesIdentifier: XYChartSeriesIdentifier = {
       specId: 'test',
@@ -339,6 +340,7 @@ describe('Rendering utils', () => {
       initialY1: 4,
       initialY0: 5,
       mark: null,
+      datum: null,
     };
     const seriesIdentifier: XYChartSeriesIdentifier = {
       specId: 'test',

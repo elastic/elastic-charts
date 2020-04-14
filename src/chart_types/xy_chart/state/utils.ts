@@ -52,7 +52,7 @@ import {
   isBubbleSeriesSpec,
 } from '../utils/specs';
 import { ColorConfig, Theme } from '../../../utils/themes/theme';
-import { identity, mergePartial, Rotation, Color } from '../../../utils/commons';
+import { identity, mergePartial, Rotation, Color, RecursivePartial } from '../../../utils/commons';
 import { Dimensions } from '../../../utils/dimensions';
 import { Domain } from '../../../utils/domain';
 import { GroupId, SpecId } from '../../../utils/ids';
@@ -813,3 +813,35 @@ export function isUniqueArray<B, T>(arr: B[], extractor?: (value: B) => T) {
     });
   })();
 }
+
+/**
+ * Returns defined value type if not null nor undefined
+ *
+ * @internal
+ */
+export function isDefined<T>(value?: T): value is NonNullable<T> {
+  return value !== null && value !== undefined;
+}
+
+/**
+ * Returns defined value type if value from getter function is not null nor undefined
+ *
+ * **IMPORTANT**: You must provide an accurate typeCheck function that will filter out _EVERY_
+ * item in the array that is not of type `T`. If not, the type check will override the
+ * type as `T` which may be incorrect.
+ *
+ * @internal
+ */
+export const isDefinedFrom = <T>(typeCheck: (value: RecursivePartial<T>) => boolean) => (
+  value?: RecursivePartial<T>,
+): value is NonNullable<T> => {
+  if (value === undefined) {
+    return false;
+  }
+
+  try {
+    return typeCheck(value);
+  } catch (error) {
+    return false;
+  }
+};

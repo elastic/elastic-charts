@@ -47,9 +47,9 @@ export interface RawDataSeriesDatum<T = any> {
   /** the optional y0 metric, used for bars and area with a lower bound */
   y0?: number | null;
   /** the optional mark metric, used for lines and area series */
-  mark: number | null;
+  mark?: number | null;
   /** the datum */
-  datum?: T;
+  datum?: T | null;
 }
 
 export interface DataSeriesDatum<T = any> {
@@ -66,7 +66,7 @@ export interface DataSeriesDatum<T = any> {
   /** the optional mark metric, used for lines and area series */
   mark: number | null;
   /** initial datum */
-  datum?: T;
+  datum: T;
   /** the list of filled values because missing or nulls */
   filled?: FilledValues;
 }

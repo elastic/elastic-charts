@@ -128,8 +128,8 @@ export function hasPartialObjectToMerge<T>(
     return false;
   }
 
-  if (typeof base === 'object') {
-    if (typeof partial === 'object' && !Array.isArray(partial)) {
+  if (typeof base === 'object' && base !== null) {
+    if (typeof partial === 'object' && !Array.isArray(partial) && partial !== null) {
       return true;
     }
 
