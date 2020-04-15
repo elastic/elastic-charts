@@ -27,6 +27,16 @@ import {
 } from '../../chart_types/xy_chart/utils/series';
 import { fitFunctionData } from './data';
 import { FullDataSeriesDatum, WithIndex } from '../../chart_types/xy_chart/utils/fit_function';
+import { getRandomNumberGenerator } from '../utils';
+
+const rng = getRandomNumberGenerator();
+
+interface DomainRange {
+  min?: number;
+  max?: number;
+  fractionDigits?: number;
+  inclusive?: boolean;
+}
 
 /** @internal */
 export class MockDataSeries {
@@ -58,6 +68,17 @@ export class MockDataSeries {
   }
 
   static fromData(data: DataSeries['data']): DataSeries {
+    return {
+      ...MockDataSeries.base,
+      data,
+    };
+  }
+
+  static random(
+    options: { count?: number; x?: DomainRange; y?: DomainRange; mark?: DomainRange },
+    includeMarks = false,
+  ): DataSeries {
+    const data = new Array(options?.count ?? 10).fill(0).map(() => MockDataSeriesDatum.random(options, includeMarks));
     return {
       ...MockDataSeries.base,
       data,
@@ -162,13 +183,14 @@ export class MockDataSeriesDatum {
     x,
     y1 = null,
     y0 = null,
+    mark = null,
     filled,
   }: Partial<DataSeriesDatum> & Pick<DataSeriesDatum, 'x'>): DataSeriesDatum {
     return {
       x,
       y1,
       y0,
-      mark: null,
+      mark,
       initialY1: y1,
       initialY0: y0,
       datum: {
@@ -206,6 +228,24 @@ export class MockDataSeriesDatum {
       partial,
       { mergeOptionalPartialValues: true },
     );
+  }
+
+  /**
+   * Psuedo-random values between a specified domain
+   *
+   * @param options
+   */
+  static random(
+    options: { x?: DomainRange; y?: DomainRange; mark?: DomainRange },
+    includeMark = false,
+  ): DataSeriesDatum {
+    return MockDataSeriesDatum.simple({
+      x: rng(options?.x?.min, options?.x?.max, options.x?.fractionDigits, options.x?.inclusive),
+      y1: rng(options?.y?.min, options?.y?.max, options.y?.fractionDigits, options.y?.inclusive),
+      ...(includeMark && {
+        mark: rng(options?.mark?.min, options?.mark?.max, options.mark?.fractionDigits, options.mark?.inclusive),
+      }),
+    });
   }
 }
 

@@ -107,15 +107,15 @@ export function getBarStyleOverrides(
 type GetRadiusFnReturn = (mark: number | null, defaultRadius?: number) => number;
 
 /**
- * Get radius function form ratio and min/max mark sixe
+ * Get radius function form ratio and min/max mark size
  *
  * @todo add continuous/non-stepped function
  *
  * @param  {Datum[]} radii
  * @param  {number} lineWidth
- * @param  {number=50} markSizeRatio - 1 to 100
+ * @param  {number=50} markSizeRatio - 0 to 100
  */
-function getRadiusFn(data: DataSeriesDatum[], lineWidth: number, markSizeRatio: number = 50): GetRadiusFnReturn {
+export function getRadiusFn(data: DataSeriesDatum[], lineWidth: number, markSizeRatio: number = 50): GetRadiusFnReturn {
   if (data.length === 0) {
     return () => 0;
   }
@@ -129,7 +129,8 @@ function getRadiusFn(data: DataSeriesDatum[], lineWidth: number, markSizeRatio: 
           },
     { min: Infinity, max: -Infinity },
   );
-  const radiusStep = (max - min || max * 100) / Math.pow(markSizeRatio, 2);
+  const adjustedMarkSizeRatio = Math.min(Math.max(markSizeRatio, 0), 100);
+  const radiusStep = (max - min || max * 100) / Math.pow(adjustedMarkSizeRatio, 2);
   return function getRadius(mark, defaultRadius = 0): number {
     if (mark === null) {
       return defaultRadius;
@@ -479,6 +480,7 @@ export function renderLine(
 
 /** @internal */
 export function renderBubble(
+  shift: number,
   dataSeries: DataSeries,
   xScale: Scale,
   yScale: Scale,
@@ -493,7 +495,7 @@ export function renderBubble(
   indexedGeometryMap: IndexedGeometryMap;
 } {
   const { pointGeometries, indexedGeometryMap } = renderPoints(
-    0,
+    shift,
     dataSeries,
     xScale,
     yScale,

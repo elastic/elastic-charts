@@ -1251,4 +1251,92 @@ describe('Rendering points - areas', () => {
       },
     ]);
   });
+
+  describe('Error guards for scaled values', () => {
+    const pointSeriesSpec: AreaSeriesSpec = {
+      chartType: ChartTypes.XYAxis,
+      specType: SpecTypes.Series,
+      id: SPEC_ID,
+      groupId: GROUP_ID,
+      seriesType: SeriesTypes.Area,
+      yScaleToDataExtent: false,
+      data: [
+        [0, 10],
+        [1, 5],
+      ],
+      xAccessor: 0,
+      yAccessors: [1],
+      xScaleType: ScaleType.Ordinal,
+      yScaleType: ScaleType.Linear,
+    };
+    const pointSeriesMap = [pointSeriesSpec];
+    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
+    const xScale = computeXScale({
+      xDomain: pointSeriesDomains.xDomain,
+      totalBarsInCluster: pointSeriesMap.length,
+      range: [0, 100],
+    });
+    const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
+    let renderedArea: {
+      areaGeometry: AreaGeometry;
+      indexedGeometryMap: IndexedGeometryMap;
+    };
+
+    beforeEach(() => {
+      renderedArea = renderArea(
+        25, // adding a ideal 25px shift, generally applied by renderGeometries
+        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
+        xScale,
+        yScales.get(GROUP_ID)!,
+        'red',
+        CurveType.LINEAR,
+        false,
+        0,
+        LIGHT_THEME.areaSeriesStyle,
+        {
+          enabled: false,
+        },
+      );
+    });
+
+    describe('xScale values throw error', () => {
+      beforeAll(() => {
+        jest.spyOn(xScale, 'scaleOrThrow').mockImplementation(() => {
+          throw new Error();
+        });
+      });
+
+      test('Should include no lines nor area', () => {
+        const {
+          areaGeometry: { lines, area, color, seriesIdentifier, transform },
+        } = renderedArea;
+        expect(lines).toHaveLength(0);
+        expect(area).toBe('');
+        expect(color).toBe('red');
+        expect(seriesIdentifier.seriesKeys).toEqual([1]);
+        expect(seriesIdentifier.specId).toEqual(SPEC_ID);
+        expect(transform).toEqual({ x: 25, y: 0 });
+      });
+    });
+
+    describe('yScale values throw error', () => {
+      beforeAll(() => {
+        jest.spyOn(yScales.get(GROUP_ID)!, 'scaleOrThrow').mockImplementation(() => {
+          throw new Error();
+        });
+      });
+
+      test('Should include no lines nor area', () => {
+        const {
+          areaGeometry: { lines, area, color, seriesIdentifier, transform },
+        } = renderedArea;
+        expect(lines).toHaveLength(0);
+        expect(area).toBe('');
+        expect(color).toBe('red');
+        expect(seriesIdentifier.seriesKeys).toEqual([1]);
+        expect(seriesIdentifier.specId).toEqual(SPEC_ID);
+        expect(transform).toEqual({ x: 25, y: 0 });
+      });
+    });
+  });
 });

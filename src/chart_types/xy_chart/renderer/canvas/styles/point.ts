@@ -56,7 +56,8 @@ export function buildPointStyles(
   return { fill, stroke, radius };
 }
 
-function getRadius(pointRadius: number, themeRadius: number, overrideRadius?: number) {
+/** @internal */
+export function getRadius(pointRadius: number, themeRadius: number, overrideRadius?: number) {
   if (overrideRadius !== undefined) {
     return overrideRadius;
   }

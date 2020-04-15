@@ -18,12 +18,11 @@
 
 import { computeSeriesDomains } from '../state/utils';
 import { ScaleType } from '../../../scales';
-import { CurveType } from '../../../utils/curves';
-import { renderLine } from './rendering';
+import { renderBubble } from './rendering';
 import { computeXScale, computeYScales } from '../utils/scales';
-import { LineSeriesSpec, DomainRange, SeriesTypes } from '../utils/specs';
+import { BubbleSeriesSpec, DomainRange, SeriesTypes } from '../utils/specs';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
-import { LineGeometry, PointGeometry } from '../../../utils/geometry';
+import { BubbleGeometry, PointGeometry } from '../../../utils/geometry';
 import { GroupId } from '../../../utils/ids';
 import { ChartTypes } from '../..';
 import { SpecTypes } from '../../../specs/settings';
@@ -32,14 +31,14 @@ import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
 const SPEC_ID = 'spec_1';
 const GROUP_ID = 'group_1';
 
-describe('Rendering points - line', () => {
-  describe('Empty line for missing data', () => {
-    const pointSeriesSpec: LineSeriesSpec = {
+describe('Rendering points - bubble', () => {
+  describe('Empty bubble for missing data', () => {
+    const pointSeriesSpec: BubbleSeriesSpec = {
       chartType: ChartTypes.XYAxis,
       specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: SeriesTypes.Line,
+      seriesType: SeriesTypes.Bubble,
       yScaleToDataExtent: false,
       data: [
         [0, 10],
@@ -58,43 +57,41 @@ describe('Rendering points - line', () => {
       range: [0, 100],
     });
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
-    let renderedLine: {
-      lineGeometry: LineGeometry;
+    let renderedBubble: {
+      bubbleGeometry: BubbleGeometry;
       indexedGeometryMap: IndexedGeometryMap;
     };
 
     beforeEach(() => {
-      renderedLine = renderLine(
+      renderedBubble = renderBubble(
         25, // adding a ideal 25px shift, generally applied by renderGeometries
         { ...pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0], data: [] },
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
-        CurveType.LINEAR,
         false,
-        0,
-        LIGHT_THEME.lineSeriesStyle,
+        LIGHT_THEME.bubbleSeriesStyle,
         {
           enabled: false,
         },
+        false,
       );
     });
-    test('Can render the geometry without a line', () => {
-      const { lineGeometry } = renderedLine;
-      expect(lineGeometry.line).toBe('');
-      expect(lineGeometry.color).toBe('red');
-      expect(lineGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
-      expect(lineGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
-      expect(lineGeometry.transform).toEqual({ x: 25, y: 0 });
+    test('Can render the geometry without a bubble', () => {
+      const { bubbleGeometry } = renderedBubble;
+      expect(bubbleGeometry.points).toHaveLength(0);
+      expect(bubbleGeometry.color).toBe('red');
+      expect(bubbleGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
+      expect(bubbleGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
     });
   });
-  describe('Single series line chart - ordinal', () => {
-    const pointSeriesSpec: LineSeriesSpec = {
+  describe('Single series bubble chart - ordinal', () => {
+    const pointSeriesSpec: BubbleSeriesSpec = {
       chartType: ChartTypes.XYAxis,
       specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: SeriesTypes.Line,
+      seriesType: SeriesTypes.Bubble,
       yScaleToDataExtent: false,
       data: [
         [0, 10],
@@ -113,40 +110,38 @@ describe('Rendering points - line', () => {
       range: [0, 100],
     });
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
-    let renderedLine: {
-      lineGeometry: LineGeometry;
+    let renderedBubble: {
+      bubbleGeometry: BubbleGeometry;
       indexedGeometryMap: IndexedGeometryMap;
     };
 
     beforeEach(() => {
-      renderedLine = renderLine(
+      renderedBubble = renderBubble(
         25, // adding a ideal 25px shift, generally applied by renderGeometries
         pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
-        CurveType.LINEAR,
         false,
-        0,
-        LIGHT_THEME.lineSeriesStyle,
+        LIGHT_THEME.bubbleSeriesStyle,
         {
           enabled: false,
         },
+        false,
       );
     });
-    test('Can render a line', () => {
-      const { lineGeometry } = renderedLine;
-      expect(lineGeometry.line).toBe('M0,0L50,50');
-      expect(lineGeometry.color).toBe('red');
-      expect(lineGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
-      expect(lineGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
-      expect(lineGeometry.transform).toEqual({ x: 25, y: 0 });
+    test('Can render a bubble', () => {
+      const { bubbleGeometry } = renderedBubble;
+      expect(bubbleGeometry.points).toHaveLength(2);
+      expect(bubbleGeometry.color).toBe('red');
+      expect(bubbleGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
+      expect(bubbleGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
     });
     test('Can render two points', () => {
       const {
-        lineGeometry: { points },
+        bubbleGeometry: { points },
         indexedGeometryMap,
-      } = renderedLine;
+      } = renderedBubble;
 
       expect(points[0]).toEqual(({
         x: 0,
@@ -198,15 +193,15 @@ describe('Rendering points - line', () => {
       expect(indexedGeometryMap.size).toEqual(points.length);
     });
   });
-  describe('Multi series line chart - ordinal', () => {
+  describe('Multi series bubble chart - ordinal', () => {
     const spec1Id = 'point1';
     const spec2Id = 'point2';
-    const pointSeriesSpec1: LineSeriesSpec = {
+    const pointSeriesSpec1: BubbleSeriesSpec = {
       chartType: ChartTypes.XYAxis,
       specType: SpecTypes.Series,
       id: spec1Id,
       groupId: GROUP_ID,
-      seriesType: SeriesTypes.Line,
+      seriesType: SeriesTypes.Bubble,
       yScaleToDataExtent: false,
       data: [
         [0, 10],
@@ -217,12 +212,12 @@ describe('Rendering points - line', () => {
       xScaleType: ScaleType.Ordinal,
       yScaleType: ScaleType.Linear,
     };
-    const pointSeriesSpec2: LineSeriesSpec = {
+    const pointSeriesSpec2: BubbleSeriesSpec = {
       chartType: ChartTypes.XYAxis,
       specType: SpecTypes.Series,
       id: spec2Id,
       groupId: GROUP_ID,
-      seriesType: SeriesTypes.Line,
+      seriesType: SeriesTypes.Bubble,
       yScaleToDataExtent: false,
       data: [
         [0, 20],
@@ -242,64 +237,60 @@ describe('Rendering points - line', () => {
     });
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
 
-    let firstLine: {
-      lineGeometry: LineGeometry;
+    let firstBubble: {
+      bubbleGeometry: BubbleGeometry;
       indexedGeometryMap: IndexedGeometryMap;
     };
-    let secondLine: {
-      lineGeometry: LineGeometry;
+    let secondBubble: {
+      bubbleGeometry: BubbleGeometry;
       indexedGeometryMap: IndexedGeometryMap;
     };
 
     beforeEach(() => {
-      firstLine = renderLine(
+      firstBubble = renderBubble(
         25, // adding a ideal 25px shift, generally applied by renderGeometries
         pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
-        CurveType.LINEAR,
         false,
-        0,
-        LIGHT_THEME.lineSeriesStyle,
+        LIGHT_THEME.bubbleSeriesStyle,
         {
           enabled: false,
         },
+        false,
       );
-      secondLine = renderLine(
+      secondBubble = renderBubble(
         25, // adding a ideal 25px shift, generally applied by renderGeometries
         pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[1],
         xScale,
         yScales.get(GROUP_ID)!,
         'blue',
-        CurveType.LINEAR,
         false,
-        0,
-        LIGHT_THEME.lineSeriesStyle,
+        LIGHT_THEME.bubbleSeriesStyle,
         {
           enabled: false,
         },
+        false,
       );
     });
 
-    test('Can render two ordinal lines', () => {
-      expect(firstLine.lineGeometry.line).toBe('M0,50L50,75');
-      expect(firstLine.lineGeometry.color).toBe('red');
-      expect(firstLine.lineGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
-      expect(firstLine.lineGeometry.seriesIdentifier.specId).toEqual(spec1Id);
-      expect(firstLine.lineGeometry.transform).toEqual({ x: 25, y: 0 });
+    test('Can render two ordinal bubbles', () => {
+      expect(firstBubble.bubbleGeometry.points).toHaveLength(2);
+      expect(firstBubble.bubbleGeometry.color).toBe('red');
+      expect(firstBubble.bubbleGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
+      expect(firstBubble.bubbleGeometry.seriesIdentifier.specId).toEqual(spec1Id);
 
-      expect(secondLine.lineGeometry.line).toBe('M0,0L50,50');
-      expect(secondLine.lineGeometry.color).toBe('blue');
-      expect(secondLine.lineGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
-      expect(secondLine.lineGeometry.seriesIdentifier.specId).toEqual(spec2Id);
-      expect(secondLine.lineGeometry.transform).toEqual({ x: 25, y: 0 });
+      expect(secondBubble.bubbleGeometry.points).toHaveLength(2);
+      expect(secondBubble.bubbleGeometry.color).toBe('blue');
+      expect(secondBubble.bubbleGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
+      expect(secondBubble.bubbleGeometry.seriesIdentifier.specId).toEqual(spec2Id);
     });
     test('can render first spec points', () => {
       const {
-        lineGeometry: { points },
+        bubbleGeometry: { points },
         indexedGeometryMap,
-      } = firstLine;
+      } = firstBubble;
       expect(points.length).toEqual(2);
       expect(points[0]).toEqual(({
         x: 0,
@@ -351,9 +342,9 @@ describe('Rendering points - line', () => {
     });
     test('can render second spec points', () => {
       const {
-        lineGeometry: { points },
+        bubbleGeometry: { points },
         indexedGeometryMap,
-      } = secondLine;
+      } = secondBubble;
       expect(points.length).toEqual(2);
       expect(points[0]).toEqual(({
         x: 0,
@@ -404,13 +395,13 @@ describe('Rendering points - line', () => {
       expect(indexedGeometryMap.size).toEqual(points.length);
     });
   });
-  describe('Single series line chart - linear', () => {
-    const pointSeriesSpec: LineSeriesSpec = {
+  describe('Single series bubble chart - linear', () => {
+    const pointSeriesSpec: BubbleSeriesSpec = {
       chartType: ChartTypes.XYAxis,
       specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: SeriesTypes.Line,
+      seriesType: SeriesTypes.Bubble,
       yScaleToDataExtent: false,
       data: [
         [0, 10],
@@ -430,39 +421,37 @@ describe('Rendering points - line', () => {
     });
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
 
-    let renderedLine: {
-      lineGeometry: LineGeometry;
+    let renderedBubble: {
+      bubbleGeometry: BubbleGeometry;
       indexedGeometryMap: IndexedGeometryMap;
     };
 
     beforeEach(() => {
-      renderedLine = renderLine(
+      renderedBubble = renderBubble(
         0, // not applied any shift, renderGeometries applies it only with mixed charts
         pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
-        CurveType.LINEAR,
         false,
-        0,
-        LIGHT_THEME.lineSeriesStyle,
+        LIGHT_THEME.bubbleSeriesStyle,
         {
           enabled: false,
         },
+        false,
       );
     });
-    test('Can render a linear line', () => {
-      expect(renderedLine.lineGeometry.line).toBe('M0,0L100,50');
-      expect(renderedLine.lineGeometry.color).toBe('red');
-      expect(renderedLine.lineGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
-      expect(renderedLine.lineGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
-      expect(renderedLine.lineGeometry.transform).toEqual({ x: 0, y: 0 });
+    test('Can render a linear bubble', () => {
+      expect(renderedBubble.bubbleGeometry.points).toHaveLength(2);
+      expect(renderedBubble.bubbleGeometry.color).toBe('red');
+      expect(renderedBubble.bubbleGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
+      expect(renderedBubble.bubbleGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
     });
     test('Can render two points', () => {
       const {
-        lineGeometry: { points },
+        bubbleGeometry: { points },
         indexedGeometryMap,
-      } = renderedLine;
+      } = renderedBubble;
       expect(points[0]).toEqual(({
         x: 0,
         y: 0,
@@ -512,15 +501,15 @@ describe('Rendering points - line', () => {
       expect(indexedGeometryMap.size).toEqual(points.length);
     });
   });
-  describe('Multi series line chart - linear', () => {
+  describe('Multi series bubble chart - linear', () => {
     const spec1Id = 'point1';
     const spec2Id = 'point2';
-    const pointSeriesSpec1: LineSeriesSpec = {
+    const pointSeriesSpec1: BubbleSeriesSpec = {
       chartType: ChartTypes.XYAxis,
       specType: SpecTypes.Series,
       id: spec1Id,
       groupId: GROUP_ID,
-      seriesType: SeriesTypes.Line,
+      seriesType: SeriesTypes.Bubble,
       yScaleToDataExtent: false,
       data: [
         [0, 10],
@@ -531,12 +520,12 @@ describe('Rendering points - line', () => {
       xScaleType: ScaleType.Linear,
       yScaleType: ScaleType.Linear,
     };
-    const pointSeriesSpec2: LineSeriesSpec = {
+    const pointSeriesSpec2: BubbleSeriesSpec = {
       chartType: ChartTypes.XYAxis,
       specType: SpecTypes.Series,
       id: spec2Id,
       groupId: GROUP_ID,
-      seriesType: SeriesTypes.Line,
+      seriesType: SeriesTypes.Bubble,
       yScaleToDataExtent: false,
       data: [
         [0, 20],
@@ -556,63 +545,59 @@ describe('Rendering points - line', () => {
     });
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
 
-    let firstLine: {
-      lineGeometry: LineGeometry;
+    let firstBubble: {
+      bubbleGeometry: BubbleGeometry;
       indexedGeometryMap: IndexedGeometryMap;
     };
-    let secondLine: {
-      lineGeometry: LineGeometry;
+    let secondBubble: {
+      bubbleGeometry: BubbleGeometry;
       indexedGeometryMap: IndexedGeometryMap;
     };
 
     beforeEach(() => {
-      firstLine = renderLine(
+      firstBubble = renderBubble(
         0, // not applied any shift, renderGeometries applies it only with mixed charts
         pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
-        CurveType.LINEAR,
         false,
-        0,
-        LIGHT_THEME.lineSeriesStyle,
+        LIGHT_THEME.bubbleSeriesStyle,
         {
           enabled: false,
         },
+        false,
       );
-      secondLine = renderLine(
+      secondBubble = renderBubble(
         0, // not applied any shift, renderGeometries applies it only with mixed charts
         pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[1],
         xScale,
         yScales.get(GROUP_ID)!,
         'blue',
-        CurveType.LINEAR,
         false,
-        0,
-        LIGHT_THEME.lineSeriesStyle,
+        LIGHT_THEME.bubbleSeriesStyle,
         {
           enabled: false,
         },
+        false,
       );
     });
-    test('can render two linear lines', () => {
-      expect(firstLine.lineGeometry.line).toBe('M0,50L100,75');
-      expect(firstLine.lineGeometry.color).toBe('red');
-      expect(firstLine.lineGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
-      expect(firstLine.lineGeometry.seriesIdentifier.specId).toEqual(spec1Id);
-      expect(firstLine.lineGeometry.transform).toEqual({ x: 0, y: 0 });
+    test('can render two linear bubbles', () => {
+      expect(firstBubble.bubbleGeometry.points).toHaveLength(2);
+      expect(firstBubble.bubbleGeometry.color).toBe('red');
+      expect(firstBubble.bubbleGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
+      expect(firstBubble.bubbleGeometry.seriesIdentifier.specId).toEqual(spec1Id);
 
-      expect(secondLine.lineGeometry.line).toBe('M0,0L100,50');
-      expect(secondLine.lineGeometry.color).toBe('blue');
-      expect(secondLine.lineGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
-      expect(secondLine.lineGeometry.seriesIdentifier.specId).toEqual(spec2Id);
-      expect(secondLine.lineGeometry.transform).toEqual({ x: 0, y: 0 });
+      expect(secondBubble.bubbleGeometry.points).toHaveLength(2);
+      expect(secondBubble.bubbleGeometry.color).toBe('blue');
+      expect(secondBubble.bubbleGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
+      expect(secondBubble.bubbleGeometry.seriesIdentifier.specId).toEqual(spec2Id);
     });
     test('can render first spec points', () => {
       const {
-        lineGeometry: { points },
+        bubbleGeometry: { points },
         indexedGeometryMap,
-      } = firstLine;
+      } = firstBubble;
       expect(points.length).toEqual(2);
       expect(points[0]).toEqual(({
         x: 0,
@@ -664,9 +649,9 @@ describe('Rendering points - line', () => {
     });
     test('can render second spec points', () => {
       const {
-        lineGeometry: { points },
+        bubbleGeometry: { points },
         indexedGeometryMap,
-      } = secondLine;
+      } = secondBubble;
       expect(points.length).toEqual(2);
       expect(points[0]).toEqual(({
         x: 0,
@@ -717,13 +702,13 @@ describe('Rendering points - line', () => {
       expect(indexedGeometryMap.size).toEqual(points.length);
     });
   });
-  describe('Single series line chart - time', () => {
-    const pointSeriesSpec: LineSeriesSpec = {
+  describe('Single series bubble chart - time', () => {
+    const pointSeriesSpec: BubbleSeriesSpec = {
       chartType: ChartTypes.XYAxis,
       specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: SeriesTypes.Line,
+      seriesType: SeriesTypes.Bubble,
       yScaleToDataExtent: false,
       data: [
         [1546300800000, 10],
@@ -743,39 +728,37 @@ describe('Rendering points - line', () => {
     });
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
 
-    let renderedLine: {
-      lineGeometry: LineGeometry;
+    let renderedBubble: {
+      bubbleGeometry: BubbleGeometry;
       indexedGeometryMap: IndexedGeometryMap;
     };
 
     beforeEach(() => {
-      renderedLine = renderLine(
+      renderedBubble = renderBubble(
         0, // not applied any shift, renderGeometries applies it only with mixed charts
         pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
-        CurveType.LINEAR,
         false,
-        0,
-        LIGHT_THEME.lineSeriesStyle,
+        LIGHT_THEME.bubbleSeriesStyle,
         {
           enabled: false,
         },
+        false,
       );
     });
-    test('Can render a time line', () => {
-      expect(renderedLine.lineGeometry.line).toBe('M0,0L100,50');
-      expect(renderedLine.lineGeometry.color).toBe('red');
-      expect(renderedLine.lineGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
-      expect(renderedLine.lineGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
-      expect(renderedLine.lineGeometry.transform).toEqual({ x: 0, y: 0 });
+    test('Can render a time bubble', () => {
+      expect(renderedBubble.bubbleGeometry.points).toHaveLength(2);
+      expect(renderedBubble.bubbleGeometry.color).toBe('red');
+      expect(renderedBubble.bubbleGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
+      expect(renderedBubble.bubbleGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
     });
     test('Can render two points', () => {
       const {
-        lineGeometry: { points },
+        bubbleGeometry: { points },
         indexedGeometryMap,
-      } = renderedLine;
+      } = renderedBubble;
       expect(points[0]).toEqual(({
         x: 0,
         y: 0,
@@ -825,15 +808,15 @@ describe('Rendering points - line', () => {
       expect(indexedGeometryMap.size).toEqual(points.length);
     });
   });
-  describe('Multi series line chart - time', () => {
+  describe('Multi series bubble chart - time', () => {
     const spec1Id = 'point1';
     const spec2Id = 'point2';
-    const pointSeriesSpec1: LineSeriesSpec = {
+    const pointSeriesSpec1: BubbleSeriesSpec = {
       chartType: ChartTypes.XYAxis,
       specType: SpecTypes.Series,
       id: spec1Id,
       groupId: GROUP_ID,
-      seriesType: SeriesTypes.Line,
+      seriesType: SeriesTypes.Bubble,
       yScaleToDataExtent: false,
       data: [
         [1546300800000, 10],
@@ -844,12 +827,12 @@ describe('Rendering points - line', () => {
       xScaleType: ScaleType.Time,
       yScaleType: ScaleType.Linear,
     };
-    const pointSeriesSpec2: LineSeriesSpec = {
+    const pointSeriesSpec2: BubbleSeriesSpec = {
       chartType: ChartTypes.XYAxis,
       specType: SpecTypes.Series,
       id: spec2Id,
       groupId: GROUP_ID,
-      seriesType: SeriesTypes.Line,
+      seriesType: SeriesTypes.Bubble,
       yScaleToDataExtent: false,
       data: [
         [1546300800000, 20],
@@ -869,50 +852,48 @@ describe('Rendering points - line', () => {
     });
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
 
-    let firstLine: {
-      lineGeometry: LineGeometry;
+    let firstBubble: {
+      bubbleGeometry: BubbleGeometry;
       indexedGeometryMap: IndexedGeometryMap;
     };
-    let secondLine: {
-      lineGeometry: LineGeometry;
+    let secondBubble: {
+      bubbleGeometry: BubbleGeometry;
       indexedGeometryMap: IndexedGeometryMap;
     };
 
     beforeEach(() => {
-      firstLine = renderLine(
+      firstBubble = renderBubble(
         0, // not applied any shift, renderGeometries applies it only with mixed charts
         pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
-        CurveType.LINEAR,
         false,
-        0,
-        LIGHT_THEME.lineSeriesStyle,
+        LIGHT_THEME.bubbleSeriesStyle,
         {
           enabled: false,
         },
+        false,
       );
-      secondLine = renderLine(
+      secondBubble = renderBubble(
         0, // not applied any shift, renderGeometries applies it only with mixed charts
         pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[1],
         xScale,
         yScales.get(GROUP_ID)!,
         'blue',
-        CurveType.LINEAR,
         false,
-        0,
-        LIGHT_THEME.lineSeriesStyle,
+        LIGHT_THEME.bubbleSeriesStyle,
         {
           enabled: false,
         },
+        false,
       );
     });
     test('can render first spec points', () => {
       const {
-        lineGeometry: { points },
+        bubbleGeometry: { points },
         indexedGeometryMap,
-      } = firstLine;
+      } = firstBubble;
       expect(points.length).toEqual(2);
       expect(points[0]).toEqual(({
         x: 0,
@@ -964,9 +945,9 @@ describe('Rendering points - line', () => {
     });
     test('can render second spec points', () => {
       const {
-        lineGeometry: { points },
+        bubbleGeometry: { points },
         indexedGeometryMap,
-      } = secondLine;
+      } = secondBubble;
       expect(points.length).toEqual(2);
       expect(points[0]).toEqual(({
         x: 0,
@@ -1017,13 +998,13 @@ describe('Rendering points - line', () => {
       expect(indexedGeometryMap.size).toEqual(points.length);
     });
   });
-  describe('Single series line chart - y log', () => {
-    const pointSeriesSpec: LineSeriesSpec = {
+  describe('Single series bubble chart - y log', () => {
+    const pointSeriesSpec: BubbleSeriesSpec = {
       chartType: ChartTypes.XYAxis,
       specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: SeriesTypes.Line,
+      seriesType: SeriesTypes.Bubble,
       yScaleToDataExtent: false,
       data: [
         [0, 10],
@@ -1050,48 +1031,51 @@ describe('Rendering points - line', () => {
     });
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
 
-    let renderedLine: {
-      lineGeometry: LineGeometry;
+    let renderedBubble: {
+      bubbleGeometry: BubbleGeometry;
       indexedGeometryMap: IndexedGeometryMap;
     };
 
     beforeEach(() => {
-      renderedLine = renderLine(
+      renderedBubble = renderBubble(
         0, // not applied any shift, renderGeometries applies it only with mixed charts
         pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
-        CurveType.LINEAR,
         false,
-        0,
-        LIGHT_THEME.lineSeriesStyle,
+        LIGHT_THEME.bubbleSeriesStyle,
         {
           enabled: false,
         },
+        false,
       );
     });
-    test('Can render a splitted line', () => {
-      // expect(renderedLine.lineGeometry.line).toBe('ss');
-      expect(renderedLine.lineGeometry.line.split('M').length - 1).toBe(3);
-      expect(renderedLine.lineGeometry.color).toBe('red');
-      expect(renderedLine.lineGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
-      expect(renderedLine.lineGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
-      expect(renderedLine.lineGeometry.transform).toEqual({ x: 0, y: 0 });
+    test('Can render a splitted bubble', () => {
+      expect(renderedBubble.bubbleGeometry.points).toHaveLength(7);
+      expect(renderedBubble.bubbleGeometry.color).toBe('red');
+      expect(renderedBubble.bubbleGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
+      expect(renderedBubble.bubbleGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
     });
     test('Can render points', () => {
       const {
-        lineGeometry: { points },
+        bubbleGeometry: { points },
         indexedGeometryMap,
-      } = renderedLine;
+      } = renderedBubble;
       // all the points minus the undefined ones on a log scale
       expect(points.length).toBe(7);
       // all the points expect null geometries
       expect(indexedGeometryMap.size).toEqual(8);
-      const nullIndexdGeometry = indexedGeometryMap.find(2)!;
+      const nullIndexdGeometry = indexedGeometryMap.find(null, {
+        x: 1000,
+        y: 1000,
+      });
       expect(nullIndexdGeometry).toEqual([]);
 
-      const zeroValueIndexdGeometry = indexedGeometryMap.find(5)!;
+      const zeroValueIndexdGeometry = indexedGeometryMap.find(null, {
+        x: 56.25,
+        y: 100,
+      });
       expect(zeroValueIndexdGeometry).toBeDefined();
       expect(zeroValueIndexdGeometry.length).toBe(1);
       // moved to the bottom of the chart
@@ -1101,12 +1085,12 @@ describe('Rendering points - line', () => {
     });
   });
   describe('Remove points datum is not in domain', () => {
-    const pointSeriesSpec: LineSeriesSpec = {
+    const pointSeriesSpec: BubbleSeriesSpec = {
       chartType: ChartTypes.XYAxis,
       specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: SeriesTypes.Line,
+      seriesType: SeriesTypes.Bubble,
       yScaleToDataExtent: false,
       data: [
         [0, 0],
@@ -1132,32 +1116,31 @@ describe('Rendering points - line', () => {
       range: [0, 100],
     });
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
-    let renderedLine: {
-      lineGeometry: LineGeometry;
+    let renderedBubble: {
+      bubbleGeometry: BubbleGeometry;
       indexedGeometryMap: IndexedGeometryMap;
     };
 
     beforeEach(() => {
-      renderedLine = renderLine(
+      renderedBubble = renderBubble(
         25, // adding a ideal 25px shift, generally applied by renderGeometries
         pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
-        CurveType.LINEAR,
         false,
-        0,
-        LIGHT_THEME.lineSeriesStyle,
+        LIGHT_THEME.bubbleSeriesStyle,
         {
           enabled: false,
         },
+        false,
       );
     });
     test('Can render two points', () => {
       const {
-        lineGeometry: { points },
+        bubbleGeometry: { points },
         indexedGeometryMap,
-      } = renderedLine;
+      } = renderedBubble;
       // will not render the 3rd point that is out of y domain
       expect(points.length).toBe(2);
       // will keep the 3rd point as an indexedGeometry
@@ -1212,12 +1195,12 @@ describe('Rendering points - line', () => {
   });
 
   describe('Error guards for scaled values', () => {
-    const pointSeriesSpec: LineSeriesSpec = {
+    const pointSeriesSpec: BubbleSeriesSpec = {
       chartType: ChartTypes.XYAxis,
       specType: SpecTypes.Series,
       id: SPEC_ID,
       groupId: GROUP_ID,
-      seriesType: SeriesTypes.Line,
+      seriesType: SeriesTypes.Bubble,
       yScaleToDataExtent: false,
       data: [
         [0, 10],
@@ -1236,25 +1219,24 @@ describe('Rendering points - line', () => {
       range: [0, 100],
     });
     const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
-    let renderedLine: {
-      lineGeometry: LineGeometry;
+    let renderedBubble: {
+      bubbleGeometry: BubbleGeometry;
       indexedGeometryMap: IndexedGeometryMap;
     };
 
     beforeEach(() => {
-      renderedLine = renderLine(
+      renderedBubble = renderBubble(
         25, // adding a ideal 25px shift, generally applied by renderGeometries
         pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
         xScale,
         yScales.get(GROUP_ID)!,
         'red',
-        CurveType.LINEAR,
         false,
-        0,
-        LIGHT_THEME.lineSeriesStyle,
+        LIGHT_THEME.bubbleSeriesStyle,
         {
           enabled: false,
         },
+        false,
       );
     });
 
@@ -1265,13 +1247,12 @@ describe('Rendering points - line', () => {
         });
       });
 
-      it('Should have empty line', () => {
-        const { lineGeometry } = renderedLine;
-        expect(lineGeometry.line).toBe('');
-        expect(lineGeometry.color).toBe('red');
-        expect(lineGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
-        expect(lineGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
-        expect(lineGeometry.transform).toEqual({ x: 25, y: 0 });
+      it('Should have empty bubble', () => {
+        const { bubbleGeometry } = renderedBubble;
+        expect(bubbleGeometry.points).toHaveLength(2);
+        expect(bubbleGeometry.color).toBe('red');
+        expect(bubbleGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
+        expect(bubbleGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
       });
     });
 
@@ -1282,13 +1263,12 @@ describe('Rendering points - line', () => {
         });
       });
 
-      it('Should have empty line', () => {
-        const { lineGeometry } = renderedLine;
-        expect(lineGeometry.line).toBe('');
-        expect(lineGeometry.color).toBe('red');
-        expect(lineGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
-        expect(lineGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
-        expect(lineGeometry.transform).toEqual({ x: 25, y: 0 });
+      it('Should have empty bubble', () => {
+        const { bubbleGeometry } = renderedBubble;
+        expect(bubbleGeometry.points).toHaveLength(2);
+        expect(bubbleGeometry.color).toBe('red');
+        expect(bubbleGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
+        expect(bubbleGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
       });
     });
   });

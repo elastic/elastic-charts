@@ -99,7 +99,7 @@ export type RecursivePartial<T> = {
     ? Map<K, RecursivePartial<V>>
     : T[P] extends NonAny // checks for primative values
     ? T[P]
-    : RecursivePartial<T[P]>;
+    : RecursivePartial<T[P]>; // recurse for all non-array and non-primative values
 };
 type NonAny = number | boolean | string | symbol | null;
 

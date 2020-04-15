@@ -61,11 +61,11 @@ export class IndexedGeometryMap {
   }
 
   find(x: number | string | null, point?: Point): IndexedGeometry[] {
-    if (x === null) {
+    if (x === null && !point) {
       return [];
     }
 
-    const spatialValues = point === undefined ? [] : this.spatialMap.find(x, point);
+    const spatialValues = point === undefined ? [] : this.spatialMap.find(point);
 
     return [...this.linearMap.find(x), ...spatialValues];
   }
