@@ -43,7 +43,7 @@ import {
   BubbleGeometry,
 } from '../../../utils/geometry';
 import { mergePartial, Color } from '../../../utils/commons';
-import { LegendItem } from '../legend/legend';
+import { LegendItem } from '../../../commons/legend';
 import { IndexedGeometryMap, GeometryType } from '../utils/indexed_geometry_map';
 import { getDistance } from '../state/utils';
 import { MarkBuffer } from '../../../specs';

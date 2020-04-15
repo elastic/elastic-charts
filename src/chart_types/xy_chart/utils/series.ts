@@ -27,9 +27,12 @@ import { ScaleType } from '../../../scales';
 import { LastValues } from '../state/utils';
 import { Datum, Color } from '../../../utils/commons';
 import { ColorOverrides } from '../../../state/chart_state';
+import { SeriesIdentifier, SeriesKey } from '../../../commons/series_id';
 
+/** @internal */
 export const SERIES_DELIMITER = ' - ';
 
+/** @internal */
 export interface FilledValues {
   /** the x value */
   x?: number | string;
@@ -52,6 +55,7 @@ export interface RawDataSeriesDatum<T = any> {
   datum?: T | null;
 }
 
+/** @internal */
 export interface DataSeriesDatum<T = any> {
   /** the x value */
   x: number | string;
@@ -71,24 +75,19 @@ export interface DataSeriesDatum<T = any> {
   filled?: FilledValues;
 }
 
-export type SeriesKey = string;
-
-export type SeriesIdentifier = {
-  specId: SpecId;
-  key: SeriesKey;
-};
-
 export interface XYChartSeriesIdentifier extends SeriesIdentifier {
   yAccessor: string | number;
   splitAccessors: Map<string | number, string | number>; // does the map have a size vs making it optional
   seriesKeys: (string | number)[];
 }
 
+/** @internal */
 export type DataSeries = XYChartSeriesIdentifier & {
   // seriesColorKey: string;
   data: DataSeriesDatum[];
 };
 
+/** @internal */
 export type RawDataSeries = XYChartSeriesIdentifier & {
   // seriesColorKey: string;
   data: RawDataSeriesDatum[];
@@ -108,6 +107,7 @@ export interface DataSeriesCounts {
   areaSeries: number;
 }
 
+/** @internal */
 export type SeriesCollectionValue = {
   banded?: boolean;
   lastValue?: LastValues;
@@ -116,7 +116,7 @@ export type SeriesCollectionValue = {
 };
 
 /** @internal */
-export function getSeriesIndex(series: XYChartSeriesIdentifier[], target: XYChartSeriesIdentifier): number {
+export function getSeriesIndex(series: SeriesIdentifier[], target: SeriesIdentifier): number {
   if (!series) {
     return -1;
   }
@@ -152,6 +152,11 @@ export function splitSeries({
 
   data.forEach((datum) => {
     const splitAccessors = getSplitAccessors(datum, splitSeriesAccessors);
+    // if splitSeriesAccessors are defined we should have at least one split value to include datum
+    if (splitSeriesAccessors.length > 0 && splitAccessors.size < 1) {
+      return;
+    }
+
     if (isMultipleY) {
       yAccessors.forEach((accessor, index) => {
         const cleanedDatum = cleanDatum(
@@ -394,7 +399,7 @@ function getRawDataSeries(
  */
 export function getSplittedSeries(
   seriesSpecs: BasicSeriesSpec[],
-  deselectedDataSeries: XYChartSeriesIdentifier[] = [],
+  deselectedDataSeries: SeriesIdentifier[] = [],
 ): {
   splittedSeries: Map<SpecId, RawDataSeries[]>;
   seriesCollection: Map<SeriesKey, SeriesCollectionValue>;

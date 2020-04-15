@@ -46,7 +46,6 @@ export class MockSeriesSpec {
     yScaleType: ScaleType.Linear,
     xAccessor: 'x',
     yAccessors: ['y'],
-    splitSeriesAccessors: ['g'],
     yScaleToDataExtent: false,
     hideInLegend: false,
     enableHistogramMode: false,

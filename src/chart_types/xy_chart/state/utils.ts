@@ -32,8 +32,8 @@ import {
   getSeriesKey,
   RawDataSeries,
   XYChartSeriesIdentifier,
-  SeriesKey,
 } from '../utils/series';
+import { SeriesKey, SeriesIdentifier } from '../../../commons/series_id';
 import {
   AreaSeriesSpec,
   AxisSpec,
@@ -58,7 +58,7 @@ import { Domain } from '../../../utils/domain';
 import { GroupId, SpecId } from '../../../utils/ids';
 import { Scale } from '../../../scales';
 import { PointGeometry, BarGeometry, AreaGeometry, LineGeometry, BubbleGeometry } from '../../../utils/geometry';
-import { LegendItem } from '../legend/legend';
+import { LegendItem } from '../../../commons/legend';
 import { Spec } from '../../../specs';
 import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
 import { Point } from '../../../utils/point';
@@ -189,6 +189,7 @@ export function getCustomSeriesColors(
   return updatedCustomSeriesColors;
 }
 
+/** @internal */
 export interface LastValues {
   y0: number | null;
   y1: number | null;
@@ -247,7 +248,7 @@ function getLastValues(formattedDataSeries: {
 export function computeSeriesDomains(
   seriesSpecs: BasicSeriesSpec[],
   customYDomainsByGroupId: Map<GroupId, DomainRange> = new Map(),
-  deselectedDataSeries: XYChartSeriesIdentifier[] = [],
+  deselectedDataSeries: SeriesIdentifier[] = [],
   customXDomain?: DomainRange | Domain,
 ): SeriesDomainsAndData {
   const { splittedSeries, xValues, seriesCollection } = deselectedDataSeries
@@ -758,9 +759,9 @@ export function isChartAnimatable(geometriesCounts: GeometriesCounts, animationE
 }
 
 /** @internal */
-export function isAllSeriesDeselected(legendItems: Map<string, LegendItem>): boolean {
-  for (const [, legendItem] of legendItems) {
-    if (legendItem.isSeriesVisible) {
+export function isAllSeriesDeselected(legendItems: LegendItem[]): boolean {
+  for (const legendItem of legendItems) {
+    if (!legendItem.isSeriesHidden) {
       return false;
     }
   }

@@ -19,11 +19,11 @@
 import { getGeometryStateStyle } from '../../rendering/rendering';
 import { BubbleGeometry, PointGeometry } from '../../../../utils/geometry';
 import { SharedGeometryStateStyle, GeometryStateStyle, PointStyle } from '../../../../utils/themes/theme';
-import { LegendItem } from '../../legend/legend';
 import { withContext, withClip } from '../../../../renderers/canvas';
 import { renderPointGroup } from './points';
 import { Rect } from '../../../../geoms/types';
-import { SeriesKey } from '../../utils/series';
+import { LegendItem } from '../../../../commons/legend';
+import { SeriesKey } from '../../../../commons/series_id';
 
 interface BubbleGeometriesDataProps {
   animated?: boolean;

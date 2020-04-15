@@ -21,7 +21,7 @@ import { PointStyle, GeometryStateStyle } from '../../../../utils/themes/theme';
 import { renderCircle } from './primitives/arc';
 import { Circle, Stroke, Fill } from '../../../../geoms/types';
 import { buildPointStyles } from './styles/point';
-import { SeriesKey } from '../../utils/series';
+import { SeriesKey } from '../../../../commons/series_id';
 
 /**
  * Renders points from single series
