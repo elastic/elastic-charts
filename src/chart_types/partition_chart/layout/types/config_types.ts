@@ -90,6 +90,7 @@ export interface StaticConfig {
   backgroundColor: Color;
   sectorLineWidth: Pixels;
   sectorLineStroke: StrokeStyle;
+  containerBackgroundColor: string;
 }
 
 export type EasingFunction = (x: Ratio) => Ratio;

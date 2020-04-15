@@ -32,7 +32,7 @@ import {
 import { Box, Font, PartialFont, TextMeasure } from '../types/types';
 import { conjunctiveConstraint } from '../circline_geometry';
 import { Layer } from '../../specs/index';
-import { colorIsDark } from '../utils/calcs';
+import { colorIsDark, getBackgroundWithContainerColorFromUser } from '../utils/calcs';
 import { ValueFormatter } from '../../../../utils/commons';
 
 const INFINITY_RADIUS = 1e4; // far enough for a sub-2px precision on a 4k screen, good enough for text bounds; 64 bit floats still work well with it
@@ -280,9 +280,13 @@ function fill(
       layer.fillLabel && layer.fillLabel.valueFont,
     );
 
-    // need to compare the contrast from the shapeFillColor to the textColor and change the textColor if the contrast isn't enough
-    const shapeFillColor = node.fillColor;
-    const textColorWithContrast = colorIsDark(textColor, shapeFillColor);
+    // need to compare the contrast from the shapeFillColor and the background of the container to the textColor and change the textColor if the contrast isn't at least 4.5
+    const sliceFillColor = node.fillColor;
+    const containerBackgroundColorFromUser = config.containerBackgroundColor;
+    const containerBackground = containerBackgroundColorFromUser
+      ? getBackgroundWithContainerColorFromUser(sliceFillColor, containerBackgroundColorFromUser)
+      : sliceFillColor;
+    const textColorWithContrast = colorIsDark(textColor, containerBackground);
     const sizeInvariantFont: Font = {
       fontStyle,
       fontVariant,
