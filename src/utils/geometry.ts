@@ -95,13 +95,6 @@ export interface LineGeometry {
   clippedRanges: ClippedRanges;
 }
 
-export interface BubbleGeometry {
-  points: PointGeometry[];
-  color: Color;
-  seriesIdentifier: XYChartSeriesIdentifier;
-  seriesPointStyle: PointStyle;
-}
-
 export interface AreaGeometry {
   area: string;
   lines: string[];
@@ -120,6 +113,13 @@ export interface AreaGeometry {
    * Ranges of `[x0, x1]` pairs to clip from series
    */
   clippedRanges: ClippedRanges;
+}
+
+export interface BubbleGeometry {
+  points: PointGeometry[];
+  color: Color;
+  seriesIdentifier: XYChartSeriesIdentifier;
+  seriesPointStyle: PointStyle;
 }
 
 export interface ArcGeometry {

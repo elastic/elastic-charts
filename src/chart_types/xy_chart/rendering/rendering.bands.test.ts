@@ -27,6 +27,7 @@ import { AreaGeometry, PointGeometry } from '../../../utils/geometry';
 import { ChartTypes } from '../..';
 import { SpecTypes } from '../../../specs/settings';
 import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
+import { MockPointGeometry } from '../../../mocks';
 
 const SPEC_ID = 'spec_1';
 const GROUP_ID = 'group_1';
@@ -323,147 +324,96 @@ describe('Rendering bands - areas', () => {
       const {
         areaGeometry: { points },
       } = renderedArea;
-      // expect(points).toBe(6);
       expect(points.length).toBe(6);
-      expect(points[0]).toEqual(({
-        x: 0,
-        y: 80,
-        radius: 0,
-        color: 'red',
-        seriesIdentifier: {
-          specId: SPEC_ID,
-          yAccessor: 2,
-          splitAccessors: new Map(),
-          seriesKeys: [2],
-          key: 'spec{spec_1}yAccessor{2}splitAccessors{}',
-        },
-        value: {
-          accessor: 'y0',
+      const getPointGeo = MockPointGeometry.fromBaseline(
+        {
           x: 0,
-          y: 2,
-          mark: null,
-        },
-        transform: {
-          x: 25,
           y: 0,
+          radius: 0,
+          color: 'red',
+          value: {
+            accessor: 'y1',
+            x: 0,
+            y: 10,
+            mark: null,
+          },
+          transform: {
+            x: 25,
+            y: 0,
+          },
         },
-      } as unknown) as PointGeometry);
-
-      expect(points[1]).toEqual(({
-        x: 0,
-        y: 0,
-        radius: 0,
-        color: 'red',
-        seriesIdentifier: {
-          specId: SPEC_ID,
-          yAccessor: 2,
-          splitAccessors: new Map(),
-          seriesKeys: [2],
-          key: 'spec{spec_1}yAccessor{2}splitAccessors{}',
-        },
-        value: {
-          accessor: 'y1',
+        'seriesIdentifier',
+      );
+      expect(points[0]).toMatchObject(
+        getPointGeo({
           x: 0,
-          y: 10,
-          mark: null,
-        },
-        transform: {
-          x: 25,
-          y: 0,
-        },
-      } as unknown) as PointGeometry);
-      expect(points[2]).toEqual(({
-        x: 50,
-        y: 70,
-        radius: 0,
-        color: 'red',
-        seriesIdentifier: {
-          specId: SPEC_ID,
-          yAccessor: 2,
-          splitAccessors: new Map(),
-          seriesKeys: [2],
-          key: 'spec{spec_1}yAccessor{2}splitAccessors{}',
-        },
-        value: {
-          accessor: 'y0',
-          x: 2,
-          y: 3,
-          mark: null,
-        },
-        transform: {
-          x: 25,
-          y: 0,
-        },
-      } as unknown) as PointGeometry);
-      expect(points[3]).toEqual(({
-        x: 50,
-        y: 50,
-        radius: 0,
-        color: 'red',
-        seriesIdentifier: {
-          specId: SPEC_ID,
-          yAccessor: 2,
-          splitAccessors: new Map(),
-          seriesKeys: [2],
-          key: 'spec{spec_1}yAccessor{2}splitAccessors{}',
-        },
-        value: {
-          accessor: 'y1',
-          x: 2,
-          y: 5,
-          mark: null,
-        },
-        transform: {
-          x: 25,
-          y: 0,
-        },
-      } as unknown) as PointGeometry);
-      expect(points[4]).toEqual(({
-        x: 75,
-        y: 70,
-        radius: 0,
-        color: 'red',
-        seriesIdentifier: {
-          specId: SPEC_ID,
-          yAccessor: 2,
-          splitAccessors: new Map(),
-          seriesKeys: [2],
-          key: 'spec{spec_1}yAccessor{2}splitAccessors{}',
-        },
-        value: {
-          accessor: 'y0',
-          x: 3,
-          y: 3,
-          mark: null,
-        },
-        transform: {
-          x: 25,
-          y: 0,
-        },
-      } as unknown) as PointGeometry);
-      expect(points[5]).toEqual(({
-        x: 75,
-        y: 50,
-        radius: 0,
-        color: 'red',
-        seriesIdentifier: {
-          specId: SPEC_ID,
-          yAccessor: 2,
-          splitAccessors: new Map(),
-          seriesKeys: [2],
-          key: 'spec{spec_1}yAccessor{2}splitAccessors{}',
-        },
-        value: {
-          accessor: 'y1',
-          x: 3,
-          y: 5,
-          mark: null,
-        },
-        transform: {
-          x: 25,
-          y: 0,
-        },
-      } as unknown) as PointGeometry);
+          y: 80,
+          value: {
+            accessor: 'y0',
+            x: 0,
+            y: 2,
+            mark: null,
+          },
+        }),
+      );
+      expect(points[1]).toMatchObject(
+        getPointGeo({
+          value: {
+            accessor: 'y1',
+            x: 0,
+            y: 10,
+            mark: null,
+          },
+        }),
+      );
+      expect(points[2]).toMatchObject(
+        getPointGeo({
+          x: 50,
+          y: 70,
+          value: {
+            accessor: 'y0',
+            x: 2,
+            y: 3,
+            mark: null,
+          },
+        }),
+      );
+      expect(points[3]).toMatchObject(
+        getPointGeo({
+          x: 50,
+          y: 50,
+          value: {
+            accessor: 'y1',
+            x: 2,
+            y: 5,
+            mark: null,
+          },
+        }),
+      );
+      expect(points[4]).toMatchObject(
+        getPointGeo({
+          x: 75,
+          y: 70,
+          value: {
+            accessor: 'y0',
+            x: 3,
+            y: 3,
+            mark: null,
+          },
+        }),
+      );
+      expect(points[5]).toMatchObject(
+        getPointGeo({
+          x: 75,
+          y: 50,
+          value: {
+            accessor: 'y1',
+            x: 3,
+            y: 5,
+            mark: null,
+          },
+        }),
+      );
     });
   });
   describe('Single series band bar chart - ordinal', () => {
