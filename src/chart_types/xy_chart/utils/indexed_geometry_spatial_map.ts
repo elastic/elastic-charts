@@ -106,18 +106,21 @@ export class IndexedGeometrySpatialMap {
       return [];
     }
 
-    return [...this.map.neighbors(selectedIndex)]
-      .filter((i) => !visitedIndices.has(i))
-      .flatMap((i) => {
-        visitedIndices.add(i);
-        const geometry = this.pointGeometries[i];
-
-        if (getDistance(geometry, point) < this.maxRadius) {
-          // Gets neighbors based on relation to maxRadius
-          return [geometry, ...this.getRadialNeighbors(i, point, visitedIndices)];
-        }
-
+    const neighbors = [...this.map.neighbors(selectedIndex)];
+    return neighbors.flatMap((i) => {
+      if (visitedIndices.has(i)) {
         return [];
-      });
+      }
+
+      visitedIndices.add(i);
+      const geometry = this.pointGeometries[i];
+
+      if (getDistance(geometry, point) < this.maxRadius) {
+        // Gets neighbors based on relation to maxRadius
+        return [geometry, ...this.getRadialNeighbors(i, point, visitedIndices)];
+      }
+
+      return [];
+    });
   }
 }
