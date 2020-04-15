@@ -93,6 +93,11 @@ export type RecursivePartial<T> = {
 };
 
 export interface MergeOptions {
+  /**
+   * Includes all available keys of every provided partial at a given level.
+   * This is opposite to normal behavoir, which only uses keys from the base
+   * object to merge values.
+   */
   mergeOptionalPartialValues?: boolean;
 }
 
@@ -109,13 +114,21 @@ export function getPartialValue<T>(base: T, partial?: RecursivePartial<T>, parti
  * @internal
  */
 export function getAllKeys(object: any, objects: any[] = []): string[] {
+  const initalKeys = object instanceof Map ? [...object.keys()] : Object.keys(object);
+
   return objects.reduce((keys: any[], obj) => {
     if (obj && typeof obj === 'object') {
-      keys.push(...Object.keys(obj));
+      const newKeys = obj instanceof Map ? obj.keys() : Object.keys(obj);
+      keys.push(...newKeys);
     }
 
     return keys;
-  }, Object.keys(object));
+  }, initalKeys);
+}
+
+/** @internal */
+export function isArrayOrSet(value: any): boolean {
+  return Array.isArray(value) || value instanceof Set;
 }
 
 /** @internal */
@@ -124,12 +137,12 @@ export function hasPartialObjectToMerge<T>(
   partial?: RecursivePartial<T>,
   additionalPartials: RecursivePartial<T>[] = [],
 ): boolean {
-  if (Array.isArray(base)) {
+  if (isArrayOrSet(base)) {
     return false;
   }
 
   if (typeof base === 'object' && base !== null) {
-    if (typeof partial === 'object' && !Array.isArray(partial) && partial !== null) {
+    if (typeof partial === 'object' && !isArrayOrSet(partial) && partial !== null) {
       return true;
     }
 
@@ -145,7 +158,15 @@ export function shallowClone(value: any) {
     return [...value];
   }
 
+  if (value instanceof Set) {
+    return new Set([...value]);
+  }
+
   if (typeof value === 'object' && value !== null) {
+    if (value instanceof Map) {
+      return new Map(value.entries());
+    }
+
     return { ...value };
   }
 
@@ -173,13 +194,36 @@ export function mergePartial<T>(
   if (hasPartialObjectToMerge(base, partial, additionalPartials)) {
     if (partial !== undefined && options.mergeOptionalPartialValues) {
       getAllKeys(partial, additionalPartials).forEach((key) => {
-        if (!(key in baseClone)) {
+        if (baseClone instanceof Map) {
+          if (!baseClone.has(key)) {
+            baseClone.set(
+              key,
+              (partial as any).get(key) !== undefined
+                ? (partial as any).get(key)
+                : additionalPartials.find((v: any) => v.get(key) !== undefined) || new Map().get(key),
+            );
+          }
+        } else if (!(key in baseClone)) {
           (baseClone as any)[key] =
             (partial as any)[key] !== undefined
               ? (partial as any)[key]
               : (additionalPartials.find((v: any) => v[key] !== undefined) || ({} as any))[key];
         }
       });
+    }
+
+    if (baseClone instanceof Map) {
+      return [...baseClone.keys()].reduce((newBase: Map<any, any>, key) => {
+        const partialValue = partial && (partial as any).get(key);
+        const partialValues = additionalPartials.map((v) =>
+          typeof v === 'object' && v instanceof Map ? v.get(key) : undefined,
+        );
+        const baseValue = (base as any).get(key);
+
+        newBase.set(key, mergePartial(baseValue, partialValue, options, partialValues));
+
+        return newBase;
+      }, baseClone as any);
     }
 
     return Object.keys(base).reduce((newBase, key) => {
