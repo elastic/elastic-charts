@@ -30,7 +30,8 @@ import { Scale } from '../../../../scales';
 import { Dimensions } from '../../../../utils/dimensions';
 import { GroupId } from '../../../../utils/ids';
 import { Rotation } from '../../../../utils/commons';
-import { getLeftPoint, getTopPoint, isRotated } from './get_brush_area';
+import { getLeftPoint, getTopPoint } from './get_brush_area';
+import { isVerticalRotation } from '../utils';
 
 const getLastDragSelector = (state: GlobalChartState) => state.interactions.pointer.lastDrag;
 
@@ -127,7 +128,7 @@ function getXBrushExtent(
   let endPos = getLeftPoint(chartDimensions, lastDrag.end.position);
   let chartMax = chartDimensions.width;
 
-  if (isRotated(rotation)) {
+  if (isVerticalRotation(rotation)) {
     startPos = getTopPoint(chartDimensions, lastDrag.start.position);
     endPos = getTopPoint(chartDimensions, lastDrag.end.position);
     chartMax = chartDimensions.height;
@@ -163,7 +164,7 @@ function getYBrushExtents(
     let startPos = getTopPoint(chartDimensions, lastDrag.start.position);
     let endPos = getTopPoint(chartDimensions, lastDrag.end.position);
     let chartMax = chartDimensions.height;
-    if (isRotated(rotation)) {
+    if (isVerticalRotation(rotation)) {
       startPos = getLeftPoint(chartDimensions, lastDrag.start.position);
       endPos = getLeftPoint(chartDimensions, lastDrag.end.position);
       chartMax = chartDimensions.width;

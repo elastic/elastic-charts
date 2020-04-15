@@ -17,6 +17,7 @@
  * under the License. */
 
 import createCachedSelector from 're-reselect';
+import { isVerticalRotation } from '../utils';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { Dimensions } from '../../../../utils/dimensions';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
@@ -63,7 +64,7 @@ export const getBrushAreaSelector = createCachedSelector(
 
 /** @internal */
 export function getBrushForXAxis(chartDimensions: Dimensions, chartRotation: Rotation, start: Point, end: Point) {
-  const rotated = isRotated(chartRotation);
+  const rotated = isVerticalRotation(chartRotation);
   return {
     left: rotated ? 0 : getLeftPoint(chartDimensions, start),
     top: rotated ? getTopPoint(chartDimensions, start) : 0,
@@ -74,7 +75,7 @@ export function getBrushForXAxis(chartDimensions: Dimensions, chartRotation: Rot
 
 /** @internal */
 export function getBrushForYAxis(chartDimensions: Dimensions, chartRotation: Rotation, start: Point, end: Point) {
-  const rotated = isRotated(chartRotation);
+  const rotated = isVerticalRotation(chartRotation);
   return {
     left: rotated ? getLeftPoint(chartDimensions, start) : 0,
     top: rotated ? 0 : getTopPoint(chartDimensions, start),
@@ -93,18 +94,20 @@ export function getBrushForBothAxis(chartDimensions: Dimensions, start: Point, e
   };
 }
 
-export function isRotated(chartRotation: Rotation) {
-  return chartRotation === -90 || chartRotation === 90;
-}
+/** @internal */
 export function getLeftPoint({ left }: Dimensions, { x }: Point) {
   return x - left;
 }
+
+/** @internal */
 export function getTopPoint({ top }: Dimensions, { y }: Point) {
   return y - top;
 }
-export function getHeight(start: Point, end: Point) {
+
+function getHeight(start: Point, end: Point) {
   return end.y - start.y;
 }
-export function getWidth(start: Point, end: Point) {
+
+function getWidth(start: Point, end: Point) {
   return end.x - start.x;
 }
