@@ -18,7 +18,7 @@
 
 import { common } from '../page_objects';
 
-describe.only('Tooltips', () => {
+describe('Tooltips', () => {
   describe('rotation 0', () => {
     it('shows tooltip on first x value - top', async () => {
       await common.expectChartWithMouseAtUrlToMatchScreenshot(
@@ -101,6 +101,49 @@ describe.only('Tooltips', () => {
           x: 350,
           y: 100,
         },
+      );
+    });
+    it('show rectangular brush selection', async () => {
+      await common.expectChartWithDragAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/interactions--brush-tool',
+        { x: 100, y: 100 },
+        { x: 250, y: 250 },
+      );
+    });
+    it('show y brush selection', async () => {
+      await common.expectChartWithDragAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/interactions--brush-tool&knob-brush axis=y&knob-chartRotation=0',
+        { x: 100, y: 100 },
+        { x: 250, y: 250 },
+      );
+    });
+    it('show x brush selection', async () => {
+      await common.expectChartWithDragAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/interactions--brush-tool&knob-brush axis=x&knob-chartRotation=0',
+        { x: 100, y: 100 },
+        { x: 250, y: 250 },
+      );
+    });
+
+    it('show rectangular brush selection -90 degree', async () => {
+      await common.expectChartWithDragAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/interactions--brush-tool&knob-brush axis=both&knob-chartRotation=-90',
+        { x: 100, y: 100 },
+        { x: 250, y: 250 },
+      );
+    });
+    it('show y brush selection -90 degree', async () => {
+      await common.expectChartWithDragAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/interactions--brush-tool&knob-brush axis=y&knob-chartRotation=-90',
+        { x: 100, y: 100 },
+        { x: 250, y: 250 },
+      );
+    });
+    it('show x brush selection -90 degree', async () => {
+      await common.expectChartWithDragAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/interactions--brush-tool&knob-brush axis=x&knob-chartRotation=-90',
+        { x: 100, y: 100 },
+        { x: 250, y: 250 },
       );
     });
   });

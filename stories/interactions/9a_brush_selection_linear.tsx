@@ -23,17 +23,16 @@ import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, BrushAxis } fro
 import { getChartRotationKnob } from '../utils/knobs';
 import { select } from '@storybook/addon-knobs';
 
-const brushAxisSelect = select(
-  'brush axis',
-  {
-    x: BrushAxis.X,
-    y: BrushAxis.Y,
-    both: BrushAxis.Both,
-  },
-  BrushAxis.Both,
-);
-
 export const example = () => {
+  const brushAxisSelect = select(
+    'brush axis',
+    {
+      x: BrushAxis.X,
+      y: BrushAxis.Y,
+      both: BrushAxis.Both,
+    },
+    BrushAxis.Both,
+  );
   return (
     <Chart className="story-chart">
       <Settings onBrushEnd={action('onBrushEnd')} rotation={getChartRotationKnob()} brushAxis={brushAxisSelect} />

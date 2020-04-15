@@ -41,62 +41,55 @@ export const getBrushAreaSelector = createCachedSelector(
     computeChartDimensionsSelector,
     getSettingsSpecSelector,
   ],
-  (mouseDownPosition, cursorPosition, chartRotation, { chartDimensions }, { brushAxis }): Dimensions | null => {
+  (mouseDownPosition, end, chartRotation, { chartDimensions }, { brushAxis }): Dimensions | null => {
     if (!mouseDownPosition) {
       return null;
     }
-    const brushStart = {
+    const start = {
       x: mouseDownPosition.position.x,
       y: mouseDownPosition.position.y,
     };
     switch (brushAxis) {
       case BrushAxis.Y:
-        return getBrushForYAxis(chartDimensions, chartRotation, cursorPosition, brushStart);
+        return getBrushForYAxis(chartDimensions, chartRotation, start, end);
       case BrushAxis.Both:
-        return getBrushForBothAxis(chartDimensions, cursorPosition, brushStart);
+        return getBrushForBothAxis(chartDimensions, start, end);
       case BrushAxis.X:
       default:
-        return getBrushForXAxis(chartDimensions, chartRotation, cursorPosition, brushStart);
+        return getBrushForXAxis(chartDimensions, chartRotation, start, end);
     }
   },
 )(getChartIdSelector);
 
-function getBrushForXAxis(
-  chartDimensions: Dimensions,
-  chartRotation: Rotation,
-  cursorPosition: Point,
-  brushStart: Point,
-) {
+/** @internal */
+export function getBrushForXAxis(chartDimensions: Dimensions, chartRotation: Rotation, start: Point, end: Point) {
   const rotated = isRotated(chartRotation);
   return {
-    left: rotated ? 0 : getLeftPoint(chartDimensions, brushStart),
-    top: rotated ? getTopPoint(chartDimensions, brushStart) : 0,
-    height: rotated ? getHeight(cursorPosition, brushStart) : chartDimensions.height,
-    width: rotated ? chartDimensions.width : getWidth(cursorPosition, brushStart),
+    left: rotated ? 0 : getLeftPoint(chartDimensions, start),
+    top: rotated ? getTopPoint(chartDimensions, start) : 0,
+    height: rotated ? getHeight(start, end) : chartDimensions.height,
+    width: rotated ? chartDimensions.width : getWidth(start, end),
   };
 }
 
-function getBrushForYAxis(
-  chartDimensions: Dimensions,
-  chartRotation: Rotation,
-  cursorPosition: Point,
-  brushStart: Point,
-) {
+/** @internal */
+export function getBrushForYAxis(chartDimensions: Dimensions, chartRotation: Rotation, start: Point, end: Point) {
   const rotated = isRotated(chartRotation);
   return {
-    left: rotated ? getLeftPoint(chartDimensions, brushStart) : 0,
-    top: rotated ? 0 : getTopPoint(chartDimensions, brushStart),
-    height: rotated ? chartDimensions.height : getHeight(cursorPosition, brushStart),
-    width: rotated ? getWidth(cursorPosition, brushStart) : chartDimensions.width,
+    left: rotated ? getLeftPoint(chartDimensions, start) : 0,
+    top: rotated ? 0 : getTopPoint(chartDimensions, start),
+    height: rotated ? chartDimensions.height : getHeight(start, end),
+    width: rotated ? getWidth(start, end) : chartDimensions.width,
   };
 }
 
-function getBrushForBothAxis(chartDimensions: Dimensions, cursorPosition: Point, brushStart: Point) {
+/** @internal */
+export function getBrushForBothAxis(chartDimensions: Dimensions, start: Point, end: Point) {
   return {
-    left: getLeftPoint(chartDimensions, brushStart),
-    top: getTopPoint(chartDimensions, brushStart),
-    height: getHeight(cursorPosition, brushStart),
-    width: getWidth(cursorPosition, brushStart),
+    left: getLeftPoint(chartDimensions, start),
+    top: getTopPoint(chartDimensions, start),
+    height: getHeight(start, end),
+    width: getWidth(start, end),
   };
 }
 
@@ -109,9 +102,9 @@ export function getLeftPoint({ left }: Dimensions, { x }: Point) {
 export function getTopPoint({ top }: Dimensions, { y }: Point) {
   return y - top;
 }
-export function getHeight(cursorPosition: Point, brushStart: Point) {
-  return cursorPosition.y - brushStart.y;
+export function getHeight(start: Point, end: Point) {
+  return end.y - start.y;
 }
-export function getWidth(cursorPosition: Point, brushStart: Point) {
-  return cursorPosition.x - brushStart.x;
+export function getWidth(start: Point, end: Point) {
+  return end.x - start.x;
 }
