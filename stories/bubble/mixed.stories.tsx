@@ -26,5 +26,6 @@ export default {
 };
 
 export { example as simple } from './1_simple';
-export { example as multiple } from './2_multiple';
-export { example as mixed } from './3_mixed';
+export { example as ordinal } from './2_ordinal';
+export { example as multiple } from './3_multiple';
+export { example as mixed } from './4_mixed';

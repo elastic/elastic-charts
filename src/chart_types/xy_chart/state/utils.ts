@@ -575,10 +575,12 @@ function renderGeometries(
       geometriesCounts.bars += renderedBars.barGeometries.length;
       barIndexOffset += 1;
     } else if (isBubbleSeriesSpec(spec)) {
+      const bubbleShift = clusteredCount > 0 ? clusteredCount : 1;
       const bubbleSeriesStyle = spec.bubbleSeriesStyle
         ? mergePartial(chartTheme.bubbleSeriesStyle, spec.bubbleSeriesStyle, { mergeOptionalPartialValues: true })
         : chartTheme.bubbleSeriesStyle;
       const renderedBubbles = renderBubble(
+        (xScale.bandwidth * bubbleShift) / 2,
         ds,
         xScale,
         yScale,

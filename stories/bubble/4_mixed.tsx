@@ -48,6 +48,7 @@ export const example = () => {
   return (
     <Chart className="story-chart">
       <Settings
+        showLegend
         theme={{
           markSizeRatio,
           bubbleSeriesStyle: {
