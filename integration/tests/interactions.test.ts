@@ -147,4 +147,13 @@ describe('Tooltips', () => {
       );
     });
   });
+  it('should render corrent tooltip for split and y accessors', async () => {
+    await common.expectChartWithMouseAtUrlToMatchScreenshot(
+      'http://localhost:9001/iframe.html?id=bar-chart--bar-chart-2-y-2-g',
+      {
+        x: 330,
+        y: 40,
+      },
+    );
+  });
 });

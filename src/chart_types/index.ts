@@ -20,6 +20,7 @@ import { $Values } from 'utility-types';
 
 export const ChartTypes = Object.freeze({
   Global: 'global' as 'global',
+  Goal: 'goal' as 'goal',
   Partition: 'partition' as 'partition',
   XYAxis: 'xy_axis' as 'xy_axis',
 });

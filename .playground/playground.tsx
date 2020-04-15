@@ -17,40 +17,10 @@
  * under the License. */
 
 import React from 'react';
-import { Chart, ScaleType, Position, Axis, Settings, BarSeries, DataGenerator } from '../src';
+import { example } from '../stories/sunburst/12_very_small';
 
 export class Playground extends React.Component {
   render() {
-    const dg = new DataGenerator();
-    const data = dg.generateBasicSeries(10);
-    const data2 = dg.generateBasicSeries(10);
-
-    return (
-      <>
-        <div className="chart">
-          <Chart>
-            <Settings
-              brushAxis="both"
-              onBrushEnd={(values) => {
-                // eslint-disable-next-line no-console
-                console.log(values);
-              }}
-            />
-            <Axis id="x" position={Position.Bottom} />
-            <Axis id="y1" position={Position.Left} />
-            <Axis id="y2" groupId="aaa" position={Position.Right} />
-            <BarSeries id="amount" xScaleType={ScaleType.Linear} xAccessor="x" yAccessors={['y']} data={data} />
-            <BarSeries
-              id="amount2"
-              groupId="aaa"
-              xScaleType={ScaleType.Linear}
-              xAccessor="x"
-              yAccessors={['y']}
-              data={data2}
-            />
-          </Chart>
-        </div>
-      </>
-    );
+    return <div className="chart">{example()}</div>;
   }
 }

@@ -27,7 +27,8 @@ import { Spec } from '.';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { ChartTypes } from '../chart_types';
 import { GeometryValue } from '../utils/geometry';
-import { XYChartSeriesIdentifier, SeriesIdentifier } from '../chart_types/xy_chart/utils/series';
+import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
+import { SeriesIdentifier } from '../commons/series_id';
 import { Accessor } from '../utils/accessor';
 import { Position, Rendering, Rotation, Color } from '../utils/commons';
 import { ScaleContinuousType, ScaleOrdinalType } from '../scales';
@@ -54,7 +55,7 @@ export type PartitionElementEvent = [Array<LayerValue>, SeriesIdentifier];
 export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent>) => void;
 export type ElementOverListener = (elements: Array<XYChartElementEvent | PartitionElementEvent>) => void;
 export type BrushEndListener = (brushArea: XYBrushArea) => void;
-export type LegendItemListener = (series: XYChartSeriesIdentifier | null) => void;
+export type LegendItemListener = (series: SeriesIdentifier | null) => void;
 export type PointerUpdateListener = (event: PointerEvent) => void;
 /**
  * Listener to be called when chart render state changes
@@ -162,7 +163,7 @@ export interface LegendColorPickerProps {
   /**
    * Anchor used to position picker
    */
-  anchor: HTMLDivElement;
+  anchor: HTMLElement;
   /**
    * Current color of the given series
    */
@@ -178,7 +179,7 @@ export interface LegendColorPickerProps {
   /**
    * Series id for the active series
    */
-  seriesIdentifier: XYChartSeriesIdentifier;
+  seriesIdentifier: SeriesIdentifier;
 }
 export type LegendColorPicker = ComponentType<LegendColorPickerProps>;
 
@@ -213,6 +214,14 @@ export interface SettingsSpec extends Spec {
    * @default false
    */
   showLegendExtra: boolean;
+  /**
+   * Limit the legend to a max depth when showing a hierarchical legend
+   */
+  legendMaxDepth?: number;
+  /**
+   * Display the legend as a flat hierarchy
+   */
+  flatLegend?: boolean;
   /**
    * Removes duplicate axes
    *
