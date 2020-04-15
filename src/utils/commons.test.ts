@@ -476,6 +476,9 @@ describe('commons utilities', () => {
               },
             ],
           ]),
+          {
+            mergeMaps: true,
+          },
         );
         expect(result).toEqual(
           new Map([
@@ -518,6 +521,7 @@ describe('commons utilities', () => {
             ]),
           },
           {
+            mergeMaps: true,
             mergeOptionalPartialValues: true,
           },
         );
@@ -561,6 +565,9 @@ describe('commons utilities', () => {
               ],
             ]),
           },
+          {
+            mergeMaps: true,
+          },
         );
         expect(result).toEqual({
           test: new Map([
@@ -597,6 +604,7 @@ describe('commons utilities', () => {
             ]),
           },
           {
+            mergeMaps: true,
             mergeOptionalPartialValues: true,
           },
         );
@@ -630,8 +638,10 @@ describe('commons utilities', () => {
               ],
             ]),
           },
-          {},
-          {},
+          undefined,
+          {
+            mergeMaps: true,
+          },
           [
             {
               test: new Map([
@@ -655,6 +665,80 @@ describe('commons utilities', () => {
             ],
             [
               'cat',
+              {
+                name: 'snickers',
+              },
+            ],
+          ]),
+        });
+      });
+
+      it('should replace Maps when mergeMaps is false', () => {
+        const result = mergePartial(
+          {
+            test: new Map([
+              [
+                'cat',
+                {
+                  name: 'toby',
+                },
+              ],
+            ]),
+          },
+          {
+            test: new Map([
+              [
+                'dog',
+                {
+                  name: 'snickers',
+                },
+              ],
+            ]),
+          },
+        );
+        expect(result).toEqual({
+          test: new Map([
+            [
+              'dog',
+              {
+                name: 'snickers',
+              },
+            ],
+          ]),
+        });
+      });
+
+      it('should replace Maps when mergeMaps is false from additionalPartials', () => {
+        const result = mergePartial(
+          {
+            test: new Map([
+              [
+                'cat',
+                {
+                  name: 'toby',
+                },
+              ],
+            ]),
+          },
+          undefined,
+          undefined,
+          [
+            {
+              test: new Map([
+                [
+                  'dog',
+                  {
+                    name: 'snickers',
+                  },
+                ],
+              ]),
+            },
+          ],
+        );
+        expect(result).toEqual({
+          test: new Map([
+            [
+              'dog',
               {
                 name: 'snickers',
               },
