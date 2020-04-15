@@ -18,7 +18,7 @@
 
 import { AreaGeometry, PointGeometry, BarGeometry, LineGeometry, BubbleGeometry } from '../utils/geometry';
 import { MockSeriesIdentifier } from './series/series_identifiers';
-import { mergePartial } from '../utils/commons';
+import { mergePartial, RecursivePartial } from '../utils/commons';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { omit } from 'lodash';
 
@@ -45,12 +45,12 @@ export class MockPointGeometry {
     },
   };
 
-  static default(partial?: Partial<PointGeometry>) {
+  static default(partial?: RecursivePartial<PointGeometry>) {
     return mergePartial<PointGeometry>(MockPointGeometry.base, partial, { mergeOptionalPartialValues: true });
   }
 
-  static fromBaseline(baseline: Partial<PointGeometry>, omitKeys: string[] | string = []) {
-    return function(partial?: Partial<PointGeometry>) {
+  static fromBaseline(baseline: RecursivePartial<PointGeometry>, omitKeys: string[] | string = []) {
+    return function(partial?: RecursivePartial<PointGeometry>) {
       return omit(
         mergePartial<PointGeometry>(MockPointGeometry.base, partial, { mergeOptionalPartialValues: true }, [baseline]),
         omitKeys,
@@ -83,8 +83,17 @@ export class MockBarGeometry {
     seriesStyle: barSeriesStyle,
   };
 
-  static default(partial?: Partial<BarGeometry>) {
+  static default(partial?: RecursivePartial<BarGeometry>) {
     return mergePartial<BarGeometry>(MockBarGeometry.base, partial, { mergeOptionalPartialValues: true });
+  }
+
+  static fromBaseline(baseline: RecursivePartial<BarGeometry>, omitKeys: string[] | string = []) {
+    return function(partial?: RecursivePartial<BarGeometry>) {
+      const geo = mergePartial<BarGeometry>(MockBarGeometry.base, partial, { mergeOptionalPartialValues: true }, [
+        baseline,
+      ]);
+      return omit(geo, omitKeys);
+    };
   }
 }
 
@@ -103,7 +112,7 @@ export class MockLineGeometry {
     clippedRanges: [],
   };
 
-  static default(partial?: Partial<LineGeometry>) {
+  static default(partial?: RecursivePartial<LineGeometry>) {
     return mergePartial<LineGeometry>(MockLineGeometry.base, partial, { mergeOptionalPartialValues: true });
   }
 }
@@ -126,7 +135,7 @@ export class MockAreaGeometry {
     clippedRanges: [],
   };
 
-  static default(partial?: Partial<AreaGeometry>) {
+  static default(partial?: RecursivePartial<AreaGeometry>) {
     return mergePartial<AreaGeometry>(MockAreaGeometry.base, partial, { mergeOptionalPartialValues: true });
   }
 }
@@ -139,7 +148,9 @@ export class MockBubbleGeometry {
     seriesPointStyle: bubbleSeriesStyle.point,
   };
 
-  static default(partial?: Partial<BubbleGeometry>) {
-    return mergePartial<BubbleGeometry>(MockBubbleGeometry.base, partial, { mergeOptionalPartialValues: true });
+  static default(partial?: RecursivePartial<BubbleGeometry>) {
+    return mergePartial<BubbleGeometry>(MockBubbleGeometry.base, partial, {
+      mergeOptionalPartialValues: true,
+    });
   }
 }
