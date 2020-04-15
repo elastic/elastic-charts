@@ -17,7 +17,7 @@
  * under the License. */
 
 import { getGeometryStateStyle } from '../../rendering/rendering';
-import { BubbleGeometry } from '../../../../utils/geometry';
+import { BubbleGeometry, PointGeometry } from '../../../../utils/geometry';
 import { SharedGeometryStateStyle, GeometryStateStyle, PointStyle } from '../../../../utils/themes/theme';
 import { LegendItem } from '../../legend/legend';
 import { withContext, withClip } from '../../../../renderers/canvas';
@@ -40,13 +40,14 @@ export function renderBubbles(ctx: CanvasRenderingContext2D, props: BubbleGeomet
     const geometryStyles: Record<SeriesKey, GeometryStateStyle> = {};
     const pointStyles: Record<SeriesKey, PointStyle> = {};
 
-    const allPoints = bubbles.flatMap(({ seriesIdentifier, seriesPointStyle, points }) => {
+    const allPoints = bubbles.reduce<PointGeometry[]>((acc, { seriesIdentifier, seriesPointStyle, points }) => {
       const geometryStyle = getGeometryStateStyle(seriesIdentifier, highlightedLegendItem, sharedStyle);
       geometryStyles[seriesIdentifier.key] = geometryStyle;
       pointStyles[seriesIdentifier.key] = seriesPointStyle;
 
-      return points;
-    });
+      acc.push(...points);
+      return acc;
+    }, []);
 
     withClip(
       ctx,

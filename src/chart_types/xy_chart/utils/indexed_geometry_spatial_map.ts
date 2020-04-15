@@ -107,9 +107,9 @@ export class IndexedGeometrySpatialMap {
     }
 
     const neighbors = [...this.map.neighbors(selectedIndex)];
-    return neighbors.flatMap((i) => {
+    return neighbors.reduce<IndexedGeometry[]>((acc, i) => {
       if (visitedIndices.has(i)) {
-        return [];
+        return acc;
       }
 
       visitedIndices.add(i);
@@ -117,10 +117,10 @@ export class IndexedGeometrySpatialMap {
 
       if (getDistance(geometry, point) < this.maxRadius) {
         // Gets neighbors based on relation to maxRadius
-        return [geometry, ...this.getRadialNeighbors(i, point, visitedIndices)];
+        acc.push(geometry, ...this.getRadialNeighbors(i, point, visitedIndices));
       }
 
-      return [];
-    });
+      return acc;
+    }, []);
   }
 }
