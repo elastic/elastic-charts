@@ -20,6 +20,7 @@ import { IndexedGeometry, PointGeometry } from '../../../utils/geometry';
 import { Point } from '../../../utils/point';
 import { getDistance } from '../state/utils';
 import { Delaunay, Bounds } from '../../../utils/d3-delaunay';
+import { DEFAULT_HIGHLIGHT_PADDING } from '../rendering/rendering';
 
 export type IndexedGeometrySpatialMapPoint = [number, number];
 
@@ -76,19 +77,18 @@ export class IndexedGeometrySpatialMap {
     return this.pointGeometries.map(({ value: { x } }) => x);
   }
 
-  find(x: number | string | null, point: Point): IndexedGeometry[] {
-    if (x === null) {
-      return [];
-    }
-
+  find(point: Point): IndexedGeometry[] {
     const elements = [];
     if (this.map !== null) {
       const index = this.map.find(point.x, point.y, this.searchStartIndex);
+      const geometry = this.pointGeometries[index];
 
-      // Set next starting search index for faster lookup
-      this.searchStartIndex = index;
-      elements.push(...this.getRadialNeighbors(index, point, new Set([index])));
-      elements.push(...[this.pointGeometries[index] ?? []]);
+      if (geometry && getDistance(geometry, point) < this.maxRadius + DEFAULT_HIGHLIGHT_PADDING) {
+        // Set next starting search index for faster lookup
+        this.searchStartIndex = index;
+        elements.push(geometry);
+        elements.push(...this.getRadialNeighbors(index, point, new Set([index])));
+      }
     }
 
     return elements;
