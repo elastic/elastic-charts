@@ -83,7 +83,7 @@ export class IndexedGeometrySpatialMap {
       const index = this.map.find(point.x, point.y, this.searchStartIndex);
       const geometry = this.pointGeometries[index];
 
-      if (geometry && getDistance(geometry, point) < this.maxRadius + DEFAULT_HIGHLIGHT_PADDING) {
+      if (geometry) {
         // Set next starting search index for faster lookup
         this.searchStartIndex = index;
         elements.push(geometry);
@@ -115,9 +115,13 @@ export class IndexedGeometrySpatialMap {
       visitedIndices.add(i);
       const geometry = this.pointGeometries[i];
 
-      if (getDistance(geometry, point) < this.maxRadius) {
-        // Gets neighbors based on relation to maxRadius
-        acc.push(geometry, ...this.getRadialNeighbors(i, point, visitedIndices));
+      if (geometry) {
+        acc.push(geometry);
+
+        if (getDistance(geometry, point) < Math.min(this.maxRadius, DEFAULT_HIGHLIGHT_PADDING)) {
+          // Gets neighbors based on relation to maxRadius
+          acc.push(...this.getRadialNeighbors(i, point, visitedIndices));
+        }
       }
 
       return acc;
