@@ -184,7 +184,7 @@ function getTooltipAndHighlightFromValue(
         header = formatTooltip(indexedGeometry, spec, true, false, hasSingleSeries, formatterAxis);
       }
 
-      xValues.add(indexedGeometry.x);
+      xValues.add(indexedGeometry.value.x);
 
       return [...acc, formattedTooltip];
     }, []);
