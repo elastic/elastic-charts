@@ -83,7 +83,13 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
           computeChartDimensionsSelector,
           isHistogramModeEnabledSelector,
         ],
-        (lastDrag, { onBrushEnd, rotation, brushAxis }, computedScales, { chartDimensions }, histogramMode): void => {
+        (
+          lastDrag,
+          { onBrushEnd, rotation, brushAxis, minBrushDelta },
+          computedScales,
+          { chartDimensions },
+          histogramMode,
+        ): void => {
           const nextProps = {
             lastDrag,
             onBrushEnd,
@@ -95,10 +101,17 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
               const { yScales, xScale } = computedScales;
 
               if (brushAxis === BrushAxis.X || brushAxis === BrushAxis.Both) {
-                brushArea.x = getXBrushExtent(chartDimensions, lastDrag, rotation, histogramMode, xScale);
+                brushArea.x = getXBrushExtent(
+                  chartDimensions,
+                  lastDrag,
+                  rotation,
+                  histogramMode,
+                  xScale,
+                  minBrushDelta,
+                );
               }
               if (brushAxis === BrushAxis.Y || brushAxis === BrushAxis.Both) {
-                brushArea.y = getYBrushExtents(chartDimensions, lastDrag, rotation, yScales);
+                brushArea.y = getYBrushExtents(chartDimensions, lastDrag, rotation, yScales, minBrushDelta);
               }
               if (brushArea.x !== undefined || brushArea.y !== undefined) {
                 onBrushEnd(brushArea);
@@ -123,6 +136,7 @@ function getXBrushExtent(
   rotation: Rotation,
   histogramMode: boolean,
   xScale: Scale,
+  minBrushDelta?: number,
 ): [number, number] | undefined {
   let startPos = getLeftPoint(chartDimensions, lastDrag.start.position);
   let endPos = getLeftPoint(chartDimensions, lastDrag.end.position);
@@ -140,7 +154,7 @@ function getXBrushExtent(
     minPos = chartMax - minPos;
     maxPos = chartMax - maxPos;
   }
-  if (maxPos === minPos) {
+  if (minBrushDelta !== undefined ? Math.abs(maxPos - minPos) < minBrushDelta : maxPos === minPos) {
     // if 0 size brush, avoid computing the value
     return;
   }
@@ -158,6 +172,7 @@ function getYBrushExtents(
   lastDrag: DragState,
   rotation: Rotation,
   yScales: Map<GroupId, Scale>,
+  minBrushDelta?: number,
 ): GroupBrushExtent[] | undefined {
   const yValues: GroupBrushExtent[] = [];
   yScales.forEach((yScale, groupId) => {
@@ -175,7 +190,7 @@ function getYBrushExtents(
       minPos = chartMax - minPos;
       maxPos = chartMax - maxPos;
     }
-    if (maxPos === minPos) {
+    if (minBrushDelta !== undefined ? Math.abs(maxPos - minPos) < minBrushDelta : maxPos === minPos) {
       // if 0 size brush, avoid computing the value
       return;
     }

@@ -247,6 +247,12 @@ export interface SettingsSpec extends Spec {
    * @default BrushAxis.X
    */
   brushAxis?: BrushAxis;
+  /**
+   * The minimum number of pixel to consider for a valid brush event (in both axis if brushAxis prop is BrushAxis.Both).
+   * E.g. a min value of 2 means that the brush area needs to be at least 2 pixel wide and 2 pixel tall.
+   * @default 2
+   */
+  minBrushDelta?: number;
 }
 
 export type DefaultSettingsProps =
@@ -264,7 +270,8 @@ export type DefaultSettingsProps =
   | 'theme'
   | 'legendPosition'
   | 'hideDuplicateAxes'
-  | 'brushAxis';
+  | 'brushAxis'
+  | 'minBrushDelta';
 
 export const DEFAULT_TOOLTIP_TYPE = TooltipType.VerticalCursor;
 export const DEFAULT_TOOLTIP_SNAP = true;
@@ -297,6 +304,7 @@ export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
   hideDuplicateAxes: false,
   theme: LIGHT_THEME,
   brushAxis: BrushAxis.X,
+  minBrushDelta: 2,
 };
 
 export type SettingsSpecProps = Partial<Omit<SettingsSpec, 'chartType' | 'specType' | 'id'>>;
