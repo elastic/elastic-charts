@@ -32,7 +32,6 @@ import { SeriesIdentifier, SeriesKey } from '../../../commons/series_id';
 /** @internal */
 export const SERIES_DELIMITER = ' - ';
 
-/** @internal */
 export interface FilledValues {
   /** the x value */
   x?: number | string;
@@ -55,7 +54,6 @@ export interface RawDataSeriesDatum<T = any> {
   datum?: T | null;
 }
 
-/** @internal */
 export interface DataSeriesDatum<T = any> {
   /** the x value */
   x: number | string;
