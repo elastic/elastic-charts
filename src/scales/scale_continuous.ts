@@ -28,7 +28,7 @@ import {
   ScaleTime,
 } from 'd3-scale';
 
-import { clamp, mergePartial } from '../utils/commons';
+import { maxValueWithUpperLimit, mergePartial } from '../utils/commons';
 import { ScaleContinuousType, ScaleType, Scale } from '.';
 import { getMomentWithTz } from '../utils/data/date_time';
 
@@ -190,7 +190,7 @@ export class ScaleContinuous implements Scale {
     this.domain = cleanDomain;
     this.d3Scale.domain(cleanDomain);
 
-    const safeBarPadding = clamp(barsPadding, 0, 1);
+    const safeBarPadding = maxValueWithUpperLimit(barsPadding, 0, 1);
     this.barsPadding = safeBarPadding;
     this.bandwidth = bandwidth * (1 - safeBarPadding);
     this.bandwidthPadding = bandwidth * safeBarPadding;

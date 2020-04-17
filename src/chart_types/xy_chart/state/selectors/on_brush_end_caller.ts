@@ -29,7 +29,7 @@ import { isBrushAvailableSelector } from './is_brush_available';
 import { Scale } from '../../../../scales';
 import { Dimensions } from '../../../../utils/dimensions';
 import { GroupId } from '../../../../utils/ids';
-import { Rotation } from '../../../../utils/commons';
+import { Rotation, minValueWithLowerLimit, maxValueWithUpperLimit } from '../../../../utils/commons';
 import { getLeftPoint, getTopPoint } from './get_brush_area';
 import { isVerticalRotation } from '../utils';
 
@@ -134,8 +134,8 @@ function getXBrushExtent(
     chartMax = chartDimensions.height;
   }
 
-  let minPos = Math.max(Math.min(startPos, endPos), 0);
-  let maxPos = Math.min(Math.max(startPos, endPos), chartMax);
+  let minPos = minValueWithLowerLimit(startPos, endPos, 0);
+  let maxPos = maxValueWithUpperLimit(startPos, endPos, chartMax);
   if (rotation === -90 || rotation === 180) {
     minPos = chartMax - minPos;
     maxPos = chartMax - maxPos;
@@ -148,8 +148,8 @@ function getXBrushExtent(
   const offset = histogramMode ? 0 : -(xScale.bandwidth + xScale.bandwidthPadding) / 2;
   const minPosScaled = xScale.invert(minPos + offset);
   const maxPosScaled = xScale.invert(maxPos + offset);
-  const minValue = Math.max(Math.min(minPosScaled, maxPosScaled), xScale.domain[0]);
-  const maxValue = Math.min(Math.max(minPosScaled, maxPosScaled), xScale.domain[1]);
+  const minValue = minValueWithLowerLimit(minPosScaled, maxPosScaled, xScale.domain[0]);
+  const maxValue = maxValueWithUpperLimit(minPosScaled, maxPosScaled, xScale.domain[1]);
   return [minValue, maxValue];
 }
 
@@ -169,8 +169,8 @@ function getYBrushExtents(
       endPos = getLeftPoint(chartDimensions, lastDrag.end.position);
       chartMax = chartDimensions.width;
     }
-    let minPos = Math.max(Math.min(startPos, endPos), 0);
-    let maxPos = Math.min(Math.max(startPos, endPos), chartMax);
+    let minPos = minValueWithLowerLimit(startPos, endPos, 0);
+    let maxPos = maxValueWithUpperLimit(startPos, endPos, chartMax);
     if (rotation === -90 || rotation === 180) {
       minPos = chartMax - minPos;
       maxPos = chartMax - maxPos;
@@ -182,8 +182,8 @@ function getYBrushExtents(
 
     const minPosScaled = yScale.invert(minPos);
     const maxPosScaled = yScale.invert(maxPos);
-    const minValue = Math.max(Math.min(minPosScaled, maxPosScaled), yScale.domain[0]);
-    const maxValue = Math.min(Math.max(minPosScaled, maxPosScaled), yScale.domain[1]);
+    const minValue = minValueWithLowerLimit(minPosScaled, maxPosScaled, yScale.domain[0]);
+    const maxValue = maxValueWithUpperLimit(minPosScaled, maxPosScaled, yScale.domain[1]);
     yValues.push({ extent: [minValue, maxValue], groupId });
   });
   return yValues.length === 0 ? undefined : yValues;

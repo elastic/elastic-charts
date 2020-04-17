@@ -17,7 +17,7 @@
  * under the License. */
 
 import { scaleBand, scaleQuantize, ScaleQuantize } from 'd3-scale';
-import { clamp } from '../utils/commons';
+import { maxValueWithUpperLimit } from '../utils/commons';
 import { ScaleType, Scale } from '.';
 /**
  * Categorical scale
@@ -51,7 +51,7 @@ export class ScaleBand implements Scale {
     this.d3Scale = scaleBand();
     this.d3Scale.domain(domain);
     this.d3Scale.range(range);
-    const safeBarPadding = clamp(barsPadding, 0, 1);
+    const safeBarPadding = maxValueWithUpperLimit(barsPadding, 0, 1);
     this.barsPadding = safeBarPadding;
     this.d3Scale.paddingInner(safeBarPadding);
     this.d3Scale.paddingOuter(safeBarPadding / 2);
