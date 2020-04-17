@@ -114,6 +114,7 @@ type GetRadiusFnReturn = (mark: number | null, defaultRadius?: number) => number
  * @param  {Datum[]} radii
  * @param  {number} lineWidth
  * @param  {number=50} markSizeRatio - 0 to 100
+ * @internal
  */
 export function getRadiusFn(data: DataSeriesDatum[], lineWidth: number, markSizeRatio: number = 50): GetRadiusFnReturn {
   if (data.length === 0) {

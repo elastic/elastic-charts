@@ -18,6 +18,7 @@
 
 import { IndexedGeometry } from '../../../utils/geometry';
 
+/** @internal */
 export class IndexedGeometryLinearMap {
   private map = new Map<string | number, IndexedGeometry[]>();
 

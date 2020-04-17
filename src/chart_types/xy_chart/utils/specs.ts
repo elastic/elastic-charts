@@ -700,30 +700,37 @@ export interface BaseAnnotationSpec<
 
 export type AnnotationSpec = LineAnnotationSpec | RectAnnotationSpec;
 
+/** @internal */
 export function isLineAnnotation(spec: AnnotationSpec): spec is LineAnnotationSpec {
   return spec.annotationType === AnnotationTypes.Line;
 }
 
+/** @internal */
 export function isRectAnnotation(spec: AnnotationSpec): spec is RectAnnotationSpec {
   return spec.annotationType === AnnotationTypes.Rectangle;
 }
 
+/** @internal */
 export function isBarSeriesSpec(spec: BasicSeriesSpec): spec is BarSeriesSpec {
   return spec.seriesType === SeriesTypes.Bar;
 }
 
+/** @internal */
 export function isBubbleSeriesSpec(spec: BasicSeriesSpec): spec is BubbleSeriesSpec {
   return spec.seriesType === SeriesTypes.Bubble;
 }
 
+/** @internal */
 export function isLineSeriesSpec(spec: BasicSeriesSpec): spec is LineSeriesSpec {
   return spec.seriesType === SeriesTypes.Line;
 }
 
+/** @internal */
 export function isAreaSeriesSpec(spec: BasicSeriesSpec): spec is AreaSeriesSpec {
   return spec.seriesType === SeriesTypes.Area;
 }
 
+/** @internal */
 export function isBandedSpec(y0Accessors: SeriesAccessors['y0Accessors']): boolean {
   return Boolean(y0Accessors && y0Accessors.length > 0);
 }

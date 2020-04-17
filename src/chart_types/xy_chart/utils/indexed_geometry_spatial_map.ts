@@ -22,8 +22,10 @@ import { getDistance } from '../state/utils';
 import { Delaunay, Bounds } from '../../../utils/d3-delaunay';
 import { DEFAULT_HIGHLIGHT_PADDING } from '../rendering/rendering';
 
+/** @internal */
 export type IndexedGeometrySpatialMapPoint = [number, number];
 
+/** @internal */
 export class IndexedGeometrySpatialMap {
   private map: Delaunay<IndexedGeometrySpatialMapPoint> | null = null;
   private points: IndexedGeometrySpatialMapPoint[] = [];

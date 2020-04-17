@@ -24,12 +24,15 @@ import { IndexedGeometryLinearMap } from './indexed_geometry_linear_map';
 import { IndexedGeometrySpatialMap } from './indexed_geometry_spatial_map';
 import { Bounds } from '../../../utils/d3-delaunay';
 
+/** @internal */
 export const GeometryType = Object.freeze({
   linear: 'linear' as 'linear',
   spatial: 'spatial' as 'spatial',
 });
+/** @internal */
 export type GeometryType = $Values<typeof GeometryType>;
 
+/** @internal */
 export class IndexedGeometryMap {
   private linearMap = new IndexedGeometryLinearMap();
   private spatialMap = new IndexedGeometrySpatialMap();
