@@ -1066,18 +1066,14 @@ describe('Rendering points - bubble', () => {
       expect(points.length).toBe(7);
       // all the points expect null geometries
       expect(indexedGeometryMap.size).toEqual(8);
-      const nullIndexdGeometry = indexedGeometryMap.find(null, {
-        x: 1000,
-        y: 1000,
-      });
-      expect(nullIndexdGeometry).toEqual([]);
 
       const zeroValueIndexdGeometry = indexedGeometryMap.find(null, {
         x: 56.25,
         y: 100,
       });
       expect(zeroValueIndexdGeometry).toBeDefined();
-      expect(zeroValueIndexdGeometry.length).toBe(1);
+      expect(zeroValueIndexdGeometry.length).toBe(5);
+      expect(zeroValueIndexdGeometry.find(({ value: { x } }) => x === 5)).toBeDefined();
       // moved to the bottom of the chart
       expect((zeroValueIndexdGeometry[0] as PointGeometry).y).toBe(100);
       // 0 radius point
