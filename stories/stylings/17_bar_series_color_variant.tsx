@@ -17,6 +17,7 @@
  * under the License. */
 
 import React from 'react';
+import { select, color } from '@storybook/addon-knobs';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings, PartialTheme } from '../../src';
 import * as TestDatasets from '../../src/utils/data_samples/test_dataset';
@@ -24,15 +25,37 @@ import { SB_SOURCE_PANEL } from '../utils/storybook';
 import { ColorVariant } from '../../src/utils/commons';
 
 export const example = () => {
+  const fillOption = select(
+    'fillColor',
+    {
+      None: ColorVariant.None,
+      Series: ColorVariant.Series,
+      Custom: 'custom',
+    },
+    ColorVariant.None,
+  );
+  const fillColor = color('custom fill color', 'aquamarine');
+  const fill = fillOption === 'custom' ? fillColor : fillOption;
+  const strokeOption = select(
+    'strokeColor',
+    {
+      None: ColorVariant.None,
+      Series: ColorVariant.Series,
+      Custom: 'custom',
+    },
+    ColorVariant.Series,
+  );
+  const strokeColor = color('custom stroke color', 'aquamarine');
+  const stroke = strokeOption === 'custom' ? strokeColor : strokeOption;
   const customTheme: PartialTheme = {
     barSeriesStyle: {
       rect: {
-        fill: ColorVariant.None,
+        fill,
       },
       rectBorder: {
         visible: true,
         strokeWidth: 10,
-        stroke: ColorVariant.Series,
+        stroke,
       },
     },
   };
