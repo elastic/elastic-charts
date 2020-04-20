@@ -19,7 +19,6 @@
 import { Ratio } from '../types/geometry_types';
 import { RgbTuple } from './d3_utils';
 import { Color } from '../../../../utils/commons';
-import colorJS from 'color';
 import chroma from 'chroma-js';
 
 /** @internal */
@@ -51,19 +50,33 @@ export function arrayToLookup(keyFun: Function, array: Array<any>) {
 }
 
 /** @internal */
-function computeContrast(rgb1: string, rgb2: string | RgbTuple) {
-  return colorJS(rgb1).contrast(colorJS(rgb2));
+function convertRGBAStringToSeparateValues(rgba: Color) {
+  const [red1, green1, blue1, alpha1 = 1] = rgba
+    .replace(/[^\d.,]/g, '')
+    .split(',')
+    .map((x) => parseFloat(x));
+  return { red: red1, green: green1, blue: blue1, alpha: alpha1 };
 }
 
 /** If the user specifies the background of the container in which the chart will be on, we can use that color
  * and make sure to provide optimal contrast
 /** @internal */
-export function getBackgroundWithContainerColorFromUser(rgba1: Color, rgba2: Color): RgbTuple {
-  return chroma.blend(rgba1, rgba2, 'screen').rgba();
+export function getBackgroundWithContainerColorFromUser(rgba1: Color, rgba2: Color) {
+  const alpha1 = convertRGBAStringToSeparateValues(rgba1).alpha;
+  const alpha2 = convertRGBAStringToSeparateValues(rgba2).alpha;
+  const combineAlpha = alpha1 + alpha2 * (1 - alpha2);
+
+  if (combineAlpha < 0.7) {
+    return chroma.mix(rgba1, rgba2, combineAlpha).rgba();
+  } else {
+    return chroma.blend(rgba1, rgba2, 'multiply').rgba();
+  }
 }
 
 /** @internal */
 export function colorIsDark(textColor: Color, bgColor: Color) {
-  const currentContrast = computeContrast(textColor, bgColor);
-  return currentContrast >= 4.5 ? textColor : textColor === '#000000' ? '#ffffff' : '#000000';
+  const currentContrast = chroma.contrast(textColor, bgColor);
+  const otherTextColor = textColor === '#000000' ? '#ffffff' : '#000000';
+  const otherContrast = chroma.contrast(otherTextColor, bgColor);
+  return currentContrast > otherContrast ? textColor : otherTextColor;
 }
