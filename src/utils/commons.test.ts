@@ -644,7 +644,7 @@ describe('commons utilities', () => {
 
   describe('#getColorFromVariant', () => {
     const seriesColor = '#626825';
-    it('should return color if series color is undefined ', () => {
+    it('should return seriesColor if color is undefined', () => {
       expect(getColorFromVariant(seriesColor)).toBe(seriesColor);
     });
 
