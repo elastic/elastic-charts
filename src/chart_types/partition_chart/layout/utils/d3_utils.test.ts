@@ -69,6 +69,15 @@ describe('d3 Utils', () => {
         // https://gist.github.com/lopspower/03fb1cc0ac9f32ef38f4
         expect(stringToRGB('#ef713d80').opacity).toBeCloseTo(0.5, 1);
       });
+
+      it('should return correct RgbObject for alpha value of 0', () => {
+        expect(stringToRGB('#00000000')).toMatchObject({
+          r: 0,
+          g: 0,
+          b: 0,
+          opacity: 0,
+        });
+      });
     });
 
     describe('rgb colors', () => {
@@ -82,6 +91,15 @@ describe('d3 Utils', () => {
 
       it('should return RgbObject with correct opacity', () => {
         expect(stringToRGB('rgba(50,50,50,0.25)').opacity).toBe(0.25);
+      });
+
+      it('should return correct RgbObject for alpha value of 0', () => {
+        expect(stringToRGB('rgba(50,50,50,0)')).toMatchObject({
+          r: 50,
+          g: 50,
+          b: 50,
+          opacity: 0,
+        });
       });
     });
 
@@ -97,6 +115,15 @@ describe('d3 Utils', () => {
       it('should return RgbObject with correct opacity', () => {
         expect(stringToRGB('hsla(0,0%,50%,0.25)').opacity).toBe(0.25);
       });
+
+      it('should return correct RgbObject for alpha value of 0', () => {
+        expect(stringToRGB('hsla(0,0%,50%,0)')).toEqual({
+          r: 127.5,
+          g: 127.5,
+          b: 127.5,
+          opacity: 0,
+        });
+      });
     });
 
     describe('named colors', () => {
@@ -110,7 +137,7 @@ describe('d3 Utils', () => {
 
       it('should return default RgbObject with 0 opacity', () => {
         expect(stringToRGB('transparent')).toMatchObject({
-          r: 255,
+          r: 0,
           g: 0,
           b: 0,
           opacity: 0,
@@ -119,7 +146,7 @@ describe('d3 Utils', () => {
 
       it('should return default RgbObject with 0 opacity even with override', () => {
         expect(stringToRGB('transparent', 0.5)).toMatchObject({
-          r: 255,
+          r: 0,
           g: 0,
           b: 0,
           opacity: 0,

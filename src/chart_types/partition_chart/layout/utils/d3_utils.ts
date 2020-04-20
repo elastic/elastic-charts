@@ -26,6 +26,8 @@ export type RgbObject = { r: RGB; g: RGB; b: RGB; opacity: A };
 /** @internal */
 export const defaultColor: RgbObject = { r: 255, g: 0, b: 0, opacity: 1 };
 /** @internal */
+export const transparentColor: RgbObject = { r: 0, g: 0, b: 0, opacity: 0 };
+/** @internal */
 export const defaultD3Color: D3RGBColor = d3Rgb(defaultColor.r, defaultColor.g, defaultColor.b, defaultColor.opacity);
 
 /** @internal */
@@ -34,12 +36,9 @@ export type OpacityFn = (colorOpacity: number) => number;
 /** @internal */
 export function stringToRGB(cssColorSpecifier: string, opacity?: number | OpacityFn): RgbObject {
   if (cssColorSpecifier === 'transparent') {
-    return {
-      ...defaultColor,
-      opacity: 0,
-    };
+    return transparentColor;
   }
-  const color = validateColor(d3Rgb(cssColorSpecifier)) ?? defaultColor;
+  const color = getColor(cssColorSpecifier);
 
   if (opacity === undefined) {
     return color;
@@ -55,6 +54,29 @@ export function stringToRGB(cssColorSpecifier: string, opacity?: number | Opacit
     ...color,
     opacity: opacityOverride,
   };
+}
+
+/**
+ * Returns color as RgbObject or default fallback.
+ *
+ * Handles issue in d3-color for hsla and rgba colors with alpha value of `0`
+ *
+ * @param cssColorSpecifier
+ */
+function getColor(cssColorSpecifier: string): RgbObject {
+  let color: D3RGBColor;
+  const endRegEx = /,\s*0+(\.0*)?\s*\)$/;
+  // TODO: make this check more robust
+  if (/^(rgba|hsla)\(/i.test(cssColorSpecifier) && endRegEx.test(cssColorSpecifier)) {
+    color = {
+      ...d3Rgb(cssColorSpecifier.replace(endRegEx, ',1)')),
+      opacity: 0,
+    };
+  } else {
+    color = d3Rgb(cssColorSpecifier);
+  }
+
+  return validateColor(color) ?? defaultColor;
 }
 
 /** @internal */
