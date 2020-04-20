@@ -34,7 +34,7 @@ export const defaultD3Color: D3RGBColor = d3Rgb(defaultColor.r, defaultColor.g, 
 export type OpacityFn = (colorOpacity: number) => number;
 
 /** @internal */
-export function stringToRGB(cssColorSpecifier: string, opacity?: number | OpacityFn): RgbObject {
+export function stringToRGB(cssColorSpecifier?: string, opacity?: number | OpacityFn): RgbObject {
   if (cssColorSpecifier === 'transparent') {
     return transparentColor;
   }
@@ -63,7 +63,7 @@ export function stringToRGB(cssColorSpecifier: string, opacity?: number | Opacit
  *
  * @param cssColorSpecifier
  */
-function getColor(cssColorSpecifier: string): RgbObject {
+function getColor(cssColorSpecifier: string = ''): RgbObject {
   let color: D3RGBColor;
   const endRegEx = /,\s*0+(\.0*)?\s*\)$/;
   // TODO: make this check more robust

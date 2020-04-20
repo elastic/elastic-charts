@@ -28,7 +28,16 @@ import {
 
 describe('d3 Utils', () => {
   describe('stringToRGB', () => {
-    describe('bad colors', () => {
+    describe('bad colors or undefined', () => {
+      it('should return default color for undefined color string', () => {
+        expect(stringToRGB()).toMatchObject({
+          r: 255,
+          g: 0,
+          b: 0,
+          opacity: 1,
+        });
+      });
+
       it('should return default RgbObject', () => {
         expect(stringToRGB('not a color')).toMatchObject({
           r: 255,
