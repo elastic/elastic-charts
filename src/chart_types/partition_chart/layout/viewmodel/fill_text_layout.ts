@@ -33,7 +33,8 @@ import { Box, Font, PartialFont, TextMeasure } from '../types/types';
 import { conjunctiveConstraint } from '../circline_geometry';
 import { Layer } from '../../specs/index';
 import { colorIsDark, getBackgroundWithContainerColorFromUser } from '../utils/calcs';
-import { ValueFormatter } from '../../../../utils/commons';
+import { ValueFormatter, Color } from '../../../../utils/commons';
+import { RGBATupleToString } from '../utils/d3_utils';
 
 const INFINITY_RADIUS = 1e4; // far enough for a sub-2px precision on a 4k screen, good enough for text bounds; 64 bit floats still work well with it
 
@@ -259,6 +260,7 @@ function fill(
   shapeConstructor: (n: ShapeTreeNode) => any,
   getShapeRowGeometry: (...args: any[]) => RowSpace,
   getRotation: Function,
+  containerBackgroundColor?: Color,
 ) {
   return (node: QuadViewModel, index: number) => {
     const { maxRowCount, fillLabel } = config;
@@ -282,11 +284,15 @@ function fill(
 
     // need to compare the contrast from the shapeFillColor and the background of the container to the textColor and change the textColor if the contrast isn't at least 4.5
     const sliceFillColor = node.fillColor;
-    const containerBackgroundColorFromUser = config.containerBackgroundColor;
-    const containerBackground = containerBackgroundColorFromUser
-      ? getBackgroundWithContainerColorFromUser(sliceFillColor, containerBackgroundColorFromUser)
-      : sliceFillColor;
-    const textColorWithContrast = colorIsDark(textColor, containerBackground);
+    const containerBackgroundColorFromUser =
+      containerBackgroundColor !== undefined ? containerBackgroundColor : 'rgba(255, 255, 255, 0)';
+    const containerBackground =
+      containerBackgroundColorFromUser !== undefined
+        ? getBackgroundWithContainerColorFromUser(sliceFillColor, containerBackgroundColorFromUser)
+        : sliceFillColor;
+    const formattedContainerBackground =
+      typeof containerBackground !== 'string' ? RGBATupleToString(containerBackground) : containerBackground;
+    const textColorWithContrast = colorIsDark(textColor, formattedContainerBackground);
     const sizeInvariantFont: Font = {
       fontStyle,
       fontVariant,
@@ -428,6 +434,7 @@ export function fillTextLayout(
   shapeConstructor: (n: ShapeTreeNode) => any,
   getShapeRowGeometry: (...args: any[]) => RowSpace,
   getRotation: Function,
+  containerBackgroundColor?: Color,
 ) {
   const { minFontSize, maxFontSize, idealFontSizeJump } = config;
   const fontSizeMagnification = maxFontSize / minFontSize;
@@ -454,6 +461,7 @@ export function fillTextLayout(
       shapeConstructor,
       getShapeRowGeometry,
       getRotation,
+      containerBackgroundColor,
     ),
   );
 }

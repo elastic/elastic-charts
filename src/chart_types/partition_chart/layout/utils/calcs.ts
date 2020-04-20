@@ -20,6 +20,7 @@ import { Ratio } from '../types/geometry_types';
 import { RgbTuple } from './d3_utils';
 import { Color } from '../../../../utils/commons';
 import colorJS from 'color';
+import chroma from 'chroma-js';
 
 /** @internal */
 export function hueInterpolator(colors: RgbTuple[]) {
@@ -49,41 +50,20 @@ export function arrayToLookup(keyFun: Function, array: Array<any>) {
   return Object.assign({}, ...array.map((d) => ({ [keyFun(d)]: d })));
 }
 
-// /** @internal */
-// function computeRelativeLuminosity(rgb: string) {
-//   return colorJS(rgb).luminosity();
-// }
-
 /** @internal */
-function computeContrast(rgb1: string, rgb2: string) {
+function computeContrast(rgb1: string, rgb2: string | RgbTuple) {
   return colorJS(rgb1).contrast(colorJS(rgb2));
 }
 
 /** If the user specifies the background of the container in which the chart will be on, we can use that color
  * and make sure to provide optimal contrast
- * https://stackoverflow.com/questions/10781953/determine-rgba-colour-received-by-combining-two-colours*/
 /** @internal */
-export function getBackgroundWithContainerColorFromUser(rgba1: string, rgba2: string): string {
-  // @ts-ignore
-  const [red1, green1, blue1, alpha1] = parseInt(rgba1.replace(/[^\d.,]/g, '').split(','));
-  // @ts-ignore
-  const [red2, green2, blue2, alpha2] = parseInt(rgba2.replace(/[^\d.,]/g, '').split(','));
-  const alpha = alpha1 + alpha2 * (1 - alpha1);
-  const red = (red2 * alpha2 + red1 * alpha1 * (1 - alpha2)) / alpha;
-  const green = (green2 * alpha2 + green1 * alpha1 * (1 - alpha2)) / alpha;
-  const blue = (blue2 * alpha2 + blue1 * alpha1 * (1 - alpha2)) / alpha;
-
-  return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+export function getBackgroundWithContainerColorFromUser(rgba1: Color, rgba2: Color): RgbTuple {
+  return chroma.blend(rgba1, rgba2, 'screen').rgba();
 }
 
 /** @internal */
 export function colorIsDark(textColor: Color, bgColor: Color) {
   const currentContrast = computeContrast(textColor, bgColor);
-  if (textColor === '#ffffff' || textColor === '#000000') {
-    return currentContrast > 4.5 ? textColor : textColor === '#ffffff' ? '#000000' : '#ffffff';
-  } else {
-    const newTextColor =
-      computeContrast(textColor, '#000000') > computeContrast(textColor, '#ffffff') ? '#ffffff' : '#000000';
-    return currentContrast > 4.5 ? newTextColor : newTextColor === '#ffffff' ? '#000000' : '#ffffff';
-  }
+  return currentContrast >= 4.5 ? textColor : textColor === '#000000' ? '#ffffff' : '#000000';
 }

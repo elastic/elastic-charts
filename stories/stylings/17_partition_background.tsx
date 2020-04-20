@@ -33,11 +33,11 @@ import { color } from '@storybook/addon-knobs';
 export const example = () => {
   const partialColorTheme: PartialTheme = {
     background: {
-      color: color('Color of the background container', '#ffffff'),
+      color: color('Color of the background container', `rgba(${255}, ${255}, ${255}, ${1})`),
     },
   };
   return (
-    <Chart className="story-chart" /*size={{ width: 1200, height: 800 }}*/>
+    <Chart className="story-chart">
       <Settings theme={partialColorTheme} />
       <Partition
         id="spec_1"

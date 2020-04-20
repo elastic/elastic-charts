@@ -26,14 +26,23 @@ import { PartitionSpec } from '../../specs/index';
 import { SpecTypes } from '../../../../specs/settings';
 import { getTree } from './tree';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 
 const getSpecs = (state: GlobalChartState) => state.specs;
 
 /** @internal */
 export const partitionGeometries = createCachedSelector(
-  [getSpecs, getChartContainerDimensionsSelector, getTree],
-  (specs, parentDimensions, tree): ShapeViewModel => {
+  [getSpecs, getChartContainerDimensionsSelector, getTree, getSettingsSpecSelector],
+  (specs, parentDimensions, tree, settingsSpec): ShapeViewModel => {
     const pieSpecs = getSpecsFromStore<PartitionSpec>(specs, ChartTypes.Partition, SpecTypes.Series);
-    return pieSpecs.length === 1 ? render(pieSpecs[0], parentDimensions, tree) : nullShapeViewModel();
+    // @ts-ignore
+    const { background } = settingsSpec.theme;
+    if (background !== undefined) {
+      return pieSpecs.length === 1
+        ? render(pieSpecs[0], parentDimensions, tree, background.color)
+        : nullShapeViewModel();
+    } else {
+      return pieSpecs.length === 1 ? render(pieSpecs[0], parentDimensions, tree) : nullShapeViewModel();
+    }
   },
 )((state) => state.chartId);

@@ -57,7 +57,7 @@ import {
   sortIndexAccessor,
   HierarchyOfArrays,
 } from '../utils/group_by_rollup';
-import { StrokeStyle, ValueFormatter } from '../../../../utils/commons';
+import { StrokeStyle, ValueFormatter, Color } from '../../../../utils/commons';
 import { percentValueGetter } from '../config/config';
 
 function paddingAccessor(n: ArrayEntry) {
@@ -148,6 +148,7 @@ export function shapeViewModel(
   specifiedPercentFormatter: ValueFormatter,
   valueGetter: ValueGetterFunction,
   tree: HierarchyOfArrays,
+  containerBackgroundColor?: Color,
 ): ShapeViewModel {
   const {
     width,
@@ -255,6 +256,7 @@ export function shapeViewModel(
     treemapLayout ? rectangleConstruction : ringSectorConstruction(config, innerRadius, ringThickness),
     treemapLayout ? getRectangleRowGeometry : getSectorRowGeometry,
     treemapLayout ? () => 0 : inSectorRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
+    containerBackgroundColor,
   );
 
   // whiskers (ie. just lines, no text) for fill text outside the outer radius

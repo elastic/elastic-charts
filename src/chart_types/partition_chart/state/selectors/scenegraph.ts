@@ -28,7 +28,7 @@ import {
 } from '../../layout/types/viewmodel_types';
 import { DEPTH_KEY, HierarchyOfArrays } from '../../layout/utils/group_by_rollup';
 import { PartitionSpec, Layer } from '../../specs/index';
-import { identity, mergePartial, RecursivePartial } from '../../../../utils/commons';
+import { identity, mergePartial, RecursivePartial, Color } from '../../../../utils/commons';
 import { config as defaultConfig, VALUE_GETTERS } from '../../layout/config/config';
 import { Config } from '../../layout/types/config_types';
 
@@ -49,6 +49,7 @@ export function render(
   partitionSpec: PartitionSpec,
   parentDimensions: Dimensions,
   tree: HierarchyOfArrays,
+  containerBackgroundColor?: Color,
 ): ShapeViewModel {
   const { width, height } = parentDimensions;
   const { layers, config: specConfig } = partitionSpec;
@@ -69,5 +70,6 @@ export function render(
     partitionSpec.percentFormatter,
     valueGetter,
     tree,
+    containerBackgroundColor,
   );
 }
