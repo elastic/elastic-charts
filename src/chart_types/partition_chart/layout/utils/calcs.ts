@@ -73,10 +73,35 @@ export function getBackgroundWithContainerColorFromUser(rgba1: Color, rgba2: Col
   }
 }
 
-/** @internal */
-export function colorIsDark(textColor: Color, bgColor: Color) {
-  const currentContrast = chroma.contrast(textColor, bgColor);
-  const otherTextColor = textColor === '#000000' ? '#ffffff' : '#000000';
-  const otherContrast = chroma.contrast(otherTextColor, bgColor);
-  return currentContrast > otherContrast ? textColor : otherTextColor;
+// /** @internal */
+// export function colorIsDark(textColor: Color, bgColor: Color) {
+//   const currentContrast = chroma.contrast(textColor, bgColor);
+//   const otherTextColor = textColor === '#000000' ? '#ffffff' : '#000000';
+//   const otherContrast = chroma.contrast(otherTextColor, bgColor);
+//   return currentContrast > otherContrast ? textColor : otherTextColor;
+// }
+
+/**
+ * make a high contrast text color in cases black and white can't reach 4.5
+ * @internal
+ */
+export function makeHighContrastColor(foreground: Color, background: Color, ratio = 4.5) {
+  let contrast = chroma.contrast(foreground, background);
+  // determine the lightness factor of the color to determine whether to shade or tint the foreground
+  const brightness = chroma(background).luminance();
+
+  let highContrastTextColor = foreground as string;
+  while (contrast < ratio) {
+    if (brightness > 50) {
+      highContrastTextColor = chroma(highContrastTextColor)
+        .darken()
+        .toString();
+    } else {
+      highContrastTextColor = chroma(highContrastTextColor)
+        .brighten()
+        .toString();
+    }
+    contrast = chroma.contrast(highContrastTextColor, background);
+  }
+  return highContrastTextColor.toString();
 }

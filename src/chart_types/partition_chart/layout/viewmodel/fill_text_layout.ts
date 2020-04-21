@@ -32,7 +32,7 @@ import {
 import { Box, Font, PartialFont, TextMeasure } from '../types/types';
 import { conjunctiveConstraint } from '../circline_geometry';
 import { Layer } from '../../specs/index';
-import { colorIsDark, getBackgroundWithContainerColorFromUser } from '../utils/calcs';
+import { getBackgroundWithContainerColorFromUser, makeHighContrastColor } from '../utils/calcs';
 import { ValueFormatter, Color } from '../../../../utils/commons';
 import { RGBATupleToString } from '../utils/d3_utils';
 
@@ -292,7 +292,7 @@ function fill(
         : sliceFillColor;
     const formattedContainerBackground =
       typeof containerBackground !== 'string' ? RGBATupleToString(containerBackground) : containerBackground;
-    const textColorWithContrast = colorIsDark(textColor, formattedContainerBackground);
+    const textColorWithContrast = makeHighContrastColor(textColor, formattedContainerBackground);
     const sizeInvariantFont: Font = {
       fontStyle,
       fontVariant,
