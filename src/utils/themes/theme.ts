@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { mergePartial, RecursivePartial } from '../commons';
+import { mergePartial, RecursivePartial, Color, ColorVariant } from '../commons';
 import { Margins } from '../dimensions';
 import { LIGHT_THEME } from './light_theme';
 
@@ -28,7 +28,7 @@ export interface TextStyle {
   fontSize: number;
   fontFamily: string;
   fontStyle?: string;
-  fill: string;
+  fill: Color;
   padding: number;
 }
 
@@ -58,9 +58,9 @@ export interface SharedGeometryStateStyle {
   unhighlighted: GeometryStateStyle;
 }
 
-export interface StrokeStyle {
+export interface StrokeStyle<C = Color> {
   /** The stroke color in hex, rgba, hsl */
-  stroke: string;
+  stroke: C;
   /** The stroke width in pixel */
   strokeWidth: number;
 }
@@ -73,7 +73,7 @@ export interface StrokeDashArray {
 }
 export interface FillStyle {
   /** The fill color in hex, rgba, hsl */
-  fill: string;
+  fill: Color;
 }
 export interface Opacity {
   /** The opacity value from 0 to 1 */
@@ -92,7 +92,7 @@ export interface AxisConfig {
 }
 export interface GridLineConfig {
   visible?: boolean;
-  stroke?: string;
+  stroke?: Color;
   strokeWidth?: number;
   opacity?: number;
   dash?: number[];
@@ -112,8 +112,8 @@ export interface ScalesConfig {
   histogramPadding: number;
 }
 export interface ColorConfig {
-  vizColors: string[];
-  defaultVizColor: string;
+  vizColors: Color[];
+  defaultVizColor: Color;
 }
 export interface LegendStyle {
   /**
@@ -168,6 +168,14 @@ export interface Theme {
    * You may use `SeriesColorAccessor` to assign colors to a given series or replace the `theme.colors.vizColors` colors to your desired colors.
    */
   barSeriesStyle: BarSeriesStyle;
+  /**
+   * Global bubble styles.
+   *
+   * __Note:__ This is not used to set the color of a specific series. As such, any changes to the styles will not be reflected in the tooltip, legend, etc..
+   *
+   * You may use `SeriesColorAccessor` to assign colors to a given series or replace the `theme.colors.vizColors` colors to your desired colors.
+   */
+  bubbleSeriesStyle: BubbleSeriesStyle;
   arcSeriesStyle: ArcSeriesStyle;
   sharedStyle: SharedGeometryStateStyle;
   axes: AxisConfig;
@@ -175,6 +183,12 @@ export interface Theme {
   colors: ColorConfig;
   legend: LegendStyle;
   crosshair: CrosshairStyle;
+  /**
+   * Used to scale radius with `markSizeAccessor`
+   *
+   * value from 1 to 100
+   */
+  markSizeRatio?: number;
 }
 
 export type PartialTheme = RecursivePartial<Theme>;
@@ -188,11 +202,11 @@ export interface PointStyle {
   /** is the point visible or hidden */
   visible: boolean;
   /** a static stroke color if defined, if not it will use the color of the series */
-  stroke?: string;
+  stroke?: Color | ColorVariant;
   /** the stroke width of the point */
   strokeWidth: number;
   /**  a static fill color if defined, if not it will use the color of the series */
-  fill?: string;
+  fill?: Color | ColorVariant;
   /** the opacity of each point on the theme/series */
   opacity: number;
   /** the radius of each point of the theme/series */
@@ -203,7 +217,7 @@ export interface LineStyle {
   /** is the line visible or hidden ? */
   visible: boolean;
   /** a static stroke color if defined, if not it will use the color of the series */
-  stroke?: string;
+  stroke?: Color | ColorVariant;
   /** the stroke width of the line */
   strokeWidth: number;
   /** the opacity of each line on the theme/series */
@@ -216,7 +230,7 @@ export interface AreaStyle {
   /** is the area is visible or hidden ? */
   visible: boolean;
   /** a static fill color if defined, if not it will use the color of the series */
-  fill?: string;
+  fill?: Color | ColorVariant;
   /** the opacity of each area on the theme/series */
   opacity: number;
 }
@@ -225,9 +239,9 @@ export interface ArcStyle {
   /** is the arc is visible or hidden ? */
   visible: boolean;
   /** a static fill color if defined, if not it will use the color of the series */
-  fill?: string;
+  fill?: Color | ColorVariant;
   /** a static stroke color if defined, if not it will use the color of the series */
-  stroke?: string;
+  stroke?: Color | ColorVariant;
   /** the stroke width of the line */
   strokeWidth: number;
   /** the opacity of each arc on the theme/series */
@@ -236,7 +250,7 @@ export interface ArcStyle {
 
 export interface RectStyle {
   /** a static fill color if defined, if not it will use the color of the series */
-  fill?: string;
+  fill?: Color | ColorVariant;
   /** the opacity of each rect on the theme/series */
   opacity: number;
 }
@@ -249,7 +263,7 @@ export interface RectBorderStyle {
   /**
    * Border stroke color
    */
-  stroke?: string;
+  stroke?: Color | ColorVariant;
   /**
    * Border stroke width
    */
@@ -263,6 +277,10 @@ export interface BarSeriesStyle {
   rect: RectStyle;
   rectBorder: RectBorderStyle;
   displayValue: DisplayValueStyle;
+}
+
+export interface BubbleSeriesStyle {
+  point: PointStyle;
 }
 
 export interface LineSeriesStyle {
