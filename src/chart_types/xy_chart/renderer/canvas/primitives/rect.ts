@@ -31,8 +31,6 @@ export function renderRect(
     return;
   }
 
-  // fill
-
   if (fill) {
     const borderOffset = !disableBoardOffset && stroke && stroke.width > 0.001 ? stroke.width : 0;
     // console.log(stroke, borderOffset);
@@ -58,16 +56,19 @@ export function renderRect(
     drawRect(ctx, { x, y, width, height });
     if (stroke.dash) {
       ctx.setLineDash(stroke.dash);
+    } else {
+      // Setting linecap with dash causes solid line
+      ctx.lineCap = 'square';
     }
 
     ctx.stroke();
   }
 }
 
+/** @internal */
 function drawRect(ctx: CanvasRenderingContext2D, rect: Rect) {
   const { x, y, width, height } = rect;
   ctx.beginPath();
-  ctx.lineCap = 'square';
   ctx.moveTo(x, y);
   ctx.lineTo(x + width, y);
   ctx.lineTo(x + width, y + height);
@@ -86,7 +87,6 @@ export function renderMultiRect(ctx: CanvasRenderingContext2D, rects: Rect[], fi
   for (let i = 0; i < rectsLength; i++) {
     const { width, height, x, y } = rects[i];
     ctx.moveTo(x, y);
-    ctx.lineCap = 'square';
     ctx.lineTo(x + width, y);
     ctx.lineTo(x + width, y + height!);
     ctx.lineTo(x, y + height);
@@ -102,5 +102,12 @@ export function renderMultiRect(ctx: CanvasRenderingContext2D, rects: Rect[], fi
     ctx.strokeStyle = RGBtoString(stroke.color);
     ctx.lineWidth = stroke.width;
     ctx.stroke();
+
+    if (stroke.dash) {
+      ctx.setLineDash(stroke.dash);
+    } else {
+      // Setting linecap with dash causes solid line
+      ctx.lineCap = 'square';
+    }
   }
 }
