@@ -88,5 +88,4 @@ You can find documentation around creating and submitting new features in [CONTR
 [theming]: wiki/theming.md
 [contributing]: CONTRIBUTING.md
 
-
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Felastic%2Felastic-charts.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Felastic%2Felastic-charts?ref=badge_large)
