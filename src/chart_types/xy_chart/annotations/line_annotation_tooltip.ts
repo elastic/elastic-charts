@@ -38,7 +38,6 @@ import { isHorizontalAxis } from '../utils/axis_utils';
 import { Dimensions } from '../../../utils/dimensions';
 import { Scale } from '../../../scales';
 import { GroupId } from '../../../utils/ids';
-import { LineAnnotationStyle } from '../../../utils/themes/theme';
 import { Point } from '../../../utils/point';
 import { isWithinRectBounds } from './rect_annotation_tooltip';
 
@@ -85,7 +84,7 @@ function computeYDomainLineAnnotationDimensions(
   dataValues: LineAnnotationDatum[],
   yScale: Scale,
   chartRotation: Rotation,
-  axisPosition: Position,
+  axisPosition: Position | null,
   chartDimensions: Dimensions,
   lineColor: string,
   marker?: JSX.Element,
@@ -94,11 +93,14 @@ function computeYDomainLineAnnotationDimensions(
   const chartHeight = chartDimensions.height;
   const chartWidth = chartDimensions.width;
   const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
-
+  // let's use a default Bottom-X/Left-Y axis orientation if we are not showing an axis
+  // but we are displaying a line annotation
+  const anchorPosition =
+    axisPosition === null ? (isHorizontalChartRotation ? Position.Bottom : Position.Left) : axisPosition;
   const lineProps: AnnotationLineProps[] = [];
 
   dataValues.forEach((datum: LineAnnotationDatum) => {
-    const { dataValue } = datum;
+    let { dataValue } = datum;
 
     // avoid rendering invalid annotation value
     if (dataValue === null || dataValue === undefined || dataValue === '') {
@@ -113,11 +115,15 @@ function computeYDomainLineAnnotationDimensions(
 
     const [domainStart, domainEnd] = yScale.domain;
     // avoid rendering annotation with values outside the scale domain
-    if (domainStart > dataValue || domainEnd < dataValue) {
-      return;
+    if (dataValue < domainStart) {
+      dataValue = domainStart;
     }
+    if (dataValue > domainEnd) {
+      dataValue = domainEnd;
+    }
+
     const anchor = {
-      position: axisPosition,
+      position: anchorPosition,
       top: 0,
       left: 0,
     };
@@ -129,7 +135,7 @@ function computeYDomainLineAnnotationDimensions(
     // the Y axis is vertical, X axis is horizontal  y|--x--|y
     if (isHorizontalChartRotation) {
       // y|__x__
-      if (axisPosition === Position.Left) {
+      if (anchorPosition === Position.Left) {
         anchor.left = 0;
         markerPosition.left = -markerDimension.width;
         linePathPoints.start.x1 = 0;
@@ -155,7 +161,7 @@ function computeYDomainLineAnnotationDimensions(
       // the Y axis is horizontal, X axis is vertical x|--y--|x
     } else {
       // ¯¯y¯¯
-      if (axisPosition === Position.Top) {
+      if (anchorPosition === Position.Top) {
         anchor.top = 0;
         markerPosition.top = -markerDimension.height;
         linePathPoints.start.x1 = 0;
@@ -208,11 +214,11 @@ function computeXDomainLineAnnotationDimensions(
   dataValues: LineAnnotationDatum[],
   xScale: Scale,
   chartRotation: Rotation,
-  axisPosition: Position,
+  axisPosition: Position | null,
   chartDimensions: Dimensions,
   lineColor: string,
   xScaleOffset: number,
-  enableHistogramMode: boolean,
+  totalBarsInCluster: number,
   marker?: JSX.Element,
   markerDimension = { width: 0, height: 0 },
 ): AnnotationLineProps[] {
@@ -220,12 +226,15 @@ function computeXDomainLineAnnotationDimensions(
   const chartWidth = chartDimensions.width;
   const lineProps: AnnotationLineProps[] = [];
   const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
+  // let's use a default Bottom-X/Left-Y axis orientation if we are not showing an axis
+  // but we are displaying a line annotation
+  const anchorPosition =
+    axisPosition === null ? (isHorizontalChartRotation ? Position.Bottom : Position.Left) : axisPosition;
 
-  const alignWithTick = xScale.bandwidth > 0 && !enableHistogramMode;
   dataValues.forEach((datum: LineAnnotationDatum) => {
     const { dataValue } = datum;
 
-    const scaledXValue = scaleAndValidateDatum(dataValue, xScale, alignWithTick);
+    const scaledXValue = scaleAndValidateDatum(dataValue, xScale, totalBarsInCluster, false);
 
     if (scaledXValue == null) {
       return;
@@ -240,14 +249,14 @@ function computeXDomainLineAnnotationDimensions(
       end: { x2: 0, y2: 0 },
     };
     const anchor = {
-      position: axisPosition,
+      position: anchorPosition,
       top: 0,
       left: 0,
     };
     // the Y axis is vertical, X axis is horizontal  y|--x--|y
     if (isHorizontalChartRotation) {
       // __x__
-      if (axisPosition === Position.Bottom) {
+      if (anchorPosition === Position.Bottom) {
         linePathPoints.start.y1 = chartHeight;
         linePathPoints.end.y2 = 0;
         anchor.top = chartHeight;
@@ -273,7 +282,7 @@ function computeXDomainLineAnnotationDimensions(
       // the Y axis is horizontal, X axis is vertical x|--y--|x
     } else {
       // x|--y--
-      if (axisPosition === Position.Left) {
+      if (anchorPosition === Position.Left) {
         anchor.left = 0;
         markerPosition.left = -markerDimension.width;
         linePathPoints.start.x1 = annotationValueXposition;
@@ -330,9 +339,9 @@ export function computeLineAnnotationDimensions(
   chartRotation: Rotation,
   yScales: Map<GroupId, Scale>,
   xScale: Scale,
-  axisPosition: Position,
+  axisPosition: Position | null,
   xScaleOffset: number,
-  enableHistogramMode: boolean,
+  totalBarsInCluster: number = 0,
 ): AnnotationLineProps[] | null {
   const { domainType, dataValues, marker, markerDimensions, hideLines } = annotationSpec;
 
@@ -341,8 +350,8 @@ export function computeLineAnnotationDimensions(
   }
 
   // this type is guaranteed as this has been merged with default
-  const lineStyle = annotationSpec.style as LineAnnotationStyle;
-  const lineColor = lineStyle.line.stroke;
+  const lineStyle = annotationSpec.style;
+  const lineColor = lineStyle?.line?.stroke ?? 'red';
 
   if (domainType === AnnotationDomainTypes.XDomain) {
     return computeXDomainLineAnnotationDimensions(
@@ -353,7 +362,7 @@ export function computeLineAnnotationDimensions(
       chartDimensions,
       lineColor,
       xScaleOffset,
-      enableHistogramMode,
+      totalBarsInCluster,
       marker,
       markerDimensions,
     );

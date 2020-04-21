@@ -28,6 +28,10 @@ import {
   BasicSeriesSpec,
   SeriesTypes,
   BubbleSeriesSpec,
+  LineAnnotationSpec,
+  RectAnnotationSpec,
+  AnnotationTypes,
+  AnnotationDomainTypes,
 } from '../../chart_types/xy_chart/utils/specs';
 import { ScaleType } from '../../scales';
 import { ChartTypes } from '../../chart_types';
@@ -221,6 +225,17 @@ export class MockSeriesSpec {
         return MockSeriesSpec.barBase;
     }
   }
+  static byTypePartial(type?: 'line' | 'bar' | 'area') {
+    switch (type) {
+      case 'line':
+        return MockSeriesSpec.line;
+      case 'area':
+        return MockSeriesSpec.area;
+      case 'bar':
+      default:
+        return MockSeriesSpec.bar;
+    }
+  }
 }
 
 export class MockSeriesSpecs {
@@ -264,7 +279,53 @@ export class MockGlobalSpec {
     theme: LIGHT_THEME,
   };
 
+  private static readonly settingsBaseNoMargings: SettingsSpec = {
+    ...MockGlobalSpec.settingsBase,
+    theme: {
+      ...LIGHT_THEME,
+      chartMargins: { top: 0, left: 0, right: 0, bottom: 0 },
+      chartPaddings: { top: 0, left: 0, right: 0, bottom: 0 },
+      scales: {
+        barsPadding: 0,
+      },
+    },
+  };
+
   static settings(partial?: Partial<SettingsSpec>): SettingsSpec {
     return mergePartial<SettingsSpec>(MockGlobalSpec.settingsBase, partial, { mergeOptionalPartialValues: true });
+  }
+  static settingsNoMargins(partial?: Partial<SettingsSpec>): SettingsSpec {
+    return mergePartial<SettingsSpec>(MockGlobalSpec.settingsBaseNoMargings, partial, {
+      mergeOptionalPartialValues: true,
+    });
+  }
+}
+
+/** @internal */
+export class MockAnnotationSpec {
+  private static readonly lineBase: LineAnnotationSpec = {
+    id: 'line_annotation_1',
+    groupId: DEFAULT_GLOBAL_ID,
+    chartType: ChartTypes.XYAxis,
+    specType: SpecTypes.Annotation,
+    annotationType: AnnotationTypes.Line,
+    dataValues: [],
+    domainType: AnnotationDomainTypes.XDomain,
+  };
+
+  private static readonly rectBase: RectAnnotationSpec = {
+    id: 'rect_annotation_1',
+    groupId: DEFAULT_GLOBAL_ID,
+    chartType: ChartTypes.XYAxis,
+    specType: SpecTypes.Annotation,
+    annotationType: AnnotationTypes.Rectangle,
+    dataValues: [],
+  };
+
+  static line(partial?: Partial<LineAnnotationSpec>): LineAnnotationSpec {
+    return mergePartial<LineAnnotationSpec>(MockAnnotationSpec.lineBase, partial, { mergeOptionalPartialValues: true });
+  }
+  static rect(partial?: Partial<RectAnnotationSpec>): RectAnnotationSpec {
+    return mergePartial<RectAnnotationSpec>(MockAnnotationSpec.rectBase, partial, { mergeOptionalPartialValues: true });
   }
 }

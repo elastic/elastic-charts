@@ -668,7 +668,7 @@ export interface BaseAnnotationSpec<
   D extends RectAnnotationDatum | LineAnnotationDatum,
   S extends RectAnnotationStyle | LineAnnotationStyle
 > extends Spec {
-  chartType: ChartTypes;
+  chartType: typeof ChartTypes.XYAxis;
   specType: typeof SpecTypes.Annotation;
   /**
    * Annotation type: line, rectangle, text

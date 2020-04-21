@@ -76,7 +76,7 @@ describe('annotation marker', () => {
       xScale,
       Position.Left,
       0,
-      false,
+      0,
     );
     const expectedDimensions: AnnotationLineProps[] = [
       {
@@ -131,7 +131,7 @@ describe('annotation marker', () => {
       xScale,
       Position.Left,
       0,
-      false,
+      0,
     );
     const expectedDimensions: AnnotationLineProps[] = [
       {
@@ -185,7 +185,7 @@ describe('annotation marker', () => {
       xScale,
       Position.Bottom,
       0,
-      false,
+      0,
     );
     const expectedDimensions: AnnotationLineProps[] = [
       {

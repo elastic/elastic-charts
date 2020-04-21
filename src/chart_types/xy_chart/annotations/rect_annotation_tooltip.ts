@@ -20,7 +20,7 @@ import { AnnotationTypes, RectAnnotationDatum, RectAnnotationSpec } from '../uti
 import { Rotation } from '../../../utils/commons';
 import { Dimensions } from '../../../utils/dimensions';
 import { GroupId } from '../../../utils/ids';
-import { Scale } from '../../../scales';
+import { Scale, ScaleType } from '../../../scales';
 import { Point } from '../../../utils/point';
 import {
   AnnotationTooltipFormatter,
@@ -98,14 +98,15 @@ export function computeRectAnnotationDimensions(
   xScale: Scale,
   enableHistogramMode: boolean,
   barsPadding: number,
+  totalBarsInCluster: number,
 ): AnnotationRectProps[] | null {
   const { dataValues } = annotationSpec;
-
   const groupId = annotationSpec.groupId;
   const yScale = yScales.get(groupId);
   if (!yScale) {
     return null;
   }
+  const hasBars = totalBarsInCluster > 0;
 
   const xDomain = xScale.domain;
   const yDomain = yScale.domain;
@@ -115,16 +116,14 @@ export function computeRectAnnotationDimensions(
 
   dataValues.forEach((dataValue: RectAnnotationDatum) => {
     let { x0, x1, y0, y1 } = dataValue.coordinates;
-
     // if everything is null, return; otherwise we coerce the other coordinates
     if (x0 == null && x1 == null && y0 == null && y1 == null) {
       return;
     }
-
-    if (x1 == null) {
-      // if x1 is defined, we want the rect to draw to the end of the scale
-      // if we're in histogram mode, extend domain end by min interval
-      x1 = enableHistogramMode && !xScale.isSingleValue() ? lastX + xMinInterval : lastX;
+    x1 = x1 == null ? lastX : x1;
+    if (hasBars && xScale.type !== ScaleType.Ordinal) {
+      // if bar chart cover fully the last bar
+      x1 = x1 + xMinInterval;
     }
 
     if (x0 == null) {
@@ -133,22 +132,20 @@ export function computeRectAnnotationDimensions(
     }
 
     if (y0 == null) {
-      // if y0 is defined, we want the rect to draw to the end of the scale
-      y0 = yDomain[yDomain.length - 1];
+      // if y0 is not defined, start from the beginning of the yScale
+      y0 = yDomain[0];
     }
 
     if (y1 == null) {
-      // if y1 is defined, we want the rect to draw to the start of the scale
-      y1 = yDomain[0];
+      // if y1 is not defined, end the annotation at the end of the yScale
+      y1 = yDomain[yDomain.length - 1];
     }
-
-    const alignWithTick = xScale.bandwidth > 0 && !enableHistogramMode;
-
-    let x0Scaled = scaleAndValidateDatum(x0, xScale, alignWithTick);
-    let x1Scaled = scaleAndValidateDatum(x1, xScale, alignWithTick);
-    const y0Scaled = scaleAndValidateDatum(y0, yScale, false);
-    const y1Scaled = scaleAndValidateDatum(y1, yScale, false);
-
+    const barSpaces = totalBarsInCluster > 0 ? totalBarsInCluster : xScale.type === ScaleType.Ordinal ? 1 : 0;
+    let x0Scaled = scaleAndValidateDatum(x0, xScale, barSpaces);
+    let x1Scaled = scaleAndValidateDatum(x1, xScale, barSpaces, true);
+    // we don't consider bars in y scale
+    const y0Scaled = scaleAndValidateDatum(y0, yScale, 0);
+    const y1Scaled = scaleAndValidateDatum(y1, yScale, 0, true);
     // TODO: surface this as a warning
     if (x0Scaled === null || x1Scaled === null || y0Scaled === null || y1Scaled === null) {
       return;
@@ -187,6 +184,5 @@ export function computeRectAnnotationDimensions(
       details: dataValue.details,
     });
   });
-
   return rectsProps;
 }

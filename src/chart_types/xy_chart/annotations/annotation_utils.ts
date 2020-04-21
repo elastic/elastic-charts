@@ -87,25 +87,36 @@ export type AnnotationDimensions = AnnotationLineProps[] | AnnotationRectProps[]
 export type Bounds = { startX: number; endX: number; startY: number; endY: number };
 
 /** @internal */
-export function scaleAndValidateDatum(dataValue: any, scale: Scale, alignWithTick: boolean): number | null {
+export function scaleAndValidateDatum(
+  value: any,
+  scale: Scale,
+  totalBarsInCluster: number,
+  lastValue?: boolean,
+): number | null {
   const isContinuous = scale.type !== ScaleType.Ordinal;
-  const scaledValue = scale.scale(dataValue);
+  const scaledValue = scale.scale(value);
   // d3.scale will return 0 for '', rendering the line incorrectly at 0
-  if (scaledValue === null || (isContinuous && dataValue === '')) {
+  if (scaledValue === null || (isContinuous && value === '')) {
     return null;
   }
 
   if (isContinuous) {
     const [domainStart, domainEnd] = scale.domain;
+    const adjustedDomainEnd = domainEnd + (totalBarsInCluster > 0 ? scale.minInterval : 0);
 
-    // if we're not aligning the ticks, we need to extend the domain by one more tick for histograms
-    const domainEndOffset = alignWithTick ? 0 : scale.minInterval;
-
-    if (domainStart > dataValue || domainEnd + domainEndOffset < dataValue) {
-      return null;
+    // limit the value to min or max of the domain
+    if (value < domainStart) {
+      return scale.scale(domainStart);
     }
+    if (value > adjustedDomainEnd) {
+      return scale.scale(adjustedDomainEnd);
+    }
+    return scaledValue;
   }
-
+  // is ordinal scale
+  if (lastValue) {
+    return scaledValue + scale.bandwidth * totalBarsInCluster;
+  }
   return scaledValue;
 }
 
@@ -187,9 +198,6 @@ export function computeAnnotationDimensions(
       const { groupId, domainType } = annotationSpec;
       const annotationAxisPosition = getAnnotationAxis(axesSpecs, groupId, domainType, chartRotation);
 
-      if (!annotationAxisPosition) {
-        return;
-      }
       const dimensions = computeLineAnnotationDimensions(
         annotationSpec,
         chartDimensions,
@@ -198,7 +206,7 @@ export function computeAnnotationDimensions(
         xScale,
         annotationAxisPosition,
         xScaleOffset - clusterOffset,
-        enableHistogramMode,
+        totalBarsInCluster,
       );
 
       if (dimensions) {
@@ -211,6 +219,7 @@ export function computeAnnotationDimensions(
         xScale,
         enableHistogramMode,
         barsPadding,
+        totalBarsInCluster,
       );
 
       if (dimensions) {
