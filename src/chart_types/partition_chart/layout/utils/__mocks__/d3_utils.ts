@@ -16,6 +16,14 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-export * from './series';
-export * from './geometries';
-export * from './theme';
+const module = jest.requireActual('../d3_utils.ts');
+
+export const defaultColor = module.defaultColor;
+export const transparentColor = module.transparentColor;
+export const defaultD3Color = module.defaultD3Color;
+
+export const stringToRGB = jest.fn(module.stringToRGB);
+export const validateColor = jest.fn(module.validateColor);
+export const argsToRGB = jest.fn(module.argsToRGB);
+export const argsToRGBString = jest.fn(module.argsToRGBString);
+export const RGBtoString = jest.fn(module.RGBtoString);

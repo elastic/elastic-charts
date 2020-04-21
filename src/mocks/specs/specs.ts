@@ -33,6 +33,12 @@ import { ScaleType } from '../../scales';
 import { ChartTypes } from '../../chart_types';
 import { SettingsSpec, SpecTypes, TooltipType } from '../../specs';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
+import { PartitionSpec } from '../../chart_types/partition_chart/specs';
+import { config, percentFormatter } from '../../chart_types/partition_chart/layout/config/config';
+import { ShapeTreeNode } from '../../chart_types/partition_chart/layout/types/viewmodel_types';
+import { Datum } from '../../utils/commons';
+import { AGGREGATE_KEY, PrimitiveValue } from '../../chart_types/partition_chart/layout/utils/group_by_rollup';
+import { PartitionLayout } from '../../chart_types/partition_chart/layout/types/config_types';
 
 /** @internal */
 export class MockSeriesSpec {
@@ -116,6 +122,52 @@ export class MockSeriesSpec {
     data: [],
   };
 
+  private static readonly sunburstBase: PartitionSpec = {
+    chartType: ChartTypes.Partition,
+    specType: SpecTypes.Series,
+    id: 'spec1',
+    config: {
+      ...config,
+      partitionLayout: PartitionLayout.sunburst,
+    },
+    valueAccessor: (d: Datum) => (typeof d === 'number' ? d : 0),
+    valueGetter: (n: ShapeTreeNode): number => n[AGGREGATE_KEY],
+    valueFormatter: (d: number): string => String(d),
+    percentFormatter,
+    layers: [
+      {
+        groupByRollup: (d: Datum, i: number) => i,
+        nodeLabel: (d: PrimitiveValue) => String(d),
+        showAccessor: () => true,
+        fillLabel: {},
+      },
+    ],
+    data: [],
+  };
+
+  private static readonly treemapBase: PartitionSpec = {
+    chartType: ChartTypes.Partition,
+    specType: SpecTypes.Series,
+    id: 'spec1',
+    config: {
+      ...config,
+      partitionLayout: PartitionLayout.treemap,
+    },
+    valueAccessor: (d: Datum) => (typeof d === 'number' ? d : 0),
+    valueGetter: (n: ShapeTreeNode): number => n[AGGREGATE_KEY],
+    valueFormatter: (d: number): string => String(d),
+    percentFormatter,
+    layers: [
+      {
+        groupByRollup: (d: Datum, i: number) => i,
+        nodeLabel: (d: PrimitiveValue) => String(d),
+        showAccessor: () => true,
+        fillLabel: {},
+      },
+    ],
+    data: [],
+  };
+
   static bar(partial?: Partial<BarSeriesSpec>): BarSeriesSpec {
     return mergePartial<BarSeriesSpec>(MockSeriesSpec.barBase, partial as RecursivePartial<BarSeriesSpec>, {
       mergeOptionalPartialValues: true,
@@ -144,16 +196,27 @@ export class MockSeriesSpec {
     });
   }
 
+  static sunburst(partial?: Partial<PartitionSpec>): PartitionSpec {
+    return mergePartial<PartitionSpec>(MockSeriesSpec.sunburstBase, partial as RecursivePartial<PartitionSpec>, {
+      mergeOptionalPartialValues: true,
+    });
+  }
+
+  static treemap(partial?: Partial<PartitionSpec>): PartitionSpec {
+    return mergePartial<PartitionSpec>(MockSeriesSpec.treemapBase, partial as RecursivePartial<PartitionSpec>, {
+      mergeOptionalPartialValues: true,
+    });
+  }
+
   static byType(type?: SeriesTypes): BasicSeriesSpec {
     switch (type) {
       case SeriesTypes.Line:
         return MockSeriesSpec.lineBase;
-      case SeriesTypes.Bar:
-        return MockSeriesSpec.barBase;
       case SeriesTypes.Area:
         return MockSeriesSpec.areaBase;
       case SeriesTypes.Bubble:
         return MockSeriesSpec.bubbleBase;
+      case SeriesTypes.Bar:
       default:
         return MockSeriesSpec.barBase;
     }

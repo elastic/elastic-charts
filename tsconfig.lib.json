@@ -5,5 +5,5 @@
   },
   "extends": "./tsconfig",
   "include": ["src/**/*"],
-  "exclude": ["**/*.test.*", "src/mocks"]
+  "exclude": ["**/*.test.*", "**/__mocks__", "src/mocks"]
 }
