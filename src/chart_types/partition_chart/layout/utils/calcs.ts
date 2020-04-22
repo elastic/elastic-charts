@@ -17,7 +17,7 @@
  * under the License. */
 
 import { Ratio } from '../types/geometry_types';
-import { RgbTuple } from './d3_utils';
+import { RgbTuple, stringToRGB } from './d3_utils';
 import { Color } from '../../../../utils/commons';
 import chroma from 'chroma-js';
 
@@ -90,9 +90,9 @@ export function makeHighContrastColor(foreground: Color, background: Color, rati
   // determine the lightness factor of the color to determine whether to shade or tint the foreground
   const brightness = chroma(background).luminance();
 
-  let highContrastTextColor = foreground as string;
+  let highContrastTextColor = foreground;
   while (contrast < ratio) {
-    if (brightness > 50) {
+    if (brightness > 0.3) {
       highContrastTextColor = chroma(highContrastTextColor)
         .darken()
         .toString();
@@ -104,4 +104,13 @@ export function makeHighContrastColor(foreground: Color, background: Color, rati
     contrast = chroma.contrast(highContrastTextColor, background);
   }
   return highContrastTextColor.toString();
+}
+
+/** @internal */
+export function colorIsDark(color: Color) {
+  // fixme this assumes a white or very light background
+  const rgba = stringToRGB(color);
+  const { r, g, b, opacity } = rgba;
+  const a = rgba.hasOwnProperty('opacity') ? opacity : 1;
+  return r * 0.299 + g * 0.587 + b * 0.114 < a * 150;
 }

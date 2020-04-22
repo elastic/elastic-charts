@@ -32,9 +32,9 @@ import {
 import { Box, Font, PartialFont, TextMeasure } from '../types/types';
 import { conjunctiveConstraint } from '../circline_geometry';
 import { Layer } from '../../specs/index';
-import { getBackgroundWithContainerColorFromUser, makeHighContrastColor } from '../utils/calcs';
+import { getBackgroundWithContainerColorFromUser, makeHighContrastColor, colorIsDark } from '../utils/calcs';
 import { ValueFormatter, Color } from '../../../../utils/commons';
-import { RGBATupleToString } from '../utils/d3_utils';
+import { RGBATupleToString, stringToRGB } from '../utils/d3_utils';
 
 const INFINITY_RADIUS = 1e4; // far enough for a sub-2px precision on a 4k screen, good enough for text bounds; 64 bit floats still work well with it
 
@@ -266,7 +266,7 @@ function fill(
     const { maxRowCount, fillLabel } = config;
 
     const layer = layers[node.depth - 1] || {};
-    const { textColor, fontStyle, fontVariant, fontFamily, fontWeight, valueFormatter } = Object.assign(
+    const { textColor, textInvertible, fontStyle, fontVariant, fontFamily, fontWeight, valueFormatter } = Object.assign(
       { fontFamily: config.fontFamily, fontWeight: 'normal' },
       fillLabel,
       { valueFormatter: formatter },
@@ -292,7 +292,10 @@ function fill(
         : sliceFillColor;
     const formattedContainerBackground =
       typeof containerBackground !== 'string' ? RGBATupleToString(containerBackground) : containerBackground;
+    // console.log('\n\n\n formated container background', formattedContainerBackground);
     const textColorWithContrast = makeHighContrastColor(textColor, formattedContainerBackground);
+    // console.log('text color with contrast', textColorWithContrast);
+    const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(textColor);
     const sizeInvariantFont: Font = {
       fontStyle,
       fontVariant,
@@ -331,6 +334,10 @@ function fill(
 
       while (++targetRowCount <= maxRowCount && !innerCompleted) {
         measuredBoxes = allMeasuredBoxes.slice();
+        const backgroundIsDark = colorIsDark(sliceFillColor);
+        const specifiedTextColorIsDark = colorIsDark(textColor);
+        const inverseForContrast = textInvertible && specifiedTextColorIsDark === backgroundIsDark;
+
         rowSet = {
           id: nodeId(node),
           fontSize,
@@ -339,7 +346,11 @@ function fill(
           // todo factor out the discretization into a => FontWeight function
 
           // this is where the textColor is defined for the relevant pie slices
-          fillTextColor: textColorWithContrast,
+          fillTextColor: inverseForContrast
+            ? to === undefined
+              ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`
+              : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
+            : textColorWithContrast,
           rotation,
           rows: [...Array(targetRowCount)].map(() => ({
             rowWords: [],
