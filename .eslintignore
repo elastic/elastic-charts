@@ -8,7 +8,7 @@
 /node_modules
 /coverage
 
-# Editory configs
+# Editor configs
 /.vscode
 
 # Compiled source
