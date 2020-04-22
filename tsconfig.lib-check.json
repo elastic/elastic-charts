@@ -3,7 +3,8 @@
     "noUnusedLocals": true,
     "removeComments": true,
     "noEmit": true,
-    "skipLibCheck": false
+    "skipLibCheck": false,
+    "rootDir": "src"
   },
   "extends": "./tsconfig",
   "include": ["dist/**/*"]
