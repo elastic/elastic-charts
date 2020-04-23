@@ -104,6 +104,7 @@ export function makeQuadViewModel(
     const shapeFillColor = typeof fill === 'function' ? fill(node, node.sortIndex, node.parent.children) : fill;
     const { r, g, b, opacity } = stringToRGB(shapeFillColor);
     const fillColor = argsToRGBString(r, g, b, opacity * opacityMultiplier);
+    console.log('\n\nfillColor from viewmodel', fillColor);
     const strokeWidth = sectorLineWidth;
     const strokeStyle = sectorLineStroke;
     return { strokeWidth, strokeStyle, fillColor, ...node };

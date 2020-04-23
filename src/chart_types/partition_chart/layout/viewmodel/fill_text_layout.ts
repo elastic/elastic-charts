@@ -284,6 +284,7 @@ function fill(
 
     // need to compare the contrast from the shapeFillColor and the background of the container to the textColor and change the textColor if the contrast isn't at least 4.5
     const sliceFillColor = node.fillColor;
+    // console.log('\n\n\nslice background color', sliceFillColor);
     const containerBackgroundColorFromUser =
       containerBackgroundColor !== undefined ? containerBackgroundColor : 'rgba(255, 255, 255, 0)';
     const containerBackground =

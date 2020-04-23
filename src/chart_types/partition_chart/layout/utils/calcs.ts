@@ -101,6 +101,7 @@ export function makeHighContrastColor(foreground: Color, background: Color, rati
         .brighten()
         .toString();
     }
+    // console.log('new contrast', contrast);
     contrast = chroma.contrast(highContrastTextColor, background);
   }
   return highContrastTextColor.toString();

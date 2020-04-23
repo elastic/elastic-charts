@@ -63,7 +63,7 @@ export const example = () => (
           nodeLabel: (d: any) => countryLookup[d].name,
           fillLabel: {
             valueFormatter: (d: number) => `${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`,
-            textColor: 'rgb(60,60,60,1)',
+            textColor: 'rgba(60,60,60,1)',
             textInvertible: false,
             fontWeight: 100,
             fontStyle: 'normal',
