@@ -52,6 +52,8 @@ export function getFinalTooltipPosition(
   container: Dimensions,
   /** the dimensions of the tooltip container */
   tooltip: Dimensions,
+  /** the width of the tooltip portal container */
+  portalWidth: number,
   /** the tooltip anchor computed position not adjusted within chart bounds */
   anchorPosition: TooltipAnchorPosition,
 ): {
@@ -67,7 +69,7 @@ export function getFinalTooltipPosition(
 
   if (!isRotated) {
     const leftOfBand = window.pageXOffset + container.left + x0;
-    if (x1 + tooltip.width + padding > container.width) {
+    if (x1 + portalWidth + padding > container.width) {
       left = leftOfBand - tooltip.width - padding;
     } else {
       left = leftOfBand + (x1 - x0) + padding;
@@ -80,7 +82,7 @@ export function getFinalTooltipPosition(
     }
   } else {
     const leftOfBand = window.pageXOffset + container.left;
-    if (x1 + tooltip.width > container.width) {
+    if (x1 + portalWidth > container.width) {
       left = leftOfBand + container.width - tooltip.width;
     } else {
       left = leftOfBand + x1;
