@@ -248,6 +248,36 @@ function getWordSpacing(fontSize: number) {
   return fontSize / 4;
 }
 
+function getTextColor(
+  textColor: Color,
+  textInvertible: boolean,
+  node: QuadViewModel,
+  containerBackgroundColor?: Color,
+) {
+  const sliceFillColor = node.fillColor;
+  // if textInvertible is true then contrast with background needs to be calculated otherwise the textColor should be the same as other slices
+  if (textInvertible) {
+    const containerBackgroundColorFromUser =
+      containerBackgroundColor !== undefined ? containerBackgroundColor : 'rgba(255, 255, 255, 0)';
+    const containerBackground = getBackgroundWithContainerColorFromUser(
+      sliceFillColor,
+      containerBackgroundColorFromUser,
+    );
+    const formattedContainerBackground =
+      typeof containerBackground !== 'string' ? RGBATupleToString(containerBackground) : containerBackground;
+    return makeHighContrastColor(textColor, formattedContainerBackground);
+  }
+  const backgroundIsDark = colorIsDark(sliceFillColor);
+  const specifiedTextColorIsDark = colorIsDark(textColor);
+  const inverseForContrast = textInvertible && specifiedTextColorIsDark === backgroundIsDark;
+  const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(textColor);
+  return inverseForContrast
+    ? to === undefined
+      ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`
+      : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
+    : textColor;
+}
+
 function fill(
   config: Config,
   layers: Layer[],
@@ -273,6 +303,8 @@ function fill(
       layer.fillLabel,
       layer.shape,
     );
+    const fillTextColor = getTextColor(textColor, textInvertible, node, containerBackgroundColor);
+
     const valueFont = Object.assign(
       { fontFamily: config.fontFamily, fontWeight: 'normal' },
       config.fillLabel && config.fillLabel.valueFont,
@@ -282,21 +314,6 @@ function fill(
       layer.fillLabel && layer.fillLabel.valueFont,
     );
 
-    // need to compare the contrast from the shapeFillColor and the background of the container to the textColor and change the textColor if the contrast isn't at least 4.5
-    const sliceFillColor = node.fillColor;
-    // console.log('\n\n\nslice background color', sliceFillColor);
-    const containerBackgroundColorFromUser =
-      containerBackgroundColor !== undefined ? containerBackgroundColor : 'rgba(255, 255, 255, 0)';
-    const containerBackground =
-      containerBackgroundColorFromUser !== undefined
-        ? getBackgroundWithContainerColorFromUser(sliceFillColor, containerBackgroundColorFromUser)
-        : sliceFillColor;
-    const formattedContainerBackground =
-      typeof containerBackground !== 'string' ? RGBATupleToString(containerBackground) : containerBackground;
-    // console.log('\n\n\n formated container background', formattedContainerBackground);
-    const textColorWithContrast = makeHighContrastColor(textColor, formattedContainerBackground);
-    // console.log('text color with contrast', textColorWithContrast);
-    const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(textColor);
     const sizeInvariantFont: Font = {
       fontStyle,
       fontVariant,
@@ -335,9 +352,6 @@ function fill(
 
       while (++targetRowCount <= maxRowCount && !innerCompleted) {
         measuredBoxes = allMeasuredBoxes.slice();
-        const backgroundIsDark = colorIsDark(sliceFillColor);
-        const specifiedTextColorIsDark = colorIsDark(textColor);
-        const inverseForContrast = textInvertible && specifiedTextColorIsDark === backgroundIsDark;
 
         rowSet = {
           id: nodeId(node),
@@ -346,12 +360,7 @@ function fill(
           // https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight#Fallback_weights - Fallback weights
           // todo factor out the discretization into a => FontWeight function
 
-          // this is where the textColor is defined for the relevant pie slices
-          fillTextColor: inverseForContrast
-            ? to === undefined
-              ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`
-              : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
-            : textColorWithContrast,
+          fillTextColor,
           rotation,
           rows: [...Array(targetRowCount)].map(() => ({
             rowWords: [],

@@ -50,20 +50,20 @@ export function arrayToLookup(keyFun: Function, array: Array<any>) {
 }
 
 /** @internal */
-function convertRGBAStringToSeparateValues(rgba: Color) {
+export function convertRGBAStringToSeparateValues(rgba: Color) {
   const [red1, green1, blue1, alpha1 = 1] = rgba
     .replace(/[^\d.,]/g, '')
     .split(',')
     .map((x) => parseFloat(x));
-  return { red: red1, green: green1, blue: blue1, alpha: alpha1 };
+  return { red: red1, green: green1, blue: blue1, opacity: alpha1 };
 }
 
 /** If the user specifies the background of the container in which the chart will be on, we can use that color
  * and make sure to provide optimal contrast
 /** @internal */
 export function getBackgroundWithContainerColorFromUser(rgba1: Color, rgba2: Color) {
-  const alpha1 = convertRGBAStringToSeparateValues(rgba1).alpha;
-  const alpha2 = convertRGBAStringToSeparateValues(rgba2).alpha;
+  const alpha1 = convertRGBAStringToSeparateValues(rgba1).opacity;
+  const alpha2 = convertRGBAStringToSeparateValues(rgba2).opacity;
   const combineAlpha = alpha1 + alpha2 * (1 - alpha2);
 
   if (combineAlpha < 0.7) {
@@ -73,14 +73,6 @@ export function getBackgroundWithContainerColorFromUser(rgba1: Color, rgba2: Col
   }
 }
 
-// /** @internal */
-// export function colorIsDark(textColor: Color, bgColor: Color) {
-//   const currentContrast = chroma.contrast(textColor, bgColor);
-//   const otherTextColor = textColor === '#000000' ? '#ffffff' : '#000000';
-//   const otherContrast = chroma.contrast(otherTextColor, bgColor);
-//   return currentContrast > otherContrast ? textColor : otherTextColor;
-// }
-
 /**
  * make a high contrast text color in cases black and white can't reach 4.5
  * @internal
@@ -89,20 +81,28 @@ export function makeHighContrastColor(foreground: Color, background: Color, rati
   let contrast = chroma.contrast(foreground, background);
   // determine the lightness factor of the color to determine whether to shade or tint the foreground
   const brightness = chroma(background).luminance();
-
   let highContrastTextColor = foreground;
   while (contrast < ratio) {
-    if (brightness > 0.3) {
-      highContrastTextColor = chroma(highContrastTextColor)
-        .darken()
-        .toString();
+    if (brightness < 0.5) {
+      highContrastTextColor =
+        chroma.contrast('rgba(255, 255, 255, 1)', background) > ratio
+          ? 'rgba(255, 255, 255, 1)'
+          : chroma(highContrastTextColor)
+              .darken()
+              .toString();
     } else {
-      highContrastTextColor = chroma(highContrastTextColor)
-        .brighten()
-        .toString();
+      highContrastTextColor =
+        chroma.contrast('rgba(0, 0, 0, 1)', background) > ratio
+          ? 'rgba(0, 0, 0, 1)'
+          : chroma(highContrastTextColor)
+              .brighten()
+              .toString();
     }
-    // console.log('new contrast', contrast);
+    const oldContrast = contrast;
     contrast = chroma.contrast(highContrastTextColor, background);
+    if (contrast === oldContrast) {
+      break;
+    }
   }
   return highContrastTextColor.toString();
 }
