@@ -26,7 +26,7 @@ import { Scale, ScaleType, ScaleContinuous } from '../../../scales';
 import { SpecTypes } from '../../../specs/settings';
 import { computeLineAnnotationDimensions } from './line/dimensions';
 import { AnnotationLineProps } from './line/types';
-import { ChartTypes } from '../../../index';
+import { ChartTypes } from '../..';
 
 describe('annotation marker', () => {
   const groupId = 'foo-group';

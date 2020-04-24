@@ -75,12 +75,16 @@ export function computeRectAnnotationDimensions(
     if (!xAndWidth) {
       return;
     }
-    const y = yScale.pureScale(y1);
-    const height = Math.abs(yScale.pureScale(y0) - y);
+    const scaledY1 = yScale.pureScale(y1);
+    const scaledY0 = yScale.pureScale(y0);
+    if (scaledY1 == null || scaledY0 == null) {
+      return;
+    }
+    const height = Math.abs(scaledY0 - scaledY1);
 
     const rectDimensions = {
       ...xAndWidth,
-      y,
+      y: scaledY1,
       height,
     };
 
@@ -100,21 +104,25 @@ function scaleXonBandScale(
   // the band scale return the start of the band, we need to cover
   // also the inner padding of the bar
   const padding = (xScale.step - xScale.originalBandwidth) / 2;
-
+  let scaledX1 = xScale.scale(x1);
+  let scaledX0 = xScale.scale(x0);
+  if (scaledX1 == null || scaledX0 == null) {
+    return null;
+  }
   // extend the x1 scaled value to fully cover the last bar
-  let x1Scaled: number = xScale.scale(x1) + xScale.originalBandwidth + padding;
+  scaledX1 += xScale.originalBandwidth + padding;
   // give the x1 value a maximum of the chart range
-  if (x1Scaled > xScale.range[1]) {
-    x1Scaled = xScale.range[1];
+  if (scaledX1 > xScale.range[1]) {
+    scaledX1 = xScale.range[1];
   }
 
-  let x0Scaled = xScale.scale(x0) - padding;
-  if (x0Scaled < xScale.range[0]) {
-    x0Scaled = xScale.range[0];
+  scaledX0 -= padding;
+  if (scaledX0 < xScale.range[0]) {
+    scaledX0 = xScale.range[0];
   }
-  const width = Math.abs(x1Scaled - x0Scaled);
+  const width = Math.abs(scaledX1 - scaledX0);
   return {
-    x: x0Scaled,
+    x: scaledX0,
     width,
   };
 }
@@ -125,20 +133,23 @@ function scaleXonContinuousScale(
   x1: PrimitiveValue,
   isHistogramModeEnabled: boolean = false,
 ): { x: number; width: number } | null {
-  let x1Scaled: number;
   if (typeof x1 !== 'number' || typeof x0 !== 'number') {
     return null;
   }
+  const scaledX0 = xScale.scale(x0);
+  let scaledX1: number | null;
   if (xScale.totalBarsInCluster > 0 && !isHistogramModeEnabled) {
-    x1Scaled = xScale.scale(x1 + xScale.minInterval);
+    scaledX1 = xScale.scale(x1 + xScale.minInterval);
   } else {
-    x1Scaled = xScale.scale(x1);
+    scaledX1 = xScale.scale(x1);
   }
-  const x0Scaled = xScale.scale(x0);
+  if (scaledX1 == null || scaledX0 == null) {
+    return null;
+  }
   // the width needs to be computed before adjusting the x anchor
-  const width = Math.abs(x1Scaled - x0Scaled);
+  const width = Math.abs(scaledX1 - scaledX0);
   return {
-    x: x0Scaled - (xScale.bandwidthPadding / 2) * xScale.totalBarsInCluster,
+    x: scaledX0 - (xScale.bandwidthPadding / 2) * xScale.totalBarsInCluster,
     width,
   };
 }

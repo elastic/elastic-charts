@@ -180,6 +180,9 @@ function computeXDomainLineAnnotationDimensions(
   dataValues.forEach((datum: LineAnnotationDatum) => {
     const { dataValue } = datum;
     let annotationValueXposition = xScale.scale(dataValue);
+    if (annotationValueXposition == null) {
+      return;
+    }
     if (isContinuousScale(xScale) && typeof dataValue === 'number') {
       const minDomain = xScale.domain[0];
       const maxDomain = isHistogramMode ? xScale.domain[1] + xScale.minInterval : xScale.domain[1];
@@ -188,16 +191,20 @@ function computeXDomainLineAnnotationDimensions(
       }
       if (isHistogramMode) {
         const offset = computeXScaleOffset(xScale, true);
-        annotationValueXposition = xScale.pureScale(dataValue) - offset;
+        const pureScaledValue = xScale.pureScale(dataValue);
+        if (pureScaledValue == null) {
+          return;
+        }
+        annotationValueXposition = pureScaledValue - offset;
       } else {
-        annotationValueXposition = xScale.scale(dataValue) + (xScale.bandwidth * xScale.totalBarsInCluster) / 2;
+        annotationValueXposition = annotationValueXposition + (xScale.bandwidth * xScale.totalBarsInCluster) / 2;
       }
     } else if (isBandScale(xScale)) {
       if (isHistogramMode) {
         const padding = (xScale.step - xScale.originalBandwidth) / 2;
-        annotationValueXposition = xScale.scale(dataValue) - padding;
+        annotationValueXposition = annotationValueXposition - padding;
       } else {
-        annotationValueXposition = xScale.scale(dataValue) + xScale.originalBandwidth / 2;
+        annotationValueXposition = annotationValueXposition + xScale.originalBandwidth / 2;
       }
     } else {
       return;
