@@ -59,6 +59,7 @@ export function getFinalTooltipPosition(
 ): {
   left: string | null;
   top: string | null;
+  anchor: 'left' | 'right';
 } {
   const { x1, y1, isRotated, padding = 10 } = anchorPosition;
   let left = 0;
@@ -66,11 +67,13 @@ export function getFinalTooltipPosition(
 
   const x0 = anchorPosition.x0 || anchorPosition.x1;
   const y0 = anchorPosition.y0 || anchorPosition.y1;
+  let anchor: 'left' | 'right' = 'left' as 'left';
 
   if (!isRotated) {
     const leftOfBand = window.pageXOffset + container.left + x0;
     if (x1 + portalWidth + padding > container.width) {
-      left = leftOfBand - tooltip.width - padding;
+      left = leftOfBand - portalWidth - padding;
+      anchor = 'right' as 'right';
     } else {
       left = leftOfBand + (x1 - x0) + padding;
     }
@@ -81,6 +84,7 @@ export function getFinalTooltipPosition(
       top = topOfBand + y0;
     }
   } else {
+    // not sure if this is also fixed no rotated charts
     const leftOfBand = window.pageXOffset + container.left;
     if (x1 + portalWidth > container.width) {
       left = leftOfBand + container.width - tooltip.width;
@@ -98,5 +102,6 @@ export function getFinalTooltipPosition(
   return {
     left: `${Math.round(left)}px`,
     top: `${Math.round(top)}px`,
+    anchor,
   };
 }

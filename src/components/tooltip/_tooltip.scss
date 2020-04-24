@@ -1,7 +1,12 @@
 #echTooltipContainerPortal {
   position: absolute;
+  background-color: red;
+  height: 20px;
+  pointer-events: none;
+  z-index: 10000000;
 }
 .echTooltip {
+  opacity: 0.2;
   position: absolute;
   @include euiToolTipStyle;
   @include euiFontSizeXS;

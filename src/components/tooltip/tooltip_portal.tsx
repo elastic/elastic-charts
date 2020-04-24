@@ -92,6 +92,10 @@ class TooltipPortalComponent extends React.Component<TooltipPortalProps> {
 
     if (tooltipStyle.left) {
       this.portalNode.style.left = tooltipStyle.left;
+      if (this.tooltipRef.current) {
+        this.tooltipRef.current.style.left = tooltipStyle.anchor === 'right' ? 'auto' : '0px';
+        this.tooltipRef.current.style.right = tooltipStyle.anchor === 'right' ? '0px' : 'auto';
+      }
     }
     if (tooltipStyle.top) {
       this.portalNode.style.top = tooltipStyle.top;
