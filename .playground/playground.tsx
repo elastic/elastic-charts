@@ -36,12 +36,19 @@ import {
 //   // { x: 2, min: 0, max: 3 },
 // ];
 
-const data = new Array(11).fill(0).map((d, i) => {
+const data = new Array(10).fill(0).map((d, i) => {
   return {
     x: i,
-    max: Math.random() * 10,
+    y: Math.random() * 10,
   };
 });
+
+// data = [
+//   { x: 0, y: 4 },
+//   { x: 1, y: 1 },
+//   { x: 10, y: 3 },
+//   // { x: 3, y: 2 },
+// ];
 interface State {
   showRectAnnotation: boolean;
   showLineXAnnotation: boolean;
@@ -56,14 +63,14 @@ interface State {
 }
 export class Playground extends React.Component<{}, State> {
   state: State = {
-    showRectAnnotation: false,
-    showLineXAnnotation: false,
+    showRectAnnotation: true,
+    showLineXAnnotation: true,
     showLineYAnnotation: false,
     totalBars: 1,
     totalLines: 1,
-    useLinearBar: true,
+    useLinearBar: false,
     useOrdinalBar: false,
-    useHistogramBar: false,
+    useHistogramBar: true,
     useLinearLine: false,
     useOrdinalLine: false,
   };
@@ -111,6 +118,7 @@ export class Playground extends React.Component<{}, State> {
           <Chart>
             <Settings
               tooltip={TooltipType.None}
+              rotation={0}
               theme={{
                 lineSeriesStyle: {
                   point: {
@@ -133,7 +141,12 @@ export class Playground extends React.Component<{}, State> {
             {this.state.showRectAnnotation && (
               <RectAnnotation
                 id="annotation"
-                dataValues={[{ coordinates: { x0: 0 } }]}
+                dataValues={[
+                  // { coordinates: { x0: 1, x1: null, y0: null, y1: null } },
+                  // { coordinates: { x0: null, x1: 1, y0: null, y1: null } },
+                  { coordinates: { x0: null, x1: null, y0: 1, y1: null } },
+                  // { coordinates: { x0: null, x1: null, y0: null, y1: 1 } },
+                ]}
                 style={{
                   fill: 'red',
                   opacity: 0.25,
@@ -144,11 +157,12 @@ export class Playground extends React.Component<{}, State> {
               <LineAnnotation
                 id="lineany"
                 dataValues={[
-                  {
-                    dataValue: 6,
-                    details: 'aaa',
-                    header: 'aaa',
-                  },
+                  { dataValue: 2, details: 'foo' },
+                  // {
+                  //   dataValue: -0.5,
+                  //   details: 'aaa',
+                  //   header: 'aaa',
+                  // },
                 ]}
                 domainType="yDomain"
                 marker={<div style={{ width: 10, height: 10, background: 'red' }}></div>}
@@ -159,13 +173,13 @@ export class Playground extends React.Component<{}, State> {
                 id="lineanx"
                 dataValues={[
                   {
-                    dataValue: 10,
+                    dataValue: 9.5,
                     details: 'aaa',
                     header: 'aaa',
                   },
                 ]}
                 domainType="xDomain"
-                marker={<div style={{ width: 10, height: 10, background: 'red' }}></div>}
+                marker={<div style={{ width: 10, height: 10, background: 'rgba(255, 0, 0, 0.3)' }}></div>}
               />
             )}
             {this.state.useLinearBar &&
@@ -178,7 +192,7 @@ export class Playground extends React.Component<{}, State> {
                     xScaleType={ScaleType.Linear}
                     yScaleType={ScaleType.Linear}
                     xAccessor="x"
-                    yAccessors={['max']}
+                    yAccessors={['y']}
                     data={data}
                   />
                 ))}
@@ -193,7 +207,7 @@ export class Playground extends React.Component<{}, State> {
                     xScaleType={ScaleType.Ordinal}
                     yScaleType={ScaleType.Linear}
                     xAccessor="x"
-                    yAccessors={['max']}
+                    yAccessors={['y']}
                     data={data}
                   />
                 ))}
@@ -206,10 +220,10 @@ export class Playground extends React.Component<{}, State> {
                     key={`histoBar${i}`}
                     id={`histoBar${i}`}
                     enableHistogramMode
-                    xScaleType={ScaleType.Ordinal}
+                    xScaleType={ScaleType.Linear}
                     yScaleType={ScaleType.Linear}
                     xAccessor="x"
-                    yAccessors={['max']}
+                    yAccessors={['y']}
                     data={data}
                   />
                 ))}
@@ -224,7 +238,7 @@ export class Playground extends React.Component<{}, State> {
                     xScaleType={ScaleType.Ordinal}
                     yScaleType={ScaleType.Linear}
                     xAccessor="x"
-                    yAccessors={['max']}
+                    yAccessors={['y']}
                     data={data}
                   />
                 ))}
@@ -239,7 +253,7 @@ export class Playground extends React.Component<{}, State> {
                     xScaleType={ScaleType.Linear}
                     yScaleType={ScaleType.Linear}
                     xAccessor="x"
-                    yAccessors={['max']}
+                    yAccessors={['y']}
                     data={data}
                   />
                 ))}

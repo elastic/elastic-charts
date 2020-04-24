@@ -16,10 +16,12 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { MockStore } from '../../../mocks/store';
-import { MockSeriesSpec, MockAnnotationSpec, MockGlobalSpec } from '../../../mocks/specs';
-import { computeAnnotationDimensionsSelector } from '../state/selectors/compute_annotations';
-import { ScaleType } from '../../../scales';
+import { MockStore } from '../../../../mocks/store';
+import { MockSeriesSpec, MockAnnotationSpec, MockGlobalSpec } from '../../../../mocks/specs';
+import { computeAnnotationDimensionsSelector } from '../../state/selectors/compute_annotations';
+import { ScaleType } from '../../../../scales';
+import { AnnotationDomainTypes } from '../../utils/specs';
+import { Position } from '../../../../utils/commons';
 
 function expectAnnotationAtPosition(
   data: Array<{ x: number; y: number }>,
@@ -111,5 +113,51 @@ describe('Render vertical line annotation within', () => {
       { x: 3, y: 2 },
     ];
     expectAnnotationAtPosition(data, 'line', dataValue, linePosition, numOfSpecs, ScaleType.Ordinal);
+  });
+
+  it('histogramMode with line after the max value but before the max + minInterval ', () => {
+    const store = MockStore.default();
+    const settings = MockGlobalSpec.settingsNoMargins({
+      xDomain: {
+        min: 0,
+        max: 9,
+        minInterval: 1,
+      },
+    });
+    const spec = MockSeriesSpec.histogramBar({
+      xScaleType: ScaleType.Linear,
+      data: [
+        {
+          x: 0,
+          y: 1,
+        },
+        {
+          x: 9,
+          y: 20,
+        },
+      ],
+    });
+    const annotation = MockAnnotationSpec.line({
+      domainType: AnnotationDomainTypes.XDomain,
+      dataValues: [{ dataValue: 9.5, details: 'foo' }],
+    });
+
+    MockStore.addSpecs([settings, spec, annotation], store);
+    const annotations = computeAnnotationDimensionsSelector(store.getState());
+    expect(annotations.get(annotation.id)).toEqual([
+      {
+        anchor: {
+          top: 100,
+          left: 95,
+          position: Position.Bottom,
+        },
+        linePathPoints: {
+          start: { x1: 95, y1: 100 },
+          end: { x2: 95, y2: 0 },
+        },
+        details: { detailsText: 'foo', headerText: '9.5' },
+        marker: undefined,
+      },
+    ]);
   });
 });

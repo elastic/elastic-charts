@@ -15,16 +15,17 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License. */
-import { MockStore } from '../../../mocks/store';
-import { MockSeriesSpec, MockAnnotationSpec, MockGlobalSpec } from '../../../mocks/specs';
-import { computeAnnotationDimensionsSelector } from '../state/selectors/compute_annotations';
-import { ScaleType } from '../../../scales';
-import { RectAnnotationDatum } from '../utils/specs';
-import { AnnotationRectProps } from './rect_annotation_tooltip';
+
+import { MockStore } from '../../../../mocks/store';
+import { MockSeriesSpec, MockAnnotationSpec, MockGlobalSpec } from '../../../../mocks/specs';
+import { computeAnnotationDimensionsSelector } from '../../state/selectors/compute_annotations';
+import { ScaleType } from '../../../../scales';
+import { RectAnnotationDatum } from '../../utils/specs';
+import { AnnotationRectProps } from './types';
 
 function expectAnnotationAtPosition(
   data: Array<{ x: number; y: number }>,
-  type: 'line' | 'bar',
+  type: 'line' | 'bar' | 'histogram',
   dataValues: RectAnnotationDatum[],
   expectedRect: {
     x: number;
@@ -60,15 +61,15 @@ function expectAnnotationAtPosition(
 }
 
 describe('Render rect annotation within', () => {
-  it.each([
-    // x0, numOfSpecs, x, width
-    [0, 1, 0, 100],
-    [1, 1, 25, 75],
-    [2, 1, 50, 50],
-    [3, 1, 75, 25],
-    [1, 2, 25, 75],
-    [2, 3, 50, 50],
-  ])('bars starting from %i, %i specs, all scales', (x0, numOfSpecs, x, width) => {
+  it.each`
+    x0   | numOfSpecs | x     | width
+    ${0} | ${1}       | ${0}  | ${100}
+    ${1} | ${1}       | ${25} | ${75}
+    ${2} | ${1}       | ${50} | ${50}
+    ${3} | ${1}       | ${75} | ${25}
+    ${1} | ${2}       | ${25} | ${75}
+    ${2} | ${3}       | ${50} | ${50}
+  `('bars starting from $x0, $numOfSpecs specs, all scales', ({ x0, numOfSpecs, x, width }) => {
     const data = [
       { x: 0, y: 4 },
       { x: 1, y: 1 },
@@ -86,15 +87,15 @@ describe('Render rect annotation within', () => {
     expectAnnotationAtPosition(data, 'bar', dataValues, rect, numOfSpecs, ScaleType.Time);
   });
 
-  it.each([
-    // x1, numOfSpecs, x, width
-    [0, 1, 0, 25],
-    [1, 1, 0, 50],
-    [2, 1, 0, 75],
-    [3, 1, 0, 100],
-    [1, 2, 0, 50],
-    [2, 2, 0, 75],
-  ])('bars starting ending at %i, %i specs, all scales', (x1, numOfSpecs, x, width) => {
+  it.each`
+    x1   | numOfSpecs | x    | width
+    ${0} | ${1}       | ${0} | ${25}
+    ${1} | ${1}       | ${0} | ${50}
+    ${2} | ${1}       | ${0} | ${75}
+    ${3} | ${1}       | ${0} | ${100}
+    ${1} | ${2}       | ${0} | ${50}
+    ${2} | ${2}       | ${0} | ${75}
+  `('bars starting ending at $x1, $numOfSpecs specs, all scales', ({ x1, numOfSpecs, x, width }) => {
     const data = [
       { x: 0, y: 4 },
       { x: 1, y: 1 },
@@ -112,14 +113,14 @@ describe('Render rect annotation within', () => {
     expectAnnotationAtPosition(data, 'bar', dataValues, rect, numOfSpecs, ScaleType.Time);
   });
 
-  it.each([
-    // x0, x1, numOfSpecs, x, width
-    [0, 0, 1, 0, 25],
-    [0, 1, 1, 0, 50],
-    [1, 3, 1, 25, 75],
-    [0, 1, 2, 0, 50],
-    [1, 3, 3, 25, 75],
-  ])('bars starting starting at %i, ending at %i, %i specs, all scales', (x0, x1, numOfSpecs, x, width) => {
+  it.each`
+    x0   | x1   | numOfSpecs | x     | width
+    ${0} | ${0} | ${1}       | ${0}  | ${25}
+    ${0} | ${1} | ${1}       | ${0}  | ${50}
+    ${1} | ${3} | ${1}       | ${25} | ${75}
+    ${0} | ${1} | ${2}       | ${0}  | ${50}
+    ${1} | ${3} | ${3}       | ${25} | ${75}
+  `('bars starting at $x0, ending at $x1, $numOfSpecs specs, all scales', ({ x0, x1, numOfSpecs, x, width }) => {
     const data = [
       { x: 0, y: 4 },
       { x: 1, y: 1 },
@@ -137,14 +138,14 @@ describe('Render rect annotation within', () => {
     expectAnnotationAtPosition(data, 'bar', dataValues, rect, numOfSpecs, ScaleType.Time);
   });
 
-  it.each([
-    // x0, x1, numOfSpecs, x, width
-    [0, 0, 1, 0, 25],
-    [0, 1, 1, 0, 50],
-    [1, 3, 1, 25, 75],
-    [0, 1, 2, 0, 50],
-    [1, 3, 3, 25, 75],
-  ])('lines starting starting at %i, ending at %i, %i specs, ordinal scale', (x0, x1, numOfSpecs, x, width) => {
+  it.each`
+    x0   | x1   | numOfSpecs | x     | width
+    ${0} | ${0} | ${1}       | ${0}  | ${25}
+    ${0} | ${1} | ${1}       | ${0}  | ${50}
+    ${1} | ${3} | ${1}       | ${25} | ${75}
+    ${0} | ${1} | ${2}       | ${0}  | ${50}
+    ${1} | ${3} | ${3}       | ${25} | ${75}
+  `('lines starting at $x0, ending at $x1, $numOfSpecs specs, ordinal scale', ({ x0, x1, numOfSpecs, x, width }) => {
     const data = [
       { x: 0, y: 4 },
       { x: 1, y: 1 },
@@ -160,30 +161,86 @@ describe('Render rect annotation within', () => {
     expectAnnotationAtPosition(data, 'line', dataValues, rect, numOfSpecs, ScaleType.Ordinal);
   });
 
-  it.each([
-    // x0, x1, numOfSpecs, x, width
-    [0, 0, 1, 0, 0],
-    [0, 1, 1, 0, 50],
-    [1, 2, 1, 50, 50],
-    [0, 2, 1, 0, 100],
-    [0, 1, 2, 0, 50],
-    [1, 2, 3, 50, 50],
-  ])('lines starting starting at %i, ending at %i, %i specs, continuous scale', (x0, x1, numOfSpecs, x, width) => {
+  it.each`
+    x0   | x1   | numOfSpecs | x     | width
+    ${0} | ${0} | ${1}       | ${0}  | ${0}
+    ${0} | ${1} | ${1}       | ${0}  | ${50}
+    ${1} | ${2} | ${1}       | ${50} | ${50}
+    ${0} | ${2} | ${1}       | ${0}  | ${100}
+    ${0} | ${1} | ${2}       | ${0}  | ${50}
+    ${1} | ${2} | ${3}       | ${50} | ${50}
+  `(
+    'on line starting at $x0, ending at $x1, $numOfSpecs specs, continuous scale',
+    ({ x0, x1, numOfSpecs, x, width }) => {
+      const data = [
+        { x: 0, y: 4 },
+        { x: 1, y: 1 },
+        { x: 2, y: 3 },
+      ];
+      const dataValues: RectAnnotationDatum[] = [
+        {
+          coordinates: { x0, x1 },
+        },
+      ];
+      const rect = { x, width, y: 0, height: 100 };
+      expectAnnotationAtPosition(data, 'line', dataValues, rect, numOfSpecs, ScaleType.Linear);
+    },
+  );
+  it.each`
+    x0   | x1   | numOfSpecs | x     | width
+    ${0} | ${0} | ${1}       | ${0}  | ${0}
+    ${0} | ${1} | ${1}       | ${0}  | ${25}
+    ${1} | ${2} | ${1}       | ${25} | ${25}
+    ${0} | ${2} | ${1}       | ${0}  | ${50}
+    ${0} | ${1} | ${2}       | ${0}  | ${25}
+    ${1} | ${2} | ${3}       | ${25} | ${25}
+  `(
+    'on histogram starting at $x0, ending at $x1, $numOfSpecs specs, continuous scale',
+    ({ x0, x1, numOfSpecs, x, width }) => {
+      const data = [
+        { x: 0, y: 4 },
+        { x: 1, y: 1 },
+        { x: 2, y: 3 },
+        { x: 3, y: 3 },
+      ];
+      const dataValues: RectAnnotationDatum[] = [
+        {
+          coordinates: { x0, x1 },
+        },
+      ];
+      const rect = { x, width, y: 0, height: 100 };
+      expectAnnotationAtPosition(data, 'histogram', dataValues, rect, numOfSpecs, ScaleType.Linear);
+    },
+  );
+
+  it.each`
+    prop    | x     | y     | width  | height
+    ${'x0'} | ${50} | ${0}  | ${50}  | ${100}
+    ${'x1'} | ${0}  | ${0}  | ${50}  | ${100}
+    ${'y0'} | ${0}  | ${0}  | ${100} | ${75}
+    ${'y1'} | ${0}  | ${75} | ${100} | ${25}
+  `('expand annotation with only one prop configured:  $prop', ({ prop, x, y, width, height }) => {
     const data = [
       { x: 0, y: 4 },
       { x: 1, y: 1 },
-      { x: 2, y: 3 },
+      { x: 2, y: 2 },
     ];
     const dataValues: RectAnnotationDatum[] = [
       {
-        coordinates: { x0, x1 },
+        coordinates: { [prop]: 1 },
       },
     ];
-    const rect = { x, width, y: 0, height: 100 };
-    expectAnnotationAtPosition(data, 'line', dataValues, rect, numOfSpecs, ScaleType.Linear);
+    const rect = { x, width, y, height };
+    expectAnnotationAtPosition(data, 'line', dataValues, rect, 1, ScaleType.Linear);
   });
 
-  it('out of bound annotations upper y', () => {
+  it.each`
+    value | prop
+    ${10} | ${'y1'}
+    ${-4} | ${'y0'}
+    ${-4} | ${'x0'}
+    ${5}  | ${'x1'}
+  `('out of bound annotations for $prop', ({ prop, value }) => {
     const data = [
       { x: 0, y: 4 },
       { x: 1, y: 1 },
@@ -191,59 +248,11 @@ describe('Render rect annotation within', () => {
     ];
     const dataValues: RectAnnotationDatum[] = [
       {
-        coordinates: { y1: 10 },
+        coordinates: { [prop]: value },
       },
     ];
     const rect = { x: 0, width: 100, y: 0, height: 100 };
     expectAnnotationAtPosition(data, 'line', dataValues, rect, 1, ScaleType.Linear);
     expectAnnotationAtPosition(data, 'bar', dataValues, rect, 1, ScaleType.Linear);
-  });
-
-  it('out of bound annotations lower y', () => {
-    const data = [
-      { x: 0, y: 4 },
-      { x: 1, y: 1 },
-      { x: 2, y: 3 },
-    ];
-    const dataValues: RectAnnotationDatum[] = [
-      {
-        coordinates: { y0: -4 },
-      },
-    ];
-    const rect = { x: 0, width: 100, y: 0, height: 100 };
-    expectAnnotationAtPosition(data, 'bar', dataValues, rect, 1, ScaleType.Linear);
-    expectAnnotationAtPosition(data, 'line', dataValues, rect, 1, ScaleType.Linear);
-  });
-
-  it('out of bound annotations lower x', () => {
-    const data = [
-      { x: 0, y: 4 },
-      { x: 1, y: 1 },
-      { x: 2, y: 3 },
-    ];
-    const dataValues: RectAnnotationDatum[] = [
-      {
-        coordinates: { x0: -4 },
-      },
-    ];
-    const rect = { x: 0, width: 100, y: 0, height: 100 };
-    expectAnnotationAtPosition(data, 'bar', dataValues, rect, 1, ScaleType.Linear);
-    expectAnnotationAtPosition(data, 'line', dataValues, rect, 1, ScaleType.Linear);
-  });
-
-  it('out of bound annotations upper x', () => {
-    const data = [
-      { x: 0, y: 4 },
-      { x: 1, y: 1 },
-      { x: 2, y: 3 },
-    ];
-    const dataValues: RectAnnotationDatum[] = [
-      {
-        coordinates: { x1: 5 },
-      },
-    ];
-    const rect = { x: 0, width: 100, y: 0, height: 100 };
-    expectAnnotationAtPosition(data, 'bar', dataValues, rect, 1, ScaleType.Linear);
-    expectAnnotationAtPosition(data, 'line', dataValues, rect, 1, ScaleType.Linear);
   });
 });

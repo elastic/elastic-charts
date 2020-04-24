@@ -41,7 +41,7 @@ export const example = () => {
   return (
     <Chart className="story-chart">
       <Settings debug={debug} rotation={rotation} />
-      <RectAnnotation dataValues={dataValues} id="rect" />
+      <RectAnnotation dataValues={dataValues} id="rect" style={{ fill: 'red' }} />
       <Axis id="bottom" position={Position.Bottom} title="x-domain axis" />
       <Axis id="left" title="y-domain axis" position={Position.Left} />
       <BarSeries
@@ -52,7 +52,7 @@ export const example = () => {
         yAccessors={['y']}
         data={[
           { x: 0, y: 2 },
-          { x: 1, y: 7 },
+          { x: 1, y: 3 },
           { x: 3, y: 6 },
         ]}
       />

@@ -38,7 +38,7 @@ export const example = () => {
     'x0',
   );
 
-  const dataValues: RectAnnotationDatum[] = [
+  const dataValues1: RectAnnotationDatum[] = [
     {
       coordinates: {
         x0: 1,
@@ -48,6 +48,8 @@ export const example = () => {
       },
       details: 'details about this annotation',
     },
+  ];
+  const dataValues2: RectAnnotationDatum[] = [
     {
       coordinates: {
         x0: 2.0,
@@ -57,6 +59,8 @@ export const example = () => {
       },
       details: 'details about this annotation',
     },
+  ];
+  const dataValues3: RectAnnotationDatum[] = [
     {
       coordinates: {
         x0: definedCoordinate === 'x0' ? 0.25 : null,
@@ -79,7 +83,9 @@ export const example = () => {
   return (
     <Chart className="story-chart">
       <Settings debug={debug} rotation={rotation} />
-      <RectAnnotation dataValues={dataValues} id="rect" />
+      <RectAnnotation dataValues={dataValues3} id="rect3" style={{ fill: 'lightgreen', opacity: 1 }} />
+      <RectAnnotation dataValues={dataValues2} id="rect2" style={{ fill: 'blue', opacity: 1 }} />
+      <RectAnnotation dataValues={dataValues1} id="rect1" style={{ fill: 'red', opacity: 1 }} />
       <Axis id="bottom" position={xAxisPosition} title={xAxisTitle} />
       <Axis id="left" title={yAxisTitle} position={yAxisPosition} />
       <LineSeries

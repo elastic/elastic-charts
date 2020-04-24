@@ -19,11 +19,7 @@
 import React from 'react';
 import { isLineAnnotation, AnnotationSpec, AnnotationTypes } from '../../utils/specs';
 import { AnnotationId } from '../../../../utils/ids';
-import {
-  AnnotationDimensions,
-  AnnotationTooltipState,
-  AnnotationTooltipFormatter,
-} from '../../annotations/annotation_utils';
+import { AnnotationDimensions, AnnotationTooltipState, AnnotationTooltipFormatter } from '../../annotations/types';
 import { connect } from 'react-redux';
 import { Dimensions } from '../../../../utils/dimensions';
 import { GlobalChartState, BackwardRef } from '../../../../state/chart_state';
@@ -32,10 +28,10 @@ import { computeAnnotationDimensionsSelector } from '../../state/selectors/compu
 import { getAnnotationSpecsSelector } from '../../state/selectors/get_specs';
 import { getAnnotationTooltipStateSelector } from '../../state/selectors/get_annotation_tooltip_state';
 import { isChartEmptySelector } from '../../state/selectors/is_chart_empty';
-import { AnnotationLineProps } from '../../annotations/line_annotation_tooltip';
+import { AnnotationLineProps } from '../../annotations/line/types';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
 import { createPortal } from 'react-dom';
-import { getFinalAnnotationTooltipPosition } from '../../annotations/annotation_tooltip';
+import { getFinalAnnotationTooltipPosition } from '../../annotations/tooltip';
 import { getSpecsById } from '../../state/utils';
 
 interface AnnotationTooltipStateProps {

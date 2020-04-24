@@ -16,66 +16,16 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import {
-  AnnotationDomainType,
-  AnnotationDomainTypes,
-  AnnotationTypes,
-  LineAnnotationSpec,
-  LineAnnotationDatum,
-  AxisSpec,
-} from '../utils/specs';
-import { Position, Rotation } from '../../../utils/commons';
-import {
-  AnnotationTooltipState,
-  AnnotationDetails,
-  AnnotationMarker,
-  scaleAndValidateDatum,
-  isXDomain,
-  Bounds,
-} from './annotation_utils';
-import { isHorizontalRotation, getAxesSpecForSpecId } from '../state/utils';
-import { isHorizontalAxis } from '../utils/axis_utils';
-import { Dimensions } from '../../../utils/dimensions';
-import { Scale } from '../../../scales';
-import { GroupId } from '../../../utils/ids';
-import { Point } from '../../../utils/point';
-import { isWithinRectBounds } from './rect_annotation_tooltip';
-
-/** @internal */
-export type AnnotationLinePosition = [number, number, number, number];
-
-/**
- * Start and end points of a line annotation
- * @internal
- */
-export interface AnnotationLinePathPoints {
-  /** x1,y1 the start point anchored to the linked axis */
-  start: {
-    x1: number;
-    y1: number;
-  };
-  /** x2,y2 the end point */
-  end: {
-    x2: number;
-    y2: number;
-  };
-}
-
-/** @internal */
-export interface AnnotationLineProps {
-  /** the position of the start point relative to the Chart */
-  anchor: {
-    position: Position;
-    top: number;
-    left: number;
-  };
-  /**
-   * The path points of a line annotation
-   */
-  linePathPoints: AnnotationLinePathPoints;
-  details: AnnotationDetails;
-  marker?: AnnotationMarker;
-}
+import { AnnotationDomainTypes, LineAnnotationSpec, LineAnnotationDatum } from '../../utils/specs';
+import { Position, Rotation } from '../../../../utils/commons';
+import { AnnotationMarker } from '../types';
+import { isHorizontalRotation } from '../../state/utils';
+import { Dimensions } from '../../../../utils/dimensions';
+import { Scale } from '../../../../scales';
+import { GroupId } from '../../../../utils/ids';
+import { AnnotationLineProps, AnnotationLinePathPoints } from './types';
+import { isContinuousScale, isBandScale } from '../../../../scales/types';
+import { computeXScaleOffset } from '../../state/utils';
 
 /** @internal */
 export const DEFAULT_LINE_OVERFLOW = 0;
@@ -96,11 +46,11 @@ function computeYDomainLineAnnotationDimensions(
   // let's use a default Bottom-X/Left-Y axis orientation if we are not showing an axis
   // but we are displaying a line annotation
   const anchorPosition =
-    axisPosition === null ? (isHorizontalChartRotation ? Position.Bottom : Position.Left) : axisPosition;
+    axisPosition === null ? (isHorizontalChartRotation ? Position.Left : Position.Bottom) : axisPosition;
   const lineProps: AnnotationLineProps[] = [];
 
   dataValues.forEach((datum: LineAnnotationDatum) => {
-    let { dataValue } = datum;
+    const { dataValue } = datum;
 
     // avoid rendering invalid annotation value
     if (dataValue === null || dataValue === undefined || dataValue === '') {
@@ -115,11 +65,8 @@ function computeYDomainLineAnnotationDimensions(
 
     const [domainStart, domainEnd] = yScale.domain;
     // avoid rendering annotation with values outside the scale domain
-    if (dataValue < domainStart) {
-      dataValue = domainStart;
-    }
-    if (dataValue > domainEnd) {
-      dataValue = domainEnd;
+    if (dataValue < domainStart || dataValue > domainEnd) {
+      return;
     }
 
     const anchor = {
@@ -217,8 +164,7 @@ function computeXDomainLineAnnotationDimensions(
   axisPosition: Position | null,
   chartDimensions: Dimensions,
   lineColor: string,
-  xScaleOffset: number,
-  totalBarsInCluster: number,
+  isHistogramMode: boolean,
   marker?: JSX.Element,
   markerDimension = { width: 0, height: 0 },
 ): AnnotationLineProps[] {
@@ -233,15 +179,32 @@ function computeXDomainLineAnnotationDimensions(
 
   dataValues.forEach((datum: LineAnnotationDatum) => {
     const { dataValue } = datum;
-
-    const scaledXValue = scaleAndValidateDatum(dataValue, xScale, totalBarsInCluster, false);
-
-    if (scaledXValue == null) {
+    let annotationValueXposition = xScale.scale(dataValue);
+    if (isContinuousScale(xScale) && typeof dataValue === 'number') {
+      const minDomain = xScale.domain[0];
+      const maxDomain = isHistogramMode ? xScale.domain[1] + xScale.minInterval : xScale.domain[1];
+      if (dataValue < minDomain || dataValue > maxDomain) {
+        return;
+      }
+      if (isHistogramMode) {
+        const offset = computeXScaleOffset(xScale, true);
+        annotationValueXposition = xScale.pureScale(dataValue) - offset;
+      } else {
+        annotationValueXposition = xScale.scale(dataValue) + (xScale.bandwidth * xScale.totalBarsInCluster) / 2;
+      }
+    } else if (isBandScale(xScale)) {
+      if (isHistogramMode) {
+        const padding = (xScale.step - xScale.originalBandwidth) / 2;
+        annotationValueXposition = xScale.scale(dataValue) - padding;
+      } else {
+        annotationValueXposition = xScale.scale(dataValue) + xScale.originalBandwidth / 2;
+      }
+    } else {
       return;
     }
-
-    const offset = xScale.bandwidth / 2 - xScaleOffset;
-    const annotationValueXposition = scaledXValue + offset;
+    if (isNaN(annotationValueXposition) || annotationValueXposition == null) {
+      return;
+    }
 
     const markerPosition = { top: 0, left: 0 };
     const linePathPoints: AnnotationLinePathPoints = {
@@ -340,8 +303,7 @@ export function computeLineAnnotationDimensions(
   yScales: Map<GroupId, Scale>,
   xScale: Scale,
   axisPosition: Position | null,
-  xScaleOffset: number,
-  totalBarsInCluster: number = 0,
+  isHistogramMode: boolean,
 ): AnnotationLineProps[] | null {
   const { domainType, dataValues, marker, markerDimensions, hideLines } = annotationSpec;
 
@@ -361,8 +323,7 @@ export function computeLineAnnotationDimensions(
       axisPosition,
       chartDimensions,
       lineColor,
-      xScaleOffset,
-      totalBarsInCluster,
+      isHistogramMode,
       marker,
       markerDimensions,
     );
@@ -384,101 +345,4 @@ export function computeLineAnnotationDimensions(
     marker,
     markerDimensions,
   );
-}
-
-/** @internal */
-export function getAnnotationLineTooltipXOffset(chartRotation: Rotation, axisPosition: Position): number {
-  let xOffset = 0;
-  const isChartHorizontalRotation = isHorizontalRotation(chartRotation);
-
-  if (isHorizontalAxis(axisPosition)) {
-    xOffset = isChartHorizontalRotation ? 50 : 0;
-  } else {
-    if (isChartHorizontalRotation) {
-      xOffset = axisPosition === Position.Right ? 100 : 0;
-    } else {
-      xOffset = 50;
-    }
-  }
-
-  return xOffset;
-}
-
-/** @internal */
-export function getAnnotationLineTooltipYOffset(chartRotation: Rotation, axisPosition: Position): number {
-  let yOffset = 0;
-  const isChartHorizontalRotation = isHorizontalRotation(chartRotation);
-
-  if (isHorizontalAxis(axisPosition)) {
-    if (isChartHorizontalRotation) {
-      yOffset = axisPosition === Position.Top ? 0 : 100;
-    } else {
-      yOffset = 50;
-    }
-  } else {
-    yOffset = isChartHorizontalRotation ? 50 : 100;
-  }
-
-  return yOffset;
-}
-
-/** @internal */
-export function isVerticalAnnotationLine(isXDomainAnnotation: boolean, isHorizontalChartRotation: boolean): boolean {
-  if (isXDomainAnnotation) {
-    return isHorizontalChartRotation;
-  }
-
-  return !isHorizontalChartRotation;
-}
-
-/**
- * Checks if the cursorPosition is within the line annotation marker
- * @param cursorPosition the cursor position relative to the projected area
- * @param marker the line annotation marker
- */
-function isWithinLineMarkerBounds(cursorPosition: Point, marker: AnnotationMarker): boolean {
-  const { top, left } = marker.position;
-  const { width, height } = marker.dimension;
-  const markerRect: Bounds = { startX: left, startY: top, endX: left + width, endY: top + height };
-  return isWithinRectBounds(cursorPosition, markerRect);
-}
-
-/** @internal */
-export function computeLineAnnotationTooltipState(
-  cursorPosition: Point,
-  annotationLines: AnnotationLineProps[],
-  groupId: GroupId,
-  domainType: AnnotationDomainType,
-  axesSpecs: AxisSpec[],
-): AnnotationTooltipState {
-  const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, groupId);
-  const isXDomainAnnotation = isXDomain(domainType);
-  const annotationAxis = isXDomainAnnotation ? xAxis : yAxis;
-
-  if (!annotationAxis) {
-    return {
-      isVisible: false,
-    };
-  }
-
-  const totalAnnotationLines = annotationLines.length;
-  for (let i = 0; i < totalAnnotationLines; i++) {
-    const line = annotationLines[i];
-    const isWithinBounds = line.marker && isWithinLineMarkerBounds(cursorPosition, line.marker);
-
-    if (isWithinBounds) {
-      return {
-        annotationType: AnnotationTypes.Line,
-        isVisible: true,
-        anchor: {
-          ...line.anchor,
-        },
-        ...(line.details && { header: line.details.headerText }),
-        ...(line.details && { details: line.details.detailsText }),
-      };
-    }
-  }
-  return {
-    isVisible: false,
-  };
 }
