@@ -30,7 +30,7 @@ import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../utils/themes/theme';
 import { Dimensions } from '../../../utils/dimensions';
 import { GroupId, AnnotationId } from '../../../utils/ids';
 import { Scale, ScaleType, ScaleBand, ScaleContinuous } from '../../../scales';
-import { computeAnnotationDimensions, computeClusterOffset, getAnnotationAxis, getRotatedCursor } from './utils';
+import { computeAnnotationDimensions, getAnnotationAxis, getRotatedCursor } from './utils';
 import { AnnotationDimensions, AnnotationTooltipState, Bounds } from './types';
 import { computeLineAnnotationDimensions } from './line/dimensions';
 import { AnnotationLineProps } from './line/types';
@@ -1365,16 +1365,5 @@ describe('annotation utils', () => {
     expect(getRotatedCursor(cursorPosition, chartDimensions, 90)).toEqual({ x: 2, y: 9 });
     expect(getRotatedCursor(cursorPosition, chartDimensions, -90)).toEqual({ x: 18, y: 1 });
     expect(getRotatedCursor(cursorPosition, chartDimensions, 180)).toEqual({ x: 9, y: 18 });
-  });
-
-  test('should compute cluster offset', () => {
-    const singleBarCluster = 1;
-    const multiBarCluster = 2;
-
-    const barsShift = 4;
-    const bandwidth = 2;
-
-    expect(computeClusterOffset(singleBarCluster, barsShift, bandwidth)).toBe(0);
-    expect(computeClusterOffset(multiBarCluster, barsShift, bandwidth)).toBe(3);
   });
 });

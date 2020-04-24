@@ -50,15 +50,6 @@ export function getAnnotationAxis(
 }
 
 /** @internal */
-export function computeClusterOffset(totalBarsInCluster: number, barsShift: number, bandwidth: number): number {
-  if (totalBarsInCluster > 1) {
-    return barsShift - bandwidth / 2;
-  }
-
-  return 0;
-}
-
-/** @internal */
 export function isXDomain(domainType: AnnotationDomainType): boolean {
   return domainType === AnnotationDomainTypes.XDomain;
 }
