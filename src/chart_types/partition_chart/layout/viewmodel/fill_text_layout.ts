@@ -313,8 +313,7 @@ function fill(
       layer.shape,
     );
 
-    // console.log('textColor', textColor);
-    let newTextColor = !textColor ? '#000000' : textColor;
+    const newTextColor = !textColor ? '#000000' : textColor;
 
     const fillTextColor = getTextColor(newTextColor, textInvertible, node, containerBackgroundColor);
 

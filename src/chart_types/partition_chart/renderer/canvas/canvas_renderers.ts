@@ -31,7 +31,6 @@ import { PartitionLayout } from '../../layout/types/config_types';
 import { cssFontShorthand } from '../../layout/utils/measure';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
 import { LinkLabelsViewModelSpec } from '../../layout/viewmodel/link_text_layout';
-import { Color } from '../../../../utils/commons';
 
 // the burnout avoidance in the center of the pie
 const LINE_WIDTH_MULT = 10; // border can be a maximum 1/LINE_WIDTH_MULT - th of the sector angle, otherwise the border would dominate

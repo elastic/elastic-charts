@@ -24,7 +24,6 @@ import { meanAngle } from '../geometry';
 import { TextMeasure, Font } from '../types/types';
 import { ValueFormatter, Color } from '../../../../utils/commons';
 import { makeHighContrastColor } from '../utils/calcs';
-import { StrokeStyle } from '../../../../utils/themes/theme';
 
 export interface LinkLabelsViewModelSpec {
   links: LinkLabelVM[];
