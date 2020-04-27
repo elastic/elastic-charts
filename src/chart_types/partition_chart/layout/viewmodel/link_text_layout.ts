@@ -21,8 +21,17 @@ import { Config } from '../types/config_types';
 import { TAU, trueBearingToStandardPositionAngle } from '../utils/math';
 import { LinkLabelVM, ShapeTreeNode, ValueGetterFunction } from '../types/viewmodel_types';
 import { meanAngle } from '../geometry';
-import { TextMeasure } from '../types/types';
-import { ValueFormatter } from '../../../../utils/commons';
+import { TextMeasure, Font } from '../types/types';
+import { ValueFormatter, Color } from '../../../../utils/commons';
+import { makeHighContrastColor } from '../utils/calcs';
+import { StrokeStyle } from '../../../../utils/themes/theme';
+
+export interface LinkLabelsViewModelSpec {
+  links: LinkLabelVM[];
+  labelFontSpec: Font;
+  valueFontSpec: Font;
+  strokeColor: Color;
+}
 
 /** @internal */
 export function linkTextLayout(
@@ -34,12 +43,38 @@ export function linkTextLayout(
   rawTextGetter: Function,
   valueGetter: ValueGetterFunction,
   valueFormatter: ValueFormatter,
-): LinkLabelVM[] {
-  const { linkLabel } = config;
+  containerBackgroundColor?: Color,
+): LinkLabelsViewModelSpec {
+  const { linkLabel, sectorLineStroke } = config;
   const maxDepth = nodesWithoutRoom.reduce((p: number, n: ShapeTreeNode) => Math.max(p, n.depth), 0);
   const yRelativeIncrement = Math.sin(linkLabel.stemAngle) * linkLabel.minimumStemLength;
   const rowPitch = linkLabel.fontSize + linkLabel.spacing;
-  return nodesWithoutRoom
+  const contrastTextColor = containerBackgroundColor
+    ? makeHighContrastColor(linkLabel.textColor, containerBackgroundColor)
+    : linkLabel.textColor;
+  const strokeColor = containerBackgroundColor
+    ? makeHighContrastColor(sectorLineStroke, containerBackgroundColor)
+    : sectorLineStroke;
+  const labelFontSpec = {
+    fontStyle: 'normal',
+    fontVariant: 'normal',
+    fontFamily: config.fontFamily,
+    fontWeight: 'normal',
+    ...linkLabel,
+    textColor: contrastTextColor,
+  };
+
+  const valueFontSpec = {
+    fontStyle: 'normal',
+    fontVariant: 'normal',
+    fontFamily: config.fontFamily,
+    fontWeight: 'normal',
+    ...linkLabel,
+    ...linkLabel.valueFont,
+    textColor: contrastTextColor,
+  };
+
+  const links: LinkLabelVM[] = nodesWithoutRoom
     .filter((n: ShapeTreeNode) => n.depth === maxDepth) // only the outermost ring can have links
     .sort((n1: ShapeTreeNode, n2: ShapeTreeNode) => Math.abs(n2.x0 - n2.x1) - Math.abs(n1.x0 - n1.x1))
     .slice(0, linkLabel.maxCount) // largest linkLabel.MaxCount slices
@@ -71,25 +106,9 @@ export function linkTextLayout(
       const stemToY = cy;
       const text = rawTextGetter(node);
       const valueText = valueFormatter(valueGetter(node));
-      const labelFontSpec = {
-        fontStyle: 'normal',
-        fontVariant: 'normal',
-        fontFamily: config.fontFamily,
-        fontWeight: 'normal',
-        ...linkLabel,
-        text,
-      };
-      const valueFontSpec = {
-        fontStyle: 'normal',
-        fontVariant: 'normal',
-        fontFamily: config.fontFamily,
-        fontWeight: 'normal',
-        ...linkLabel,
-        ...linkLabel.valueFont,
-        text: valueText,
-      };
-      const { width, emHeightAscent, emHeightDescent } = measure(linkLabel.fontSize, [labelFontSpec])[0];
-      const { width: valueWidth } = measure(linkLabel.fontSize, [valueFontSpec])[0];
+
+      const { width, emHeightAscent, emHeightDescent } = measure(linkLabel.fontSize, [{ ...labelFontSpec, text }])[0];
+      const { width: valueWidth } = measure(linkLabel.fontSize, [{ ...valueFontSpec, text: valueText }])[0];
       return {
         link: [
           [x0, y0],
@@ -104,8 +123,7 @@ export function linkTextLayout(
         width,
         valueWidth,
         verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`
-        labelFontSpec,
-        valueFontSpec,
       };
     });
+  return { links, valueFontSpec, labelFontSpec, strokeColor };
 }

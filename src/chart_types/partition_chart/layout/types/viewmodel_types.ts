@@ -22,6 +22,7 @@ import { Font } from './types';
 import { config, ValueGetterName } from '../config/config';
 import { ArrayNode, HierarchyOfArrays } from '../utils/group_by_rollup';
 import { Color } from '../../../../utils/commons';
+import { LinkLabelsViewModelSpec } from '../viewmodel/link_text_layout';
 
 export type LinkLabelVM = {
   link: [PointTuple, ...PointTuple[]]; // at least one point
@@ -32,8 +33,6 @@ export type LinkLabelVM = {
   width: Distance;
   valueWidth: Distance;
   verticalOffset: Distance;
-  labelFontSpec: Font;
-  valueFontSpec: Font;
 };
 
 export interface RowBox extends Font {
@@ -82,18 +81,32 @@ export type ShapeViewModel = {
   config: Config;
   quadViewModel: QuadViewModel[];
   rowSets: RowSet[];
-  linkLabelViewModels: LinkLabelVM[];
+  linkLabelViewModelSpec: LinkLabelsViewModelSpec;
   outsideLinksViewModel: OutsideLinksViewModel[];
   diskCenter: PointObject;
   pickQuads: PickFunction;
   outerRadius: number;
 };
 
+const defaultFont: Font = {
+  fontStyle: 'normal',
+  fontVariant: 'normal',
+  fontFamily: '',
+  fontWeight: 'normal',
+  textColor: 'black',
+  textOpacity: 1,
+};
+
 export const nullShapeViewModel = (specifiedConfig?: Config, diskCenter?: PointObject): ShapeViewModel => ({
   config: specifiedConfig || config,
   quadViewModel: [],
   rowSets: [],
-  linkLabelViewModels: [],
+  linkLabelViewModelSpec: {
+    links: [],
+    labelFontSpec: defaultFont,
+    valueFontSpec: defaultFont,
+    strokeColor: '',
+  },
   outsideLinksViewModel: [],
   diskCenter: diskCenter || { x: 0, y: 0 },
   pickQuads: () => [],

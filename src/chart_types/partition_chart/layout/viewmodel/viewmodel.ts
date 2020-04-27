@@ -257,7 +257,7 @@ export function shapeViewModel(
           return !(foundInFillText && foundInFillText.rows.length !== 0);
         });
 
-  const linkLabelViewModels = linkTextLayout(
+  const linkLabelViewModelSpec = linkTextLayout(
     textMeasure,
     config,
     nodesWithoutRoom,
@@ -266,6 +266,7 @@ export function shapeViewModel(
     rawTextGetter,
     valueGetter,
     valueFormatter,
+    containerBackgroundColor,
   );
 
   const pickQuads: PickFunction = (x, y) => {
@@ -286,7 +287,7 @@ export function shapeViewModel(
     diskCenter,
     quadViewModel,
     rowSets,
-    linkLabelViewModels,
+    linkLabelViewModelSpec,
     outsideLinksViewModel,
     pickQuads,
     outerRadius,

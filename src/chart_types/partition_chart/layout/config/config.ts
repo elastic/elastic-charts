@@ -170,7 +170,8 @@ export const configMetadata = {
   fillLabel: {
     type: 'group',
     values: {
-      textColor: { dflt: '#000000', type: 'color' },
+      // textColor: { dflt: '#000000', type: 'color' },
+      textColor: { type: 'color' },
       textInvertible: { dflt: false, type: 'boolean' },
       ...fontSettings,
       valueGetter: {
@@ -210,7 +211,8 @@ export const configMetadata = {
         type: 'number',
         documentation: 'Limits the total count of linked labels. The first N largest slices are kept.',
       },
-      textColor: { dflt: '#000000', type: 'color' },
+      // textColor: { dflt: '#000000', type: 'color' },
+      textColor: { type: 'color', dflt: '#000000' },
       textInvertible: { dflt: false, type: 'boolean' },
       textOpacity: { dflt: 1, min: 0, max: 1, type: 'number' },
       minimumStemLength: {

@@ -47,3 +47,4 @@ export { example as barSeriesColorVariant } from './17_bar_series_color_variant'
 export { example as lineSeriesColorVariant } from './18_line_series_color_variant';
 export { example as areaSeriesColorVariant } from './19_area_series_color_variant';
 export { example as partitionBackground } from './20_partition_background';
+export { example as partitionLabels } from './21_partition_labels';

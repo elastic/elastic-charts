@@ -296,14 +296,27 @@ function fill(
     const { maxRowCount, fillLabel } = config;
 
     const layer = layers[node.depth - 1] || {};
-    const { textColor, textInvertible, fontStyle, fontVariant, fontFamily, fontWeight, valueFormatter } = Object.assign(
+    const {
+      textColor,
+      textInvertible,
+      fontStyle,
+      fontVariant,
+      fontFamily,
+      fontWeight,
+      valueFormatter,
+      textOpacity,
+    } = Object.assign(
       { fontFamily: config.fontFamily, fontWeight: 'normal' },
       fillLabel,
       { valueFormatter: formatter },
       layer.fillLabel,
       layer.shape,
     );
-    const fillTextColor = getTextColor(textColor, textInvertible, node, containerBackgroundColor);
+
+    // console.log('textColor', textColor);
+    let newTextColor = !textColor ? '#000000' : textColor;
+
+    const fillTextColor = getTextColor(newTextColor, textInvertible, node, containerBackgroundColor);
 
     const valueFont = Object.assign(
       { fontFamily: config.fontFamily, fontWeight: 'normal' },
@@ -319,6 +332,8 @@ function fill(
       fontVariant,
       fontWeight,
       fontFamily,
+      textColor,
+      textOpacity,
     };
     const allBoxes = getAllBoxes(rawTextGetter, valueGetter, valueFormatter, sizeInvariantFont, valueFont, node);
     let rowSet = identityRowSet();
@@ -412,7 +427,6 @@ function fill(
               rowHasRoom = false;
             }
           }
-
           currentRowIndex++;
         }
 
