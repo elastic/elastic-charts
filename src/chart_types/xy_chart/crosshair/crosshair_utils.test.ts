@@ -68,7 +68,7 @@ describe('Tooltip position', () => {
         x1: 100,
         padding: 5,
       });
-      expect(position.left).toBe('65px');
+      expect(position.left).toBe('55px');
       expect(position.top).toBe('10px');
     });
 
@@ -81,7 +81,7 @@ describe('Tooltip position', () => {
         x1: 100,
         padding: 5,
       });
-      expect(position.left).toBe('65px');
+      expect(position.left).toBe('55px');
       expect(position.top).toBe('80px');
     });
 
@@ -106,7 +106,7 @@ describe('Tooltip position', () => {
         x1: 50,
         padding: 5,
       });
-      expect(position.left).toBe('15px');
+      expect(position.left).toBe('9px');
     });
   });
 
