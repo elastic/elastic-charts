@@ -28,6 +28,8 @@ import { BrushAxis } from '../../../../specs';
 import { Rotation } from '../../../../utils/commons';
 import { Point } from '../../../../utils/point';
 
+const MIN_AREA_SIZE = 1;
+
 const getMouseDownPosition = (state: GlobalChartState) => state.interactions.pointer.down;
 const getCurrentPointerPosition = (state: GlobalChartState) => {
   return state.interactions.pointer.current.position;
@@ -68,8 +70,8 @@ export function getBrushForXAxis(chartDimensions: Dimensions, chartRotation: Rot
   return {
     left: rotated ? 0 : getLeftPoint(chartDimensions, start),
     top: rotated ? getTopPoint(chartDimensions, start) : 0,
-    height: rotated ? getHeight(start, end) : chartDimensions.height,
-    width: rotated ? chartDimensions.width : getWidth(start, end),
+    height: rotated ? getMinimalHeight(start, end) : chartDimensions.height,
+    width: rotated ? chartDimensions.width : getMinimalWidth(start, end),
   };
 }
 
@@ -79,8 +81,8 @@ export function getBrushForYAxis(chartDimensions: Dimensions, chartRotation: Rot
   return {
     left: rotated ? getLeftPoint(chartDimensions, start) : 0,
     top: rotated ? 0 : getTopPoint(chartDimensions, start),
-    height: rotated ? chartDimensions.height : getHeight(start, end),
-    width: rotated ? getWidth(start, end) : chartDimensions.width,
+    height: rotated ? chartDimensions.height : getMinimalHeight(start, end),
+    width: rotated ? getMinimalWidth(start, end) : chartDimensions.width,
   };
 }
 
@@ -89,8 +91,8 @@ export function getBrushForBothAxis(chartDimensions: Dimensions, start: Point, e
   return {
     left: getLeftPoint(chartDimensions, start),
     top: getTopPoint(chartDimensions, start),
-    height: getHeight(start, end),
-    width: getWidth(start, end),
+    height: getMinimalHeight(start, end),
+    width: getMinimalWidth(start, end),
   };
 }
 
@@ -104,10 +106,18 @@ export function getTopPoint({ top }: Dimensions, { y }: Point) {
   return y - top;
 }
 
-function getHeight(start: Point, end: Point) {
-  return end.y - start.y;
+function getMinimalHeight(start: Point, end: Point, min = MIN_AREA_SIZE) {
+  const height = end.y - start.y;
+  if (Math.abs(height) < min) {
+    return min;
+  }
+  return height;
 }
 
-function getWidth(start: Point, end: Point) {
-  return end.x - start.x;
+function getMinimalWidth(start: Point, end: Point, min = MIN_AREA_SIZE) {
+  const width = end.x - start.x;
+  if (Math.abs(width) < min) {
+    return min;
+  }
+  return width;
 }
