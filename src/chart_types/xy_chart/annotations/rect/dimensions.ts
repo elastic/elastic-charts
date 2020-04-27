@@ -48,7 +48,6 @@ export function computeRectAnnotationDimensions(
   }
 
   const rectsProps: AnnotationRectProps[] = [];
-
   dataValues.forEach((dataValue: RectAnnotationDatum) => {
     let { x0, x1, y0, y1 } = dataValue.coordinates;
 
