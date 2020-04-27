@@ -17,3 +17,5 @@
  * under the License. */
 
 export * from './series';
+export * from './geometries';
+export * from './theme';

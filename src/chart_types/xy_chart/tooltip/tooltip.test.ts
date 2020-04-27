@@ -55,7 +55,7 @@ describe('Tooltip formatting', () => {
     showOverlappingTicks: false,
     tickPadding: 0,
     tickSize: 0,
-    tickFormat: (d) => `${d}`,
+    tickFormat: jest.fn((d) => `${d}`),
   };
   const seriesStyle = {
     rect: {
@@ -91,6 +91,7 @@ describe('Tooltip formatting', () => {
       x: 1,
       y: 10,
       accessor: 'y1',
+      mark: null,
     },
     seriesStyle,
   };
@@ -111,6 +112,7 @@ describe('Tooltip formatting', () => {
       x: 1,
       y: 10,
       accessor: 'y1',
+      mark: null,
     },
     seriesStyle,
   };
@@ -123,6 +125,7 @@ describe('Tooltip formatting', () => {
     expect(tooltipValue.isHighlighted).toBe(false);
     expect(tooltipValue.color).toBe('blue');
     expect(tooltipValue.value).toBe('10');
+    expect(YAXIS_SPEC.tickFormat).not.toBeCalledWith(null, undefined);
   });
   it('should set name as spec name when provided', () => {
     const name = 'test - spec';
