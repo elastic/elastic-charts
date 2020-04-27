@@ -16,12 +16,18 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import React from 'react';
+import React, { RefObject, createRef, Component } from 'react';
 import { createPortal } from 'react-dom';
 import { connect } from 'react-redux';
-import { getFinalTooltipPosition, TooltipAnchorPosition } from './utils';
+import { createPopper, Instance } from '@popperjs/core';
+// import { createPopper, Instance } from '@popperjs/core/lib/popper-lite.js';
+import preventOverflow from '@popperjs/core/lib/modifiers/preventOverflow.js';
+import popperOffset from '@popperjs/core/lib/modifiers/offset.js';
+import popperFlip from '@popperjs/core/lib/modifiers/flip.js';
+
+import { TooltipAnchorPosition } from './types';
 import { TooltipInfo } from './types';
-import { TooltipValueFormatter } from '../../specs';
+import { TooltipValueFormatter, TooltipSettings, TooltipType } from '../../specs';
 import { GlobalChartState, BackwardRef } from '../../state/chart_state';
 import { isInitialized } from '../../state/selectors/is_initialized';
 import { getInternalIsTooltipVisibleSelector } from '../../state/selectors/get_internal_is_tooltip_visible';
@@ -29,12 +35,25 @@ import { getTooltipHeaderFormatterSelector } from '../../state/selectors/get_too
 import { getInternalTooltipInfoSelector } from '../../state/selectors/get_internal_tooltip_info';
 import { getInternalTooltipAnchorPositionSelector } from '../../state/selectors/get_internal_tooltip_anchor_position';
 import { Tooltip } from './tooltip';
+import { HIGHLIGHT_PATH_SELECTOR } from '../../chart_types/xy_chart/state/selectors/get_tooltip_values_highlighted_geoms';
+import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
+import { Position } from '../../utils/commons';
+import { getTooltipTypeSelector } from '../../chart_types/xy_chart/state/selectors/get_tooltip_type';
+import { deepEqual } from '../../utils/fast_deep_equal';
+
+interface PopperSettigns {
+  fallbackPlacements: Position[];
+  placement: Position;
+  boundary?: HTMLElement;
+}
 
 interface TooltipPortalStateProps {
   isVisible: boolean;
   position: TooltipAnchorPosition | null;
   info?: TooltipInfo;
   headerFormatter?: TooltipValueFormatter;
+  settings: TooltipSettings;
+  type: TooltipType;
 }
 interface TooltipPortalOwnProps {
   getChartContainerRef: BackwardRef;
@@ -42,70 +61,158 @@ interface TooltipPortalOwnProps {
 
 type TooltipPortalProps = TooltipPortalStateProps & TooltipPortalOwnProps;
 
-class TooltipPortalComponent extends React.Component<TooltipPortalProps> {
+class TooltipPortalComponent extends Component<TooltipPortalProps> {
   static displayName = 'Tooltip';
-  /**
-   * Max allowable width for tooltip to grow to. Used to determine container fit.
-   *
-   * @unit px
-   */
-  static maxWidth = 256;
+  private popper: Instance | null = null;
   portalNode: HTMLDivElement | null = null;
-  tooltipRef: React.RefObject<HTMLDivElement>;
+  /**
+   * Invisible Anchor element used to position tooltip
+   */
+  anchorNode: HTMLDivElement | null = null;
+  hlNode: SVGElement | null = null;
+  tooltipRef: RefObject<HTMLDivElement>;
 
   constructor(props: TooltipPortalProps) {
     super(props);
-    this.tooltipRef = React.createRef();
+    this.tooltipRef = createRef();
   }
+
   createPortalNode() {
     const container = document.getElementById('echTooltipContainerPortal');
     if (container) {
       this.portalNode = container as HTMLDivElement;
     } else {
       this.portalNode = document.createElement('div');
-      this.portalNode.style.width = `${TooltipPortalComponent.maxWidth}px`;
       this.portalNode.id = 'echTooltipContainerPortal';
       document.body.appendChild(this.portalNode);
     }
   }
+
+  createAnchorNode(chartContainer: HTMLDivElement) {
+    const container = document.getElementById('echTooltipAnchor');
+    if (container) {
+      this.anchorNode = container as HTMLDivElement;
+    } else {
+      this.anchorNode = document.createElement('div');
+      this.anchorNode.id = 'echTooltipAnchor';
+      chartContainer.appendChild(this.anchorNode);
+    }
+  }
+
+  getHighlighter(): SVGGElement | null {
+    return document.getElementById(HIGHLIGHT_PATH_SELECTOR) as SVGGElement | null;
+  }
+
   componentDidMount() {
     this.createPortalNode();
   }
 
+  shouldComponentUpdate(nextProps: TooltipPortalProps) {
+    return !deepEqual(this.props, nextProps);
+  }
+
   componentDidUpdate() {
-    this.createPortalNode();
-    const { getChartContainerRef, position } = this.props;
-    const chartContainerRef = getChartContainerRef();
-
-    if (!this.tooltipRef.current || !chartContainerRef.current || !this.portalNode || !position) {
-      return;
-    }
-
-    const chartContainerBBox = chartContainerRef.current.getBoundingClientRect();
-    const tooltipBBox = this.tooltipRef.current.getBoundingClientRect();
-    const tooltipStyle = getFinalTooltipPosition(
-      chartContainerBBox,
-      tooltipBBox,
-      TooltipPortalComponent.maxWidth,
-      position,
-    );
-
-    if (tooltipStyle.left) {
-      this.portalNode.style.left = tooltipStyle.left;
-      if (this.tooltipRef.current) {
-        this.tooltipRef.current.style.left = tooltipStyle.anchor === 'right' ? 'auto' : '0px';
-        this.tooltipRef.current.style.right = tooltipStyle.anchor === 'right' ? '0px' : 'auto';
-      }
-    }
-    if (tooltipStyle.top) {
-      this.portalNode.style.top = tooltipStyle.top;
-    }
+    this.renderPopper();
   }
 
   componentWillUnmount() {
     if (this.portalNode && this.portalNode.parentNode) {
       this.portalNode.parentNode.removeChild(this.portalNode);
     }
+
+    if (this.popper) {
+      this.popper.destroy();
+    }
+  }
+
+  getPopperSettings(chartNode: HTMLDivElement, type: TooltipType): PopperSettigns {
+    const fallbackPlacements =
+      type === TooltipType.VerticalCursor || type === TooltipType.Crosshairs
+        ? [Position.Right, Position.Left]
+        : [Position.Right, Position.Left, Position.Top, Position.Bottom];
+    const placement = Position.Right;
+    if (typeof this.props.settings === 'string') {
+      return {
+        fallbackPlacements,
+        placement,
+      };
+    }
+    const { settings } = this.props;
+
+    return {
+      fallbackPlacements: settings?.placementFallbacks ?? fallbackPlacements,
+      placement: settings?.placement ?? placement,
+      boundary: settings?.boundary === 'chart' ? chartNode : settings?.boundary,
+    };
+  }
+
+  renderPopper() {
+    const { getChartContainerRef, position, type } = this.props;
+    this.createPortalNode();
+    const chartContainerRef = getChartContainerRef();
+    let anchor: HTMLElement | SVGElement | null;
+
+    if (type === TooltipType.Highlighter) {
+      this.hlNode = this.getHighlighter();
+      anchor = this.hlNode;
+    } else {
+      if (chartContainerRef.current) {
+        this.createAnchorNode(chartContainerRef.current);
+      }
+      anchor = this.anchorNode;
+    }
+
+    if (!this.tooltipRef.current || !chartContainerRef.current || !this.portalNode || !anchor || !position) {
+      return;
+    }
+
+    if (type !== TooltipType.Highlighter) {
+      const { x0, x1, y0, y1 } = position;
+      const width = x0 !== undefined ? x1 - x0 : 0;
+      const height = y0 !== undefined ? y1 - y0 : 0;
+      anchor.style.left = `${x1 - width}px`;
+      anchor.style.width = `${width}px`;
+      anchor.style.top = `${y1 - height}px`;
+      anchor.style.height = `${height}px`;
+    }
+
+    // if (!this.popper || this.tooltipRef.current !== this.popper?.state.elements.popper) {
+    if (!this.popper || this.tooltipRef.current !== this.popper?.state.elements.popper) {
+      // need to check if portal reference has been updated
+      if (this.popper) {
+        this.popper.destroy();
+      }
+
+      const { fallbackPlacements, placement, boundary } = this.getPopperSettings(chartContainerRef.current, type);
+      this.popper = createPopper(anchor, this.tooltipRef.current, {
+        strategy: 'fixed',
+        placement,
+        modifiers: [
+          {
+            ...popperOffset,
+            options: {
+              offset: [0, 10],
+            },
+          },
+          {
+            ...preventOverflow,
+            options: {
+              boundary,
+            },
+          },
+          {
+            ...popperFlip,
+            options: {
+              // Note: duplicate values causes lag
+              fallbackPlacements: fallbackPlacements.filter((p) => p !== placement),
+              boundary,
+            },
+          },
+        ],
+      });
+    }
+
+    this.popper!.update();
   }
 
   render() {
@@ -128,6 +235,8 @@ const HIDDEN_TOOLTIP_PROPS = {
   info: undefined,
   position: null,
   headerFormatter: undefined,
+  settings: {},
+  type: TooltipType.VerticalCursor,
 };
 
 const mapStateToProps = (state: GlobalChartState): TooltipPortalStateProps => {
@@ -139,6 +248,8 @@ const mapStateToProps = (state: GlobalChartState): TooltipPortalStateProps => {
     info: getInternalTooltipInfoSelector(state),
     position: getInternalTooltipAnchorPositionSelector(state),
     headerFormatter: getTooltipHeaderFormatterSelector(state),
+    settings: getSettingsSpecSelector(state).tooltip,
+    type: getTooltipTypeSelector(state),
   };
 };
 

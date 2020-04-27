@@ -18,16 +18,34 @@
 
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings, TooltipProps } from '../../src';
 import * as TestDatasets from '../../src/utils/data_samples/test_dataset';
-import { getChartRotationKnob } from '../utils/knobs';
+import { getChartRotationKnob, getPositionKnob, getTooltipTypeKnob } from '../utils/knobs';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
+import { select } from '@storybook/addon-knobs';
 
 // for testing purposes only
 export const example = () => {
+  // @ts-ignore
+  const boundary = select<TooltipProps['boundary']>(
+    'Boundary Element',
+    {
+      Chart: 'chart',
+      Document: document,
+      Default: undefined,
+    },
+    undefined,
+  );
   return (
     <Chart className="story-chart">
-      <Settings rotation={getChartRotationKnob()} />
+      <Settings
+        rotation={getChartRotationKnob()}
+        tooltip={{
+          placement: getPositionKnob('Tooltip placement'),
+          type: getTooltipTypeKnob(),
+          boundary,
+        }}
+      />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 

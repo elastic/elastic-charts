@@ -18,7 +18,7 @@
 
 import { select, array } from '@storybook/addon-knobs';
 
-import { Rotation } from '../../src';
+import { Rotation, Position, TooltipType } from '../../src';
 
 export const numberSelect = <T extends number>(
   name: string,
@@ -37,6 +37,31 @@ export const getChartRotationKnob = () =>
       '180 deg': 180,
     },
     0,
+  );
+
+export const getTooltipTypeKnob = (name = 'tooltip type', defaultValue = TooltipType.VerticalCursor) =>
+  select<TooltipType>(
+    name,
+    {
+      Vertical: TooltipType.VerticalCursor,
+      Follow: TooltipType.Follow,
+      Crosshairs: TooltipType.Crosshairs,
+      Highlighter: TooltipType.Highlighter,
+      None: TooltipType.None,
+    },
+    defaultValue,
+  );
+
+export const getPositionKnob = (name = 'chartRotation', defaultValue = Position.Right) =>
+  select<Position>(
+    name,
+    {
+      Right: Position.Right,
+      Left: Position.Left,
+      Top: Position.Top,
+      Bottom: Position.Bottom,
+    },
+    defaultValue,
   );
 
 export function arrayKnobs(name: string, values: (string | number)[]): (string | number)[] {

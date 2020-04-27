@@ -93,8 +93,10 @@ export const TooltipType = Object.freeze({
   VerticalCursor: 'vertical' as 'vertical',
   /** Vertical and horizontal cursors */
   Crosshairs: 'cross' as 'cross',
-  /** Follor the mouse coordinates */
+  /** Follow the mouse coordinates */
   Follow: 'follow' as 'follow',
+  /** Anchors on the the highlighter coordinates */
+  Highlighter: 'highlighter' as 'highlighter',
   /** Hide every tooltip */
   None: 'none' as 'none',
 });
@@ -142,8 +144,34 @@ export interface TooltipProps {
   type?: TooltipType;
   snap?: boolean;
   headerFormatter?: TooltipValueFormatter;
+  /**
+   * Preferred placement of tooltip relative to anchor.
+   *
+   * This may not be the final placement given the positioning fallbacks.
+   *
+   * @default Position.Right
+   */
+  placement?: Position;
+  /**
+   * If given tooltip placement is not sutable, these `Position`s will
+   * be used as fallback placements.
+   */
+  placementFallbacks?: Position[];
+  /**
+   * Boundary element to contain tooltip within
+   *
+   * `'chart'` will use the chart container as the boundary
+   *
+   * @default parent scroll container
+   */
+  boundary?: HTMLElement | 'chart';
   unit?: string;
 }
+
+/**
+ * Either a TooltipType or an object with configuration of type, snap, and/or headerFormatter
+ */
+export type TooltipSettings = TooltipType | TooltipProps;
 
 export interface LegendColorPickerProps {
   /**
@@ -196,8 +224,7 @@ export interface SettingsSpec extends Spec {
   rotation: Rotation;
   animateData: boolean;
   showLegend: boolean;
-  /** Either a TooltipType or an object with configuration of type, snap, and/or headerFormatter */
-  tooltip: TooltipType | TooltipProps;
+  tooltip: TooltipSettings;
   debug: boolean;
   legendPosition: Position;
   /**
@@ -321,16 +348,17 @@ export function isFollowTooltipType(type: TooltipType) {
 }
 
 /** @internal */
-export function getTooltipType(settings: SettingsSpec): TooltipType | undefined {
+export function getTooltipType(settings: SettingsSpec): TooltipType {
+  const defaultType = TooltipType.VerticalCursor;
   const { tooltip } = settings;
   if (tooltip === undefined || tooltip === null) {
-    return undefined;
+    return defaultType;
   }
   if (isTooltipType(tooltip)) {
     return tooltip;
   }
   if (isTooltipProps(tooltip)) {
-    return tooltip.type || undefined;
+    return tooltip.type || defaultType;
   }
-  return undefined;
+  return defaultType;
 }

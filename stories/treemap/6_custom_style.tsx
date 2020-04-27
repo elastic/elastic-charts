@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { Chart, Datum, Partition, PartitionLayout } from '../../src';
+import { Chart, Datum, Partition, PartitionLayout, Settings, TooltipType } from '../../src';
 import { mocks } from '../../src/mocks/hierarchical/index';
 import { config } from '../../src/chart_types/partition_chart/layout/config/config';
 import { arrayToLookup } from '../../src/chart_types/partition_chart/layout/utils/calcs';
@@ -35,6 +35,7 @@ export const example = () => (
       }
     }
   >
+    <Settings tooltip={TooltipType.Highlighter} />
     <Partition
       id="spec_1"
       data={mocks.sunburst}

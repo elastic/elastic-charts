@@ -29,6 +29,11 @@ export class Playground extends React.Component {
     return (
       <div className="testing">
         <div className="chart">{example()}</div>
+        <div className="chart">{example()}</div>
+        <div className="chart">{example()}</div>
+        <div className="chart">{example()}</div>
+        <div className="chart">{example()}</div>
+        <div className="chart">{example()}</div>
       </div>
     );
   }

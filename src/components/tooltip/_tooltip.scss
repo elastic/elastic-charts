@@ -1,12 +1,19 @@
 #echTooltipContainerPortal {
   position: absolute;
-  background-color: red;
   height: 20px;
   pointer-events: none;
   z-index: 10000000;
 }
+
+#echTooltipAnchor {
+  background-color: blue;
+  position: absolute;
+  min-width: 5px;
+  min-height: 5px;
+  pointer-events: none;
+}
+
 .echTooltip {
-  opacity: 0.2;
   position: absolute;
   @include euiToolTipStyle;
   @include euiFontSizeXS;
@@ -15,6 +22,7 @@
   pointer-events: none;
   user-select: none;
   margin-bottom: $euiSizeXS;
+  max-width: 256px;
 
   &__list {
     padding: $euiSizeXS;

@@ -56,6 +56,13 @@ const EMPTY_VALUES = Object.freeze({
   highlightedGeometries: [],
 });
 
+/**
+ * Selector path for highlighter overlay
+ *
+ * Used to position tooltip
+ */
+export const HIGHLIGHT_PATH_SELECTOR = 'echHighlighter__selectedElement';
+
 /** @internal */
 export interface TooltipAndHighlightedGeoms {
   tooltip: TooltipInfo;
@@ -95,7 +102,7 @@ function getTooltipAndHighlightFromValue(
   hasSingleSeries: boolean,
   scales: ComputedScales,
   matchingGeoms: IndexedGeometry[],
-  tooltipType: TooltipType = TooltipType.VerticalCursor,
+  tooltipType: TooltipType,
   externalPointerEvent: PointerEvent | null,
   tooltipHeaderFormatter?: TooltipValueFormatter,
 ): TooltipAndHighlightedGeoms {

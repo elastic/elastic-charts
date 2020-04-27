@@ -22,3 +22,31 @@ export interface TooltipInfo {
   header: TooltipValue | null;
   values: TooltipValue[];
 }
+
+/** @internal */
+export interface TooltipAnchorPosition {
+  /**
+   * true if the x axis is vertical
+   */
+  isRotated?: boolean;
+  /**
+   * the top position of the anchor
+   */
+  y0?: number;
+  /**
+   * the bottom position of the anchor
+   */
+  y1: number;
+  /**
+   * the right position of anchor
+   */
+  x0?: number;
+  /**
+   * the left position of the anchor
+   */
+  x1: number;
+  /**
+   * the padding to add between the tooltip position and the final position
+   */
+  padding?: number;
+}

@@ -165,6 +165,7 @@
     "webpack-dev-server": "^3.3.1"
   },
   "dependencies": {
+    "@popperjs/core": "^2.3.3",
     "classnames": "^2.2.6",
     "d3-array": "^1.2.4",
     "d3-collection": "^1.0.7",

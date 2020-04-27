@@ -71,5 +71,4 @@ const TooltipComponent = forwardRef<HTMLDivElement, TooltipProps>(({ info, heade
   );
 });
 
-/** @internal */
 export const Tooltip = memo(TooltipComponent);
