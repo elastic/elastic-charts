@@ -27,16 +27,21 @@ export function getFinalAnnotationTooltipPosition(
   tooltip: Dimensions,
   /** the tooltip computed position not adjusted within chart bounds */
   tooltipAnchor: { top: number; left: number },
+  /** the width of the tooltip portal container */
+  portalWidth: number,
   padding = 10,
 ): {
   left: string | null;
   top: string | null;
+  anchor: 'left' | 'right';
 } {
   let left = 0;
+  let anchor: 'left' | 'right' = 'left' as 'left';
 
   const annotationXOffset = window.pageXOffset + container.left + chartDimensions.left + tooltipAnchor.left;
-  if (chartDimensions.left + tooltipAnchor.left + tooltip.width + padding >= container.width) {
-    left = annotationXOffset - tooltip.width - padding;
+  if (chartDimensions.left + tooltipAnchor.left + portalWidth + padding >= container.width) {
+    left = annotationXOffset - portalWidth - padding;
+    anchor = 'right' as 'right';
   } else {
     left = annotationXOffset + padding;
   }
@@ -50,5 +55,6 @@ export function getFinalAnnotationTooltipPosition(
   return {
     left: `${Math.round(left)}px`,
     top: `${Math.round(top)}px`,
+    anchor,
   };
 }
