@@ -26,20 +26,34 @@ export const example = () => {
   const debug = boolean('debug', false);
   const rotation = getChartRotationKnob();
 
-  const dataValues = [
-    {
-      coordinates: {
-        x0: 'a',
-        x1: 'b',
-      },
-      details: 'details about this annotation',
-    },
-  ];
+  // const dataValues = [
+  //   {
+  //     coordinates: {
+  //       x0: 'a',
+  //       x1: 'b',
+  //     },
+  //     details: 'details about this annotation',
+  //   },
+  // ];
 
   return (
     <Chart className="story-chart">
       <Settings debug={debug} rotation={rotation} />
-      <RectAnnotation dataValues={dataValues} id="rect" />
+      <RectAnnotation
+        dataValues={[
+          {
+            coordinates: {
+              x0: 'a',
+              x1: 'c',
+              y0: 0,
+              y1: 4,
+            },
+            details: 'annotation on ordinal bar chart',
+          },
+        ]}
+        id="rect"
+        style={{ fill: 'red' }}
+      />
       <Axis id="bottom" position={Position.Bottom} title="x-domain axis" />
       <Axis id="left" title="y-domain axis" position={Position.Left} />
       <BarSeries
