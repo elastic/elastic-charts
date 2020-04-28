@@ -48,6 +48,7 @@ export function linkTextLayout(
   const maxDepth = nodesWithoutRoom.reduce((p: number, n: ShapeTreeNode) => Math.max(p, n.depth), 0);
   const yRelativeIncrement = Math.sin(linkLabel.stemAngle) * linkLabel.minimumStemLength;
   const rowPitch = linkLabel.fontSize + linkLabel.spacing;
+  // determine the ideal contrast color for the link labels
   const contrastTextColor = containerBackgroundColor
     ? makeHighContrastColor(linkLabel.textColor, containerBackgroundColor)
     : linkLabel.textColor;
@@ -62,7 +63,6 @@ export function linkTextLayout(
     ...linkLabel,
     textColor: contrastTextColor,
   };
-
   const valueFontSpec = {
     fontStyle: 'normal',
     fontVariant: 'normal',

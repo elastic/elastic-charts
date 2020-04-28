@@ -74,33 +74,37 @@ export function getBackgroundWithContainerColorFromUser(rgba1: Color, rgba2: Col
 }
 
 /**
- * make a high contrast text color in cases black and white can't reach 4.5
+ * Adjust the text color in cases black and white can't reach ideal 4.5 ratio
  * @internal
  */
 export function makeHighContrastColor(foreground: Color, background: Color, ratio = 4.5) {
-  let contrast = chroma.contrast(foreground, background);
-  // determine the lightness factor of the color to determine whether to shade or tint the foreground
+  // determine the lightness factor of the background color to determine whether to lighten or darken the foreground
   const brightness = chroma(background).luminance();
   let highContrastTextColor = foreground;
+  // determine whether white or black text is ideal contrast vs a grey that just passes 4.5 ratio
+  if (brightness < 0.5 && chroma.deltaE('black', foreground) === 0) {
+    highContrastTextColor = '#fff';
+  } else if (brightness > 0.5 && chroma.deltaE('white', foreground) === 0) {
+    highContrastTextColor = '#000';
+  }
+  const precision = Math.pow(10, 4);
+  let contrast = chroma.contrast(highContrastTextColor, background);
+  // adjust the highContrastTextColor for shades of grey
   while (contrast < ratio) {
     if (brightness < 0.5) {
-      highContrastTextColor =
-        chroma.contrast('rgba(255, 255, 255, 1)', background) > ratio
-          ? 'rgba(255, 255, 255, 1)'
-          : chroma(highContrastTextColor)
-              .darken()
-              .toString();
+      highContrastTextColor = chroma(highContrastTextColor)
+        .darken()
+        .toString();
     } else {
-      highContrastTextColor =
-        chroma.contrast('rgba(0, 0, 0, 1)', background) > ratio
-          ? 'rgba(0, 0, 0, 1)'
-          : chroma(highContrastTextColor)
-              .brighten()
-              .toString();
+      highContrastTextColor = chroma(highContrastTextColor)
+        .brighten()
+        .toString();
     }
-    const oldContrast = contrast;
+    const scaledOldContrast = Math.round(contrast * precision) / precision;
     contrast = chroma.contrast(highContrastTextColor, background);
-    if (contrast === oldContrast) {
+    const scaledContrast = Math.round(contrast * precision) / precision;
+    // ideal contrast may not be possible in some cases
+    if (scaledOldContrast === scaledContrast) {
       break;
     }
   }

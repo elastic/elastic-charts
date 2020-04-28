@@ -255,6 +255,16 @@ function getTextColor(
   containerBackgroundColor?: Color,
 ) {
   const sliceFillColor = node.fillColor;
+  const backgroundIsDark = colorIsDark(sliceFillColor);
+  const specifiedTextColorIsDark = colorIsDark(textColor);
+  const inverseForContrast = textInvertible && specifiedTextColorIsDark === backgroundIsDark;
+  const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(textColor);
+  const adjustedTextColor = inverseForContrast
+    ? to === undefined
+      ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`
+      : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
+    : textColor;
+
   // if textInvertible is true then contrast with background needs to be calculated otherwise the textColor should be the same as other slices
   if (textInvertible) {
     const containerBackgroundColorFromUser =
@@ -265,17 +275,9 @@ function getTextColor(
     );
     const formattedContainerBackground =
       typeof containerBackground !== 'string' ? RGBATupleToString(containerBackground) : containerBackground;
-    return makeHighContrastColor(textColor, formattedContainerBackground);
+    return makeHighContrastColor(adjustedTextColor, formattedContainerBackground);
   }
-  const backgroundIsDark = colorIsDark(sliceFillColor);
-  const specifiedTextColorIsDark = colorIsDark(textColor);
-  const inverseForContrast = textInvertible && specifiedTextColorIsDark === backgroundIsDark;
-  const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(textColor);
-  return inverseForContrast
-    ? to === undefined
-      ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`
-      : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
-    : textColor;
+  return adjustedTextColor;
 }
 
 function fill(
@@ -313,9 +315,7 @@ function fill(
       layer.shape,
     );
 
-    const newTextColor = !textColor ? '#000000' : textColor;
-
-    const fillTextColor = getTextColor(newTextColor, textInvertible, node, containerBackgroundColor);
+    const fillTextColor = getTextColor(textColor, textInvertible, node, containerBackgroundColor);
 
     const valueFont = Object.assign(
       { fontFamily: config.fontFamily, fontWeight: 'normal' },
