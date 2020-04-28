@@ -17,16 +17,7 @@
  * under the License. */
 
 import React from 'react';
-import {
-  Chart,
-  Partition,
-  Settings,
-  PartitionLayout,
-  XYChartElementEvent,
-  PartitionElementEvent,
-  PartialTheme,
-  Datum,
-} from '../src';
+import { Chart, Partition, Settings, PartitionLayout, PartialTheme, Datum } from '../src';
 import { mocks } from '../src/mocks/hierarchical';
 import { config } from '../src/chart_types/partition_chart/layout/config/config';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../stories/utils/utils';
@@ -75,15 +66,11 @@ function makeHighContrastColor(foreground: Color, background: Color, ratio = 4.5
 }
 
 export class Playground extends React.Component {
-  onElementClick = (elements: (XYChartElementEvent | PartitionElementEvent)[]) => {
-    // eslint-disable-next-line no-console
-    console.log(elements);
-  };
   render() {
     return (
       <div className="chart" style={{ width: 700, height: 300 }}>
         <Chart>
-          <Settings onElementClick={this.onElementClick} theme={partialTheme1} />
+          <Settings theme={partialTheme1} />
           <Partition
             id="1"
             data={mocks.pie}
@@ -106,7 +93,7 @@ export class Playground extends React.Component {
           contrast of first pie chart {makeHighContrastColor('rgba(255, 255, 255, 1)', 'rgba(255, 255, 0, 1)')}
         </span>
         <Chart>
-          <Settings onElementClick={this.onElementClick} theme={partialTheme2} />
+          <Settings theme={partialTheme2} />
           <Partition
             id="2"
             config={{
