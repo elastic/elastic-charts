@@ -24,7 +24,7 @@ jest.mock('../../.storybook/theme_service.ts', () => ({
   switchTheme: () => undefined,
 }));
 
-const storyGroups = getStorybookInfo();
+const storyGroups = getStorybookInfo().filter(({ group }) => group === 'Sunburst');
 
 describe('Baseline Visual tests for all stories', () => {
   storyGroups.forEach(({ group, encodedGroup, stories }) => {

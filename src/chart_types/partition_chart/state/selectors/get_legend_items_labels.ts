@@ -29,10 +29,20 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 export const getLegendItemsLabels = createCachedSelector(
   [getPieSpecOrNull, getSettingsSpecSelector, getTree],
   (pieSpec, { legendMaxDepth }, tree): LegendItemLabel[] => {
-    if (!pieSpec || (typeof legendMaxDepth === 'number' && legendMaxDepth <= 0)) {
+    if (!pieSpec) {
       return [];
     }
-    return flatSlicesNames(pieSpec.layers, 0, tree);
+    if (typeof legendMaxDepth === 'number' && (Number.isNaN(legendMaxDepth) || legendMaxDepth <= 0)) {
+      return [];
+    }
+    const labels = flatSlicesNames(pieSpec.layers, 0, tree).filter(({ depth }) => {
+      if (typeof legendMaxDepth !== 'number') {
+        return true;
+      }
+      return depth <= legendMaxDepth;
+    });
+
+    return labels;
   },
 )(getChartIdSelector);
 
@@ -45,6 +55,7 @@ function flatSlicesNames(
   if (tree.length === 0) {
     return [];
   }
+
   for (let i = 0; i < tree.length; i++) {
     const branch = tree[i];
     const arrayNode = branch[1];
