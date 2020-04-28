@@ -125,11 +125,8 @@ class TooltipPortalComponent extends Component<TooltipPortalProps> {
     }
   }
 
-  getPopperSettings(chartNode: HTMLDivElement, type: TooltipType): PopperSettigns {
-    const fallbackPlacements =
-      type === TooltipType.VerticalCursor || type === TooltipType.Crosshairs
-        ? [Position.Right, Position.Left]
-        : [Position.Right, Position.Left, Position.Top, Position.Bottom];
+  getPopperSettings(chartNode: HTMLDivElement): PopperSettigns {
+    const fallbackPlacements = [Position.Right, Position.Left, Position.Top, Position.Bottom];
     const placement = Position.Right;
     if (typeof this.props.settings === 'string') {
       return {
@@ -147,44 +144,35 @@ class TooltipPortalComponent extends Component<TooltipPortalProps> {
   }
 
   renderPopper() {
-    const { getChartContainerRef, position, type } = this.props;
+    const { getChartContainerRef, position } = this.props;
     this.createPortalNode();
     const chartContainerRef = getChartContainerRef();
-    let anchor: HTMLElement | SVGElement | null;
 
-    if (type === TooltipType.Highlighter) {
-      this.hlNode = this.getHighlighter();
-      anchor = this.hlNode;
-    } else {
-      if (chartContainerRef.current) {
-        this.createAnchorNode(chartContainerRef.current);
-      }
-      anchor = this.anchorNode;
+    if (chartContainerRef.current) {
+      this.createAnchorNode(chartContainerRef.current);
     }
 
-    if (!this.tooltipRef.current || !chartContainerRef.current || !this.portalNode || !anchor || !position) {
+    if (!this.tooltipRef.current || !chartContainerRef.current || !this.portalNode || !this.anchorNode || !position) {
       return;
     }
 
-    if (type !== TooltipType.Highlighter) {
-      const { x0, x1, y0, y1 } = position;
-      const width = x0 !== undefined ? x1 - x0 : 0;
-      const height = y0 !== undefined ? y1 - y0 : 0;
-      anchor.style.left = `${x1 - width}px`;
-      anchor.style.width = `${width}px`;
-      anchor.style.top = `${y1 - height}px`;
-      anchor.style.height = `${height}px`;
-    }
+    const { x0, x1, y0, y1 } = position;
+    const width = x0 !== undefined ? x1 - x0 : 0;
+    const height = y0 !== undefined ? y1 - y0 : 0;
+    this.anchorNode.style.left = `${x1 - width}px`;
+    this.anchorNode.style.width = `${width}px`;
+    this.anchorNode.style.top = `${y1 - height}px`;
+    this.anchorNode.style.height = `${height}px`;
 
-    // if (!this.popper || this.tooltipRef.current !== this.popper?.state.elements.popper) {
+    // need to check if portal reference has been updated
     if (!this.popper || this.tooltipRef.current !== this.popper?.state.elements.popper) {
-      // need to check if portal reference has been updated
       if (this.popper) {
+        // destroy if portal reference has been updated
         this.popper.destroy();
       }
 
-      const { fallbackPlacements, placement, boundary } = this.getPopperSettings(chartContainerRef.current, type);
-      this.popper = createPopper(anchor, this.tooltipRef.current, {
+      const { fallbackPlacements, placement, boundary } = this.getPopperSettings(chartContainerRef.current);
+      this.popper = createPopper(this.anchorNode, this.tooltipRef.current, {
         strategy: 'fixed',
         placement,
         modifiers: [
@@ -206,6 +194,8 @@ class TooltipPortalComponent extends Component<TooltipPortalProps> {
               // Note: duplicate values causes lag
               fallbackPlacements: fallbackPlacements.filter((p) => p !== placement),
               boundary,
+              // checks main axis overflow before trying to flip
+              altAxis: false,
             },
           },
         ],

@@ -46,7 +46,6 @@ export const getTooltipTypeKnob = (name = 'tooltip type', defaultValue = Tooltip
       Vertical: TooltipType.VerticalCursor,
       Follow: TooltipType.Follow,
       Crosshairs: TooltipType.Crosshairs,
-      Highlighter: TooltipType.Highlighter,
       None: TooltipType.None,
     },
     defaultValue,

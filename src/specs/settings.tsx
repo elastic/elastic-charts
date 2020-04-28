@@ -95,8 +95,6 @@ export const TooltipType = Object.freeze({
   Crosshairs: 'cross' as 'cross',
   /** Follow the mouse coordinates */
   Follow: 'follow' as 'follow',
-  /** Anchors on the the highlighter coordinates */
-  Highlighter: 'highlighter' as 'highlighter',
   /** Hide every tooltip */
   None: 'none' as 'none',
 });
