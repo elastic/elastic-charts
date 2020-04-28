@@ -63,7 +63,7 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
    *
    * @unit px
    */
-  static maxWidth = 256;
+  static MAX_WIDTH = 256;
 
   constructor(props: AnnotationTooltipProps) {
     super(props);
@@ -77,7 +77,7 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
     } else {
       this.portalNode = document.createElement('div');
       this.portalNode.id = ANNOTATION_CONTAINER_ID;
-      this.portalNode.style.width = `${AnnotationTooltipComponent.maxWidth}px`;
+      this.portalNode.style.width = `${AnnotationTooltipComponent.MAX_WIDTH}px`;
       document.body.appendChild(this.portalNode);
     }
   }
@@ -103,7 +103,7 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
     }
 
     const chartContainerBBox = chartContainerRef.current.getBoundingClientRect();
-    const width = Math.min(AnnotationTooltipComponent.maxWidth, chartContainerBBox.width * 0.7);
+    const width = Math.min(AnnotationTooltipComponent.MAX_WIDTH, chartContainerBBox.width * 0.7);
     this.portalNode.style.width = `${width}px`;
     const tooltipBBox = this.tooltipRef.current.getBoundingClientRect();
     const tooltipStyle = getFinalAnnotationTooltipPosition(

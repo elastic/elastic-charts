@@ -49,7 +49,7 @@ class TooltipPortalComponent extends React.Component<TooltipPortalProps> {
    *
    * @unit px
    */
-  static maxWidth = 256;
+  static MAX_WIDTH = 256;
   portalNode: HTMLDivElement | null = null;
   tooltipRef: React.RefObject<HTMLDivElement>;
 
@@ -64,7 +64,7 @@ class TooltipPortalComponent extends React.Component<TooltipPortalProps> {
     } else {
       this.portalNode = document.createElement('div');
       this.portalNode.id = 'echTooltipContainerPortal';
-      this.portalNode.style.width = `${TooltipPortalComponent.maxWidth}px`;
+      this.portalNode.style.width = `${TooltipPortalComponent.MAX_WIDTH}px`;
       document.body.appendChild(this.portalNode);
     }
   }
@@ -83,7 +83,7 @@ class TooltipPortalComponent extends React.Component<TooltipPortalProps> {
 
     const chartContainerBBox = chartContainerRef.current.getBoundingClientRect();
     const tooltipBBox = this.tooltipRef.current.getBoundingClientRect();
-    const width = Math.min(TooltipPortalComponent.maxWidth, chartContainerBBox.width * 0.7);
+    const width = Math.min(TooltipPortalComponent.MAX_WIDTH, chartContainerBBox.width * 0.7);
     this.portalNode.style.width = `${width}px`;
     const tooltipStyle = getFinalTooltipPosition(chartContainerBBox, tooltipBBox, width, position);
 

@@ -17,6 +17,7 @@
  * under the License. */
 
 import { Dimensions } from '../../../utils/dimensions';
+import { Position } from '../../../utils/commons';
 
 /** @internal */
 export function getFinalAnnotationTooltipPosition(
@@ -36,12 +37,12 @@ export function getFinalAnnotationTooltipPosition(
   anchor: 'left' | 'right';
 } {
   let left = 0;
-  let anchor: 'left' | 'right' = 'left' as 'left';
+  let anchor: Position = Position.Left;
 
   const annotationXOffset = window.pageXOffset + container.left + chartDimensions.left + tooltipAnchor.left;
   if (chartDimensions.left + tooltipAnchor.left + portalWidth + padding >= container.width) {
     left = annotationXOffset - portalWidth - padding;
-    anchor = 'right' as 'right';
+    anchor = Position.Right;
   } else {
     left = annotationXOffset + padding;
   }
