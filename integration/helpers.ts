@@ -20,16 +20,9 @@ import { join, resolve } from 'path';
 import { lstatSync, readdirSync } from 'fs';
 import { getStorybook, configure } from '@storybook/react';
 
-export interface StoryInfo {
-  title: string;
-  encodedTitle: string;
-}
+export type StoryInfo = [string, string];
 
-export interface StoryGroupInfo {
-  group: string;
-  encodedGroup: string;
-  stories: StoryInfo[];
-}
+export type StoryGroupInfo = [string, string, StoryInfo[]];
 
 function requireAllStories(basedir: string, directory: string) {
   function enumerateFiles(basedir: string, dir: string) {
@@ -72,29 +65,42 @@ function encodeString(string: string) {
     .toLowerCase();
 }
 
-export function getStorybookInfo(): StoryGroupInfo[] {
+export function getStorybookInfo(filters?: string[]): StoryGroupInfo[] {
   configure(requireAllStories(__dirname, '../stories'), module);
-  return getStorybook()
-    .filter(({ kind }) => kind)
+  const regexFilters =
+    filters !== undefined
+      ? filters.map((filter) => {
+          return new RegExp(filter, 'i');
+        })
+      : undefined;
+
+  const storybooks = getStorybook();
+
+  const filteredStories: StoryGroupInfo[] = storybooks
+    .filter(({ kind }) => {
+      return kind && (regexFilters !== undefined ? regexFilters.findIndex((filter) => kind.match(filter)) > -1 : true);
+    })
     .map(({ kind: group, stories: storiesRaw }) => {
       const stories: StoryInfo[] = storiesRaw
         .filter(({ name }) => name)
         .map(({ name: title }) => {
           // cleans story name to match url params
           const encodedTitle = encodeString(title);
-
-          return {
-            title,
-            encodedTitle,
-          };
+          return [title, encodedTitle];
         });
 
       const encodedGroup = encodeString(group);
 
-      return {
-        group,
-        encodedGroup,
-        stories,
-      };
+      return [group, encodedGroup, stories];
     });
+
+  if (filteredStories.length === 0) {
+    const storyGroupsNames = storybooks.map(({ kind }) => kind).join('\n');
+    throw new Error(
+      `Can't find any story with the provided filter: ${filters}\n
+      please use one or more from the following list: \n${storyGroupsNames}`,
+    );
+  }
+
+  return filteredStories;
 }
