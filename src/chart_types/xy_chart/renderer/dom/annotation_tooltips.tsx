@@ -33,6 +33,7 @@ import { computeChartDimensionsSelector } from '../../state/selectors/compute_ch
 import { createPortal } from 'react-dom';
 import { getFinalAnnotationTooltipPosition } from '../../annotations/tooltip';
 import { getSpecsById } from '../../state/utils';
+import { Position } from '../../../../utils/commons';
 
 interface AnnotationTooltipStateProps {
   isChartEmpty: boolean;
@@ -54,6 +55,12 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
   static displayName = 'AnnotationTooltip';
   portalNode: HTMLDivElement | null = null;
   tooltipRef: React.RefObject<HTMLDivElement>;
+  /**
+   * Max allowable width for tooltip to grow to. Used to determine container fit.
+   *
+   * @unit px
+   */
+  static MAX_WIDTH = 256;
 
   constructor(props: AnnotationTooltipProps) {
     super(props);
@@ -67,6 +74,7 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
     } else {
       this.portalNode = document.createElement('div');
       this.portalNode.id = ANNOTATION_CONTAINER_ID;
+      this.portalNode.style.width = `${AnnotationTooltipComponent.MAX_WIDTH}px`;
       document.body.appendChild(this.portalNode);
     }
   }
@@ -92,16 +100,30 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
     }
 
     const chartContainerBBox = chartContainerRef.current.getBoundingClientRect();
+    const width = Math.min(AnnotationTooltipComponent.MAX_WIDTH, chartContainerBBox.width * 0.7);
+    this.portalNode.style.width = `${width}px`;
     const tooltipBBox = this.tooltipRef.current.getBoundingClientRect();
     const tooltipStyle = getFinalAnnotationTooltipPosition(
       chartContainerBBox,
       chartDimensions,
       tooltipBBox,
       tooltipState.anchor,
+      width,
     );
 
     if (tooltipStyle.left) {
       this.portalNode.style.left = tooltipStyle.left;
+    }
+    if (tooltipStyle.top) {
+      this.portalNode.style.top = tooltipStyle.top;
+    }
+
+    if (tooltipStyle.left) {
+      this.portalNode.style.left = tooltipStyle.left;
+      if (this.tooltipRef.current) {
+        this.tooltipRef.current.style.left = tooltipStyle.anchor === Position.Right ? 'auto' : '0px';
+        this.tooltipRef.current.style.right = tooltipStyle.anchor === Position.Right ? '0px' : 'auto';
+      }
     }
     if (tooltipStyle.top) {
       this.portalNode.style.top = tooltipStyle.top;
