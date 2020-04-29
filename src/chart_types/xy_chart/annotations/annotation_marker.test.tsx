@@ -23,9 +23,10 @@ import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../utils/themes/theme';
 import { Dimensions } from '../../../utils/dimensions';
 import { GroupId } from '../../../utils/ids';
 import { Scale, ScaleType, ScaleContinuous } from '../../../scales';
-import { computeLineAnnotationDimensions, AnnotationLineProps } from './line_annotation_tooltip';
-import { ChartTypes } from '../..';
 import { SpecTypes } from '../../../specs/settings';
+import { computeLineAnnotationDimensions } from './line/dimensions';
+import { AnnotationLineProps } from './line/types';
+import { ChartTypes } from '../..';
 
 describe('annotation marker', () => {
   const groupId = 'foo-group';
@@ -75,7 +76,6 @@ describe('annotation marker', () => {
       yScales,
       xScale,
       Position.Left,
-      0,
       false,
     );
     const expectedDimensions: AnnotationLineProps[] = [
@@ -130,7 +130,6 @@ describe('annotation marker', () => {
       yScales,
       xScale,
       Position.Left,
-      0,
       false,
     );
     const expectedDimensions: AnnotationLineProps[] = [
@@ -184,7 +183,6 @@ describe('annotation marker', () => {
       yScales,
       xScale,
       Position.Bottom,
-      0,
       false,
     );
     const expectedDimensions: AnnotationLineProps[] = [

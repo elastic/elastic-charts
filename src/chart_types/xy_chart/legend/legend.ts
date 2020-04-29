@@ -48,8 +48,7 @@ function getPostfix(spec: BasicSeriesSpec): Postfixes {
   return {};
 }
 
-/** @internal */
-export function getBandedLegendItemLabel(name: string, yAccessor: BandedAccessorType, postfixes: Postfixes) {
+function getBandedLegendItemLabel(name: string, yAccessor: BandedAccessorType, postfixes: Postfixes) {
   return yAccessor === BandedAccessorType.Y1
     ? `${name}${postfixes.y1AccessorFormat}`
     : `${name}${postfixes.y0AccessorFormat}`;
@@ -93,6 +92,7 @@ export function computeLegend(
       childId: BandedAccessorType.Y1,
       isSeriesHidden,
       isItemHidden: hideInLegend,
+      isToggleable: true,
       defaultExtra: {
         raw: lastValue && lastValue.y1 !== null ? lastValue.y1 : null,
         formatted: lastValue && lastValue.y1 !== null ? formatter(lastValue.y1) : null,
@@ -107,6 +107,7 @@ export function computeLegend(
         childId: BandedAccessorType.Y0,
         isSeriesHidden,
         isItemHidden: hideInLegend,
+        isToggleable: true,
         defaultExtra: {
           raw: lastValue && lastValue.y0 !== null ? lastValue.y0 : null,
           formatted: lastValue && lastValue.y0 !== null ? formatter(lastValue.y0) : null,

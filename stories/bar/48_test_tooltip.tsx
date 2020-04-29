@@ -22,7 +22,7 @@ import { Axis, BarSeries, Chart, Position, ScaleType, Settings, TooltipProps } f
 import * as TestDatasets from '../../src/utils/data_samples/test_dataset';
 import { getChartRotationKnob, getPositionKnob, getTooltipTypeKnob } from '../utils/knobs';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
-import { select } from '@storybook/addon-knobs';
+import { select, boolean } from '@storybook/addon-knobs';
 
 // for testing purposes only
 export const example = () => {
@@ -45,6 +45,7 @@ export const example = () => {
           type: getTooltipTypeKnob(),
           boundary,
         }}
+        showLegend={boolean('Show Legend', false)}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
