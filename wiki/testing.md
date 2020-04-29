@@ -47,7 +47,7 @@ If the screenshot differ from the baseline, a test error is rised and a diff ima
 
 If a new test is added, a new screenshot `.png` file is written as part of the baseline.
 
-To update the snapshots to the new version run:
+To update all existing screenshot baselines to the new version run:
 ```
 yarn test:integration -u
 ```
