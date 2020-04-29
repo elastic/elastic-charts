@@ -17,7 +17,7 @@
  * under the License. */
 
 import { wrapToTau } from '../geometry';
-import { Coordinate, Distance, Pixels, Radian, Radius, RingSector } from '../types/geometry_types';
+import { Coordinate, Distance, Pixels, Radian, Radius, Ratio, RingSector } from '../types/geometry_types';
 import { Config } from '../types/config_types';
 import { logarithm, TAU, trueBearingToStandardPositionAngle } from '../utils/math';
 import {
@@ -172,6 +172,26 @@ export function getSectorRowGeometry(
   return { rowCentroidX, rowCentroidY, maximumRowLength };
 }
 
+function getVerticalAlignment(
+  container: RectangleConstruction,
+  verticalAlignment: VerticalAlignment,
+  linePitch: Pixels,
+  totalRowCount: number,
+  rowIndex: number,
+  padding: Pixels,
+  fontSize: Pixels,
+  overhang: Ratio,
+) {
+  switch (verticalAlignment) {
+    case VerticalAlignments.top:
+      return -(container.y0 + linePitch * rowIndex + padding + fontSize * overhang);
+    case VerticalAlignments.bottom:
+      return -(container.y1 - linePitch * (totalRowCount - 1 - rowIndex) - fontSize * overhang);
+    default:
+      return -((container.y0 + container.y1) / 2 + (linePitch * (rowIndex - totalRowCount)) / 2);
+  }
+}
+
 /** @internal */
 export function getRectangleRowGeometry(
   container: RectangleConstruction,
@@ -193,12 +213,16 @@ export function getRectangleRowGeometry(
       maximumRowLength: 0,
     };
   }
-  const rowCentroidY =
-    verticalAlignment === VerticalAlignments.top
-      ? -(container.y0 + linePitch * rowIndex + padding + fontSize * overhang)
-      : verticalAlignment === VerticalAlignments.bottom
-      ? -(container.y1 - linePitch * (totalRowCount - 1 - rowIndex) - fontSize * overhang)
-      : -((container.y0 + container.y1) / 2 + (linePitch * (rowIndex - totalRowCount)) / 2);
+  const rowCentroidY = getVerticalAlignment(
+    container,
+    verticalAlignment,
+    linePitch,
+    totalRowCount,
+    rowIndex,
+    padding,
+    fontSize,
+    overhang,
+  );
   return {
     rowCentroidX: cx,
     rowCentroidY,
