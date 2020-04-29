@@ -16,51 +16,87 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import React, { useRef, useEffect, useCallback } from 'react';
+import classNames from 'classnames';
+import React, { useRef, useEffect, useCallback, ReactNode, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { connect } from 'react-redux';
 import { createPopper, Instance } from '@popperjs/core/lib/popper-lite.js';
 import preventOverflow from '@popperjs/core/lib/modifiers/preventOverflow.js';
 import popperOffset from '@popperjs/core/lib/modifiers/offset.js';
 import popperFlip from '@popperjs/core/lib/modifiers/flip.js';
 
-import { TooltipAnchorPosition } from './types';
-import { TooltipInfo } from './types';
-import { TooltipValueFormatter, TooltipSettings, TooltipType } from '../../specs';
-import { GlobalChartState, BackwardRef } from '../../state/chart_state';
-import { isInitialized } from '../../state/selectors/is_initialized';
-import { getInternalIsTooltipVisibleSelector } from '../../state/selectors/get_internal_is_tooltip_visible';
-import { getTooltipHeaderFormatterSelector } from '../../state/selectors/get_tooltip_header_formatter';
-import { getInternalTooltipInfoSelector } from '../../state/selectors/get_internal_tooltip_info';
-import { getInternalTooltipAnchorPositionSelector } from '../../state/selectors/get_internal_tooltip_anchor_position';
-import { Tooltip } from './tooltip';
-import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
-import { Position } from '../../utils/commons';
-import { getTooltipTypeSelector } from '../../chart_types/xy_chart/state/selectors/get_tooltip_type';
+import { Position, mergePartial } from '../../utils/commons';
+import { isDefined } from '../../chart_types/xy_chart/state/utils';
 
-interface PopperSettigns {
+const DEFAULT_POPPER_SETTINGS: PopperSettings = {
+  fallbackPlacements: [Position.Right, Position.Left, Position.Top, Position.Bottom],
+  placement: Position.Right,
+  offset: 10,
+};
+
+/** @internal */
+export interface PopperSettings {
   fallbackPlacements: Position[];
   placement: Position;
   boundary?: HTMLElement;
+  offset?: number;
 }
 
-interface TooltipPortalStateProps {
-  isVisible: boolean;
-  position: TooltipAnchorPosition | null;
-  info?: TooltipInfo;
-  headerFormatter?: TooltipValueFormatter;
-  settings: TooltipSettings;
-  type: TooltipType;
+/** @internal */
+export interface AnchorPosition {
+  left: number;
+  top: number;
+  width?: number;
+  height?: number;
 }
-interface TooltipPortalOwnProps {
-  getChartContainerRef: BackwardRef;
+
+/**
+ * Used to position tooltip relative to invisible anchor via ref element
+ */
+interface PortalAnchorRefProps {
+  /**
+   * Positioning values relative to `anchorRef`. Return `null` if tooltip is not visible.
+   */
+  position?: AnchorPosition | null;
+  /**
+   * Anchor ref element to use as position reference
+   *
+   * @default document.body
+   */
+  anchorRef?: HTMLElement | null;
+}
+
+/**
+ * Used to position tooltip relative to dom anchor
+ */
+interface PortalAnchorProps {
+  /**
+   * Anchor element to use as position reference
+   */
+  anchor?: HTMLElement | null;
+}
+
+/**
+ * @todo make this type conditional to use PortalAnchorProps or PortalAnchorRefProps
+ */
+type PortalProps = {
   /**
    * String used to designate unique portal
    */
   scope: string;
-}
-
-type TooltipPortalProps = TooltipPortalStateProps & TooltipPortalOwnProps;
+  /**
+   * children to render inside the tooltip
+   */
+  children: ReactNode;
+  /**
+   * Used to determine if tooltip is visible, otherwise position will be used.
+   */
+  visible?: boolean;
+  /**
+   * Settings to control portal positioning
+   */
+  settings?: Partial<PopperSettings>;
+} & PortalAnchorProps &
+  PortalAnchorRefProps;
 
 function getOrCreateNode(id: string, parent: HTMLElement = document.body): HTMLDivElement {
   const node = document.getElementById(id);
@@ -74,37 +110,35 @@ function getOrCreateNode(id: string, parent: HTMLElement = document.body): HTMLD
   return newNode;
 }
 
-const TooltipPortalComponent = ({
-  getChartContainerRef,
-  position,
-  isVisible,
-  info,
-  scope,
-  settings,
-  headerFormatter,
-}: TooltipPortalProps) => {
-  const chartRef = getChartContainerRef();
+const PortalComponent = ({ anchor, anchorRef, position, scope, settings, children, visible }: PortalProps) => {
+  /**
+   * Used to skip first render for new position, which is used for capture initial position
+   */
+  const [invisible, setInvisible] = useState(!(visible ?? false));
+  /**
+   * Anchor element used to position tooltip
+   */
+  const anchorNode = useRef(isDefined(anchor) ? anchor : getOrCreateNode('echTooltipAnchor', anchorRef ?? undefined));
 
-  if (chartRef.current === null || position === null || !isVisible || !info) {
+  if (!isDefined(anchorNode.current)) {
     return null;
   }
 
   /**
-   * Portal node. This must not be removed from DOM throughout life of this component.
+   * This must not be removed from DOM throughout life of this component.
    * Otherwise the portal will loose reference to the correct node.
    */
   const portalNode = useRef(getOrCreateNode(`echPortal${scope}`));
-  /**
-   * Invisible Anchor element used to position tooltip
-   */
-  const anchorNode = useRef(getOrCreateNode('echTooltipAnchor', chartRef.current));
+
   /**
    * Popper instance used to manage position of tooltip.
    */
   const popper = useRef<Instance | null>(null);
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    popper.current = getPopper(anchorNode.current, portalNode.current);
+
+    return () => {
       if (portalNode.current.parentNode) {
         portalNode.current.parentNode.removeChild(portalNode.current);
       }
@@ -112,33 +146,17 @@ const TooltipPortalComponent = ({
       if (popper.current) {
         popper.current.destroy();
       }
-    },
-    [],
-  );
-
-  const getPopperSettings = useCallback((): PopperSettigns => {
-    console.log('getPopperSettings');
-    const fallbackPlacements = [Position.Right, Position.Left, Position.Top, Position.Bottom];
-    const placement = Position.Right;
-    if (typeof settings === 'string') {
-      return {
-        fallbackPlacements,
-        placement,
-      };
-    }
-
-    return {
-      fallbackPlacements: settings?.placementFallbacks ?? fallbackPlacements,
-      placement: settings?.placement ?? placement,
-      boundary: settings?.boundary === 'chart' ? chartRef.current! : settings?.boundary,
     };
-  }, [settings, chartRef.current]);
+  }, []);
+
+  const popperSettings = useMemo(
+    () => mergePartial(DEFAULT_POPPER_SETTINGS, settings, { mergeOptionalPartialValues: true }),
+    [...(settings && Object.values(settings))],
+  );
 
   const getPopper = useCallback(
     (anchorNode: HTMLElement, portalNode: HTMLElement): Instance => {
-      console.log('created popper');
-
-      const { fallbackPlacements, placement, boundary } = getPopperSettings();
+      const { fallbackPlacements, placement, boundary, offset } = popperSettings;
       return createPopper(anchorNode, portalNode, {
         strategy: 'fixed',
         placement,
@@ -146,7 +164,7 @@ const TooltipPortalComponent = ({
           {
             ...popperOffset,
             options: {
-              offset: [0, 10],
+              offset: [0, offset],
             },
           },
           {
@@ -168,58 +186,52 @@ const TooltipPortalComponent = ({
         ],
       });
     },
-    [getPopperSettings],
+    [...Object.values(popperSettings)],
   );
 
   useEffect(() => {
-    console.log('update popper');
-    updateAnchorDimensions();
-
-    if (!popper.current) {
-      popper.current = getPopper(anchorNode.current, portalNode.current);
+    if (popper.current) {
+      popper.current.destroy();
     }
 
-    popper.current!.update();
-  }, [popper.current, getPopperSettings, position.x0, position.x1, position.y0, position.y1]);
+    popper.current = getPopper(anchorNode.current, portalNode.current);
+  }, [portalNode.current, ...Object.values(popperSettings)]);
 
   const updateAnchorDimensions = useCallback(() => {
-    console.log('updateAnchorDimensions');
-    const { x0, x1, y0, y1 } = position!;
-    const width = x0 !== undefined ? x1 - x0 : 0;
-    const height = y0 !== undefined ? y1 - y0 : 0;
-    anchorNode.current.style.left = `${x1 - width}px`;
-    anchorNode.current.style.width = `${width}px`;
-    anchorNode.current.style.top = `${y1 - height}px`;
-    anchorNode.current.style.height = `${height}px`;
-  }, [anchorNode.current, ...Object.values(position)]);
+    if (!position) {
+      return;
+    }
 
-  return createPortal(<Tooltip info={info} headerFormatter={headerFormatter} />, portalNode.current);
+    const { left, top, width, height } = position!;
+    anchorNode.current.style.left = `${left}px`;
+    anchorNode.current.style.top = `${top}px`;
+
+    if (isDefined(width)) {
+      anchorNode.current.style.width = `${width}px`;
+    }
+
+    if (isDefined(height)) {
+      anchorNode.current.style.height = `${height}px`;
+    }
+  }, [anchorNode.current, position?.left, position?.top, position?.width, position?.height]);
+
+  useEffect(() => {
+    if (position === null) {
+      setInvisible(true);
+    } else {
+      setInvisible(false);
+    }
+  }, [position]);
+
+  useEffect(() => {
+    updateAnchorDimensions();
+    popper.current!.update();
+  }, [popper.current, settings, position?.left, position?.top, position?.width, position?.height]);
+
+  return createPortal(<div className={classNames({ invisible })}>{children}</div>, portalNode.current);
 };
 
-TooltipPortalComponent.displayName = 'Tooltip';
-
-const HIDDEN_TOOLTIP_PROPS = {
-  isVisible: false,
-  info: undefined,
-  position: null,
-  headerFormatter: undefined,
-  settings: {},
-  type: TooltipType.VerticalCursor,
-};
-
-const mapStateToProps = (state: GlobalChartState): TooltipPortalStateProps => {
-  if (!isInitialized(state)) {
-    return HIDDEN_TOOLTIP_PROPS;
-  }
-  return {
-    isVisible: getInternalIsTooltipVisibleSelector(state),
-    info: getInternalTooltipInfoSelector(state),
-    position: getInternalTooltipAnchorPositionSelector(state),
-    headerFormatter: getTooltipHeaderFormatterSelector(state),
-    settings: getSettingsSpecSelector(state).tooltip,
-    type: getTooltipTypeSelector(state),
-  };
-};
+PortalComponent.displayName = 'Portal';
 
 /** @internal */
-export const TooltipPortal = connect(mapStateToProps)(TooltipPortalComponent);
+export const Portal = PortalComponent;

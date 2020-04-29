@@ -40,7 +40,7 @@ import { Position } from '../../utils/commons';
 import { getTooltipTypeSelector } from '../../chart_types/xy_chart/state/selectors/get_tooltip_type';
 import { deepEqual } from '../../utils/fast_deep_equal';
 
-interface PopperSettigns {
+interface PopperSettings {
   fallbackPlacements: Position[];
   placement: Position;
   boundary?: HTMLElement;
@@ -124,7 +124,7 @@ class TooltipPortalComponent extends Component<TooltipPortalProps> {
     }
   }
 
-  getPopperSettings(chartNode: HTMLDivElement): PopperSettigns {
+  getPopperSettings(chartNode: HTMLDivElement): PopperSettings {
     const fallbackPlacements = [Position.Right, Position.Left, Position.Top, Position.Bottom];
     const placement = Position.Right;
     if (typeof this.props.settings === 'string') {
@@ -136,7 +136,7 @@ class TooltipPortalComponent extends Component<TooltipPortalProps> {
     const { settings } = this.props;
 
     return {
-      fallbackPlacements: settings?.placementFallbacks ?? fallbackPlacements,
+      fallbackPlacements: settings?.fallbackPlacements ?? fallbackPlacements,
       placement: settings?.placement ?? placement,
       boundary: settings?.boundary === 'chart' ? chartNode : settings?.boundary,
     };

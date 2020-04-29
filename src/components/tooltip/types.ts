@@ -16,12 +16,16 @@
  * specific language governing permissions and limitations
  * under the License. */
 
+import { ComponentType } from 'react';
+
 import { TooltipValue } from '../../specs';
 
 export interface TooltipInfo {
   header: TooltipValue | null;
   values: TooltipValue[];
 }
+
+export type CustomTooltip = ComponentType<TooltipInfo>;
 
 /** @internal */
 export interface TooltipAnchorPosition {

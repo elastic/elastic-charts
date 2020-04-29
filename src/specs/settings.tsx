@@ -34,6 +34,7 @@ import { Position, Rendering, Rotation, Color } from '../utils/commons';
 import { ScaleContinuousType, ScaleOrdinalType } from '../scales';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { GroupId } from '../utils/ids';
+import { CustomTooltip } from '../components/tooltip/types';
 
 export interface LayerValue {
   groupByRollup: PrimitiveValue;
@@ -172,7 +173,7 @@ export interface TooltipProps {
    * If given tooltip placement is not sutable, these `Position`s will
    * be used as fallback placements.
    */
-  placementFallbacks?: Position[];
+  fallbackPlacements?: Position[];
   /**
    * Boundary element to contain tooltip within
    *
@@ -182,6 +183,10 @@ export interface TooltipProps {
    */
   boundary?: HTMLElement | 'chart';
   unit?: string;
+  /**
+   * Render custom tooltip given header and values
+   */
+  customTooltip?: CustomTooltip;
 }
 
 /**

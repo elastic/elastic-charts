@@ -24,6 +24,19 @@ import { getChartRotationKnob, getPositionKnob, getTooltipTypeKnob } from '../ut
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 import { select, boolean } from '@storybook/addon-knobs';
 
+const CustomTooltip = () => (
+  <div
+    style={{
+      padding: 10,
+      height: 40,
+      backgroundColor: 'blue',
+      color: 'white',
+    }}
+  >
+    My Custom Tooltip
+  </div>
+);
+
 // for testing purposes only
 export const example = () => {
   // @ts-ignore
@@ -31,7 +44,7 @@ export const example = () => {
     'Boundary Element',
     {
       Chart: 'chart',
-      Document: document,
+      'Document Body': document.body,
       Default: undefined,
     },
     undefined,
@@ -44,6 +57,7 @@ export const example = () => {
           placement: getPositionKnob('Tooltip placement'),
           type: getTooltipTypeKnob(),
           boundary,
+          customTooltip: boolean('Custom Tooltip', false) ? CustomTooltip : undefined,
         }}
         showLegend={boolean('Show Legend', false)}
       />

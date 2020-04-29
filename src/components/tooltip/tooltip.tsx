@@ -17,29 +17,61 @@
  * under the License. */
 
 import classNames from 'classnames';
-import React, { forwardRef, memo, useCallback } from 'react';
-import { TooltipInfo } from './types';
-import { TooltipValueFormatter, TooltipValue } from '../../specs';
+import { connect } from 'react-redux';
+import React, { memo, useCallback, useMemo } from 'react';
 
-interface TooltipProps {
-  info: TooltipInfo;
+import { TooltipInfo, TooltipAnchorPosition } from './types';
+import { TooltipValueFormatter, TooltipSettings } from '../../specs';
+import { Portal, PopperSettings, AnchorPosition } from './tooltip_portal';
+import { getInternalIsTooltipVisibleSelector } from '../../state/selectors/get_internal_is_tooltip_visible';
+import { getTooltipHeaderFormatterSelector } from '../../state/selectors/get_tooltip_header_formatter';
+import { getInternalTooltipInfoSelector } from '../../state/selectors/get_internal_tooltip_info';
+import { getInternalTooltipAnchorPositionSelector } from '../../state/selectors/get_internal_tooltip_anchor_position';
+import { GlobalChartState, BackwardRef } from '../../state/chart_state';
+import { isInitialized } from '../../state/selectors/is_initialized';
+import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
+
+const SCOPE = 'MainTooltip';
+
+interface TooltipStateProps {
+  isVisible: boolean;
+  position: TooltipAnchorPosition | null;
+  info?: TooltipInfo;
   headerFormatter?: TooltipValueFormatter;
+  settings: TooltipSettings;
 }
 
-const TooltipComponent = forwardRef<HTMLDivElement, TooltipProps>(({ info, headerFormatter }, ref) => {
-  const renderHeader = useCallback(
-    (headerData: TooltipValue | null, formatter?: TooltipValueFormatter) => {
-      if (!headerData || !headerData.isVisible) {
-        return null;
-      }
-      return <div className="echTooltip__header">{formatter ? formatter(headerData) : headerData.value}</div>;
-    },
-    [info.header, headerFormatter],
-  );
+interface TooltipOwnProps {
+  getChartContainerRef: BackwardRef;
+}
 
-  return (
-    <div className="echTooltip" ref={ref}>
-      {renderHeader(info.header, headerFormatter)}
+type TooltipProps = TooltipStateProps & TooltipOwnProps;
+
+const TooltipComponent = ({
+  info,
+  headerFormatter,
+  position,
+  getChartContainerRef,
+  settings,
+  isVisible,
+}: TooltipProps) => {
+  const chartRef = getChartContainerRef();
+
+  const renderHeader = useCallback(() => {
+    if (!info || !info.header || !info.header.isVisible) {
+      return null;
+    }
+    return (
+      <div className="echTooltip__header">{headerFormatter ? headerFormatter(info.header) : info.header.value}</div>
+    );
+  }, [info?.header, info?.header?.isVisible, headerFormatter]);
+
+  const renderValues = useCallback(() => {
+    if (!info || !info.header || !info.header.isVisible) {
+      return null;
+    }
+
+    return (
       <div className="echTooltip__list">
         {info.values.map(
           ({ seriesIdentifier, valueAccessor, label, value, markValue, color, isHighlighted, isVisible }, index) => {
@@ -67,8 +99,77 @@ const TooltipComponent = forwardRef<HTMLDivElement, TooltipProps>(({ info, heade
           },
         )}
       </div>
-    </div>
-  );
-});
+    );
+  }, [info?.values, headerFormatter]);
 
-export const Tooltip = memo(TooltipComponent);
+  const renderTooltip = () => {
+    if (!info || !isVisible) {
+      return null;
+    }
+
+    if (typeof settings !== 'string' && settings?.customTooltip) {
+      const CustomTooltip = settings.customTooltip;
+      return <CustomTooltip {...info} />;
+    }
+
+    return (
+      <div className="echTooltip">
+        {renderHeader()}
+        {renderValues()}
+      </div>
+    );
+  };
+
+  const anchorPosition = useMemo((): AnchorPosition | null => {
+    if (!isVisible) return null;
+    const { x0, x1, y0, y1 } = position!;
+    const width = x0 !== undefined ? x1 - x0 : 0;
+    const height = y0 !== undefined ? y1 - y0 : 0;
+    return {
+      left: x1 - width,
+      width: width,
+      top: y1 - height,
+      height: height,
+    }
+  }, [position?.x0, position?.x1, position?.y0, position?.y1]);
+
+  const popperSettings = useMemo((): Partial<PopperSettings> | undefined => {
+    if (typeof settings === 'string') {
+      return;
+    }
+
+    return {
+      ...settings,
+      boundary: settings.boundary === 'chart' && chartRef.current ? chartRef.current : undefined,
+    };
+  }, [settings, chartRef.current]);
+
+  return (
+    <Portal scope={SCOPE} position={anchorPosition} settings={popperSettings} anchorRef={chartRef.current}>
+      {renderTooltip()}
+    </Portal>
+  );
+};
+
+const HIDDEN_TOOLTIP_PROPS = {
+  isVisible: false,
+  info: undefined,
+  position: null,
+  headerFormatter: undefined,
+  settings: {},
+};
+
+const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
+  if (!isInitialized(state)) {
+    return HIDDEN_TOOLTIP_PROPS;
+  }
+  return {
+    isVisible: getInternalIsTooltipVisibleSelector(state),
+    info: getInternalTooltipInfoSelector(state),
+    position: getInternalTooltipAnchorPositionSelector(state),
+    headerFormatter: getTooltipHeaderFormatterSelector(state),
+    settings: getSettingsSpecSelector(state).tooltip,
+  };
+};
+
+export const Tooltip = memo(connect(mapStateToProps)(TooltipComponent));
