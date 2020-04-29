@@ -15,3 +15,15 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License. */
+import React from 'react';
+import { example } from '../stories/treemap/6_custom_style';
+
+export class Playground extends React.Component {
+  render() {
+    return (
+      <div className="testing">
+        <div className="chart">{example()}</div>
+      </div>
+    );
+  }
+}
