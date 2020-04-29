@@ -22,7 +22,7 @@ import { Font } from './types';
 import { config, ValueGetterName } from '../config/config';
 import { ArrayNode, HierarchyOfArrays } from '../utils/group_by_rollup';
 import { Color } from '../../../../utils/commons';
-import { VerticalAlignment } from '../viewmodel/viewmodel';
+import { VerticalAlignments } from '../viewmodel/viewmodel';
 
 export type LinkLabelVM = {
   link: [PointTuple, ...PointTuple[]]; // at least one point
@@ -65,7 +65,7 @@ export interface RowSet {
   fillTextColor: string;
   fontSize: number;
   rotation: Radian;
-  verticalAlignment: VerticalAlignment;
+  verticalAlignment: VerticalAlignments;
   leftAlign: boolean; // might be generalized into horizontalAlign - if needed
   container?: any;
 }

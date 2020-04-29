@@ -77,7 +77,7 @@ export const VerticalAlignments = Object.freeze({
 // we might add more in the future; also, the intent is to still be of CanvasTextBaseline
 type SupportedVerticalAlignments = $Values<typeof VerticalAlignments>;
 
-export type VerticalAlignment = CanvasTextBaseline & SupportedVerticalAlignments;
+export type VerticalAlignments = CanvasTextBaseline & SupportedVerticalAlignments;
 
 function rectangleFillOrigins(n: ShapeTreeNode): [Pixels, Pixels] {
   return [(n.x0 + n.x1) / 2, (n.y0 + n.y1) / 2];

@@ -35,7 +35,7 @@ import { Layer } from '../../specs/index';
 import { stringToRGB } from '../utils/d3_utils';
 import { colorIsDark } from '../utils/calcs';
 import { ValueFormatter } from '../../../../utils/commons';
-import { RectangleConstruction, VerticalAlignment, VerticalAlignments } from './viewmodel';
+import { RectangleConstruction, VerticalAlignments } from './viewmodel';
 
 const INFINITY_RADIUS = 1e4; // far enough for a sub-2px precision on a 4k screen, good enough for text bounds; 64 bit floats still work well with it
 
@@ -174,7 +174,7 @@ export function getSectorRowGeometry(
 
 function getVerticalAlignment(
   container: RectangleConstruction,
-  verticalAlignment: VerticalAlignment,
+  verticalAlignment: VerticalAlignments,
   linePitch: Pixels,
   totalRowCount: number,
   rowIndex: number,
@@ -202,7 +202,7 @@ export function getRectangleRowGeometry(
   rowIndex: number,
   fontSize: Pixels,
   _rotation: Radian,
-  verticalAlignment: VerticalAlignment,
+  verticalAlignment: VerticalAlignments,
 ): RowSpace {
   const overhang = 0.05;
   const padding = fontSize < 6 ? 0 : Math.max(1, Math.min(2, fontSize / 16)); // taper out padding with small fonts
