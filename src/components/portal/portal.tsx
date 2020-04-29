@@ -27,7 +27,7 @@ import popperFlip from '@popperjs/core/lib/modifiers/flip.js';
 import { mergePartial } from '../../utils/commons';
 import { isDefined } from '../../chart_types/xy_chart/state/utils';
 import { PopperSettings, PortalAnchorRef } from './types';
-import { DEFAULT_POPPER_SETTINGS, getOrCreateNode } from './utils';
+import { DEFAULT_POPPER_SETTINGS, getOrCreateNode, isHTMLElement } from './utils';
 
 /**
  * @todo make this type conditional to use PortalAnchorProps or PortalAnchorRefProps
@@ -52,10 +52,10 @@ type PortalProps = {
   /**
    * Anchor element to use as position reference
    */
-  anchor?: HTMLElement | null;
-} & PortalAnchorRef;
+  anchor: HTMLElement | PortalAnchorRef | null;
+};
 
-const PortalComponent = ({ anchor, anchorRef, position, scope, settings, children, visible }: PortalProps) => {
+const PortalComponent = ({ anchor, scope, settings, children, visible }: PortalProps) => {
   /**
    * Used to skip first render for new position, which is used for capture initial position
    */
@@ -63,7 +63,9 @@ const PortalComponent = ({ anchor, anchorRef, position, scope, settings, childre
   /**
    * Anchor element used to position tooltip
    */
-  const anchorNode = useRef(isDefined(anchor) ? anchor : getOrCreateNode(`echAnchor${scope}`, anchorRef ?? undefined));
+  const anchorNode = useRef(
+    isHTMLElement(anchor) ? anchor : getOrCreateNode(`echAnchor${scope}`, anchor?.ref ?? undefined),
+  );
 
   if (!isDefined(anchorNode.current)) {
     return null;
@@ -98,6 +100,11 @@ const PortalComponent = ({ anchor, anchorRef, position, scope, settings, childre
     () => mergePartial(DEFAULT_POPPER_SETTINGS, settings, { mergeOptionalPartialValues: true }),
     [...(settings && Object.values(settings))],
   );
+
+  const position = useMemo(() => (isHTMLElement(anchor) ? null : anchor?.position), [
+    anchor,
+    (anchor as PortalAnchorRef)?.position,
+  ]);
 
   const getPopper = useCallback(
     (anchorNode: HTMLElement, portalNode: HTMLElement): Instance => {

@@ -65,11 +65,11 @@ export interface PortalAnchorRef {
   /**
    * Positioning values relative to `anchorRef`. Return `null` if tooltip is not visible.
    */
-  position?: AnchorPosition | null;
+  position: AnchorPosition | null;
   /**
    * Anchor ref element to use as position reference
    *
    * @default document.body
    */
-  anchorRef?: HTMLElement | null;
+  ref: HTMLElement | null;
 }

@@ -31,8 +31,6 @@ import { GlobalChartState, BackwardRef } from '../../state/chart_state';
 import { isInitialized } from '../../state/selectors/is_initialized';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
 
-const SCOPE = 'MainTooltip';
-
 interface TooltipStateProps {
   isVisible: boolean;
   position: TooltipAnchorPosition | null;
@@ -145,7 +143,14 @@ const TooltipComponent = ({
   }, [settings, chartRef.current]);
 
   return (
-    <Portal scope={SCOPE} position={anchorPosition} settings={popperSettings} anchorRef={chartRef.current}>
+    <Portal
+      scope="MainTooltip"
+      anchor={{
+        position: anchorPosition,
+        ref: chartRef.current,
+      }}
+      settings={popperSettings}
+    >
       {renderTooltip()}
     </Portal>
   );

@@ -41,3 +41,11 @@ export function getOrCreateNode(id: string, parent: HTMLElement = document.body)
   parent.appendChild(newNode);
   return newNode;
 }
+
+/**
+ * @link https://stackoverflow.com/questions/254302/how-can-i-determine-the-type-of-an-html-element-in-javascript
+ * @internal
+ */
+export function isHTMLElement(value: any): value is HTMLElement {
+  return typeof value === 'object' && value !== null && value.hasOwnProperty('nodeName');
+}
