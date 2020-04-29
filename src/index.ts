@@ -19,8 +19,8 @@
 // polyfill for Path2D canvas
 import 'path2d-polyfill';
 
+export * from './components';
 export { ChartTypes } from './chart_types';
-export { Chart } from './components/chart';
 export { ChartSize, ChartSizeArray, ChartSizeObject } from './utils/chart_size';
 
 export { SpecId, GroupId, AxisId, AnnotationId } from './utils/ids';

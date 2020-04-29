@@ -18,7 +18,7 @@
 
 import { select, array } from '@storybook/addon-knobs';
 
-import { Rotation, Position, TooltipType } from '../../src';
+import { Rotation, Position, TooltipType, Placement } from '../../src';
 
 export const numberSelect = <T extends number>(
   name: string,
@@ -59,6 +59,29 @@ export const getPositionKnob = (name = 'chartRotation', defaultValue = Position.
       Left: Position.Left,
       Top: Position.Top,
       Bottom: Position.Bottom,
+    },
+    defaultValue,
+  );
+
+export const getPlacementKnob = (name = 'placement', defaultValue = Placement.Right) =>
+  select<Placement>(
+    name,
+    {
+      Top: Placement.Top,
+      Bottom: Placement.Bottom,
+      Left: Placement.Left,
+      Right: Placement.Right,
+      TopStart: Placement.TopStart,
+      TopEnd: Placement.TopEnd,
+      BottomStart: Placement.BottomStart,
+      BottomEnd: Placement.BottomEnd,
+      RightStart: Placement.RightStart,
+      RightEnd: Placement.RightEnd,
+      LeftStart: Placement.LeftStart,
+      LeftEnd: Placement.LeftEnd,
+      Auto: Placement.Auto,
+      AutoStart: Placement.AutoStart,
+      AutoEnd: Placement.AutoEnd,
     },
     defaultValue,
   );

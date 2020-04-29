@@ -20,7 +20,7 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings, TooltipProps } from '../../src';
 import * as TestDatasets from '../../src/utils/data_samples/test_dataset';
-import { getChartRotationKnob, getPositionKnob, getTooltipTypeKnob } from '../utils/knobs';
+import { getChartRotationKnob, getPlacementKnob, getTooltipTypeKnob } from '../utils/knobs';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 import { select, boolean } from '@storybook/addon-knobs';
 
@@ -54,7 +54,7 @@ export const example = () => {
       <Settings
         rotation={getChartRotationKnob()}
         tooltip={{
-          placement: getPositionKnob('Tooltip placement'),
+          placement: getPlacementKnob('Tooltip placement'),
           type: getTooltipTypeKnob(),
           boundary,
           customTooltip: boolean('Custom Tooltip', false) ? CustomTooltip : undefined,

@@ -16,10 +16,34 @@
  * specific language governing permissions and limitations
  * under the License. */
 
+import { $Values } from 'utility-types';
+
+/**
+ * Placement used in positioning tooltip
+ */
+export const Placement = Object.freeze({
+  Top: 'top' as 'top',
+  Bottom: 'bottom' as 'bottom',
+  Left: 'left' as 'left',
+  Right: 'right' as 'right',
+  TopStart: 'top-start' as 'top-start',
+  TopEnd: 'top-end' as 'top-end',
+  BottomStart: 'bottom-start' as 'bottom-start',
+  BottomEnd: 'bottom-end' as 'bottom-end',
+  RightStart: 'right-start' as 'right-start',
+  RightEnd: 'right-end' as 'right-end',
+  LeftStart: 'left-start' as 'left-start',
+  LeftEnd: 'left-end' as 'left-end',
+  Auto: 'auto' as 'auto',
+  AutoStart: 'auto-start' as 'auto-start',
+  AutoEnd: 'auto-end' as 'auto-end',
+});
+export type Placement = $Values<typeof Placement>;
+
 /** @internal */
 export interface PopperSettings {
-  fallbackPlacements: Position[];
-  placement: Position;
+  fallbackPlacements: Placement[];
+  placement: Placement;
   boundary?: HTMLElement;
   offset?: number;
 }

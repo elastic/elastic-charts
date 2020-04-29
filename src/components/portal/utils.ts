@@ -16,13 +16,12 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { Position } from '../../utils/commons';
-import { PopperSettings } from './types';
+import { PopperSettings, Placement } from './types';
 
 /** @internal */
 export const DEFAULT_POPPER_SETTINGS: PopperSettings = {
-  fallbackPlacements: [Position.Right, Position.Left, Position.Top, Position.Bottom],
-  placement: Position.Right,
+  fallbackPlacements: [Placement.Right, Placement.Left, Placement.Top, Placement.Bottom],
+  placement: Placement.Right,
   offset: 10,
 };
 

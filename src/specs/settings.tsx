@@ -35,6 +35,7 @@ import { ScaleContinuousType, ScaleOrdinalType } from '../scales';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { GroupId } from '../utils/ids';
 import { CustomTooltip } from '../components/tooltip/types';
+import { Placement } from '../components/portal';
 
 export interface LayerValue {
   groupByRollup: PrimitiveValue;
@@ -166,14 +167,14 @@ export interface TooltipProps {
    *
    * This may not be the final placement given the positioning fallbacks.
    *
-   * @default Position.Right
+   * @default Placement.Right
    */
-  placement?: Position;
+  placement?: Placement;
   /**
    * If given tooltip placement is not sutable, these `Position`s will
    * be used as fallback placements.
    */
-  fallbackPlacements?: Position[];
+  fallbackPlacements?: Placement[];
   /**
    * Boundary element to contain tooltip within
    *
