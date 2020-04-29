@@ -17,23 +17,26 @@
  * under the License. */
 
 import React from 'react';
-import { isLineAnnotation, AnnotationSpec, AnnotationTypes } from '../../utils/specs';
-import { AnnotationId } from '../../../../utils/ids';
-import { AnnotationDimensions, AnnotationTooltipState, AnnotationTooltipFormatter } from '../../annotations/types';
 import { connect } from 'react-redux';
-import { Dimensions } from '../../../../utils/dimensions';
-import { GlobalChartState, BackwardRef } from '../../../../state/chart_state';
-import { isInitialized } from '../../../../state/selectors/is_initialized';
-import { computeAnnotationDimensionsSelector } from '../../state/selectors/compute_annotations';
-import { getAnnotationSpecsSelector } from '../../state/selectors/get_specs';
-import { getAnnotationTooltipStateSelector } from '../../state/selectors/get_annotation_tooltip_state';
-import { isChartEmptySelector } from '../../state/selectors/is_chart_empty';
-import { AnnotationLineProps } from '../../annotations/line/types';
-import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
+
+import { isLineAnnotation, AnnotationSpec, AnnotationTypes } from '../../../utils/specs';
+import { AnnotationId } from '../../../../../utils/ids';
+import { AnnotationDimensions, AnnotationTooltipState } from '../../../annotations/types';
+import { Dimensions } from '../../../../../utils/dimensions';
+import { GlobalChartState, BackwardRef } from '../../../../../state/chart_state';
+import { isInitialized } from '../../../../../state/selectors/is_initialized';
+import { computeAnnotationDimensionsSelector } from '../../../state/selectors/compute_annotations';
+import { getAnnotationSpecsSelector } from '../../../state/selectors/get_specs';
+import { getAnnotationTooltipStateSelector } from '../../../state/selectors/get_annotation_tooltip_state';
+import { isChartEmptySelector } from '../../../state/selectors/is_chart_empty';
+import { AnnotationLineProps } from '../../../annotations/line/types';
+import { computeChartDimensionsSelector } from '../../../state/selectors/compute_chart_dimensions';
 import { createPortal } from 'react-dom';
-import { getFinalAnnotationTooltipPosition } from '../../annotations/tooltip';
-import { getSpecsById } from '../../state/utils';
-import { Position } from '../../../../utils/commons';
+import { getFinalAnnotationTooltipPosition } from '../../../annotations/tooltip';
+import { getSpecsById } from '../../../state/utils';
+import { Position } from '../../../../../utils/commons';
+import { RectAnnotationTooltip } from './rect_annotation_tooltip';
+import { LineAnnotationTooltip } from './line_annotation_tooltip';
 
 interface AnnotationTooltipStateProps {
   isChartEmpty: boolean;
@@ -219,51 +222,13 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
     }
 
     return (
-      <React.Fragment>
+      <>
         {this.renderAnnotationMarkers()}
         {this.renderTooltip()}
-      </React.Fragment>
+      </>
     );
   }
 }
-
-interface RectAnnotationTooltipProps {
-  details?: string;
-  customTooltip?: AnnotationTooltipFormatter;
-}
-function RectAnnotationTooltipRender(props: RectAnnotationTooltipProps, ref: React.Ref<HTMLDivElement>) {
-  const { details, customTooltip } = props;
-  const tooltipContent = customTooltip ? customTooltip(details) : details;
-
-  if (!tooltipContent) {
-    return null;
-  }
-
-  return (
-    <div className="echAnnotation__tooltip" ref={ref}>
-      <div className="echAnnotation__details">
-        <div className="echAnnotation__detailsText">{tooltipContent}</div>
-      </div>
-    </div>
-  );
-}
-
-const RectAnnotationTooltip = React.forwardRef(RectAnnotationTooltipRender);
-
-interface LineAnnotationTooltipProps {
-  details?: string;
-  header?: string;
-}
-function LineAnnotationTooltipRender(props: LineAnnotationTooltipProps, ref: React.Ref<HTMLDivElement>) {
-  const { details, header } = props;
-  return (
-    <div className="echAnnotation__tooltip" ref={ref}>
-      <p className="echAnnotation__header">{header}</p>
-      <div className="echAnnotation__details">{details}</div>
-    </div>
-  );
-}
-const LineAnnotationTooltip = React.forwardRef(LineAnnotationTooltipRender);
 
 const mapStateToProps = (state: GlobalChartState): AnnotationTooltipStateProps => {
   if (!isInitialized(state)) {
