@@ -24,56 +24,10 @@ import preventOverflow from '@popperjs/core/lib/modifiers/preventOverflow.js';
 import popperOffset from '@popperjs/core/lib/modifiers/offset.js';
 import popperFlip from '@popperjs/core/lib/modifiers/flip.js';
 
-import { Position, mergePartial } from '../../utils/commons';
+import { mergePartial } from '../../utils/commons';
 import { isDefined } from '../../chart_types/xy_chart/state/utils';
-
-const DEFAULT_POPPER_SETTINGS: PopperSettings = {
-  fallbackPlacements: [Position.Right, Position.Left, Position.Top, Position.Bottom],
-  placement: Position.Right,
-  offset: 10,
-};
-
-/** @internal */
-export interface PopperSettings {
-  fallbackPlacements: Position[];
-  placement: Position;
-  boundary?: HTMLElement;
-  offset?: number;
-}
-
-/** @internal */
-export interface AnchorPosition {
-  left: number;
-  top: number;
-  width?: number;
-  height?: number;
-}
-
-/**
- * Used to position tooltip relative to invisible anchor via ref element
- */
-interface PortalAnchorRefProps {
-  /**
-   * Positioning values relative to `anchorRef`. Return `null` if tooltip is not visible.
-   */
-  position?: AnchorPosition | null;
-  /**
-   * Anchor ref element to use as position reference
-   *
-   * @default document.body
-   */
-  anchorRef?: HTMLElement | null;
-}
-
-/**
- * Used to position tooltip relative to dom anchor
- */
-interface PortalAnchorProps {
-  /**
-   * Anchor element to use as position reference
-   */
-  anchor?: HTMLElement | null;
-}
+import { PopperSettings, PortalAnchorRef } from './types';
+import { DEFAULT_POPPER_SETTINGS, getOrCreateNode } from './utils';
 
 /**
  * @todo make this type conditional to use PortalAnchorProps or PortalAnchorRefProps
@@ -95,20 +49,11 @@ type PortalProps = {
    * Settings to control portal positioning
    */
   settings?: Partial<PopperSettings>;
-} & PortalAnchorProps &
-  PortalAnchorRefProps;
-
-function getOrCreateNode(id: string, parent: HTMLElement = document.body): HTMLDivElement {
-  const node = document.getElementById(id);
-  if (node) {
-    return node as HTMLDivElement;
-  }
-
-  const newNode = document.createElement('div');
-  newNode.id = id;
-  parent.appendChild(newNode);
-  return newNode;
-}
+  /**
+   * Anchor element to use as position reference
+   */
+  anchor?: HTMLElement | null;
+} & PortalAnchorRef;
 
 const PortalComponent = ({ anchor, anchorRef, position, scope, settings, children, visible }: PortalProps) => {
   /**
@@ -118,7 +63,7 @@ const PortalComponent = ({ anchor, anchorRef, position, scope, settings, childre
   /**
    * Anchor element used to position tooltip
    */
-  const anchorNode = useRef(isDefined(anchor) ? anchor : getOrCreateNode('echTooltipAnchor', anchorRef ?? undefined));
+  const anchorNode = useRef(isDefined(anchor) ? anchor : getOrCreateNode(`echAnchor${scope}`, anchorRef ?? undefined));
 
   if (!isDefined(anchorNode.current)) {
     return null;

@@ -1,0 +1,12 @@
+[id^='echPortal'] {
+  pointer-events: none;
+  z-index: 10000000;
+}
+
+[id^='echAnchor'] {
+  background-color: blue;
+  position: absolute;
+  min-width: 5px;
+  min-height: 5px;
+  pointer-events: none;
+}

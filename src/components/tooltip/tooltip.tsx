@@ -22,7 +22,7 @@ import React, { memo, useCallback, useMemo } from 'react';
 
 import { TooltipInfo, TooltipAnchorPosition } from './types';
 import { TooltipValueFormatter, TooltipSettings } from '../../specs';
-import { Portal, PopperSettings, AnchorPosition } from './tooltip_portal';
+import { Portal, PopperSettings, AnchorPosition } from '../portal';
 import { getInternalIsTooltipVisibleSelector } from '../../state/selectors/get_internal_is_tooltip_visible';
 import { getTooltipHeaderFormatterSelector } from '../../state/selectors/get_tooltip_header_formatter';
 import { getInternalTooltipInfoSelector } from '../../state/selectors/get_internal_tooltip_info';
@@ -130,7 +130,7 @@ const TooltipComponent = ({
       width: width,
       top: y1 - height,
       height: height,
-    }
+    };
   }, [position?.x0, position?.x1, position?.y0, position?.y1]);
 
   const popperSettings = useMemo((): Partial<PopperSettings> | undefined => {
