@@ -50,6 +50,7 @@ export const example = () => (
       data={mocks.sunburst}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
+      topGroove={0}
       layers={[
         {
           groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.substr(0, 2),

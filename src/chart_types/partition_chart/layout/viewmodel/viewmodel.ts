@@ -60,9 +60,6 @@ import { StrokeStyle, ValueFormatter } from '../../../../utils/commons';
 import { percentValueGetter } from '../config/config';
 import { $Values } from 'utility-types';
 
-// todo consider turning it into a config option
-const topGroove = 20;
-
 function paddingAccessor(n: ArrayEntry) {
   return entryValue(n).depth > 1 ? 1 : [0, 2][entryValue(n).depth];
 }
@@ -166,7 +163,7 @@ export interface RectangleConstruction {
   y1: Pixels;
 }
 
-function rectangleConstruction(treeHeight: number) {
+function rectangleConstruction(treeHeight: number, topGroove: number) {
   return function(node: ShapeTreeNode): RectangleConstruction {
     return node.depth < treeHeight
       ? {
@@ -194,6 +191,7 @@ export function shapeViewModel(
   specifiedPercentFormatter: ValueFormatter,
   valueGetter: ValueGetterFunction,
   tree: HierarchyOfArrays,
+  topGroove: Pixels,
 ): ShapeViewModel {
   const {
     width,
@@ -285,7 +283,9 @@ export function shapeViewModel(
     config,
     layers,
     textFillOrigins,
-    treemapLayout ? rectangleConstruction(treeHeight) : ringSectorConstruction(config, innerRadius, ringThickness),
+    treemapLayout
+      ? rectangleConstruction(treeHeight, topGroove)
+      : ringSectorConstruction(config, innerRadius, ringThickness),
     treemapLayout ? getRectangleRowGeometry : getSectorRowGeometry,
     treemapLayout ? () => 0 : inSectorRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
     treemapLayout,
