@@ -1,6 +1,4 @@
-#echTooltipContainerPortal {
-  position: absolute;
-  height: 20px;
+[id^='echPortal'] {
   pointer-events: none;
   z-index: 10000000;
 }
@@ -14,7 +12,6 @@
 }
 
 .echTooltip {
-  position: absolute;
   @include euiToolTipStyle;
   @include euiFontSizeXS;
   padding: 0;

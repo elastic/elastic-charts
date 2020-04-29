@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { RefObject, createRef, Component } from 'react';
 import { createPortal } from 'react-dom';
 import { connect } from 'react-redux';
 import { createPopper, Instance } from '@popperjs/core/lib/popper-lite.js';
@@ -34,9 +34,11 @@ import { getTooltipHeaderFormatterSelector } from '../../state/selectors/get_too
 import { getInternalTooltipInfoSelector } from '../../state/selectors/get_internal_tooltip_info';
 import { getInternalTooltipAnchorPositionSelector } from '../../state/selectors/get_internal_tooltip_anchor_position';
 import { Tooltip } from './tooltip';
+import { HIGHLIGHT_PATH_SELECTOR } from '../../chart_types/xy_chart/state/selectors/get_tooltip_values_highlighted_geoms';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
 import { Position } from '../../utils/commons';
 import { getTooltipTypeSelector } from '../../chart_types/xy_chart/state/selectors/get_tooltip_type';
+import { deepEqual } from '../../utils/fast_deep_equal';
 
 interface PopperSettigns {
   fallbackPlacements: Position[];
@@ -54,92 +56,119 @@ interface TooltipPortalStateProps {
 }
 interface TooltipPortalOwnProps {
   getChartContainerRef: BackwardRef;
-  /**
-   * String used to designate unique portal
-   */
-  scope: string;
 }
 
 type TooltipPortalProps = TooltipPortalStateProps & TooltipPortalOwnProps;
 
-function getOrCreateNode(id: string, parent: HTMLElement = document.body): HTMLDivElement {
-  const node = document.getElementById(id);
-  if (node) {
-    return node as HTMLDivElement;
-  }
-
-  const newNode = document.createElement('div');
-  newNode.id = id;
-  parent.appendChild(newNode);
-  return newNode;
-}
-
-const TooltipPortalComponent = ({
-  getChartContainerRef,
-  position,
-  isVisible,
-  info,
-  scope,
-  settings,
-  headerFormatter,
-}: TooltipPortalProps) => {
-  const chartRef = getChartContainerRef();
-
-  if (chartRef.current === null || position === null || !isVisible || !info) {
-    return null;
-  }
-
-  /**
-   * Portal node. This must not be removed from DOM throughout life of this component.
-   * Otherwise the portal will loose reference to the correct node.
-   */
-  const portalNode = useRef(getOrCreateNode(`echPortal${scope}`));
+class TooltipPortalComponent extends Component<TooltipPortalProps> {
+  static displayName = 'Tooltip';
+  private popper: Instance | null = null;
+  portalNode: HTMLDivElement | null = null;
   /**
    * Invisible Anchor element used to position tooltip
    */
-  const anchorNode = useRef(getOrCreateNode('echTooltipAnchor', chartRef.current));
-  /**
-   * Popper instance used to manage position of tooltip.
-   */
-  const popper = useRef<Instance | null>(null);
+  anchorNode: HTMLDivElement | null = null;
+  hlNode: SVGElement | null = null;
+  tooltipRef: RefObject<HTMLDivElement>;
 
-  useEffect(
-    () => () => {
-      if (portalNode.current.parentNode) {
-        portalNode.current.parentNode.removeChild(portalNode.current);
-      }
+  constructor(props: TooltipPortalProps) {
+    super(props);
+    this.tooltipRef = createRef();
+  }
 
-      if (popper.current) {
-        popper.current.destroy();
-      }
-    },
-    [],
-  );
+  createPortalNode() {
+    const container = document.getElementById('echTooltipContainerPortal');
+    if (container) {
+      this.portalNode = container as HTMLDivElement;
+    } else {
+      this.portalNode = document.createElement('div');
+      this.portalNode.id = 'echTooltipContainerPortal';
+      document.body.appendChild(this.portalNode);
+    }
+  }
 
-  const getPopperSettings = useCallback((): PopperSettigns => {
-    console.log('getPopperSettings');
+  createAnchorNode(chartContainer: HTMLDivElement) {
+    const container = document.getElementById('echTooltipAnchor');
+    if (container) {
+      this.anchorNode = container as HTMLDivElement;
+    } else {
+      this.anchorNode = document.createElement('div');
+      this.anchorNode.id = 'echTooltipAnchor';
+      chartContainer.appendChild(this.anchorNode);
+    }
+  }
+
+  getHighlighter(): SVGGElement | null {
+    return document.getElementById(HIGHLIGHT_PATH_SELECTOR) as SVGGElement | null;
+  }
+
+  componentDidMount() {
+    this.createPortalNode();
+  }
+
+  shouldComponentUpdate(nextProps: TooltipPortalProps) {
+    return !deepEqual(this.props, nextProps);
+  }
+
+  componentDidUpdate() {
+    this.renderPopper();
+  }
+
+  componentWillUnmount() {
+    if (this.portalNode && this.portalNode.parentNode) {
+      this.portalNode.parentNode.removeChild(this.portalNode);
+    }
+
+    if (this.popper) {
+      this.popper.destroy();
+    }
+  }
+
+  getPopperSettings(chartNode: HTMLDivElement): PopperSettigns {
     const fallbackPlacements = [Position.Right, Position.Left, Position.Top, Position.Bottom];
     const placement = Position.Right;
-    if (typeof settings === 'string') {
+    if (typeof this.props.settings === 'string') {
       return {
         fallbackPlacements,
         placement,
       };
     }
+    const { settings } = this.props;
 
     return {
       fallbackPlacements: settings?.placementFallbacks ?? fallbackPlacements,
       placement: settings?.placement ?? placement,
-      boundary: settings?.boundary === 'chart' ? chartRef.current! : settings?.boundary,
+      boundary: settings?.boundary === 'chart' ? chartNode : settings?.boundary,
     };
-  }, [settings, chartRef.current]);
+  }
 
-  const getPopper = useCallback(
-    (anchorNode: HTMLElement, portalNode: HTMLElement): Instance => {
-      console.log('created popper');
+  private updateAnchorDimensions(anchor: HTMLDivElement, { x0, x1, y0, y1 }: TooltipAnchorPosition) {
+    const width = x0 !== undefined ? x1 - x0 : 0;
+    const height = y0 !== undefined ? y1 - y0 : 0;
+    anchor.style.left = `${x1 - width}px`;
+    anchor.style.width = `${width}px`;
+    anchor.style.top = `${y1 - height}px`;
+    anchor.style.height = `${height}px`;
+  }
 
-      const { fallbackPlacements, placement, boundary } = getPopperSettings();
-      return createPopper(anchorNode, portalNode, {
+  renderPopper() {
+    const { getChartContainerRef, position } = this.props;
+    this.createPortalNode();
+    const chartContainerRef = getChartContainerRef();
+
+    if (chartContainerRef.current) {
+      this.createAnchorNode(chartContainerRef.current);
+    }
+
+    if (!chartContainerRef.current || !this.portalNode || !this.anchorNode || !position) {
+      return;
+    }
+
+    this.updateAnchorDimensions(this.anchorNode, position);
+
+    if (!this.popper) {
+      const { fallbackPlacements, placement, boundary } = this.getPopperSettings(chartContainerRef.current);
+      this.popper = createPopper(this.anchorNode, this.portalNode, {
         strategy: 'fixed',
         placement,
         modifiers: [
@@ -167,36 +196,22 @@ const TooltipPortalComponent = ({
           },
         ],
       });
-    },
-    [getPopperSettings],
-  );
-
-  useEffect(() => {
-    console.log('update popper');
-    updateAnchorDimensions();
-
-    if (!popper.current) {
-      popper.current = getPopper(anchorNode.current, portalNode.current);
     }
 
-    popper.current!.update();
-  }, [popper.current, getPopperSettings, position.x0, position.x1, position.y0, position.y1]);
+    this.popper!.update();
+  }
 
-  const updateAnchorDimensions = useCallback(() => {
-    console.log('updateAnchorDimensions');
-    const { x0, x1, y0, y1 } = position!;
-    const width = x0 !== undefined ? x1 - x0 : 0;
-    const height = y0 !== undefined ? y1 - y0 : 0;
-    anchorNode.current.style.left = `${x1 - width}px`;
-    anchorNode.current.style.width = `${width}px`;
-    anchorNode.current.style.top = `${y1 - height}px`;
-    anchorNode.current.style.height = `${height}px`;
-  }, [anchorNode.current, ...Object.values(position)]);
+  render() {
+    const { isVisible, info, getChartContainerRef } = this.props;
+    const chartContainerRef = getChartContainerRef();
 
-  return createPortal(<Tooltip info={info} headerFormatter={headerFormatter} />, portalNode.current);
-};
+    if (!this.portalNode || chartContainerRef.current === null || !isVisible || !info) {
+      return null;
+    }
 
-TooltipPortalComponent.displayName = 'Tooltip';
+    return createPortal(<Tooltip info={info} headerFormatter={this.props.headerFormatter} />, this.portalNode);
+  }
+}
 
 const HIDDEN_TOOLTIP_PROPS = {
   isVisible: false,
