@@ -24,8 +24,7 @@ jest.mock('../../.storybook/theme_service.ts', () => ({
   switchTheme: () => undefined,
 }));
 
-const filters = (process.env.ALL_STORIES_FILTER && process.env.ALL_STORIES_FILTER.split(',')) || undefined;
-const storyGroups = getStorybookInfo(filters);
+const storyGroups = getStorybookInfo();
 
 describe('Baseline Visual tests for all stories', () => {
   describe.each(storyGroups)('%s', (_group, encodedGroup, stories) => {

@@ -65,10 +65,15 @@ yarn test:integration test_file_name
 yarn test:integration:local test_file_name
 ```
 
-To run the test on a specific story of the `all.test.ts` file use `ALL_STORIES_FILTER` env varibale to specify one or more stories main group name, comma separated
+To run the test on a specific story name or story group name use `--testNamePattern=<regex>` or `-t`
+see [Jest](https://jestjs.io/docs/en/cli.html#--testnamepatternregex). This example will run the integration test
+on all.test.ts file for all matching test name in `describe` or `it` with `tree*` regex.
 
 ```
+yarn test:integration all.test.ts --testNamePattern tree*
 
-ALL_STORIES_FILTER=tree,Sunburst yarn test:integration all.test.ts
+# or
+
+yarn test:integration all.test.ts -t tree*
 
 ```

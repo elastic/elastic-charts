@@ -65,21 +65,11 @@ function encodeString(string: string) {
     .toLowerCase();
 }
 
-export function getStorybookInfo(filters?: string[]): StoryGroupInfo[] {
+export function getStorybookInfo(): StoryGroupInfo[] {
   configure(requireAllStories(__dirname, '../stories'), module);
-  const regexFilters =
-    filters !== undefined
-      ? filters.map((filter) => {
-          return new RegExp(filter, 'i');
-        })
-      : undefined;
 
-  const storybooks = getStorybook();
-
-  const filteredStories: StoryGroupInfo[] = storybooks
-    .filter(({ kind }) => {
-      return kind && (regexFilters !== undefined ? regexFilters.findIndex((filter) => kind.match(filter)) > -1 : true);
-    })
+  return getStorybook()
+    .filter(({ kind }) => kind)
     .map(({ kind: group, stories: storiesRaw }) => {
       const stories: StoryInfo[] = storiesRaw
         .filter(({ name }) => name)
@@ -93,14 +83,4 @@ export function getStorybookInfo(filters?: string[]): StoryGroupInfo[] {
 
       return [group, encodedGroup, stories];
     });
-
-  if (filteredStories.length === 0) {
-    const storyGroupsNames = storybooks.map(({ kind }) => kind).join('\n');
-    throw new Error(
-      `Can't find any story with the provided filter: ${filters}\n
-      please use one or more from the following list: \n${storyGroupsNames}`,
-    );
-  }
-
-  return filteredStories;
 }
