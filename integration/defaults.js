@@ -20,4 +20,5 @@ module.exports = {
   PORT: '9009',
   HOST: 'host.docker.internal',
   USE_LOCAL_STORYBOOK: false,
+  ALL_STORIES_FILTER: null,
 };
