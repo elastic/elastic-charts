@@ -37,7 +37,7 @@ const CustomTooltip = () => (
   </div>
 );
 
-const getFallbackPlacements = () => {
+const getFallbackPlacements = (): Placement[] => {
   return optionsKnob<Placement>(
     'Fallback Placements',
     {
@@ -61,7 +61,7 @@ const getFallbackPlacements = () => {
     {
       display: 'multi-select',
     },
-  );
+  ) as any; // storybook types are all messed up here
 };
 
 export const example = () => {

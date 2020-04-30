@@ -18,7 +18,7 @@
 
 import { AnnotationId } from '../../../utils/ids';
 import { AnnotationSpec, AxisSpec, isLineAnnotation, isRectAnnotation } from '../utils/specs';
-import { Rotation, Position } from '../../../utils/commons';
+import { Rotation } from '../../../utils/commons';
 import { AnnotationDimensions, AnnotationTooltipState } from './types';
 import { Dimensions } from '../../../utils/dimensions';
 import { computeLineAnnotationTooltipState } from './line/tooltip';
