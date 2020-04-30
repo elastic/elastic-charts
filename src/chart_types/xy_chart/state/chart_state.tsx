@@ -111,9 +111,6 @@ export class XYAxisChartState implements InternalChartState {
     return getTooltipAnchorPositionSelector(globalState);
   }
   eventCallbacks(globalState: GlobalChartState) {
-    if (!this.isInitialized(globalState)) {
-      return;
-    }
     this.onElementOverCaller(globalState);
     this.onElementOutCaller(globalState);
     this.onElementClickCaller(globalState);
