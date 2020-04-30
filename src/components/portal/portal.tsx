@@ -19,10 +19,7 @@
 import classNames from 'classnames';
 import React, { useRef, useEffect, useCallback, ReactNode, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { createPopper, Instance } from '@popperjs/core/lib/popper-lite.js';
-import preventOverflow from '@popperjs/core/lib/modifiers/preventOverflow.js';
-import popperOffset from '@popperjs/core/lib/modifiers/offset.js';
-import popperFlip from '@popperjs/core/lib/modifiers/flip.js';
+import { createPopper, Instance } from '@popperjs/core';
 
 import { mergePartial } from '../../utils/commons';
 import { isDefined } from '../../chart_types/xy_chart/state/utils';
@@ -114,19 +111,19 @@ const PortalComponent = ({ anchor, scope, settings, children, visible }: PortalP
         placement,
         modifiers: [
           {
-            ...popperOffset,
+            name: 'offset',
             options: {
               offset: [0, offset],
             },
           },
           {
-            ...preventOverflow,
+            name: 'preventOverflow',
             options: {
               boundary,
             },
           },
           {
-            ...popperFlip,
+            name: 'flip',
             options: {
               // Note: duplicate values causes lag
               fallbackPlacements: fallbackPlacements.filter((p) => p !== placement),
