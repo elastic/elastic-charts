@@ -18,11 +18,11 @@
 
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings, TooltipProps } from '../../src';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings, TooltipProps, Placement } from '../../src';
 import * as TestDatasets from '../../src/utils/data_samples/test_dataset';
 import { getChartRotationKnob, getPlacementKnob, getTooltipTypeKnob } from '../utils/knobs';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
-import { select, boolean } from '@storybook/addon-knobs';
+import { select, boolean, optionsKnob } from '@storybook/addon-knobs';
 
 const CustomTooltip = () => (
   <div
@@ -37,7 +37,33 @@ const CustomTooltip = () => (
   </div>
 );
 
-// for testing purposes only
+const getFallbackPlacements = () => {
+  return optionsKnob<Placement>(
+    'Fallback Placements',
+    {
+      Top: Placement.Top,
+      Bottom: Placement.Bottom,
+      Left: Placement.Left,
+      Right: Placement.Right,
+      TopStart: Placement.TopStart,
+      TopEnd: Placement.TopEnd,
+      BottomStart: Placement.BottomStart,
+      BottomEnd: Placement.BottomEnd,
+      RightStart: Placement.RightStart,
+      RightEnd: Placement.RightEnd,
+      LeftStart: Placement.LeftStart,
+      LeftEnd: Placement.LeftEnd,
+      Auto: Placement.Auto,
+      AutoStart: Placement.AutoStart,
+      AutoEnd: Placement.AutoEnd,
+    },
+    [Placement.Right, Placement.Left, Placement.Top, Placement.Bottom],
+    {
+      display: 'multi-select',
+    },
+  );
+};
+
 export const example = () => {
   // @ts-ignore
   const boundary = select<TooltipProps['boundary']>(
@@ -55,6 +81,7 @@ export const example = () => {
         rotation={getChartRotationKnob()}
         tooltip={{
           placement: getPlacementKnob('Tooltip placement'),
+          fallbackPlacements: getFallbackPlacements(),
           type: getTooltipTypeKnob(),
           boundary,
           customTooltip: boolean('Custom Tooltip', false) ? CustomTooltip : undefined,
