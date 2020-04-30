@@ -95,7 +95,7 @@ const PortalComponent = ({ anchor, scope, settings, children, visible }: PortalP
 
   const popperSettings = useMemo(
     () => mergePartial(DEFAULT_POPPER_SETTINGS, settings, { mergeOptionalPartialValues: true }),
-    [...(settings && Object.values(settings))],
+    [settings, settings],
   );
 
   const position = useMemo(() => (isHTMLElement(anchor) ? null : anchor?.position), [
