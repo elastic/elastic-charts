@@ -45,6 +45,9 @@ export class GoalState implements InternalChartState {
     this.onElementOutCaller = createOnElementOutCaller();
   }
   chartType = ChartTypes.Goal;
+  isInitialized(globalState: GlobalChartState) {
+    return globalState.specsInitialized;
+  }
   isBrushAvailable() {
     return false;
   }

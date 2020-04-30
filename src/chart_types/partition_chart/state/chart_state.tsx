@@ -45,6 +45,9 @@ export class PartitionState implements InternalChartState {
     this.onElementOutCaller = createOnElementOutCaller();
   }
   chartType = ChartTypes.Partition;
+  isInitialized(globalState: GlobalChartState) {
+    return globalState.specsInitialized;
+  }
   isBrushAvailable() {
     return false;
   }
