@@ -268,7 +268,7 @@ function getWordSpacing(fontSize: number) {
   return fontSize / 4;
 }
 
-function getTextColor(
+export function getTextColor(
   textColor: Color,
   textInvertible: boolean,
   node: QuadViewModel,
@@ -342,8 +342,18 @@ function fill(
       layer.fillLabel,
       layer.shape,
     );
-
+    console.log(
+      'textColor',
+      textColor,
+      'textInvertible',
+      textInvertible,
+      'node',
+      node,
+      'containerBackgroundColor',
+      containerBackgroundColor,
+    );
     const fillTextColor = getTextColor(textColor, textInvertible, node, containerBackgroundColor);
+    console.log('fillTextColor', fillTextColor);
 
     const valueFont = Object.assign(
       { fontFamily: config.fontFamily, fontWeight: 'normal' },

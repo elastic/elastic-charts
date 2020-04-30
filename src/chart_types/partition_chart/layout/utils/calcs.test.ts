@@ -18,46 +18,47 @@
 
 import { makeHighContrastColor, getBackgroundWithContainerColorFromUser } from './calcs';
 
-describe('Get ideal contrast color', () => {
-  // test inputs
-  test('hex input - should change white text to black when background is white', () => {
-    const expected = '#000';
-    const result = makeHighContrastColor('#fff', '#fff');
-    expect(result).toEqual(expected);
+describe('calcs', () => {
+  describe('makeHighContrastColor', () => {
+    // test inputs
+    it('hex input - should change white text to black when background is white', () => {
+      const expected = '#000';
+      const result = makeHighContrastColor('#fff', '#fff');
+      expect(result).toEqual(expected);
+    });
+    it('rgb input - should change white text to black when background is white ', () => {
+      const expected = '#000';
+      const result = makeHighContrastColor('rgb(255, 255, 255)', 'rgb(255, 255, 255)');
+      expect(result).toEqual(expected);
+    });
+    it('rgba input - should change white text to black when background is white ', () => {
+      const expected = '#000';
+      const result = makeHighContrastColor('rgba(255, 255, 255, 1)', 'rgba(255, 255, 255, 1)');
+      expect(result).toEqual(expected);
+    });
+    it('word input - should change white text to black when background is white ', () => {
+      const expected = '#000';
+      const result = makeHighContrastColor('white', 'white');
+      expect(result).toEqual(expected);
+    });
+    // test contrast computation
+    it('should provide at least 4.5 contrast', () => {
+      const foreground = '#fff'; // white
+      const background = 'rgba(255, 255, 51, 0.3)'; // light yellow
+      const result = '#000'; // black
+      expect(result).toEqual(makeHighContrastColor(foreground, background));
+    });
   });
-  test('rgb input - should change white text to black when background is white ', () => {
-    const expected = '#000';
-    const result = makeHighContrastColor('rgb(255, 255, 255)', 'rgb(255, 255, 255)');
-    expect(result).toEqual(expected);
-  });
-  test('rgba input - should change white text to black when background is white ', () => {
-    const expected = '#000';
-    const result = makeHighContrastColor('rgba(255, 255, 255, 1)', 'rgba(255, 255, 255, 1)');
-    expect(result).toEqual(expected);
-  });
-  test('word input - should change white text to black when background is white ', () => {
-    const expected = '#000';
-    const result = makeHighContrastColor('white', 'white');
-    expect(result).toEqual(expected);
-  });
-  // test contrast computation
-  test('should provide at least 4.5 contrast', () => {
-    const foreground = '#fff'; // white
-    const background = 'rgba(255, 255, 51, 0.3)'; // light yellow
-    const result = '#000'; // black
-    expect(result).toEqual(makeHighContrastColor(foreground, background));
-  });
-});
-
-describe('Get sum of two colors for background color', () => {
-  test('should return correct RGBA tuple with opacity greater than 0.7', () => {
-    const expected = [13, 5, 35, 1];
-    const result = getBackgroundWithContainerColorFromUser('rgba(121, 47, 249, 0.8)', '#1c1c24');
-    expect(result).toEqual(expected);
-  });
-  test('should return correct RGBA tuple with opacity less than 0.7', () => {
-    const expected = [227, 141, 142, 0.51];
-    const result = getBackgroundWithContainerColorFromUser('rgba(228, 26, 28, 0.3)', 'rgba(225, 255, 255, 1)');
-    expect(result).toEqual(expected);
+  describe('getBackgroundWithContainerColorFromUser', () => {
+    it('should return correct RGBA tuple with opacity greater than 0.7', () => {
+      const expected = [13, 5, 35, 1];
+      const result = getBackgroundWithContainerColorFromUser('rgba(121, 47, 249, 0.8)', '#1c1c24');
+      expect(result).toEqual(expected);
+    });
+    it('should return correct RGBA tuple with opacity less than 0.7', () => {
+      const expected = [227, 141, 142, 0.51];
+      const result = getBackgroundWithContainerColorFromUser('rgba(228, 26, 28, 0.3)', 'rgba(225, 255, 255, 1)');
+      expect(result).toEqual(expected);
+    });
   });
 });
