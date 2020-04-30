@@ -17,7 +17,7 @@
  * under the License. */
 
 import { wrapToTau } from '../geometry';
-import { Coordinate, Distance, Pixels, Radian, Radius, RingSector } from '../types/geometry_types';
+import { Coordinate, Distance, Pixels, Radian, Radius, Ratio, RingSector } from '../types/geometry_types';
 import { Config } from '../types/config_types';
 import { logarithm, TAU, trueBearingToStandardPositionAngle } from '../utils/math';
 import {
@@ -35,6 +35,7 @@ import { Layer } from '../../specs/index';
 import { getBackgroundWithContainerColorFromUser, makeHighContrastColor, colorIsDark } from '../utils/calcs';
 import { ValueFormatter, Color } from '../../../../utils/commons';
 import { RGBATupleToString, stringToRGB } from '../utils/d3_utils';
+import { RectangleConstruction, VerticalAlignments } from './viewmodel';
 
 const INFINITY_RADIUS = 1e4; // far enough for a sub-2px precision on a 4k screen, good enough for text bounds; 64 bit floats still work well with it
 
@@ -71,16 +72,6 @@ function angleToCircline(
 // todo pick a better unique key for the slices (D3 doesn't keep track of an index)
 export function nodeId(node: ShapeTreeNode): string {
   return `${node.x0}|${node.y0}`;
-}
-
-/** @internal */
-export function rectangleConstruction(node: ShapeTreeNode) {
-  return {
-    x0: node.x0,
-    y0: node.y0px,
-    x1: node.x1,
-    y1: node.y1px,
-  };
 }
 
 /** @internal */
@@ -181,34 +172,61 @@ export function getSectorRowGeometry(
   return { rowCentroidX, rowCentroidY, maximumRowLength };
 }
 
+function getVerticalAlignment(
+  container: RectangleConstruction,
+  verticalAlignment: VerticalAlignments,
+  linePitch: Pixels,
+  totalRowCount: number,
+  rowIndex: number,
+  padding: Pixels,
+  fontSize: Pixels,
+  overhang: Ratio,
+) {
+  switch (verticalAlignment) {
+    case VerticalAlignments.top:
+      return -(container.y0 + linePitch * rowIndex + padding + fontSize * overhang);
+    case VerticalAlignments.bottom:
+      return -(container.y1 - linePitch * (totalRowCount - 1 - rowIndex) - fontSize * overhang);
+    default:
+      return -((container.y0 + container.y1) / 2 + (linePitch * (rowIndex - totalRowCount)) / 2);
+  }
+}
+
 /** @internal */
 export function getRectangleRowGeometry(
-  container: any,
+  container: RectangleConstruction,
   cx: number,
   cy: number,
   totalRowCount: number,
   linePitch: Pixels,
   rowIndex: number,
   fontSize: Pixels,
+  _rotation: Radian,
+  verticalAlignment: VerticalAlignments,
 ): RowSpace {
-  const wordSpacing = getWordSpacing(fontSize);
-  const x0 = container.x0 + wordSpacing;
-  const y0 = container.y0 + linePitch / 2;
-  const x1 = container.x1 - wordSpacing;
-  const y1 = container.y1 - linePitch / 2;
-
-  // prettier-ignore
-  const offset =
-      (totalRowCount / 2) * fontSize
-    + fontSize / 2
-    - linePitch * rowIndex
-
-  const rowCentroidX = cx;
-  const rowCentroidY = cy - offset;
+  const overhang = 0.05;
+  const padding = fontSize < 6 ? 0 : Math.max(1, Math.min(2, fontSize / 16)); // taper out padding with small fonts
+  if ((container.y1 - container.y0 - 2 * padding) / totalRowCount < linePitch) {
+    return {
+      rowCentroidX: NaN,
+      rowCentroidY: NaN,
+      maximumRowLength: 0,
+    };
+  }
+  const rowCentroidY = getVerticalAlignment(
+    container,
+    verticalAlignment,
+    linePitch,
+    totalRowCount,
+    rowIndex,
+    padding,
+    fontSize,
+    overhang,
+  );
   return {
-    rowCentroidX,
-    rowCentroidY: -rowCentroidY,
-    maximumRowLength: rowCentroidY - linePitch / 2 < y0 || rowCentroidY + linePitch / 2 > y1 ? 0 : x1 - x0,
+    rowCentroidX: cx,
+    rowCentroidY,
+    maximumRowLength: container.x1 - container.x0 - 2 * padding,
   };
 }
 
@@ -223,6 +241,8 @@ function identityRowSet(): RowSet {
     fontSize: NaN,
     fillTextColor: '',
     rotation: NaN,
+    verticalAlignment: VerticalAlignments.middle,
+    leftAlign: false,
   };
 }
 
@@ -283,7 +303,7 @@ function getTextColor(
 function fill(
   config: Config,
   layers: Layer[],
-  fontSizes: string | any[],
+  allFontSizes: string | any[],
   measure: TextMeasure,
   rawTextGetter: RawTextGetter,
   valueGetter: ValueGetterFunction,
@@ -292,12 +312,20 @@ function fill(
   shapeConstructor: (n: ShapeTreeNode) => any,
   getShapeRowGeometry: (...args: any[]) => RowSpace,
   getRotation: Function,
+  leftAlign: boolean,
+  middleAlign: boolean,
   containerBackgroundColor?: Color,
 ) {
   return (node: QuadViewModel, index: number) => {
     const { maxRowCount, fillLabel } = config;
 
     const layer = layers[node.depth - 1] || {};
+    const verticalAlignment = middleAlign
+      ? VerticalAlignments.middle
+      : node.depth < layers.length
+      ? VerticalAlignments.bottom
+      : VerticalAlignments.top;
+    const fontSizes = allFontSizes[Math.min(node.depth, allFontSizes.length) - 1];
     const {
       textColor,
       textInvertible,
@@ -376,6 +404,8 @@ function fill(
 
           fillTextColor,
           rotation,
+          verticalAlignment,
+          leftAlign: leftAlign,
           rows: [...Array(targetRowCount)].map(() => ({
             rowWords: [],
             rowCentroidX: NaN,
@@ -383,6 +413,7 @@ function fill(
             maximumLength: NaN,
             length: NaN,
           })),
+          container,
         };
 
         let currentRowIndex = 0;
@@ -400,6 +431,7 @@ function fill(
             currentRowIndex,
             fontSize,
             rotation,
+            verticalAlignment,
           );
 
           currentRow.rowCentroidX = rowCentroidX;
@@ -468,25 +500,35 @@ export function fillTextLayout(
   shapeConstructor: (n: ShapeTreeNode) => any,
   getShapeRowGeometry: (...args: any[]) => RowSpace,
   getRotation: Function,
+  leftAlign: boolean,
+  middleAlign: boolean,
   containerBackgroundColor?: Color,
 ) {
-  const { minFontSize, maxFontSize, idealFontSizeJump } = config;
-  const fontSizeMagnification = maxFontSize / minFontSize;
-  const fontSizeJumpCount = Math.round(logarithm(idealFontSizeJump, fontSizeMagnification));
-  const realFontSizeJump = Math.pow(fontSizeMagnification, 1 / fontSizeJumpCount);
-  const fontSizes: Pixels[] = [];
-  for (let i = 0; i <= fontSizeJumpCount; i++) {
-    const fontSize = Math.round(minFontSize * Math.pow(realFontSizeJump, i));
-    if (fontSizes.indexOf(fontSize) === -1) {
-      fontSizes.push(fontSize);
+  const allFontSizes: Pixels[][] = [];
+  for (let l = 0; l <= layers.length; l++) {
+    // get font size spec from config, which layer.fillLabel properties can override
+    const { minFontSize, maxFontSize, idealFontSizeJump } = {
+      ...config,
+      ...(l < layers.length && layers[l].fillLabel),
+    };
+    const fontSizeMagnification = maxFontSize / minFontSize;
+    const fontSizeJumpCount = Math.round(logarithm(idealFontSizeJump, fontSizeMagnification));
+    const realFontSizeJump = Math.pow(fontSizeMagnification, 1 / fontSizeJumpCount);
+    const fontSizes: Pixels[] = [];
+    for (let i = 0; i <= fontSizeJumpCount; i++) {
+      const fontSize = Math.round(minFontSize * Math.pow(realFontSizeJump, i));
+      if (fontSizes.indexOf(fontSize) === -1) {
+        fontSizes.push(fontSize);
+      }
     }
+    allFontSizes.push(fontSizes);
   }
 
   return childNodes.map(
     fill(
       config,
       layers,
-      fontSizes,
+      allFontSizes,
       measure,
       rawTextGetter,
       valueGetter,
@@ -495,6 +537,8 @@ export function fillTextLayout(
       shapeConstructor,
       getShapeRowGeometry,
       getRotation,
+      leftAlign,
+      middleAlign,
       containerBackgroundColor,
     ),
   );

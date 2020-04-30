@@ -16,24 +16,29 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { Chart, Datum, Partition, PartitionLayout, Settings } from '../../src';
+import { Chart, Datum, Partition, PartitionLayout } from '../../src';
 import { mocks } from '../../src/mocks/hierarchical/index';
 import { config } from '../../src/chart_types/partition_chart/layout/config/config';
 import { arrayToLookup, hueInterpolator } from '../../src/chart_types/partition_chart/layout/utils/calcs';
-import { countryDimension, productDimension } from '../../src/mocks/hierarchical/dimension_codes';
-
+import { countryDimension, regionDimension } from '../../src/mocks/hierarchical/dimension_codes';
 import { palettes } from '../../src/mocks/hierarchical/palettes';
 import React from 'react';
 import { ShapeTreeNode } from '../../src/chart_types/partition_chart/layout/types/viewmodel_types';
 
-const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
+const regionLookup = arrayToLookup((d: Datum) => d.region, regionDimension);
 const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
 
 const interpolatorTurbo = hueInterpolator(palettes.turbo.map(([r, g, b]) => [r, g, b, 0.7]));
 
 export const example = () => (
-  <Chart className="story-chart">
-    <Settings showLegend />
+  <Chart
+    className="story-chart"
+    size={
+      {
+        /* height: 800*/
+      }
+    }
+  >
     <Partition
       id="spec_1"
       data={mocks.sunburst}
@@ -41,17 +46,21 @@ export const example = () => (
       valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
       layers={[
         {
-          groupByRollup: (d: Datum) => d.sitc1,
-          nodeLabel: (d: any) => productLookup[d].name.toUpperCase(),
+          groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.substr(0, 2),
+          nodeLabel: (d: any) => regionLookup[d].regionName.toUpperCase(),
           fillLabel: {
-            valueFormatter: () => '',
+            valueFormatter: () => ``,
             fontFamily: 'Helvetica',
-            textColor: 'grey',
-            textInvertible: true,
+            // fontVariant: 'small-caps',
+            textColor: '#555',
+            textInvertible: false,
+            fontWeight: 100,
+            // padding: 100,
+            minFontSize: 4,
+            maxFontSize: 14,
+            idealFontSizeJump: 1.005,
           },
-          shape: {
-            fillColor: 'rgba(0, 0, 0, 0)',
-          },
+          shape: { fillColor: 'rgba(0,0,0,0)' },
         },
         {
           groupByRollup: (d: Datum) => d.dest,
@@ -60,13 +69,13 @@ export const example = () => (
             valueFormatter: (d: number) => `${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`,
             textColor: 'black',
             textInvertible: true,
-            fontWeight: 100,
+            fontWeight: 200,
             fontStyle: 'normal',
             fontFamily: 'Helvetica',
-            fontVariant: 'normal',
-            valueFont: {
-              fontWeight: 100,
-            },
+            valueFont: { fontWeight: 400, fontStyle: 'italic' },
+            // padding: 100,
+            minFontSize: 8,
+            maxFontSize: 18,
           },
           shape: {
             fillColor: (d: ShapeTreeNode) => {
@@ -82,8 +91,8 @@ export const example = () => (
         partitionLayout: PartitionLayout.treemap,
         margin: { top: 0, bottom: 0, left: 0, right: 0 },
         minFontSize: 4,
-        maxFontSize: 84,
-        idealFontSizeJump: 1.35,
+        maxFontSize: 114,
+        idealFontSizeJump: 1.01,
         outerSizeRatio: 1,
       }}
     />

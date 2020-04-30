@@ -52,7 +52,7 @@ export function render(
   containerBackgroundColor?: Color,
 ): ShapeViewModel {
   const { width, height } = parentDimensions;
-  const { layers, config: specConfig } = partitionSpec;
+  const { layers, topGroove, config: specConfig } = partitionSpec;
   const textMeasurer = document.createElement('canvas');
   const textMeasurerCtx = textMeasurer.getContext('2d');
   const partialConfig: RecursivePartial<Config> = { ...specConfig, width, height };
@@ -70,6 +70,7 @@ export function render(
     partitionSpec.percentFormatter,
     valueGetter,
     tree,
+    topGroove,
     containerBackgroundColor,
   );
 }

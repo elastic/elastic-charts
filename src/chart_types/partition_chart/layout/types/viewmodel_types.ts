@@ -23,6 +23,7 @@ import { config, ValueGetterName } from '../config/config';
 import { ArrayNode, HierarchyOfArrays } from '../utils/group_by_rollup';
 import { Color } from '../../../../utils/commons';
 import { LinkLabelsViewModelSpec } from '../viewmodel/link_text_layout';
+import { VerticalAlignments } from '../viewmodel/viewmodel';
 
 export type LinkLabelVM = {
   link: [PointTuple, ...PointTuple[]]; // at least one point
@@ -63,6 +64,9 @@ export interface RowSet {
   fillTextColor: string;
   fontSize: number;
   rotation: Radian;
+  verticalAlignment: VerticalAlignments;
+  leftAlign: boolean; // might be generalized into horizontalAlign - if needed
+  container?: any;
 }
 
 export interface QuadViewModel extends ShapeTreeNode {

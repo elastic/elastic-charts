@@ -30,7 +30,11 @@ const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
 // style calcs
 const interpolatorCET2s = hueInterpolator(palettes.CET2s.map(([r, g, b]) => [r, g, b, 0.7]));
 
-const defaultFillColor = (colorMaker: any) => (d: any, i: number, a: any[]) => colorMaker(i / (a.length + 1));
+const defaultFillColor = (colorMaker: any) => ({ parent }: any) => {
+  const root = parent.parent;
+  const siblingCountLayer1 = root.children.length;
+  return colorMaker(parent.sortIndex / (siblingCountLayer1 + 1));
+};
 
 export const example = () => (
   <Chart
@@ -46,16 +50,17 @@ export const example = () => (
       data={mocks.sunburst}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
+      topGroove={0}
       layers={[
         {
           groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.substr(0, 2),
           nodeLabel: (d: any) => regionLookup[d].regionName,
           fillLabel: {
             valueFormatter: () => '',
-            textColor: 'rgba(0,0,0,0)',
+            textColor: 'black',
           },
           shape: {
-            fillColor: defaultFillColor(interpolatorCET2s),
+            fillColor: 'rgba(0,0,0,0)',
           },
         },
         {
@@ -71,7 +76,7 @@ export const example = () => (
             fontVariant: 'normal',
           },
           shape: {
-            fillColor: 'rgba(0,0,0,0)',
+            fillColor: defaultFillColor(interpolatorCET2s),
           },
         },
       ]}
