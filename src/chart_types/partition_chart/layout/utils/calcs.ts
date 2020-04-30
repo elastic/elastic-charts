@@ -17,7 +17,7 @@
  * under the License. */
 
 import { Ratio } from '../types/geometry_types';
-import { RgbTuple, stringToRGB } from './d3_utils';
+import { RgbTuple, stringToRGB, RGBATupleToString } from './d3_utils';
 import { Color } from '../../../../utils/commons';
 import chroma from 'chroma-js';
 
@@ -49,6 +49,16 @@ export function arrayToLookup(keyFun: Function, array: Array<any>) {
   return Object.assign({}, ...array.map((d) => ({ [keyFun(d)]: d })));
 }
 
+/**
+ * convert string names to rgba values
+ * @internal
+ */
+function convertStringToRGBAValue(text: string) {
+  if (text === 'white') {
+    return 'rgba(255, 255, 255, 1)';
+  }
+}
+
 /** @internal */
 export function convertRGBAStringToSeparateValues(rgba: Color) {
   const [red1, green1, blue1, alpha1 = 1] = rgba
@@ -61,16 +71,26 @@ export function convertRGBAStringToSeparateValues(rgba: Color) {
 /** If the user specifies the background of the container in which the chart will be on, we can use that color
  * and make sure to provide optimal contrast
 /** @internal */
-export function getBackgroundWithContainerColorFromUser(rgba1: Color, rgba2: Color) {
-  const alpha1 = convertRGBAStringToSeparateValues(rgba1).opacity;
-  const alpha2 = convertRGBAStringToSeparateValues(rgba2).opacity;
-  const combineAlpha = alpha1 + alpha2 * (1 - alpha2);
+export function combineColors(rgba1: Color, rgba2: Color) {
+  const { red: red1, green: green1, blue: blue1, opacity: alpha1 } = convertRGBAStringToSeparateValues(rgba1);
+  const { red: red2, green: green2, blue: blue2, opacity: alpha2 } = convertRGBAStringToSeparateValues(rgba2);
+  // For reference on alpha calculations:
+  // https://stackoverflow.com/questions/10781953/determine-rgba-colour-received-by-combining-two-colours
+  // Adapted the logic from gist:
+  // https://gist.github.com/JordanDelcros/518396da1c13f75ee057
+  const combineAlpha = 1 - (1 - alpha2) * (1 - alpha1);
+  const partialRed = (red2 * alpha2) / combineAlpha;
+  const baseRed = red1 * alpha1 * (1 - alpha2);
+  const red = Math.round((partialRed + baseRed) / combineAlpha);
 
-  if (combineAlpha < 0.7) {
-    return chroma.mix(rgba1, rgba2, combineAlpha).rgba();
-  } else {
-    return chroma.blend(rgba1, rgba2, 'multiply').rgba();
-  }
+  const partialGreen = (green2 * alpha2) / combineAlpha;
+  const baseGreen = green1 * alpha1 * (1 - alpha2);
+  const green = Math.round((partialGreen + baseGreen) / combineAlpha);
+
+  const partialBlue = (blue2 * alpha2) / combineAlpha;
+  const baseBlue = blue1 * alpha1 * (1 - alpha2);
+  const blue = Math.round((partialBlue + baseBlue) / combineAlpha);
+  return RGBATupleToString([red, green, blue, combineAlpha]);
 }
 
 /**
@@ -81,17 +101,18 @@ export function makeHighContrastColor(foreground: Color, background: Color, rati
   // determine the lightness factor of the background color to determine whether to lighten or darken the foreground
   const brightness = chroma(background).luminance();
   let highContrastTextColor = foreground;
+  const isBackgroundDark = brightness < 0.5;
   // determine whether white or black text is ideal contrast vs a grey that just passes 4.5 ratio
-  if (brightness < 0.5 && chroma.deltaE('black', foreground) === 0) {
+  if (isBackgroundDark && chroma.deltaE('black', foreground) === 0) {
     highContrastTextColor = '#fff';
   } else if (brightness > 0.5 && chroma.deltaE('white', foreground) === 0) {
     highContrastTextColor = '#000';
   }
   const precision = Math.pow(10, 4);
-  let contrast = chroma.contrast(highContrastTextColor, background);
+  let contrast = showContrastAmount(highContrastTextColor, background);
   // adjust the highContrastTextColor for shades of grey
   while (contrast < ratio) {
-    if (brightness < 0.5) {
+    if (isBackgroundDark) {
       highContrastTextColor = chroma(highContrastTextColor)
         .darken()
         .toString();
@@ -101,7 +122,7 @@ export function makeHighContrastColor(foreground: Color, background: Color, rati
         .toString();
     }
     const scaledOldContrast = Math.round(contrast * precision) / precision;
-    contrast = chroma.contrast(highContrastTextColor, background);
+    contrast = showContrastAmount(highContrastTextColor, background);
     const scaledContrast = Math.round(contrast * precision) / precision;
     // ideal contrast may not be possible in some cases
     if (scaledOldContrast === scaledContrast) {
@@ -109,6 +130,14 @@ export function makeHighContrastColor(foreground: Color, background: Color, rati
     }
   }
   return highContrastTextColor.toString();
+}
+
+/**
+ * show contrast amount
+ * @internal
+ */
+export function showContrastAmount(foregroundColor: string | chroma.Color, backgroundColor: string | chroma.Color) {
+  return chroma.contrast(foregroundColor, backgroundColor);
 }
 
 /** @internal */

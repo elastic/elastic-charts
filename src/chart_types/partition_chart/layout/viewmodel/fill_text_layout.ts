@@ -32,7 +32,7 @@ import {
 import { Box, Font, PartialFont, TextMeasure } from '../types/types';
 import { conjunctiveConstraint } from '../circline_geometry';
 import { Layer } from '../../specs/index';
-import { getBackgroundWithContainerColorFromUser, makeHighContrastColor, colorIsDark } from '../utils/calcs';
+import { combineColors, makeHighContrastColor, colorIsDark } from '../utils/calcs';
 import { ValueFormatter, Color } from '../../../../utils/commons';
 import { RGBATupleToString, stringToRGB } from '../utils/d3_utils';
 import { RectangleConstruction, VerticalAlignments } from './viewmodel';
@@ -275,6 +275,7 @@ export function getTextColor(
   containerBackgroundColor?: Color,
 ) {
   const sliceFillColor = node.fillColor;
+
   const backgroundIsDark = colorIsDark(sliceFillColor);
   const specifiedTextColorIsDark = colorIsDark(textColor);
   const inverseForContrast = textInvertible && specifiedTextColorIsDark === backgroundIsDark;
@@ -289,12 +290,13 @@ export function getTextColor(
   if (textInvertible) {
     const containerBackgroundColorFromUser =
       containerBackgroundColor !== undefined ? containerBackgroundColor : 'rgba(255, 255, 255, 0)';
-    const containerBackground = getBackgroundWithContainerColorFromUser(
-      sliceFillColor,
-      containerBackgroundColorFromUser,
-    );
+    console.log('container background color from user', containerBackgroundColorFromUser);
+    console.log(sliceFillColor);
+    const containerBackground = combineColors(sliceFillColor, containerBackgroundColorFromUser);
+    console.log(containerBackground);
     const formattedContainerBackground =
       typeof containerBackground !== 'string' ? RGBATupleToString(containerBackground) : containerBackground;
+    console.log(makeHighContrastColor, makeHighContrastColor(adjustedTextColor, formattedContainerBackground));
     return makeHighContrastColor(adjustedTextColor, formattedContainerBackground);
   }
   return adjustedTextColor;
@@ -342,18 +344,8 @@ function fill(
       layer.fillLabel,
       layer.shape,
     );
-    console.log(
-      'textColor',
-      textColor,
-      'textInvertible',
-      textInvertible,
-      'node',
-      node,
-      'containerBackgroundColor',
-      containerBackgroundColor,
-    );
+
     const fillTextColor = getTextColor(textColor, textInvertible, node, containerBackgroundColor);
-    console.log('fillTextColor', fillTextColor);
 
     const valueFont = Object.assign(
       { fontFamily: config.fontFamily, fontWeight: 'normal' },
