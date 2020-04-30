@@ -20,8 +20,9 @@ import { getHierarchyOfArrays } from './hierarchy_of_arrays';
 
 const rawFacts = [
   { sitc1: '7', exportVal: 0 },
-  { sitc1: '3', exportVal: 1929578418424 },
-  { sitc1: '5', exportVal: 848173542536 },
+  { sitc1: '3', exportVal: 3 },
+  { sitc1: 'G', exportVal: 1 },
+  { sitc1: '5', exportVal: -8 },
 ];
 
 const valueAccessor = (d: any) => d.exportVal;
@@ -29,7 +30,7 @@ const valueAccessor = (d: any) => d.exportVal;
 const groupByRollupAccessors = [() => null, (d: any) => d.sitc1];
 
 describe('Test', () => {
-  test('getHierarchyOfArrays should omit zero values', () => {
+  test('getHierarchyOfArrays should omit zero and negative values', () => {
     const outerResult = getHierarchyOfArrays(rawFacts, valueAccessor, groupByRollupAccessors);
     expect(outerResult.length).toBe(1);
 
