@@ -28,7 +28,7 @@ interface RectAnnotationTooltipProps {
 }
 
 /** @internal */
-export const AnnotationTooltiper = ({ state, chartRef }: RectAnnotationTooltipProps) => {
+export const AnnotationTooltip = ({ state, chartRef }: RectAnnotationTooltipProps) => {
   const renderTooltip = useCallback(() => {
     if (!state || !state.isVisible) {
       return null;

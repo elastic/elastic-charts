@@ -31,11 +31,10 @@ import { getAnnotationTooltipStateSelector } from '../../../state/selectors/get_
 import { isChartEmptySelector } from '../../../state/selectors/is_chart_empty';
 import { AnnotationLineProps } from '../../../annotations/line/types';
 import { computeChartDimensionsSelector } from '../../../state/selectors/compute_chart_dimensions';
-import { getFinalAnnotationTooltipPosition } from '../../../annotations/tooltip';
 import { getSpecsById } from '../../../state/utils';
-import { AnnotationTooltiper } from './annotation_tooltip';
+import { AnnotationTooltip } from './annotation_tooltip';
 
-interface AnnotationTooltipStateProps {
+interface AnnotationsStateProps {
   isChartEmpty: boolean;
   tooltipState: AnnotationTooltipState | null;
   chartDimensions: Dimensions;
@@ -43,20 +42,20 @@ interface AnnotationTooltipStateProps {
   annotationSpecs: AnnotationSpec[];
 }
 
-interface AnnotationTooltipOwnProps {
+interface AnnotationsOwnProps {
   getChartContainerRef: BackwardRef;
 }
 
-type AnnotationTooltipProps = AnnotationTooltipStateProps & AnnotationTooltipOwnProps;
+type AnnotationsProps = AnnotationsStateProps & AnnotationsOwnProps;
 
-const AnnotationTooltipComponent = ({
+const AnnotationsComponent = ({
   tooltipState,
   isChartEmpty,
   chartDimensions,
   annotationSpecs,
   annotationDimensions,
   getChartContainerRef,
-}: AnnotationTooltipProps) => {
+}: AnnotationsProps) => {
   if (isChartEmpty) {
     return null;
   }
@@ -108,14 +107,14 @@ const AnnotationTooltipComponent = ({
   return (
     <>
       {renderAnnotationMarkers()}
-      <AnnotationTooltiper state={tooltipState} chartRef={getChartContainerRef().current} />
+      <AnnotationTooltip state={tooltipState} chartRef={getChartContainerRef().current} />
     </>
   );
 };
 
-AnnotationTooltipComponent.displayName = 'AnnotationTooltip';
+AnnotationsComponent.displayName = 'Annotations';
 
-const mapStateToProps = (state: GlobalChartState): AnnotationTooltipStateProps => {
+const mapStateToProps = (state: GlobalChartState): AnnotationsStateProps => {
   if (!isInitialized(state)) {
     return {
       isChartEmpty: true,
@@ -135,4 +134,4 @@ const mapStateToProps = (state: GlobalChartState): AnnotationTooltipStateProps =
 };
 
 /** @internal */
-export const AnnotationTooltip = connect(mapStateToProps)(AnnotationTooltipComponent);
+export const Annotations = connect(mapStateToProps)(AnnotationsComponent);
