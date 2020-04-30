@@ -21,7 +21,7 @@ import { connect } from 'react-redux';
 import React, { memo, useCallback, useMemo } from 'react';
 
 import { TooltipInfo, TooltipAnchorPosition } from './types';
-import { TooltipValueFormatter, TooltipSettings } from '../../specs';
+import { TooltipValueFormatter, TooltipSettings, TooltipValue } from '../../specs';
 import { Portal, PopperSettings, AnchorPosition } from '../portal';
 import { getInternalIsTooltipVisibleSelector } from '../../state/selectors/get_internal_is_tooltip_visible';
 import { getTooltipHeaderFormatterSelector } from '../../state/selectors/get_tooltip_header_formatter';
@@ -55,50 +55,46 @@ const TooltipComponent = ({
 }: TooltipProps) => {
   const chartRef = getChartContainerRef();
 
-  const renderHeader = useCallback(() => {
-    if (!info || !info.header || !info.header.isVisible) {
-      return null;
-    }
-    return (
-      <div className="echTooltip__header">{headerFormatter ? headerFormatter(info.header) : info.header.value}</div>
-    );
-  }, [info?.header, info?.header?.isVisible, headerFormatter]);
+  const renderHeader = useCallback(
+    (header: TooltipValue | null) => {
+      if (!header || !header.isVisible) {
+        return null;
+      }
 
-  const renderValues = useCallback(() => {
-    if (!info || !info.header || !info.header.isVisible) {
-      return null;
-    }
+      return <div className="echTooltip__header">{headerFormatter ? headerFormatter(header) : header.value}</div>;
+    },
+    [info?.header?.value, info?.header?.isVisible],
+  );
 
-    return (
-      <div className="echTooltip__list">
-        {info.values.map(
-          ({ seriesIdentifier, valueAccessor, label, value, markValue, color, isHighlighted, isVisible }, index) => {
-            if (!isVisible) {
-              return null;
-            }
-            const classes = classNames('echTooltip__item', {
-              /* eslint @typescript-eslint/camelcase:0 */
-              echTooltip__rowHighlighted: isHighlighted,
-            });
-            return (
-              <div
-                // NOTE: temporary to avoid errors
-                key={`${seriesIdentifier.key}__${valueAccessor}__${index}`}
-                className={classes}
-                style={{
-                  borderLeftColor: color,
-                }}
-              >
-                <span className="echTooltip__label">{label}</span>
-                <span className="echTooltip__value">{value}</span>
-                {markValue && <span className="echTooltip__markValue">&nbsp;({markValue})</span>}
-              </div>
-            );
-          },
-        )}
-      </div>
-    );
-  }, [info?.values, headerFormatter]);
+  const renderValues = (values: TooltipValue[]) => (
+    <div className="echTooltip__list">
+      {values.map(
+        ({ seriesIdentifier, valueAccessor, label, value, markValue, color, isHighlighted, isVisible }, index) => {
+          if (!isVisible) {
+            return null;
+          }
+          const classes = classNames('echTooltip__item', {
+            /* eslint @typescript-eslint/camelcase:0 */
+            echTooltip__rowHighlighted: isHighlighted,
+          });
+          return (
+            <div
+              // NOTE: temporary to avoid errors
+              key={`${seriesIdentifier.key}__${valueAccessor}__${index}`}
+              className={classes}
+              style={{
+                borderLeftColor: color,
+              }}
+            >
+              <span className="echTooltip__label">{label}</span>
+              <span className="echTooltip__value">{value}</span>
+              {markValue && <span className="echTooltip__markValue">&nbsp;({markValue})</span>}
+            </div>
+          );
+        },
+      )}
+    </div>
+  );
 
   const renderTooltip = () => {
     if (!info || !isVisible) {
@@ -112,8 +108,8 @@ const TooltipComponent = ({
 
     return (
       <div className="echTooltip">
-        {renderHeader()}
-        {renderValues()}
+        {renderHeader(info.header)}
+        {renderValues(info.values)}
       </div>
     );
   };
