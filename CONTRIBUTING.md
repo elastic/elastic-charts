@@ -22,7 +22,7 @@ These are the best practices we are currently following during a PR review
 
 ### Fixing a review comment
 
-When fixing a comment, try to use a meaningful title in commits, avoid too abstract description whenever possible: a commit like `fix: PR review comments` should be avoided. A meaningful title/description helps other reviewers too.
+When fixing a comment, try to use a meaningful title in commits, avoid a too abstract description whenever possible: a commit like `fix: PR review comments` should be avoided. A meaningful title/description helps other reviewers too.
 
 ### Reply to a review comment
 
@@ -30,6 +30,7 @@ If the reviewer left a comment on a line/file, please reply to that comment addi
 Leave the comment **unresolved** and let the reviewer marks it as resolved. This will allow double-checking the fix by the reviewer keeping the discussion open if required.
 
 ### GitHub Suggestions
+
 Whenever possible, avoid clicking on `commit suggestion`. The only reasonable case for committing directly a suggestion is on textual changes like in a JSDoc comment or a MarkDown file.
 Take every **suggestion** as they are: **suggestions**. Consider that a suggestion may only partially cover the required changes in the file.
 
