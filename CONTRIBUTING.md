@@ -18,7 +18,7 @@ The following tools are used to ensure this convention:
 
 ### PR reviews
 
-This are the best practices we are currently following during a PR review
+These are the best practices we are currently following during a PR review
 
 ### Fixing a review comment
 
@@ -49,12 +49,12 @@ To quickly summarize the standard:
 
 [optional footer(s)]
 ```
-Where the **body** should contain a meaningful description of your PR, usually a reviewed version of the GitHub PR description.
+Where the **body** should contain a meaningful description of your PR, usually a reviewed version of the GitHub PR description. It can contain multiple paragraphs or bullet points and can use MarkDown syntax.
 
-If your PR contains breaking changes, include in the footer (leave one blank line after the body), a paragraph starting with `BREAKING CHANGE: `
-(text BREAKING CHANGE, followed by a colon, space, and description)
+If your PR contains breaking changes, please include a paragraph starting with `BREAKING CHANGE: `
+(text BREAKING CHANGE, followed by a colon, space, and description). Include this section after the body leaving a blank line in between.
 
-If your PR fix or close any issue,  include in the footer (leave one blank line after the body or after the breaking change paragraph), a paragraph that list all the fixed in the following way `fix #123, close #111`
+If your PR fix or close any issue, please include in the footer a paragraph that list all the fixed in the following way `fix #123, close #111`. Include this section after the BREAKING CHANGE section if any or anyway after the body, leaving a blank line in between.
 
 This is an example that cover all cases:
 
