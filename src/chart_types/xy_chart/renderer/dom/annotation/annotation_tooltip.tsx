@@ -40,8 +40,6 @@ export const AnnotationTooltiper = ({ state, chartRef }: RectAnnotationTooltipPr
   const position = useMemo(() => state?.anchor ?? null, [state, state?.anchor]);
   const placement = useMemo(() => state?.anchor?.position ?? Placement.Right, [state, state?.anchor?.position]);
 
-  console.log(state?.anchor);
-
   return (
     <Portal
       scope="RectAnnotationTooltip"

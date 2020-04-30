@@ -18,7 +18,7 @@
 
 import { AnnotationLineProps } from './types';
 import { isWithinRectBounds } from '../rect/dimensions';
-import { isXDomain } from '../utils';
+import { isXDomain, getTranformedCursor, invertTranformedCursor } from '../utils';
 import { AnnotationTooltipState, AnnotationMarker, Bounds } from '../types';
 import { getAxesSpecForSpecId } from '../../state/utils';
 import { AnnotationDomainType, AnnotationTypes, AxisSpec } from '../../utils/specs';
@@ -43,21 +43,27 @@ export function computeLineAnnotationTooltipState(
     return null;
   }
 
-  const chartAreaProjectedPointer = {
-    x: cursorPosition.x - chartDimensions.left,
-    y: cursorPosition.y - chartDimensions.top,
-  };
+  const projectedPointer = getTranformedCursor(cursorPosition, chartDimensions, null, true);
   const totalAnnotationLines = annotationLines.length;
   for (let i = 0; i < totalAnnotationLines; i++) {
     const line = annotationLines[i];
-    const isWithinBounds = line.marker && isWithinLineMarkerBounds(chartAreaProjectedPointer, line.marker);
 
-    if (isWithinBounds) {
+    if (isWithinLineMarkerBounds(projectedPointer, line.marker)) {
+      const position = invertTranformedCursor(
+        {
+          x: line.marker.position.left,
+          y: line.marker.position.top,
+        },
+        chartDimensions,
+        null,
+        true,
+      );
       return {
         annotationType: AnnotationTypes.Line,
         isVisible: true,
         anchor: {
-          ...line.marker.position,
+          top: position.y,
+          left: position.x,
           ...line.marker.dimension,
         },
         ...(line.details && { header: line.details.headerText }),
@@ -74,7 +80,11 @@ export function computeLineAnnotationTooltipState(
  * @param cursorPosition the cursor position relative to the projected area
  * @param marker the line annotation marker
  */
-function isWithinLineMarkerBounds(cursorPosition: Point, marker: AnnotationMarker): boolean {
+function isWithinLineMarkerBounds(cursorPosition: Point, marker?: AnnotationMarker): marker is AnnotationMarker {
+  if (!marker) {
+    return false;
+  }
+
   const { top, left } = marker.position;
   const { width, height } = marker.dimension;
   const markerRect: Bounds = { startX: left, startY: top, endX: left + width, endY: top + height };

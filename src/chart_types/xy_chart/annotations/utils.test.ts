@@ -30,7 +30,7 @@ import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../utils/themes/theme';
 import { Dimensions } from '../../../utils/dimensions';
 import { GroupId, AnnotationId } from '../../../utils/ids';
 import { Scale, ScaleType, ScaleBand, ScaleContinuous } from '../../../scales';
-import { computeAnnotationDimensions, getAnnotationAxis, getRotatedCursor } from './utils';
+import { computeAnnotationDimensions, getAnnotationAxis, getRotatedCursor, invertRotatedCursor } from './utils';
 import { AnnotationDimensions, AnnotationTooltipState, Bounds } from './types';
 import { computeLineAnnotationDimensions } from './line/dimensions';
 import { AnnotationLineProps } from './line/types';
@@ -1365,5 +1365,26 @@ describe('annotation utils', () => {
     expect(getRotatedCursor(cursorPosition, chartDimensions, 90)).toEqual({ x: 2, y: 9 });
     expect(getRotatedCursor(cursorPosition, chartDimensions, -90)).toEqual({ x: 18, y: 1 });
     expect(getRotatedCursor(cursorPosition, chartDimensions, 180)).toEqual({ x: 9, y: 18 });
+  });
+
+  describe('#invertRotatedCursor', () => {
+    const cursorPosition = { x: 1, y: 2 };
+
+    it.each<Rotation>([0, 90, -90, 180])('Should invert rotated cursor - rotation %d', (rotation) => {
+      expect(
+        invertRotatedCursor(getRotatedCursor(cursorPosition, chartDimensions, rotation), chartDimensions, rotation),
+      ).toEqual(cursorPosition);
+    });
+
+    it.each<Rotation>([0, 90, -90, 180])('Should invert rotated projected cursor - rotation %d', (rotation) => {
+      expect(
+        invertRotatedCursor(
+          getRotatedCursor(cursorPosition, chartDimensions, rotation, true),
+          chartDimensions,
+          rotation,
+          true,
+        ),
+      ).toEqual(cursorPosition);
+    });
   });
 });
