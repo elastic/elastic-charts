@@ -16,10 +16,10 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 
-import { isLineAnnotation, AnnotationSpec, AnnotationTypes } from '../../../utils/specs';
+import { isLineAnnotation, AnnotationSpec } from '../../../utils/specs';
 import { AnnotationId } from '../../../../../utils/ids';
 import { AnnotationDimensions, AnnotationTooltipState } from '../../../annotations/types';
 import { Dimensions } from '../../../../../utils/dimensions';
@@ -31,12 +31,9 @@ import { getAnnotationTooltipStateSelector } from '../../../state/selectors/get_
 import { isChartEmptySelector } from '../../../state/selectors/is_chart_empty';
 import { AnnotationLineProps } from '../../../annotations/line/types';
 import { computeChartDimensionsSelector } from '../../../state/selectors/compute_chart_dimensions';
-import { createPortal } from 'react-dom';
 import { getFinalAnnotationTooltipPosition } from '../../../annotations/tooltip';
 import { getSpecsById } from '../../../state/utils';
-import { Position } from '../../../../../utils/commons';
-import { RectAnnotationTooltip } from './rect_annotation_tooltip';
-import { LineAnnotationTooltip } from './line_annotation_tooltip';
+import { AnnotationTooltiper } from './annotation_tooltip';
 
 interface AnnotationTooltipStateProps {
   isChartEmpty: boolean;
@@ -52,150 +49,44 @@ interface AnnotationTooltipOwnProps {
 
 type AnnotationTooltipProps = AnnotationTooltipStateProps & AnnotationTooltipOwnProps;
 
-const ANNOTATION_CONTAINER_ID = 'echAnnotationContainerPortal';
-
-class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps> {
-  static displayName = 'AnnotationTooltip';
-  portalNode: HTMLDivElement | null = null;
-  tooltipRef: React.RefObject<HTMLDivElement>;
-  /**
-   * Max allowable width for tooltip to grow to. Used to determine container fit.
-   *
-   * @unit px
-   */
-  static MAX_WIDTH = 256;
-
-  constructor(props: AnnotationTooltipProps) {
-    super(props);
-    this.tooltipRef = React.createRef();
+const AnnotationTooltipComponent = ({
+  tooltipState,
+  isChartEmpty,
+  chartDimensions,
+  annotationSpecs,
+  annotationDimensions,
+  getChartContainerRef,
+}: AnnotationTooltipProps) => {
+  if (isChartEmpty) {
+    return null;
   }
 
-  createPortalNode() {
-    const container = document.getElementById(ANNOTATION_CONTAINER_ID);
-    if (container) {
-      this.portalNode = container as HTMLDivElement;
-    } else {
-      this.portalNode = document.createElement('div');
-      this.portalNode.id = ANNOTATION_CONTAINER_ID;
-      this.portalNode.style.width = `${AnnotationTooltipComponent.MAX_WIDTH}px`;
-      document.body.appendChild(this.portalNode);
-    }
-  }
-  componentDidMount() {
-    this.createPortalNode();
-  }
-  componentDidUpdate() {
-    // calling on componentDidUpdate because the annotation container can be
-    // removed by another chart on the same page
-    this.createPortalNode();
-    if (!this.tooltipRef.current) {
-      return;
-    }
-    const { getChartContainerRef } = this.props;
-    const chartContainerRef = getChartContainerRef();
-    if (!chartContainerRef.current) {
-      return;
-    }
+  const renderAnnotationLineMarkers = useCallback(
+    (annotationLines: AnnotationLineProps[], id: AnnotationId) =>
+      annotationLines.reduce<JSX.Element[]>((markers, { marker }: AnnotationLineProps, index: number) => {
+        if (!marker) {
+          return markers;
+        }
 
-    const { tooltipState, chartDimensions } = this.props;
-    if (!tooltipState || !tooltipState.isVisible || !this.portalNode) {
-      return null;
-    }
+        const { icon, color, position } = marker;
+        const style = {
+          color,
+          top: chartDimensions.top + position.top,
+          left: chartDimensions.left + position.left,
+        };
 
-    const chartContainerBBox = chartContainerRef.current.getBoundingClientRect();
-    const width = Math.min(AnnotationTooltipComponent.MAX_WIDTH, chartContainerBBox.width * 0.7);
-    this.portalNode.style.width = `${width}px`;
-    const tooltipBBox = this.tooltipRef.current.getBoundingClientRect();
-    const tooltipStyle = getFinalAnnotationTooltipPosition(
-      chartContainerBBox,
-      chartDimensions,
-      tooltipBBox,
-      tooltipState.anchor,
-      width,
-    );
+        markers.push(
+          <div className="echAnnotation" style={{ ...style }} key={`annotation-${id}-${index}`}>
+            {icon}
+          </div>,
+        );
 
-    if (tooltipStyle.left) {
-      this.portalNode.style.left = tooltipStyle.left;
-    }
-    if (tooltipStyle.top) {
-      this.portalNode.style.top = tooltipStyle.top;
-    }
+        return markers;
+      }, []),
+    [],
+  );
 
-    if (tooltipStyle.left) {
-      this.portalNode.style.left = tooltipStyle.left;
-      if (this.tooltipRef.current) {
-        this.tooltipRef.current.style.left = tooltipStyle.anchor === Position.Right ? 'auto' : '0px';
-        this.tooltipRef.current.style.right = tooltipStyle.anchor === Position.Right ? '0px' : 'auto';
-      }
-    }
-    if (tooltipStyle.top) {
-      this.portalNode.style.top = tooltipStyle.top;
-    }
-  }
-
-  componentWillUnmount() {
-    if (this.portalNode && this.portalNode.parentNode) {
-      this.portalNode.parentNode.removeChild(this.portalNode);
-    }
-  }
-
-  renderTooltip = () => {
-    const { tooltipState } = this.props;
-    if (!this.portalNode) {
-      return null;
-    }
-    if (!tooltipState || !tooltipState.isVisible) {
-      return <div className="echAnnotation__tooltip echAnnotation__tooltip--hidden" />;
-    }
-
-    const { details, header } = tooltipState;
-
-    switch (tooltipState.annotationType) {
-      case AnnotationTypes.Line: {
-        const props = { details, header };
-        return createPortal(<LineAnnotationTooltip {...props} ref={this.tooltipRef} />, this.portalNode);
-      }
-      case AnnotationTypes.Rectangle: {
-        const props = { details, customTooltip: tooltipState.renderTooltip };
-        return createPortal(<RectAnnotationTooltip {...props} ref={this.tooltipRef} />, this.portalNode);
-      }
-      default:
-        return null;
-    }
-  };
-
-  renderAnnotationLineMarkers(annotationLines: AnnotationLineProps[], id: AnnotationId): JSX.Element[] {
-    const { chartDimensions } = this.props;
-
-    const markers: JSX.Element[] = [];
-
-    annotationLines.forEach((line: AnnotationLineProps, index: number) => {
-      if (!line.marker) {
-        return;
-      }
-
-      const { icon, color, position } = line.marker;
-
-      const style = {
-        color,
-        top: chartDimensions.top + position.top,
-        left: chartDimensions.left + position.left,
-      };
-
-      const markerElement = (
-        <div className="echAnnotation" style={{ ...style }} key={`annotation-${id}-${index}`}>
-          {icon}
-        </div>
-      );
-
-      markers.push(markerElement);
-    });
-
-    return markers;
-  }
-
-  renderAnnotationMarkers(): JSX.Element[] {
-    const { annotationDimensions, annotationSpecs } = this.props;
+  const renderAnnotationMarkers = useCallback((): JSX.Element[] => {
     const markers: JSX.Element[] = [];
 
     annotationDimensions.forEach((dimensions: AnnotationDimensions, id: AnnotationId) => {
@@ -206,29 +97,23 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
 
       if (isLineAnnotation(annotationSpec)) {
         const annotationLines = dimensions as AnnotationLineProps[];
-        const lineMarkers = this.renderAnnotationLineMarkers(annotationLines, id);
+        const lineMarkers = renderAnnotationLineMarkers(annotationLines, id);
         markers.push(...lineMarkers);
       }
     });
 
     return markers;
-  }
+  }, [annotationDimensions, annotationSpecs]);
 
-  render() {
-    const { isChartEmpty } = this.props;
+  return (
+    <>
+      {renderAnnotationMarkers()}
+      <AnnotationTooltiper state={tooltipState} chartRef={getChartContainerRef().current} />
+    </>
+  );
+};
 
-    if (isChartEmpty) {
-      return null;
-    }
-
-    return (
-      <>
-        {this.renderAnnotationMarkers()}
-        {this.renderTooltip()}
-      </>
-    );
-  }
-}
+AnnotationTooltipComponent.displayName = 'AnnotationTooltip';
 
 const mapStateToProps = (state: GlobalChartState): AnnotationTooltipStateProps => {
   if (!isInitialized(state)) {

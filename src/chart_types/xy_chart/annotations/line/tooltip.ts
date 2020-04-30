@@ -24,6 +24,7 @@ import { getAxesSpecForSpecId } from '../../state/utils';
 import { AnnotationDomainType, AnnotationTypes, AxisSpec } from '../../utils/specs';
 import { GroupId } from '../../../../utils/ids';
 import { Point } from '../../../../utils/point';
+import { Dimensions } from '../../../../utils/dimensions';
 
 /** @internal */
 export function computeLineAnnotationTooltipState(
@@ -32,37 +33,40 @@ export function computeLineAnnotationTooltipState(
   groupId: GroupId,
   domainType: AnnotationDomainType,
   axesSpecs: AxisSpec[],
-): AnnotationTooltipState {
+  chartDimensions: Dimensions,
+): AnnotationTooltipState | null {
   const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, groupId);
   const isXDomainAnnotation = isXDomain(domainType);
   const annotationAxis = isXDomainAnnotation ? xAxis : yAxis;
 
   if (!annotationAxis) {
-    return {
-      isVisible: false,
-    };
+    return null;
   }
 
+  const chartAreaProjectedPointer = {
+    x: cursorPosition.x - chartDimensions.left,
+    y: cursorPosition.y - chartDimensions.top,
+  };
   const totalAnnotationLines = annotationLines.length;
   for (let i = 0; i < totalAnnotationLines; i++) {
     const line = annotationLines[i];
-    const isWithinBounds = line.marker && isWithinLineMarkerBounds(cursorPosition, line.marker);
+    const isWithinBounds = line.marker && isWithinLineMarkerBounds(chartAreaProjectedPointer, line.marker);
 
     if (isWithinBounds) {
       return {
         annotationType: AnnotationTypes.Line,
         isVisible: true,
         anchor: {
-          ...line.anchor,
+          ...line.marker.position,
+          ...line.marker.dimension,
         },
         ...(line.details && { header: line.details.headerText }),
         ...(line.details && { details: line.details.detailsText }),
       };
     }
   }
-  return {
-    isVisible: false,
-  };
+
+  return null;
 }
 
 /**

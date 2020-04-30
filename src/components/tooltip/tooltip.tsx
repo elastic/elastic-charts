@@ -156,6 +156,8 @@ const TooltipComponent = ({
   );
 };
 
+TooltipComponent.displayName = 'Tooltip';
+
 const HIDDEN_TOOLTIP_PROPS = {
   isVisible: false,
   info: undefined,

@@ -58,9 +58,10 @@ export function computeAnnotationTooltipState(
         groupId,
         spec.domainType,
         axesSpecs,
+        chartDimensions,
       );
 
-      if (lineAnnotationTooltipState.isVisible) {
+      if (lineAnnotationTooltipState) {
         return lineAnnotationTooltipState;
       }
     } else if (isRectAnnotation(spec)) {
@@ -72,7 +73,7 @@ export function computeAnnotationTooltipState(
         spec.renderTooltip,
       );
 
-      if (rectAnnotationTooltipState.isVisible) {
+      if (rectAnnotationTooltipState) {
         return rectAnnotationTooltipState;
       }
     }
