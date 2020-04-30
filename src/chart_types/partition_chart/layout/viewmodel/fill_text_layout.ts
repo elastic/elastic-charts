@@ -290,13 +290,9 @@ export function getTextColor(
   if (textInvertible) {
     const containerBackgroundColorFromUser =
       containerBackgroundColor !== undefined ? containerBackgroundColor : 'rgba(255, 255, 255, 0)';
-    console.log('container background color from user', containerBackgroundColorFromUser);
-    console.log(sliceFillColor);
     const containerBackground = combineColors(sliceFillColor, containerBackgroundColorFromUser);
-    console.log(containerBackground);
     const formattedContainerBackground =
       typeof containerBackground !== 'string' ? RGBATupleToString(containerBackground) : containerBackground;
-    console.log(makeHighContrastColor, makeHighContrastColor(adjustedTextColor, formattedContainerBackground));
     return makeHighContrastColor(adjustedTextColor, formattedContainerBackground);
   }
   return adjustedTextColor;

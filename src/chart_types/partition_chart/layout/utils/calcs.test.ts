@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { makeHighContrastColor, getBackgroundWithContainerColorFromUser } from './calcs';
+import { makeHighContrastColor, combineColors } from './calcs';
 
 describe('calcs', () => {
   describe('makeHighContrastColor', () => {
@@ -49,15 +49,15 @@ describe('calcs', () => {
       expect(result).toEqual(makeHighContrastColor(foreground, background));
     });
   });
-  describe('getBackgroundWithContainerColorFromUser', () => {
+  describe('combineColors', () => {
     it('should return correct RGBA tuple with opacity greater than 0.7', () => {
       const expected = [13, 5, 35, 1];
-      const result = getBackgroundWithContainerColorFromUser('rgba(121, 47, 249, 0.8)', '#1c1c24');
+      const result = combineColors('rgba(121, 47, 249, 0.8)', '#1c1c24');
       expect(result).toEqual(expected);
     });
     it('should return correct RGBA tuple with opacity less than 0.7', () => {
       const expected = [227, 141, 142, 0.51];
-      const result = getBackgroundWithContainerColorFromUser('rgba(228, 26, 28, 0.3)', 'rgba(225, 255, 255, 1)');
+      const result = combineColors('rgba(228, 26, 28, 0.3)', 'rgba(225, 255, 255, 1)');
       expect(result).toEqual(expected);
     });
   });

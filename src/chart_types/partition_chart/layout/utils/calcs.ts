@@ -49,16 +49,6 @@ export function arrayToLookup(keyFun: Function, array: Array<any>) {
   return Object.assign({}, ...array.map((d) => ({ [keyFun(d)]: d })));
 }
 
-/**
- * convert string names to rgba values
- * @internal
- */
-function convertStringToRGBAValue(text: string) {
-  if (text === 'white') {
-    return 'rgba(255, 255, 255, 1)';
-  }
-}
-
 /** @internal */
 export function convertRGBAStringToSeparateValues(rgba: Color) {
   const [red1, green1, blue1, alpha1 = 1] = rgba
