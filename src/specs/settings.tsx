@@ -171,7 +171,7 @@ export interface TooltipProps {
    */
   placement?: Placement;
   /**
-   * If given tooltip placement is not sutable, these `Position`s will
+   * If given tooltip placement is not sutable, these `Placement`s will
    * be used as fallback placements.
    */
   fallbackPlacements?: Placement[];
