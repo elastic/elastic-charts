@@ -22,7 +22,7 @@ These are the best practices we are currently following during a PR review
 
 ### Fixing a review comment
 
-When fixing a comment, try to use a meaningful title in commits, avoid a too abstract description whenever possible: a commit like `fix: PR review comments` should be avoided. A meaningful title/description helps other reviewers too.
+When fixing a comment, use meaningful titles in commits and avoid abstract descriptions whenever possible: a commit like `fix: PR review comments` should be avoided. A meaningful title/description helps other reviewers too.
 
 ### Reply to a review comment
 
