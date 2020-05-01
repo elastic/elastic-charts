@@ -28,13 +28,22 @@ export const PartitionLayout = Object.freeze({
 
 export type PartitionLayout = Values<typeof PartitionLayout>; // could use ValuesType<typeof HierarchicalChartTypes>
 
+export interface PerSidePadding {
+  top: Pixels;
+  right: Pixels;
+  bottom: Pixels;
+  left: Pixels;
+}
+
+export type Padding = Pixels | PerSidePadding;
+
 interface LabelConfig extends Font {
   textColor: Color;
   textInvertible: boolean;
   textOpacity: Ratio;
   valueFormatter: ValueFormatter;
   valueFont: PartialFont;
-  padding: number;
+  padding: Padding;
 }
 
 export type FillLabelConfig = LabelConfig;
