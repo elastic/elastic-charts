@@ -49,8 +49,8 @@ describe('Test that getRectangleRowGeometry works with:', () => {
     // full container width is available; small Y offset for overhang
     expect(result).toEqual({
       maximumRowLength: 200,
-      rowCentroidX: 0,
-      rowCentroidY: overhangOffset,
+      rowAnchorX: 0,
+      rowAnchorY: overhangOffset,
     });
   });
 
@@ -71,8 +71,8 @@ describe('Test that getRectangleRowGeometry works with:', () => {
     // full container width is available; small Y offset for overhang
     expect(result).toEqual({
       maximumRowLength: 200 - padding * 2,
-      rowCentroidX: 0,
-      rowCentroidY: overhangOffset - padding,
+      rowAnchorX: 0,
+      rowAnchorY: overhangOffset - padding,
     });
   });
 
@@ -93,8 +93,8 @@ describe('Test that getRectangleRowGeometry works with:', () => {
     // full container width is available; small Y offset for overhang
     expect(result).toEqual({
       maximumRowLength: 200 - padding.left - padding.right,
-      rowCentroidX: 0,
-      rowCentroidY: overhangOffset - padding.top,
+      rowAnchorX: 0,
+      rowAnchorY: overhangOffset - padding.top,
     });
   });
 
@@ -115,8 +115,8 @@ describe('Test that getRectangleRowGeometry works with:', () => {
     // full container width is available; small Y offset for overhang
     expect(result).toEqual({
       maximumRowLength: 200 - defaultPadding - padding.right,
-      rowCentroidX: 0,
-      rowCentroidY: overhangOffset - defaultPadding,
+      rowAnchorX: 0,
+      rowAnchorY: overhangOffset - defaultPadding,
     });
   });
 
@@ -137,8 +137,8 @@ describe('Test that getRectangleRowGeometry works with:', () => {
     // full container width is available; small Y offset for overhang
     expect(result).toEqual({
       maximumRowLength: 0, // Height of 100 - 2 * 80 < 50
-      rowCentroidX: NaN, // if text can't be placed, what is its anchor?
-      rowCentroidY: NaN, // if text can't be placed, what is its anchor?
+      rowAnchorX: NaN, // if text can't be placed, what is its anchor?
+      rowAnchorY: NaN, // if text can't be placed, what is its anchor?
     });
   });
 
@@ -159,8 +159,8 @@ describe('Test that getRectangleRowGeometry works with:', () => {
     // full container width is available; small Y offset for overhang
     expect(result).toEqual({
       maximumRowLength: 0,
-      rowCentroidX: NaN, // if text can't be placed, what is its anchor?
-      rowCentroidY: NaN, // if text can't be placed, what is its anchor?
+      rowAnchorX: NaN, // if text can't be placed, what is its anchor?
+      rowAnchorY: NaN, // if text can't be placed, what is its anchor?
     });
   });
 
@@ -181,8 +181,8 @@ describe('Test that getRectangleRowGeometry works with:', () => {
     // full container width is available; small Y offset for overhang
     expect(result).toEqual({
       maximumRowLength: 200 - 2 * defaultPadding, // Height of 100 - 2 * 80 < 50
-      rowCentroidX: 0,
-      rowCentroidY: overhangOffset - padding.top,
+      rowAnchorX: 0,
+      rowAnchorY: overhangOffset - padding.top,
     });
   });
 
@@ -208,8 +208,8 @@ describe('Test that getRectangleRowGeometry works with:', () => {
     // full container width is available; small Y offset for overhang
     expect(result).toEqual({
       maximumRowLength: 200 - 2 * defaultPadding, // Height of 100 - 2 * 80 < 50
-      rowCentroidX: 0,
-      rowCentroidY: smallOverhangOffset - padding.top,
+      rowAnchorX: 0,
+      rowAnchorY: smallOverhangOffset - padding.top,
     });
   });
 
@@ -234,8 +234,8 @@ describe('Test that getRectangleRowGeometry works with:', () => {
     // full container width is available; small Y offset for overhang
     expect(result).toEqual({
       maximumRowLength: 0, // Height of 100 - (10 + smallOverhangOffset) - 45  < totalRowCount2 * smallLinePitch
-      rowCentroidX: NaN,
-      rowCentroidY: NaN,
+      rowAnchorX: NaN,
+      rowAnchorY: NaN,
     });
   });
 });

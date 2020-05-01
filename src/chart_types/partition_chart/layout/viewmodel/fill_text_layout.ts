@@ -159,17 +159,17 @@ export const getSectorRowGeometry: GetShapeRowGeometry = (
   const midCircline = makeRowCircline(cx, cy, offset, rotation, 0, 0);
 
   const valid1 = conjunctiveConstraint(ringSector, Object.assign({}, topCircline, { from: 0, to: TAU }))[0];
-  if (!valid1) return { rowCentroidX: cx, rowCentroidY: cy, maximumRowLength: 0 };
+  if (!valid1) return { rowAnchorX: cx, rowAnchorY: cy, maximumRowLength: 0 };
   const valid2 = conjunctiveConstraint(ringSector, Object.assign({}, bottomCircline, { from: 0, to: TAU }))[0];
-  if (!valid2) return { rowCentroidX: cx, rowCentroidY: cy, maximumRowLength: 0 };
+  if (!valid2) return { rowAnchorX: cx, rowAnchorY: cy, maximumRowLength: 0 };
   const from = Math.max(valid1.from, valid2.from);
   const to = Math.min(valid1.to, valid2.to);
   const midAngle = (from + to) / 2;
   const cheapTangent = Math.max(0, to - from); /* Math.tan(Math.max(0, to - from)) */ // https://en.wikipedia.org/wiki/Small-angle_approximation
-  const rowCentroidX = midCircline.r * Math.cos(midAngle) + midCircline.x;
-  const rowCentroidY = midCircline.r * Math.sin(midAngle) + midCircline.y;
+  const rowAnchorX = midCircline.r * Math.cos(midAngle) + midCircline.x;
+  const rowAnchorY = midCircline.r * Math.sin(midAngle) + midCircline.y;
   const maximumRowLength = cheapTangent * INFINITY_RADIUS;
-  return { rowCentroidX, rowCentroidY, maximumRowLength };
+  return { rowAnchorX, rowAnchorY, maximumRowLength };
 };
 
 function getVerticalAlignment(
@@ -219,12 +219,12 @@ export const getRectangleRowGeometry: GetShapeRowGeometry = (
   const adjustedTop = top + topPaddingAdjustment; // taper out paddingTop with small fonts
   if ((container.y1 - container.y0 - adjustedTop - bottom) / totalRowCount < linePitch) {
     return {
-      rowCentroidX: NaN,
-      rowCentroidY: NaN,
+      rowAnchorX: NaN,
+      rowAnchorY: NaN,
       maximumRowLength: 0,
     };
   }
-  const rowCentroidY = getVerticalAlignment(
+  const rowAnchorY = getVerticalAlignment(
     container,
     verticalAlignment,
     linePitch,
@@ -234,10 +234,9 @@ export const getRectangleRowGeometry: GetShapeRowGeometry = (
     fontSize,
     overhang,
   );
-  // fixme: rename rowCentroid* to rowAnchor* as it's a centroid only under the former assumption of x/y centering
   return {
-    rowCentroidX: cx,
-    rowCentroidY,
+    rowAnchorX: cx,
+    rowAnchorY,
     maximumRowLength: container.x1 - container.x0 - left - right,
   };
 };
@@ -403,8 +402,8 @@ function fill(
           leftAlign: leftAlign,
           rows: [...Array(targetRowCount)].map(() => ({
             rowWords: [],
-            rowCentroidX: NaN,
-            rowCentroidY: NaN,
+            rowAnchorX: NaN,
+            rowAnchorY: NaN,
             maximumLength: NaN,
             length: NaN,
           })),
@@ -417,7 +416,7 @@ function fill(
           const currentRowWords = currentRow.rowWords;
 
           // current row geometries
-          const { maximumRowLength, rowCentroidX, rowCentroidY } = getShapeRowGeometry(
+          const { maximumRowLength, rowAnchorX, rowAnchorY } = getShapeRowGeometry(
             container,
             cx,
             cy,
@@ -430,8 +429,8 @@ function fill(
             padding,
           );
 
-          currentRow.rowCentroidX = rowCentroidX;
-          currentRow.rowCentroidY = rowCentroidY;
+          currentRow.rowAnchorX = rowAnchorX;
+          currentRow.rowAnchorY = rowAnchorY;
           currentRow.maximumLength = maximumRowLength;
 
           // row building starts

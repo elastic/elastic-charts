@@ -44,16 +44,16 @@ export interface RowBox extends Font {
   wordBeginning: Distance;
 }
 
-interface RowCentroid {
-  rowCentroidX: Coordinate;
-  rowCentroidY: Coordinate;
+interface RowAnchor {
+  rowAnchorX: Coordinate;
+  rowAnchorY: Coordinate;
 }
 
-export interface RowSpace extends RowCentroid {
+export interface RowSpace extends RowAnchor {
   maximumRowLength: Distance;
 }
 
-export interface TextRow extends RowCentroid {
+export interface TextRow extends RowAnchor {
   length: number;
   maximumLength: number;
   rowWords: Array<RowBox>;
