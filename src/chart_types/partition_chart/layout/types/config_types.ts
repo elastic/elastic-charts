@@ -35,7 +35,7 @@ export interface PerSidePadding {
   left: Pixels;
 }
 
-export type Padding = Pixels | PerSidePadding;
+export type Padding = Pixels | Partial<PerSidePadding>;
 
 interface LabelConfig extends Font {
   textColor: Color;

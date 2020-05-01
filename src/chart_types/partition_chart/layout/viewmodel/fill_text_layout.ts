@@ -234,6 +234,7 @@ export const getRectangleRowGeometry: GetShapeRowGeometry = (
     fontSize,
     overhang,
   );
+  // fixme: rename rowCentroid* to rowAnchor* as it's a centroid only under the former assumption of x/y centering
   return {
     rowCentroidX: cx,
     rowCentroidY,
