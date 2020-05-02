@@ -17,6 +17,8 @@
  * under the License. */
 
 import { rgb as d3Rgb, RGBColor as D3RGBColor } from 'd3-color';
+import { Color } from '../../../../utils/commons';
+import chroma from 'chroma-js';
 
 type RGB = number;
 type A = number;
@@ -113,4 +115,10 @@ export function RGBATupleToString(rgba: RgbTuple): string {
     return `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]}, ${rgba[3]})`;
   }
   return `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]})`;
+}
+
+/** convert rgb to hex
+ * @internal */
+export function RGBAToHex(rgba: Color) {
+  return chroma(rgba).hex();
 }

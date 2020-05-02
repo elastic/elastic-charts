@@ -65,22 +65,12 @@ export function combineColors(rgba1: Color, rgba2: Color) {
   const { red: red1, green: green1, blue: blue1, opacity: alpha1 } = convertRGBAStringToSeparateValues(rgba1);
   const { red: red2, green: green2, blue: blue2, opacity: alpha2 } = convertRGBAStringToSeparateValues(rgba2);
   // For reference on alpha calculations:
-  // https://stackoverflow.com/questions/10781953/determine-rgba-colour-received-by-combining-two-colours
-  // Adapted the logic from gist:
-  // https://gist.github.com/JordanDelcros/518396da1c13f75ee057
-  const combineAlpha = 1 - (1 - alpha2) * (1 - alpha1);
-  const partialRed = (red2 * alpha2) / combineAlpha;
-  const baseRed = red1 * alpha1 * (1 - alpha2);
-  const red = Math.round((partialRed + baseRed) / combineAlpha);
-
-  const partialGreen = (green2 * alpha2) / combineAlpha;
-  const baseGreen = green1 * alpha1 * (1 - alpha2);
-  const green = Math.round((partialGreen + baseGreen) / combineAlpha);
-
-  const partialBlue = (blue2 * alpha2) / combineAlpha;
-  const baseBlue = blue1 * alpha1 * (1 - alpha2);
-  const blue = Math.round((partialBlue + baseBlue) / combineAlpha);
-  return RGBATupleToString([red, green, blue, combineAlpha]);
+  // https://en.wikipedia.org/wiki/Alpha_compositing
+  const combinedAlpha = alpha1 + alpha2 * (1 - alpha1);
+  const combinedRed = (red1 * alpha1 + red2 * alpha2 * (1 - alpha1)) / combinedAlpha;
+  const combinedGreen = Math.round((green1 * alpha1 + green2 * alpha2 * (1 - alpha1)) / combinedAlpha);
+  const combinedBlue = Math.round((blue1 * alpha1 + blue2 * alpha2 * (1 - alpha1)) / combinedAlpha);
+  return RGBATupleToString([combinedRed, combinedGreen, combinedBlue, combinedAlpha] as RgbTuple);
 }
 
 /**

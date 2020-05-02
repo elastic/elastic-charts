@@ -22,18 +22,35 @@ import {
   showContrastAmount,
 } from '../src/chart_types/partition_chart/layout/utils/calcs';
 
-export class Playground extends React.Component {
+type PlaygroundState = {
+  backgroundColor: string;
+  foregroundColor: string;
+  textColor: string;
+};
+export class Playground extends React.Component<{}, PlaygroundState> {
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      backgroundColor: 'rgba(113, 128, 172, 0.75)',
+      foregroundColor: 'rgba(168, 208, 20, 0.3)',
+      textColor: 'rgba(163, 122, 116, 1)',
+    };
+  }
+
+  updateForegroundColor = (event: any, color: any) => {
+    this.setState({
+      foregroundColor: color,
+    });
+  };
+
   render() {
-    const backgroundColor = 'rgba(113, 128, 172, 0.75)';
-    const foregroundColor = 'rgba(168, 208, 20, 0.3)';
-    const textColor = 'rgba(163, 122, 116, 1)';
-    const combinedColors = combineColors(foregroundColor, backgroundColor);
-    const makeContrasted = makeHighContrastColor(textColor, combinedColors);
+    const combinedColors = combineColors(this.state.foregroundColor, this.state.backgroundColor);
+    const makeContrasted = makeHighContrastColor(this.state.textColor, combinedColors);
     return (
-      <div
+      <form
         className="background"
         style={{
-          backgroundColor: backgroundColor,
+          backgroundColor: this.state.backgroundColor,
           position: 'absolute',
           width: 425,
           height: 500,
@@ -44,7 +61,7 @@ export class Playground extends React.Component {
         <div
           className="foreground"
           style={{
-            backgroundColor: foregroundColor,
+            backgroundColor: this.state.foregroundColor,
             position: 'absolute',
             width: 200,
             height: 400,
@@ -53,7 +70,12 @@ export class Playground extends React.Component {
           }}
         >
           <label>foreground color input </label>
-          {/* <input type="color" id="favcolorForeground" name="favcolor" value="#ff0000" onChange={} /> */}
+          <input
+            type="color"
+            name="foregroundColor"
+            value={this.state.foregroundColor}
+            onChange={() => (event: any, color: any) => this.updateForegroundColor(event, color)}
+          />
           <p
             style={{
               paddingTop: 40,
@@ -63,12 +85,12 @@ export class Playground extends React.Component {
             This is the foreground color
             <br />
             <br />
-            {foregroundColor}
+            {this.state.foregroundColor}
           </p>
           <p
             className="text"
             style={{
-              color: textColor,
+              color: this.state.textColor,
               padding: 20,
             }}
           >
@@ -104,7 +126,7 @@ export class Playground extends React.Component {
             Contrast between original text color and combinedBackground color
             <br />
             <br />
-            <b>{showContrastAmount(textColor, combinedColors).toFixed(3)}</b>
+            <b>{showContrastAmount(this.state.textColor, combinedColors).toFixed(3)}</b>
           </p>
           <p>
             Contrast between contrast-computed text color and combinedBackground color
@@ -116,7 +138,7 @@ export class Playground extends React.Component {
         <div
           className="combinedforeground"
           style={{
-            backgroundColor: combineColors(backgroundColor, foregroundColor),
+            backgroundColor: combineColors(this.state.foregroundColor, this.state.backgroundColor),
             position: 'absolute',
             width: 200,
             height: 400,
@@ -133,11 +155,11 @@ export class Playground extends React.Component {
             This is the combined background and container background
             <br />
             <br />
-            {combineColors(backgroundColor, foregroundColor)}
+            {combineColors(this.state.foregroundColor, this.state.backgroundColor)}
           </p>
           {}
         </div>
-      </div>
+      </form>
     );
   }
 }
