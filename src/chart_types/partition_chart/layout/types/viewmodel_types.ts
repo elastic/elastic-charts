@@ -37,6 +37,7 @@ export type LinkLabelVM = {
   valueFontSpec: Font;
 };
 
+/* @internal */
 export interface RowBox extends Font {
   text: string;
   width: Distance;
@@ -49,16 +50,19 @@ interface RowAnchor {
   rowAnchorY: Coordinate;
 }
 
+/* @internal */
 export interface RowSpace extends RowAnchor {
   maximumRowLength: Distance;
 }
 
+/* @internal */
 export interface TextRow extends RowAnchor {
   length: number;
   maximumLength: number;
   rowWords: Array<RowBox>;
 }
 
+/* @internal */
 export interface RowSet {
   id: string;
   rows: Array<TextRow>;
@@ -76,12 +80,14 @@ export interface QuadViewModel extends ShapeTreeNode {
   fillColor: string;
 }
 
+/* @internal */
 export interface OutsideLinksViewModel {
   points: Array<PointTuple>;
 }
 
 export type PickFunction = (x: Pixels, y: Pixels) => Array<QuadViewModel>;
 
+/* @internal */
 export type ShapeViewModel = {
   config: Config;
   quadViewModel: QuadViewModel[];
@@ -93,6 +99,7 @@ export type ShapeViewModel = {
   outerRadius: number;
 };
 
+/* @internal */
 export const nullShapeViewModel = (specifiedConfig?: Config, diskCenter?: PointObject): ShapeViewModel => ({
   config: specifiedConfig || config,
   quadViewModel: [],
