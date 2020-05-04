@@ -17,7 +17,7 @@
  * under the License. */
 
 import { Ratio } from '../types/geometry_types';
-import { RgbTuple, stringToRGB, RGBATupleToString } from './d3_utils';
+import { RgbTuple, stringToRGB, RGBATupleToString, HexToRGB } from './d3_utils';
 import { Color } from '../../../../utils/commons';
 import chroma from 'chroma-js';
 
@@ -62,12 +62,24 @@ export function convertRGBAStringToSeparateValues(rgba: Color) {
  * and make sure to provide optimal contrast
 /** @internal */
 export function combineColors(rgba1: Color, rgba2: Color) {
-  const { red: red1, green: green1, blue: blue1, opacity: alpha1 } = convertRGBAStringToSeparateValues(rgba1);
-  const { red: red2, green: green2, blue: blue2, opacity: alpha2 } = convertRGBAStringToSeparateValues(rgba2);
+  // convert parameters to rgba format
+  let rgba1FormattedRGBA = rgba1.startsWith('#') ? RGBATupleToString(HexToRGB(rgba1)) : rgba1;
+  let rgba2FormattedRGBA = rgba2.startsWith('#') ? RGBATupleToString(HexToRGB(rgba2)) : rgba2;
+
+  rgba1FormattedRGBA = /^[a-z]/.test(rgba1) ? RGBATupleToString(chroma(rgba1).rgba()) : rgba1;
+  rgba2FormattedRGBA = /^[a-z]/.test(rgba2) ? RGBATupleToString(chroma(rgba2).rgba()) : rgba2;
+
+  const { red: red1, green: green1, blue: blue1, opacity: alpha1 } = convertRGBAStringToSeparateValues(
+    rgba1FormattedRGBA,
+  );
+  const { red: red2, green: green2, blue: blue2, opacity: alpha2 } = convertRGBAStringToSeparateValues(
+    rgba2FormattedRGBA,
+  );
+
   // For reference on alpha calculations:
   // https://en.wikipedia.org/wiki/Alpha_compositing
   const combinedAlpha = alpha1 + alpha2 * (1 - alpha1);
-  const combinedRed = (red1 * alpha1 + red2 * alpha2 * (1 - alpha1)) / combinedAlpha;
+  const combinedRed = Math.round(red1 * alpha1 + red2 * alpha2 * (1 - alpha1)) / combinedAlpha;
   const combinedGreen = Math.round((green1 * alpha1 + green2 * alpha2 * (1 - alpha1)) / combinedAlpha);
   const combinedBlue = Math.round((blue1 * alpha1 + blue2 * alpha2 * (1 - alpha1)) / combinedAlpha);
   return RGBATupleToString([combinedRed, combinedGreen, combinedBlue, combinedAlpha] as RgbTuple);

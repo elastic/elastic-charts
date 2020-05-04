@@ -122,3 +122,9 @@ export function RGBATupleToString(rgba: RgbTuple): string {
 export function RGBAToHex(rgba: Color) {
   return chroma(rgba).hex();
 }
+
+/** convert hex to rgb
+ * @internal */
+export function HexToRGB(hex: string) {
+  return chroma(hex).rgba();
+}

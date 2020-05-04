@@ -65,9 +65,14 @@ export class Playground extends React.Component<{}, PlaygroundState> {
   };
 
   updateForegroundColor = (event: any) => {
-    //, color: any
     this.setState({
       foregroundColor: this.hexToRGB(event.target.value),
+    });
+  };
+
+  updateTextColor = (event: any) => {
+    this.setState({
+      textColor: this.hexToRGB(event.target.value),
     });
   };
 
@@ -126,7 +131,12 @@ export class Playground extends React.Component<{}, PlaygroundState> {
             Here is the original text color
           </p>
           <label>text color input </label>
-          {/* <input type="color" id="favcolor" name="favcolor" value="#ff0000" onChange={} /> */}
+          <input
+            type="color"
+            name="textColor"
+            defaultValue={this.RGBToHex(value)}
+            onChange={this.updateTextColor.bind(this)}
+          />
           <p
             className="text"
             style={{
