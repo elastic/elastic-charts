@@ -64,7 +64,7 @@ export const AnnotationTooltip = ({ state, chartRef, chartId, onScroll }: RectAn
         position,
         ref: chartRef,
       }}
-      visible={state?.isVisible ?? true}
+      visible={state?.isVisible ?? false}
       settings={{
         placement,
       }}

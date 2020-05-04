@@ -83,21 +83,6 @@ const PortalComponent = ({ anchor, scope, settings, children, visible, chartId }
    */
   const popper = useRef<Instance | null>(null);
 
-  useEffect(() => {
-    popper.current = getPopper(anchorNode.current, portalNode.current);
-
-    return () => {
-      if (portalNode.current.parentNode) {
-        portalNode.current.parentNode.removeChild(portalNode.current);
-      }
-
-      if (popper.current) {
-        popper.current.destroy();
-        popper.current = null;
-      }
-    };
-  }, []);
-
   const popperSettings = useMemo(
     () => mergePartial(DEFAULT_POPPER_SETTINGS, settings, { mergeOptionalPartialValues: true }),
     [settings, settings],
@@ -108,49 +93,71 @@ const PortalComponent = ({ anchor, scope, settings, children, visible, chartId }
     (anchor as PortalAnchorRef)?.position,
   ]);
 
-  const getPopper = useCallback(
-    (anchorNode: HTMLElement, portalNode: HTMLElement): Instance => {
-      const { fallbackPlacements, placement, boundary, offset } = popperSettings;
-      return createPopper(anchorNode, portalNode, {
-        strategy: 'fixed',
-        placement,
-        modifiers: [
-          {
-            name: 'offset',
-            options: {
-              offset: [0, offset],
-            },
-          },
-          {
-            name: 'preventOverflow',
-            options: {
-              boundary,
-            },
-          },
-          {
-            name: 'flip',
-            options: {
-              // Note: duplicate values causes lag
-              fallbackPlacements: fallbackPlacements.filter((p) => p !== placement),
-              boundary,
-              // checks main axis overflow before trying to flip
-              altAxis: false,
-              padding: offset || 10,
-            },
-          },
-        ],
-      });
-    },
-    [popperSettings.fallbackPlacements, popperSettings.placement, popperSettings.boundary, popperSettings.offset],
-  );
-
-  useEffect(() => {
+  const destroyPopper = useCallback(() => {
     if (popper.current) {
       popper.current.destroy();
       popper.current = null;
     }
+  }, [popper.current]);
 
-    popper.current = getPopper(anchorNode.current, portalNode.current);
+  const setPopper = useCallback((): Instance => {
+    if (!visible) {
+      return;
+    }
+
+    const { fallbackPlacements, placement, boundary, offset } = popperSettings;
+    popper.current = createPopper(anchorNode.current, portalNode.current, {
+      strategy: 'fixed',
+      placement,
+      modifiers: [
+        {
+          name: 'offset',
+          options: {
+            offset: [0, offset],
+          },
+        },
+        {
+          name: 'preventOverflow',
+          options: {
+            boundary,
+          },
+        },
+        {
+          name: 'flip',
+          options: {
+            // Note: duplicate values causes lag
+            fallbackPlacements: fallbackPlacements.filter((p) => p !== placement),
+            boundary,
+            // checks main axis overflow before trying to flip
+            altAxis: false,
+            padding: offset || 10,
+          },
+        },
+      ],
+    });
+  }, [
+    visible,
+    popperSettings.fallbackPlacements,
+    popperSettings.placement,
+    popperSettings.boundary,
+    popperSettings.offset,
+  ]);
+
+  useEffect(() => {
+    setPopper();
+
+    return () => {
+      if (portalNode.current.parentNode) {
+        portalNode.current.parentNode.removeChild(portalNode.current);
+      }
+
+      destroyPopper();
+    };
+  }, []);
+
+  useEffect(() => {
+    destroyPopper();
+    setPopper();
   }, [
     portalNode.current,
     popperSettings.fallbackPlacements,
@@ -158,6 +165,14 @@ const PortalComponent = ({ anchor, scope, settings, children, visible, chartId }
     popperSettings.boundary,
     popperSettings.offset,
   ]);
+
+  useEffect(() => {
+    if (!visible) {
+      destroyPopper();
+    } else if (!popper.current) {
+      setPopper();
+    }
+  }, [visible]);
 
   const updateAnchorDimensions = useCallback(() => {
     if (!position || !visible) {
@@ -186,8 +201,10 @@ const PortalComponent = ({ anchor, scope, settings, children, visible, chartId }
   }, [position]);
 
   useEffect(() => {
-    updateAnchorDimensions();
-    popper.current!.update();
+    if (popper.current) {
+      updateAnchorDimensions();
+      popper.current.update();
+    }
   }, [popper.current, settings, position?.left, position?.top, position?.width, position?.height]);
 
   return createPortal(<div className={classNames({ invisible })}>{children}</div>, portalNode.current);
