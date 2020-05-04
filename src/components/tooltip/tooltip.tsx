@@ -18,7 +18,8 @@
 
 import classNames from 'classnames';
 import { connect } from 'react-redux';
-import React, { memo, useCallback, useMemo } from 'react';
+import { bindActionCreators, Dispatch } from 'redux';
+import React, { memo, useCallback, useMemo, useEffect } from 'react';
 
 import { TooltipInfo, TooltipAnchorPosition } from './types';
 import { TooltipValueFormatter, TooltipSettings, TooltipValue } from '../../specs';
@@ -30,6 +31,11 @@ import { getInternalTooltipAnchorPositionSelector } from '../../state/selectors/
 import { GlobalChartState, BackwardRef } from '../../state/chart_state';
 import { isInitialized } from '../../state/selectors/is_initialized';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
+import { onPointerMove } from '../../state/actions/mouse';
+
+interface TooltipDispatchProps {
+  onPointerMove: typeof onPointerMove;
+}
 
 interface TooltipStateProps {
   isVisible: boolean;
@@ -37,13 +43,14 @@ interface TooltipStateProps {
   info?: TooltipInfo;
   headerFormatter?: TooltipValueFormatter;
   settings: TooltipSettings;
+  chartId: string;
 }
 
 interface TooltipOwnProps {
   getChartContainerRef: BackwardRef;
 }
 
-type TooltipProps = TooltipStateProps & TooltipOwnProps;
+type TooltipProps = TooltipDispatchProps & TooltipStateProps & TooltipOwnProps;
 
 const TooltipComponent = ({
   info,
@@ -52,8 +59,20 @@ const TooltipComponent = ({
   getChartContainerRef,
   settings,
   isVisible,
+  chartId,
+  onPointerMove,
 }: TooltipProps) => {
   const chartRef = getChartContainerRef();
+
+  const handleScroll = () => {
+    // TODO: handle scroll cursor update
+    onPointerMove({ x: -1, y: -1 }, new Date().getTime());
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll, true);
+    return () => window.removeEventListener('scroll', handleScroll, true);
+  }, []);
 
   const renderHeader = useCallback(
     (header: TooltipValue | null) => {
@@ -146,6 +165,8 @@ const TooltipComponent = ({
         ref: chartRef.current,
       }}
       settings={popperSettings}
+      chartId={chartId}
+      visible={isVisible}
     >
       {renderTooltip()}
     </Portal>
@@ -160,7 +181,11 @@ const HIDDEN_TOOLTIP_PROPS = {
   position: null,
   headerFormatter: undefined,
   settings: {},
+  chartId: '',
 };
+
+const mapDispatchToProps = (dispatch: Dispatch): TooltipDispatchProps =>
+  bindActionCreators({ onPointerMove }, dispatch);
 
 const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
   if (!isInitialized(state)) {
@@ -172,7 +197,8 @@ const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
     position: getInternalTooltipAnchorPositionSelector(state),
     headerFormatter: getTooltipHeaderFormatterSelector(state),
     settings: getSettingsSpecSelector(state).tooltip,
+    chartId: state.chartId,
   };
 };
 
-export const Tooltip = memo(connect(mapStateToProps)(TooltipComponent));
+export const Tooltip = memo(connect(mapStateToProps, mapDispatchToProps)(TooltipComponent));

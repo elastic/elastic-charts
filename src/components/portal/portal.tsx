@@ -39,9 +39,9 @@ type PortalProps = {
    */
   children: ReactNode;
   /**
-   * Used to determine if tooltip is visible, otherwise position will be used.
+   * Used to determine if tooltip is visible
    */
-  visible?: boolean;
+  visible: boolean;
   /**
    * Settings to control portal positioning
    */
@@ -50,9 +50,13 @@ type PortalProps = {
    * Anchor element to use as position reference
    */
   anchor: HTMLElement | PortalAnchorRef | null;
+  /**
+   * Chart Id to add new anchor for each chart on the page
+   */
+  chartId: string;
 };
 
-const PortalComponent = ({ anchor, scope, settings, children, visible }: PortalProps) => {
+const PortalComponent = ({ anchor, scope, settings, children, visible, chartId }: PortalProps) => {
   /**
    * Used to skip first render for new position, which is used for capture initial position
    */
@@ -61,7 +65,7 @@ const PortalComponent = ({ anchor, scope, settings, children, visible }: PortalP
    * Anchor element used to position tooltip
    */
   const anchorNode = useRef(
-    isHTMLElement(anchor) ? anchor : getOrCreateNode(`echAnchor${scope}`, anchor?.ref ?? undefined),
+    isHTMLElement(anchor) ? anchor : getOrCreateNode(`echAnchor${scope}__${chartId}`, anchor?.ref ?? undefined),
   );
 
   if (!isDefined(anchorNode.current)) {
@@ -89,6 +93,7 @@ const PortalComponent = ({ anchor, scope, settings, children, visible }: PortalP
 
       if (popper.current) {
         popper.current.destroy();
+        popper.current = null;
       }
     };
   }, []);
@@ -130,24 +135,32 @@ const PortalComponent = ({ anchor, scope, settings, children, visible }: PortalP
               boundary,
               // checks main axis overflow before trying to flip
               altAxis: false,
+              padding: offset || 10,
             },
           },
         ],
       });
     },
-    [...Object.values(popperSettings)],
+    [popperSettings.fallbackPlacements, popperSettings.placement, popperSettings.boundary, popperSettings.offset],
   );
 
   useEffect(() => {
     if (popper.current) {
       popper.current.destroy();
+      popper.current = null;
     }
 
     popper.current = getPopper(anchorNode.current, portalNode.current);
-  }, [portalNode.current, ...Object.values(popperSettings)]);
+  }, [
+    portalNode.current,
+    popperSettings.fallbackPlacements,
+    popperSettings.placement,
+    popperSettings.boundary,
+    popperSettings.offset,
+  ]);
 
   const updateAnchorDimensions = useCallback(() => {
-    if (!position) {
+    if (!position || !visible) {
       return;
     }
 
@@ -162,7 +175,7 @@ const PortalComponent = ({ anchor, scope, settings, children, visible }: PortalP
     if (isDefined(height)) {
       anchorNode.current.style.height = `${height}px`;
     }
-  }, [anchorNode.current, position?.left, position?.top, position?.width, position?.height]);
+  }, [visible, anchorNode.current, position?.left, position?.top, position?.width, position?.height]);
 
   useEffect(() => {
     if (position === null) {

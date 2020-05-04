@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useEffect } from 'react';
 
 import { Portal, Placement } from '../../../../../components/portal';
 import { AnnotationTooltipState } from '../../../annotations/types';
@@ -25,10 +25,12 @@ import { TooltipContent } from './tooltip_content';
 interface RectAnnotationTooltipProps {
   state: AnnotationTooltipState | null;
   chartRef: HTMLDivElement | null;
+  chartId: string;
+  onScroll?: () => void;
 }
 
 /** @internal */
-export const AnnotationTooltip = ({ state, chartRef }: RectAnnotationTooltipProps) => {
+export const AnnotationTooltip = ({ state, chartRef, chartId, onScroll }: RectAnnotationTooltipProps) => {
   const renderTooltip = useCallback(() => {
     if (!state || !state.isVisible) {
       return null;
@@ -37,17 +39,32 @@ export const AnnotationTooltip = ({ state, chartRef }: RectAnnotationTooltipProp
     return <TooltipContent {...state} />;
   }, [state, state?.isVisible, state?.annotationType]);
 
+  const handleScroll = () => {
+    // TODO: handle scroll cursor update
+    if (onScroll) {
+      onScroll();
+    }
+  };
+
+  useEffect(() => {
+    if (onScroll) {
+      window.addEventListener('scroll', handleScroll, true);
+      return () => window.removeEventListener('scroll', handleScroll, true);
+    }
+  }, []);
+
   const position = useMemo(() => state?.anchor ?? null, [state, state?.anchor]);
   const placement = useMemo(() => state?.anchor?.position ?? Placement.Right, [state, state?.anchor?.position]);
 
   return (
     <Portal
-      scope="RectAnnotationTooltip"
+      scope="AnnotationTooltip"
+      chartId={chartId}
       anchor={{
         position,
         ref: chartRef,
       }}
-      visible={!(state?.isVisible ?? false)}
+      visible={state?.isVisible ?? true}
       settings={{
         placement,
       }}

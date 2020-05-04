@@ -18,6 +18,7 @@
 
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators, Dispatch } from 'redux';
 
 import { isLineAnnotation, AnnotationSpec } from '../../../utils/specs';
 import { AnnotationId } from '../../../../../utils/ids';
@@ -33,6 +34,11 @@ import { AnnotationLineProps } from '../../../annotations/line/types';
 import { computeChartDimensionsSelector } from '../../../state/selectors/compute_chart_dimensions';
 import { getSpecsById } from '../../../state/utils';
 import { AnnotationTooltip } from './annotation_tooltip';
+import { onPointerMove } from '../../../../../state/actions/mouse';
+
+interface AnnotationsDispatchProps {
+  onPointerMove: typeof onPointerMove;
+}
 
 interface AnnotationsStateProps {
   isChartEmpty: boolean;
@@ -40,13 +46,14 @@ interface AnnotationsStateProps {
   chartDimensions: Dimensions;
   annotationDimensions: Map<AnnotationId, AnnotationDimensions>;
   annotationSpecs: AnnotationSpec[];
+  chartId: string;
 }
 
 interface AnnotationsOwnProps {
   getChartContainerRef: BackwardRef;
 }
 
-type AnnotationsProps = AnnotationsStateProps & AnnotationsOwnProps;
+type AnnotationsProps = AnnotationsDispatchProps & AnnotationsStateProps & AnnotationsOwnProps;
 
 const AnnotationsComponent = ({
   tooltipState,
@@ -55,6 +62,8 @@ const AnnotationsComponent = ({
   annotationSpecs,
   annotationDimensions,
   getChartContainerRef,
+  chartId,
+  onPointerMove,
 }: AnnotationsProps) => {
   if (isChartEmpty) {
     return null;
@@ -104,15 +113,27 @@ const AnnotationsComponent = ({
     return markers;
   }, [annotationDimensions, annotationSpecs]);
 
+  const onScroll = useCallback(() => {
+    onPointerMove({ x: -1, y: -1 }, new Date().getTime());
+  }, []);
+
   return (
     <>
       {renderAnnotationMarkers()}
-      <AnnotationTooltip state={tooltipState} chartRef={getChartContainerRef().current} />
+      <AnnotationTooltip
+        chartId={chartId}
+        state={tooltipState}
+        chartRef={getChartContainerRef().current}
+        onScroll={onScroll}
+      />
     </>
   );
 };
 
 AnnotationsComponent.displayName = 'Annotations';
+
+const mapDispatchToProps = (dispatch: Dispatch): AnnotationsDispatchProps =>
+  bindActionCreators({ onPointerMove }, dispatch);
 
 const mapStateToProps = (state: GlobalChartState): AnnotationsStateProps => {
   if (!isInitialized(state)) {
@@ -122,6 +143,7 @@ const mapStateToProps = (state: GlobalChartState): AnnotationsStateProps => {
       annotationDimensions: new Map(),
       annotationSpecs: [],
       tooltipState: null,
+      chartId: '',
     };
   }
   return {
@@ -130,8 +152,9 @@ const mapStateToProps = (state: GlobalChartState): AnnotationsStateProps => {
     annotationDimensions: computeAnnotationDimensionsSelector(state),
     annotationSpecs: getAnnotationSpecsSelector(state),
     tooltipState: getAnnotationTooltipStateSelector(state),
+    chartId: state.chartId,
   };
 };
 
 /** @internal */
-export const Annotations = connect(mapStateToProps)(AnnotationsComponent);
+export const Annotations = connect(mapStateToProps, mapDispatchToProps)(AnnotationsComponent);
