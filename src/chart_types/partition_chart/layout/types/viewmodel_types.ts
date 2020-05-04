@@ -85,6 +85,7 @@ export interface OutsideLinksViewModel {
   points: Array<PointTuple>;
 }
 
+/* @internal */
 export type PickFunction = (x: Pixels, y: Pixels) => Array<QuadViewModel>;
 
 /* @internal */
