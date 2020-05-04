@@ -138,7 +138,7 @@ function makeRowCircline(
 }
 
 /** @internal */
-export const getSectorRowGeometry: GetShapeRowGeometry = (
+export const getSectorRowGeometry: GetShapeRowGeometry<RingSector> = (
   ringSector,
   cx,
   cy,
@@ -193,7 +193,7 @@ function getVerticalAlignment(
 }
 
 /** @internal */
-export const getRectangleRowGeometry: GetShapeRowGeometry = (
+export const getRectangleRowGeometry: GetShapeRowGeometry<RectangleConstruction> = (
   container,
   cx,
   cy,
@@ -279,8 +279,8 @@ function getWordSpacing(fontSize: number) {
   return fontSize / 4;
 }
 
-type GetShapeRowGeometry = (
-  container: any, // fixme RectangleConstruction | RingSector,
+type GetShapeRowGeometry<C> = (
+  container: C,
   cx: Distance,
   cy: Distance,
   targetRowCount: number,
@@ -302,7 +302,7 @@ function fill(
   formatter: ValueFormatter,
   textFillOrigins: any[],
   shapeConstructor: (n: ShapeTreeNode) => any,
-  getShapeRowGeometry: GetShapeRowGeometry,
+  getShapeRowGeometry: GetShapeRowGeometry<RectangleConstruction> | GetShapeRowGeometry<RingSector>,
   getRotation: Function,
   leftAlign: boolean,
   middleAlign: boolean,
@@ -494,7 +494,7 @@ export function fillTextLayout(
   layers: Layer[],
   textFillOrigins: [number, number][],
   shapeConstructor: (n: ShapeTreeNode) => any,
-  getShapeRowGeometry: GetShapeRowGeometry,
+  getShapeRowGeometry: GetShapeRowGeometry<RectangleConstruction> | GetShapeRowGeometry<RingSector>,
   getRotation: Function,
   leftAlign: boolean,
   middleAlign: boolean,
