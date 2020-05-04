@@ -201,4 +201,5 @@ const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
   };
 };
 
+/** @internal */
 export const Tooltip = memo(connect(mapStateToProps, mapDispatchToProps)(TooltipComponent));

@@ -21,6 +21,7 @@ import React, { useCallback } from 'react';
 import { AnnotationTooltipState } from '../../../annotations/types';
 import { AnnotationTypes } from '../../../../specs';
 
+/** @internal */
 export const TooltipContent = ({ annotationType, header, details, renderTooltip }: AnnotationTooltipState) => {
   const renderLine = useCallback(() => {
     return (
