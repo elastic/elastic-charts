@@ -20,7 +20,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { isPointGeometry, IndexedGeometry } from '../../../../utils/geometry';
 import { GlobalChartState } from '../../../../state/chart_state';
-import { isInitialized } from '../../../../state/selectors/is_initialized';
 import { computeChartTransformSelector } from '../../state/selectors/compute_chart_transform';
 import {
   getHighlightedGeomsSelector,
@@ -32,6 +31,7 @@ import { Transform } from '../../state/utils';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
 import { DEFAULT_HIGHLIGHT_PADDING } from '../../rendering/rendering';
+import { getInternalIsInitializedSelector } from '../../../../state/selectors/get_internal_is_intialized';
 
 interface HighlighterProps {
   initialized: boolean;
@@ -95,7 +95,7 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
 }
 
 const mapStateToProps = (state: GlobalChartState): HighlighterProps => {
-  if (!isInitialized(state)) {
+  if (!getInternalIsInitializedSelector(state)) {
     return {
       initialized: false,
       chartId: state.chartId,

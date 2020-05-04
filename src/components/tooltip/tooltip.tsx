@@ -29,7 +29,7 @@ import { getTooltipHeaderFormatterSelector } from '../../state/selectors/get_too
 import { getInternalTooltipInfoSelector } from '../../state/selectors/get_internal_tooltip_info';
 import { getInternalTooltipAnchorPositionSelector } from '../../state/selectors/get_internal_tooltip_anchor_position';
 import { GlobalChartState, BackwardRef } from '../../state/chart_state';
-import { isInitialized } from '../../state/selectors/is_initialized';
+import { getInternalIsInitializedSelector } from '../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
 import { onPointerMove } from '../../state/actions/mouse';
 
@@ -188,7 +188,7 @@ const mapDispatchToProps = (dispatch: Dispatch): TooltipDispatchProps =>
   bindActionCreators({ onPointerMove }, dispatch);
 
 const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
-  if (!isInitialized(state)) {
+  if (!getInternalIsInitializedSelector(state)) {
     return HIDDEN_TOOLTIP_PROPS;
   }
   return {

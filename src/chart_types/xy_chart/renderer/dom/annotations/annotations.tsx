@@ -25,7 +25,7 @@ import { AnnotationId } from '../../../../../utils/ids';
 import { AnnotationDimensions, AnnotationTooltipState } from '../../../annotations/types';
 import { Dimensions } from '../../../../../utils/dimensions';
 import { GlobalChartState, BackwardRef } from '../../../../../state/chart_state';
-import { isInitialized } from '../../../../../state/selectors/is_initialized';
+import { getInternalIsInitializedSelector } from '../../../../../state/selectors/get_internal_is_intialized';
 import { computeAnnotationDimensionsSelector } from '../../../state/selectors/compute_annotations';
 import { getAnnotationSpecsSelector } from '../../../state/selectors/get_specs';
 import { getAnnotationTooltipStateSelector } from '../../../state/selectors/get_annotation_tooltip_state';
@@ -136,7 +136,7 @@ const mapDispatchToProps = (dispatch: Dispatch): AnnotationsDispatchProps =>
   bindActionCreators({ onPointerMove }, dispatch);
 
 const mapStateToProps = (state: GlobalChartState): AnnotationsStateProps => {
-  if (!isInitialized(state)) {
+  if (!getInternalIsInitializedSelector(state)) {
     return {
       isChartEmpty: true,
       chartDimensions: { top: 0, left: 0, width: 0, height: 0 },

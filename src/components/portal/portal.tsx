@@ -100,7 +100,7 @@ const PortalComponent = ({ anchor, scope, settings, children, visible, chartId }
     }
   }, [popper.current]);
 
-  const setPopper = useCallback((): Instance => {
+  const setPopper = useCallback(() => {
     if (!visible) {
       return;
     }
