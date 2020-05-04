@@ -24,6 +24,7 @@ import { countryDimension, regionDimension } from '../../src/mocks/hierarchical/
 import { palettes } from '../../src/mocks/hierarchical/palettes';
 import React from 'react';
 import { ShapeTreeNode } from '../../src/chart_types/partition_chart/layout/types/viewmodel_types';
+import { number } from '@storybook/addon-knobs';
 
 const regionLookup = arrayToLookup((d: Datum) => d.region, regionDimension);
 const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
@@ -55,7 +56,32 @@ export const example = () => (
             textColor: '#555',
             textInvertible: false,
             fontWeight: 100,
-            padding: { top: 0, bottom: 0, left: 2, right: 2 },
+            padding: {
+              top: number('group padding top', 0, {
+                range: true,
+                min: 0,
+                max: 8,
+                step: 0.1,
+              }),
+              right: number('group padding right', 2, {
+                range: true,
+                min: 0,
+                max: 8,
+                step: 0.1,
+              }),
+              bottom: number('group padding bottom', 0, {
+                range: true,
+                min: 0,
+                max: 8,
+                step: 0.1,
+              }),
+              left: number('group padding left', 2, {
+                range: true,
+                min: 0,
+                max: 8,
+                step: 0.1,
+              }),
+            },
             minFontSize: 4,
             maxFontSize: 14,
             idealFontSizeJump: 1.005,
@@ -73,7 +99,12 @@ export const example = () => (
             fontStyle: 'normal',
             fontFamily: 'Helvetica',
             valueFont: { fontWeight: 400, fontStyle: 'italic' },
-            padding: 4,
+            padding: number('leaf padding', 4, {
+              range: true,
+              min: 0,
+              max: 8,
+              step: 0.1,
+            }),
             minFontSize: 8,
             maxFontSize: 18,
           },
