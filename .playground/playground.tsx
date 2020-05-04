@@ -26,6 +26,7 @@ type PlaygroundState = {
   backgroundColor: string;
   foregroundColor: string;
   textColor: string;
+  value: any;
 };
 export class Playground extends React.Component<{}, PlaygroundState> {
   constructor(props: any) {
@@ -34,23 +35,51 @@ export class Playground extends React.Component<{}, PlaygroundState> {
       backgroundColor: 'rgba(113, 128, 172, 0.75)',
       foregroundColor: 'rgba(168, 208, 20, 0.3)',
       textColor: 'rgba(163, 122, 116, 1)',
+      value: 'rgba(113, 128, 172, 0.75)',
     };
   }
 
-  updateForegroundColor = (event: any, color: any) => {
+  // https://stackoverflow.com/questions/21646738/convert-hex-to-rgba
+  hexToRGB = (hex: string, alpha?: string) => {
+    const r = parseInt(hex.slice(1, 3), 16),
+      g = parseInt(hex.slice(3, 5), 16),
+      b = parseInt(hex.slice(5, 7), 16);
+
+    if (alpha) {
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    } else {
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+  };
+
+  // https://jsfiddle.net/Mottie/xcqpF/1/light/
+  RGBToHex = (rgba: string) => {
+    if (rgba !== null) {
+      const newRgba = rgba.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+      return newRgba && rgba.length === 4
+        ? `#${`0${parseInt(newRgba[1], 10).toString(16)}`.slice(-2)}${`0${parseInt(newRgba[2], 10).toString(16)}`.slice(
+            -2,
+          )}${`0${parseInt(newRgba[3], 10).toString(16)}`.slice(-2)}`
+        : '';
+    }
+  };
+
+  updateForegroundColor = (event: any) => {
+    //, color: any
     this.setState({
-      foregroundColor: color,
+      foregroundColor: this.hexToRGB(event.target.value),
     });
   };
 
   render() {
-    const combinedColors = combineColors(this.state.foregroundColor, this.state.backgroundColor);
-    const makeContrasted = makeHighContrastColor(this.state.textColor, combinedColors);
+    const { backgroundColor, foregroundColor, textColor, value } = this.state;
+    const combinedColors = combineColors(foregroundColor, backgroundColor);
+    const makeContrasted = makeHighContrastColor(textColor, combinedColors);
     return (
       <form
         className="background"
         style={{
-          backgroundColor: this.state.backgroundColor,
+          backgroundColor: backgroundColor,
           position: 'absolute',
           width: 425,
           height: 500,
@@ -61,7 +90,7 @@ export class Playground extends React.Component<{}, PlaygroundState> {
         <div
           className="foreground"
           style={{
-            backgroundColor: this.state.foregroundColor,
+            backgroundColor: foregroundColor,
             position: 'absolute',
             width: 200,
             height: 400,
@@ -73,8 +102,8 @@ export class Playground extends React.Component<{}, PlaygroundState> {
           <input
             type="color"
             name="foregroundColor"
-            value={this.state.foregroundColor}
-            onChange={() => (event: any, color: any) => this.updateForegroundColor(event, color)}
+            defaultValue={this.RGBToHex(value)}
+            onChange={this.updateForegroundColor.bind(this)}
           />
           <p
             style={{
@@ -85,12 +114,12 @@ export class Playground extends React.Component<{}, PlaygroundState> {
             This is the foreground color
             <br />
             <br />
-            {this.state.foregroundColor}
+            {foregroundColor}
           </p>
           <p
             className="text"
             style={{
-              color: this.state.textColor,
+              color: textColor,
               padding: 20,
             }}
           >
@@ -126,7 +155,7 @@ export class Playground extends React.Component<{}, PlaygroundState> {
             Contrast between original text color and combinedBackground color
             <br />
             <br />
-            <b>{showContrastAmount(this.state.textColor, combinedColors).toFixed(3)}</b>
+            <b>{showContrastAmount(textColor, combinedColors).toFixed(3)}</b>
           </p>
           <p>
             Contrast between contrast-computed text color and combinedBackground color
@@ -138,7 +167,7 @@ export class Playground extends React.Component<{}, PlaygroundState> {
         <div
           className="combinedforeground"
           style={{
-            backgroundColor: combineColors(this.state.foregroundColor, this.state.backgroundColor),
+            backgroundColor: combineColors(foregroundColor, backgroundColor),
             position: 'absolute',
             width: 200,
             height: 400,
@@ -155,9 +184,8 @@ export class Playground extends React.Component<{}, PlaygroundState> {
             This is the combined background and container background
             <br />
             <br />
-            {combineColors(this.state.foregroundColor, this.state.backgroundColor)}
+            {combineColors(foregroundColor, backgroundColor)}
           </p>
-          {}
         </div>
       </form>
     );
