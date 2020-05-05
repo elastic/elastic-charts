@@ -238,4 +238,37 @@ describe('Test that getRectangleRowGeometry works with:', () => {
       rowAnchorY: NaN,
     });
   });
+
+  test('paddingBottom correctly moves the row anchor with bottom alignment', () => {
+    const padding = { top: 0, right: 0, bottom: 20, left: 0 };
+    const smallFontSize = 25;
+    const smallLinePitch = 25;
+    const totalRowCount2 = 2;
+    const rowIndex = 0;
+    const result = getRectangleRowGeometry(
+      container,
+      cx,
+      cy,
+      totalRowCount2,
+      smallLinePitch,
+      rowIndex,
+      smallFontSize,
+      _rotation,
+      'bottom',
+      padding,
+    );
+    // full container width is available; small Y offset for overhang
+    expect(result).toEqual({
+      maximumRowLength: 200,
+      rowAnchorX: 0,
+      rowAnchorY: -(
+        (
+          100 /*y1*/ -
+          smallLinePitch * (totalRowCount2 - 1 - rowIndex) -
+          padding.bottom -
+          smallFontSize * 0.05
+        ) /* 0.05 = 5%: default overhang multiplier */
+      ),
+    });
+  });
 });
