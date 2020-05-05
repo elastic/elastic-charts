@@ -93,7 +93,7 @@ describe('Test that getRectangleRowGeometry works with:', () => {
     // full container width is available; small Y offset for overhang
     expect(result).toEqual({
       maximumRowLength: 200 - padding.left - padding.right,
-      rowAnchorX: 0,
+      rowAnchorX: -5, // (left - right) / 2
       rowAnchorY: overhangOffset - padding.top,
     });
   });
@@ -115,7 +115,7 @@ describe('Test that getRectangleRowGeometry works with:', () => {
     // full container width is available; small Y offset for overhang
     expect(result).toEqual({
       maximumRowLength: 200 - defaultPadding - padding.right,
-      rowAnchorX: 0,
+      rowAnchorX: -(30 /* right padding */ / 2 - 2 /* 2: default left padding */ / 2),
       rowAnchorY: overhangOffset - defaultPadding,
     });
   });
