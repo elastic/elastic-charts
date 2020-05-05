@@ -3,7 +3,7 @@ name: Check for API changes
 on: [push, pull_request]
 
 jobs:
-  build:
+  api-check:
     runs-on: ubuntu-latest
 
     steps:
