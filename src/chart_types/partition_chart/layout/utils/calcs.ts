@@ -90,16 +90,16 @@ export function combineColors(rgba1: Color, rgba2: Color) {
  */
 export function makeHighContrastColor(foreground: Color, background: Color, ratio = 4.5) {
   // determine the lightness factor of the background color to determine whether to lighten or darken the foreground
-  const brightness = chroma(background).luminance();
+  const lightness = chroma(background).get('hsl.l');
   let highContrastTextColor = foreground;
-  const isBackgroundDark = brightness < 0.5;
+  const isBackgroundDark = lightness < 0.5;
   // determine whether white or black text is ideal contrast vs a grey that just passes 4.5 ratio
   if (isBackgroundDark && chroma.deltaE('black', foreground) === 0) {
     highContrastTextColor = '#fff';
-  } else if (brightness > 0.5 && chroma.deltaE('white', foreground) === 0) {
+  } else if (lightness > 0.5 && chroma.deltaE('white', foreground) === 0) {
     highContrastTextColor = '#000';
   }
-  const precision = Math.pow(10, 4);
+  const precision = Math.pow(10, 8);
   let contrast = showContrastAmount(highContrastTextColor, background);
   // adjust the highContrastTextColor for shades of grey
   while (contrast < ratio) {
