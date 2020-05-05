@@ -57,11 +57,12 @@ const getFallbackPlacements = (): Placement[] => {
       AutoStart: Placement.AutoStart,
       AutoEnd: Placement.AutoEnd,
     },
-    [Placement.Right, Placement.Left, Placement.Top, Placement.Bottom],
+    // @ts-ignore
+    [Placement.Right, Placement.Left, Placement.Top, Placement.Bottom].join(','),
     {
       display: 'multi-select',
     },
-  ) as any; // storybook types are all messed up here
+  ).split(',');
 };
 
 export const example = () => {
@@ -75,32 +76,36 @@ export const example = () => {
     },
     undefined,
   );
-  return (
-    <Chart className="story-chart">
-      <Settings
-        rotation={getChartRotationKnob()}
-        tooltip={{
-          placement: getPlacementKnob('Tooltip placement'),
-          fallbackPlacements: getFallbackPlacements(),
-          type: getTooltipTypeKnob(),
-          boundary,
-          customTooltip: boolean('Custom Tooltip', false) ? CustomTooltip : undefined,
-        }}
-        showLegend={boolean('Show Legend', false)}
-      />
-      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
-      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
-      <BarSeries
-        id="bars1"
-        xScaleType={ScaleType.Ordinal}
-        yScaleType={ScaleType.Linear}
-        xAccessor="x"
-        yAccessors={['y1', 'y2']}
-        splitSeriesAccessors={['g']}
-        data={TestDatasets.BARCHART_2Y1G}
-      />
-    </Chart>
+  // Added buffer to test tooltip positioning within chart container
+  return (
+    <div className="buffer" style={{ width: '100%', height: '100%', paddingLeft: 30, paddingRight: 80 }}>
+      <Chart className="story-chart">
+        <Settings
+          rotation={getChartRotationKnob()}
+          tooltip={{
+            placement: getPlacementKnob('Tooltip placement'),
+            fallbackPlacements: getFallbackPlacements(),
+            type: getTooltipTypeKnob(),
+            boundary,
+            customTooltip: boolean('Custom Tooltip', false) ? CustomTooltip : undefined,
+          }}
+          showLegend={boolean('Show Legend', false)}
+        />
+        <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+        <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
+
+        <BarSeries
+          id="bars1"
+          xScaleType={ScaleType.Ordinal}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y1', 'y2']}
+          splitSeriesAccessors={['g']}
+          data={TestDatasets.BARCHART_2Y1G}
+        />
+      </Chart>
+    </div>
   );
 };
 
