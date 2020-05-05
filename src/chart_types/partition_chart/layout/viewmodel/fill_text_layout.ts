@@ -244,7 +244,12 @@ export const getRectangleRowGeometry: GetShapeRowGeometry<RectangleConstruction>
 };
 
 function rowSetComplete(rowSet: RowSet, measuredBoxes: RowBox[]) {
-  return !rowSet.rows.some((r) => isNaN(r.length)) && !measuredBoxes.length;
+  return (
+    !measuredBoxes.length &&
+    !rowSet.rows.some(
+      (r) => isNaN(r.length) || r.rowWords.length === 0 || r.rowWords.every((rw) => rw.text.length === 0),
+    )
+  );
 }
 
 function identityRowSet(): RowSet {
