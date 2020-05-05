@@ -19,7 +19,7 @@
 import { Distance } from '../types/geometry_types';
 import { Config } from '../types/config_types';
 import { TAU, trueBearingToStandardPositionAngle } from '../utils/math';
-import { LinkLabelVM, ShapeTreeNode, ValueGetterFunction } from '../types/viewmodel_types';
+import { LinkLabelVM, RawTextGetter, ShapeTreeNode, ValueGetterFunction } from '../types/viewmodel_types';
 import { meanAngle } from '../geometry';
 import { TextMeasure } from '../types/types';
 import { ValueFormatter } from '../../../../utils/commons';
@@ -31,7 +31,7 @@ export function linkTextLayout(
   nodesWithoutRoom: ShapeTreeNode[],
   currentY: Distance[],
   anchorRadius: Distance,
-  rawTextGetter: Function,
+  rawTextGetter: RawTextGetter,
   valueGetter: ValueGetterFunction,
   valueFormatter: ValueFormatter,
 ): LinkLabelVM[] {
