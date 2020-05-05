@@ -99,14 +99,34 @@ export const example = () => (
             fontStyle: 'normal',
             fontFamily: 'Helvetica',
             valueFont: { fontWeight: 400, fontStyle: 'italic' },
-            padding: number('leaf padding', 4, {
-              range: true,
-              min: 0,
-              max: 8,
-              step: 0.1,
-            }),
+            padding: {
+              top: number('leaf padding top', 0, {
+                range: true,
+                min: 0,
+                max: 28,
+                step: 0.1,
+              }),
+              right: number('leaf padding right', 2, {
+                range: true,
+                min: 0,
+                max: 28,
+                step: 0.1,
+              }),
+              bottom: number('leaf padding bottom', 0, {
+                range: true,
+                min: 0,
+                max: 28,
+                step: 0.1,
+              }),
+              left: number('leaf padding left', 2, {
+                range: true,
+                min: 0,
+                max: 28,
+                step: 0.1,
+              }),
+            },
             minFontSize: 8,
-            maxFontSize: 18,
+            maxFontSize: 48,
           },
           shape: {
             fillColor: (d: ShapeTreeNode) => {
