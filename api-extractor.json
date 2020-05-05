@@ -77,7 +77,7 @@
      * SUPPORTED TOKENS: <projectFolder>, <packageName>, <unscopedPackageName>
      * DEFAULT VALUE: "<projectFolder>/tsconfig.json"
      */
-    // "tsconfigFilePath": "<projectFolder>/tsconfig.json",
+    "tsconfigFilePath": "<projectFolder>/tsconfig.lib.json",
     /**
      * Provides a compiler configuration that will be used instead of reading the tsconfig.json file from disk.
      * The object must conform to the TypeScript tsconfig schema:
@@ -99,7 +99,7 @@
      *
      * DEFAULT VALUE: false
      */
-    "skipLibCheck": true
+    "skipLibCheck": false
   },
 
   /**
@@ -181,7 +181,7 @@
     /**
      * (REQUIRED) Whether to generate the .d.ts rollup file.
      */
-    "enabled": true,
+    "enabled": false,
 
     /**
      * Specifies the output path for a .d.ts rollup file to be generated without any trimming.
@@ -242,7 +242,7 @@
      *
      * DEFAULT VALUE: true
      */
-    "enabled": true,
+    "enabled": true
     /**
      * Specifies where the TSDoc metadata file should be written.
      *
@@ -330,14 +330,15 @@
       "default": {
         "logLevel": "warning"
         // "addToApiReportFile": false
+      },
+      "ae-extra-release-tag": {
+        "logLevel": "warning",
+        "addToApiReportFile": true
+      },
+      "ae-missing-release-tag": {
+        "logLevel": "warning",
+        "addToApiReportFile": true
       }
-
-      // "ae-extra-release-tag": {
-      //   "logLevel": "warning",
-      //   "addToApiReportFile": true
-      // },
-      //
-      // . . .
     },
 
     /**

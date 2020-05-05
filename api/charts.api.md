@@ -5,38 +5,42 @@
 ```ts
 
 import { $Values } from 'utility-types';
-import { ComponentType } from 'react';
-import * as CSS from 'csstype';
-import { FunctionComponent } from 'react';
-import * as PropTypes from 'prop-types';
 import React from 'react';
 
-// Warning: (ae-forgotten-export) The symbol "UnaryAccessorFn" needs to be exported by the entry point index.d.ts
-//
-// @public (undocumented)
+// @public
 export type AccessorFn = UnaryAccessorFn;
 
-// @public (undocumented)
+// @public
 export type AnnotationDomainType = $Values<typeof AnnotationDomainTypes>;
 
-// @public (undocumented)
+// @public
 export const AnnotationDomainTypes: Readonly<{
     XDomain: "xDomain";
     YDomain: "yDomain";
 }>;
 
+// Warning: (ae-missing-release-tag) "AnnotationId" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type AnnotationId = string;
 
+// Warning: (ae-missing-release-tag) "AnnotationSpec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type AnnotationSpec = LineAnnotationSpec | RectAnnotationSpec;
 
+// Warning: (ae-missing-release-tag) "AnnotationTooltipFormatter" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type AnnotationTooltipFormatter = (details?: string) => JSX.Element | null;
 
+// Warning: (ae-missing-release-tag) "AnnotationType" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type AnnotationType = $Values<typeof AnnotationTypes>;
 
+// Warning: (ae-missing-release-tag) "AnnotationTypes" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export const AnnotationTypes: Readonly<{
     Line: "line";
@@ -44,12 +48,16 @@ export const AnnotationTypes: Readonly<{
     Text: "text";
 }>;
 
+// Warning: (ae-missing-release-tag) "ArcSeriesStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface ArcSeriesStyle {
     // (undocumented)
     arc: ArcStyle;
 }
 
+// Warning: (ae-missing-release-tag) "ArcStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface ArcStyle {
     // Warning: (ae-forgotten-export) The symbol "Color" needs to be exported by the entry point index.d.ts
@@ -63,10 +71,13 @@ export interface ArcStyle {
 
 // Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "AreaSeries" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 export const AreaSeries: React.FunctionComponent<SpecRequiredProps_2 & SpecOptionalProps_2>;
 
+// Warning: (ae-missing-release-tag) "AreaSeriesSpec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public
 export type AreaSeriesSpec = BasicSeriesSpec & HistogramConfig & Postfixes & {
     seriesType: typeof SeriesTypes.Area;
@@ -77,6 +88,8 @@ export type AreaSeriesSpec = BasicSeriesSpec & HistogramConfig & Postfixes & {
     fit?: Exclude<Fit, 'explicit'> | FitConfig;
 };
 
+// Warning: (ae-missing-release-tag) "AreaSeriesStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface AreaSeriesStyle {
     // (undocumented)
@@ -87,6 +100,8 @@ export interface AreaSeriesStyle {
     point: PointStyle;
 }
 
+// Warning: (ae-missing-release-tag) "AreaStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface AreaStyle {
     fill?: Color | ColorVariant;
@@ -96,10 +111,13 @@ export interface AreaStyle {
 
 // Warning: (ae-forgotten-export) The symbol "SpecRequired" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "SpecOptionals" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "Axis" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 export const Axis: React.FunctionComponent<SpecRequired & SpecOptionals>;
 
+// Warning: (ae-missing-release-tag) "AxisConfig" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface AxisConfig {
     // (undocumented)
@@ -117,9 +135,13 @@ export interface AxisConfig {
     tickLineStyle: TickStyle;
 }
 
+// Warning: (ae-missing-release-tag) "AxisId" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type AxisId = string;
 
+// Warning: (ae-missing-release-tag) "AxisSpec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public
 export interface AxisSpec extends Spec {
     // (undocumented)
@@ -146,6 +168,8 @@ export interface AxisSpec extends Spec {
     title?: string;
 }
 
+// Warning: (ae-missing-release-tag) "AxisStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface AxisStyle {
     tickLabelPadding?: number;
@@ -153,10 +177,13 @@ export interface AxisStyle {
 
 // Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "BarSeries" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 export const BarSeries: React.FunctionComponent<SpecRequiredProps_3 & SpecOptionalProps_3>;
 
+// Warning: (ae-missing-release-tag) "BarSeriesSpec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public
 export type BarSeriesSpec = BasicSeriesSpec & Postfixes & {
     seriesType: typeof SeriesTypes.Bar;
@@ -167,6 +194,8 @@ export type BarSeriesSpec = BasicSeriesSpec & Postfixes & {
     minBarHeight?: number;
 };
 
+// Warning: (ae-missing-release-tag) "BarSeriesStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface BarSeriesStyle {
     // (undocumented)
@@ -178,13 +207,18 @@ export interface BarSeriesStyle {
 }
 
 // Warning: (ae-forgotten-export) The symbol "RawDataSeriesDatum" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "BarStyleAccessor" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
 export type BarStyleAccessor = (datum: RawDataSeriesDatum, seriesIdentifier: XYChartSeriesIdentifier) => BarStyleOverride;
 
+// Warning: (ae-missing-release-tag) "BarStyleOverride" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type BarStyleOverride = RecursivePartial<BarSeriesStyle> | Color | null;
 
+// Warning: (ae-missing-release-tag) "BaseAnnotationSpec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface BaseAnnotationSpec<T extends typeof AnnotationTypes.Rectangle | typeof AnnotationTypes.Line, D extends RectAnnotationDatum | LineAnnotationDatum, S extends RectAnnotationStyle | LineAnnotationStyle> extends Spec {
     annotationType: T;
@@ -199,6 +233,8 @@ export interface BaseAnnotationSpec<T extends typeof AnnotationTypes.Rectangle |
     zIndex?: number;
 }
 
+// Warning: (ae-missing-release-tag) "BasePointerEvent" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface BasePointerEvent {
     // (undocumented)
@@ -207,12 +243,19 @@ export interface BasePointerEvent {
     type: PointerEventType;
 }
 
+// Warning: (ae-missing-release-tag) "BasicListener" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type BasicListener = () => undefined | void;
 
+// Warning: (ae-missing-release-tag) "BasicSeriesSpec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales;
 
+// Warning: (ae-missing-release-tag) "BrushAxis" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-missing-release-tag) "BrushAxis" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export const BrushAxis: Readonly<{
     X: "x";
@@ -223,6 +266,8 @@ export const BrushAxis: Readonly<{
 // @public (undocumented)
 export type BrushAxis = $Values<typeof BrushAxis>;
 
+// Warning: (ae-missing-release-tag) "BrushEndListener" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type BrushEndListener = (brushArea: XYBrushArea) => void;
 
@@ -239,6 +284,8 @@ export type BubbleSeriesSpec = BasicSeriesSpec & {
     pointStyleAccessor?: PointStyleAccessor;
 };
 
+// Warning: (ae-missing-release-tag) "BubbleSeriesStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface BubbleSeriesStyle {
     // (undocumented)
@@ -247,10 +294,11 @@ export interface BubbleSeriesStyle {
 
 // Warning: (ae-forgotten-export) The symbol "ChartProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "ChartState" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "Chart" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 export class Chart extends React.Component<ChartProps, ChartState> {
-    constructor(props: any);
+    constructor(props: ChartProps);
     // (undocumented)
     componentWillUnmount(): void;
     // (undocumented)
@@ -271,12 +319,18 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     render(): JSX.Element;
     }
 
+// Warning: (ae-missing-release-tag) "ChartSize" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type ChartSize = number | string | ChartSizeArray | ChartSizeObject;
 
+// Warning: (ae-missing-release-tag) "ChartSizeArray" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type ChartSizeArray = [number | string | undefined, number | string | undefined];
 
+// Warning: (ae-missing-release-tag) "ChartSizeObject" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface ChartSizeObject {
     // (undocumented)
@@ -285,6 +339,9 @@ export interface ChartSizeObject {
     width?: number | string;
 }
 
+// Warning: (ae-missing-release-tag) "ChartTypes" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-missing-release-tag) "ChartTypes" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export const ChartTypes: Readonly<{
     Global: "global";
@@ -296,6 +353,8 @@ export const ChartTypes: Readonly<{
 // @public (undocumented)
 export type ChartTypes = $Values<typeof ChartTypes>;
 
+// Warning: (ae-missing-release-tag) "ColorConfig" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface ColorConfig {
     // (undocumented)
@@ -307,10 +366,13 @@ export interface ColorConfig {
 // Warning: (ae-forgotten-export) The symbol "DomainBase" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "LowerBound" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "UpperBound" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "CompleteBoundedDomain" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 export type CompleteBoundedDomain = DomainBase & LowerBound & UpperBound;
 
+// Warning: (ae-missing-release-tag) "CrosshairStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface CrosshairStyle {
     // Warning: (ae-forgotten-export) The symbol "Visible" needs to be exported by the entry point index.d.ts
@@ -321,6 +383,9 @@ export interface CrosshairStyle {
     line: StrokeStyle & Visible & Partial<StrokeDashArray>;
 }
 
+// Warning: (ae-missing-release-tag) "CurveType" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-missing-release-tag) "CurveType" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export const CurveType: Readonly<{
     CURVE_CARDINAL: 0;
@@ -338,9 +403,13 @@ export const CurveType: Readonly<{
 // @public (undocumented)
 export type CurveType = $Values<typeof CurveType>;
 
+// Warning: (ae-missing-release-tag) "DARK_THEME" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export const DARK_THEME: Theme;
 
+// Warning: (ae-missing-release-tag) "DataGenerator" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export class DataGenerator {
     // Warning: (ae-forgotten-export) The symbol "RandomNumberGenerator" needs to be exported by the entry point index.d.ts
@@ -378,44 +447,69 @@ export class DataGenerator {
     }[];
     }
 
+// Warning: (ae-missing-release-tag) "Datum" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type Datum = any;
 
+// Warning: (ae-missing-release-tag) "DEFAULT_ANNOTATION_LINE_STYLE" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export const DEFAULT_ANNOTATION_LINE_STYLE: LineAnnotationStyle;
 
+// Warning: (ae-missing-release-tag) "DEFAULT_ANNOTATION_RECT_STYLE" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export const DEFAULT_ANNOTATION_RECT_STYLE: RectAnnotationStyle;
 
 // Warning: (ae-forgotten-export) The symbol "Margins" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "DEFAULT_CHART_MARGINS" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 export const DEFAULT_CHART_MARGINS: Margins;
 
+// Warning: (ae-missing-release-tag) "DEFAULT_CHART_PADDING" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export const DEFAULT_CHART_PADDING: Margins;
 
+// Warning: (ae-missing-release-tag) "DEFAULT_GEOMETRY_STYLES" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export const DEFAULT_GEOMETRY_STYLES: SharedGeometryStateStyle;
 
+// Warning: (ae-missing-release-tag) "DEFAULT_GLOBAL_ID" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public
 export const DEFAULT_GLOBAL_ID = "__global__";
 
+// Warning: (ae-missing-release-tag) "DEFAULT_MISSING_COLOR" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export const DEFAULT_MISSING_COLOR = "red";
 
+// Warning: (ae-missing-release-tag) "DEFAULT_SETTINGS_SPEC" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export const DEFAULT_SETTINGS_SPEC: SettingsSpec;
 
+// Warning: (ae-missing-release-tag) "DEFAULT_TOOLTIP_SNAP" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export const DEFAULT_TOOLTIP_SNAP = true;
 
+// Warning: (ae-missing-release-tag) "DEFAULT_TOOLTIP_TYPE" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export const DEFAULT_TOOLTIP_TYPE: "vertical";
 
+// Warning: (ae-missing-release-tag) "DefaultSettingsProps" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'showLegend' | 'debug' | 'tooltip' | 'showLegendExtra' | 'theme' | 'legendPosition' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta';
 
+// Warning: (ae-missing-release-tag) "DisplayValueSpec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface DisplayValueSpec {
     hideClippedValue?: boolean;
@@ -425,29 +519,44 @@ export interface DisplayValueSpec {
     valueFormatter?: TickFormatter;
 }
 
+// Warning: (ae-missing-release-tag) "DisplayValueStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type DisplayValueStyle = TextStyle & {
     offsetX: number;
     offsetY: number;
 };
 
+// Warning: (ae-missing-release-tag) "DomainRange" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type DomainRange = LowerBoundedDomain | UpperBoundedDomain | CompleteBoundedDomain | UnboundedDomainWithInterval;
 
+// Warning: (ae-missing-release-tag) "ElementClickListener" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent>) => void;
 
+// Warning: (ae-missing-release-tag) "ElementOverListener" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type ElementOverListener = (elements: Array<XYChartElementEvent | PartitionElementEvent>) => void;
 
+// Warning: (ae-missing-release-tag) "FillStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface FillStyle {
     fill: Color;
 }
 
+// Warning: (ae-missing-release-tag) "FilterPredicate" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type FilterPredicate = (series: XYChartSeriesIdentifier) => boolean;
 
+// Warning: (ae-missing-release-tag) "Fit" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-missing-release-tag) "Fit" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public
 export const Fit: Readonly<{
     None: "none";
@@ -463,6 +572,8 @@ export const Fit: Readonly<{
 // @public (undocumented)
 export type Fit = $Values<typeof Fit>;
 
+// Warning: (ae-missing-release-tag) "FitConfig" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type FitConfig = {
     type: Fit;
@@ -470,16 +581,22 @@ export type FitConfig = {
     endValue?: number | 'nearest';
 };
 
+// Warning: (ae-missing-release-tag) "GeometryStateStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public
 export interface GeometryStateStyle {
     opacity: number;
 }
 
+// Warning: (ae-missing-release-tag) "GeometryStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public
 export interface GeometryStyle {
     opacity: number;
 }
 
+// Warning: (ae-missing-release-tag) "GeometryValue" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface GeometryValue {
     // Warning: (ae-forgotten-export) The symbol "BandedAccessorType" needs to be exported by the entry point index.d.ts
@@ -498,8 +615,10 @@ export interface GeometryValue {
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
 //
 // @alpha (undocumented)
-export const Goal: FunctionComponent<SpecRequiredProps & SpecOptionalProps>;
+export const Goal: React.FunctionComponent<SpecRequiredProps & SpecOptionalProps>;
 
+// Warning: (ae-missing-release-tag) "GridLineConfig" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface GridLineConfig {
     // (undocumented)
@@ -514,6 +633,8 @@ export interface GridLineConfig {
     visible?: boolean;
 }
 
+// Warning: (ae-missing-release-tag) "GroupBrushExtent" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface GroupBrushExtent {
     // (undocumented)
@@ -522,28 +643,39 @@ export interface GroupBrushExtent {
     groupId: GroupId;
 }
 
+// Warning: (ae-missing-release-tag) "GroupId" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type GroupId = string;
 
 // Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "HistogramBarSeries" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 export const HistogramBarSeries: React.FunctionComponent<SpecRequiredProps_5 & SpecOptionalProps_5>;
 
+// Warning: (ae-missing-release-tag) "HistogramBarSeriesSpec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public
 export type HistogramBarSeriesSpec = Omit<BarSeriesSpec, 'stackAccessors'> & {
     enableHistogramMode: true;
 };
 
+// Warning: (ae-missing-release-tag) "HistogramConfig" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface HistogramConfig {
     histogramModeAlignment?: HistogramModeAlignment;
 }
 
+// Warning: (ae-missing-release-tag) "HistogramModeAlignment" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type HistogramModeAlignment = 'start' | 'center' | 'end';
 
+// Warning: (ae-missing-release-tag) "HistogramModeAlignments" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export const HistogramModeAlignments: Readonly<{
     Start: HistogramModeAlignment;
@@ -553,9 +685,11 @@ export const HistogramModeAlignments: Readonly<{
 
 // Warning: (ae-forgotten-export) The symbol "BinaryAccessorFn" needs to be exported by the entry point index.d.ts
 //
-// @public (undocumented)
+// @public
 export type IndexedAccessorFn = UnaryAccessorFn | BinaryAccessorFn;
 
+// Warning: (ae-missing-release-tag) "LayerValue" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface LayerValue {
     // Warning: (ae-forgotten-export) The symbol "PrimitiveValue" needs to be exported by the entry point index.d.ts
@@ -566,9 +700,13 @@ export interface LayerValue {
     value: number;
 }
 
+// Warning: (ae-missing-release-tag) "LegendColorPicker" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
-export type LegendColorPicker = ComponentType<LegendColorPickerProps>;
+export type LegendColorPicker = React.ComponentType<LegendColorPickerProps>;
 
+// Warning: (ae-missing-release-tag) "LegendColorPickerProps" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface LegendColorPickerProps {
     anchor: HTMLElement;
@@ -578,9 +716,13 @@ export interface LegendColorPickerProps {
     seriesIdentifier: SeriesIdentifier;
 }
 
+// Warning: (ae-missing-release-tag) "LegendItemListener" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type LegendItemListener = (series: SeriesIdentifier | null) => void;
 
+// Warning: (ae-missing-release-tag) "LegendStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface LegendStyle {
     horizontalHeight: number;
@@ -588,11 +730,14 @@ export interface LegendStyle {
     verticalWidth: number;
 }
 
+// Warning: (ae-missing-release-tag) "LIGHT_THEME" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export const LIGHT_THEME: Theme;
 
 // Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "LineAnnotation" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 export const LineAnnotation: React.FunctionComponent<SpecRequiredProps_6 & SpecOptionalProps_6>;
@@ -604,6 +749,8 @@ export interface LineAnnotationDatum {
     header?: string;
 }
 
+// Warning: (ae-missing-release-tag) "LineAnnotationSpec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type LineAnnotationSpec = BaseAnnotationSpec<typeof AnnotationTypes.Line, LineAnnotationDatum, LineAnnotationStyle> & {
     domainType: AnnotationDomainType;
@@ -617,6 +764,8 @@ export type LineAnnotationSpec = BaseAnnotationSpec<typeof AnnotationTypes.Line,
     zIndex?: number;
 };
 
+// Warning: (ae-missing-release-tag) "LineAnnotationStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface LineAnnotationStyle {
     // (undocumented)
@@ -627,10 +776,13 @@ export interface LineAnnotationStyle {
 
 // Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "LineSeries" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 export const LineSeries: React.FunctionComponent<SpecRequiredProps_7 & SpecOptionalProps_7>;
 
+// Warning: (ae-missing-release-tag) "LineSeriesSpec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public
 export type LineSeriesSpec = BasicSeriesSpec & HistogramConfig & {
     seriesType: typeof SeriesTypes.Line;
@@ -640,6 +792,8 @@ export type LineSeriesSpec = BasicSeriesSpec & HistogramConfig & {
     fit?: Exclude<Fit, 'explicit'> | FitConfig;
 };
 
+// Warning: (ae-missing-release-tag) "LineSeriesStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface LineSeriesStyle {
     // (undocumented)
@@ -648,6 +802,8 @@ export interface LineSeriesStyle {
     point: PointStyle;
 }
 
+// Warning: (ae-missing-release-tag) "LineStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface LineStyle {
     dash?: number[];
@@ -657,45 +813,67 @@ export interface LineStyle {
     visible: boolean;
 }
 
+// Warning: (ae-missing-release-tag) "LowerBoundedDomain" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type LowerBoundedDomain = DomainBase & LowerBound;
 
+// Warning: (ae-missing-release-tag) "MarkBuffer" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public
 export type MarkBuffer = number | ((radius: number) => number);
 
+// Warning: (ae-missing-release-tag) "mergeGridLineConfigs" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export function mergeGridLineConfigs(axisSpecConfig: GridLineConfig, themeConfig: GridLineConfig): GridLineConfig;
 
+// Warning: (ae-missing-release-tag) "mergeWithDefaultAnnotationLine" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export function mergeWithDefaultAnnotationLine(config?: Partial<LineAnnotationStyle>): LineAnnotationStyle;
 
+// Warning: (ae-missing-release-tag) "mergeWithDefaultAnnotationRect" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export function mergeWithDefaultAnnotationRect(config?: Partial<RectAnnotationStyle>): RectAnnotationStyle;
 
+// Warning: (ae-missing-release-tag) "mergeWithDefaultTheme" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public
 export function mergeWithDefaultTheme(theme: PartialTheme, defaultTheme?: Theme, axillaryThemes?: PartialTheme[]): Theme;
 
+// Warning: (ae-missing-release-tag) "niceTimeFormatByDay" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export function niceTimeFormatByDay(days: number): "YYYY-MM-DD" | "MMMM DD" | "MM-DD HH:mm" | "HH:mm:ss";
 
+// Warning: (ae-missing-release-tag) "niceTimeFormatter" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export function niceTimeFormatter(domain: [number, number]): TickFormatter;
 
+// Warning: (ae-missing-release-tag) "Opacity" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface Opacity {
     opacity: number;
 }
 
+// Warning: (ae-missing-release-tag) "PartialTheme" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type PartialTheme = RecursivePartial<Theme>;
 
 // Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "Partition" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export const Partition: React.FunctionComponent<SpecRequiredProps_9 & SpecOptionalProps_9>;
+export const Partition: React.FunctionComponent<SpecRequiredProps_8 & SpecOptionalProps_8>;
 
 // Warning: (ae-forgotten-export) The symbol "StaticConfig" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "Config" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 export interface PartitionConfig extends StaticConfig {
@@ -706,14 +884,19 @@ export interface PartitionConfig extends StaticConfig {
     };
 }
 
+// Warning: (ae-missing-release-tag) "PartitionElementEvent" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type PartitionElementEvent = [Array<LayerValue>, SeriesIdentifier];
 
 // Warning: (ae-forgotten-export) The symbol "LabelConfig" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "FillLabelConfig" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 export type PartitionFillLabel = LabelConfig;
 
+// Warning: (ae-missing-release-tag) "Layer" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface PartitionLayer {
     // Warning: (ae-forgotten-export) The symbol "ExtendedFillLabelConfig" needs to be exported by the entry point index.d.ts
@@ -736,6 +919,9 @@ export interface PartitionLayer {
     showAccessor?: ShowAccessor;
 }
 
+// Warning: (ae-missing-release-tag) "PartitionLayout" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-missing-release-tag) "PartitionLayout" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export const PartitionLayout: Readonly<{
     sunburst: "sunburst";
@@ -745,9 +931,14 @@ export const PartitionLayout: Readonly<{
 // @public (undocumented)
 export type PartitionLayout = $Values<typeof PartitionLayout>;
 
+// Warning: (ae-missing-release-tag) "PointerEvent" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type PointerEvent = PointerOverEvent | PointerOutEvent;
 
+// Warning: (ae-missing-release-tag) "PointerEventType" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-missing-release-tag) "PointerEventType" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export const PointerEventType: Readonly<{
     Over: "Over";
@@ -757,12 +948,16 @@ export const PointerEventType: Readonly<{
 // @public (undocumented)
 export type PointerEventType = $Values<typeof PointerEventType>;
 
+// Warning: (ae-missing-release-tag) "PointerOutEvent" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface PointerOutEvent extends BasePointerEvent {
     // (undocumented)
     type: typeof PointerEventType.Out;
 }
 
+// Warning: (ae-missing-release-tag) "PointerOverEvent" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public
 export interface PointerOverEvent extends BasePointerEvent {
     // Warning: (ae-forgotten-export) The symbol "ScaleContinuousType" needs to be exported by the entry point index.d.ts
@@ -772,14 +967,19 @@ export interface PointerOverEvent extends BasePointerEvent {
     scale: ScaleContinuousType | ScaleOrdinalType;
     // (undocumented)
     type: typeof PointerEventType.Over;
+    // @alpha
     unit?: string;
     // (undocumented)
     value: number | string | null;
 }
 
+// Warning: (ae-missing-release-tag) "PointerUpdateListener" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type PointerUpdateListener = (event: PointerEvent) => void;
 
+// Warning: (ae-missing-release-tag) "PointStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface PointStyle {
     fill?: Color | ColorVariant;
@@ -790,12 +990,19 @@ export interface PointStyle {
     visible: boolean;
 }
 
+// Warning: (ae-missing-release-tag) "PointStyleAccessor" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public
 export type PointStyleAccessor = (datum: RawDataSeriesDatum, seriesIdentifier: XYChartSeriesIdentifier) => PointStyleOverride;
 
+// Warning: (ae-missing-release-tag) "PointStyleOverride" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type PointStyleOverride = RecursivePartial<PointStyle> | Color | null;
 
+// Warning: (ae-missing-release-tag) "Position" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-missing-release-tag) "Position" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export const Position: Readonly<{
     Top: "top";
@@ -807,18 +1014,21 @@ export const Position: Readonly<{
 // @public (undocumented)
 export type Position = $Values<typeof Position>;
 
+// Warning: (ae-missing-release-tag) "Postfixes" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface Postfixes {
     y0AccessorFormat?: string;
     y1AccessorFormat?: string;
 }
 
-// Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "RectAnnotation" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export const RectAnnotation: React.FunctionComponent<SpecRequiredProps_8 & SpecOptionalProps_8>;
+export const RectAnnotation: React.FunctionComponent<Pick<RectAnnotationSpec, 'id' | 'dataValues'> & Partial<Omit<RectAnnotationSpec, 'chartType' | 'specType' | 'seriesType' | 'id' | 'dataValues' | 'domainType' | 'annotationType'>>>;
 
+// Warning: (ae-missing-release-tag) "RectAnnotationDatum" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public
 export interface RectAnnotationDatum {
     coordinates: {
@@ -830,15 +1040,21 @@ export interface RectAnnotationDatum {
     details?: string;
 }
 
+// Warning: (ae-missing-release-tag) "RectAnnotationSpec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type RectAnnotationSpec = BaseAnnotationSpec<typeof AnnotationTypes.Rectangle, RectAnnotationDatum, RectAnnotationStyle> & {
     renderTooltip?: AnnotationTooltipFormatter;
     zIndex?: number;
 };
 
+// Warning: (ae-missing-release-tag) "RectAnnotationStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type RectAnnotationStyle = StrokeStyle & FillStyle & Opacity;
 
+// Warning: (ae-missing-release-tag) "RectBorderStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface RectBorderStyle {
     stroke?: Color | ColorVariant;
@@ -847,6 +1063,8 @@ export interface RectBorderStyle {
     visible: boolean;
 }
 
+// Warning: (ae-missing-release-tag) "RectStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface RectStyle {
     fill?: Color | ColorVariant;
@@ -854,27 +1072,39 @@ export interface RectStyle {
 }
 
 // Warning: (ae-forgotten-export) The symbol "NonAny" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "RecursivePartial" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
 export type RecursivePartial<T> = {
     [P in keyof T]?: T[P] extends NonAny[] ? T[P] : T[P] extends ReadonlyArray<NonAny> ? T[P] : T[P] extends (infer U)[] ? RecursivePartial<U>[] : T[P] extends ReadonlyArray<infer U> ? ReadonlyArray<RecursivePartial<U>> : T[P] extends Set<infer V> ? Set<RecursivePartial<V>> : T[P] extends Map<infer K, infer V> ? Map<K, RecursivePartial<V>> : T[P] extends NonAny ? T[P] : RecursivePartial<T[P]>;
 };
 
+// Warning: (ae-missing-release-tag) "RenderChangeListener" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public
 export type RenderChangeListener = (isRendered: boolean) => void;
 
+// Warning: (ae-missing-release-tag) "Rendering" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type Rendering = 'canvas' | 'svg';
 
+// Warning: (ae-missing-release-tag) "Rotation" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type Rotation = 0 | 90 | -90 | 180;
 
+// Warning: (ae-missing-release-tag) "ScalesConfig" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface ScalesConfig {
     barsPadding: number;
     histogramPadding: number;
 }
 
+// Warning: (ae-missing-release-tag) "ScaleType" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-missing-release-tag) "ScaleType" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public
 export const ScaleType: Readonly<{
     Linear: "linear";
@@ -887,6 +1117,8 @@ export const ScaleType: Readonly<{
 // @public (undocumented)
 export type ScaleType = $Values<typeof ScaleType>;
 
+// Warning: (ae-missing-release-tag) "SeriesAccessors" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface SeriesAccessors {
     markSizeAccessor?: Accessor | AccessorFn;
@@ -898,27 +1130,41 @@ export interface SeriesAccessors {
     yAccessors: Accessor[];
 }
 
+// Warning: (ae-missing-release-tag) "SeriesColorAccessor" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type SeriesColorAccessor = string | SeriesColorsArray | SeriesColorAccessorFn;
 
+// Warning: (ae-missing-release-tag) "SeriesColorAccessorFn" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type SeriesColorAccessorFn = (seriesIdentifier: XYChartSeriesIdentifier) => string | null;
 
+// Warning: (ae-missing-release-tag) "SeriesColorsArray" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type SeriesColorsArray = string[];
 
+// Warning: (ae-missing-release-tag) "SeriesIdentifier" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public
 export type SeriesIdentifier = {
     specId: SpecId;
     key: SeriesKey;
 };
 
+// Warning: (ae-missing-release-tag) "SeriesName" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type SeriesName = string | number | null;
 
+// Warning: (ae-missing-release-tag) "SeriesNameAccessor" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type SeriesNameAccessor = string | SeriesNameFn | SeriesNameConfigOptions;
 
+// Warning: (ae-missing-release-tag) "SeriesNameConfig" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public
 export interface SeriesNameConfig {
     accessor: string | number;
@@ -927,15 +1173,21 @@ export interface SeriesNameConfig {
     value?: string | number;
 }
 
+// Warning: (ae-missing-release-tag) "SeriesNameConfigOptions" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface SeriesNameConfigOptions {
     delimiter?: string;
     names?: SeriesNameConfig[];
 }
 
+// Warning: (ae-missing-release-tag) "SeriesNameFn" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public
 export type SeriesNameFn = (series: XYChartSeriesIdentifier, isTooltip: boolean) => SeriesName;
 
+// Warning: (ae-missing-release-tag) "SeriesScales" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface SeriesScales {
     timeZone?: string;
@@ -944,6 +1196,8 @@ export interface SeriesScales {
     yScaleType: ScaleContinuousType;
 }
 
+// Warning: (ae-missing-release-tag) "SeriesSpec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface SeriesSpec extends Spec {
     // (undocumented)
@@ -966,9 +1220,14 @@ export interface SeriesSpec extends Spec {
     y1AccessorFormat?: AccessorFormat;
 }
 
+// Warning: (ae-missing-release-tag) "SeriesSpecs" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type SeriesSpecs<S extends BasicSeriesSpec = BasicSeriesSpec> = Array<S>;
 
+// Warning: (ae-missing-release-tag) "SeriesTypes" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-missing-release-tag) "SeriesTypes" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export const SeriesTypes: Readonly<{
     Area: "area";
@@ -980,11 +1239,13 @@ export const SeriesTypes: Readonly<{
 // @public (undocumented)
 export type SeriesTypes = $Values<typeof SeriesTypes>;
 
-// Warning: (ae-forgotten-export) The symbol "React" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "Settings" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export const Settings: React_2.FunctionComponent<SettingsSpecProps>;
+export const Settings: React.FunctionComponent<SettingsSpecProps>;
 
+// Warning: (ae-missing-release-tag) "SettingsSpec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface SettingsSpec extends Spec {
     // (undocumented)
@@ -1042,9 +1303,13 @@ export interface SettingsSpec extends Spec {
     xDomain?: Domain | DomainRange;
 }
 
+// Warning: (ae-missing-release-tag) "SettingsSpecProps" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type SettingsSpecProps = Partial<Omit<SettingsSpec, 'chartType' | 'specType' | 'id'>>;
 
+// Warning: (ae-missing-release-tag) "SharedGeometryStateStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface SharedGeometryStateStyle {
     // (undocumented)
@@ -1055,6 +1320,8 @@ export interface SharedGeometryStateStyle {
     unhighlighted: GeometryStateStyle;
 }
 
+// Warning: (ae-missing-release-tag) "Spec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface Spec {
     chartType: ChartTypes;
@@ -1062,9 +1329,14 @@ export interface Spec {
     specType: string;
 }
 
+// Warning: (ae-missing-release-tag) "SpecId" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type SpecId = string;
 
+// Warning: (ae-missing-release-tag) "SpecTypes" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-missing-release-tag) "SpecTypes" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export const SpecTypes: Readonly<{
     Series: "series";
@@ -1076,17 +1348,23 @@ export const SpecTypes: Readonly<{
 // @public (undocumented)
 export type SpecTypes = $Values<typeof SpecTypes>;
 
+// Warning: (ae-missing-release-tag) "StrokeDashArray" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface StrokeDashArray {
     dash: number[];
 }
 
+// Warning: (ae-missing-release-tag) "StrokeStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface StrokeStyle<C = Color> {
     stroke: C;
     strokeWidth: number;
 }
 
+// Warning: (ae-missing-release-tag) "TextStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface TextStyle {
     // (undocumented)
@@ -1101,6 +1379,8 @@ export interface TextStyle {
     padding: number;
 }
 
+// Warning: (ae-missing-release-tag) "Theme" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface Theme {
     // (undocumented)
@@ -1126,20 +1406,30 @@ export interface Theme {
     sharedStyle: SharedGeometryStateStyle;
 }
 
+// Warning: (ae-missing-release-tag) "TickFormatter" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type TickFormatter = (value: any, options?: TickFormatterOptions) => string;
 
+// Warning: (ae-missing-release-tag) "TickFormatterOptions" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type TickFormatterOptions = {
     timeZone?: string;
 };
 
+// Warning: (ae-missing-release-tag) "TickStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type TickStyle = StrokeStyle & Visible;
 
+// Warning: (ae-missing-release-tag) "timeFormatter" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export function timeFormatter(format: string): TickFormatter;
 
+// Warning: (ae-missing-release-tag) "TooltipProps" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface TooltipProps {
     // (undocumented)
@@ -1152,6 +1442,9 @@ export interface TooltipProps {
     unit?: string;
 }
 
+// Warning: (ae-missing-release-tag) "TooltipType" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-missing-release-tag) "TooltipType" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public
 export const TooltipType: Readonly<{
     VerticalCursor: "vertical";
@@ -1163,6 +1456,8 @@ export const TooltipType: Readonly<{
 // @public (undocumented)
 export type TooltipType = $Values<typeof TooltipType>;
 
+// Warning: (ae-missing-release-tag) "TooltipValue" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface TooltipValue {
     color: Color;
@@ -1175,15 +1470,26 @@ export interface TooltipValue {
     valueAccessor?: Accessor;
 }
 
+// Warning: (ae-missing-release-tag) "TooltipValueFormatter" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type TooltipValueFormatter = (data: TooltipValue) => JSX.Element | string;
 
+// @public
+export type UnaryAccessorFn<Return = any> = (datum: Datum) => Return;
+
+// Warning: (ae-missing-release-tag) "UnboundedDomainWithInterval" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type UnboundedDomainWithInterval = DomainBase;
 
+// Warning: (ae-missing-release-tag) "UpperBoundedDomain" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type UpperBoundedDomain = DomainBase & UpperBound;
 
+// Warning: (ae-missing-release-tag) "XYBrushArea" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface XYBrushArea {
     // (undocumented)
@@ -1192,9 +1498,13 @@ export interface XYBrushArea {
     y?: Array<GroupBrushExtent>;
 }
 
+// Warning: (ae-missing-release-tag) "XYChartElementEvent" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export type XYChartElementEvent = [GeometryValue, XYChartSeriesIdentifier];
 
+// Warning: (ae-missing-release-tag) "XYChartSeriesIdentifier" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
 export interface XYChartSeriesIdentifier extends SeriesIdentifier {
     // (undocumented)
