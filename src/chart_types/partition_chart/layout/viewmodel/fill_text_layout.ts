@@ -179,6 +179,7 @@ function getVerticalAlignment(
   totalRowCount: number,
   rowIndex: number,
   paddingTop: Pixels,
+  paddingBottom: Pixels,
   fontSize: Pixels,
   overhang: Ratio,
 ) {
@@ -186,7 +187,7 @@ function getVerticalAlignment(
     case VerticalAlignments.top:
       return -(container.y0 + linePitch * rowIndex + paddingTop + fontSize * overhang);
     case VerticalAlignments.bottom:
-      return -(container.y1 - linePitch * (totalRowCount - 1 - rowIndex) - fontSize * overhang);
+      return -(container.y1 - linePitch * (totalRowCount - 1 - rowIndex) - paddingBottom - fontSize * overhang);
     default:
       return -((container.y0 + container.y1) / 2 + (linePitch * (rowIndex - totalRowCount)) / 2);
   }
@@ -231,6 +232,7 @@ export const getRectangleRowGeometry: GetShapeRowGeometry<RectangleConstruction>
     totalRowCount,
     rowIndex,
     adjustedTop,
+    bottom,
     fontSize,
     overhang,
   );
