@@ -235,7 +235,7 @@ export const getRectangleRowGeometry: GetShapeRowGeometry<RectangleConstruction>
     overhang,
   );
   return {
-    rowAnchorX: cx,
+    rowAnchorX: cx + left / 2 - right / 2,
     rowAnchorY,
     maximumRowLength: container.x1 - container.x0 - left - right,
   };
