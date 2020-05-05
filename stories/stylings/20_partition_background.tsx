@@ -83,7 +83,7 @@ export const example = () => {
           fillLabel: {
             valueFormatter: (d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`,
             fontStyle: 'italic',
-            textInvertible: true,
+            textContrast: true,
             fontWeight: 900,
             valueFont: {
               fontFamily: 'Menlo',

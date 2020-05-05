@@ -27,6 +27,7 @@ type PlaygroundState = {
   foregroundColor: string;
   textColor: string;
   value: any;
+  opacityColor: number;
 };
 export class Playground extends React.Component<{}, PlaygroundState> {
   constructor(props: any) {
@@ -36,6 +37,7 @@ export class Playground extends React.Component<{}, PlaygroundState> {
       foregroundColor: 'rgba(168, 208, 20, 0.3)',
       textColor: 'rgba(163, 122, 116, 1)',
       value: 'rgba(113, 128, 172, 0.75)',
+      opacityColor: 1,
     };
   }
 
@@ -76,10 +78,25 @@ export class Playground extends React.Component<{}, PlaygroundState> {
     });
   };
 
+  updateColorAlpha = (event: any) => {
+    this.setState({
+      opacityColor: event.target.value,
+      foregroundColor: this.combineOpacityToRGB(this.state.foregroundColor, event.target.value),
+    });
+  };
+
+  combineOpacityToRGB = (rgb: string, opacity: string) => {
+    const [r, g, b] = rgb
+      .replace('rgb(', '')
+      .replace(')', '')
+      .split(',');
+    return `${r.trim()}, ${g.trim()}, ${b.trim()}, ${opacity})`;
+  };
+
   render() {
-    const { backgroundColor, foregroundColor, textColor, value } = this.state;
+    const { backgroundColor, foregroundColor, textColor, value, opacityColor } = this.state;
     const combinedColors = combineColors(foregroundColor, backgroundColor);
-    const makeContrasted = makeHighContrastColor(textColor, combinedColors);
+    const makeContrasted = makeHighContrastColor(textColor, combinedColors, 4.5);
     return (
       <form
         className="background"
@@ -101,6 +118,7 @@ export class Playground extends React.Component<{}, PlaygroundState> {
             height: 400,
             top: 10,
             left: 200,
+            opacity: opacityColor,
           }}
         >
           <label>foreground color input </label>
@@ -109,6 +127,16 @@ export class Playground extends React.Component<{}, PlaygroundState> {
             name="foregroundColor"
             defaultValue={this.RGBToHex(value)}
             onChange={this.updateForegroundColor.bind(this)}
+          />
+          <br />
+          <input
+            type="range"
+            id="alpha"
+            onChange={this.updateColorAlpha.bind(this)}
+            min="0.3"
+            max="1"
+            step="0.1"
+            defaultValue={this.state.value}
           />
           <p
             style={{
@@ -146,6 +174,18 @@ export class Playground extends React.Component<{}, PlaygroundState> {
           >
             Here is some text with contrasted color
           </p>
+          <button
+            style={{
+              border: '2px solid black',
+              color: 'lavender',
+              background: 'grey',
+            }}
+            onClick={() => makeHighContrastColor(textColor, combineColors(foregroundColor, backgroundColor))}
+          >
+            Calculate new contrast
+          </button>
+          <br />
+          <br />
         </div>
         <div
           className="showCalculations"
@@ -191,10 +231,12 @@ export class Playground extends React.Component<{}, PlaygroundState> {
               padding: 10,
             }}
           >
-            This is the combined background and container background
+            This is the combined background and container background using the combineColors function
             <br />
             <br />
-            {combineColors(foregroundColor, backgroundColor)}
+            The rgba of this div is:
+            <br />
+            <b>{combineColors(foregroundColor, backgroundColor)}</b>
           </p>
         </div>
       </form>

@@ -172,6 +172,7 @@ export const configMetadata = {
     values: {
       textColor: { type: 'color', dflt: '#000' },
       textInvertible: { dflt: false, type: 'boolean' },
+      textContrast: { dflt: false, type: 'boolean' },
       ...fontSettings,
       valueGetter: {
         dflt: sumValueGetter,
@@ -212,6 +213,7 @@ export const configMetadata = {
       },
       textColor: { type: 'color', dflt: '#000' },
       textInvertible: { dflt: false, type: 'boolean' },
+      textContrast: { dflt: false, type: 'boolean' },
       textOpacity: { dflt: 1, min: 0, max: 1, type: 'number' },
       minimumStemLength: {
         dflt: 0,

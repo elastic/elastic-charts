@@ -66,9 +66,8 @@ export function combineColors(rgba1: Color, rgba2: Color) {
   let rgba1FormattedRGBA = rgba1.startsWith('#') ? RGBATupleToString(HexToRGB(rgba1)) : rgba1;
   let rgba2FormattedRGBA = rgba2.startsWith('#') ? RGBATupleToString(HexToRGB(rgba2)) : rgba2;
 
-  rgba1FormattedRGBA = /^[a-z]/.test(rgba1) ? RGBATupleToString(chroma(rgba1).rgba()) : rgba1;
-  rgba2FormattedRGBA = /^[a-z]/.test(rgba2) ? RGBATupleToString(chroma(rgba2).rgba()) : rgba2;
-
+  rgba1FormattedRGBA = /^[a-z]/.test(rgba1) ? RGBATupleToString(chroma(rgba1).rgba()) : rgba1FormattedRGBA;
+  rgba2FormattedRGBA = /^[a-z]/.test(rgba2) ? RGBATupleToString(chroma(rgba2).rgba()) : rgba2FormattedRGBA;
   const { red: red1, green: green1, blue: blue1, opacity: alpha1 } = convertRGBAStringToSeparateValues(
     rgba1FormattedRGBA,
   );
@@ -79,7 +78,7 @@ export function combineColors(rgba1: Color, rgba2: Color) {
   // For reference on alpha calculations:
   // https://en.wikipedia.org/wiki/Alpha_compositing
   const combinedAlpha = alpha1 + alpha2 * (1 - alpha1);
-  const combinedRed = Math.round(red1 * alpha1 + red2 * alpha2 * (1 - alpha1)) / combinedAlpha;
+  const combinedRed = Math.round((red1 * alpha1 + red2 * alpha2 * (1 - alpha1)) / combinedAlpha);
   const combinedGreen = Math.round((green1 * alpha1 + green2 * alpha2 * (1 - alpha1)) / combinedAlpha);
   const combinedBlue = Math.round((blue1 * alpha1 + blue2 * alpha2 * (1 - alpha1)) / combinedAlpha);
   return RGBATupleToString([combinedRed, combinedGreen, combinedBlue, combinedAlpha] as RgbTuple);
@@ -106,11 +105,11 @@ export function makeHighContrastColor(foreground: Color, background: Color, rati
   while (contrast < ratio) {
     if (isBackgroundDark) {
       highContrastTextColor = chroma(highContrastTextColor)
-        .darken()
+        .brighten()
         .toString();
     } else {
       highContrastTextColor = chroma(highContrastTextColor)
-        .brighten()
+        .darken()
         .toString();
     }
     const scaledOldContrast = Math.round(contrast * precision) / precision;

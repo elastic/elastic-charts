@@ -36,6 +36,7 @@ export type Padding = Pixels | Partial<PerSidePadding>;
 interface LabelConfig extends Font {
   textColor: Color;
   textInvertible: boolean;
+  textContrast: boolean;
   textOpacity: Ratio;
   valueFormatter: ValueFormatter;
   valueFont: PartialFont;

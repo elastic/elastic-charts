@@ -41,7 +41,7 @@ export const example = () => {
           {
             groupByRollup: (d: Datum) => d.sitc1,
             nodeLabel: (d: Datum) => productLookup[d].name,
-            fillLabel: { textInvertible: true },
+            fillLabel: { textInvertible: true, textContrast: true },
             shape: {
               fillColor: indexInterpolatedFillColor(interpolatorCET2s),
             },

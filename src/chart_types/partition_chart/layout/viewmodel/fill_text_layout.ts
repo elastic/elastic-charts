@@ -289,6 +289,7 @@ function getWordSpacing(fontSize: number) {
 export function getTextColor(
   textColor: Color,
   textInvertible: boolean,
+  textContrast: boolean,
   node: QuadViewModel,
   containerBackgroundColor?: Color,
 ) {
@@ -304,8 +305,8 @@ export function getTextColor(
       : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
     : textColor;
 
-  // if textInvertible is true then contrast with background needs to be calculated otherwise the textColor should be the same as other slices
-  if (textInvertible) {
+  // if textContrast is true then contrast with background needs to be calculated otherwise the textColor should be the same as other slices
+  if (textContrast) {
     const containerBackgroundColorFromUser =
       containerBackgroundColor !== undefined ? containerBackgroundColor : 'rgba(255, 255, 255, 0)';
     const containerBackground = combineColors(sliceFillColor, containerBackgroundColorFromUser);
@@ -357,6 +358,7 @@ function fill(
     const {
       textColor,
       textInvertible,
+      textContrast,
       fontStyle,
       fontVariant,
       fontFamily,
@@ -372,7 +374,7 @@ function fill(
       layer.shape,
     );
 
-    const fillTextColor = getTextColor(textColor, textInvertible, node, containerBackgroundColor);
+    const fillTextColor = getTextColor(textColor, textInvertible, textContrast, node, containerBackgroundColor);
 
     const valueFont = Object.assign(
       { fontFamily: config.fontFamily, fontWeight: 'normal' },
