@@ -1,3 +1,52 @@
+# [19.2.0](https://github.com/elastic/elastic-charts/compare/v19.1.2...v19.2.0) (2020-05-05)
+
+
+### Features
+
+* **partition:** treemap padding ([#660](https://github.com/elastic/elastic-charts/issues/660)) ([ed1e8be](https://github.com/elastic/elastic-charts/commit/ed1e8be1c870c748fee432a643039b4ba93b2c62))
+
+## [19.1.2](https://github.com/elastic/elastic-charts/compare/v19.1.1...v19.1.2) (2020-05-04)
+
+
+### Bug Fixes
+
+* **partition:** elimination of zero values ([#658](https://github.com/elastic/elastic-charts/issues/658)) ([9ee67dc](https://github.com/elastic/elastic-charts/commit/9ee67dc89851e268edf79016915b973bcea6bd98)), closes [#642](https://github.com/elastic/elastic-charts/issues/642)
+
+## [19.1.1](https://github.com/elastic/elastic-charts/compare/v19.1.0...v19.1.1) (2020-04-30)
+
+
+### Bug Fixes
+
+* render charts without series ([#657](https://github.com/elastic/elastic-charts/issues/657)) ([0c0af01](https://github.com/elastic/elastic-charts/commit/0c0af01413b00734bd3dfa13dbc3aa7571ee4240))
+
+# [19.1.0](https://github.com/elastic/elastic-charts/compare/v19.0.0...v19.1.0) (2020-04-30)
+
+
+### Features
+
+* **partition:** treemap group text in grooves ([#652](https://github.com/elastic/elastic-charts/issues/652)) ([304dd48](https://github.com/elastic/elastic-charts/commit/304dd481b0c3195022d2a1b26887901ba56c07e0))
+
+# [19.0.0](https://github.com/elastic/elastic-charts/compare/v18.4.2...v19.0.0) (2020-04-28)
+
+
+### Bug Fixes
+
+* tooltip container scroll issue ([#647](https://github.com/elastic/elastic-charts/issues/647)) ([f411771](https://github.com/elastic/elastic-charts/commit/f4117717690f4086805f002afb85c3a4b0d2fe22))
+* **annotations:** fix alignment at the edges ([#641](https://github.com/elastic/elastic-charts/issues/641)) ([43c5a59](https://github.com/elastic/elastic-charts/commit/43c5a59e3862b6191537b73fc0ca604e79fbc992)), closes [#586](https://github.com/elastic/elastic-charts/issues/586)
+
+
+### Features
+
+* shift click legend items & partition legend hover ([#648](https://github.com/elastic/elastic-charts/issues/648)) ([ed91744](https://github.com/elastic/elastic-charts/commit/ed9174471e31df77234ea05f307b0dce79722bea))
+* **brush:** add multi axis brushing ([#625](https://github.com/elastic/elastic-charts/issues/625)) ([9e49534](https://github.com/elastic/elastic-charts/commit/9e4953474db37d33f8a19dfb1ff1a5528b0f6d54)), closes [#587](https://github.com/elastic/elastic-charts/issues/587) [#620](https://github.com/elastic/elastic-charts/issues/620)
+
+
+### BREAKING CHANGES
+
+* **brush:** The type used by the `BrushEndListener` is now in the following form `{ x?: [number, number]; y?: Array<{ groupId: GroupId; values: [number,
+number]; }> }` where `x` contains an array of `[min, max]` values, and the  `y` property is an optional array of objects, containing the `GroupId` and the values of the brush for that specific axis.
+* **annotations:** In the rectangular annotation, the y0 parameter of the coordinates now refers to the minimum value and the y1 value refers to the maximum value of the y domain.
+
 ## [18.4.2](https://github.com/elastic/elastic-charts/compare/v18.4.1...v18.4.2) (2020-04-24)
 
 

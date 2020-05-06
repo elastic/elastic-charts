@@ -16,12 +16,38 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { GlobalChartState } from '../chart_state';
-// import { getSeriesSpecsSelector } from '../../chart_types/xy_chart/state/selectors/get_specs';
+import { Position } from '../../../../utils/commons';
+import { AnnotationDetails, AnnotationMarker } from '../types';
+
+/**
+ * Start and end points of a line annotation
+ * @internal
+ */
+export interface AnnotationLinePathPoints {
+  /** x1,y1 the start point anchored to the linked axis */
+  start: {
+    x1: number;
+    y1: number;
+  };
+  /** x2,y2 the end point */
+  end: {
+    x2: number;
+    y2: number;
+  };
+}
 
 /** @internal */
-export const isInitialized = (state: GlobalChartState) => {
-  // return state.specsInitialized && getSeriesSpecsSelector(state).length > 0;
-  // todo getSeriesSpecsSelector, at the time of merging `master` now, is specific to Cartesians, blocking non-Cartesians
-  return state.specsInitialized;
-};
+export interface AnnotationLineProps {
+  /** the position of the start point relative to the Chart */
+  anchor: {
+    position: Position;
+    top: number;
+    left: number;
+  };
+  /**
+   * The path points of a line annotation
+   */
+  linePathPoints: AnnotationLinePathPoints;
+  details: AnnotationDetails;
+  marker?: AnnotationMarker;
+}

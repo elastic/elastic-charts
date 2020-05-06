@@ -25,12 +25,11 @@ import { getChartContainerDimensionsSelector } from '../../../../state/selectors
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { isInitialized } from '../../../../state/selectors/is_initialized';
 import { Dimensions } from '../../../../utils/dimensions';
 import { AnnotationId, AxisId } from '../../../../utils/ids';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { Theme } from '../../../../utils/themes/theme';
-import { AnnotationDimensions } from '../../annotations/annotation_utils';
+import { AnnotationDimensions } from '../../annotations/types';
 import { LegendItem } from '../../../../commons/legend';
 import { computeAnnotationDimensionsSelector } from '../../state/selectors/compute_annotations';
 import { computeAxisTicksDimensionsSelector } from '../../state/selectors/compute_axis_ticks_dimensions';
@@ -48,6 +47,7 @@ import { isChartEmptySelector } from '../../state/selectors/is_chart_empty';
 import { deepEqual } from '../../../../utils/fast_deep_equal';
 import { Rotation } from '../../../../utils/commons';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
+import { getInternalIsInitializedSelector } from '../../../../state/selectors/get_internal_is_intialized';
 
 /** @internal */
 export interface ReactiveChartStateProps {
@@ -219,7 +219,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
-  if (!isInitialized(state)) {
+  if (!getInternalIsInitializedSelector(state)) {
     return DEFAULT_PROPS;
   }
 
