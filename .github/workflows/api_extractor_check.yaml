@@ -22,4 +22,5 @@ jobs:
         with:
           old: api/charts.api.md
           new: tmp/charts.api.md
-          mode: addition
+          mode: deletion
+          tolerance: better
