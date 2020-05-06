@@ -16,9 +16,3 @@ jobs:
         run: yarn --frozen-lockfile
       - name: Run API-Extractor
         run: yarn api:check
-        if: ${{ failure() }}
-        uses: LouisBrunner/diff-action@v0.1.0
-        with:
-          old: api/charts.api.md
-          new: tmp/charts.api.md
-          mode: addition
