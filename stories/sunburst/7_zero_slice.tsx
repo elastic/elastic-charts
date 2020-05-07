@@ -42,7 +42,7 @@ export const example = () => (
           },
         },
       ]}
-      config={{ partitionLayout: PartitionLayout.sunburst }}
+      config={{ partitionLayout: PartitionLayout.sunburst, margin: { left: 0.2 } }}
     />
   </Chart>
 );
