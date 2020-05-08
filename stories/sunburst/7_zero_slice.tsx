@@ -23,7 +23,7 @@ import React from 'react';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 
 export const example = () => (
-  <Chart className="story-chart">
+  <Chart className="story-chart" size={{ height: 180 }}>
     <Partition
       id="spec_1"
       data={mocks.pie
