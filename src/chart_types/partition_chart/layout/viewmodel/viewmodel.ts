@@ -309,8 +309,8 @@ export function shapeViewModel(
           // successful text render if found, and has some row(s)
           return !(foundInFillText && foundInFillText.rows.length !== 0);
         });
-
-  const linkLabelViewModelSpec = linkTextLayout(
+  const maxLinkedLabelTextLength = config.linkLabel.maxTextLength;
+  const linkLabelViewModels = linkTextLayout(
     textMeasure,
     config,
     nodesWithoutRoom,
@@ -319,6 +319,7 @@ export function shapeViewModel(
     rawTextGetter,
     valueGetter,
     valueFormatter,
+    maxLinkedLabelTextLength,
     containerBackgroundColor,
   );
 
@@ -340,7 +341,7 @@ export function shapeViewModel(
     diskCenter,
     quadViewModel,
     rowSets,
-    linkLabelViewModelSpec,
+    linkLabelViewModels,
     outsideLinksViewModel,
     pickQuads,
     outerRadius,

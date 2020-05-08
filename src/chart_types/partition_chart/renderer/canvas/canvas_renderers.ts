@@ -224,7 +224,7 @@ function renderLinkLabels(
 export function renderPartitionCanvas2d(
   ctx: CanvasRenderingContext2D,
   dpr: number,
-  { config, quadViewModel, rowSets, outsideLinksViewModel, linkLabelViewModelSpec, diskCenter }: ShapeViewModel,
+  { config, quadViewModel, rowSets, outsideLinksViewModel, linkLabelViewModels, diskCenter }: ShapeViewModel,
 ) {
   const { sectorLineWidth, sectorLineStroke, linkLabel } = config;
 
@@ -276,7 +276,7 @@ export function renderPartitionCanvas2d(
 
       // all the text and link lines for single-row outside texts
       (ctx: CanvasRenderingContext2D) =>
-        renderLinkLabels(ctx, linkLabel.fontSize, linkLabel.lineWidth, linkLabelViewModelSpec),
+        renderLinkLabels(ctx, linkLabel.fontSize, linkLabel.lineWidth, linkLabelViewModels),
     ]);
   });
 }

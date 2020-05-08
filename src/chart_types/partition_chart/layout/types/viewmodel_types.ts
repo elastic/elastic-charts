@@ -93,7 +93,7 @@ export type ShapeViewModel = {
   config: Config;
   quadViewModel: QuadViewModel[];
   rowSets: RowSet[];
-  linkLabelViewModelSpec: LinkLabelsViewModelSpec;
+  linkLabelViewModels: LinkLabelsViewModelSpec;
   outsideLinksViewModel: OutsideLinksViewModel[];
   diskCenter: PointObject;
   pickQuads: PickFunction;
@@ -114,7 +114,7 @@ export const nullShapeViewModel = (specifiedConfig?: Config, diskCenter?: PointO
   config: specifiedConfig || config,
   quadViewModel: [],
   rowSets: [],
-  linkLabelViewModelSpec: {
+  linkLabelViewModels: {
     links: [],
     labelFontSpec: defaultFont,
     valueFontSpec: defaultFont,

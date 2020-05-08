@@ -19,7 +19,7 @@
 import { Distance } from '../types/geometry_types';
 import { Config } from '../types/config_types';
 import { TAU, trueBearingToStandardPositionAngle } from '../utils/math';
-import { LinkLabelVM, ShapeTreeNode, ValueGetterFunction } from '../types/viewmodel_types';
+import { LinkLabelVM, RawTextGetter, ShapeTreeNode, ValueGetterFunction } from '../types/viewmodel_types';
 import { meanAngle } from '../geometry';
 import { TextMeasure, Font } from '../types/types';
 import { ValueFormatter, Color } from '../../../../utils/commons';
@@ -39,9 +39,10 @@ export function linkTextLayout(
   nodesWithoutRoom: ShapeTreeNode[],
   currentY: Distance[],
   anchorRadius: Distance,
-  rawTextGetter: Function,
+  rawTextGetter: RawTextGetter,
   valueGetter: ValueGetterFunction,
   valueFormatter: ValueFormatter,
+  maxTextLength: number,
   containerBackgroundColor?: Color,
 ): LinkLabelsViewModelSpec {
   const { linkLabel, sectorLineStroke } = config;
@@ -103,7 +104,8 @@ export function linkTextLayout(
       const stemFromY = y;
       const stemToX = x + north * west * cy - west * relativeY;
       const stemToY = cy;
-      const text = rawTextGetter(node);
+      const rawText = rawTextGetter(node);
+      const text = rawText.length <= maxTextLength ? rawText : `${rawText.substr(0, maxTextLength - 1)}…`; // ellipsis is one char
       const valueText = valueFormatter(valueGetter(node));
 
       const { width, emHeightAscent, emHeightDescent } = measure(linkLabel.fontSize, [{ ...labelFontSpec, text }])[0];
