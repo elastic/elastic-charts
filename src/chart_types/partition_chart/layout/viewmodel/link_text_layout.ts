@@ -100,7 +100,7 @@ export function linkTextLayout(
       };
       const translateX = stemToX + west * (linkLabel.horizontalStemLength + linkLabel.gap);
       const { width: valueWidth } = measure(linkLabel.fontSize, [valueSpec])[0];
-      const widthAdjustment = valueWidth + 2 * linkLabel.fontSize; // gap between label and value, plus possibly 2em wide ellipsis
+      const widthAdjustment = valueWidth + 3 * linkLabel.fontSize; // gap between label and value, plus possibly 2em wide ellipsis
       const allottedLabelWidth = rightSide
         ? rectWidth - diskCenter.x - translateX - widthAdjustment
         : diskCenter.x + translateX - widthAdjustment;
