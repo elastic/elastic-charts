@@ -17,7 +17,7 @@
  * under the License. */
 
 import { Config } from './config_types';
-import { Coordinate, Distance, Pixels, PointObject, PointTuple, Radian } from './geometry_types';
+import { Coordinate, Distance, Pixels, PointObject, PointTuple, PointTuples, Radian } from './geometry_types';
 import { Font } from './types';
 import { config, ValueGetterName } from '../config/config';
 import { ArrayNode, HierarchyOfArrays } from '../utils/group_by_rollup';
@@ -26,7 +26,7 @@ import { VerticalAlignments } from '../viewmodel/viewmodel';
 
 /* @internal */
 export type LinkLabelVM = {
-  link: [PointTuple, ...PointTuple[]]; // at least one point
+  link: PointTuples;
   translate: [number, number];
   textAlign: CanvasTextAlign;
   text: string;

@@ -38,6 +38,9 @@ export interface PointObject {
 
 export type PointTuple = [Coordinate, Coordinate];
 
+/* @internal */
+export type PointTuples = [PointTuple, ...PointTuple[]]; // at least one point
+
 export class Circline {
   x: Coordinate = NaN;
   y: Coordinate = NaN;
