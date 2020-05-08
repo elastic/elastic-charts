@@ -24,6 +24,7 @@ import { ArrayNode, HierarchyOfArrays } from '../utils/group_by_rollup';
 import { Color } from '../../../../utils/commons';
 import { VerticalAlignments } from '../viewmodel/viewmodel';
 
+/* @internal */
 export type LinkLabelVM = {
   link: [PointTuple, ...PointTuple[]]; // at least one point
   translate: [number, number];
@@ -120,7 +121,7 @@ interface AngleFromTo {
   x1: Radian;
 }
 
-export interface TreeNode extends AngleFromTo {
+interface TreeNode extends AngleFromTo {
   x0: Radian;
   x1: Radian;
   y0: TreeLevel;
