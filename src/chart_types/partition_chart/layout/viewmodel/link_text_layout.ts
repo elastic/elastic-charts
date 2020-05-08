@@ -16,12 +16,12 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { Distance } from '../types/geometry_types';
+import { Distance, PointTuple, PointTuples } from '../types/geometry_types';
 import { Config } from '../types/config_types';
 import { TAU, trueBearingToStandardPositionAngle } from '../utils/math';
 import { LinkLabelVM, RawTextGetter, ShapeTreeNode, ValueGetterFunction } from '../types/viewmodel_types';
 import { meanAngle } from '../geometry';
-import { Box, TextMeasure } from '../types/types';
+import { Box, Font, TextAlign, TextMeasure } from '../types/types';
 import { ValueFormatter } from '../../../../utils/commons';
 import { Point } from '../../../../utils/point';
 
@@ -81,54 +81,53 @@ export function linkTextLayout(
       const rawText = rawTextGetter(node);
       const labelText = cutToLength(rawText, maxTextLength);
       const valueText = valueFormatter(valueGetter(node));
-      const labelSpec = {
+      const labelFontSpec: Font = {
         fontStyle: 'normal',
         fontVariant: 'normal',
         fontFamily: config.fontFamily,
         fontWeight: 'normal',
         ...linkLabel,
-        text: labelText,
       };
-      const valueSpec = {
+      const valueFontSpec: Font = {
         fontStyle: 'normal',
         fontVariant: 'normal',
         fontFamily: config.fontFamily,
         fontWeight: 'normal',
         ...linkLabel,
         ...linkLabel.valueFont,
-        text: valueText,
       };
       const translateX = stemToX + west * (linkLabel.horizontalStemLength + linkLabel.gap);
-      const { width: valueWidth } = measure(linkLabel.fontSize, [valueSpec])[0];
+      const { width: valueWidth } = measure(linkLabel.fontSize, [{ ...valueFontSpec, text: valueText }])[0];
       const widthAdjustment = valueWidth + 3 * linkLabel.fontSize; // gap between label and value, plus possibly 2em wide ellipsis
       const allottedLabelWidth = rightSide
         ? rectWidth - diskCenter.x - translateX - widthAdjustment
         : diskCenter.x + translateX - widthAdjustment;
-      const { text, width, verticalOffset } = fitText(
-        measure,
-        labelText,
-        allottedLabelWidth,
-        linkLabel.fontSize,
-        labelSpec,
-      );
+      const { text, width, verticalOffset } = fitText(measure, labelText, allottedLabelWidth, linkLabel.fontSize, {
+        ...labelFontSpec,
+        text: labelText,
+      });
+      const link: PointTuples = [
+        [x0, y0],
+        [stemFromX, stemFromY],
+        [stemToX, stemToY],
+        [stemToX + west * linkLabel.horizontalStemLength, stemToY],
+      ];
+      const translate: PointTuple = [translateX, stemToY];
+      const textAlign: TextAlign = rightSide ? 'left' : 'right';
       return {
-        link: [
-          [x0, y0],
-          [stemFromX, stemFromY],
-          [stemToX, stemToY],
-          [stemToX + west * linkLabel.horizontalStemLength, stemToY],
-        ],
-        translate: [translateX, stemToY],
-        textAlign: rightSide ? 'left' : 'right',
+        link,
+        translate,
+        textAlign,
         text,
         valueText,
         width,
         valueWidth,
         verticalOffset,
-        labelFontSpec: labelSpec,
-        valueFontSpec: valueSpec,
+        labelFontSpec,
+        valueFontSpec,
       };
-    });
+    })
+    .filter((l: LinkLabelVM) => l.text !== ''); // cull linked labels whose text was truncated to nothing
 }
 
 function monotonicMaximizer(
@@ -183,7 +182,7 @@ function fitText(measure: TextMeasure, desiredText: string, allottedWidth: numbe
       allottedWidth,
     ),
   );
-  const text = cutToLength(box.text, visibleLength);
+  const text = visibleLength < 2 && desiredLength >= 2 ? '' : cutToLength(box.text, visibleLength);
   const { width, emHeightAscent, emHeightDescent } = measure(fontSize, [{ ...box, text }])[0];
   return {
     width,

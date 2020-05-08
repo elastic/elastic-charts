@@ -27,7 +27,7 @@ import { VerticalAlignments } from '../viewmodel/viewmodel';
 /* @internal */
 export type LinkLabelVM = {
   link: PointTuples;
-  translate: [number, number];
+  translate: PointTuple;
   textAlign: CanvasTextAlign;
   text: string;
   valueText: string;
