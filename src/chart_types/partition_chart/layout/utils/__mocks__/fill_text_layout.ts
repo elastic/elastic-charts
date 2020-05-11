@@ -15,6 +15,6 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License. */
-const module = jest.requireActual('../../fill_text_layout.ts');
+const module = jest.requireActual('../../viewmodel/fill_text_layout.ts');
 
 export const getTextColor = jest.fn(module.getTextColor);

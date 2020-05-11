@@ -134,6 +134,7 @@ export function showContrastAmount(foregroundColor: string | chroma.Color, backg
 /** @internal */
 export function colorIsDark(color: Color) {
   // fixme this assumes a white or very light background
+
   const rgba = stringToRGB(color);
   const { r, g, b, opacity } = rgba;
   const a = rgba.hasOwnProperty('opacity') ? opacity : 1;

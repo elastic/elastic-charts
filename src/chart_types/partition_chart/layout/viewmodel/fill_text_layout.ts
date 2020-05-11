@@ -18,7 +18,7 @@
 
 import { wrapToTau } from '../geometry';
 import { Coordinate, Distance, Pixels, Radian, Radius, Ratio, RingSector } from '../types/geometry_types';
-import { Config, Padding } from '../types/config_types';
+import { Config, Padding, TextContrast } from '../types/config_types';
 import { logarithm, TAU, trueBearingToStandardPositionAngle } from '../utils/math';
 import {
   QuadViewModel,
@@ -289,24 +289,23 @@ function getWordSpacing(fontSize: number) {
 export function getTextColor(
   textColor: Color,
   textInvertible: boolean,
-  textContrast: boolean,
-  node: QuadViewModel,
+  textContrast: TextContrast,
+  sliceFillColor: string,
   containerBackgroundColor?: Color,
 ) {
-  const sliceFillColor = node.fillColor;
-
-  const backgroundIsDark = colorIsDark(sliceFillColor);
-  const specifiedTextColorIsDark = colorIsDark(textColor);
-  const inverseForContrast = textInvertible && specifiedTextColorIsDark === backgroundIsDark;
-  const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(textColor);
-  const adjustedTextColor = inverseForContrast
-    ? to === undefined
-      ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`
-      : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
-    : textColor;
-
-  // if textContrast is true then contrast with background needs to be calculated otherwise the textColor should be the same as other slices
-  if (textContrast) {
+  let adjustedTextColor = textColor;
+  if ((textInvertible && !textContrast) || (textInvertible && typeof textContrast !== 'number')) {
+    const backgroundIsDark = colorIsDark(sliceFillColor);
+    const specifiedTextColorIsDark = colorIsDark(adjustedTextColor);
+    const inverseForContrast = specifiedTextColorIsDark === backgroundIsDark;
+    const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(adjustedTextColor);
+    adjustedTextColor = inverseForContrast
+      ? to === undefined
+        ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`
+        : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
+      : textColor;
+    // if textContrast is a number then take that into account
+  } else if (typeof textContrast === 'number') {
     const containerBackgroundColorFromUser =
       containerBackgroundColor !== undefined ? containerBackgroundColor : 'rgba(255, 255, 255, 0)';
     const containerBackground = combineColors(sliceFillColor, containerBackgroundColorFromUser);
@@ -373,8 +372,15 @@ function fill(
       layer.fillLabel,
       layer.shape,
     );
+    const sliceFillColor = node.fillColor;
 
-    const fillTextColor = getTextColor(textColor, textInvertible, textContrast, node, containerBackgroundColor);
+    const fillTextColor = getTextColor(
+      textColor,
+      textInvertible,
+      textContrast,
+      sliceFillColor,
+      containerBackgroundColor,
+    );
 
     const valueFont = Object.assign(
       { fontFamily: config.fontFamily, fontWeight: 'normal' },
