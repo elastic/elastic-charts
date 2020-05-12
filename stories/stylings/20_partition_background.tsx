@@ -36,6 +36,7 @@ export const example = () => {
       color: color('Color of the background container', `rgba(${255}, ${255}, ${255}, ${1})`),
     },
   };
+  // const textContrastBoolean = boolean('show text contrast of at least 4.5', true);
   return (
     <Chart className="story-chart">
       <Settings theme={partialColorTheme} />
@@ -84,7 +85,7 @@ export const example = () => {
             valueFormatter: (d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`,
             fontStyle: 'italic',
             textInvertible: true,
-            // textContrast: 5,
+            // textContrast: 4.5,
             fontWeight: 900,
             valueFont: {
               fontFamily: 'Menlo',

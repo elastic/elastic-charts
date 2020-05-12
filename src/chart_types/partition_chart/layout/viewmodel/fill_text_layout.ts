@@ -286,6 +286,10 @@ function getWordSpacing(fontSize: number) {
   return fontSize / 4;
 }
 
+/**
+ * Determine the color for the text hinging on the parameters of textInvertible and textContrast
+ * @internal
+ */
 export function getTextColor(
   textColor: Color,
   textInvertible: boolean,
@@ -294,8 +298,11 @@ export function getTextColor(
   containerBackgroundColor?: Color,
 ) {
   let adjustedTextColor = textColor;
+  const containerBackgroundColorFromUser =
+    containerBackgroundColor !== undefined ? containerBackgroundColor : 'rgba(255, 255, 255, 0)';
+  // change the contrast for the inverted slices
   if ((textInvertible && !textContrast) || (textInvertible && typeof textContrast !== 'number')) {
-    const backgroundIsDark = colorIsDark(sliceFillColor);
+    const backgroundIsDark = colorIsDark(combineColors(sliceFillColor, containerBackgroundColorFromUser));
     const specifiedTextColorIsDark = colorIsDark(adjustedTextColor);
     const inverseForContrast = specifiedTextColorIsDark === backgroundIsDark;
     const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(adjustedTextColor);
@@ -304,10 +311,8 @@ export function getTextColor(
         ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`
         : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
       : textColor;
-    // if textContrast is a number then take that into account
-  } else if (typeof textContrast === 'number') {
-    const containerBackgroundColorFromUser =
-      containerBackgroundColor !== undefined ? containerBackgroundColor : 'rgba(255, 255, 255, 0)';
+    // if textContrast is a number then take that into account or if textInvertible is set to false
+  } else if (typeof textContrast === 'number' || (textContrast && !textInvertible)) {
     const containerBackground = combineColors(sliceFillColor, containerBackgroundColorFromUser);
     const formattedContainerBackground =
       typeof containerBackground !== 'string' ? RGBATupleToString(containerBackground) : containerBackground;

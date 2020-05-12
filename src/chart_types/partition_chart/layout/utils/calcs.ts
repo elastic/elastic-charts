@@ -17,7 +17,7 @@
  * under the License. */
 
 import { Ratio } from '../types/geometry_types';
-import { RgbTuple, stringToRGB, RGBATupleToString, HexToRGB } from './d3_utils';
+import { RgbTuple, RGBATupleToString, HexToRGB } from './d3_utils';
 import { Color } from '../../../../utils/commons';
 import chroma from 'chroma-js';
 
@@ -92,7 +92,7 @@ export function makeHighContrastColor(foreground: Color, background: Color, rati
   // determine the lightness factor of the background color to determine whether to lighten or darken the foreground
   const lightness = chroma(background).get('hsl.l');
   let highContrastTextColor = foreground;
-  const isBackgroundDark = lightness < 0.5;
+  const isBackgroundDark = colorIsDark(background);
   // determine whether white or black text is ideal contrast vs a grey that just passes 4.5 ratio
   if (isBackgroundDark && chroma.deltaE('black', foreground) === 0) {
     highContrastTextColor = '#fff';
@@ -131,12 +131,11 @@ export function showContrastAmount(foregroundColor: string | chroma.Color, backg
   return chroma.contrast(foregroundColor, backgroundColor);
 }
 
-/** @internal */
+/**
+ * determines if the color is dark based on the luminance
+ * @internal
+ */
 export function colorIsDark(color: Color) {
-  // fixme this assumes a white or very light background
-
-  const rgba = stringToRGB(color);
-  const { r, g, b, opacity } = rgba;
-  const a = rgba.hasOwnProperty('opacity') ? opacity : 1;
-  return r * 0.299 + g * 0.587 + b * 0.114 < a * 150;
+  const luminance = chroma(color).luminance();
+  return luminance < 0.2;
 }
