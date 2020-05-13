@@ -99,7 +99,7 @@ export class Playground extends React.Component<{}, PlaygroundState> {
     const makeContrasted = makeHighContrastColor(textColor, combinedColors, 4.5);
     return (
       <form
-        className="background"
+        className="background echChart"
         style={{
           backgroundColor: backgroundColor,
           position: 'absolute',

@@ -16,11 +16,10 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { makeHighContrastColor } from './calcs';
+import { makeHighContrastColor, combineColors } from './calcs';
 
 describe('calcs', () => {
-  describe('makeHighContrastColor', () => {
-    // test inputs
+  describe('test makeHighContrastColor', () => {
     it('hex input - should change white text to black when background is white', () => {
       const expected = '#000';
       const result = makeHighContrastColor('#fff', '#fff');
@@ -49,16 +48,26 @@ describe('calcs', () => {
       expect(result).toEqual(makeHighContrastColor(foreground, background));
     });
   });
-  // describe('combineColors', () => {
-  // it('should return correct RGBA tuple with opacity greater than 0.7', () => {
-  //   const expected = [13, 5, 35, 1];
-  //   const result = combineColors('rgba(121, 47, 249, 0.8)', '#1c1c24');
-  //   expect(result).toEqual(expected);
-  // });
-  // it('should return correct RGBA tuple with opacity less than 0.7', () => {
-  //   const expected = [227, 141, 142, 0.51];
-  //   const result = combineColors('rgba(228, 26, 28, 0.3)', 'rgba(225, 255, 255, 1)');
-  //   expect(result).toEqual(expected);
-  // });
-  // });
+  describe('test the combineColors function', () => {
+    it('should return correct RGBA with opacity greater than 0.7', () => {
+      const expected = 'rgba(102, 43, 206, 1)';
+      const result = combineColors('rgba(121, 47, 249, 0.8)', '#1c1c24');
+      expect(result).toEqual(expected);
+    });
+    it('should return correct RGBA with opacity less than 0.7', () => {
+      const expected = 'rgba(226, 186, 187, 1)';
+      const result = combineColors('rgba(228, 26, 28, 0.3)', 'rgba(225, 255, 255, 1)');
+      expect(result).toEqual(expected);
+    });
+    it('should return correct RGBA with the input color as a word vs rgba or hex value', () => {
+      const expected = 'rgba(0, 0, 255, 1)';
+      const result = combineColors('blue', 'black');
+      expect(result).toEqual(expected);
+    });
+    it('should return the correct RGBA with hex input', () => {
+      const expected = 'rgba(212, 242, 210, 1)';
+      const result = combineColors('#D4F2D2', '#BEB7DF');
+      expect(result).toEqual(expected);
+    });
+  });
 });
