@@ -17,7 +17,7 @@
  * under the License. */
 
 import { Config } from './config_types';
-import { Coordinate, Distance, Pixels, PointObject, PointTuple, Radian } from './geometry_types';
+import { Coordinate, Distance, Pixels, PointObject, PointTuple, PointTuples, Radian } from './geometry_types';
 import { Font } from './types';
 import { config, ValueGetterName } from '../config/config';
 import { ArrayNode, HierarchyOfArrays } from '../utils/group_by_rollup';
@@ -25,9 +25,10 @@ import { Color } from '../../../../utils/commons';
 import { LinkLabelsViewModelSpec } from '../viewmodel/link_text_layout';
 import { VerticalAlignments } from '../viewmodel/viewmodel';
 
+/* @internal */
 export type LinkLabelVM = {
-  link: [PointTuple, ...PointTuple[]]; // at least one point
-  translate: [number, number];
+  link: PointTuples;
+  translate: PointTuple;
   textAlign: CanvasTextAlign;
   text: string;
   valueText: string;
@@ -133,7 +134,7 @@ interface AngleFromTo {
   x1: Radian;
 }
 
-export interface TreeNode extends AngleFromTo {
+interface TreeNode extends AngleFromTo {
   x0: Radian;
   x1: Radian;
   y0: TreeLevel;

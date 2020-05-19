@@ -16,15 +16,19 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { Distance } from '../types/geometry_types';
+import { Distance, PointTuple, PointTuples } from '../types/geometry_types';
 import { Config } from '../types/config_types';
 import { TAU, trueBearingToStandardPositionAngle } from '../utils/math';
 import { LinkLabelVM, RawTextGetter, ShapeTreeNode, ValueGetterFunction } from '../types/viewmodel_types';
 import { meanAngle } from '../geometry';
-import { TextMeasure, Font } from '../types/types';
 import { ValueFormatter, Color } from '../../../../utils/commons';
 import { makeHighContrastColor } from '../utils/calcs';
+import { Point } from '../../../../utils/point';
+import { Box, Font, TextAlign, TextMeasure } from '../types/types';
 
+function cutToLength(s: string, maxLength: number) {
+  return s.length <= maxLength ? s : `${s.substr(0, maxLength - 1)}…`; // ellipsis is one char
+}
 export interface LinkLabelsViewModelSpec {
   links: LinkLabelVM[];
   labelFontSpec: Font;
@@ -34,6 +38,8 @@ export interface LinkLabelsViewModelSpec {
 
 /** @internal */
 export function linkTextLayout(
+  rectWidth: Distance,
+  rectHeight: Distance,
   measure: TextMeasure,
   config: Config,
   nodesWithoutRoom: ShapeTreeNode[],
@@ -43,6 +49,7 @@ export function linkTextLayout(
   valueGetter: ValueGetterFunction,
   valueFormatter: ValueFormatter,
   maxTextLength: number,
+  diskCenter: Point,
   containerBackgroundColor?: Color,
 ): LinkLabelsViewModelSpec {
   const { linkLabel, sectorLineStroke } = config;
@@ -88,15 +95,15 @@ export function linkTextLayout(
     .map((node: ShapeTreeNode) => {
       const midAngle = trueBearingToStandardPositionAngle(meanAngle(node.x0, node.x1));
       const north = midAngle < TAU / 2 ? 1 : -1;
-      const side = TAU / 4 < midAngle && midAngle < (3 * TAU) / 4 ? 0 : 1;
-      const west = side ? 1 : -1;
+      const rightSide = TAU / 4 < midAngle && midAngle < (3 * TAU) / 4 ? 0 : 1;
+      const west = rightSide ? 1 : -1;
       const cos = Math.cos(midAngle);
       const sin = Math.sin(midAngle);
       const x0 = cos * anchorRadius;
       const y0 = sin * anchorRadius;
       const x = cos * (anchorRadius + linkLabel.radiusPadding);
       const y = sin * (anchorRadius + linkLabel.radiusPadding);
-      const poolIndex = side + (1 - north);
+      const poolIndex = rightSide + (1 - north);
       const relativeY = north * y;
       currentY[poolIndex] = Math.max(currentY[poolIndex] + rowPitch, relativeY + yRelativeIncrement, rowPitch / 2);
       const cy = north * currentY[poolIndex];
@@ -105,26 +112,121 @@ export function linkTextLayout(
       const stemToX = x + north * west * cy - west * relativeY;
       const stemToY = cy;
       const rawText = rawTextGetter(node);
-      const text = rawText.length <= maxTextLength ? rawText : `${rawText.substr(0, maxTextLength - 1)}…`; // ellipsis is one char
+      const labelText = cutToLength(rawText, maxTextLength);
       const valueText = valueFormatter(valueGetter(node));
 
-      const { width, emHeightAscent, emHeightDescent } = measure(linkLabel.fontSize, [{ ...labelFontSpec, text }])[0];
+      // const { width, emHeightAscent, emHeightDescent } = measure(linkLabel.fontSize, [{ ...labelFontSpec, text }])[0];
+      // const { width: valueWidth } = measure(linkLabel.fontSize, [{ ...valueFontSpec, text: valueText }])[0];
+      const labelFontSpec: Font = {
+        fontStyle: 'normal',
+        fontVariant: 'normal',
+        fontFamily: config.fontFamily,
+        fontWeight: 'normal',
+        ...linkLabel,
+      };
+      const valueFontSpec: Font = {
+        fontStyle: 'normal',
+        fontVariant: 'normal',
+        fontFamily: config.fontFamily,
+        fontWeight: 'normal',
+        ...linkLabel,
+        ...linkLabel.valueFont,
+      };
+      const translateX = stemToX + west * (linkLabel.horizontalStemLength + linkLabel.gap);
       const { width: valueWidth } = measure(linkLabel.fontSize, [{ ...valueFontSpec, text: valueText }])[0];
+      const widthAdjustment = valueWidth + 3 * linkLabel.fontSize; // gap between label and value, plus possibly 2em wide ellipsis
+      const allottedLabelWidth = rightSide
+        ? rectWidth - diskCenter.x - translateX - widthAdjustment
+        : diskCenter.x + translateX - widthAdjustment;
+      const { text, width, verticalOffset } =
+        linkLabel.fontSize / 2 <= cy + diskCenter.y && cy + diskCenter.y <= rectHeight - linkLabel.fontSize / 2
+          ? fitText(measure, labelText, allottedLabelWidth, linkLabel.fontSize, {
+              ...labelFontSpec,
+              text: labelText,
+            })
+          : { text: '', width: 0, verticalOffset: 0 };
+      const link: PointTuples = [
+        [x0, y0],
+        [stemFromX, stemFromY],
+        [stemToX, stemToY],
+        [stemToX + west * linkLabel.horizontalStemLength, stemToY],
+      ];
+      const translate: PointTuple = [translateX, stemToY];
+      const textAlign: TextAlign = rightSide ? 'left' : 'right';
       return {
-        link: [
-          [x0, y0],
-          [stemFromX, stemFromY],
-          [stemToX, stemToY],
-          [stemToX + west * linkLabel.horizontalStemLength, stemToY],
-        ],
-        translate: [stemToX + west * (linkLabel.horizontalStemLength + linkLabel.gap), stemToY],
-        textAlign: side ? 'left' : 'right',
+        link,
+        translate,
+        textAlign,
         text,
         valueText,
         width,
         valueWidth,
-        verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`
+        verticalOffset,
+        labelFontSpec,
+        valueFontSpec,
       };
-    });
+    })
+    .filter((l: LinkLabelVM) => l.text !== ''); // cull linked labels whose text was truncated to nothing;
   return { links, valueFontSpec, labelFontSpec, strokeColor };
+
+  function monotonicMaximizer(
+    test: (n: number) => number,
+    maxVar: number,
+    maxWidth: number,
+    minVar: number = 0,
+    minVarWidth: number = 0,
+  ) {
+    // Lowers iteration count by weakly assuming that there's a `pixelWidth(text) ~ charLength(text), ie. instead of pivoting
+    // at the 50% midpoint like a basic binary search would do, it takes proportions into account. Still works if assumption is false.
+    // It's usable for all problems where there's a monotonic relationship between the constrained output and the variable
+    // (eg. can maximize font size etc.)
+    let loVar = minVar;
+    let loWidth = minVarWidth;
+
+    let hiVar = maxVar;
+    let hiWidth = test(hiVar);
+
+    if (hiWidth <= maxWidth) return maxVar; // early bail if maxVar is compliant
+
+    let pivotVar: number = NaN;
+    while (loVar < hiVar && pivotVar !== loVar && pivotVar !== hiVar) {
+      const newPivotVar = loVar + ((hiVar - loVar) * (maxWidth - loWidth)) / (hiWidth - loWidth);
+      if (pivotVar === newPivotVar) {
+        return loVar; // early bail if we're not making progress
+      }
+      pivotVar = newPivotVar;
+      const pivotWidth = test(pivotVar);
+      const pivotIsCompliant = pivotWidth <= maxWidth;
+      if (pivotIsCompliant) {
+        loVar = pivotVar;
+        loWidth = pivotWidth;
+      } else {
+        hiVar = pivotVar;
+        hiWidth = pivotWidth;
+      }
+    }
+    return pivotVar;
+  }
+
+  function discreteLength(n: number) {
+    return Math.round(n);
+  }
+
+  function fitText(measure: TextMeasure, desiredText: string, allottedWidth: number, fontSize: number, box: Box) {
+    const desiredLength = desiredText.length;
+    const visibleLength = discreteLength(
+      monotonicMaximizer(
+        (v: number) => measure(fontSize, [{ ...box, text: box.text.substr(0, discreteLength(v)) }])[0].width,
+        desiredLength,
+        allottedWidth,
+      ),
+    );
+    const text = visibleLength < 2 && desiredLength >= 2 ? '' : cutToLength(box.text, visibleLength);
+    const { width, emHeightAscent, emHeightDescent } = measure(fontSize, [{ ...box, text }])[0];
+    return {
+      width,
+      verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`
+      text,
+    };
+  }
 }
