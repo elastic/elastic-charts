@@ -17,7 +17,7 @@
  * under the License. */
 
 import { Ratio } from '../types/geometry_types';
-import { RgbTuple, RGBATupleToString, HexToRGB } from './d3_utils';
+import { RgbTuple, RGBATupleToString } from './d3_utils';
 import { Color } from '../../../../utils/commons';
 import chroma from 'chroma-js';
 
@@ -49,31 +49,12 @@ export function arrayToLookup(keyFun: Function, array: Array<any>) {
   return Object.assign({}, ...array.map((d) => ({ [keyFun(d)]: d })));
 }
 
-/** @internal */
-export function convertRGBAStringToSeparateValues(rgba: Color) {
-  const [red1, green1, blue1, alpha1 = 1] = rgba
-    .replace(/[^\d.,]/g, '')
-    .split(',')
-    .map((x) => parseFloat(x));
-  return { red: red1, green: green1, blue: blue1, opacity: alpha1 };
-}
-
 /** If the user specifies the background of the container in which the chart will be on, we can use that color
  * and make sure to provide optimal contrast
 /** @internal */
-export function combineColors(rgba1: Color, rgba2: Color) {
-  // convert parameters to rgba format
-  let rgba1FormattedRGBA = rgba1.startsWith('#') ? RGBATupleToString(HexToRGB(rgba1)) : rgba1;
-  let rgba2FormattedRGBA = rgba2.startsWith('#') ? RGBATupleToString(HexToRGB(rgba2)) : rgba2;
-
-  rgba1FormattedRGBA = /^[a-z]/.test(rgba1) ? RGBATupleToString(chroma(rgba1).rgba()) : rgba1FormattedRGBA;
-  rgba2FormattedRGBA = /^[a-z]/.test(rgba2) ? RGBATupleToString(chroma(rgba2).rgba()) : rgba2FormattedRGBA;
-  const { red: red1, green: green1, blue: blue1, opacity: alpha1 } = convertRGBAStringToSeparateValues(
-    rgba1FormattedRGBA,
-  );
-  const { red: red2, green: green2, blue: blue2, opacity: alpha2 } = convertRGBAStringToSeparateValues(
-    rgba2FormattedRGBA,
-  );
+export function combineColors(foregroundColor: Color, backgroundColor: Color) {
+  const [red1, green1, blue1, alpha1] = chroma(foregroundColor).rgba();
+  const [red2, green2, blue2, alpha2] = chroma(backgroundColor).rgba();
 
   // For reference on alpha calculations:
   // https://en.wikipedia.org/wiki/Alpha_compositing
@@ -100,7 +81,7 @@ export function makeHighContrastColor(foreground: Color, background: Color, rati
     highContrastTextColor = '#000';
   }
   const precision = Math.pow(10, 8);
-  let contrast = showContrastAmount(highContrastTextColor, background);
+  let contrast = getContrast(highContrastTextColor, background);
   // adjust the highContrastTextColor for shades of grey
   while (contrast < ratio) {
     if (isBackgroundDark) {
@@ -113,7 +94,7 @@ export function makeHighContrastColor(foreground: Color, background: Color, rati
         .toString();
     }
     const scaledOldContrast = Math.round(contrast * precision) / precision;
-    contrast = showContrastAmount(highContrastTextColor, background);
+    contrast = getContrast(highContrastTextColor, background);
     const scaledContrast = Math.round(contrast * precision) / precision;
     // ideal contrast may not be possible in some cases
     if (scaledOldContrast === scaledContrast) {
@@ -127,7 +108,7 @@ export function makeHighContrastColor(foreground: Color, background: Color, rati
  * show contrast amount
  * @internal
  */
-export function showContrastAmount(foregroundColor: string | chroma.Color, backgroundColor: string | chroma.Color) {
+export function getContrast(foregroundColor: string | chroma.Color, backgroundColor: string | chroma.Color) {
   return chroma.contrast(foregroundColor, backgroundColor);
 }
 

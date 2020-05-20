@@ -113,7 +113,6 @@
     "babel-loader": "^8.0.6",
     "backport": "^4.8.0",
     "canvas": "^2.4.1",
-    "chroma-js": "^2.1.0",
     "chromedriver": "^80.0.0",
     "commitizen": "^4.0.3",
     "core-js": "^3.6.4",
@@ -169,6 +168,7 @@
     "webpack-dev-server": "^3.3.1"
   },
   "dependencies": {
+    "chroma-js": "^2.1.0",
     "classnames": "^2.2.6",
     "d3-array": "^1.2.4",
     "d3-collection": "^1.0.7",

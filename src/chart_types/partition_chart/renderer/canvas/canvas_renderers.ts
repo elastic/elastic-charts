@@ -187,18 +187,18 @@ function renderLinkLabels(
   ctx: CanvasRenderingContext2D,
   linkLabelFontSize: Pixels,
   linkLabelLineWidth: Pixels,
-  { links, labelFontSpec, valueFontSpec, strokeColor }: LinkLabelsViewModelSpec,
+  { linkLabels, labelFontSpec, valueFontSpec, strokeColor }: LinkLabelsViewModelSpec,
 ) {
   const labelColor = addOpacity(labelFontSpec.textColor, labelFontSpec.textOpacity);
   const valueColor = addOpacity(valueFontSpec.textColor, valueFontSpec.textOpacity);
   const labelValueGap = linkLabelFontSize / 2; // one en space
   withContext(ctx, (ctx) => {
     ctx.lineWidth = linkLabelLineWidth;
-    links.forEach(({ link, translate, textAlign, text, valueText, width, valueWidth }: LinkLabelVM) => {
+    linkLabels.forEach(({ linkLabels, translate, textAlign, text, valueText, width, valueWidth }: LinkLabelVM) => {
       // label lines
       ctx.beginPath();
-      ctx.moveTo(...link[0]);
-      link.slice(1).forEach((point) => ctx.lineTo(...point));
+      ctx.moveTo(...linkLabels[0]);
+      linkLabels.slice(1).forEach((point) => ctx.lineTo(...point));
       ctx.strokeStyle = strokeColor;
       ctx.stroke();
       withContext(ctx, (ctx) => {

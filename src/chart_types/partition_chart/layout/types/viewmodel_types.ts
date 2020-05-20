@@ -27,7 +27,7 @@ import { VerticalAlignments } from '../viewmodel/viewmodel';
 
 /* @internal */
 export type LinkLabelVM = {
-  link: PointTuples;
+  linkLabels: PointTuples;
   translate: PointTuple;
   textAlign: CanvasTextAlign;
   text: string;
@@ -116,7 +116,7 @@ export const nullShapeViewModel = (specifiedConfig?: Config, diskCenter?: PointO
   quadViewModel: [],
   rowSets: [],
   linkLabelViewModels: {
-    links: [],
+    linkLabels: [],
     labelFontSpec: defaultFont,
     valueFontSpec: defaultFont,
     strokeColor: '',

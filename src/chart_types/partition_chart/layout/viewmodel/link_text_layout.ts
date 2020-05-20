@@ -30,7 +30,7 @@ function cutToLength(s: string, maxLength: number) {
   return s.length <= maxLength ? s : `${s.substr(0, maxLength - 1)}…`; // ellipsis is one char
 }
 export interface LinkLabelsViewModelSpec {
-  links: LinkLabelVM[];
+  linkLabels: LinkLabelVM[];
   labelFontSpec: Font;
   valueFontSpec: Font;
   strokeColor: Color;
@@ -81,7 +81,7 @@ export function linkTextLayout(
     textColor: contrastTextColor,
   };
 
-  const links: LinkLabelVM[] = nodesWithoutRoom
+  const linkLabels: LinkLabelVM[] = nodesWithoutRoom
     .filter((n: ShapeTreeNode) => n.depth === maxDepth) // only the outermost ring can have links
     .sort((n1: ShapeTreeNode, n2: ShapeTreeNode) => Math.abs(n2.x0 - n2.x1) - Math.abs(n1.x0 - n1.x1))
     .slice(0, linkLabel.maxCount) // largest linkLabel.MaxCount slices
@@ -145,7 +145,7 @@ export function linkTextLayout(
               text: labelText,
             })
           : { text: '', width: 0, verticalOffset: 0 };
-      const link: PointTuples = [
+      const linkLabels: PointTuples = [
         [x0, y0],
         [stemFromX, stemFromY],
         [stemToX, stemToY],
@@ -154,7 +154,7 @@ export function linkTextLayout(
       const translate: PointTuple = [translateX, stemToY];
       const textAlign: TextAlign = rightSide ? 'left' : 'right';
       return {
-        link,
+        linkLabels,
         translate,
         textAlign,
         text,
@@ -167,7 +167,7 @@ export function linkTextLayout(
       };
     })
     .filter((l: LinkLabelVM) => l.text !== ''); // cull linked labels whose text was truncated to nothing;
-  return { links, valueFontSpec, labelFontSpec, strokeColor };
+  return { linkLabels, valueFontSpec, labelFontSpec, strokeColor };
 
   function monotonicMaximizer(
     test: (n: number) => number,

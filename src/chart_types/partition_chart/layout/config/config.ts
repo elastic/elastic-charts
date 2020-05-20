@@ -170,7 +170,7 @@ export const configMetadata = {
   fillLabel: {
     type: 'group',
     values: {
-      textColor: { type: 'color', dflt: '#000' },
+      textColor: { type: 'color', dflt: '#000000' },
       textInvertible: { dflt: false, type: 'boolean' },
       textContrast: { dflt: false, type: 'boolean' || 'number' },
       ...fontSettings,
