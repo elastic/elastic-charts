@@ -28,7 +28,7 @@ describe('Partition - Legend items labels', () => {
   const spec = MockSeriesSpec.sunburst({
     data: [
       ['aaa', 'aa', '1', 1],
-      ['aaa', 'aa', '1', 2],
+      ['aaa', 'aa', '1', 2], // this should be filtered out
       ['aaa', 'aa', '3', 1],
       ['aaa', 'bb', '4', 1],
       ['aaa', 'bb', '5', 1],

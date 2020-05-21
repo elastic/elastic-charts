@@ -77,7 +77,8 @@ function flatSlicesNames(
     if (key != null) {
       formattedValue = formatter ? formatter(key) : `${key}`;
     }
-    if (formattedValue !== '') {
+    // preventing errors from external formatters
+    if (formattedValue != null && formattedValue !== '') {
       // save only the max depth, so we can compute the the max extension of the legend
       keys.set(formattedValue, Math.max(depth, keys.get(formattedValue) ?? 0));
     }
