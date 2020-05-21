@@ -29,6 +29,8 @@ import { Box, Font, TextAlign, TextMeasure } from '../types/types';
 function cutToLength(s: string, maxLength: number) {
   return s.length <= maxLength ? s : `${s.substr(0, maxLength - 1)}…`; // ellipsis is one char
 }
+
+/**@internal */
 export interface LinkLabelsViewModelSpec {
   linkLabels: LinkLabelVM[];
   labelFontSpec: Font;
