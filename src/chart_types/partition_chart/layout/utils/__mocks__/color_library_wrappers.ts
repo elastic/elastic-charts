@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-const module = jest.requireActual('../d3_utils.ts');
+const module = jest.requireActual('../color_library_wrappers.ts');
 
 export const defaultColor = module.defaultColor;
 export const transparentColor = module.transparentColor;

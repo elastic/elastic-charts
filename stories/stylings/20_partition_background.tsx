@@ -28,7 +28,7 @@ import {
   productLookup,
   regionLookup,
 } from '../utils/utils';
-import { color } from '@storybook/addon-knobs';
+import { color, boolean } from '@storybook/addon-knobs';
 
 export const example = () => {
   const partialColorTheme: PartialTheme = {
@@ -36,7 +36,7 @@ export const example = () => {
       color: color('Color of the background container', `rgba(${255}, ${255}, ${255}, ${1})`),
     },
   };
-  // const textContrastBoolean = boolean('show text contrast of at least 4.5', true);
+  const invertTextColors = boolean('invert colors for lightness/darkness', true);
   return (
     <Chart className="story-chart">
       <Settings theme={partialColorTheme} />
@@ -84,7 +84,7 @@ export const example = () => {
           fillLabel: {
             valueFormatter: (d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`,
             fontStyle: 'italic',
-            textInvertible: true,
+            textInvertible: invertTextColors,
             textContrast: false,
             fontWeight: 900,
             valueFont: {

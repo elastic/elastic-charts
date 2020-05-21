@@ -19,7 +19,7 @@ import React from 'react';
 import {
   makeHighContrastColor,
   combineColors,
-  showContrastAmount,
+  getContrast,
 } from '../src/chart_types/partition_chart/layout/utils/calcs';
 
 type PlaygroundState = {
@@ -205,13 +205,13 @@ export class Playground extends React.Component<{}, PlaygroundState> {
             Contrast between original text color and combinedBackground color
             <br />
             <br />
-            <b>{showContrastAmount(textColor, combinedColors).toFixed(3)}</b>
+            <b>{getContrast(textColor, combinedColors).toFixed(3)}</b>
           </p>
           <p>
             Contrast between contrast-computed text color and combinedBackground color
             <br />
             <br />
-            <b>{showContrastAmount(makeContrasted, combinedColors).toFixed(3)}</b>
+            <b>{getContrast(makeContrasted, combinedColors).toFixed(3)}</b>
           </p>
         </div>
         <div

@@ -17,7 +17,7 @@
  * under the License. */
 
 import { Ratio } from '../types/geometry_types';
-import { RgbTuple, RGBATupleToString } from './d3_utils';
+import { RgbTuple, RGBATupleToString, stringToRGB } from './color_library_wrappers';
 import { Color } from '../../../../utils/commons';
 import chroma from 'chroma-js';
 
@@ -80,7 +80,7 @@ export function makeHighContrastColor(foreground: Color, background: Color, rati
   } else if (lightness > 0.5 && chroma.deltaE('white', foreground) === 0) {
     highContrastTextColor = '#000';
   }
-  const precision = Math.pow(10, 8);
+  const precision = 1e8;
   let contrast = getContrast(highContrastTextColor, background);
   // adjust the highContrastTextColor for shades of grey
   while (contrast < ratio) {
@@ -119,4 +119,22 @@ export function getContrast(foregroundColor: string | chroma.Color, backgroundCo
 export function colorIsDark(color: Color) {
   const luminance = chroma(color).luminance();
   return luminance < 0.2;
+}
+
+/**
+ * inverse color for text
+ * @internal
+ */
+export function getTextColorIfTextInvertible(
+  specifiedTextColorIsDark: boolean,
+  backgroundIsDark: boolean,
+  textColor: Color,
+) {
+  const inverseForContrast = specifiedTextColorIsDark === backgroundIsDark;
+  const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(textColor);
+  return inverseForContrast
+    ? to === undefined
+      ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`
+      : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
+    : textColor;
 }

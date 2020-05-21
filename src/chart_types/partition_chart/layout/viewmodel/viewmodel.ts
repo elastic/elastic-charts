@@ -24,7 +24,7 @@ import { Distance, Pixels, Radius } from '../types/geometry_types';
 import { meanAngle } from '../geometry';
 import { getTopPadding, treemap } from '../utils/treemap';
 import { sunburst } from '../utils/sunburst';
-import { argsToRGBString, stringToRGB } from '../utils/d3_utils';
+import { argsToRGBString, stringToRGB } from '../utils/color_library_wrappers';
 import {
   nullShapeViewModel,
   OutsideLinksViewModel,

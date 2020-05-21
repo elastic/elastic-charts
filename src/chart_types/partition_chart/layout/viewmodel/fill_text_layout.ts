@@ -32,9 +32,9 @@ import {
 import { Box, Font, PartialFont, TextMeasure } from '../types/types';
 import { conjunctiveConstraint } from '../circline_geometry';
 import { Layer } from '../../specs/index';
-import { combineColors, makeHighContrastColor, colorIsDark } from '../utils/calcs';
+import { combineColors, makeHighContrastColor, colorIsDark, getTextColorIfTextInvertible } from '../utils/calcs';
 import { ValueFormatter, Color } from '../../../../utils/commons';
-import { RGBATupleToString, stringToRGB } from '../utils/d3_utils';
+import { RGBATupleToString } from '../utils/color_library_wrappers';
 import { RectangleConstruction, VerticalAlignments } from './viewmodel';
 
 const INFINITY_RADIUS = 1e4; // far enough for a sub-2px precision on a 4k screen, good enough for text bounds; 64 bit floats still work well with it
@@ -297,22 +297,21 @@ export function getTextColor(
   sliceFillColor: string,
   containerBackgroundColor?: Color,
 ) {
+  // return variable
   let adjustedTextColor = textColor;
   const containerBackgroundColorFromUser =
     containerBackgroundColor !== undefined ? containerBackgroundColor : 'rgba(255, 255, 255, 0)';
+  const textShouldBeInvertedAndTextContrastIsNotSpecified = textInvertible && !textContrast;
+  const textShouldBeInvertedAndTextContrastIsSetToTrue = textInvertible && typeof textContrast !== 'number';
+  const textContrastIsSetToANumberValue = typeof textContrast === 'number';
+  const textShouldNotBeInvertedButTextContrastIsDefined = textContrast && !textInvertible;
   // change the contrast for the inverted slices
-  if ((textInvertible && !textContrast) || (textInvertible && typeof textContrast !== 'number')) {
+  if (textShouldBeInvertedAndTextContrastIsNotSpecified || textShouldBeInvertedAndTextContrastIsSetToTrue) {
     const backgroundIsDark = colorIsDark(combineColors(sliceFillColor, containerBackgroundColorFromUser));
-    const specifiedTextColorIsDark = colorIsDark(adjustedTextColor);
-    const inverseForContrast = specifiedTextColorIsDark === backgroundIsDark;
-    const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(adjustedTextColor);
-    adjustedTextColor = inverseForContrast
-      ? to === undefined
-        ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`
-        : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
-      : textColor;
+    const specifiedTextColorIsDark = colorIsDark(textColor);
+    adjustedTextColor = getTextColorIfTextInvertible(backgroundIsDark, specifiedTextColorIsDark, textColor);
     // if textContrast is a number then take that into account or if textInvertible is set to false
-  } else if (typeof textContrast === 'number' || (textContrast && !textInvertible)) {
+  } else if (textContrastIsSetToANumberValue || textShouldNotBeInvertedButTextContrastIsDefined) {
     const containerBackground = combineColors(sliceFillColor, containerBackgroundColorFromUser);
     const formattedContainerBackground =
       typeof containerBackground !== 'string' ? RGBATupleToString(containerBackground) : containerBackground;
