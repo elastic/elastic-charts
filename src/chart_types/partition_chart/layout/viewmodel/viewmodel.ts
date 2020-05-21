@@ -65,7 +65,7 @@ function grooveAccessor(n: ArrayEntry) {
 }
 
 function topGrooveAccessor(topGroovePx: Pixels) {
-  return (n: ArrayEntry) => (entryValue(n).depth === 1 ? topGroovePx : grooveAccessor(n));
+  return (n: ArrayEntry) => (entryValue(n).depth > 0 ? topGroovePx : grooveAccessor(n));
 }
 
 export const VerticalAlignments = Object.freeze({
@@ -308,7 +308,11 @@ export function shapeViewModel(
           return !(foundInFillText && foundInFillText.rows.length !== 0);
         });
 
+  const maxLinkedLabelTextLength = config.linkLabel.maxTextLength;
+
   const linkLabelViewModels = linkTextLayout(
+    width,
+    height,
     textMeasure,
     config,
     nodesWithoutRoom,
@@ -317,6 +321,8 @@ export function shapeViewModel(
     rawTextGetter,
     valueGetter,
     valueFormatter,
+    maxLinkedLabelTextLength,
+    diskCenter,
   );
 
   const pickQuads: PickFunction = (x, y) => {
