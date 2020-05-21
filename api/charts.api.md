@@ -413,7 +413,7 @@ export const DARK_THEME: Theme;
 // @public (undocumented)
 export class DataGenerator {
     // Warning: (ae-forgotten-export) The symbol "RandomNumberGenerator" needs to be exported by the entry point index.d.ts
-    constructor(frequency: number | undefined, randomNumberGenerator: RandomNumberGenerator);
+    constructor(frequency?: number, randomNumberGenerator?: RandomNumberGenerator);
     // (undocumented)
     generateBasicSeries(totalPoints?: number, offset?: number, amplitude?: number): {
         x: number;
@@ -1518,8 +1518,8 @@ export interface XYChartSeriesIdentifier extends SeriesIdentifier {
 
 // Warnings were encountered during analysis:
 //
-// src/chart_types/partition_chart/layout/types/config_types.ts:112:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
-// src/chart_types/partition_chart/layout/types/config_types.ts:113:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
+// src/chart_types/partition_chart/layout/types/config_types.ts:113:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
+// src/chart_types/partition_chart/layout/types/config_types.ts:114:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/specs/index.ts:47:13 - (ae-forgotten-export) The symbol "NodeColorAccessor" needs to be exported by the entry point index.d.ts
 // src/commons/series_id.ts:37:3 - (ae-forgotten-export) The symbol "SeriesKey" needs to be exported by the entry point index.d.ts
 
