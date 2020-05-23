@@ -62,6 +62,7 @@ export interface FillFontSizeRange {
   minFontSize: Pixels;
   maxFontSize: Pixels;
   idealFontSizeJump: Ratio;
+  monotonic: boolean;
 }
 
 // todo switch to `io-ts` style, generic way of combining static and runtime type info

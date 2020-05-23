@@ -20,7 +20,7 @@ import { Part, TextMeasure } from '../types/types';
 import { linkTextLayout } from './link_text_layout';
 import { Config, PartitionLayout } from '../types/config_types';
 import { TAU, trueBearingToStandardPositionAngle } from '../utils/math';
-import { Distance, Pixels, Radius } from '../types/geometry_types';
+import { Distance, Pixels, PointTuple, Radius } from '../types/geometry_types';
 import { meanAngle } from '../geometry';
 import { getTopPadding, treemap } from '../utils/treemap';
 import { sunburst } from '../utils/sunburst';
@@ -79,7 +79,7 @@ type SupportedVerticalAlignments = $Values<typeof VerticalAlignments>;
 
 export type VerticalAlignments = CanvasTextBaseline & SupportedVerticalAlignments;
 
-function rectangleFillOrigins(n: ShapeTreeNode): [Pixels, Pixels] {
+function rectangleFillOrigins(n: ShapeTreeNode): PointTuple {
   return [(n.x0 + n.x1) / 2, (n.y0 + n.y1) / 2];
 }
 export const ringSectorInnerRadius = (n: ShapeTreeNode): Radius => n.y0px;

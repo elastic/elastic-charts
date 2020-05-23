@@ -17,7 +17,7 @@
  * under the License. */
 
 import { wrapToTau } from '../geometry';
-import { Coordinate, Distance, Pixels, Radian, Radius, Ratio, RingSector } from '../types/geometry_types';
+import { Coordinate, Distance, Pixels, PointTuple, Radian, Radius, Ratio, RingSector } from '../types/geometry_types';
 import { Config, Padding } from '../types/config_types';
 import { logarithm, TAU, trueBearingToStandardPositionAngle } from '../utils/math';
 import {
@@ -299,22 +299,22 @@ type GetShapeRowGeometry<C> = (
   padding: Padding,
 ) => RowSpace;
 
+type NodeWithOrigin = { node: QuadViewModel; origin: PointTuple };
+
 function fill(
   config: Config,
   layers: Layer[],
-  allFontSizes: string | any[],
   measure: TextMeasure,
   rawTextGetter: RawTextGetter,
   valueGetter: ValueGetterFunction,
   formatter: ValueFormatter,
-  textFillOrigins: any[],
   shapeConstructor: (n: ShapeTreeNode) => any,
   getShapeRowGeometry: GetShapeRowGeometry<RectangleConstruction> | GetShapeRowGeometry<RingSector>,
   getRotation: Function,
   leftAlign: boolean,
   middleAlign: boolean,
 ) {
-  return (node: QuadViewModel, index: number) => {
+  return (allFontSizes: string | any[], textFillOrigin: PointTuple, node: QuadViewModel): RowSet => {
     const { maxRowCount, fillLabel } = config;
 
     const layer = layers[node.depth - 1] || {};
@@ -365,7 +365,7 @@ function fill(
     let completed = false;
     const rotation = getRotation(node);
     const container = shapeConstructor(node);
-    const [cx, cy] = textFillOrigins[index];
+    const [cx, cy] = textFillOrigin;
 
     while (!completed && fontSizeIndex >= 0) {
       const fontSize = fontSizes[fontSizeIndex];
@@ -499,13 +499,13 @@ export function fillTextLayout(
   childNodes: QuadViewModel[],
   config: Config,
   layers: Layer[],
-  textFillOrigins: [number, number][],
+  textFillOrigins: PointTuple[],
   shapeConstructor: (n: ShapeTreeNode) => any,
   getShapeRowGeometry: GetShapeRowGeometry<RectangleConstruction> | GetShapeRowGeometry<RingSector>,
   getRotation: Function,
   leftAlign: boolean,
   middleAlign: boolean,
-) {
+): RowSet[] {
   const allFontSizes: Pixels[][] = [];
   for (let l = 0; l <= layers.length; l++) {
     // get font size spec from config, which layer.fillLabel properties can override
@@ -526,21 +526,39 @@ export function fillTextLayout(
     allFontSizes.push(fontSizes);
   }
 
-  return childNodes.map(
-    fill(
-      config,
-      layers,
-      allFontSizes,
-      measure,
-      rawTextGetter,
-      valueGetter,
-      valueFormatter,
-      textFillOrigins,
-      shapeConstructor,
-      getShapeRowGeometry,
-      getRotation,
-      leftAlign,
-      middleAlign,
-    ),
+  const filler = fill(
+    config,
+    layers,
+    measure,
+    rawTextGetter,
+    valueGetter,
+    valueFormatter,
+    shapeConstructor,
+    getShapeRowGeometry,
+    getRotation,
+    leftAlign,
+    middleAlign,
   );
+
+  return childNodes
+    .map((node: QuadViewModel, i: number) => ({ node, origin: textFillOrigins[i] }))
+    .sort((a: NodeWithOrigin, b: NodeWithOrigin) => b.node.value - a.node.value)
+    .reduce(
+      (
+        { rowSets, fontSizes }: { rowSets: RowSet[]; fontSizes: Pixels[][] },
+        { node, origin }: { node: QuadViewModel; origin: [Pixels, Pixels] },
+      ) => {
+        const nextRowSet = filler(fontSizes, origin, node);
+        const layerIndex = node.depth - 1;
+        return {
+          rowSets: [...rowSets, nextRowSet],
+          fontSizes: fontSizes.map((layerFontSizes: Pixels[], index: number) =>
+            layers[layerIndex]?.fillLabel?.monotonic && index === layerIndex
+              ? layerFontSizes.filter((size: Pixels) => size <= nextRowSet.fontSize)
+              : layerFontSizes,
+          ),
+        };
+      },
+      { rowSets: [] as RowSet[], fontSizes: allFontSizes },
+    ).rowSets;
 }
