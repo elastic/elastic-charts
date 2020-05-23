@@ -56,3 +56,68 @@ export function colorIsDark(color: Color) {
   const a = rgba.hasOwnProperty('opacity') ? opacity : 1;
   return r * 0.299 + g * 0.587 + b * 0.114 < a * 150;
 }
+
+/** @internal */
+export function getFillTextColor(shapeFillColor: Color, textColor: Color, textInvertible: boolean) {
+  const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(textColor);
+  const backgroundIsDark = colorIsDark(shapeFillColor);
+  const specifiedTextColorIsDark = colorIsDark(textColor);
+  const inverseForContrast = textInvertible && specifiedTextColorIsDark === backgroundIsDark;
+  return inverseForContrast
+    ? to === undefined
+      ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`
+      : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
+    : textColor;
+}
+
+/** @internal */
+export function integerSnap(n: number) {
+  return Math.floor(n);
+}
+
+type NumberMap = (n: number) => number;
+
+/** @internal */
+export function monotonicHillClimb(
+  getResponse: NumberMap,
+  maxVar: number,
+  responseUpperConstraint: number,
+  domainSnap: NumberMap = (n: number) => n,
+  minVar: number = 0,
+) {
+  let loVar = domainSnap(minVar);
+  const loResponse = getResponse(loVar);
+  let hiVar = domainSnap(maxVar);
+  let hiResponse = getResponse(hiVar);
+
+  if (loResponse > responseUpperConstraint || loVar > hiVar) {
+    // bail if even the lowest value doesn't satisfy the constraint
+    return NaN;
+  }
+
+  if (hiResponse <= responseUpperConstraint) {
+    return hiVar; // early bail if maxVar is compliant
+  }
+
+  let pivotVar: number = NaN;
+  let pivotResponse: number = NaN;
+  let lastPivotResponse: number = NaN;
+  while (loVar < hiVar) {
+    const newPivotVar = (loVar + hiVar) / 2;
+    const newPivotResponse = getResponse(domainSnap(newPivotVar));
+    if (newPivotResponse === pivotResponse || newPivotResponse === lastPivotResponse) {
+      return domainSnap(loVar); // bail if we're good and not making further progress
+    }
+    pivotVar = newPivotVar;
+    lastPivotResponse = pivotResponse; // for prevention of bistable oscillation around discretization snap
+    pivotResponse = newPivotResponse;
+    const pivotIsCompliant = pivotResponse <= responseUpperConstraint;
+    if (pivotIsCompliant) {
+      loVar = pivotVar;
+    } else {
+      hiVar = pivotVar;
+      hiResponse = pivotResponse;
+    }
+  }
+  return domainSnap(pivotVar);
+}
