@@ -6,7 +6,7 @@ module.exports = {
     'plugin:prettier/recommended',
     'plugin:react/recommended',
   ],
-  plugins: ['@typescript-eslint', 'import', 'jest', 'unicorn', 'file-header'],
+  plugins: ['@typescript-eslint', 'import', 'jest', 'unicorn', 'file-header', 'react-hooks'],
 
   env: {
     es6: true,
@@ -104,6 +104,8 @@ module.exports = {
       'block',
       ['-\\*-(.*)-\\*-', 'eslint(.*)', '@jest-environment'],
     ],
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'warn',
   },
   settings: {
     'import/resolver': {

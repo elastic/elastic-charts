@@ -68,10 +68,6 @@ const TooltipPortalComponent = ({ anchor, scope, settings, children, visible, ch
     isHTMLElement(anchor) ? anchor : getOrCreateNode(`echAnchor${scope}__${chartId}`, anchor?.ref ?? undefined),
   );
 
-  if (!isDefined(anchorNode.current)) {
-    return null;
-  }
-
   /**
    * This must not be removed from DOM throughout life of this component.
    * Otherwise the portal will loose reference to the correct node.
@@ -85,23 +81,21 @@ const TooltipPortalComponent = ({ anchor, scope, settings, children, visible, ch
 
   const popperSettings = useMemo(
     () => mergePartial(DEFAULT_POPPER_SETTINGS, settings, { mergeOptionalPartialValues: true }),
-    [settings, settings],
+    [settings],
   );
 
-  const position = useMemo(() => (isHTMLElement(anchor) ? null : anchor?.position), [
-    anchor,
-    (anchor as PortalAnchorRef)?.position,
-  ]);
+  const anchorPosition = (anchor as PortalAnchorRef)?.position;
+  const position = useMemo(() => (isHTMLElement(anchor) ? null : anchorPosition), [anchor, anchorPosition]);
 
   const destroyPopper = useCallback(() => {
     if (popper.current) {
       popper.current.destroy();
       popper.current = null;
     }
-  }, [popper.current]);
+  }, []);
 
   const setPopper = useCallback(() => {
-    if (!visible) {
+    if (!isDefined(anchorNode.current) || !visible) {
       return;
     }
 
@@ -135,6 +129,7 @@ const TooltipPortalComponent = ({ anchor, scope, settings, children, visible, ch
         },
       ],
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     visible,
     popperSettings.fallbackPlacements,
@@ -145,26 +140,22 @@ const TooltipPortalComponent = ({ anchor, scope, settings, children, visible, ch
 
   useEffect(() => {
     setPopper();
+    const nodeCopy = portalNode.current;
 
     return () => {
-      if (portalNode.current.parentNode) {
-        portalNode.current.parentNode.removeChild(portalNode.current);
+      if (nodeCopy.parentNode) {
+        nodeCopy.parentNode.removeChild(nodeCopy);
       }
 
       destroyPopper();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     destroyPopper();
     setPopper();
-  }, [
-    portalNode.current,
-    popperSettings.fallbackPlacements,
-    popperSettings.placement,
-    popperSettings.boundary,
-    popperSettings.offset,
-  ]);
+  }, [destroyPopper, setPopper, popperSettings]);
 
   useEffect(() => {
     if (!visible) {
@@ -172,7 +163,7 @@ const TooltipPortalComponent = ({ anchor, scope, settings, children, visible, ch
     } else if (!popper.current) {
       setPopper();
     }
-  }, [visible]);
+  }, [destroyPopper, setPopper, visible]);
 
   const updateAnchorDimensions = useCallback(() => {
     if (!position || !visible) {
@@ -190,7 +181,8 @@ const TooltipPortalComponent = ({ anchor, scope, settings, children, visible, ch
     if (isDefined(height)) {
       anchorNode.current.style.height = `${height}px`;
     }
-  }, [visible, anchorNode.current, position?.left, position?.top, position?.width, position?.height]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible, anchorNode, position?.left, position?.top, position?.width, position?.height]);
 
   useEffect(() => {
     if (position === null) {
@@ -205,7 +197,7 @@ const TooltipPortalComponent = ({ anchor, scope, settings, children, visible, ch
       updateAnchorDimensions();
       popper.current.update();
     }
-  }, [popper.current, settings, position?.left, position?.top, position?.width, position?.height]);
+  }, [updateAnchorDimensions, popper]);
 
   return createPortal(<div className={classNames({ invisible })}>{children}</div>, portalNode.current);
 };

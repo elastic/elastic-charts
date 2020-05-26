@@ -65,10 +65,6 @@ const AnnotationsComponent = ({
   chartId,
   onPointerMove,
 }: AnnotationsProps) => {
-  if (isChartEmpty) {
-    return null;
-  }
-
   const renderAnnotationLineMarkers = useCallback(
     (annotationLines: AnnotationLineProps[], id: AnnotationId) =>
       annotationLines.reduce<JSX.Element[]>((markers, { marker }: AnnotationLineProps, index: number) => {
@@ -91,7 +87,7 @@ const AnnotationsComponent = ({
 
         return markers;
       }, []),
-    [],
+    [], // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   const renderAnnotationMarkers = useCallback((): JSX.Element[] => {
@@ -111,11 +107,15 @@ const AnnotationsComponent = ({
     });
 
     return markers;
-  }, [annotationDimensions, annotationSpecs]);
+  }, [annotationDimensions, annotationSpecs, renderAnnotationLineMarkers]);
 
   const onScroll = useCallback(() => {
     onPointerMove({ x: -1, y: -1 }, new Date().getTime());
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (isChartEmpty) {
+    return null;
+  }
 
   return (
     <>

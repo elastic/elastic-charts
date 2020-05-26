@@ -33,7 +33,7 @@ import { TEST_DATASET_DISCOVER } from '../../src/utils/data_samples/test_dataset
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 // for testing purposes only
-export const example = () => {
+export const Example = () => {
   const data = TEST_DATASET_DISCOVER.series[0].values;
 
   const formatter = timeFormatter(niceTimeFormatByDay(1));
@@ -69,7 +69,7 @@ export const example = () => {
 };
 
 // storybook configuration
-example.story = {
+Example.story = {
   parameters: {
     options: { selectedPanel: SB_SOURCE_PANEL },
   },

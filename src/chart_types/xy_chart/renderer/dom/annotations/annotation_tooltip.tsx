@@ -37,7 +37,7 @@ export const AnnotationTooltip = ({ state, chartRef, chartId, onScroll }: RectAn
     }
 
     return <TooltipContent {...state} />;
-  }, [state, state?.isVisible, state?.annotationType]);
+  }, [state]);
 
   const handleScroll = () => {
     // TODO: handle scroll cursor update
@@ -51,10 +51,10 @@ export const AnnotationTooltip = ({ state, chartRef, chartId, onScroll }: RectAn
       window.addEventListener('scroll', handleScroll, true);
       return () => window.removeEventListener('scroll', handleScroll, true);
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const position = useMemo(() => state?.anchor ?? null, [state, state?.anchor]);
-  const placement = useMemo(() => state?.anchor?.position ?? Placement.Right, [state, state?.anchor?.position]);
+  const position = useMemo(() => state?.anchor ?? null, [state?.anchor]);
+  const placement = useMemo(() => state?.anchor?.position ?? Placement.Right, [state?.anchor?.position]);
 
   return (
     <TooltipPortal

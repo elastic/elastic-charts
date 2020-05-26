@@ -72,7 +72,7 @@ const TooltipComponent = ({
   useEffect(() => {
     window.addEventListener('scroll', handleScroll, true);
     return () => window.removeEventListener('scroll', handleScroll, true);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const renderHeader = useCallback(
     (header: TooltipValue | null) => {
@@ -82,7 +82,7 @@ const TooltipComponent = ({
 
       return <div className="echTooltip__header">{headerFormatter ? headerFormatter(header) : header.value}</div>;
     },
-    [info?.header?.value, info?.header?.isVisible],
+    [headerFormatter],
   );
 
   const renderValues = (values: TooltipValue[]) => (
@@ -144,7 +144,7 @@ const TooltipComponent = ({
       top: y1 - height,
       height: height,
     };
-  }, [position?.x0, position?.x1, position?.y0, position?.y1]);
+  }, [isVisible, position?.x0, position?.x1, position?.y0, position?.y1]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const popperSettings = useMemo((): Partial<PopperSettings> | undefined => {
     if (typeof settings === 'string') {
@@ -155,7 +155,7 @@ const TooltipComponent = ({
       ...settings,
       boundary: settings.boundary === 'chart' && chartRef.current ? chartRef.current : undefined,
     };
-  }, [settings, chartRef.current]);
+  }, [settings, chartRef]);
 
   return (
     <TooltipPortal

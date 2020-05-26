@@ -38,7 +38,7 @@ const CustomTooltip = () => (
 );
 
 const getFallbackPlacements = (): Placement[] => {
-  return optionsKnob<Placement>(
+  const knob = optionsKnob<Placement>(
     'Fallback Placements',
     {
       Top: Placement.Top,
@@ -62,10 +62,17 @@ const getFallbackPlacements = (): Placement[] => {
     {
       display: 'multi-select',
     },
-  ).split(',');
+  );
+
+  if (typeof knob === 'string') {
+    // @ts-ignore
+    return knob.split(', ');
+  }
+
+  return knob;
 };
 
-export const example = () => {
+export const Example = () => {
   // @ts-ignore
   const boundary = select<TooltipProps['boundary']>(
     'Boundary Element',
@@ -79,7 +86,7 @@ export const example = () => {
 
   // Added buffer to test tooltip positioning within chart container
   return (
-    <div className="buffer" style={{ width: '100%', height: '100%', paddingLeft: 30, paddingRight: 80 }}>
+    <div className="buffer" style={{ width: '100%', height: '100%', paddingLeft: 80, paddingRight: 80 }}>
       <Chart className="story-chart">
         <Settings
           rotation={getChartRotationKnob()}
@@ -92,8 +99,14 @@ export const example = () => {
           }}
           showLegend={boolean('Show Legend', false)}
         />
-        <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
-        <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
+        <Axis id="bottom" hide position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+        <Axis
+          id="left2"
+          hide
+          title="Left axis"
+          position={Position.Left}
+          tickFormat={(d: any) => Number(d).toFixed(2)}
+        />
 
         <BarSeries
           id="bars1"
@@ -110,7 +123,7 @@ export const example = () => {
 };
 
 // storybook configuration
-example.story = {
+Example.story = {
   parameters: {
     options: { selectedPanel: SB_SOURCE_PANEL },
   },
