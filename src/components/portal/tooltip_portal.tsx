@@ -170,7 +170,7 @@ const TooltipPortalComponent = ({ anchor, scope, settings, children, visible, ch
       return;
     }
 
-    const { left, top, width, height } = position!;
+    const { left, top, width, height } = position;
     anchorNode.current.style.left = `${left}px`;
     anchorNode.current.style.top = `${top}px`;
 

@@ -134,8 +134,11 @@ const TooltipComponent = ({
   };
 
   const anchorPosition = useMemo((): AnchorPosition | null => {
-    if (!isVisible) return null;
-    const { x0, x1, y0, y1 } = position!;
+    if (!position || !isVisible) {
+      return null;
+    }
+
+    const { x0, x1, y0, y1 } = position;
     const width = x0 !== undefined ? x1 - x0 : 0;
     const height = y0 !== undefined ? y1 - y0 : 0;
     return {
