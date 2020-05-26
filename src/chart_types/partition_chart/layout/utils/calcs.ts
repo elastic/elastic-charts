@@ -77,6 +77,16 @@ export function integerSnap(n: number) {
 
 type NumberMap = (n: number) => number;
 
+/**
+ * `monotonicHillClimb` attempts to return a variable value that's associated with the highest valued response (as returned by invoking `getResponse`
+ * with said variable) yet still within the bounds for that response value, ie. constrained to smaller than or equal `responseUpperConstraint`.
+ * `minVar` and `maxVar` represent a closed interval constraint on the variable itself.
+ * `domainSnap` is useful if all real values in the range can't be assumed by the variable; typically, if the variable is integer only,
+ * such as the number of characters, or avoiding fractional font sizes.
+ * It is required that `getResponse` is a monotonic function over [minVar, maxVar], ie. a larger `n` value in this domain can't lead to
+ * a smaller return value. However, as it's an internal function with known use cases, there's no runtime check to assert this.
+ * Which is why the name expresses it prominently.
+ */
 /** @internal */
 export function monotonicHillClimb(
   getResponse: NumberMap,
