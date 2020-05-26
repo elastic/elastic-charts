@@ -167,7 +167,7 @@ export interface TooltipProps {
    *
    * This may not be the final placement given the positioning fallbacks.
    *
-   * @default Placement.Right
+   * @defaultValue `right` {@link (Placement:type) | Placement.Right}
    */
   placement?: Placement;
   /**
@@ -180,7 +180,7 @@ export interface TooltipProps {
    *
    * `'chart'` will use the chart container as the boundary
    *
-   * @default parent scroll container
+   * @defaultValue parent scroll container
    */
   boundary?: HTMLElement | 'chart';
   unit?: string;

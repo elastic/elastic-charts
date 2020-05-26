@@ -5,6 +5,7 @@
 ```ts
 
 import { $Values } from 'utility-types';
+import { ComponentType } from 'react';
 import React from 'react';
 
 // @public
@@ -678,9 +679,9 @@ export type HistogramModeAlignment = 'start' | 'center' | 'end';
 //
 // @public (undocumented)
 export const HistogramModeAlignments: Readonly<{
-    Start: HistogramModeAlignment;
-    Center: HistogramModeAlignment;
-    End: HistogramModeAlignment;
+    Start: LineAlignSetting;
+    Center: LineAlignSetting;
+    End: LineAlignSetting;
 }>;
 
 // Warning: (ae-forgotten-export) The symbol "BinaryAccessorFn" needs to be exported by the entry point index.d.ts
@@ -930,6 +931,31 @@ export const PartitionLayout: Readonly<{
 
 // @public (undocumented)
 export type PartitionLayout = $Values<typeof PartitionLayout>;
+
+// Warning: (ae-missing-release-tag) "Placement" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-missing-release-tag) "Placement" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export const Placement: Readonly<{
+    Top: "top";
+    Bottom: "bottom";
+    Left: "left";
+    Right: "right";
+    TopStart: "top-start";
+    TopEnd: "top-end";
+    BottomStart: "bottom-start";
+    BottomEnd: "bottom-end";
+    RightStart: "right-start";
+    RightEnd: "right-end";
+    LeftStart: "left-start";
+    LeftEnd: "left-end";
+    Auto: "auto";
+    AutoStart: "auto-start";
+    AutoEnd: "auto-end";
+}>;
+
+// @public (undocumented)
+export type Placement = $Values<typeof Placement>;
 
 // Warning: (ae-missing-release-tag) "PointerEvent" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1296,7 +1322,8 @@ export interface SettingsSpec extends Spec {
     showLegend: boolean;
     showLegendExtra: boolean;
     theme?: PartialTheme | PartialTheme[];
-    tooltip: TooltipType | TooltipProps;
+    // (undocumented)
+    tooltip: TooltipSettings;
     // Warning: (ae-forgotten-export) The symbol "Domain" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
@@ -1432,8 +1459,13 @@ export function timeFormatter(format: string): TickFormatter;
 //
 // @public (undocumented)
 export interface TooltipProps {
+    boundary?: HTMLElement | 'chart';
+    // Warning: (ae-forgotten-export) The symbol "CustomTooltip" needs to be exported by the entry point index.d.ts
+    customTooltip?: CustomTooltip;
+    fallbackPlacements?: Placement[];
     // (undocumented)
     headerFormatter?: TooltipValueFormatter;
+    placement?: Placement;
     // (undocumented)
     snap?: boolean;
     // (undocumented)
@@ -1441,6 +1473,11 @@ export interface TooltipProps {
     // (undocumented)
     unit?: string;
 }
+
+// Warning: (ae-missing-release-tag) "TooltipSettings" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export type TooltipSettings = TooltipType | TooltipProps;
 
 // Warning: (ae-missing-release-tag) "TooltipType" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 // Warning: (ae-missing-release-tag) "TooltipType" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
