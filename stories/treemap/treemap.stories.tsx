@@ -34,3 +34,4 @@ export { Example as customStyle } from './6_custom_style';
 export { Example as percentage } from './7_percentage';
 export { Example as grooveText } from './8_groove_text';
 export { Example as zeroValues } from './9_zero_values';
+export { Example as threeLayer } from './10_three_layers';
