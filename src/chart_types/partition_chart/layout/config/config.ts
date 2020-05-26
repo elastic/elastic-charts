@@ -151,8 +151,8 @@ export const configMetadata = {
     type: 'number',
     reconfigurable: false, // there's no real reason to reconfigure it; finding the largest possible font is good for readability
   },
-  monotonic: {
-    dflt: true,
+  maximizeFontSize: {
+    dflt: false,
     type: 'boolean',
   },
   partitionLayout: {

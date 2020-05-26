@@ -628,7 +628,7 @@ export function fillTextLayout<C>(
           return {
             rowSets: [...rowSets, nextRowSet],
             fontSizes: fontSizes.map((layerFontSizes: Pixels[], index: number) =>
-              layers[layerIndex]?.fillLabel?.monotonic && index === layerIndex
+              index === layerIndex && !layers[layerIndex]?.fillLabel?.maximizeFontSize
                 ? layerFontSizes.filter((size: Pixels) => size <= nextRowSet.fontSize)
                 : layerFontSizes,
             ),
