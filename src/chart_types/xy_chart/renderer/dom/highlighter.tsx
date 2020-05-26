@@ -21,10 +21,7 @@ import { connect } from 'react-redux';
 import { isPointGeometry, IndexedGeometry } from '../../../../utils/geometry';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { computeChartTransformSelector } from '../../state/selectors/compute_chart_transform';
-import {
-  getHighlightedGeomsSelector,
-  HIGHLIGHT_PATH_SELECTOR,
-} from '../../state/selectors/get_tooltip_values_highlighted_geoms';
+import { getHighlightedGeomsSelector } from '../../state/selectors/get_tooltip_values_highlighted_geoms';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Rotation } from '../../../../utils/commons';
 import { Transform } from '../../state/utils';
@@ -59,7 +56,7 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
             <rect x="0" y="0" width={clipWidth} height={clipHeight} />
           </clipPath>
         </defs>
-        <g id={HIGHLIGHT_PATH_SELECTOR} transform={`translate(${left}, ${top}) rotate(${chartRotation})`}>
+        <g transform={`translate(${left}, ${top}) rotate(${chartRotation})`}>
           {highlightedGeometries.map((geom, i) => {
             const { color, x, y } = geom;
             if (isPointGeometry(geom)) {

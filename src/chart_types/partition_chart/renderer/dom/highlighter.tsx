@@ -22,7 +22,6 @@ import { TAU } from '../../layout/utils/math';
 import { PointObject } from '../../layout/types/geometry_types';
 import { PartitionLayout } from '../../layout/types/config_types';
 import { Dimensions } from '../../../../utils/dimensions';
-import { HIGHLIGHT_PATH_SELECTOR } from '../../../xy_chart/state/selectors/get_tooltip_values_highlighted_geoms';
 
 /** @internal */
 export interface HighlighterProps {
@@ -163,7 +162,7 @@ export class HighlighterComponent extends React.Component<HighlighterProps> {
   renderAsOverlay() {
     const { geometries, diskCenter, partitionLayout } = this.props;
     return (
-      <g id={HIGHLIGHT_PATH_SELECTOR} transform={`translate(${diskCenter.x}, ${diskCenter.y})`}>
+      <g transform={`translate(${diskCenter.x}, ${diskCenter.y})`}>
         {renderGeometries(geometries, partitionLayout, {
           fillClassName: 'echHighlighterOverlay__fill',
           strokeClassName: 'echHighlighterOverlay__stroke',
