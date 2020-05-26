@@ -62,6 +62,7 @@ export interface FillFontSizeRange {
   minFontSize: Pixels;
   maxFontSize: Pixels;
   idealFontSizeJump: Ratio;
+  /** when `monotonic` is true, text font will not be larger than font sizes in larger sectors/rectangles in the same pie chart, sunburst ring or treemap layer **/
   monotonic: boolean;
 }
 
