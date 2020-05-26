@@ -33,7 +33,7 @@ export const getLegendItemsLabels = createCachedSelector(
     if (!pieSpec) {
       return [];
     }
-    if (isInvalidLegendMaxDepth({ legendMaxDepth })) {
+    if (isInvalidLegendMaxDepth(legendMaxDepth)) {
       return [];
     }
     const labels = flatSlicesNames(pieSpec.layers, 0, tree).filter(({ depth }) => {
@@ -49,9 +49,9 @@ export const getLegendItemsLabels = createCachedSelector(
 
 /**
  * Check if the legendMaxDepth from settings is not a valid number (NaN or <=0)
- * @param legendMaxDepth - Pick<SettingsSpec, 'legendMaxDepth'>
+ * @param legendMaxDepth - SettingsSpec['legendMaxDepth']
  */
-function isInvalidLegendMaxDepth({ legendMaxDepth }: Pick<SettingsSpec, 'legendMaxDepth'>): boolean {
+function isInvalidLegendMaxDepth(legendMaxDepth: SettingsSpec['legendMaxDepth']): boolean {
   return typeof legendMaxDepth === 'number' && (Number.isNaN(legendMaxDepth) || legendMaxDepth <= 0);
 }
 
