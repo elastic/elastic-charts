@@ -23,7 +23,7 @@ import React, { memo, useCallback, useMemo, useEffect } from 'react';
 
 import { TooltipInfo, TooltipAnchorPosition } from './types';
 import { TooltipValueFormatter, TooltipSettings, TooltipValue } from '../../specs';
-import { Portal, PopperSettings, AnchorPosition } from '../portal';
+import { TooltipPortal, PopperSettings, AnchorPosition } from '../portal';
 import { getInternalIsTooltipVisibleSelector } from '../../state/selectors/get_internal_is_tooltip_visible';
 import { getTooltipHeaderFormatterSelector } from '../../state/selectors/get_tooltip_header_formatter';
 import { getInternalTooltipInfoSelector } from '../../state/selectors/get_internal_tooltip_info';
@@ -158,7 +158,7 @@ const TooltipComponent = ({
   }, [settings, chartRef.current]);
 
   return (
-    <Portal
+    <TooltipPortal
       scope="MainTooltip"
       anchor={{
         position: anchorPosition,
@@ -169,7 +169,7 @@ const TooltipComponent = ({
       visible={isVisible}
     >
       {renderTooltip()}
-    </Portal>
+    </TooltipPortal>
   );
 };
 

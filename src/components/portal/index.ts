@@ -17,6 +17,6 @@
  * under the License. */
 
 /** @internal */
-export * from './portal';
+export * from './tooltip_portal';
 export * from './types';
 export * from './utils';

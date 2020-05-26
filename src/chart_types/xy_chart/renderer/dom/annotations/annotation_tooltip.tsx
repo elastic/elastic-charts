@@ -18,7 +18,7 @@
 
 import React, { useCallback, useMemo, useEffect } from 'react';
 
-import { Portal, Placement } from '../../../../../components/portal';
+import { TooltipPortal, Placement } from '../../../../../components/portal';
 import { AnnotationTooltipState } from '../../../annotations/types';
 import { TooltipContent } from './tooltip_content';
 
@@ -57,7 +57,7 @@ export const AnnotationTooltip = ({ state, chartRef, chartId, onScroll }: RectAn
   const placement = useMemo(() => state?.anchor?.position ?? Placement.Right, [state, state?.anchor?.position]);
 
   return (
-    <Portal
+    <TooltipPortal
       scope="AnnotationTooltip"
       chartId={chartId}
       anchor={{
@@ -70,6 +70,6 @@ export const AnnotationTooltip = ({ state, chartRef, chartId, onScroll }: RectAn
       }}
     >
       {renderTooltip()}
-    </Portal>
+    </TooltipPortal>
   );
 };
