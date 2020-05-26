@@ -28,64 +28,6 @@ const baseUrl = `http://${host}:${port}/iframe.html`;
 
 expect.extend({ toMatchImageSnapshot });
 
-interface MousePosition {
-  /**
-   * position from top of reference element, trumps bottom
-   */
-  top?: number;
-  /**
-   * position from right of reference element
-   */
-  right?: number;
-  /**
-   * position from bottom of reference element
-   */
-  bottom?: number;
-  /**
-   * position from left of reference element, trump right
-   */
-  left?: number;
-}
-
-interface ElementBBox {
-  left: any;
-  top: any;
-  width: any;
-  height: any;
-}
-
-/**
- * Used to get postion from any value of cursor position
- *
- * @param mousePosition
- * @param element
- */
-function getCursorPosition(
-  { top, right, bottom, left }: MousePosition,
-  element: ElementBBox,
-): { x: number; y: number } {
-  let x = element.left;
-  let y = element.top;
-
-  if (top !== undefined || bottom !== undefined) {
-    if (top !== undefined) {
-      y = element.top + top;
-    } else {
-      y = element.top + element.height - bottom!;
-    }
-  }
-
-  if (left !== undefined || right !== undefined) {
-    if (left !== undefined) {
-      x = element.left + left;
-    } else {
-      x = element.left + element.width - right!;
-    }
-  }
-
-  return { x, y };
-}
-
 interface ScreenshotDOMElementOptions {
   padding?: number;
   path?: string;
@@ -174,10 +116,9 @@ class CommonPage {
    * @param mousePosition
    * @param selector
    */
-  async moveMouseRelativeToDOMElement(mousePosition: MousePosition, selector: string) {
+  async moveMouseRelativeToDOMElement(mousePosition: { x: number; y: number }, selector: string) {
     const element = await this.getBoundingClientRect(selector);
-    const { x, y } = getCursorPosition(mousePosition, element);
-    await page.mouse.move(x, y);
+    await page.mouse.move(element.left + mousePosition.x, element.top + mousePosition.y);
   }
 
   /**
@@ -186,10 +127,9 @@ class CommonPage {
    * @param mousePosition
    * @param selector
    */
-  async clickMouseRelativeToDOMElement(mousePosition: MousePosition, selector: string) {
+  async clickMouseRelativeToDOMElement(mousePosition: { x: number; y: number }, selector: string) {
     const element = await this.getBoundingClientRect(selector);
-    const { x, y } = getCursorPosition(mousePosition, element);
-    await page.mouse.click(x, y);
+    await page.mouse.click(element.left + mousePosition.x, element.top + mousePosition.y);
   }
 
   /**
@@ -198,13 +138,15 @@ class CommonPage {
    * @param mousePosition
    * @param selector
    */
-  async dragMouseRelativeToDOMElement(start: MousePosition, end: MousePosition, selector: string) {
+  async dragMouseRelativeToDOMElement(
+    start: { x: number; y: number },
+    end: { x: number; y: number },
+    selector: string,
+  ) {
     const element = await this.getBoundingClientRect(selector);
-    const { x: x0, y: y0 } = getCursorPosition(start, element);
-    const { x: x1, y: y1 } = getCursorPosition(end, element);
-    await page.mouse.move(x0, y0);
+    await page.mouse.move(element.left + start.x, element.top + start.y);
     await page.mouse.down();
-    await page.mouse.move(x1, y1);
+    await page.mouse.move(element.left + end.x, element.top + end.y);
   }
 
   /**
@@ -223,9 +165,16 @@ class CommonPage {
    * @param mousePosition
    * @param selector
    */
-  async dragAndDropMouseRelativeToDOMElement(start: MousePosition, end: MousePosition, selector: string) {
-    await this.dragMouseRelativeToDOMElement(start, end, selector);
-    await this.dropMouse();
+  async dragAndDropMouseRelativeToDOMElement(
+    start: { x: number; y: number },
+    end: { x: number; y: number },
+    selector: string,
+  ) {
+    const element = await this.getBoundingClientRect(selector);
+    await page.mouse.move(element.left + start.x, element.top + start.y);
+    await page.mouse.down();
+    await page.mouse.move(element.left + end.x, element.top + end.y);
+    await page.mouse.up();
   }
 
   /**
@@ -287,7 +236,7 @@ class CommonPage {
    */
   async expectChartWithMouseAtUrlToMatchScreenshot(
     url: string,
-    mousePosition: MousePosition,
+    mousePosition: { x: number; y: number },
     options?: Omit<ScreenshotElementAtUrlOptions, 'action'>,
   ) {
     const action = async () => await this.moveMouseRelativeToDOMElement(mousePosition, this.chartSelector);
@@ -307,8 +256,8 @@ class CommonPage {
    */
   async expectChartWithDragAtUrlToMatchScreenshot(
     url: string,
-    start: MousePosition,
-    end: MousePosition,
+    start: { x: number; y: number },
+    end: { x: number; y: number },
     options?: Omit<ScreenshotElementAtUrlOptions, 'action'>,
   ) {
     const action = async () => await this.dragMouseRelativeToDOMElement(start, end, this.chartSelector);
