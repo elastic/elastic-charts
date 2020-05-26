@@ -58,7 +58,7 @@ export function colorIsDark(color: Color) {
 }
 
 /** @internal */
-export function getFillTextColor(shapeFillColor: Color, textColor: Color, textInvertible: boolean) {
+export function getTextColor(shapeFillColor: Color, textColor: Color, textInvertible: boolean) {
   const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(textColor);
   const backgroundIsDark = colorIsDark(shapeFillColor);
   const specifiedTextColorIsDark = colorIsDark(textColor);

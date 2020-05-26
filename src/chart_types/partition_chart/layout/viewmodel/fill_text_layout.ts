@@ -41,7 +41,7 @@ import {
 import { Box, Font, PartialFont, TextMeasure } from '../types/types';
 import { conjunctiveConstraint } from '../circline_geometry';
 import { Layer } from '../../specs/index';
-import { integerSnap, getFillTextColor, monotonicHillClimb } from '../utils/calcs';
+import { integerSnap, getTextColor, monotonicHillClimb } from '../utils/calcs';
 import { ValueFormatter } from '../../../../utils/commons';
 import { RectangleConstruction, VerticalAlignments } from './viewmodel';
 
@@ -355,7 +355,7 @@ function fill<C>(
         layer.shape,
       );
 
-      const fillTextColor = getFillTextColor(node.fillColor, textColor, textInvertible);
+      const fillTextColor = getTextColor(node.fillColor, textColor, textInvertible);
 
       const valueFont = Object.assign(
         { fontFamily: configFontFamily, fontWeight: 'normal' },
