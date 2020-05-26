@@ -43,7 +43,8 @@ type D3ScaleNonTime<R = PrimitiveValue, O = number> = ScaleLinear<R, O> | ScaleL
  */
 type D3Scale<R = PrimitiveValue, O = number> = D3ScaleNonTime<R, O> | ScaleTime<R, O>;
 
-const SCALES = {
+/** @internal */
+export const SCALES = {
   [ScaleType.Linear]: scaleLinear,
   [ScaleType.Log]: scaleLog,
   [ScaleType.Sqrt]: scaleSqrt,

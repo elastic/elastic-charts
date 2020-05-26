@@ -16,7 +16,8 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { AxisTick, getTickLabelProps } from '../../../utils/axis_utils';
+import { getTickLabelProps } from '../../../utils/axis_utils';
+import { AxisTick } from '../../../axes/types';
 import { AxisProps } from '.';
 import { renderText } from '../primitives/text';
 import { renderDebugRectCenterRotated } from '../utils/debug';

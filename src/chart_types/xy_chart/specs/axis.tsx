@@ -23,7 +23,8 @@ import { ChartTypes } from '../../../chart_types';
 import { specComponentFactory, getConnect } from '../../../state/spec_factory';
 import { SpecTypes } from '../../../specs/settings';
 
-const defaultProps = {
+/** @internal */
+export const AXIS_SPEC_DEFAULTS = {
   chartType: ChartTypes.XYAxis,
   specType: SpecTypes.Axis,
   groupId: DEFAULT_GLOBAL_ID,
@@ -52,5 +53,5 @@ export const Axis: React.FunctionComponent<SpecRequired & SpecOptionals> = getCo
     | 'tickPadding'
     | 'tickFormat'
     | 'tickLabelRotation'
-  >(defaultProps),
+  >(AXIS_SPEC_DEFAULTS),
 );

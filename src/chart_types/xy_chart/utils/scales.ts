@@ -21,6 +21,7 @@ import { Scale, ScaleType, ScaleBand, ScaleContinuous } from '../../../scales';
 import { XDomain } from '../domains/x_domain';
 import { YDomain } from '../domains/y_domain';
 import { FormattedDataSeries } from './series';
+import { Range } from '../../../utils/commons';
 
 /**
  * Count the max number of bars in cluster value.
@@ -55,26 +56,25 @@ export function countBarsInCluster(
   };
 }
 
-function getBandScaleRange(
-  isInverse: boolean,
-  isSingleValueHistogram: boolean,
-  minRange: number,
-  maxRange: number,
-  bandwidth: number,
-): {
-  start: number;
-  end: number;
-} {
+/**
+ * Get the reduced range for a band scale, removing the bandwidth from the current range
+ * @param range the current Range
+ * @param bandwidth the scale bandwidth
+ * @param isSingleValueHistogram true if the data has only a single value
+ */
+function getBandReducedScaleRange(range: Range, bandwidth: number, isSingleValueHistogram: boolean): Range {
+  const [min, max] = range;
+  const isInverse = max < min;
   const rangeEndOffset = isSingleValueHistogram ? 0 : bandwidth;
-  const start = isInverse ? minRange - rangeEndOffset : minRange;
-  const end = isInverse ? maxRange : maxRange - rangeEndOffset;
-  return { start, end };
+  const start = isInverse ? min - rangeEndOffset : min;
+  const end = isInverse ? max : max - rangeEndOffset;
+  return [start, end];
 }
 
 interface XScaleOptions {
   xDomain: XDomain;
   totalBarsInCluster: number;
-  range: [number, number];
+  range: Range;
   barsPadding?: number;
   enableHistogramMode?: boolean;
   ticks?: number;
@@ -92,7 +92,7 @@ export function computeXScale(options: XScaleOptions): Scale {
   const { xDomain, totalBarsInCluster, range, barsPadding, enableHistogramMode, ticks, integersOnly } = options;
   const { scaleType, minInterval, domain, isBandScale, timeZone } = xDomain;
   const rangeDiff = Math.abs(range[1] - range[0]);
-  const isInverse = range[1] < range[0];
+
   if (scaleType === ScaleType.Ordinal) {
     const dividend = totalBarsInCluster > 0 ? totalBarsInCluster : 1;
     const bandwidth = rangeDiff / (domain.length * dividend);
@@ -102,19 +102,19 @@ export function computeXScale(options: XScaleOptions): Scale {
       const [domainMin, domainMax] = domain;
       const isSingleValueHistogram = !!enableHistogramMode && domainMax - domainMin === 0;
 
-      const adjustedDomainMax = isSingleValueHistogram ? domainMin + minInterval : domainMax;
+      const adjustedDomainMax = isSingleValueHistogram ? domainMax + minInterval : domainMax;
       const adjustedDomain = [domainMin, adjustedDomainMax];
 
       const intervalCount = (adjustedDomain[1] - adjustedDomain[0]) / minInterval;
       const intervalCountOffest = isSingleValueHistogram ? 0 : 1;
       const bandwidth = rangeDiff / (intervalCount + intervalCountOffest);
-      const { start, end } = getBandScaleRange(isInverse, isSingleValueHistogram, range[0], range[1], bandwidth);
+      const bandRange = getBandReducedScaleRange(range, bandwidth, isSingleValueHistogram);
 
       const scale = new ScaleContinuous(
         {
           type: scaleType,
           domain: adjustedDomain,
-          range: [start, end],
+          range: bandRange,
         },
         {
           bandwidth: totalBarsInCluster > 0 ? bandwidth / totalBarsInCluster : bandwidth,
@@ -139,7 +139,7 @@ export function computeXScale(options: XScaleOptions): Scale {
 
 interface YScaleOptions {
   yDomains: YDomain[];
-  range: [number, number];
+  range: Range;
   ticks?: number;
   integersOnly?: boolean;
 }

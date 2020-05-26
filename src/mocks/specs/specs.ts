@@ -34,6 +34,7 @@ import {
   AnnotationDomainTypes,
   AxisSpec,
 } from '../../chart_types/xy_chart/utils/specs';
+import { AXIS_SPEC_DEFAULTS } from '../../chart_types/xy_chart/specs/axis';
 import { ScaleType } from '../../scales';
 import { ChartTypes } from '../../chart_types';
 import { SettingsSpec, SpecTypes, TooltipType } from '../../specs';
@@ -263,6 +264,19 @@ export class MockSeriesSpecs {
     return [];
   }
 }
+/** @internal */
+export class MockAxisSpec {
+  private static readonly axisBase: AxisSpec = {
+    id: 'axis',
+    specType: SpecTypes.Axis,
+    chartType: ChartTypes.XYAxis,
+    ...AXIS_SPEC_DEFAULTS,
+  };
+
+  static axis(partial?: Partial<AxisSpec>): AxisSpec {
+    return mergePartial<AxisSpec>(MockAxisSpec.axisBase, partial, { mergeOptionalPartialValues: true });
+  }
+}
 
 /** @internal */
 export class MockGlobalSpec {
@@ -286,21 +300,6 @@ export class MockGlobalSpec {
     theme: LIGHT_THEME,
   };
 
-  private static readonly axisBase: AxisSpec = {
-    id: 'yAxis',
-    chartType: ChartTypes.XYAxis,
-    specType: SpecTypes.Axis,
-    groupId: DEFAULT_GLOBAL_ID,
-    hide: false,
-    showOverlappingTicks: false,
-    showOverlappingLabels: false,
-    position: Position.Left,
-    tickSize: 10,
-    tickPadding: 10,
-    tickFormat: (tick: any) => `${tick}`,
-    tickLabelRotation: 0,
-  };
-
   private static readonly settingsBaseNoMargings: SettingsSpec = {
     ...MockGlobalSpec.settingsBase,
     theme: {
@@ -321,9 +320,6 @@ export class MockGlobalSpec {
     return mergePartial<SettingsSpec>(MockGlobalSpec.settingsBaseNoMargings, partial, {
       mergeOptionalPartialValues: true,
     });
-  }
-  static axis(partial?: Partial<AxisSpec>): AxisSpec {
-    return mergePartial<AxisSpec>(MockGlobalSpec.axisBase, partial, { mergeOptionalPartialValues: true });
   }
 }
 

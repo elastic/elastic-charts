@@ -16,7 +16,8 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { AxisLinePosition, isVerticalGrid } from '../../utils/axis_utils';
+import { isVerticalGrid } from '../../utils/axis_utils';
+import { AxisLinePosition } from '../../axes/types';
 import { mergeGridLineConfigs, Theme } from '../../../../utils/themes/theme';
 import { Dimensions } from '../../../../utils/dimensions';
 import { AxisId } from '../../../../utils/ids';

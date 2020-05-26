@@ -28,7 +28,8 @@ import {
 import { Position } from '../../../utils/commons';
 import { ScaleType, ScaleContinuous, ScaleBand } from '../../../scales';
 import { IndexedGeometry, GeometryValue, BandedAccessorType } from '../../../utils/geometry';
-import { AxisTicksDimensions, isDuplicateAxis } from '../utils/axis_utils';
+import { isDuplicateAxis } from '../utils/axis_utils';
+import { AxisTicksDimensions } from '../axes/types';
 import { AxisId } from '../../../utils/ids';
 import { LegendItem } from '../../../commons/legend';
 import { ChartTypes } from '../..';

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { AxisTick, AxisTicksDimensions } from '../../../utils/axis_utils';
+import { AxisTick, AxisTicksDimensions } from '../../../axes/types';
 import { AxisSpec } from '../../../utils/specs';
 import { AxisConfig } from '../../../../../utils/themes/theme';
 import { Dimensions } from '../../../../../utils/dimensions';

@@ -43,6 +43,11 @@ export type Rendering = 'canvas' | 'svg';
 export type Color = string;
 export type StrokeStyle = Color; // now narrower than string | CanvasGradient | CanvasPattern
 
+/**
+ * The [min, max] range
+ */
+export type Range = [number, number];
+
 export const Position = Object.freeze({
   Top: 'top' as 'top',
   Bottom: 'bottom' as 'bottom',

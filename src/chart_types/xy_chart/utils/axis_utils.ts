@@ -18,7 +18,6 @@
 
 import { XDomain } from '../domains/x_domain';
 import { YDomain } from '../domains/y_domain';
-import { computeXScale, computeYScales } from './scales';
 import {
   AxisSpec,
   CompleteBoundedDomain,
@@ -29,39 +28,16 @@ import {
   AxisStyle,
   TickFormatterOptions,
 } from './specs';
-import { Position, Rotation, getUniqueValues } from '../../../utils/commons';
+import { Position, Rotation, Range } from '../../../utils/commons';
 import { AxisConfig, Theme } from '../../../utils/themes/theme';
 import { Dimensions, Margins } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';
-import { Scale } from '../../../scales';
+import { ScaleType } from '../../../scales';
 import { BBox, BBoxCalculator } from '../../../utils/bbox/bbox_calculator';
 import { getSpecsById } from '../state/utils';
-
-export type AxisLinePosition = [number, number, number, number];
-
-export interface AxisTick {
-  value: number | string;
-  label: string;
-  position: number;
-}
-
-export interface AxisTicksDimensions {
-  tickValues: string[] | number[];
-  tickLabels: string[];
-  maxLabelBboxWidth: number;
-  maxLabelBboxHeight: number;
-  maxLabelTextWidth: number;
-  maxLabelTextHeight: number;
-}
-
-export interface TickLabelProps {
-  x: number;
-  y: number;
-  offsetX: number;
-  offsetY: number;
-  align: string;
-  verticalAlign: string;
-}
+import { AxisTicksDimensions, TickLabelProps, AxisLinePosition, AxisTick } from '../axes/types';
+import { BaseScale, getContinuousScale, getOrdinalScale } from '../../../scales/base';
+import { PrimitiveValue } from '../../partition_chart/layout/utils/group_by_rollup';
 
 /**
  * Compute the ticks values and identify max width and height of the labels
@@ -78,35 +54,22 @@ export function computeAxisTicksDimensions(
   axisSpec: AxisSpec,
   xDomain: XDomain,
   yDomain: YDomain[],
-  totalBarsInCluster: number,
   bboxCalculator: BBoxCalculator,
   chartRotation: Rotation,
   axisConfig: AxisConfig,
-  barsPadding?: number,
-  enableHistogramMode?: boolean,
 ): AxisTicksDimensions | null {
   if (axisSpec.hide) {
     return null;
   }
-  const scale = getScaleForAxisSpec(
-    axisSpec,
-    xDomain,
-    yDomain,
-    totalBarsInCluster,
-    chartRotation,
-    0,
-    1,
-    barsPadding,
-    enableHistogramMode,
-  );
+  const scale = getScaleForAxisSpec(axisSpec, xDomain, yDomain, chartRotation, [0, 1]);
   if (!scale) {
     throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
   }
 
   const tickLabelPadding = getAxisTickLabelPadding(axisConfig.tickLabelStyle.padding, axisSpec.style);
 
-  const dimensions = computeTickDimensions(
-    scale,
+  return computeTickDimensions(
+    scale.ticks(),
     axisSpec.tickFormat,
     bboxCalculator,
     axisConfig,
@@ -116,10 +79,6 @@ export function computeAxisTicksDimensions(
       timeZone: xDomain.timeZone,
     },
   );
-
-  return {
-    ...dimensions,
-  };
 }
 
 /** @internal */
@@ -145,36 +104,39 @@ export function getScaleForAxisSpec(
   axisSpec: AxisSpec,
   xDomain: XDomain,
   yDomain: YDomain[],
-  totalBarsInCluster: number,
   chartRotation: Rotation,
-  minRange: number,
-  maxRange: number,
+  range: Range,
+  isHistogram = false,
   barsPadding?: number,
-  enableHistogramMode?: boolean,
-): Scale | null {
+  maxTicks?: number,
+): BaseScale<number> | BaseScale<NonNullable<PrimitiveValue>> | null {
   const axisIsYDomain = isYDomain(axisSpec.position, chartRotation);
-  const range: [number, number] = [minRange, maxRange];
+
   if (axisIsYDomain) {
-    const yScales = computeYScales({
-      yDomains: yDomain,
-      range,
-      ticks: axisSpec.ticks,
-      integersOnly: axisSpec.integersOnly,
-    });
-    if (yScales.has(axisSpec.groupId)) {
-      return yScales.get(axisSpec.groupId)!;
+    const domain = yDomain.find((domain) => domain.groupId === axisSpec.groupId);
+    if (!domain) {
+      return null;
     }
-    return null;
+    return getContinuousScale(domain.scaleType, range, domain.domain, maxTicks, xDomain.timeZone);
   } else {
-    return computeXScale({
-      xDomain,
-      totalBarsInCluster,
-      range,
-      barsPadding,
-      enableHistogramMode,
-      ticks: axisSpec.ticks,
-      integersOnly: axisSpec.integersOnly,
-    });
+    const { scaleType, domain, isBandScale, minInterval, timeZone } = xDomain;
+    if (scaleType === ScaleType.Ordinal) {
+      return getOrdinalScale(range, domain, barsPadding);
+    } else {
+      const [min, max] = domain;
+      const count = Math.ceil((max - min) / minInterval);
+      const maxWidth = range[1] - range[0];
+      if (!isHistogram && isBandScale && maxWidth / count >= 1) {
+        const filledDomain = [];
+        for (let i = 0; i <= count; i++) {
+          filledDomain.push(min + i * minInterval);
+        }
+        return getOrdinalScale(range, filledDomain);
+      } else {
+        const cDomain = isHistogram ? [domain[0], domain[1] + minInterval] : domain;
+        return getContinuousScale(scaleType, range, cDomain, maxTicks, timeZone);
+      }
+    }
   }
 }
 
@@ -231,37 +193,26 @@ export const getMaxBboxDimensions = (
 };
 
 function computeTickDimensions(
-  scale: Scale,
+  tickValues: any[],
   tickFormat: TickFormatter,
   bboxCalculator: BBoxCalculator,
-  axisConfig: AxisConfig,
+  { tickLabelStyle: { fontFamily, fontSize } }: AxisConfig,
   tickLabelPadding: number,
   tickLabelRotation = 0,
   tickFormatOptions?: TickFormatterOptions,
 ) {
-  const tickValues = scale.ticks();
   const tickLabels = tickValues.map((d) => {
     return tickFormat(d, tickFormatOptions);
   });
-  const {
-    tickLabelStyle: { fontFamily, fontSize },
-  } = axisConfig;
-  const {
-    maxLabelBboxWidth,
-    maxLabelBboxHeight,
-    maxLabelTextWidth,
-    maxLabelTextHeight,
-  } = tickLabels.reduce(
+
+  const bbox = tickLabels.reduce(
     getMaxBboxDimensions(bboxCalculator, fontSize, fontFamily, tickLabelRotation, tickLabelPadding),
     { maxLabelBboxWidth: 0, maxLabelBboxHeight: 0, maxLabelTextWidth: 0, maxLabelTextHeight: 0 },
   );
   return {
     tickValues,
     tickLabels,
-    maxLabelBboxWidth,
-    maxLabelBboxHeight,
-    maxLabelTextWidth,
-    maxLabelTextHeight,
+    ...bbox,
   };
 }
 
@@ -353,15 +304,16 @@ export function getHorizontalAxisGridLineProps(tickPosition: number, chartHeight
   return [tickPosition, 0, tickPosition, chartHeight];
 }
 
-/** @internal */
-export function getMinMaxRange(
-  axisPosition: Position,
-  chartRotation: Rotation,
-  chartDimensions: Dimensions,
-): {
-  minRange: number;
-  maxRange: number;
-} {
+/**
+ * Get the min and the max range value to compute the axis scale.
+ * Depends on the orientation of the axis (left/right,top/bottom)
+ * @internal
+ * @param axisPosition the axis position
+ * @param chartRotation the chart rotation
+ * @param chartDimensions the chart dimensions
+ * @returns the Range
+ */
+export function getMinMaxRange(axisPosition: Position, chartRotation: Rotation, chartDimensions: Dimensions): Range {
   const { width, height } = chartDimensions;
   switch (axisPosition) {
     case Position.Bottom:
@@ -373,110 +325,72 @@ export function getMinMaxRange(
   }
 }
 
-function getBottomTopAxisMinMaxRange(chartRotation: Rotation, width: number) {
+/**
+ * The the min/max range for an horizontal axis
+ * @param chartRotation the chart rotation
+ * @param width the width of the chart
+ * @returns the Range
+ */
+function getBottomTopAxisMinMaxRange(chartRotation: Rotation, width: number): Range {
   switch (chartRotation) {
-    case 0:
-      // dealing with x domain
-      return { minRange: 0, maxRange: width };
-    case 90:
-      // dealing with y domain
-      return { minRange: 0, maxRange: width };
-    case -90:
-      // dealing with y domain
-      return { minRange: width, maxRange: 0 };
-    case 180:
-      // dealing with x domain
-      return { minRange: width, maxRange: 0 };
+    case 0: // dealing with x domain
+    case 90: // dealing with y domain (the y domain is lying horizontally)
+      return [0, width];
+    case 180: // dealing with x domain
+    case -90: // dealing with y domain (the y domain is lying horizontally)
+      return [width, 0];
   }
 }
-function getLeftAxisMinMaxRange(chartRotation: Rotation, height: number) {
+/**
+ * The the min/max range for a vertical axis
+ * @param chartRotation the chart rotation
+ * @param height the height of the chart
+ * @returns the Range
+ */
+function getLeftAxisMinMaxRange(chartRotation: Rotation, height: number): Range {
   switch (chartRotation) {
-    case 0:
-      // dealing with y domain
-      return { minRange: height, maxRange: 0 };
-    case 90:
-      // dealing with x domain
-      return { minRange: 0, maxRange: height };
-    case -90:
-      // dealing with x domain
-      return { minRange: height, maxRange: 0 };
-    case 180:
-      // dealing with y domain
-      return { minRange: 0, maxRange: height };
+    case 0: // dealing with y domain
+    case -90: // dealing with x domain (the x domain is lying vertically)
+      return [height, 0];
+    case 180: // dealing with y domain
+    case 90: // dealing with x domain (the x domain is lying vertically)
+      return [0, height];
   }
 }
 
 /** @internal */
 export function getAvailableTicks(
-  axisSpec: AxisSpec,
-  scale: Scale,
-  totalBarsInCluster: number,
-  enableHistogramMode: boolean,
+  { showDuplicatedTicks, tickFormat }: AxisSpec,
+  scale: BaseScale<number> | BaseScale<NonNullable<PrimitiveValue>>,
   tickFormatOptions?: TickFormatterOptions,
 ): AxisTick[] {
   const ticks = scale.ticks();
-  const isSingleValueScale = scale.domain[0] - scale.domain[1] === 0;
-  const hasAdditionalTicks = enableHistogramMode && scale.bandwidth > 0;
-
-  if (hasAdditionalTicks) {
-    const lastComputedTick = ticks[ticks.length - 1];
-
-    if (!isSingleValueScale) {
-      const penultimateComputedTick = ticks[ticks.length - 2];
-      const computedTickDistance = lastComputedTick - penultimateComputedTick;
-      const numTicks = scale.minInterval / computedTickDistance;
-
-      for (let i = 1; i <= numTicks; i++) {
-        ticks.push(i * computedTickDistance + lastComputedTick);
+  return ticks.reduce<{ ticks: AxisTick[]; lastTickLabel: string | null }>(
+    (acc, tick) => {
+      const scaledValue =
+        typeof tick === 'number'
+          ? (scale as BaseScale<number>).scale(tick)
+          : (scale as BaseScale<NonNullable<PrimitiveValue>>).scale(tick);
+      if (scaledValue === null) {
+        return acc;
       }
-    }
-  }
-  const shift = totalBarsInCluster > 0 ? totalBarsInCluster : 1;
+      const label = tickFormat(tick, tickFormatOptions);
 
-  const band = scale.bandwidth / (1 - scale.barsPadding);
-  const halfPadding = (band - scale.bandwidth) / 2;
-  const offset = enableHistogramMode ? -halfPadding : (scale.bandwidth * shift) / 2;
+      // hide duplicated consecutive labels
+      const differFromLastLabel = label !== acc.lastTickLabel;
+      if (differFromLastLabel || showDuplicatedTicks) {
+        acc.ticks.push({
+          value: tick,
+          label,
+          position: scaledValue,
+        });
+      }
 
-  if (isSingleValueScale && hasAdditionalTicks) {
-    const firstTickValue = ticks[0];
-    const firstTick = {
-      value: firstTickValue,
-      label: axisSpec.tickFormat(firstTickValue, tickFormatOptions),
-      position: (scale.scale(firstTickValue) ?? 0) + offset,
-    };
-
-    const lastTickValue = firstTickValue + scale.minInterval;
-    const lastTick = {
-      value: lastTickValue,
-      label: axisSpec.tickFormat(lastTickValue, tickFormatOptions),
-      position: scale.bandwidth + halfPadding * 2,
-    };
-
-    return [firstTick, lastTick];
-  }
-  return enableDuplicatedTicks(axisSpec, scale, offset, tickFormatOptions);
-}
-
-/** @internal */
-export function enableDuplicatedTicks(
-  axisSpec: AxisSpec,
-  scale: Scale,
-  offset: number,
-  tickFormatOptions?: TickFormatterOptions,
-) {
-  const ticks = scale.ticks();
-  const allTicks: AxisTick[] = ticks.map((tick) => {
-    return {
-      value: tick,
-      label: axisSpec.tickFormat(tick, tickFormatOptions),
-      position: (scale.scale(tick) ?? 0) + offset,
-    };
-  });
-
-  if (axisSpec.showDuplicatedTicks === true) {
-    return allTicks;
-  }
-  return getUniqueValues(allTicks, 'label');
+      acc.lastTickLabel = label;
+      return acc;
+    },
+    { ticks: [], lastTickLabel: null },
+  ).ticks;
 }
 
 /** @internal */
@@ -597,8 +511,7 @@ export function getAxisTicksPositions(
   axisDimensions: Map<AxisId, AxisTicksDimensions>,
   xDomain: XDomain,
   yDomain: YDomain[],
-  totalGroupsCount: number,
-  enableHistogramMode: boolean,
+  isHistogramModeOn: boolean,
   barsPadding?: number,
 ): {
   axisPositions: Map<AxisId, Dimensions>;
@@ -625,28 +538,27 @@ export function getAxisTicksPositions(
     if (!axisSpec) {
       return;
     }
-    const minMaxRanges = getMinMaxRange(axisSpec.position, chartRotation, chartDimensions);
+    // get the axis ranges
+    const range = getMinMaxRange(axisSpec.position, chartRotation, chartDimensions);
+
+    // get the axis scale
 
     const scale = getScaleForAxisSpec(
       axisSpec,
       xDomain,
       yDomain,
-      totalGroupsCount,
       chartRotation,
-      minMaxRanges.minRange,
-      minMaxRanges.maxRange,
+      range,
+      isHistogramModeOn,
       barsPadding,
-      enableHistogramMode,
+      axisSpec.ticks,
     );
 
     if (!scale) {
       throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
     }
-    const tickFormatOptions = {
-      timeZone: xDomain.timeZone,
-    };
 
-    const allTicks = getAvailableTicks(axisSpec, scale, totalGroupsCount, enableHistogramMode, tickFormatOptions);
+    const allTicks = getAvailableTicks(axisSpec, scale);
     const visibleTicks = getVisibleTicks(allTicks, axisSpec, axisDim);
 
     if (axisSpec.showGridLines) {

@@ -40,7 +40,7 @@ import { computeSeriesGeometriesSelector } from '../../state/selectors/compute_s
 import { getHighlightedSeriesSelector } from '../../state/selectors/get_highlighted_series';
 import { getAnnotationSpecsSelector, getAxisSpecsSelector } from '../../state/selectors/get_specs';
 import { Geometries, Transform } from '../../state/utils';
-import { AxisLinePosition, AxisTicksDimensions } from '../../utils/axis_utils';
+import { AxisLinePosition, AxisTicksDimensions } from '../../axes/types';
 import { AxisSpec, AnnotationSpec } from '../../utils/specs';
 import { renderXYChartCanvas2d } from './renderers';
 import { isChartEmptySelector } from '../../state/selectors/is_chart_empty';

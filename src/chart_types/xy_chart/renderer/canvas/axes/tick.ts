@@ -16,7 +16,8 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { AxisTick, isVerticalAxis } from '../../../utils/axis_utils';
+import { isVerticalAxis } from '../../../utils/axis_utils';
+import { AxisTick } from '../../../axes/types';
 import { AxisProps } from '.';
 import { Position } from '../../../../../utils/commons';
 import { TickStyle } from '../../../../../utils/themes/theme';
