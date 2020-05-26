@@ -182,7 +182,7 @@ function rectangleConstruction(treeHeight: number, topGroove: number) {
 }
 
 /** @internal */
-export function shapeViewModel<C>(
+export function shapeViewModel(
   textMeasure: TextMeasure,
   config: Config,
   layers: Layer[],
