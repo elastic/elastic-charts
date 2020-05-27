@@ -47,6 +47,12 @@ describe('calcs', () => {
       const result = '#000'; // black
       expect(result).toEqual(makeHighContrastColor(foreground, background));
     });
+    it('should use black text for hex value', () => {
+      const foreground = '#fff'; // white
+      const background = '#7874B2'; // Thailand color
+      const result = '#000'; // black
+      expect(result).toEqual(makeHighContrastColor(foreground, background));
+    });
   });
   describe('test the combineColors function', () => {
     it('should return correct RGBA with opacity greater than 0.7', () => {
