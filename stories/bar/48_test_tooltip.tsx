@@ -37,7 +37,7 @@ const CustomTooltip = () => (
   </div>
 );
 
-const getFallbackPlacements = (): Placement[] => {
+const getFallbackPlacements = (): Placement[] | undefined => {
   const knob = optionsKnob<Placement>(
     'Fallback Placements',
     {
@@ -57,8 +57,7 @@ const getFallbackPlacements = (): Placement[] => {
       AutoStart: Placement.AutoStart,
       AutoEnd: Placement.AutoEnd,
     },
-    // @ts-ignore
-    [Placement.Right, Placement.Left, Placement.Top, Placement.Bottom].join(','),
+    [Placement.Right, Placement.Left, Placement.Top, Placement.Bottom],
     {
       display: 'multi-select',
     },
@@ -67,6 +66,9 @@ const getFallbackPlacements = (): Placement[] => {
   if (typeof knob === 'string') {
     // @ts-ignore
     return knob.split(', ');
+    // @ts-ignore
+  } else if (knob.length === 0) {
+    return undefined;
   }
 
   return knob;
@@ -86,7 +88,7 @@ export const Example = () => {
 
   // Added buffer to test tooltip positioning within chart container
   return (
-    <div className="buffer" style={{ width: '100%', height: '100%', paddingLeft: 80, paddingRight: 80 }}>
+    <div className="buffer" style={{ width: '100%', height: '100%' }}>
       <Chart className="story-chart">
         <Settings
           rotation={getChartRotationKnob()}
@@ -99,14 +101,8 @@ export const Example = () => {
           }}
           showLegend={boolean('Show Legend', false)}
         />
-        <Axis id="bottom" hide position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
-        <Axis
-          id="left2"
-          hide
-          title="Left axis"
-          position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
-        />
+        <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+        <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
         <BarSeries
           id="bars1"

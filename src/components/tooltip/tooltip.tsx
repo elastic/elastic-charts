@@ -23,7 +23,7 @@ import React, { memo, useCallback, useMemo, useEffect } from 'react';
 
 import { TooltipInfo, TooltipAnchorPosition } from './types';
 import { TooltipValueFormatter, TooltipSettings, TooltipValue } from '../../specs';
-import { TooltipPortal, PopperSettings, AnchorPosition } from '../portal';
+import { TooltipPortal, PopperSettings, AnchorPosition, Placement } from '../portal';
 import { getInternalIsTooltipVisibleSelector } from '../../state/selectors/get_internal_is_tooltip_visible';
 import { getTooltipHeaderFormatterSelector } from '../../state/selectors/get_tooltip_header_formatter';
 import { getInternalTooltipInfoSelector } from '../../state/selectors/get_internal_tooltip_info';
@@ -32,6 +32,8 @@ import { GlobalChartState, BackwardRef } from '../../state/chart_state';
 import { getInternalIsInitializedSelector } from '../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
 import { onPointerMove } from '../../state/actions/mouse';
+import { getChartRotationSelector } from '../../state/selectors/get_chart_rotation';
+import { Rotation } from '../../utils/commons';
 
 interface TooltipDispatchProps {
   onPointerMove: typeof onPointerMove;
@@ -43,6 +45,7 @@ interface TooltipStateProps {
   info?: TooltipInfo;
   headerFormatter?: TooltipValueFormatter;
   settings: TooltipSettings;
+  rotation: Rotation;
   chartId: string;
 }
 
@@ -59,6 +62,7 @@ const TooltipComponent = ({
   getChartContainerRef,
   settings,
   isVisible,
+  rotation,
   chartId,
   onPointerMove,
 }: TooltipProps) => {
@@ -154,11 +158,19 @@ const TooltipComponent = ({
       return;
     }
 
+    const { placement, fallbackPlacements, boundary, ...rest } = settings;
+
     return {
-      ...settings,
-      boundary: settings.boundary === 'chart' && chartRef.current ? chartRef.current : undefined,
+      ...rest,
+      placement: placement ?? (rotation === 0 || rotation === 180 ? Placement.Right : Placement.Top),
+      fallbackPlacements:
+        fallbackPlacements ??
+        (rotation === 0 || rotation === 180
+          ? [Placement.Right, Placement.Left, Placement.Top, Placement.Bottom]
+          : [Placement.Top, Placement.Bottom, Placement.Right, Placement.Left]),
+      boundary: boundary === 'chart' && chartRef.current ? chartRef.current : undefined,
     };
-  }, [settings, chartRef]);
+  }, [settings, chartRef, rotation]);
 
   return (
     <TooltipPortal
@@ -184,6 +196,7 @@ const HIDDEN_TOOLTIP_PROPS = {
   position: null,
   headerFormatter: undefined,
   settings: {},
+  rotation: 0 as Rotation,
   chartId: '',
 };
 
@@ -200,6 +213,7 @@ const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
     position: getInternalTooltipAnchorPositionSelector(state),
     headerFormatter: getTooltipHeaderFormatterSelector(state),
     settings: getSettingsSpecSelector(state).tooltip,
+    rotation: getChartRotationSelector(state),
     chartId: state.chartId,
   };
 };

@@ -63,10 +63,11 @@ export const getPositionKnob = (name = 'chartRotation', defaultValue = Position.
     defaultValue,
   );
 
-export const getPlacementKnob = (name = 'placement', defaultValue = Placement.Right) =>
-  select<Placement>(
+export const getPlacementKnob = (name = 'placement', defaultValue?: Placement) => {
+  const value = select<Placement | undefined>(
     name,
     {
+      Default: undefined,
       Top: Placement.Top,
       Bottom: Placement.Bottom,
       Left: Placement.Left,
@@ -85,6 +86,9 @@ export const getPlacementKnob = (name = 'placement', defaultValue = Placement.Ri
     },
     defaultValue,
   );
+
+  return value || undefined;
+};
 
 export function arrayKnobs(name: string, values: (string | number)[]): (string | number)[] {
   const stringifiedValues = values.map<string>((d) => `${d}`);
