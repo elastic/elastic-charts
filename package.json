@@ -26,7 +26,7 @@
     "build:watch": "echo 'Watching build...' && yarn build:clean && yarn build:css && yarn build:compile -w ",
     "concat:sass": "echo 'Concat SASS...' && node scripts/concat_sass.js",
     "cz": "git-cz",
-    "lint": "NODE_ENV=production eslint --cache --ext .tsx,.ts,.js .",
+    "lint": "NODE_ENV=production eslint --ext .tsx,.ts,.js .",
     "lint:fix": "yarn lint --fix",
     "prettier:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,html,css,scss}\"",
     "playground": "cd .playground && webpack-dev-server",
