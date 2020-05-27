@@ -51,11 +51,7 @@
     "watch": "yarn test --watch"
   },
   "files": [
-    "dist/**/*",
-    "FAQ.md",
-    "LICENSE.txt",
-    "NOTICE.txt",
-    "yarn.lock"
+    "dist/**/*"
   ],
   "devDependencies": {
     "@babel/core": "^7.8.3",
