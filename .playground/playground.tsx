@@ -17,13 +17,13 @@
  * under the License. */
 
 import React from 'react';
-import { example } from '../stories/treemap/6_custom_style';
+import { Example } from '../stories/treemap/6_custom_style';
 
 export class Playground extends React.Component {
   render() {
     return (
       <div className="testing">
-        <div className="chart">{example()}</div>
+        <div className="chart">{Example()}</div>
       </div>
     );
   }
