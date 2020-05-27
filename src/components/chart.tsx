@@ -33,9 +33,8 @@ import { chartStoreReducer, GlobalChartState } from '../state/chart_state';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_specs';
 import { onExternalPointerEvent } from '../state/actions/events';
 import { PointerEvent } from '../specs';
-import { BackgroundStyles } from '../utils/themes/theme';
-import { getChartThemeSelector } from '../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector } from '../state/selectors/get_internal_is_intialized';
+import { ChartBackground } from './chart_background';
 
 interface ChartProps {
   /** The type of rendered
@@ -49,16 +48,15 @@ interface ChartProps {
 
 interface ChartState {
   legendPosition: Position;
-  backgroundStyles?: BackgroundStyles;
 }
 
-function getContainerStyle(size: any, styles?: BackgroundStyles): CSSProperties {
-  return {
-    ...(styles && {
-      backgroundColor: styles.color,
-    }),
-    ...getChartSize(size),
-  };
+function getContainerStyle(size: any): CSSProperties {
+  if (size) {
+    return {
+      ...getChartSize(size),
+    };
+  }
+  return {};
 }
 
 export class Chart extends React.Component<ChartProps, ChartState> {
@@ -101,9 +99,6 @@ export class Chart extends React.Component<ChartProps, ChartState> {
       if (state.internalChartState) {
         state.internalChartState.eventCallbacks(state);
       }
-      this.setState({
-        backgroundStyles: getChartThemeSelector(state).background,
-      });
     });
   }
 
@@ -161,16 +156,18 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
   render() {
     const { size, className } = this.props;
-    const containerStyle = getContainerStyle(size, this.state.backgroundStyles);
+    const containerStyle = getContainerStyle(size);
     const horizontal = isHorizontalAxis(this.state.legendPosition);
     const chartClassNames = classNames('echChart', className, {
       'echChart--column': horizontal,
     });
+
     return (
       <Provider store={this.chartStore}>
-        <div style={containerStyle} className={chartClassNames} ref={this.chartContainerRef}>
+        <div className={chartClassNames} style={containerStyle} ref={this.chartContainerRef}>
           <ChartStatus />
           <ChartResizer />
+          <ChartBackground />
           <Legend />
           <SpecsParser>{this.props.children}</SpecsParser>
           <div className="echContainer">

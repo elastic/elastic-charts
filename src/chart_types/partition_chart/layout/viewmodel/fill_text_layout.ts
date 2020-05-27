@@ -313,24 +313,32 @@ export function getFillTextColor(
   sliceFillColor: string,
   containerBackgroundColor?: Color,
 ) {
-  // return variable
   let adjustedTextColor = textColor;
   const containerBackgroundColorFromUser =
     containerBackgroundColor !== undefined ? containerBackgroundColor : 'rgba(255, 255, 255, 0)';
-  const textShouldBeInvertedAndTextContrastIsNotSpecified = textInvertible && !textContrast;
+  const containerBackground = combineColors(sliceFillColor, containerBackgroundColorFromUser);
+  const formattedContainerBackground =
+    typeof containerBackground !== 'string' ? RGBATupleToString(containerBackground) : containerBackground;
+
+  const textShouldBeInvertedAndTextContrastIsFalse = textInvertible && !textContrast;
   const textShouldBeInvertedAndTextContrastIsSetToTrue = textInvertible && typeof textContrast !== 'number';
   const textContrastIsSetToANumberValue = typeof textContrast === 'number';
   const textShouldNotBeInvertedButTextContrastIsDefined = textContrast && !textInvertible;
+
   // change the contrast for the inverted slices
-  if (textShouldBeInvertedAndTextContrastIsNotSpecified || textShouldBeInvertedAndTextContrastIsSetToTrue) {
+  if (textShouldBeInvertedAndTextContrastIsFalse || textShouldBeInvertedAndTextContrastIsSetToTrue) {
     const backgroundIsDark = colorIsDark(combineColors(sliceFillColor, containerBackgroundColorFromUser));
     const specifiedTextColorIsDark = colorIsDark(textColor);
-    adjustedTextColor = getTextColorIfTextInvertible(backgroundIsDark, specifiedTextColorIsDark, textColor);
+    // @ts-ignore
+    adjustedTextColor = getTextColorIfTextInvertible(
+      backgroundIsDark,
+      specifiedTextColorIsDark,
+      textColor,
+      textContrast,
+      formattedContainerBackground,
+    );
     // if textContrast is a number then take that into account or if textInvertible is set to false
   } else if (textContrastIsSetToANumberValue || textShouldNotBeInvertedButTextContrastIsDefined) {
-    const containerBackground = combineColors(sliceFillColor, containerBackgroundColorFromUser);
-    const formattedContainerBackground =
-      typeof containerBackground !== 'string' ? RGBATupleToString(containerBackground) : containerBackground;
     return makeHighContrastColor(adjustedTextColor, formattedContainerBackground);
   }
   return adjustedTextColor;

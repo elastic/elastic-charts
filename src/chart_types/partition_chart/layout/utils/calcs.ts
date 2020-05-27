@@ -20,6 +20,7 @@ import { Ratio } from '../types/geometry_types';
 import { RgbTuple, RGBATupleToString, stringToRGB } from './color_library_wrappers';
 import { Color } from '../../../../utils/commons';
 import chroma from 'chroma-js';
+import { TextContrast } from '../types/config_types';
 
 /** @internal */
 export function hueInterpolator(colors: RgbTuple[]) {
@@ -74,7 +75,7 @@ export function makeHighContrastColor(foreground: Color, background: Color, rati
   const lightness = chroma(background).get('hsl.l');
   let highContrastTextColor = foreground;
   const isBackgroundDark = colorIsDark(background);
-  // determine whether white or black text is ideal contrast vs a grey that just passes 4.5 ratio
+  // determine whether white or black text is ideal contrast vs a grey that just passes the ratio
   if (isBackgroundDark && chroma.deltaE('black', foreground) === 0) {
     highContrastTextColor = '#fff';
   } else if (lightness > 0.5 && chroma.deltaE('white', foreground) === 0) {
@@ -82,7 +83,7 @@ export function makeHighContrastColor(foreground: Color, background: Color, rati
   }
   const precision = 1e8;
   let contrast = getContrast(highContrastTextColor, background);
-  // adjust the highContrastTextColor for shades of grey
+  // brighten and darken the text color if not meeting the ratio
   while (contrast < ratio) {
     if (isBackgroundDark) {
       highContrastTextColor = chroma(highContrastTextColor)
@@ -96,7 +97,7 @@ export function makeHighContrastColor(foreground: Color, background: Color, rati
     const scaledOldContrast = Math.round(contrast * precision) / precision;
     contrast = getContrast(highContrastTextColor, background);
     const scaledContrast = Math.round(contrast * precision) / precision;
-    // ideal contrast may not be possible in some cases
+    // catch if the ideal contrast may not be possible
     if (scaledOldContrast === scaledContrast) {
       break;
     }
@@ -129,14 +130,24 @@ export function getTextColorIfTextInvertible(
   specifiedTextColorIsDark: boolean,
   backgroundIsDark: boolean,
   textColor: Color,
+  textContrast: TextContrast,
+  backgroundColor: Color,
 ) {
   const inverseForContrast = specifiedTextColorIsDark === backgroundIsDark;
   const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(textColor);
-  return inverseForContrast
-    ? to === undefined
-      ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`
-      : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
-    : textColor;
+  if (!textContrast) {
+    return inverseForContrast
+      ? to === undefined
+        ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`
+        : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
+      : textColor;
+  } else if (textContrast === true) {
+    return inverseForContrast
+      ? to === undefined
+        ? makeHighContrastColor(`rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`, backgroundColor)
+        : makeHighContrastColor(`rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`, backgroundColor)
+      : makeHighContrastColor(textColor, backgroundColor);
+  }
 }
 
 /** @internal */
