@@ -25,7 +25,7 @@ import { Color } from '../../../../utils/commons';
 import { LinkLabelsViewModelSpec } from '../viewmodel/link_text_layout';
 import { VerticalAlignments } from '../viewmodel/viewmodel';
 
-/* @internal */
+/** @internal */
 export type LinkLabelVM = {
   linkLabels: PointTuples;
   translate: PointTuple;
@@ -37,7 +37,7 @@ export type LinkLabelVM = {
   verticalOffset: Distance;
 };
 
-/* @internal */
+/** @internal */
 export interface RowBox extends Font {
   text: string;
   width: Distance;
@@ -50,19 +50,19 @@ interface RowAnchor {
   rowAnchorY: Coordinate;
 }
 
-/* @internal */
+/** @internal */
 export interface RowSpace extends RowAnchor {
   maximumRowLength: Distance;
 }
 
-/* @internal */
+/** @internal */
 export interface TextRow extends RowAnchor {
   length: number;
   maximumLength: number;
   rowWords: Array<RowBox>;
 }
 
-/* @internal */
+/** @internal */
 export interface RowSet {
   id: string;
   rows: Array<TextRow>;
@@ -74,22 +74,22 @@ export interface RowSet {
   container?: any;
 }
 
-/* @internal */
+/** @internal */
 export interface QuadViewModel extends ShapeTreeNode {
   strokeWidth: number;
   strokeStyle: string;
   fillColor: string;
 }
 
-/* @internal */
+/** @internal */
 export interface OutsideLinksViewModel {
   points: Array<PointTuple>;
 }
 
-/* @internal */
+/** @internal */
 export type PickFunction = (x: Pixels, y: Pixels) => Array<QuadViewModel>;
 
-/* @internal */
+/** @internal */
 export type ShapeViewModel = {
   config: Config;
   quadViewModel: QuadViewModel[];
@@ -110,7 +110,7 @@ const defaultFont: Font = {
   textOpacity: 1,
 };
 
-/* @internal */
+/** @internal */
 export const nullShapeViewModel = (specifiedConfig?: Config, diskCenter?: PointObject): ShapeViewModel => ({
   config: specifiedConfig || config,
   quadViewModel: [],

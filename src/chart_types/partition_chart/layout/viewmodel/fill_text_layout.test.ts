@@ -16,8 +16,7 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { getRectangleRowGeometry } from './fill_text_layout';
-import { getTextColor } from '../utils/__mocks__/fill_text_layout';
+import { getRectangleRowGeometry, getFillTextColor } from './fill_text_layout';
 
 describe('Test that getRectangleRowGeometry works with:', () => {
   const container = { x0: 0, y0: 0, x1: 200, y1: 100 };
@@ -281,7 +280,7 @@ describe('Test getTextColor function', () => {
     const fillColor = 'rgba(55, 126, 184, 0.7)';
     const containerBackgroundColor = 'white';
     const expectedAdjustedTextColor = 'black';
-    expect(getTextColor(textColor, textInvertible, textContrast, fillColor, containerBackgroundColor)).toEqual(
+    expect(getFillTextColor(textColor, textInvertible, textContrast, fillColor, containerBackgroundColor)).toEqual(
       expectedAdjustedTextColor,
     );
   });
@@ -292,7 +291,7 @@ describe('Test getTextColor function', () => {
     const fillColor = 'rgba(55, 126, 184, 0.7)';
     const containerBackgroundColor = 'white';
     const expectedAdjustedTextColor = 'black';
-    expect(getTextColor(textColor, textInvertible, textContrast, fillColor, containerBackgroundColor)).toEqual(
+    expect(getFillTextColor(textColor, textInvertible, textContrast, fillColor, containerBackgroundColor)).toEqual(
       expectedAdjustedTextColor,
     );
   });
