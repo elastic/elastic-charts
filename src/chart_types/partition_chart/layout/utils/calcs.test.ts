@@ -53,6 +53,15 @@ describe('calcs', () => {
       const result = '#000'; // black
       expect(result).toEqual(makeHighContrastColor(foreground, background));
     });
+    it('should switch to black text if background color is in rgba() format', () => {
+      const containerBackground = 'white';
+      const background = 'rgba(120, 116, 178, 0.7)';
+      const resultForCombined = 'rgba(161, 158, 201, 1)';
+      expect(combineColors(background, containerBackground)).toBe(resultForCombined);
+      const foreground = 'white';
+      const resultForContrastedText = '#000'; //switches to black text
+      expect(makeHighContrastColor(foreground, resultForCombined)).toBe(resultForContrastedText);
+    });
   });
   describe('test the combineColors function', () => {
     it('should return correct RGBA with opacity greater than 0.7', () => {

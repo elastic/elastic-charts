@@ -17,4 +17,4 @@
  * under the License. */
 const module = jest.requireActual('../../viewmodel/fill_text_layout.ts');
 
-export const getTextColor = jest.fn(module.getTextColor);
+export const getTextColorIfTextInvertible = jest.fn(module.getTextColorIfTextInvertible);

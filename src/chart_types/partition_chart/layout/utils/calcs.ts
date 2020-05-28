@@ -151,19 +151,6 @@ export function getTextColorIfTextInvertible(
 }
 
 /** @internal */
-export function getTextColor(shapeFillColor: Color, textColor: Color, textInvertible: boolean) {
-  const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(textColor);
-  const backgroundIsDark = colorIsDark(shapeFillColor);
-  const specifiedTextColorIsDark = colorIsDark(textColor);
-  const inverseForContrast = textInvertible && specifiedTextColorIsDark === backgroundIsDark;
-  return inverseForContrast
-    ? to === undefined
-      ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`
-      : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
-    : textColor;
-}
-
-/** @internal */
 export function integerSnap(n: number) {
   return Math.floor(n);
 }
