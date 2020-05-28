@@ -406,7 +406,6 @@ function fill<C>(
         layer.fillLabel,
         layer.shape,
       );
-
       const fillTextColor = getFillTextColor(
         textColor,
         textInvertible,

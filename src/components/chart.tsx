@@ -164,8 +164,8 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
     return (
       <Provider store={this.chartStore}>
-        <ChartBackground />
         <div className={chartClassNames} style={containerStyle} ref={this.chartContainerRef}>
+          <ChartBackground />
           <ChartStatus />
           <ChartResizer />
           <Legend />
