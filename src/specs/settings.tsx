@@ -168,7 +168,7 @@ export interface TooltipValue {
 }
 
 /**
- * A value formatter of a {@link (TooltipValue:type) | TooltipValue}
+ * A value formatter of a {@link TooltipValue}
  * @public
  */
 export type TooltipValueFormatter = (data: TooltipValue) => JSX.Element | string;

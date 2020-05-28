@@ -931,9 +931,6 @@ export const PartitionLayout: Readonly<{
 // @public (undocumented)
 export type PartitionLayout = $Values<typeof PartitionLayout>;
 
-// Warning: (ae-missing-release-tag) "Placement" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-// Warning: (ae-missing-release-tag) "Placement" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export const Placement: Readonly<{
     Top: "top";
@@ -953,7 +950,7 @@ export const Placement: Readonly<{
     AutoEnd: "auto-end";
 }>;
 
-// @public (undocumented)
+// @public
 export type Placement = $Values<typeof Placement>;
 
 // Warning: (ae-missing-release-tag) "PointerEvent" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)

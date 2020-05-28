@@ -20,6 +20,7 @@ import { $Values } from 'utility-types';
 
 /**
  * Placement used in positioning tooltip
+ * @public
  */
 export const Placement = Object.freeze({
   Top: 'top' as 'top',
@@ -38,6 +39,11 @@ export const Placement = Object.freeze({
   AutoStart: 'auto-start' as 'auto-start',
   AutoEnd: 'auto-end' as 'auto-end',
 });
+
+/**
+ * {@inheritDoc (Placement:variable)}
+ * @public
+ */
 export type Placement = $Values<typeof Placement>;
 
 /** @internal */
