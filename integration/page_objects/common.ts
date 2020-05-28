@@ -18,13 +18,17 @@
 
 import Url from 'url';
 
-import { JEST_TIMEOUT, toMatchImageSnapshot } from '../jest_env_setup';
+import { toMatchImageSnapshot } from '../jest_env_setup';
 // @ts-ignore
 import defaults from '../defaults';
 
 const port = process.env.PORT || defaults.PORT;
 const host = process.env.HOST || defaults.HOST;
 const baseUrl = `http://${host}:${port}/iframe.html`;
+
+// Use to log console statements from within the page.evaluate blocks
+// @ts-ignore
+// page.on('console', (msg) => (msg._type === 'log' ? console.log('PAGE LOG:', msg._text) : null)); // eslint-disable-line no-console
 
 expect.extend({ toMatchImageSnapshot });
 
@@ -89,13 +93,27 @@ function getCursorPosition(
 interface ScreenshotDOMElementOptions {
   padding?: number;
   path?: string;
+  /**
+   * Screenshot selector override. Used to select beyond set element.
+   */
+  hiddenSelectors?: string[];
+  /**
+   * Pauses just before taking screenshot to debug dom
+   *
+   * To continue:
+   *  - resume script execution in dev tools
+   *  - press enter in the terminal running the jest tests
+   *
+   * **Only triggered when `process.env.DEBUG` is true**
+   */
+  debug?: boolean;
 }
 
 type ScreenshotElementAtUrlOptions = ScreenshotDOMElementOptions & {
   /**
    * timeout for waiting on element to appear in DOM
    *
-   * @default JEST_TIMEOUT
+   * @default 10000
    */
   timeout?: number;
   /**
@@ -110,6 +128,10 @@ type ScreenshotElementAtUrlOptions = ScreenshotDOMElementOptions & {
    * Delay to take screenshot after element is visiable
    */
   delay?: number;
+  /**
+   * Screenshot selector override. Used to select beyond set element.
+   */
+  screenshotSelector?: string;
 };
 
 class CommonPage {
@@ -128,22 +150,27 @@ class CommonPage {
   }
 
   /**
+   * Toggle element visibility
+   * @param selector
+   */
+  async toggleElementVisibility(selector: string) {
+    await page.$$eval(selector, (elements) => {
+      elements.forEach((element) => {
+        element.classList.toggle('invisible');
+      });
+    });
+  }
+
+  /**
    * Get getBoundingClientRect of selected element
    *
    * @param selector
    */
   async getBoundingClientRect(selector: string) {
-    return await page.evaluate((selector) => {
-      const element = document.querySelector(selector);
-
-      if (!element) {
-        throw Error(`Could not find element that matches selector: ${selector}.`);
-      }
-
+    return page.$eval(selector, (element) => {
       const { x, y, width, height } = element.getBoundingClientRect();
-
       return { left: x, top: y, width, height, id: element.id };
-    }, selector);
+    });
   }
 
   /**
@@ -152,12 +179,20 @@ class CommonPage {
    * @param selector
    * @param options
    */
-  async screenshotDOMElement(selector: string, options?: ScreenshotDOMElementOptions) {
+  async screenshotDOMElement(selector: string, options?: ScreenshotDOMElementOptions): Promise<Buffer> {
     const padding: number = options && options.padding ? options.padding : 0;
     const path: string | undefined = options && options.path ? options.path : undefined;
     const rect = await this.getBoundingClientRect(selector);
 
-    return page.screenshot({
+    if (options?.hiddenSelectors) {
+      await Promise.all(options.hiddenSelectors.map(this.toggleElementVisibility));
+    }
+
+    if (options?.debug && process.env.DEBUG === 'true') {
+      await jestPuppeteer.debug();
+    }
+
+    const buffer = await page.screenshot({
       path,
       clip: {
         x: rect.left - padding,
@@ -166,6 +201,12 @@ class CommonPage {
         height: rect.height + padding * 2,
       },
     });
+
+    if (options?.hiddenSelectors) {
+      await Promise.all(options.hiddenSelectors.map(this.toggleElementVisibility));
+    }
+
+    return buffer;
   }
 
   /**
@@ -253,7 +294,7 @@ class CommonPage {
         await page.waitFor(options.delay);
       }
 
-      const element = await this.screenshotDOMElement(selector, options);
+      const element = await this.screenshotDOMElement(options?.screenshotSelector ?? selector, options);
 
       if (!element) {
         throw new Error(`Error: Unable to find element\n\n\t${url}`);
@@ -340,7 +381,7 @@ class CommonPage {
    * @param {string} [waitSelector] the DOM selector to wait for, default to '.echChartStatus[data-ech-render-complete=true]'
    * @param {number} [timeout] - the timeout for the operation, default to 10000ms
    */
-  async waitForElement(waitSelector: string, timeout = JEST_TIMEOUT) {
+  async waitForElement(waitSelector: string, timeout = 10000) {
     await page.waitForSelector(waitSelector, { timeout });
   }
 }
