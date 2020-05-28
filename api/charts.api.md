@@ -404,6 +404,9 @@ export const CurveType: Readonly<{
 // @public (undocumented)
 export type CurveType = $Values<typeof CurveType>;
 
+// @public
+export type CustomTooltip = ComponentType<TooltipInfo>;
+
 // Warning: (ae-missing-release-tag) "DARK_THEME" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -494,14 +497,10 @@ export const DEFAULT_MISSING_COLOR = "red";
 // @public (undocumented)
 export const DEFAULT_SETTINGS_SPEC: SettingsSpec;
 
-// Warning: (ae-missing-release-tag) "DEFAULT_TOOLTIP_SNAP" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export const DEFAULT_TOOLTIP_SNAP = true;
 
-// Warning: (ae-missing-release-tag) "DEFAULT_TOOLTIP_TYPE" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export const DEFAULT_TOOLTIP_TYPE: "vertical";
 
 // Warning: (ae-missing-release-tag) "DefaultSettingsProps" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -1322,7 +1321,6 @@ export interface SettingsSpec extends Spec {
     showLegend: boolean;
     showLegendExtra: boolean;
     theme?: PartialTheme | PartialTheme[];
-    // (undocumented)
     tooltip: TooltipSettings;
     // Warning: (ae-forgotten-export) The symbol "Domain" needs to be exported by the entry point index.d.ts
     //
@@ -1455,33 +1453,28 @@ export type TickStyle = StrokeStyle & Visible;
 // @public (undocumented)
 export function timeFormatter(format: string): TickFormatter;
 
-// Warning: (ae-missing-release-tag) "TooltipProps" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
+export interface TooltipInfo {
+    header: TooltipValue | null;
+    values: TooltipValue[];
+}
+
+// @public
 export interface TooltipProps {
     boundary?: HTMLElement | 'chart';
-    // Warning: (ae-forgotten-export) The symbol "CustomTooltip" needs to be exported by the entry point index.d.ts
     customTooltip?: CustomTooltip;
     fallbackPlacements?: Placement[];
-    // (undocumented)
     headerFormatter?: TooltipValueFormatter;
     placement?: Placement;
-    // (undocumented)
     snap?: boolean;
-    // (undocumented)
     type?: TooltipType;
-    // (undocumented)
+    // @alpha
     unit?: string;
 }
 
-// Warning: (ae-missing-release-tag) "TooltipSettings" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export type TooltipSettings = TooltipType | TooltipProps;
 
-// Warning: (ae-missing-release-tag) "TooltipType" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-// Warning: (ae-missing-release-tag) "TooltipType" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export const TooltipType: Readonly<{
     VerticalCursor: "vertical";
@@ -1490,12 +1483,10 @@ export const TooltipType: Readonly<{
     None: "none";
 }>;
 
-// @public (undocumented)
+// @public
 export type TooltipType = $Values<typeof TooltipType>;
 
-// Warning: (ae-missing-release-tag) "TooltipValue" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface TooltipValue {
     color: Color;
     isHighlighted: boolean;
@@ -1507,9 +1498,7 @@ export interface TooltipValue {
     valueAccessor?: Accessor;
 }
 
-// Warning: (ae-missing-release-tag) "TooltipValueFormatter" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type TooltipValueFormatter = (data: TooltipValue) => JSX.Element | string;
 
 // @public

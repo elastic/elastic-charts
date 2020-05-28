@@ -43,6 +43,7 @@ export { Layer as PartitionLayer } from './chart_types/partition_chart/specs/ind
 export { Goal } from './chart_types/goal_chart/specs/index';
 export { AccessorFn, IndexedAccessorFn, UnaryAccessorFn } from './utils/accessor';
 export { SpecTypes } from './specs/settings';
+export { CustomTooltip, TooltipInfo } from './components/tooltip/types';
 
 // scales
 export { ScaleType } from './scales';

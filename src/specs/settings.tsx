@@ -99,7 +99,10 @@ export interface PointerOutEvent extends BasePointerEvent {
 
 export type PointerEvent = PointerOverEvent | PointerOutEvent;
 
-/** The type of tooltip to use */
+/**
+ * This enums provides the available tooltip types
+ * @public
+ */
 export const TooltipType = Object.freeze({
   /** Vertical cursor parallel to x axis */
   VerticalCursor: 'vertical' as 'vertical',
@@ -111,6 +114,10 @@ export const TooltipType = Object.freeze({
   None: 'none' as 'none',
 });
 
+/**
+ * The TooltipType
+ * @public
+ */
 export type TooltipType = $Values<typeof TooltipType>;
 
 export const BrushAxis = Object.freeze({
@@ -121,6 +128,10 @@ export const BrushAxis = Object.freeze({
 
 export type BrushAxis = $Values<typeof BrushAxis>;
 
+/**
+ * This interface describe the properties of single value shown in the tooltip
+ * @public
+ */
 export interface TooltipValue {
   /**
    * The label of the tooltip value
@@ -156,11 +167,28 @@ export interface TooltipValue {
   valueAccessor?: Accessor;
 }
 
+/**
+ * A value formatter of a {@link (TooltipValue:type) | TooltipValue}
+ * @public
+ */
 export type TooltipValueFormatter = (data: TooltipValue) => JSX.Element | string;
 
+/**
+ * The advanced configuration for the tooltip
+ * @public
+ */
 export interface TooltipProps {
+  /**
+   * The {@link (TooltipType:type) | TooltipType} of the tooltip
+   */
   type?: TooltipType;
+  /**
+   * Whenever the tooltip needs to snap to the x/band position or not
+   */
   snap?: boolean;
+  /**
+   * A {@link TooltipValueFormatter} to format the header value
+   */
   headerFormatter?: TooltipValueFormatter;
   /**
    * Preferred placement of tooltip relative to anchor.
@@ -183,6 +211,11 @@ export interface TooltipProps {
    * @defaultValue parent scroll container
    */
   boundary?: HTMLElement | 'chart';
+  /**
+   * Unit for event (i.e. `time`, `feet`, `count`, etc.).
+   * Not currently used/implemented
+   * @alpha
+   */
   unit?: string;
   /**
    * Render custom tooltip given header and values
@@ -192,6 +225,7 @@ export interface TooltipProps {
 
 /**
  * Either a TooltipType or an object with configuration of type, snap, and/or headerFormatter
+ * @public
  */
 export type TooltipSettings = TooltipType | TooltipProps;
 
@@ -246,6 +280,9 @@ export interface SettingsSpec extends Spec {
   rotation: Rotation;
   animateData: boolean;
   showLegend: boolean;
+  /**
+   * The tooltip configuration forr the chart {@link TooltipSettings}
+   */
   tooltip: TooltipSettings;
   debug: boolean;
   legendPosition: Position;
@@ -314,7 +351,18 @@ export type DefaultSettingsProps =
   | 'brushAxis'
   | 'minBrushDelta';
 
+/**
+ * Default value for the tooltip type
+ * @defaultValue `vertical` {@link (TooltipType:type) | TooltipType.VerticalCursor}
+ * @public
+ */
 export const DEFAULT_TOOLTIP_TYPE = TooltipType.VerticalCursor;
+
+/**
+ * Default value for the tooltip snap
+ * @defaultValue `true`
+ * @public
+ */
 export const DEFAULT_TOOLTIP_SNAP = true;
 
 export const SpecTypes = Object.freeze({
