@@ -21,10 +21,9 @@ import { mocks } from '../../src/mocks/hierarchical/index';
 import { config } from '../../src/chart_types/partition_chart/layout/config/config';
 import React from 'react';
 import { countryLookup, indexInterpolatedFillColor, interpolatorCET2s } from '../utils/utils';
-
 import { color } from '@storybook/addon-knobs';
 
-export const example = () => {
+export const Example = () => {
   const partialCustomTheme = {
     background: {
       color: color('Change background container color', '#1c1c24'),

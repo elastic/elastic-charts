@@ -92,7 +92,6 @@ export class Playground extends React.Component<{}, PlaygroundState> {
       .split(',');
     return `${r.trim()}, ${g.trim()}, ${b.trim()}, ${opacity})`;
   };
-
   render() {
     const { backgroundColor, foregroundColor, textColor, value, opacityColor } = this.state;
     const combinedColors = combineColors(foregroundColor, backgroundColor);

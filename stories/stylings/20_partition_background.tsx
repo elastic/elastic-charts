@@ -30,7 +30,7 @@ import {
 } from '../utils/utils';
 import { color, boolean } from '@storybook/addon-knobs';
 
-export const example = () => {
+export const Example = () => {
   const partialColorTheme: PartialTheme = {
     background: {
       color: color('Color of the background container', `rgba(${255}, ${255}, ${255}, ${1})`),

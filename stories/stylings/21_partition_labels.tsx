@@ -23,7 +23,7 @@ import React from 'react';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 import { color } from '@storybook/addon-knobs';
 
-export const example = () => {
+export const Example = () => {
   const partialCustomTheme = {
     background: {
       color: color('Change background container color', '#1c1c24'),
