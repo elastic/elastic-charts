@@ -37,6 +37,7 @@ export const Example = () => {
     },
   };
   const invertTextColors = boolean('invert colors for lightness/darkness', true);
+  const toggleTextContrast = boolean('set text contrast to true or false', true);
   return (
     <Chart className="story-chart">
       <Settings theme={partialColorTheme} />
@@ -85,7 +86,7 @@ export const Example = () => {
             valueFormatter: (d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`,
             fontStyle: 'italic',
             textInvertible: invertTextColors,
-            textContrast: false,
+            textContrast: toggleTextContrast,
             fontWeight: 900,
             valueFont: {
               fontFamily: 'Menlo',

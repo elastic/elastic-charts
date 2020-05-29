@@ -141,12 +141,18 @@ export function getTextColorIfTextInvertible(
         ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`
         : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
       : textColor;
-  } else if (textContrast === true) {
+  } else if (textContrast === true && typeof textContrast !== 'number') {
     return inverseForContrast
       ? to === undefined
         ? makeHighContrastColor(`rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`, backgroundColor)
         : makeHighContrastColor(`rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`, backgroundColor)
       : makeHighContrastColor(textColor, backgroundColor);
+  } else if (typeof textContrast === 'number') {
+    return inverseForContrast
+      ? to === undefined
+        ? makeHighContrastColor(`rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`, backgroundColor, textContrast)
+        : makeHighContrastColor(`rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`, backgroundColor, textContrast)
+      : makeHighContrastColor(textColor, backgroundColor, textContrast);
   }
 }
 

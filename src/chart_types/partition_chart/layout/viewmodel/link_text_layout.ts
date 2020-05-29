@@ -118,8 +118,6 @@ export function linkTextLayout(
       const labelText = cutToLength(rawText, maxTextLength);
       const valueText = valueFormatter(valueGetter(node));
 
-      // const { width, emHeightAscent, emHeightDescent } = measure(linkLabel.fontSize, [{ ...labelFontSpec, text }])[0];
-      // const { width: valueWidth } = measure(linkLabel.fontSize, [{ ...valueFontSpec, text: valueText }])[0];
       const labelFontSpec: Font = {
         fontStyle: 'normal',
         fontVariant: 'normal',
@@ -172,7 +170,7 @@ export function linkTextLayout(
         valueFontSpec,
       };
     })
-    .filter((l: LinkLabelVM) => l.text !== ''); // cull linked labels whose text was truncated to nothing;
+    .filter(({ text }) => text !== ''); // cull linked labels whose text was truncated to nothing;
   return { linkLabels, valueFontSpec, labelFontSpec, strokeColor };
 
   function fitText(measure: TextMeasure, desiredText: string, allottedWidth: number, fontSize: number, box: Box) {
