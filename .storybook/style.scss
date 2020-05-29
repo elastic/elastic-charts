@@ -32,3 +32,15 @@
 .Pane.vertical.Pane1 {
   background: red;
 }
+
+
+html {
+  background-color: white;
+}
+html body {
+  visibility: hidden;
+}
+
+#story-root,#echTooltipPortalMainTooltip, #echTooltipPortalAnnotationTooltip {
+  visibility: visible;
+}

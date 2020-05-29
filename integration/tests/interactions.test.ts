@@ -43,7 +43,7 @@ describe('Interactions', () => {
                 await common.expectChartWithMouseAtUrlToMatchScreenshot(
                   url,
                   { left, top },
-                  { screenshotSelector: 'body', hiddenSelectors: ['#root > div:first-of-type'] },
+                  { screenshotSelector: 'body' },
                 );
               });
 
@@ -51,7 +51,7 @@ describe('Interactions', () => {
                 await common.expectChartWithMouseAtUrlToMatchScreenshot(
                   url,
                   { right, top },
-                  { screenshotSelector: 'body', hiddenSelectors: ['#root > div:first-of-type'] },
+                  { screenshotSelector: 'body' },
                 );
               });
 
@@ -59,7 +59,7 @@ describe('Interactions', () => {
                 await common.expectChartWithMouseAtUrlToMatchScreenshot(
                   url,
                   { left, bottom },
-                  { screenshotSelector: 'body', hiddenSelectors: ['#root > div:first-of-type'] },
+                  { screenshotSelector: 'body' },
                 );
               });
 
@@ -67,7 +67,7 @@ describe('Interactions', () => {
                 await common.expectChartWithMouseAtUrlToMatchScreenshot(
                   url,
                   { right, bottom },
-                  { screenshotSelector: 'body', hiddenSelectors: ['#root > div:first-of-type'] },
+                  { screenshotSelector: 'body' },
                 );
               });
             },
@@ -82,28 +82,28 @@ describe('Interactions', () => {
           await common.expectChartWithMouseAtUrlToMatchScreenshot(
             'http://localhost:9001/?path=/story/bar-chart--test-tooltip-and-rotation',
             { left: 50, top: 50 },
-            { screenshotSelector: 'body', hiddenSelectors: ['#root > div:first-of-type'] },
+            { screenshotSelector: 'body' },
           );
         });
         it('shows tooltip on last bar group - top', async () => {
           await common.expectChartWithMouseAtUrlToMatchScreenshot(
             'http://localhost:9001/?path=/story/bar-chart--test-tooltip-and-rotation',
             { right: 50, top: 50 },
-            { screenshotSelector: 'body', hiddenSelectors: ['#root > div:first-of-type'] },
+            { screenshotSelector: 'body' },
           );
         });
         it('shows tooltip on first bar group - bottom', async () => {
           await common.expectChartWithMouseAtUrlToMatchScreenshot(
             'http://localhost:9001/?path=/story/bar-chart--test-tooltip-and-rotation',
             { left: 50, bottom: 50 },
-            { screenshotSelector: 'body', hiddenSelectors: ['#root > div:first-of-type'] },
+            { screenshotSelector: 'body' },
           );
         });
         it('shows tooltip on last bar group - bottom', async () => {
           await common.expectChartWithMouseAtUrlToMatchScreenshot(
             'http://localhost:9001/?path=/story/bar-chart--test-tooltip-and-rotation',
             { left: 50, bottom: 50 },
-            { screenshotSelector: 'body', hiddenSelectors: ['#root > div:first-of-type'] },
+            { screenshotSelector: 'body' },
           );
         });
       });
@@ -113,28 +113,28 @@ describe('Interactions', () => {
           await common.expectChartWithMouseAtUrlToMatchScreenshot(
             'http://localhost:9001/?path=/story/bar-chart--test-tooltip-and-rotation&knob-chartRotation=90',
             { left: 50, top: 50 },
-            { screenshotSelector: 'body', hiddenSelectors: ['#root > div:first-of-type'] },
+            { screenshotSelector: 'body' },
           );
         });
         it('shows tooltip on last bar group - top', async () => {
           await common.expectChartWithMouseAtUrlToMatchScreenshot(
             'http://localhost:9001/?path=/story/bar-chart--test-tooltip-and-rotation&knob-chartRotation=90',
             { left: 50, top: 50 },
-            { screenshotSelector: 'body', hiddenSelectors: ['#root > div:first-of-type'] },
+            { screenshotSelector: 'body' },
           );
         });
         it('shows tooltip on first bar group - bottom', async () => {
           await common.expectChartWithMouseAtUrlToMatchScreenshot(
             'http://localhost:9001/?path=/story/bar-chart--test-tooltip-and-rotation&knob-chartRotation=90',
             { left: 50, bottom: 50 },
-            { screenshotSelector: 'body', hiddenSelectors: ['#root > div:first-of-type'] },
+            { screenshotSelector: 'body' },
           );
         });
         it('shows tooltip on last bar group - bottom', async () => {
           await common.expectChartWithMouseAtUrlToMatchScreenshot(
             'http://localhost:9001/?path=/story/bar-chart--test-tooltip-and-rotation&knob-chartRotation=90',
             { right: 50, bottom: 50 },
-            { screenshotSelector: 'body', hiddenSelectors: ['#root > div:first-of-type'] },
+            { screenshotSelector: 'body' },
           );
         });
       });
@@ -151,7 +151,7 @@ describe('Interactions', () => {
       await common.expectChartWithMouseAtUrlToMatchScreenshot(
         'http://localhost:9001/?path=/story/bar-chart--test-tooltip-and-rotation&knob-Custom Tooltip=true&knob-Show Legend=true',
         { left: 330, top: 40 },
-        { screenshotSelector: 'body', hiddenSelectors: ['#root > div:first-of-type'] },
+        { screenshotSelector: 'body' },
       );
     });
 
