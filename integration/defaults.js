@@ -19,5 +19,5 @@
 module.exports = {
   PORT: '9009',
   HOST: process.env.DEBUG === 'true' ? 'localhost' : 'host.docker.internal',
-  USE_LOCAL_STORYBOOK: false,
+  LOCAL_STORYBOOK_VRT: false,
 };

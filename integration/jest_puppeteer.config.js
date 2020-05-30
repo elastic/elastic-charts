@@ -22,7 +22,7 @@ const baseConfig = isDebug ? {} : getConfig();
 const defaults = require('./defaults');
 
 const port = process.env.PORT || defaults.PORT;
-const useLocalStorybook = process.env.USE_LOCAL_STORYBOOK || defaults.USE_LOCAL_STORYBOOK;
+const useLocalStorybook = process.env.LOCAL_STORYBOOK_VRT || defaults.LOCAL_STORYBOOK_VRT;
 
 const defaultViewport = {
   width: 800,

@@ -192,6 +192,11 @@ class CommonPage {
       await jestPuppeteer.debug();
     }
 
+    // activate peripheral visibility
+    page.evaluate(() => {
+      document.body.classList.add('echVisualTesting');
+    });
+
     const buffer = await page.screenshot({
       path,
       clip: {
