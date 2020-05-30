@@ -39,14 +39,35 @@ module.exports = {
     '@typescript-eslint/camelcase': 0,
 
     /**
+     *****************************************
      * Rules to consider adding/fixing later
+     *****************************************
      */
     'import/no-cycle': 0,
     '@typescript-eslint/no-unsafe-assignment': 0,
     '@typescript-eslint/no-unsafe-member-access': 0,
     '@typescript-eslint/no-unsafe-return': 0,
     '@typescript-eslint/explicit-module-boundary-types': 0,
+    '@typescript-eslint/restrict-template-expressions': 1,
+    '@typescript-eslint/restrict-plus-operands': 1,
+    '@typescript-eslint/no-unsafe-call': 1,
+    '@typescript-eslint/unbound-method': 1,
+    'unicorn/consistent-function-scoping': 1,
+    'unicorn/explicit-length-check': 1,
+    'no-use-before-define': 0,
+    'no-restricted-properties': 0, // need to find and filter desired options
+    'class-methods-use-this': 1,
     'unicorn/prefer-number-properties': 0,
+    'global-require': 1,
+    'import/no-dynamic-require': 1,
+    'no-shadow': 1,
+    'no-param-reassign': 1,
+    'react/no-array-index-key': 1,
+    'react/prefer-stateless-function': 1,
+    'jsx-a11y/no-static-element-interactions': 1,
+    'jsx-a11y/mouse-events-have-key-events': 1,
+    'jsx-a11y/click-events-have-key-events': 1,
+    eqeqeq: 1,
 
     /**
      * Standard rules
@@ -57,21 +78,22 @@ module.exports = {
     'comma-dangle': ['error', 'always-multiline'],
     'consistent-return': 0,
     'no-plusplus': 0,
+    'no-bitwise': 0,
+    'no-void': 0,
+    'no-restricted-globals': 0,
+    'no-case-declarations': 0,
     'no-return-await': 0,
+    'max-classes-per-file': 0,
+    'no-continue': 0,
+    'no-lonely-if': 0,
+    'no-return-assign': 0,
     'no-underscore-dangle': 0,
-    'multiline-comment-style': ['error', 'starred-block'],
     'no-unused-vars': [
       'error',
       {
         vars: 'all',
         args: 'after-used',
         ignoreRestSiblings: true,
-      },
-    ],
-    'unicorn/filename-case': [
-      'error',
-      {
-        case: 'snakeCase',
       },
     ],
     'sort-keys': 0,
@@ -91,6 +113,7 @@ module.exports = {
     '@typescript-eslint/no-non-null-assertion': 0,
     '@typescript-eslint/ban-ts-ignore': 0,
     '@typescript-eslint/no-inferrable-types': 0,
+    '@typescript-eslint/ban-ts-comment': 1,
     '@typescript-eslint/no-unused-vars': [
       'error',
       {
@@ -100,8 +123,8 @@ module.exports = {
       },
     ],
     '@typescript-eslint/no-use-before-define': [
-      'error',
-      { functions: false, classes: true, variables: true, typedefs: true },
+      'warn',
+      { functions: false, classes: true, variables: true, typedefs: false },
     ],
 
     /*
@@ -120,7 +143,6 @@ module.exports = {
     ],
     // https://basarat.gitbooks.io/typescript/docs/tips/defaultIsBad.html
     'import/prefer-default-export': 0,
-    'import/no-default-export': 'error',
     // Limit usage in development directories
     'import/no-extraneous-dependencies': 0,
 
@@ -133,12 +155,15 @@ module.exports = {
     'react/destructuring-assignment': 0,
     // No jsx extension: https://github.com/facebook/create-react-app/issues/87#issuecomment-234627904
     'react/jsx-filename-extension': 0,
+    'react/jsx-props-no-spreading': 0,
+    'react/static-property-placement': 0,
+    'react/state-in-constructor': 0,
 
     /*
-     * react-hooks plugin
+     * jest plugin
      */
-    'react-hooks/rules-of-hooks': 'error',
-    'react-hooks/exhaustive-deps': 'warn',
+    'jest/no-standalone-expect': 0, // using custom expect functions
+    'jest/no-disabled-tests': 0,
 
     /*
      * unicorn plugin
@@ -146,6 +171,15 @@ module.exports = {
     'unicorn/prevent-abbreviations': 0, // Common abbreviations are known and readable
     'unicorn/no-null': 0,
     'unicorn/no-fn-reference-in-iterator': 0,
+    'unicorn/no-nested-ternary': 1,
+    'unicorn/no-reduce': 0,
+    'unicorn/no-useless-undefined': 0,
+    'unicorn/filename-case': [
+      'error',
+      {
+        case: 'snakeCase',
+      },
+    ],
 
     /*
      * file-header plugin
@@ -210,7 +244,7 @@ module.exports = {
         'import/no-extraneous-dependencies': [
           'error',
           {
-            devDependencies: ['**/*.test.ts'],
+            devDependencies: ['**/*.test.ts?(x)', 'src/mocks/**/*.ts?(x)'],
           },
         ],
       },
@@ -233,10 +267,33 @@ module.exports = {
       },
     },
     {
-      files: ['stories/**/*.ts?(x)'],
+      files: ['stories/**/*.ts?(x)', 'docs/**/*.ts?(x)'],
       rules: {
-        'import/no-default-export': 0,
         '@typescript-eslint/no-unsafe-call': 0,
+      },
+    },
+    {
+      files: ['integration/**/*.ts?(x)'],
+      rules: {
+        'jest/expect-expect': [
+          'error',
+          {
+            assertFunctionNames: [
+              'expect',
+              'common.expectChartAtUrlToMatchScreenshot',
+              'common.expectElementAtUrlToMatchScreenshot',
+              'common.expectChartAtUrlToMatchScreenshot',
+              'common.expectChartWithMouseAtUrlToMatchScreenshot',
+              'common.expectChartWithDragAtUrlToMatchScreenshot',
+            ],
+          },
+        ],
+      },
+    },
+    {
+      files: ['*.test.ts?(x)'],
+      rules: {
+        'unicorn/error-message': 0,
       },
     },
     {
