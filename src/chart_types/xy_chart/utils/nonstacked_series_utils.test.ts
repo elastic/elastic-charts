@@ -14,15 +14,16 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
-import { RawDataSeries } from './series';
-import { ScaleType } from '../../../scales';
 import { MockRawDataSeries, MockDataSeries } from '../../../mocks';
 import { MockSeriesSpecs, MockSeriesSpec } from '../../../mocks/specs';
+import { ScaleType } from '../../../scales';
 
 import * as fitFunctionModule from './fit_function';
 import * as testModule from './nonstacked_series_utils';
+import { RawDataSeries } from './series';
 import { Fit } from './specs';
 
 const EMPTY_DATA_SET: RawDataSeries[] = [
@@ -372,7 +373,7 @@ describe('Non-Stacked Series Utils', () => {
         mark: null,
       });
     });
-    test('format data with nulls', () => {
+    test('format data with nulls - fit functions', () => {
       const formattedData = testModule.formatNonStackedDataSeriesValues(
         WITH_NULL_DATASET_WY0,
         false,

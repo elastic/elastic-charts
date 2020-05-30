@@ -14,28 +14,36 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import { BBox, BBoxCalculator } from './bbox_calculator';
 
 export class SvgTextBBoxCalculator implements BBoxCalculator {
   svgElem: SVGSVGElement;
+
   textElem: SVGTextElement;
+
   attachedRoot: HTMLElement;
+
   textNode: Text;
-  // TODO specify styles for text
-  // TODO specify how to hide the svg from the current dom view
-  // like moving it a -9999999px
+
+  /*
+   * TODO specify styles for text
+   * TODO specify how to hide the svg from the current dom view
+   * like moving it a -9999999px
+   */
   constructor(rootElement?: HTMLElement) {
     const xmlns = 'http://www.w3.org/2000/svg';
     this.svgElem = document.createElementNS(xmlns, 'svg');
     this.textElem = document.createElementNS(xmlns, 'text');
-    this.svgElem.appendChild(this.textElem);
+    this.svgElem.append(this.textElem);
     this.textNode = document.createTextNode('');
-    this.textElem.appendChild(this.textNode);
+    this.textElem.append(this.textNode);
     this.attachedRoot = rootElement || document.documentElement;
-    this.attachedRoot.appendChild(this.svgElem);
+    this.attachedRoot.append(this.svgElem);
   }
+
   compute(text: string): BBox {
     this.textNode.textContent = text;
     const rect = this.textElem.getBoundingClientRect();
@@ -44,7 +52,8 @@ export class SvgTextBBoxCalculator implements BBoxCalculator {
       height: rect.height,
     };
   }
+
   destroy(): void {
-    this.attachedRoot.removeChild(this.svgElem);
+    this.svgElem.remove();
   }
 }

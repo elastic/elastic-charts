@@ -14,7 +14,8 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import { Rotation } from '../../../utils/commons';
 import { Dimensions } from '../../../utils/dimensions';
@@ -37,6 +38,7 @@ export function getOrientedXPosition(xPos: number, yPos: number, chartRotation: 
     case 90:
       return yPos;
     case -90:
+    default:
       return chartDimension.height - yPos;
   }
 }
@@ -51,6 +53,7 @@ export function getOrientedYPosition(xPos: number, yPos: number, chartRotation: 
     case -90:
       return xPos;
     case 90:
+    default:
       return chartDimension.width - xPos;
   }
 }

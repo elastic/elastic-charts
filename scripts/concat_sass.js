@@ -14,10 +14,10 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
-
-/* eslint-disable @typescript-eslint/no-var-requires */
+ * under the License.
+ */
 const fs = require('fs');
+
 const sassGraph = require('sass-graph');
 
 const graph = sassGraph.parseFile('./src/components/_index.scss');

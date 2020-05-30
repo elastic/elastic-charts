@@ -14,11 +14,13 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
-import { Ratio } from '../types/geometry_types';
-import { RgbTuple, stringToRGB } from './d3_utils';
 import { Color } from '../../../../utils/commons';
+import { Ratio } from '../types/geometry_types';
+
+import { RgbTuple, stringToRGB } from './d3_utils';
 
 /** @internal */
 export function hueInterpolator(colors: RgbTuple[]) {
@@ -31,20 +33,20 @@ export function hueInterpolator(colors: RgbTuple[]) {
 
 /** @internal */
 export function addOpacity(hexColorString: string, opacity: Ratio) {
-  // this is a super imperfect multiplicative alpha blender that assumes a "#rrggbb" or "#rrggbbaa" hexColorString
-  // todo roll some proper utility that can handle "rgb(...)", "rgba(...)", "red", {r, g, b} etc.
+  /*
+   * this is a super imperfect multiplicative alpha blender that assumes a "#rrggbb" or "#rrggbbaa" hexColorString
+   * todo roll some proper utility that can handle "rgb(...)", "rgba(...)", "red", {r, g, b} etc.
+   */
   return opacity === 1
     ? hexColorString
     : hexColorString.slice(0, 7) +
         (hexColorString.slice(7).length === 0 || parseInt(hexColorString.slice(7, 2), 16) === 255
-          ? `00${Math.round(opacity * 255).toString(16)}`.substr(-2) // color was of full opacity
-          : `00${Math.round((parseInt(hexColorString.slice(7, 2), 16) / 255) * opacity * 255).toString(16)}`.substr(
-              -2,
-            ));
+          ? `00${Math.round(opacity * 255).toString(16)}`.slice(-2) // color was of full opacity
+          : `00${Math.round((parseInt(hexColorString.slice(7, 2), 16) / 255) * opacity * 255).toString(16)}`.slice(-2));
 }
 
 /** @internal */
-export function arrayToLookup(keyFun: Function, array: Array<any>) {
+export function arrayToLookup(keyFun: (v: any) => any, array: Array<any>) {
   return Object.assign({}, ...array.map((d) => ({ [keyFun(d)]: d })));
 }
 

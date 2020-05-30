@@ -14,7 +14,8 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import { select, array } from '@storybook/addon-knobs';
 
@@ -25,7 +26,7 @@ export const numberSelect = <T extends number>(
   options: { [s: string]: T },
   value: T,
   groupId?: string,
-): T => (parseInt(select<T | string>(name, options, value, groupId) as string) as T) || value;
+): T => (parseInt(select<T | string>(name, options, value, groupId) as string, 10) as T) || value;
 
 export const getChartRotationKnob = () =>
   numberSelect<Rotation>(

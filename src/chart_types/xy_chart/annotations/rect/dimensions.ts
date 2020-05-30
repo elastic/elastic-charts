@@ -14,16 +14,18 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
-import { RectAnnotationDatum, RectAnnotationSpec } from '../../utils/specs';
-import { GroupId } from '../../../../utils/ids';
 import { Scale, ScaleBand, ScaleContinuous } from '../../../../scales';
-import { Point } from '../../../../utils/point';
-import { Bounds } from '../types';
-import { AnnotationRectProps } from './types';
 import { isBandScale, isContinuousScale } from '../../../../scales/types';
+import { GroupId } from '../../../../utils/ids';
+import { Point } from '../../../../utils/point';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
+import { RectAnnotationDatum, RectAnnotationSpec } from '../../utils/specs';
+import { Bounds } from '../types';
+
+import { AnnotationRectProps } from './types';
 
 /** @internal */
 export function isWithinRectBounds({ x, y }: Point, { startX, endX, startY, endY }: Bounds): boolean {
@@ -41,7 +43,7 @@ export function computeRectAnnotationDimensions(
   isHistogram: boolean = false,
 ): AnnotationRectProps[] | null {
   const { dataValues } = annotationSpec;
-  const groupId = annotationSpec.groupId;
+  const { groupId } = annotationSpec;
   const yScale = yScales.get(groupId);
   if (!yScale) {
     return null;
@@ -100,8 +102,10 @@ function scaleXonBandScale(
   x0: PrimitiveValue,
   x1: PrimitiveValue,
 ): { x: number; width: number } | null {
-  // the band scale return the start of the band, we need to cover
-  // also the inner padding of the bar
+  /*
+   * the band scale return the start of the band, we need to cover
+   * also the inner padding of the bar
+   */
   const padding = (xScale.step - xScale.originalBandwidth) / 2;
   let scaledX1 = xScale.scale(x1);
   let scaledX0 = xScale.scale(x0);

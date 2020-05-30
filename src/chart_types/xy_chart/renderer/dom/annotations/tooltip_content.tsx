@@ -14,12 +14,13 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import React, { useCallback } from 'react';
 
-import { AnnotationTooltipState } from '../../../annotations/types';
 import { AnnotationTypes } from '../../../../specs';
+import { AnnotationTooltipState } from '../../../annotations/types';
 
 /** @internal */
 export const TooltipContent = ({ annotationType, header, details, renderTooltip }: AnnotationTooltipState) => {

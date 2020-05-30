@@ -14,10 +14,19 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
+import { Scale } from '../../../scales';
+import { BBox, BBoxCalculator } from '../../../utils/bbox/bbox_calculator';
+import { Position, Rotation, getUniqueValues } from '../../../utils/commons';
+import { Dimensions, Margins } from '../../../utils/dimensions';
+import { AxisId } from '../../../utils/ids';
+import { AxisConfig, Theme } from '../../../utils/themes/theme';
 import { XDomain } from '../domains/x_domain';
 import { YDomain } from '../domains/y_domain';
+import { getSpecsById } from '../state/utils';
+
 import { computeXScale, computeYScales } from './scales';
 import {
   AxisSpec,
@@ -29,13 +38,6 @@ import {
   AxisStyle,
   TickFormatterOptions,
 } from './specs';
-import { Position, Rotation, getUniqueValues } from '../../../utils/commons';
-import { AxisConfig, Theme } from '../../../utils/themes/theme';
-import { Dimensions, Margins } from '../../../utils/dimensions';
-import { AxisId } from '../../../utils/ids';
-import { Scale } from '../../../scales';
-import { BBox, BBoxCalculator } from '../../../utils/bbox/bbox_calculator';
-import { getSpecsById } from '../state/utils';
 
 export type AxisLinePosition = [number, number, number, number];
 
@@ -165,17 +167,16 @@ export function getScaleForAxisSpec(
       return yScales.get(axisSpec.groupId)!;
     }
     return null;
-  } else {
-    return computeXScale({
-      xDomain,
-      totalBarsInCluster,
-      range,
-      barsPadding,
-      enableHistogramMode,
-      ticks: axisSpec.ticks,
-      integersOnly: axisSpec.integersOnly,
-    });
   }
+  return computeXScale({
+    xDomain,
+    totalBarsInCluster,
+    range,
+    barsPadding,
+    enableHistogramMode,
+    ticks: axisSpec.ticks,
+    integersOnly: axisSpec.integersOnly,
+  });
 }
 
 /** @internal */
@@ -369,6 +370,7 @@ export function getMinMaxRange(
       return getBottomTopAxisMinMaxRange(chartRotation, width);
     case Position.Left:
     case Position.Right:
+    default:
       return getLeftAxisMinMaxRange(chartRotation, height);
   }
 }
@@ -385,6 +387,7 @@ function getBottomTopAxisMinMaxRange(chartRotation: Rotation, width: number) {
       // dealing with y domain
       return { minRange: width, maxRange: 0 };
     case 180:
+    default:
       // dealing with x domain
       return { minRange: width, maxRange: 0 };
   }
@@ -401,6 +404,7 @@ function getLeftAxisMinMaxRange(chartRotation: Rotation, height: number) {
       // dealing with x domain
       return { minRange: height, maxRange: 0 };
     case 180:
+    default:
       // dealing with y domain
       return { minRange: 0, maxRange: height };
   }
@@ -491,21 +495,22 @@ export function getVisibleTicks(allTicks: AxisTick[], axisSpec: AxisSpec, axisDi
 
   let previousOccupiedSpace = 0;
   const visibleTicks = [];
-  for (let i = 0; i < allTicks.length; i++) {
-    const { position } = allTicks[i];
+  // eslint-disable-next-line no-restricted-syntax
+  for (const [i, allTick] of allTicks.entries()) {
+    const { position } = allTick;
 
     if (i === 0) {
-      visibleTicks.push(allTicks[i]);
+      visibleTicks.push(allTick);
       previousOccupiedSpace = position + requiredSpace;
     } else if (position - requiredSpace >= previousOccupiedSpace) {
-      visibleTicks.push(allTicks[i]);
+      visibleTicks.push(allTick);
       previousOccupiedSpace = position + requiredSpace;
     } else {
       // still add the tick but without a label
       if (showOverlappingTicks || showOverlappingLabels) {
         const overlappingTick = {
-          ...allTicks[i],
-          label: showOverlappingLabels ? allTicks[i].label : '',
+          ...allTick,
+          label: showOverlappingLabels ? allTick.label : '',
         };
         visibleTicks.push(overlappingTick);
       }
@@ -620,8 +625,10 @@ export function getAxisTicksPositions(
   axisDimensions.forEach((axisDim, id) => {
     const axisSpec = getSpecsById<AxisSpec>(axisSpecs, id);
 
-    // Consider refactoring this so this condition can be tested
-    // Given some of the values that get passed around, maybe re-write as a reduce instead of forEach?
+    /*
+     * Consider refactoring this so this condition can be tested
+     * Given some of the values that get passed around, maybe re-write as a reduce instead of forEach?
+     */
     if (!axisSpec) {
       return;
     }

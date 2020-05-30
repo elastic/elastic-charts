@@ -14,12 +14,13 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
-
-import React from 'react';
-import { Axis, BarSeries, Chart, niceTimeFormatter, Position, ScaleType, Settings } from '../../src/';
+ * under the License.
+ */
 
 import { button } from '@storybook/addon-knobs';
+import React from 'react';
+
+import { Axis, BarSeries, Chart, niceTimeFormatter, Position, ScaleType, Settings } from '../../src';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 
@@ -51,9 +52,9 @@ export const Example = () => {
         const link = document.createElement('a');
         link.download = fileName;
         link.href = snapshot.blobOrDataUrl;
-        document.body.appendChild(link);
+        document.body.append(link);
         link.click();
-        document.body.removeChild(link);
+        link.remove();
     }
   };
   const groupId = '';
@@ -75,7 +76,7 @@ export const Example = () => {
         xAccessor={0}
         yAccessors={[1]}
         data={data}
-        yScaleToDataExtent={true}
+        yScaleToDataExtent
       />
     </Chart>
   );

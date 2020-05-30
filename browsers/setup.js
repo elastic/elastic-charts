@@ -14,15 +14,18 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
+
+const path = require('path');
 
 const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
-const path = require('path');
+
 const config = require(path.join(__dirname, '..', '.playground', 'webpack.config.js'));
 
 module.exports = async () => {
-  return new Promise((resolve, reject) => {
+  return await new Promise((resolve, reject) => {
     const compiler = webpack(config);
     const server = new WebpackDevServer(compiler);
     compiler.hooks.done.tap('done', () => {

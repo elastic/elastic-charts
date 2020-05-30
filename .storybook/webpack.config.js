@@ -14,10 +14,11 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
-// eslint-disable-next-line
 const path = require('path');
+
 const webpack = require('webpack');
 
 const nonce = 'Pk1rZ1XDlMuYe8ubWV3Lh0BzwrTigJQ=';
@@ -122,5 +123,5 @@ module.exports = async ({ config }) => {
 
   config.resolve.extensions.push('.ts', '.tsx');
 
-  return config;
+  return await config;
 };

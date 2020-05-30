@@ -14,7 +14,8 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
@@ -28,7 +29,7 @@ export const Example = () => {
         id="bottom"
         position={Position.Bottom}
         title="bottom"
-        showOverlappingTicks={true}
+        showOverlappingTicks
         hide={boolean('hide botttom axis', false)}
       />
       <Axis
@@ -38,13 +39,7 @@ export const Example = () => {
         tickFormat={(d) => Number(d).toFixed(2)}
         hide={boolean('hide left axis', false)}
       />
-      <Axis
-        id="top"
-        position={Position.Top}
-        title="top"
-        showOverlappingTicks={true}
-        hide={boolean('hide top axis', false)}
-      />
+      <Axis id="top" position={Position.Top} title="top" showOverlappingTicks hide={boolean('hide top axis', false)} />
       <Axis
         id="right"
         title="right"

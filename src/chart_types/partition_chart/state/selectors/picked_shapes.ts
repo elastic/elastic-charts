@@ -14,14 +14,17 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import createCachedSelector from 're-reselect';
-import { partitionGeometries } from './geometries';
-import { GlobalChartState } from '../../../../state/chart_state';
+
 import { LayerValue } from '../../../../specs';
-import { PARENT_KEY, DEPTH_KEY, AGGREGATE_KEY, CHILDREN_KEY, SORT_INDEX_KEY } from '../../layout/utils/group_by_rollup';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { QuadViewModel } from '../../layout/types/viewmodel_types';
+import { PARENT_KEY, DEPTH_KEY, AGGREGATE_KEY, CHILDREN_KEY, SORT_INDEX_KEY } from '../../layout/utils/group_by_rollup';
+
+import { partitionGeometries } from './geometries';
 
 function getCurrentPointerPosition(state: GlobalChartState) {
   return state.interactions.pointer.current.position;
@@ -32,7 +35,7 @@ export const getPickedShapes = createCachedSelector(
   [partitionGeometries, getCurrentPointerPosition],
   (geoms, pointerPosition): QuadViewModel[] => {
     const picker = geoms.pickQuads;
-    const diskCenter = geoms.diskCenter;
+    const { diskCenter } = geoms;
     const x = pointerPosition.x - diskCenter.x;
     const y = pointerPosition.y - diskCenter.y;
     return picker(x, y);

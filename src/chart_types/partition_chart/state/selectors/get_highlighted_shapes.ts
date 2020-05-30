@@ -14,13 +14,16 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import createCachedSelector from 're-reselect';
+
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { partitionGeometries } from './geometries';
 import { QuadViewModel } from '../../layout/types/viewmodel_types';
+
+import { partitionGeometries } from './geometries';
 
 const getHighlightedLegendItemKey = (state: GlobalChartState) => state.interactions.highlightedLegendItemKey;
 

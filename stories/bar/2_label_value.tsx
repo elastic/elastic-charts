@@ -14,7 +14,8 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import { boolean, color, number, select } from '@storybook/addon-knobs';
 import React from 'react';
@@ -85,7 +86,7 @@ export const Example = () => {
   return (
     <Chart renderer="canvas" className="story-chart">
       <Settings theme={theme} debug={debug} rotation={getChartRotationKnob()} showLegend showLegendExtra />
-      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
       <BarSeries
         id="bars"

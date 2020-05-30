@@ -14,15 +14,16 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
+import { select, boolean, optionsKnob } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings, TooltipProps, Placement } from '../../src';
 import * as TestDatasets from '../../src/utils/data_samples/test_dataset';
 import { getChartRotationKnob, getPlacementKnob, getTooltipTypeKnob } from '../utils/knobs';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
-import { select, boolean, optionsKnob } from '@storybook/addon-knobs';
 
 const CustomTooltip = () => (
   <div
@@ -67,8 +68,9 @@ const getFallbackPlacements = (): Placement[] | undefined => {
     // @ts-ignore
     return knob.split(', ');
     // @ts-ignore
-  } else if (knob.length === 0) {
-    return undefined;
+  }
+  if (knob.length === 0) {
+    return;
   }
 
   return knob;
@@ -76,15 +78,11 @@ const getFallbackPlacements = (): Placement[] | undefined => {
 
 export const Example = () => {
   // @ts-ignore
-  const boundary = select<TooltipProps['boundary']>(
-    'Boundary Element',
-    {
-      Chart: 'chart',
-      'Document Body': document.body,
-      Default: undefined,
-    },
-    undefined,
-  );
+  const boundary = select<TooltipProps['boundary']>('Boundary Element', {
+    Chart: 'chart',
+    'Document Body': document.body,
+    Default: undefined,
+  });
 
   // Added buffer to test tooltip positioning within chart container
   return (
@@ -101,7 +99,7 @@ export const Example = () => {
           }}
           showLegend={boolean('Show Legend', false)}
         />
-        <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+        <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
         <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
         <BarSeries

@@ -14,10 +14,12 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import React from 'react';
-import { Axis, Chart, LineSeries, niceTimeFormatByDay, Position, ScaleType, Settings, timeFormatter } from '../../src/';
+
+import { Axis, Chart, LineSeries, niceTimeFormatByDay, Position, ScaleType, Settings, timeFormatter } from '../../src';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
 
 const dateFormatter = timeFormatter(niceTimeFormatByDay(1));
@@ -26,7 +28,7 @@ export const Example = () => {
   return (
     <Chart className="story-chart">
       <Settings showLegend showLegendExtra legendPosition={Position.Right} />
-      <Axis id="bottom" position={Position.Bottom} showOverlappingTicks={true} tickFormat={dateFormatter} />
+      <Axis id="bottom" position={Position.Bottom} showOverlappingTicks tickFormat={dateFormatter} />
       <Axis
         id="left"
         title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}

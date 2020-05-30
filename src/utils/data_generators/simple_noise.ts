@@ -14,15 +14,20 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import { RandomNumberGenerator } from './data_generator';
 
 export class Simple1DNoise {
   private maxVertices: number;
+
   private maxVerticesMask: number;
+
   private amplitude: number;
+
   private scale: number;
+
   private getRandomNumber: RandomNumberGenerator;
 
   constructor(randomNumberGenerator: RandomNumberGenerator, maxVertices = 256, amplitude = 5.1, scale = 0.6) {

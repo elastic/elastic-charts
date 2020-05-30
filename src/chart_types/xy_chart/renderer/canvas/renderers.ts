@@ -14,21 +14,23 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
-import { withContext, renderLayers, clearCanvas } from '../../../../renderers/canvas';
-import { renderBars } from './bars';
-import { renderAreas } from './areas';
-import { renderLines } from './lines';
-import { renderAxes } from './axes';
-import { renderGrids } from './grids';
-import { ReactiveChartStateProps } from './xy_chart';
-import { renderAnnotations } from './annotations';
-import { renderBarValues } from './values/bar';
-import { renderDebugRect } from './utils/debug';
-import { stringToRGB } from '../../../partition_chart/layout/utils/d3_utils';
 import { Rect } from '../../../../geoms/types';
+import { withContext, renderLayers, clearCanvas } from '../../../../renderers/canvas';
+import { stringToRGB } from '../../../partition_chart/layout/utils/d3_utils';
+
+import { renderAnnotations } from './annotations';
+import { renderAreas } from './areas';
+import { renderAxes } from './axes';
+import { renderBars } from './bars';
 import { renderBubbles } from './bubbles';
+import { renderGrids } from './grids';
+import { renderLines } from './lines';
+import { renderDebugRect } from './utils/debug';
+import { renderBarValues } from './values/bar';
+import { ReactiveChartStateProps } from './xy_chart';
 
 /** @internal */
 export function renderXYChartCanvas2d(
@@ -60,13 +62,15 @@ export function renderXYChartCanvas2d(
       x: chartDimensions.left + chartTransform.x,
       y: chartDimensions.top + chartTransform.y,
     };
-    // painter's algorithm, like that of SVG: the sequence determines what overdraws what; first element of the array is drawn first
-    // (of course, with SVG, it's for ambiguous situations only, eg. when 3D transforms with different Z values aren't used, but
-    // unlike SVG and esp. WebGL, Canvas2d doesn't support the 3rd dimension well, see ctx.transform / ctx.setTransform).
-    // The layers are callbacks, because of the need to not bake in the `ctx`, it feels more composable and uncoupled this way.
+    /*
+     * painter's algorithm, like that of SVG: the sequence determines what overdraws what; first element of the array is drawn first
+     * (of course, with SVG, it's for ambiguous situations only, eg. when 3D transforms with different Z values aren't used, but
+     * unlike SVG and esp. WebGL, Canvas2d doesn't support the 3rd dimension well, see ctx.transform / ctx.setTransform).
+     * The layers are callbacks, because of the need to not bake in the `ctx`, it feels more composable and uncoupled this way.
+     */
     renderLayers(ctx, [
       // clear the canvas
-      (ctx: CanvasRenderingContext2D) => clearCanvas(ctx, 200000, 200000 /*, backgroundColor*/),
+      (ctx: CanvasRenderingContext2D) => clearCanvas(ctx, 200000, 200000 /* , backgroundColor */),
 
       (ctx: CanvasRenderingContext2D) => {
         renderAxes(ctx, {

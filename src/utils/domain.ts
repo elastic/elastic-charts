@@ -14,10 +14,12 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import { extent, sum } from 'd3-array';
 import { nest } from 'd3-collection';
+
 import { AccessorFn } from './accessor';
 
 export type Domain = any[];
@@ -67,7 +69,8 @@ export function computeDomainExtent(
   if (start != null && end != null) {
     if (start >= 0 && end >= 0) {
       return scaleToExtent || fitToExtent ? [start, end] : [0, end];
-    } else if (start < 0 && end < 0) {
+    }
+    if (start < 0 && end < 0) {
       return scaleToExtent || fitToExtent ? [start, end] : [start, 0];
     }
     return [start, end];

@@ -14,24 +14,12 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import createCachedSelector from 're-reselect';
-import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
-import { Point } from '../../../../utils/point';
-import { getOrientedProjectedPointerPositionSelector } from './get_oriented_projected_pointer_position';
-import { ComputedScales, getAxesSpecForSpecId, getSpecsById } from '../utils';
-import { getComputedScalesSelector } from './get_computed_scales';
-import { getElementAtCursorPositionSelector } from './get_elements_at_cursor_pos';
-import { IndexedGeometry } from '../../../../utils/geometry';
-import { getSeriesSpecsSelector, getAxisSpecsSelector } from './get_specs';
-import { BasicSeriesSpec, AxisSpec } from '../../utils/specs';
-import { Rotation } from '../../../../utils/commons';
-import { getTooltipTypeSelector } from './get_tooltip_type';
-import { formatTooltip } from '../../tooltip/tooltip';
-import { getTooltipHeaderFormatterSelector } from '../../../../state/selectors/get_tooltip_header_formatter';
-import { isPointOnGeometry } from '../../rendering/rendering';
-import { GlobalChartState } from '../../../../state/chart_state';
+
+import { TooltipInfo } from '../../../../components/tooltip/types';
 import {
   PointerEvent,
   isPointerOutEvent,
@@ -41,12 +29,27 @@ import {
   isFollowTooltipType,
   SettingsSpec,
 } from '../../../../specs';
-import { isValidPointerOverEvent } from '../../../../utils/events';
-import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { hasSingleSeriesSelector } from './has_single_series';
-import { TooltipInfo } from '../../../../components/tooltip/types';
+import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { getTooltipHeaderFormatterSelector } from '../../../../state/selectors/get_tooltip_header_formatter';
+import { Rotation } from '../../../../utils/commons';
+import { isValidPointerOverEvent } from '../../../../utils/events';
+import { IndexedGeometry } from '../../../../utils/geometry';
+import { Point } from '../../../../utils/point';
+import { isPointOnGeometry } from '../../rendering/rendering';
+import { formatTooltip } from '../../tooltip/tooltip';
+import { BasicSeriesSpec, AxisSpec } from '../../utils/specs';
+import { ComputedScales, getAxesSpecForSpecId, getSpecsById } from '../utils';
+
+import { getComputedScalesSelector } from './get_computed_scales';
+import { getElementAtCursorPositionSelector } from './get_elements_at_cursor_pos';
+import { getOrientedProjectedPointerPositionSelector } from './get_oriented_projected_pointer_position';
+import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
+import { getSeriesSpecsSelector, getAxisSpecsSelector } from './get_specs';
+import { getTooltipTypeSelector } from './get_tooltip_type';
+import { hasSingleSeriesSelector } from './has_single_series';
 
 const EMPTY_VALUES = Object.freeze({
   tooltip: {
@@ -105,8 +108,8 @@ function getTooltipAndHighlightFromValue(
   if (tooltipType === TooltipType.None) {
     return EMPTY_VALUES;
   }
-  let x = orientedProjectedPointerPosition.x;
-  let y = orientedProjectedPointerPosition.y;
+  let { x } = orientedProjectedPointerPosition;
+  let { y } = orientedProjectedPointerPosition;
   if (isValidPointerOverEvent(scales.xScale, externalPointerEvent)) {
     const scaledX = scales.xScale.pureScale(externalPointerEvent.value);
 
@@ -159,8 +162,10 @@ function getTooltipAndHighlightFromValue(
         highlightedGeometries.push(indexedGeometry);
       }
 
-      // if it's a follow tooltip, and no element is highlighted
-      // do _not_ add element into tooltip list
+      /*
+       * if it's a follow tooltip, and no element is highlighted
+       * do _not_ add element into tooltip list
+       */
       if (!isHighlighted && isFollowTooltipType(tooltipType)) {
         return acc;
       }

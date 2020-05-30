@@ -14,9 +14,11 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 const getConfig = require('jest-puppeteer-docker/lib/config');
+
 const baseConfig = getConfig();
 const defaults = require('./defaults');
 
@@ -29,26 +31,24 @@ const useLocalStorybook = process.env.USE_LOCAL_STORYBOOK || defaults.USE_LOCAL_
  *
  * https://github.com/smooth-code/jest-puppeteer/tree/master/packages/jest-environment-puppeteer#jest-puppeteerconfigjs
  */
-const customConfig = Object.assign(
-  {
-    launch: {
-      dumpio: false,
-      headless: true,
-      slowMo: 0,
-      browserUrl: `http://${host}:${port}/iframe.html`,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    },
-    server: useLocalStorybook
-      ? null
-      : {
-          command: `yarn start --port=${port} --quiet`,
-          port,
-          usedPortAction: 'error',
-          launchTimeout: 120000,
-          debug: false,
-        },
+const customConfig = {
+  launch: {
+    dumpio: false,
+    headless: true,
+    slowMo: 0,
+    browserUrl: `http://${host}:${port}/iframe.html`,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
   },
-  baseConfig,
-);
+  server: useLocalStorybook
+    ? null
+    : {
+        command: `yarn start --port=${port} --quiet`,
+        port,
+        usedPortAction: 'error',
+        launchTimeout: 120000,
+        debug: false,
+      },
+  ...baseConfig,
+};
 
 module.exports = customConfig;

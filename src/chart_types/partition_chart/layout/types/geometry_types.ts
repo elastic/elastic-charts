@@ -14,13 +14,8 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
-
-// In preparation of nominal types in future TS versions
-// https://github.com/microsoft/TypeScript/pull/33038
-// eg. to avoid adding angles and coordinates and similar inconsistent number/number ops.
-// could in theory be three-valued (in,on,out)
-// It also serves as documentation.
+ * under the License.
+ */
 
 export type Pixels = number;
 export type Ratio = number;
@@ -46,7 +41,9 @@ export type PointTuples = [PointTuple, ...PointTuple[]]; // at least one point
 /** @internal */
 export class Circline {
   x: Coordinate = NaN;
+
   y: Coordinate = NaN;
+
   r: Radius = NaN;
 }
 

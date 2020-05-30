@@ -14,12 +14,14 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
-import { ClippedRanges } from '../../../../../utils/geometry';
-import { withContext, withClipRanges } from '../../../../../renderers/canvas';
-import { RGBtoString } from '../../../../partition_chart/layout/utils/d3_utils';
 import { Rect, Stroke, Fill } from '../../../../../geoms/types';
+import { withContext, withClipRanges } from '../../../../../renderers/canvas';
+import { ClippedRanges } from '../../../../../utils/geometry';
+import { RGBtoString } from '../../../../partition_chart/layout/utils/d3_utils';
+
 import { MIN_STROKE_WIDTH } from './line';
 
 /** @internal */
@@ -34,19 +36,19 @@ export function renderLinePaths(
   ctx.translate(transformX, 0);
   if (clippedRanges.length > 0) {
     withClipRanges(ctx, clippedRanges, clippings, false, (ctx) => {
-      linePaths.map((path) => {
+      linePaths.forEach((path) => {
         renderPathStroke(ctx, path, stroke);
       });
     });
     withClipRanges(ctx, clippedRanges, clippings, true, (ctx) => {
-      linePaths.map((path) => {
+      linePaths.forEach((path) => {
         renderPathStroke(ctx, path, { ...stroke, dash: [5, 5] });
       });
     });
     return;
   }
 
-  linePaths.map((path) => {
+  linePaths.forEach((path) => {
     withContext(ctx, (ctx) => {
       renderPathStroke(ctx, path, stroke);
     });

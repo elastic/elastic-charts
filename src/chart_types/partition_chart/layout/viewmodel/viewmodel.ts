@@ -14,17 +14,18 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
-import { Part, TextMeasure } from '../types/types';
-import { linkTextLayout } from './link_text_layout';
-import { Config, PartitionLayout } from '../types/config_types';
-import { TAU, trueBearingToStandardPositionAngle } from '../utils/math';
-import { Distance, Pixels, PointTuple, Radius } from '../types/geometry_types';
+import { $Values } from 'utility-types';
+
+import { StrokeStyle, ValueFormatter } from '../../../../utils/commons';
+import { Layer } from '../../specs';
+import { percentValueGetter } from '../config/config';
 import { meanAngle } from '../geometry';
-import { getTopPadding, treemap } from '../utils/treemap';
-import { sunburst } from '../utils/sunburst';
-import { argsToRGBString, stringToRGB } from '../utils/d3_utils';
+import { Config, PartitionLayout } from '../types/config_types';
+import { Distance, Pixels, PointTuple, Radius } from '../types/geometry_types';
+import { Part, TextMeasure } from '../types/types';
 import {
   nullShapeViewModel,
   OutsideLinksViewModel,
@@ -36,15 +37,7 @@ import {
   ShapeViewModel,
   ValueGetterFunction,
 } from '../types/viewmodel_types';
-import { Layer } from '../../specs/index';
-import {
-  fillTextLayout,
-  getRectangleRowGeometry,
-  getSectorRowGeometry,
-  inSectorRotation,
-  nodeId,
-  ringSectorConstruction,
-} from './fill_text_layout';
+import { argsToRGBString, stringToRGB } from '../utils/d3_utils';
 import {
   aggregateAccessor,
   ArrayEntry,
@@ -56,9 +49,19 @@ import {
   sortIndexAccessor,
   HierarchyOfArrays,
 } from '../utils/group_by_rollup';
-import { StrokeStyle, ValueFormatter } from '../../../../utils/commons';
-import { percentValueGetter } from '../config/config';
-import { $Values } from 'utility-types';
+import { TAU, trueBearingToStandardPositionAngle } from '../utils/math';
+import { sunburst } from '../utils/sunburst';
+import { getTopPadding, treemap } from '../utils/treemap';
+
+import {
+  fillTextLayout,
+  getRectangleRowGeometry,
+  getSectorRowGeometry,
+  inSectorRotation,
+  nodeId,
+  ringSectorConstruction,
+} from './fill_text_layout';
+import { linkTextLayout } from './link_text_layout';
 
 function grooveAccessor(n: ArrayEntry) {
   return entryValue(n).depth > 1 ? 1 : [0, 2][entryValue(n).depth];
@@ -69,9 +72,9 @@ function topGrooveAccessor(topGroovePx: Pixels) {
 }
 
 export const VerticalAlignments = Object.freeze({
-  top: 'top' as 'top',
-  middle: 'middle' as 'middle',
-  bottom: 'bottom' as 'bottom',
+  top: 'top' as const,
+  middle: 'middle' as const,
+  bottom: 'bottom' as const,
 });
 
 // we might add more in the future; also, the intent is to still be of CanvasTextBaseline
@@ -355,7 +358,7 @@ export function shapeViewModel(
 
 function partToShapeTreeNode(treemapLayout: boolean, innerRadius: Radius, ringThickness: number) {
   return (n: Part): ShapeTreeNode => {
-    const node: ArrayEntry = n.node;
+    const { node } = n;
     return {
       dataName: entryKey(node),
       depth: depthAccessor(node),

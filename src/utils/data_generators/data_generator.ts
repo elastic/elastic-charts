@@ -14,7 +14,8 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import { Simple1DNoise } from './simple_noise';
 
@@ -37,13 +38,17 @@ function defaultRNG(min = 0, max = 1, fractionDigits = 0, inclusive = true) {
 
 export class DataGenerator {
   private randomNumberGenerator: RandomNumberGenerator;
+
   private generator: Simple1DNoise;
+
   private frequency: number;
+
   constructor(frequency = 500, randomNumberGenerator: RandomNumberGenerator = defaultRNG) {
     this.randomNumberGenerator = randomNumberGenerator;
     this.generator = new Simple1DNoise(this.randomNumberGenerator);
     this.frequency = frequency;
   }
+
   generateBasicSeries(totalPoints = 50, offset = 0, amplitude = 1) {
     const dataPoints = new Array(totalPoints).fill(0).map((_, i) => {
       return {
@@ -53,6 +58,7 @@ export class DataGenerator {
     });
     return dataPoints;
   }
+
   generateSimpleSeries(totalPoints = 50, groupIndex = 1, groupPrefix = '') {
     const group = String.fromCharCode(97 + groupIndex);
     const dataPoints = new Array(totalPoints).fill(0).map((_, i) => {
@@ -64,13 +70,14 @@ export class DataGenerator {
     });
     return dataPoints;
   }
+
   generateGroupedSeries(totalPoints = 50, totalGroups = 2, groupPrefix = '') {
     const groups = new Array(totalGroups).fill(0).map((group, i) => {
-      // eslint-disable-line
       return this.generateSimpleSeries(totalPoints, i, groupPrefix);
     });
     return groups.reduce((acc, curr) => [...acc, ...curr]);
   }
+
   generateRandomSeries(totalPoints = 50, groupIndex = 1, groupPrefix = '') {
     const group = String.fromCharCode(97 + groupIndex);
     const dataPoints = new Array(totalPoints).fill(0).map(() => {
@@ -83,9 +90,9 @@ export class DataGenerator {
     });
     return dataPoints;
   }
+
   generateRandomGroupedSeries(totalPoints = 50, totalGroups = 2, groupPrefix = '') {
     const groups = new Array(totalGroups).fill(0).map((group, i) => {
-      // eslint-disable-line
       return this.generateRandomSeries(totalPoints, i, groupPrefix);
     });
     return groups.reduce((acc, curr) => [...acc, ...curr]);

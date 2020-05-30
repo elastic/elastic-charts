@@ -14,14 +14,16 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import { scaleBand, scaleQuantize, ScaleQuantize, ScaleBand as D3ScaleBand } from 'd3-scale';
 
-import { maxValueWithUpperLimit } from '../utils/commons';
-import { ScaleType, Scale } from '.';
-import { stringifyNullsUndefined } from '../chart_types/xy_chart/state/utils';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
+import { stringifyNullsUndefined } from '../chart_types/xy_chart/state/utils';
+import { maxValueWithUpperLimit } from '../utils/commons';
+
+import { ScaleType, Scale } from '.';
 
 /**
  * Categorical scale
@@ -29,18 +31,31 @@ import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/grou
  */
 export class ScaleBand implements Scale {
   readonly bandwidth: number;
+
   readonly bandwidthPadding: number;
+
   readonly step: number;
+
   readonly outerPadding: number;
+
   readonly innerPadding: number;
+
   readonly originalBandwidth: number;
+
   readonly type: ScaleType;
+
   readonly domain: any[];
+
   readonly range: number[];
+
   readonly isInverted: boolean;
+
   readonly invertedScale: ScaleQuantize<number>;
+
   readonly minInterval: number;
+
   readonly barsPadding: number;
+
   private readonly d3Scale: D3ScaleBand<NonNullable<PrimitiveValue>>;
 
   constructor(

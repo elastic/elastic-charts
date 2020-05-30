@@ -14,9 +14,14 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
+import { ValueFormatter } from '../../../../utils/commons';
+import { Layer } from '../../specs';
+import { conjunctiveConstraint } from '../circline_geometry';
 import { wrapToTau } from '../geometry';
+import { Config, Padding } from '../types/config_types';
 import {
   Coordinate,
   Distance,
@@ -27,8 +32,7 @@ import {
   Ratio,
   RingSectorConstruction,
 } from '../types/geometry_types';
-import { Config, Padding } from '../types/config_types';
-import { logarithm, TAU, trueBearingToStandardPositionAngle } from '../utils/math';
+import { Box, Font, PartialFont, TextMeasure } from '../types/types';
 import {
   QuadViewModel,
   RawTextGetter,
@@ -38,11 +42,9 @@ import {
   ShapeTreeNode,
   ValueGetterFunction,
 } from '../types/viewmodel_types';
-import { Box, Font, PartialFont, TextMeasure } from '../types/types';
-import { conjunctiveConstraint } from '../circline_geometry';
-import { Layer } from '../../specs/index';
 import { integerSnap, getTextColor, monotonicHillClimb } from '../utils/calcs';
-import { ValueFormatter } from '../../../../utils/commons';
+import { logarithm, TAU, trueBearingToStandardPositionAngle } from '../utils/math';
+
 import { RectangleConstruction, VerticalAlignments } from './viewmodel';
 
 const INFINITY_RADIUS = 1e4; // far enough for a sub-2px precision on a 4k screen, good enough for text bounds; 64 bit floats still work well with it
@@ -56,10 +58,10 @@ function ringSectorEndAngle(d: ShapeTreeNode): Radian {
 }
 
 function ringSectorInnerRadius(innerRadius: Radian, ringThickness: Distance) {
-  return (d: ShapeTreeNode): Radius => innerRadius + (d.y0 as number) * ringThickness;
+  return (d: ShapeTreeNode): Radius => innerRadius + d.y0 * ringThickness;
 }
 function ringSectorOuterRadius(innerRadius: Radian, ringThickness: Distance) {
-  return (d: ShapeTreeNode): Radius => innerRadius + ((d.y0 as number) + 1) * ringThickness;
+  return (d: ShapeTreeNode): Radius => innerRadius + (d.y0 + 1) * ringThickness;
 }
 
 function angleToCircline(
@@ -166,9 +168,9 @@ export const getSectorRowGeometry: GetShapeRowGeometry<RingSectorConstruction> =
   const bottomCircline = makeRowCircline(cx, cy, offset, rotation, fontSize, -1);
   const midCircline = makeRowCircline(cx, cy, offset, rotation, 0, 0);
 
-  const valid1 = conjunctiveConstraint(ringSector, Object.assign({}, topCircline, { from: 0, to: TAU }))[0];
+  const valid1 = conjunctiveConstraint(ringSector, { ...topCircline, from: 0, to: TAU })[0];
   if (!valid1) return { rowAnchorX: cx, rowAnchorY: cy, maximumRowLength: 0 };
-  const valid2 = conjunctiveConstraint(ringSector, Object.assign({}, bottomCircline, { from: 0, to: TAU }))[0];
+  const valid2 = conjunctiveConstraint(ringSector, { ...bottomCircline, from: 0, to: TAU })[0];
   if (!valid2) return { rowAnchorX: cx, rowAnchorY: cy, maximumRowLength: 0 };
   const from = Math.max(valid1.from, valid2.from);
   const to = Math.min(valid1.to, valid2.to);
@@ -338,32 +340,26 @@ function fill<C>(
         ? VerticalAlignments.bottom
         : VerticalAlignments.top;
       const fontSizes = allFontSizes[Math.min(node.depth, allFontSizes.length) - 1];
-      const {
-        textColor,
-        textInvertible,
-        fontStyle,
-        fontVariant,
-        fontFamily,
-        fontWeight,
-        valueFormatter,
-        padding,
-      } = Object.assign(
-        { fontFamily: configFontFamily, fontWeight: 'normal', padding: 2 },
-        fillLabel,
-        { valueFormatter: formatter },
-        layer.fillLabel,
-        layer.shape,
-      );
+      const { textColor, textInvertible, fontStyle, fontVariant, fontFamily, fontWeight, valueFormatter, padding } = {
+        fontFamily: configFontFamily,
+        fontWeight: 'normal',
+        padding: 2,
+        ...fillLabel,
+        valueFormatter: formatter,
+        ...layer.fillLabel,
+        ...layer.shape,
+      };
 
       const fillTextColor = getTextColor(node.fillColor, textColor, textInvertible);
 
-      const valueFont = Object.assign(
-        { fontFamily: configFontFamily, fontWeight: 'normal' },
-        fillLabel,
-        fillLabel.valueFont,
-        layer.fillLabel,
-        layer.fillLabel?.valueFont,
-      );
+      const valueFont = {
+        fontFamily: configFontFamily,
+        fontWeight: 'normal',
+        ...fillLabel,
+        ...fillLabel.valueFont,
+        ...layer.fillLabel,
+        ...layer.fillLabel?.valueFont,
+      };
 
       const sizeInvariantFont: Font = {
         fontStyle,
@@ -443,7 +439,7 @@ function tryFontSize<C>(
         rotation,
         verticalAlignment,
         leftAlign,
-        rows: [...Array(targetRowCount)].map(() => ({
+        rows: [...new Array(targetRowCount)].map(() => ({
           rowWords: [],
           rowAnchorX: NaN,
           rowAnchorY: NaN,
@@ -491,7 +487,7 @@ function tryFontSize<C>(
           currentRowLength += currentBox.width + wordSpacing;
 
           if (currentRowLength <= currentRow.maximumLength) {
-            currentRowWords.push(Object.assign({}, currentBox, { wordBeginning }));
+            currentRowWords.push({ ...currentBox, wordBeginning });
             currentRow.length = currentRowLength;
             measuredBoxes.shift();
           } else {
@@ -557,7 +553,7 @@ export function inSectorRotation(horizontalTextEnforcer: number, horizontalTextA
   return (node: ShapeTreeNode): Radian => {
     let rotation = trueBearingToStandardPositionAngle((node.x0 + node.x1) / 2);
     if (Math.abs(node.x1 - node.x0) > horizontalTextAngleThreshold && horizontalTextEnforcer > 0)
-      rotation = rotation * (1 - horizontalTextEnforcer);
+      rotation *= 1 - horizontalTextEnforcer;
     if (TAU / 4 < rotation && rotation < (3 * TAU) / 4) rotation = wrapToTau(rotation - TAU / 2);
     return rotation;
   };
@@ -597,7 +593,7 @@ export function fillTextLayout<C>(
       const fontSizes: Pixels[] = [];
       for (let i = 0; i <= fontSizeJumpCount; i++) {
         const fontSize = Math.round(minFontSize * Math.pow(realFontSizeJump, i));
-        if (fontSizes.indexOf(fontSize) === -1) {
+        if (!fontSizes.includes(fontSize)) {
           fontSizes.push(fontSize);
         }
       }

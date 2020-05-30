@@ -14,11 +14,13 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
-import { Color } from '../utils/commons';
-import { SeriesIdentifier } from './series_id';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
+import { Color } from '../utils/commons';
+
+import { SeriesIdentifier } from './series_id';
 /** @internal */
 export type LegendItemChildId = string;
 

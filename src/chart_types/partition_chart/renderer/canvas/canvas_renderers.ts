@@ -14,10 +14,12 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
+import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
+import { PartitionLayout } from '../../layout/types/config_types';
 import { Pixels } from '../../layout/types/geometry_types';
-import { addOpacity } from '../../layout/utils/calcs';
 import {
   LinkLabelVM,
   OutsideLinksViewModel,
@@ -26,10 +28,9 @@ import {
   ShapeViewModel,
   TextRow,
 } from '../../layout/types/viewmodel_types';
+import { addOpacity } from '../../layout/utils/calcs';
 import { TAU } from '../../layout/utils/math';
-import { PartitionLayout } from '../../layout/types/config_types';
 import { cssFontShorthand } from '../../layout/utils/measure';
-import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
 
 // the burnout avoidance in the center of the pie
 const LINE_WIDTH_MULT = 10; // border can be a maximum 1/LINE_WIDTH_MULT - th of the sector angle, otherwise the border would dominate
@@ -37,7 +38,7 @@ const TAPER_OFF_LIMIT = 50; // taper off within a radius of TAPER_OFF_LIMIT to a
 
 function renderTextRow(
   ctx: CanvasRenderingContext2D,
-  { fontSize, fillTextColor, rotation, verticalAlignment, leftAlign /*, container*/ }: RowSet,
+  { fontSize, fillTextColor, rotation, verticalAlignment, leftAlign /* , container */ }: RowSet,
 ) {
   return (currentRow: TextRow) => {
     const crx = leftAlign
@@ -56,19 +57,19 @@ function renderTextRow(
       });
     });
     /*
-    // for debug use: this draws magenta boxes for where the text needs to fit
-    // note: `container` is a property of the RowSet, needs to be added
-    withContext(ctx, (ctx) => {
-      ctx.scale(1, -1);
-      ctx.rotate(-rotation);
-      ctx.beginPath();
-      ctx.strokeStyle = 'magenta';
-      ctx.fillStyle = 'magenta';
-      ctx.lineWidth = 1;
-      ctx.rect(container.x0 + 1, container.y0 + 1, container.x1 - container.x0 - 2, container.y1 - container.y0 - 2);
-      ctx.stroke();
-    });
-    */
+     * // for debug use: this draws magenta boxes for where the text needs to fit
+     * // note: `container` is a property of the RowSet, needs to be added
+     *withContext(ctx, (ctx) => {
+     *  ctx.scale(1, -1);
+     *  ctx.rotate(-rotation);
+     *  ctx.beginPath();
+     *  ctx.strokeStyle = 'magenta';
+     *  ctx.fillStyle = 'magenta';
+     *  ctx.lineWidth = 1;
+     *  ctx.rect(container.x0 + 1, container.y0 + 1, container.x1 - container.x0 - 2, container.y1 - container.y0 - 2);
+     *  ctx.stroke();
+     *});
+     */
   };
 }
 
@@ -95,9 +96,11 @@ function renderTaperedBorder(
 
   ctx.fill();
   if (strokeWidth > 0.001 && !(x0 === 0 && x1 === TAU)) {
-    // canvas2d uses a default of 1 if the lineWidth is assigned 0, so we use a small value to test, to avoid it
-    // ... and also don't draw a separator if we have a single sector that's the full ring (eg. single-fact-row pie)
-    // outer arc
+    /*
+     * canvas2d uses a default of 1 if the lineWidth is assigned 0, so we use a small value to test, to avoid it
+     * ... and also don't draw a separator if we have a single sector that's the full ring (eg. single-fact-row pie)
+     * outer arc
+     */
     ctx.lineWidth = strokeWidth;
     const tapered = x1 - x0 < (15 * TAU) / 360; // burnout seems visible, and tapering invisible, with less than 15deg
     if (tapered) {
@@ -230,7 +233,7 @@ export function renderPartitionCanvas2d(
   dpr: number,
   { config, quadViewModel, rowSets, outsideLinksViewModel, linkLabelViewModels, diskCenter }: ShapeViewModel,
 ) {
-  const { sectorLineWidth, sectorLineStroke, linkLabel /*, backgroundColor*/ } = config;
+  const { sectorLineWidth, sectorLineStroke, linkLabel /* , backgroundColor */ } = config;
 
   const linkLabelTextColor = addOpacity(linkLabel.textColor, linkLabel.textOpacity);
 
@@ -240,30 +243,36 @@ export function renderPartitionCanvas2d(
     // let's set the devicePixelRatio once and for all; then we'll never worry about it again
     ctx.scale(dpr, dpr);
 
-    // all texts are currently center-aligned because
-    //     - the calculations manually compute and lay out text (word) boxes, so we can choose whatever
-    //     - but center/middle has mathematical simplicity and the most unassuming thing
-    //     - due to using the math x/y convention (+y is up) while Canvas uses screen convention (+y is down)
-    //         text rendering must be y-flipped, which is a bit easier this way
+    /*
+     * all texts are currently center-aligned because
+     *     - the calculations manually compute and lay out text (word) boxes, so we can choose whatever
+     *     - but center/middle has mathematical simplicity and the most unassuming thing
+     *     - due to using the math x/y convention (+y is up) while Canvas uses screen convention (+y is down)
+     *         text rendering must be y-flipped, which is a bit easier this way
+     */
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.translate(diskCenter.x, diskCenter.y);
-    // this applies the mathematical x/y conversion (+y is North) which is easier when developing geometry
-    // functions - also, all renderers have flexibility (eg. SVG scale) and WebGL NDC is also +y up
-    // - in any case, it's possible to refactor for a -y = North convention if that's deemed preferable
+    /*
+     * this applies the mathematical x/y conversion (+y is North) which is easier when developing geometry
+     * functions - also, all renderers have flexibility (eg. SVG scale) and WebGL NDC is also +y up
+     * - in any case, it's possible to refactor for a -y = North convention if that's deemed preferable
+     */
     ctx.scale(1, -1);
 
     ctx.lineJoin = 'round';
     ctx.strokeStyle = sectorLineStroke;
     ctx.lineWidth = sectorLineWidth;
 
-    // painter's algorithm, like that of SVG: the sequence determines what overdraws what; first element of the array is drawn first
-    // (of course, with SVG, it's for ambiguous situations only, eg. when 3D transforms with different Z values aren't used, but
-    // unlike SVG and esp. WebGL, Canvas2d doesn't support the 3rd dimension well, see ctx.transform / ctx.setTransform).
-    // The layers are callbacks, because of the need to not bake in the `ctx`, it feels more composable and uncoupled this way.
+    /*
+     * painter's algorithm, like that of SVG: the sequence determines what overdraws what; first element of the array is drawn first
+     * (of course, with SVG, it's for ambiguous situations only, eg. when 3D transforms with different Z values aren't used, but
+     * unlike SVG and esp. WebGL, Canvas2d doesn't support the 3rd dimension well, see ctx.transform / ctx.setTransform).
+     * The layers are callbacks, because of the need to not bake in the `ctx`, it feels more composable and uncoupled this way.
+     */
     renderLayers(ctx, [
       // clear the canvas
-      (ctx: CanvasRenderingContext2D) => clearCanvas(ctx, 200000, 200000 /*, backgroundColor*/),
+      (ctx: CanvasRenderingContext2D) => clearCanvas(ctx, 200000, 200000 /* , backgroundColor */),
 
       // bottom layer: sectors (pie slices, ring sectors etc.)
       (ctx: CanvasRenderingContext2D) =>

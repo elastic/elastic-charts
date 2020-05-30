@@ -14,13 +14,14 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
+import { Delaunay, Bounds } from '../../../utils/d3-delaunay';
 import { IndexedGeometry, PointGeometry } from '../../../utils/geometry';
 import { Point } from '../../../utils/point';
-import { getDistance } from '../state/utils';
-import { Delaunay, Bounds } from '../../../utils/d3-delaunay';
 import { DEFAULT_HIGHLIGHT_PADDING } from '../rendering/rendering';
+import { getDistance } from '../state/utils';
 
 /** @internal */
 export type IndexedGeometrySpatialMapPoint = [number, number];
@@ -28,9 +29,13 @@ export type IndexedGeometrySpatialMapPoint = [number, number];
 /** @internal */
 export class IndexedGeometrySpatialMap {
   private map: Delaunay<IndexedGeometrySpatialMapPoint> | null = null;
+
   private points: IndexedGeometrySpatialMapPoint[] = [];
+
   private pointGeometries: PointGeometry[] = [];
+
   private searchStartIndex: number = 0;
+
   private maxRadius = -Infinity;
 
   constructor(points: PointGeometry[] = []) {
@@ -50,12 +55,14 @@ export class IndexedGeometrySpatialMap {
     this.pointGeometries.push(...points);
     this.points.push(
       ...points.map<IndexedGeometrySpatialMapPoint>(({ x, y }) => {
-        // TODO: handle coincident points better
-        // This nonce is used to slightly offset every point such that each point
-        // has a unique poition in the index. This number is only used in the index.
-        // The other option would be to find the point(s) near a Point and add logic
-        // to account for multiple values in the pointGeometries array. This would be
-        // a very comutationally expensive approach having to repeat for every point.
+        /*
+         * TODO: handle coincident points better
+         * This nonce is used to slightly offset every point such that each point
+         * has a unique poition in the index. This number is only used in the index.
+         * The other option would be to find the point(s) near a Point and add logic
+         * to account for multiple values in the pointGeometries array. This would be
+         * a very comutationally expensive approach having to repeat for every point.
+         */
         const nonce = Math.random() * 0.000001;
         return [x + nonce, y];
       }),

@@ -14,13 +14,16 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import { BBox, BBoxCalculator, DEFAULT_EMPTY_BBOX } from './bbox_calculator';
 
 export class CanvasTextBBoxCalculator implements BBoxCalculator {
   private attachedRoot: HTMLElement;
+
   private offscreenCanvas: HTMLCanvasElement;
+
   private context: CanvasRenderingContext2D | null;
 
   constructor(rootElement?: HTMLElement) {
@@ -30,8 +33,9 @@ export class CanvasTextBBoxCalculator implements BBoxCalculator {
     this.offscreenCanvas.style.left = '-99999px';
     this.context = this.offscreenCanvas.getContext('2d');
     this.attachedRoot = rootElement || document.documentElement;
-    this.attachedRoot.appendChild(this.offscreenCanvas);
+    this.attachedRoot.append(this.offscreenCanvas);
   }
+
   compute(text: string, padding: number, fontSize = 16, fontFamily = 'Arial', lineHeight = 1, fontWeight = 400): BBox {
     if (!this.context) {
       return DEFAULT_EMPTY_BBOX;
@@ -48,7 +52,8 @@ export class CanvasTextBBoxCalculator implements BBoxCalculator {
       height: fontSize * lineHeight,
     };
   }
+
   destroy(): void {
-    this.attachedRoot.removeChild(this.offscreenCanvas);
+    this.offscreenCanvas.remove();
   }
 }

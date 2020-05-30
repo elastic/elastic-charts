@@ -14,13 +14,14 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
-import { ShapeViewModel } from '../../layout/types/viewmodel_types';
-import { cssFontShorthand } from '../../../partition_chart/layout/utils/measure';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
 import { GOLDEN_RATIO } from '../../../partition_chart/layout/utils/math';
-import { GOAL_SUBTYPES } from '../../specs/index';
+import { cssFontShorthand } from '../../../partition_chart/layout/utils/measure';
+import { ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { GOAL_SUBTYPES } from '../../specs';
 
 // fixme turn these into config, or capitalize as constants
 const referenceCircularSizeCap = 360; // goal/gauge won't be bigger even if there's ample room: it'd be a waste of space
@@ -43,6 +44,7 @@ export function renderCanvas2d(
   dpr: number,
   { config, bulletViewModel, chartCenter }: ShapeViewModel,
 ) {
+  // eslint-disable-next-line no-empty-pattern
   const {} = config;
 
   withContext(ctx, (ctx) => {
@@ -51,17 +53,21 @@ export function renderCanvas2d(
     // let's set the devicePixelRatio once and for all; then we'll never worry about it again
     ctx.scale(dpr, dpr);
 
-    // all texts are currently center-aligned because
-    //     - the calculations manually compute and lay out text (word) boxes, so we can choose whatever
-    //     - but center/middle has mathematical simplicity and the most unassuming thing
-    //     - due to using the math x/y convention (+y is up) while Canvas uses screen convention (+y is down)
-    //         text rendering must be y-flipped, which is a bit easier this way
+    /*
+     * all texts are currently center-aligned because
+     *     - the calculations manually compute and lay out text (word) boxes, so we can choose whatever
+     *     - but center/middle has mathematical simplicity and the most unassuming thing
+     *     - due to using the math x/y convention (+y is up) while Canvas uses screen convention (+y is down)
+     *         text rendering must be y-flipped, which is a bit easier this way
+     */
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.translate(chartCenter.x, chartCenter.y);
-    // this applies the mathematical x/y conversion (+y is North) which is easier when developing geometry
-    // functions - also, all renderers have flexibility (eg. SVG scale) and WebGL NDC is also +y up
-    // - in any case, it's possible to refactor for a -y = North convention if that's deemed preferable
+    /*
+     * this applies the mathematical x/y conversion (+y is North) which is easier when developing geometry
+     * functions - also, all renderers have flexibility (eg. SVG scale) and WebGL NDC is also +y up
+     * - in any case, it's possible to refactor for a -y = North convention if that's deemed preferable
+     */
     ctx.scale(1, -1);
 
     const {
@@ -239,8 +245,8 @@ export function renderCanvas2d(
 
           const linearScale = (x: number) => pxRangeFrom + (pxRange * (x - domain[0])) / domainExtent;
 
-          const angleStart = config.angleStart;
-          const angleEnd = config.angleEnd;
+          const { angleStart } = config;
+          const { angleEnd } = config;
           const angleRange = angleEnd - angleStart;
           const angleScale = (x: number) => angleStart + (angleRange * (x - domain[0])) / domainExtent;
           const clockwise = angleStart > angleEnd; // todo refine this crude approach
@@ -249,7 +255,7 @@ export function renderCanvas2d(
             .slice()
             .sort((a, b) => a.order - b.order)
             .forEach((g) => {
-              const landmarks = g.landmarks;
+              const { landmarks } = g;
               const at = get(landmarks, 'at', '');
               const from = get(landmarks, 'from', '');
               const to = get(landmarks, 'to', '');

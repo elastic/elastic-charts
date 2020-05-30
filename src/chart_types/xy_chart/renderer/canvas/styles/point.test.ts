@@ -14,14 +14,16 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
-import { MockStyles } from '../../../../../mocks';
-import { buildPointStyles } from './point';
 import { Fill, Stroke } from '../../../../../geoms/types';
+import { MockStyles } from '../../../../../mocks';
 import { getColorFromVariant } from '../../../../../utils/commons';
-import { stringToRGB } from '../../../../partition_chart/layout/utils/d3_utils';
 import { PointStyle } from '../../../../../utils/themes/theme';
+import { stringToRGB } from '../../../../partition_chart/layout/utils/d3_utils';
+
+import { buildPointStyles } from './point';
 
 jest.mock('../../../../partition_chart/layout/utils/d3_utils');
 jest.mock('../../../../../utils/commons');
@@ -166,12 +168,12 @@ describe('Point styles', () => {
         });
 
         it('should return fill with color', () => {
-          const { opacity, ...color } = stringToRGB(overrides.fill!);
+          const { opacity, ...color } = stringToRGB(overrides.fill);
           expect(result.fill.color).toMatchObject(color);
         });
 
         it('should return stroke with color', () => {
-          const { opacity, ...color } = stringToRGB(overrides.stroke!);
+          const { opacity, ...color } = stringToRGB(overrides.stroke);
           expect(result.stroke.color).toMatchObject(color);
         });
 

@@ -14,13 +14,16 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
+
+import { boolean } from '@storybook/addon-knobs';
+import React from 'react';
 
 import { Chart, Datum, Partition, PartitionLayout, Settings } from '../../src';
-import { mocks } from '../../src/mocks/hierarchical/index';
 import { config } from '../../src/chart_types/partition_chart/layout/config/config';
-import React from 'react';
 import { ShapeTreeNode } from '../../src/chart_types/partition_chart/layout/types/viewmodel_types';
+import { mocks } from '../../src/mocks/hierarchical';
 import {
   categoricalFillColor,
   colorBrewerCategoricalStark9,
@@ -28,16 +31,15 @@ import {
   productLookup,
   regionLookup,
 } from '../utils/utils';
-import { boolean } from '@storybook/addon-knobs';
 
 export const Example = () => (
-  <Chart className="story-chart" /*size={{ width: 1200, height: 800 }}*/>
+  <Chart className="story-chart" /* size={{ width: 1200, height: 800 }} */>
     <Settings showLegend />
     <Partition
       id="spec_1"
       data={mocks.miniSunburst}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
@@ -50,7 +52,7 @@ export const Example = () => (
           },
         },
         {
-          groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.substr(0, 2),
+          groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2),
           nodeLabel: (d: any) => regionLookup[d].regionName,
           fillLabel: { maximizeFontSize: boolean('Maximize font size layer 2', true) },
           shape: {
@@ -78,7 +80,7 @@ export const Example = () => (
         },
         fontFamily: 'Arial',
         fillLabel: {
-          valueFormatter: (d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`,
+          valueFormatter: (d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
           fontStyle: 'italic',
           textInvertible: true,
           fontWeight: 900,

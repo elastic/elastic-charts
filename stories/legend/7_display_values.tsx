@@ -14,11 +14,13 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import { boolean, select } from '@storybook/addon-knobs';
 import React from 'react';
-import { AreaSeries, Axis, Chart, CurveType, Position, ScaleType, Settings } from '../../src/';
+
+import { AreaSeries, Axis, Chart, CurveType, Position, ScaleType, Settings } from '../../src';
 import { TSVB_DATASET } from '../../src/utils/data_samples/test_dataset_tsvb';
 import { arrayKnobs } from '../utils/knobs';
 
@@ -62,8 +64,8 @@ export const Example = () => {
   });
   return (
     <Chart className="story-chart">
-      <Settings showLegend={true} legendPosition={legendPosition} showLegendExtra={showLegendDisplayValue} />
-      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks={true} />
+      <Settings showLegend legendPosition={legendPosition} showLegendExtra={showLegendDisplayValue} />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
       {seriesComponents}
     </Chart>

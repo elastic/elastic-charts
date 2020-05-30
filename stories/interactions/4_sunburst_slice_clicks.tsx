@@ -14,10 +14,13 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import { action } from '@storybook/addon-actions';
+import { select } from '@storybook/addon-knobs';
 import React from 'react';
+
 import { Chart, Position, Settings, Partition, PartitionLayout } from '../../src';
 import {
   indexInterpolatedFillColor,
@@ -25,7 +28,6 @@ import {
   categoricalFillColor,
   colorBrewerCategoricalPastel12,
 } from '../utils/utils';
-import { select } from '@storybook/addon-knobs';
 
 const onElementListeners = {
   onElementClick: action('onElementClick'),
@@ -83,9 +85,8 @@ export const Example = () => {
                 if (partitionLayout === 'sunburst') {
                   // pick color from color palette based on mean angle - rather distinct colors in the inner ring
                   return indexInterpolatedFillColor(interpolatorCET2s)(d, (d.x0 + d.x1) / 2 / (2 * Math.PI), []);
-                } else {
-                  return categoricalFillColor(colorBrewerCategoricalPastel12)(d.sortIndex);
                 }
+                return categoricalFillColor(colorBrewerCategoricalPastel12)(d.sortIndex);
               },
             },
           },
@@ -101,9 +102,8 @@ export const Example = () => {
                 if (partitionLayout === 'sunburst') {
                   // pick color from color palette based on mean angle - rather distinct colors in the inner ring
                   return indexInterpolatedFillColor(interpolatorCET2s)(d, (d.x0 + d.x1) / 2 / (2 * Math.PI), []);
-                } else {
-                  return categoricalFillColor(colorBrewerCategoricalPastel12)(d.sortIndex);
                 }
+                return categoricalFillColor(colorBrewerCategoricalPastel12)(d.sortIndex);
               },
             },
           },

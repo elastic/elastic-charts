@@ -14,17 +14,20 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import createCachedSelector from 're-reselect';
-import { getTree } from './tree';
+
+import { SettingsSpec } from '../../../../specs';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { getPieSpec } from './pie_spec';
-import { HierarchyOfArrays, CHILDREN_KEY } from '../../layout/utils/group_by_rollup';
-import { Layer } from '../../specs';
 import { LegendItemLabel } from '../../../../state/selectors/get_legend_items_labels';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { SettingsSpec } from '../../../../specs';
+import { HierarchyOfArrays, CHILDREN_KEY } from '../../layout/utils/group_by_rollup';
+import { Layer } from '../../specs';
+
+import { getPieSpec } from './pie_spec';
+import { getTree } from './tree';
 
 /** @internal */
 export const getLegendItemsLabels = createCachedSelector(
@@ -65,8 +68,8 @@ function flatSlicesNames(
     return [];
   }
 
-  for (let i = 0; i < tree.length; i++) {
-    const branch = tree[i];
+  // eslint-disable-next-line no-restricted-syntax
+  for (const branch of tree) {
     const arrayNode = branch[1];
     const key = branch[0];
 

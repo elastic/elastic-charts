@@ -14,16 +14,18 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
+import { ChartTypes } from '../..';
+import { ScaleType } from '../../../scales';
+import { SpecTypes } from '../../../specs/settings';
+import { Dimensions } from '../../../utils/dimensions';
+import { computeSeriesDomains } from '../state/utils';
 import { computeXScale } from '../utils/scales';
 import { BasicSeriesSpec, SeriesTypes } from '../utils/specs';
-import { Dimensions } from '../../../utils/dimensions';
-import { ScaleType } from '../../../scales';
+
 import { getCursorBandPosition, getSnapPosition } from './crosshair_utils';
-import { computeSeriesDomains } from '../state/utils';
-import { ChartTypes } from '../..';
-import { SpecTypes } from '../../../specs/settings';
 
 describe('Crosshair utils linear scale', () => {
   const barSeries1SpecId = 'barSeries1';
@@ -158,10 +160,12 @@ describe('Crosshair utils linear scale', () => {
     expect(snappedPosition?.band).toEqual(1);
     expect(snappedPosition?.position).toEqual(120);
 
-    // TODO uncomment this when we will limit the scale function to domain values.
-    // snappedPosition = getSnapPosition(3, singleScale);
-    // expect(snappedPosition?.band).toEqual(1);
-    // expect(snappedPosition?.position).toBeUndefined();
+    /*
+     * TODO uncomment this when we will limit the scale function to domain values.
+     * snappedPosition = getSnapPosition(3, singleScale);
+     * expect(snappedPosition?.band).toEqual(1);
+     * expect(snappedPosition?.position).toBeUndefined();
+     */
 
     snappedPosition = getSnapPosition(0, multiLineSeriesScale, 2);
     expect(snappedPosition?.band).toEqual(1);
@@ -193,10 +197,12 @@ describe('Crosshair utils linear scale', () => {
     expect(snappedPosition?.band).toEqual(40);
     expect(snappedPosition?.position).toEqual(80);
 
-    // TODO uncomment this when we will limit the scale function to domain values.
-    // snappedPosition = getSnapPosition(3, singleScale);
-    // expect(snappedPosition?.band).toEqual(40);
-    // expect(snappedPosition?.position).toBeUndefined();
+    /*
+     * TODO uncomment this when we will limit the scale function to domain values.
+     * snappedPosition = getSnapPosition(3, singleScale);
+     * expect(snappedPosition?.band).toEqual(40);
+     * expect(snappedPosition?.position).toBeUndefined();
+     */
 
     // test a scale with a value of totalBarsInCluster > 1
     snappedPosition = getSnapPosition(0, multiBarSeriesScale, 2);

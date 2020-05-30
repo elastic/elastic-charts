@@ -14,11 +14,13 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
+
+import { ChartTypes } from '../chart_types';
+import { Spec } from '../specs';
 
 import { SpecList, PointerState } from './chart_state';
-import { Spec } from '../specs';
-import { ChartTypes } from '../chart_types';
 
 /** @internal */
 export function getSpecsFromStore<U extends Spec>(specs: SpecList, chartType: ChartTypes, specType?: string): U[] {

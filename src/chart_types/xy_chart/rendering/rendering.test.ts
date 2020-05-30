@@ -14,7 +14,16 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
+
+import { LegendItem } from '../../../commons/legend';
+import { MockDataSeries } from '../../../mocks';
+import { MockScale } from '../../../mocks/scale';
+import { mergePartial, RecursivePartial } from '../../../utils/commons';
+import { BarGeometry, PointGeometry } from '../../../utils/geometry';
+import { BarSeriesStyle, SharedGeometryStateStyle, PointStyle } from '../../../utils/themes/theme';
+import { DataSeriesDatum, XYChartSeriesIdentifier } from '../utils/series';
 
 import {
   getGeometryStateStyle,
@@ -24,13 +33,6 @@ import {
   getClippedRanges,
   getRadiusFn,
 } from './rendering';
-import { BarSeriesStyle, SharedGeometryStateStyle, PointStyle } from '../../../utils/themes/theme';
-import { DataSeriesDatum, XYChartSeriesIdentifier } from '../utils/series';
-import { mergePartial, RecursivePartial } from '../../../utils/commons';
-import { BarGeometry, PointGeometry } from '../../../utils/geometry';
-import { MockDataSeries } from '../../../mocks';
-import { MockScale } from '../../../mocks/scale';
-import { LegendItem } from '../../../commons/legend';
 
 describe('Rendering utils', () => {
   test('check if point is on geometry', () => {
@@ -570,7 +572,7 @@ describe('Rendering utils', () => {
 
       describe('markSizeRatio - 100', () => {
         const getRadius = getRadiusFn(data, 1, 100);
-        const expectedRadii = [80.71, 75.37, 1, 101.0, 83.61];
+        const expectedRadii = [80.71, 75.37, 1, 101, 83.61];
         it.each<[number | null, number]>(data.map(({ mark }, i) => [mark, expectedRadii[i]]))(
           'should return stepped value - data[%#]',
           (mark, expected) => {
@@ -582,7 +584,7 @@ describe('Rendering utils', () => {
       describe('markSizeRatio - 1000', () => {
         // Should be treated as 100
         const getRadius = getRadiusFn(data, 1, 1000);
-        const expectedRadii = [80.71, 75.37, 1, 101.0, 83.61];
+        const expectedRadii = [80.71, 75.37, 1, 101, 83.61];
         it.each<[number | null, number]>(data.map(({ mark }, i) => [mark, expectedRadii[i]]))(
           'should return stepped value - data[%#]',
           (mark, expected) => {

@@ -14,12 +14,15 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import createCachedSelector from 're-reselect';
-import { ComputedScales } from '../utils';
-import { computeSeriesGeometriesSelector } from './compute_series_geometries';
+
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { ComputedScales } from '../utils';
+
+import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 
 /** @internal */
 export const getComputedScalesSelector = createCachedSelector(

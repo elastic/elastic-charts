@@ -14,13 +14,15 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
-import { MockStore } from '../../../../mocks/store';
 import { MockSeriesSpec, MockAnnotationSpec, MockGlobalSpec } from '../../../../mocks/specs';
-import { computeAnnotationDimensionsSelector } from '../../state/selectors/compute_annotations';
+import { MockStore } from '../../../../mocks/store';
 import { ScaleType } from '../../../../scales';
+import { computeAnnotationDimensionsSelector } from '../../state/selectors/compute_annotations';
 import { RectAnnotationDatum } from '../../utils/specs';
+
 import { AnnotationRectProps } from './types';
 
 function expectAnnotationAtPosition(

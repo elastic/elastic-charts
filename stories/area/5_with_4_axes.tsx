@@ -14,9 +14,11 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import React from 'react';
+
 import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, timeFormatter } from '../../src';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
@@ -31,7 +33,7 @@ export const Example = () => {
         id="bottom"
         title="timestamp per 1 minute"
         position={Position.Bottom}
-        showOverlappingTicks={true}
+        showOverlappingTicks
         tickFormat={dateFormatter}
       />
       <Axis
@@ -40,7 +42,7 @@ export const Example = () => {
         position={Position.Left}
         tickFormat={(d) => `${Number(d).toFixed(0)}%`}
       />
-      <Axis id="top" position={Position.Top} showOverlappingTicks={true} tickFormat={timeFormatter('HH:mm:ss')} />
+      <Axis id="top" position={Position.Top} showOverlappingTicks tickFormat={timeFormatter('HH:mm:ss')} />
       <Axis
         id="right"
         title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}

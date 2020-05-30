@@ -14,14 +14,15 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
-import { renderRect } from '../primitives/rect';
 import { Rect, Fill, Stroke } from '../../../../../geoms/types';
-import { AnnotationRectProps } from '../../../annotations/rect/types';
+import { withContext } from '../../../../../renderers/canvas';
 import { RectAnnotationStyle } from '../../../../../utils/themes/theme';
 import { stringToRGB } from '../../../../partition_chart/layout/utils/d3_utils';
-import { withContext } from '../../../../../renderers/canvas';
+import { AnnotationRectProps } from '../../../annotations/rect/types';
+import { renderRect } from '../primitives/rect';
 
 /** @internal */
 export function renderRectAnnotations(
@@ -33,12 +34,12 @@ export function renderRectAnnotations(
     return annotation.rect;
   });
   const fillColor = stringToRGB(rectStyle.fill);
-  fillColor.opacity = fillColor.opacity * rectStyle.opacity;
+  fillColor.opacity *= rectStyle.opacity;
   const fill: Fill = {
     color: fillColor,
   };
   const strokeColor = stringToRGB(rectStyle.stroke);
-  strokeColor.opacity = strokeColor.opacity * rectStyle.opacity;
+  strokeColor.opacity *= rectStyle.opacity;
   const stroke: Stroke = {
     color: strokeColor,
     width: rectStyle.strokeWidth,

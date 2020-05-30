@@ -14,18 +14,20 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
-import { AxisLinePosition, isVerticalGrid } from '../../utils/axis_utils';
-import { mergeGridLineConfigs, Theme } from '../../../../utils/themes/theme';
+import { Line, Stroke } from '../../../../geoms/types';
+import { withContext } from '../../../../renderers/canvas';
 import { Dimensions } from '../../../../utils/dimensions';
 import { AxisId } from '../../../../utils/ids';
-import { AxisSpec } from '../../../../chart_types/xy_chart/utils/specs';
-import { getSpecsById } from '../../state/utils';
-import { renderMultiLine, MIN_STROKE_WIDTH } from './primitives/line';
-import { Line, Stroke } from '../../../../geoms/types';
+import { mergeGridLineConfigs, Theme } from '../../../../utils/themes/theme';
 import { stringToRGB } from '../../../partition_chart/layout/utils/d3_utils';
-import { withContext } from '../../../../renderers/canvas';
+import { getSpecsById } from '../../state/utils';
+import { AxisLinePosition, isVerticalGrid } from '../../utils/axis_utils';
+import { AxisSpec } from '../../utils/specs';
+
+import { renderMultiLine, MIN_STROKE_WIDTH } from './primitives/line';
 
 interface GridProps {
   chartTheme: Theme;

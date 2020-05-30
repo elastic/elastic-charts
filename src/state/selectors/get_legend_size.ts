@@ -14,18 +14,21 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import createCachedSelector from 're-reselect';
-import { CanvasTextBBoxCalculator } from '../../utils/bbox/canvas_text_bbox_calculator';
-import { BBox } from '../../utils/bbox/bbox_calculator';
-import { getSettingsSpecSelector } from './get_settings_specs';
+
 import { isVerticalAxis } from '../../chart_types/xy_chart/utils/axis_utils';
-import { getChartThemeSelector } from './get_chart_theme';
-import { GlobalChartState } from '../chart_state';
-import { getChartIdSelector } from './get_chart_id';
-import { getLegendItemsLabelsSelector } from './get_legend_items_labels';
 import { LEGEND_HIERARCHY_MARGIN } from '../../components/legend/legend_item';
+import { BBox } from '../../utils/bbox/bbox_calculator';
+import { CanvasTextBBoxCalculator } from '../../utils/bbox/canvas_text_bbox_calculator';
+import { GlobalChartState } from '../chart_state';
+
+import { getChartIdSelector } from './get_chart_id';
+import { getChartThemeSelector } from './get_chart_theme';
+import { getLegendItemsLabelsSelector } from './get_legend_items_labels';
+import { getSettingsSpecSelector } from './get_settings_specs';
 
 const getParentDimensionSelector = (state: GlobalChartState) => state.parentDimensions;
 
@@ -78,12 +81,11 @@ export const getLegendSizeSelector = createCachedSelector(
         width: Math.floor(Math.min(legendItemWidth + spacingBuffer, verticalWidth)),
         height: legendItemHeight,
       };
-    } else {
-      const isSingleLine = (parentDimensions.width - 20) / 200 > labels.length;
-      return {
-        height: isSingleLine ? bbox.height + 16 : bbox.height * 2 + 24,
-        width: Math.floor(Math.min(legendItemWidth + spacingBuffer, verticalWidth)),
-      };
     }
+    const isSingleLine = (parentDimensions.width - 20) / 200 > labels.length;
+    return {
+      height: isSingleLine ? bbox.height + 16 : bbox.height * 2 + 24,
+      width: Math.floor(Math.min(legendItemWidth + spacingBuffer, verticalWidth)),
+    };
   },
 )(getChartIdSelector);

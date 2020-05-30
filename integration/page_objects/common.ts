@@ -14,13 +14,14 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import Url from 'url';
 
+import defaults from '../defaults';
 import { JEST_TIMEOUT, toMatchImageSnapshot } from '../jest_env_setup';
 // @ts-ignore
-import defaults from '../defaults';
 
 const port = process.env.PORT || defaults.PORT;
 const host = process.env.HOST || defaults.HOST;
@@ -56,6 +57,7 @@ type ScreenshotElementAtUrlOptions = ScreenshotDOMElementOptions & {
 
 class CommonPage {
   readonly chartWaitSelector = '.echChartStatus[data-ech-render-complete=true]';
+
   readonly chartSelector = '.echChart';
 
   /**
@@ -79,7 +81,7 @@ class CommonPage {
       const element = document.querySelector(selector);
 
       if (!element) {
-        throw Error(`Could not find element that matches selector: ${selector}.`);
+        throw new Error(`Could not find element that matches selector: ${selector}.`);
       }
 
       const { x, y, width, height } = element.getBoundingClientRect();
@@ -99,7 +101,7 @@ class CommonPage {
     const path: string | undefined = options && options.path ? options.path : undefined;
     const rect = await this.getBoundingClientRect(selector);
 
-    return page.screenshot({
+    return await page.screenshot({
       path,
       clip: {
         x: rect.left - padding,

@@ -14,18 +14,23 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
+
+import path from 'path';
 
 import webdriver, { By } from 'selenium-webdriver';
-import path from 'path';
+
 jest.setTimeout(30000);
+
+/* eslint-disable global-require */
 
 let driver: webdriver.WebDriver;
 describe('smoke tests', () => {
   beforeAll(async () => {
     let capabilities: webdriver.Capabilities | null = null;
     switch (process.env.BROWSER || 'chrome') {
-      case 'ie': {
+      case 'ie':
         // HACK: include IEDriver path by nuget
         const driverPath = path.join(__dirname, '../Selenium.WebDriver.IEDriver.3.150.0/driver/');
         process.env.PATH = `${process.env.PATH};${driverPath};`;
@@ -33,24 +38,20 @@ describe('smoke tests', () => {
         capabilities.set('ignoreProtectedModeSettings', true);
         capabilities.set('ignoreZoomSetting', true);
         break;
-      }
-      case 'safari': {
+      case 'safari':
         capabilities = webdriver.Capabilities.safari();
         break;
-      }
-      case 'firefox': {
         require('geckodriver');
         capabilities = webdriver.Capabilities.firefox();
         break;
-      }
-      case 'chrome': {
+      case 'chrome':
+      default:
         require('chromedriver');
         capabilities = webdriver.Capabilities.chrome();
         capabilities.set('chromeOptions', {
           args: ['--headless', '--no-sandbox', '--disable-gpu', '--window-size=1980,1200'],
         });
         break;
-      }
     }
     if (capabilities) {
       driver = await new webdriver.Builder().withCapabilities(capabilities).build();
@@ -70,3 +71,5 @@ describe('smoke tests', () => {
     expect(elements.length).toBeGreaterThan(0);
   });
 });
+
+/* eslint-enable */

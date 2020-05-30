@@ -14,14 +14,18 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
+
+import { DateTime, Settings } from 'luxon';
 
 import { XDomain } from '../chart_types/xy_chart/domains/x_domain';
 import { computeXScale } from '../chart_types/xy_chart/utils/scales';
 import { Domain } from '../utils/domain';
-import { DateTime, Settings } from 'luxon';
-import { ScaleContinuous, ScaleType, ScaleBand } from '.';
+
 import { isLogarithmicScale } from './types';
+
+import { ScaleContinuous, ScaleType, ScaleBand } from '.';
 
 describe('Scale Continuous', () => {
   test('shall invert on continuous scale linear', () => {
@@ -122,8 +126,10 @@ describe('Scale Continuous', () => {
     const domain = [0, 100];
     const data = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90];
 
-    // we tweak the maxRange removing the bandwidth to correctly compute
-    // a band linear scale in computeXScale
+    /*
+     * we tweak the maxRange removing the bandwidth to correctly compute
+     * a band linear scale in computeXScale
+     */
     const range: [number, number] = [0, 100 - 10];
     const scaleLinear = new ScaleContinuous(
       { type: ScaleType.Linear, domain, range },
@@ -145,8 +151,10 @@ describe('Scale Continuous', () => {
       scaleType: ScaleType.Linear,
       type: 'xDomain',
     };
-    // we tweak the maxRange removing the bandwidth to correctly compute
-    // a band linear scale in computeXScale
+    /*
+     * we tweak the maxRange removing the bandwidth to correctly compute
+     * a band linear scale in computeXScale
+     */
     const scaleLinear = computeXScale({ xDomain, totalBarsInCluster: 1, range: [0, 109], barsPadding: 0 });
     expect(scaleLinear.bandwidth).toBe(109 / 11);
 
@@ -222,7 +230,7 @@ describe('Scale Continuous', () => {
       Settings.defaultZoneName = currentTz;
     });
 
-    timezonesToTest.map((tz) => {
+    timezonesToTest.forEach((tz) => {
       describe(`standard tests in ${tz}`, () => {
         beforeEach(() => {
           Settings.defaultZoneName = tz;
@@ -328,7 +336,7 @@ describe('Scale Continuous', () => {
         ]);
       });
 
-      xtest('should not leave gaps in hourly ticks on dst switch summer to winter time', () => {
+      test.skip('should not leave gaps in hourly ticks on dst switch summer to winter time', () => {
         Settings.defaultZoneName = 'Europe/Berlin';
 
         const ticks = getTicksForDomain(
@@ -470,7 +478,7 @@ describe('Scale Continuous', () => {
     });
 
     it('should throw for undefined values', () => {
-      expect(() => scale.scaleOrThrow(undefined)).toThrow();
+      expect(() => scale.scaleOrThrow()).toThrow();
     });
   });
 });

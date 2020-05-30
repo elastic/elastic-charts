@@ -14,11 +14,13 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
-import { withContext } from '../../../../../renderers/canvas';
 import { Circle, Stroke, Fill, Arc } from '../../../../../geoms/types';
+import { withContext } from '../../../../../renderers/canvas';
 import { RGBtoString } from '../../../../partition_chart/layout/utils/d3_utils';
+
 import { MIN_STROKE_WIDTH } from './line';
 
 /** @internal */

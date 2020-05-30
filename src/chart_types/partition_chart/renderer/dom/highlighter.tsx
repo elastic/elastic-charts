@@ -14,14 +14,16 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import React from 'react';
+
+import { Dimensions } from '../../../../utils/dimensions';
+import { PartitionLayout } from '../../layout/types/config_types';
+import { PointObject } from '../../layout/types/geometry_types';
 import { QuadViewModel } from '../../layout/types/viewmodel_types';
 import { TAU } from '../../layout/utils/math';
-import { PointObject } from '../../layout/types/geometry_types';
-import { PartitionLayout } from '../../layout/types/config_types';
-import { Dimensions } from '../../../../utils/dimensions';
 
 /** @internal */
 export interface HighlighterProps {

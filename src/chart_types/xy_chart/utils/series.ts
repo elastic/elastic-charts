@@ -14,20 +14,22 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
-import { ColorConfig } from '../../../utils/themes/theme';
+import { SeriesIdentifier, SeriesKey } from '../../../commons/series_id';
+import { ScaleType } from '../../../scales';
+import { ColorOverrides } from '../../../state/chart_state';
 import { Accessor, AccessorFn, getAccessorValue } from '../../../utils/accessor';
+import { Datum, Color } from '../../../utils/commons';
 import { GroupId, SpecId } from '../../../utils/ids';
+import { ColorConfig } from '../../../utils/themes/theme';
 import { splitSpecsByGroupId, YBasicSeriesSpec } from '../domains/y_domain';
+import { LastValues } from '../state/utils';
+
 import { formatNonStackedDataSeriesValues } from './nonstacked_series_utils';
 import { BasicSeriesSpec, SeriesTypes, SeriesSpecs, SeriesNameConfigOptions } from './specs';
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
-import { ScaleType } from '../../../scales';
-import { LastValues } from '../state/utils';
-import { Datum, Color } from '../../../utils/commons';
-import { ColorOverrides } from '../../../state/chart_state';
-import { SeriesIdentifier, SeriesKey } from '../../../commons/series_id';
 
 /** @internal */
 export const SERIES_DELIMITER = ' - ';
@@ -378,6 +380,7 @@ function getRawDataSeries(
         counts.lineSeries += ds ? ds.length : 0;
         break;
       case SeriesTypes.Area:
+      default:
         counts.areaSeries += ds ? ds.length : 0;
         break;
     }
@@ -409,6 +412,7 @@ export function getSplittedSeries(
   const seriesCollection = new Map<SeriesKey, SeriesCollectionValue>();
   const xValues: Set<any> = new Set();
   let isOrdinalScale = false;
+  // eslint-disable-next-line no-restricted-syntax
   for (const spec of seriesSpecs) {
     const dataSeries = splitSeries(spec);
     let currentRawDataSeries = dataSeries.rawDataSeries;
@@ -434,6 +438,7 @@ export function getSplittedSeries(
       });
     });
 
+    // eslint-disable-next-line no-restricted-syntax
     for (const xValue of dataSeries.xValues) {
       xValues.add(xValue);
     }

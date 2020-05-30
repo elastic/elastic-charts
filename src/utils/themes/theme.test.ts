@@ -14,9 +14,11 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
-import { Margins } from '../../utils/dimensions';
+import { Margins } from '../dimensions';
+
 import { DARK_THEME } from './dark_theme';
 import { LIGHT_THEME } from './light_theme';
 import {
@@ -260,11 +262,11 @@ describe('Theme', () => {
           },
           rectBorder: {
             ...DARK_THEME.barSeriesStyle.rectBorder,
-            ...partialTheme!.barSeriesStyle!.rectBorder,
+            ...partialTheme.barSeriesStyle!.rectBorder,
           },
           displayValue: {
             ...DARK_THEME.barSeriesStyle.displayValue,
-            ...partialTheme!.barSeriesStyle!.displayValue,
+            ...partialTheme.barSeriesStyle!.displayValue,
           },
         },
       });
@@ -285,7 +287,7 @@ describe('Theme', () => {
           ...DARK_THEME.sharedStyle,
           highlighted: {
             ...DARK_THEME.sharedStyle.highlighted,
-            ...partialTheme!.sharedStyle!.highlighted,
+            ...partialTheme.sharedStyle!.highlighted,
           },
         },
       });
@@ -302,7 +304,7 @@ describe('Theme', () => {
         ...DARK_THEME,
         scales: {
           ...DARK_THEME.scales,
-          ...partialTheme!.scales,
+          ...partialTheme.scales,
         },
       });
     });
@@ -325,11 +327,11 @@ describe('Theme', () => {
           ...DARK_THEME.axes,
           axisTitleStyle: {
             ...DARK_THEME.axes.axisTitleStyle,
-            ...partialTheme!.axes!.axisTitleStyle,
+            ...partialTheme.axes!.axisTitleStyle,
           },
           axisLineStyle: {
             ...DARK_THEME.axes.axisLineStyle,
-            ...partialTheme!.axes!.axisLineStyle,
+            ...partialTheme.axes!.axisLineStyle,
           },
         },
       });
@@ -346,7 +348,7 @@ describe('Theme', () => {
         ...DARK_THEME,
         colors: {
           ...DARK_THEME.colors,
-          ...partialTheme!.colors,
+          ...partialTheme.colors,
         },
       });
     });
@@ -362,7 +364,7 @@ describe('Theme', () => {
         ...DARK_THEME,
         legend: {
           ...DARK_THEME.legend,
-          ...partialTheme!.legend,
+          ...partialTheme.legend,
         },
       });
     });
@@ -385,11 +387,11 @@ describe('Theme', () => {
           ...DARK_THEME.crosshair,
           band: {
             ...DARK_THEME.crosshair.band,
-            ...partialTheme!.crosshair!.band,
+            ...partialTheme.crosshair!.band,
           },
           line: {
             ...DARK_THEME.crosshair.line,
-            ...partialTheme!.crosshair!.line,
+            ...partialTheme.crosshair!.line,
           },
         },
       });

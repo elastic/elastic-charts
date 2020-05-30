@@ -14,10 +14,12 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import { boolean, text } from '@storybook/addon-knobs';
 import React from 'react';
+
 import {
   AreaSeries,
   Axis,
@@ -29,8 +31,8 @@ import {
   Settings,
   timeFormatter,
 } from '../../src';
-import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
 import { getRandomNumberGenerator } from '../../src/mocks/utils';
+import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
 
 const dateFormatter = timeFormatter('HH:mm');
 
@@ -56,7 +58,7 @@ export const Example = () => {
         id="bottom"
         title="timestamp per 1 minute"
         position={Position.Bottom}
-        showOverlappingTicks={true}
+        showOverlappingTicks
         tickFormat={dateFormatter}
       />
       <Axis

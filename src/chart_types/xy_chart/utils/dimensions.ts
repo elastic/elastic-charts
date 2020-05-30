@@ -14,15 +14,17 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
+
+import { Position } from '../../../utils/commons';
+import { Dimensions } from '../../../utils/dimensions';
+import { AxisId } from '../../../utils/ids';
+import { Theme } from '../../../utils/themes/theme';
+import { getSpecsById } from '../state/utils';
 
 import { AxisTicksDimensions } from './axis_utils';
 import { AxisSpec } from './specs';
-import { Position } from '../../../utils/commons';
-import { Theme } from '../../../utils/themes/theme';
-import { AxisId } from '../../../utils/ids';
-import { Dimensions } from '../../../utils/dimensions';
-import { getSpecsById } from '../state/utils';
 
 /**
  * Compute the chart dimensions. It's computed removing from the parent dimensions
@@ -91,6 +93,7 @@ export function computeChartDimensions(
         verticalEdgeLabelOverflow = Math.max(verticalEdgeLabelOverflow, maxLabelBboxHeight / 2);
         break;
       case Position.Right:
+      default:
         vRightAxisSpecWidth += maxAxisWidth + chartMargins.right;
         verticalEdgeLabelOverflow = Math.max(verticalEdgeLabelOverflow, maxLabelBboxHeight / 2);
         break;

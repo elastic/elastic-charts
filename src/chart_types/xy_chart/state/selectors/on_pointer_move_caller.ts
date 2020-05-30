@@ -14,20 +14,23 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import createCachedSelector from 're-reselect';
 import { Selector } from 'reselect';
-import { GlobalChartState } from '../../../../state/chart_state';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { SettingsSpec, PointerEvent, PointerEventType } from '../../../../specs';
-import { ChartTypes } from '../../../index';
+
+import { ChartTypes } from '../../..';
 import { Scale } from '../../../../scales';
+import { SettingsSpec, PointerEvent, PointerEventType } from '../../../../specs';
+import { GlobalChartState } from '../../../../state/chart_state';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { Point } from '../../../../utils/point';
-import { getOrientedProjectedPointerPositionSelector } from './get_oriented_projected_pointer_position';
+
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { getGeometriesIndexKeysSelector } from './get_geometries_index_keys';
-import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { getOrientedProjectedPointerPositionSelector } from './get_oriented_projected_pointer_position';
 
 const getPointerEventSelector = createCachedSelector(
   [
@@ -125,8 +128,10 @@ export function createOnPointerMoveCaller(): (state: GlobalChartState) => void {
           const tempPrev = {
             ...prevPointerEvent,
           };
-          // we have to update the prevPointerEvents before possiibly calling the onPointerUpdate
-          // to avoid a recursive loop of calls caused by the impossibility to update the prevPointerEvent
+          /*
+           * we have to update the prevPointerEvents before possiibly calling the onPointerUpdate
+           * to avoid a recursive loop of calls caused by the impossibility to update the prevPointerEvent
+           */
           prevPointerEvent = nextPointerEvent;
           if (settings && settings.onPointerUpdate && hasPointerEventChanged(tempPrev, nextPointerEvent)) {
             settings.onPointerUpdate(nextPointerEvent);

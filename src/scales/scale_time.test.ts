@@ -14,15 +14,19 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import { DateTime } from 'luxon';
+
 import { ScaleContinuous, ScaleType } from '.';
 
 describe('[Scale Time] - timezones', () => {
   describe('timezone checks', () => {
-    // these tests are only for have a better understanding on how to deal with
-    // timezones, isos and formattings
+    /*
+     * these tests are only for have a better understanding on how to deal with
+     * timezones, isos and formattings
+     */
     test('[UTC] check equity of luxon and js Date', () => {
       const DATE_STRING = '2019-01-01T00:00:00.000Z';
       const dateA = DateTime.fromISO(DATE_STRING, { setZone: true });
@@ -33,9 +37,11 @@ describe('[Scale Time] - timezones', () => {
       expect(dateA.toISO()).toEqual(DATE_STRING);
       expect(dateB.toISOString()).toEqual(DATE_STRING);
       expect(dateA.toISO()).toEqual(dateB.toISOString());
-      // only valid if current timezone is +1
-      // expect(dateAInLocalTime.toISO()).toEqual('2019-01-01T01:00:00.000+01:00');
-      // if the date is already UTC, doesn't matter if you convert it to utc
+      /*
+       * only valid if current timezone is +1
+       * expect(dateAInLocalTime.toISO()).toEqual('2019-01-01T01:00:00.000+01:00');
+       * if the date is already UTC, doesn't matter if you convert it to utc
+       */
       expect(dateA.toUTC().toISO()).toEqual(DATE_STRING);
       expect(dateB.toISOString()).toEqual(DATE_STRING);
       expect(dateB.toISOString()).toEqual(dateA.toUTC().toISO());
