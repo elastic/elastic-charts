@@ -44,8 +44,8 @@ html {
 html body.echVisualTesting {
   visibility: hidden;
 
-  #story-root, [id^=echTooltipPortal] {
+  #story-root,
+  [id^='echTooltipPortal'] {
     visibility: visible;
   }
 }
-
