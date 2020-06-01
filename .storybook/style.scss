@@ -41,11 +41,16 @@ html {
   background: red;
 }
 
-html body.echVisualTesting {
-  visibility: hidden;
+// html body.echVisualTesting {
+html body {
+  background-color: blanchedalmond;
 
-  #story-root,
-  [id^='echTooltipPortal'] {
-    visibility: visible;
+  #root > div:not(#story-root) {
+    display: none;
+  }
+
+  #root {
+    padding-top: 100px;
+    padding-bottom: 100px;
   }
 }
