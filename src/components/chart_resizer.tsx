@@ -36,6 +36,8 @@ interface ResizerDispatchProps {
 
 type ResizerProps = ResizerStateProps & ResizerDispatchProps;
 
+const DEFAULT_RESIZE_DEBOUNCE = 200;
+
 class Resizer extends React.Component<ResizerProps> {
   private initialResizeComplete = false;
   private containerRef: RefObject<HTMLDivElement>;
@@ -53,10 +55,8 @@ class Resizer extends React.Component<ResizerProps> {
   componentDidMount() {
     this.onResizeDebounced = debounce(this.onResize, this.props.resizeDebounce);
     if (this.containerRef.current) {
-      const { clientWidth, clientHeight } = this.containerRef.current;
-      this.props.updateParentDimensions({ width: clientWidth, height: clientHeight, top: 0, left: 0 });
+      this.ro.observe(this.containerRef.current as Element);
     }
-    this.ro.observe(this.containerRef.current as Element);
   }
 
   componentWillUnmount() {
@@ -102,11 +102,9 @@ const mapDispatchToProps = (dispatch: Dispatch): ResizerDispatchProps =>
   );
 
 const mapStateToProps = (state: GlobalChartState): ResizerStateProps => {
-  const settings = getSettingsSpecSelector(state);
-  const resizeDebounce =
-    settings.resizeDebounce === undefined || settings.resizeDebounce === null ? 200 : settings.resizeDebounce;
+  const { resizeDebounce } = getSettingsSpecSelector(state);
   return {
-    resizeDebounce,
+    resizeDebounce: resizeDebounce == null || Number.isNaN(resizeDebounce) ? DEFAULT_RESIZE_DEBOUNCE : resizeDebounce,
   };
 };
 
