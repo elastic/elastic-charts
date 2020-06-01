@@ -772,14 +772,11 @@ export type LineAnnotationSpec = BaseAnnotationSpec<typeof AnnotationTypes.Line,
     zIndex?: number;
 };
 
-// Warning: (ae-missing-release-tag) "LineAnnotationStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface LineAnnotationStyle {
-    // (undocumented)
+    // @deprecated
     details: TextStyle;
-    // (undocumented)
-    line: StrokeStyle & Opacity;
+    line: StrokeStyle & Opacity & Partial<StrokeDashArray>;
 }
 
 // Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
@@ -1081,7 +1078,7 @@ export type RectAnnotationSpec = BaseAnnotationSpec<typeof AnnotationTypes.Recta
 // Warning: (ae-missing-release-tag) "RectAnnotationStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type RectAnnotationStyle = StrokeStyle & FillStyle & Opacity;
+export type RectAnnotationStyle = StrokeStyle & FillStyle & Opacity & Partial<StrokeDashArray>;
 
 // Warning: (ae-missing-release-tag) "RectBorderStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1380,16 +1377,12 @@ export const SpecTypes: Readonly<{
 // @public (undocumented)
 export type SpecTypes = $Values<typeof SpecTypes>;
 
-// Warning: (ae-missing-release-tag) "StrokeDashArray" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface StrokeDashArray {
     dash: number[];
 }
 
-// Warning: (ae-missing-release-tag) "StrokeStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface StrokeStyle<C = Color> {
     stroke: C;
     strokeWidth: number;
