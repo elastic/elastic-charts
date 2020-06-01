@@ -321,9 +321,9 @@ export interface LineAnnotationStyle {
    */
   line: StrokeStyle & Opacity & Partial<StrokeDashArray>;
   /**
-   * The style for the text shown on the tooltip
-   * Currently unused.
-   * @deprecated
+   * The style for the text shown on the tooltip.
+   * @deprecated This style is not currently used and will
+   * soon be removed.
    */
   details: TextStyle;
 }
