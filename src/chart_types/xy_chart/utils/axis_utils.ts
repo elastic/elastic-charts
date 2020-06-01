@@ -297,7 +297,7 @@ export function getTickLabelProps(
       y: tickPosition,
       offsetX,
       offsetY: 0,
-      align: isRotated ? 'center' : isLeftAxis ? 'right' : 'left',
+      align: isRotated ? 'center' : (isLeftAxis ? 'right' : 'left'),
       verticalAlign: 'middle',
     };
   }
@@ -310,7 +310,7 @@ export function getTickLabelProps(
     offsetX: 0,
     offsetY: isAxisTop ? -maxLabelBboxHeight / 2 : maxLabelBboxHeight / 2,
     align: 'center',
-    verticalAlign: isRotated ? 'middle' : isAxisTop ? 'bottom' : 'top',
+    verticalAlign: isRotated ? 'middle' : (isAxisTop ? 'bottom' : 'top'),
   };
 }
 
@@ -377,9 +377,6 @@ export function getMinMaxRange(
 
 function getBottomTopAxisMinMaxRange(chartRotation: Rotation, width: number) {
   switch (chartRotation) {
-    case 0:
-      // dealing with x domain
-      return { minRange: 0, maxRange: width };
     case 90:
       // dealing with y domain
       return { minRange: 0, maxRange: width };
@@ -387,9 +384,12 @@ function getBottomTopAxisMinMaxRange(chartRotation: Rotation, width: number) {
       // dealing with y domain
       return { minRange: width, maxRange: 0 };
     case 180:
-    default:
       // dealing with x domain
       return { minRange: width, maxRange: 0 };
+    case 0:
+    default:
+      // dealing with x domain
+      return { minRange: 0, maxRange: width };
   }
 }
 function getLeftAxisMinMaxRange(chartRotation: Rotation, height: number) {

@@ -31,30 +31,30 @@ import { BarGeometry, PointGeometry, IndexedGeometry, isPointGeometry, isBarGeom
  */
 export function getOrientedXPosition(xPos: number, yPos: number, chartRotation: Rotation, chartDimension: Dimensions) {
   switch (chartRotation) {
-    case 0:
-      return xPos;
     case 180:
       return chartDimension.width - xPos;
     case 90:
       return yPos;
     case -90:
-    default:
       return chartDimension.height - yPos;
+    case 0:
+    default:
+      return xPos;
   }
 }
 
 /** @internal */
 export function getOrientedYPosition(xPos: number, yPos: number, chartRotation: Rotation, chartDimension: Dimensions) {
   switch (chartRotation) {
-    case 0:
-      return yPos;
     case 180:
       return chartDimension.height - yPos;
     case -90:
       return xPos;
     case 90:
-    default:
       return chartDimension.width - xPos;
+    case 0:
+    default:
+      return yPos;
   }
 }
 

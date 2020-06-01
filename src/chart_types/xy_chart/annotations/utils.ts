@@ -79,15 +79,15 @@ export function getTranformedCursor(
   }
 
   switch (chartRotation) {
-    case 0:
-      return { x, y };
     case 90:
       return { x: y, y: width - x };
     case -90:
       return { x: height - y, y: x };
     case 180:
-    default:
       return { x: width - x, y: height - y };
+    case 0:
+    default:
+      return { x, y };
   }
 }
 

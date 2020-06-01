@@ -106,8 +106,8 @@ function repositionTextLine(
 ) {
   const { x, y } = origin;
   const { width, height } = box;
-  let lineX = x;
-  let lineY = y + i * height;
+  let lineX: number;
+  let lineY: number;
   switch (chartRotation) {
     case 180:
       lineX = x;
@@ -116,12 +116,15 @@ function repositionTextLine(
     case -90:
       lineX = x;
       lineY = y;
-      // TODO: check that this should break
       break;
     case 90:
-    default:
       lineX = x;
       lineY = y - (i - max + 1) * width;
+      break;
+    case 0:
+    default:
+      lineX = x;
+      lineY = y + i * height;
   }
 
   return { x: lineX, y: lineY };

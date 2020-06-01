@@ -88,13 +88,13 @@ export function computeChartDimensions(
         // find the max half label size to accomodate the left/right labels
         horizontalEdgeLabelOverflow = Math.max(horizontalEdgeLabelOverflow, maxLabelBboxWidth / 2);
         break;
-      case Position.Left:
-        vLeftAxisSpecWidth += maxAxisWidth + chartMargins.left;
+      case Position.Right:
+        vRightAxisSpecWidth += maxAxisWidth + chartMargins.right;
         verticalEdgeLabelOverflow = Math.max(verticalEdgeLabelOverflow, maxLabelBboxHeight / 2);
         break;
-      case Position.Right:
+      case Position.Left:
       default:
-        vRightAxisSpecWidth += maxAxisWidth + chartMargins.right;
+        vLeftAxisSpecWidth += maxAxisWidth + chartMargins.left;
         verticalEdgeLabelOverflow = Math.max(verticalEdgeLabelOverflow, maxLabelBboxHeight / 2);
         break;
     }
