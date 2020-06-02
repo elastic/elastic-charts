@@ -158,11 +158,11 @@ export function mapsToArrays(root: HierarchyOfMaps, sorter: NodeSorter): Hierarc
         return [key, newValue];
       },
     )
-    .sort(sorter)
-    .map((n: ArrayEntry, i) => {
-      entryValue(n).sortIndex = i;
-      return n;
-    }); // with the current algo, decreasing order is important
+      .sort(sorter)
+      .map((n: ArrayEntry, i) => {
+        entryValue(n).sortIndex = i;
+        return n;
+      }); // with the current algo, decreasing order is important
   return groupByMap(root, getRootArrayNode());
 }
 

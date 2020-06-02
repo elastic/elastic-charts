@@ -461,9 +461,7 @@ export function setBarSeriesAccessors(isHistogramMode: boolean, seriesSpecs: Map
 
 /** @internal */
 export function isHistogramModeEnabled(seriesSpecs: BasicSeriesSpec[]): boolean {
-  return seriesSpecs.some((spec) => {
-    return isBarSeriesSpec(spec) && spec.enableHistogramMode;
-  });
+  return seriesSpecs.some((spec) => isBarSeriesSpec(spec) && spec.enableHistogramMode);
 }
 
 /** @internal */
@@ -554,9 +552,9 @@ function renderGeometries(
 
       const displayValueSettings = spec.displayValueSettings
         ? {
-            valueFormatter,
-            ...spec.displayValueSettings,
-          }
+          valueFormatter,
+          ...spec.displayValueSettings,
+        }
         : undefined;
 
       const renderedBars = renderBars(
@@ -743,9 +741,7 @@ export function isVerticalRotation(chartRotation: Rotation) {
  * @internal
  */
 export function isLineAreaOnlyChart(specs: BasicSeriesSpec[]) {
-  return !specs.some((spec) => {
-    return spec.seriesType === SeriesTypes.Bar;
-  });
+  return !specs.some((spec) => spec.seriesType === SeriesTypes.Bar);
 }
 
 /** @internal */
@@ -816,7 +812,7 @@ export function isUniqueArray<B, T>(arr: B[], extractor?: (value: B) => T) {
       values.add(value);
       return true;
     });
-  })();
+  }());
 }
 
 /**

@@ -29,8 +29,18 @@ import { getProjectedPointerPositionSelector } from './get_projected_pointer_pos
 
 /** @internal */
 export const getCursorLinePositionSelector = createCachedSelector(
-  [computeChartDimensionsSelector, getSettingsSpecSelector, getProjectedPointerPositionSelector],
-  (chartDimensions, settingsSpec, projectedPointerPosition): Dimensions | undefined => {
-    return getCursorLinePosition(settingsSpec.rotation, chartDimensions.chartDimensions, projectedPointerPosition);
-  },
+  [
+    computeChartDimensionsSelector,
+    getSettingsSpecSelector,
+    getProjectedPointerPositionSelector,
+  ],
+  (
+    chartDimensions,
+    settingsSpec,
+    projectedPointerPosition,
+  ): Dimensions | undefined => getCursorLinePosition(
+    settingsSpec.rotation,
+    chartDimensions.chartDimensions,
+    projectedPointerPosition,
+  ),
 )(getChartIdSelector);

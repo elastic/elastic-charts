@@ -26,7 +26,5 @@ import { computeSeriesDomainsSelector } from './compute_series_domains';
 /** @internal */
 export const hasSingleSeriesSelector = createCachedSelector(
   [computeSeriesDomainsSelector],
-  (seriesDomainsAndData): boolean => {
-    return Boolean(seriesDomainsAndData) && seriesDomainsAndData.seriesCollection.size > 1;
-  },
+  (seriesDomainsAndData): boolean => Boolean(seriesDomainsAndData) && seriesDomainsAndData.seriesCollection.size > 1,
 )(getChartIdSelector);

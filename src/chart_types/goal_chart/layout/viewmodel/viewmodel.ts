@@ -34,11 +34,10 @@ export function shapeViewModel(textMeasure: TextMeasure, spec: GoalSpec, config:
     y: height * margin.top + innerHeight / 2,
   };
 
-  const pickQuads: PickFunction = (x, y) => {
-    return -innerWidth / 2 <= x && x <= innerWidth / 2 && -innerHeight / 2 <= y && y <= innerHeight / 2
+  const pickQuads: PickFunction = (x, y) =>
+    -innerWidth / 2 <= x && x <= innerWidth / 2 && -innerHeight / 2 <= y && y <= innerHeight / 2
       ? [bulletViewModel]
       : [];
-  };
 
   const {
     subtype,

@@ -98,8 +98,7 @@ function sectorFillOrigins(fillOutside: boolean) {
     const innerBias = fillOutside ? 9 : 1;
     const outerBias = divider - innerBias;
     // prettier-ignore
-    const radius =
-    (  innerBias * ringSectorInnerRadius(node)
+    const radius = (innerBias * ringSectorInnerRadius(node)
       + outerBias * ringSectorOuterRadius(node)
     )
     / divider;
@@ -170,17 +169,17 @@ function rectangleConstruction(treeHeight: number, topGroove: number) {
   return function(node: ShapeTreeNode): RectangleConstruction {
     return node.depth < treeHeight
       ? {
-          x0: node.x0,
-          y0: node.y0px,
-          x1: node.x1,
-          y1: node.y0px + getTopPadding(topGroove, node.y1px - node.y0px),
-        }
+        x0: node.x0,
+        y0: node.y0px,
+        x1: node.x1,
+        y1: node.y0px + getTopPadding(topGroove, node.y1px - node.y0px),
+      }
       : {
-          x0: node.x0,
-          y0: node.y0px,
-          x1: node.x1,
-          y1: node.y1px,
-        };
+        x0: node.x0,
+        y0: node.y0px,
+        x1: node.x1,
+        y1: node.y1px,
+      };
   };
 }
 
@@ -235,11 +234,11 @@ export function shapeViewModel(
 
   const rawChildNodes: Array<Part> = treemapLayout
     ? treemap(tree, treemapAreaAccessor, topGrooveAccessor(topGroove), grooveAccessor, {
-        x0: -width / 2,
-        y0: -height / 2,
-        width,
-        height,
-      })
+      x0: -width / 2,
+      y0: -height / 2,
+      width,
+      height,
+    })
     : sunburst(tree, sunburstAreaAccessor, { x0: 0, y0: -1 }, clockwiseSectors, specialFirstInnermostSector);
 
   const shownChildNodes = rawChildNodes.filter((n: Part) => {
@@ -280,10 +279,10 @@ export function shapeViewModel(
   const getRowSets = treemapLayout
     ? fillTextLayout(rectangleConstruction(treeHeight, topGroove), getRectangleRowGeometry, () => 0)
     : fillTextLayout(
-        ringSectorConstruction(config, innerRadius, ringThickness),
-        getSectorRowGeometry,
-        inSectorRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
-      );
+      ringSectorConstruction(config, innerRadius, ringThickness),
+      getSectorRowGeometry,
+      inSectorRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
+    );
 
   const rowSets: RowSet[] = getRowSets(
     textMeasure,
@@ -304,15 +303,14 @@ export function shapeViewModel(
   // linked text
   const currentY = [-height, -height, -height, -height];
 
-  const nodesWithoutRoom =
-    fillOutside || treemapLayout
-      ? [] // outsideFillNodes and linkLabels are in inherent conflict due to very likely overlaps
-      : quadViewModel.filter((n: ShapeTreeNode) => {
-          const id = nodeId(n);
-          const foundInFillText = rowSets.find((r: RowSet) => r.id === id);
-          // successful text render if found, and has some row(s)
-          return !(foundInFillText && foundInFillText.rows.length !== 0);
-        });
+  const nodesWithoutRoom = fillOutside || treemapLayout
+    ? [] // outsideFillNodes and linkLabels are in inherent conflict due to very likely overlaps
+    : quadViewModel.filter((n: ShapeTreeNode) => {
+      const id = nodeId(n);
+      const foundInFillText = rowSets.find((r: RowSet) => r.id === id);
+      // successful text render if found, and has some row(s)
+      return !(foundInFillText && foundInFillText.rows.length !== 0);
+    });
 
   const maxLinkedLabelTextLength = config.linkLabel.maxTextLength;
 
@@ -331,17 +329,15 @@ export function shapeViewModel(
     diskCenter,
   );
 
-  const pickQuads: PickFunction = (x, y) => {
-    return quadViewModel.filter(
-      treemapLayout
-        ? ({ x0, y0, x1, y1 }) => x0 <= x && x <= x1 && y0 <= y && y <= y1
-        : ({ x0, y0px, x1, y1px }) => {
-            const angleX = (Math.atan2(y, x) + TAU / 4 + TAU) % TAU;
-            const yPx = Math.sqrt(x * x + y * y);
-            return x0 <= angleX && angleX <= x1 && y0px <= yPx && yPx <= y1px;
-          },
-    );
-  };
+  const pickQuads: PickFunction = (x, y) => quadViewModel.filter(
+    treemapLayout
+      ? ({ x0, y0, x1, y1 }) => x0 <= x && x <= x1 && y0 <= y && y <= y1
+      : ({ x0, y0px, x1, y1px }) => {
+        const angleX = (Math.atan2(y, x) + TAU / 4 + TAU) % TAU;
+        const yPx = Math.sqrt(x * x + y * y);
+        return x0 <= angleX && angleX <= x1 && y0px <= yPx && yPx <= y1px;
+      },
+  );
 
   // combined viewModel
   return {
@@ -357,20 +353,18 @@ export function shapeViewModel(
 }
 
 function partToShapeTreeNode(treemapLayout: boolean, innerRadius: Radius, ringThickness: number) {
-  return ({ node, x0, x1, y0, y1 }: Part): ShapeTreeNode => {
-    return {
-      dataName: entryKey(node),
-      depth: depthAccessor(node),
-      value: aggregateAccessor(node),
-      parent: parentAccessor(node),
-      sortIndex: sortIndexAccessor(node),
-      x0,
-      x1,
-      y0,
-      y1,
-      y0px: treemapLayout ? y0 : innerRadius + y0 * ringThickness,
-      y1px: treemapLayout ? y1 : innerRadius + y1 * ringThickness,
-      yMidPx: treemapLayout ? (y0 + y1) / 2 : innerRadius + ((y0 + y1) / 2) * ringThickness,
-    };
-  };
+  return ({ node, x0, x1, y0, y1 }: Part): ShapeTreeNode => ({
+    dataName: entryKey(node),
+    depth: depthAccessor(node),
+    value: aggregateAccessor(node),
+    parent: parentAccessor(node),
+    sortIndex: sortIndexAccessor(node),
+    x0,
+    x1,
+    y0,
+    y1,
+    y0px: treemapLayout ? y0 : innerRadius + y0 * ringThickness,
+    y1px: treemapLayout ? y1 : innerRadius + y1 * ringThickness,
+    yMidPx: treemapLayout ? (y0 + y1) / 2 : innerRadius + ((y0 + y1) / 2) * ringThickness,
+  });
 }

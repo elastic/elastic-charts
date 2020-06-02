@@ -27,7 +27,5 @@ import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 /** @internal */
 export const getComputedScalesSelector = createCachedSelector(
   [computeSeriesGeometriesSelector],
-  (geometries): ComputedScales => {
-    return geometries.scales;
-  },
+  ({ scales }): ComputedScales => scales,
 )(getChartIdSelector);

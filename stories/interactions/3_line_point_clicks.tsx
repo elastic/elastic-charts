@@ -28,26 +28,24 @@ const onElementListeners = {
   onElementOut: action('onElementOut'),
 };
 
-export const Example = () => {
-  return (
-    <Chart className="story-chart">
-      <Settings showLegend showLegendExtra legendPosition={Position.Right} {...onElementListeners} />
-      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
-      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
+export const Example = () => (
+  <Chart className="story-chart">
+    <Settings showLegend showLegendExtra legendPosition={Position.Right} {...onElementListeners} />
+    <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
+    <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
-      <LineSeries
-        id="line"
-        xScaleType={ScaleType.Linear}
-        yScaleType={ScaleType.Linear}
-        xAccessor="x"
-        yAccessors={['y']}
-        data={[
-          { x: 0, y: 2 },
-          { x: 1, y: 7 },
-          { x: 2, y: 3 },
-          { x: 3, y: 6 },
-        ]}
-      />
-    </Chart>
-  );
-};
+    <LineSeries
+      id="line"
+      xScaleType={ScaleType.Linear}
+      yScaleType={ScaleType.Linear}
+      xAccessor="x"
+      yAccessors={['y']}
+      data={[
+        { x: 0, y: 2 },
+        { x: 1, y: 7 },
+        { x: 2, y: 3 },
+        { x: 3, y: 6 },
+      ]}
+    />
+  </Chart>
+);

@@ -34,9 +34,7 @@ import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 const MIN_AREA_SIZE = 1;
 
 const getMouseDownPosition = (state: GlobalChartState) => state.interactions.pointer.down;
-const getCurrentPointerPosition = (state: GlobalChartState) => {
-  return state.interactions.pointer.current.position;
-};
+const getCurrentPointerPosition = (state: GlobalChartState) => state.interactions.pointer.current.position;
 
 /** @internal */
 export const getBrushAreaSelector = createCachedSelector(

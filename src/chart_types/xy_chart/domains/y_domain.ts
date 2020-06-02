@@ -224,8 +224,8 @@ export function splitSpecsByGroupId(specs: YBasicSeriesSpec[]) {
     // stack every bars if using histogram mode
     // independenyly from lines and areas
     if (
-      (spec.seriesType === SeriesTypes.Bar && isHistogramEnabled) ||
-      (spec.stackAccessors && spec.stackAccessors.length > 0)
+      (spec.seriesType === SeriesTypes.Bar && isHistogramEnabled)
+      || (spec.stackAccessors && spec.stackAccessors.length > 0)
     ) {
       group.stacked.push(spec);
     } else {

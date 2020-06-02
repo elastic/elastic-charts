@@ -28,9 +28,7 @@ import { getTooltipSnapSelector } from './get_tooltip_snap';
 /** @internal */
 export const isTooltipSnapEnableSelector = createCachedSelector(
   [computeSeriesGeometriesSelector, getTooltipSnapSelector],
-  (seriesGeometries, snap) => {
-    return isTooltipSnapEnabled(seriesGeometries.scales.xScale, snap);
-  },
+  (seriesGeometries, snap) => isTooltipSnapEnabled(seriesGeometries.scales.xScale, snap),
 )(getChartIdSelector);
 
 function isTooltipSnapEnabled(xScale: Scale, snap: boolean) {

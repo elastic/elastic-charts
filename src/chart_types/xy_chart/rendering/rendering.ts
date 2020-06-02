@@ -128,9 +128,9 @@ export function getRadiusFn(data: DataSeriesDatum[], lineWidth: number, markSize
       mark === null
         ? acc
         : {
-            min: Math.min(acc.min, mark / 2),
-            max: Math.max(acc.max, mark / 2),
-          },
+          min: Math.min(acc.min, mark / 2),
+          max: Math.max(acc.max, mark / 2),
+        },
     { min: Infinity, max: -Infinity },
   );
   const adjustedMarkSizeRatio = Math.min(Math.max(markSizeRatio, 0), 100);
@@ -325,36 +325,32 @@ export function renderBars(
     const x = xScaled + xScale.bandwidth * orderIndex;
     const width = xScale.bandwidth;
 
-    const formattedDisplayValue =
-      displayValueSettings && displayValueSettings.valueFormatter
-        ? displayValueSettings.valueFormatter(initialY1)
-        : undefined;
+    const formattedDisplayValue = displayValueSettings && displayValueSettings.valueFormatter
+      ? displayValueSettings.valueFormatter(initialY1)
+      : undefined;
 
     // only show displayValue for even bars if showOverlappingValue
-    const displayValueText =
-      displayValueSettings && displayValueSettings.isAlternatingValueLabel
-        ? barGeometries.length % 2 === 0
-          ? formattedDisplayValue
-          : undefined
-        : formattedDisplayValue;
+    const displayValueText = displayValueSettings && displayValueSettings.isAlternatingValueLabel
+      ? barGeometries.length % 2 === 0
+        ? formattedDisplayValue
+        : undefined
+      : formattedDisplayValue;
 
     const computedDisplayValueWidth = bboxCalculator.compute(displayValueText || '', padding, fontSize, fontFamily)
       .width;
-    const displayValueWidth =
-      displayValueSettings && displayValueSettings.isValueContainedInElement ? width : computedDisplayValueWidth;
+    const displayValueWidth = displayValueSettings && displayValueSettings.isValueContainedInElement ? width : computedDisplayValueWidth;
 
     const hideClippedValue = displayValueSettings ? displayValueSettings.hideClippedValue : undefined;
 
-    const displayValue =
-      displayValueSettings && displayValueSettings.showValueLabel
-        ? {
-            text: displayValueText,
-            width: displayValueWidth,
-            height: fontSize,
-            hideClippedValue,
-            isValueContainedInElement: displayValueSettings.isValueContainedInElement,
-          }
-        : undefined;
+    const displayValue = displayValueSettings && displayValueSettings.showValueLabel
+      ? {
+        text: displayValueText,
+        width: displayValueWidth,
+        height: fontSize,
+        hideClippedValue,
+        isValueContainedInElement: displayValueSettings.isValueContainedInElement,
+      }
+      : undefined;
 
     const seriesIdentifier: XYChartSeriesIdentifier = {
       key: dataSeries.key,
@@ -587,8 +583,7 @@ export function renderArea(
     })
     .curve(getCurveFactory(curve));
 
-  const clippedRanges =
-    hasFit && !hasY0Accessors && !isStacked ? getClippedRanges(dataSeries.data, xScale, xScaleOffset) : [];
+  const clippedRanges = hasFit && !hasY0Accessors && !isStacked ? getClippedRanges(dataSeries.data, xScale, xScaleOffset) : [];
   let y1Line: string | null;
 
   try {

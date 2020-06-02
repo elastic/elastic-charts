@@ -27,9 +27,7 @@ import { getTree } from './tree';
 /** @internal */
 export const getFlatHierarchy = createCachedSelector(
   [getTree],
-  (tree): Array<[PrimitiveValue, number, PrimitiveValue]> => {
-    return flatHierarchy(tree);
-  },
+  (tree): Array<[PrimitiveValue, number, PrimitiveValue]> => flatHierarchy(tree),
 )(getChartIdSelector);
 
 function flatHierarchy(tree: HierarchyOfArrays, orderedList: Array<[PrimitiveValue, number, PrimitiveValue]> = []) {

@@ -64,19 +64,17 @@ export const getCursorBandPositionSelector = createCachedSelector(
     totalBarsInCluster,
     isTooltipSnapEnabled,
     geometriesIndexKeys,
-  ) => {
-    return getCursorBand(
-      orientedProjectedPointerPosition,
-      externalPointerEvent,
-      chartDimensions.chartDimensions,
-      settingsSpec,
-      seriesGeometries.scales.xScale,
-      seriesSpec,
-      totalBarsInCluster,
-      isTooltipSnapEnabled,
-      geometriesIndexKeys,
-    );
-  },
+  ) => getCursorBand(
+    orientedProjectedPointerPosition,
+    externalPointerEvent,
+    chartDimensions.chartDimensions,
+    settingsSpec,
+    seriesGeometries.scales.xScale,
+    seriesSpec,
+    totalBarsInCluster,
+    isTooltipSnapEnabled,
+    geometriesIndexKeys,
+  ),
 )(getChartIdSelector);
 
 function getCursorBand(

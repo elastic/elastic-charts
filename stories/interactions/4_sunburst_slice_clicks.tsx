@@ -69,17 +69,11 @@ export const Example = () => {
         config={{
           partitionLayout,
         }}
-        valueAccessor={(d) => {
-          return d[3];
-        }}
+        valueAccessor={(d) => d[3]}
         layers={[
           {
-            groupByRollup: (d: PieDatum) => {
-              return d[0];
-            },
-            nodeLabel: (d) => {
-              return `dest: ${d}`;
-            },
+            groupByRollup: (d: PieDatum) => d[0],
+            nodeLabel: (d) => `dest: ${d}`,
             shape: {
               fillColor: (d) => {
                 if (partitionLayout === 'sunburst') {
@@ -91,12 +85,8 @@ export const Example = () => {
             },
           },
           {
-            groupByRollup: (d: PieDatum) => {
-              return d[2];
-            },
-            nodeLabel: (d) => {
-              return `source: ${d}`;
-            },
+            groupByRollup: (d: PieDatum) => d[2],
+            nodeLabel: (d) => `source: ${d}`,
             shape: {
               fillColor: (d) => {
                 if (partitionLayout === 'sunburst') {

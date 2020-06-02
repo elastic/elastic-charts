@@ -83,10 +83,9 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
     const id = uuid.v4();
     const storeReducer = chartStoreReducer(id);
-    const enhancers =
-      typeof window !== 'undefined' && (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-        ? (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ trace: true, name: `@elastic/charts (id: ${id})` })()
-        : undefined;
+    const enhancers = typeof window !== 'undefined' && (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+      ? (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ trace: true, name: `@elastic/charts (id: ${id})` })()
+      : undefined;
 
     this.chartStore = createStore(storeReducer, enhancers);
     this.state = {
@@ -154,9 +153,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     };
   }
 
-  getChartContainerRef = () => {
-    return this.chartContainerRef;
-  };
+  getChartContainerRef = () => this.chartContainerRef;
 
   dispatchExternalPointerEvent(event: PointerEvent) {
     this.chartStore.dispatch(onExternalPointerEvent(event));

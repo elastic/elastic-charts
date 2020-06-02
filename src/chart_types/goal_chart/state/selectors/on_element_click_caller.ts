@@ -55,15 +55,13 @@ export function createOnElementClickCaller(): (state: GlobalChartState) => void 
           const nextPickedShapesLength = pickedShapes.length;
           if (nextPickedShapesLength > 0 && isClicking(prevClick, lastClick)) {
             if (settings && settings.onElementClick) {
-              const elements = pickedShapes.map<[Array<LayerValue>, SeriesIdentifier]>((values) => {
-                return [
-                  values,
-                  {
-                    specId: spec.id,
-                    key: `spec{${spec.id}}`,
-                  },
-                ];
-              });
+              const elements = pickedShapes.map<[Array<LayerValue>, SeriesIdentifier]>((values) => [
+                values,
+                {
+                  specId: spec.id,
+                  key: `spec{${spec.id}}`,
+                },
+              ]);
               settings.onElementClick(elements);
             }
           }

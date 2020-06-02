@@ -24,9 +24,7 @@ import { TickFormatter, TickFormatterOptions } from '../../chart_types/xy_chart/
 import { getMomentWithTz } from './date_time';
 
 export function timeFormatter(format: string): TickFormatter {
-  return (value: number, options?: TickFormatterOptions): string => {
-    return getMomentWithTz(value, options && options.timeZone).format(format);
-  };
+  return (value: number, options?: TickFormatterOptions): string => getMomentWithTz(value, options && options.timeZone).format(format);
 }
 
 export function niceTimeFormatter(domain: [number, number]): TickFormatter {

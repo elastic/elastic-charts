@@ -28,9 +28,7 @@ import { getSettingsSpecSelector } from './get_settings_specs';
 /** @internal */
 export const getChartThemeSelector = createCachedSelector(
   [getSettingsSpecSelector],
-  (settingsSpec): Theme => {
-    return getTheme(settingsSpec.baseTheme, settingsSpec.theme);
-  },
+  (settingsSpec): Theme => getTheme(settingsSpec.baseTheme, settingsSpec.theme),
 )(getChartIdSelector);
 
 function getTheme(baseTheme?: Theme, theme?: PartialTheme | PartialTheme[]): Theme {

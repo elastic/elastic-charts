@@ -27,7 +27,5 @@ import { getSettingsSpecSelector } from './get_settings_specs';
 /** @internal */
 export const getChartRotationSelector = createCachedSelector(
   [getSettingsSpecSelector],
-  (settingsSpec): Rotation => {
-    return settingsSpec.rotation;
-  },
+  (settingsSpec): Rotation => settingsSpec.rotation,
 )(getChartIdSelector);

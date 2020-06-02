@@ -277,10 +277,9 @@ export function mergePartial<T>(
             );
           }
         } else if (!(key in baseClone)) {
-          baseClone[key] =
-            (partial as any)[key] !== undefined
-              ? (partial as any)[key]
-              : (additionalPartials.find((v: any) => v[key] !== undefined) || ({} as any))[key];
+          baseClone[key] = (partial as any)[key] !== undefined
+            ? (partial as any)[key]
+            : (additionalPartials.find((v: any) => v[key] !== undefined) || ({} as any))[key];
         }
       });
     }

@@ -420,9 +420,7 @@ export function getSplittedSeries(
       isOrdinalScale = true;
     }
     if (deselectedDataSeries.length > 0) {
-      currentRawDataSeries = dataSeries.rawDataSeries.filter(({ key }) => {
-        return !deselectedDataSeries.some(({ key: deselectedKey }) => key === deselectedKey);
-      });
+      currentRawDataSeries = dataSeries.rawDataSeries.filter(({ key }) => !deselectedDataSeries.some(({ key: deselectedKey }) => key === deselectedKey));
     }
 
     splittedSeries.set(spec.id, currentRawDataSeries);
@@ -507,8 +505,7 @@ export function getSeriesName(
   }
 
   let name = '';
-  const nameKeys =
-    spec && spec.yAccessors.length > 1 ? seriesIdentifier.seriesKeys : seriesIdentifier.seriesKeys.slice(0, -1);
+  const nameKeys = spec && spec.yAccessors.length > 1 ? seriesIdentifier.seriesKeys : seriesIdentifier.seriesKeys.slice(0, -1);
 
   // there is one series, the is only one yAccessor, the first part is not null
   if (hasSingleSeries || nameKeys.length === 0 || nameKeys[0] == null) {
@@ -537,9 +534,7 @@ export function getSortedDataSeriesColorsValuesMap(
   seriesCollection: Map<SeriesKey, SeriesCollectionValue>,
 ): Map<SeriesKey, SeriesCollectionValue> {
   const seriesColorsArray = [...seriesCollection];
-  seriesColorsArray.sort(([, specA], [, specB]) => {
-    return getSortIndex(specA, seriesCollection.size) - getSortIndex(specB, seriesCollection.size);
-  });
+  seriesColorsArray.sort(([, specA], [, specB]) => getSortIndex(specA, seriesCollection.size) - getSortIndex(specB, seriesCollection.size));
 
   return new Map([...seriesColorsArray]);
 }

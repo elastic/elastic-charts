@@ -25,7 +25,6 @@ import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const Example = () => {
   const customSeriesNamingFn: SeriesNameFn = ({ yAccessor, splitAccessors }) => {
-    // eslint-disable-next-line react/prop-types
     if (yAccessor === 'y1' && splitAccessors.get('g') === 'a') {
       return 'Custom full series name';
     }

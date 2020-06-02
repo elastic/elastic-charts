@@ -84,9 +84,7 @@ export const getTooltipInfoAndGeometriesSelector = createCachedSelector(
     getTooltipHeaderFormatterSelector,
   ],
   getTooltipAndHighlightFromValue,
-)((state: GlobalChartState) => {
-  return state.chartId;
-});
+)(({ chartId }) => chartId);
 
 function getTooltipAndHighlightFromValue(
   seriesSpecs: BasicSeriesSpec[],
@@ -154,8 +152,8 @@ function getTooltipAndHighlightFromValue(
       // check if the pointer is on the geometry (avoid checking if using external pointer event)
       let isHighlighted = false;
       if (
-        (!externalPointerEvent || isPointerOutEvent(externalPointerEvent)) &&
-        isPointOnGeometry(x, y, indexedGeometry, settings.pointBuffer)
+        (!externalPointerEvent || isPointerOutEvent(externalPointerEvent))
+        && isPointOnGeometry(x, y, indexedGeometry, settings.pointBuffer)
       ) {
         isHighlighted = true;
         highlightedGeometries.push(indexedGeometry);
@@ -208,15 +206,11 @@ function getTooltipAndHighlightFromValue(
 /** @internal */
 export const getTooltipInfoSelector = createCachedSelector(
   [getTooltipInfoAndGeometriesSelector],
-  ({ tooltip }): TooltipInfo => {
-    return tooltip;
-  },
+  ({ tooltip }): TooltipInfo => tooltip,
 )(getChartIdSelector);
 
 /** @internal */
 export const getHighlightedGeomsSelector = createCachedSelector(
   [getTooltipInfoAndGeometriesSelector],
-  (values): IndexedGeometry[] => {
-    return values.highlightedGeometries;
-  },
+  ({ highlightedGeometries }): IndexedGeometry[] => highlightedGeometries,
 )(getChartIdSelector);

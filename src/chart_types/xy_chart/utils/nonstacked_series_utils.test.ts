@@ -471,8 +471,7 @@ describe('Non-Stacked Series Utils', () => {
     describe.each(['area', 'line'])('Spec type - %s', (specType) => {
       const rawDataSeries = [MockRawDataSeries.fitFunction({ shuffle: false })];
       const dataSeries = MockDataSeries.fitFunction({ shuffle: false });
-      const spec =
-        specType === 'area' ? MockSeriesSpec.area({ fit: Fit.Linear }) : MockSeriesSpec.line({ fit: Fit.Linear });
+      const spec = specType === 'area' ? MockSeriesSpec.area({ fit: Fit.Linear }) : MockSeriesSpec.line({ fit: Fit.Linear });
       const seriesSpecs = MockSeriesSpecs.fromSpecs([spec]);
 
       beforeAll(() => {
@@ -493,8 +492,7 @@ describe('Non-Stacked Series Utils', () => {
       });
 
       it('return not call fitFunction if no fit specified', () => {
-        const spec =
-          specType === 'area' ? MockSeriesSpec.area({ fit: undefined }) : MockSeriesSpec.line({ fit: undefined });
+        const spec = specType === 'area' ? MockSeriesSpec.area({ fit: undefined }) : MockSeriesSpec.line({ fit: undefined });
         const noFitSpec = MockSeriesSpecs.fromSpecs([spec]);
         testModule.formatNonStackedDataSeriesValues(rawDataSeries, false, noFitSpec, ScaleType.Linear);
 

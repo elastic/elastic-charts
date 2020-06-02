@@ -24,9 +24,7 @@ import * as TestDatasets from '../../src/utils/data_samples/test_dataset';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const Example = () => {
-  const isVisibleFunction: FilterPredicate = (series) => {
-    return series.splitAccessors.get('g1') === 'cloudflare.com';
-  };
+  const isVisibleFunction: FilterPredicate = (series) => series.splitAccessors.get('g1') === 'cloudflare.com';
   return (
     <Chart className="story-chart">
       <Settings showLegend showLegendExtra legendPosition={Position.Right} />

@@ -48,9 +48,7 @@ describe('Picked shapes selector', () => {
   beforeEach(() => {
     store = initStore();
     const common = {
-      valueAccessor: (d: { v: number }) => {
-        return d.v;
-      },
+      valueAccessor: (d: { v: number }) => d.v,
       data: [
         { g1: 'a', g2: 'a', v: 1 },
         { g1: 'a', g2: 'b', v: 1 },

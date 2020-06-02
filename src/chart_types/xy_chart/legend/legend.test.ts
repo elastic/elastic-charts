@@ -109,9 +109,7 @@ const axisSpec: AxisSpec = {
   position: Position.Left,
   tickSize: 10,
   tickPadding: 10,
-  tickFormat: (value: any) => {
-    return `${value}`;
-  },
+  tickFormat: (value: any) => `${value}`,
 };
 axesSpecs.push(axisSpec);
 

@@ -28,16 +28,12 @@ const dateFormatter = timeFormatter('HH:mm:ss');
 
 export const Example = () => {
   const getRandomNumber = getRandomNumberGenerator();
-  const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d: any) => {
-    return {
-      x: d[0],
-      max: d[1] + 4 + 4 * getRandomNumber(),
-      min: d[1] - 4 - 4 * getRandomNumber(),
-    };
-  });
-  const lineData = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d: any) => {
-    return [d[0], d[1]];
-  });
+  const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d: any) => ({
+    x: d[0],
+    max: d[1] + 4 + 4 * getRandomNumber(),
+    min: d[1] - 4 - 4 * getRandomNumber(),
+  }));
+  const lineData = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d: any) => [d[0], d[1]]);
   const scaleToDataExtent = boolean('scale to extent', true);
   return (
     <Chart className="story-chart">

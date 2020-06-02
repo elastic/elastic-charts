@@ -44,7 +44,5 @@ export const computeChartDimensionsSelector = createCachedSelector(
   ): {
     chartDimensions: Dimensions;
     leftMargin: number;
-  } => {
-    return computeChartDimensions(chartContainerDimensions, chartTheme, axesTicksDimensions, axesSpecs);
-  },
+  } => computeChartDimensions(chartContainerDimensions, chartTheme, axesTicksDimensions, axesSpecs),
 )(getChartIdSelector);

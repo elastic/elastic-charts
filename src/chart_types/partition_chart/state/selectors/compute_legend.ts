@@ -96,7 +96,5 @@ export const computeLegendSelector = createCachedSelector(
 )(getChartIdSelector);
 
 function findIndex(items: Array<[PrimitiveValue, number, PrimitiveValue]>, child: QuadViewModel) {
-  return items.findIndex(([dataName, depth, value]) => {
-    return dataName === child.dataName && depth === child.depth && value === child.value;
-  });
+  return items.findIndex(([dataName, depth, value]) => dataName === child.dataName && depth === child.depth && value === child.value);
 }

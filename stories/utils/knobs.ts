@@ -93,7 +93,5 @@ export const getPlacementKnob = (name = 'placement', defaultValue?: Placement) =
 
 export function arrayKnobs(name: string, values: (string | number)[]): (string | number)[] {
   const stringifiedValues = values.map<string>((d) => `${d}`);
-  return array(name, stringifiedValues).map<string | number>((value: string) => {
-    return !isNaN(parseFloat(value)) ? parseFloat(value) : value;
-  });
+  return array(name, stringifiedValues).map<string | number>((value: string) => !isNaN(parseFloat(value)) ? parseFloat(value) : value);
 }

@@ -27,8 +27,8 @@ export const Example = () => {
   const hasCustomDomain = boolean('has custom domain', false);
   const xDomain = hasCustomDomain
     ? {
-        min: 0,
-      }
+      min: 0,
+    }
     : undefined;
 
   const theme = {

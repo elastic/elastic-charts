@@ -34,8 +34,6 @@ export const getHighlightedSectorsSelector = createCachedSelector(
     if (!highlightedLegendItemKey) {
       return [];
     }
-    return geoms.quadViewModel.filter((geom) => {
-      return geom.dataName === highlightedLegendItemKey;
-    });
+    return geoms.quadViewModel.filter(({ dataName }) => dataName === highlightedLegendItemKey);
   },
 )(getChartIdSelector);

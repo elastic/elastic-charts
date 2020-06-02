@@ -25,56 +25,54 @@ import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const dateFormatter = timeFormatter('HH:mm');
 
-export const Example = () => {
-  return (
-    <Chart className="story-chart">
-      <Settings showLegend showLegendExtra legendPosition={Position.Right} />
-      <Axis
-        id="bottom"
-        position={Position.Bottom}
-        title="timestamp per 1 minute"
-        showOverlappingTicks
-        tickFormat={dateFormatter}
-      />
-      <Axis
-        id="left"
-        title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
-        position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
-      <AreaSeries
-        id="1"
-        name={KIBANA_METRICS.metrics.kibana_os_load[2].metric.label}
-        xScaleType={ScaleType.Time}
-        yScaleType={ScaleType.Linear}
-        xAccessor={0}
-        yAccessors={[1]}
-        stackAccessors={[0]}
-        data={KIBANA_METRICS.metrics.kibana_os_load[2].data}
-      />
-      <AreaSeries
-        id="2"
-        name={KIBANA_METRICS.metrics.kibana_os_load[1].metric.label}
-        xScaleType={ScaleType.Time}
-        yScaleType={ScaleType.Linear}
-        xAccessor={0}
-        yAccessors={[1]}
-        stackAccessors={[0]}
-        data={KIBANA_METRICS.metrics.kibana_os_load[1].data}
-      />
-      <AreaSeries
-        id="3"
-        name={KIBANA_METRICS.metrics.kibana_os_load[0].metric.label}
-        xScaleType={ScaleType.Time}
-        yScaleType={ScaleType.Linear}
-        xAccessor={0}
-        yAccessors={[1]}
-        stackAccessors={[0]}
-        data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
-      />
-    </Chart>
-  );
-};
+export const Example = () => (
+  <Chart className="story-chart">
+    <Settings showLegend showLegendExtra legendPosition={Position.Right} />
+    <Axis
+      id="bottom"
+      position={Position.Bottom}
+      title="timestamp per 1 minute"
+      showOverlappingTicks
+      tickFormat={dateFormatter}
+    />
+    <Axis
+      id="left"
+      title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
+      position={Position.Left}
+      tickFormat={(d) => Number(d).toFixed(2)}
+    />
+    <AreaSeries
+      id="1"
+      name={KIBANA_METRICS.metrics.kibana_os_load[2].metric.label}
+      xScaleType={ScaleType.Time}
+      yScaleType={ScaleType.Linear}
+      xAccessor={0}
+      yAccessors={[1]}
+      stackAccessors={[0]}
+      data={KIBANA_METRICS.metrics.kibana_os_load[2].data}
+    />
+    <AreaSeries
+      id="2"
+      name={KIBANA_METRICS.metrics.kibana_os_load[1].metric.label}
+      xScaleType={ScaleType.Time}
+      yScaleType={ScaleType.Linear}
+      xAccessor={0}
+      yAccessors={[1]}
+      stackAccessors={[0]}
+      data={KIBANA_METRICS.metrics.kibana_os_load[1].data}
+    />
+    <AreaSeries
+      id="3"
+      name={KIBANA_METRICS.metrics.kibana_os_load[0].metric.label}
+      xScaleType={ScaleType.Time}
+      yScaleType={ScaleType.Linear}
+      xAccessor={0}
+      yAccessors={[1]}
+      stackAccessors={[0]}
+      data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
+    />
+  </Chart>
+);
 
 // storybook configuration
 Example.story = {

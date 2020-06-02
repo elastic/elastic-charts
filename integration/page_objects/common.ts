@@ -241,7 +241,7 @@ class CommonPage {
     mousePosition: { x: number; y: number },
     options?: Omit<ScreenshotElementAtUrlOptions, 'action'>,
   ) {
-    const action = async () => await this.moveMouseRelativeToDOMElement(mousePosition, this.chartSelector);
+    const action = async() => await this.moveMouseRelativeToDOMElement(mousePosition, this.chartSelector);
     await this.expectChartAtUrlToMatchScreenshot(url, {
       ...options,
       action,
@@ -262,7 +262,7 @@ class CommonPage {
     end: { x: number; y: number },
     options?: Omit<ScreenshotElementAtUrlOptions, 'action'>,
   ) {
-    const action = async () => await this.dragMouseRelativeToDOMElement(start, end, this.chartSelector);
+    const action = async() => await this.dragMouseRelativeToDOMElement(start, end, this.chartSelector);
     await this.expectChartAtUrlToMatchScreenshot(url, {
       ...options,
       action,

@@ -28,9 +28,7 @@ import { DataGenerator, RandomNumberGenerator } from '../utils/data_generators/d
  *
  * @param obj partial object type
  */
-export const forcedType = <T extends Record<string, unknown>>(obj: Partial<T>): T => {
-  return obj as T;
-};
+export const forcedType = <T extends Record<string, unknown>>(obj: Partial<T>): T => obj as T;
 
 /**
  * Return rng function with optional `min`, `max` and `fractionDigits` params

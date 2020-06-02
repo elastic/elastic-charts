@@ -117,15 +117,14 @@ export function ringSectorConstruction(config: Config, innerRadius: Radius, ring
       outerCircline,
       ...(fullCircle ? [] : [sectorStartCircle, sectorEndCircle]),
     ];
-    const rectangleCirclines =
-      outerRadiusFromRectangleWidth === Infinity && outerRadiusFromRectanglHeight === Infinity
-        ? []
-        : [
-            { x: INFINITY_RADIUS - outerRadiusFromRectangleWidth, y: 0, r: INFINITY_RADIUS, inside: true },
-            { x: -INFINITY_RADIUS + outerRadiusFromRectangleWidth, y: 0, r: INFINITY_RADIUS, inside: true },
-            { x: 0, y: INFINITY_RADIUS - outerRadiusFromRectanglHeight, r: INFINITY_RADIUS, inside: true },
-            { x: 0, y: -INFINITY_RADIUS + outerRadiusFromRectanglHeight, r: INFINITY_RADIUS, inside: true },
-          ];
+    const rectangleCirclines = outerRadiusFromRectangleWidth === Infinity && outerRadiusFromRectanglHeight === Infinity
+      ? []
+      : [
+        { x: INFINITY_RADIUS - outerRadiusFromRectangleWidth, y: 0, r: INFINITY_RADIUS, inside: true },
+        { x: -INFINITY_RADIUS + outerRadiusFromRectangleWidth, y: 0, r: INFINITY_RADIUS, inside: true },
+        { x: 0, y: INFINITY_RADIUS - outerRadiusFromRectanglHeight, r: INFINITY_RADIUS, inside: true },
+        { x: 0, y: -INFINITY_RADIUS + outerRadiusFromRectanglHeight, r: INFINITY_RADIUS, inside: true },
+      ];
     return [...sectorCirclines, ...rectangleCirclines];
   };
 }
@@ -159,10 +158,9 @@ export const getSectorRowGeometry: GetShapeRowGeometry<RingSectorConstruction> =
   rotation,
 ) => {
   // prettier-ignore
-  const offset =
-      (totalRowCount / 2) * fontSize
+  const offset = (totalRowCount / 2) * fontSize
     + fontSize / 2
-    - linePitch * rowIndex
+    - linePitch * rowIndex;
 
   const topCircline = makeRowCircline(cx, cy, offset, rotation, fontSize, 1);
   const bottomCircline = makeRowCircline(cx, cy, offset, rotation, fontSize, -1);
@@ -217,13 +215,12 @@ export const getRectangleRowGeometry: GetShapeRowGeometry<RectangleConstruction>
   padding,
 ) => {
   const defaultPad: Pixels = 2;
-  const { top, right, bottom, left } =
-    typeof padding === 'number'
-      ? { top: padding, right: padding, bottom: padding, left: padding }
-      : {
-          ...{ top: defaultPad, right: defaultPad, bottom: defaultPad, left: defaultPad },
-          ...padding,
-        };
+  const { top, right, bottom, left } = typeof padding === 'number'
+    ? { top: padding, right: padding, bottom: padding, left: padding }
+    : {
+      ...{ top: defaultPad, right: defaultPad, bottom: defaultPad, left: defaultPad },
+      ...padding,
+    };
 
   const overhang = 0.05;
   const topPaddingAdjustment = fontSize < 6 ? 0 : Math.max(1, Math.min(2, fontSize / 16));
@@ -255,8 +252,8 @@ export const getRectangleRowGeometry: GetShapeRowGeometry<RectangleConstruction>
 
 function rowSetComplete(rowSet: RowSet, measuredBoxes: RowBox[]) {
   return (
-    !measuredBoxes.length &&
-    !rowSet.rows.some(
+    !measuredBoxes.length
+    && !rowSet.rows.some(
       (r) => isNaN(r.length) || r.rowWords.length === 0 || r.rowWords.every((rw) => rw.text.length === 0),
     )
   );
@@ -336,9 +333,9 @@ function fill<C>(
       const layer = layers[node.depth - 1] || {};
       const verticalAlignment = middleAlign
         ? VerticalAlignments.middle
-        : node.depth < layers.length
-        ? VerticalAlignments.bottom
-        : VerticalAlignments.top;
+        : (node.depth < layers.length
+          ? VerticalAlignments.bottom
+          : VerticalAlignments.top);
       const fontSizes = allFontSizes[Math.min(node.depth, allFontSizes.length) - 1];
       const { textColor, textInvertible, fontStyle, fontVariant, fontFamily, fontWeight, valueFormatter, padding } = {
         fontFamily: configFontFamily,
@@ -552,8 +549,7 @@ function getRowSet<C>(
 export function inSectorRotation(horizontalTextEnforcer: number, horizontalTextAngleThreshold: number) {
   return (node: ShapeTreeNode): Radian => {
     let rotation = trueBearingToStandardPositionAngle((node.x0 + node.x1) / 2);
-    if (Math.abs(node.x1 - node.x0) > horizontalTextAngleThreshold && horizontalTextEnforcer > 0)
-      rotation *= 1 - horizontalTextEnforcer;
+    if (Math.abs(node.x1 - node.x0) > horizontalTextAngleThreshold && horizontalTextEnforcer > 0) rotation *= 1 - horizontalTextEnforcer;
     if (TAU / 4 < rotation && rotation < (3 * TAU) / 4) rotation = wrapToTau(rotation - TAU / 2);
     return rotation;
   };

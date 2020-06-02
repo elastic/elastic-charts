@@ -50,9 +50,7 @@ export const getPickedShapesLayerValues = createCachedSelector(
 
 /** @internal */
 export function pickShapesLayerValues(pickedShapes: QuadViewModel[]): Array<Array<LayerValue>> {
-  const maxDepth = pickedShapes.reduce((acc, curr) => {
-    return Math.max(acc, curr.depth);
-  }, 0);
+  const maxDepth = pickedShapes.reduce((acc, curr) => Math.max(acc, curr.depth), 0);
   const elements = pickedShapes
     .filter(({ depth }) => depth === maxDepth)
     .map<Array<LayerValue>>((model) => {

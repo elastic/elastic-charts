@@ -112,7 +112,13 @@ const TooltipComponent = ({
             >
               <span className="echTooltip__label">{label}</span>
               <span className="echTooltip__value">{value}</span>
-              {markValue && <span className="echTooltip__markValue">&nbsp;({markValue})</span>}
+              {markValue && (
+                <span className="echTooltip__markValue">
+                  &nbsp;(
+                  {markValue}
+                  )
+                </span>
+              )}
             </div>
           );
         },
@@ -165,8 +171,8 @@ const TooltipComponent = ({
       ...rest,
       placement: placement ?? (rotation === 0 || rotation === 180 ? Placement.Right : Placement.Top),
       fallbackPlacements:
-        fallbackPlacements ??
-        (rotation === 0 || rotation === 180
+        fallbackPlacements
+        ?? (rotation === 0 || rotation === 180
           ? [Placement.Right, Placement.Left, Placement.Top, Placement.Bottom]
           : [Placement.Top, Placement.Bottom, Placement.Right, Placement.Left]),
       boundary: boundary === 'chart' && chartRef.current ? chartRef.current : undefined,

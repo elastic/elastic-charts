@@ -239,9 +239,7 @@ export class ScaleContinuous implements Scale {
       // We want to avoid displaying inner ticks between bars in a bar chart when using linear x scale
       if (minInterval > 0 && bandwidth > 0) {
         const intervalCount = Math.floor((this.domain[1] - this.domain[0]) / this.minInterval);
-        this.tickValues = new Array(intervalCount + 1).fill(0).map((_, i) => {
-          return this.domain[0] + i * this.minInterval;
-        });
+        this.tickValues = new Array(intervalCount + 1).fill(0).map((_, i) => this.domain[0] + i * this.minInterval);
       } else {
         this.tickValues = this.getTicks(ticks, integersOnly!);
       }
@@ -263,9 +261,9 @@ export class ScaleContinuous implements Scale {
     // This is forcing a return type of number[] but is really (number|Date)[]
     return integersOnly
       ? (this.d3Scale as D3ScaleNonTime)
-          .ticks(ticks)
-          .filter((item: number) => typeof item === 'number' && item % 1 === 0)
-          .map((item: number) => parseInt(item.toFixed(0), 10))
+        .ticks(ticks)
+        .filter((item: number) => typeof item === 'number' && item % 1 === 0)
+        .map((item: number) => parseInt(item.toFixed(0), 10))
       : (this.d3Scale as D3ScaleNonTime).ticks(ticks);
   }
 

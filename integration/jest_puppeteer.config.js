@@ -42,12 +42,12 @@ const customConfig = {
   server: useLocalStorybook
     ? null
     : {
-        command: `yarn start --port=${port} --quiet`,
-        port,
-        usedPortAction: 'error',
-        launchTimeout: 120000,
-        debug: false,
-      },
+      command: `yarn start --port=${port} --quiet`,
+      port,
+      usedPortAction: 'error',
+      launchTimeout: 120000,
+      debug: false,
+    },
   ...baseConfig,
 };
 

@@ -24,14 +24,12 @@ import { AnnotationTooltipState } from '../../../annotations/types';
 
 /** @internal */
 export const TooltipContent = ({ annotationType, header, details, renderTooltip }: AnnotationTooltipState) => {
-  const renderLine = useCallback(() => {
-    return (
-      <div className="echAnnotation__tooltip">
-        <p className="echAnnotation__header">{header}</p>
-        <div className="echAnnotation__details">{details}</div>
-      </div>
-    );
-  }, [header, details]);
+  const renderLine = useCallback(() => (
+    <div className="echAnnotation__tooltip">
+      <p className="echAnnotation__header">{header}</p>
+      <div className="echAnnotation__details">{details}</div>
+    </div>
+  ), [header, details]);
 
   const renderRect = useCallback(() => {
     const tooltipContent = renderTooltip ? renderTooltip(details) : details;

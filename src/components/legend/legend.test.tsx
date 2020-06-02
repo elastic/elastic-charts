@@ -164,26 +164,24 @@ describe('Legend', () => {
 
       data = dg.generateGroupedSeries(10, 4, 'split');
 
-      legendColorPickerFn: LegendColorPicker = ({ onClose }) => {
-        return (
-          <div id="colorPicker">
-            <span>Custom Color Picker</span>
-            <button
-              id="change"
-              type="button"
-              onClick={() => {
-                this.setState<any>({ colors: [this.props.customColor] });
-                onClose();
-              }}
-            >
-              {this.props.customColor}
-            </button>
-            <button id="close" type="button" onClick={onClose}>
-              close
-            </button>
-          </div>
-        );
-      };
+      legendColorPickerFn: LegendColorPicker = ({ onClose }) => (
+        <div id="colorPicker">
+          <span>Custom Color Picker</span>
+          <button
+            id="change"
+            type="button"
+            onClick={() => {
+              this.setState<any>({ colors: [this.props.customColor] });
+              onClose();
+            }}
+          >
+            {this.props.customColor}
+          </button>
+          <button id="close" type="button" onClick={onClose}>
+            close
+          </button>
+        </div>
+      );
 
       render() {
         return (

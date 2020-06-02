@@ -38,10 +38,10 @@ export const formatNonStackedDataSeriesValues = (
     const spec = getSpecsById<BasicSeriesSpec>(seriesSpecs, formattedDataValue.specId);
 
     if (
-      spec !== null &&
-      spec !== undefined &&
-      (isAreaSeriesSpec(spec) || isLineSeriesSpec(spec)) &&
-      spec.fit !== undefined
+      spec !== null
+      && spec !== undefined
+      && (isAreaSeriesSpec(spec) || isLineSeriesSpec(spec))
+      && spec.fit !== undefined
     ) {
       const fittedData = fitFunction(formattedDataValue, spec.fit, xScaleType);
       formattedValues.push(fittedData);

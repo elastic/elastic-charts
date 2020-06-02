@@ -37,8 +37,8 @@ export function addOpacity(hexColorString: string, opacity: Ratio) {
   // todo roll some proper utility that can handle "rgb(...)", "rgba(...)", "red", {r, g, b} etc.
   return opacity === 1
     ? hexColorString
-    : hexColorString.slice(0, 7) +
-        (hexColorString.slice(7).length === 0 || parseInt(hexColorString.slice(7, 2), 16) === 255
+    : hexColorString.slice(0, 7)
+        + (hexColorString.slice(7).length === 0 || parseInt(hexColorString.slice(7, 2), 16) === 255
           ? `00${Math.round(opacity * 255).toString(16)}`.slice(-2) // color was of full opacity
           : `00${Math.round((parseInt(hexColorString.slice(7, 2), 16) / 255) * opacity * 255).toString(16)}`.slice(-2));
 }

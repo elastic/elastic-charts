@@ -39,7 +39,7 @@ const countries = mocks.sunburst
 const countryCount = countries.length;
 
 export const Example = () => (
-  <Chart className="story-chart" /* size={{ width: 1200, height: 800 }} */>
+  <Chart className="story-chart">
     <Settings showLegend />
     <Partition
       id="spec_1"
@@ -87,10 +87,10 @@ export const Example = () => (
           groupByRollup: (d: Datum) => d.dest,
           nodeLabel: (d: any) => countryLookup[d].name,
           shape: {
-            fillColor: (d: ShapeTreeNode) => {
+            fillColor: (d: ShapeTreeNode) =>
               // pick color by country
-              return interpolator(countries.indexOf(d.dataName) / countryCount);
-            },
+              interpolator(countries.indexOf(d.dataName) / countryCount)
+            ,
           },
           fillLabel: { maximizeFontSize: boolean('Maximize font size layer 3', true) },
         },

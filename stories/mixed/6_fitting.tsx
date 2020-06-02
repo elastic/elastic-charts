@@ -156,8 +156,8 @@ export const Example = () => {
     {
       None: 'none',
       nearest: 'nearest',
-      '0': 0,
-      '2': 2,
+      0: 0,
+      2: 2,
     },
     'none',
   );

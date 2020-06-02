@@ -109,8 +109,7 @@ const mapDispatchToProps = (dispatch: Dispatch): ResizerDispatchProps =>
 
 const mapStateToProps = (state: GlobalChartState): ResizerStateProps => {
   const settings = getSettingsSpecSelector(state);
-  const resizeDebounce =
-    settings.resizeDebounce === undefined || settings.resizeDebounce === null ? 200 : settings.resizeDebounce;
+  const resizeDebounce = settings.resizeDebounce === undefined || settings.resizeDebounce === null ? 200 : settings.resizeDebounce;
   return {
     resizeDebounce,
   };

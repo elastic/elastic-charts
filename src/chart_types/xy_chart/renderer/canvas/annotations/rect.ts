@@ -30,9 +30,7 @@ export function renderRectAnnotations(
   annotations: AnnotationRectProps[],
   rectStyle: RectAnnotationStyle,
 ) {
-  const rects = annotations.map<Rect>((annotation) => {
-    return annotation.rect;
-  });
+  const rects = annotations.map<Rect>(({ rect }) => rect);
   const fillColor = stringToRGB(rectStyle.fill);
   fillColor.opacity *= rectStyle.opacity;
   const fill: Fill = {

@@ -42,13 +42,9 @@ export function countBarsInCluster(
   // along x axis, we count one "space" per bar series.
   // we ignore the points, areas, lines as they are
   // aligned with the x value and doesn't occupy space
-  const nonStackedBarsInCluster = nonStacked.reduce((acc, ns) => {
-    return acc + ns.counts.barSeries;
-  }, 0);
+  const nonStackedBarsInCluster = nonStacked.reduce((acc, ns) => acc + ns.counts.barSeries, 0);
   // count stacked bars groups as 1 per group
-  const stackedBarsInCluster = stacked.reduce((acc, ns) => {
-    return acc + (ns.counts.barSeries > 0 ? 1 : 0);
-  }, 0);
+  const stackedBarsInCluster = stacked.reduce((acc, ns) => acc + (ns.counts.barSeries > 0 ? 1 : 0), 0);
   const totalBarsInCluster = nonStackedBarsInCluster + stackedBarsInCluster;
   return {
     nonStackedBarsInCluster,

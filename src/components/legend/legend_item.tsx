@@ -122,9 +122,9 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
   handleColorClick = (changable: boolean): MouseEventHandler | undefined =>
     changable
       ? (event) => {
-          event.stopPropagation();
-          this.toggleIsOpen();
-        }
+        event.stopPropagation();
+        this.toggleIsOpen();
+      }
       : undefined;
 
   toggleIsOpen = () => {
@@ -209,8 +209,8 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
     const extra = getExtra(extraValues, item, totalItems);
     const style = item.depth
       ? {
-          marginLeft: LEGEND_HIERARCHY_MARGIN * (item.depth ?? 0),
-        }
+        marginLeft: LEGEND_HIERARCHY_MARGIN * (item.depth ?? 0),
+      }
       : undefined;
     return (
       <>

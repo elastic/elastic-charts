@@ -25,13 +25,11 @@ import { Axis, Chart, BubbleSeries, Position, ScaleType, Settings, TooltipType }
 import { getRandomNumberGenerator } from '../../src/mocks/utils';
 
 const rng = getRandomNumberGenerator();
-const data = new Array(100).fill(0).map(() => {
-  return {
-    x: String.fromCharCode(rng(97, 122)),
-    y: rng(0, 100),
-    z: rng(0, 100),
-  };
-});
+const data = new Array(100).fill(0).map(() => ({
+  x: String.fromCharCode(rng(97, 122)),
+  y: rng(0, 100),
+  z: rng(0, 100),
+}));
 
 export const Example = () => {
   const onElementListeners = {

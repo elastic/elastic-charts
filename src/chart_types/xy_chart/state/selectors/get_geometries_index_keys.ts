@@ -27,7 +27,5 @@ import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 /** @internal */
 export const getGeometriesIndexKeysSelector = createCachedSelector(
   [computeSeriesGeometriesSelector],
-  (seriesGeometries): (number | string)[] => {
-    return seriesGeometries.geometriesIndex.keys().sort(compareByValueAsc);
-  },
+  (seriesGeometries): (number | string)[] => seriesGeometries.geometriesIndex.keys().sort(compareByValueAsc),
 )(getChartIdSelector);

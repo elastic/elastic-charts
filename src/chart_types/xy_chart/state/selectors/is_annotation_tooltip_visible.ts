@@ -26,7 +26,5 @@ import { getAnnotationTooltipStateSelector } from './get_annotation_tooltip_stat
 /** @internal */
 export const isAnnotationTooltipVisibleSelector = createCachedSelector(
   [getAnnotationTooltipStateSelector],
-  (annotationTooltipState): boolean => {
-    return annotationTooltipState !== null && annotationTooltipState.isVisible;
-  },
+  (annotationTooltipState): boolean => annotationTooltipState !== null && annotationTooltipState.isVisible,
 )(getChartIdSelector);

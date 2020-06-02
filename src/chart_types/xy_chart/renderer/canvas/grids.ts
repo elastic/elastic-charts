@@ -54,21 +54,13 @@ export function renderGrids(ctx: CanvasRenderingContext2D, props: GridProps) {
           return;
         }
         const strokeColor = stringToRGB(gridLineStyle.stroke);
-        strokeColor.opacity =
-          gridLineStyle.opacity !== undefined ? strokeColor.opacity * gridLineStyle.opacity : strokeColor.opacity;
+        strokeColor.opacity = gridLineStyle.opacity !== undefined ? strokeColor.opacity * gridLineStyle.opacity : strokeColor.opacity;
         const stroke: Stroke = {
           color: strokeColor,
           width: gridLineStyle.strokeWidth,
           dash: gridLineStyle.dash,
         };
-        const lines = axisGridLinesPositions.map<Line>((position) => {
-          return {
-            x1: position[0],
-            y1: position[1],
-            x2: position[2],
-            y2: position[3],
-          };
-        });
+        const lines = axisGridLinesPositions.map<Line>(([x1, y1, x2, y2]) => ({ x1, y1, x2, y2 }));
         renderMultiLine(ctx, lines, stroke);
       }
     });

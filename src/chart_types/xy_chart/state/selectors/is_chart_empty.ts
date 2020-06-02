@@ -25,6 +25,4 @@ import { isAllSeriesDeselected } from '../utils';
 import { computeLegendSelector } from './compute_legend';
 
 /** @internal */
-export const isChartEmptySelector = createCachedSelector([computeLegendSelector], (legendItems): boolean => {
-  return isAllSeriesDeselected(legendItems);
-})(getChartIdSelector);
+export const isChartEmptySelector = createCachedSelector([computeLegendSelector], (legendItems): boolean => isAllSeriesDeselected(legendItems))(getChartIdSelector);

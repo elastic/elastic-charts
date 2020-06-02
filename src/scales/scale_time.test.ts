@@ -230,9 +230,7 @@ describe('[Scale Time] - timezones', () => {
           { type: ScaleType.Time, domain, range: [minRange, maxRange] },
           { bandwidth: undefined, minInterval, timeZone: timezone },
         );
-        const formatFunction = (d: number) => {
-          return DateTime.fromMillis(d, { zone: timezone }).toISO();
-        };
+        const formatFunction = (d: number) => DateTime.fromMillis(d, { zone: timezone }).toISO();
         expect(scale.invert(0)).toBe(startTime);
         expect(scale.invert(49.5)).toBe(midTime);
         expect(scale.invert(99)).toBe(endTime);

@@ -39,9 +39,7 @@ export function computeOrdinalDataDomain(
   const domain = data.map(accessor).filter((d) => (removeNull ? d !== null : true));
   const uniqueValues = [...new Set(domain)];
   return sorted
-    ? uniqueValues.sort((a, b) => {
-        return `${a}`.localeCompare(`${b}`);
-      })
+    ? uniqueValues.sort((a, b) => `${a}`.localeCompare(`${b}`))
     : uniqueValues;
 }
 
@@ -102,9 +100,7 @@ export function computeStackedContinuousDomain(
 ): any {
   const groups = nest<any, number>()
     .key((datum: any) => `${xAccessor(datum)}`)
-    .rollup((values: any) => {
-      return sum(values, yAccessor);
-    })
+    .rollup((values: any) => sum(values, yAccessor))
     .entries(data);
   const cumulativeSumAccessor = (d: any) => d.value;
   return computeContinuousDataDomain(groups, cumulativeSumAccessor, scaleToExtent);

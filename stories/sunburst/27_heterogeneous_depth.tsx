@@ -33,7 +33,7 @@ import {
 } from '../utils/utils';
 
 export const Example = () => (
-  <Chart className="story-chart" /* size={{ width: 1200, height: 800 }} */>
+  <Chart className="story-chart">
     <Partition
       id="spec_1"
       data={mocks.miniSunburst}
@@ -44,18 +44,14 @@ export const Example = () => (
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: PrimitiveValue) => d !== null && productLookup[d].name,
           shape: {
-            fillColor: (d: ShapeTreeNode) => {
-              return categoricalFillColor(colorBrewerCategoricalStark9, 0.7)(d.sortIndex);
-            },
+            fillColor: (d: ShapeTreeNode) => categoricalFillColor(colorBrewerCategoricalStark9, 0.7)(d.sortIndex),
           },
         },
         {
           groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2),
           nodeLabel: (d: PrimitiveValue) => d !== null && regionLookup[d].regionName,
           shape: {
-            fillColor: (d: ShapeTreeNode) => {
-              return categoricalFillColor(colorBrewerCategoricalStark9, 0.5)(d.parent.sortIndex);
-            },
+            fillColor: (d: ShapeTreeNode) => categoricalFillColor(colorBrewerCategoricalStark9, 0.5)(d.parent.sortIndex),
           },
         },
         {
@@ -63,9 +59,7 @@ export const Example = () => (
           nodeLabel: (d: PrimitiveValue) => d !== null && countryLookup[d].name,
           showAccessor: (d: PrimitiveValue) => !(['chn', 'hkg', 'jpn', 'kor'] as PrimitiveValue[]).includes(d),
           shape: {
-            fillColor: (d: ShapeTreeNode) => {
-              return categoricalFillColor(colorBrewerCategoricalStark9, 0.3)(d.parent.parent.sortIndex);
-            },
+            fillColor: (d: ShapeTreeNode) => categoricalFillColor(colorBrewerCategoricalStark9, 0.3)(d.parent.parent.sortIndex),
           },
         },
       ]}

@@ -45,27 +45,21 @@ export const Example = () => (
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: any) => productLookup[d].name,
           shape: {
-            fillColor: (d: ShapeTreeNode) => {
-              return categoricalFillColor(colorBrewerCategoricalStark9, 0.7)(d.sortIndex);
-            },
+            fillColor: (d: ShapeTreeNode) => categoricalFillColor(colorBrewerCategoricalStark9, 0.7)(d.sortIndex),
           },
         },
         {
           groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2),
           nodeLabel: (d: any) => regionLookup[d].regionName,
           shape: {
-            fillColor: (d: ShapeTreeNode) => {
-              return categoricalFillColor(colorBrewerCategoricalStark9, 0.5)(d.parent.sortIndex);
-            },
+            fillColor: (d: ShapeTreeNode) => categoricalFillColor(colorBrewerCategoricalStark9, 0.5)(d.parent.sortIndex),
           },
         },
         {
           groupByRollup: (d: Datum) => d.dest,
           nodeLabel: (d: any) => countryLookup[d].name,
           shape: {
-            fillColor: (d: ShapeTreeNode) => {
-              return categoricalFillColor(colorBrewerCategoricalStark9, 0.3)(d.parent.parent.sortIndex);
-            },
+            fillColor: (d: ShapeTreeNode) => categoricalFillColor(colorBrewerCategoricalStark9, 0.3)(d.parent.parent.sortIndex),
           },
         },
       ]}

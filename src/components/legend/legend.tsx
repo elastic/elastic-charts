@@ -114,9 +114,7 @@ export class LegendComponent extends React.Component<LegendProps> {
       <div className={legendClasses}>
         <div style={legendContainerStyle} className="echLegendListContainer">
           <ul style={legendListStyle} className="echLegendList">
-            {items.map((item, index) => {
-              return renderLegendItem(item, itemProps, items.length, index);
-            })}
+            {items.map((item, index) => renderLegendItem(item, itemProps, items.length, index))}
           </ul>
         </div>
       </div>

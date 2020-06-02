@@ -46,8 +46,7 @@ function computeYDomainLineAnnotationDimensions(
   const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
   // let's use a default Bottom-X/Left-Y axis orientation if we are not showing an axis
   // but we are displaying a line annotation
-  const anchorPosition =
-    axisPosition === null ? (isHorizontalChartRotation ? Position.Left : Position.Bottom) : axisPosition;
+  const anchorPosition = axisPosition === null ? (isHorizontalChartRotation ? Position.Left : Position.Bottom) : axisPosition;
   const lineProps: AnnotationLineProps[] = [];
 
   dataValues.forEach((datum: LineAnnotationDatum) => {
@@ -136,11 +135,11 @@ function computeYDomainLineAnnotationDimensions(
 
     const annotationMarker: AnnotationMarker | undefined = marker
       ? {
-          icon: marker,
-          color: lineColor,
-          dimension: markerDimension,
-          position: markerPosition,
-        }
+        icon: marker,
+        color: lineColor,
+        dimension: markerDimension,
+        position: markerPosition,
+      }
       : undefined;
     const lineProp: AnnotationLineProps = {
       anchor,
@@ -175,8 +174,7 @@ function computeXDomainLineAnnotationDimensions(
   const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
   // let's use a default Bottom-X/Left-Y axis orientation if we are not showing an axis
   // but we are displaying a line annotation
-  const anchorPosition =
-    axisPosition === null ? (isHorizontalChartRotation ? Position.Bottom : Position.Left) : axisPosition;
+  const anchorPosition = axisPosition === null ? (isHorizontalChartRotation ? Position.Bottom : Position.Left) : axisPosition;
 
   dataValues.forEach((datum: LineAnnotationDatum) => {
     const { dataValue } = datum;
@@ -282,11 +280,11 @@ function computeXDomainLineAnnotationDimensions(
 
     const annotationMarker: AnnotationMarker | undefined = marker
       ? {
-          icon: marker,
-          color: lineColor,
-          dimension: markerDimension,
-          position: markerPosition,
-        }
+        icon: marker,
+        color: lineColor,
+        dimension: markerDimension,
+        position: markerPosition,
+      }
       : undefined;
     const lineProp: AnnotationLineProps = {
       anchor,

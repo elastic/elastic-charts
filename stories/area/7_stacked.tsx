@@ -26,15 +26,15 @@ import { SB_SOURCE_PANEL } from '../utils/storybook';
 const dateFormatter = timeFormatter('HH:mm');
 
 export const Example = () => {
-  const data1 = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d) => {
-    return [...d, KIBANA_METRICS.metrics.kibana_os_load[0].metric.label];
-  });
-  const data2 = KIBANA_METRICS.metrics.kibana_os_load[1].data.map((d) => {
-    return [...d, KIBANA_METRICS.metrics.kibana_os_load[1].metric.label];
-  });
-  const data3 = KIBANA_METRICS.metrics.kibana_os_load[2].data.map((d) => {
-    return [...d, KIBANA_METRICS.metrics.kibana_os_load[2].metric.label];
-  });
+  const data1 = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d) => [
+    ...d, KIBANA_METRICS.metrics.kibana_os_load[0].metric.label,
+  ]);
+  const data2 = KIBANA_METRICS.metrics.kibana_os_load[1].data.map((d) => [
+    ...d, KIBANA_METRICS.metrics.kibana_os_load[1].metric.label,
+  ]);
+  const data3 = KIBANA_METRICS.metrics.kibana_os_load[2].data.map((d) => [
+    ...d, KIBANA_METRICS.metrics.kibana_os_load[2].metric.label,
+  ]);
   const allMetrics = [...data3, ...data2, ...data1];
   return (
     <Chart className="story-chart">

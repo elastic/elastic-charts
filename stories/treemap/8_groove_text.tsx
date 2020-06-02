@@ -36,11 +36,6 @@ const interpolatorTurbo = hueInterpolator(palettes.turbo.map(([r, g, b]) => [r, 
 export const Example = () => (
   <Chart
     className="story-chart"
-    size={
-      {
-        /* height: 800 */
-      }
-    }
   >
     <Partition
       id="spec_1"
@@ -52,9 +47,8 @@ export const Example = () => (
           groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2),
           nodeLabel: (d: any) => regionLookup[d].regionName.toUpperCase(),
           fillLabel: {
-            valueFormatter: () => ``,
+            valueFormatter: () => '',
             fontFamily: 'Helvetica',
-            // fontVariant: 'small-caps',
             textColor: '#555',
             textInvertible: false,
             fontWeight: 100,
@@ -92,12 +86,12 @@ export const Example = () => (
             idealFontSizeJump: 1.01,
           },
           shape: {
-            fillColor: (d: ShapeTreeNode) => {
+            fillColor: (d: ShapeTreeNode) =>
               // primarily, pick color based on parent's index, but then perturb by the index within the parent
-              return interpolatorTurbo(
+              interpolatorTurbo(
                 (d.parent.sortIndex + d.sortIndex / d.parent.children.length) / (d.parent.parent.children.length + 1),
-              );
-            },
+              )
+            ,
           },
         },
       ]}

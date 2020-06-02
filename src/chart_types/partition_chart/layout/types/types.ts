@@ -25,8 +25,22 @@ export type FontVariant = typeof FONT_VARIANTS[number];
 
 // prettier-ignore
 export const FONT_WEIGHTS = Object.freeze([
-  100, 200, 300, 400, 500, 600, 700, 800, 900,
-  'normal', 'bold', 'lighter', 'bolder', 'inherit', 'initial', 'unset',
+  100,
+  200,
+  300,
+  400,
+  500,
+  600,
+  700,
+  800,
+  900,
+  'normal',
+  'bold',
+  'lighter',
+  'bolder',
+  'inherit',
+  'initial',
+  'unset',
 ] as const);
 export type FontWeight = typeof FONT_WEIGHTS[number];
 export type NumericFontWeight = number & typeof FONT_WEIGHTS[number];

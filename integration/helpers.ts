@@ -29,7 +29,7 @@ export type StoryGroupInfo = [string, string, StoryInfo[]];
 function requireAllStories(basedir: string, directory: string) {
   function enumerateFiles(basedir: string, dir: string) {
     let result: string[] = [];
-    readdirSync(join(basedir, dir)).forEach(function(file) {
+    readdirSync(join(basedir, dir)).forEach((file) => {
       const relativePath = join(dir, file);
       const stats = lstatSync(join(basedir, relativePath));
       if (stats.isDirectory()) {

@@ -28,7 +28,6 @@ import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 /** @internal */
 export const computeChartTransformSelector = createCachedSelector(
   [computeChartDimensionsSelector, getSettingsSpecSelector],
-  (chartDimensions, settingsSpecs): Transform => {
-    return computeChartTransform(chartDimensions.chartDimensions, settingsSpecs.rotation);
-  },
+  (chartDimensions, settingsSpecs): Transform =>
+    computeChartTransform(chartDimensions.chartDimensions, settingsSpecs.rotation),
 )(getChartIdSelector);

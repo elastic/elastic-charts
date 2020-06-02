@@ -734,11 +734,11 @@ export const isDuplicateAxis = (
   let hasDuplicate = false;
   tickMap.forEach(({ tickLabels: axisTickLabels }, axisId) => {
     if (
-      !hasDuplicate &&
-      axisTickLabels &&
-      tickLabels.length === axisTickLabels.length &&
-      firstTickLabel === axisTickLabels[0] &&
-      lastTickLabel === axisTickLabels.slice(-1)[0]
+      !hasDuplicate
+      && axisTickLabels
+      && tickLabels.length === axisTickLabels.length
+      && firstTickLabel === axisTickLabels[0]
+      && lastTickLabel === axisTickLabels.slice(-1)[0]
     ) {
       const spec = getSpecsById<AxisSpec>(specs, axisId);
 

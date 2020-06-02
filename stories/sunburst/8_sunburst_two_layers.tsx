@@ -41,20 +41,20 @@ export const Example = () => (
             valueFormatter: (d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000000))}\u00A0Tn`,
           },
           shape: {
-            fillColor: (d) => {
+            fillColor: (d) =>
               // pick color from color palette based on mean angle - rather distinct colors in the inner ring
-              return indexInterpolatedFillColor(interpolatorCET2s)(d, (d.x0 + d.x1) / 2 / (2 * Math.PI), []);
-            },
+              indexInterpolatedFillColor(interpolatorCET2s)(d, (d.x0 + d.x1) / 2 / (2 * Math.PI), [])
+            ,
           },
         },
         {
           groupByRollup: (d: Datum) => d.dest,
           nodeLabel: (d: any) => countryLookup[d].name,
           shape: {
-            fillColor: (d) => {
+            fillColor: (d) =>
               // pick color from color palette based on mean angle - related yet distinct colors in the outer ring
-              return indexInterpolatedFillColor(interpolatorCET2s)(d, (d.x0 + d.x1) / 2 / (2 * Math.PI), []);
-            },
+              indexInterpolatedFillColor(interpolatorCET2s)(d, (d.x0 + d.x1) / 2 / (2 * Math.PI), [])
+            ,
           },
         },
       ]}

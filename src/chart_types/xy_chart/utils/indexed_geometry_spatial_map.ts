@@ -72,9 +72,7 @@ export class IndexedGeometrySpatialMap {
     }
   }
 
-  triangulation = (bounds?: Bounds) => {
-    return this.map?.voronoi(bounds);
-  };
+  triangulation = (bounds?: Bounds) => this.map?.voronoi(bounds);
 
   getMergeData() {
     return [...this.pointGeometries];

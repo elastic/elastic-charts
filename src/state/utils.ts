@@ -31,9 +31,7 @@ export function getSpecsFromStore<U extends Spec>(specs: SpecList, chartType: Ch
       const sameSpecType = specType ? currentSpec.specType === specType : true;
       return sameChartType && sameSpecType;
     })
-    .map((specId) => {
-      return specs[specId] as U;
-    });
+    .map((specId) => specs[specId] as U);
 }
 
 /** @internal */

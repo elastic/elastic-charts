@@ -25,12 +25,12 @@ import { Settings } from '../specs';
 import { Chart } from './chart';
 
 describe('Chart', () => {
-  it("should render 'No data to display' without series", () => {
+  it('should render \'No data to display\' without series', () => {
     const wrapper = render(<Chart />);
     expect(wrapper.text()).toContain('No data to display');
   });
 
-  it("should render 'No data to display' with settings but without series", () => {
+  it('should render \'No data to display\' with settings but without series', () => {
     const wrapper = render(
       <Chart>
         <Settings debug rendering="svg" />

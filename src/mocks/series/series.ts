@@ -114,12 +114,10 @@ export class MockRawDataSeries {
   }
 
   static defaults(partials: Partial<RawDataSeriesPartialData>[], defaults?: Partial<RawDataSeries>): RawDataSeries[] {
-    return partials.map((partial) => {
-      return MockRawDataSeries.default({
-        ...defaults,
-        ...partial,
-      });
-    });
+    return partials.map((partial) => MockRawDataSeries.default({
+      ...defaults,
+      ...partial,
+    }));
   }
 
   static fitFunction(

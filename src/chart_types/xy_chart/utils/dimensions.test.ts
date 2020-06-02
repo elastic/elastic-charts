@@ -68,9 +68,7 @@ describe('Computed chart dimensions', () => {
     position: Position.Left,
     tickSize: 10,
     tickPadding: 10,
-    tickFormat: (value: any) => {
-      return `${value}`;
-    },
+    tickFormat: (value: any) => `${value}`,
   };
   const legend: LegendStyle = {
     verticalWidth: 10,

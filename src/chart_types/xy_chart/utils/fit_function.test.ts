@@ -192,7 +192,7 @@ describe('Fit Function', () => {
           });
         });
 
-        describe(`endValue is set to 'nearest'`, () => {
+        describe('endValue is set to \'nearest\'', () => {
           it('should return current datum with value from next when previous is null', () => {
             const current = MockDataSeriesDatum.simple({ x: 3 });
             const next = MockDataSeriesDatum.full({ x: 4, y1: 20 });
@@ -376,7 +376,7 @@ describe('Fit Function', () => {
           });
         });
 
-        describe("endValue is set to 'nearest'", () => {
+        describe('endValue is set to \'nearest\'', () => {
           it('should return current datum with value from next when previous is null', () => {
             const current = MockDataSeriesDatum.simple({ x: 'c' });
             const next = MockDataSeriesDatum.full({ x: 'e', y1: 20, fittingIndex: 4 });
@@ -603,7 +603,7 @@ describe('Fit Function', () => {
           });
         });
 
-        describe("'nearest' value", () => {
+        describe('\'nearest\' value', () => {
           const endValue = 'nearest';
 
           it('should set end values - None', () => {

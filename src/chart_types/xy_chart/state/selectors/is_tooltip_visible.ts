@@ -30,9 +30,7 @@ import { getProjectedPointerPositionSelector } from './get_projected_pointer_pos
 import { getTooltipInfoSelector } from './get_tooltip_values_highlighted_geoms';
 import { isAnnotationTooltipVisibleSelector } from './is_annotation_tooltip_visible';
 
-const hasTooltipTypeDefinedSelector = (state: GlobalChartState): TooltipType | undefined => {
-  return getTooltipType(getSettingsSpecSelector(state));
-};
+const hasTooltipTypeDefinedSelector = (state: GlobalChartState): TooltipType | undefined => getTooltipType(getSettingsSpecSelector(state));
 
 const getPointerSelector = (state: GlobalChartState) => state.interactions.pointer;
 
@@ -56,11 +54,11 @@ function isTooltipVisible(
   isAnnotationTooltipVisible: boolean,
 ) {
   return (
-    tooltipType !== TooltipType.None &&
-    pointer.down === null &&
-    projectedPointerPosition.x > -1 &&
-    projectedPointerPosition.y > -1 &&
-    tooltip.values.length > 0 &&
-    !isAnnotationTooltipVisible
+    tooltipType !== TooltipType.None
+    && pointer.down === null
+    && projectedPointerPosition.x > -1
+    && projectedPointerPosition.y > -1
+    && tooltip.values.length > 0
+    && !isAnnotationTooltipVisible
   );
 }

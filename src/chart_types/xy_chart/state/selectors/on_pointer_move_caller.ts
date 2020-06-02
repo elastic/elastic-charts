@@ -39,14 +39,17 @@ const getPointerEventSelector = createCachedSelector(
     computeSeriesGeometriesSelector,
     getGeometriesIndexKeysSelector,
   ],
-  (chartId, orientedProjectedPointerPosition, seriesGeometries, geometriesIndexKeys): PointerEvent => {
-    return getPointerEvent(
-      chartId,
-      orientedProjectedPointerPosition,
-      seriesGeometries.scales.xScale,
-      geometriesIndexKeys,
-    );
-  },
+  (
+    chartId,
+    orientedProjectedPointerPosition,
+    seriesGeometries,
+    geometriesIndexKeys,
+  ): PointerEvent => getPointerEvent(
+    chartId,
+    orientedProjectedPointerPosition,
+    seriesGeometries.scales.xScale,
+    geometriesIndexKeys,
+  ),
 )(getChartIdSelector);
 
 function getPointerEvent(
@@ -90,20 +93,20 @@ function hasPointerEventChanged(prevPointerEvent: PointerEvent, nextPointerEvent
     return true;
   }
   if (
-    nextPointerEvent &&
-    prevPointerEvent.type === nextPointerEvent.type &&
-    prevPointerEvent.type === PointerEventType.Out
+    nextPointerEvent
+    && prevPointerEvent.type === nextPointerEvent.type
+    && prevPointerEvent.type === PointerEventType.Out
   ) {
     return false;
   }
   // if something changed in the pointerEvent than recompute
   if (
-    nextPointerEvent &&
-    prevPointerEvent.type === PointerEventType.Over &&
-    nextPointerEvent.type === PointerEventType.Over &&
-    (prevPointerEvent.value !== nextPointerEvent.value ||
-      prevPointerEvent.scale !== nextPointerEvent.scale ||
-      prevPointerEvent.unit !== nextPointerEvent.unit)
+    nextPointerEvent
+    && prevPointerEvent.type === PointerEventType.Over
+    && nextPointerEvent.type === PointerEventType.Over
+    && (prevPointerEvent.value !== nextPointerEvent.value
+      || prevPointerEvent.scale !== nextPointerEvent.scale
+      || prevPointerEvent.unit !== nextPointerEvent.unit)
   ) {
     return true;
   }

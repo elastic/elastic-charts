@@ -29,7 +29,5 @@ import { getTooltipInfoSelector } from './get_tooltip_values_highlighted_geoms';
 /** @internal */
 export const getHighlightedValuesSelector = createCachedSelector(
   [getTooltipInfoSelector],
-  ({ values }): Map<SeriesKey, LegendItemExtraValues> => {
-    return getHighligthedValues(values);
-  },
+  ({ values }): Map<SeriesKey, LegendItemExtraValues> => getHighligthedValues(values),
 )(getChartIdSelector);

@@ -101,9 +101,7 @@ function renderGeometries(geometries: QuadViewModel[], partitionLayout: Partitio
   let maxDepth = -1;
   // we should render only the deepest geometries of the tree to avoid overlaying highlighted geometries
   if (partitionLayout === PartitionLayout.treemap) {
-    maxDepth = geometries.reduce((acc, geom) => {
-      return Math.max(acc, geom.depth);
-    }, 0);
+    maxDepth = geometries.reduce((acc, geom) => Math.max(acc, geom.depth), 0);
   }
   return geometries
     .filter((geometry) => {

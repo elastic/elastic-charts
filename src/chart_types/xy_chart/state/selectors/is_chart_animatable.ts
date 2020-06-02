@@ -28,6 +28,7 @@ import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 /** @internal */
 export const isChartAnimatableSelector = createCachedSelector(
   [computeSeriesGeometriesSelector, getSettingsSpecSelector],
+  // eslint-disable-next-line arrow-body-style
   () => {
     // const { geometriesCounts } = seriesGeometries;
     // temporary disabled until

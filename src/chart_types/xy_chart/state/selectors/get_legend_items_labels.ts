@@ -28,12 +28,10 @@ import { computeLegendSelector } from './compute_legend';
 /** @internal */
 export const getLegendItemsLabelsSelector = createCachedSelector(
   [computeLegendSelector, getSettingsSpecSelector],
-  (legendItems, { showLegendExtra }): LegendItemLabel[] => {
-    return legendItems.map(({ label, defaultExtra }) => {
-      if (defaultExtra?.formatted != null) {
-        return { label: `${label}${showLegendExtra ? defaultExtra.formatted : ''}`, depth: 0 };
-      }
-      return { label, depth: 0 };
-    });
-  },
+  (legendItems, { showLegendExtra }): LegendItemLabel[] => legendItems.map(({ label, defaultExtra }) => {
+    if (defaultExtra?.formatted != null) {
+      return { label: `${label}${showLegendExtra ? defaultExtra.formatted : ''}`, depth: 0 };
+    }
+    return { label, depth: 0 };
+  }),
 )(getChartIdSelector);

@@ -72,12 +72,12 @@ export const Example = () => (
             valueFont: { fontWeight: 400, fontStyle: 'italic' },
           },
           shape: {
-            fillColor: (d: ShapeTreeNode) => {
+            fillColor: (d: ShapeTreeNode) =>
               // primarily, pick color based on parent's index, but then perturb by the index within the parent
-              return interpolatorTurbo(
+              interpolatorTurbo(
                 (d.parent.sortIndex + d.sortIndex / d.parent.children.length) / (d.parent.parent.children.length + 1),
-              );
-            },
+              )
+            ,
           },
         },
       ]}
