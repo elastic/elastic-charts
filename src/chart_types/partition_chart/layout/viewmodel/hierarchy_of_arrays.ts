@@ -47,12 +47,9 @@ export function getHierarchyOfArrays(
     return [];
   }
 
-  /*
-   * We can precompute things invariant of how the rectangle is divvied up.
-   * By introducing `scale`, we no longer need to deal with the dichotomy of
-   * size as data value vs size as number of pixels in the rectangle
-   */
-
+  // We can precompute things invariant of how the rectangle is divvied up.
+  // By introducing `scale`, we no longer need to deal with the dichotomy of
+  // size as data value vs size as number of pixels in the rectangle
   return mapsToArrays(
     groupByRollup(groupByRollupAccessors, valueAccessor, aggregator, facts),
     aggregateComparator(mapEntryValue, childOrders.descending),

@@ -139,7 +139,7 @@ interface ScaleOptions {
   ticks: number;
   /** true if the scale was adjusted to fit one single value histogram */
   isSingleValueHistogram: boolean;
-  /** Show only integer values * */
+  /** Show only integer values */
   integersOnly?: boolean;
 }
 const defaultScaleOptions: ScaleOptions = {
@@ -235,11 +235,8 @@ export class ScaleContinuous implements Scale {
         return currentDateTime.subtract(currentOffset, 'minutes').valueOf();
       });
     } else {
-      /**
-       * This case is for the xScale (minInterval is > 0) when we want to show bars (bandwidth > 0)
-       *
-       * We want to avoid displaying inner ticks between bars in a bar chart when using linear x scale
-       */
+      // This case is for the xScale (minInterval is > 0) when we want to show bars (bandwidth > 0)
+      // We want to avoid displaying inner ticks between bars in a bar chart when using linear x scale
       if (minInterval > 0 && bandwidth > 0) {
         const intervalCount = Math.floor((this.domain[1] - this.domain[0]) / this.minInterval);
         this.tickValues = new Array(intervalCount + 1).fill(0).map((_, i) => {
@@ -262,10 +259,8 @@ export class ScaleContinuous implements Scale {
   }
 
   getTicks(ticks: number, integersOnly: boolean) {
-    /*
-     * TODO: cleanup types for ticks btw time and non-time scales
-     * This is forcing a return type of number[] but is really (number|Date)[]
-     */
+    // TODO: cleanup types for ticks btw time and non-time scales
+    // This is forcing a return type of number[] but is really (number|Date)[]
     return integersOnly
       ? (this.d3Scale as D3ScaleNonTime)
           .ticks(ticks)

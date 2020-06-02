@@ -66,7 +66,6 @@ export function mergeYCustomDomainsByGroupId(
 
     if (prevGroupDomain) {
       const prevDomain = prevGroupDomain;
-
       const prevMin = isLowerBound(prevDomain) ? prevDomain.min : undefined;
       const prevMax = isUpperBound(prevDomain) ? prevDomain.max : undefined;
 

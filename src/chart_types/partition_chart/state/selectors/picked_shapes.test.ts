@@ -80,7 +80,7 @@ describe('Picked shapes selector', () => {
   });
   test('treemap check picked geometries', () => {
     const onClickListener = jest.fn<undefined, Array<(XYChartElementEvent | PartitionElementEvent)[]>>(
-      (): undefined => {},
+      (): undefined => undefined,
     );
     addSeries(store, treemapSpec, {
       onElementClick: onClickListener,
@@ -111,7 +111,7 @@ describe('Picked shapes selector', () => {
   });
   test('sunburst check picked geometries', () => {
     const onClickListener = jest.fn<undefined, Array<(XYChartElementEvent | PartitionElementEvent)[]>>(
-      (): undefined => {},
+      (): undefined => undefined,
     );
     addSeries(store, sunburstSpec, {
       onElementClick: onClickListener,

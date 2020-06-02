@@ -210,10 +210,8 @@ function getHorizontalTooltipPosition(
     };
   }
   return {
-    /*
-     * NOTE: x0 set to zero blocks tooltip placement on left when rotated 90 deg
-     * Delete this comment before merging and verifing this doesn't break anything.
-     */
+    // NOTE: x0 set to zero blocks tooltip placement on left when rotated 90 deg
+    // Delete this comment before merging and verifing this doesn't break anything.
     x1: chartDimensions.left + cursorXPosition,
   };
 }

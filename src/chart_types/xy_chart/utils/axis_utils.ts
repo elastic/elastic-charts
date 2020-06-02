@@ -241,9 +241,7 @@ function computeTickDimensions(
   tickFormatOptions?: TickFormatterOptions,
 ) {
   const tickValues = scale.ticks();
-  const tickLabels = tickValues.map((d) => {
-    return tickFormat(d, tickFormatOptions);
-  });
+  const tickLabels = tickValues.map((d) => tickFormat(d, tickFormatOptions));
   const {
     tickLabelStyle: { fontFamily, fontSize },
   } = axisConfig;
@@ -394,9 +392,6 @@ function getBottomTopAxisMinMaxRange(chartRotation: Rotation, width: number) {
 }
 function getLeftAxisMinMaxRange(chartRotation: Rotation, height: number) {
   switch (chartRotation) {
-    case 0:
-      // dealing with y domain
-      return { minRange: height, maxRange: 0 };
     case 90:
       // dealing with x domain
       return { minRange: 0, maxRange: height };
@@ -404,9 +399,12 @@ function getLeftAxisMinMaxRange(chartRotation: Rotation, height: number) {
       // dealing with x domain
       return { minRange: height, maxRange: 0 };
     case 180:
-    default:
       // dealing with y domain
       return { minRange: 0, maxRange: height };
+    case 0:
+    default:
+      // dealing with y domain
+      return { minRange: height, maxRange: 0 };
   }
 }
 
@@ -469,13 +467,11 @@ export function enableDuplicatedTicks(
   tickFormatOptions?: TickFormatterOptions,
 ) {
   const ticks = scale.ticks();
-  const allTicks: AxisTick[] = ticks.map((tick) => {
-    return {
-      value: tick,
-      label: axisSpec.tickFormat(tick, tickFormatOptions),
-      position: (scale.scale(tick) ?? 0) + offset,
-    };
-  });
+  const allTicks: AxisTick[] = ticks.map((tick) => ({
+    value: tick,
+    label: axisSpec.tickFormat(tick, tickFormatOptions),
+    position: (scale.scale(tick) ?? 0) + offset,
+  }));
 
   if (axisSpec.showDuplicatedTicks === true) {
     return allTicks;
@@ -495,22 +491,21 @@ export function getVisibleTicks(allTicks: AxisTick[], axisSpec: AxisSpec, axisDi
 
   let previousOccupiedSpace = 0;
   const visibleTicks = [];
-  // eslint-disable-next-line no-restricted-syntax
-  for (const [i, allTick] of allTicks.entries()) {
-    const { position } = allTick;
+  for (let i = 0; i < allTicks.length; i++) {
+    const { position } = allTicks[i];
 
     if (i === 0) {
-      visibleTicks.push(allTick);
+      visibleTicks.push(allTicks[i]);
       previousOccupiedSpace = position + requiredSpace;
     } else if (position - requiredSpace >= previousOccupiedSpace) {
-      visibleTicks.push(allTick);
+      visibleTicks.push(allTicks[i]);
       previousOccupiedSpace = position + requiredSpace;
     } else {
       // still add the tick but without a label
       if (showOverlappingTicks || showOverlappingLabels) {
         const overlappingTick = {
-          ...allTick,
-          label: showOverlappingLabels ? allTick.label : '',
+          ...allTicks[i],
+          label: showOverlappingLabels ? allTicks[i].label : '',
         };
         visibleTicks.push(overlappingTick);
       }
@@ -625,10 +620,8 @@ export function getAxisTicksPositions(
   axisDimensions.forEach((axisDim, id) => {
     const axisSpec = getSpecsById<AxisSpec>(axisSpecs, id);
 
-    /*
-     * Consider refactoring this so this condition can be tested
-     * Given some of the values that get passed around, maybe re-write as a reduce instead of forEach?
-     */
+    // Consider refactoring this so this condition can be tested
+    // Given some of the values that get passed around, maybe re-write as a reduce instead of forEach?
     if (!axisSpec) {
       return;
     }
@@ -659,9 +652,7 @@ export function getAxisTicksPositions(
     if (axisSpec.showGridLines) {
       const isVertical = isVerticalAxis(axisSpec.position);
       const gridLines = visibleTicks.map(
-        (tick: AxisTick): AxisLinePosition => {
-          return computeAxisGridLinePositions(isVertical, tick.position, chartDimensions);
-        },
+        (tick: AxisTick): AxisLinePosition => computeAxisGridLinePositions(isVertical, tick.position, chartDimensions),
       );
       axisGridLinesPositions.set(id, gridLines);
     }

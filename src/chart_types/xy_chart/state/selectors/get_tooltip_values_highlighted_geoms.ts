@@ -108,8 +108,7 @@ function getTooltipAndHighlightFromValue(
   if (tooltipType === TooltipType.None) {
     return EMPTY_VALUES;
   }
-  let { x } = orientedProjectedPointerPosition;
-  let { y } = orientedProjectedPointerPosition;
+  let { x, y } = orientedProjectedPointerPosition;
   if (isValidPointerOverEvent(scales.xScale, externalPointerEvent)) {
     const scaledX = scales.xScale.pureScale(externalPointerEvent.value);
 
@@ -162,10 +161,8 @@ function getTooltipAndHighlightFromValue(
         highlightedGeometries.push(indexedGeometry);
       }
 
-      /*
-       * if it's a follow tooltip, and no element is highlighted
-       * do _not_ add element into tooltip list
-       */
+      // if it's a follow tooltip, and no element is highlighted
+      // do _not_ add element into tooltip list
       if (!isHighlighted && isFollowTooltipType(tooltipType)) {
         return acc;
       }

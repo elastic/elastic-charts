@@ -160,12 +160,10 @@ describe('Crosshair utils linear scale', () => {
     expect(snappedPosition?.band).toEqual(1);
     expect(snappedPosition?.position).toEqual(120);
 
-    /*
-     * TODO uncomment this when we will limit the scale function to domain values.
-     * snappedPosition = getSnapPosition(3, singleScale);
-     * expect(snappedPosition?.band).toEqual(1);
-     * expect(snappedPosition?.position).toBeUndefined();
-     */
+    // TODO uncomment this when we will limit the scale function to domain values.
+    // snappedPosition = getSnapPosition(3, singleScale);
+    // expect(snappedPosition?.band).toEqual(1);
+    // expect(snappedPosition?.position).toBeUndefined();
 
     snappedPosition = getSnapPosition(0, multiLineSeriesScale, 2);
     expect(snappedPosition?.band).toEqual(1);
@@ -197,12 +195,10 @@ describe('Crosshair utils linear scale', () => {
     expect(snappedPosition?.band).toEqual(40);
     expect(snappedPosition?.position).toEqual(80);
 
-    /*
-     * TODO uncomment this when we will limit the scale function to domain values.
-     * snappedPosition = getSnapPosition(3, singleScale);
-     * expect(snappedPosition?.band).toEqual(40);
-     * expect(snappedPosition?.position).toBeUndefined();
-     */
+    // TODO uncomment this when we will limit the scale function to domain values.
+    // snappedPosition = getSnapPosition(3, singleScale);
+    // expect(snappedPosition?.band).toEqual(40);
+    // expect(snappedPosition?.position).toBeUndefined();
 
     // test a scale with a value of totalBarsInCluster > 1
     snappedPosition = getSnapPosition(0, multiBarSeriesScale, 2);

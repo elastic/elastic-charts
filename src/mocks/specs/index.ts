@@ -16,4 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+/** @internal */
 export * from './specs';

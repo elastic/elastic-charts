@@ -275,10 +275,8 @@ describe('Series', () => {
     ];
     const xValues = new Set([1, 2, 3, 4]);
     const stackedValues = formatStackedDataSeriesValues(dataSeries, true, false, xValues, ScaleType.Linear);
-    /*
-     * the datum on the snapshots is undefined because we are not adding it to
-     * the test raw dataseries
-     */
+    // the datum on the snapshots is undefined because we are not adding it to
+    // the test raw dataseries
     expect(stackedValues).toMatchSnapshot();
   });
   test('Can stack multiple dataseries with scale to extent', () => {
@@ -338,10 +336,8 @@ describe('Series', () => {
     ];
     const xValues = new Set([1, 2, 3, 4]);
     const stackedValues = formatStackedDataSeriesValues(dataSeries, true, false, xValues, ScaleType.Linear);
-    /*
-     * the datum on the snapshots is undefined because we are not adding it to
-     * the test raw dataseries
-     */
+    // the datum on the snapshots is undefined because we are not adding it to
+    // the test raw dataseries
     expect(stackedValues).toMatchSnapshot();
   });
   test('Can stack simple dataseries with y0', () => {
@@ -374,10 +370,8 @@ describe('Series', () => {
     ];
     const xValues = new Set([1, 2, 3, 4]);
     const stackedValues = formatStackedDataSeriesValues(dataSeries, true, false, xValues, ScaleType.Linear);
-    /*
-     * the datum on the snapshots is undefined because we are not adding it to
-     * the test raw dataseries
-     */
+    // the datum on the snapshots is undefined because we are not adding it to
+    // the test raw dataseries
 
     expect(stackedValues[0].data[0].y0).toBe(1);
     expect(stackedValues[0].data[0].y1).toBe(3);
@@ -421,10 +415,8 @@ describe('Series', () => {
     ];
     const xValues = new Set([1, 2, 3, 4]);
     const stackedValues = formatStackedDataSeriesValues(dataSeries, true, false, xValues, ScaleType.Linear);
-    /*
-     * the datum on the snapshots is undefined because we are not adding it to
-     * the test raw dataseries
-     */
+    // the datum on the snapshots is undefined because we are not adding it to
+    // the test raw dataseries
     expect(stackedValues[0].data[0].y0).toBe(1);
     expect(stackedValues[0].data[0].y1).toBe(3);
     expect(stackedValues[0].data[0].initialY0).toBe(1);

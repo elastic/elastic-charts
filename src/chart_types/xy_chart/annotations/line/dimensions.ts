@@ -44,10 +44,8 @@ function computeYDomainLineAnnotationDimensions(
   const chartHeight = chartDimensions.height;
   const chartWidth = chartDimensions.width;
   const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
-  /*
-   * let's use a default Bottom-X/Left-Y axis orientation if we are not showing an axis
-   * but we are displaying a line annotation
-   */
+  // let's use a default Bottom-X/Left-Y axis orientation if we are not showing an axis
+  // but we are displaying a line annotation
   const anchorPosition =
     axisPosition === null ? (isHorizontalChartRotation ? Position.Left : Position.Bottom) : axisPosition;
   const lineProps: AnnotationLineProps[] = [];
@@ -175,10 +173,8 @@ function computeXDomainLineAnnotationDimensions(
   const chartWidth = chartDimensions.width;
   const lineProps: AnnotationLineProps[] = [];
   const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
-  /*
-   * let's use a default Bottom-X/Left-Y axis orientation if we are not showing an axis
-   * but we are displaying a line annotation
-   */
+  // let's use a default Bottom-X/Left-Y axis orientation if we are not showing an axis
+  // but we are displaying a line annotation
   const anchorPosition =
     axisPosition === null ? (isHorizontalChartRotation ? Position.Bottom : Position.Left) : axisPosition;
 

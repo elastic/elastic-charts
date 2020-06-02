@@ -68,7 +68,7 @@ export interface FillFontSizeRange {
   /**
    * When `maximizeFontSize` is false (the default), text font will not be larger than font sizes in larger sectors/rectangles in the same pie chart,
    * sunburst ring or treemap layer. When it is set to true, the largest font, not exceeding `maxFontSize`, that fits in the slice/sector/rectangle
-   * will be chosen for easier text readability, irrespective of the value. *
+   * will be chosen for easier text readability, irrespective of the value.
    */
   maximizeFontSize: boolean;
 }

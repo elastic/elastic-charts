@@ -247,10 +247,8 @@ export function getStackedFormattedSeriesDatum(
       stackedY1 = y1 !== null ? stackY + y1 : null;
       stackedY0 = y0 != null ? stackY + y0 : stackY;
     }
-    /*
-     * configure null y0 if y1 is null
-     * it's semantically correct to say y0 is null if y1 is null
-     */
+    // configure null y0 if y1 is null
+    // it's semantically correct to say y0 is null if y1 is null
     if (stackedY1 === null) {
       stackedY0 = null;
     }

@@ -33,10 +33,8 @@ export function hueInterpolator(colors: RgbTuple[]) {
 
 /** @internal */
 export function addOpacity(hexColorString: string, opacity: Ratio) {
-  /*
-   * this is a super imperfect multiplicative alpha blender that assumes a "#rrggbb" or "#rrggbbaa" hexColorString
-   * todo roll some proper utility that can handle "rgb(...)", "rgba(...)", "red", {r, g, b} etc.
-   */
+  // this is a super imperfect multiplicative alpha blender that assumes a "#rrggbb" or "#rrggbbaa" hexColorString
+  // todo roll some proper utility that can handle "rgb(...)", "rgba(...)", "red", {r, g, b} etc.
   return opacity === 1
     ? hexColorString
     : hexColorString.slice(0, 7) +

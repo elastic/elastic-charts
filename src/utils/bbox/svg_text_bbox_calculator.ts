@@ -28,11 +28,9 @@ export class SvgTextBBoxCalculator implements BBoxCalculator {
 
   textNode: Text;
 
-  /*
-   * TODO specify styles for text
-   * TODO specify how to hide the svg from the current dom view
-   * like moving it a -9999999px
-   */
+  // TODO specify styles for text
+  // TODO specify how to hide the svg from the current dom view
+  // like moving it a -9999999px
   constructor(rootElement?: HTMLElement) {
     const xmlns = 'http://www.w3.org/2000/svg';
     this.svgElem = document.createElementNS(xmlns, 'svg');

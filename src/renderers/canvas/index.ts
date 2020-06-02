@@ -41,18 +41,12 @@ export function withContext(ctx: CanvasRenderingContext2D, fun: (ctx: CanvasRend
 export function clearCanvas(
   ctx: CanvasRenderingContext2D,
   width: Coordinate,
-  height: Coordinate /* , backgroundColor: string */,
+  height: Coordinate,
 ) {
   withContext(ctx, (ctx) => {
-    /*
-     * two steps, as the backgroundColor may have a non-one opacity
-     * todo we should avoid `fillRect` by setting the <canvas> element background via CSS
-     */
+    // two steps, as the backgroundColor may have a non-one opacity
+    // todo we should avoid `fillRect` by setting the <canvas> element background via CSS
     ctx.clearRect(-width, -height, 2 * width, 2 * height); // remove past contents
-    /*
-     * ctx.fillStyle = backgroundColor;
-     * ctx.fillRect(-width, -height, 2 * width, 2 * height); // new background
-     */
   });
 }
 

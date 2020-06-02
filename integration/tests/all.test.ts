@@ -22,7 +22,7 @@ import { common } from '../page_objects';
 
 // mock required for importing trick, otherwise .scss files will throw an error
 jest.mock('../../.storybook/theme_service.ts', () => ({
-  switchTheme: () => {},
+  switchTheme: () => undefined,
 }));
 
 const storyGroups = getStorybookInfo();

@@ -83,11 +83,11 @@ const valueFont = {
   type: 'group',
   values: {
     /*
-     * // Object.assign interprets the extant `undefined` as legit, so commenting it out till moving away from Object.assign in `const valueFont = ...`
-     *fontFamily: {
-     *  dflt: undefined,
-     *  type: 'string',
-     *},
+     * Object.assign interprets the extant `undefined` as legit, so commenting it out till moving away from Object.assign in `const valueFont = ...`
+     * fontFamily: {
+     *   dflt: undefined,
+     *   type: 'string',
+     * },
      */
     fontWeight: fontSettings.fontWeight,
     fontStyle: fontSettings.fontStyle,

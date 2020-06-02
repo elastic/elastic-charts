@@ -86,11 +86,9 @@ function circlineValidSectors(refC: CirclinePredicate, c: CirclineArc): Circline
 
   // now we know there's intersection and we're supposed to get back two distinct points
   const circlineIntersections = circlineIntersect(refC, c);
-  /*
-   * These conditions don't happen; kept for documentation purposes:
-   * if (circlineIntersections.length !== 2) throw new Error('Problem in intersection calculation.')
-   * if (from > to) throw new Error('From/to problem in intersection calculation.')
-   */
+  // These conditions don't happen; kept for documentation purposes:
+  // if (circlineIntersections.length !== 2) throw new Error('Problem in intersection calculation.')
+  // if (from > to) throw new Error('From/to problem in intersection calculation.')
   if (circlineIntersections.length !== 2) return [];
   const [p1, p2] = circlineIntersections;
   const aPre1 = Math.atan2(p1.y - c.y, p1.x - c.x);
@@ -121,16 +119,15 @@ function circlineValidSectors(refC: CirclinePredicate, c: CirclineArc): Circline
   return result;
 }
 
-/* eslint-disable no-restricted-syntax */
-
 /** @internal */
 export function conjunctiveConstraint(constraints: RingSectorConstruction, c: CirclineArc): CirclineArc[] {
   // imperative, slightly optimized buildup of `valids` as it's in the hot loop:
   let valids = [c];
-  for (const refC of constraints) {
-    // reference circle
+  for (let i = 0; i < constraints.length; i++) {
+    const refC = constraints[i]; // reference circle
     const nextValids: CirclineArc[] = [];
-    for (const cc of valids) {
+    for (let j = 0; j < valids.length; j++) {
+      const cc = valids[j];
       const currentValids = circlineValidSectors(refC, cc);
       nextValids.push(...currentValids);
     }
@@ -138,5 +135,3 @@ export function conjunctiveConstraint(constraints: RingSectorConstruction, c: Ci
   }
   return valids;
 }
-
-/* eslint-enable */

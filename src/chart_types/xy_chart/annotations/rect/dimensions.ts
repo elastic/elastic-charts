@@ -102,10 +102,8 @@ function scaleXonBandScale(
   x0: PrimitiveValue,
   x1: PrimitiveValue,
 ): { x: number; width: number } | null {
-  /*
-   * the band scale return the start of the band, we need to cover
-   * also the inner padding of the bar
-   */
+  // the band scale return the start of the band, we need to cover
+  // also the inner padding of the bar
   const padding = (xScale.step - xScale.originalBandwidth) / 2;
   let scaledX1 = xScale.scale(x1);
   let scaledX0 = xScale.scale(x0);

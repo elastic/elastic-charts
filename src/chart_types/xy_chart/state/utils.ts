@@ -268,10 +268,8 @@ export function computeSeriesDomains(
     seriesSpecs,
   );
 
-  /*
-   * we need to get the last values from the formatted dataseries
-   * because we change the format if we are on percentage mode
-   */
+  // we need to get the last values from the formatted dataseries
+  // because we change the format if we are on percentage mode
   const lastValues = getLastValues(formattedDataSeries);
   const updatedSeriesCollection = new Map<SeriesKey, SeriesCollectionValue>();
   seriesCollection.forEach((value, key) => {

@@ -110,59 +110,57 @@ function initStore(spec: BasicSeriesSpec) {
   return store;
 }
 
-/*
- * const barStyle = {
- *   rect: {
- *     opacity: 1,
- *   },
- *   rectBorder: {
- *     strokeWidth: 1,
- *     visible: false,
- *   },
- *   displayValue: {
- *     fill: 'black',
- *     fontFamily: '',
- *     fontSize: 2,
- *     offsetX: 0,
- *     offsetY: 0,
- *     padding: 2,
- *   },
- * };
- * const indexedGeom1Red: BarGeometry = {
- *   color: 'red',
- *   x: 0,
- *   y: 0,
- *   width: 50,
- *   height: 100,
- *   value: {
- *     x: 0,
- *     y: 10,
- *     accessor: 'y1',
- *   },
- *   geometryId: {
- *     specId: SPEC_ID,
- *     seriesKey: [],
- *   },
- *   seriesStyle: barStyle,
- * };
- * const indexedGeom2Blue: BarGeometry = {
- *   color: 'blue',
- *   x: 50,
- *   y: 50,
- *   width: 50,
- *   height: 50,
- *   value: {
- *     x: 1,
- *     y: 5,
- *     accessor: 'y1',
- *   },
- *   geometryId: {
- *     specId: SPEC_ID,
- *     seriesKey: [],
- *   },
- *   seriesStyle: barStyle,
- * };
- */
+// const barStyle = {
+//   rect: {
+//     opacity: 1,
+//   },
+//   rectBorder: {
+//     strokeWidth: 1,
+//     visible: false,
+//   },
+//   displayValue: {
+//     fill: 'black',
+//     fontFamily: '',
+//     fontSize: 2,
+//     offsetX: 0,
+//     offsetY: 0,
+//     padding: 2,
+//   },
+// };
+// const indexedGeom1Red: BarGeometry = {
+//   color: 'red',
+//   x: 0,
+//   y: 0,
+//   width: 50,
+//   height: 100,
+//   value: {
+//     x: 0,
+//     y: 10,
+//     accessor: 'y1',
+//   },
+//   geometryId: {
+//     specId: SPEC_ID,
+//     seriesKey: [],
+//   },
+//   seriesStyle: barStyle,
+// };
+// const indexedGeom2Blue: BarGeometry = {
+//   color: 'blue',
+//   x: 50,
+//   y: 50,
+//   width: 50,
+//   height: 50,
+//   value: {
+//     x: 1,
+//     y: 5,
+//     accessor: 'y1',
+//   },
+//   geometryId: {
+//     specId: SPEC_ID,
+//     seriesKey: [],
+//   },
+//   seriesStyle: barStyle,
+// };
 
 describe('Chart state pointer interactions', () => {
   let store: Store<GlobalChartState>;
@@ -273,11 +271,9 @@ describe('Chart state pointer interactions', () => {
     mouseOverTestSuite(ScaleType.Linear);
   });
 
-  /*
-   * TODO add test for point series
-   * TODO add test for mixed series
-   * TODO add test for clicks
-   */
+  it.todo('add test for point series');
+  it.todo('add test for mixed series');
+  it.todo('add test for clicks');
 });
 
 function mouseOverTestSuite(scaleType: ScaleType) {
@@ -721,29 +717,23 @@ function mouseOverTestSuite(scaleType: ScaleType) {
 
   describe.skip('can position tooltip within chart when xScale is a single value scale', () => {
     beforeEach(() => {
-      /*
-       * const singleValueScale =
-       *   store.xScale!.type === ScaleType.Ordinal
-       *     ? new ScaleBand(['a'], [0, 0])
-       *     : new ScaleContinuous({ type: ScaleType.Linear, domain: [1, 1], range: [0, 0] });
-       * store.xScale = singleValueScale;
-       */
+      // const singleValueScale =
+      //   store.xScale!.type === ScaleType.Ordinal
+      //     ? new ScaleBand(['a'], [0, 0])
+      //     : new ScaleContinuous({ type: ScaleType.Linear, domain: [1, 1], range: [0, 0] });
+      // store.xScale = singleValueScale;
     });
     test.skip('horizontal chart rotation', () => {
-      /*
-       * store.setCursorPosition(chartLeft + 99, chartTop + 99);
-       * const expectedTransform = `translateX(${chartLeft}px) translateX(-0%) translateY(109px) translateY(-100%)`;
-       * expect(store.tooltipPosition.transform).toBe(expectedTransform);
-       */
+      // store.setCursorPosition(chartLeft + 99, chartTop + 99);
+      // const expectedTransform = `translateX(${chartLeft}px) translateX(-0%) translateY(109px) translateY(-100%)`;
+      // expect(store.tooltipPosition.transform).toBe(expectedTransform);
     });
 
     test.skip('vertical chart rotation', () => {
-      /*
-       * store.chartRotation = 90;
-       * store.setCursorPosition(chartLeft + 99, chartTop + 99);
-       * const expectedTransform = `translateX(109px) translateX(-100%) translateY(${chartTop}px) translateY(-0%)`;
-       * expect(store.tooltipPosition.transform).toBe(expectedTransform);
-       */
+      // store.chartRotation = 90;
+      // store.setCursorPosition(chartLeft + 99, chartTop + 99);
+      // const expectedTransform = `translateX(109px) translateX(-100%) translateY(${chartTop}px) translateY(-0%)`;
+      // expect(store.tooltipPosition.transform).toBe(expectedTransform);
     });
   });
   describe('can format tooltip values on rotated chart', () => {
@@ -801,7 +791,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
   });
   describe('brush', () => {
     test('can respond to a brush end event', () => {
-      const brushEndListener = jest.fn<void, [XYBrushArea]>((): void => {});
+      const brushEndListener = jest.fn<void, [XYBrushArea]>((): void => undefined);
       const onBrushCaller = createOnBrushEndCaller();
       store.subscribe(() => {
         onBrushCaller(store.getState());
@@ -884,7 +874,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
       }
     });
     test('can respond to a brush end event on rotated chart', () => {
-      const brushEndListener = jest.fn<void, [XYBrushArea]>((): void => {});
+      const brushEndListener = jest.fn<void, [XYBrushArea]>((): void => undefined);
       const onBrushCaller = createOnBrushEndCaller();
       store.subscribe(() => {
         onBrushCaller(store.getState());
@@ -957,7 +947,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
       }
     });
     test('can respond to a Y brush', () => {
-      const brushEndListener = jest.fn<void, [XYBrushArea]>((): void => {});
+      const brushEndListener = jest.fn<void, [XYBrushArea]>((): void => undefined);
       const onBrushCaller = createOnBrushEndCaller();
       store.subscribe(() => {
         onBrushCaller(store.getState());
@@ -1031,7 +1021,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
       }
     });
     test('can respond to rectangular brush', () => {
-      const brushEndListener = jest.fn<void, [XYBrushArea]>((): void => {});
+      const brushEndListener = jest.fn<void, [XYBrushArea]>((): void => undefined);
       const onBrushCaller = createOnBrushEndCaller();
       store.subscribe(() => {
         onBrushCaller(store.getState());

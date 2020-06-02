@@ -29,12 +29,10 @@ import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 export const isChartAnimatableSelector = createCachedSelector(
   [computeSeriesGeometriesSelector, getSettingsSpecSelector],
   () => {
-    /*
-     * const { geometriesCounts } = seriesGeometries;
-     * temporary disabled until
-     * https://github.com/elastic/elastic-charts/issues/89 and https://github.com/elastic/elastic-charts/issues/41
-     * return isChartAnimatable(geometriesCounts, settingsSpec.animateData);
-     */
+    // const { geometriesCounts } = seriesGeometries;
+    // temporary disabled until
+    // https://github.com/elastic/elastic-charts/issues/89 and https://github.com/elastic/elastic-charts/issues/41
+    // return isChartAnimatable(geometriesCounts, settingsSpec.animateData);
     return false;
   },
 )(getChartIdSelector);

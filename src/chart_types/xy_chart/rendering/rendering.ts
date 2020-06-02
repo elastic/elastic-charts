@@ -265,8 +265,7 @@ export function renderBars(
 
   // default padding to 1 for now
   const padding = 1;
-  const { fontSize } = sharedSeriesStyle.displayValue;
-  const { fontFamily } = sharedSeriesStyle.displayValue;
+  const { fontSize, fontFamily } = sharedSeriesStyle.displayValue;
   const absMinHeight = minBarHeight && Math.abs(minBarHeight);
 
   dataSeries.data.forEach((datum) => {

@@ -98,10 +98,8 @@ describe('Computed chart dimensions', () => {
     expect(chartDimensions).toMatchSnapshot();
   });
   test('should be padded by a left axis', () => {
-    /*
-     * |margin|titleFontSize|titlePadding|maxLabelBboxWidth|tickPadding|tickSize|padding|
-     * \10|10|10|10|10|10|10| = 70px from left
-     */
+    // |margin|titleFontSize|titlePadding|maxLabelBboxWidth|tickPadding|tickSize|padding|
+    // \10|10|10|10|10|10|10| = 70px from left
     const axisDims = new Map<AxisId, AxisTicksDimensions>();
     const axisSpecs = [axisLeftSpec];
     axisDims.set('axis_1', axis1Dims);
@@ -111,10 +109,8 @@ describe('Computed chart dimensions', () => {
     expect(chartDimensions).toMatchSnapshot();
   });
   test('should be padded by a right axis', () => {
-    /*
-     * |padding|tickSize|tickPadding|maxLabelBBoxWidth|titlePadding|titleFontSize\margin|
-     * \10|10|10|10|10|10|10| = 70px from right
-     */
+    // |padding|tickSize|tickPadding|maxLabelBBoxWidth|titlePadding|titleFontSize\margin|
+    // \10|10|10|10|10|10|10| = 70px from right
     const axisDims = new Map<AxisId, AxisTicksDimensions>();
     const axisSpecs = [{ ...axisLeftSpec, position: Position.Right }];
     axisDims.set('axis_1', axis1Dims);
@@ -124,10 +120,8 @@ describe('Computed chart dimensions', () => {
     expect(chartDimensions).toMatchSnapshot();
   });
   test('should be padded by a top axis', () => {
-    /*
-     * |margin|titleFontSize|titlePadding|maxLabelBboxHeight|tickPadding|tickSize|padding|
-     * \10|10|10|10|10|10|10| = 70px from top
-     */
+    // |margin|titleFontSize|titlePadding|maxLabelBboxHeight|tickPadding|tickSize|padding|
+    // \10|10|10|10|10|10|10| = 70px from top
     const axisDims = new Map<AxisId, AxisTicksDimensions>();
     const axisSpecs = [
       {
@@ -142,10 +136,8 @@ describe('Computed chart dimensions', () => {
     expect(chartDimensions).toMatchSnapshot();
   });
   test('should be padded by a bottom axis', () => {
-    /*
-     * |margin|titleFontSize|titlePadding|maxLabelBboxHeight|tickPadding|tickSize|padding|
-     * \10|10|10|10|10|10|10| = 70px from bottom
-     */
+    // |margin|titleFontSize|titlePadding|maxLabelBboxHeight|tickPadding|tickSize|padding|
+    // \10|10|10|10|10|10|10| = 70px from bottom
     const axisDims = new Map<AxisId, AxisTicksDimensions>();
     const axisSpecs = [
       {

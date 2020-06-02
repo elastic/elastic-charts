@@ -33,8 +33,8 @@ export const getFlatHierarchy = createCachedSelector(
 )(getChartIdSelector);
 
 function flatHierarchy(tree: HierarchyOfArrays, orderedList: Array<[PrimitiveValue, number, PrimitiveValue]> = []) {
-  // eslint-disable-next-line no-restricted-syntax
-  for (const branch of tree) {
+  for (let i = 0; i < tree.length; i++) {
+    const branch = tree[i];
     const [key, arrayNode] = branch;
     const { children, depth, value } = arrayNode;
 

@@ -170,22 +170,20 @@ describe('Axis computational utils', () => {
     integersOnly: false,
   };
 
-  /*
-   * const horizontalAxisSpecWTitle: AxisSpec = {
-   *   id: ('axis_2'),
-   *   groupId: ('group_1'),
-   *   title: 'h axis',
-   *   hide: false,
-   *   showOverlappingTicks: false,
-   *   showOverlappingLabels: false,
-   *   position: Position.Top,
-   *   tickSize: 10,
-   *   tickPadding: 10,
-   *   tickFormat: (value: any) => {
-   *     return `${value}`;
-   *   },
-   * };
-   */
+  // const horizontalAxisSpecWTitle: AxisSpec = {
+  //   id: ('axis_2'),
+  //   groupId: ('group_1'),
+  //   title: 'h axis',
+  //   hide: false,
+  //   showOverlappingTicks: false,
+  //   showOverlappingLabels: false,
+  //   position: Position.Top,
+  //   tickSize: 10,
+  //   tickPadding: 10,
+  //   tickFormat: (value: any) => {
+  //     return `${value}`;
+  //   },
+  // };
 
   const xDomain: XDomain = {
     type: 'xDomain',

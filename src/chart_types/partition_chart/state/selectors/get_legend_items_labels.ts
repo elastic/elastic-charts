@@ -68,8 +68,8 @@ function flatSlicesNames(
     return [];
   }
 
-  // eslint-disable-next-line no-restricted-syntax
-  for (const branch of tree) {
+  for (let i = 0; i < tree.length; i++) {
+    const branch = tree[i];
     const arrayNode = branch[1];
     const key = branch[0];
 
@@ -89,10 +89,8 @@ function flatSlicesNames(
     const children = arrayNode[CHILDREN_KEY];
     flatSlicesNames(layers, depth + 1, children, keys);
   }
-  return [...keys.keys()].map((k) => {
-    return {
-      label: k,
-      depth: keys.get(k) ?? 0,
-    };
-  });
+  return [...keys.keys()].map((k) => ({
+    label: k,
+    depth: keys.get(k) ?? 0,
+  }));
 }

@@ -1277,11 +1277,9 @@ describe('Chart State utils', () => {
         },
       },
     ]);
-    /*
-     * const merged = mergeGeometriesIndexes(map1, map2);
-     * expect(merged.get('a')).toBeDefined();
-     * expect(merged.get('a')?.length).toBe(2);
-     */
+    // const merged = mergeGeometriesIndexes(map1, map2);
+    // expect(merged.get('a')).toBeDefined();
+    // expect(merged.get('a')?.length).toBe(2);
   });
   test('can compute xScaleOffset dependent on histogram mode', () => {
     const domain = [0, 10];

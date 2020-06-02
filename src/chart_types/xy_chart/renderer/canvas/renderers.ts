@@ -62,12 +62,10 @@ export function renderXYChartCanvas2d(
       x: chartDimensions.left + chartTransform.x,
       y: chartDimensions.top + chartTransform.y,
     };
-    /*
-     * painter's algorithm, like that of SVG: the sequence determines what overdraws what; first element of the array is drawn first
-     * (of course, with SVG, it's for ambiguous situations only, eg. when 3D transforms with different Z values aren't used, but
-     * unlike SVG and esp. WebGL, Canvas2d doesn't support the 3rd dimension well, see ctx.transform / ctx.setTransform).
-     * The layers are callbacks, because of the need to not bake in the `ctx`, it feels more composable and uncoupled this way.
-     */
+    // painter's algorithm, like that of SVG: the sequence determines what overdraws what; first element of the array is drawn first
+    // (of course, with SVG, it's for ambiguous situations only, eg. when 3D transforms with different Z values aren't used, but
+    // unlike SVG and esp. WebGL, Canvas2d doesn't support the 3rd dimension well, see ctx.transform / ctx.setTransform).
+    // The layers are callbacks, because of the need to not bake in the `ctx`, it feels more composable and uncoupled this way.
     renderLayers(ctx, [
       // clear the canvas
       (ctx: CanvasRenderingContext2D) => clearCanvas(ctx, 200000, 200000 /* , backgroundColor */),

@@ -96,11 +96,9 @@ function renderTaperedBorder(
 
   ctx.fill();
   if (strokeWidth > 0.001 && !(x0 === 0 && x1 === TAU)) {
-    /*
-     * canvas2d uses a default of 1 if the lineWidth is assigned 0, so we use a small value to test, to avoid it
-     * ... and also don't draw a separator if we have a single sector that's the full ring (eg. single-fact-row pie)
-     * outer arc
-     */
+    // canvas2d uses a default of 1 if the lineWidth is assigned 0, so we use a small value to test, to avoid it
+    // ... and also don't draw a separator if we have a single sector that's the full ring (eg. single-fact-row pie)
+    // outer arc
     ctx.lineWidth = strokeWidth;
     const tapered = x1 - x0 < (15 * TAU) / 360; // burnout seems visible, and tapering invisible, with less than 15deg
     if (tapered) {
@@ -243,33 +241,27 @@ export function renderPartitionCanvas2d(
     // let's set the devicePixelRatio once and for all; then we'll never worry about it again
     ctx.scale(dpr, dpr);
 
-    /*
-     * all texts are currently center-aligned because
-     *     - the calculations manually compute and lay out text (word) boxes, so we can choose whatever
-     *     - but center/middle has mathematical simplicity and the most unassuming thing
-     *     - due to using the math x/y convention (+y is up) while Canvas uses screen convention (+y is down)
-     *         text rendering must be y-flipped, which is a bit easier this way
-     */
+    // all texts are currently center-aligned because
+    //     - the calculations manually compute and lay out text (word) boxes, so we can choose whatever
+    //     - but center/middle has mathematical simplicity and the most unassuming thing
+    //     - due to using the math x/y convention (+y is up) while Canvas uses screen convention (+y is down)
+    //         text rendering must be y-flipped, which is a bit easier this way
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.translate(diskCenter.x, diskCenter.y);
-    /*
-     * this applies the mathematical x/y conversion (+y is North) which is easier when developing geometry
-     * functions - also, all renderers have flexibility (eg. SVG scale) and WebGL NDC is also +y up
-     * - in any case, it's possible to refactor for a -y = North convention if that's deemed preferable
-     */
+    // this applies the mathematical x/y conversion (+y is North) which is easier when developing geometry
+    // functions - also, all renderers have flexibility (eg. SVG scale) and WebGL NDC is also +y up
+    // - in any case, it's possible to refactor for a -y = North convention if that's deemed preferable
     ctx.scale(1, -1);
 
     ctx.lineJoin = 'round';
     ctx.strokeStyle = sectorLineStroke;
     ctx.lineWidth = sectorLineWidth;
 
-    /*
-     * painter's algorithm, like that of SVG: the sequence determines what overdraws what; first element of the array is drawn first
-     * (of course, with SVG, it's for ambiguous situations only, eg. when 3D transforms with different Z values aren't used, but
-     * unlike SVG and esp. WebGL, Canvas2d doesn't support the 3rd dimension well, see ctx.transform / ctx.setTransform).
-     * The layers are callbacks, because of the need to not bake in the `ctx`, it feels more composable and uncoupled this way.
-     */
+    // painter's algorithm, like that of SVG: the sequence determines what overdraws what; first element of the array is drawn first
+    // (of course, with SVG, it's for ambiguous situations only, eg. when 3D transforms with different Z values aren't used, but
+    // unlike SVG and esp. WebGL, Canvas2d doesn't support the 3rd dimension well, see ctx.transform / ctx.setTransform).
+    // The layers are callbacks, because of the need to not bake in the `ctx`, it feels more composable and uncoupled this way.
     renderLayers(ctx, [
       // clear the canvas
       (ctx: CanvasRenderingContext2D) => clearCanvas(ctx, 200000, 200000 /* , backgroundColor */),

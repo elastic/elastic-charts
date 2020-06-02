@@ -331,10 +331,8 @@ describe('Legends', () => {
     name = getSeriesName(seriesIdentifier3, true, false, specWithSplit);
     expect(name).toBe('a');
 
-    /*
-     * happens when we have multiple values in splitSeriesAccessor
-     * or we have also multiple yAccessors
-     */
+    // happens when we have multiple values in splitSeriesAccessor
+    // or we have also multiple yAccessors
     name = getSeriesName(seriesIdentifier2, true, false, specWithSplit);
     expect(name).toBe('a - b');
 

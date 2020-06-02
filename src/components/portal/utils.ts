@@ -30,7 +30,6 @@ export const DEFAULT_POPPER_SETTINGS: PopperSettings = {
  * Creates new dom element with given id and attaches to parent
  *
  * @internal
- *
  */
 export function getOrCreateNode(id: string, parent: HTMLElement = document.body): HTMLDivElement {
   // eslint-disable-next-line unicorn/prefer-query-selector

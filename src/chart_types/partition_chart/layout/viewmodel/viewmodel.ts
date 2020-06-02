@@ -357,21 +357,20 @@ export function shapeViewModel(
 }
 
 function partToShapeTreeNode(treemapLayout: boolean, innerRadius: Radius, ringThickness: number) {
-  return (n: Part): ShapeTreeNode => {
-    const { node } = n;
+  return ({ node, x0, x1, y0, y1 }: Part): ShapeTreeNode => {
     return {
       dataName: entryKey(node),
       depth: depthAccessor(node),
       value: aggregateAccessor(node),
       parent: parentAccessor(node),
       sortIndex: sortIndexAccessor(node),
-      x0: n.x0,
-      x1: n.x1,
-      y0: n.y0,
-      y1: n.y1,
-      y0px: treemapLayout ? n.y0 : innerRadius + n.y0 * ringThickness,
-      y1px: treemapLayout ? n.y1 : innerRadius + n.y1 * ringThickness,
-      yMidPx: treemapLayout ? (n.y0 + n.y1) / 2 : innerRadius + ((n.y0 + n.y1) / 2) * ringThickness,
+      x0,
+      x1,
+      y0,
+      y1,
+      y0px: treemapLayout ? y0 : innerRadius + y0 * ringThickness,
+      y1px: treemapLayout ? y1 : innerRadius + y1 * ringThickness,
+      yMidPx: treemapLayout ? (y0 + y1) / 2 : innerRadius + ((y0 + y1) / 2) * ringThickness,
     };
   };
 }

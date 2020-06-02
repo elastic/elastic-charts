@@ -401,7 +401,7 @@ function tryFontSize<C>(
   getShapeRowGeometry: GetShapeRowGeometry<C>,
   cx: Coordinate,
   cy: Coordinate,
-  padding: number,
+  padding: Padding,
   node: ShapeTreeNode,
   boxes: Box[],
   maxRowCount: number,
@@ -517,7 +517,7 @@ function getRowSet<C>(
   getShapeRowGeometry: GetShapeRowGeometry<C>,
   cx: Coordinate,
   cy: Coordinate,
-  padding: number,
+  padding: Padding,
   node: ShapeTreeNode,
 ) {
   const tryFunction = tryFontSize(

@@ -296,7 +296,7 @@ describe.skip('Chart Store', () => {
   });
 
   test.skip('can respond to legend item mouseover event', () => {
-    const legendListener = jest.fn((): void => {});
+    const legendListener = jest.fn((): void => undefined);
 
     store.legendItems = new Map([
       [firstLegendItem.seriesIdentifier.key, firstLegendItem],
@@ -319,7 +319,7 @@ describe.skip('Chart Store', () => {
   });
 
   test.skip('can respond to legend item mouseout event', () => {
-    const outListener = jest.fn((): undefined => {});
+    const outListener = jest.fn((): undefined => undefined);
 
     store.highlightedLegendItemKey.set(firstLegendItem.seriesIdentifier.key);
 
@@ -336,7 +336,7 @@ describe.skip('Chart Store', () => {
   });
 
   test.skip('do nothing when mouseover an hidden series', () => {
-    const legendListener = jest.fn((): void => {});
+    const legendListener = jest.fn((): void => undefined);
     store.setOnLegendItemOverListener(legendListener);
 
     store.legendItems = new Map([
@@ -363,7 +363,7 @@ describe.skip('Chart Store', () => {
   });
 
   test.skip('can respond to legend item click event', () => {
-    const legendListener = jest.fn((): void => {});
+    const legendListener = jest.fn((): void => undefined);
 
     store.legendItems = new Map([
       [firstLegendItem.seriesIdentifier.key, firstLegendItem],
@@ -396,7 +396,7 @@ describe.skip('Chart Store', () => {
   });
 
   test.skip('can respond to a legend item plus click event', () => {
-    const legendListener = jest.fn((): void => {});
+    const legendListener = jest.fn((): void => undefined);
 
     store.legendItems = new Map([
       [firstLegendItem.seriesIdentifier.key, firstLegendItem],
@@ -418,7 +418,7 @@ describe.skip('Chart Store', () => {
   });
 
   test.skip('can respond to a legend item minus click event', () => {
-    const legendListener = jest.fn((): void => {});
+    const legendListener = jest.fn((): void => undefined);
 
     store.legendItems = new Map([
       [firstLegendItem.seriesIdentifier.key, firstLegendItem],
@@ -440,7 +440,7 @@ describe.skip('Chart Store', () => {
   });
 
   test.skip('can toggle series visibility', () => {
-    const computeChart = jest.fn((): void => {});
+    const computeChart = jest.fn((): void => undefined);
 
     store.legendItems = new Map([
       [firstLegendItem.seriesIdentifier.key, firstLegendItem],
@@ -464,7 +464,7 @@ describe.skip('Chart Store', () => {
   });
 
   test.skip('can toggle single series visibility', () => {
-    const computeChart = jest.fn((): void => {});
+    const computeChart = jest.fn((): void => undefined);
 
     store.legendItems = new Map([
       [firstLegendItem.seriesIdentifier.key, firstLegendItem],
@@ -485,28 +485,28 @@ describe.skip('Chart Store', () => {
   });
 
   test.skip('can set an element click listener', () => {
-    const clickListener = (): void => {};
+    const clickListener = (): void => undefined;
     store.setOnElementClickListener(clickListener);
 
     expect(store.onElementClickListener).toEqual(clickListener);
   });
 
   test.skip('can set a brush end listener', () => {
-    const brushEndListener = (): void => {};
+    const brushEndListener = (): void => undefined;
     store.setOnBrushEndListener(brushEndListener);
 
     expect(store.onBrushEndListener).toEqual(brushEndListener);
   });
 
   test.skip('can set a cursor hover listener', () => {
-    const listener = (): void => {};
+    const listener = (): void => undefined;
     store.setOnCursorUpdateListener(listener);
 
     expect(store.onCursorUpdateListener).toEqual(listener);
   });
 
   test.skip('can set a render change listener', () => {
-    const listener = (): void => {};
+    const listener = (): void => undefined;
     store.setOnRenderChangeListener(listener);
 
     expect(store.onRenderChangeListener).toEqual(listener);
@@ -557,7 +557,7 @@ describe.skip('Chart Store', () => {
   });
 
   test.skip('can update parent dimensions', () => {
-    const computeChart = jest.fn((): void => {});
+    const computeChart = jest.fn((): void => undefined);
     store.computeChart = computeChart;
 
     store.parentDimensions = {
@@ -589,7 +589,7 @@ describe.skip('Chart Store', () => {
   test.skip('can remove a series spec', () => {
     store.addSeriesSpec(spec);
     store.removeSeriesSpec(SPEC_ID);
-    expect(store.seriesSpecs.get(SPEC_ID)).toBe();
+    expect(store.seriesSpecs.get(SPEC_ID)).toBeUndefined();
   });
 
   test.skip('can remove an axis spec', () => {
@@ -609,7 +609,7 @@ describe.skip('Chart Store', () => {
 
     store.addAxisSpec(axisSpec);
     store.removeAxisSpec(AXIS_ID);
-    expect(store.axesSpecs.get(AXIS_ID)).toBe();
+    expect(store.axesSpecs.get(AXIS_ID)).toBeUndefined();
   });
 
   test('can add and remove an annotation spec', () => {
@@ -832,7 +832,7 @@ describe.skip('Chart Store', () => {
     });
 
     test.skip('should update cursor postion with hover event', () => {
-      const legendListener = jest.fn((): void => {});
+      const legendListener = jest.fn((): void => undefined);
 
       store.legendItems = new Map([
         [firstLegendItem.seriesIdentifier.key, firstLegendItem],
@@ -954,7 +954,7 @@ describe.skip('Chart Store', () => {
       height: 0,
       seriesStyle: barStyle,
     };
-    const clickListener = jest.fn<void, [GeometryValue[]]>((): void => {});
+    const clickListener = jest.fn<void, [GeometryValue[]]>((): void => undefined);
     store.setOnElementClickListener(clickListener);
 
     store.highlightedGeometries.replace([]);
@@ -1094,7 +1094,7 @@ describe.skip('Chart Store', () => {
     expect(t).toEqual(expectedTooltipValues);
   });
   describe('can determine if crosshair cursor is visible', () => {
-    const brushEndListener = (): void => {};
+    const brushEndListener = (): void => undefined;
 
     beforeEach(() => {
       store.xScale = new ScaleContinuous({ type: ScaleType.Linear, domain: [0, 100], range: [0, 100] });

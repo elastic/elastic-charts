@@ -126,10 +126,8 @@ describe('Scale Continuous', () => {
     const domain = [0, 100];
     const data = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90];
 
-    /*
-     * we tweak the maxRange removing the bandwidth to correctly compute
-     * a band linear scale in computeXScale
-     */
+    // we tweak the maxRange removing the bandwidth to correctly compute
+    // a band linear scale in computeXScale
     const range: [number, number] = [0, 100 - 10];
     const scaleLinear = new ScaleContinuous(
       { type: ScaleType.Linear, domain, range },
@@ -151,10 +149,8 @@ describe('Scale Continuous', () => {
       scaleType: ScaleType.Linear,
       type: 'xDomain',
     };
-    /*
-     * we tweak the maxRange removing the bandwidth to correctly compute
-     * a band linear scale in computeXScale
-     */
+    // we tweak the maxRange removing the bandwidth to correctly compute
+    // a band linear scale in computeXScale
     const scaleLinear = computeXScale({ xDomain, totalBarsInCluster: 1, range: [0, 109], barsPadding: 0 });
     expect(scaleLinear.bandwidth).toBe(109 / 11);
 
