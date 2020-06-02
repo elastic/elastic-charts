@@ -31,7 +31,7 @@
     "cz": "git-cz",
     "lint": "NODE_ENV=production eslint --quiet --ext .tsx,.ts,.js .",
     "lint:fix": "yarn lint --fix",
-    "prettier:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,html,css,scss}\"",
+    "prettier:check": "prettier --check \"**/*.{json,html,css,scss}\"",
     "playground": "cd .playground && webpack-dev-server",
     "playground:ie": "cd .playground && webpack-dev-server --host=0.0.0.0 --disable-host-check --useLocalIp",
     "pq": "pretty-quick",

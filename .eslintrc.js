@@ -5,32 +5,18 @@ module.exports = {
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
-    'prettier/@typescript-eslint',
     'airbnb/hooks',
     'plugin:eslint-comments/recommended',
     'plugin:jest/recommended',
     'plugin:promise/recommended',
     'plugin:unicorn/recommended',
     'plugin:react/recommended',
-    'plugin:prettier/recommended',
     'plugin:jsx-a11y/recommended',
     'plugin:import/errors',
     'plugin:import/warnings',
     'plugin:import/typescript',
-    'prettier',
-    'prettier/react',
   ],
-  plugins: [
-    '@typescript-eslint',
-    'eslint-comments',
-    'jest',
-    'import',
-    'promise',
-    'unicorn',
-    'header',
-    'react-hooks',
-    'jsx-a11y',
-  ],
+  plugins: ['@typescript-eslint', 'eslint-comments', 'jest', 'import', 'promise', 'unicorn', 'header', 'react-hooks', 'jsx-a11y'],
   rules: {
     /**
      * depricated to be deleted
@@ -88,6 +74,42 @@ module.exports = {
     'no-lonely-if': 0,
     'no-return-assign': 0,
     'no-underscore-dangle': 0,
+    'no-confusing-arrow': 0,
+    'prefer-destructuring': 0,
+    'function-paren-newline': 0,
+    'implicit-arrow-linebreak': 0,
+    'function-call-argument-newline': ['error', 'consistent'],
+    'array-bracket-newline': ['error', 'consistent'],
+    'array-element-newline': [
+      'error',
+      {
+        ArrayExpression: 'consistent',
+        ArrayPattern: 'consistent',
+      },
+    ],
+    'object-curly-newline': [
+      'error',
+      {
+        ObjectExpression: { multiline: true, minProperties: 10, consistent: true },
+        ObjectPattern: { multiline: true, minProperties: 10, consistent: true },
+        ImportDeclaration: { consistent: true },
+        ExportDeclaration: { consistent: true },
+      },
+    ],
+    quotes: ['error', 'single'],
+    semi: ['error', 'always'],
+    // https://github.com/typescript-eslint/typescript-eslint/issues/1824
+    indent: ['error', 2, { SwitchCase: 1, MemberExpression: 1 }],
+    'max-len': [
+      'warn',
+      {
+        code: 120,
+        ignoreUrls: true,
+        ignoreStrings: true,
+        ignoreComments: true,
+        ignoreRegExpLiterals: true,
+      },
+    ],
     'no-unused-vars': [
       'error',
       {
@@ -112,8 +134,10 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 0,
     '@typescript-eslint/no-non-null-assertion': 0,
     '@typescript-eslint/ban-ts-ignore': 0,
+    '@typescript-eslint/indent': 0,
     '@typescript-eslint/no-inferrable-types': 0,
     '@typescript-eslint/ban-ts-comment': 1,
+    '@typescript-eslint/space-before-function-paren': [2, 'never'],
     '@typescript-eslint/no-unused-vars': [
       'error',
       {
@@ -140,10 +164,7 @@ module.exports = {
     'import/no-restricted-paths': [
       'error',
       {
-        zones: [
-          { target: './src', from: './src/index.ts' },
-          { target: './src', from: './', except: ['./src', './node_modules/'] },
-        ],
+        zones: [{ target: './src', from: './src/index.ts' }, { target: './src', from: './', except: ['./src', './node_modules/'] }],
       },
     ],
     // https://basarat.gitbooks.io/typescript/docs/tips/defaultIsBad.html
@@ -254,6 +275,16 @@ module.exports = {
           'error',
           {
             devDependencies: ['**/*.test.ts?(x)', 'src/mocks/**/*.ts?(x)'],
+          },
+        ],
+        'prefer-destructuring': [
+          'warn',
+          {
+            array: true,
+            object: true,
+          },
+          {
+            enforceForRenamedProperties: false,
           },
         ],
       },
