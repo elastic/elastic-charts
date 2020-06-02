@@ -52,10 +52,10 @@ interface MousePosition {
 }
 
 interface ElementBBox {
-  left: any;
-  top: any;
-  width: any;
-  height: any;
+  left: number;
+  top: number;
+  width: number;
+  height: number;
 }
 
 /**
