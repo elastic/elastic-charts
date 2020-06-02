@@ -137,32 +137,32 @@ function getRootArrayNode(): ArrayNode {
 /** @internal */
 export function mapsToArrays(root: HierarchyOfMaps, sorter: NodeSorter): HierarchyOfArrays {
   const groupByMap = (node: HierarchyOfMaps, parent: ArrayNode) =>
-    [...node]
-      .map(
-        ([key, value]: [Key, MapNode]): ArrayEntry => {
-          const valueElement = value[CHILDREN_KEY];
-          const resultNode: ArrayNode = {
-            [AGGREGATE_KEY]: NaN,
-            [STATISTICS_KEY]: { globalAggregate: NaN },
-            [CHILDREN_KEY]: [],
-            [DEPTH_KEY]: NaN,
-            [SORT_INDEX_KEY]: NaN,
-            [PARENT_KEY]: parent,
-            [INPUT_KEY]: [],
-          };
-          const newValue: ArrayNode = Object.assign(
-            resultNode,
-            value,
-            valueElement && { [CHILDREN_KEY]: groupByMap(valueElement, resultNode) },
-          );
-          return [key, newValue];
-        },
-      )
-      .sort(sorter)
-      .map((n: ArrayEntry, i) => {
-        entryValue(n).sortIndex = i;
-        return n;
-      }); // with the current algo, decreasing order is important
+    Array.from(
+      node,
+      ([key, value]: [Key, MapNode]): ArrayEntry => {
+        const valueElement = value[CHILDREN_KEY];
+        const resultNode: ArrayNode = {
+          [AGGREGATE_KEY]: NaN,
+          [STATISTICS_KEY]: { globalAggregate: NaN },
+          [CHILDREN_KEY]: [],
+          [DEPTH_KEY]: NaN,
+          [SORT_INDEX_KEY]: NaN,
+          [PARENT_KEY]: parent,
+          [INPUT_KEY]: [],
+        };
+        const newValue: ArrayNode = Object.assign(
+          resultNode,
+          value,
+          valueElement && { [CHILDREN_KEY]: groupByMap(valueElement, resultNode) },
+        );
+        return [key, newValue];
+      },
+    )
+    .sort(sorter)
+    .map((n: ArrayEntry, i) => {
+      entryValue(n).sortIndex = i;
+      return n;
+    }); // with the current algo, decreasing order is important
   return groupByMap(root, getRootArrayNode());
 }
 

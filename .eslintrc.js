@@ -181,6 +181,7 @@ module.exports = {
     'unicorn/no-nested-ternary': 1,
     'unicorn/no-reduce': 0,
     'unicorn/no-useless-undefined': 0,
+    'unicorn/prefer-spread': 0,
     'unicorn/filename-case': [
       'error',
       {
