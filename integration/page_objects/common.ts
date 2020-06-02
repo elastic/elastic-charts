@@ -19,9 +19,9 @@
 
 import Url from 'url';
 
+// @ts-ignore
 import defaults from '../defaults';
 import { JEST_TIMEOUT, toMatchImageSnapshot } from '../jest_env_setup';
-// @ts-ignore
 
 const port = process.env.PORT || defaults.PORT;
 const host = process.env.HOST || defaults.HOST;
