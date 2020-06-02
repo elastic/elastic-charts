@@ -67,8 +67,9 @@ const getFallbackPlacements = (): Placement[] | undefined => {
   if (typeof knob === 'string') {
     // @ts-ignore
     return knob.split(', ');
-    // @ts-ignore
   }
+
+  // @ts-ignore
   if (knob.length === 0) {
     return;
   }
