@@ -124,14 +124,19 @@ module.exports = {
     ],
     '@typescript-eslint/no-use-before-define': [
       'warn',
-      { functions: false, classes: true, variables: true, typedefs: false },
+      {
+        functions: false,
+        classes: true,
+        variables: true,
+        typedefs: false,
+      },
     ],
 
     /*
      * import plugin
      */
     'import/order': ['error', { 'newlines-between': 'always', alphabetize: { order: 'asc', caseInsensitive: true } }],
-    'import/no-unresolved': 'error',
+    'import/no-unresolved': ['error', { ignore: ['theme_dark.scss', 'theme_light.scss'] }],
     'import/no-restricted-paths': [
       'error',
       {
@@ -171,6 +176,8 @@ module.exports = {
     'unicorn/prevent-abbreviations': 0, // Common abbreviations are known and readable
     'unicorn/no-null': 0,
     'unicorn/no-fn-reference-in-iterator': 0,
+    'unicorn/prefer-query-selector': 0,
+    'unicorn/no-for-loop': 0,
     'unicorn/no-nested-ternary': 1,
     'unicorn/no-reduce': 0,
     'unicorn/no-useless-undefined': 0,
@@ -239,8 +246,8 @@ module.exports = {
     {
       files: ['src/**/*.{ts?(x),js}'],
       rules: {
-        'prefer-destructuring': ['error', { object: true, array: false }],
         'no-underscore-dangle': 2,
+        'import/no-unresolved': 'error',
         'import/no-extraneous-dependencies': [
           'error',
           {
