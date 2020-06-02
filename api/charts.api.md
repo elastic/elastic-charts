@@ -178,7 +178,7 @@ export interface AxisStyle {
 
 // Warning: (ae-missing-release-tag) "BackgroundStyles" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
-// @public (undocumented)
+// @public
 export interface BackgroundStyles {
     // (undocumented)
     color: string;
@@ -1277,8 +1277,6 @@ export const Settings: React.FunctionComponent<SettingsSpecProps>;
 export interface SettingsSpec extends Spec {
     // (undocumented)
     animateData: boolean;
-    // (undocumented)
-    backgroundColor?: string;
     baseTheme?: Theme;
     brushAxis?: BrushAxis;
     // (undocumented)
@@ -1413,7 +1411,6 @@ export interface Theme {
     areaSeriesStyle: AreaSeriesStyle;
     // (undocumented)
     axes: AxisConfig;
-    // (undocumented)
     background: BackgroundStyles;
     barSeriesStyle: BarSeriesStyle;
     bubbleSeriesStyle: BubbleSeriesStyle;

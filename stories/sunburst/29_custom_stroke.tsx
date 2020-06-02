@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { Chart, Datum, Partition, PartitionLayout, Settings } from '../../src';
+import { Chart, Datum, Partition, PartitionLayout, Settings, DARK_THEME } from '../../src';
 import { mocks } from '../../src/mocks/hierarchical/index';
 import { config } from '../../src/chart_types/partition_chart/layout/config/config';
 import React from 'react';
@@ -31,7 +31,7 @@ export const Example = () => {
   };
   return (
     <Chart className="story-chart-dark">
-      <Settings theme={partialCustomTheme} />
+      <Settings baseTheme={DARK_THEME} theme={partialCustomTheme} />
       <Partition
         id="spec_1"
         data={mocks.manyPie}

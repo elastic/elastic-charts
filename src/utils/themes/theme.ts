@@ -123,6 +123,9 @@ export interface ColorConfig {
   vizColors: Color[];
   defaultVizColor: Color;
 }
+/**
+ * This is used to coordinate adequate contrast of the text in partition and treemap charts.
+ */
 export interface BackgroundStyles {
   color: string;
 }
@@ -200,6 +203,10 @@ export interface Theme {
    * value from 1 to 100
    */
   markSizeRatio?: number;
+  /**
+   * The background allows the consumer to provide a color of the background container of the chart.
+   * This can then be used to calculate the contrast of the text for partition charts.
+   */
   background: BackgroundStyles;
 }
 

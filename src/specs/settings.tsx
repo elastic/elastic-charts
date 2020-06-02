@@ -331,7 +331,6 @@ export interface SettingsSpec extends Spec {
    * @defaultValue 2
    */
   minBrushDelta?: number;
-  backgroundColor?: string;
 }
 
 export type DefaultSettingsProps =
