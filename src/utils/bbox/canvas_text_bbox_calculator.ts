@@ -33,7 +33,7 @@ export class CanvasTextBBoxCalculator implements BBoxCalculator {
     this.offscreenCanvas.style.left = '-99999px';
     this.context = this.offscreenCanvas.getContext('2d');
     this.attachedRoot = rootElement || document.documentElement;
-    this.attachedRoot.append(this.offscreenCanvas);
+    this.attachedRoot.appendChild(this.offscreenCanvas);
   }
 
   compute(text: string, padding: number, fontSize = 16, fontFamily = 'Arial', lineHeight = 1, fontWeight = 400): BBox {

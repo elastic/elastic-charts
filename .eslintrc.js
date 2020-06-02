@@ -182,6 +182,7 @@ module.exports = {
     'unicorn/no-reduce': 0,
     'unicorn/no-useless-undefined': 0,
     'unicorn/prefer-spread': 0,
+    'unicorn/prefer-node-append': 0,
     'unicorn/filename-case': [
       'error',
       {

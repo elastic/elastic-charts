@@ -52,7 +52,7 @@ export const Example = () => {
         const link = document.createElement('a');
         link.download = fileName;
         link.href = snapshot.blobOrDataUrl;
-        document.body.append(link);
+        document.body.appendChild(link);
         link.click();
         link.remove();
     }

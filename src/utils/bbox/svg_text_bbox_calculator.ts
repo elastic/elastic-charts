@@ -35,11 +35,11 @@ export class SvgTextBBoxCalculator implements BBoxCalculator {
     const xmlns = 'http://www.w3.org/2000/svg';
     this.svgElem = document.createElementNS(xmlns, 'svg');
     this.textElem = document.createElementNS(xmlns, 'text');
-    this.svgElem.append(this.textElem);
+    this.svgElem.appendChild(this.textElem);
     this.textNode = document.createTextNode('');
-    this.textElem.append(this.textNode);
+    this.textElem.appendChild(this.textNode);
     this.attachedRoot = rootElement || document.documentElement;
-    this.attachedRoot.append(this.svgElem);
+    this.attachedRoot.appendChild(this.svgElem);
   }
 
   compute(text: string): BBox {

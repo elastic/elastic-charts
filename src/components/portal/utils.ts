@@ -40,7 +40,7 @@ export function getOrCreateNode(id: string, parent: HTMLElement = document.body)
 
   const newNode = document.createElement('div');
   newNode.id = id;
-  parent.append(newNode);
+  parent.appendChild(newNode);
   return newNode;
 }
 
