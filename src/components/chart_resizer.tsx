@@ -25,6 +25,7 @@ import { Dispatch, bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_specs';
 import { GlobalChartState } from '../state/chart_state';
+import { isDefined } from '../chart_types/xy_chart/state/utils';
 
 interface ResizerStateProps {
   resizeDebounce: number;
@@ -104,7 +105,8 @@ const mapDispatchToProps = (dispatch: Dispatch): ResizerDispatchProps =>
 const mapStateToProps = (state: GlobalChartState): ResizerStateProps => {
   const { resizeDebounce } = getSettingsSpecSelector(state);
   return {
-    resizeDebounce: resizeDebounce == null || Number.isNaN(resizeDebounce) ? DEFAULT_RESIZE_DEBOUNCE : resizeDebounce,
+    resizeDebounce:
+      !isDefined(resizeDebounce) || Number.isNaN(resizeDebounce) ? DEFAULT_RESIZE_DEBOUNCE : resizeDebounce,
   };
 };
 
