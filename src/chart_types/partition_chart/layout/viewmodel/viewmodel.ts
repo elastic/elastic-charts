@@ -69,9 +69,9 @@ function topGrooveAccessor(topGroovePx: Pixels) {
 }
 
 export const VerticalAlignments = Object.freeze({
-  top: 'top' as 'top',
-  middle: 'middle' as 'middle',
-  bottom: 'bottom' as 'bottom',
+  top: 'top' as const,
+  middle: 'middle' as const,
+  bottom: 'bottom' as const,
 });
 
 // we might add more in the future; also, the intent is to still be of CanvasTextBaseline
@@ -207,7 +207,6 @@ export function shapeViewModel(
     partitionLayout,
     sectorLineWidth,
   } = config;
-
   const innerWidth = width * (1 - Math.min(1, margin.left + margin.right));
   const innerHeight = height * (1 - Math.min(1, margin.top + margin.bottom));
 

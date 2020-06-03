@@ -47,7 +47,7 @@ export class PartitionState implements InternalChartState {
   }
   chartType = ChartTypes.Partition;
   isInitialized(globalState: GlobalChartState) {
-    return globalState.specsInitialized && getPieSpec(globalState) !== null;
+    return getPieSpec(globalState) !== null;
   }
   isBrushAvailable() {
     return false;

@@ -65,7 +65,7 @@ export class XYAxisChartState implements InternalChartState {
     this.legendId = htmlIdGenerator()('legend');
   }
   isInitialized(globalState: GlobalChartState) {
-    return globalState.specsInitialized && getSeriesSpecsSelector(globalState).length > 0;
+    return getSeriesSpecsSelector(globalState).length > 0;
   }
 
   isBrushAvailable(globalState: GlobalChartState) {

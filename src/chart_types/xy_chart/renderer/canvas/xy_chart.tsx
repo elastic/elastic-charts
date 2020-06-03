@@ -137,19 +137,12 @@ class XYChartComponent extends React.Component<XYChartProps> {
       isChartEmpty,
       chartContainerDimensions: { width, height },
     } = this.props;
-    if (!initialized || width === 0 || height === 0) {
+
+    if (!initialized || isChartEmpty) {
       this.ctx = null;
       return null;
     }
 
-    if (isChartEmpty) {
-      this.ctx = null;
-      return (
-        <div className="echReactiveChart_unavailable">
-          <p>No data to display</p>
-        </div>
-      );
-    }
     return (
       <canvas
         ref={forwardStageRef}
@@ -192,7 +185,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     left: 0,
     top: 0,
   },
-  chartRotation: 0 as 0,
+  chartRotation: 0 as const,
   chartDimensions: {
     width: 0,
     height: 0,

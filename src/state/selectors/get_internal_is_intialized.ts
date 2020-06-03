@@ -20,9 +20,16 @@ import { GlobalChartState } from '../chart_state';
 
 /** @internal */
 export const getInternalIsInitializedSelector = (state: GlobalChartState): boolean => {
-  if (state.internalChartState) {
-    return state.internalChartState.isInitialized(state);
-  } else {
+  const {
+    parentDimensions: { width, height },
+    specsInitialized,
+  } = state;
+
+  if (width <= 0 || height <= 0 || !specsInitialized) {
     return false;
   }
+  if (state.internalChartState) {
+    return state.internalChartState.isInitialized(state);
+  }
+  return false;
 };
