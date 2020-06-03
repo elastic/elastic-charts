@@ -17,7 +17,7 @@
  * under the License. */
 
 import React from 'react';
-import { Example } from '../stories/treemap/6_custom_style';
+import { Example } from '../stories/annotations/lines/3_x_time';
 
 export class Playground extends React.Component {
   render() {
