@@ -25,7 +25,6 @@ import { InternalChartState, GlobalChartState, BackwardRef } from '../../../stat
 import { Partition } from '../renderer/canvas/partition';
 import { HighlighterFromHover } from '../renderer/dom/highlighter_hover';
 import { HighlighterFromLegend } from '../renderer/dom/highlighter_legend';
-
 import { computeLegendSelector } from './selectors/compute_legend';
 import { getLegendItemsLabels } from './selectors/get_legend_items_labels';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';

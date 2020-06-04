@@ -20,7 +20,6 @@
 import createCachedSelector from 're-reselect';
 
 import { SettingsSpec, TooltipValueFormatter, isTooltipProps } from '../../specs/settings';
-
 import { getChartIdSelector } from './get_chart_id';
 import { getSettingsSpecSelector } from './get_settings_specs';
 

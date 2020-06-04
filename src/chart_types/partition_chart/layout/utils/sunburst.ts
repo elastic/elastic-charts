@@ -18,7 +18,6 @@
  */
 
 import { Origin, Part } from '../types/types';
-
 import { ArrayEntry, childrenAccessor, HierarchyOfArrays } from './group_by_rollup';
 
 /** @internal */

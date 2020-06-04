@@ -23,7 +23,6 @@ import { SpecTypes } from '../../../specs/settings';
 import { Position } from '../../../utils/commons';
 import { BarGeometry } from '../../../utils/geometry';
 import { AxisSpec, BarSeriesSpec, SeriesTypes } from '../utils/specs';
-
 import { formatTooltip } from './tooltip';
 
 describe('Tooltip formatting', () => {

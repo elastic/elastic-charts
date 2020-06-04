@@ -26,7 +26,6 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { Color } from '../../../../utils/commons';
 import { getSeriesColors } from '../../utils/series';
 import { getCustomSeriesColors } from '../utils';
-
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { getSeriesSpecsSelector } from './get_specs';
 

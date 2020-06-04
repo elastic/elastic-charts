@@ -28,7 +28,6 @@ import { Rotation } from '../../../../utils/commons';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Point } from '../../../../utils/point';
 import { isVerticalRotation } from '../utils';
-
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 
 const MIN_AREA_SIZE = 1;

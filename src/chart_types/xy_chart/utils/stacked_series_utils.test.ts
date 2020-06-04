@@ -18,7 +18,6 @@
  */
 
 import { ScaleType } from '../../../scales';
-
 import { RawDataSeries } from './series';
 import {
   computeYStackedMapValues,

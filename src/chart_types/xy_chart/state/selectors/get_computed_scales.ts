@@ -21,7 +21,6 @@ import createCachedSelector from 're-reselect';
 
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { ComputedScales } from '../utils';
-
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 
 /** @internal */

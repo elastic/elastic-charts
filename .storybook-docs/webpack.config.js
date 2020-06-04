@@ -18,7 +18,6 @@
  */
 
 const path = require('path');
-// const webpack = require('webpack');
 
 const createCompiler = require('@storybook/addon-docs/mdx-compiler-plugin');
 

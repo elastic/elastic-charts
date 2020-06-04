@@ -32,7 +32,6 @@ import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { XDomain } from '../domains/x_domain';
 import { YDomain } from '../domains/y_domain';
 import { mergeYCustomDomainsByGroupId } from '../state/selectors/merge_y_custom_domains';
-
 import {
   AxisTick,
   AxisTicksDimensions,

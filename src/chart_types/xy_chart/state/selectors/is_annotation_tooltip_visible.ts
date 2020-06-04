@@ -20,7 +20,6 @@
 import createCachedSelector from 're-reselect';
 
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-
 import { getAnnotationTooltipStateSelector } from './get_annotation_tooltip_state';
 
 /** @internal */

@@ -24,7 +24,6 @@ import { SeededDataGenerator } from '../../mocks/utils';
 import { ScaleType } from '../../scales';
 import { Settings, BarSeries, LegendColorPicker } from '../../specs';
 import { Chart } from '../chart';
-
 import { Legend } from './legend';
 import { LegendListItem } from './legend_item';
 

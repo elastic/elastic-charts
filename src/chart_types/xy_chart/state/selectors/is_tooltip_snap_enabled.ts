@@ -21,7 +21,6 @@ import createCachedSelector from 're-reselect';
 
 import { Scale } from '../../../../scales';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { getTooltipSnapSelector } from './get_tooltip_snap';
 

@@ -20,7 +20,6 @@
 import { Circle, Stroke, Fill, Arc } from '../../../../../geoms/types';
 import { withContext } from '../../../../../renderers/canvas';
 import { RGBtoString } from '../../../../partition_chart/layout/utils/d3_utils';
-
 import { MIN_STROKE_WIDTH } from './line';
 
 /** @internal */

@@ -26,7 +26,6 @@ import { GroupId, SpecId } from '../../../utils/ids';
 import { isCompleteBound, isLowerBound, isUpperBound } from '../utils/axis_utils';
 import { RawDataSeries } from '../utils/series';
 import { BasicSeriesSpec, DomainRange, DEFAULT_GLOBAL_ID, SeriesTypes } from '../utils/specs';
-
 import { BaseDomain } from './domain';
 
 export type YDomain = BaseDomain & {

@@ -27,7 +27,6 @@ import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { IndexedGeometry, GeometryValue } from '../../../../utils/geometry';
 import { XYChartSeriesIdentifier } from '../../utils/series';
-
 import {
   getTooltipInfoAndGeometriesSelector,
   TooltipAndHighlightedGeoms,

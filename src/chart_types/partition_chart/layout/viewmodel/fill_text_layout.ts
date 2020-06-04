@@ -44,7 +44,6 @@ import {
 } from '../types/viewmodel_types';
 import { integerSnap, getTextColor, monotonicHillClimb } from '../utils/calcs';
 import { logarithm, TAU, trueBearingToStandardPositionAngle } from '../utils/math';
-
 import { RectangleConstruction, VerticalAlignments } from './viewmodel';
 
 const INFINITY_RADIUS = 1e4; // far enough for a sub-2px precision on a 4k screen, good enough for text bounds; 64 bit floats still work well with it

@@ -52,7 +52,6 @@ import {
 import { TAU, trueBearingToStandardPositionAngle } from '../utils/math';
 import { sunburst } from '../utils/sunburst';
 import { getTopPadding, treemap } from '../utils/treemap';
-
 import {
   fillTextLayout,
   getRectangleRowGeometry,

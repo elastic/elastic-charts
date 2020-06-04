@@ -24,7 +24,6 @@ import { AnnotationRectProps } from '../../../annotations/rect/types';
 import { AnnotationDimensions } from '../../../annotations/types';
 import { getSpecsById } from '../../../state/utils';
 import { AnnotationSpec, isLineAnnotation, isRectAnnotation } from '../../../utils/specs';
-
 import { renderLineAnnotations } from './lines';
 import { renderRectAnnotations } from './rect';
 

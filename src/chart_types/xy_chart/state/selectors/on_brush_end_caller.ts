@@ -29,7 +29,6 @@ import { Rotation, minValueWithLowerLimit, maxValueWithUpperLimit } from '../../
 import { Dimensions } from '../../../../utils/dimensions';
 import { GroupId } from '../../../../utils/ids';
 import { isVerticalRotation } from '../utils';
-
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getLeftPoint, getTopPoint } from './get_brush_area';
 import { getComputedScalesSelector } from './get_computed_scales';

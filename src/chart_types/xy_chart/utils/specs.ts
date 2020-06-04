@@ -38,7 +38,6 @@ import {
 } from '../../../utils/themes/theme';
 import { PrimitiveValue } from '../../partition_chart/layout/utils/group_by_rollup';
 import { AnnotationTooltipFormatter } from '../annotations/types';
-
 import { RawDataSeriesDatum, XYChartSeriesIdentifier } from './series';
 
 export type BarStyleOverride = RecursivePartial<BarSeriesStyle> | Color | null;

@@ -20,7 +20,6 @@
 import { Rect } from '../../../../geoms/types';
 import { withContext, renderLayers, clearCanvas } from '../../../../renderers/canvas';
 import { stringToRGB } from '../../../partition_chart/layout/utils/d3_utils';
-
 import { renderAnnotations } from './annotations';
 import { renderAreas } from './areas';
 import { renderAxes } from './axes';

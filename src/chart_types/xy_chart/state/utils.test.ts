@@ -40,7 +40,6 @@ import {
   SeriesTypes,
   SeriesColorAccessorFn,
 } from '../utils/specs';
-
 import { mergeYCustomDomainsByGroupId } from './selectors/merge_y_custom_domains';
 import {
   computeSeriesDomains,

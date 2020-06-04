@@ -49,7 +49,6 @@ import { Geometries, Transform } from '../../state/utils';
 import { AxisLinePosition, AxisTicksDimensions } from '../../utils/axis_utils';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
 import { AxisSpec, AnnotationSpec } from '../../utils/specs';
-
 import { renderXYChartCanvas2d } from './renderers';
 
 /** @internal */

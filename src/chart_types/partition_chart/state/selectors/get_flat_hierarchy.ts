@@ -21,7 +21,6 @@ import createCachedSelector from 're-reselect';
 
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { HierarchyOfArrays, PrimitiveValue } from '../../layout/utils/group_by_rollup';
-
 import { getTree } from './tree';
 
 /** @internal */

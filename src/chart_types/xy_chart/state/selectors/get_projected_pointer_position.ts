@@ -23,7 +23,6 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Point } from '../../../../utils/point';
-
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 
 const getCurrentPointerPosition = (state: GlobalChartState) => state.interactions.pointer.current.position;

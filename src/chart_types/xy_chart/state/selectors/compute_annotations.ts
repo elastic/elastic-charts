@@ -24,7 +24,6 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { AnnotationId } from '../../../../utils/ids';
 import { AnnotationDimensions } from '../../annotations/types';
 import { computeAnnotationDimensions } from '../../annotations/utils';
-
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { getAxisSpecsSelector, getAnnotationSpecsSelector } from './get_specs';

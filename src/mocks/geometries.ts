@@ -22,7 +22,6 @@ import { omit } from 'lodash';
 import { mergePartial, RecursivePartial } from '../utils/commons';
 import { AreaGeometry, PointGeometry, BarGeometry, LineGeometry, BubbleGeometry } from '../utils/geometry';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
-
 import { MockSeriesIdentifier } from './series/series_identifiers';
 
 const color = 'red';

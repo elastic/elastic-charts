@@ -27,7 +27,6 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { GroupId } from '../../../../utils/ids';
 import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../../utils/themes/theme';
 import { AnnotationDomainTypes, AnnotationSpec, AnnotationTypes } from '../../utils/specs';
-
 import { computeLineAnnotationDimensions } from './dimensions';
 import { AnnotationLineProps } from './types';
 

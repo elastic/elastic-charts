@@ -21,7 +21,6 @@ import createCachedSelector from 're-reselect';
 
 import { TooltipInfo } from '../../../../components/tooltip/types';
 import { percentValueGetter, sumValueGetter } from '../../layout/config/config';
-
 import { getPickedShapes } from './picked_shapes';
 import { getPieSpec } from './pie_spec';
 import { valueGetterFunction } from './scenegraph';

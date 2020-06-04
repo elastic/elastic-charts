@@ -21,7 +21,6 @@ import { render } from 'enzyme';
 import React from 'react';
 
 import { Settings } from '../specs';
-
 import { Chart } from './chart';
 
 describe('Chart', () => {

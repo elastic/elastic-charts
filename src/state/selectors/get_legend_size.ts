@@ -24,7 +24,6 @@ import { LEGEND_HIERARCHY_MARGIN } from '../../components/legend/legend_item';
 import { BBox } from '../../utils/bbox/bbox_calculator';
 import { CanvasTextBBoxCalculator } from '../../utils/bbox/canvas_text_bbox_calculator';
 import { GlobalChartState } from '../chart_state';
-
 import { getChartIdSelector } from './get_chart_id';
 import { getChartThemeSelector } from './get_chart_theme';
 import { getLegendItemsLabelsSelector } from './get_legend_items_labels';

@@ -18,7 +18,6 @@
  */
 
 import { Margins } from '../dimensions';
-
 import { SharedGeometryStateStyle } from './theme';
 
 export const DEFAULT_MISSING_COLOR = 'red';

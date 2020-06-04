@@ -19,7 +19,6 @@
 
 import { Pixels } from '../types/geometry_types';
 import { Part } from '../types/types';
-
 import { ArrayEntry, CHILDREN_KEY, entryValue, HierarchyOfArrays } from './group_by_rollup';
 import { GOLDEN_RATIO } from './math';
 

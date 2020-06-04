@@ -38,7 +38,6 @@ import {
   RectAnnotationSpec,
   AnnotationTypes,
 } from '../utils/specs';
-
 import { computeLineAnnotationDimensions } from './line/dimensions';
 import { computeLineAnnotationTooltipState } from './line/tooltip';
 import { AnnotationLineProps } from './line/types';

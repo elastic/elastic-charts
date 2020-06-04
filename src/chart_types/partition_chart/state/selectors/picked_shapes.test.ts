@@ -26,7 +26,6 @@ import { onMouseDown, onMouseUp, onPointerMove } from '../../../../state/actions
 import { upsertSpec, specParsed, specParsing } from '../../../../state/actions/specs';
 import { chartStoreReducer, GlobalChartState } from '../../../../state/chart_state';
 import { PartitionSpec } from '../../specs';
-
 import { partitionGeometries } from './geometries';
 import { createOnElementClickCaller } from './on_element_click_caller';
 

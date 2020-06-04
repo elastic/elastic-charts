@@ -23,7 +23,6 @@ import { SpecTypes } from '../../../specs/settings';
 import { computeSeriesDomains } from '../state/utils';
 import { computeXScale } from '../utils/scales';
 import { BasicSeriesSpec, SeriesTypes } from '../utils/specs';
-
 import { getSnapPosition } from './crosshair_utils';
 
 describe('Crosshair utils ordinal scales', () => {

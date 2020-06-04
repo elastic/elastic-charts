@@ -29,7 +29,6 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { nullShapeViewModel, QuadViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { INPUT_KEY } from '../../layout/utils/group_by_rollup';
 import { partitionGeometries } from '../../state/selectors/geometries';
-
 import { renderPartitionCanvas2d } from './canvas_renderers';
 
 interface ReactiveChartStateProps {

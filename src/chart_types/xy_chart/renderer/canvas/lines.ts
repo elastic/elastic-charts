@@ -23,7 +23,6 @@ import { withContext, withClip } from '../../../../renderers/canvas';
 import { LineGeometry } from '../../../../utils/geometry';
 import { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
 import { getGeometryStateStyle } from '../../rendering/rendering';
-
 import { renderPoints } from './points';
 import { renderLinePaths } from './primitives/path';
 import { buildLineStyles } from './styles/line';

@@ -35,7 +35,6 @@ import { getAnnotationSpecsSelector } from '../../../state/selectors/get_specs';
 import { isChartEmptySelector } from '../../../state/selectors/is_chart_empty';
 import { getSpecsById } from '../../../state/utils';
 import { isLineAnnotation, AnnotationSpec } from '../../../utils/specs';
-
 import { AnnotationTooltip } from './annotation_tooltip';
 
 interface AnnotationsDispatchProps {

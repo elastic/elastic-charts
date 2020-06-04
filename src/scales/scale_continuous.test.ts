@@ -22,9 +22,7 @@ import { DateTime, Settings } from 'luxon';
 import { XDomain } from '../chart_types/xy_chart/domains/x_domain';
 import { computeXScale } from '../chart_types/xy_chart/utils/scales';
 import { Domain } from '../utils/domain';
-
 import { isLogarithmicScale } from './types';
-
 import { ScaleContinuous, ScaleType, ScaleBand } from '.';
 
 describe('Scale Continuous', () => {

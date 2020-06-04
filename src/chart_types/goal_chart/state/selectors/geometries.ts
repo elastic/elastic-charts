@@ -25,7 +25,6 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { getSpecsFromStore } from '../../../../state/utils';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { GoalSpec } from '../../specs';
-
 import { render } from './scenegraph';
 
 const getSpecs = (state: GlobalChartState) => state.specs;

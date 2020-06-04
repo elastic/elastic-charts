@@ -24,7 +24,6 @@ import { withContext, withClip } from '../../../../renderers/canvas';
 import { BubbleGeometry, PointGeometry } from '../../../../utils/geometry';
 import { SharedGeometryStateStyle, GeometryStateStyle, PointStyle } from '../../../../utils/themes/theme';
 import { getGeometryStateStyle } from '../../rendering/rendering';
-
 import { renderPointGroup } from './points';
 
 interface BubbleGeometriesDataProps {

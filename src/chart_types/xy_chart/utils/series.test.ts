@@ -26,7 +26,6 @@ import { SpecTypes } from '../../../specs/settings';
 import { AccessorFn } from '../../../utils/accessor';
 import * as TestDataset from '../../../utils/data_samples/test_dataset';
 import { ColorConfig } from '../../../utils/themes/theme';
-
 import {
   SeriesCollectionValue,
   getFormattedDataseries,

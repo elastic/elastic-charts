@@ -22,7 +22,6 @@ import { Font, FontStyle } from '../../../../partition_chart/layout/types/types'
 import { AxisTick, getTickLabelProps } from '../../../utils/axis_utils';
 import { renderText } from '../primitives/text';
 import { renderDebugRectCenterRotated } from '../utils/debug';
-
 import { AxisProps } from '.';
 
 /** @internal */

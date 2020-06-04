@@ -26,7 +26,6 @@ import { GroupId, SpecId } from '../../../utils/ids';
 import { ColorConfig } from '../../../utils/themes/theme';
 import { splitSpecsByGroupId, YBasicSeriesSpec } from '../domains/y_domain';
 import { LastValues } from '../state/utils';
-
 import { formatNonStackedDataSeriesValues } from './nonstacked_series_utils';
 import { BasicSeriesSpec, SeriesTypes, SeriesSpecs, SeriesNameConfigOptions } from './specs';
 import { formatStackedDataSeriesValues } from './stacked_series_utils';

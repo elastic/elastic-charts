@@ -36,7 +36,6 @@ import { GeometryValue } from '../utils/geometry';
 import { GroupId } from '../utils/ids';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { PartialTheme, Theme } from '../utils/themes/theme';
-
 import { Spec } from '.';
 
 export interface LayerValue {

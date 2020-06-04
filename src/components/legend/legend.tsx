@@ -42,7 +42,6 @@ import { BBox } from '../../utils/bbox/bbox_calculator';
 import { Position } from '../../utils/commons';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 import { Theme } from '../../utils/themes/theme';
-
 import { LegendItemProps, renderLegendItem } from './legend_item';
 import { getLegendStyle, getLegendListStyle } from './style_utils';
 

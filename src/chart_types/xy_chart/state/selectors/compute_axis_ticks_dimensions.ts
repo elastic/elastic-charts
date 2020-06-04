@@ -25,7 +25,6 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { CanvasTextBBoxCalculator } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { AxisId } from '../../../../utils/ids';
 import { computeAxisTicksDimensions, AxisTicksDimensions, isDuplicateAxis } from '../../utils/axis_utils';
-
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
 import { getBarPaddingsSelector } from './get_bar_paddings';

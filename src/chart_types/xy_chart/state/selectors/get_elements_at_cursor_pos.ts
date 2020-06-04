@@ -28,7 +28,6 @@ import { IndexedGeometry } from '../../../../utils/geometry';
 import { Point } from '../../../../utils/point';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
 import { ComputedScales } from '../utils';
-
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getComputedScalesSelector } from './get_computed_scales';
 import { getGeometriesIndexSelector } from './get_geometries_index';

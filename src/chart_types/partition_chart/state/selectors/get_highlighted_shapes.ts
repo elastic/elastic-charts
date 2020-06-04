@@ -22,7 +22,6 @@ import createCachedSelector from 're-reselect';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { QuadViewModel } from '../../layout/types/viewmodel_types';
-
 import { partitionGeometries } from './geometries';
 
 const getHighlightedLegendItemKey = (state: GlobalChartState) => state.interactions.highlightedLegendItemKey;

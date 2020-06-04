@@ -28,7 +28,6 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { isClicking } from '../../../../state/utils';
 import { IndexedGeometry, GeometryValue } from '../../../../utils/geometry';
 import { XYChartSeriesIdentifier } from '../../utils/series';
-
 import { getHighlightedGeomsSelector } from './get_tooltip_values_highlighted_geoms';
 
 /**

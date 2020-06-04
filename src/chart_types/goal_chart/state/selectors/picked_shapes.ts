@@ -22,7 +22,6 @@ import createCachedSelector from 're-reselect';
 import { LayerValue } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { BulletViewModel } from '../../layout/types/viewmodel_types';
-
 import { geometries } from './geometries';
 
 function getCurrentPointerPosition(state: GlobalChartState) {

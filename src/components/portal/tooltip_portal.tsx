@@ -24,7 +24,6 @@ import { createPortal } from 'react-dom';
 
 import { isDefined } from '../../chart_types/xy_chart/state/utils';
 import { mergePartial } from '../../utils/commons';
-
 import { PopperSettings, PortalAnchorRef } from './types';
 import { DEFAULT_POPPER_SETTINGS, getOrCreateNode, isHTMLElement } from './utils';
 

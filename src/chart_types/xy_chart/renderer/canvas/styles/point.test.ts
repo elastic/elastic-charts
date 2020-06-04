@@ -22,7 +22,6 @@ import { MockStyles } from '../../../../../mocks';
 import { getColorFromVariant } from '../../../../../utils/commons';
 import { PointStyle } from '../../../../../utils/themes/theme';
 import { stringToRGB } from '../../../../partition_chart/layout/utils/d3_utils';
-
 import { buildPointStyles } from './point';
 
 jest.mock('../../../../partition_chart/layout/utils/d3_utils');

@@ -21,7 +21,6 @@ import { Rect, Stroke, Fill } from '../../../../../geoms/types';
 import { withContext, withClipRanges } from '../../../../../renderers/canvas';
 import { ClippedRanges } from '../../../../../utils/geometry';
 import { RGBtoString } from '../../../../partition_chart/layout/utils/d3_utils';
-
 import { MIN_STROKE_WIDTH } from './line';
 
 /** @internal */

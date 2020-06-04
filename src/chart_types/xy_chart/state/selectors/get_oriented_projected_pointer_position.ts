@@ -25,7 +25,6 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { Dimensions } from '../../../../utils/dimensions';
 import { Point } from '../../../../utils/point';
 import { getOrientedXPosition, getOrientedYPosition } from '../../utils/interactions';
-
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
 

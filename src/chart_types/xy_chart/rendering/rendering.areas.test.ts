@@ -28,7 +28,6 @@ import { computeSeriesDomains } from '../state/utils';
 import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
 import { computeXScale, computeYScales } from '../utils/scales';
 import { AreaSeriesSpec, SeriesTypes } from '../utils/specs';
-
 import { renderArea } from './rendering';
 
 const SPEC_ID = 'spec_1';

@@ -21,7 +21,6 @@ import { SpecTypes } from '../../../../specs/settings';
 import { Pixels, PointObject } from '../../../partition_chart/layout/types/geometry_types';
 import { BandFillColorAccessorInput, GOAL_SUBTYPES } from '../../specs';
 import { config } from '../config/config';
-
 import { Config } from './config_types';
 
 interface BandViewModel {

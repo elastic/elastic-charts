@@ -20,7 +20,6 @@
 import { DateTime } from 'luxon';
 
 import { limitLogScaleDomain, ScaleContinuous } from './scale_continuous';
-
 import { ScaleType, ScaleBand } from '.';
 
 describe('Scale Test', () => {

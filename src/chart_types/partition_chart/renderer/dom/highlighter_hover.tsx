@@ -24,7 +24,6 @@ import { getChartContainerDimensionsSelector } from '../../../../state/selectors
 import { getInternalIsInitializedSelector } from '../../../../state/selectors/get_internal_is_intialized';
 import { partitionGeometries } from '../../state/selectors/geometries';
 import { getPickedShapes } from '../../state/selectors/picked_shapes';
-
 import { HighlighterComponent, HighlighterProps, DEFAULT_PROPS } from './highlighter';
 
 const hoverMapStateToProps = (state: GlobalChartState): HighlighterProps => {

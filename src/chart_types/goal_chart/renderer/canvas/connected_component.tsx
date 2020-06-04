@@ -27,7 +27,6 @@ import { getInternalIsInitializedSelector } from '../../../../state/selectors/ge
 import { Dimensions } from '../../../../utils/dimensions';
 import { BulletViewModel, nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { geometries } from '../../state/selectors/geometries';
-
 import { renderCanvas2d } from './canvas_renderers';
 
 interface ReactiveChartStateProps {

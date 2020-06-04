@@ -25,7 +25,6 @@ import { updateParentDimensions } from '../../../state/actions/chart_settings';
 import { onPointerMove } from '../../../state/actions/mouse';
 import { upsertSpec, specParsed } from '../../../state/actions/specs';
 import { GlobalChartState, chartStoreReducer } from '../../../state/chart_state';
-
 import { getTooltipInfoAndGeometriesSelector } from './selectors/get_tooltip_values_highlighted_geoms';
 
 describe('XYChart - State tooltips', () => {

@@ -31,7 +31,6 @@ import { DEFAULT_SETTINGS_SPEC } from '../specs/settings';
 import { Color } from '../utils/commons';
 import { Dimensions } from '../utils/dimensions';
 import { Point } from '../utils/point';
-
 import { StateActions } from './actions';
 import { CHART_RENDERED } from './actions/chart';
 import { UPDATE_PARENT_DIMENSION } from './actions/chart_settings';

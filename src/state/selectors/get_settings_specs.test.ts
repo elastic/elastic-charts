@@ -19,7 +19,6 @@
 
 import { DEFAULT_SETTINGS_SPEC } from '../../specs';
 import { getInitialState } from '../chart_state';
-
 import { getSettingsSpecSelector } from './get_settings_specs';
 
 describe('selectors - getSettingsSpecSelector', () => {

@@ -22,7 +22,6 @@ import { ScaleType } from '../../../scales';
 import { SpecTypes } from '../../../specs/settings';
 import { getSplittedSeries } from '../utils/series';
 import { BasicSeriesSpec, SeriesTypes } from '../utils/specs';
-
 import { convertXScaleTypes, findMinInterval, mergeXDomain } from './x_domain';
 
 describe('X Domain', () => {

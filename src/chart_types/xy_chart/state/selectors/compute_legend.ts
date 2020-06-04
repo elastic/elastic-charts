@@ -24,7 +24,6 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { computeLegend } from '../../legend/legend';
-
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { getSeriesColorsSelector } from './get_series_color_map';
 import { getSeriesSpecsSelector, getAxisSpecsSelector } from './get_specs';

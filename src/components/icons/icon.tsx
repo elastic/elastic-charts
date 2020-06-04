@@ -21,7 +21,6 @@ import classNames from 'classnames';
 import React, { SVGAttributes } from 'react';
 
 import { deepEqual } from '../../utils/fast_deep_equal';
-
 import { AlertIcon } from './assets/alert';
 import { DotIcon } from './assets/dot';
 import { EmptyIcon } from './assets/empty';

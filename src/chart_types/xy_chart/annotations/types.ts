@@ -19,7 +19,6 @@
 
 import { Position, Color } from '../../../utils/commons';
 import { AnnotationType } from '../utils/specs';
-
 import { AnnotationLineProps } from './line/types';
 import { AnnotationRectProps } from './rect/types';
 

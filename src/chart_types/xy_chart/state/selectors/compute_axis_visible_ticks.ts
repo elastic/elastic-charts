@@ -25,7 +25,6 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { Dimensions } from '../../../../utils/dimensions';
 import { AxisId } from '../../../../utils/ids';
 import { getAxisTicksPositions, AxisTick, AxisLinePosition } from '../../utils/axis_utils';
-
 import { computeAxisTicksDimensionsSelector } from './compute_axis_ticks_dimensions';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { computeSeriesDomainsSelector } from './compute_series_domains';

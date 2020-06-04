@@ -23,7 +23,6 @@ import { withClip, withContext } from '../../../../renderers/canvas';
 import { AreaGeometry } from '../../../../utils/geometry';
 import { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
 import { getGeometryStateStyle } from '../../rendering/rendering';
-
 import { renderPoints } from './points';
 import { renderLinePaths, renderAreaPath } from './primitives/path';
 import { buildAreaStyles } from './styles/area';

@@ -30,7 +30,6 @@ import { chartStoreReducer, GlobalChartState } from '../../../state/chart_state'
 import { getSettingsSpecSelector } from '../../../state/selectors/get_settings_specs';
 import { Position } from '../../../utils/commons';
 import { BarSeriesSpec, BasicSeriesSpec, AxisSpec, SeriesTypes } from '../utils/specs';
-
 import { computeSeriesGeometriesSelector } from './selectors/compute_series_geometries';
 import { getCursorBandPositionSelector } from './selectors/get_cursor_band';
 import { getProjectedPointerPositionSelector } from './selectors/get_projected_pointer_position';

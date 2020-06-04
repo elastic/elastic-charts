@@ -25,7 +25,6 @@ import {
   MockDataSeriesDatum,
 } from '../../../mocks';
 import { ScaleType } from '../../../scales';
-
 import * as testModule from './fit_function';
 import { DataSeries } from './series';
 import { Fit } from './specs';

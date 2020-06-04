@@ -23,7 +23,6 @@ import { Point } from '../../../../utils/point';
 import { AnnotationTypes } from '../../utils/specs';
 import { AnnotationTooltipFormatter, AnnotationTooltipState, Bounds } from '../types';
 import { getTranformedCursor } from '../utils';
-
 import { isWithinRectBounds } from './dimensions';
 import { AnnotationRectProps } from './types';
 

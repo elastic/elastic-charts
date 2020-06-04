@@ -25,7 +25,6 @@ import { Tooltip } from '../../../components/tooltip';
 import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
 import { LegendItemLabel } from '../../../state/selectors/get_legend_items_labels';
 import { Goal } from '../renderer/canvas/connected_component';
-
 import { getSpecOrNull } from './selectors/goal_spec';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
 import { createOnElementClickCaller } from './selectors/on_element_click_caller';

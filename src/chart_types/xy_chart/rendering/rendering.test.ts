@@ -24,7 +24,6 @@ import { mergePartial, RecursivePartial } from '../../../utils/commons';
 import { BarGeometry, PointGeometry } from '../../../utils/geometry';
 import { BarSeriesStyle, SharedGeometryStateStyle, PointStyle } from '../../../utils/themes/theme';
 import { DataSeriesDatum, XYChartSeriesIdentifier } from '../utils/series';
-
 import {
   getGeometryStateStyle,
   isPointOnGeometry,

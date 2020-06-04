@@ -24,7 +24,6 @@ import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { Dimensions } from '../../../../utils/dimensions';
 import { computeChartDimensions } from '../../utils/dimensions';
-
 import { computeAxisTicksDimensionsSelector } from './compute_axis_ticks_dimensions';
 import { getAxisSpecsSelector } from './get_specs';
 

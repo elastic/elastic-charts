@@ -29,7 +29,6 @@ import { Position, Rendering, Rotation } from '../utils/commons';
 import { DARK_THEME } from '../utils/themes/dark_theme';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { PartialTheme } from '../utils/themes/theme';
-
 import { Settings, SettingsSpec, TooltipType } from './settings';
 import { SpecsParser } from './specs_parser';
 

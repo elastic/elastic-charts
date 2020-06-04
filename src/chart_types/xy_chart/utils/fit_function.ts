@@ -20,7 +20,6 @@
 import { DeepNonNullable } from 'utility-types';
 
 import { ScaleType } from '../../../scales';
-
 import { DataSeries, DataSeriesDatum } from './series';
 import { Fit, FitConfig } from './specs';
 import { datumXSortPredicate } from './stacked_series_utils';

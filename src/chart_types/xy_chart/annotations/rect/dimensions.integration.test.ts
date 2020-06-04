@@ -22,7 +22,6 @@ import { MockStore } from '../../../../mocks/store';
 import { ScaleType } from '../../../../scales';
 import { computeAnnotationDimensionsSelector } from '../../state/selectors/compute_annotations';
 import { RectAnnotationDatum } from '../../utils/specs';
-
 import { AnnotationRectProps } from './types';
 
 function expectAnnotationAtPosition(

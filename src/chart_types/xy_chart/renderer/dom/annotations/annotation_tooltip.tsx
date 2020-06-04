@@ -21,7 +21,6 @@ import React, { useCallback, useMemo, useEffect } from 'react';
 
 import { TooltipPortal, Placement } from '../../../../../components/portal';
 import { AnnotationTooltipState } from '../../../annotations/types';
-
 import { TooltipContent } from './tooltip_content';
 
 interface RectAnnotationTooltipProps {

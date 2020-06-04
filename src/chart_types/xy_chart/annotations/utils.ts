@@ -31,7 +31,6 @@ import {
   isLineAnnotation,
   isRectAnnotation,
 } from '../utils/specs';
-
 import { computeLineAnnotationDimensions } from './line/dimensions';
 import { computeRectAnnotationDimensions } from './rect/dimensions';
 import { AnnotationDimensions } from './types';

@@ -21,7 +21,6 @@ import createCachedSelector from 're-reselect';
 
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 import { PartialTheme, Theme, mergeWithDefaultTheme } from '../../utils/themes/theme';
-
 import { getChartIdSelector } from './get_chart_id';
 import { getSettingsSpecSelector } from './get_settings_specs';
 

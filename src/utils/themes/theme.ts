@@ -19,7 +19,6 @@
 
 import { mergePartial, RecursivePartial, Color, ColorVariant } from '../commons';
 import { Margins } from '../dimensions';
-
 import { LIGHT_THEME } from './light_theme';
 
 interface Visible {

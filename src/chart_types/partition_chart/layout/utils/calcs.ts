@@ -19,7 +19,6 @@
 
 import { Color } from '../../../../utils/commons';
 import { Ratio } from '../types/geometry_types';
-
 import { RgbTuple, stringToRGB } from './d3_utils';
 
 /** @internal */

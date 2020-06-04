@@ -19,7 +19,6 @@
 
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { Color } from '../utils/commons';
-
 import { SeriesIdentifier } from './series_id';
 /** @internal */
 export type LegendItemChildId = string;

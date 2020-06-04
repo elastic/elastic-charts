@@ -25,7 +25,6 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { Position } from '../../../../utils/commons';
 import { QuadViewModel } from '../../layout/types/viewmodel_types';
 import { PrimitiveValue } from '../../layout/utils/group_by_rollup';
-
 import { partitionGeometries } from './geometries';
 import { getFlatHierarchy } from './get_flat_hierarchy';
 import { getPieSpec } from './pie_spec';

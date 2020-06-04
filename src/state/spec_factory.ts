@@ -22,7 +22,6 @@ import { connect } from 'react-redux';
 import { Dispatch, bindActionCreators } from 'redux';
 
 import { Spec } from '../specs';
-
 import { upsertSpec, removeSpec } from './actions/specs';
 
 /** @internal */

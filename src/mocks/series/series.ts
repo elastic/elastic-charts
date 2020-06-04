@@ -28,7 +28,6 @@ import {
 } from '../../chart_types/xy_chart/utils/series';
 import { mergePartial } from '../../utils/commons';
 import { getRandomNumberGenerator } from '../utils';
-
 import { fitFunctionData } from './data';
 
 const rng = getRandomNumberGenerator();

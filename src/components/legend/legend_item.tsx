@@ -35,7 +35,6 @@ import {
 } from '../../state/actions/legend';
 import { Position, Color } from '../../utils/commons';
 import { deepEqual } from '../../utils/fast_deep_equal';
-
 import { Color as ItemColor } from './color';
 import { renderExtra } from './extra';
 import { Label as ItemLabel } from './label';

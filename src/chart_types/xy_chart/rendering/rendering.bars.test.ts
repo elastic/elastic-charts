@@ -27,7 +27,6 @@ import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { computeSeriesDomains } from '../state/utils';
 import { computeXScale, computeYScales } from '../utils/scales';
 import { BarSeriesSpec, DomainRange, SeriesTypes } from '../utils/specs';
-
 import { renderBars } from './rendering';
 
 const SPEC_ID = 'spec_1';

@@ -25,7 +25,6 @@ import { getSpecsById } from '../../../state/utils';
 import { AxisTick, AxisTicksDimensions } from '../../../utils/axis_utils';
 import { AxisSpec } from '../../../utils/specs';
 import { renderDebugRect } from '../utils/debug';
-
 import { renderLine } from './line';
 import { renderTick } from './tick';
 import { renderTickLabel } from './tick_label';

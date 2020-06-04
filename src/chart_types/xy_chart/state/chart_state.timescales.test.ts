@@ -30,7 +30,6 @@ import { chartStoreReducer, GlobalChartState } from '../../../state/chart_state'
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { mergeWithDefaultTheme } from '../../../utils/themes/theme';
 import { LineSeriesSpec, SeriesTypes } from '../utils/specs';
-
 import { computeSeriesGeometriesSelector } from './selectors/compute_series_geometries';
 import { getComputedScalesSelector } from './selectors/get_computed_scales';
 import { getTooltipInfoSelector } from './selectors/get_tooltip_values_highlighted_geoms';

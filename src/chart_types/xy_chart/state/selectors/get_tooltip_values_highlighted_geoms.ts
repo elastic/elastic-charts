@@ -42,7 +42,6 @@ import { isPointOnGeometry } from '../../rendering/rendering';
 import { formatTooltip } from '../../tooltip/tooltip';
 import { BasicSeriesSpec, AxisSpec } from '../../utils/specs';
 import { ComputedScales, getAxesSpecForSpecId, getSpecsById } from '../utils';
-
 import { getComputedScalesSelector } from './get_computed_scales';
 import { getElementAtCursorPositionSelector } from './get_elements_at_cursor_pos';
 import { getOrientedProjectedPointerPositionSelector } from './get_oriented_projected_pointer_position';

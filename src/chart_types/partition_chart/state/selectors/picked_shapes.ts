@@ -23,7 +23,6 @@ import { LayerValue } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { QuadViewModel } from '../../layout/types/viewmodel_types';
 import { PARENT_KEY, DEPTH_KEY, AGGREGATE_KEY, CHILDREN_KEY, SORT_INDEX_KEY } from '../../layout/utils/group_by_rollup';
-
 import { partitionGeometries } from './geometries';
 
 function getCurrentPointerPosition(state: GlobalChartState) {

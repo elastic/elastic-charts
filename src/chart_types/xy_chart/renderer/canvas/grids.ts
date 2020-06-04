@@ -26,7 +26,6 @@ import { stringToRGB } from '../../../partition_chart/layout/utils/d3_utils';
 import { getSpecsById } from '../../state/utils';
 import { AxisLinePosition, isVerticalGrid } from '../../utils/axis_utils';
 import { AxisSpec } from '../../utils/specs';
-
 import { renderMultiLine, MIN_STROKE_WIDTH } from './primitives/line';
 
 interface GridProps {

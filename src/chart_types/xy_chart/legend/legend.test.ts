@@ -24,7 +24,6 @@ import { SpecTypes } from '../../../specs/settings';
 import { Position } from '../../../utils/commons';
 import { SeriesCollectionValue, getSeriesName } from '../utils/series';
 import { AxisSpec, BasicSeriesSpec, SeriesTypes } from '../utils/specs';
-
 import { computeLegend } from './legend';
 
 const nullDisplayValue = {

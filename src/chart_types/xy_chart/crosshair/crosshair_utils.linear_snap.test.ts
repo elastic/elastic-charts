@@ -24,7 +24,6 @@ import { Dimensions } from '../../../utils/dimensions';
 import { computeSeriesDomains } from '../state/utils';
 import { computeXScale } from '../utils/scales';
 import { BasicSeriesSpec, SeriesTypes } from '../utils/specs';
-
 import { getCursorBandPosition, getSnapPosition } from './crosshair_utils';
 
 describe('Crosshair utils linear scale', () => {

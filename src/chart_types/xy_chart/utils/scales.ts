@@ -21,7 +21,6 @@ import { Scale, ScaleType, ScaleBand, ScaleContinuous } from '../../../scales';
 import { GroupId } from '../../../utils/ids';
 import { XDomain } from '../domains/x_domain';
 import { YDomain } from '../domains/y_domain';
-
 import { FormattedDataSeries } from './series';
 
 /**

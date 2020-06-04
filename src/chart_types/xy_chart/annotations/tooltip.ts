@@ -22,7 +22,6 @@ import { Dimensions } from '../../../utils/dimensions';
 import { AnnotationId } from '../../../utils/ids';
 import { Point } from '../../../utils/point';
 import { AnnotationSpec, AxisSpec, isLineAnnotation, isRectAnnotation } from '../utils/specs';
-
 import { computeLineAnnotationTooltipState } from './line/tooltip';
 import { AnnotationLineProps } from './line/types';
 import { computeRectAnnotationTooltipState } from './rect/tooltip';

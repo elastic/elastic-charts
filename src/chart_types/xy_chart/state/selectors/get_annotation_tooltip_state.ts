@@ -31,7 +31,6 @@ import { computeAnnotationTooltipState } from '../../annotations/tooltip';
 import { AnnotationTooltipState, AnnotationDimensions } from '../../annotations/types';
 import { AxisSpec, AnnotationSpec, AnnotationTypes } from '../../utils/specs';
 import { ComputedGeometries } from '../utils';
-
 import { computeAnnotationDimensionsSelector } from './compute_annotations';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';

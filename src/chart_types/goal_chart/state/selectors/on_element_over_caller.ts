@@ -26,7 +26,6 @@ import { LayerValue } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-
 import { getSpecOrNull } from './goal_spec';
 import { getPickedShapesLayerValues } from './picked_shapes';
 

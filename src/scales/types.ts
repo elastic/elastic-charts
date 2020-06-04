@@ -19,7 +19,6 @@
 
 import { ScaleBand } from './scale_band';
 import { ScaleContinuous } from './scale_continuous';
-
 import { Scale, ScaleType } from '.';
 
 /**

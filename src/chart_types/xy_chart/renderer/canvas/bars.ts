@@ -23,7 +23,6 @@ import { withContext, withClip } from '../../../../renderers/canvas';
 import { BarGeometry } from '../../../../utils/geometry';
 import { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
 import { getGeometryStateStyle } from '../../rendering/rendering';
-
 import { renderRect } from './primitives/rect';
 import { buildBarStyles } from './styles/bar';
 

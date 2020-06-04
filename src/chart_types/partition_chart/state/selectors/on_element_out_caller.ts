@@ -24,7 +24,6 @@ import { ChartTypes } from '../../..';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-
 import { getPickedShapesLayerValues } from './picked_shapes';
 import { getPieSpec } from './pie_spec';
 

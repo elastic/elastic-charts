@@ -19,7 +19,6 @@
 
 import { MockRawDataSeries } from '../../../mocks';
 import { ScaleType } from '../../../scales';
-
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
 
 describe('Stacked Series Utils', () => {

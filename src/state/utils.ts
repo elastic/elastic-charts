@@ -19,7 +19,6 @@
 
 import { ChartTypes } from '../chart_types';
 import { Spec } from '../specs';
-
 import { SpecList, PointerState } from './chart_state';
 
 /** @internal */

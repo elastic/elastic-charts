@@ -25,7 +25,6 @@ import { GlobalChartState, PointerStates } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { Point } from '../../../../utils/point';
-
 import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
 import { getTooltipInfoSelector } from './get_tooltip_values_highlighted_geoms';
 import { isAnnotationTooltipVisibleSelector } from './is_annotation_tooltip_visible';

@@ -34,7 +34,6 @@ import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec
 import { getTooltipHeaderFormatterSelector } from '../../state/selectors/get_tooltip_header_formatter';
 import { Rotation } from '../../utils/commons';
 import { TooltipPortal, PopperSettings, AnchorPosition, Placement } from '../portal';
-
 import { TooltipInfo, TooltipAnchorPosition } from './types';
 
 interface TooltipDispatchProps {

@@ -25,7 +25,6 @@ import { Rotation } from '../../../../utils/commons';
 import { GroupId } from '../../../../utils/ids';
 import { isYDomain, isCompleteBound, isLowerBound, isUpperBound, isBounded } from '../../utils/axis_utils';
 import { AxisSpec, DomainRange } from '../../utils/specs';
-
 import { getAxisSpecsSelector } from './get_specs';
 
 /** @internal */

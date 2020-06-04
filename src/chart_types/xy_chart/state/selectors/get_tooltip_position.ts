@@ -23,7 +23,6 @@ import { TooltipAnchorPosition } from '../../../../components/tooltip/types';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getTooltipAnchorPosition } from '../../crosshair/crosshair_utils';
-
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getComputedScalesSelector } from './get_computed_scales';
 import { getCursorBandPositionSelector } from './get_cursor_band';

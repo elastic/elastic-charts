@@ -19,7 +19,6 @@
 
 import { ChartTypes } from '../chart_types';
 import { SpecTypes } from '../specs/settings';
-
 import { getSpecsFromStore } from './utils';
 
 describe('State utils', () => {

@@ -24,7 +24,6 @@ import { Margins } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { LegendStyle } from '../../../utils/themes/theme';
-
 import { AxisTicksDimensions } from './axis_utils';
 import { computeChartDimensions } from './dimensions';
 import { AxisSpec } from './specs';

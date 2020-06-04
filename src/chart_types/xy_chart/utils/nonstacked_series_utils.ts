@@ -19,7 +19,6 @@
 
 import { ScaleType } from '../../../scales';
 import { getSpecsById, isDefined } from '../state/utils';
-
 import { fitFunction } from './fit_function';
 import { DataSeries, DataSeriesDatum, RawDataSeries } from './series';
 import { isAreaSeriesSpec, isLineSeriesSpec, SeriesSpecs, BasicSeriesSpec } from './specs';

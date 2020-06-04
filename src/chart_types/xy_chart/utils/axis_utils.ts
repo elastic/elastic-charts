@@ -26,7 +26,6 @@ import { AxisConfig, Theme } from '../../../utils/themes/theme';
 import { XDomain } from '../domains/x_domain';
 import { YDomain } from '../domains/y_domain';
 import { getSpecsById } from '../state/utils';
-
 import { computeXScale, computeYScales } from './scales';
 import {
   AxisSpec,

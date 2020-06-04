@@ -22,7 +22,6 @@ import { TickStyle } from '../../../../../utils/themes/theme';
 import { stringToRGB } from '../../../../partition_chart/layout/utils/d3_utils';
 import { AxisTick, isVerticalAxis } from '../../../utils/axis_utils';
 import { renderLine, MIN_STROKE_WIDTH } from '../primitives/line';
-
 import { AxisProps } from '.';
 
 /** @internal */

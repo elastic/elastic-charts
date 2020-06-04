@@ -25,7 +25,6 @@ import { LegendItemLabel } from '../../../../state/selectors/get_legend_items_la
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { HierarchyOfArrays, CHILDREN_KEY } from '../../layout/utils/group_by_rollup';
 import { Layer } from '../../specs';
-
 import { getPieSpec } from './pie_spec';
 import { getTree } from './tree';
 

@@ -22,7 +22,6 @@ import { compareByValueAsc, identity, isNumberArray } from '../../../utils/commo
 import { computeContinuousDataDomain, computeOrdinalDataDomain, Domain } from '../../../utils/domain';
 import { isCompleteBound, isLowerBound, isUpperBound } from '../utils/axis_utils';
 import { BasicSeriesSpec, DomainRange, SeriesTypes } from '../utils/specs';
-
 import { BaseDomain } from './domain';
 
 export type XDomain = BaseDomain & {

@@ -18,7 +18,6 @@
  */
 
 import { Dimensions } from '../../../../utils/dimensions';
-
 import { getBrushForXAxis, getBrushForYAxis, getBrushForBothAxis } from './get_brush_area';
 
 describe('getBrushArea Selector', () => {

@@ -21,7 +21,6 @@ import createCachedSelector from 're-reselect';
 
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-
 import { isBrushAvailableSelector } from './is_brush_available';
 
 const getPointerSelector = (state: GlobalChartState) => state.interactions.pointer;

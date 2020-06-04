@@ -21,7 +21,6 @@ import { SeriesKey } from '../../../../commons/series_id';
 import { Circle, Stroke, Fill } from '../../../../geoms/types';
 import { PointGeometry } from '../../../../utils/geometry';
 import { PointStyle, GeometryStateStyle } from '../../../../utils/themes/theme';
-
 import { renderCircle } from './primitives/arc';
 import { buildPointStyles } from './styles/point';
 

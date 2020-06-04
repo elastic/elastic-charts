@@ -26,7 +26,6 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { IndexedGeometry } from '../../../../utils/geometry';
-
 import {
   getTooltipInfoAndGeometriesSelector,
   TooltipAndHighlightedGeoms,

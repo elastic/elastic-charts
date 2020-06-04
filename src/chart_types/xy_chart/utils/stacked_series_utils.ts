@@ -19,7 +19,6 @@
 
 import { ScaleType } from '../../../scales';
 import { isDefined } from '../state/utils';
-
 import { DataSeries, DataSeriesDatum, RawDataSeries, RawDataSeriesDatum, FilledValues } from './series';
 
 /** @internal */

@@ -20,7 +20,6 @@
 import { $Values } from 'utility-types';
 
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
-
 import { Color } from './commons';
 import { BarSeriesStyle, PointStyle, AreaStyle, LineStyle, ArcStyle } from './themes/theme';
 

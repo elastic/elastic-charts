@@ -25,7 +25,6 @@ import { AnnotationDomainType, AnnotationTypes, AxisSpec } from '../../utils/spe
 import { isWithinRectBounds } from '../rect/dimensions';
 import { AnnotationTooltipState, AnnotationMarker, Bounds } from '../types';
 import { isXDomain, getTranformedCursor, invertTranformedCursor } from '../utils';
-
 import { AnnotationLineProps } from './types';
 
 /** @internal */

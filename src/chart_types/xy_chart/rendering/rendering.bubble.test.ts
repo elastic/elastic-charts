@@ -27,7 +27,6 @@ import { computeSeriesDomains } from '../state/utils';
 import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
 import { computeXScale, computeYScales } from '../utils/scales';
 import { BubbleSeriesSpec, DomainRange, SeriesTypes } from '../utils/specs';
-
 import { renderBubble } from './rendering';
 
 const SPEC_ID = 'spec_1';

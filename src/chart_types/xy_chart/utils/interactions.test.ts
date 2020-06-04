@@ -20,7 +20,6 @@
 import { TooltipType, isCrosshairTooltipType, isFollowTooltipType } from '../../../specs';
 import { Dimensions } from '../../../utils/dimensions';
 import { IndexedGeometry, PointGeometry } from '../../../utils/geometry';
-
 import {
   areIndexedGeometryArraysEquals,
   areIndexedGeomsEquals,

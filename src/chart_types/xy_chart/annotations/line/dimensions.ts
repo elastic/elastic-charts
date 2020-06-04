@@ -25,7 +25,6 @@ import { GroupId } from '../../../../utils/ids';
 import { isHorizontalRotation, computeXScaleOffset } from '../../state/utils';
 import { AnnotationDomainTypes, LineAnnotationSpec, LineAnnotationDatum } from '../../utils/specs';
 import { AnnotationMarker } from '../types';
-
 import { AnnotationLineProps, AnnotationLinePathPoints } from './types';
 
 /** @internal */

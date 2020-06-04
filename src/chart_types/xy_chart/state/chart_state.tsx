@@ -30,7 +30,6 @@ import { Annotations } from '../renderer/dom/annotations';
 import { BrushTool } from '../renderer/dom/brush';
 import { Crosshair } from '../renderer/dom/crosshair';
 import { Highlighter } from '../renderer/dom/highlighter';
-
 import { computeLegendSelector } from './selectors/compute_legend';
 import { getPointerCursorSelector } from './selectors/get_cursor_pointer';
 import { getHighlightedValuesSelector } from './selectors/get_highlighted_values';

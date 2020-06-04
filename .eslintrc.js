@@ -165,7 +165,14 @@ module.exports = {
     /*
      * import plugin
      */
-    'import/order': ['error', { 'newlines-between': 'always', alphabetize: { order: 'asc', caseInsensitive: true } }],
+    'import/order': ['error', {
+      'newlines-between': 'always',
+      groups: [
+        'builtin',
+        'external',
+        ['parent', 'sibling', 'index', 'internal'],
+      ],
+    }],
     'import/no-unresolved': ['error', { ignore: ['theme_dark.scss', 'theme_light.scss'] }],
     'import/no-restricted-paths': [
       'error',

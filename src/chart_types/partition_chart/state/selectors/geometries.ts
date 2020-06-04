@@ -26,7 +26,6 @@ import { getChartContainerDimensionsSelector } from '../../../../state/selectors
 import { getSpecsFromStore } from '../../../../state/utils';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { PartitionSpec } from '../../specs';
-
 import { render } from './scenegraph';
 import { getTree } from './tree';
 

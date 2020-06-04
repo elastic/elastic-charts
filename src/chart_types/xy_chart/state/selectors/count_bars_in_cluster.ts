@@ -21,7 +21,6 @@ import createCachedSelector from 're-reselect';
 
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { countBarsInCluster } from '../../utils/scales';
-
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 
 /** @internal */

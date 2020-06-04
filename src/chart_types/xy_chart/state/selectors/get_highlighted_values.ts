@@ -23,7 +23,6 @@ import { LegendItemExtraValues } from '../../../../commons/legend';
 import { SeriesKey } from '../../../../commons/series_id';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getHighligthedValues } from '../../tooltip/tooltip';
-
 import { getTooltipInfoSelector } from './get_tooltip_values_highlighted_geoms';
 
 /** @internal */
