@@ -157,7 +157,6 @@ export const getSectorRowGeometry: GetShapeRowGeometry<RingSectorConstruction> =
   fontSize,
   rotation,
 ) => {
-  // prettier-ignore
   const offset = (totalRowCount / 2) * fontSize
     + fontSize / 2
     - linePitch * rowIndex;

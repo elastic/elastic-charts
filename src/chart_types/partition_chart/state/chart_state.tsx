@@ -39,10 +39,10 @@ const EMPTY_MAP = new Map();
 
 /** @internal */
 export class PartitionState implements InternalChartState {
+  chartType = ChartTypes.Partition;
+
   onElementClickCaller: (state: GlobalChartState) => void;
-
   onElementOverCaller: (state: GlobalChartState) => void;
-
   onElementOutCaller: (state: GlobalChartState) => void;
 
   constructor() {
@@ -50,8 +50,6 @@ export class PartitionState implements InternalChartState {
     this.onElementOverCaller = createOnElementOverCaller();
     this.onElementOutCaller = createOnElementOutCaller();
   }
-
-  chartType = ChartTypes.Partition;
 
   isInitialized(globalState: GlobalChartState) {
     return globalState.specsInitialized && getPieSpec(globalState) !== null;

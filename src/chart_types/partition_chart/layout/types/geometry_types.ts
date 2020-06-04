@@ -17,6 +17,12 @@
  * under the License.
  */
 
+// In preparation of nominal types in future TS versions
+// https://github.com/microsoft/TypeScript/pull/33038
+// eg. to avoid adding angles and coordinates and similar inconsistent number/number ops.
+// could in theory be three-valued (in,on,out)
+// It also serves as documentation.
+
 export type Pixels = number;
 export type Ratio = number;
 export type SizeRatio = Ratio;
@@ -41,9 +47,7 @@ export type PointTuples = [PointTuple, ...PointTuple[]]; // at least one point
 /** @internal */
 export class Circline {
   x: Coordinate = NaN;
-
   y: Coordinate = NaN;
-
   r: Radius = NaN;
 }
 

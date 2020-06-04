@@ -162,7 +162,7 @@ export const configMetadata = {
   },
 
   // fill text layout config
-  circlePadding: { dflt: 2, min: 0, max: 8, type: 'number' },
+  circlePadding: { dflt: 2, min: 0.0, max: 8, type: 'number' },
   radialPadding: { dflt: TAU / 360, min: 0, max: 0.035, type: 'number' },
   horizontalTextAngleThreshold: { dflt: TAU / 12, min: 0, max: TAU, type: 'number' },
   horizontalTextEnforcer: { dflt: 1, min: 0, max: 1, type: 'number' },

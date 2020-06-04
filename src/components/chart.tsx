@@ -69,11 +69,8 @@ export class Chart extends React.Component<ChartProps, ChartState> {
   };
 
   private unsubscribeToStore: Unsubscribe;
-
   private chartStore: Store<GlobalChartState>;
-
   private chartContainerRef: React.RefObject<HTMLDivElement>;
-
   private chartStageRef: React.RefObject<HTMLCanvasElement>;
 
   constructor(props: ChartProps) {

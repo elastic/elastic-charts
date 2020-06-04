@@ -21,7 +21,6 @@ import { BBox, BBoxCalculator } from './bbox_calculator';
 
 export class DOMTextBBoxCalculator implements BBoxCalculator {
   private attachedRoot: HTMLElement;
-
   private offscreenCanvas: HTMLSpanElement;
 
   constructor(rootElement?: HTMLElement) {

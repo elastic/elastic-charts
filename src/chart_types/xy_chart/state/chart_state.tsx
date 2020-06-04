@@ -50,19 +50,14 @@ import { createOnPointerMoveCaller } from './selectors/on_pointer_move_caller';
 
 /** @internal */
 export class XYAxisChartState implements InternalChartState {
-  onElementClickCaller: (state: GlobalChartState) => void;
-
-  onElementOverCaller: (state: GlobalChartState) => void;
-
-  onElementOutCaller: (state: GlobalChartState) => void;
-
-  onBrushEndCaller: (state: GlobalChartState) => void;
-
-  onPointerMoveCaller: (state: GlobalChartState) => void;
-
   chartType: ChartTypes;
-
   legendId: string;
+
+  onElementClickCaller: (state: GlobalChartState) => void;
+  onElementOverCaller: (state: GlobalChartState) => void;
+  onElementOutCaller: (state: GlobalChartState) => void;
+  onBrushEndCaller: (state: GlobalChartState) => void;
+  onPointerMoveCaller: (state: GlobalChartState) => void;
 
   constructor() {
     this.onElementClickCaller = createOnElementClickCaller();

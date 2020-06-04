@@ -22,7 +22,7 @@ import { TAU } from './utils/math';
 
 /** @internal */
 export function wrapToTau(a: Radian) {
-  if (a >= 0 && a <= TAU) return a; // efficient shortcut
+  if (0 <= a && a <= TAU) return a; // efficient shortcut
   if (a < 0) a -= TAU * Math.floor(a / TAU);
   return a > TAU ? a % TAU : a;
 }

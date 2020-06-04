@@ -53,6 +53,7 @@ module.exports = {
     'jsx-a11y/no-static-element-interactions': 1,
     'jsx-a11y/mouse-events-have-key-events': 1,
     'jsx-a11y/click-events-have-key-events': 1,
+    '@typescript-eslint/member-ordering': 1,
     eqeqeq: 1,
 
     /**
@@ -66,6 +67,8 @@ module.exports = {
     'no-plusplus': 0,
     'no-bitwise': 0,
     'no-void': 0,
+    yoda: 0,
+    'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
     'no-restricted-globals': 0,
     'no-case-declarations': 0,
     'no-return-await': 0,
@@ -99,7 +102,10 @@ module.exports = {
     quotes: ['error', 'single'],
     semi: ['error', 'always'],
     // https://github.com/typescript-eslint/typescript-eslint/issues/1824
-    indent: ['error', 2, { SwitchCase: 1, MemberExpression: 1 }],
+    indent: ['error', 2, {
+      SwitchCase: 1,
+      MemberExpression: 1,
+    }],
     'max-len': [
       'warn',
       {
@@ -204,6 +210,7 @@ module.exports = {
     'unicorn/no-useless-undefined': 0,
     'unicorn/prefer-spread': 0,
     'unicorn/prefer-node-append': 0,
+    'unicorn/no-zero-fractions': 0,
     'unicorn/filename-case': [
       'error',
       {

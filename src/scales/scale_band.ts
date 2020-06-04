@@ -31,31 +31,18 @@ import { ScaleType, Scale } from '.';
  */
 export class ScaleBand implements Scale {
   readonly bandwidth: number;
-
   readonly bandwidthPadding: number;
-
   readonly step: number;
-
   readonly outerPadding: number;
-
   readonly innerPadding: number;
-
   readonly originalBandwidth: number;
-
   readonly type: ScaleType;
-
   readonly domain: any[];
-
   readonly range: number[];
-
   readonly isInverted: boolean;
-
   readonly invertedScale: ScaleQuantize<number>;
-
   readonly minInterval: number;
-
   readonly barsPadding: number;
-
   private readonly d3Scale: D3ScaleBand<NonNullable<PrimitiveValue>>;
 
   constructor(

@@ -162,9 +162,7 @@ export function renderCanvas2d(
           textAlign: vertical ? 'right' : 'center',
           textBaseline: vertical ? 'middle' : 'top',
           fillColor: 'black',
-          fontShape: {
-            fontStyle: 'normal', fontVariant: 'normal', fontWeight: '500', fontFamily: 'sans-serif',
-          },
+          fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '500', fontFamily: 'sans-serif' },
           axisNormalOffset: -barThickness,
         },
       })),
@@ -178,9 +176,7 @@ export function renderCanvas2d(
           textAlign: vertical ? 'center' : 'right',
           textBaseline: 'bottom',
           fillColor: 'black',
-          fontShape: {
-            fontStyle: 'normal', fontVariant: 'normal', fontWeight: '900', fontFamily: 'sans-serif',
-          },
+          fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '900', fontFamily: 'sans-serif' },
         },
       },
       {
@@ -193,9 +189,7 @@ export function renderCanvas2d(
           textAlign: vertical ? 'center' : 'right',
           textBaseline: 'top',
           fillColor: 'black',
-          fontShape: {
-            fontStyle: 'normal', fontVariant: 'normal', fontWeight: '300', fontFamily: 'sans-serif',
-          },
+          fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '300', fontFamily: 'sans-serif' },
         },
       },
       ...(circular
@@ -208,9 +202,7 @@ export function renderCanvas2d(
               textAlign: 'center',
               textBaseline: 'bottom',
               fillColor: 'black',
-              fontShape: {
-                fontStyle: 'normal', fontVariant: 'normal', fontWeight: '900', fontFamily: 'sans-serif',
-              },
+              fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '900', fontFamily: 'sans-serif' },
             },
           },
           {
@@ -221,9 +213,7 @@ export function renderCanvas2d(
               textAlign: 'center',
               textBaseline: 'top',
               fillColor: 'black',
-              fontShape: {
-                fontStyle: 'normal', fontVariant: 'normal', fontWeight: '300', fontFamily: 'sans-serif',
-              },
+              fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '300', fontFamily: 'sans-serif' },
             },
           },
         ]

@@ -127,9 +127,7 @@ export interface Config extends StaticConfig {
 // switching to `io-ts` style, generic way of combining static and runtime type info - 1st step
 class Type<A> {
   dflt: A;
-
   reconfigurable: boolean | string;
-
   documentation = 'string';
 
   constructor(dflt: A, reconfigurable: boolean | string, documentation: string) {
@@ -141,9 +139,7 @@ class Type<A> {
 
 export class Numeric extends Type<number> {
   min: number;
-
   max: number;
-
   type = 'number';
 
   constructor({

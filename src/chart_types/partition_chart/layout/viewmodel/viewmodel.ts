@@ -97,7 +97,6 @@ function sectorFillOrigins(fillOutside: boolean) {
     const divider = 10;
     const innerBias = fillOutside ? 9 : 1;
     const outerBias = divider - innerBias;
-    // prettier-ignore
     const radius = (innerBias * ringSectorInnerRadius(node)
       + outerBias * ringSectorOuterRadius(node)
     )

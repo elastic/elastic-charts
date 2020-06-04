@@ -39,10 +39,10 @@ const EMPTY_LEGEND_ITEM_LIST: LegendItemLabel[] = [];
 
 /** @internal */
 export class GoalState implements InternalChartState {
+  chartType = ChartTypes.Goal;
+
   onElementClickCaller: (state: GlobalChartState) => void;
-
   onElementOverCaller: (state: GlobalChartState) => void;
-
   onElementOutCaller: (state: GlobalChartState) => void;
 
   constructor() {
@@ -50,8 +50,6 @@ export class GoalState implements InternalChartState {
     this.onElementOverCaller = createOnElementOverCaller();
     this.onElementOutCaller = createOnElementOutCaller();
   }
-
-  chartType = ChartTypes.Goal;
 
   isInitialized(globalState: GlobalChartState) {
     return globalState.specsInitialized && getSpecOrNull(globalState) !== null;

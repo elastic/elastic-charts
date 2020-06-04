@@ -110,7 +110,6 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
   static displayName = 'LegendItem';
 
   ref = createRef<HTMLLIElement>();
-
   state: LegendItemState = {
     isOpen: false,
   };

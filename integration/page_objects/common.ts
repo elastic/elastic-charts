@@ -57,7 +57,6 @@ type ScreenshotElementAtUrlOptions = ScreenshotDOMElementOptions & {
 
 class CommonPage {
   readonly chartWaitSelector = '.echChartStatus[data-ech-render-complete=true]';
-
   readonly chartSelector = '.echChart';
 
   /**

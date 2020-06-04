@@ -19,7 +19,6 @@
 
 import { RgbTuple } from '../../chart_types/partition_chart/layout/utils/d3_utils';
 
-// prettier-ignore
 const CET2s: RgbTuple[] = [
   [46, 34, 235],
   [49, 32, 237],
@@ -279,7 +278,6 @@ const CET2s: RgbTuple[] = [
   [44, 36, 234],
 ];
 
-// prettier-ignore
 const turbo: RgbTuple[] = [
   [48, 18, 59],
   [50, 21, 67],

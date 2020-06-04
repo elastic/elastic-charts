@@ -37,7 +37,6 @@ export type GeometryType = $Values<typeof GeometryType>;
 /** @internal */
 export class IndexedGeometryMap {
   private linearMap = new IndexedGeometryLinearMap();
-
   private spatialMap = new IndexedGeometrySpatialMap();
 
   /**

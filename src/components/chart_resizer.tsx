@@ -40,11 +40,8 @@ type ResizerProps = ResizerStateProps & ResizerDispatchProps;
 
 class Resizer extends React.Component<ResizerProps> {
   private initialResizeComplete = false;
-
   private containerRef: RefObject<HTMLDivElement>;
-
   private ro: ResizeObserver;
-
   private animationFrameID: number | null;
 
   constructor(props: ResizerProps) {
@@ -71,7 +68,6 @@ class Resizer extends React.Component<ResizerProps> {
   }
 
   private onResizeDebounced: (entries: ResizeObserverEntry[]) => void = () => {};
-
   private handleResize = (entries: ResizeObserverEntry[]) => {
     if (this.initialResizeComplete) {
       this.onResizeDebounced(entries);
