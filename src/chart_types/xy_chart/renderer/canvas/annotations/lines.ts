@@ -46,6 +46,7 @@ export function renderLineAnnotations(
   const stroke: Stroke = {
     color: strokeColor,
     width: lineStyle.line.strokeWidth,
+    dash: lineStyle.line.dash,
   };
 
   renderMultiLine(ctx, lines, stroke);
