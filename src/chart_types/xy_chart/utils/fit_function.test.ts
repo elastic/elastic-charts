@@ -24,11 +24,11 @@ import {
   getYResolvedData,
   MockDataSeriesDatum,
 } from '../../../mocks';
-import { ScaleType } from '../../../scales';
-import * as testModule from './fit_function';
-import { DataSeries } from './series';
 import { Fit } from './specs';
+import { ScaleType } from '../../../scales';
+import { DataSeries } from './series';
 import * as seriesUtils from './stacked_series_utils';
+import * as testModule from './fit_function';
 
 describe('Fit Function', () => {
   describe('getValue', () => {
@@ -733,6 +733,7 @@ describe('Fit Function', () => {
               null,
               expect.objectContaining(next),
               Fit.Lookahead,
+              undefined,
             );
           });
 
@@ -750,6 +751,7 @@ describe('Fit Function', () => {
               expect.objectContaining(previous),
               expect.objectContaining(next),
               Fit.Lookahead,
+              undefined,
             );
           });
 
@@ -764,6 +766,7 @@ describe('Fit Function', () => {
               expect.objectContaining(previous),
               null,
               Fit.Lookahead,
+              undefined,
             );
           });
 
@@ -806,6 +809,7 @@ describe('Fit Function', () => {
               null,
               expect.objectContaining(next),
               Fit.Nearest,
+              undefined,
             );
           });
 
@@ -823,6 +827,7 @@ describe('Fit Function', () => {
               expect.objectContaining(previous),
               expect.objectContaining(next),
               Fit.Nearest,
+              undefined,
             );
           });
 
@@ -837,6 +842,7 @@ describe('Fit Function', () => {
               expect.objectContaining(previous),
               null,
               Fit.Nearest,
+              undefined,
             );
           });
 
@@ -880,6 +886,7 @@ describe('Fit Function', () => {
               null,
               expect.objectContaining(next),
               Fit.Average,
+              undefined,
             );
           });
 
@@ -897,6 +904,7 @@ describe('Fit Function', () => {
               expect.objectContaining(previous),
               expect.objectContaining(next),
               Fit.Average,
+              undefined,
             );
           });
 
@@ -911,6 +919,7 @@ describe('Fit Function', () => {
               expect.objectContaining(previous),
               null,
               Fit.Average,
+              undefined,
             );
           });
 
@@ -954,6 +963,7 @@ describe('Fit Function', () => {
               null,
               expect.objectContaining(next),
               Fit.Linear,
+              undefined,
             );
           });
 
@@ -971,6 +981,7 @@ describe('Fit Function', () => {
               expect.objectContaining(previous),
               expect.objectContaining(next),
               Fit.Linear,
+              undefined,
             );
           });
 
@@ -985,6 +996,7 @@ describe('Fit Function', () => {
               expect.objectContaining(previous),
               null,
               Fit.Linear,
+              undefined,
             );
           });
 
