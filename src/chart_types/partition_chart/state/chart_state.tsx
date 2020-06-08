@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import React from 'react';
+import React, { RefObject } from 'react';
 import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
 import { ChartTypes } from '../..';
 import { Partition } from '../renderer/canvas/partition';
@@ -67,11 +67,11 @@ export class PartitionState implements InternalChartState {
   getLegendExtraValues() {
     return EMPTY_MAP;
   }
-  chartRenderer(containerRef: BackwardRef) {
+  chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) {
     return (
       <>
         <Tooltip getChartContainerRef={containerRef} />
-        <Partition />
+        <Partition forwardStageRef={forwardStageRef} />
         <HighlighterFromHover />
         <HighlighterFromLegend />
       </>
