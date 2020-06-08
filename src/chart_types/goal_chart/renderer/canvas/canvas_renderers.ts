@@ -96,9 +96,9 @@ export function renderCanvas2d(
       ...Object.assign({}, ...ticks.map(({ value, text }, i) => ({ [`tick_${i}`]: { value, text } }))),
       ...(circular
         ? {
-          centralMajor: { value: 0, text: centralMajor },
-          centralMinor: { value: 0, text: centralMinor },
-        }
+            centralMajor: { value: 0, text: centralMajor },
+            centralMinor: { value: 0, text: centralMinor },
+          }
         : {}),
     };
 
@@ -194,29 +194,29 @@ export function renderCanvas2d(
       },
       ...(circular
         ? [
-          {
-            order: 6,
-            landmarks: { at: 'centralMajor' },
-            aes: {
-              shape: 'text',
-              textAlign: 'center',
-              textBaseline: 'bottom',
-              fillColor: 'black',
-              fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '900', fontFamily: 'sans-serif' },
+            {
+              order: 6,
+              landmarks: { at: 'centralMajor' },
+              aes: {
+                shape: 'text',
+                textAlign: 'center',
+                textBaseline: 'bottom',
+                fillColor: 'black',
+                fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '900', fontFamily: 'sans-serif' },
+              },
             },
-          },
-          {
-            order: 6,
-            landmarks: { at: 'centralMinor' },
-            aes: {
-              shape: 'text',
-              textAlign: 'center',
-              textBaseline: 'top',
-              fillColor: 'black',
-              fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '300', fontFamily: 'sans-serif' },
+            {
+              order: 6,
+              landmarks: { at: 'centralMinor' },
+              aes: {
+                shape: 'text',
+                textAlign: 'center',
+                textBaseline: 'top',
+                fillColor: 'black',
+                fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '300', fontFamily: 'sans-serif' },
+              },
             },
-          },
-        ]
+          ]
         : []),
     ];
 

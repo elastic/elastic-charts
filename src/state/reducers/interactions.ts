@@ -75,28 +75,28 @@ export function interactionsReducer(
           lastDrag:
             state.pointer.down && state.pointer.dragging
               ? {
-                start: {
-                  position: {
-                    ...state.pointer.down.position,
+                  start: {
+                    position: {
+                      ...state.pointer.down.position,
+                    },
+                    time: state.pointer.down.time,
                   },
-                  time: state.pointer.down.time,
-                },
-                end: {
-                  position: {
-                    ...state.pointer.current.position,
+                  end: {
+                    position: {
+                      ...state.pointer.current.position,
+                    },
+                    time: action.time,
                   },
-                  time: action.time,
-                },
-              }
+                }
               : null,
           lastClick:
             state.pointer.down && !state.pointer.dragging
               ? {
-                position: {
-                  ...action.position,
-                },
-                time: action.time,
-              }
+                  position: {
+                    ...action.position,
+                  },
+                  time: action.time,
+                }
               : null,
           dragging: false,
           down: null,

@@ -552,9 +552,9 @@ function renderGeometries(
 
       const displayValueSettings = spec.displayValueSettings
         ? {
-          valueFormatter,
-          ...spec.displayValueSettings,
-        }
+            valueFormatter,
+            ...spec.displayValueSettings,
+          }
         : undefined;
 
       const renderedBars = renderBars(

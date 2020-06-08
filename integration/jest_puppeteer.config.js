@@ -43,30 +43,30 @@ const sharedConfig = {
 const customConfig = {
   ...(isDebug
     ? {
-      launch: {
-        dumpio: false,
-        headless: false,
-        slowMo: 500,
-        devtools: true,
-        ...sharedConfig,
-      },
-    }
+        launch: {
+          dumpio: false,
+          headless: false,
+          slowMo: 500,
+          devtools: true,
+          ...sharedConfig,
+        },
+      }
     : {
       // https://github.com/gidztech/jest-puppeteer-docker/issues/24
-      chromiumFlags: [], // for docker chromium options
-      connect: {
-        ...sharedConfig,
-      },
-    }),
+        chromiumFlags: [], // for docker chromium options
+        connect: {
+          ...sharedConfig,
+        },
+      }),
   server: useLocalStorybook
     ? null
     : {
-      command: `yarn start --port=${port} --quiet`,
-      port,
-      usedPortAction: 'error',
-      launchTimeout: 120000,
-      debug: true,
-    },
+        command: `yarn start --port=${port} --quiet`,
+        port,
+        usedPortAction: 'error',
+        launchTimeout: 120000,
+        debug: true,
+      },
   ...baseConfig,
 };
 

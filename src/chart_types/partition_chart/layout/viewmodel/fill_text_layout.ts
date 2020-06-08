@@ -119,11 +119,11 @@ export function ringSectorConstruction(config: Config, innerRadius: Radius, ring
     const rectangleCirclines = outerRadiusFromRectangleWidth === Infinity && outerRadiusFromRectanglHeight === Infinity
       ? []
       : [
-        { x: INFINITY_RADIUS - outerRadiusFromRectangleWidth, y: 0, r: INFINITY_RADIUS, inside: true },
-        { x: -INFINITY_RADIUS + outerRadiusFromRectangleWidth, y: 0, r: INFINITY_RADIUS, inside: true },
-        { x: 0, y: INFINITY_RADIUS - outerRadiusFromRectanglHeight, r: INFINITY_RADIUS, inside: true },
-        { x: 0, y: -INFINITY_RADIUS + outerRadiusFromRectanglHeight, r: INFINITY_RADIUS, inside: true },
-      ];
+          { x: INFINITY_RADIUS - outerRadiusFromRectangleWidth, y: 0, r: INFINITY_RADIUS, inside: true },
+          { x: -INFINITY_RADIUS + outerRadiusFromRectangleWidth, y: 0, r: INFINITY_RADIUS, inside: true },
+          { x: 0, y: INFINITY_RADIUS - outerRadiusFromRectanglHeight, r: INFINITY_RADIUS, inside: true },
+          { x: 0, y: -INFINITY_RADIUS + outerRadiusFromRectanglHeight, r: INFINITY_RADIUS, inside: true },
+        ];
     return [...sectorCirclines, ...rectangleCirclines];
   };
 }
@@ -216,9 +216,9 @@ export const getRectangleRowGeometry: GetShapeRowGeometry<RectangleConstruction>
   const { top, right, bottom, left } = typeof padding === 'number'
     ? { top: padding, right: padding, bottom: padding, left: padding }
     : {
-      ...{ top: defaultPad, right: defaultPad, bottom: defaultPad, left: defaultPad },
-      ...padding,
-    };
+        ...{ top: defaultPad, right: defaultPad, bottom: defaultPad, left: defaultPad },
+        ...padding,
+      };
 
   const overhang = 0.05;
   const topPaddingAdjustment = fontSize < 6 ? 0 : Math.max(1, Math.min(2, fontSize / 16));
@@ -332,8 +332,8 @@ function fill<C>(
       const verticalAlignment = middleAlign
         ? VerticalAlignments.middle
         : (node.depth < layers.length
-          ? VerticalAlignments.bottom
-          : VerticalAlignments.top);
+            ? VerticalAlignments.bottom
+            : VerticalAlignments.top);
       const fontSizes = allFontSizes[Math.min(node.depth, allFontSizes.length) - 1];
       const { textColor, textInvertible, fontStyle, fontVariant, fontFamily, fontWeight, valueFormatter, padding } = {
         fontFamily: configFontFamily,

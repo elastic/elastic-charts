@@ -134,11 +134,11 @@ function computeYDomainLineAnnotationDimensions(
 
     const annotationMarker: AnnotationMarker | undefined = marker
       ? {
-        icon: marker,
-        color: lineColor,
-        dimension: markerDimension,
-        position: markerPosition,
-      }
+          icon: marker,
+          color: lineColor,
+          dimension: markerDimension,
+          position: markerPosition,
+        }
       : undefined;
     const lineProp: AnnotationLineProps = {
       anchor,
@@ -279,11 +279,11 @@ function computeXDomainLineAnnotationDimensions(
 
     const annotationMarker: AnnotationMarker | undefined = marker
       ? {
-        icon: marker,
-        color: lineColor,
-        dimension: markerDimension,
-        position: markerPosition,
-      }
+          icon: marker,
+          color: lineColor,
+          dimension: markerDimension,
+          position: markerPosition,
+        }
       : undefined;
     const lineProp: AnnotationLineProps = {
       anchor,

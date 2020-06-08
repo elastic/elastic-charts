@@ -128,9 +128,9 @@ export function getRadiusFn(data: DataSeriesDatum[], lineWidth: number, markSize
       mark === null
         ? acc
         : {
-          min: Math.min(acc.min, mark / 2),
-          max: Math.max(acc.max, mark / 2),
-        },
+            min: Math.min(acc.min, mark / 2),
+            max: Math.max(acc.max, mark / 2),
+          },
     { min: Infinity, max: -Infinity },
   );
   const adjustedMarkSizeRatio = Math.min(Math.max(markSizeRatio, 0), 100);
@@ -332,8 +332,8 @@ export function renderBars(
     // only show displayValue for even bars if showOverlappingValue
     const displayValueText = displayValueSettings && displayValueSettings.isAlternatingValueLabel
       ? barGeometries.length % 2 === 0
-        ? formattedDisplayValue
-        : undefined
+          ? formattedDisplayValue
+          : undefined
       : formattedDisplayValue;
 
     const computedDisplayValueWidth = bboxCalculator.compute(displayValueText || '', padding, fontSize, fontFamily)
@@ -344,12 +344,12 @@ export function renderBars(
 
     const displayValue = displayValueSettings && displayValueSettings.showValueLabel
       ? {
-        text: displayValueText,
-        width: displayValueWidth,
-        height: fontSize,
-        hideClippedValue,
-        isValueContainedInElement: displayValueSettings.isValueContainedInElement,
-      }
+          text: displayValueText,
+          width: displayValueWidth,
+          height: fontSize,
+          hideClippedValue,
+          isValueContainedInElement: displayValueSettings.isValueContainedInElement,
+        }
       : undefined;
 
     const seriesIdentifier: XYChartSeriesIdentifier = {

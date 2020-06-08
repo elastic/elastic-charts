@@ -105,6 +105,7 @@ module.exports = {
     indent: ['error', 2, {
       SwitchCase: 1,
       MemberExpression: 1,
+      offsetTernaryExpressions: true,
     }],
     'max-len': [
       'warn',

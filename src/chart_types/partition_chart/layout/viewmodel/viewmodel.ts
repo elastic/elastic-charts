@@ -167,17 +167,17 @@ function rectangleConstruction(treeHeight: number, topGroove: number) {
   return function(node: ShapeTreeNode): RectangleConstruction {
     return node.depth < treeHeight
       ? {
-        x0: node.x0,
-        y0: node.y0px,
-        x1: node.x1,
-        y1: node.y0px + getTopPadding(topGroove, node.y1px - node.y0px),
-      }
+          x0: node.x0,
+          y0: node.y0px,
+          x1: node.x1,
+          y1: node.y0px + getTopPadding(topGroove, node.y1px - node.y0px),
+        }
       : {
-        x0: node.x0,
-        y0: node.y0px,
-        x1: node.x1,
-        y1: node.y1px,
-      };
+          x0: node.x0,
+          y0: node.y0px,
+          x1: node.x1,
+          y1: node.y1px,
+        };
   };
 }
 
@@ -232,11 +232,11 @@ export function shapeViewModel(
 
   const rawChildNodes: Array<Part> = treemapLayout
     ? treemap(tree, treemapAreaAccessor, topGrooveAccessor(topGroove), grooveAccessor, {
-      x0: -width / 2,
-      y0: -height / 2,
-      width,
-      height,
-    })
+        x0: -width / 2,
+        y0: -height / 2,
+        width,
+        height,
+      })
     : sunburst(tree, sunburstAreaAccessor, { x0: 0, y0: -1 }, clockwiseSectors, specialFirstInnermostSector);
 
   const shownChildNodes = rawChildNodes.filter((n: Part) => {
@@ -331,10 +331,10 @@ export function shapeViewModel(
     treemapLayout
       ? ({ x0, y0, x1, y1 }) => x0 <= x && x <= x1 && y0 <= y && y <= y1
       : ({ x0, y0px, x1, y1px }) => {
-        const angleX = (Math.atan2(y, x) + TAU / 4 + TAU) % TAU;
-        const yPx = Math.sqrt(x * x + y * y);
-        return x0 <= angleX && angleX <= x1 && y0px <= yPx && yPx <= y1px;
-      },
+          const angleX = (Math.atan2(y, x) + TAU / 4 + TAU) % TAU;
+          const yPx = Math.sqrt(x * x + y * y);
+          return x0 <= angleX && angleX <= x1 && y0px <= yPx && yPx <= y1px;
+        },
   );
 
   // combined viewModel

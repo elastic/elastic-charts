@@ -109,9 +109,9 @@ export function linkTextLayout(
       );
       const { text, width, verticalOffset } = linkLabel.fontSize / 2 <= cy + diskCenter.y && cy + diskCenter.y <= rectHeight - linkLabel.fontSize / 2
         ? fitText(measure, labelText, allottedLabelWidth, linkLabel.fontSize, {
-          ...labelFontSpec,
-          text: labelText,
-        })
+            ...labelFontSpec,
+            text: labelText,
+          })
         : { text: '', width: 0, verticalOffset: 0 };
       const link: PointTuples = [
         [x0, y0],

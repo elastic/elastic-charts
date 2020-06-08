@@ -64,8 +64,8 @@ export function getTextColor(shapeFillColor: Color, textColor: Color, textInvert
   const inverseForContrast = textInvertible && specifiedTextColorIsDark === backgroundIsDark;
   return inverseForContrast
     ? to === undefined
-      ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`
-      : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
+        ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`
+        : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
     : textColor;
 }
 
