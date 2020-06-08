@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import React, { CSSProperties, createRef } from 'react';
+import React, { createRef } from 'react';
 import classNames from 'classnames';
 import { Provider } from 'react-redux';
 import { createStore, Store, Unsubscribe } from 'redux';
@@ -48,15 +48,6 @@ interface ChartProps {
 
 interface ChartState {
   legendPosition: Position;
-}
-
-function getContainerStyle(size: any): CSSProperties {
-  if (size) {
-    return {
-      ...getChartSize(size),
-    };
-  }
-  return {};
 }
 
 export class Chart extends React.Component<ChartProps, ChartState> {
@@ -156,7 +147,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
   render() {
     const { size, className } = this.props;
-    const containerStyle = getContainerStyle(size);
+    const containerStyle = getChartSize(size);
     const horizontal = isHorizontalAxis(this.state.legendPosition);
     const chartClassNames = classNames('echChart', className, {
       'echChart--column': horizontal,
