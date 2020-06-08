@@ -126,8 +126,12 @@ export interface ColorConfig {
 /**
  * The background style applied to the chart.
  * This is used to coordinate adequate contrast of the text in partition and treemap charts.
+ * @public
  */
 export interface BackgroundStyle {
+  /**
+   * The background color
+   */
   color: string;
 }
 export interface LegendStyle {

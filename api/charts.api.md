@@ -176,11 +176,8 @@ export interface AxisStyle {
     tickLabelPadding?: number;
 }
 
-// Warning: (ae-missing-release-tag) "BackgroundStyles" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
-export interface BackgroundStyles {
-    // (undocumented)
+export interface BackgroundStyle {
     color: string;
 }
 
@@ -1411,7 +1408,7 @@ export interface Theme {
     areaSeriesStyle: AreaSeriesStyle;
     // (undocumented)
     axes: AxisConfig;
-    background: BackgroundStyles;
+    background: BackgroundStyle;
     barSeriesStyle: BarSeriesStyle;
     bubbleSeriesStyle: BubbleSeriesStyle;
     chartMargins: Margins;
