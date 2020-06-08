@@ -173,6 +173,7 @@ module.exports = {
         'external',
         ['parent', 'sibling', 'index', 'internal'],
       ],
+      alphabetize: { order: 'asc', caseInsensitive: true }, // todo replace with directory gradient ordering
     }],
     'import/no-unresolved': ['error', { ignore: ['theme_dark.scss', 'theme_light.scss'] }],
     'import/no-restricted-paths': [

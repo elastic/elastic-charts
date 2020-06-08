@@ -24,11 +24,11 @@ import {
   getYResolvedData,
   MockDataSeriesDatum,
 } from '../../../mocks';
-import { Fit } from './specs';
 import { ScaleType } from '../../../scales';
-import { DataSeries } from './series';
-import * as seriesUtils from './stacked_series_utils';
 import * as testModule from './fit_function';
+import { DataSeries } from './series';
+import { Fit } from './specs';
+import * as seriesUtils from './stacked_series_utils';
 
 describe('Fit Function', () => {
   describe('getValue', () => {

@@ -20,9 +20,9 @@
 import chroma from 'chroma-js';
 
 import { Color } from '../../../../utils/commons';
+import { TextContrast } from '../types/config_types';
 import { Ratio } from '../types/geometry_types';
 import { RgbTuple, RGBATupleToString, stringToRGB } from './color_library_wrappers';
-import { TextContrast } from '../types/config_types';
 
 /** @internal */
 export function hueInterpolator(colors: RgbTuple[]) {

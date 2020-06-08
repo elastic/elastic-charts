@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import { common } from '../page_objects';
 import { Rotation, Placement } from '../../src';
+import { common } from '../page_objects';
 
 describe('Interactions', () => {
   describe('Tooltips', () => {

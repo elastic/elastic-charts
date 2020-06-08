@@ -19,8 +19,8 @@
 
 import { DateTime } from 'luxon';
 
-import { limitLogScaleDomain, ScaleContinuous } from './scale_continuous';
 import { ScaleType, ScaleBand } from '.';
+import { limitLogScaleDomain, ScaleContinuous } from './scale_continuous';
 
 describe('Scale Test', () => {
   test('Create an ordinal scale', () => {

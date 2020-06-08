@@ -17,9 +17,9 @@
  * under the License.
  */
 
+import { Scale, ScaleType } from '.';
 import { ScaleBand } from './scale_band';
 import { ScaleContinuous } from './scale_continuous';
-import { Scale, ScaleType } from '.';
 
 /**
  * Check if a scale is logaritmic

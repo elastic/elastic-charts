@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import { rgb as d3Rgb, RGBColor as D3RGBColor } from 'd3-color';
 import chroma from 'chroma-js';
+import { rgb as d3Rgb, RGBColor as D3RGBColor } from 'd3-color';
 
 import { Color } from '../../../../utils/commons';
 

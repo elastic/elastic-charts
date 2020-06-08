@@ -18,11 +18,11 @@
  */
 
 import { Rect, Fill, Stroke } from '../../../../../geoms/types';
+import { withContext } from '../../../../../renderers/canvas';
 import { RectAnnotationStyle } from '../../../../../utils/themes/theme';
+import { stringToRGB } from '../../../../partition_chart/layout/utils/color_library_wrappers';
 import { AnnotationRectProps } from '../../../annotations/rect/types';
 import { renderRect } from '../primitives/rect';
-import { stringToRGB } from '../../../../partition_chart/layout/utils/color_library_wrappers';
-import { withContext } from '../../../../../renderers/canvas';
 
 /** @internal */
 export function renderRectAnnotations(

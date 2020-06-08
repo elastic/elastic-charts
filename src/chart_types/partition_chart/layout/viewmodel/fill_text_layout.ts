@@ -32,7 +32,7 @@ import {
   RingSectorConstruction,
   PointTuple,
 } from '../types/geometry_types';
-import { logarithm, TAU, trueBearingToStandardPositionAngle } from '../utils/math';
+import { Box, Font, PartialFont, TextMeasure } from '../types/types';
 import {
   QuadViewModel,
   RawTextGetter,
@@ -42,7 +42,6 @@ import {
   ShapeTreeNode,
   ValueGetterFunction,
 } from '../types/viewmodel_types';
-import { Box, Font, PartialFont, TextMeasure } from '../types/types';
 import {
   combineColors,
   makeHighContrastColor,
@@ -52,6 +51,7 @@ import {
   monotonicHillClimb,
 } from '../utils/calcs';
 import { RGBATupleToString } from '../utils/color_library_wrappers';
+import { logarithm, TAU, trueBearingToStandardPositionAngle } from '../utils/math';
 import { RectangleConstruction, VerticalAlignments } from './viewmodel';
 
 const INFINITY_RADIUS = 1e4; // far enough for a sub-2px precision on a 4k screen, good enough for text bounds; 64 bit floats still work well with it

@@ -17,12 +17,12 @@
  * under the License.
  */
 
-import React from 'react';
 import { color } from '@storybook/addon-knobs';
+import React from 'react';
 
 import { Chart, Datum, Partition, Settings } from '../../src';
-import { mocks } from '../../src/mocks/hierarchical';
 import { config } from '../../src/chart_types/partition_chart/layout/config/config';
+import { mocks } from '../../src/mocks/hierarchical';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 
 export const Example = () => {

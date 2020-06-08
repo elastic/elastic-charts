@@ -17,12 +17,12 @@
  * under the License.
  */
 
+import { AxisProps } from '.';
 import { withContext } from '../../../../../renderers/canvas';
 import { Font, FontStyle } from '../../../../partition_chart/layout/types/types';
 import { AxisTick, getTickLabelProps } from '../../../utils/axis_utils';
 import { renderText } from '../primitives/text';
 import { renderDebugRectCenterRotated } from '../utils/debug';
-import { AxisProps } from '.';
 
 /** @internal */
 export function renderTickLabel(ctx: CanvasRenderingContext2D, tick: AxisTick, props: AxisProps) {

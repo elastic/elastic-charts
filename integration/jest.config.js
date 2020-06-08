@@ -17,9 +17,9 @@
  * under the License.
  */
 
-const tsPreset = require('ts-jest/jest-preset');
-const jestPuppeteer = require('jest-puppeteer/jest-preset');
 const jestPuppeteerDocker = require('jest-puppeteer-docker/jest-preset');
+const jestPuppeteer = require('jest-puppeteer/jest-preset');
+const tsPreset = require('ts-jest/jest-preset');
 
 module.exports = {
   setupFilesAfterEnv: ['<rootDir>/jest_env_setup.ts'],

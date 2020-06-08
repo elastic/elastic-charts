@@ -25,9 +25,7 @@ import { percentValueGetter } from '../config/config';
 import { meanAngle } from '../geometry';
 import { Config, PartitionLayout } from '../types/config_types';
 import { Distance, Pixels, PointTuple, Radius } from '../types/geometry_types';
-import { getTopPadding, treemap } from '../utils/treemap';
-import { sunburst } from '../utils/sunburst';
-import { argsToRGBString, stringToRGB } from '../utils/color_library_wrappers';
+import { TextMeasure, Part } from '../types/types';
 import {
   nullShapeViewModel,
   OutsideLinksViewModel,
@@ -39,6 +37,7 @@ import {
   ShapeViewModel,
   ValueGetterFunction,
 } from '../types/viewmodel_types';
+import { argsToRGBString, stringToRGB } from '../utils/color_library_wrappers';
 import {
   aggregateAccessor,
   ArrayEntry,
@@ -51,7 +50,8 @@ import {
   HierarchyOfArrays,
 } from '../utils/group_by_rollup';
 import { trueBearingToStandardPositionAngle, TAU } from '../utils/math';
-import { TextMeasure, Part } from '../types/types';
+import { sunburst } from '../utils/sunburst';
+import { getTopPadding, treemap } from '../utils/treemap';
 import { fillTextLayout, getRectangleRowGeometry, ringSectorConstruction, getSectorRowGeometry, inSectorRotation, nodeId } from './fill_text_layout';
 import { linkTextLayout } from './link_text_layout';
 

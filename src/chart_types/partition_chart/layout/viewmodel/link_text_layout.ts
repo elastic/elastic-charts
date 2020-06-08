@@ -17,14 +17,14 @@
  * under the License.
  */
 
-import { Distance, PointTuple, PointTuples } from '../types/geometry_types';
-import { Config } from '../types/config_types';
-import { LinkLabelVM, RawTextGetter, ShapeTreeNode, ValueGetterFunction } from '../types/viewmodel_types';
-import { meanAngle } from '../geometry';
 import { ValueFormatter, Color } from '../../../../utils/commons';
-import { makeHighContrastColor, validateColor, integerSnap, monotonicHillClimb } from '../utils/calcs';
 import { Point } from '../../../../utils/point';
+import { meanAngle } from '../geometry';
+import { Config } from '../types/config_types';
+import { Distance, PointTuple, PointTuples } from '../types/geometry_types';
 import { Box, Font, TextAlign, TextMeasure } from '../types/types';
+import { LinkLabelVM, RawTextGetter, ShapeTreeNode, ValueGetterFunction } from '../types/viewmodel_types';
+import { makeHighContrastColor, validateColor, integerSnap, monotonicHillClimb } from '../utils/calcs';
 import { TAU, trueBearingToStandardPositionAngle } from '../utils/math';
 
 function cutToLength(s: string, maxLength: number) {

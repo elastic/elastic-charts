@@ -17,19 +17,19 @@
  * under the License.
  */
 
+import { Rect } from '../../../../geoms/types';
 import { withContext, renderLayers, clearCanvas } from '../../../../renderers/canvas';
+import { stringToRGB } from '../../../partition_chart/layout/utils/color_library_wrappers';
 import { renderAnnotations } from './annotations';
 import { renderAreas } from './areas';
 import { renderAxes } from './axes';
 import { renderBars } from './bars';
+import { renderBubbles } from './bubbles';
 import { renderGrids } from './grids';
 import { renderLines } from './lines';
 import { renderDebugRect } from './utils/debug';
 import { renderBarValues } from './values/bar';
 import { ReactiveChartStateProps } from './xy_chart';
-import { stringToRGB } from '../../../partition_chart/layout/utils/color_library_wrappers';
-import { Rect } from '../../../../geoms/types';
-import { renderBubbles } from './bubbles';
 
 /** @internal */
 export function renderXYChartCanvas2d(

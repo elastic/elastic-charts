@@ -17,10 +17,10 @@
  * under the License.
  */
 
-import { stringToRGB, OpacityFn } from '../../../../partition_chart/layout/utils/color_library_wrappers';
 import { Fill, Stroke } from '../../../../../geoms/types';
 import { mergePartial, getColorFromVariant } from '../../../../../utils/commons';
 import { PointStyle, GeometryStateStyle } from '../../../../../utils/themes/theme';
+import { stringToRGB, OpacityFn } from '../../../../partition_chart/layout/utils/color_library_wrappers';
 
 /**
  * Return the fill, stroke and radius styles for a point geometry.

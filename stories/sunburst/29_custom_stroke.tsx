@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import React from 'react';
 import { color } from '@storybook/addon-knobs';
+import React from 'react';
 
 import { Chart, Datum, Partition, PartitionLayout, Settings, DARK_THEME } from '../../src';
 import { config } from '../../src/chart_types/partition_chart/layout/config/config';

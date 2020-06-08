@@ -23,13 +23,13 @@ import { ChartTypes } from '../../..';
 import { SpecTypes } from '../../../../specs/settings';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSpecsFromStore } from '../../../../state/utils';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { isColorValid } from '../../layout/utils/calcs';
 import { PartitionSpec } from '../../specs';
 import { render } from './scenegraph';
 import { getTree } from './tree';
-import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { isColorValid } from '../../layout/utils/calcs';
 
 const getSpecs = (state: GlobalChartState) => state.specs;
 

@@ -20,6 +20,7 @@
 import React from 'react';
 import { $Values } from 'utility-types';
 
+import { Spec } from '.';
 import { ChartTypes } from '../chart_types';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
@@ -36,7 +37,6 @@ import { GeometryValue } from '../utils/geometry';
 import { GroupId } from '../utils/ids';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { PartialTheme, Theme } from '../utils/themes/theme';
-import { Spec } from '.';
 
 export interface LayerValue {
   groupByRollup: PrimitiveValue;

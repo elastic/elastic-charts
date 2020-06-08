@@ -19,8 +19,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { getChartThemeSelector } from '../state/selectors/get_chart_theme';
 import { GlobalChartState } from '../state/chart_state';
+import { getChartThemeSelector } from '../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector } from '../state/selectors/get_internal_is_intialized';
 
 interface ChartBackgroundProps {

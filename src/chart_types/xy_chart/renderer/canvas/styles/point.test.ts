@@ -20,8 +20,8 @@
 import { Fill, Stroke } from '../../../../../geoms/types';
 import { MockStyles } from '../../../../../mocks';
 import { getColorFromVariant } from '../../../../../utils/commons';
-import { stringToRGB } from '../../../../partition_chart/layout/utils/color_library_wrappers';
 import { PointStyle } from '../../../../../utils/themes/theme';
+import { stringToRGB } from '../../../../partition_chart/layout/utils/color_library_wrappers';
 import { buildPointStyles } from './point';
 
 jest.mock('../../../../partition_chart/layout/utils/color_library_wrappers');

@@ -20,8 +20,8 @@
 import { Stroke } from '../../../../../geoms/types';
 import { MockStyles } from '../../../../../mocks';
 import { getColorFromVariant } from '../../../../../utils/commons';
-import { buildLineStyles } from './line';
 import { stringToRGB } from '../../../../partition_chart/layout/utils/color_library_wrappers';
+import { buildLineStyles } from './line';
 
 jest.mock('../../../../partition_chart/layout/utils/color_library_wrappers');
 jest.mock('../../../../../utils/commons');

@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import React, { createRef } from 'react';
 import classNames from 'classnames';
+import React, { createRef } from 'react';
 import { Provider } from 'react-redux';
 import { createStore, Store, Unsubscribe } from 'redux';
 import uuid from 'uuid';
@@ -32,11 +32,11 @@ import { getInternalIsInitializedSelector } from '../state/selectors/get_interna
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_specs';
 import { ChartSize, getChartSize } from '../utils/chart_size';
 import { Position } from '../utils/commons';
+import { ChartBackground } from './chart_background';
 import { ChartContainer } from './chart_container';
 import { ChartResizer } from './chart_resizer';
 import { ChartStatus } from './chart_status';
 import { Legend } from './legend/legend';
-import { ChartBackground } from './chart_background';
 
 interface ChartProps {
   /**

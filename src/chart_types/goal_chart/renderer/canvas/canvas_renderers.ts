@@ -18,9 +18,9 @@
  */
 
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
-import { ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { GOLDEN_RATIO } from '../../../partition_chart/layout/utils/math';
 import { cssFontShorthand } from '../../../partition_chart/layout/utils/measure';
+import { ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { GOAL_SUBTYPES } from '../../specs';
 
 // fixme turn these into config, or capitalize as constants

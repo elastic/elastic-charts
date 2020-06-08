@@ -17,13 +17,13 @@
  * under the License.
  */
 
-import React from 'react';
 import { color, boolean } from '@storybook/addon-knobs';
+import React from 'react';
 
 import { Chart, Datum, Partition, PartitionLayout, PartialTheme, Settings } from '../../src';
-import { mocks } from '../../src/mocks/hierarchical';
 import { config } from '../../src/chart_types/partition_chart/layout/config/config';
 import { ShapeTreeNode } from '../../src/chart_types/partition_chart/layout/types/viewmodel_types';
+import { mocks } from '../../src/mocks/hierarchical';
 import {
   categoricalFillColor,
   colorBrewerCategoricalStark9,
