@@ -19,7 +19,7 @@
 
 import React from 'react';
 
-import { Example } from '../stories/treemap/6_custom_style';
+import { Example } from '../stories/stylings/20_partition_background';
 
 export class Playground extends React.Component {
   render() {
