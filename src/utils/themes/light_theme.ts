@@ -163,6 +163,6 @@ export const LIGHT_THEME: Theme = {
     },
   },
   background: {
-    color: 'white',
+    color: '#FFFFFF', // $euiColorEmptyShade: #FFF !default;
   },
 };

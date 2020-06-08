@@ -78,6 +78,19 @@ export function validateColor(color?: string, defaultColor = 'rgba(255, 255, 255
 }
 
 /**
+ * Return true if the color is a valid CSS color, false otherwise
+ * @param color a color written in string
+ */
+export function isColorValid(color: string) {
+  try {
+    chroma(color);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Adjust the text color in cases black and white can't reach ideal 4.5 ratio
  * @internal
  */
