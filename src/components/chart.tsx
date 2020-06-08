@@ -147,7 +147,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
   render() {
     const { size, className } = this.props;
-    const containerStyle = getChartSize(size);
+    const containerSizeStyle = getChartSize(size);
     const horizontal = isHorizontalAxis(this.state.legendPosition);
     const chartClassNames = classNames('echChart', className, {
       'echChart--column': horizontal,
@@ -155,7 +155,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
     return (
       <Provider store={this.chartStore}>
-        <div className={chartClassNames} style={containerStyle} ref={this.chartContainerRef}>
+        <div className={chartClassNames} style={containerSizeStyle} ref={this.chartContainerRef}>
           <ChartBackground />
           <ChartStatus />
           <ChartResizer />

@@ -22,7 +22,7 @@ import { GlobalChartState } from '../state/chart_state';
 import { getInternalIsInitializedSelector } from '../state/selectors/get_internal_is_intialized';
 
 interface ChartBackgroundProps {
-  background: string;
+  backgroundColor: string;
 }
 
 export class ChartBackgroundComponent extends React.Component<ChartBackgroundProps> {
@@ -33,19 +33,19 @@ export class ChartBackgroundComponent extends React.Component<ChartBackgroundPro
   }
 
   render() {
-    const { background } = this.props;
-    return <div className="echChartBackground" style={{ background }} />;
+    const { backgroundColor } = this.props;
+    return <div className="echChartBackground" style={{ backgroundColor }} />;
   }
 }
 
 const mapStateToProps = (state: GlobalChartState): ChartBackgroundProps => {
   if (!getInternalIsInitializedSelector(state)) {
     return {
-      background: 'transparent',
+      backgroundColor: 'transparent',
     };
   }
   return {
-    background: getChartThemeSelector(state).background.color,
+    backgroundColor: getChartThemeSelector(state).background.color,
   };
 };
 
