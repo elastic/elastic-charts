@@ -218,6 +218,7 @@ module.exports = {
     'unicorn/prefer-spread': 0,
     'unicorn/prefer-node-append': 0,
     'unicorn/no-zero-fractions': 0,
+    'unicorn/prefer-node-remove': 0, // not IE11 compatible
     'unicorn/filename-case': [
       'error',
       {

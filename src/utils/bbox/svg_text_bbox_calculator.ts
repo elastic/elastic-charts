@@ -49,6 +49,6 @@ export class SvgTextBBoxCalculator implements BBoxCalculator {
   }
 
   destroy(): void {
-    this.svgElem.remove();
+    this.attachedRoot.removeChild(this.svgElem);
   }
 }

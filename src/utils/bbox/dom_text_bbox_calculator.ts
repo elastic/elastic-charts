@@ -47,6 +47,6 @@ export class DOMTextBBoxCalculator implements BBoxCalculator {
   }
 
   destroy(): void {
-    this.offscreenCanvas.remove();
+    this.attachedRoot.removeChild(this.offscreenCanvas);
   }
 }

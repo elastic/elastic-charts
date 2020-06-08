@@ -145,7 +145,7 @@ const TooltipPortalComponent = ({ anchor, scope, settings, children, visible, ch
 
     return () => {
       if (nodeCopy.parentNode) {
-        nodeCopy.remove();
+        nodeCopy.parentNode.removeChild(nodeCopy);
       }
 
       destroyPopper();

@@ -41,6 +41,7 @@ describe('smoke tests', () => {
       case 'safari':
         capabilities = webdriver.Capabilities.safari();
         break;
+      case 'firefox':
         require('geckodriver');
         capabilities = webdriver.Capabilities.firefox();
         break;

@@ -54,7 +54,7 @@ export const Example = () => {
         link.href = snapshot.blobOrDataUrl;
         document.body.appendChild(link);
         link.click();
-        link.remove();
+        document.body.removeChild(link);
     }
   };
   const groupId = '';
