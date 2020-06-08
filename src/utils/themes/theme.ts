@@ -124,9 +124,10 @@ export interface ColorConfig {
   defaultVizColor: Color;
 }
 /**
+ * The background style applied to the chart.
  * This is used to coordinate adequate contrast of the text in partition and treemap charts.
  */
-export interface BackgroundStyles {
+export interface BackgroundStyle {
   color: string;
 }
 export interface LegendStyle {
@@ -207,7 +208,7 @@ export interface Theme {
    * The background allows the consumer to provide a color of the background container of the chart.
    * This can then be used to calculate the contrast of the text for partition charts.
    */
-  background: BackgroundStyles;
+  background: BackgroundStyle;
 }
 
 export type PartialTheme = RecursivePartial<Theme>;

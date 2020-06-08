@@ -17,13 +17,12 @@
  * under the License. */
 import React from 'react';
 import { connect } from 'react-redux';
-import { BackgroundStyles } from '../utils/themes/theme';
 import { getChartThemeSelector } from '../state/selectors/get_chart_theme';
 import { GlobalChartState } from '../state/chart_state';
 import { getInternalIsInitializedSelector } from '../state/selectors/get_internal_is_intialized';
 
 interface ChartBackgroundProps {
-  backgroundStyles?: BackgroundStyles;
+  background: string;
 }
 
 export class ChartBackgroundComponent extends React.Component<ChartBackgroundProps> {
@@ -34,18 +33,19 @@ export class ChartBackgroundComponent extends React.Component<ChartBackgroundPro
   }
 
   render() {
-    return <div className="echChartBackground" style={{ background: this.props?.backgroundStyles?.color }} />;
+    const { background } = this.props;
+    return <div className="echChartBackground" style={{ background }} />;
   }
 }
 
 const mapStateToProps = (state: GlobalChartState): ChartBackgroundProps => {
   if (!getInternalIsInitializedSelector(state)) {
     return {
-      backgroundStyles: getChartThemeSelector(state).background,
+      background: 'transparent',
     };
   }
   return {
-    backgroundStyles: getChartThemeSelector(state).background,
+    background: getChartThemeSelector(state).background.color,
   };
 };
 
