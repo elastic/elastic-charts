@@ -19,10 +19,10 @@
 
 import { Position } from '../../../../../utils/commons';
 import { TickStyle } from '../../../../../utils/themes/theme';
-import { stringToRGB } from '../../../../partition_chart/layout/utils/d3_utils';
 import { AxisTick, isVerticalAxis } from '../../../utils/axis_utils';
-import { renderLine, MIN_STROKE_WIDTH } from '../primitives/line';
 import { AxisProps } from '.';
+import { renderLine, MIN_STROKE_WIDTH } from '../primitives/line';
+import { stringToRGB } from '../../../../partition_chart/layout/utils/color_library_wrappers';
 
 /** @internal */
 export function renderTick(ctx: CanvasRenderingContext2D, tick: AxisTick, props: AxisProps) {

@@ -163,4 +163,7 @@ export const LIGHT_THEME: Theme = {
       visible: true,
     },
   },
+  background: {
+    color: '#FFFFFF', // $euiColorEmptyShade: #FFF !default;
+  },
 };

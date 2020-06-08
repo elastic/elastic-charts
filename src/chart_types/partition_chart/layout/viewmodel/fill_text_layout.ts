@@ -17,22 +17,22 @@
  * under the License.
  */
 
-import { ValueFormatter } from '../../../../utils/commons';
+import { ValueFormatter, Color } from '../../../../utils/commons';
 import { Layer } from '../../specs';
 import { conjunctiveConstraint } from '../circline_geometry';
 import { wrapToTau } from '../geometry';
-import { Config, Padding } from '../types/config_types';
+import { Config, Padding, TextContrast } from '../types/config_types';
 import {
   Coordinate,
   Distance,
   Pixels,
-  PointTuple,
   Radian,
   Radius,
   Ratio,
   RingSectorConstruction,
+  PointTuple,
 } from '../types/geometry_types';
-import { Box, Font, PartialFont, TextMeasure } from '../types/types';
+import { logarithm, TAU, trueBearingToStandardPositionAngle } from '../utils/math';
 import {
   QuadViewModel,
   RawTextGetter,
@@ -42,8 +42,16 @@ import {
   ShapeTreeNode,
   ValueGetterFunction,
 } from '../types/viewmodel_types';
-import { integerSnap, getTextColor, monotonicHillClimb } from '../utils/calcs';
-import { logarithm, TAU, trueBearingToStandardPositionAngle } from '../utils/math';
+import { Box, Font, PartialFont, TextMeasure } from '../types/types';
+import {
+  combineColors,
+  makeHighContrastColor,
+  colorIsDark,
+  getTextColorIfTextInvertible,
+  integerSnap,
+  monotonicHillClimb,
+} from '../utils/calcs';
+import { RGBATupleToString } from '../utils/color_library_wrappers';
 import { RectangleConstruction, VerticalAlignments } from './viewmodel';
 
 const INFINITY_RADIUS = 1e4; // far enough for a sub-2px precision on a 4k screen, good enough for text bounds; 64 bit floats still work well with it
@@ -291,6 +299,48 @@ function getWordSpacing(fontSize: number) {
   return fontSize / 4;
 }
 
+/**
+ * Determine the color for the text hinging on the parameters of textInvertible and textContrast
+ * @internal
+ */
+export function getFillTextColor(
+  textColor: Color,
+  textInvertible: boolean,
+  textContrast: TextContrast,
+  sliceFillColor: string,
+  containerBackgroundColor?: Color,
+) {
+  let adjustedTextColor = textColor;
+  const containerBackgroundColorFromUser = containerBackgroundColor === undefined || containerBackgroundColor === 'transparent'
+    ? 'rgba(255, 255, 255, 0)'
+    : containerBackgroundColor;
+
+  const containerBackground = combineColors(sliceFillColor, containerBackgroundColorFromUser);
+  const formattedContainerBackground = typeof containerBackground !== 'string' ? RGBATupleToString(containerBackground) : containerBackground;
+
+  const textShouldBeInvertedAndTextContrastIsFalse = textInvertible && !textContrast;
+  const textShouldBeInvertedAndTextContrastIsSetToTrue = textInvertible && typeof textContrast !== 'number';
+  const textContrastIsSetToANumberValue = typeof textContrast === 'number';
+  const textShouldNotBeInvertedButTextContrastIsDefined = textContrast && !textInvertible;
+
+  // change the contrast for the inverted slices
+  if (textShouldBeInvertedAndTextContrastIsFalse || textShouldBeInvertedAndTextContrastIsSetToTrue) {
+    const backgroundIsDark = colorIsDark(combineColors(sliceFillColor, containerBackgroundColorFromUser));
+    const specifiedTextColorIsDark = colorIsDark(textColor);
+    // @ts-ignore
+    adjustedTextColor = getTextColorIfTextInvertible(
+      backgroundIsDark,
+      specifiedTextColorIsDark,
+      textColor,
+      textContrast,
+      formattedContainerBackground,
+    );
+    // if textContrast is a number then take that into account or if textInvertible is set to false
+  } else if (textContrastIsSetToANumberValue || textShouldNotBeInvertedButTextContrastIsDefined) {
+    return makeHighContrastColor(adjustedTextColor, formattedContainerBackground);
+  }
+  return adjustedTextColor;
+}
 type GetShapeRowGeometry<C> = (
   container: C,
   cx: Distance,
@@ -312,6 +362,7 @@ function fill<C>(
   shapeConstructor: ShapeConstructor<C>,
   getShapeRowGeometry: GetShapeRowGeometry<C>,
   getRotation: GetRotation,
+  containerBackgroundColor?: Color,
 ) {
   return function(
     config: Config,
@@ -335,7 +386,18 @@ function fill<C>(
             ? VerticalAlignments.bottom
             : VerticalAlignments.top);
       const fontSizes = allFontSizes[Math.min(node.depth, allFontSizes.length) - 1];
-      const { textColor, textInvertible, fontStyle, fontVariant, fontFamily, fontWeight, valueFormatter, padding } = {
+      const {
+        textColor,
+        textInvertible,
+        fontStyle,
+        fontVariant,
+        fontFamily,
+        fontWeight,
+        valueFormatter,
+        padding,
+        textContrast,
+        textOpacity,
+      } = {
         fontFamily: configFontFamily,
         fontWeight: 'normal',
         padding: 2,
@@ -344,8 +406,13 @@ function fill<C>(
         ...layer.fillLabel,
         ...layer.shape,
       };
-
-      const fillTextColor = getTextColor(node.fillColor, textColor, textInvertible);
+      const fillTextColor = getFillTextColor(
+        textColor,
+        textInvertible,
+        textContrast,
+        node.fillColor,
+        containerBackgroundColor,
+      );
 
       const valueFont = {
         fontFamily: configFontFamily,
@@ -361,6 +428,8 @@ function fill<C>(
         fontVariant,
         fontWeight,
         fontFamily,
+        textColor,
+        textOpacity,
       };
       const allBoxes = getAllBoxes(rawTextGetter, valueGetter, valueFormatter, sizeInvariantFont, valueFont, node);
       const [cx, cy] = textFillOrigin;
@@ -560,8 +629,9 @@ export function fillTextLayout<C>(
   shapeConstructor: ShapeConstructor<C>,
   getShapeRowGeometry: GetShapeRowGeometry<C>,
   getRotation: GetRotation,
+  containerBackgroundColor?: Color,
 ) {
-  const specificFiller = fill(shapeConstructor, getShapeRowGeometry, getRotation);
+  const specificFiller = fill(shapeConstructor, getShapeRowGeometry, getRotation, containerBackgroundColor);
   return function(
     measure: TextMeasure,
     rawTextGetter: RawTextGetter,

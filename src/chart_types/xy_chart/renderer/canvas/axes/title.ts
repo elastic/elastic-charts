@@ -62,6 +62,8 @@ function renderVerticalTitle(ctx: CanvasRenderingContext2D, props: AxisProps) {
     fontVariant: 'normal',
     fontStyle: titleStyle.fontStyle ? (titleStyle.fontStyle as FontStyle) : 'normal',
     fontWeight: 'normal',
+    textColor: titleStyle.fill,
+    textOpacity: 1,
   };
   renderText(
     ctx,
@@ -100,6 +102,8 @@ function renderHorizontalTitle(ctx: CanvasRenderingContext2D, props: AxisProps) 
     fontVariant: 'normal',
     fontStyle: titleStyle.fontStyle ? (titleStyle.fontStyle as FontStyle) : 'normal',
     fontWeight: 'normal',
+    textColor: titleStyle.fill,
+    textOpacity: 1,
   };
   renderText(
     ctx,

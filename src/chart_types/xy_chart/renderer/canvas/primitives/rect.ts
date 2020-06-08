@@ -18,7 +18,7 @@
  */
 
 import { Rect, Fill, Stroke } from '../../../../../geoms/types';
-import { RGBtoString } from '../../../../partition_chart/layout/utils/d3_utils';
+import { RGBtoString } from '../../../../partition_chart/layout/utils/color_library_wrappers';
 
 /** @internal */
 export function renderRect(

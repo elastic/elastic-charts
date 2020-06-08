@@ -16,13 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+const module = jest.requireActual('../../viewmodel/fill_text_layout.ts');
 
-const module = jest.requireActual('../d3_utils.ts');
-
-export const { defaultColor, transparentColor, defaultD3Color } = module;
-
-export const stringToRGB = jest.fn(module.stringToRGB);
-export const validateColor = jest.fn(module.validateColor);
-export const argsToRGB = jest.fn(module.argsToRGB);
-export const argsToRGBString = jest.fn(module.argsToRGBString);
-export const RGBtoString = jest.fn(module.RGBtoString);
+export const getTextColorIfTextInvertible = jest.fn(module.getTextColorIfTextInvertible);

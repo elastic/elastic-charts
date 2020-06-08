@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { identity, mergePartial, RecursivePartial } from '../../../../utils/commons';
+import { identity, mergePartial, RecursivePartial, Color } from '../../../../utils/commons';
 import { Dimensions } from '../../../../utils/dimensions';
 import { config as defaultConfig, VALUE_GETTERS } from '../../layout/config/config';
 import { Config } from '../../layout/types/config_types';
@@ -29,9 +29,10 @@ import {
   ValueGetter,
 } from '../../layout/types/viewmodel_types';
 import { DEPTH_KEY, HierarchyOfArrays } from '../../layout/utils/group_by_rollup';
-import { measureText } from '../../layout/utils/measure';
-import { shapeViewModel } from '../../layout/viewmodel/viewmodel';
 import { PartitionSpec, Layer } from '../../specs';
+import { shapeViewModel } from '../../layout/viewmodel/viewmodel';
+import { measureText } from '../../layout/utils/measure';
+
 
 function rawTextGetter(layers: Layer[]): RawTextGetter {
   return (node: ShapeTreeNode) => {
@@ -50,6 +51,7 @@ export function render(
   partitionSpec: PartitionSpec,
   parentDimensions: Dimensions,
   tree: HierarchyOfArrays,
+  containerBackgroundColor?: Color,
 ): ShapeViewModel {
   const { width, height } = parentDimensions;
   const { layers, topGroove, config: specConfig } = partitionSpec;
@@ -71,5 +73,6 @@ export function render(
     valueGetter,
     tree,
     topGroove,
+    containerBackgroundColor,
   );
 }

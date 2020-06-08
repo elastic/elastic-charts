@@ -20,7 +20,7 @@
 import { Fill } from '../../../../../geoms/types';
 import { getColorFromVariant } from '../../../../../utils/commons';
 import { GeometryStateStyle, AreaStyle } from '../../../../../utils/themes/theme';
-import { stringToRGB, OpacityFn } from '../../../../partition_chart/layout/utils/d3_utils';
+import { OpacityFn, stringToRGB } from '../../../../partition_chart/layout/utils/color_library_wrappers';
 
 /**
  * Return the rendering props for an area. The color of the area will be overwritten

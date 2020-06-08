@@ -17,8 +17,8 @@
  * under the License.
  */
 
+import React, { createRef } from 'react';
 import classNames from 'classnames';
-import React, { CSSProperties, createRef } from 'react';
 import { Provider } from 'react-redux';
 import { createStore, Store, Unsubscribe } from 'redux';
 import uuid from 'uuid';
@@ -36,6 +36,7 @@ import { ChartContainer } from './chart_container';
 import { ChartResizer } from './chart_resizer';
 import { ChartStatus } from './chart_status';
 import { Legend } from './legend/legend';
+import { ChartBackground } from './chart_background';
 
 interface ChartProps {
   /**
@@ -50,16 +51,6 @@ interface ChartProps {
 
 interface ChartState {
   legendPosition: Position;
-}
-
-function getContainerStyle(size: any): CSSProperties {
-  if (size) {
-    return {
-      position: 'relative',
-      ...getChartSize(size),
-    };
-  }
-  return {};
 }
 
 export class Chart extends React.Component<ChartProps, ChartState> {
@@ -87,7 +78,6 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     this.state = {
       legendPosition: Position.Right,
     };
-
     this.unsubscribeToStore = this.chartStore.subscribe(() => {
       const state = this.chartStore.getState();
       if (!getInternalIsInitializedSelector(state)) {
@@ -157,14 +147,16 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
   render() {
     const { size, className } = this.props;
-    const containerStyle = getContainerStyle(size);
+    const containerSizeStyle = getChartSize(size);
     const horizontal = isHorizontalAxis(this.state.legendPosition);
     const chartClassNames = classNames('echChart', className, {
       'echChart--column': horizontal,
     });
+
     return (
       <Provider store={this.chartStore}>
-        <div style={containerStyle} className={chartClassNames} ref={this.chartContainerRef}>
+        <div className={chartClassNames} style={containerSizeStyle} ref={this.chartContainerRef}>
+          <ChartBackground />
           <ChartStatus />
           <ChartResizer />
           <Legend />

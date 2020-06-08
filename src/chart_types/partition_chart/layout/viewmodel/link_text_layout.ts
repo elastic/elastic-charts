@@ -17,18 +17,26 @@
  * under the License.
  */
 
-import { ValueFormatter } from '../../../../utils/commons';
-import { Point } from '../../../../utils/point';
-import { meanAngle } from '../geometry';
-import { Config } from '../types/config_types';
 import { Distance, PointTuple, PointTuples } from '../types/geometry_types';
-import { Box, Font, TextAlign, TextMeasure } from '../types/types';
+import { Config } from '../types/config_types';
 import { LinkLabelVM, RawTextGetter, ShapeTreeNode, ValueGetterFunction } from '../types/viewmodel_types';
-import { integerSnap, monotonicHillClimb } from '../utils/calcs';
+import { meanAngle } from '../geometry';
+import { ValueFormatter, Color } from '../../../../utils/commons';
+import { makeHighContrastColor, validateColor, integerSnap, monotonicHillClimb } from '../utils/calcs';
+import { Point } from '../../../../utils/point';
+import { Box, Font, TextAlign, TextMeasure } from '../types/types';
 import { TAU, trueBearingToStandardPositionAngle } from '../utils/math';
 
 function cutToLength(s: string, maxLength: number) {
   return s.length <= maxLength ? s : `${s.slice(0, Math.max(0, maxLength - 1))}…`; // ellipsis is one char
+}
+
+/** @internal */
+export interface LinkLabelsViewModelSpec {
+  linkLabels: LinkLabelVM[];
+  labelFontSpec: Font;
+  valueFontSpec: Font;
+  strokeColor: Color;
 }
 
 /** @internal */
@@ -45,12 +53,39 @@ export function linkTextLayout(
   valueFormatter: ValueFormatter,
   maxTextLength: number,
   diskCenter: Point,
-): LinkLabelVM[] {
-  const { linkLabel } = config;
+  containerBackgroundColor?: Color,
+): LinkLabelsViewModelSpec {
+  const { linkLabel, sectorLineStroke } = config;
   const maxDepth = nodesWithoutRoom.reduce((p: number, n: ShapeTreeNode) => Math.max(p, n.depth), 0);
   const yRelativeIncrement = Math.sin(linkLabel.stemAngle) * linkLabel.minimumStemLength;
   const rowPitch = linkLabel.fontSize + linkLabel.spacing;
-  return nodesWithoutRoom
+  // determine the ideal contrast color for the link labels
+  const validBackgroundColor = validateColor(containerBackgroundColor);
+  const contrastTextColor = containerBackgroundColor
+    ? makeHighContrastColor(linkLabel.textColor, validBackgroundColor)
+    : linkLabel.textColor;
+  const strokeColor = containerBackgroundColor
+    ? makeHighContrastColor(sectorLineStroke, validBackgroundColor)
+    : sectorLineStroke;
+  const labelFontSpec = {
+    fontStyle: 'normal',
+    fontVariant: 'normal',
+    fontFamily: config.fontFamily,
+    fontWeight: 'normal',
+    ...linkLabel,
+    textColor: contrastTextColor,
+  };
+  const valueFontSpec = {
+    fontStyle: 'normal',
+    fontVariant: 'normal',
+    fontFamily: config.fontFamily,
+    fontWeight: 'normal',
+    ...linkLabel,
+    ...linkLabel.valueFont,
+    textColor: contrastTextColor,
+  };
+
+  const linkLabels: LinkLabelVM[] = nodesWithoutRoom
     .filter((n: ShapeTreeNode) => n.depth === maxDepth) // only the outermost ring can have links
     .sort((n1: ShapeTreeNode, n2: ShapeTreeNode) => Math.abs(n2.x0 - n2.x1) - Math.abs(n1.x0 - n1.x1))
     .slice(0, linkLabel.maxCount) // largest linkLabel.MaxCount slices
@@ -83,6 +118,7 @@ export function linkTextLayout(
       const rawText = rawTextGetter(node);
       const labelText = cutToLength(rawText, maxTextLength);
       const valueText = valueFormatter(valueGetter(node));
+
       const labelFontSpec: Font = {
         fontStyle: 'normal',
         fontVariant: 'normal',
@@ -113,7 +149,7 @@ export function linkTextLayout(
             text: labelText,
           })
         : { text: '', width: 0, verticalOffset: 0 };
-      const link: PointTuples = [
+      const linkLabels: PointTuples = [
         [x0, y0],
         [stemFromX, stemFromY],
         [stemToX, stemToY],
@@ -122,7 +158,7 @@ export function linkTextLayout(
       const translate: PointTuple = [translateX, stemToY];
       const textAlign: TextAlign = rightSide ? 'left' : 'right';
       return {
-        link,
+        linkLabels,
         translate,
         textAlign,
         text,
@@ -134,18 +170,19 @@ export function linkTextLayout(
         valueFontSpec,
       };
     })
-    .filter((l: LinkLabelVM) => l.text !== ''); // cull linked labels whose text was truncated to nothing
-}
+    .filter(({ text }) => text !== ''); // cull linked labels whose text was truncated to nothing;
+  return { linkLabels, valueFontSpec, labelFontSpec, strokeColor };
 
-function fitText(measure: TextMeasure, desiredText: string, allottedWidth: number, fontSize: number, box: Box) {
-  const desiredLength = desiredText.length;
-  const response = (v: number) => measure(fontSize, [{ ...box, text: box.text.slice(0, Math.max(0, v)) }])[0].width;
-  const visibleLength = monotonicHillClimb(response, desiredLength, allottedWidth, integerSnap);
-  const text = visibleLength < 2 && desiredLength >= 2 ? '' : cutToLength(box.text, visibleLength);
-  const { width, emHeightAscent, emHeightDescent } = measure(fontSize, [{ ...box, text }])[0];
-  return {
-    width,
-    verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`
-    text,
-  };
+  function fitText(measure: TextMeasure, desiredText: string, allottedWidth: number, fontSize: number, box: Box) {
+    const desiredLength = desiredText.length;
+    const response = (v: number) => measure(fontSize, [{ ...box, text: box.text.slice(0, Math.max(0, v)) }])[0].width;
+    const visibleLength = monotonicHillClimb(response, desiredLength, allottedWidth, integerSnap);
+    const text = visibleLength < 2 && desiredLength >= 2 ? '' : cutToLength(box.text, visibleLength);
+    const { width, emHeightAscent, emHeightDescent } = measure(fontSize, [{ ...box, text }])[0];
+    return {
+      width,
+      verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`
+      text,
+    };
+  }
 }

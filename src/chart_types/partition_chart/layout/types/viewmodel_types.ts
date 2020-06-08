@@ -20,6 +20,7 @@
 import { Color } from '../../../../utils/commons';
 import { config, ValueGetterName } from '../config/config';
 import { ArrayNode, HierarchyOfArrays } from '../utils/group_by_rollup';
+import { LinkLabelsViewModelSpec } from '../viewmodel/link_text_layout';
 import { VerticalAlignments } from '../viewmodel/viewmodel';
 import { Config } from './config_types';
 import { Coordinate, Distance, Pixels, PointObject, PointTuple, PointTuples, Radian } from './geometry_types';
@@ -27,7 +28,7 @@ import { Font } from './types';
 
 /** @internal */
 export type LinkLabelVM = {
-  link: PointTuples;
+  linkLabels: PointTuples;
   translate: PointTuple;
   textAlign: CanvasTextAlign;
   text: string;
@@ -35,8 +36,6 @@ export type LinkLabelVM = {
   width: Distance;
   valueWidth: Distance;
   verticalOffset: Distance;
-  labelFontSpec: Font;
-  valueFontSpec: Font;
 };
 
 /** @internal */
@@ -96,11 +95,20 @@ export type ShapeViewModel = {
   config: Config;
   quadViewModel: QuadViewModel[];
   rowSets: RowSet[];
-  linkLabelViewModels: LinkLabelVM[];
+  linkLabelViewModels: LinkLabelsViewModelSpec;
   outsideLinksViewModel: OutsideLinksViewModel[];
   diskCenter: PointObject;
   pickQuads: PickFunction;
   outerRadius: number;
+};
+
+const defaultFont: Font = {
+  fontStyle: 'normal',
+  fontVariant: 'normal',
+  fontFamily: '',
+  fontWeight: 'normal',
+  textColor: 'black',
+  textOpacity: 1,
 };
 
 /** @internal */
@@ -108,7 +116,12 @@ export const nullShapeViewModel = (specifiedConfig?: Config, diskCenter?: PointO
   config: specifiedConfig || config,
   quadViewModel: [],
   rowSets: [],
-  linkLabelViewModels: [],
+  linkLabelViewModels: {
+    linkLabels: [],
+    labelFontSpec: defaultFont,
+    valueFontSpec: defaultFont,
+    strokeColor: '',
+  },
   outsideLinksViewModel: [],
   diskCenter: diskCenter || { x: 0, y: 0 },
   pickQuads: () => [],

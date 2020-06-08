@@ -306,7 +306,7 @@ module.exports = {
       },
     },
     {
-      files: ['*.js'],
+      files: ['*.js', 'integration/**/*.ts?(x)'],
       rules: {
         '@typescript-eslint/no-var-requires': 0,
         '@typescript-eslint/no-unsafe-call': 0,

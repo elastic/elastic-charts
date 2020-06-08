@@ -19,7 +19,7 @@
 
 import { Stroke, Line } from '../../../../../geoms/types';
 import { withContext } from '../../../../../renderers/canvas';
-import { RGBtoString } from '../../../../partition_chart/layout/utils/d3_utils';
+import { RGBtoString } from '../../../../partition_chart/layout/utils/color_library_wrappers';
 
 /**
  * Canvas2d stroke ignores an exact zero line width

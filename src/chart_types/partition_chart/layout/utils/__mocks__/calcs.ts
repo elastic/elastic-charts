@@ -16,25 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+const module = jest.requireActual('../calcs.ts');
 
-import createCachedSelector from 're-reselect';
-
-import { ChartTypes } from '../../chart_types';
-import { GlobalChartState } from '../chart_state';
-import { getSpecsFromStore } from '../utils';
-import { SettingsSpec, SpecTypes, DEFAULT_SETTINGS_SPEC } from '../../specs/settings';
-import { getChartIdSelector } from './get_chart_id';
-
-const getSpecs = (state: GlobalChartState) => state.specs;
-
-/** @internal */
-export const getSettingsSpecSelector = createCachedSelector(
-  [getSpecs],
-  (specs): SettingsSpec => {
-    const settingsSpecs = getSpecsFromStore<SettingsSpec>(specs, ChartTypes.Global, SpecTypes.Settings);
-    if (settingsSpecs.length === 1) {
-      return settingsSpecs[0];
-    }
-    return DEFAULT_SETTINGS_SPEC;
-  },
-)(getChartIdSelector);
+export const getBackgroundWithContainerColorFromUser = jest.fn(module.getBackgroundWithContainerColorFromUser);
+export const makeHighContrastColor = jest.fn(module.makeHighContrastColor);

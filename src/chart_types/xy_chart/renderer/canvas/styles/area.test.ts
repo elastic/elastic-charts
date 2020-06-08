@@ -20,10 +20,10 @@
 import { Fill } from '../../../../../geoms/types';
 import { MockStyles } from '../../../../../mocks';
 import { getColorFromVariant } from '../../../../../utils/commons';
-import { stringToRGB } from '../../../../partition_chart/layout/utils/d3_utils';
 import { buildAreaStyles } from './area';
+import { stringToRGB } from '../../../../partition_chart/layout/utils/color_library_wrappers';
 
-jest.mock('../../../../partition_chart/layout/utils/d3_utils');
+jest.mock('../../../../partition_chart/layout/utils/color_library_wrappers');
 jest.mock('../../../../../utils/commons');
 
 const COLOR = 'aquamarine';

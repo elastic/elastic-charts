@@ -17,16 +17,16 @@
  * under the License.
  */
 
-import { Line, Stroke } from '../../../../geoms/types';
-import { withContext } from '../../../../renderers/canvas';
 import { Dimensions } from '../../../../utils/dimensions';
 import { AxisId } from '../../../../utils/ids';
 import { mergeGridLineConfigs, Theme } from '../../../../utils/themes/theme';
-import { stringToRGB } from '../../../partition_chart/layout/utils/d3_utils';
 import { getSpecsById } from '../../state/utils';
 import { AxisLinePosition, isVerticalGrid } from '../../utils/axis_utils';
 import { AxisSpec } from '../../utils/specs';
 import { renderMultiLine, MIN_STROKE_WIDTH } from './primitives/line';
+import { Line, Stroke } from '../../../../geoms/types';
+import { stringToRGB } from '../../../partition_chart/layout/utils/color_library_wrappers';
+import { withContext } from '../../../../renderers/canvas';
 
 interface GridProps {
   chartTheme: Theme;

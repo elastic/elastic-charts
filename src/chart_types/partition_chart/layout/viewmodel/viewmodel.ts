@@ -19,13 +19,15 @@
 
 import { $Values } from 'utility-types';
 
-import { StrokeStyle, ValueFormatter } from '../../../../utils/commons';
+import { StrokeStyle, ValueFormatter, Color } from '../../../../utils/commons';
 import { Layer } from '../../specs';
 import { percentValueGetter } from '../config/config';
 import { meanAngle } from '../geometry';
 import { Config, PartitionLayout } from '../types/config_types';
 import { Distance, Pixels, PointTuple, Radius } from '../types/geometry_types';
-import { Part, TextMeasure } from '../types/types';
+import { getTopPadding, treemap } from '../utils/treemap';
+import { sunburst } from '../utils/sunburst';
+import { argsToRGBString, stringToRGB } from '../utils/color_library_wrappers';
 import {
   nullShapeViewModel,
   OutsideLinksViewModel,
@@ -37,7 +39,6 @@ import {
   ShapeViewModel,
   ValueGetterFunction,
 } from '../types/viewmodel_types';
-import { argsToRGBString, stringToRGB } from '../utils/d3_utils';
 import {
   aggregateAccessor,
   ArrayEntry,
@@ -49,18 +50,11 @@ import {
   sortIndexAccessor,
   HierarchyOfArrays,
 } from '../utils/group_by_rollup';
-import { TAU, trueBearingToStandardPositionAngle } from '../utils/math';
-import { sunburst } from '../utils/sunburst';
-import { getTopPadding, treemap } from '../utils/treemap';
-import {
-  fillTextLayout,
-  getRectangleRowGeometry,
-  getSectorRowGeometry,
-  inSectorRotation,
-  nodeId,
-  ringSectorConstruction,
-} from './fill_text_layout';
+import { trueBearingToStandardPositionAngle, TAU } from '../utils/math';
+import { TextMeasure, Part } from '../types/types';
+import { fillTextLayout, getRectangleRowGeometry, ringSectorConstruction, getSectorRowGeometry, inSectorRotation, nodeId } from './fill_text_layout';
 import { linkTextLayout } from './link_text_layout';
+
 
 function grooveAccessor(n: ArrayEntry) {
   return entryValue(n).depth > 1 ? 1 : [0, 2][entryValue(n).depth];
@@ -192,6 +186,7 @@ export function shapeViewModel(
   valueGetter: ValueGetterFunction,
   tree: HierarchyOfArrays,
   topGroove: Pixels,
+  containerBackgroundColor?: Color,
 ): ShapeViewModel {
   const {
     width,
@@ -275,11 +270,17 @@ export function shapeViewModel(
   const valueFormatter = valueGetter === percentValueGetter ? specifiedPercentFormatter : specifiedValueFormatter;
 
   const getRowSets = treemapLayout
-    ? fillTextLayout(rectangleConstruction(treeHeight, topGroove), getRectangleRowGeometry, () => 0)
+    ? fillTextLayout(
+        rectangleConstruction(treeHeight, topGroove),
+        getRectangleRowGeometry,
+        () => 0,
+        containerBackgroundColor,
+      )
     : fillTextLayout(
       ringSectorConstruction(config, innerRadius, ringThickness),
       getSectorRowGeometry,
       inSectorRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
+      containerBackgroundColor,
     );
 
   const rowSets: RowSet[] = getRowSets(
@@ -309,9 +310,7 @@ export function shapeViewModel(
       // successful text render if found, and has some row(s)
       return !(foundInFillText && foundInFillText.rows.length !== 0);
     });
-
   const maxLinkedLabelTextLength = config.linkLabel.maxTextLength;
-
   const linkLabelViewModels = linkTextLayout(
     width,
     height,
@@ -325,6 +324,7 @@ export function shapeViewModel(
     valueFormatter,
     maxLinkedLabelTextLength,
     diskCenter,
+    containerBackgroundColor,
   );
 
   const pickQuads: PickFunction = (x, y) => quadViewModel.filter(

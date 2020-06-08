@@ -18,7 +18,7 @@
  */
 
 import { Radian } from '../chart_types/partition_chart/layout/types/geometry_types';
-import { RgbObject } from '../chart_types/partition_chart/layout/utils/d3_utils';
+import { RgbObject } from '../chart_types/partition_chart/layout/utils/color_library_wrappers';
 
 export interface Text {
   text: string;
