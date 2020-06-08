@@ -52,8 +52,9 @@ export function arrayToLookup(keyFun: Function, array: Array<any>) {
 
 /** If the user specifies the background of the container in which the chart will be on, we can use that color
  * and make sure to provide optimal contrast
-/** @internal */
-export function combineColors(foregroundColor: Color, backgroundColor: Color) {
+ * @internal
+ */
+export function combineColors(foregroundColor: Color, backgroundColor: Color): Color {
   const [red1, green1, blue1, alpha1] = chroma(foregroundColor).rgba();
   const [red2, green2, blue2, alpha2] = chroma(backgroundColor).rgba();
 
@@ -63,7 +64,8 @@ export function combineColors(foregroundColor: Color, backgroundColor: Color) {
   const combinedRed = Math.round((red1 * alpha1 + red2 * alpha2 * (1 - alpha1)) / combinedAlpha);
   const combinedGreen = Math.round((green1 * alpha1 + green2 * alpha2 * (1 - alpha1)) / combinedAlpha);
   const combinedBlue = Math.round((blue1 * alpha1 + blue2 * alpha2 * (1 - alpha1)) / combinedAlpha);
-  return RGBATupleToString([combinedRed, combinedGreen, combinedBlue, combinedAlpha] as RgbTuple);
+  const rgba: RgbTuple = [combinedRed, combinedGreen, combinedBlue, combinedAlpha];
+  return RGBATupleToString(rgba);
 }
 
 /**
@@ -71,15 +73,15 @@ export function combineColors(foregroundColor: Color, backgroundColor: Color) {
  * @param color valid color
  * @internal
  */
-export function validateColor(color?: string, defaultColor?: string): string {
-  return color === undefined || color === 'transparent' ? defaultColor ?? 'rgba(255, 255, 255, 0)' : color;
+export function validateColor(color?: string, defaultColor = 'rgba(255, 255, 255, 0)'): string {
+  return color === undefined || color === 'transparent' ? defaultColor : color;
 }
 
 /**
  * Adjust the text color in cases black and white can't reach ideal 4.5 ratio
  * @internal
  */
-export function makeHighContrastColor(foreground: Color, background: Color, ratio = 4.5) {
+export function makeHighContrastColor(foreground: Color, background: Color, ratio = 4.5): Color {
   // determine the lightness factor of the background color to determine whether to lighten or darken the foreground
   const lightness = chroma(background).get('hsl.l');
   let highContrastTextColor = foreground;
@@ -118,7 +120,7 @@ export function makeHighContrastColor(foreground: Color, background: Color, rati
  * show contrast amount
  * @internal
  */
-export function getContrast(foregroundColor: string | chroma.Color, backgroundColor: string | chroma.Color) {
+export function getContrast(foregroundColor: string | chroma.Color, backgroundColor: string | chroma.Color): number {
   return chroma.contrast(foregroundColor, backgroundColor);
 }
 
@@ -126,7 +128,7 @@ export function getContrast(foregroundColor: string | chroma.Color, backgroundCo
  * determines if the color is dark based on the luminance
  * @internal
  */
-export function colorIsDark(color: Color) {
+export function colorIsDark(color: Color): boolean {
   const luminance = chroma(color).luminance();
   return luminance < 0.2;
 }

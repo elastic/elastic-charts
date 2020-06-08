@@ -114,7 +114,7 @@ export function RGBATupleToString(rgba: RgbTuple): string {
   if (rgba.length === 4) {
     return `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]}, ${rgba[3]})`;
   }
-  return `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]})`;
+  return `rgb(${rgba[0]}, ${rgba[1]}, ${rgba[2]})`;
 }
 
 /** convert rgb to hex
