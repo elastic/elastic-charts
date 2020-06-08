@@ -315,7 +315,10 @@ export function getFillTextColor(
 ) {
   let adjustedTextColor = textColor;
   const containerBackgroundColorFromUser =
-    containerBackgroundColor !== undefined ? containerBackgroundColor : 'rgba(255, 255, 255, 0)';
+    containerBackgroundColor === undefined || containerBackgroundColor === 'transparent'
+      ? 'rgba(255, 255, 255, 0)'
+      : containerBackgroundColor;
+
   const containerBackground = combineColors(sliceFillColor, containerBackgroundColorFromUser);
   const formattedContainerBackground =
     typeof containerBackground !== 'string' ? RGBATupleToString(containerBackground) : containerBackground;

@@ -22,7 +22,7 @@ import { TAU, trueBearingToStandardPositionAngle } from '../utils/math';
 import { LinkLabelVM, RawTextGetter, ShapeTreeNode, ValueGetterFunction } from '../types/viewmodel_types';
 import { meanAngle } from '../geometry';
 import { ValueFormatter, Color } from '../../../../utils/commons';
-import { makeHighContrastColor } from '../utils/calcs';
+import { makeHighContrastColor, validateColor } from '../utils/calcs';
 import { Point } from '../../../../utils/point';
 import { Box, Font, TextAlign, TextMeasure } from '../types/types';
 import { integerSnap, monotonicHillClimb } from '../utils/calcs';
@@ -60,11 +60,12 @@ export function linkTextLayout(
   const yRelativeIncrement = Math.sin(linkLabel.stemAngle) * linkLabel.minimumStemLength;
   const rowPitch = linkLabel.fontSize + linkLabel.spacing;
   // determine the ideal contrast color for the link labels
+  const validBackgroundColor = validateColor(containerBackgroundColor);
   const contrastTextColor = containerBackgroundColor
-    ? makeHighContrastColor(linkLabel.textColor, containerBackgroundColor)
+    ? makeHighContrastColor(linkLabel.textColor, validBackgroundColor)
     : linkLabel.textColor;
   const strokeColor = containerBackgroundColor
-    ? makeHighContrastColor(sectorLineStroke, containerBackgroundColor)
+    ? makeHighContrastColor(sectorLineStroke, validBackgroundColor)
     : sectorLineStroke;
   const labelFontSpec = {
     fontStyle: 'normal',

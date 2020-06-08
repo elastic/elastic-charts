@@ -33,7 +33,7 @@ import { color, boolean } from '@storybook/addon-knobs';
 export const Example = () => {
   const partialColorTheme: PartialTheme = {
     background: {
-      color: color('Color of the background container', `rgba(${255}, ${255}, ${255}, ${1})`),
+      color: color('Color of the background container', 'rgba(255, 255, 255, 1)'),
     },
   };
   const invertTextColors = boolean('invert colors for lightness/darkness', true);

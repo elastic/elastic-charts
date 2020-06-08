@@ -67,6 +67,15 @@ export function combineColors(foregroundColor: Color, backgroundColor: Color) {
 }
 
 /**
+ * Returns a valid color
+ * @param color valid color
+ * @internal
+ */
+export function validateColor(color?: string, defaultColor?: string): string {
+  return color === undefined || color === 'transparent' ? defaultColor ?? 'rgba(255, 255, 255, 0)' : color;
+}
+
+/**
  * Adjust the text color in cases black and white can't reach ideal 4.5 ratio
  * @internal
  */
