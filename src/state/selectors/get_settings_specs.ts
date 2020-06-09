@@ -14,13 +14,15 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import createCachedSelector from 're-reselect';
-import { GlobalChartState } from '../chart_state';
+
 import { ChartTypes } from '../../chart_types';
+import { SettingsSpec, SpecTypes, DEFAULT_SETTINGS_SPEC } from '../../specs/settings';
+import { GlobalChartState } from '../chart_state';
 import { getSpecsFromStore } from '../utils';
-import { SettingsSpec, SpecTypes } from '../../specs/settings';
 import { getChartIdSelector } from './get_chart_id';
 
 const getSpecs = (state: GlobalChartState) => state.specs;
@@ -30,9 +32,9 @@ export const getSettingsSpecSelector = createCachedSelector(
   [getSpecs],
   (specs): SettingsSpec => {
     const settingsSpecs = getSpecsFromStore<SettingsSpec>(specs, ChartTypes.Global, SpecTypes.Settings);
-    if (settingsSpecs.length > 1) {
-      throw new Error('Multiple settings specs are configured on the same chart');
+    if (settingsSpecs.length === 1) {
+      return settingsSpecs[0];
     }
-    return settingsSpecs[0];
+    return DEFAULT_SETTINGS_SPEC;
   },
 )(getChartIdSelector);

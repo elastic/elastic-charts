@@ -14,18 +14,20 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import React, { MouseEvent, RefObject } from 'react';
-import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
+import { bindActionCreators, Dispatch } from 'redux';
+
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
-import { Dimensions } from '../../../../utils/dimensions';
-import { geometries } from '../../state/selectors/geometries';
-import { BulletViewModel, nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
-import { renderCanvas2d } from './canvas_renderers';
 import { getInternalIsInitializedSelector } from '../../../../state/selectors/get_internal_is_intialized';
+import { Dimensions } from '../../../../utils/dimensions';
+import { BulletViewModel, nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { geometries } from '../../state/selectors/geometries';
+import { renderCanvas2d } from './canvas_renderers';
 
 interface ReactiveChartStateProps {
   initialized: boolean;
@@ -48,25 +50,23 @@ class Component extends React.Component<Props> {
   private ctx: CanvasRenderingContext2D | null;
   // see example https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#Example
   private readonly devicePixelRatio: number; // fixme this be no constant: multi-monitor window drag may necessitate modifying the `<canvas>` dimensions
+
   constructor(props: Readonly<Props>) {
     super(props);
     this.ctx = null;
     this.devicePixelRatio = window.devicePixelRatio;
   }
 
-  private drawCanvas() {
-    if (this.ctx) {
-      const { width, height }: Dimensions = this.props.chartContainerDimensions;
-      renderCanvas2d(this.ctx, this.devicePixelRatio, {
-        ...this.props.geometries,
-        config: { ...this.props.geometries.config, width, height },
-      });
+  componentDidMount() {
+    /*
+     * the DOM element has just been appended, and getContext('2d') is always non-null,
+     * so we could use a couple of ! non-null assertions but no big plus
+     */
+    this.tryCanvasContext();
+    if (this.props.initialized) {
+      this.drawCanvas();
+      this.props.onChartRendered();
     }
-  }
-
-  private tryCanvasContext() {
-    const canvas = this.props.forwardStageRef.current;
-    this.ctx = canvas && canvas.getContext('2d');
   }
 
   componentDidUpdate() {
@@ -79,13 +79,18 @@ class Component extends React.Component<Props> {
     }
   }
 
-  componentDidMount() {
-    // the DOM element has just been appended, and getContext('2d') is always non-null,
-    // so we could use a couple of ! non-null assertions but no big plus
-    this.tryCanvasContext();
-    if (this.props.initialized) {
-      this.drawCanvas();
-      this.props.onChartRendered();
+  private tryCanvasContext() {
+    const canvas = this.props.forwardStageRef.current;
+    this.ctx = canvas && canvas.getContext('2d');
+  }
+
+  private drawCanvas() {
+    if (this.ctx) {
+      const { width, height }: Dimensions = this.props.chartContainerDimensions;
+      renderCanvas2d(this.ctx, this.devicePixelRatio, {
+        ...this.props.geometries,
+        config: { ...this.props.geometries.config, width, height },
+      });
     }
   }
 
@@ -101,7 +106,7 @@ class Component extends React.Component<Props> {
     }
     const picker = geometries.pickQuads;
     const box = forwardStageRef.current.getBoundingClientRect();
-    const chartCenter = geometries.chartCenter;
+    const { chartCenter } = geometries;
     const x = e.clientX - box.left - chartCenter.x;
     const y = e.clientY - box.top - chartCenter.y;
     const pickedShapes: Array<BulletViewModel> = picker(x, y);

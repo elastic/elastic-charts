@@ -14,7 +14,8 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import { mergePartial, RecursivePartial, Color, ColorVariant } from '../commons';
 import { Margins } from '../dimensions';
@@ -123,6 +124,17 @@ export interface ColorConfig {
   vizColors: Color[];
   defaultVizColor: Color;
 }
+/**
+ * The background style applied to the chart.
+ * This is used to coordinate adequate contrast of the text in partition and treemap charts.
+ * @public
+ */
+export interface BackgroundStyle {
+  /**
+   * The background color
+   */
+  color: string;
+}
 export interface LegendStyle {
   /**
    * Max width used for left/right legend
@@ -197,6 +209,11 @@ export interface Theme {
    * value from 1 to 100
    */
   markSizeRatio?: number;
+  /**
+   * The background allows the consumer to provide a color of the background container of the chart.
+   * This can then be used to calculate the contrast of the text for partition charts.
+   */
+  background: BackgroundStyle;
 }
 
 export type PartialTheme = RecursivePartial<Theme>;

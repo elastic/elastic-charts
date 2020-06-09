@@ -14,16 +14,8 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
+const module = jest.requireActual('../../viewmodel/fill_text_layout.ts');
 
-const module = jest.requireActual('../d3_utils.ts');
-
-export const defaultColor = module.defaultColor;
-export const transparentColor = module.transparentColor;
-export const defaultD3Color = module.defaultD3Color;
-
-export const stringToRGB = jest.fn(module.stringToRGB);
-export const validateColor = jest.fn(module.validateColor);
-export const argsToRGB = jest.fn(module.argsToRGB);
-export const argsToRGBString = jest.fn(module.argsToRGBString);
-export const RGBtoString = jest.fn(module.RGBtoString);
+export const getTextColorIfTextInvertible = jest.fn(module.getTextColorIfTextInvertible);

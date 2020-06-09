@@ -14,7 +14,8 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 export type ChartSizeArray = [number | string | undefined, number | string | undefined];
 export interface ChartSizeObject {
@@ -25,13 +26,17 @@ export interface ChartSizeObject {
 export type ChartSize = number | string | ChartSizeArray | ChartSizeObject;
 
 /** @internal */
-export function getChartSize(size: ChartSize) {
+export function getChartSize(size?: ChartSize): ChartSizeObject {
+  if (size === undefined) {
+    return {};
+  }
   if (Array.isArray(size)) {
     return {
       width: size[0] === undefined ? '100%' : size[0],
       height: size[1] === undefined ? '100%' : size[1],
     };
-  } else if (typeof size === 'object') {
+  }
+  if (typeof size === 'object') {
     return {
       width: size.width === undefined ? '100%' : size.width,
       height: size.height === undefined ? '100%' : size.height,
