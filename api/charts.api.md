@@ -511,7 +511,7 @@ export const DEFAULT_TOOLTIP_TYPE: "vertical";
 // Warning: (ae-missing-release-tag) "DefaultSettingsProps" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'showLegend' | 'debug' | 'tooltip' | 'showLegendExtra' | 'theme' | 'legendPosition' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta';
+export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'showLegend' | 'debug' | 'tooltip' | 'showLegendExtra' | 'theme' | 'legendPosition' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents';
 
 // Warning: (ae-missing-release-tag) "DisplayValueSpec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -546,6 +546,17 @@ export type ElementClickListener = (elements: Array<XYChartElementEvent | Partit
 //
 // @public (undocumented)
 export type ElementOverListener = (elements: Array<XYChartElementEvent | PartitionElementEvent>) => void;
+
+// @alpha
+export interface ExternalPointerEventsSettings {
+    // (undocumented)
+    tooltip?: {
+        visible?: boolean;
+        placement?: Placement;
+        fallbackPlacements?: Placement[];
+        boundary?: HTMLElement | 'chart';
+    };
+}
 
 // Warning: (ae-missing-release-tag) "FillStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1278,6 +1289,10 @@ export interface SettingsSpec extends Spec {
     brushAxis?: BrushAxis;
     // (undocumented)
     debug: boolean;
+    // Warning: (ae-incompatible-release-tags) The symbol "externalPointerEvents" is marked as @public, but its signature references "ExternalPointerEventsSettings" which is marked as @alpha
+    //
+    // (undocumented)
+    externalPointerEvents: ExternalPointerEventsSettings;
     flatLegend?: boolean;
     hideDuplicateAxes: boolean;
     // (undocumented)

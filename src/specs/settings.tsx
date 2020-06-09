@@ -232,9 +232,11 @@ export type TooltipSettings = TooltipType | TooltipProps;
 
 /**
  * The settings for handling external events.
- * @alpha
  */
 export interface ExternalPointerEventsSettings {
+  /**
+   * Tooltip settings used for external events
+   */
   tooltip?: {
     /**
      * `true` to show the tooltip when the chart receive an
@@ -243,8 +245,8 @@ export interface ExternalPointerEventsSettings {
      */
     visible?: boolean;
     /**
-       *  {@inheritDoc TooltipProps.placement}
-       */
+     *  {@inheritDoc TooltipProps.placement}
+     */
     placement?: Placement;
     /**
      *  {@inheritDoc TooltipProps.fallbackPlacements}
@@ -314,7 +316,7 @@ export interface SettingsSpec extends Spec {
    */
   tooltip: TooltipSettings;
   /**
-   *
+   * {@inheritDoc ExternalPointerEventsSettings}
    */
   externalPointerEvents: ExternalPointerEventsSettings;
   debug: boolean;
