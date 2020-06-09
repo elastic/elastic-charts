@@ -26,7 +26,7 @@ import { TooltipValueFormatter, TooltipSettings, TooltipValue } from '../../spec
 import { onPointerMove } from '../../state/actions/mouse';
 import { GlobalChartState, BackwardRef } from '../../state/chart_state';
 import { getChartRotationSelector } from '../../state/selectors/get_chart_rotation';
-import { getInternalIsInitializedSelector } from '../../state/selectors/get_internal_is_intialized';
+import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
 import { getInternalIsTooltipVisibleSelector } from '../../state/selectors/get_internal_is_tooltip_visible';
 import { getInternalTooltipAnchorPositionSelector } from '../../state/selectors/get_internal_tooltip_anchor_position';
 import { getInternalTooltipInfoSelector } from '../../state/selectors/get_internal_tooltip_info';
@@ -210,7 +210,7 @@ const mapDispatchToProps = (dispatch: Dispatch): TooltipDispatchProps =>
   bindActionCreators({ onPointerMove }, dispatch);
 
 const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
-  if (!getInternalIsInitializedSelector(state)) {
+  if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return HIDDEN_TOOLTIP_PROPS;
   }
   return {

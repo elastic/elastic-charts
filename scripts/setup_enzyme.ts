@@ -23,3 +23,33 @@ import Adapter from 'enzyme-adapter-react-16';
 configure({ adapter: new Adapter() });
 
 process.env.RNG_SEED = 'jest-unit-tests';
+
+jest.useFakeTimers();
+
+window.requestAnimationFrame = function(callback) {
+  callback(0);
+  return 0;
+};
+
+type ResizeObserverMockCallback = (entries: Array<{ contentRect: { width: number; height: number } }>) => void;
+class ResizeObserverMock {
+  callback: ResizeObserverMockCallback;
+  constructor(callback: ResizeObserverMockCallback) {
+    this.callback = callback;
+  }
+
+  observe() {
+    this.callback([{ contentRect: { width: 200, height: 200 } }]);
+  }
+
+  unobserve() {
+    // do nothing
+  }
+
+  disconnect() {
+    // do nothing
+  }
+}
+
+// @ts-ignore
+window.ResizeObserver = ResizeObserverMock;
