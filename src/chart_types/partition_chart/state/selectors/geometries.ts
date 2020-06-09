@@ -14,26 +14,32 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import createCachedSelector from 're-reselect';
-import { GlobalChartState } from '../../../../state/chart_state';
-import { getSpecsFromStore } from '../../../../state/utils';
+
 import { ChartTypes } from '../../..';
-import { render } from './scenegraph';
-import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
-import { PartitionSpec } from '../../specs/index';
 import { SpecTypes } from '../../../../specs/settings';
-import { getTree } from './tree';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { getSpecsFromStore } from '../../../../state/utils';
+import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { isColorValid } from '../../layout/utils/calcs';
+import { PartitionSpec } from '../../specs';
+import { render } from './scenegraph';
+import { getTree } from './tree';
 
 const getSpecs = (state: GlobalChartState) => state.specs;
 
 /** @internal */
 export const partitionGeometries = createCachedSelector(
-  [getSpecs, getChartContainerDimensionsSelector, getTree],
-  (specs, parentDimensions, tree): ShapeViewModel => {
+  [getSpecs, getChartContainerDimensionsSelector, getTree, getChartThemeSelector],
+  (specs, parentDimensions, tree, theme): ShapeViewModel => {
     const pieSpecs = getSpecsFromStore<PartitionSpec>(specs, ChartTypes.Partition, SpecTypes.Series);
-    return pieSpecs.length === 1 ? render(pieSpecs[0], parentDimensions, tree) : nullShapeViewModel();
+    const { color } = theme.background;
+    const bgColor: string | undefined = isColorValid(color) ? color : undefined;
+    return pieSpecs.length === 1 ? render(pieSpecs[0], parentDimensions, tree, bgColor) : nullShapeViewModel();
   },
 )((state) => state.chartId);

@@ -14,18 +14,20 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import React, { RefObject } from 'react';
+import { connect } from 'react-redux';
+import { Dispatch, bindActionCreators } from 'redux';
 import ResizeObserver from 'resize-observer-polyfill';
 import { debounce } from 'ts-debounce';
-import { Dimensions } from '../utils/dimensions';
-import { updateParentDimensions } from '../state/actions/chart_settings';
-import { Dispatch, bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { getSettingsSpecSelector } from '../state/selectors/get_settings_specs';
-import { GlobalChartState } from '../state/chart_state';
+
 import { isDefined } from '../chart_types/xy_chart/state/utils';
+import { updateParentDimensions } from '../state/actions/chart_settings';
+import { GlobalChartState } from '../state/chart_state';
+import { getSettingsSpecSelector } from '../state/selectors/get_settings_specs';
+import { Dimensions } from '../utils/dimensions';
 
 interface ResizerStateProps {
   resizeDebounce: number;
@@ -44,13 +46,14 @@ class Resizer extends React.Component<ResizerProps> {
   private containerRef: RefObject<HTMLDivElement>;
   private ro: ResizeObserver;
   private animationFrameID: number | null;
-  private onResizeDebounced: (entries: ResizeObserverEntry[]) => void = () => undefined;
+  private onResizeDebounced: (entries: ResizeObserverEntry[]) => void;
 
   constructor(props: ResizerProps) {
     super(props);
     this.containerRef = React.createRef();
     this.ro = new ResizeObserver(this.handleResize);
     this.animationFrameID = null;
+    this.onResizeDebounced = () => { };
   }
 
   componentDidMount() {
@@ -71,7 +74,7 @@ class Resizer extends React.Component<ResizerProps> {
     if (!Array.isArray(entries)) {
       return;
     }
-    if (!entries.length || !entries[0]) {
+    if (entries.length === 0 || !entries[0]) {
       return;
     }
     const { width, height } = entries[0].contentRect;
@@ -80,11 +83,7 @@ class Resizer extends React.Component<ResizerProps> {
     });
   };
 
-  render() {
-    return <div ref={this.containerRef} className="echChartResizer" />;
-  }
-
-  private handleResize = (entries: ResizeObserverEntry[]) => {
+  handleResize = (entries: ResizeObserverEntry[]) => {
     if (this.initialResizeComplete) {
       this.onResizeDebounced(entries);
     } else {
@@ -92,6 +91,10 @@ class Resizer extends React.Component<ResizerProps> {
       this.onResize(entries);
     }
   };
+
+  render() {
+    return <div ref={this.containerRef} className="echChartResizer" />;
+  }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch): ResizerDispatchProps =>
@@ -103,7 +106,9 @@ const mapDispatchToProps = (dispatch: Dispatch): ResizerDispatchProps =>
   );
 
 const mapStateToProps = (state: GlobalChartState): ResizerStateProps => {
-  const { resizeDebounce } = getSettingsSpecSelector(state);
+  const settings = getSettingsSpecSelector(state);
+  const resizeDebounce = settings.resizeDebounce === undefined || settings.resizeDebounce === null
+    ? 200 : settings.resizeDebounce;
   return {
     resizeDebounce:
       !isDefined(resizeDebounce) || Number.isNaN(resizeDebounce) ? DEFAULT_RESIZE_DEBOUNCE : resizeDebounce,

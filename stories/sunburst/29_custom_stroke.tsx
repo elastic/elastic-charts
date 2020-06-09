@@ -14,37 +14,48 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
-import { Chart, Datum, Partition, PartitionLayout } from '../../src';
-import { mocks } from '../../src/mocks/hierarchical/index';
-import { config } from '../../src/chart_types/partition_chart/layout/config/config';
+import { color } from '@storybook/addon-knobs';
 import React from 'react';
+
+import { Chart, Datum, Partition, PartitionLayout, Settings, DARK_THEME } from '../../src';
+import { config } from '../../src/chart_types/partition_chart/layout/config/config';
+import { mocks } from '../../src/mocks/hierarchical';
 import { countryLookup, indexInterpolatedFillColor, interpolatorCET2s } from '../utils/utils';
 
-export const Example = () => (
-  <Chart className="story-chart-dark">
-    <Partition
-      id="spec_1"
-      data={mocks.manyPie}
-      valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`}
-      layers={[
-        {
-          groupByRollup: (d: Datum) => d.origin,
-          nodeLabel: (d: Datum) => countryLookup[d].name,
-          fillLabel: { textInvertible: true },
-          shape: {
-            fillColor: indexInterpolatedFillColor(interpolatorCET2s),
+export const Example = () => {
+  const partialCustomTheme = {
+    background: {
+      color: color('Change background container color', '#1c1c24'),
+    },
+  };
+  return (
+    <Chart className="story-chart-dark">
+      <Settings baseTheme={DARK_THEME} theme={partialCustomTheme} />
+      <Partition
+        id="spec_1"
+        data={mocks.manyPie}
+        valueAccessor={(d: Datum) => d.exportVal as number}
+        valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+        layers={[
+          {
+            groupByRollup: (d: Datum) => d.origin,
+            nodeLabel: (d: Datum) => countryLookup[d].name,
+            fillLabel: { textInvertible: true },
+            shape: {
+              fillColor: indexInterpolatedFillColor(interpolatorCET2s),
+            },
           },
-        },
-      ]}
-      config={{
-        partitionLayout: PartitionLayout.sunburst,
-        linkLabel: { maxCount: 15, textColor: 'white' },
-        sectorLineStroke: 'rgb(26, 27, 32)', // same as the dark theme
-        sectorLineWidth: 1.2,
-      }}
-    />
-  </Chart>
-);
+        ]}
+        config={{
+          partitionLayout: PartitionLayout.sunburst,
+          linkLabel: { maxCount: 15, textColor: 'white' },
+          sectorLineStroke: 'rgb(26, 27, 32)', // same as the dark theme
+          sectorLineWidth: 1.2,
+        }}
+      />
+    </Chart>
+  );
+};

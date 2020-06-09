@@ -14,10 +14,11 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 module.exports = {
   PORT: '9009',
-  HOST: 'host.docker.internal',
-  USE_LOCAL_STORYBOOK: false,
+  HOST: process.env.DEBUG === 'true' ? 'localhost' : 'host.docker.internal',
+  LOCAL_STORYBOOK_VRT: false,
 };

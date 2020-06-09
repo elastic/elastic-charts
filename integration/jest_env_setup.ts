@@ -14,18 +14,20 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
 
-const customConfig = { threshold: 0.01 };
+const customConfig = { threshold: 0 };
 export const toMatchImageSnapshot = configureToMatchImageSnapshot({
   customDiffConfig: customConfig,
-  failureThreshold: 0.005,
+  failureThreshold: 0,
   failureThresholdType: 'percent',
 });
 
 expect.extend({ toMatchImageSnapshot });
 
-export const JEST_TIMEOUT = 10000;
-jest.setTimeout(JEST_TIMEOUT);
+if (process.env.DEBUG === 'true') {
+  jest.setTimeout(10 * 60 * 1000); // set timeout to 10 minutes;
+}

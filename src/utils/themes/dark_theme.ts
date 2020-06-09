@@ -14,11 +14,11 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. */
+ * under the License.
+ */
 
 import { palettes } from './colors';
 import { Theme } from './theme';
-
 import {
   DEFAULT_CHART_MARGINS,
   DEFAULT_CHART_PADDING,
@@ -162,5 +162,8 @@ export const DARK_THEME: Theme = {
       dash: [5, 5],
       visible: true,
     },
+  },
+  background: {
+    color: '#1D1E24', // $euiColorEmptyShade
   },
 };
