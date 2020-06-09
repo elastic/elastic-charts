@@ -79,31 +79,15 @@ export const Example = () => {
     ChartTypes.XYAxis,
   );
 
-
-  return (
-    <div style={{
-      position: 'relative',
-      height: '300px',
-    }}
-    >
-      <button
-        id="exportToPng"
-        type="button"
-        style={{
-          border: '1px solid black',
-          margin: '2px',
-          background: 'white',
-        }}
-        onClick={handler}
-      >
-        Export PNG
-      </button>
-      {
-        selectedChart === ChartTypes.XYAxis ? renderXYAxisChart(chartRef)
-          : (selectedChart === ChartTypes.Partition ? renderPartitionChart(chartRef) : renderGoalchart(chartRef))
-      }
-    </div>
-  );
+  switch (selectedChart) {
+    case ChartTypes.Partition:
+      return renderPartitionChart(chartRef);
+    case ChartTypes.Goal:
+      return renderGoalchart(chartRef);
+    case ChartTypes.XYAxis:
+    default:
+      return renderXYAxisChart(chartRef);
+  }
 };
 
 function renderPartitionChart(chartRef: RefObject<Chart>) {
