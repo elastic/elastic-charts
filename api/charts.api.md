@@ -184,9 +184,7 @@ export interface BackgroundStyle {
 // @alpha (undocumented)
 export type BandFillColorAccessor = (input: BandFillColorAccessorInput) => Color;
 
-// Warning: (ae-missing-release-tag) "BandFillColorAccessorInput" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @alpha (undocumented)
 export interface BandFillColorAccessorInput {
     // (undocumented)
     aboveBaseCount: number;
