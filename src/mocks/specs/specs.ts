@@ -281,6 +281,8 @@ export class MockGlobalSpec {
       type: TooltipType.VerticalCursor,
       snap: true,
     },
+    externalPointerEvents: {
+    },
     legendPosition: Position.Right,
     showLegendExtra: true,
     hideDuplicateAxes: false,

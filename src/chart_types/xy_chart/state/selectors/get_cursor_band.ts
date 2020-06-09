@@ -96,8 +96,7 @@ function getCursorBand(
   let xValue;
   if (isValidPointerOverEvent(xScale, externalPointerEvent)) {
     const x = xScale.pureScale(externalPointerEvent.value);
-
-    if (x == null || x > chartDimensions.width + chartDimensions.left) {
+    if (x == null || x > chartDimensions.width || x < 0) {
       return;
     }
     pointerPosition = { x, y: 0 };
@@ -111,6 +110,7 @@ function getCursorBand(
       return;
     }
   }
+
   return getCursorBandPosition(
     settingsSpec.rotation,
     chartDimensions,

@@ -17,16 +17,150 @@
  * under the License.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 
-import { Example } from '../stories/treemap/6_custom_style';
+import { Chart, Settings, Axis, Position, BarSeries, ScaleType, PointerEvent, LineSeries } from '../src';
+import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 
-export class Playground extends React.Component {
-  render() {
-    return (
-      <div className="testing">
-        <div className="chart">{Example()}</div>
+export const Playground = () => {
+  const ref1 = React.createRef<Chart>();
+  const ref2 = React.createRef<Chart>();
+  const ref3 = React.createRef<Chart>();
+  const ref4 = React.createRef<Chart>();
+
+  const pointerUpdate = (event: PointerEvent) => {
+    if (ref1.current) {
+      ref1.current.dispatchExternalPointerEvent(event);
+    }
+    if (ref2.current) {
+      ref2.current.dispatchExternalPointerEvent(event);
+    }
+    if (ref3.current) {
+      ref3.current.dispatchExternalPointerEvent(event);
+    }
+    if (ref4.current) {
+      ref4.current.dispatchExternalPointerEvent(event);
+    }
+  };
+  const [show, toggleVisibility] = useState(true);
+  return (
+    <div className="testing">
+      <button
+        type="button"
+        onClick={() => {
+          toggleVisibility(!show);
+        }}
+      >
+        hide/show
+
+      </button>
+
+      <div className="chart">
+        <Chart className="story-chart" ref={ref2} id="chart1">
+          <Settings onPointerUpdate={pointerUpdate} externalPointerEvents={{ tooltip: { visible: true } }} />
+          <Axis
+            id="bottom"
+            position={Position.Bottom}
+            title="External tooltip VISIBLE"
+
+          />
+          <Axis id="left2" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
+
+          <BarSeries
+            id="bars"
+            xScaleType={ScaleType.Time}
+            yScaleType={ScaleType.Linear}
+            xAccessor={0}
+            yAccessors={[1]}
+            data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(3, 60)}
+          />
+        </Chart>
+
       </div>
-    );
-  }
-}
+
+      {
+        show && (
+          <div className="chart">
+            <Chart className="story-chart" ref={ref1}>
+              <Settings onPointerUpdate={pointerUpdate} externalPointerEvents={{ tooltip: { visible: true, boundary: 'chart' } }} />
+              <Axis
+                id="bottom"
+                position={Position.Bottom}
+                title="External tooltip VISIBLE - boundary => chart"
+              />
+              <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
+
+              <BarSeries
+                id="bars"
+                xScaleType={ScaleType.Time}
+                yScaleType={ScaleType.Linear}
+                xAccessor={0}
+                yAccessors={[1]}
+                data={KIBANA_METRICS.metrics.kibana_os_load[1].data}
+              />
+            </Chart>
+
+          </div>
+        )
+      }
+
+      <div className="chart">
+        <Chart className="story-chart" ref={ref3}>
+          <Settings onPointerUpdate={pointerUpdate} externalPointerEvents={{ tooltip: { visible: true, boundary: 'chart' } }} />
+          <Axis
+            id="bottom"
+            position={Position.Bottom}
+            title="External tooltip VISIBLE - boundary => chart"
+          />
+          <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
+
+          <LineSeries
+            id="bars"
+            xScaleType={ScaleType.Time}
+            yScaleType={ScaleType.Linear}
+            xAccessor={0}
+            yAccessors={[1]}
+            data={KIBANA_METRICS.metrics.kibana_os_load[1].data.slice(0, 50)}
+          />
+          <LineSeries
+            id="bars2"
+            xScaleType={ScaleType.Time}
+            yScaleType={ScaleType.Linear}
+            xAccessor={0}
+            yAccessors={[1]}
+            data={KIBANA_METRICS.metrics.kibana_os_load[2].data.slice(20, 30)}
+          />
+        </Chart>
+      </div>
+
+      <div className="chart">
+        <Chart className="story-chart" ref={ref4}>
+          <Settings onPointerUpdate={pointerUpdate} externalPointerEvents={{ tooltip: { visible: false } }} />
+          <Axis
+            id="bottom"
+            position={Position.Bottom}
+            title="External tooltip HIDDEN"
+          />
+          <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
+
+          <LineSeries
+            id="bars"
+            xScaleType={ScaleType.Time}
+            yScaleType={ScaleType.Linear}
+            xAccessor={0}
+            yAccessors={[1]}
+            data={KIBANA_METRICS.metrics.kibana_os_load[1].data.slice(0, 50)}
+          />
+          <LineSeries
+            id="bars2"
+            xScaleType={ScaleType.Time}
+            yScaleType={ScaleType.Linear}
+            xAccessor={0}
+            yAccessors={[1]}
+            data={KIBANA_METRICS.metrics.kibana_os_load[2].data.slice(20, 30)}
+          />
+        </Chart>
+      </div>
+    </div>
+  );
+};

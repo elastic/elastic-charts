@@ -23,21 +23,21 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { TooltipValueFormatter, TooltipSettings, TooltipValue } from '../../specs';
-import { onPointerMove } from '../../state/actions/mouse';
+import { onPointerMove as onPointerMoveAction } from '../../state/actions/mouse';
 import { GlobalChartState, BackwardRef } from '../../state/chart_state';
 import { getChartRotationSelector } from '../../state/selectors/get_chart_rotation';
 import { getInternalIsInitializedSelector } from '../../state/selectors/get_internal_is_intialized';
 import { getInternalIsTooltipVisibleSelector } from '../../state/selectors/get_internal_is_tooltip_visible';
 import { getInternalTooltipAnchorPositionSelector } from '../../state/selectors/get_internal_tooltip_anchor_position';
 import { getInternalTooltipInfoSelector } from '../../state/selectors/get_internal_tooltip_info';
-import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
 import { getTooltipHeaderFormatterSelector } from '../../state/selectors/get_tooltip_header_formatter';
+import { getTooltipSettings } from '../../state/selectors/get_tooltip_settings';
 import { Rotation } from '../../utils/commons';
 import { TooltipPortal, PopperSettings, AnchorPosition, Placement } from '../portal';
 import { TooltipInfo, TooltipAnchorPosition } from './types';
 
 interface TooltipDispatchProps {
-  onPointerMove: typeof onPointerMove;
+  onPointerMove: typeof onPointerMoveAction;
 }
 
 interface TooltipStateProps {
@@ -207,7 +207,7 @@ const HIDDEN_TOOLTIP_PROPS = {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): TooltipDispatchProps =>
-  bindActionCreators({ onPointerMove }, dispatch);
+  bindActionCreators({ onPointerMove: onPointerMoveAction }, dispatch);
 
 const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
   if (!getInternalIsInitializedSelector(state)) {
@@ -218,7 +218,7 @@ const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
     info: getInternalTooltipInfoSelector(state),
     position: getInternalTooltipAnchorPositionSelector(state),
     headerFormatter: getTooltipHeaderFormatterSelector(state),
-    settings: getSettingsSpecSelector(state).tooltip,
+    settings: getTooltipSettings(state),
     rotation: getChartRotationSelector(state),
     chartId: state.chartId,
   };

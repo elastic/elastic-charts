@@ -73,7 +73,7 @@ const TooltipPortalComponent = ({ anchor, scope, settings, children, visible, ch
    * This must not be removed from DOM throughout life of this component.
    * Otherwise the portal will loose reference to the correct node.
    */
-  const portalNode = useRef(getOrCreateNode(`echTooltipPortal${scope}`));
+  const portalNode = useRef(getOrCreateNode(`echTooltipPortal${scope}__${chartId}`));
 
   /**
    * Popper instance used to manage position of tooltip.
@@ -200,7 +200,9 @@ const TooltipPortalComponent = ({ anchor, scope, settings, children, visible, ch
     }
   }, [updateAnchorDimensions, popper]);
 
-  return createPortal(<div className={classNames({ invisible })}>{children}</div>, portalNode.current);
+  const className = classNames({ invisible });
+
+  return createPortal(<div className={className}>{children}</div>, portalNode.current);
 };
 
 TooltipPortalComponent.displayName = 'TooltipPortal';

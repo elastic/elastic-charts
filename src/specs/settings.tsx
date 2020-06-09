@@ -230,6 +230,34 @@ export interface TooltipProps {
  */
 export type TooltipSettings = TooltipType | TooltipProps;
 
+/**
+ * The settings for handling external events.
+ * @alpha
+ */
+export interface ExternalPointerEventsSettings {
+  tooltip?: {
+    /**
+     * `true` to show the tooltip when the chart receive an
+     * external pointer event, 'false' to hide the tooltip.
+     * @defaultValue `false`
+     */
+    visible?: boolean;
+    /**
+       *  {@inheritDoc TooltipProps.placement}
+       */
+    placement?: Placement;
+    /**
+     *  {@inheritDoc TooltipProps.fallbackPlacements}
+     */
+    fallbackPlacements?: Placement[];
+    /**
+     *  {@inheritDoc TooltipProps.boundary}
+     */
+    boundary?: HTMLElement | 'chart';
+  }
+
+}
+
 export interface LegendColorPickerProps {
   /**
    * Anchor used to position picker
@@ -285,6 +313,10 @@ export interface SettingsSpec extends Spec {
    * The tooltip configuration forr the chart {@link TooltipSettings}
    */
   tooltip: TooltipSettings;
+  /**
+   *
+   */
+  externalPointerEvents: ExternalPointerEventsSettings;
   debug: boolean;
   legendPosition: Position;
   /**
@@ -350,7 +382,8 @@ export type DefaultSettingsProps =
   | 'legendPosition'
   | 'hideDuplicateAxes'
   | 'brushAxis'
-  | 'minBrushDelta';
+  | 'minBrushDelta'
+  | 'externalPointerEvents';
 
 /**
  * Default value for the tooltip type
@@ -388,6 +421,11 @@ export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
   tooltip: {
     type: DEFAULT_TOOLTIP_TYPE,
     snap: DEFAULT_TOOLTIP_SNAP,
+  },
+  externalPointerEvents: {
+    tooltip: {
+      visible: false,
+    },
   },
   legendPosition: Position.Right,
   showLegendExtra: false,
