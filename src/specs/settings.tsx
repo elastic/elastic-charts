@@ -232,6 +232,7 @@ export type TooltipSettings = TooltipType | TooltipProps;
 
 /**
  * The settings for handling external events.
+ * @alpha
  */
 export interface ExternalPointerEventsSettings {
   /**
@@ -289,6 +290,10 @@ export type LegendColorPicker = React.ComponentType<LegendColorPickerProps>;
  */
 export type MarkBuffer = number | ((radius: number) => number);
 
+/**
+ * The Spec used for Chart settings
+ * @public
+ */
 export interface SettingsSpec extends Spec {
   /**
    * Partial theme to be merged with base
@@ -317,6 +322,7 @@ export interface SettingsSpec extends Spec {
   tooltip: TooltipSettings;
   /**
    * {@inheritDoc ExternalPointerEventsSettings}
+   * @alpha
    */
   externalPointerEvents: ExternalPointerEventsSettings;
   debug: boolean;

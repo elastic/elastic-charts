@@ -549,7 +549,6 @@ export type ElementOverListener = (elements: Array<XYChartElementEvent | Partiti
 
 // @alpha
 export interface ExternalPointerEventsSettings {
-    // (undocumented)
     tooltip?: {
         visible?: boolean;
         placement?: Placement;
@@ -1279,9 +1278,7 @@ export type SeriesTypes = $Values<typeof SeriesTypes>;
 // @public (undocumented)
 export const Settings: React.FunctionComponent<SettingsSpecProps>;
 
-// Warning: (ae-missing-release-tag) "SettingsSpec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface SettingsSpec extends Spec {
     // (undocumented)
     animateData: boolean;
@@ -1289,9 +1286,7 @@ export interface SettingsSpec extends Spec {
     brushAxis?: BrushAxis;
     // (undocumented)
     debug: boolean;
-    // Warning: (ae-incompatible-release-tags) The symbol "externalPointerEvents" is marked as @public, but its signature references "ExternalPointerEventsSettings" which is marked as @alpha
-    //
-    // (undocumented)
+    // @alpha
     externalPointerEvents: ExternalPointerEventsSettings;
     flatLegend?: boolean;
     hideDuplicateAxes: boolean;
