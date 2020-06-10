@@ -24,9 +24,11 @@ configure({ adapter: new Adapter() });
 
 process.env.RNG_SEED = 'jest-unit-tests';
 
-jest.useFakeTimers();
+/**
+ * Mocking RAF and ResizeObserver to missing RAF and RO in jsdom
+ */
 
-window.requestAnimationFrame = function(callback) {
+window.requestAnimationFrame = (callback) => {
   callback(0);
   return 0;
 };
@@ -42,13 +44,9 @@ class ResizeObserverMock {
     this.callback([{ contentRect: { width: 200, height: 200 } }]);
   }
 
-  unobserve() {
-    // do nothing
-  }
+  unobserve() { }
 
-  disconnect() {
-    // do nothing
-  }
+  disconnect() { }
 }
 
 // @ts-ignore
