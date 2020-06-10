@@ -69,10 +69,7 @@ interface LegendDispatchProps {
   setPersistedColor: typeof setPersistedColor;
 }
 
-/**
- * @internal
- */
-export function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
+function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
   const {
     items,
     position,
@@ -140,6 +137,7 @@ const EMPTY_DEFAULT_STATE = {
   size: { width: 0, height: 0 },
   showExtra: false,
 };
+
 const mapStateToProps = (state: GlobalChartState): LegendStateProps => {
   if (!getInternalIsInitializedSelector(state)) {
     return EMPTY_DEFAULT_STATE;

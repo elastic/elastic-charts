@@ -19,9 +19,26 @@
 
 import React, { useState } from 'react';
 
-import { Chart, Settings, Axis, Position, BarSeries, ScaleType, PointerEvent, LineSeries } from '../src';
+import { Chart, Settings, Axis, Position, BarSeries, ScaleType, PointerEvent, LineSeries, CustomTooltip } from '../src';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 
+
+const TestCustomTooltip: CustomTooltip = (props) => (
+  <div style={{ border: '1px solid black', background: 'white', fontSize: 12, padding: 4 }}>
+    <p>Testing a custom tooltip </p>
+    <ul>
+      {
+        props.values.map((value) => (
+          <li key={value.label} style={{ color: value.color }}>
+            {value.label}
+            {' - '}
+            {value.value}
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+);
 export const Playground = () => {
   const ref1 = React.createRef<Chart>();
   const ref2 = React.createRef<Chart>();
@@ -106,7 +123,13 @@ export const Playground = () => {
 
       <div className="chart">
         <Chart className="story-chart" ref={ref3}>
-          <Settings onPointerUpdate={pointerUpdate} externalPointerEvents={{ tooltip: { visible: true, boundary: 'chart' } }} />
+          <Settings
+            onPointerUpdate={pointerUpdate}
+            externalPointerEvents={{ tooltip: { visible: true, boundary: 'chart' } }}
+            tooltip={{
+              customTooltip: TestCustomTooltip,
+            }}
+          />
           <Axis
             id="bottom"
             position={Position.Bottom}
