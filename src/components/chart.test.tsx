@@ -50,7 +50,7 @@ describe('Chart', () => {
 
   it('should render the legend name test', () => {
     const wrapper = mount(
-      <Chart size={[100, 100]}>
+      <Chart size={[100, 100]} id="chart1">
         <Settings debug rendering="svg" showLegend />
         <BarSeries id="test" data={[{ x: 0, y: 2 }]} />
       </Chart>,
