@@ -17,11 +17,12 @@
  * under the License.
  */
 
-import React from 'react';
+import React, { RefObject } from 'react';
 
 import { ChartTypes } from '../..';
 import { Tooltip } from '../../../components/tooltip';
 import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
+import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { Partition } from '../renderer/canvas/partition';
 import { HighlighterFromHover } from '../renderer/dom/highlighter_hover';
 import { HighlighterFromLegend } from '../renderer/dom/highlighter_legend';
@@ -51,7 +52,7 @@ export class PartitionState implements InternalChartState {
   }
 
   isInitialized(globalState: GlobalChartState) {
-    return globalState.specsInitialized && getPieSpec(globalState) !== null;
+    return getPieSpec(globalState) !== null ? InitStatus.Initialized : InitStatus.SpecNotInitialized;
   }
 
   isBrushAvailable() {
@@ -78,11 +79,11 @@ export class PartitionState implements InternalChartState {
     return EMPTY_MAP;
   }
 
-  chartRenderer(containerRef: BackwardRef) {
+  chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) {
     return (
       <>
         <Tooltip getChartContainerRef={containerRef} />
-        <Partition />
+        <Partition forwardStageRef={forwardStageRef} />
         <HighlighterFromHover />
         <HighlighterFromLegend />
       </>
