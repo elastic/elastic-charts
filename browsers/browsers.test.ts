@@ -19,7 +19,7 @@
 
 import path from 'path';
 
-import webdriver, { By } from 'selenium-webdriver';
+import webdriver, { By, logging } from 'selenium-webdriver';
 
 jest.setTimeout(30000);
 
@@ -60,6 +60,15 @@ describe('smoke tests', () => {
   });
 
   afterAll(async() => {
+    const entries = await driver.manage().logs().get(logging.Type.BROWSER);
+    console.log(JSON.stringify(entries));
+
+    entries.forEach((entry) => {
+      if (entry.level.name === 'error') {
+        console.log('[%s] %s', entry.level.name, entry.message);
+      }
+    });
+
     await driver.quit();
   });
 
