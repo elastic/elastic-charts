@@ -26,7 +26,8 @@ import { TooltipValueFormatter, TooltipSettings, TooltipValue } from '../../spec
 import { onPointerMove as onPointerMoveAction } from '../../state/actions/mouse';
 import { GlobalChartState, BackwardRef } from '../../state/chart_state';
 import { getChartRotationSelector } from '../../state/selectors/get_chart_rotation';
-import { getInternalIsInitializedSelector } from '../../state/selectors/get_internal_is_intialized';
+import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';
+import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
 import { getInternalIsTooltipVisibleSelector } from '../../state/selectors/get_internal_is_tooltip_visible';
 import { getInternalTooltipAnchorPositionSelector } from '../../state/selectors/get_internal_tooltip_anchor_position';
 import { getInternalTooltipInfoSelector } from '../../state/selectors/get_internal_tooltip_info';
@@ -48,6 +49,7 @@ interface TooltipStateProps {
   settings: TooltipSettings;
   rotation: Rotation;
   chartId: string;
+  backgroundColor: string;
 }
 
 interface TooltipOwnProps {
@@ -66,6 +68,7 @@ const TooltipComponent = ({
   rotation,
   chartId,
   onPointerMove,
+  backgroundColor,
 }: TooltipProps) => {
   const chartRef = getChartContainerRef();
 
@@ -109,15 +112,24 @@ const TooltipComponent = ({
                 borderLeftColor: color,
               }}
             >
-              <span className="echTooltip__label">{label}</span>
-              <span className="echTooltip__value">{value}</span>
-              {markValue && (
-                <span className="echTooltip__markValue">
-                  &nbsp;(
-                  {markValue}
-                  )
-                </span>
-              )}
+              <div className="echTooltip__item--backgroundColor" style={{ backgroundColor }}>
+                <div
+                  className="echTooltip__item--color"
+                  style={{ backgroundColor: color }}
+                />
+              </div>
+
+              <div className="echTooltip__item--container">
+                <span className="echTooltip__label">{label}</span>
+                <span className="echTooltip__value">{value}</span>
+                {markValue && (
+                  <span className="echTooltip__markValue">
+                    &nbsp;(
+                    {markValue}
+                    )
+                  </span>
+                )}
+              </div>
             </div>
           );
         },
@@ -204,13 +216,14 @@ const HIDDEN_TOOLTIP_PROPS = {
   settings: {},
   rotation: 0 as Rotation,
   chartId: '',
+  backgroundColor: 'transparent',
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): TooltipDispatchProps =>
   bindActionCreators({ onPointerMove: onPointerMoveAction }, dispatch);
 
 const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
-  if (!getInternalIsInitializedSelector(state)) {
+  if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return HIDDEN_TOOLTIP_PROPS;
   }
   return {
@@ -221,6 +234,7 @@ const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
     settings: getTooltipSettings(state),
     rotation: getChartRotationSelector(state),
     chartId: state.chartId,
+    backgroundColor: getChartThemeSelector(state).background.color,
   };
 };
 

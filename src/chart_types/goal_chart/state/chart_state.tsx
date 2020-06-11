@@ -17,12 +17,13 @@
  * under the License.
  */
 
-import React from 'react';
+import React, { RefObject } from 'react';
 
 import { ChartTypes } from '../..';
 import { LegendItem } from '../../../commons/legend';
 import { Tooltip } from '../../../components/tooltip';
 import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
+import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { LegendItemLabel } from '../../../state/selectors/get_legend_items_labels';
 import { Goal } from '../renderer/canvas/connected_component';
 import { getSpecOrNull } from './selectors/goal_spec';
@@ -51,7 +52,7 @@ export class GoalState implements InternalChartState {
   }
 
   isInitialized(globalState: GlobalChartState) {
-    return globalState.specsInitialized && getSpecOrNull(globalState) !== null;
+    return getSpecOrNull(globalState) !== null ? InitStatus.Initialized : InitStatus.ChartNotInitialized;
   }
 
   isBrushAvailable() {
@@ -78,11 +79,11 @@ export class GoalState implements InternalChartState {
     return EMPTY_MAP;
   }
 
-  chartRenderer(containerRef: BackwardRef) {
+  chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) {
     return (
       <>
         <Tooltip getChartContainerRef={containerRef} />
-        <Goal />
+        <Goal forwardStageRef={forwardStageRef} />
       </>
     );
   }

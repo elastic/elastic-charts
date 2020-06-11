@@ -23,12 +23,12 @@ import { Provider } from 'react-redux';
 import { createStore, Store, Unsubscribe } from 'redux';
 import uuid from 'uuid';
 
-import { isHorizontalAxis } from '../chart_types/xy_chart/utils/axis_utils';
+import { isHorizontalAxis } from '../chart_types/xy_chart/utils/axis_type_utils';
 import { PointerEvent } from '../specs';
 import { SpecsParser } from '../specs/specs_parser';
 import { onExternalPointerEvent } from '../state/actions/events';
 import { chartStoreReducer, GlobalChartState } from '../state/chart_state';
-import { getInternalIsInitializedSelector } from '../state/selectors/get_internal_is_intialized';
+import { getInternalIsInitializedSelector, InitStatus } from '../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_specs';
 import { ChartSize, getChartSize } from '../utils/chart_size';
 import { Position } from '../utils/commons';
@@ -80,7 +80,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     };
     this.unsubscribeToStore = this.chartStore.subscribe(() => {
       const state = this.chartStore.getState();
-      if (!getInternalIsInitializedSelector(state)) {
+      if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
         return;
       }
 

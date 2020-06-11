@@ -27,7 +27,7 @@ import { LegendItem, LegendItemExtraValues } from '../commons/legend';
 import { SeriesKey, SeriesIdentifier } from '../commons/series_id';
 import { TooltipInfo, TooltipAnchorPosition } from '../components/tooltip/types';
 import { Spec, PointerEvent } from '../specs';
-import { DEFAULT_SETTINGS_SPEC } from '../specs/settings';
+import { DEFAULT_SETTINGS_SPEC } from '../specs/constants';
 import { Color } from '../utils/commons';
 import { Dimensions } from '../utils/dimensions';
 import { Point } from '../utils/point';
@@ -38,7 +38,7 @@ import { SET_PERSISTED_COLOR, SET_TEMPORARY_COLOR, CLEAR_TEMPORARY_COLORS } from
 import { EXTERNAL_POINTER_EVENT } from './actions/events';
 import { SPEC_PARSED, SPEC_UNMOUNTED, UPSERT_SPEC, REMOVE_SPEC, SPEC_PARSING } from './actions/specs';
 import { interactionsReducer } from './reducers/interactions';
-import { getInternalIsInitializedSelector } from './selectors/get_internal_is_intialized';
+import { getInternalIsInitializedSelector, InitStatus } from './selectors/get_internal_is_intialized';
 import { getLegendItemsSelector } from './selectors/get_legend_items';
 import { LegendItemLabel } from './selectors/get_legend_items_labels';
 
@@ -53,7 +53,7 @@ export interface InternalChartState {
    * The chart type
    */
   chartType: ChartTypes;
-  isInitialized(globalState: GlobalChartState): boolean;
+  isInitialized(globalState: GlobalChartState): InitStatus;
   /**
    * Returns a JSX element with the chart rendered (lenged excluded)
    * @param containerRef
@@ -379,7 +379,7 @@ export const chartStoreReducer = (chartId: string) => {
           },
         };
       default:
-        if (!getInternalIsInitializedSelector(state)) {
+        if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
           return state;
         }
         return {
