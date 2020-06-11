@@ -61,7 +61,9 @@ describe('smoke tests', () => {
 
   afterAll(async() => {
     const entries = await driver.manage().logs().get(logging.Type.BROWSER);
-    console.log(JSON.stringify(entries));
+    const entries2 = await driver.manage().logs().get(logging.Type.CLIENT);
+    console.log('ERRRORS BROWSER', JSON.stringify(entries));
+    console.log('ERRRORS CLIENT', JSON.stringify(entries2));
 
     entries.forEach((entry) => {
       if (entry.level.name === 'error') {
