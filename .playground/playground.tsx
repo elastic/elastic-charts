@@ -98,7 +98,7 @@ export const Playground = () => {
       {
         show && (
           <div className="chart">
-            <Chart className="story-chart" ref={ref1}>
+            <Chart className="story-chart" ref={ref1} id="chart2">
               <Settings onPointerUpdate={pointerUpdate} externalPointerEvents={{ tooltip: { visible: true, boundary: 'chart' } }} />
               <Axis
                 id="bottom"

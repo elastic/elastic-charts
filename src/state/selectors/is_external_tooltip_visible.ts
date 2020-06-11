@@ -19,12 +19,28 @@
 
 import createCachedSelector from 're-reselect';
 
+import { computeChartDimensionsSelector } from '../../chart_types/xy_chart/state/selectors/compute_chart_dimensions';
+import { getComputedScalesSelector } from '../../chart_types/xy_chart/state/selectors/get_computed_scales';
+import { PointerEventType } from '../../specs';
+import { GlobalChartState } from '../chart_state';
 import { getChartIdSelector } from './get_chart_id';
 import { getSettingsSpecSelector } from './get_settings_specs';
 import { hasExternalEventSelector } from './has_external_pointer_event';
 
+const getExternalEventPointer = ({ externalEvents: { pointer } }: GlobalChartState) => pointer;
+
 /** @internal */
 export const isExternalTooltipVisibleSelector = createCachedSelector(
-  [getSettingsSpecSelector, hasExternalEventSelector],
-  (settings, hasExternalEvent): boolean => hasExternalEvent && settings.externalPointerEvents.tooltip?.visible === true,
+  [getSettingsSpecSelector, hasExternalEventSelector, getExternalEventPointer, getComputedScalesSelector, computeChartDimensionsSelector],
+  ({ externalPointerEvents }, hasExternalEvent, pointer, { xScale }, { chartDimensions }): boolean => {
+    if (!pointer || pointer.type !== PointerEventType.Over || externalPointerEvents.tooltip?.visible === false) {
+      return false;
+    }
+    const x = xScale.pureScale(pointer.value);
+
+    if (x == null || x > chartDimensions.width + chartDimensions.left || x < 0) {
+      return false;
+    }
+    return hasExternalEvent && externalPointerEvents.tooltip?.visible === true;
+  }
 )(getChartIdSelector);

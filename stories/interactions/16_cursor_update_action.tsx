@@ -41,7 +41,7 @@ export const Example = () => {
   const data2 = KIBANA_METRICS.metrics.kibana_os_load[1].data;
   return (
     <>
-      <Chart className="story-chart" ref={ref2} size={{ height: '50%' }}>
+      <Chart className="story-chart" ref={ref1} size={{ height: '50%' }} id="chart1">
         <Settings
           onPointerUpdate={pointerUpdate}
           externalPointerEvents={{ tooltip: { visible: true, boundary: 'chart' } }}
@@ -63,10 +63,10 @@ export const Example = () => {
           data={data1.slice(3, 60)}
         />
       </Chart>
-      <Chart className="story-chart" ref={ref1} size={{ height: '50%' }}>
+      <Chart className="story-chart" ref={ref2} size={{ height: '50%' }} id="chart2">
         <Settings
           onPointerUpdate={pointerUpdate}
-          externalPointerEvents={{ tooltip: { visible: true, placement: Placement.BottomEnd } }}
+          externalPointerEvents={{ tooltip: { visible: true, placement: Placement.Left } }}
         />
         <Axis
           id="bottom"
