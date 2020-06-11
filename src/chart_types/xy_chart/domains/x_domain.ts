@@ -36,6 +36,7 @@ export function mergeXDomain(
   specs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>[],
   xValues: Set<string | number>,
   customXDomain?: DomainRange | Domain,
+  fallbackScale?: ScaleType,
 ): XDomain {
   const mainXScaleType = convertXScaleTypes(specs);
   if (!mainXScaleType) {
@@ -46,7 +47,14 @@ export function mergeXDomain(
   let seriesXComputedDomains;
   let minInterval = 0;
 
-  if (mainXScaleType.scaleType === ScaleType.Ordinal) {
+  if (mainXScaleType.scaleType === ScaleType.Ordinal || fallbackScale === ScaleType.Ordinal) {
+    if (mainXScaleType.scaleType !== ScaleType.Ordinal) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        `Each X value in a ${mainXScaleType.scaleType} x scale needs be be a number. Using ordinal x scale as fallback.`,
+      );
+    }
+
     seriesXComputedDomains = computeOrdinalDataDomain(values, identity, false, true);
     if (customXDomain) {
       if (Array.isArray(customXDomain)) {
@@ -58,7 +66,9 @@ export function mergeXDomain(
   } else {
     seriesXComputedDomains = computeContinuousDataDomain(values, identity, true);
     let customMinInterval: undefined | number;
-    if (!isNumberArray(values)) {
+
+    // The number check is done in mergeXDomain which makes this a dummy type check
+    if (!isNumberArray(values, !fallbackScale)) {
       throw new Error(
         `Each X value in a ${mainXScaleType.scaleType} x scale needs be be a number. String or objects are not allowed`,
       );
@@ -107,7 +117,7 @@ export function mergeXDomain(
 
   return {
     type: 'xDomain',
-    scaleType: mainXScaleType.scaleType,
+    scaleType: fallbackScale ?? mainXScaleType.scaleType,
     isBandScale: mainXScaleType.isBandScale,
     domain: seriesXComputedDomains,
     minInterval,

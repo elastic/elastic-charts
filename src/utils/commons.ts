@@ -327,8 +327,8 @@ export function mergePartial<T>(
 }
 
 /** @internal */
-export function isNumberArray(value: unknown): value is number[] {
-  return Array.isArray(value) && value.every((element) => typeof element === 'number');
+export function isNumberArray(value: unknown, bypass?: boolean): value is number[] {
+  return bypass ?? (Array.isArray(value) && value.every((element) => typeof element === 'number'));
 }
 
 /** @internal */
