@@ -53,7 +53,6 @@ const ordinalBarSeries: BarSeriesSpec = {
   id: SPEC_ID,
   groupId: GROUP_ID,
   seriesType: SeriesTypes.Bar,
-  yScaleToDataExtent: false,
   data: [
     [0, 10],
     [1, 5],
@@ -70,7 +69,6 @@ const linearBarSeries: BarSeriesSpec = {
   id: SPEC_ID,
   groupId: GROUP_ID,
   seriesType: SeriesTypes.Bar,
-  yScaleToDataExtent: false,
   data: [
     [0, 10],
     [1, 5],
