@@ -23,6 +23,7 @@ import { ColorOverrides } from '../../../state/chart_state';
 import { Accessor, AccessorFn, getAccessorValue } from '../../../utils/accessor';
 import { Datum, Color } from '../../../utils/commons';
 import { GroupId, SpecId } from '../../../utils/ids';
+import { Logger } from '../../../utils/logger';
 import { ColorConfig } from '../../../utils/themes/theme';
 import { splitSpecsByGroupId, YBasicSeriesSpec } from '../domains/y_domain';
 import { LastValues } from '../state/utils/types';
@@ -194,8 +195,7 @@ export function splitSeries({
   });
 
   if (nonNumericValues.length > 0) {
-    // eslint-disable-next-line no-console
-    console.warn(`Found non-numeric y value${nonNumericValues.length > 1 ? 's' : ''} in dataset for spec "${specId}"`,
+    Logger.warn(`Found non-numeric y value${nonNumericValues.length > 1 ? 's' : ''} in dataset for spec "${specId}"`,
       `(${nonNumericValues.map((v) => JSON.stringify(v)).join(', ')})`
     );
   }

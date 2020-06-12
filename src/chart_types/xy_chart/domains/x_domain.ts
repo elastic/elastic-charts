@@ -18,8 +18,9 @@
  */
 
 import { ScaleType } from '../../../scales/constants';
-import { compareByValueAsc, identity, isNumberArray } from '../../../utils/commons';
+import { compareByValueAsc, identity } from '../../../utils/commons';
 import { computeContinuousDataDomain, computeOrdinalDataDomain, Domain } from '../../../utils/domain';
+import { Logger } from '../../../utils/logger';
 import { isCompleteBound, isLowerBound, isUpperBound } from '../utils/axis_type_utils';
 import { BasicSeriesSpec, DomainRange, SeriesTypes } from '../utils/specs';
 import { XDomain } from './types';
@@ -49,8 +50,7 @@ export function mergeXDomain(
 
   if (mainXScaleType.scaleType === ScaleType.Ordinal || fallbackScale === ScaleType.Ordinal) {
     if (mainXScaleType.scaleType !== ScaleType.Ordinal) {
-      // eslint-disable-next-line no-console
-      console.warn(
+      Logger.warn(
         `Each X value in a ${mainXScaleType.scaleType} x scale needs be be a number. Using ordinal x scale as fallback.`,
       );
     }
@@ -67,12 +67,6 @@ export function mergeXDomain(
     seriesXComputedDomains = computeContinuousDataDomain(values, identity, true);
     let customMinInterval: undefined | number;
 
-    // The number check is done in mergeXDomain which makes this a dummy type check
-    if (!isNumberArray(values, !fallbackScale)) {
-      throw new Error(
-        `Each X value in a ${mainXScaleType.scaleType} x scale needs be be a number. String or objects are not allowed`,
-      );
-    }
     if (customXDomain) {
       if (Array.isArray(customXDomain)) {
         throw new TypeError('xDomain for continuous scale should be a DomainRange object, not an array');
@@ -101,7 +95,7 @@ export function mergeXDomain(
         seriesXComputedDomains = [computedDomainMin, customXDomain.max];
       }
     }
-    const computedMinInterval = findMinInterval(values);
+    const computedMinInterval = findMinInterval(values as number[]);
     if (customMinInterval != null) {
       // Allow greater custom min iff xValues has 1 member.
       if (xValues.size > 1 && customMinInterval > computedMinInterval) {
