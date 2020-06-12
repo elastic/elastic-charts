@@ -147,7 +147,7 @@ export type AxisId = string;
 export interface AxisSpec extends Spec {
     // (undocumented)
     chartType: typeof ChartTypes.XYAxis;
-    domain?: DomainRange;
+    domain?: YDomainRange;
     gridLineStyle?: GridLineConfig;
     groupId: GroupId;
     hide: boolean;
@@ -1277,7 +1277,8 @@ export type SeriesNameFn = (series: XYChartSeriesIdentifier, isTooltip: boolean)
 export interface SeriesScales {
     timeZone?: string;
     xScaleType: typeof ScaleType.Ordinal | typeof ScaleType.Linear | typeof ScaleType.Time;
-    yScaleToDataExtent: boolean;
+    // @deprecated
+    yScaleToDataExtent?: boolean;
     yScaleType: ScaleContinuousType;
 }
 
@@ -1597,6 +1598,12 @@ export interface XYChartSeriesIdentifier extends SeriesIdentifier {
     // (undocumented)
     yAccessor: string | number;
 }
+
+// Warning: (ae-forgotten-export) The symbol "YDomainBase" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "YDomainRange" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type YDomainRange = YDomainBase & DomainRange;
 
 
 // Warnings were encountered during analysis:
