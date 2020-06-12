@@ -19,9 +19,9 @@
 
 import path from 'path';
 
-import webdriver, { By, logging } from 'selenium-webdriver';
+import webdriver, { By } from 'selenium-webdriver';
 
-jest.setTimeout(6000);
+jest.setTimeout(30000);
 
 /* eslint-disable global-require */
 
@@ -56,19 +56,17 @@ describe('smoke tests', () => {
     }
     if (capabilities) {
       driver = await new webdriver.Builder().withCapabilities(capabilities).build();
-    }
-  });
 
-  beforeAll(async() => {
-    await driver.executeScript(() => {
-      // @ts-ignore
-      window.browserErrors = [];
-
-      window.console.error = (...args: any[]) => {
+      await driver.executeScript(() => {
         // @ts-ignore
-        window.browserErrors.push(...args);
-      };
-    });
+        window.browserErrors = [];
+
+        window.console.error = (...args: any[]) => {
+          // @ts-ignore
+          window.browserErrors.push(...args);
+        };
+      });
+    }
   });
 
   afterAll(async() => {
