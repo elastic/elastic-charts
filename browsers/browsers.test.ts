@@ -21,7 +21,7 @@ import path from 'path';
 
 import webdriver, { By, logging } from 'selenium-webdriver';
 
-jest.setTimeout(30000);
+jest.setTimeout(6000);
 
 /* eslint-disable global-require */
 
@@ -59,17 +59,27 @@ describe('smoke tests', () => {
     }
   });
 
-  afterAll(async() => {
-    const entries = await driver.manage().logs().get(logging.Type.BROWSER);
-    const entries2 = await driver.manage().logs().get(logging.Type.CLIENT);
-    console.log('ERRRORS BROWSER', JSON.stringify(entries));
-    console.log('ERRRORS CLIENT', JSON.stringify(entries2));
+  beforeAll(async() => {
+    await driver.executeScript(() => {
+      // @ts-ignore
+      window.browserErrors = [];
 
-    entries.forEach((entry) => {
-      if (entry.level.name === 'error') {
-        console.log('[%s] %s', entry.level.name, entry.message);
-      }
+      window.console.error = (...args: any[]) => {
+        // @ts-ignore
+        window.browserErrors.push(...args);
+      };
     });
+  });
+
+  afterAll(async() => {
+    const errors = await driver.executeScript(() =>
+      // @ts-ignore
+      JSON.stringify(window.browserErrors)
+      // if (entry.level.name === 'error') {
+      //   console.log('[%s] %s', entry.level.name, entry.message);
+      // }
+    );
+    console.log('ERRRORS CLIENT', JSON.stringify(errors));
 
     await driver.quit();
   });
