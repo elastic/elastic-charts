@@ -234,12 +234,34 @@ interface DomainBase {
    * be a valid interval because it is greater than the computed minInterval of 365 days betwen the other years.
    */
   minInterval?: number;
+}
+
+/**
+ * Domain option that **only** apply to `yDomains`.
+ */
+interface YDomainBase {
+    /**
+   * Whether to fit the domain to the data.
+   *
+   * Setting `max` or `min` will override this functionality.
+   * @defaultValue false
+   */
+  fit?: boolean;
   /**
-   * Whether to fit the domain to the data. ONLY applies to `yDomains`
+   * Padding for computed domain. Pixel number or percent string.
    *
    * Setting `max` or `min` will override this functionality.
    */
-  fit?: boolean;
+  padding?: number | string;
+  /**
+   * Constrains padded domain to the zero baseline.
+   *
+   * e.g. If your domain is `[10, 100]` and `[-10, 120]` with padding.
+   * The domain would be `[0, 120]` if **constrained** or `[-10, 120]` if **unconstrained**.
+   *
+   * @defaultValue true
+   */
+  constrainPadding?: boolean;
 }
 
 interface LowerBound {
@@ -262,6 +284,7 @@ export type CompleteBoundedDomain = DomainBase & LowerBound & UpperBound;
 export type UnboundedDomainWithInterval = DomainBase;
 
 export type DomainRange = LowerBoundedDomain | UpperBoundedDomain | CompleteBoundedDomain | UnboundedDomainWithInterval;
+export type YDomainRange = YDomainBase & DomainRange;
 
 export interface DisplayValueSpec {
   /** Show value label in chart element */
@@ -376,9 +399,10 @@ export interface SeriesScales {
   yScaleType: ScaleContinuousType;
   /**
    * if true, the min y value is set to the minimum domain value, 0 otherwise
+   * @deprecated use `domain.fit` instead
    * @defaultValue `false`
    */
-  yScaleToDataExtent: boolean;
+  yScaleToDataExtent?: boolean;
 }
 
 export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales;
@@ -557,7 +581,7 @@ export interface AxisSpec extends Spec {
   /** The axis title */
   title?: string;
   /** If specified, it constrains the domain for these values */
-  domain?: DomainRange;
+  domain?: YDomainRange;
   /** Object to hold custom styling */
   style?: AxisStyle;
   /** Show only integar values * */
