@@ -26,7 +26,7 @@
  * @todo Add more helpful messages in dev for configuration errors
  */
 export class Logger {
-  static namespace = '[@elastic/chart] ';
+  static namespace = '[@elastic/chart]';
 
   /**
    * Log warning to console
@@ -36,7 +36,7 @@ export class Logger {
    */
   static warn(message?: any, ...optionalParams: any[]) {
     if (Logger.isDevelopment()) {
-      console.warn(Logger.namespace, message, ...optionalParams);
+      console.warn(`${Logger.namespace} ${message}`, ...optionalParams);
     }
   }
 
@@ -48,22 +48,7 @@ export class Logger {
    */
   static error(message?: any, ...optionalParams: any[]) {
     if (Logger.isDevelopment()) {
-      console.error(Logger.namespace, message, ...optionalParams);
-    }
-  }
-
-  /**
-   * Throw an error when no fallback is available
-   *
-   * @throws
-   * @param message
-   * @param optionalParams
-   */
-  static throw(message?: any) {
-    if (Logger.isDevelopment()) {
-      console.error(Logger.namespace, message);
-    } else {
-      throw new Error(`${Logger.namespace} + ${message}`);
+      console.warn(`${Logger.namespace} ${message}`, ...optionalParams);
     }
   }
 
