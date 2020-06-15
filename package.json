@@ -1,7 +1,7 @@
 {
   "name": "@elastic/charts",
   "description": "Elastic-Charts data visualization library",
-  "version": "19.4.1",
+  "version": "19.5.0",
   "author": "Marco Vettorello <marco.vettorello@elastic.co>",
   "license": "Apache-2.0",
   "main": "dist/index.js",
@@ -142,6 +142,7 @@
     "circular-dependency-plugin": "^5.2.0",
     "commitizen": "^4.0.3",
     "core-js": "^3.6.4",
+    "cross-env": "^7.0.2",
     "css-loader": "^2.1.0",
     "cz-conventional-changelog": "^3.0.2",
     "enzyme": "^3.9.0",
