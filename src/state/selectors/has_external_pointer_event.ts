@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { PointerEventType } from '../../specs/settings';
+import { PointerEventType } from '../../specs';
 import { GlobalChartState } from '../chart_state';
 
 /** @internal */

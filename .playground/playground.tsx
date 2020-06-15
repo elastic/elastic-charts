@@ -17,9 +17,9 @@
  * under the License.
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 
-import { Chart, Settings, Axis, Position, BarSeries, ScaleType, PointerEvent, LineSeries, CustomTooltip } from '../src';
+import { Chart, Settings, Axis, Position, BarSeries, ScaleType, PointerEvent, LineSeries, CustomTooltip, TooltipType } from '../src';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 
 
@@ -59,16 +59,23 @@ export const Playground = () => {
       ref4.current.dispatchExternalPointerEvent(event);
     }
   };
-  const [show, toggleVisibility] = useState(true);
+
   return (
     <div className="testing">
       <button
         type="button"
         onClick={() => {
-          toggleVisibility(!show);
+          if (ref1.current) {
+            ref1.current.dispatchExternalPointerEvent({
+              chartId: 'chart1',
+              type: 'Over',
+              scale: 'time',
+              value: 1551438420000,
+            });
+          }
         }}
       >
-        hide/show
+        show external tooltip
 
       </button>
 
@@ -95,31 +102,28 @@ export const Playground = () => {
 
       </div>
 
-      {
-        show && (
-          <div className="chart">
-            <Chart className="story-chart" ref={ref1} id="chart2">
-              <Settings onPointerUpdate={pointerUpdate} externalPointerEvents={{ tooltip: { visible: true, boundary: 'chart' } }} />
-              <Axis
-                id="bottom"
-                position={Position.Bottom}
-                title="External tooltip VISIBLE - boundary => chart"
-              />
-              <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
+      <div className="chart">
+        <Chart className="story-chart" ref={ref1} id="chart2">
+          <Settings onPointerUpdate={pointerUpdate} externalPointerEvents={{ tooltip: { visible: true, boundary: 'chart' } }} />
+          <Axis
+            id="bottom"
+            position={Position.Bottom}
+            title="External tooltip VISIBLE - boundary => chart"
+          />
+          <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
-              <BarSeries
-                id="bars"
-                xScaleType={ScaleType.Time}
-                yScaleType={ScaleType.Linear}
-                xAccessor={0}
-                yAccessors={[1]}
-                data={KIBANA_METRICS.metrics.kibana_os_load[1].data}
-              />
-            </Chart>
+          <BarSeries
+            id="bars"
+            xScaleType={ScaleType.Time}
+            yScaleType={ScaleType.Linear}
+            xAccessor={0}
+            yAccessors={[1]}
+            data={KIBANA_METRICS.metrics.kibana_os_load[1].data}
+          />
+        </Chart>
 
-          </div>
-        )
-      }
+      </div>
+
 
       <div className="chart">
         <Chart className="story-chart" ref={ref3}>
@@ -127,6 +131,7 @@ export const Playground = () => {
             onPointerUpdate={pointerUpdate}
             externalPointerEvents={{ tooltip: { visible: true, boundary: 'chart' } }}
             tooltip={{
+              type: TooltipType.Follow,
               customTooltip: TestCustomTooltip,
             }}
           />

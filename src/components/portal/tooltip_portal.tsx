@@ -200,7 +200,6 @@ const TooltipPortalComponent = ({ anchor, scope, settings, children, visible, ch
   }, [updateAnchorDimensions, popper]);
 
   const className = classNames({ invisible });
-
   return createPortal(<div className={className}>{children}</div>, portalNode.current);
 };
 
