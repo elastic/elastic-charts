@@ -7,3 +7,8 @@
   position: absolute;
   pointer-events: none;
 }
+
+.echPortalInvisible {
+  position: fixed;
+  visibility: hidden;
+}
