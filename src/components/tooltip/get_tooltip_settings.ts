@@ -17,29 +17,21 @@
  * under the License.
  */
 
-import createCachedSelector from 're-reselect';
-
-import { TooltipSettings, isTooltipType } from '../../specs/settings';
-import { getChartIdSelector } from './get_chart_id';
-import { getSettingsSpecSelector } from './get_settings_specs';
-import { isExternalTooltipVisibleSelector } from './is_external_tooltip_visible';
+import { TooltipSettings, isTooltipType, SettingsSpec } from '../../specs/settings';
 
 /** @internal */
-export const getTooltipSettings = createCachedSelector(
-  [getSettingsSpecSelector, isExternalTooltipVisibleSelector],
-  (settings, isExternalTooltipVisible): TooltipSettings => {
-    if (!isExternalTooltipVisible) {
-      return settings.tooltip;
-    }
-    if (isTooltipType(settings.tooltip)) {
-      return {
-        type: settings.tooltip,
-        ...settings.externalPointerEvents.tooltip,
-      };
-    }
+export function getTooltipSettings(settings: SettingsSpec, isExternalTooltipVisible: boolean): TooltipSettings {
+  if (!isExternalTooltipVisible) {
+    return settings.tooltip;
+  }
+  if (isTooltipType(settings.tooltip)) {
     return {
-      ...settings.tooltip,
+      type: settings.tooltip,
       ...settings.externalPointerEvents.tooltip,
     };
   }
-)(getChartIdSelector);
+  return {
+    ...settings.tooltip,
+    ...settings.externalPointerEvents.tooltip,
+  };
+}

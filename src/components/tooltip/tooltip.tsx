@@ -31,18 +31,20 @@ import { getInternalIsInitializedSelector, InitStatus } from '../../state/select
 import { getInternalIsTooltipVisibleSelector } from '../../state/selectors/get_internal_is_tooltip_visible';
 import { getInternalTooltipAnchorPositionSelector } from '../../state/selectors/get_internal_tooltip_anchor_position';
 import { getInternalTooltipInfoSelector } from '../../state/selectors/get_internal_tooltip_info';
+import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
 import { getTooltipHeaderFormatterSelector } from '../../state/selectors/get_tooltip_header_formatter';
-import { getTooltipSettings } from '../../state/selectors/get_tooltip_settings';
 import { Rotation } from '../../utils/commons';
 import { TooltipPortal, PopperSettings, AnchorPosition, Placement } from '../portal';
+import { getTooltipSettings } from './get_tooltip_settings';
 import { TooltipInfo, TooltipAnchorPosition } from './types';
+
 
 interface TooltipDispatchProps {
   onPointerMove: typeof onPointerMoveAction;
 }
 
 interface TooltipStateProps {
-  isVisible: boolean;
+  visible: boolean;
   position: TooltipAnchorPosition | null;
   info?: TooltipInfo;
   headerFormatter?: TooltipValueFormatter;
@@ -64,7 +66,7 @@ const TooltipComponent = ({
   position,
   getChartContainerRef,
   settings,
-  isVisible,
+  visible,
   rotation,
   chartId,
   onPointerMove,
@@ -138,7 +140,7 @@ const TooltipComponent = ({
   );
 
   const renderTooltip = () => {
-    if (!info || !isVisible) {
+    if (!info || !visible) {
       return null;
     }
 
@@ -156,7 +158,7 @@ const TooltipComponent = ({
   };
 
   const anchorPosition = useMemo((): AnchorPosition | null => {
-    if (!position || !isVisible) {
+    if (!position || !visible) {
       return null;
     }
 
@@ -169,7 +171,7 @@ const TooltipComponent = ({
       top: y1 - height,
       height,
     };
-  }, [isVisible, position?.x0, position?.x1, position?.y0, position?.y1]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [visible, position?.x0, position?.x1, position?.y0, position?.y1]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const popperSettings = useMemo((): Partial<PopperSettings> | undefined => {
     if (typeof settings === 'string') {
@@ -199,7 +201,7 @@ const TooltipComponent = ({
       }}
       settings={popperSettings}
       chartId={chartId}
-      visible={isVisible}
+      visible={visible}
     >
       {renderTooltip()}
     </TooltipPortal>
@@ -209,7 +211,7 @@ const TooltipComponent = ({
 TooltipComponent.displayName = 'Tooltip';
 
 const HIDDEN_TOOLTIP_PROPS = {
-  isVisible: false,
+  visible: false,
   info: undefined,
   position: null,
   headerFormatter: undefined,
@@ -226,12 +228,15 @@ const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
   if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return HIDDEN_TOOLTIP_PROPS;
   }
+  const { visible, isExternal } = getInternalIsTooltipVisibleSelector(state);
+  const settings = getSettingsSpecSelector(state);
+
   return {
-    isVisible: getInternalIsTooltipVisibleSelector(state),
+    visible,
     info: getInternalTooltipInfoSelector(state),
     position: getInternalTooltipAnchorPositionSelector(state),
     headerFormatter: getTooltipHeaderFormatterSelector(state),
-    settings: getTooltipSettings(state),
+    settings: getTooltipSettings(settings, isExternal),
     rotation: getChartRotationSelector(state),
     chartId: state.chartId,
     backgroundColor: getChartThemeSelector(state).background.color,

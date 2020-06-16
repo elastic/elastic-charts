@@ -23,6 +23,7 @@ import React from 'react';
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings, PointerEvent, Placement, niceTimeFormatter } from '../../src';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
 import { palettes } from '../../src/utils/themes/colors';
+import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const Example = () => {
   const ref1 = React.createRef<Chart>();
@@ -100,5 +101,6 @@ Example.story = {
     info: {
       text: 'Sends an event every time the cursor changes. This is provided to sync cursors between multiple charts.',
     },
+    options: { selectedPanel: SB_SOURCE_PANEL },
   },
 };

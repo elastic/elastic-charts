@@ -65,6 +65,8 @@ function isTooltipVisible(
     && tooltip.values.length > 0
     && !isAnnotationTooltipVisible
   );
-
-  return isLocalTooltop || externalTooltipVisible;
+  return {
+    visible: isLocalTooltop || externalTooltipVisible,
+    isExternal: externalTooltipVisible,
+  };
 }
