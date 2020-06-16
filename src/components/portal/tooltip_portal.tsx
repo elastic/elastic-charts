@@ -200,7 +200,7 @@ const TooltipPortalComponent = ({ anchor, scope, settings, children, visible, ch
   }, [updateAnchorDimensions, popper]);
 
   return createPortal(
-    <div className={classNames({ echPortalInvisible: invisible })}>
+    <div className={classNames({ echTooltipPortal__invisible: invisible })}>
       {children}
     </div>,
     portalNode.current,
