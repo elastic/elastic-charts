@@ -572,7 +572,7 @@ export type ElementOverListener = (elements: Array<XYChartElementEvent | Partiti
 
 // @alpha
 export interface ExternalPointerEventsSettings {
-    tooltip?: {
+    tooltip: {
         visible?: boolean;
         placement?: Placement;
         fallbackPlacements?: Placement[];
@@ -1401,7 +1401,9 @@ export interface SettingsSpec extends Spec {
 // Warning: (ae-missing-release-tag) "SettingsSpecProps" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type SettingsSpecProps = Partial<Omit<SettingsSpec, 'chartType' | 'specType' | 'id'>>;
+export type SettingsSpecProps = Partial<Omit<SettingsSpec, 'chartType' | 'specType' | 'id' | 'externalPointerEvents'>> & {
+    externalPointerEvents?: RecursivePartial<SettingsSpec['externalPointerEvents']>;
+};
 
 // Warning: (ae-missing-release-tag) "SharedGeometryStateStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //

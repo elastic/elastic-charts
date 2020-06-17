@@ -187,7 +187,7 @@ export interface TooltipProps {
 }
 
 /**
- * Either a TooltipType or an object with configuration of type, snap, and/or headerFormatter
+ * Either a {@link (TooltipType:type)} or an {@link (TooltipProps:interface)} configuration
  * @public
  */
 export type TooltipSettings = TooltipType | TooltipProps;
@@ -206,21 +206,17 @@ export interface ExternalPointerEventsSettings {
      * external pointer event, 'false' to hide the tooltip.
      * @defaultValue `false`
      */
-    visible: boolean;
+    visible?: boolean;
     /**
      * {@inheritDoc TooltipProps.placement}
-     * Fallbacks to tooltip placement
      */
     placement?: Placement;
     /**
      * {@inheritDoc TooltipProps.fallbackPlacements}
-     * Fallbacks to tooltip fallbackPlacements
      */
     fallbackPlacements?: Placement[];
     /**
      * {@inheritDoc TooltipProps.boundary}
-     * @defaultValue undefined
-     * Fallbacks to tooltip boundary default
      */
     boundary?: HTMLElement | 'chart';
   }
@@ -283,7 +279,7 @@ export interface SettingsSpec extends Spec {
   animateData: boolean;
   showLegend: boolean;
   /**
-   * The tooltip configuration forr the chart {@link TooltipSettings}
+   * The tooltip configuration {@link TooltipSettings}
    */
   tooltip: TooltipSettings;
   /**
@@ -419,7 +415,8 @@ export function getTooltipType(settings: SettingsSpec, externalTooltip = false):
 
 /**
  * Always return a Vertical Cursor for external pointer events or None if hidden
- * @param settings SettingsSpec
+ * @internal
+ * @param settings - the SettingsSpec
  */
 export function getExternalTooltipType({ externalPointerEvents: { tooltip: { visible } } }: SettingsSpec): TooltipType {
   return visible ? TooltipType.VerticalCursor : TooltipType.None;
