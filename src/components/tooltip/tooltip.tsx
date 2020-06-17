@@ -229,14 +229,14 @@ const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
     return HIDDEN_TOOLTIP_PROPS;
   }
   const { visible, isExternal } = getInternalIsTooltipVisibleSelector(state);
-  const settings = getSettingsSpecSelector(state);
-
+  const settingsSpec = getSettingsSpecSelector(state);
+  const settings = getTooltipSettings(settingsSpec, isExternal);
   return {
     visible,
     info: getInternalTooltipInfoSelector(state),
     position: getInternalTooltipAnchorPositionSelector(state),
     headerFormatter: getTooltipHeaderFormatterSelector(state),
-    settings: getTooltipSettings(settings, isExternal),
+    settings,
     rotation: getChartRotationSelector(state),
     chartId: state.chartId,
     backgroundColor: getChartThemeSelector(state).background.color,

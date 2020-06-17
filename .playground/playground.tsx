@@ -65,22 +65,37 @@ export const Playground = () => {
       <button
         type="button"
         onClick={() => {
+          // if (ref1.current) {
+          //   ref1.current.dispatchExternalPointerEvent({
+          //     chartId: 'chart1',
+          //     type: 'Over',
+          //     scale: 'time',
+          //     value: 1551438420000,
+          //   });
+          // }
           if (ref1.current) {
-            ref1.current.dispatchExternalPointerEvent({
-              chartId: 'chart1',
-              type: 'Over',
-              scale: 'time',
-              value: 1551438420000,
-            });
+            ref1.current.dispatchExternalPointerEvent({ chartId: 'chart2', type: 'Over', unit: undefined, scale: 'time', value: 1551439800000 });
           }
         }}
       >
-        show external tooltip
+        out
+
+      </button>
+
+      <button
+        type="button"
+        onClick={() => {
+          if (ref1.current) {
+            ref1.current.dispatchExternalPointerEvent({ chartId: 'chart2', type: 'Over', unit: undefined, scale: 'time', value: 1551439770000 });
+          }
+        }}
+      >
+        valid
 
       </button>
 
       <div className="chart">
-        <Chart className="story-chart" ref={ref2} id="chart1">
+        <Chart className="story-chart" ref={ref1} id="chart1">
           <Settings onPointerUpdate={pointerUpdate} externalPointerEvents={{ tooltip: { visible: true } }} />
           <Axis
             id="bottom"
@@ -103,7 +118,7 @@ export const Playground = () => {
       </div>
 
       <div className="chart">
-        <Chart className="story-chart" ref={ref1} id="chart2">
+        <Chart className="story-chart" ref={ref2} id="chart2">
           <Settings onPointerUpdate={pointerUpdate} externalPointerEvents={{ tooltip: { visible: true, boundary: 'chart' } }} />
           <Axis
             id="bottom"
