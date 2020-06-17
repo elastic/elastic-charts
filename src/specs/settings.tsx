@@ -171,7 +171,7 @@ export interface TooltipProps {
    *
    * `'chart'` will use the chart container as the boundary
    *
-   * @defaultValue parent scroll container
+   * @defaultValue undefined - parent scroll container
    */
   boundary?: HTMLElement | 'chart';
   /**
@@ -208,18 +208,21 @@ export interface ExternalPointerEventsSettings {
      */
     visible: boolean;
     /**
-     *  {@inheritDoc TooltipProps.placement}
+     * {@inheritDoc TooltipProps.placement}
+     * Fallbacks to tooltip placement
      */
-    placement: Placement;
+    placement?: Placement;
     /**
-     *  {@inheritDoc TooltipProps.fallbackPlacements}
+     * {@inheritDoc TooltipProps.fallbackPlacements}
+     * Fallbacks to tooltip fallbackPlacements
      */
-    fallbackPlacements: Placement[];
+    fallbackPlacements?: Placement[];
     /**
-     *  {@inheritDoc TooltipProps.boundary}
-     * @defaultValue `chart`
+     * {@inheritDoc TooltipProps.boundary}
+     * @defaultValue undefined
+     * Fallbacks to tooltip boundary default
      */
-    boundary: HTMLElement | 'chart';
+    boundary?: HTMLElement | 'chart';
   }
 
 }

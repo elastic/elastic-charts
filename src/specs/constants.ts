@@ -20,7 +20,6 @@
 import { $Values } from 'utility-types';
 
 import { ChartTypes } from '../chart_types';
-import { Placement } from '../components/portal/types';
 import { Position } from '../utils/commons';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { SettingsSpec } from './settings';
@@ -97,9 +96,6 @@ export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
   externalPointerEvents: {
     tooltip: {
       visible: false,
-      boundary: 'chart',
-      fallbackPlacements: [Placement.Right, Placement.Left, Placement.Top, Placement.Bottom],
-      placement: Placement.Right,
     },
   },
   legendPosition: Position.Right,
