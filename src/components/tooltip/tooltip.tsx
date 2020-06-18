@@ -191,7 +191,9 @@ const TooltipComponent = ({
       boundary: boundary === 'chart' && chartRef.current ? chartRef.current : undefined,
     };
   }, [settings, chartRef, rotation]);
-
+  if (!visible) {
+    return null;
+  }
   return (
     <TooltipPortal
       scope="MainTooltip"
@@ -229,6 +231,9 @@ const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
     return HIDDEN_TOOLTIP_PROPS;
   }
   const { visible, isExternal } = getInternalIsTooltipVisibleSelector(state);
+  if (state.chartId === 'chart4') {
+    // console.log(visible, isExternal);
+  }
   const settingsSpec = getSettingsSpecSelector(state);
   const settings = getTooltipSettings(settingsSpec, isExternal);
   return {

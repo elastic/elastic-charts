@@ -59,15 +59,18 @@ const TooltipPortalComponent = ({ anchor, scope, settings, children, visible, ch
   /**
    * Anchor element used to position tooltip
    */
-  const anchorNode = useRef(
-    isHTMLElement(anchor) ? anchor : getOrCreateNode(`echAnchor${scope}__${chartId}`, anchor?.ref ?? undefined),
+  const anchorNode = useRef(isHTMLElement(anchor)
+    ? anchor
+    : getOrCreateNode(`echAnchor${scope}__${chartId}`, undefined, anchor?.ref ?? undefined),
   );
 
   /**
    * This must not be removed from DOM throughout life of this component.
    * Otherwise the portal will loose reference to the correct node.
    */
-  const portalNode = useRef(getOrCreateNode(`echTooltipPortal${scope}__${chartId}`));
+  const portalNodeElement = getOrCreateNode(`echTooltipPortal${scope}__${chartId}`, 'echTooltipPortal__invisible');
+
+  const portalNode = useRef(portalNodeElement);
 
   /**
    * Popper instance used to manage position of tooltip.
@@ -76,6 +79,7 @@ const TooltipPortalComponent = ({ anchor, scope, settings, children, visible, ch
 
   const popperSettings = useMemo(
     () => mergePartial(DEFAULT_POPPER_SETTINGS, settings, { mergeOptionalPartialValues: true }),
+
     [settings],
   );
 

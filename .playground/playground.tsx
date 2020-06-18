@@ -19,7 +19,19 @@
 
 import React from 'react';
 
-import { Chart, Settings, Axis, Position, BarSeries, ScaleType, PointerEvent, LineSeries, CustomTooltip, TooltipType } from '../src';
+import {
+  Chart,
+  Settings,
+  Axis,
+  Position,
+  BarSeries,
+  ScaleType,
+  PointerEvent,
+  LineSeries,
+  CustomTooltip,
+  TooltipType,
+  LineAnnotation, AnnotationDomainTypes,
+} from '../src';
 import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 
 
@@ -104,7 +116,12 @@ export const Playground = () => {
 
           />
           <Axis id="left2" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
-
+          <LineAnnotation
+            marker={<div>Hello</div>}
+            dataValues={[{ dataValue: KIBANA_METRICS.metrics.kibana_os_load[0].data[10][0], details: 'hello' }]}
+            id="test"
+            domainType={AnnotationDomainTypes.XDomain}
+          />
           <BarSeries
             id="bars"
             xScaleType={ScaleType.Time}
@@ -177,8 +194,8 @@ export const Playground = () => {
       </div>
 
       <div className="chart">
-        <Chart className="story-chart" ref={ref4}>
-          <Settings onPointerUpdate={pointerUpdate} externalPointerEvents={{ tooltip: { visible: false } }} />
+        <Chart className="story-chart" ref={ref4} id="chart4">
+          <Settings onPointerUpdate={pointerUpdate} tooltip={{ type: TooltipType.None }} externalPointerEvents={{ tooltip: { visible: false } }} />
           <Axis
             id="bottom"
             position={Position.Bottom}
