@@ -108,9 +108,13 @@ export function computeDomainExtent(
 export function computeContinuousDataDomain(
   data: any[],
   accessor: (n: any) => number,
-  domainOptions?: YDomainRange,
+  domainOptions?: YDomainRange | null,
 ): number[] {
   const range = extent<any, number>(data, accessor);
+
+  if (domainOptions === null) {
+    return [range[0] ?? 0, range[1] ?? 0];
+  }
 
   return computeDomainExtent(range, domainOptions);
 }

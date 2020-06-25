@@ -106,14 +106,11 @@ function mergeYDomainForGroup(
 
     // compute stacked domain
     const stackedDataSeries = getDataSeriesOnGroup(dataSeries, groupSpecs.stacked);
-    const stackedDomain = computeYStackedDomain(stackedDataSeries, customDomain);
+    const stackedDomain = computeYStackedDomain(stackedDataSeries);
 
     // compute non stacked domain
     const nonStackedDataSeries = getDataSeriesOnGroup(dataSeries, groupSpecs.nonStacked);
-    const nonStackedDomain = computeYNonStackedDomain(
-      nonStackedDataSeries,
-      customDomain,
-    );
+    const nonStackedDomain = computeYNonStackedDomain(nonStackedDataSeries);
 
     // merge stacked and non stacked domain together
     domain = computeContinuousDataDomain(
@@ -161,10 +158,7 @@ export function getDataSeriesOnGroup(
   }, [] as RawDataSeries[]);
 }
 
-function computeYStackedDomain(
-  dataseries: RawDataSeries[],
-  domainOptions?: YDomainRange,
-): number[] {
+function computeYStackedDomain(dataseries: RawDataSeries[]): number[] {
   const stackMap = new Map<any, any[]>();
   dataseries.forEach((ds, index) => {
     ds.data.forEach((datum) => {
@@ -184,10 +178,10 @@ function computeYStackedDomain(
   if (dataValues.length === 0) {
     return [];
   }
-  return computeContinuousDataDomain(dataValues, identity, domainOptions);
+  return computeContinuousDataDomain(dataValues, identity, null);
 }
 
-function computeYNonStackedDomain(dataseries: RawDataSeries[], domainOptions?: YDomainRange) {
+function computeYNonStackedDomain(dataseries: RawDataSeries[]) {
   const yValues = new Set<any>();
   dataseries.forEach((ds) => {
     ds.data.forEach((datum) => {
@@ -200,7 +194,7 @@ function computeYNonStackedDomain(dataseries: RawDataSeries[], domainOptions?: Y
   if (yValues.size === 0) {
     return [];
   }
-  return computeContinuousDataDomain([...yValues.values()], identity, domainOptions);
+  return computeContinuousDataDomain([...yValues.values()], identity, null);
 }
 
 /** @internal */

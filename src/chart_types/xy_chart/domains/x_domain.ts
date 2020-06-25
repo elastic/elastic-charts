@@ -56,7 +56,7 @@ export function mergeXDomain(
       }
     }
   } else {
-    seriesXComputedDomains = computeContinuousDataDomain(values, identity, { fit: true });
+    seriesXComputedDomains = computeContinuousDataDomain(values, identity, { fit: false });
     let customMinInterval: undefined | number;
     if (!isNumberArray(values)) {
       throw new Error(

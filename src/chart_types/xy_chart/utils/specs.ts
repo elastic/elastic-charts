@@ -240,7 +240,7 @@ interface DomainBase {
  * Domain option that **only** apply to `yDomains`.
  */
 interface YDomainBase {
-    /**
+  /**
    * Whether to fit the domain to the data.
    *
    * Setting `max` or `min` will override this functionality.

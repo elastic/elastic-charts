@@ -21,7 +21,14 @@ import { boolean, select, text } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType } from '../../src';
+import { computeContinuousDataDomain } from '../../src/utils/domain';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
+
+const logDomains = (data: any[], customDomain: any) => {
+  console.clear();
+  console.log('data domain:', JSON.stringify(computeContinuousDataDomain(data, (d) => d.y)));
+  console.log('computed domain:', JSON.stringify(computeContinuousDataDomain(data, (d) => d.y, customDomain)));
+};
 
 export const Example = () => {
   const yScaleToDataExtent = boolean('yScaleDataToExtent', false);
@@ -47,20 +54,35 @@ export const Example = () => {
     },
     'all negative',
   );
+  const shouldLogDomains = boolean('console log domains', true);
 
-  let data = mixed;
+  let data;
   switch (dataChoice) {
     case 'all positive':
       data = allPositive;
       break;
     case 'all negative':
-    default:
       data = allNegative;
+      break;
+    default:
+      data = mixed;
   }
+  const customDomain = { fit, padding, constrainPadding };
+
+  if (shouldLogDomains) {
+    logDomains(data, customDomain);
+  }
+
   return (
     <Chart className="story-chart">
       <Axis id="top" position={Position.Top} title="Top axis" />
-      <Axis id="left2" domain={{ fit, padding, constrainPadding }} title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
+      <Axis
+        id="left2"
+        domain={customDomain}
+        title="Left axis"
+        position={Position.Left}
+        tickFormat={(d: any) => Number(d).toFixed(2)}
+      />
 
       <BarSeries
         id="bars"
