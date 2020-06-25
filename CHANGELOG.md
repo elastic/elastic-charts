@@ -1,3 +1,41 @@
+# [19.6.0](https://github.com/elastic/elastic-charts/compare/v19.5.2...v19.6.0) (2020-06-24)
+
+
+### Features
+
+* show tooltip for external events ([#698](https://github.com/elastic/elastic-charts/issues/698)) ([cc31739](https://github.com/elastic/elastic-charts/commit/cc31739a2d2d5173ded3780f1d23890714fb61b3)), closes [#695](https://github.com/elastic/elastic-charts/issues/695)
+
+## [19.5.2](https://github.com/elastic/elastic-charts/compare/v19.5.1...v19.5.2) (2020-06-16)
+
+
+### Bug Fixes
+
+* apply fixed positioning to hidden tooltip ([#716](https://github.com/elastic/elastic-charts/issues/716)) ([12b1135](https://github.com/elastic/elastic-charts/commit/12b1135fa6a965eda17a0235d2b639a19b19df54))
+
+## [19.5.1](https://github.com/elastic/elastic-charts/compare/v19.5.0...v19.5.1) (2020-06-16)
+
+
+### Bug Fixes
+
+* graceful scale fallbacks and warnings ([#704](https://github.com/elastic/elastic-charts/issues/704)) ([ed49bbb](https://github.com/elastic/elastic-charts/commit/ed49bbbb5afd69a5d771fff29e9fc7742153d94e)), closes [#678](https://github.com/elastic/elastic-charts/issues/678)
+* **axis:** rotated label positioning ([#709](https://github.com/elastic/elastic-charts/issues/709)) ([2e26430](https://github.com/elastic/elastic-charts/commit/2e264305b0427969e6ffd6bfd2a21a0200ddd004)), closes [#673](https://github.com/elastic/elastic-charts/issues/673)
+* **tooltip:** popper scroll issue ([#712](https://github.com/elastic/elastic-charts/issues/712)) ([0c97c67](https://github.com/elastic/elastic-charts/commit/0c97c677af5133efa1017afa7141111667bf9d56))
+
+# [19.5.0](https://github.com/elastic/elastic-charts/compare/v19.4.1...v19.5.0) (2020-06-15)
+
+
+### Bug Fixes
+
+* **tooltip:** show true opaque colors in tooltips ([#629](https://github.com/elastic/elastic-charts/issues/629)) ([23290be](https://github.com/elastic/elastic-charts/commit/23290be8d58a46cfe5b9144c54fc849fabcb6abc)), closes [#628](https://github.com/elastic/elastic-charts/issues/628)
+* path of stacked area series with missing values ([#703](https://github.com/elastic/elastic-charts/issues/703)) ([2541180](https://github.com/elastic/elastic-charts/commit/2541180b1a477aa637120ce225c59e0f8cbd5aa4))
+* remove double rendering ([#693](https://github.com/elastic/elastic-charts/issues/693)) ([ebf2748](https://github.com/elastic/elastic-charts/commit/ebf2748b47e098197b87fe43cc6ec452443207fb)), closes [#690](https://github.com/elastic/elastic-charts/issues/690)
+
+
+### Features
+
+* **partition:** add 4.5 contrast for text in partition slices ([#608](https://github.com/elastic/elastic-charts/issues/608)) ([eded2ac](https://github.com/elastic/elastic-charts/commit/eded2ac7da909a0bd279c7f38bb83d0b713a01be)), closes [#606](https://github.com/elastic/elastic-charts/issues/606)
+* add screenshot functions to partition/goal ([#697](https://github.com/elastic/elastic-charts/issues/697)) ([5581c3c](https://github.com/elastic/elastic-charts/commit/5581c3c8fdc3730892402fa1c5cc2a068012eaf8))
+
 ## [19.4.1](https://github.com/elastic/elastic-charts/compare/v19.4.0...v19.4.1) (2020-06-01)
 
 
