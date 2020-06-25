@@ -1,7 +1,7 @@
 ---
 - job:
     name: elastic+elastic-charts+pr-license-scan
-    display-name: 'elastic / elastic-charts # pull-request test'
+    display-name: 'elastic / elastic-charts # pull-request license scan'
     description: Testing of elastic-charts pull requests.
     builders:
       - shell: |-
