@@ -64,7 +64,7 @@ export function mergeXDomain(
       }
     }
   } else {
-    seriesXComputedDomains = computeContinuousDataDomain(values, identity, { fit: false });
+    seriesXComputedDomains = computeContinuousDataDomain(values, identity, { fit: true });
     let customMinInterval: undefined | number;
 
     if (customXDomain) {

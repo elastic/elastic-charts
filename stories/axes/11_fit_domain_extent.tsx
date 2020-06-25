@@ -48,7 +48,7 @@ export const Example = () => {
   const dataset = dataTypes[dataKey];
   const fit = boolean('fit Y domain to data', true);
   const constrainPadding = boolean('constrain padding', true);
-  const padding = text('domain padding', '8%');
+  const padding = text('domain padding', '10%');
 
   return (
     <Chart className="story-chart">
