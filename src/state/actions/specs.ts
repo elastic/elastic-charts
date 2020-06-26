@@ -72,18 +72,12 @@ export function specParsed(): SpecParsedAction {
 }
 
 /** @internal */
-export function specParsing(): SpecParsingAction {
-  return { type: SPEC_PARSING };
-}
-
-/** @internal */
 export function specUnmounted(): SpecUnmountedAction {
   return { type: SPEC_UNMOUNTED };
 }
 
 /** @internal */
 export type SpecActions =
-  | SpecParsingAction
   | SpecParsedAction
   | SpecUnmountedAction
   | UpsertSpecAction
