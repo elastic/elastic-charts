@@ -178,6 +178,7 @@ export interface GlobalChartState {
    * true when all all the specs are parsed ad stored into the specs object
    */
   specsInitialized: boolean;
+  specParsing: boolean;
   /**
    * true if the chart is rendered on dom
    */
@@ -220,6 +221,7 @@ export interface GlobalChartState {
 export const getInitialState = (chartId: string): GlobalChartState => ({
   chartId,
   specsInitialized: false,
+  specParsing: false,
   chartRendered: false,
   chartRenderedCount: 0,
   specs: {
@@ -274,22 +276,16 @@ export const chartStoreReducer = (chartId: string) => {
           return {
             ...state,
             specsInitialized: true,
+            specParsing: false,
             chartType,
             internalChartState,
-            specs: {
-              ...state.specs,
-              [DEFAULT_SETTINGS_SPEC.id]: state.specs[DEFAULT_SETTINGS_SPEC.id] ?? DEFAULT_SETTINGS_SPEC,
-            },
           };
         }
         return {
           ...state,
           specsInitialized: true,
+          specParsing: false,
           chartType,
-          specs: {
-            ...state.specs,
-            [DEFAULT_SETTINGS_SPEC.id]: state.specs[DEFAULT_SETTINGS_SPEC.id] ?? DEFAULT_SETTINGS_SPEC,
-          },
         };
 
       case SPEC_UNMOUNTED:
@@ -299,6 +295,18 @@ export const chartStoreReducer = (chartId: string) => {
           chartRendered: false,
         };
       case UPSERT_SPEC:
+        if (!state.specParsing) {
+          return {
+            ...state,
+            specsInitialized: false,
+            chartRendered: false,
+            specParsing: true,
+            specs: {
+              [DEFAULT_SETTINGS_SPEC.id]: DEFAULT_SETTINGS_SPEC,
+              [action.spec.id]: action.spec,
+            },
+          };
+        }
         return {
           ...state,
           specsInitialized: false,
