@@ -17,17 +17,16 @@
  * under the License.
  */
 
-import { createStore, Store } from 'redux';
+import { Store } from 'redux';
 
 import { ChartTypes } from '../..';
+import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
 import { SettingsSpec, XYBrushArea } from '../../../specs';
 import { SpecTypes, DEFAULT_SETTINGS_SPEC, TooltipType, BrushAxis } from '../../../specs/constants';
-import { updateParentDimensions } from '../../../state/actions/chart_settings';
 import { onExternalPointerEvent } from '../../../state/actions/events';
 import { onPointerMove, onMouseDown, onMouseUp } from '../../../state/actions/mouse';
-import { upsertSpec, specParsed } from '../../../state/actions/specs';
-import { chartStoreReducer, GlobalChartState } from '../../../state/chart_state';
+import { GlobalChartState } from '../../../state/chart_state';
 import { getSettingsSpecSelector } from '../../../state/selectors/get_settings_specs';
 import { Position } from '../../../utils/commons';
 import { BarSeriesSpec, BasicSeriesSpec, AxisSpec, SeriesTypes } from '../utils/specs';
@@ -97,14 +96,8 @@ const settingSpec: SettingsSpec = {
 };
 
 function initStore(spec: BasicSeriesSpec) {
-  const storeReducer = chartStoreReducer('chartId');
-  const store = createStore(storeReducer);
-
-  store.dispatch(upsertSpec(settingSpec));
-  store.dispatch(upsertSpec(spec));
-  store.dispatch(specParsed());
-  store.dispatch(updateParentDimensions({ width: 100, height: 100, top: chartTop, left: chartLeft }));
-
+  const store = MockStore.default({ width: 100, height: 100, top: chartTop, left: chartLeft }, 'chartId');
+  MockStore.addSpecs([settingSpec, spec], store);
   return store;
 }
 
@@ -212,8 +205,8 @@ describe('Chart state pointer interactions', () => {
       ...settingSpec,
       onElementOut: onOutListener,
     };
-    store.dispatch(upsertSpec(settingsWithListeners));
-    store.dispatch(specParsed());
+
+    MockStore.addSpecs([ordinalBarSeries, settingsWithListeners], store);
     // registering the out/over listener caller
     store.subscribe(() => {
       onElementOutCaller(store.getState());
@@ -236,8 +229,7 @@ describe('Chart state pointer interactions', () => {
         type: TooltipType.None,
       },
     };
-    store.dispatch(upsertSpec(updatedSettings));
-    store.dispatch(specParsed());
+    MockStore.addSpecs([ordinalBarSeries, updatedSettings], store);
     store.dispatch(onPointerMove({ x: 10, y: 10 + 70 }, 0));
     const tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
     // no tooltip values exist if we have a TooltipType === None
@@ -251,8 +243,7 @@ describe('Chart state pointer interactions', () => {
         type: TooltipType.Follow,
       },
     };
-    store.dispatch(upsertSpec(updatedSettings));
-    store.dispatch(specParsed());
+    MockStore.addSpecs([ordinalBarSeries, updatedSettings], store);
     store.dispatch(onPointerMove({ x: 10, y: 10 + 70 }, 1));
     const { geometriesIndex } = computeSeriesGeometriesSelector(store.getState());
     expect(geometriesIndex.size).toBe(2);
@@ -291,8 +282,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
       onElementOut: onOutListener,
       onPointerUpdate: onPointerUpdateListener,
     };
-    store.dispatch(upsertSpec(settingsWithListeners));
-    store.dispatch(specParsed());
+    MockStore.addSpecs([spec, settingsWithListeners], store);
     const onElementOutCaller = createOnElementOutCaller();
     const onElementOverCaller = createOnElementOverCaller();
     const onPointerMoveCaller = createOnPointerMoveCaller();
@@ -735,8 +725,11 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     });
   });
   describe('can format tooltip values on rotated chart', () => {
+    let leftAxis: AxisSpec;
+    let bottomAxis: AxisSpec;
+    let currentSettingSpec: SettingsSpec;
     beforeEach(() => {
-      const leftAxis: AxisSpec = {
+      leftAxis = {
         chartType: ChartTypes.XYAxis,
         specType: SpecTypes.Axis,
         hide: true,
@@ -749,7 +742,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
         tickPadding: 0,
         tickSize: 0,
       };
-      const bottomAxis: AxisSpec = {
+      bottomAxis = {
         chartType: ChartTypes.XYAxis,
         specType: SpecTypes.Axis,
         hide: true,
@@ -762,11 +755,11 @@ function mouseOverTestSuite(scaleType: ScaleType) {
         tickPadding: 0,
         tickSize: 0,
       };
-      store.dispatch(upsertSpec(leftAxis));
-      store.dispatch(upsertSpec(bottomAxis));
-      store.dispatch(specParsed());
+      currentSettingSpec = getSettingsSpecSelector(store.getState());
     });
+
     test('chart 0 rotation', () => {
+      MockStore.addSpecs([spec, leftAxis, bottomAxis, currentSettingSpec], store);
       store.dispatch(onPointerMove({ x: chartLeft + 0, y: chartTop + 89 }, 0));
       const tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
       expect(tooltipInfo.tooltip.header?.value).toBe('bottom 0');
@@ -774,13 +767,12 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     });
 
     test('chart 90 deg rotated', () => {
-      const settings = getSettingsSpecSelector(store.getState());
       const updatedSettings: SettingsSpec = {
-        ...settings,
+        ...currentSettingSpec,
         rotation: 90,
       };
-      store.dispatch(upsertSpec(updatedSettings));
-      store.dispatch(specParsed());
+      MockStore.addSpecs([spec, leftAxis, bottomAxis, updatedSettings], store);
+
       store.dispatch(onPointerMove({ x: chartLeft + 0, y: chartTop + 89 }, 0));
       const tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
       expect(tooltipInfo.tooltip.header?.value).toBe('left 1');
@@ -808,19 +800,15 @@ function mouseOverTestSuite(scaleType: ScaleType) {
         },
         onBrushEnd: brushEndListener,
       };
-      store.dispatch(upsertSpec(updatedSettings));
-      store.dispatch(
-        upsertSpec({
-          ...spec,
-          data: [
-            [0, 1],
-            [1, 1],
-            [2, 2],
-            [3, 3],
-          ],
-        } as BarSeriesSpec),
-      );
-      store.dispatch(specParsed());
+      MockStore.addSpecs([{
+        ...spec,
+        data: [
+          [0, 1],
+          [1, 1],
+          [2, 2],
+          [3, 3],
+        ],
+      } as BarSeriesSpec, updatedSettings], store);
 
       const start1 = { x: 0, y: 0 };
       const end1 = { x: 75, y: 0 };
@@ -892,8 +880,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
         },
         onBrushEnd: brushEndListener,
       };
-      store.dispatch(upsertSpec(updatedSettings));
-      store.dispatch(specParsed());
+      MockStore.addSpecs([spec, updatedSettings], store);
 
       const start1 = { x: 0, y: 25 };
       const end1 = { x: 0, y: 75 };
@@ -965,19 +952,15 @@ function mouseOverTestSuite(scaleType: ScaleType) {
         },
         onBrushEnd: brushEndListener,
       };
-      store.dispatch(upsertSpec(updatedSettings));
-      store.dispatch(
-        upsertSpec({
-          ...spec,
-          data: [
-            [0, 1],
-            [1, 1],
-            [2, 2],
-            [3, 3],
-          ],
-        } as BarSeriesSpec),
-      );
-      store.dispatch(specParsed());
+      MockStore.addSpecs([{
+        ...spec,
+        data: [
+          [0, 1],
+          [1, 1],
+          [2, 2],
+          [3, 3],
+        ],
+      } as BarSeriesSpec, updatedSettings], store);
 
       const start1 = { x: 0, y: 0 };
       const end1 = { x: 0, y: 75 };
@@ -1039,19 +1022,15 @@ function mouseOverTestSuite(scaleType: ScaleType) {
         },
         onBrushEnd: brushEndListener,
       };
-      store.dispatch(upsertSpec(updatedSettings));
-      store.dispatch(
-        upsertSpec({
-          ...spec,
-          data: [
-            [0, 1],
-            [1, 1],
-            [2, 2],
-            [3, 3],
-          ],
-        } as BarSeriesSpec),
-      );
-      store.dispatch(specParsed());
+      MockStore.addSpecs([{
+        ...spec,
+        data: [
+          [0, 1],
+          [1, 1],
+          [2, 2],
+          [3, 3],
+        ],
+      } as BarSeriesSpec, updatedSettings], store);
 
       const start1 = { x: 0, y: 0 };
       const end1 = { x: 75, y: 75 };
