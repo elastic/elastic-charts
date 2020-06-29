@@ -1,7 +1,7 @@
 ---
 - job:
-    name: elastic+elastic-charts+pr-license-scan
-    display-name: 'elastic / elastic-charts # pull-request license scan'
+    name: elastic+elastic-charts+pr-test
+    display-name: 'elastic / elastic-charts # pull-request test'
     description: Testing of elastic-charts pull requests.
     builders:
       - shell: |-
@@ -16,4 +16,4 @@
           unset VAULT_TOKEN
           set -x
 
-          ./.ci/scripts/license_scan.sh
+          ./.ci/scripts/unit_tests.sh

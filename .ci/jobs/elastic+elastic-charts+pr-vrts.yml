@@ -1,8 +1,8 @@
 ---
 - job:
-    name: elastic+elastic-charts+pr-test
-    display-name: 'elastic / elastic-charts # pull-request test'
-    description: Testing of elastic-charts pull requests.
+    name: elastic+elastic-charts+pr-vrt
+    display-name: 'elastic / elastic-charts # pull-request VRTs'
+    description: Visual Regression Testing of elastic-charts pull requests.
     builders:
       - shell: |-
           #!/usr/local/bin/runbld
@@ -16,4 +16,4 @@
           unset VAULT_TOKEN
           set -x
 
-          ./.ci/run_tests.sh
+          ./.ci/scripts/vrts.sh

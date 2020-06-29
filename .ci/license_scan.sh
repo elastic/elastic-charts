@@ -5,12 +5,7 @@
 ###
 source global_setup.sh
 
-
 ###
-### install dependencies
+### run FOSSA license check
 ###
-echo " -- installing dependencies"
-yarn install --frozen-lockfile
-
-
 fossa analyze --output

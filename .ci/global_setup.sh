@@ -84,3 +84,9 @@ yarn config set yarn-offline-mirror "$cacheDir/yarn-offline-cache"
 ###
 yarnGlobalDir="$(yarn global bin)"
 export PATH="$PATH:$yarnGlobalDir"
+
+###
+### install dependencies
+###
+echo " -- installing dependencies"
+yarn install --frozen-lockfile
