@@ -94,14 +94,11 @@ function mergeYDomainForGroup(
     domain = computeContinuousDataDomain([0, 1], identity, customDomain);
   } else {
     // TODO remove when removing yScaleToDataExtent
+    const newCustomDomain = customDomain ? { ...customDomain } : {};
     const shouldScaleToExtent = groupSpecs.stacked.some(({ yScaleToDataExtent }) => yScaleToDataExtent)
       || groupSpecs.nonStacked.some(({ yScaleToDataExtent }) => yScaleToDataExtent);
     if (customDomain?.fit !== true && shouldScaleToExtent) {
-      if (!customDomain) {
-        customDomain = {};
-      }
-
-      customDomain.fit = true;
+      newCustomDomain.fit = true;
     }
 
     // compute stacked domain
@@ -116,26 +113,26 @@ function mergeYDomainForGroup(
     domain = computeContinuousDataDomain(
       [...stackedDomain, ...nonStackedDomain],
       identity,
-      customDomain,
+      newCustomDomain,
     );
 
     const [computedDomainMin, computedDomainMax] = domain;
 
-    if (customDomain && isCompleteBound(customDomain)) {
+    if (newCustomDomain && isCompleteBound(newCustomDomain)) {
       // Don't need to check min > max because this has been validated on axis domain merge
-      domain = [customDomain.min, customDomain.max];
-    } else if (customDomain && isLowerBound(customDomain)) {
-      if (customDomain.min > computedDomainMax) {
+      domain = [newCustomDomain.min, newCustomDomain.max];
+    } else if (newCustomDomain && isLowerBound(newCustomDomain)) {
+      if (newCustomDomain.min > computedDomainMax) {
         throw new Error(`custom yDomain for ${groupId} is invalid, custom min is greater than computed max`);
       }
 
-      domain = [customDomain.min, computedDomainMax];
-    } else if (customDomain && isUpperBound(customDomain)) {
-      if (computedDomainMin > customDomain.max) {
+      domain = [newCustomDomain.min, computedDomainMax];
+    } else if (newCustomDomain && isUpperBound(newCustomDomain)) {
+      if (computedDomainMin > newCustomDomain.max) {
         throw new Error(`custom yDomain for ${groupId} is invalid, computed min is greater than custom max`);
       }
 
-      domain = [computedDomainMin, customDomain.max];
+      domain = [computedDomainMin, newCustomDomain.max];
     }
   }
   return {

@@ -104,7 +104,12 @@ export function computeDomainExtent(
   return [0, 0];
 }
 
-/** @internal */
+/**
+ * Get Continuous domain from data. May alters domain to constrain to zero baseline.
+ *
+ * when `domainOptions` is null the domain will not be altered
+ * @internal
+ */
 export function computeContinuousDataDomain(
   data: any[],
   accessor: (n: any) => number,
