@@ -1,6 +1,6 @@
 ---
 - job:
-    name: elastic+elastic-charts+pr-test
+    name: elastic+elastic-charts+pr-unit-tests
     display-name: 'elastic / elastic-charts # pull-request test'
     description: Testing of elastic-charts pull requests.
     builders:
@@ -16,4 +16,4 @@
           unset VAULT_TOKEN
           set -x
 
-          ./.ci/scripts/unit_tests.sh
+          ./.ci/unit_tests.sh
