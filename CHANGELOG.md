@@ -1,3 +1,24 @@
+## [19.6.2](https://github.com/elastic/elastic-charts/compare/v19.6.1...v19.6.2) (2020-06-29)
+
+
+### Bug Fixes
+
+* react/redux issue with specParser ([#723](https://github.com/elastic/elastic-charts/issues/723)) ([f9c29ec](https://github.com/elastic/elastic-charts/commit/f9c29ec7ec8b4d16c73e556f4ea6964548c78790)), closes [#720](https://github.com/elastic/elastic-charts/issues/720)
+
+## [19.6.1](https://github.com/elastic/elastic-charts/compare/v19.6.0...v19.6.1) (2020-06-29)
+
+
+### Bug Fixes
+
+* background color dark mode issue ([#719](https://github.com/elastic/elastic-charts/issues/719)) ([40bb526](https://github.com/elastic/elastic-charts/commit/40bb5266b5acf1f80d147c30f6ebca52272f0bec))
+
+# [19.6.0](https://github.com/elastic/elastic-charts/compare/v19.5.2...v19.6.0) (2020-06-24)
+
+
+### Features
+
+* show tooltip for external events ([#698](https://github.com/elastic/elastic-charts/issues/698)) ([cc31739](https://github.com/elastic/elastic-charts/commit/cc31739a2d2d5173ded3780f1d23890714fb61b3)), closes [#695](https://github.com/elastic/elastic-charts/issues/695)
+
 ## [19.5.2](https://github.com/elastic/elastic-charts/compare/v19.5.1...v19.5.2) (2020-06-16)
 
 
