@@ -12,7 +12,7 @@
           set +x
           export VAULT_TOKEN=$(vault write -field=token auth/approle/login role_id="$VAULT_ROLE_ID" secret_id="$VAULT_SECRET_ID")
           unset VAULT_ROLE_ID VAULT_SECRET_ID
-          export CODECOV_TOKEN=$(vault read -field=token secret/kibana-issues/prod/codecov)
+          export FOSSA_API_KEY=$(vault read -field=token secret/jenkins-ci/fossa/api-token)
           unset VAULT_TOKEN
           set -x
 
