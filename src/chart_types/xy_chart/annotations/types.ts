@@ -28,6 +28,7 @@ import { AnnotationRectProps } from './rect/types';
 /** @public */
 export type AnnotationTooltipFormatter = (details?: string) => JSX.Element | null;
 
+/** @public */
 export type CustomAnnotationTooltip = ComponentType<{
   header?: string;
   details?: string;

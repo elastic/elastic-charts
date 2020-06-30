@@ -24,7 +24,7 @@ import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/grou
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import { DomainRange } from '../chart_types/xy_chart/utils/specs';
 import { SeriesIdentifier } from '../commons/series_id';
-import { Placement, TooltipPortalSettings } from '../components/portal';
+import { TooltipPortalSettings } from '../components/portal';
 import { CustomTooltip } from '../components/tooltip/types';
 import { ScaleContinuousType, ScaleOrdinalType } from '../scales';
 import { getConnect, specComponentFactory } from '../state/spec_factory';
@@ -156,6 +156,7 @@ export type TooltipProps = TooltipPortalSettings<'chart'> & {
   /**
    * Unit for event (i.e. `time`, `feet`, `count`, etc.).
    * Not currently used/implemented
+   *
    * @alpha
    */
   unit?: string;
@@ -179,27 +180,14 @@ export interface ExternalPointerEventsSettings {
   /**
    * Tooltip settings used for external events
    */
-  tooltip: {
+  tooltip: TooltipPortalSettings<'chart'> & {
     /**
      * `true` to show the tooltip when the chart receive an
      * external pointer event, 'false' to hide the tooltip.
      * @defaultValue `false`
      */
     visible?: boolean;
-    /**
-     * {@inheritDoc TooltipProps.placement}
-     */
-    placement?: Placement;
-    /**
-     * {@inheritDoc TooltipProps.fallbackPlacements}
-     */
-    fallbackPlacements?: Placement[];
-    /**
-     * {@inheritDoc TooltipProps.boundary}
-     */
-    boundary?: HTMLElement | 'chart';
   }
-
 }
 
 export interface LegendColorPickerProps {

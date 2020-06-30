@@ -75,6 +75,8 @@ export interface PortalAnchorRef {
 
 /**
  * Tooltip portal settings
+ *
+ * @public
  */
 export interface TooltipPortalSettings<B = never> {
   /**

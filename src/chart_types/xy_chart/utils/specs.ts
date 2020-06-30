@@ -758,6 +758,11 @@ export type RectAnnotationSpec = BaseAnnotationSpec<
   zIndex?: number;
 };
 
+/**
+ * Portal settings for annotation tooltips
+ *
+ * @public
+ */
 export type AnnotationPortalSettings = TooltipPortalSettings<'chart'> & {
   /**
    * The react component used to render a custom tooltip
