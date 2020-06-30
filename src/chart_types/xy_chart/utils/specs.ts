@@ -20,6 +20,7 @@
 import { $Values } from 'utility-types';
 
 import { ChartTypes } from '../..';
+import { TooltipPortalSettings } from '../../../components/portal/types';
 import { ScaleContinuousType } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { Spec } from '../../../specs';
@@ -39,7 +40,7 @@ import {
   BubbleSeriesStyle,
 } from '../../../utils/themes/theme';
 import { PrimitiveValue } from '../../partition_chart/layout/utils/group_by_rollup';
-import { AnnotationTooltipFormatter } from '../annotations/types';
+import { AnnotationTooltipFormatter, CustomAnnotationTooltip } from '../annotations/types';
 import { RawDataSeriesDatum, XYChartSeriesIdentifier } from './series';
 
 export type BarStyleOverride = RecursivePartial<BarSeriesStyle> | Color | null;
@@ -688,7 +689,9 @@ export type RectAnnotationSpec = BaseAnnotationSpec<
   RectAnnotationDatum,
   RectAnnotationStyle
 > & {
-  /** Custom rendering function for tooltip */
+  /**
+   * @deprecated use customTooltipDetails
+   */
   renderTooltip?: AnnotationTooltipFormatter;
   /**
    * z-index of the annotation relative to other elements in the chart
@@ -697,11 +700,24 @@ export type RectAnnotationSpec = BaseAnnotationSpec<
   zIndex?: number;
 };
 
+export type AnnotationPortalSettings = TooltipPortalSettings<'chart'> & {
+  /**
+   * The react component used to render a custom tooltip
+   * @public
+   */
+  customTooltip?: CustomAnnotationTooltip;
+  /**
+   * The react component used to render a custom tooltip details
+   * @public
+   */
+  customTooltipDetails?: AnnotationTooltipFormatter;
+};
+
 export interface BaseAnnotationSpec<
   T extends typeof AnnotationTypes.Rectangle | typeof AnnotationTypes.Line,
   D extends RectAnnotationDatum | LineAnnotationDatum,
   S extends RectAnnotationStyle | LineAnnotationStyle
-> extends Spec {
+> extends Spec, AnnotationPortalSettings {
   chartType: typeof ChartTypes.XYAxis;
   specType: typeof SpecTypes.Annotation;
   /**

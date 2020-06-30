@@ -17,12 +17,20 @@
  * under the License.
  */
 
+import { ComponentType } from 'react';
+
+import { TooltipPortalSettings } from '../../../components/portal';
 import { Position, Color } from '../../../utils/commons';
 import { AnnotationType } from '../utils/specs';
 import { AnnotationLineProps } from './line/types';
 import { AnnotationRectProps } from './rect/types';
 
 export type AnnotationTooltipFormatter = (details?: string) => JSX.Element | null;
+
+export type CustomAnnotationTooltip = ComponentType<{
+  header?: string;
+  details?: string;
+}> | null;
 
 /**
  * The header and description strings for an Annotation
@@ -61,7 +69,9 @@ export interface AnnotationTooltipState {
     top: number;
     left: number;
   };
-  renderTooltip?: AnnotationTooltipFormatter;
+  customTooltipDetails?: AnnotationTooltipFormatter;
+  customTooltip?: CustomAnnotationTooltip;
+  tooltipSettings?: TooltipPortalSettings<'chart'>;
 }
 
 /** @internal */

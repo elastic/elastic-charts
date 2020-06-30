@@ -34,7 +34,7 @@ import { getInternalTooltipInfoSelector } from '../../state/selectors/get_intern
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
 import { getTooltipHeaderFormatterSelector } from '../../state/selectors/get_tooltip_header_formatter';
 import { Rotation } from '../../utils/commons';
-import { TooltipPortal, PopperSettings, AnchorPosition, Placement } from '../portal';
+import { TooltipPortal, TooltipPortalSettings, AnchorPosition, Placement } from '../portal';
 import { getTooltipSettings } from './get_tooltip_settings';
 import { TooltipInfo, TooltipAnchorPosition } from './types';
 
@@ -48,7 +48,7 @@ interface TooltipStateProps {
   position: TooltipAnchorPosition | null;
   info?: TooltipInfo;
   headerFormatter?: TooltipValueFormatter;
-  settings: TooltipSettings;
+  settings?: TooltipSettings;
   rotation: Rotation;
   chartId: string;
   backgroundColor: string;
@@ -173,8 +173,8 @@ const TooltipComponent = ({
     };
   }, [visible, position?.x0, position?.x1, position?.y0, position?.y1]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const popperSettings = useMemo((): Partial<PopperSettings> | undefined => {
-    if (typeof settings === 'string') {
+  const popperSettings = useMemo((): TooltipPortalSettings | undefined => {
+    if (!settings || typeof settings === 'string') {
       return;
     }
 
