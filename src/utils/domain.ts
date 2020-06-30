@@ -57,10 +57,11 @@ function getPaddedRange(start: number, end: number, domainOptions?: YDomainRange
       const paddingPercent = Number.parseInt(padding.trim().slice(0, -1), 10);
       const delta = Math.abs(end - start);
       computedPadding = delta * (paddingPercent / 100);
-    }
-    const num = Number.parseFloat(padding);
+    } else {
+      const num = Number.parseFloat(padding);
 
-    computedPadding = num && !isNaN(num) ? num : 0;
+      computedPadding = num && !isNaN(num) ? num : 0;
+    }
   } else {
     computedPadding = domainOptions.padding;
   }
