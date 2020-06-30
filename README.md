@@ -6,7 +6,7 @@
   <a href="https://codecov.io/gh/elastic/elastic-charts">
     <img src="https://codecov.io/gh/elastic/elastic-charts/branch/master/graph/badge.svg" />
   </a>
-<a href="https://app.fossa.io/projects/git%2Bgithub.com%2Felastic%2Felastic-charts?ref=badge_shield" alt="FOSSA Status"><img src="https://app.fossa.io/api/projects/git%2Bgithub.com%2Felastic%2Felastic-charts.svg?type=shield"/></a>
+
   <a href="https://www.npmjs.com/@elastic/charts"><img alt="NPM version" src="https://img.shields.io/npm/v/@elastic/charts.svg?style=flat"></a>
   <a href="http://commitizen.github.io/cz-cli/"><img alt="Commitizen friendly" src="https://img.shields.io/badge/commitizen-friendly-brightgreen.svg"></a>
   <a href="https://elastic.github.io/elastic-charts">
