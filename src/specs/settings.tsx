@@ -167,7 +167,7 @@ export type TooltipProps = TooltipPortalSettings<'chart'> & {
 };
 
 /**
- * Either a {@link (TooltipType:type)} or an {@link (TooltipProps:interface)} configuration
+ * Either a {@link (TooltipType:type)} or an {@link (TooltipProps:type)} configuration
  * @public
  */
 export type TooltipSettings = TooltipType | TooltipProps;
