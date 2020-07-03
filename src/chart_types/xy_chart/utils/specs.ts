@@ -695,6 +695,16 @@ export type LineAnnotationSpec = BaseAnnotationSpec<
     width: number;
     height: number;
   };
+  /**
+   * An optional marker position.
+   *
+   * @remarks
+   * The default position, if this property is not specified, falls back to the linked axis position.
+   * If no axis is specified, the marker position are positioned by default on bottom on the X domain
+   * and on the left of the chart for Y domain. The specified position is an absolute position and reflect
+   * the spatial position of the marker independently from the chart rotation.
+   */
+  markerPosition?: Position;
   /** Annotation lines are hidden */
   hideLines?: boolean;
   /**
