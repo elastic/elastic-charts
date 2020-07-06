@@ -15,10 +15,10 @@ yarn build
 ### run linter
 ###
 echo " -- run linter"
-yarn lint
+yarn run github-checks-reporter yarn lint yarn lint
 
 ###
 ### run prettier check
 ###
 echo " -- run prettier check"
-yarn prettier:check
+yarn run github-checks-reporter yarn prettier yarn prettier:check
