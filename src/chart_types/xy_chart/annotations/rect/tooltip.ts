@@ -22,7 +22,7 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { Point } from '../../../../utils/point';
 import { AnnotationTypes } from '../../utils/specs';
 import { AnnotationTooltipState, Bounds } from '../types';
-import { getTranformedCursor } from '../utils';
+import { getTransformedCursor } from '../utils';
 import { isWithinRectBounds } from './dimensions';
 import { AnnotationRectProps } from './types';
 
@@ -33,7 +33,7 @@ export function computeRectAnnotationTooltipState(
   chartRotation: Rotation,
   chartDimensions: Dimensions,
 ): AnnotationTooltipState | null {
-  const rotatedProjectedCursorPosition = getTranformedCursor(cursorPosition, chartDimensions, chartRotation, true);
+  const rotatedProjectedCursorPosition = getTransformedCursor(cursorPosition, chartDimensions, chartRotation, true);
   const totalAnnotationRect = annotationRects.length;
   for (let i = 0; i < totalAnnotationRect; i++) {
     const rectProps = annotationRects[i];
