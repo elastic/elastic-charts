@@ -357,28 +357,6 @@ export function getUniqueValues<T>(fullArray: T[], uniqueProperty: keyof T, filt
   ).filtered;
 }
 
-/** @internal */
-export function getUniqueConsecutiveValues<T>(fullArray: T[], uniqueProperty: keyof T): T[] {
-  return fullArray.reduce<{
-    filtered: T[];
-    uniqueValues: Set<T[keyof T]>;
-  }>(
-    (acc, currentValue) => {
-      const uniqueValue = currentValue[uniqueProperty];
-      if (acc.uniqueValues.has(uniqueValue)) {
-        return acc;
-      }
-      acc.uniqueValues.add(uniqueValue);
-      acc.filtered.push(currentValue);
-      return acc;
-    },
-    {
-      filtered: [],
-      uniqueValues: new Set(),
-    },
-  ).filtered;
-}
-
 export type ValueFormatter = (value: number) => string;
 export type ValueAccessor = (d: Datum) => number;
 export type LabelAccessor = (value: PrimitiveValue) => string;
