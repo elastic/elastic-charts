@@ -331,7 +331,34 @@ export function mergePartial<T>(
 }
 
 /** @internal */
-export function getUniqueValues<T>(fullArray: T[], uniqueProperty: keyof T): T[] {
+export function getUniqueValues<T>(fullArray: T[], uniqueProperty: keyof T, filterConsecutives = false): T[] {
+  return fullArray.reduce<{
+    filtered: T[];
+    uniqueValues: Set<T[keyof T]>;
+  }>(
+    (acc, currentValue) => {
+      const uniqueValue = currentValue[uniqueProperty];
+      if (acc.uniqueValues.has(uniqueValue)) {
+        return acc;
+      }
+      if (filterConsecutives) {
+        acc.uniqueValues.clear();
+        acc.uniqueValues.add(uniqueValue);
+      } else {
+        acc.uniqueValues.add(uniqueValue);
+      }
+      acc.filtered.push(currentValue);
+      return acc;
+    },
+    {
+      filtered: [],
+      uniqueValues: new Set(),
+    },
+  ).filtered;
+}
+
+/** @internal */
+export function getUniqueConsecutiveValues<T>(fullArray: T[], uniqueProperty: keyof T): T[] {
   return fullArray.reduce<{
     filtered: T[];
     uniqueValues: Set<T[keyof T]>;
