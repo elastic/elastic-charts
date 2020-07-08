@@ -175,6 +175,7 @@
     "lodash": "^4.17.15",
     "lorem-ipsum": "^2.0.3",
     "luxon": "^1.11.3",
+    "moment": "^2.27.0",
     "moment-timezone": "^0.5.27",
     "node-sass": "^4.14.1",
     "postcss-cli": "^7.1.1",
