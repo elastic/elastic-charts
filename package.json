@@ -204,6 +204,7 @@
     "webpack-dev-server": "^3.11.0"
   },
   "peerDependencies": {
+    "moment": "^2.27.0",
     "moment-timezone": "^0.5.27",
     "react": "^16.12.0",
     "react-dom": "^16.12.0"
