@@ -191,6 +191,8 @@ export interface ExternalPointerEventsSettings {
 }
 
 /**
+ * Legend action component props
+ *
  * @public
  */
 export interface LegendActionProps {
@@ -211,6 +213,11 @@ export interface LegendActionProps {
    */
   seriesIdentifier: SeriesIdentifier;
 }
+/**
+ * Legend action component used to render actions next to legend items
+ *
+ * @public
+ */
 export type LegendAction = ComponentType<LegendActionProps>;
 
 export interface LegendColorPickerProps {
