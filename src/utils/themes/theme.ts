@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import { mergePartial, RecursivePartial, Color, ColorVariant } from '../commons';
-import { Margins } from '../dimensions';
+import { mergePartial, RecursivePartial, Color, ColorVariant, HorizontalAlignment, VerticalAlignment } from '../commons';
+import { Margins, SimplePadding } from '../dimensions';
 import { LIGHT_THEME } from './light_theme';
 
 interface Visible {
@@ -30,7 +30,33 @@ export interface TextStyle {
   fontFamily: string;
   fontStyle?: string;
   fill: Color;
-  padding: number;
+  padding: number | SimplePadding;
+}
+
+/**
+ * Offset in pixels
+ */
+export interface TextOffset {
+  /**
+   * X offset of tick in px or string with % of height
+   */
+  x: number | string;
+  /**
+   * X offset of tick in px or string with % of height
+   */
+  y: number | string;
+  /**
+   * Sets reference for offset to `global` coordinate or `local`
+   */
+  reference: 'global' | 'local';
+}
+
+/**
+ * Text alignment
+ */
+export interface TextAlignment {
+  horizontal: HorizontalAlignment;
+  vertical: VerticalAlignment;
 }
 
 /** Shared style properties for varies geometries */
@@ -71,7 +97,16 @@ export interface StrokeStyle<C = Color> {
 }
 
 /** @public */
-export type TickStyle = StrokeStyle & Visible;
+export type TickStyle = StrokeStyle & Visible & {
+  /**
+   * Amount of padding between tick line and labels
+   */
+  padding: number;
+  /**
+   * length of tick line
+   */
+  size: number;
+};
 
 /**
  * The dash array for a stroke
@@ -90,12 +125,22 @@ export interface Opacity {
   opacity: number;
 }
 
-export interface AxisConfig {
-  axisTitleStyle: TextStyle;
-  axisLineStyle: StrokeStyle;
-  tickLabelStyle: TextStyle;
-  tickLineStyle: TickStyle;
-  gridLineStyle: {
+export interface AxisStyle {
+  axisTitle: TextStyle & Visible;
+  axisLine: StrokeStyle & Visible;
+  tickLabel: TextStyle & Visible & {
+    /** The degrees of rotation of the tick labels */
+    rotation: number;
+    /**
+     * Offset in pixels to render text relative to anchor
+     *
+     * @note rotation aligns to global cartesian coordinates
+     */
+    offset: TextOffset;
+    alignment: TextAlignment
+  };
+  tickLine: TickStyle;
+  gridLine: {
     horizontal: GridLineConfig;
     vertical: GridLineConfig;
   };
@@ -199,7 +244,7 @@ export interface Theme {
   bubbleSeriesStyle: BubbleSeriesStyle;
   arcSeriesStyle: ArcSeriesStyle;
   sharedStyle: SharedGeometryStateStyle;
-  axes: AxisConfig;
+  axes: AxisStyle;
   scales: ScalesConfig;
   colors: ColorConfig;
   legend: LegendStyle;

@@ -102,30 +102,45 @@ export const DARK_THEME: Theme = {
     histogramPadding: 0.05,
   },
   axes: {
-    axisTitleStyle: {
+    axisTitle: {
       fontSize: 12,
       fontStyle: 'bold',
       fontFamily: 'sans-serif',
       padding: 8,
       fill: '#D4D4D4',
+      visible: true,
     },
-    axisLineStyle: {
+    axisLine: {
+      visible: true,
       stroke: '#444',
       strokeWidth: 1,
     },
-    tickLabelStyle: {
+    tickLabel: {
+      visible: true,
       fontSize: 10,
       fontFamily: 'sans-serif',
       fontStyle: 'normal',
       fill: '#999',
       padding: 1,
+      rotation: 0,
+      offset: {
+        x: 0,
+        y: 0,
+        reference: 'local',
+      },
+      alignment: {
+        vertical: 'near',
+        horizontal: 'near',
+      },
     },
-    tickLineStyle: {
+    tickLine: {
       visible: true,
       stroke: '#444',
       strokeWidth: 1,
+      size: 10,
+      padding: 10,
     },
-    gridLineStyle: {
+    gridLine: {
       horizontal: {
         visible: true,
         stroke: '#D3DAE6',

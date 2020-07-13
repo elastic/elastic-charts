@@ -118,18 +118,18 @@ export const Axis: React.FunctionComponent<SpecRequired & SpecOptionals>;
 // @public (undocumented)
 export interface AxisConfig {
     // (undocumented)
-    axisLineStyle: StrokeStyle;
+    axisLine: StrokeStyle;
     // (undocumented)
-    axisTitleStyle: TextStyle;
+    axisTitle: TextStyle;
     // (undocumented)
-    gridLineStyle: {
+    gridLine: {
         horizontal: GridLineConfig;
         vertical: GridLineConfig;
     };
     // (undocumented)
-    tickLabelStyle: TextStyle;
+    tickLabel: TextStyle;
     // (undocumented)
-    tickLineStyle: TickStyle;
+    tickLine: TickStyle;
 }
 
 // @public (undocumented)
@@ -141,8 +141,8 @@ export type AxisId = string;
 export interface AxisSpec extends Spec {
     // (undocumented)
     chartType: typeof ChartTypes.XYAxis;
+    gridLine?: GridLineConfig;
     domain?: YDomainRange;
-    gridLineStyle?: GridLineConfig;
     groupId: GroupId;
     hide: boolean;
     id: AxisId;

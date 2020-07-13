@@ -40,6 +40,50 @@ export const ColorVariant = Object.freeze({
 });
 export type ColorVariant = $Values<typeof ColorVariant>;
 
+/**
+ * Horizontal text alignment
+ */
+export const HorizontalAlignment = Object.freeze({
+  Center: 'center' as const,
+  Right: 'right' as const,
+  Left: 'left' as const,
+  /**
+   * Near side of relative baseline
+   *
+   * i.e. near side of axis depending on position
+   */
+  Near: 'near' as const,
+  /**
+   * Far side of relative baseline
+   *
+   * i.e. far side of axis depending on position
+   */
+  Far: 'far' as const,
+});
+export type HorizontalAlignment = $Values<typeof HorizontalAlignment>;
+
+/**
+ * Vertical text alignment
+ */
+export const VerticalAlignment = Object.freeze({
+  Middle: 'middle' as const,
+  Top: 'top' as const,
+  Bottom: 'bottom' as const,
+  /**
+   * Near side of relative baseline
+   *
+   * i.e. near side of axis depending on position
+   */
+  Near: 'near' as const,
+  /**
+   * Far side of relative baseline
+   *
+   * i.e. far side of axis depending on position
+   */
+  Far: 'far' as const,
+});
+export type VerticalAlignment = $Values<typeof VerticalAlignment>;
+
 /** @public */
 export type Datum = any; // unknown;
 /** @public */
@@ -453,4 +497,29 @@ export const round = (value: number, fractionDigits = 0): number => {
   const scaledValue = Math.floor(value * precision);
 
   return scaledValue / precision;
+};
+
+/**
+ * Get number/percentage value from string
+ *
+ * i.e. `'90%'` with relative value of `100` returns `90`
+ */
+export const getPercenageValue = <T>(
+  ratio: string | number,
+  relativeValue: number,
+  defaultValue: T,
+): number | T => {
+  if (typeof ratio === 'number') {
+    return ratio;
+  }
+
+  const ratioStr = ratio.trim();
+
+  if (/\d+%$/.test(ratioStr)) {
+    const percentage = Number.parseInt(ratioStr.slice(0, -1), 10);
+    return relativeValue * (percentage / 100);
+  }
+  const num = Number.parseFloat(ratioStr);
+
+  return num && !isNaN(num) ? num : defaultValue;
 };

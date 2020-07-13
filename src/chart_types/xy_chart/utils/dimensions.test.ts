@@ -84,8 +84,8 @@ describe('Computed chart dimensions', () => {
     },
     ...legend,
   };
-  chartTheme.axes.axisTitleStyle.fontSize = 10;
-  chartTheme.axes.axisTitleStyle.padding = 10;
+  chartTheme.axes.axisTitle.fontSize = 10;
+  chartTheme.axes.axisTitle.padding = 10;
   test('should be equal to parent dimension with no axis minus margins', () => {
     const axisDims = new Map<AxisId, AxisTicksDimensions>();
     const axisSpecs: AxisSpec[] = [];

@@ -39,7 +39,7 @@ function range(title: string, min: number, max: number, value: number, groupId?:
 export const Example = () => {
   const theme: PartialTheme = {
     axes: {
-      tickLabelStyle: {
+      tickLabel: {
         fill: color('tickFill', '#333', 'Tick Label'),
         fontSize: range('tickFontSize', 0, 40, 10, 'Tick Label'),
         fontFamily: '\'Open Sans\', Helvetica, Arial, sans-serif',

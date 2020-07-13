@@ -18,11 +18,11 @@
  */
 
 import { Position } from '../../../utils/commons';
-import { Dimensions } from '../../../utils/dimensions';
+import { Dimensions, getSimplePadding } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';
-import { Theme } from '../../../utils/themes/theme';
+import { Theme, AxisStyle } from '../../../utils/themes/theme';
 import { getSpecsById } from '../state/utils/spec';
-import { AxisTicksDimensions } from './axis_utils';
+import { AxisTicksDimensions, shouldShowTicks } from './axis_utils';
 import { AxisSpec } from './specs';
 
 /**
@@ -38,8 +38,9 @@ import { AxisSpec } from './specs';
  */
 export function computeChartDimensions(
   parentDimensions: Dimensions,
-  chartTheme: Theme,
+  { chartMargins, chartPaddings, axes: sharedAxesStyles }: Theme,
   axisDimensions: Map<AxisId, AxisTicksDimensions>,
+  axesStyles: Map<AxisId, AxisStyle | null>,
   axisSpecs: AxisSpec[],
 ): {
   chartDimensions: Dimensions;
@@ -56,10 +57,6 @@ export function computeChartDimensions(
       leftMargin: 0,
     };
   }
-  const { chartMargins, chartPaddings } = chartTheme;
-  const { axisTitleStyle } = chartTheme.axes;
-
-  const axisTitleHeight = axisTitleStyle.fontSize + axisTitleStyle.padding;
 
   let vLeftAxisSpecWidth = 0;
   let vRightAxisSpecWidth = 0;
@@ -72,10 +69,16 @@ export function computeChartDimensions(
     if (!axisSpec || axisSpec.hide) {
       return;
     }
-    const { position, tickSize, tickPadding, title } = axisSpec;
-    const titleHeight = title !== undefined ? axisTitleHeight : 0;
-    const maxAxisHeight = maxLabelBboxHeight + tickSize + tickPadding + titleHeight;
-    const maxAxisWidth = maxLabelBboxWidth + tickSize + tickPadding + titleHeight;
+    const { tickLine, axisTitle, tickLabel } = axesStyles.get(id) ?? sharedAxesStyles;
+    const showTicks = shouldShowTicks(tickLine, axisSpec.hide);
+    const { position, title } = axisSpec;
+    const titlePadding = getSimplePadding(axisTitle.padding);
+    const labelPadding = getSimplePadding(tickLabel.padding);
+    const tickDimension = showTicks ? tickLine.size + tickLine.padding : 0;
+    const titleHeight = title !== undefined ? axisTitle.fontSize : 0;
+    const axisDimension = labelPadding.inner + labelPadding.outer + tickDimension + titleHeight + titlePadding.outer + titlePadding.inner;
+    const maxAxisHeight = maxLabelBboxHeight + axisDimension;
+    const maxAxisWidth = maxLabelBboxWidth + axisDimension;
     switch (position) {
       case Position.Top:
         hTopAxisSpecHeight += maxAxisHeight + chartMargins.top;
@@ -95,7 +98,6 @@ export function computeChartDimensions(
       default:
         vLeftAxisSpecWidth += maxAxisWidth + chartMargins.left;
         verticalEdgeLabelOverflow = Math.max(verticalEdgeLabelOverflow, maxLabelBboxHeight / 2);
-        break;
     }
   });
   const chartLeftAxisMaxWidth = Math.max(vLeftAxisSpecWidth, horizontalEdgeLabelOverflow + chartMargins.left);

@@ -58,7 +58,7 @@ describe('Theme', () => {
         dash: [0, 0],
       };
       const partialConfig = { strokeWidth: 5 };
-      const themeConfig = LIGHT_THEME.axes.gridLineStyle.vertical;
+      const themeConfig = LIGHT_THEME.axes.gridLine.vertical;
 
       expect(mergeGridLineConfigs(fullConfig, themeConfig)).toEqual(fullConfig);
       expect(mergeGridLineConfigs({}, themeConfig)).toEqual(themeConfig);
@@ -311,10 +311,10 @@ describe('Theme', () => {
     it('should merge partial theme: axes', () => {
       const partialTheme: PartialTheme = {
         axes: {
-          axisTitleStyle: {
+          axisTitle: {
             fontStyle: 'elastic_charts',
           },
-          axisLineStyle: {
+          axisLine: {
             stroke: 'elastic_charts',
           },
         },
@@ -324,13 +324,13 @@ describe('Theme', () => {
         ...DARK_THEME,
         axes: {
           ...DARK_THEME.axes,
-          axisTitleStyle: {
-            ...DARK_THEME.axes.axisTitleStyle,
-            ...partialTheme.axes!.axisTitleStyle,
+          axisTitle: {
+            ...DARK_THEME.axes.axisTitle,
+            ...partialTheme.axes!.axisTitle,
           },
-          axisLineStyle: {
-            ...DARK_THEME.axes.axisLineStyle,
-            ...partialTheme.axes!.axisLineStyle,
+          axisLine: {
+            ...DARK_THEME.axes.axisLine,
+            ...partialTheme.axes!.axisLine,
           },
         },
       });

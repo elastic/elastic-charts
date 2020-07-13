@@ -51,11 +51,10 @@ import {
   getVerticalAxisTickLineProps,
   getVisibleTicks,
   isYDomain,
-  getAxisTickLabelPadding,
   enableDuplicatedTicks,
 } from './axis_utils';
 import { computeXScale } from './scales';
-import { AxisSpec, DomainRange, AxisStyle, DEFAULT_GLOBAL_ID, TickFormatter } from './specs';
+import { AxisSpec, DomainRange, DEFAULT_GLOBAL_ID, TickFormatter } from './specs';
 
 describe('Axis computational utils', () => {
   const mockedRect = {
@@ -1385,15 +1384,6 @@ describe('Axis computational utils', () => {
     const positiveReducer = getMaxBboxDimensions(bboxCalculator, 16, 'Arial', 0, positivePadding);
 
     expect(JSON.stringify(negativeReducer)).toEqual(JSON.stringify(positiveReducer));
-  });
-  test('should expect axisSpec.style.tickLabelPadding if specified', () => {
-    const axisSpecStyle: AxisStyle = {
-      tickLabelPadding: 2,
-    };
-
-    const axisConfigTickLabelPadding = 1;
-
-    expect(getAxisTickLabelPadding(axisConfigTickLabelPadding, axisSpecStyle)).toEqual(2);
   });
   test('should show unique tick labels if duplicateTicks is set to false', () => {
     const now = DateTime.fromISO('2019-01-11T00:00:00.000')

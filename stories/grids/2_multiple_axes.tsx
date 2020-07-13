@@ -89,7 +89,7 @@ export const Example = () => {
         position={Position.Left}
         tickFormat={(d) => Number(d).toFixed(2)}
         showGridLines={boolean('show left axis grid lines', false, 'left axis')}
-        gridLineStyle={leftAxisGridLineConfig}
+        gridLine={leftAxisGridLineConfig}
       />
       <Axis
         id="left2"
@@ -98,7 +98,7 @@ export const Example = () => {
         position={Position.Left}
         tickFormat={(d) => Number(d).toFixed(2)}
         showGridLines={boolean('show left axis 2 grid lines', false, 'left2 axis')}
-        gridLineStyle={leftAxisGridLineConfig2}
+        gridLine={leftAxisGridLineConfig2}
       />
       <BarSeries
         id="bars"

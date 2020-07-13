@@ -38,6 +38,7 @@ import {
   PointStyle,
   RectAnnotationStyle,
   BubbleSeriesStyle,
+  AxisStyle,
 } from '../../../utils/themes/theme';
 import { PrimitiveValue } from '../../partition_chart/layout/utils/group_by_rollup';
 import { AnnotationTooltipFormatter, CustomAnnotationTooltip } from '../annotations/types';
@@ -579,7 +580,7 @@ export interface AxisSpec extends Spec {
   /** The ID of the spec */
   id: AxisId;
   /** Style options for grid line */
-  gridLineStyle?: GridLineConfig;
+  gridLine?: GridLineConfig;
   /**
    * The ID of the axis group
    * @defaultValue {@link DEFAULT_GLOBAL_ID}
@@ -598,22 +599,16 @@ export interface AxisSpec extends Spec {
   showGridLines?: boolean;
   /** Where the axis appear on the chart */
   position: Position;
-  /** The length of the tick line */
-  tickSize: number;
-  /** The padding between the label and the tick */
-  tickPadding: number;
   /** A function called to format each single tick label */
   tickFormat: TickFormatter;
-  /** The degrees of rotation of the tick labels */
-  tickLabelRotation?: number;
   /** An approximate count of how many ticks will be generated */
   ticks?: number;
   /** The axis title */
   title?: string;
+  /** Custom style overrides */
+  style?: RecursivePartial<AxisStyle>;
   /** If specified, it constrains the domain for these values */
   domain?: YDomainRange;
-  /** Object to hold custom styling */
-  style?: AxisStyle;
   /** Show only integar values * */
   integersOnly?: boolean;
   /**
@@ -630,11 +625,6 @@ export type TickFormatterOptions = {
 
 /** @public */
 export type TickFormatter = (value: any, options?: TickFormatterOptions) => string;
-
-export interface AxisStyle {
-  /** Specifies the amount of padding on the tick label bounding box */
-  tickLabelPadding?: number;
-}
 
 export const AnnotationTypes = Object.freeze({
   Line: 'line' as const,
