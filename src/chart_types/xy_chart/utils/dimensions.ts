@@ -74,11 +74,13 @@ export function computeChartDimensions(
     const { position, title } = axisSpec;
     const titlePadding = getSimplePadding(axisTitle.padding);
     const labelPadding = getSimplePadding(tickLabel.padding);
+    const labelPaddingSum = tickLabel.visible ? labelPadding.inner + labelPadding.outer : 0;
+
     const tickDimension = showTicks ? tickLine.size + tickLine.padding : 0;
     const titleHeight = title !== undefined ? axisTitle.fontSize : 0;
-    const axisDimension = labelPadding.inner + labelPadding.outer + tickDimension + titleHeight + titlePadding.outer + titlePadding.inner;
-    const maxAxisHeight = maxLabelBboxHeight + axisDimension;
-    const maxAxisWidth = maxLabelBboxWidth + axisDimension;
+    const axisDimension = labelPaddingSum + tickDimension + titleHeight + titlePadding.outer + titlePadding.inner;
+    const maxAxisHeight = tickLabel.visible ? maxLabelBboxHeight + axisDimension : axisDimension;
+    const maxAxisWidth = tickLabel.visible ? maxLabelBboxWidth + axisDimension : axisDimension;
     switch (position) {
       case Position.Top:
         hTopAxisSpecHeight += maxAxisHeight + chartMargins.top;

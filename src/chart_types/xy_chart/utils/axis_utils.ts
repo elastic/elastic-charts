@@ -601,7 +601,6 @@ export function getAxisPosition(
   chartMargins: Margins,
   axisTitleHeight: number,
   titlePadding: SimplePadding,
-  labelPadding: SimplePadding,
   axisSpec: AxisSpec,
   axisDim: AxisTicksDimensions,
   cumTopSum: number,
@@ -609,9 +608,10 @@ export function getAxisPosition(
   cumLeftSum: number,
   cumRightSum: number,
   tickDimension: number,
+  labelPaddingSum: number,
+  showLabels: boolean,
 ) {
   const titleDimension = titlePadding.inner + axisTitleHeight + titlePadding.outer;
-  const labelPaddingSum = labelPadding.inner + labelPadding.outer;
   const { position } = axisSpec;
   const { maxLabelBboxHeight, maxLabelBboxWidth } = axisDim;
   const { top, left, height, width } = chartDimensions;
@@ -627,7 +627,7 @@ export function getAxisPosition(
   let rightIncrement = 0;
 
   if (isVerticalAxis(position)) {
-    const dimWidth = labelPaddingSum + maxLabelBboxWidth + tickDimension + titleDimension;
+    const dimWidth = labelPaddingSum + (showLabels ? maxLabelBboxWidth : 0) + tickDimension + titleDimension;
     if (position === Position.Left) {
       leftIncrement = chartMargins.left + dimWidth;
       dimensions.left = cumLeftSum + chartMargins.left;
@@ -637,7 +637,7 @@ export function getAxisPosition(
     }
     dimensions.width = dimWidth;
   } else {
-    const dimHeight = labelPaddingSum + maxLabelBboxHeight + tickDimension + titleDimension;
+    const dimHeight = labelPaddingSum + (showLabels ? maxLabelBboxHeight : 0) + tickDimension + titleDimension;
     if (position === Position.Top) {
       topIncrement = dimHeight + chartMargins.top;
       dimensions.top = cumTopSum + chartMargins.top;
@@ -740,20 +740,22 @@ export function getAxisTicksPositions(
     const showTicks = shouldShowTicks(tickLine, axisSpec.hide);
     const axisTitleHeight = axisSpec.title !== undefined ? fontSize : 0;
     const tickDimension = showTicks ? tickLine.size + tickLine.padding : 0;
+    const labelPaddingSum = tickLabel.visible ? labelPadding.inner + labelPadding.outer : 0;
 
     const axisPosition = getAxisPosition(
       chartDimensions,
       chartMargins,
       axisTitleHeight,
       titlePadding,
-      labelPadding,
       axisSpec,
       axisDim,
       cumTopSum,
       cumBottomSum,
       cumLeftSum,
       cumRightSum,
+      labelPaddingSum,
       tickDimension,
+      tickLabel.visible
     );
 
     cumTopSum += axisPosition.topIncrement;
