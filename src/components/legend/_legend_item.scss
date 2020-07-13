@@ -8,10 +8,41 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
   user-select: none;
   align-items: center;
   width: 100%;
+  height: 100%;
 
   &:not(&--hidden) {
     .echLegendItem__color--changable {
       cursor: pointer;
+    }
+  }
+
+  &__main {
+    @include euiTextTruncate;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    padding-right: $euiSizeXS;
+    align-items: center;
+    flex: 1 1 auto;
+
+    &:hover {
+      background-color: #e7f0f7;
+    }
+  }
+
+  &__main:hover ~ .echLegendItem__action {
+    display: block;
+  }
+
+  &__action {
+    height: 100%;
+    display: none;
+    cursor: pointer;
+
+    &--active,
+    &:hover {
+      display: block;
+      background-color: #e7f0f7;
     }
   }
 
@@ -43,6 +74,7 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
   &__extra {
     @include euiFontSizeXS;
     text-align: right;
+    flex: 0 0 auto;
     margin-left: $euiSizeXS;
     font-feature-settings: 'tnum';
 
