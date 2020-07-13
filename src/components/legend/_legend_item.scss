@@ -16,22 +16,31 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
     }
   }
 
+  &__mainWrapper:hover {
+    .echLegendItem__main {
+      background-color: #e7f0f7;
+    }
+
+    ~ .echLegendItem__action {
+      display: block;
+    }
+  }
+
   &__main {
     @include euiTextTruncate;
+    width: 100%;
     display: flex;
     flex-wrap: nowrap;
     justify-content: space-between;
     padding-right: $euiSizeXS;
     align-items: center;
     flex: 1 1 auto;
-
-    &:hover {
-      background-color: #e7f0f7;
-    }
   }
 
-  &__main:hover ~ .echLegendItem__action {
-    display: block;
+  &__mainWrapper {
+    @include euiTextTruncate;
+    width: 100%;
+    flex: 1 1 auto;
   }
 
   &__action {
@@ -85,8 +94,10 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
 
   &--right,
   &--left {
-    padding-top: $legendItemVerticalPadding;
-    padding-bottom: $legendItemVerticalPadding;
+    .echLegendItem__mainWrapper {
+      padding-top: $legendItemVerticalPadding;
+      padding-bottom: $legendItemVerticalPadding;
+    }
   }
 
   @include internetExplorerOnly {
@@ -96,8 +107,10 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
       margin-right: $euiSizeL;
     }
 
-    padding-top: $legendItemVerticalPadding;
-    padding-bottom: $legendItemVerticalPadding;
+    .echLegendItem__mainWrapper {
+      padding-top: $legendItemVerticalPadding;
+      padding-bottom: $legendItemVerticalPadding;
+    }
   }
 
   &--hidden {

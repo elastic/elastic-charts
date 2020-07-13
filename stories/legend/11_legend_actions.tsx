@@ -17,17 +17,15 @@
  * under the License.
  */
 
-import { EuiIcon, EuiPopover, EuiContextMenu, EuiContextMenuPanelDescriptor } from '@elastic/eui';
-import { boolean } from '@storybook/addon-knobs';
+import { EuiIcon, EuiPopover, EuiContextMenu, EuiContextMenuPanelDescriptor, EuiWrappingPopover, EuiColorPicker, EuiSpacer, EuiButton } from '@elastic/eui';
 import React, { useState } from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings, LegendAction, XYChartSeriesIdentifier } from '../../src';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings, LegendAction, XYChartSeriesIdentifier, LegendColorPicker } from '../../src';
 import * as TestDatasets from '../../src/utils/data_samples/test_dataset';
 import { getPositionKnob } from '../utils/knobs';
 
-export const Example = () => {
-  const hideActions = boolean('Hide actions', false);
-  const [popoverId, setPopoverId] = useState<string | null>(null);
+const getAction = (hideActions: boolean): LegendAction => ({ activateAction, deactivateAction, seriesIdentifier }) => {
+  const [popoverOpen, setPopoverOpen] = useState(false);
 
   const getPanels = (series: XYChartSeriesIdentifier, onClose: () => void): EuiContextMenuPanelDescriptor[] => [
     {
@@ -38,7 +36,7 @@ export const Example = () => {
           name: 'Alert series specId',
           icon: <EuiIcon type="iInCircle" size="m" />,
           onClick: () => {
-            setPopoverId(null);
+            setPopoverOpen(false);
             onClose();
             setTimeout(() => {
               window.alert(`Selected series: ${series.specId}`);
@@ -49,7 +47,7 @@ export const Example = () => {
           name: 'Alert series keys',
           icon: <EuiIcon type="tokenKey" size="m" />,
           onClick: () => {
-            setPopoverId(null);
+            setPopoverOpen(false);
             onClose();
             setTimeout(() => {
               window.alert(`Selected series: [${series.seriesKeys.join(', ')}]`);
@@ -60,7 +58,7 @@ export const Example = () => {
           name: 'Filter series',
           icon: <EuiIcon type="filter" size="m" />,
           onClick: () => {
-            setPopoverId(null);
+            setPopoverOpen(false);
             onClose();
             setTimeout(() => {
               window.alert('Series Filtered!');
@@ -71,7 +69,7 @@ export const Example = () => {
           name: 'Like series',
           icon: <EuiIcon type="starFilled" size="m" />,
           onClick: () => {
-            setPopoverId(null);
+            setPopoverOpen(false);
             onClose();
             setTimeout(() => {
               window.alert('Series liked!!!');
@@ -93,11 +91,11 @@ export const Example = () => {
         marginRight: 4,
       }}
       onClick={() => {
-        if (key === popoverId) {
-          setPopoverId(null);
+        if (popoverOpen) {
+          setPopoverOpen(false);
           onClose();
         } else {
-          setPopoverId(key);
+          setPopoverOpen(true);
           onOpen();
         }
       }}
@@ -106,14 +104,14 @@ export const Example = () => {
     </div>
   );
 
-  const Action: LegendAction = ({ onOpen, onClose, seriesIdentifier }) => (
+  return (
     <EuiPopover
       id="contextMenuNormal"
-      button={hideActions ? <div /> : getButton(seriesIdentifier.key, onOpen, onClose)}
-      isOpen={popoverId === seriesIdentifier.key}
+      button={hideActions ? <div /> : getButton(seriesIdentifier.key, activateAction, deactivateAction)}
+      isOpen={popoverOpen}
       closePopover={() => {
-        setPopoverId(null);
-        onClose();
+        setPopoverOpen(false);
+        deactivateAction();
       }}
       panelPaddingSize="none"
       withTitle
@@ -121,14 +119,41 @@ export const Example = () => {
     >
       <EuiContextMenu
         initialPanelId={0}
-        panels={getPanels(seriesIdentifier as XYChartSeriesIdentifier, onClose)}
+        panels={getPanels(seriesIdentifier as XYChartSeriesIdentifier, deactivateAction)}
       />
     </EuiPopover>
   );
+};
+
+const renderColorPicker: LegendColorPicker = ({ anchor, color, onClose, onChange }) => (
+  <EuiWrappingPopover
+    isOpen
+    button={anchor}
+    closePopover={onClose}
+    anchorPosition="leftCenter"
+  >
+    <EuiColorPicker display="inline" color={color} onChange={onChange} />
+    <EuiSpacer size="m" />
+    <EuiButton fullWidth size="s" onClick={onClose}>
+      Done
+    </EuiButton>
+  </EuiWrappingPopover>
+);
+
+export const Example = () => {
+  const hideActions = false;
+  const showLegendExtra = true;
+  const showColorPicker = true;
 
   return (
     <Chart className="story-chart">
-      <Settings showLegend showLegendExtra legendPosition={getPositionKnob()} legendAction={Action} />
+      <Settings
+        showLegend
+        showLegendExtra={showLegendExtra}
+        legendPosition={getPositionKnob('Legend position')}
+        legendAction={getAction(hideActions)}
+        legendColorPicker={showColorPicker ? renderColorPicker : undefined}
+      />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
