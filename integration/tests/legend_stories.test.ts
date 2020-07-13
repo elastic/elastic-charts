@@ -62,6 +62,7 @@ describe('Legend stories', () => {
       'http://localhost:9001/?path=/story/legend--actions',
       {
         action,
+        delay: 200, // needed for icon to load
       },
     );
   });
