@@ -609,7 +609,7 @@ export interface AxisSpec extends Spec {
   /**
    * A function called to format every single label  (excludes tooltip)
    *
-   * @overrides tickFormat for axis labels
+   * overrides tickFormat for axis labels
    */
   labelFormat?: TickFormatter;
   /** The degrees of rotation of the tick labels */
