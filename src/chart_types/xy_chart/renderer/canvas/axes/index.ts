@@ -114,7 +114,7 @@ function renderAxis(ctx: CanvasRenderingContext2D, props: AxisProps) {
       });
     }
 
-    if (props.axisStyle.tickLabel.visible) {
+    if (axisStyle.tickLabel.visible) {
       withContext(ctx, (ctx) => {
         ticks
           .filter((tick) => tick.label !== null)

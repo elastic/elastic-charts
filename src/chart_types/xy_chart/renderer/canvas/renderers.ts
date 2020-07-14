@@ -87,7 +87,8 @@ export function renderXYChartCanvas2d(
           axesSpecs,
           chartDimensions,
           axesGridLinesPositions,
-          chartTheme: theme,
+          axesStyles,
+          sharedAxesStyle: theme.axes,
         });
       },
       // rendering background annotations

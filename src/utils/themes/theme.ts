@@ -35,6 +35,7 @@ export interface TextStyle {
 
 /**
  * Offset in pixels
+ * @public
  */
 export interface TextOffset {
   /**
@@ -46,13 +47,17 @@ export interface TextOffset {
    */
   y: number | string;
   /**
-   * Sets reference for offset to `global` coordinate or `local`
+   * Offset coordinate system reference
+   *
+   * - `global` - aligns offset coordinate system to global (non-rotated) coordinate system
+   * - `local` - aligns offset coordinate system to local rotated coordinate system
    */
   reference: 'global' | 'local';
 }
 
 /**
  * Text alignment
+ * @public
  */
 export interface TextAlignment {
   horizontal: HorizontalAlignment;
@@ -134,23 +139,27 @@ export interface AxisStyle {
     /**
      * Offset in pixels to render text relative to anchor
      *
-     * @note rotation aligns to global cartesian coordinates
+     * **Note:** rotation aligns to global cartesian coordinates
      */
     offset: TextOffset;
     alignment: TextAlignment
   };
   tickLine: TickStyle;
   gridLine: {
-    horizontal: GridLineConfig;
-    vertical: GridLineConfig;
+    horizontal: GridLineStyle;
+    vertical: GridLineStyle;
   };
 }
-export interface GridLineConfig {
-  visible?: boolean;
-  stroke?: Color;
-  strokeWidth?: number;
-  opacity?: number;
-  dash?: number[];
+
+/**
+ * @public
+ */
+export interface GridLineStyle {
+  visible: boolean;
+  stroke: Color;
+  strokeWidth: number;
+  opacity: number;
+  dash: number[];
 }
 export interface ScalesConfig {
   /**
@@ -418,7 +427,15 @@ export const DEFAULT_ANNOTATION_RECT_STYLE: RectAnnotationStyle = {
   fill: '#FFEEBC',
 };
 
-export function mergeGridLineConfigs(axisSpecConfig: GridLineConfig, themeConfig: GridLineConfig): GridLineConfig {
+/**
+ * Merges two GridLineStyle objects
+ *
+ * @param axisSpecConfig
+ * @param themeConfig
+ *
+ * @internal
+ */
+export function mergeGridLineStyles(axisSpecConfig: Partial<GridLineStyle>, themeConfig: GridLineStyle): GridLineStyle {
   const visible = axisSpecConfig.visible != null ? axisSpecConfig.visible : themeConfig.visible;
   const strokeWidth = axisSpecConfig.strokeWidth != null ? axisSpecConfig.strokeWidth : themeConfig.strokeWidth;
   const opacity = axisSpecConfig.opacity != null ? axisSpecConfig.opacity : themeConfig.opacity;

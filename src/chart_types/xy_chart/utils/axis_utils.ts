@@ -19,9 +19,10 @@
 
 import { Scale } from '../../../scales';
 import { BBox, BBoxCalculator } from '../../../utils/bbox/bbox_calculator';
-import { Position, Rotation, getUniqueValues, VerticalAlignment, HorizontalAlignment, getPercenageValue } from '../../../utils/commons';
+import { Position, Rotation, getUniqueValues, VerticalAlignment, HorizontalAlignment, getPercentageValue } from '../../../utils/commons';
 import { Dimensions, Margins, getSimplePadding, SimplePadding } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';
+import { Logger } from '../../../utils/logger';
 import { AxisStyle, Theme, TextAlignment, TextOffset } from '../../../utils/themes/theme';
 import { XDomain, YDomain } from '../domains/types';
 import { MIN_STROKE_WIDTH } from '../renderer/canvas/primitives/line';
@@ -97,7 +98,9 @@ export function computeAxisTicksDimensions(
   );
 
   if (!scale) {
-    throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
+    Logger.warn(`Cannot compute scale for axis spec ${axisSpec.id}. Axis will not be displayed.`);
+
+    return null;
   }
 
   const dimensions = computeTickDimensions(
@@ -246,8 +249,8 @@ function getUserTextOffsets(dimensions: AxisTicksDimensions, offset: TextOffset)
     return {
       local: defaults,
       global: {
-        x: getPercenageValue(offset.x, dimensions.maxLabelBboxWidth, 0),
-        y: getPercenageValue(offset.y, dimensions.maxLabelBboxHeight, 0),
+        x: getPercentageValue(offset.x, dimensions.maxLabelBboxWidth, 0),
+        y: getPercentageValue(offset.y, dimensions.maxLabelBboxHeight, 0),
       },
     };
   }
@@ -255,13 +258,13 @@ function getUserTextOffsets(dimensions: AxisTicksDimensions, offset: TextOffset)
   return {
     global: defaults,
     local: {
-      x: getPercenageValue(offset.x, dimensions.maxLabelTextWidth, 0),
-      y: getPercenageValue(offset.y, dimensions.maxLabelTextHeight, 0),
+      x: getPercentageValue(offset.x, dimensions.maxLabelTextWidth, 0),
+      y: getPercentageValue(offset.y, dimensions.maxLabelTextHeight, 0),
     },
   };
 }
 
-function getHorizontalTextOffset(width: number, alignment: 'center' | 'right' | 'left'): number {
+function getHorizontalTextOffset(width: number, alignment: Exclude<HorizontalAlignment, 'far' | 'near'>): number {
   switch (alignment) {
     case 'left':
       return -width / 2;
@@ -273,7 +276,7 @@ function getHorizontalTextOffset(width: number, alignment: 'center' | 'right' | 
   }
 }
 
-function getVerticalTextOffset(height: number, alignment: 'middle' | 'top' | 'bottom'): number {
+function getVerticalTextOffset(height: number, alignment: Exclude<VerticalAlignment, 'far' | 'near'>): number {
   switch (alignment) {
     case 'top':
       return -height / 2;
@@ -718,23 +721,32 @@ export function getAxisTicksPositions(
     const tickFormatOptions = {
       timeZone: xDomain.timeZone,
     };
-
+    const {
+      axisTitle: { fontSize, padding },
+      tickLine,
+      tickLabel,
+      gridLine,
+    } = axesStyles.get(id) ?? sharedAxesStyle;
     const allTicks = getAvailableTicks(axisSpec, scale, totalGroupsCount, enableHistogramMode, tickFormatOptions);
     const visibleTicks = getVisibleTicks(allTicks, axisSpec, axisDim);
+    const isVertical = isVerticalAxis(axisSpec.position);
 
-    if (axisSpec.showGridLines) {
-      const isVertical = isVerticalAxis(axisSpec.position);
+    if (
+      (axisSpec.showGridLines === undefined
+        ? (
+            isVertical
+              ? gridLine.vertical.visible
+              : gridLine.horizontal.visible
+          )
+        : axisSpec.showGridLines
+      )
+    ) {
       const gridLines = visibleTicks.map(
         (tick: AxisTick): AxisLinePosition => computeAxisGridLinePositions(isVertical, tick.position, chartDimensions),
       );
       axisGridLinesPositions.set(id, gridLines);
     }
 
-    const {
-      axisTitle: { fontSize, padding },
-      tickLine,
-      tickLabel,
-    } = axesStyles.get(id) ?? sharedAxesStyle;
     const titlePadding = getSimplePadding(padding);
     const labelPadding = getSimplePadding(tickLabel.padding);
     const showTicks = shouldShowTicks(tickLine, axisSpec.hide);

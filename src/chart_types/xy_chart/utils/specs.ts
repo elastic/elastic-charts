@@ -32,7 +32,7 @@ import { AxisId, GroupId } from '../../../utils/ids';
 import {
   AreaSeriesStyle,
   BarSeriesStyle,
-  GridLineConfig,
+  GridLineStyle,
   LineAnnotationStyle,
   LineSeriesStyle,
   PointStyle,
@@ -580,7 +580,7 @@ export interface AxisSpec extends Spec {
   /** The ID of the spec */
   id: AxisId;
   /** Style options for grid line */
-  gridLine?: GridLineConfig;
+  gridLine?: GridLineStyle;
   /**
    * The ID of the axis group
    * @defaultValue {@link DEFAULT_GLOBAL_ID}

@@ -106,7 +106,10 @@ export const DARK_THEME: Theme = {
       fontSize: 12,
       fontStyle: 'bold',
       fontFamily: 'sans-serif',
-      padding: 8,
+      padding: {
+        inner: 8,
+        outer: 0,
+      },
       fill: '#D4D4D4',
       visible: true,
     },
@@ -121,7 +124,7 @@ export const DARK_THEME: Theme = {
       fontFamily: 'sans-serif',
       fontStyle: 'normal',
       fill: '#999',
-      padding: 1,
+      padding: 0,
       rotation: 0,
       offset: {
         x: 0,
@@ -142,14 +145,14 @@ export const DARK_THEME: Theme = {
     },
     gridLine: {
       horizontal: {
-        visible: true,
+        visible: false,
         stroke: '#D3DAE6',
         strokeWidth: 1,
         opacity: 1,
         dash: [0, 0],
       },
       vertical: {
-        visible: true,
+        visible: false,
         stroke: '#D3DAE6',
         strokeWidth: 1,
         opacity: 1,

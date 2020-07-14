@@ -26,24 +26,19 @@ import { renderDebugRectCenterRotated } from '../utils/debug';
 
 /** @internal */
 export function renderTickLabel(ctx: CanvasRenderingContext2D, tick: AxisTick, showTicks: boolean, props: AxisProps) {
-  /**
-   * padding is already computed through width
-   * and bbox_calculator using tickLabelPadding
-   * set padding to 0 to avoid conflict
-   */
-  const labelStyle = props.axisStyle.tickLabel;
-
   const {
     axisSpec: { position },
     axisTicksDimensions,
     axisPosition,
     debug,
+    axisStyle,
   } = props;
+  const labelStyle = axisStyle.tickLabel;
   const {
     rotation: tickLabelRotation,
     alignment,
     offset,
-  } = props.axisStyle.tickLabel;
+  } = labelStyle;
 
   const {
     maxLabelBboxWidth,
@@ -61,7 +56,7 @@ export function renderTickLabel(ctx: CanvasRenderingContext2D, tick: AxisTick, s
     align,
     verticalAlign,
   } = getTickLabelProps(
-    props.axisStyle,
+    axisStyle,
     tick.position,
     position,
     axisPosition,

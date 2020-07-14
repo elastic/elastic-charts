@@ -21,7 +21,7 @@ import { extent } from 'd3-array';
 
 import { YDomainRange } from '../specs';
 import { AccessorFn } from './accessor';
-import { getPercenageValue } from './commons';
+import { getPercentageValue } from './commons';
 
 export type Domain = any[];
 
@@ -53,7 +53,7 @@ function getPaddedRange(start: number, end: number, domainOptions?: YDomainRange
 
   if (typeof domainOptions.padding === 'string') {
     const delta = Math.abs(end - start);
-    computedPadding = getPercenageValue(domainOptions.padding, delta, 0);
+    computedPadding = getPercentageValue(domainOptions.padding, delta, 0);
   } else {
     computedPadding = domainOptions.padding;
   }

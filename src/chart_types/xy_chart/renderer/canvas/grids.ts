@@ -21,7 +21,7 @@ import { Line, Stroke } from '../../../../geoms/types';
 import { withContext } from '../../../../renderers/canvas';
 import { Dimensions } from '../../../../utils/dimensions';
 import { AxisId } from '../../../../utils/ids';
-import { mergeGridLineConfigs, Theme } from '../../../../utils/themes/theme';
+import { mergeGridLineStyles, AxisStyle } from '../../../../utils/themes/theme';
 import { stringToRGB } from '../../../partition_chart/layout/utils/color_library_wrappers';
 import { getSpecsById } from '../../state/utils/spec';
 import { isVerticalGrid } from '../../utils/axis_type_utils';
@@ -30,26 +30,28 @@ import { AxisSpec } from '../../utils/specs';
 import { renderMultiLine, MIN_STROKE_WIDTH } from './primitives/line';
 
 interface GridProps {
-  chartTheme: Theme;
+  sharedAxesStyle: AxisStyle;
   axesGridLinesPositions: Map<AxisId, AxisLinePosition[]>;
   axesSpecs: AxisSpec[];
   chartDimensions: Dimensions;
+  axesStyles: Map<string, AxisStyle | null>;
 }
 
 /** @internal */
 export function renderGrids(ctx: CanvasRenderingContext2D, props: GridProps) {
-  const { axesGridLinesPositions, axesSpecs, chartDimensions, chartTheme } = props;
+  const { axesGridLinesPositions, axesSpecs, chartDimensions, sharedAxesStyle, axesStyles } = props;
   withContext(ctx, (ctx) => {
     ctx.translate(chartDimensions.left, chartDimensions.top);
     axesGridLinesPositions.forEach((axisGridLinesPositions, axisId) => {
       const axisSpec = getSpecsById<AxisSpec>(axesSpecs, axisId);
       if (axisSpec && axisGridLinesPositions.length > 0) {
+        const axisStyle = axesStyles.get(axisSpec.id) ?? sharedAxesStyle;
         const themeConfig = isVerticalGrid(axisSpec.position)
-          ? chartTheme.axes.gridLine.vertical
-          : chartTheme.axes.gridLine.horizontal;
+          ? axisStyle.gridLine.vertical
+          : axisStyle.gridLine.horizontal;
 
         const axisSpecConfig = axisSpec.gridLine;
-        const gridLine = axisSpecConfig ? mergeGridLineConfigs(axisSpecConfig, themeConfig) : themeConfig;
+        const gridLine = axisSpecConfig ? mergeGridLineStyles(axisSpecConfig, themeConfig) : themeConfig;
         if (!gridLine.stroke || !gridLine.strokeWidth || gridLine.strokeWidth < MIN_STROKE_WIDTH) {
           return;
         }

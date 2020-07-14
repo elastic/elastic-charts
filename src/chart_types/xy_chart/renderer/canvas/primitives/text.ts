@@ -46,7 +46,9 @@ export function renderText(
       ctx.textAlign = font.align;
       ctx.textBaseline = font.baseline;
       ctx.font = cssFontShorthand(font, font.fontSize);
-      ctx.translate(translation?.x ?? 0, translation?.y ?? 0);
+      if (translation?.x || translation?.y) {
+        ctx.translate(translation?.x ?? 0, translation?.y ?? 0);
+      }
       ctx.fillText(text, origin.x, origin.y);
     });
   });

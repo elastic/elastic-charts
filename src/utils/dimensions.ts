@@ -40,10 +40,14 @@ export type Margins = PerSideDistance;
 
 export type Padding = PerSideDistance;
 
-export type SimplePadding = {
+/**
+ * Simple padding declaration
+ * @public
+ */
+export interface SimplePadding {
   outer: number;
   inner: number;
-};
+}
 
 /**
  * Computes padding from number or `SimplePadding` with optional `minPadding`

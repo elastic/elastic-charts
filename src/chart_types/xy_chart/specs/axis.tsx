@@ -34,7 +34,6 @@ const defaultProps = {
   showOverlappingLabels: false,
   position: Position.Left,
   tickFormat: (tick: any) => `${tick}`,
-  tickLabelRotation: 0,
 };
 
 type SpecRequired = Pick<AxisSpec, 'id'>;

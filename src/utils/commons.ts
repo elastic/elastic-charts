@@ -40,48 +40,62 @@ export const ColorVariant = Object.freeze({
 });
 export type ColorVariant = $Values<typeof ColorVariant>;
 
-/**
- * Horizontal text alignment
- */
 export const HorizontalAlignment = Object.freeze({
   Center: 'center' as const,
   Right: 'right' as const,
   Left: 'left' as const,
   /**
-   * Near side of relative baseline
+   * Aligns to near side of axis depending on position
    *
-   * i.e. near side of axis depending on position
+   * Examples:
+   * - Left Axis, `Near` will push the label to the `Right`, _near_ the axis
+   * - Right Axis, `Near` will push the axis labels to the `Left`
+   * - Top/Bottom Axes, `Near` will default to `center`
    */
   Near: 'near' as const,
   /**
-   * Far side of relative baseline
+   * Aligns to far side of axis depending on position
    *
-   * i.e. far side of axis depending on position
+   * Examples:
+   * - Left Axis, `Far` will push the label to the `Left`, _far_ from the axis
+   * - Right Axis, `Far` will push the axis labels to the `Right`
+   * - Top/Bottom Axes, `Far` will default to `center`
    */
   Far: 'far' as const,
 });
+/**
+ * Horizontal text alignment
+ * @public
+ */
 export type HorizontalAlignment = $Values<typeof HorizontalAlignment>;
 
-/**
- * Vertical text alignment
- */
 export const VerticalAlignment = Object.freeze({
   Middle: 'middle' as const,
   Top: 'top' as const,
   Bottom: 'bottom' as const,
   /**
-   * Near side of relative baseline
+   * Aligns to near side of axis depending on position
    *
-   * i.e. near side of axis depending on position
+   * Examples:
+   * - Top Axis, `Near` will push the label to the `Right`, _near_ the axis
+   * - Bottom Axis, `Near` will push the axis labels to the `Left`
+   * - Left/Right Axes, `Near` will default to `middle`
    */
   Near: 'near' as const,
   /**
-   * Far side of relative baseline
+   * Aligns to far side of axis depending on position
    *
-   * i.e. far side of axis depending on position
+   * Examples:
+   * - Top Axis, `Far` will push the label to the `Top`, _far_ from the axis
+   * - Bottom Axis, `Far` will push the axis labels to the `Bottom`
+   * - Left/Right Axes, `Far` will default to `middle`
    */
   Far: 'far' as const,
 });
+/**
+ * Vertical text alignment
+ * @public
+ */
 export type VerticalAlignment = $Values<typeof VerticalAlignment>;
 
 /** @public */
@@ -504,7 +518,7 @@ export const round = (value: number, fractionDigits = 0): number => {
  *
  * i.e. `'90%'` with relative value of `100` returns `90`
  */
-export const getPercenageValue = <T>(
+export const getPercentageValue = <T>(
   ratio: string | number,
   relativeValue: number,
   defaultValue: T,
