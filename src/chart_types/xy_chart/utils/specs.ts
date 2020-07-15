@@ -599,8 +599,16 @@ export interface AxisSpec extends Spec {
   showGridLines?: boolean;
   /** Where the axis appear on the chart */
   position: Position;
-  /** A function called to format each single tick label */
+  /**
+   * A function called to format every single tick label (includes tooltip)
+   */
   tickFormat: TickFormatter;
+  /**
+   * A function called to format every single label  (excludes tooltip)
+   *
+   * overrides tickFormat for axis labels
+   */
+  labelFormat?: TickFormatter;
   /** An approximate count of how many ticks will be generated */
   ticks?: number;
   /** The axis title */

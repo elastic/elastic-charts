@@ -29,7 +29,7 @@ import { MIN_STROKE_WIDTH } from '../renderer/canvas/primitives/line';
 import { getSpecsById } from '../state/utils/spec';
 import { isVerticalAxis } from './axis_type_utils';
 import { computeXScale, computeYScales } from './scales';
-import { AxisSpec, TickFormatterOptions } from './specs';
+import { AxisSpec, TickFormatterOptions, TickFormatter } from './specs';
 
 export type AxisLinePosition = [number, number, number, number];
 
@@ -105,7 +105,7 @@ export function computeAxisTicksDimensions(
 
   const dimensions = computeTickDimensions(
     scale,
-    axisSpec,
+    axisSpec.labelFormat ?? axisSpec.tickFormat,
     bboxCalculator,
     tickLabel,
     { timeZone: xDomain.timeZone },
@@ -217,7 +217,7 @@ export const getMaxLabelDimensions = (
 
 function computeTickDimensions(
   scale: Scale,
-  { tickFormat }: AxisSpec,
+  tickFormat: TickFormatter,
   bboxCalculator: BBoxCalculator,
   tickLabelStyle: AxisStyle['tickLabel'],
   tickFormatOptions?: TickFormatterOptions,

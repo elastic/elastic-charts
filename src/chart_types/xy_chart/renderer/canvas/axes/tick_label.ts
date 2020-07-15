@@ -27,7 +27,7 @@ import { renderDebugRectCenterRotated } from '../utils/debug';
 /** @internal */
 export function renderTickLabel(ctx: CanvasRenderingContext2D, tick: AxisTick, showTicks: boolean, props: AxisProps) {
   const {
-    axisSpec: { position },
+    axisSpec: { position, labelFormat },
     axisTicksDimensions,
     axisPosition,
     debug,
@@ -120,7 +120,7 @@ export function renderTickLabel(ctx: CanvasRenderingContext2D, tick: AxisTick, s
         x: x + offsetX,
         y: y + offsetY,
       },
-      tick.label,
+      labelFormat ? labelFormat(tick.value) : tick.label,
       {
         ...font,
         fontSize: labelStyle.fontSize,
