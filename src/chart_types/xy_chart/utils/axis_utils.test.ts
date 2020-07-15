@@ -1569,3 +1569,4 @@ it.todo('Test alignment calculations');
 it.todo('Test text offsets calculations');
 it.todo('Test title padding calculations');
 it.todo('Test label padding calculations');
+it.todo('Test axis visibility');

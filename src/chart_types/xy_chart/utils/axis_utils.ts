@@ -20,7 +20,7 @@
 import { Scale } from '../../../scales';
 import { BBox, BBoxCalculator } from '../../../utils/bbox/bbox_calculator';
 import { Position, Rotation, getUniqueValues, VerticalAlignment, HorizontalAlignment, getPercentageValue } from '../../../utils/commons';
-import { Dimensions, Margins, getSimplePadding, SimplePadding } from '../../../utils/dimensions';
+import { Dimensions, Margins, getSimplePadding } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
 import { AxisStyle, Theme, TextAlignment, TextOffset } from '../../../utils/themes/theme';
