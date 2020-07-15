@@ -144,12 +144,9 @@ export function splitSeries({
   'id' | 'data' | 'xAccessor' | 'yAccessors' | 'y0Accessors' | 'splitSeriesAccessors' | 'markSizeAccessor'
 >): {
   rawDataSeries: RawDataSeries[];
-  colorsValues: Set<string>;
   xValues: Set<string | number>;
 } {
-  const isMultipleY = yAccessors && yAccessors.length > 1;
   const series = new Map<SeriesKey, RawDataSeries>();
-  const colorsValues = new Set<string>();
   const xValues = new Set<string | number>();
   const nonNumericValues: any[] = [];
 
@@ -160,38 +157,21 @@ export function splitSeries({
       return;
     }
 
-    if (isMultipleY) {
-      yAccessors.forEach((accessor, index) => {
-        const cleanedDatum = cleanDatum(
-          datum,
-          xAccessor,
-          accessor,
-          nonNumericValues,
-          y0Accessors && y0Accessors[index],
-          markSizeAccessor,
-        );
-
-        if (cleanedDatum !== null && cleanedDatum.x !== null && cleanedDatum.x !== undefined) {
-          xValues.add(cleanedDatum.x);
-          const seriesKey = updateSeriesMap(series, splitAccessors, accessor, cleanedDatum, specId);
-          colorsValues.add(seriesKey);
-        }
-      });
-    } else {
+    yAccessors.forEach((accessor, index) => {
       const cleanedDatum = cleanDatum(
         datum,
         xAccessor,
-        yAccessors[0],
+        accessor,
         nonNumericValues,
-        y0Accessors && y0Accessors[0],
+        y0Accessors && y0Accessors[index],
         markSizeAccessor,
       );
+
       if (cleanedDatum !== null && cleanedDatum.x !== null && cleanedDatum.x !== undefined) {
         xValues.add(cleanedDatum.x);
-        const seriesKey = updateSeriesMap(series, splitAccessors, yAccessors[0], cleanedDatum, specId);
-        colorsValues.add(seriesKey);
+        updateSeriesMap(series, splitAccessors, accessor, cleanedDatum, specId);
       }
-    }
+    });
   });
 
   if (nonNumericValues.length > 0) {
@@ -202,7 +182,6 @@ export function splitSeries({
 
   return {
     rawDataSeries: [...series.values()],
-    colorsValues,
     xValues,
   };
 }
@@ -298,11 +277,8 @@ export function cleanDatum(
 
   const mark = markSizeAccessor === undefined ? null : getAccessorValue(datum, markSizeAccessor);
   const y1 = castToNumber(datum[yAccessor], nonNumericValues);
-  const cleanedDatum: RawDataSeriesDatum = { x, y1, datum, y0: null, mark };
-  if (y0Accessor) {
-    cleanedDatum.y0 = castToNumber(datum[y0Accessor as keyof typeof datum], nonNumericValues);
-  }
-  return cleanedDatum;
+  const y0 = y0Accessor ? castToNumber(datum[y0Accessor as keyof typeof datum], nonNumericValues) : null;
+  return { x, y1, datum, y0, mark };
 }
 
 function castToNumber(value: any, nonNumericValues: any[]): number | null {
@@ -416,6 +392,7 @@ function getRawDataSeries(
     counts,
   };
 }
+
 /**
  *
  * @param seriesSpecs the map for all the series spec
