@@ -427,28 +427,6 @@ export const DEFAULT_ANNOTATION_RECT_STYLE: RectAnnotationStyle = {
   fill: '#FFEEBC',
 };
 
-/**
- * Merges two GridLineStyle objects
- *
- * @param axisSpecConfig
- * @param themeConfig
- *
- * @internal
- */
-export function mergeGridLineStyles(axisSpecConfig: Partial<GridLineStyle>, themeConfig: GridLineStyle): GridLineStyle {
-  const visible = axisSpecConfig.visible != null ? axisSpecConfig.visible : themeConfig.visible;
-  const strokeWidth = axisSpecConfig.strokeWidth != null ? axisSpecConfig.strokeWidth : themeConfig.strokeWidth;
-  const opacity = axisSpecConfig.opacity != null ? axisSpecConfig.opacity : themeConfig.opacity;
-
-  return {
-    visible,
-    stroke: axisSpecConfig.stroke || themeConfig.stroke,
-    dash: axisSpecConfig.dash || themeConfig.dash,
-    strokeWidth,
-    opacity,
-  };
-}
-
 export function mergeWithDefaultAnnotationLine(config?: Partial<LineAnnotationStyle>): LineAnnotationStyle {
   const defaultLine = DEFAULT_ANNOTATION_LINE_STYLE.line;
   const defaultDetails = DEFAULT_ANNOTATION_LINE_STYLE.details;

@@ -27,7 +27,6 @@ import {
   LineSeriesStyle,
   mergeWithDefaultAnnotationLine,
   mergeWithDefaultAnnotationRect,
-  mergeGridLineStyles,
   mergeWithDefaultTheme,
   PartialTheme,
   Theme,
@@ -46,24 +45,6 @@ describe('Theme', () => {
     // check default immutability
     expect(LIGHT_THEME).toEqual(CLONED_LIGHT_THEME);
     expect(DARK_THEME).toEqual(CLONED_DARK_THEME);
-  });
-
-  describe('mergeGridLineStyles', () => {
-    it('should merge partial grid line configs', () => {
-      const fullConfig = {
-        visible: true,
-        stroke: 'foo',
-        strokeWidth: 1,
-        opacity: 0,
-        dash: [0, 0],
-      };
-      const partialConfig = { strokeWidth: 5 };
-      const themeConfig = LIGHT_THEME.axes.gridLine.vertical;
-
-      expect(mergeGridLineStyles(fullConfig, themeConfig)).toEqual(fullConfig);
-      expect(mergeGridLineStyles({}, themeConfig)).toEqual(themeConfig);
-      expect(mergeGridLineStyles(partialConfig, themeConfig)).toEqual({ ...themeConfig, ...partialConfig });
-    });
   });
 
   describe('mergeWithDefaultAnnotationLine', () => {

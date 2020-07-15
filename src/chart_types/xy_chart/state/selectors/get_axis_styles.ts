@@ -21,7 +21,7 @@ import createCachedSelector from 're-reselect';
 
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { mergePartial } from '../../../../utils/commons';
+import { mergePartial, RecursivePartial } from '../../../../utils/commons';
 import { AxisId } from '../../../../utils/ids';
 import { AxisStyle } from '../../../../utils/themes/theme';
 import { getAxisSpecsSelector } from './get_specs';
@@ -36,7 +36,11 @@ export const getAxesStylesSelector = createCachedSelector(
   (axesSpecs, { axes: sharedAxesStyle }): Map<AxisId, AxisStyle | null> => {
     const axesStyles = new Map<AxisId, AxisStyle | null>();
     axesSpecs.forEach(({ id, style }) => {
-      const newStyle = style ? mergePartial(sharedAxesStyle, style, { mergeOptionalPartialValues: true }) : null;
+      const newStyle = style
+        ? mergePartial(sharedAxesStyle, style as RecursivePartial<AxisStyle>, {
+            mergeOptionalPartialValues: true,
+          })
+        : null;
       axesStyles.set(id, newStyle);
     });
     return axesStyles;

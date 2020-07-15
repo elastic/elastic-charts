@@ -19,9 +19,10 @@
 
 import { Line, Stroke } from '../../../../geoms/types';
 import { withContext } from '../../../../renderers/canvas';
+import { mergePartial } from '../../../../utils/commons';
 import { Dimensions } from '../../../../utils/dimensions';
 import { AxisId } from '../../../../utils/ids';
-import { mergeGridLineStyles, AxisStyle } from '../../../../utils/themes/theme';
+import { AxisStyle } from '../../../../utils/themes/theme';
 import { stringToRGB } from '../../../partition_chart/layout/utils/color_library_wrappers';
 import { getSpecsById } from '../../state/utils/spec';
 import { isVerticalGrid } from '../../utils/axis_type_utils';
@@ -51,7 +52,7 @@ export function renderGrids(ctx: CanvasRenderingContext2D, props: GridProps) {
           : axisStyle.gridLine.horizontal;
 
         const axisSpecConfig = axisSpec.gridLine;
-        const gridLine = axisSpecConfig ? mergeGridLineStyles(axisSpecConfig, themeConfig) : themeConfig;
+        const gridLine = axisSpecConfig ? mergePartial(themeConfig, axisSpecConfig) : themeConfig;
         if (!gridLine.stroke || !gridLine.strokeWidth || gridLine.strokeWidth < MIN_STROKE_WIDTH) {
           return;
         }

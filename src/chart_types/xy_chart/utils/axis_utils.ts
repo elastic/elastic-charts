@@ -19,7 +19,7 @@
 
 import { Scale } from '../../../scales';
 import { BBox, BBoxCalculator } from '../../../utils/bbox/bbox_calculator';
-import { Position, Rotation, getUniqueValues, VerticalAlignment, HorizontalAlignment, getPercentageValue } from '../../../utils/commons';
+import { Position, Rotation, getUniqueValues, VerticalAlignment, HorizontalAlignment, getPercentageValue, mergePartial } from '../../../utils/commons';
 import { Dimensions, Margins, getSimplePadding } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
@@ -731,17 +731,11 @@ export function getAxisTicksPositions(
     const allTicks = getAvailableTicks(axisSpec, scale, totalGroupsCount, enableHistogramMode, tickFormatOptions);
     const visibleTicks = getVisibleTicks(allTicks, axisSpec, axisDim);
     const isVertical = isVerticalAxis(axisSpec.position);
+    const axisSpecConfig = axisSpec.gridLine;
+    const gridLineThemeStyles = isVertical ? gridLine.vertical : gridLine.horizontal;
+    const gridLineStyles = axisSpecConfig ? mergePartial(gridLineThemeStyles, axisSpecConfig) : gridLineThemeStyles;
 
-    if (
-      (axisSpec.showGridLines === undefined
-        ? (
-            isVertical
-              ? gridLine.vertical.visible
-              : gridLine.horizontal.visible
-          )
-        : axisSpec.showGridLines
-      )
-    ) {
+    if (axisSpec.showGridLines ?? gridLineStyles.visible) {
       const gridLines = visibleTicks.map(
         (tick: AxisTick): AxisLinePosition => computeAxisGridLinePositions(isVertical, tick.position, chartDimensions),
       );

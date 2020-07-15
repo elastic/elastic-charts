@@ -23,7 +23,7 @@ import React from 'react';
 import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, AxisStyle, RecursivePartial, DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING } from '../../src';
 import { getVerticalTextAlignmentKnob, getHorizontalTextAlignmentKnob, getPositiveNumberKnob } from '../utils/knobs';
 
-const getAxisKnobs = (group?: string): RecursivePartial<AxisStyle> => ({
+const getAxisKnobs = (group?: string, gridLines = false): RecursivePartial<AxisStyle> => ({
   axisTitle: {
     visible: !boolean('Hide axis title', false, group),
     padding: {
@@ -74,6 +74,16 @@ const getAxisKnobs = (group?: string): RecursivePartial<AxisStyle> => ({
       horizontal: getHorizontalTextAlignmentKnob(group),
     },
   },
+  ...(gridLines && {
+    gridLine: {
+      horizontal: {
+        visible: boolean('show horizontal gridLines', false, group),
+      },
+      vertical: {
+        visible: boolean('show vertical gridLines', false, group),
+      },
+    },
+  }),
 });
 
 export const Example = () => {
@@ -96,7 +106,7 @@ export const Example = () => {
   const topAxisStyles = getAxisKnobs(Position.Top);
   const rightAxisStyles = getAxisKnobs(Position.Right);
   const theme = {
-    axes: getAxisKnobs('shared'),
+    axes: getAxisKnobs('shared', true),
     chartMargins,
     chartPaddings,
   };
@@ -110,6 +120,9 @@ export const Example = () => {
         position={Position.Bottom}
         title="Bottom axis"
         showOverlappingTicks
+        gridLine={onlyGlobal ? {
+          visible: boolean('show gridLines', false, Position.Bottom),
+        } : undefined}
         style={onlyGlobal ? bottomAxisStyles : undefined}
       />
       <Axis
@@ -118,6 +131,9 @@ export const Example = () => {
         title="Left axis"
         position={Position.Left}
         style={onlyGlobal ? leftAxisStyles : undefined}
+        gridLine={onlyGlobal ? {
+          visible: boolean('show gridLines', false, Position.Left),
+        } : undefined}
         tickFormat={(d) => Number(d).toFixed(2)}
       />
       <Axis
@@ -126,6 +142,9 @@ export const Example = () => {
         title="Top axis"
         position={Position.Top}
         style={onlyGlobal ? topAxisStyles : undefined}
+        gridLine={onlyGlobal ? {
+          visible: boolean('show gridLines', false, Position.Top),
+        } : undefined}
         tickFormat={(d) => Number(d).toFixed(2)}
       />
       <Axis
@@ -134,6 +153,9 @@ export const Example = () => {
         title="Right axis"
         position={Position.Right}
         style={onlyGlobal ? rightAxisStyles : undefined}
+        gridLine={onlyGlobal ? {
+          visible: boolean('show gridLines', false, Position.Right),
+        } : undefined}
         tickFormat={(d) => d % 2 === 0 ? Number(d).toFixed(2) : ''}
         domain={{ min: 0, max: 10 }}
       />
