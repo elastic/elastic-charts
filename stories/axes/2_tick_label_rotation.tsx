@@ -25,6 +25,7 @@ import { getVerticalTextAlignmentKnob, getHorizontalTextAlignmentKnob, getPositi
 
 const getAxisKnobs = (group?: string): RecursivePartial<AxisStyle> => ({
   axisTitle: {
+    visible: !boolean('Hide axis title', false, group),
     padding: {
       outer: getPositiveNumberKnob('Axis title padding - outer', 6, group),
       inner: getPositiveNumberKnob('Axis title padding - inner', 6, group),

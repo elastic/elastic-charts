@@ -30,8 +30,11 @@ import { renderDebugRect } from '../utils/debug';
 export function renderTitle(ctx: CanvasRenderingContext2D, props: AxisProps) {
   const {
     axisSpec: { title, position },
+    axisStyle: {
+      axisTitle,
+    },
   } = props;
-  if (!title) {
+  if (!title || !axisTitle.visible) {
     return null;
   }
   if (isHorizontalAxis(position)) {
@@ -56,7 +59,7 @@ function renderVerticalTitle(ctx: CanvasRenderingContext2D, props: AxisProps) {
     return null;
   }
   const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
-  const titlePadding = getSimplePadding(axisTitle.padding);
+  const titlePadding = getSimplePadding(axisTitle.visible ? axisTitle.padding : 0);
   const labelPadding = getSimplePadding(tickLabel.padding);
   const labelWidth = tickLabel.visible ? labelPadding.outer + maxLabelBboxWidth + labelPadding.inner : 0;
   const top = height;
@@ -103,7 +106,7 @@ function renderHorizontalTitle(ctx: CanvasRenderingContext2D, props: AxisProps) 
   }
 
   const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
-  const titlePadding = getSimplePadding(axisTitle.padding);
+  const titlePadding = getSimplePadding(axisTitle.visible ? axisTitle.padding : 0);
   const labelPadding = getSimplePadding(tickLabel.padding);
   const labelHeight = tickLabel.visible ? maxLabelBboxHeight + labelPadding.outer + labelPadding.inner : 0;
   const top = position === Position.Top ? titlePadding.outer : labelHeight + tickDimension + titlePadding.inner;
