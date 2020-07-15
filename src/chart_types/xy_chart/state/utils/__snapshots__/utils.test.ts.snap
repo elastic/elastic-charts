@@ -4,9 +4,10 @@ exports[`Chart State utils should compute and format specifications for non stac
 Array [
   Object {
     "counts": Object {
-      "areaSeries": 0,
-      "barSeries": 0,
-      "lineSeries": 1,
+      "area": 0,
+      "bar": 0,
+      "bubble": 0,
+      "line": 1,
     },
     "dataSeries": Array [
       Object {
@@ -73,9 +74,10 @@ Array [
   },
   Object {
     "counts": Object {
-      "areaSeries": 0,
-      "barSeries": 0,
-      "lineSeries": 1,
+      "area": 0,
+      "bar": 0,
+      "bubble": 0,
+      "line": 1,
     },
     "dataSeries": Array [
       Object {
@@ -147,9 +149,10 @@ exports[`Chart State utils should compute and format specifications for stacked 
 Array [
   Object {
     "counts": Object {
-      "areaSeries": 0,
-      "barSeries": 0,
-      "lineSeries": 2,
+      "area": 0,
+      "bar": 0,
+      "bubble": 0,
+      "line": 2,
     },
     "dataSeries": Array [
       Object {
@@ -294,9 +297,10 @@ exports[`Chart State utils should compute and format specifications for stacked 
 Array [
   Object {
     "counts": Object {
-      "areaSeries": 0,
-      "barSeries": 0,
-      "lineSeries": 2,
+      "area": 0,
+      "bar": 0,
+      "bubble": 0,
+      "line": 2,
     },
     "dataSeries": Array [
       Object {

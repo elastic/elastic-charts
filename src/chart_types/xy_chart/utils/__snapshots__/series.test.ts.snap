@@ -21471,9 +21471,10 @@ exports[`Series should compute data series for stacked specs 1`] = `
 Array [
   Object {
     "counts": Object {
-      "areaSeries": 0,
-      "barSeries": 0,
-      "lineSeries": 2,
+      "area": 0,
+      "bar": 0,
+      "bubble": 0,
+      "line": 2,
     },
     "dataSeries": Array [
       Object {

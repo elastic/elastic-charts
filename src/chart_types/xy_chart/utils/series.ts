@@ -103,11 +103,7 @@ export interface FormattedDataSeries {
 }
 
 /** @internal */
-export interface DataSeriesCounts {
-  barSeries: number;
-  lineSeries: number;
-  areaSeries: number;
-}
+export type DataSeriesCounts = {[key in SeriesTypes]: number};
 
 /** @internal */
 export type SeriesCollectionValue = {
@@ -167,7 +163,7 @@ export function splitSeries({
         markSizeAccessor,
       );
 
-      if (cleanedDatum !== null && cleanedDatum.x !== null && cleanedDatum.x !== undefined) {
+      if (cleanedDatum !== null) {
         xValues.add(cleanedDatum.x);
         updateSeriesMap(series, splitAccessors, accessor, cleanedDatum, specId);
       }
@@ -289,7 +285,6 @@ function castToNumber(value: any, nonNumericValues: any[]): number | null {
 
   if (isNaN(num)) {
     nonNumericValues.push(value);
-
     return null;
   }
   return num;
@@ -358,39 +353,26 @@ function getRawDataSeries(
   rawDataSeries: RawDataSeries[];
   counts: DataSeriesCounts;
 } {
-  const rawDataSeries: RawDataSeries[] = [];
-  const counts = {
-    barSeries: 0,
-    lineSeries: 0,
-    areaSeries: 0,
-  };
-  const seriesSpecsCount = seriesSpecs.length;
-  let i = 0;
-  for (; i < seriesSpecsCount; i++) {
-    const spec = seriesSpecs[i];
-    const { id, seriesType } = spec;
+  return seriesSpecs.reduce<{
+    rawDataSeries: RawDataSeries[];
+    counts: DataSeriesCounts;
+  }>((acc, { id, seriesType }) => {
     const ds = dataSeries.get(id);
-    switch (seriesType) {
-      case SeriesTypes.Bar:
-        counts.barSeries += ds ? ds.length : 0;
-        break;
-      case SeriesTypes.Line:
-        counts.lineSeries += ds ? ds.length : 0;
-        break;
-      case SeriesTypes.Area:
-      default:
-        counts.areaSeries += ds ? ds.length : 0;
-        break;
+    if (!ds) {
+      return acc;
     }
-
-    if (ds) {
-      rawDataSeries.push(...ds);
-    }
-  }
-  return {
-    rawDataSeries,
-    counts,
-  };
+    acc.rawDataSeries.push(...ds);
+    acc.counts[seriesType] += ds.length;
+    return acc;
+  }, {
+    rawDataSeries: [],
+    counts: {
+      [SeriesTypes.Bar]: 0,
+      [SeriesTypes.Area]: 0,
+      [SeriesTypes.Line]: 0,
+      [SeriesTypes.Bubble]: 0,
+    },
+  });
 }
 
 /**
@@ -416,12 +398,17 @@ export function getSplittedSeries(
   // eslint-disable-next-line no-restricted-syntax
   for (const spec of seriesSpecs) {
     const dataSeries = splitSeries(spec);
-    let currentRawDataSeries = dataSeries.rawDataSeries;
+    let { rawDataSeries: currentRawDataSeries } = dataSeries;
     if (spec.xScaleType === ScaleType.Ordinal) {
       isOrdinalScale = true;
     }
     if (deselectedDataSeries.length > 0) {
-      currentRawDataSeries = dataSeries.rawDataSeries.filter(({ key }) => !deselectedDataSeries.some(({ key: deselectedKey }) => key === deselectedKey));
+      currentRawDataSeries = currentRawDataSeries.filter(
+        ({ key }) =>
+          !deselectedDataSeries.some(
+            ({ key: deselectedKey }) => key === deselectedKey
+          )
+      );
     }
 
     splittedSeries.set(spec.id, currentRawDataSeries);
@@ -437,6 +424,9 @@ export function getSplittedSeries(
       });
     });
 
+    // check the nature of the x values. If all of them are numbers
+    // we can use a continuous scale, if not we should use an ordinal scale.
+    // The xValue is already casted to be a valid number or a string
     // eslint-disable-next-line no-restricted-syntax
     for (const xValue of dataSeries.xValues) {
       if (isNumberArray && typeof xValue !== 'number') {

@@ -56,6 +56,7 @@ import {
   FitConfig,
   isBubbleSeriesSpec,
   YDomainRange,
+  SeriesTypes,
 } from '../../utils/specs';
 import { getSpecsById, getAxesSpecForSpecId } from './spec';
 import { SeriesDomainsAndData, ComputedGeometries, GeometriesCounts, Transform, LastValues } from './types';
@@ -183,14 +184,16 @@ export function computeSeriesDomains(
 ): SeriesDomainsAndData {
   const {
     splittedSeries,
-    xValues, seriesCollection,
+    xValues,
+    seriesCollection,
     fallbackScale,
   } = getSplittedSeries(seriesSpecs, deselectedDataSeries);
+
   const splittedDataSeries = [...splittedSeries.values()];
   const specsArray = [...seriesSpecs.values()];
 
   const xDomain = mergeXDomain(specsArray, xValues, customXDomain, fallbackScale);
-  const yDomain = mergeYDomain(splittedSeries, specsArray, customYDomainsByGroupId);
+
 
   const formattedDataSeries = getFormattedDataseries(
     specsArray,
@@ -199,6 +202,9 @@ export function computeSeriesDomains(
     xDomain.scaleType,
     seriesSpecs,
   );
+
+  // let's compute the yDomain after computing all stacked values
+  const yDomain = mergeYDomain(splittedSeries, specsArray, customYDomainsByGroupId);
 
   // we need to get the last values from the formatted dataseries
   // because we change the format if we are on percentage mode
@@ -299,7 +305,7 @@ export function computeSeriesGeometries(
       chartTheme,
       enableHistogramMode,
     );
-    orderIndex = counts.barSeries > 0 ? orderIndex + 1 : orderIndex;
+    orderIndex = counts[SeriesTypes.Bar] > 0 ? orderIndex + 1 : orderIndex;
     areas.push(...geometries.areas);
     lines.push(...geometries.lines);
     bars.push(...geometries.bars);
