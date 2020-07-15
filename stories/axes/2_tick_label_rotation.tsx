@@ -20,7 +20,7 @@
 import { boolean, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, AxisStyle, RecursivePartial } from '../../src';
+import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, AxisStyle, RecursivePartial, DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING } from '../../src';
 import { getVerticalTextAlignmentKnob, getHorizontalTextAlignmentKnob, getPositiveNumberKnob } from '../utils/knobs';
 
 const getAxisKnobs = (group?: string): RecursivePartial<AxisStyle> => ({
@@ -79,12 +79,26 @@ const getAxisKnobs = (group?: string): RecursivePartial<AxisStyle> => ({
 export const Example = () => {
   const debug = boolean('debug', false, 'general');
   const onlyGlobal = !boolean('disable axis overrides', false, 'general');
+  const chartMargins = {
+    left: getPositiveNumberKnob('margin left', DEFAULT_CHART_MARGINS.left, 'general'),
+    right: getPositiveNumberKnob('margin right', DEFAULT_CHART_MARGINS.right, 'general'),
+    top: getPositiveNumberKnob('margin top', DEFAULT_CHART_MARGINS.top, 'general'),
+    bottom: getPositiveNumberKnob('margin bottom', DEFAULT_CHART_MARGINS.bottom, 'general'),
+  };
+  const chartPaddings = {
+    left: getPositiveNumberKnob('padding left', DEFAULT_CHART_PADDING.left, 'general'),
+    right: getPositiveNumberKnob('padding right', DEFAULT_CHART_PADDING.right, 'general'),
+    top: getPositiveNumberKnob('padding top', DEFAULT_CHART_PADDING.top, 'general'),
+    bottom: getPositiveNumberKnob('padding bottom', DEFAULT_CHART_PADDING.bottom, 'general'),
+  };
   const bottomAxisStyles = getAxisKnobs(Position.Bottom);
   const leftAxisStyles = getAxisKnobs(Position.Left);
   const topAxisStyles = getAxisKnobs(Position.Top);
   const rightAxisStyles = getAxisKnobs(Position.Right);
   const theme = {
     axes: getAxisKnobs('shared'),
+    chartMargins,
+    chartPaddings,
   };
 
   return (
