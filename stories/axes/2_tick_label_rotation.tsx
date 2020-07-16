@@ -156,7 +156,7 @@ export const Example = () => {
         gridLine={onlyGlobal ? {
           visible: boolean('show gridLines', false, Position.Right),
         } : undefined}
-        tickFormat={(d) => d % 2 === 0 ? Number(d).toFixed(2) : ''}
+        tickFormat={(d) => Number(d).toFixed(2)}
         domain={{ min: 0, max: 10 }}
       />
       <AreaSeries

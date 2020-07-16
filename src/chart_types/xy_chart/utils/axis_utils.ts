@@ -553,6 +553,7 @@ export function enableDuplicatedTicks(
   const ticks = scale.ticks();
   const allTicks: AxisTick[] = ticks.map((tick) => ({
     value: tick,
+    // TODO handle empty string tick formatting
     label: axisSpec.tickFormat(tick, tickFormatOptions),
     position: (scale.scale(tick) ?? 0) + offset,
   }));
