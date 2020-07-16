@@ -37,3 +37,4 @@ export { Example as legendSpacingBuffer } from './8_spacing_buffer';
 export { Example as colorPicker } from './9_color_picker';
 export { Example as piechart } from './10_sunburst';
 export { Example as actions } from './11_legend_actions';
+export { Example as margins } from './12_legend_margins';

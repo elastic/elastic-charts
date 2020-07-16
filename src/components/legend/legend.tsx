@@ -81,7 +81,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
   if (items.length === 0) {
     return null;
   }
-  const legendContainerStyle = getLegendStyle(position, size);
+  const legendContainerStyle = getLegendStyle(position, size, legend.margin);
   const legendListStyle = getLegendListStyle(position, chartMargins, legend);
   const legendClasses = classNames('echLegend', `echLegend--${position}`, {
     'echLegend--debug': debug,
