@@ -273,14 +273,14 @@ describe('Stacked Series Utils', () => {
   describe('compute stacked arrays', () => {
     test('with empty values', () => {
       const stackedMap = getYValueStackMap(EMPTY_DATA_SET, emptyXValues);
-      let computedStackedMap = computeYStackedMapValues(stackedMap, false);
+      let computedStackedMap = computeYStackedMapValues(stackedMap);
       expect(computedStackedMap.size).toBe(0);
-      computedStackedMap = computeYStackedMapValues(stackedMap, true);
+      computedStackedMap = computeYStackedMapValues(stackedMap);
       expect(computedStackedMap.size).toBe(0);
     });
     test('with basic values', () => {
       const stackedMap = getYValueStackMap(STANDARD_DATA_SET, xValues);
-      const computedStackedMap = computeYStackedMapValues(stackedMap, false);
+      const computedStackedMap = computeYStackedMapValues(stackedMap);
       expect(computedStackedMap.size).toBe(1);
       const x0Array = computedStackedMap.get(0)!;
       expect(x0Array).toBeDefined();
@@ -290,7 +290,7 @@ describe('Stacked Series Utils', () => {
     });
     test('with null values', () => {
       const stackedMap = getYValueStackMap(WITH_NULL_DATASET, xValues);
-      const computedStackedMap = computeYStackedMapValues(stackedMap, false);
+      const computedStackedMap = computeYStackedMapValues(stackedMap);
       expect(computedStackedMap.size).toBe(1);
       const x0Array = computedStackedMap.get(0)!;
       expect(x0Array).toBeDefined();
@@ -301,7 +301,7 @@ describe('Stacked Series Utils', () => {
   });
   describe('Format stacked dataset', () => {
     test('format data without nulls', () => {
-      const formattedData = formatStackedDataSeriesValues(STANDARD_DATA_SET, false, false, xValues, ScaleType.Linear);
+      const formattedData = formatStackedDataSeriesValues(STANDARD_DATA_SET, false, xValues, ScaleType.Linear);
       expect(formattedData[0].data[0]).toEqual({
         datum: undefined,
         initialY0: null,
@@ -331,7 +331,7 @@ describe('Stacked Series Utils', () => {
       });
     });
     test('format data with nulls', () => {
-      const formattedData = formatStackedDataSeriesValues(WITH_NULL_DATASET, false, false, xValues, ScaleType.Linear);
+      const formattedData = formatStackedDataSeriesValues(WITH_NULL_DATASET, false, xValues, ScaleType.Linear);
       expect(formattedData[1].data[0]).toEqual({
         datum: undefined,
         initialY0: null,
@@ -345,7 +345,6 @@ describe('Stacked Series Utils', () => {
     test('format data without nulls with y0 values', () => {
       const formattedData = formatStackedDataSeriesValues(
         STANDARD_DATA_SET_WY0,
-        false,
         false,
         xValues,
         ScaleType.Linear,
@@ -382,7 +381,6 @@ describe('Stacked Series Utils', () => {
       const formattedData = formatStackedDataSeriesValues(
         WITH_NULL_DATASET_WY0,
         false,
-        false,
         xValues,
         ScaleType.Linear,
       );
@@ -417,7 +415,6 @@ describe('Stacked Series Utils', () => {
     test('format data without nulls on second series', () => {
       const formattedData = formatStackedDataSeriesValues(
         DATA_SET_WITH_NULL_2,
-        false,
         false,
         with2NullsXValues,
         ScaleType.Linear,
@@ -480,7 +477,7 @@ describe('Stacked Series Utils', () => {
       percent: [0, 0, 0],
       total: 0,
     });
-    const formattedDatum = getStackedFormattedSeriesDatum({ x: 1, y1: 0, mark: null }, stackedValues, 0, false, true);
+    const formattedDatum = getStackedFormattedSeriesDatum({ x: 1, y1: 0, mark: null }, stackedValues, 0, true);
     expect(formattedDatum).toEqual({
       datum: undefined,
       initialY0: null,

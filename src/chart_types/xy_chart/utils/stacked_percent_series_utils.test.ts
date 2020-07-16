@@ -75,25 +75,25 @@ describe('Stacked Series Utils', () => {
 
   describe('Format stacked dataset', () => {
     test('format data without nulls', () => {
-      const formattedData = formatStackedDataSeriesValues(STANDARD_DATA_SET, false, true, xValues, ScaleType.Linear);
-      const data0 = formattedData[0].data[0];
+      const formattedData = formatStackedDataSeriesValues(STANDARD_DATA_SET, true, xValues, ScaleType.Linear);
+      const [data0] = formattedData[0].data;
       expect(data0.initialY1).toBe(0.1);
       expect(data0.y0).toBeNull();
       expect(data0.y1).toBe(0.1);
 
-      const data1 = formattedData[1].data[0];
+      const [data1] = formattedData[1].data;
       expect(data1.initialY1).toBe(0.2);
       expect(data1.y0).toBe(0.1);
       expect(data1.y1).toBeCloseTo(0.3);
 
-      const data2 = formattedData[2].data[0];
+      const [data2] = formattedData[2].data;
       expect(data2.initialY1).toBe(0.7);
       expect(data2.y0).toBe(0.3);
       expect(data2.y1).toBe(1);
     });
     test('format data with nulls', () => {
-      const formattedData = formatStackedDataSeriesValues(WITH_NULL_DATASET, false, true, xValues, ScaleType.Linear);
-      const data0 = formattedData[0].data[0];
+      const formattedData = formatStackedDataSeriesValues(WITH_NULL_DATASET, true, xValues, ScaleType.Linear);
+      const [data0] = formattedData[0].data;
       expect(data0.initialY1).toBe(0.25);
       expect(data0.y0).toBeNull();
       expect(data0.y1).toBe(0.25);
@@ -107,7 +107,7 @@ describe('Stacked Series Utils', () => {
         mark: null,
       });
 
-      const data2 = formattedData[2].data[0];
+      const [data2] = formattedData[2].data;
       expect(data2.initialY1).toBe(0.75);
       expect(data2.y0).toBe(0.25);
       expect(data2.y1).toBe(1);
@@ -115,24 +115,23 @@ describe('Stacked Series Utils', () => {
     test('format data without nulls with y0 values', () => {
       const formattedData = formatStackedDataSeriesValues(
         STANDARD_DATA_SET_WY0,
-        false,
         true,
         xValues,
         ScaleType.Linear,
       );
-      const data0 = formattedData[0].data[0];
+      const [data0] = formattedData[0].data;
       expect(data0.initialY0).toBe(0.02);
       expect(data0.initialY1).toBe(0.1);
       expect(data0.y0).toBe(0.02);
       expect(data0.y1).toBe(0.1);
 
-      const data1 = formattedData[1].data[0];
+      const [data1] = formattedData[1].data;
       expect(data1.initialY0).toBe(0.04);
       expect(data1.initialY1).toBe(0.2);
       expect(data1.y0).toBe(0.14);
       expect(data1.y1).toBeCloseTo(0.3, 5);
 
-      const data2 = formattedData[2].data[0];
+      const [data2] = formattedData[2].data;
       expect(data2.initialY0).toBe(0.06);
       expect(data2.initialY1).toBe(0.7);
       expect(data2.y0).toBe(0.36);
@@ -141,24 +140,23 @@ describe('Stacked Series Utils', () => {
     test('format data with nulls - missing points', () => {
       const formattedData = formatStackedDataSeriesValues(
         WITH_NULL_DATASET_WY0,
-        false,
         true,
         xValues,
         ScaleType.Linear,
       );
-      const data0 = formattedData[0].data[0];
+      const [data0] = formattedData[0].data;
       expect(data0.initialY0).toBe(0.02);
       expect(data0.initialY1).toBe(0.1);
       expect(data0.y0).toBe(0.02);
       expect(data0.y1).toBe(0.1);
 
-      const data1 = formattedData[1].data[0];
+      const [data1] = formattedData[1].data;
       expect(data1.initialY0).toBe(null);
       expect(data1.initialY1).toBe(null);
       expect(data1.y0).toBe(0.1);
       expect(data1.y1).toBe(null);
 
-      const data2 = formattedData[2].data[0];
+      const [data2] = formattedData[2].data;
       expect(data2.initialY0).toBe(0.06);
       expect(data2.initialY1).toBe(0.9);
       expect(data2.y0).toBe(0.16);
@@ -167,7 +165,6 @@ describe('Stacked Series Utils', () => {
     test('format data without nulls on second series', () => {
       const formattedData = formatStackedDataSeriesValues(
         DATA_SET_WITH_NULL_2,
-        false,
         true,
         with2NullsXValues,
         ScaleType.Linear,

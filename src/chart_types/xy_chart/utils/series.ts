@@ -321,7 +321,6 @@ export function getFormattedDataseries(
     const stackedDataSeries = getRawDataSeries(groupSpecs.stacked, dataSeries);
     const stackedDataSeriesValues = formatStackedDataSeriesValues(
       stackedDataSeries.rawDataSeries,
-      false,
       isPercentageStack,
       xValues,
       xScaleType,
@@ -337,7 +336,7 @@ export function getFormattedDataseries(
     nonStackedFormattedDataSeries.push({
       groupId,
       counts: nonStackedDataSeries.counts,
-      dataSeries: formatNonStackedDataSeriesValues(nonStackedDataSeries.rawDataSeries, false, seriesSpecs, xScaleType),
+      dataSeries: formatNonStackedDataSeriesValues(nonStackedDataSeries.rawDataSeries, seriesSpecs, xScaleType),
     });
   });
   return {

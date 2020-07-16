@@ -75,22 +75,13 @@ export function getYValueStackMap(
  * @param scaleToExtent
  * @internal
  */
-export function computeYStackedMapValues(
-  yValueStackMap: Map<any, number[]>,
-  scaleToExtent: boolean,
-): Map<any, StackedValues> {
+export function computeYStackedMapValues(yValueStackMap: Map<any, number[]>): Map<any, StackedValues> {
   const stackedValues = new Map<any, StackedValues>();
 
   yValueStackMap.forEach((yStackArray, xValue) => {
     const stackArray = yStackArray.reduce(
       (acc, currentValue, index) => {
         if (acc.values.length === 0) {
-          if (scaleToExtent) {
-            return {
-              values: [currentValue, currentValue],
-              total: currentValue,
-            };
-          }
           return {
             values: [0, currentValue],
             total: currentValue,
@@ -124,13 +115,13 @@ export function computeYStackedMapValues(
 /** @internal */
 export function formatStackedDataSeriesValues(
   dataseries: RawDataSeries[],
-  scaleToExtent: boolean,
   isPercentageMode: boolean,
   xValues: Set<string | number>,
   xScaleType: ScaleType,
 ): DataSeries[] {
   const yValueStackMap = getYValueStackMap(dataseries, xValues);
-  const stackedValues = computeYStackedMapValues(yValueStackMap, scaleToExtent);
+  const stackedValues = computeYStackedMapValues(yValueStackMap);
+
   const stackedDataSeries: DataSeries[] = dataseries.map((ds, seriesIndex) => {
     const newData: DataSeriesDatum[] = [];
     const missingXValues = new Set([...xValues]);
@@ -139,7 +130,6 @@ export function formatStackedDataSeriesValues(
         data,
         stackedValues,
         seriesIndex,
-        scaleToExtent,
         isPercentageMode,
       );
       if (formattedSeriesDatum === undefined) {
@@ -160,7 +150,6 @@ export function formatStackedDataSeriesValues(
         },
         stackedValues,
         seriesIndex,
-        scaleToExtent,
         isPercentageMode,
         {
           x,
@@ -187,7 +176,6 @@ export function getStackedFormattedSeriesDatum(
   data: RawDataSeriesDatum,
   stackedValues: Map<any, StackedValues>,
   seriesIndex: number,
-  scaleToExtent: boolean,
   isPercentageMode = false,
   filled?: FilledValues,
 ): DataSeriesDatum | undefined {
@@ -212,12 +200,8 @@ export function getStackedFormattedSeriesDatum(
     y0 = data.y0;
   }
 
-  let computedY0: number | null;
-  if (scaleToExtent) {
-    computedY0 = y0 || y1;
-  } else {
-    computedY0 = y0 || null;
-  }
+  const computedY0: number | null = y0 || null;
+
   const initialY0 = y0 == null ? null : y0;
   const mark = isDefined(markValue) ? markValue : null;
 

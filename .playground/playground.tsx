@@ -19,13 +19,35 @@
 
 import React from 'react';
 
-import { Example } from '../stories/sunburst/15_single_sunburst';
+import { Chart, BarSeries, Axis, Position, ScaleType } from '../src';
 
 export class Playground extends React.Component {
   render() {
     return (
       <div className="testing">
-        <div className="chart">{Example()}</div>
+        <div className="chart">
+          <Chart>
+            <Axis
+              id="y"
+              position={Position.Left}
+              domain={{ fit: true }}
+            />
+            <BarSeries
+              id="spec1"
+              yAccessors={['y1']}
+              splitSeriesAccessors={['g']}
+              stackAccessors={['x']}
+              xScaleType={ScaleType.Linear}
+              data={[
+                { x: 1, y1: 1, g: 'a' },
+                { x: 2, y1: 2, g: 'a' },
+                { x: 4, y1: 4, g: 'a' },
+                { x: 1, y1: 21, g: 'b' },
+                { x: 3, y1: 23, g: 'b' },
+              ]}
+            />
+          </Chart>
+        </div>
       </div>
     );
   }
