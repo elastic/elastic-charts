@@ -235,16 +235,17 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
               {showExtra && extra != null && renderExtra(extra, isSeriesHidden)}
             </div>
           </div>
-          <div className="echLegendItem__action">
-            {Action
-              && (
+
+          {Action
+            && (
+              <div className="echLegendItem__action">
                 <Action
                   seriesIdentifier={seriesIdentifier}
                   activateAction={() => this.setState({ actionActive: true })}
                   deactivateAction={() => this.setState({ actionActive: false })}
                 />
-              )}
-          </div>
+              </div>
+            )}
         </li>
         {this.renderColorPicker()}
       </>
