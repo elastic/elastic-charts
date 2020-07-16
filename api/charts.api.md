@@ -743,9 +743,7 @@ export type LegendAction = ComponentType<LegendActionProps>;
 
 // @public
 export interface LegendActionProps {
-    activateAction: () => void;
-    deactivateAction: () => void;
-    seriesIdentifier: SeriesIdentifier;
+    series: SeriesIdentifier;
 }
 
 // Warning: (ae-missing-release-tag) "LegendColorPicker" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -774,6 +772,7 @@ export type LegendItemListener = (series: SeriesIdentifier | null) => void;
 // @public (undocumented)
 export interface LegendStyle {
     horizontalHeight: number;
+    margin: number;
     spacingBuffer: number;
     verticalWidth: number;
 }
