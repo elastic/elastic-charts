@@ -223,27 +223,18 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
           onMouseLeave={this.onLegendItemMouseOut}
           style={style}
         >
-          <div className="echLegendItem__mainWrapper">
-            <div className="echLegendItem__main">
-              <ItemColor
-                color={color}
-                isSeriesHidden={isSeriesHidden}
-                hasColorPicker={hasColorPicker}
-                onClick={this.handleColorClick(hasColorPicker)}
-              />
-              <ItemLabel label={label} onClick={this.handleLabelClick(seriesIdentifier)} />
-              {showExtra && extra != null && renderExtra(extra, isSeriesHidden)}
-            </div>
-          </div>
-
+          <ItemColor
+            color={color}
+            isSeriesHidden={isSeriesHidden}
+            hasColorPicker={hasColorPicker}
+            onClick={this.handleColorClick(hasColorPicker)}
+          />
+          <ItemLabel label={label} onClick={this.handleLabelClick(seriesIdentifier)} />
+          {showExtra && extra != null && renderExtra(extra, isSeriesHidden)}
           {Action
             && (
               <div className="echLegendItem__action">
-                <Action
-                  seriesIdentifier={seriesIdentifier}
-                  activateAction={() => this.setState({ actionActive: true })}
-                  deactivateAction={() => this.setState({ actionActive: false })}
-                />
+                <Action series={seriesIdentifier} />
               </div>
             )}
         </li>

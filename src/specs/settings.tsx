@@ -197,21 +197,9 @@ export interface ExternalPointerEventsSettings {
  */
 export interface LegendActionProps {
   /**
-   * Callback to indicate when action is activated
-   *
-   * Use when openning a popover where you want to persist the action button
+   * Series identifier for the given series
    */
-  activateAction: () => void;
-  /**
-   * Callback to indicate when action is deactivated
-   *
-   * Use when openning a popover where you want to persist the action button
-   */
-  deactivateAction: () => void;
-  /**
-   * Series id for the given series
-   */
-  seriesIdentifier: SeriesIdentifier;
+  series: SeriesIdentifier;
 }
 /**
  * Legend action component used to render actions next to legend items

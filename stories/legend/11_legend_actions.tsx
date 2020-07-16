@@ -18,16 +18,17 @@
  */
 
 import { EuiIcon, EuiPopover, EuiContextMenu, EuiContextMenuPanelDescriptor, EuiWrappingPopover, EuiColorPicker, EuiSpacer, EuiButton } from '@elastic/eui';
+import { boolean } from '@storybook/addon-knobs';
 import React, { useState } from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings, LegendAction, XYChartSeriesIdentifier, LegendColorPicker } from '../../src';
 import * as TestDatasets from '../../src/utils/data_samples/test_dataset';
 import { getPositionKnob } from '../utils/knobs';
 
-const getAction = (hideActions: boolean): LegendAction => ({ activateAction, deactivateAction, seriesIdentifier }) => {
+const getAction = (hideActions: boolean): LegendAction => ({ series }) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
 
-  const getPanels = (series: XYChartSeriesIdentifier, onClose: () => void): EuiContextMenuPanelDescriptor[] => [
+  const getPanels = (series: XYChartSeriesIdentifier): EuiContextMenuPanelDescriptor[] => [
     {
       id: 0,
       title: 'Legend Actions',
@@ -37,7 +38,6 @@ const getAction = (hideActions: boolean): LegendAction => ({ activateAction, dea
           icon: <EuiIcon type="iInCircle" size="m" />,
           onClick: () => {
             setPopoverOpen(false);
-            onClose();
             setTimeout(() => {
               window.alert(`Selected series: ${series.specId}`);
             }, 100);
@@ -48,7 +48,6 @@ const getAction = (hideActions: boolean): LegendAction => ({ activateAction, dea
           icon: <EuiIcon type="tokenKey" size="m" />,
           onClick: () => {
             setPopoverOpen(false);
-            onClose();
             setTimeout(() => {
               window.alert(`Selected series: [${series.seriesKeys.join(', ')}]`);
             }, 100);
@@ -59,7 +58,6 @@ const getAction = (hideActions: boolean): LegendAction => ({ activateAction, dea
           icon: <EuiIcon type="filter" size="m" />,
           onClick: () => {
             setPopoverOpen(false);
-            onClose();
             setTimeout(() => {
               window.alert('Series Filtered!');
             }, 100);
@@ -70,7 +68,6 @@ const getAction = (hideActions: boolean): LegendAction => ({ activateAction, dea
           icon: <EuiIcon type="starFilled" size="m" />,
           onClick: () => {
             setPopoverOpen(false);
-            onClose();
             setTimeout(() => {
               window.alert('Series liked!!!');
             }, 100);
@@ -80,7 +77,7 @@ const getAction = (hideActions: boolean): LegendAction => ({ activateAction, dea
     },
   ];
 
-  const getButton = (key: string, onOpen: () => void, onClose: () => void) => (
+  const Button = (
     <div
       style={{
         display: 'flex',
@@ -90,15 +87,7 @@ const getAction = (hideActions: boolean): LegendAction => ({ activateAction, dea
         marginLeft: 4,
         marginRight: 4,
       }}
-      onClick={() => {
-        if (popoverOpen) {
-          setPopoverOpen(false);
-          onClose();
-        } else {
-          setPopoverOpen(true);
-          onOpen();
-        }
-      }}
+      onClick={() => setPopoverOpen(!popoverOpen)}
     >
       <EuiIcon size="s" type="pencil" />
     </div>
@@ -107,19 +96,16 @@ const getAction = (hideActions: boolean): LegendAction => ({ activateAction, dea
   return (
     <EuiPopover
       id="contextMenuNormal"
-      button={hideActions ? <div /> : getButton(seriesIdentifier.key, activateAction, deactivateAction)}
+      button={hideActions ? <div /> : Button}
       isOpen={popoverOpen}
-      closePopover={() => {
-        setPopoverOpen(false);
-        deactivateAction();
-      }}
+      closePopover={() => setPopoverOpen(false)}
       panelPaddingSize="none"
       withTitle
       anchorPosition="upLeft"
     >
       <EuiContextMenu
         initialPanelId={0}
-        panels={getPanels(seriesIdentifier as XYChartSeriesIdentifier, deactivateAction)}
+        panels={getPanels(series as XYChartSeriesIdentifier)}
       />
     </EuiPopover>
   );
@@ -141,9 +127,9 @@ const renderColorPicker: LegendColorPicker = ({ anchor, color, onClose, onChange
 );
 
 export const Example = () => {
-  const hideActions = false;
-  const showLegendExtra = true;
-  const showColorPicker = true;
+  const hideActions = boolean('Hide legend action', false);
+  const showLegendExtra = !boolean('Hide legend extra', false);
+  const showColorPicker = !boolean('Hide color picker', true);
 
   return (
     <Chart className="story-chart">
@@ -174,12 +160,7 @@ Example.story = {
   parameters: {
     info: {
       text:
-        `The \`legendAction\` action prop allows you to pass a render function/component that will render next to the legend item.
-
-
-The \`onOpen\` and \`onClose\` props of the \`LegendAction\` component should be used when it is desirable to persist the action after clicked.
-For example when using an action with a popover context menu. Without using \`onOpen\` and \`onClose\` the action element will only appear when
-the item is hovered over`,
+        'The `legendAction` action prop allows you to pass a render function/component that will render next to the legend item.',
     },
   },
 };
