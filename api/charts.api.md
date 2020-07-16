@@ -123,7 +123,7 @@ export interface AxisSpec extends Spec {
     // (undocumented)
     chartType: typeof ChartTypes.XYAxis;
     domain?: YDomainRange;
-    gridLine?: GridLineStyle;
+    gridLine?: Partial<GridLineStyle>;
     groupId: GroupId;
     hide: boolean;
     id: AxisId;
@@ -131,12 +131,13 @@ export interface AxisSpec extends Spec {
     labelFormat?: TickFormatter;
     position: Position;
     showDuplicatedTicks?: boolean;
+    // @deprecated
     showGridLines?: boolean;
     showOverlappingLabels: boolean;
     showOverlappingTicks: boolean;
     // (undocumented)
     specType: typeof SpecTypes.Axis;
-    style?: RecursivePartial<AxisStyle>;
+    style?: RecursivePartial<Omit<AxisStyle, 'gridLine'>>;
     tickFormat: TickFormatter;
     ticks?: number;
     title?: string;
