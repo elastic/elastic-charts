@@ -232,13 +232,10 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
                 onClick={this.handleColorClick(hasColorPicker)}
               />
               <ItemLabel label={label} onClick={this.handleLabelClick(seriesIdentifier)} />
+              {showExtra && extra != null && renderExtra(extra, isSeriesHidden)}
             </div>
           </div>
-          <div
-            className={classNames('echLegendItem__action', {
-              'echLegendItem__action--active': this.state.actionActive,
-            })}
-          >
+          <div className="echLegendItem__action">
             {Action
               && (
                 <Action
@@ -248,7 +245,6 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
                 />
               )}
           </div>
-          {showExtra && extra != null && renderExtra(extra, isSeriesHidden)}
         </li>
         {this.renderColorPicker()}
       </>

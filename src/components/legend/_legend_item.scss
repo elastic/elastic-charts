@@ -45,12 +45,9 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
 
   &__action {
     height: 100%;
-    display: none;
     cursor: pointer;
 
-    &--active,
     &:hover {
-      display: block;
       background-color: #e7f0f7;
     }
   }
