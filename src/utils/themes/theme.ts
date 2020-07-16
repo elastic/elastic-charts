@@ -158,7 +158,7 @@ export interface LegendStyle {
   /**
    * Legend padding. The Chart margins are independent of the legend.
    *
-   * @todo make SimplePadding when after axis changes are added
+   * TODO: make SimplePadding when after axis changes are added
    */
   margin: number;
 }
