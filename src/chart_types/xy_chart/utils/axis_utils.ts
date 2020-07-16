@@ -55,8 +55,8 @@ export interface TickLabelProps {
   offsetY: number;
   textOffsetX: number;
   textOffsetY: number;
-  align: string;
-  verticalAlign: string;
+  align: Extract<HorizontalAlignment, 'left' | 'center' | 'right'>;
+  verticalAlign: Extract<VerticalAlignment, 'top' | 'middle' | 'bottom'>;
 }
 
 /**
@@ -264,7 +264,7 @@ function getUserTextOffsets(dimensions: AxisTicksDimensions, offset: TextOffset)
   };
 }
 
-function getHorizontalTextOffset(width: number, alignment: Exclude<HorizontalAlignment, 'far' | 'near'>): number {
+function getHorizontalTextOffset(width: number, alignment: Extract<HorizontalAlignment, 'left' | 'center' | 'right'>): number {
   switch (alignment) {
     case 'left':
       return -width / 2;
@@ -276,7 +276,7 @@ function getHorizontalTextOffset(width: number, alignment: Exclude<HorizontalAli
   }
 }
 
-function getVerticalTextOffset(height: number, alignment: Exclude<VerticalAlignment, 'far' | 'near'>): number {
+function getVerticalTextOffset(height: number, alignment: Extract<VerticalAlignment, 'top' | 'middle' | 'bottom'>): number {
   switch (alignment) {
     case 'top':
       return -height / 2;
