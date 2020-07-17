@@ -168,6 +168,7 @@ export const LIGHT_THEME: Theme = {
     verticalWidth: 200,
     horizontalHeight: 64,
     spacingBuffer: 10,
+    margin: 0,
   },
   crosshair: {
     band: {
