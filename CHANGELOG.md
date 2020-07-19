@@ -1,3 +1,10 @@
+# [19.10.0](https://github.com/elastic/elastic-charts/compare/v19.9.0...v19.10.0) (2020-07-19)
+
+
+### Features
+
+* **axis:** improved axis styles ([#711](https://github.com/elastic/elastic-charts/issues/711)) ([4f1a0b1](https://github.com/elastic/elastic-charts/commit/4f1a0b13444752aba834fecf3fc151f7ed589866)), closes [#714](https://github.com/elastic/elastic-charts/issues/714) [#312](https://github.com/elastic/elastic-charts/issues/312)
+
 # [19.9.0](https://github.com/elastic/elastic-charts/compare/v19.8.1...v19.9.0) (2020-07-17)
 
 
