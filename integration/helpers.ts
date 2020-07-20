@@ -72,18 +72,15 @@ function encodeString(string: string) {
  */
 const storiesToSkip: Record<string, string[]> = {
   // Interactions: ['Some story name'],
-  Legend: [
-    'Actions',
-  ],
 };
 
 /**
  * Delays for stories to skip in all vrt based on group.
  */
 const storiesToDelay: Record<string, Record<string, number>> = {
-  // GroupName: {
-  //   'some story name': 200,
-  // },
+  Legend: {
+    Actions: 200, // needed for icon to load
+  },
 };
 
 export function getStorybookInfo(): StoryGroupInfo[] {

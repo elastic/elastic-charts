@@ -20,13 +20,12 @@
 import { boolean, color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, GridLineStyle, LineSeries, Position, ScaleType, Settings } from '../../src';
+import { Axis, BarSeries, Chart, GridLineConfig, LineSeries, Position, ScaleType, Settings } from '../../src';
 
-function generateGridLineStyle(group: string, gridColor = 'purple'): GridLineStyle {
+function generateGridLineConfig(group: string, gridColor = 'purple'): GridLineConfig {
   const groupId = `${group} axis`;
 
   return {
-    visible: true,
     stroke: color(`${groupId} grid line stroke color`, gridColor, groupId),
     strokeWidth: number(
       `${groupId} grid line stroke width`,
@@ -78,8 +77,8 @@ function generateGridLineStyle(group: string, gridColor = 'purple'): GridLineSty
 }
 
 export const Example = () => {
-  const leftAxisGridLineStyle = generateGridLineStyle(Position.Left);
-  const leftAxisGridLineStyle2 = generateGridLineStyle(`${Position.Left}2`);
+  const leftAxisGridLineConfig = generateGridLineConfig(Position.Left);
+  const leftAxisGridLineConfig2 = generateGridLineConfig(`${Position.Left}2`);
 
   return (
     <Chart size={[500, 300]} className="story-chart">
@@ -90,7 +89,7 @@ export const Example = () => {
         position={Position.Left}
         tickFormat={(d) => Number(d).toFixed(2)}
         showGridLines={boolean('show left axis grid lines', false, 'left axis')}
-        gridLine={leftAxisGridLineStyle}
+        gridLineStyle={leftAxisGridLineConfig}
       />
       <Axis
         id="left2"
@@ -99,7 +98,7 @@ export const Example = () => {
         position={Position.Left}
         tickFormat={(d) => Number(d).toFixed(2)}
         showGridLines={boolean('show left axis 2 grid lines', false, 'left2 axis')}
-        gridLine={leftAxisGridLineStyle2}
+        gridLineStyle={leftAxisGridLineConfig2}
       />
       <BarSeries
         id="bars"

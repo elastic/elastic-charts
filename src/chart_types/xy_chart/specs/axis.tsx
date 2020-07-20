@@ -33,7 +33,10 @@ const defaultProps = {
   showOverlappingTicks: false,
   showOverlappingLabels: false,
   position: Position.Left,
+  tickSize: 10,
+  tickPadding: 10,
   tickFormat: (tick: any) => `${tick}`,
+  tickLabelRotation: 0,
 };
 
 type SpecRequired = Pick<AxisSpec, 'id'>;
@@ -47,6 +50,9 @@ export const Axis: React.FunctionComponent<SpecRequired & SpecOptionals> = getCo
     | 'showOverlappingTicks'
     | 'showOverlappingLabels'
     | 'position'
+    | 'tickSize'
+    | 'tickPadding'
     | 'tickFormat'
+    | 'tickLabelRotation'
   >(defaultProps),
 );

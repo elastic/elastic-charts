@@ -54,7 +54,6 @@ export function renderXYChartCanvas2d(
       axisTickPositions,
       axesSpecs,
       axesTicksDimensions,
-      axesStyles,
       axesGridLinesPositions,
       debug,
     } = props;
@@ -68,7 +67,7 @@ export function renderXYChartCanvas2d(
     // The layers are callbacks, because of the need to not bake in the `ctx`, it feels more composable and uncoupled this way.
     renderLayers(ctx, [
       // clear the canvas
-      (ctx: CanvasRenderingContext2D) => clearCanvas(ctx, 200000, 200000),
+      (ctx: CanvasRenderingContext2D) => clearCanvas(ctx, 200000, 200000 /* , backgroundColor */),
 
       (ctx: CanvasRenderingContext2D) => {
         renderAxes(ctx, {
@@ -78,8 +77,7 @@ export function renderXYChartCanvas2d(
           axesVisibleTicks: axisTickPositions.axisVisibleTicks,
           chartDimensions,
           debug,
-          axesStyles,
-          sharedAxesStyle: theme.axes,
+          axisStyle: theme.axes,
         });
       },
       (ctx: CanvasRenderingContext2D) => {
@@ -87,8 +85,7 @@ export function renderXYChartCanvas2d(
           axesSpecs,
           chartDimensions,
           axesGridLinesPositions,
-          axesStyles,
-          sharedAxesStyle: theme.axes,
+          chartTheme: theme,
         });
       },
       // rendering background annotations

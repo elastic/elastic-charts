@@ -20,18 +20,10 @@
 import { ChartTypes } from '../..';
 import { ScaleType } from '../../../scales/constants';
 import { SpecTypes } from '../../../specs/constants';
-import { Position, RecursivePartial } from '../../../utils/commons';
+import { Position } from '../../../utils/commons';
 import { BarGeometry } from '../../../utils/geometry';
-import { AxisStyle } from '../../../utils/themes/theme';
 import { AxisSpec, BarSeriesSpec, SeriesTypes } from '../utils/specs';
 import { formatTooltip } from './tooltip';
-
-const style: RecursivePartial<AxisStyle> = {
-  tickLine: {
-    size: 0,
-    padding: 0,
-  },
-};
 
 describe('Tooltip formatting', () => {
   const SPEC_ID_1 = 'bar_1';
@@ -61,7 +53,8 @@ describe('Tooltip formatting', () => {
     position: Position.Left,
     showOverlappingLabels: false,
     showOverlappingTicks: false,
-    style,
+    tickPadding: 0,
+    tickSize: 0,
     tickFormat: jest.fn((d) => `${d}`),
   };
   const seriesStyle = {

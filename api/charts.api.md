@@ -113,6 +113,25 @@ export interface AreaStyle {
 // @public (undocumented)
 export const Axis: React.FunctionComponent<SpecRequired & SpecOptionals>;
 
+// Warning: (ae-missing-release-tag) "AxisConfig" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface AxisConfig {
+    // (undocumented)
+    axisLineStyle: StrokeStyle;
+    // (undocumented)
+    axisTitleStyle: TextStyle;
+    // (undocumented)
+    gridLineStyle: {
+        horizontal: GridLineConfig;
+        vertical: GridLineConfig;
+    };
+    // (undocumented)
+    tickLabelStyle: TextStyle;
+    // (undocumented)
+    tickLineStyle: TickStyle;
+}
+
 // @public (undocumented)
 export type AxisId = string;
 
@@ -123,7 +142,7 @@ export interface AxisSpec extends Spec {
     // (undocumented)
     chartType: typeof ChartTypes.XYAxis;
     domain?: YDomainRange;
-    gridLine?: Partial<GridLineStyle>;
+    gridLineStyle?: GridLineConfig;
     groupId: GroupId;
     hide: boolean;
     id: AxisId;
@@ -131,15 +150,17 @@ export interface AxisSpec extends Spec {
     labelFormat?: TickFormatter;
     position: Position;
     showDuplicatedTicks?: boolean;
-    // @deprecated
     showGridLines?: boolean;
     showOverlappingLabels: boolean;
     showOverlappingTicks: boolean;
     // (undocumented)
     specType: typeof SpecTypes.Axis;
-    style?: RecursivePartial<Omit<AxisStyle, 'gridLine'>>;
+    style?: AxisStyle;
     tickFormat: TickFormatter;
+    tickLabelRotation?: number;
+    tickPadding: number;
     ticks?: number;
+    tickSize: number;
     title?: string;
 }
 
@@ -147,25 +168,7 @@ export interface AxisSpec extends Spec {
 //
 // @public (undocumented)
 export interface AxisStyle {
-    // (undocumented)
-    axisLine: StrokeStyle & Visible;
-    // Warning: (ae-forgotten-export) The symbol "Visible" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    axisTitle: TextStyle & Visible;
-    // (undocumented)
-    gridLine: {
-        horizontal: GridLineStyle;
-        vertical: GridLineStyle;
-    };
-    // (undocumented)
-    tickLabel: TextStyle & Visible & {
-        rotation: number;
-        offset: TextOffset;
-        alignment: TextAlignment;
-    };
-    // (undocumented)
-    tickLine: TickStyle;
+    tickLabelPadding?: number;
 }
 
 // @public
@@ -382,6 +385,8 @@ export type CompleteBoundedDomain = DomainBase & LowerBound & UpperBound;
 //
 // @public (undocumented)
 export interface CrosshairStyle {
+    // Warning: (ae-forgotten-export) The symbol "Visible" needs to be exported by the entry point index.d.ts
+    //
     // (undocumented)
     band: FillStyle & Visible;
     // (undocumented)
@@ -656,18 +661,20 @@ export interface GoalSpec extends Spec {
     tickValueFormatter: BandFillColorAccessor;
 }
 
+// Warning: (ae-missing-release-tag) "GridLineConfig" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public (undocumented)
-export interface GridLineStyle {
+export interface GridLineConfig {
     // (undocumented)
-    dash: number[];
+    dash?: number[];
     // (undocumented)
-    opacity: number;
+    opacity?: number;
     // (undocumented)
-    stroke: Color;
+    stroke?: Color;
     // (undocumented)
-    strokeWidth: number;
+    strokeWidth?: number;
     // (undocumented)
-    visible: boolean;
+    visible?: boolean;
 }
 
 // Warning: (ae-missing-release-tag) "GroupBrushExtent" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -713,20 +720,6 @@ export const HistogramModeAlignments: Readonly<{
     Center: LineAlignSetting;
     End: LineAlignSetting;
 }>;
-
-// Warning: (ae-missing-release-tag) "HorizontalAlignment" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export const HorizontalAlignment: Readonly<{
-    Center: "center";
-    Right: "right";
-    Left: "left";
-    Near: "near";
-    Far: "far";
-}>;
-
-// @public
-export type HorizontalAlignment = $Values<typeof HorizontalAlignment>;
 
 // Warning: (ae-forgotten-export) The symbol "BinaryAccessorFn" needs to be exported by the entry point index.d.ts
 //
@@ -868,6 +861,11 @@ export type LowerBoundedDomain = DomainBase & LowerBound;
 //
 // @public
 export type MarkBuffer = number | ((radius: number) => number);
+
+// Warning: (ae-missing-release-tag) "mergeGridLineConfigs" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export function mergeGridLineConfigs(axisSpecConfig: GridLineConfig, themeConfig: GridLineConfig): GridLineConfig;
 
 // Warning: (ae-missing-release-tag) "mergeWithDefaultAnnotationLine" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1351,14 +1349,6 @@ export interface SharedGeometryStateStyle {
     unhighlighted: GeometryStateStyle;
 }
 
-// @public
-export interface SimplePadding {
-    // (undocumented)
-    inner: number;
-    // (undocumented)
-    outer: number;
-}
-
 // Warning: (ae-missing-release-tag) "Spec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -1395,21 +1385,6 @@ export interface StrokeStyle<C = Color> {
     strokeWidth: number;
 }
 
-// @public
-export interface TextAlignment {
-    // (undocumented)
-    horizontal: HorizontalAlignment;
-    // (undocumented)
-    vertical: VerticalAlignment;
-}
-
-// @public
-export interface TextOffset {
-    reference: 'global' | 'local';
-    x: number | string;
-    y: number | string;
-}
-
 // Warning: (ae-missing-release-tag) "TextStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -1423,7 +1398,7 @@ export interface TextStyle {
     // (undocumented)
     fontStyle?: string;
     // (undocumented)
-    padding: number | SimplePadding;
+    padding: number;
 }
 
 // Warning: (ae-missing-release-tag) "Theme" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -1434,7 +1409,7 @@ export interface Theme {
     arcSeriesStyle: ArcSeriesStyle;
     areaSeriesStyle: AreaSeriesStyle;
     // (undocumented)
-    axes: AxisStyle;
+    axes: AxisConfig;
     background: BackgroundStyle;
     barSeriesStyle: BarSeriesStyle;
     bubbleSeriesStyle: BubbleSeriesStyle;
@@ -1463,10 +1438,7 @@ export type TickFormatterOptions = {
 };
 
 // @public (undocumented)
-export type TickStyle = StrokeStyle & Visible & {
-    padding: number;
-    size: number;
-};
+export type TickStyle = StrokeStyle & Visible;
 
 // Warning: (ae-missing-release-tag) "timeFormatter" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1533,20 +1505,6 @@ export type UnboundedDomainWithInterval = DomainBase;
 
 // @public (undocumented)
 export type UpperBoundedDomain = DomainBase & UpperBound;
-
-// Warning: (ae-missing-release-tag) "VerticalAlignment" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export const VerticalAlignment: Readonly<{
-    Middle: "middle";
-    Top: "top";
-    Bottom: "bottom";
-    Near: "near";
-    Far: "far";
-}>;
-
-// @public
-export type VerticalAlignment = $Values<typeof VerticalAlignment>;
 
 // Warning: (ae-missing-release-tag) "XYBrushArea" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //

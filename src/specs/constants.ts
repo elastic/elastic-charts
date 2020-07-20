@@ -104,7 +104,7 @@ export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
   legendPosition: Position.Right,
   showLegendExtra: false,
   hideDuplicateAxes: false,
-  baseTheme: LIGHT_THEME,
+  theme: LIGHT_THEME,
   brushAxis: BrushAxis.X,
   minBrushDelta: 2,
 };

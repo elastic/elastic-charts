@@ -28,8 +28,7 @@ import { onExternalPointerEvent } from '../../../state/actions/events';
 import { onPointerMove, onMouseDown, onMouseUp } from '../../../state/actions/mouse';
 import { GlobalChartState } from '../../../state/chart_state';
 import { getSettingsSpecSelector } from '../../../state/selectors/get_settings_specs';
-import { Position, RecursivePartial } from '../../../utils/commons';
-import { AxisStyle } from '../../../utils/themes/theme';
+import { Position } from '../../../utils/commons';
 import { BarSeriesSpec, BasicSeriesSpec, AxisSpec, SeriesTypes } from '../utils/specs';
 import { computeSeriesGeometriesSelector } from './selectors/compute_series_geometries';
 import { getCursorBandPositionSelector } from './selectors/get_cursor_band';
@@ -729,12 +728,6 @@ function mouseOverTestSuite(scaleType: ScaleType) {
     let leftAxis: AxisSpec;
     let bottomAxis: AxisSpec;
     let currentSettingSpec: SettingsSpec;
-    const style: RecursivePartial<AxisStyle> = {
-      tickLine: {
-        size: 0,
-        padding: 0,
-      },
-    };
     beforeEach(() => {
       leftAxis = {
         chartType: ChartTypes.XYAxis,
@@ -746,7 +739,8 @@ function mouseOverTestSuite(scaleType: ScaleType) {
         tickFormat: (value) => `left ${Number(value)}`,
         showOverlappingLabels: false,
         showOverlappingTicks: false,
-        style,
+        tickPadding: 0,
+        tickSize: 0,
       };
       bottomAxis = {
         chartType: ChartTypes.XYAxis,
@@ -758,7 +752,8 @@ function mouseOverTestSuite(scaleType: ScaleType) {
         tickFormat: (value) => `bottom ${Number(value)}`,
         showOverlappingLabels: false,
         showOverlappingTicks: false,
-        style,
+        tickPadding: 0,
+        tickSize: 0,
       };
       currentSettingSpec = getSettingsSpecSelector(store.getState());
     });

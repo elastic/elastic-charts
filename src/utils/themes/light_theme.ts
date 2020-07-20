@@ -102,57 +102,39 @@ export const LIGHT_THEME: Theme = {
     histogramPadding: 0.05,
   },
   axes: {
-    axisTitle: {
-      visible: true,
+    axisTitleStyle: {
       fontSize: 12,
       fontStyle: 'bold',
       fontFamily: 'sans-serif',
-      padding: {
-        inner: 8,
-        outer: 0,
-      },
+      padding: 8,
       fill: '#333',
     },
-    axisLine: {
-      visible: true,
+    axisLineStyle: {
       stroke: '#eaeaea',
       strokeWidth: 1,
     },
-    tickLabel: {
-      visible: true,
+    tickLabelStyle: {
       fontSize: 10,
       fontFamily: 'sans-serif',
       fontStyle: 'normal',
       fill: '#777',
-      padding: 0,
-      rotation: 0,
-      offset: {
-        x: 0,
-        y: 0,
-        reference: 'local',
-      },
-      alignment: {
-        vertical: 'near',
-        horizontal: 'near',
-      },
+      padding: 4,
     },
-    tickLine: {
+    tickLineStyle: {
       visible: true,
       stroke: '#eaeaea',
       strokeWidth: 1,
-      size: 10,
-      padding: 10,
     },
-    gridLine: {
+    gridLineStyle: {
       horizontal: {
-        visible: false,
+        visible: true,
         stroke: '#D3DAE6',
         strokeWidth: 1,
         opacity: 1,
         dash: [0, 0],
       },
       vertical: {
-        visible: false,
+        visible: true,
         stroke: '#D3DAE6',
         strokeWidth: 1,
         opacity: 1,

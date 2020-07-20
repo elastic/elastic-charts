@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import { mergePartial, RecursivePartial, Color, ColorVariant, HorizontalAlignment, VerticalAlignment } from '../commons';
-import { Margins, SimplePadding } from '../dimensions';
+import { mergePartial, RecursivePartial, Color, ColorVariant } from '../commons';
+import { Margins } from '../dimensions';
 import { LIGHT_THEME } from './light_theme';
 
 interface Visible {
@@ -30,38 +30,7 @@ export interface TextStyle {
   fontFamily: string;
   fontStyle?: string;
   fill: Color;
-  padding: number | SimplePadding;
-}
-
-/**
- * Offset in pixels
- * @public
- */
-export interface TextOffset {
-  /**
-   * X offset of tick in px or string with % of height
-   */
-  x: number | string;
-  /**
-   * X offset of tick in px or string with % of height
-   */
-  y: number | string;
-  /**
-   * Offset coordinate system reference
-   *
-   * - `global` - aligns offset coordinate system to global (non-rotated) coordinate system
-   * - `local` - aligns offset coordinate system to local rotated coordinate system
-   */
-  reference: 'global' | 'local';
-}
-
-/**
- * Text alignment
- * @public
- */
-export interface TextAlignment {
-  horizontal: HorizontalAlignment;
-  vertical: VerticalAlignment;
+  padding: number;
 }
 
 /** Shared style properties for varies geometries */
@@ -102,16 +71,7 @@ export interface StrokeStyle<C = Color> {
 }
 
 /** @public */
-export type TickStyle = StrokeStyle & Visible & {
-  /**
-   * Amount of padding between tick line and labels
-   */
-  padding: number;
-  /**
-   * length of tick line
-   */
-  size: number;
-};
+export type TickStyle = StrokeStyle & Visible;
 
 /**
  * The dash array for a stroke
@@ -130,36 +90,22 @@ export interface Opacity {
   opacity: number;
 }
 
-export interface AxisStyle {
-  axisTitle: TextStyle & Visible;
-  axisLine: StrokeStyle & Visible;
-  tickLabel: TextStyle & Visible & {
-    /** The degrees of rotation of the tick labels */
-    rotation: number;
-    /**
-     * Offset in pixels to render text relative to anchor
-     *
-     * **Note:** rotation aligns to global cartesian coordinates
-     */
-    offset: TextOffset;
-    alignment: TextAlignment
-  };
-  tickLine: TickStyle;
-  gridLine: {
-    horizontal: GridLineStyle;
-    vertical: GridLineStyle;
+export interface AxisConfig {
+  axisTitleStyle: TextStyle;
+  axisLineStyle: StrokeStyle;
+  tickLabelStyle: TextStyle;
+  tickLineStyle: TickStyle;
+  gridLineStyle: {
+    horizontal: GridLineConfig;
+    vertical: GridLineConfig;
   };
 }
-
-/**
- * @public
- */
-export interface GridLineStyle {
-  visible: boolean;
-  stroke: Color;
-  strokeWidth: number;
-  opacity: number;
-  dash: number[];
+export interface GridLineConfig {
+  visible?: boolean;
+  stroke?: Color;
+  strokeWidth?: number;
+  opacity?: number;
+  dash?: number[];
 }
 export interface ScalesConfig {
   /**
@@ -259,7 +205,7 @@ export interface Theme {
   bubbleSeriesStyle: BubbleSeriesStyle;
   arcSeriesStyle: ArcSeriesStyle;
   sharedStyle: SharedGeometryStateStyle;
-  axes: AxisStyle;
+  axes: AxisConfig;
   scales: ScalesConfig;
   colors: ColorConfig;
   legend: LegendStyle;
@@ -432,6 +378,20 @@ export const DEFAULT_ANNOTATION_RECT_STYLE: RectAnnotationStyle = {
   opacity: 0.25,
   fill: '#FFEEBC',
 };
+
+export function mergeGridLineConfigs(axisSpecConfig: GridLineConfig, themeConfig: GridLineConfig): GridLineConfig {
+  const visible = axisSpecConfig.visible != null ? axisSpecConfig.visible : themeConfig.visible;
+  const strokeWidth = axisSpecConfig.strokeWidth != null ? axisSpecConfig.strokeWidth : themeConfig.strokeWidth;
+  const opacity = axisSpecConfig.opacity != null ? axisSpecConfig.opacity : themeConfig.opacity;
+
+  return {
+    visible,
+    stroke: axisSpecConfig.stroke || themeConfig.stroke,
+    dash: axisSpecConfig.dash || themeConfig.dash,
+    strokeWidth,
+    opacity,
+  };
+}
 
 export function mergeWithDefaultAnnotationLine(config?: Partial<LineAnnotationStyle>): LineAnnotationStyle {
   const defaultLine = DEFAULT_ANNOTATION_LINE_STYLE.line;

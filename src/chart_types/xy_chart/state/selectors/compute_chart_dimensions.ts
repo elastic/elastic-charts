@@ -25,7 +25,6 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { Dimensions } from '../../../../utils/dimensions';
 import { computeChartDimensions } from '../../utils/dimensions';
 import { computeAxisTicksDimensionsSelector } from './compute_axis_ticks_dimensions';
-import { getAxesStylesSelector } from './get_axis_styles';
 import { getAxisSpecsSelector } from './get_specs';
 
 /** @internal */
@@ -35,16 +34,14 @@ export const computeChartDimensionsSelector = createCachedSelector(
     getChartThemeSelector,
     computeAxisTicksDimensionsSelector,
     getAxisSpecsSelector,
-    getAxesStylesSelector,
   ],
   (
     chartContainerDimensions,
     chartTheme,
     axesTicksDimensions,
     axesSpecs,
-    axesStyles,
   ): {
     chartDimensions: Dimensions;
     leftMargin: number;
-  } => computeChartDimensions(chartContainerDimensions, chartTheme, axesTicksDimensions, axesStyles, axesSpecs),
+  } => computeChartDimensions(chartContainerDimensions, chartTheme, axesTicksDimensions, axesSpecs),
 )(getChartIdSelector);

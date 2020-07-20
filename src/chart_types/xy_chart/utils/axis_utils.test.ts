@@ -26,11 +26,10 @@ import { ScaleType } from '../../../scales/constants';
 import { SpecTypes } from '../../../specs/constants';
 import { CanvasTextBBoxCalculator } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import { SvgTextBBoxCalculator } from '../../../utils/bbox/svg_text_bbox_calculator';
-import { Position, mergePartial } from '../../../utils/commons';
+import { Position } from '../../../utils/commons';
 import { niceTimeFormatter } from '../../../utils/data/formatters';
 import { AxisId, GroupId } from '../../../utils/ids';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
-import { AxisStyle, TextOffset } from '../../../utils/themes/theme';
 import { XDomain, YDomain } from '../domains/types';
 import { mergeYCustomDomainsByGroupId } from '../state/selectors/merge_y_custom_domains';
 import {
@@ -44,7 +43,7 @@ import {
   getAxisTicksPositions,
   getHorizontalAxisGridLineProps,
   getHorizontalAxisTickLineProps,
-  getMaxLabelDimensions,
+  getMaxBboxDimensions,
   getMinMaxRange,
   getScaleForAxisSpec,
   getTickLabelProps,
@@ -52,23 +51,11 @@ import {
   getVerticalAxisTickLineProps,
   getVisibleTicks,
   isYDomain,
+  getAxisTickLabelPadding,
   enableDuplicatedTicks,
 } from './axis_utils';
 import { computeXScale } from './scales';
-import { AxisSpec, DomainRange, DEFAULT_GLOBAL_ID, TickFormatter } from './specs';
-
-const getCustomStyle = (rotation = 0, padding = 10): AxisStyle => mergePartial(LIGHT_THEME.axes, {
-  tickLine: {
-    size: 10,
-    padding,
-  },
-  tickLabel: {
-    fontSize: 16,
-    fontFamily: 'Arial',
-    rotation,
-  },
-});
-const style = getCustomStyle();
+import { AxisSpec, DomainRange, AxisStyle, DEFAULT_GLOBAL_ID, TickFormatter } from './specs';
 
 describe('Axis computational utils', () => {
   const mockedRect = {
@@ -116,7 +103,8 @@ describe('Axis computational utils', () => {
     showOverlappingTicks: false,
     showOverlappingLabels: false,
     position: Position.Left,
-    style,
+    tickSize: 10,
+    tickPadding: 10,
     tickFormat: (value: any) => `${value}`,
     showGridLines: true,
     integersOnly: false,
@@ -131,7 +119,8 @@ describe('Axis computational utils', () => {
     showOverlappingTicks: false,
     showOverlappingLabels: false,
     position: Position.Top,
-    style,
+    tickSize: 10,
+    tickPadding: 10,
     tickFormat: (value: any) => `${value}`,
     integersOnly: false,
   };
@@ -146,7 +135,8 @@ describe('Axis computational utils', () => {
     showOverlappingTicks: false,
     showOverlappingLabels: false,
     position: Position.Left,
-    style,
+    tickSize: 10,
+    tickPadding: 10,
     tickFormat: (value: any) => `${value}`,
     showGridLines: true,
     integersOnly: false,
@@ -161,7 +151,8 @@ describe('Axis computational utils', () => {
     showOverlappingTicks: false,
     showOverlappingLabels: false,
     position: Position.Bottom,
-    style,
+    tickSize: 10,
+    tickPadding: 10,
     tickFormat: niceTimeFormatter([1551438000000, 1551441300000]),
     showGridLines: true,
     integersOnly: false,
@@ -175,7 +166,8 @@ describe('Axis computational utils', () => {
   //   showOverlappingTicks: false,
   //   showOverlappingLabels: false,
   //   position: Position.Top,
-  //   style,
+  //   tickSize: 10,
+  //   tickPadding: 10,
   //   tickFormat: (value: any) => {
   //     return `${value}`;
   //   },
@@ -204,10 +196,12 @@ describe('Axis computational utils', () => {
     const axisDimensions = computeAxisTicksDimensions(verticalAxisSpec, xDomain, [yDomain], 1, bboxCalculator, 0, axes);
     expect(axisDimensions).toEqual(axis1Dims);
 
-    const ungroupedAxisSpec = { ...verticalAxisSpec, groupId: 'foo' };
-    const result = computeAxisTicksDimensions(ungroupedAxisSpec, xDomain, [yDomain], 1, bboxCalculator, 0, axes, undefined, false);
+    const computeScalelessSpec = () => {
+      computeAxisTicksDimensions(ungroupedAxisSpec, xDomain, [yDomain], 1, bboxCalculator, 0, axes, undefined, false);
+    };
 
-    expect(result).toBeNull();
+    const ungroupedAxisSpec = { ...verticalAxisSpec, groupId: 'foo' };
+    expect(computeScalelessSpec).toThrowError('Cannot compute scale for axis spec axis_1');
 
     bboxCalculator.destroy();
   });
@@ -299,20 +293,6 @@ describe('Axis computational utils', () => {
     const xScale = getScaleForAxisSpec(horizontalAxisSpec, xDomain, [yDomain], 0, 0, 100, 0);
     expect(xScale).toBeDefined();
   });
-
-  const axisDimensions: AxisTicksDimensions = {
-    maxLabelBboxWidth: 100,
-    maxLabelBboxHeight: 100,
-    maxLabelTextHeight: 100,
-    maxLabelTextWidth: 100,
-    tickLabels: [],
-    tickValues: [],
-  };
-  const offset: TextOffset = {
-    x: 0,
-    y: 0,
-    reference: 'global',
-  };
 
   describe('getAvailableTicks', () => {
     test('should compute to end of domain when histogram mode not enabled', () => {
@@ -621,7 +601,7 @@ describe('Axis computational utils', () => {
   });
   test('should get max bbox dimensions for a tick in comparison to previous values', () => {
     const bboxCalculator = new CanvasTextBBoxCalculator();
-    const reducer = getMaxLabelDimensions(bboxCalculator, LIGHT_THEME.axes.tickLabel);
+    const reducer = getMaxBboxDimensions(bboxCalculator, 16, 'Arial', 0, 1);
 
     const accWithGreaterValues = {
       maxLabelBboxWidth: 100,
@@ -633,6 +613,9 @@ describe('Axis computational utils', () => {
   });
 
   test('should compute positions and alignment of tick labels along a vertical axis', () => {
+    let tickLabelRotation = 0;
+    const tickSize = 10;
+    const tickPadding = 5;
     const tickPosition = 0;
     const axisPosition = {
       top: 0,
@@ -640,93 +623,83 @@ describe('Axis computational utils', () => {
       width: 100,
       height: 10,
     };
+    const axisDimensions = {
+      maxLabelBboxWidth: 100,
+      maxLabelBboxHeight: 100,
+    };
     const unrotatedLabelProps = getTickLabelProps(
-      getCustomStyle(0, 5),
+      tickLabelRotation,
+      tickSize,
+      tickPadding,
       tickPosition,
       Position.Left,
       axisPosition,
       axisDimensions,
-      true,
-      offset,
     );
 
     expect(unrotatedLabelProps).toEqual({
       offsetX: -50,
       offsetY: 0,
-      textOffsetX: 50,
-      textOffsetY: 0,
       x: 85,
       y: 0,
       align: 'right',
       verticalAlign: 'middle',
     });
 
+    tickLabelRotation = 90;
     const rotatedLabelProps = getTickLabelProps(
-      getCustomStyle(90),
+      tickLabelRotation,
+      tickSize,
+      tickPadding,
       tickPosition,
       Position.Left,
       axisPosition,
       axisDimensions,
-      true,
-      offset,
-      {
-        vertical: 'middle',
-        horizontal: 'center',
-      },
     );
 
     expect(rotatedLabelProps).toEqual({
       offsetX: -50,
       offsetY: 0,
-      textOffsetX: 0,
-      textOffsetY: 0,
-      x: 80,
+      x: 85,
       y: 0,
       align: 'center',
       verticalAlign: 'middle',
     });
 
     const rightRotatedLabelProps = getTickLabelProps(
-      getCustomStyle(90),
+      tickLabelRotation,
+      tickSize,
+      tickPadding,
       tickPosition,
       Position.Right,
       axisPosition,
       axisDimensions,
-      true,
-      offset,
-      {
-        horizontal: 'center',
-        vertical: 'middle',
-      },
     );
 
     expect(rightRotatedLabelProps).toEqual({
       offsetX: 50,
       offsetY: 0,
-      textOffsetX: 0,
-      textOffsetY: 0,
-      x: 20,
+      x: 15,
       y: 0,
       align: 'center',
       verticalAlign: 'middle',
     });
 
+    tickLabelRotation = 0;
     const rightUnrotatedLabelProps = getTickLabelProps(
-      getCustomStyle(),
+      tickLabelRotation,
+      tickSize,
+      tickPadding,
       tickPosition,
       Position.Right,
       axisPosition,
       axisDimensions,
-      true,
-      offset,
     );
 
     expect(rightUnrotatedLabelProps).toEqual({
       offsetX: 50,
       offsetY: 0,
-      textOffsetX: -50,
-      textOffsetY: 0,
-      x: 20,
+      x: 15,
       y: 0,
       align: 'left',
       verticalAlign: 'middle',
@@ -734,6 +707,9 @@ describe('Axis computational utils', () => {
   });
 
   test('should compute positions and alignment of tick labels along a horizontal axis', () => {
+    let tickLabelRotation = 0;
+    const tickSize = 10;
+    const tickPadding = 5;
     const tickPosition = 0;
     const axisPosition = {
       top: 0,
@@ -741,94 +717,84 @@ describe('Axis computational utils', () => {
       width: 100,
       height: 10,
     };
+    const axisDimensions = {
+      maxLabelBboxWidth: 100,
+      maxLabelBboxHeight: 100,
+    };
     const unrotatedLabelProps = getTickLabelProps(
-      getCustomStyle(0, 5),
+      tickLabelRotation,
+      tickSize,
+      tickPadding,
       tickPosition,
       Position.Top,
       axisPosition,
       axisDimensions,
-      true,
-      offset,
-      {
-        horizontal: 'center',
-        vertical: 'bottom',
-      }
     );
 
     expect(unrotatedLabelProps).toEqual({
       offsetX: 0,
       offsetY: -50,
-      textOffsetY: 50,
-      textOffsetX: 0,
       x: 0,
       y: -5,
       align: 'center',
       verticalAlign: 'bottom',
     });
 
+    tickLabelRotation = 90;
     const rotatedLabelProps = getTickLabelProps(
-      getCustomStyle(90),
+      tickLabelRotation,
+      tickSize,
+      tickPadding,
       tickPosition,
       Position.Top,
       axisPosition,
       axisDimensions,
-      true,
-      offset,
     );
 
     expect(rotatedLabelProps).toEqual({
       offsetX: 0,
       offsetY: -50,
-      textOffsetX: 0,
-      textOffsetY: 0,
       x: 0,
-      y: -10,
+      y: -5,
       align: 'center',
       verticalAlign: 'middle',
     });
 
     const bottomRotatedLabelProps = getTickLabelProps(
-      getCustomStyle(90),
+      tickLabelRotation,
+      tickSize,
+      tickPadding,
       tickPosition,
       Position.Bottom,
       axisPosition,
       axisDimensions,
-      true,
-      offset,
     );
 
     expect(bottomRotatedLabelProps).toEqual({
       offsetX: 0,
       offsetY: 50,
-      textOffsetX: 0,
-      textOffsetY: 0,
       x: 0,
-      y: 20,
+      y: 15,
       align: 'center',
       verticalAlign: 'middle',
     });
 
+    tickLabelRotation = 0;
     const bottomUnrotatedLabelProps = getTickLabelProps(
-      getCustomStyle(90),
+      tickLabelRotation,
+      tickSize,
+      tickPadding,
       tickPosition,
       Position.Bottom,
       axisPosition,
       axisDimensions,
-      true,
-      offset,
-      {
-        horizontal: 'center',
-        vertical: 'top',
-      }
     );
 
     expect(bottomUnrotatedLabelProps).toEqual({
       offsetX: 0,
       offsetY: 50,
-      textOffsetX: 0,
-      textOffsetY: -50,
       x: 0,
-      y: 20,
+      y: 15,
       align: 'center',
       verticalAlign: 'top',
     });
@@ -888,7 +854,7 @@ describe('Axis computational utils', () => {
     expect(verticalAxisSpec.id).toEqual(verticalAxisSpecWTitle.id);
 
     const axisSpecs = [verticalAxisSpecWTitle];
-    const axesStyles = new Map();
+
     const axisDims = new Map();
     axisDims.set(verticalAxisSpecWTitle.id, axis1Dims);
 
@@ -901,7 +867,6 @@ describe('Axis computational utils', () => {
       chartRotation,
       axisSpecs,
       axisDims,
-      axesStyles,
       xDomain,
       [yDomain],
       1,
@@ -928,7 +893,6 @@ describe('Axis computational utils', () => {
       chartRotation,
       axisSpecs,
       axisDims,
-      axesStyles,
       xDomain,
       [yDomain],
       1,
@@ -938,16 +902,9 @@ describe('Axis computational utils', () => {
     expect(axisTicksPosition.axisPositions.get(verticalAxisSpecWTitle.id)).toEqual({
       top: 0,
       left: 10,
-      width: 18,
+      width: 30,
       height: 100,
     });
-  });
-
-  const axisTitleStyles = mergePartial(LIGHT_THEME.axes.axisTitle, {
-    padding: {
-      inner: 0,
-      outer: 10,
-    },
   });
 
   test('should compute left axis position', () => {
@@ -961,16 +918,12 @@ describe('Axis computational utils', () => {
       chartDim,
       LIGHT_THEME.chartMargins,
       axisTitleHeight,
-      axisTitleStyles,
       verticalAxisSpec,
       axis1Dims,
       cumTopSum,
       cumBottomSum,
       cumLeftSum,
       cumRightSum,
-      10,
-      0,
-      true,
     );
 
     const expectedLeftAxisPosition = {
@@ -1001,16 +954,12 @@ describe('Axis computational utils', () => {
       chartDim,
       LIGHT_THEME.chartMargins,
       axisTitleHeight,
-      axisTitleStyles,
       verticalAxisSpec,
       axis1Dims,
       cumTopSum,
       cumBottomSum,
       cumLeftSum,
       cumRightSum,
-      10,
-      0,
-      true,
     );
 
     const expectedRightAxisPosition = {
@@ -1041,26 +990,18 @@ describe('Axis computational utils', () => {
       chartDim,
       LIGHT_THEME.chartMargins,
       axisTitleHeight,
-      axisTitleStyles,
       horizontalAxisSpec,
       axis1Dims,
       cumTopSum,
       cumBottomSum,
       cumLeftSum,
       cumRightSum,
-      10,
-      0,
-      true,
     );
-    const {
-      size: tickSize,
-      padding: tickPadding,
-    } = LIGHT_THEME.axes.tickLine;
 
     const expectedTopAxisPosition = {
       dimensions: {
         height:
-          axis1Dims.maxLabelBboxHeight + axisTitleHeight + tickSize + tickPadding,
+          axis1Dims.maxLabelBboxHeight + axisTitleHeight + horizontalAxisSpec.tickSize + horizontalAxisSpec.tickPadding,
         width: 100,
         left: 0,
         top: cumTopSum + LIGHT_THEME.chartMargins.top,
@@ -1086,16 +1027,12 @@ describe('Axis computational utils', () => {
       chartDim,
       LIGHT_THEME.chartMargins,
       axisTitleHeight,
-      axisTitleStyles,
       horizontalAxisSpec,
       axis1Dims,
       cumTopSum,
       cumBottomSum,
       cumLeftSum,
       cumRightSum,
-      10,
-      0,
-      true,
     );
 
     const expectedBottomAxisPosition = {
@@ -1118,7 +1055,7 @@ describe('Axis computational utils', () => {
     const chartRotation = 0;
 
     const axisSpecs = [verticalAxisSpec];
-    const axisStyles = new Map();
+
     const axisDims = new Map<AxisId, AxisTicksDimensions>();
     axisDims.set('not_a_mapped_one', axis1Dims);
 
@@ -1131,7 +1068,6 @@ describe('Axis computational utils', () => {
       chartRotation,
       axisSpecs,
       axisDims,
-      axisStyles,
       xDomain,
       [yDomain],
       1,
@@ -1147,7 +1083,7 @@ describe('Axis computational utils', () => {
     const chartRotation = 0;
 
     const axisSpecs = [verticalAxisSpec];
-    const axisStyles = new Map();
+
     const axisDims = new Map<AxisId, AxisTicksDimensions>();
     axisDims.set(verticalAxisSpec.id, axis1Dims);
 
@@ -1160,7 +1096,6 @@ describe('Axis computational utils', () => {
       chartRotation,
       axisSpecs,
       axisDims,
-      axisStyles,
       xDomain,
       [yDomain],
       1,
@@ -1192,7 +1127,6 @@ describe('Axis computational utils', () => {
       chartRotation,
       axisSpecs,
       axisDims,
-      axisStyles,
       xDomain,
       [yDomain],
       1,
@@ -1201,7 +1135,7 @@ describe('Axis computational utils', () => {
 
     const expectedPositionWithTopLegend = {
       height: 100,
-      width: 18,
+      width: 30,
       left: 100,
       top: 0,
     };
@@ -1220,7 +1154,6 @@ describe('Axis computational utils', () => {
         chartRotation,
         invalidSpecs,
         axisDims,
-        axisStyles,
         xDomain,
         [yDomain],
         1,
@@ -1442,6 +1375,26 @@ describe('Axis computational utils', () => {
     expect(attemptToMerge).toThrowError(expectedError);
   });
 
+  test('should not allow negative padding', () => {
+    const negativePadding = -2;
+    // value canvas_text_bbox_calculator changes negative values is 1
+    const positivePadding = 1;
+
+    const bboxCalculator = new CanvasTextBBoxCalculator();
+    const negativeReducer = getMaxBboxDimensions(bboxCalculator, 16, 'Arial', 0, negativePadding);
+    const positiveReducer = getMaxBboxDimensions(bboxCalculator, 16, 'Arial', 0, positivePadding);
+
+    expect(JSON.stringify(negativeReducer)).toEqual(JSON.stringify(positiveReducer));
+  });
+  test('should expect axisSpec.style.tickLabelPadding if specified', () => {
+    const axisSpecStyle: AxisStyle = {
+      tickLabelPadding: 2,
+    };
+
+    const axisConfigTickLabelPadding = 1;
+
+    expect(getAxisTickLabelPadding(axisConfigTickLabelPadding, axisSpecStyle)).toEqual(2);
+  });
   test('should show unique tick labels if duplicateTicks is set to false', () => {
     const now = DateTime.fromISO('2019-01-11T00:00:00.000')
       .setZone('utc+1')
@@ -1458,7 +1411,9 @@ describe('Axis computational utils', () => {
       hide: false,
       showOverlappingLabels: false,
       showOverlappingTicks: false,
-      style,
+      tickSize: 10,
+      tickPadding: 10,
+      tickLabelRotation: 0,
       tickFormat: formatter,
     };
     const xDomainTime: XDomain = {
@@ -1492,7 +1447,9 @@ describe('Axis computational utils', () => {
       hide: false,
       showOverlappingLabels: false,
       showOverlappingTicks: false,
-      style,
+      tickSize: 10,
+      tickPadding: 10,
+      tickLabelRotation: 0,
       tickFormat: formatter,
     };
     const xDomainTime: XDomain = {
@@ -1537,7 +1494,9 @@ describe('Axis computational utils', () => {
       hide: false,
       showOverlappingLabels: false,
       showOverlappingTicks: false,
-      style,
+      tickSize: 10,
+      tickPadding: 10,
+      tickLabelRotation: 0,
       tickFormat: formatter,
     };
     const xDomainTime: XDomain = {
@@ -1564,9 +1523,3 @@ describe('Axis computational utils', () => {
     ]);
   });
 });
-
-it.todo('Test alignment calculations');
-it.todo('Test text offsets calculations');
-it.todo('Test title padding calculations');
-it.todo('Test label padding calculations');
-it.todo('Test axis visibility');

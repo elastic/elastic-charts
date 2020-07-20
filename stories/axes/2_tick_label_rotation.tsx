@@ -17,147 +17,73 @@
  * under the License.
  */
 
-import { boolean, number, select } from '@storybook/addon-knobs';
+import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, AxisStyle, RecursivePartial, DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING } from '../../src';
-import { getVerticalTextAlignmentKnob, getHorizontalTextAlignmentKnob, getPositiveNumberKnob } from '../utils/knobs';
-
-const getAxisKnobs = (group?: string, gridLines = false): RecursivePartial<AxisStyle> => ({
-  axisTitle: {
-    visible: !boolean('Hide axis title', false, group),
-    padding: {
-      outer: getPositiveNumberKnob('Axis title padding - outer', 6, group),
-      inner: getPositiveNumberKnob('Axis title padding - inner', 6, group),
-    },
-  },
-  axisLine: {
-    visible: !boolean('Hide axis line', false, group),
-  },
-  tickLine: {
-    visible: !boolean('Hide tick lines', false, group),
-    padding: getPositiveNumberKnob('Tick line padding', 10, group),
-    size: getPositiveNumberKnob('Tick line size', 10, group),
-  },
-  tickLabel: {
-    visible: !boolean('Hide tick labels', false, group),
-    rotation: number('Tick label rotation', 0, {
-      range: true,
-      min: -90,
-      max: 90,
-      step: 1,
-    }, group),
-    padding: {
-      outer: getPositiveNumberKnob('Tick label padding - outer', 0, group),
-      inner: getPositiveNumberKnob('Tick label padding - inner', 0, group),
-    },
-    offset: {
-      y: number('Tick label y offset', 0, {
-        range: true,
-        min: -10,
-        max: 10,
-        step: 1,
-      }, group),
-      x: number('Tick label x offset', 0, {
-        range: true,
-        min: -10,
-        max: 10,
-        step: 1,
-      }, group),
-      reference: select('Tick label offset reference', {
-        Global: 'global',
-        Local: 'local',
-      }, 'local', group),
-    },
-    alignment: {
-      vertical: getVerticalTextAlignmentKnob(group),
-      horizontal: getHorizontalTextAlignmentKnob(group),
-    },
-  },
-  ...(gridLines && {
-    gridLine: {
-      horizontal: {
-        visible: boolean('show horizontal gridLines', false, group),
-      },
-      vertical: {
-        visible: boolean('show vertical gridLines', false, group),
-      },
-    },
-  }),
-});
+import { AreaSeries, Axis, Chart, Position, ScaleType, Settings } from '../../src';
 
 export const Example = () => {
-  const debug = boolean('debug', false, 'general');
-  const onlyGlobal = !boolean('disable axis overrides', false, 'general');
-  const chartMargins = {
-    left: getPositiveNumberKnob('margin left', DEFAULT_CHART_MARGINS.left, 'general'),
-    right: getPositiveNumberKnob('margin right', DEFAULT_CHART_MARGINS.right, 'general'),
-    top: getPositiveNumberKnob('margin top', DEFAULT_CHART_MARGINS.top, 'general'),
-    bottom: getPositiveNumberKnob('margin bottom', DEFAULT_CHART_MARGINS.bottom, 'general'),
-  };
-  const chartPaddings = {
-    left: getPositiveNumberKnob('padding left', DEFAULT_CHART_PADDING.left, 'general'),
-    right: getPositiveNumberKnob('padding right', DEFAULT_CHART_PADDING.right, 'general'),
-    top: getPositiveNumberKnob('padding top', DEFAULT_CHART_PADDING.top, 'general'),
-    bottom: getPositiveNumberKnob('padding bottom', DEFAULT_CHART_PADDING.bottom, 'general'),
-  };
-  const bottomAxisStyles = getAxisKnobs(Position.Bottom);
-  const leftAxisStyles = getAxisKnobs(Position.Left);
-  const topAxisStyles = getAxisKnobs(Position.Top);
-  const rightAxisStyles = getAxisKnobs(Position.Right);
-  const theme = {
-    axes: getAxisKnobs('shared', true),
-    chartMargins,
-    chartPaddings,
+  const customStyle = {
+    tickLabelPadding: number('Tick Label Padding', 0),
   };
 
   return (
     <Chart className="story-chart">
-      <Settings debug={debug} theme={theme} />
       <Axis
         id="bottom"
-        hide={boolean('hide axis', false, Position.Bottom)}
         position={Position.Bottom}
         title="Bottom axis"
         showOverlappingTicks
-        gridLine={onlyGlobal ? {
-          visible: boolean('show gridLines', false, Position.Bottom),
-        } : undefined}
-        style={onlyGlobal ? bottomAxisStyles : undefined}
+        tickLabelRotation={number('bottom axis tick label rotation', 0, {
+          range: true,
+          min: -90,
+          max: 90,
+          step: 1,
+        })}
+        hide={boolean('hide bottom axis', false)}
+        style={customStyle}
       />
       <Axis
         id="left"
-        hide={boolean('hide axis', false, Position.Left)}
-        title="Left axis"
+        title="Bar axis"
         position={Position.Left}
-        style={onlyGlobal ? leftAxisStyles : undefined}
-        gridLine={onlyGlobal ? {
-          visible: boolean('show gridLines', false, Position.Left),
-        } : undefined}
+        tickLabelRotation={number('left axis tick label rotation', 0, {
+          range: true,
+          min: -90,
+          max: 90,
+          step: 1,
+        })}
         tickFormat={(d) => Number(d).toFixed(2)}
+        style={customStyle}
+        hide={boolean('hide left axis', false)}
       />
       <Axis
         id="top"
-        hide={boolean('hide axis', false, Position.Top)}
-        title="Top axis"
+        title="Bar axis"
         position={Position.Top}
-        style={onlyGlobal ? topAxisStyles : undefined}
-        gridLine={onlyGlobal ? {
-          visible: boolean('show gridLines', false, Position.Top),
-        } : undefined}
+        tickLabelRotation={number('top axis tick label rotation', 0, {
+          range: true,
+          min: -90,
+          max: 90,
+          step: 1,
+        })}
         tickFormat={(d) => Number(d).toFixed(2)}
+        style={customStyle}
+        hide={boolean('hide top axis', false)}
       />
       <Axis
         id="right"
-        hide={boolean('hide axis', false, Position.Right)}
-        title="Right axis"
+        title="Bar axis"
         position={Position.Right}
-        style={onlyGlobal ? rightAxisStyles : undefined}
-        gridLine={onlyGlobal ? {
-          visible: boolean('show gridLines', false, Position.Right),
-        } : undefined}
+        tickLabelRotation={number('right axis tick label rotation', -90, {
+          range: true,
+          min: -90,
+          max: 90,
+          step: 1,
+        })}
         tickFormat={(d) => Number(d).toFixed(2)}
-        domain={{ min: 0, max: 10 }}
+        style={customStyle}
+        hide={boolean('hide right axis', false)}
       />
       <AreaSeries
         id="lines"
@@ -172,6 +98,7 @@ export const Example = () => {
           { x: 3, y: 6 },
         ]}
       />
+      <Settings debug={boolean('debug', false)} />
     </Chart>
   );
 };

@@ -39,25 +39,25 @@ function range(title: string, min: number, max: number, value: number, groupId?:
 export const Example = () => {
   const theme: PartialTheme = {
     axes: {
-      axisTitle: {
+      axisTitleStyle: {
         fill: color('titleFill', '#333', 'Axis Title'),
         fontSize: range('titleFontSize', 0, 40, 12, 'Axis Title'),
         fontStyle: 'bold',
         fontFamily: '\'Open Sans\', Helvetica, Arial, sans-serif',
         padding: range('titlePadding', 0, 40, 5, 'Axis Title'),
       },
-      axisLine: {
+      axisLineStyle: {
         stroke: color('axisLinecolor', '#333', 'Axis Line'),
         strokeWidth: range('axisLineWidth', 0, 5, 1, 'Axis Line'),
       },
-      tickLabel: {
+      tickLabelStyle: {
         fill: color('tickFill', '#333', 'Tick Label'),
         fontSize: range('tickFontSize', 0, 40, 10, 'Tick Label'),
         fontFamily: '\'Open Sans\', Helvetica, Arial, sans-serif',
         fontStyle: 'normal',
         padding: number('tickLabelPadding', 1, {}, 'Tick Label'),
       },
-      tickLine: {
+      tickLineStyle: {
         visible: boolean('showTicks', true, 'Tick Line'),
         stroke: color('tickLineColor', '#333', 'Tick Line'),
         strokeWidth: range('tickLineWidth', 0, 5, 1, 'Tick Line'),
