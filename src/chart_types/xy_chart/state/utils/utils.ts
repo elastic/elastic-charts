@@ -301,6 +301,7 @@ export function computeSeriesGeometries(
       enableHistogramMode,
     );
     orderIndex = counts.barSeries > 0 ? orderIndex + 1 : orderIndex;
+
     areas.push(...geometries.areas);
     lines.push(...geometries.lines);
     bars.push(...geometries.bars);
@@ -339,7 +340,7 @@ export function computeSeriesGeometries(
       chartTheme,
       enableHistogramMode,
     );
-    orderIndex = counts.barSeries > 0 ? orderIndex + 1 : orderIndex;
+    orderIndex = counts.barSeries > 0 ? orderIndex + counts.barSeries : orderIndex;
 
     areas.push(...geometries.areas);
     lines.push(...geometries.lines);
