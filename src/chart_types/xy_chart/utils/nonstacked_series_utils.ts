@@ -18,55 +18,23 @@
  */
 
 import { ScaleType } from '../../../scales/constants';
-import { isDefined } from '../../../utils/commons';
 import { getSpecsById } from '../state/utils/spec';
 import { fitFunction } from './fit_function';
-import { DataSeries, DataSeriesDatum, RawDataSeries } from './series';
+import { DataSeries } from './series';
 import { isAreaSeriesSpec, isLineSeriesSpec, SeriesSpecs, BasicSeriesSpec } from './specs';
 
-/** @internal */
-export const formatNonStackedDataValues = (dataSeries: RawDataSeries): DataSeries => {
-  const len = dataSeries.data.length;
-  const formattedValues: DataSeries = {
-    ...dataSeries,
-    data: [],
-  };
-  for (let i = 0; i < len; i++) {
-    const data = dataSeries.data[i];
-    const { x, y1, mark, datum } = data;
-    let y0: number | null;
-    if (y1 === null) {
-      y0 = null;
-    } else {
-      y0 = data.y0 ? data.y0 : 0;
-    }
-
-    const formattedValue: DataSeriesDatum = {
-      x,
-      y1,
-      y0,
-      initialY1: y1,
-      initialY0: data.y0 == null || y1 === null ? null : data.y0,
-      mark: isDefined(mark) ? mark : null,
-      datum,
-    };
-    formattedValues.data.push(formattedValue);
-  }
-  return formattedValues;
-};
-
 
 /** @internal */
-export const formatNonStackedDataSeriesValues = (
-  dataseries: RawDataSeries[],
+export const applyFitFunctionToDataSeries = (
+  dataseries: DataSeries[],
   seriesSpecs: SeriesSpecs,
   xScaleType: ScaleType,
 ): DataSeries[] => {
   const len = dataseries.length;
   const formattedValues: DataSeries[] = [];
   for (let i = 0; i < len; i++) {
-    const formattedDataValue = formatNonStackedDataValues(dataseries[i]);
-    const spec = getSpecsById<BasicSeriesSpec>(seriesSpecs, formattedDataValue.specId);
+    const { specId, data, ...rest } = dataseries[i];
+    const spec = getSpecsById<BasicSeriesSpec>(seriesSpecs, specId);
 
     if (
       spec !== null
@@ -74,10 +42,15 @@ export const formatNonStackedDataSeriesValues = (
       && (isAreaSeriesSpec(spec) || isLineSeriesSpec(spec))
       && spec.fit !== undefined
     ) {
-      const fittedData = fitFunction(formattedDataValue, spec.fit, xScaleType);
-      formattedValues.push(fittedData);
+      const fittedData = fitFunction(data, spec.fit, xScaleType);
+
+      formattedValues.push({
+        specId,
+        ...rest,
+        data: fittedData,
+      });
     } else {
-      formattedValues.push(formattedDataValue);
+      formattedValues.push({ specId, data, ...rest });
     }
   }
   return formattedValues;

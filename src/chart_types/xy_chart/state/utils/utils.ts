@@ -30,6 +30,7 @@ import { XDomain, YDomain } from '../../domains/types';
 import { mergeXDomain } from '../../domains/x_domain';
 import { mergeYDomain } from '../../domains/y_domain';
 import { renderArea, renderBars, renderLine, renderBubble } from '../../rendering/rendering';
+import { fillSeries } from '../../utils/fill_series';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
 import { computeXScale, computeYScales, countBarsInCluster } from '../../utils/scales';
 import {
@@ -38,7 +39,7 @@ import {
   getSeriesIndex,
   FormattedDataSeries,
   getFormattedDataseries,
-  getSplittedSeries,
+  getDataSeriesBySpecId,
   getSeriesKey,
   XYChartSeriesIdentifier,
 } from '../../utils/series';
@@ -183,28 +184,30 @@ export function computeSeriesDomains(
   customXDomain?: DomainRange | Domain,
 ): SeriesDomainsAndData {
   const {
-    splittedSeries,
+    dataSeriesBySpecId,
     xValues,
     seriesCollection,
     fallbackScale,
-  } = getSplittedSeries(seriesSpecs, deselectedDataSeries);
+  } = getDataSeriesBySpecId(seriesSpecs, deselectedDataSeries);
 
-  const splittedDataSeries = [...splittedSeries.values()];
+  // fill series with missing x values
+  const filledDataSeriesBySpecId = fillSeries(dataSeriesBySpecId, xValues);
   const specsArray = [...seriesSpecs.values()];
 
+  // compute the x domain merging any custom domain
   const xDomain = mergeXDomain(specsArray, xValues, customXDomain, fallbackScale);
 
 
   const formattedDataSeries = getFormattedDataseries(
     specsArray,
-    splittedSeries,
+    filledDataSeriesBySpecId,
     xValues,
     xDomain.scaleType,
     seriesSpecs,
   );
 
   // let's compute the yDomain after computing all stacked values
-  const yDomain = mergeYDomain(splittedSeries, specsArray, customYDomainsByGroupId);
+  const yDomain = mergeYDomain(formattedDataSeries, seriesSpecs, customYDomainsByGroupId);
 
   // we need to get the last values from the formatted dataseries
   // because we change the format if we are on percentage mode
@@ -222,7 +225,6 @@ export function computeSeriesDomains(
   return {
     xDomain,
     yDomain,
-    splittedDataSeries,
     formattedDataSeries,
     seriesCollection: updatedSeriesCollection,
   };

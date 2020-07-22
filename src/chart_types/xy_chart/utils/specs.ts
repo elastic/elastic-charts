@@ -41,7 +41,7 @@ import {
 } from '../../../utils/themes/theme';
 import { PrimitiveValue } from '../../partition_chart/layout/utils/group_by_rollup';
 import { AnnotationTooltipFormatter, CustomAnnotationTooltip } from '../annotations/types';
-import { RawDataSeriesDatum, XYChartSeriesIdentifier } from './series';
+import { XYChartSeriesIdentifier, DataSeriesDatum } from './series';
 
 /** @public */
 export type BarStyleOverride = RecursivePartial<BarSeriesStyle> | Color | null;
@@ -67,7 +67,7 @@ export type SeriesTypes = $Values<typeof SeriesTypes>;
  * @public
  */
 export type BarStyleAccessor = (
-  datum: RawDataSeriesDatum,
+  datum: DataSeriesDatum,
   seriesIdentifier: XYChartSeriesIdentifier,
 ) => BarStyleOverride;
 /**
@@ -80,7 +80,7 @@ export type BarStyleAccessor = (
  * @public
  */
 export type PointStyleAccessor = (
-  datum: RawDataSeriesDatum,
+  datum: DataSeriesDatum,
   seriesIdentifier: XYChartSeriesIdentifier,
 ) => PointStyleOverride;
 

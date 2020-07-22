@@ -20,7 +20,7 @@
 import { DeepNonNullable } from 'utility-types';
 
 import { ScaleType } from '../../../scales/constants';
-import { DataSeries, DataSeriesDatum } from './series';
+import { DataSeriesDatum } from './series';
 import { Fit, FitConfig } from './specs';
 import { datumXSortPredicate } from './stacked_series_utils';
 
@@ -61,7 +61,9 @@ export const getValue = (
   if (previous !== null && type === Fit.Carry) {
     return {
       ...current,
+      y1: previous.y1,
       filled: {
+        ...current.filled,
         y1: previous.y1,
       },
     };
@@ -69,7 +71,9 @@ export const getValue = (
   if (next !== null && type === Fit.Lookahead) {
     return {
       ...current,
+      y1: next.y1,
       filled: {
+        ...current.filled,
         y1: next.y1,
       },
     };
@@ -78,7 +82,9 @@ export const getValue = (
     if (type === Fit.Average) {
       return {
         ...current,
+        y1: (previous.y1 + next.y1) / 2,
         filled: {
+          ...current.filled,
           y1: (previous.y1 + next.y1) / 2,
         },
       };
@@ -93,7 +99,9 @@ export const getValue = (
         const x2Delta = Math.abs(currentX - x2);
         return {
           ...current,
+          y1: x1Delta > x2Delta ? y2 : y1,
           filled: {
+            ...current.filled,
             y1: x1Delta > x2Delta ? y2 : y1,
           },
         };
@@ -101,7 +109,9 @@ export const getValue = (
       if (type === Fit.Linear) {
         return {
           ...current,
+          y1: previous.y1 + (currentX - x1) * ((y2 - y1) / (x2 - x1)),
           filled: {
+            ...current.filled,
             // simple linear interpolation function
             y1: previous.y1 + (currentX - x1) * ((y2 - y1) / (x2 - x1)),
           },
@@ -111,7 +121,9 @@ export const getValue = (
   } else if ((previous !== null || next !== null) && (type === Fit.Nearest || endValue === 'nearest')) {
     return {
       ...current,
+      y1: previous !== null ? previous.y1 : next!.y1,
       filled: {
+        ...current.filled,
         y1: previous !== null ? previous.y1 : next!.y1,
       },
     };
@@ -124,7 +136,9 @@ export const getValue = (
   // No matching fit - should only fall here on end conditions
   return {
     ...current,
+    y1: endValue,
     filled: {
+      ...current.filled,
       y1: endValue,
     },
   };
@@ -160,45 +174,43 @@ export const parseConfig = (config?: Exclude<Fit, 'explicit'> | FitConfig): FitC
 
 /** @internal */
 export const fitFunction = (
-  dataSeries: DataSeries,
+  data: DataSeriesDatum[],
   fitConfig: Exclude<Fit, 'explicit'> | FitConfig,
   xScaleType: ScaleType,
   sorted = false,
-): DataSeries => {
+): DataSeriesDatum[] => {
   const { type, value, endValue } = parseConfig(fitConfig);
 
   if (type === Fit.None) {
-    return dataSeries;
+    return data;
   }
 
-  const { data } = dataSeries;
+  // const { data } = dataSeries;
 
   if (type === Fit.Zero) {
-    return {
-      ...dataSeries,
-      data: data.map((datum) => ({
-        ...datum,
-        filled: {
-          y1: datum.y1 === null ? 0 : undefined,
-        },
-      })),
-    };
+    return data.map((datum) => ({
+      ...datum,
+      y1: datum.y1 === null ? 0 : datum.y1,
+      filled: {
+        ...datum.filled,
+        y1: datum.y1 === null ? 0 : undefined,
+      },
+    }));
   }
 
   if (type === Fit.Explicit) {
     if (value === undefined) {
-      return dataSeries;
+      return data;
     }
 
-    return {
-      ...dataSeries,
-      data: data.map((datum) => ({
-        ...datum,
-        filled: {
-          y1: datum.y1 === null ? value : undefined,
-        },
-      })),
-    };
+    return data.map((datum) => ({
+      ...datum,
+      y1: datum.y1 === null ? value : datum.y1,
+      filled: {
+        ...datum.filled,
+        y1: datum.y1 === null ? value : undefined,
+      },
+    }));
   }
 
   const sortedData = sorted || xScaleType === ScaleType.Ordinal ? data : data.slice().sort(datumXSortPredicate(xScaleType));
@@ -208,10 +220,10 @@ export const fitFunction = (
 
   for (let i = 0; i < sortedData.length; i++) {
     let j = i;
-    const current = sortedData[i];
+    const currentValue = sortedData[i];
 
     if (
-      current.y1 === null
+      currentValue.y1 === null
       && nextNonNullDatum === null
       && (type === Fit.Lookahead
         || type === Fit.Nearest
@@ -221,11 +233,11 @@ export const fitFunction = (
     ) {
       // Forward lookahead to get next non-null value
       for (j = i + 1; j < sortedData.length; j++) {
-        const value = sortedData[j];
+        const nextValue = sortedData[j];
 
-        if (value.y1 !== null && value.x !== null) {
+        if (nextValue.y1 !== null && nextValue.x !== null) {
           nextNonNullDatum = {
-            ...(value as FullDataSeriesDatum),
+            ...(nextValue as FullDataSeriesDatum),
             fittingIndex: j,
           };
           break;
@@ -233,24 +245,21 @@ export const fitFunction = (
       }
     }
 
-    const newValue = current.y1 === null ? getValue(current, i, previousNonNullDatum, nextNonNullDatum, type, endValue) : current;
+    const newValue = currentValue.y1 === null ? getValue(currentValue, i, previousNonNullDatum, nextNonNullDatum, type, endValue) : currentValue;
 
     newData[i] = newValue;
 
-    if (current.y1 !== null && current.x !== null) {
+    if (currentValue.y1 !== null && currentValue.x !== null) {
       previousNonNullDatum = {
-        ...(current as FullDataSeriesDatum),
+        ...(currentValue as FullDataSeriesDatum),
         fittingIndex: i,
       };
     }
 
-    if (nextNonNullDatum !== null && nextNonNullDatum.x <= current.x) {
+    if (nextNonNullDatum !== null && nextNonNullDatum.x <= currentValue.x) {
       nextNonNullDatum = null;
     }
   }
 
-  return {
-    ...dataSeries,
-    data: newData,
-  };
+  return newData;
 };

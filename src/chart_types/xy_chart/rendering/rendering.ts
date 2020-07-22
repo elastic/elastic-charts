@@ -582,7 +582,7 @@ export function renderArea(
     })
     .curve(getCurveFactory(curve));
 
-  const clippedRanges = hasFit && !hasY0Accessors && !isStacked ? getClippedRanges(dataSeries.data, xScale, xScaleOffset) : [];
+  const clippedRanges = hasFit && !hasY0Accessors ? getClippedRanges(dataSeries.data, xScale, xScaleOffset) : [];
   let y1Line: string | null;
 
   try {
@@ -670,14 +670,14 @@ export function getClippedRanges(dataset: DataSeriesDatum[], xScale: Scale, xSca
   let firstNonNullX: number | null = null;
   let hasNull = false;
 
-  return dataset.reduce<ClippedRanges>((acc, { x, y1 }) => {
+  return dataset.reduce<ClippedRanges>((acc, { x, filled }) => {
     const xScaled = xScale.scale(x);
     if (xScaled === null) {
       return acc;
     }
     const xValue = xScaled - xScaleOffset + xScale.bandwidth / 2;
 
-    if (y1 !== null) {
+    if (filled?.y1 === undefined) {
       if (hasNull) {
         if (firstNonNullX !== null) {
           acc.push([firstNonNullX, xValue]);

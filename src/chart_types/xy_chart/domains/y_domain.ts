@@ -17,15 +17,13 @@
  * under the License.
  */
 
-import { sum } from 'd3-array';
-
 import { ScaleContinuousType } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { identity } from '../../../utils/commons';
 import { computeContinuousDataDomain } from '../../../utils/domain';
-import { GroupId, SpecId } from '../../../utils/ids';
+import { GroupId } from '../../../utils/ids';
 import { isCompleteBound, isLowerBound, isUpperBound } from '../utils/axis_type_utils';
-import { RawDataSeries } from '../utils/series';
+import { DataSeries, FormattedDataSeries } from '../utils/series';
 import { BasicSeriesSpec, YDomainRange, DEFAULT_GLOBAL_ID, SeriesTypes } from '../utils/specs';
 import { YDomain } from './types';
 
@@ -42,7 +40,10 @@ interface GroupSpecs {
 
 /** @internal */
 export function mergeYDomain(
-  dataSeries: Map<SpecId, RawDataSeries[]>,
+  { stacked, nonStacked }:{
+    stacked: FormattedDataSeries[],
+    nonStacked: FormattedDataSeries[],
+  },
   specs: YBasicSeriesSpec[],
   domainsByGroupId: Map<GroupId, YDomainRange>,
 ): YDomain[] {
@@ -53,7 +54,9 @@ export function mergeYDomain(
 
   const yDomains = specsByGroupIdsEntries.map<YDomain>(([groupId, groupSpecs]) => {
     const customDomain = domainsByGroupId.get(groupId);
-    return mergeYDomainForGroup(dataSeries, groupId, groupSpecs, customDomain);
+    const stackedDS = stacked.find((d) => (d.groupId === groupId)) ?? { dataSeries: [] };
+    const nonStackedDS = nonStacked.find((d) => (d.groupId === groupId)) ?? { dataSeries: [] };
+    return mergeYDomainForGroup(stackedDS.dataSeries, nonStackedDS.dataSeries, groupId, groupSpecs, customDomain);
   });
 
   const globalGroupIds: Set<GroupId> = specs.reduce<Set<GroupId>>((acc, { groupId, useDefaultGroupDomain }) => {
@@ -81,7 +84,8 @@ export function mergeYDomain(
 }
 
 function mergeYDomainForGroup(
-  dataSeries: Map<SpecId, RawDataSeries[]>,
+  stacked: DataSeries[],
+  nonStacked: DataSeries[],
   groupId: GroupId,
   groupSpecs: GroupSpecs,
   customDomain?: YDomainRange,
@@ -102,12 +106,10 @@ function mergeYDomainForGroup(
     }
 
     // compute stacked domain
-    const stackedDataSeries = getDataSeriesOnGroup(dataSeries, groupSpecs.stacked);
-    const stackedDomain = computeYStackedDomain(stackedDataSeries);
+    const stackedDomain = computeYDomain(stacked, true);
 
     // compute non stacked domain
-    const nonStackedDataSeries = getDataSeriesOnGroup(dataSeries, groupSpecs.nonStacked);
-    const nonStackedDomain = computeYNonStackedDomain(nonStackedDataSeries);
+    const nonStackedDomain = computeYDomain(nonStacked);
 
     // merge stacked and non stacked domain together
     domain = computeContinuousDataDomain(
@@ -144,46 +146,12 @@ function mergeYDomainForGroup(
   };
 }
 
-/** @internal */
-export function getDataSeriesOnGroup(
-  dataSeries: Map<SpecId, RawDataSeries[]>,
-  specs: YBasicSeriesSpec[],
-): RawDataSeries[] {
-  return specs.reduce((acc, spec) => {
-    const ds = dataSeries.get(spec.id) || [];
-    return [...acc, ...ds];
-  }, [] as RawDataSeries[]);
-}
-
-function computeYStackedDomain(dataseries: RawDataSeries[]): number[] {
-  const stackMap = new Map<any, any[]>();
-  dataseries.forEach((ds, index) => {
-    ds.data.forEach((datum) => {
-      const stack = stackMap.get(datum.x) || [];
-      stack[index] = datum.y1;
-      stackMap.set(datum.x, stack);
-    });
-  });
-  const dataValues = [];
-  // eslint-disable-next-line no-restricted-syntax
-  for (const stackValues of stackMap) {
-    dataValues.push(...stackValues[1]);
-    if (stackValues[1].length > 1) {
-      dataValues.push(sum(stackValues[1]));
-    }
-  }
-  if (dataValues.length === 0) {
-    return [];
-  }
-  return computeContinuousDataDomain(dataValues, identity, null);
-}
-
-function computeYNonStackedDomain(dataseries: RawDataSeries[]) {
+function computeYDomain(dataseries: DataSeries[], isStacked = false) {
   const yValues = new Set<any>();
   dataseries.forEach((ds) => {
     ds.data.forEach((datum) => {
       yValues.add(datum.y1);
-      if (datum.y0 != null) {
+      if (!isStacked && datum.y0 != null) {
         yValues.add(datum.y0);
       }
     });

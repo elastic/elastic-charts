@@ -1,3 +1,4 @@
+
 /*
  * Licensed to Elasticsearch B.V. under one or more contributor
  * license agreements. See the NOTICE file distributed with
@@ -19,7 +20,8 @@
 
 import React from 'react';
 
-import { Chart, BarSeries, Axis, Position, ScaleType } from '../src';
+import { Chart, AreaSeries, Axis, Position, ScaleType, Fit, Settings, CurveType, timeFormatter, niceTimeFormatByDay } from '../src';
+import { data } from './data';
 
 export class Playground extends React.Component {
   render() {
@@ -30,22 +32,51 @@ export class Playground extends React.Component {
             <Axis
               id="y"
               position={Position.Left}
-              domain={{ fit: true }}
             />
-            <BarSeries
+            <Axis
+              id="x"
+              position={Position.Bottom}
+              tickFormat={timeFormatter(niceTimeFormatByDay(365 * 10))}
+            />
+            <Settings />
+
+            <AreaSeries
               id="spec1"
+              xAccessor="date"
+              yAccessors={['count']}
+              // y0Accessors={['metric0']}
+              splitSeriesAccessors={['series']}
+              stackAccessors={['date']}
+              xScaleType={ScaleType.Time}
+              fit={Fit.Lookahead}
+              curve={CurveType.CURVE_MONOTONE_X}
+              // areaSeriesStyle={{ point: { visible: true } }}
+              // stackAsPercentage
+              data={data.filter((d) => d.year !== 2006 || d.series !== 'Manufacturing')}
+            />
+
+            {/* <AreaSeries
+              id="spec2"
               yAccessors={['y1']}
               splitSeriesAccessors={['g']}
-              stackAccessors={['x']}
+              // stackAccessors={['x']}
               xScaleType={ScaleType.Linear}
+              fit={Fit.Carry}
+              areaSeriesStyle={{
+                point: {
+                  visible: true,
+                },
+              }}
               data={[
                 { x: 1, y1: 1, g: 'a' },
                 { x: 2, y1: 2, g: 'a' },
+                { x: 3, y1: 2, g: 'a' },
                 { x: 4, y1: 4, g: 'a' },
-                { x: 1, y1: 21, g: 'b' },
-                { x: 3, y1: 23, g: 'b' },
+                // { x: 1, y1: 21, g: 'b' },
+                // { x: 2, y1: 5, g: 'b' },
+                // { x: 3, y1: 23, g: 'b' },
               ]}
-            />
+            /> */}
           </Chart>
         </div>
       </div>

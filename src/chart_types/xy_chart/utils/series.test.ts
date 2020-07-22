@@ -34,12 +34,12 @@ import {
   getFormattedDataseries,
   getSeriesColors,
   getSortedDataSeriesColorsValuesMap,
-  getSplittedSeries,
-  RawDataSeries,
-  splitSeries,
+  getDataSeriesBySpecId,
+  splitSeriesDataByAccessors,
   XYChartSeriesIdentifier,
-  cleanDatum,
+  extractYandMarkFromDatum,
   getSeriesName,
+  DataSeries,
 } from './series';
 import { BasicSeriesSpec, LineSeriesSpec, SeriesTypes, AreaSeriesSpec } from './specs';
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
@@ -48,7 +48,7 @@ const dg = new SeededDataGenerator();
 
 describe('Series', () => {
   test('Can split dataset into 1Y0G series', () => {
-    const splittedSeries = splitSeries({
+    const splittedSeries = splitSeriesDataByAccessors({
       id: 'spec1',
       data: TestDataset.BARCHART_1Y0G,
       xAccessor: 'x',
@@ -56,58 +56,58 @@ describe('Series', () => {
       splitSeriesAccessors: ['y'],
     });
 
-    expect(splittedSeries.rawDataSeries).toMatchSnapshot();
+    expect([...splittedSeries.dataSeries.values()]).toMatchSnapshot();
   });
   test('Can split dataset into 1Y1G series', () => {
-    const splittedSeries = splitSeries({
+    const splittedSeries = splitSeriesDataByAccessors({
       id: 'spec1',
       data: TestDataset.BARCHART_1Y1G,
       xAccessor: 'x',
       yAccessors: ['y'],
     });
-    expect(splittedSeries.rawDataSeries).toMatchSnapshot();
+    expect([...splittedSeries.dataSeries.values()]).toMatchSnapshot();
   });
   test('Can split dataset into 1Y2G series', () => {
-    const splittedSeries = splitSeries({
+    const splittedSeries = splitSeriesDataByAccessors({
       id: 'spec1',
       data: TestDataset.BARCHART_1Y2G,
       xAccessor: 'x',
       yAccessors: ['y'],
       splitSeriesAccessors: ['g1', 'g2'],
     });
-    expect(splittedSeries.rawDataSeries).toMatchSnapshot();
+    expect([...splittedSeries.dataSeries.values()]).toMatchSnapshot();
   });
   test('Can split dataset into 2Y0G series', () => {
-    const splittedSeries = splitSeries({
+    const splittedSeries = splitSeriesDataByAccessors({
       id: 'spec1',
       data: TestDataset.BARCHART_2Y0G,
       xAccessor: 'x',
       yAccessors: ['y1', 'y2'],
     });
-    expect(splittedSeries.rawDataSeries).toMatchSnapshot();
+    expect([...splittedSeries.dataSeries.values()]).toMatchSnapshot();
   });
   test('Can split dataset into 2Y1G series', () => {
-    const splittedSeries = splitSeries({
+    const splittedSeries = splitSeriesDataByAccessors({
       id: 'spec1',
       data: TestDataset.BARCHART_2Y1G,
       xAccessor: 'x',
       yAccessors: ['y1', 'y2'],
       splitSeriesAccessors: ['g'],
     });
-    expect(splittedSeries.rawDataSeries).toMatchSnapshot();
+    expect([...splittedSeries.dataSeries.values()]).toMatchSnapshot();
   });
   test('Can split dataset into 2Y2G series', () => {
-    const splittedSeries = splitSeries({
+    const splittedSeries = splitSeriesDataByAccessors({
       id: 'spec1',
       data: TestDataset.BARCHART_2Y2G,
       xAccessor: 'x',
       yAccessors: ['y1', 'y2'],
       splitSeriesAccessors: ['g1', 'g2'],
     });
-    expect(splittedSeries.rawDataSeries).toMatchSnapshot();
+    expect([...splittedSeries.dataSeries.values()]).toMatchSnapshot();
   });
   test('Can stack simple dataseries', () => {
-    const dataSeries: RawDataSeries[] = [
+    const dataSeries: DataSeries[] = [
       {
         specId: 'spec1',
         yAccessor: 'y1',
@@ -115,9 +115,9 @@ describe('Series', () => {
         seriesKeys: ['a'],
         key: 'a',
         data: [
-          { x: 1, y1: 1, mark: null },
-          { x: 2, y1: 2, mark: null },
-          { x: 4, y1: 4, mark: null },
+          { x: 1, y1: 1, mark: null, y0: null, initialY1: 1, initialY0: null, datum: undefined },
+          { x: 2, y1: 2, mark: null, y0: null, initialY1: 2, initialY0: null, datum: undefined },
+          { x: 4, y1: 4, mark: null, y0: null, initialY1: 4, initialY0: null, datum: undefined },
         ],
       },
       {
@@ -127,17 +127,17 @@ describe('Series', () => {
         seriesKeys: ['b'],
         key: 'b',
         data: [
-          { x: 1, y1: 21, mark: null },
-          { x: 3, y1: 23, mark: null },
+          { x: 1, y1: 21, mark: null, y0: null, initialY1: 21, initialY0: null, datum: undefined },
+          { x: 3, y1: 23, mark: null, y0: null, initialY1: 23, initialY0: null, datum: undefined },
         ],
       },
     ];
     const xValues = new Set([1, 2, 3, 4]);
-    const stackedValues = formatStackedDataSeriesValues(dataSeries, false, xValues, ScaleType.Linear);
+    const stackedValues = formatStackedDataSeriesValues(dataSeries, false, xValues);
     expect(stackedValues).toMatchSnapshot();
   });
   test('Can stack multiple dataseries', () => {
-    const dataSeries: RawDataSeries[] = [
+    const dataSeries: DataSeries[] = [
       {
         specId: 'spec1',
         yAccessor: 'y1',
@@ -145,10 +145,10 @@ describe('Series', () => {
         seriesKeys: ['a'],
         key: 'a',
         data: [
-          { x: 1, y1: 1, mark: null },
-          { x: 2, y1: 2, mark: null },
-          { x: 3, y1: 3, mark: null },
-          { x: 4, y1: 4, mark: null },
+          { x: 1, y1: 1, mark: null, y0: null, initialY1: 1, initialY0: null, datum: undefined },
+          { x: 2, y1: 2, mark: null, y0: null, initialY1: 2, initialY0: null, datum: undefined },
+          { x: 3, y1: 3, mark: null, y0: null, initialY1: 3, initialY0: null, datum: undefined },
+          { x: 4, y1: 4, mark: null, y0: null, initialY1: 4, initialY0: null, datum: undefined },
         ],
       },
       {
@@ -158,10 +158,10 @@ describe('Series', () => {
         seriesKeys: ['b'],
         key: 'b',
         data: [
-          { x: 1, y1: 1, mark: null },
-          { x: 2, y1: 2, mark: null },
-          { x: 3, y1: 3, mark: null },
-          { x: 4, y1: 4, mark: null },
+          { x: 1, y1: 1, mark: null, y0: null, initialY1: 1, initialY0: null, datum: undefined },
+          { x: 2, y1: 2, mark: null, y0: null, initialY1: 2, initialY0: null, datum: undefined },
+          { x: 3, y1: 3, mark: null, y0: null, initialY1: 3, initialY0: null, datum: undefined },
+          { x: 4, y1: 4, mark: null, y0: null, initialY1: 4, initialY0: null, datum: undefined },
         ],
       },
       {
@@ -171,10 +171,10 @@ describe('Series', () => {
         seriesKeys: ['b'],
         key: 'b',
         data: [
-          { x: 1, y1: 1, mark: null },
-          { x: 2, y1: 2, mark: null },
-          { x: 3, y1: 3, mark: null },
-          { x: 4, y1: 4, mark: null },
+          { x: 1, y1: 1, mark: null, y0: null, initialY1: 1, initialY0: null, datum: undefined },
+          { x: 2, y1: 2, mark: null, y0: null, initialY1: 2, initialY0: null, datum: undefined },
+          { x: 3, y1: 3, mark: null, y0: null, initialY1: 3, initialY0: null, datum: undefined },
+          { x: 4, y1: 4, mark: null, y0: null, initialY1: 4, initialY0: null, datum: undefined },
         ],
       },
       {
@@ -184,19 +184,19 @@ describe('Series', () => {
         seriesKeys: ['b'],
         key: 'b',
         data: [
-          { x: 1, y1: 1, mark: null },
-          { x: 2, y1: 2, mark: null },
-          { x: 3, y1: 3, mark: null },
-          { x: 4, y1: 4, mark: null },
+          { x: 1, y1: 1, mark: null, y0: null, initialY1: 1, initialY0: null, datum: undefined },
+          { x: 2, y1: 2, mark: null, y0: null, initialY1: 2, initialY0: null, datum: undefined },
+          { x: 3, y1: 3, mark: null, y0: null, initialY1: 3, initialY0: null, datum: undefined },
+          { x: 4, y1: 4, mark: null, y0: null, initialY1: 4, initialY0: null, datum: undefined },
         ],
       },
     ];
     const xValues = new Set([1, 2, 3, 4]);
-    const stackedValues = formatStackedDataSeriesValues(dataSeries, false, xValues, ScaleType.Linear);
+    const stackedValues = formatStackedDataSeriesValues(dataSeries, false, xValues);
     expect(stackedValues).toMatchSnapshot();
   });
   test('Can stack unsorted dataseries', () => {
-    const dataSeries: RawDataSeries[] = [
+    const dataSeries: DataSeries[] = [
       {
         specId: 'spec1',
         yAccessor: 'y1',
@@ -204,9 +204,9 @@ describe('Series', () => {
         seriesKeys: ['a'],
         key: 'a',
         data: [
-          { x: 1, y1: 1, mark: null },
-          { x: 4, y1: 4, mark: null },
-          { x: 2, y1: 2, mark: null },
+          { x: 1, y1: 1, mark: null, y0: null, initialY1: 1, initialY0: null, datum: undefined },
+          { x: 4, y1: 4, mark: null, y0: null, initialY1: 4, initialY0: null, datum: undefined },
+          { x: 2, y1: 2, mark: null, y0: null, initialY1: 2, initialY0: null, datum: undefined },
         ],
       },
       {
@@ -216,25 +216,25 @@ describe('Series', () => {
         seriesKeys: ['b'],
         key: 'b',
         data: [
-          { x: 3, y1: 23, mark: null },
-          { x: 1, y1: 21, mark: null },
+          { x: 3, y1: 23, mark: null, y0: null, initialY1: 23, initialY0: null, datum: undefined },
+          { x: 1, y1: 21, mark: null, y0: null, initialY1: 21, initialY0: null, datum: undefined },
         ],
       },
     ];
     const xValues = new Set([1, 2, 3, 4]);
-    const stackedValues = formatStackedDataSeriesValues(dataSeries, false, xValues, ScaleType.Linear);
+    const stackedValues = formatStackedDataSeriesValues(dataSeries, false, xValues);
     expect(stackedValues).toMatchSnapshot();
   });
   test('Can stack high volume of dataseries', () => {
     const maxArrayItems = 1000;
-    const dataSeries: RawDataSeries[] = [
+    const dataSeries: DataSeries[] = [
       {
         specId: 'spec1',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['a'],
         key: 'a',
-        data: new Array(maxArrayItems).fill(0).map((d, i) => ({ x: i, y1: i, mark: null })),
+        data: new Array(maxArrayItems).fill(0).map((d, i) => ({ x: i, y1: i, mark: null, y0: null, initialY1: i, initialY0: null, datum: undefined })),
       },
       {
         specId: 'spec1',
@@ -242,11 +242,11 @@ describe('Series', () => {
         splitAccessors: new Map(),
         seriesKeys: ['b'],
         key: 'b',
-        data: new Array(maxArrayItems).fill(0).map((d, i) => ({ x: i, y1: i, mark: null })),
+        data: new Array(maxArrayItems).fill(0).map((d, i) => ({ x: i, y1: i, mark: null, y0: null, initialY1: i, initialY0: null, datum: undefined })),
       },
     ];
     const xValues = new Set(new Array(maxArrayItems).fill(0).map((d, i) => i));
-    const stackedValues = formatStackedDataSeriesValues(dataSeries, false, xValues, ScaleType.Linear);
+    const stackedValues = formatStackedDataSeriesValues(dataSeries, false, xValues);
     expect(stackedValues).toMatchSnapshot();
   });
   test('Can stack simple dataseries with scale to extent', () => {
@@ -408,9 +408,9 @@ describe('Series', () => {
       hideInLegend: false,
     };
 
-    const splittedDataSeries = getSplittedSeries([spec1, spec2]);
-    expect(splittedDataSeries.splittedSeries.get('spec1')).toMatchSnapshot();
-    expect(splittedDataSeries.splittedSeries.get('spec2')).toMatchSnapshot();
+    const splittedDataSeries = getDataSeriesBySpecId([spec1, spec2]);
+    expect(splittedDataSeries.dataSeriesBySpecId.get('spec1')).toMatchSnapshot();
+    expect(splittedDataSeries.dataSeriesBySpecId.get('spec2')).toMatchSnapshot();
   });
   test('should compute data series for stacked specs', () => {
     const spec1: BasicSeriesSpec = {
@@ -441,10 +441,10 @@ describe('Series', () => {
       hideInLegend: false,
     };
     const xValues = new Set([0, 1, 2, 3]);
-    const splittedDataSeries = getSplittedSeries([spec1, spec2]);
+    const splittedDataSeries = getDataSeriesBySpecId([spec1, spec2]);
     const stackedDataSeries = getFormattedDataseries(
       [spec1, spec2],
-      splittedDataSeries.splittedSeries,
+      splittedDataSeries.dataSeriesBySpecId,
       xValues,
       ScaleType.Linear,
       [],
@@ -536,11 +536,11 @@ describe('Series', () => {
       hideInLegend: false,
     };
 
-    const allSeries = getSplittedSeries([splitSpec]);
-    expect(allSeries.splittedSeries.get(specId)?.length).toBe(2);
+    const allSeries = getDataSeriesBySpecId([splitSpec]);
+    expect(allSeries.dataSeriesBySpecId.get(specId)?.length).toBe(2);
 
-    const emptyDeselected = getSplittedSeries([splitSpec]);
-    expect(emptyDeselected.splittedSeries.get(specId)?.length).toBe(2);
+    const emptyDeselected = getDataSeriesBySpecId([splitSpec]);
+    expect(emptyDeselected.dataSeriesBySpecId.get(specId)?.length).toBe(2);
 
     const deselectedDataSeries: XYChartSeriesIdentifier[] = [
       {
@@ -551,8 +551,8 @@ describe('Series', () => {
         key: 'spec{splitSpec}yAccessor{y1}splitAccessors{}',
       },
     ];
-    const subsetSplit = getSplittedSeries([splitSpec], deselectedDataSeries);
-    expect(subsetSplit.splittedSeries.get(specId)?.length).toBe(1);
+    const subsetSplit = getDataSeriesBySpecId([splitSpec], deselectedDataSeries);
+    expect(subsetSplit.dataSeriesBySpecId.get(specId)?.length).toBe(1);
   });
 
   test('should sort series color by series spec sort index', () => {
@@ -629,26 +629,26 @@ describe('Series', () => {
     expect(getSortedDataSeriesColorsValuesMap(seriesCollection)).toEqual(undefinedSortedColorValues);
   });
   test('clean datum shall parse string as number for y values', () => {
-    let datum = cleanDatum([0, 1, 2], 0, 1, [], 2);
+    let datum = extractYandMarkFromDatum([0, 1, 2], 1, [], 2);
     expect(datum).toBeDefined();
     expect(datum?.y1).toBe(1);
     expect(datum?.y0).toBe(2);
-    datum = cleanDatum([0, '1', 2], 0, 1, [], 2);
-    expect(datum).toBeDefined();
-    expect(datum?.y1).toBe(1);
-    expect(datum?.y0).toBe(2);
-
-    datum = cleanDatum([0, '1', '2'], 0, 1, [], 2);
+    datum = extractYandMarkFromDatum([0, '1', 2], 1, [], 2);
     expect(datum).toBeDefined();
     expect(datum?.y1).toBe(1);
     expect(datum?.y0).toBe(2);
 
-    datum = cleanDatum([0, 1, '2'], 0, 1, [], 2);
+    datum = extractYandMarkFromDatum([0, '1', '2'], 1, [], 2);
     expect(datum).toBeDefined();
     expect(datum?.y1).toBe(1);
     expect(datum?.y0).toBe(2);
 
-    datum = cleanDatum([0, 'invalid', 'invalid'], 0, 1, [], 2);
+    datum = extractYandMarkFromDatum([0, 1, '2'], 1, [], 2);
+    expect(datum).toBeDefined();
+    expect(datum?.y1).toBe(1);
+    expect(datum?.y0).toBe(2);
+
+    datum = extractYandMarkFromDatum([0, 'invalid', 'invalid'], 1, [], 2);
     expect(datum).toBeDefined();
     expect(datum?.y1).toBe(null);
     expect(datum?.y0).toBe(null);
@@ -872,27 +872,27 @@ describe('Series', () => {
   describe('functional accessors', () => {
     test('Can split dataset into 2Y2G series', () => {
       const xAccessor: AccessorFn = (d) => d.x;
-      const splittedSeries = splitSeries({
+      const splittedSeries = splitSeriesDataByAccessors({
         id: 'spec1',
         data: TestDataset.BARCHART_2Y2G,
         xAccessor,
         yAccessors: ['y1', 'y2'],
         splitSeriesAccessors: ['g1', 'g2'],
       });
-      expect(splittedSeries.rawDataSeries.length).toBe(8);
-      expect(splittedSeries.rawDataSeries).toMatchSnapshot();
+      expect([...splittedSeries.dataSeries.values()].length).toBe(8);
+      expect([...splittedSeries.dataSeries.values()]).toMatchSnapshot();
     });
 
     test('Can split dataset with custom _all xAccessor', () => {
       const xAccessor: AccessorFn = () => '_all';
-      const splittedSeries = splitSeries({
+      const splittedSeries = splitSeriesDataByAccessors({
         id: 'spec1',
         data: TestDataset.BARCHART_2Y2G,
         xAccessor,
         yAccessors: ['y1'],
       });
-      expect(splittedSeries.rawDataSeries.length).toBe(1);
-      expect(splittedSeries.rawDataSeries).toMatchSnapshot();
+      expect([...splittedSeries.dataSeries.values()].length).toBe(1);
+      expect([...splittedSeries.dataSeries.values()]).toMatchSnapshot();
     });
 
     test('Shall ignore undefined values on splitSeriesAccessors', () => {
@@ -912,9 +912,9 @@ describe('Series', () => {
         yAccessors: [1],
         splitSeriesAccessors: [2],
       });
-      const splittedSeries = splitSeries(spec);
-      expect(splittedSeries.rawDataSeries.length).toBe(2);
-      expect(splittedSeries.rawDataSeries).toMatchSnapshot();
+      const splittedSeries = splitSeriesDataByAccessors(spec);
+      expect([...splittedSeries.dataSeries.values()].length).toBe(2);
+      expect([...splittedSeries.dataSeries.values()]).toMatchSnapshot();
     });
     test('Should ignore series if splitSeriesAccessors are defined but not contained in any datum', () => {
       const spec = MockSeriesSpec.bar({
@@ -927,8 +927,8 @@ describe('Series', () => {
         yAccessors: [1],
         splitSeriesAccessors: [2],
       });
-      const splittedSeries = splitSeries(spec);
-      expect(splittedSeries.rawDataSeries.length).toBe(0);
+      const splittedSeries = splitSeriesDataByAccessors(spec);
+      expect([...splittedSeries.dataSeries.values()].length).toBe(0);
     });
   });
 });
