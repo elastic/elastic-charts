@@ -34,7 +34,7 @@ module.exports = {
     '@typescript-eslint/no-unsafe-return': 0,
     '@typescript-eslint/explicit-module-boundary-types': 0,
     '@typescript-eslint/restrict-template-expressions': 1,
-    '@typescript-eslint/restrict-plus-operands': 1,
+    '@typescript-eslint/restrict-plus-operands': 0, // rule is broken
     '@typescript-eslint/no-unsafe-call': 1,
     '@typescript-eslint/unbound-method': 1,
     'unicorn/consistent-function-scoping': 1,
@@ -356,6 +356,8 @@ module.exports = {
     {
       files: ['stories/**/*.ts?(x)', '*.test.ts?(x)'],
       rules: {
+        'jsx-a11y/no-static-element-interactions': 0,
+        'jsx-a11y/click-events-have-key-events': 0,
         'no-restricted-properties': [
           process.env.NODE_ENV === 'production' ? 2 : 1,
           {

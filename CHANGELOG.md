@@ -1,3 +1,50 @@
+## [20.0.1](https://github.com/elastic/elastic-charts/compare/v20.0.0...v20.0.1) (2020-07-21)
+
+
+### Bug Fixes
+
+* custom domain error with fallback ordinal scale ([#757](https://github.com/elastic/elastic-charts/issues/757)) ([142c3df](https://github.com/elastic/elastic-charts/commit/142c3dfd15832d1dbbc923918c662b1a40d169a4)), closes [#756](https://github.com/elastic/elastic-charts/issues/756)
+
+# [20.0.0](https://github.com/elastic/elastic-charts/compare/v19.9.1...v20.0.0) (2020-07-19)
+
+
+### Features
+
+* **axis:** improved axis styles ([#711](https://github.com/elastic/elastic-charts/issues/711)) ([3c46f9c](https://github.com/elastic/elastic-charts/commit/3c46f9c8c45a1375e4856fec7f53b85bbda4bae8)), closes [#714](https://github.com/elastic/elastic-charts/issues/714) [#312](https://github.com/elastic/elastic-charts/issues/312)
+
+
+### BREAKING CHANGES
+
+* **axis:** - `AxisSpec.gridLineStyle` => `AxisSpec.gridLine`
+- `AxisSpec.gridLineStyle` => `AxisSpec.gridLine`
+- `AxisSpec.tickLabelRotation` => `AxisStyle.tickLabel.rotation`
+- `AxisSpec.tickPadding` => `AxisStyle.tickLine.padding`
+- `AxisSpec.tickSize` => `AxisStyle.tickLine.size`
+- `AxisStyle.tickLabelPadding` => `AxisStyle.tickLabel.padding`
+- `GridLineConfig` => `GridLineStyle`
+- `AxisSpec.style` => `RecursivePartial<AxisStyle>` (new `AxisStyle` type)
+- `AxisConfig.axisLineStyle` => `AxisStyle.axisLine`
+- `AxisConfig.axisTitleStyle` => `AxisStyle.axisTitle`
+- `AxisConfig.tickLabelStyle` => `AxisStyle.tickLabel`
+- `AxisConfig.tickLineStyle` => `AxisStyle.tickLine`
+- `GridLineStyle` requires all properties
+- deprecate `AxisSpec.showGridLines` in favor of `AxisSpec.gridLine.visible`
+
+## [19.9.1](https://github.com/elastic/elastic-charts/compare/v19.9.0...v19.9.1) (2020-07-19)
+
+
+### Bug Fixes
+
+* correct bad breaking change merge ([3acc263](https://github.com/elastic/elastic-charts/commit/3acc263b1c1a7f6fed9f1820132abd656e3f153e))
+
+# [19.9.0](https://github.com/elastic/elastic-charts/compare/v19.8.1...v19.9.0) (2020-07-17)
+
+
+### Features
+
+* **axis:** formatting different for label vs tooltip and legend ([#750](https://github.com/elastic/elastic-charts/issues/750)) ([daff503](https://github.com/elastic/elastic-charts/commit/daff5033cc979cb978227dcbf044f8ceb22568a9))
+* **legend:** add legend item actions and margins ([#749](https://github.com/elastic/elastic-charts/issues/749)) ([8136dca](https://github.com/elastic/elastic-charts/commit/8136dcae91fc0f7e4ee0912d23713ff2bbe46fad)), closes [#717](https://github.com/elastic/elastic-charts/issues/717)
+
 ## [19.8.1](https://github.com/elastic/elastic-charts/compare/v19.8.0...v19.8.1) (2020-07-07)
 
 
