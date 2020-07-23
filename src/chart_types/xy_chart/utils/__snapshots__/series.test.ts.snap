@@ -22095,7 +22095,11 @@ Array [
   Object {
     "data": Array [
       Object {
-        "datum": undefined,
+        "datum": Object {
+          "g": "a",
+          "x": 1,
+          "y1": 1,
+        },
         "filled": undefined,
         "initialY0": null,
         "initialY1": 1,
@@ -22105,7 +22109,11 @@ Array [
         "y1": 1,
       },
       Object {
-        "datum": undefined,
+        "datum": Object {
+          "g": "a",
+          "x": 2,
+          "y1": 2,
+        },
         "filled": undefined,
         "initialY0": null,
         "initialY1": 2,
@@ -22115,17 +22123,23 @@ Array [
         "y1": 2,
       },
       Object {
-        "datum": null,
-        "filled": undefined,
+        "datum": undefined,
+        "filled": Object {
+          "x": 3,
+        },
         "initialY0": null,
         "initialY1": null,
         "mark": null,
         "x": 3,
-        "y0": NaN,
-        "y1": NaN,
+        "y0": 0,
+        "y1": 0,
       },
       Object {
-        "datum": undefined,
+        "datum": Object {
+          "g": "a",
+          "x": 4,
+          "y1": 4,
+        },
         "filled": undefined,
         "initialY0": null,
         "initialY1": 4,
@@ -22135,18 +22149,25 @@ Array [
         "y1": 4,
       },
     ],
-    "key": "a",
+    "key": "spec{spec1}yAccessor{y1}splitAccessors{g-a}",
     "seriesKeys": Array [
       "a",
+      "y1",
     ],
     "specId": "spec1",
-    "splitAccessors": Map {},
+    "splitAccessors": Map {
+      "g" => "a",
+    },
     "yAccessor": "y1",
   },
   Object {
     "data": Array [
       Object {
-        "datum": undefined,
+        "datum": Object {
+          "g": "b",
+          "x": 1,
+          "y1": 21,
+        },
         "filled": undefined,
         "initialY0": null,
         "initialY1": 21,
@@ -22156,17 +22177,23 @@ Array [
         "y1": 22,
       },
       Object {
-        "datum": null,
-        "filled": undefined,
+        "datum": undefined,
+        "filled": Object {
+          "x": 2,
+        },
         "initialY0": null,
         "initialY1": null,
         "mark": null,
         "x": 2,
-        "y0": NaN,
-        "y1": NaN,
+        "y0": 2,
+        "y1": 2,
       },
       Object {
-        "datum": undefined,
+        "datum": Object {
+          "g": "b",
+          "x": 3,
+          "y1": 23,
+        },
         "filled": undefined,
         "initialY0": null,
         "initialY1": 23,
@@ -22176,22 +22203,27 @@ Array [
         "y1": 23,
       },
       Object {
-        "datum": null,
-        "filled": undefined,
+        "datum": undefined,
+        "filled": Object {
+          "x": 4,
+        },
         "initialY0": null,
         "initialY1": null,
         "mark": null,
         "x": 4,
-        "y0": NaN,
-        "y1": NaN,
+        "y0": 4,
+        "y1": 4,
       },
     ],
-    "key": "b",
+    "key": "spec{spec1}yAccessor{y1}splitAccessors{g-b}",
     "seriesKeys": Array [
       "b",
+      "y1",
     ],
     "specId": "spec1",
-    "splitAccessors": Map {},
+    "splitAccessors": Map {
+      "g" => "b",
+    },
     "yAccessor": "y1",
   },
 ]
@@ -22641,7 +22673,11 @@ Array [
   Object {
     "data": Array [
       Object {
-        "datum": undefined,
+        "datum": Object {
+          "g": "a",
+          "x": 1,
+          "y1": 1,
+        },
         "filled": undefined,
         "initialY0": null,
         "initialY1": 1,
@@ -22651,7 +22687,11 @@ Array [
         "y1": 1,
       },
       Object {
-        "datum": undefined,
+        "datum": Object {
+          "g": "a",
+          "x": 2,
+          "y1": 2,
+        },
         "filled": undefined,
         "initialY0": null,
         "initialY1": 2,
@@ -22661,17 +22701,23 @@ Array [
         "y1": 2,
       },
       Object {
-        "datum": null,
-        "filled": undefined,
+        "datum": undefined,
+        "filled": Object {
+          "x": 3,
+        },
         "initialY0": null,
         "initialY1": null,
         "mark": null,
         "x": 3,
-        "y0": NaN,
-        "y1": NaN,
+        "y0": 0,
+        "y1": 0,
       },
       Object {
-        "datum": undefined,
+        "datum": Object {
+          "g": "a",
+          "x": 4,
+          "y1": 4,
+        },
         "filled": undefined,
         "initialY0": null,
         "initialY1": 4,
@@ -22681,18 +22727,25 @@ Array [
         "y1": 4,
       },
     ],
-    "key": "a",
+    "key": "spec{spec1}yAccessor{y1}splitAccessors{g-a}",
     "seriesKeys": Array [
       "a",
+      "y1",
     ],
     "specId": "spec1",
-    "splitAccessors": Map {},
+    "splitAccessors": Map {
+      "g" => "a",
+    },
     "yAccessor": "y1",
   },
   Object {
     "data": Array [
       Object {
-        "datum": undefined,
+        "datum": Object {
+          "g": "b",
+          "x": 1,
+          "y1": 21,
+        },
         "filled": undefined,
         "initialY0": null,
         "initialY1": 21,
@@ -22702,17 +22755,23 @@ Array [
         "y1": 22,
       },
       Object {
-        "datum": null,
-        "filled": undefined,
+        "datum": undefined,
+        "filled": Object {
+          "x": 2,
+        },
         "initialY0": null,
         "initialY1": null,
         "mark": null,
         "x": 2,
-        "y0": NaN,
-        "y1": NaN,
+        "y0": 2,
+        "y1": 2,
       },
       Object {
-        "datum": undefined,
+        "datum": Object {
+          "g": "b",
+          "x": 3,
+          "y1": 23,
+        },
         "filled": undefined,
         "initialY0": null,
         "initialY1": 23,
@@ -22722,22 +22781,27 @@ Array [
         "y1": 23,
       },
       Object {
-        "datum": null,
-        "filled": undefined,
+        "datum": undefined,
+        "filled": Object {
+          "x": 4,
+        },
         "initialY0": null,
         "initialY1": null,
         "mark": null,
         "x": 4,
-        "y0": NaN,
-        "y1": NaN,
+        "y0": 4,
+        "y1": 4,
       },
     ],
-    "key": "b",
+    "key": "spec{spec1}yAccessor{y1}splitAccessors{g-b}",
     "seriesKeys": Array [
       "b",
+      "y1",
     ],
     "specId": "spec1",
-    "splitAccessors": Map {},
+    "splitAccessors": Map {
+      "g" => "b",
+    },
     "yAccessor": "y1",
   },
 ]

@@ -20,8 +20,7 @@
 
 import React from 'react';
 
-import { Chart, AreaSeries, Axis, Position, ScaleType, Fit, Settings, CurveType, timeFormatter, niceTimeFormatByDay } from '../src';
-import { data } from './data';
+import { Chart, AreaSeries, Axis, Position, Settings } from '../src';
 
 export class Playground extends React.Component {
   render() {
@@ -36,23 +35,34 @@ export class Playground extends React.Component {
             <Axis
               id="x"
               position={Position.Bottom}
-              tickFormat={timeFormatter(niceTimeFormatByDay(365 * 10))}
+              // tickFormat={timeFormatter(niceTimeFormatByDay(365 * 10))}
             />
             <Settings />
 
             <AreaSeries
               id="spec1"
-              xAccessor="date"
-              yAccessors={['count']}
-              // y0Accessors={['metric0']}
-              splitSeriesAccessors={['series']}
-              stackAccessors={['date']}
-              xScaleType={ScaleType.Time}
-              fit={Fit.Lookahead}
-              curve={CurveType.CURVE_MONOTONE_X}
-              // areaSeriesStyle={{ point: { visible: true } }}
-              // stackAsPercentage
-              data={data.filter((d) => d.year !== 2006 || d.series !== 'Manufacturing')}
+              // xAccessor="date"
+              // yAccessors={['count']}
+              // // y0Accessors={['metric0']}
+              // splitSeriesAccessors={['series']}
+              // stackAccessors={['date']}
+              // xScaleType={ScaleType.Time}
+              // fit={Fit.Lookahead}
+              // curve={CurveType.CURVE_MONOTONE_X}
+              // // areaSeriesStyle={{ point: { visible: true } }}
+              // // stackAsPercentage
+              // data={data.filter((d) => d.year !== 2006 || d.series !== 'Manufacturing')}
+
+              splitSeriesAccessors={['g']}
+              yAccessors={['y1']}
+              stackAccessors={['x']}
+              data={[
+                { x: 1, y1: 1, g: 'a' },
+                { x: 4, y1: 4, g: 'a' },
+                { x: 2, y1: 2, g: 'a' },
+                { x: 3, y1: 23, g: 'b' },
+                { x: 1, y1: 21, g: 'b' },
+              ]}
             />
 
             {/* <AreaSeries

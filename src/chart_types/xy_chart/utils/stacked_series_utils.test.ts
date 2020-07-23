@@ -21,6 +21,7 @@ import { MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
 import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_domains';
+import { StackModes } from './specs';
 
 describe('Stacked Series Utils', () => {
   const EMPTY_DATA_SET = MockSeriesSpec.area({
@@ -118,7 +119,7 @@ describe('Stacked Series Utils', () => {
       MockStore.addSpecs(
         MockSeriesSpec.area({
           ...STANDARD_DATA_SET,
-          stackAsPercentage: true,
+          stackMode: StackModes.Percentage,
         }),
         store);
       const { formattedDataSeries: { stacked: [{ dataSeries }] } } = computeSeriesDomainsSelector(store.getState());
@@ -148,7 +149,7 @@ describe('Stacked Series Utils', () => {
       const store = MockStore.default();
       MockStore.addSpecs(MockSeriesSpec.area({
         ...WITH_NULL_DATASET,
-        stackAsPercentage: true,
+        stackMode: StackModes.Percentage,
       }), store);
       const { formattedDataSeries: { stacked: [{ dataSeries }] } } = computeSeriesDomainsSelector(store.getState());
 

@@ -287,14 +287,14 @@ export function getFormattedDataseries(
   }[] = [];
 
   specsByGroupIdsEntries.forEach(([groupId, groupSpecs]) => {
-    const { isPercentageStack } = groupSpecs;
+    const { stackMode } = groupSpecs;
     // format stacked data series
     const stackedDataSeries = getDataSeriesBySpecGroup(groupSpecs.stacked, availableDataSeries);
     const fittedDataSeries = applyFitFunctionToDataSeries(stackedDataSeries.dataSeries, seriesSpecs, xScaleType);
     const fittedAndStackedDataSeries = formatStackedDataSeriesValues(
       fittedDataSeries,
-      isPercentageStack,
       xValues,
+      stackMode,
     );
 
     stackedFormattedDataSeries.push({

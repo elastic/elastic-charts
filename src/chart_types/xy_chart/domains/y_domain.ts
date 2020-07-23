@@ -22,18 +22,19 @@ import { ScaleType } from '../../../scales/constants';
 import { identity } from '../../../utils/commons';
 import { computeContinuousDataDomain } from '../../../utils/domain';
 import { GroupId } from '../../../utils/ids';
+import { Logger } from '../../../utils/logger';
 import { isCompleteBound, isLowerBound, isUpperBound } from '../utils/axis_type_utils';
 import { DataSeries, FormattedDataSeries } from '../utils/series';
-import { BasicSeriesSpec, YDomainRange, DEFAULT_GLOBAL_ID, SeriesTypes } from '../utils/specs';
+import { BasicSeriesSpec, YDomainRange, DEFAULT_GLOBAL_ID, SeriesTypes, StackModes } from '../utils/specs';
 import { YDomain } from './types';
 
 export type YBasicSeriesSpec = Pick<
   BasicSeriesSpec,
   'id' | 'seriesType' | 'yScaleType' | 'groupId' | 'stackAccessors' | 'yScaleToDataExtent' | 'useDefaultGroupDomain'
-> & { stackAsPercentage?: boolean; enableHistogramMode?: boolean };
+> & { stackMode?: StackModes; enableHistogramMode?: boolean };
 
 interface GroupSpecs {
-  isPercentageStack: boolean;
+  stackMode?: StackModes;
   stacked: YBasicSeriesSpec[];
   nonStacked: YBasicSeriesSpec[];
 }
@@ -91,10 +92,10 @@ function mergeYDomainForGroup(
   customDomain?: YDomainRange,
 ): YDomain {
   const groupYScaleType = coerceYScaleTypes([...groupSpecs.stacked, ...groupSpecs.nonStacked]);
-  const { isPercentageStack } = groupSpecs;
+  const { stackMode } = groupSpecs;
 
   let domain: number[];
-  if (isPercentageStack) {
+  if (stackMode === StackModes.Percentage) {
     domain = computeContinuousDataDomain([0, 1], identity, customDomain);
   } else {
     // TODO remove when removing yScaleToDataExtent
@@ -166,16 +167,19 @@ function computeYDomain(dataseries: DataSeries[], isStacked = false) {
 export function splitSpecsByGroupId(specs: YBasicSeriesSpec[]) {
   const specsByGroupIds = new Map<
     GroupId,
-    { isPercentageStack: boolean; stacked: YBasicSeriesSpec[]; nonStacked: YBasicSeriesSpec[] }
+    { stackMode: StackModes | undefined; stacked: YBasicSeriesSpec[]; nonStacked: YBasicSeriesSpec[] }
   >();
   // After mobx->redux https://github.com/elastic/elastic-charts/pull/281 we keep the specs untouched on mount
   // in MobX version, the stackAccessors was programmatically added to every histogram specs
   // in ReduX version, we left untouched the specs, so we have to manually check that
-  const isHistogramEnabled = specs.some(({ seriesType, enableHistogramMode }) => seriesType === SeriesTypes.Bar && enableHistogramMode);
-  // split each specs by groupId and by stacked or not
+  const isHistogramEnabled = specs.some(
+    ({ seriesType, enableHistogramMode }) =>
+      seriesType === SeriesTypes.Bar && enableHistogramMode
+  );
+    // split each specs by groupId and by stacked or not
   specs.forEach((spec) => {
     const group = specsByGroupIds.get(spec.groupId) || {
-      isPercentageStack: false,
+      stackMode: undefined,
       stacked: [],
       nonStacked: [],
     };
@@ -189,8 +193,12 @@ export function splitSpecsByGroupId(specs: YBasicSeriesSpec[]) {
     } else {
       group.nonStacked.push(spec);
     }
-    if (spec.stackAsPercentage === true) {
-      group.isPercentageStack = true;
+    if (group.stackMode === undefined && spec.stackMode !== undefined) {
+      group.stackMode = spec.stackMode;
+    }
+    if (spec.stackMode !== undefined && group.stackMode !== undefined && group.stackMode !== spec.stackMode) {
+      Logger.warn(`Is not possible to mix different stackModes, please align all stackMode on the same GroupId
+      to the same mode. The default behaviour will be to use the first encountered stackMode on the series`);
     }
     specsByGroupIds.set(spec.groupId, group);
   });

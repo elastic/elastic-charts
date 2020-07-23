@@ -21,6 +21,8 @@ import {
   stack as D3Stack,
   stackOffsetExpand as D3StackOffsetExpand,
   stackOffsetNone as D3StackOffsetNone,
+  stackOffsetSilhouette as D3StackOffsetSilhouette,
+  stackOffsetWiggle as D3StackOffsetWiggle,
   stackOrderNone,
   SeriesPoint,
 } from 'd3-shape';
@@ -28,6 +30,7 @@ import {
 import { SeriesKey } from '../../../commons/series_id';
 import { ScaleType } from '../../../scales/constants';
 import { DataSeries, DataSeriesDatum } from './series';
+import { StackModes } from './specs';
 
 /** @internal */
 export interface StackedValues {
@@ -66,8 +69,8 @@ type D3UnionStack = Record<
 /** @internal */
 export function formatStackedDataSeriesValues(
   dataSeries: DataSeries[],
-  isPercentageMode: boolean,
   xValues: Set<string | number>,
+  stackMode?: StackModes,
 ): DataSeries[] {
   const dataSeriesKeys = dataSeries.reduce<Record<SeriesKey, DataSeries>>((acc, curr) => {
     acc[curr.key] = curr;
@@ -97,10 +100,12 @@ export function formatStackedDataSeriesValues(
     xValueMap.set(key, dsMap);
   });
 
-  const stackOffset = isPercentageMode ? D3StackOffsetExpand : D3StackOffsetNone;
+  const stackOffset = getOffsetBasedOnStackMode(stackMode);
+
+  const keys = Object.keys(dataSeriesKeys).reduce<string[]>((acc, key) => ([...acc, `${key}-y0`, `${key}-y1`]), []);
 
   const stack = D3Stack<D3StackArrayElement>()
-    .keys(Object.keys(dataSeriesKeys).reduce<string[]>((acc, key) => ([...acc, `${key}-y0`, `${key}-y1`]), []))
+    .keys(keys)
     .order(stackOrderNone)
     .offset(stackOffset)(reorderedArray);
 
@@ -120,14 +125,14 @@ export function formatStackedDataSeriesValues(
     return acc;
   }, {});
 
+
   return Object.keys(unionedYStacks).map((stackedDataSeriesKey) => {
     const dataSeriesProps = dataSeriesKeys[stackedDataSeriesKey];
     const dsMap = xValueMap.get(stackedDataSeriesKey);
     const { y0: y0StackArray, y1: y1StackArray } = unionedYStacks[stackedDataSeriesKey];
-
     const data = y1StackArray.map<DataSeriesDatum | null>((y1Stack, index) => {
       const { x } = y1Stack.data;
-      if (!x) {
+      if (x === undefined || x === null) {
         return null;
       }
       const originalData = dsMap?.get(x);
@@ -148,10 +153,23 @@ export function formatStackedDataSeriesValues(
         filled,
       };
     }).filter((d) => d !== null) as DataSeriesDatum[];
-
     return {
       ...dataSeriesProps,
       data,
     };
   });
+}
+
+
+function getOffsetBasedOnStackMode(stackMode?: StackModes) {
+  switch (stackMode) {
+    case StackModes.Percentage:
+      return D3StackOffsetExpand;
+    case StackModes.Silhouette:
+      return D3StackOffsetSilhouette;
+    case StackModes.Wiggle:
+      return D3StackOffsetWiggle;
+    default:
+      return D3StackOffsetNone;
+  }
 }

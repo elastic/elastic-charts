@@ -21,6 +21,7 @@ import { MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
 import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_domains';
+import { StackModes } from './specs';
 
 describe('Stacked Series Utils', () => {
   const STANDARD_DATA_SET = [{ x: 0, y1: 10, g: 'a' }, { x: 0, y1: 20, g: 'b' }, { x: 0, y1: 70, g: 'c' }];
@@ -43,14 +44,17 @@ describe('Stacked Series Utils', () => {
       const store = MockStore.default();
       MockStore.addSpecs([
         MockSeriesSpec.area({
+          xAccessor: 'x',
           yAccessors: ['y1'],
           splitSeriesAccessors: ['g'],
           stackAccessors: ['x'],
-          stackAsPercentage: true,
+          stackMode: StackModes.Percentage,
           data: STANDARD_DATA_SET,
         }),
       ], store);
-      const { formattedDataSeries: { stacked } } = computeSeriesDomainsSelector(store.getState());
+      const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
+      const { stacked } = formattedDataSeries;
+      // console.log(JSON.stringify(formattedDataSeries.stacked, null, 2));
       const [data0] = stacked[0].dataSeries[0].data;
       expect(data0.initialY1).toBe(10);
       expect(data0.y0).toBe(0);
@@ -73,7 +77,7 @@ describe('Stacked Series Utils', () => {
           yAccessors: ['y1'],
           splitSeriesAccessors: ['g'],
           stackAccessors: ['x'],
-          stackAsPercentage: true,
+          stackMode: StackModes.Percentage,
           data: WITH_NULL_DATASET,
         }),
       ], store);
@@ -106,7 +110,7 @@ describe('Stacked Series Utils', () => {
           y0Accessors: ['y0'],
           splitSeriesAccessors: ['g'],
           stackAccessors: ['x'],
-          stackAsPercentage: true,
+          stackMode: StackModes.Percentage,
           data: STANDARD_DATA_SET_WY0,
         }),
       ], store);
@@ -138,7 +142,7 @@ describe('Stacked Series Utils', () => {
           y0Accessors: ['y0'],
           splitSeriesAccessors: ['g'],
           stackAccessors: ['x'],
-          stackAsPercentage: true,
+          stackMode: StackModes.Percentage,
           data: WITH_NULL_DATASET_WY0,
         }),
       ], store);
@@ -172,7 +176,7 @@ describe('Stacked Series Utils', () => {
           y0Accessors: ['y0'],
           splitSeriesAccessors: ['g'],
           stackAccessors: ['x'],
-          stackAsPercentage: true,
+          stackMode: StackModes.Percentage,
           data: DATA_SET_WITH_NULL_2,
         }),
       ], store);

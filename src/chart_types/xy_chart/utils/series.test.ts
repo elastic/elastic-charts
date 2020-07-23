@@ -107,34 +107,25 @@ describe('Series', () => {
     expect([...splittedSeries.dataSeries.values()]).toMatchSnapshot();
   });
   test('Can stack simple dataseries', () => {
-    const dataSeries: DataSeries[] = [
-      {
-        specId: 'spec1',
-        yAccessor: 'y1',
-        splitAccessors: new Map(),
-        seriesKeys: ['a'],
-        key: 'a',
-        data: [
-          { x: 1, y1: 1, mark: null, y0: null, initialY1: 1, initialY0: null, datum: undefined },
-          { x: 2, y1: 2, mark: null, y0: null, initialY1: 2, initialY0: null, datum: undefined },
-          { x: 4, y1: 4, mark: null, y0: null, initialY1: 4, initialY0: null, datum: undefined },
-        ],
-      },
-      {
-        specId: 'spec1',
-        yAccessor: 'y1',
-        splitAccessors: new Map(),
-        seriesKeys: ['b'],
-        key: 'b',
-        data: [
-          { x: 1, y1: 21, mark: null, y0: null, initialY1: 21, initialY0: null, datum: undefined },
-          { x: 3, y1: 23, mark: null, y0: null, initialY1: 23, initialY0: null, datum: undefined },
-        ],
-      },
-    ];
-    const xValues = new Set([1, 2, 3, 4]);
-    const stackedValues = formatStackedDataSeriesValues(dataSeries, false, xValues);
-    expect(stackedValues).toMatchSnapshot();
+    const store = MockStore.default();
+    MockStore.addSpecs(MockSeriesSpec.area({
+      id: 'spec1',
+      splitSeriesAccessors: ['g'],
+      yAccessors: ['y1'],
+      stackAccessors: ['x'],
+      xScaleType: ScaleType.Linear,
+      data: [
+        { x: 1, y1: 1, g: 'a' },
+        { x: 2, y1: 2, g: 'a' },
+        { x: 4, y1: 4, g: 'a' },
+        { x: 1, y1: 21, g: 'b' },
+        { x: 3, y1: 23, g: 'b' },
+      ],
+    }), store);
+
+    const { formattedDataSeries: { stacked } } = computeSeriesDomainsSelector(store.getState());
+
+    expect(stacked[0].dataSeries).toMatchSnapshot();
   });
   test('Can stack multiple dataseries', () => {
     const dataSeries: DataSeries[] = [
@@ -192,38 +183,55 @@ describe('Series', () => {
       },
     ];
     const xValues = new Set([1, 2, 3, 4]);
-    const stackedValues = formatStackedDataSeriesValues(dataSeries, false, xValues);
+    const stackedValues = formatStackedDataSeriesValues(dataSeries, xValues);
     expect(stackedValues).toMatchSnapshot();
   });
   test('Can stack unsorted dataseries', () => {
-    const dataSeries: DataSeries[] = [
-      {
-        specId: 'spec1',
-        yAccessor: 'y1',
-        splitAccessors: new Map(),
-        seriesKeys: ['a'],
-        key: 'a',
-        data: [
-          { x: 1, y1: 1, mark: null, y0: null, initialY1: 1, initialY0: null, datum: undefined },
-          { x: 4, y1: 4, mark: null, y0: null, initialY1: 4, initialY0: null, datum: undefined },
-          { x: 2, y1: 2, mark: null, y0: null, initialY1: 2, initialY0: null, datum: undefined },
-        ],
-      },
-      {
-        specId: 'spec1',
-        yAccessor: 'y1',
-        splitAccessors: new Map(),
-        seriesKeys: ['b'],
-        key: 'b',
-        data: [
-          { x: 3, y1: 23, mark: null, y0: null, initialY1: 23, initialY0: null, datum: undefined },
-          { x: 1, y1: 21, mark: null, y0: null, initialY1: 21, initialY0: null, datum: undefined },
-        ],
-      },
-    ];
-    const xValues = new Set([1, 2, 3, 4]);
-    const stackedValues = formatStackedDataSeriesValues(dataSeries, false, xValues);
-    expect(stackedValues).toMatchSnapshot();
+    const store = MockStore.default();
+    MockStore.addSpecs(MockSeriesSpec.area({
+      id: 'spec1',
+      splitSeriesAccessors: ['g'],
+      yAccessors: ['y1'],
+      stackAccessors: ['x'],
+      xScaleType: ScaleType.Linear,
+      data: [
+        { x: 1, y1: 1, g: 'a' },
+        { x: 4, y1: 4, g: 'a' },
+        { x: 2, y1: 2, g: 'a' },
+        { x: 3, y1: 23, g: 'b' },
+        { x: 1, y1: 21, g: 'b' },
+      ],
+    }), store);
+    const { formattedDataSeries: { stacked } } = computeSeriesDomainsSelector(store.getState());
+    // const dataSeries: DataSeries[] = [
+    //   {
+    //     specId: 'spec1',
+    //     yAccessor: 'y1',
+    //     splitAccessors: new Map(),
+    //     seriesKeys: ['a'],
+    //     key: 'a',
+    //     data: [
+    //       { x: 1, y1: 1, mark: null, y0: null, initialY1: 1, initialY0: null, datum: undefined },
+    //       { x: 4, y1: 4, mark: null, y0: null, initialY1: 4, initialY0: null, datum: undefined },
+    //       { x: 2, y1: 2, mark: null, y0: null, initialY1: 2, initialY0: null, datum: undefined },
+    //     ],
+    //   },
+    //   {
+    //     specId: 'spec1',
+    //     yAccessor: 'y1',
+    //     splitAccessors: new Map(),
+    //     seriesKeys: ['b'],
+    //     key: 'b',
+    //     data: [
+    //       { x: 3, y1: 23, mark: null, y0: null, initialY1: 23, initialY0: null, datum: undefined },
+    //       { x: 1, y1: 21, mark: null, y0: null, initialY1: 21, initialY0: null, datum: undefined },
+    //     ],
+    //   },
+    // ];
+    // const xValues = new Set([1, 2, 3, 4]);
+    // const stackedValues = formatStackedDataSeriesValues(dataSeries, xValues);
+
+    expect(stacked[0].dataSeries).toMatchSnapshot();
   });
   test('Can stack high volume of dataseries', () => {
     const maxArrayItems = 1000;
@@ -246,7 +254,7 @@ describe('Series', () => {
       },
     ];
     const xValues = new Set(new Array(maxArrayItems).fill(0).map((d, i) => i));
-    const stackedValues = formatStackedDataSeriesValues(dataSeries, false, xValues);
+    const stackedValues = formatStackedDataSeriesValues(dataSeries, xValues);
     expect(stackedValues).toMatchSnapshot();
   });
   test('Can stack simple dataseries with scale to extent', () => {

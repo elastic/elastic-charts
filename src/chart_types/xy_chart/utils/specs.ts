@@ -49,14 +49,27 @@ export type BarStyleOverride = RecursivePartial<BarSeriesStyle> | Color | null;
 /** @public */
 export type PointStyleOverride = RecursivePartial<PointStyle> | Color | null;
 
+/** @public */
 export const SeriesTypes = Object.freeze({
   Area: 'area' as const,
   Bar: 'bar' as const,
   Line: 'line' as const,
   Bubble: 'bubble' as const,
 });
+
 /** @public */
 export type SeriesTypes = $Values<typeof SeriesTypes>;
+
+
+/** @public */
+export const StackModes = Object.freeze({
+  Percentage: 'percentage' as const,
+  Wiggle: 'wiggle' as const,
+  Silhouette: 'silhouette' as const,
+});
+
+/** @public */
+export type StackModes = $Values<typeof StackModes>;
 
 /**
  * Override for bar styles per datum
@@ -446,9 +459,10 @@ export type BarSeriesSpec = BasicSeriesSpec &
     enableHistogramMode?: boolean;
     barSeriesStyle?: RecursivePartial<BarSeriesStyle>;
     /**
-     * Stack each series in percentage for each point.
+     * Stack each series using a specific mode: Percentage, Wiggle, Silhouette.
+     * The last two modes are generally used for stream graphs
      */
-    stackAsPercentage?: boolean;
+    stackMode?: StackModes;
     /**
      * Functional accessor to return custom color or style for bar datum
      */
@@ -541,9 +555,10 @@ export type AreaSeriesSpec = BasicSeriesSpec &
     curve?: CurveType;
     areaSeriesStyle?: RecursivePartial<AreaSeriesStyle>;
     /**
-     * Stack each series in percentage for each point.
+     * Stack each series using a specific mode: Percentage, Wiggle, Silhouette.
+     * The last two modes are generally used for stream graphs
      */
-    stackAsPercentage?: boolean;
+    stackMode?: StackModes;
     /**
      * An optional functional accessor to return custom color or style for point datum
      */

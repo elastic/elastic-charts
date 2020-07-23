@@ -27,7 +27,7 @@ import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { computeSeriesDomains } from '../state/utils/utils';
 import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
 import { computeXScale, computeYScales } from '../utils/scales';
-import { AreaSeriesSpec, SeriesTypes } from '../utils/specs';
+import { AreaSeriesSpec, SeriesTypes, StackModes } from '../utils/specs';
 import { renderArea } from './rendering';
 
 const SPEC_ID = 'spec_1';
@@ -1136,7 +1136,7 @@ describe('Rendering points - areas', () => {
       xScaleType: ScaleType.Time,
       yScaleType: ScaleType.Linear,
       stackAccessors: [0],
-      stackAsPercentage: true,
+      stackMode: StackModes.Percentage,
     });
     const pointSeriesSpec2: AreaSeriesSpec = MockSeriesSpec.area({
       id: 'spec_2',
@@ -1149,7 +1149,7 @@ describe('Rendering points - areas', () => {
       xScaleType: ScaleType.Time,
       yScaleType: ScaleType.Linear,
       stackAccessors: [0],
-      stackAsPercentage: true,
+      stackMode: StackModes.Percentage,
     });
     const pointSeriesDomains = computeSeriesDomains([pointSeriesSpec1, pointSeriesSpec2]);
     expect(pointSeriesDomains.formattedDataSeries.stacked[0].dataSeries[0].data).toMatchObject([
