@@ -39,6 +39,25 @@ module.exports = {
 
     /**
      *****************************************
+     * Rules with high processing demand
+     *****************************************
+     */
+    'import/no-restricted-paths':
+      process.env.NODE_ENV === 'production'
+        ? [
+            'error',
+            {
+              zones: [
+                { target: './src', from: './src/index.ts' },
+                { target: './src', from: './', except: ['./src', './node_modules/'] },
+              ],
+            },
+          ]
+        : 0,
+    'import/namespace': process.env.NODE_ENV === 'production' ? 2 : 0,
+
+    /**
+     *****************************************
      * Rules to consider adding/fixing later
      *****************************************
      */
@@ -115,15 +134,16 @@ module.exports = {
     quotes: ['error', 'single'],
     semi: ['error', 'always'],
     // https://github.com/typescript-eslint/typescript-eslint/issues/1824
-    indent: [
-      'error',
-      2,
-      {
-        SwitchCase: 1,
-        MemberExpression: 1,
-        offsetTernaryExpressions: true,
-      },
-    ],
+    // TODO: Add back once indent ts rule is fixed
+    // indent: [
+    //   'error',
+    //   2,
+    //   {
+    //     SwitchCase: 1,
+    //     MemberExpression: 1,
+    //     offsetTernaryExpressions: true,
+    //   },
+    // ],
     'max-len': [
       'warn',
       {
@@ -192,15 +212,6 @@ module.exports = {
       },
     ],
     'import/no-unresolved': ['error', { ignore: ['theme_dark.scss', 'theme_light.scss'] }],
-    'import/no-restricted-paths': [
-      'error',
-      {
-        zones: [
-          { target: './src', from: './src/index.ts' },
-          { target: './src', from: './', except: ['./src', './node_modules/'] },
-        ],
-      },
-    ],
     // https://basarat.gitbooks.io/typescript/docs/tips/defaultIsBad.html
     'import/prefer-default-export': 0,
     // Limit usage in development directories
