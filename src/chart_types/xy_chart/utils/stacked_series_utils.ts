@@ -17,7 +17,13 @@
  * under the License.
  */
 
-import { stack as D3Stack, stackOffsetExpand as D3StackOffsetExpand, stackOffsetNone as D3StackOffsetNone, stackOrderNone } from 'd3-shape';
+import {
+  stack as D3Stack,
+  stackOffsetExpand as D3StackOffsetExpand,
+  stackOffsetNone as D3StackOffsetNone,
+  stackOrderNone,
+  SeriesPoint,
+} from 'd3-shape';
 
 import { SeriesKey } from '../../../commons/series_id';
 import { ScaleType } from '../../../scales/constants';
@@ -31,12 +37,31 @@ export interface StackedValues {
 }
 
 /** @internal */
-export const datumXSortPredicate = (xScaleType: ScaleType, sortedXValues?: (string | number)[]) => (a: {x: number| string}, b: {x: number| string}) => {
-  if (xScaleType === ScaleType.Ordinal || typeof a.x === 'string' || typeof b.x === 'string') {
-    return sortedXValues ? sortedXValues.indexOf(a.x) - sortedXValues.indexOf(b.x) : 0;
+export const datumXSortPredicate = (
+  xScaleType: ScaleType,
+  sortedXValues?: (string | number)[]
+) => (a: { x: number | string }, b: { x: number | string }) => {
+  if (
+    xScaleType === ScaleType.Ordinal
+    || typeof a.x === 'string'
+    || typeof b.x === 'string'
+  ) {
+    return sortedXValues
+      ? sortedXValues.indexOf(a.x) - sortedXValues.indexOf(b.x)
+      : 0;
   }
   return a.x - b.x;
 };
+
+
+type D3StackArrayElement = Record<SeriesKey, string | number | null>;
+type D3UnionStack = Record<
+  SeriesKey,
+  {
+    y0: SeriesPoint<D3StackArrayElement>[],
+    y1: SeriesPoint<D3StackArrayElement>[],
+  }
+>;
 
 /** @internal */
 export function formatStackedDataSeriesValues(
@@ -50,8 +75,9 @@ export function formatStackedDataSeriesValues(
   }, {});
 
   const xValuesArray = [...xValues];
-  const reorderedArray: Array<Record<SeriesKey, string| number| null>> = [];
+  const reorderedArray: Array<D3StackArrayElement> = [];
   const xValueMap: Map<SeriesKey, Map<string|number, DataSeriesDatum>> = new Map();
+  // transforming the current set of series into the d3 stack required data structure
   dataSeries.forEach(({ data, key }) => {
     const dsMap: Map<string|number, DataSeriesDatum> = new Map();
     data.forEach((d) => {
@@ -61,7 +87,10 @@ export function formatStackedDataSeriesValues(
       if (reorderedArray[xIndex] === undefined) {
         reorderedArray[xIndex] = { x };
       }
+      // y0 can be considered as always present
       reorderedArray[xIndex][`${key}-y0`] = y0;
+      // if y0 is available, we have to count y1 as the different of y1 and y0
+      // to correctly stack them when stacking banded charts
       reorderedArray[xIndex][`${key}-y1`] = (y1 ?? 0) - (y0 ?? 0);
       dsMap.set(x, d);
     });
@@ -70,12 +99,12 @@ export function formatStackedDataSeriesValues(
 
   const stackOffset = isPercentageMode ? D3StackOffsetExpand : D3StackOffsetNone;
 
-  const y1Stack = D3Stack<Record<SeriesKey, string| number| null>>()
+  const stack = D3Stack<D3StackArrayElement>()
     .keys(Object.keys(dataSeriesKeys).reduce<string[]>((acc, key) => ([...acc, `${key}-y0`, `${key}-y1`]), []))
     .order(stackOrderNone)
     .offset(stackOffset)(reorderedArray);
 
-  const unionYStacks = y1Stack.reduce<Record<SeriesKey, {y0: any, y1: any}>>((acc, d) => {
+  const unionedYStacks = stack.reduce<D3UnionStack>((acc, d) => {
     const key = d.key.slice(0, -3);
     const accessor = d.key.slice(-2);
     if (accessor !== 'y1' && accessor !== 'y0') {
@@ -91,25 +120,35 @@ export function formatStackedDataSeriesValues(
     return acc;
   }, {});
 
-  return Object.keys(unionYStacks).map((stackedDataSeriesKey) => {
+  return Object.keys(unionedYStacks).map((stackedDataSeriesKey) => {
     const dataSeriesProps = dataSeriesKeys[stackedDataSeriesKey];
     const dsMap = xValueMap.get(stackedDataSeriesKey);
-    const { y0, y1 } = unionYStacks[stackedDataSeriesKey];
+    const { y0: y0StackArray, y1: y1StackArray } = unionedYStacks[stackedDataSeriesKey];
 
-    const data = y1.map((value: any, index: number) => {
-      const originalData = dsMap?.get(value.data.x!);
-      const [,y0Value] = y0[index];
+    const data = y1StackArray.map<DataSeriesDatum | null>((y1Stack, index) => {
+      const { x } = y1Stack.data;
+      if (!x) {
+        return null;
+      }
+      const originalData = dsMap?.get(x);
+      if (!originalData) {
+        return null;
+      }
+      const [,y0] = y0StackArray[index];
+      const [,y1] = y1Stack;
+      const { initialY0, initialY1, mark, datum, filled } = originalData;
       return {
-        x: value.data.x!,
-        y1: value[1],
-        y0: y0Value,
-        initialY0: originalData ? originalData.initialY0 : null,
-        initialY1: originalData ? originalData.initialY1 : null,
-        mark: originalData ? originalData.mark : null,
-        datum: originalData ? originalData.datum : null,
-        filled: originalData ? originalData.filled : undefined,
+        x,
+        y1,
+        y0,
+        initialY0,
+        initialY1,
+        mark,
+        datum,
+        filled,
       };
-    });
+    }).filter((d) => d !== null) as DataSeriesDatum[];
+
     return {
       ...dataSeriesProps,
       data,
