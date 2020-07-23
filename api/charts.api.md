@@ -225,10 +225,8 @@ export interface BarSeriesStyle {
     rectBorder: RectBorderStyle;
 }
 
-// Warning: (ae-forgotten-export) The symbol "RawDataSeriesDatum" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type BarStyleAccessor = (datum: RawDataSeriesDatum, seriesIdentifier: XYChartSeriesIdentifier) => BarStyleOverride;
+export type BarStyleAccessor = (datum: DataSeriesDatum, seriesIdentifier: XYChartSeriesIdentifier) => BarStyleOverride;
 
 // @public (undocumented)
 export type BarStyleOverride = RecursivePartial<BarSeriesStyle> | Color | null;
@@ -461,6 +459,18 @@ export class DataGenerator {
     }
 
 // @public (undocumented)
+export interface DataSeriesDatum<T = any> {
+    datum: T;
+    filled?: FilledValues;
+    initialY0: number | null;
+    initialY1: number | null;
+    mark: number | null;
+    x: number | string;
+    y0: number | null;
+    y1: number | null;
+}
+
+// @public (undocumented)
 export type Datum = any;
 
 // Warning: (ae-missing-release-tag) "DEFAULT_ANNOTATION_LINE_STYLE" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -548,6 +558,13 @@ export interface ExternalPointerEventsSettings {
     tooltip: TooltipPortalSettings<'chart'> & {
         visible?: boolean;
     };
+}
+
+// @public (undocumented)
+export interface FilledValues {
+    x?: number | string;
+    y0?: number;
+    y1?: number;
 }
 
 // Warning: (ae-missing-release-tag) "FillStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -1049,7 +1066,7 @@ export interface PointStyle {
 }
 
 // @public
-export type PointStyleAccessor = (datum: RawDataSeriesDatum, seriesIdentifier: XYChartSeriesIdentifier) => PointStyleOverride;
+export type PointStyleAccessor = (datum: DataSeriesDatum, seriesIdentifier: XYChartSeriesIdentifier) => PointStyleOverride;
 
 // @public (undocumented)
 export type PointStyleOverride = RecursivePartial<PointStyle> | Color | null;

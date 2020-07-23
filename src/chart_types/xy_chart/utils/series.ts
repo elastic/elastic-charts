@@ -34,7 +34,7 @@ import { formatStackedDataSeriesValues } from './stacked_series_utils';
 /** @internal */
 export const SERIES_DELIMITER = ' - ';
 
-/** @internal */
+/** @public */
 export interface FilledValues {
   /** the x value */
   x?: number | string;
@@ -44,7 +44,7 @@ export interface FilledValues {
   y0?: number;
 }
 
-/** @internal */
+/** @public */
 export interface DataSeriesDatum<T = any> {
   /** the x value */
   x: number | string;
