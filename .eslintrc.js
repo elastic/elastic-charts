@@ -6,6 +6,8 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'airbnb/hooks',
+    'prettier/@typescript-eslint',
+    'plugin:prettier/recommended',
     'plugin:eslint-comments/recommended',
     'plugin:jest/recommended',
     'plugin:promise/recommended',
@@ -16,7 +18,18 @@ module.exports = {
     'plugin:import/warnings',
     'plugin:import/typescript',
   ],
-  plugins: ['@typescript-eslint', 'eslint-comments', 'jest', 'import', 'promise', 'unicorn', 'header', 'react-hooks', 'jsx-a11y'],
+  plugins: [
+    '@typescript-eslint',
+    'eslint-comments',
+    'jest',
+    'import',
+    'promise',
+    'unicorn',
+    'header',
+    'react-hooks',
+    'jsx-a11y',
+    'prettier',
+  ],
   rules: {
     /**
      * depricated to be deleted
@@ -102,11 +115,15 @@ module.exports = {
     quotes: ['error', 'single'],
     semi: ['error', 'always'],
     // https://github.com/typescript-eslint/typescript-eslint/issues/1824
-    indent: ['error', 2, {
-      SwitchCase: 1,
-      MemberExpression: 1,
-      offsetTernaryExpressions: true,
-    }],
+    indent: [
+      'error',
+      2,
+      {
+        SwitchCase: 1,
+        MemberExpression: 1,
+        offsetTernaryExpressions: true,
+      },
+    ],
     'max-len': [
       'warn',
       {
@@ -166,20 +183,22 @@ module.exports = {
     /*
      * import plugin
      */
-    'import/order': ['error', {
-      'newlines-between': 'always',
-      groups: [
-        'builtin',
-        'external',
-        ['parent', 'sibling', 'index', 'internal'],
-      ],
-      alphabetize: { order: 'asc', caseInsensitive: true }, // todo replace with directory gradient ordering
-    }],
+    'import/order': [
+      'error',
+      {
+        'newlines-between': 'always',
+        groups: ['builtin', 'external', ['parent', 'sibling', 'index', 'internal']],
+        alphabetize: { order: 'asc', caseInsensitive: true }, // todo replace with directory gradient ordering
+      },
+    ],
     'import/no-unresolved': ['error', { ignore: ['theme_dark.scss', 'theme_light.scss'] }],
     'import/no-restricted-paths': [
       'error',
       {
-        zones: [{ target: './src', from: './src/index.ts' }, { target: './src', from: './', except: ['./src', './node_modules/'] }],
+        zones: [
+          { target: './src', from: './src/index.ts' },
+          { target: './src', from: './', except: ['./src', './node_modules/'] },
+        ],
       },
     ],
     // https://basarat.gitbooks.io/typescript/docs/tips/defaultIsBad.html
@@ -192,6 +211,7 @@ module.exports = {
      */
     'react/jsx-curly-brace-presence': ['error', { props: 'never', children: 'never' }],
     'react/prop-types': 0,
+    'react/sort-comp': 0,
     // Too restrictive: https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/destructuring-assignment.md
     'react/destructuring-assignment': 0,
     // No jsx extension: https://github.com/facebook/create-react-app/issues/87#issuecomment-234627904
@@ -345,6 +365,12 @@ module.exports = {
             ],
           },
         ],
+      },
+    },
+    {
+      files: ['.playground/**/*.ts?(x)'],
+      rules: {
+        'react/prefer-stateless-function': 0,
       },
     },
     {
