@@ -1,3 +1,10 @@
+## [19.8.2](https://github.com/elastic/elastic-charts/compare/v19.8.1...v19.8.2) (2020-07-23)
+
+
+### Bug Fixes
+
+* **axis:** dual axis x positioning of bars ([#760](https://github.com/elastic/elastic-charts/issues/760)) [19.8.x] ([#765](https://github.com/elastic/elastic-charts/issues/765)) ([02db39e](https://github.com/elastic/elastic-charts/commit/02db39e198a6cdb5862b75ca4510032d70c8ef53))
+
 ## [19.8.1](https://github.com/elastic/elastic-charts/compare/v19.8.0...v19.8.1) (2020-07-07)
 
 
