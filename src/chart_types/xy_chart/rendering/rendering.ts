@@ -23,7 +23,7 @@ import { LegendItem } from '../../../commons/legend';
 import { Scale } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { isLogarithmicScale } from '../../../scales/types';
-import { MarkBuffer } from '../../../specs';
+import { MarkBuffer, StackModes } from '../../../specs';
 import { CanvasTextBBoxCalculator } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import { mergePartial, Color, getDistance } from '../../../utils/commons';
 import { CurveType, getCurveFactory } from '../../../utils/curves';
@@ -156,6 +156,7 @@ function renderPoints(
   markSizeOptions: MarkSizeOptions,
   styleAccessor?: PointStyleAccessor,
   spatial = false,
+  stackMode?: StackModes,
 ): {
   pointGeometries: PointGeometry[];
   indexedGeometryMap: IndexedGeometryMap;
@@ -168,8 +169,12 @@ function renderPoints(
   const geometryType = spatial ? GeometryType.spatial : GeometryType.linear;
   const pointGeometries = dataSeries.data.reduce((acc, datum) => {
     const { x: xValue, y0, y1, initialY0, initialY1, filled, mark } = datum;
-    // don't create the point if not within the xScale domain or it that point was filled
-    if (!xScale.isValueInDomain(xValue) || (filled && filled.y1 !== undefined)) {
+    // don't create the point if not within the xScale domain
+    if (!xScale.isValueInDomain(xValue)) {
+      return acc;
+    }
+    // don't create the point if it that point was filled
+    if (filled && (filled.x !== undefined || filled.y1 !== undefined)) {
       return acc;
     }
     const x = xScale.scale(xValue);
@@ -199,8 +204,14 @@ function renderPoints(
       if (y === null) {
         return acc;
       }
-
-      const originalY = hasY0Accessors && index === 0 ? initialY0 : initialY1;
+      // const hasY0 = hasY0Accessors && index === 0;
+      let originalY: null | number = null;
+      if (hasY0Accessors) {
+        originalY = stackMode === StackModes.Percentage ? (index === 0 ? y0 : y1) : (index === 0 ? initialY0 : initialY1);
+      } else {
+        originalY = stackMode === StackModes.Percentage ? (y1 - (y0 ?? 0)) : initialY1;
+      }
+      // const originalY = hasY0Accessors && index === 0 ? initialY0 : initialY1;
       const seriesIdentifier: XYChartSeriesIdentifier = {
         key: dataSeries.key,
         specId: dataSeries.specId,
@@ -253,6 +264,7 @@ export function renderBars(
   displayValueSettings?: DisplayValueSpec,
   styleAccessor?: BarStyleAccessor,
   minBarHeight?: number,
+  stackMode?: StackModes,
 ): {
   barGeometries: BarGeometry[];
   indexedGeometryMap: IndexedGeometryMap;
@@ -323,9 +335,9 @@ export function renderBars(
 
     const x = xScaled + xScale.bandwidth * orderIndex;
     const width = xScale.bandwidth;
-
+    const originalY1Value = stackMode === StackModes.Percentage ? (y1 - (y0 ?? 0)) : initialY1;
     const formattedDisplayValue = displayValueSettings && displayValueSettings.valueFormatter
-      ? displayValueSettings.valueFormatter(initialY1)
+      ? displayValueSettings.valueFormatter(originalY1Value)
       : undefined;
 
     // only show displayValue for even bars if showOverlappingValue
@@ -370,7 +382,7 @@ export function renderBars(
       color,
       value: {
         x: datum.x,
-        y: initialY1,
+        y: originalY1Value,
         mark: null,
         accessor: BandedAccessorType.Y1,
       },
@@ -532,7 +544,7 @@ export const getYValue = ({ y1, filled }: DataSeriesDatum): number | null => {
     return y1;
   }
 
-  if (filled && filled.y1 !== undefined) {
+  if (filled && (filled.y1 !== undefined)) {
     return filled.y1;
   }
 
@@ -554,6 +566,7 @@ export function renderArea(
   isStacked = false,
   pointStyleAccessor?: PointStyleAccessor,
   hasFit?: boolean,
+  stackMode?: StackModes
 ): {
   areaGeometry: AreaGeometry;
   indexedGeometryMap: IndexedGeometryMap;
@@ -581,7 +594,6 @@ export function renderArea(
       return yValue !== null && !(isLogScale && yValue <= 0) && xScale.isValueInDomain(datum.x);
     })
     .curve(getCurveFactory(curve));
-
   const clippedRanges = hasFit && !hasY0Accessors ? getClippedRanges(dataSeries.data, xScale, xScaleOffset) : [];
   let y1Line: string | null;
 
@@ -620,6 +632,8 @@ export function renderArea(
     hasY0Accessors,
     markSizeOptions,
     pointStyleAccessor,
+    false,
+    stackMode
   );
 
   let areaPath: string;

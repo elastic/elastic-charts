@@ -61,7 +61,32 @@ const DEMO_AREA_SPEC_2 = {
 };
 
 describe('Y Domain', () => {
-  test('Should merge Y domain', () => {
+  test('Should merge Y domain for non zero baseline charts', () => {
+    const store = MockStore.default();
+    MockStore.addSpecs([
+      MockGlobalSpec.axis({
+        id: 'y',
+        position: Position.Left,
+        domain: { fit: true },
+      }),
+      MockSeriesSpec.line({
+        ...DEMO_AREA_SPEC_1,
+        groupId: DEFAULT_GLOBAL_ID,
+      }),
+    ], store);
+    const { yDomain } = computeSeriesDomainsSelector(store.getState());
+
+    expect(yDomain).toEqual([
+      {
+        type: 'yDomain',
+        groupId: DEFAULT_GLOBAL_ID,
+        domain: [2, 12],
+        scaleType: ScaleType.Linear,
+        isBandScale: false,
+      },
+    ]);
+  });
+  test('Should merge Y domain for zero baseline charts', () => {
     const store = MockStore.default();
     MockStore.addSpecs([
       MockGlobalSpec.axis({
@@ -80,7 +105,7 @@ describe('Y Domain', () => {
       {
         type: 'yDomain',
         groupId: DEFAULT_GLOBAL_ID,
-        domain: [2, 12],
+        domain: [0, 12],
         scaleType: ScaleType.Linear,
         isBandScale: false,
       },
@@ -101,8 +126,8 @@ describe('Y Domain', () => {
         position: Position.Left,
         domain: { fit: true },
       }),
-      MockSeriesSpec.area(DEMO_AREA_SPEC_1),
-      MockSeriesSpec.area({
+      MockSeriesSpec.line(DEMO_AREA_SPEC_1),
+      MockSeriesSpec.line({
         ...DEMO_AREA_SPEC_2,
         groupId: 'b',
       }),
@@ -150,7 +175,7 @@ describe('Y Domain', () => {
     expect(yDomain).toEqual([
       {
         groupId: 'a',
-        domain: [2, 17],
+        domain: [0, 17],
         scaleType: ScaleType.Linear,
         isBandScale: false,
         type: 'yDomain',
@@ -176,7 +201,7 @@ describe('Y Domain', () => {
     expect(yDomain).toEqual([
       {
         groupId: 'a',
-        domain: [2, 12],
+        domain: [0, 12],
         scaleType: ScaleType.Linear,
         isBandScale: false,
         type: 'yDomain',
@@ -422,7 +447,7 @@ describe('Y Domain', () => {
         position: Position.Left,
         domain: { max: 20, fit: true },
       }),
-      MockSeriesSpec.area(DEMO_AREA_SPEC_1),
+      MockSeriesSpec.line(DEMO_AREA_SPEC_1),
     ], store);
 
 

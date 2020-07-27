@@ -58,6 +58,8 @@ import {
   isBubbleSeriesSpec,
   YDomainRange,
   SeriesTypes,
+  StackModes,
+  hasOffsetDifferentThanZero,
 } from '../../utils/specs';
 import { getSpecsById, getAxesSpecForSpecId } from './spec';
 import { SeriesDomainsAndData, ComputedGeometries, GeometriesCounts, Transform, LastValues } from './types';
@@ -140,7 +142,12 @@ function getLastValues(formattedDataSeries: {
       if (series.data.length > 0) {
         const last = series.data[series.data.length - 1];
         if (last !== null) {
-          const { initialY1: y1, initialY0: y0 } = last;
+          let y0: null | number = last.initialY0;
+          let y1: null | number = last.initialY1;
+          if (ds.stackMode === StackModes.Percentage) {
+            y1 = (last.y1 ?? 0) - (last.y0 ?? 0);
+            y0 = last.y0;
+          }
 
           if (!last.filled && (y1 !== null || y0 !== null)) {
             lastValues.set(seriesKey, { y0, y1 });
@@ -149,6 +156,7 @@ function getLastValues(formattedDataSeries: {
       }
     });
   });
+
   formattedDataSeries.nonStacked.forEach((ds) => {
     ds.dataSeries.forEach((series) => {
       const seriesKey = getSeriesKey(series as XYChartSeriesIdentifier);
@@ -287,7 +295,7 @@ export function computeSeriesGeometries(
     bubblePoints: 0,
   };
   formattedDataSeries.stacked.forEach((dataSeriesGroup) => {
-    const { groupId, dataSeries, counts } = dataSeriesGroup;
+    const { groupId, dataSeries, counts, stackMode } = dataSeriesGroup;
     const yScale = yScales.get(groupId);
     if (!yScale) {
       return;
@@ -306,6 +314,7 @@ export function computeSeriesGeometries(
       axesSpecs,
       chartTheme,
       enableHistogramMode,
+      stackMode,
     );
     orderIndex = counts[SeriesTypes.Bar] > 0 ? orderIndex + 1 : orderIndex;
     areas.push(...geometries.areas);
@@ -443,6 +452,7 @@ function renderGeometries(
   axesSpecs: AxisSpec[],
   chartTheme: Theme,
   enableHistogramMode: boolean,
+  stackMode?: StackModes,
 ): {
   points: PointGeometry[];
   bars: BarGeometry[];
@@ -504,6 +514,7 @@ function renderGeometries(
         displayValueSettings,
         spec.styleAccessor,
         spec.minBarHeight,
+        stackMode
       );
       indexedGeometryMap.merge(renderedBars.indexedGeometryMap);
       bars.push(...renderedBars.barGeometries);
@@ -577,7 +588,7 @@ function renderGeometries(
         yScale,
         color,
         spec.curve || CurveType.LINEAR,
-        isBandedSpec(spec.y0Accessors),
+        isBandedSpec(spec.y0Accessors) || (hasOffsetDifferentThanZero(spec.stackMode) && i === 0),
         xScaleOffset,
         areaSeriesStyle,
         {
@@ -587,6 +598,7 @@ function renderGeometries(
         isStacked,
         spec.pointStyleAccessor,
         Boolean(spec.fit && ((spec.fit as FitConfig).type || spec.fit) !== Fit.None),
+        stackMode
       );
       indexedGeometryMap.merge(renderedAreas.indexedGeometryMap);
       areas.push(renderedAreas.areaGeometry);

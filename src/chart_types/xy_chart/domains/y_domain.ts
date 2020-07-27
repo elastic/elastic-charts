@@ -55,9 +55,15 @@ export function mergeYDomain(
 
   const yDomains = specsByGroupIdsEntries.map<YDomain>(([groupId, groupSpecs]) => {
     const customDomain = domainsByGroupId.get(groupId);
-    const stackedDS = stacked.find((d) => (d.groupId === groupId)) ?? { dataSeries: [] };
-    const nonStackedDS = nonStacked.find((d) => (d.groupId === groupId)) ?? { dataSeries: [] };
-    return mergeYDomainForGroup(stackedDS.dataSeries, nonStackedDS.dataSeries, groupId, groupSpecs, customDomain);
+    const emptyDS: FormattedDataSeries = {
+      dataSeries: [],
+      groupId,
+      counts: { area: 0, bubble: 0, bar: 0, line: 0 },
+    };
+    const stackedDS = stacked.find((d) => (d.groupId === groupId)) ?? emptyDS;
+    const nonStackedDS = nonStacked.find((d) => (d.groupId === groupId)) ?? emptyDS;
+    const nonZeroBaselineSpecs = stackedDS.counts.bar + stackedDS.counts.area + nonStackedDS.counts.bar + nonStackedDS.counts.area;
+    return mergeYDomainForGroup(stackedDS.dataSeries, nonStackedDS.dataSeries, groupId, groupSpecs, nonZeroBaselineSpecs > 0, customDomain);
   });
 
   const globalGroupIds: Set<GroupId> = specs.reduce<Set<GroupId>>((acc, { groupId, useDefaultGroupDomain }) => {
@@ -89,6 +95,7 @@ function mergeYDomainForGroup(
   nonStacked: DataSeries[],
   groupId: GroupId,
   groupSpecs: GroupSpecs,
+  hasZeroBaselineSpecs: boolean,
   customDomain?: YDomainRange,
 ): YDomain {
   const groupYScaleType = coerceYScaleTypes([...groupSpecs.stacked, ...groupSpecs.nonStacked]);
@@ -107,10 +114,10 @@ function mergeYDomainForGroup(
     }
 
     // compute stacked domain
-    const stackedDomain = computeYDomain(stacked, true);
+    const stackedDomain = computeYDomain(stacked, hasZeroBaselineSpecs);
 
     // compute non stacked domain
-    const nonStackedDomain = computeYDomain(nonStacked);
+    const nonStackedDomain = computeYDomain(nonStacked, hasZeroBaselineSpecs);
 
     // merge stacked and non stacked domain together
     domain = computeContinuousDataDomain(
@@ -147,12 +154,12 @@ function mergeYDomainForGroup(
   };
 }
 
-function computeYDomain(dataseries: DataSeries[], isStacked = false) {
+function computeYDomain(dataseries: DataSeries[], hasZeroBaselineSpecs: boolean) {
   const yValues = new Set<any>();
   dataseries.forEach((ds) => {
     ds.data.forEach((datum) => {
       yValues.add(datum.y1);
-      if (!isStacked && datum.y0 != null) {
+      if (hasZeroBaselineSpecs && datum.y0 != null) {
         yValues.add(datum.y0);
       }
     });

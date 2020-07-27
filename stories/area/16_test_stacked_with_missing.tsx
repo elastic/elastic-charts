@@ -19,7 +19,7 @@
 
 import React from 'react';
 
-import { Chart, CurveType, AreaSeries, Position, Axis, ScaleType } from '../../src';
+import { Chart, CurveType, AreaSeries, Position, Axis, ScaleType, Fit } from '../../src';
 
 export const Example = () => (
   <Chart className="story-chart">
@@ -35,6 +35,7 @@ export const Example = () => (
       curve={CurveType.CURVE_CATMULL_ROM}
       splitSeriesAccessors={['col-1-6']}
       stackAccessors={['col-1-6']}
+      fit={Fit.Zero}
     />
   </Chart>
 );

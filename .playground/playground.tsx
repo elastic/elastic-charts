@@ -20,7 +20,7 @@
 
 import React from 'react';
 
-import { Chart, AreaSeries, Axis, Position, Settings } from '../src';
+import { Chart, AreaSeries, Axis, Position, Settings, StackModes } from '../src';
 
 export class Playground extends React.Component {
   render() {
@@ -28,6 +28,8 @@ export class Playground extends React.Component {
       <div className="testing">
         <div className="chart">
           <Chart>
+            <Settings showLegend showLegendExtra />
+
             <Axis
               id="y"
               position={Position.Left}
@@ -37,7 +39,6 @@ export class Playground extends React.Component {
               position={Position.Bottom}
               // tickFormat={timeFormatter(niceTimeFormatByDay(365 * 10))}
             />
-            <Settings />
 
             <AreaSeries
               id="spec1"
@@ -52,16 +53,20 @@ export class Playground extends React.Component {
               // // areaSeriesStyle={{ point: { visible: true } }}
               // // stackAsPercentage
               // data={data.filter((d) => d.year !== 2006 || d.series !== 'Manufacturing')}
-
+              stackMode={StackModes.Percentage}
               splitSeriesAccessors={['g']}
               yAccessors={['y1']}
               stackAccessors={['x']}
+              y0Accessors={['y0']}
               data={[
-                { x: 1, y1: 1, g: 'a' },
-                { x: 4, y1: 4, g: 'a' },
-                { x: 2, y1: 2, g: 'a' },
-                { x: 3, y1: 23, g: 'b' },
-                { x: 1, y1: 21, g: 'b' },
+                { x: 1, y0: 1, y1: 2, g: 'a' },
+                { x: 2, y0: 2, y1: 2.5, g: 'a' },
+                { x: 3, y0: 1, y1: 4, g: 'a' },
+                { x: 4, y0: 1, y1: 2, g: 'a' },
+                { x: 1, y0: 2, y1: 4, g: 'b' },
+                { x: 2, y0: 2, y1: 5, g: 'b' },
+                { x: 3, y0: 2, y1: 3, g: 'b' },
+                { x: 4, y0: 2, y1: 5, g: 'b' },
               ]}
             />
 
