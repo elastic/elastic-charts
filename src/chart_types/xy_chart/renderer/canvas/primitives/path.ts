@@ -31,15 +31,20 @@ export function renderLinePaths(
   stroke: Stroke,
   clippedRanges: ClippedRanges,
   clippings: Rect,
+  hideClippedRanges = false,
 ) {
-  ctx.translate(transformX, 0);
   if (clippedRanges.length > 0) {
     withClipRanges(ctx, clippedRanges, clippings, false, (ctx) => {
+      ctx.translate(transformX, 0);
       linePaths.forEach((path) => {
         renderPathStroke(ctx, path, stroke);
       });
     });
+    if (hideClippedRanges) {
+      return;
+    }
     withClipRanges(ctx, clippedRanges, clippings, true, (ctx) => {
+      ctx.translate(transformX, 0);
       linePaths.forEach((path) => {
         renderPathStroke(ctx, path, { ...stroke, dash: [5, 5] });
       });
@@ -47,8 +52,10 @@ export function renderLinePaths(
     return;
   }
 
-  linePaths.forEach((path) => {
-    withContext(ctx, (ctx) => {
+
+  withContext(ctx, (ctx) => {
+    ctx.translate(transformX, 0);
+    linePaths.forEach((path) => {
       renderPathStroke(ctx, path, stroke);
     });
   });
@@ -62,12 +69,16 @@ export function renderAreaPath(
   fill: Fill,
   clippedRanges: ClippedRanges,
   clippings: Rect,
+  hideClippedRanges = false,
 ) {
   if (clippedRanges.length > 0) {
     withClipRanges(ctx, clippedRanges, clippings, false, (ctx) => {
       ctx.translate(transformX, 0);
       renderPathFill(ctx, area, fill);
     });
+    if (hideClippedRanges) {
+      return;
+    }
     withClipRanges(ctx, clippedRanges, clippings, true, (ctx) => {
       ctx.translate(transformX, 0);
       const { opacity } = fill.color;

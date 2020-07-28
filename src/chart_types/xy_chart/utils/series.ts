@@ -335,6 +335,7 @@ function getDataSeriesBySpecGroup(
     if (!ds) {
       return acc;
     }
+
     acc.dataSeries.push(...ds);
     acc.counts[seriesType] += ds.length;
     return acc;
@@ -417,12 +418,17 @@ export function getDataSeriesBySpecId(
       globalXValues.add(xValue);
     }
   }
-
   return {
     dataSeriesBySpecId,
     seriesCollection,
     // keep the user order for ordinal scales
-    xValues: (isOrdinalScale || !isNumberArray) ? globalXValues : new Set([...globalXValues].sort()),
+    xValues: (isOrdinalScale || !isNumberArray) ? globalXValues : new Set([...globalXValues]
+      .sort((a, b) => {
+        if (typeof a === 'string' || typeof b === 'string') {
+          return 0;
+        }
+        return a - b;
+      })),
     fallbackScale: (!isOrdinalScale && !isNumberArray) ? ScaleType.Ordinal : undefined,
   };
 }

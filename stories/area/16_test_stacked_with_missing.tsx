@@ -19,7 +19,7 @@
 
 import React from 'react';
 
-import { Chart, CurveType, AreaSeries, Position, Axis, ScaleType, Fit } from '../../src';
+import { Chart, CurveType, AreaSeries, Position, Axis, ScaleType } from '../../src';
 
 export const Example = () => (
   <Chart className="story-chart">
@@ -35,7 +35,9 @@ export const Example = () => (
       curve={CurveType.CURVE_CATMULL_ROM}
       splitSeriesAccessors={['col-1-6']}
       stackAccessors={['col-1-6']}
-      fit={Fit.Zero}
+      areaSeriesStyle={{
+        point: { visible: true },
+      }}
     />
   </Chart>
 );
@@ -78,6 +80,11 @@ const data = [
   },
   {
     'col-0-3': 'YWG',
+    'col-1-6': 'ES-Air',
+    'col-2-5': 10,
+  },
+  {
+    'col-0-3': 'YWG',
     'col-1-6': 'Logstash Airways',
     'col-2-5': 17,
   },
@@ -86,11 +93,11 @@ const data = [
     'col-1-6': 'Kibana Airlines',
     'col-2-5': 19,
   },
-  {
-    'col-0-3': 'YWG',
-    'col-1-6': 'JetBeats',
-    'col-2-5': 17,
-  },
+  // {
+  //   'col-0-3': 'YWG',
+  //   'col-1-6': 'JetBeats',
+  //   'col-2-5': 17,
+  // },
   {
     'col-0-3': 'YUL',
     'col-1-6': 'Logstash Airways',
@@ -127,3 +134,4 @@ const data = [
     'col-2-5': 14,
   },
 ];
+// .filter((d) => d['col-1-6'] === 'Kibana Airlines' || d['col-1-6'] === 'Logstash Airways');

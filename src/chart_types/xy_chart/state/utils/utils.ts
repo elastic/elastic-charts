@@ -19,6 +19,7 @@
 
 import { SeriesKey, SeriesIdentifier } from '../../../../commons/series_id';
 import { Scale } from '../../../../scales';
+import { ScaleType } from '../../../../scales/constants';
 import { identity, mergePartial, Rotation, Color, isUniqueArray } from '../../../../utils/commons';
 import { CurveType } from '../../../../utils/curves';
 import { Dimensions } from '../../../../utils/dimensions';
@@ -136,15 +137,15 @@ function getLastValues(formattedDataSeries: {
   const lastValues = new Map<SeriesKey, LastValues>();
 
   // we need to get the latest
-  formattedDataSeries.stacked.forEach((ds) => {
-    ds.dataSeries.forEach((series) => {
+  formattedDataSeries.stacked.forEach(({ dataSeries, stackMode }) => {
+    dataSeries.forEach((series) => {
       const seriesKey = getSeriesKey(series as XYChartSeriesIdentifier);
       if (series.data.length > 0) {
         const last = series.data[series.data.length - 1];
         if (last !== null) {
           let y0: null | number = last.initialY0;
           let y1: null | number = last.initialY1;
-          if (ds.stackMode === StackModes.Percentage) {
+          if (stackMode === StackModes.Percentage) {
             y1 = (last.y1 ?? 0) - (last.y0 ?? 0);
             y0 = last.y0;
           }
@@ -157,8 +158,8 @@ function getLastValues(formattedDataSeries: {
     });
   });
 
-  formattedDataSeries.nonStacked.forEach((ds) => {
-    ds.dataSeries.forEach((series) => {
+  formattedDataSeries.nonStacked.forEach(({ dataSeries }) => {
+    dataSeries.forEach((series) => {
       const seriesKey = getSeriesKey(series as XYChartSeriesIdentifier);
       if (series.data.length > 0) {
         const last = series.data[series.data.length - 1];
@@ -198,12 +199,12 @@ export function computeSeriesDomains(
     fallbackScale,
   } = getDataSeriesBySpecId(seriesSpecs, deselectedDataSeries);
 
+  // compute the x domain merging any custom domain
+  const specsArray = [...seriesSpecs.values()];
+  const xDomain = mergeXDomain(specsArray, xValues, customXDomain, fallbackScale);
+
   // fill series with missing x values
   const filledDataSeriesBySpecId = fillSeries(dataSeriesBySpecId, xValues);
-  const specsArray = [...seriesSpecs.values()];
-
-  // compute the x domain merging any custom domain
-  const xDomain = mergeXDomain(specsArray, xValues, customXDomain, fallbackScale);
 
 
   const formattedDataSeries = getFormattedDataseries(
@@ -219,7 +220,7 @@ export function computeSeriesDomains(
 
   // we need to get the last values from the formatted dataseries
   // because we change the format if we are on percentage mode
-  const lastValues = getLastValues(formattedDataSeries);
+  const lastValues = xDomain.scaleType !== ScaleType.Ordinal ? getLastValues(formattedDataSeries) : new Map();
   const updatedSeriesCollection = new Map<SeriesKey, SeriesCollectionValue>();
   seriesCollection.forEach((value, key) => {
     const lastValue = lastValues.get(key);

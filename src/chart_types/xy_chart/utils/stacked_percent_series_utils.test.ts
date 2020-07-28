@@ -36,8 +36,6 @@ describe('Stacked Series Utils', () => {
     { x: 1, y1: 90, g: 'b' },
     { x: 3, y1: 30, g: 'b' },
   ];
-  // const xValues = new Set([0]);
-  // const with2NullsXValues = new Set([1, 2, 3, 4]);
 
   describe('Format stacked dataset', () => {
     test('format data without nulls', () => {
@@ -54,7 +52,6 @@ describe('Stacked Series Utils', () => {
       ], store);
       const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
       const { stacked } = formattedDataSeries;
-      // console.log(JSON.stringify(formattedDataSeries.stacked, null, 2));
       const [data0] = stacked[0].dataSeries[0].data;
       expect(data0.initialY1).toBe(10);
       expect(data0.y0).toBe(0);

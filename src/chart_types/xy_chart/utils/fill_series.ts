@@ -19,13 +19,17 @@
 import { SpecId } from '../../../utils/ids';
 import { DataSeries } from './series';
 
+
 /**
  *
  * @param series
  * @param xValues
  * @internal
  */
-export function fillSeries(series: Map<SpecId, DataSeries[]>, xValues: Set<string | number>): Map<SpecId, DataSeries[]> {
+export function fillSeries(
+  series: Map<SpecId, DataSeries[]>,
+  xValues: Set<string | number>,
+): Map<SpecId, DataSeries[]> {
   const sortedXValues = [...xValues.values()];
   const filledSeries: Map<SpecId, DataSeries[]> = new Map();
   series.forEach((dataSeries, key) => {

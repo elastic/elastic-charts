@@ -57,6 +57,22 @@ export interface MarkSizeOptions {
   ratio?: number;
 }
 
+/**
+ * Returns value of `y1` or `filled.y1` or null
+ * @internal
+ */
+export const getYValue = ({ y1, filled }: DataSeriesDatum): number | null => {
+  if (y1 !== null) {
+    return y1;
+  }
+
+  if (filled && (filled.y1 !== undefined)) {
+    return filled.y1;
+  }
+
+  return null;
+};
+
 /** @internal */
 export function getPointStyleOverrides(
   datum: DataSeriesDatum,
@@ -535,21 +551,6 @@ export function renderBubble(
   };
 }
 
-/**
- * Returns value of `y1` or `filled.y1` or null
- * @internal
- */
-export const getYValue = ({ y1, filled }: DataSeriesDatum): number | null => {
-  if (y1 !== null) {
-    return y1;
-  }
-
-  if (filled && (filled.y1 !== undefined)) {
-    return filled.y1;
-  }
-
-  return null;
-};
 
 /** @internal */
 export function renderArea(
@@ -594,7 +595,9 @@ export function renderArea(
       return yValue !== null && !(isLogScale && yValue <= 0) && xScale.isValueInDomain(datum.x);
     })
     .curve(getCurveFactory(curve));
-  const clippedRanges = hasFit && !hasY0Accessors ? getClippedRanges(dataSeries.data, xScale, xScaleOffset) : [];
+
+  const clippedRanges = !hasY0Accessors ? getClippedRanges(dataSeries.data, xScale, xScaleOffset) : [];
+
   let y1Line: string | null;
 
   try {
@@ -666,11 +669,16 @@ export function renderArea(
     seriesPointStyle: seriesStyle.point,
     isStacked,
     clippedRanges,
+    hideClippedRanges: !hasFit,
   };
   return {
     areaGeometry,
     indexedGeometryMap,
   };
+}
+
+function isDatumFitted({ filled, initialY1 } : DataSeriesDatum) {
+  return filled?.x !== undefined || filled?.y1 !== undefined || initialY1 === null || initialY1 === undefined;
 }
 
 /**
@@ -684,14 +692,20 @@ export function getClippedRanges(dataset: DataSeriesDatum[], xScale: Scale, xSca
   let firstNonNullX: number | null = null;
   let hasNull = false;
 
-  return dataset.reduce<ClippedRanges>((acc, { x, filled }) => {
-    const xScaled = xScale.scale(x);
+  return dataset.reduce<ClippedRanges>((acc, data) => {
+    const xScaled = xScale.scale(data.x);
     if (xScaled === null) {
       return acc;
     }
     const xValue = xScaled - xScaleOffset + xScale.bandwidth / 2;
 
-    if (filled?.y1 === undefined) {
+    if (isDatumFitted(data)) {
+      const endXValue = xScale.range[1] - xScale.bandwidth * (2 / 3);
+      if (firstNonNullX !== null && xValue === endXValue) {
+        acc.push([firstNonNullX, xValue]);
+      }
+      hasNull = true;
+    } else {
       if (hasNull) {
         if (firstNonNullX !== null) {
           acc.push([firstNonNullX, xValue]);
@@ -702,12 +716,6 @@ export function getClippedRanges(dataset: DataSeriesDatum[], xScale: Scale, xSca
       }
 
       firstNonNullX = xValue;
-    } else {
-      const endXValue = xScale.range[1] - xScale.bandwidth * (2 / 3);
-      if (firstNonNullX !== null && xValue === endXValue) {
-        acc.push([firstNonNullX, xValue]);
-      }
-      hasNull = true;
     }
     return acc;
   }, []);
