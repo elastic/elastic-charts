@@ -297,6 +297,7 @@ Array [
       },
     ],
     "groupId": "group2",
+    "stackMode": undefined,
   },
 ]
 `;
