@@ -384,7 +384,7 @@ describe('Rendering utils', () => {
     });
   });
 
-  describe.skip('getClippedRanges', () => {
+  describe('getClippedRanges', () => {
     const dataSeries = MockDataSeries.fitFunction({ shuffle: false });
 
     const xScale = MockScale.default({
