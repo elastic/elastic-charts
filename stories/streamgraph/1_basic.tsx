@@ -19,7 +19,7 @@
 import React from 'react';
 
 import { AreaSeries, Chart, ScaleType, StackModes, Axis, Position, CurveType } from '../../src';
-import { BABYNAME_DATA } from '../../src/utils/data/babynames';
+import { BABYNAME_DATA } from '../../src/utils/data_samples/babynames';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const Example = () => (
