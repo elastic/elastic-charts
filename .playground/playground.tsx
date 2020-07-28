@@ -1,4 +1,3 @@
-
 /*
  * Licensed to Elasticsearch B.V. under one or more contributor
  * license agreements. See the NOTICE file distributed with
@@ -20,80 +19,13 @@
 
 import React from 'react';
 
-import { Chart, AreaSeries, Axis, Position, Settings, StackModes } from '../src';
+import { Example } from '../stories/sunburst/15_single_sunburst';
 
 export class Playground extends React.Component {
   render() {
     return (
       <div className="testing">
-        <div className="chart">
-          <Chart>
-            <Settings showLegend showLegendExtra />
-
-            <Axis
-              id="y"
-              position={Position.Left}
-            />
-            <Axis
-              id="x"
-              position={Position.Bottom}
-              // tickFormat={timeFormatter(niceTimeFormatByDay(365 * 10))}
-            />
-
-            <AreaSeries
-              id="spec1"
-              // xAccessor="date"
-              // yAccessors={['count']}
-              // // y0Accessors={['metric0']}
-              // splitSeriesAccessors={['series']}
-              // stackAccessors={['date']}
-              // xScaleType={ScaleType.Time}
-              // fit={Fit.Lookahead}
-              // curve={CurveType.CURVE_MONOTONE_X}
-              // // areaSeriesStyle={{ point: { visible: true } }}
-              // // stackAsPercentage
-              // data={data.filter((d) => d.year !== 2006 || d.series !== 'Manufacturing')}
-              stackMode={StackModes.Percentage}
-              splitSeriesAccessors={['g']}
-              yAccessors={['y1']}
-              stackAccessors={['x']}
-              y0Accessors={['y0']}
-              data={[
-                { x: 1, y0: 1, y1: 2, g: 'a' },
-                { x: 2, y0: 2, y1: 2.5, g: 'a' },
-                { x: 3, y0: 1, y1: 4, g: 'a' },
-                { x: 4, y0: 1, y1: 2, g: 'a' },
-                { x: 1, y0: 2, y1: 4, g: 'b' },
-                { x: 2, y0: 2, y1: 5, g: 'b' },
-                { x: 3, y0: 2, y1: 3, g: 'b' },
-                { x: 4, y0: 2, y1: 5, g: 'b' },
-              ]}
-            />
-
-            {/* <AreaSeries
-              id="spec2"
-              yAccessors={['y1']}
-              splitSeriesAccessors={['g']}
-              // stackAccessors={['x']}
-              xScaleType={ScaleType.Linear}
-              fit={Fit.Carry}
-              areaSeriesStyle={{
-                point: {
-                  visible: true,
-                },
-              }}
-              data={[
-                { x: 1, y1: 1, g: 'a' },
-                { x: 2, y1: 2, g: 'a' },
-                { x: 3, y1: 2, g: 'a' },
-                { x: 4, y1: 4, g: 'a' },
-                // { x: 1, y1: 21, g: 'b' },
-                // { x: 2, y1: 5, g: 'b' },
-                // { x: 3, y1: 23, g: 'b' },
-              ]}
-            /> */}
-          </Chart>
-        </div>
+        <div className="chart">{Example()}</div>
       </div>
     );
   }
