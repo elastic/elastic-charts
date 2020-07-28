@@ -23,7 +23,7 @@ import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
 import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_domains';
 import * as fitFunctionModule from './fit_function';
-import * as testModule from './nonstacked_series_utils';
+import * as testModule from './fit_function_utils';
 import { Fit } from './specs';
 
 const EMPTY_DATA_SET = MockSeriesSpec.area({

@@ -27,7 +27,7 @@ import { Logger } from '../../../utils/logger';
 import { ColorConfig } from '../../../utils/themes/theme';
 import { splitSpecsByGroupId, YBasicSeriesSpec } from '../domains/y_domain';
 import { LastValues } from '../state/utils/types';
-import { applyFitFunctionToDataSeries } from './nonstacked_series_utils';
+import { applyFitFunctionToDataSeries } from './fit_function_utils';
 import { BasicSeriesSpec, SeriesTypes, SeriesSpecs, SeriesNameConfigOptions, StackModes } from './specs';
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
 
