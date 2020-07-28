@@ -25,7 +25,7 @@ import { SpecTypes } from '../../../specs/constants';
 import { Position } from '../../../utils/commons';
 import { BARCHART_1Y0G } from '../../../utils/data_samples/test_dataset';
 import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_domains';
-import { BasicSeriesSpec, SeriesTypes, DEFAULT_GLOBAL_ID, StackModes } from '../utils/specs';
+import { BasicSeriesSpec, SeriesTypes, DEFAULT_GLOBAL_ID, StackMode } from '../utils/specs';
 import {
   coerceYScaleTypes,
   splitSpecsByGroupId,
@@ -486,7 +486,7 @@ describe('Y Domain', () => {
     MockStore.addSpecs([
       MockSeriesSpec.area({
         ...DEMO_AREA_SPEC_1,
-        stackMode: StackModes.Percentage,
+        stackMode: StackMode.Percentage,
       }),
       MockSeriesSpec.area({
         ...DEMO_AREA_SPEC_2,
@@ -517,7 +517,7 @@ describe('Y Domain', () => {
       }),
       MockSeriesSpec.area({
         ...DEMO_AREA_SPEC_1,
-        stackMode: StackModes.Percentage,
+        stackMode: StackMode.Percentage,
       }),
     ], store);
     const { yDomain } = computeSeriesDomainsSelector(store.getState());

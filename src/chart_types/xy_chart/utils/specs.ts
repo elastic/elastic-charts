@@ -61,15 +61,24 @@ export const SeriesTypes = Object.freeze({
 export type SeriesTypes = $Values<typeof SeriesTypes>;
 
 
-/** @public */
-export const StackModes = Object.freeze({
+/**
+ * The offset and mode applied when stacking values
+ * @public
+ */
+export const StackMode = Object.freeze({
+  /** Applies a zero baseline and normalizes the values for each point such that the topline is always one. */
   Percentage: 'percentage' as const,
+  /** Shifts the baseline so as to minimize the weighted wiggle of layers. */
   Wiggle: 'wiggle' as const,
+  /** Shifts the baseline down such that the center of the streamgraph is always at zero. */
   Silhouette: 'silhouette' as const,
 });
 
-/** @public */
-export type StackModes = $Values<typeof StackModes>;
+/**
+ * The offset and mode applied when stacking values
+ * @public
+ */
+export type StackMode = $Values<typeof StackMode>;
 
 /**
  * Override for bar styles per datum
@@ -462,7 +471,7 @@ export type BarSeriesSpec = BasicSeriesSpec &
      * Stack each series using a specific mode: Percentage, Wiggle, Silhouette.
      * The last two modes are generally used for stream graphs
      */
-    stackMode?: StackModes;
+    stackMode?: StackMode;
     /**
      * Functional accessor to return custom color or style for bar datum
      */
@@ -558,7 +567,7 @@ export type AreaSeriesSpec = BasicSeriesSpec &
      * Stack each series using a specific mode: Percentage, Wiggle, Silhouette.
      * The last two modes are generally used for stream graphs
      */
-    stackMode?: StackModes;
+    stackMode?: StackMode;
     /**
      * An optional functional accessor to return custom color or style for point datum
      */
@@ -874,6 +883,6 @@ export function isBandedSpec(y0Accessors: SeriesAccessors['y0Accessors']): boole
 }
 
 /** @internal */
-export function hasOffsetDifferentThanZero(stackMode?: StackModes): boolean {
-  return stackMode === StackModes.Silhouette || stackMode === StackModes.Wiggle;
+export function hasOffsetDifferentThanZero(stackMode?: StackMode): boolean {
+  return stackMode === StackMode.Silhouette || stackMode === StackMode.Wiggle;
 }

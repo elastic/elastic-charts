@@ -30,7 +30,7 @@ import {
 import { SeriesKey } from '../../../commons/series_id';
 import { ScaleType } from '../../../scales/constants';
 import { DataSeries, DataSeriesDatum } from './series';
-import { StackModes } from './specs';
+import { StackMode } from './specs';
 
 /** @internal */
 export interface StackedValues {
@@ -70,7 +70,7 @@ type D3UnionStack = Record<
 export function formatStackedDataSeriesValues(
   dataSeries: DataSeries[],
   xValues: Set<string | number>,
-  stackMode?: StackModes,
+  stackMode?: StackMode,
 ): DataSeries[] {
   const dataSeriesKeys = dataSeries.reduce<Record<SeriesKey, DataSeries>>((acc, curr) => {
     acc[curr.key] = curr;
@@ -161,13 +161,13 @@ export function formatStackedDataSeriesValues(
 }
 
 
-function getOffsetBasedOnStackMode(stackMode?: StackModes) {
+function getOffsetBasedOnStackMode(stackMode?: StackMode) {
   switch (stackMode) {
-    case StackModes.Percentage:
+    case StackMode.Percentage:
       return D3StackOffsetExpand;
-    case StackModes.Silhouette:
+    case StackMode.Silhouette:
       return D3StackOffsetSilhouette;
-    case StackModes.Wiggle:
+    case StackMode.Wiggle:
       return D3StackOffsetWiggle;
     default:
       return D3StackOffsetNone;

@@ -18,7 +18,7 @@
  */
 import React from 'react';
 
-import { AreaSeries, Chart, ScaleType, StackModes, Axis, Position, CurveType } from '../../src';
+import { AreaSeries, Chart, ScaleType, StackMode, Axis, Position, CurveType } from '../../src';
 import { BABYNAME_DATA } from '../../src/utils/data_samples/babynames';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
@@ -36,7 +36,7 @@ export const Example = () => (
       data={BABYNAME_DATA}
       stackAccessors={[0]}
       curve={CurveType.CURVE_MONOTONE_X}
-      stackMode={StackModes.Silhouette}
+      stackMode={StackMode.Silhouette}
       areaSeriesStyle={{
         area: {
           opacity: 0.7,

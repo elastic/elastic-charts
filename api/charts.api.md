@@ -80,7 +80,7 @@ export type AreaSeriesSpec = BasicSeriesSpec & HistogramConfig & Postfixes & {
     seriesType: typeof SeriesTypes.Area;
     curve?: CurveType;
     areaSeriesStyle?: RecursivePartial<AreaSeriesStyle>;
-    stackAsPercentage?: boolean;
+    stackMode?: StackMode;
     pointStyleAccessor?: PointStyleAccessor;
     fit?: Exclude<Fit, 'explicit'> | FitConfig;
 };
@@ -208,7 +208,7 @@ export type BarSeriesSpec = BasicSeriesSpec & Postfixes & {
     seriesType: typeof SeriesTypes.Bar;
     enableHistogramMode?: boolean;
     barSeriesStyle?: RecursivePartial<BarSeriesStyle>;
-    stackAsPercentage?: boolean;
+    stackMode?: StackMode;
     styleAccessor?: BarStyleAccessor;
     minBarHeight?: number;
 };
@@ -1271,8 +1271,6 @@ export interface SeriesSpec extends Spec {
 // @public (undocumented)
 export type SeriesSpecs<S extends BasicSeriesSpec = BasicSeriesSpec> = Array<S>;
 
-// Warning: (ae-missing-release-tag) "SeriesTypes" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const SeriesTypes: Readonly<{
     Area: "area";
@@ -1400,6 +1398,16 @@ export const SpecTypes: Readonly<{
 
 // @public (undocumented)
 export type SpecTypes = $Values<typeof SpecTypes>;
+
+// @public
+export const StackMode: Readonly<{
+    Percentage: "percentage";
+    Wiggle: "wiggle";
+    Silhouette: "silhouette";
+}>;
+
+// @public
+export type StackMode = $Values<typeof StackMode>;
 
 // @public
 export interface StrokeDashArray {

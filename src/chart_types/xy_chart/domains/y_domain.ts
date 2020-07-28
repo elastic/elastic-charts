@@ -25,16 +25,16 @@ import { GroupId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
 import { isCompleteBound, isLowerBound, isUpperBound } from '../utils/axis_type_utils';
 import { DataSeries, FormattedDataSeries } from '../utils/series';
-import { BasicSeriesSpec, YDomainRange, DEFAULT_GLOBAL_ID, SeriesTypes, StackModes } from '../utils/specs';
+import { BasicSeriesSpec, YDomainRange, DEFAULT_GLOBAL_ID, SeriesTypes, StackMode } from '../utils/specs';
 import { YDomain } from './types';
 
 export type YBasicSeriesSpec = Pick<
   BasicSeriesSpec,
   'id' | 'seriesType' | 'yScaleType' | 'groupId' | 'stackAccessors' | 'yScaleToDataExtent' | 'useDefaultGroupDomain'
-> & { stackMode?: StackModes; enableHistogramMode?: boolean };
+> & { stackMode?: StackMode; enableHistogramMode?: boolean };
 
 interface GroupSpecs {
-  stackMode?: StackModes;
+  stackMode?: StackMode;
   stacked: YBasicSeriesSpec[];
   nonStacked: YBasicSeriesSpec[];
 }
@@ -102,7 +102,7 @@ function mergeYDomainForGroup(
   const { stackMode } = groupSpecs;
 
   let domain: number[];
-  if (stackMode === StackModes.Percentage) {
+  if (stackMode === StackMode.Percentage) {
     domain = computeContinuousDataDomain([0, 1], identity, customDomain);
   } else {
     // TODO remove when removing yScaleToDataExtent
@@ -174,7 +174,7 @@ function computeYDomain(dataseries: DataSeries[], hasZeroBaselineSpecs: boolean)
 export function splitSpecsByGroupId(specs: YBasicSeriesSpec[]) {
   const specsByGroupIds = new Map<
     GroupId,
-    { stackMode: StackModes | undefined; stacked: YBasicSeriesSpec[]; nonStacked: YBasicSeriesSpec[] }
+    { stackMode: StackMode | undefined; stacked: YBasicSeriesSpec[]; nonStacked: YBasicSeriesSpec[] }
   >();
   // After mobx->redux https://github.com/elastic/elastic-charts/pull/281 we keep the specs untouched on mount
   // in MobX version, the stackAccessors was programmatically added to every histogram specs

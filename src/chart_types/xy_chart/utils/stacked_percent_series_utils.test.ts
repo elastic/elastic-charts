@@ -21,7 +21,7 @@ import { MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
 import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_domains';
-import { StackModes } from './specs';
+import { StackMode } from './specs';
 
 describe('Stacked Series Utils', () => {
   const STANDARD_DATA_SET = [{ x: 0, y1: 10, g: 'a' }, { x: 0, y1: 20, g: 'b' }, { x: 0, y1: 70, g: 'c' }];
@@ -46,7 +46,7 @@ describe('Stacked Series Utils', () => {
           yAccessors: ['y1'],
           splitSeriesAccessors: ['g'],
           stackAccessors: ['x'],
-          stackMode: StackModes.Percentage,
+          stackMode: StackMode.Percentage,
           data: STANDARD_DATA_SET,
         }),
       ], store);
@@ -74,7 +74,7 @@ describe('Stacked Series Utils', () => {
           yAccessors: ['y1'],
           splitSeriesAccessors: ['g'],
           stackAccessors: ['x'],
-          stackMode: StackModes.Percentage,
+          stackMode: StackMode.Percentage,
           data: WITH_NULL_DATASET,
         }),
       ], store);
@@ -107,7 +107,7 @@ describe('Stacked Series Utils', () => {
           y0Accessors: ['y0'],
           splitSeriesAccessors: ['g'],
           stackAccessors: ['x'],
-          stackMode: StackModes.Percentage,
+          stackMode: StackMode.Percentage,
           data: STANDARD_DATA_SET_WY0,
         }),
       ], store);
@@ -139,7 +139,7 @@ describe('Stacked Series Utils', () => {
           y0Accessors: ['y0'],
           splitSeriesAccessors: ['g'],
           stackAccessors: ['x'],
-          stackMode: StackModes.Percentage,
+          stackMode: StackMode.Percentage,
           data: WITH_NULL_DATASET_WY0,
         }),
       ], store);
@@ -173,7 +173,7 @@ describe('Stacked Series Utils', () => {
           y0Accessors: ['y0'],
           splitSeriesAccessors: ['g'],
           stackAccessors: ['x'],
-          stackMode: StackModes.Percentage,
+          stackMode: StackMode.Percentage,
           data: DATA_SET_WITH_NULL_2,
         }),
       ], store);

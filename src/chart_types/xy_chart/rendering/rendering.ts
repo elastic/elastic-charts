@@ -23,7 +23,7 @@ import { LegendItem } from '../../../commons/legend';
 import { Scale } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { isLogarithmicScale } from '../../../scales/types';
-import { MarkBuffer, StackModes } from '../../../specs';
+import { MarkBuffer, StackMode } from '../../../specs';
 import { CanvasTextBBoxCalculator } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import { mergePartial, Color, getDistance } from '../../../utils/commons';
 import { CurveType, getCurveFactory } from '../../../utils/curves';
@@ -172,7 +172,7 @@ function renderPoints(
   markSizeOptions: MarkSizeOptions,
   styleAccessor?: PointStyleAccessor,
   spatial = false,
-  stackMode?: StackModes,
+  stackMode?: StackMode,
 ): {
   pointGeometries: PointGeometry[];
   indexedGeometryMap: IndexedGeometryMap;
@@ -223,9 +223,9 @@ function renderPoints(
       // const hasY0 = hasY0Accessors && index === 0;
       let originalY: null | number = null;
       if (hasY0Accessors) {
-        originalY = stackMode === StackModes.Percentage ? (index === 0 ? y0 : y1) : (index === 0 ? initialY0 : initialY1);
+        originalY = stackMode === StackMode.Percentage ? (index === 0 ? y0 : y1) : (index === 0 ? initialY0 : initialY1);
       } else {
-        originalY = stackMode === StackModes.Percentage ? (y1 - (y0 ?? 0)) : initialY1;
+        originalY = stackMode === StackMode.Percentage ? (y1 - (y0 ?? 0)) : initialY1;
       }
       // const originalY = hasY0Accessors && index === 0 ? initialY0 : initialY1;
       const seriesIdentifier: XYChartSeriesIdentifier = {
@@ -280,7 +280,7 @@ export function renderBars(
   displayValueSettings?: DisplayValueSpec,
   styleAccessor?: BarStyleAccessor,
   minBarHeight?: number,
-  stackMode?: StackModes,
+  stackMode?: StackMode,
 ): {
   barGeometries: BarGeometry[];
   indexedGeometryMap: IndexedGeometryMap;
@@ -351,7 +351,7 @@ export function renderBars(
 
     const x = xScaled + xScale.bandwidth * orderIndex;
     const width = xScale.bandwidth;
-    const originalY1Value = stackMode === StackModes.Percentage ? (y1 - (y0 ?? 0)) : initialY1;
+    const originalY1Value = stackMode === StackMode.Percentage ? (y1 - (y0 ?? 0)) : initialY1;
     const formattedDisplayValue = displayValueSettings && displayValueSettings.valueFormatter
       ? displayValueSettings.valueFormatter(originalY1Value)
       : undefined;
@@ -567,7 +567,7 @@ export function renderArea(
   isStacked = false,
   pointStyleAccessor?: PointStyleAccessor,
   hasFit?: boolean,
-  stackMode?: StackModes
+  stackMode?: StackMode
 ): {
   areaGeometry: AreaGeometry;
   indexedGeometryMap: IndexedGeometryMap;

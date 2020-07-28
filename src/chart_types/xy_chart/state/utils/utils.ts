@@ -59,7 +59,7 @@ import {
   isBubbleSeriesSpec,
   YDomainRange,
   SeriesTypes,
-  StackModes,
+  StackMode,
   hasOffsetDifferentThanZero,
 } from '../../utils/specs';
 import { getSpecsById, getAxesSpecForSpecId } from './spec';
@@ -145,7 +145,7 @@ function getLastValues(formattedDataSeries: {
         if (last !== null) {
           let y0: null | number = last.initialY0;
           let y1: null | number = last.initialY1;
-          if (stackMode === StackModes.Percentage) {
+          if (stackMode === StackMode.Percentage) {
             y1 = (last.y1 ?? 0) - (last.y0 ?? 0);
             y0 = last.y0;
           }
@@ -457,7 +457,7 @@ function renderGeometries(
   axesSpecs: AxisSpec[],
   chartTheme: Theme,
   enableHistogramMode: boolean,
-  stackMode?: StackModes,
+  stackMode?: StackMode,
 ): {
   points: PointGeometry[];
   bars: BarGeometry[];

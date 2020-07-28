@@ -28,7 +28,7 @@ import { ColorConfig } from '../../../utils/themes/theme';
 import { splitSpecsByGroupId, YBasicSeriesSpec } from '../domains/y_domain';
 import { LastValues } from '../state/utils/types';
 import { applyFitFunctionToDataSeries } from './fit_function_utils';
-import { BasicSeriesSpec, SeriesTypes, SeriesSpecs, SeriesNameConfigOptions, StackModes } from './specs';
+import { BasicSeriesSpec, SeriesTypes, SeriesSpecs, SeriesNameConfigOptions, StackMode } from './specs';
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
 
 /** @internal */
@@ -81,7 +81,7 @@ export interface FormattedDataSeries {
   groupId: GroupId;
   dataSeries: DataSeries[];
   counts: DataSeriesCounts;
-  stackMode?: StackModes;
+  stackMode?: StackMode;
 }
 
 /** @internal */
@@ -280,7 +280,7 @@ export function getFormattedDataseries(
     groupId: GroupId;
     dataSeries: DataSeries[];
     counts: DataSeriesCounts;
-    stackMode?: StackModes;
+    stackMode?: StackMode;
   }[] = [];
   const nonStackedFormattedDataSeries: {
     groupId: GroupId;
