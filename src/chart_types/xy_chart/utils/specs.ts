@@ -883,6 +883,6 @@ export function isBandedSpec(y0Accessors: SeriesAccessors['y0Accessors']): boole
 }
 
 /** @internal */
-export function hasOffsetDifferentThanZero(stackMode?: StackMode): boolean {
+export function hasNonZeroOffset(stackMode?: StackMode): boolean {
   return stackMode === StackMode.Silhouette || stackMode === StackMode.Wiggle;
 }

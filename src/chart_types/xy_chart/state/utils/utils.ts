@@ -60,7 +60,7 @@ import {
   YDomainRange,
   SeriesTypes,
   StackMode,
-  hasOffsetDifferentThanZero,
+  hasNonZeroOffset,
 } from '../../utils/specs';
 import { getSpecsById, getAxesSpecForSpecId } from './spec';
 import { SeriesDomainsAndData, ComputedGeometries, GeometriesCounts, Transform, LastValues } from './types';
@@ -593,7 +593,7 @@ function renderGeometries(
         yScale,
         color,
         spec.curve || CurveType.LINEAR,
-        isBandedSpec(spec.y0Accessors) || (hasOffsetDifferentThanZero(spec.stackMode) && i === 0),
+        isBandedSpec(spec.y0Accessors) || (hasNonZeroOffset(spec.stackMode) && i === 0),
         xScaleOffset,
         areaSeriesStyle,
         {
