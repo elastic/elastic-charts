@@ -25,7 +25,7 @@ import { MIN_STROKE_WIDTH } from './line';
 
 /** @internal */
 export function renderLinePaths(
-  ctx: CanvasRenderingContext2D,
+  context: CanvasRenderingContext2D,
   transformX: number,
   linePaths: Array<string>,
   stroke: Stroke,
@@ -34,7 +34,7 @@ export function renderLinePaths(
   hideClippedRanges = false,
 ) {
   if (clippedRanges.length > 0) {
-    withClipRanges(ctx, clippedRanges, clippings, false, (ctx) => {
+    withClipRanges(context, clippedRanges, clippings, false, (ctx) => {
       ctx.translate(transformX, 0);
       linePaths.forEach((path) => {
         renderPathStroke(ctx, path, stroke);
@@ -43,7 +43,7 @@ export function renderLinePaths(
     if (hideClippedRanges) {
       return;
     }
-    withClipRanges(ctx, clippedRanges, clippings, true, (ctx) => {
+    withClipRanges(context, clippedRanges, clippings, true, (ctx) => {
       ctx.translate(transformX, 0);
       linePaths.forEach((path) => {
         renderPathStroke(ctx, path, { ...stroke, dash: [5, 5] });
@@ -52,8 +52,7 @@ export function renderLinePaths(
     return;
   }
 
-
-  withContext(ctx, (ctx) => {
+  withContext(context, (ctx) => {
     ctx.translate(transformX, 0);
     linePaths.forEach((path) => {
       renderPathStroke(ctx, path, stroke);
