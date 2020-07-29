@@ -25,19 +25,17 @@ import {
   Axis,
   Chart,
   CurveType,
-  LineSeries,
   Position,
   ScaleType,
   Settings,
   Fit,
-  SeriesTypes,
   StackMode,
 } from '../../src';
 import { getRandomNumberGenerator } from '../../src/mocks/utils';
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 
 export const Example = () => {
-  const dataTypes = {
+  const dataTypes: Record<string, Array<{x: number | string, y: number | null}>> = {
     isolated: [
       { x: 0, y: 3 },
       { x: 1, y: 5 },
@@ -102,14 +100,6 @@ export const Example = () => {
     ],
   };
 
-  const seriesType = select<string>(
-    'seriesType',
-    {
-      Area: SeriesTypes.Area,
-      Line: SeriesTypes.Line,
-    },
-    SeriesTypes.Area,
-  );
   const stackMode = select<StackMode | 'none'>(
     'stackMode',
     {
@@ -120,7 +110,8 @@ export const Example = () => {
     },
     'none',
   );
-  const dataKey = select<string>(
+
+  const dataKey = select<keyof typeof dataTypes>(
     'dataset',
     {
       'Isolated Points': 'isolated',
@@ -131,7 +122,7 @@ export const Example = () => {
     },
     'all',
   );
-  // @ts-ignore
+
   const dataset = dataTypes[dataKey];
   const fit = select(
     'fitting function',
@@ -192,77 +183,58 @@ export const Example = () => {
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left" title="Left axis" position={Position.Left} />
-      {seriesType === SeriesTypes.Area ? (
-        <>
-          <AreaSeries
-            id="test3"
-            xScaleType={xScaleType}
-            yScaleType={ScaleType.Linear}
-            xAccessor="x"
-            yAccessors={['y']}
-            curve={curve}
-            stackAccessors={['x']}
-            fit={{
-              type: fit,
-              value: fit === Fit.Explicit ? value : undefined,
-              endValue: endValue === 'none' ? undefined : parsedEndValue,
-            }}
-            data={dataset.map((d: any) => ({
-              ...d,
-              y: rng(2, 10),
-            }))}
-          />
-          <AreaSeries
-            id="test"
-            xScaleType={xScaleType}
-            yScaleType={ScaleType.Linear}
-            xAccessor="x"
-            yAccessors={['y']}
-            stackAccessors={['x']}
-            stackMode={stackMode === 'none' ? undefined : stackMode}
-            curve={curve}
-            fit={{
-              type: fit,
-              value: fit === Fit.Explicit ? value : undefined,
-              endValue: endValue === 'none' ? undefined : parsedEndValue,
-            }}
-            data={dataset}
-          />
-          <AreaSeries
-            id="test2"
-            xScaleType={xScaleType}
-            yScaleType={ScaleType.Linear}
-            xAccessor="x"
-            yAccessors={['y']}
-            curve={curve}
-            stackAccessors={['x']}
-            fit={{
-              type: fit,
-              value: fit === Fit.Explicit ? value : undefined,
-              endValue: endValue === 'none' ? undefined : parsedEndValue,
-            }}
-            data={dataset.map((d: any) => ({
-              ...d,
-              y: rng(2, 10),
-            }))}
-          />
-        </>
-      ) : (
-        <LineSeries
-          id="test"
-          xScaleType={xScaleType}
-          yScaleType={ScaleType.Linear}
-          xAccessor="x"
-          yAccessors={['y']}
-          curve={curve}
-          fit={{
-            type: fit,
-            value: fit === Fit.Explicit ? value : undefined,
-            endValue: endValue === 'none' ? undefined : parsedEndValue,
-          }}
-          data={dataset}
-        />
-      )}
+      <AreaSeries
+        id="test3"
+        xScaleType={xScaleType}
+        yScaleType={ScaleType.Linear}
+        xAccessor="x"
+        yAccessors={['y']}
+        curve={curve}
+        stackAccessors={['x']}
+        fit={{
+          type: fit,
+          value: fit === Fit.Explicit ? value : undefined,
+          endValue: endValue === 'none' ? undefined : parsedEndValue,
+        }}
+        data={dataset.map((d: any) => ({
+          ...d,
+          y: rng(2, 10),
+        }))}
+      />
+      <AreaSeries
+        id="test"
+        xScaleType={xScaleType}
+        yScaleType={ScaleType.Linear}
+        xAccessor="x"
+        yAccessors={['y']}
+        stackAccessors={['x']}
+        stackMode={stackMode === 'none' ? undefined : stackMode}
+        curve={curve}
+        fit={{
+          type: fit,
+          value: fit === Fit.Explicit ? value : undefined,
+          endValue: endValue === 'none' ? undefined : parsedEndValue,
+        }}
+        data={dataset}
+      />
+      <AreaSeries
+        id="test2"
+        xScaleType={xScaleType}
+        yScaleType={ScaleType.Linear}
+        xAccessor="x"
+        yAccessors={['y']}
+        curve={curve}
+        stackAccessors={['x']}
+        fit={{
+          type: fit,
+          value: fit === Fit.Explicit ? value : undefined,
+          endValue: endValue === 'none' ? undefined : parsedEndValue,
+        }}
+        data={dataset.map((d) => ({
+          ...d,
+          y: rng(2, 10),
+        }))}
+      />
     </Chart>
   );
 };

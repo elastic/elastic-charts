@@ -108,7 +108,7 @@ export const Example = () => {
     },
     SeriesTypes.Area,
   );
-  const dataKey = select<string>(
+  const dataKey = select<keyof typeof dataTypes>(
     'dataset',
     {
       'Isolated Points': 'isolated',
@@ -119,7 +119,6 @@ export const Example = () => {
     },
     'all',
   );
-  // @ts-ignore
   const dataset = dataTypes[dataKey];
   const fit = select(
     'fitting function',
