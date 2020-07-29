@@ -59,33 +59,36 @@ export const getValue = (
   endValue?: number | 'nearest',
 ): DataSeriesDatum => {
   if (previous !== null && type === Fit.Carry) {
+    const { y1 } = previous;
     return {
       ...current,
-      y1: previous.y1,
+      y1,
       filled: {
         ...current.filled,
-        y1: previous.y1,
+        y1,
       },
     };
   }
   if (next !== null && type === Fit.Lookahead) {
+    const { y1 } = next;
     return {
       ...current,
-      y1: next.y1,
+      y1,
       filled: {
         ...current.filled,
-        y1: next.y1,
+        y1,
       },
     };
   }
   if (previous !== null && next !== null) {
     if (type === Fit.Average) {
+      const y1 = (previous.y1 + next.y1) / 2;
       return {
         ...current,
-        y1: (previous.y1 + next.y1) / 2,
+        y1,
         filled: {
           ...current.filled,
-          y1: (previous.y1 + next.y1) / 2,
+          y1,
         },
       };
     }
@@ -97,34 +100,37 @@ export const getValue = (
       if (type === Fit.Nearest) {
         const x1Delta = Math.abs(currentX - x1);
         const x2Delta = Math.abs(currentX - x2);
+        const y1Delta = x1Delta > x2Delta ? y2 : y1;
         return {
           ...current,
-          y1: x1Delta > x2Delta ? y2 : y1,
+          y1: y1Delta,
           filled: {
             ...current.filled,
-            y1: x1Delta > x2Delta ? y2 : y1,
+            y1: y1Delta,
           },
         };
       }
       if (type === Fit.Linear) {
+        // simple linear interpolation function
+        const linearInterpolatedY1 = previous.y1 + (currentX - x1) * ((y2 - y1) / (x2 - x1));
         return {
           ...current,
-          y1: previous.y1 + (currentX - x1) * ((y2 - y1) / (x2 - x1)),
+          y1: linearInterpolatedY1,
           filled: {
             ...current.filled,
-            // simple linear interpolation function
-            y1: previous.y1 + (currentX - x1) * ((y2 - y1) / (x2 - x1)),
+            y1: linearInterpolatedY1,
           },
         };
       }
     }
   } else if ((previous !== null || next !== null) && (type === Fit.Nearest || endValue === 'nearest')) {
+    const nearestY1 = previous !== null ? previous.y1 : next!.y1;
     return {
       ...current,
-      y1: previous !== null ? previous.y1 : next!.y1,
+      y1: nearestY1,
       filled: {
         ...current.filled,
-        y1: previous !== null ? previous.y1 : next!.y1,
+        y1: nearestY1,
       },
     };
   }

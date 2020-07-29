@@ -28,8 +28,8 @@ export const getFilledNullData = (
   data: DataSeriesDatum[]
 ): (number | undefined)[] =>
   data
-    .filter(({ filled }) => filled !== undefined && filled.y1 !== undefined)
-    .map(({ filled }) => filled && filled.y1);
+    .filter(({ filled }) => filled?.y1 !== undefined)
+    .map(({ filled }) => filled?.y1);
 
 /**
  * Helper function to return array of rendered y1 values
@@ -41,9 +41,9 @@ export const getFilledNonNullData = (
   data
     .filter(
       ({ y1, filled }) =>
-        y1 !== null && (filled === undefined || filled.y1 === undefined)
+        y1 !== null && (filled?.y1 === undefined)
     )
-    .map(({ filled }) => filled && filled.y1);
+    .map(({ filled }) => filled?.y1);
 
 /**
  * Helper function to return array of rendered x values
