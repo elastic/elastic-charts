@@ -185,8 +185,6 @@ export const fitFunction = (
     return data;
   }
 
-  // const { data } = dataSeries;
-
   if (type === Fit.Zero) {
     return data.map((datum) => ({
       ...datum,

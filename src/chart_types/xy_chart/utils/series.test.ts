@@ -203,33 +203,6 @@ describe('Series', () => {
       ],
     }), store);
     const { formattedDataSeries: { stacked } } = computeSeriesDomainsSelector(store.getState());
-    // const dataSeries: DataSeries[] = [
-    //   {
-    //     specId: 'spec1',
-    //     yAccessor: 'y1',
-    //     splitAccessors: new Map(),
-    //     seriesKeys: ['a'],
-    //     key: 'a',
-    //     data: [
-    //       { x: 1, y1: 1, mark: null, y0: null, initialY1: 1, initialY0: null, datum: undefined },
-    //       { x: 4, y1: 4, mark: null, y0: null, initialY1: 4, initialY0: null, datum: undefined },
-    //       { x: 2, y1: 2, mark: null, y0: null, initialY1: 2, initialY0: null, datum: undefined },
-    //     ],
-    //   },
-    //   {
-    //     specId: 'spec1',
-    //     yAccessor: 'y1',
-    //     splitAccessors: new Map(),
-    //     seriesKeys: ['b'],
-    //     key: 'b',
-    //     data: [
-    //       { x: 3, y1: 23, mark: null, y0: null, initialY1: 23, initialY0: null, datum: undefined },
-    //       { x: 1, y1: 21, mark: null, y0: null, initialY1: 21, initialY0: null, datum: undefined },
-    //     ],
-    //   },
-    // ];
-    // const xValues = new Set([1, 2, 3, 4]);
-    // const stackedValues = formatStackedDataSeriesValues(dataSeries, xValues);
 
     expect(stacked[0].dataSeries).toMatchSnapshot();
   });

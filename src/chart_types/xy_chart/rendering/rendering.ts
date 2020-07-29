@@ -184,7 +184,7 @@ function renderPoints(
     : () => 0;
   const geometryType = spatial ? GeometryType.spatial : GeometryType.linear;
   const pointGeometries = dataSeries.data.reduce((acc, datum) => {
-    const { x: xValue, y0, y1, initialY0, initialY1, filled, mark } = datum;
+    const { x: xValue, y0, y1, filled, mark } = datum;
     // don't create the point if not within the xScale domain
     if (!xScale.isValueInDomain(xValue)) {
       return acc;
@@ -220,14 +220,7 @@ function renderPoints(
       if (y === null) {
         return acc;
       }
-      // const hasY0 = hasY0Accessors && index === 0;
-      let originalY: null | number = null;
-      if (hasY0Accessors) {
-        originalY = stackMode === StackMode.Percentage ? (index === 0 ? y0 : y1) : (index === 0 ? initialY0 : initialY1);
-      } else {
-        originalY = stackMode === StackMode.Percentage ? (y1 - (y0 ?? 0)) : initialY1;
-      }
-      // const originalY = hasY0Accessors && index === 0 ? initialY0 : initialY1;
+      const originalY = getDatumYValue(datum, index, hasY0Accessors, stackMode);
       const seriesIdentifier: XYChartSeriesIdentifier = {
         key: dataSeries.key,
         specId: dataSeries.specId,
@@ -268,6 +261,25 @@ function renderPoints(
     indexedGeometryMap,
   };
 }
+
+function getDatumYValue(
+  { y1, y0, initialY1, initialY0 }: DataSeriesDatum,
+  index: number,
+  hasY0Accessors: boolean,
+  stackMode?: StackMode
+) {
+  if (hasY0Accessors) {
+    return stackMode === StackMode.Percentage
+      ? (index === 0
+          ? y0
+          : y1)
+      : (index === 0
+          ? initialY0
+          : initialY1);
+  }
+  return stackMode === StackMode.Percentage ? (y1 ?? 0) - (y0 ?? 0) : initialY1;
+}
+
 
 /** @internal */
 export function renderBars(
