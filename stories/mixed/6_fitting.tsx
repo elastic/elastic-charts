@@ -162,12 +162,14 @@ export const Example = () => {
     'none',
   );
   const parsedEndValue: number | 'nearest' = Number.isNaN(Number(endValue)) ? 'nearest' : Number(endValue);
-  const value = number('Explicit valuve (using Fit.Explicit)', 5);
+  const value = number('Explicit value (using Fit.Explicit)', 5);
   const xScaleType = dataKey === 'ordinal' ? ScaleType.Ordinal : ScaleType.Linear;
 
   return (
     <Chart className="story-chart">
       <Settings
+        showLegend
+        showLegendExtra
         theme={{
           areaSeriesStyle: {
             point: {

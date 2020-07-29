@@ -30,7 +30,7 @@ import { ColorConfig, Theme } from '../../../../utils/themes/theme';
 import { XDomain, YDomain } from '../../domains/types';
 import { mergeXDomain } from '../../domains/x_domain';
 import { mergeYDomain } from '../../domains/y_domain';
-import { renderArea, renderBars, renderLine, renderBubble } from '../../rendering/rendering';
+import { renderArea, renderBars, renderLine, renderBubble, isDatumFilled } from '../../rendering/rendering';
 import { fillSeries } from '../../utils/fill_series';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
 import { computeXScale, computeYScales, countBarsInCluster } from '../../utils/scales';
@@ -139,37 +139,48 @@ function getLastValues(formattedDataSeries: {
   // we need to get the latest
   formattedDataSeries.stacked.forEach(({ dataSeries, stackMode }) => {
     dataSeries.forEach((series) => {
-      const seriesKey = getSeriesKey(series as XYChartSeriesIdentifier);
-      if (series.data.length > 0) {
-        const last = series.data[series.data.length - 1];
-        if (last !== null) {
-          let y0: null | number = last.initialY0;
-          let y1: null | number = last.initialY1;
-          if (stackMode === StackMode.Percentage) {
-            y1 = (last.y1 ?? 0) - (last.y0 ?? 0);
-            y0 = last.y0;
-          }
+      if (series.data.length === 0) {
+        return;
+      }
+      const last = series.data[series.data.length - 1];
+      if (!last) {
+        return;
+      }
+      if (isDatumFilled(last)) {
+        return;
+      }
 
-          if (!last.filled && (y1 !== null || y0 !== null)) {
-            lastValues.set(seriesKey, { y0, y1 });
-          }
-        }
+      const { y0, y1, initialY0, initialY1 } = last;
+      const seriesKey = getSeriesKey(series as XYChartSeriesIdentifier);
+
+      if (stackMode === StackMode.Percentage) {
+        const y1InPercentage = y1 === null || y0 === null ? null : y1 - y0;
+        lastValues.set(seriesKey, { y0, y1: y1InPercentage });
+        return;
+      }
+      if (initialY0 !== null || initialY1 !== null) {
+        lastValues.set(seriesKey, { y0: initialY0, y1: initialY1 });
       }
     });
   });
 
   formattedDataSeries.nonStacked.forEach(({ dataSeries }) => {
     dataSeries.forEach((series) => {
-      const seriesKey = getSeriesKey(series as XYChartSeriesIdentifier);
-      if (series.data.length > 0) {
-        const last = series.data[series.data.length - 1];
-        if (last !== null) {
-          const { initialY1: y1, initialY0: y0 } = last;
-          if (y1 !== null || y0 !== null) {
-            lastValues.set(seriesKey, { y0, y1 });
-          }
-        }
+      if (series.data.length === 0) {
+        return;
       }
+      const last = series.data[series.data.length - 1];
+      if (!last) {
+        return;
+      }
+      if (isDatumFilled(last)) {
+        return;
+      }
+
+      const { initialY1, initialY0 } = last;
+      const seriesKey = getSeriesKey(series as XYChartSeriesIdentifier);
+
+      lastValues.set(seriesKey, { y0: initialY0, y1: initialY1 });
     });
   });
   return lastValues;

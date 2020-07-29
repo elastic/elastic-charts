@@ -16,39 +16,51 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { AreaSeries, Chart, ScaleType, StackMode, Axis, Position, CurveType } from '../../src';
 import { BABYNAME_DATA } from '../../src/utils/data_samples/babynames';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
-export const Example = () => (
-  <Chart className="story-chart">
-    <Axis id="x" position={Position.Bottom} />
-    <Axis id="y" position={Position.Left} />
-    <AreaSeries
-      id="area1"
-      xScaleType={ScaleType.Linear}
-      yScaleType={ScaleType.Linear}
-      xAccessor={0}
-      yAccessors={[3]}
-      splitSeriesAccessors={[2]}
-      data={BABYNAME_DATA}
-      stackAccessors={[0]}
-      curve={CurveType.CURVE_MONOTONE_X}
-      stackMode={StackMode.Silhouette}
-      areaSeriesStyle={{
-        area: {
-          opacity: 0.7,
-        },
-        line: {
-          visible: false,
-        },
-      }}
-    />
+export const Example = () => {
+  const stackMode = select<StackMode>(
+    'stackMode',
+    {
+      Silhouette: StackMode.Silhouette,
+      Wiggle: StackMode.Wiggle,
+    },
+    StackMode.Silhouette,
+  );
+  return (
+    <Chart className="story-chart">
+      <Axis id="x" position={Position.Bottom} />
+      <Axis id="y" position={Position.Left} />
+      <AreaSeries
+        id="area1"
+        xScaleType={ScaleType.Linear}
+        yScaleType={ScaleType.Linear}
+        xAccessor={0}
+        yAccessors={[3]}
+        splitSeriesAccessors={[2]}
+        data={BABYNAME_DATA}
+        stackAccessors={[0]}
+        curve={CurveType.CURVE_MONOTONE_X}
+        stackMode={stackMode}
+        areaSeriesStyle={{
+          area: {
+            opacity: 0.7,
+          },
+          line: {
+            visible: false,
+          },
+        }}
+      />
 
-  </Chart>
-);
+    </Chart>
+  );
+};
+
 
 // storybook configuration
 Example.story = {

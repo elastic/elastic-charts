@@ -184,13 +184,13 @@ function renderPoints(
     : () => 0;
   const geometryType = spatial ? GeometryType.spatial : GeometryType.linear;
   const pointGeometries = dataSeries.data.reduce((acc, datum) => {
-    const { x: xValue, y0, y1, filled, mark } = datum;
+    const { x: xValue, y0, y1, mark } = datum;
     // don't create the point if not within the xScale domain
     if (!xScale.isValueInDomain(xValue)) {
       return acc;
     }
     // don't create the point if it that point was filled
-    if (filled && (filled.x !== undefined || filled.y1 !== undefined)) {
+    if (isDatumFilled(datum)) {
       return acc;
     }
     const x = xScale.scale(xValue);
@@ -699,7 +699,12 @@ export function renderArea(
   };
 }
 
-function isDatumFitted({ filled, initialY1 } : DataSeriesDatum) {
+/**
+ *
+ * @param param0
+ * @internal
+ */
+export function isDatumFilled({ filled, initialY1 } : DataSeriesDatum) {
   return filled?.x !== undefined || filled?.y1 !== undefined || initialY1 === null || initialY1 === undefined;
 }
 
@@ -721,7 +726,7 @@ export function getClippedRanges(dataset: DataSeriesDatum[], xScale: Scale, xSca
     }
     const xValue = xScaled - xScaleOffset + xScale.bandwidth / 2;
 
-    if (isDatumFitted(data)) {
+    if (isDatumFilled(data)) {
       const endXValue = xScale.range[1] - xScale.bandwidth * (2 / 3);
       if (firstNonNullX !== null && xValue === endXValue) {
         acc.push([firstNonNullX, xValue]);
