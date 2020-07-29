@@ -881,8 +881,3 @@ export function isAreaSeriesSpec(spec: BasicSeriesSpec): spec is AreaSeriesSpec 
 export function isBandedSpec(y0Accessors: SeriesAccessors['y0Accessors']): boolean {
   return Boolean(y0Accessors && y0Accessors.length > 0);
 }
-
-/** @internal */
-export function hasNonZeroOffset(stackMode?: StackMode): boolean {
-  return stackMode === StackMode.Silhouette || stackMode === StackMode.Wiggle;
-}

@@ -491,7 +491,7 @@ export function renderLine(
     pointStyleAccessor,
   );
 
-  const clippedRanges = hasFit && !hasY0Accessors ? getClippedRanges(dataSeries.data, xScale, xScaleOffset) : [];
+  const clippedRanges = getClippedRanges(dataSeries.data, xScale, xScaleOffset);
   let linePath: string;
 
   try {
@@ -519,6 +519,7 @@ export function renderLine(
     seriesLineStyle: seriesStyle.line,
     seriesPointStyle: seriesStyle.point,
     clippedRanges,
+    hideClippedRanges: !hasFit,
   };
   return {
     lineGeometry,
@@ -618,7 +619,7 @@ export function renderArea(
     })
     .curve(getCurveFactory(curve));
 
-  const clippedRanges = !hasY0Accessors ? getClippedRanges(dataSeries.data, xScale, xScaleOffset) : [];
+  const clippedRanges = getClippedRanges(dataSeries.data, xScale, xScaleOffset);
 
   let y1Line: string | null;
 

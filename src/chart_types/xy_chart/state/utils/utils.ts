@@ -60,7 +60,6 @@ import {
   YDomainRange,
   SeriesTypes,
   StackMode,
-  hasNonZeroOffset,
 } from '../../utils/specs';
 import { getSpecsById, getAxesSpecForSpecId } from './spec';
 import { SeriesDomainsAndData, ComputedGeometries, GeometriesCounts, Transform, LastValues } from './types';
@@ -584,7 +583,7 @@ function renderGeometries(
           ratio: chartTheme.markSizeRatio,
         },
         spec.pointStyleAccessor,
-        Boolean(spec.fit && ((spec.fit as FitConfig).type || spec.fit) !== Fit.None),
+        hasFitFnConfigured(spec.fit),
       );
       indexedGeometryMap.merge(renderedLines.indexedGeometryMap);
       lines.push(renderedLines.lineGeometry);
@@ -604,7 +603,7 @@ function renderGeometries(
         yScale,
         color,
         spec.curve || CurveType.LINEAR,
-        isBandedSpec(spec.y0Accessors) || (hasNonZeroOffset(spec.stackMode) && i === 0),
+        isBandedSpec(spec.y0Accessors),
         xScaleOffset,
         areaSeriesStyle,
         {
@@ -613,7 +612,7 @@ function renderGeometries(
         },
         isStacked,
         spec.pointStyleAccessor,
-        Boolean(spec.fit && ((spec.fit as FitConfig).type || spec.fit) !== Fit.None),
+        hasFitFnConfigured(spec.fit),
         stackMode
       );
       indexedGeometryMap.merge(renderedAreas.indexedGeometryMap);
@@ -662,4 +661,8 @@ export function computeChartTransform(chartDimensions: Dimensions, chartRotation
     y: 0,
     rotate: 0,
   };
+}
+
+function hasFitFnConfigured(fit?: Fit | FitConfig) {
+  return Boolean(fit && ((fit as FitConfig).type || fit) !== Fit.None);
 }
