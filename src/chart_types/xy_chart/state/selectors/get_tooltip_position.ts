@@ -26,7 +26,6 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { Position } from '../../../../utils/commons';
 import { getTooltipAnchorPosition } from '../../crosshair/crosshair_utils';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
-import { getComputedScalesSelector } from './get_computed_scales';
 import { getCursorBandPositionSelector } from './get_cursor_band';
 import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
 
@@ -37,7 +36,6 @@ export const getTooltipAnchorPositionSelector = createCachedSelector(
     getSettingsSpecSelector,
     getCursorBandPositionSelector,
     getProjectedPointerPositionSelector,
-    getComputedScalesSelector,
     getLegendSizeSelector,
   ],
   (
@@ -45,7 +43,6 @@ export const getTooltipAnchorPositionSelector = createCachedSelector(
     settings,
     cursorBandPosition,
     projectedPointerPosition,
-    scales,
     legendSize,
   ): TooltipAnchorPosition | null => {
     if (!cursorBandPosition) {
@@ -56,7 +53,6 @@ export const getTooltipAnchorPositionSelector = createCachedSelector(
       settings.rotation,
       cursorBandPosition,
       projectedPointerPosition,
-      scales.xScale.isSingleValue(),
       getLegendDimension(legendSize),
     );
   },

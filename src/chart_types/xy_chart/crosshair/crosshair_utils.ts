@@ -172,7 +172,6 @@ export function getTooltipAnchorPosition(
   chartRotation: Rotation,
   cursorBandPosition: Dimensions,
   cursorPosition: { x: number; y: number },
-  isSingleValueXScale: boolean,
   legendDimension: {
     top: number,
     left: number,
@@ -185,7 +184,6 @@ export function getTooltipAnchorPosition(
     chartDimensions,
     legendDimension.left,
     isRotated,
-    isSingleValueXScale,
   );
   const vPosition = getVerticalTooltipPosition(
     cursorPosition.y,
@@ -193,7 +191,6 @@ export function getTooltipAnchorPosition(
     chartDimensions,
     legendDimension.top,
     isRotated,
-    isSingleValueXScale,
   );
   return {
     isRotated,
@@ -208,12 +205,11 @@ function getHorizontalTooltipPosition(
   chartDimensions: Dimensions,
   legendDimension: number,
   isRotated: boolean,
-  isSingleValueXScale: boolean,
 ): { x0?: number; x1: number } {
   if (!isRotated) {
     return {
       x0: cursorBandPosition.left + legendDimension,
-      x1: cursorBandPosition.left + (isSingleValueXScale ? 0 : cursorBandPosition.width) + legendDimension,
+      x1: cursorBandPosition.left + cursorBandPosition.width + legendDimension,
     };
   }
   return {
@@ -229,7 +225,6 @@ function getVerticalTooltipPosition(
   chartDimensions: Dimensions,
   legendDimension: number,
   isRotated: boolean,
-  isSingleValueXScale: boolean,
 ): {
   y0: number;
   y1: number;
@@ -243,6 +238,6 @@ function getVerticalTooltipPosition(
   }
   return {
     y0: cursorBandPosition.top + legendDimension,
-    y1: (isSingleValueXScale ? 0 : cursorBandPosition.height) + cursorBandPosition.top + legendDimension,
+    y1: cursorBandPosition.height + cursorBandPosition.top + legendDimension,
   };
 }
