@@ -173,12 +173,17 @@ export function getTooltipAnchorPosition(
   cursorBandPosition: Dimensions,
   cursorPosition: { x: number; y: number },
   isSingleValueXScale: boolean,
+  legendDimension: {
+    top: number,
+    left: number,
+  },
 ): TooltipAnchorPosition {
   const isRotated = isVerticalRotation(chartRotation);
   const hPosition = getHorizontalTooltipPosition(
     cursorPosition.x,
     cursorBandPosition,
     chartDimensions,
+    legendDimension.left,
     isRotated,
     isSingleValueXScale,
   );
@@ -186,6 +191,7 @@ export function getTooltipAnchorPosition(
     cursorPosition.y,
     cursorBandPosition,
     chartDimensions,
+    legendDimension.top,
     isRotated,
     isSingleValueXScale,
   );
@@ -200,19 +206,20 @@ function getHorizontalTooltipPosition(
   cursorXPosition: number,
   cursorBandPosition: Dimensions,
   chartDimensions: Dimensions,
+  legendDimension: number,
   isRotated: boolean,
   isSingleValueXScale: boolean,
 ): { x0?: number; x1: number } {
   if (!isRotated) {
     return {
-      x0: cursorBandPosition.left,
-      x1: cursorBandPosition.left + (isSingleValueXScale ? 0 : cursorBandPosition.width),
+      x0: cursorBandPosition.left + legendDimension,
+      x1: cursorBandPosition.left + (isSingleValueXScale ? 0 : cursorBandPosition.width) + legendDimension,
     };
   }
   return {
     // NOTE: x0 set to zero blocks tooltip placement on left when rotated 90 deg
     // Delete this comment before merging and verifing this doesn't break anything.
-    x1: chartDimensions.left + cursorXPosition,
+    x1: chartDimensions.left + cursorXPosition + legendDimension,
   };
 }
 
@@ -220,6 +227,7 @@ function getVerticalTooltipPosition(
   cursorYPosition: number,
   cursorBandPosition: Dimensions,
   chartDimensions: Dimensions,
+  legendDimension: number,
   isRotated: boolean,
   isSingleValueXScale: boolean,
 ): {
@@ -227,13 +235,14 @@ function getVerticalTooltipPosition(
   y1: number;
 } {
   if (!isRotated) {
+    const y = cursorYPosition + chartDimensions.top + legendDimension;
     return {
-      y0: cursorYPosition + chartDimensions.top,
-      y1: cursorYPosition + chartDimensions.top,
+      y0: y,
+      y1: y,
     };
   }
   return {
-    y0: cursorBandPosition.top,
-    y1: (isSingleValueXScale ? 0 : cursorBandPosition.height) + cursorBandPosition.top,
+    y0: cursorBandPosition.top + legendDimension,
+    y1: (isSingleValueXScale ? 0 : cursorBandPosition.height) + cursorBandPosition.top + legendDimension,
   };
 }
