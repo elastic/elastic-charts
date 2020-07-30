@@ -131,7 +131,6 @@ module.exports = {
         ExportDeclaration: { consistent: true },
       },
     ],
-    quotes: ['error', 'single'],
     semi: ['error', 'always'],
     // https://github.com/typescript-eslint/typescript-eslint/issues/1824
     // TODO: Add back once indent ts rule is fixed
@@ -181,7 +180,6 @@ module.exports = {
     '@typescript-eslint/indent': 0,
     '@typescript-eslint/no-inferrable-types': 0,
     '@typescript-eslint/ban-ts-comment': 1,
-    '@typescript-eslint/space-before-function-paren': [2, 'never'],
     '@typescript-eslint/no-unused-vars': [
       'error',
       {
@@ -223,6 +221,9 @@ module.exports = {
     'react/jsx-curly-brace-presence': ['error', { props: 'never', children: 'never' }],
     'react/prop-types': 0,
     'react/sort-comp': 0,
+    'react/jsx-one-expression-per-line': 0,
+    'react/jsx-curly-newline': 0,
+    'react/jsx-indent': 0,
     // Too restrictive: https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/destructuring-assignment.md
     'react/destructuring-assignment': 0,
     // No jsx extension: https://github.com/facebook/create-react-app/issues/87#issuecomment-234627904
