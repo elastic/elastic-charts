@@ -60,5 +60,5 @@ export const Color = forwardRef<HTMLDivElement, ColorProps>(
         </div>
       </div>
     );
-  }
+  },
 );

@@ -31,11 +31,24 @@ import {
 import { boolean } from '@storybook/addon-knobs';
 import React, { useState } from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings, LegendAction, XYChartSeriesIdentifier, LegendColorPicker } from '../../src';
+import {
+  Axis,
+  BarSeries,
+  Chart,
+  Position,
+  ScaleType,
+  Settings,
+  LegendAction,
+  XYChartSeriesIdentifier,
+  LegendColorPicker,
+} from '../../src';
 import * as TestDatasets from '../../src/utils/data_samples/test_dataset';
 import { getPositionKnob, getEuiPopoverPositionKnob } from '../utils/knobs';
 
-const getAction = (hideActions: boolean, anchorPosition: PopoverAnchorPosition): LegendAction => ({ series, label }) => {
+const getAction = (hideActions: boolean, anchorPosition: PopoverAnchorPosition): LegendAction => ({
+  series,
+  label,
+}) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
 
   const getPanels = (series: XYChartSeriesIdentifier): EuiContextMenuPanelDescriptor[] => [
@@ -113,21 +126,18 @@ const getAction = (hideActions: boolean, anchorPosition: PopoverAnchorPosition):
       withTitle
       anchorPosition={anchorPosition}
     >
-      <EuiContextMenu
-        initialPanelId={0}
-        panels={getPanels(series as XYChartSeriesIdentifier)}
-      />
+      <EuiContextMenu initialPanelId={0} panels={getPanels(series as XYChartSeriesIdentifier)} />
     </EuiPopover>
   );
 };
 
-const renderColorPicker = (anchorPosition: PopoverAnchorPosition): LegendColorPicker => ({ anchor, color, onClose, onChange }) => (
-  <EuiWrappingPopover
-    isOpen
-    button={anchor}
-    closePopover={onClose}
-    anchorPosition={anchorPosition}
-  >
+const renderColorPicker = (anchorPosition: PopoverAnchorPosition): LegendColorPicker => ({
+  anchor,
+  color,
+  onClose,
+  onChange,
+}) => (
+  <EuiWrappingPopover isOpen button={anchor} closePopover={onClose} anchorPosition={anchorPosition}>
     <EuiColorPicker display="inline" color={color} onChange={onChange} />
     <EuiSpacer size="m" />
     <EuiButton fullWidth size="s" onClick={onClose}>
