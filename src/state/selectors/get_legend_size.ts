@@ -40,8 +40,8 @@ const VERTICAL_PADDING = 4;
 
 /** @internal */
 export type LegendSizing = BBox & {
-  margin: number,
-  position: Position,
+  margin: number;
+  position: Position;
 };
 
 /** @internal */
@@ -79,7 +79,8 @@ export const getLegendSizeSelector = createCachedSelector(
     if (!showLegend) {
       return { width: 0, height: 0, margin: 0, position };
     }
-    const legendItemWidth = MARKER_WIDTH + MARKER_LEFT_MARGIN + bbox.width + (showLegendDisplayValue ? VALUE_LEFT_MARGIN : 0);
+    const legendItemWidth =
+      MARKER_WIDTH + MARKER_LEFT_MARGIN + bbox.width + (showLegendDisplayValue ? VALUE_LEFT_MARGIN : 0);
     if (isVerticalAxis(position)) {
       const legendItemHeight = bbox.height + VERTICAL_PADDING * 2;
       return {

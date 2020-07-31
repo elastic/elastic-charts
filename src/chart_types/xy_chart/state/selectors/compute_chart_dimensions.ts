@@ -39,24 +39,23 @@ export const computeChartDimensionsSelector = createCachedSelector(
     getAxesStylesSelector,
     getLegendSizeSelector,
   ],
-  (
-    chartContainerDimensions,
-    chartTheme,
-    axesTicksDimensions,
-    axesSpecs,
-    axesStyles,
-    legendSize,
-  ): ChartDimensions => computeChartDimensions(
-    chartContainerDimensions,
-    chartTheme,
-    axesTicksDimensions,
-    axesStyles,
-    axesSpecs,
-    getLegendDimension(legendSize),
-  ),
+  (chartContainerDimensions, chartTheme, axesTicksDimensions, axesSpecs, axesStyles, legendSize): ChartDimensions =>
+    computeChartDimensions(
+      chartContainerDimensions,
+      chartTheme,
+      axesTicksDimensions,
+      axesStyles,
+      axesSpecs,
+      getLegendDimension(legendSize),
+    ),
 )(getChartIdSelector);
 
-function getLegendDimension({ position, width, height, margin }: LegendSizing): {
+function getLegendDimension({
+  position,
+  width,
+  height,
+  margin,
+}: LegendSizing): {
   top: number;
   left: number;
 } {

@@ -37,21 +37,11 @@ export const getTooltipAnchorPositionSelector = createCachedSelector(
     getProjectedPointerPositionSelector,
     getLegendSizeSelector,
   ],
-  (
-    chartDimensions,
-    settings,
-    cursorBandPosition,
-    projectedPointerPosition,
-  ): TooltipAnchorPosition | null => {
+  (chartDimensions, settings, cursorBandPosition, projectedPointerPosition): TooltipAnchorPosition | null => {
     if (!cursorBandPosition) {
       return null;
     }
 
-    return getTooltipAnchorPosition(
-      chartDimensions,
-      settings.rotation,
-      cursorBandPosition,
-      projectedPointerPosition,
-    );
+    return getTooltipAnchorPosition(chartDimensions, settings.rotation, cursorBandPosition, projectedPointerPosition);
   },
 )(getChartIdSelector);
