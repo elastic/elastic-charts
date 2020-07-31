@@ -23,6 +23,7 @@ import { Rotation } from '../../../utils/commons';
 import { Dimensions } from '../../../utils/dimensions';
 import { Point } from '../../../utils/point';
 import { isHorizontalRotation, isVerticalRotation } from '../state/utils/common';
+import { ChartDimensions } from '../utils/dimensions';
 
 export interface SnappedPosition {
   position: number;
@@ -168,28 +169,24 @@ export function getCursorBandPosition(
 
 /** @internal */
 export function getTooltipAnchorPosition(
-  chartDimensions: Dimensions,
+  { chartDimensions, globalChartDimensions }: ChartDimensions,
   chartRotation: Rotation,
   cursorBandPosition: Dimensions,
   cursorPosition: { x: number; y: number },
-  legendDimension: {
-    top: number,
-    left: number,
-  },
 ): TooltipAnchorPosition {
   const isRotated = isVerticalRotation(chartRotation);
   const hPosition = getHorizontalTooltipPosition(
     cursorPosition.x,
     cursorBandPosition,
     chartDimensions,
-    legendDimension.left,
+    globalChartDimensions.left,
     isRotated,
   );
   const vPosition = getVerticalTooltipPosition(
     cursorPosition.y,
     cursorBandPosition,
     chartDimensions,
-    legendDimension.top,
+    globalChartDimensions.top,
     isRotated,
   );
   return {
@@ -203,19 +200,19 @@ function getHorizontalTooltipPosition(
   cursorXPosition: number,
   cursorBandPosition: Dimensions,
   chartDimensions: Dimensions,
-  legendDimension: number,
+  globalOffset: number,
   isRotated: boolean,
 ): { x0?: number; x1: number } {
   if (!isRotated) {
     return {
-      x0: cursorBandPosition.left + legendDimension,
-      x1: cursorBandPosition.left + cursorBandPosition.width + legendDimension,
+      x0: cursorBandPosition.left + globalOffset,
+      x1: cursorBandPosition.left + cursorBandPosition.width + globalOffset,
     };
   }
   return {
     // NOTE: x0 set to zero blocks tooltip placement on left when rotated 90 deg
     // Delete this comment before merging and verifing this doesn't break anything.
-    x1: chartDimensions.left + cursorXPosition + legendDimension,
+    x1: chartDimensions.left + cursorXPosition + globalOffset,
   };
 }
 
@@ -223,21 +220,21 @@ function getVerticalTooltipPosition(
   cursorYPosition: number,
   cursorBandPosition: Dimensions,
   chartDimensions: Dimensions,
-  legendDimension: number,
+  globalOffset: number,
   isRotated: boolean,
 ): {
   y0: number;
   y1: number;
 } {
   if (!isRotated) {
-    const y = cursorYPosition + chartDimensions.top + legendDimension;
+    const y = cursorYPosition + chartDimensions.top + globalOffset;
     return {
       y0: y,
       y1: y,
     };
   }
   return {
-    y0: cursorBandPosition.top + legendDimension,
-    y1: cursorBandPosition.height + cursorBandPosition.top + legendDimension,
+    y0: cursorBandPosition.top + globalOffset,
+    y1: cursorBandPosition.height + cursorBandPosition.top + globalOffset,
   };
 }

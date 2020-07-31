@@ -21,9 +21,8 @@ import createCachedSelector from 're-reselect';
 
 import { TooltipAnchorPosition } from '../../../../components/tooltip/types';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { getLegendSizeSelector, LegendSizing } from '../../../../state/selectors/get_legend_size';
+import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_size';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { Position } from '../../../../utils/commons';
 import { getTooltipAnchorPosition } from '../../crosshair/crosshair_utils';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getCursorBandPositionSelector } from './get_cursor_band';
@@ -39,40 +38,20 @@ export const getTooltipAnchorPositionSelector = createCachedSelector(
     getLegendSizeSelector,
   ],
   (
-    { chartDimensions },
+    chartDimensions,
     settings,
     cursorBandPosition,
     projectedPointerPosition,
-    legendSize,
   ): TooltipAnchorPosition | null => {
     if (!cursorBandPosition) {
       return null;
     }
+
     return getTooltipAnchorPosition(
       chartDimensions,
       settings.rotation,
       cursorBandPosition,
       projectedPointerPosition,
-      getLegendDimension(legendSize),
     );
   },
 )(getChartIdSelector);
-
-function getLegendDimension({ position, width, height, margin }: LegendSizing): {
-  top: number;
-  left: number;
-} {
-  let left = 0;
-  let top = 0;
-
-  if (position === Position.Left) {
-    left = width + margin * 2;
-  } else if (position === Position.Top) {
-    top = height + margin * 2;
-  }
-
-  return {
-    left,
-    top,
-  };
-}
