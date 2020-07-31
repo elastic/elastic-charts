@@ -212,6 +212,8 @@ export interface LegendActionProps {
 /**
  * Legend action component used to render actions next to legend items
  *
+ * render slot is constrained to 20px x 16px
+ *
  * @public
  */
 export type LegendAction = ComponentType<LegendActionProps>;

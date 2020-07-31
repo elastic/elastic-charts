@@ -72,13 +72,13 @@ export const getLegendSizeSelector = createCachedSelector(
     if (!showLegend) {
       return { width: 0, height: 0, margin: 0 };
     }
-    const actionPadding = isDefined(legendAction) ? 4 : 0; // euiSizeXS padding between action and label
+    const actionDimension = isDefined(legendAction) ? 24 : 0; // max width plus margin
     const legendItemWidth =
       MARKER_WIDTH + MARKER_LEFT_MARGIN + bbox.width + (showLegendDisplayValue ? VALUE_LEFT_MARGIN : 0);
     if (isVerticalAxis(legendPosition)) {
       const legendItemHeight = bbox.height + VERTICAL_PADDING * 2;
       return {
-        width: Math.floor(Math.min(legendItemWidth + spacingBuffer + actionPadding, verticalWidth)),
+        width: Math.floor(Math.min(legendItemWidth + spacingBuffer + actionDimension, verticalWidth)),
         height: legendItemHeight,
         margin,
       };
@@ -86,7 +86,7 @@ export const getLegendSizeSelector = createCachedSelector(
     const isSingleLine = (parentDimensions.width - 20) / 200 > labels.length;
     return {
       height: isSingleLine ? bbox.height + 16 : bbox.height * 2 + 24,
-      width: Math.floor(Math.min(legendItemWidth + spacingBuffer + actionPadding, verticalWidth)),
+      width: Math.floor(Math.min(legendItemWidth + spacingBuffer + actionDimension, verticalWidth)),
       margin,
     };
   },

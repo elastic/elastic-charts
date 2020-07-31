@@ -18,7 +18,7 @@
  */
 
 import classNames from 'classnames';
-import React, { MouseEventHandler, forwardRef } from 'react';
+import React, { MouseEventHandler, forwardRef, memo } from 'react';
 
 import { Icon } from '../icons/icon';
 
@@ -33,8 +33,8 @@ interface ColorProps {
  * Color component used by the legend item
  * @internal
  */
-export const Color = forwardRef<HTMLDivElement, ColorProps>(
-  ({ color, isSeriesHidden = false, hasColorPicker, onClick }, ref) => {
+export const Color = memo(
+  forwardRef<HTMLDivElement, ColorProps>(({ color, isSeriesHidden = false, hasColorPicker, onClick }, ref) => {
     if (isSeriesHidden) {
       return (
         <div className="echLegendItem__color" aria-label="series hidden" title="series hidden">
@@ -60,5 +60,6 @@ export const Color = forwardRef<HTMLDivElement, ColorProps>(
         </div>
       </div>
     );
-  },
+  }),
 );
+Color.displayName = 'Color';

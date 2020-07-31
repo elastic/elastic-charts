@@ -26,6 +26,8 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
     justify-content: center;
     align-items: center;
     margin-left: $euiSizeXS;
+    height: 16px;
+    width: 20px;
   }
 
   &__color {
