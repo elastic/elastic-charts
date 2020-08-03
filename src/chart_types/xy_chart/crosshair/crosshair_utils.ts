@@ -169,7 +169,7 @@ export function getCursorBandPosition(
 
 /** @internal */
 export function getTooltipAnchorPosition(
-  { chartDimensions, globalChartDimensions }: ChartDimensions,
+  { chartDimensions, offset }: ChartDimensions,
   chartRotation: Rotation,
   cursorBandPosition: Dimensions,
   cursorPosition: { x: number; y: number },
@@ -179,14 +179,14 @@ export function getTooltipAnchorPosition(
     cursorPosition.x,
     cursorBandPosition,
     chartDimensions,
-    globalChartDimensions.left,
+    offset.left,
     isRotated,
   );
   const vPosition = getVerticalTooltipPosition(
     cursorPosition.y,
     cursorBandPosition,
     chartDimensions,
-    globalChartDimensions.top,
+    offset.top,
     isRotated,
   );
   return {

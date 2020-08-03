@@ -211,6 +211,10 @@ describe('Computed chart dimensions', () => {
         top: 20,
       },
       leftMargin: 10,
+      offset: {
+        top: 0,
+        left: 0,
+      },
     };
 
     expect(chartDimensions).toEqual(expectedDims);

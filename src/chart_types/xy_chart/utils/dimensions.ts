@@ -36,7 +36,7 @@ export interface ChartDimensions {
   /**
    * Dimensions relative to echChart element
    */
-  globalChartDimensions: {
+  offset: {
     top: number;
     left: number;
   };
@@ -75,7 +75,7 @@ export function computeChartDimensions(
         top: 0,
       },
       leftMargin: 0,
-      globalChartDimensions: {
+      offset: {
         left: 0,
         top: 0,
       },
@@ -146,7 +146,7 @@ export function computeChartDimensions(
       width: chartWidth - chartPaddings.left - chartPaddings.right,
       height: chartHeight - chartPaddings.top - chartPaddings.bottom,
     },
-    globalChartDimensions: {
+    offset: {
       top: legendSizing.top,
       left: legendSizing.left,
     },
