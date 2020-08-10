@@ -16,16 +16,48 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
+/* eslint-disable no-console */
 import React from 'react';
 
-import { Example } from '../stories/sunburst/15_single_sunburst';
+import { Chart, Heatmap, Settings } from '../src';
+import { BABYNAME_DATA } from '../src/utils/data_samples/babynames';
 
 export class Playground extends React.Component {
   render() {
     return (
-      <div className="testing">
-        <div className="chart">{Example()}</div>
+      <div className="chart">
+        <Chart>
+          <Settings onElementClick={console.log} />
+          <Heatmap
+            id="heatmap"
+            // ranges={[0, 1000]}
+            colors={['green', 'yellow', 'red']}
+            data={BABYNAME_DATA.filter(([year]) => year > 1950)}
+            xAccessor={(d) => d[2]}
+            yAccessor={(d) => d[0]}
+            valueAccessor={(d) => d[3]}
+            valueFormatter={(value) => value.toFixed(0.2)}
+            xSortPredicate="alphaAsc"
+            config={{
+              grid: {
+                cellHeight: {
+                  max: 30, // 'fill',
+                },
+              },
+              cell: {
+                maxWidth: 'fill',
+                maxHeight: 'fill',
+                label: {
+                  visible: true,
+                },
+                border: {
+                  stroke: 'white',
+                  strokeWidth: 0.5,
+                },
+              },
+            }}
+          />
+        </Chart>
       </div>
     );
   }
