@@ -20,6 +20,7 @@
 import React, { ComponentType } from 'react';
 
 import { Spec } from '.';
+import { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import { DomainRange } from '../chart_types/xy_chart/utils/specs';
@@ -52,9 +53,14 @@ export interface XYBrushArea {
 
 export type XYChartElementEvent = [GeometryValue, XYChartSeriesIdentifier];
 export type PartitionElementEvent = [Array<LayerValue>, SeriesIdentifier];
+export type HeatmapElementEvent = [Cell, SeriesIdentifier];
 
-export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent>) => void;
-export type ElementOverListener = (elements: Array<XYChartElementEvent | PartitionElementEvent>) => void;
+export type ElementClickListener = (
+  elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent>,
+) => void;
+export type ElementOverListener = (
+  elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent>,
+) => void;
 export type BrushEndListener = (brushArea: XYBrushArea) => void;
 export type LegendItemListener = (series: SeriesIdentifier | null) => void;
 export type PointerUpdateListener = (event: PointerEvent) => void;

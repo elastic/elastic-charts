@@ -17,15 +17,14 @@
  * under the License.
  */
 
-import { $Values } from 'utility-types';
+import { ChartTypes } from '../../..';
+import { SpecTypes } from '../../../../specs/constants';
+import { GlobalChartState } from '../../../../state/chart_state';
+import { getSpecsFromStore } from '../../../../state/utils';
+import { HeatmapSpec } from '../../specs/heatmap';
 
-export const ChartTypes = Object.freeze({
-  Global: 'global' as const,
-  Goal: 'goal' as const,
-  Partition: 'partition' as const,
-  XYAxis: 'xy_axis' as const,
-  Heatmap: 'heatmap' as const,
-});
-
-/** @public */
-export type ChartTypes = $Values<typeof ChartTypes>;
+/** @internal */
+export function getSpecOrNull(state: GlobalChartState): HeatmapSpec | null {
+  const specs = getSpecsFromStore<HeatmapSpec>(state.specs, ChartTypes.Heatmap, SpecTypes.Series);
+  return specs.length > 0 ? specs[0] : null;
+}

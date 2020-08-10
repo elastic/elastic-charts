@@ -16,16 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { Config } from '../types/config_types';
 
-import { $Values } from 'utility-types';
+export function getGridCellHeight(yValues: Array<string | number>, config: Config): number {
+  const { height, grid } = config;
+  if (yValues.length === 0) {
+    return height;
+  }
+  const stretchedHeight = height / yValues.length;
 
-export const ChartTypes = Object.freeze({
-  Global: 'global' as const,
-  Goal: 'goal' as const,
-  Partition: 'partition' as const,
-  XYAxis: 'xy_axis' as const,
-  Heatmap: 'heatmap' as const,
-});
+  if (stretchedHeight < grid.cellHeight.min) {
+    return grid.cellHeight.min;
+  }
+  if (grid.cellHeight.max !== 'fill' && stretchedHeight > grid.cellHeight.max) {
+    return grid.cellHeight.max;
+  }
 
-/** @public */
-export type ChartTypes = $Values<typeof ChartTypes>;
+  return stretchedHeight;
+}

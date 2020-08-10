@@ -17,15 +17,22 @@
  * under the License.
  */
 
-import { $Values } from 'utility-types';
+import createCachedSelector from 're-reselect';
 
-export const ChartTypes = Object.freeze({
-  Global: 'global' as const,
-  Goal: 'goal' as const,
-  Partition: 'partition' as const,
-  XYAxis: 'xy_axis' as const,
-  Heatmap: 'heatmap' as const,
-});
+import { GlobalChartState } from '../../../../state/chart_state';
+import { Cell } from '../../layout/types/viewmodel_types';
+import { geometries } from './geometries';
 
-/** @public */
-export type ChartTypes = $Values<typeof ChartTypes>;
+function getCurrentPointerPosition(state: GlobalChartState) {
+  return state.interactions.pointer.current.position;
+}
+
+/** @internal */
+export const getPickedShapes = createCachedSelector(
+  [geometries, getCurrentPointerPosition],
+  (geoms, pointerPosition): Cell[] => {
+    const picker = geoms.pickQuads;
+    const { x, y } = pointerPosition;
+    return picker(x, y);
+  },
+)((state) => state.chartId);

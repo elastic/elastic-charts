@@ -17,15 +17,4 @@
  * under the License.
  */
 
-import { $Values } from 'utility-types';
-
-export const ChartTypes = Object.freeze({
-  Global: 'global' as const,
-  Goal: 'goal' as const,
-  Partition: 'partition' as const,
-  XYAxis: 'xy_axis' as const,
-  Heatmap: 'heatmap' as const,
-});
-
-/** @public */
-export type ChartTypes = $Values<typeof ChartTypes>;
+export { Heatmap, HeatmapSpec } from './heatmap';
