@@ -37,7 +37,7 @@ export const Example = () => {
     return null;
   };
 
-  const lineColor = color('linelineSeriesColor', '#ff0');
+  const lineColor = color('lineSeriesColor', '#ff0');
   const lineSeriesColorAccessor: SeriesColorAccessor = ({ specId, yAccessor, splitAccessors }) => {
     if (specId === 'lines' && yAccessor === 'y1' && splitAccessors.size === 0) {
       return lineColor;

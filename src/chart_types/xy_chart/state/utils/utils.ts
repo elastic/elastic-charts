@@ -102,6 +102,8 @@ export function getCustomSeriesColors(
   const updatedCustomSeriesColors = new Map<SeriesKey, Color>();
   const counters = new Map<SpecId, number>();
 
+  let allSeries: XYChartSeriesIdentifier[] | null = null;
+
   seriesCollection.forEach(({ seriesIdentifier }, seriesKey) => {
     const spec = getSpecsById(seriesSpecs, seriesIdentifier.specId);
 
@@ -117,7 +119,16 @@ export function getCustomSeriesColors(
         color = spec.color;
       } else {
         const counter = counters.get(seriesIdentifier.specId) || 0;
-        color = Array.isArray(spec.color) ? spec.color[counter % spec.color.length] : spec.color(seriesIdentifier);
+
+        if (Array.isArray(spec.color)) {
+          color = spec.color[counter % spec.color.length];
+        } else {
+          if (!allSeries) {
+            allSeries = [...seriesCollection.values()].map(({ seriesIdentifier: si }) => si);
+          }
+
+          color = spec.color(seriesIdentifier, allSeries);
+        }
         counters.set(seriesIdentifier.specId, counter + 1);
       }
     }

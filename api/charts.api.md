@@ -1195,7 +1195,7 @@ export interface SeriesAccessors {
 export type SeriesColorAccessor = string | SeriesColorsArray | SeriesColorAccessorFn;
 
 // @public (undocumented)
-export type SeriesColorAccessorFn = (seriesIdentifier: XYChartSeriesIdentifier) => string | null;
+export type SeriesColorAccessorFn = (seriesIdentifier: XYChartSeriesIdentifier, allSeries: XYChartSeriesIdentifier[]) => string | null;
 
 // @public (undocumented)
 export type SeriesColorsArray = string[];

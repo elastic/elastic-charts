@@ -402,7 +402,10 @@ export interface Postfixes {
 /** @public */
 export type SeriesColorsArray = string[];
 /** @public */
-export type SeriesColorAccessorFn = (seriesIdentifier: XYChartSeriesIdentifier) => string | null;
+export type SeriesColorAccessorFn = (
+  seriesIdentifier: XYChartSeriesIdentifier,
+  allSeries: XYChartSeriesIdentifier[],
+) => string | null;
 /** @public */
 export type SeriesColorAccessor = string | SeriesColorsArray | SeriesColorAccessorFn;
 
