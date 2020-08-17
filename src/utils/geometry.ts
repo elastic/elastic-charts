@@ -71,6 +71,10 @@ export interface BarGeometry {
   y: number;
   width: number;
   height: number;
+  transform: {
+    x: number;
+    y: number;
+  };
   color: Color;
   displayValue?: {
     text: any;

@@ -78,8 +78,8 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
             return (
               <rect
                 key={i}
-                x={x}
-                y={y}
+                x={x + geom.transform.x}
+                y={y + geom.transform.y}
                 width={geom.width}
                 height={geom.height}
                 className="echHighlighterOverlay__fill"

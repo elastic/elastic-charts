@@ -26,13 +26,13 @@ import { AxisStyle } from '../../../../utils/themes/theme';
 import { stringToRGB } from '../../../partition_chart/layout/utils/color_library_wrappers';
 import { getSpecsById } from '../../state/utils/spec';
 import { isVerticalGrid } from '../../utils/axis_type_utils';
-import { AxisLinePosition } from '../../utils/axis_utils';
+import { AxisGeometry, AxisLinePosition } from '../../utils/axis_utils';
 import { AxisSpec } from '../../utils/specs';
 import { renderMultiLine, MIN_STROKE_WIDTH } from './primitives/line';
 
 interface GridProps {
   sharedAxesStyle: AxisStyle;
-  axesGridLinesPositions: Map<AxisId, AxisLinePosition[]>;
+  axesGeometries: AxisGeometry[];
   axesSpecs: AxisSpec[];
   chartDimensions: Dimensions;
   axesStyles: Map<string, AxisStyle | null>;
@@ -40,12 +40,13 @@ interface GridProps {
 
 /** @internal */
 export function renderGrids(ctx: CanvasRenderingContext2D, props: GridProps) {
-  const { axesGridLinesPositions, axesSpecs, chartDimensions, sharedAxesStyle, axesStyles } = props;
+  const { axesGeometries, axesSpecs, chartDimensions, sharedAxesStyle, axesStyles } = props;
   withContext(ctx, (ctx) => {
     ctx.translate(chartDimensions.left, chartDimensions.top);
-    axesGridLinesPositions.forEach((axisGridLinesPositions, axisId) => {
+    axesGeometries.forEach((axisGeometry) => {
+      const { axisId, gridLinePositions } = axisGeometry;
       const axisSpec = getSpecsById<AxisSpec>(axesSpecs, axisId);
-      if (axisSpec && axisGridLinesPositions.length > 0) {
+      if (axisSpec && gridLinePositions.length > 0) {
         const axisStyle = axesStyles.get(axisSpec.id) ?? sharedAxesStyle;
         const themeConfig = isVerticalGrid(axisSpec.position)
           ? axisStyle.gridLine.vertical
@@ -64,7 +65,7 @@ export function renderGrids(ctx: CanvasRenderingContext2D, props: GridProps) {
           width: gridLine.strokeWidth,
           dash: gridLine.dash,
         };
-        const lines = axisGridLinesPositions.map<Line>(([x1, y1, x2, y2]) => ({ x1, y1, x2, y2 }));
+        const lines = gridLinePositions.map<Line>(([x1, y1, x2, y2]) => ({ x1, y1, x2, y2 }));
         renderMultiLine(ctx, lines, stroke);
       }
     });

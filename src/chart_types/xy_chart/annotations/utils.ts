@@ -22,6 +22,7 @@ import { Rotation, Position } from '../../../utils/commons';
 import { Dimensions } from '../../../utils/dimensions';
 import { AnnotationId, GroupId } from '../../../utils/ids';
 import { Point } from '../../../utils/point';
+import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
 import { isHorizontalRotation } from '../state/utils/common';
 import { getAxesSpecForSpecId } from '../state/utils/spec';
 import {
@@ -139,6 +140,7 @@ export function computeAnnotationDimensions(
   xScale: Scale,
   axesSpecs: AxisSpec[],
   isHistogramModeEnabled: boolean,
+  smallMultipleScales: SmallMultipleScales,
 ): Map<AnnotationId, AnnotationDimensions> {
   const annotationDimensions = new Map<AnnotationId, AnnotationDimensions>();
 
@@ -155,6 +157,7 @@ export function computeAnnotationDimensions(
         yScales,
         xScale,
         isHistogramModeEnabled,
+        smallMultipleScales,
         annotationAxisPosition,
       );
 
@@ -162,7 +165,13 @@ export function computeAnnotationDimensions(
         annotationDimensions.set(id, dimensions);
       }
     } else if (isRectAnnotation(annotationSpec)) {
-      const dimensions = computeRectAnnotationDimensions(annotationSpec, yScales, xScale, isHistogramModeEnabled);
+      const dimensions = computeRectAnnotationDimensions(
+        annotationSpec,
+        yScales,
+        xScale,
+        smallMultipleScales,
+        isHistogramModeEnabled,
+      );
 
       if (dimensions) {
         annotationDimensions.set(id, dimensions);

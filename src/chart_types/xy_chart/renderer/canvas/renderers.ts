@@ -51,11 +51,9 @@ export function renderXYChartCanvas2d(
       highlightedLegendItem,
       annotationDimensions,
       annotationSpecs,
-      axisTickPositions,
+      axesGeometries,
       axesSpecs,
-      axesTicksDimensions,
       axesStyles,
-      axesGridLinesPositions,
       debug,
     } = props;
     const transform = {
@@ -72,10 +70,8 @@ export function renderXYChartCanvas2d(
 
       (ctx: CanvasRenderingContext2D) => {
         renderAxes(ctx, {
-          axesPositions: axisTickPositions.axisPositions,
           axesSpecs,
-          axesTicksDimensions,
-          axesVisibleTicks: axisTickPositions.axisVisibleTicks,
+          axesGeometries,
           chartDimensions,
           debug,
           axesStyles,
@@ -86,7 +82,7 @@ export function renderXYChartCanvas2d(
         renderGrids(ctx, {
           axesSpecs,
           chartDimensions,
-          axesGridLinesPositions,
+          axesGeometries,
           axesStyles,
           sharedAxesStyle: theme.axes,
         });

@@ -24,7 +24,7 @@ import { isVerticalAxis } from '../../../utils/axis_type_utils';
 /** @internal */
 export function renderLine(
   ctx: CanvasRenderingContext2D,
-  { axisSpec: { position }, axisPosition, axisStyle: { axisLine } }: AxisProps,
+  { axisSpec: { position }, position: axisPosition, axisStyle: { axisLine } }: AxisProps,
 ) {
   if (!axisLine.visible) {
     return;

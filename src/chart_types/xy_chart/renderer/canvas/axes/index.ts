@@ -22,7 +22,7 @@ import { Dimensions } from '../../../../../utils/dimensions';
 import { AxisId } from '../../../../../utils/ids';
 import { AxisStyle } from '../../../../../utils/themes/theme';
 import { getSpecsById } from '../../../state/utils/spec';
-import { AxisTick, AxisTicksDimensions, shouldShowTicks } from '../../../utils/axis_utils';
+import { AxisGeometry, AxisTick, AxisTicksDimensions, shouldShowTicks } from '../../../utils/axis_utils';
 import { AxisSpec } from '../../../utils/specs';
 import { renderDebugRect } from '../utils/debug';
 import { renderLine } from './line';
@@ -34,8 +34,8 @@ import { renderTitle } from './title';
 export interface AxisProps {
   axisStyle: AxisStyle;
   axisSpec: AxisSpec;
-  axisTicksDimensions: AxisTicksDimensions;
-  axisPosition: Dimensions;
+  position: Dimensions;
+  dimension: AxisTicksDimensions;
   ticks: AxisTick[];
   debug: boolean;
   chartDimensions: Dimensions;
@@ -43,10 +43,8 @@ export interface AxisProps {
 
 /** @internal */
 export interface AxesProps {
-  axesVisibleTicks: Map<AxisId, AxisTick[]>;
   axesSpecs: AxisSpec[];
-  axesTicksDimensions: Map<AxisId, AxisTicksDimensions>;
-  axesPositions: Map<AxisId, Dimensions>;
+  axesGeometries: AxisGeometry[];
   axesStyles: Map<string, AxisStyle | null>;
   sharedAxesStyle: AxisStyle;
   debug: boolean;
@@ -55,22 +53,12 @@ export interface AxesProps {
 
 /** @internal */
 export function renderAxes(ctx: CanvasRenderingContext2D, props: AxesProps) {
-  const {
-    axesVisibleTicks,
-    axesSpecs,
-    axesTicksDimensions,
-    axesPositions,
-    axesStyles,
-    sharedAxesStyle,
-    debug,
-    chartDimensions,
-  } = props;
-  axesVisibleTicks.forEach((ticks, axisId) => {
+  const { axesSpecs, axesGeometries, axesStyles, sharedAxesStyle, debug, chartDimensions } = props;
+  axesGeometries.forEach((geometry) => {
+    const { axisId, position, dimension, visibleTicks: ticks } = geometry;
     const axisSpec = getSpecsById<AxisSpec>(axesSpecs, axisId);
-    const axisTicksDimensions = axesTicksDimensions.get(axisId);
-    const axisPosition = axesPositions.get(axisId);
 
-    if (!ticks || !axisSpec || !axisTicksDimensions || !axisPosition || axisSpec.hide) {
+    if (!axisSpec || !dimension || !position || axisSpec.hide) {
       return;
     }
 
@@ -78,8 +66,8 @@ export function renderAxes(ctx: CanvasRenderingContext2D, props: AxesProps) {
 
     renderAxis(ctx, {
       axisSpec,
-      axisTicksDimensions,
-      axisPosition,
+      position,
+      dimension,
       ticks,
       axisStyle,
       debug,
@@ -90,15 +78,15 @@ export function renderAxes(ctx: CanvasRenderingContext2D, props: AxesProps) {
 
 function renderAxis(ctx: CanvasRenderingContext2D, props: AxisProps) {
   withContext(ctx, (ctx) => {
-    const { ticks, axisPosition, debug, axisStyle, axisSpec } = props;
+    const { ticks, position, debug, axisStyle, axisSpec } = props;
     const showTicks = shouldShowTicks(axisStyle.tickLine, axisSpec.hide);
-    ctx.translate(axisPosition.left, axisPosition.top);
+    ctx.translate(position.left, position.top);
     if (debug) {
       renderDebugRect(ctx, {
         x: 0,
         y: 0,
-        width: axisPosition.width,
-        height: axisPosition.height,
+        width: position.width,
+        height: position.height,
       });
     }
 

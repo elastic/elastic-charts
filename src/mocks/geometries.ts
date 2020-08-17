@@ -85,6 +85,10 @@ export class MockBarGeometry {
       datum: { x: 0, y: 0 },
     },
     seriesStyle: barSeriesStyle,
+    transform: {
+      x: 0,
+      y: 0,
+    },
   };
 
   static default(partial?: RecursivePartial<BarGeometry>) {

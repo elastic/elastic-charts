@@ -17,20 +17,17 @@
  * under the License.
  */
 import { ScaleType } from '../../../scales/constants';
-import { SpecId, GroupId } from '../../../utils/ids';
+import { GroupId } from '../../../utils/ids';
 import { YBasicSeriesSpec } from '../domains/y_domain';
-import { getSpecsById } from '../state/utils/spec';
 import { DataSeries } from './series';
-import { SeriesSpecs, StackMode, BasicSeriesSpec, isLineSeriesSpec, isAreaSeriesSpec } from './specs';
+import { StackMode, BasicSeriesSpec, isLineSeriesSpec, isAreaSeriesSpec } from './specs';
 
 /**
- * Fill missing x values in all data series
  * @internal
  */
 export function fillSeries(
-  series: Map<SpecId, DataSeries[]>,
+  dataSeries: DataSeries[],
   xValues: Set<string | number>,
-  seriesSpecs: SeriesSpecs,
   groupScaleType: ScaleType,
   specsByGroupIds: Map<
     GroupId,
@@ -40,25 +37,22 @@ export function fillSeries(
       nonStacked: YBasicSeriesSpec[];
     }
   >,
-): Map<SpecId, DataSeries[]> {
+): DataSeries[] {
   const sortedXValues = [...xValues.values()];
-  const filledSeries: Map<SpecId, DataSeries[]> = new Map();
-  series.forEach((dataSeries, key) => {
-    const spec = getSpecsById(seriesSpecs, key);
-    if (!spec) {
-      return;
-    }
-    const group = specsByGroupIds.get(spec.groupId);
-    if (!group) {
-      return;
-    }
-    const isStacked = Boolean(group.stacked.find(({ id }) => id === key));
-    const noFillRequired = isXFillNotRequired(spec, groupScaleType, isStacked);
+  return dataSeries
+    .map((series) => {
+      const { key, spec, data } = series;
+      const group = specsByGroupIds.get(spec.groupId);
+      if (!group) {
+        return undefined;
+      }
+      const isStacked = Boolean(group.stacked.find(({ id }) => id === key));
 
-    const filledDataSeries = dataSeries.map(({ data, ...rest }) => {
+      const noFillRequired = isXFillNotRequired(spec, groupScaleType, isStacked);
+
       if (data.length === xValues.size || noFillRequired) {
         return {
-          ...rest,
+          ...series,
           data,
         };
       }
@@ -89,13 +83,11 @@ export function fillSeries(
         });
       }
       return {
-        ...rest,
+        ...series,
         data: filledData,
       };
-    });
-    filledSeries.set(key, filledDataSeries);
-  });
-  return filledSeries;
+    })
+    .filter((d) => d) as DataSeries[];
 }
 
 function isXFillNotRequired(spec: BasicSeriesSpec, groupScaleType: ScaleType, isStacked: boolean) {

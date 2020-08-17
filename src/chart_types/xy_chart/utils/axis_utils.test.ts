@@ -983,12 +983,14 @@ describe('Axis computational utils', () => {
       axesStyles,
       xDomain,
       [yDomain],
+      [],
+      [],
       1,
       false,
       (v) => `${v}`,
     );
 
-    expect(axisTicksPosition.axisPositions.get(verticalAxisSpecWTitle.id)).toEqual({
+    expect(axisTicksPosition.find(({ axisId }) => axisId === verticalAxisSpecWTitle.id)).toEqual({
       top: 0,
       left: 10,
       width: 50,
@@ -1011,12 +1013,14 @@ describe('Axis computational utils', () => {
       axesStyles,
       xDomain,
       [yDomain],
+      [],
+      [],
       1,
       false,
       (v) => `${v}`,
     );
 
-    expect(axisTicksPosition.axisPositions.get(verticalAxisSpecWTitle.id)).toEqual({
+    expect(axisTicksPosition.find(({ axisId }) => axisId === verticalAxisSpecWTitle.id)).toEqual({
       top: 0,
       left: 10,
       width: 10,
@@ -1211,14 +1215,16 @@ describe('Axis computational utils', () => {
       axisStyles,
       xDomain,
       [yDomain],
+      [],
+      [],
       1,
       false,
       (v) => `${v}`,
     );
-    expect(axisTicksPosition.axisPositions.size).toBe(0);
-    expect(axisTicksPosition.axisTicks.size).toBe(0);
-    expect(axisTicksPosition.axisGridLinesPositions.size).toBe(0);
-    expect(axisTicksPosition.axisVisibleTicks.size).toBe(0);
+    expect(axisTicksPosition).toHaveLength(0);
+    // expect(axisTicksPosition.axisTicks.size).toBe(0);
+    // expect(axisTicksPosition.axisGridLinesPositions.size).toBe(0);
+    // expect(axisTicksPosition.axisVisibleTicks.size).toBe(0);
   });
 
   test('should compute axis ticks positions', () => {
@@ -1241,6 +1247,8 @@ describe('Axis computational utils', () => {
       axisStyles,
       xDomain,
       [yDomain],
+      [],
+      [],
       1,
       false,
       (v) => `${v}`,
@@ -1260,7 +1268,9 @@ describe('Axis computational utils', () => {
       [0, 100, 100, 100],
     ];
 
-    expect(axisTicksPosition.axisGridLinesPositions.get(verticalAxisSpec.id)).toEqual(expectedVerticalAxisGridLines);
+    expect(axisTicksPosition.find(({ axisId }) => axisId === verticalAxisSpec.id)).toEqual(
+      expectedVerticalAxisGridLines,
+    );
 
     const axisTicksPositionWithTopLegend = getAxisTicksPositions(
       {
@@ -1274,6 +1284,8 @@ describe('Axis computational utils', () => {
       axisStyles,
       xDomain,
       [yDomain],
+      [],
+      [],
       1,
       false,
       (v) => `${v}`,
@@ -1285,7 +1297,9 @@ describe('Axis computational utils', () => {
       left: 100,
       top: 0,
     };
-    const verticalAxisWithTopLegendPosition = axisTicksPositionWithTopLegend.axisPositions.get(verticalAxisSpec.id);
+    const verticalAxisWithTopLegendPosition = axisTicksPositionWithTopLegend.find(
+      ({ axisId }) => axisId === verticalAxisSpec.id,
+    );
     expect(verticalAxisWithTopLegendPosition).toEqual(expectedPositionWithTopLegend);
 
     const ungroupedAxisSpec = { ...verticalAxisSpec, groupId: 'foo' };
@@ -1303,6 +1317,8 @@ describe('Axis computational utils', () => {
         axisStyles,
         xDomain,
         [yDomain],
+        [],
+        [],
         1,
         false,
         (v) => `${v}`,
@@ -1708,6 +1724,8 @@ describe('Axis computational utils', () => {
         axesStyles,
         xDomain,
         [yDomain],
+        [],
+        [],
         1,
         false,
         customFotmatter,
@@ -1717,7 +1735,9 @@ describe('Axis computational utils', () => {
         .slice()
         .reverse()
         .map(customFotmatter);
-      expect(axisTicksPosition.axisTicks.get(verticalAxisSpec.id)!.map(({ label }) => label)).toEqual(expected);
+      expect(
+        axisTicksPosition.find(({ axisId }) => axisId === verticalAxisSpec.id)!.ticks.map(({ label }) => label),
+      ).toEqual(expected);
     });
 
     it('should not use custom formatter with x axis', () => {
@@ -1739,13 +1759,17 @@ describe('Axis computational utils', () => {
         axesStyles,
         xDomain,
         [yDomain],
+        [],
+        [],
         1,
         false,
         customFotmatter,
       );
 
       const expected = axis1Dims.tickValues.slice().map(defaultTickFormatter);
-      expect(axisTicksPosition.axisTicks.get(horizontalAxisSpec.id)!.map(({ label }) => label)).toEqual(expected);
+      expect(
+        axisTicksPosition.find(({ axisId }) => axisId === horizontalAxisSpec.id)!.ticks.map(({ label }) => label),
+      ).toEqual(expected);
     });
 
     it('should use custom axis tick formatter to get labels for x axis', () => {
@@ -1772,13 +1796,17 @@ describe('Axis computational utils', () => {
         axesStyles,
         xDomain,
         [yDomain],
+        [],
+        [],
         1,
         false,
         customFotmatter,
       );
 
       const expected = axis1Dims.tickValues.slice().map(customAxisFotmatter);
-      expect(axisTicksPosition.axisTicks.get(spec.id)!.map(({ label }) => label)).toEqual(expected);
+      expect(axisTicksPosition.find(({ axisId }) => axisId === spec.id)!.ticks.map(({ label }) => label)).toEqual(
+        expected,
+      );
     });
   });
 });

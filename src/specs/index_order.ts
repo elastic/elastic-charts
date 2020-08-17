@@ -16,21 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import React from 'react';
 
+import { Spec } from '.';
 import { ChartTypes } from '../chart_types';
+import { getConnect, specComponentFactory } from '../state/spec_factory';
+import { SpecTypes } from './constants';
 
-export interface Spec {
-  /** unique Spec identifier */
-  id: string;
-  /** Chart type define the type of chart that use this spec */
-  chartType: ChartTypes;
-  /** The type of spec, can be series, axis, annotation, settings etc */
-  specType: string;
+export type IndexOrderBy = (spec: Spec, datum: any) => Array<string | number>;
+export type IndexOrderSort = Array<string | number>;
+
+export interface IndexOrderSpec extends Spec {
+  by: IndexOrderBy;
+  order: IndexOrderSort;
 }
+const DEFAULT_INDEX_ORDER_PROPS = {
+  chartType: ChartTypes.Global,
+  specType: SpecTypes.IndexOrder,
+};
 
-export * from './index_order';
-export * from './small_multiples';
+type DefaultIndexOrderProps = 'chartType' | 'specType';
 
-export * from './settings';
-export * from './constants';
-export * from '../chart_types/specs';
+export type IndexOrderProps = Pick<IndexOrderSpec, 'id' | 'by' | 'order'>;
+
+export const IndexOrder: React.FunctionComponent<IndexOrderProps> = getConnect()(
+  specComponentFactory<IndexOrderSpec, DefaultIndexOrderProps>(DEFAULT_INDEX_ORDER_PROPS),
+);

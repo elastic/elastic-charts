@@ -19,7 +19,7 @@
 
 import {
   SeriesCollectionValue,
-  getDataSeriesBySpecId,
+  getDataSeriesFromSpecs,
   XYChartSeriesIdentifier,
 } from '../../chart_types/xy_chart/utils/series';
 import { BasicSeriesSpec } from '../../specs';
@@ -34,7 +34,7 @@ export class MockSeriesCollection {
   }
 
   static fromSpecs(seriesSpecs: BasicSeriesSpec[]) {
-    const { seriesCollection } = getDataSeriesBySpecId(seriesSpecs, []);
+    const { seriesCollection } = getDataSeriesFromSpecs(seriesSpecs, []);
 
     return seriesCollection;
   }
@@ -57,7 +57,7 @@ export class MockSeriesIdentifier {
   }
 
   static fromSpecs(specs: BasicSeriesSpec[]): XYChartSeriesIdentifier[] {
-    const { seriesCollection } = getDataSeriesBySpecId(specs);
+    const { seriesCollection } = getDataSeriesFromSpecs(specs);
 
     return [...seriesCollection.values()].map(({ seriesIdentifier }) => seriesIdentifier);
   }

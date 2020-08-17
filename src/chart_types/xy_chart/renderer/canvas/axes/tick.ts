@@ -29,7 +29,7 @@ import { renderLine } from '../primitives/line';
 export function renderTick(ctx: CanvasRenderingContext2D, tick: AxisTick, props: AxisProps) {
   const {
     axisSpec: { position },
-    axisPosition,
+    position: axisPosition,
     axisStyle: { tickLine },
   } = props;
   if (isVerticalAxis(position)) {

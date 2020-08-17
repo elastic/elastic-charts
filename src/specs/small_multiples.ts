@@ -16,21 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import React from 'react';
 
+import { Spec } from '.';
 import { ChartTypes } from '../chart_types';
+import { getConnect, specComponentFactory } from '../state/spec_factory';
+import { SpecTypes } from './constants';
 
-export interface Spec {
-  /** unique Spec identifier */
-  id: string;
-  /** Chart type define the type of chart that use this spec */
-  chartType: ChartTypes;
-  /** The type of spec, can be series, axis, annotation, settings etc */
-  specType: string;
+export interface SmallMultiplesSpec extends Spec {
+  verticalIndex?: string;
+  horizontalIndex?: string;
 }
+const DEFAULT_SMALL_MULTIPLES_PROPS = {
+  id: '__global__small_multiples___',
+  chartType: ChartTypes.Global,
+  specType: SpecTypes.SmallMultiples,
+};
 
-export * from './index_order';
-export * from './small_multiples';
+type DefaultIndexOrderProps = 'id' | 'chartType' | 'specType';
 
-export * from './settings';
-export * from './constants';
-export * from '../chart_types/specs';
+export type SmallMultiplesProps = Partial<Omit<SmallMultiplesSpec, 'chartType' | 'specType' | 'id'>>;
+
+export const SmallMultiples: React.FunctionComponent<SmallMultiplesProps> = getConnect()(
+  specComponentFactory<SmallMultiplesSpec, DefaultIndexOrderProps>(DEFAULT_SMALL_MULTIPLES_PROPS),
+);

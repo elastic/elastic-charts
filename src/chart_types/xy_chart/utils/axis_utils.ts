@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Scale } from '../../../scales';
+import { Scale, ScaleBand } from '../../../scales';
 import { BBox, BBoxCalculator } from '../../../utils/bbox/bbox_calculator';
 import {
   Position,
@@ -29,6 +29,7 @@ import {
   mergePartial,
 } from '../../../utils/commons';
 import { Dimensions, Margins, getSimplePadding } from '../../../utils/dimensions';
+import { Domain } from '../../../utils/domain';
 import { AxisId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
 import { AxisStyle, Theme, TextAlignment, TextOffset } from '../../../utils/themes/theme';
@@ -78,6 +79,11 @@ export const defaultTickFormatter = (tick: any) => `${tick}`;
  * @param totalBarsInCluster the total number of grouped series
  * @param bboxCalculator an instance of the boundingbox calculator
  * @param chartRotation the rotation of the chart
+ * @param gridLine
+ * @param tickLabel
+ * @param fallBackTickFormatter
+ * @param barsPadding
+ * @param enableHistogramMode
  * @internal
  */
 export function computeAxisTicksDimensions(
@@ -349,11 +355,13 @@ function getVerticalAlign(
 /**
  * Gets the computed x/y coordinates & alignment properties for an axis tick label.
  * @param isVerticalAxis if the axis is vertical (in contrast to horizontal)
- * @param tickSize length of tick line
- * @param tickPadding amount of padding between label and tick line
  * @param tickPosition position of tick relative to axis line origin and other ticks along it
  * @param position position of where the axis sits relative to the visualization
- * @param axisTicksDimensions computed axis dimensions and values (from computeTickDimensions)
+ * @param axisPosition
+ * @param tickDimensions
+ * @param showTicks
+ * @param textOffset
+ * @param textAlignment
  * @internal
  */
 export function getTickLabelProps(
@@ -678,6 +686,17 @@ export function shouldShowTicks({ visible, strokeWidth, size }: AxisStyle['tickL
   return !axisHidden && visible && size > 0 && strokeWidth >= MIN_STROKE_WIDTH;
 }
 
+export interface AxisGeometry {
+  position: Dimensions;
+  dimension: AxisTicksDimensions;
+  ticks: AxisTick[];
+  visibleTicks: AxisTick[];
+  gridLinePositions: AxisLinePosition[];
+  axisId: AxisId;
+  smVerticalValue: unknown;
+  smHorizontalValue: unknown;
+}
+
 /** @internal */
 export function getAxisTicksPositions(
   computedChartDims: {
@@ -691,123 +710,191 @@ export function getAxisTicksPositions(
   axesStyles: Map<AxisId, AxisStyle | null>,
   xDomain: XDomain,
   yDomain: YDomain[],
+  smVDomain: Domain,
+  smHDomain: Domain,
   totalGroupsCount: number,
   enableHistogramMode: boolean,
   fallBackTickFormatter: TickFormatter,
   barsPadding?: number,
-): {
-  axisPositions: Map<AxisId, Dimensions>;
-  axisTicks: Map<AxisId, AxisTick[]>;
-  axisVisibleTicks: Map<AxisId, AxisTick[]>;
-  axisGridLinesPositions: Map<AxisId, AxisLinePosition[]>;
-} {
-  const axisPositions: Map<AxisId, Dimensions> = new Map();
-  const axisVisibleTicks: Map<AxisId, AxisTick[]> = new Map();
-  const axisTicks: Map<AxisId, AxisTick[]> = new Map();
-  const axisGridLinesPositions: Map<AxisId, AxisLinePosition[]> = new Map();
+): Array<AxisGeometry> {
+  const axesGeometries: Array<AxisGeometry> = [];
+
   const { chartDimensions } = computedChartDims;
-  let cumTopSum = 0;
-  let cumBottomSum = chartPaddings.bottom;
-  let cumLeftSum = computedChartDims.leftMargin;
-  let cumRightSum = chartPaddings.right;
+
+  // compute the anchor point for every axis group
+
+  const anchorPointByAxisGroups = [...axisDimensions.entries()]
+    // .sort((a, b) => {
+    //   const axisSpecA = getSpecsById<AxisSpec>(axisSpecs, a[0]);
+    //   const axisSpecB = getSpecsById<AxisSpec>(axisSpecs, b[0]);
+    //   return isVerticalAxis(axisSpecA.position);
+    // })
+    .reduce(
+      (acc, [axisId, dimension]) => {
+        const axisSpec = getSpecsById<AxisSpec>(axisSpecs, axisId);
+        if (!axisSpec) {
+          return acc;
+        }
+
+        const { axisTitle, tickLine, tickLabel } = axesStyles.get(axisId) ?? sharedAxesStyle;
+        const labelPadding = getSimplePadding(tickLabel.padding);
+        const showTicks = shouldShowTicks(tickLine, axisSpec.hide);
+        const axisTitleHeight = axisSpec.title !== undefined ? axisTitle.fontSize : 0;
+        const tickDimension = showTicks ? tickLine.size + tickLine.padding : 0;
+        const labelPaddingSum = tickLabel.visible ? labelPadding.inner + labelPadding.outer : 0;
+
+        const { dimensions, topIncrement, bottomIncrement, leftIncrement, rightIncrement } = getAxisPosition(
+          chartDimensions,
+          chartMargins,
+          axisTitleHeight,
+          axisTitle,
+          axisSpec,
+          dimension,
+          acc.top,
+          acc.bottom,
+          acc.left,
+          acc.right,
+          labelPaddingSum,
+          tickDimension,
+          tickLabel.visible,
+        );
+        const anchor = {
+          top: acc.top + topIncrement,
+          bottom: acc.bottom + bottomIncrement,
+          left: acc.left + leftIncrement,
+          right: acc.right + rightIncrement,
+        };
+        acc.pos.set(axisId, {
+          anchor: {
+            top: acc.top,
+            left: acc.left,
+            right: acc.right,
+            bottom: acc.bottom,
+          },
+          dimensions,
+        });
+        return {
+          ...anchor,
+          pos: acc.pos,
+        };
+      },
+      {
+        top: 0,
+        bottom: chartPaddings.bottom,
+        left: computedChartDims.leftMargin,
+        right: chartPaddings.right,
+        pos: new Map<
+          AxisId,
+          {
+            anchor: { left: number; right: number; top: number; bottom: number };
+            dimensions: Dimensions;
+          }
+        >(),
+      },
+    ).pos;
 
   axisDimensions.forEach((axisDim, id) => {
     const axisSpec = getSpecsById<AxisSpec>(axisSpecs, id);
-
+    const anchorPoint = anchorPointByAxisGroups.get(id);
     // Consider refactoring this so this condition can be tested
     // Given some of the values that get passed around, maybe re-write as a reduce instead of forEach?
-    if (!axisSpec) {
+    if (!axisSpec || !anchorPoint) {
       return;
     }
-    const minMaxRanges = getMinMaxRange(axisSpec.position, chartRotation, chartDimensions);
 
-    const scale = getScaleForAxisSpec(
-      axisSpec,
-      xDomain,
-      yDomain,
-      totalGroupsCount,
-      chartRotation,
-      minMaxRanges.minRange,
-      minMaxRanges.maxRange,
-      barsPadding,
-      enableHistogramMode,
-    );
-
-    if (!scale) {
-      throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
-    }
-    const tickFormatOptions = {
-      timeZone: xDomain.timeZone,
-    };
-    const { axisTitle, tickLine, tickLabel, gridLine } = axesStyles.get(id) ?? sharedAxesStyle;
     const isVertical = isVerticalAxis(axisSpec.position);
-    // TODO: Find the true cause of the this offset error
-    const rotationOffset =
-      enableHistogramMode &&
-      ((isVertical && [-90].includes(chartRotation)) || (!isVertical && [180].includes(chartRotation)))
-        ? scale.step
-        : 0;
+    let smAxisDomain = isVertical ? smVDomain : smHDomain;
 
-    const allTicks = getAvailableTicks(
-      axisSpec,
-      scale,
-      totalGroupsCount,
-      enableHistogramMode,
-      isVertical ? fallBackTickFormatter : defaultTickFormatter,
-      rotationOffset,
-      tickFormatOptions,
-    );
-
-    const visibleTicks = getVisibleTicks(allTicks, axisSpec, axisDim);
-    const axisSpecConfig = axisSpec.gridLine;
-    const gridLineThemeStyles = isVertical ? gridLine.vertical : gridLine.horizontal;
-    const gridLineStyles = axisSpecConfig ? mergePartial(gridLineThemeStyles, axisSpecConfig) : gridLineThemeStyles;
-
-    if (axisSpec.showGridLines ?? gridLineStyles.visible) {
-      const gridLines = visibleTicks.map(
-        (tick: AxisTick): AxisLinePosition => computeAxisGridLinePositions(isVertical, tick.position, chartDimensions),
-      );
-      axisGridLinesPositions.set(id, gridLines);
+    if (smAxisDomain.length === 0) {
+      smAxisDomain = ['base'];
     }
 
-    const labelPadding = getSimplePadding(tickLabel.padding);
-    const showTicks = shouldShowTicks(tickLine, axisSpec.hide);
-    const axisTitleHeight = axisSpec.title !== undefined ? axisTitle.fontSize : 0;
-    const tickDimension = showTicks ? tickLine.size + tickLine.padding : 0;
-    const labelPaddingSum = tickLabel.visible ? labelPadding.inner + labelPadding.outer : 0;
-
-    const axisPosition = getAxisPosition(
-      chartDimensions,
-      chartMargins,
-      axisTitleHeight,
-      axisTitle,
-      axisSpec,
-      axisDim,
-      cumTopSum,
-      cumBottomSum,
-      cumLeftSum,
-      cumRightSum,
-      labelPaddingSum,
-      tickDimension,
-      tickLabel.visible,
+    const smPanelScale = new ScaleBand(
+      smAxisDomain,
+      [0, isVertical ? anchorPoint.dimensions.height : anchorPoint.dimensions.width],
+      undefined,
+      smAxisDomain.length > 1 ? 0.1 : 0,
     );
 
-    cumTopSum += axisPosition.topIncrement;
-    cumBottomSum += axisPosition.bottomIncrement;
-    cumLeftSum += axisPosition.leftIncrement;
-    cumRightSum += axisPosition.rightIncrement;
+    smAxisDomain.forEach((smDomainValue) => {
+      const axisSize = {
+        width: isVertical ? chartDimensions.width : smPanelScale.bandwidth,
+        height: isVertical ? smPanelScale.bandwidth : chartDimensions.height,
+        top: 0,
+        left: 0,
+      };
 
-    axisPositions.set(id, axisPosition.dimensions);
-    axisVisibleTicks.set(id, visibleTicks);
-    axisTicks.set(id, allTicks);
+      const minMaxRanges = getMinMaxRange(axisSpec.position, chartRotation, axisSize);
+
+      const scale = getScaleForAxisSpec(
+        axisSpec,
+        xDomain,
+        yDomain,
+        totalGroupsCount,
+        chartRotation,
+        minMaxRanges.minRange,
+        minMaxRanges.maxRange,
+        barsPadding,
+        enableHistogramMode,
+      );
+
+      if (!scale) {
+        throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
+      }
+      const tickFormatOptions = {
+        timeZone: xDomain.timeZone,
+      };
+      const { gridLine } = axesStyles.get(id) ?? sharedAxesStyle;
+      // TODO: Find the true cause of the this offset error
+      const rotationOffset =
+        enableHistogramMode &&
+        ((isVertical && [-90].includes(chartRotation)) || (!isVertical && [180].includes(chartRotation)))
+          ? scale.step
+          : 0;
+
+      const allTicks = getAvailableTicks(
+        axisSpec,
+        scale,
+        totalGroupsCount,
+        enableHistogramMode,
+        isVertical ? fallBackTickFormatter : defaultTickFormatter,
+        rotationOffset,
+        tickFormatOptions,
+      );
+      const visibleTicks = getVisibleTicks(allTicks, axisSpec, axisDim);
+
+      const axisSpecConfig = axisSpec.gridLine;
+      const gridLineThemeStyles = isVertical ? gridLine.vertical : gridLine.horizontal;
+      const gridLineStyles = axisSpecConfig ? mergePartial(gridLineThemeStyles, axisSpecConfig) : gridLineThemeStyles;
+
+      const gridLines =
+        axisSpec.showGridLines ?? gridLineStyles.visible
+          ? visibleTicks.map(
+              (tick: AxisTick): AxisLinePosition =>
+                computeAxisGridLinePositions(isVertical, tick.position, chartDimensions),
+            )
+          : [];
+
+      const position = {
+        top: anchorPoint.dimensions.top + (isVertical ? smPanelScale.scale(smDomainValue) ?? 0 : 0),
+        left: anchorPoint.dimensions.left + (!isVertical ? smPanelScale.scale(smDomainValue) ?? 0 : 0),
+        width: isVertical ? anchorPoint.dimensions.width : smPanelScale.bandwidth,
+        height: isVertical ? smPanelScale.bandwidth : anchorPoint.dimensions.height,
+      };
+
+      axesGeometries.push({
+        axisId: axisSpec.id,
+        position,
+        dimension: axisDim,
+        ticks: allTicks,
+        visibleTicks,
+        gridLinePositions: gridLines,
+        smHorizontalValue: isVertical ? null : smDomainValue,
+        smVerticalValue: isVertical ? smDomainValue : null,
+      });
+    });
   });
-
-  return {
-    axisPositions,
-    axisTicks,
-    axisVisibleTicks,
-    axisGridLinesPositions,
-  };
+  return axesGeometries;
 }
 
 /** @internal */

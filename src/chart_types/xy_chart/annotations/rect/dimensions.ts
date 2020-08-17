@@ -22,6 +22,7 @@ import { isBandScale, isContinuousScale } from '../../../../scales/types';
 import { GroupId } from '../../../../utils/ids';
 import { Point } from '../../../../utils/point';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
+import { SmallMultipleScales } from '../../state/selectors/compute_small_multiple_scales';
 import { RectAnnotationDatum, RectAnnotationSpec } from '../../utils/specs';
 import { Bounds } from '../types';
 import { AnnotationRectProps } from './types';
@@ -39,6 +40,7 @@ export function computeRectAnnotationDimensions(
   annotationSpec: RectAnnotationSpec,
   yScales: Map<GroupId, Scale>,
   xScale: Scale,
+  smallMultiplesScales: SmallMultipleScales,
   isHistogram: boolean = false,
 ): AnnotationRectProps[] | null {
   const { dataValues } = annotationSpec;

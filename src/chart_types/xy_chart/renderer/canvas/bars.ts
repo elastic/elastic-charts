@@ -38,14 +38,14 @@ export function renderBars(
     withClip(ctx, clippings, (ctx: CanvasRenderingContext2D) => {
       // ctx.scale(1, -1); // D3 and Canvas2d use a left-handed coordinate system (+y = down) but the ViewModel uses +y = up, so we must locally invert Y
       barGeometries.forEach((barGeometry) => {
-        const { x, y, width, height, color, seriesStyle } = barGeometry;
+        const { x, y, width, height, color, seriesStyle, transform } = barGeometry;
         const geometryStateStyle = getGeometryStateStyle(
           barGeometry.seriesIdentifier,
           highlightedLegendItem || null,
           sharedStyle,
         );
         const { fill, stroke } = buildBarStyles(color, seriesStyle.rect, seriesStyle.rectBorder, geometryStateStyle);
-        const rect = { x, y, width, height };
+        const rect = { x: x + transform.x, y: y + transform.y, width, height };
         renderRect(ctx, rect, fill, stroke);
       });
     });

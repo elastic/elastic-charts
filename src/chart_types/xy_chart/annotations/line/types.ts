@@ -34,6 +34,10 @@ export interface AnnotationLinePathPoints {
     x2: number;
     y2: number;
   };
+  transform: {
+    x: number;
+    y: number;
+  };
 }
 
 /** @internal */
