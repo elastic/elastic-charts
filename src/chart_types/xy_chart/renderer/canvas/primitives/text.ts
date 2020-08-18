@@ -32,6 +32,7 @@ export function renderText(
     fontSize: number;
     align: TextAlign;
     baseline: TextBaseline;
+    shadow?: string;
   },
   degree: number = 0,
   translation?: Partial<Point>,
@@ -48,6 +49,12 @@ export function renderText(
       ctx.font = cssFontShorthand(font, font.fontSize);
       if (translation?.x || translation?.y) {
         ctx.translate(translation?.x ?? 0, translation?.y ?? 0);
+      }
+      if (font.shadow) {
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = font.shadow;
+        ctx.strokeText(text, origin.x, origin.y);
+        ctx.shadowBlur = 0;
       }
       ctx.fillText(text, origin.x, origin.y);
     });

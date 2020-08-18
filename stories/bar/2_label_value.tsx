@@ -61,6 +61,7 @@ export const Example = () => {
         fontStyle: 'normal',
         padding: 0,
         fill: color('value color', '#000'),
+        shadowColor: color('shadow color', 'transparent'),
         offsetX: number('offsetX', 0),
         offsetY: number('offsetY', 0),
       },

@@ -293,6 +293,7 @@ export type PartialTheme = RecursivePartial<Theme>;
 export type DisplayValueStyle = TextStyle & {
   offsetX: number;
   offsetY: number;
+  shadowColor?: Color;
 };
 
 export interface PointStyle {
