@@ -17,5 +17,7 @@
  * under the License.
  */
 
+/* @internal */
 export { ErrorBoundary } from './error_boundary';
+/* @internal */
 export * from './errors';

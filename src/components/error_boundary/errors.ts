@@ -23,19 +23,13 @@ export const ErrorType = Object.freeze({
   Graceful: 'graceful' as const,
 });
 /** @public */
-export type ChartTypes = $Values<typeof ErrorType>;
+export type ErrorType = $Values<typeof ErrorType>;
 
 /**
  * Error to used to gracefully render empty chart
  */
 export class GracefulError extends Error {
   type = ErrorType.Graceful;
-  renderEmptyChart: boolean;
-
-  constructor(message: string, renderEmptyChart = true) {
-    super(message);
-    this.renderEmptyChart = renderEmptyChart;
-  }
 }
 
 export function isGracefulError(error: Error): error is GracefulError {
