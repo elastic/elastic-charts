@@ -79,3 +79,5 @@ export { Example as testSingleHistogramBarChart } from './44_test_single_histogr
 export { Example as testMinHeightPositiveAndNegativeValues } from './46_test_min_height';
 export { Example as testTooltipAndRotation } from './48_test_tooltip';
 export { Example as testDualYAxis } from './49_test_dual_axis';
+
+export { Example as simpleValuelabel } from './50_simple_value_label';

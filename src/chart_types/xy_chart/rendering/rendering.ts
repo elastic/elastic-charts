@@ -390,8 +390,16 @@ export function renderBars(
           : undefined
         : formattedDisplayValue;
 
-    const computedDisplayValueWidth = bboxCalculator.compute(displayValueText || '', padding, fontSize, fontFamily)
-      .width;
+    const targetFontSize = displayValueText
+      ? Math.max(Math.floor(width / displayValueText.length), fontSize)
+      : fontSize;
+
+    const computedDisplayValueWidth = bboxCalculator.compute(
+      displayValueText || '',
+      padding,
+      targetFontSize,
+      fontFamily,
+    ).width;
     const displayValueWidth =
       displayValueSettings && displayValueSettings.isValueContainedInElement ? width : computedDisplayValueWidth;
 
@@ -400,6 +408,7 @@ export function renderBars(
     const displayValue =
       displayValueSettings && displayValueSettings.showValueLabel
         ? {
+            fontSize: targetFontSize,
             text: displayValueText,
             width: displayValueWidth,
             height: fontSize,

@@ -69,6 +69,7 @@ export interface BarGeometry {
   height: number;
   color: Color;
   displayValue?: {
+    fontSize: number;
     text: any;
     width: number;
     height: number;

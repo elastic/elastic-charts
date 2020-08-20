@@ -38,14 +38,14 @@ interface BarValuesProps {
 /** @internal */
 export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesProps) {
   const { bars, debug, chartRotation, chartDimensions, theme } = props;
-  const { fontFamily, fontStyle, fill, fontSize } = theme.barSeriesStyle.displayValue;
+  const { fontFamily, fontStyle, fill } = theme.barSeriesStyle.displayValue;
   const barsLength = bars.length;
   for (let i = 0; i < barsLength; i++) {
     const { displayValue } = bars[i];
     if (!displayValue) {
       continue;
     }
-    const { text } = displayValue;
+    const { text, fontSize } = displayValue;
     let textLines = {
       lines: [text],
       width: displayValue.width,
