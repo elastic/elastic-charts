@@ -19,7 +19,7 @@
 /* eslint-disable no-console */
 import React from 'react';
 
-import { Chart, Heatmap, Settings } from '../src';
+import { Chart, Heatmap, ScaleType, Settings } from '../src';
 import { BABYNAME_DATA } from '../src/utils/data_samples/babynames';
 
 export class Playground extends React.Component {
@@ -27,10 +27,11 @@ export class Playground extends React.Component {
     return (
       <div className="chart">
         <Chart>
-          <Settings onElementClick={console.log} />
+          <Settings onElementClick={console.log} showLegend legendPosition="top" />
           <Heatmap
             id="heatmap"
-            // ranges={[0, 1000]}
+            ranges={[0, 1000]}
+            colorScale={ScaleType.Quantize}
             colors={['green', 'yellow', 'red']}
             data={BABYNAME_DATA.filter(([year]) => year > 1950)}
             xAccessor={(d) => d[2]}

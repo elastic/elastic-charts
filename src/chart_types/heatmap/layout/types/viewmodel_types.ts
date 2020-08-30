@@ -17,6 +17,9 @@
  * under the License.
  */
 
+import { ScaleLinear, ScaleQuantile, ScaleQuantize } from 'd3-scale';
+
+import { ScaleType } from '../../../..';
 import { Fill, Stroke } from '../../../../geoms/types';
 import { Pixels } from '../../../partition_chart/layout/types/geometry_types';
 import { config } from '../config/config';
@@ -59,11 +62,24 @@ export interface HeatmapViewModel {
 /** @internal */
 export type PickFunction = (x: Pixels, y: Pixels) => Cell[];
 
+export type ScaleModelType<Type, Config> = {
+  type: Type;
+  config: Config;
+};
+
+type ScaleLinearType = ScaleModelType<typeof ScaleType.Linear, ScaleLinear<string, string>>;
+type ScaleQuantizeType = ScaleModelType<typeof ScaleType.Quantize, ScaleQuantize<string>>;
+type ScaleQuantileType = ScaleModelType<typeof ScaleType.Quantile, ScaleQuantile<string>>;
+
+/** @internal */
+export type ColorScaleType = ScaleLinearType | ScaleQuantizeType | ScaleQuantileType;
+
 /** @internal */
 export type ShapeViewModel = {
   config: Config;
   heatmapViewModel: HeatmapViewModel;
   pickQuads: PickFunction;
+  colorScale: ColorScaleType | null;
 };
 
 /** @internal */
@@ -83,4 +99,5 @@ export const nullShapeViewModel = (specifiedConfig?: Config): ShapeViewModel => 
   config: specifiedConfig || config,
   heatmapViewModel: nullHeatmapViewModel,
   pickQuads: () => [],
+  colorScale: null,
 });

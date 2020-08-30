@@ -26,6 +26,7 @@ import { InternalChartState, GlobalChartState, BackwardRef } from '../../../stat
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { LegendItemLabel } from '../../../state/selectors/get_legend_items_labels';
 import { Heatmap } from '../renderer/canvas/connected_component';
+import { computeLegendSelector } from './selectors/compute_legend';
 import { getSpecOrNull } from './selectors/heatmap_spec';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
 import { createOnElementClickCaller } from './selectors/on_element_click_caller';
@@ -67,12 +68,12 @@ export class HeatmapState implements InternalChartState {
     return false;
   }
 
-  getLegendItems() {
-    return EMPTY_LEGEND_LIST;
+  getLegendItems(globalState: GlobalChartState) {
+    return computeLegendSelector(globalState);
   }
 
   getLegendItemsLabels() {
-    return EMPTY_LEGEND_ITEM_LIST;
+    return [{ label: 'Test', depth: 1 }];
   }
 
   getLegendExtraValues() {
