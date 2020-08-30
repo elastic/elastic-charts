@@ -17,17 +17,18 @@
  * under the License.
  */
 
-import { max as d3Max } from 'd3-array';
+import { max as d3Max, extent as d3Extent } from 'd3-array';
 import { interpolateHcl } from 'd3-interpolate';
-import { scaleBand, scaleLinear, scaleQuantize } from 'd3-scale';
+import { scaleBand, scaleLinear, scaleQuantile, scaleQuantize } from 'd3-scale';
 
+import { ScaleType } from '../../../..';
 import { Pixels } from '../../../partition_chart/layout/types/geometry_types';
 import { Box, TextMeasure } from '../../../partition_chart/layout/types/types';
 import { stringToRGB } from '../../../partition_chart/layout/utils/color_library_wrappers';
 import { HeatmapSpec } from '../../specs';
 import { getPredicateFn } from '../../utils/commons';
 import { Config } from '../types/config_types';
-import { Cell, ShapeViewModel } from '../types/viewmodel_types';
+import { Cell, ColorScaleType, ShapeViewModel } from '../types/viewmodel_types';
 import { getGridCellHeight } from './grid';
 
 export interface HeatmapCellDatum {
@@ -53,7 +54,15 @@ export interface TextBox extends Box {
 
 /** @internal */
 export function shapeViewModel(textMeasure: TextMeasure, spec: HeatmapSpec, config: Config): ShapeViewModel {
-  const { data, valueAccessor, xAccessor, yAccessor, xSortPredicate, ySortPredicate } = spec;
+  const {
+    data,
+    valueAccessor,
+    xAccessor,
+    yAccessor,
+    xSortPredicate,
+    ySortPredicate,
+    colorScale: colorScaleSpec,
+  } = spec;
 
   const { table, xValues, yValues, extent } = data.reduce<HeatmapTable>(
     (acc, curr, index) => {
@@ -94,13 +103,27 @@ export function shapeViewModel(textMeasure: TextMeasure, spec: HeatmapSpec, conf
   yValues.sort(getPredicateFn(ySortPredicate));
 
   // compute the color scale based domain and colors
-  const { colorDomain = extent } = spec;
+  const { ranges = extent } = spec;
   const colorRange = spec.colors ?? ['green', 'red'];
-  // TODO the color scale can be also a quantized scale or other type of scales with different interpolation
-  const colorScale = scaleLinear<string>()
-    .domain(colorDomain)
-    .interpolate(interpolateHcl)
-    .range(colorRange);
+
+  const colorScale = {
+    type: colorScaleSpec,
+  } as ColorScaleType;
+
+  if (colorScale.type === ScaleType.Quantize) {
+    colorScale.config = scaleQuantize<string>()
+      .domain(d3Extent(ranges) as [number, number])
+      .range(colorRange);
+  } else if (colorScale.type === ScaleType.Quantile) {
+    colorScale.config = scaleQuantile<string>()
+      .domain(ranges)
+      .range(colorRange);
+  } else {
+    colorScale.config = scaleLinear<string>()
+      .domain(ranges)
+      .interpolate(interpolateHcl)
+      .range(colorRange);
+  }
 
   // measure the text width of all rows values to get the grid area width
   const boxedYValues = yValues.map<Box & { value: string | number }>((value) => {
@@ -181,7 +204,7 @@ export function shapeViewModel(textMeasure: TextMeasure, spec: HeatmapSpec, conf
     const x = xScale(String(d.x));
     const y = yScale(String(d.y));
     const yIndex = yValues.indexOf(d.y);
-    const color = colorScale(d.value);
+    const color = colorScale.config(d.value);
     if (x === undefined || y === undefined || yIndex === -1) {
       return acc;
     }
@@ -239,6 +262,7 @@ export function shapeViewModel(textMeasure: TextMeasure, spec: HeatmapSpec, conf
       yValues: textYValues,
     },
     pickQuads,
+    colorScale,
   };
 }
 

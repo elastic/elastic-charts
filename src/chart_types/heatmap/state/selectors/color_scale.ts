@@ -16,21 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { $Values } from 'utility-types';
+import createCachedSelector from 're-reselect';
 
-/**
- * The scale type
- * @public
- */
-export const ScaleType = Object.freeze({
-  Linear: 'linear' as const,
-  Ordinal: 'ordinal' as const,
-  Log: 'log' as const,
-  Sqrt: 'sqrt' as const,
-  Time: 'time' as const,
-  Quantize: 'quantize' as const,
-  Quantile: 'quantile' as const,
-});
+import { ColorScaleType } from '../../layout/types/viewmodel_types';
+import { geometries } from './geometries';
 
-/** @public */
-export type ScaleType = $Values<typeof ScaleType>;
+/** @internal */
+export const getColorScale = createCachedSelector([geometries], (geom): ColorScaleType | null => {
+  return geom.colorScale;
+})((state) => state.chartId);

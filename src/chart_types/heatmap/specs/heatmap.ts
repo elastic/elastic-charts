@@ -20,6 +20,7 @@
 import React from 'react';
 
 import { ChartTypes } from '../..';
+import { ScaleType } from '../../..';
 import { Spec } from '../../../specs';
 import { SpecTypes } from '../../../specs/constants';
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
@@ -34,6 +35,8 @@ const defaultProps = {
   specType: SpecTypes.Series,
   data: [],
   colors: ['red', 'yellow', 'green'],
+  // FIXME set ScaleType.Linear
+  colorScale: 'linear',
   xAccessor: ({ x }: { x: string | number }) => x,
   yAccessor: ({ y }: { y: string | number }) => y,
   valueAccessor: ({ value }: { value: string | number }) => value,
@@ -43,12 +46,16 @@ const defaultProps = {
   config,
 };
 
+export type HeatmapScaleType = typeof ScaleType.Linear | typeof ScaleType.Quantile | typeof ScaleType.Quantize;
+
 /** @alpha */
 export interface HeatmapSpec extends Spec {
   specType: typeof SpecTypes.Series;
   chartType: typeof ChartTypes.Heatmap;
   data: Datum[];
-  colorDomain?: number[];
+  // colorDomain?: number[];
+  colorScale?: HeatmapScaleType;
+  ranges?: number[] | [number, number];
   colors: Color[];
   xAccessor: AccessorFn;
   yAccessor: AccessorFn;
