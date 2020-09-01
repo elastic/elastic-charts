@@ -21,69 +21,46 @@ import createCachedSelector from 're-reselect';
 
 import { ScaleType } from '../../../..';
 import { LegendItem } from '../../../../commons/legend';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { BandedAccessorType } from '../../../../utils/geometry';
 import { getColorScale } from './color_scale';
 
+const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interactions.deselectedDataSeries;
+
 /** @internal */
-export const computeLegendSelector = createCachedSelector([getColorScale], (colorScale): LegendItem[] => {
-  let legendItems: LegendItem[] = [];
+export const computeLegendSelector = createCachedSelector(
+  [getColorScale, getDeselectedSeriesSelector],
+  (colorScale, deselectedDataSeries): LegendItem[] => {
+    const legendItems: LegendItem[] = [];
 
-  if (colorScale === null) {
-    return legendItems;
-  }
+    if (colorScale === null) {
+      return legendItems;
+    }
 
-  if (colorScale.type === ScaleType.Linear) {
-    const ticks = colorScale.config.ticks(6);
+    let ticks: number[] = [];
 
-    legendItems = ticks.map((tick) => {
+    if (colorScale.type === ScaleType.Linear) {
+      ticks = colorScale.config.ticks(6);
+    } else if (colorScale.type === ScaleType.Quantile) {
+      ticks = colorScale.config.quantiles();
+    } else if (colorScale.type === ScaleType.Quantize) {
+      ticks = colorScale.config.ticks(6);
+    }
+    return ticks.map((tick) => {
+      const seriesIdentifier = {
+        key: `from_${tick}`,
+        specId: String(tick),
+      };
+
       return {
         color: colorScale.config(tick),
         label: `> ${tick}`,
-        seriesIdentifier: {
-          key: `d`,
-          specId: '',
-        },
+        seriesIdentifier,
         childId: BandedAccessorType.Y1,
-        // isSeriesHidden,
-        // isItemHidden: hideInLegend,
+        isSeriesHidden: deselectedDataSeries.some((dataSeries) => dataSeries.key === seriesIdentifier.key),
         isToggleable: true,
       };
     });
-  } else if (colorScale.type === ScaleType.Quantile) {
-    const ticks = colorScale.config.quantiles();
-
-    legendItems = ticks.map((tick) => {
-      return {
-        color: colorScale.config(tick),
-        label: `> ${tick}`,
-        seriesIdentifier: {
-          key: `d`,
-          specId: '',
-        },
-        childId: BandedAccessorType.Y1,
-        // isSeriesHidden,
-        // isItemHidden: hideInLegend,
-        isToggleable: true,
-      };
-    });
-  } else if (colorScale.type === ScaleType.Quantize) {
-    const ticks = colorScale.config.ticks(6);
-
-    legendItems = ticks.map((tick) => {
-      return {
-        color: colorScale.config(tick),
-        label: `> ${tick}`,
-        seriesIdentifier: {
-          key: `d`,
-          specId: '',
-        },
-        childId: BandedAccessorType.Y1,
-        // isSeriesHidden,
-        // isItemHidden: hideInLegend,
-        isToggleable: true,
-      };
-    });
-  }
-  return legendItems;
-})(getChartIdSelector);
+  },
+)(getChartIdSelector);
