@@ -1291,6 +1291,7 @@ export const Settings: React.FunctionComponent<SettingsSpecProps>;
 
 // @public
 export interface SettingsSpec extends Spec {
+    allowBrushingLastHistogramBucket?: boolean;
     // (undocumented)
     animateData: boolean;
     baseTheme?: Theme;
@@ -1338,6 +1339,7 @@ export interface SettingsSpec extends Spec {
     resizeDebounce?: number;
     // (undocumented)
     rotation: Rotation;
+    roundHistogramBrushValues?: boolean;
     // (undocumented)
     showLegend: boolean;
     showLegendExtra: boolean;
