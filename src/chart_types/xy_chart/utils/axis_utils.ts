@@ -564,7 +564,7 @@ export function enableDuplicatedTicks(
   offset: number,
   fallBackTickFormatter: TickFormatter,
   tickFormatOptions?: TickFormatterOptions,
-) {
+): AxisTick[] {
   const ticks = scale.ticks();
   const allTicks: AxisTick[] = ticks.map((tick) => ({
     value: tick,
