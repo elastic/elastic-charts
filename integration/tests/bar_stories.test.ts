@@ -17,9 +17,18 @@
  * under the License.
  */
 
+import { Rotation } from '../../src';
 import { common } from '../page_objects';
 
 describe('Bar series stories', () => {
+  describe('[test] axis positions with histogram bar series', () => {
+    it.each<Rotation>([0, 90, -90, 180])('Should render correct axis - rotation %d', async (rotation) => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        `http://localhost:9001/?path=/story/interactions--brush-selection-tool-on-histogram-time-charts&knob-debug=&knob-chartRotation=${rotation}`,
+      );
+    });
+  });
+
   describe('[test] switch ordinal/linear x axis', () => {
     it('using ordinal x axis', async () => {
       await common.expectChartAtUrlToMatchScreenshot(

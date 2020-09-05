@@ -215,6 +215,7 @@ export class ScaleContinuous implements Scale {
       const rawTicks = tzShiftedScale.ticks(ticks);
       const timePerTick = (shiftedDomainMax - shiftedDomainMin) / rawTicks.length;
       const hasHourTicks = timePerTick < 1000 * 60 * 60 * 12;
+      this.step = this.bandwidth + this.barsPadding + this.bandwidthPadding;
 
       this.tickValues = rawTicks.map((d: Date) => {
         const currentDateTime = getMomentWithTz(d, this.timeZone);
