@@ -535,7 +535,8 @@ export function getAvailableTicks(
 
   const band = scale.bandwidth / (1 - scale.barsPadding);
   const halfPadding = (band - scale.bandwidth) / 2;
-  const offset = (enableHistogramMode ? -halfPadding : (scale.bandwidth * shift) / 2) + rotationOffset;
+  const offset =
+    (enableHistogramMode ? -halfPadding : (scale.bandwidth * shift) / 2) + (scale.isSingleValue() ? 0 : rotationOffset);
   const tickFormatter = axisSpec.tickFormat ?? fallBackTickFormatter;
 
   if (isSingleValueScale && hasAdditionalTicks) {
@@ -746,6 +747,7 @@ export function getAxisTicksPositions(
       ((isVertical && [-90].includes(chartRotation)) || (!isVertical && [180].includes(chartRotation)))
         ? scale.step
         : 0;
+
     const allTicks = getAvailableTicks(
       axisSpec,
       scale,
