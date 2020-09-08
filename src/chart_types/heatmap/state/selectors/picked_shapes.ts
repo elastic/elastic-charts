@@ -20,11 +20,16 @@
 import createCachedSelector from 're-reselect';
 
 import { GlobalChartState } from '../../../../state/chart_state';
-import { Cell } from '../../layout/types/viewmodel_types';
+import { getLastDragSelector } from '../../../../state/selectors/get_last_drag';
+import { Cell, DragShape } from '../../layout/types/viewmodel_types';
 import { geometries } from './geometries';
 
 function getCurrentPointerPosition(state: GlobalChartState) {
   return state.interactions.pointer.current.position;
+}
+
+function getCurrentPointerStates(state: GlobalChartState) {
+  return state.interactions.pointer;
 }
 
 /** @internal */
@@ -34,5 +39,50 @@ export const getPickedShapes = createCachedSelector(
     const picker = geoms.pickQuads;
     const { x, y } = pointerPosition;
     return picker(x, y);
+  },
+)((state) => state.chartId);
+
+/** @internal */
+export const getPickedCells = createCachedSelector([geometries, getLastDragSelector], (geoms, dragState): Cell[] => {
+  if (!dragState) {
+    return [];
+  }
+
+  const {
+    start: {
+      position: { x: startX, y: startY },
+    },
+    end: {
+      position: { x: endX, y: endY },
+    },
+  } = dragState;
+
+  return geoms.pickDragArea([
+    { x: startX, y: startY },
+    { x: endX, y: endY },
+  ]);
+})((state) => state.chartId);
+
+/** @internal */
+export const getPickedArea = createCachedSelector(
+  [geometries, getCurrentPointerStates],
+  (geoms, pointerStates): DragShape => {
+    if (!pointerStates.dragging || !pointerStates.down) {
+      return { x: 0, y: 0, height: 0, width: 0 };
+    }
+
+    const {
+      down: {
+        position: { x: startX, y: startY },
+      },
+      current: {
+        position: { x: endX, y: endY },
+      },
+    } = pointerStates;
+
+    return geoms.pickDragShape([
+      { x: startX, y: startY },
+      { x: endX, y: endY },
+    ]);
   },
 )((state) => state.chartId);

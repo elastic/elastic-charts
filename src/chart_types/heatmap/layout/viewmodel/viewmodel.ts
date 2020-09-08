@@ -21,14 +21,20 @@ import { max as d3Max, extent as d3Extent } from 'd3-array';
 import { interpolateHcl } from 'd3-interpolate';
 import { scaleBand, scaleLinear, scaleQuantile, scaleQuantize } from 'd3-scale';
 
-import { ScaleType } from '../../../..';
+import { ScaleType } from '../../../../scales/constants';
 import { Pixels } from '../../../partition_chart/layout/types/geometry_types';
 import { Box, TextMeasure } from '../../../partition_chart/layout/types/types';
 import { stringToRGB } from '../../../partition_chart/layout/utils/color_library_wrappers';
 import { HeatmapSpec } from '../../specs';
 import { getPredicateFn } from '../../utils/commons';
 import { Config } from '../types/config_types';
-import { Cell, ColorScaleType, ShapeViewModel } from '../types/viewmodel_types';
+import {
+  Cell,
+  ColorScaleType,
+  PickDragFunction,
+  PickDragShapeFunction,
+  ShapeViewModel,
+} from '../types/viewmodel_types';
 import { getGridCellHeight } from './grid';
 
 export interface HeatmapCellDatum {
@@ -249,6 +255,62 @@ export function shapeViewModel(textMeasure: TextMeasure, spec: HeatmapSpec, conf
     return [];
   };
 
+  /**
+   * Return selected cells based on drag selection.
+   * @param start
+   * @param end
+   */
+  const pickDragArea: PickDragFunction = ([start, end]) => {
+    const result: Cell[] = [];
+
+    const startX = Math.min(start.x, end.x);
+    const startY = Math.min(start.y, end.y);
+
+    const endX = Math.max(start.x, end.x);
+    const endY = Math.max(start.y, end.y);
+
+    const [startPoint] = pickQuads(startX, startY);
+    result.push(startPoint);
+
+    let { x, y } = startPoint;
+    x += cellWidth + maxTextWidth;
+
+    while (y <= endY) {
+      while (x <= endX) {
+        result.push(pickQuads(x, y)[0]);
+        x += cellWidth;
+      }
+      // move to the next line
+      x = startPoint.x + maxTextWidth;
+      y += cellHeight;
+    }
+
+    return result;
+  };
+
+  /**
+   * Resolves coordinates and metrics of the selected rect area.
+   * @param start
+   * @param end
+   */
+  const pickDragShape: PickDragShapeFunction = ([start, end]) => {
+    const startX = Math.min(start.x, end.x);
+    const startY = Math.min(start.y, end.y);
+
+    const endX = Math.max(start.x, end.x);
+    const endY = Math.max(start.y, end.y);
+
+    const [startPoint] = pickQuads(startX, startY);
+    const [endPoint] = pickQuads(endX, endY);
+
+    return {
+      x: startPoint.x + maxTextWidth,
+      y: startPoint.y,
+      width: Math.abs(endPoint.x - startPoint.x) + cellWidth,
+      height: Math.abs(endPoint.y - startPoint.y) + cellHeight,
+    };
+  };
+
   return {
     config,
     heatmapViewModel: {
@@ -262,6 +324,8 @@ export function shapeViewModel(textMeasure: TextMeasure, spec: HeatmapSpec, conf
       yValues: textYValues,
     },
     pickQuads,
+    pickDragArea,
+    pickDragShape,
     colorScale,
   };
 }

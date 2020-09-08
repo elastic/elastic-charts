@@ -27,12 +27,18 @@ export class Playground extends React.Component {
     return (
       <div className="chart">
         <Chart>
-          <Settings onElementClick={console.log} showLegend legendPosition="top" />
+          <Settings
+            onElementClick={console.log}
+            showLegend
+            legendPosition="top"
+            onBrushEnd={console.log}
+            brushAxis="both"
+          />
           <Heatmap
             id="heatmap"
-            ranges={[0, 1000]}
+            ranges={[0, 1000, 3000, 5000, 6000]}
             colorScale={ScaleType.Quantize}
-            colors={['green', 'yellow', 'red']}
+            colors={['green', 'yellow', 'blue', 'gray', 'red']}
             data={BABYNAME_DATA.filter(([year]) => year > 1950)}
             xAccessor={(d) => d[2]}
             yAccessor={(d) => d[0]}
@@ -42,18 +48,19 @@ export class Playground extends React.Component {
             config={{
               grid: {
                 cellHeight: {
-                  max: 30, // 'fill',
+                  min: 40,
+                  max: 40, // 'fill',
                 },
               },
               cell: {
                 maxWidth: 'fill',
-                maxHeight: 'fill',
+                maxHeight: 20,
                 label: {
                   visible: true,
                 },
                 border: {
                   stroke: 'white',
-                  strokeWidth: 0.5,
+                  strokeWidth: 1,
                 },
               },
             }}

@@ -19,8 +19,9 @@
 
 import { ScaleLinear, ScaleQuantile, ScaleQuantize } from 'd3-scale';
 
-import { ScaleType } from '../../../..';
 import { Fill, Stroke } from '../../../../geoms/types';
+import { ScaleType } from '../../../../scales/constants';
+import { Point } from '../../../../utils/point';
 import { Pixels } from '../../../partition_chart/layout/types/geometry_types';
 import { config } from '../config/config';
 import { HeatmapCellDatum, TextBox } from '../viewmodel/viewmodel';
@@ -62,6 +63,15 @@ export interface HeatmapViewModel {
 /** @internal */
 export type PickFunction = (x: Pixels, y: Pixels) => Cell[];
 
+/** @internal */
+export type PickDragFunction = (points: [Point, Point]) => Cell[];
+
+/** @internal */
+export type PickDragShapeFunction = (points: [Point, Point]) => { x: number; y: number; width: number; height: number };
+
+/** @internal */
+export type DragShape = ReturnType<PickDragShapeFunction>;
+
 export type ScaleModelType<Type, Config> = {
   type: Type;
   config: Config;
@@ -79,6 +89,8 @@ export type ShapeViewModel = {
   config: Config;
   heatmapViewModel: HeatmapViewModel;
   pickQuads: PickFunction;
+  pickDragArea: PickDragFunction;
+  pickDragShape: PickDragShapeFunction;
   colorScale: ColorScaleType | null;
 };
 
@@ -99,5 +111,7 @@ export const nullShapeViewModel = (specifiedConfig?: Config): ShapeViewModel => 
   config: specifiedConfig || config,
   heatmapViewModel: nullHeatmapViewModel,
   pickQuads: () => [],
+  pickDragArea: () => [],
+  pickDragShape: () => ({ x: 0, y: 0, height: 0, width: 0 }),
   colorScale: null,
 });

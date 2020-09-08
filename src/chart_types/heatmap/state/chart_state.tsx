@@ -25,10 +25,13 @@ import { Tooltip } from '../../../components/tooltip';
 import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { LegendItemLabel } from '../../../state/selectors/get_legend_items_labels';
+import { BrushTool } from '../../xy_chart/renderer/dom/brush';
 import { Heatmap } from '../renderer/canvas/connected_component';
+import { HighlighterFromBrush } from '../renderer/dom/highlighter_brush';
 import { computeLegendSelector } from './selectors/compute_legend';
 import { getSpecOrNull } from './selectors/heatmap_spec';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
+import { createOnBrushEndCaller } from './selectors/on_brush_end_caller';
 import { createOnElementClickCaller } from './selectors/on_element_click_caller';
 import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
@@ -45,6 +48,7 @@ export class HeatmapState implements InternalChartState {
   onElementClickCaller: (state: GlobalChartState) => void;
   onElementOverCaller: (state: GlobalChartState) => void;
   onElementOutCaller: (state: GlobalChartState) => void;
+  onBrushEndCaller: (state: GlobalChartState) => void = createOnBrushEndCaller();
 
   constructor() {
     this.onElementClickCaller = createOnElementClickCaller();
@@ -57,11 +61,11 @@ export class HeatmapState implements InternalChartState {
   }
 
   isBrushAvailable() {
-    return false;
+    return true;
   }
 
   isBrushing() {
-    return false;
+    return true;
   }
 
   isChartEmpty() {
@@ -85,6 +89,8 @@ export class HeatmapState implements InternalChartState {
       <>
         <Tooltip getChartContainerRef={containerRef} />
         <Heatmap forwardStageRef={forwardStageRef} />
+        {/* <BrushTool /> */}
+        <HighlighterFromBrush />
       </>
     );
   }
@@ -114,5 +120,6 @@ export class HeatmapState implements InternalChartState {
     this.onElementOverCaller(globalState);
     this.onElementOutCaller(globalState);
     this.onElementClickCaller(globalState);
+    this.onBrushEndCaller(globalState);
   }
 }

@@ -20,7 +20,7 @@
 import React from 'react';
 
 import { ChartTypes } from '../..';
-import { ScaleType } from '../../..';
+import { ScaleType } from '../../../scales/constants';
 import { Spec } from '../../../specs';
 import { SpecTypes } from '../../../specs/constants';
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
@@ -35,8 +35,7 @@ const defaultProps = {
   specType: SpecTypes.Series,
   data: [],
   colors: ['red', 'yellow', 'green'],
-  // FIXME set ScaleType.Linear
-  colorScale: 'linear',
+  colorScale: ScaleType.Linear,
   xAccessor: ({ x }: { x: string | number }) => x,
   yAccessor: ({ y }: { y: string | number }) => y,
   valueAccessor: ({ value }: { value: string | number }) => value,
