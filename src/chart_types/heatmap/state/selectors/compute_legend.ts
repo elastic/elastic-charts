@@ -19,22 +19,22 @@
 
 import createCachedSelector from 're-reselect';
 
-import { ScaleType } from '../../../..';
 import { LegendItem } from '../../../../commons/legend';
+import { ScaleType } from '../../../../scales/constants';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { BandedAccessorType } from '../../../../utils/geometry';
 import { getColorScale } from './color_scale';
+import { getSpecOrNull } from './heatmap_spec';
 
-const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interactions.deselectedDataSeries;
+export const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interactions.deselectedDataSeries;
 
 /** @internal */
 export const computeLegendSelector = createCachedSelector(
-  [getColorScale, getDeselectedSeriesSelector],
-  (colorScale, deselectedDataSeries): LegendItem[] => {
+  [getSpecOrNull, getColorScale, getDeselectedSeriesSelector],
+  (spec, colorScale, deselectedDataSeries): LegendItem[] => {
     const legendItems: LegendItem[] = [];
 
-    if (colorScale === null) {
+    if (colorScale === null || spec === null) {
       return legendItems;
     }
 
@@ -45,7 +45,7 @@ export const computeLegendSelector = createCachedSelector(
     } else if (colorScale.type === ScaleType.Quantile) {
       ticks = colorScale.config.quantiles();
     } else if (colorScale.type === ScaleType.Quantize) {
-      ticks = colorScale.config.ticks(6);
+      ticks = colorScale.config.ticks(spec.colors.length);
     }
     return ticks.map((tick) => {
       const seriesIdentifier = {
@@ -57,7 +57,6 @@ export const computeLegendSelector = createCachedSelector(
         color: colorScale.config(tick),
         label: `> ${tick}`,
         seriesIdentifier,
-        childId: BandedAccessorType.Y1,
         isSeriesHidden: deselectedDataSeries.some((dataSeries) => dataSeries.key === seriesIdentifier.key),
         isToggleable: true,
       };
