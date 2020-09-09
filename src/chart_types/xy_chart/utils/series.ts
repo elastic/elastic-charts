@@ -124,7 +124,7 @@ export function splitSeriesDataByAccessors(
     BasicSeriesSpec,
     'id' | 'data' | 'xAccessor' | 'yAccessors' | 'y0Accessors' | 'splitSeriesAccessors' | 'markSizeAccessor'
   >,
-  vislibSort = false,
+  enableVislibSeriesSort = false,
 ): {
   dataSeries: Map<SeriesKey, DataSeries>;
   xValues: Array<string | number>;
@@ -133,7 +133,7 @@ export function splitSeriesDataByAccessors(
   const xValues: Array<string | number> = [];
   const nonNumericValues: any[] = [];
 
-  if (vislibSort) {
+  if (enableVislibSeriesSort) {
     /*
      * This logic is mostly duplicated from below but is a temporary fix before
      * https://github.com/elastic/elastic-charts/issues/795 is completed to allow sorting
@@ -149,14 +149,14 @@ export function splitSeriesDataByAccessors(
 
         // skip if the datum is not an object or null
         if (typeof datum !== 'object' || datum === null) {
-          return null;
+          return;
         }
 
         const x = getAccessorValue(datum, xAccessor);
 
         // skip if the x value is not a string or a number
         if (typeof x !== 'string' && typeof x !== 'number') {
-          return null;
+          return;
         }
 
         xValues.push(x);
@@ -200,14 +200,14 @@ export function splitSeriesDataByAccessors(
 
       // skip if the datum is not an object or null
       if (typeof datum !== 'object' || datum === null) {
-        return null;
+        return;
       }
 
       const x = getAccessorValue(datum, xAccessor);
 
       // skip if the x value is not a string or a number
       if (typeof x !== 'string' && typeof x !== 'number') {
-        return null;
+        return;
       }
 
       xValues.push(x);
@@ -412,13 +412,13 @@ function getDataSeriesBySpecGroup(
  *
  * @param seriesSpecs the map for all the series spec
  * @param deselectedDataSeries the array of deselected/hidden data series
- * @param vislibSort is optional; if not specified in <Settings />,
+ * @param enableVislibSeriesSort is optional; if not specified in <Settings />,
  * @internal
  */
 export function getDataSeriesBySpecId(
   seriesSpecs: BasicSeriesSpec[],
   deselectedDataSeries: SeriesIdentifier[] = [],
-  vislibSort?: boolean,
+  enableVislibSeriesSort?: boolean,
 ): {
   dataSeriesBySpecId: Map<SpecId, DataSeries[]>;
   seriesCollection: Map<SeriesKey, SeriesCollectionValue>;
@@ -441,7 +441,7 @@ export function getDataSeriesBySpecId(
       isOrdinalScale = true;
     }
 
-    const { dataSeries, xValues } = splitSeriesDataByAccessors(spec, vislibSort);
+    const { dataSeries, xValues } = splitSeriesDataByAccessors(spec, enableVislibSeriesSort);
 
     // filter deleselected dataseries
     let filteredDataSeries: DataSeries[] = [...dataSeries.values()];
