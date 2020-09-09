@@ -202,10 +202,12 @@ export function computeSeriesDomains(
   customYDomainsByGroupId: Map<GroupId, YDomainRange> = new Map(),
   deselectedDataSeries: SeriesIdentifier[] = [],
   customXDomain?: DomainRange | Domain,
+  orderOrdinalBucketsBySum?: boolean,
 ): SeriesDomainsAndData {
   const { dataSeriesBySpecId, xValues, seriesCollection, fallbackScale } = getDataSeriesBySpecId(
     seriesSpecs,
     deselectedDataSeries,
+    orderOrdinalBucketsBySum,
   );
 
   // compute the x domain merging any custom domain

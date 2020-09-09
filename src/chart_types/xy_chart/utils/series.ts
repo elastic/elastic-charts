@@ -111,18 +111,21 @@ export function getSeriesIndex(series: SeriesIdentifier[], target: SeriesIdentif
  * `y` values and `mark` values are casted to number or null.
  * @internal
  */
-export function splitSeriesDataByAccessors({
-  id: specId,
-  data,
-  xAccessor,
-  yAccessors,
-  y0Accessors,
-  markSizeAccessor,
-  splitSeriesAccessors = [],
-}: Pick<
-  BasicSeriesSpec,
-  'id' | 'data' | 'xAccessor' | 'yAccessors' | 'y0Accessors' | 'splitSeriesAccessors' | 'markSizeAccessor'
->): {
+export function splitSeriesDataByAccessors(
+  {
+    id: specId,
+    data,
+    xAccessor,
+    yAccessors,
+    y0Accessors,
+    markSizeAccessor,
+    splitSeriesAccessors = [],
+  }: Pick<
+    BasicSeriesSpec,
+    'id' | 'data' | 'xAccessor' | 'yAccessors' | 'y0Accessors' | 'splitSeriesAccessors' | 'markSizeAccessor'
+  >,
+  xValueSums: Map<string | number, number>,
+): {
   dataSeries: Map<SeriesKey, DataSeries>;
   xValues: Array<string | number>;
 } {
@@ -150,6 +153,7 @@ export function splitSeriesDataByAccessors({
     }
 
     xValues.push(x);
+    let sum = xValueSums.get(x) ?? 0;
 
     yAccessors.forEach((accessor, index) => {
       const cleanedDatum = extractYandMarkFromDatum(
@@ -165,6 +169,7 @@ export function splitSeriesDataByAccessors({
         yAccessor: accessor,
         splitAccessors,
       });
+      sum += cleanedDatum.y1 ?? 0;
       const newDatum = { x, ...cleanedDatum };
       const series = dataSeries.get(seriesKey);
       if (series) {
@@ -180,6 +185,8 @@ export function splitSeriesDataByAccessors({
         });
       }
     });
+
+    xValueSums.set(x, sum);
   });
 
   if (nonNumericValues.length > 0) {
@@ -355,6 +362,7 @@ function getDataSeriesBySpecGroup(
 export function getDataSeriesBySpecId(
   seriesSpecs: BasicSeriesSpec[],
   deselectedDataSeries: SeriesIdentifier[] = [],
+  orderOrdinalBucketsBySum?: boolean,
 ): {
   dataSeriesBySpecId: Map<SpecId, DataSeries[]>;
   seriesCollection: Map<SeriesKey, SeriesCollectionValue>;
@@ -363,6 +371,7 @@ export function getDataSeriesBySpecId(
 } {
   const dataSeriesBySpecId = new Map<SpecId, DataSeries[]>();
   const seriesCollection = new Map<SeriesKey, SeriesCollectionValue>();
+  const mutatedXValueSums = new Map<string | number, number>();
 
   // the unique set of values along the x axis
   const globalXValues: Set<string | number> = new Set();
@@ -377,7 +386,7 @@ export function getDataSeriesBySpecId(
       isOrdinalScale = true;
     }
 
-    const { dataSeries, xValues } = splitSeriesDataByAccessors(spec);
+    const { dataSeries, xValues } = splitSeriesDataByAccessors(spec, mutatedXValueSums);
 
     // filter deleselected dataseries
     let filteredDataSeries: DataSeries[] = [...dataSeries.values()];
@@ -414,10 +423,9 @@ export function getDataSeriesBySpecId(
   return {
     dataSeriesBySpecId,
     seriesCollection,
-    // keep the user order for ordinal scales
     xValues:
       isOrdinalScale || !isNumberArray
-        ? globalXValues
+        ? getSortedOrdinalXValues(globalXValues, mutatedXValueSums, orderOrdinalBucketsBySum)
         : new Set(
             [...globalXValues].sort((a, b) => {
               if (typeof a === 'string' || typeof b === 'string') {
@@ -428,6 +436,20 @@ export function getDataSeriesBySpecId(
           ),
     fallbackScale: !isOrdinalScale && !isNumberArray ? ScaleType.Ordinal : undefined,
   };
+}
+
+function getSortedOrdinalXValues(
+  xValues: Set<string | number>,
+  xValueSums: Map<string | number, number>,
+  orderOrdinalBucketsBySum = false,
+) {
+  return orderOrdinalBucketsBySum
+    ? new Set(
+        [...xValues].sort((v1, v2) => {
+          return (xValueSums.get(v2) ?? 0) - (xValueSums.get(v1) ?? 0);
+        }),
+      )
+    : xValues; // keep the user order for ordinal scales
 }
 
 function getSeriesNameFromOptions(

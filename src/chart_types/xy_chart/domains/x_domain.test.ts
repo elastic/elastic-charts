@@ -18,6 +18,7 @@
  */
 
 import { ChartTypes } from '../..';
+import { MockSeriesSpecs } from '../../../mocks/specs';
 import { ScaleType } from '../../../scales/constants';
 import { SpecTypes } from '../../../specs/constants';
 import { getDataSeriesBySpecId } from '../utils/series';
@@ -835,6 +836,73 @@ describe('X Domain', () => {
       };
       const expectedError = 'custom xDomain is invalid, custom minInterval is less than 0';
       expect(attemptToMerge).toThrowError(expectedError);
+    });
+  });
+
+  describe('orderOrdinalBucketsBySum', () => {
+    const ordinalSpecs = MockSeriesSpecs.fromPartialSpecs([
+      {
+        id: 'ordinal1',
+        seriesType: SeriesTypes.Bar,
+        xScaleType: ScaleType.Ordinal,
+        data: [
+          { x: 'a', y: 2 },
+          { x: 'b', y: 4 },
+          { x: 'c', y: 8 },
+          { x: 'd', y: 6 },
+        ],
+      },
+      {
+        id: 'ordinal2',
+        seriesType: SeriesTypes.Bar,
+        xScaleType: ScaleType.Ordinal,
+        data: [
+          { x: 'a', y: 4 },
+          { x: 'b', y: 8 },
+          { x: 'c', y: 16 },
+          { x: 'd', y: 12 },
+        ],
+      },
+    ]);
+
+    const linearSpecs = MockSeriesSpecs.fromPartialSpecs([
+      {
+        id: 'linear1',
+        seriesType: SeriesTypes.Bar,
+        xScaleType: ScaleType.Linear,
+        data: [
+          { x: 1, y: 2 },
+          { x: 2, y: 4 },
+          { x: 3, y: 8 },
+          { x: 4, y: 6 },
+        ],
+      },
+      {
+        id: 'linear2',
+        seriesType: SeriesTypes.Bar,
+        xScaleType: ScaleType.Linear,
+        data: [
+          { x: 1, y: 4 },
+          { x: 2, y: 8 },
+          { x: 3, y: 16 },
+          { x: 4, y: 12 },
+        ],
+      },
+    ]);
+
+    it('should sort ordinal xValues by decreasing sum when true', () => {
+      const { xValues } = getDataSeriesBySpecId(ordinalSpecs, [], true);
+      expect(xValues).toEqual(new Set(['c', 'd', 'b', 'a']));
+    });
+
+    it('should NOT sort ordinal xValues by decreasing sum when false', () => {
+      const { xValues } = getDataSeriesBySpecId(ordinalSpecs, [], false);
+      expect(xValues).toEqual(new Set(['a', 'b', 'c', 'd']));
+    });
+
+    it('should NOT sort linear xValue by decreasing sum when true', () => {
+      const { xValues } = getDataSeriesBySpecId(linearSpecs, [], true);
+      expect(xValues).toEqual(new Set([1, 2, 3, 4]));
     });
   });
 });

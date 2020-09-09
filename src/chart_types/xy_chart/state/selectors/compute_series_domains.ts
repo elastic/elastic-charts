@@ -38,6 +38,7 @@ export const computeSeriesDomainsSelector = createCachedSelector(
       customYDomainsByGroupId,
       deselectedDataSeries,
       settingsSpec.xDomain,
+      settingsSpec.orderOrdinalBucketsBySum,
     );
     return domains;
   },
