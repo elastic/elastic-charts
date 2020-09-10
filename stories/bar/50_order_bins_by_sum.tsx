@@ -24,16 +24,16 @@ import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const data = [
-  { x1: 'a', x2: 1, g1: 'false', g2: 'USA', y2: 847 },
-  { x1: 'a', x2: 1, g1: 'true', g2: 'Canada', y2: 652 },
-  { x1: 'b', x2: 2, g1: 'false', g2: 'Canada', y2: 1127 },
-  { x1: 'b', x2: 2, g1: 'true', g2: 'USA', y2: 214 },
-  { x1: 'c', x2: 3, g1: 'false', g2: 'Canada', y2: 990 },
-  { x1: 'c', x2: 3, g1: 'true', g2: 'USA', y2: 724 },
-  { x1: 'd', x2: 4, g1: 'false', g2: 'USA', y2: 951 },
-  { x1: 'd', x2: 4, g1: 'true', g2: 'USA', y2: 430 },
-  { x1: 'e', x2: 5, g1: 'false', g2: 'Canada', y2: 447 },
-  { x1: 'e', x2: 5, g1: 'true', g2: 'Canada', y2: 834 },
+  { x1: 'b', x2: 2, g1: 'false', g2: 'Canada', y1: 19, y2: 22 },
+  { x1: 'd', x2: 4, g1: 'false', g2: 'USA', y1: 34, y2: 21 },
+  { x1: 'd', x2: 4, g1: 'true', g2: 'USA', y1: 49, y2: 169 },
+  { x1: 'e', x2: 5, g1: 'false', g2: 'Canada', y1: 40, y2: 77 },
+  { x1: 'b', x2: 2, g1: 'true', g2: 'USA', y1: 28, y2: 84 },
+  { x1: 'a', x2: 1, g1: 'false', g2: 'USA', y1: 53, y2: 39 },
+  { x1: 'a', x2: 1, g1: 'true', g2: 'Canada', y1: 93, y2: 42 },
+  { x1: 'c', x2: 3, g1: 'true', g2: 'USA', y1: 55, y2: 72 },
+  { x1: 'e', x2: 5, g1: 'true', g2: 'Canada', y1: 96, y2: 74 },
+  { x1: 'c', x2: 3, g1: 'false', g2: 'Canada', y1: 87, y2: 39 },
 ];
 
 export const Example = () => {
@@ -45,15 +45,16 @@ export const Example = () => {
     },
     'ordinal',
   );
-  const orderOrdinalBinsBySum = select(
-    'orderOrdinalBinsBySum',
-    {
-      asc: 'asc',
-      desc: 'desc',
-      none: undefined,
-    },
-    'asc',
-  );
+  const orderOrdinalBinsBySum =
+    select(
+      'orderOrdinalBinsBySum',
+      {
+        asc: 'asc',
+        desc: 'desc',
+        none: undefined,
+      },
+      'desc',
+    ) || undefined;
   return (
     <Chart className="story-chart">
       <Settings

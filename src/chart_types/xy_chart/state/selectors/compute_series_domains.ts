@@ -39,6 +39,8 @@ export const computeSeriesDomainsSelector = createCachedSelector(
       deselectedDataSeries,
       settingsSpec.xDomain,
       settingsSpec.orderOrdinalBinsBySum,
+      // @ts-ignore blind sort option for vislib
+      settingsSpec.enableVislibSeriesSort,
     );
     return domains;
   },

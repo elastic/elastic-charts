@@ -124,6 +124,7 @@ export function splitSeriesDataByAccessors(
     'id' | 'data' | 'xAccessor' | 'yAccessors' | 'y0Accessors' | 'splitSeriesAccessors' | 'markSizeAccessor'
   >,
   xValueSums: Map<string | number, number>,
+  enableVislibSeriesSort = false,
 ): {
   dataSeries: Map<SeriesKey, DataSeries>;
   xValues: Array<string | number>;
@@ -132,61 +133,122 @@ export function splitSeriesDataByAccessors(
   const xValues: Array<string | number> = [];
   const nonNumericValues: any[] = [];
 
-  data.forEach((datum) => {
-    const splitAccessors = getSplitAccessors(datum, splitSeriesAccessors);
-    // if splitSeriesAccessors are defined we should have at least one split value to include datum
-    if (splitSeriesAccessors.length > 0 && splitAccessors.size < 1) {
-      return;
-    }
-
-    // skip if the datum is not an object or null
-    if (typeof datum !== 'object' || datum === null) {
-      return null;
-    }
-
-    const x = getAccessorValue(datum, xAccessor);
-
-    // skip if the x value is not a string or a number
-    if (typeof x !== 'string' && typeof x !== 'number') {
-      return null;
-    }
-
-    xValues.push(x);
-    let sum = xValueSums.get(x) ?? 0;
-
+  if (enableVislibSeriesSort) {
+    /*
+     * This logic is mostly duplicated from below but is a temporary fix before
+     * https://github.com/elastic/elastic-charts/issues/795 is completed to allow sorting
+     * The difference from below is that it loops through all the yAsccessors before the data.
+     */
     yAccessors.forEach((accessor, index) => {
-      const cleanedDatum = extractYandMarkFromDatum(
-        datum,
-        accessor,
-        nonNumericValues,
-        y0Accessors && y0Accessors[index],
-        markSizeAccessor,
-      );
-      const seriesKeys = [...splitAccessors.values(), accessor];
-      const seriesKey = getSeriesKey({
-        specId,
-        yAccessor: accessor,
-        splitAccessors,
-      });
-      sum += cleanedDatum.y1 ?? 0;
-      const newDatum = { x, ...cleanedDatum };
-      const series = dataSeries.get(seriesKey);
-      if (series) {
-        series.data.push(newDatum);
-      } else {
-        dataSeries.set(seriesKey, {
+      data.forEach((datum) => {
+        const splitAccessors = getSplitAccessors(datum, splitSeriesAccessors);
+        // if splitSeriesAccessors are defined we should have at least one split value to include datum
+        if (splitSeriesAccessors.length > 0 && splitAccessors.size < 1) {
+          return;
+        }
+
+        // skip if the datum is not an object or null
+        if (typeof datum !== 'object' || datum === null) {
+          return;
+        }
+
+        const x = getAccessorValue(datum, xAccessor);
+
+        // skip if the x value is not a string or a number
+        if (typeof x !== 'string' && typeof x !== 'number') {
+          return;
+        }
+
+        xValues.push(x);
+        let sum = xValueSums.get(x) ?? 0;
+
+        const cleanedDatum = extractYandMarkFromDatum(
+          datum,
+          accessor,
+          nonNumericValues,
+          y0Accessors && y0Accessors[index],
+          markSizeAccessor,
+        );
+        const seriesKeys = [...splitAccessors.values(), accessor];
+        const seriesKey = getSeriesKey({
           specId,
           yAccessor: accessor,
           splitAccessors,
-          data: [newDatum],
-          key: seriesKey,
-          seriesKeys,
         });
-      }
+        sum += cleanedDatum.y1 ?? 0;
+        const newDatum = { x, ...cleanedDatum };
+        const series = dataSeries.get(seriesKey);
+        if (series) {
+          series.data.push(newDatum);
+        } else {
+          dataSeries.set(seriesKey, {
+            specId,
+            yAccessor: accessor,
+            splitAccessors,
+            data: [newDatum],
+            key: seriesKey,
+            seriesKeys,
+          });
+        }
+        xValueSums.set(x, sum);
+      });
     });
+  } else {
+    data.forEach((datum) => {
+      const splitAccessors = getSplitAccessors(datum, splitSeriesAccessors);
+      // if splitSeriesAccessors are defined we should have at least one split value to include datum
+      if (splitSeriesAccessors.length > 0 && splitAccessors.size < 1) {
+        return;
+      }
 
-    xValueSums.set(x, sum);
-  });
+      // skip if the datum is not an object or null
+      if (typeof datum !== 'object' || datum === null) {
+        return;
+      }
+
+      const x = getAccessorValue(datum, xAccessor);
+
+      // skip if the x value is not a string or a number
+      if (typeof x !== 'string' && typeof x !== 'number') {
+        return;
+      }
+
+      xValues.push(x);
+      let sum = xValueSums.get(x) ?? 0;
+
+      yAccessors.forEach((accessor, index) => {
+        const cleanedDatum = extractYandMarkFromDatum(
+          datum,
+          accessor,
+          nonNumericValues,
+          y0Accessors && y0Accessors[index],
+          markSizeAccessor,
+        );
+        const seriesKeys = [...splitAccessors.values(), accessor];
+        const seriesKey = getSeriesKey({
+          specId,
+          yAccessor: accessor,
+          splitAccessors,
+        });
+        sum += cleanedDatum.y1 ?? 0;
+        const newDatum = { x, ...cleanedDatum };
+        const series = dataSeries.get(seriesKey);
+        if (series) {
+          series.data.push(newDatum);
+        } else {
+          dataSeries.set(seriesKey, {
+            specId,
+            yAccessor: accessor,
+            splitAccessors,
+            data: [newDatum],
+            key: seriesKey,
+            seriesKeys,
+          });
+        }
+      });
+      xValueSums.set(x, sum);
+    });
+  }
 
   if (nonNumericValues.length > 0) {
     Logger.warn(
@@ -356,12 +418,14 @@ function getDataSeriesBySpecGroup(
  *
  * @param seriesSpecs the map for all the series spec
  * @param deselectedDataSeries the array of deselected/hidden data series
+ * @param enableVislibSeriesSort is optional; if not specified in <Settings />,
  * @internal
  */
 export function getDataSeriesBySpecId(
   seriesSpecs: BasicSeriesSpec[],
   deselectedDataSeries: SeriesIdentifier[] = [],
   orderOrdinalBinsBySum?: 'asc' | 'desc',
+  enableVislibSeriesSort?: boolean,
 ): {
   dataSeriesBySpecId: Map<SpecId, DataSeries[]>;
   seriesCollection: Map<SeriesKey, SeriesCollectionValue>;
@@ -385,7 +449,7 @@ export function getDataSeriesBySpecId(
       isOrdinalScale = true;
     }
 
-    const { dataSeries, xValues } = splitSeriesDataByAccessors(spec, mutatedXValueSums);
+    const { dataSeries, xValues } = splitSeriesDataByAccessors(spec, mutatedXValueSums, enableVislibSeriesSort);
 
     // filter deleselected dataseries
     let filteredDataSeries: DataSeries[] = [...dataSeries.values()];
@@ -440,7 +504,7 @@ export function getDataSeriesBySpecId(
 function getSortedOrdinalXValues(
   xValues: Set<string | number>,
   xValueSums: Map<string | number, number>,
-  orderOrdinalBinsBySum: 'asc' | 'desc' = 'asc',
+  orderOrdinalBinsBySum?: 'asc' | 'desc',
 ) {
   return isDefined(orderOrdinalBinsBySum)
     ? new Set(
