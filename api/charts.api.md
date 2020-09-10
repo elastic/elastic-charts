@@ -1332,6 +1332,7 @@ export interface SettingsSpec extends Spec {
     onPointerUpdate?: PointerUpdateListener;
     // (undocumented)
     onRenderChange?: RenderChangeListener;
+    orderOrdinalBinsBySum?: 'asc' | 'desc';
     // (undocumented)
     pointBuffer?: MarkBuffer;
     // (undocumented)
