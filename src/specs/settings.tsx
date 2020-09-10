@@ -362,11 +362,9 @@ export interface SettingsSpec extends Spec {
    */
   allowBrushingLastHistogramBucket?: boolean;
   /**
-   * Orders ordinal x value from highest to lowest sum
-   *
-   * @defaultValue false
+   * Orders ordinal x values by sum
    */
-  orderOrdinalBucketsBySum?: boolean;
+  orderOrdinalBinsBySum?: 'asc' | 'desc';
 }
 
 export type DefaultSettingsProps =

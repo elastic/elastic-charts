@@ -839,7 +839,7 @@ describe('X Domain', () => {
     });
   });
 
-  describe('orderOrdinalBucketsBySum', () => {
+  describe('orderOrdinalBinsBySum', () => {
     const ordinalSpecs = MockSeriesSpecs.fromPartialSpecs([
       {
         id: 'ordinal1',
@@ -890,18 +890,23 @@ describe('X Domain', () => {
       },
     ]);
 
-    it('should sort ordinal xValues by decreasing sum when true', () => {
-      const { xValues } = getDataSeriesBySpecId(ordinalSpecs, [], true);
+    it('should sort ordinal xValues by descending sum when set to desc', () => {
+      const { xValues } = getDataSeriesBySpecId(ordinalSpecs, [], 'desc');
       expect(xValues).toEqual(new Set(['c', 'd', 'b', 'a']));
     });
 
-    it('should NOT sort ordinal xValues by decreasing sum when false', () => {
-      const { xValues } = getDataSeriesBySpecId(ordinalSpecs, [], false);
+    it('should sort ordinal xValues by ascending sum when set to asc', () => {
+      const { xValues } = getDataSeriesBySpecId(ordinalSpecs, [], 'asc');
+      expect(xValues).toEqual(new Set(['a', 'b', 'd', 'c']));
+    });
+
+    it('should NOT sort ordinal xValues by descending sum when false', () => {
+      const { xValues } = getDataSeriesBySpecId(ordinalSpecs, [], undefined);
       expect(xValues).toEqual(new Set(['a', 'b', 'c', 'd']));
     });
 
-    it('should NOT sort linear xValue by decreasing sum when true', () => {
-      const { xValues } = getDataSeriesBySpecId(linearSpecs, [], true);
+    it('should NOT sort linear xValue by descending sum when true', () => {
+      const { xValues } = getDataSeriesBySpecId(linearSpecs, [], 'desc');
       expect(xValues).toEqual(new Set([1, 2, 3, 4]));
     });
   });

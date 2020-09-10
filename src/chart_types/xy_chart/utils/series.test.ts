@@ -48,7 +48,7 @@ const dg = new SeededDataGenerator();
 
 describe('Series', () => {
   test('Can split dataset into 1Y0G series', () => {
-    const splittedSeries = splitSeriesDataByAccessors(
+    const splitSeries = splitSeriesDataByAccessors(
       {
         id: 'spec1',
         data: TestDataset.BARCHART_1Y0G,
@@ -59,10 +59,10 @@ describe('Series', () => {
       new Map(),
     );
 
-    expect([...splittedSeries.dataSeries.values()]).toMatchSnapshot();
+    expect([...splitSeries.dataSeries.values()]).toMatchSnapshot();
   });
   test('Can split dataset into 1Y1G series', () => {
-    const splittedSeries = splitSeriesDataByAccessors(
+    const splitSeries = splitSeriesDataByAccessors(
       {
         id: 'spec1',
         data: TestDataset.BARCHART_1Y1G,
@@ -71,10 +71,10 @@ describe('Series', () => {
       },
       new Map(),
     );
-    expect([...splittedSeries.dataSeries.values()]).toMatchSnapshot();
+    expect([...splitSeries.dataSeries.values()]).toMatchSnapshot();
   });
   test('Can split dataset into 1Y2G series', () => {
-    const splittedSeries = splitSeriesDataByAccessors(
+    const splitSeries = splitSeriesDataByAccessors(
       {
         id: 'spec1',
         data: TestDataset.BARCHART_1Y2G,
@@ -84,10 +84,10 @@ describe('Series', () => {
       },
       new Map(),
     );
-    expect([...splittedSeries.dataSeries.values()]).toMatchSnapshot();
+    expect([...splitSeries.dataSeries.values()]).toMatchSnapshot();
   });
   test('Can split dataset into 2Y0G series', () => {
-    const splittedSeries = splitSeriesDataByAccessors(
+    const splitSeries = splitSeriesDataByAccessors(
       {
         id: 'spec1',
         data: TestDataset.BARCHART_2Y0G,
@@ -96,10 +96,10 @@ describe('Series', () => {
       },
       new Map(),
     );
-    expect([...splittedSeries.dataSeries.values()]).toMatchSnapshot();
+    expect([...splitSeries.dataSeries.values()]).toMatchSnapshot();
   });
   test('Can split dataset into 2Y1G series', () => {
-    const splittedSeries = splitSeriesDataByAccessors(
+    const splitSeries = splitSeriesDataByAccessors(
       {
         id: 'spec1',
         data: TestDataset.BARCHART_2Y1G,
@@ -109,10 +109,10 @@ describe('Series', () => {
       },
       new Map(),
     );
-    expect([...splittedSeries.dataSeries.values()]).toMatchSnapshot();
+    expect([...splitSeries.dataSeries.values()]).toMatchSnapshot();
   });
   test('Can split dataset into 2Y2G series', () => {
-    const splittedSeries = splitSeriesDataByAccessors(
+    const splitSeries = splitSeriesDataByAccessors(
       {
         id: 'spec1',
         data: TestDataset.BARCHART_2Y2G,
@@ -122,7 +122,7 @@ describe('Series', () => {
       },
       new Map(),
     );
-    expect([...splittedSeries.dataSeries.values()]).toMatchSnapshot();
+    expect([...splitSeries.dataSeries.values()]).toMatchSnapshot();
   });
   it('should get sum of all xValues', () => {
     const xValueSums = new Map();
@@ -915,7 +915,7 @@ describe('Series', () => {
   describe('functional accessors', () => {
     test('Can split dataset into 2Y2G series', () => {
       const xAccessor: AccessorFn = (d) => d.x;
-      const splittedSeries = splitSeriesDataByAccessors(
+      const splitSeries = splitSeriesDataByAccessors(
         {
           id: 'spec1',
           data: TestDataset.BARCHART_2Y2G,
@@ -925,13 +925,13 @@ describe('Series', () => {
         },
         new Map(),
       );
-      expect([...splittedSeries.dataSeries.values()].length).toBe(8);
-      expect([...splittedSeries.dataSeries.values()]).toMatchSnapshot();
+      expect([...splitSeries.dataSeries.values()].length).toBe(8);
+      expect([...splitSeries.dataSeries.values()]).toMatchSnapshot();
     });
 
     test('Can split dataset with custom _all xAccessor', () => {
       const xAccessor: AccessorFn = () => '_all';
-      const splittedSeries = splitSeriesDataByAccessors(
+      const splitSeries = splitSeriesDataByAccessors(
         {
           id: 'spec1',
           data: TestDataset.BARCHART_2Y2G,
@@ -940,8 +940,8 @@ describe('Series', () => {
         },
         new Map(),
       );
-      expect([...splittedSeries.dataSeries.values()].length).toBe(1);
-      expect([...splittedSeries.dataSeries.values()]).toMatchSnapshot();
+      expect([...splitSeries.dataSeries.values()].length).toBe(1);
+      expect([...splitSeries.dataSeries.values()]).toMatchSnapshot();
     });
 
     test('Shall ignore undefined values on splitSeriesAccessors', () => {
@@ -961,9 +961,9 @@ describe('Series', () => {
         yAccessors: [1],
         splitSeriesAccessors: [2],
       });
-      const splittedSeries = splitSeriesDataByAccessors(spec, new Map());
-      expect([...splittedSeries.dataSeries.values()].length).toBe(2);
-      expect([...splittedSeries.dataSeries.values()]).toMatchSnapshot();
+      const splitSeries = splitSeriesDataByAccessors(spec, new Map());
+      expect([...splitSeries.dataSeries.values()].length).toBe(2);
+      expect([...splitSeries.dataSeries.values()]).toMatchSnapshot();
     });
     test('Should ignore series if splitSeriesAccessors are defined but not contained in any datum', () => {
       const spec = MockSeriesSpec.bar({
@@ -976,8 +976,8 @@ describe('Series', () => {
         yAccessors: [1],
         splitSeriesAccessors: [2],
       });
-      const splittedSeries = splitSeriesDataByAccessors(spec, new Map());
-      expect([...splittedSeries.dataSeries.values()].length).toBe(0);
+      const splitSeries = splitSeriesDataByAccessors(spec, new Map());
+      expect([...splitSeries.dataSeries.values()].length).toBe(0);
     });
   });
 });

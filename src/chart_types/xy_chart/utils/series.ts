@@ -21,7 +21,7 @@ import { SeriesIdentifier, SeriesKey } from '../../../commons/series_id';
 import { ScaleType } from '../../../scales/constants';
 import { ColorOverrides } from '../../../state/chart_state';
 import { Accessor, AccessorFn, getAccessorValue } from '../../../utils/accessor';
-import { Datum, Color } from '../../../utils/commons';
+import { Datum, Color, isDefined } from '../../../utils/commons';
 import { GroupId, SpecId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
 import { ColorConfig } from '../../../utils/themes/theme';
@@ -72,7 +72,6 @@ export interface XYChartSeriesIdentifier extends SeriesIdentifier {
 
 /** @internal */
 export type DataSeries = XYChartSeriesIdentifier & {
-  // seriesColorKey: string;
   data: DataSeriesDatum[];
 };
 
@@ -362,7 +361,7 @@ function getDataSeriesBySpecGroup(
 export function getDataSeriesBySpecId(
   seriesSpecs: BasicSeriesSpec[],
   deselectedDataSeries: SeriesIdentifier[] = [],
-  orderOrdinalBucketsBySum?: boolean,
+  orderOrdinalBinsBySum?: 'asc' | 'desc',
 ): {
   dataSeriesBySpecId: Map<SpecId, DataSeries[]>;
   seriesCollection: Map<SeriesKey, SeriesCollectionValue>;
@@ -425,7 +424,7 @@ export function getDataSeriesBySpecId(
     seriesCollection,
     xValues:
       isOrdinalScale || !isNumberArray
-        ? getSortedOrdinalXValues(globalXValues, mutatedXValueSums, orderOrdinalBucketsBySum)
+        ? getSortedOrdinalXValues(globalXValues, mutatedXValueSums, orderOrdinalBinsBySum)
         : new Set(
             [...globalXValues].sort((a, b) => {
               if (typeof a === 'string' || typeof b === 'string') {
@@ -441,12 +440,12 @@ export function getDataSeriesBySpecId(
 function getSortedOrdinalXValues(
   xValues: Set<string | number>,
   xValueSums: Map<string | number, number>,
-  orderOrdinalBucketsBySum = false,
+  orderOrdinalBinsBySum: 'asc' | 'desc' = 'asc',
 ) {
-  return orderOrdinalBucketsBySum
+  return isDefined(orderOrdinalBinsBySum)
     ? new Set(
         [...xValues].sort((v1, v2) => {
-          return (xValueSums.get(v2) ?? 0) - (xValueSums.get(v1) ?? 0);
+          return (orderOrdinalBinsBySum === 'asc' ? 1 : -1) * ((xValueSums.get(v1) ?? 0) - (xValueSums.get(v2) ?? 0));
         }),
       )
     : xValues; // keep the user order for ordinal scales

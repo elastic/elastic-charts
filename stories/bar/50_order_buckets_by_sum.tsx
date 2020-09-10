@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { boolean, select } from '@storybook/addon-knobs';
+import { select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src';
@@ -37,7 +37,6 @@ const data = [
 ];
 
 export const Example = () => {
-  const orderOrdinalBucketsBySum = boolean('orderOrdinalBucketsBySum', true);
   const dataType = select(
     'data type',
     {
@@ -46,10 +45,19 @@ export const Example = () => {
     },
     'ordinal',
   );
+  const orderOrdinalBinsBySum = select(
+    'orderOrdinalBinsBySum',
+    {
+      asc: 'asc',
+      desc: 'desc',
+      none: undefined,
+    },
+    'asc',
+  );
   return (
     <Chart className="story-chart">
       <Settings
-        orderOrdinalBucketsBySum={orderOrdinalBucketsBySum}
+        orderOrdinalBinsBySum={orderOrdinalBinsBySum}
         showLegend
         showLegendExtra
         legendPosition={Position.Right}
