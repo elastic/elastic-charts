@@ -263,7 +263,9 @@ export interface BasePointerEvent {
 export type BasicListener = () => undefined | void;
 
 // @public (undocumented)
-export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales;
+export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales & {
+    markFormat?: TickFormatter;
+};
 
 // Warning: (ae-missing-release-tag) "BrushAxis" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1543,11 +1545,12 @@ export type TooltipType = $Values<typeof TooltipType>;
 // @public
 export interface TooltipValue {
     color: Color;
+    formattedMarkValue?: string | null;
     formattedValue: string;
     isHighlighted: boolean;
     isVisible: boolean;
     label: string;
-    markValue?: any;
+    markValue?: number | null;
     seriesIdentifier: SeriesIdentifier;
     value: any;
     valueAccessor?: Accessor;
