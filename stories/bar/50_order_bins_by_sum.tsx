@@ -17,10 +17,10 @@
  * under the License.
  */
 
-import { select } from '@storybook/addon-knobs';
+import { select, boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings, BinAgg, Direction } from '../../src';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const data = [
@@ -37,28 +37,46 @@ const data = [
 ];
 
 export const Example = () => {
+  const orderOrdinalBinsBy = boolean('enable orderOrdinalBinsBy', true);
   const dataType = select(
-    'data type',
+    'Data type',
     {
       linear: 'linear',
       ordinal: 'ordinal',
     },
     'ordinal',
   );
-  const orderOrdinalBinsBySum =
-    select(
-      'orderOrdinalBinsBySum',
+  const direction =
+    select<Direction | undefined>(
+      'Direction',
       {
-        asc: 'asc',
-        desc: 'desc',
-        none: undefined,
+        Ascending: Direction.Ascending,
+        Descending: Direction.Descending,
+        'Default (Descending)': undefined,
       },
-      'desc',
+      Direction.Descending,
+    ) || undefined;
+  const binAgg =
+    select<BinAgg | undefined>(
+      'BinAgg',
+      {
+        Sum: BinAgg.Sum,
+        None: BinAgg.None,
+        'Default (sum)': undefined,
+      },
+      BinAgg.Sum,
     ) || undefined;
   return (
     <Chart className="story-chart">
       <Settings
-        orderOrdinalBinsBySum={orderOrdinalBinsBySum}
+        orderOrdinalBinsBy={
+          orderOrdinalBinsBy
+            ? {
+                direction,
+                binAgg,
+              }
+            : undefined
+        }
         showLegend
         showLegendExtra
         legendPosition={Position.Right}

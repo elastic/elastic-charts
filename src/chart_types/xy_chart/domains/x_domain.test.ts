@@ -20,7 +20,7 @@
 import { ChartTypes } from '../..';
 import { MockSeriesSpecs } from '../../../mocks/specs';
 import { ScaleType } from '../../../scales/constants';
-import { SpecTypes } from '../../../specs/constants';
+import { SpecTypes, Direction, BinAgg } from '../../../specs/constants';
 import { getDataSeriesBySpecId } from '../utils/series';
 import { BasicSeriesSpec, SeriesTypes } from '../utils/specs';
 import { convertXScaleTypes, findMinInterval, mergeXDomain } from './x_domain';
@@ -890,23 +890,44 @@ describe('X Domain', () => {
       },
     ]);
 
-    it('should sort ordinal xValues by descending sum when set to desc', () => {
-      const { xValues } = getDataSeriesBySpecId(ordinalSpecs, [], 'desc');
+    it('should sort ordinal xValues by descending sum by default', () => {
+      const { xValues } = getDataSeriesBySpecId(ordinalSpecs, [], {});
       expect(xValues).toEqual(new Set(['c', 'd', 'b', 'a']));
     });
 
-    it('should sort ordinal xValues by ascending sum when set to asc', () => {
-      const { xValues } = getDataSeriesBySpecId(ordinalSpecs, [], 'asc');
+    it('should sort ordinal xValues by descending sum', () => {
+      const { xValues } = getDataSeriesBySpecId(ordinalSpecs, [], {
+        binAgg: BinAgg.None,
+        direction: Direction.Descending,
+      });
+      expect(xValues).toEqual(new Set(['c', 'd', 'b', 'a']));
+    });
+
+    it('should sort ordinal xValues by ascending sum', () => {
+      const { xValues } = getDataSeriesBySpecId(ordinalSpecs, [], {
+        binAgg: BinAgg.None,
+        direction: Direction.Ascending,
+      });
       expect(xValues).toEqual(new Set(['a', 'b', 'd', 'c']));
     });
 
-    it('should NOT sort ordinal xValues by descending sum when false', () => {
+    it('should NOT sort ordinal xValues sum', () => {
       const { xValues } = getDataSeriesBySpecId(ordinalSpecs, [], undefined);
       expect(xValues).toEqual(new Set(['a', 'b', 'c', 'd']));
     });
 
-    it('should NOT sort linear xValue by descending sum when true', () => {
-      const { xValues } = getDataSeriesBySpecId(linearSpecs, [], 'desc');
+    it('should NOT sort ordinal xValues sum when undefined', () => {
+      const { xValues } = getDataSeriesBySpecId(ordinalSpecs, [], {
+        binAgg: BinAgg.None,
+        direction: Direction.Descending,
+      });
+      expect(xValues).toEqual(new Set(['a', 'b', 'c', 'd']));
+    });
+
+    it('should NOT sort linear xValue by descending sum', () => {
+      const { xValues } = getDataSeriesBySpecId(linearSpecs, [], {
+        direction: Direction.Descending,
+      });
       expect(xValues).toEqual(new Set([1, 2, 3, 4]));
     });
   });

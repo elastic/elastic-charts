@@ -19,9 +19,11 @@
 
 import { SeriesIdentifier, SeriesKey } from '../../../commons/series_id';
 import { ScaleType } from '../../../scales/constants';
+import { BinAgg, Direction } from '../../../specs';
+import { OrderBy } from '../../../specs/settings';
 import { ColorOverrides } from '../../../state/chart_state';
 import { Accessor, AccessorFn, getAccessorValue } from '../../../utils/accessor';
-import { Datum, Color, isDefined } from '../../../utils/commons';
+import { Datum, Color } from '../../../utils/commons';
 import { GroupId, SpecId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
 import { ColorConfig } from '../../../utils/themes/theme';
@@ -424,7 +426,7 @@ function getDataSeriesBySpecGroup(
 export function getDataSeriesBySpecId(
   seriesSpecs: BasicSeriesSpec[],
   deselectedDataSeries: SeriesIdentifier[] = [],
-  orderOrdinalBinsBySum?: 'asc' | 'desc',
+  orderOrdinalBinsBy?: OrderBy,
   enableVislibSeriesSort?: boolean,
 ): {
   dataSeriesBySpecId: Map<SpecId, DataSeries[]>;
@@ -488,7 +490,7 @@ export function getDataSeriesBySpecId(
     seriesCollection,
     xValues:
       isOrdinalScale || !isNumberArray
-        ? getSortedOrdinalXValues(globalXValues, mutatedXValueSums, orderOrdinalBinsBySum)
+        ? getSortedOrdinalXValues(globalXValues, mutatedXValueSums, orderOrdinalBinsBy)
         : new Set(
             [...globalXValues].sort((a, b) => {
               if (typeof a === 'string' || typeof b === 'string') {
@@ -504,15 +506,26 @@ export function getDataSeriesBySpecId(
 function getSortedOrdinalXValues(
   xValues: Set<string | number>,
   xValueSums: Map<string | number, number>,
-  orderOrdinalBinsBySum?: 'asc' | 'desc',
+  orderOrdinalBinsBy?: OrderBy,
 ) {
-  return isDefined(orderOrdinalBinsBySum)
-    ? new Set(
+  if (!orderOrdinalBinsBy) {
+    return xValues; // keep the user order for ordinal scales
+  }
+
+  switch (orderOrdinalBinsBy?.binAgg) {
+    case BinAgg.None:
+      return xValues; // keep the user order for ordinal scales
+    case BinAgg.Sum:
+    default:
+      return new Set(
         [...xValues].sort((v1, v2) => {
-          return (orderOrdinalBinsBySum === 'asc' ? 1 : -1) * ((xValueSums.get(v1) ?? 0) - (xValueSums.get(v2) ?? 0));
+          return (
+            (orderOrdinalBinsBy.direction === Direction.Ascending ? 1 : -1) *
+            ((xValueSums.get(v1) ?? 0) - (xValueSums.get(v2) ?? 0))
+          );
         }),
-      )
-    : xValues; // keep the user order for ordinal scales
+      );
+  }
 }
 
 function getSeriesNameFromOptions(
