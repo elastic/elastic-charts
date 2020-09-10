@@ -264,7 +264,7 @@ export type BasicListener = () => undefined | void;
 
 // @public (undocumented)
 export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales & {
-    markFormat?: TickFormatter;
+    markFormat?: TickFormatter<number>;
 };
 
 // Warning: (ae-missing-release-tag) "BrushAxis" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -1487,7 +1487,7 @@ export interface Theme {
 }
 
 // @public (undocumented)
-export type TickFormatter = (value: any, options?: TickFormatterOptions) => string;
+export type TickFormatter<V = any> = (value: V, options?: TickFormatterOptions) => string;
 
 // @public (undocumented)
 export type TickFormatterOptions = {
