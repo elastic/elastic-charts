@@ -34,7 +34,7 @@ const data1 = new Array(100).fill(0).map((_, x) => ({
 const data2 = new Array(100).fill(0).map((_, x) => ({
   x,
   y: getRandomNumber(0, 100),
-  z: getRandomNumber(0, 50, 4),
+  z: getRandomNumber(200, 500, 4),
 }));
 
 export const Example = () => {
@@ -93,7 +93,7 @@ export const Example = () => {
         yAccessors={['y']}
         markSizeAccessor="z"
         data={data2.slice(0, size)}
-        markFormat={(d) => `${numeral(d).format(markFormat)}%`}
+        markFormat={(d) => `$${numeral(d).format(markFormat)}`}
       />
     </Chart>
   );
