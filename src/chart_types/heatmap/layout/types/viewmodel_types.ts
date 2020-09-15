@@ -19,7 +19,7 @@
 
 import { ScaleLinear, ScaleQuantile, ScaleQuantize, ScaleThreshold } from 'd3-scale';
 
-import { Fill, Stroke } from '../../../../geoms/types';
+import { Fill, Line, Stroke } from '../../../../geoms/types';
 import { ScaleType } from '../../../../scales/constants';
 import { Point } from '../../../../utils/point';
 import { Pixels } from '../../../partition_chart/layout/types/geometry_types';
@@ -53,6 +53,11 @@ export interface HeatmapViewModel {
   gridOrigin: {
     x: number;
     y: number;
+  };
+  gridLines: {
+    x: Line[];
+    y: Line[];
+    stroke: Stroke;
   };
   cells: Cell[];
   xValues: Array<TextBox>;
@@ -100,6 +105,11 @@ export const nullHeatmapViewModel: HeatmapViewModel = {
   gridOrigin: {
     x: 0,
     y: 0,
+  },
+  gridLines: {
+    x: [],
+    y: [],
+    stroke: { width: 0, color: { r: 0, g: 0, b: 0, opacity: 0 } },
   },
   cells: [],
   xValues: [],

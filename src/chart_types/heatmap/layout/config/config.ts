@@ -65,6 +65,10 @@ export const config: Config = {
       min: 12,
       max: 30,
     },
+    stroke: {
+      width: 1,
+      color: 'gray',
+    },
   },
   cell: {
     maxWidth: 'fill',

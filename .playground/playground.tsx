@@ -46,12 +46,16 @@ export class Playground extends React.Component {
               xAccessor={(d) => d.time}
               yAccessor={(d) => d.laneLabel}
               valueAccessor={(d) => d.value}
-              valueFormatter={(value) => value.toFixed(0.2)}
+              valueFormatter={() => ''}
               config={{
                 grid: {
                   cellHeight: {
                     min: 40,
                     max: 40, // 'fill',
+                  },
+                  stroke: {
+                    width: 1,
+                    color: 'gray',
                   },
                 },
                 cell: {

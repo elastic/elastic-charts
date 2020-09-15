@@ -18,6 +18,7 @@
  */
 
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
+import { renderMultiLine } from '../../../xy_chart/renderer/canvas/primitives/line';
 import { renderRect } from '../../../xy_chart/renderer/canvas/primitives/rect';
 import { renderText } from '../../../xy_chart/renderer/canvas/primitives/text';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
@@ -61,6 +62,13 @@ export function renderCanvas2d(
       // clear the canvas
       (ctx: CanvasRenderingContext2D) => clearCanvas(ctx, config.width, config.height),
 
+      (ctx: CanvasRenderingContext2D) => {
+        withContext(ctx, (ctx) => {
+          // render grid
+          renderMultiLine(ctx, heatmapViewModel.gridLines.x, heatmapViewModel.gridLines.stroke);
+          renderMultiLine(ctx, heatmapViewModel.gridLines.y, heatmapViewModel.gridLines.stroke);
+        });
+      },
       (ctx: CanvasRenderingContext2D) =>
         withContext(ctx, (ctx) => {
           // render cells
