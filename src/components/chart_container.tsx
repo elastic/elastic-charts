@@ -22,7 +22,12 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { SettingsSpec } from '../specs';
-import { onMouseUp, onMouseDown, onPointerMove } from '../state/actions/mouse';
+import { onKeyPress as onKeyPressAction } from '../state/actions/key';
+import {
+  onMouseUp as onMouseUpAction,
+  onMouseDown as onMouseDownAction,
+  onPointerMove as onPointerMoveAction,
+} from '../state/actions/mouse';
 import { GlobalChartState, BackwardRef } from '../state/chart_state';
 import { getInternalChartRendererSelector } from '../state/selectors/get_chart_type_components';
 import { getInternalPointerCursor } from '../state/selectors/get_internal_cursor_pointer';
@@ -46,9 +51,10 @@ interface ChartContainerComponentStateProps {
   ) => JSX.Element | null;
 }
 interface ChartContainerComponentDispatchProps {
-  onPointerMove: typeof onPointerMove;
-  onMouseUp: typeof onMouseUp;
-  onMouseDown: typeof onMouseDown;
+  onPointerMove: typeof onPointerMoveAction;
+  onMouseUp: typeof onMouseUpAction;
+  onMouseDown: typeof onMouseDownAction;
+  onKeyPress: typeof onKeyPressAction;
 }
 
 interface ChartContainerComponentOwnProps {
@@ -63,6 +69,11 @@ type ReactiveChartProps = ChartContainerComponentStateProps &
 class ChartContainerComponent extends React.Component<ReactiveChartProps> {
   static displayName = 'ChartContainer';
 
+  /**
+   * Track active brush listener
+   */
+  hasBrushListener = false;
+
   shouldComponentUpdate(nextProps: ReactiveChartProps) {
     return !deepEqual(this.props, nextProps);
   }
@@ -70,9 +81,14 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
   handleMouseMove = ({
     nativeEvent: { offsetX, offsetY, timeStamp },
   }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    const { isChartEmpty, onPointerMove } = this.props;
+    const { isChartEmpty, onPointerMove, isBrushingAvailable, isBrushing } = this.props;
     if (isChartEmpty) {
       return;
+    }
+
+    if (isBrushingAvailable && isBrushing && !this.hasBrushListener) {
+      this.hasBrushListener = true;
+      window.addEventListener('keyup', this.handleKeyUp);
     }
     onPointerMove(
       {
@@ -118,6 +134,12 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     if (isChartEmpty) {
       return;
     }
+
+    if (this.hasBrushListener) {
+      window.removeEventListener('keyup', this.handleKeyUp);
+      this.hasBrushListener = false;
+    }
+
     onMouseUp(
       {
         x: offsetX,
@@ -125,6 +147,15 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
       },
       timeStamp,
     );
+  };
+
+  handleKeyUp = ({ key }: KeyboardEvent) => {
+    const { isChartEmpty, onKeyPress } = this.props;
+    if (isChartEmpty) {
+      return;
+    }
+
+    onKeyPress(key);
   };
 
   handleBrushEnd = () => {
@@ -179,9 +210,10 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
 const mapDispatchToProps = (dispatch: Dispatch): ChartContainerComponentDispatchProps =>
   bindActionCreators(
     {
-      onPointerMove,
-      onMouseUp,
-      onMouseDown,
+      onPointerMove: onPointerMoveAction,
+      onMouseUp: onMouseUpAction,
+      onMouseDown: onMouseDownAction,
+      onKeyPress: onKeyPressAction,
     },
     dispatch,
   );
