@@ -113,7 +113,7 @@ class BrushToolComponent extends React.Component<Props> {
               height,
             },
             {
-              color: fillColor || DEFAULT_FILL_COLOR,
+              color: fillColor ?? DEFAULT_FILL_COLOR,
             },
           );
         },
