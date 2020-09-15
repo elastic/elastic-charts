@@ -55,6 +55,10 @@ export interface Config {
       min: Pixels;
       max: Pixels | 'fill';
     };
+    stroke: {
+      color: string;
+      width: number;
+    };
   };
   cell: {
     maxWidth: Pixels | 'fill';

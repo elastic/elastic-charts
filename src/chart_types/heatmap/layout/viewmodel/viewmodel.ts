@@ -298,8 +298,6 @@ export function shapeViewModel(textMeasure: TextMeasure, spec: HeatmapSpec, conf
    * @param end
    */
   const pickDragShape: PickDragShapeFunction = ([start, end]) => {
-    console.log(start, '___start___');
-
     const startX = Math.min(start.x, end.x);
     const startY = Math.min(start.y, end.y);
 
@@ -323,6 +321,20 @@ export function shapeViewModel(textMeasure: TextMeasure, spec: HeatmapSpec, conf
       gridOrigin: {
         x: maxTextWidth,
         y: 0,
+      },
+      gridLines: {
+        x: xValues.map((v, i) => {
+          const x = maxTextWidth + i * cellWidth;
+          return { x1: x, y1: maxHeight, x2: x, y2: 0 };
+        }),
+        y: yValues.map((v, i) => {
+          const y = i * cellHeight;
+          return { x1: maxTextWidth, y1: y, x2: maxGridAreaWidth + maxTextWidth, y2: y };
+        }),
+        stroke: {
+          color: stringToRGB(config.grid.stroke.color),
+          width: config.grid.stroke.width ?? 1,
+        },
       },
       pageSize,
       cells: Object.values(cellMap),
