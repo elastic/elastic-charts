@@ -31,6 +31,7 @@ interface KeyUpAction {
 /**
  * Action called on `keyup` event
  * @param key keyboard key
+ * @internal
  */
 export function onKeyPress(key: string): KeyUpAction {
   return { type: ON_KEY_UP, key };
