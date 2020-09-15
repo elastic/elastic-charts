@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ScaleLinear, ScaleQuantile, ScaleQuantize } from 'd3-scale';
+import { ScaleLinear, ScaleQuantile, ScaleQuantize, ScaleThreshold } from 'd3-scale';
 
 import { Fill, Stroke } from '../../../../geoms/types';
 import { ScaleType } from '../../../../scales/constants';
@@ -80,9 +80,10 @@ export type ScaleModelType<Type, Config> = {
 type ScaleLinearType = ScaleModelType<typeof ScaleType.Linear, ScaleLinear<string, string>>;
 type ScaleQuantizeType = ScaleModelType<typeof ScaleType.Quantize, ScaleQuantize<string>>;
 type ScaleQuantileType = ScaleModelType<typeof ScaleType.Quantile, ScaleQuantile<string>>;
+type ScaleThresholdType = ScaleModelType<typeof ScaleType.Threshold, ScaleThreshold<number, string>>;
 
 /** @internal */
-export type ColorScaleType = ScaleLinearType | ScaleQuantizeType | ScaleQuantileType;
+export type ColorScaleType = ScaleLinearType | ScaleQuantizeType | ScaleQuantileType | ScaleThresholdType;
 
 /** @internal */
 export type ShapeViewModel = {

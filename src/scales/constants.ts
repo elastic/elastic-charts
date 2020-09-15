@@ -30,6 +30,7 @@ export const ScaleType = Object.freeze({
   Time: 'time' as const,
   Quantize: 'quantize' as const,
   Quantile: 'quantile' as const,
+  Threshold: 'threshold' as const,
 });
 
 /** @public */

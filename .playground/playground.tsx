@@ -21,51 +21,96 @@ import React from 'react';
 
 import { Chart, Heatmap, ScaleType, Settings } from '../src';
 import { BABYNAME_DATA } from '../src/utils/data_samples/babynames';
+import { SWIM_LANE_DATA } from '../src/utils/data_samples/test_anomaly_swim_lane';
 
 export class Playground extends React.Component {
   render() {
     return (
-      <div className="chart">
-        <Chart>
-          <Settings
-            onElementClick={console.log}
-            showLegend
-            legendPosition="top"
-            onBrushEnd={console.log}
-            brushAxis="both"
-          />
-          <Heatmap
-            id="heatmap"
-            ranges={[0, 1000, 3000, 5000, 6000]}
-            colorScale={ScaleType.Quantize}
-            colors={['green', 'yellow', 'blue', 'gray', 'red']}
-            data={BABYNAME_DATA.filter(([year]) => year > 1950)}
-            xAccessor={(d) => d[2]}
-            yAccessor={(d) => d[0]}
-            valueAccessor={(d) => d[3]}
-            valueFormatter={(value) => value.toFixed(0.2)}
-            xSortPredicate="alphaAsc"
-            config={{
-              grid: {
-                cellHeight: {
-                  min: 40,
-                  max: 40, // 'fill',
+      <div>
+        <div className="chart" style={{ height: '500px' }}>
+          <Chart>
+            <Settings
+              onElementClick={console.log}
+              showLegend
+              legendPosition="top"
+              onBrushEnd={console.log}
+              brushAxis="both"
+            />
+            <Heatmap
+              id="heatmap1"
+              ranges={[0, 3, 25, 50, 75]}
+              colorScale={ScaleType.Threshold}
+              colors={['#ffffff', '#d2e9f7', '#8bc8fb', '#fdec25', '#fba740', '#fe5050']}
+              data={SWIM_LANE_DATA}
+              // highlightedData={{ x: [], y: [] }}
+              xAccessor={(d) => d.time}
+              yAccessor={(d) => d.laneLabel}
+              valueAccessor={(d) => d.value}
+              valueFormatter={(value) => value.toFixed(0.2)}
+              config={{
+                grid: {
+                  cellHeight: {
+                    min: 40,
+                    max: 40, // 'fill',
+                  },
                 },
-              },
-              cell: {
-                maxWidth: 'fill',
-                maxHeight: 20,
-                label: {
-                  visible: true,
+                cell: {
+                  maxWidth: 'fill',
+                  maxHeight: 20,
+                  label: {
+                    visible: true,
+                  },
+                  border: {
+                    stroke: '#D3DAE6',
+                    strokeWidth: 1,
+                  },
                 },
-                border: {
-                  stroke: 'white',
-                  strokeWidth: 1,
+              }}
+            />
+          </Chart>
+        </div>
+        <br />
+        <div className="chart" style={{ height: '500px' }}>
+          <Chart>
+            <Settings
+              onElementClick={console.log}
+              showLegend
+              legendPosition="top"
+              onBrushEnd={console.log}
+              brushAxis="both"
+            />
+            <Heatmap
+              id="heatmap2"
+              colorScale={ScaleType.Linear}
+              colors={['yellow', 'red']}
+              data={BABYNAME_DATA.filter(([year]) => year > 1950)}
+              xAccessor={(d) => d[2]}
+              yAccessor={(d) => d[0]}
+              valueAccessor={(d) => d[3]}
+              valueFormatter={(value) => value.toFixed(0.2)}
+              xSortPredicate="alphaAsc"
+              config={{
+                grid: {
+                  cellHeight: {
+                    min: 40,
+                    max: 40, // 'fill',
+                  },
                 },
-              },
-            }}
-          />
-        </Chart>
+                cell: {
+                  maxWidth: 'fill',
+                  maxHeight: 20,
+                  label: {
+                    visible: true,
+                  },
+                  border: {
+                    stroke: 'white',
+                    strokeWidth: 1,
+                  },
+                },
+              }}
+            />
+          </Chart>
+        </div>
       </div>
     );
   }
