@@ -69,11 +69,6 @@ type ReactiveChartProps = ChartContainerComponentStateProps &
 class ChartContainerComponent extends React.Component<ReactiveChartProps> {
   static displayName = 'ChartContainer';
 
-  /**
-   * Track active brush listener
-   */
-  hasBrushListener = false;
-
   shouldComponentUpdate(nextProps: ReactiveChartProps) {
     return !deepEqual(this.props, nextProps);
   }
@@ -81,15 +76,11 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
   handleMouseMove = ({
     nativeEvent: { offsetX, offsetY, timeStamp },
   }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    const { isChartEmpty, onPointerMove, isBrushingAvailable, isBrushing } = this.props;
+    const { isChartEmpty, onPointerMove } = this.props;
     if (isChartEmpty) {
       return;
     }
 
-    if (isBrushingAvailable && isBrushing && !this.hasBrushListener) {
-      this.hasBrushListener = true;
-      window.addEventListener('keyup', this.handleKeyUp);
-    }
     onPointerMove(
       {
         x: offsetX,
@@ -117,9 +108,13 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     if (isChartEmpty) {
       return;
     }
+
     if (isBrushingAvailable) {
       window.addEventListener('mouseup', this.handleBrushEnd);
     }
+
+    window.addEventListener('keyup', this.handleKeyUp);
+
     onMouseDown(
       {
         x: offsetX,
@@ -135,10 +130,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
       return;
     }
 
-    if (this.hasBrushListener) {
-      window.removeEventListener('keyup', this.handleKeyUp);
-      this.hasBrushListener = false;
-    }
+    window.removeEventListener('keyup', this.handleKeyUp);
 
     onMouseUp(
       {
@@ -150,6 +142,8 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
   };
 
   handleKeyUp = ({ key }: KeyboardEvent) => {
+    window.removeEventListener('keyup', this.handleKeyUp);
+
     const { isChartEmpty, onKeyPress } = this.props;
     if (isChartEmpty) {
       return;
@@ -162,6 +156,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     const { onMouseUp } = this.props;
 
     window.removeEventListener('mouseup', this.handleBrushEnd);
+
     requestAnimationFrame(() => {
       onMouseUp(
         {
