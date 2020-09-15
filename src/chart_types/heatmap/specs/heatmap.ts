@@ -45,7 +45,11 @@ const defaultProps = {
   config,
 };
 
-export type HeatmapScaleType = typeof ScaleType.Linear | typeof ScaleType.Quantile | typeof ScaleType.Quantize;
+export type HeatmapScaleType =
+  | typeof ScaleType.Linear
+  | typeof ScaleType.Quantile
+  | typeof ScaleType.Quantize
+  | typeof ScaleType.Threshold;
 
 /** @alpha */
 export interface HeatmapSpec extends Spec {

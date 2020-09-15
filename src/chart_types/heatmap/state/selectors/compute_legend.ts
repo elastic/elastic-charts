@@ -46,6 +46,8 @@ export const computeLegendSelector = createCachedSelector(
       ticks = colorScale.config.quantiles();
     } else if (colorScale.type === ScaleType.Quantize) {
       ticks = colorScale.config.ticks(spec.colors.length);
+    } else if (colorScale.type === ScaleType.Threshold) {
+      ticks = colorScale.config.domain();
     }
     return ticks.map((tick) => {
       const seriesIdentifier = {

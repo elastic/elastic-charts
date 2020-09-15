@@ -19,7 +19,7 @@
 
 import { max as d3Max, extent as d3Extent } from 'd3-array';
 import { interpolateHcl } from 'd3-interpolate';
-import { scaleBand, scaleLinear, scaleQuantile, scaleQuantize } from 'd3-scale';
+import { scaleBand, scaleLinear, scaleQuantile, scaleQuantize, scaleThreshold } from 'd3-scale';
 
 import { ScaleType } from '../../../../scales/constants';
 import { Pixels } from '../../../partition_chart/layout/types/geometry_types';
@@ -122,6 +122,10 @@ export function shapeViewModel(textMeasure: TextMeasure, spec: HeatmapSpec, conf
       .range(colorRange);
   } else if (colorScale.type === ScaleType.Quantile) {
     colorScale.config = scaleQuantile<string>()
+      .domain(ranges)
+      .range(colorRange);
+  } else if (colorScale.type === ScaleType.Threshold) {
+    colorScale.config = scaleThreshold<number, string>()
       .domain(ranges)
       .range(colorRange);
   } else {
@@ -294,6 +298,8 @@ export function shapeViewModel(textMeasure: TextMeasure, spec: HeatmapSpec, conf
    * @param end
    */
   const pickDragShape: PickDragShapeFunction = ([start, end]) => {
+    console.log(start, '___start___');
+
     const startX = Math.min(start.x, end.x);
     const startY = Math.min(start.y, end.y);
 
