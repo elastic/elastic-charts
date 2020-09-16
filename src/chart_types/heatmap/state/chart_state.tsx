@@ -21,14 +21,17 @@ import React, { RefObject } from 'react';
 
 import { ChartTypes } from '../..';
 import { LegendItem } from '../../../commons/legend';
+import { BrushTool } from '../../../components/brush/brush';
 import { Tooltip } from '../../../components/tooltip';
 import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
+import { getChartContainerDimensionsSelector } from '../../../state/selectors/get_chart_container_dimensions';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { LegendItemLabel } from '../../../state/selectors/get_legend_items_labels';
-import { BrushTool } from '../../xy_chart/renderer/dom/brush';
+import { Dimensions } from '../../../utils/dimensions';
 import { Heatmap } from '../renderer/canvas/connected_component';
 import { HighlighterFromBrush } from '../renderer/dom/highlighter_brush';
 import { computeLegendSelector } from './selectors/compute_legend';
+import { getBrushAreaSelector } from './selectors/get_brush_area';
 import { getSpecOrNull } from './selectors/heatmap_spec';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
 import { createOnBrushEndCaller } from './selectors/on_brush_end_caller';
@@ -89,7 +92,7 @@ export class HeatmapState implements InternalChartState {
       <>
         <Tooltip getChartContainerRef={containerRef} />
         <Heatmap forwardStageRef={forwardStageRef} />
-        {/* <BrushTool /> */}
+        <BrushTool />
         <HighlighterFromBrush />
       </>
     );
@@ -114,6 +117,19 @@ export class HeatmapState implements InternalChartState {
       x1: position.x,
       y1: position.y,
     };
+  }
+
+  getProjectionContainerArea(globalState: GlobalChartState): Dimensions {
+    return getChartContainerDimensionsSelector(globalState);
+  }
+
+  // TODO
+  getMainProjectionArea(globalState: GlobalChartState): Dimensions {
+    return getChartContainerDimensionsSelector(globalState);
+  }
+
+  getBrushArea(globalState: GlobalChartState): Dimensions | null {
+    return getBrushAreaSelector(globalState);
   }
 
   eventCallbacks(globalState: GlobalChartState) {
