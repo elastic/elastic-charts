@@ -22,7 +22,6 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { geometries } from '../../state/selectors/geometries';
-import { getPickedArea } from '../../state/selectors/picked_shapes';
 import { DEFAULT_PROPS, HighlighterCellsComponent, HighlighterCellsProps } from './highlighter';
 
 const brushMapStateToProps = (state: GlobalChartState): HighlighterCellsProps => {
@@ -34,12 +33,14 @@ const brushMapStateToProps = (state: GlobalChartState): HighlighterCellsProps =>
 
   const geoms = geometries(state);
   const canvasDimension = getChartContainerDimensionsSelector(state);
+  const dragShape = state.internalChartState.getPickedArea(state);
+
   return {
     chartId,
     initialized: true,
     canvasDimension,
     geometries: geoms,
-    dragShape: getPickedArea(state),
+    dragShape,
   };
 };
 

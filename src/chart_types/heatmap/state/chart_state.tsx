@@ -35,6 +35,7 @@ import { getBrushAreaSelector } from './selectors/get_brush_area';
 import { getSpecOrNull } from './selectors/heatmap_spec';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
 import { createOnBrushEndCaller } from './selectors/on_brush_end_caller';
+import { createOnBrushingCaller } from './selectors/on_brushing_caller';
 import { createOnElementClickCaller } from './selectors/on_element_click_caller';
 import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
@@ -48,16 +49,11 @@ const EMPTY_LEGEND_ITEM_LIST: LegendItemLabel[] = [];
 export class HeatmapState implements InternalChartState {
   chartType = ChartTypes.Heatmap;
 
-  onElementClickCaller: (state: GlobalChartState) => void;
-  onElementOverCaller: (state: GlobalChartState) => void;
-  onElementOutCaller: (state: GlobalChartState) => void;
+  onElementClickCaller: (state: GlobalChartState) => void = createOnElementClickCaller();
+  onElementOverCaller: (state: GlobalChartState) => void = createOnElementOverCaller();
+  onElementOutCaller: (state: GlobalChartState) => void = createOnElementOutCaller();
   onBrushEndCaller: (state: GlobalChartState) => void = createOnBrushEndCaller();
-
-  constructor() {
-    this.onElementClickCaller = createOnElementClickCaller();
-    this.onElementOverCaller = createOnElementOverCaller();
-    this.onElementOutCaller = createOnElementOutCaller();
-  }
+  onBrushingCaller: (state: GlobalChartState) => void = createOnBrushingCaller();
 
   isInitialized(globalState: GlobalChartState) {
     return getSpecOrNull(globalState) !== null ? InitStatus.Initialized : InitStatus.ChartNotInitialized;
@@ -123,13 +119,17 @@ export class HeatmapState implements InternalChartState {
     return getChartContainerDimensionsSelector(globalState);
   }
 
-  // TODO
+  // TODO;
   getMainProjectionArea(globalState: GlobalChartState): Dimensions {
     return getChartContainerDimensionsSelector(globalState);
   }
 
   getBrushArea(globalState: GlobalChartState): Dimensions | null {
     return getBrushAreaSelector(globalState);
+  }
+
+  getPickedArea(globalState: GlobalChartState) {
+    return this.onBrushingCaller(globalState);
   }
 
   eventCallbacks(globalState: GlobalChartState) {
