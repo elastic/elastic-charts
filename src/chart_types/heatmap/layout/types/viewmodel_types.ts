@@ -72,7 +72,9 @@ export type PickFunction = (x: Pixels, y: Pixels) => Cell[];
 export type PickDragFunction = (points: [Point, Point]) => Cell[];
 
 /** @internal */
-export type PickDragShapeFunction = (points: [Point, Point]) => { x: number; y: number; width: number; height: number };
+export type PickDragShapeFunction = (
+  points: [Point, Point],
+) => { x: number; y: number; width: number; height: number } | void;
 
 /** @internal */
 export type DragShape = ReturnType<PickDragShapeFunction>;
@@ -123,6 +125,6 @@ export const nullShapeViewModel = (specifiedConfig?: Config): ShapeViewModel => 
   heatmapViewModel: nullHeatmapViewModel,
   pickQuads: () => [],
   pickDragArea: () => [],
-  pickDragShape: () => ({ x: 0, y: 0, height: 0, width: 0 }),
+  pickDragShape: () => {},
   colorScale: null,
 });

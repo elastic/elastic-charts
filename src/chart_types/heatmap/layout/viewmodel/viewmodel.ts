@@ -307,6 +307,10 @@ export function shapeViewModel(textMeasure: TextMeasure, spec: HeatmapSpec, conf
     const [startPoint] = pickQuads(startX, startY);
     const [endPoint] = pickQuads(endX, endY);
 
+    if (startPoint === undefined || endPoint === undefined) {
+      return;
+    }
+
     return {
       x: startPoint.x + maxTextWidth,
       y: startPoint.y,
