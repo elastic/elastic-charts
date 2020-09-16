@@ -20,7 +20,8 @@
 import { SeriesKey, SeriesIdentifier } from '../../../../commons/series_id';
 import { Scale } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
-import { identity, mergePartial, Rotation, Color, isUniqueArray } from '../../../../utils/commons';
+import { OrderBy } from '../../../../specs/settings';
+import { mergePartial, Rotation, Color, isUniqueArray } from '../../../../utils/commons';
 import { CurveType } from '../../../../utils/curves';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Domain } from '../../../../utils/domain';
@@ -31,6 +32,7 @@ import { XDomain, YDomain } from '../../domains/types';
 import { mergeXDomain } from '../../domains/x_domain';
 import { mergeYDomain } from '../../domains/y_domain';
 import { renderArea, renderBars, renderLine, renderBubble, isDatumFilled } from '../../rendering/rendering';
+import { defaultTickFormatter } from '../../utils/axis_utils';
 import { fillSeries } from '../../utils/fill_series';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
 import { computeXScale, computeYScales, countBarsInCluster } from '../../utils/scales';
@@ -191,6 +193,8 @@ function getLastValues(formattedDataSeries: {
  * @param customYDomainsByGroupId custom Y domains grouped by GroupId
  * @param customXDomain if specified in <Settings />, the custom X domain
  * @param deselectedDataSeries is optional; if not supplied,
+ * @param customXDomain is optional; if not supplied,
+ * @param enableVislibSeriesSort is optional; if not specified in <Settings />,
  * then all series will be factored into computations. Otherwise, selectedDataSeries
  * is used to restrict the computation for just the selected series
  * @returns `SeriesDomainsAndData`
@@ -201,12 +205,15 @@ export function computeSeriesDomains(
   customYDomainsByGroupId: Map<GroupId, YDomainRange> = new Map(),
   deselectedDataSeries: SeriesIdentifier[] = [],
   customXDomain?: DomainRange | Domain,
+  orderOrdinalBinsBy?: OrderBy,
+  enableVislibSeriesSort?: boolean,
 ): SeriesDomainsAndData {
   const { dataSeriesBySpecId, xValues, seriesCollection, fallbackScale } = getDataSeriesBySpecId(
     seriesSpecs,
     deselectedDataSeries,
+    orderOrdinalBinsBy,
+    enableVislibSeriesSort,
   );
-
   // compute the x domain merging any custom domain
   const specsArray = [...seriesSpecs.values()];
   const xDomain = mergeXDomain(specsArray, xValues, customXDomain, fallbackScale);
@@ -483,6 +490,7 @@ function renderGeometries(
   const bubbles: BubbleGeometry[] = [];
   const indexedGeometryMap = new IndexedGeometryMap();
   const isMixedChart = isUniqueArray(seriesSpecs, ({ seriesType }) => seriesType) && seriesSpecs.length > 1;
+  const fallBackTickFormatter = seriesSpecs.find(({ tickFormat }) => tickFormat)?.tickFormat ?? defaultTickFormatter;
   const geometriesCounts: GeometriesCounts = {
     points: 0,
     bars: 0,
@@ -510,7 +518,7 @@ function renderGeometries(
       });
 
       const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
-      const valueFormatter = yAxis && yAxis.tickFormat ? yAxis.tickFormat : identity;
+      const valueFormatter = yAxis?.tickFormat ?? fallBackTickFormatter;
 
       const displayValueSettings = spec.displayValueSettings
         ? { valueFormatter, ...spec.displayValueSettings }

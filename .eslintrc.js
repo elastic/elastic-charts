@@ -87,6 +87,7 @@ module.exports = {
     'jsx-a11y/click-events-have-key-events': 1,
     '@typescript-eslint/member-ordering': 1,
     eqeqeq: 1,
+    'unicorn/no-nested-ternary': 0,
 
     /**
      * Standard rules
@@ -223,6 +224,9 @@ module.exports = {
     'react/sort-comp': 0,
     'react/jsx-one-expression-per-line': 0,
     'react/jsx-curly-newline': 0,
+    'react/jsx-indent-props': 0,
+    'react/jsx-max-props-per-line': 0,
+    'react/jsx-first-prop-new-line': 0,
     'react/jsx-indent': 0,
     // Too restrictive: https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/destructuring-assignment.md
     'react/destructuring-assignment': 0,
@@ -246,7 +250,6 @@ module.exports = {
     'unicorn/no-fn-reference-in-iterator': 0,
     'unicorn/prefer-query-selector': 0,
     'unicorn/no-for-loop': 0,
-    'unicorn/no-nested-ternary': 1,
     'unicorn/no-reduce': 0,
     'unicorn/no-useless-undefined': 0,
     'unicorn/prefer-spread': 0,

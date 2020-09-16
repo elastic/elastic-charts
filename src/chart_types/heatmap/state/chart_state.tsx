@@ -25,7 +25,7 @@ import { Tooltip } from '../../../components/tooltip';
 import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { LegendItemLabel } from '../../../state/selectors/get_legend_items_labels';
-import { BrushTool } from '../../xy_chart/renderer/dom/brush';
+import { Dimensions } from '../../../utils/dimensions';
 import { Heatmap } from '../renderer/canvas/connected_component';
 import { HighlighterFromBrush } from '../renderer/dom/highlighter_brush';
 import { computeLegendSelector } from './selectors/compute_legend';
@@ -89,7 +89,6 @@ export class HeatmapState implements InternalChartState {
       <>
         <Tooltip getChartContainerRef={containerRef} />
         <Heatmap forwardStageRef={forwardStageRef} />
-        {/* <BrushTool /> */}
         <HighlighterFromBrush />
       </>
     );
@@ -114,6 +113,21 @@ export class HeatmapState implements InternalChartState {
       x1: position.x,
       y1: position.y,
     };
+  }
+
+  // TODO
+  getProjectionContainerArea(): Dimensions {
+    return { width: 0, height: 0, top: 0, left: 0 };
+  }
+
+  // TODO
+  getMainProjectionArea(): Dimensions {
+    return { width: 0, height: 0, top: 0, left: 0 };
+  }
+
+  // TODO
+  getBrushArea(): Dimensions | null {
+    return null;
   }
 
   eventCallbacks(globalState: GlobalChartState) {

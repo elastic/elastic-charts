@@ -35,7 +35,7 @@ import { Domain } from '../utils/domain';
 import { GeometryValue } from '../utils/geometry';
 import { GroupId } from '../utils/ids';
 import { PartialTheme, Theme } from '../utils/themes/theme';
-import { PointerEventType, TooltipType, BrushAxis, DEFAULT_SETTINGS_SPEC } from './constants';
+import { PointerEventType, TooltipType, BrushAxis, DEFAULT_SETTINGS_SPEC, BinAgg, Direction } from './constants';
 
 export interface LayerValue {
   groupByRollup: PrimitiveValue;
@@ -107,13 +107,21 @@ export interface TooltipValue {
    */
   label: string;
   /**
-   * The value to display
+   * The value
    */
   value: any;
   /**
+   * The formatted value to display
+   */
+  formattedValue: string;
+  /**
+   * The mark value
+   */
+  markValue?: number | null;
+  /**
    * The mark value to display
    */
-  markValue?: any;
+  formattedMarkValue?: string | null;
   /**
    * The color of the graphic mark (by default the color of the series)
    */
@@ -339,6 +347,43 @@ export interface SettingsSpec extends Spec {
    * @defaultValue 2
    */
   minBrushDelta?: number;
+  /**
+   * Boolean to round brushed values to nearest step bounds.
+   *
+   * e.g.
+   * A brush selection range of [1.23, 3.6] with a domain of [1, 2, 3, 4].
+   *
+   * - when true returns [1, 3]
+   * - when false returns [1.23, 3.6]
+   *
+   * @defaultValue false
+   */
+  roundHistogramBrushValues?: boolean;
+  /**
+   * Boolean to allow brushing on last bucket even when outside domain or limit to end of domain.
+   *
+   * e.g.
+   * A brush selection range of [1.23, 3.6] with a domain of [1, 2, 3]
+   *
+   * - when true returns [1.23, 3.6]
+   * - when false returns [1.23, 3]
+   *
+   * @defaultValue false
+   */
+  allowBrushingLastHistogramBucket?: boolean;
+  /**
+   * Orders ordinal x values
+   */
+  orderOrdinalBinsBy?: OrderBy;
+}
+
+/**
+ * Order by options
+ * @public
+ */
+export interface OrderBy {
+  binAgg?: BinAgg;
+  direction?: Direction;
 }
 
 export type DefaultSettingsProps =

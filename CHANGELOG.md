@@ -1,3 +1,65 @@
+# [21.2.0](https://github.com/elastic/elastic-charts/compare/v21.1.2...v21.2.0) (2020-09-14)
+
+
+### Features
+
+* blind sorting option for vislib ([#813](https://github.com/elastic/elastic-charts/issues/813)) ([8afce43](https://github.com/elastic/elastic-charts/commit/8afce435c85eeff9ed7ee7b44a246f898f4050fb))
+* order ordinal values by sum ([#814](https://github.com/elastic/elastic-charts/issues/814)) ([5b2758b](https://github.com/elastic/elastic-charts/commit/5b2758bb41fd3b89a51921b40373d5105eae4d4b))
+* **series:** add simple mark formatter ([#775](https://github.com/elastic/elastic-charts/issues/775)) ([ab95284](https://github.com/elastic/elastic-charts/commit/ab95284dcaf20dae2c29653917e70fb3ce7960bc))
+
+## [21.1.2](https://github.com/elastic/elastic-charts/compare/v21.1.1...v21.1.2) (2020-09-09)
+
+
+### Bug Fixes
+
+* remove unused redux dev middlewares ([#812](https://github.com/elastic/elastic-charts/issues/812)) ([b2679e7](https://github.com/elastic/elastic-charts/commit/b2679e7248ff0475b4267a3099c7afe1dfee67b6))
+
+## [21.1.1](https://github.com/elastic/elastic-charts/compare/v21.1.0...v21.1.1) (2020-09-08)
+
+
+### Bug Fixes
+
+* build issues and tooltip formatting issues ([#810](https://github.com/elastic/elastic-charts/issues/810)) ([74d9ae0](https://github.com/elastic/elastic-charts/commit/74d9ae0d9425ce494cd15037f4d952eb2db167ab))
+
+# [21.1.0](https://github.com/elastic/elastic-charts/compare/v21.0.1...v21.1.0) (2020-09-06)
+
+
+### Bug Fixes
+
+* **axis:** misaligned axis with rotated histogram bar charts ([#805](https://github.com/elastic/elastic-charts/issues/805)) ([6c454e1](https://github.com/elastic/elastic-charts/commit/6c454e10ece3f4cbaf1bacf06f5f2b832e9c32b0))
+
+
+### Features
+
+* **brush:** histogram brushing last values and rounding ([#801](https://github.com/elastic/elastic-charts/issues/801)) ([6d0319f](https://github.com/elastic/elastic-charts/commit/6d0319f1b0898360c004ec34844ac0b441d08b38))
+* **tooltip:** series tick formatters ([#802](https://github.com/elastic/elastic-charts/issues/802)) ([fbcd92e](https://github.com/elastic/elastic-charts/commit/fbcd92e1ff4802c07561a9abf309cc88a26e8b5e))
+
+## [21.0.1](https://github.com/elastic/elastic-charts/compare/v21.0.0...v21.0.1) (2020-08-18)
+
+
+### Bug Fixes
+
+* allow graceful error handling ([#779](https://github.com/elastic/elastic-charts/issues/779)) ([8183b32](https://github.com/elastic/elastic-charts/commit/8183b32f41bd9f5c0948393a4e5e05d1211cd74c)), closes [#776](https://github.com/elastic/elastic-charts/issues/776)
+
+# [21.0.0](https://github.com/elastic/elastic-charts/compare/v20.0.2...v21.0.0) (2020-08-10)
+
+
+### Bug Fixes
+
+* update dep vulnerabilities, minimist and kind-of ([#763](https://github.com/elastic/elastic-charts/issues/763)) ([4455281](https://github.com/elastic/elastic-charts/commit/4455281bbc23bf13e8eccbdb4ab36168c1610c7f))
+* **legend:** fix color anchor, add action context, fix action padding ([#774](https://github.com/elastic/elastic-charts/issues/774)) ([4590a22](https://github.com/elastic/elastic-charts/commit/4590a22c58359ffb13e977cb1dca854a01c3961b))
+* **tooltip:** placement with left/top legends and single bars ([#771](https://github.com/elastic/elastic-charts/issues/771)) ([e576b26](https://github.com/elastic/elastic-charts/commit/e576b2610f882a490de645e1e702a33ccebb818d)), closes [#769](https://github.com/elastic/elastic-charts/issues/769) [#770](https://github.com/elastic/elastic-charts/issues/770)
+
+
+### Features
+
+* streamgraph and fit functions on stacked charts ([#751](https://github.com/elastic/elastic-charts/issues/751)) ([268fcc0](https://github.com/elastic/elastic-charts/commit/268fcc087578b17ae6575f08653ca3be01fb5801)), closes [#766](https://github.com/elastic/elastic-charts/issues/766) [#715](https://github.com/elastic/elastic-charts/issues/715) [#450](https://github.com/elastic/elastic-charts/issues/450)
+
+
+### BREAKING CHANGES
+
+* the first parameter of `PointStyleAccessor` and `BarStyleAccessor` callbacks is changed from `RawDataSeriesDatum` to `DataSeriesDatum`. `stackAsPercentage` prop is replaced by `stackMode` that accept one `StackMode`.
+
 ## [20.0.2](https://github.com/elastic/elastic-charts/compare/v20.0.1...v20.0.2) (2020-07-23)
 
 

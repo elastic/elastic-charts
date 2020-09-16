@@ -48,6 +48,7 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
             return;
           }
 
+          // @ts-ignore
           onBrushEnd(pickedCells);
         },
       )({

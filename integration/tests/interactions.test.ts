@@ -220,11 +220,78 @@ describe('Interactions', () => {
   describe('Tooltip sync', () => {
     it('show synced tooltips', async () => {
       await common.expectChartWithMouseAtUrlToMatchScreenshot(
-        'http://localhost:9001/?path=/story/interactions--cursor-update-action',
-        { left: 180, top: 80 },
+        'http://localhost:9001/?path=/story/interactions--cursor-update-action&knob-local%20tooltip%20type_Top%20Chart=vertical&knob-local%20tooltip%20type_Bottom%20Chart=vertical&knob-enable%20external%20tooltip_Top%20Chart=true&knob-enable%20external%20tooltip_Bottom%20Chart=true&knob-external%20tooltip%20placement_Top%20Chart=left&knob-external%20tooltip%20placement_Bottom%20Chart=left',
+        { right: 120, top: 80 },
         {
           screenshotSelector: '#story-root',
         },
+      );
+    });
+    it('show synced crosshairs', async () => {
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/interactions--cursor-update-action&knob-local%20tooltip%20type_Top%20Chart=vertical&knob-local%20tooltip%20type_Bottom%20Chart=vertical&knob-enable%20external%20tooltip_Top%20Chart=true&knob-enable%20external%20tooltip_Bottom%20Chart=false&knob-external%20tooltip%20placement_Top%20Chart=left&knob-external%20tooltip%20placement_Bottom%20Chart=left',
+        { right: 120, top: 80 },
+        {
+          screenshotSelector: '#story-root',
+        },
+      );
+    });
+  });
+
+  describe('Tooltip formatting', () => {
+    it('should use all custom tick formatters', async () => {
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/axes--different-tooltip-formatter&knob-Show%20legend_Y%20axis=true&knob-Disable%20Axis%20tickFormat_Y%20axis=&knob-Axis%20value%20format_Y%20axis=0[.]0&knob-Axis%20unit_Y%20axis=pets&knob-Disable%20header%20tickFormat_X%20axis=&knob-Header%20unit_X%20axis=(header)&knob-Disable%20Axis%20tickFormat_X%20axis=&knob-Axis%20unit_X%20axis=(axis)&knob-Disable%20dog%20line%20tickFormat_Y%20axis=&knob-Dog%20line%20unit_Y%20axis=dogs&knob-Disable%20cat%20line%20tickFormat_Y%20axis=&knob-Cat%20line%20unit_Y%20axis=cats',
+        { left: 280, top: 80 },
+      );
+    });
+
+    it('should use series tick formatter with no axis tick formatter', async () => {
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/axes--different-tooltip-formatter&knob-Show legend_Y axis=true&knob-Disable Axis tickFormat_Y axis=true&knob-Axis value format_Y axis=0[.]0&knob-Axis unit_Y axis=pets&knob-Disable header tickFormat_X axis=&knob-Header unit_X axis=(header)&knob-Disable Axis tickFormat_X axis=&knob-Axis unit_X axis=(axis)&knob-Disable dog line tickFormat_Y axis=&knob-Dog line unit_Y axis=dogs&knob-Disable cat line tickFormat_Y axis=&knob-Cat line unit_Y axis=cats',
+        { left: 280, top: 80 },
+      );
+    });
+
+    it('should use series tick formatter with no axis tick formatter, missing series tick formatter', async () => {
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/axes--different-tooltip-formatter&knob-Show legend_Y axis=true&knob-Disable Axis tickFormat_Y axis=true&knob-Axis value format_Y axis=0[.]0&knob-Axis unit_Y axis=pets&knob-Disable header tickFormat_X axis=&knob-Header unit_X axis=(header)&knob-Disable Axis tickFormat_X axis=&knob-Axis unit_X axis=(axis)&knob-Disable dog line tickFormat_Y axis=true&knob-Dog line unit_Y axis=dogs&knob-Disable cat line tickFormat_Y axis=&knob-Cat line unit_Y axis=cats',
+        { left: 280, top: 80 },
+      );
+    });
+
+    it('should use default tick formatter with no axis tick formatter, nor series tick formatter', async () => {
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/axes--different-tooltip-formatter&knob-Show legend_Y axis=true&knob-Disable Axis tickFormat_Y axis=true&knob-Axis value format_Y axis=0[.]0&knob-Axis unit_Y axis=pets&knob-Disable header tickFormat_X axis=&knob-Header unit_X axis=(header)&knob-Disable Axis tickFormat_X axis=&knob-Axis unit_X axis=(axis)&knob-Disable dog line tickFormat_Y axis=true&knob-Dog line unit_Y axis=dogs&knob-Disable cat line tickFormat_Y axis=true&knob-Cat line unit_Y axis=cats',
+        { left: 280, top: 80 },
+      );
+    });
+
+    it('should use headerFormatter for x axis', async () => {
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/axes--different-tooltip-formatter&knob-Show legend_Y axis=true&knob-Disable Axis tickFormat_Y axis=&knob-Axis value format_Y axis=0[.]0&knob-Axis unit_Y axis=pets&knob-Disable header tickFormat_X axis=&knob-Header unit_X axis=(header)&knob-Disable Axis tickFormat_X axis=&knob-Axis unit_X axis=(axis)&knob-Disable dog line tickFormat_Y axis=&knob-Dog line unit_Y axis=dogs&knob-Disable cat line tickFormat_Y axis=&knob-Cat line unit_Y axis=cats',
+        { left: 280, top: 80 },
+      );
+    });
+
+    it('should use axis tick formatter with no headerFormatter', async () => {
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/axes--different-tooltip-formatter&knob-Show legend_Y axis=true&knob-Disable Axis tickFormat_Y axis=&knob-Axis value format_Y axis=0[.]0&knob-Axis unit_Y axis=pets&knob-Disable header tickFormat_X axis=true&knob-Header unit_X axis=(header)&knob-Disable Axis tickFormat_X axis=&knob-Axis unit_X axis=(axis)&knob-Disable dog line tickFormat_Y axis=&knob-Dog line unit_Y axis=dogs&knob-Disable cat line tickFormat_Y axis=&knob-Cat line unit_Y axis=cats',
+        { left: 280, top: 80 },
+      );
+    });
+
+    it('should use default tick formatter with no axis tick formatter nor headerFormatter', async () => {
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/axes--different-tooltip-formatter&knob-Show legend_Y axis=true&knob-Disable Axis tickFormat_Y axis=&knob-Axis value format_Y axis=0[.]0&knob-Axis unit_Y axis=pets&knob-Disable header tickFormat_X axis=true&knob-Header unit_X axis=(header)&knob-Disable Axis tickFormat_X axis=true&knob-Axis unit_X axis=(axis)&knob-Disable dog line tickFormat_Y axis=&knob-Dog line unit_Y axis=dogs&knob-Disable cat line tickFormat_Y axis=&knob-Cat line unit_Y axis=cats',
+        { left: 280, top: 80 },
+      );
+    });
+
+    it('should use custom mark formatters', async () => {
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/mixed-charts--mark-size-accessor',
+        { left: 400, top: 80 },
       );
     });
   });

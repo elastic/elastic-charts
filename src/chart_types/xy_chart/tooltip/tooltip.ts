@@ -21,8 +21,9 @@ import { LegendItemExtraValues } from '../../../commons/legend';
 import { SeriesKey } from '../../../commons/series_id';
 import { TooltipValue } from '../../../specs';
 import { getAccessorFormatLabel } from '../../../utils/accessor';
-import { identity } from '../../../utils/commons';
+import { isDefined } from '../../../utils/commons';
 import { IndexedGeometry, BandedAccessorType } from '../../../utils/geometry';
+import { defaultTickFormatter } from '../utils/axis_utils';
 import { getSeriesName } from '../utils/series';
 import {
   AxisSpec,
@@ -43,8 +44,8 @@ export function getHighligthedValues(
 ): Map<SeriesKey, LegendItemExtraValues> {
   const seriesTooltipValues = new Map<SeriesKey, LegendItemExtraValues>();
 
-  tooltipValues.forEach(({ value, seriesIdentifier, valueAccessor }) => {
-    const seriesValue = defaultValue || value;
+  tooltipValues.forEach(({ formattedValue, seriesIdentifier, valueAccessor }) => {
+    const seriesValue = defaultValue || formattedValue;
     const current: LegendItemExtraValues = seriesTooltipValues.get(seriesIdentifier.key) ?? new Map();
     if (defaultValue) {
       if (!current.has(BandedAccessorType.Y0)) {
@@ -83,14 +84,23 @@ export function formatTooltip(
   const isVisible = label === '' ? false : isFiltered;
 
   const value = isHeader ? x : y;
+  const markValue = isHeader || mark === null ? null : mark;
   const tickFormatOptions: TickFormatterOptions | undefined = spec.timeZone ? { timeZone: spec.timeZone } : undefined;
+  const tickFormatter =
+    (isHeader ? axisSpec?.tickFormat : spec.tickFormat ?? axisSpec?.tickFormat) ?? defaultTickFormatter;
 
   return {
     seriesIdentifier,
     valueAccessor: accessor,
     label,
-    value: axisSpec ? axisSpec.tickFormat(value, tickFormatOptions) : identity(value),
-    markValue: isHeader || mark === null ? null : mark,
+    value,
+    formattedValue: tickFormatter(value, tickFormatOptions),
+    markValue,
+    ...(isDefined(markValue) && {
+      formattedMarkValue: spec.markFormat
+        ? spec.markFormat(markValue, tickFormatOptions)
+        : defaultTickFormatter(markValue),
+    }),
     color,
     isHighlighted: isHeader ? false : isHighlighted,
     isVisible,

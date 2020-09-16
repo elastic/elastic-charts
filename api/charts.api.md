@@ -138,7 +138,7 @@ export interface AxisSpec extends Spec {
     // (undocumented)
     specType: typeof SpecTypes.Axis;
     style?: RecursivePartial<Omit<AxisStyle, 'gridLine'>>;
-    tickFormat: TickFormatter;
+    tickFormat?: TickFormatter;
     ticks?: number;
     title?: string;
 }
@@ -263,7 +263,20 @@ export interface BasePointerEvent {
 export type BasicListener = () => undefined | void;
 
 // @public (undocumented)
-export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales;
+export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales & {
+    markFormat?: TickFormatter<number>;
+};
+
+// Warning: (ae-missing-release-tag) "BinAgg" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export const BinAgg: Readonly<{
+    Sum: "sum";
+    None: "none";
+}>;
+
+// @public (undocumented)
+export type BinAgg = $Values<typeof BinAgg>;
 
 // Warning: (ae-missing-release-tag) "BrushAxis" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -522,6 +535,17 @@ export const DEFAULT_TOOLTIP_TYPE: "vertical";
 //
 // @public (undocumented)
 export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'showLegend' | 'debug' | 'tooltip' | 'showLegendExtra' | 'theme' | 'legendPosition' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents';
+
+// Warning: (ae-missing-release-tag) "Direction" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export const Direction: Readonly<{
+    Ascending: "ascending";
+    Descending: "descending";
+}>;
+
+// @public (undocumented)
+export type Direction = $Values<typeof Direction>;
 
 // Warning: (ae-missing-release-tag) "DisplayValueSpec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -920,6 +944,14 @@ export interface Opacity {
     opacity: number;
 }
 
+// @public
+export interface OrderBy {
+    // (undocumented)
+    binAgg?: BinAgg;
+    // (undocumented)
+    direction?: Direction;
+}
+
 // @public (undocumented)
 export type PartialTheme = RecursivePartial<Theme>;
 
@@ -1262,6 +1294,7 @@ export interface SeriesSpec extends Spec {
     sortIndex?: number;
     // (undocumented)
     specType: typeof SpecTypes.Series;
+    tickFormat?: TickFormatter;
     useDefaultGroupDomain?: boolean;
     // Warning: (ae-forgotten-export) The symbol "AccessorFormat" needs to be exported by the entry point index.d.ts
     y0AccessorFormat?: AccessorFormat;
@@ -1291,6 +1324,7 @@ export const Settings: React.FunctionComponent<SettingsSpecProps>;
 
 // @public
 export interface SettingsSpec extends Spec {
+    allowBrushingLastHistogramBucket?: boolean;
     // (undocumented)
     animateData: boolean;
     baseTheme?: Theme;
@@ -1330,6 +1364,7 @@ export interface SettingsSpec extends Spec {
     onPointerUpdate?: PointerUpdateListener;
     // (undocumented)
     onRenderChange?: RenderChangeListener;
+    orderOrdinalBinsBy?: OrderBy;
     // (undocumented)
     pointBuffer?: MarkBuffer;
     // (undocumented)
@@ -1338,6 +1373,7 @@ export interface SettingsSpec extends Spec {
     resizeDebounce?: number;
     // (undocumented)
     rotation: Rotation;
+    roundHistogramBrushValues?: boolean;
     // (undocumented)
     showLegend: boolean;
     showLegendExtra: boolean;
@@ -1482,7 +1518,7 @@ export interface Theme {
 }
 
 // @public (undocumented)
-export type TickFormatter = (value: any, options?: TickFormatterOptions) => string;
+export type TickFormatter<V = any> = (value: V, options?: TickFormatterOptions) => string;
 
 // @public (undocumented)
 export type TickFormatterOptions = {
@@ -1540,10 +1576,12 @@ export type TooltipType = $Values<typeof TooltipType>;
 // @public
 export interface TooltipValue {
     color: Color;
+    formattedMarkValue?: string | null;
+    formattedValue: string;
     isHighlighted: boolean;
     isVisible: boolean;
     label: string;
-    markValue?: any;
+    markValue?: number | null;
     seriesIdentifier: SeriesIdentifier;
     value: any;
     valueAccessor?: Accessor;
