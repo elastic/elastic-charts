@@ -18,17 +18,24 @@
  */
 
 import { boolean } from '@storybook/addon-knobs';
+import { shuffle } from 'lodash';
 import React from 'react';
 
 import { Axis, LineSeries, Chart, Position, ScaleType, Settings, Direction } from '../../src';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
-const data = [
+/**
+ * Data to defined consistent order of series when using shuffle
+ */
+const data1 = [
   // DestAirportID: Descending	Carrier: Descending	Max AvgTicketPrice	Average AvgTicketPrice	Test
   { x: 'XIY', g: 'JetBeats', y1: 1195.87316894531, y2: 735.960746071555, z: 735.960746071555 },
   { x: 'XIY', g: 'Kibana Airlines', y1: 1079.14624023438, y2: 742.831329345703, z: 742.831329345703 },
   { x: 'XIY', g: 'ES-Air', y1: 929.561462402344, y2: 765.738806152344, z: 765.738806152344 },
   { x: 'XIY', g: 'Logstash Airways', y1: 836.307922363281, y2: 487.398278808594, z: 487.398278808594 },
+];
+
+const data2 = [
   { x: 'XHBU', g: 'JetBeats', y1: 1193.38342285156, y2: 702.543407440186, z: 702.543407440186 },
   { x: 'XHBU', g: 'Kibana Airlines', y1: 1159.03503417969, y2: 606.558886210124, z: 606.558886210124 },
   { x: 'XHBU', g: 'ES-Air', y1: 996.849731445313, y2: 752.394683837891, z: 752.394683837891 },
@@ -67,7 +74,7 @@ export const Example = () => {
         yAccessors={['y1', 'y2']}
         splitSeriesAccessors={['g']}
         stackAccessors={boolean('Stacked', true) ? ['g'] : undefined}
-        data={orderOrdinalBinsBy  ? _.shuffle(data) : data}
+        data={[...data1, ...(orderOrdinalBinsBy ? shuffle(data2) : data2)]}
       />
     </Chart>
   );
