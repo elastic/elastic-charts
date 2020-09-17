@@ -67,7 +67,7 @@ export const Example = () => {
         yAccessors={['y1', 'y2']}
         splitSeriesAccessors={['g']}
         stackAccessors={boolean('Stacked', true) ? ['g'] : undefined}
-        data={data}
+        data={orderOrdinalBinsBy  ? _.shuffle(data) : data}
       />
     </Chart>
   );
