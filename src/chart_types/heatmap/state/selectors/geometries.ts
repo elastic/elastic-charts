@@ -22,6 +22,7 @@ import createCachedSelector from 're-reselect';
 import { ChartTypes } from '../../..';
 import { SpecTypes } from '../../../../specs/constants';
 import { GlobalChartState } from '../../../../state/chart_state';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getSpecsFromStore } from '../../../../state/utils';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { HeatmapSpec } from '../../specs';
@@ -33,9 +34,9 @@ const getParentDimensions = (state: GlobalChartState) => state.parentDimensions;
 
 /** @internal */
 export const geometries = createCachedSelector(
-  [getSpecs, getParentDimensions],
-  (specs, parentDimensions): ShapeViewModel => {
+  [getSpecs, getParentDimensions, getSettingsSpecSelector],
+  (specs, parentDimensions, settingSpec): ShapeViewModel => {
     const spec = getSpecsFromStore<HeatmapSpec>(specs, ChartTypes.Heatmap, SpecTypes.Series);
-    return spec.length === 1 ? render(spec[0], parentDimensions) : nullShapeViewModel();
+    return spec.length === 1 ? render(spec[0], settingSpec, parentDimensions) : nullShapeViewModel();
   },
 )((state) => state.chartId);

@@ -19,13 +19,13 @@
 export const SWIM_LANE_DATA = [
   {
     laneLabel: 'i-71a7f77b',
-    time: 1572892200,
-    value: 98.22463906512188,
+    time: 1572847200,
+    value: 1.393504,
   },
   {
     laneLabel: 'i-71a7f77b',
-    time: 1572893100,
-    value: 0.013759721032325404,
+    time: 1572892200,
+    value: 98.22463906512188,
   },
   {
     laneLabel: 'i-71a7f77b',
@@ -49,53 +49,38 @@ export const SWIM_LANE_DATA = [
   },
   {
     laneLabel: 'i-71a7f77b',
-    time: 1572900300,
-    value: 3.6615739803105756,
-  },
-  {
-    laneLabel: 'i-71a7f77b',
     time: 1572901200,
     value: 0.5144934818824536,
   },
   {
     laneLabel: 'i-71a7f77b',
-    time: 1572902100,
-    value: 0.18073503954661715,
-  },
-  {
-    laneLabel: 'i-71a7f77b',
     time: 1572903000,
-    value: 0.05117753934911236,
-  },
-  {
-    laneLabel: 'i-71a7f77b',
-    time: 1572903900,
     value: 0.2689519481619711,
   },
   {
     laneLabel: 'i-71a7f77b',
     time: 1572904800,
-    value: 0.014689531395858322,
-  },
-  {
-    laneLabel: 'i-71a7f77b',
-    time: 1572905700,
     value: 0.2141724473865323,
   },
   {
     laneLabel: 'i-71a7f77b',
-    time: 1572907500,
+    time: 1572906600,
     value: 0.10464817254089763,
   },
   {
     laneLabel: 'i-71a7f77b',
-    time: 1572909300,
+    time: 1572908400,
     value: 0.07397995823713518,
   },
   {
     laneLabel: 'i-71a7f77b',
-    time: 1572911100,
+    time: 1572910200,
     value: 0.03091943662761636,
+  },
+  {
+    laneLabel: 'i-5d303091',
+    time: 1572836400,
+    value: 0.08552883,
   },
   {
     laneLabel: 'i-5d303091',
@@ -104,27 +89,17 @@ export const SWIM_LANE_DATA = [
   },
   {
     laneLabel: 'i-5d303091',
-    time: 1572884100,
-    value: 86.11206,
-  },
-  {
-    laneLabel: 'i-5d303091',
     time: 1572885000,
     value: 50.42717,
   },
   {
     laneLabel: 'i-5d303091',
-    time: 1572885900,
-    value: 24.092157631569048,
-  },
-  {
-    laneLabel: 'i-5d303091',
-    time: 1572911100,
+    time: 1572910200,
     value: 2.397241548271217,
   },
   {
     laneLabel: 'i-9f07c700',
-    time: 1572880500,
+    time: 1572879600,
     value: 76.10974,
   },
   {
@@ -134,28 +109,13 @@ export const SWIM_LANE_DATA = [
   },
   {
     laneLabel: 'i-9f07c700',
-    time: 1572882300,
-    value: 62.0358,
-  },
-  {
-    laneLabel: 'i-9f07c700',
     time: 1572883200,
-    value: 22.512204790251165,
-  },
-  {
-    laneLabel: 'i-9f07c700',
-    time: 1572884100,
     value: 28.016079894074096,
   },
   {
     laneLabel: 'i-9f07c700',
     time: 1572885000,
     value: 2.1780847014803517,
-  },
-  {
-    laneLabel: 'i-9f07c700',
-    time: 1572885900,
-    value: 1.0512413481465437,
   },
   {
     laneLabel: 'i-9f07c700',
@@ -169,13 +129,13 @@ export const SWIM_LANE_DATA = [
   },
   {
     laneLabel: 'i-d17dcd4c',
-    time: 1572892200,
-    value: 89.6491,
+    time: 1572849000,
+    value: 4.210354,
   },
   {
     laneLabel: 'i-d17dcd4c',
-    time: 1572893100,
-    value: 39.29433,
+    time: 1572892200,
+    value: 89.6491,
   },
   {
     laneLabel: 'i-d17dcd4c',
@@ -184,27 +144,12 @@ export const SWIM_LANE_DATA = [
   },
   {
     laneLabel: 'i-d17dcd4c',
-    time: 1572894900,
-    value: 9.465761180736992,
-  },
-  {
-    laneLabel: 'i-d17dcd4c',
     time: 1572895800,
-    value: 1.5702767103536377,
-  },
-  {
-    laneLabel: 'i-d17dcd4c',
-    time: 1572896700,
     value: 2.6694704470251565,
   },
   {
     laneLabel: 'i-d17dcd4c',
     time: 1572897600,
-    value: 0.06939321809165011,
-  },
-  {
-    laneLabel: 'i-d17dcd4c',
-    time: 1572898500,
     value: 0.5850535152380327,
   },
   {
@@ -214,62 +159,32 @@ export const SWIM_LANE_DATA = [
   },
   {
     laneLabel: 'i-d17dcd4c',
-    time: 1572900300,
-    value: 8.910474843546483,
-  },
-  {
-    laneLabel: 'i-d17dcd4c',
     time: 1572901200,
-    value: 0.4148717821994119,
-  },
-  {
-    laneLabel: 'i-d17dcd4c',
-    time: 1572902100,
     value: 0.792024488699497,
   },
   {
     laneLabel: 'i-d17dcd4c',
     time: 1572903000,
-    value: 0.2222157866782728,
-  },
-  {
-    laneLabel: 'i-d17dcd4c',
-    time: 1572903900,
     value: 0.5615131943374475,
   },
   {
     laneLabel: 'i-d17dcd4c',
     time: 1572904800,
-    value: 0.09680453952693104,
-  },
-  {
-    laneLabel: 'i-d17dcd4c',
-    time: 1572905700,
     value: 0.394169564717292,
   },
   {
     laneLabel: 'i-d17dcd4c',
     time: 1572906600,
-    value: 0.05369915404011522,
-  },
-  {
-    laneLabel: 'i-d17dcd4c',
-    time: 1572907500,
     value: 0.2046931978696015,
   },
   {
     laneLabel: 'i-d17dcd4c',
     time: 1572908400,
-    value: 0.015262108881918096,
-  },
-  {
-    laneLabel: 'i-d17dcd4c',
-    time: 1572909300,
     value: 0.15470219555712722,
   },
   {
     laneLabel: 'i-d17dcd4c',
-    time: 1572911100,
+    time: 1572910200,
     value: 0.11787869182904363,
   },
   {
@@ -279,57 +194,42 @@ export const SWIM_LANE_DATA = [
   },
   {
     laneLabel: 'i-37fbfb39',
-    time: 1572884100,
-    value: 54.71724,
-  },
-  {
-    laneLabel: 'i-37fbfb39',
     time: 1572885000,
     value: 21.49062,
   },
   {
     laneLabel: 'i-37fbfb39',
-    time: 1572885900,
-    value: 0.4516329619028579,
-  },
-  {
-    laneLabel: 'i-37fbfb39',
-    time: 1572911100,
+    time: 1572910200,
     value: 0.5619960991147903,
   },
   {
     laneLabel: 'i-b118880c',
-    time: 1572892200,
-    value: 0.6268532,
+    time: 1572847200,
+    value: 0.7038798,
   },
   {
     laneLabel: 'i-b118880c',
-    time: 1572893100,
+    time: 1572849000,
+    value: 8.885096,
+  },
+  {
+    laneLabel: 'i-b118880c',
+    time: 1572892200,
     value: 81.92052,
   },
   {
     laneLabel: 'i-b118880c',
     time: 1572894000,
-    value: 0.3529266629639924,
-  },
-  {
-    laneLabel: 'i-b118880c',
-    time: 1572894900,
     value: 6.385433818669964,
   },
   {
     laneLabel: 'i-b118880c',
     time: 1572895800,
-    value: 0.25693024916977736,
-  },
-  {
-    laneLabel: 'i-b118880c',
-    time: 1572896700,
     value: 0.7529454579485226,
   },
   {
     laneLabel: 'i-b118880c',
-    time: 1572898500,
+    time: 1572897600,
     value: 0.16135425990161706,
   },
   {
@@ -339,67 +239,32 @@ export const SWIM_LANE_DATA = [
   },
   {
     laneLabel: 'i-b118880c',
-    time: 1572900300,
-    value: 0.9308909842961562,
-  },
-  {
-    laneLabel: 'i-b118880c',
     time: 1572901200,
-    value: 0.7363204497868395,
-  },
-  {
-    laneLabel: 'i-b118880c',
-    time: 1572902100,
     value: 0.7578572100943552,
   },
   {
     laneLabel: 'i-b118880c',
     time: 1572903000,
-    value: 0.3498545852034054,
-  },
-  {
-    laneLabel: 'i-b118880c',
-    time: 1572903900,
     value: 0.6111162033658646,
   },
   {
     laneLabel: 'i-b118880c',
     time: 1572904800,
-    value: 0.2885106595232287,
-  },
-  {
-    laneLabel: 'i-b118880c',
-    time: 1572905700,
     value: 0.443324186956941,
   },
   {
     laneLabel: 'i-b118880c',
     time: 1572906600,
-    value: 0.2762547015884273,
-  },
-  {
-    laneLabel: 'i-b118880c',
-    time: 1572907500,
     value: 0.3075144354570065,
   },
   {
     laneLabel: 'i-b118880c',
     time: 1572908400,
-    value: 0.0483576714592588,
-  },
-  {
-    laneLabel: 'i-b118880c',
-    time: 1572909300,
     value: 0.18905638316915416,
   },
   {
     laneLabel: 'i-b118880c',
     time: 1572910200,
-    value: 0.08669559766379012,
-  },
-  {
-    laneLabel: 'i-b118880c',
-    time: 1572911100,
     value: 0.15234682243112949,
   },
   {
@@ -409,27 +274,12 @@ export const SWIM_LANE_DATA = [
   },
   {
     laneLabel: 'i-66578749',
-    time: 1572882300,
-    value: 43.99361,
-  },
-  {
-    laneLabel: 'i-66578749',
     time: 1572883200,
-    value: 35.77181,
-  },
-  {
-    laneLabel: 'i-66578749',
-    time: 1572884100,
     value: 67.31324,
   },
   {
     laneLabel: 'i-66578749',
     time: 1572885000,
-    value: 51.51048,
-  },
-  {
-    laneLabel: 'i-66578749',
-    time: 1572885900,
     value: 81.34977,
   },
   {
@@ -439,18 +289,8 @@ export const SWIM_LANE_DATA = [
   },
   {
     laneLabel: 'i-66578749',
-    time: 1572893100,
-    value: 38.11687,
-  },
-  {
-    laneLabel: 'i-66578749',
     time: 1572894000,
     value: 31.06416,
-  },
-  {
-    laneLabel: 'i-66578749',
-    time: 1572894900,
-    value: 13.228937272549265,
   },
   {
     laneLabel: 'i-66578749',
@@ -459,18 +299,8 @@ export const SWIM_LANE_DATA = [
   },
   {
     laneLabel: 'i-66578749',
-    time: 1572896700,
-    value: 0.7269698286070799,
-  },
-  {
-    laneLabel: 'i-66578749',
     time: 1572897600,
     value: 0.23590009859709954,
-  },
-  {
-    laneLabel: 'i-66578749',
-    time: 1572898500,
-    value: 0.08134368060501725,
   },
   {
     laneLabel: 'i-66578749',
@@ -479,18 +309,8 @@ export const SWIM_LANE_DATA = [
   },
   {
     laneLabel: 'i-66578749',
-    time: 1572900300,
-    value: 34.01264,
-  },
-  {
-    laneLabel: 'i-66578749',
     time: 1572901200,
     value: 0.9189229698167014,
-  },
-  {
-    laneLabel: 'i-66578749',
-    time: 1572902100,
-    value: 0.6491054452630617,
   },
   {
     laneLabel: 'i-66578749',
@@ -499,18 +319,8 @@ export const SWIM_LANE_DATA = [
   },
   {
     laneLabel: 'i-66578749',
-    time: 1572903900,
-    value: 0.18847919756952353,
-  },
-  {
-    laneLabel: 'i-66578749',
     time: 1572904800,
     value: 0.09983690866310621,
-  },
-  {
-    laneLabel: 'i-66578749',
-    time: 1572905700,
-    value: 0.0550074636110055,
   },
   {
     laneLabel: 'i-66578749',
@@ -524,23 +334,18 @@ export const SWIM_LANE_DATA = [
   },
   {
     laneLabel: 'i-5d302081',
-    time: 1572884100,
-    value: 72.5804,
-  },
-  {
-    laneLabel: 'i-5d302081',
     time: 1572885000,
     value: 38.70934,
   },
   {
     laneLabel: 'i-5d302081',
-    time: 1572885900,
-    value: 3.502424166572962,
+    time: 1572910200,
+    value: 2.3953009901171605,
   },
   {
-    laneLabel: 'i-5d302081',
-    time: 1572911100,
-    value: 2.3953009901171605,
+    laneLabel: 'i-ef74d410',
+    time: 1572849000,
+    value: 0.1538905,
   },
   {
     laneLabel: 'i-ef74d410',
@@ -549,17 +354,7 @@ export const SWIM_LANE_DATA = [
   },
   {
     laneLabel: 'i-ef74d410',
-    time: 1572882300,
-    value: 35.18178,
-  },
-  {
-    laneLabel: 'i-ef74d410',
     time: 1572883200,
-    value: 1.5117578048500768,
-  },
-  {
-    laneLabel: 'i-ef74d410',
-    time: 1572884100,
     value: 7.1111139045789935,
   },
   {
@@ -579,18 +374,8 @@ export const SWIM_LANE_DATA = [
   },
   {
     laneLabel: 'i-ef74d410',
-    time: 1572900300,
-    value: 0.18881600911659896,
-  },
-  {
-    laneLabel: 'i-ef74d410',
     time: 1572901200,
     value: 0.05279469228246696,
-  },
-  {
-    laneLabel: 'i-ef74d410',
-    time: 1572902100,
-    value: 0.044017310451658916,
   },
   {
     laneLabel: 'i-ef74d410',
@@ -600,42 +385,22 @@ export const SWIM_LANE_DATA = [
   {
     laneLabel: 'i-3b3565e0',
     time: 1572881400,
-    value: 46.09307,
-  },
-  {
-    laneLabel: 'i-3b3565e0',
-    time: 1572882300,
     value: 49.34176,
   },
   {
     laneLabel: 'i-3b3565e0',
     time: 1572883200,
-    value: 39.89069,
-  },
-  {
-    laneLabel: 'i-3b3565e0',
-    time: 1572884100,
     value: 74.35002,
   },
   {
     laneLabel: 'i-3b3565e0',
     time: 1572885000,
-    value: 52.58946,
-  },
-  {
-    laneLabel: 'i-3b3565e0',
-    time: 1572885900,
     value: 70.82227,
   },
   {
     laneLabel: 'i-3b3565e0',
     time: 1572899400,
     value: 1.129179725764338,
-  },
-  {
-    laneLabel: 'i-3b3565e0',
-    time: 1572900300,
-    value: 0.1558817827608715,
   },
   {
     laneLabel: 'i-3b3565e0',
@@ -646,5 +411,320 @@ export const SWIM_LANE_DATA = [
     laneLabel: 'i-3b3565e0',
     time: 1572903000,
     value: 0.025215653478830508,
+  },
+  {
+    laneLabel: 'i-7db7c747',
+    time: 1572881400,
+    value: 56.8998,
+  },
+  {
+    laneLabel: 'i-7db7c747',
+    time: 1572883200,
+    value: 34.59895,
+  },
+  {
+    laneLabel: 'i-7db7c747',
+    time: 1572885000,
+    value: 69.07187,
+  },
+  {
+    laneLabel: 'i-7db7c747',
+    time: 1572899400,
+    value: 20.04246,
+  },
+  {
+    laneLabel: 'i-7db7c747',
+    time: 1572901200,
+    value: 0.501246678069153,
+  },
+  {
+    laneLabel: 'i-7db7c747',
+    time: 1572903000,
+    value: 0.10228357345625516,
+  },
+  {
+    laneLabel: 'i-8270d519',
+    time: 1572858000,
+    value: 23.41472,
+  },
+  {
+    laneLabel: 'i-8270d519',
+    time: 1572870600,
+    value: 0.09778774,
+  },
+  {
+    laneLabel: 'i-8270d519',
+    time: 1572881400,
+    value: 57.96897,
+  },
+  {
+    laneLabel: 'i-8270d519',
+    time: 1572883200,
+    value: 63.73998,
+  },
+  {
+    laneLabel: 'i-8270d519',
+    time: 1572885000,
+    value: 45.19735,
+  },
+  {
+    laneLabel: 'i-8270d519',
+    time: 1572892200,
+    value: 2.166846374797418,
+  },
+  {
+    laneLabel: 'i-8270d519',
+    time: 1572894000,
+    value: 0.2283247569954898,
+  },
+  {
+    laneLabel: 'i-8270d519',
+    time: 1572899400,
+    value: 42.24531,
+  },
+  {
+    laneLabel: 'i-8270d519',
+    time: 1572901200,
+    value: 0.49207037746175214,
+  },
+  {
+    laneLabel: 'i-8270d519',
+    time: 1572903000,
+    value: 0.3243143048875506,
+  },
+  {
+    laneLabel: 'i-8270d519',
+    time: 1572904800,
+    value: 0.10024450293348822,
+  },
+  {
+    laneLabel: 'i-8270d519',
+    time: 1572906600,
+    value: 0.033965805201251434,
+  },
+  {
+    laneLabel: 'i-4fefbf6c',
+    time: 1572847200,
+    value: 0.1867262,
+  },
+  {
+    laneLabel: 'i-4fefbf6c',
+    time: 1572849000,
+    value: 11.47219,
+  },
+  {
+    laneLabel: 'i-4fefbf6c',
+    time: 1572892200,
+    value: 53.59314,
+  },
+  {
+    laneLabel: 'i-4fefbf6c',
+    time: 1572894000,
+    value: 15.91959,
+  },
+  {
+    laneLabel: 'i-4fefbf6c',
+    time: 1572895800,
+    value: 0.5736916311300446,
+  },
+  {
+    laneLabel: 'i-4fefbf6c',
+    time: 1572897600,
+    value: 29.28071,
+  },
+  {
+    laneLabel: 'i-4fefbf6c',
+    time: 1572899400,
+    value: 25.1765,
+  },
+  {
+    laneLabel: 'i-4fefbf6c',
+    time: 1572901200,
+    value: 1.4671989108080628,
+  },
+  {
+    laneLabel: 'i-4fefbf6c',
+    time: 1572903000,
+    value: 0.8367316591855911,
+  },
+  {
+    laneLabel: 'i-4fefbf6c',
+    time: 1572904800,
+    value: 0.48490204846685775,
+  },
+  {
+    laneLabel: 'i-4fefbf6c',
+    time: 1572906600,
+    value: 0.24413767062868427,
+  },
+  {
+    laneLabel: 'i-4fefbf6c',
+    time: 1572908400,
+    value: 0.17736807671463703,
+  },
+  {
+    laneLabel: 'i-4fefbf6c',
+    time: 1572910200,
+    value: 0.10326196476266834,
+  },
+  {
+    laneLabel: 'i-16fd8d2a',
+    time: 1572859800,
+    value: 33.42309,
+  },
+  {
+    laneLabel: 'i-16fd8d2a',
+    time: 1572861600,
+    value: 47.17204,
+  },
+  {
+    laneLabel: 'i-16fd8d2a',
+    time: 1572863400,
+    value: 0.16179846422070132,
+  },
+  {
+    laneLabel: 'i-ca80c01a',
+    time: 1572847200,
+    value: 0.6692097,
+  },
+  {
+    laneLabel: 'i-ca80c01a',
+    time: 1572870600,
+    value: 44.60156,
+  },
+  {
+    laneLabel: 'i-ca80c01a',
+    time: 1572883200,
+    value: 26.06775,
+  },
+  {
+    laneLabel: 'i-ca80c01a',
+    time: 1572885000,
+    value: 0.24539550844649843,
+  },
+  {
+    laneLabel: 'i-ca80c01a',
+    time: 1572910200,
+    value: 0.09130230719255052,
+  },
+  {
+    laneLabel: 'i-4a90d021',
+    time: 1572883200,
+    value: 43.41428,
+  },
+  {
+    laneLabel: 'i-4a90d021',
+    time: 1572885000,
+    value: 20.30829,
+  },
+  {
+    laneLabel: 'i-4a90d021',
+    time: 1572910200,
+    value: 20.706159141229445,
+  },
+  {
+    laneLabel: 'i-4ff414ac',
+    time: 1572883200,
+    value: 42.82781,
+  },
+  {
+    laneLabel: 'i-4ff414ac',
+    time: 1572885000,
+    value: 3.643815188524499,
+  },
+  {
+    laneLabel: 'i-4ff414ac',
+    time: 1572910200,
+    value: 7.987421742621203,
+  },
+  {
+    laneLabel: 'i-850643a7',
+    time: 1572870600,
+    value: 37.51045,
+  },
+  {
+    laneLabel: 'i-850643a7',
+    time: 1572904800,
+    value: 0.08720035850172568,
+  },
+  {
+    laneLabel: 'i-c961f137',
+    time: 1572859800,
+    value: 0.7612613,
+  },
+  {
+    laneLabel: 'i-c961f137',
+    time: 1572861600,
+    value: 36.94459,
+  },
+  {
+    laneLabel: 'i-c961f137',
+    time: 1572863400,
+    value: 3.530620723871948,
+  },
+  {
+    laneLabel: 'i-7cdbab5b',
+    time: 1572874200,
+    value: 3.468401,
+  },
+  {
+    laneLabel: 'i-7cdbab5b',
+    time: 1572876000,
+    value: 15.87705,
+  },
+  {
+    laneLabel: 'i-7cdbab5b',
+    time: 1572877800,
+    value: 21.19452,
+  },
+  {
+    laneLabel: 'i-7cdbab5b',
+    time: 1572879600,
+    value: 22.534,
+  },
+  {
+    laneLabel: 'i-7cdbab5b',
+    time: 1572881400,
+    value: 30.46893,
+  },
+  {
+    laneLabel: 'i-7cdbab5b',
+    time: 1572883200,
+    value: 9.532251,
+  },
+  {
+    laneLabel: 'i-7cdbab5b',
+    time: 1572885000,
+    value: 6.127118137471535,
+  },
+  {
+    laneLabel: 'i-7cdbab5b',
+    time: 1572892200,
+    value: 0.13956047806108005,
+  },
+  {
+    laneLabel: 'i-7cdbab5b',
+    time: 1572894000,
+    value: 0.11986169822285726,
+  },
+  {
+    laneLabel: 'i-7cdbab5b',
+    time: 1572899400,
+    value: 4.098007780030352,
+  },
+  {
+    laneLabel: 'i-7cdbab5b',
+    time: 1572901200,
+    value: 0.6927671145991932,
+  },
+  {
+    laneLabel: 'i-7cdbab5b',
+    time: 1572903000,
+    value: 0.2113142229906149,
+  },
+  {
+    laneLabel: 'i-7cdbab5b',
+    time: 1572904800,
+    value: 0.0823203266441151,
   },
 ];

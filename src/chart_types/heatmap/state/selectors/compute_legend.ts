@@ -23,6 +23,8 @@ import { LegendItem } from '../../../../commons/legend';
 import { ScaleType } from '../../../../scales/constants';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { LegendItemLabel } from '../../../../state/selectors/get_legend_items_labels';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getColorScale } from './color_scale';
 import { getSpecOrNull } from './heatmap_spec';
 
@@ -64,4 +66,15 @@ export const computeLegendSelector = createCachedSelector(
       };
     });
   },
+)(getChartIdSelector);
+
+export const getLegendItemsLabelsSelector = createCachedSelector(
+  [computeLegendSelector, getSettingsSpecSelector],
+  (legendItems, { showLegendExtra }): LegendItemLabel[] =>
+    legendItems.map(({ label, defaultExtra }) => {
+      if (defaultExtra?.formatted != null) {
+        return { label: `${label}${showLegendExtra ? defaultExtra.formatted : ''}`, depth: 0 };
+      }
+      return { label, depth: 0 };
+    }),
 )(getChartIdSelector);

@@ -30,7 +30,7 @@ import { LegendItemLabel } from '../../../state/selectors/get_legend_items_label
 import { Dimensions } from '../../../utils/dimensions';
 import { Heatmap } from '../renderer/canvas/connected_component';
 import { HighlighterFromBrush } from '../renderer/dom/highlighter_brush';
-import { computeLegendSelector } from './selectors/compute_legend';
+import { computeLegendSelector, getLegendItemsLabelsSelector } from './selectors/compute_legend';
 import { getBrushAreaSelector } from './selectors/get_brush_area';
 import { getSpecOrNull } from './selectors/heatmap_spec';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
@@ -75,8 +75,8 @@ export class HeatmapState implements InternalChartState {
     return computeLegendSelector(globalState);
   }
 
-  getLegendItemsLabels() {
-    return [{ label: 'Test', depth: 1 }];
+  getLegendItemsLabels(globalState: GlobalChartState) {
+    return getLegendItemsLabelsSelector(globalState);
   }
 
   getLegendExtraValues() {

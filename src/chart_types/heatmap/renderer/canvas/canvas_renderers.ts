@@ -80,7 +80,7 @@ export function renderCanvas2d(
         }),
       (ctx: CanvasRenderingContext2D) =>
         withContext(ctx, (ctx) => {
-          // render text
+          // render text on Y axis
           const { x, y } = heatmapViewModel.gridOrigin;
           ctx.translate(x, y);
           if (!config.cell.label.visible) {
@@ -101,7 +101,7 @@ export function renderCanvas2d(
       (ctx: CanvasRenderingContext2D) =>
         withContext(ctx, (ctx) => {
           // render text
-          if (!config.cell.label.visible) {
+          if (!config.yAxisLabel.visible) {
             return;
           }
           filteredYValues.forEach((cell) => {
@@ -119,7 +119,7 @@ export function renderCanvas2d(
       (ctx: CanvasRenderingContext2D) =>
         withContext(ctx, (ctx) => {
           // render text
-          if (!config.cell.label.visible) {
+          if (!config.xAxisLabel.visible) {
             return;
           }
           heatmapViewModel.xValues.forEach((cell) => {
@@ -129,7 +129,7 @@ export function renderCanvas2d(
                 x: cell.x,
                 y: cell.y,
               },
-              cell.text,
+              `${cell.text}    `,
               config.xAxisLabel,
             );
           });
