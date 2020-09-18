@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { SettingsSpec } from '../../../../specs';
 import { RecursivePartial, mergePartial } from '../../../../utils/commons';
 import { Dimensions } from '../../../../utils/dimensions';
 import { measureText } from '../../../partition_chart/layout/utils/measure';
@@ -27,7 +28,7 @@ import { shapeViewModel } from '../../layout/viewmodel/viewmodel';
 import { HeatmapSpec } from '../../specs';
 
 /** @internal */
-export function render(spec: HeatmapSpec, parentDimensions: Dimensions): ShapeViewModel {
+export function render(spec: HeatmapSpec, settingsSpec: SettingsSpec, parentDimensions: Dimensions): ShapeViewModel {
   const textMeasurer = document.createElement('canvas');
   const textMeasurerCtx = textMeasurer.getContext('2d');
   if (!textMeasurerCtx) {
@@ -37,5 +38,5 @@ export function render(spec: HeatmapSpec, parentDimensions: Dimensions): ShapeVi
   const { config: specConfig } = spec;
   const partialConfig: RecursivePartial<Config> = { ...specConfig, width, height };
   const config = mergePartial<Config>(defaultConfig, partialConfig);
-  return shapeViewModel(measureText(textMeasurerCtx), spec, config);
+  return shapeViewModel(measureText(textMeasurerCtx), spec, config, settingsSpec);
 }

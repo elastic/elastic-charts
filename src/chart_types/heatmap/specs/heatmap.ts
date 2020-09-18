@@ -38,6 +38,7 @@ const defaultProps = {
   colorScale: ScaleType.Linear,
   xAccessor: ({ x }: { x: string | number }) => x,
   yAccessor: ({ y }: { y: string | number }) => y,
+  xScaleType: ScaleType.Linear,
   valueAccessor: ({ value }: { value: string | number }) => value,
   valueFormatter: (value: number) => `${value}`,
   xSortPredicate: Predicate.AlphaAsc,
@@ -66,6 +67,7 @@ export interface HeatmapSpec extends Spec {
   valueFormatter: (value: number) => string;
   xSortPredicate: Predicate;
   ySortPredicate: Predicate;
+  xScaleType: ScaleType;
   config: RecursivePartial<Config>;
 }
 
@@ -85,5 +87,6 @@ export const Heatmap: React.FunctionComponent<SpecRequiredProps & SpecOptionalPr
     | 'xSortPredicate'
     | 'valueFormatter'
     | 'config'
+    | 'xScaleType'
   >(defaultProps),
 );

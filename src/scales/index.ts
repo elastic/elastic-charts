@@ -61,7 +61,10 @@ export interface Scale {
   barsPadding: number;
 }
 
-export type ScaleContinuousType = Exclude<ScaleType, typeof ScaleType.Ordinal>;
+export type ScaleContinuousType = Exclude<
+  ScaleType,
+  typeof ScaleType.Ordinal | typeof ScaleType.Threshold | typeof ScaleType.Quantize | typeof ScaleType.Quantile
+>;
 
 export type ScaleOrdinalType = typeof ScaleType.Ordinal;
 
