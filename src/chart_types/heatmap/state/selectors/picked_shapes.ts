@@ -23,6 +23,7 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getLastDragSelector } from '../../../../state/selectors/get_last_drag';
 import { Cell } from '../../layout/types/viewmodel_types';
+import { TextBox } from '../../layout/viewmodel/viewmodel';
 import { geometries } from './geometries';
 
 function getCurrentPointerPosition(state: GlobalChartState) {
@@ -30,14 +31,13 @@ function getCurrentPointerPosition(state: GlobalChartState) {
 }
 
 /** @internal */
-export const getPickedShapes = createCachedSelector(
-  [geometries, getCurrentPointerPosition],
-  (geoms, pointerPosition): Cell[] => {
-    const picker = geoms.pickQuads;
-    const { x, y } = pointerPosition;
-    return picker(x, y);
-  },
-)((state) => state.chartId);
+export const getPickedShapes = createCachedSelector([geometries, getCurrentPointerPosition], (geoms, pointerPosition):
+  | Cell[]
+  | TextBox => {
+  const picker = geoms.pickQuads;
+  const { x, y } = pointerPosition;
+  return picker(x, y);
+})(getChartIdSelector);
 
 /** @internal */
 export const getPickedCells = createCachedSelector([geometries, getLastDragSelector], (geoms, dragState): Cell[] => {

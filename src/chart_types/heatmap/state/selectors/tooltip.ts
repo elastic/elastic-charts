@@ -20,6 +20,7 @@
 import createCachedSelector from 're-reselect';
 
 import { TooltipInfo } from '../../../../components/tooltip/types';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { RGBtoString } from '../../../partition_chart/layout/utils/color_library_wrappers';
 import { getSpecOrNull } from './heatmap_spec';
 import { getPickedShapes } from './picked_shapes';
@@ -42,20 +43,36 @@ export const getTooltipInfoSelector = createCachedSelector(
       values: [],
     };
 
-    pickedShapes.forEach((shape) => {
+    if (Array.isArray(pickedShapes)) {
+      pickedShapes.forEach((shape) => {
+        tooltipInfo.values.push({
+          label: `${shape.datum.y} - ${shape.datum.x}`,
+          color: RGBtoString(shape.fill.color),
+          isHighlighted: false,
+          isVisible: true,
+          seriesIdentifier: {
+            specId: spec.id,
+            key: spec.id,
+          },
+          value: `${shape.value}`,
+          formattedValue: `${shape.value}`,
+        });
+      });
+    } else {
       tooltipInfo.values.push({
-        label: `${shape.datum.y} - ${shape.datum.x}`,
-        color: RGBtoString(shape.fill.color),
+        label: ``,
+        color: 'transparent',
         isHighlighted: false,
         isVisible: true,
         seriesIdentifier: {
           specId: spec.id,
           key: spec.id,
         },
-        value: `${shape.value}`,
+        value: `${pickedShapes.value}`,
+        formattedValue: `${pickedShapes.value}`,
       });
-    });
+    }
 
     return tooltipInfo;
   },
-)((state) => state.chartId);
+)(getChartIdSelector);
