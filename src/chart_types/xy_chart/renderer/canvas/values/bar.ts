@@ -45,7 +45,7 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
     if (!displayValue) {
       continue;
     }
-    const { text, fontSize } = displayValue;
+    const { text, fontSize, fontScale } = displayValue;
     let textLines = {
       lines: [text],
       width: displayValue.width,
@@ -80,13 +80,13 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
     const { width, height } = textLines;
     const linesLength = textLines.lines.length;
 
-    for (let i = 0; i < linesLength; i++) {
-      const text = textLines.lines[i];
-      const origin = repositionTextLine({ x, y }, chartRotation, i, linesLength, { height, width });
+    for (let j = 0; j < linesLength; j++) {
+      const textLine = textLines.lines[j];
+      const origin = repositionTextLine({ x, y }, chartRotation, j, linesLength, { height, width });
       renderText(
         ctx,
         origin,
-        text,
+        textLine,
         {
           ...font,
           fill,
@@ -95,6 +95,8 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
           baseline,
         },
         -chartRotation,
+        undefined,
+        fontScale,
       );
     }
   }

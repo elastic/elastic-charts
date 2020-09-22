@@ -290,7 +290,14 @@ export interface Theme {
 export type PartialTheme = RecursivePartial<Theme>;
 
 /** @public */
-export type DisplayValueStyle = TextStyle & {
+export type DisplayValueStyle = Omit<TextStyle, 'fontSize'> & {
+  fontSize:
+    | number
+    | {
+        min: number;
+        max: number;
+      };
+} & {
   offsetX: number;
   offsetY: number;
 };

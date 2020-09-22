@@ -46,6 +46,7 @@ import {
   GeometryStateStyle,
   LineStyle,
   BubbleSeriesStyle,
+  DisplayValueStyle,
 } from '../../../utils/themes/theme';
 import { IndexedGeometryMap, GeometryType } from '../utils/indexed_geometry_map';
 import { DataSeriesDatum, DataSeries, XYChartSeriesIdentifier } from '../utils/series';
@@ -55,6 +56,59 @@ import { DEFAULT_HIGHLIGHT_PADDING } from './constants';
 export interface MarkSizeOptions {
   enabled: boolean;
   ratio?: number;
+}
+/**
+ * Returns a safe scaling factor for label text for fixed or range size inputs
+ * @internal
+ */
+function getFinalFontScalingFactor(
+  scale: number,
+  fixedFontSize: number,
+  limits: DisplayValueStyle['fontSize'],
+): number {
+  if (typeof limits === 'number') {
+    // it's a fixed size, so it's always ok
+    return 1;
+  }
+  const finalFontSize = scale * fixedFontSize;
+  return finalFontSize <= limits.max && finalFontSize >= limits.min ? scale : 0;
+}
+
+/**
+ * Workout the text box size and fixedFontSize based on a collection of options
+ * @internal
+ */
+function computeBoxWidth(
+  text: string,
+  {
+    padding,
+    fontSize,
+    fontFamily,
+    bboxCalculator,
+    width,
+  }: {
+    padding: number;
+    fontSize: number | { min: number; max: number };
+    fontFamily: string;
+    bboxCalculator: CanvasTextBBoxCalculator;
+    width: number;
+  },
+  displayValueSettings: DisplayValueSpec | undefined,
+): { fixedFontScale: number; displayValueWidth: number } {
+  const fixedFontScale = typeof fontSize === 'number' ? fontSize : fontSize.min;
+
+  const computedDisplayValueWidth = bboxCalculator.compute(text || '', padding, fixedFontScale, fontFamily).width;
+  if (typeof fontSize !== 'number') {
+    return {
+      fixedFontScale,
+      displayValueWidth: computedDisplayValueWidth,
+    };
+  }
+  return {
+    fixedFontScale,
+    displayValueWidth:
+      displayValueSettings && displayValueSettings.isValueContainedInElement ? width : computedDisplayValueWidth,
+  };
 }
 
 /**
@@ -306,6 +360,7 @@ export function renderBars(
   styleAccessor?: BarStyleAccessor,
   minBarHeight?: number,
   stackMode?: StackMode,
+  chartRotation?: number,
 ): {
   barGeometries: BarGeometry[];
   indexedGeometryMap: IndexedGeometryMap;
@@ -384,34 +439,37 @@ export function renderBars(
 
     // only show displayValue for even bars if showOverlappingValue
     const displayValueText =
-      displayValueSettings && displayValueSettings.isAlternatingValueLabel
-        ? barGeometries.length % 2 === 0
-          ? formattedDisplayValue
-          : undefined
+      displayValueSettings && displayValueSettings.isAlternatingValueLabel && barGeometries.length % 2
+        ? undefined
         : formattedDisplayValue;
 
-    const targetFontSize = displayValueText
-      ? Math.max(Math.floor(width / displayValueText.length), fontSize)
-      : fontSize;
-
-    const computedDisplayValueWidth = bboxCalculator.compute(
+    const { displayValueWidth, fixedFontScale } = computeBoxWidth(
       displayValueText || '',
-      padding,
-      targetFontSize,
-      fontFamily,
-    ).width;
-    const displayValueWidth =
-      displayValueSettings && displayValueSettings.isValueContainedInElement ? width : computedDisplayValueWidth;
+      { padding, fontSize, fontFamily, bboxCalculator, width },
+      displayValueSettings,
+    );
+
+    const isHorizontalRotation = chartRotation == null || [0, 180].includes(chartRotation);
+    // Take 70% of space for the label text
+    const fontSizeFactor = 0.7;
+    // Pick the right side of the label's box to use as factor reference
+    const referenceWidth = isHorizontalRotation ? displayValueWidth : fixedFontScale;
+
+    const tempTextScalingFactor = (width * fontSizeFactor) / referenceWidth;
+    const textScalingFactor = getFinalFontScalingFactor(tempTextScalingFactor, fixedFontScale, fontSize);
 
     const hideClippedValue = displayValueSettings ? displayValueSettings.hideClippedValue : undefined;
+    // Based on rotation scale the width of the text box
+    const bboxWidthFactor = isHorizontalRotation ? textScalingFactor : 1;
 
     const displayValue =
       displayValueSettings && displayValueSettings.showValueLabel
         ? {
-            fontSize: targetFontSize,
+            fontScale: textScalingFactor,
+            fontSize: fixedFontScale,
             text: displayValueText,
-            width: displayValueWidth,
-            height: fontSize,
+            width: bboxWidthFactor * displayValueWidth,
+            height: textScalingFactor * fixedFontScale,
             hideClippedValue,
             isValueContainedInElement: displayValueSettings.isValueContainedInElement,
           }

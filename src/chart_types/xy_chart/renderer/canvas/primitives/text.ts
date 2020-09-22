@@ -35,6 +35,7 @@ export function renderText(
   },
   degree: number = 0,
   translation?: Partial<Point>,
+  scale: number = 1,
 ) {
   if (text === undefined || text === null) {
     return;
@@ -49,7 +50,9 @@ export function renderText(
       if (translation?.x || translation?.y) {
         ctx.translate(translation?.x ?? 0, translation?.y ?? 0);
       }
-      ctx.fillText(text, origin.x, origin.y);
+      ctx.translate(origin.x, origin.y);
+      ctx.scale(scale, scale);
+      ctx.fillText(text, 0, 0);
     });
   });
 }
@@ -81,14 +84,14 @@ export function wrapLines(
   const shouldAddEllipsis = false;
   const textArr: string[] = [];
   const textMeasureProcessor = measureText(ctx);
-  const getTextWidth = (text: string) => {
+  const getTextWidth = (textString: string) => {
     const measuredText = textMeasureProcessor(fontSize, [
       {
-        text,
+        text: textString,
         ...font,
       },
     ]);
-    const measure = measuredText[0];
+    const [measure] = measuredText;
     if (measure) {
       return measure.width;
     }
