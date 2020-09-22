@@ -272,24 +272,23 @@ export function shapeViewModel(
    * @param end
    */
   const pickDragShape: PickDragShapeFunction = ([start, end]) => {
-    const startX = Math.min(start.x, end.x);
+    const startX = Math.min(start.x, end.x) - chartDimensions.left;
     const startY = Math.min(start.y, end.y);
 
-    const endX = Math.max(start.x, end.x);
+    const endX = Math.max(start.x, end.x) - chartDimensions.left;
     const endY = Math.max(start.y, end.y);
 
-    const [startPoint] = pickQuads(startX, startY);
-    const [endPoint] = pickQuads(endX, endY);
+    const startXValue = Math.floor(startX / cellWidth) * cellWidth;
+    const startYValue = Math.floor(startY / cellHeight) * cellHeight;
 
-    if (startPoint === undefined || endPoint === undefined) {
-      return;
-    }
+    const endXValue = Math.floor(endX / cellWidth) * cellWidth;
+    const endYValue = Math.floor(endY / cellHeight) * cellHeight;
 
     return {
-      x: startPoint.x + maxTextWidth,
-      y: startPoint.y,
-      width: Math.abs(endPoint.x - startPoint.x) + cellWidth,
-      height: Math.abs(endPoint.y - startPoint.y) + cellHeight,
+      x: startXValue + chartDimensions.left,
+      y: startYValue,
+      width: Math.abs(endXValue - startXValue) + cellWidth,
+      height: Math.abs(endYValue - startYValue) + cellHeight,
     };
   };
 
