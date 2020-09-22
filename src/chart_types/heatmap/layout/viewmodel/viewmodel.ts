@@ -18,26 +18,20 @@
  */
 
 import { max as d3Max, extent as d3Extent } from 'd3-array';
-import { interpolateHcl } from 'd3-interpolate';
-import { scaleBand, scaleLinear, scaleQuantile, scaleQuantize, scaleThreshold } from 'd3-scale';
+import { scaleBand, scaleQuantize } from 'd3-scale';
 
 import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { SettingsSpec } from '../../../../specs';
 import { niceTimeFormatter } from '../../../../utils/data/formatters';
+import { Dimensions } from '../../../../utils/dimensions';
 import { Pixels } from '../../../partition_chart/layout/types/geometry_types';
 import { Box, TextMeasure } from '../../../partition_chart/layout/types/types';
 import { stringToRGB } from '../../../partition_chart/layout/utils/color_library_wrappers';
 import { HeatmapSpec } from '../../specs';
-import { getPredicateFn } from '../../utils/commons';
+import { ColorScaleType } from '../../state/selectors/get_color_scale';
 import { Config } from '../types/config_types';
-import {
-  Cell,
-  ColorScaleType,
-  PickDragFunction,
-  PickDragShapeFunction,
-  ShapeViewModel,
-} from '../types/viewmodel_types';
+import { Cell, PickDragFunction, PickDragShapeFunction, ShapeViewModel } from '../types/viewmodel_types';
 import { getGridCellHeight } from './grid';
 
 export interface HeatmapCellDatum {
@@ -61,25 +55,17 @@ export interface TextBox extends Box {
   y: number;
 }
 
-const Y_LABEL_PADDING = 8;
-
 /** @internal */
 export function shapeViewModel(
   textMeasure: TextMeasure,
   spec: HeatmapSpec,
   config: Config,
   settingsSpec: SettingsSpec,
+  chartDimensions: Dimensions,
+  heatmapTable: HeatmapTable,
+  colorScale: ColorScaleType,
 ): ShapeViewModel {
-  const {
-    data,
-    valueAccessor,
-    xAccessor,
-    yAccessor,
-    xSortPredicate,
-    ySortPredicate,
-    colorScale: colorScaleSpec,
-    xScaleType,
-  } = spec;
+  const { xScaleType } = spec;
 
   const gridStrokeWidth = config.grid.stroke.width ?? 1;
 
@@ -87,97 +73,8 @@ export function shapeViewModel(
 
   const isXAxisTimeScale = xScaleType === ScaleType.Time;
 
-  let isXValueValid = (x: string | number) => true;
-  const minDate: Date | null = xDomain.min ? new Date(xDomain.min) : null;
-  const maxDate: Date | null = xDomain.max ? new Date(xDomain.max) : null;
-
-  // time scale with custom boundaries
-  if (xScaleType === ScaleType.Time && (minDate || maxDate)) {
-    isXValueValid = (v: number | string) => {
-      const dateV = new Date(v);
-      let isValid = false;
-      if (minDate) {
-        isValid = dateV >= minDate;
-      }
-      if (maxDate) {
-        isValid = dateV <= maxDate;
-      }
-      return isValid;
-    };
-  }
-
-  const resultData = data.reduce<HeatmapTable>(
-    (acc, curr, index) => {
-      const x = xAccessor(curr);
-
-      if (!isXValueValid(x)) {
-        return acc;
-      }
-
-      const y = yAccessor(curr);
-      const value = valueAccessor(curr);
-
-      // compute the data domain extent
-      const [min, max] = acc.extent;
-      acc.extent = [Math.min(min, value), Math.max(max, value)];
-
-      acc.table.push({
-        x,
-        y,
-        value: valueAccessor(curr),
-        originalIndex: index,
-      });
-
-      if (!acc.xValues.includes(x)) {
-        acc.xValues.push(x);
-      }
-      if (!acc.yValues.includes(y)) {
-        acc.yValues.push(y);
-      }
-
-      return acc;
-    },
-    {
-      table: [],
-      xValues: [],
-      yValues: [],
-      extent: [+Infinity, -Infinity],
-    },
-  );
-
-  const { table, yValues, extent } = resultData;
-  let { xValues } = resultData;
-
-  // sort values by their predicates
-  xValues.sort(getPredicateFn(xSortPredicate));
-  yValues.sort(getPredicateFn(ySortPredicate));
-
-  // compute the color scale based domain and colors
-  const { ranges = extent } = spec;
-  const colorRange = spec.colors ?? ['green', 'red'];
-
-  const colorScale = {
-    type: colorScaleSpec,
-  } as ColorScaleType;
-
-  if (colorScale.type === ScaleType.Quantize) {
-    colorScale.config = scaleQuantize<string>()
-      .domain(d3Extent(ranges) as [number, number])
-      .range(colorRange);
-  } else if (colorScale.type === ScaleType.Quantile) {
-    colorScale.config = scaleQuantile<string>()
-      .domain(ranges)
-      .range(colorRange);
-  } else if (colorScale.type === ScaleType.Threshold) {
-    colorScale.config = scaleThreshold<number, string>()
-      .domain(ranges)
-      .range(colorRange);
-  } else {
-    colorScale.config = scaleLinear<string>()
-      .domain(ranges)
-      .interpolate(interpolateHcl)
-      .range(colorRange);
-  }
+  const { table, yValues } = heatmapTable;
+  const { xValues } = heatmapTable;
 
   // measure the text width of all rows values to get the grid area width
   const boxedYValues = yValues.map<Box & { value: string | number }>((value) => {
@@ -188,12 +85,11 @@ export function shapeViewModel(
     };
   });
   const measuredYValues = textMeasure(config.yAxisLabel.fontSize, boxedYValues);
-  const maxTextWidth = (d3Max(measuredYValues, ({ width }) => width) || 0) + Y_LABEL_PADDING;
-  const maxGridAreaWidth = config.width - maxTextWidth;
+  const maxTextWidth = d3Max(measuredYValues, ({ width }) => width) || 0;
+  const maxGridAreaWidth = chartDimensions.width;
 
   // compute the grid area height removing the bottom axis
-  const maxTextHeight = config.yAxisLabel.fontSize;
-  const maxGridAreaHeight = config.height - maxTextHeight;
+  const maxGridAreaHeight = chartDimensions.height;
 
   // compute the grid cell height
   const gridCellHeight = getGridCellHeight(yValues, config);
@@ -213,17 +109,6 @@ export function shapeViewModel(
   const yInvertedScale = scaleQuantize<string | number>()
     .domain([0, maxHeight])
     .range(yValues);
-
-  if (isXAxisTimeScale) {
-    const result = [];
-    const timePoint = minDate?.getTime();
-    while (timePoint < maxDate?.getTime()) {
-      result.push(timePoint);
-      timePoint += xDomain.minInterval;
-    }
-
-    xValues = result;
-  }
 
   // compute the scale for the columns positions
   const xScale = scaleBand<string | number>()
@@ -247,10 +132,24 @@ export function shapeViewModel(
   const textYValues = boxedYValues.map<TextBox>((d) => {
     return {
       ...d,
-      x: maxTextWidth,
+      // position of the Y labels
+      x: 0,
       y: cellHeight / 2 + (yScale(d.value) || 0),
     };
   });
+
+  const getTextValue = (
+    formatter: (v: any) => string,
+    scaleCallback: (x: any) => number | undefined | null = xScale,
+  ) => (value: any) => {
+    return {
+      text: formatter(value),
+      value,
+      ...config.xAxisLabel,
+      x: chartDimensions.left + (scaleCallback(value) || 0) + cellWidth / 2,
+      y: maxGridAreaHeight + config.xAxisLabel.fontSize / 2 + config.xAxisLabel.padding,
+    };
+  };
 
   // compute the position of each column label
   let textXValues: Array<TextBox> = [];
@@ -258,27 +157,15 @@ export function shapeViewModel(
     const domain = xDomain ? [xDomain.min, xDomain.max] : d3Extent<number>(xValues as number[]);
     const formatter = niceTimeFormatter(domain as [number, number]);
 
-    const timeScale = new ScaleContinuous({ type: ScaleType.Time, domain, range: [maxTextWidth, maxGridAreaWidth] });
-    textXValues = timeScale.ticks().map<TextBox>((value) => {
-      return {
-        text: formatter(value),
-        value,
-        ...config.xAxisLabel,
-        x: maxTextWidth + (timeScale.pureScale(value) || 0) + cellWidth / 2,
-        y: maxGridAreaHeight + config.xAxisLabel.fontSize / 2,
-      };
+    const timeScale = new ScaleContinuous({
+      type: ScaleType.Time,
+      domain,
+      range: [chartDimensions.left, maxGridAreaWidth],
     });
+    textXValues = timeScale.ticks().map<TextBox>(getTextValue(formatter, (x: any) => timeScale.pureScale(x)));
   } else {
     // TODO remove overlapping labels or scale better the columns labels
-    textXValues = xValues.map<TextBox>((value) => {
-      return {
-        text: String(value),
-        value,
-        ...config.xAxisLabel,
-        x: maxTextWidth + (xScale(value) || 0) + cellWidth / 2,
-        y: maxGridAreaHeight + config.xAxisLabel.fontSize / 2,
-      };
-    });
+    textXValues = xValues.map<TextBox>(getTextValue(String));
   }
 
   // compute each available cell position, color and value
@@ -392,23 +279,25 @@ export function shapeViewModel(
     };
   };
 
+  // vertical lines
   const xLines = [];
   for (let i = 0; i < xValues.length + 1; i++) {
-    const x = maxTextWidth + i * cellWidth;
-    xLines.push({ x1: x, y1: maxHeight, x2: x, y2: 0 });
+    const x = chartDimensions.left + i * cellWidth;
+    xLines.push({ x1: x, y1: chartDimensions.height, x2: x, y2: chartDimensions.top });
   }
+  // horizontal lines
   const yLines = [];
   for (let i = 0; i < yValues.length + 1; i++) {
     const y = i * cellHeight;
-    yLines.push({ x1: maxTextWidth, y1: y, x2: maxGridAreaWidth + maxTextWidth, y2: y });
+    yLines.push({ x1: chartDimensions.left, y1: y, x2: chartDimensions.width + chartDimensions.left, y2: y });
   }
 
   return {
     config,
     heatmapViewModel: {
       gridOrigin: {
-        x: maxTextWidth,
-        y: 0,
+        x: chartDimensions.left,
+        y: chartDimensions.top,
       },
       gridLines: {
         x: xLines,
@@ -426,7 +315,6 @@ export function shapeViewModel(
     pickQuads,
     pickDragArea,
     pickDragShape,
-    colorScale,
   };
 }
 

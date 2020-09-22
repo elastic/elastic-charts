@@ -26,13 +26,14 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { Dimensions } from '../../../../utils/dimensions';
 
 const getMouseDownPosition = (state: GlobalChartState) => state.interactions.pointer.down;
+const getIsDragging = (state: GlobalChartState) => state.interactions.pointer.dragging;
 const getCurrentPointerPosition = (state: GlobalChartState) => state.interactions.pointer.current.position;
 
 /** @internal */
 export const getBrushAreaSelector = createCachedSelector(
-  [getMouseDownPosition, getCurrentPointerPosition, getChartRotationSelector, getSettingsSpecSelector],
-  (mouseDownPosition, end, chartRotation, { brushAxis }): Dimensions | null => {
-    if (!mouseDownPosition) {
+  [getIsDragging, getMouseDownPosition, getCurrentPointerPosition, getChartRotationSelector, getSettingsSpecSelector],
+  (isDragging, mouseDownPosition, end, chartRotation, { brushAxis }): Dimensions | null => {
+    if (!isDragging || !mouseDownPosition) {
       return null;
     }
     const start = {

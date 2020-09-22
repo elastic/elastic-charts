@@ -18,9 +18,10 @@
  */
 
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
+import { Font } from '../../../partition_chart/layout/types/types';
 import { renderMultiLine } from '../../../xy_chart/renderer/canvas/primitives/line';
 import { renderRect } from '../../../xy_chart/renderer/canvas/primitives/rect';
-import { renderText } from '../../../xy_chart/renderer/canvas/primitives/text';
+import { renderText, wrapLines } from '../../../xy_chart/renderer/canvas/primitives/text';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
 
 /** @internal */
@@ -80,7 +81,7 @@ export function renderCanvas2d(
         }),
       (ctx: CanvasRenderingContext2D) =>
         withContext(ctx, (ctx) => {
-          // render text on Y axis
+          // render text on cells
           const { x, y } = heatmapViewModel.gridOrigin;
           ctx.translate(x, y);
           if (!config.cell.label.visible) {
@@ -100,36 +101,59 @@ export function renderCanvas2d(
         }),
       (ctx: CanvasRenderingContext2D) =>
         withContext(ctx, (ctx) => {
-          // render text
+          // render text on Y axis
           if (!config.yAxisLabel.visible) {
             return;
           }
-          filteredYValues.forEach((cell) => {
+          filteredYValues.forEach((yValue) => {
+            const font: Font = {
+              fontFamily: config.yAxisLabel.fontFamily,
+              fontStyle: config.yAxisLabel.fontStyle ? config.yAxisLabel.fontStyle : 'normal',
+              fontVariant: 'normal',
+              fontWeight: 'normal',
+              textColor: 'black',
+              textOpacity: 1,
+            };
+
+            const [resultText] = wrapLines(
+              ctx,
+              yValue.text,
+              font,
+              config.yAxisLabel.fontSize,
+              heatmapViewModel.gridOrigin.x - config.yAxisLabel.padding,
+              // heatmapViewModel.gridOrigin.x,
+              16,
+              {
+                shouldAddEllipsis: true,
+                wrapAtWord: false,
+              },
+            ).lines;
+
             renderText(
               ctx,
               {
-                x: cell.x,
-                y: cell.y,
+                x: yValue.x,
+                y: yValue.y,
               },
-              cell.text,
+              resultText,
               config.yAxisLabel,
             );
           });
         }),
       (ctx: CanvasRenderingContext2D) =>
         withContext(ctx, (ctx) => {
-          // render text
+          // render text on X axis
           if (!config.xAxisLabel.visible) {
             return;
           }
-          heatmapViewModel.xValues.forEach((cell) => {
+          heatmapViewModel.xValues.forEach((xValue) => {
             renderText(
               ctx,
               {
-                x: cell.x,
-                y: cell.y,
+                x: xValue.x,
+                y: xValue.y,
               },
-              `${cell.text}    `,
+              xValue.text,
               config.xAxisLabel,
             );
           });

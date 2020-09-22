@@ -32,7 +32,7 @@ export class Playground extends React.Component {
             <Settings
               onElementClick={console.log}
               showLegend
-              legendPosition="left"
+              legendPosition="top"
               onBrushEnd={console.log}
               brushAxis="both"
               xDomain={{ min: 1572825600000, max: 1572912000000, minInterval: 1800000 }}
@@ -54,7 +54,7 @@ export class Playground extends React.Component {
                 grid: {
                   cellHeight: {
                     min: 20,
-                    max: 40, // 'fill',
+                    max: 'fill', // 'fill',
                   },
                   stroke: {
                     width: 1,
@@ -73,11 +73,12 @@ export class Playground extends React.Component {
                   },
                 },
                 yAxisLabel: {
-                  align: 'right',
+                  align: 'left',
                   visible: true,
+                  maxWidth: 50,
                 },
                 xAxisLabel: {
-                  maxWidth: 50,
+                  maxWidth: 20,
                 },
               }}
             />
@@ -89,7 +90,7 @@ export class Playground extends React.Component {
             <Settings
               onElementClick={console.log}
               showLegend
-              legendPosition="top"
+              legendPosition="left"
               onBrushEnd={console.log}
               brushAxis="both"
             />
@@ -109,6 +110,9 @@ export class Playground extends React.Component {
                     min: 40,
                     max: 40, // 'fill',
                   },
+                  stroke: {
+                    width: 0,
+                  },
                 },
                 cell: {
                   maxWidth: 'fill',
@@ -120,6 +124,10 @@ export class Playground extends React.Component {
                     stroke: 'white',
                     strokeWidth: 1,
                   },
+                },
+                yAxisLabel: {
+                  visible: true,
+                  maxWidth: 200,
                 },
               }}
             />
