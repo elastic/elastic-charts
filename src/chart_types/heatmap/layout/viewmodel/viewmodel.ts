@@ -199,7 +199,21 @@ export function shapeViewModel(
     return acc;
   }, {});
 
-  const pickQuads = (x: Pixels, y: Pixels): Array<Cell> => {
+  /**
+   * Returns selected elements based on coordinates.
+   * @param x
+   * @param y
+   */
+  const pickQuads = (x: Pixels, y: Pixels): Array<Cell> | TextBox => {
+    if (x > 0 && x < chartDimensions.left && y > chartDimensions.top && y < chartDimensions.height) {
+      // look up for a Y axis elements
+      const yLabelKey = yInvertedScale(y);
+      const yLabelValue = textYValues.find((v) => v.value === yLabelKey);
+      if (yLabelValue) {
+        return yLabelValue;
+      }
+    }
+
     if (x < chartDimensions.left || y < chartDimensions.top) {
       return [];
     }

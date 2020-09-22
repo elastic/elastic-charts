@@ -63,7 +63,7 @@ export interface HeatmapViewModel {
 }
 
 /** @internal */
-export type PickFunction = (x: Pixels, y: Pixels) => Cell[];
+export type PickFunction = (x: Pixels, y: Pixels) => Cell[] | TextBox;
 
 /** @internal */
 export type PickDragFunction = (points: [Point, Point]) => Cell[];
