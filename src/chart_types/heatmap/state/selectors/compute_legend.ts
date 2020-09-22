@@ -25,7 +25,7 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { LegendItemLabel } from '../../../../state/selectors/get_legend_items_labels';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { getColorScale } from './color_scale';
+import { getColorScale } from './get_color_scale';
 import { getSpecOrNull } from './heatmap_spec';
 
 export const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interactions.deselectedDataSeries;

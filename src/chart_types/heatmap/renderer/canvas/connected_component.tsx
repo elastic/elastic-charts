@@ -23,6 +23,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
+import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { Dimensions } from '../../../../utils/dimensions';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
@@ -211,7 +212,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   return {
     initialized: true,
     geometries: geometries(state),
-    chartContainerDimensions: state.parentDimensions,
+    chartContainerDimensions: getChartContainerDimensionsSelector(state),
   };
 };
 

@@ -37,6 +37,7 @@ export interface Config {
     align: TextAlign;
     baseline: TextBaseline;
     visible: boolean;
+    padding: number;
   };
   yAxisLabel: Font & {
     fontSize: Pixels;
@@ -45,6 +46,7 @@ export interface Config {
     align: TextAlign;
     baseline: TextBaseline;
     visible: boolean;
+    padding: number;
   };
   grid: {
     cellWidth: {

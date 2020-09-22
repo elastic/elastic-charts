@@ -17,10 +17,7 @@
  * under the License.
  */
 
-import { ScaleLinear, ScaleQuantile, ScaleQuantize, ScaleThreshold } from 'd3-scale';
-
 import { Fill, Line, Stroke } from '../../../../geoms/types';
-import { ScaleType } from '../../../../scales/constants';
 import { Point } from '../../../../utils/point';
 import { Pixels } from '../../../partition_chart/layout/types/geometry_types';
 import { config } from '../config/config';
@@ -79,19 +76,6 @@ export type PickDragShapeFunction = (
 /** @internal */
 export type DragShape = ReturnType<PickDragShapeFunction>;
 
-export type ScaleModelType<Type, Config> = {
-  type: Type;
-  config: Config;
-};
-
-type ScaleLinearType = ScaleModelType<typeof ScaleType.Linear, ScaleLinear<string, string>>;
-type ScaleQuantizeType = ScaleModelType<typeof ScaleType.Quantize, ScaleQuantize<string>>;
-type ScaleQuantileType = ScaleModelType<typeof ScaleType.Quantile, ScaleQuantile<string>>;
-type ScaleThresholdType = ScaleModelType<typeof ScaleType.Threshold, ScaleThreshold<number, string>>;
-
-/** @internal */
-export type ColorScaleType = ScaleLinearType | ScaleQuantizeType | ScaleQuantileType | ScaleThresholdType;
-
 /** @internal */
 export type ShapeViewModel = {
   config: Config;
@@ -99,7 +83,6 @@ export type ShapeViewModel = {
   pickQuads: PickFunction;
   pickDragArea: PickDragFunction;
   pickDragShape: PickDragShapeFunction;
-  colorScale: ColorScaleType | null;
 };
 
 /** @internal */
@@ -126,5 +109,4 @@ export const nullShapeViewModel = (specifiedConfig?: Config): ShapeViewModel => 
   pickQuads: () => [],
   pickDragArea: () => [],
   pickDragShape: () => {},
-  colorScale: null,
 });

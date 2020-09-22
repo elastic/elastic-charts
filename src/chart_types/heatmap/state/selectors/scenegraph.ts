@@ -26,17 +26,33 @@ import { Config } from '../../layout/types/config_types';
 import { ShapeViewModel, nullShapeViewModel } from '../../layout/types/viewmodel_types';
 import { shapeViewModel } from '../../layout/viewmodel/viewmodel';
 import { HeatmapSpec } from '../../specs';
+import { HeatmapTable } from './compute_chart_dimensions';
+import { ColorScaleType } from './get_color_scale';
 
 /** @internal */
-export function render(spec: HeatmapSpec, settingsSpec: SettingsSpec, parentDimensions: Dimensions): ShapeViewModel {
+export function render(
+  spec: HeatmapSpec,
+  settingsSpec: SettingsSpec,
+  chartDimensions: Dimensions,
+  heatmapTable: HeatmapTable,
+  colorScale: ColorScaleType,
+): ShapeViewModel {
   const textMeasurer = document.createElement('canvas');
   const textMeasurerCtx = textMeasurer.getContext('2d');
   if (!textMeasurerCtx) {
     return nullShapeViewModel();
   }
-  const { width, height } = parentDimensions;
+  const { width, height } = chartDimensions;
   const { config: specConfig } = spec;
   const partialConfig: RecursivePartial<Config> = { ...specConfig, width, height };
   const config = mergePartial<Config>(defaultConfig, partialConfig);
-  return shapeViewModel(measureText(textMeasurerCtx), spec, config, settingsSpec);
+  return shapeViewModel(
+    measureText(textMeasurerCtx),
+    spec,
+    config,
+    settingsSpec,
+    chartDimensions,
+    heatmapTable,
+    colorScale,
+  );
 }
