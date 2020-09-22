@@ -22,7 +22,7 @@ import createCachedSelector from 're-reselect';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getLastDragSelector } from '../../../../state/selectors/get_last_drag';
-import { Cell } from '../../layout/types/viewmodel_types';
+import { Cell, PickDragFunction } from '../../layout/types/viewmodel_types';
 import { TextBox } from '../../layout/viewmodel/viewmodel';
 import { geometries } from './geometries';
 
@@ -40,9 +40,11 @@ export const getPickedShapes = createCachedSelector([geometries, getCurrentPoint
 })(getChartIdSelector);
 
 /** @internal */
-export const getPickedCells = createCachedSelector([geometries, getLastDragSelector], (geoms, dragState): Cell[] => {
+export const getPickedCells = createCachedSelector([geometries, getLastDragSelector], (geoms, dragState): ReturnType<
+  PickDragFunction
+> | null => {
   if (!dragState) {
-    return [];
+    return null;
   }
 
   const {

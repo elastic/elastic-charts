@@ -232,40 +232,6 @@ export function shapeViewModel(
     }
     return [];
   };
-
-  /**
-   * Return selected cells based on drag selection.
-   * @param start
-   * @param end
-   */
-  const pickDragArea: PickDragFunction = ([start, end]) => {
-    const result: Cell[] = [];
-
-    const startX = Math.min(start.x, end.x);
-    const startY = Math.min(start.y, end.y);
-
-    const endX = Math.max(start.x, end.x);
-    const endY = Math.max(start.y, end.y);
-
-    const [startPoint] = pickQuads(startX, startY);
-    result.push(startPoint);
-
-    let { x, y } = startPoint;
-    x += cellWidth + maxTextWidth;
-
-    while (y <= endY) {
-      while (x <= endX) {
-        result.push(pickQuads(x, y)[0]);
-        x += cellWidth;
-      }
-      // move to the next line
-      x = startPoint.x + maxTextWidth;
-      y += cellHeight;
-    }
-
-    return result;
-  };
-
   /**
    * Resolves coordinates and metrics of the selected rect area.
    * @param start
@@ -289,6 +255,44 @@ export function shapeViewModel(
       y: startYValue,
       width: Math.abs(endXValue - startXValue) + cellWidth,
       height: Math.abs(endYValue - startYValue) + cellHeight,
+    };
+  };
+
+  /**
+   * Return selected cells based on drag selection.
+   */
+  const pickDragArea: PickDragFunction = (bound) => {
+    const result = {
+      cells: [] as Cell[],
+      x: new Set(),
+      y: new Set(),
+    };
+
+    const shape = pickDragShape(bound);
+
+    let { x, y } = shape;
+
+    while (y < shape.height + shape.y) {
+      result.y.add(yInvertedScale(y));
+      while (x < shape.width + shape.x) {
+        const [cell] = pickQuads(x, y);
+        if (cell) {
+          result.cells.push(cell);
+        }
+        result.x.add(xInvertedScale(x));
+        x += cellWidth;
+      }
+      // move to the next line
+      x = shape.x;
+      y += cellHeight;
+    }
+
+    const x = [...result.x];
+
+    return {
+      ...result,
+      x: isXAxisTimeScale ? [x[0], x[x.length - 1]] : x,
+      y: [...result.y],
     };
   };
 
