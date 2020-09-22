@@ -200,13 +200,13 @@ export function shapeViewModel(
   }, {});
 
   const pickQuads = (x: Pixels, y: Pixels): Array<Cell> => {
-    if (x < maxTextWidth || y < 0) {
+    if (x < chartDimensions.left || y < chartDimensions.top) {
       return [];
     }
-    if (x > maxTextWidth + config.width || y > config.height) {
+    if (x > chartDimensions.width || y > chartDimensions.height) {
       return [];
     }
-    const xValue = xInvertedScale(x - maxTextWidth);
+    const xValue = xInvertedScale(x - chartDimensions.left);
     const yValue = yInvertedScale(y);
     if (xValue === undefined || yValue === undefined) {
       return [];
