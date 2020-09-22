@@ -20,6 +20,7 @@
 import createCachedSelector from 're-reselect';
 
 import { GlobalChartState } from '../../../../state/chart_state';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getLastDragSelector } from '../../../../state/selectors/get_last_drag';
 import { Cell } from '../../layout/types/viewmodel_types';
 import { geometries } from './geometries';
@@ -57,4 +58,4 @@ export const getPickedCells = createCachedSelector([geometries, getLastDragSelec
     { x: startX, y: startY },
     { x: endX, y: endY },
   ]);
-})((state) => state.chartId);
+})(getChartIdSelector);
