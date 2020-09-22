@@ -71,7 +71,14 @@ function getFinalFontScalingFactor(
     return 1;
   }
   const finalFontSize = scale * fixedFontSize;
-  return finalFontSize <= limits.max && finalFontSize >= limits.min ? scale : 0;
+  if (finalFontSize > limits.max) {
+    return limits.max / fixedFontSize;
+  }
+  if (finalFontSize < limits.min) {
+    // it's technically 1, but keep it generic in case the fixedFontSize changes
+    return limits.min / fixedFontSize;
+  }
+  return scale;
 }
 
 /**
