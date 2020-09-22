@@ -66,7 +66,7 @@ export interface HeatmapViewModel {
 export type PickFunction = (x: Pixels, y: Pixels) => Cell[] | TextBox;
 
 /** @internal */
-export type PickDragFunction = (points: [Point, Point]) => Cell[];
+export type PickDragFunction = (points: [Point, Point]) => { cells: Cell[]; x: any[]; y: any[] };
 
 /** @internal */
 export type PickDragShapeFunction = (
@@ -107,6 +107,6 @@ export const nullShapeViewModel = (specifiedConfig?: Config): ShapeViewModel => 
   config: specifiedConfig || config,
   heatmapViewModel: nullHeatmapViewModel,
   pickQuads: () => [],
-  pickDragArea: () => [],
+  pickDragArea: () => ({ cells: [], x: [], y: [] }),
   pickDragShape: () => {},
 });

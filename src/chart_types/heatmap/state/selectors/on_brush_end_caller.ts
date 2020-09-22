@@ -43,8 +43,8 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
     if (selector === null && state.chartType === ChartTypes.Heatmap) {
       selector = createCachedSelector(
         [getSpecOrNull, getSettingsSpecSelector, getPickedCells],
-        (spec, { onBrushEnd, rotation, brushAxis, minBrushDelta }, pickedCells): void => {
-          if (!spec || !onBrushEnd || pickedCells.length === 0) {
+        (spec, { onBrushEnd }, pickedCells): void => {
+          if (!spec || !onBrushEnd || pickedCells === null) {
             return;
           }
 
