@@ -367,6 +367,7 @@ export const ChartTypes: Readonly<{
     Goal: "goal";
     Partition: "partition";
     XYAxis: "xy_axis";
+    Heatmap: "heatmap";
 }>;
 
 // @public (undocumented)
@@ -570,12 +571,12 @@ export type DomainRange = LowerBoundedDomain | UpperBoundedDomain | CompleteBoun
 // Warning: (ae-missing-release-tag) "ElementClickListener" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent>) => void;
+export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent>) => void;
 
 // Warning: (ae-missing-release-tag) "ElementOverListener" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type ElementOverListener = (elements: Array<XYChartElementEvent | PartitionElementEvent>) => void;
+export type ElementOverListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent>) => void;
 
 // @alpha
 export interface ExternalPointerEventsSettings {
@@ -657,7 +658,7 @@ export interface GeometryValue {
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
 //
 // @alpha (undocumented)
-export const Goal: React.FunctionComponent<SpecRequiredProps_8 & SpecOptionalProps_8>;
+export const Goal: React.FunctionComponent<SpecRequiredProps_9 & SpecOptionalProps_9>;
 
 // @alpha (undocumented)
 export interface GoalSpec extends Spec {
@@ -678,7 +679,7 @@ export interface GoalSpec extends Spec {
     // Warning: (ae-forgotten-export) The symbol "Config" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
-    config: RecursivePartial<Config>;
+    config: RecursivePartial<Config_2>;
     // (undocumented)
     labelMajor: string | BandFillColorAccessor;
     // (undocumented)
@@ -723,6 +724,26 @@ export interface GroupBrushExtent {
 
 // @public (undocumented)
 export type GroupId = string;
+
+// Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
+//
+// @alpha (undocumented)
+export const Heatmap: React.FunctionComponent<SpecRequiredProps_8 & SpecOptionalProps_8>;
+
+// Warning: (ae-missing-release-tag) "HeatmapBrushEvent" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type HeatmapBrushEvent = {
+    cells: Cell[];
+    x: any[];
+    y: any[];
+};
+
+// Warning: (ae-missing-release-tag) "HeatmapElementEvent" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type HeatmapElementEvent = [Cell, SeriesIdentifier];
 
 // Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
@@ -1205,6 +1226,9 @@ export const ScaleType: Readonly<{
     Log: "log";
     Sqrt: "sqrt";
     Time: "time";
+    Quantize: "quantize";
+    Quantile: "quantile";
+    Threshold: "threshold";
 }>;
 
 // @public (undocumented)
@@ -1270,7 +1294,7 @@ export type SeriesNameFn = (series: XYChartSeriesIdentifier, isTooltip: boolean)
 // @public (undocumented)
 export interface SeriesScales {
     timeZone?: string;
-    xScaleType: typeof ScaleType.Ordinal | typeof ScaleType.Linear | typeof ScaleType.Time;
+    xScaleType: XScaleType;
     // @deprecated
     yScaleToDataExtent?: boolean;
     yScaleType: ScaleContinuousType;
@@ -1613,6 +1637,11 @@ export const VerticalAlignment: Readonly<{
 // @public
 export type VerticalAlignment = $Values<typeof VerticalAlignment>;
 
+// Warning: (ae-missing-release-tag) "XScaleType" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type XScaleType = typeof ScaleType.Ordinal | typeof ScaleType.Linear | typeof ScaleType.Time;
+
 // Warning: (ae-missing-release-tag) "XYBrushArea" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -1657,6 +1686,7 @@ export type YDomainRange = YDomainBase & DomainRange;
 // src/chart_types/partition_chart/layout/types/config_types.ts:127:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/specs/index.ts:48:13 - (ae-forgotten-export) The symbol "NodeColorAccessor" needs to be exported by the entry point index.d.ts
 // src/commons/series_id.ts:39:3 - (ae-forgotten-export) The symbol "SeriesKey" needs to be exported by the entry point index.d.ts
+// src/specs/settings.tsx:58:35 - (ae-forgotten-export) The symbol "Cell" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 
