@@ -40,6 +40,7 @@ import { HeatmapCellDatum } from '../../layout/viewmodel/viewmodel';
 import { HeatmapSpec } from '../../specs';
 import { getPredicateFn } from '../../utils/commons';
 
+/** @internal */
 export interface HeatmapTable {
   table: Array<HeatmapCellDatum>;
   // unique set of column values
@@ -51,11 +52,13 @@ export interface HeatmapTable {
 
 const getSpecs = (state: GlobalChartState) => state.specs;
 
+/** @internal */
 export const getHeatmapSpec = createCachedSelector([getSpecs], (specs) => {
   const spec = getSpecsFromStore<HeatmapSpec>(specs, ChartTypes.Heatmap, SpecTypes.Series);
   return spec[0];
 })(getChartIdSelector);
 
+/** @internal */
 export const getHeatmapConfig = createCachedSelector(
   [getHeatmapSpec],
   (spec): Config => {

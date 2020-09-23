@@ -55,6 +55,8 @@ export type XYChartElementEvent = [GeometryValue, XYChartSeriesIdentifier];
 export type PartitionElementEvent = [Array<LayerValue>, SeriesIdentifier];
 export type HeatmapElementEvent = [Cell, SeriesIdentifier];
 
+export type HeatmapBrushEvent = { cells: Cell[]; x: any[]; y: any[] };
+
 export type ElementClickListener = (
   elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent>,
 ) => void;

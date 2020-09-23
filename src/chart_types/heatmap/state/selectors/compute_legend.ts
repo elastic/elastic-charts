@@ -28,7 +28,7 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { getColorScale } from './get_color_scale';
 import { getSpecOrNull } from './heatmap_spec';
 
-export const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interactions.deselectedDataSeries;
+const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interactions.deselectedDataSeries;
 
 /** @internal */
 export const computeLegendSelector = createCachedSelector(
@@ -68,6 +68,7 @@ export const computeLegendSelector = createCachedSelector(
   },
 )(getChartIdSelector);
 
+/** @internal */
 export const getLegendItemsLabelsSelector = createCachedSelector(
   [computeLegendSelector, getSettingsSpecSelector],
   (legendItems, { showLegendExtra }): LegendItemLabel[] =>

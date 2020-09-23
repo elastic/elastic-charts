@@ -21,6 +21,7 @@ import { Selector } from 'reselect';
 
 import { ChartTypes } from '../../..';
 import { GlobalChartState } from '../../../../state/chart_state';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { DragShape } from '../../layout/types/viewmodel_types';
 import { geometries } from './geometries';
 
@@ -28,6 +29,9 @@ function getCurrentPointerStates(state: GlobalChartState) {
   return state.interactions.pointer;
 }
 
+/**
+ * @internal
+ */
 export function createOnBrushingCaller(): (state: GlobalChartState) => void {
   let prevShape: DragShape = { x: 0, y: 0, height: 0, width: 0 };
   let selector: Selector<GlobalChartState, DragShape> | null = null;
@@ -63,7 +67,7 @@ export function createOnBrushingCaller(): (state: GlobalChartState) => void {
           return shape;
         },
       )({
-        keySelector: (state: GlobalChartState) => state.chartId,
+        keySelector: getChartIdSelector,
       });
     }
     return selector!(state);
