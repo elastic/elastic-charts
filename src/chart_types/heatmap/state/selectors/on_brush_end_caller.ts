@@ -20,16 +20,10 @@ import createCachedSelector from 're-reselect';
 import { Selector } from 'reselect';
 
 import { ChartTypes } from '../../..';
-import { BrushEndListener } from '../../../..';
-import { DragState, GlobalChartState } from '../../../../state/chart_state';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getSpecOrNull } from './heatmap_spec';
 import { getPickedCells } from './picked_shapes';
-
-interface Props {
-  onBrushEnd: BrushEndListener | undefined;
-  lastDrag: DragState | null;
-}
 
 /**
  * Will call the onBrushEnd listener every time the following preconditions are met:

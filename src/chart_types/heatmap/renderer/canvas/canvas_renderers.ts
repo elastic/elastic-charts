@@ -121,7 +121,6 @@ export function renderCanvas2d(
               font,
               config.yAxisLabel.fontSize,
               heatmapViewModel.gridOrigin.x - config.yAxisLabel.padding,
-              // heatmapViewModel.gridOrigin.x,
               16,
               {
                 shouldAddEllipsis: true,

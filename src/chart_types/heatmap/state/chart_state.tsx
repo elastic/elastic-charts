@@ -20,13 +20,11 @@
 import React, { RefObject } from 'react';
 
 import { ChartTypes } from '../..';
-import { LegendItem } from '../../../commons/legend';
 import { BrushTool } from '../../../components/brush/brush';
 import { Tooltip } from '../../../components/tooltip';
 import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../state/selectors/get_chart_container_dimensions';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
-import { LegendItemLabel } from '../../../state/selectors/get_legend_items_labels';
 import { Dimensions } from '../../../utils/dimensions';
 import { Heatmap } from '../renderer/canvas/connected_component';
 import { HighlighterFromBrush } from '../renderer/dom/highlighter_brush';
@@ -43,8 +41,6 @@ import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { getTooltipInfoSelector } from './selectors/tooltip';
 
 const EMPTY_MAP = new Map();
-const EMPTY_LEGEND_LIST: LegendItem[] = [];
-const EMPTY_LEGEND_ITEM_LIST: LegendItemLabel[] = [];
 
 /** @internal */
 export class HeatmapState implements InternalChartState {

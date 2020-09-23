@@ -32,6 +32,8 @@ import { mergePartial } from '../../../../utils/commons';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Box } from '../../../partition_chart/layout/types/types';
 import { measureText } from '../../../partition_chart/layout/utils/measure';
+import { XDomain } from '../../../xy_chart/domains/types';
+import { mergeXDomain } from '../../../xy_chart/domains/x_domain';
 import { config as defaultConfig } from '../../layout/config/config';
 import { Config } from '../../layout/types/config_types';
 import { HeatmapCellDatum } from '../../layout/viewmodel/viewmodel';
@@ -41,7 +43,7 @@ import { getPredicateFn } from '../../utils/commons';
 export interface HeatmapTable {
   table: Array<HeatmapCellDatum>;
   // unique set of column values
-  xValues: Array<string | number>;
+  xDomain: XDomain;
   // unique set of row values
   yValues: Array<string | number>;
   extent: [number, number];
@@ -65,89 +67,60 @@ export const getHeatmapConfig = createCachedSelector(
  * Extracts axis and cell values from the input data.
  * @internal
  */
-export const getHeatmapTable = createCachedSelector([getHeatmapSpec, getSettingsSpecSelector], (spec, settingsSpec) => {
-  const { data, valueAccessor, xAccessor, yAccessor, xSortPredicate, ySortPredicate, xScaleType } = spec;
+export const getHeatmapTable = createCachedSelector(
+  [getHeatmapSpec, getSettingsSpecSelector],
+  (spec, settingsSpec): HeatmapTable => {
+    const { data, valueAccessor, xAccessor, yAccessor, xSortPredicate, ySortPredicate } = spec;
+    const { xDomain } = settingsSpec;
 
-  const isXAxisTimeScale = xScaleType === ScaleType.Time;
+    const resultData = data.reduce(
+      (acc, curr, index) => {
+        const x = xAccessor(curr);
 
-  const { xDomain = {} } = settingsSpec;
+        const y = yAccessor(curr);
+        const value = valueAccessor(curr);
 
-  let isXValueValid = (x: string | number) => true;
-  const minDate: Date | null = xDomain.min ? new Date(xDomain.min) : null;
-  const maxDate: Date | null = xDomain.max ? new Date(xDomain.max) : null;
+        // compute the data domain extent
+        const [min, max] = acc.extent;
+        acc.extent = [Math.min(min, value), Math.max(max, value)];
 
-  // time scale with custom boundaries
-  if (xScaleType === ScaleType.Time && (minDate || maxDate)) {
-    isXValueValid = (v: number | string) => {
-      const dateV = new Date(v);
-      let isValid = false;
-      if (minDate) {
-        isValid = dateV >= minDate;
-      }
-      if (maxDate) {
-        isValid = dateV <= maxDate;
-      }
-      return isValid;
-    };
-  }
+        acc.table.push({
+          x,
+          y,
+          value: valueAccessor(curr),
+          originalIndex: index,
+        });
 
-  const resultData = data.reduce<HeatmapTable>(
-    (acc, curr, index) => {
-      const x = xAccessor(curr);
+        if (!acc.xValues.includes(x)) {
+          acc.xValues.push(x);
+        }
+        if (!acc.yValues.includes(y)) {
+          acc.yValues.push(y);
+        }
 
-      if (!isXValueValid(x)) {
         return acc;
-      }
+      },
+      {
+        table: [],
+        xValues: [],
+        yValues: [],
+        extent: [+Infinity, -Infinity],
+      },
+    );
 
-      const y = yAccessor(curr);
-      const value = valueAccessor(curr);
+    // FIXME, typing for mergeXDomain without seriesType
+    // @ts-ignore
+    resultData.xDomain = mergeXDomain([{ xScaleType: spec.xScaleType }], resultData.xValues, xDomain);
 
-      // compute the data domain extent
-      const [min, max] = acc.extent;
-      acc.extent = [Math.min(min, value), Math.max(max, value)];
-
-      acc.table.push({
-        x,
-        y,
-        value: valueAccessor(curr),
-        originalIndex: index,
-      });
-
-      if (!acc.xValues.includes(x)) {
-        acc.xValues.push(x);
-      }
-      if (!acc.yValues.includes(y)) {
-        acc.yValues.push(y);
-      }
-
-      return acc;
-    },
-    {
-      table: [],
-      xValues: [],
-      yValues: [],
-      extent: [+Infinity, -Infinity],
-    },
-  );
-
-  if (isXAxisTimeScale) {
-    const result = [];
-    const timePoint = minDate?.getTime();
-    while (timePoint < maxDate?.getTime()) {
-      result.push(timePoint);
-      timePoint += xDomain.minInterval;
+    // sort values by their predicates
+    if (spec.xScaleType === ScaleType.Ordinal) {
+      resultData.xDomain.domain.sort(getPredicateFn(xSortPredicate));
     }
+    resultData.yValues.sort(getPredicateFn(ySortPredicate));
 
-    resultData.xValues = result;
-  } else {
-    resultData.xValues.sort(getPredicateFn(xSortPredicate));
-  }
-
-  // sort values by their predicates
-  resultData.yValues.sort(getPredicateFn(ySortPredicate));
-
-  return resultData;
-})(getChartIdSelector);
+    return resultData;
+  },
+)(getChartIdSelector);
 
 /**
  * Gets charts dimensions excluding legend and X,Y axis labels and paddings.

@@ -21,7 +21,7 @@ import React from 'react';
 
 import { ChartTypes } from '../..';
 import { ScaleType } from '../../../scales/constants';
-import { Spec } from '../../../specs';
+import { SeriesScales, Spec } from '../../../specs';
 import { SpecTypes } from '../../../specs/constants';
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
 import { AccessorFn } from '../../../utils/accessor';
@@ -38,7 +38,7 @@ const defaultProps = {
   colorScale: ScaleType.Linear,
   xAccessor: ({ x }: { x: string | number }) => x,
   yAccessor: ({ y }: { y: string | number }) => y,
-  xScaleType: ScaleType.Linear,
+  xScaleType: ScaleType.Ordinal,
   valueAccessor: ({ value }: { value: string | number }) => value,
   valueFormatter: (value: number) => `${value}`,
   xSortPredicate: Predicate.AlphaAsc,
@@ -67,7 +67,7 @@ export interface HeatmapSpec extends Spec {
   valueFormatter: (value: number) => string;
   xSortPredicate: Predicate;
   ySortPredicate: Predicate;
-  xScaleType: ScaleType;
+  xScaleType: SeriesScales['xScaleType'];
   config: RecursivePartial<Config>;
 }
 

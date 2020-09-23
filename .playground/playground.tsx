@@ -137,3 +137,4 @@ export class Playground extends React.Component {
     );
   }
 }
+/* eslint-enable no-console */

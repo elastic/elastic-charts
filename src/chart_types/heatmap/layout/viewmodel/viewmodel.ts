@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import { max as d3Max, extent as d3Extent } from 'd3-array';
 import { scaleBand, scaleQuantize } from 'd3-scale';
 
 import { ScaleContinuous } from '../../../../scales';
@@ -29,6 +28,7 @@ import { Pixels } from '../../../partition_chart/layout/types/geometry_types';
 import { Box, TextMeasure } from '../../../partition_chart/layout/types/types';
 import { stringToRGB } from '../../../partition_chart/layout/utils/color_library_wrappers';
 import { HeatmapSpec } from '../../specs';
+import { HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
 import { ColorScaleType } from '../../state/selectors/get_color_scale';
 import { Config } from '../types/config_types';
 import { Cell, PickDragFunction, PickDragShapeFunction, ShapeViewModel } from '../types/viewmodel_types';
@@ -39,14 +39,6 @@ export interface HeatmapCellDatum {
   y: string | number;
   value: number;
   originalIndex: number;
-}
-interface HeatmapTable {
-  table: Array<HeatmapCellDatum>;
-  // unique set of column values
-  xValues: Array<string | number>;
-  // unique set of row values
-  yValues: Array<string | number>;
-  extent: [number, number];
 }
 
 export interface TextBox extends Box {
@@ -69,12 +61,10 @@ export function shapeViewModel(
 
   const gridStrokeWidth = config.grid.stroke.width ?? 1;
 
-  const { xDomain = {} } = settingsSpec;
-
   const isXAxisTimeScale = xScaleType === ScaleType.Time;
 
   const { table, yValues } = heatmapTable;
-  const { xValues } = heatmapTable;
+  const { xDomain } = heatmapTable;
 
   // measure the text width of all rows values to get the grid area width
   const boxedYValues = yValues.map<Box & { value: string | number }>((value) => {
@@ -84,11 +74,8 @@ export function shapeViewModel(
       ...config.yAxisLabel,
     };
   });
-  const measuredYValues = textMeasure(config.yAxisLabel.fontSize, boxedYValues);
-  const maxTextWidth = d3Max(measuredYValues, ({ width }) => width) || 0;
-  const maxGridAreaWidth = chartDimensions.width;
 
-  // compute the grid area height removing the bottom axis
+  const maxGridAreaWidth = chartDimensions.width;
   const maxGridAreaHeight = chartDimensions.height;
 
   // compute the grid cell height
@@ -110,6 +97,25 @@ export function shapeViewModel(
     .domain([0, maxHeight])
     .range(yValues);
 
+  let xValues = xDomain.domain;
+
+  const timeScale =
+    xDomain.scaleType === ScaleType.Time
+      ? new ScaleContinuous({
+          type: ScaleType.Time,
+          domain: xDomain.domain,
+          range: [chartDimensions.left, maxGridAreaWidth],
+        })
+      : null;
+
+  if (timeScale) {
+    xValues = timeScale
+      .getTicks((xDomain.domain[1] - xDomain.domain[0]) / xDomain.minInterval, false)
+      // format Date object to timestamps
+      // @ts-ignore
+      .map((v) => v.getTime());
+  }
+
   // compute the scale for the columns positions
   const xScale = scaleBand<string | number>()
     .domain(xValues)
@@ -124,19 +130,6 @@ export function shapeViewModel(
     config.cell.maxWidth !== 'fill' && xScale.bandwidth() > config.cell.maxWidth
       ? config.cell.maxWidth
       : xScale.bandwidth();
-
-  // compute the cell height (we already computed the max size for that)
-  const cellHeight = yScale.bandwidth();
-
-  // compute the position of each row label
-  const textYValues = boxedYValues.map<TextBox>((d) => {
-    return {
-      ...d,
-      // position of the Y labels
-      x: 0,
-      y: cellHeight / 2 + (yScale(d.value) || 0),
-    };
-  });
 
   const getTextValue = (
     formatter: (v: any) => string,
@@ -153,20 +146,26 @@ export function shapeViewModel(
 
   // compute the position of each column label
   let textXValues: Array<TextBox> = [];
-  if (isXAxisTimeScale) {
-    const domain = xDomain ? [xDomain.min, xDomain.max] : d3Extent<number>(xValues as number[]);
-    const formatter = niceTimeFormatter(domain as [number, number]);
-
-    const timeScale = new ScaleContinuous({
-      type: ScaleType.Time,
-      domain,
-      range: [chartDimensions.left, maxGridAreaWidth],
-    });
+  if (timeScale) {
+    const formatter = niceTimeFormatter(xDomain.domain as [number, number]);
     textXValues = timeScale.ticks().map<TextBox>(getTextValue(formatter, (x: any) => timeScale.pureScale(x)));
   } else {
     // TODO remove overlapping labels or scale better the columns labels
     textXValues = xValues.map<TextBox>(getTextValue(String));
   }
+
+  // compute the cell height (we already computed the max size for that)
+  const cellHeight = yScale.bandwidth();
+
+  // compute the position of each row label
+  const textYValues = boxedYValues.map<TextBox>((d) => {
+    return {
+      ...d,
+      // position of the Y labels
+      x: 0,
+      y: cellHeight / 2 + (yScale(d.value) || 0),
+    };
+  });
 
   // compute each available cell position, color and value
   const cellMap = table.reduce<Record<string, Cell>>((acc, d) => {
@@ -287,11 +286,11 @@ export function shapeViewModel(
       y += cellHeight;
     }
 
-    const x = [...result.x];
+    const xArr = [...result.x];
 
     return {
       ...result,
-      x: isXAxisTimeScale ? [x[0], x[x.length - 1]] : x,
+      x: isXAxisTimeScale ? [xArr[0], xArr[xArr.length - 1]] : xArr,
       y: [...result.y],
     };
   };
