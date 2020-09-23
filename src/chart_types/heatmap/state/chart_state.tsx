@@ -32,6 +32,8 @@ import { computeChartDimensionsSelector } from './selectors/compute_chart_dimens
 import { computeLegendSelector, getLegendItemsLabelsSelector } from './selectors/compute_legend';
 import { getBrushAreaSelector } from './selectors/get_brush_area';
 import { getSpecOrNull } from './selectors/heatmap_spec';
+import { isBrushAvailableSelector } from './selectors/is_brush_available';
+import { isBrushingSelector } from './selectors/is_brushing';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
 import { createOnBrushEndCaller } from './selectors/on_brush_end_caller';
 import { createOnBrushingCaller } from './selectors/on_brushing_caller';
@@ -56,12 +58,12 @@ export class HeatmapState implements InternalChartState {
     return getSpecOrNull(globalState) !== null ? InitStatus.Initialized : InitStatus.ChartNotInitialized;
   }
 
-  isBrushAvailable() {
-    return true;
+  isBrushAvailable(globalState: GlobalChartState) {
+    return isBrushAvailableSelector(globalState);
   }
 
-  isBrushing() {
-    return true;
+  isBrushing(globalState: GlobalChartState) {
+    return isBrushingSelector(globalState);
   }
 
   isChartEmpty() {
