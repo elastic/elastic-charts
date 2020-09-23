@@ -30,7 +30,7 @@ import { GroupId, SpecId } from '../../../../utils/ids';
 import { ColorConfig, Theme } from '../../../../utils/themes/theme';
 import { XDomain, YDomain } from '../../domains/types';
 import { mergeXDomain } from '../../domains/x_domain';
-import { mergeYDomain } from '../../domains/y_domain';
+import { mergeYDomain, splitSpecsByGroupId } from '../../domains/y_domain';
 import { renderArea, renderBars, renderLine, renderBubble, isDatumFilled } from '../../rendering/rendering';
 import { defaultTickFormatter } from '../../utils/axis_utils';
 import { fillSeries } from '../../utils/fill_series';
@@ -194,6 +194,7 @@ function getLastValues(formattedDataSeries: {
  * @param customXDomain if specified in <Settings />, the custom X domain
  * @param deselectedDataSeries is optional; if not supplied,
  * @param customXDomain is optional; if not supplied,
+ * @param orderOrdinalBinsBy
  * @param enableVislibSeriesSort is optional; if not specified in <Settings />,
  * then all series will be factored into computations. Otherwise, selectedDataSeries
  * is used to restrict the computation for just the selected series
@@ -215,18 +216,25 @@ export function computeSeriesDomains(
     enableVislibSeriesSort,
   );
   // compute the x domain merging any custom domain
-  const specsArray = [...seriesSpecs.values()];
-  const xDomain = mergeXDomain(specsArray, xValues, customXDomain, fallbackScale);
+  const xDomain = mergeXDomain(seriesSpecs, xValues, customXDomain, fallbackScale);
+
+  const specsByGroupIds = splitSpecsByGroupId(seriesSpecs);
 
   // fill series with missing x values
-  const filledDataSeriesBySpecId = fillSeries(dataSeriesBySpecId, xValues);
+  const filledDataSeriesBySpecId = fillSeries(
+    dataSeriesBySpecId,
+    xValues,
+    seriesSpecs,
+    xDomain.scaleType,
+    specsByGroupIds,
+  );
 
   const formattedDataSeries = getFormattedDataseries(
-    specsArray,
     filledDataSeriesBySpecId,
     xValues,
     xDomain.scaleType,
     seriesSpecs,
+    specsByGroupIds,
   );
 
   // let's compute the yDomain after computing all stacked values

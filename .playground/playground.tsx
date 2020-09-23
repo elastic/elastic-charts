@@ -19,14 +19,70 @@
 
 import React from 'react';
 
-import { Example } from '../stories/sunburst/15_single_sunburst';
+import { Chart, Fit, Axis, LineSeries, CurveType, Position, ScaleType } from '../src';
+import browserData from './browser_data';
+import overallData from './overall_data';
 
-export class Playground extends React.Component {
-  render() {
-    return (
-      <div className="testing">
-        <div className="chart">{Example()}</div>
-      </div>
-    );
-  }
+export function Playground() {
+  const [showOverall, setShowOverall] = React.useState(true);
+  const [showBrowser, setShowBrowser] = React.useState(true);
+  const [showFit, setShowFit] = React.useState(false);
+  return (
+    <div className="testing">
+      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+      <label htmlFor="showOverall">showOverall</label>
+      <input
+        checked={showOverall}
+        onChange={({ target }) => setShowOverall(target.checked)}
+        type="checkbox"
+        id="showOverall"
+      />
+      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+      <label htmlFor="showOverall">showBrowser</label>
+      <input
+        checked={showBrowser}
+        onChange={({ target }) => setShowBrowser(target.checked)}
+        type="checkbox"
+        id="showBrowser"
+      />
+      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+      <label htmlFor="showFit">showFit</label>
+      <input checked={showFit} onChange={({ target }) => setShowFit(target.checked)} type="checkbox" id="showFit" />
+      <Chart className="chart" size={{ height: 500 }}>
+        <Axis id="bottom" position={Position.Bottom} />
+        <Axis id="left" position="left" />
+
+        {showOverall && (
+          <LineSeries
+            id="PagesPercentage"
+            name="overall"
+            xScaleType={ScaleType.Linear}
+            yScaleType={ScaleType.Linear}
+            data={overallData?.pageLoadDistribution ?? []}
+            curve={CurveType.CURVE_MONOTONE_X}
+            // lineSeriesStyle={{ point: { visible: false } }}
+          />
+        )}
+
+        {showBrowser && (
+          <>
+            {browserData?.map(({ data: seriesData, name }) => (
+              <LineSeries
+                id={name}
+                key={name}
+                name={name}
+                xScaleType={ScaleType.Linear}
+                yScaleType={ScaleType.Linear}
+                data={seriesData ?? []}
+                curve={CurveType.CURVE_MONOTONE_X}
+                stackAccessors={showFit ? [0] : undefined}
+                fit={showFit ? Fit.Linear : undefined}
+                // lineSeriesStyle={{ point: { visible: false } }}
+              />
+            ))}
+          </>
+        )}
+      </Chart>
+    </div>
+  );
 }
