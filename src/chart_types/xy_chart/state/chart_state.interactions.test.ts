@@ -21,6 +21,7 @@ import { Store } from 'redux';
 
 import { ChartTypes } from '../..';
 import { MockStore } from '../../../mocks/store';
+import { BaseScaleType } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { SettingsSpec, XYBrushArea } from '../../../specs';
 import { SpecTypes, DEFAULT_SETTINGS_SPEC, TooltipType, BrushAxis } from '../../../specs/constants';
@@ -266,7 +267,7 @@ describe('Chart state pointer interactions', () => {
   it.todo('add test for clicks');
 });
 
-function mouseOverTestSuite(scaleType: ScaleType) {
+function mouseOverTestSuite(scaleType: BaseScaleType) {
   let store: Store<GlobalChartState>;
   let onOverListener: jest.Mock<undefined>;
   let onOutListener: jest.Mock<undefined>;

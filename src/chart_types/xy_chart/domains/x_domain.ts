@@ -17,12 +17,13 @@
  * under the License.
  */
 
+import { BaseScaleType } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { compareByValueAsc, identity } from '../../../utils/commons';
 import { computeContinuousDataDomain, computeOrdinalDataDomain, Domain } from '../../../utils/domain';
 import { Logger } from '../../../utils/logger';
 import { isCompleteBound, isLowerBound, isUpperBound } from '../utils/axis_type_utils';
-import { BasicSeriesSpec, DomainRange, SeriesTypes } from '../utils/specs';
+import { BasicSeriesSpec, DomainRange, SeriesTypes, XScaleType } from '../utils/specs';
 import { XDomain } from './types';
 
 /**
@@ -37,7 +38,7 @@ export function mergeXDomain(
   specs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>[],
   xValues: Set<string | number>,
   customXDomain?: DomainRange | Domain,
-  fallbackScale?: ScaleType,
+  fallbackScale?: XScaleType,
 ): XDomain {
   const mainXScaleType = convertXScaleTypes(specs);
   if (!mainXScaleType) {
@@ -163,7 +164,7 @@ export function findMinInterval(xValues: number[]): number {
 export function convertXScaleTypes(
   specs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType' | 'timeZone'>[],
 ): {
-  scaleType: ScaleType;
+  scaleType: BaseScaleType;
   isBandScale: boolean;
   timeZone?: string;
 } | null {
