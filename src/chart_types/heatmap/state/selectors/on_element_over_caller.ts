@@ -25,7 +25,7 @@ import { SeriesIdentifier } from '../../../../commons/series_id';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { Cell } from '../../layout/types/viewmodel_types';
+import { Cell, isPickedCells } from '../../layout/types/viewmodel_types';
 import { getSpecOrNull } from './heatmap_spec';
 import { getPickedShapes } from './picked_shapes';
 
@@ -63,6 +63,9 @@ export function createOnElementOverCaller(): (state: GlobalChartState) => void {
             return;
           }
           if (!settings.onElementOver) {
+            return;
+          }
+          if (!isPickedCells(nextPickedShapes)) {
             return;
           }
 

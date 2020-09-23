@@ -33,6 +33,8 @@ const brushMapStateToProps = (state: GlobalChartState): HighlighterCellsProps =>
 
   const geoms = geometries(state);
   const canvasDimension = getChartContainerDimensionsSelector(state);
+  // FIXME stateful picked area from the internal state
+  // @ts-ignore
   const dragShape = state.internalChartState.getPickedArea(state);
 
   return {

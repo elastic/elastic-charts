@@ -62,6 +62,10 @@ export interface HeatmapViewModel {
   pageSize: number;
 }
 
+export function isPickedCells(v: any): v is Cell[] {
+  return Array.isArray(v);
+}
+
 /** @internal */
 export type PickFunction = (x: Pixels, y: Pixels) => Cell[] | TextBox;
 

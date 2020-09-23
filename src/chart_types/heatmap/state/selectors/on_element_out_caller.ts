@@ -24,6 +24,7 @@ import { ChartTypes } from '../../..';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { isPickedCells } from '../../layout/types/viewmodel_types';
 import { getSpecOrNull } from './heatmap_spec';
 import { getPickedShapes } from './picked_shapes';
 
@@ -47,7 +48,7 @@ export function createOnElementOutCaller(): (state: GlobalChartState) => void {
           if (!settings.onElementOut) {
             return;
           }
-          const nextPickedShapes = pickedShapes.length;
+          const nextPickedShapes = isPickedCells(pickedShapes) ? pickedShapes.length : 0;
 
           if (prevPickedShapes !== null && prevPickedShapes > 0 && nextPickedShapes === 0) {
             settings.onElementOut();

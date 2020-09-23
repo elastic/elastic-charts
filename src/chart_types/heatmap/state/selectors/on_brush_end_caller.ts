@@ -42,6 +42,8 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
             return;
           }
 
+          // FIXME Settings component should support different type of callback based on the chart type
+          // @ts-ignore
           onBrushEnd(pickedCells);
         },
       )({

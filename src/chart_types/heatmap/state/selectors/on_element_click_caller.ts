@@ -27,7 +27,7 @@ import { GlobalChartState, PointerState } from '../../../../state/chart_state';
 import { getLastClickSelector } from '../../../../state/selectors/get_last_click';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { isClicking } from '../../../../state/utils';
-import { Cell } from '../../layout/types/viewmodel_types';
+import { Cell, isPickedCells } from '../../layout/types/viewmodel_types';
 import { getSpecOrNull } from './heatmap_spec';
 import { getPickedShapes } from './picked_shapes';
 
@@ -50,6 +50,9 @@ export function createOnElementClickCaller(): (state: GlobalChartState) => void 
             return;
           }
           if (!settings.onElementClick) {
+            return;
+          }
+          if (!isPickedCells(pickedShapes)) {
             return;
           }
           const nextPickedShapesLength = pickedShapes.length;
