@@ -216,7 +216,7 @@ export function shapeViewModel(
     if (x < chartDimensions.left || y < chartDimensions.top) {
       return [];
     }
-    if (x > chartDimensions.width || y > chartDimensions.height) {
+    if (x > chartDimensions.width + chartDimensions.left || y > chartDimensions.height) {
       return [];
     }
     const xValue = xInvertedScale(x - chartDimensions.left);
