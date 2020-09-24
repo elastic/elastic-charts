@@ -296,8 +296,12 @@ export interface SettingsSpec extends Spec {
   debug: boolean;
   /**
    * Show debug render state on `ChartStatus` component
+   * @alpha
    */
-  debugState: boolean;
+  debugState?: boolean;
+  /**
+   * Set legend position
+   */
   legendPosition: Position;
   /**
    * Show an extra parameter on each legend item defined by the chart type

@@ -17,24 +17,29 @@
  * under the License.
  */
 
-import { GeometryValue } from '../../utils/geometry';
+import { Position } from '../utils/commons';
+import { GeometryValue } from '../utils/geometry';
 
-/** @internal */
 export interface DebugStateAxis {
   id: string;
+  position: Position;
   title?: string;
   labels: string[];
   values: any[];
 }
 
-/** @internal */
+export interface DebugStateAxes {
+  x: DebugStateAxis[];
+  y: DebugStateAxis[];
+}
+
 export interface DebugStateLegendItem {
   key: string;
   name: string;
   color: string;
 }
 
-interface DebugStateLegend {
+export interface DebugStateLegend {
   items: DebugStateLegendItem[];
 }
 
@@ -44,7 +49,6 @@ interface DebugStateBase {
   color: string;
 }
 
-/** @internal */
 export type DebugStateValue = Pick<GeometryValue, 'x' | 'y' | 'mark'>;
 
 interface DebugStateLineConfig {
@@ -54,9 +58,9 @@ interface DebugStateLineConfig {
   visiblePoints: boolean;
 }
 
-interface DebugStateLine extends DebugStateBase, DebugStateLineConfig {}
+export interface DebugStateLine extends DebugStateBase, DebugStateLineConfig {}
 
-type DebugStateArea = Omit<DebugStateLine, 'points' | 'visiblePoints'> & {
+export type DebugStateArea = Omit<DebugStateLine, 'points' | 'visiblePoints'> & {
   path: string;
   lines: {
     y0?: DebugStateLineConfig;
@@ -64,21 +68,20 @@ type DebugStateArea = Omit<DebugStateLine, 'points' | 'visiblePoints'> & {
   };
 };
 
-type DebugStateBar = DebugStateBase & {
+export type DebugStateBar = DebugStateBase & {
   visible: boolean;
   bars: DebugStateValue[];
 };
 
 /**
  * Describes _visible_ chart state for use in functional tests
+ *
+ * TODO: add other chart types to debug state
  */
 export interface DebugState {
-  legend: DebugStateLegend;
-  axes: {
-    x: DebugStateAxis[];
-    y: DebugStateAxis[];
-  };
-  areas: DebugStateArea[];
-  lines: DebugStateLine[];
-  bars: DebugStateBar[];
+  legend?: DebugStateLegend;
+  axes?: DebugStateAxes;
+  areas?: DebugStateArea[];
+  lines?: DebugStateLine[];
+  bars?: DebugStateBar[];
 }
