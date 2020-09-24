@@ -1,3 +1,24 @@
+# [22.0.0](https://github.com/elastic/elastic-charts/compare/v21.3.2...v22.0.0) (2020-09-22)
+
+
+### Bug Fixes
+
+* breaking change in patch release of 21.1.1 ([d0ddc45](https://github.com/elastic/elastic-charts/commit/d0ddc45e2dbfb23bb1d8682b354b5de2b8476fce)), closes [#810](https://github.com/elastic/elastic-charts/issues/810)
+
+
+### BREAKING CHANGES
+
+* caused by changes in #810 see #830 for more info
+* `TooltipValue.value` is now raw value and `TooltipValue.formattedValue` is now the
+string formatted value.
+
+## [21.3.2](https://github.com/elastic/elastic-charts/compare/v21.3.1...v21.3.2) (2020-09-21)
+
+
+### Bug Fixes
+
+* **axis:** style overrides not applied to axis dimensions ([#829](https://github.com/elastic/elastic-charts/issues/829)) ([62172c4](https://github.com/elastic/elastic-charts/commit/62172c4cd80cdcf06167a70ad8e875f5dd79bea4))
+
 ## [21.3.1](https://github.com/elastic/elastic-charts/compare/v21.3.0...v21.3.1) (2020-09-17)
 
 
