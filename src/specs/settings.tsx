@@ -290,7 +290,14 @@ export interface SettingsSpec extends Spec {
    * @alpha
    */
   externalPointerEvents: ExternalPointerEventsSettings;
+  /**
+   * Show debug shadow elements on chart
+   */
   debug: boolean;
+  /**
+   * Show debug render state on `ChartStatus` component
+   */
+  debugState: boolean;
   legendPosition: Position;
   /**
    * Show an extra parameter on each legend item defined by the chart type

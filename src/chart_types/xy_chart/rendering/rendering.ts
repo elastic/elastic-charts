@@ -582,6 +582,7 @@ export function renderBubble(
 }
 
 /** @internal */
+
 export function renderArea(
   shift: number,
   dataSeries: DataSeries,
