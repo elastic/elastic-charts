@@ -535,7 +535,12 @@ export interface DisplayValueSpec {
 }
 
 // @public (undocumented)
-export type DisplayValueStyle = TextStyle & {
+export type DisplayValueStyle = Omit<TextStyle, 'fontSize'> & {
+    fontSize: number | {
+        min: number;
+        max: number;
+    };
+} & {
     offsetX: number;
     offsetY: number;
 };
