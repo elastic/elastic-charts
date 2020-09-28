@@ -24,7 +24,9 @@ import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getLastDragSelector } from '../../../../state/selectors/get_last_drag';
 import { Cell, PickDragFunction } from '../../layout/types/viewmodel_types';
 import { TextBox } from '../../layout/viewmodel/viewmodel';
+import { getHeatmapSpec } from './compute_chart_dimensions';
 import { geometries } from './geometries';
+import { isBrushingSelector } from './is_brushing';
 
 function getCurrentPointerPosition(state: GlobalChartState) {
   return state.interactions.pointer.current.position;
@@ -61,3 +63,17 @@ export const getPickedCells = createCachedSelector([geometries, getLastDragSelec
     { x: endX, y: endY },
   ]);
 })(getChartIdSelector);
+
+/**
+ *
+ * @internal
+ */
+export const getHighlightedArea = createCachedSelector(
+  [geometries, getHeatmapSpec, isBrushingSelector],
+  (geoms, spec, isBrushing) => {
+    if (!spec.highlightedData || isBrushing) {
+      return null;
+    }
+    return geoms.pickHighlightedArea(spec.highlightedData.x, spec.highlightedData.y);
+  },
+)(getChartIdSelector);

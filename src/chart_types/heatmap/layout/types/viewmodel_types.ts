@@ -75,6 +75,9 @@ export type PickDragFunction = (points: [Point, Point]) => { cells: Cell[]; x: a
 export type PickDragShapeFunction = (points: [Point, Point]) => { x: number; y: number; width: number; height: number };
 
 /** @internal */
+export type PickHighlightedArea = (x: any[], y: any[]) => { x: number; y: number; width: number; height: number };
+
+/** @internal */
 export type DragShape = ReturnType<PickDragShapeFunction>;
 
 /** @internal */
@@ -84,6 +87,7 @@ export type ShapeViewModel = {
   pickQuads: PickFunction;
   pickDragArea: PickDragFunction;
   pickDragShape: PickDragShapeFunction;
+  pickHighlightedArea: PickHighlightedArea;
 };
 
 /** @internal */
@@ -110,4 +114,5 @@ export const nullShapeViewModel = (specifiedConfig?: Config): ShapeViewModel => 
   pickQuads: () => [],
   pickDragArea: () => ({ cells: [], x: [], y: [] }),
   pickDragShape: () => ({ x: 0, y: 0, width: 0, height: 0 }),
+  pickHighlightedArea: () => ({ x: 0, y: 0, width: 0, height: 0 }),
 });

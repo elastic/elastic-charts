@@ -109,11 +109,20 @@ export function shapeViewModel(
       : null;
 
   if (timeScale) {
-    xValues = timeScale
-      .getTicks((xDomain.domain[1] - xDomain.domain[0]) / xDomain.minInterval, false)
-      // format Date object to timestamps
-      // @ts-ignore
-      .map((v) => v.getTime());
+    const result = [];
+    let timePoint = xDomain.domain[0];
+    while (timePoint < xDomain.domain[1]) {
+      result.push(timePoint);
+      timePoint += xDomain.minInterval;
+    }
+
+    xValues = result;
+
+    // xValues = timeScale
+    //   .getTicks((xDomain.domain[1] - xDomain.domain[0]) / xDomain.minInterval, false)
+    //   // format Date object to timestamps
+    //   // @ts-ignore
+    //   .map((v) => v.getTime());
   }
 
   // compute the scale for the columns positions
@@ -295,6 +304,46 @@ export function shapeViewModel(
     };
   };
 
+  /**
+   * Resolves rect area based on provided X and Y ranges
+   * @param x
+   * @param y
+   */
+  const pickHighlightedArea = (x: any[], y: any[]) => {
+    let xStart = 0;
+    let width = 0;
+    if (xDomain.scaleType === ScaleType.Time) {
+      const [start, end] = x;
+      // find X coordinated based on the time range
+      const startFromScale = xScale(start);
+      const endFromScale = xScale(end);
+      if (startFromScale === undefined || endFromScale === undefined) {
+        throw new Error("Couldn't resolve the time range");
+      }
+      xStart = startFromScale + chartDimensions.left;
+      width = endFromScale - startFromScale;
+    }
+
+    // resolve Y coordinated making sure the order is correct
+    const { y: yStart, height } = y.reduce(
+      (acc, current, i) => {
+        if (i === 0) {
+          acc.y = yScale(current);
+        }
+        acc.height += cellHeight;
+        return acc;
+      },
+      { y: 0, height: 0 },
+    );
+
+    return {
+      x: xStart,
+      y: yStart,
+      width,
+      height,
+    };
+  };
+
   // vertical lines
   const xLines = [];
   for (let i = 0; i < xValues.length + 1; i++) {
@@ -331,6 +380,7 @@ export function shapeViewModel(
     pickQuads,
     pickDragArea,
     pickDragShape,
+    pickHighlightedArea,
   };
 }
 

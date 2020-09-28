@@ -22,6 +22,7 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { geometries } from '../../state/selectors/geometries';
+import { getHighlightedArea } from '../../state/selectors/picked_shapes';
 import { DEFAULT_PROPS, HighlighterCellsComponent, HighlighterCellsProps } from './highlighter';
 
 const brushMapStateToProps = (state: GlobalChartState): HighlighterCellsProps => {
@@ -35,7 +36,11 @@ const brushMapStateToProps = (state: GlobalChartState): HighlighterCellsProps =>
   const canvasDimension = getChartContainerDimensionsSelector(state);
   // FIXME stateful picked area from the internal state
   // @ts-ignore
-  const dragShape = state.internalChartState.getPickedArea(state);
+  let dragShape = state.internalChartState.getPickedArea(state);
+  const highlightedArea = getHighlightedArea(state);
+  if (highlightedArea) {
+    dragShape = highlightedArea;
+  }
 
   return {
     chartId,

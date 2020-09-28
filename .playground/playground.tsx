@@ -27,7 +27,7 @@ export class Playground extends React.Component {
   render() {
     return (
       <div>
-        <div className="chart" style={{ height: '600px' }}>
+        <div className="chart" style={{ height: '400px' }}>
           <Chart>
             <Settings
               onElementClick={console.log}
@@ -43,7 +43,7 @@ export class Playground extends React.Component {
               colorScale={ScaleType.Threshold}
               colors={['#ffffff', '#d2e9f7', '#8bc8fb', '#fdec25', '#fba740', '#fe5050']}
               data={SWIM_LANE_DATA.map((v) => ({ ...v, time: v.time * 1000 }))}
-              // highlightedData={{ x: [], y: [] }}
+              highlightedData={{ x: [1572877800000, 1572888600000], y: ['i-9f07c700'] }}
               xAccessor={(d) => d.time}
               yAccessor={(d) => d.laneLabel}
               valueAccessor={(d) => d.value}
@@ -53,8 +53,8 @@ export class Playground extends React.Component {
               config={{
                 grid: {
                   cellHeight: {
-                    min: 20,
-                    max: 'fill', // 'fill',
+                    min: 40,
+                    max: 40, // 'fill',
                   },
                   stroke: {
                     width: 1,
@@ -76,9 +76,11 @@ export class Playground extends React.Component {
                   align: 'left',
                   visible: true,
                   maxWidth: 50,
+                  fill: '#6a717d',
                 },
                 xAxisLabel: {
                   maxWidth: 20,
+                  fill: '#6a717d',
                 },
               }}
             />
@@ -128,6 +130,7 @@ export class Playground extends React.Component {
                 yAxisLabel: {
                   visible: true,
                   maxWidth: 200,
+                  textColor: '#6a717d',
                 },
               }}
             />
