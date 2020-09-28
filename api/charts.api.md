@@ -538,6 +538,7 @@ export interface DisplayValueSpec {
 export type DisplayValueStyle = TextStyle & {
     offsetX: number;
     offsetY: number;
+    shadowColor?: Color;
 };
 
 // @public (undocumented)
