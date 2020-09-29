@@ -62,9 +62,6 @@ export const Example = () => {
         ? (JSON.parse(statusEl.dataset.echDebugState) as DebugState)
         : null;
       dataStateAction(dataState);
-      console.log('------------ dataState ------------');
-      console.log(dataState);
-      console.log('-----------------------------------');
     }
   }, 100);
 
