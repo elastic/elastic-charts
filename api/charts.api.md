@@ -8,6 +8,12 @@ import { $Values } from 'utility-types';
 import { ComponentType } from 'react';
 import React from 'react';
 
+// Warning: (ae-forgotten-export) The symbol "AccessorObjectKey" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "AccessorArrayIndex" needs to be exported by the entry point index.d.ts
+//
+// @public
+export type Accessor = AccessorObjectKey | AccessorArrayIndex;
+
 // @public
 export type AccessorFn = UnaryAccessorFn;
 
@@ -1242,7 +1248,6 @@ export interface SeriesAccessors {
     markSizeAccessor?: Accessor | AccessorFn;
     splitSeriesAccessors?: Accessor[];
     stackAccessors?: Accessor[];
-    // Warning: (ae-forgotten-export) The symbol "Accessor" needs to be exported by the entry point index.d.ts
     xAccessor: Accessor | AccessorFn;
     y0Accessors?: Accessor[];
     yAccessors: Accessor[];
