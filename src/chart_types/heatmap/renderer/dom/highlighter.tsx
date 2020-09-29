@@ -69,6 +69,22 @@ export const HighlighterCellsComponent: FC<HighlighterCellsProps> = ({
           mask={`url(#${maskId})`}
           className="echHighlighter__mask"
         />
+        <line x1={dragShape.x} y1={dragShape.y} x2={dragShape.x + dragShape.width} y2={dragShape.y} stroke="black" />
+        <line
+          x1={dragShape.x}
+          y1={dragShape.y + dragShape.height}
+          x2={dragShape.x + dragShape.width}
+          y2={dragShape.y + dragShape.height}
+          stroke="black"
+        />
+        <line x1={dragShape.x} y1={dragShape.y} x2={dragShape.x} y2={dragShape.y + dragShape.height} stroke="black" />
+        <line
+          x1={dragShape.x + dragShape.width}
+          y1={dragShape.y}
+          x2={dragShape.x + dragShape.width}
+          y2={dragShape.y + dragShape.height}
+          stroke="black"
+        />
       </g>
     </svg>
   );
