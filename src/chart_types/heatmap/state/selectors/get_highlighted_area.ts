@@ -16,24 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 import createCachedSelector from 're-reselect';
 
-import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { Cell } from '../../layout/types/viewmodel_types';
-import { TextBox } from '../../layout/viewmodel/viewmodel';
 import { geometries } from './geometries';
+import { getHeatmapSpecSelector } from './get_heatmap_spec';
+import { isBrushingSelector } from './is_brushing';
 
-function getCurrentPointerPosition(state: GlobalChartState) {
-  return state.interactions.pointer.current.position;
-}
-
-/** @internal */
-export const getPickedShapes = createCachedSelector([geometries, getCurrentPointerPosition], (geoms, pointerPosition):
-  | Cell[]
-  | TextBox => {
-  const picker = geoms.pickQuads;
-  const { x, y } = pointerPosition;
-  return picker(x, y);
-})(getChartIdSelector);
+/**
+ *
+ * @internal
+ */
+export const getHighlightedAreaSelector = createCachedSelector(
+  [geometries, getHeatmapSpecSelector, isBrushingSelector],
+  (geoms, spec, isBrushing) => {
+    if (!spec.highlightedData || isBrushing) {
+      return null;
+    }
+    return geoms.pickHighlightedArea(spec.highlightedData.x, spec.highlightedData.y);
+  },
+)(getChartIdSelector);

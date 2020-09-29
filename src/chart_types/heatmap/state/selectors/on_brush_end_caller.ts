@@ -25,9 +25,9 @@ import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getLastDragSelector } from '../../../../state/selectors/get_last_drag';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { DragCheckProps, hasDragged } from '../../../../utils/events';
+import { getPickedCells } from './get_picked_cells';
 import { getSpecOrNull } from './heatmap_spec';
 import { isBrushAvailableSelector } from './is_brush_available';
-import { getPickedCells } from './picked_shapes';
 
 /**
  * Will call the onBrushEnd listener every time the following preconditions are met:

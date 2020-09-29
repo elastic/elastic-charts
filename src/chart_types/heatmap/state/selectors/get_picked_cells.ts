@@ -16,24 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 import createCachedSelector from 're-reselect';
 
-import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { Cell } from '../../layout/types/viewmodel_types';
-import { TextBox } from '../../layout/viewmodel/viewmodel';
+import { getLastDragSelector } from '../../../../state/selectors/get_last_drag';
+import { PickDragFunction } from '../../layout/types/viewmodel_types';
 import { geometries } from './geometries';
 
-function getCurrentPointerPosition(state: GlobalChartState) {
-  return state.interactions.pointer.current.position;
-}
-
 /** @internal */
-export const getPickedShapes = createCachedSelector([geometries, getCurrentPointerPosition], (geoms, pointerPosition):
-  | Cell[]
-  | TextBox => {
-  const picker = geoms.pickQuads;
-  const { x, y } = pointerPosition;
-  return picker(x, y);
+export const getPickedCells = createCachedSelector([geometries, getLastDragSelector], (geoms, dragState): ReturnType<
+  PickDragFunction
+> | null => {
+  if (!dragState) {
+    return null;
+  }
+
+  const {
+    start: {
+      position: { x: startX, y: startY },
+    },
+    end: {
+      position: { x: endX, y: endY },
+    },
+  } = dragState;
+
+  return geoms.pickDragArea([
+    { x: startX, y: startY },
+    { x: endX, y: endY },
+  ]);
 })(getChartIdSelector);

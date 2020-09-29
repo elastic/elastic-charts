@@ -16,24 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 import createCachedSelector from 're-reselect';
 
+import { ChartTypes } from '../../..';
+import { SpecTypes } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { Cell } from '../../layout/types/viewmodel_types';
-import { TextBox } from '../../layout/viewmodel/viewmodel';
-import { geometries } from './geometries';
+import { getSpecsFromStore } from '../../../../state/utils';
+import { HeatmapSpec } from '../../specs';
 
-function getCurrentPointerPosition(state: GlobalChartState) {
-  return state.interactions.pointer.current.position;
-}
+const getSpecs = (state: GlobalChartState) => state.specs;
 
 /** @internal */
-export const getPickedShapes = createCachedSelector([geometries, getCurrentPointerPosition], (geoms, pointerPosition):
-  | Cell[]
-  | TextBox => {
-  const picker = geoms.pickQuads;
-  const { x, y } = pointerPosition;
-  return picker(x, y);
+export const getHeatmapSpecSelector = createCachedSelector([getSpecs], (specs) => {
+  const spec = getSpecsFromStore<HeatmapSpec>(specs, ChartTypes.Heatmap, SpecTypes.Series);
+  return spec[0];
 })(getChartIdSelector);

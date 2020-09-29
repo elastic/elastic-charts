@@ -16,24 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 import createCachedSelector from 're-reselect';
 
-import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { Cell } from '../../layout/types/viewmodel_types';
-import { TextBox } from '../../layout/viewmodel/viewmodel';
-import { geometries } from './geometries';
-
-function getCurrentPointerPosition(state: GlobalChartState) {
-  return state.interactions.pointer.current.position;
-}
+import { mergePartial } from '../../../../utils/commons';
+import { config as defaultConfig } from '../../layout/config/config';
+import { Config } from '../../layout/types/config_types';
+import { getHeatmapSpecSelector } from './get_heatmap_spec';
 
 /** @internal */
-export const getPickedShapes = createCachedSelector([geometries, getCurrentPointerPosition], (geoms, pointerPosition):
-  | Cell[]
-  | TextBox => {
-  const picker = geoms.pickQuads;
-  const { x, y } = pointerPosition;
-  return picker(x, y);
-})(getChartIdSelector);
+export const getHeatmapConfigSelector = createCachedSelector(
+  [getHeatmapSpecSelector],
+  (spec): Config => {
+    return mergePartial<Config>(defaultConfig, spec.config);
+  },
+)(getChartIdSelector);

@@ -1,0 +1,61 @@
+/*
+ * Licensed to Elasticsearch B.V. under one or more contributor
+ * license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Elasticsearch B.V. licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+import createCachedSelector from 're-reselect';
+
+import { ScaleContinuous } from '../../../../scales';
+import { ScaleType } from '../../../../scales/constants';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { CanvasTextBBoxCalculator } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import { niceTimeFormatter } from '../../../../utils/data/formatters';
+import { getHeatmapConfigSelector } from './get_heatmap_config';
+import { getHeatmapTableSelector } from './get_heatmap_table';
+
+/**
+ * @internal
+ * Gets color scale based on specification and values range.
+ */
+export const getXAxisRightOverflow = createCachedSelector(
+  [getHeatmapConfigSelector, getHeatmapTableSelector],
+  (config, { xDomain }): number => {
+    if (xDomain.scaleType !== ScaleType.Time) {
+      return 0;
+    }
+    const timeScale = new ScaleContinuous(
+      {
+        type: ScaleType.Time,
+        domain: xDomain.domain,
+        range: [0, 1],
+      },
+      {
+        timeZone: 'UTC',
+      },
+    );
+    const bboxCompute = new CanvasTextBBoxCalculator();
+    const { fontSize, fontFamily } = config.xAxisLabel;
+    const formatter = niceTimeFormatter(xDomain.domain as [number, number]);
+    const maxTextWidth = timeScale.ticks().reduce((acc, d) => {
+      const text = formatter(d, { timeZone: 'UTC' });
+      const textSize = bboxCompute.compute(text, 1, fontSize, fontFamily, 1);
+      return Math.max(acc, textSize.width);
+    }, 0);
+
+    return maxTextWidth / 2;
+  },
+)(getChartIdSelector);

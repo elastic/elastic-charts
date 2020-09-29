@@ -16,24 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 import createCachedSelector from 're-reselect';
 
-import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { Cell } from '../../layout/types/viewmodel_types';
-import { TextBox } from '../../layout/viewmodel/viewmodel';
-import { geometries } from './geometries';
-
-function getCurrentPointerPosition(state: GlobalChartState) {
-  return state.interactions.pointer.current.position;
-}
+import { LegendItemLabel } from '../../../../state/selectors/get_legend_items_labels';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { computeLegendSelector } from './compute_legend';
 
 /** @internal */
-export const getPickedShapes = createCachedSelector([geometries, getCurrentPointerPosition], (geoms, pointerPosition):
-  | Cell[]
-  | TextBox => {
-  const picker = geoms.pickQuads;
-  const { x, y } = pointerPosition;
-  return picker(x, y);
-})(getChartIdSelector);
+export const getLegendItemsLabelsSelector = createCachedSelector(
+  [computeLegendSelector, getSettingsSpecSelector],
+  (legendItems, { showLegendExtra }): LegendItemLabel[] =>
+    legendItems.map(({ label, defaultExtra }) => {
+      if (defaultExtra?.formatted != null) {
+        return { label: `${label}${showLegendExtra ? defaultExtra.formatted : ''}`, depth: 0 };
+      }
+      return { label, depth: 0 };
+    }),
+)(getChartIdSelector);

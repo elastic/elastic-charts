@@ -33,7 +33,8 @@ import createCachedSelector from 're-reselect';
 
 import { ScaleType } from '../../../../scales/constants';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { getHeatmapSpec, getHeatmapTable } from './compute_chart_dimensions';
+import { getHeatmapSpecSelector } from './get_heatmap_spec';
+import { getHeatmapTableSelector } from './get_heatmap_table';
 
 export type ScaleModelType<Type, Config> = {
   type: Type;
@@ -49,33 +50,36 @@ export type ColorScaleType = ScaleLinearType | ScaleQuantizeType | ScaleQuantile
  * @internal
  * Gets color scale based on specification and values range.
  */
-export const getColorScale = createCachedSelector([getHeatmapSpec, getHeatmapTable], (spec, hepmapTable) => {
-  const { colors, colorScale: colorScaleSpec } = spec;
+export const getColorScale = createCachedSelector(
+  [getHeatmapSpecSelector, getHeatmapTableSelector],
+  (spec, heatmapTable) => {
+    const { colors, colorScale: colorScaleSpec } = spec;
 
-  // compute the color scale based domain and colors
-  const { ranges = hepmapTable.extent } = spec;
-  const colorRange = colors ?? ['green', 'red'];
+    // compute the color scale based domain and colors
+    const { ranges = heatmapTable.extent } = spec;
+    const colorRange = colors ?? ['green', 'red'];
 
-  const colorScale = {
-    type: colorScaleSpec,
-  } as ColorScaleType;
-  if (colorScale.type === ScaleType.Quantize) {
-    colorScale.config = scaleQuantize<string>()
-      .domain(d3Extent(ranges) as [number, number])
-      .range(colorRange);
-  } else if (colorScale.type === ScaleType.Quantile) {
-    colorScale.config = scaleQuantile<string>()
-      .domain(ranges)
-      .range(colorRange);
-  } else if (colorScale.type === ScaleType.Threshold) {
-    colorScale.config = scaleThreshold<number, string>()
-      .domain(ranges)
-      .range(colorRange);
-  } else {
-    colorScale.config = scaleLinear<string>()
-      .domain(ranges)
-      .interpolate(interpolateHcl)
-      .range(colorRange);
-  }
-  return colorScale;
-})(getChartIdSelector);
+    const colorScale = {
+      type: colorScaleSpec,
+    } as ColorScaleType;
+    if (colorScale.type === ScaleType.Quantize) {
+      colorScale.config = scaleQuantize<string>()
+        .domain(d3Extent(ranges) as [number, number])
+        .range(colorRange);
+    } else if (colorScale.type === ScaleType.Quantile) {
+      colorScale.config = scaleQuantile<string>()
+        .domain(ranges)
+        .range(colorRange);
+    } else if (colorScale.type === ScaleType.Threshold) {
+      colorScale.config = scaleThreshold<number, string>()
+        .domain(ranges)
+        .range(colorRange);
+    } else {
+      colorScale.config = scaleLinear<string>()
+        .domain(ranges)
+        .interpolate(interpolateHcl)
+        .range(colorRange);
+    }
+    return colorScale;
+  },
+)(getChartIdSelector);

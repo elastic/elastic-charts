@@ -22,13 +22,21 @@ import createCachedSelector from 're-reselect';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
-import { computeChartDimensionsSelector, getHeatmapSpec, getHeatmapTable } from './compute_chart_dimensions';
+import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getColorScale } from './get_color_scale';
+import { getHeatmapSpecSelector } from './get_heatmap_spec';
+import { getHeatmapTableSelector } from './get_heatmap_table';
 import { render } from './scenegraph';
 
 /** @internal */
 export const geometries = createCachedSelector(
-  [getHeatmapSpec, computeChartDimensionsSelector, getSettingsSpecSelector, getHeatmapTable, getColorScale],
+  [
+    getHeatmapSpecSelector,
+    computeChartDimensionsSelector,
+    getSettingsSpecSelector,
+    getHeatmapTableSelector,
+    getColorScale,
+  ],
   (heatmapSpec, chartDimensions, settingSpec, heatmapTable, colorScale): ShapeViewModel => {
     return heatmapSpec
       ? render(heatmapSpec, settingSpec, chartDimensions, heatmapTable, colorScale)
