@@ -54,9 +54,9 @@ export class Playground extends React.Component<any, { highlightedData?: Heatmap
         },
       },
       yAxisLabel: {
-        align: 'left',
         visible: true,
-        maxWidth: 50,
+        maxWidth: 150,
+        padding: 5,
         fill: '#6a717d',
       },
       xAxisLabel: {

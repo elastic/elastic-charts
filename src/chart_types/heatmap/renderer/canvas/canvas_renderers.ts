@@ -127,7 +127,6 @@ export function renderCanvas2d(
                 wrapAtWord: false,
               },
             ).lines;
-
             renderText(
               ctx,
               {
@@ -135,7 +134,8 @@ export function renderCanvas2d(
                 y: yValue.y,
               },
               resultText,
-              config.yAxisLabel,
+              // the alignment for y axis labels is fixed to the right
+              { ...config.yAxisLabel, align: 'right' },
             );
           });
         }),

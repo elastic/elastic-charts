@@ -43,7 +43,6 @@ export interface Config {
     fontSize: Pixels;
     maxWidth: Pixels | 'fill';
     fill: string;
-    align: TextAlign;
     baseline: TextBaseline;
     visible: boolean;
     padding: number;

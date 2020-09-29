@@ -171,7 +171,7 @@ export function shapeViewModel(
     return {
       ...d,
       // position of the Y labels
-      x: 0,
+      x: chartDimensions.left - config.yAxisLabel.padding,
       y: cellHeight / 2 + (yScale(d.value) || 0),
     };
   });

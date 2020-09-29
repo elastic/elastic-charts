@@ -54,7 +54,6 @@ export const config: Config = {
     fontVariant: 'normal',
     fontWeight: 'normal',
     textOpacity: 1,
-    align: 'left' as CanvasTextAlign,
     baseline: 'verticalAlign' as CanvasTextBaseline,
     padding: 6,
   },

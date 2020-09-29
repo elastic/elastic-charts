@@ -46,7 +46,6 @@ export const Example = () => {
       },
     },
     yAxisLabel: {
-      align: 'left',
       visible: true,
       maxWidth: 250,
       padding: 20,

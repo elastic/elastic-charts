@@ -48,12 +48,12 @@ export const getXAxisRightOverflow = createCachedSelector(
       },
     );
     const bboxCompute = new CanvasTextBBoxCalculator();
-    const { fontSize, fontFamily } = config.xAxisLabel;
+    const { fontSize, fontFamily, padding } = config.xAxisLabel;
     const formatter = niceTimeFormatter(xDomain.domain as [number, number]);
     const maxTextWidth = timeScale.ticks().reduce((acc, d) => {
       const text = formatter(d, { timeZone: 'UTC' });
-      const textSize = bboxCompute.compute(text, 1, fontSize, fontFamily, 1);
-      return Math.max(acc, textSize.width);
+      const textSize = bboxCompute.compute(text, padding, fontSize, fontFamily, 1);
+      return Math.max(acc, textSize.width + padding);
     }, 0);
 
     return maxTextWidth / 2;
