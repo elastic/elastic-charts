@@ -23,7 +23,6 @@ import { ChartTypes } from '../../..';
 import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { SettingsSpec } from '../../../../specs';
-import { niceTimeFormatter } from '../../../../utils/data/formatters';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Pixels } from '../../../partition_chart/layout/types/geometry_types';
 import { Box, TextMeasure } from '../../../partition_chart/layout/types/types';
@@ -70,7 +69,7 @@ export function shapeViewModel(
   // measure the text width of all rows values to get the grid area width
   const boxedYValues = yValues.map<Box & { value: string | number }>((value) => {
     return {
-      text: String(value),
+      text: config.yAxisLabel.formatter(value),
       value,
       ...config.yAxisLabel,
     };
@@ -146,7 +145,7 @@ export function shapeViewModel(
   const getTextValue = (
     formatter: (v: any, options: any) => string,
     scaleCallback: (x: any) => number | undefined | null = xScale,
-  ) => (value: any) => {
+  ) => (value: any): TextBox => {
     return {
       text: formatter(value, { timeZone: 'UTC' }),
       value,
@@ -159,11 +158,18 @@ export function shapeViewModel(
   // compute the position of each column label
   let textXValues: Array<TextBox> = [];
   if (timeScale) {
-    const formatter = niceTimeFormatter(xDomain.domain as [number, number]);
-    textXValues = timeScale.ticks().map<TextBox>(getTextValue(formatter, (x: any) => timeScale.scale(x)));
+    textXValues = timeScale
+      .ticks()
+      .map<TextBox>(getTextValue(config.xAxisLabel.formatter, (x: any) => timeScale.scale(x)));
   } else {
     // TODO remove overlapping labels or scale better the columns labels
-    textXValues = xValues.map<TextBox>(getTextValue(String));
+    textXValues = xValues.map<TextBox>((textBox: any) => {
+      const textValue = getTextValue(config.xAxisLabel.formatter)(textBox);
+      return {
+        ...textValue,
+        x: chartDimensions.left + (xScale(textBox) || 0) + xScale.bandwidth() / 2,
+      };
+    });
   }
 
   const { padding } = config.yAxisLabel;

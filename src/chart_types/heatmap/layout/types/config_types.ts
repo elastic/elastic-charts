@@ -37,6 +37,7 @@ export interface Config {
     baseline: TextBaseline;
     visible: boolean;
     padding: number;
+    formatter: (value: string | number) => string;
   };
   yAxisLabel: Font & {
     fontSize: Pixels;
@@ -45,6 +46,7 @@ export interface Config {
     baseline: TextBaseline;
     visible: boolean;
     padding: number | { left?: number; right?: number; top?: number; bottom?: number };
+    formatter: (value: string | number) => string;
   };
   grid: {
     cellWidth: {

@@ -23,7 +23,6 @@ import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { CanvasTextBBoxCalculator } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { niceTimeFormatter } from '../../../../utils/data/formatters';
 import { getHeatmapConfigSelector } from './get_heatmap_config';
 import { getHeatmapTableSelector } from './get_heatmap_table';
 
@@ -33,7 +32,7 @@ import { getHeatmapTableSelector } from './get_heatmap_table';
  */
 export const getXAxisRightOverflow = createCachedSelector(
   [getHeatmapConfigSelector, getHeatmapTableSelector],
-  (config, { xDomain }): number => {
+  ({ xAxisLabel: { fontSize, fontFamily, padding, formatter } }, { xDomain }): number => {
     if (xDomain.scaleType !== ScaleType.Time) {
       return 0;
     }
@@ -48,10 +47,8 @@ export const getXAxisRightOverflow = createCachedSelector(
       },
     );
     const bboxCompute = new CanvasTextBBoxCalculator();
-    const { fontSize, fontFamily, padding } = config.xAxisLabel;
-    const formatter = niceTimeFormatter(xDomain.domain as [number, number]);
     const maxTextWidth = timeScale.ticks().reduce((acc, d) => {
-      const text = formatter(d, { timeZone: 'UTC' });
+      const text = formatter(d);
       const textSize = bboxCompute.compute(text, padding, fontSize, fontFamily, 1);
       return Math.max(acc, textSize.width + padding);
     }, 0);

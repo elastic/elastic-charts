@@ -19,7 +19,7 @@
 import { action } from '@storybook/addon-actions';
 import React from 'react';
 
-import { Chart, Heatmap, RecursivePartial, ScaleType, Settings } from '../../src';
+import { Chart, Heatmap, niceTimeFormatter, RecursivePartial, ScaleType, Settings } from '../../src';
 import { Config } from '../../src/chart_types/heatmap/layout/types/config_types';
 import { SWIM_LANE_DATA } from '../../src/utils/data_samples/test_anomaly_swim_lane';
 
@@ -49,6 +49,11 @@ export const Example = () => {
       visible: true,
       width: 'auto',
       padding: { left: 10, right: 10 },
+    },
+    xAxisLabel: {
+      formatter: (value: string | number) => {
+        return niceTimeFormatter([1572825600000, 1572912000000])(value, { timeZone: 'UTC' });
+      },
     },
   };
   return (

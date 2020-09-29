@@ -41,6 +41,7 @@ export const config: Config = {
     align: 'center' as CanvasTextAlign,
     baseline: 'verticalAlign' as CanvasTextBaseline,
     padding: 6,
+    formatter: String,
   },
   yAxisLabel: {
     visible: true,
@@ -55,6 +56,7 @@ export const config: Config = {
     textOpacity: 1,
     baseline: 'verticalAlign' as CanvasTextBaseline,
     padding: 5,
+    formatter: String,
   },
   grid: {
     cellWidth: {
