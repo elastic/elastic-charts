@@ -166,12 +166,15 @@ export function shapeViewModel(
     textXValues = xValues.map<TextBox>(getTextValue(String));
   }
 
+  const { padding } = config.yAxisLabel;
+  const rightPadding = typeof padding === 'number' ? padding : padding.right ?? 0;
+
   // compute the position of each row label
   const textYValues = boxedYValues.map<TextBox>((d) => {
     return {
       ...d,
       // position of the Y labels
-      x: chartDimensions.left - config.yAxisLabel.padding,
+      x: chartDimensions.left - rightPadding,
       y: cellHeight / 2 + (yScale(d.value) || 0),
     };
   });

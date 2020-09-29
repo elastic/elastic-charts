@@ -30,7 +30,6 @@ export const config: Config = {
 
   xAxisLabel: {
     visible: true,
-    maxWidth: 'fill',
     fill: 'black',
     fontSize: 12,
     fontFamily: 'Sans-Serif',
@@ -45,7 +44,7 @@ export const config: Config = {
   },
   yAxisLabel: {
     visible: true,
-    maxWidth: 'fill',
+    width: 'auto',
     fill: 'black',
     fontSize: 12,
     fontFamily: 'Sans-Serif',
@@ -55,7 +54,7 @@ export const config: Config = {
     fontWeight: 'normal',
     textOpacity: 1,
     baseline: 'verticalAlign' as CanvasTextBaseline,
-    padding: 6,
+    padding: 5,
   },
   grid: {
     cellWidth: {

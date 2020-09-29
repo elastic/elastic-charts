@@ -55,12 +55,11 @@ export class Playground extends React.Component<any, { highlightedData?: Heatmap
       },
       yAxisLabel: {
         visible: true,
-        maxWidth: 150,
+        width: { max: 50 },
         padding: 5,
         fill: '#6a717d',
       },
       xAxisLabel: {
-        maxWidth: 20,
         fill: '#6a717d',
       },
     };
@@ -141,7 +140,7 @@ export class Playground extends React.Component<any, { highlightedData?: Heatmap
                 },
                 yAxisLabel: {
                   visible: true,
-                  maxWidth: 200,
+                  width: 'auto',
                   textColor: '#6a717d',
                 },
               }}

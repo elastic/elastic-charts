@@ -32,7 +32,6 @@ export interface Config {
 
   xAxisLabel: Font & {
     fontSize: Pixels;
-    maxWidth: Pixels | 'fill';
     fill: string;
     align: TextAlign;
     baseline: TextBaseline;
@@ -41,11 +40,11 @@ export interface Config {
   };
   yAxisLabel: Font & {
     fontSize: Pixels;
-    maxWidth: Pixels | 'fill';
+    width: Pixels | 'auto' | { max: Pixels };
     fill: string;
     baseline: TextBaseline;
     visible: boolean;
-    padding: number;
+    padding: number | { left?: number; right?: number; top?: number; bottom?: number };
   };
   grid: {
     cellWidth: {

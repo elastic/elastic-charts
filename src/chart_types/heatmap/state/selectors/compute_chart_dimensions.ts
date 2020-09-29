@@ -61,6 +61,11 @@ export const computeChartDimensionsSelector = createCachedSelector(
     const textMeasurerCtx = textMeasurer.getContext('2d');
     const textMeasure = measureText(textMeasurerCtx!);
 
+    const { padding } = config.yAxisLabel;
+    const totalHorizontalPadding =
+      typeof padding === 'number' ? padding * 2 : (padding.left ?? 0) + (padding.right ?? 0);
+    const totalVerticalPadding = typeof padding === 'number' ? padding * 2 : (padding.top ?? 0) + (padding.bottom ?? 0);
+
     if (config.yAxisLabel.visible) {
       // measure the text width of all rows values to get the grid area width
       const boxedYValues = heatmapTable.yValues.map<Box & { value: string | number }>((value) => {
@@ -73,20 +78,21 @@ export const computeChartDimensionsSelector = createCachedSelector(
       const measuredYValues = textMeasure(config.yAxisLabel.fontSize, boxedYValues);
       const maxTextWidth = d3Max(measuredYValues, ({ width }) => width) ?? 0;
 
-      // let yColumnWidth: number = maxTextWidth;
-      let yColumnWidth: number = maxTextWidth + config.yAxisLabel.padding;
-      if (typeof config.yAxisLabel.maxWidth === 'number' && yColumnWidth > config.yAxisLabel.maxWidth) {
-        yColumnWidth = config.yAxisLabel.maxWidth;
+      let yColumnWidth: number = maxTextWidth;
+      if (typeof config.yAxisLabel.width === 'number') {
+        yColumnWidth = config.yAxisLabel.width;
+      } else if (typeof config.yAxisLabel.width === 'object' && yColumnWidth > config.yAxisLabel.width.max) {
+        yColumnWidth = config.yAxisLabel.width.max;
       }
 
-      width -= yColumnWidth + rightOverflow;
-      left += yColumnWidth;
+      width -= yColumnWidth + rightOverflow + totalHorizontalPadding;
+      left += yColumnWidth + totalHorizontalPadding;
     }
 
     if (config.xAxisLabel.visible) {
       // compute the grid area height removing the bottom axis
       const maxTextHeight = config.yAxisLabel?.fontSize;
-      height -= maxTextHeight + config.yAxisLabel.padding * 2;
+      height -= maxTextHeight + totalVerticalPadding;
     }
 
     const result = {

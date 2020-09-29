@@ -114,13 +114,15 @@ export function renderCanvas2d(
               textColor: 'black',
               textOpacity: 1,
             };
-
+            const { padding } = config.yAxisLabel;
+            const horizontalPadding =
+              typeof padding === 'number' ? padding * 2 : (padding.left ?? 0) + (padding.right ?? 0);
             const [resultText] = wrapLines(
               ctx,
               yValue.text,
               font,
               config.yAxisLabel.fontSize,
-              heatmapViewModel.gridOrigin.x - config.yAxisLabel.padding,
+              heatmapViewModel.gridOrigin.x - horizontalPadding,
               16,
               {
                 shouldAddEllipsis: true,

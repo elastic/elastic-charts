@@ -47,11 +47,8 @@ export const Example = () => {
     },
     yAxisLabel: {
       visible: true,
-      maxWidth: 250,
-      padding: 20,
-    },
-    xAxisLabel: {
-      maxWidth: 20,
+      width: 'auto',
+      padding: { left: 10, right: 10 },
     },
   };
   return (

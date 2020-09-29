@@ -66,7 +66,7 @@ export const Example = () => {
           },
           yAxisLabel: {
             visible: true,
-            maxWidth: 200,
+            width: 100,
           },
         }}
       />
