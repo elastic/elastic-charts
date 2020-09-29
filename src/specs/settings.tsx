@@ -63,7 +63,7 @@ export type ElementClickListener = (
 export type ElementOverListener = (
   elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent>,
 ) => void;
-export type BrushEndListener = (brushArea: XYBrushArea) => void;
+export type BrushEndListener = (brushArea: XYBrushArea | HeatmapBrushEvent) => void;
 export type LegendItemListener = (series: SeriesIdentifier | null) => void;
 export type PointerUpdateListener = (event: PointerEvent) => void;
 /**

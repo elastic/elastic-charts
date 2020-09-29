@@ -20,20 +20,31 @@
 import React from 'react';
 
 import { Chart, Heatmap, ScaleType, Settings } from '../src';
+import { HeatmapSpec } from '../src/chart_types/heatmap/specs';
 import { BABYNAME_DATA } from '../src/utils/data_samples/babynames';
 import { SWIM_LANE_DATA } from '../src/utils/data_samples/test_anomaly_swim_lane';
 
-export class Playground extends React.Component {
+export class Playground extends React.Component<any, { highlightedData?: HeatmapSpec['highlightedData'] }> {
+  constructor(props: any) {
+    super(props);
+    this.state = {};
+  }
+
   render() {
     return (
       <div>
-        <div className="chart" style={{ height: '400px' }}>
+        <div className="chart" style={{ height: '500px', overflow: 'auto' }}>
           <Chart>
             <Settings
               onElementClick={console.log}
               showLegend
               legendPosition="top"
-              onBrushEnd={console.log}
+              onBrushEnd={(e) => {
+                console.log('___onBrushEnd___', e);
+                this.setState({
+                  highlightedData: { x: e.x as any[], y: e.y as any[] },
+                });
+              }}
               brushAxis="both"
               xDomain={{ min: 1572825600000, max: 1572912000000, minInterval: 1800000 }}
             />
@@ -43,7 +54,7 @@ export class Playground extends React.Component {
               colorScale={ScaleType.Threshold}
               colors={['#ffffff', '#d2e9f7', '#8bc8fb', '#fdec25', '#fba740', '#fe5050']}
               data={SWIM_LANE_DATA.map((v) => ({ ...v, time: v.time * 1000 }))}
-              highlightedData={{ x: [1572877800000, 1572888600000], y: ['i-9f07c700'] }}
+              highlightedData={this.state.highlightedData}
               xAccessor={(d) => d.time}
               yAccessor={(d) => d.laneLabel}
               valueAccessor={(d) => d.value}
@@ -53,8 +64,8 @@ export class Playground extends React.Component {
               config={{
                 grid: {
                   cellHeight: {
-                    min: 40,
-                    max: 40, // 'fill',
+                    min: 20,
+                    max: 20, // 'fill',
                   },
                   stroke: {
                     width: 1,

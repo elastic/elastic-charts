@@ -281,14 +281,17 @@ export function shapeViewModel(
     let { x, y } = shape;
 
     while (y < shape.height + shape.y) {
-      result.y.add(yInvertedScale(y));
-      while (x < shape.width + shape.x) {
+      result.y.add(yInvertedScale(y - chartDimensions.top));
+      while (x <= shape.width + shape.x) {
+        const xValue = xInvertedScale(x - chartDimensions.left);
+        result.x.add(xValue);
         const [cell] = pickQuads(x, y);
         if (cell) {
           result.cells.push(cell);
         }
-        result.x.add(xInvertedScale(x));
-        x += cellWidth;
+        x += cellWidth + config.grid.stroke.width;
+        // set value to close the time range
+        result.x.add(xInvertedScale(x - chartDimensions.left));
       }
       // move to the next line
       x = shape.x;

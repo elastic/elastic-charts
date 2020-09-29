@@ -21,8 +21,12 @@ import { Selector } from 'reselect';
 
 import { ChartTypes } from '../../..';
 import { GlobalChartState } from '../../../../state/chart_state';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { getLastDragSelector } from '../../../../state/selectors/get_last_drag';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { DragCheckProps, hasDragged } from '../../../../utils/events';
 import { getSpecOrNull } from './heatmap_spec';
+import { isBrushAvailableSelector } from './is_brush_available';
 import { getPickedCells } from './picked_shapes';
 
 /**
@@ -32,22 +36,32 @@ import { getPickedCells } from './picked_shapes';
  * @internal
  */
 export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
+  let prevProps: DragCheckProps | null = null;
   let selector: Selector<GlobalChartState, void> | null = null;
   return (state: GlobalChartState) => {
     if (selector === null && state.chartType === ChartTypes.Heatmap) {
+      if (!isBrushAvailableSelector(state)) {
+        selector = null;
+        prevProps = null;
+        return;
+      }
       selector = createCachedSelector(
-        [getSpecOrNull, getSettingsSpecSelector, getPickedCells],
-        (spec, { onBrushEnd }, pickedCells): void => {
+        [getLastDragSelector, getSpecOrNull, getSettingsSpecSelector, getPickedCells],
+        (lastDrag, spec, { onBrushEnd }, pickedCells): void => {
+          const nextProps: DragCheckProps = {
+            lastDrag,
+            onBrushEnd,
+          };
           if (!spec || !onBrushEnd || pickedCells === null) {
             return;
           }
-
-          // FIXME Settings component should support different type of callback based on the chart type
-          // @ts-ignore
-          onBrushEnd(pickedCells);
+          if (lastDrag !== null && hasDragged(prevProps, nextProps)) {
+            onBrushEnd(pickedCells);
+          }
+          prevProps = nextProps;
         },
       )({
-        keySelector: (state: GlobalChartState) => state.chartId,
+        keySelector: getChartIdSelector,
       });
     }
     if (selector) {
