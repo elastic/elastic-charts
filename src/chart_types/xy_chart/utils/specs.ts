@@ -430,6 +430,28 @@ export interface SeriesAccessors {
   markSizeAccessor?: Accessor | AccessorFn;
 }
 
+export type SeriesSerializer<T extends number | string = number | string> = (d: any) => T;
+
+export interface SeriesSerializers {
+  /**
+   * serializer for all non-primative data values
+   * Used as fallback for all other serializers
+   */
+  serializer?: SeriesSerializer;
+  /**
+   * serializer for all non-primative x values
+   */
+  xSerializer?: SeriesSerializer;
+  /**
+   * serializer for all non-primative y values
+   */
+  ySerializer?: SeriesSerializer<number>;
+  /**
+   * serializer for all non-primative y values
+   */
+  markSerializer?: SeriesSerializer<number>;
+}
+
 export interface SeriesScales {
   /**
    * The x axis scale type
@@ -459,7 +481,8 @@ export interface SeriesScales {
 /** @public */
 export type BasicSeriesSpec = SeriesSpec &
   SeriesAccessors &
-  SeriesScales & {
+  SeriesScales &
+  SeriesSerializers & {
     /**
      * A function called to format every single mark value
      *

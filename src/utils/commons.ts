@@ -534,3 +534,9 @@ export const getPercentageValue = <T>(ratio: string | number, relativeValue: num
 
   return num && !isNaN(num) ? num : defaultValue;
 };
+
+/**
+ * @internal
+ */
+export const isStringOrNumber = (value: any): value is string | number =>
+  typeof value === 'string' || typeof value === 'number';

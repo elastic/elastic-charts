@@ -263,7 +263,7 @@ export interface BasePointerEvent {
 export type BasicListener = () => undefined | void;
 
 // @public (undocumented)
-export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales & {
+export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales & SeriesSerializers & {
     markFormat?: TickFormatter<number>;
 };
 
@@ -1275,6 +1275,21 @@ export interface SeriesScales {
     // @deprecated
     yScaleToDataExtent?: boolean;
     yScaleType: ScaleContinuousType;
+}
+
+// Warning: (ae-missing-release-tag) "SeriesSerializer" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type SeriesSerializer<T extends number | string = number | string> = (d: any) => T;
+
+// Warning: (ae-missing-release-tag) "SeriesSerializers" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface SeriesSerializers {
+    markSerializer?: SeriesSerializer<number>;
+    serializer?: SeriesSerializer;
+    xSerializer?: SeriesSerializer;
+    ySerializer?: SeriesSerializer<number>;
 }
 
 // Warning: (ae-missing-release-tag) "SeriesSpec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)

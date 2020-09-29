@@ -19,11 +19,11 @@
 
 import { SeriesIdentifier, SeriesKey } from '../../../commons/series_id';
 import { ScaleType } from '../../../scales/constants';
-import { BinAgg, Direction } from '../../../specs';
+import { BinAgg, Direction, SeriesSerializer } from '../../../specs';
 import { OrderBy } from '../../../specs/settings';
 import { ColorOverrides } from '../../../state/chart_state';
 import { Accessor, AccessorFn, getAccessorValue } from '../../../utils/accessor';
-import { Datum, Color } from '../../../utils/commons';
+import { Datum, Color, isStringOrNumber } from '../../../utils/commons';
 import { GroupId, SpecId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
 import { ColorConfig } from '../../../utils/themes/theme';
@@ -121,10 +121,11 @@ export function splitSeriesDataByAccessors(
     y0Accessors,
     markSizeAccessor,
     splitSeriesAccessors = [],
-  }: Pick<
-    BasicSeriesSpec,
-    'id' | 'data' | 'xAccessor' | 'yAccessors' | 'y0Accessors' | 'splitSeriesAccessors' | 'markSizeAccessor'
-  >,
+    serializer,
+    xSerializer,
+    ySerializer,
+    markSerializer,
+  }: BasicSeriesSpec,
   xValueSums: Map<string | number, number>,
   enableVislibSeriesSort = false,
 ): {
@@ -154,10 +155,10 @@ export function splitSeriesDataByAccessors(
           return;
         }
 
-        const x = getAccessorValue(datum, xAccessor);
+        const x = getAccessorValue(datum, xAccessor, xSerializer ?? serializer);
 
         // skip if the x value is not a string or a number
-        if (typeof x !== 'string' && typeof x !== 'number') {
+        if (!isStringOrNumber(x)) {
           return;
         }
 
@@ -170,6 +171,8 @@ export function splitSeriesDataByAccessors(
           nonNumericValues,
           y0Accessors && y0Accessors[index],
           markSizeAccessor,
+          ySerializer ?? serializer,
+          markSerializer ?? serializer,
         );
         const seriesKeys = [...splitAccessors.values(), accessor];
         const seriesKey = getSeriesKey({
@@ -208,10 +211,10 @@ export function splitSeriesDataByAccessors(
         return;
       }
 
-      const x = getAccessorValue(datum, xAccessor);
+      const x = getAccessorValue(datum, xAccessor, xSerializer ?? serializer);
 
       // skip if the x value is not a string or a number
-      if (typeof x !== 'string' && typeof x !== 'number') {
+      if (!isStringOrNumber(x)) {
         return;
       }
 
@@ -225,6 +228,8 @@ export function splitSeriesDataByAccessors(
           nonNumericValues,
           y0Accessors && y0Accessors[index],
           markSizeAccessor,
+          ySerializer ?? serializer,
+          markSerializer ?? serializer,
         );
         const seriesKeys = [...splitAccessors.values(), accessor];
         const seriesKey = getSeriesKey({
@@ -308,11 +313,16 @@ export function extractYandMarkFromDatum(
   nonNumericValues: any[],
   y0Accessor?: Accessor,
   markSizeAccessor?: Accessor | AccessorFn,
+  ySerializer?: SeriesSerializer,
+  markSerializer?: SeriesSerializer,
 ): Pick<DataSeriesDatum, 'y0' | 'y1' | 'mark' | 'datum' | 'initialY0' | 'initialY1'> {
   const mark =
-    markSizeAccessor === undefined ? null : castToNumber(getAccessorValue(datum, markSizeAccessor), nonNumericValues);
-  const y1 = castToNumber(datum[yAccessor], nonNumericValues);
-  const y0 = y0Accessor ? castToNumber(datum[y0Accessor as keyof typeof datum], nonNumericValues) : null;
+    markSizeAccessor === undefined
+      ? null
+      : castToNumber(getAccessorValue(datum, markSizeAccessor, markSerializer), nonNumericValues);
+  const y1 = castToNumber(getAccessorValue(datum, yAccessor, ySerializer), nonNumericValues);
+  const y0 = y0Accessor ? castToNumber(getAccessorValue(datum, y0Accessor, ySerializer), nonNumericValues) : null;
+
   return { y1, datum, y0, mark, initialY0: y0, initialY1: y1 };
 }
 

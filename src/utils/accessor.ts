@@ -17,7 +17,8 @@
  * under the License.
  */
 
-import { Datum } from './commons';
+import { SeriesSerializer } from '../specs';
+import { Datum, isStringOrNumber } from './commons';
 
 /**
  * Accessor function
@@ -86,9 +87,24 @@ export function getAccessorFormatLabel(accessor: AccessorFormat, label: string):
  *
  * @param  {Datum} datum
  * @param  {AccessorString|AccessorFn} accessor
+ * @param  {SeriesSerializer} serializer
  * @internal
  */
-export function getAccessorValue(datum: Datum, accessor: Accessor | AccessorFn) {
+export function getAccessorValue(datum: Datum, accessor: Accessor | AccessorFn, serializer?: SeriesSerializer): any {
+  const value = getAccessorDatumValue(datum, accessor);
+
+  if (!isStringOrNumber(value) && serializer) {
+    try {
+      return serializer(value);
+    } catch {
+      // just return value;
+    }
+  }
+
+  return value;
+}
+
+function getAccessorDatumValue(datum: Datum, accessor: Accessor | AccessorFn) {
   if (typeof accessor === 'function') {
     return accessor(datum);
   }
