@@ -17,19 +17,14 @@
  * under the License.
  */
 
-export {
-  AreaSeries,
-  Axis,
-  BarSeries,
-  BubbleSeries,
-  HistogramBarSeries,
-  LineAnnotation,
-  LineSeries,
-  RectAnnotation,
-} from './xy_chart/specs';
+import { SB_KNOBS_PANEL } from '../utils/storybook';
 
-export * from './xy_chart/utils/specs';
+export default {
+  title: 'Heatmap (@alpha)',
+  parameters: {
+    options: { selectedPanel: SB_KNOBS_PANEL },
+  },
+};
 
-export { Partition } from './partition_chart/specs';
-
-export { Heatmap, HeatmapSpec } from './heatmap/specs';
+export { Example as basic } from './1_basic';
+export { Example as categorical } from './2_categorical';

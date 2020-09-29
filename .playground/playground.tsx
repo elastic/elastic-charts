@@ -19,7 +19,7 @@
 /* eslint-disable no-console */
 import React from 'react';
 
-import { Chart, Heatmap, ScaleType, Settings } from '../src';
+import { Chart, Heatmap, HeatmapConfig, RecursivePartial, ScaleType, Settings } from '../src';
 import { HeatmapSpec } from '../src/chart_types/heatmap/specs';
 import { BABYNAME_DATA } from '../src/utils/data_samples/babynames';
 import { SWIM_LANE_DATA } from '../src/utils/data_samples/test_anomaly_swim_lane';
@@ -31,6 +31,39 @@ export class Playground extends React.Component<any, { highlightedData?: Heatmap
   }
 
   render() {
+    const heatmapConfig: RecursivePartial<HeatmapConfig> = {
+      grid: {
+        cellHeight: {
+          min: 20,
+          max: 20, // 'fill',
+        },
+        stroke: {
+          width: 1,
+          color: '#D3DAE6',
+        },
+      },
+      cell: {
+        maxWidth: 'fill',
+        maxHeight: 'fill',
+        label: {
+          visible: false,
+        },
+        border: {
+          stroke: '#D3DAE6',
+          strokeWidth: 0,
+        },
+      },
+      yAxisLabel: {
+        align: 'left',
+        visible: true,
+        maxWidth: 50,
+        fill: '#6a717d',
+      },
+      xAxisLabel: {
+        maxWidth: 20,
+        fill: '#6a717d',
+      },
+    };
     return (
       <div>
         <div className="chart" style={{ height: '500px', overflow: 'auto' }}>
@@ -61,39 +94,7 @@ export class Playground extends React.Component<any, { highlightedData?: Heatmap
               valueFormatter={(d) => d.toFixed(0.2)}
               ySortPredicate="numAsc"
               xScaleType={ScaleType.Time}
-              config={{
-                grid: {
-                  cellHeight: {
-                    min: 20,
-                    max: 20, // 'fill',
-                  },
-                  stroke: {
-                    width: 1,
-                    color: '#D3DAE6',
-                  },
-                },
-                cell: {
-                  maxWidth: 'fill',
-                  maxHeight: 'fill',
-                  label: {
-                    visible: false,
-                  },
-                  border: {
-                    stroke: '#D3DAE6',
-                    strokeWidth: 0,
-                  },
-                },
-                yAxisLabel: {
-                  align: 'left',
-                  visible: true,
-                  maxWidth: 50,
-                  fill: '#6a717d',
-                },
-                xAxisLabel: {
-                  maxWidth: 20,
-                  fill: '#6a717d',
-                },
-              }}
+              config={heatmapConfig}
             />
           </Chart>
         </div>

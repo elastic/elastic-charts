@@ -19,6 +19,7 @@
 
 import { scaleBand, scaleQuantize } from 'd3-scale';
 
+import { ChartTypes } from '../../..';
 import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { SettingsSpec } from '../../../../specs';
@@ -101,11 +102,16 @@ export function shapeViewModel(
 
   const timeScale =
     xDomain.scaleType === ScaleType.Time
-      ? new ScaleContinuous({
-          type: ScaleType.Time,
-          domain: xDomain.domain,
-          range: [chartDimensions.left, maxGridAreaWidth],
-        })
+      ? new ScaleContinuous(
+          {
+            type: ScaleType.Time,
+            domain: xDomain.domain,
+            range: [0, maxGridAreaWidth],
+          },
+          {
+            timeZone: 'UTC',
+          },
+        )
       : null;
 
   if (timeScale) {
@@ -117,12 +123,6 @@ export function shapeViewModel(
     }
 
     xValues = result;
-
-    // xValues = timeScale
-    //   .getTicks((xDomain.domain[1] - xDomain.domain[0]) / xDomain.minInterval, false)
-    //   // format Date object to timestamps
-    //   // @ts-ignore
-    //   .map((v) => v.getTime());
   }
 
   // compute the scale for the columns positions
@@ -140,16 +140,19 @@ export function shapeViewModel(
       ? config.cell.maxWidth
       : xScale.bandwidth();
 
+  // compute the cell height (we already computed the max size for that)
+  const cellHeight = yScale.bandwidth();
+
   const getTextValue = (
-    formatter: (v: any) => string,
+    formatter: (v: any, options: any) => string,
     scaleCallback: (x: any) => number | undefined | null = xScale,
   ) => (value: any) => {
     return {
-      text: formatter(value),
+      text: formatter(value, { timeZone: 'UTC' }),
       value,
       ...config.xAxisLabel,
-      x: chartDimensions.left + (scaleCallback(value) || 0) + cellWidth / 2,
-      y: maxGridAreaHeight + config.xAxisLabel.fontSize / 2 + config.xAxisLabel.padding,
+      x: chartDimensions.left + (scaleCallback(value) || 0),
+      y: cellHeight * pageSize + config.xAxisLabel.fontSize / 2 + config.xAxisLabel.padding,
     };
   };
 
@@ -157,14 +160,11 @@ export function shapeViewModel(
   let textXValues: Array<TextBox> = [];
   if (timeScale) {
     const formatter = niceTimeFormatter(xDomain.domain as [number, number]);
-    textXValues = timeScale.ticks().map<TextBox>(getTextValue(formatter, (x: any) => timeScale.pureScale(x)));
+    textXValues = timeScale.ticks().map<TextBox>(getTextValue(formatter, (x: any) => timeScale.scale(x)));
   } else {
     // TODO remove overlapping labels or scale better the columns labels
     textXValues = xValues.map<TextBox>(getTextValue(String));
   }
-
-  // compute the cell height (we already computed the max size for that)
-  const cellHeight = yScale.bandwidth();
 
   // compute the position of each row label
   const textYValues = boxedYValues.map<TextBox>((d) => {
@@ -304,6 +304,7 @@ export function shapeViewModel(
       ...result,
       x: isXAxisTimeScale ? [xArr[0], xArr[xArr.length - 1]] : xArr,
       y: [...result.y],
+      chartType: ChartTypes.Heatmap,
     };
   };
 
@@ -351,11 +352,13 @@ export function shapeViewModel(
   const xLines = [];
   for (let i = 0; i < xValues.length + 1; i++) {
     const x = chartDimensions.left + i * cellWidth;
-    xLines.push({ x1: x, y1: chartDimensions.height, x2: x, y2: chartDimensions.top });
+    const y1 = chartDimensions.top;
+    const y2 = cellHeight * pageSize;
+    xLines.push({ x1: x, y1, x2: x, y2 });
   }
   // horizontal lines
   const yLines = [];
-  for (let i = 0; i < yValues.length + 1; i++) {
+  for (let i = 0; i < pageSize + 1; i++) {
     const y = i * cellHeight;
     yLines.push({ x1: chartDimensions.left, y1: y, x2: chartDimensions.width + chartDimensions.left, y2: y });
   }

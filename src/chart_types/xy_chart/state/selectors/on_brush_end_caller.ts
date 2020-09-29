@@ -84,7 +84,9 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
 
           if (lastDrag !== null && hasDragged(prevProps, nextProps)) {
             if (onBrushEnd) {
-              const brushArea: XYBrushArea = {};
+              const brushArea: XYBrushArea = {
+                chartType: ChartTypes.XYAxis,
+              };
               const { yScales, xScale } = computedScales;
 
               if (brushAxis === BrushAxis.X || brushAxis === BrushAxis.Both) {

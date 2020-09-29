@@ -46,7 +46,7 @@ export const getTooltipInfoSelector = createCachedSelector(
     if (Array.isArray(pickedShapes)) {
       pickedShapes.forEach((shape) => {
         tooltipInfo.values.push({
-          label: `${shape.datum.y} - ${shape.datum.x}`,
+          label: `${shape.datum.y} - ${new Date(shape.datum.x).toUTCString()}`, // TODO fix to use the right formatter
           color: RGBtoString(shape.fill.color),
           isHighlighted: false,
           isVisible: true,

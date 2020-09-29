@@ -17,7 +17,9 @@
  * under the License.
  */
 
+import { ChartTypes } from '../../..';
 import { Fill, Line, Stroke } from '../../../../geoms/types';
+import { HeatmapBrushEvent } from '../../../../specs';
 import { Point } from '../../../../utils/point';
 import { Pixels } from '../../../partition_chart/layout/types/geometry_types';
 import { config } from '../config/config';
@@ -69,7 +71,7 @@ export function isPickedCells(v: any): v is Cell[] {
 export type PickFunction = (x: Pixels, y: Pixels) => Cell[] | TextBox;
 
 /** @internal */
-export type PickDragFunction = (points: [Point, Point]) => { cells: Cell[]; x: any[]; y: any[] };
+export type PickDragFunction = (points: [Point, Point]) => HeatmapBrushEvent;
 
 /** @internal */
 export type PickDragShapeFunction = (points: [Point, Point]) => { x: number; y: number; width: number; height: number };
@@ -112,7 +114,7 @@ export const nullShapeViewModel = (specifiedConfig?: Config): ShapeViewModel => 
   config: specifiedConfig || config,
   heatmapViewModel: nullHeatmapViewModel,
   pickQuads: () => [],
-  pickDragArea: () => ({ cells: [], x: [], y: [] }),
+  pickDragArea: () => ({ cells: [], x: [], y: [], chartType: ChartTypes.Heatmap }),
   pickDragShape: () => ({ x: 0, y: 0, width: 0, height: 0 }),
   pickHighlightedArea: () => ({ x: 0, y: 0, width: 0, height: 0 }),
 });

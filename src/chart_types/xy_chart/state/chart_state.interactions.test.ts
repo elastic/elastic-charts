@@ -23,7 +23,7 @@ import { ChartTypes } from '../..';
 import { MockStore } from '../../../mocks/store';
 import { BaseScaleType } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
-import { SettingsSpec, XYBrushArea } from '../../../specs';
+import { HeatmapBrushEvent, SettingsSpec, XYBrushArea } from '../../../specs';
 import { SpecTypes, DEFAULT_SETTINGS_SPEC, TooltipType, BrushAxis } from '../../../specs/constants';
 import { onExternalPointerEvent } from '../../../state/actions/events';
 import { onPointerMove, onMouseDown, onMouseUp } from '../../../state/actions/mouse';
@@ -791,7 +791,7 @@ function mouseOverTestSuite(scaleType: BaseScaleType) {
   });
   describe('brush', () => {
     test('can respond to a brush end event', () => {
-      const brushEndListener = jest.fn<void, [XYBrushArea]>((): void => undefined);
+      const brushEndListener = jest.fn<void, [XYBrushArea | HeatmapBrushEvent]>((): void => undefined);
       const onBrushCaller = createOnBrushEndCaller();
       store.subscribe(() => {
         onBrushCaller(store.getState());
@@ -876,7 +876,7 @@ function mouseOverTestSuite(scaleType: BaseScaleType) {
       }
     });
     test('can respond to a brush end event on rotated chart', () => {
-      const brushEndListener = jest.fn<void, [XYBrushArea]>((): void => undefined);
+      const brushEndListener = jest.fn<void, [XYBrushArea | HeatmapBrushEvent]>((): void => undefined);
       const onBrushCaller = createOnBrushEndCaller();
       store.subscribe(() => {
         onBrushCaller(store.getState());
@@ -948,7 +948,7 @@ function mouseOverTestSuite(scaleType: BaseScaleType) {
       }
     });
     test('can respond to a Y brush', () => {
-      const brushEndListener = jest.fn<void, [XYBrushArea]>((): void => undefined);
+      const brushEndListener = jest.fn<void, [XYBrushArea | HeatmapBrushEvent]>((): void => undefined);
       const onBrushCaller = createOnBrushEndCaller();
       store.subscribe(() => {
         onBrushCaller(store.getState());
@@ -1024,7 +1024,7 @@ function mouseOverTestSuite(scaleType: BaseScaleType) {
       }
     });
     test('can respond to rectangular brush', () => {
-      const brushEndListener = jest.fn<void, [XYBrushArea]>((): void => undefined);
+      const brushEndListener = jest.fn<void, [XYBrushArea | HeatmapBrushEvent]>((): void => undefined);
       const onBrushCaller = createOnBrushEndCaller();
       store.subscribe(() => {
         onBrushCaller(store.getState());
