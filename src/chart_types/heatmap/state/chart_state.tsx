@@ -37,7 +37,6 @@ import { isBrushAvailableSelector } from './selectors/is_brush_available';
 import { isBrushingSelector } from './selectors/is_brushing';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
 import { createOnBrushEndCaller } from './selectors/on_brush_end_caller';
-import { createOnBrushingCaller } from './selectors/on_brushing_caller';
 import { createOnElementClickCaller } from './selectors/on_element_click_caller';
 import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
@@ -53,7 +52,6 @@ export class HeatmapState implements InternalChartState {
   onElementOverCaller: (state: GlobalChartState) => void = createOnElementOverCaller();
   onElementOutCaller: (state: GlobalChartState) => void = createOnElementOutCaller();
   onBrushEndCaller: (state: GlobalChartState) => void = createOnBrushEndCaller();
-  onBrushingCaller: (state: GlobalChartState) => void = createOnBrushingCaller();
 
   isInitialized(globalState: GlobalChartState) {
     return getSpecOrNull(globalState) !== null ? InitStatus.Initialized : InitStatus.ChartNotInitialized;
@@ -125,10 +123,6 @@ export class HeatmapState implements InternalChartState {
 
   getBrushArea(globalState: GlobalChartState): Dimensions | null {
     return getBrushAreaSelector(globalState);
-  }
-
-  getPickedArea(globalState: GlobalChartState) {
-    return this.onBrushingCaller(globalState);
   }
 
   eventCallbacks(globalState: GlobalChartState) {

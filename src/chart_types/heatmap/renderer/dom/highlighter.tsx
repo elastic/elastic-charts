@@ -27,7 +27,7 @@ export interface HighlighterCellsProps {
   initialized: boolean;
   canvasDimension: Dimensions;
   geometries: ShapeViewModel;
-  dragShape: DragShape;
+  dragShape: DragShape | null;
 }
 
 /**
@@ -49,7 +49,13 @@ export const HighlighterCellsComponent: FC<HighlighterCellsProps> = ({
     <svg className="echHighlighter" width="100%" height="100%">
       <defs>
         <mask id={maskId}>
-          <rect x={0} y={0} width={canvasDimension.width} height={canvasDimension.height} fill="#eee" />
+          <rect
+            x={0}
+            y={0}
+            width={canvasDimension.width + canvasDimension.left}
+            height={canvasDimension.height}
+            fill="#eee"
+          />
           <rect x={dragShape.x} y={dragShape.y} width={dragShape.width} height={dragShape.height} fill="black" />
           <rect x={0} y={dragShape.y} width={canvasDimension.left} height={dragShape.height} fill="black" />
         </mask>
@@ -58,7 +64,7 @@ export const HighlighterCellsComponent: FC<HighlighterCellsProps> = ({
         <rect
           x={0}
           y={0}
-          width={canvasDimension.width}
+          width={canvasDimension.width + canvasDimension.left}
           height={canvasDimension.height}
           mask={`url(#${maskId})`}
           className="echHighlighter__mask"
