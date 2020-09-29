@@ -19,8 +19,8 @@
 import { connect } from 'react-redux';
 
 import { GlobalChartState } from '../../../../state/chart_state';
-import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
+import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
 import { geometries } from '../../state/selectors/geometries';
 import { getHighlightedArea } from '../../state/selectors/picked_shapes';
 import { DEFAULT_PROPS, HighlighterCellsComponent, HighlighterCellsProps } from './highlighter';
@@ -33,7 +33,7 @@ const brushMapStateToProps = (state: GlobalChartState): HighlighterCellsProps =>
   const { chartId } = state;
 
   const geoms = geometries(state);
-  const canvasDimension = getChartContainerDimensionsSelector(state);
+  const canvasDimension = computeChartDimensionsSelector(state);
   // FIXME stateful picked area from the internal state
   // @ts-ignore
   let dragShape = state.internalChartState.getPickedArea(state);

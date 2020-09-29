@@ -33,16 +33,16 @@ function getCurrentPointerStates(state: GlobalChartState) {
  * @internal
  */
 export function createOnBrushingCaller(): (state: GlobalChartState) => void {
-  let prevShape: DragShape = { x: 0, y: 0, height: 0, width: 0 };
-  let selector: Selector<GlobalChartState, DragShape> | null = null;
+  let prevShape: DragShape | null = null;
+  let selector: Selector<GlobalChartState, DragShape | null> | null = null;
 
   return (state: GlobalChartState) => {
     if (selector === null && state.chartType === ChartTypes.Heatmap) {
       selector = createCachedSelector(
         [geometries, getCurrentPointerStates],
-        (geoms, pointerStates): DragShape => {
+        (geoms, pointerStates): DragShape | null => {
           if (!pointerStates.dragging || !pointerStates.down) {
-            return { x: 0, y: 0, height: 0, width: 0 };
+            return null;
           }
 
           const {

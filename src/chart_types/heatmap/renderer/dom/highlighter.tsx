@@ -35,19 +35,33 @@ export interface HighlighterCellsProps {
  *
  * Component for highlighting selected cells
  */
-export const HighlighterCellsComponent: FC<HighlighterCellsProps> = ({ initialized, dragShape }) => {
-  if (!initialized) return null;
+export const HighlighterCellsComponent: FC<HighlighterCellsProps> = ({
+  initialized,
+  dragShape,
+  chartId,
+  canvasDimension,
+}) => {
+  if (!initialized || dragShape === null) return null;
+
+  const maskId = `echHighlighterMask__${chartId}`;
 
   return (
     <svg className="echHighlighter" width="100%" height="100%">
-      <g transform={`translate(${0}, ${0})`}>
+      <defs>
+        <mask id={maskId}>
+          <rect x={0} y={0} width={canvasDimension.width} height={canvasDimension.height} fill="#eee" />
+          <rect x={dragShape.x} y={dragShape.y} width={dragShape.width} height={dragShape.height} fill="black" />
+          <rect x={0} y={dragShape.y} width={canvasDimension.left} height={dragShape.height} fill="black" />
+        </mask>
+      </defs>
+      <g>
         <rect
-          x={dragShape.x}
-          y={dragShape.y}
-          width={dragShape.width}
-          height={dragShape.height}
+          x={0}
+          y={0}
+          width={canvasDimension.width}
+          height={canvasDimension.height}
+          mask={`url(#${maskId})`}
           className="echHighlighter__mask"
-          clipPath={`url(#${''})`}
         />
       </g>
     </svg>
