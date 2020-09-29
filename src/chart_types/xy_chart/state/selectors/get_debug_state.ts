@@ -58,20 +58,28 @@ export const getDebugStateSelector = createCachedSelector(
   },
 )(getChartIdSelector);
 
-const getAxes = (ticks: AxisVisibleTicks, axesSpecs: AxisSpec[]): DebugStateAxes => {
+const getAxes = (ticks: AxisVisibleTicks, axesSpecs: AxisSpec[]): DebugStateAxes | undefined => {
+  if (axesSpecs.length === 0) {
+    return;
+  }
+
   return axesSpecs.reduce<DebugStateAxes>(
     (acc, { position, title, id }) => {
       const axisTicks = ticks.axisVisibleTicks.get(id) ?? [];
       const labels = axisTicks.map(({ label }) => label);
       const values = axisTicks.map(({ value }) => value);
+      const grids = ticks.axisGridLinesPositions.get(id) ?? [];
+      const gridlines = grids.map(([x, y]) => ({ x, y }));
 
       if (isVerticalAxis(position)) {
         acc.y.push({
           id,
           title,
           position,
+          // reverse for bottom/up coordinates
           labels: labels.reverse(),
           values: values.reverse(),
+          gridlines: gridlines.reverse(),
         });
       } else {
         acc.x.push({
@@ -80,14 +88,15 @@ const getAxes = (ticks: AxisVisibleTicks, axesSpecs: AxisSpec[]): DebugStateAxes
           position,
           labels,
           values,
+          gridlines,
         });
       }
 
       return acc;
     },
     {
-      x: [],
       y: [],
+      x: [],
     },
   );
 };
@@ -96,18 +105,30 @@ const getBarsState = (seriesNameMap: Map<string, string>, barGeometries: BarGeom
   const buckets = new Map<string, DebugStateBar>();
 
   barGeometries.forEach(
-    ({ color, seriesIdentifier: { key }, seriesStyle: { rect, rectBorder }, value: { x, y, mark } }: BarGeometry) => {
-      if (buckets.has(key)) {
-        buckets.get(key)!.bars.push({ x, y, mark });
-      } else {
+    ({
+      color,
+      seriesIdentifier: { key },
+      seriesStyle: { rect, rectBorder },
+      value: { x, y, mark },
+      displayValue,
+    }: BarGeometry) => {
+      const label = displayValue?.text;
+      if (!buckets.has(key)) {
         const name = seriesNameMap.get(key) ?? '';
         buckets.set(key, {
           key,
           name,
           color,
-          bars: [{ x, y, mark }],
-          visible: hasVisibleStyle(rect) && hasVisibleStyle(rectBorder),
+          bars: [],
+          labels: [],
+          visible: hasVisibleStyle(rect) || hasVisibleStyle(rectBorder),
         });
+      }
+
+      buckets.get(key)!.bars.push({ x, y, mark });
+
+      if (label) {
+        buckets.get(key)!.labels.push(label);
       }
     },
   );

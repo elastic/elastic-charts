@@ -26,6 +26,10 @@ export interface DebugStateAxis {
   title?: string;
   labels: string[];
   values: any[];
+  gridlines: {
+    y: number;
+    x: number;
+  }[];
 }
 
 export interface DebugStateAxes {
@@ -71,6 +75,7 @@ export type DebugStateArea = Omit<DebugStateLine, 'points' | 'visiblePoints'> & 
 export type DebugStateBar = DebugStateBase & {
   visible: boolean;
   bars: DebugStateValue[];
+  labels: any[];
 };
 
 /**
