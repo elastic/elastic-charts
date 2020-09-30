@@ -8,14 +8,17 @@ import { $Values } from 'utility-types';
 import { ComponentType } from 'react';
 import React from 'react';
 
-// Warning: (ae-forgotten-export) The symbol "AccessorObjectKey" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "AccessorArrayIndex" needs to be exported by the entry point index.d.ts
-//
 // @public
 export type Accessor = AccessorObjectKey | AccessorArrayIndex;
 
 // @public
+export type AccessorArrayIndex = number;
+
+// @public
 export type AccessorFn = UnaryAccessorFn;
+
+// @public
+export type AccessorObjectKey = string;
 
 // @public
 export type AnnotationDomainType = $Values<typeof AnnotationDomainTypes>;
