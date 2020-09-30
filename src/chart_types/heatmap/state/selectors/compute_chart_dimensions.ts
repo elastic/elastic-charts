@@ -26,6 +26,7 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { Box } from '../../../partition_chart/layout/types/types';
 import { measureText } from '../../../partition_chart/layout/utils/measure';
 import { XDomain } from '../../../xy_chart/domains/types';
+import { getGridCellHeight } from '../../layout/viewmodel/grid';
 import { HeatmapCellDatum } from '../../layout/viewmodel/viewmodel';
 import { getHeatmapConfigSelector } from './get_heatmap_config';
 import { getHeatmapTableSelector } from './get_heatmap_table';
@@ -60,6 +61,10 @@ export const computeChartDimensionsSelector = createCachedSelector(
     const textMeasurer = document.createElement('canvas');
     const textMeasurerCtx = textMeasurer.getContext('2d');
     const textMeasure = measureText(textMeasurerCtx!);
+
+    // compute the grid cell height
+    const gridCellHeight = getGridCellHeight(heatmapTable.yValues, config);
+    const maxHeight = gridCellHeight * heatmapTable.yValues.length;
 
     const { padding } = config.yAxisLabel;
     const totalHorizontalPadding =
@@ -96,7 +101,7 @@ export const computeChartDimensionsSelector = createCachedSelector(
     }
 
     const result = {
-      height,
+      height: Math.min(maxHeight, height),
       width,
       top,
       left,

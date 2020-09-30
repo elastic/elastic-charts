@@ -255,11 +255,11 @@ export function shapeViewModel(
    * @param end
    */
   const pickDragShape: PickDragShapeFunction = ([start, end]) => {
-    const startX = Math.min(start.x, end.x) - chartDimensions.left;
+    const startX = Math.max(Math.min(start.x, end.x), chartDimensions.left) - chartDimensions.left;
     const startY = Math.min(start.y, end.y);
 
-    const endX = Math.max(start.x, end.x) - chartDimensions.left;
-    const endY = Math.max(start.y, end.y);
+    const endX = Math.min(Math.max(start.x, end.x), chartDimensions.width + cellWidth) - chartDimensions.left;
+    const endY = Math.min(Math.max(start.y, end.y), maxHeight - chartDimensions.top - cellHeight);
 
     const startXValue = Math.floor(startX / cellWidth) * cellWidth;
     const startYValue = Math.floor(startY / cellHeight) * cellHeight;
