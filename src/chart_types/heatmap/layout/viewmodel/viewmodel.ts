@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { bisectLeft } from 'd3-array';
 import { scaleBand, scaleQuantize } from 'd3-scale';
 
 import { ChartTypes } from '../../..';
@@ -276,7 +277,7 @@ export function shapeViewModel(
   };
 
   /**
-   * Return selected cells based on drag selection.
+   * Return selected cells and X,Y ranges based on the drag selection.
    */
   const pickDragArea: PickDragFunction = (bound) => {
     const result = {
@@ -309,6 +310,14 @@ export function shapeViewModel(
 
     const xArr = [...result.x];
 
+    if (timeScale) {
+      // extend the range in case the right boundary has been selected
+      const maxValue = xArr[xArr.length - 1] as number;
+      if (maxValue === xValues[xValues.length - 1]) {
+        xArr.push(maxValue + xDomain.minInterval);
+      }
+    }
+
     return {
       ...result,
       x: isXAxisTimeScale ? [xArr[0], xArr[xArr.length - 1]] : xArr,
@@ -327,14 +336,25 @@ export function shapeViewModel(
     let width = 0;
     if (xDomain.scaleType === ScaleType.Time) {
       const [start, end] = x;
-      // find X coordinated based on the time range
-      const startFromScale = xScale(start);
-      const endFromScale = xScale(end);
-      if (startFromScale === undefined || endFromScale === undefined) {
+      try {
+        // find X coordinated based on the time range
+        const leftIndex = bisectLeft(xValues, start);
+        let rightIndex = bisectLeft(xValues, end);
+
+        const isOutOfRange = rightIndex >= xValues.length - 1;
+
+        rightIndex = isOutOfRange ? xValues.length - 1 : rightIndex;
+
+        const startFromScale = xScale(xValues[leftIndex]);
+        const endFromScale = xScale(xValues[rightIndex]);
+
+        xStart = startFromScale! + chartDimensions.left;
+
+        // extend the range in case the right boundary has been selected
+        width = endFromScale! - startFromScale! + (isOutOfRange ? cellWidth : 0);
+      } catch {
         throw new Error("Couldn't resolve the time range");
       }
-      xStart = startFromScale + chartDimensions.left;
-      width = endFromScale - startFromScale;
     }
 
     // resolve Y coordinated making sure the order is correct
