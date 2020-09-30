@@ -24,7 +24,8 @@ import { MockStore } from '../../../mocks/store';
 import { SeededDataGenerator } from '../../../mocks/utils';
 import { ScaleType } from '../../../scales/constants';
 import { SpecTypes } from '../../../specs/constants';
-import { AccessorFn } from '../../../utils/accessor';
+import { GlobalChartState } from '../../../state/chart_state';
+import { AccessorFn, Accessor } from '../../../utils/accessor';
 import { Position } from '../../../utils/commons';
 import * as TestDataset from '../../../utils/data_samples/test_dataset';
 import { ColorConfig } from '../../../utils/themes/theme';
@@ -173,6 +174,7 @@ describe('Series', () => {
 
     expect(stacked[0].dataSeries).toMatchSnapshot();
   });
+
   test('Can stack multiple dataseries', () => {
     const dataSeries: DataSeries[] = [
       {
@@ -981,6 +983,184 @@ describe('Series', () => {
       });
       const splitSeries = splitSeriesDataByAccessors(spec, new Map());
       expect([...splitSeries.dataSeries.values()].length).toBe(0);
+    });
+  });
+
+  describe.each<'stacked' | 'nonStacked'>(['stacked', 'nonStacked'])('Serializing values - %s', (stackedType) => {
+    const getData = (data: any[], ykey?: string) =>
+      data.map((y, index) => ({
+        ...{ y: ykey ? { [ykey]: y } : y },
+        x: {
+          from: index,
+          to: index + 1,
+        },
+        index,
+      }));
+    const useStackAccessors = (accessors?: Accessor[]) => (stackedType === 'nonStacked' ? undefined : accessors);
+    const testSeriesDomainsSelector = (state: GlobalChartState) => {
+      const { formattedDataSeries } = computeSeriesDomainsSelector(state);
+      return formattedDataSeries[stackedType][0];
+    };
+
+    test('Can serialize complex values values', () => {
+      const store = MockStore.default();
+      MockStore.addSpecs(
+        MockSeriesSpec.area({
+          stackAccessors: useStackAccessors(['x']),
+          xScaleType: ScaleType.Ordinal,
+          serializer: ({ from, to }) => `${from} - ${to}`,
+          data: getData([1, 2, 3, 4, 5]),
+        }),
+        store,
+      );
+
+      const dataSeries = testSeriesDomainsSelector(store.getState());
+      expect(dataSeries).toMatchSnapshot();
+    });
+
+    test('Can serialize complex x and y values with overrides', () => {
+      const store = MockStore.default();
+      MockStore.addSpecs(
+        MockSeriesSpec.area({
+          xScaleType: ScaleType.Ordinal,
+          stackAccessors: useStackAccessors(['x']),
+          serializer: () => null,
+          xSerializer: ({ from, to }) => `${from} - ${to}`,
+          ySerializer: ({ value }) => value,
+          data: getData([1, 2, 3, 4, 5], 'value'),
+        }),
+        store,
+      );
+
+      const dataSeries = testSeriesDomainsSelector(store.getState());
+      expect(dataSeries).toMatchSnapshot();
+    });
+
+    test('Can serialize complex y values', () => {
+      const store = MockStore.default();
+      MockStore.addSpecs(
+        MockSeriesSpec.area({
+          xScaleType: ScaleType.Ordinal,
+          xAccessor: 'index',
+          stackAccessors: useStackAccessors(['x']),
+          serializer: () => null,
+          xSerializer: ({ from, to }) => `${from} - ${to}`,
+          ySerializer: ({ value }) => value,
+          data: getData([1, 2, 3, 4, 5], 'value'),
+        }),
+        store,
+      );
+
+      const dataSeries = testSeriesDomainsSelector(store.getState());
+      expect(dataSeries).toMatchSnapshot();
+    });
+
+    test('Can serialize complex mark values', () => {
+      const store = MockStore.default();
+      MockStore.addSpecs(
+        MockSeriesSpec.area({
+          xScaleType: ScaleType.Ordinal,
+          yAccessors: ['index'],
+          markSizeAccessor: 'y',
+          stackAccessors: useStackAccessors(['x']),
+          serializer: () => null,
+          xSerializer: ({ from, to }) => `${from} - ${to}`,
+          ySerializer: ({ mark }) => mark,
+          markSerializer: ({ mark }) => mark,
+          data: getData([1, 2, 3, 4, 5], 'mark'),
+        }),
+        store,
+      );
+
+      const dataSeries = testSeriesDomainsSelector(store.getState());
+      expect(dataSeries).toMatchSnapshot();
+    });
+
+    test('Can serialize complex x values without affecting y values', () => {
+      const store = MockStore.default();
+      MockStore.addSpecs(
+        MockSeriesSpec.area({
+          stackAccessors: useStackAccessors(['x']),
+          xScaleType: ScaleType.Ordinal,
+          xSerializer: ({ from, to }) => `${from} - ${to}`,
+          data: getData([1, 2, 3, 4, 5]),
+        }),
+        store,
+      );
+
+      const dataSeries = testSeriesDomainsSelector(store.getState());
+      expect(dataSeries).toMatchSnapshot();
+    });
+
+    test('Can serialize complex y values without affecting x values', () => {
+      const store = MockStore.default();
+      MockStore.addSpecs(
+        MockSeriesSpec.area({
+          xAccessor: 'index',
+          stackAccessors: useStackAccessors(['index']),
+          xScaleType: ScaleType.Ordinal,
+          ySerializer: ({ value }) => value,
+          data: getData([1, 2, 3, 4, 5], 'value'),
+        }),
+        store,
+      );
+
+      const dataSeries = testSeriesDomainsSelector(store.getState());
+      expect(dataSeries).toMatchSnapshot();
+    });
+
+    test('Can serialize mix of complex y values', () => {
+      const store = MockStore.default();
+      MockStore.addSpecs(
+        MockSeriesSpec.area({
+          xScaleType: ScaleType.Ordinal,
+          xAccessor: 'index',
+          stackAccessors: useStackAccessors(['index']),
+          ySerializer: ({ value }) => value,
+          data: getData([1, undefined, 3, null, 5, false], 'value'),
+        }),
+        store,
+      );
+
+      const dataSeries = testSeriesDomainsSelector(store.getState());
+      expect(dataSeries).toMatchSnapshot();
+    });
+
+    test('Can serialize mix of complex x values', () => {
+      const store = MockStore.default();
+      MockStore.addSpecs(
+        MockSeriesSpec.area({
+          xScaleType: ScaleType.Ordinal,
+          xAccessor: 'y',
+          yAccessors: ['index'],
+          stackAccessors: useStackAccessors(['y']),
+          xSerializer: ({ value }) => value,
+          data: getData([1, undefined, 3, null, 5, false], 'value'),
+        }),
+        store,
+      );
+
+      const dataSeries = testSeriesDomainsSelector(store.getState());
+      expect(dataSeries).toMatchSnapshot();
+    });
+
+    test('Can serialize mix of complex y0 values', () => {
+      const store = MockStore.default();
+      MockStore.addSpecs(
+        MockSeriesSpec.area({
+          xScaleType: ScaleType.Ordinal,
+          yAccessors: ['index'],
+          y0Accessors: ['y'],
+          stackAccessors: useStackAccessors(['x']),
+          serializer: ({ from, to }) => `${from} - ${to}`,
+          ySerializer: ({ value }) => value,
+          data: getData([-10, -20, -30, -40, -50, -60], 'value'),
+        }),
+        store,
+      );
+
+      const dataSeries = testSeriesDomainsSelector(store.getState());
+      expect(dataSeries).toMatchSnapshot();
     });
   });
 });

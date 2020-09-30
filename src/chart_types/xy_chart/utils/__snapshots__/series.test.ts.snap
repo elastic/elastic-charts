@@ -22807,6 +22807,2090 @@ Array [
 ]
 `;
 
+exports[`Series Serializing values - nonStacked Can serialize complex mark values 1`] = `
+Object {
+  "counts": Object {
+    "area": 1,
+    "bar": 0,
+    "bubble": 0,
+    "line": 0,
+  },
+  "dataSeries": Array [
+    Object {
+      "data": Array [
+        Object {
+          "datum": Object {
+            "index": 0,
+            "x": Object {
+              "from": 0,
+              "to": 1,
+            },
+            "y": Object {
+              "mark": 1,
+            },
+          },
+          "initialY0": null,
+          "initialY1": 0,
+          "mark": 1,
+          "x": "0 - 1",
+          "y0": null,
+          "y1": 0,
+        },
+        Object {
+          "datum": Object {
+            "index": 1,
+            "x": Object {
+              "from": 1,
+              "to": 2,
+            },
+            "y": Object {
+              "mark": 2,
+            },
+          },
+          "initialY0": null,
+          "initialY1": 1,
+          "mark": 2,
+          "x": "1 - 2",
+          "y0": null,
+          "y1": 1,
+        },
+        Object {
+          "datum": Object {
+            "index": 2,
+            "x": Object {
+              "from": 2,
+              "to": 3,
+            },
+            "y": Object {
+              "mark": 3,
+            },
+          },
+          "initialY0": null,
+          "initialY1": 2,
+          "mark": 3,
+          "x": "2 - 3",
+          "y0": null,
+          "y1": 2,
+        },
+        Object {
+          "datum": Object {
+            "index": 3,
+            "x": Object {
+              "from": 3,
+              "to": 4,
+            },
+            "y": Object {
+              "mark": 4,
+            },
+          },
+          "initialY0": null,
+          "initialY1": 3,
+          "mark": 4,
+          "x": "3 - 4",
+          "y0": null,
+          "y1": 3,
+        },
+        Object {
+          "datum": Object {
+            "index": 4,
+            "x": Object {
+              "from": 4,
+              "to": 5,
+            },
+            "y": Object {
+              "mark": 5,
+            },
+          },
+          "initialY0": null,
+          "initialY1": 4,
+          "mark": 5,
+          "x": "4 - 5",
+          "y0": null,
+          "y1": 4,
+        },
+      ],
+      "key": "spec{spec1}yAccessor{index}splitAccessors{}",
+      "seriesKeys": Array [
+        "index",
+      ],
+      "specId": "spec1",
+      "splitAccessors": Map {},
+      "yAccessor": "index",
+    },
+  ],
+  "groupId": "__global__",
+}
+`;
+
+exports[`Series Serializing values - nonStacked Can serialize complex values values 1`] = `
+Object {
+  "counts": Object {
+    "area": 1,
+    "bar": 0,
+    "bubble": 0,
+    "line": 0,
+  },
+  "dataSeries": Array [
+    Object {
+      "data": Array [
+        Object {
+          "datum": Object {
+            "index": 0,
+            "x": Object {
+              "from": 0,
+              "to": 1,
+            },
+            "y": 1,
+          },
+          "initialY0": null,
+          "initialY1": 1,
+          "mark": null,
+          "x": "0 - 1",
+          "y0": null,
+          "y1": 1,
+        },
+        Object {
+          "datum": Object {
+            "index": 1,
+            "x": Object {
+              "from": 1,
+              "to": 2,
+            },
+            "y": 2,
+          },
+          "initialY0": null,
+          "initialY1": 2,
+          "mark": null,
+          "x": "1 - 2",
+          "y0": null,
+          "y1": 2,
+        },
+        Object {
+          "datum": Object {
+            "index": 2,
+            "x": Object {
+              "from": 2,
+              "to": 3,
+            },
+            "y": 3,
+          },
+          "initialY0": null,
+          "initialY1": 3,
+          "mark": null,
+          "x": "2 - 3",
+          "y0": null,
+          "y1": 3,
+        },
+        Object {
+          "datum": Object {
+            "index": 3,
+            "x": Object {
+              "from": 3,
+              "to": 4,
+            },
+            "y": 4,
+          },
+          "initialY0": null,
+          "initialY1": 4,
+          "mark": null,
+          "x": "3 - 4",
+          "y0": null,
+          "y1": 4,
+        },
+        Object {
+          "datum": Object {
+            "index": 4,
+            "x": Object {
+              "from": 4,
+              "to": 5,
+            },
+            "y": 5,
+          },
+          "initialY0": null,
+          "initialY1": 5,
+          "mark": null,
+          "x": "4 - 5",
+          "y0": null,
+          "y1": 5,
+        },
+      ],
+      "key": "spec{spec1}yAccessor{y}splitAccessors{}",
+      "seriesKeys": Array [
+        "y",
+      ],
+      "specId": "spec1",
+      "splitAccessors": Map {},
+      "yAccessor": "y",
+    },
+  ],
+  "groupId": "__global__",
+}
+`;
+
+exports[`Series Serializing values - nonStacked Can serialize complex x and y values with overrides 1`] = `
+Object {
+  "counts": Object {
+    "area": 1,
+    "bar": 0,
+    "bubble": 0,
+    "line": 0,
+  },
+  "dataSeries": Array [
+    Object {
+      "data": Array [
+        Object {
+          "datum": Object {
+            "index": 0,
+            "x": Object {
+              "from": 0,
+              "to": 1,
+            },
+            "y": Object {
+              "value": 1,
+            },
+          },
+          "initialY0": null,
+          "initialY1": 1,
+          "mark": null,
+          "x": "0 - 1",
+          "y0": null,
+          "y1": 1,
+        },
+        Object {
+          "datum": Object {
+            "index": 1,
+            "x": Object {
+              "from": 1,
+              "to": 2,
+            },
+            "y": Object {
+              "value": 2,
+            },
+          },
+          "initialY0": null,
+          "initialY1": 2,
+          "mark": null,
+          "x": "1 - 2",
+          "y0": null,
+          "y1": 2,
+        },
+        Object {
+          "datum": Object {
+            "index": 2,
+            "x": Object {
+              "from": 2,
+              "to": 3,
+            },
+            "y": Object {
+              "value": 3,
+            },
+          },
+          "initialY0": null,
+          "initialY1": 3,
+          "mark": null,
+          "x": "2 - 3",
+          "y0": null,
+          "y1": 3,
+        },
+        Object {
+          "datum": Object {
+            "index": 3,
+            "x": Object {
+              "from": 3,
+              "to": 4,
+            },
+            "y": Object {
+              "value": 4,
+            },
+          },
+          "initialY0": null,
+          "initialY1": 4,
+          "mark": null,
+          "x": "3 - 4",
+          "y0": null,
+          "y1": 4,
+        },
+        Object {
+          "datum": Object {
+            "index": 4,
+            "x": Object {
+              "from": 4,
+              "to": 5,
+            },
+            "y": Object {
+              "value": 5,
+            },
+          },
+          "initialY0": null,
+          "initialY1": 5,
+          "mark": null,
+          "x": "4 - 5",
+          "y0": null,
+          "y1": 5,
+        },
+      ],
+      "key": "spec{spec1}yAccessor{y}splitAccessors{}",
+      "seriesKeys": Array [
+        "y",
+      ],
+      "specId": "spec1",
+      "splitAccessors": Map {},
+      "yAccessor": "y",
+    },
+  ],
+  "groupId": "__global__",
+}
+`;
+
+exports[`Series Serializing values - nonStacked Can serialize complex x values without affecting y values 1`] = `
+Object {
+  "counts": Object {
+    "area": 1,
+    "bar": 0,
+    "bubble": 0,
+    "line": 0,
+  },
+  "dataSeries": Array [
+    Object {
+      "data": Array [
+        Object {
+          "datum": Object {
+            "index": 0,
+            "x": Object {
+              "from": 0,
+              "to": 1,
+            },
+            "y": 1,
+          },
+          "initialY0": null,
+          "initialY1": 1,
+          "mark": null,
+          "x": "0 - 1",
+          "y0": null,
+          "y1": 1,
+        },
+        Object {
+          "datum": Object {
+            "index": 1,
+            "x": Object {
+              "from": 1,
+              "to": 2,
+            },
+            "y": 2,
+          },
+          "initialY0": null,
+          "initialY1": 2,
+          "mark": null,
+          "x": "1 - 2",
+          "y0": null,
+          "y1": 2,
+        },
+        Object {
+          "datum": Object {
+            "index": 2,
+            "x": Object {
+              "from": 2,
+              "to": 3,
+            },
+            "y": 3,
+          },
+          "initialY0": null,
+          "initialY1": 3,
+          "mark": null,
+          "x": "2 - 3",
+          "y0": null,
+          "y1": 3,
+        },
+        Object {
+          "datum": Object {
+            "index": 3,
+            "x": Object {
+              "from": 3,
+              "to": 4,
+            },
+            "y": 4,
+          },
+          "initialY0": null,
+          "initialY1": 4,
+          "mark": null,
+          "x": "3 - 4",
+          "y0": null,
+          "y1": 4,
+        },
+        Object {
+          "datum": Object {
+            "index": 4,
+            "x": Object {
+              "from": 4,
+              "to": 5,
+            },
+            "y": 5,
+          },
+          "initialY0": null,
+          "initialY1": 5,
+          "mark": null,
+          "x": "4 - 5",
+          "y0": null,
+          "y1": 5,
+        },
+      ],
+      "key": "spec{spec1}yAccessor{y}splitAccessors{}",
+      "seriesKeys": Array [
+        "y",
+      ],
+      "specId": "spec1",
+      "splitAccessors": Map {},
+      "yAccessor": "y",
+    },
+  ],
+  "groupId": "__global__",
+}
+`;
+
+exports[`Series Serializing values - nonStacked Can serialize complex y values 1`] = `
+Object {
+  "counts": Object {
+    "area": 1,
+    "bar": 0,
+    "bubble": 0,
+    "line": 0,
+  },
+  "dataSeries": Array [
+    Object {
+      "data": Array [
+        Object {
+          "datum": Object {
+            "index": 0,
+            "x": Object {
+              "from": 0,
+              "to": 1,
+            },
+            "y": Object {
+              "value": 1,
+            },
+          },
+          "initialY0": null,
+          "initialY1": 1,
+          "mark": null,
+          "x": 0,
+          "y0": null,
+          "y1": 1,
+        },
+        Object {
+          "datum": Object {
+            "index": 1,
+            "x": Object {
+              "from": 1,
+              "to": 2,
+            },
+            "y": Object {
+              "value": 2,
+            },
+          },
+          "initialY0": null,
+          "initialY1": 2,
+          "mark": null,
+          "x": 1,
+          "y0": null,
+          "y1": 2,
+        },
+        Object {
+          "datum": Object {
+            "index": 2,
+            "x": Object {
+              "from": 2,
+              "to": 3,
+            },
+            "y": Object {
+              "value": 3,
+            },
+          },
+          "initialY0": null,
+          "initialY1": 3,
+          "mark": null,
+          "x": 2,
+          "y0": null,
+          "y1": 3,
+        },
+        Object {
+          "datum": Object {
+            "index": 3,
+            "x": Object {
+              "from": 3,
+              "to": 4,
+            },
+            "y": Object {
+              "value": 4,
+            },
+          },
+          "initialY0": null,
+          "initialY1": 4,
+          "mark": null,
+          "x": 3,
+          "y0": null,
+          "y1": 4,
+        },
+        Object {
+          "datum": Object {
+            "index": 4,
+            "x": Object {
+              "from": 4,
+              "to": 5,
+            },
+            "y": Object {
+              "value": 5,
+            },
+          },
+          "initialY0": null,
+          "initialY1": 5,
+          "mark": null,
+          "x": 4,
+          "y0": null,
+          "y1": 5,
+        },
+      ],
+      "key": "spec{spec1}yAccessor{y}splitAccessors{}",
+      "seriesKeys": Array [
+        "y",
+      ],
+      "specId": "spec1",
+      "splitAccessors": Map {},
+      "yAccessor": "y",
+    },
+  ],
+  "groupId": "__global__",
+}
+`;
+
+exports[`Series Serializing values - nonStacked Can serialize complex y values without affecting x values 1`] = `
+Object {
+  "counts": Object {
+    "area": 1,
+    "bar": 0,
+    "bubble": 0,
+    "line": 0,
+  },
+  "dataSeries": Array [
+    Object {
+      "data": Array [
+        Object {
+          "datum": Object {
+            "index": 0,
+            "x": Object {
+              "from": 0,
+              "to": 1,
+            },
+            "y": Object {
+              "value": 1,
+            },
+          },
+          "initialY0": null,
+          "initialY1": 1,
+          "mark": null,
+          "x": 0,
+          "y0": null,
+          "y1": 1,
+        },
+        Object {
+          "datum": Object {
+            "index": 1,
+            "x": Object {
+              "from": 1,
+              "to": 2,
+            },
+            "y": Object {
+              "value": 2,
+            },
+          },
+          "initialY0": null,
+          "initialY1": 2,
+          "mark": null,
+          "x": 1,
+          "y0": null,
+          "y1": 2,
+        },
+        Object {
+          "datum": Object {
+            "index": 2,
+            "x": Object {
+              "from": 2,
+              "to": 3,
+            },
+            "y": Object {
+              "value": 3,
+            },
+          },
+          "initialY0": null,
+          "initialY1": 3,
+          "mark": null,
+          "x": 2,
+          "y0": null,
+          "y1": 3,
+        },
+        Object {
+          "datum": Object {
+            "index": 3,
+            "x": Object {
+              "from": 3,
+              "to": 4,
+            },
+            "y": Object {
+              "value": 4,
+            },
+          },
+          "initialY0": null,
+          "initialY1": 4,
+          "mark": null,
+          "x": 3,
+          "y0": null,
+          "y1": 4,
+        },
+        Object {
+          "datum": Object {
+            "index": 4,
+            "x": Object {
+              "from": 4,
+              "to": 5,
+            },
+            "y": Object {
+              "value": 5,
+            },
+          },
+          "initialY0": null,
+          "initialY1": 5,
+          "mark": null,
+          "x": 4,
+          "y0": null,
+          "y1": 5,
+        },
+      ],
+      "key": "spec{spec1}yAccessor{y}splitAccessors{}",
+      "seriesKeys": Array [
+        "y",
+      ],
+      "specId": "spec1",
+      "splitAccessors": Map {},
+      "yAccessor": "y",
+    },
+  ],
+  "groupId": "__global__",
+}
+`;
+
+exports[`Series Serializing values - nonStacked Can serialize mix of complex x values 1`] = `
+Object {
+  "counts": Object {
+    "area": 1,
+    "bar": 0,
+    "bubble": 0,
+    "line": 0,
+  },
+  "dataSeries": Array [
+    Object {
+      "data": Array [
+        Object {
+          "datum": Object {
+            "index": 0,
+            "x": Object {
+              "from": 0,
+              "to": 1,
+            },
+            "y": Object {
+              "value": 1,
+            },
+          },
+          "initialY0": null,
+          "initialY1": 0,
+          "mark": null,
+          "x": 1,
+          "y0": null,
+          "y1": 0,
+        },
+        Object {
+          "datum": Object {
+            "index": 2,
+            "x": Object {
+              "from": 2,
+              "to": 3,
+            },
+            "y": Object {
+              "value": 3,
+            },
+          },
+          "initialY0": null,
+          "initialY1": 2,
+          "mark": null,
+          "x": 3,
+          "y0": null,
+          "y1": 2,
+        },
+        Object {
+          "datum": Object {
+            "index": 4,
+            "x": Object {
+              "from": 4,
+              "to": 5,
+            },
+            "y": Object {
+              "value": 5,
+            },
+          },
+          "initialY0": null,
+          "initialY1": 4,
+          "mark": null,
+          "x": 5,
+          "y0": null,
+          "y1": 4,
+        },
+      ],
+      "key": "spec{spec1}yAccessor{index}splitAccessors{}",
+      "seriesKeys": Array [
+        "index",
+      ],
+      "specId": "spec1",
+      "splitAccessors": Map {},
+      "yAccessor": "index",
+    },
+  ],
+  "groupId": "__global__",
+}
+`;
+
+exports[`Series Serializing values - nonStacked Can serialize mix of complex y values 1`] = `
+Object {
+  "counts": Object {
+    "area": 1,
+    "bar": 0,
+    "bubble": 0,
+    "line": 0,
+  },
+  "dataSeries": Array [
+    Object {
+      "data": Array [
+        Object {
+          "datum": Object {
+            "index": 0,
+            "x": Object {
+              "from": 0,
+              "to": 1,
+            },
+            "y": Object {
+              "value": 1,
+            },
+          },
+          "initialY0": null,
+          "initialY1": 1,
+          "mark": null,
+          "x": 0,
+          "y0": null,
+          "y1": 1,
+        },
+        Object {
+          "datum": Object {
+            "index": 1,
+            "x": Object {
+              "from": 1,
+              "to": 2,
+            },
+            "y": Object {
+              "value": undefined,
+            },
+          },
+          "initialY0": null,
+          "initialY1": null,
+          "mark": null,
+          "x": 1,
+          "y0": null,
+          "y1": null,
+        },
+        Object {
+          "datum": Object {
+            "index": 2,
+            "x": Object {
+              "from": 2,
+              "to": 3,
+            },
+            "y": Object {
+              "value": 3,
+            },
+          },
+          "initialY0": null,
+          "initialY1": 3,
+          "mark": null,
+          "x": 2,
+          "y0": null,
+          "y1": 3,
+        },
+        Object {
+          "datum": Object {
+            "index": 3,
+            "x": Object {
+              "from": 3,
+              "to": 4,
+            },
+            "y": Object {
+              "value": null,
+            },
+          },
+          "initialY0": null,
+          "initialY1": null,
+          "mark": null,
+          "x": 3,
+          "y0": null,
+          "y1": null,
+        },
+        Object {
+          "datum": Object {
+            "index": 4,
+            "x": Object {
+              "from": 4,
+              "to": 5,
+            },
+            "y": Object {
+              "value": 5,
+            },
+          },
+          "initialY0": null,
+          "initialY1": 5,
+          "mark": null,
+          "x": 4,
+          "y0": null,
+          "y1": 5,
+        },
+        Object {
+          "datum": Object {
+            "index": 5,
+            "x": Object {
+              "from": 5,
+              "to": 6,
+            },
+            "y": Object {
+              "value": false,
+            },
+          },
+          "initialY0": null,
+          "initialY1": 0,
+          "mark": null,
+          "x": 5,
+          "y0": null,
+          "y1": 0,
+        },
+      ],
+      "key": "spec{spec1}yAccessor{y}splitAccessors{}",
+      "seriesKeys": Array [
+        "y",
+      ],
+      "specId": "spec1",
+      "splitAccessors": Map {},
+      "yAccessor": "y",
+    },
+  ],
+  "groupId": "__global__",
+}
+`;
+
+exports[`Series Serializing values - nonStacked Can serialize mix of complex y0 values 1`] = `
+Object {
+  "counts": Object {
+    "area": 1,
+    "bar": 0,
+    "bubble": 0,
+    "line": 0,
+  },
+  "dataSeries": Array [
+    Object {
+      "data": Array [
+        Object {
+          "datum": Object {
+            "index": 0,
+            "x": Object {
+              "from": 0,
+              "to": 1,
+            },
+            "y": Object {
+              "value": -10,
+            },
+          },
+          "initialY0": -10,
+          "initialY1": 0,
+          "mark": null,
+          "x": "0 - 1",
+          "y0": -10,
+          "y1": 0,
+        },
+        Object {
+          "datum": Object {
+            "index": 1,
+            "x": Object {
+              "from": 1,
+              "to": 2,
+            },
+            "y": Object {
+              "value": -20,
+            },
+          },
+          "initialY0": -20,
+          "initialY1": 1,
+          "mark": null,
+          "x": "1 - 2",
+          "y0": -20,
+          "y1": 1,
+        },
+        Object {
+          "datum": Object {
+            "index": 2,
+            "x": Object {
+              "from": 2,
+              "to": 3,
+            },
+            "y": Object {
+              "value": -30,
+            },
+          },
+          "initialY0": -30,
+          "initialY1": 2,
+          "mark": null,
+          "x": "2 - 3",
+          "y0": -30,
+          "y1": 2,
+        },
+        Object {
+          "datum": Object {
+            "index": 3,
+            "x": Object {
+              "from": 3,
+              "to": 4,
+            },
+            "y": Object {
+              "value": -40,
+            },
+          },
+          "initialY0": -40,
+          "initialY1": 3,
+          "mark": null,
+          "x": "3 - 4",
+          "y0": -40,
+          "y1": 3,
+        },
+        Object {
+          "datum": Object {
+            "index": 4,
+            "x": Object {
+              "from": 4,
+              "to": 5,
+            },
+            "y": Object {
+              "value": -50,
+            },
+          },
+          "initialY0": -50,
+          "initialY1": 4,
+          "mark": null,
+          "x": "4 - 5",
+          "y0": -50,
+          "y1": 4,
+        },
+        Object {
+          "datum": Object {
+            "index": 5,
+            "x": Object {
+              "from": 5,
+              "to": 6,
+            },
+            "y": Object {
+              "value": -60,
+            },
+          },
+          "initialY0": -60,
+          "initialY1": 5,
+          "mark": null,
+          "x": "5 - 6",
+          "y0": -60,
+          "y1": 5,
+        },
+      ],
+      "key": "spec{spec1}yAccessor{index}splitAccessors{}",
+      "seriesKeys": Array [
+        "index",
+      ],
+      "specId": "spec1",
+      "splitAccessors": Map {},
+      "yAccessor": "index",
+    },
+  ],
+  "groupId": "__global__",
+}
+`;
+
+exports[`Series Serializing values - stacked Can serialize complex mark values 1`] = `
+Object {
+  "counts": Object {
+    "area": 1,
+    "bar": 0,
+    "bubble": 0,
+    "line": 0,
+  },
+  "dataSeries": Array [
+    Object {
+      "data": Array [
+        Object {
+          "datum": Object {
+            "index": 0,
+            "x": Object {
+              "from": 0,
+              "to": 1,
+            },
+            "y": Object {
+              "mark": 1,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 0,
+          "mark": 1,
+          "x": "0 - 1",
+          "y0": 0,
+          "y1": 0,
+        },
+        Object {
+          "datum": Object {
+            "index": 1,
+            "x": Object {
+              "from": 1,
+              "to": 2,
+            },
+            "y": Object {
+              "mark": 2,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 1,
+          "mark": 2,
+          "x": "1 - 2",
+          "y0": 0,
+          "y1": 1,
+        },
+        Object {
+          "datum": Object {
+            "index": 2,
+            "x": Object {
+              "from": 2,
+              "to": 3,
+            },
+            "y": Object {
+              "mark": 3,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 2,
+          "mark": 3,
+          "x": "2 - 3",
+          "y0": 0,
+          "y1": 2,
+        },
+        Object {
+          "datum": Object {
+            "index": 3,
+            "x": Object {
+              "from": 3,
+              "to": 4,
+            },
+            "y": Object {
+              "mark": 4,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 3,
+          "mark": 4,
+          "x": "3 - 4",
+          "y0": 0,
+          "y1": 3,
+        },
+        Object {
+          "datum": Object {
+            "index": 4,
+            "x": Object {
+              "from": 4,
+              "to": 5,
+            },
+            "y": Object {
+              "mark": 5,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 4,
+          "mark": 5,
+          "x": "4 - 5",
+          "y0": 0,
+          "y1": 4,
+        },
+      ],
+      "key": "spec{spec1}yAccessor{index}splitAccessors{}",
+      "seriesKeys": Array [
+        "index",
+      ],
+      "specId": "spec1",
+      "splitAccessors": Map {},
+      "yAccessor": "index",
+    },
+  ],
+  "groupId": "__global__",
+  "stackMode": undefined,
+}
+`;
+
+exports[`Series Serializing values - stacked Can serialize complex values values 1`] = `
+Object {
+  "counts": Object {
+    "area": 1,
+    "bar": 0,
+    "bubble": 0,
+    "line": 0,
+  },
+  "dataSeries": Array [
+    Object {
+      "data": Array [
+        Object {
+          "datum": Object {
+            "index": 0,
+            "x": Object {
+              "from": 0,
+              "to": 1,
+            },
+            "y": 1,
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 1,
+          "mark": null,
+          "x": "0 - 1",
+          "y0": 0,
+          "y1": 1,
+        },
+        Object {
+          "datum": Object {
+            "index": 1,
+            "x": Object {
+              "from": 1,
+              "to": 2,
+            },
+            "y": 2,
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 2,
+          "mark": null,
+          "x": "1 - 2",
+          "y0": 0,
+          "y1": 2,
+        },
+        Object {
+          "datum": Object {
+            "index": 2,
+            "x": Object {
+              "from": 2,
+              "to": 3,
+            },
+            "y": 3,
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 3,
+          "mark": null,
+          "x": "2 - 3",
+          "y0": 0,
+          "y1": 3,
+        },
+        Object {
+          "datum": Object {
+            "index": 3,
+            "x": Object {
+              "from": 3,
+              "to": 4,
+            },
+            "y": 4,
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 4,
+          "mark": null,
+          "x": "3 - 4",
+          "y0": 0,
+          "y1": 4,
+        },
+        Object {
+          "datum": Object {
+            "index": 4,
+            "x": Object {
+              "from": 4,
+              "to": 5,
+            },
+            "y": 5,
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 5,
+          "mark": null,
+          "x": "4 - 5",
+          "y0": 0,
+          "y1": 5,
+        },
+      ],
+      "key": "spec{spec1}yAccessor{y}splitAccessors{}",
+      "seriesKeys": Array [
+        "y",
+      ],
+      "specId": "spec1",
+      "splitAccessors": Map {},
+      "yAccessor": "y",
+    },
+  ],
+  "groupId": "__global__",
+  "stackMode": undefined,
+}
+`;
+
+exports[`Series Serializing values - stacked Can serialize complex x and y values with overrides 1`] = `
+Object {
+  "counts": Object {
+    "area": 1,
+    "bar": 0,
+    "bubble": 0,
+    "line": 0,
+  },
+  "dataSeries": Array [
+    Object {
+      "data": Array [
+        Object {
+          "datum": Object {
+            "index": 0,
+            "x": Object {
+              "from": 0,
+              "to": 1,
+            },
+            "y": Object {
+              "value": 1,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 1,
+          "mark": null,
+          "x": "0 - 1",
+          "y0": 0,
+          "y1": 1,
+        },
+        Object {
+          "datum": Object {
+            "index": 1,
+            "x": Object {
+              "from": 1,
+              "to": 2,
+            },
+            "y": Object {
+              "value": 2,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 2,
+          "mark": null,
+          "x": "1 - 2",
+          "y0": 0,
+          "y1": 2,
+        },
+        Object {
+          "datum": Object {
+            "index": 2,
+            "x": Object {
+              "from": 2,
+              "to": 3,
+            },
+            "y": Object {
+              "value": 3,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 3,
+          "mark": null,
+          "x": "2 - 3",
+          "y0": 0,
+          "y1": 3,
+        },
+        Object {
+          "datum": Object {
+            "index": 3,
+            "x": Object {
+              "from": 3,
+              "to": 4,
+            },
+            "y": Object {
+              "value": 4,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 4,
+          "mark": null,
+          "x": "3 - 4",
+          "y0": 0,
+          "y1": 4,
+        },
+        Object {
+          "datum": Object {
+            "index": 4,
+            "x": Object {
+              "from": 4,
+              "to": 5,
+            },
+            "y": Object {
+              "value": 5,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 5,
+          "mark": null,
+          "x": "4 - 5",
+          "y0": 0,
+          "y1": 5,
+        },
+      ],
+      "key": "spec{spec1}yAccessor{y}splitAccessors{}",
+      "seriesKeys": Array [
+        "y",
+      ],
+      "specId": "spec1",
+      "splitAccessors": Map {},
+      "yAccessor": "y",
+    },
+  ],
+  "groupId": "__global__",
+  "stackMode": undefined,
+}
+`;
+
+exports[`Series Serializing values - stacked Can serialize complex x values without affecting y values 1`] = `
+Object {
+  "counts": Object {
+    "area": 1,
+    "bar": 0,
+    "bubble": 0,
+    "line": 0,
+  },
+  "dataSeries": Array [
+    Object {
+      "data": Array [
+        Object {
+          "datum": Object {
+            "index": 0,
+            "x": Object {
+              "from": 0,
+              "to": 1,
+            },
+            "y": 1,
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 1,
+          "mark": null,
+          "x": "0 - 1",
+          "y0": 0,
+          "y1": 1,
+        },
+        Object {
+          "datum": Object {
+            "index": 1,
+            "x": Object {
+              "from": 1,
+              "to": 2,
+            },
+            "y": 2,
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 2,
+          "mark": null,
+          "x": "1 - 2",
+          "y0": 0,
+          "y1": 2,
+        },
+        Object {
+          "datum": Object {
+            "index": 2,
+            "x": Object {
+              "from": 2,
+              "to": 3,
+            },
+            "y": 3,
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 3,
+          "mark": null,
+          "x": "2 - 3",
+          "y0": 0,
+          "y1": 3,
+        },
+        Object {
+          "datum": Object {
+            "index": 3,
+            "x": Object {
+              "from": 3,
+              "to": 4,
+            },
+            "y": 4,
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 4,
+          "mark": null,
+          "x": "3 - 4",
+          "y0": 0,
+          "y1": 4,
+        },
+        Object {
+          "datum": Object {
+            "index": 4,
+            "x": Object {
+              "from": 4,
+              "to": 5,
+            },
+            "y": 5,
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 5,
+          "mark": null,
+          "x": "4 - 5",
+          "y0": 0,
+          "y1": 5,
+        },
+      ],
+      "key": "spec{spec1}yAccessor{y}splitAccessors{}",
+      "seriesKeys": Array [
+        "y",
+      ],
+      "specId": "spec1",
+      "splitAccessors": Map {},
+      "yAccessor": "y",
+    },
+  ],
+  "groupId": "__global__",
+  "stackMode": undefined,
+}
+`;
+
+exports[`Series Serializing values - stacked Can serialize complex y values 1`] = `
+Object {
+  "counts": Object {
+    "area": 1,
+    "bar": 0,
+    "bubble": 0,
+    "line": 0,
+  },
+  "dataSeries": Array [
+    Object {
+      "data": Array [
+        Object {
+          "datum": Object {
+            "index": 0,
+            "x": Object {
+              "from": 0,
+              "to": 1,
+            },
+            "y": Object {
+              "value": 1,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 1,
+          "mark": null,
+          "x": 0,
+          "y0": 0,
+          "y1": 1,
+        },
+        Object {
+          "datum": Object {
+            "index": 1,
+            "x": Object {
+              "from": 1,
+              "to": 2,
+            },
+            "y": Object {
+              "value": 2,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 2,
+          "mark": null,
+          "x": 1,
+          "y0": 0,
+          "y1": 2,
+        },
+        Object {
+          "datum": Object {
+            "index": 2,
+            "x": Object {
+              "from": 2,
+              "to": 3,
+            },
+            "y": Object {
+              "value": 3,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 3,
+          "mark": null,
+          "x": 2,
+          "y0": 0,
+          "y1": 3,
+        },
+        Object {
+          "datum": Object {
+            "index": 3,
+            "x": Object {
+              "from": 3,
+              "to": 4,
+            },
+            "y": Object {
+              "value": 4,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 4,
+          "mark": null,
+          "x": 3,
+          "y0": 0,
+          "y1": 4,
+        },
+        Object {
+          "datum": Object {
+            "index": 4,
+            "x": Object {
+              "from": 4,
+              "to": 5,
+            },
+            "y": Object {
+              "value": 5,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 5,
+          "mark": null,
+          "x": 4,
+          "y0": 0,
+          "y1": 5,
+        },
+      ],
+      "key": "spec{spec1}yAccessor{y}splitAccessors{}",
+      "seriesKeys": Array [
+        "y",
+      ],
+      "specId": "spec1",
+      "splitAccessors": Map {},
+      "yAccessor": "y",
+    },
+  ],
+  "groupId": "__global__",
+  "stackMode": undefined,
+}
+`;
+
+exports[`Series Serializing values - stacked Can serialize complex y values without affecting x values 1`] = `
+Object {
+  "counts": Object {
+    "area": 1,
+    "bar": 0,
+    "bubble": 0,
+    "line": 0,
+  },
+  "dataSeries": Array [
+    Object {
+      "data": Array [
+        Object {
+          "datum": Object {
+            "index": 0,
+            "x": Object {
+              "from": 0,
+              "to": 1,
+            },
+            "y": Object {
+              "value": 1,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 1,
+          "mark": null,
+          "x": 0,
+          "y0": 0,
+          "y1": 1,
+        },
+        Object {
+          "datum": Object {
+            "index": 1,
+            "x": Object {
+              "from": 1,
+              "to": 2,
+            },
+            "y": Object {
+              "value": 2,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 2,
+          "mark": null,
+          "x": 1,
+          "y0": 0,
+          "y1": 2,
+        },
+        Object {
+          "datum": Object {
+            "index": 2,
+            "x": Object {
+              "from": 2,
+              "to": 3,
+            },
+            "y": Object {
+              "value": 3,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 3,
+          "mark": null,
+          "x": 2,
+          "y0": 0,
+          "y1": 3,
+        },
+        Object {
+          "datum": Object {
+            "index": 3,
+            "x": Object {
+              "from": 3,
+              "to": 4,
+            },
+            "y": Object {
+              "value": 4,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 4,
+          "mark": null,
+          "x": 3,
+          "y0": 0,
+          "y1": 4,
+        },
+        Object {
+          "datum": Object {
+            "index": 4,
+            "x": Object {
+              "from": 4,
+              "to": 5,
+            },
+            "y": Object {
+              "value": 5,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 5,
+          "mark": null,
+          "x": 4,
+          "y0": 0,
+          "y1": 5,
+        },
+      ],
+      "key": "spec{spec1}yAccessor{y}splitAccessors{}",
+      "seriesKeys": Array [
+        "y",
+      ],
+      "specId": "spec1",
+      "splitAccessors": Map {},
+      "yAccessor": "y",
+    },
+  ],
+  "groupId": "__global__",
+  "stackMode": undefined,
+}
+`;
+
+exports[`Series Serializing values - stacked Can serialize mix of complex x values 1`] = `
+Object {
+  "counts": Object {
+    "area": 1,
+    "bar": 0,
+    "bubble": 0,
+    "line": 0,
+  },
+  "dataSeries": Array [
+    Object {
+      "data": Array [
+        Object {
+          "datum": Object {
+            "index": 0,
+            "x": Object {
+              "from": 0,
+              "to": 1,
+            },
+            "y": Object {
+              "value": 1,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 0,
+          "mark": null,
+          "x": 1,
+          "y0": 0,
+          "y1": 0,
+        },
+        Object {
+          "datum": Object {
+            "index": 2,
+            "x": Object {
+              "from": 2,
+              "to": 3,
+            },
+            "y": Object {
+              "value": 3,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 2,
+          "mark": null,
+          "x": 3,
+          "y0": 0,
+          "y1": 2,
+        },
+        Object {
+          "datum": Object {
+            "index": 4,
+            "x": Object {
+              "from": 4,
+              "to": 5,
+            },
+            "y": Object {
+              "value": 5,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 4,
+          "mark": null,
+          "x": 5,
+          "y0": 0,
+          "y1": 4,
+        },
+      ],
+      "key": "spec{spec1}yAccessor{index}splitAccessors{}",
+      "seriesKeys": Array [
+        "index",
+      ],
+      "specId": "spec1",
+      "splitAccessors": Map {},
+      "yAccessor": "index",
+    },
+  ],
+  "groupId": "__global__",
+  "stackMode": undefined,
+}
+`;
+
+exports[`Series Serializing values - stacked Can serialize mix of complex y values 1`] = `
+Object {
+  "counts": Object {
+    "area": 1,
+    "bar": 0,
+    "bubble": 0,
+    "line": 0,
+  },
+  "dataSeries": Array [
+    Object {
+      "data": Array [
+        Object {
+          "datum": Object {
+            "index": 0,
+            "x": Object {
+              "from": 0,
+              "to": 1,
+            },
+            "y": Object {
+              "value": 1,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 1,
+          "mark": null,
+          "x": 0,
+          "y0": 0,
+          "y1": 1,
+        },
+        Object {
+          "datum": Object {
+            "index": 1,
+            "x": Object {
+              "from": 1,
+              "to": 2,
+            },
+            "y": Object {
+              "value": undefined,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": null,
+          "mark": null,
+          "x": 1,
+          "y0": 0,
+          "y1": 0,
+        },
+        Object {
+          "datum": Object {
+            "index": 2,
+            "x": Object {
+              "from": 2,
+              "to": 3,
+            },
+            "y": Object {
+              "value": 3,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 3,
+          "mark": null,
+          "x": 2,
+          "y0": 0,
+          "y1": 3,
+        },
+        Object {
+          "datum": Object {
+            "index": 3,
+            "x": Object {
+              "from": 3,
+              "to": 4,
+            },
+            "y": Object {
+              "value": null,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": null,
+          "mark": null,
+          "x": 3,
+          "y0": 0,
+          "y1": 0,
+        },
+        Object {
+          "datum": Object {
+            "index": 4,
+            "x": Object {
+              "from": 4,
+              "to": 5,
+            },
+            "y": Object {
+              "value": 5,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 5,
+          "mark": null,
+          "x": 4,
+          "y0": 0,
+          "y1": 5,
+        },
+        Object {
+          "datum": Object {
+            "index": 5,
+            "x": Object {
+              "from": 5,
+              "to": 6,
+            },
+            "y": Object {
+              "value": false,
+            },
+          },
+          "filled": undefined,
+          "initialY0": null,
+          "initialY1": 0,
+          "mark": null,
+          "x": 5,
+          "y0": 0,
+          "y1": 0,
+        },
+      ],
+      "key": "spec{spec1}yAccessor{y}splitAccessors{}",
+      "seriesKeys": Array [
+        "y",
+      ],
+      "specId": "spec1",
+      "splitAccessors": Map {},
+      "yAccessor": "y",
+    },
+  ],
+  "groupId": "__global__",
+  "stackMode": undefined,
+}
+`;
+
+exports[`Series Serializing values - stacked Can serialize mix of complex y0 values 1`] = `
+Object {
+  "counts": Object {
+    "area": 1,
+    "bar": 0,
+    "bubble": 0,
+    "line": 0,
+  },
+  "dataSeries": Array [
+    Object {
+      "data": Array [
+        Object {
+          "datum": Object {
+            "index": 0,
+            "x": Object {
+              "from": 0,
+              "to": 1,
+            },
+            "y": Object {
+              "value": -10,
+            },
+          },
+          "filled": undefined,
+          "initialY0": -10,
+          "initialY1": 0,
+          "mark": null,
+          "x": "0 - 1",
+          "y0": -10,
+          "y1": 0,
+        },
+        Object {
+          "datum": Object {
+            "index": 1,
+            "x": Object {
+              "from": 1,
+              "to": 2,
+            },
+            "y": Object {
+              "value": -20,
+            },
+          },
+          "filled": undefined,
+          "initialY0": -20,
+          "initialY1": 1,
+          "mark": null,
+          "x": "1 - 2",
+          "y0": -20,
+          "y1": 1,
+        },
+        Object {
+          "datum": Object {
+            "index": 2,
+            "x": Object {
+              "from": 2,
+              "to": 3,
+            },
+            "y": Object {
+              "value": -30,
+            },
+          },
+          "filled": undefined,
+          "initialY0": -30,
+          "initialY1": 2,
+          "mark": null,
+          "x": "2 - 3",
+          "y0": -30,
+          "y1": 2,
+        },
+        Object {
+          "datum": Object {
+            "index": 3,
+            "x": Object {
+              "from": 3,
+              "to": 4,
+            },
+            "y": Object {
+              "value": -40,
+            },
+          },
+          "filled": undefined,
+          "initialY0": -40,
+          "initialY1": 3,
+          "mark": null,
+          "x": "3 - 4",
+          "y0": -40,
+          "y1": 3,
+        },
+        Object {
+          "datum": Object {
+            "index": 4,
+            "x": Object {
+              "from": 4,
+              "to": 5,
+            },
+            "y": Object {
+              "value": -50,
+            },
+          },
+          "filled": undefined,
+          "initialY0": -50,
+          "initialY1": 4,
+          "mark": null,
+          "x": "4 - 5",
+          "y0": -50,
+          "y1": 4,
+        },
+        Object {
+          "datum": Object {
+            "index": 5,
+            "x": Object {
+              "from": 5,
+              "to": 6,
+            },
+            "y": Object {
+              "value": -60,
+            },
+          },
+          "filled": undefined,
+          "initialY0": -60,
+          "initialY1": 5,
+          "mark": null,
+          "x": "5 - 6",
+          "y0": -60,
+          "y1": 5,
+        },
+      ],
+      "key": "spec{spec1}yAccessor{index}splitAccessors{}",
+      "seriesKeys": Array [
+        "index",
+      ],
+      "specId": "spec1",
+      "splitAccessors": Map {},
+      "yAccessor": "index",
+    },
+  ],
+  "groupId": "__global__",
+  "stackMode": undefined,
+}
+`;
+
 exports[`Series functional accessors Can split dataset into 2Y2G series 1`] = `
 Array [
   Object {

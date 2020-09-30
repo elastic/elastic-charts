@@ -430,7 +430,7 @@ export interface SeriesAccessors {
   markSizeAccessor?: Accessor | AccessorFn;
 }
 
-export type SeriesSerializer<T extends number | string = number | string> = (d: any) => T;
+export type SeriesSerializer<T extends number | string = number | string> = (d: any) => T | null;
 
 export interface SeriesSerializers {
   /**
