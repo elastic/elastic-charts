@@ -42,7 +42,14 @@ export {
 } from './chart_types/partition_chart/layout/types/config_types';
 export { Layer as PartitionLayer } from './chart_types/partition_chart/specs/index';
 export * from './chart_types/goal_chart/specs/index';
-export { Accessor, AccessorFn, IndexedAccessorFn, UnaryAccessorFn } from './utils/accessor';
+export {
+  Accessor,
+  AccessorFn,
+  IndexedAccessorFn,
+  UnaryAccessorFn,
+  AccessorObjectKey,
+  AccessorArrayIndex,
+} from './utils/accessor';
 export { CustomTooltip, TooltipInfo } from './components/tooltip/types';
 
 // scales

@@ -113,23 +113,25 @@ const getBarsState = (seriesNameMap: Map<string, string>, barGeometries: BarGeom
       displayValue,
     }: BarGeometry) => {
       const label = displayValue?.text;
-      if (!buckets.has(key)) {
-        const name = seriesNameMap.get(key) ?? '';
-        buckets.set(key, {
-          key,
-          name,
-          color,
-          bars: [],
-          labels: [],
-          visible: hasVisibleStyle(rect) || hasVisibleStyle(rectBorder),
-        });
-      }
+      const name = seriesNameMap.get(key) ?? '';
+      const bucket: DebugStateBar = buckets.get(key) ?? {
+        key,
+        name,
+        color,
+        bars: [],
+        labels: [],
+        visible: hasVisibleStyle(rect) || hasVisibleStyle(rectBorder),
+      };
 
-      buckets.get(key)!.bars.push({ x, y, mark });
+      bucket.bars.push({ x, y, mark });
 
       if (label) {
-        buckets.get(key)!.labels.push(label);
+        bucket.labels.push(label);
       }
+
+      buckets.set(key, bucket);
+
+      return buckets;
     },
   );
 
