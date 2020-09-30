@@ -1280,7 +1280,7 @@ export interface SeriesScales {
 // Warning: (ae-missing-release-tag) "SeriesSerializer" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type SeriesSerializer<T extends number | string = number | string> = (d: any) => T;
+export type SeriesSerializer<T extends number | string = number | string> = (d: any) => T | null;
 
 // Warning: (ae-missing-release-tag) "SeriesSerializers" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //

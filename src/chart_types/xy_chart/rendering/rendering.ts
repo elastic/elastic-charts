@@ -510,7 +510,7 @@ export function renderLine(
     linePath = '';
   }
 
-  const lineGeometry = {
+  const lineGeometry: LineGeometry = {
     line: linePath,
     points: pointGeometries,
     color,
@@ -529,6 +529,7 @@ export function renderLine(
     seriesPointStyle: seriesStyle.point,
     clippedRanges,
     hideClippedRanges: !hasFit,
+    hasMarkAccessor: markSizeOptions.enabled,
   };
   return {
     lineGeometry,
@@ -701,6 +702,7 @@ export function renderArea(
     isStacked,
     clippedRanges,
     hideClippedRanges: !hasFit,
+    hasMarkAccessor: markSizeOptions.enabled,
   };
   return {
     areaGeometry,

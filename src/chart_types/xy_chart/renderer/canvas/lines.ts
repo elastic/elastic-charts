@@ -41,7 +41,7 @@ export function renderLines(ctx: CanvasRenderingContext2D, props: LineGeometries
     const { lines, sharedStyle, highlightedLegendItem, clippings } = props;
 
     lines.forEach((line) => {
-      const { seriesLineStyle, seriesPointStyle } = line;
+      const { seriesLineStyle, seriesPointStyle, hasMarkAccessor } = line;
 
       if (seriesLineStyle.visible) {
         withContext(ctx, (ctx) => {
@@ -49,7 +49,7 @@ export function renderLines(ctx: CanvasRenderingContext2D, props: LineGeometries
         });
       }
 
-      if (seriesPointStyle.visible) {
+      if (seriesPointStyle.visible || hasMarkAccessor) {
         withClip(
           ctx,
           clippings,

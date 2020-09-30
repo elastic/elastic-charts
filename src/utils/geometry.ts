@@ -95,6 +95,7 @@ export interface LineGeometry {
   seriesIdentifier: XYChartSeriesIdentifier;
   seriesLineStyle: LineStyle;
   seriesPointStyle: PointStyle;
+  hasMarkAccessor: boolean;
   /**
    * Ranges of `[x0, x1]` pairs to clip from series
    */
@@ -116,6 +117,7 @@ export interface AreaGeometry {
   seriesAreaLineStyle: LineStyle;
   seriesPointStyle: PointStyle;
   isStacked: boolean;
+  hasMarkAccessor: boolean;
   /**
    * Ranges of `[x0, x1]` pairs to clip from series
    */

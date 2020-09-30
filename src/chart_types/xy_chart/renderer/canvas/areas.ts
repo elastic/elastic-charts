@@ -63,8 +63,8 @@ export function renderAreas(ctx: CanvasRenderingContext2D, props: AreaGeometries
     });
 
     areas.forEach((area) => {
-      const { seriesPointStyle, seriesIdentifier } = area;
-      if (seriesPointStyle.visible) {
+      const { seriesPointStyle, seriesIdentifier, hasMarkAccessor } = area;
+      if (seriesPointStyle.visible || hasMarkAccessor) {
         const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, highlightedLegendItem, sharedStyle);
         withClip(
           ctx,
