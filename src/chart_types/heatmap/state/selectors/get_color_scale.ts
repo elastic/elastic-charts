@@ -39,6 +39,7 @@ import { getHeatmapTableSelector } from './get_heatmap_table';
 export type ScaleModelType<Type, Config> = {
   type: Type;
   config: Config;
+  ticks: number[];
 };
 type ScaleLinearType = ScaleModelType<typeof ScaleType.Linear, ScaleLinear<string, string>>;
 type ScaleQuantizeType = ScaleModelType<typeof ScaleType.Quantize, ScaleQuantize<string>>;
@@ -46,6 +47,7 @@ type ScaleQuantileType = ScaleModelType<typeof ScaleType.Quantile, ScaleQuantile
 type ScaleThresholdType = ScaleModelType<typeof ScaleType.Threshold, ScaleThreshold<number, string>>;
 /** @internal */
 export type ColorScaleType = ScaleLinearType | ScaleQuantizeType | ScaleQuantileType | ScaleThresholdType;
+
 /**
  * @internal
  * Gets color scale based on specification and values range.
@@ -66,19 +68,23 @@ export const getColorScale = createCachedSelector(
       colorScale.config = scaleQuantize<string>()
         .domain(d3Extent(ranges) as [number, number])
         .range(colorRange);
+      colorScale.ticks = colorScale.config.ticks(spec.colors.length);
     } else if (colorScale.type === ScaleType.Quantile) {
       colorScale.config = scaleQuantile<string>()
         .domain(ranges)
         .range(colorRange);
+      colorScale.ticks = colorScale.config.quantiles();
     } else if (colorScale.type === ScaleType.Threshold) {
       colorScale.config = scaleThreshold<number, string>()
         .domain(ranges)
         .range(colorRange);
+      colorScale.ticks = colorScale.config.domain();
     } else {
       colorScale.config = scaleLinear<string>()
         .domain(ranges)
         .interpolate(interpolateHcl)
         .range(colorRange);
+      colorScale.ticks = colorScale.config.ticks(6);
     }
     return colorScale;
   },
