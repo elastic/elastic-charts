@@ -20,7 +20,6 @@
 import { bisectLeft } from 'd3-array';
 import { scaleBand, scaleQuantize } from 'd3-scale';
 
-import { ChartTypes } from '../../..';
 import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { SettingsSpec } from '../../../../specs';
@@ -316,7 +315,6 @@ export function shapeViewModel(
       ...result,
       x: invertedXValues,
       y: invertedYValues,
-      chartType: ChartTypes.Heatmap,
     };
   };
 

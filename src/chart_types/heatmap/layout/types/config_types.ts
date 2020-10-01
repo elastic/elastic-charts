@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import { ChartTypes } from '../../..';
 import { Color } from '../../../../utils/commons';
 import { Pixels, SizeRatio } from '../../../partition_chart/layout/types/geometry_types';
 import { Font, FontFamily, TextAlign, TextBaseline } from '../../../partition_chart/layout/types/types';
@@ -108,5 +107,4 @@ export type HeatmapBrushEvent = {
   cells: Cell[];
   x: (string | number)[];
   y: (string | number)[];
-  chartType: typeof ChartTypes.Heatmap;
 };

@@ -20,7 +20,6 @@
 import React, { ComponentType } from 'react';
 
 import { Spec } from '.';
-import { ChartTypes } from '../chart_types';
 import { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
@@ -48,7 +47,6 @@ export interface GroupBrushExtent {
   extent: [number, number];
 }
 export interface XYBrushArea {
-  chartType: typeof ChartTypes.XYAxis;
   x?: [number, number];
   y?: Array<GroupBrushExtent>;
 }
