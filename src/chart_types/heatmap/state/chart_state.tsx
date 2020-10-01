@@ -25,6 +25,7 @@ import { Tooltip } from '../../../components/tooltip';
 import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../state/selectors/get_chart_container_dimensions';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
+import { DebugState } from '../../../state/types';
 import { Dimensions } from '../../../utils/dimensions';
 import { Heatmap } from '../renderer/canvas/connected_component';
 import { HighlighterFromBrush } from '../renderer/dom/highlighter_brush';
@@ -123,6 +124,11 @@ export class HeatmapState implements InternalChartState {
 
   getBrushArea(globalState: GlobalChartState): Dimensions | null {
     return getBrushAreaSelector(globalState);
+  }
+
+  // TODO
+  getDebugState(): DebugState {
+    return {};
   }
 
   eventCallbacks(globalState: GlobalChartState) {
