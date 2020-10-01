@@ -47,9 +47,6 @@ export function computeRectAnnotationDimensions(
   const { dataValues } = annotationSpec;
   const { groupId } = annotationSpec;
   const yScale = yScales.get(groupId);
-  if (!yScale) {
-    return null;
-  }
 
   const rectsProps: AnnotationRectProps[] = [];
   dataValues.forEach((dataValue: RectAnnotationDatum) => {
@@ -60,11 +57,12 @@ export function computeRectAnnotationDimensions(
       return;
     }
 
+    let height: number | undefined;
+
     const [x0, x1] = limitValueToDomainRange(xScale, initialX0, initialX1, isHistogram);
-    const [y0, y1] = limitValueToDomainRange(yScale, intialY0, intialY1);
 
     // something is wrong with the data types, don't draw this annotation
-    if (x0 == null || x1 == null || y0 == null || y1 == null) {
+    if (x0 == null || x1 == null) {
       return;
     }
 
@@ -80,12 +78,36 @@ export function computeRectAnnotationDimensions(
       return;
     }
 
+    if (!yScale) {
+      if (!isDefined(intialY0) && !isDefined(intialY0)) {
+        const rectDimensions = {
+          ...xAndWidth,
+          y: 0,
+          height: chartDimensions.height,
+        };
+
+        rectsProps.push({
+          rect: rectDimensions,
+          details: dataValue.details,
+        });
+      }
+
+      return;
+    }
+
+    const [y0, y1] = limitValueToDomainRange(yScale, intialY0, intialY1);
+
+    // something is wrong with the data types, don't draw this annotation
+    if (y0 == null || y1 == null) {
+      return;
+    }
+
     let scaledY1 = yScale.pureScale(y1);
     const scaledY0 = yScale.pureScale(y0);
     if (scaledY1 == null || scaledY0 == null) {
       return;
     }
-    let height = Math.abs(scaledY0 - scaledY1);
+    height = Math.abs(scaledY0 - scaledY1);
 
     if (height === 0) {
       if (intialY0 || intialY1) {
