@@ -21,6 +21,7 @@ import createCachedSelector from 're-reselect';
 import { ScaleType } from '../../../../scales/constants';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { getAccessorValue } from '../../../../utils/accessor';
 import { mergeXDomain } from '../../../xy_chart/domains/x_domain';
 import { getPredicateFn } from '../../utils/commons';
 import { HeatmapTable } from './compute_chart_dimensions';
@@ -38,10 +39,10 @@ export const getHeatmapTableSelector = createCachedSelector(
 
     const resultData = data.reduce(
       (acc, curr, index) => {
-        const x = xAccessor(curr);
+        const x = getAccessorValue(curr, xAccessor);
 
-        const y = yAccessor(curr);
-        const value = valueAccessor(curr);
+        const y = getAccessorValue(curr, yAccessor);
+        const value = getAccessorValue(curr, valueAccessor);
 
         // compute the data domain extent
         const [min, max] = acc.extent;
@@ -50,7 +51,7 @@ export const getHeatmapTableSelector = createCachedSelector(
         acc.table.push({
           x,
           y,
-          value: valueAccessor(curr),
+          value,
           originalIndex: index,
         });
 

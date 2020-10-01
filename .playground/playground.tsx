@@ -87,9 +87,9 @@ export class Playground extends React.Component<any, { highlightedData?: Heatmap
               colors={['#ffffff', '#d2e9f7', '#8bc8fb', '#fdec25', '#fba740', '#fe5050']}
               data={SWIM_LANE_DATA.map((v) => ({ ...v, time: v.time * 1000 }))}
               highlightedData={this.state.highlightedData}
-              xAccessor={(d) => d.time}
+              xAccessor="time"
               yAccessor={(d) => d.laneLabel}
-              valueAccessor={(d) => d.value}
+              valueAccessor="value"
               valueFormatter={(d) => d.toFixed(0.2)}
               ySortPredicate="numAsc"
               xScaleType={ScaleType.Time}
