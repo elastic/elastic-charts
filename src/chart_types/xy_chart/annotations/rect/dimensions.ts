@@ -19,6 +19,8 @@
 
 import { Scale, ScaleBand, ScaleContinuous } from '../../../../scales';
 import { isBandScale, isContinuousScale } from '../../../../scales/types';
+import { isDefined } from '../../../../utils/commons';
+import { Dimensions } from '../../../../utils/dimensions';
 import { GroupId } from '../../../../utils/ids';
 import { Point } from '../../../../utils/point';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
@@ -37,6 +39,7 @@ export function isWithinRectBounds({ x, y }: Point, { startX, endX, startY, endY
 /** @internal */
 export function computeRectAnnotationDimensions(
   annotationSpec: RectAnnotationSpec,
+  chartDimensions: Dimensions,
   yScales: Map<GroupId, Scale>,
   xScale: Scale,
   isHistogram: boolean = false,
@@ -50,14 +53,15 @@ export function computeRectAnnotationDimensions(
 
   const rectsProps: AnnotationRectProps[] = [];
   dataValues.forEach((dataValue: RectAnnotationDatum) => {
-    let { x0, x1, y0, y1 } = dataValue.coordinates;
+    const { x0: initialX0, x1: initialX1, y0: intialY0, y1: intialY1 } = dataValue.coordinates;
 
     // if everything is null, return; otherwise we coerce the other coordinates
-    if (x0 == null && x1 == null && y0 == null && y1 == null) {
+    if (initialX0 == null && initialX1 == null && intialY0 == null && intialY1 == null) {
       return;
     }
-    [x0, x1] = limitValueToDomainRange(xScale, x0, x1, isHistogram);
-    [y0, y1] = limitValueToDomainRange(yScale, y0, y1);
+
+    const [x0, x1] = limitValueToDomainRange(xScale, initialX0, initialX1, isHistogram);
+    const [y0, y1] = limitValueToDomainRange(yScale, intialY0, intialY1);
 
     // something is wrong with the data types, don't draw this annotation
     if (x0 == null || x1 == null || y0 == null || y1 == null) {
@@ -75,12 +79,35 @@ export function computeRectAnnotationDimensions(
     if (!xAndWidth) {
       return;
     }
-    const scaledY1 = yScale.pureScale(y1);
+
+    let scaledY1 = yScale.pureScale(y1);
     const scaledY0 = yScale.pureScale(y0);
     if (scaledY1 == null || scaledY0 == null) {
       return;
     }
-    const height = Math.abs(scaledY0 - scaledY1);
+    let height = Math.abs(scaledY0 - scaledY1);
+
+    if (height === 0) {
+      if (intialY0 || intialY1) {
+        // const [start, end] = yScale.domain;
+
+        // // Ask Marco if this make sense
+        // const areBoth = isDefined(intialY0) && isDefined(intialY1) && intialY0 < start && intialY1 > end;
+        // const isLower = areBoth && isDefined(intialY0) && intialY0 < start;
+        // const isUpper = areBoth && isDefined(intialY1) && intialY1 > end;
+
+        // console.log(areBoth, isLower, isUpper);
+
+        // if (areBoth && isLower && isUpper) {
+        //   return;
+        // }
+
+        return;
+      }
+
+      height = chartDimensions.height;
+      scaledY1 = 0;
+    }
 
     const rectDimensions = {
       ...xAndWidth,
@@ -93,6 +120,7 @@ export function computeRectAnnotationDimensions(
       details: dataValue.details,
     });
   });
+
   return rectsProps;
 }
 
@@ -166,7 +194,7 @@ function limitValueToDomainRange(
   maxValue?: PrimitiveValue,
   isHistogram: boolean = false,
 ): [PrimitiveValue, PrimitiveValue] {
-  const domainStartValue = scale.domain[0];
+  const [domainStartValue] = scale.domain;
   // this fix the case where rendering on categorical scale and we have only one element
   const domainEndValue = scale.domain.length > 0 ? scale.domain[scale.domain.length - 1] : scale.domain[0];
 
