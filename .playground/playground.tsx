@@ -21,87 +21,13 @@ import React from 'react';
 import { Axis, BarSeries, Chart, RectAnnotation, ScaleType, Settings } from '../src';
 import { Position } from '../src/utils/commons';
 
-export class Playground extends React.Component {
-  render() {
-    return (
-      <div className="chart">
-        <Chart className="story-chart">
-          <RectAnnotation
-            // groupId="nick"
-            id="rect"
-            dataValues={[
-              {
-                coordinates: {
-                  x0: 2,
-                  x1: 4,
-                },
-                details: 'Max anomaly score: 7',
-              },
-              {
-                coordinates: {
-                  x0: 12,
-                  x1: 16,
-                  // y0: 1,
-                  // y1: 2,
-                },
-                details: 'Max anomaly score: 8',
-              },
-            ]}
-            style={{ fill: 'red' }}
-          />
-          <Settings />
-          <Axis id="bottom" position={Position.Bottom} title="x-domain axis" />
-          <Axis
-            // domain={{ constrainPadding: false, fit: true }}
-            id="left"
-            groupId="nick"
-            title="y-domain axis"
-            position={Position.Left}
-          />
-          <Axis
-            // domain={{ constrainPadding: false, fit: true }}
-            id="right"
-            groupId="nick2"
-            position={Position.Right}
-          />
-          <BarSeries
-            id="bars"
-            groupId="nick"
-            xScaleType={ScaleType.Linear}
-            yScaleType={ScaleType.Linear}
-            xAccessor="x"
-            yAccessors={['y']}
-            data={[
-              { x: 0, y: 1 },
-              { x: 5, y: 5 },
-              { x: 20, y: 10 },
-            ]}
-          />
-          <BarSeries
-            id="bars1"
-            groupId="nick2"
-            xScaleType={ScaleType.Linear}
-            yScaleType={ScaleType.Linear}
-            xAccessor="x"
-            yAccessors={['y']}
-            data={[
-              { x: 0, y: 61 },
-              { x: 5, y: 43 },
-              { x: 20, y: 49 },
-            ]}
-          />
-        </Chart>
-      </div>
-    );
-  }
-}
-
 // export class Playground extends React.Component {
 //   render() {
 //     return (
 //       <div className="chart">
 //         <Chart className="story-chart">
 //           <RectAnnotation
+//             // groupId="nick"
 //             id="rect"
 //             dataValues={[
 //               {
@@ -126,13 +52,21 @@ export class Playground extends React.Component {
 //           <Settings />
 //           <Axis id="bottom" position={Position.Bottom} title="x-domain axis" />
 //           <Axis
-//             domain={{ constrainPadding: false, fit: true }}
+//             // domain={{ constrainPadding: false, fit: true }}
 //             id="left"
+//             groupId="nick"
 //             title="y-domain axis"
 //             position={Position.Left}
 //           />
+//           <Axis
+//             // domain={{ constrainPadding: false, fit: true }}
+//             id="right"
+//             groupId="nick2"
+//             position={Position.Right}
+//           />
 //           <BarSeries
 //             id="bars"
+//             groupId="nick"
 //             xScaleType={ScaleType.Linear}
 //             yScaleType={ScaleType.Linear}
 //             xAccessor="x"
@@ -143,8 +77,74 @@ export class Playground extends React.Component {
 //               { x: 20, y: 0 },
 //             ]}
 //           />
+//           {/* <BarSeries
+//             id="bars1"
+//             groupId="nick2"
+//             xScaleType={ScaleType.Linear}
+//             yScaleType={ScaleType.Linear}
+//             xAccessor="x"
+//             yAccessors={['y']}
+//             data={[
+//               { x: 0, y: 61 },
+//               { x: 5, y: 43 },
+//               { x: 20, y: 49 },
+//             ]}
+//           /> */}
 //         </Chart>
 //       </div>
 //     );
 //   }
 // }
+
+export class Playground extends React.Component {
+  render() {
+    return (
+      <div className="chart">
+        <Chart className="story-chart">
+          <RectAnnotation
+            id="rect"
+            dataValues={[
+              {
+                coordinates: {
+                  x0: 2,
+                  x1: 4,
+                },
+                details: 'Max anomaly score: 7',
+              },
+              {
+                coordinates: {
+                  x0: 12,
+                  x1: 16,
+                  // y0: 1,
+                  // y1: 2,
+                },
+                details: 'Max anomaly score: 8',
+              },
+            ]}
+            style={{ fill: 'red' }}
+          />
+          <Settings />
+          <Axis id="bottom" position={Position.Bottom} title="x-domain axis" />
+          <Axis
+            domain={{ constrainPadding: false, fit: true }}
+            id="left"
+            title="y-domain axis"
+            position={Position.Left}
+          />
+          <BarSeries
+            id="bars"
+            xScaleType={ScaleType.Linear}
+            yScaleType={ScaleType.Linear}
+            xAccessor="x"
+            yAccessors={['y']}
+            data={[
+              { x: 0, y: 10 },
+              { x: 5, y: 10 },
+              { x: 20, y: 10 },
+            ]}
+          />
+        </Chart>
+      </div>
+    );
+  }
+}

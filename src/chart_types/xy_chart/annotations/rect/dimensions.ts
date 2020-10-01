@@ -109,24 +109,9 @@ export function computeRectAnnotationDimensions(
     }
     height = Math.abs(scaledY0 - scaledY1);
 
+    // if the annotation height is 0 override it with the height from chart dimension
     if (height === 0) {
-      if (intialY0 || intialY1) {
-        // const [start, end] = yScale.domain;
-
-        // // Ask Marco if this make sense
-        // const areBoth = isDefined(intialY0) && isDefined(intialY1) && intialY0 < start && intialY1 > end;
-        // const isLower = areBoth && isDefined(intialY0) && intialY0 < start;
-        // const isUpper = areBoth && isDefined(intialY1) && intialY1 > end;
-
-        // console.log(areBoth, isLower, isUpper);
-
-        // if (areBoth && isLower && isUpper) {
-        //   return;
-        // }
-
-        return;
-      }
-
+      // eslint-disable-next-line prefer-destructuring
       height = chartDimensions.height;
       scaledY1 = 0;
     }
@@ -163,12 +148,12 @@ function scaleXonBandScale(
   scaledX1 += xScale.originalBandwidth + padding;
   // give the x1 value a maximum of the chart range
   if (scaledX1 > xScale.range[1]) {
-    scaledX1 = xScale.range[1];
+    [, scaledX1] = xScale.range;
   }
 
   scaledX0 -= padding;
   if (scaledX0 < xScale.range[0]) {
-    scaledX0 = xScale.range[0];
+    [scaledX0] = xScale.range;
   }
   const width = Math.abs(scaledX1 - scaledX0);
   return {

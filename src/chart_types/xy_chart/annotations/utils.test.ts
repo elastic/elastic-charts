@@ -92,6 +92,7 @@ describe('annotation utils', () => {
     showOverlappingLabels: false,
     position: Position.Left,
     style,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     tickFormat: (value: any) => value.toString(),
     showGridLines: true,
   };
@@ -105,6 +106,7 @@ describe('annotation utils', () => {
     showOverlappingLabels: false,
     position: Position.Bottom,
     style,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     tickFormat: (value: any) => value.toString(),
     showGridLines: true,
   };
@@ -1157,9 +1159,9 @@ describe('annotation utils', () => {
       dataValues: [{ coordinates: { x0: 1, x1: 2, y0: 3, y1: 5 } }],
     };
 
-    const noYScale = computeRectAnnotationDimensions(annotationRectangle, yScales, xScale);
+    const noYScale = computeRectAnnotationDimensions(annotationRectangle, chartDimensions, yScales, xScale);
 
-    expect(noYScale).toBe(null);
+    expect(noYScale).toEqual([]);
   });
   test('should skip computing rectangle annotation dimensions when annotation data invalid', () => {
     const yScales: Map<GroupId, Scale> = new Map();
@@ -1179,7 +1181,7 @@ describe('annotation utils', () => {
       ],
     };
 
-    const skippedInvalid = computeRectAnnotationDimensions(annotationRectangle, yScales, xScale);
+    const skippedInvalid = computeRectAnnotationDimensions(annotationRectangle, chartDimensions, yScales, xScale);
 
     expect(skippedInvalid).toHaveLength(1);
   });
@@ -1216,7 +1218,7 @@ describe('annotation utils', () => {
       ],
     };
 
-    const dimensions = computeRectAnnotationDimensions(annotationRectangle, yScales, xScale);
+    const dimensions = computeRectAnnotationDimensions(annotationRectangle, chartDimensions, yScales, xScale);
 
     const [dims1, dims2, dims3, dims4] = dimensions;
     expect(dims1.rect.x).toBe(10);
