@@ -24,10 +24,16 @@ import { computeAnnotationDimensionsSelector } from '../../state/selectors/compu
 import { RectAnnotationDatum } from '../../utils/specs';
 import { AnnotationRectProps } from './types';
 
-function createStore(
+function expectAnnotationAtPosition(
   data: Array<{ x: number; y: number }>,
   type: 'line' | 'bar' | 'histogram',
   dataValues: RectAnnotationDatum[],
+  expectedRect: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  },
   numOfSpecs = 1,
   xScaleType: typeof ScaleType.Ordinal | typeof ScaleType.Linear | typeof ScaleType.Time = ScaleType.Linear,
 ) {
@@ -45,27 +51,9 @@ function createStore(
   });
 
   MockStore.addSpecs([settings, ...specs, annotation], store);
-  return store;
-}
-
-function expectAnnotationAtPosition(
-  data: Array<{ x: number; y: number }>,
-  type: 'line' | 'bar' | 'histogram',
-  dataValues: RectAnnotationDatum[],
-  expectedRect: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  },
-  numOfSpecs = 1,
-  xScaleType: typeof ScaleType.Ordinal | typeof ScaleType.Linear | typeof ScaleType.Time = ScaleType.Linear,
-) {
-  const store = createStore(data, type, dataValues, numOfSpecs, xScaleType);
   const annotations = computeAnnotationDimensionsSelector(store.getState());
-  const [annotationId] = [...annotations.keys()];
-  const renderedAnnotations = annotations.get(annotationId)!;
-  expect(renderedAnnotations).toHaveLength(1);
+  const renderedAnnotations = annotations.get(annotation.id)!;
+  expect(renderedAnnotations.length).toBe(1);
   const { rect } = renderedAnnotations[0] as AnnotationRectProps;
   expect(rect.x).toBeCloseTo(expectedRect.x, 3);
   expect(rect.y).toBeCloseTo(expectedRect.y, 3);
@@ -91,11 +79,11 @@ describe('Render rect annotation within', () => {
     ];
     const dataValues: RectAnnotationDatum[] = [
       {
-        coordinates: { x0: Number(x0) },
+        coordinates: { x0 },
       },
     ];
     const rect = { x, width, y: 0, height: 100 };
-    expectAnnotationAtPosition(data, 'bar', dataValues, rect, numOfSpecs, ScaleType.Linear);
+    expectAnnotationAtPosition(data, 'bar', dataValues, rect, numOfSpecs);
     expectAnnotationAtPosition(data, 'bar', dataValues, rect, numOfSpecs, ScaleType.Ordinal);
     expectAnnotationAtPosition(data, 'bar', dataValues, rect, numOfSpecs, ScaleType.Time);
   });
