@@ -22,6 +22,7 @@ import createCachedSelector from 're-reselect';
 import { TooltipInfo } from '../../../../components/tooltip/types';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { RGBtoString } from '../../../partition_chart/layout/utils/color_library_wrappers';
+import { getHeatmapConfigSelector } from './get_heatmap_config';
 import { getSpecOrNull } from './heatmap_spec';
 import { getPickedShapes } from './picked_shapes';
 
@@ -32,8 +33,8 @@ const EMPTY_TOOLTIP = Object.freeze({
 
 /** @internal */
 export const getTooltipInfoSelector = createCachedSelector(
-  [getSpecOrNull, getPickedShapes],
-  (spec, pickedShapes): TooltipInfo => {
+  [getSpecOrNull, getHeatmapConfigSelector, getPickedShapes],
+  (spec, config, pickedShapes): TooltipInfo => {
     if (!spec) {
       return EMPTY_TOOLTIP;
     }
@@ -45,8 +46,9 @@ export const getTooltipInfoSelector = createCachedSelector(
 
     if (Array.isArray(pickedShapes)) {
       pickedShapes.forEach((shape) => {
+        const xValueLabel = config.xAxisLabel.formatter(shape.datum.x);
         tooltipInfo.values.push({
-          label: `${shape.datum.y} - ${new Date(shape.datum.x).toUTCString()}`, // TODO fix to use the right formatter
+          label: `${shape.datum.y} - ${xValueLabel}`,
           color: RGBtoString(shape.fill.color),
           isHighlighted: false,
           isVisible: true,

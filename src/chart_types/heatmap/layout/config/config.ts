@@ -33,7 +33,7 @@ export const config: Config = {
   brushArea: {
     visible: true,
     fill: 'black', // black === transparent
-    stroke: '#69707D', // euiColorDarkShade,
+    stroke: 'red', // '#69707D', // euiColorDarkShade,
     strokeWidth: 2,
   },
   brushMask: {

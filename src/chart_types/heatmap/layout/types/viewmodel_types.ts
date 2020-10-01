@@ -73,10 +73,21 @@ export type PickFunction = (x: Pixels, y: Pixels) => Cell[] | TextBox;
 export type PickDragFunction = (points: [Point, Point]) => HeatmapBrushEvent;
 
 /** @internal */
-export type PickDragShapeFunction = (points: [Point, Point]) => { x: number; y: number; width: number; height: number };
+export type PickDragShapeFunction = (
+  points: [Point, Point],
+) => { x: number; y: number; width: number; height: number } | null;
 
-/** @internal */
-export type PickHighlightedArea = (x: any[], y: any[]) => { x: number; y: number; width: number; height: number };
+/**
+ * From x and y coordinates in the data domain space to a canvas projected rectangle
+ * that cover entirely the data domain coordinates provided.
+ * If the data domain coordinates leaves within a bucket, then the full bucket is taken in consideration.
+ * Used mainly for the Highlighter that shows the rounded selected area.
+ * @internal
+ */
+export type PickHighlightedArea = (
+  x: any[],
+  y: any[],
+) => { x: number; y: number; width: number; height: number } | null;
 
 /** @internal */
 export type DragShape = ReturnType<PickDragShapeFunction>;

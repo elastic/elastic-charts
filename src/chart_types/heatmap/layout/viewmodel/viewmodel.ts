@@ -32,7 +32,13 @@ import { HeatmapSpec } from '../../specs';
 import { HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
 import { ColorScaleType } from '../../state/selectors/get_color_scale';
 import { Config } from '../types/config_types';
-import { Cell, PickDragFunction, PickDragShapeFunction, ShapeViewModel } from '../types/viewmodel_types';
+import {
+  Cell,
+  PickDragFunction,
+  PickDragShapeFunction,
+  PickHighlightedArea,
+  ShapeViewModel,
+} from '../types/viewmodel_types';
 import { getGridCellHeight } from './grid';
 
 export interface HeatmapCellDatum {
@@ -77,11 +83,7 @@ export function shapeViewModel(
   heatmapTable: HeatmapTable,
   colorScale: ColorScaleType,
 ): ShapeViewModel {
-  const { xScaleType } = spec;
-
   const gridStrokeWidth = config.grid.stroke.width ?? 1;
-
-  const isXAxisTimeScale = xScaleType === ScaleType.Time;
 
   const { table, yValues } = heatmapTable;
   const { xDomain } = heatmapTable;
@@ -136,7 +138,7 @@ export function shapeViewModel(
 
   if (timeScale) {
     const result = [];
-    let timePoint = xDomain.domain[0];
+    let [timePoint] = xDomain.domain;
     while (timePoint < xDomain.domain[1]) {
       result.push(timePoint);
       timePoint += xDomain.minInterval;
@@ -177,7 +179,7 @@ export function shapeViewModel(
   };
 
   // compute the position of each column label
-  let textXValues: Array<TextBox> = [];
+  let textXValues: Array<TextBox>;
   if (timeScale) {
     textXValues = timeScale
       .ticks()
@@ -270,31 +272,6 @@ export function shapeViewModel(
     }
     return [];
   };
-  /**
-   * Resolves coordinates and metrics of the selected rect area.
-   * @param start
-   * @param end
-   */
-  const pickDragShape: PickDragShapeFunction = ([start, end]) => {
-    const startX = Math.max(Math.min(start.x, end.x), chartDimensions.left) - chartDimensions.left;
-    const startY = Math.min(start.y, end.y);
-
-    const endX = Math.min(Math.max(start.x, end.x), chartDimensions.width + cellWidth) - chartDimensions.left;
-    const endY = Math.min(Math.max(start.y, end.y), maxHeight - chartDimensions.top - cellHeight);
-
-    const startXValue = Math.floor(startX / cellWidth) * cellWidth;
-    const startYValue = Math.floor(startY / cellHeight) * cellHeight;
-
-    const endXValue = Math.floor(endX / cellWidth) * cellWidth;
-    const endYValue = Math.floor(endY / cellHeight) * cellHeight;
-
-    return {
-      x: startXValue + chartDimensions.left,
-      y: startYValue,
-      width: Math.abs(endXValue - startXValue) + cellWidth,
-      height: Math.abs(endYValue - startYValue) + cellHeight,
-    };
-  };
 
   /**
    * Return selected cells and X,Y ranges based on the drag selection.
@@ -306,42 +283,39 @@ export function shapeViewModel(
       y: new Set<string | number>(),
     };
 
-    const shape = pickDragShape(bound);
+    const [start, end] = bound;
 
-    let { x, y } = shape;
+    const { left, top } = chartDimensions;
+    const invertedBounds = {
+      startX: xInvertedScale(Math.min(start.x, end.x) - left),
+      startY: yInvertedScale(Math.min(start.y, end.y) - top),
+      endX: xInvertedScale(Math.max(start.x, end.x) - left),
+      endY: yInvertedScale(Math.max(start.y, end.y) - top),
+    };
 
-    while (y < shape.height + shape.y) {
-      result.y.add(yInvertedScale(y - chartDimensions.top));
-      while (x <= shape.width + shape.x) {
-        const xValue = xInvertedScale(x - chartDimensions.left);
-        result.x.add(xValue);
-        const [cell] = pickQuads(x, y);
-        if (cell) {
-          result.cells.push(cell);
-        }
-        x += cellWidth + config.grid.stroke.width;
-        // set value to close the time range
-        result.x.add(xInvertedScale(x - chartDimensions.left));
-      }
-      // move to the next line
-      x = shape.x;
-      y += cellHeight;
+    const invertedXValues: Array<string | number> = [];
+    const { startX, endX, startY, endY } = invertedBounds;
+    invertedXValues.push(startX);
+    if (typeof endX === 'number') {
+      invertedXValues.push(endX + xDomain.minInterval);
+    } else {
+      invertedXValues.push(endX);
+      const startXIndex = xValues.indexOf(startX);
+      const endXIndex = Math.min(xValues.indexOf(endX) + 1, xValues.length);
+      invertedXValues.push(...xValues.slice(startXIndex, endXIndex));
     }
 
-    const xArr = [...result.x];
+    const invertedYValues: Array<string | number> = [];
 
-    if (timeScale) {
-      // extend the range in case the right boundary has been selected
-      const maxValue = xArr[xArr.length - 1] as number;
-      if (maxValue === xValues[xValues.length - 1]) {
-        xArr.push(maxValue + xDomain.minInterval);
-      }
-    }
+    const startYIndex = yValues.indexOf(startY);
+    const endYIndex = Math.min(yValues.indexOf(endY) + 1, yValues.length);
+
+    invertedYValues.push(...yValues.slice(startYIndex, endYIndex));
 
     return {
       ...result,
-      x: isXAxisTimeScale ? [xArr[0], xArr[xArr.length - 1]] : xArr,
-      y: [...result.y],
+      x: invertedXValues,
+      y: invertedYValues,
       chartType: ChartTypes.Heatmap,
     };
   };
@@ -351,37 +325,41 @@ export function shapeViewModel(
    * @param x
    * @param y
    */
-  const pickHighlightedArea = (x: any[], y: any[]) => {
-    let xStart = 0;
-    let width = 0;
-    if (xDomain.scaleType === ScaleType.Time) {
-      const [start, end] = x;
-      try {
-        // find X coordinated based on the time range
-        const leftIndex = bisectLeft(xValues, start);
-        let rightIndex = bisectLeft(xValues, end);
-
-        const isOutOfRange = rightIndex >= xValues.length - 1;
-
-        rightIndex = isOutOfRange ? xValues.length - 1 : rightIndex;
-
-        const startFromScale = xScale(xValues[leftIndex]);
-        const endFromScale = xScale(xValues[rightIndex]);
-
-        xStart = startFromScale! + chartDimensions.left;
-
-        // extend the range in case the right boundary has been selected
-        width = endFromScale! - startFromScale! + (isOutOfRange ? cellWidth : 0);
-      } catch {
-        throw new Error("Couldn't resolve the time range");
-      }
+  const pickHighlightedArea: PickHighlightedArea = (x: Array<string | number>, y: Array<string | number>) => {
+    if (xDomain.scaleType !== ScaleType.Time) {
+      return null;
     }
+    const [startValue, endValue] = x;
+
+    if (typeof startValue !== 'number' || typeof endValue !== 'number') {
+      return null;
+    }
+    const start = Math.min(startValue, endValue);
+    const end = Math.max(startValue, endValue);
+
+    // find X coordinated based on the time range
+    const leftIndex = bisectLeft(xValues, start);
+    const rightIndex = bisectLeft(xValues, end);
+
+    const isOutOfRange = rightIndex > xValues.length - 1;
+
+    const startFromScale = xScale(xValues[leftIndex]);
+    const endFromScale = xScale(isOutOfRange ? xValues[xValues.length - 1] : xValues[rightIndex]);
+
+    if (startFromScale === undefined || endFromScale === undefined) {
+      return null;
+    }
+
+    const xStart = chartDimensions.left + startFromScale;
+
+    // extend the range in case the right boundary has been selected
+    const width = endFromScale - startFromScale + (isOutOfRange ? cellWidth : 0);
 
     // resolve Y coordinated making sure the order is correct
     const { y: yStart, height } = y.reduce(
       (acc, current, i) => {
         if (i === 0) {
-          acc.y = yScale(current);
+          acc.y = yScale(current) || 0;
         }
         acc.height += cellHeight;
         return acc;
@@ -395,6 +373,14 @@ export function shapeViewModel(
       width,
       height,
     };
+  };
+
+  /**
+   * Resolves coordinates and metrics of the selected rect area.
+   */
+  const pickDragShape: PickDragShapeFunction = (bound) => {
+    const area = pickDragArea(bound);
+    return pickHighlightedArea(area.x, area.y);
   };
 
   // vertical lines

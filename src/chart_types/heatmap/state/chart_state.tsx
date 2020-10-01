@@ -33,6 +33,7 @@ import { computeChartDimensionsSelector } from './selectors/compute_chart_dimens
 import { computeLegendSelector } from './selectors/compute_legend';
 import { getBrushAreaSelector } from './selectors/get_brush_area';
 import { getLegendItemsLabelsSelector } from './selectors/get_legend_items_labels';
+import { getTooltipAnchorSelector } from './selectors/get_tooltip_anchor';
 import { getSpecOrNull } from './selectors/heatmap_spec';
 import { isBrushAvailableSelector } from './selectors/is_brush_available';
 import { isBrushingSelector } from './selectors/is_brushing';
@@ -105,13 +106,8 @@ export class HeatmapState implements InternalChartState {
     return getTooltipInfoSelector(globalState);
   }
 
-  getTooltipAnchor(state: GlobalChartState) {
-    const { position } = state.interactions.pointer.current;
-    return {
-      isRotated: false,
-      x1: position.x,
-      y1: position.y,
-    };
+  getTooltipAnchor(globalState: GlobalChartState) {
+    return getTooltipAnchorSelector(globalState);
   }
 
   getProjectionContainerArea(globalState: GlobalChartState): Dimensions {

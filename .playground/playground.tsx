@@ -27,7 +27,12 @@ import { SWIM_LANE_DATA } from '../src/utils/data_samples/test_anomaly_swim_lane
 export class Playground extends React.Component<any, { highlightedData?: HeatmapSpec['highlightedData'] }> {
   constructor(props: any) {
     super(props);
-    this.state = {};
+    this.state = {
+      highlightedData: {
+        x: [1572908400000, 1572910200000],
+        y: ['i-ca80c01a'],
+      },
+    };
   }
 
   onBrushEnd: HeatmapConfig['onBrushEnd'] = (e) => {
@@ -59,6 +64,9 @@ export class Playground extends React.Component<any, { highlightedData?: Heatmap
           stroke: '#D3DAE6',
           strokeWidth: 0,
         },
+      },
+      brushArea: {
+        fill: 'red',
       },
       yAxisLabel: {
         visible: true,
