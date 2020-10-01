@@ -129,7 +129,7 @@ export function shapeViewModel(
           },
           {
             ticks: getTicksPerWidth(chartDimensions.width),
-            timeZone: 'UTC',
+            timeZone: config.timeZone,
           },
         )
       : null;
@@ -168,7 +168,7 @@ export function shapeViewModel(
     scaleCallback: (x: any) => number | undefined | null = xScale,
   ) => (value: any): TextBox => {
     return {
-      text: formatter(value, { timeZone: 'UTC' }),
+      text: formatter(value, { timeZone: config.timeZone }),
       value,
       ...config.xAxisLabel,
       x: chartDimensions.left + (scaleCallback(value) || 0),

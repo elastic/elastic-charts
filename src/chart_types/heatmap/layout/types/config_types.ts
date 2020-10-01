@@ -30,7 +30,7 @@ export interface Config {
   // general text config
   fontFamily: FontFamily;
 
-  timeZone?: string;
+  timeZone: string;
 
   /**
    * Config of the mask over the area outside of the selected cells
