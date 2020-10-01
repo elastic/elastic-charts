@@ -32,6 +32,7 @@ import { HighlighterFromBrush } from '../renderer/dom/highlighter_brush';
 import { computeChartDimensionsSelector } from './selectors/compute_chart_dimensions';
 import { computeLegendSelector } from './selectors/compute_legend';
 import { getBrushAreaSelector } from './selectors/get_brush_area';
+import { getPointerCursorSelector } from './selectors/get_cursor_pointer';
 import { getLegendItemsLabelsSelector } from './selectors/get_legend_items_labels';
 import { getTooltipAnchorSelector } from './selectors/get_tooltip_anchor';
 import { getSpecOrNull } from './selectors/heatmap_spec';
@@ -94,8 +95,8 @@ export class HeatmapState implements InternalChartState {
     );
   }
 
-  getPointerCursor() {
-    return 'default';
+  getPointerCursor(globalState: GlobalChartState) {
+    return getPointerCursorSelector(globalState);
   }
 
   isTooltipVisible(globalState: GlobalChartState) {
