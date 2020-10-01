@@ -48,6 +48,25 @@ export interface TextBox extends Box {
   y: number;
 }
 
+function getTicksPerWidth(width: number) {
+  if (width <= 100) {
+    return 0;
+  }
+  if (width > 100 && width <= 200) {
+    return 1;
+  }
+  if (width > 200 && width <= 300) {
+    return 2;
+  }
+  if (width > 300 && width <= 500) {
+    return 3;
+  }
+  if (width > 500 && width < 700) {
+    return 5;
+  }
+  return 10;
+}
+
 /** @internal */
 export function shapeViewModel(
   textMeasure: TextMeasure,
@@ -109,6 +128,7 @@ export function shapeViewModel(
             range: [0, maxGridAreaWidth],
           },
           {
+            ticks: getTicksPerWidth(chartDimensions.width),
             timeZone: 'UTC',
           },
         )

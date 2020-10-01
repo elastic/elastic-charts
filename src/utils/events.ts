@@ -29,6 +29,7 @@ export function isValidPointerOverEvent(
   return isPointerOverEvent(event) && (event.unit === undefined || event.unit === mainScale.unit);
 }
 
+/** @internal */
 export interface DragCheckProps {
   onBrushEnd: BrushEndListener | undefined;
   lastDrag: DragState | null;
