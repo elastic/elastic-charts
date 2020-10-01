@@ -19,42 +19,12 @@
 
 import React from 'react';
 
-import { Chart, BarSeries, Settings, RectAnnotation, ScaleType, Axis, Position } from '../src';
+import { Example } from '../stories/bar/1_basic';
 
 export function Playground() {
   return (
     <div className="chart">
-      <Chart>
-        <Settings showLegend legendPosition={Position.Right} />
-        <RectAnnotation
-          id="ann"
-          style={{
-            fill: 'red',
-            opacity: 0.2,
-          }}
-          dataValues={[
-            {
-              coordinates: { x0: 1, x1: 1 },
-            },
-          ]}
-        />
-        <Axis id="x" position={Position.Bottom} />
-        <BarSeries
-          id="aaa"
-          name="Simple bar series"
-          xScaleType={ScaleType.Linear}
-          yScaleType={ScaleType.Linear}
-          xAccessor="x"
-          // enableHistogramMode
-          yAccessors={['y']}
-          data={[
-            { x: 0, y: 4 },
-            { x: 1, y: 1 },
-            { x: 2, y: 3 },
-            { x: 3, y: 2 },
-          ]}
-        />
-      </Chart>
+      <Example />
     </div>
   );
 }
