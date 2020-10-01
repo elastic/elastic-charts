@@ -430,7 +430,7 @@ export interface SeriesAccessors {
   markSizeAccessor?: Accessor | AccessorFn;
 }
 
-export type XScaleType = typeof ScaleType.Ordinal | typeof ScaleType.Linear | typeof ScaleType.Time;
+export type XScaleType = typeof ScaleType.Ordinal | ScaleContinuousType;
 
 export interface SeriesScales {
   /**

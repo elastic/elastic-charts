@@ -302,8 +302,8 @@ export function shapeViewModel(
   const pickDragArea: PickDragFunction = (bound) => {
     const result = {
       cells: [] as Cell[],
-      x: new Set(),
-      y: new Set(),
+      x: new Set<string | number>(),
+      y: new Set<string | number>(),
     };
 
     const shape = pickDragShape(bound);

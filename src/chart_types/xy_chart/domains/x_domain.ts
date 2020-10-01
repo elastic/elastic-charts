@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import { BaseScaleType } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { compareByValueAsc, identity } from '../../../utils/commons';
 import { computeContinuousDataDomain, computeOrdinalDataDomain, Domain } from '../../../utils/domain';
@@ -164,7 +163,7 @@ export function findMinInterval(xValues: number[]): number {
 export function convertXScaleTypes(
   specs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType' | 'timeZone'>[],
 ): {
-  scaleType: BaseScaleType;
+  scaleType: XScaleType;
   isBandScale: boolean;
   timeZone?: string;
 } | null {

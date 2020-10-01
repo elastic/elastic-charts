@@ -26,8 +26,6 @@ export type ScaleContinuousType =
   | typeof ScaleType.Log
   | typeof ScaleType.Sqrt;
 
-export type BaseScaleType = typeof ScaleType.Ordinal | ScaleContinuousType;
-
 export type ScaleOrdinalType = typeof ScaleType.Ordinal;
 
 export type ScaleBandType = ScaleOrdinalType;

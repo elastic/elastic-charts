@@ -21,9 +21,8 @@ import { Store } from 'redux';
 
 import { ChartTypes } from '../..';
 import { MockStore } from '../../../mocks/store';
-import { BaseScaleType } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
-import { HeatmapBrushEvent, SettingsSpec, XYBrushArea } from '../../../specs';
+import { HeatmapBrushEvent, SettingsSpec, XScaleType, XYBrushArea } from '../../../specs';
 import { SpecTypes, DEFAULT_SETTINGS_SPEC, TooltipType, BrushAxis } from '../../../specs/constants';
 import { onExternalPointerEvent } from '../../../state/actions/events';
 import { onPointerMove, onMouseDown, onMouseUp } from '../../../state/actions/mouse';
@@ -267,7 +266,7 @@ describe('Chart state pointer interactions', () => {
   it.todo('add test for clicks');
 });
 
-function mouseOverTestSuite(scaleType: BaseScaleType) {
+function mouseOverTestSuite(scaleType: XScaleType) {
   let store: Store<GlobalChartState>;
   let onOverListener: jest.Mock<undefined>;
   let onOutListener: jest.Mock<undefined>;
