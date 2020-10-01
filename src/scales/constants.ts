@@ -16,6 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+// eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
+import { ScaleThreshold, ScaleQuantize, ScaleQuantile } from 'd3-scale';
 import { $Values } from 'utility-types';
 
 /**
@@ -28,8 +30,11 @@ export const ScaleType = Object.freeze({
   Log: 'log' as const,
   Sqrt: 'sqrt' as const,
   Time: 'time' as const,
+  /** {@link ScaleQuantize} */
   Quantize: 'quantize' as const,
+  /** {@link ScaleQuantile} */
   Quantile: 'quantile' as const,
+  /** {@link ScaleThreshold} */
   Threshold: 'threshold' as const,
 });
 
