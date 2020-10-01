@@ -34,6 +34,7 @@ export const isBrushAvailableSelector = createCachedSelector(
   },
 )(getChartIdSelector);
 
+/** @internal */
 export const isBrushEndProvided = createCachedSelector([getSettingsSpecSelector], (settingsSpec): boolean => {
   return Boolean(settingsSpec.onBrushEnd);
 })(getChartIdSelector);
