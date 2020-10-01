@@ -23,6 +23,7 @@ import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
 import { geometries } from '../../state/selectors/geometries';
 import { getBrushedHighlightedShapesSelector } from '../../state/selectors/get_brushed_highlighted_shapes';
+import { getHeatmapConfigSelector } from '../../state/selectors/get_heatmap_config';
 import { getHighlightedAreaSelector } from '../../state/selectors/get_highlighted_area';
 import { DEFAULT_PROPS, HighlighterCellsComponent, HighlighterCellsProps } from './highlighter';
 
@@ -41,6 +42,7 @@ const brushMapStateToProps = (state: GlobalChartState): HighlighterCellsProps =>
   if (highlightedArea) {
     dragShape = highlightedArea;
   }
+  const { brushMask, brushArea } = getHeatmapConfigSelector(state);
 
   return {
     chartId,
@@ -48,6 +50,8 @@ const brushMapStateToProps = (state: GlobalChartState): HighlighterCellsProps =>
     canvasDimension,
     geometries: geoms,
     dragShape,
+    brushMask,
+    brushArea,
   };
 };
 

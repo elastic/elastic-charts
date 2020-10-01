@@ -30,6 +30,25 @@ export interface Config {
   // general text config
   fontFamily: FontFamily;
 
+  timeZone?: string;
+
+  /**
+   * Config of the mask over the area outside of the selected cells
+   */
+  brushMask: { visible: boolean; fill: Color };
+  /**
+   * Config of the mask over the selected cells
+   */
+  brushArea: { visible: boolean; fill: Color; stroke: Color; strokeWidth: number };
+  /**
+   * Config of the brushing tool
+   */
+  brushTool: {
+    visible: boolean;
+    // TODO add support for changing the brush tool color
+    fill: Color;
+  };
+
   xAxisLabel: Font & {
     fontSize: Pixels;
     fill: string;

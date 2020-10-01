@@ -28,6 +28,21 @@ export const config: Config = {
 
   fontFamily: 'Sans-Serif',
 
+  brushArea: {
+    visible: true,
+    fill: 'black', // black === transparent
+    stroke: '#69707D', // euiColorDarkShade,
+    strokeWidth: 2,
+  },
+  brushMask: {
+    visible: true,
+    fill: 'rgb(115 115 115 / 50%)',
+  },
+  brushTool: {
+    visible: false,
+    fill: 'gray',
+  },
+
   xAxisLabel: {
     visible: true,
     fill: 'black',

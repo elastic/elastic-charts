@@ -21,11 +21,19 @@ import createCachedSelector from 're-reselect';
 
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { getHeatmapConfigSelector } from './get_heatmap_config';
 
 /**
  * The brush is available only if a onBrushEnd listener is configured
  * @internal
  */
-export const isBrushAvailableSelector = createCachedSelector([getSettingsSpecSelector], (settingsSpec): boolean => {
+export const isBrushAvailableSelector = createCachedSelector(
+  [getSettingsSpecSelector, getHeatmapConfigSelector],
+  (settingsSpec, config): boolean => {
+    return Boolean(settingsSpec.onBrushEnd) && config.brushTool.visible;
+  },
+)(getChartIdSelector);
+
+export const isBrushEndProvided = createCachedSelector([getSettingsSpecSelector], (settingsSpec): boolean => {
   return Boolean(settingsSpec.onBrushEnd);
 })(getChartIdSelector);

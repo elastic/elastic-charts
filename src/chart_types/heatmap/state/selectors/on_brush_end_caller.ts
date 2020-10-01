@@ -27,7 +27,7 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { DragCheckProps, hasDragged } from '../../../../utils/events';
 import { getPickedCells } from './get_picked_cells';
 import { getSpecOrNull } from './heatmap_spec';
-import { isBrushAvailableSelector } from './is_brush_available';
+import { isBrushEndProvided } from './is_brush_available';
 
 /**
  * Will call the onBrushEnd listener every time the following preconditions are met:
@@ -40,7 +40,7 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
   let selector: Selector<GlobalChartState, void> | null = null;
   return (state: GlobalChartState) => {
     if (selector === null && state.chartType === ChartTypes.Heatmap) {
-      if (!isBrushAvailableSelector(state)) {
+      if (!isBrushEndProvided(state)) {
         selector = null;
         prevProps = null;
         return;

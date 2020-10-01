@@ -19,6 +19,8 @@
 import React, { FC } from 'react';
 
 import { Dimensions } from '../../../../utils/dimensions';
+import { config } from '../../layout/config/config';
+import { Config } from '../../layout/types/config_types';
 import { DragShape, nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 
 /** @internal */
@@ -28,6 +30,8 @@ export interface HighlighterCellsProps {
   canvasDimension: Dimensions;
   geometries: ShapeViewModel;
   dragShape: DragShape | null;
+  brushMask: Config['brushMask'];
+  brushArea: Config['brushArea'];
 }
 
 /**
@@ -40,6 +44,8 @@ export const HighlighterCellsComponent: FC<HighlighterCellsProps> = ({
   dragShape,
   chartId,
   canvasDimension,
+  brushArea,
+  brushMask,
 }) => {
   if (!initialized || dragShape === null) return null;
 
@@ -49,42 +55,82 @@ export const HighlighterCellsComponent: FC<HighlighterCellsProps> = ({
     <svg className="echHighlighter" width="100%" height="100%">
       <defs>
         <mask id={maskId}>
+          {brushMask.visible && (
+            <rect
+              x={0}
+              y={0}
+              width={canvasDimension.width + canvasDimension.left}
+              height={canvasDimension.height}
+              fill="#eee"
+            />
+          )}
+          {brushArea.visible && (
+            <>
+              <rect
+                x={dragShape.x}
+                y={dragShape.y}
+                width={dragShape.width}
+                height={dragShape.height}
+                fill={brushArea.fill}
+              />
+              <rect
+                x={0}
+                y={dragShape.y}
+                width={canvasDimension.left}
+                height={dragShape.height}
+                fill={brushArea.fill}
+              />
+            </>
+          )}
+        </mask>
+      </defs>
+      <g>
+        {brushMask.visible && (
           <rect
             x={0}
             y={0}
             width={canvasDimension.width + canvasDimension.left}
             height={canvasDimension.height}
-            fill="#eee"
+            mask={`url(#${maskId})`}
+            fill={brushMask.fill}
           />
-          <rect x={dragShape.x} y={dragShape.y} width={dragShape.width} height={dragShape.height} fill="black" />
-          <rect x={0} y={dragShape.y} width={canvasDimension.left} height={dragShape.height} fill="black" />
-        </mask>
-      </defs>
-      <g>
-        <rect
-          x={0}
-          y={0}
-          width={canvasDimension.width + canvasDimension.left}
-          height={canvasDimension.height}
-          mask={`url(#${maskId})`}
-          className="echHighlighter__mask"
-        />
-        <line x1={dragShape.x} y1={dragShape.y} x2={dragShape.x + dragShape.width} y2={dragShape.y} stroke="black" />
-        <line
-          x1={dragShape.x}
-          y1={dragShape.y + dragShape.height}
-          x2={dragShape.x + dragShape.width}
-          y2={dragShape.y + dragShape.height}
-          stroke="black"
-        />
-        <line x1={dragShape.x} y1={dragShape.y} x2={dragShape.x} y2={dragShape.y + dragShape.height} stroke="black" />
-        <line
-          x1={dragShape.x + dragShape.width}
-          y1={dragShape.y}
-          x2={dragShape.x + dragShape.width}
-          y2={dragShape.y + dragShape.height}
-          stroke="black"
-        />
+        )}
+        {brushArea.visible && (
+          <>
+            <line
+              x1={dragShape.x}
+              y1={dragShape.y}
+              x2={dragShape.x + dragShape.width}
+              y2={dragShape.y}
+              stroke={brushArea.stroke}
+              strokeWidth={brushArea.strokeWidth}
+            />
+            <line
+              x1={dragShape.x}
+              y1={dragShape.y + dragShape.height}
+              x2={dragShape.x + dragShape.width}
+              y2={dragShape.y + dragShape.height}
+              stroke={brushArea.stroke}
+              strokeWidth={brushArea.strokeWidth}
+            />
+            <line
+              x1={dragShape.x}
+              y1={dragShape.y}
+              x2={dragShape.x}
+              y2={dragShape.y + dragShape.height}
+              stroke={brushArea.stroke}
+              strokeWidth={brushArea.strokeWidth}
+            />
+            <line
+              x1={dragShape.x + dragShape.width}
+              y1={dragShape.y}
+              x2={dragShape.x + dragShape.width}
+              y2={dragShape.y + dragShape.height}
+              stroke={brushArea.stroke}
+              strokeWidth={brushArea.strokeWidth}
+            />
+          </>
+        )}
       </g>
     </svg>
   );
@@ -102,4 +148,6 @@ export const DEFAULT_PROPS: HighlighterCellsProps = {
   },
   geometries: nullShapeViewModel(),
   dragShape: { x: 0, y: 0, height: 0, width: 0 },
+  brushArea: config.brushArea,
+  brushMask: config.brushMask,
 };
