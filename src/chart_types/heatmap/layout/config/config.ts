@@ -28,6 +28,8 @@ export const config: Config = {
 
   fontFamily: 'Sans-Serif',
 
+  onBrushEnd: undefined,
+
   brushArea: {
     visible: true,
     fill: 'black', // black === transparent

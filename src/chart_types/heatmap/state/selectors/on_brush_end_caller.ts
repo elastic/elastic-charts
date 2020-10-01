@@ -23,8 +23,8 @@ import { ChartTypes } from '../../..';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getLastDragSelector } from '../../../../state/selectors/get_last_drag';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { DragCheckProps, hasDragged } from '../../../../utils/events';
+import { getHeatmapConfigSelector } from './get_heatmap_config';
 import { getPickedCells } from './get_picked_cells';
 import { getSpecOrNull } from './heatmap_spec';
 import { isBrushEndProvided } from './is_brush_available';
@@ -46,7 +46,7 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
         return;
       }
       selector = createCachedSelector(
-        [getLastDragSelector, getSpecOrNull, getSettingsSpecSelector, getPickedCells],
+        [getLastDragSelector, getSpecOrNull, getHeatmapConfigSelector, getPickedCells],
         (lastDrag, spec, { onBrushEnd }, pickedCells): void => {
           const nextProps: DragCheckProps = {
             lastDrag,

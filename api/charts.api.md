@@ -300,7 +300,7 @@ export type BrushAxis = $Values<typeof BrushAxis>;
 // Warning: (ae-missing-release-tag) "BrushEndListener" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type BrushEndListener = (brushArea: XYBrushArea | HeatmapBrushEvent) => void;
+export type BrushEndListener = (brushArea: XYBrushArea) => void;
 
 // Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
@@ -765,16 +765,6 @@ export type GroupId = string;
 // @alpha (undocumented)
 export const Heatmap: React.FunctionComponent<SpecRequiredProps_8 & SpecOptionalProps_8>;
 
-// Warning: (ae-missing-release-tag) "HeatmapBrushEvent" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export type HeatmapBrushEvent = {
-    cells: Cell[];
-    x: (string | number)[];
-    y: (string | number)[];
-    chartType: typeof ChartTypes.Heatmap;
-};
-
 // Warning: (ae-missing-release-tag) "Config" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -843,6 +833,10 @@ export interface HeatmapConfig {
     maxColumnWidth: Pixels;
     // (undocumented)
     maxRowHeight: Pixels;
+    // Warning: (ae-forgotten-export) The symbol "HeatmapBrushEvent" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    onBrushEnd?: (brushArea: HeatmapBrushEvent) => void;
     // (undocumented)
     timeZone: string;
     // Warning: (ae-forgotten-export) The symbol "Pixels" needs to be exported by the entry point index.d.ts
@@ -880,6 +874,7 @@ export interface HeatmapConfig {
     };
 }
 
+// Warning: (ae-forgotten-export) The symbol "Cell" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "HeatmapElementEvent" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -912,8 +907,6 @@ export interface HeatmapSpec extends Spec {
     valueAccessor: Accessor | AccessorFn;
     // (undocumented)
     valueFormatter: (value: number) => string;
-    // Warning: (ae-forgotten-export) The symbol "Accessor" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     xAccessor: Accessor | AccessorFn;
     // (undocumented)
@@ -1874,14 +1867,13 @@ export type YDomainRange = YDomainBase & DomainRange;
 
 // Warnings were encountered during analysis:
 //
-// src/chart_types/heatmap/layout/types/config_types.ts:27:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
-// src/chart_types/heatmap/layout/types/config_types.ts:55:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
-// src/chart_types/heatmap/layout/types/config_types.ts:56:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:29:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:59:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:60:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:126:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:127:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/specs/index.ts:48:13 - (ae-forgotten-export) The symbol "NodeColorAccessor" needs to be exported by the entry point index.d.ts
 // src/commons/series_id.ts:39:3 - (ae-forgotten-export) The symbol "SeriesKey" needs to be exported by the entry point index.d.ts
-// src/specs/settings.tsx:61:3 - (ae-forgotten-export) The symbol "Cell" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

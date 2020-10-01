@@ -30,6 +30,13 @@ export class Playground extends React.Component<any, { highlightedData?: Heatmap
     this.state = {};
   }
 
+  onBrushEnd: HeatmapConfig['onBrushEnd'] = (e) => {
+    console.log('___onBrushEnd___', e);
+    this.setState({
+      highlightedData: { x: e.x as any[], y: e.y as any[] },
+    });
+  };
+
   render() {
     const heatmapConfig: RecursivePartial<HeatmapConfig> = {
       grid: {
@@ -62,6 +69,7 @@ export class Playground extends React.Component<any, { highlightedData?: Heatmap
       xAxisLabel: {
         fill: '#6a717d',
       },
+      onBrushEnd: this.onBrushEnd,
     };
     return (
       <div>
@@ -71,12 +79,6 @@ export class Playground extends React.Component<any, { highlightedData?: Heatmap
               onElementClick={console.log}
               showLegend
               legendPosition="top"
-              onBrushEnd={(e) => {
-                console.log('___onBrushEnd___', e);
-                this.setState({
-                  highlightedData: { x: e.x as any[], y: e.y as any[] },
-                });
-              }}
               brushAxis="both"
               xDomain={{ min: 1572825600000, max: 1572912000000, minInterval: 1800000 }}
             />

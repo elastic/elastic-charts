@@ -17,9 +17,11 @@
  * under the License.
  */
 
+import { ChartTypes } from '../../..';
 import { Color } from '../../../../utils/commons';
 import { Pixels, SizeRatio } from '../../../partition_chart/layout/types/geometry_types';
 import { Font, FontFamily, TextAlign, TextBaseline } from '../../../partition_chart/layout/types/types';
+import { Cell } from './viewmodel_types';
 
 export interface Config {
   width: Pixels;
@@ -31,6 +33,8 @@ export interface Config {
   fontFamily: FontFamily;
 
   timeZone: string;
+
+  onBrushEnd?: (brushArea: HeatmapBrushEvent) => void;
 
   /**
    * Config of the mask over the area outside of the selected cells
@@ -99,3 +103,10 @@ export interface Config {
     };
   };
 }
+
+export type HeatmapBrushEvent = {
+  cells: Cell[];
+  x: (string | number)[];
+  y: (string | number)[];
+  chartType: typeof ChartTypes.Heatmap;
+};

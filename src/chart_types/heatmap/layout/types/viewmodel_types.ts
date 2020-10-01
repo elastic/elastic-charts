@@ -19,12 +19,11 @@
 
 import { ChartTypes } from '../../..';
 import { Fill, Line, Stroke } from '../../../../geoms/types';
-import { HeatmapBrushEvent } from '../../../../specs';
 import { Point } from '../../../../utils/point';
 import { Pixels } from '../../../partition_chart/layout/types/geometry_types';
 import { config } from '../config/config';
 import { HeatmapCellDatum, TextBox } from '../viewmodel/viewmodel';
-import { Config } from './config_types';
+import { Config, HeatmapBrushEvent } from './config_types';
 
 /** @internal */
 export interface Value {
