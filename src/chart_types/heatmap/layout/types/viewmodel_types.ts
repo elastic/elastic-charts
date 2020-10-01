@@ -42,6 +42,7 @@ export interface Cell {
   stroke: Stroke;
   value: number;
   formatted: string;
+  visible: boolean;
   datum: HeatmapCellDatum;
 }
 

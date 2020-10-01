@@ -84,7 +84,7 @@ export const getColorScale = createCachedSelector(
         .domain(ranges)
         .interpolate(interpolateHcl)
         .range(colorRange);
-      colorScale.ticks = colorScale.config.ticks(6);
+      colorScale.ticks = [0, ...colorScale.config.ticks(6)];
     }
     return colorScale;
   },

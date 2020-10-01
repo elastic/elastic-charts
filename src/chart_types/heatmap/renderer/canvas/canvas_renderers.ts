@@ -76,6 +76,9 @@ export function renderCanvas2d(
           const { x, y } = heatmapViewModel.gridOrigin;
           ctx.translate(x, y);
           filteredCells.forEach((cell) => {
+            if (!cell.visible) {
+              return;
+            }
             renderRect(ctx, cell, cell.fill, cell.stroke);
           });
         }),
@@ -88,6 +91,9 @@ export function renderCanvas2d(
             return;
           }
           filteredCells.forEach((cell) => {
+            if (!cell.visible) {
+              return;
+            }
             renderText(
               ctx,
               {

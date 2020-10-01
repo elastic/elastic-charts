@@ -36,6 +36,7 @@ export function render(
   chartDimensions: Dimensions,
   heatmapTable: HeatmapTable,
   colorScale: ColorScaleType,
+  filterRanges: Array<[number, number | null]>,
 ): ShapeViewModel {
   const textMeasurer = document.createElement('canvas');
   const textMeasurerCtx = textMeasurer.getContext('2d');
@@ -54,5 +55,6 @@ export function render(
     chartDimensions,
     heatmapTable,
     colorScale,
+    filterRanges,
   );
 }

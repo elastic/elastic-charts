@@ -37,7 +37,6 @@ export const computeLegendSelector = createCachedSelector(
 
     return colorScale.ticks.map((tick) => {
       const color = colorScale.config(tick);
-
       const seriesIdentifier = {
         key: String(tick),
         specId: String(tick),

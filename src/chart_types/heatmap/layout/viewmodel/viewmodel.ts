@@ -81,6 +81,7 @@ export function shapeViewModel(
   chartDimensions: Dimensions,
   heatmapTable: HeatmapTable,
   colorScale: ColorScaleType,
+  filterRanges: Array<[number, number | null]>,
 ): ShapeViewModel {
   const gridStrokeWidth = config.grid.stroke.width ?? 1;
 
@@ -233,6 +234,7 @@ export function shapeViewModel(
         width: config.cell.border.strokeWidth,
       },
       value: d.value,
+      visible: !isFilteredValue(filterRanges, d.value),
       formatted: spec.valueFormatter(d.value),
     };
     return acc;
@@ -425,4 +427,13 @@ export function shapeViewModel(
 
 function getCellKey(x: string | number, y: string | number) {
   return [String(x), String(y)].join('&_&');
+}
+
+function isFilteredValue(filterRanges: Array<[number, number | null]>, value: number) {
+  return filterRanges.some(([min, max]) => {
+    if (max !== null && value > min && value < max) {
+      return true;
+    }
+    return max === null && value > min;
+  });
 }

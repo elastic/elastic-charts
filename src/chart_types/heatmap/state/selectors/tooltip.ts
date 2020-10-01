@@ -45,21 +45,23 @@ export const getTooltipInfoSelector = createCachedSelector(
     };
 
     if (Array.isArray(pickedShapes)) {
-      pickedShapes.forEach((shape) => {
-        const xValueLabel = config.xAxisLabel.formatter(shape.datum.x);
-        tooltipInfo.values.push({
-          label: `${shape.datum.y} - ${xValueLabel}`,
-          color: RGBtoString(shape.fill.color),
-          isHighlighted: false,
-          isVisible: true,
-          seriesIdentifier: {
-            specId: spec.id,
-            key: spec.id,
-          },
-          value: `${shape.value}`,
-          formattedValue: `${shape.value}`,
+      pickedShapes
+        .filter(({ visible }) => visible)
+        .forEach((shape) => {
+          const xValueLabel = config.xAxisLabel.formatter(shape.datum.x);
+          tooltipInfo.values.push({
+            label: `${shape.datum.y} - ${xValueLabel}`,
+            color: RGBtoString(shape.fill.color),
+            isHighlighted: false,
+            isVisible: true,
+            seriesIdentifier: {
+              specId: spec.id,
+              key: spec.id,
+            },
+            value: `${shape.value}`,
+            formattedValue: `${shape.value}`,
+          });
         });
-      });
     } else {
       tooltipInfo.values.push({
         label: ``,
