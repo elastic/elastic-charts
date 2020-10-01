@@ -1830,8 +1830,6 @@ export type XScaleType = typeof ScaleType.Ordinal | ScaleContinuousType;
 // @public (undocumented)
 export interface XYBrushArea {
     // (undocumented)
-    chartType: typeof ChartTypes.XYAxis;
-    // (undocumented)
     x?: [number, number];
     // (undocumented)
     y?: Array<GroupBrushExtent>;
@@ -1867,9 +1865,9 @@ export type YDomainRange = YDomainBase & DomainRange;
 
 // Warnings were encountered during analysis:
 //
-// src/chart_types/heatmap/layout/types/config_types.ts:29:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
-// src/chart_types/heatmap/layout/types/config_types.ts:59:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
-// src/chart_types/heatmap/layout/types/config_types.ts:60:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:28:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:58:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:59:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:126:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:127:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/specs/index.ts:48:13 - (ae-forgotten-export) The symbol "NodeColorAccessor" needs to be exported by the entry point index.d.ts
