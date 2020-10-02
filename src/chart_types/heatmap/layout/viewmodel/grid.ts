@@ -18,6 +18,7 @@
  */
 import { Config } from '../types/config_types';
 
+/** @internal */
 export function getGridCellHeight(yValues: Array<string | number>, config: Config): number {
   const { height, grid } = config;
   if (yValues.length === 0) {

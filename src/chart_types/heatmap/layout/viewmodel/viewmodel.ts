@@ -278,12 +278,6 @@ export function shapeViewModel(
    * Return selected cells and X,Y ranges based on the drag selection.
    */
   const pickDragArea: PickDragFunction = (bound) => {
-    const result = {
-      cells: [] as Cell[],
-      x: new Set<string | number>(),
-      y: new Set<string | number>(),
-    };
-
     const [start, end] = bound;
 
     const { left, top } = chartDimensions;
@@ -294,27 +288,45 @@ export function shapeViewModel(
       endY: yInvertedScale(Math.max(start.y, end.y) - top),
     };
 
+    let allXValuesInRange = [];
     const invertedXValues: Array<string | number> = [];
     const { startX, endX, startY, endY } = invertedBounds;
     invertedXValues.push(startX);
     if (typeof endX === 'number') {
       invertedXValues.push(endX + xDomain.minInterval);
+      let [startXValue] = invertedXValues;
+      if (typeof startXValue === 'number') {
+        while (startXValue < invertedXValues[1]) {
+          allXValuesInRange.push(startXValue);
+          startXValue += xDomain.minInterval;
+        }
+      }
     } else {
       invertedXValues.push(endX);
       const startXIndex = xValues.indexOf(startX);
       const endXIndex = Math.min(xValues.indexOf(endX) + 1, xValues.length);
-      invertedXValues.push(...xValues.slice(startXIndex, endXIndex));
+      allXValuesInRange = xValues.slice(startXIndex, endXIndex);
+      invertedXValues.push(...allXValuesInRange);
     }
 
     const invertedYValues: Array<string | number> = [];
 
     const startYIndex = yValues.indexOf(startY);
     const endYIndex = Math.min(yValues.indexOf(endY) + 1, yValues.length);
+    const allYValuesInRange = yValues.slice(startYIndex, endYIndex);
+    invertedYValues.push(...allYValuesInRange);
 
-    invertedYValues.push(...yValues.slice(startYIndex, endYIndex));
+    const cells: Cell[] = [];
+
+    allXValuesInRange.forEach((x) => {
+      allYValuesInRange.forEach((y) => {
+        const cellKey = getCellKey(x, y);
+        cells.push(cellMap[cellKey]);
+      });
+    });
 
     return {
-      ...result,
+      cells: cells.filter(Boolean),
       x: invertedXValues,
       y: invertedYValues,
     };

@@ -36,7 +36,7 @@ import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHeatmapTableSelector } from './get_heatmap_table';
 
-export type ScaleModelType<Type, Config> = {
+type ScaleModelType<Type, Config> = {
   type: Type;
   config: Config;
   ticks: number[];
@@ -84,8 +84,19 @@ export const getColorScale = createCachedSelector(
         .domain(ranges)
         .interpolate(interpolateHcl)
         .range(colorRange);
-      colorScale.ticks = [0, ...colorScale.config.ticks(6)];
+      colorScale.ticks = addBaselineOnLinearScale(ranges[0], ranges[1], colorScale.config.ticks(6));
     }
     return colorScale;
   },
 )(getChartIdSelector);
+
+function addBaselineOnLinearScale(min: number, max: number, ticks: Array<number>): Array<number> {
+  if (min < 0 && max < 0) {
+    return [...ticks, 0];
+  }
+  if (min >= 0 && max >= 0) {
+    return [0, ...ticks];
+  }
+
+  return ticks;
+}

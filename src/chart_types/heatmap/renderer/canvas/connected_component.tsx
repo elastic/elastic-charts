@@ -95,25 +95,6 @@ class Component extends React.Component<Props> {
     }
   }
 
-  // handleMouseMove(e: MouseEvent<HTMLCanvasElement>) {
-  //   const {
-  //     initialized,
-  //     chartContainerDimensions: { width, height },
-  //     forwardStageRef,
-  //     geometries,
-  //   } = this.props;
-  //   if (!forwardStageRef.current || !this.ctx || !initialized || width === 0 || height === 0) {
-  //     return;
-  //   }
-  //   const picker = geometries.pickQuads;
-  //   const box = forwardStageRef.current.getBoundingClientRect();
-  //   const { chartCenter } = geometries;
-  //   const x = e.clientX - box.left - chartCenter.x;
-  //   const y = e.clientY - box.top - chartCenter.y;
-  //   const pickedShapes: Array<BulletViewModel> = picker(x, y);
-  //   return pickedShapes;
-  // }
-
   render() {
     const {
       initialized,
@@ -123,55 +104,7 @@ class Component extends React.Component<Props> {
     if (!initialized || width === 0 || height === 0) {
       return null;
     }
-    // TODO the following commented code is a test using CSS Grid instead of canvas to render the heatmap
-    // const { xValues, yValues } = geometries.heatmapViewModel;
-
-    // const gridContainer = {
-    //   display: 'grid',
-    //   width: '100%',
-    //   height: '100%',
-    //   gridTemplateColumns: `fit-content(100px) repeat(${xValues.length}, 1fr)`,
-    //   gridTemplateRows: `repeat(${yValues.length}, minmax(30px, 1fr))`,
-    // };
-
-    // console.log(geometries.heatmapViewModel.xValues, gridContainer);
     return (
-      // <div style={gridContainer}>
-      //   {geometries.heatmapViewModel.cells.map((c, i) => {
-      //     if (i % geometries.heatmapViewModel.xValues.length === 0) {
-      //       return (
-      //         <>
-      //           <div
-      //             key={`0-${c.x} - ${c.y}`}
-      //             className="cellItem"
-      //             style={{
-      //               textAlign: 'right',
-      //               maxHeight: '30px',
-      //               textOverflow: 'ellipsis',
-      //               overflow: 'hidden',
-      //               // whiteSpace: 'nowrap',
-      //             }}
-      //           >
-      //             {geometries.heatmapViewModel.yValues[0]}
-      //           </div>
-      //           <div
-      //             key={`${c.x} - ${c.y}`}
-      //             className="cellItem"
-      //             style={{ background: c.fill.color, textAlign: 'center' }}
-      //           >
-      //             {c.formatted}
-      //           </div>
-      //         </>
-      //       );
-      //     }
-      //
-      //     return (
-      //       <div key={`${c.x} - ${c.y}`} className="cellItem" style={{ background: c.fill.color, textAlign: 'center' }}>
-      //         {c.formatted}
-      //       </div>
-      //     );
-      //   })}
-      // </div>
       <canvas
         ref={forwardStageRef}
         className="echCanvasRenderer"

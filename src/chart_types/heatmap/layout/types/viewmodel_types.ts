@@ -63,6 +63,7 @@ export interface HeatmapViewModel {
   pageSize: number;
 }
 
+/** @internal */
 export function isPickedCells(v: any): v is Cell[] {
   return Array.isArray(v);
 }

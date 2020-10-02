@@ -79,6 +79,11 @@ export class Playground extends React.Component<any, { highlightedData?: Heatmap
       },
       onBrushEnd: this.onBrushEnd,
     };
+    console.log(
+      BABYNAME_DATA.filter(([year]) => year > 1950).map((d) => {
+        return [d[0], d[1], d[2], -d[3]];
+      }),
+    );
     return (
       <div>
         <div className="chart" style={{ height: '500px', overflow: 'auto' }}>
@@ -121,7 +126,12 @@ export class Playground extends React.Component<any, { highlightedData?: Heatmap
               id="heatmap2"
               colorScale={ScaleType.Linear}
               colors={['yellow', 'red']}
-              data={BABYNAME_DATA.filter(([year]) => year > 1950)}
+              data={
+                BABYNAME_DATA.filter(([year]) => year > 1950)
+                // .map((d, i) => {
+                //   return [d[0], d[1], d[2], d[3] > 20000 ? -d[3] : d[3]];
+                // })
+              }
               xAccessor={(d) => d[2]}
               yAccessor={(d) => d[0]}
               valueAccessor={(d) => d[3]}
