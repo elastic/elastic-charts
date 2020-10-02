@@ -77,7 +77,6 @@ export function computeRectAnnotationDimensions(
     if (!xAndWidth) {
       return;
     }
-    console.log(yScale);
 
     if (!yScale) {
       if (!isDefined(intialY0) && !isDefined(intialY0)) {

@@ -256,4 +256,33 @@ describe('Render rect annotation within', () => {
     expectAnnotationAtPosition(data, 'line', dataValues, rect, 1, ScaleType.Linear);
     expectAnnotationAtPosition(data, 'bar', dataValues, rect, 1, ScaleType.Linear);
   });
+  describe('render annotations', () => {
+    it('annotation with no height will take the chart dimension height', () => {
+      const store = MockStore.default({ top: 0, left: 0, width: 20, height: 200 });
+      const settings = MockGlobalSpec.settingsNoMargins();
+      const annotation = MockAnnotationSpec.rect({
+        dataValues: [
+          { coordinates: { x0: 2, x1: 4 }, details: 'Max anomaly score: 7' },
+          { coordinates: { x0: 12, x1: 16 }, details: 'Max anomaly score: 8' },
+        ],
+      });
+
+      const bar = MockSeriesSpec.bar({
+        xScaleType: ScaleType.Linear,
+        data: [
+          { x: 1, y: 0 },
+          { x: 2, y: 0 },
+          { x: 4, y: 0 },
+        ],
+        xAccessor: 'x',
+        yAccessors: ['y'],
+      });
+      MockStore.addSpecs([settings, annotation, bar], store);
+      const expected = computeAnnotationDimensionsSelector(store.getState());
+      expect(expected.get('rect_annotation_1')![0]).toEqual({
+        rect: { x: 5, width: 15, y: 0, height: 200 },
+        details: 'Max anomaly score: 7',
+      });
+    });
+  });
 });

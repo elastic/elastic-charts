@@ -98,51 +98,42 @@ import { Position } from '../../../src/utils/commons';
 
 export const Example = () => {
   return (
-    <div className="chart">
-      <Chart className="story-chart">
-        <RectAnnotation
-          id="rect"
-          dataValues={[
-            {
-              coordinates: {
-                x0: 2,
-                x1: 4,
-              },
-              details: 'Max anomaly score: 7',
+    <Chart className="story-chart">
+      <RectAnnotation
+        id="rect"
+        dataValues={[
+          {
+            coordinates: {
+              x0: 2,
+              x1: 4,
             },
-            {
-              coordinates: {
-                x0: 12,
-                x1: 16,
-                // y0: 1,
-                // y1: 2,
-              },
-              details: 'Max anomaly score: 8',
+            details: 'Max anomaly score: 7',
+          },
+          {
+            coordinates: {
+              x0: 12,
+              x1: 16,
             },
-          ]}
-          style={{ fill: 'red' }}
-        />
-        <Settings />
-        <Axis id="bottom" position={Position.Bottom} title="x-domain axis" />
-        <Axis
-          domain={{ constrainPadding: false, fit: true }}
-          id="left"
-          title="y-domain axis"
-          position={Position.Left}
-        />
-        <BarSeries
-          id="bars"
-          xScaleType={ScaleType.Linear}
-          yScaleType={ScaleType.Linear}
-          xAccessor="x"
-          yAccessors={['y']}
-          data={[
-            { x: 0, y: 10 },
-            { x: 5, y: 10 },
-            { x: 20, y: 10 },
-          ]}
-        />
-      </Chart>
-    </div>
+            details: 'Max anomaly score: 8',
+          },
+        ]}
+        style={{ fill: 'red' }}
+      />
+      <Settings />
+      <Axis id="bottom" position={Position.Bottom} title="x-domain axis" />
+      <Axis domain={{ constrainPadding: false, fit: true }} id="left" title="y-domain axis" position={Position.Left} />
+      <BarSeries
+        id="bars"
+        xScaleType={ScaleType.Linear}
+        yScaleType={ScaleType.Linear}
+        xAccessor="x"
+        yAccessors={['y']}
+        data={[
+          { x: 0, y: 10 },
+          { x: 5, y: 10 },
+          { x: 20, y: 10 },
+        ]}
+      />
+    </Chart>
   );
 };

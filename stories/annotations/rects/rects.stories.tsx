@@ -32,3 +32,4 @@ export { Example as linearLineChart } from './3_linear_line_chart';
 export { Example as styling } from './4_styling';
 export { Example as tooltipOptions } from './5_tooltip_options';
 export { Example as chartDimension } from './6_chart_dimensions';
+export { Example as noGroupId } from './7_no_global_id';
