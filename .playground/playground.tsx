@@ -144,7 +144,3 @@ export class Playground extends React.Component {
             ]}
           />
         </Chart>
-      </div>
-    );
-  }
-}
