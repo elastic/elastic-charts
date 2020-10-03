@@ -50,36 +50,35 @@ export function computeRectAnnotationDimensions(
 
   const rectsProps: AnnotationRectProps[] = [];
   dataValues.forEach((dataValue: RectAnnotationDatum) => {
-    const { x0: initialX0, x1: initialX1, y0: intialY0, y1: intialY1 } = dataValue.coordinates;
+    const { x0: initialX0, x1: initialX1, y0: initialY0, y1: initialY1 } = dataValue.coordinates;
 
     // if everything is null, return; otherwise we coerce the other coordinates
-    if (initialX0 == null && initialX1 == null && intialY0 == null && intialY1 == null) {
+    if (initialX0 == null && initialX1 == null && initialY0 == null && initialY1 == null) {
       return;
     }
-
     let height: number | undefined;
 
     const [x0, x1] = limitValueToDomainRange(xScale, initialX0, initialX1, isHistogram);
-
     // something is wrong with the data types, don't draw this annotation
     if (x0 == null || x1 == null) {
       return;
     }
 
     let xAndWidth: { x: number; width: number } | null = null;
+
     if (isBandScale(xScale)) {
       xAndWidth = scaleXonBandScale(xScale, x0, x1);
     } else if (isContinuousScale(xScale)) {
       xAndWidth = scaleXonContinuousScale(xScale, x0, x1, isHistogram);
     }
-
     // something is wrong with scales, don't draw
     if (!xAndWidth) {
       return;
     }
-
     if (!yScale) {
-      if (!isDefined(intialY0) && !isDefined(intialY0)) {
+      // what axis should it default to?
+
+      if (!isDefined(initialY0) && !isDefined(initialY1)) {
         const rectDimensions = {
           ...xAndWidth,
           y: 0,
@@ -91,12 +90,12 @@ export function computeRectAnnotationDimensions(
           details: dataValue.details,
         });
       }
-
+      // TODO else if (!isDefined(initialX0) && !isDefined(initialX1)) {
+      // need to know what yAxis to bind the annotation to (user input or a default?)
       return;
     }
 
-    const [y0, y1] = limitValueToDomainRange(yScale, intialY0, intialY1);
-
+    const [y0, y1] = limitValueToDomainRange(yScale, initialY0, initialY1);
     // something is wrong with the data types, don't draw this annotation
     if (y0 == null || y1 == null) {
       return;
@@ -108,7 +107,6 @@ export function computeRectAnnotationDimensions(
       return;
     }
     height = Math.abs(scaledY0 - scaledY1);
-
     // if the annotation height is 0 override it with the height from chart dimension
     if (height === 0) {
       // eslint-disable-next-line prefer-destructuring
@@ -127,6 +125,7 @@ export function computeRectAnnotationDimensions(
       details: dataValue.details,
     });
   });
+
   return rectsProps;
 }
 

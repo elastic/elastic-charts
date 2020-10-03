@@ -279,9 +279,9 @@ describe('Render rect annotation within', () => {
       });
       MockStore.addSpecs([settings, annotation, bar], store);
       const expected = computeAnnotationDimensionsSelector(store.getState());
-      expect(expected.get('rect_annotation_1')![0]).toEqual({
-        rect: { x: 5, width: 15, y: 0, height: 200 },
-        details: 'Max anomaly score: 7',
+      const [resultAnnotation] = expected.get('rect_annotation_1') ?? [];
+      expect(resultAnnotation).toMatchObject({
+        rect: { height: 200 },
       });
     });
   });
