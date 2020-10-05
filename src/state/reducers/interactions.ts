@@ -20,6 +20,7 @@
 import { getSeriesIndex } from '../../chart_types/xy_chart/utils/series';
 import { LegendItem } from '../../commons/legend';
 import { SeriesIdentifier } from '../../commons/series_id';
+import { getDelta } from '../../utils/point';
 import { ON_KEY_UP, KeyActions } from '../actions/key';
 import {
   ON_TOGGLE_LEGEND,
@@ -51,12 +52,13 @@ export function interactionsReducer(
       return state;
 
     case ON_POINTER_MOVE:
+      const delta = state.pointer.down && getDelta(state.pointer.down.position, action.position) > 4;
       return {
         ...state,
         pointer: {
           ...state.pointer,
           // enable the dragging flag only if the time between the down action and the move action is > 100ms
-          dragging: !!(state.pointer.down && action.time - state.pointer.down.time >= 100),
+          dragging: !!(state.pointer.down && action.time - state.pointer.down.time >= 100 && delta),
           current: {
             position: {
               ...action.position,
