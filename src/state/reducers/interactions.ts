@@ -35,6 +35,9 @@ import { InteractionsState } from '../chart_state';
 import { getInitialPointerState } from '../utils';
 
 /** @internal */
+export const DRAG_DETECTION_TIMEOUT = 100;
+
+/** @internal */
 export function interactionsReducer(
   state: InteractionsState,
   action: LegendActions | MouseActions | KeyActions,
@@ -58,7 +61,7 @@ export function interactionsReducer(
         pointer: {
           ...state.pointer,
           // enable the dragging flag only if the time between the down action and the move action is > 100ms
-          dragging: !!(state.pointer.down && action.time - state.pointer.down.time >= 100 && delta),
+          dragging: !!(state.pointer.down && action.time - state.pointer.down.time >= DRAG_DETECTION_TIMEOUT && delta),
           current: {
             position: {
               ...action.position,
