@@ -713,7 +713,7 @@ export interface GoalSpec extends Spec {
     // Warning: (ae-forgotten-export) The symbol "Config" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
-    config: RecursivePartial<Config>;
+    config: RecursivePartial<Config_2>;
     // (undocumented)
     labelMajor: string | BandFillColorAccessor;
     // (undocumented)
@@ -765,114 +765,11 @@ export type GroupId = string;
 // @alpha (undocumented)
 export const Heatmap: React.FunctionComponent<SpecRequiredProps_8 & SpecOptionalProps_8>;
 
-// Warning: (ae-missing-release-tag) "Config" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-forgotten-export) The symbol "Config" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "HeatmapConfig" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export interface HeatmapConfig {
-    brushArea: {
-        visible: boolean;
-        fill: Color;
-        stroke: Color;
-        strokeWidth: number;
-    };
-    brushMask: {
-        visible: boolean;
-        fill: Color;
-    };
-    brushTool: {
-        visible: boolean;
-        fill: Color;
-    };
-    // (undocumented)
-    cell: {
-        maxWidth: Pixels | 'fill';
-        maxHeight: Pixels | 'fill';
-        align: 'center';
-        label: Font & {
-            fontSize: Pixels;
-            maxWidth: Pixels | 'fill';
-            fill: string;
-            align: TextAlign;
-            baseline: TextBaseline;
-            visible: boolean;
-        };
-        border: {
-            strokeWidth: Pixels;
-            stroke: Color;
-        };
-    };
-    // Warning: (ae-forgotten-export) The symbol "FontFamily" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    fontFamily: FontFamily;
-    // (undocumented)
-    grid: {
-        cellWidth: {
-            min: Pixels;
-            max: Pixels | 'fill';
-        };
-        cellHeight: {
-            min: Pixels;
-            max: Pixels | 'fill';
-        };
-        stroke: {
-            color: string;
-            width: number;
-        };
-    };
-    // (undocumented)
-    height: Pixels;
-    // (undocumented)
-    margin: {
-        left: SizeRatio;
-        right: SizeRatio;
-        top: SizeRatio;
-        bottom: SizeRatio;
-    };
-    // (undocumented)
-    maxColumnWidth: Pixels;
-    // (undocumented)
-    maxRowHeight: Pixels;
-    // Warning: (ae-forgotten-export) The symbol "HeatmapBrushEvent" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    onBrushEnd?: (brushArea: HeatmapBrushEvent) => void;
-    // (undocumented)
-    timeZone: string;
-    // Warning: (ae-forgotten-export) The symbol "Pixels" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    width: Pixels;
-    // Warning: (ae-forgotten-export) The symbol "Font" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    xAxisLabel: Font & {
-        fontSize: Pixels;
-        fill: string;
-        align: TextAlign;
-        baseline: TextBaseline;
-        visible: boolean;
-        padding: number;
-        formatter: (value: string | number) => string;
-    };
-    // (undocumented)
-    yAxisLabel: Font & {
-        fontSize: Pixels;
-        width: Pixels | 'auto' | {
-            max: Pixels;
-        };
-        fill: string;
-        baseline: TextBaseline;
-        visible: boolean;
-        padding: number | {
-            left?: number;
-            right?: number;
-            top?: number;
-            bottom?: number;
-        };
-        formatter: (value: string | number) => string;
-    };
-}
+export type HeatmapConfig = RecursivePartial<Config>;
 
 // Warning: (ae-forgotten-export) The symbol "Cell" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "HeatmapElementEvent" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -891,7 +788,7 @@ export interface HeatmapSpec extends Spec {
     // (undocumented)
     colorScale?: HeatmapScaleType;
     // (undocumented)
-    config: RecursivePartial<HeatmapConfig>;
+    config: RecursivePartial<Config>;
     // (undocumented)
     data: Datum[];
     // (undocumented)
@@ -1865,9 +1762,6 @@ export type YDomainRange = YDomainBase & DomainRange;
 
 // Warnings were encountered during analysis:
 //
-// src/chart_types/heatmap/layout/types/config_types.ts:28:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
-// src/chart_types/heatmap/layout/types/config_types.ts:58:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
-// src/chart_types/heatmap/layout/types/config_types.ts:59:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:126:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:127:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/specs/index.ts:48:13 - (ae-forgotten-export) The symbol "NodeColorAccessor" needs to be exported by the entry point index.d.ts
