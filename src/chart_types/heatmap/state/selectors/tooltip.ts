@@ -51,7 +51,7 @@ export const getTooltipInfoSelector = createCachedSelector(
           // X-axis value
           tooltipInfo.values.push({
             label: config.xAxisLabel.name,
-            color: RGBtoString(shape.fill.color),
+            color: 'transparent',
             isHighlighted: false,
             isVisible: true,
             seriesIdentifier: {
@@ -65,7 +65,7 @@ export const getTooltipInfoSelector = createCachedSelector(
           // Y-axis value
           tooltipInfo.values.push({
             label: config.yAxisLabel.name,
-            color: RGBtoString(shape.fill.color),
+            color: 'transparent',
             isHighlighted: false,
             isVisible: true,
             seriesIdentifier: {
@@ -78,7 +78,7 @@ export const getTooltipInfoSelector = createCachedSelector(
 
           // Cell value
           tooltipInfo.values.push({
-            label: '',
+            label: spec.name ?? spec.id,
             color: RGBtoString(shape.fill.color),
             isHighlighted: false,
             isVisible: true,

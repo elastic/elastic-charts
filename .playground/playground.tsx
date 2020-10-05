@@ -98,6 +98,7 @@ export class Playground extends React.Component<any, { highlightedData?: Heatmap
             />
             <Heatmap
               id="heatmap1"
+              name="maxAnomalyScore"
               ranges={[0, 3, 25, 50, 75]}
               colorScale={ScaleType.Threshold}
               colors={['#ffffff', '#d2e9f7', '#8bc8fb', '#fdec25', '#fba740', '#fe5050']}

@@ -17,12 +17,10 @@
  * under the License.
  */
 
-import { Color, RecursivePartial } from '../../../../utils/commons';
+import { Color } from '../../../../utils/commons';
 import { Pixels, SizeRatio } from '../../../partition_chart/layout/types/geometry_types';
 import { Font, FontFamily, TextAlign, TextBaseline } from '../../../partition_chart/layout/types/types';
 import { Cell } from './viewmodel_types';
-
-export type HeatmapConfig = RecursivePartial<Config>;
 
 export interface Config {
   width: Pixels;
