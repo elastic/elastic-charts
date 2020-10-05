@@ -55,7 +55,8 @@ export function interactionsReducer(
         ...state,
         pointer: {
           ...state.pointer,
-          dragging: !!(state.pointer.down && state.pointer.down.time < action.time),
+          // enable the dragging flag only if the time between the down action and the move action is > 100ms
+          dragging: !!(state.pointer.down && action.time - state.pointer.down.time >= 100),
           current: {
             position: {
               ...action.position,
