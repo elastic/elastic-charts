@@ -48,6 +48,7 @@ export const config: Config = {
   timeZone: 'UTC',
 
   xAxisLabel: {
+    name: '',
     visible: true,
     fill: 'black',
     fontSize: 12,
@@ -63,6 +64,7 @@ export const config: Config = {
     formatter: String,
   },
   yAxisLabel: {
+    name: '',
     visible: true,
     width: 'auto',
     fill: 'black',

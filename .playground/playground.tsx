@@ -69,6 +69,7 @@ export class Playground extends React.Component<any, { highlightedData?: Heatmap
         fill: 'red',
       },
       yAxisLabel: {
+        name: 'instance',
         visible: true,
         width: { max: 50 },
         padding: 5,
@@ -105,7 +106,7 @@ export class Playground extends React.Component<any, { highlightedData?: Heatmap
               xAccessor="time"
               yAccessor={(d) => d.laneLabel}
               valueAccessor="value"
-              valueFormatter={(d) => d.toFixed(0.2)}
+              valueFormatter={(d) => d.toFixed(2)}
               ySortPredicate="numAsc"
               xScaleType={ScaleType.Time}
               config={heatmapConfig}

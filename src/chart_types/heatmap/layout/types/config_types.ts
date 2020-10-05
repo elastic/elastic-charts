@@ -17,10 +17,12 @@
  * under the License.
  */
 
-import { Color } from '../../../../utils/commons';
+import { Color, RecursivePartial } from '../../../../utils/commons';
 import { Pixels, SizeRatio } from '../../../partition_chart/layout/types/geometry_types';
 import { Font, FontFamily, TextAlign, TextBaseline } from '../../../partition_chart/layout/types/types';
 import { Cell } from './viewmodel_types';
+
+export type HeatmapConfig = RecursivePartial<Config>;
 
 export interface Config {
   width: Pixels;
@@ -53,6 +55,7 @@ export interface Config {
   };
 
   xAxisLabel: Font & {
+    name: string;
     fontSize: Pixels;
     fill: string;
     align: TextAlign;
@@ -62,6 +65,7 @@ export interface Config {
     formatter: (value: string | number) => string;
   };
   yAxisLabel: Font & {
+    name: string;
     fontSize: Pixels;
     width: Pixels | 'auto' | { max: Pixels };
     fill: string;
