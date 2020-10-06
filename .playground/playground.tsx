@@ -189,6 +189,7 @@ export class Playground extends React.Component<any, { highlightedData?: Heatmap
         padding: 8,
       },
       onBrushEnd: this.onBrushEnd,
+      maxLegendHeight: 20,
     };
     console.log(
       BABYNAME_DATA.filter(([year]) => year > 1950).map((d) => {

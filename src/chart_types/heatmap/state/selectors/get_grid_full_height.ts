@@ -18,8 +18,11 @@
  */
 import createCachedSelector from 're-reselect';
 
-import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_size';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { Position } from '../../../../utils/commons';
 import { getGridCellHeight } from '../../layout/viewmodel/grid';
 import { getHeatmapConfigSelector } from './get_heatmap_config';
 import { getHeatmapTableSelector } from './get_heatmap_table';
@@ -30,17 +33,31 @@ export interface GridHeightParams {
   gridCellHeight: number;
   pageSize: number;
 }
+const getParentDimension = (state: GlobalChartState) => state.parentDimensions;
+
 /** @internal */
 export const getGridHeightParamsSelector = createCachedSelector(
-  [getChartContainerDimensionsSelector, getHeatmapConfigSelector, getHeatmapTableSelector],
+  [
+    getLegendSizeSelector,
+    getSettingsSpecSelector,
+    getParentDimension,
+    getHeatmapConfigSelector,
+    getHeatmapTableSelector,
+  ],
   (
+    legendSize,
+    { showLegend, legendPosition },
     { height: containerHeight },
-    { xAxisLabel: { padding, visible, fontSize }, grid },
+    { xAxisLabel: { padding, visible, fontSize }, grid, maxLegendHeight },
     { yValues },
   ): GridHeightParams => {
     const xAxisHeight = visible ? fontSize : 0;
     const totalVerticalPadding = padding * 2;
-    const verticalRemainingSpace = containerHeight - xAxisHeight - totalVerticalPadding;
+    let legendHeight = 0;
+    if (showLegend && (legendPosition === Position.Top || legendPosition === Position.Bottom)) {
+      legendHeight = maxLegendHeight ?? legendSize.height;
+    }
+    const verticalRemainingSpace = containerHeight - xAxisHeight - totalVerticalPadding - legendHeight;
 
     // compute the grid cell height
     const gridCellHeight = getGridCellHeight(yValues, grid, verticalRemainingSpace);

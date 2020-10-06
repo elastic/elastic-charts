@@ -19,7 +19,7 @@
 import { max as d3Max } from 'd3-array';
 import createCachedSelector from 're-reselect';
 
-import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_size';
 import { Dimensions } from '../../../../utils/dimensions';
@@ -42,13 +42,15 @@ export interface HeatmapTable {
   extent: [number, number];
 }
 
+const getParentDimension = (state: GlobalChartState) => state.parentDimensions;
+
 /**
  * Gets charts grid area excluding legend and X,Y axis labels and paddings.
  * @internal
  */
 export const computeChartDimensionsSelector = createCachedSelector(
   [
-    getChartContainerDimensionsSelector,
+    getParentDimension,
     getLegendSizeSelector,
     getHeatmapTableSelector,
     getHeatmapConfigSelector,
