@@ -62,15 +62,15 @@ export function interactionsReducer(
       return state;
 
     case ON_POINTER_MOVE:
-      const isDragging = !!(
+      // enable the dragging flag only if the pixel delta between down and move is greater then 4 pixel
+      const dragging = !!(
         state.pointer.down && getDelta(state.pointer.down.position, action.position) > DRAG_DETECTION_PIXEL_DELTA
       );
       return {
         ...state,
         pointer: {
           ...state.pointer,
-          // enable the dragging flag only if the pixel delta between down and move is greater then 4 pixel
-          dragging: isDragging,
+          dragging,
           current: {
             position: {
               ...action.position,
