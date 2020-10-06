@@ -323,8 +323,8 @@ export function computeSeriesGeometries(
       axesSpecs,
       chartTheme,
       enableHistogramMode,
-      stackMode,
       chartRotation,
+      stackMode,
     );
     orderIndex = counts[SeriesTypes.Bar] > 0 ? orderIndex + 1 : orderIndex;
     areas.push(...geometries.areas);
@@ -364,7 +364,6 @@ export function computeSeriesGeometries(
       axesSpecs,
       chartTheme,
       enableHistogramMode,
-      undefined,
       chartRotation,
     );
     orderIndex = counts[SeriesTypes.Bar] > 0 ? orderIndex + counts[SeriesTypes.Bar] : orderIndex;
@@ -467,8 +466,8 @@ function renderGeometries(
   axesSpecs: AxisSpec[],
   chartTheme: Theme,
   enableHistogramMode: boolean,
-  stackMode: StackMode | undefined,
   chartRotation: number,
+  stackMode?: StackMode,
 ): {
   points: PointGeometry[];
   bars: BarGeometry[];
