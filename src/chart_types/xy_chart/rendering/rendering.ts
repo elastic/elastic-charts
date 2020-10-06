@@ -102,7 +102,7 @@ function computeBoxWidth(
   },
   displayValueSettings: DisplayValueSpec | undefined,
 ): { fixedFontScale: number; displayValueWidth: number } {
-  const fixedFontScale = typeof fontSize === 'number' ? fontSize : fontSize.min;
+  const fixedFontScale = Math.max(typeof fontSize === 'number' ? fontSize : fontSize.min, 1);
 
   const computedDisplayValueWidth = bboxCalculator.compute(text || '', padding, fixedFontScale, fontFamily).width;
   if (typeof fontSize !== 'number') {
