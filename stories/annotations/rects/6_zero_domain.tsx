@@ -33,14 +33,15 @@ const getKnobs = () => {
     maxY,
     x0,
     x1,
-    y0: enableYValues ? number('y0', 5) : undefined,
+    y0: enableYValues ? number('y0', 1) : undefined,
     y1: enableYValues ? number('y1', 5) : undefined,
   };
 };
 
 export const Example = () => {
   const xAxisKnobs = getKnobs();
-  const fit = boolean('fit to the domain', true);
+  // only show the fit enable or disable if relevant
+  const fit = xAxisKnobs.minY === xAxisKnobs.maxY ? boolean('fit to the domain', false) : undefined;
 
   return (
     <Chart className="story-chart">
