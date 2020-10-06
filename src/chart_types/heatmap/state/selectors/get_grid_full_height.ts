@@ -23,7 +23,7 @@ import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_size';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { Position } from '../../../../utils/commons';
-import { getGridCellHeight } from '../../layout/viewmodel/grid';
+import { Config } from '../../layout/types/config_types';
 import { getHeatmapConfigSelector } from './get_heatmap_config';
 import { getHeatmapTableSelector } from './get_heatmap_table';
 
@@ -74,3 +74,19 @@ export const getGridHeightParamsSelector = createCachedSelector(
     };
   },
 )(getChartIdSelector);
+
+function getGridCellHeight(yValues: Array<string | number>, grid: Config['grid'], height: number): number {
+  if (yValues.length === 0) {
+    return height;
+  }
+  const stretchedHeight = height / yValues.length;
+
+  if (stretchedHeight < grid.cellHeight.min) {
+    return grid.cellHeight.min;
+  }
+  if (grid.cellHeight.max !== 'fill' && stretchedHeight > grid.cellHeight.max) {
+    return grid.cellHeight.max;
+  }
+
+  return stretchedHeight;
+}
