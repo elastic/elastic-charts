@@ -213,11 +213,11 @@ function computeVerticalOffset(
       break;
     }
     case CHART_DIRECTION.TopToBottom: {
-      if (vertical === VerticalAlignment.Bottom) {
-        return geom.width - valueBox.height;
+      if (vertical === VerticalAlignment.Top) {
+        return geom.height - valueBox.height;
       }
       if (vertical === VerticalAlignment.Middle) {
-        return geom.width / 2 - valueBox.height / 2;
+        return geom.height / 2 - valueBox.height / 2;
       }
       break;
     }
