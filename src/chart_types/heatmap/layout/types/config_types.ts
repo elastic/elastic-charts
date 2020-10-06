@@ -53,6 +53,7 @@ export interface Config {
   };
 
   xAxisLabel: Font & {
+    name: string;
     fontSize: Pixels;
     fill: string;
     align: TextAlign;
@@ -62,6 +63,7 @@ export interface Config {
     formatter: (value: string | number) => string;
   };
   yAxisLabel: Font & {
+    name: string;
     fontSize: Pixels;
     width: Pixels | 'auto' | { max: Pixels };
     fill: string;
@@ -101,6 +103,7 @@ export interface Config {
       stroke: Color;
     };
   };
+  maxLegendHeight?: number;
 }
 
 export type HeatmapBrushEvent = {
