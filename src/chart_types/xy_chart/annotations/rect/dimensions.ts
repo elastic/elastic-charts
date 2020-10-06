@@ -76,8 +76,6 @@ export function computeRectAnnotationDimensions(
       return;
     }
     if (!yScale) {
-      // what axis should it default to?
-
       if (!isDefined(initialY0) && !isDefined(initialY1)) {
         const rectDimensions = {
           ...xAndWidth,
@@ -90,8 +88,6 @@ export function computeRectAnnotationDimensions(
           details: dataValue.details,
         });
       }
-      // TODO else if (!isDefined(initialX0) && !isDefined(initialX1)) {
-      // need to know what yAxis to bind the annotation to (user input or a default?)
       return;
     }
 

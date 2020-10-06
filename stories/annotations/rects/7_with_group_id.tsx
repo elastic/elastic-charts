@@ -22,18 +22,24 @@ import React from 'react';
 import { Axis, BarSeries, Chart, RectAnnotation, ScaleType, Settings } from '../../../src';
 import { Position } from '../../../src/utils/commons';
 
-const getKnobs = (group: string) => ({
-  enabled: boolean('Enable annotation', group === 'x axis', group),
-  groupId:
-    select('Annotation groupId', { group1: 'group1', group2: 'group2', none: undefined }, 'group1', group) || undefined,
-  x0: group === 'x axis' ? number('x0', 5, {}, group) : undefined,
-  x1: group === 'x axis' ? number('x1', 10, {}, group) : undefined,
-  y0: group === 'y axis' ? number('y0', 5, {}, group) : undefined,
-  y1: group === 'y axis' ? number('y1', 10, {}, group) : undefined,
-});
+const getKnobs = () => {
+  const enabled = boolean('enable annotation', true);
+  const groupId =
+    select('Annotation groupId', { group1: 'group1', group2: 'group2', none: undefined }, 'group1') || undefined;
+  const x0 = number('x0', 5);
+  const x1 = number('x1', 10);
+  const yDefined = boolean('enable y0 and y1 values', false);
+  return {
+    enabled,
+    groupId,
+    x0,
+    x1,
+    y0: yDefined ? number('y0', 3) : undefined,
+    y1: yDefined ? number('y1', 3) : undefined,
+  };
+};
 export const Example = () => {
-  const xAxisKnobs = getKnobs('x axis');
-  const yAxisKnobs = getKnobs('y axis');
+  const xAxisKnobs = getKnobs();
 
   return (
     <Chart className="story-chart">
@@ -42,15 +48,6 @@ export const Example = () => {
           groupId={xAxisKnobs.groupId}
           id="x axis"
           dataValues={[{ coordinates: xAxisKnobs }]}
-          style={{ fill: 'red' }}
-        />
-      )}
-      {yAxisKnobs.enabled && (
-        <RectAnnotation
-          groupId={yAxisKnobs.groupId}
-          id="y axis"
-          // xAxis coordinates are required
-          dataValues={[{ coordinates: yAxisKnobs }]}
           style={{ fill: 'red' }}
         />
       )}
