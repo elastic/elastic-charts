@@ -34,8 +34,15 @@ import { ON_MOUSE_DOWN, ON_MOUSE_UP, ON_POINTER_MOVE, MouseActions } from '../ac
 import { InteractionsState } from '../chart_state';
 import { getInitialPointerState } from '../utils';
 
-/** @internal */
+/**
+ * The minimum amount of time to consider for for dragging purposes
+ * @internal
+ */
 export const DRAG_DETECTION_TIMEOUT = 100;
+/**
+ * The minimum number of pixel between two pointer positions to consider for dragging purposes
+ */
+const DRAG_DETECTION_PIXEL_DELTA = 4;
 
 /** @internal */
 export function interactionsReducer(
@@ -55,7 +62,8 @@ export function interactionsReducer(
       return state;
 
     case ON_POINTER_MOVE:
-      const delta = state.pointer.down && getDelta(state.pointer.down.position, action.position) > 4;
+      const delta =
+        state.pointer.down && getDelta(state.pointer.down.position, action.position) > DRAG_DETECTION_PIXEL_DELTA;
       return {
         ...state,
         pointer: {
