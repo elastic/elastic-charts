@@ -284,5 +284,54 @@ describe('Render rect annotation within', () => {
         rect: { height: 200 },
       });
     });
+    it('annotation with group id should render with x0 and x1 values', () => {
+      const store = MockStore.default({ top: 0, left: 0, width: 20, height: 200 });
+      const settings = MockGlobalSpec.settingsNoMargins();
+      const annotation = MockAnnotationSpec.rect({
+        groupId: 'group1',
+        dataValues: [
+          { coordinates: { x0: 2, x1: 4 }, details: 'Max anomaly score: 7' },
+          { coordinates: { x0: 12, x1: 16 }, details: 'Max anomaly score: 8' },
+        ],
+      });
+      const bar1 = MockSeriesSpec.bar({
+        xScaleType: ScaleType.Linear,
+        data: [
+          { x: 1, y: 0 },
+          { x: 2, y: 5 },
+          { x: 4, y: 10 },
+        ],
+        xAccessor: 'x',
+        yAccessors: ['y'],
+      });
+      MockStore.addSpecs([settings, annotation, bar1], store);
+      const expected = computeAnnotationDimensionsSelector(store.getState());
+      const [resultAnnotation] = expected.get('rect_annotation_1') ?? [];
+      expect(resultAnnotation).toBeTruthy();
+    });
+    it('annotation with no group id should render', () => {
+      const store = MockStore.default({ top: 0, left: 0, width: 20, height: 200 });
+      const settings = MockGlobalSpec.settingsNoMargins();
+      const annotation = MockAnnotationSpec.rect({
+        dataValues: [
+          { coordinates: { x0: 2, x1: 4 }, details: 'Max anomaly score: 7' },
+          { coordinates: { x0: 12, x1: 16 }, details: 'Max anomaly score: 8' },
+        ],
+      });
+      const bar = MockSeriesSpec.bar({
+        xScaleType: ScaleType.Linear,
+        data: [
+          { x: 1, y: 0 },
+          { x: 2, y: 5 },
+          { x: 4, y: 10 },
+        ],
+        xAccessor: 'x',
+        yAccessors: ['y'],
+      });
+      MockStore.addSpecs([settings, annotation, bar], store);
+      const expected = computeAnnotationDimensionsSelector(store.getState());
+      const [resultAnnotation] = expected.get('rect_annotation_1') ?? [];
+      expect(resultAnnotation).toBeTruthy();
+    });
   });
 });
