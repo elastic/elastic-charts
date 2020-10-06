@@ -30,6 +30,7 @@ import { stringToRGB } from '../../../partition_chart/layout/utils/color_library
 import { HeatmapSpec } from '../../specs';
 import { HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
 import { ColorScaleType } from '../../state/selectors/get_color_scale';
+import { GridHeightParams } from '../../state/selectors/get_grid_full_height';
 import { Config } from '../types/config_types';
 import {
   Cell,
@@ -38,7 +39,6 @@ import {
   PickHighlightedArea,
   ShapeViewModel,
 } from '../types/viewmodel_types';
-import { getGridCellHeight } from './grid';
 
 export interface HeatmapCellDatum {
   x: string | number;
@@ -82,11 +82,11 @@ export function shapeViewModel(
   heatmapTable: HeatmapTable,
   colorScale: ColorScaleType,
   filterRanges: Array<[number, number | null]>,
+  { height, pageSize }: GridHeightParams,
 ): ShapeViewModel {
   const gridStrokeWidth = config.grid.stroke.width ?? 1;
 
-  const { table, yValues } = heatmapTable;
-  const { xDomain } = heatmapTable;
+  const { table, yValues, xDomain } = heatmapTable;
 
   // measure the text width of all rows values to get the grid area width
   const boxedYValues = yValues.map<Box & { value: string | number }>((value) => {
@@ -97,26 +97,13 @@ export function shapeViewModel(
     };
   });
 
-  const maxGridAreaWidth = chartDimensions.width;
-  const maxGridAreaHeight = chartDimensions.height;
-
-  // compute the grid cell height
-  const gridCellHeight = getGridCellHeight(yValues, config);
-  const maxHeight = gridCellHeight * yValues.length;
-
-  // compute the pageSize: how many rows can be fitted into the current panel height
-  const pageSize: number =
-    gridCellHeight > 0 && maxHeight > maxGridAreaHeight
-      ? Math.floor(maxGridAreaHeight / gridCellHeight)
-      : yValues.length;
-
   // compute the scale for the rows positions
   const yScale = scaleBand<string | number>()
     .domain(yValues)
-    .range([0, maxHeight]);
+    .range([0, height]);
 
   const yInvertedScale = scaleQuantize<string | number>()
-    .domain([0, maxHeight])
+    .domain([0, height])
     .range(yValues);
 
   let xValues = xDomain.domain;
@@ -127,7 +114,7 @@ export function shapeViewModel(
           {
             type: ScaleType.Time,
             domain: xDomain.domain,
-            range: [0, maxGridAreaWidth],
+            range: [0, chartDimensions.width],
           },
           {
             ticks: getTicksPerWidth(chartDimensions.width),
@@ -150,10 +137,10 @@ export function shapeViewModel(
   // compute the scale for the columns positions
   const xScale = scaleBand<string | number>()
     .domain(xValues)
-    .range([0, maxGridAreaWidth]);
+    .range([0, chartDimensions.width]);
 
   const xInvertedScale = scaleQuantize<string | number>()
-    .domain([0, maxGridAreaWidth])
+    .domain([0, chartDimensions.width])
     .range(xValues);
 
   // compute the cell width (can be smaller then the available size depending on config
@@ -368,22 +355,22 @@ export function shapeViewModel(
     const width = endFromScale - startFromScale + (isOutOfRange ? cellWidth : 0);
 
     // resolve Y coordinated making sure the order is correct
-    const { y: yStart, height } = y.reduce(
+    const { y: yStart, totalHeight } = y.reduce(
       (acc, current, i) => {
         if (i === 0) {
           acc.y = yScale(current) || 0;
         }
-        acc.height += cellHeight;
+        acc.totalHeight += cellHeight;
         return acc;
       },
-      { y: 0, height: 0 },
+      { y: 0, totalHeight: 0 },
     );
 
     return {
       x: xStart,
       y: yStart,
       width,
-      height,
+      height: totalHeight,
     };
   };
 

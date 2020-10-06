@@ -26,8 +26,8 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { Box } from '../../../partition_chart/layout/types/types';
 import { measureText } from '../../../partition_chart/layout/utils/measure';
 import { XDomain } from '../../../xy_chart/domains/types';
-import { getGridCellHeight } from '../../layout/viewmodel/grid';
 import { HeatmapCellDatum } from '../../layout/viewmodel/viewmodel';
+import { getGridHeightParamsSelector } from './get_grid_full_height';
 import { getHeatmapConfigSelector } from './get_heatmap_config';
 import { getHeatmapTableSelector } from './get_heatmap_table';
 import { getXAxisRightOverflow } from './get_x_axis_right_overflow';
@@ -43,7 +43,7 @@ export interface HeatmapTable {
 }
 
 /**
- * Gets charts dimensions excluding legend and X,Y axis labels and paddings.
+ * Gets charts grid area excluding legend and X,Y axis labels and paddings.
  * @internal
  */
 export const computeChartDimensionsSelector = createCachedSelector(
@@ -53,23 +53,19 @@ export const computeChartDimensionsSelector = createCachedSelector(
     getHeatmapTableSelector,
     getHeatmapConfigSelector,
     getXAxisRightOverflow,
+    getGridHeightParamsSelector,
   ],
-  (chartContainerDimensions, legendSize, heatmapTable, config, rightOverflow): Dimensions => {
-    let { height, width, left } = chartContainerDimensions;
+  (chartContainerDimensions, legendSize, heatmapTable, config, rightOverflow, { height }): Dimensions => {
+    let { width, left } = chartContainerDimensions;
     const { top } = chartContainerDimensions;
+    const { padding } = config.yAxisLabel;
 
     const textMeasurer = document.createElement('canvas');
     const textMeasurerCtx = textMeasurer.getContext('2d');
     const textMeasure = measureText(textMeasurerCtx!);
 
-    // compute the grid cell height
-    const gridCellHeight = getGridCellHeight(heatmapTable.yValues, config);
-    const maxHeight = gridCellHeight * heatmapTable.yValues.length;
-
-    const { padding } = config.yAxisLabel;
     const totalHorizontalPadding =
       typeof padding === 'number' ? padding * 2 : (padding.left ?? 0) + (padding.right ?? 0);
-    const totalVerticalPadding = typeof padding === 'number' ? padding * 2 : (padding.top ?? 0) + (padding.bottom ?? 0);
 
     if (config.yAxisLabel.visible) {
       // measure the text width of all rows values to get the grid area width
@@ -93,19 +89,11 @@ export const computeChartDimensionsSelector = createCachedSelector(
       left += yColumnWidth + totalHorizontalPadding;
     }
 
-    if (config.xAxisLabel.visible) {
-      // compute the grid area height removing the bottom axis
-      const maxTextHeight = config.yAxisLabel?.fontSize;
-      height -= maxTextHeight + totalVerticalPadding;
-    }
-
-    const result = {
-      height: Math.min(maxHeight, height),
+    return {
+      height,
       width,
       top,
       left,
     };
-
-    return result;
   },
 )(getChartIdSelector);
