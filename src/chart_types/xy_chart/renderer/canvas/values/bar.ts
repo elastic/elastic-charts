@@ -35,7 +35,7 @@ interface BarValuesProps {
   bars: BarGeometry[];
 }
 
-const CHART_ROTATION: Record<string, Rotation> = {
+const CHART_DIRECTION: Record<string, Rotation> = {
   BottomUp: 0,
   TopToBottom: 180,
   LeftToRight: 90,
@@ -147,7 +147,7 @@ function computeHorizontalOffset(
   { horizontal }: Partial<TextAlignment> = {},
 ) {
   switch (chartRotation) {
-    case CHART_ROTATION.LeftToRight: {
+    case CHART_DIRECTION.LeftToRight: {
       if (horizontal === HorizontalAlignment.Left) {
         return geom.height - valueBox.width;
       }
@@ -156,7 +156,7 @@ function computeHorizontalOffset(
       }
       break;
     }
-    case CHART_ROTATION.RightToLeft: {
+    case CHART_DIRECTION.RightToLeft: {
       if (horizontal === HorizontalAlignment.Right) {
         return geom.height - valueBox.width;
       }
@@ -165,7 +165,7 @@ function computeHorizontalOffset(
       }
       break;
     }
-    case CHART_ROTATION.TopToBottom: {
+    case CHART_DIRECTION.TopToBottom: {
       if (horizontal === HorizontalAlignment.Left) {
         return geom.width / 2 - valueBox.width / 2;
       }
@@ -174,7 +174,7 @@ function computeHorizontalOffset(
       }
       break;
     }
-    case CHART_ROTATION.BottomUp:
+    case CHART_DIRECTION.BottomUp:
     default: {
       if (horizontal === HorizontalAlignment.Left) {
         return -geom.width / 2 + valueBox.width / 2;
@@ -194,7 +194,7 @@ function computeVerticalOffset(
   { vertical }: Partial<TextAlignment> = {},
 ) {
   switch (chartRotation) {
-    case CHART_ROTATION.LeftToRight: {
+    case CHART_DIRECTION.LeftToRight: {
       if (vertical === VerticalAlignment.Bottom) {
         return geom.width - valueBox.height;
       }
@@ -203,7 +203,7 @@ function computeVerticalOffset(
       }
       break;
     }
-    case CHART_ROTATION.RightToLeft: {
+    case CHART_DIRECTION.RightToLeft: {
       if (vertical === VerticalAlignment.Bottom) {
         return -geom.width + valueBox.height;
       }
@@ -212,7 +212,7 @@ function computeVerticalOffset(
       }
       break;
     }
-    case CHART_ROTATION.TopToBottom: {
+    case CHART_DIRECTION.TopToBottom: {
       if (vertical === VerticalAlignment.Bottom) {
         return geom.width - valueBox.height;
       }
@@ -221,7 +221,7 @@ function computeVerticalOffset(
       }
       break;
     }
-    case CHART_ROTATION.BottomUp:
+    case CHART_DIRECTION.BottomUp:
     default: {
       if (vertical === VerticalAlignment.Bottom) {
         return geom.height - valueBox.height;
@@ -254,16 +254,16 @@ function positionText(
   alignment?: TextAlignment,
 ): { x: number; y: number; align: TextAlign; baseline: TextBaseline; rect: Rect } {
   const { offsetX, offsetY } = offsets;
-  const x = geom.x + geom.width / 2 - offsetX;
-  const y = geom.y - offsetY;
 
   const { alignmentOffsetX, alignmentOffsetY } = computeAlignmentOffset(geom, valueBox, chartRotation, alignment);
 
   switch (chartRotation) {
-    case 180:
+    case CHART_DIRECTION.TopToBottom: {
+      const x = geom.x + geom.width / 2 - offsetX + alignmentOffsetX;
+      const y = geom.y + offsetY + alignmentOffsetY;
       return {
-        x: geom.x + geom.width / 2 + offsetX + alignmentOffsetX,
-        y: geom.y + offsetY + alignmentOffsetY,
+        x,
+        y,
         align: 'center',
         baseline: 'bottom',
         rect: {
@@ -273,10 +273,13 @@ function positionText(
           height: valueBox.height,
         },
       };
-    case -90:
+    }
+    case CHART_DIRECTION.RightToLeft: {
+      const x = geom.x + geom.width + offsetY + alignmentOffsetY;
+      const y = geom.y - offsetX + alignmentOffsetX;
       return {
-        x: geom.x + geom.width + offsetY + alignmentOffsetY,
-        y: geom.y - offsetX + alignmentOffsetX,
+        x,
+        y,
         align: 'left',
         baseline: 'top',
         rect: {
@@ -286,10 +289,13 @@ function positionText(
           height: valueBox.width,
         },
       };
-    case 90:
+    }
+    case CHART_DIRECTION.LeftToRight: {
+      const x = geom.x - offsetY + alignmentOffsetY;
+      const y = geom.y + offsetX + alignmentOffsetX;
       return {
-        x: geom.x - offsetY + alignmentOffsetY,
-        y: geom.y + offsetX + alignmentOffsetX,
+        x,
+        y,
         align: 'right',
         baseline: 'top',
         rect: {
@@ -299,11 +305,14 @@ function positionText(
           height: valueBox.width,
         },
       };
-    case 0:
-    default:
+    }
+    case CHART_DIRECTION.BottomUp:
+    default: {
+      const x = geom.x + geom.width / 2 - offsetX + alignmentOffsetX;
+      const y = geom.y - offsetY + alignmentOffsetY;
       return {
-        x: geom.x + geom.width / 2 - offsetX + alignmentOffsetX,
-        y: geom.y - offsetY + alignmentOffsetY,
+        x,
+        y,
         align: 'center',
         baseline: 'top',
         rect: {
@@ -313,6 +322,7 @@ function positionText(
           height: valueBox.height,
         },
       };
+    }
   }
 }
 
