@@ -181,6 +181,7 @@ export class Playground extends React.Component<any, { highlightedData?: Heatmap
         },
       },
       yAxisLabel: {
+        name: 'instance',
         visible: true,
         width: 170,
         // eui color subdued
@@ -207,6 +208,7 @@ export class Playground extends React.Component<any, { highlightedData?: Heatmap
             />
             <Heatmap
               id="heatmap1"
+              name="maxAnomalyScore"
               ranges={[0, 3, 25, 50, 75]}
               colorScale={ScaleType.Threshold}
               colors={['#ffffff', '#d2e9f7', '#8bc8fb', '#fdec25', '#fba740', '#fe5050']}
@@ -215,7 +217,7 @@ export class Playground extends React.Component<any, { highlightedData?: Heatmap
               xAccessor="time"
               yAccessor={(d) => d.laneLabel}
               valueAccessor="value"
-              valueFormatter={(d) => d.toFixed(0.2)}
+              valueFormatter={(d) => d.toFixed(2)}
               ySortPredicate="numAsc"
               xScaleType={ScaleType.Time}
               config={heatmapConfig}
