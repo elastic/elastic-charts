@@ -22,6 +22,8 @@ import createCachedSelector from 're-reselect';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_size';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { Position } from '../../../../utils/commons';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Box } from '../../../partition_chart/layout/types/types';
 import { measureText } from '../../../partition_chart/layout/utils/measure';
@@ -56,8 +58,17 @@ export const computeChartDimensionsSelector = createCachedSelector(
     getHeatmapConfigSelector,
     getXAxisRightOverflow,
     getGridHeightParamsSelector,
+    getSettingsSpecSelector,
   ],
-  (chartContainerDimensions, legendSize, heatmapTable, config, rightOverflow, { height }): Dimensions => {
+  (
+    chartContainerDimensions,
+    legendSize,
+    heatmapTable,
+    config,
+    rightOverflow,
+    { height },
+    { showLegend, legendPosition },
+  ): Dimensions => {
     let { width, left } = chartContainerDimensions;
     const { top } = chartContainerDimensions;
     const { padding } = config.yAxisLabel;
@@ -90,6 +101,11 @@ export const computeChartDimensionsSelector = createCachedSelector(
       width -= yColumnWidth + rightOverflow + totalHorizontalPadding;
       left += yColumnWidth + totalHorizontalPadding;
     }
+    let legendWidth = 0;
+    if (showLegend && (legendPosition === Position.Right || legendPosition === Position.Left)) {
+      legendWidth = legendSize.width - legendSize.margin * 2;
+    }
+    width -= legendWidth;
 
     return {
       height,
