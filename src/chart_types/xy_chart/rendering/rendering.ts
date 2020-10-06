@@ -460,10 +460,13 @@ export function renderBars(
     // Take 70% of space for the label text
     const fontSizeFactor = 0.7;
     // Pick the right side of the label's box to use as factor reference
-    const referenceWidth = isHorizontalRotation ? displayValueWidth : fixedFontScale;
+    const referenceWidth = Math.max(isHorizontalRotation ? displayValueWidth : fixedFontScale, 1);
 
-    const tempTextScalingFactor = (width * fontSizeFactor) / referenceWidth;
-    const textScalingFactor = getFinalFontScalingFactor(tempTextScalingFactor, fixedFontScale, fontSize);
+    const textScalingFactor = getFinalFontScalingFactor(
+      (width * fontSizeFactor) / referenceWidth,
+      fixedFontScale,
+      fontSize,
+    );
 
     const hideClippedValue = displayValueSettings ? displayValueSettings.hideClippedValue : undefined;
     // Based on rotation scale the width of the text box
