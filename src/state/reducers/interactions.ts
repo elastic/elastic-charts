@@ -62,14 +62,15 @@ export function interactionsReducer(
       return state;
 
     case ON_POINTER_MOVE:
-      const delta =
-        state.pointer.down && getDelta(state.pointer.down.position, action.position) > DRAG_DETECTION_PIXEL_DELTA;
+      const isDragging = !!(
+        state.pointer.down && getDelta(state.pointer.down.position, action.position) > DRAG_DETECTION_PIXEL_DELTA
+      );
       return {
         ...state,
         pointer: {
           ...state.pointer,
-          // enable the dragging flag only if the time between the down action and the move action is > 100ms
-          dragging: !!(state.pointer.down && action.time - state.pointer.down.time >= DRAG_DETECTION_TIMEOUT && delta),
+          // enable the dragging flag only if the pixel delta between down and move is greater then 4 pixel
+          dragging: isDragging,
           current: {
             position: {
               ...action.position,
