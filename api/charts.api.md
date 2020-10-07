@@ -535,10 +535,17 @@ export interface DisplayValueSpec {
 }
 
 // @public (undocumented)
-export type DisplayValueStyle = TextStyle & {
+export type DisplayValueStyle = Omit<TextStyle, 'fill'> & {
     offsetX: number;
     offsetY: number;
-    shadowColor?: Color;
+    fill: Color | {
+        color: Color;
+        borderColor?: Color;
+    } | {
+        textInvertible: boolean;
+        textContrast?: number | boolean;
+        textBorder?: boolean;
+    };
 };
 
 // @public (undocumented)
