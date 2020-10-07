@@ -103,8 +103,8 @@ export function computeRectAnnotationDimensions(
       return;
     }
     height = Math.abs(scaledY0 - scaledY1);
-    // if the annotation height is 0 override it with the height from chart dimension
-    if (height === 0) {
+    // if the annotation height is 0 override it with the height from chart dimension and if the values in the domain are the same
+    if (height === 0 && yScale.domain[0] === yScale.domain[1] && yScale.domain.length === 2) {
       // eslint-disable-next-line prefer-destructuring
       height = chartDimensions.height;
       scaledY1 = 0;
