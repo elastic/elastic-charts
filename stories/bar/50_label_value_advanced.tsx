@@ -54,7 +54,7 @@ export const Example = () => {
   const debug = boolean('debug', false);
   const useInverted = boolean('textInverted', false);
   const valueColor = color('value color', '#fff');
-  const borderColor = color('shadow color', 'rgba(0,0,0,1)');
+  const borderColor = color('value border color', 'rgba(0,0,0,1)');
 
   const theme = {
     barSeriesStyle: {
