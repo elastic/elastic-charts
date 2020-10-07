@@ -24,6 +24,8 @@ import { BarGeometry } from '../../../../../utils/geometry';
 import { Point } from '../../../../../utils/point';
 import { Theme } from '../../../../../utils/themes/theme';
 import { Font, FontStyle, TextBaseline, TextAlign } from '../../../../partition_chart/layout/types/types';
+import { colorIsDark, getTextColorIfTextInvertible } from '../../../../partition_chart/layout/utils/calcs';
+import { getFillTextColor } from '../../../../partition_chart/layout/viewmodel/fill_text_layout';
 import { renderText, wrapLines } from '../primitives/text';
 import { renderDebugRect } from '../utils/debug';
 
@@ -38,7 +40,7 @@ interface BarValuesProps {
 /** @internal */
 export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesProps) {
   const { bars, debug, chartRotation, chartDimensions, theme } = props;
-  const { fontFamily, fontStyle, fill, fontSize, shadowColor } = theme.barSeriesStyle.displayValue;
+  const { fontFamily, fontStyle, fill, fontSize } = theme.barSeriesStyle.displayValue;
   const barsLength = bars.length;
   for (let i = 0; i < barsLength; i++) {
     const { displayValue } = bars[i];
@@ -79,6 +81,7 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
     }
     const { width, height } = textLines;
     const linesLength = textLines.lines.length;
+    const { fillColor, shadowColor } = getTextColors(fill, bars[i].color);
 
     for (let i = 0; i < linesLength; i++) {
       const text = textLines.lines[i];
@@ -89,7 +92,7 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
         text,
         {
           ...font,
-          fill,
+          fill: fillColor,
           fontSize,
           align,
           baseline,
@@ -200,4 +203,47 @@ function isOverflow(rect: Rect, chartDimensions: Dimensions, chartRotation: Rota
   }
 
   return false;
+}
+
+const DEFAULT_VALUE_COLOR = 'black';
+// a little bit of alpha makes black font more readable
+const DEFAULT_VALUE_BORDER_COLOR = 'rgba(255, 255, 255, 0.8)';
+const TRANSPARENT_COLOR = 'rgba(0,0,0,0)';
+type ValueFillDefinition = Theme['barSeriesStyle']['displayValue']['fill'];
+
+function getTextColors(
+  fillDefinition: ValueFillDefinition,
+  geometryColor: string,
+): { fillColor: string; shadowColor: string } {
+  if (typeof fillDefinition === 'string') {
+    return { fillColor: fillDefinition, shadowColor: TRANSPARENT_COLOR };
+  }
+  if ('color' in fillDefinition) {
+    return {
+      fillColor: fillDefinition.color,
+      shadowColor: fillDefinition.borderColor || TRANSPARENT_COLOR,
+    };
+  }
+  const fillColor =
+    getFillTextColor(
+      DEFAULT_VALUE_COLOR,
+      fillDefinition.textInvertible,
+      fillDefinition.textContrast || false,
+      geometryColor,
+      'white',
+    ) || DEFAULT_VALUE_COLOR;
+
+  return {
+    fillColor,
+    shadowColor:
+      'textBorder' in fillDefinition
+        ? getTextColorIfTextInvertible(
+            colorIsDark(fillColor),
+            colorIsDark(DEFAULT_VALUE_BORDER_COLOR),
+            DEFAULT_VALUE_BORDER_COLOR,
+            false,
+            geometryColor,
+          ) || TRANSPARENT_COLOR
+        : TRANSPARENT_COLOR,
+  };
 }

@@ -290,10 +290,17 @@ export interface Theme {
 export type PartialTheme = RecursivePartial<Theme>;
 
 /** @public */
-export type DisplayValueStyle = TextStyle & {
+export type DisplayValueStyle = Omit<TextStyle, 'fill'> & {
   offsetX: number;
   offsetY: number;
-  shadowColor?: Color;
+  fill:
+    | Color
+    | { color: Color; borderColor?: Color }
+    | {
+        textInvertible: boolean;
+        textContrast?: number | boolean;
+        textBorder?: boolean;
+      };
 };
 
 export interface PointStyle {

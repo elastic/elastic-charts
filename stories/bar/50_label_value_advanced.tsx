@@ -52,6 +52,9 @@ export const Example = () => {
   };
 
   const debug = boolean('debug', false);
+  const useInverted = boolean('textInverted', false);
+  const valueColor = color('value color', '#fff');
+  const borderColor = color('shadow color', 'rgba(0,0,0,1)');
 
   const theme = {
     barSeriesStyle: {
@@ -60,7 +63,9 @@ export const Example = () => {
         fontFamily: "'Open Sans', Helvetica, Arial, sans-serif",
         fontStyle: 'normal',
         padding: 0,
-        fill: color('value color', '#000'),
+        fill: useInverted
+          ? { textInverted: useInverted, textContrast: true, textBorder: true }
+          : { color: valueColor, borderColor },
         offsetX: number('offsetX', 0),
         offsetY: number('offsetY', 0),
       },
