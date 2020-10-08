@@ -1,3 +1,10 @@
+## [19.8.3](https://github.com/elastic/elastic-charts/compare/v19.8.2...v19.8.3) (2020-10-08)
+
+
+### Bug Fixes
+
+* show crosshair for external pointer events ([#817](https://github.com/elastic/elastic-charts/issues/817)) ([#863](https://github.com/elastic/elastic-charts/issues/863)) ([f253599](https://github.com/elastic/elastic-charts/commit/f25359924e252ab72c372dac5dc1f78b2e37fadb))
+
 ## [19.8.2](https://github.com/elastic/elastic-charts/compare/v19.8.1...v19.8.2) (2020-07-23)
 
 
