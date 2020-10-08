@@ -256,82 +256,88 @@ describe('Render rect annotation within', () => {
     expectAnnotationAtPosition(data, 'line', dataValues, rect, 1, ScaleType.Linear);
     expectAnnotationAtPosition(data, 'bar', dataValues, rect, 1, ScaleType.Linear);
   });
-  describe('render annotations', () => {
-    it('annotation with no height will take the chart dimension height', () => {
-      const store = MockStore.default({ top: 0, left: 0, width: 20, height: 200 });
-      const settings = MockGlobalSpec.settingsNoMargins();
-      const annotation = MockAnnotationSpec.rect({
-        dataValues: [
-          { coordinates: { x0: 2, x1: 4 }, details: 'Max anomaly score: 7' },
-          { coordinates: { x0: 12, x1: 16 }, details: 'Max anomaly score: 8' },
-        ],
-      });
 
-      const bar = MockSeriesSpec.bar({
-        xScaleType: ScaleType.Linear,
-        data: [
-          { x: 1, y: 0 },
-          { x: 2, y: 0 },
-          { x: 4, y: 0 },
-        ],
-        xAccessor: 'x',
-        yAccessors: ['y'],
-      });
-      MockStore.addSpecs([settings, annotation, bar], store);
-      const expected = computeAnnotationDimensionsSelector(store.getState());
-      const [resultAnnotation] = expected.get('rect_annotation_1') ?? [];
-      expect(resultAnnotation).toMatchObject({
-        rect: { height: 200 },
-      });
+  it('annotation with no height will take the chart dimension height', () => {
+    const store = MockStore.default({ top: 0, left: 0, width: 20, height: 200 });
+    const settings = MockGlobalSpec.settingsNoMargins();
+    const annotation = MockAnnotationSpec.rect({
+      dataValues: [{ coordinates: { x0: 2, x1: 4 } }],
     });
-    it('annotation with group id should render with x0 and x1 values', () => {
-      const store = MockStore.default({ top: 0, left: 0, width: 20, height: 200 });
-      const settings = MockGlobalSpec.settingsNoMargins();
-      const annotation = MockAnnotationSpec.rect({
-        groupId: 'group1',
-        dataValues: [
-          { coordinates: { x0: 2, x1: 4 }, details: 'Max anomaly score: 7' },
-          { coordinates: { x0: 12, x1: 16 }, details: 'Max anomaly score: 8' },
-        ],
-      });
-      const bar1 = MockSeriesSpec.bar({
-        xScaleType: ScaleType.Linear,
-        data: [
-          { x: 1, y: 0 },
-          { x: 2, y: 5 },
-          { x: 4, y: 10 },
-        ],
-        xAccessor: 'x',
-        yAccessors: ['y'],
-      });
-      MockStore.addSpecs([settings, annotation, bar1], store);
-      const expected = computeAnnotationDimensionsSelector(store.getState());
-      const [resultAnnotation] = expected.get('rect_annotation_1') ?? [];
-      expect(resultAnnotation).toBeTruthy();
+    const barWithYNoHeight = MockSeriesSpec.bar({
+      data: [
+        { x: 1, y: 0 },
+        { x: 2, y: 0 },
+        { x: 4, y: 0 },
+      ],
     });
-    it('annotation with no group id should render', () => {
-      const store = MockStore.default({ top: 0, left: 0, width: 20, height: 200 });
-      const settings = MockGlobalSpec.settingsNoMargins();
-      const annotation = MockAnnotationSpec.rect({
-        dataValues: [
-          { coordinates: { x0: 2, x1: 4 }, details: 'Max anomaly score: 7' },
-          { coordinates: { x0: 12, x1: 16 }, details: 'Max anomaly score: 8' },
-        ],
-      });
-      const bar = MockSeriesSpec.bar({
-        xScaleType: ScaleType.Linear,
-        data: [
-          { x: 1, y: 0 },
-          { x: 2, y: 5 },
-          { x: 4, y: 10 },
-        ],
-        xAccessor: 'x',
-        yAccessors: ['y'],
-      });
-      MockStore.addSpecs([settings, annotation, bar], store);
-      const expected = computeAnnotationDimensionsSelector(store.getState());
-      const [resultAnnotation] = expected.get('rect_annotation_1') ?? [];
-      expect(resultAnnotation).toBeTruthy();
+    MockStore.addSpecs([settings, annotation, barWithYNoHeight], store);
+    const expected = computeAnnotationDimensionsSelector(store.getState());
+    const [resultAnnotation] = expected.get('rect_annotation_1') ?? [];
+    expect(resultAnnotation).toMatchObject({
+      rect: { height: 200 },
+    });
+  });
+  it('annotation with fit domain will render', () => {
+    const store = MockStore.default({ top: 0, left: 0, width: 20, height: 200 });
+    const settings = MockGlobalSpec.settingsNoMargins();
+    const yDomainFitted = MockGlobalSpec.axis({ domain: { fit: true } });
+    const annotation = MockAnnotationSpec.rect({
+      dataValues: [{ coordinates: { x0: 2, x1: 4 } }],
+    });
+    const bar = MockSeriesSpec.bar({
+      data: [
+        { x: 1, y: 0 },
+        { x: 2, y: 5 },
+        { x: 4, y: 10 },
+      ],
+    });
+    MockStore.addSpecs([settings, yDomainFitted, annotation, bar], store);
+    const expected = computeAnnotationDimensionsSelector(store.getState());
+    const [resultAnnotation] = expected.get('rect_annotation_1') ?? [];
+    expect(resultAnnotation).toMatchObject({
+      rect: { height: 190 },
+    });
+  });
+  it('annotation with group id should render with x0 and x1 values', () => {
+    const store = MockStore.default({ top: 0, left: 0, width: 20, height: 200 });
+    const settings = MockGlobalSpec.settingsNoMargins();
+    const annotation = MockAnnotationSpec.rect({
+      groupId: 'group1',
+      dataValues: [{ coordinates: { x0: 2, x1: 4 } }],
+    });
+    const bar = MockSeriesSpec.bar({
+      data: [
+        { x: 1, y: 0 },
+        { x: 2, y: 5 },
+        { x: 4, y: 10 },
+      ],
+    });
+    MockStore.addSpecs([settings, annotation, bar], store);
+    const expected = computeAnnotationDimensionsSelector(store.getState());
+    const [resultAnnotation] = expected.get('rect_annotation_1') ?? [];
+    expect(resultAnnotation).toMatchObject({
+      rect: { height: 200 },
+    });
+  });
+  it('annotation with no group id should render', () => {
+    const store = MockStore.default({ top: 0, left: 0, width: 20, height: 200 });
+    const settings = MockGlobalSpec.settingsNoMargins();
+    const annotation = MockAnnotationSpec.rect({
+      groupId: undefined,
+      dataValues: [{ coordinates: { x0: 2, x1: 4 } }],
+    });
+    const bar = MockSeriesSpec.bar({
+      data: [
+        { x: 1, y: 0 },
+        { x: 2, y: 5 },
+        { x: 4, y: 10 },
+      ],
+    });
+    MockStore.addSpecs([settings, annotation, bar], store);
+    const expected = computeAnnotationDimensionsSelector(store.getState());
+    const [resultAnnotation] = expected.get('rect_annotation_1') ?? [];
+    expect(resultAnnotation).toMatchObject({
+      rect: { height: 200 },
     });
   });
 });

@@ -34,7 +34,7 @@ const getKnobs = () => {
     groupId,
     x0,
     x1,
-    y0: yDefined ? number('y0', 3) : undefined,
+    y0: yDefined ? number('y0', 0) : undefined,
     y1: yDefined ? number('y1', 3) : undefined,
   };
 };

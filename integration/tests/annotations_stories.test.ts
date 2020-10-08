@@ -70,39 +70,39 @@ describe('Annotations stories', () => {
     });
   });
   describe('Render with zero domain or fit to domain', () => {
-    it('show annotation when yDomain is [0, 20]', async () => {
+    it('show annotation when yDomain is not zero value', async () => {
       await common.expectChartAtUrlToMatchScreenshot(
-        'http://localhost:9001/?path=/story/annotations-rects--zero-domain&knob-min y=0&knob-max y=20&knob-x0=5&knob-x1=10&knob-enable y0 and y1 values=&knob-y0=5&knob-y1=5&knob-fit to the domain=',
+        'http://localhost:9001/?path=/story/annotations-rects--zero-domain&knob-min y=0&knob-max y=20&knob-x0=5&knob-x1=10&knob-enable y0 and y1 values=&knob-y0=1&knob-y1=5',
       );
     });
     it('show annotation when yDomain is [0, 20] and y0 and y1 are specified', async () => {
       await common.expectChartAtUrlToMatchScreenshot(
-        'http://localhost:9001/?path=/story/annotations-rects--zero-domain&knob-min y=0&knob-max y=4&knob-x0=5&knob-x1=10&knob-enable y0 and y1 values=true&knob-y0=4&knob-y1=5&knob-fit to the domain=',
+        'http://localhost:9001/?path=/story/annotations-rects--zero-domain&knob-min y=0&knob-max y=20&knob-x0=5&knob-x1=10&knob-enable y0 and y1 values=true&knob-y0=1&knob-y1=5',
       );
     });
     it('show annotation when yDomain is [0, 0]', async () => {
       await common.expectChartAtUrlToMatchScreenshot(
-        'http://localhost:9001/?path=/story/annotations-rects--zero-domain&knob-fit to the domain=&knob-min y=0&knob-max y=0&knob-x0=5&knob-x1=5&knob-enable y0 and y1 values=&knob-y0=5&knob-y1=5',
+        'http://localhost:9001/?path=/story/annotations-rects--zero-domain&knob-min y=0&knob-max y=0&knob-x0=5&knob-x1=10&knob-enable y0 and y1 values=&knob-y0=1&knob-y1=5&knob-fit to the domain=',
       );
     });
-    it('show annotation when yDomain is [20, 20]', async () => {
+    it('show annotation when yDomain fit is true', async () => {
       await common.expectChartAtUrlToMatchScreenshot(
-        'http://localhost:9001/?path=/story/annotations-rects--zero-domain&knob-fit to the domain=true&knob-min y=20&knob-max y=20&knob-x0=5&knob-x1=5&knob-enable y0 and y1 values=&knob-y0=5&knob-y1=5',
+        'http://localhost:9001/?path=/story/annotations-rects--zero-domain&knob-min y=10&knob-max y=10&knob-x0=5&knob-x1=10&knob-enable y0 and y1 values=&knob-y0=1&knob-y1=5&knob-fit to the domain=true',
       );
     });
     it('does not show annotation with yDomain is [0, 0] and y0 and y1 specified', async () => {
       await common.expectChartAtUrlToMatchScreenshot(
-        'http://localhost:9001/?path=/story/annotations-rects--zero-domain&knob-min y=0&knob-max y=0&knob-x0=5&knob-x1=10&knob-enable y0 and y1 values=true&knob-y0=5&knob-y1=5&knob-fit to the domain=true',
+        'http://localhost:9001/?path=/story/annotations-rects--zero-domain&knob-min y=0&knob-max y=0&knob-x0=5&knob-x1=10&knob-enable y0 and y1 values=true&knob-y0=1&knob-y1=5&knob-fit to the domain=',
       );
     });
     it('does not show annotation with yDomain is [20, 20] and y0 and y1 values are specified', async () => {
       await common.expectChartAtUrlToMatchScreenshot(
-        'http://localhost:9001/?path=/story/annotations-rects--zero-domain&knob-min y=4&knob-max y=4&knob-x0=5&knob-x1=10&knob-enable y0 and y1 values=true&knob-y0=5&knob-y1=5&knob-fit to the domain=true',
+        'http://localhost:9001/?path=/story/annotations-rects--zero-domain&knob-min y=20&knob-max y=20&knob-x0=5&knob-x1=10&knob-enable y0 and y1 values=true&knob-y0=1&knob-y1=5&knob-fit to the domain=true',
       );
     });
   });
   describe('Render with no group id provided', () => {
-    it('show annotaiton when group id is provided no y0 nor y1 values specified', async () => {
+    it('show annotation when group id is provided no y0 nor y1 values specified', async () => {
       await common.expectChartAtUrlToMatchScreenshot(
         'http://localhost:9001/?path=/story/annotations-rects--with-group-id&knob-enable annotation=true&knob-Annotation groupId=group1&knob-x0=5&knob-x1=10&knob-enable y0 and y1 values=',
       );
@@ -124,7 +124,7 @@ describe('Annotations stories', () => {
     });
     it('does not show annotation when no group id provided and y0 and y1 values specified', async () => {
       await common.expectChartAtUrlToMatchScreenshot(
-        'http://localhost:9001/?path=/story/annotations-rects--with-group-id&knob-enable annotation=true&knob-Annotation groupId=&knob-x0=5&knob-x1=10&knob-enable y0 and y1 values=true&knob-y0=2&knob-y1=3',
+        'http://localhost:9001/?path=/story/annotations-rects--with-group-id&knob-enable%20annotation=true&knob-Annotation%20groupId=&knob-x0=5&knob-x1=10&knob-enable%20y0%20and%20y1%20values=true&knob-y0=0&knob-y1=3',
       );
     });
   });
