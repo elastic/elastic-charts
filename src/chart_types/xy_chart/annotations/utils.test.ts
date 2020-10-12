@@ -92,7 +92,6 @@ describe('annotation utils', () => {
     showOverlappingLabels: false,
     position: Position.Left,
     style,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     tickFormat: (value: any) => value.toString(),
     showGridLines: true,
   };
@@ -106,7 +105,6 @@ describe('annotation utils', () => {
     showOverlappingLabels: false,
     position: Position.Bottom,
     style,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     tickFormat: (value: any) => value.toString(),
     showGridLines: true,
   };
