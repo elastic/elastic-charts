@@ -599,10 +599,11 @@ export type DisplayValueStyle = Omit<TextStyle, 'fill'> & {
     fill: Color | {
         color: Color;
         borderColor?: Color;
+        borderWidth?: number;
     } | {
         textInvertible: boolean;
         textContrast?: number | boolean;
-        textBorder?: boolean;
+        textBorder?: number | boolean;
     };
 };
 
