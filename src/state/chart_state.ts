@@ -21,6 +21,7 @@ import React, { RefObject } from 'react';
 
 import { ChartTypes } from '../chart_types';
 import { GoalState } from '../chart_types/goal_chart/state/chart_state';
+import { HeatmapState } from '../chart_types/heatmap/state/chart_state';
 import { PartitionState } from '../chart_types/partition_chart/state/chart_state';
 import { XYAxisChartState } from '../chart_types/xy_chart/state/chart_state';
 import { LegendItem, LegendItemExtraValues } from '../commons/legend';
@@ -42,6 +43,8 @@ import { interactionsReducer } from './reducers/interactions';
 import { getInternalIsInitializedSelector, InitStatus } from './selectors/get_internal_is_intialized';
 import { getLegendItemsSelector } from './selectors/get_legend_items';
 import { LegendItemLabel } from './selectors/get_legend_items_labels';
+import { DebugState } from './types';
+import { getInitialPointerState } from './utils';
 
 export type BackwardRef = () => React.RefObject<HTMLDivElement>;
 
@@ -121,6 +124,30 @@ export interface InternalChartState {
    * @param globalState
    */
   eventCallbacks(globalState: GlobalChartState): void;
+
+  /**
+   * Get the chart main projection area: exclude legends, axis and other external marks
+   * @param globalState
+   */
+  getMainProjectionArea(globalState: GlobalChartState): Dimensions;
+
+  /**
+   * Get the chart container projection area
+   * @param globalState
+   */
+  getProjectionContainerArea(globalState: GlobalChartState): Dimensions;
+
+  /**
+   * Get the brushed area if available
+   * @param globalState
+   */
+  getBrushArea(globalState: GlobalChartState): Dimensions | null;
+
+  /**
+   * Get debug state of chart
+   * @param globalState
+   */
+  getDebugState(globalState: GlobalChartState): DebugState;
 }
 
 /** @internal */
@@ -234,20 +261,7 @@ export const getInitialState = (chartId: string): GlobalChartState => ({
   chartType: null,
   internalChartState: null,
   interactions: {
-    pointer: {
-      dragging: false,
-      current: {
-        position: {
-          x: -1,
-          y: -1,
-        },
-        time: 0,
-      },
-      down: null,
-      up: null,
-      lastDrag: null,
-      lastClick: null,
-    },
+    pointer: getInitialPointerState(),
     legendCollapsed: false,
     highlightedLegendItemKey: null,
     deselectedDataSeries: [],
@@ -435,6 +449,8 @@ function initInternalChartState(chartType: ChartTypes | null): InternalChartStat
       return new PartitionState();
     case ChartTypes.XYAxis:
       return new XYAxisChartState();
+    case ChartTypes.Heatmap:
+      return new HeatmapState();
     default:
       return null;
   }

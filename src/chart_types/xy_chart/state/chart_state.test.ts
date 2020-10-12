@@ -760,6 +760,7 @@ describe.skip('Chart Store', () => {
     const tooltipValue: TooltipValue = {
       label: 'a',
       value: 'a',
+      formattedValue: 'a',
       color: 'a',
       isHighlighted: false,
       seriesIdentifier: {
@@ -873,6 +874,7 @@ describe.skip('Chart Store', () => {
     const tooltipValue: TooltipValue = {
       label: 'a',
       value: 'a',
+      formattedValue: 'a',
       color: 'a',
       isHighlighted: false,
       seriesIdentifier: {
@@ -931,6 +933,7 @@ describe.skip('Chart Store', () => {
         y: 1,
         accessor: 'y1',
         mark: null,
+        datum: { x: 0, y: 1 },
       },
       x: 0,
       y: 0,
@@ -952,6 +955,7 @@ describe.skip('Chart Store', () => {
         y: 3,
         accessor: 'y1',
         mark: null,
+        datum: { x: 0, y: 3 },
       },
       x: 50,
       y: 0,
@@ -1019,6 +1023,7 @@ describe.skip('Chart Store', () => {
     const highlightedTooltipValue: TooltipValue = {
       label: 'foo',
       value: 1,
+      formattedValue: '1',
       color: 'color',
       isHighlighted: true,
       seriesIdentifier: {
@@ -1031,6 +1036,7 @@ describe.skip('Chart Store', () => {
     const unhighlightedTooltipValue: TooltipValue = {
       label: 'foo',
       value: 1,
+      formattedValue: '1',
       color: 'color',
       isHighlighted: false,
       seriesIdentifier: {
@@ -1063,6 +1069,7 @@ describe.skip('Chart Store', () => {
     const headerValue: TooltipValue = {
       label: 'header',
       value: 'foo',
+      formattedValue: 'foo',
       color: 'a',
       isHighlighted: false,
       seriesIdentifier: {
@@ -1079,6 +1086,7 @@ describe.skip('Chart Store', () => {
     const tooltipValue: TooltipValue = {
       label: 'a',
       value: 123,
+      formattedValue: '123',
       color: 'a',
       isHighlighted: false,
       seriesIdentifier: {
@@ -1143,6 +1151,7 @@ describe.skip('Chart Store', () => {
           y: 1,
           accessor: 'y1',
           mark: null,
+          datum: { x: 0, y: 1 },
         },
         x: 0,
         y: 0,

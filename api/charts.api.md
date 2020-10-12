@@ -9,7 +9,16 @@ import { ComponentType } from 'react';
 import React from 'react';
 
 // @public
+export type Accessor = AccessorObjectKey | AccessorArrayIndex;
+
+// @public
+export type AccessorArrayIndex = number;
+
+// @public
 export type AccessorFn = UnaryAccessorFn;
+
+// @public
+export type AccessorObjectKey = string;
 
 // @public
 export type AnnotationDomainType = $Values<typeof AnnotationDomainTypes>;
@@ -138,7 +147,7 @@ export interface AxisSpec extends Spec {
     // (undocumented)
     specType: typeof SpecTypes.Axis;
     style?: RecursivePartial<Omit<AxisStyle, 'gridLine'>>;
-    tickFormat: TickFormatter;
+    tickFormat?: TickFormatter;
     ticks?: number;
     title?: string;
 }
@@ -149,8 +158,6 @@ export interface AxisSpec extends Spec {
 export interface AxisStyle {
     // (undocumented)
     axisLine: StrokeStyle & Visible;
-    // Warning: (ae-forgotten-export) The symbol "Visible" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     axisTitle: TextStyle & Visible;
     // (undocumented)
@@ -263,7 +270,20 @@ export interface BasePointerEvent {
 export type BasicListener = () => undefined | void;
 
 // @public (undocumented)
-export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales;
+export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales & {
+    markFormat?: TickFormatter<number>;
+};
+
+// Warning: (ae-missing-release-tag) "BinAgg" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export const BinAgg: Readonly<{
+    Sum: "sum";
+    None: "none";
+}>;
+
+// @public (undocumented)
+export type BinAgg = $Values<typeof BinAgg>;
 
 // Warning: (ae-missing-release-tag) "BrushAxis" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -354,6 +374,7 @@ export const ChartTypes: Readonly<{
     Goal: "goal";
     Partition: "partition";
     XYAxis: "xy_axis";
+    Heatmap: "heatmap";
 }>;
 
 // @public (undocumented)
@@ -473,6 +494,32 @@ export interface DataSeriesDatum<T = any> {
 // @public (undocumented)
 export type Datum = any;
 
+// Warning: (ae-missing-release-tag) "DebugState" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export interface DebugState {
+    // Warning: (ae-forgotten-export) The symbol "DebugStateArea" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    areas?: DebugStateArea[];
+    // Warning: (ae-forgotten-export) The symbol "DebugStateAxes" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    axes?: DebugStateAxes;
+    // Warning: (ae-forgotten-export) The symbol "DebugStateBar" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    bars?: DebugStateBar[];
+    // Warning: (ae-forgotten-export) The symbol "DebugStateLegend" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    legend?: DebugStateLegend;
+    // Warning: (ae-forgotten-export) The symbol "DebugStateLine" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    lines?: DebugStateLine[];
+}
+
 // Warning: (ae-missing-release-tag) "DEFAULT_ANNOTATION_LINE_STYLE" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -523,6 +570,17 @@ export const DEFAULT_TOOLTIP_TYPE: "vertical";
 // @public (undocumented)
 export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'showLegend' | 'debug' | 'tooltip' | 'showLegendExtra' | 'theme' | 'legendPosition' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents';
 
+// Warning: (ae-missing-release-tag) "Direction" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export const Direction: Readonly<{
+    Ascending: "ascending";
+    Descending: "descending";
+}>;
+
+// @public (undocumented)
+export type Direction = $Values<typeof Direction>;
+
 // Warning: (ae-missing-release-tag) "DisplayValueSpec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -551,12 +609,12 @@ export type DomainRange = LowerBoundedDomain | UpperBoundedDomain | CompleteBoun
 // Warning: (ae-missing-release-tag) "ElementClickListener" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent>) => void;
+export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent>) => void;
 
 // Warning: (ae-missing-release-tag) "ElementOverListener" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type ElementOverListener = (elements: Array<XYChartElementEvent | PartitionElementEvent>) => void;
+export type ElementOverListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent>) => void;
 
 // @alpha
 export interface ExternalPointerEventsSettings {
@@ -626,6 +684,7 @@ export interface GeometryValue {
     //
     // (undocumented)
     accessor: BandedAccessorType;
+    datum: any;
     // (undocumented)
     mark: number | null;
     // (undocumented)
@@ -638,7 +697,7 @@ export interface GeometryValue {
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
 //
 // @alpha (undocumented)
-export const Goal: React.FunctionComponent<SpecRequiredProps_8 & SpecOptionalProps_8>;
+export const Goal: React.FunctionComponent<SpecRequiredProps_9 & SpecOptionalProps_9>;
 
 // @alpha (undocumented)
 export interface GoalSpec extends Spec {
@@ -704,6 +763,174 @@ export interface GroupBrushExtent {
 
 // @public (undocumented)
 export type GroupId = string;
+
+// Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
+//
+// @alpha (undocumented)
+export const Heatmap: React.FunctionComponent<SpecRequiredProps_8 & SpecOptionalProps_8>;
+
+// Warning: (ae-missing-release-tag) "Config" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface HeatmapConfig {
+    brushArea: {
+        visible: boolean;
+        fill: Color;
+        stroke: Color;
+        strokeWidth: number;
+    };
+    brushMask: {
+        visible: boolean;
+        fill: Color;
+    };
+    brushTool: {
+        visible: boolean;
+        fill: Color;
+    };
+    // (undocumented)
+    cell: {
+        maxWidth: Pixels | 'fill';
+        maxHeight: Pixels | 'fill';
+        align: 'center';
+        label: Font & {
+            fontSize: Pixels;
+            maxWidth: Pixels | 'fill';
+            fill: string;
+            align: TextAlign;
+            baseline: TextBaseline;
+            visible: boolean;
+        };
+        border: {
+            strokeWidth: Pixels;
+            stroke: Color;
+        };
+    };
+    // Warning: (ae-forgotten-export) The symbol "FontFamily" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    fontFamily: FontFamily;
+    // (undocumented)
+    grid: {
+        cellWidth: {
+            min: Pixels;
+            max: Pixels | 'fill';
+        };
+        cellHeight: {
+            min: Pixels;
+            max: Pixels | 'fill';
+        };
+        stroke: {
+            color: string;
+            width: number;
+        };
+    };
+    // (undocumented)
+    height: Pixels;
+    // (undocumented)
+    margin: {
+        left: SizeRatio;
+        right: SizeRatio;
+        top: SizeRatio;
+        bottom: SizeRatio;
+    };
+    // (undocumented)
+    maxColumnWidth: Pixels;
+    // (undocumented)
+    maxLegendHeight?: number;
+    // (undocumented)
+    maxRowHeight: Pixels;
+    // Warning: (ae-forgotten-export) The symbol "HeatmapBrushEvent" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    onBrushEnd?: (brushArea: HeatmapBrushEvent) => void;
+    // (undocumented)
+    timeZone: string;
+    // Warning: (ae-forgotten-export) The symbol "Pixels" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    width: Pixels;
+    // Warning: (ae-forgotten-export) The symbol "Font" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    xAxisLabel: Font & {
+        name: string;
+        fontSize: Pixels;
+        fill: string;
+        align: TextAlign;
+        baseline: TextBaseline;
+        visible: boolean;
+        padding: number;
+        formatter: (value: string | number) => string;
+    };
+    // (undocumented)
+    yAxisLabel: Font & {
+        name: string;
+        fontSize: Pixels;
+        width: Pixels | 'auto' | {
+            max: Pixels;
+        };
+        fill: string;
+        baseline: TextBaseline;
+        visible: boolean;
+        padding: number | {
+            left?: number;
+            right?: number;
+            top?: number;
+            bottom?: number;
+        };
+        formatter: (value: string | number) => string;
+    };
+}
+
+// Warning: (ae-forgotten-export) The symbol "Cell" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "HeatmapElementEvent" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type HeatmapElementEvent = [Cell, SeriesIdentifier];
+
+// @alpha (undocumented)
+export interface HeatmapSpec extends Spec {
+    // (undocumented)
+    chartType: typeof ChartTypes.Heatmap;
+    // (undocumented)
+    colors: Color[];
+    // Warning: (ae-forgotten-export) The symbol "HeatmapScaleType" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    colorScale?: HeatmapScaleType;
+    // (undocumented)
+    config: RecursivePartial<HeatmapConfig>;
+    // (undocumented)
+    data: Datum[];
+    // (undocumented)
+    highlightedData?: {
+        x: any[];
+        y: any[];
+    };
+    // (undocumented)
+    name?: string;
+    // (undocumented)
+    ranges?: number[] | [number, number];
+    // (undocumented)
+    specType: typeof SpecTypes.Series;
+    // (undocumented)
+    valueAccessor: Accessor | AccessorFn;
+    // (undocumented)
+    valueFormatter: (value: number) => string;
+    // (undocumented)
+    xAccessor: Accessor | AccessorFn;
+    // (undocumented)
+    xScaleType: SeriesScales['xScaleType'];
+    // Warning: (ae-forgotten-export) The symbol "Predicate" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    xSortPredicate: Predicate;
+    // (undocumented)
+    yAccessor: Accessor | AccessorFn;
+    // (undocumented)
+    ySortPredicate: Predicate;
+}
 
 // Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
@@ -923,6 +1150,14 @@ export function niceTimeFormatter(domain: [number, number]): TickFormatter;
 // @public (undocumented)
 export interface Opacity {
     opacity: number;
+}
+
+// @public
+export interface OrderBy {
+    // (undocumented)
+    binAgg?: BinAgg;
+    // (undocumented)
+    direction?: Direction;
 }
 
 // @public (undocumented)
@@ -1178,6 +1413,9 @@ export const ScaleType: Readonly<{
     Log: "log";
     Sqrt: "sqrt";
     Time: "time";
+    Quantize: "quantize";
+    Quantile: "quantile";
+    Threshold: "threshold";
 }>;
 
 // @public (undocumented)
@@ -1190,7 +1428,6 @@ export interface SeriesAccessors {
     markSizeAccessor?: Accessor | AccessorFn;
     splitSeriesAccessors?: Accessor[];
     stackAccessors?: Accessor[];
-    // Warning: (ae-forgotten-export) The symbol "Accessor" needs to be exported by the entry point index.d.ts
     xAccessor: Accessor | AccessorFn;
     y0Accessors?: Accessor[];
     yAccessors: Accessor[];
@@ -1243,7 +1480,7 @@ export type SeriesNameFn = (series: XYChartSeriesIdentifier, isTooltip: boolean)
 // @public (undocumented)
 export interface SeriesScales {
     timeZone?: string;
-    xScaleType: typeof ScaleType.Ordinal | typeof ScaleType.Linear | typeof ScaleType.Time;
+    xScaleType: XScaleType;
     // @deprecated
     yScaleToDataExtent?: boolean;
     yScaleType: ScaleContinuousType;
@@ -1267,6 +1504,7 @@ export interface SeriesSpec extends Spec {
     sortIndex?: number;
     // (undocumented)
     specType: typeof SpecTypes.Series;
+    tickFormat?: TickFormatter;
     useDefaultGroupDomain?: boolean;
     // Warning: (ae-forgotten-export) The symbol "AccessorFormat" needs to be exported by the entry point index.d.ts
     y0AccessorFormat?: AccessorFormat;
@@ -1296,12 +1534,14 @@ export const Settings: React.FunctionComponent<SettingsSpecProps>;
 
 // @public
 export interface SettingsSpec extends Spec {
+    allowBrushingLastHistogramBucket?: boolean;
     // (undocumented)
     animateData: boolean;
     baseTheme?: Theme;
     brushAxis?: BrushAxis;
-    // (undocumented)
     debug: boolean;
+    // @alpha
+    debugState?: boolean;
     // @alpha
     externalPointerEvents: ExternalPointerEventsSettings;
     flatLegend?: boolean;
@@ -1310,7 +1550,6 @@ export interface SettingsSpec extends Spec {
     // (undocumented)
     legendColorPicker?: LegendColorPicker;
     legendMaxDepth?: number;
-    // (undocumented)
     legendPosition: Position;
     minBrushDelta?: number;
     // (undocumented)
@@ -1335,6 +1574,7 @@ export interface SettingsSpec extends Spec {
     onPointerUpdate?: PointerUpdateListener;
     // (undocumented)
     onRenderChange?: RenderChangeListener;
+    orderOrdinalBinsBy?: OrderBy;
     // (undocumented)
     pointBuffer?: MarkBuffer;
     // (undocumented)
@@ -1343,6 +1583,7 @@ export interface SettingsSpec extends Spec {
     resizeDebounce?: number;
     // (undocumented)
     rotation: Rotation;
+    roundHistogramBrushValues?: boolean;
     // (undocumented)
     showLegend: boolean;
     showLegendExtra: boolean;
@@ -1487,7 +1728,7 @@ export interface Theme {
 }
 
 // @public (undocumented)
-export type TickFormatter = (value: any, options?: TickFormatterOptions) => string;
+export type TickFormatter<V = any> = (value: V, options?: TickFormatterOptions) => string;
 
 // @public (undocumented)
 export type TickFormatterOptions = {
@@ -1545,10 +1786,12 @@ export type TooltipType = $Values<typeof TooltipType>;
 // @public
 export interface TooltipValue {
     color: Color;
+    formattedMarkValue?: string | null;
+    formattedValue: string;
     isHighlighted: boolean;
     isVisible: boolean;
     label: string;
-    markValue?: any;
+    markValue?: number | null;
     seriesIdentifier: SeriesIdentifier;
     value: any;
     valueAccessor?: Accessor;
@@ -1579,6 +1822,19 @@ export const VerticalAlignment: Readonly<{
 
 // @public
 export type VerticalAlignment = $Values<typeof VerticalAlignment>;
+
+// Warning: (ae-missing-release-tag) "Visible" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface Visible {
+    // (undocumented)
+    visible: boolean;
+}
+
+// Warning: (ae-missing-release-tag) "XScaleType" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type XScaleType = typeof ScaleType.Ordinal | ScaleContinuousType;
 
 // Warning: (ae-missing-release-tag) "XYBrushArea" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1620,6 +1876,9 @@ export type YDomainRange = YDomainBase & DomainRange;
 
 // Warnings were encountered during analysis:
 //
+// src/chart_types/heatmap/layout/types/config_types.ts:28:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:59:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:60:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:126:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:127:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/specs/index.ts:48:13 - (ae-forgotten-export) The symbol "NodeColorAccessor" needs to be exported by the entry point index.d.ts

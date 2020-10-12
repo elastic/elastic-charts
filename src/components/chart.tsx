@@ -57,14 +57,6 @@ interface ChartState {
 const getMiddlware = (id: string): StoreEnhancer => {
   const middlware: Middleware<any, any, any>[] = [];
 
-  if (process.env.DEBUG_REDUX === 'true') {
-    /* eslint-disable @typescript-eslint/no-var-requires, import/no-extraneous-dependencies */
-    middlware.push(require('redux-immutable-state-invariant').default());
-    // https://github.com/LogRocket/redux-logger#options-description
-    middlware.push(require('redux-logger').createLogger({}));
-    /* eslint-enable */
-  }
-
   if (typeof window !== 'undefined' && (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     return (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({

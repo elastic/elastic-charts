@@ -40,6 +40,7 @@ export class MockPointGeometry {
       x: 0,
       y: 0,
       mark: null,
+      datum: { x: 0, y: 0 },
     },
     transform: {
       x: 25,
@@ -82,6 +83,7 @@ export class MockBarGeometry {
       x: 0,
       y: 0,
       mark: null,
+      datum: { x: 0, y: 0 },
     },
     seriesStyle: barSeriesStyle,
   };

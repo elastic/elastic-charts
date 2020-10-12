@@ -300,6 +300,7 @@ function renderPoints(
           y: originalY,
           mark,
           accessor: hasY0Accessors && index === 0 ? BandedAccessorType.Y0 : BandedAccessorType.Y1,
+          datum: datum.datum,
         },
         transform: {
           x: shift,
@@ -507,6 +508,7 @@ export function renderBars(
         y: originalY1Value,
         mark: null,
         accessor: BandedAccessorType.Y1,
+        datum: datum.datum,
       },
       seriesIdentifier,
       seriesStyle,
@@ -659,6 +661,7 @@ export function renderBubble(
 }
 
 /** @internal */
+
 export function renderArea(
   shift: number,
   dataSeries: DataSeries,

@@ -23,7 +23,7 @@ import { SpecTypes } from '../../../specs/constants';
 import { Position, RecursivePartial } from '../../../utils/commons';
 import { BarGeometry } from '../../../utils/geometry';
 import { AxisStyle } from '../../../utils/themes/theme';
-import { AxisSpec, BarSeriesSpec, SeriesTypes } from '../utils/specs';
+import { AxisSpec, BarSeriesSpec, SeriesTypes, TickFormatter } from '../utils/specs';
 import { formatTooltip } from './tooltip';
 
 const style: RecursivePartial<AxisStyle> = {
@@ -99,6 +99,7 @@ describe('Tooltip formatting', () => {
       y: 10,
       accessor: 'y1',
       mark: null,
+      datum: { x: 1, y: 10 },
     },
     seriesStyle,
   };
@@ -120,6 +121,7 @@ describe('Tooltip formatting', () => {
       y: 10,
       accessor: 'y1',
       mark: null,
+      datum: { x: 1, y: 10 },
     },
     seriesStyle,
   };
@@ -131,7 +133,9 @@ describe('Tooltip formatting', () => {
     expect(tooltipValue.label).toBe('bar_1');
     expect(tooltipValue.isHighlighted).toBe(false);
     expect(tooltipValue.color).toBe('blue');
-    expect(tooltipValue.value).toBe('10');
+    expect(tooltipValue.value).toBe(10);
+    expect(tooltipValue.formattedValue).toBe('10');
+    expect(tooltipValue.formattedValue).toBe('10');
     expect(YAXIS_SPEC.tickFormat).not.toBeCalledWith(null);
   });
   it('should set name as spec name when provided', () => {
@@ -237,7 +241,8 @@ describe('Tooltip formatting', () => {
     expect(tooltipValue.label).toBe('bar_1');
     expect(tooltipValue.isHighlighted).toBe(false);
     expect(tooltipValue.color).toBe('blue');
-    expect(tooltipValue.value).toBe('10');
+    expect(tooltipValue.value).toBe(10);
+    expect(tooltipValue.formattedValue).toBe('10');
   });
   test('format y0 tooltip', () => {
     const geometry: BarGeometry = {
@@ -253,7 +258,8 @@ describe('Tooltip formatting', () => {
     expect(tooltipValue.label).toBe('bar_1');
     expect(tooltipValue.isHighlighted).toBe(false);
     expect(tooltipValue.color).toBe('blue');
-    expect(tooltipValue.value).toBe('10');
+    expect(tooltipValue.value).toBe(10);
+    expect(tooltipValue.formattedValue).toBe('10');
   });
   test('format x tooltip', () => {
     const geometry: BarGeometry = {
@@ -269,9 +275,110 @@ describe('Tooltip formatting', () => {
     expect(tooltipValue.label).toBe('bar_1');
     expect(tooltipValue.isHighlighted).toBe(false);
     expect(tooltipValue.color).toBe('blue');
-    expect(tooltipValue.value).toBe('1');
+    expect(tooltipValue.value).toBe(1);
+    expect(tooltipValue.formattedValue).toBe('1');
     // disable any highlight on x value
     tooltipValue = formatTooltip(geometry, SPEC_1, true, true, false, YAXIS_SPEC);
     expect(tooltipValue.isHighlighted).toBe(false);
+  });
+
+  it('should format ticks with custom formatter from spec', () => {
+    const axisTickFormatter: TickFormatter = (v) => `${v} axis`;
+    const tickFormatter: TickFormatter = (v) => `${v} spec`;
+    const axisSpec: AxisSpec = {
+      ...YAXIS_SPEC,
+      tickFormat: axisTickFormatter,
+    };
+    const spec: BarSeriesSpec = {
+      ...SPEC_1,
+      tickFormat: tickFormatter,
+    };
+    const tooltipValue = formatTooltip(indexedGeometry, spec, false, false, false, axisSpec);
+    expect(tooltipValue.value).toBe(10);
+    expect(tooltipValue.formattedValue).toBe('10 spec');
+  });
+
+  it('should format ticks with custom formatter from axis', () => {
+    const axisTickFormatter: TickFormatter = (v) => `${v} axis`;
+    const axisSpec: AxisSpec = {
+      ...YAXIS_SPEC,
+      tickFormat: axisTickFormatter,
+    };
+    const tooltipValue = formatTooltip(indexedGeometry, SPEC_1, false, false, false, axisSpec);
+    expect(tooltipValue.value).toBe(10);
+    expect(tooltipValue.formattedValue).toBe('10 axis');
+  });
+
+  it('should format ticks with default formatter', () => {
+    const tooltipValue = formatTooltip(indexedGeometry, SPEC_1, false, false, false, YAXIS_SPEC);
+    expect(tooltipValue.value).toBe(10);
+    expect(tooltipValue.formattedValue).toBe('10');
+  });
+
+  it('should format header with custom formatter from axis', () => {
+    const axisTickFormatter: TickFormatter = (v) => `${v} axis`;
+    const tickFormatter: TickFormatter = (v) => `${v} spec`;
+    const axisSpec: AxisSpec = {
+      ...YAXIS_SPEC,
+      tickFormat: axisTickFormatter,
+    };
+    const spec: BarSeriesSpec = {
+      ...SPEC_1,
+      tickFormat: tickFormatter,
+    };
+    const tooltipValue = formatTooltip(indexedGeometry, spec, true, false, false, axisSpec);
+    expect(tooltipValue.value).toBe(1);
+    expect(tooltipValue.formattedValue).toBe('1 axis');
+  });
+
+  it('should format header with default formatter from axis', () => {
+    const tickFormatter: TickFormatter = (v) => `${v} spec`;
+    const spec: BarSeriesSpec = {
+      ...SPEC_1,
+      tickFormat: tickFormatter,
+    };
+    const tooltipValue = formatTooltip(indexedGeometry, spec, true, false, false, YAXIS_SPEC);
+    expect(tooltipValue.value).toBe(1);
+    expect(tooltipValue.formattedValue).toBe('1');
+  });
+
+  describe('markFormat', () => {
+    const markFormat = jest.fn((d) => `${d} number`);
+    const markIndexedGeometry: BarGeometry = {
+      ...indexedGeometry,
+      value: {
+        x: 1,
+        y: 10,
+        accessor: 'y1',
+        mark: 10,
+        datum: { x: 1, y: 10 },
+      },
+    };
+
+    it('should format mark value with markFormat', () => {
+      const tooltipValue = formatTooltip(
+        markIndexedGeometry,
+        {
+          ...SPEC_1,
+          markFormat,
+        },
+        false,
+        false,
+        false,
+        YAXIS_SPEC,
+      );
+      expect(tooltipValue).toBeDefined();
+      expect(tooltipValue.markValue).toBe(10);
+      expect(tooltipValue.formattedMarkValue).toBe('10 number');
+      expect(markFormat).toBeCalledWith(10, undefined);
+    });
+
+    it('should format mark value with defaultTickFormatter', () => {
+      const tooltipValue = formatTooltip(markIndexedGeometry, SPEC_1, false, false, false, YAXIS_SPEC);
+      expect(tooltipValue).toBeDefined();
+      expect(tooltipValue.markValue).toBe(10);
+      expect(tooltipValue.formattedMarkValue).toBe('10');
+      expect(markFormat).not.toBeCalled();
+    });
   });
 });

@@ -1,7 +1,7 @@
 {
   "name": "@elastic/charts",
   "description": "Elastic-Charts data visualization library",
-  "version": "21.0.1",
+  "version": "23.2.1",
   "author": "Marco Vettorello <marco.vettorello@elastic.co>",
   "license": "Apache-2.0",
   "main": "dist/index.js",
@@ -38,7 +38,7 @@
     "semantic-release": "semantic-release",
     "start": "yarn storybook",
     "start-docs": "start-storybook -p 8001 -c .storybook-docs --ci",
-    "storybook": "RNG_SEED='elastic-charts' start-storybook -p 9001 -c .storybook --ci",
+    "storybook": "RNG_SEED='elastic-charts' start-storybook -p 9001 -c .storybook --ci --no-version-updates",
     "storybook:build": "rm -rf .out && build-storybook -c .storybook -o .out",
     "test": "jest --verbose --config jest.config.js",
     "test:tz": "yarn test:tz-utc && yarn test:tz-ny && yarn test:tz-jp",
@@ -61,6 +61,7 @@
     "d3-array": "^1.2.4",
     "d3-collection": "^1.0.7",
     "d3-color": "^1.4.0",
+    "d3-interpolate": "^1.4.0",
     "d3-scale": "^1.0.7",
     "d3-shape": "^1.3.4",
     "newtype-ts": "^0.2.4",
@@ -81,8 +82,8 @@
     "@babel/polyfill": "^7.10.4",
     "@babel/preset-env": "^7.10.4",
     "@babel/preset-react": "^7.10.4",
-    "@commitlint/cli": "^8.1.0",
-    "@commitlint/config-conventional": "^8.1.0",
+    "@commitlint/cli": "^9.1.2",
+    "@commitlint/config-conventional": "^9.1.2",
     "@elastic/datemath": "^5.0.2",
     "@elastic/eui": "^27.0.0",
     "@elastic/github-checks-reporter": "^0.0.20-b3",
@@ -95,14 +96,14 @@
     "@semantic-release/github": "^6.0.1",
     "@semantic-release/npm": "^6.0.0",
     "@semantic-release/release-notes-generator": "^7.3.5",
-    "@storybook/addon-actions": "5.3.19",
+    "@storybook/addon-actions": "^5.3.19",
     "@storybook/addon-docs": "^5.3.19",
     "@storybook/addon-info": "^5.3.19",
-    "@storybook/addon-knobs": "5.3.19",
+    "@storybook/addon-knobs": "^5.3.19",
     "@storybook/addon-links": "^5.3.19",
     "@storybook/addon-storysource": "^5.3.19",
     "@storybook/preset-typescript": "^3.0.0",
-    "@storybook/react": "5.3.19",
+    "@storybook/react": "^5.3.19",
     "@storybook/source-loader": "^5.3.19",
     "@storybook/theming": "^5.3.19",
     "@types/chroma-js": "^2.0.0",
@@ -112,6 +113,7 @@
     "@types/d3-array": "^1.2.6",
     "@types/d3-collection": "^1.0.8",
     "@types/d3-color": "^1.2.2",
+    "@types/d3-interpolate": "^1.3.1",
     "@types/d3-scale": "^2.1.1",
     "@types/d3-shape": "^1.3.1",
     "@types/enzyme": "^3.9.0",
@@ -125,7 +127,6 @@
     "@types/luxon": "^1.11.1",
     "@types/moment-timezone": "^0.5.12",
     "@types/puppeteer": "^1.19.1",
-    "@types/react": "^16.9.41",
     "@types/react-dom": "^16.9.8",
     "@types/react-redux": "^7.1.1",
     "@types/seedrandom": "^2.4.28",
@@ -145,7 +146,7 @@
     "core-js": "^3.6.4",
     "cross-env": "^7.0.2",
     "css-loader": "^3.6.0",
-    "cz-conventional-changelog": "^3.0.2",
+    "cz-conventional-changelog": "^3.3.0",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.10.0",
     "eslint": "^7.1.0",
@@ -210,14 +211,14 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0"
   },
-  "optionalDependencies": {
-    "redux-immutable-state-invariant": "^2.1.0",
-    "redux-logger": "^3.0.6"
-  },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "resolutions": {
+    "conventional-changelog-conventionalcommits": "^4.3.0",
+    "refractor": "~3.1.0"
   },
   "engines": {
     "node": ">=10",

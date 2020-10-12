@@ -21,6 +21,7 @@ import { ChartActions } from './chart';
 import { ChartSettingsActions } from './chart_settings';
 import { ColorsActions } from './colors';
 import { EventsActions } from './events';
+import { KeyActions } from './key';
 import { LegendActions } from './legend';
 import { MouseActions } from './mouse';
 import { SpecActions } from './specs';
@@ -33,4 +34,5 @@ export type StateActions =
   | LegendActions
   | EventsActions
   | MouseActions
+  | KeyActions
   | ColorsActions;
