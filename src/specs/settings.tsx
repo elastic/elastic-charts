@@ -20,6 +20,7 @@
 import React, { ComponentType } from 'react';
 
 import { Spec } from '.';
+import { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import { DomainRange } from '../chart_types/xy_chart/utils/specs';
@@ -29,12 +30,12 @@ import { CustomTooltip } from '../components/tooltip/types';
 import { ScaleContinuousType, ScaleOrdinalType } from '../scales';
 import { getConnect, specComponentFactory } from '../state/spec_factory';
 import { Accessor } from '../utils/accessor';
-import { Position, Rendering, Rotation, Color, RecursivePartial } from '../utils/commons';
+import { Color, Position, RecursivePartial, Rendering, Rotation } from '../utils/commons';
 import { Domain } from '../utils/domain';
 import { GeometryValue } from '../utils/geometry';
 import { GroupId } from '../utils/ids';
 import { PartialTheme, Theme } from '../utils/themes/theme';
-import { PointerEventType, TooltipType, BrushAxis, DEFAULT_SETTINGS_SPEC } from './constants';
+import { BinAgg, BrushAxis, DEFAULT_SETTINGS_SPEC, Direction, PointerEventType, TooltipType } from './constants';
 
 export interface LayerValue {
   groupByRollup: PrimitiveValue;
@@ -52,9 +53,14 @@ export interface XYBrushArea {
 
 export type XYChartElementEvent = [GeometryValue, XYChartSeriesIdentifier];
 export type PartitionElementEvent = [Array<LayerValue>, SeriesIdentifier];
+export type HeatmapElementEvent = [Cell, SeriesIdentifier];
 
-export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent>) => void;
-export type ElementOverListener = (elements: Array<XYChartElementEvent | PartitionElementEvent>) => void;
+export type ElementClickListener = (
+  elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent>,
+) => void;
+export type ElementOverListener = (
+  elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent>,
+) => void;
 export type BrushEndListener = (brushArea: XYBrushArea) => void;
 export type LegendItemListener = (series: SeriesIdentifier | null) => void;
 export type PointerUpdateListener = (event: PointerEvent) => void;
@@ -101,13 +107,21 @@ export interface TooltipValue {
    */
   label: string;
   /**
-   * The value to display
+   * The value
    */
   value: any;
   /**
+   * The formatted value to display
+   */
+  formattedValue: string;
+  /**
+   * The mark value
+   */
+  markValue?: number | null;
+  /**
    * The mark value to display
    */
-  markValue?: any;
+  formattedMarkValue?: string | null;
   /**
    * The color of the graphic mark (by default the color of the series)
    */
@@ -121,7 +135,7 @@ export interface TooltipValue {
    */
   isVisible: boolean;
   /**
-   * The idenfitier of the related series
+   * The identifier of the related series
    */
   seriesIdentifier: SeriesIdentifier;
   /**
@@ -282,7 +296,18 @@ export interface SettingsSpec extends Spec {
    * @alpha
    */
   externalPointerEvents: ExternalPointerEventsSettings;
+  /**
+   * Show debug shadow elements on chart
+   */
   debug: boolean;
+  /**
+   * Show debug render state on `ChartStatus` component
+   * @alpha
+   */
+  debugState?: boolean;
+  /**
+   * Set legend position
+   */
   legendPosition: Position;
   /**
    * Show an extra parameter on each legend item defined by the chart type
@@ -333,6 +358,43 @@ export interface SettingsSpec extends Spec {
    * @defaultValue 2
    */
   minBrushDelta?: number;
+  /**
+   * Boolean to round brushed values to nearest step bounds.
+   *
+   * e.g.
+   * A brush selection range of [1.23, 3.6] with a domain of [1, 2, 3, 4].
+   *
+   * - when true returns [1, 3]
+   * - when false returns [1.23, 3.6]
+   *
+   * @defaultValue false
+   */
+  roundHistogramBrushValues?: boolean;
+  /**
+   * Boolean to allow brushing on last bucket even when outside domain or limit to end of domain.
+   *
+   * e.g.
+   * A brush selection range of [1.23, 3.6] with a domain of [1, 2, 3]
+   *
+   * - when true returns [1.23, 3.6]
+   * - when false returns [1.23, 3]
+   *
+   * @defaultValue false
+   */
+  allowBrushingLastHistogramBucket?: boolean;
+  /**
+   * Orders ordinal x values
+   */
+  orderOrdinalBinsBy?: OrderBy;
+}
+
+/**
+ * Order by options
+ * @public
+ */
+export interface OrderBy {
+  binAgg?: BinAgg;
+  direction?: Direction;
 }
 
 export type DefaultSettingsProps =

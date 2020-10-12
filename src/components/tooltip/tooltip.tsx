@@ -35,7 +35,7 @@ import { getInternalTooltipAnchorPositionSelector } from '../../state/selectors/
 import { getInternalTooltipInfoSelector } from '../../state/selectors/get_internal_tooltip_info';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
 import { getTooltipHeaderFormatterSelector } from '../../state/selectors/get_tooltip_header_formatter';
-import { Rotation } from '../../utils/commons';
+import { Rotation, isDefined } from '../../utils/commons';
 import { TooltipPortal, TooltipPortalSettings, AnchorPosition, Placement } from '../portal';
 import { getTooltipSettings } from './get_tooltip_settings';
 import { TooltipInfo, TooltipAnchorPosition } from './types';
@@ -91,7 +91,9 @@ const TooltipComponent = ({
         return null;
       }
 
-      return <div className="echTooltip__header">{headerFormatter ? headerFormatter(header) : header.value}</div>;
+      return (
+        <div className="echTooltip__header">{headerFormatter ? headerFormatter(header) : header.formattedValue}</div>
+      );
     },
     [headerFormatter],
   );
@@ -99,10 +101,24 @@ const TooltipComponent = ({
   const renderValues = (values: TooltipValue[]) => (
     <div className="echTooltip__list">
       {values.map(
-        ({ seriesIdentifier, valueAccessor, label, value, markValue, color, isHighlighted, isVisible }, index) => {
+        (
+          {
+            seriesIdentifier,
+            valueAccessor,
+            label,
+            markValue,
+            formattedValue,
+            formattedMarkValue,
+            color,
+            isHighlighted,
+            isVisible,
+          },
+          index,
+        ) => {
           if (!isVisible) {
             return null;
           }
+
           const classes = classNames('echTooltip__item', {
             echTooltip__rowHighlighted: isHighlighted,
           });
@@ -123,8 +139,8 @@ const TooltipComponent = ({
 
               <div className="echTooltip__item--container">
                 <span className="echTooltip__label">{label}</span>
-                <span className="echTooltip__value">{value}</span>
-                {markValue && <span className="echTooltip__markValue">&nbsp;({markValue})</span>}
+                <span className="echTooltip__value">{formattedValue}</span>
+                {isDefined(markValue) && <span className="echTooltip__markValue">&nbsp;({formattedMarkValue})</span>}
               </div>
             </div>
           );

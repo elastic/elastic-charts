@@ -19,17 +19,19 @@
 
 import { SeriesIdentifier, SeriesKey } from '../../../commons/series_id';
 import { ScaleType } from '../../../scales/constants';
+import { BinAgg, Direction, XScaleType } from '../../../specs';
+import { OrderBy } from '../../../specs/settings';
 import { ColorOverrides } from '../../../state/chart_state';
 import { Accessor, AccessorFn, getAccessorValue } from '../../../utils/accessor';
 import { Datum, Color } from '../../../utils/commons';
 import { GroupId, SpecId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
 import { ColorConfig } from '../../../utils/themes/theme';
-import { splitSpecsByGroupId, YBasicSeriesSpec } from '../domains/y_domain';
+import { YBasicSeriesSpec } from '../domains/y_domain';
 import { LastValues } from '../state/utils/types';
 import { applyFitFunctionToDataSeries } from './fit_function_utils';
 import { BasicSeriesSpec, SeriesTypes, SeriesSpecs, SeriesNameConfigOptions, StackMode } from './specs';
-import { formatStackedDataSeriesValues } from './stacked_series_utils';
+import { formatStackedDataSeriesValues, datumXSortPredicate } from './stacked_series_utils';
 
 /** @internal */
 export const SERIES_DELIMITER = ' - ';
@@ -72,7 +74,6 @@ export interface XYChartSeriesIdentifier extends SeriesIdentifier {
 
 /** @internal */
 export type DataSeries = XYChartSeriesIdentifier & {
-  // seriesColorKey: string;
   data: DataSeriesDatum[];
 };
 
@@ -111,18 +112,22 @@ export function getSeriesIndex(series: SeriesIdentifier[], target: SeriesIdentif
  * `y` values and `mark` values are casted to number or null.
  * @internal
  */
-export function splitSeriesDataByAccessors({
-  id: specId,
-  data,
-  xAccessor,
-  yAccessors,
-  y0Accessors,
-  markSizeAccessor,
-  splitSeriesAccessors = [],
-}: Pick<
-  BasicSeriesSpec,
-  'id' | 'data' | 'xAccessor' | 'yAccessors' | 'y0Accessors' | 'splitSeriesAccessors' | 'markSizeAccessor'
->): {
+export function splitSeriesDataByAccessors(
+  {
+    id: specId,
+    data,
+    xAccessor,
+    yAccessors,
+    y0Accessors,
+    markSizeAccessor,
+    splitSeriesAccessors = [],
+  }: Pick<
+    BasicSeriesSpec,
+    'id' | 'data' | 'xAccessor' | 'yAccessors' | 'y0Accessors' | 'splitSeriesAccessors' | 'markSizeAccessor'
+  >,
+  xValueSums: Map<string | number, number>,
+  enableVislibSeriesSort = false,
+): {
   dataSeries: Map<SeriesKey, DataSeries>;
   xValues: Array<string | number>;
 } {
@@ -130,57 +135,122 @@ export function splitSeriesDataByAccessors({
   const xValues: Array<string | number> = [];
   const nonNumericValues: any[] = [];
 
-  data.forEach((datum) => {
-    const splitAccessors = getSplitAccessors(datum, splitSeriesAccessors);
-    // if splitSeriesAccessors are defined we should have at least one split value to include datum
-    if (splitSeriesAccessors.length > 0 && splitAccessors.size < 1) {
-      return;
-    }
-
-    // skip if the datum is not an object or null
-    if (typeof datum !== 'object' || datum === null) {
-      return null;
-    }
-
-    const x = getAccessorValue(datum, xAccessor);
-
-    // skip if the x value is not a string or a number
-    if (typeof x !== 'string' && typeof x !== 'number') {
-      return null;
-    }
-
-    xValues.push(x);
-
+  if (enableVislibSeriesSort) {
+    /*
+     * This logic is mostly duplicated from below but is a temporary fix before
+     * https://github.com/elastic/elastic-charts/issues/795 is completed to allow sorting
+     * The difference from below is that it loops through all the yAsccessors before the data.
+     */
     yAccessors.forEach((accessor, index) => {
-      const cleanedDatum = extractYandMarkFromDatum(
-        datum,
-        accessor,
-        nonNumericValues,
-        y0Accessors && y0Accessors[index],
-        markSizeAccessor,
-      );
-      const seriesKeys = [...splitAccessors.values(), accessor];
-      const seriesKey = getSeriesKey({
-        specId,
-        yAccessor: accessor,
-        splitAccessors,
-      });
-      const newDatum = { x, ...cleanedDatum };
-      const series = dataSeries.get(seriesKey);
-      if (series) {
-        series.data.push(newDatum);
-      } else {
-        dataSeries.set(seriesKey, {
+      data.forEach((datum) => {
+        const splitAccessors = getSplitAccessors(datum, splitSeriesAccessors);
+        // if splitSeriesAccessors are defined we should have at least one split value to include datum
+        if (splitSeriesAccessors.length > 0 && splitAccessors.size < 1) {
+          return;
+        }
+
+        // skip if the datum is not an object or null
+        if (typeof datum !== 'object' || datum === null) {
+          return;
+        }
+
+        const x = getAccessorValue(datum, xAccessor);
+
+        // skip if the x value is not a string or a number
+        if (typeof x !== 'string' && typeof x !== 'number') {
+          return;
+        }
+
+        xValues.push(x);
+        let sum = xValueSums.get(x) ?? 0;
+
+        const cleanedDatum = extractYandMarkFromDatum(
+          datum,
+          accessor,
+          nonNumericValues,
+          y0Accessors && y0Accessors[index],
+          markSizeAccessor,
+        );
+        const seriesKeys = [...splitAccessors.values(), accessor];
+        const seriesKey = getSeriesKey({
           specId,
           yAccessor: accessor,
           splitAccessors,
-          data: [newDatum],
-          key: seriesKey,
-          seriesKeys,
         });
-      }
+        sum += cleanedDatum.y1 ?? 0;
+        const newDatum = { x, ...cleanedDatum };
+        const series = dataSeries.get(seriesKey);
+        if (series) {
+          series.data.push(newDatum);
+        } else {
+          dataSeries.set(seriesKey, {
+            specId,
+            yAccessor: accessor,
+            splitAccessors,
+            data: [newDatum],
+            key: seriesKey,
+            seriesKeys,
+          });
+        }
+        xValueSums.set(x, sum);
+      });
     });
-  });
+  } else {
+    data.forEach((datum) => {
+      const splitAccessors = getSplitAccessors(datum, splitSeriesAccessors);
+      // if splitSeriesAccessors are defined we should have at least one split value to include datum
+      if (splitSeriesAccessors.length > 0 && splitAccessors.size < 1) {
+        return;
+      }
+
+      // skip if the datum is not an object or null
+      if (typeof datum !== 'object' || datum === null) {
+        return;
+      }
+
+      const x = getAccessorValue(datum, xAccessor);
+
+      // skip if the x value is not a string or a number
+      if (typeof x !== 'string' && typeof x !== 'number') {
+        return;
+      }
+
+      xValues.push(x);
+      let sum = xValueSums.get(x) ?? 0;
+
+      yAccessors.forEach((accessor, index) => {
+        const cleanedDatum = extractYandMarkFromDatum(
+          datum,
+          accessor,
+          nonNumericValues,
+          y0Accessors && y0Accessors[index],
+          markSizeAccessor,
+        );
+        const seriesKeys = [...splitAccessors.values(), accessor];
+        const seriesKey = getSeriesKey({
+          specId,
+          yAccessor: accessor,
+          splitAccessors,
+        });
+        sum += cleanedDatum.y1 ?? 0;
+        const newDatum = { x, ...cleanedDatum };
+        const series = dataSeries.get(seriesKey);
+        if (series) {
+          series.data.push(newDatum);
+        } else {
+          dataSeries.set(seriesKey, {
+            specId,
+            yAccessor: accessor,
+            splitAccessors,
+            data: [newDatum],
+            key: seriesKey,
+            seriesKeys,
+          });
+        }
+      });
+      xValueSums.set(x, sum);
+    });
+  }
 
   if (nonNumericValues.length > 0) {
     Logger.warn(
@@ -259,20 +329,40 @@ function castToNumber(value: any, nonNumericValues: any[]): number | null {
   return num;
 }
 
+/**
+ * Sorts data based on order of xValues
+ * @param dataSeries
+ * @param xValues
+ * @param xScaleType
+ */
+const getSortedDataSeries = (
+  dataSeries: DataSeries[],
+  xValues: Set<string | number>,
+  xScaleType: ScaleType,
+): DataSeries[] =>
+  dataSeries.map(({ data, ...rest }) => ({
+    ...rest,
+    data: data.sort(datumXSortPredicate(xScaleType, [...xValues.values()])),
+  }));
+
 /** @internal */
 export function getFormattedDataseries(
-  specs: YBasicSeriesSpec[],
   availableDataSeries: Map<SpecId, DataSeries[]>,
   xValues: Set<string | number>,
   xScaleType: ScaleType,
   seriesSpecs: SeriesSpecs,
+  specsByGroupIdsEntries: Map<
+    GroupId,
+    {
+      stackMode: StackMode | undefined;
+      stacked: YBasicSeriesSpec[];
+      nonStacked: YBasicSeriesSpec[];
+    }
+  >,
 ): {
   stacked: FormattedDataSeries[];
   nonStacked: FormattedDataSeries[];
 } {
-  const specsByGroupIds = splitSpecsByGroupId(specs);
-  const specsByGroupIdsEntries = [...specsByGroupIds.entries()];
-
   const stackedFormattedDataSeries: {
     groupId: GroupId;
     dataSeries: DataSeries[];
@@ -285,12 +375,16 @@ export function getFormattedDataseries(
     counts: DataSeriesCounts;
   }[] = [];
 
-  specsByGroupIdsEntries.forEach(([groupId, groupSpecs]) => {
+  [...specsByGroupIdsEntries.entries()].forEach(([groupId, groupSpecs]) => {
     const { stackMode } = groupSpecs;
     // format stacked data series
     const stackedDataSeries = getDataSeriesBySpecGroup(groupSpecs.stacked, availableDataSeries);
-    const fittedDataSeries = applyFitFunctionToDataSeries(stackedDataSeries.dataSeries, seriesSpecs, xScaleType);
-    const fittedAndStackedDataSeries = formatStackedDataSeriesValues(fittedDataSeries, xValues, stackMode);
+    const fittedStackedDataSeries = applyFitFunctionToDataSeries(
+      getSortedDataSeries(stackedDataSeries.dataSeries, xValues, xScaleType),
+      seriesSpecs,
+      xScaleType,
+    );
+    const fittedAndStackedDataSeries = formatStackedDataSeriesValues(fittedStackedDataSeries, xValues, stackMode);
 
     stackedFormattedDataSeries.push({
       groupId,
@@ -301,10 +395,15 @@ export function getFormattedDataseries(
 
     // format non stacked data series
     const nonStackedDataSeries = getDataSeriesBySpecGroup(groupSpecs.nonStacked, availableDataSeries);
+    const fittedNonStackedDataSeries = applyFitFunctionToDataSeries(
+      getSortedDataSeries(nonStackedDataSeries.dataSeries, xValues, xScaleType),
+      seriesSpecs,
+      xScaleType,
+    );
     nonStackedFormattedDataSeries.push({
       groupId,
       counts: nonStackedDataSeries.counts,
-      dataSeries: applyFitFunctionToDataSeries(nonStackedDataSeries.dataSeries, seriesSpecs, xScaleType),
+      dataSeries: fittedNonStackedDataSeries,
     });
   });
   return {
@@ -350,19 +449,23 @@ function getDataSeriesBySpecGroup(
  *
  * @param seriesSpecs the map for all the series spec
  * @param deselectedDataSeries the array of deselected/hidden data series
+ * @param enableVislibSeriesSort is optional; if not specified in <Settings />,
  * @internal
  */
 export function getDataSeriesBySpecId(
   seriesSpecs: BasicSeriesSpec[],
   deselectedDataSeries: SeriesIdentifier[] = [],
+  orderOrdinalBinsBy?: OrderBy,
+  enableVislibSeriesSort?: boolean,
 ): {
   dataSeriesBySpecId: Map<SpecId, DataSeries[]>;
   seriesCollection: Map<SeriesKey, SeriesCollectionValue>;
   xValues: Set<string | number>;
-  fallbackScale?: ScaleType;
+  fallbackScale?: XScaleType;
 } {
   const dataSeriesBySpecId = new Map<SpecId, DataSeries[]>();
   const seriesCollection = new Map<SeriesKey, SeriesCollectionValue>();
+  const mutatedXValueSums = new Map<string | number, number>();
 
   // the unique set of values along the x axis
   const globalXValues: Set<string | number> = new Set();
@@ -377,7 +480,7 @@ export function getDataSeriesBySpecId(
       isOrdinalScale = true;
     }
 
-    const { dataSeries, xValues } = splitSeriesDataByAccessors(spec);
+    const { dataSeries, xValues } = splitSeriesDataByAccessors(spec, mutatedXValueSums, enableVislibSeriesSort);
 
     // filter deleselected dataseries
     let filteredDataSeries: DataSeries[] = [...dataSeries.values()];
@@ -411,23 +514,50 @@ export function getDataSeriesBySpecId(
       globalXValues.add(xValue);
     }
   }
+
+  const xValues =
+    isOrdinalScale || !isNumberArray
+      ? getSortedOrdinalXValues(globalXValues, mutatedXValueSums, orderOrdinalBinsBy)
+      : new Set(
+          [...globalXValues].sort((a, b) => {
+            if (typeof a === 'string' || typeof b === 'string') {
+              return 0;
+            }
+            return a - b;
+          }),
+        );
+
   return {
     dataSeriesBySpecId,
     seriesCollection,
-    // keep the user order for ordinal scales
-    xValues:
-      isOrdinalScale || !isNumberArray
-        ? globalXValues
-        : new Set(
-            [...globalXValues].sort((a, b) => {
-              if (typeof a === 'string' || typeof b === 'string') {
-                return 0;
-              }
-              return a - b;
-            }),
-          ),
+    xValues,
     fallbackScale: !isOrdinalScale && !isNumberArray ? ScaleType.Ordinal : undefined,
   };
+}
+
+function getSortedOrdinalXValues(
+  xValues: Set<string | number>,
+  xValueSums: Map<string | number, number>,
+  orderOrdinalBinsBy?: OrderBy,
+) {
+  if (!orderOrdinalBinsBy) {
+    return xValues; // keep the user order for ordinal scales
+  }
+
+  switch (orderOrdinalBinsBy?.binAgg) {
+    case BinAgg.None:
+      return xValues; // keep the user order for ordinal scales
+    case BinAgg.Sum:
+    default:
+      return new Set(
+        [...xValues].sort((v1, v2) => {
+          return (
+            (orderOrdinalBinsBy.direction === Direction.Ascending ? 1 : -1) *
+            ((xValueSums.get(v1) ?? 0) - (xValueSums.get(v2) ?? 0))
+          );
+        }),
+      );
+  }
 }
 
 function getSeriesNameFromOptions(

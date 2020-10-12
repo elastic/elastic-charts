@@ -25,6 +25,8 @@ import { Tooltip } from '../../../components/tooltip';
 import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { LegendItemLabel } from '../../../state/selectors/get_legend_items_labels';
+import { DebugState } from '../../../state/types';
+import { Dimensions } from '../../../utils/dimensions';
 import { Goal } from '../renderer/canvas/connected_component';
 import { getSpecOrNull } from './selectors/goal_spec';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
@@ -113,5 +115,25 @@ export class GoalState implements InternalChartState {
     this.onElementOverCaller(globalState);
     this.onElementOutCaller(globalState);
     this.onElementClickCaller(globalState);
+  }
+
+  // TODO
+  getProjectionContainerArea(): Dimensions {
+    return { width: 0, height: 0, top: 0, left: 0 };
+  }
+
+  // TODO
+  getMainProjectionArea(): Dimensions {
+    return { width: 0, height: 0, top: 0, left: 0 };
+  }
+
+  // TODO
+  getBrushArea(): Dimensions | null {
+    return null;
+  }
+
+  // TODO
+  getDebugState(): DebugState {
+    return {};
   }
 }

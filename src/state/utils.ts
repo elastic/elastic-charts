@@ -38,8 +38,21 @@ export function isClicking(prevClick: PointerState | null, lastClick: PointerSta
   if (prevClick === null && lastClick !== null) {
     return true;
   }
-  if (prevClick !== null && lastClick !== null && prevClick.time !== lastClick.time) {
-    return true;
-  }
-  return false;
+  return prevClick !== null && lastClick !== null && prevClick.time !== lastClick.time;
 }
+
+/** @internal */
+export const getInitialPointerState = () => ({
+  dragging: false,
+  current: {
+    position: {
+      x: -1,
+      y: -1,
+    },
+    time: 0,
+  },
+  down: null,
+  up: null,
+  lastDrag: null,
+  lastClick: null,
+});

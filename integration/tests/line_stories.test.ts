@@ -42,4 +42,31 @@ describe('Line series stories', () => {
       );
     });
   });
+
+  describe('Line paths for ordered values', () => {
+    it('should render correct line path - non-stacked', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/line-chart--test-path-ordering&knob-enable orderOrdinalBinsBy=true&knob-Stacked=false',
+      );
+    });
+
+    it('should render correct line path - stacked', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/line-chart--test-path-ordering&knob-enable orderOrdinalBinsBy=true&knob-Stacked=true',
+      );
+    });
+  });
+  describe('Non-Stacked Linear Line with discontinuous data points', () => {
+    it('with fit', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/line-chart--discontinuous-data-points&knob-enable fit function=false&knob-switch to area=',
+      );
+    });
+
+    it('no fit function', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/line-chart--discontinuous-data-points&knob-enable fit function=true&knob-switch to area=',
+      );
+    });
+  });
 });

@@ -28,8 +28,8 @@ export function getSpecsById<T extends Spec>(specs: T[], id: string): T | undefi
 
 /** @internal */
 export function getAxesSpecForSpecId(axesSpecs: AxisSpec[], groupId: GroupId) {
-  let xAxis;
-  let yAxis;
+  let xAxis: AxisSpec | undefined;
+  let yAxis: AxisSpec | undefined;
   // eslint-disable-next-line no-restricted-syntax
   for (const axisSpec of axesSpecs) {
     if (axisSpec.groupId !== groupId) {
@@ -41,6 +41,7 @@ export function getAxesSpecForSpecId(axesSpecs: AxisSpec[], groupId: GroupId) {
       xAxis = axisSpec;
     }
   }
+
   return {
     xAxis,
     yAxis,

@@ -382,6 +382,11 @@ export interface SeriesSpec extends Spec {
    * Hide series in tooltip
    */
   filterSeriesInTooltip?: FilterPredicate;
+  /**
+   * A function called to format every value label.
+   * Uses axis `tickFormat` when not provided.
+   */
+  tickFormat?: TickFormatter;
 }
 
 export interface Postfixes {
@@ -417,16 +422,22 @@ export interface SeriesAccessors {
   splitSeriesAccessors?: Accessor[];
   /** An array of fields thats indicates the stack membership */
   stackAccessors?: Accessor[];
-  /** Field name of mark size metric on `Datum` */
+  /**
+   * Field name of mark size metric on `Datum`
+   *
+   * Only used with line/area series
+   */
   markSizeAccessor?: Accessor | AccessorFn;
 }
+
+export type XScaleType = typeof ScaleType.Ordinal | ScaleContinuousType;
 
 export interface SeriesScales {
   /**
    * The x axis scale type
    * @defaultValue `ordinal` {@link (ScaleType:type) | ScaleType.Ordinal}
    */
-  xScaleType: typeof ScaleType.Ordinal | typeof ScaleType.Linear | typeof ScaleType.Time;
+  xScaleType: XScaleType;
   /**
    * If using a ScaleType.Time this timezone identifier is required to
    * compute a nice set of xScale ticks. Can be any IANA zone supported by
@@ -448,7 +459,16 @@ export interface SeriesScales {
 }
 
 /** @public */
-export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales;
+export type BasicSeriesSpec = SeriesSpec &
+  SeriesAccessors &
+  SeriesScales & {
+    /**
+     * A function called to format every single mark value
+     *
+     * Only used with line/area series
+     */
+    markFormat?: TickFormatter<number>;
+  };
 
 export type SeriesSpecs<S extends BasicSeriesSpec = BasicSeriesSpec> = Array<S>;
 
@@ -621,11 +641,14 @@ export interface AxisSpec extends Spec {
   /** Where the axis appear on the chart */
   position: Position;
   /**
-   * A function called to format every single tick label (includes tooltip)
+   * A function called to format every tick value label.
+   * Uses first series spec `tickFormat` when not provided.
+   *
+   * used in tooltip when no `tickFormat` is provided from series spec
    */
-  tickFormat: TickFormatter;
+  tickFormat?: TickFormatter;
   /**
-   * A function called to format every single label  (excludes tooltip)
+   * A function called to format every label  (excludes tooltip)
    *
    * overrides tickFormat for axis labels
    */
@@ -653,7 +676,7 @@ export type TickFormatterOptions = {
 };
 
 /** @public */
-export type TickFormatter = (value: any, options?: TickFormatterOptions) => string;
+export type TickFormatter<V = any> = (value: V, options?: TickFormatterOptions) => string;
 
 export const AnnotationTypes = Object.freeze({
   Line: 'line' as const,

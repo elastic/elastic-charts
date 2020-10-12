@@ -1,3 +1,150 @@
+## [23.2.1](https://github.com/elastic/elastic-charts/compare/v23.2.0...v23.2.1) (2020-10-06)
+
+
+### Bug Fixes
+
+* detect dragging only by the delta changes ([#853](https://github.com/elastic/elastic-charts/issues/853)) ([219f9dd](https://github.com/elastic/elastic-charts/commit/219f9dd822b15750949ee3192fa573421eb8e534))
+* filter highlighted y values ([#855](https://github.com/elastic/elastic-charts/issues/855)) ([d3ebe77](https://github.com/elastic/elastic-charts/commit/d3ebe776126af0257882d1fa3f94e8426a063fd3))
+
+# [23.2.0](https://github.com/elastic/elastic-charts/compare/v23.1.1...v23.2.0) (2020-10-06)
+
+
+### Bug Fixes
+
+* **heatmap:** adjust pageSize based available chart height ([#849](https://github.com/elastic/elastic-charts/issues/849)) ([9aa396b](https://github.com/elastic/elastic-charts/commit/9aa396b59c1af4208663a78366a678ead54e6eca))
+* **heatmap:** destroy canvas bbox calculator when done ([#844](https://github.com/elastic/elastic-charts/issues/844)) ([42460bd](https://github.com/elastic/elastic-charts/commit/42460bd649b6a8114a01fb63cd9bee01515f37b6))
+* **heatmap:** x-axis labels overlapping for time series data ([#850](https://github.com/elastic/elastic-charts/issues/850)) ([9ebd879](https://github.com/elastic/elastic-charts/commit/9ebd8799881d6ee67a3a5a91cf0eb85f13f38ac8))
+* **interactions:** recognise drag after 100ms and 4px ([#848](https://github.com/elastic/elastic-charts/issues/848)) ([70626fe](https://github.com/elastic/elastic-charts/commit/70626fe4ef34504c9c9d59b0abb1c6ec0d19b04d)), closes [#748](https://github.com/elastic/elastic-charts/issues/748)
+
+
+### Features
+
+* heatmap tooltip enhancements and fixes ([#847](https://github.com/elastic/elastic-charts/issues/847)) ([d879e05](https://github.com/elastic/elastic-charts/commit/d879e056f05c1651d04e2de8610cc2f194e6faa9))
+
+## [23.1.1](https://github.com/elastic/elastic-charts/compare/v23.1.0...v23.1.1) (2020-10-05)
+
+
+### Bug Fixes
+
+* limit annotation to the current domain extent ([#841](https://github.com/elastic/elastic-charts/issues/841)) ([4186962](https://github.com/elastic/elastic-charts/commit/4186962a63ecb6fcee7d88abfcb98c6c3aa9666e)), closes [#832](https://github.com/elastic/elastic-charts/issues/832)
+
+# [23.1.0](https://github.com/elastic/elastic-charts/compare/v23.0.1...v23.1.0) (2020-10-02)
+
+
+### Features
+
+* heatmap/swimlane chart type ([#831](https://github.com/elastic/elastic-charts/issues/831)) ([96f92b5](https://github.com/elastic/elastic-charts/commit/96f92b5684175c7d14b0c6f257c060cf60ab76fa)), closes [#752](https://github.com/elastic/elastic-charts/issues/752)
+
+## [23.0.1](https://github.com/elastic/elastic-charts/compare/v23.0.0...v23.0.1) (2020-10-01)
+
+
+### Bug Fixes
+
+* legend item label for functional tests ([#843](https://github.com/elastic/elastic-charts/issues/843)) ([c2d3283](https://github.com/elastic/elastic-charts/commit/c2d3283bb4b577c4024d756562c0e3dc77c127ad))
+
+# [23.0.0](https://github.com/elastic/elastic-charts/compare/v22.0.0...v23.0.0) (2020-09-30)
+
+
+### Bug Fixes
+
+* render continuous line/area between non-adjacent points ([#833](https://github.com/elastic/elastic-charts/issues/833)) ([9f9892b](https://github.com/elastic/elastic-charts/commit/9f9892b255e62f6d42f4119458a791a62d592986)), closes [#825](https://github.com/elastic/elastic-charts/issues/825)
+
+
+### Features
+
+* debug state flag added to chart status ([#834](https://github.com/elastic/elastic-charts/issues/834)) ([83919ff](https://github.com/elastic/elastic-charts/commit/83919ffe294257839d360b589ce10f405e04af5b))
+* expose datum as part of GeometryValue ([#822](https://github.com/elastic/elastic-charts/issues/822)) ([dcd7077](https://github.com/elastic/elastic-charts/commit/dcd70777c2b6b8530b4518ebbac066e9f097594e))
+
+
+### BREAKING CHANGES
+
+* when rendering non-stacked line/area charts with a continuous x scale and no fit function,
+the line/area between non-consecutive data points will be rendered as a continuous line/area without adding an uncertain dashed line/ semi-transparent area that connects the two, non-adjacent, points.
+
+# [22.0.0](https://github.com/elastic/elastic-charts/compare/v21.3.2...v22.0.0) (2020-09-22)
+
+
+### Bug Fixes
+
+* breaking change in patch release of 21.1.1 ([d0ddc45](https://github.com/elastic/elastic-charts/commit/d0ddc45e2dbfb23bb1d8682b354b5de2b8476fce)), closes [#810](https://github.com/elastic/elastic-charts/issues/810)
+
+
+### BREAKING CHANGES
+
+* caused by changes in #810 see #830 for more info
+* `TooltipValue.value` is now raw value and `TooltipValue.formattedValue` is now the
+string formatted value.
+
+## [21.3.2](https://github.com/elastic/elastic-charts/compare/v21.3.1...v21.3.2) (2020-09-21)
+
+
+### Bug Fixes
+
+* **axis:** style overrides not applied to axis dimensions ([#829](https://github.com/elastic/elastic-charts/issues/829)) ([62172c4](https://github.com/elastic/elastic-charts/commit/62172c4cd80cdcf06167a70ad8e875f5dd79bea4))
+
+## [21.3.1](https://github.com/elastic/elastic-charts/compare/v21.3.0...v21.3.1) (2020-09-17)
+
+
+### Bug Fixes
+
+* line path with ordered xValues ([#824](https://github.com/elastic/elastic-charts/issues/824)) ([5a73a3a](https://github.com/elastic/elastic-charts/commit/5a73a3ad7049fc80a72f6b4a09c6404e8067bd9b))
+
+# [21.3.0](https://github.com/elastic/elastic-charts/compare/v21.2.0...v21.3.0) (2020-09-16)
+
+
+### Bug Fixes
+
+* legend dark mode hover color ([#820](https://github.com/elastic/elastic-charts/issues/820)) ([5227b2e](https://github.com/elastic/elastic-charts/commit/5227b2e811379a941d0bc23bc3160867707177ce))
+
+
+### Features
+
+* cancel brush/click event with escape key ([#819](https://github.com/elastic/elastic-charts/issues/819)) ([b599d13](https://github.com/elastic/elastic-charts/commit/b599d133c64c05400715fc9368865fdd35969736))
+* show crosshair for external pointer events ([#817](https://github.com/elastic/elastic-charts/issues/817)) ([f591a6a](https://github.com/elastic/elastic-charts/commit/f591a6a329c9297df9faf9bc7fde43eb13699500))
+
+# [21.2.0](https://github.com/elastic/elastic-charts/compare/v21.1.2...v21.2.0) (2020-09-14)
+
+
+### Features
+
+* blind sorting option for vislib ([#813](https://github.com/elastic/elastic-charts/issues/813)) ([8afce43](https://github.com/elastic/elastic-charts/commit/8afce435c85eeff9ed7ee7b44a246f898f4050fb))
+* order ordinal values by sum ([#814](https://github.com/elastic/elastic-charts/issues/814)) ([5b2758b](https://github.com/elastic/elastic-charts/commit/5b2758bb41fd3b89a51921b40373d5105eae4d4b))
+* **series:** add simple mark formatter ([#775](https://github.com/elastic/elastic-charts/issues/775)) ([ab95284](https://github.com/elastic/elastic-charts/commit/ab95284dcaf20dae2c29653917e70fb3ce7960bc))
+
+## [21.1.2](https://github.com/elastic/elastic-charts/compare/v21.1.1...v21.1.2) (2020-09-09)
+
+
+### Bug Fixes
+
+* remove unused redux dev middlewares ([#812](https://github.com/elastic/elastic-charts/issues/812)) ([b2679e7](https://github.com/elastic/elastic-charts/commit/b2679e7248ff0475b4267a3099c7afe1dfee67b6))
+
+## [21.1.1](https://github.com/elastic/elastic-charts/compare/v21.1.0...v21.1.1) (2020-09-08)
+
+
+### Bug Fixes
+
+* build issues and tooltip formatting issues ([#810](https://github.com/elastic/elastic-charts/issues/810)) ([74d9ae0](https://github.com/elastic/elastic-charts/commit/74d9ae0d9425ce494cd15037f4d952eb2db167ab))
+
+# [21.1.0](https://github.com/elastic/elastic-charts/compare/v21.0.1...v21.1.0) (2020-09-06)
+
+
+### Bug Fixes
+
+* **axis:** misaligned axis with rotated histogram bar charts ([#805](https://github.com/elastic/elastic-charts/issues/805)) ([6c454e1](https://github.com/elastic/elastic-charts/commit/6c454e10ece3f4cbaf1bacf06f5f2b832e9c32b0))
+
+
+### Features
+
+* **brush:** histogram brushing last values and rounding ([#801](https://github.com/elastic/elastic-charts/issues/801)) ([6d0319f](https://github.com/elastic/elastic-charts/commit/6d0319f1b0898360c004ec34844ac0b441d08b38))
+* **tooltip:** series tick formatters ([#802](https://github.com/elastic/elastic-charts/issues/802)) ([fbcd92e](https://github.com/elastic/elastic-charts/commit/fbcd92e1ff4802c07561a9abf309cc88a26e8b5e))
+
+## [21.0.1](https://github.com/elastic/elastic-charts/compare/v21.0.0...v21.0.1) (2020-08-18)
+
+
+### Bug Fixes
+
+* allow graceful error handling ([#779](https://github.com/elastic/elastic-charts/issues/779)) ([8183b32](https://github.com/elastic/elastic-charts/commit/8183b32f41bd9f5c0948393a4e5e05d1211cd74c)), closes [#776](https://github.com/elastic/elastic-charts/issues/776)
+
 # [21.0.0](https://github.com/elastic/elastic-charts/compare/v20.0.2...v21.0.0) (2020-08-10)
 
 

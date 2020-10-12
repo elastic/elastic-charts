@@ -20,6 +20,8 @@
 import { getSeriesIndex } from '../../chart_types/xy_chart/utils/series';
 import { LegendItem } from '../../commons/legend';
 import { SeriesIdentifier } from '../../commons/series_id';
+import { getDelta } from '../../utils/point';
+import { ON_KEY_UP, KeyActions } from '../actions/key';
 import {
   ON_TOGGLE_LEGEND,
   ON_LEGEND_ITEM_OUT,
@@ -30,20 +32,44 @@ import {
 } from '../actions/legend';
 import { ON_MOUSE_DOWN, ON_MOUSE_UP, ON_POINTER_MOVE, MouseActions } from '../actions/mouse';
 import { InteractionsState } from '../chart_state';
+import { getInitialPointerState } from '../utils';
+
+/**
+ * The minimum amount of time to consider for for dragging purposes
+ * @internal
+ */
+export const DRAG_DETECTION_TIMEOUT = 100;
+/**
+ * The minimum number of pixel between two pointer positions to consider for dragging purposes
+ */
+const DRAG_DETECTION_PIXEL_DELTA = 4;
 
 /** @internal */
 export function interactionsReducer(
   state: InteractionsState,
-  action: LegendActions | MouseActions,
+  action: LegendActions | MouseActions | KeyActions,
   legendItems: LegendItem[],
 ): InteractionsState {
   switch (action.type) {
+    case ON_KEY_UP:
+      if (action.key === 'Escape') {
+        return {
+          ...state,
+          pointer: getInitialPointerState(),
+        };
+      }
+
+      return state;
+
     case ON_POINTER_MOVE:
+      // enable the dragging flag only if the pixel delta between down and move is greater then 4 pixel
+      const dragging =
+        !!state.pointer.down && getDelta(state.pointer.down.position, action.position) > DRAG_DETECTION_PIXEL_DELTA;
       return {
         ...state,
         pointer: {
           ...state.pointer,
-          dragging: !!(state.pointer.down && state.pointer.down.time < action.time),
+          dragging,
           current: {
             position: {
               ...action.position,
