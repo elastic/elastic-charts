@@ -28,6 +28,7 @@ export default {
 
 export { Example as basic } from './1_basic';
 export { Example as withValueLabel } from './2_label_value';
+export { Example as withValueLabelAdvanced } from './50_label_value_advanced';
 export { Example as withAxis } from './3_with_axis';
 export { Example as withOrdinalXAxis } from './4_ordinal';
 export { Example as withLinearXAxis } from './5_linear';
@@ -35,7 +36,6 @@ export { Example as withLinearXAxisNoLinearInterval } from './6_linear_no_linear
 export { Example as withTimeXAxis } from './7_with_time_xaxis';
 export { Example as withLogYAxis } from './8_with_log_yaxis';
 export { Example as withStackedLogYAxis } from './9_with_stacked_log';
-export { Example as withValueLabelAdvanced } from './50_label_value_advanced';
 
 export { Example as withAxisAndLegend } from './10_axis_and_legend';
 export { Example as stackedWithAxisAndLegend } from './11_stacked_with_axis_and_legend';

@@ -81,7 +81,8 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
     }
     const { width, height } = textLines;
     const linesLength = textLines.lines.length;
-    const { fillColor, shadowColor } = getTextColors(fill, bars[i].color);
+    const shadowSize = getTextBorderSize(fill);
+    const { fillColor, shadowColor } = getTextColors(fill, bars[i].color, shadowSize);
 
     for (let i = 0; i < linesLength; i++) {
       const text = textLines.lines[i];
@@ -97,6 +98,7 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
           align,
           baseline,
           shadow: shadowColor,
+          shadowSize,
         },
         -chartRotation,
       );
@@ -208,12 +210,14 @@ function isOverflow(rect: Rect, chartDimensions: Dimensions, chartRotation: Rota
 const DEFAULT_VALUE_COLOR = 'black';
 // a little bit of alpha makes black font more readable
 const DEFAULT_VALUE_BORDER_COLOR = 'rgba(255, 255, 255, 0.8)';
+const DEFAULT_VALUE_BORDER_SOLID_COLOR = 'rgb(255, 255, 255)';
 const TRANSPARENT_COLOR = 'rgba(0,0,0,0)';
 type ValueFillDefinition = Theme['barSeriesStyle']['displayValue']['fill'];
 
 function getTextColors(
   fillDefinition: ValueFillDefinition,
   geometryColor: string,
+  borderSize: number,
 ): { fillColor: string; shadowColor: string } {
   if (typeof fillDefinition === 'string') {
     return { fillColor: fillDefinition, shadowColor: TRANSPARENT_COLOR };
@@ -233,17 +237,37 @@ function getTextColors(
       'white',
     ) || DEFAULT_VALUE_COLOR;
 
+  // If the border is too wide it can overlap between a letter or another
+  // therefore use a solid color for thinker borders
+  const defaultBorderColor = borderSize < 2 ? DEFAULT_VALUE_BORDER_COLOR : DEFAULT_VALUE_BORDER_SOLID_COLOR;
+  const shadowColor =
+    'textBorder' in fillDefinition
+      ? getTextColorIfTextInvertible(
+          colorIsDark(fillColor),
+          colorIsDark(defaultBorderColor),
+          defaultBorderColor,
+          false,
+          geometryColor,
+        ) || TRANSPARENT_COLOR
+      : TRANSPARENT_COLOR;
+
   return {
     fillColor,
-    shadowColor:
-      'textBorder' in fillDefinition
-        ? getTextColorIfTextInvertible(
-            colorIsDark(fillColor),
-            colorIsDark(DEFAULT_VALUE_BORDER_COLOR),
-            DEFAULT_VALUE_BORDER_COLOR,
-            false,
-            geometryColor,
-          ) || TRANSPARENT_COLOR
-        : TRANSPARENT_COLOR,
+    shadowColor,
   };
+}
+
+const DEFAULT_BORDER_WIDTH = 1.5;
+const MAX_BORDER_WIDTH = 8;
+
+function getTextBorderSize(fill: ValueFillDefinition): number {
+  if (typeof fill === 'string') {
+    return DEFAULT_BORDER_WIDTH;
+  }
+  if ('borderWidth' in fill) {
+    return Math.min(fill.borderWidth || DEFAULT_BORDER_WIDTH, MAX_BORDER_WIDTH);
+  }
+  const borderWidth =
+    'textBorder' in fill && typeof fill.textBorder === 'number' ? fill.textBorder : DEFAULT_BORDER_WIDTH;
+  return Math.min(borderWidth, MAX_BORDER_WIDTH);
 }

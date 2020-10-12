@@ -295,11 +295,11 @@ export type DisplayValueStyle = Omit<TextStyle, 'fill'> & {
   offsetY: number;
   fill:
     | Color
-    | { color: Color; borderColor?: Color }
+    | { color: Color; borderColor?: Color; borderWidth?: number }
     | {
         textInvertible: boolean;
         textContrast?: number | boolean;
-        textBorder?: boolean;
+        textBorder?: number | boolean;
       };
 };
 
