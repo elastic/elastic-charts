@@ -52,16 +52,16 @@ export function renderText(
       if (translation?.x || translation?.y) {
         ctx.translate(translation?.x ?? 0, translation?.y ?? 0);
       }
+      ctx.translate(origin.x, origin.y);
+      ctx.scale(scale, scale);
       if (font.shadow) {
         ctx.lineJoin = 'round';
         const prevLineWidth = ctx.lineWidth;
         ctx.lineWidth = font.shadowSize || 1.5;
         ctx.strokeStyle = font.shadow;
-        ctx.strokeText(text, origin.x, origin.y);
+        ctx.strokeText(text, 0, 0);
         ctx.lineWidth = prevLineWidth;
       }
-      ctx.translate(origin.x, origin.y);
-      ctx.scale(scale, scale);
       ctx.fillText(text, 0, 0);
     });
   });
