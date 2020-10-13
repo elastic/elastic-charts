@@ -601,6 +601,10 @@ export type DisplayValueStyle = Omit<TextStyle, 'fontSize'> & {
 } & {
     offsetX: number;
     offsetY: number;
+    alignment?: {
+        horizontal: Exclude<HorizontalAlignment, 'far' | 'near'>;
+        vertical: Exclude<VerticalAlignment, 'far' | 'near'>;
+    };
 };
 
 // @public (undocumented)
