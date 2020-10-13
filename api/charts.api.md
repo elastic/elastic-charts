@@ -605,6 +605,10 @@ export type DisplayValueStyle = Omit<TextStyle, 'fill'> & {
         textContrast?: number | boolean;
         textBorder?: number | boolean;
     };
+    alignment?: {
+        horizontal: Exclude<HorizontalAlignment, 'far' | 'near'>;
+        vertical: Exclude<VerticalAlignment, 'far' | 'near'>;
+    };
 };
 
 // @public (undocumented)
