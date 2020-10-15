@@ -23,7 +23,7 @@ import { Position, Rotation } from '../../../../utils/commons';
 import { Dimensions } from '../../../../utils/dimensions';
 import { GroupId } from '../../../../utils/ids';
 import { SmallMultipleScales } from '../../state/selectors/compute_small_multiple_scales';
-import { isHorizontalRotation, isVerticalRotation } from '../../state/utils/common';
+import { isHorizontalRotation } from '../../state/utils/common';
 import { computeXScaleOffset } from '../../state/utils/utils';
 import { AnnotationDomainTypes, LineAnnotationSpec, LineAnnotationDatum } from '../../utils/specs';
 import { AnnotationMarker } from '../types';
@@ -99,7 +99,10 @@ function computeYDomainLineAnnotationDimensions(
               icon: marker,
               color: lineColor,
               dimension: { ...markerDimensions },
-              position: markerPosition,
+              position: {
+                top: markerPosition.top + topPos,
+                left: markerPosition.left + leftPos,
+              },
             }
           : undefined;
         const lineProp: AnnotationLineProps = {
@@ -202,7 +205,10 @@ function computeXDomainLineAnnotationDimensions(
               icon: marker,
               color: lineColor,
               dimension: { ...markerDimensions },
-              position: markerPosition,
+              position: {
+                top: markerPosition.top + topPos,
+                left: markerPosition.left + leftPos,
+              },
             }
           : undefined;
         const lineProp: AnnotationLineProps = {

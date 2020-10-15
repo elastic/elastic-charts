@@ -18,10 +18,9 @@
  */
 
 import { LegendItem } from '../../../commons/legend';
-import { MockDataSeries } from '../../../mocks';
+import { MockBarGeometry, MockDataSeries, MockPointGeometry } from '../../../mocks';
 import { MockScale } from '../../../mocks/scale';
 import { mergePartial, RecursivePartial } from '../../../utils/commons';
-import { BarGeometry, PointGeometry } from '../../../utils/geometry';
 import { BarSeriesStyle, SharedGeometryStateStyle, PointStyle } from '../../../utils/themes/theme';
 import { DataSeriesDatum, XYChartSeriesIdentifier } from '../utils/series';
 import {
@@ -53,7 +52,7 @@ describe('Rendering utils', () => {
       },
     };
 
-    const geometry: BarGeometry = {
+    const geometry = MockBarGeometry.default({
       color: 'red',
       seriesIdentifier: {
         specId: 'id',
@@ -74,7 +73,7 @@ describe('Rendering utils', () => {
       width: 10,
       height: 10,
       seriesStyle,
-    };
+    });
     expect(isPointOnGeometry(0, 0, geometry)).toBe(true);
     expect(isPointOnGeometry(10, 10, geometry)).toBe(true);
     expect(isPointOnGeometry(0, 10, geometry)).toBe(true);
@@ -84,7 +83,7 @@ describe('Rendering utils', () => {
     expect(isPointOnGeometry(11, 11, geometry)).toBe(false);
   });
   test('check if point is on point geometry', () => {
-    const geometry: PointGeometry = {
+    const geometry = MockPointGeometry.default({
       color: 'red',
       seriesIdentifier: {
         specId: 'id',
@@ -107,7 +106,7 @@ describe('Rendering utils', () => {
       x: 0,
       y: 0,
       radius: 10,
-    };
+    });
     // with buffer
     expect(isPointOnGeometry(10, 10, geometry, 10)).toBe(true);
     expect(isPointOnGeometry(20, 20, geometry, 5)).toBe(false);
@@ -396,7 +395,7 @@ describe('Rendering utils', () => {
     });
 
     it('should return array pairs of non-null x regions with null end values', () => {
-      const actual = getClippedRanges(dataSeries.data, xScale, 0);
+      const actual = getClippedRanges(dataSeries.data, xScale, 0, { top: 0, left: 0, width: 100, height: 100 });
 
       expect(actual).toEqual([
         [0, 1],
@@ -413,7 +412,7 @@ describe('Rendering utils', () => {
         scale: jest.fn().mockImplementation((x) => x),
         range: [data[0].x as number, data[10].x as number],
       });
-      const actual = getClippedRanges(data, xScale, 0);
+      const actual = getClippedRanges(data, xScale, 0, { top: 0, left: 0, width: 100, height: 100 });
 
       expect(actual).toEqual([
         [2, 4],
@@ -429,7 +428,7 @@ describe('Rendering utils', () => {
         bandwidth,
         range: [dataSeries.data[0].x as number, (dataSeries.data[12].x as number) + bandwidth * (2 / 3)],
       });
-      const actual = getClippedRanges(dataSeries.data, xScale, 0);
+      const actual = getClippedRanges(dataSeries.data, xScale, 0, { top: 0, left: 0, width: 100, height: 100 });
 
       expect(actual).toEqual([
         [0, 2],
@@ -440,7 +439,7 @@ describe('Rendering utils', () => {
     });
 
     it('should account for xScaleOffset', () => {
-      const actual = getClippedRanges(dataSeries.data, xScale, 2);
+      const actual = getClippedRanges(dataSeries.data, xScale, 2, { top: 0, left: 0, width: 100, height: 100 });
 
       expect(actual).toEqual([
         [0, -1],
@@ -451,7 +450,7 @@ describe('Rendering utils', () => {
     });
 
     it('should call scale to get x value for each datum', () => {
-      getClippedRanges(dataSeries.data, xScale, 0);
+      getClippedRanges(dataSeries.data, xScale, 0, { top: 0, left: 0, width: 100, height: 100 });
 
       expect(xScale.scale).toHaveBeenNthCalledWith(1, dataSeries.data[0].x);
       expect(xScale.scale).toHaveBeenCalledTimes(dataSeries.data.length);

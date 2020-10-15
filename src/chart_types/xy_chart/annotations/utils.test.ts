@@ -18,55 +18,22 @@
  */
 
 import { RecursivePartial } from '@elastic/eui';
-import React from 'react';
 
 import { ChartTypes } from '../..';
 import { MockAnnotationLineProps } from '../../../mocks/annotations/annotations';
 import { MockGlobalSpec, MockSeriesSpec, MockAnnotationSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
-import { Scale, ScaleBand, ScaleContinuous } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { SpecTypes } from '../../../specs/constants';
-import { Position, Rotation } from '../../../utils/commons';
-import { Dimensions } from '../../../utils/dimensions';
-import { GroupId, AnnotationId } from '../../../utils/ids';
-import { Point } from '../../../utils/point';
+import { Position } from '../../../utils/commons';
+import { AnnotationId } from '../../../utils/ids';
 import { DEFAULT_ANNOTATION_LINE_STYLE, AxisStyle } from '../../../utils/themes/theme';
 import { computeAnnotationDimensionsSelector } from '../state/selectors/compute_annotations';
-import {
-  AnnotationDomainTypes,
-  AnnotationSpec,
-  AxisSpec,
-  LineAnnotationSpec,
-  RectAnnotationSpec,
-  AnnotationTypes,
-} from '../utils/specs';
-import { computeLineAnnotationDimensions } from './line/dimensions';
-import { computeLineAnnotationTooltipState } from './line/tooltip';
+import { AnnotationDomainTypes, AxisSpec } from '../utils/specs';
 import { AnnotationLineProps } from './line/types';
-import { computeRectAnnotationDimensions, isWithinRectBounds } from './rect/dimensions';
-import { computeRectAnnotationTooltipState } from './rect/tooltip';
-import { computeAnnotationTooltipState } from './tooltip';
-import { AnnotationDimensions, AnnotationTooltipState, Bounds } from './types';
-import { computeAnnotationDimensions, getAnnotationAxis, getTransformedCursor, invertTranformedCursor } from './utils';
+import { AnnotationDimensions } from './types';
 
 describe('annotation utils', () => {
-  const minRange = 0;
-  const maxRange = 100;
-
-  const continuousData = [0, 10];
-  const continuousScale = new ScaleContinuous(
-    {
-      type: ScaleType.Linear,
-      domain: continuousData,
-      range: [minRange, maxRange],
-    },
-    { bandwidth: 10, minInterval: 1 },
-  );
-
-  const ordinalData = ['a', 'b', 'c', 'd', 'a', 'b', 'c'];
-  const ordinalScale = new ScaleBand(ordinalData, [minRange, maxRange]);
-
   const groupId = 'foo-group';
 
   const ordinalBarChart = MockSeriesSpec.bar({
@@ -79,13 +46,6 @@ describe('annotation utils', () => {
       { x: 'd', y: 5 },
     ],
   });
-
-  const chartDimensions: Dimensions = {
-    width: 10,
-    height: 20,
-    top: 5,
-    left: 15,
-  };
 
   const style: RecursivePartial<AxisStyle> = {
     tickLine: {
@@ -104,19 +64,6 @@ describe('annotation utils', () => {
     showOverlappingTicks: false,
     showOverlappingLabels: false,
     position: Position.Left,
-    style,
-    tickFormat: (value: any) => value.toString(),
-    showGridLines: true,
-  };
-  const horizontalAxisSpec: AxisSpec = {
-    chartType: ChartTypes.XYAxis,
-    specType: SpecTypes.Axis,
-    id: 'horizontal_axis',
-    groupId,
-    hide: false,
-    showOverlappingTicks: false,
-    showOverlappingLabels: false,
-    position: Position.Bottom,
     style,
     tickFormat: (value: any) => value.toString(),
     showGridLines: true,
@@ -207,8 +154,8 @@ describe('annotation utils', () => {
     const expectedDimensions: AnnotationLineProps[] = [
       MockAnnotationLineProps.default({
         linePathPoints: {
-          start: { x1: 0, y1: 20 },
-          end: { x2: 10, y2: 20 },
+          start: { x1: 0, y1: 80 },
+          end: { x2: 10, y2: 80 },
         },
         details: { detailsText: 'foo', headerText: '2' },
       }),

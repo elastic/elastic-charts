@@ -23,22 +23,22 @@ import { ChartTypes } from '../chart_types';
 import { getConnect, specComponentFactory } from '../state/spec_factory';
 import { SpecTypes } from './constants';
 
-export type IndexOrderBy = (spec: Spec, datum: any) => Array<string | number>;
-export type IndexOrderSort = Array<string | number>;
+export type GroupByAccessor = (spec: Spec, datum: any) => Array<string | number>;
+export type GroupBySort = Array<string | number>;
 
-export interface IndexOrderSpec extends Spec {
-  by: IndexOrderBy;
-  order: IndexOrderSort;
+export interface GroupBySpec extends Spec {
+  by: GroupByAccessor;
+  sort: GroupBySort;
 }
-const DEFAULT_INDEX_ORDER_PROPS = {
+const DEFAULT_GROUP_BY_PROPS = {
   chartType: ChartTypes.Global,
   specType: SpecTypes.IndexOrder,
 };
 
-type DefaultIndexOrderProps = 'chartType' | 'specType';
+type DefaultGroupByProps = 'chartType' | 'specType';
 
-export type IndexOrderProps = Pick<IndexOrderSpec, 'id' | 'by' | 'order'>;
+export type GroupByProps = Pick<GroupBySpec, 'id' | 'by' | 'sort'>;
 
-export const IndexOrder: React.FunctionComponent<IndexOrderProps> = getConnect()(
-  specComponentFactory<IndexOrderSpec, DefaultIndexOrderProps>(DEFAULT_INDEX_ORDER_PROPS),
+export const GroupBy: React.FunctionComponent<GroupByProps> = getConnect()(
+  specComponentFactory<GroupBySpec, DefaultGroupByProps>(DEFAULT_GROUP_BY_PROPS),
 );

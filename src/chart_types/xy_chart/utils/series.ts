@@ -19,15 +19,15 @@
 
 import { SeriesIdentifier, SeriesKey } from '../../../commons/series_id';
 import { ScaleType } from '../../../scales/constants';
-import { IndexOrderSpec, BinAgg, Direction, XScaleType } from '../../../specs';
+import { GroupBySpec, BinAgg, Direction, XScaleType } from '../../../specs';
 import { OrderBy } from '../../../specs/settings';
 import { ColorOverrides } from '../../../state/chart_state';
 import { Accessor, AccessorFn, getAccessorValue } from '../../../utils/accessor';
 import { Datum, Color } from '../../../utils/commons';
-import { GroupId, SpecId } from '../../../utils/ids';
+import { GroupId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
 import { ColorConfig } from '../../../utils/themes/theme';
-import { groupSeriesByYGroup, isHistogramEnabled, isStackedSpec, YBasicSeriesSpec } from '../domains/y_domain';
+import { groupSeriesByYGroup, isHistogramEnabled, isStackedSpec } from '../domains/y_domain';
 import { LastValues } from '../state/utils/types';
 import { applyFitFunctionToDataSeries } from './fit_function_utils';
 import { groupBy } from './group_data_series';
@@ -80,6 +80,7 @@ export type DataSeries = XYChartSeriesIdentifier & {
   groupId: GroupId;
   seriesType: SeriesTypes;
   data: DataSeriesDatum[];
+  isStacked: boolean;
   stackMode: StackMode | undefined;
   spec: Exclude<BasicSeriesSpec, 'data'>;
 };
@@ -122,9 +123,10 @@ export function getSeriesIndex(series: SeriesIdentifier[], target: SeriesIdentif
 export function splitSeriesDataByAccessors(
   spec: BasicSeriesSpec,
   xValueSums: Map<string | number, number>,
+  isStacked = false,
   enableVislibSeriesSort = false,
   stackMode?: StackMode,
-  smallMultiples?: { verticalIndex?: IndexOrderSpec; horizontalIndex?: IndexOrderSpec },
+  smallMultiples?: { verticalIndex?: GroupBySpec; horizontalIndex?: GroupBySpec },
 ): {
   dataSeries: Map<SeriesKey, DataSeries>;
   xValues: Array<string | number>;
@@ -220,6 +222,7 @@ export function splitSeriesDataByAccessors(
         } else {
           dataSeries.set(seriesKey, {
             ...seriesIdentifier,
+            isStacked,
             seriesKeys,
             key: seriesKey,
             data: [newDatum],
@@ -293,6 +296,7 @@ export function splitSeriesDataByAccessors(
         } else {
           dataSeries.set(seriesKey, {
             ...seriesIdentifier,
+            isStacked,
             seriesKeys,
             key: seriesKey,
             data: [newDatum],
@@ -444,66 +448,63 @@ export function getFormattedDataSeries(
   return [...fittedAndStackedDataSeries, ...nonStackedDataSeries];
 }
 
-function getDataSeriesBySpecGroup(
-  seriesSpecs: YBasicSeriesSpec[],
-  dataSeries: Map<SpecId, DataSeries[]>,
-): {
-  dataSeries: DataSeries[];
-  counts: DataSeriesCounts;
-} {
-  return seriesSpecs.reduce<{
-    dataSeries: DataSeries[];
-    counts: DataSeriesCounts;
-  }>(
-    (acc, { id, seriesType }) => {
-      const ds = dataSeries.get(id);
-      if (!ds) {
-        return acc;
-      }
-      acc.dataSeries.push(...ds);
-      if (seriesType === SeriesTypes.Bar) {
-        // for bar series, count the max number of bars per panel
-        const barCounts = ds.reduce<Record<string, number>>((countAcc, dsCurrent) => {
-          const key = `${dsCurrent?.smHorizontalAccessorValue ?? 'global'}___${dsCurrent?.smVerticalAccessorValue ??
-            'global'}`;
-          let count = countAcc[key];
-          if (count === undefined) {
-            count = 0;
-          }
-          count++;
-          return {
-            ...countAcc,
-            [key]: count,
-          };
-        }, {});
-        const maxBarCounts = Math.max(...Object.values(barCounts));
-        acc.counts[seriesType] += maxBarCounts;
-      } else {
-        acc.counts[seriesType] += ds.length;
-      }
-      return acc;
-    },
-    {
-      dataSeries: [],
-      counts: {
-        [SeriesTypes.Bar]: 0,
-        [SeriesTypes.Area]: 0,
-        [SeriesTypes.Line]: 0,
-        [SeriesTypes.Bubble]: 0,
-      },
-    },
-  );
-}
+// function getDataSeriesBySpecGroup(
+//   seriesSpecs: YBasicSeriesSpec[],
+//   dataSeries: Map<SpecId, DataSeries[]>,
+// ): {
+//   dataSeries: DataSeries[];
+//   counts: DataSeriesCounts;
+// } {
+//   return seriesSpecs.reduce<{
+//     dataSeries: DataSeries[];
+//     counts: DataSeriesCounts;
+//   }>(
+//     (acc, { id, seriesType }) => {
+//       const ds = dataSeries.get(id);
+//       if (!ds) {
+//         return acc;
+//       }
+//       acc.dataSeries.push(...ds);
+//       if (seriesType === SeriesTypes.Bar) {
+//         // for bar series, count the max number of bars per panel
+//         const barCounts = ds.reduce<Record<string, number>>((countAcc, dsCurrent) => {
+//           const key = `${dsCurrent?.smHorizontalAccessorValue ?? 'global'}___${dsCurrent?.smVerticalAccessorValue ??
+//             'global'}`;
+//           let count = countAcc[key];
+//           if (count === undefined) {
+//             count = 0;
+//           }
+//           count++;
+//           return {
+//             ...countAcc,
+//             [key]: count,
+//           };
+//         }, {});
+//         const maxBarCounts = Math.max(...Object.values(barCounts));
+//         acc.counts[seriesType] += maxBarCounts;
+//       } else {
+//         acc.counts[seriesType] += ds.length;
+//       }
+//       return acc;
+//     },
+//     {
+//       dataSeries: [],
+//       counts: {
+//         [SeriesTypes.Bar]: 0,
+//         [SeriesTypes.Area]: 0,
+//         [SeriesTypes.Line]: 0,
+//         [SeriesTypes.Bubble]: 0,
+//       },
+//     },
+//   );
+// }
 
 /**
  *
  * @param seriesSpecs the map for all the series spec
  * @param deselectedDataSeries the array of deselected/hidden data series
-<<<<<<< HEAD
  * @param enableVislibSeriesSort is optional; if not specified in <Settings />,
-=======
  * @param smallMultiples
->>>>>>> feat: small-multiples for xy axis chart
  * @internal
  */
 export function getDataSeriesFromSpecs(
@@ -511,7 +512,7 @@ export function getDataSeriesFromSpecs(
   deselectedDataSeries: SeriesIdentifier[] = [],
   orderOrdinalBinsBy?: OrderBy,
   enableVislibSeriesSort?: boolean,
-  smallMultiples?: { verticalIndex?: IndexOrderSpec; horizontalIndex?: IndexOrderSpec },
+  smallMultiples?: { verticalIndex?: GroupBySpec; horizontalIndex?: GroupBySpec },
 ): {
   dataSeries: DataSeries[];
   seriesCollection: Map<SeriesKey, SeriesCollectionValue>;
@@ -545,9 +546,11 @@ export function getDataSeriesFromSpecs(
     }
 
     const specGroup = specsByYGroup.get(spec.groupId);
+    const isStacked = Boolean(specGroup?.stacked.find(({ id }) => id === spec.id));
     const { dataSeries, xValues, smVValues, smHValues } = splitSeriesDataByAccessors(
       spec,
       mutatedXValueSums,
+      isStacked,
       enableVislibSeriesSort,
       specGroup?.stackMode,
       smallMultiples,

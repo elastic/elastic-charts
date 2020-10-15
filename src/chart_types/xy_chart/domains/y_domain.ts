@@ -57,11 +57,12 @@ export function mergeYDomain(
 
   return dataSeriesByGroupId.map<YDomain>((groupedDataSeries) => {
     const [{ groupId }] = groupedDataSeries;
-    const stacked = groupedDataSeries.filter(({ stackMode }) => stackMode);
-    const nonStacked = groupedDataSeries.filter(({ stackMode }) => stackMode === undefined);
+
+    const stacked = groupedDataSeries.filter(({ isStacked }) => isStacked);
+    const nonStacked = groupedDataSeries.filter(({ isStacked }) => !isStacked);
     const customDomain = domainsByGroupId.get(groupId);
     const hasNonZeroBaselineTypes = groupedDataSeries.some(
-      ({ seriesType }) => seriesType === SeriesTypes.Bar || SeriesTypes.Area,
+      ({ seriesType }) => seriesType === SeriesTypes.Bar || seriesType === SeriesTypes.Area,
     );
     return mergeYDomainForGroup(stacked, nonStacked, hasNonZeroBaselineTypes, customDomain);
   });
@@ -92,7 +93,6 @@ function mergeYDomainForGroup(
     if (customDomain?.fit !== true && shouldScaleToExtent) {
       newCustomDomain.fit = true;
     }
-
     // compute stacked domain
     const stackedDomain = computeYDomain(stacked, hasZeroBaselineSpecs);
 

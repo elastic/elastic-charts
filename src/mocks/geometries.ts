@@ -43,7 +43,7 @@ export class MockPointGeometry {
       datum: { x: 0, y: 0 },
     },
     transform: {
-      x: 25,
+      x: 0,
       y: 0,
     },
   };
@@ -69,13 +69,7 @@ export class MockBarGeometry {
     width: 0,
     height: 0,
     color,
-    displayValue: {
-      text: '',
-      width: 0,
-      height: 0,
-      hideClippedValue: false,
-      isValueContainedInElement: false,
-    },
+    displayValue: undefined,
     seriesIdentifier: MockSeriesIdentifier.default(),
     value: {
       accessor: 'y0',
@@ -96,7 +90,7 @@ export class MockBarGeometry {
   }
 
   static fromBaseline(baseline: RecursivePartial<BarGeometry>, omitKeys: string[] | string = []) {
-    return function(partial?: RecursivePartial<BarGeometry>) {
+    return (partial?: RecursivePartial<BarGeometry>) => {
       const geo = mergePartial<BarGeometry>(MockBarGeometry.base, partial, { mergeOptionalPartialValues: true }, [
         baseline,
       ]);

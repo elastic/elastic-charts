@@ -420,7 +420,7 @@ function mouseOverTestSuite(scaleType: XScaleType) {
           datum: [0, 10],
         },
         {
-          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
           seriesKeys: [1],
           specId: 'spec_1',
           splitAccessors: new Map(),
@@ -466,7 +466,7 @@ function mouseOverTestSuite(scaleType: XScaleType) {
           datum: [0, 10],
         },
         {
-          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
           seriesKeys: [1],
           specId: 'spec_1',
           splitAccessors: new Map(),
@@ -515,7 +515,7 @@ function mouseOverTestSuite(scaleType: XScaleType) {
           datum: [0, 10],
         },
         {
-          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
           seriesKeys: [1],
           specId: 'spec_1',
           splitAccessors: new Map(),
@@ -569,7 +569,7 @@ function mouseOverTestSuite(scaleType: XScaleType) {
           datum: [(spec.data[0] as Array<any>)[0], (spec.data[0] as Array<any>)[1]],
         },
         {
-          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
           seriesKeys: [1],
           specId: 'spec_1',
           splitAccessors: new Map(),
@@ -602,7 +602,7 @@ function mouseOverTestSuite(scaleType: XScaleType) {
           datum: [(spec.data[1] as Array<any>)[0], (spec.data[1] as Array<any>)[1]],
         },
         {
-          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
           seriesKeys: [1],
           specId: 'spec_1',
           splitAccessors: new Map(),
@@ -699,7 +699,7 @@ function mouseOverTestSuite(scaleType: XScaleType) {
           datum: [1, 5],
         },
         {
-          key: 'spec{spec_1}yAccessor{1}splitAccessors{}',
+          key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
           seriesKeys: [1],
           specId: 'spec_1',
           splitAccessors: new Map(),

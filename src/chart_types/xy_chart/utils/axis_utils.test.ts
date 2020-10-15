@@ -990,7 +990,7 @@ describe('Axis computational utils', () => {
       (v) => `${v}`,
     );
 
-    expect(axisTicksPosition.find(({ axisId }) => axisId === verticalAxisSpecWTitle.id)).toEqual({
+    expect(axisTicksPosition.find(({ axisId }) => axisId === verticalAxisSpecWTitle.id)?.position).toEqual({
       top: 0,
       left: 10,
       width: 50,
@@ -1020,7 +1020,7 @@ describe('Axis computational utils', () => {
       (v) => `${v}`,
     );
 
-    expect(axisTicksPosition.find(({ axisId }) => axisId === verticalAxisSpecWTitle.id)).toEqual({
+    expect(axisTicksPosition.find(({ axisId }) => axisId === verticalAxisSpecWTitle.id)?.position).toEqual({
       top: 0,
       left: 10,
       width: 10,
@@ -1268,7 +1268,7 @@ describe('Axis computational utils', () => {
       [0, 100, 100, 100],
     ];
 
-    expect(axisTicksPosition.find(({ axisId }) => axisId === verticalAxisSpec.id)).toEqual(
+    expect(axisTicksPosition.find(({ axisId }) => axisId === verticalAxisSpec.id)?.gridLinePositions).toEqual(
       expectedVerticalAxisGridLines,
     );
 
@@ -1300,7 +1300,7 @@ describe('Axis computational utils', () => {
     const verticalAxisWithTopLegendPosition = axisTicksPositionWithTopLegend.find(
       ({ axisId }) => axisId === verticalAxisSpec.id,
     );
-    expect(verticalAxisWithTopLegendPosition).toEqual(expectedPositionWithTopLegend);
+    expect(verticalAxisWithTopLegendPosition?.position).toEqual(expectedPositionWithTopLegend);
 
     const ungroupedAxisSpec = { ...verticalAxisSpec, groupId: 'foo' };
     const invalidSpecs = [ungroupedAxisSpec];

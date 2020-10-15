@@ -19,12 +19,13 @@
 
 import { ChartTypes } from '../..';
 import { LegendItem } from '../../../commons/legend';
+import { MockBarGeometry } from '../../../mocks';
 import { ScaleContinuous, ScaleBand } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { SpecTypes, TooltipType } from '../../../specs/constants';
 import { TooltipValue } from '../../../specs/settings';
 import { Position, RecursivePartial } from '../../../utils/commons';
-import { IndexedGeometry, GeometryValue, BandedAccessorType } from '../../../utils/geometry';
+import { GeometryValue, BandedAccessorType } from '../../../utils/geometry';
 import { AxisId } from '../../../utils/ids';
 import { AxisStyle } from '../../../utils/themes/theme';
 import { AxisTicksDimensions, isDuplicateAxis } from '../utils/axis_utils';
@@ -919,7 +920,7 @@ describe.skip('Chart Store', () => {
         padding: 2,
       },
     };
-    const geom1: IndexedGeometry = {
+    const geom1 = MockBarGeometry.default({
       color: 'red',
       seriesIdentifier: {
         specId: 'specId1',
@@ -940,8 +941,8 @@ describe.skip('Chart Store', () => {
       width: 0,
       height: 0,
       seriesStyle: barStyle,
-    };
-    const geom2: IndexedGeometry = {
+    });
+    const geom2 = MockBarGeometry.default({
       color: 'blue',
       seriesIdentifier: {
         specId: 'specId2',
@@ -962,7 +963,7 @@ describe.skip('Chart Store', () => {
       width: 0,
       height: 0,
       seriesStyle: barStyle,
-    };
+    });
     const clickListener = jest.fn<void, [GeometryValue[]]>((): void => undefined);
     store.setOnElementClickListener(clickListener);
 
@@ -1137,7 +1138,7 @@ describe.skip('Chart Store', () => {
       store.cursorPosition.x = 10;
       store.cursorPosition.y = 10;
       store.onBrushEndListener = brushEndListener;
-      const geom1: IndexedGeometry = {
+      const geom1 = MockBarGeometry.default({
         color: 'red',
         seriesIdentifier: {
           specId: 'specId1',
@@ -1174,7 +1175,7 @@ describe.skip('Chart Store', () => {
             padding: 2,
           },
         },
-      };
+      });
       store.highlightedGeometries.replace([geom1]);
       expect(store.chartCursor.get()).toBe('crosshair');
       store.onElementClickListener = jest.fn();

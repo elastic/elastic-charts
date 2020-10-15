@@ -28,7 +28,7 @@ export interface Spec {
   specType: string;
 }
 
-export * from './index_order';
+export * from './group_by';
 export * from './small_multiples';
 
 export * from './settings';

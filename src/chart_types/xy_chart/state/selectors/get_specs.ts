@@ -20,7 +20,7 @@
 import createCachedSelector from 're-reselect';
 
 import { ChartTypes } from '../../..';
-import { IndexOrderSpec, SmallMultiplesSpec } from '../../../../specs';
+import { GroupBySpec, SmallMultiplesSpec } from '../../../../specs';
 import { SpecTypes } from '../../../../specs/constants';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
@@ -50,17 +50,17 @@ export const getSmallMultiplesIndexOrderSelector = createCachedSelector([getSpec
   if (smallMultiples.length !== 1) {
     return undefined;
   }
-  const indexOrders = getSpecsFromStore<IndexOrderSpec>(specs, ChartTypes.Global, SpecTypes.IndexOrder);
+  const indexOrders = getSpecsFromStore<GroupBySpec>(specs, ChartTypes.Global, SpecTypes.IndexOrder);
   const [smallMultiplesConfig] = smallMultiples;
 
-  let verticalIndex: IndexOrderSpec | undefined;
-  let horizontalIndex: IndexOrderSpec | undefined;
+  let verticalIndex: GroupBySpec | undefined;
+  let horizontalIndex: GroupBySpec | undefined;
 
-  if (smallMultiplesConfig.verticalIndex) {
-    verticalIndex = indexOrders.find((d) => d.id === smallMultiplesConfig.verticalIndex);
+  if (smallMultiplesConfig.yGroup) {
+    verticalIndex = indexOrders.find((d) => d.id === smallMultiplesConfig.yGroup);
   }
-  if (smallMultiplesConfig.horizontalIndex) {
-    horizontalIndex = indexOrders.find((d) => d.id === smallMultiplesConfig.horizontalIndex);
+  if (smallMultiplesConfig.xGroup) {
+    horizontalIndex = indexOrders.find((d) => d.id === smallMultiplesConfig.xGroup);
   }
 
   return {

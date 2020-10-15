@@ -18,85 +18,38 @@
  */
 import React from 'react';
 
-import {
-  LineSeries,
-  Axis,
-  Chart,
-  IndexOrder,
-  SmallMultiples,
-  Position,
-  ScaleType,
-  Settings,
-  DataGenerator,
-} from '../src';
+import { Chart, ScaleType, Settings, AreaSeries } from '../src';
 
-const dg = new DataGenerator();
-
-const data = dg.generateGroupedSeries(50, 9).map(({ x, y, g }) => {
-  switch (g) {
-    case 'a':
-      return { x, y, v: 'a', h: 1 };
-    case 'b':
-      return { x, y, v: 'b', h: 1 };
-    case 'c':
-      return { x, y, v: 'c', h: 1 };
-    case 'd':
-      return { x, y, v: 'a', h: 2 };
-    case 'e':
-      return { x, y, v: 'b', h: 2 };
-    case 'f':
-      return { x, y, v: 'c', h: 2 };
-    case 'g':
-      return { x, y, v: 'a', h: 3 };
-    case 'h':
-      return { x, y, v: 'b', h: 3 };
-    case 'i':
-      return { x, y, v: 'c', h: 3 };
-    default:
-      return { x, y, v: 'x', h: -2 };
-  }
-});
-
-export const Playground = () => (
-  <Chart className="chart">
-    <Settings
-      showLegend
-      showLegendExtra
-      legendPosition={Position.Right}
-      theme={{
-        lineSeriesStyle: {
-          point: { visible: false },
-        },
-      }}
-    />
-    <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
-    <Axis id="Y1" title="Y1" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
-
-    <IndexOrder
-      id="verticalGrid"
-      by={(spec, datum: any) => {
-        return [datum.v];
-      }}
-      order={['alphaDesc', 'alphaAsc']}
-    />
-
-    <IndexOrder
-      id="horizontalGrid"
-      by={(spec, datum: any) => {
-        return [datum.h];
-      }}
-      order={['alphaDesc', 'alphaAsc']}
-    />
-
-    <SmallMultiples verticalIndex="verticalGrid" horizontalIndex="horizontalGrid" />
-
-    <LineSeries
-      id="bars1"
-      xScaleType={ScaleType.Linear}
-      yScaleType={ScaleType.Linear}
-      xAccessor="x"
-      yAccessors={['y']}
-      data={data}
-    />
-  </Chart>
-);
+export const Playground = () => {
+  return (
+    <div className="App">
+      <Chart size={[100, 100]}>
+        <Settings
+          theme={{
+            chartMargins: { top: 0, left: 0, right: 0, bottom: 0 },
+            chartPaddings: { top: 0, left: 0, right: 0, bottom: 0 },
+          }}
+        />
+        <AreaSeries
+          id="test"
+          data={[
+            [0, 2, 10],
+            [1, 2, null],
+            [2, 3, 5],
+            [3, 3, 5],
+          ]}
+          xAccessor={0}
+          y0Accessors={[1]}
+          yAccessors={[2]}
+          xScaleType={ScaleType.Ordinal}
+          yScaleType={ScaleType.Linear}
+          areaSeriesStyle={{
+            point: {
+              visible: true,
+            },
+          }}
+        />
+      </Chart>
+    </div>
+  );
+};

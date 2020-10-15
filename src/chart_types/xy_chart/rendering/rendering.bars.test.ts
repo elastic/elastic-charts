@@ -85,6 +85,7 @@ describe('Rendering bars', () => {
         value: {
           x: 1,
           y: 5,
+          datum: [1, 5],
         },
       }),
     );

@@ -20,7 +20,7 @@
 import { SeriesKey, SeriesIdentifier } from '../../../../commons/series_id';
 import { Scale } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
-import { IndexOrderSpec } from '../../../../specs';
+import { GroupBySpec } from '../../../../specs';
 import { OrderBy } from '../../../../specs/settings';
 import { mergePartial, Rotation, Color, isUniqueArray } from '../../../../utils/commons';
 import { CurveType } from '../../../../utils/curves';
@@ -31,7 +31,7 @@ import { GroupId, SpecId } from '../../../../utils/ids';
 import { ColorConfig, Theme } from '../../../../utils/themes/theme';
 import { XDomain } from '../../domains/types';
 import { mergeXDomain } from '../../domains/x_domain';
-import { groupSeriesByYGroup, isStackedSpec, mergeYDomain } from '../../domains/y_domain';
+import { isStackedSpec, mergeYDomain } from '../../domains/y_domain';
 import { renderArea, renderBars, renderLine, renderBubble, isDatumFilled } from '../../rendering/rendering';
 import { defaultTickFormatter } from '../../utils/axis_utils';
 import { fillSeries } from '../../utils/fill_series';
@@ -194,7 +194,7 @@ export function computeSeriesDomains(
   customXDomain?: DomainRange | Domain,
   orderOrdinalBinsBy?: OrderBy,
   enableVislibSeriesSort?: boolean,
-  smallMultiples?: { verticalIndex?: IndexOrderSpec; horizontalIndex?: IndexOrderSpec },
+  smallMultiples?: { verticalIndex?: GroupBySpec; horizontalIndex?: GroupBySpec },
 ): SeriesDomainsAndData {
   const { dataSeries, xValues, seriesCollection, fallbackScale, smHValues, smVValues } = getDataSeriesFromSpecs(
     seriesSpecs,
@@ -206,18 +206,15 @@ export function computeSeriesDomains(
   // compute the x domain merging any custom domain
   const xDomain = mergeXDomain(seriesSpecs, xValues, customXDomain, fallbackScale);
 
-  const specsByGroupIds = groupSeriesByYGroup(seriesSpecs);
-
   // fill series with missing x values
-
-  const filledDataSeries = fillSeries(dataSeries, xValues, xDomain.scaleType, specsByGroupIds);
+  const filledDataSeries = fillSeries(dataSeries, xValues, xDomain.scaleType);
 
   const formattedDataSeries = getFormattedDataSeries(seriesSpecs, filledDataSeries, xValues, xDomain.scaleType);
 
   // let's compute the yDomain after computing all stacked values
   const yDomain = mergeYDomain(formattedDataSeries, seriesSpecs, customYDomainsByGroupId);
 
-  // we need to get the last values from the formatted dataseries
+  // we need to get the last values from the formattedDataSeries
   // because we change the format if we are on percentage mode
   const lastValues = getLastValues(formattedDataSeries, xDomain);
   const updatedSeriesCollection = new Map<SeriesKey, SeriesCollectionValue>();

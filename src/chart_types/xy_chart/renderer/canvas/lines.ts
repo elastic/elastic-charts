@@ -75,5 +75,5 @@ function renderLine(
   const { color, transform, seriesIdentifier, seriesLineStyle, clippedRanges, hideClippedRanges } = line;
   const geometryStyle = getGeometryStateStyle(seriesIdentifier, highlightedLegendItem, sharedStyle);
   const stroke = buildLineStyles(color, seriesLineStyle, geometryStyle);
-  renderLinePaths(ctx, transform.x, [line.line], stroke, clippedRanges, clippings, hideClippedRanges);
+  renderLinePaths(ctx, transform, [line.line], stroke, clippedRanges, clippings, hideClippedRanges);
 }

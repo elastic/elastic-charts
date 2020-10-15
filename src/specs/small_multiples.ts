@@ -24,19 +24,20 @@ import { getConnect, specComponentFactory } from '../state/spec_factory';
 import { SpecTypes } from './constants';
 
 export interface SmallMultiplesSpec extends Spec {
-  verticalIndex?: string;
-  horizontalIndex?: string;
+  xGroup?: string;
+  yGroup?: string;
 }
+
 const DEFAULT_SMALL_MULTIPLES_PROPS = {
   id: '__global__small_multiples___',
   chartType: ChartTypes.Global,
   specType: SpecTypes.SmallMultiples,
 };
 
-type DefaultIndexOrderProps = 'id' | 'chartType' | 'specType';
+type DefaultSmallMultiplesProps = keyof typeof DEFAULT_SMALL_MULTIPLES_PROPS;
 
-export type SmallMultiplesProps = Partial<Omit<SmallMultiplesSpec, 'chartType' | 'specType' | 'id'>>;
+export type SmallMultiplesProps = Partial<Omit<SmallMultiplesSpec, DefaultSmallMultiplesProps>>;
 
 export const SmallMultiples: React.FunctionComponent<SmallMultiplesProps> = getConnect()(
-  specComponentFactory<SmallMultiplesSpec, DefaultIndexOrderProps>(DEFAULT_SMALL_MULTIPLES_PROPS),
+  specComponentFactory<SmallMultiplesSpec, DefaultSmallMultiplesProps>(DEFAULT_SMALL_MULTIPLES_PROPS),
 );

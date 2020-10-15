@@ -20,6 +20,7 @@
 import React from 'react';
 import { Store } from 'redux';
 
+import { MockAnnotationLineProps } from '../../../../mocks/annotations/annotations';
 import { MockAnnotationSpec, MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs';
 import { MockStore } from '../../../../mocks/store';
 import { ScaleType } from '../../../../scales/constants';
@@ -75,7 +76,7 @@ describe('annotation marker', () => {
     const dimensions = computeAnnotationDimensionsSelector(store.getState());
 
     const expectedDimensions: AnnotationLineProps[] = [
-      {
+      MockAnnotationLineProps.default({
         linePathPoints: {
           start: {
             x1: 0,
@@ -92,9 +93,9 @@ describe('annotation marker', () => {
           icon: <div />,
           color: '#777',
           dimension: { width: 0, height: 0 },
-          position: { left: -0, top: 80 },
+          position: { left: 0, top: 80 },
         },
-      },
+      }),
     ];
     expect(dimensions.get(id)).toEqual(expectedDimensions);
   });
@@ -117,7 +118,7 @@ describe('annotation marker', () => {
     // so this position at 80 pixel right now, is a 20 pixel from top
     // when rotated 180 degrees
     const expectedDimensions: AnnotationLineProps[] = [
-      {
+      MockAnnotationLineProps.default({
         linePathPoints: {
           start: {
             x1: 0,
@@ -133,9 +134,9 @@ describe('annotation marker', () => {
           icon: <div />,
           color: '#777',
           dimension: { width: 0, height: 0 },
-          position: { left: -0, top: 20 },
+          position: { left: 0, top: 20 },
         },
-      },
+      }),
     ];
     expect(dimensions.get(id)).toEqual(expectedDimensions);
   });
@@ -154,7 +155,7 @@ describe('annotation marker', () => {
     const dimensions = computeAnnotationDimensionsSelector(store.getState());
 
     const expectedDimensions: AnnotationLineProps[] = [
-      {
+      MockAnnotationLineProps.default({
         details: { detailsText: 'foo', headerText: '2' },
         linePathPoints: {
           start: {
@@ -172,7 +173,7 @@ describe('annotation marker', () => {
           dimension: { width: 0, height: 0 },
           position: { top: 100, left: 20 },
         },
-      },
+      }),
     ];
     expect(dimensions.get(id)).toEqual(expectedDimensions);
   });

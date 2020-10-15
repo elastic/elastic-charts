@@ -54,6 +54,7 @@ export class MockDataSeries {
     seriesType: SeriesTypes.Bar,
     stackMode: undefined,
     spec: MockSeriesSpec.bar(),
+    isStacked: false,
   };
 
   static default(partial?: Partial<DataSeries>) {

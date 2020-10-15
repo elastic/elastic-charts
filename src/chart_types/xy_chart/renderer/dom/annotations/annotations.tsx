@@ -68,7 +68,6 @@ function renderAnnotationLineMarkers(
     if (!marker) {
       return markers;
     }
-
     const { icon, color, position } = marker;
     const style = {
       color,
