@@ -304,7 +304,7 @@ function renderPoints(
           datum: datum.datum,
         },
         transform: {
-          x: shift,
+          x: panel.left + shift,
           y: panel.top,
         },
         seriesIdentifier,

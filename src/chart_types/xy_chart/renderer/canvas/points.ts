@@ -48,7 +48,7 @@ export function renderPoints(
 
       const circle: Circle = {
         x: x + transform.x,
-        y,
+        y: y + transform.y,
         radius,
       };
 

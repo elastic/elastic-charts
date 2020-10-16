@@ -24,8 +24,8 @@ import { getConnect, specComponentFactory } from '../state/spec_factory';
 import { SpecTypes } from './constants';
 
 export interface SmallMultiplesSpec extends Spec {
-  xGroup?: string;
-  yGroup?: string;
+  splitHorizontally?: string;
+  splitVertically?: string;
 }
 
 const DEFAULT_SMALL_MULTIPLES_PROPS = {

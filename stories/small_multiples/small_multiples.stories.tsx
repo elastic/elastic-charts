@@ -17,10 +17,13 @@
  * under the License.
  */
 
-import React from 'react';
+import { SB_KNOBS_PANEL } from '../utils/storybook';
 
-import { Example } from '../stories/small_multiples/1_grid';
-
-export const Playground = () => {
-  return <Example />;
+export default {
+  title: 'Small Multiples',
+  parameters: {
+    options: { selectedPanel: SB_KNOBS_PANEL },
+  },
 };
+
+export { Example as grid } from './1_grid';

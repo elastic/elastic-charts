@@ -56,11 +56,11 @@ export const getSmallMultiplesIndexOrderSelector = createCachedSelector([getSpec
   let verticalIndex: GroupBySpec | undefined;
   let horizontalIndex: GroupBySpec | undefined;
 
-  if (smallMultiplesConfig.yGroup) {
-    verticalIndex = indexOrders.find((d) => d.id === smallMultiplesConfig.yGroup);
+  if (smallMultiplesConfig.splitVertically) {
+    verticalIndex = indexOrders.find((d) => d.id === smallMultiplesConfig.splitVertically);
   }
-  if (smallMultiplesConfig.xGroup) {
-    horizontalIndex = indexOrders.find((d) => d.id === smallMultiplesConfig.xGroup);
+  if (smallMultiplesConfig.splitHorizontally) {
+    horizontalIndex = indexOrders.find((d) => d.id === smallMultiplesConfig.splitHorizontally);
   }
 
   return {
