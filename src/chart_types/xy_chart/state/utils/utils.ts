@@ -289,6 +289,7 @@ export function computeSeriesGeometries(
     axesSpecs,
     chartTheme,
     enableHistogramMode,
+    chartRotation,
   );
 
   const totalBarsInCluster = Object.values(barIndexByPanel).reduce((acc, curr) => {
@@ -384,6 +385,7 @@ function renderGeometries(
   axesSpecs: AxisSpec[],
   chartTheme: Theme,
   enableHistogramMode: boolean,
+  chartRotation: Rotation,
 ): {
   points: PointGeometry[];
   bars: BarGeometry[];
@@ -480,6 +482,7 @@ function renderGeometries(
         spec.styleAccessor,
         spec.minBarHeight,
         stackMode,
+        chartRotation,
       );
       indexedGeometryMap.merge(renderedBars.indexedGeometryMap);
       bars.push(...renderedBars.barGeometries);

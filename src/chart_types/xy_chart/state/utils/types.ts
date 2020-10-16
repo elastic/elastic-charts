@@ -21,23 +21,15 @@ import { Scale } from '../../../../scales';
 import { Domain } from '../../../../utils/domain';
 import { PointGeometry, BarGeometry, AreaGeometry, LineGeometry, BubbleGeometry } from '../../../../utils/geometry';
 import { GroupId } from '../../../../utils/ids';
-import { BaseDomain, XDomain, YDomain } from '../../domains/types';
+import { XDomain, YDomain } from '../../domains/types';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
-import { SeriesCollectionValue, FormattedDataSeries, DataSeries } from '../../utils/series';
+import { SeriesCollectionValue, DataSeries } from '../../utils/series';
 
 /** @internal */
 export interface Transform {
   x: number;
   y: number;
   rotate: number;
-}
-
-/** @internal */
-export interface BrushExtent {
-  minX: number;
-  minY: number;
-  maxX: number;
-  maxY: number;
 }
 
 /** @internal */

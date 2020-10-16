@@ -290,9 +290,27 @@ export interface Theme {
 export type PartialTheme = RecursivePartial<Theme>;
 
 /** @public */
-export type DisplayValueStyle = TextStyle & {
+export type DisplayValueStyle = Omit<TextStyle, 'fill' | 'fontSize'> & {
   offsetX: number;
   offsetY: number;
+  fontSize:
+    | number
+    | {
+        min: number;
+        max: number;
+      };
+  fill:
+    | Color
+    | { color: Color; borderColor?: Color; borderWidth?: number }
+    | {
+        textInvertible: boolean;
+        textContrast?: number | boolean;
+        textBorder?: number | boolean;
+      };
+  alignment?: {
+    horizontal: Exclude<HorizontalAlignment, 'far' | 'near'>;
+    vertical: Exclude<VerticalAlignment, 'far' | 'near'>;
+  };
 };
 
 export interface PointStyle {

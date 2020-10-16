@@ -167,6 +167,7 @@ export function computeAnnotationDimensions(
     } else if (isRectAnnotation(annotationSpec)) {
       const dimensions = computeRectAnnotationDimensions(
         annotationSpec,
+        chartDimensions,
         yScales,
         xScale,
         smallMultipleScales,

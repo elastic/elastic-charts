@@ -77,6 +77,8 @@ export interface BarGeometry {
   };
   color: Color;
   displayValue?: {
+    fontScale?: number;
+    fontSize: number;
     text: any;
     width: number;
     height: number;
