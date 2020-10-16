@@ -80,6 +80,7 @@ describe.skip('Chart Store', () => {
     defaultExtra: {
       raw: null,
       formatted: 'formatted-last',
+      legendSizingLabel: 'formatted-last',
     },
   };
 
@@ -93,6 +94,7 @@ describe.skip('Chart Store', () => {
     defaultExtra: {
       raw: null,
       formatted: 'formatted-last',
+      legendSizingLabel: 'formatted-last',
     },
   };
   beforeEach(() => {
