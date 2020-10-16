@@ -58,6 +58,8 @@ function getBandedLegendItemLabel(name: string, yAccessor: BandedAccessorType, p
     ? `${name}${postfixes.y1AccessorFormat}`
     : `${name}${postfixes.y0AccessorFormat}`;
 }
+
+/** @internal */
 export function getLegendExtra(
   showLegendExtra: boolean,
   xScaleType: ScaleType,
