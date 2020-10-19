@@ -36,7 +36,6 @@ import { mergeYCustomDomainsByGroupId } from '../state/selectors/merge_y_custom_
 import {
   AxisTick,
   AxisTicksDimensions,
-  computeAxisGridLinePositions,
   computeAxisTicksDimensions,
   computeRotatedLabelDimensions,
   getAvailableTicks,
@@ -1329,10 +1328,10 @@ describe('Axis computational utils', () => {
   });
 
   test('should compute positions for grid lines', () => {
-    const verticalAxisGridLines = computeAxisGridLinePositions(true, 25, chartDim);
+    const verticalAxisGridLines = getVerticalAxisGridLineProps(true, 25, chartDim);
     expect(verticalAxisGridLines).toEqual([0, 25, 100, 25]);
 
-    const horizontalAxisGridLines = computeAxisGridLinePositions(false, 25, chartDim);
+    const horizontalAxisGridLines = getHorizontalAxisGridLineProps(false, 25, chartDim);
     expect(horizontalAxisGridLines).toEqual([25, 0, 25, 100]);
   });
 

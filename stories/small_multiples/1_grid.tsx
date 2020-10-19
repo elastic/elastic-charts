@@ -16,9 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { ScaleType, Position, Chart, Axis, LineSeries, GroupBy, SmallMultiples } from '../../src';
+import { ScaleType, Position, Chart, Axis, LineSeries, GroupBy, SmallMultiples, Settings } from '../../src';
 import { DataGenerator } from '../../src/utils/data_generators/data_generator';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
@@ -28,8 +29,11 @@ export const Example = () => {
   const data1 = dg.generateGroupedSeries(50, 3);
   const data2 = dg.generateGroupedSeries(50, 3);
   const data3 = dg.generateGroupedSeries(50, 3);
+  const splitVertically = boolean('vertical split', true);
+  const splitHorizontally = boolean('horizontal split', true);
   return (
     <Chart className="story-chart">
+      <Settings />
       <Axis id="time" position={Position.Bottom} showGridLines />
       <Axis id="y" position={Position.Left} showGridLines />
 
@@ -47,7 +51,10 @@ export const Example = () => {
         }}
         sort={['alphaAsc']}
       />
-      <SmallMultiples splitVertically="vertical_split" splitHorizontally="horizontal_split" />
+      <SmallMultiples
+        splitVertically={splitVertically ? 'vertical_split' : undefined}
+        splitHorizontally={splitHorizontally ? 'horizontal_split' : undefined}
+      />
       <LineSeries
         id="lines1"
         xScaleType={ScaleType.Linear}

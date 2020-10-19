@@ -34,6 +34,10 @@ const DEFAULT_SMALL_MULTIPLES_PROPS = {
   specType: SpecTypes.SmallMultiples,
 };
 
+/** @internal */
+export const DEFAULT_SINGLE_PANEL_SM_VALUE = '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__';
+export const DEFAULT_SM_PANEL_PADDING = 0.1;
+
 type DefaultSmallMultiplesProps = keyof typeof DEFAULT_SMALL_MULTIPLES_PROPS;
 
 export type SmallMultiplesProps = Partial<Omit<SmallMultiplesSpec, DefaultSmallMultiplesProps>>;

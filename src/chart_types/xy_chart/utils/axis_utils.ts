@@ -18,6 +18,7 @@
  */
 
 import { Scale, ScaleBand } from '../../../scales';
+import { DEFAULT_SM_PANEL_PADDING } from '../../../specs/small_multiples';
 import { BBox, BBoxCalculator } from '../../../utils/bbox/bbox_calculator';
 import {
   Position,
@@ -447,13 +448,13 @@ export function getHorizontalAxisTickLineProps(
 }
 
 /** @internal */
-export function getVerticalAxisGridLineProps(tickPosition: number, chartWidth: number): AxisLinePosition {
-  return [0, tickPosition, chartWidth, tickPosition];
+export function getVerticalAxisGridLineProps(tickPosition: number, panel: Dimensions): AxisLinePosition {
+  return [panel.left, tickPosition + panel.top, panel.left + panel.width, tickPosition + panel.top];
 }
 
 /** @internal */
-export function getHorizontalAxisGridLineProps(tickPosition: number, chartHeight: number): AxisLinePosition {
-  return [tickPosition, 0, tickPosition, chartHeight];
+export function getHorizontalAxisGridLineProps(tickPosition: number, panel: Dimensions): AxisLinePosition {
+  return [panel.left + tickPosition, panel.top, panel.left + tickPosition, panel.top + panel.height];
 }
 
 /** @internal */
@@ -710,8 +711,8 @@ export function getAxisTicksPositions(
   axesStyles: Map<AxisId, AxisStyle | null>,
   xDomain: XDomain,
   yDomain: YDomain[],
-  smVDomain: Domain,
-  smHDomain: Domain,
+  smallMultiplesVerticalDomain: Domain,
+  smallMultiplesHorizontalDomain: Domain,
   totalGroupsCount: number,
   enableHistogramMode: boolean,
   fallBackTickFormatter: TickFormatter,
@@ -803,111 +804,107 @@ export function getAxisTicksPositions(
     }
 
     const isVertical = isVerticalAxis(axisSpec.position);
-    let smAxisDomain = isVertical ? smVDomain : smHDomain;
+    const smVDomain = smallMultiplesVerticalDomain.length === 0 ? ['base'] : smallMultiplesVerticalDomain;
+    const smHDomain = smallMultiplesHorizontalDomain.length === 0 ? ['base'] : smallMultiplesHorizontalDomain;
 
-    if (smAxisDomain.length === 0) {
-      smAxisDomain = ['base'];
-    }
-
-    const smPanelScale = new ScaleBand(
-      smAxisDomain,
-      [0, isVertical ? anchorPoint.dimensions.height : anchorPoint.dimensions.width],
+    const smVerticalScale = new ScaleBand(
+      smVDomain,
+      [0, chartDimensions.height],
       undefined,
-      smAxisDomain.length > 1 ? 0.1 : 0,
+      smVDomain.length > 1 ? DEFAULT_SM_PANEL_PADDING : 0,
     );
 
-    smAxisDomain.forEach((smDomainValue) => {
-      const axisSize = {
-        width: isVertical ? chartDimensions.width : smPanelScale.bandwidth,
-        height: isVertical ? smPanelScale.bandwidth : chartDimensions.height,
-        top: 0,
-        left: 0,
-      };
+    const smHorizontalScale = new ScaleBand(
+      smHDomain,
+      [0, chartDimensions.width],
+      undefined,
+      smHDomain.length > 1 ? DEFAULT_SM_PANEL_PADDING : 0,
+    );
 
-      const minMaxRanges = getMinMaxRange(axisSpec.position, chartRotation, axisSize);
+    smVDomain.forEach((smVValue, vi) => {
+      smHDomain.forEach((smHValue, vh) => {
+        const axisSize = {
+          width: smHorizontalScale.bandwidth,
+          height: smVerticalScale.bandwidth,
+          top: smVerticalScale.scale(smVValue) ?? 0,
+          left: smHorizontalScale.scale(smHValue) ?? 0,
+        };
 
-      const scale = getScaleForAxisSpec(
-        axisSpec,
-        xDomain,
-        yDomain,
-        totalGroupsCount,
-        chartRotation,
-        minMaxRanges.minRange,
-        minMaxRanges.maxRange,
-        barsPadding,
-        enableHistogramMode,
-      );
+        const minMaxRanges = getMinMaxRange(axisSpec.position, chartRotation, axisSize);
 
-      if (!scale) {
-        throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
-      }
-      const tickFormatOptions = {
-        timeZone: xDomain.timeZone,
-      };
-      const { gridLine } = axesStyles.get(id) ?? sharedAxesStyle;
-      // TODO: Find the true cause of the this offset error
-      const rotationOffset =
-        enableHistogramMode &&
-        ((isVertical && [-90].includes(chartRotation)) || (!isVertical && [180].includes(chartRotation)))
-          ? scale.step
-          : 0;
+        const scale = getScaleForAxisSpec(
+          axisSpec,
+          xDomain,
+          yDomain,
+          totalGroupsCount,
+          chartRotation,
+          minMaxRanges.minRange,
+          minMaxRanges.maxRange,
+          barsPadding,
+          enableHistogramMode,
+        );
 
-      const allTicks = getAvailableTicks(
-        axisSpec,
-        scale,
-        totalGroupsCount,
-        enableHistogramMode,
-        isVertical ? fallBackTickFormatter : defaultTickFormatter,
-        rotationOffset,
-        tickFormatOptions,
-      );
-      const visibleTicks = getVisibleTicks(allTicks, axisSpec, axisDim);
+        if (!scale) {
+          throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
+        }
+        const tickFormatOptions = {
+          timeZone: xDomain.timeZone,
+        };
+        const { gridLine } = axesStyles.get(id) ?? sharedAxesStyle;
+        // TODO: Find the true cause of the this offset error
+        const rotationOffset =
+          enableHistogramMode &&
+          ((isVertical && [-90].includes(chartRotation)) || (!isVertical && [180].includes(chartRotation)))
+            ? scale.step
+            : 0;
 
-      const axisSpecConfig = axisSpec.gridLine;
-      const gridLineThemeStyles = isVertical ? gridLine.vertical : gridLine.horizontal;
-      const gridLineStyles = axisSpecConfig ? mergePartial(gridLineThemeStyles, axisSpecConfig) : gridLineThemeStyles;
+        const allTicks = getAvailableTicks(
+          axisSpec,
+          scale,
+          totalGroupsCount,
+          enableHistogramMode,
+          isVertical ? fallBackTickFormatter : defaultTickFormatter,
+          rotationOffset,
+          tickFormatOptions,
+        );
+        const visibleTicks = getVisibleTicks(allTicks, axisSpec, axisDim);
 
-      const gridLines =
-        axisSpec.showGridLines ?? gridLineStyles.visible
-          ? visibleTicks.map(
-              (tick: AxisTick): AxisLinePosition =>
-                computeAxisGridLinePositions(isVertical, tick.position, chartDimensions),
-            )
-          : [];
+        const axisSpecConfig = axisSpec.gridLine;
+        const gridLineThemeStyles = isVertical ? gridLine.vertical : gridLine.horizontal;
+        const gridLineStyles = axisSpecConfig ? mergePartial(gridLineThemeStyles, axisSpecConfig) : gridLineThemeStyles;
 
-      const position = {
-        top: anchorPoint.dimensions.top + (isVertical ? smPanelScale.scale(smDomainValue) ?? 0 : 0),
-        left: anchorPoint.dimensions.left + (!isVertical ? smPanelScale.scale(smDomainValue) ?? 0 : 0),
-        width: isVertical ? anchorPoint.dimensions.width : smPanelScale.bandwidth,
-        height: isVertical ? smPanelScale.bandwidth : anchorPoint.dimensions.height,
-      };
+        const gridLines =
+          axisSpec.showGridLines ?? gridLineStyles.visible
+            ? visibleTicks.map(
+                (tick: AxisTick): AxisLinePosition => {
+                  return isVertical
+                    ? getVerticalAxisGridLineProps(tick.position, axisSize)
+                    : getHorizontalAxisGridLineProps(tick.position, axisSize);
+                },
+              )
+            : [];
 
-      axesGeometries.push({
-        axisId: axisSpec.id,
-        position,
-        dimension: axisDim,
-        ticks: allTicks,
-        visibleTicks,
-        gridLinePositions: gridLines,
-        smHorizontalValue: isVertical ? null : smDomainValue,
-        smVerticalValue: isVertical ? smDomainValue : null,
+        const position = {
+          top: anchorPoint.dimensions.top + (isVertical ? smVerticalScale.scale(smVValue) ?? 0 : 0),
+          left: anchorPoint.dimensions.left + (!isVertical ? smHorizontalScale.scale(smHValue) ?? 0 : 0),
+          width: isVertical ? anchorPoint.dimensions.width : smHorizontalScale.bandwidth,
+          height: isVertical ? smVerticalScale.bandwidth : anchorPoint.dimensions.height,
+        };
+
+        axesGeometries.push({
+          axisId: axisSpec.id,
+          position,
+          dimension: axisDim,
+          ticks: allTicks,
+          visibleTicks,
+          gridLinePositions: gridLines,
+          smHorizontalValue: smHValue,
+          smVerticalValue: smVValue,
+        });
       });
     });
   });
   return axesGeometries;
-}
-
-/** @internal */
-export function computeAxisGridLinePositions(
-  isVerticalAxis: boolean,
-  tickPosition: number,
-  chartDimensions: Dimensions,
-): AxisLinePosition {
-  const positions = isVerticalAxis
-    ? getVerticalAxisGridLineProps(tickPosition, chartDimensions.width)
-    : getHorizontalAxisGridLineProps(tickPosition, chartDimensions.height);
-
-  return positions;
 }
 
 /** @internal */

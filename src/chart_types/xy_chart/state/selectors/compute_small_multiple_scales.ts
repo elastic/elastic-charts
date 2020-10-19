@@ -20,16 +20,13 @@
 import createCachedSelector from 're-reselect';
 
 import { ScaleBand } from '../../../../scales';
+import { DEFAULT_SINGLE_PANEL_SM_VALUE, DEFAULT_SM_PANEL_PADDING } from '../../../../specs/small_multiples';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { Domain } from '../../../../utils/domain';
 import { isHorizontalRotation } from '../utils/common';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
-
-/** @internal */
-export const DEFAULT_SINGLE_PANEL_SM_VALUE = '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__';
-export const DEFAULT_SM_PANEL_PADDING = 0.1;
 
 /** @internal */
 export interface SmallMultipleScales {
