@@ -360,6 +360,8 @@ describe('Legends', () => {
     const xScaleIsLinear = ScaleType.Linear;
 
     expect(getLegendExtra(showExtraLegend, xScaleIsLinear, formatter, 'y1', lastValues)).toMatchObject({
+      raw: 14,
+      formatted: '14.00 dogs',
       legendSizingLabel: '14.00 dogs',
     });
   });
@@ -368,7 +370,9 @@ describe('Legends', () => {
     const lastValues = { y0: null, y1: 14 };
 
     expect(getLegendExtra(true, ScaleType.Ordinal, formatter, 'y1', lastValues)).toMatchObject({
+      raw: 14,
       formatted: null,
+      legendSizingLabel: '14.00 dogs',
     });
   });
   it('should return legendSizingLabel null with showLegendExtra set to false', () => {
@@ -377,6 +381,8 @@ describe('Legends', () => {
     const showLegendExtra = false;
 
     expect(getLegendExtra(showLegendExtra, ScaleType.Ordinal, formatter, 'y1', lastValues)).toMatchObject({
+      raw: null,
+      formatted: null,
       legendSizingLabel: null,
     });
   });
