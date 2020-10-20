@@ -37,16 +37,21 @@ import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { Theme, AxisStyle } from '../../../../utils/themes/theme';
 import { AnnotationDimensions } from '../../annotations/types';
 import { computeAnnotationDimensionsSelector } from '../../state/selectors/compute_annotations';
-import { computeAxesGeometriesSelector } from '../../state/selectors/compute_axis_visible_ticks';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
 import { computeChartTransformSelector } from '../../state/selectors/compute_chart_transform';
+import { computePerPanelGridLinesSelector } from '../../state/selectors/compute_grid_lines';
+import { computePanelsSelectors, PanelGeoms } from '../../state/selectors/compute_panels';
+import {
+  computePerPanelAxesGeomsSelector,
+  PerPanelAxisGeoms,
+} from '../../state/selectors/compute_per_panel_axes_geoms';
 import { computeSeriesGeometriesSelector } from '../../state/selectors/compute_series_geometries';
 import { getAxesStylesSelector } from '../../state/selectors/get_axis_styles';
 import { getHighlightedSeriesSelector } from '../../state/selectors/get_highlighted_series';
 import { getAnnotationSpecsSelector, getAxisSpecsSelector } from '../../state/selectors/get_specs';
 import { isChartEmptySelector } from '../../state/selectors/is_chart_empty';
 import { Geometries, Transform } from '../../state/utils/types';
-import { AxisGeometry } from '../../utils/axis_utils';
+import { LinesGrid } from '../../utils/grid_lines';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
 import { AxisSpec, AnnotationSpec } from '../../utils/specs';
 import { renderXYChartCanvas2d } from './renderers';
@@ -65,10 +70,12 @@ export interface ReactiveChartStateProps {
   chartTransform: Transform;
   highlightedLegendItem?: LegendItem;
   axesSpecs: AxisSpec[];
-  axesGeometries: AxisGeometry[];
+  perPanelAxisGeoms: Array<PerPanelAxisGeoms>;
+  perPanelGridLines: Array<LinesGrid>;
   axesStyles: Map<AxisId, AxisStyle | null>;
   annotationDimensions: Map<AnnotationId, AnnotationDimensions>;
   annotationSpecs: AnnotationSpec[];
+  panelGeoms: PanelGeoms;
 }
 
 interface ReactiveChartDispatchProps {
@@ -205,10 +212,12 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   },
 
   axesSpecs: [],
-  axesGeometries: [],
+  perPanelAxisGeoms: [],
+  perPanelGridLines: [],
   axesStyles: new Map(),
   annotationDimensions: new Map(),
   annotationSpecs: [],
+  panelGeoms: [],
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -231,10 +240,12 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     chartDimensions: computeChartDimensionsSelector(state).chartDimensions,
     chartTransform: computeChartTransformSelector(state),
     axesSpecs: getAxisSpecsSelector(state),
-    axesGeometries: computeAxesGeometriesSelector(state),
+    perPanelAxisGeoms: computePerPanelAxesGeomsSelector(state),
+    perPanelGridLines: computePerPanelGridLinesSelector(state),
     axesStyles: getAxesStylesSelector(state),
     annotationDimensions: computeAnnotationDimensionsSelector(state),
     annotationSpecs: getAnnotationSpecsSelector(state),
+    panelGeoms: computePanelsSelectors(state),
   };
 };
 

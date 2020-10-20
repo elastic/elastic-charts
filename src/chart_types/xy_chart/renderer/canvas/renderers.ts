@@ -27,6 +27,7 @@ import { renderBars } from './bars';
 import { renderBubbles } from './bubbles';
 import { renderGrids } from './grids';
 import { renderLines } from './lines';
+import { renderGridPanels } from './panels/panels';
 import { renderDebugRect } from './utils/debug';
 import { renderBarValues } from './values/bar';
 import { ReactiveChartStateProps } from './xy_chart';
@@ -51,10 +52,12 @@ export function renderXYChartCanvas2d(
       highlightedLegendItem,
       annotationDimensions,
       annotationSpecs,
-      axesGeometries,
+      perPanelAxisGeoms,
+      perPanelGridLines,
       axesSpecs,
       axesStyles,
       debug,
+      panelGeoms,
     } = props;
     const transform = {
       x: chartDimensions.left + chartTransform.x,
@@ -67,11 +70,16 @@ export function renderXYChartCanvas2d(
     renderLayers(ctx, [
       // clear the canvas
       (ctx: CanvasRenderingContext2D) => clearCanvas(ctx, 200000, 200000),
-
+      // render panel grid
+      (ctx: CanvasRenderingContext2D) => {
+        if (debug) {
+          renderGridPanels(ctx, transform, panelGeoms);
+        }
+      },
       (ctx: CanvasRenderingContext2D) => {
         renderAxes(ctx, {
           axesSpecs,
-          axesGeometries,
+          perPanelAxisGeoms,
           chartDimensions,
           debug,
           axesStyles,
@@ -82,7 +90,7 @@ export function renderXYChartCanvas2d(
         renderGrids(ctx, {
           axesSpecs,
           chartDimensions,
-          axesGeometries,
+          perPanelGridLines,
           axesStyles,
           sharedAxesStyle: theme.axes,
         });

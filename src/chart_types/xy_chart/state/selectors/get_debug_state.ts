@@ -20,6 +20,7 @@
 import createCachedSelector from 're-reselect';
 
 import { LegendItem } from '../../../../commons/legend';
+import { Line } from '../../../../geoms/types';
 import { AxisSpec } from '../../../../specs';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import {
@@ -35,9 +36,11 @@ import { AreaGeometry, BandedAccessorType, LineGeometry, BarGeometry } from '../
 import { FillStyle, Visible, StrokeStyle, Opacity } from '../../../../utils/themes/theme';
 import { isVerticalAxis } from '../../utils/axis_type_utils';
 import { AxisGeometry } from '../../utils/axis_utils';
-import { computeAxesGeometriesSelector } from './compute_axis_visible_ticks';
+import { LinesGrid } from '../../utils/grid_lines';
+import { computeAxesGeometriesSelector } from './compute_axes_geometries';
 import { computeLegendSelector } from './compute_legend';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
+import { computeGridLinesSelector } from './get_grid_lines';
 import { getAxisSpecsSelector } from './get_specs';
 
 /**
@@ -45,13 +48,19 @@ import { getAxisSpecsSelector } from './get_specs';
  * @internal
  */
 export const getDebugStateSelector = createCachedSelector(
-  [computeSeriesGeometriesSelector, computeLegendSelector, computeAxesGeometriesSelector, getAxisSpecsSelector],
-  ({ geometries }, legend, axes, axesSpecs): DebugState => {
+  [
+    computeSeriesGeometriesSelector,
+    computeLegendSelector,
+    computeAxesGeometriesSelector,
+    computeGridLinesSelector,
+    getAxisSpecsSelector,
+  ],
+  ({ geometries }, legend, axes, gridLines, axesSpecs): DebugState => {
     const seriesNameMap = getSeriesNameMap(legend);
 
     return {
       legend: getLegendState(legend),
-      axes: getAxes(axes, axesSpecs),
+      axes: getAxes(axes, axesSpecs, gridLines),
       areas: geometries.areas.map(getAreaState(seriesNameMap)),
       lines: geometries.lines.map(getLineState(seriesNameMap)),
       bars: getBarsState(seriesNameMap, geometries.bars),
@@ -59,23 +68,33 @@ export const getDebugStateSelector = createCachedSelector(
   },
 )(getChartIdSelector);
 
-function getAxes(axesGeoms: AxisGeometry[], axesSpecs: AxisSpec[]): DebugStateAxes | undefined {
+function getAxes(axesGeoms: AxisGeometry[], axesSpecs: AxisSpec[], gridLines: LinesGrid[]): DebugStateAxes | undefined {
   if (axesSpecs.length === 0) {
     return;
   }
 
   return axesSpecs.reduce<DebugStateAxes>(
     (acc, { position, title, id }) => {
-      const geom = axesGeoms.find(({ axisId }) => axisId === id);
+      const geom = axesGeoms.find(({ axis }) => axis.id === id);
       if (!geom) {
         return acc;
       }
 
-      const { ticks, gridLinePositions } = geom;
+      const { ticks } = geom;
       const labels = ticks.map(({ label }) => label);
       const values = ticks.map(({ value }) => value);
 
-      const gridlines = gridLinePositions.map(([x, y]) => ({ x, y }));
+      const gridlines = gridLines
+        .reduce<Line[]>((accLines, { lineGroups }) => {
+          const groupLines = lineGroups.find(({ axisId }) => {
+            return axisId === geom.axis.id;
+          });
+          if (!groupLines) {
+            return accLines;
+          }
+          return [...accLines, ...groupLines.lines];
+        }, [])
+        .map(({ x1, y1 }) => ({ x: x1, y: y1 }));
 
       if (isVerticalAxis(position)) {
         acc.y.push({

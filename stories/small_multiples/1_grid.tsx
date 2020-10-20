@@ -19,7 +19,18 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { ScaleType, Position, Chart, Axis, LineSeries, GroupBy, SmallMultiples, Settings } from '../../src';
+import {
+  ScaleType,
+  Position,
+  Chart,
+  Axis,
+  LineSeries,
+  GroupBy,
+  SmallMultiples,
+  Settings,
+  BarSeries,
+  AreaSeries,
+} from '../../src';
 import { DataGenerator } from '../../src/utils/data_generators/data_generator';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
@@ -33,9 +44,9 @@ export const Example = () => {
   const splitHorizontally = boolean('horizontal split', true);
   return (
     <Chart className="story-chart">
-      <Settings />
-      <Axis id="time" position={Position.Bottom} showGridLines />
-      <Axis id="y" position={Position.Left} showGridLines />
+      <Settings rotation={0} />
+      <Axis id="time" title="horizontal" position={Position.Bottom} gridLine={{ visible: true }} hide />
+      <Axis id="y" title="vertical" position={Position.Left} gridLine={{ visible: true }} />
 
       <GroupBy
         id="vertical_split"
@@ -55,7 +66,7 @@ export const Example = () => {
         splitVertically={splitVertically ? 'vertical_split' : undefined}
         splitHorizontally={splitHorizontally ? 'horizontal_split' : undefined}
       />
-      <LineSeries
+      <BarSeries
         id="lines1"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
@@ -63,6 +74,7 @@ export const Example = () => {
         xAccessor="x"
         yAccessors={['y']}
         splitSeriesAccessors={['g']}
+        stackAccessors={['g']}
         data={data1}
       />
       <LineSeries
@@ -75,7 +87,7 @@ export const Example = () => {
         splitSeriesAccessors={['g']}
         data={data2}
       />
-      <LineSeries
+      <AreaSeries
         id="lines3"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}

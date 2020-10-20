@@ -51,9 +51,9 @@ export function computeAxesSizes(
     bottom: 0,
   };
 
-  axisDimensions.forEach(({ maxLabelBboxWidth = 0, maxLabelBboxHeight = 0 }, id) => {
+  axisDimensions.forEach(({ maxLabelBboxWidth = 0, maxLabelBboxHeight = 0, isHidden }, id) => {
     const axisSpec = getSpecsById<AxisSpec>(axisSpecs, id);
-    if (!axisSpec || axisSpec.hide) {
+    if (!axisSpec || isHidden) {
       return;
     }
     const { tickLine, axisTitle, tickLabel } = axesStyles.get(id) ?? sharedAxesStyles;

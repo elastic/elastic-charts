@@ -22,10 +22,11 @@ import createCachedSelector from 're-reselect';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { getAxisTicksPositions, AxisGeometry, defaultTickFormatter } from '../../utils/axis_utils';
+import { getAxesGeometries, AxisGeometry, defaultTickFormatter } from '../../utils/axis_utils';
 import { computeAxisTicksDimensionsSelector } from './compute_axis_ticks_dimensions';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
+import { computeSmallMultipleScalesSelector } from './compute_small_multiple_scales';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
 import { getAxesStylesSelector } from './get_axis_styles';
 import { getBarPaddingsSelector } from './get_bar_paddings';
@@ -46,6 +47,7 @@ export const computeAxesGeometriesSelector = createCachedSelector(
     isHistogramModeEnabledSelector,
     getBarPaddingsSelector,
     getSeriesSpecsSelector,
+    computeSmallMultipleScalesSelector,
   ],
   (
     chartDimensions,
@@ -59,10 +61,13 @@ export const computeAxesGeometriesSelector = createCachedSelector(
     isHistogramMode,
     barsPadding,
     seriesSpecs,
-  ): Array<AxisGeometry> => {
+    { horizontal, vertical },
+  ): AxisGeometry[] => {
     const fallBackTickFormatter = seriesSpecs.find(({ tickFormat }) => tickFormat)?.tickFormat ?? defaultTickFormatter;
-    const { xDomain, yDomain, smVDomain, smHDomain } = seriesDomainsAndData;
-    return getAxisTicksPositions(
+    const { xDomain, yDomain } = seriesDomainsAndData;
+    const panel = { width: horizontal.bandwidth, height: vertical.bandwidth };
+
+    return getAxesGeometries(
       chartDimensions,
       chartTheme,
       settingsSpec.rotation,
@@ -71,8 +76,7 @@ export const computeAxesGeometriesSelector = createCachedSelector(
       axesStyles,
       xDomain,
       yDomain,
-      smVDomain,
-      smHDomain,
+      panel,
       totalBarsInCluster,
       isHistogramMode,
       fallBackTickFormatter,

@@ -36,7 +36,7 @@ const DEFAULT_SMALL_MULTIPLES_PROPS = {
 
 /** @internal */
 export const DEFAULT_SINGLE_PANEL_SM_VALUE = '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__';
-export const DEFAULT_SM_PANEL_PADDING = 0.1;
+export const DEFAULT_SM_PANEL_PADDING: [number, number] = [0, 0.1];
 
 type DefaultSmallMultiplesProps = keyof typeof DEFAULT_SMALL_MULTIPLES_PROPS;
 

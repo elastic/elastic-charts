@@ -129,6 +129,7 @@ describe.skip('Chart Store', () => {
       maxLabelBboxHeight: 1,
       maxLabelTextWidth: 1,
       maxLabelTextHeight: 1,
+      isHidden: false,
     };
     let tickMap: Map<AxisId, AxisTicksDimensions>;
     let specMap: AxisSpec[];

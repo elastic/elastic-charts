@@ -17,22 +17,16 @@
  * under the License.
  */
 
-import { Line, Stroke } from '../../../../geoms/types';
 import { withContext } from '../../../../renderers/canvas';
-import { mergePartial } from '../../../../utils/commons';
 import { Dimensions } from '../../../../utils/dimensions';
-import { AxisId } from '../../../../utils/ids';
 import { AxisStyle } from '../../../../utils/themes/theme';
-import { stringToRGB } from '../../../partition_chart/layout/utils/color_library_wrappers';
-import { getSpecsById } from '../../state/utils/spec';
-import { isVerticalGrid } from '../../utils/axis_type_utils';
-import { AxisGeometry, AxisLinePosition } from '../../utils/axis_utils';
+import { LinesGrid } from '../../utils/grid_lines';
 import { AxisSpec } from '../../utils/specs';
-import { renderMultiLine, MIN_STROKE_WIDTH } from './primitives/line';
+import { renderMultiLine } from './primitives/line';
 
 interface GridProps {
   sharedAxesStyle: AxisStyle;
-  axesGeometries: AxisGeometry[];
+  perPanelGridLines: Array<LinesGrid>;
   axesSpecs: AxisSpec[];
   chartDimensions: Dimensions;
   axesStyles: Map<string, AxisStyle | null>;
@@ -40,34 +34,17 @@ interface GridProps {
 
 /** @internal */
 export function renderGrids(ctx: CanvasRenderingContext2D, props: GridProps) {
-  const { axesGeometries, axesSpecs, chartDimensions, sharedAxesStyle, axesStyles } = props;
+  const { perPanelGridLines, chartDimensions } = props;
   withContext(ctx, (ctx) => {
     ctx.translate(chartDimensions.left, chartDimensions.top);
-    axesGeometries.forEach((axisGeometry) => {
-      const { axisId, gridLinePositions } = axisGeometry;
-      const axisSpec = getSpecsById<AxisSpec>(axesSpecs, axisId);
-      if (axisSpec && gridLinePositions.length > 0) {
-        const axisStyle = axesStyles.get(axisSpec.id) ?? sharedAxesStyle;
-        const themeConfig = isVerticalGrid(axisSpec.position)
-          ? axisStyle.gridLine.vertical
-          : axisStyle.gridLine.horizontal;
 
-        const axisSpecConfig = axisSpec.gridLine;
-        const gridLine = axisSpecConfig ? mergePartial(themeConfig, axisSpecConfig) : themeConfig;
-        if (!gridLine.stroke || !gridLine.strokeWidth || gridLine.strokeWidth < MIN_STROKE_WIDTH) {
-          return;
-        }
-        const strokeColor = stringToRGB(gridLine.stroke);
-        strokeColor.opacity =
-          gridLine.opacity !== undefined ? strokeColor.opacity * gridLine.opacity : strokeColor.opacity;
-        const stroke: Stroke = {
-          color: strokeColor,
-          width: gridLine.strokeWidth,
-          dash: gridLine.dash,
-        };
-        const lines = gridLinePositions.map<Line>(([x1, y1, x2, y2]) => ({ x1, y1, x2, y2 }));
-        renderMultiLine(ctx, lines, stroke);
-      }
+    perPanelGridLines.forEach(({ lineGroups, panelAnchor }) => {
+      withContext(ctx, (ctx) => {
+        ctx.translate(panelAnchor.x, panelAnchor.y);
+        lineGroups.forEach(({ lines, stroke }) => {
+          renderMultiLine(ctx, lines, stroke);
+        });
+      });
     });
   });
 }

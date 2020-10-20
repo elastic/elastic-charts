@@ -29,7 +29,7 @@ export function renderTickLabel(ctx: CanvasRenderingContext2D, tick: AxisTick, s
   const {
     axisSpec: { position, labelFormat },
     dimension: axisTicksDimensions,
-    position: axisPosition,
+    size,
     debug,
     axisStyle,
   } = props;
@@ -41,7 +41,7 @@ export function renderTickLabel(ctx: CanvasRenderingContext2D, tick: AxisTick, s
     axisStyle,
     tick.position,
     position,
-    axisPosition,
+    size,
     axisTicksDimensions,
     showTicks,
     offset,
