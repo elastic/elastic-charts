@@ -49,6 +49,7 @@ import {
   BubbleSeriesStyle,
   DisplayValueStyle,
 } from '../../../utils/themes/theme';
+import { PrimitiveValue } from '../../partition_chart/layout/utils/group_by_rollup';
 import { IndexedGeometryMap, GeometryType } from '../utils/indexed_geometry_map';
 import { DataSeriesDatum, DataSeries, XYChartSeriesIdentifier } from '../utils/series';
 import { DisplayValueSpec, PointStyleAccessor, BarStyleAccessor } from '../utils/specs';
@@ -289,6 +290,8 @@ function renderPoints(
         yAccessor: dataSeries.yAccessor,
         splitAccessors: dataSeries.splitAccessors,
         seriesKeys: dataSeries.seriesKeys,
+        smVerticalAccessorValue: dataSeries.smVerticalAccessorValue,
+        smHorizontalAccessorValue: dataSeries.smHorizontalAccessorValue,
       };
       const styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, styleAccessor);
       const pointGeometry: PointGeometry = {
@@ -493,6 +496,8 @@ export function renderBars(
       yAccessor: dataSeries.yAccessor,
       splitAccessors: dataSeries.splitAccessors,
       seriesKeys: dataSeries.seriesKeys,
+      smHorizontalAccessorValue: dataSeries.smHorizontalAccessorValue,
+      smVerticalAccessorValue: dataSeries.smVerticalAccessorValue,
     };
 
     const seriesStyle = getBarStyleOverrides(datum, seriesIdentifier, sharedSeriesStyle, styleAccessor);
@@ -605,6 +610,8 @@ export function renderLine(
       yAccessor: dataSeries.yAccessor,
       splitAccessors: dataSeries.splitAccessors,
       seriesKeys: dataSeries.seriesKeys,
+      smHorizontalAccessorValue: dataSeries.smHorizontalAccessorValue,
+      smVerticalAccessorValue: dataSeries.smVerticalAccessorValue,
     },
     seriesLineStyle: seriesStyle.line,
     seriesPointStyle: seriesStyle.point,
@@ -657,6 +664,8 @@ export function renderBubble(
       yAccessor: dataSeries.yAccessor,
       splitAccessors: dataSeries.splitAccessors,
       seriesKeys: dataSeries.seriesKeys,
+      smHorizontalAccessorValue: dataSeries.smHorizontalAccessorValue,
+      smVerticalAccessorValue: dataSeries.smVerticalAccessorValue,
     },
     seriesPointStyle: seriesStyle.point,
   };
@@ -775,6 +784,8 @@ export function renderArea(
       yAccessor: dataSeries.yAccessor,
       splitAccessors: dataSeries.splitAccessors,
       seriesKeys: dataSeries.seriesKeys,
+      smHorizontalAccessorValue: dataSeries.smHorizontalAccessorValue,
+      smVerticalAccessorValue: dataSeries.smVerticalAccessorValue,
     },
     seriesAreaStyle: seriesStyle.area,
     seriesAreaLineStyle: seriesStyle.line,
@@ -879,17 +890,18 @@ export function isPointOnGeometry(
 ) {
   const { x, y } = indexedGeometry;
   if (isPointGeometry(indexedGeometry)) {
-    const { radius, transform } = indexedGeometry;
+    const { radius } = indexedGeometry;
     const distance = getDistance(
       {
         x: xCoordinate,
         y: yCoordinate,
       },
       {
-        x: x + transform.x,
+        x,
         y,
       },
     );
+
     const radiusBuffer = typeof buffer === 'number' ? buffer : buffer(radius);
 
     if (radiusBuffer === Infinity) {

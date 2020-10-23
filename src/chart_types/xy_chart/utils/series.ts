@@ -19,7 +19,7 @@
 
 import { SeriesIdentifier, SeriesKey } from '../../../commons/series_id';
 import { ScaleType } from '../../../scales/constants';
-import { GroupBySpec, BinAgg, Direction, XScaleType } from '../../../specs';
+import { GroupBySpec, BinAgg, Direction, XScaleType, DEFAULT_SINGLE_PANEL_SM_VALUE } from '../../../specs';
 import { OrderBy } from '../../../specs/settings';
 import { ColorOverrides } from '../../../state/chart_state';
 import { Accessor, AccessorFn, getAccessorValue } from '../../../utils/accessor';
@@ -183,14 +183,14 @@ export function splitSeriesDataByAccessors(
         // extract small multiples aggregation values
         const smH = smallMultiples?.horizontalIndex?.by
           ? smallMultiples.horizontalIndex?.by(spec, datum).join('___')
-          : undefined;
+          : DEFAULT_SINGLE_PANEL_SM_VALUE;
         if (smH !== undefined) {
           smHValues.add(smH);
         }
 
         const smV = smallMultiples?.verticalIndex?.by
           ? smallMultiples.verticalIndex.by(spec, datum).join('___')
-          : undefined;
+          : DEFAULT_SINGLE_PANEL_SM_VALUE;
         if (smV) {
           smVValues.add(smV);
         }
@@ -213,6 +213,7 @@ export function splitSeriesDataByAccessors(
           smHorizontalAccessorValue: smH,
           stackMode,
         };
+        console.log(seriesIdentifier);
         const seriesKey = getSeriesKey(seriesIdentifier, groupId);
         sum += cleanedDatum.y1 ?? 0;
         const newDatum = { x, ...cleanedDatum, smH, smV };
@@ -257,14 +258,14 @@ export function splitSeriesDataByAccessors(
       // extract small multiples aggregation values
       const smH = smallMultiples?.horizontalIndex?.by
         ? smallMultiples.horizontalIndex?.by(spec, datum).join('___')
-        : undefined;
+        : DEFAULT_SINGLE_PANEL_SM_VALUE;
       if (smH !== undefined) {
         smHValues.add(smH);
       }
 
       const smV = smallMultiples?.verticalIndex?.by
         ? smallMultiples.verticalIndex.by(spec, datum).join('___')
-        : undefined;
+        : DEFAULT_SINGLE_PANEL_SM_VALUE;
       if (smV) {
         smVValues.add(smV);
       }

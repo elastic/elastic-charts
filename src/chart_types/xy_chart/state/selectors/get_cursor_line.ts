@@ -24,11 +24,22 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { Dimensions } from '../../../../utils/dimensions';
 import { getCursorLinePosition } from '../../crosshair/crosshair_utils';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { computeSmallMultipleScalesSelector } from './compute_small_multiple_scales';
 import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
 
 /** @internal */
 export const getCursorLinePositionSelector = createCachedSelector(
-  [computeChartDimensionsSelector, getSettingsSpecSelector, getProjectedPointerPositionSelector],
-  (chartDimensions, settingsSpec, projectedPointerPosition): Dimensions | undefined =>
-    getCursorLinePosition(settingsSpec.rotation, chartDimensions.chartDimensions, projectedPointerPosition),
+  [
+    computeChartDimensionsSelector,
+    getSettingsSpecSelector,
+    getProjectedPointerPositionSelector,
+    computeSmallMultipleScalesSelector,
+  ],
+  (chartDimensions, settingsSpec, projectedPointerPosition, smallMultipleScales): Dimensions | undefined =>
+    getCursorLinePosition(
+      settingsSpec.rotation,
+      chartDimensions.chartDimensions,
+      projectedPointerPosition,
+      smallMultipleScales,
+    ),
 )(getChartIdSelector);

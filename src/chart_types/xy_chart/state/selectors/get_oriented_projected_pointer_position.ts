@@ -23,10 +23,9 @@ import { SettingsSpec } from '../../../../specs/settings';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { Dimensions } from '../../../../utils/dimensions';
-import { Point } from '../../../../utils/point';
 import { getOrientedXPosition, getOrientedYPosition } from '../../utils/interactions';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
-import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
+import { getProjectedPointerPositionSelector, PointerPosition } from './get_projected_pointer_position';
 
 /** @internal */
 export const getOrientedProjectedPointerPositionSelector = createCachedSelector(
@@ -35,17 +34,15 @@ export const getOrientedProjectedPointerPositionSelector = createCachedSelector(
 )(getChartIdSelector);
 
 function getOrientedProjectedPointerPosition(
-  projectedPointerPosition: Point,
+  { x, y, horizontalPanelValue, verticalPanelValue }: PointerPosition,
   chartDimensions: { chartDimensions: Dimensions },
   settingsSpec: SettingsSpec,
-): Point {
-  const xPos = projectedPointerPosition.x;
-  const yPos = projectedPointerPosition.y;
+): PointerPosition {
   // get the oriented projected pointer position
-  const x = getOrientedXPosition(xPos, yPos, settingsSpec.rotation, chartDimensions.chartDimensions);
-  const y = getOrientedYPosition(xPos, yPos, settingsSpec.rotation, chartDimensions.chartDimensions);
   return {
-    x,
-    y,
+    x: getOrientedXPosition(x, y, settingsSpec.rotation, chartDimensions.chartDimensions),
+    y: getOrientedYPosition(x, y, settingsSpec.rotation, chartDimensions.chartDimensions),
+    horizontalPanelValue,
+    verticalPanelValue,
   };
 }

@@ -66,7 +66,7 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
                 <circle
                   key={i}
                   cx={x + geom.transform.x}
-                  cy={y}
+                  cy={y + +geom.transform.y}
                   r={geom.radius + DEFAULT_HIGHLIGHT_PADDING}
                   stroke={color}
                   strokeWidth={4}

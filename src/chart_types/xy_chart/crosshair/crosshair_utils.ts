@@ -22,6 +22,7 @@ import { Scale } from '../../../scales';
 import { Rotation } from '../../../utils/commons';
 import { Dimensions } from '../../../utils/dimensions';
 import { Point } from '../../../utils/point';
+import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
 import { isHorizontalRotation, isVerticalRotation } from '../state/utils/common';
 import { ChartDimensions } from '../utils/dimensions';
 
@@ -63,6 +64,7 @@ export function getCursorLinePosition(
   chartRotation: Rotation,
   chartDimensions: Dimensions,
   projectedPointerPosition: { x: number; y: number },
+  { horizontal, vertical }: SmallMultipleScales,
 ): Dimensions | undefined {
   const { x, y } = projectedPointerPosition;
   if (x < 0 || y < 0) {
@@ -71,7 +73,7 @@ export function getCursorLinePosition(
   const { left, top, width, height } = chartDimensions;
   const isHorizontalRotated = isHorizontalRotation(chartRotation);
   if (isHorizontalRotated) {
-    const crosshairTop = projectedPointerPosition.y + top;
+    const crosshairTop = y  + top;
     return {
       left,
       width,
@@ -79,7 +81,7 @@ export function getCursorLinePosition(
       height: 0,
     };
   }
-  const crosshairLeft = projectedPointerPosition.x + left;
+  const crosshairLeft = x + left;
 
   return {
     top,
@@ -143,7 +145,7 @@ export function getCursorBandPosition(
     }
     return {
       top,
-      left: leftPosition,
+      left: leftPosition + ,
       width: adjustedWidth,
       height,
       visible: true,

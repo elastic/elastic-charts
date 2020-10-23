@@ -31,6 +31,7 @@ import { Point } from '../../../../utils/point';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { getGeometriesIndexKeysSelector } from './get_geometries_index_keys';
 import { getOrientedProjectedPointerPositionSelector } from './get_oriented_projected_pointer_position';
+import { PointerPosition } from './get_projected_pointer_position';
 
 const getPointerEventSelector = createCachedSelector(
   [
@@ -45,7 +46,7 @@ const getPointerEventSelector = createCachedSelector(
 
 function getPointerEvent(
   chartId: string,
-  orientedProjectedPoinerPosition: Point,
+  orientedProjectedPointerPosition: PointerPosition,
   xScale: Scale | undefined,
   geometriesIndexKeys: any[],
 ): PointerEvent {
@@ -56,7 +57,7 @@ function getPointerEvent(
       type: PointerEventType.Out,
     };
   }
-  const { x, y } = orientedProjectedPoinerPosition;
+  const { x, y } = orientedProjectedPointerPosition;
   if (x === -1 || y === -1) {
     return {
       chartId,

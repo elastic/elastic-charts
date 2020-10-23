@@ -45,7 +45,7 @@ export const Example = () => {
   return (
     <Chart className="story-chart">
       <Settings rotation={0} />
-      <Axis id="time" title="horizontal" position={Position.Bottom} gridLine={{ visible: true }} hide />
+      <Axis id="time" title="horizontal" position={Position.Bottom} gridLine={{ visible: true }} />
       <Axis id="y" title="vertical" position={Position.Left} gridLine={{ visible: true }} />
 
       <GroupBy

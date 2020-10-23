@@ -73,6 +73,7 @@ export class ScaleBand implements Scale {
 
     this.outerPadding = this.d3Scale.paddingOuter();
     this.innerPadding = this.d3Scale.paddingInner();
+    console.log({ o: this.outerPadding, i: this.innerPadding });
     this.bandwidth = this.d3Scale.bandwidth() || 0;
     this.originalBandwidth = this.d3Scale.bandwidth() || 0;
     this.step = this.d3Scale.step();
