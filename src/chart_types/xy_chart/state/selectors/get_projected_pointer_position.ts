@@ -44,6 +44,8 @@ export const getProjectedPointerPositionSelector = createCachedSelector(
 /**
  * Get the x and y pointer position relative to the chart projection area
  * @param chartAreaPointerPosition the pointer position relative to the chart area
+ * @param horizontal SmallMultipleScales horizontal panel scale
+ * @param vertical SmallMultipleScales vertical panel scale
  * @param chartAreaDimensions the chart dimensions
  */
 function getProjectedPointerPosition(

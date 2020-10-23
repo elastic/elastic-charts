@@ -73,7 +73,7 @@ export function getCursorLinePosition(
   const { left, top, width, height } = chartDimensions;
   const isHorizontalRotated = isHorizontalRotation(chartRotation);
   if (isHorizontalRotated) {
-    const crosshairTop = y  + top;
+    const crosshairTop = y + top;
     return {
       left,
       width,
@@ -145,7 +145,7 @@ export function getCursorBandPosition(
     }
     return {
       top,
-      left: leftPosition + ,
+      left: leftPosition,
       width: adjustedWidth,
       height,
       visible: true,
@@ -175,19 +175,20 @@ export function getTooltipAnchorPosition(
   chartRotation: Rotation,
   cursorBandPosition: Dimensions,
   cursorPosition: { x: number; y: number },
+  panelDimension: Dimensions,
 ): TooltipAnchorPosition {
   const isRotated = isVerticalRotation(chartRotation);
   const hPosition = getHorizontalTooltipPosition(
     cursorPosition.x,
     cursorBandPosition,
-    chartDimensions,
+    panelDimension,
     offset.left,
     isRotated,
   );
   const vPosition = getVerticalTooltipPosition(
     cursorPosition.y,
     cursorBandPosition,
-    chartDimensions,
+    panelDimension,
     offset.top,
     isRotated,
   );

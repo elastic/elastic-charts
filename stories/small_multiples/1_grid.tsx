@@ -66,7 +66,7 @@ export const Example = () => {
         splitVertically={splitVertically ? 'vertical_split' : undefined}
         splitHorizontally={splitHorizontally ? 'horizontal_split' : undefined}
       />
-      <BarSeries
+      <LineSeries
         id="lines1"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
@@ -87,7 +87,7 @@ export const Example = () => {
         splitSeriesAccessors={['g']}
         data={data2}
       />
-      <AreaSeries
+      <LineSeries
         id="lines3"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}

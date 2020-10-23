@@ -25,6 +25,7 @@ import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_si
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getTooltipAnchorPosition } from '../../crosshair/crosshair_utils';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { computeSmallMultipleScalesSelector } from './compute_small_multiple_scales';
 import { getCursorBandPositionSelector } from './get_cursor_band';
 import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
 
@@ -35,13 +36,33 @@ export const getTooltipAnchorPositionSelector = createCachedSelector(
     getSettingsSpecSelector,
     getCursorBandPositionSelector,
     getProjectedPointerPositionSelector,
-    getLegendSizeSelector,
+    computeSmallMultipleScalesSelector,
   ],
-  (chartDimensions, settings, cursorBandPosition, projectedPointerPosition): TooltipAnchorPosition | null => {
+  (
+    chartDimensions,
+    settings,
+    cursorBandPosition,
+    projectedPointerPosition,
+    { horizontal, vertical },
+  ): TooltipAnchorPosition | null => {
     if (!cursorBandPosition) {
       return null;
     }
 
-    return getTooltipAnchorPosition(chartDimensions, settings.rotation, cursorBandPosition, projectedPointerPosition);
+    const panel = {
+      width: horizontal.bandwidth,
+      height: vertical.bandwidth,
+      top: chartDimensions.chartDimensions.top + (vertical.scale(projectedPointerPosition.verticalPanelValue) || 0),
+      left:
+        chartDimensions.chartDimensions.left + (horizontal.scale(projectedPointerPosition.horizontalPanelValue) || 0),
+    };
+
+    return getTooltipAnchorPosition(
+      chartDimensions,
+      settings.rotation,
+      cursorBandPosition,
+      projectedPointerPosition,
+      panel,
+    );
   },
 )(getChartIdSelector);
