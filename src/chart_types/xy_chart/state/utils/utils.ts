@@ -19,7 +19,6 @@
 
 import { SeriesKey, SeriesIdentifier } from '../../../../commons/series_id';
 import { Scale } from '../../../../scales';
-import { ScaleType } from '../../../../scales/constants';
 import { OrderBy } from '../../../../specs/settings';
 import { mergePartial, Rotation, Color, isUniqueArray } from '../../../../utils/commons';
 import { CurveType } from '../../../../utils/curves';
@@ -139,9 +138,7 @@ function getLastValues(
   xDomain: XDomain,
 ): Map<SeriesKey, LastValues> {
   const lastValues = new Map<SeriesKey, LastValues>();
-  if (xDomain.scaleType === ScaleType.Ordinal) {
-    return lastValues;
-  }
+
   // we need to get the latest
   formattedDataSeries.stacked.forEach(({ dataSeries, stackMode }) => {
     dataSeries.forEach((series) => {
@@ -358,6 +355,7 @@ export function computeSeriesGeometries(
       axesSpecs,
       chartTheme,
       enableHistogramMode,
+      chartRotation,
       stackMode,
     );
     orderIndex = counts[SeriesTypes.Bar] > 0 ? orderIndex + 1 : orderIndex;
@@ -398,6 +396,7 @@ export function computeSeriesGeometries(
       axesSpecs,
       chartTheme,
       enableHistogramMode,
+      chartRotation,
     );
     orderIndex = counts[SeriesTypes.Bar] > 0 ? orderIndex + counts[SeriesTypes.Bar] : orderIndex;
 
@@ -499,6 +498,7 @@ function renderGeometries(
   axesSpecs: AxisSpec[],
   chartTheme: Theme,
   enableHistogramMode: boolean,
+  chartRotation: number,
   stackMode?: StackMode,
 ): {
   points: PointGeometry[];
@@ -563,6 +563,7 @@ function renderGeometries(
         spec.styleAccessor,
         spec.minBarHeight,
         stackMode,
+        chartRotation,
       );
       indexedGeometryMap.merge(renderedBars.indexedGeometryMap);
       bars.push(...renderedBars.barGeometries);
