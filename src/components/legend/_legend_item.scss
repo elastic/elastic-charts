@@ -5,7 +5,7 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-between;
-  user-select: none;
+  user-select: all;
   align-items: center;
   width: 100%;
 
