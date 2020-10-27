@@ -162,6 +162,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
           width,
           height,
         }}
+        tabIndex={0}
       />
     );
   }

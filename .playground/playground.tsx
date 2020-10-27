@@ -38,67 +38,28 @@
 
 import React from 'react';
 
-import {
-  AnnotationDomainTypes,
-  Axis,
-  BarSeries,
-  Chart,
-  LineAnnotation,
-  LineAnnotationDatum,
-  ScaleType,
-  Settings,
-} from '../src';
-import { Icon } from '../src/components/icons/icon';
+import { Axis, BarSeries, Chart, ScaleType, Settings } from '../src';
 import { Position } from '../src/utils/commons';
-import { arrayKnobs } from '../stories/utils/knobs';
-
-function generateAnnotationData(values: any[]): LineAnnotationDatum[] {
-  return values.map((value, index) => ({ dataValue: value, details: `detail-${index}` }));
-}
-const data = arrayKnobs('data values', [2.5, 7.2]);
-const dataValues = generateAnnotationData(data);
+import * as TestDatasets from '../src/utils/data_samples/test_dataset';
 
 export class Playground extends React.Component {
   render() {
     return (
       <div className="chart">
         <Chart className="story-chart">
-          <Settings showLegend showLegendExtra />
-          <LineAnnotation
-            id="annotation_1"
-            domainType={AnnotationDomainTypes.XDomain}
-            dataValues={dataValues}
-            marker={<Icon type="alert" />}
-          />
-          <LineAnnotation id="1" domainType={AnnotationDomainTypes.YDomain} dataValues={dataValues} />
-          <Axis id="horizontal" position={Position.Bottom} title="x-domain axis" />
-          <Axis id="left" title="y-domain axis left" position={Position.Left} />
-          <Axis id="right" title="y-domain axis right" position={Position.Right} />
+          <Settings showLegend showLegendExtra legendPosition={Position.Right} />
+          <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
+          <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
+
           <BarSeries
             id="bars"
-            groupId="group1"
             xScaleType={ScaleType.Linear}
             yScaleType={ScaleType.Linear}
             xAccessor="x"
-            yAccessors={['y']}
-            data={[
-              { x: 0, y: 0 },
-              { x: 1, y: 5 },
-              { x: 3, y: 20 },
-            ]}
-          />
-          <BarSeries
-            id="bars1"
-            groupId="group2"
-            xScaleType={ScaleType.Linear}
-            yScaleType={ScaleType.Linear}
-            xAccessor="x"
-            yAccessors={['y']}
-            data={[
-              { x: 0, y: 100 },
-              { x: 1, y: 50 },
-              { x: 3, y: 200 },
-            ]}
+            yAccessors={['y1', 'y2']}
+            splitSeriesAccessors={['g1', 'g2']}
+            data={TestDatasets.BARCHART_2Y2G}
+            hideInLegend={false}
           />
         </Chart>
       </div>

@@ -44,4 +44,8 @@
     overflow-y: auto;
     overflow-x: hidden;
   }
+
+  &:focus-within {
+    border-color: blue;
+  }
 }

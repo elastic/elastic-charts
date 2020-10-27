@@ -80,25 +80,29 @@ export function renderLegendItem(
   } = item;
 
   return (
-    <LegendListItem
-      key={`${key}-${childId}-${index}`}
-      item={item}
-      totalItems={totalItems}
-      position={props.position}
-      colorPicker={props.colorPicker}
-      action={props.action}
-      extraValues={props.extraValues}
-      showExtra={props.showExtra}
-      toggleDeselectSeriesAction={props.toggleDeselectSeriesAction}
-      mouseOutAction={props.mouseOutAction}
-      mouseOverAction={props.mouseOverAction}
-      clearTemporaryColorsAction={props.clearTemporaryColorsAction}
-      setTemporaryColorAction={props.setTemporaryColorAction}
-      setPersistedColorAction={props.setPersistedColorAction}
-      onMouseOver={props.onMouseOver}
-      onMouseOut={props.onMouseOut}
-      onClick={props.onClick}
-    />
+    <>
+      <button type="button" tabIndex={0} aria-label="color legend label and value">
+        <LegendListItem
+          key={`${key}-${childId}-${index}`}
+          item={item}
+          totalItems={totalItems}
+          position={props.position}
+          colorPicker={props.colorPicker}
+          action={props.action}
+          extraValues={props.extraValues}
+          showExtra={props.showExtra}
+          toggleDeselectSeriesAction={props.toggleDeselectSeriesAction}
+          mouseOutAction={props.mouseOutAction}
+          mouseOverAction={props.mouseOverAction}
+          clearTemporaryColorsAction={props.clearTemporaryColorsAction}
+          setTemporaryColorAction={props.setTemporaryColorAction}
+          setPersistedColorAction={props.setPersistedColorAction}
+          onMouseOver={props.onMouseOver}
+          onMouseOut={props.onMouseOut}
+          onClick={props.onClick}
+        />
+      </button>
+    </>
   );
 }
 
@@ -223,19 +227,24 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
           style={style}
           data-ech-series-name={label}
         >
-          <ItemColor
-            ref={this.colorRef}
-            color={color}
-            isSeriesHidden={isSeriesHidden}
-            hasColorPicker={hasColorPicker}
-            onClick={this.handleColorClick(hasColorPicker)}
-          />
-          <ItemLabel label={label} onClick={this.handleLabelClick(seriesIdentifier)} />
+          <button type="button" aria-label={`legend item color is ${color}`}>
+            <ItemColor
+              aria-label={`legend item color ${color}`}
+              ref={this.colorRef}
+              color={color}
+              isSeriesHidden={isSeriesHidden}
+              hasColorPicker={hasColorPicker}
+              onClick={this.handleColorClick(hasColorPicker)}
+            />
+          </button>
+          <button type="button" aria-label={`legend item label is ${label}`}>
+            <ItemLabel label={label} onClick={this.handleLabelClick(seriesIdentifier)} />
+          </button>
           {showExtra && extra != null && renderExtra(extra, isSeriesHidden)}
           {Action && (
-            <div className="echLegendItem__action">
+            <button type="button" className="echLegendItem__action">
               <Action series={seriesIdentifier} color={color} label={label} />
-            </div>
+            </button>
           )}
         </li>
         {this.renderColorPicker()}

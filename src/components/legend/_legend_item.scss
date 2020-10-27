@@ -9,6 +9,10 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
   align-items: center;
   width: 100%;
 
+  :focus {
+    border-color: blue;
+  }
+
   &:not(&--hidden) {
     .echLegendItem__color--changable {
       cursor: pointer;
