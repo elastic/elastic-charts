@@ -7,7 +7,6 @@
       grid-row-gap: $echLegendRowGap;
       margin-top: $echLegendRowGap;
       margin-bottom: $echLegendRowGap;
-
       @include internetExplorerOnly {
         display: flex;
         flex-direction: row;
@@ -38,6 +37,10 @@
     position: relative;
   }
 
+  &:focus {
+    border: 1px solid cornflowerblue;
+  }
+
   .echLegendListContainer {
     @include euiYScrollWithShadows;
     width: 100%;
@@ -45,7 +48,7 @@
     overflow-x: hidden;
   }
 
-  &:focus-within {
-    border-color: blue;
+  &:focus {
+    border: 1px solid cornflowerblue;
   }
 }

@@ -9,7 +9,7 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
   width: 100%;
 
   :focus {
-    border-color: blue;
+    border: 1px solid cornflowerblue;
   }
 
   &:not(&--hidden) {

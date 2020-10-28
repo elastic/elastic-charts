@@ -33,8 +33,8 @@ export function Label({ label, onClick }: LabelProps) {
     'echLegendItem__label--clickable': Boolean(onClick),
   });
   return (
-    <div className={labelClassNames} title={label} onClick={onClick}>
+    <button type="button" className={labelClassNames} title={label} onClick={onClick} aria-labelledby={`${label}`}>
       {label}
-    </div>
+    </button>
   );
 }

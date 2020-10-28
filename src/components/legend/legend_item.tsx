@@ -227,19 +227,19 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
           style={style}
           data-ech-series-name={label}
         >
-          <button type="button" aria-label={`legend item color is ${color}`}>
-            <ItemColor
-              aria-label={`legend item color ${color}`}
-              ref={this.colorRef}
-              color={color}
-              isSeriesHidden={isSeriesHidden}
-              hasColorPicker={hasColorPicker}
-              onClick={this.handleColorClick(hasColorPicker)}
-            />
-          </button>
-          <button type="button" aria-label={`legend item label is ${label}`}>
-            <ItemLabel label={label} onClick={this.handleLabelClick(seriesIdentifier)} />
-          </button>
+          {/* <button type="button" aria-label={`legend item color is ${color}`}> */}
+          <ItemColor
+            aria-label={`legend item color ${color}`}
+            ref={this.colorRef}
+            color={color}
+            isSeriesHidden={isSeriesHidden}
+            hasColorPicker={hasColorPicker}
+            onClick={this.handleColorClick(hasColorPicker)}
+          />
+          {/* </button> */}
+          {/* <button type="button" aria-label={`legend item label is ${label}`}> */}
+          <ItemLabel label={label} onClick={this.handleLabelClick(seriesIdentifier)} />
+          {/* </button> */}
           {showExtra && extra != null && renderExtra(extra, isSeriesHidden)}
           {Action && (
             <button type="button" className="echLegendItem__action">

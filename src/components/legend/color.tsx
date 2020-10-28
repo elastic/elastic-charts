@@ -37,10 +37,10 @@ export const Color = memo(
   forwardRef<HTMLDivElement, ColorProps>(({ color, isSeriesHidden = false, hasColorPicker, onClick }, ref) => {
     if (isSeriesHidden) {
       return (
-        <div className="echLegendItem__color" aria-label="series hidden" title="series hidden">
+        <button type="button" className="echLegendItem__color" aria-label="series hidden" title="series hidden">
           {/* changing the default viewBox for the eyeClosed icon to keep the same dimensions */}
           <Icon type="eyeClosed" viewBox="-3 -3 22 22" />
-        </div>
+        </button>
       );
     }
 
@@ -49,7 +49,8 @@ export const Color = memo(
     });
 
     return (
-      <div
+      <button
+        type="button"
         onClick={hasColorPicker ? onClick : undefined}
         className={colorClasses}
         aria-label="series color"
@@ -58,7 +59,7 @@ export const Color = memo(
         <div ref={ref}>
           <Icon type="dot" color={color} />
         </div>
-      </div>
+      </button>
     );
   }),
 );
