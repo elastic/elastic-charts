@@ -32,7 +32,7 @@ import {
   DebugStateBar,
   DebugStateLegend,
 } from '../../../../state/types';
-import { AreaGeometry, BandedAccessorType, LineGeometry, BarGeometry } from '../../../../utils/geometry';
+import { AreaGeometry, BandedAccessorType, LineGeometry, BarGeometry, PerPanel } from '../../../../utils/geometry';
 import { FillStyle, Visible, StrokeStyle, Opacity } from '../../../../utils/themes/theme';
 import { isVerticalAxis } from '../../utils/axis_type_utils';
 import { AxisGeometry } from '../../utils/axis_utils';
@@ -126,10 +126,15 @@ function getAxes(axesGeoms: AxisGeometry[], axesSpecs: AxisSpec[], gridLines: Li
   );
 }
 
-function getBarsState(seriesNameMap: Map<string, string>, barGeometries: BarGeometry[]): DebugStateBar[] {
+function getBarsState(
+  seriesNameMap: Map<string, string>,
+  barGeometries: Array<PerPanel<BarGeometry[]>>,
+): DebugStateBar[] {
   const buckets = new Map<string, DebugStateBar>();
-
-  barGeometries.forEach(
+  const bars = barGeometries.reduce<BarGeometry[]>((acc, bars) => {
+    return [...acc, ...bars.value];
+  }, []);
+  bars.forEach(
     ({
       color,
       seriesIdentifier: { key },
@@ -165,13 +170,15 @@ function getBarsState(seriesNameMap: Map<string, string>, barGeometries: BarGeom
 
 function getLineState(seriesNameMap: Map<string, string>) {
   return ({
-    line: path,
-    points,
-    color,
-    seriesIdentifier: { key },
-    seriesLineStyle,
-    seriesPointStyle,
-  }: LineGeometry): DebugStateLine => {
+    value: {
+      line: path,
+      points,
+      color,
+      seriesIdentifier: { key },
+      seriesLineStyle,
+      seriesPointStyle,
+    },
+  }: PerPanel<LineGeometry>): DebugStateLine => {
     const name = seriesNameMap.get(key) ?? '';
 
     return {
@@ -188,15 +195,17 @@ function getLineState(seriesNameMap: Map<string, string>) {
 
 function getAreaState(seriesNameMap: Map<string, string>) {
   return ({
-    area: path,
-    lines,
-    points,
-    color,
-    seriesIdentifier: { key },
-    seriesAreaStyle,
-    seriesPointStyle,
-    seriesAreaLineStyle,
-  }: AreaGeometry): DebugStateArea => {
+    value: {
+      area: path,
+      lines,
+      points,
+      color,
+      seriesIdentifier: { key },
+      seriesAreaStyle,
+      seriesPointStyle,
+      seriesAreaLineStyle,
+    },
+  }: PerPanel<AreaGeometry>): DebugStateArea => {
     const [y1Path, y0Path] = lines;
     const linePoints = points.reduce<{
       y0: DebugStateValue[];

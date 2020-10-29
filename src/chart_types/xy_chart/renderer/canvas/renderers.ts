@@ -114,20 +114,30 @@ export function renderXYChartCanvas2d(
       // rendering bars
       (ctx: CanvasRenderingContext2D) => {
         withContext(ctx, (ctx) => {
-          ctx.translate(transform.x, transform.y);
-          ctx.rotate((chartRotation * Math.PI) / 180);
-          renderBars(ctx, geometries.bars, theme.sharedStyle, clippings, highlightedLegendItem);
+          // ctx.translate(transform.x, transform.y);
+          // ctx.rotate((chartRotation * Math.PI) / 180);
+          renderBars(
+            ctx,
+            geometries.bars,
+            theme.sharedStyle,
+            clippings,
+            chartDimensions,
+            highlightedLegendItem,
+            chartRotation,
+          );
         });
       },
       // rendering areas
       (ctx: CanvasRenderingContext2D) => {
         withContext(ctx, (ctx) => {
-          ctx.translate(transform.x, transform.y);
-          ctx.rotate((chartRotation * Math.PI) / 180);
+          // ctx.translate(transform.x, transform.y);
+          // ctx.rotate((chartRotation * Math.PI) / 180);
           renderAreas(ctx, {
             areas: geometries.areas,
             clippings,
-            highlightedLegendItem: highlightedLegendItem || null,
+            chartDimensions,
+            rotation: chartRotation,
+            highlightedLegendItem,
             sharedStyle: theme.sharedStyle,
           });
         });
@@ -135,27 +145,25 @@ export function renderXYChartCanvas2d(
       // rendering lines
       (ctx: CanvasRenderingContext2D) => {
         withContext(ctx, (ctx) => {
-          ctx.translate(transform.x, transform.y);
-          ctx.rotate((chartRotation * Math.PI) / 180);
           renderLines(ctx, {
             lines: geometries.lines,
             clippings,
-            highlightedLegendItem: highlightedLegendItem || null,
+            chartDimensions,
+            rotation: chartRotation,
+            highlightedLegendItem,
             sharedStyle: theme.sharedStyle,
           });
         });
       },
       // rendering bubbles
       (ctx: CanvasRenderingContext2D) => {
-        withContext(ctx, (ctx) => {
-          ctx.translate(transform.x, transform.y);
-          ctx.rotate((chartRotation * Math.PI) / 180);
-          renderBubbles(ctx, {
-            bubbles: geometries.bubbles,
-            clippings,
-            highlightedLegendItem: highlightedLegendItem || null,
-            sharedStyle: theme.sharedStyle,
-          });
+        renderBubbles(ctx, {
+          bubbles: geometries.bubbles,
+          clippings,
+          highlightedLegendItem,
+          sharedStyle: theme.sharedStyle,
+          rotation: chartRotation,
+          renderingArea: chartDimensions,
         });
       },
       (ctx: CanvasRenderingContext2D) => {
@@ -163,7 +171,7 @@ export function renderXYChartCanvas2d(
           ctx.translate(transform.x, transform.y);
           ctx.rotate((chartRotation * Math.PI) / 180);
           renderBarValues(ctx, {
-            bars: geometries.bars,
+            bars: geometries.bars.flatMap(({ value }) => value),
             chartDimensions,
             chartRotation,
             debug,

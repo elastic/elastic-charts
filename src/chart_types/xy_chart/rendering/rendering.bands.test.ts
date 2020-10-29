@@ -48,7 +48,11 @@ describe('Rendering bands - areas', () => {
     } = computeSeriesGeometriesSelector(store.getState());
 
     test('Can render upper and lower lines and area paths', () => {
-      const [{ lines, area, color, seriesIdentifier, transform }] = areas;
+      const [
+        {
+          value: { lines, area, color, seriesIdentifier, transform },
+        },
+      ] = areas;
       expect(lines.length).toBe(2);
       expect(lines[0]).toBe('M0,0L50,50');
       expect(lines[1]).toBe('M0,80L50,70');
@@ -60,7 +64,11 @@ describe('Rendering bands - areas', () => {
     });
 
     test('Can render two points', () => {
-      const [{ points }] = areas;
+      const [
+        {
+          value: { points },
+        },
+      ] = areas;
       expect(points.length).toBe(4);
       expect(points[0]).toEqual(
         MockPointGeometry.default({
@@ -197,7 +205,11 @@ describe('Rendering bands - areas', () => {
     } = computeSeriesGeometriesSelector(store.getState());
 
     test('Can render upper and lower lines and area paths', () => {
-      const [{ lines, area, color, seriesIdentifier, transform }] = areas;
+      const [
+        {
+          value: { lines, area, color, seriesIdentifier, transform },
+        },
+      ] = areas;
       expect(lines.length).toBe(2);
       expect(lines[0]).toBe('M0,0ZM50,50L75,50');
       expect(lines[1]).toBe('M0,80ZM50,70L75,70');
@@ -209,7 +221,11 @@ describe('Rendering bands - areas', () => {
     });
 
     test('Can render two points', () => {
-      const [{ points }] = areas;
+      const [
+        {
+          value: { points },
+        },
+      ] = areas;
       expect(points.length).toBe(6);
       const getPointGeo = MockPointGeometry.fromBaseline(
         {

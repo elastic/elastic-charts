@@ -24,9 +24,16 @@ import { GroupBySpec } from '../../../../specs';
 import { OrderBy } from '../../../../specs/settings';
 import { mergePartial, Rotation, Color, isUniqueArray } from '../../../../utils/commons';
 import { CurveType } from '../../../../utils/curves';
-import { Dimensions } from '../../../../utils/dimensions';
+import { Dimensions, Size } from '../../../../utils/dimensions';
 import { Domain } from '../../../../utils/domain';
-import { PointGeometry, BarGeometry, AreaGeometry, LineGeometry, BubbleGeometry } from '../../../../utils/geometry';
+import {
+  PointGeometry,
+  BarGeometry,
+  AreaGeometry,
+  LineGeometry,
+  BubbleGeometry,
+  PerPanel,
+} from '../../../../utils/geometry';
 import { GroupId, SpecId } from '../../../../utils/ids';
 import { ColorConfig, Theme } from '../../../../utils/themes/theme';
 import { XDomain } from '../../domains/types';
@@ -64,6 +71,7 @@ import {
   StackMode,
 } from '../../utils/specs';
 import { SmallMultipleScales } from '../selectors/compute_small_multiple_scales';
+import { isHorizontalRotation } from './common';
 import { getSpecsById, getAxesSpecForSpecId } from './spec';
 import { SeriesDomainsAndData, ComputedGeometries, GeometriesCounts, Transform, LastValues } from './types';
 
@@ -274,9 +282,12 @@ export function computeSeriesGeometries(
 
   const { horizontal, vertical } = smallMultiplesScales;
 
-  const yScales = computeYScales({ yDomains: yDomain, range: [vertical.bandwidth, 0] });
+  const yScales = computeYScales({
+    yDomains: yDomain,
+    range: [isHorizontalRotation(chartRotation) ? vertical.bandwidth : horizontal.bandwidth, 0],
+  });
 
-  const { areas, bars, bubbles, lines, points, indexedGeometryMap, geometriesCounts } = renderGeometries(
+  const computedGeoms = renderGeometries(
     formattedDataSeries,
     xDomain,
     yScales,
@@ -299,7 +310,7 @@ export function computeSeriesGeometries(
   const xScale = computeXScale({
     xDomain,
     totalBarsInCluster,
-    range: [0, horizontal.bandwidth],
+    range: [0, isHorizontalRotation(chartRotation) ? horizontal.bandwidth : vertical.bandwidth],
     barsPadding: enableHistogramMode ? chartTheme.scales.histogramPadding : chartTheme.scales.barsPadding,
     enableHistogramMode,
   });
@@ -309,15 +320,7 @@ export function computeSeriesGeometries(
       xScale,
       yScales,
     },
-    geometries: {
-      areas,
-      bars,
-      bubbles,
-      lines,
-      points,
-    },
-    geometriesIndex: indexedGeometryMap,
-    geometriesCounts,
+    ...computedGeoms,
   };
 }
 
@@ -386,23 +389,15 @@ function renderGeometries(
   chartTheme: Theme,
   enableHistogramMode: boolean,
   chartRotation: Rotation,
-): {
-  points: PointGeometry[];
-  bars: BarGeometry[];
-  areas: AreaGeometry[];
-  lines: LineGeometry[];
-  bubbles: BubbleGeometry[];
-  indexedGeometryMap: IndexedGeometryMap;
-  geometriesCounts: GeometriesCounts;
-} {
+): Omit<ComputedGeometries, 'scales'> {
   const len = dataSeries.length;
   let i;
   const points: PointGeometry[] = [];
-  const bars: BarGeometry[] = [];
-  const areas: AreaGeometry[] = [];
-  const lines: LineGeometry[] = [];
-  const bubbles: BubbleGeometry[] = [];
-  const indexedGeometryMap = new IndexedGeometryMap();
+  const bars: Array<PerPanel<BarGeometry[]>> = [];
+  const areas: Array<PerPanel<AreaGeometry>> = [];
+  const lines: Array<PerPanel<LineGeometry>> = [];
+  const bubbles: Array<PerPanel<BubbleGeometry>> = [];
+  const geometriesIndex = new IndexedGeometryMap();
   const isMixedChart = isUniqueArray(seriesSpecs, ({ seriesType }) => seriesType) && seriesSpecs.length > 1;
   const fallBackTickFormatter = seriesSpecs.find(({ tickFormat }) => tickFormat)?.tickFormat ?? defaultTickFormatter;
   const geometriesCounts: GeometriesCounts = {
@@ -435,18 +430,20 @@ function renderGeometries(
     const xScale = computeXScale({
       xDomain,
       totalBarsInCluster: barIndexOrder?.length ?? 0,
-      range: [0, smHScale.bandwidth],
+      range: [0, isHorizontalRotation(chartRotation) ? smHScale.bandwidth : smVScale.bandwidth],
       barsPadding,
       enableHistogramMode,
     });
 
     const { stackMode } = ds;
 
+    const leftPos = smHScale.scale(ds.smHorizontalAccessorValue) || 0;
+    const topPos = smVScale.scale(ds.smVerticalAccessorValue) || 0;
     const panel: Dimensions = {
       width: smHScale.bandwidth,
       height: smVScale.bandwidth,
-      top: smVScale.scale(ds.smVerticalAccessorValue) || 0,
-      left: smHScale.scale(ds.smHorizontalAccessorValue) || 0,
+      top: topPos,
+      left: leftPos,
     };
 
     const color = seriesColorsMap.get(ds.key) || defaultColor;
@@ -484,22 +481,27 @@ function renderGeometries(
         stackMode,
         chartRotation,
       );
-      indexedGeometryMap.merge(renderedBars.indexedGeometryMap);
-      bars.push(...renderedBars.barGeometries);
+      geometriesIndex.merge(renderedBars.indexedGeometryMap);
+      bars.push({
+        panel,
+        value: renderedBars.barGeometries,
+      });
       geometriesCounts.bars += renderedBars.barGeometries.length;
     } else if (isBubbleSeriesSpec(spec)) {
       const bubbleShift = barIndexOrder && barIndexOrder.length > 0 ? barIndexOrder.length : 1;
       const bubbleSeriesStyle = spec.bubbleSeriesStyle
         ? mergePartial(chartTheme.bubbleSeriesStyle, spec.bubbleSeriesStyle, { mergeOptionalPartialValues: true })
         : chartTheme.bubbleSeriesStyle;
+      const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode);
       const renderedBubbles = renderBubble(
-        (xScale.bandwidth * bubbleShift) / 2 + panel.left,
+        (xScale.bandwidth * bubbleShift) / 2,
         ds,
         xScale,
         yScale,
         color,
         panel,
         isBandedSpec(spec.y0Accessors),
+        xScaleOffset,
         bubbleSeriesStyle,
         {
           enabled: spec.markSizeAccessor !== undefined,
@@ -508,8 +510,11 @@ function renderGeometries(
         isMixedChart,
         spec.pointStyleAccessor,
       );
-      indexedGeometryMap.merge(renderedBubbles.indexedGeometryMap);
-      bubbles.push(renderedBubbles.bubbleGeometry);
+      geometriesIndex.merge(renderedBubbles.indexedGeometryMap);
+      bubbles.push({
+        panel,
+        value: renderedBubbles.bubbleGeometry,
+      });
       geometriesCounts.bubblePoints += renderedBubbles.bubbleGeometry.points.length;
       geometriesCounts.bubbles += 1;
     } else if (isLineSeriesSpec(spec)) {
@@ -539,8 +544,12 @@ function renderGeometries(
         spec.pointStyleAccessor,
         hasFitFnConfigured(spec.fit),
       );
-      indexedGeometryMap.merge(renderedLines.indexedGeometryMap);
-      lines.push(renderedLines.lineGeometry);
+
+      geometriesIndex.merge(renderedLines.indexedGeometryMap);
+      lines.push({
+        panel,
+        value: renderedLines.lineGeometry,
+      });
       geometriesCounts.linePoints += renderedLines.lineGeometry.points.length;
       geometriesCounts.lines += 1;
     } else if (isAreaSeriesSpec(spec)) {
@@ -569,29 +578,34 @@ function renderGeometries(
         spec.pointStyleAccessor,
         hasFitFnConfigured(spec.fit),
       );
-      indexedGeometryMap.merge(renderedAreas.indexedGeometryMap);
-      areas.push(renderedAreas.areaGeometry);
+      geometriesIndex.merge(renderedAreas.indexedGeometryMap);
+      areas.push({
+        panel,
+        value: renderedAreas.areaGeometry,
+      });
       geometriesCounts.areasPoints += renderedAreas.areaGeometry.points.length;
       geometriesCounts.areas += 1;
     }
   }
 
   return {
-    points,
-    bars,
-    areas,
-    lines,
-    bubbles,
-    indexedGeometryMap,
+    geometries: {
+      points,
+      bars,
+      areas,
+      lines,
+      bubbles,
+    },
+    geometriesIndex,
     geometriesCounts,
   };
 }
 
 /** @internal */
-export function computeChartTransform(chartDimensions: Dimensions, chartRotation: Rotation): Transform {
+export function computeChartTransform({ width, height }: Size, chartRotation: Rotation): Transform {
   if (chartRotation === 90) {
     return {
-      x: chartDimensions.width,
+      x: width,
       y: 0,
       rotate: 90,
     };
@@ -599,14 +613,14 @@ export function computeChartTransform(chartDimensions: Dimensions, chartRotation
   if (chartRotation === -90) {
     return {
       x: 0,
-      y: chartDimensions.height,
+      y: height,
       rotate: -90,
     };
   }
   if (chartRotation === 180) {
     return {
-      x: chartDimensions.width,
-      y: chartDimensions.height,
+      x: width,
+      y: height,
       rotate: 180,
     };
   }

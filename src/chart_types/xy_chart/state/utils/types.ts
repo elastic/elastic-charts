@@ -19,7 +19,14 @@
 import { SeriesKey } from '../../../../commons/series_id';
 import { Scale } from '../../../../scales';
 import { Domain } from '../../../../utils/domain';
-import { PointGeometry, BarGeometry, AreaGeometry, LineGeometry, BubbleGeometry } from '../../../../utils/geometry';
+import {
+  PointGeometry,
+  BarGeometry,
+  AreaGeometry,
+  LineGeometry,
+  BubbleGeometry,
+  PerPanel,
+} from '../../../../utils/geometry';
 import { GroupId } from '../../../../utils/ids';
 import { XDomain, YDomain } from '../../domains/types';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
@@ -53,10 +60,10 @@ export interface ComputedScales {
 /** @internal */
 export interface Geometries {
   points: PointGeometry[];
-  bars: BarGeometry[];
-  areas: AreaGeometry[];
-  lines: LineGeometry[];
-  bubbles: BubbleGeometry[];
+  bars: Array<PerPanel<BarGeometry[]>>;
+  areas: Array<PerPanel<AreaGeometry>>;
+  lines: Array<PerPanel<LineGeometry>>;
+  bubbles: Array<PerPanel<BubbleGeometry>>;
 }
 
 /** @internal */

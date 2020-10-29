@@ -46,6 +46,12 @@ export class MockPointGeometry {
       x: 0,
       y: 0,
     },
+    panel: {
+      width: 0,
+      height: 0,
+      left: 0,
+      top: 0,
+    },
   };
 
   static default(partial?: RecursivePartial<PointGeometry>) {
@@ -53,7 +59,7 @@ export class MockPointGeometry {
   }
 
   static fromBaseline(baseline: RecursivePartial<PointGeometry>, omitKeys: string[] | string = []) {
-    return function(partial?: RecursivePartial<PointGeometry>) {
+    return (partial?: RecursivePartial<PointGeometry>) => {
       return omit(
         mergePartial<PointGeometry>(MockPointGeometry.base, partial, { mergeOptionalPartialValues: true }, [baseline]),
         omitKeys,
@@ -82,6 +88,12 @@ export class MockBarGeometry {
     transform: {
       x: 0,
       y: 0,
+    },
+    panel: {
+      width: 0,
+      height: 0,
+      left: 0,
+      top: 0,
     },
   };
 

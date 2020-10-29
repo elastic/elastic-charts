@@ -19,10 +19,10 @@
 
 import { Store } from 'redux';
 
-import { Spec } from '../../..';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
+import { Spec } from '../../../specs';
 import { GlobalChartState } from '../../../state/chart_state';
 import { PointGeometry, AreaGeometry } from '../../../utils/geometry';
 import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_domains';
@@ -89,7 +89,7 @@ describe('Rendering points - areas', () => {
         }),
       ]);
       const geometries = computeSeriesGeometriesSelector(store.getState());
-      [areaGeometry] = geometries.geometries.areas;
+      [{ value: areaGeometry }] = geometries.geometries.areas;
       geometriesIndex = geometries.geometriesIndex;
     });
     test('Can render an line and area paths', () => {
@@ -194,7 +194,7 @@ describe('Rendering points - areas', () => {
 
     test('Can render two ordinal areas', () => {
       const { areas } = geometries.geometries;
-      const [firstArea, secondArea] = areas;
+      const [{ value: firstArea }, { value: secondArea }] = areas;
       expect(firstArea.lines[0]).toBe('M0,50L50,75');
       expect(firstArea.area).toBe('M0,50L50,75L50,100L0,100Z');
       expect(firstArea.color).toBe('red');
@@ -211,7 +211,7 @@ describe('Rendering points - areas', () => {
     });
     test('can render first spec points', () => {
       const { areas } = geometries.geometries;
-      const [firstArea] = areas;
+      const [{ value: firstArea }] = areas;
       expect(firstArea.points.length).toEqual(2);
       expect(firstArea.points[0]).toEqual(({
         x: 0,
@@ -266,7 +266,7 @@ describe('Rendering points - areas', () => {
     });
     test('can render second spec points', () => {
       const { areas } = geometries.geometries;
-      const [, secondArea] = areas;
+      const [, { value: secondArea }] = areas;
       expect(secondArea.points.length).toEqual(2);
       expect(secondArea.points[0]).toEqual(({
         x: 0,
@@ -321,7 +321,7 @@ describe('Rendering points - areas', () => {
     });
     test('has the right number of geometry in the indexes', () => {
       const { areas } = geometries.geometries;
-      const [firstArea] = areas;
+      const [{ value: firstArea }] = areas;
       expect(geometries.geometriesIndex.size).toEqual(firstArea.points.length);
     });
   });
@@ -351,7 +351,7 @@ describe('Rendering points - areas', () => {
 
     test('Can render a linear area', () => {
       const { areas } = geometries.geometries;
-      const [firstArea] = areas;
+      const [{ value: firstArea }] = areas;
       expect(firstArea.lines[0]).toBe('M0,0L100,50');
       expect(firstArea.area).toBe('M0,0L100,50L100,100L0,100Z');
       expect(firstArea.color).toBe('red');
@@ -361,7 +361,7 @@ describe('Rendering points - areas', () => {
     });
     test('Can render two points', () => {
       const { areas } = geometries.geometries;
-      const [firstArea] = areas;
+      const [{ value: firstArea }] = areas;
       expect(firstArea.points[0]).toEqual(({
         x: 0,
         y: 0,
@@ -452,7 +452,7 @@ describe('Rendering points - areas', () => {
     });
     test('can render two linear areas', () => {
       const { areas } = geometries.geometries;
-      const [firstArea, secondArea] = areas;
+      const [{ value: firstArea }, { value: secondArea }] = areas;
       expect(firstArea.lines[0]).toBe('M0,50L100,75');
       expect(firstArea.area).toBe('M0,50L100,75L100,100L0,100Z');
       expect(firstArea.color).toBe('red');
@@ -469,7 +469,7 @@ describe('Rendering points - areas', () => {
     });
     test('can render first spec points', () => {
       const { areas } = geometries.geometries;
-      const [firstArea] = areas;
+      const [{ value: firstArea }] = areas;
       expect(firstArea.points.length).toEqual(2);
       expect(firstArea.points[0]).toEqual(({
         x: 0,
@@ -525,7 +525,7 @@ describe('Rendering points - areas', () => {
     });
     test('can render second spec points', () => {
       const { areas } = geometries.geometries;
-      const [, secondArea] = areas;
+      const [, { value: secondArea }] = areas;
       expect(secondArea.points.length).toEqual(2);
       expect(secondArea.points[0]).toEqual(({
         x: 0,
@@ -605,7 +605,7 @@ describe('Rendering points - areas', () => {
 
     test('Can render a time area', () => {
       const { areas } = geometries.geometries;
-      const [firstArea] = areas;
+      const [{ value: firstArea }] = areas;
       expect(firstArea.lines[0]).toBe('M0,0L100,50');
       expect(firstArea.area).toBe('M0,0L100,50L100,100L0,100Z');
       expect(firstArea.color).toBe('red');
@@ -615,7 +615,7 @@ describe('Rendering points - areas', () => {
     });
     test('Can render two points', () => {
       const { areas } = geometries.geometries;
-      const [firstArea] = areas;
+      const [{ value: firstArea }] = areas;
       expect(firstArea.points[0]).toEqual(({
         x: 0,
         y: 0,
@@ -706,7 +706,7 @@ describe('Rendering points - areas', () => {
 
     test('can render first spec points', () => {
       const { areas } = geometries.geometries;
-      const [firstArea] = areas;
+      const [{ value: firstArea }] = areas;
       expect(firstArea.points.length).toEqual(2);
       expect(firstArea.points[0]).toEqual(({
         x: 0,
@@ -762,7 +762,7 @@ describe('Rendering points - areas', () => {
     });
     test('can render second spec points', () => {
       const { areas } = geometries.geometries;
-      const [, secondArea] = areas;
+      const [, { value: secondArea }] = areas;
 
       expect(secondArea.points.length).toEqual(2);
       expect(secondArea.points[0]).toEqual(({
@@ -851,7 +851,7 @@ describe('Rendering points - areas', () => {
 
     test('Can render a splitted area and line', () => {
       const { areas } = geometries.geometries;
-      const [firstArea] = areas;
+      const [{ value: firstArea }] = areas;
       expect(firstArea.lines[0].split('M').length - 1).toBe(3);
       expect(firstArea.area.split('M').length - 1).toBe(3);
       expect(firstArea.color).toBe('red');
@@ -864,7 +864,11 @@ describe('Rendering points - areas', () => {
         geometriesIndex,
         geometries: { areas },
       } = geometries;
-      const [{ points }] = areas;
+      const [
+        {
+          value: { points },
+        },
+      ] = areas;
       // all the points minus the undefined ones on a log scale
       expect(points.length).toBe(7);
       // all the points expect null geometries

@@ -22,26 +22,27 @@ import createCachedSelector from 're-reselect';
 import { SettingsSpec } from '../../../../specs/settings';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { Dimensions } from '../../../../utils/dimensions';
 import { getOrientedXPosition, getOrientedYPosition } from '../../utils/interactions';
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { getPanelSize } from '../../utils/panel';
+import { computeSmallMultipleScalesSelector, SmallMultipleScales } from './compute_small_multiple_scales';
 import { getProjectedPointerPositionSelector, PointerPosition } from './get_projected_pointer_position';
 
 /** @internal */
 export const getOrientedProjectedPointerPositionSelector = createCachedSelector(
-  [getProjectedPointerPositionSelector, computeChartDimensionsSelector, getSettingsSpecSelector],
+  [getProjectedPointerPositionSelector, getSettingsSpecSelector, computeSmallMultipleScalesSelector],
   getOrientedProjectedPointerPosition,
 )(getChartIdSelector);
 
 function getOrientedProjectedPointerPosition(
   { x, y, horizontalPanelValue, verticalPanelValue }: PointerPosition,
-  chartDimensions: { chartDimensions: Dimensions },
   settingsSpec: SettingsSpec,
+  scales: SmallMultipleScales,
 ): PointerPosition {
   // get the oriented projected pointer position
+  const panel = getPanelSize(scales);
   return {
-    x: getOrientedXPosition(x, y, settingsSpec.rotation, chartDimensions.chartDimensions),
-    y: getOrientedYPosition(x, y, settingsSpec.rotation, chartDimensions.chartDimensions),
+    x: getOrientedXPosition(x, y, settingsSpec.rotation, panel),
+    y: getOrientedYPosition(x, y, settingsSpec.rotation, panel),
     horizontalPanelValue,
     verticalPanelValue,
   };

@@ -16,22 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
 
-import createCachedSelector from 're-reselect';
-
-import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { Size } from '../../../../utils/dimensions';
-import { getPanelSize } from '../../utils/panel';
-import { PerPanelMap, perPanelMap } from '../../utils/panel_utils';
-import { computeSmallMultipleScalesSelector } from './compute_small_multiple_scales';
-
-export type PanelGeoms = Array<Size & PerPanelMap>;
-
-/** @internal */
-export const computePanelsSelectors = createCachedSelector(
-  [computeSmallMultipleScalesSelector],
-  (scales): PanelGeoms => {
-    const panelSize = getPanelSize(scales);
-    return perPanelMap(scales, () => panelSize);
-  },
-)(getChartIdSelector);
+export function getPanelSize({ horizontal, vertical }: SmallMultipleScales) {
+  return { width: horizontal.bandwidth, height: vertical.bandwidth };
+}

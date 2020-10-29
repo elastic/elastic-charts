@@ -21,6 +21,7 @@ import { $Values } from 'utility-types';
 
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import { Color } from './commons';
+import { Dimensions } from './dimensions';
 import { BarSeriesStyle, PointStyle, AreaStyle, LineStyle, ArcStyle } from './themes/theme';
 
 /**
@@ -65,7 +66,14 @@ export interface PointGeometry {
   seriesIdentifier: XYChartSeriesIdentifier;
   value: GeometryValue;
   styleOverrides?: Partial<PointStyle>;
+  panel: Dimensions;
 }
+
+export interface PerPanel<T> {
+  panel: Dimensions;
+  value: T;
+}
+
 export interface BarGeometry {
   x: number;
   y: number;
@@ -74,6 +82,7 @@ export interface BarGeometry {
   transform: {
     x: number;
     y: number;
+    rotation?: number;
   };
   color: Color;
   displayValue?: {
@@ -88,6 +97,7 @@ export interface BarGeometry {
   seriesIdentifier: XYChartSeriesIdentifier;
   value: GeometryValue;
   seriesStyle: BarSeriesStyle;
+  panel: Dimensions;
 }
 
 export interface LineGeometry {
@@ -147,10 +157,10 @@ export interface ArcGeometry {
   };
 }
 
-export function isPointGeometry(ig: IndexedGeometry): ig is PointGeometry {
+export function isPointGeometry(ig: IndexedGeometry): ig is PointGeometry & { panel: Dimensions } {
   return ig.hasOwnProperty('radius');
 }
 
-export function isBarGeometry(ig: IndexedGeometry): ig is BarGeometry {
+export function isBarGeometry(ig: IndexedGeometry): ig is BarGeometry & { panel: Dimensions } {
   return ig.hasOwnProperty('width') && ig.hasOwnProperty('height');
 }

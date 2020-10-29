@@ -29,7 +29,7 @@ import { getAxisSpecsSelector } from './get_specs';
 /** @internal */
 export const computeGridLinesSelector = createCachedSelector(
   [getChartThemeSelector, getAxisSpecsSelector, computeAxesGeometriesSelector, computeSmallMultipleScalesSelector],
-  (chartTheme, axesSpecs, axesGeoms, { horizontal, vertical }): LinesGrid[] => {
-    return getGridLines(axesSpecs, axesGeoms, chartTheme.axes, horizontal, vertical);
+  (chartTheme, axesSpecs, axesGeoms, scales): LinesGrid[] => {
+    return getGridLines(axesSpecs, axesGeoms, chartTheme.axes, scales);
   },
 )(getChartIdSelector);

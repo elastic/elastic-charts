@@ -20,52 +20,60 @@
 import { LegendItem } from '../../../../commons/legend';
 import { Rect } from '../../../../geoms/types';
 import { withClip, withContext } from '../../../../renderers/canvas';
-import { AreaGeometry } from '../../../../utils/geometry';
+import { Rotation } from '../../../../utils/commons';
+import { Dimensions } from '../../../../utils/dimensions';
+import { AreaGeometry, PerPanel } from '../../../../utils/geometry';
 import { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
 import { getGeometryStateStyle } from '../../rendering/rendering';
 import { renderPoints } from './points';
 import { renderLinePaths, renderAreaPath } from './primitives/path';
 import { buildAreaStyles } from './styles/area';
 import { buildLineStyles } from './styles/line';
+import { withPanelTransform } from './utils/panel_transform';
 
 interface AreaGeometriesProps {
-  areas: AreaGeometry[];
+  areas: Array<PerPanel<AreaGeometry>>;
   sharedStyle: SharedGeometryStateStyle;
-  highlightedLegendItem: LegendItem | null;
+  rotation: Rotation;
+  chartDimensions: Dimensions;
+  highlightedLegendItem?: LegendItem;
   clippings: Rect;
 }
 
 /** @internal */
 export function renderAreas(ctx: CanvasRenderingContext2D, props: AreaGeometriesProps) {
+  const { sharedStyle, highlightedLegendItem, areas, clippings, rotation, chartDimensions } = props;
+
   withContext(ctx, (ctx) => {
-    const { sharedStyle, highlightedLegendItem, areas, clippings } = props;
+    // withClip(ctx, clippings, (ctx: CanvasRenderingContext2D) => {
+    //   ctx.save();
 
-    withClip(ctx, clippings, (ctx: CanvasRenderingContext2D) => {
-      ctx.save();
-
-      // eslint-disable-next-line no-restricted-syntax
-      for (const glyph of areas) {
-        const { seriesAreaLineStyle, seriesAreaStyle } = glyph;
-        if (seriesAreaStyle.visible) {
-          withContext(ctx, () => {
-            renderArea(ctx, glyph, sharedStyle, highlightedLegendItem, clippings);
-          });
-        }
-        if (seriesAreaLineStyle.visible) {
-          withContext(ctx, () => {
-            renderAreaLines(ctx, glyph, sharedStyle, highlightedLegendItem, clippings);
-          });
-        }
+    // eslint-disable-next-line no-restricted-syntax
+    areas.forEach(({ panel, value: area }) => {
+      const { seriesAreaLineStyle, seriesAreaStyle } = area;
+      if (seriesAreaStyle.visible) {
+        withPanelTransform(ctx, panel, rotation, chartDimensions, (ctx) => {
+          renderArea(ctx, area, sharedStyle, clippings, highlightedLegendItem);
+        });
       }
-      ctx.rect(clippings.x, clippings.y, clippings.width, clippings.height);
-      ctx.clip();
-      ctx.restore();
+      if (seriesAreaLineStyle.visible) {
+        withPanelTransform(ctx, panel, rotation, chartDimensions, (ctx) => {
+          renderAreaLines(ctx, area, sharedStyle, clippings, highlightedLegendItem);
+        });
+      }
     });
+    //   ctx.rect(clippings.x, clippings.y, clippings.width, clippings.height);
+    //   ctx.clip();
+    //   ctx.restore();
+    // });
 
-    areas.forEach((area) => {
+    areas.forEach(({ panel, value: area }) => {
       const { seriesPointStyle, seriesIdentifier } = area;
       if (seriesPointStyle.visible) {
-        const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, highlightedLegendItem, sharedStyle);
+        return;
+      }
+      const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
+      withPanelTransform(ctx, panel, rotation, chartDimensions, (ctx) => {
         withClip(
           ctx,
           clippings,
@@ -75,7 +83,7 @@ export function renderAreas(ctx: CanvasRenderingContext2D, props: AreaGeometries
           // TODO: add padding over clipping
           area.points[0]?.value.mark !== null,
         );
-      }
+      });
     });
   });
 }
@@ -84,11 +92,11 @@ function renderArea(
   ctx: CanvasRenderingContext2D,
   glyph: AreaGeometry,
   sharedStyle: SharedGeometryStateStyle,
-  highlightedLegendItem: LegendItem | null,
   clippings: Rect,
+  highlightedLegendItem?: LegendItem,
 ) {
   const { area, color, transform, seriesIdentifier, seriesAreaStyle, clippedRanges, hideClippedRanges } = glyph;
-  const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, highlightedLegendItem, sharedStyle);
+  const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
   const fill = buildAreaStyles(color, seriesAreaStyle, geometryStateStyle);
   renderAreaPath(ctx, transform, area, fill, clippedRanges, clippings, hideClippedRanges);
 }
@@ -97,11 +105,11 @@ function renderAreaLines(
   ctx: CanvasRenderingContext2D,
   glyph: AreaGeometry,
   sharedStyle: SharedGeometryStateStyle,
-  highlightedLegendItem: LegendItem | null,
   clippings: Rect,
+  highlightedLegendItem?: LegendItem,
 ) {
   const { lines, color, seriesIdentifier, transform, seriesAreaLineStyle, clippedRanges, hideClippedRanges } = glyph;
-  const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, highlightedLegendItem, sharedStyle);
+  const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
   const stroke = buildLineStyles(color, seriesAreaLineStyle, geometryStateStyle);
   renderLinePaths(ctx, transform, lines, stroke, clippedRanges, clippings, hideClippedRanges);
 }

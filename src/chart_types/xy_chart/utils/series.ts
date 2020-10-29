@@ -213,7 +213,6 @@ export function splitSeriesDataByAccessors(
           smHorizontalAccessorValue: smH,
           stackMode,
         };
-        console.log(seriesIdentifier);
         const seriesKey = getSeriesKey(seriesIdentifier, groupId);
         sum += cleanedDatum.y1 ?? 0;
         const newDatum = { x, ...cleanedDatum, smH, smV };

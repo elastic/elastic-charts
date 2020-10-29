@@ -21,7 +21,6 @@ import createCachedSelector from 're-reselect';
 
 import { TooltipAnchorPosition } from '../../../../components/tooltip/types';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_size';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getTooltipAnchorPosition } from '../../crosshair/crosshair_utils';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
@@ -49,12 +48,14 @@ export const getTooltipAnchorPositionSelector = createCachedSelector(
       return null;
     }
 
+    const topPos = vertical.scale(projectedPointerPosition.verticalPanelValue) || 0;
+    const leftPos = horizontal.scale(projectedPointerPosition.horizontalPanelValue) || 0;
+
     const panel = {
       width: horizontal.bandwidth,
       height: vertical.bandwidth,
-      top: chartDimensions.chartDimensions.top + (vertical.scale(projectedPointerPosition.verticalPanelValue) || 0),
-      left:
-        chartDimensions.chartDimensions.left + (horizontal.scale(projectedPointerPosition.horizontalPanelValue) || 0),
+      top: chartDimensions.chartDimensions.top + topPos,
+      left: chartDimensions.chartDimensions.left + leftPos,
     };
 
     return getTooltipAnchorPosition(

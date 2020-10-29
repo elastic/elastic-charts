@@ -48,7 +48,7 @@ import { getAxisSpecsSelector } from './get_specs';
 /** @internal */
 export const computePerPanelGridLinesSelector = createCachedSelector(
   [getAxisSpecsSelector, getChartThemeSelector, computeAxesGeometriesSelector, computeSmallMultipleScalesSelector],
-  (axesSpecs, chartTheme, axesGeoms, { horizontal, vertical }): Array<LinesGrid> => {
-    return getGridLines(axesSpecs, axesGeoms, chartTheme.axes, horizontal, vertical);
+  (axesSpecs, chartTheme, axesGeoms, scales): Array<LinesGrid> => {
+    return getGridLines(axesSpecs, axesGeoms, chartTheme.axes, scales);
   },
 )(getChartIdSelector);

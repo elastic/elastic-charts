@@ -23,6 +23,7 @@ import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getAxesGeometries, AxisGeometry, defaultTickFormatter } from '../../utils/axis_utils';
+import { getPanelSize } from '../../utils/panel';
 import { computeAxisTicksDimensionsSelector } from './compute_axis_ticks_dimensions';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
@@ -61,11 +62,11 @@ export const computeAxesGeometriesSelector = createCachedSelector(
     isHistogramMode,
     barsPadding,
     seriesSpecs,
-    { horizontal, vertical },
+    scales,
   ): AxisGeometry[] => {
     const fallBackTickFormatter = seriesSpecs.find(({ tickFormat }) => tickFormat)?.tickFormat ?? defaultTickFormatter;
     const { xDomain, yDomain } = seriesDomainsAndData;
-    const panel = { width: horizontal.bandwidth, height: vertical.bandwidth };
+    const panel = getPanelSize(scales);
 
     return getAxesGeometries(
       chartDimensions,

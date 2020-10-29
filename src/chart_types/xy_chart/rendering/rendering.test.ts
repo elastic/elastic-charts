@@ -167,36 +167,36 @@ describe('Rendering utils', () => {
     };
 
     it('no highlighted elements', () => {
-      const defaultStyle = getGeometryStateStyle(seriesIdentifier, null, sharedThemeStyle);
+      const defaultStyle = getGeometryStateStyle(seriesIdentifier, sharedThemeStyle);
       expect(defaultStyle).toBe(sharedThemeStyle.default);
     });
 
     it('should equal highlighted opacity', () => {
-      const highlightedStyle = getGeometryStateStyle(seriesIdentifier, highlightedLegendItem, sharedThemeStyle);
+      const highlightedStyle = getGeometryStateStyle(seriesIdentifier, sharedThemeStyle, highlightedLegendItem);
       expect(highlightedStyle).toBe(sharedThemeStyle.highlighted);
     });
 
     it('should equal unhighlighted when not highlighted item', () => {
-      const unhighlightedStyle = getGeometryStateStyle(seriesIdentifier, unhighlightedLegendItem, sharedThemeStyle);
+      const unhighlightedStyle = getGeometryStateStyle(seriesIdentifier, sharedThemeStyle, unhighlightedLegendItem);
       expect(unhighlightedStyle).toBe(sharedThemeStyle.unhighlighted);
     });
 
     it('should equal custom spec highlighted opacity', () => {
-      const customHighlightedStyle = getGeometryStateStyle(seriesIdentifier, highlightedLegendItem, sharedThemeStyle);
+      const customHighlightedStyle = getGeometryStateStyle(seriesIdentifier, sharedThemeStyle, highlightedLegendItem);
       expect(customHighlightedStyle).toBe(sharedThemeStyle.highlighted);
     });
 
     it('unhighlighted elements remain unchanged with custom opacity', () => {
       const customUnhighlightedStyle = getGeometryStateStyle(
         seriesIdentifier,
-        unhighlightedLegendItem,
         sharedThemeStyle,
+        unhighlightedLegendItem,
       );
       expect(customUnhighlightedStyle).toBe(sharedThemeStyle.unhighlighted);
     });
 
     it('has individual highlight', () => {
-      const hasIndividualHighlight = getGeometryStateStyle(seriesIdentifier, null, sharedThemeStyle, {
+      const hasIndividualHighlight = getGeometryStateStyle(seriesIdentifier, sharedThemeStyle, undefined, {
         hasHighlight: true,
         hasGeometryHover: true,
       });
@@ -204,7 +204,7 @@ describe('Rendering utils', () => {
     });
 
     it('no highlight', () => {
-      const noHighlight = getGeometryStateStyle(seriesIdentifier, null, sharedThemeStyle, {
+      const noHighlight = getGeometryStateStyle(seriesIdentifier, sharedThemeStyle, undefined, {
         hasHighlight: false,
         hasGeometryHover: true,
       });
@@ -212,7 +212,7 @@ describe('Rendering utils', () => {
     });
 
     it('no geometry hover', () => {
-      const noHover = getGeometryStateStyle(seriesIdentifier, null, sharedThemeStyle, {
+      const noHover = getGeometryStateStyle(seriesIdentifier, sharedThemeStyle, undefined, {
         hasHighlight: true,
         hasGeometryHover: false,
       });
@@ -395,7 +395,7 @@ describe('Rendering utils', () => {
     });
 
     it('should return array pairs of non-null x regions with null end values', () => {
-      const actual = getClippedRanges(dataSeries.data, xScale, 0, { top: 0, left: 0, width: 100, height: 100 });
+      const actual = getClippedRanges(dataSeries.data, xScale, 0);
 
       expect(actual).toEqual([
         [0, 1],
@@ -412,7 +412,7 @@ describe('Rendering utils', () => {
         scale: jest.fn().mockImplementation((x) => x),
         range: [data[0].x as number, data[10].x as number],
       });
-      const actual = getClippedRanges(data, xScale, 0, { top: 0, left: 0, width: 100, height: 100 });
+      const actual = getClippedRanges(data, xScale, 0);
 
       expect(actual).toEqual([
         [2, 4],
@@ -428,7 +428,7 @@ describe('Rendering utils', () => {
         bandwidth,
         range: [dataSeries.data[0].x as number, (dataSeries.data[12].x as number) + bandwidth * (2 / 3)],
       });
-      const actual = getClippedRanges(dataSeries.data, xScale, 0, { top: 0, left: 0, width: 100, height: 100 });
+      const actual = getClippedRanges(dataSeries.data, xScale, 0);
 
       expect(actual).toEqual([
         [0, 2],
@@ -439,7 +439,7 @@ describe('Rendering utils', () => {
     });
 
     it('should account for xScaleOffset', () => {
-      const actual = getClippedRanges(dataSeries.data, xScale, 2, { top: 0, left: 0, width: 100, height: 100 });
+      const actual = getClippedRanges(dataSeries.data, xScale, 2);
 
       expect(actual).toEqual([
         [0, -1],
@@ -450,7 +450,7 @@ describe('Rendering utils', () => {
     });
 
     it('should call scale to get x value for each datum', () => {
-      getClippedRanges(dataSeries.data, xScale, 0, { top: 0, left: 0, width: 100, height: 100 });
+      getClippedRanges(dataSeries.data, xScale, 0);
 
       expect(xScale.scale).toHaveBeenNthCalledWith(1, dataSeries.data[0].x);
       expect(xScale.scale).toHaveBeenCalledTimes(dataSeries.data.length);

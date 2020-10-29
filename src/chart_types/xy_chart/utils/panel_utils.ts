@@ -16,8 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ScaleBand } from '../../../scales/scale_band';
 import { Point } from '../../../utils/point';
+import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
 
 export interface PerPanelMap {
   panelAnchor: Point;
@@ -25,19 +25,19 @@ export interface PerPanelMap {
   verticalValue: any;
 }
 export function perPanelMap<T>(
-  horizontalPanelScale: ScaleBand,
-  verticalPanelScale: ScaleBand,
-  fn: (panelAnchor: Point, horizontalValue: any, verticalValue: any) => T | null,
+  scales: SmallMultipleScales,
+  fn: (panelAnchor: Point, horizontalValue: any, verticalValue: any, scales: SmallMultipleScales) => T | null,
 ): Array<T & PerPanelMap> {
-  return verticalPanelScale.domain.reduce<Array<T & PerPanelMap>>((acc, verticalValue) => {
+  const { horizontal, vertical } = scales;
+  return vertical.domain.reduce<Array<T & PerPanelMap>>((acc, verticalValue) => {
     return [
       ...acc,
-      ...horizontalPanelScale.domain.reduce<Array<T & PerPanelMap>>((hAcc, horizontalValue) => {
+      ...horizontal.domain.reduce<Array<T & PerPanelMap>>((hAcc, horizontalValue) => {
         const panelAnchor: Point = {
-          x: horizontalPanelScale.scale(horizontalValue) ?? 0,
-          y: verticalPanelScale.scale(verticalValue) ?? 0,
+          x: horizontal.scale(horizontalValue) ?? 0,
+          y: vertical.scale(verticalValue) ?? 0,
         };
-        const fnObj = fn(panelAnchor, horizontalValue, verticalValue);
+        const fnObj = fn(panelAnchor, horizontalValue, verticalValue, scales);
         if (!fnObj) {
           return hAcc;
         }

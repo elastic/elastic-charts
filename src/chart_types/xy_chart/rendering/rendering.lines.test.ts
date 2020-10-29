@@ -52,7 +52,7 @@ describe('Rendering points - line', () => {
     } = computeSeriesGeometriesSelector(store.getState());
 
     test('Can render a line', () => {
-      const [lineGeometry] = lines;
+      const [{ value: lineGeometry }] = lines;
       expect(lineGeometry.line).toBe('M0,0L50,50');
       expect(lineGeometry.color).toBe('red');
       expect(lineGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
@@ -60,7 +60,11 @@ describe('Rendering points - line', () => {
       expect(lineGeometry.transform).toEqual({ x: 25, y: 0 });
     });
     test('Can render two points', () => {
-      const [{ points }] = lines;
+      const [
+        {
+          value: { points },
+        },
+      ] = lines;
 
       expect(points[0]).toEqual(
         MockPointGeometry.default({
@@ -156,7 +160,7 @@ describe('Rendering points - line', () => {
     } = computeSeriesGeometriesSelector(store.getState());
 
     test('Can render two ordinal lines', () => {
-      const [firstLine, secondLine] = lines;
+      const [{ value: firstLine }, { value: secondLine }] = lines;
       expect(firstLine.color).toBe('red');
       expect(firstLine.seriesIdentifier.seriesKeys).toEqual([1]);
       expect(firstLine.seriesIdentifier.specId).toEqual(spec1Id);
@@ -169,7 +173,11 @@ describe('Rendering points - line', () => {
       expect(secondLine.transform).toEqual({ x: 25, y: 0 });
     });
     test('can render first spec points', () => {
-      const [{ points }] = lines;
+      const [
+        {
+          value: { points },
+        },
+      ] = lines;
       expect(points.length).toEqual(2);
       expect(points[0]).toEqual(
         MockPointGeometry.default({
@@ -226,7 +234,12 @@ describe('Rendering points - line', () => {
       expect(geometriesIndex.size).toEqual(points.length);
     });
     test('can render second spec points', () => {
-      const [, { points }] = lines;
+      const [
+        ,
+        {
+          value: { points },
+        },
+      ] = lines;
       expect(points.length).toEqual(2);
       expect(points[0]).toEqual(
         MockPointGeometry.default({
@@ -306,7 +319,7 @@ describe('Rendering points - line', () => {
     } = computeSeriesGeometriesSelector(store.getState());
 
     test('Can render a linear line', () => {
-      const [renderedLine] = lines;
+      const [{ value: renderedLine }] = lines;
       expect(renderedLine.line).toBe('M0,0L100,50');
       expect(renderedLine.color).toBe('red');
       expect(renderedLine.seriesIdentifier.seriesKeys).toEqual([1]);
@@ -314,7 +327,11 @@ describe('Rendering points - line', () => {
       expect(renderedLine.transform).toEqual({ x: 0, y: 0 });
     });
     test('Can render two points', () => {
-      const [{ points }] = lines;
+      const [
+        {
+          value: { points },
+        },
+      ] = lines;
       expect(points[0]).toEqual(
         MockPointGeometry.default({
           x: 0,
@@ -398,7 +415,7 @@ describe('Rendering points - line', () => {
     } = computeSeriesGeometriesSelector(store.getState());
 
     test('can render two linear lines', () => {
-      const [firstLine, secondLine] = lines;
+      const [{ value: firstLine }, { value: secondLine }] = lines;
       expect(firstLine.line).toBe('M0,50L100,75');
       expect(firstLine.color).toBe('red');
       expect(firstLine.seriesIdentifier.seriesKeys).toEqual([1]);
@@ -412,7 +429,11 @@ describe('Rendering points - line', () => {
       expect(secondLine.transform).toEqual({ x: 0, y: 0 });
     });
     test('can render first spec points', () => {
-      const [{ points }] = lines;
+      const [
+        {
+          value: { points },
+        },
+      ] = lines;
       expect(points.length).toEqual(2);
       expect(points[0]).toEqual(
         MockPointGeometry.default({
@@ -461,7 +482,12 @@ describe('Rendering points - line', () => {
       expect(geometriesIndex.size).toEqual(points.length);
     });
     test('can render second spec points', () => {
-      const [, { points }] = lines;
+      const [
+        ,
+        {
+          value: { points },
+        },
+      ] = lines;
       expect(points.length).toEqual(2);
       expect(points[0]).toEqual(
         MockPointGeometry.default({
@@ -533,7 +559,7 @@ describe('Rendering points - line', () => {
     } = computeSeriesGeometriesSelector(store.getState());
 
     test('Can render a time line', () => {
-      const [renderedLine] = lines;
+      const [{ value: renderedLine }] = lines;
       expect(renderedLine.line).toBe('M0,0L100,50');
       expect(renderedLine.color).toBe('red');
       expect(renderedLine.seriesIdentifier.seriesKeys).toEqual([1]);
@@ -541,7 +567,11 @@ describe('Rendering points - line', () => {
       expect(renderedLine.transform).toEqual({ x: 0, y: 0 });
     });
     test('Can render two points', () => {
-      const [{ points }] = lines;
+      const [
+        {
+          value: { points },
+        },
+      ] = lines;
       expect(points[0]).toEqual(
         MockPointGeometry.default({
           x: 0,
@@ -627,7 +657,9 @@ describe('Rendering points - line', () => {
     } = computeSeriesGeometriesSelector(store.getState());
 
     test('can render first spec points', () => {
-      const { points } = firstLine;
+      const {
+        value: { points },
+      } = firstLine;
       expect(points.length).toEqual(2);
       expect(points[0]).toEqual(
         MockPointGeometry.default({
@@ -676,7 +708,9 @@ describe('Rendering points - line', () => {
       expect(geometriesIndex.size).toEqual(points.length);
     });
     test('can render second spec points', () => {
-      const { points } = secondLine;
+      const {
+        value: { points },
+      } = secondLine;
       expect(points.length).toEqual(2);
       expect(points[0]).toEqual(
         MockPointGeometry.default({
@@ -754,7 +788,7 @@ describe('Rendering points - line', () => {
     } = computeSeriesGeometriesSelector(store.getState());
 
     test('Can render a splitted line', () => {
-      const [renderedLine] = lines;
+      const [{ value: renderedLine }] = lines;
       expect(renderedLine.line.split('M').length - 1).toBe(3);
       expect(renderedLine.color).toBe('red');
       expect(renderedLine.seriesIdentifier.seriesKeys).toEqual([1]);
@@ -762,7 +796,11 @@ describe('Rendering points - line', () => {
       expect(renderedLine.transform).toEqual({ x: 0, y: 0 });
     });
     test('Can render points', () => {
-      const [{ points }] = lines;
+      const [
+        {
+          value: { points },
+        },
+      ] = lines;
       // all the points minus the undefined ones on a log scale
       expect(points.length).toBe(7);
       // all the points expect null geometries
@@ -806,7 +844,11 @@ describe('Rendering points - line', () => {
       geometriesIndex,
     } = computeSeriesGeometriesSelector(store.getState());
     test('Can render two points', () => {
-      const [{ points }] = lines;
+      const [
+        {
+          value: { points },
+        },
+      ] = lines;
       // will not render the 3rd point that is out of y domain
       expect(points.length).toBe(2);
       // will keep the 3rd point as an indexedGeometry

@@ -20,34 +20,60 @@
 import { LegendItem } from '../../../../commons/legend';
 import { Rect } from '../../../../geoms/types';
 import { withContext, withClip } from '../../../../renderers/canvas';
-import { BarGeometry } from '../../../../utils/geometry';
+import { Rotation } from '../../../../utils/commons';
+import { Dimensions } from '../../../../utils/dimensions';
+import { BarGeometry, PerPanel } from '../../../../utils/geometry';
 import { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
 import { getGeometryStateStyle } from '../../rendering/rendering';
 import { renderRect } from './primitives/rect';
 import { buildBarStyles } from './styles/bar';
+import { withPanelTransform } from './utils/panel_transform';
 
 /** @internal */
 export function renderBars(
   ctx: CanvasRenderingContext2D,
-  barGeometries: BarGeometry[],
+  barGeometries: Array<PerPanel<BarGeometry[]>>,
   sharedStyle: SharedGeometryStateStyle,
   clippings: Rect,
+  chartDimensions: Dimensions,
   highlightedLegendItem?: LegendItem,
+  rotation?: Rotation,
 ) {
   withContext(ctx, (ctx) => {
-    withClip(ctx, clippings, (ctx: CanvasRenderingContext2D) => {
-      // ctx.scale(1, -1); // D3 and Canvas2d use a left-handed coordinate system (+y = down) but the ViewModel uses +y = up, so we must locally invert Y
-      barGeometries.forEach((barGeometry) => {
-        const { x, y, width, height, color, seriesStyle, transform } = barGeometry;
-        const geometryStateStyle = getGeometryStateStyle(
-          barGeometry.seriesIdentifier,
-          highlightedLegendItem || null,
-          sharedStyle,
-        );
-        const { fill, stroke } = buildBarStyles(color, seriesStyle.rect, seriesStyle.rectBorder, geometryStateStyle);
-        const rect = { x: x + transform.x, y: y + transform.y, width, height };
-        renderRect(ctx, rect, fill, stroke);
+    const barRenderer = renderPerPanelBars(
+      ctx,
+      clippings,
+      sharedStyle,
+      chartDimensions,
+      highlightedLegendItem,
+      rotation,
+    );
+    barGeometries.forEach(barRenderer);
+  });
+}
+
+function renderPerPanelBars(
+  ctx: CanvasRenderingContext2D,
+  clippings: Rect,
+  sharedStyle: SharedGeometryStateStyle,
+  chartDimensions: Dimensions,
+  highlightedLegendItem?: LegendItem,
+  rotation: Rotation = 0,
+) {
+  return ({ panel, value: bars }: PerPanel<BarGeometry[]>) => {
+    withPanelTransform(ctx, panel, rotation, chartDimensions, (ctx) => {
+      withClip(ctx, clippings, (ctx: CanvasRenderingContext2D) => {
+        bars.forEach((barGeometry) => {
+          const { x, y, width, height, color, seriesStyle, seriesIdentifier } = barGeometry;
+          const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
+          const { fill, stroke } = buildBarStyles(color, seriesStyle.rect, seriesStyle.rectBorder, geometryStateStyle);
+          const rect = { x, y, width, height };
+          withContext(ctx, (ctx) => {
+            // ctx.translate(transform.x, transform.y);
+            renderRect(ctx, rect, fill, stroke);
+          });
+        });
       });
     });
-  });
+  };
 }

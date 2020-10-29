@@ -17,7 +17,7 @@
  * under the License.
  */
 import { boolean } from '@storybook/addon-knobs';
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
   ScaleType,
@@ -30,74 +30,124 @@ import {
   Settings,
   BarSeries,
   AreaSeries,
+  Fit,
+  LineAnnotation,
+  BubbleSeries,
+  AnnotationDomainTypes,
 } from '../../src';
+import { getRandomNumberGenerator } from '../../src/mocks/utils';
 import { DataGenerator } from '../../src/utils/data_generators/data_generator';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
+const getRandomNumber = getRandomNumberGenerator();
 const dg = new DataGenerator();
 
+const data1 = dg.generateGroupedSeries(50, 3);
+const data2 = dg.generateGroupedSeries(50, 3).map((d) => {
+  return getRandomNumber() > 0.95 ? { ...d, y: null } : d;
+});
+const data3 = dg.generateGroupedSeries(50, 3).map((d) => {
+  return getRandomNumber() > 0.95 ? { ...d, y: null } : d;
+});
+
 export const Example = () => {
-  const data1 = dg.generateGroupedSeries(50, 3);
-  const data2 = dg.generateGroupedSeries(50, 3);
-  const data3 = dg.generateGroupedSeries(50, 3);
   const splitVertically = boolean('vertical split', true);
   const splitHorizontally = boolean('horizontal split', true);
+  const [isRotated, setRotation] = useState(false);
   return (
-    <Chart className="story-chart">
-      <Settings rotation={0} />
-      <Axis id="time" title="horizontal" position={Position.Bottom} gridLine={{ visible: true }} />
-      <Axis id="y" title="vertical" position={Position.Left} gridLine={{ visible: true }} />
+    <>
+      <input
+        type="checkbox"
+        checked={isRotated}
+        onChange={() => {
+          setRotation(!isRotated);
+        }}
+      />
+      <Chart className="story-chart">
+        <Settings
+          rotation={isRotated ? -90 : 0}
+          theme={{
+            markSizeRatio: 15,
+            bubbleSeriesStyle: {
+              point: {
+                opacity: 0.6,
+              },
+            },
+          }}
+        />
+        <Axis id="time" title="horizontal" position={Position.Bottom} gridLine={{ visible: true }} />
+        <Axis id="y" title="vertical" position={Position.Left} gridLine={{ visible: true }} />
 
-      <GroupBy
-        id="vertical_split"
-        by={({ id }) => {
-          return [id];
-        }}
-        sort={['alphaAsc']}
-      />
-      <GroupBy
-        id="horizontal_split"
-        by={(spec, { g }: any) => {
-          return [g];
-        }}
-        sort={['alphaAsc']}
-      />
-      <SmallMultiples
-        splitVertically={splitVertically ? 'vertical_split' : undefined}
-        splitHorizontally={splitHorizontally ? 'horizontal_split' : undefined}
-      />
-      <LineSeries
-        id="lines1"
-        xScaleType={ScaleType.Linear}
-        yScaleType={ScaleType.Linear}
-        timeZone="local"
-        xAccessor="x"
-        yAccessors={['y']}
-        splitSeriesAccessors={['g']}
-        stackAccessors={['g']}
-        data={data1}
-      />
-      <LineSeries
-        id="lines2"
-        xScaleType={ScaleType.Linear}
-        yScaleType={ScaleType.Linear}
-        timeZone="local"
-        xAccessor="x"
-        yAccessors={['y']}
-        splitSeriesAccessors={['g']}
-        data={data2}
-      />
-      <LineSeries
-        id="lines3"
-        xScaleType={ScaleType.Linear}
-        yScaleType={ScaleType.Linear}
-        timeZone="local"
-        xAccessor="x"
-        yAccessors={['y']}
-        splitSeriesAccessors={['g']}
-        data={data3}
-      />
-    </Chart>
+        <GroupBy
+          id="v_split"
+          by={({ id }) => {
+            return [id];
+          }}
+          sort={['alphaAsc']}
+        />
+        <GroupBy
+          id="h_split"
+          by={(spec, { g }: any) => {
+            return [g];
+          }}
+          sort={['alphaAsc']}
+        />
+        <SmallMultiples
+          splitVertically={splitVertically ? 'v_split' : undefined}
+          splitHorizontally={splitHorizontally ? 'h_split' : undefined}
+        />
+        <BarSeries
+          id="bar"
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          timeZone="local"
+          xAccessor="x"
+          yAccessors={['y']}
+          splitSeriesAccessors={['g']}
+          stackAccessors={['g']}
+          data={data1}
+        />
+        <LineAnnotation
+          dataValues={[{ dataValue: 10 }]}
+          id="test"
+          domainType={AnnotationDomainTypes.XDomain}
+          marker={<div style={{ width: 10, height: 10, background: 'red' }} />}
+        />
+        <AreaSeries
+          id="area"
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          timeZone="local"
+          xAccessor="x"
+          yAccessors={['y']}
+          splitSeriesAccessors={['g']}
+          fit={Fit.Linear}
+          data={data2}
+        />
+        <BubbleSeries
+          id="bubble"
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          timeZone="local"
+          xAccessor="x"
+          yAccessors={['y']}
+          splitSeriesAccessors={['g']}
+          markSizeAccessor="y"
+          data={data3}
+        />
+        <LineSeries
+          id="line"
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          timeZone="local"
+          xAccessor="x"
+          yAccessors={['y']}
+          splitSeriesAccessors={['g']}
+          markSizeAccessor="y"
+          data={data3}
+        />
+      </Chart>
+    </>
   );
 };
 Example.story = {

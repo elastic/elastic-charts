@@ -50,14 +50,18 @@ describe('Rendering points - bubble', () => {
       geometriesIndex,
     } = computeSeriesGeometriesSelector(store.getState());
     test('Can render a bubble', () => {
-      const [bubbleGeometry] = bubbles;
+      const [{ value: bubbleGeometry }] = bubbles;
       expect(bubbleGeometry.points).toHaveLength(2);
       expect(bubbleGeometry.color).toBe('red');
       expect(bubbleGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
       expect(bubbleGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
     });
     test('Can render two points', () => {
-      const [{ points }] = bubbles;
+      const [
+        {
+          value: { points },
+        },
+      ] = bubbles;
 
       expect(points[0]).toEqual(
         MockPointGeometry.default({
@@ -151,7 +155,7 @@ describe('Rendering points - bubble', () => {
     } = computeSeriesGeometriesSelector(store.getState());
 
     test('Can render two ordinal bubbles', () => {
-      const [firstBubble, secondBubble] = bubbles;
+      const [{ value: firstBubble }, { value: secondBubble }] = bubbles;
       expect(firstBubble.points).toHaveLength(2);
       expect(firstBubble.color).toBe('red');
       expect(firstBubble.seriesIdentifier.seriesKeys).toEqual([1]);
@@ -164,7 +168,11 @@ describe('Rendering points - bubble', () => {
       expect(geometriesIndex.size).toEqual(4);
     });
     test('can render first spec points', () => {
-      const [{ points }] = bubbles;
+      const [
+        {
+          value: { points },
+        },
+      ] = bubbles;
       expect(points.length).toEqual(2);
       expect(points[0]).toEqual(
         MockPointGeometry.default({
@@ -220,7 +228,12 @@ describe('Rendering points - bubble', () => {
       );
     });
     test('can render second spec points', () => {
-      const [, { points }] = bubbles;
+      const [
+        ,
+        {
+          value: { points },
+        },
+      ] = bubbles;
       expect(points.length).toEqual(2);
       expect(points[0]).toEqual(
         MockPointGeometry.default({
@@ -298,14 +311,18 @@ describe('Rendering points - bubble', () => {
     } = computeSeriesGeometriesSelector(store.getState());
 
     test('Can render a linear bubble', () => {
-      const [bubbleGeometry] = bubbles;
+      const [{ value: bubbleGeometry }] = bubbles;
       expect(bubbleGeometry.points).toHaveLength(2);
       expect(bubbleGeometry.color).toBe('red');
       expect(bubbleGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
       expect(bubbleGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
     });
     test('Can render two points', () => {
-      const [{ points }] = bubbles;
+      const [
+        {
+          value: { points },
+        },
+      ] = bubbles;
       expect(points[0]).toEqual(
         MockPointGeometry.default({
           x: 0,
@@ -398,7 +415,7 @@ describe('Rendering points - bubble', () => {
     } = computeSeriesGeometriesSelector(store.getState());
 
     test('can render two linear bubbles', () => {
-      const [firstBubble, secondBubble] = bubbles;
+      const [{ value: firstBubble }, { value: secondBubble }] = bubbles;
       expect(firstBubble.points).toHaveLength(2);
       expect(firstBubble.color).toBe('red');
       expect(firstBubble.seriesIdentifier.seriesKeys).toEqual([1]);
@@ -411,7 +428,11 @@ describe('Rendering points - bubble', () => {
       expect(geometriesIndex.size).toEqual(4);
     });
     test('can render first spec points', () => {
-      const [{ points }] = bubbles;
+      const [
+        {
+          value: { points },
+        },
+      ] = bubbles;
       expect(points.length).toEqual(2);
       expect(points[0]).toEqual(
         MockPointGeometry.default({
@@ -467,7 +488,12 @@ describe('Rendering points - bubble', () => {
       );
     });
     test('can render second spec points', () => {
-      const [, { points }] = bubbles;
+      const [
+        ,
+        {
+          value: { points },
+        },
+      ] = bubbles;
       expect(points.length).toEqual(2);
       expect(points[0]).toEqual(
         MockPointGeometry.default({
@@ -545,14 +571,18 @@ describe('Rendering points - bubble', () => {
     } = computeSeriesGeometriesSelector(store.getState());
 
     test('Can render a time bubble', () => {
-      const [renderedBubble] = bubbles;
+      const [{ value: renderedBubble }] = bubbles;
       expect(renderedBubble.points).toHaveLength(2);
       expect(renderedBubble.color).toBe('red');
       expect(renderedBubble.seriesIdentifier.seriesKeys).toEqual([1]);
       expect(renderedBubble.seriesIdentifier.specId).toEqual(SPEC_ID);
     });
     test('Can render two points', () => {
-      const [{ points }] = bubbles;
+      const [
+        {
+          value: { points },
+        },
+      ] = bubbles;
       expect(points[0]).toEqual(
         MockPointGeometry.default({
           x: 0,
@@ -643,7 +673,11 @@ describe('Rendering points - bubble', () => {
       geometriesIndex,
     } = computeSeriesGeometriesSelector(store.getState());
     test('can render first spec points', () => {
-      const [{ points }] = bubbles;
+      const [
+        {
+          value: { points },
+        },
+      ] = bubbles;
       expect(points.length).toEqual(2);
       expect(points[0]).toEqual(
         MockPointGeometry.default({
@@ -700,7 +734,12 @@ describe('Rendering points - bubble', () => {
       expect(geometriesIndex.size).toEqual(4);
     });
     test('can render second spec points', () => {
-      const [, { points }] = bubbles;
+      const [
+        ,
+        {
+          value: { points },
+        },
+      ] = bubbles;
       expect(points.length).toEqual(2);
       expect(points[0]).toEqual(
         MockPointGeometry.default({
@@ -785,14 +824,18 @@ describe('Rendering points - bubble', () => {
     } = computeSeriesGeometriesSelector(store.getState());
 
     test('Can render a splitted bubble', () => {
-      const [renderedBubble] = bubbles;
+      const [{ value: renderedBubble }] = bubbles;
       expect(renderedBubble.points).toHaveLength(7);
       expect(renderedBubble.color).toBe('red');
       expect(renderedBubble.seriesIdentifier.seriesKeys).toEqual([1]);
       expect(renderedBubble.seriesIdentifier.specId).toEqual(SPEC_ID);
     });
     test('Can render points', () => {
-      const [{ points }] = bubbles;
+      const [
+        {
+          value: { points },
+        },
+      ] = bubbles;
       // all the points minus the undefined ones on a log scale
       expect(points.length).toBe(7);
       // all the points expect null geometries
@@ -837,7 +880,11 @@ describe('Rendering points - bubble', () => {
       geometriesIndex,
     } = computeSeriesGeometriesSelector(store.getState());
     test('Can render two points', () => {
-      const [{ points }] = bubbles;
+      const [
+        {
+          value: { points },
+        },
+      ] = bubbles;
       // will not render the 3rd point that is out of y domain
       expect(points.length).toBe(2);
       // will keep the 3rd point as an indexedGeometry

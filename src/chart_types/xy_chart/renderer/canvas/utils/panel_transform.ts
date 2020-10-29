@@ -16,22 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { withContext } from '../../../../../renderers/canvas';
+import { Rotation } from '../../../../../utils/commons';
+import { Dimensions } from '../../../../../utils/dimensions';
+import { computeChartTransform } from '../../../state/utils/utils';
 
-import createCachedSelector from 're-reselect';
-
-import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { Size } from '../../../../utils/dimensions';
-import { getPanelSize } from '../../utils/panel';
-import { PerPanelMap, perPanelMap } from '../../utils/panel_utils';
-import { computeSmallMultipleScalesSelector } from './compute_small_multiple_scales';
-
-export type PanelGeoms = Array<Size & PerPanelMap>;
-
-/** @internal */
-export const computePanelsSelectors = createCachedSelector(
-  [computeSmallMultipleScalesSelector],
-  (scales): PanelGeoms => {
-    const panelSize = getPanelSize(scales);
-    return perPanelMap(scales, () => panelSize);
-  },
-)(getChartIdSelector);
+export function withPanelTransform(
+  context: CanvasRenderingContext2D,
+  panel: Dimensions,
+  rotation: Rotation,
+  renderingArea: Dimensions,
+  fn: (ctx: CanvasRenderingContext2D) => void,
+) {
+  const transform = computeChartTransform(panel, rotation);
+  const left = renderingArea.left + panel.left + transform.x;
+  const top = renderingArea.top + panel.top + transform.y;
+  withContext(context, (ctx) => {
+    ctx.translate(left, top);
+    ctx.rotate((rotation * Math.PI) / 180);
+    fn(ctx);
+  });
+}

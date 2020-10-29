@@ -21,18 +21,16 @@ import createCachedSelector from 're-reselect';
 
 import { Scale } from '../../../../scales';
 import { SettingsSpec, PointerEvent } from '../../../../specs/settings';
-import { DEFAULT_SINGLE_PANEL_SM_VALUE, DEFAULT_SM_PANEL_PADDING } from '../../../../specs/small_multiples';
+import { DEFAULT_SINGLE_PANEL_SM_VALUE } from '../../../../specs/small_multiples';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { Dimensions } from '../../../../utils/dimensions';
 import { isValidPointerOverEvent } from '../../../../utils/events';
-import { Point } from '../../../../utils/point';
 import { getCursorBandPosition } from '../../crosshair/crosshair_utils';
 import { BasicSeriesSpec } from '../../utils/specs';
 import { isLineAreaOnlyChart } from '../utils/common';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
-import { computePanelsSelectors } from './compute_panels';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { computeSmallMultipleScalesSelector, SmallMultipleScales } from './compute_small_multiple_scales';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
@@ -96,12 +94,14 @@ function getCursorBand(
   geometriesIndexKeys: (string | number)[],
   smallMultipleScales: SmallMultipleScales,
 ): (Dimensions & { visible: boolean; fromExternalEvent: boolean }) | undefined {
-  // update che cursorBandPosition based on chart configuration
-  const isLineAreaOnly = isLineAreaOnlyChart(seriesSpecs);
   if (!xScale) {
     return;
   }
-  let pointerPosition = orientedProjectedPointerPosition;
+  // update che cursorBandPosition based on chart configuration
+  const isLineAreaOnly = isLineAreaOnlyChart(seriesSpecs);
+
+  let pointerPosition = { ...orientedProjectedPointerPosition };
+
   let xValue;
   let fromExternalEvent = false;
   // external pointer events takes precedence over the current mouse pointer
@@ -128,11 +128,14 @@ function getCursorBand(
     }
   }
   const { horizontal, vertical } = smallMultipleScales;
+  const topPos = vertical.scale(pointerPosition.verticalPanelValue) || 0;
+  const leftPos = horizontal.scale(pointerPosition.horizontalPanelValue) || 0;
+
   const panel = {
     width: horizontal.bandwidth,
     height: vertical.bandwidth,
-    top: chartDimensions.top + (vertical.scale(pointerPosition.verticalPanelValue) || 0),
-    left: chartDimensions.left + (horizontal.scale(pointerPosition.horizontalPanelValue) || 0),
+    top: chartDimensions.top + topPos,
+    left: chartDimensions.left + leftPos,
   };
   const cursorBand = getCursorBandPosition(
     settingsSpec.rotation,

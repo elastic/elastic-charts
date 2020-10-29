@@ -33,8 +33,9 @@ export type PerPanelAxisGeoms = {
 /** @internal */
 export const computePerPanelAxesGeomsSelector = createCachedSelector(
   [computeAxesGeometriesSelector, computeSmallMultipleScalesSelector],
-  (axesGeoms, { horizontal, vertical }): Array<PerPanelAxisGeoms> => {
-    return perPanelMap(horizontal, vertical, (anchor, h, v) => {
+  (axesGeoms, scales): Array<PerPanelAxisGeoms> => {
+    const { horizontal, vertical } = scales;
+    return perPanelMap(scales, (anchor, h, v) => {
       const lastLine = horizontal.domain.includes(h) && vertical.domain[vertical.domain.length - 1] === v;
       const firstColumn = horizontal.domain[0] === h;
       if (firstColumn || lastLine) {

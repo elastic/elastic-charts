@@ -17,7 +17,6 @@
  * under the License.
  */
 import { Line, Stroke } from '../../../geoms/types';
-import { ScaleBand } from '../../../scales/scale_band';
 import { mergePartial, RecursivePartial } from '../../../utils/commons';
 import { Size } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';
@@ -25,8 +24,10 @@ import { Point } from '../../../utils/point';
 import { AxisStyle } from '../../../utils/themes/theme';
 import { stringToRGB } from '../../partition_chart/layout/utils/color_library_wrappers';
 import { MIN_STROKE_WIDTH } from '../renderer/canvas/primitives/line';
+import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
 import { isVerticalAxis } from './axis_type_utils';
 import { AxisGeometry, AxisTick } from './axis_utils';
+import { getPanelSize } from './panel';
 import { perPanelMap } from './panel_utils';
 import { AxisSpec } from './specs';
 
@@ -45,14 +46,10 @@ export function getGridLines(
   axesSpecs: Array<AxisSpec>,
   axesGeoms: Array<AxisGeometry>,
   themeAxisStyle: AxisStyle,
-  horizontalPanelScale: ScaleBand,
-  verticalPanelScale: ScaleBand,
+  scales: SmallMultipleScales,
 ): Array<LinesGrid> {
-  const panelSize = {
-    width: horizontalPanelScale.bandwidth,
-    height: verticalPanelScale.bandwidth,
-  };
-  return perPanelMap(horizontalPanelScale, verticalPanelScale, () => {
+  const panelSize = getPanelSize(scales);
+  return perPanelMap(scales, () => {
     // get grids per panel (depends on all the axis that exist
     const lines = axesGeoms.reduce<Array<GridLineGroup>>((linesAcc, { axis, visibleTicks }) => {
       const axisSpec = axesSpecs.find(({ id }) => id === axis.id);

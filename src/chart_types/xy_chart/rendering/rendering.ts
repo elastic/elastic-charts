@@ -49,7 +49,6 @@ import {
   BubbleSeriesStyle,
   DisplayValueStyle,
 } from '../../../utils/themes/theme';
-import { PrimitiveValue } from '../../partition_chart/layout/utils/group_by_rollup';
 import { IndexedGeometryMap, GeometryType } from '../utils/indexed_geometry_map';
 import { DataSeriesDatum, DataSeries, XYChartSeriesIdentifier } from '../utils/series';
 import { DisplayValueSpec, PointStyleAccessor, BarStyleAccessor } from '../utils/specs';
@@ -307,11 +306,12 @@ function renderPoints(
           datum: datum.datum,
         },
         transform: {
-          x: panel.left + shift,
-          y: panel.top,
+          x: shift,
+          y: 0,
         },
         seriesIdentifier,
         styleOverrides,
+        panel,
       };
       indexedGeometryMap.set(pointGeometry, geometryType);
       // use the geometry only if the yDatum in contained in the current yScale domain
@@ -507,8 +507,8 @@ export function renderBars(
       x,
       y,
       transform: {
-        x: panel.left,
-        y: panel.top,
+        x: 0,
+        y: 0,
       },
       width,
       height,
@@ -522,6 +522,7 @@ export function renderBars(
       },
       seriesIdentifier,
       seriesStyle,
+      panel,
     };
     indexedGeometryMap.set(barGeometry);
     barGeometries.push(barGeometry);
@@ -586,7 +587,7 @@ export function renderLine(
     pointStyleAccessor,
   );
 
-  const clippedRanges = getClippedRanges(dataSeries.data, xScale, xScaleOffset, panel);
+  const clippedRanges = getClippedRanges(dataSeries.data, xScale, xScaleOffset);
   let linePath: string;
 
   try {
@@ -601,8 +602,8 @@ export function renderLine(
     points: pointGeometries,
     color,
     transform: {
-      x: panel.left + shift,
-      y: panel.top,
+      x: shift,
+      y: 0,
     },
     seriesIdentifier: {
       key: dataSeries.key,
@@ -633,6 +634,7 @@ export function renderBubble(
   color: Color,
   panel: Dimensions,
   hasY0Accessors: boolean,
+  xScaleOffset: number,
   seriesStyle: BubbleSeriesStyle,
   markSizeOptions: MarkSizeOptions,
   isMixedChart: boolean,
@@ -642,7 +644,7 @@ export function renderBubble(
   indexedGeometryMap: IndexedGeometryMap;
 } {
   const { pointGeometries, indexedGeometryMap } = renderPoints(
-    shift,
+    shift - xScaleOffset,
     dataSeries,
     xScale,
     yScale,
@@ -717,7 +719,7 @@ export function renderArea(
     })
     .curve(getCurveFactory(curve));
 
-  const clippedRanges = getClippedRanges(dataSeries.data, xScale, xScaleOffset, panel);
+  const clippedRanges = getClippedRanges(dataSeries.data, xScale, xScaleOffset);
 
   let y1Line: string | null;
 
@@ -775,8 +777,8 @@ export function renderArea(
     points: pointGeometries,
     color,
     transform: {
-      y: panel.top,
-      x: panel.left + shift,
+      y: 0,
+      x: shift,
     },
     seriesIdentifier: {
       key: dataSeries.key,
@@ -817,12 +819,7 @@ export function isDatumFilled({ filled, initialY1 }: DataSeriesDatum) {
  * @param panel
  * @internal
  */
-export function getClippedRanges(
-  dataset: DataSeriesDatum[],
-  xScale: Scale,
-  xScaleOffset: number,
-  panel: Dimensions,
-): ClippedRanges {
+export function getClippedRanges(dataset: DataSeriesDatum[], xScale: Scale, xScaleOffset: number): ClippedRanges {
   let firstNonNullX: number | null = null;
   let hasNull = false;
   return dataset.reduce<ClippedRanges>((acc, data) => {
@@ -831,7 +828,7 @@ export function getClippedRanges(
       return acc;
     }
 
-    const xValue = panel.left + xScaled - xScaleOffset + xScale.bandwidth / 2;
+    const xValue = xScaled - xScaleOffset + xScale.bandwidth / 2;
 
     if (isDatumFilled(data)) {
       const endXValue = xScale.range[1] - xScale.bandwidth * (2 / 3);
@@ -858,13 +855,13 @@ export function getClippedRanges(
 /** @internal */
 export function getGeometryStateStyle(
   seriesIdentifier: XYChartSeriesIdentifier,
-  highlightedLegendItem: LegendItem | null,
   sharedGeometryStyle: SharedGeometryStateStyle,
+  highlightedLegendItem?: LegendItem,
   individualHighlight?: { [key: string]: boolean },
 ): GeometryStateStyle {
   const { default: defaultStyles, highlighted, unhighlighted } = sharedGeometryStyle;
 
-  if (highlightedLegendItem != null) {
+  if (highlightedLegendItem) {
     const isPartOfHighlightedSeries = seriesIdentifier.key === highlightedLegendItem.seriesIdentifier.key;
 
     return isPartOfHighlightedSeries ? highlighted : unhighlighted;

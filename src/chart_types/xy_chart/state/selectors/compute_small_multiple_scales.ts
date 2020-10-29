@@ -22,9 +22,7 @@ import createCachedSelector from 're-reselect';
 import { ScaleBand } from '../../../../scales';
 import { DEFAULT_SINGLE_PANEL_SM_VALUE, DEFAULT_SM_PANEL_PADDING } from '../../../../specs/small_multiples';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { Domain } from '../../../../utils/domain';
-import { isHorizontalRotation } from '../utils/common';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 
@@ -34,17 +32,16 @@ export interface SmallMultipleScales {
   vertical: ScaleBand;
 }
 
-/** @internal */
+/**
+ * Return the small multiple scales for horizontal and vertical grids
+ * @internal
+ */
 export const computeSmallMultipleScalesSelector = createCachedSelector(
-  [getSettingsSpecSelector, computeSeriesDomainsSelector, computeChartDimensionsSelector],
-  ({ rotation }, { smHDomain, smVDomain }, { chartDimensions: { width, height } }): SmallMultipleScales => {
-    const isChartHorizontalOriented = isHorizontalRotation(rotation);
-    const rotatedWidth = isChartHorizontalOriented ? width : height;
-    const rotatedHeight = isChartHorizontalOriented ? height : width;
-
+  [computeSeriesDomainsSelector, computeChartDimensionsSelector],
+  ({ smHDomain, smVDomain }, { chartDimensions: { width, height } }): SmallMultipleScales => {
     return {
-      horizontal: getScale(smHDomain, rotatedWidth),
-      vertical: getScale(smVDomain, rotatedHeight),
+      horizontal: getScale(smHDomain, width),
+      vertical: getScale(smVDomain, height),
     };
   },
 )(getChartIdSelector);
