@@ -106,11 +106,11 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
   };
   return (
     <button type="button" className={legendClasses}>
-      <button type="button" style={legendContainerStyle} className="echLegendListContainer">
+      <div style={legendContainerStyle} className="echLegendListContainer">
         <ul style={legendListStyle} className="echLegendList" aria-label="legend">
           {items.map((item, index) => renderLegendItem(item, itemProps, items.length, index))}
         </ul>
-      </button>
+      </div>
     </button>
   );
 }

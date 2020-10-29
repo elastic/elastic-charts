@@ -8,6 +8,10 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
   align-items: center;
   width: 100%;
 
+  // button {
+  //   display: block;
+  // }
+
   :focus {
     border: 1px solid cornflowerblue;
   }
