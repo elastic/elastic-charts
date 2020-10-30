@@ -34,6 +34,7 @@ import {
   LineAnnotation,
   BubbleSeries,
   AnnotationDomainTypes,
+  Rotation,
 } from '../../src';
 import { getRandomNumberGenerator } from '../../src/mocks/utils';
 import { DataGenerator } from '../../src/utils/data_generators/data_generator';
@@ -53,19 +54,21 @@ const data3 = dg.generateGroupedSeries(50, 3).map((d) => {
 export const Example = () => {
   const splitVertically = boolean('vertical split', true);
   const splitHorizontally = boolean('horizontal split', true);
-  const [isRotated, setRotation] = useState(false);
+  const [rotationIndex, setRotationIndex] = useState(0);
+  const rot: Rotation = ([0, 90, -90, 180] as Rotation[])[rotationIndex];
   return (
     <>
-      <input
-        type="checkbox"
-        checked={isRotated}
-        onChange={() => {
-          setRotation(!isRotated);
+      <button
+        type="button"
+        onClick={() => {
+          setRotationIndex((rotationIndex + 1) % 4);
         }}
-      />
+      >
+        rotate
+      </button>
       <Chart className="story-chart">
         <Settings
-          rotation={isRotated ? -90 : 0}
+          rotation={rot}
           theme={{
             markSizeRatio: 15,
             bubbleSeriesStyle: {
@@ -75,8 +78,8 @@ export const Example = () => {
             },
           }}
         />
-        <Axis id="time" title="horizontal" position={Position.Bottom} gridLine={{ visible: true }} />
-        <Axis id="y" title="vertical" position={Position.Left} gridLine={{ visible: true }} />
+        <Axis id="time" title="horizontal" position={Position.Bottom} gridLine={{ visible: false }} />
+        <Axis id="y" title="vertical" position={Position.Left} gridLine={{ visible: false }} />
 
         <GroupBy
           id="v_split"
@@ -112,7 +115,29 @@ export const Example = () => {
           id="test"
           domainType={AnnotationDomainTypes.XDomain}
           marker={<div style={{ width: 10, height: 10, background: 'red' }} />}
+          style={{
+            line: {
+              stroke: 'red',
+              strokeWidth: 2,
+              opacity: 0.8,
+            },
+          }}
         />
+
+        <LineAnnotation
+          dataValues={[{ dataValue: 5 }]}
+          id="test2"
+          domainType={AnnotationDomainTypes.YDomain}
+          marker={<div style={{ width: 10, height: 10, background: 'blue' }} />}
+          style={{
+            line: {
+              stroke: 'blue',
+              strokeWidth: 5,
+              opacity: 0.8,
+            },
+          }}
+        />
+
         <AreaSeries
           id="area"
           xScaleType={ScaleType.Linear}

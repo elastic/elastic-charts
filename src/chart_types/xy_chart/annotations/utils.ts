@@ -142,30 +142,24 @@ export function computeAnnotationDimensions(
   isHistogramModeEnabled: boolean,
   smallMultipleScales: SmallMultipleScales,
 ): Map<AnnotationId, AnnotationDimensions> {
-  const annotationDimensions = new Map<AnnotationId, AnnotationDimensions>();
-
-  annotations.forEach((annotationSpec) => {
+  return annotations.reduce<Map<AnnotationId, AnnotationDimensions>>((annotationDimensions, annotationSpec) => {
     const { id } = annotationSpec;
+    let dimensions: AnnotationDimensions | null = null;
     if (isLineAnnotation(annotationSpec)) {
       const { groupId, domainType } = annotationSpec;
       const annotationAxisPosition = getAnnotationAxis(axesSpecs, groupId, domainType, chartRotation);
 
-      const dimensions = computeLineAnnotationDimensions(
+      dimensions = computeLineAnnotationDimensions(
         annotationSpec,
-        chartDimensions,
         chartRotation,
         yScales,
         xScale,
-        isHistogramModeEnabled,
         smallMultipleScales,
+        isHistogramModeEnabled,
         annotationAxisPosition,
       );
-
-      if (dimensions) {
-        annotationDimensions.set(id, dimensions);
-      }
     } else if (isRectAnnotation(annotationSpec)) {
-      const dimensions = computeRectAnnotationDimensions(
+      dimensions = computeRectAnnotationDimensions(
         annotationSpec,
         chartDimensions,
         yScales,
@@ -173,12 +167,10 @@ export function computeAnnotationDimensions(
         smallMultipleScales,
         isHistogramModeEnabled,
       );
-
-      if (dimensions) {
-        annotationDimensions.set(id, dimensions);
-      }
     }
-  });
-
-  return annotationDimensions;
+    if (dimensions) {
+      annotationDimensions.set(id, dimensions);
+    }
+    return annotationDimensions;
+  }, new Map());
 }

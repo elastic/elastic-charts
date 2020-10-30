@@ -26,11 +26,8 @@ export class MockAnnotationLineProps {
     linePathPoints: {
       start: { x1: 0, y1: 0 },
       end: { x2: 0, y2: 0 },
-      transform: {
-        x: 0,
-        y: 0,
-      },
     },
+    panel: { top: 0, left: 0, width: 0, height: 0 },
     details: {},
   };
 

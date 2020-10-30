@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { Dimensions } from '../../../../utils/dimensions';
 import { AnnotationDetails, AnnotationMarker } from '../types';
 
 /**
@@ -34,10 +35,6 @@ export interface AnnotationLinePathPoints {
     x2: number;
     y2: number;
   };
-  transform: {
-    x: number;
-    y: number;
-  };
 }
 
 /** @internal */
@@ -48,4 +45,5 @@ export interface AnnotationLineProps {
   linePathPoints: AnnotationLinePathPoints;
   details: AnnotationDetails;
   marker?: AnnotationMarker;
+  panel: Dimensions;
 }

@@ -98,11 +98,13 @@ export function renderXYChartCanvas2d(
       // rendering background annotations
       (ctx: CanvasRenderingContext2D) => {
         withContext(ctx, (ctx) => {
-          ctx.translate(transform.x, transform.y);
-          ctx.rotate((chartRotation * Math.PI) / 180);
+          // ctx.translate(transform.x, transform.y);
+          // ctx.rotate((chartRotation * Math.PI) / 180);
           renderAnnotations(
             ctx,
             {
+              rotation: chartRotation,
+              renderingArea: chartDimensions,
               annotationDimensions,
               annotationSpecs,
             },
@@ -182,13 +184,15 @@ export function renderXYChartCanvas2d(
       // rendering foreground annotations
       (ctx: CanvasRenderingContext2D) => {
         withContext(ctx, (ctx) => {
-          ctx.translate(transform.x, transform.y);
-          ctx.rotate((chartRotation * Math.PI) / 180);
+          // ctx.translate(transform.x, transform.y);
+          // ctx.rotate((chartRotation * Math.PI) / 180);
           renderAnnotations(
             ctx,
             {
               annotationDimensions,
               annotationSpecs,
+              rotation: chartRotation,
+              renderingArea: chartDimensions,
             },
             false,
           );
