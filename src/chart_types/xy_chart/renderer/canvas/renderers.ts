@@ -98,8 +98,6 @@ export function renderXYChartCanvas2d(
       // rendering background annotations
       (ctx: CanvasRenderingContext2D) => {
         withContext(ctx, (ctx) => {
-          // ctx.translate(transform.x, transform.y);
-          // ctx.rotate((chartRotation * Math.PI) / 180);
           renderAnnotations(
             ctx,
             {
@@ -116,8 +114,6 @@ export function renderXYChartCanvas2d(
       // rendering bars
       (ctx: CanvasRenderingContext2D) => {
         withContext(ctx, (ctx) => {
-          // ctx.translate(transform.x, transform.y);
-          // ctx.rotate((chartRotation * Math.PI) / 180);
           renderBars(
             ctx,
             geometries.bars,
@@ -132,8 +128,6 @@ export function renderXYChartCanvas2d(
       // rendering areas
       (ctx: CanvasRenderingContext2D) => {
         withContext(ctx, (ctx) => {
-          // ctx.translate(transform.x, transform.y);
-          // ctx.rotate((chartRotation * Math.PI) / 180);
           renderAreas(ctx, {
             areas: geometries.areas,
             clippings,
@@ -184,8 +178,6 @@ export function renderXYChartCanvas2d(
       // rendering foreground annotations
       (ctx: CanvasRenderingContext2D) => {
         withContext(ctx, (ctx) => {
-          // ctx.translate(transform.x, transform.y);
-          // ctx.rotate((chartRotation * Math.PI) / 180);
           renderAnnotations(
             ctx,
             {

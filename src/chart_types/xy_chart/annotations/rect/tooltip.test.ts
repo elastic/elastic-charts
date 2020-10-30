@@ -30,7 +30,9 @@ describe('Rect annotation tooltip', () => {
       left: 15,
     };
     const cursorPosition = { x: 18, y: 9 };
-    const annotationRects = [{ rect: { x: 2, y: 3, width: 3, height: 5 } }];
+    const annotationRects = [
+      { rect: { x: 2, y: 3, width: 3, height: 5 }, panel: { top: 0, left: 0, width: 10, height: 20 } },
+    ];
 
     const visibleTooltip = computeRectAnnotationTooltipState(cursorPosition, annotationRects, 0, chartDimensions);
     const expectedVisibleTooltipState: AnnotationTooltipState = {

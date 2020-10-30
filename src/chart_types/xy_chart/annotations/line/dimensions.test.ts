@@ -95,7 +95,13 @@ describe('Annotation utils', () => {
         details: { detailsText: 'foo', headerText: '2' },
       }),
     ]);
-    expectedDimensions.set('rect', [{ details: undefined, rect: { x: 0, y: 50, width: 50, height: 20 } }]);
+    expectedDimensions.set('rect', [
+      {
+        details: undefined,
+        rect: { x: 0, y: 50, width: 50, height: 20 },
+        panel: { top: 0, left: 0, width: 100, height: 100 },
+      },
+    ]);
 
     expect(dimensions).toEqual(expectedDimensions);
   });

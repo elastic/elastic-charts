@@ -35,6 +35,7 @@ import {
   BubbleSeries,
   AnnotationDomainTypes,
   Rotation,
+  RectAnnotation,
 } from '../../src';
 import { getRandomNumberGenerator } from '../../src/mocks/utils';
 import { DataGenerator } from '../../src/utils/data_generators/data_generator';
@@ -55,7 +56,7 @@ export const Example = () => {
   const splitVertically = boolean('vertical split', true);
   const splitHorizontally = boolean('horizontal split', true);
   const [rotationIndex, setRotationIndex] = useState(0);
-  const rot: Rotation = ([0, 90, -90, 180] as Rotation[])[rotationIndex];
+  const rot: Rotation = ([180, -90, 90, 0] as Rotation[])[rotationIndex];
   return (
     <>
       <button
@@ -64,7 +65,7 @@ export const Example = () => {
           setRotationIndex((rotationIndex + 1) % 4);
         }}
       >
-        rotate
+        rotate {rot}
       </button>
       <Chart className="story-chart">
         <Settings
@@ -109,6 +110,24 @@ export const Example = () => {
           splitSeriesAccessors={['g']}
           stackAccessors={['g']}
           data={data1}
+        />
+        <RectAnnotation
+          dataValues={[
+            {
+              details: 'ciao',
+              coordinates: {
+                x0: 10,
+                x1: 30,
+                y0: 1,
+                y1: 3,
+              },
+            },
+          ]}
+          id="rect1"
+          style={{
+            fill: 'violet',
+            opacity: 0.5,
+          }}
         />
         <LineAnnotation
           dataValues={[{ dataValue: 10 }]}

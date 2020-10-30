@@ -54,7 +54,7 @@ export function renderAnnotations(
         renderLineAnnotations(ctx, annotation as AnnotationLineProps[], lineStyle, rotation, renderingArea);
       } else if (isRectAnnotation(spec)) {
         const rectStyle = mergeWithDefaultAnnotationRect(spec.style);
-        renderRectAnnotations(ctx, annotation as AnnotationRectProps[], rectStyle);
+        renderRectAnnotations(ctx, annotation as AnnotationRectProps[], rectStyle, rotation, renderingArea);
       }
     }
   });

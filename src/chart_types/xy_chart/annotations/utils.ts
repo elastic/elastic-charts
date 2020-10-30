@@ -161,7 +161,6 @@ export function computeAnnotationDimensions(
     } else if (isRectAnnotation(annotationSpec)) {
       dimensions = computeRectAnnotationDimensions(
         annotationSpec,
-        chartDimensions,
         yScales,
         xScale,
         smallMultipleScales,
