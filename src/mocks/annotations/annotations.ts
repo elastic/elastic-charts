@@ -18,6 +18,7 @@
  */
 
 import { AnnotationLineProps } from '../../chart_types/xy_chart/annotations/line/types';
+import { AnnotationRectProps } from '../../chart_types/xy_chart/annotations/rect/types';
 import { mergePartial, RecursivePartial } from '../../utils/commons';
 
 /** @internal */
@@ -27,7 +28,7 @@ export class MockAnnotationLineProps {
       start: { x1: 0, y1: 0 },
       end: { x2: 0, y2: 0 },
     },
-    panel: { top: 0, left: 0, width: 0, height: 0 },
+    panel: { top: 0, left: 0, width: 100, height: 100 },
     details: {},
   };
 
@@ -42,6 +43,41 @@ export class MockAnnotationLineProps {
       linePathPoints: {
         start: { x1, y1 },
         end: { x2, y2 },
+      },
+    });
+  }
+}
+
+/** @internal */
+export class MockAnnotationRectProps {
+  private static readonly base: AnnotationRectProps = {
+    rect: {
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+    },
+    panel: {
+      width: 100,
+      height: 100,
+      top: 0,
+      left: 0,
+    },
+  };
+
+  static default(partial?: RecursivePartial<AnnotationRectProps>) {
+    return mergePartial<AnnotationRectProps>(MockAnnotationRectProps.base, partial, {
+      mergeOptionalPartialValues: true,
+    });
+  }
+
+  static fromValues(x = 0, y = 0, width = 0, height = 0): AnnotationRectProps {
+    return MockAnnotationRectProps.default({
+      rect: {
+        x,
+        y,
+        width,
+        height,
       },
     });
   }

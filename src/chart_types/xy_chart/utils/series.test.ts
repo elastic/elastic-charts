@@ -600,7 +600,8 @@ describe('Series', () => {
         yAccessor: splitSpec.yAccessors[0],
         splitAccessors: new Map(),
         seriesKeys: [],
-        key: 'groupId{group}spec{splitSpec}yAccessor{y1}splitAccessors{}',
+        key:
+          'groupId{group}spec{splitSpec}yAccessor{y1}splitAccessors{}smV{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}smH{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}',
       },
     ];
     const subsetSplit = getDataSeriesFromSpecs([splitSpec], deselectedDataSeries);

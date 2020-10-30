@@ -47,8 +47,8 @@ export class MockPointGeometry {
       y: 0,
     },
     panel: {
-      width: 0,
-      height: 0,
+      width: 100,
+      height: 100,
       left: 0,
       top: 0,
     },
@@ -90,8 +90,8 @@ export class MockBarGeometry {
       y: 0,
     },
     panel: {
-      width: 0,
-      height: 0,
+      width: 100,
+      height: 100,
       left: 0,
       top: 0,
     },

@@ -74,9 +74,6 @@ import { isHorizontalRotation } from './common';
 import { getSpecsById, getAxesSpecForSpecId } from './spec';
 import { SeriesDomainsAndData, ComputedGeometries, GeometriesCounts, Transform, LastValues } from './types';
 
-export const MAX_ANIMATABLE_BARS = 300;
-export const MAX_ANIMATABLE_LINES_AREA_POINTS = 600;
-
 /**
  * Adds or removes series from array or series
  * @param series

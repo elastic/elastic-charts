@@ -125,7 +125,8 @@ describe('Annotation utils', () => {
   });
 
   test('should compute line annotation dimensions for yDomain on a yScale (chartRotation 0, left axis)', () => {
-    const store = MockStore.default({ width: 10, height: 100, top: 0, left: 0 });
+    const panel = { width: 10, height: 100, top: 0, left: 0 };
+    const store = MockStore.default(panel);
     const settings = MockGlobalSpec.settingsNoMargins();
 
     const lineAnnotation = MockAnnotationSpec.line({
@@ -157,6 +158,7 @@ describe('Annotation utils', () => {
           start: { x1: 0, y1: 80 },
           end: { x2: 10, y2: 80 },
         },
+        panel,
         details: { detailsText: 'foo', headerText: '2' },
       }),
     ];
@@ -197,6 +199,7 @@ describe('Annotation utils', () => {
           start: { x1: 0, y1: 80 },
           end: { x2: 10, y2: 80 },
         },
+        panel: { width: 10, height: 100, top: 0, left: 0 },
         details: { detailsText: 'foo', headerText: '2' },
       }),
     ];
@@ -430,7 +433,8 @@ describe('Annotation utils', () => {
   });
 
   test('should compute line annotation dimensions for xDomain on a xScale (chartRotation 90, continuous scale)', () => {
-    const store = MockStore.default({ width: 100, height: 50, top: 0, left: 0 });
+    const panel = { width: 100, height: 50, top: 0, left: 0 };
+    const store = MockStore.default(panel);
     const settings = MockGlobalSpec.settingsNoMargins({ rotation: 90 });
 
     const lineAnnotation = MockAnnotationSpec.line({
@@ -462,6 +466,7 @@ describe('Annotation utils', () => {
           start: { x1: 12.5, y1: 0 },
           end: { x2: 12.5, y2: 100 },
         },
+        panel,
         details: { detailsText: 'foo', headerText: '2' },
       }),
     ];
@@ -469,7 +474,8 @@ describe('Annotation utils', () => {
   });
 
   test('should compute line annotation dimensions for xDomain on a xScale (chartRotation -90, continuous scale)', () => {
-    const store = MockStore.default({ width: 100, height: 50, top: 0, left: 0 });
+    const panel = { width: 100, height: 50, top: 0, left: 0 };
+    const store = MockStore.default(panel);
     const settings = MockGlobalSpec.settingsNoMargins({ rotation: -90 });
 
     const lineAnnotation = MockAnnotationSpec.line({
@@ -501,6 +507,7 @@ describe('Annotation utils', () => {
           start: { x1: 12.5, y1: 0 },
           end: { x2: 12.5, y2: 100 },
         },
+        panel,
         details: { detailsText: 'foo', headerText: '2' },
       }),
     ];
@@ -547,7 +554,8 @@ describe('Annotation utils', () => {
   });
 
   test('should compute line annotation dimensions for xDomain (chartRotation 180, continuous scale, bottom axis)', () => {
-    const store = MockStore.default({ width: 100, height: 50, top: 0, left: 0 });
+    const panel = { width: 100, height: 50, top: 0, left: 0 };
+    const store = MockStore.default(panel);
     const settings = MockGlobalSpec.settingsNoMargins({ rotation: 180 });
 
     const lineAnnotation = MockAnnotationSpec.line({
@@ -579,6 +587,7 @@ describe('Annotation utils', () => {
           start: { x1: 25, y1: 0 },
           end: { x2: 25, y2: 50 },
         },
+        panel,
         details: { detailsText: 'foo', headerText: '2' },
       }),
     ];

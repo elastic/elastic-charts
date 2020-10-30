@@ -47,7 +47,7 @@ export const computeSmallMultipleScalesSelector = createCachedSelector(
 )(getChartIdSelector);
 
 function getScale(domain: Domain, maxRange: number) {
-  const singlePanelSmallMultiple = domain.length === 1;
+  const singlePanelSmallMultiple = domain.length <= 1;
   return new ScaleBand(
     singlePanelSmallMultiple ? [DEFAULT_SINGLE_PANEL_SM_VALUE] : domain,
     [0, maxRange],

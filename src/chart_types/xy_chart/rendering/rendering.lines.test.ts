@@ -18,6 +18,7 @@
  */
 
 import { MockPointGeometry } from '../../../mocks';
+import { MockSeriesIdentifier } from '../../../mocks/series/series_identifiers';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
@@ -72,13 +73,7 @@ describe('Rendering points - line', () => {
           y: 0,
           radius: 0,
           color: 'red',
-          seriesIdentifier: {
-            specId: SPEC_ID,
-            key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
-            yAccessor: 1,
-            splitAccessors: new Map(),
-            seriesKeys: [1],
-          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec),
           styleOverrides: undefined,
           value: {
             accessor: 'y1',
@@ -99,13 +94,7 @@ describe('Rendering points - line', () => {
           y: 50,
           radius: 0,
           color: 'red',
-          seriesIdentifier: {
-            specId: SPEC_ID,
-            key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
-            yAccessor: 1,
-            splitAccessors: new Map(),
-            seriesKeys: [1],
-          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec),
           value: {
             accessor: 'y1',
             x: 1,
@@ -185,13 +174,7 @@ describe('Rendering points - line', () => {
           y: 50,
           radius: 0,
           color: 'red',
-          seriesIdentifier: {
-            specId: spec1Id,
-            key: 'groupId{group_1}spec{point1}yAccessor{1}splitAccessors{}',
-            yAccessor: 1,
-            splitAccessors: new Map(),
-            seriesKeys: [1],
-          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec1),
           value: {
             accessor: 'y1',
             x: 0,
@@ -211,13 +194,7 @@ describe('Rendering points - line', () => {
           y: 75,
           color: 'red',
           radius: 0,
-          seriesIdentifier: {
-            specId: spec1Id,
-            key: 'groupId{group_1}spec{point1}yAccessor{1}splitAccessors{}',
-            yAccessor: 1,
-            splitAccessors: new Map(),
-            seriesKeys: [1],
-          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec1),
           value: {
             accessor: 'y1',
             x: 1,
@@ -247,13 +224,7 @@ describe('Rendering points - line', () => {
           y: 0,
           color: 'blue',
           radius: 0,
-          seriesIdentifier: {
-            specId: spec2Id,
-            key: 'groupId{group_1}spec{point2}yAccessor{1}splitAccessors{}',
-            yAccessor: 1,
-            splitAccessors: new Map(),
-            seriesKeys: [1],
-          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec2),
           value: {
             accessor: 'y1',
             x: 0,
@@ -273,13 +244,7 @@ describe('Rendering points - line', () => {
           y: 50,
           color: 'blue',
           radius: 0,
-          seriesIdentifier: {
-            specId: spec2Id,
-            key: 'groupId{group_1}spec{point2}yAccessor{1}splitAccessors{}',
-            yAccessor: 1,
-            splitAccessors: new Map(),
-            seriesKeys: [1],
-          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec2),
           value: {
             accessor: 'y1',
             x: 1,
@@ -338,13 +303,7 @@ describe('Rendering points - line', () => {
           y: 0,
           color: 'red',
           radius: 0,
-          seriesIdentifier: {
-            specId: SPEC_ID,
-            key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
-            yAccessor: 1,
-            splitAccessors: new Map(),
-            seriesKeys: [1],
-          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec),
           value: {
             accessor: 'y1',
             x: 0,
@@ -360,13 +319,7 @@ describe('Rendering points - line', () => {
           y: 50,
           color: 'red',
           radius: 0,
-          seriesIdentifier: {
-            specId: SPEC_ID,
-            key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
-            yAccessor: 1,
-            splitAccessors: new Map(),
-            seriesKeys: [1],
-          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec),
           value: {
             accessor: 'y1',
             x: 1,
@@ -441,13 +394,7 @@ describe('Rendering points - line', () => {
           y: 50,
           radius: 0,
           color: 'red',
-          seriesIdentifier: {
-            specId: spec1Id,
-            key: 'groupId{group_1}spec{point1}yAccessor{1}splitAccessors{}',
-            yAccessor: 1,
-            splitAccessors: new Map(),
-            seriesKeys: [1],
-          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec1),
           value: {
             accessor: 'y1',
             x: 0,
@@ -463,13 +410,7 @@ describe('Rendering points - line', () => {
           y: 75,
           radius: 0,
           color: 'red',
-          seriesIdentifier: {
-            specId: spec1Id,
-            key: 'groupId{group_1}spec{point1}yAccessor{1}splitAccessors{}',
-            yAccessor: 1,
-            splitAccessors: new Map(),
-            seriesKeys: [1],
-          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec1),
           value: {
             accessor: 'y1',
             x: 1,
@@ -495,13 +436,7 @@ describe('Rendering points - line', () => {
           y: 0,
           color: 'blue',
           radius: 0,
-          seriesIdentifier: {
-            specId: spec2Id,
-            key: 'groupId{group_1}spec{point2}yAccessor{1}splitAccessors{}',
-            yAccessor: 1,
-            splitAccessors: new Map(),
-            seriesKeys: [1],
-          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec2),
           value: {
             accessor: 'y1',
             x: 0,
@@ -517,13 +452,7 @@ describe('Rendering points - line', () => {
           y: 50,
           color: 'blue',
           radius: 0,
-          seriesIdentifier: {
-            specId: spec2Id,
-            key: 'groupId{group_1}spec{point2}yAccessor{1}splitAccessors{}',
-            yAccessor: 1,
-            splitAccessors: new Map(),
-            seriesKeys: [1],
-          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec2),
           value: {
             accessor: 'y1',
             x: 1,
@@ -578,13 +507,7 @@ describe('Rendering points - line', () => {
           y: 0,
           radius: 0,
           color: 'red',
-          seriesIdentifier: {
-            specId: SPEC_ID,
-            key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
-            yAccessor: 1,
-            splitAccessors: new Map(),
-            seriesKeys: [1],
-          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec),
           value: {
             accessor: 'y1',
             x: 1546300800000,
@@ -600,13 +523,7 @@ describe('Rendering points - line', () => {
           y: 50,
           radius: 0,
           color: 'red',
-          seriesIdentifier: {
-            specId: SPEC_ID,
-            key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
-            yAccessor: 1,
-            splitAccessors: new Map(),
-            seriesKeys: [1],
-          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec),
           value: {
             accessor: 'y1',
             x: 1546387200000,
@@ -667,13 +584,7 @@ describe('Rendering points - line', () => {
           y: 50,
           radius: 0,
           color: 'red',
-          seriesIdentifier: {
-            specId: spec1Id,
-            key: 'groupId{group_1}spec{point1}yAccessor{1}splitAccessors{}',
-            yAccessor: 1,
-            splitAccessors: new Map(),
-            seriesKeys: [1],
-          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec1),
           value: {
             accessor: 'y1',
             x: 1546300800000,
@@ -689,13 +600,7 @@ describe('Rendering points - line', () => {
           y: 75,
           radius: 0,
           color: 'red',
-          seriesIdentifier: {
-            specId: spec1Id,
-            key: 'groupId{group_1}spec{point1}yAccessor{1}splitAccessors{}',
-            yAccessor: 1,
-            splitAccessors: new Map(),
-            seriesKeys: [1],
-          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec1),
           value: {
             accessor: 'y1',
             x: 1546387200000,
@@ -718,13 +623,7 @@ describe('Rendering points - line', () => {
           y: 0,
           radius: 0,
           color: 'blue',
-          seriesIdentifier: {
-            specId: spec2Id,
-            key: 'groupId{group_1}spec{point2}yAccessor{1}splitAccessors{}',
-            yAccessor: 1,
-            splitAccessors: new Map(),
-            seriesKeys: [1],
-          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec2),
           value: {
             accessor: 'y1',
             x: 1546300800000,
@@ -740,13 +639,7 @@ describe('Rendering points - line', () => {
           y: 50,
           radius: 0,
           color: 'blue',
-          seriesIdentifier: {
-            specId: spec2Id,
-            key: 'groupId{group_1}spec{point2}yAccessor{1}splitAccessors{}',
-            yAccessor: 1,
-            splitAccessors: new Map(),
-            seriesKeys: [1],
-          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec2),
           value: {
             accessor: 'y1',
             x: 1546387200000,
@@ -859,13 +752,7 @@ describe('Rendering points - line', () => {
           y: 100,
           radius: 0,
           color: 'red',
-          seriesIdentifier: {
-            specId: SPEC_ID,
-            key: 'groupId{__global__}spec{spec_1}yAccessor{1}splitAccessors{}',
-            yAccessor: 1,
-            splitAccessors: new Map(),
-            seriesKeys: [1],
-          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec),
           value: {
             accessor: 'y1',
             x: 0,
@@ -881,13 +768,7 @@ describe('Rendering points - line', () => {
           y: 0,
           radius: 0,
           color: 'red',
-          seriesIdentifier: {
-            specId: SPEC_ID,
-            key: 'groupId{__global__}spec{spec_1}yAccessor{1}splitAccessors{}',
-            yAccessor: 1,
-            splitAccessors: new Map(),
-            seriesKeys: [1],
-          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec),
           value: {
             accessor: 'y1',
             x: 1,

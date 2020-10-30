@@ -231,7 +231,8 @@ describe('Chart State utils', () => {
     const dg = new SeededDataGenerator();
     // 4 groups generated
     const data = dg.generateGroupedSeries(50, 4);
-    const targetKey = 'groupId{__global__}spec{bar1}yAccessor{y}splitAccessors{g-b}';
+    const targetKey =
+      'groupId{__global__}spec{bar1}yAccessor{y}splitAccessors{g-b}smV{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}smH{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}';
 
     describe('empty series collection and specs', () => {
       it('it should return an empty map', () => {

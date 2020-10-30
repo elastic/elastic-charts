@@ -18,6 +18,7 @@
  */
 
 import { MockBarGeometry } from '../../../mocks';
+import { MockSeriesIdentifier } from '../../../mocks/series/series_identifiers';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
@@ -30,23 +31,21 @@ const GROUP_ID = 'group_1';
 describe('Rendering bars', () => {
   test('Can render two bars within domain', () => {
     const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });
+    const spec = MockSeriesSpec.bar({
+      id: SPEC_ID,
+      groupId: GROUP_ID,
+      xScaleType: ScaleType.Ordinal,
+      yScaleType: ScaleType.Linear,
+      xAccessor: 0,
+      yAccessors: [1],
+      data: [
+        [-200, 0],
+        [0, 10],
+        [1, 5],
+      ], // first datum should be skipped as it's out of domain
+    });
     MockStore.addSpecs(
-      [
-        MockSeriesSpec.bar({
-          id: SPEC_ID,
-          groupId: GROUP_ID,
-          xScaleType: ScaleType.Ordinal,
-          yScaleType: ScaleType.Linear,
-          xAccessor: 0,
-          yAccessors: [1],
-          data: [
-            [-200, 0],
-            [0, 10],
-            [1, 5],
-          ], // first datum should be skipped as it's out of domain
-        }),
-        MockGlobalSpec.settingsNoMargins({ xDomain: [0, 1], theme: { colors: { vizColors: ['red'] } } }),
-      ],
+      [spec, MockGlobalSpec.settingsNoMargins({ xDomain: [0, 1], theme: { colors: { vizColors: ['red'] } } })],
       store,
     );
     const { geometries } = computeSeriesGeometriesSelector(store.getState());
@@ -65,13 +64,7 @@ describe('Rendering bars', () => {
           mark: null,
           datum: [0, 10],
         },
-        seriesIdentifier: {
-          specId: SPEC_ID,
-          key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
-          yAccessor: 1,
-          splitAccessors: new Map(),
-          seriesKeys: [1],
-        },
+        seriesIdentifier: MockSeriesIdentifier.fromSpec(spec),
       },
       'displayValue',
     );
@@ -182,7 +175,7 @@ describe('Rendering bars', () => {
       const { geometries } = computeSeriesGeometriesSelector(store.getState());
 
       expect(geometries.bars[0].value[0].displayValue?.text).toBeDefined();
-      expect(geometries.bars[1].value[0].displayValue?.text).toBeUndefined();
+      expect(geometries.bars[0].value[1].displayValue?.text).toBeUndefined();
     });
 
     test('Can render bars with contained value labels', () => {

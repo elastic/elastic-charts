@@ -18,6 +18,7 @@
  */
 
 import { MockBarGeometry, MockPointGeometry } from '../../../mocks';
+import { MockSeriesIdentifier } from '../../../mocks/series/series_identifiers';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
@@ -76,13 +77,7 @@ describe('Rendering bands - areas', () => {
           y: 80,
           radius: 0,
           color: 'red',
-          seriesIdentifier: {
-            specId: SPEC_ID,
-            yAccessor: 2,
-            splitAccessors: new Map(),
-            seriesKeys: [2],
-            key: 'groupId{__global__}spec{spec_1}yAccessor{2}splitAccessors{}',
-          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec),
           styleOverrides: undefined,
           value: {
             accessor: 'y0',
@@ -104,13 +99,7 @@ describe('Rendering bands - areas', () => {
           y: 0,
           radius: 0,
           color: 'red',
-          seriesIdentifier: {
-            specId: SPEC_ID,
-            yAccessor: 2,
-            splitAccessors: new Map(),
-            seriesKeys: [2],
-            key: 'groupId{__global__}spec{spec_1}yAccessor{2}splitAccessors{}',
-          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec),
           styleOverrides: undefined,
           value: {
             accessor: 'y1',
@@ -131,13 +120,7 @@ describe('Rendering bands - areas', () => {
           y: 70,
           radius: 0,
           color: 'red',
-          seriesIdentifier: {
-            specId: SPEC_ID,
-            yAccessor: 2,
-            splitAccessors: new Map(),
-            seriesKeys: [2],
-            key: 'groupId{__global__}spec{spec_1}yAccessor{2}splitAccessors{}',
-          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec),
           value: {
             accessor: 'y0',
             x: 1,
@@ -158,13 +141,7 @@ describe('Rendering bands - areas', () => {
           y: 50,
           radius: 0,
           color: 'red',
-          seriesIdentifier: {
-            specId: SPEC_ID,
-            yAccessor: 2,
-            splitAccessors: new Map(),
-            seriesKeys: [2],
-            key: 'groupId{__global__}spec{spec_1}yAccessor{2}splitAccessors{}',
-          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec),
           styleOverrides: undefined,
           value: {
             accessor: 'y1',
@@ -345,7 +322,9 @@ describe('Rendering bands - areas', () => {
     const settings = MockGlobalSpec.settingsNoMargins({ theme: { colors: { vizColors: ['red', 'blue'] } } });
     MockStore.addSpecs([barSeriesSpec, settings], store);
     const {
-      geometries: { bars },
+      geometries: {
+        bars: [{ value: bars }],
+      },
     } = computeSeriesGeometriesSelector(store.getState());
 
     test('Can render two bars', () => {
@@ -364,13 +343,7 @@ describe('Rendering bands - areas', () => {
             mark: null,
             datum: [0, 2, 10],
           },
-          seriesIdentifier: {
-            specId: SPEC_ID,
-            yAccessor: 2,
-            splitAccessors: new Map(),
-            seriesKeys: [2],
-            key: 'groupId{group_1}spec{spec_1}yAccessor{2}splitAccessors{}',
-          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(barSeriesSpec),
           displayValue: undefined,
           seriesStyle: {
             displayValue: {
@@ -406,13 +379,7 @@ describe('Rendering bands - areas', () => {
             mark: null,
             datum: [2, 3, 5],
           },
-          seriesIdentifier: {
-            specId: SPEC_ID,
-            yAccessor: 2,
-            splitAccessors: new Map(),
-            seriesKeys: [2],
-            key: 'groupId{group_1}spec{spec_1}yAccessor{2}splitAccessors{}',
-          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(barSeriesSpec),
           displayValue: undefined,
           seriesStyle: {
             displayValue: {
@@ -448,13 +415,7 @@ describe('Rendering bands - areas', () => {
             mark: null,
             datum: [3, 4, 8],
           },
-          seriesIdentifier: {
-            specId: SPEC_ID,
-            yAccessor: 2,
-            splitAccessors: new Map(),
-            seriesKeys: [2],
-            key: 'groupId{group_1}spec{spec_1}yAccessor{2}splitAccessors{}',
-          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(barSeriesSpec),
           displayValue: undefined,
           seriesStyle: {
             displayValue: {

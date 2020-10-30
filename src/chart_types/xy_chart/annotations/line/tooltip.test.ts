@@ -19,11 +19,12 @@
 import React from 'react';
 
 import { ChartTypes } from '../../..';
-import { MockAnnotationLineProps } from '../../../../mocks/annotations/annotations';
+import { MockAnnotationLineProps, MockAnnotationRectProps } from '../../../../mocks/annotations/annotations';
 import { MockGlobalSpec } from '../../../../mocks/specs/specs';
 import { SpecTypes } from '../../../../specs/constants';
 import { Position, Rotation } from '../../../../utils/commons';
 import { Dimensions } from '../../../../utils/dimensions';
+import { AnnotationId } from '../../../../utils/ids';
 import { Point } from '../../../../utils/point';
 import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../../utils/themes/theme';
 import {
@@ -35,7 +36,7 @@ import {
   RectAnnotationSpec,
 } from '../../utils/specs';
 import { computeAnnotationTooltipState } from '../tooltip';
-import { AnnotationTooltipState } from '../types';
+import { AnnotationDimensions, AnnotationTooltipState } from '../types';
 import { computeLineAnnotationTooltipState } from './tooltip';
 import { AnnotationLineProps } from './types';
 
@@ -233,7 +234,7 @@ describe('Annotation tooltips', () => {
     const chartRotation: Rotation = 0;
     const localAxesSpecs: AxisSpec[] = [];
 
-    const annotationDimensions = new Map();
+    const annotationDimensions = new Map<AnnotationId, AnnotationDimensions>();
     annotationDimensions.set(annotationId, annotationLines);
 
     // missing annotations
@@ -320,8 +321,9 @@ describe('Annotation tooltips', () => {
     const rectAnnotations: RectAnnotationSpec[] = [];
     rectAnnotations.push(annotationRectangle);
 
-    const rectAnnotationDimensions = [{ rect: { x: 2, y: 3, width: 3, height: 5 } }];
-    annotationDimensions.set(annotationRectangle.id, rectAnnotationDimensions);
+    annotationDimensions.set(annotationRectangle.id, [
+      MockAnnotationRectProps.default({ rect: { x: 2, y: 3, width: 3, height: 5 } }),
+    ]);
 
     const rectTooltipState = computeAnnotationTooltipState(
       { x: 18, y: 9 },
