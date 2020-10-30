@@ -27,7 +27,6 @@ import { PointerEventType } from '../../../../specs/constants';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { Point } from '../../../../utils/point';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { getGeometriesIndexKeysSelector } from './get_geometries_index_keys';
 import { getOrientedProjectedPointerPositionSelector } from './get_oriented_projected_pointer_position';

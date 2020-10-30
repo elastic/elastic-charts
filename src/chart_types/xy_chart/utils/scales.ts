@@ -21,8 +21,6 @@ import { Scale, ScaleBand, ScaleContinuous } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { GroupId } from '../../../utils/ids';
 import { XDomain, YDomain } from '../domains/types';
-import { FormattedDataSeries } from './series';
-import { SeriesTypes } from './specs';
 
 function getBandScaleRange(
   isInverse: boolean,

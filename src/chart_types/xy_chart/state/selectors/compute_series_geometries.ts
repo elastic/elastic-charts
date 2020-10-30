@@ -24,7 +24,6 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { ComputedGeometries } from '../utils/types';
 import { computeSeriesGeometries } from '../utils/utils';
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { computeSmallMultipleScalesSelector } from './compute_small_multiple_scales';
 import { getSeriesColorsSelector } from './get_series_color_map';

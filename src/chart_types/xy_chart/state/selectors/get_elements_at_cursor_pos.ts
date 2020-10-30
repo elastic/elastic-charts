@@ -22,15 +22,12 @@ import createCachedSelector from 're-reselect';
 import { PointerEvent } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { Dimensions } from '../../../../utils/dimensions';
 import { isValidPointerOverEvent } from '../../../../utils/events';
 import { IndexedGeometry } from '../../../../utils/geometry';
-import { Point } from '../../../../utils/point';
 import { ChartDimensions } from '../../utils/dimensions';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
 import { ComputedScales } from '../utils/types';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
-import { computeSmallMultipleScalesSelector, SmallMultipleScales } from './compute_small_multiple_scales';
 import { getComputedScalesSelector } from './get_computed_scales';
 import { getGeometriesIndexSelector } from './get_geometries_index';
 import { getGeometriesIndexKeysSelector } from './get_geometries_index_keys';
@@ -48,7 +45,6 @@ export const getElementAtCursorPositionSelector = createCachedSelector(
     getGeometriesIndexSelector,
     getExternalPointerEventStateSelector,
     computeChartDimensionsSelector,
-    computeSmallMultipleScalesSelector,
   ],
   getElementAtCursorPosition,
 )(getChartIdSelector);
@@ -60,7 +56,6 @@ function getElementAtCursorPosition(
   geometriesIndex: IndexedGeometryMap,
   externalPointerEvent: PointerEvent | null,
   { chartDimensions }: ChartDimensions,
-  { horizontal, vertical }: SmallMultipleScales,
 ): IndexedGeometry[] {
   if (isValidPointerOverEvent(scales.xScale, externalPointerEvent)) {
     const x = scales.xScale.pureScale(externalPointerEvent.value);

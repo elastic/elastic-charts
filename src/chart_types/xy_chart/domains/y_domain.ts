@@ -35,12 +35,6 @@ export type YBasicSeriesSpec = Pick<
   'id' | 'seriesType' | 'yScaleType' | 'groupId' | 'stackAccessors' | 'yScaleToDataExtent' | 'useDefaultGroupDomain'
 > & { stackMode?: StackMode; enableHistogramMode?: boolean };
 
-interface GroupSpecs {
-  stackMode?: StackMode;
-  stacked: YBasicSeriesSpec[];
-  nonStacked: YBasicSeriesSpec[];
-}
-
 /** @internal */
 export function mergeYDomain(
   dataSeries: DataSeries[],
