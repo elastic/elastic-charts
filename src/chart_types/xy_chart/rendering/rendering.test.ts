@@ -143,6 +143,7 @@ describe('Rendering utils', () => {
       defaultExtra: {
         formatted: null,
         raw: null,
+        legendSizingLabel: null,
       },
     };
 

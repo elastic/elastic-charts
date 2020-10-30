@@ -19,7 +19,6 @@
 
 import { SeriesKey, SeriesIdentifier } from '../../../../commons/series_id';
 import { Scale } from '../../../../scales';
-import { ScaleType } from '../../../../scales/constants';
 import { GroupBySpec } from '../../../../specs';
 import { OrderBy } from '../../../../specs/settings';
 import { mergePartial, Rotation, Color, isUniqueArray } from '../../../../utils/commons';
@@ -141,9 +140,7 @@ export function getCustomSeriesColors(
 
 function getLastValues(dataSeries: DataSeries[], xDomain: XDomain): Map<SeriesKey, LastValues> {
   const lastValues = new Map<SeriesKey, LastValues>();
-  if (xDomain.scaleType === ScaleType.Ordinal) {
-    return lastValues;
-  }
+
   // we need to get the latest
   dataSeries.forEach((series) => {
     if (series.data.length === 0) {
