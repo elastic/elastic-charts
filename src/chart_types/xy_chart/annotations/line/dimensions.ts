@@ -214,8 +214,8 @@ function computeXDomainLineAnnotationDimensions(
               color: lineColor,
               dimension: { ...markerDimensions },
               position: {
-                top: Math.abs(markerPosition.top),
-                left: Math.abs(markerPosition.left),
+                top: markerPosition.top,
+                left: markerPosition.left,
               },
             }
           : undefined;
