@@ -272,7 +272,7 @@ export type BasicListener = () => undefined | void;
 // @public (undocumented)
 export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales & {
     markFormat?: TickFormatter<number>;
-};
+} & SmallMultiplesAccessors;
 
 // Warning: (ae-missing-release-tag) "BinAgg" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -771,6 +771,36 @@ export interface GroupBrushExtent {
     extent: [number, number];
     // (undocumented)
     groupId: GroupId;
+}
+
+// Warning: (ae-missing-release-tag) "GroupBy" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export const GroupBy: React.FunctionComponent<GroupByProps>;
+
+// Warning: (ae-missing-release-tag) "GroupByAccessor" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type GroupByAccessor = (spec: Spec, datum: any) => Array<string | number>;
+
+// Warning: (ae-missing-release-tag) "GroupByProps" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type GroupByProps = Pick<GroupBySpec, 'id' | 'by' | 'sort'>;
+
+// Warning: (ae-missing-release-tag) "GroupBySort" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type GroupBySort = Array<string | number>;
+
+// Warning: (ae-missing-release-tag) "GroupBySpec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface GroupBySpec extends Spec {
+    // (undocumented)
+    by: GroupByAccessor;
+    // (undocumented)
+    sort: GroupBySort;
 }
 
 // @public (undocumented)
@@ -1635,6 +1665,39 @@ export interface SimplePadding {
     outer: number;
 }
 
+// Warning: (ae-missing-release-tag) "SmallMultiples" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export const SmallMultiples: React.FunctionComponent<SmallMultiplesProps>;
+
+// Warning: (ae-missing-release-tag) "SmallMultiplesAccessors" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface SmallMultiplesAccessors {
+    // (undocumented)
+    smallMultiple?: {
+        horizontalAccessor?: Accessor;
+        verticalAccessor?: Accessor;
+        shouldWrap?: boolean;
+    };
+}
+
+// Warning: (ae-forgotten-export) The symbol "DefaultSmallMultiplesProps" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "SmallMultiplesProps" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type SmallMultiplesProps = Partial<Omit<SmallMultiplesSpec, DefaultSmallMultiplesProps>>;
+
+// Warning: (ae-missing-release-tag) "SmallMultiplesSpec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface SmallMultiplesSpec extends Spec {
+    // (undocumented)
+    splitHorizontally?: string;
+    // (undocumented)
+    splitVertically?: string;
+}
+
 // Warning: (ae-missing-release-tag) "Spec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -1655,6 +1718,8 @@ export const SpecTypes: Readonly<{
     Axis: "axis";
     Annotation: "annotation";
     Settings: "settings";
+    IndexOrder: "index_order";
+    SmallMultiples: "small_multiples";
 }>;
 
 // @public (undocumented)
@@ -1870,6 +1935,10 @@ export type XYChartElementEvent = [GeometryValue, XYChartSeriesIdentifier];
 export interface XYChartSeriesIdentifier extends SeriesIdentifier {
     // (undocumented)
     seriesKeys: (string | number)[];
+    // (undocumented)
+    smHorizontalAccessorValue?: string | number;
+    // (undocumented)
+    smVerticalAccessorValue?: string | number;
     // (undocumented)
     splitAccessors: Map<string | number, string | number>;
     // (undocumented)

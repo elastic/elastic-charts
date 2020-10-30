@@ -18,6 +18,7 @@
  */
 import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
 
+/** @internal */
 export function getPanelSize({ horizontal, vertical }: SmallMultipleScales) {
   return { width: horizontal.bandwidth, height: vertical.bandwidth };
 }

@@ -31,17 +31,20 @@ import { getPanelSize } from './panel';
 import { perPanelMap } from './panel_utils';
 import { AxisSpec } from './specs';
 
+/** @internal */
 export interface GridLineGroup {
   lines: Array<Line>;
   stroke: Stroke;
   axisId: AxisId;
 }
 
+/** @internal */
 export type LinesGrid = {
   panelAnchor: Point;
   lineGroups: Array<GridLineGroup>;
 };
 
+/** @internal */
 export function getGridLines(
   axesSpecs: Array<AxisSpec>,
   axesGeoms: Array<AxisGeometry>,

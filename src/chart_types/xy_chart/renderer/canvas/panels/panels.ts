@@ -22,6 +22,7 @@ import { stringToRGB } from '../../../../partition_chart/layout/utils/color_libr
 import { PanelGeoms } from '../../../state/selectors/compute_panels';
 import { renderRect } from '../primitives/rect';
 
+/** @internal */
 export function renderGridPanels(ctx: CanvasRenderingContext2D, chartAnchor: Point, panels: PanelGeoms) {
   withContext(ctx, (ctx) => {
     ctx.translate(chartAnchor.x, chartAnchor.y);

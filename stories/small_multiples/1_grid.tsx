@@ -79,8 +79,8 @@ export const Example = () => {
             },
           }}
         />
-        <Axis id="time" title="horizontal" position={Position.Bottom} gridLine={{ visible: false }} />
-        <Axis id="y" title="vertical" position={Position.Left} gridLine={{ visible: false }} />
+        <Axis id="time" title="horizontal" position={Position.Bottom} gridLine={{ visible: true }} />
+        <Axis id="y" title="vertical" position={Position.Left} gridLine={{ visible: true }} />
 
         <GroupBy
           id="v_split"

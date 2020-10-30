@@ -26,6 +26,7 @@ import { PerPanelMap, perPanelMap } from '../../utils/panel_utils';
 import { computeAxesGeometriesSelector } from './compute_axes_geometries';
 import { computeSmallMultipleScalesSelector } from './compute_small_multiple_scales';
 
+/** @internal */
 export type PerPanelAxisGeoms = {
   axesGeoms: AxisGeometry[];
 } & PerPanelMap;

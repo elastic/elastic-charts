@@ -19,11 +19,14 @@
 import { Point } from '../../../utils/point';
 import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
 
+/** @internal */
 export interface PerPanelMap {
   panelAnchor: Point;
   horizontalValue: any;
   verticalValue: any;
 }
+
+/** @internal */
 export function perPanelMap<T>(
   scales: SmallMultipleScales,
   fn: (panelAnchor: Point, horizontalValue: any, verticalValue: any, scales: SmallMultipleScales) => T | null,

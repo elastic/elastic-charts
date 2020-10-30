@@ -25,6 +25,7 @@ import { getPanelSize } from '../../utils/panel';
 import { PerPanelMap, perPanelMap } from '../../utils/panel_utils';
 import { computeSmallMultipleScalesSelector } from './compute_small_multiple_scales';
 
+/** @internal */
 export type PanelGeoms = Array<Size & PerPanelMap>;
 
 /** @internal */
