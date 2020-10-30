@@ -45,7 +45,7 @@
     @include euiYScrollWithShadows;
     width: 100%;
     overflow-y: auto;
-    overflow-x: hidden;
+    // overflow-x: hidden;
   }
 
   &:focus {

@@ -81,7 +81,7 @@ export function renderLegendItem(
 
   return (
     <>
-      <button type="button" tabIndex={0} aria-label="color legend label and value">
+      <div aria-label="color legend label and value">
         <LegendListItem
           key={`${key}-${childId}-${index}`}
           item={item}
@@ -101,7 +101,7 @@ export function renderLegendItem(
           onMouseOut={props.onMouseOut}
           onClick={props.onClick}
         />
-      </button>
+      </div>
     </>
   );
 }
