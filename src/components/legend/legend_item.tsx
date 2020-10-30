@@ -81,27 +81,25 @@ export function renderLegendItem(
 
   return (
     <>
-      <div aria-label="color legend label and value">
-        <LegendListItem
-          key={`${key}-${childId}-${index}`}
-          item={item}
-          totalItems={totalItems}
-          position={props.position}
-          colorPicker={props.colorPicker}
-          action={props.action}
-          extraValues={props.extraValues}
-          showExtra={props.showExtra}
-          toggleDeselectSeriesAction={props.toggleDeselectSeriesAction}
-          mouseOutAction={props.mouseOutAction}
-          mouseOverAction={props.mouseOverAction}
-          clearTemporaryColorsAction={props.clearTemporaryColorsAction}
-          setTemporaryColorAction={props.setTemporaryColorAction}
-          setPersistedColorAction={props.setPersistedColorAction}
-          onMouseOver={props.onMouseOver}
-          onMouseOut={props.onMouseOut}
-          onClick={props.onClick}
-        />
-      </div>
+      <LegendListItem
+        key={`${key}-${childId}-${index}`}
+        item={item}
+        totalItems={totalItems}
+        position={props.position}
+        colorPicker={props.colorPicker}
+        action={props.action}
+        extraValues={props.extraValues}
+        showExtra={props.showExtra}
+        toggleDeselectSeriesAction={props.toggleDeselectSeriesAction}
+        mouseOutAction={props.mouseOutAction}
+        mouseOverAction={props.mouseOverAction}
+        clearTemporaryColorsAction={props.clearTemporaryColorsAction}
+        setTemporaryColorAction={props.setTemporaryColorAction}
+        setPersistedColorAction={props.setPersistedColorAction}
+        onMouseOver={props.onMouseOver}
+        onMouseOut={props.onMouseOut}
+        onClick={props.onClick}
+      />
     </>
   );
 }
