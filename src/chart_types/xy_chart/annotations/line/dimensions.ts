@@ -103,8 +103,8 @@ function computeYDomainLineAnnotationDimensions(
               color: lineColor,
               dimension: { ...markerDimensions },
               position: {
-                top: Math.abs(markerPosition.top),
-                left: Math.abs(markerPosition.left),
+                top: markerPosition.top,
+                left: markerPosition.left,
               },
             }
           : undefined;
@@ -406,7 +406,7 @@ function getMarkerPositionForYAnnotation(
       };
     case Position.Top:
       return {
-        top: 0 - mHeight,
+        top: -mHeight,
         left: rotation === 90 ? width - value - mWidth / 2 : value - mWidth / 2,
       };
     case Position.Bottom:

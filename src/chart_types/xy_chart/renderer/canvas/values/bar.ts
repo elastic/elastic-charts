@@ -28,6 +28,7 @@ import { colorIsDark, getTextColorIfTextInvertible } from '../../../../partition
 import { getFillTextColor } from '../../../../partition_chart/layout/viewmodel/fill_text_layout';
 import { renderText, wrapLines } from '../primitives/text';
 import { renderDebugRect } from '../utils/debug';
+import { withPanelTransform } from '../utils/panel_transform';
 
 interface BarValuesProps {
   theme: Theme;
@@ -35,6 +36,7 @@ interface BarValuesProps {
   chartRotation: Rotation;
   debug: boolean;
   bars: BarGeometry[];
+  panel: Dimensions;
 }
 
 const CHART_DIRECTION: Record<string, Rotation> = {
@@ -46,7 +48,7 @@ const CHART_DIRECTION: Record<string, Rotation> = {
 
 /** @internal */
 export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesProps) {
-  const { bars, debug, chartRotation, chartDimensions, theme } = props;
+  const { bars, debug, chartRotation, chartDimensions, theme, panel } = props;
   const { fontFamily, fontStyle, fill, alignment } = theme.barSeriesStyle.displayValue;
   const barsLength = bars.length;
   for (let i = 0; i < barsLength; i++) {
@@ -95,23 +97,25 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
     for (let j = 0; j < linesLength; j++) {
       const textLine = textLines.lines[j];
       const origin = repositionTextLine({ x, y }, chartRotation, j, linesLength, { height, width });
-      renderText(
-        ctx,
-        origin,
-        textLine,
-        {
-          ...font,
-          fill: fillColor,
-          fontSize,
-          align,
-          baseline,
-          shadow: shadowColor,
-          shadowSize,
-        },
-        -chartRotation,
-        undefined,
-        fontScale,
-      );
+      withPanelTransform(ctx, panel, chartRotation, chartDimensions, (ctx) => {
+        renderText(
+          ctx,
+          origin,
+          textLine,
+          {
+            ...font,
+            fill: fillColor,
+            fontSize,
+            align,
+            baseline,
+            shadow: shadowColor,
+            shadowSize,
+          },
+          -chartRotation,
+          undefined,
+          fontScale,
+        );
+      });
     }
   }
 }

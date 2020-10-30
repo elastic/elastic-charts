@@ -69,7 +69,7 @@ export function renderAreas(ctx: CanvasRenderingContext2D, props: AreaGeometries
 
     areas.forEach(({ panel, value: area }) => {
       const { seriesPointStyle, seriesIdentifier } = area;
-      if (seriesPointStyle.visible) {
+      if (!seriesPointStyle.visible) {
         return;
       }
       const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);

@@ -44,11 +44,11 @@ import { SB_SOURCE_PANEL } from '../utils/storybook';
 const getRandomNumber = getRandomNumberGenerator();
 const dg = new DataGenerator();
 
-const data1 = dg.generateGroupedSeries(50, 3);
-const data2 = dg.generateGroupedSeries(50, 3).map((d) => {
+const data1 = dg.generateGroupedSeries(10, 3);
+const data2 = dg.generateGroupedSeries(10, 3).map((d) => {
   return getRandomNumber() > 0.95 ? { ...d, y: null } : d;
 });
-const data3 = dg.generateGroupedSeries(50, 3).map((d) => {
+const data3 = dg.generateGroupedSeries(10, 3).map((d) => {
   return getRandomNumber() > 0.95 ? { ...d, y: null } : d;
 });
 
@@ -56,7 +56,7 @@ export const Example = () => {
   const splitVertically = boolean('vertical split', true);
   const splitHorizontally = boolean('horizontal split', true);
   const [rotationIndex, setRotationIndex] = useState(0);
-  const rot: Rotation = ([180, -90, 90, 0] as Rotation[])[rotationIndex];
+  const rot: Rotation = ([0, -90, 90, 0] as Rotation[])[rotationIndex];
   return (
     <>
       <button
@@ -72,6 +72,17 @@ export const Example = () => {
           rotation={rot}
           theme={{
             markSizeRatio: 15,
+            barSeriesStyle: {
+              displayValue: {
+                fontSize: {
+                  max: 20,
+                  min: 10,
+                },
+                fill: {
+                  color: 'black',
+                },
+              },
+            },
             bubbleSeriesStyle: {
               point: {
                 opacity: 0.6,
@@ -80,7 +91,13 @@ export const Example = () => {
           }}
         />
         <Axis id="time" title="horizontal" position={Position.Bottom} gridLine={{ visible: true }} />
-        <Axis id="y" title="vertical" position={Position.Left} gridLine={{ visible: true }} />
+        <Axis
+          id="y"
+          title="vertical"
+          position={Position.Left}
+          gridLine={{ visible: true }}
+          tickFormat={(d) => d.toFixed(2)}
+        />
 
         <GroupBy
           id="v_split"
@@ -100,24 +117,14 @@ export const Example = () => {
           splitVertically={splitVertically ? 'v_split' : undefined}
           splitHorizontally={splitHorizontally ? 'h_split' : undefined}
         />
-        <BarSeries
-          id="bar"
-          xScaleType={ScaleType.Linear}
-          yScaleType={ScaleType.Linear}
-          timeZone="local"
-          xAccessor="x"
-          yAccessors={['y']}
-          splitSeriesAccessors={['g']}
-          stackAccessors={['g']}
-          data={data1}
-        />
+
         <RectAnnotation
           dataValues={[
             {
               details: 'ciao',
               coordinates: {
-                x0: 10,
-                x1: 30,
+                x0: 1,
+                x1: 3,
                 y0: 1,
                 y1: 3,
               },
@@ -128,9 +135,10 @@ export const Example = () => {
             fill: 'violet',
             opacity: 0.5,
           }}
+          zIndex={-10}
         />
         <LineAnnotation
-          dataValues={[{ dataValue: 10 }]}
+          dataValues={[{ dataValue: 4 }]}
           id="test"
           domainType={AnnotationDomainTypes.XDomain}
           marker={<div style={{ width: 10, height: 10, background: 'red' }} />}
@@ -141,6 +149,7 @@ export const Example = () => {
               opacity: 0.8,
             },
           }}
+          zIndex={-10}
         />
 
         <LineAnnotation
@@ -155,6 +164,7 @@ export const Example = () => {
               opacity: 0.8,
             },
           }}
+          zIndex={-10}
         />
 
         <AreaSeries
@@ -167,6 +177,20 @@ export const Example = () => {
           splitSeriesAccessors={['g']}
           fit={Fit.Linear}
           data={data2}
+        />
+        <BarSeries
+          id="bar"
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          timeZone="local"
+          xAccessor="x"
+          yAccessors={['y']}
+          splitSeriesAccessors={['g']}
+          stackAccessors={['g']}
+          data={data1}
+          displayValueSettings={{
+            showValueLabel: true,
+          }}
         />
         <BubbleSeries
           id="bubble"
@@ -187,7 +211,7 @@ export const Example = () => {
           xAccessor="x"
           yAccessors={['y']}
           splitSeriesAccessors={['g']}
-          markSizeAccessor="y"
+          fit={Fit.Linear}
           data={data3}
         />
       </Chart>

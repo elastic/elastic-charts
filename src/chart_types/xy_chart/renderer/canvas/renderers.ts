@@ -163,15 +163,16 @@ export function renderXYChartCanvas2d(
         });
       },
       (ctx: CanvasRenderingContext2D) => {
-        withContext(ctx, (ctx) => {
-          ctx.translate(transform.x, transform.y);
-          ctx.rotate((chartRotation * Math.PI) / 180);
-          renderBarValues(ctx, {
-            bars: geometries.bars.flatMap(({ value }) => value),
-            chartDimensions,
-            chartRotation,
-            debug,
-            theme,
+        geometries.bars.forEach(({ value: bars, panel }) => {
+          withContext(ctx, (ctx) => {
+            renderBarValues(ctx, {
+              bars,
+              panel,
+              chartDimensions,
+              chartRotation,
+              debug,
+              theme,
+            });
           });
         });
       },

@@ -93,7 +93,7 @@ describe('annotation marker', () => {
           icon: <div />,
           color: '#777',
           dimension: { width: 0, height: 0 },
-          position: { left: 0, top: 80 },
+          position: { left: -0, top: 80 },
         },
       }),
     ];
@@ -134,7 +134,7 @@ describe('annotation marker', () => {
           icon: <div />,
           color: '#777',
           dimension: { width: 0, height: 0 },
-          position: { left: 0, top: 20 },
+          position: { left: -0, top: 20 },
         },
       }),
     ];
