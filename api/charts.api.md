@@ -272,7 +272,7 @@ export type BasicListener = () => undefined | void;
 // @public (undocumented)
 export type BasicSeriesSpec = SeriesSpec & SeriesAccessors & SeriesScales & {
     markFormat?: TickFormatter<number>;
-} & SmallMultiplesAccessors;
+};
 
 // Warning: (ae-missing-release-tag) "BinAgg" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1657,18 +1657,6 @@ export interface SimplePadding {
 
 // @alpha (undocumented)
 export const SmallMultiples: React.FunctionComponent<SmallMultiplesProps>;
-
-// Warning: (ae-missing-release-tag) "SmallMultiplesAccessors" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export interface SmallMultiplesAccessors {
-    // (undocumented)
-    smallMultiple?: {
-        horizontalAccessor?: Accessor;
-        verticalAccessor?: Accessor;
-        shouldWrap?: boolean;
-    };
-}
 
 // Warning: (ae-forgotten-export) The symbol "DefaultSmallMultiplesProps" needs to be exported by the entry point index.d.ts
 //

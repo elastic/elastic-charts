@@ -458,14 +458,6 @@ export interface SeriesScales {
   yScaleToDataExtent?: boolean;
 }
 
-export interface SmallMultiplesAccessors {
-  smallMultiple?: {
-    horizontalAccessor?: Accessor;
-    verticalAccessor?: Accessor;
-    shouldWrap?: boolean;
-  };
-}
-
 /** @public */
 
 export type BasicSeriesSpec = SeriesSpec &
@@ -477,7 +469,7 @@ export type BasicSeriesSpec = SeriesSpec &
      * Only used with line/area series
      */
     markFormat?: TickFormatter<number>;
-  } & SmallMultiplesAccessors;
+  };
 
 export type SeriesSpecs<S extends BasicSeriesSpec = BasicSeriesSpec> = Array<S>;
 

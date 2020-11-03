@@ -124,7 +124,7 @@ export function computeRectAnnotationDimensions(
     });
   });
 
-  return rectsProps.flatMap<AnnotationRectProps>((props) => {
+  return rectsProps.reduce<AnnotationRectProps[]>((acc, props) => {
     const duplicated: AnnotationRectProps[] = [];
     smallMultiplesScales.vertical.domain.forEach((vDomainValue) => {
       smallMultiplesScales.horizontal.domain.forEach((hDomainValue) => {
@@ -136,8 +136,8 @@ export function computeRectAnnotationDimensions(
         duplicated.push({ ...props, panel });
       });
     });
-    return duplicated;
-  });
+    return [...acc, ...duplicated];
+  }, []);
 }
 
 function scaleXonBandScale(
