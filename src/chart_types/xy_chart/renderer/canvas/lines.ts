@@ -19,7 +19,7 @@
 
 import { LegendItem } from '../../../../commons/legend';
 import { Rect } from '../../../../geoms/types';
-import { withContext, withClip } from '../../../../renderers/canvas';
+import { withContext } from '../../../../renderers/canvas';
 import { Rotation } from '../../../../utils/commons';
 import { Dimensions } from '../../../../utils/dimensions';
 import { LineGeometry, PerPanel } from '../../../../utils/geometry';
@@ -49,24 +49,31 @@ export function renderLines(ctx: CanvasRenderingContext2D, props: LineGeometries
       const { seriesLineStyle, seriesPointStyle } = line;
 
       if (seriesLineStyle.visible) {
-        withPanelTransform(ctx, panel, rotation, chartDimensions, (ctx) => {
-          renderLine(ctx, line, sharedStyle, clippings, highlightedLegendItem);
-        });
+        withPanelTransform(
+          ctx,
+          panel,
+          rotation,
+          chartDimensions,
+          (ctx) => {
+            renderLine(ctx, line, sharedStyle, clippings, highlightedLegendItem);
+          },
+          { area: clippings, shouldClip: true },
+        );
       }
 
       if (seriesPointStyle.visible) {
-        withPanelTransform(ctx, panel, rotation, chartDimensions, (ctx) => {
-          withClip(
-            ctx,
-            clippings,
-            (ctx) => {
-              const geometryStyle = getGeometryStateStyle(line.seriesIdentifier, sharedStyle, highlightedLegendItem);
-              renderPoints(ctx, line.points, line.seriesPointStyle, geometryStyle);
-            },
-            // TODO: add padding over clipping
-            line.points[0]?.value.mark !== null,
-          );
-        });
+        withPanelTransform(
+          ctx,
+          panel,
+          rotation,
+          chartDimensions,
+          (ctx) => {
+            const geometryStyle = getGeometryStateStyle(line.seriesIdentifier, sharedStyle, highlightedLegendItem);
+            renderPoints(ctx, line.points, line.seriesPointStyle, geometryStyle);
+          },
+          // TODO: add padding over clipping
+          { area: clippings, shouldClip: line.points[0]?.value.mark !== null },
+        );
       }
     });
   });

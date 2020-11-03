@@ -26,7 +26,6 @@ export default {
   },
 };
 
-// export { Example as grid } from './1_grid';
 export { Example as verticalAreas } from './2_vertical_areas';
 export { Example as horizontalBars } from './4_horizontal_bars';
 export { Example as gridLines } from './3_grid_lines';

@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { Rect } from '../../../../../geoms/types';
 import { withContext } from '../../../../../renderers/canvas';
 import { Rotation } from '../../../../../utils/commons';
 import { Dimensions } from '../../../../../utils/dimensions';
@@ -27,6 +28,10 @@ export function withPanelTransform(
   rotation: Rotation,
   renderingArea: Dimensions,
   fn: (ctx: CanvasRenderingContext2D) => void,
+  clippings?: {
+    area: Rect;
+    shouldClip?: boolean;
+  },
 ) {
   const transform = computeChartTransform(panel, rotation);
   const left = renderingArea.left + panel.left + transform.x;
@@ -34,6 +39,17 @@ export function withPanelTransform(
   withContext(context, (ctx) => {
     ctx.translate(left, top);
     ctx.rotate((rotation * Math.PI) / 180);
+
+    if (clippings?.shouldClip) {
+      const { x, y, width, height } = clippings.area;
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(x, y, width, height);
+      ctx.clip();
+    }
     fn(ctx);
+    if (clippings?.shouldClip) {
+      ctx.restore();
+    }
   });
 }

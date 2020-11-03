@@ -773,30 +773,21 @@ export interface GroupBrushExtent {
     groupId: GroupId;
 }
 
-// Warning: (ae-missing-release-tag) "GroupBy" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @alpha (undocumented)
 export const GroupBy: React.FunctionComponent<GroupByProps>;
 
-// Warning: (ae-missing-release-tag) "GroupByAccessor" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @alpha (undocumented)
 export type GroupByAccessor = (spec: Spec, datum: any) => string | number;
 
-// Warning: (ae-missing-release-tag) "GroupByProps" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @alpha (undocumented)
 export type GroupByProps = Pick<GroupBySpec, 'id' | 'by' | 'sort'>;
 
 // Warning: (ae-forgotten-export) The symbol "Predicate" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "GroupBySort" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
-// @public (undocumented)
+// @alpha (undocumented)
 export type GroupBySort = Predicate;
 
-// Warning: (ae-missing-release-tag) "GroupBySpec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @alpha (undocumented)
 export interface GroupBySpec extends Spec {
     // (undocumented)
     by: GroupByAccessor;
@@ -1664,9 +1655,7 @@ export interface SimplePadding {
     outer: number;
 }
 
-// Warning: (ae-missing-release-tag) "SmallMultiples" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @alpha (undocumented)
 export const SmallMultiples: React.FunctionComponent<SmallMultiplesProps>;
 
 // Warning: (ae-missing-release-tag) "SmallMultiplesAccessors" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -1682,19 +1671,21 @@ export interface SmallMultiplesAccessors {
 }
 
 // Warning: (ae-forgotten-export) The symbol "DefaultSmallMultiplesProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "SmallMultiplesProps" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
-// @public (undocumented)
+// @alpha (undocumented)
 export type SmallMultiplesProps = Partial<Omit<SmallMultiplesSpec, DefaultSmallMultiplesProps>>;
 
-// Warning: (ae-missing-release-tag) "SmallMultiplesSpec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @alpha (undocumented)
 export interface SmallMultiplesSpec extends Spec {
     // (undocumented)
     splitHorizontally?: string;
     // (undocumented)
     splitVertically?: string;
+    // (undocumented)
+    style?: {
+        verticalPanelPadding?: [number, number];
+        horizontalPanelPadding?: [number, number];
+    };
 }
 
 // Warning: (ae-missing-release-tag) "Spec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)

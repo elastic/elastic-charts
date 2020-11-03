@@ -29,6 +29,7 @@ export const DEFAULT_SINGLE_PANEL_SM_VALUE = '__ECH_DEFAULT_SINGLE_PANEL_SM_VALU
 /** @internal */
 export const DEFAULT_SM_PANEL_PADDING: [number, number] = [0, 0.1];
 
+/** @alpha */
 export interface SmallMultiplesSpec extends Spec {
   splitHorizontally?: string;
   splitVertically?: string;
@@ -46,8 +47,10 @@ const DEFAULT_SMALL_MULTIPLES_PROPS = {
 
 type DefaultSmallMultiplesProps = keyof typeof DEFAULT_SMALL_MULTIPLES_PROPS;
 
+/** @alpha */
 export type SmallMultiplesProps = Partial<Omit<SmallMultiplesSpec, DefaultSmallMultiplesProps>>;
 
+/** @alpha */
 export const SmallMultiples: React.FunctionComponent<SmallMultiplesProps> = getConnect()(
   specComponentFactory<SmallMultiplesSpec, DefaultSmallMultiplesProps>(DEFAULT_SMALL_MULTIPLES_PROPS),
 );

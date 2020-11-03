@@ -19,7 +19,7 @@
 
 import { LegendItem } from '../../../../commons/legend';
 import { Rect } from '../../../../geoms/types';
-import { withClip, withContext } from '../../../../renderers/canvas';
+import { withContext } from '../../../../renderers/canvas';
 import { Rotation } from '../../../../utils/commons';
 import { Dimensions } from '../../../../utils/dimensions';
 import { AreaGeometry, PerPanel } from '../../../../utils/geometry';
@@ -45,27 +45,33 @@ export function renderAreas(ctx: CanvasRenderingContext2D, props: AreaGeometries
   const { sharedStyle, highlightedLegendItem, areas, clippings, rotation, chartDimensions } = props;
 
   withContext(ctx, (ctx) => {
-    // withClip(ctx, clippings, (ctx: CanvasRenderingContext2D) => {
-    //   ctx.save();
-
-    // eslint-disable-next-line no-restricted-syntax
     areas.forEach(({ panel, value: area }) => {
       const { seriesAreaLineStyle, seriesAreaStyle } = area;
       if (seriesAreaStyle.visible) {
-        withPanelTransform(ctx, panel, rotation, chartDimensions, (ctx) => {
-          renderArea(ctx, area, sharedStyle, clippings, highlightedLegendItem);
-        });
+        withPanelTransform(
+          ctx,
+          panel,
+          rotation,
+          chartDimensions,
+          (ctx) => {
+            renderArea(ctx, area, sharedStyle, clippings, highlightedLegendItem);
+          },
+          { area: clippings, shouldClip: true },
+        );
       }
       if (seriesAreaLineStyle.visible) {
-        withPanelTransform(ctx, panel, rotation, chartDimensions, (ctx) => {
-          renderAreaLines(ctx, area, sharedStyle, clippings, highlightedLegendItem);
-        });
+        withPanelTransform(
+          ctx,
+          panel,
+          rotation,
+          chartDimensions,
+          (ctx) => {
+            renderAreaLines(ctx, area, sharedStyle, clippings, highlightedLegendItem);
+          },
+          { area: clippings, shouldClip: true },
+        );
       }
     });
-    //   ctx.rect(clippings.x, clippings.y, clippings.width, clippings.height);
-    //   ctx.clip();
-    //   ctx.restore();
-    // });
 
     areas.forEach(({ panel, value: area }) => {
       const { seriesPointStyle, seriesIdentifier } = area;
@@ -73,17 +79,16 @@ export function renderAreas(ctx: CanvasRenderingContext2D, props: AreaGeometries
         return;
       }
       const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
-      withPanelTransform(ctx, panel, rotation, chartDimensions, (ctx) => {
-        withClip(
-          ctx,
-          clippings,
-          (ctx) => {
-            renderPoints(ctx, area.points, seriesPointStyle, geometryStateStyle);
-          },
-          // TODO: add padding over clipping
-          area.points[0]?.value.mark !== null,
-        );
-      });
+      withPanelTransform(
+        ctx,
+        panel,
+        rotation,
+        chartDimensions,
+        (ctx) => {
+          renderPoints(ctx, area.points, seriesPointStyle, geometryStateStyle);
+        },
+        { area: clippings, shouldClip: area.points[0]?.value.mark !== null },
+      );
     });
   });
 }

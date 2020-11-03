@@ -19,7 +19,7 @@
 
 import { LegendItem } from '../../../../commons/legend';
 import { Rect } from '../../../../geoms/types';
-import { withContext, withClip } from '../../../../renderers/canvas';
+import { withContext } from '../../../../renderers/canvas';
 import { Rotation } from '../../../../utils/commons';
 import { Dimensions } from '../../../../utils/dimensions';
 import { BarGeometry, PerPanel } from '../../../../utils/geometry';
@@ -61,8 +61,12 @@ function renderPerPanelBars(
   rotation: Rotation = 0,
 ) {
   return ({ panel, value: bars }: PerPanel<BarGeometry[]>) => {
-    withPanelTransform(ctx, panel, rotation, chartDimensions, (ctx) => {
-      withClip(ctx, clippings, (ctx: CanvasRenderingContext2D) => {
+    withPanelTransform(
+      ctx,
+      panel,
+      rotation,
+      chartDimensions,
+      (ctx) => {
         bars.forEach((barGeometry) => {
           const { x, y, width, height, color, seriesStyle, seriesIdentifier } = barGeometry;
           const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
@@ -73,7 +77,8 @@ function renderPerPanelBars(
             renderRect(ctx, rect, fill, stroke);
           });
         });
-      });
-    });
+      },
+      { area: clippings, shouldClip: true },
+    );
   };
 }

@@ -33,7 +33,7 @@ export function renderGridPanels(ctx: CanvasRenderingContext2D, chartAnchor: Poi
           renderRect(
             ctx,
             { x: 0, y: 0, ...panel },
-            { color: stringToRGB('#00000010') },
+            { color: stringToRGB('#00000000') },
             { color: stringToRGB('#000000'), width: 1 },
           );
         });

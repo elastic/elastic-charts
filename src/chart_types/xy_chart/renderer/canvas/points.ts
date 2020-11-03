@@ -19,7 +19,6 @@
 
 import { SeriesKey } from '../../../../commons/series_id';
 import { Circle, Stroke, Fill, Rect } from '../../../../geoms/types';
-import { withClip } from '../../../../renderers/canvas';
 import { Rotation } from '../../../../utils/commons';
 import { Dimensions } from '../../../../utils/dimensions';
 import { PointGeometry } from '../../../../utils/geometry';
@@ -107,15 +106,15 @@ export function renderPointGroup(
     })
     .sort(([{ radius: a }], [{ radius: b }]) => b - a)
     .forEach(([circle, fill, stroke, panel]) => {
-      withPanelTransform(ctx, panel, rotation, renderingArea, (ctx) => {
-        withClip(
-          ctx,
-          clippings,
-          (ctx) => {
-            renderCircle(ctx, circle, fill, stroke);
-          },
-          shouldClip,
-        );
-      });
+      withPanelTransform(
+        ctx,
+        panel,
+        rotation,
+        renderingArea,
+        (ctx) => {
+          renderCircle(ctx, circle, fill, stroke);
+        },
+        { area: clippings, shouldClip },
+      );
     });
 }

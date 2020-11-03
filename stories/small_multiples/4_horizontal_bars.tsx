@@ -32,10 +32,10 @@ import {
   AnnotationDomainTypes,
   LIGHT_THEME,
 } from '../../src';
-import { DataGenerator } from '../../src/utils/data_generators/data_generator';
+import { SeededDataGenerator } from '../../src/mocks/utils';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
-const dg = new DataGenerator();
+const dg = new SeededDataGenerator();
 const numOfDays = 7;
 function generateData() {
   return dg.generateGroupedSeries(numOfDays, 2).map((d) => {

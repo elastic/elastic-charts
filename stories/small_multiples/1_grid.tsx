@@ -37,12 +37,11 @@ import {
   Rotation,
   RectAnnotation,
 } from '../../src';
-import { getRandomNumberGenerator } from '../../src/mocks/utils';
-import { DataGenerator } from '../../src/utils/data_generators/data_generator';
+import { getRandomNumberGenerator, SeededDataGenerator } from '../../src/mocks/utils';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const getRandomNumber = getRandomNumberGenerator();
-const dg = new DataGenerator();
+const dg = new SeededDataGenerator();
 
 const data1 = dg.generateGroupedSeries(10, 3);
 const data2 = dg.generateGroupedSeries(10, 3).map((d) => {

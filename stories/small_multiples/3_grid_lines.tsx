@@ -32,10 +32,10 @@ import {
   niceTimeFormatByDay,
   timeFormatter,
 } from '../../src';
-import { DataGenerator } from '../../src/utils/data_generators/data_generator';
+import { SeededDataGenerator } from '../../src/mocks/utils';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
-const dg = new DataGenerator();
+const dg = new SeededDataGenerator();
 const numOfDays = 90;
 const groupNames = new Array(16).fill(0).map((d, i) => String.fromCharCode(97 + i));
 const data = dg.generateGroupedSeries(numOfDays, 16).map((d) => {
@@ -54,6 +54,7 @@ export const Example = () => {
   return (
     <Chart className="story-chart">
       <Settings
+        debug
         theme={{
           lineSeriesStyle: {
             point: {

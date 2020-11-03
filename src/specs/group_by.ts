@@ -24,9 +24,12 @@ import { Predicate } from '../chart_types/heatmap/utils/commons';
 import { getConnect, specComponentFactory } from '../state/spec_factory';
 import { SpecTypes } from './constants';
 
+/** @alpha */
 export type GroupByAccessor = (spec: Spec, datum: any) => string | number;
+/** @alpha */
 export type GroupBySort = Predicate;
 
+/** @alpha */
 export interface GroupBySpec extends Spec {
   by: GroupByAccessor;
   sort: GroupBySort;
@@ -38,8 +41,10 @@ const DEFAULT_GROUP_BY_PROPS = {
 
 type DefaultGroupByProps = 'chartType' | 'specType';
 
+/** @alpha */
 export type GroupByProps = Pick<GroupBySpec, 'id' | 'by' | 'sort'>;
 
+/** @alpha */
 export const GroupBy: React.FunctionComponent<GroupByProps> = getConnect()(
   specComponentFactory<GroupBySpec, DefaultGroupByProps>(DEFAULT_GROUP_BY_PROPS),
 );
