@@ -58,15 +58,6 @@ export const Example = () => {
         yAccessors={[1]}
         data={data}
         curve={CurveType.CURVE_MONOTONE_X}
-        areaSeriesStyle={{
-          line: {
-            opacity: 0.3,
-            strokeWidth: 10,
-          },
-          area: {
-            visible: false,
-          },
-        }}
       />
     </Chart>
   );

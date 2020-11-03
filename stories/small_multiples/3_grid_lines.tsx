@@ -54,7 +54,6 @@ export const Example = () => {
   return (
     <Chart className="story-chart">
       <Settings
-        debug
         theme={{
           lineSeriesStyle: {
             point: {
