@@ -28,19 +28,22 @@ interface GridProps {
   sharedAxesStyle: AxisStyle;
   perPanelGridLines: Array<LinesGrid>;
   axesSpecs: AxisSpec[];
-  chartDimensions: Dimensions;
+  renderingArea: Dimensions;
   axesStyles: Map<string, AxisStyle | null>;
 }
 
 /** @internal */
 export function renderGrids(ctx: CanvasRenderingContext2D, props: GridProps) {
-  const { perPanelGridLines, chartDimensions } = props;
+  const {
+    perPanelGridLines,
+    renderingArea: { left, top },
+  } = props;
   withContext(ctx, (ctx) => {
-    ctx.translate(chartDimensions.left, chartDimensions.top);
+    ctx.translate(left, top);
 
-    perPanelGridLines.forEach(({ lineGroups, panelAnchor }) => {
+    perPanelGridLines.forEach(({ lineGroups, panelAnchor: { x, y } }) => {
       withContext(ctx, (ctx) => {
-        ctx.translate(panelAnchor.x, panelAnchor.y);
+        ctx.translate(x, y);
         lineGroups.forEach(({ lines, stroke }) => {
           renderMultiLine(ctx, lines, stroke);
         });

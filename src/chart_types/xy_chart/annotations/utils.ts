@@ -31,7 +31,6 @@ import {
   AnnotationSpec,
   AxisSpec,
   isLineAnnotation,
-  isRectAnnotation,
 } from '../utils/specs';
 import { computeLineAnnotationDimensions } from './line/dimensions';
 import { computeRectAnnotationDimensions } from './rect/dimensions';
@@ -144,12 +143,12 @@ export function computeAnnotationDimensions(
 ): Map<AnnotationId, AnnotationDimensions> {
   return annotations.reduce<Map<AnnotationId, AnnotationDimensions>>((annotationDimensions, annotationSpec) => {
     const { id } = annotationSpec;
-    let dimensions: AnnotationDimensions | null = null;
+
     if (isLineAnnotation(annotationSpec)) {
       const { groupId, domainType } = annotationSpec;
       const annotationAxisPosition = getAnnotationAxis(axesSpecs, groupId, domainType, chartRotation);
 
-      dimensions = computeLineAnnotationDimensions(
+      const dimensions = computeLineAnnotationDimensions(
         annotationSpec,
         chartRotation,
         yScales,
@@ -158,15 +157,20 @@ export function computeAnnotationDimensions(
         isHistogramModeEnabled,
         annotationAxisPosition,
       );
-    } else if (isRectAnnotation(annotationSpec)) {
-      dimensions = computeRectAnnotationDimensions(
-        annotationSpec,
-        yScales,
-        xScale,
-        smallMultipleScales,
-        isHistogramModeEnabled,
-      );
+      if (dimensions) {
+        annotationDimensions.set(id, dimensions);
+      }
+      return annotationDimensions;
     }
+
+    const dimensions = computeRectAnnotationDimensions(
+      annotationSpec,
+      yScales,
+      xScale,
+      smallMultipleScales,
+      isHistogramModeEnabled,
+    );
+
     if (dimensions) {
       annotationDimensions.set(id, dimensions);
     }

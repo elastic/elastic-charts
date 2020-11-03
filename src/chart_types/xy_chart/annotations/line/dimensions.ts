@@ -17,9 +17,10 @@
  * under the License.
  */
 
+import { Line } from '../../../../geoms/types';
 import { Scale } from '../../../../scales';
 import { isContinuousScale, isBandScale } from '../../../../scales/types';
-import { Position, Rotation } from '../../../../utils/commons';
+import { isNil, Position, Rotation } from '../../../../utils/commons';
 import { Dimensions, Size } from '../../../../utils/dimensions';
 import { GroupId } from '../../../../utils/ids';
 import { SmallMultipleScales } from '../../state/selectors/compute_small_multiple_scales';
@@ -28,7 +29,7 @@ import { computeXScaleOffset } from '../../state/utils/utils';
 import { getPanelSize } from '../../utils/panel';
 import { AnnotationDomainTypes, LineAnnotationSpec, LineAnnotationDatum } from '../../utils/specs';
 import { AnnotationMarker } from '../types';
-import { AnnotationLineProps, AnnotationLinePathPoints } from './types';
+import { AnnotationLineProps } from './types';
 
 /** @internal */
 export const DEFAULT_LINE_OVERFLOW = 0;
@@ -78,10 +79,6 @@ function computeYDomainLineAnnotationDimensions(
 
     vertical.domain.forEach((verticalValue) => {
       horizontal.domain.forEach((horizontalValue) => {
-        if (annotationValueYPosition == null) {
-          return;
-        }
-
         const topPos = vertical.scaleOrThrow(verticalValue);
         const leftPos = horizontal.scaleOrThrow(horizontalValue);
 
@@ -154,7 +151,7 @@ function computeXDomainLineAnnotationDimensions(
   dataValues.forEach((datum: LineAnnotationDatum) => {
     const { dataValue } = datum;
     let annotationValueXPosition = xScale.scale(dataValue);
-    if (annotationValueXPosition == null) {
+    if (isNil(annotationValueXPosition)) {
       return;
     }
     if (isContinuousScale(xScale) && typeof dataValue === 'number') {
@@ -325,29 +322,21 @@ function getDefaultMarkerPositionFromAxis(
   return Position.Bottom;
 }
 
-function getXLinePath({ height }: Size, value: number): AnnotationLinePathPoints {
+function getXLinePath({ height }: Size, value: number): Line {
   return {
-    start: {
-      x1: value,
-      y1: 0,
-    },
-    end: {
-      x2: value,
-      y2: height,
-    },
+    x1: value,
+    y1: 0,
+    x2: value,
+    y2: height,
   };
 }
 
-function getYLinePath({ width }: Size, value: number): AnnotationLinePathPoints {
+function getYLinePath({ width }: Size, value: number): Line {
   return {
-    start: {
-      x1: 0,
-      y1: value,
-    },
-    end: {
-      x2: width,
-      y2: value,
-    },
+    x1: 0,
+    y1: value,
+    x2: width,
+    y2: value,
   };
 }
 

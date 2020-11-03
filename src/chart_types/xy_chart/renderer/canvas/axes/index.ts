@@ -43,7 +43,7 @@ export interface AxisProps {
   dimension: AxisTicksDimensions;
   ticks: AxisTick[];
   debug: boolean;
-  chartDimensions: Dimensions;
+  renderingArea: Dimensions;
 }
 
 /** @internal */
@@ -53,12 +53,12 @@ export interface AxesProps {
   axesStyles: Map<string, AxisStyle | null>;
   sharedAxesStyle: AxisStyle;
   debug: boolean;
-  chartDimensions: Dimensions;
+  renderingArea: Dimensions;
 }
 
 /** @internal */
 export function renderAxes(ctx: CanvasRenderingContext2D, props: AxesProps) {
-  const { axesSpecs, perPanelAxisGeoms, axesStyles, sharedAxesStyle, debug, chartDimensions } = props;
+  const { axesSpecs, perPanelAxisGeoms, axesStyles, sharedAxesStyle, debug, renderingArea } = props;
   perPanelAxisGeoms.forEach(({ axesGeoms, panelAnchor }) => {
     withContext(ctx, (ctx) => {
       axesGeoms.forEach((geometry) => {
@@ -86,7 +86,7 @@ export function renderAxes(ctx: CanvasRenderingContext2D, props: AxesProps) {
           ticks,
           axisStyle,
           debug,
-          chartDimensions,
+          renderingArea,
         });
       });
     });

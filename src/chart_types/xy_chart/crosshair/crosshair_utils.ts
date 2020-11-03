@@ -103,8 +103,6 @@ export function getCursorBandPosition(
   const chartWidth = isHorizontalRotated ? width : height;
   const chartHeight = isHorizontalRotated ? height : width;
 
-  // console.log({ x, chartWidth, chartHeight, y });
-
   if (x > chartWidth || y > chartHeight || x < 0 || y < 0 || !invertedValue.withinBandwidth) {
     return {
       top: -1,
@@ -170,23 +168,11 @@ export function getTooltipAnchorPosition(
   chartRotation: Rotation,
   cursorBandPosition: Dimensions,
   cursorPosition: { x: number; y: number },
-  panelDimension: Dimensions,
+  panel: Dimensions,
 ): TooltipAnchorPosition {
   const isRotated = isVerticalRotation(chartRotation);
-  const hPosition = getHorizontalTooltipPosition(
-    cursorPosition.x,
-    cursorBandPosition,
-    panelDimension,
-    offset.left,
-    isRotated,
-  );
-  const vPosition = getVerticalTooltipPosition(
-    cursorPosition.y,
-    cursorBandPosition,
-    panelDimension,
-    offset.top,
-    isRotated,
-  );
+  const hPosition = getHorizontalTooltipPosition(cursorPosition.x, cursorBandPosition, panel, offset.left, isRotated);
+  const vPosition = getVerticalTooltipPosition(cursorPosition.y, cursorBandPosition, panel, offset.top, isRotated);
   return {
     isRotated,
     ...vPosition,

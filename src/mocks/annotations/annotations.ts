@@ -25,8 +25,10 @@ import { mergePartial, RecursivePartial } from '../../utils/commons';
 export class MockAnnotationLineProps {
   private static readonly base: AnnotationLineProps = {
     linePathPoints: {
-      start: { x1: 0, y1: 0 },
-      end: { x2: 0, y2: 0 },
+      x1: 0,
+      y1: 0,
+      x2: 0,
+      y2: 0,
     },
     panel: { top: 0, left: 0, width: 100, height: 100 },
     details: {},
@@ -41,8 +43,10 @@ export class MockAnnotationLineProps {
   static fromPoints(x1 = 0, y1 = 0, x2 = 0, y2 = 0): AnnotationLineProps {
     return MockAnnotationLineProps.default({
       linePathPoints: {
-        start: { x1, y1 },
-        end: { x2, y2 },
+        x1,
+        y1,
+        x2,
+        y2,
       },
     });
   }

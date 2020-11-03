@@ -65,8 +65,8 @@ export interface ReactiveChartStateProps {
   geometriesIndex: IndexedGeometryMap;
   theme: Theme;
   chartContainerDimensions: Dimensions;
-  chartRotation: Rotation;
-  chartDimensions: Dimensions;
+  rotation: Rotation;
+  renderingArea: Dimensions;
   chartTransform: Transform;
   highlightedLegendItem?: LegendItem;
   axesSpecs: AxisSpec[];
@@ -127,12 +127,12 @@ class XYChartComponent extends React.Component<XYChartProps> {
 
   private drawCanvas() {
     if (this.ctx) {
-      const { chartDimensions, chartRotation } = this.props;
+      const { renderingArea, rotation } = this.props;
       const clippings = {
         x: 0,
         y: 0,
-        width: [90, -90].includes(chartRotation) ? chartDimensions.height : chartDimensions.width,
-        height: [90, -90].includes(chartRotation) ? chartDimensions.width : chartDimensions.height,
+        width: [90, -90].includes(rotation) ? renderingArea.height : renderingArea.width,
+        height: [90, -90].includes(rotation) ? renderingArea.width : renderingArea.height,
       };
       renderXYChartCanvas2d(this.ctx, this.devicePixelRatio, clippings, this.props);
     }
@@ -198,8 +198,8 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     left: 0,
     top: 0,
   },
-  chartRotation: 0 as const,
-  chartDimensions: {
+  rotation: 0 as const,
+  renderingArea: {
     width: 0,
     height: 0,
     left: 0,
@@ -236,8 +236,8 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     theme: getChartThemeSelector(state),
     chartContainerDimensions: getChartContainerDimensionsSelector(state),
     highlightedLegendItem: getHighlightedSeriesSelector(state),
-    chartRotation: getChartRotationSelector(state),
-    chartDimensions: computeChartDimensionsSelector(state).chartDimensions,
+    rotation: getChartRotationSelector(state),
+    renderingArea: computeChartDimensionsSelector(state).chartDimensions,
     chartTransform: computeChartTransformSelector(state),
     axesSpecs: getAxisSpecsSelector(state),
     perPanelAxisGeoms: computePerPanelAxesGeomsSelector(state),

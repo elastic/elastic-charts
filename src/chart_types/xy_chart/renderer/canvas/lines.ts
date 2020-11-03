@@ -33,7 +33,7 @@ import { withPanelTransform } from './utils/panel_transform';
 interface LineGeometriesDataProps {
   animated?: boolean;
   lines: Array<PerPanel<LineGeometry>>;
-  chartDimensions: Dimensions;
+  renderingArea: Dimensions;
   rotation: Rotation;
   sharedStyle: SharedGeometryStateStyle;
   highlightedLegendItem?: LegendItem;
@@ -43,7 +43,7 @@ interface LineGeometriesDataProps {
 /** @internal */
 export function renderLines(ctx: CanvasRenderingContext2D, props: LineGeometriesDataProps) {
   withContext(ctx, (ctx) => {
-    const { lines, sharedStyle, highlightedLegendItem, clippings, chartDimensions, rotation } = props;
+    const { lines, sharedStyle, highlightedLegendItem, clippings, renderingArea, rotation } = props;
 
     lines.forEach(({ panel, value: line }) => {
       const { seriesLineStyle, seriesPointStyle } = line;
@@ -53,7 +53,7 @@ export function renderLines(ctx: CanvasRenderingContext2D, props: LineGeometries
           ctx,
           panel,
           rotation,
-          chartDimensions,
+          renderingArea,
           (ctx) => {
             renderLine(ctx, line, sharedStyle, clippings, highlightedLegendItem);
           },
@@ -66,7 +66,7 @@ export function renderLines(ctx: CanvasRenderingContext2D, props: LineGeometries
           ctx,
           panel,
           rotation,
-          chartDimensions,
+          renderingArea,
           (ctx) => {
             const geometryStyle = getGeometryStateStyle(line.seriesIdentifier, sharedStyle, highlightedLegendItem);
             renderPoints(ctx, line.points, line.seriesPointStyle, geometryStyle);

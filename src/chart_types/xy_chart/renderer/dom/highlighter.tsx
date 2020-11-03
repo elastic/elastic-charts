@@ -66,7 +66,7 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
           {highlightedGeometries.map((geom, i) => {
             const { color, panel } = geom;
             const geomTransform = getTransformForPanel(panel, chartRotation, chartDimensions);
-            const x = geom.transform.x + geom.x;
+            const x = geom.x + geom.transform.x;
             const y = geom.y + geom.transform.y;
 
             if (isPointGeometry(geom)) {

@@ -35,14 +35,14 @@ interface AreaGeometriesProps {
   areas: Array<PerPanel<AreaGeometry>>;
   sharedStyle: SharedGeometryStateStyle;
   rotation: Rotation;
-  chartDimensions: Dimensions;
+  renderingArea: Dimensions;
   highlightedLegendItem?: LegendItem;
   clippings: Rect;
 }
 
 /** @internal */
 export function renderAreas(ctx: CanvasRenderingContext2D, props: AreaGeometriesProps) {
-  const { sharedStyle, highlightedLegendItem, areas, clippings, rotation, chartDimensions } = props;
+  const { sharedStyle, highlightedLegendItem, areas, clippings, rotation, renderingArea } = props;
 
   withContext(ctx, (ctx) => {
     areas.forEach(({ panel, value: area }) => {
@@ -52,7 +52,7 @@ export function renderAreas(ctx: CanvasRenderingContext2D, props: AreaGeometries
           ctx,
           panel,
           rotation,
-          chartDimensions,
+          renderingArea,
           (ctx) => {
             renderArea(ctx, area, sharedStyle, clippings, highlightedLegendItem);
           },
@@ -64,7 +64,7 @@ export function renderAreas(ctx: CanvasRenderingContext2D, props: AreaGeometries
           ctx,
           panel,
           rotation,
-          chartDimensions,
+          renderingArea,
           (ctx) => {
             renderAreaLines(ctx, area, sharedStyle, clippings, highlightedLegendItem);
           },
@@ -83,7 +83,7 @@ export function renderAreas(ctx: CanvasRenderingContext2D, props: AreaGeometries
         ctx,
         panel,
         rotation,
-        chartDimensions,
+        renderingArea,
         (ctx) => {
           renderPoints(ctx, area.points, seriesPointStyle, geometryStateStyle);
         },

@@ -55,8 +55,10 @@ function expectAnnotationAtPosition(
     MockAnnotationLineProps.default({
       details: { detailsText: undefined, headerText: `${indexPosition}` },
       linePathPoints: {
-        start: { x1: expectedLinePosition, y1: 0 },
-        end: { x2: expectedLinePosition, y2: 100 },
+        x1: expectedLinePosition,
+        y1: 0,
+        x2: expectedLinePosition,
+        y2: 100,
       },
     }),
   ]);
@@ -146,8 +148,10 @@ describe('Render vertical line annotation within', () => {
     expect(annotations.get(annotation.id)).toEqual([
       MockAnnotationLineProps.default({
         linePathPoints: {
-          start: { x1: 95, y1: 0 },
-          end: { x2: 95, y2: 100 },
+          x1: 95,
+          y1: 0,
+          x2: 95,
+          y2: 100,
         },
         details: { detailsText: 'foo', headerText: '9.5' },
       }),

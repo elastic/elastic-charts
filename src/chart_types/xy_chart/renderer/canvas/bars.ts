@@ -73,7 +73,6 @@ function renderPerPanelBars(
           const { fill, stroke } = buildBarStyles(color, seriesStyle.rect, seriesStyle.rectBorder, geometryStateStyle);
           const rect = { x, y, width, height };
           withContext(ctx, (ctx) => {
-            // ctx.translate(transform.x, transform.y);
             renderRect(ctx, rect, fill, stroke);
           });
         });

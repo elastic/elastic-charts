@@ -31,9 +31,9 @@ import { renderDebugRect } from '../utils/debug';
 import { withPanelTransform } from '../utils/panel_transform';
 
 interface BarValuesProps {
-  theme: Theme;
-  chartDimensions: Dimensions;
-  chartRotation: Rotation;
+  barSeriesStyle: Theme['barSeriesStyle'];
+  renderingArea: Dimensions;
+  rotation: Rotation;
   debug: boolean;
   bars: BarGeometry[];
   panel: Dimensions;
@@ -48,8 +48,8 @@ const CHART_DIRECTION: Record<string, Rotation> = {
 
 /** @internal */
 export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesProps) {
-  const { bars, debug, chartRotation, chartDimensions, theme, panel } = props;
-  const { fontFamily, fontStyle, fill, alignment } = theme.barSeriesStyle.displayValue;
+  const { bars, debug, rotation, renderingArea, barSeriesStyle, panel } = props;
+  const { fontFamily, fontStyle, fill, alignment } = barSeriesStyle.displayValue;
   const barsLength = bars.length;
   for (let i = 0; i < barsLength; i++) {
     const { displayValue } = bars[i];
@@ -74,16 +74,16 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
     const { x, y, align, baseline, rect } = positionText(
       bars[i],
       displayValue,
-      chartRotation,
-      theme.barSeriesStyle.displayValue,
+      rotation,
+      barSeriesStyle.displayValue,
       alignment,
     );
 
     if (displayValue.isValueContainedInElement) {
-      const width = chartRotation === 0 || chartRotation === 180 ? bars[i].width : bars[i].height;
+      const width = rotation === 0 || rotation === 180 ? bars[i].width : bars[i].height;
       textLines = wrapLines(ctx, textLines.lines[0], font, fontSize, width, 100);
     }
-    if (displayValue.hideClippedValue && isOverflow(rect, chartDimensions, chartRotation)) {
+    if (displayValue.hideClippedValue && isOverflow(rect, renderingArea, rotation)) {
       continue;
     }
     if (debug) {
@@ -96,8 +96,8 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
 
     for (let j = 0; j < linesLength; j++) {
       const textLine = textLines.lines[j];
-      const origin = repositionTextLine({ x, y }, chartRotation, j, linesLength, { height, width });
-      withPanelTransform(ctx, panel, chartRotation, chartDimensions, (ctx) => {
+      const origin = repositionTextLine({ x, y }, rotation, j, linesLength, { height, width });
+      withPanelTransform(ctx, panel, rotation, renderingArea, (ctx) => {
         renderText(
           ctx,
           origin,
@@ -111,7 +111,7 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
             shadow: shadowColor,
             shadowSize,
           },
-          -chartRotation,
+          -rotation,
           undefined,
           fontScale,
         );

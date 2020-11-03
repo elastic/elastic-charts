@@ -42,23 +42,9 @@ export function renderLineAnnotations(
     dash: lineStyle.line.dash,
   };
 
-  annotations.forEach(
-    ({
-      linePathPoints: {
-        start: { x1, y1 },
-        end: { x2, y2 },
-      },
-      panel,
-    }) => {
-      const line = {
-        x1,
-        y1,
-        x2,
-        y2,
-      };
-      withPanelTransform(ctx, panel, rotation, renderingArea, (ctx) => {
-        renderLine(ctx, line, stroke);
-      });
-    },
-  );
+  annotations.forEach(({ linePathPoints, panel }) => {
+    withPanelTransform(ctx, panel, rotation, renderingArea, (ctx) => {
+      renderLine(ctx, linePathPoints, stroke);
+    });
+  });
 }

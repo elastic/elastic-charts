@@ -89,8 +89,10 @@ describe('Annotation utils', () => {
     expectedDimensions.set('foo', [
       MockAnnotationLineProps.default({
         linePathPoints: {
-          start: { x1: 0, y1: 80 },
-          end: { x2: 100, y2: 80 },
+          x1: 0,
+          y1: 80,
+          x2: 100,
+          y2: 80,
         },
         details: { detailsText: 'foo', headerText: '2' },
       }),
@@ -155,8 +157,10 @@ describe('Annotation utils', () => {
     const expectedDimensions: AnnotationLineProps[] = [
       MockAnnotationLineProps.default({
         linePathPoints: {
-          start: { x1: 0, y1: 80 },
-          end: { x2: 10, y2: 80 },
+          x1: 0,
+          y1: 80,
+          x2: 10,
+          y2: 80,
         },
         panel,
         details: { detailsText: 'foo', headerText: '2' },
@@ -196,8 +200,10 @@ describe('Annotation utils', () => {
     const expectedDimensions: AnnotationLineProps[] = [
       MockAnnotationLineProps.default({
         linePathPoints: {
-          start: { x1: 0, y1: 80 },
-          end: { x2: 10, y2: 80 },
+          x1: 0,
+          y1: 80,
+          x2: 10,
+          y2: 80,
         },
         panel: { width: 10, height: 100, top: 0, left: 0 },
         details: { detailsText: 'foo', headerText: '2' },
@@ -236,8 +242,10 @@ describe('Annotation utils', () => {
     const expectedDimensions: AnnotationLineProps[] = [
       MockAnnotationLineProps.default({
         linePathPoints: {
-          start: { x1: 0, y1: 80 },
-          end: { x2: 100, y2: 80 },
+          x1: 0,
+          y1: 80,
+          x2: 100,
+          y2: 80,
         },
         details: { detailsText: 'foo', headerText: '2' },
       }),
@@ -306,8 +314,10 @@ describe('Annotation utils', () => {
     const expectedDimensions: AnnotationLineProps[] = [
       MockAnnotationLineProps.default({
         linePathPoints: {
-          start: { x1: 12.5, y1: 0 },
-          end: { x2: 12.5, y2: 100 },
+          x1: 12.5,
+          y1: 0,
+          x2: 12.5,
+          y2: 100,
         },
         details: { detailsText: 'foo', headerText: 'a' },
       }),
@@ -345,8 +355,10 @@ describe('Annotation utils', () => {
     const expectedDimensions: AnnotationLineProps[] = [
       MockAnnotationLineProps.default({
         linePathPoints: {
-          start: { x1: 25, y1: 0 },
-          end: { x2: 25, y2: 100 },
+          x1: 25,
+          y1: 0,
+          x2: 25,
+          y2: 100,
         },
         details: { detailsText: 'foo', headerText: '2' },
       }),
@@ -384,8 +396,10 @@ describe('Annotation utils', () => {
     const expectedDimensions: AnnotationLineProps[] = [
       MockAnnotationLineProps.default({
         linePathPoints: {
-          start: { x1: 25, y1: 0 },
-          end: { x2: 25, y2: 100 },
+          x1: 25,
+          y1: 0,
+          x2: 25,
+          y2: 100,
         },
         details: { detailsText: 'foo', headerText: '2' },
       }),
@@ -423,8 +437,10 @@ describe('Annotation utils', () => {
     const expectedDimensions: AnnotationLineProps[] = [
       MockAnnotationLineProps.default({
         linePathPoints: {
-          start: { x1: 12.5, y1: 0 },
-          end: { x2: 12.5, y2: 100 },
+          x1: 12.5,
+          y1: 0,
+          x2: 12.5,
+          y2: 100,
         },
         details: { detailsText: 'foo', headerText: 'a' },
       }),
@@ -463,8 +479,10 @@ describe('Annotation utils', () => {
     const expectedDimensions: AnnotationLineProps[] = [
       MockAnnotationLineProps.default({
         linePathPoints: {
-          start: { x1: 12.5, y1: 0 },
-          end: { x2: 12.5, y2: 100 },
+          x1: 12.5,
+          y1: 0,
+          x2: 12.5,
+          y2: 100,
         },
         panel,
         details: { detailsText: 'foo', headerText: '2' },
@@ -504,8 +522,10 @@ describe('Annotation utils', () => {
     const expectedDimensions: AnnotationLineProps[] = [
       MockAnnotationLineProps.default({
         linePathPoints: {
-          start: { x1: 12.5, y1: 0 },
-          end: { x2: 12.5, y2: 100 },
+          x1: 12.5,
+          y1: 0,
+          x2: 12.5,
+          y2: 100,
         },
         panel,
         details: { detailsText: 'foo', headerText: '2' },
@@ -544,8 +564,10 @@ describe('Annotation utils', () => {
     const expectedDimensions: AnnotationLineProps[] = [
       MockAnnotationLineProps.default({
         linePathPoints: {
-          start: { x1: 25, y1: 0 },
-          end: { x2: 25, y2: 100 },
+          x1: 25,
+          y1: 0,
+          x2: 25,
+          y2: 100,
         },
         details: { detailsText: 'foo', headerText: '2' },
       }),
@@ -584,8 +606,10 @@ describe('Annotation utils', () => {
     const expectedDimensions: AnnotationLineProps[] = [
       MockAnnotationLineProps.default({
         linePathPoints: {
-          start: { x1: 25, y1: 0 },
-          end: { x2: 25, y2: 50 },
+          x1: 25,
+          y1: 0,
+          x2: 25,
+          y2: 50,
         },
         panel,
         details: { detailsText: 'foo', headerText: '2' },

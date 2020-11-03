@@ -78,14 +78,10 @@ describe('annotation marker', () => {
     const expectedDimensions: AnnotationLineProps[] = [
       MockAnnotationLineProps.default({
         linePathPoints: {
-          start: {
-            x1: 0,
-            y1: 80,
-          },
-          end: {
-            x2: 100,
-            y2: 80,
-          },
+          x1: 0,
+          y1: 80,
+          x2: 100,
+          y2: 80,
         },
         details: { detailsText: 'foo', headerText: '2' },
 
@@ -120,14 +116,10 @@ describe('annotation marker', () => {
     const expectedDimensions: AnnotationLineProps[] = [
       MockAnnotationLineProps.default({
         linePathPoints: {
-          start: {
-            x1: 0,
-            y1: 80,
-          },
-          end: {
-            x2: 100,
-            y2: 80,
-          },
+          x1: 0,
+          y1: 80,
+          x2: 100,
+          y2: 80,
         },
         details: { detailsText: 'foo', headerText: '2' },
         marker: {
@@ -158,14 +150,10 @@ describe('annotation marker', () => {
       MockAnnotationLineProps.default({
         details: { detailsText: 'foo', headerText: '2' },
         linePathPoints: {
-          start: {
-            x1: 20,
-            y1: 0,
-          },
-          end: {
-            x2: 20,
-            y2: 100,
-          },
+          x1: 20,
+          y1: 0,
+          x2: 20,
+          y2: 100,
         },
         marker: {
           icon: <div />,

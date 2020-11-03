@@ -61,8 +61,10 @@ describe('Annotation tooltips', () => {
     const annotationLines: AnnotationLineProps[] = [
       MockAnnotationLineProps.default({
         linePathPoints: {
-          start: { x1: 1, y1: 2 },
-          end: { x2: 3, y2: 4 },
+          x1: 1,
+          y1: 2,
+          x2: 3,
+          y2: 4,
         },
         marker: {
           icon: React.createElement('div'),
@@ -73,8 +75,10 @@ describe('Annotation tooltips', () => {
       }),
       MockAnnotationLineProps.default({
         linePathPoints: {
-          start: { x1: 0, y1: 10 },
-          end: { x2: 20, y2: 10 },
+          x1: 0,
+          y1: 10,
+          x2: 20,
+          y2: 10,
         },
         marker: {
           icon: React.createElement('div'),
@@ -220,8 +224,10 @@ describe('Annotation tooltips', () => {
     const annotationLines: AnnotationLineProps[] = [
       MockAnnotationLineProps.default({
         linePathPoints: {
-          start: { x1: 1, y1: 2 },
-          end: { x2: 3, y2: 4 },
+          x1: 1,
+          y1: 2,
+          x2: 3,
+          y2: 4,
         },
         marker: {
           icon: React.createElement('div'),
