@@ -30,13 +30,8 @@ export function renderExtra(extra: string | number, isSeriesHidden?: boolean) {
     'echLegendItem__extra--hidden': isSeriesHidden,
   });
   return (
-    <button
-      type="button"
-      className={extraClassNames}
-      title={`${extra}`}
-      aria-labelledby={`legend item extra is ${extra}`}
-    >
+    <div className={extraClassNames} title={`${extra}`} aria-labelledby={`legend item extra is ${extra}`}>
       {extra}
-    </button>
+    </div>
   );
 }

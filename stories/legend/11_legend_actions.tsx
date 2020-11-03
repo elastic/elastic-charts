@@ -101,7 +101,8 @@ const getAction = (hideActions: boolean, anchorPosition: PopoverAnchorPosition):
   ];
 
   const Button = (
-    <div
+    <button
+      type="button"
       style={{
         display: 'flex',
         justifyContent: 'center',
@@ -113,7 +114,7 @@ const getAction = (hideActions: boolean, anchorPosition: PopoverAnchorPosition):
       onClick={() => setPopoverOpen(!popoverOpen)}
     >
       <EuiIcon size="s" type="pencil" />
-    </div>
+    </button>
   );
 
   return (

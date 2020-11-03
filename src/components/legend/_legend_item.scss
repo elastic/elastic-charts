@@ -53,6 +53,7 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
     @include euiFontSizeXS;
     @include euiTextTruncate;
     flex: 1 1 auto;
+    text-align: left;
 
     &--clickable {
       &:hover {

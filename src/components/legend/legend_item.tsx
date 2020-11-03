@@ -80,27 +80,25 @@ export function renderLegendItem(
   } = item;
 
   return (
-    <>
-      <LegendListItem
-        key={`${key}-${childId}-${index}`}
-        item={item}
-        totalItems={totalItems}
-        position={props.position}
-        colorPicker={props.colorPicker}
-        action={props.action}
-        extraValues={props.extraValues}
-        showExtra={props.showExtra}
-        toggleDeselectSeriesAction={props.toggleDeselectSeriesAction}
-        mouseOutAction={props.mouseOutAction}
-        mouseOverAction={props.mouseOverAction}
-        clearTemporaryColorsAction={props.clearTemporaryColorsAction}
-        setTemporaryColorAction={props.setTemporaryColorAction}
-        setPersistedColorAction={props.setPersistedColorAction}
-        onMouseOver={props.onMouseOver}
-        onMouseOut={props.onMouseOut}
-        onClick={props.onClick}
-      />
-    </>
+    <LegendListItem
+      key={`${key}-${childId}-${index}`}
+      item={item}
+      totalItems={totalItems}
+      position={props.position}
+      colorPicker={props.colorPicker}
+      action={props.action}
+      extraValues={props.extraValues}
+      showExtra={props.showExtra}
+      toggleDeselectSeriesAction={props.toggleDeselectSeriesAction}
+      mouseOutAction={props.mouseOutAction}
+      mouseOverAction={props.mouseOverAction}
+      clearTemporaryColorsAction={props.clearTemporaryColorsAction}
+      setTemporaryColorAction={props.setTemporaryColorAction}
+      setPersistedColorAction={props.setPersistedColorAction}
+      onMouseOver={props.onMouseOver}
+      onMouseOut={props.onMouseOut}
+      onClick={props.onClick}
+    />
   );
 }
 
@@ -216,9 +214,12 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
           marginLeft: LEGEND_HIERARCHY_MARGIN * (item.depth ?? 0),
         }
       : undefined;
+
     return (
       <>
         <li
+          role="option"
+          aria-selected
           className={itemClassNames}
           onMouseEnter={this.onLegendItemMouseOver}
           onMouseLeave={this.onLegendItemMouseOut}
@@ -236,9 +237,9 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
           <ItemLabel label={label} onClick={this.handleLabelClick(seriesIdentifier)} />
           {showExtra && extra != null && renderExtra(extra, isSeriesHidden)}
           {Action && (
-            <button type="button" className="echLegendItem__action">
+            <div className="echLegendItem__action">
               <Action series={seriesIdentifier} color={color} label={label} />
-            </button>
+            </div>
           )}
         </li>
         {this.renderColorPicker()}

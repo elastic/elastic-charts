@@ -38,7 +38,7 @@
   }
 
   &:focus {
-    box-shadow: inset 0 0 0 4 / 4 rgba(#238cff, 0.3);
+    box-shadow: inset 0 0 0 $euiSizeXS / 4 $euiFocusRingColor;
   }
 
   .echLegendListContainer {
@@ -49,6 +49,6 @@
   }
 
   &:focus {
-    box-shadow: inset 0 0 0 4 / 4 rgba(#238cff, 0.3);
+    box-shadow: inset 0 0 0 $euiSizeXS / 4 $euiFocusRingColor;
   }
 }
