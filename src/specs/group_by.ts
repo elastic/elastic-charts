@@ -20,11 +20,12 @@ import React from 'react';
 
 import { Spec } from '.';
 import { ChartTypes } from '../chart_types';
+import { Predicate } from '../chart_types/heatmap/utils/commons';
 import { getConnect, specComponentFactory } from '../state/spec_factory';
 import { SpecTypes } from './constants';
 
-export type GroupByAccessor = (spec: Spec, datum: any) => Array<string | number>;
-export type GroupBySort = Array<string | number>;
+export type GroupByAccessor = (spec: Spec, datum: any) => string | number;
+export type GroupBySort = Predicate;
 
 export interface GroupBySpec extends Spec {
   by: GroupByAccessor;

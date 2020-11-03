@@ -76,7 +76,6 @@ export function renderAxes(ctx: CanvasRenderingContext2D, props: AxesProps) {
         }
 
         const axisStyle = axesStyles.get(axisSpec.id) ?? sharedAxesStyle;
-
         renderAxis(ctx, {
           title,
           panelAnchor,

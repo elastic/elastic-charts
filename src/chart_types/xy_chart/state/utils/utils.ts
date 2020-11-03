@@ -35,6 +35,7 @@ import {
 } from '../../../../utils/geometry';
 import { GroupId, SpecId } from '../../../../utils/ids';
 import { ColorConfig, Theme } from '../../../../utils/themes/theme';
+import { getPredicateFn, Predicate } from '../../../heatmap/utils/commons';
 import { XDomain } from '../../domains/types';
 import { mergeXDomain } from '../../domains/x_domain';
 import { isStackedSpec, mergeYDomain } from '../../domains/y_domain';
@@ -196,7 +197,7 @@ export function computeSeriesDomains(
   customXDomain?: DomainRange | Domain,
   orderOrdinalBinsBy?: OrderBy,
   enableVislibSeriesSort?: boolean,
-  smallMultiples?: { verticalIndex?: GroupBySpec; horizontalIndex?: GroupBySpec },
+  smallMultiples?: { vertical?: GroupBySpec; horizontal?: GroupBySpec },
 ): SeriesDomainsAndData {
   const { dataSeries, xValues, seriesCollection, fallbackScale, smHValues, smVValues } = getDataSeriesFromSpecs(
     seriesSpecs,
@@ -229,11 +230,18 @@ export function computeSeriesDomains(
     updatedSeriesCollection.set(key, updatedColorSet);
   });
 
+  // sort small multiples values
+  const horizontalPredicate = smallMultiples?.horizontal?.sort ?? Predicate.DataIndex;
+  const smHDomain = [...smHValues].sort(getPredicateFn(horizontalPredicate));
+
+  const verticalPredicate = smallMultiples?.vertical?.sort ?? Predicate.DataIndex;
+  const smVDomain = [...smVValues].sort(getPredicateFn(verticalPredicate));
+
   return {
     xDomain,
     yDomain,
-    smHDomain: [...smHValues],
-    smVDomain: [...smVValues],
+    smHDomain,
+    smVDomain,
     formattedDataSeries,
     seriesCollection: updatedSeriesCollection,
   };

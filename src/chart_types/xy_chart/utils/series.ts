@@ -23,7 +23,7 @@ import { GroupBySpec, BinAgg, Direction, XScaleType, DEFAULT_SINGLE_PANEL_SM_VAL
 import { OrderBy } from '../../../specs/settings';
 import { ColorOverrides } from '../../../state/chart_state';
 import { Accessor, AccessorFn, getAccessorValue } from '../../../utils/accessor';
-import { Datum, Color } from '../../../utils/commons';
+import { Datum, Color, isNil } from '../../../utils/commons';
 import { GroupId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
 import { ColorConfig } from '../../../utils/themes/theme';
@@ -126,7 +126,7 @@ export function splitSeriesDataByAccessors(
   isStacked = false,
   enableVislibSeriesSort = false,
   stackMode?: StackMode,
-  smallMultiples?: { verticalIndex?: GroupBySpec; horizontalIndex?: GroupBySpec },
+  smallMultiples?: { vertical?: GroupBySpec; horizontal?: GroupBySpec },
 ): {
   dataSeries: Map<SeriesKey, DataSeries>;
   xValues: Array<string | number>;
@@ -181,17 +181,17 @@ export function splitSeriesDataByAccessors(
         let sum = xValueSums.get(x) ?? 0;
 
         // extract small multiples aggregation values
-        const smH = smallMultiples?.horizontalIndex?.by
-          ? smallMultiples.horizontalIndex?.by(spec, datum).join('___')
+        const smH = smallMultiples?.horizontal?.by
+          ? smallMultiples.horizontal?.by(spec, datum)
           : DEFAULT_SINGLE_PANEL_SM_VALUE;
-        if (smH !== undefined) {
+        if (!isNil(smH)) {
           smHValues.add(smH);
         }
 
-        const smV = smallMultiples?.verticalIndex?.by
-          ? smallMultiples.verticalIndex.by(spec, datum).join('___')
+        const smV = smallMultiples?.vertical?.by
+          ? smallMultiples.vertical.by(spec, datum)
           : DEFAULT_SINGLE_PANEL_SM_VALUE;
-        if (smV) {
+        if (!isNil(smV)) {
           smVValues.add(smV);
         }
 
@@ -255,19 +255,20 @@ export function splitSeriesDataByAccessors(
       let sum = xValueSums.get(x) ?? 0;
 
       // extract small multiples aggregation values
-      const smH = smallMultiples?.horizontalIndex?.by
-        ? smallMultiples.horizontalIndex?.by(spec, datum).join('___')
+      const smH = smallMultiples?.horizontal?.by
+        ? smallMultiples.horizontal?.by(spec, datum)
         : DEFAULT_SINGLE_PANEL_SM_VALUE;
-      if (smH !== undefined) {
+      if (!isNil(smH)) {
         smHValues.add(smH);
       }
 
-      const smV = smallMultiples?.verticalIndex?.by
-        ? smallMultiples.verticalIndex.by(spec, datum).join('___')
+      const smV = smallMultiples?.vertical?.by
+        ? smallMultiples.vertical.by(spec, datum)
         : DEFAULT_SINGLE_PANEL_SM_VALUE;
-      if (smV) {
+      if (!isNil(smV)) {
         smVValues.add(smV);
       }
+
       yAccessors.forEach((accessor, index) => {
         const cleanedDatum = extractYAndMarkFromDatum(
           datum,
@@ -512,7 +513,7 @@ export function getDataSeriesFromSpecs(
   deselectedDataSeries: SeriesIdentifier[] = [],
   orderOrdinalBinsBy?: OrderBy,
   enableVislibSeriesSort?: boolean,
-  smallMultiples?: { verticalIndex?: GroupBySpec; horizontalIndex?: GroupBySpec },
+  smallMultiples?: { vertical?: GroupBySpec; horizontal?: GroupBySpec },
 ): {
   dataSeries: DataSeries[];
   seriesCollection: Map<SeriesKey, SeriesCollectionValue>;

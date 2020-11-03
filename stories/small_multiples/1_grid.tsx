@@ -67,7 +67,7 @@ export const Example = () => {
       >
         rotate {rot}
       </button>
-      <Chart className="story-chart">
+      <Chart className="story-chart" size={[800, 400]}>
         <Settings
           rotation={rot}
           theme={{
@@ -90,28 +90,28 @@ export const Example = () => {
             },
           }}
         />
-        <Axis id="time" title="horizontal" position={Position.Bottom} gridLine={{ visible: true }} />
+        <Axis id="time" title="horizontal" position={Position.Bottom} gridLine={{ visible: false }} />
         <Axis
           id="y"
           title="vertical"
           position={Position.Left}
-          gridLine={{ visible: true }}
+          gridLine={{ visible: false }}
           tickFormat={(d) => d.toFixed(2)}
         />
 
         <GroupBy
           id="v_split"
           by={({ id }) => {
-            return [id];
+            return id;
           }}
-          sort={['alphaAsc']}
+          sort="alphaAsc"
         />
         <GroupBy
           id="h_split"
           by={(spec, { g }: any) => {
-            return [g];
+            return g;
           }}
-          sort={['alphaAsc']}
+          sort="alphaAsc"
         />
         <SmallMultiples
           splitVertically={splitVertically ? 'v_split' : undefined}

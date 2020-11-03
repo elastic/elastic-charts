@@ -53,18 +53,18 @@ export const getSmallMultiplesIndexOrderSelector = createCachedSelector([getSpec
   const indexOrders = getSpecsFromStore<GroupBySpec>(specs, ChartTypes.Global, SpecTypes.IndexOrder);
   const [smallMultiplesConfig] = smallMultiples;
 
-  let verticalIndex: GroupBySpec | undefined;
-  let horizontalIndex: GroupBySpec | undefined;
+  let vertical: GroupBySpec | undefined;
+  let horizontal: GroupBySpec | undefined;
 
   if (smallMultiplesConfig.splitVertically) {
-    verticalIndex = indexOrders.find((d) => d.id === smallMultiplesConfig.splitVertically);
+    vertical = indexOrders.find((d) => d.id === smallMultiplesConfig.splitVertically);
   }
   if (smallMultiplesConfig.splitHorizontally) {
-    horizontalIndex = indexOrders.find((d) => d.id === smallMultiplesConfig.splitHorizontally);
+    horizontal = indexOrders.find((d) => d.id === smallMultiplesConfig.splitHorizontally);
   }
 
   return {
-    verticalIndex,
-    horizontalIndex,
+    vertical,
+    horizontal,
   };
 })(getChartIdSelector);

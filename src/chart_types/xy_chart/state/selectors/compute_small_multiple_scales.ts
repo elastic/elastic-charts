@@ -48,8 +48,9 @@ export const computeSmallMultipleScalesSelector = createCachedSelector(
 
 function getScale(domain: Domain, maxRange: number) {
   const singlePanelSmallMultiple = domain.length <= 1;
+  const defaultDomain = domain.length === 0 ? [DEFAULT_SINGLE_PANEL_SM_VALUE] : domain;
   return new ScaleBand(
-    singlePanelSmallMultiple ? [DEFAULT_SINGLE_PANEL_SM_VALUE] : domain,
+    defaultDomain,
     [0, maxRange],
     undefined,
     singlePanelSmallMultiple ? 0 : DEFAULT_SM_PANEL_PADDING,

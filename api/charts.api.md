@@ -781,17 +781,18 @@ export const GroupBy: React.FunctionComponent<GroupByProps>;
 // Warning: (ae-missing-release-tag) "GroupByAccessor" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type GroupByAccessor = (spec: Spec, datum: any) => Array<string | number>;
+export type GroupByAccessor = (spec: Spec, datum: any) => string | number;
 
 // Warning: (ae-missing-release-tag) "GroupByProps" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 export type GroupByProps = Pick<GroupBySpec, 'id' | 'by' | 'sort'>;
 
+// Warning: (ae-forgotten-export) The symbol "Predicate" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "GroupBySort" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type GroupBySort = Array<string | number>;
+export type GroupBySort = Predicate;
 
 // Warning: (ae-missing-release-tag) "GroupBySpec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -965,8 +966,6 @@ export interface HeatmapSpec extends Spec {
     xAccessor: Accessor | AccessorFn;
     // (undocumented)
     xScaleType: SeriesScales['xScaleType'];
-    // Warning: (ae-forgotten-export) The symbol "Predicate" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     xSortPredicate: Predicate;
     // (undocumented)

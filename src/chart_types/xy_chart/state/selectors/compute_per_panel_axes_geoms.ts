@@ -56,10 +56,12 @@ export const computePerPanelAxesGeomsSelector = createCachedSelector(
               const useSmallMultiplePanelTitles = isVerticalAxis(position)
                 ? vertical.domain.length > 1
                 : horizontal.domain.length > 1;
-
               return {
                 ...geom,
-                title: useSmallMultiplePanelTitles ? panelTitle : title,
+                axis: {
+                  ...geom.axis,
+                  title: useSmallMultiplePanelTitles ? panelTitle : title,
+                },
               };
             }),
         };
