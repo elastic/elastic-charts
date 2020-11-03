@@ -93,7 +93,7 @@ describe('Axis computational utils', () => {
     () =>
       (SVGElement.prototype.getBoundingClientRect = function() {
         const text = this.textContent || 0;
-        return { ...mockedRect, width: Number(text) * 10, heigh: Number(text) * 10 };
+        return { ...mockedRect, width: Number(text) * 10, height: Number(text) * 10 };
       }),
   );
   afterEach(() => (SVGElement.prototype.getBoundingClientRect = originalGetBBox));

@@ -122,7 +122,7 @@ export function createOnPointerMoveCaller(): (state: GlobalChartState) => void {
           const tempPrev = {
             ...prevPointerEvent,
           };
-          // we have to update the prevPointerEvents before possiibly calling the onPointerUpdate
+          // we have to update the prevPointerEvents before possibly calling the onPointerUpdate
           // to avoid a recursive loop of calls caused by the impossibility to update the prevPointerEvent
           prevPointerEvent = nextPointerEvent;
           if (settings && settings.onPointerUpdate && hasPointerEventChanged(tempPrev, nextPointerEvent)) {

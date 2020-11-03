@@ -23,9 +23,19 @@ import { ChartTypes } from '../chart_types';
 import { getConnect, specComponentFactory } from '../state/spec_factory';
 import { SpecTypes } from './constants';
 
+/** @internal */
+export const DEFAULT_SINGLE_PANEL_SM_VALUE = '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__';
+
+/** @internal */
+export const DEFAULT_SM_PANEL_PADDING: [number, number] = [0, 0.1];
+
 export interface SmallMultiplesSpec extends Spec {
   splitHorizontally?: string;
   splitVertically?: string;
+  style?: {
+    verticalPanelPadding?: [number, number];
+    horizontalPanelPadding?: [number, number];
+  };
 }
 
 const DEFAULT_SMALL_MULTIPLES_PROPS = {
@@ -33,12 +43,6 @@ const DEFAULT_SMALL_MULTIPLES_PROPS = {
   chartType: ChartTypes.Global,
   specType: SpecTypes.SmallMultiples,
 };
-
-/** @internal */
-export const DEFAULT_SINGLE_PANEL_SM_VALUE = '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__';
-
-/** @internal */
-export const DEFAULT_SM_PANEL_PADDING: [number, number] = [0, 0.3];
 
 type DefaultSmallMultiplesProps = keyof typeof DEFAULT_SMALL_MULTIPLES_PROPS;
 

@@ -20,10 +20,13 @@
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 
 export default {
-  title: 'Small Multiples',
+  title: 'Small Multiples (@alpha)',
   parameters: {
     options: { selectedPanel: SB_KNOBS_PANEL },
   },
 };
 
-export { Example as grid } from './1_grid';
+// export { Example as grid } from './1_grid';
+export { Example as verticalAreas } from './2_vertical_areas';
+export { Example as horizontalBars } from './4_horizontal_bars';
+export { Example as gridLines } from './3_grid_lines';
