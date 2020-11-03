@@ -35,19 +35,12 @@ export function renderBars(
   barGeometries: Array<PerPanel<BarGeometry[]>>,
   sharedStyle: SharedGeometryStateStyle,
   clippings: Rect,
-  chartDimensions: Dimensions,
+  renderingArea: Dimensions,
   highlightedLegendItem?: LegendItem,
   rotation?: Rotation,
 ) {
   withContext(ctx, (ctx) => {
-    const barRenderer = renderPerPanelBars(
-      ctx,
-      clippings,
-      sharedStyle,
-      chartDimensions,
-      highlightedLegendItem,
-      rotation,
-    );
+    const barRenderer = renderPerPanelBars(ctx, clippings, sharedStyle, renderingArea, highlightedLegendItem, rotation);
     barGeometries.forEach(barRenderer);
   });
 }
@@ -56,7 +49,7 @@ function renderPerPanelBars(
   ctx: CanvasRenderingContext2D,
   clippings: Rect,
   sharedStyle: SharedGeometryStateStyle,
-  chartDimensions: Dimensions,
+  renderingArea: Dimensions,
   highlightedLegendItem?: LegendItem,
   rotation: Rotation = 0,
 ) {
@@ -65,7 +58,7 @@ function renderPerPanelBars(
       ctx,
       panel,
       rotation,
-      chartDimensions,
+      renderingArea,
       (ctx) => {
         bars.forEach((barGeometry) => {
           const { x, y, width, height, color, seriesStyle, seriesIdentifier } = barGeometry;
