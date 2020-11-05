@@ -1658,10 +1658,8 @@ export interface SimplePadding {
 // @alpha (undocumented)
 export const SmallMultiples: React.FunctionComponent<SmallMultiplesProps>;
 
-// Warning: (ae-forgotten-export) The symbol "DefaultSmallMultiplesProps" needs to be exported by the entry point index.d.ts
-//
 // @alpha (undocumented)
-export type SmallMultiplesProps = Partial<Omit<SmallMultiplesSpec, DefaultSmallMultiplesProps>>;
+export type SmallMultiplesProps = Partial<Omit<SmallMultiplesSpec, 'id' | 'chatType' | 'specType'>>;
 
 // @alpha (undocumented)
 export interface SmallMultiplesSpec extends Spec {

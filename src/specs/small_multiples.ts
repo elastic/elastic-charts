@@ -45,12 +45,10 @@ const DEFAULT_SMALL_MULTIPLES_PROPS = {
   specType: SpecTypes.SmallMultiples,
 };
 
-type DefaultSmallMultiplesProps = keyof typeof DEFAULT_SMALL_MULTIPLES_PROPS;
-
 /** @alpha */
-export type SmallMultiplesProps = Partial<Omit<SmallMultiplesSpec, DefaultSmallMultiplesProps>>;
+export type SmallMultiplesProps = Partial<Omit<SmallMultiplesSpec, 'id' | 'chatType' | 'specType'>>;
 
 /** @alpha */
 export const SmallMultiples: React.FunctionComponent<SmallMultiplesProps> = getConnect()(
-  specComponentFactory<SmallMultiplesSpec, DefaultSmallMultiplesProps>(DEFAULT_SMALL_MULTIPLES_PROPS),
+  specComponentFactory<SmallMultiplesSpec, 'id'>(DEFAULT_SMALL_MULTIPLES_PROPS),
 );
