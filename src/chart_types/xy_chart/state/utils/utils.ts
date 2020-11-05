@@ -215,7 +215,7 @@ export function computeSeriesDomains(
   const formattedDataSeries = getFormattedDataSeries(seriesSpecs, filledDataSeries, xValues, xDomain.scaleType);
 
   // let's compute the yDomain after computing all stacked values
-  const yDomain = mergeYDomain(formattedDataSeries, seriesSpecs, customYDomainsByGroupId);
+  const yDomain = mergeYDomain(formattedDataSeries, customYDomainsByGroupId);
 
   // we need to get the last values from the formattedDataSeries
   // because we change the format if we are on percentage mode

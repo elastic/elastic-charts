@@ -22,7 +22,7 @@ import createCachedSelector from 're-reselect';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { Size } from '../../../../utils/dimensions';
 import { getPanelSize } from '../../utils/panel';
-import { PerPanelMap, perPanelMap } from '../../utils/panel_utils';
+import { PerPanelMap, getPerPanelMap } from '../../utils/panel_utils';
 import { computeSmallMultipleScalesSelector } from './compute_small_multiple_scales';
 
 /** @internal */
@@ -33,6 +33,6 @@ export const computePanelsSelectors = createCachedSelector(
   [computeSmallMultipleScalesSelector],
   (scales): PanelGeoms => {
     const panelSize = getPanelSize(scales);
-    return perPanelMap(scales, () => panelSize);
+    return getPerPanelMap(scales, () => panelSize);
   },
 )(getChartIdSelector);

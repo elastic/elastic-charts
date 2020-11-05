@@ -149,7 +149,6 @@ export function splitSeriesDataByAccessors(
   const smVValues: Set<string | number> = new Set();
   const smHValues: Set<string | number> = new Set();
   const nonNumericValues: any[] = [];
-  const accessors = [...splitSeriesAccessors];
 
   if (enableVislibSeriesSort) {
     /*
@@ -160,9 +159,9 @@ export function splitSeriesDataByAccessors(
     yAccessors.forEach((accessor, index) => {
       for (let i = 0; i < data.length; i++) {
         const datum = data[i];
-        const splitAccessors = getSplitAccessors(datum, accessors);
+        const splitAccessors = getSplitAccessors(datum, splitSeriesAccessors);
         // if splitSeriesAccessors are defined we should have at least one split value to include datum
-        if (accessors.length > 0 && splitAccessors.size < 1) {
+        if (splitSeriesAccessors.length > 0 && splitAccessors.size < 1) {
           continue;
         }
 
@@ -235,9 +234,9 @@ export function splitSeriesDataByAccessors(
   } else {
     for (let i = 0; i < data.length; i++) {
       const datum = data[i];
-      const splitAccessors = getSplitAccessors(datum, accessors);
+      const splitAccessors = getSplitAccessors(datum, splitSeriesAccessors);
       // if splitSeriesAccessors are defined we should have at least one split value to include datum
-      if (accessors.length > 0 && splitAccessors.size < 1) {
+      if (splitSeriesAccessors.length > 0 && splitAccessors.size < 1) {
         continue;
       }
 
@@ -448,57 +447,6 @@ export function getFormattedDataSeries(
 
   return [...fittedAndStackedDataSeries, ...nonStackedDataSeries];
 }
-
-// function getDataSeriesBySpecGroup(
-//   seriesSpecs: YBasicSeriesSpec[],
-//   dataSeries: Map<SpecId, DataSeries[]>,
-// ): {
-//   dataSeries: DataSeries[];
-//   counts: DataSeriesCounts;
-// } {
-//   return seriesSpecs.reduce<{
-//     dataSeries: DataSeries[];
-//     counts: DataSeriesCounts;
-//   }>(
-//     (acc, { id, seriesType }) => {
-//       const ds = dataSeries.get(id);
-//       if (!ds) {
-//         return acc;
-//       }
-//       acc.dataSeries.push(...ds);
-//       if (seriesType === SeriesTypes.Bar) {
-//         // for bar series, count the max number of bars per panel
-//         const barCounts = ds.reduce<Record<string, number>>((countAcc, dsCurrent) => {
-//           const key = `${dsCurrent?.smHorizontalAccessorValue ?? 'global'}___${dsCurrent?.smVerticalAccessorValue ??
-//             'global'}`;
-//           let count = countAcc[key];
-//           if (count === undefined) {
-//             count = 0;
-//           }
-//           count++;
-//           return {
-//             ...countAcc,
-//             [key]: count,
-//           };
-//         }, {});
-//         const maxBarCounts = Math.max(...Object.values(barCounts));
-//         acc.counts[seriesType] += maxBarCounts;
-//       } else {
-//         acc.counts[seriesType] += ds.length;
-//       }
-//       return acc;
-//     },
-//     {
-//       dataSeries: [],
-//       counts: {
-//         [SeriesTypes.Bar]: 0,
-//         [SeriesTypes.Area]: 0,
-//         [SeriesTypes.Line]: 0,
-//         [SeriesTypes.Bubble]: 0,
-//       },
-//     },
-//   );
-// }
 
 /**
  *

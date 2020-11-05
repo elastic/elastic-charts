@@ -28,7 +28,7 @@ import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_s
 import { isVerticalAxis } from './axis_type_utils';
 import { AxisGeometry, AxisTick } from './axis_utils';
 import { getPanelSize } from './panel';
-import { perPanelMap } from './panel_utils';
+import { getPerPanelMap } from './panel_utils';
 import { AxisSpec } from './specs';
 
 /** @internal */
@@ -52,7 +52,7 @@ export function getGridLines(
   scales: SmallMultipleScales,
 ): Array<LinesGrid> {
   const panelSize = getPanelSize(scales);
-  return perPanelMap(scales, () => {
+  return getPerPanelMap(scales, () => {
     // get grids per panel (depends on all the axis that exist
     const lines = axesGeoms.reduce<Array<GridLineGroup>>((linesAcc, { axis, visibleTicks }) => {
       const axisSpec = axesSpecs.find(({ id }) => id === axis.id);

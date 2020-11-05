@@ -91,8 +91,8 @@ function transformRotateRect(rect: Rect, rotation: Rotation, dim: Dimensions): R
         width: rect.width,
         height: rect.height,
       };
-    default:
     case 0:
+    default:
       return rect;
   }
 }

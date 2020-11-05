@@ -16,9 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { Size } from '../../../utils/dimensions';
 import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
 
 /** @internal */
-export function getPanelSize({ horizontal, vertical }: SmallMultipleScales) {
+export function getPanelSize({ horizontal, vertical }: SmallMultipleScales): Size {
   return { width: horizontal.bandwidth, height: vertical.bandwidth };
 }

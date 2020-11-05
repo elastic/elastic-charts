@@ -36,11 +36,7 @@ export type YBasicSeriesSpec = Pick<
 > & { stackMode?: StackMode; enableHistogramMode?: boolean };
 
 /** @internal */
-export function mergeYDomain(
-  dataSeries: DataSeries[],
-  specs: YBasicSeriesSpec[],
-  domainsByGroupId: Map<GroupId, YDomainRange>,
-): YDomain[] {
+export function mergeYDomain(dataSeries: DataSeries[], domainsByGroupId: Map<GroupId, YDomainRange>): YDomain[] {
   const dataSeriesByGroupId = groupBy(
     dataSeries,
     ({ spec: { useDefaultGroupDomain, groupId } }) => {

@@ -22,7 +22,7 @@ import createCachedSelector from 're-reselect';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
 import { AxisGeometry } from '../../utils/axis_utils';
-import { PerPanelMap, perPanelMap } from '../../utils/panel_utils';
+import { PerPanelMap, getPerPanelMap } from '../../utils/panel_utils';
 import { computeAxesGeometriesSelector } from './compute_axes_geometries';
 import { computeSmallMultipleScalesSelector } from './compute_small_multiple_scales';
 
@@ -36,7 +36,7 @@ export const computePerPanelAxesGeomsSelector = createCachedSelector(
   [computeAxesGeometriesSelector, computeSmallMultipleScalesSelector],
   (axesGeoms, scales): Array<PerPanelAxisGeoms> => {
     const { horizontal, vertical } = scales;
-    return perPanelMap(scales, (anchor, h, v) => {
+    return getPerPanelMap(scales, (anchor, h, v) => {
       const lastLine = horizontal.domain.includes(h) && vertical.domain[vertical.domain.length - 1] === v;
       const firstColumn = horizontal.domain[0] === h;
       if (firstColumn || lastLine) {

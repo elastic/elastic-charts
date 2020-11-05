@@ -157,10 +157,10 @@ export interface ArcGeometry {
   };
 }
 
-export function isPointGeometry(ig: IndexedGeometry): ig is PointGeometry & { panel: Dimensions } {
+export function isPointGeometry(ig: IndexedGeometry): ig is PointGeometry {
   return ig.hasOwnProperty('radius');
 }
 
-export function isBarGeometry(ig: IndexedGeometry): ig is BarGeometry & { panel: Dimensions } {
+export function isBarGeometry(ig: IndexedGeometry): ig is BarGeometry {
   return ig.hasOwnProperty('width') && ig.hasOwnProperty('height');
 }

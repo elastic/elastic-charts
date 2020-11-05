@@ -27,7 +27,7 @@ export interface PerPanelMap {
 }
 
 /** @internal */
-export function perPanelMap<T>(
+export function getPerPanelMap<T>(
   scales: SmallMultipleScales,
   fn: (panelAnchor: Point, horizontalValue: any, verticalValue: any, scales: SmallMultipleScales) => T | null,
 ): Array<T & PerPanelMap> {
