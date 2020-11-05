@@ -69,7 +69,7 @@ function mergeYDomainForGroup(
   customDomain?: YDomainRange,
 ): YDomain | null {
   const dataSeries = [...stacked, ...nonStacked];
-  if (dataSeries.length > 0) {
+  if (dataSeries.length === 0) {
     return null;
   }
   const yScaleTypes = dataSeries.map(({ spec: { yScaleType } }) => ({
