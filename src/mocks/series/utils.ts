@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { getYValue } from '../../chart_types/xy_chart/rendering/rendering';
+import { getYValue } from '../../chart_types/xy_chart/rendering/utils';
 import { DataSeriesDatum } from '../../chart_types/xy_chart/utils/series';
 
 /**
