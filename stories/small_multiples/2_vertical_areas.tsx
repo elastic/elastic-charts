@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { boolean } from '@storybook/addon-knobs';
 import { DateTime } from 'luxon';
 import React from 'react';
 
@@ -47,9 +48,10 @@ const data = dg.generateGroupedSeries(numOfDays, 6, 'metric ').map((d) => {
 });
 
 export const Example = () => {
+  const showLegend = boolean('Show Legend', false);
   return (
     <Chart className="story-chart">
-      <Settings />
+      <Settings showLegend={showLegend} />
       <Axis
         id="time"
         title="timestamp"

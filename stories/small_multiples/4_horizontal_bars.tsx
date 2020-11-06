@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { boolean } from '@storybook/addon-knobs';
 import { DateTime } from 'luxon';
 import React from 'react';
 
@@ -67,9 +68,11 @@ export const Example = () => {
       MIN
     </span>
   );
+  const showLegend = boolean('Show Legend', false);
+
   return (
     <Chart className="story-chart">
-      <Settings rotation={90} />
+      <Settings rotation={90} showLegend={showLegend} />
       <Axis id="time" title="metric" position={Position.Bottom} gridLine={{ visible: false }} />
       <Axis id="y" title="Day of week" position={Position.Left} gridLine={{ visible: false }} />
 

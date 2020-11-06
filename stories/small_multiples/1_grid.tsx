@@ -56,8 +56,10 @@ export const Example = () => {
   const splitHorizontally = boolean('horizontal split', true);
   const [rotationIndex, setRotationIndex] = useState(0);
   const rot: Rotation = ([0, -90, 90, 0] as Rotation[])[rotationIndex];
+  const showLegend = boolean('Show Legend', false);
   return (
     <>
+      g
       <button
         type="button"
         onClick={() => {
@@ -69,6 +71,7 @@ export const Example = () => {
       <Chart className="story-chart" size={[800, 400]}>
         <Settings
           rotation={rot}
+          showLegend={showLegend}
           theme={{
             markSizeRatio: 15,
             barSeriesStyle: {
