@@ -26,7 +26,7 @@ import { getRandomNumberGenerator } from '../../src/mocks/utils';
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 
 export const Example = () => {
-  const randomizeBoundingData = boolean('randomize bounding data', false);
+  const randomizeBoundingData = process.env.RNG_SEED !== null ? false : boolean('randomize bounding data', false);
   const dataTypes: Record<string, Array<{ x: number | string; y: number | null }>> = {
     isolated: [
       { x: 0, y: 3 },
@@ -159,7 +159,8 @@ export const Example = () => {
   const parsedEndValue: number | 'nearest' = Number.isNaN(Number(endValue)) ? 'nearest' : Number(endValue);
   const value = number('Explicit value (using Fit.Explicit)', 5);
   const xScaleType = dataKey === 'ordinal' ? ScaleType.Ordinal : ScaleType.Linear;
-  const rng = getRandomNumberGenerator(randomizeBoundingData ? undefined : '__seed__');
+  const rngSeed = randomizeBoundingData ? undefined : process.env.RNG_SEED ?? '__seed__';
+  const rng = getRandomNumberGenerator(rngSeed);
   const tickFormat = stackMode === 'percentage' ? (d: any) => numeral(d).format('0[.]00%') : undefined;
   return (
     <Chart className="story-chart">
