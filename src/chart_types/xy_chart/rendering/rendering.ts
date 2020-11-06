@@ -191,7 +191,7 @@ type GetRadiusFnReturn = (mark: number | null, defaultRadius?: number) => number
  *
  * @todo add continuous/non-stepped function
  *
- * @param  {Datum[]} radii
+ * @param  {DataSeriesDatum[]} data
  * @param  {number} lineWidth
  * @param  {number=50} markSizeRatio - 0 to 100
  * @internal
@@ -218,8 +218,7 @@ export function getRadiusFn(data: DataSeriesDatum[], lineWidth: number, markSize
     }
     const circleRadius = (mark / 2 - min) / radiusStep;
     const baseMagicNumber = 2;
-    const base = circleRadius ? Math.sqrt(circleRadius + baseMagicNumber) + lineWidth : lineWidth;
-    return base;
+    return circleRadius ? Math.sqrt(circleRadius + baseMagicNumber) + lineWidth : lineWidth;
   };
 }
 
@@ -273,7 +272,7 @@ function renderPoints(
       let radius = getRadius(mark);
       // we fix 0 and negative values at y = 0
       if (yDatum === null || (isLogScale && yDatum <= 0)) {
-        y = yScale.range[0];
+        [y] = yScale.range;
         radius = 0;
       } else {
         y = yScale.scale(yDatum);
@@ -399,7 +398,7 @@ export function renderBars(
       return;
     }
 
-    let y: number | null = 0;
+    let y: number | null;
     let y0Scaled;
     if (yScale.type === ScaleType.Log) {
       y = y1 === 0 || y1 === null ? yScale.range[0] : yScale.scale(y1);
@@ -711,7 +710,16 @@ export function renderArea(
       return yScale.isInverted ? yScale.range[1] : yScale.range[0];
     })
     .y0(({ y0 }) => {
-      return y0 === null || (isLogScale && y0 <= 0) ? yScale.range[0] : yScale.scaleOrThrow(y0);
+      if (y0 === null) {
+        if (isLogScale) {
+          return yScale.scaleOrThrow(1);
+        }
+        return yScale.scaleOrThrow(0);
+      }
+      if (isLogScale) {
+        return yScale.scaleOrThrow(Math.max(1, y0));
+      }
+      return yScale.scaleOrThrow(y0);
     })
     .defined((datum) => {
       const yValue = getYValue(datum);
@@ -816,7 +824,6 @@ export function isDatumFilled({ filled, initialY1 }: DataSeriesDatum) {
  * @param dataset
  * @param xScale
  * @param xScaleOffset
- * @param panel
  * @internal
  */
 export function getClippedRanges(dataset: DataSeriesDatum[], xScale: Scale, xScaleOffset: number): ClippedRanges {
