@@ -37,7 +37,7 @@
     position: relative;
   }
 
-  &:focus {
+  :focus {
     box-shadow: inset 0 0 0 $euiSizeXS / 4 $euiFocusRingColor;
   }
 
@@ -45,7 +45,6 @@
     @include euiYScrollWithShadows;
     width: 100%;
     overflow-y: auto;
-    // overflow-x: hidden;
   }
 
   &:focus {

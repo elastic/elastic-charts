@@ -22,19 +22,37 @@ import React, { MouseEventHandler } from 'react';
 
 interface LabelProps {
   label: string;
+  extra: string | number | undefined;
   onClick?: MouseEventHandler;
 }
 /**
  * Label component used to display text in legend item
  * @internal
  */
-export function Label({ label, onClick }: LabelProps) {
+export function Label({ label, onClick, extra }: LabelProps) {
   const labelClassNames = classNames('echLegendItem__label', {
     'echLegendItem__label--clickable': Boolean(onClick),
   });
+  const labelWithExtra = getExtra(label, extra);
   return (
-    <button type="button" className={labelClassNames} title={label} onClick={onClick} aria-labelledby={`${label}`}>
+    <button
+      type="button"
+      className={labelClassNames}
+      title={labelWithExtra}
+      onClick={onClick}
+      aria-label={labelWithExtra}
+    >
       {label}
     </button>
   );
+}
+
+/**
+ * @internal
+ */
+function getExtra(label: string, extra: string | number | undefined) {
+  if (extra !== undefined) {
+    return `${label} ${extra}`;
+  }
+  return `${label}`;
 }

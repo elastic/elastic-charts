@@ -53,7 +53,7 @@ export const Color = memo(
         type="button"
         onClick={hasColorPicker ? onClick : undefined}
         className={colorClasses}
-        aria-label="series color"
+        aria-label={colorClasses}
         title={hasColorPicker ? 'change series color' : 'series color'}
       >
         <div ref={ref}>

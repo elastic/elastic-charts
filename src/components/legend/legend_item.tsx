@@ -214,12 +214,9 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
           marginLeft: LEGEND_HIERARCHY_MARGIN * (item.depth ?? 0),
         }
       : undefined;
-
     return (
       <>
         <li
-          role="option"
-          aria-selected
           className={itemClassNames}
           onMouseEnter={this.onLegendItemMouseOver}
           onMouseLeave={this.onLegendItemMouseOut}
@@ -227,14 +224,13 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
           data-ech-series-name={label}
         >
           <ItemColor
-            aria-label={`legend item color ${color}`}
             ref={this.colorRef}
             color={color}
             isSeriesHidden={isSeriesHidden}
             hasColorPicker={hasColorPicker}
             onClick={this.handleColorClick(hasColorPicker)}
           />
-          <ItemLabel label={label} onClick={this.handleLabelClick(seriesIdentifier)} />
+          <ItemLabel label={label} onClick={this.handleLabelClick(seriesIdentifier)} extra={extra} />
           {showExtra && extra != null && renderExtra(extra, isSeriesHidden)}
           {Action && (
             <div className="echLegendItem__action">
