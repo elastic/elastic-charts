@@ -49,16 +49,9 @@ export function renderLines(ctx: CanvasRenderingContext2D, props: LineGeometries
       const { seriesLineStyle, seriesPointStyle } = line;
 
       if (seriesLineStyle.visible) {
-        withPanelTransform(
-          ctx,
-          panel,
-          rotation,
-          renderingArea,
-          (ctx) => {
-            renderLine(ctx, line, sharedStyle, clippings, highlightedLegendItem);
-          },
-          { area: clippings, shouldClip: true },
-        );
+        withPanelTransform(ctx, panel, rotation, renderingArea, (ctx) => {
+          renderLine(ctx, line, sharedStyle, clippings, highlightedLegendItem);
+        });
       }
 
       if (seriesPointStyle.visible) {
