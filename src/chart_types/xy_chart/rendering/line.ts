@@ -19,7 +19,6 @@
 import { line } from 'd3-shape';
 
 import { Scale } from '../../../scales';
-import { isLogarithmicScale } from '../../../scales/types';
 import { Color } from '../../../utils/commons';
 import { CurveType, getCurveFactory } from '../../../utils/curves';
 import { Dimensions } from '../../../utils/dimensions';
@@ -29,7 +28,7 @@ import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
 import { DataSeries, DataSeriesDatum } from '../utils/series';
 import { PointStyleAccessor } from '../utils/specs';
 import { renderPoints } from './points';
-import { getClippedRanges, getYValue, MarkSizeOptions } from './utils';
+import { getClippedRanges, getY1ScaledValueOrThrow, isYValueDefined, MarkSizeOptions } from './utils';
 
 /** @internal */
 export function renderLine(
@@ -50,22 +49,14 @@ export function renderLine(
   lineGeometry: LineGeometry;
   indexedGeometryMap: IndexedGeometryMap;
 } {
-  const isLogScale = isLogarithmicScale(yScale);
+  const y1Fn = getY1ScaledValueOrThrow(yScale);
+  const definedFn = isYValueDefined(yScale, xScale);
+
   const pathGenerator = line<DataSeriesDatum>()
     .x(({ x }) => xScale.scaleOrThrow(x) - xScaleOffset)
-    .y((datum) => {
-      const yValue = getYValue(datum);
-
-      if (yValue !== null) {
-        return yScale.scaleOrThrow(yValue);
-      }
-
-      // this should never happen thanks to the defined function
-      return yScale.isInverted ? yScale.range[1] : yScale.range[0];
-    })
+    .y(y1Fn)
     .defined((datum) => {
-      const yValue = getYValue(datum);
-      return yValue !== null && !(isLogScale && yValue <= 0) && xScale.isValueInDomain(datum.x);
+      return definedFn(datum);
     })
     .curve(getCurveFactory(curve));
 

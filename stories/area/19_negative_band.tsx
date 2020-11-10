@@ -20,15 +20,9 @@
 import { select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { AreaSeries, Axis, Chart, Position, ScaleType, timeFormatter } from '../../src';
-import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
+import { AreaSeries, Axis, Chart, Fit, LineSeries, Position, ScaleType, Settings } from '../../src';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
-const dateFormatter = timeFormatter('HH:mm');
-
-const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.map(([x, y]) => {
-  return [x, -y];
-});
 export const Example = () => {
   const scaleType = select(
     'Y scale',
@@ -38,23 +32,50 @@ export const Example = () => {
     },
     ScaleType.Linear,
   );
+
+  const data = [
+    [0, -5, -2],
+    [1, -6, -2.1],
+    [2, -8, -0.9],
+    [3, -3, -1.2],
+    [4, -2.3, -1.6],
+    [5, -4, -3.4],
+  ];
+
   return (
     <Chart className="story-chart">
-      <Axis id="bottom" position={Position.Bottom} showOverlappingTicks tickFormat={dateFormatter} />
-      <Axis id="left" title="negative metric" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
+      <Settings
+        showLegend
+        theme={{ areaSeriesStyle: { point: { visible: true } }, lineSeriesStyle: { point: { visible: false } } }}
+        xDomain={{ minInterval: 1 }}
+      />
+      <Axis id="bottom" title="timestamp" position={Position.Bottom} showOverlappingTicks />
+      <Axis id="left" title="metric" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
       <AreaSeries
-        id="area"
-        xScaleType={ScaleType.Time}
+        id="band"
+        xScaleType={ScaleType.Linear}
         yScaleType={scaleType}
         xAccessor={0}
         yAccessors={[1]}
+        y0Accessors={[2]}
         data={data}
+      />
+
+      <LineSeries
+        id="metric"
+        xScaleType={ScaleType.Linear}
+        yScaleType={scaleType}
+        xAccessor={0}
+        yAccessors={[1]}
+        fit={Fit.Carry}
+        data={data.map(([x, y1, y0]) => {
+          return [x, (y1 + y0) / 2];
+        })}
       />
     </Chart>
   );
 };
-
 // storybook configuration
 Example.story = {
   parameters: {

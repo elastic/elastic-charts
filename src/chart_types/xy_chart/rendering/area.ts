@@ -19,7 +19,6 @@
 import { area } from 'd3-shape';
 
 import { Scale } from '../../../scales';
-import { isLogarithmicScale } from '../../../scales/types';
 import { Color } from '../../../utils/commons';
 import { CurveType, getCurveFactory } from '../../../utils/curves';
 import { Dimensions } from '../../../utils/dimensions';
@@ -29,7 +28,13 @@ import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
 import { DataSeries, DataSeriesDatum } from '../utils/series';
 import { PointStyleAccessor } from '../utils/specs';
 import { renderPoints } from './points';
-import { getClippedRanges, getYValue, MarkSizeOptions } from './utils';
+import {
+  getClippedRanges,
+  getY0ScaledValueOrThrow,
+  getY1ScaledValueOrThrow,
+  isYValueDefined,
+  MarkSizeOptions,
+} from './utils';
 
 /** @internal */
 export function renderArea(
@@ -51,33 +56,15 @@ export function renderArea(
   areaGeometry: AreaGeometry;
   indexedGeometryMap: IndexedGeometryMap;
 } {
-  const isLogScale = isLogarithmicScale(yScale);
-
+  const y1Fn = getY1ScaledValueOrThrow(yScale);
+  const y0Fn = getY0ScaledValueOrThrow(yScale);
+  const definedFn = isYValueDefined(yScale, xScale);
   const pathGenerator = area<DataSeriesDatum>()
     .x(({ x }) => xScale.scaleOrThrow(x) - xScaleOffset)
-    .y1((datum) => {
-      const yValue = getYValue(datum);
-      if (yValue !== null) {
-        return yScale.scaleOrThrow(yValue);
-      }
-      // this should never happen thanks to the defined function
-      return yScale.isInverted ? yScale.range[1] : yScale.range[0];
-    })
-    .y0(({ y0 }) => {
-      if (y0 === null) {
-        if (isLogScale) {
-          return yScale.scaleOrThrow(1);
-        }
-        return yScale.scaleOrThrow(0);
-      }
-      if (isLogScale) {
-        return yScale.scaleOrThrow(Math.max(1, y0));
-      }
-      return yScale.scaleOrThrow(y0);
-    })
+    .y1(y1Fn)
+    .y0(y0Fn)
     .defined((datum) => {
-      const yValue = getYValue(datum);
-      return yValue !== null && !(isLogScale && yValue <= 0) && xScale.isValueInDomain(datum.x);
+      return definedFn(datum) && (hasY0Accessors ? definedFn(datum, 'y0') : true);
     })
     .curve(getCurveFactory(curve));
 

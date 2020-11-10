@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, timeFormatter } from '../../src';
@@ -27,6 +28,15 @@ const dateFormatter = timeFormatter('HH:mm');
 
 export const Example = () => {
   const dataset = KIBANA_METRICS.metrics.kibana_os_load[0];
+  const scaleType = select(
+    'Y scale',
+    {
+      [ScaleType.Linear]: ScaleType.Linear,
+      [ScaleType.Log]: ScaleType.Log,
+    },
+    ScaleType.Linear,
+  );
+
   return (
     <Chart className="story-chart">
       <Settings showLegend />
@@ -42,7 +52,7 @@ export const Example = () => {
       <AreaSeries
         id="area1"
         xScaleType={ScaleType.Time}
-        yScaleType={ScaleType.Linear}
+        yScaleType={scaleType}
         xAccessor={0}
         yAccessors={[1]}
         data={dataset.data.map(([x, y], i) => {
@@ -51,8 +61,8 @@ export const Example = () => {
       />
       <AreaSeries
         id="area2"
-        xScaleType={ScaleType.Time}
-        yScaleType={ScaleType.Linear}
+        xScaleType={ScaleType.Linear}
+        yScaleType={scaleType}
         xAccessor={0}
         yAccessors={[1]}
         data={dataset.data.map(([x, y], i) => {

@@ -17,15 +17,20 @@
  * under the License.
  */
 import { Scale } from '../../../scales';
-import { isLogarithmicScale } from '../../../scales/types';
 import { Color } from '../../../utils/commons';
 import { Dimensions } from '../../../utils/dimensions';
 import { BandedAccessorType, PointGeometry } from '../../../utils/geometry';
 import { LineStyle, PointStyle } from '../../../utils/themes/theme';
 import { GeometryType, IndexedGeometryMap } from '../utils/indexed_geometry_map';
-import { DataSeries, DataSeriesDatum, XYChartSeriesIdentifier } from '../utils/series';
+import { DataSeries, DataSeriesDatum, FilledValues, XYChartSeriesIdentifier } from '../utils/series';
 import { PointStyleAccessor, StackMode } from '../utils/specs';
-import { isDatumFilled, MarkSizeOptions } from './utils';
+import {
+  getY0ScaledValueOrThrow,
+  getY1ScaledValueOrThrow,
+  isDatumFilled,
+  isYValueDefined,
+  MarkSizeOptions,
+} from './utils';
 
 /** @internal */
 export function renderPoints(
@@ -45,13 +50,17 @@ export function renderPoints(
   indexedGeometryMap: IndexedGeometryMap;
 } {
   const indexedGeometryMap = new IndexedGeometryMap();
-  const isLogScale = isLogarithmicScale(yScale);
   const getRadius = markSizeOptions.enabled
     ? getRadiusFn(dataSeries.data, lineStyle.strokeWidth, markSizeOptions.ratio)
     : () => 0;
   const geometryType = spatial ? GeometryType.spatial : GeometryType.linear;
+
+  const y1Fn = getY1ScaledValueOrThrow(yScale);
+  const y0Fn = getY0ScaledValueOrThrow(yScale);
+  const yDefined = isYValueDefined(yScale, xScale);
+
   const pointGeometries = dataSeries.data.reduce((acc, datum) => {
-    const { x: xValue, y0, y1, mark } = datum;
+    const { x: xValue, mark } = datum;
     // don't create the point if not within the xScale domain
     if (!xScale.isValueInDomain(xValue)) {
       return acc;
@@ -67,26 +76,21 @@ export function renderPoints(
     }
 
     const points: PointGeometry[] = [];
-    const yDatums = hasY0Accessors ? [y0, y1] : [y1];
+    const yDatumKeyNames: Array<keyof Omit<FilledValues, 'x'>> = hasY0Accessors ? ['y0', 'y1'] : ['y1'];
 
-    yDatums.forEach((yDatum, index) => {
+    yDatumKeyNames.forEach((yDatumKeyName, index) => {
       // skip rendering point if y1 is null
-      if (y1 === null) {
+      const radius = getRadius(mark);
+      let y: number | null;
+      try {
+        y = yDatumKeyName === 'y1' ? y1Fn(datum) : y0Fn(datum);
+        if (y === null) {
+          return;
+        }
+      } catch {
         return;
       }
-      let y;
-      let radius = getRadius(mark);
-      // we fix 0 and negative values at y = 0
-      if (yDatum === null || (isLogScale && yDatum <= 0)) {
-        [y] = yScale.range;
-        radius = 0;
-      } else {
-        y = yScale.scale(yDatum);
-      }
 
-      if (y === null) {
-        return acc;
-      }
       const originalY = getDatumYValue(datum, index === 0, hasY0Accessors, dataSeries.stackMode);
       const seriesIdentifier: XYChartSeriesIdentifier = {
         key: dataSeries.key,
@@ -120,8 +124,7 @@ export function renderPoints(
       };
       indexedGeometryMap.set(pointGeometry, geometryType);
       // use the geometry only if the yDatum in contained in the current yScale domain
-      const isHidden = yDatum === null || (isLogScale && yDatum <= 0);
-      if (!isHidden && yScale.isValueInDomain(yDatum)) {
+      if (yDefined(datum, yDatumKeyName)) {
         points.push(pointGeometry);
       }
     });
