@@ -694,7 +694,12 @@ function getHighestOverride(
   customColors: Map<SeriesKey, Color>,
   overrides: ColorOverrides,
 ): Color | undefined {
-  let color: Color | undefined = overrides.temporary[key];
+  let color: Color | undefined | null = overrides.temporary[key];
+
+  if (color === null) {
+    // Use default color when temporary is null
+    return;
+  }
 
   if (color) {
     return color;
