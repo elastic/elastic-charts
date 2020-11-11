@@ -29,7 +29,7 @@ interface LabelProps {
  * Label component used to display text in legend item
  * @internal
  */
-export function Label({ label, onClick, extra }: LabelProps) {
+export function Label({ label, extra, onClick }: LabelProps) {
   const labelClassNames = classNames('echLegendItem__label', {
     'echLegendItem__label--clickable': Boolean(onClick),
   });
