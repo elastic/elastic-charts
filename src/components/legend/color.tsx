@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import classNames from 'classnames';
 import React, { MouseEventHandler, forwardRef, memo } from 'react';
 
 import { Icon } from '../icons/icon';
@@ -34,32 +33,34 @@ interface ColorProps {
  * @internal
  */
 export const Color = memo(
-  forwardRef<HTMLDivElement, ColorProps>(({ color, isSeriesHidden = false, hasColorPicker, onClick }, ref) => {
+  forwardRef<HTMLButtonElement, ColorProps>(({ color, isSeriesHidden = false, hasColorPicker, onClick }, ref) => {
     if (isSeriesHidden) {
       return (
-        <button type="button" className="echLegendItem__color" aria-label="series hidden" title="series hidden">
+        <div className="echLegendItem__color" title="series hidden">
           {/* changing the default viewBox for the eyeClosed icon to keep the same dimensions */}
-          <Icon type="eyeClosed" viewBox="-3 -3 22 22" />
+          <Icon type="eyeClosed" viewBox="-3 -3 22 22" aria-label="series color is hidden" />
+        </div>
+      );
+    }
+
+    if (hasColorPicker) {
+      return (
+        <button
+          type="button"
+          onClick={onClick}
+          className="echLegendItem__color--changable"
+          title="change series color"
+          ref={ref}
+        >
+          <Icon type="dot" color={color} aria-label="change series color" />
         </button>
       );
     }
 
-    const colorClasses = classNames('echLegendItem__color', {
-      'echLegendItem__color--changable': hasColorPicker,
-    });
-
     return (
-      <button
-        type="button"
-        onClick={hasColorPicker ? onClick : undefined}
-        className={colorClasses}
-        aria-label={hasColorPicker ? 'change series color' : 'series color'}
-        title={hasColorPicker ? 'change series color' : 'series color'}
-      >
-        <div ref={ref}>
-          <Icon type="dot" color={color} />
-        </div>
-      </button>
+      <div className="echLegendItem__color" title="series color">
+        <Icon type="dot" color={color} aria-label={hasColorPicker ? 'change series color' : 'series color'} />
+      </div>
     );
   }),
 );

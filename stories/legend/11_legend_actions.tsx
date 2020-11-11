@@ -126,6 +126,7 @@ const getAction = (hideActions: boolean, anchorPosition: PopoverAnchorPosition):
       panelPaddingSize="none"
       withTitle
       anchorPosition={anchorPosition}
+      ownFocus
     >
       <EuiContextMenu initialPanelId={0} panels={getPanels(series as XYChartSeriesIdentifier)} />
     </EuiPopover>

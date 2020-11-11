@@ -111,7 +111,7 @@ interface LegendItemState {
 export class LegendListItem extends Component<LegendItemProps, LegendItemState> {
   static displayName = 'LegendItem';
 
-  colorRef = createRef<HTMLDivElement>();
+  colorRef = createRef<HTMLButtonElement>();
   state: LegendItemState = {
     isOpen: false,
     actionActive: false,
