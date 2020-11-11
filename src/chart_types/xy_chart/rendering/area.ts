@@ -32,6 +32,7 @@ import {
   getClippedRanges,
   getY0ScaledValueOrThrow,
   getY1ScaledValueOrThrow,
+  getYDatumValue,
   isYValueDefined,
   MarkSizeOptions,
 } from './utils';
@@ -59,12 +60,14 @@ export function renderArea(
   const y1Fn = getY1ScaledValueOrThrow(yScale);
   const y0Fn = getY0ScaledValueOrThrow(yScale);
   const definedFn = isYValueDefined(yScale, xScale);
+  const y1DatumAccessor = getYDatumValue();
+  const y0DatumAccessor = getYDatumValue('y0');
   const pathGenerator = area<DataSeriesDatum>()
     .x(({ x }) => xScale.scaleOrThrow(x) - xScaleOffset)
     .y1(y1Fn)
     .y0(y0Fn)
     .defined((datum) => {
-      return definedFn(datum) && (hasY0Accessors ? definedFn(datum, 'y0') : true);
+      return definedFn(datum, y1DatumAccessor) && (hasY0Accessors ? definedFn(datum, y0DatumAccessor) : true);
     })
     .curve(getCurveFactory(curve));
 

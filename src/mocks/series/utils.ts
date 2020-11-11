@@ -44,7 +44,9 @@ export const getXValueData = (data: DataSeriesDatum[]): (number | string)[] => d
  * Returns value of `y1` or `filled.y1` or null
  * @internal
  */
-export const getYResolvedData = (data: DataSeriesDatum[]): (number | null)[] =>
-  data.map((d) => {
-    return getYDatumValue(d);
+export const getYResolvedData = (data: DataSeriesDatum[]): (number | null)[] => {
+  const datumAccessor = getYDatumValue();
+  return data.map((d) => {
+    return datumAccessor(d);
   });
+};
