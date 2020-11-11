@@ -406,10 +406,8 @@ export const chartStoreReducer = (chartId: string) => {
                     [action.key]: action.color,
                   }
                 : (() => {
-                    const colors = { ...state.colors.persisted };
-                    delete colors[action.key];
-
-                    return colors;
+                    const { [action.key]: removed, ...others } = state.colors.persisted;
+                    return others;
                   })(),
           },
         };
