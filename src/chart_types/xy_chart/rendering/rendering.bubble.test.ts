@@ -1080,12 +1080,8 @@ describe('Rendering points - bubble', () => {
         y: 100,
       });
       expect(zeroValueIndexdGeometry).toBeDefined();
-      expect(zeroValueIndexdGeometry.length).toBe(5);
+      expect(zeroValueIndexdGeometry.length).toBe(3);
       expect(zeroValueIndexdGeometry.find(({ value: { x } }) => x === 5)).toBeDefined();
-      // moved to the bottom of the chart
-      expect((zeroValueIndexdGeometry[0] as PointGeometry).y).toBe(100);
-      // 0 radius point
-      expect((zeroValueIndexdGeometry[0] as PointGeometry).radius).toBe(0);
     });
   });
   describe('Remove points datum is not in domain', () => {
@@ -1196,84 +1192,6 @@ describe('Rendering points - bubble', () => {
           y: 0,
         },
       } as unknown) as PointGeometry);
-    });
-  });
-
-  describe('Error guards for scaled values', () => {
-    const pointSeriesSpec: BubbleSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
-      specType: SpecTypes.Series,
-      id: SPEC_ID,
-      groupId: GROUP_ID,
-      seriesType: SeriesTypes.Bubble,
-      data: [
-        [0, 10],
-        [1, 5],
-      ],
-      xAccessor: 0,
-      yAccessors: [1],
-      xScaleType: ScaleType.Ordinal,
-      yScaleType: ScaleType.Linear,
-    };
-    const pointSeriesMap = [pointSeriesSpec];
-    const pointSeriesDomains = computeSeriesDomains(pointSeriesMap, new Map());
-    const xScale = computeXScale({
-      xDomain: pointSeriesDomains.xDomain,
-      totalBarsInCluster: pointSeriesMap.length,
-      range: [0, 100],
-    });
-    const yScales = computeYScales({ yDomains: pointSeriesDomains.yDomain, range: [100, 0] });
-    let renderedBubble: {
-      bubbleGeometry: BubbleGeometry;
-      indexedGeometryMap: IndexedGeometryMap;
-    };
-
-    beforeEach(() => {
-      renderedBubble = renderBubble(
-        25, // adding a ideal 25px shift, generally applied by renderGeometries
-        pointSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
-        xScale,
-        yScales.get(GROUP_ID)!,
-        'red',
-        false,
-        LIGHT_THEME.bubbleSeriesStyle,
-        {
-          enabled: false,
-        },
-        false,
-      );
-    });
-
-    describe('xScale values throw error', () => {
-      beforeAll(() => {
-        jest.spyOn(xScale, 'scaleOrThrow').mockImplementation(() => {
-          throw new Error();
-        });
-      });
-
-      it('Should have empty bubble', () => {
-        const { bubbleGeometry } = renderedBubble;
-        expect(bubbleGeometry.points).toHaveLength(2);
-        expect(bubbleGeometry.color).toBe('red');
-        expect(bubbleGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
-        expect(bubbleGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
-      });
-    });
-
-    describe('yScale values throw error', () => {
-      beforeAll(() => {
-        jest.spyOn(yScales.get(GROUP_ID)!, 'scaleOrThrow').mockImplementation(() => {
-          throw new Error();
-        });
-      });
-
-      it('Should have empty bubble', () => {
-        const { bubbleGeometry } = renderedBubble;
-        expect(bubbleGeometry.points).toHaveLength(2);
-        expect(bubbleGeometry.color).toBe('red');
-        expect(bubbleGeometry.seriesIdentifier.seriesKeys).toEqual([1]);
-        expect(bubbleGeometry.seriesIdentifier.specId).toEqual(SPEC_ID);
-      });
     });
   });
 });
