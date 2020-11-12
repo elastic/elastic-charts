@@ -139,7 +139,7 @@ const renderColorPicker = (anchorPosition: PopoverAnchorPosition): LegendColorPi
   onClose,
   onChange,
 }) => (
-  <EuiWrappingPopover isOpen button={anchor} closePopover={onClose} anchorPosition={anchorPosition}>
+  <EuiWrappingPopover isOpen button={anchor} closePopover={onClose} anchorPosition={anchorPosition} ownFocus>
     <EuiColorPicker display="inline" color={color} onChange={onChange} />
     <EuiSpacer size="m" />
     <EuiButton fullWidth size="s" onClick={onClose}>

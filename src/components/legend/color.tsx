@@ -48,7 +48,7 @@ export const Color = memo(
         <button
           type="button"
           onClick={onClick}
-          className="echLegendItem__color--changable"
+          className="echLegendItem__color echLegendItem__color--changable"
           title="change series color"
           ref={ref}
         >
