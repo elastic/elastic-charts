@@ -1136,8 +1136,8 @@ describe('Rendering points - areas', () => {
       const zeroValueIndexdGeometry = indexedGeometryMap.find(5)!;
       expect(zeroValueIndexdGeometry).toBeDefined();
       expect(zeroValueIndexdGeometry.length).toBe(1);
-      // moved to the bottom of the chart
-      expect(zeroValueIndexdGeometry[0].y).toBe(100);
+      // the zero value is moved vertically to infinity
+      expect(zeroValueIndexdGeometry[0].y).toBe(Infinity);
       // 0 radius point
       expect((zeroValueIndexdGeometry[0] as PointGeometry).radius).toBe(0);
     });

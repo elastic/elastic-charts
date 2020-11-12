@@ -1103,7 +1103,7 @@ describe('Rendering points - line', () => {
       expect(zeroValueIndexdGeometry).toBeDefined();
       expect(zeroValueIndexdGeometry.length).toBe(1);
       // moved to the bottom of the chart
-      expect((zeroValueIndexdGeometry[0] as PointGeometry).y).toBe(100);
+      expect((zeroValueIndexdGeometry[0] as PointGeometry).y).toBe(Infinity);
       // 0 radius point
       expect((zeroValueIndexdGeometry[0] as PointGeometry).radius).toBe(0);
     });
