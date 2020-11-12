@@ -33,11 +33,19 @@ export const Example = () => {
   const actual = number('actual', 170, { range: true, min: 0, max: 300, step: 1 });
   const ticks = array('ticks', ['0', '50', '100', '150', '200', '250', '300']).map(Number);
   const bands = array('bands', ['200', '250', '300']).map(Number);
-  const colorMap: { [k: number]: Color } = bands.reduce<{ [k: number]: Color }>((acc, band, i) => {
-    const defaultValue = 0.2 + (i / (bands.length - 1)) * 0.8;
-    acc[band] = color(`color at ${band}`, `rgba(0,0,0,${defaultValue.toFixed(1)})`, 'colors');
+
+  const opacityMap: { [k: string]: number } = {
+    '200': 0.2,
+    '250': 0.12,
+    '300': 0.05,
+  };
+
+  const colorMap: { [k: number]: Color } = bands.reduce<{ [k: number]: Color }>((acc, band) => {
+    const defaultValue = opacityMap[band] ?? 0;
+    acc[band] = color(`color at ${band}`, `rgba(0,0,0,${defaultValue.toFixed(2)})`, 'colors');
     return acc;
   }, {});
+
   const bandFillColor = (x: number): Color => colorMap[x];
   return (
     <Chart className="story-chart">
