@@ -55,13 +55,16 @@ export function renderLines(ctx: CanvasRenderingContext2D, props: LineGeometries
       }
 
       const visiblePoints = seriesPointStyle.visible ? points : points.filter(({ orphan }) => orphan);
+      if (visiblePoints.length === 0) {
+        return;
+      }
+      const geometryStyle = getGeometryStateStyle(line.seriesIdentifier, sharedStyle, highlightedLegendItem);
       withPanelTransform(
         ctx,
         panel,
         rotation,
         renderingArea,
         (ctx) => {
-          const geometryStyle = getGeometryStateStyle(line.seriesIdentifier, sharedStyle, highlightedLegendItem);
           renderPoints(ctx, visiblePoints, line.seriesPointStyle, geometryStyle);
         },
         // TODO: add padding over clipping

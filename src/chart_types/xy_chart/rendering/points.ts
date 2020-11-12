@@ -17,7 +17,7 @@
  * under the License.
  */
 import { Scale } from '../../../scales';
-import { Color } from '../../../utils/commons';
+import { Color, isNil } from '../../../utils/commons';
 import { Dimensions } from '../../../utils/dimensions';
 import { BandedAccessorType, PointGeometry } from '../../../utils/geometry';
 import { LineStyle, PointStyle } from '../../../utils/themes/theme';
@@ -25,11 +25,11 @@ import { GeometryType, IndexedGeometryMap } from '../utils/indexed_geometry_map'
 import { DataSeries, DataSeriesDatum, FilledValues, XYChartSeriesIdentifier } from '../utils/series';
 import { PointStyleAccessor, StackMode } from '../utils/specs';
 import {
-  getY0ScaledValueOrThrow,
-  getY1ScaledValueOrThrow,
-  getYDatumValue,
+  getY0ScaledValueOrThrowFn,
+  getY1ScaledValueOrThrowFn,
+  getYDatumValueFn,
   isDatumFilled,
-  isYValueDefined,
+  isYValueDefinedFn,
   MarkSizeOptions,
   YDefinedFn,
 } from './utils';
@@ -57,9 +57,9 @@ export function renderPoints(
     : () => 0;
   const geometryType = spatial ? GeometryType.spatial : GeometryType.linear;
 
-  const y1Fn = getY1ScaledValueOrThrow(yScale);
-  const y0Fn = getY0ScaledValueOrThrow(yScale);
-  const yDefined = isYValueDefined(yScale, xScale);
+  const y1Fn = getY1ScaledValueOrThrowFn(yScale);
+  const y0Fn = getY0ScaledValueOrThrowFn(yScale);
+  const yDefined = isYValueDefinedFn(yScale, xScale);
 
   const pointGeometries = dataSeries.data.reduce((acc, datum, dataIndex) => {
     const { x: xValue, mark } = datum;
@@ -83,7 +83,7 @@ export function renderPoints(
     const yDatumKeyNames: Array<keyof Omit<FilledValues, 'x'>> = hasY0Accessors ? ['y0', 'y1'] : ['y1'];
 
     yDatumKeyNames.forEach((yDatumKeyName, keyIndex) => {
-      const valueAccessor = getYDatumValue(yDatumKeyName);
+      const valueAccessor = getYDatumValueFn(yDatumKeyName);
       // skip rendering point if y1 is null
       const radius = getRadius(mark);
       let y: number | null;
@@ -107,7 +107,7 @@ export function renderPoints(
         smHorizontalAccessorValue: dataSeries.smHorizontalAccessorValue,
       };
       const styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, styleAccessor);
-      const orphan = isOrphanData(prev, next, dataIndex, dataSeries.data.length, yDefined);
+      const orphan = isOrphanDataPoint(dataIndex, dataSeries.data.length, yDefined, prev, next);
       const pointGeometry: PointGeometry = {
         radius,
         x,
@@ -240,21 +240,21 @@ function yAccessorForOrphanCheck(datum: DataSeriesDatum): number | null {
   return datum.filled?.y1 ? null : datum.y1;
 }
 
-function isOrphanData(
-  prev: DataSeriesDatum | undefined,
-  next: DataSeriesDatum | undefined,
+function isOrphanDataPoint(
   index: number,
   length: number,
   yDefined: YDefinedFn,
-) {
-  if (index === 0 && (next === undefined || !yDefined(next, yAccessorForOrphanCheck))) {
+  prev?: DataSeriesDatum,
+  next?: DataSeriesDatum,
+): boolean {
+  if (index === 0 && (isNil(next) || !yDefined(next, yAccessorForOrphanCheck))) {
     return true;
   }
-  if (index === length - 1 && (prev === undefined || !yDefined(prev, yAccessorForOrphanCheck))) {
+  if (index === length - 1 && (isNil(prev) || !yDefined(prev, yAccessorForOrphanCheck))) {
     return true;
   }
   return (
-    (prev === undefined || !yDefined(prev, yAccessorForOrphanCheck)) &&
-    (next === undefined || !yDefined(next, yAccessorForOrphanCheck))
+    (isNil(prev) || !yDefined(prev, yAccessorForOrphanCheck)) &&
+    (isNil(next) || !yDefined(next, yAccessorForOrphanCheck))
   );
 }

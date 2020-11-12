@@ -39,16 +39,15 @@ export interface MarkSizeOptions {
  * Passing a filled key (x, y1, y0) it will return that value or the filled one
  * @internal
  */
-export const getYDatumValue = (valueName: keyof Omit<FilledValues, 'x'> = 'y1') => (
-  datum: DataSeriesDatum,
-  returnFilled = true,
-): number | null => {
-  const value = datum[valueName];
-  if (value !== null || !returnFilled) {
-    return value;
-  }
-  return datum.filled?.[valueName] ?? null;
-};
+export function getYDatumValueFn(valueName: keyof Omit<FilledValues, 'x'> = 'y1') {
+  return (datum: DataSeriesDatum, returnFilled = true): number | null => {
+    const value = datum[valueName];
+    if (value !== null || !returnFilled) {
+      return value;
+    }
+    return datum.filled?.[valueName] ?? null;
+  };
+}
 
 /**
  *
@@ -175,10 +174,10 @@ export type YDefinedFn = (
 ) => boolean;
 
 /** @internal */
-export function isYValueDefined(yScale: Scale, xScale: Scale): YDefinedFn {
+export function isYValueDefinedFn(yScale: Scale, xScale: Scale): YDefinedFn {
   const isLogScale = isLogarithmicScale(yScale);
   const domainPolarity = getDomainPolarity(yScale.domain);
-  return (datum, getValueAccessor: (datum: DataSeriesDatum) => number | null) => {
+  return (datum, getValueAccessor) => {
     const yValue = getValueAccessor(datum);
     return (
       yValue !== null &&
@@ -190,8 +189,8 @@ export function isYValueDefined(yScale: Scale, xScale: Scale): YDefinedFn {
 }
 
 /** @internal */
-export function getY1ScaledValueOrThrow(yScale: Scale): (datum: DataSeriesDatum) => number {
-  const datumAccessor = getYDatumValue();
+export function getY1ScaledValueOrThrowFn(yScale: Scale): (datum: DataSeriesDatum) => number {
+  const datumAccessor = getYDatumValueFn();
   return (datum) => {
     const yValue = datumAccessor(datum);
     return yScale.scaleOrThrow(yValue);
@@ -199,7 +198,7 @@ export function getY1ScaledValueOrThrow(yScale: Scale): (datum: DataSeriesDatum)
 }
 
 /** @internal */
-export function getY0ScaledValueOrThrow(yScale: Scale): (datum: DataSeriesDatum) => number {
+export function getY0ScaledValueOrThrowFn(yScale: Scale): (datum: DataSeriesDatum) => number {
   const isLogScale = isLogarithmicScale(yScale);
   const domainPolarity = getDomainPolarity(yScale.domain);
 

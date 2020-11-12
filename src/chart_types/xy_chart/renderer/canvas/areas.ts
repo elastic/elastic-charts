@@ -76,7 +76,9 @@ export function renderAreas(ctx: CanvasRenderingContext2D, props: AreaGeometries
     areas.forEach(({ panel, value: area }) => {
       const { seriesPointStyle, seriesIdentifier, points } = area;
       const visiblePoints = seriesPointStyle.visible ? points : points.filter(({ orphan }) => orphan);
-
+      if (visiblePoints.length === 0) {
+        return;
+      }
       const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
       withPanelTransform(
         ctx,
