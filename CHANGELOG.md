@@ -1,3 +1,10 @@
+## [23.2.2](https://github.com/elastic/elastic-charts/compare/v23.2.1...v23.2.2) (2020-11-12)
+
+
+### Bug Fixes
+
+* **area_charts:** correctly represent baseline with negative data points ([#903](https://github.com/elastic/elastic-charts/issues/903)) ([5f240d1](https://github.com/elastic/elastic-charts/commit/5f240d16befb74eab115a09d745a9627670623f9))
+
 ## [23.2.1](https://github.com/elastic/elastic-charts/compare/v23.2.0...v23.2.1) (2020-10-06)
 
 
