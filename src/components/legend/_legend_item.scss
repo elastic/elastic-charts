@@ -8,10 +8,6 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
   align-items: center;
   width: 100%;
 
-  &:focus {
-    box-shadow: inset 0 0 0 $euiSizeXS / 4 $euiFocusRingColor;
-  }
-
   &:not(&--hidden) {
     .echLegendItem__color--changable {
       cursor: pointer;
@@ -35,6 +31,7 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
 
   &__color {
     margin-right: $euiSizeXS;
+    margin-left: $euiSizeXS;
 
     .euiPopover {
       vertical-align: inherit; // prevents color dot from shifting
@@ -53,7 +50,7 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
     @include euiFontSizeXS;
     @include euiTextTruncate;
     flex: 1 1 auto;
-    width: 100%;
+    width: $echLegendMaxWidth;
     text-align: left;
     overflow-x: scroll;
     overflow: hidden;

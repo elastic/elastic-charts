@@ -2,7 +2,7 @@
   &--top,
   &--bottom {
     .echLegendList {
-      display: grid;
+      display: flex;
       grid-column-gap: $echLegendColumnGap;
       grid-row-gap: $echLegendRowGap;
       margin-top: $echLegendRowGap;
@@ -19,6 +19,7 @@
   &--right {
     .echLegendList {
       flex-direction: column;
+      width: 100%;
     }
   }
 
@@ -37,17 +38,16 @@
     position: relative;
   }
 
-  :focus {
-    box-shadow: inset 0 0 0 $euiSizeXS / 4 $euiFocusRingColor;
-  }
-
   .echLegendListContainer {
     @include euiYScrollWithShadows;
     width: 100%;
     overflow-y: auto;
-  }
 
-  &:focus {
-    box-shadow: inset 0 0 0 $euiSizeXS / 4 $euiFocusRingColor;
+    :focus {
+      @include euiFocusRing;
+      background-color: $euiFocusBackgroundColor;
+      border-radius: $euiBorderRadius / 2;
+      margin-right: $euiSizeXS;
+    }
   }
 }
