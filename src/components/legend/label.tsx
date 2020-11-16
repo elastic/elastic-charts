@@ -22,37 +22,26 @@ import React, { MouseEventHandler } from 'react';
 
 interface LabelProps {
   label: string;
-  extra: string | number | undefined;
+  isSeriesHidden?: boolean;
   onClick?: MouseEventHandler;
 }
 /**
  * Label component used to display text in legend item
  * @internal
  */
-export function Label({ label, extra, onClick }: LabelProps) {
+export function Label({ label, onClick, isSeriesHidden }: LabelProps) {
   const labelClassNames = classNames('echLegendItem__label', {
     'echLegendItem__label--clickable': Boolean(onClick),
   });
-  const labelWithExtra = getExtra(label, extra);
   return (
     <button
       type="button"
       className={labelClassNames}
-      title={labelWithExtra}
+      title={label}
       onClick={onClick}
-      aria-label={labelWithExtra}
+      aria-label={isSeriesHidden ? `Activate to show series in graph` : `Activate to hide series in graph`}
     >
       {label}
     </button>
   );
-}
-
-/**
- * @internal
- */
-function getExtra(label: string, extra: string | number | undefined) {
-  if (extra !== undefined) {
-    return `${label} ${extra}`;
-  }
-  return `${label}`;
 }
