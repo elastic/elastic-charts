@@ -39,7 +39,9 @@ export function Label({ label, onClick, isSeriesHidden }: LabelProps) {
       className={labelClassNames}
       title={label}
       onClick={onClick}
-      aria-label={isSeriesHidden ? `Activate to show series in graph` : `Activate to hide series in graph`}
+      aria-label={
+        isSeriesHidden ? `${label}; Activate to show series in graph` : `${label}; Activate to hide series in graph`
+      }
     >
       {label}
     </button>
