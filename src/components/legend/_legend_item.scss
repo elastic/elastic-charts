@@ -50,7 +50,6 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
     @include euiFontSizeXS;
     @include euiTextTruncate;
     flex: 1 1 auto;
-    width: $echLegendMaxWidth;
     text-align: left;
     overflow-x: scroll;
     overflow: hidden;
