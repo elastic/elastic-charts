@@ -30,6 +30,10 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
   }
 
   &__color {
+    display: flex;
+    align-items: center;
+    // makes the color picker to have the same height as the legend
+    height: 18px;
     margin-right: $euiSizeXS;
     margin-left: $euiSizeXS;
 
