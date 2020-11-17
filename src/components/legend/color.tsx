@@ -52,7 +52,7 @@ export const Color = memo(
           title="change series color"
           ref={ref}
         >
-          <Icon type="dot" color={color} aria-label="change series color" />
+          <Icon type="dot" color={color} aria-label={`Change series color, currently ${color}`} />
         </button>
       );
     }
