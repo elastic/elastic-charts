@@ -19,6 +19,7 @@
 
 import { AxisProps } from '.';
 import { withContext } from '../../../../../renderers/canvas';
+import { Rotation } from '../../../../../utils/commons';
 import { Font, FontStyle } from '../../../../partition_chart/layout/types/types';
 import { AxisTick, getTickLabelProps } from '../../../utils/axis_utils';
 import { renderText } from '../primitives/text';
@@ -41,6 +42,7 @@ export function renderTickLabel(ctx: CanvasRenderingContext2D, tick: AxisTick, s
     axisStyle,
     tick.position,
     position,
+    tickLabelRotation as Rotation,
     size,
     axisTicksDimensions,
     showTicks,
