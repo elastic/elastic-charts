@@ -2,11 +2,12 @@
   &--top,
   &--bottom {
     .echLegendList {
-      display: flex;
+      display: grid;
       grid-column-gap: $echLegendColumnGap;
       grid-row-gap: $echLegendRowGap;
       margin-top: $echLegendRowGap;
       margin-bottom: $echLegendRowGap;
+
       @include internetExplorerOnly {
         display: flex;
         flex-direction: row;
@@ -19,7 +20,6 @@
   &--right {
     .echLegendList {
       flex-direction: column;
-      width: 100%;
     }
   }
 

@@ -60,6 +60,13 @@ interface ElementBBox {
   height: number;
 }
 
+interface KeyboardKey {
+  actionLabel: string;
+  count: number;
+}
+
+type KeyboardKeys = Array<KeyboardKey>;
+
 /**
  * Used to get postion from any value of cursor position
  *
@@ -121,7 +128,7 @@ type ScreenshotElementAtUrlOptions = ScreenshotDOMElementOptions & {
   /**
    * any desired action to be performed after loading url, prior to screenshot
    */
-  action?: () => void | Promise<void>;
+  action?: () => void | Promise<void> | Promise<void[]>;
   /**
    * Selector used to wait on DOM element
    */
@@ -273,6 +280,24 @@ class CommonPage {
   }
 
   /**
+   * Keyboard tab
+   * @param keyCode
+   * @param selector
+   */
+  async triggerKeyboardTab() {
+    await page.keyboard.press('Tab');
+  }
+
+  /**
+   * Keyboard enter
+   * @param keyCode
+   * @param selector
+   */
+  async triggerKeyboardEnter() {
+    await page.keyboard.press('Enter');
+  }
+
+  /**
    * Expect an element given a url and selector from storybook
    *
    * - Note: No need to fix host or port. They will be set automatically.
@@ -335,6 +360,45 @@ class CommonPage {
     options?: Omit<ScreenshotElementAtUrlOptions, 'action'>,
   ) {
     const action = async () => await this.moveMouseRelativeToDOMElement(mousePosition, this.chartSelector);
+    await this.expectChartAtUrlToMatchScreenshot(url, {
+      ...options,
+      action,
+    });
+  }
+
+  /**
+   * Expect a chart given a url from storybook with keyboard events
+   * @param url
+   * @param keyboardEvents
+   * @param options
+   */
+  async expectChartWithKeyboardEventsAtUrlToMatchScreenshot(
+    url: string,
+    keyboardEvents: KeyboardKeys,
+    options?: Omit<ScreenshotElementAtUrlOptions, 'action'>,
+  ) {
+    // click and then capture the tab and enter keypresses
+    const action = async () =>
+      await this.clickMouseRelativeToDOMElement({ top: 242, left: 910 }, this.chartSelector)
+        .then(() =>
+          keyboardEvents.map(({ actionLabel, count }) => {
+            if (actionLabel === 'tab') {
+              let i = 0;
+              while (i < count) {
+                void page.keyboard.press('Tab');
+                i++;
+              }
+            } else if (actionLabel === 'enter') {
+              let i = 0;
+              while (i < count) {
+                void page.keyboard.press('Enter');
+                i++;
+              }
+            }
+          }),
+        )
+        .then((response) => Promise.all(response));
+
     await this.expectChartAtUrlToMatchScreenshot(url, {
       ...options,
       action,

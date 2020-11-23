@@ -11,6 +11,7 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
   &:not(&--hidden) {
     .echLegendItem__color--changable {
       cursor: pointer;
+      height: 18px;
     }
   }
 
@@ -31,11 +32,10 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
 
   &__color {
     display: flex;
-    align-items: center;
     // makes the color picker to have the same height as the legend
-    height: 18px;
     margin-right: $euiSizeXS;
-    margin-left: $euiSizeXS;
+    // margin-left: $euiSizeXS;
+    line-height: 1.5;
 
     .euiPopover {
       vertical-align: inherit; // prevents color dot from shifting
@@ -55,8 +55,10 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
     @include euiTextTruncate;
     flex: 1 1 auto;
     text-align: left;
-    overflow-x: scroll;
-    overflow: hidden;
+    vertical-align: baseline;
+    letter-spacing: -0.005em;
+    // overflow-x: scroll;
+    // overflow: hidden;
 
     &--clickable {
       &:hover {
@@ -69,9 +71,9 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
   &__extra {
     @include euiFontSizeXS;
     text-align: right;
+    flex: 0 0 auto;
     margin-left: $euiSizeXS;
     font-feature-settings: 'tnum';
-    flex: 0 0 auto;
 
     &--hidden {
       display: none;
