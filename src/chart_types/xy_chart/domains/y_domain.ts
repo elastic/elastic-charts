@@ -38,24 +38,17 @@ export type YBasicSeriesSpec = Pick<
 
 /** @internal */
 export function mergeYDomain(dataSeries: DataSeries[], domainsByGroupId: Map<GroupId, YDomainRange>): YDomain[] {
-  const dataSeriesByGroupId = groupBy(
-    dataSeries,
-    ({ spec }) => {
-      return getSpecGroupId(spec);
-    },
-    true,
-  );
+  const dataSeriesByGroupId = groupBy(dataSeries, ({ spec }) => getSpecGroupId(spec), true);
 
   return dataSeriesByGroupId.reduce<YDomain[]>((acc, groupedDataSeries) => {
-    const [{ groupId }] = groupedDataSeries;
-
+    const groupId = getSpecGroupId(groupedDataSeries[0].spec);
     const stacked = groupedDataSeries.filter(({ isStacked }) => isStacked);
     const nonStacked = groupedDataSeries.filter(({ isStacked }) => !isStacked);
     const customDomain = domainsByGroupId.get(groupId);
     const hasNonZeroBaselineTypes = groupedDataSeries.some(
       ({ seriesType }) => seriesType === SeriesTypes.Bar || seriesType === SeriesTypes.Area,
     );
-    const domain = mergeYDomainForGroup(stacked, nonStacked, hasNonZeroBaselineTypes, customDomain);
+    const domain = mergeYDomainForGroup(stacked, nonStacked, hasNonZeroBaselineTypes, groupId, customDomain);
     if (!domain) {
       return acc;
     }
@@ -67,6 +60,7 @@ function mergeYDomainForGroup(
   stacked: DataSeries[],
   nonStacked: DataSeries[],
   hasZeroBaselineSpecs: boolean,
+  groupId: string,
   customDomain?: YDomainRange,
 ): YDomain | null {
   const dataSeries = [...stacked, ...nonStacked];
@@ -77,7 +71,7 @@ function mergeYDomainForGroup(
     yScaleType,
   }));
   const groupYScaleType = coerceYScaleTypes(yScaleTypes);
-  const [{ stackMode, groupId }] = dataSeries;
+  const [{ stackMode }] = dataSeries;
 
   let domain: number[];
   if (stackMode === StackMode.Percentage) {
