@@ -49,6 +49,9 @@ export function getAxesSpecForSpecId(axesSpecs: AxisSpec[], groupId: GroupId) {
 }
 
 /** @internal */
-export function getSpecGroupId(spec: BasicSeriesSpec) {
-  return spec.useDefaultGroupDomain ? DEFAULT_GLOBAL_ID : spec.groupId;
+export function getSpecGroupId(spec: BasicSeriesSpec): string {
+  if (!spec.useDefaultGroupDomain) {
+    return spec.groupId;
+  }
+  return typeof spec.useDefaultGroupDomain === 'boolean' ? DEFAULT_GLOBAL_ID : spec.useDefaultGroupDomain;
 }

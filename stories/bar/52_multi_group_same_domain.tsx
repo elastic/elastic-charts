@@ -139,7 +139,9 @@ The data Y domain of each group, specified by \`groupId\`, is computed independe
 where the Y value position is scaled independently on the Y axis from the other groups. An axis with the same \`groupId\`
 will reflect that scale.
 
-Use \`useDefaultGroupDomain\` if the same domain is required on every series.
+Use \`useDefaultGroupDomain\` if the same domain is required on every series. If you sent a \`boolean\` value, it will use
+the group id applied by default on every series with no specific groupId. You can also pass a \`string\` to use a different \`groupId\`
+see next storybook example.
       `,
     },
   },
