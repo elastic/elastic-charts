@@ -24,10 +24,11 @@ import { identity } from '../../../utils/commons';
 import { computeContinuousDataDomain } from '../../../utils/domain';
 import { GroupId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
+import { getSpecGroupId } from '../state/utils/spec';
 import { isCompleteBound, isLowerBound, isUpperBound } from '../utils/axis_type_utils';
 import { groupBy } from '../utils/group_data_series';
 import { DataSeries } from '../utils/series';
-import { BasicSeriesSpec, YDomainRange, DEFAULT_GLOBAL_ID, SeriesTypes, StackMode } from '../utils/specs';
+import { BasicSeriesSpec, YDomainRange, SeriesTypes, StackMode } from '../utils/specs';
 import { YDomain } from './types';
 
 export type YBasicSeriesSpec = Pick<
@@ -39,8 +40,8 @@ export type YBasicSeriesSpec = Pick<
 export function mergeYDomain(dataSeries: DataSeries[], domainsByGroupId: Map<GroupId, YDomainRange>): YDomain[] {
   const dataSeriesByGroupId = groupBy(
     dataSeries,
-    ({ spec: { useDefaultGroupDomain, groupId } }) => {
-      return useDefaultGroupDomain ? DEFAULT_GLOBAL_ID : groupId;
+    ({ spec }) => {
+      return getSpecGroupId(spec);
     },
     true,
   );

@@ -63,7 +63,8 @@ export { Example as negativeAndPositiveXValues } from './31_negative_and_positiv
 export { Example as scaleToExtent } from './32_scale_to_extent';
 export { Example as bandBarChart } from './33_band_bar';
 export { Example as minHeight } from './45_min_height';
-export { Example as stackedOnlyGroupedAreas } from './47_stacked_only_grouped';
+export { Example as stackedOnlyGrouped } from './47_stacked_only_grouped';
+export { Example as dualAxisSameYDomain } from './52_multi_group_same_domain';
 export { Example as orderBinsBySum } from './50_order_bins_by_sum';
 
 // for testing purposes only
