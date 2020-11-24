@@ -24,7 +24,7 @@ import { identity } from '../../../utils/commons';
 import { computeContinuousDataDomain } from '../../../utils/domain';
 import { GroupId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
-import { getSpecGroupId } from '../state/utils/spec';
+import { getSpecDomainGroupId } from '../state/utils/spec';
 import { isCompleteBound, isLowerBound, isUpperBound } from '../utils/axis_type_utils';
 import { groupBy } from '../utils/group_data_series';
 import { DataSeries } from '../utils/series';
@@ -38,17 +38,19 @@ export type YBasicSeriesSpec = Pick<
 
 /** @internal */
 export function mergeYDomain(dataSeries: DataSeries[], domainsByGroupId: Map<GroupId, YDomainRange>): YDomain[] {
-  const dataSeriesByGroupId = groupBy(dataSeries, ({ spec }) => getSpecGroupId(spec), true);
+  const dataSeriesByGroupId = groupBy(dataSeries, ({ spec }) => getSpecDomainGroupId(spec), true);
 
   return dataSeriesByGroupId.reduce<YDomain[]>((acc, groupedDataSeries) => {
-    const groupId = getSpecGroupId(groupedDataSeries[0].spec);
+    const [{ spec }] = groupedDataSeries;
+    const groupId = getSpecDomainGroupId(spec);
+
     const stacked = groupedDataSeries.filter(({ isStacked }) => isStacked);
     const nonStacked = groupedDataSeries.filter(({ isStacked }) => !isStacked);
     const customDomain = domainsByGroupId.get(groupId);
     const hasNonZeroBaselineTypes = groupedDataSeries.some(
       ({ seriesType }) => seriesType === SeriesTypes.Bar || seriesType === SeriesTypes.Area,
     );
-    const domain = mergeYDomainForGroup(stacked, nonStacked, hasNonZeroBaselineTypes, groupId, customDomain);
+    const domain = mergeYDomainForGroup(stacked, nonStacked, hasNonZeroBaselineTypes, customDomain);
     if (!domain) {
       return acc;
     }
@@ -60,7 +62,6 @@ function mergeYDomainForGroup(
   stacked: DataSeries[],
   nonStacked: DataSeries[],
   hasZeroBaselineSpecs: boolean,
-  groupId: string,
   customDomain?: YDomainRange,
 ): YDomain | null {
   const dataSeries = [...stacked, ...nonStacked];
@@ -71,7 +72,8 @@ function mergeYDomainForGroup(
     yScaleType,
   }));
   const groupYScaleType = coerceYScaleTypes(yScaleTypes);
-  const [{ stackMode }] = dataSeries;
+  const [{ stackMode, spec }] = dataSeries;
+  const groupId = getSpecDomainGroupId(spec);
 
   let domain: number[];
   if (stackMode === StackMode.Percentage) {
@@ -196,28 +198,6 @@ export function isStackedSpec(spec: YBasicSeriesSpec, histogramEnabled: boolean)
 }
 
 /**
- * Get the stack mode for every groupId
- * @param specs
- * @internal
- */
-export function getStackModeForYGroup(specs: YBasicSeriesSpec[]) {
-  return specs.reduce<Record<GroupId, StackMode | undefined>>((acc, { groupId, stackMode }) => {
-    if (!acc[groupId]) {
-      acc[groupId] = undefined;
-    }
-
-    if (acc[groupId] === undefined && stackMode !== undefined) {
-      acc[groupId] = stackMode;
-    }
-    if (stackMode !== undefined && acc[groupId] !== stackMode) {
-      Logger.warn(`Is not possible to mix different stackModes, please align all stackMode on the same GroupId
-      to the same mode. The default behaviour will be to use the first encountered stackMode on the series`);
-    }
-    return acc;
-  }, {});
-}
-
-/**
  * Coerce the scale types of a set of specification to a generic one.
  * If there is at least one bar series type, than the response will specity
  * that the coerced scale is a `scaleBand` (each point needs to have a surrounding empty
@@ -243,14 +223,4 @@ function coerceYScale(scaleTypes: Set<ScaleContinuousType>): ScaleContinuousType
     return value;
   }
   return ScaleType.Linear;
-}
-
-export function getYScaleTypeByGroupId(specs: BasicSeriesSpec[]): Map<GroupId, ScaleContinuousType> {
-  const groups = groupBy(specs, ['groupId'], true);
-  return groups.reduce((acc, group) => {
-    const scaleType = coerceYScaleTypes(group);
-    const [{ groupId }] = group;
-    acc.set(groupId, scaleType);
-    return acc;
-  }, new Map());
 }

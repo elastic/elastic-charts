@@ -49,7 +49,7 @@ export function getAxesSpecForSpecId(axesSpecs: AxisSpec[], groupId: GroupId) {
 }
 
 /** @internal */
-export function getSpecGroupId(spec: BasicSeriesSpec): string {
+export function getSpecDomainGroupId(spec: BasicSeriesSpec): string {
   if (!spec.useDefaultGroupDomain) {
     return spec.groupId;
   }
