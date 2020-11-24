@@ -309,7 +309,7 @@ function getVerticalTextOffset(
 
 function getHorizontalAlign(
   position: Position,
-  rotation: Rotation,
+  rotation: number,
   alignment: HorizontalAlignment = HorizontalAlignment.Near,
 ): Exclude<HorizontalAlignment, 'far' | 'near'> {
   if (
@@ -350,7 +350,7 @@ function getHorizontalAlign(
 
 function getVerticalAlign(
   position: Position,
-  rotation: Rotation,
+  rotation: number,
   alignment: VerticalAlignment = VerticalAlignment.Middle,
 ): Exclude<VerticalAlignment, 'far' | 'near'> {
   if (
@@ -401,7 +401,7 @@ export function getTickLabelProps(
   { tickLine, tickLabel }: AxisStyle,
   tickPosition: number,
   position: Position,
-  rotation: Rotation,
+  rotation: number,
   axisSize: Size,
   tickDimensions: AxisTicksDimensions,
   showTicks: boolean,
@@ -893,8 +893,8 @@ export const isDuplicateAxis = (
   tickMap: Map<AxisId, AxisTicksDimensions>,
   specs: AxisSpec[],
 ): boolean => {
-  const firstTickLabel = tickLabels[0];
-  const lastTickLabel = tickLabels.slice(-1)[0];
+  const [firstTickLabel] = tickLabels;
+  const [lastTickLabel] = tickLabels.slice(-1);
 
   let hasDuplicate = false;
   tickMap.forEach(({ tickLabels: axisTickLabels }, axisId) => {
