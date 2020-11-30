@@ -280,24 +280,6 @@ class CommonPage {
   }
 
   /**
-   * Keyboard tab
-   * @param keyCode
-   * @param selector
-   */
-  async triggerKeyboardTab() {
-    await page.keyboard.press('Tab');
-  }
-
-  /**
-   * Keyboard enter
-   * @param keyCode
-   * @param selector
-   */
-  async triggerKeyboardEnter() {
-    await page.keyboard.press('Enter');
-  }
-
-  /**
    * Expect an element given a url and selector from storybook
    *
    * - Note: No need to fix host or port. They will be set automatically.
@@ -379,26 +361,26 @@ class CommonPage {
   ) {
     // click and then capture the tab and enter keypresses
     const action = async () =>
-      await this.clickMouseRelativeToDOMElement({ top: 242, left: 910 }, this.chartSelector)
-        .then(() =>
-          keyboardEvents.map(({ actionLabel, count }) => {
-            if (actionLabel === 'tab') {
-              let i = 0;
-              while (i < count) {
-                void page.keyboard.press('Tab');
-                i++;
-              }
-            } else if (actionLabel === 'enter') {
-              let i = 0;
-              while (i < count) {
-                void page.keyboard.press('Enter');
-                i++;
-              }
+      await this.clickMouseRelativeToDOMElement({ top: 242, left: 910 }, this.chartSelector).then(() =>
+        // eslint-disable-next-line array-callback-return
+        keyboardEvents.map(({ actionLabel, count }) => {
+          if (actionLabel === 'tab') {
+            let i = 0;
+            while (i < count) {
+              void page.keyboard.press('Tab');
+              i++;
             }
-          }),
-        )
-        .then((response) => Promise.all(response));
-
+          } else if (actionLabel === 'enter') {
+            let i = 0;
+            while (i < count) {
+              void page.keyboard.press('Enter');
+              i++;
+            }
+          }
+        }),
+      );
+    // .then((response) => Promise.all(response));
+    // trigger the array of actions vs one action at a time
     await this.expectChartAtUrlToMatchScreenshot(url, {
       ...options,
       action,
