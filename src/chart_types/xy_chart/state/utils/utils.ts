@@ -19,7 +19,7 @@
 
 import { SeriesKey, SeriesIdentifier } from '../../../../commons/series_id';
 import { Scale } from '../../../../scales';
-import { GroupBySpec } from '../../../../specs';
+import { GroupBySpec, SeriesSortFn } from '../../../../specs';
 import { OrderBy } from '../../../../specs/settings';
 import { mergePartial, Rotation, Color, isUniqueArray } from '../../../../utils/commons';
 import { CurveType } from '../../../../utils/curves';
@@ -261,10 +261,13 @@ export function computeSeriesGeometries(
   axesSpecs: AxisSpec[],
   smallMultiplesScales: SmallMultipleScales,
   enableHistogramMode: boolean,
+  seriesSortFn: SeriesSortFn,
 ): ComputedGeometries {
   const chartColors: ColorConfig = chartTheme.colors;
-
-  const barDataSeries = formattedDataSeries.filter(({ spec }) => isBarSeriesSpec(spec));
+  const sortedDataSeries = formattedDataSeries.slice().sort((a, b) => {
+    return seriesSortFn(a, b);
+  });
+  const barDataSeries = sortedDataSeries.filter(({ spec }) => isBarSeriesSpec(spec));
   // compute max bar in cluster per panel
   const dataSeriesGroupedByPanel = groupBy(
     barDataSeries,
@@ -294,7 +297,7 @@ export function computeSeriesGeometries(
   });
 
   const computedGeoms = renderGeometries(
-    formattedDataSeries,
+    sortedDataSeries,
     xDomain,
     yScales,
     vertical,

@@ -16,22 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import React from 'react';
 
+import { Spec } from '.';
 import { ChartTypes } from '../chart_types';
+import { SeriesIdentifier } from '../commons/series_id';
+import { getConnect, specComponentFactory } from '../state/spec_factory';
+import { SpecTypes } from './constants';
 
-export interface Spec {
-  /** unique Spec identifier */
-  id: string;
-  /** Chart type define the type of chart that use this spec */
-  chartType: ChartTypes;
-  /** The type of spec, can be series, axis, annotation, settings etc */
-  specType: string;
+/** @alpha */
+export type SeriesSortFn = (siA: SeriesIdentifier, siB: SeriesIdentifier) => number;
+
+/** @alpha */
+export interface SeriesSortSpec extends Spec {
+  fn: SeriesSortFn;
 }
 
-export * from './series_sort';
-export * from './group_by';
-export * from './small_multiples';
+const DEFAULT_SERIES_SORT_PROPS = {
+  chartType: ChartTypes.Global,
+  specType: SpecTypes.IndexOrder,
+};
 
-export * from './settings';
-export * from './constants';
-export * from '../chart_types/specs';
+type DefaultSeriesSortProps = 'chartType' | 'specType';
+
+/** @alpha */
+export type SeriesSortProps = Pick<SeriesSortSpec, 'id' | 'fn'>;
+
+/** @alpha */
+export const SeriesSort: React.FunctionComponent<SeriesSortProps> = getConnect()(
+  specComponentFactory<SeriesSortSpec, DefaultSeriesSortProps>(DEFAULT_SERIES_SORT_PROPS),
+);

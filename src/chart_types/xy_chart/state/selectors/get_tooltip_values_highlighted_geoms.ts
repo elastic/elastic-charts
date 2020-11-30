@@ -33,6 +33,7 @@ import { TooltipType } from '../../../../specs/constants';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
+import { getTooltipSeriesSortSelector, TooltipSortingFn } from '../../../../state/selectors/get_series_sort';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getTooltipHeaderFormatterSelector } from '../../../../state/selectors/get_tooltip_header_formatter';
 import { Rotation } from '../../../../utils/commons';
@@ -73,6 +74,7 @@ export const getTooltipInfoAndGeometriesSelector = createCachedSelector(
     getSeriesSpecsSelector,
     getAxisSpecsSelector,
     getSettingsSpecSelector,
+    getTooltipSeriesSortSelector,
     getProjectedPointerPositionSelector,
     getOrientedProjectedPointerPositionSelector,
     getChartRotationSelector,
@@ -89,6 +91,7 @@ function getTooltipAndHighlightFromValue(
   seriesSpecs: BasicSeriesSpec[],
   axesSpecs: AxisSpec[],
   settings: SettingsSpec,
+  tooltipSortFn: TooltipSortingFn,
   projectedPointerPosition: Point,
   orientedProjectedPointerPosition: Point,
   chartRotation: Rotation,
@@ -200,7 +203,9 @@ function getTooltipAndHighlightFromValue(
     tooltip: {
       header,
       // to avoid creating a breaking change because of a different sorting order on tooltip
-      values: values.reverse(),
+      values: values.sort((a, b) => {
+        return tooltipSortFn(a.seriesIdentifier, b.seriesIdentifier);
+      }),
     },
     highlightedGeometries,
   };

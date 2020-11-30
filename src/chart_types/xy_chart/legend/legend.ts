@@ -20,7 +20,8 @@
 import { LegendItem } from '../../../commons/legend';
 import { SeriesKey, SeriesIdentifier } from '../../../commons/series_id';
 import { ScaleType } from '../../../scales/constants';
-import { TickFormatterOptions } from '../../../specs';
+import { SeriesSortFn, TickFormatterOptions } from '../../../specs';
+import { DEFAULT_SORTING_FN } from '../../../state/selectors/get_series_sort';
 import { Color } from '../../../utils/commons';
 import { BandedAccessorType } from '../../../utils/geometry';
 import { getAxesSpecForSpecId, getSpecsById } from '../state/utils/spec';
@@ -93,6 +94,7 @@ export function computeLegend(
   axesSpecs: AxisSpec[],
   showLegendExtra: boolean,
   deselectedDataSeries: SeriesIdentifier[] = [],
+  seriesSortFn: SeriesSortFn = DEFAULT_SORTING_FN,
 ): LegendItem[] {
   const legendItems: LegendItem[] = [];
 
@@ -142,5 +144,8 @@ export function computeLegend(
       });
     }
   });
-  return legendItems;
+
+  return legendItems.sort((a, b) => {
+    return seriesSortFn(a.seriesIdentifier, b.seriesIdentifier);
+  });
 }

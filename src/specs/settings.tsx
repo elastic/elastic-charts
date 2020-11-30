@@ -210,6 +210,11 @@ export type TooltipProps = TooltipPortalSettings<'chart'> & {
    * Render custom tooltip given header and values
    */
   customTooltip?: CustomTooltip;
+
+  /**
+   * The ID of a <SeriesSort> component to sort tooltip values (top-bottom)
+   */
+  seriesSort?: string;
 };
 
 /**
@@ -355,6 +360,10 @@ export interface SettingsSpec extends Spec {
    */
   flatLegend?: boolean;
   /**
+   * The ID of a <SeriesSort> component to sort the legend values (top-bottom)
+   */
+  legendSeriesSort?: string;
+  /**
    * Removes duplicate axes
    *
    * Compares title, position and first & last tick labels
@@ -424,6 +433,12 @@ export interface SettingsSpec extends Spec {
    * Orders ordinal x values
    */
   orderOrdinalBinsBy?: OrderBy;
+
+  /**
+   * The ID of a <SeriesSort> component to sort the rendering order of series.
+   * Left/right for cluster, bottom-up for stacked
+   */
+  renderingSeriesSort?: string;
 }
 
 /**

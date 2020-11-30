@@ -23,6 +23,7 @@ import { LegendItem } from '../../../../commons/legend';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getDeselectedSeriesSelector } from '../../../../state/selectors/get_deselected_data_series';
+import { getLegendSeriesSortSelector } from '../../../../state/selectors/get_series_sort';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { computeLegend } from '../../legend/legend';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
@@ -39,6 +40,7 @@ export const computeLegendSelector = createCachedSelector(
     getAxisSpecsSelector,
     getDeselectedSeriesSelector,
     getSettingsSpecSelector,
+    getLegendSeriesSortSelector,
   ],
   (
     seriesSpecs,
@@ -48,6 +50,7 @@ export const computeLegendSelector = createCachedSelector(
     axesSpecs,
     deselectedDataSeries,
     { showLegendExtra },
+    seriesSortFn,
   ): LegendItem[] =>
     computeLegend(
       seriesDomainsAndData.seriesCollection,
@@ -57,5 +60,6 @@ export const computeLegendSelector = createCachedSelector(
       axesSpecs,
       showLegendExtra,
       deselectedDataSeries,
+      seriesSortFn,
     ),
 )(getChartIdSelector);
