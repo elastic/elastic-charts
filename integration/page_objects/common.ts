@@ -386,7 +386,6 @@ class CommonPage {
         }
       });
 
-    // trigger the array of actions vs one action at a time
     await this.expectChartAtUrlToMatchScreenshot(url, {
       ...options,
       action,
