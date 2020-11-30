@@ -68,16 +68,22 @@ export class Playground extends React.Component {
     });
   };
 
-  makingFood = (ms: number) => {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+  makingFood = (ms: number, food: string) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        // console.log(`resolving the promise ${food}`, new Date());
+        resolve(`done with ${food}`);
+      }, ms);
+      // console.log(`starting the promise ${food}`, new Date());
+    });
   };
 
   getNumberOfFood = (food: any) => {
-    return this.makingFood(1000).then(() => this.getFoodAction(food));
+    return this.makingFood(1000, food).then(() => this.getFoodAction(food));
   };
 
   getNumberOfFoodArray = () => {
-    return this.makingFood(1000).then(() => this.getFoodsArrayAction(this.foodsAsAnArray));
+    return this.makingFood(1000, 'apple').then(() => this.getFoodsArrayAction(this.foodsAsAnArray));
   };
 
   getAsyncNumberOfFoodArray = async () => {
@@ -107,20 +113,53 @@ export class Playground extends React.Component {
   // alert('End');
   // };
 
-  getFoodArray = async () => {};
+  // getFoodArray =
+  // async() => {
+  // console.log(await this.makingFood(1000, 'apricot'));
+  // console.log(await this.makingFood(50, 'apple'));
+  // const foodTimeArray = [
+  //   { ms: 1000, food: 'a', count: 2 },
+  //   { ms: 50, food: 'b', count: 1 },
+  //   { ms: 500, food: 'c', count: 3 },
+  // ];
+
+  // for (let i = 0; i < foodTimeArray.length; i++) {
+  //   void this.makingFood(foodTimeArray[i].ms, foodTimeArray[i].food);
+  // }
+
+  // const foodMap = foodTimeArray.map(({ ms, food }) => {
+  //   return this.makingFood(ms, food);
+  // });
+
+  // console.log('before the promise');
+  // for (const i of foodTimeArray) {
+  //   const j = 0;
+  //   while (j < i.count) {
+  //     await this.makingFood(i.ms, i.food);
+  //     j++;
+  //   }
+  // }
+
+  // await Promise.all();
+  // console.log('after the promise');
+  // };
 
   render() {
-    return (
-      <>
-        <div className="page" style={{ width: 5000, height: 5000, backgroundColor: 'yellow' }}>
-          <div id="root" style={{ backgroundColor: 'blueviolet' }}>
-            {/* <div>{this.foods.map(({ label }) => this.getNumberOfFood(label))}</div> */}
-            {/* <div>{alert(this.makingFood(50000).then(this.getFoodsArrayAction(this.foodsAsAnArray)))}</div> */}
-            {/* <div>{alert(this.getNumberOfFoodArray())}</div> */}
-            {/* <div>{alert(this.getAsyncNumberOfFoodArray())}</div> */}
-          </div>
-        </div>
-      </>
-    );
+    // console.log(this.makingFood(1000, 'apricot'));
+    // console.log(this.makingFood(50, 'apple'));
+    // void this.getFoodArray();
+
+    return null;
+    // <>
+    //   <div className="page" style={{ width: 5000, height: 5000, backgroundColor: 'yellow' }}>
+    //     <div id="root" style={{ backgroundColor: 'blueviolet' }}>
+    //       {/* <div>{this.foods.map(({ label }) => this.getNumberOfFood(label))}</div> */}
+    //       {/* <div>{alert(this.makingFood(50000).then(this.getFoodsArrayAction(this.foodsAsAnArray)))}</div> */}
+    //       {/* <div>{alert(this.getNumberOfFoodArray())}</div> */}
+    //       {/* <div>{alert(this.getAsyncNumberOfFoodArray())}</div> */}
+    //       <div>{this.makingFood(50)}</div>
+    //     </div>
+    //   </div>
+    // </>
   }
 }

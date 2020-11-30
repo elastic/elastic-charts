@@ -17,6 +17,13 @@
  * under the License.
  */
 
+// eslint-disable-next-line eslint-comments/disable-enable-pair
+/* eslint-disable promise/always-return */
+/* eslint-disable eslint-comments/disable-enable-pair */
+/* eslint-disable header/header */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-await-in-loop */
+
 import Url from 'url';
 
 import { DRAG_DETECTION_TIMEOUT } from '../../src/state/reducers/interactions';
@@ -128,7 +135,7 @@ type ScreenshotElementAtUrlOptions = ScreenshotDOMElementOptions & {
   /**
    * any desired action to be performed after loading url, prior to screenshot
    */
-  action?: () => void | Promise<void> | Promise<void[]>;
+  action?: () => void | Promise<void> | Iterable<unknown>;
   /**
    * Selector used to wait on DOM element
    */
@@ -361,25 +368,24 @@ class CommonPage {
   ) {
     // click and then capture the tab and enter keypresses
     const action = async () =>
-      await this.clickMouseRelativeToDOMElement({ top: 242, left: 910 }, this.chartSelector).then(() =>
-        // eslint-disable-next-line array-callback-return
-        keyboardEvents.map(({ actionLabel, count }) => {
-          if (actionLabel === 'tab') {
+      await this.clickMouseRelativeToDOMElement({ top: 242, left: 910 }, this.chartSelector).then(async () => {
+        for (const actions of keyboardEvents) {
+          if (actions.actionLabel === 'tab') {
             let i = 0;
-            while (i < count) {
-              void page.keyboard.press('Tab');
+            while (i < actions.count) {
+              await page.keyboard.press('Tab');
               i++;
             }
-          } else if (actionLabel === 'enter') {
+          } else if (actions.actionLabel === 'enter') {
             let i = 0;
-            while (i < count) {
-              void page.keyboard.press('Enter');
+            while (i < actions.count) {
+              await page.keyboard.press('Enter');
               i++;
             }
           }
-        }),
-      );
-    // .then((response) => Promise.all(response));
+        }
+      });
+
     // trigger the array of actions vs one action at a time
     await this.expectChartAtUrlToMatchScreenshot(url, {
       ...options,
