@@ -18,10 +18,6 @@
  */
 
 // eslint-disable-next-line eslint-comments/disable-enable-pair
-/* eslint-disable promise/always-return */
-/* eslint-disable eslint-comments/disable-enable-pair */
-/* eslint-disable header/header */
-/* eslint-disable no-restricted-syntax */
 /* eslint-disable no-await-in-loop */
 
 import Url from 'url';
@@ -276,6 +272,27 @@ class CommonPage {
   }
 
   /**
+   * Press keyboard keys
+   * @param count
+   * @param actionLabel
+   */
+  async pressKey(actionLabel: string, count: number) {
+    if (actionLabel === 'tab') {
+      let i = 0;
+      while (i < count) {
+        await page.keyboard.press('Tab');
+        i++;
+      }
+    } else if (actionLabel === 'enter') {
+      let i = 0;
+      while (i < count) {
+        await page.keyboard.press('Enter');
+        i++;
+      }
+    }
+  }
+
+  /**
    * Drag and drop mouse relative to element
    *
    * @param mousePosition
@@ -366,25 +383,13 @@ class CommonPage {
     keyboardEvents: KeyboardKeys,
     options?: Omit<ScreenshotElementAtUrlOptions, 'action'>,
   ) {
-    // click and then capture the tab and enter keypresses
-    const action = async () =>
-      await this.clickMouseRelativeToDOMElement({ top: 242, left: 910 }, this.chartSelector).then(async () => {
-        for (const actions of keyboardEvents) {
-          if (actions.actionLabel === 'tab') {
-            let i = 0;
-            while (i < actions.count) {
-              await page.keyboard.press('Tab');
-              i++;
-            }
-          } else if (actions.actionLabel === 'enter') {
-            let i = 0;
-            while (i < actions.count) {
-              await page.keyboard.press('Enter');
-              i++;
-            }
-          }
-        }
-      });
+    const action = async () => {
+      await this.clickMouseRelativeToDOMElement({ top: 242, left: 910 }, this.chartSelector);
+      // eslint-disable-next-line no-restricted-syntax
+      for (const actions of keyboardEvents) {
+        await this.pressKey(actions.actionLabel, actions.count);
+      }
+    };
 
     await this.expectChartAtUrlToMatchScreenshot(url, {
       ...options,
