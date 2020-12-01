@@ -34,6 +34,7 @@ import { Color, Position, RecursivePartial, Rendering, Rotation } from '../utils
 import { Domain } from '../utils/domain';
 import { GeometryValue } from '../utils/geometry';
 import { GroupId } from '../utils/ids';
+import { SeriesSortFn } from '../utils/series_sort';
 import { PartialTheme, Theme } from '../utils/themes/theme';
 import { BinAgg, BrushAxis, DEFAULT_SETTINGS_SPEC, Direction, PointerEventType, TooltipType } from './constants';
 
@@ -212,9 +213,9 @@ export type TooltipProps = TooltipPortalSettings<'chart'> & {
   customTooltip?: CustomTooltip;
 
   /**
-   * The ID of a <SeriesSort> component to sort tooltip values (top-bottom)
+   * A SeriesSortFn to sort tooltip values (top-bottom)
    */
-  seriesSort?: string;
+  seriesSort?: SeriesSortFn;
 };
 
 /**
@@ -360,9 +361,9 @@ export interface SettingsSpec extends Spec {
    */
   flatLegend?: boolean;
   /**
-   * The ID of a <SeriesSort> component to sort the legend values (top-bottom)
+   * A SeriesSortFn to sort the legend values (top-bottom)
    */
-  legendSeriesSort?: string;
+  legendSeriesSort?: SeriesSortFn;
   /**
    * Removes duplicate axes
    *
@@ -435,10 +436,10 @@ export interface SettingsSpec extends Spec {
   orderOrdinalBinsBy?: OrderBy;
 
   /**
-   * The ID of a <SeriesSort> component to sort the rendering order of series.
+   * A SeriesSortFn to sort the rendering order of series.
    * Left/right for cluster, bottom-up for stacked
    */
-  renderingSeriesSort?: string;
+  renderingSeriesSort?: SeriesSortFn;
 }
 
 /**

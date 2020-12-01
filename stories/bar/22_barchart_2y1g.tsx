@@ -19,66 +19,15 @@
 
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, SeriesSort, Settings, XYChartSeriesIdentifier } from '../../src';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src';
 import * as TestDatasets from '../../src/utils/data_samples/test_dataset';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const Example = () => (
   <Chart className="story-chart">
-    <Settings
-      showLegend
-      showLegendExtra
-      legendPosition={Position.Right}
-      tooltip={{
-        seriesSort: 'tooltipSort',
-      }}
-      legendSeriesSort="legendSort"
-      renderingSeriesSort="renderingSort"
-    />
+    <Settings showLegend showLegendExtra legendPosition={Position.Right} />
     <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
     <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
-
-    <SeriesSort
-      id="tooltipSort"
-      fn={(a, b) => {
-        const { splitAccessors: aSplit, yAccessor: aYAccessor } = a as XYChartSeriesIdentifier;
-        const { splitAccessors: bSplit, yAccessor: bYAccessor } = b as XYChartSeriesIdentifier;
-        const aGroup = `${aSplit.get('g')}` ?? '';
-        const bGroup = `${bSplit.get('g')}` ?? '';
-        if (aGroup === bGroup) {
-          return `${aYAccessor}`.localeCompare(`${bYAccessor}`);
-        }
-        return `${aGroup}`.localeCompare(`${bGroup}`);
-      }}
-    />
-
-    <SeriesSort
-      id="legendSort"
-      fn={(a, b) => {
-        const { splitAccessors: aSplit, yAccessor: aYAccessor } = a as XYChartSeriesIdentifier;
-        const { splitAccessors: bSplit, yAccessor: bYAccessor } = b as XYChartSeriesIdentifier;
-        const aGroup = `${aSplit.get('g')}` ?? '';
-        const bGroup = `${bSplit.get('g')}` ?? '';
-        if (aGroup === bGroup) {
-          return `${bYAccessor}`.localeCompare(`${aYAccessor}`);
-        }
-        return `${bGroup}`.localeCompare(`${aGroup}`);
-      }}
-    />
-
-    <SeriesSort
-      id="renderingSort"
-      fn={(a, b) => {
-        const { splitAccessors: aSplit, yAccessor: aYAccessor } = a as XYChartSeriesIdentifier;
-        const { splitAccessors: bSplit, yAccessor: bYAccessor } = b as XYChartSeriesIdentifier;
-        const aGroup = `${aSplit.get('g')}` ?? '';
-        const bGroup = `${bSplit.get('g')}` ?? '';
-        if (aGroup === bGroup) {
-          return `${bYAccessor}`.localeCompare(`${aYAccessor}`);
-        }
-        return `${bGroup}`.localeCompare(`${aGroup}`);
-      }}
-    />
 
     <BarSeries
       id="bars1"

@@ -16,33 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from 'react';
-
-import { Spec } from '.';
-import { ChartTypes } from '../chart_types';
 import { SeriesIdentifier } from '../commons/series_id';
-import { getConnect, specComponentFactory } from '../state/spec_factory';
-import { SpecTypes } from './constants';
+import { SettingsSpec } from '../specs/settings';
 
-/** @alpha */
 export type SeriesSortFn = (siA: SeriesIdentifier, siB: SeriesIdentifier) => number;
 
-/** @alpha */
-export interface SeriesSortSpec extends Spec {
-  fn: SeriesSortFn;
-}
-
-const DEFAULT_SERIES_SORT_PROPS = {
-  chartType: ChartTypes.Global,
-  specType: SpecTypes.IndexOrder,
+/** @internal */
+export const DEFAULT_SORTING_FN = () => {
+  return 0;
 };
 
-type DefaultSeriesSortProps = 'chartType' | 'specType';
+export function getRenderingSortingFn(settings: SettingsSpec): SeriesSortFn {
+  return settings.renderingSeriesSort ?? DEFAULT_SORTING_FN;
+}
 
-/** @alpha */
-export type SeriesSortProps = Pick<SeriesSortSpec, 'id' | 'fn'>;
+export function getLegendSortingFn(settings: SettingsSpec): SeriesSortFn {
+  return settings.legendSeriesSort ?? DEFAULT_SORTING_FN;
+}
 
-/** @alpha */
-export const SeriesSort: React.FunctionComponent<SeriesSortProps> = getConnect()(
-  specComponentFactory<SeriesSortSpec, DefaultSeriesSortProps>(DEFAULT_SERIES_SORT_PROPS),
-);
+export function getTooltipSortingFn(settings: SettingsSpec): SeriesSortFn {
+  if (typeof settings.tooltip !== 'object') {
+    return DEFAULT_SORTING_FN;
+  }
+  return settings.tooltip.seriesSort ?? DEFAULT_SORTING_FN;
+}

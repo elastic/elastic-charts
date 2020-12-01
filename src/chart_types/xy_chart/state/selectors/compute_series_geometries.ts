@@ -21,8 +21,8 @@ import createCachedSelector from 're-reselect';
 
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { getRenderingSeriesSortSelector } from '../../../../state/selectors/get_series_sort';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { getRenderingSortingFn } from '../../../../utils/series_sort';
 import { ComputedGeometries } from '../utils/types';
 import { computeSeriesGeometries } from '../utils/utils';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
@@ -42,7 +42,6 @@ export const computeSeriesGeometriesSelector = createCachedSelector(
     getAxisSpecsSelector,
     computeSmallMultipleScalesSelector,
     isHistogramModeEnabledSelector,
-    getRenderingSeriesSortSelector,
   ],
   (
     settingsSpec,
@@ -53,7 +52,6 @@ export const computeSeriesGeometriesSelector = createCachedSelector(
     axesSpecs,
     smallMultiplesScales,
     isHistogramMode,
-    seriesSortFn,
   ): ComputedGeometries => {
     return computeSeriesGeometries(
       seriesSpecs,
@@ -64,7 +62,7 @@ export const computeSeriesGeometriesSelector = createCachedSelector(
       axesSpecs,
       smallMultiplesScales,
       isHistogramMode,
-      seriesSortFn,
+      getRenderingSortingFn(settingsSpec),
     );
   },
 )(getChartIdSelector);

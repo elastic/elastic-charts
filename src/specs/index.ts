@@ -28,10 +28,9 @@ export interface Spec {
   specType: string;
 }
 
-export * from './series_sort';
 export * from './group_by';
 export * from './small_multiples';
-
+export { SeriesSortFn } from '../utils/series_sort';
 export * from './settings';
 export * from './constants';
 export * from '../chart_types/specs';

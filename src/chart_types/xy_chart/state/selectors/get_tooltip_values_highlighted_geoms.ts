@@ -33,13 +33,13 @@ import { TooltipType } from '../../../../specs/constants';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
-import { getTooltipSeriesSortSelector, TooltipSortingFn } from '../../../../state/selectors/get_series_sort';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getTooltipHeaderFormatterSelector } from '../../../../state/selectors/get_tooltip_header_formatter';
 import { Rotation } from '../../../../utils/commons';
 import { isValidPointerOverEvent } from '../../../../utils/events';
 import { IndexedGeometry } from '../../../../utils/geometry';
 import { Point } from '../../../../utils/point';
+import { getTooltipSortingFn } from '../../../../utils/series_sort';
 import { isPointOnGeometry } from '../../rendering/utils';
 import { formatTooltip } from '../../tooltip/tooltip';
 import { BasicSeriesSpec, AxisSpec } from '../../utils/specs';
@@ -74,7 +74,6 @@ export const getTooltipInfoAndGeometriesSelector = createCachedSelector(
     getSeriesSpecsSelector,
     getAxisSpecsSelector,
     getSettingsSpecSelector,
-    getTooltipSeriesSortSelector,
     getProjectedPointerPositionSelector,
     getOrientedProjectedPointerPositionSelector,
     getChartRotationSelector,
@@ -91,7 +90,6 @@ function getTooltipAndHighlightFromValue(
   seriesSpecs: BasicSeriesSpec[],
   axesSpecs: AxisSpec[],
   settings: SettingsSpec,
-  tooltipSortFn: TooltipSortingFn,
   projectedPointerPosition: Point,
   orientedProjectedPointerPosition: Point,
   chartRotation: Rotation,
@@ -198,6 +196,7 @@ function getTooltipAndHighlightFromValue(
     // TODO: remove after tooltip redesign
     header = null;
   }
+  const tooltipSortFn = getTooltipSortingFn(settings);
 
   return {
     tooltip: {
