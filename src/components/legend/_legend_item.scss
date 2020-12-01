@@ -33,9 +33,7 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
 
   &__color {
     display: flex;
-    // makes the color picker to have the same height as the legend
     margin-right: $euiSizeXS;
-    // margin-left: $euiSizeXS;
     line-height: 1.5;
 
     .euiPopover {
@@ -57,9 +55,7 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
     flex: 1 1 auto;
     text-align: left;
     vertical-align: baseline;
-    letter-spacing: -0.005em;
-    // overflow-x: scroll;
-    // overflow: hidden;
+    letter-spacing: unset;
 
     &--clickable {
       &:hover {
@@ -75,6 +71,7 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
     flex: 0 0 auto;
     margin-left: $euiSizeXS;
     font-feature-settings: 'tnum';
+    letter-spacing: unset;
 
     &--hidden {
       display: none;
