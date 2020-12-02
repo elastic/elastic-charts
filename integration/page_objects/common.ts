@@ -388,6 +388,7 @@ class CommonPage {
       // eslint-disable-next-line no-restricted-syntax
       for (const actions of keyboardEvents) {
         await this.pressKey(actions.actionLabel, actions.count);
+        void page.waitFor(1000);
       }
     };
 
