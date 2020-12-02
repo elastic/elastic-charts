@@ -231,6 +231,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
           <ItemColor
             ref={this.colorRef}
             color={color}
+            seriesName={label}
             isSeriesHidden={isSeriesHidden}
             hasColorPicker={hasColorPicker}
             onClick={this.handleColorClick(hasColorPicker)}
