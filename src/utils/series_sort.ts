@@ -19,6 +19,12 @@
 import { SeriesIdentifier } from '../commons/series_id';
 import { SettingsSpec } from '../specs/settings';
 
+/**
+ * A compare function used to determine the order of the elements. It is expected to return
+ * a negative value if first argument is less than second argument, zero if they're equal and a positive
+ * value otherwise.
+ * @public
+ */
 export type SeriesSortFn = (siA: SeriesIdentifier, siB: SeriesIdentifier) => number;
 
 /** @internal */
@@ -27,16 +33,16 @@ export const DEFAULT_SORTING_FN = () => {
 };
 
 export function getRenderingSortingFn(settings: SettingsSpec): SeriesSortFn {
-  return settings.renderingSeriesSort ?? DEFAULT_SORTING_FN;
+  return settings.renderingSeriesSort ?? settings.globalSeriesSort ?? DEFAULT_SORTING_FN;
 }
 
 export function getLegendSortingFn(settings: SettingsSpec): SeriesSortFn {
-  return settings.legendSeriesSort ?? DEFAULT_SORTING_FN;
+  return settings.legendSeriesSort ?? settings.globalSeriesSort ?? DEFAULT_SORTING_FN;
 }
 
 export function getTooltipSortingFn(settings: SettingsSpec): SeriesSortFn {
   if (typeof settings.tooltip !== 'object') {
-    return DEFAULT_SORTING_FN;
+    return settings.globalSeriesSort ?? DEFAULT_SORTING_FN;
   }
-  return settings.tooltip.seriesSort ?? DEFAULT_SORTING_FN;
+  return settings.tooltip.seriesSort ?? settings.globalSeriesSort ?? DEFAULT_SORTING_FN;
 }

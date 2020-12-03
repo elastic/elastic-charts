@@ -1533,6 +1533,9 @@ export interface SeriesScales {
     yScaleType: ScaleContinuousType;
 }
 
+// @public
+export type SeriesSortFn = (siA: SeriesIdentifier, siB: SeriesIdentifier) => number;
+
 // Warning: (ae-missing-release-tag) "SeriesSpec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -1592,12 +1595,14 @@ export interface SettingsSpec extends Spec {
     // @alpha
     externalPointerEvents: ExternalPointerEventsSettings;
     flatLegend?: boolean;
+    globalSeriesSort?: SeriesSortFn;
     hideDuplicateAxes: boolean;
     legendAction?: LegendAction;
     // (undocumented)
     legendColorPicker?: LegendColorPicker;
     legendMaxDepth?: number;
     legendPosition: Position;
+    legendSeriesSort?: SeriesSortFn;
     minBrushDelta?: number;
     // (undocumented)
     onBrushEnd?: BrushEndListener;
@@ -1627,6 +1632,7 @@ export interface SettingsSpec extends Spec {
     pointBuffer?: MarkBuffer;
     // (undocumented)
     rendering: Rendering;
+    renderingSeriesSort?: SeriesSortFn;
     // (undocumented)
     resizeDebounce?: number;
     // (undocumented)
@@ -1836,6 +1842,7 @@ export type TooltipProps = TooltipPortalSettings<'chart'> & {
     headerFormatter?: TooltipValueFormatter;
     unit?: string;
     customTooltip?: CustomTooltip;
+    seriesSort?: SeriesSortFn;
 };
 
 // @public

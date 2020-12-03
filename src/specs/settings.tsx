@@ -214,6 +214,7 @@ export type TooltipProps = TooltipPortalSettings<'chart'> & {
 
   /**
    * A SeriesSortFn to sort tooltip values (top-bottom)
+   * Has precedence over the globalSeriesSort prop
    */
   seriesSort?: SeriesSortFn;
 };
@@ -362,6 +363,7 @@ export interface SettingsSpec extends Spec {
   flatLegend?: boolean;
   /**
    * A SeriesSortFn to sort the legend values (top-bottom)
+   * Has precedence over the globalSeriesSort prop
    */
   legendSeriesSort?: SeriesSortFn;
   /**
@@ -437,9 +439,17 @@ export interface SettingsSpec extends Spec {
 
   /**
    * A SeriesSortFn to sort the rendering order of series.
-   * Left/right for cluster, bottom-up for stacked
+   * Left/right for cluster, bottom-up for stacked.
+   * Has precedence over the globalSeriesSort prop
+   * Currently available only on XY charts
    */
   renderingSeriesSort?: SeriesSortFn;
+
+  /**
+   * A global SeriesSortFn to use on tooltip, legend and rendering
+   * Currently available only on XY charts
+   */
+  globalSeriesSort?: SeriesSortFn;
 }
 
 /**

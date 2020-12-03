@@ -124,7 +124,6 @@ export function splitSeriesDataByAccessors(
   spec: BasicSeriesSpec,
   xValueSums: Map<string | number, number>,
   isStacked = false,
-  enableVislibSeriesSort = false,
   stackMode?: StackMode,
   smallMultiples?: { vertical?: GroupBySpec; horizontal?: GroupBySpec },
 ): {
@@ -150,163 +149,78 @@ export function splitSeriesDataByAccessors(
   const smHValues: Set<string | number> = new Set();
   const nonNumericValues: any[] = [];
 
-  if (enableVislibSeriesSort) {
-    /*
-     * This logic is mostly duplicated from below but is a temporary fix before
-     * https://github.com/elastic/elastic-charts/issues/795 is completed to allow sorting
-     * The difference from below is that it loops through all the yAsccessors before the data.
-     */
-    yAccessors.forEach((accessor, index) => {
-      for (let i = 0; i < data.length; i++) {
-        const datum = data[i];
-        const splitAccessors = getSplitAccessors(datum, splitSeriesAccessors);
-        // if splitSeriesAccessors are defined we should have at least one split value to include datum
-        if (splitSeriesAccessors.length > 0 && splitAccessors.size < 1) {
-          continue;
-        }
-
-        // skip if the datum is not an object or null
-        if (typeof datum !== 'object' || datum === null) {
-          continue;
-        }
-        const x = getAccessorValue(datum, xAccessor);
-
-        // skip if the x value is not a string or a number
-        if (typeof x !== 'string' && typeof x !== 'number') {
-          continue;
-        }
-
-        xValues.push(x);
-        let sum = xValueSums.get(x) ?? 0;
-
-        // extract small multiples aggregation values
-        const smH = smallMultiples?.horizontal?.by
-          ? smallMultiples.horizontal?.by(spec, datum)
-          : DEFAULT_SINGLE_PANEL_SM_VALUE;
-        if (!isNil(smH)) {
-          smHValues.add(smH);
-        }
-
-        const smV = smallMultiples?.vertical?.by
-          ? smallMultiples.vertical.by(spec, datum)
-          : DEFAULT_SINGLE_PANEL_SM_VALUE;
-        if (!isNil(smV)) {
-          smVValues.add(smV);
-        }
-
-        const cleanedDatum = extractYAndMarkFromDatum(
-          datum,
-          accessor,
-          nonNumericValues,
-          y0Accessors && y0Accessors[index],
-          markSizeAccessor,
-        );
-        const seriesKeys = [...splitAccessors.values(), accessor];
-        const seriesIdentifier = {
-          specId,
-          groupId,
-          seriesType,
-          yAccessor: accessor,
-          splitAccessors,
-          smVerticalAccessorValue: smV,
-          smHorizontalAccessorValue: smH,
-          stackMode,
-        };
-        const seriesKey = getSeriesKey(seriesIdentifier, groupId);
-        sum += cleanedDatum.y1 ?? 0;
-        const newDatum = { x, ...cleanedDatum, smH, smV };
-        const series = dataSeries.get(seriesKey);
-        if (series) {
-          series.data.push(newDatum);
-        } else {
-          dataSeries.set(seriesKey, {
-            ...seriesIdentifier,
-            isStacked,
-            seriesKeys,
-            key: seriesKey,
-            data: [newDatum],
-            spec,
-          });
-        }
-        xValueSums.set(x, sum);
-      }
-    });
-  } else {
-    for (let i = 0; i < data.length; i++) {
-      const datum = data[i];
-      const splitAccessors = getSplitAccessors(datum, splitSeriesAccessors);
-      // if splitSeriesAccessors are defined we should have at least one split value to include datum
-      if (splitSeriesAccessors.length > 0 && splitAccessors.size < 1) {
-        continue;
-      }
-
-      // skip if the datum is not an object or null
-      if (typeof datum !== 'object' || datum === null) {
-        continue;
-      }
-      const x = getAccessorValue(datum, xAccessor);
-      // skip if the x value is not a string or a number
-      if (typeof x !== 'string' && typeof x !== 'number') {
-        continue;
-      }
-
-      xValues.push(x);
-      let sum = xValueSums.get(x) ?? 0;
-
-      // extract small multiples aggregation values
-      const smH = smallMultiples?.horizontal?.by
-        ? smallMultiples.horizontal?.by(spec, datum)
-        : DEFAULT_SINGLE_PANEL_SM_VALUE;
-      if (!isNil(smH)) {
-        smHValues.add(smH);
-      }
-
-      const smV = smallMultiples?.vertical?.by
-        ? smallMultiples.vertical.by(spec, datum)
-        : DEFAULT_SINGLE_PANEL_SM_VALUE;
-      if (!isNil(smV)) {
-        smVValues.add(smV);
-      }
-
-      yAccessors.forEach((accessor, index) => {
-        const cleanedDatum = extractYAndMarkFromDatum(
-          datum,
-          accessor,
-          nonNumericValues,
-          y0Accessors && y0Accessors[index],
-          markSizeAccessor,
-        );
-        const seriesKeys = [...splitAccessors.values(), accessor];
-        const seriesIdentifier = {
-          specId,
-          groupId,
-          seriesType,
-          yAccessor: accessor,
-          splitAccessors,
-          smVerticalAccessorValue: smV,
-          smHorizontalAccessorValue: smH,
-          stackMode,
-        };
-        const seriesKey = getSeriesKey(seriesIdentifier, groupId);
-        sum += cleanedDatum.y1 ?? 0;
-        const newDatum = { x, ...cleanedDatum, smH, smV };
-        const series = dataSeries.get(seriesKey);
-        if (series) {
-          series.data.push(newDatum);
-        } else {
-          dataSeries.set(seriesKey, {
-            ...seriesIdentifier,
-            isStacked,
-            seriesKeys,
-            key: seriesKey,
-            data: [newDatum],
-            spec,
-          });
-        }
-
-        xValueSums.set(x, sum);
-      });
+  for (let i = 0; i < data.length; i++) {
+    const datum = data[i];
+    const splitAccessors = getSplitAccessors(datum, splitSeriesAccessors);
+    // if splitSeriesAccessors are defined we should have at least one split value to include datum
+    if (splitSeriesAccessors.length > 0 && splitAccessors.size < 1) {
+      continue;
     }
+
+    // skip if the datum is not an object or null
+    if (typeof datum !== 'object' || datum === null) {
+      continue;
+    }
+    const x = getAccessorValue(datum, xAccessor);
+    // skip if the x value is not a string or a number
+    if (typeof x !== 'string' && typeof x !== 'number') {
+      continue;
+    }
+
+    xValues.push(x);
+    let sum = xValueSums.get(x) ?? 0;
+
+    // extract small multiples aggregation values
+    const smH = smallMultiples?.horizontal?.by
+      ? smallMultiples.horizontal?.by(spec, datum)
+      : DEFAULT_SINGLE_PANEL_SM_VALUE;
+    if (!isNil(smH)) {
+      smHValues.add(smH);
+    }
+
+    const smV = smallMultiples?.vertical?.by ? smallMultiples.vertical.by(spec, datum) : DEFAULT_SINGLE_PANEL_SM_VALUE;
+    if (!isNil(smV)) {
+      smVValues.add(smV);
+    }
+
+    yAccessors.forEach((accessor, index) => {
+      const cleanedDatum = extractYAndMarkFromDatum(
+        datum,
+        accessor,
+        nonNumericValues,
+        y0Accessors && y0Accessors[index],
+        markSizeAccessor,
+      );
+      const seriesKeys = [...splitAccessors.values(), accessor];
+      const seriesIdentifier = {
+        specId,
+        groupId,
+        seriesType,
+        yAccessor: accessor,
+        splitAccessors,
+        smVerticalAccessorValue: smV,
+        smHorizontalAccessorValue: smH,
+        stackMode,
+      };
+      const seriesKey = getSeriesKey(seriesIdentifier, groupId);
+      sum += cleanedDatum.y1 ?? 0;
+      const newDatum = { x, ...cleanedDatum, smH, smV };
+      const series = dataSeries.get(seriesKey);
+      if (series) {
+        series.data.push(newDatum);
+      } else {
+        dataSeries.set(seriesKey, {
+          ...seriesIdentifier,
+          isStacked,
+          seriesKeys,
+          key: seriesKey,
+          data: [newDatum],
+          spec,
+        });
+      }
+
+      xValueSums.set(x, sum);
+    });
   }
 
   if (nonNumericValues.length > 0) {
@@ -452,7 +366,7 @@ export function getFormattedDataSeries(
  *
  * @param seriesSpecs the map for all the series spec
  * @param deselectedDataSeries the array of deselected/hidden data series
- * @param enableVislibSeriesSort is optional; if not specified in <Settings />,
+ * @param orderOrdinalBinsBy
  * @param smallMultiples
  * @internal
  */
@@ -460,7 +374,6 @@ export function getDataSeriesFromSpecs(
   seriesSpecs: BasicSeriesSpec[],
   deselectedDataSeries: SeriesIdentifier[] = [],
   orderOrdinalBinsBy?: OrderBy,
-  enableVislibSeriesSort?: boolean,
   smallMultiples?: { vertical?: GroupBySpec; horizontal?: GroupBySpec },
 ): {
   dataSeries: DataSeries[];
@@ -500,7 +413,6 @@ export function getDataSeriesFromSpecs(
       spec,
       mutatedXValueSums,
       isStacked,
-      enableVislibSeriesSort,
       specGroup?.stackMode,
       smallMultiples,
     );
