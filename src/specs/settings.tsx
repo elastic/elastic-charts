@@ -34,7 +34,7 @@ import { Color, Position, RecursivePartial, Rendering, Rotation } from '../utils
 import { Domain } from '../utils/domain';
 import { GeometryValue } from '../utils/geometry';
 import { GroupId } from '../utils/ids';
-import { SeriesSortFn } from '../utils/series_sort';
+import { SeriesCompareFn } from '../utils/series_sort';
 import { PartialTheme, Theme } from '../utils/themes/theme';
 import { BinAgg, BrushAxis, DEFAULT_SETTINGS_SPEC, Direction, PointerEventType, TooltipType } from './constants';
 
@@ -211,12 +211,6 @@ export type TooltipProps = TooltipPortalSettings<'chart'> & {
    * Render custom tooltip given header and values
    */
   customTooltip?: CustomTooltip;
-
-  /**
-   * A SeriesSortFn to sort tooltip values (top-bottom)
-   * Has precedence over the globalSeriesSort prop
-   */
-  seriesSort?: SeriesSortFn;
 };
 
 /**
@@ -361,11 +355,7 @@ export interface SettingsSpec extends Spec {
    * Display the legend as a flat hierarchy
    */
   flatLegend?: boolean;
-  /**
-   * A SeriesSortFn to sort the legend values (top-bottom)
-   * Has precedence over the globalSeriesSort prop
-   */
-  legendSeriesSort?: SeriesSortFn;
+
   /**
    * Removes duplicate axes
    *
@@ -438,18 +428,41 @@ export interface SettingsSpec extends Spec {
   orderOrdinalBinsBy?: OrderBy;
 
   /**
-   * A SeriesSortFn to sort the rendering order of series.
-   * Left/right for cluster, bottom-up for stacked.
-   * Has precedence over the globalSeriesSort prop
-   * Currently available only on XY charts
+   * A compare function or an object of compare functions to sort
+   * series in different part of the chart like tooltip, legend and
+   * the rendering order on the screen. To assign the same compare function.
+   *  @defaultValue the series are sorted in order of appearance in the chart configuration
    */
-  renderingSeriesSort?: SeriesSortFn;
+  sortSeriesBy?: SeriesCompareFn | SortSeriesByConfig;
+}
 
+/**
+ * An object of compare functions to sort
+ * series in different part of the chart like tooltip, legend and rendering order.
+ */
+export interface SortSeriesByConfig {
   /**
    * A global SeriesSortFn to use on tooltip, legend and rendering
+   * The rendering sorting is applied only to XY charts at the moment
+   */
+  general?: SeriesCompareFn;
+  /**
+   * A SeriesSortFn to sort the legend values (top-bottom)
+   * It has precedence over the general one
+   */
+  legend?: SeriesCompareFn;
+  /**
+   * A SeriesSortFn to sort tooltip values (top-bottom)
+   * It has precedence over the general one
+   */
+  tooltip?: SeriesCompareFn;
+  /**
+   * A SeriesSortFn to sort the rendering order of series.
+   * Left/right for cluster, bottom-up for stacked.
+   * It has precedence over the general one
    * Currently available only on XY charts
    */
-  globalSeriesSort?: SeriesSortFn;
+  rendering?: SeriesCompareFn;
 }
 
 /**

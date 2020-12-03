@@ -41,7 +41,7 @@ function getGroups(a: SeriesIdentifier, b: SeriesIdentifier) {
 }
 
 // sort ascending by group and yAccessor (a,y1)(a,y2)(b,y1)(b,y2)
-function sortSeries(a: SeriesIdentifier, b: SeriesIdentifier) {
+function compareSeriesFn(a: SeriesIdentifier, b: SeriesIdentifier) {
   const { aGroup, bGroup, aYAccessor, bYAccessor, specIdA, specIdB } = getGroups(a, b);
   if (aGroup === bGroup) {
     return aYAccessor.localeCompare(bYAccessor);
@@ -54,16 +54,7 @@ function sortSeries(a: SeriesIdentifier, b: SeriesIdentifier) {
 
 export const Example = () => (
   <Chart className="story-chart">
-    <Settings
-      showLegend
-      showLegendExtra
-      legendPosition={Position.Right}
-      tooltip={{
-        seriesSort: sortSeries,
-      }}
-      legendSeriesSort={sortSeries}
-      renderingSeriesSort={sortSeries}
-    />
+    <Settings showLegend showLegendExtra legendPosition={Position.Right} sortSeriesBy={compareSeriesFn} />
     <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
     <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 

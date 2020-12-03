@@ -23,7 +23,7 @@ import { ScaleType } from '../../../scales/constants';
 import { TickFormatterOptions } from '../../../specs';
 import { Color } from '../../../utils/commons';
 import { BandedAccessorType } from '../../../utils/geometry';
-import { DEFAULT_SORTING_FN, SeriesSortFn } from '../../../utils/series_sort';
+import { DEFAULT_SORTING_FN, SeriesCompareFn } from '../../../utils/series_sort';
 import { getAxesSpecForSpecId, getSpecsById } from '../state/utils/spec';
 import { LastValues } from '../state/utils/types';
 import { Y0_ACCESSOR_POSTFIX, Y1_ACCESSOR_POSTFIX } from '../tooltip/tooltip';
@@ -94,7 +94,7 @@ export function computeLegend(
   axesSpecs: AxisSpec[],
   showLegendExtra: boolean,
   deselectedDataSeries: SeriesIdentifier[] = [],
-  seriesSortFn: SeriesSortFn = DEFAULT_SORTING_FN,
+  seriesSortFn: SeriesCompareFn = DEFAULT_SORTING_FN,
 ): LegendItem[] {
   const legendItems: LegendItem[] = [];
 

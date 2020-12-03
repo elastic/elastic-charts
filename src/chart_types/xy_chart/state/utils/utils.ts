@@ -19,7 +19,7 @@
 
 import { SeriesKey, SeriesIdentifier } from '../../../../commons/series_id';
 import { Scale } from '../../../../scales';
-import { GroupBySpec, SeriesSortFn } from '../../../../specs';
+import { GroupBySpec, SeriesCompareFn } from '../../../../specs';
 import { OrderBy } from '../../../../specs/settings';
 import { mergePartial, Rotation, Color, isUniqueArray } from '../../../../utils/commons';
 import { CurveType } from '../../../../utils/curves';
@@ -256,7 +256,7 @@ export function computeSeriesGeometries(
   axesSpecs: AxisSpec[],
   smallMultiplesScales: SmallMultipleScales,
   enableHistogramMode: boolean,
-  seriesSortFn: SeriesSortFn,
+  seriesSortFn: SeriesCompareFn,
 ): ComputedGeometries {
   const chartColors: ColorConfig = chartTheme.colors;
   const sortedDataSeries = formattedDataSeries.slice().sort((a, b) => {

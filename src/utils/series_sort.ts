@@ -17,7 +17,7 @@
  * under the License.
  */
 import { SeriesIdentifier } from '../commons/series_id';
-import { SettingsSpec } from '../specs/settings';
+import { SettingsSpec, SortSeriesByConfig } from '../specs/settings';
 
 /**
  * A compare function used to determine the order of the elements. It is expected to return
@@ -25,24 +25,28 @@ import { SettingsSpec } from '../specs/settings';
  * value otherwise.
  * @public
  */
-export type SeriesSortFn = (siA: SeriesIdentifier, siB: SeriesIdentifier) => number;
+export type SeriesCompareFn = (siA: SeriesIdentifier, siB: SeriesIdentifier) => number;
 
 /** @internal */
 export const DEFAULT_SORTING_FN = () => {
   return 0;
 };
 
-export function getRenderingSortingFn(settings: SettingsSpec): SeriesSortFn {
-  return settings.renderingSeriesSort ?? settings.globalSeriesSort ?? DEFAULT_SORTING_FN;
+export function getRenderingCompareFn(settings: SettingsSpec): SeriesCompareFn {
+  return getCompareFn(settings, 'tooltip');
 }
 
-export function getLegendSortingFn(settings: SettingsSpec): SeriesSortFn {
-  return settings.legendSeriesSort ?? settings.globalSeriesSort ?? DEFAULT_SORTING_FN;
+export function getLegendCompareFn(settings: SettingsSpec): SeriesCompareFn {
+  return getCompareFn(settings, 'tooltip');
 }
 
-export function getTooltipSortingFn(settings: SettingsSpec): SeriesSortFn {
-  if (typeof settings.tooltip !== 'object') {
-    return settings.globalSeriesSort ?? DEFAULT_SORTING_FN;
+export function getTooltipCompareFn(settings: SettingsSpec): SeriesCompareFn {
+  return getCompareFn(settings, 'tooltip');
+}
+
+function getCompareFn({ sortSeriesBy }: SettingsSpec, aspect: keyof SortSeriesByConfig): SeriesCompareFn {
+  if (typeof sortSeriesBy === 'object') {
+    return sortSeriesBy[aspect] ?? sortSeriesBy.general ?? DEFAULT_SORTING_FN;
   }
-  return settings.tooltip.seriesSort ?? settings.globalSeriesSort ?? DEFAULT_SORTING_FN;
+  return sortSeriesBy ?? DEFAULT_SORTING_FN;
 }

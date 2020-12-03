@@ -39,7 +39,7 @@ import { Rotation } from '../../../../utils/commons';
 import { isValidPointerOverEvent } from '../../../../utils/events';
 import { IndexedGeometry } from '../../../../utils/geometry';
 import { Point } from '../../../../utils/point';
-import { getTooltipSortingFn } from '../../../../utils/series_sort';
+import { getTooltipCompareFn } from '../../../../utils/series_sort';
 import { isPointOnGeometry } from '../../rendering/utils';
 import { formatTooltip } from '../../tooltip/tooltip';
 import { BasicSeriesSpec, AxisSpec } from '../../utils/specs';
@@ -196,7 +196,7 @@ function getTooltipAndHighlightFromValue(
     // TODO: remove after tooltip redesign
     header = null;
   }
-  const tooltipSortFn = getTooltipSortingFn(settings);
+  const tooltipSortFn = getTooltipCompareFn(settings);
 
   return {
     tooltip: {

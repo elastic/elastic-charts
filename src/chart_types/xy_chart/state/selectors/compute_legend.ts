@@ -24,7 +24,7 @@ import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getDeselectedSeriesSelector } from '../../../../state/selectors/get_deselected_data_series';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { getLegendSortingFn } from '../../../../utils/series_sort';
+import { getLegendCompareFn } from '../../../../utils/series_sort';
 import { computeLegend } from '../../legend/legend';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { getSeriesColorsSelector } from './get_series_color_map';
@@ -58,6 +58,6 @@ export const computeLegendSelector = createCachedSelector(
       axesSpecs,
       settings.showLegendExtra,
       deselectedDataSeries,
-      getLegendSortingFn(settings),
+      getLegendCompareFn(settings),
     ),
 )(getChartIdSelector);
