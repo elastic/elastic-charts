@@ -21,4 +21,5 @@ module.exports = {
   PORT: '9009',
   HOST: process.env.DEBUG === 'true' ? 'localhost' : 'host.docker.internal',
   LOCAL_STORYBOOK_VRT: false,
+  global_setup: '../../.storybook/style_test.scss',
 };

@@ -347,6 +347,26 @@ class CommonPage {
    * @param options
    */
   async expectChartAtUrlToMatchScreenshot(url: string, options?: ScreenshotElementAtUrlOptions) {
+    await page.evaluateOnNewDocument(() => {
+      const style = document.createElement('style');
+      style.type = 'text/css';
+      style.innerHTML = `
+      *,
+      *::after,
+      *::before,
+      .echLegendItem {
+        transition-delay: 0s !important;
+        transition-duration: 0s !important;
+        animation-delay: -0.0001s !important;
+        animation-duration: 0s !important;
+        animation-play-state: paused !important;
+        caret-color: transparent !important;
+      };`;
+      const storyRoot = document.getElementById('#story-root');
+      if (storyRoot) {
+        storyRoot.appendChild(style);
+      }
+    });
     await this.expectElementAtUrlToMatchScreenshot(url, this.chartSelector, {
       waitSelector: this.chartWaitSelector,
       ...options,
@@ -385,22 +405,10 @@ class CommonPage {
   ) {
     const action = async () => {
       await this.clickMouseRelativeToDOMElement({ top: 242, left: 910 }, this.chartSelector);
-      await page.addStyleTag({
-        content: `*,
-                  *::after,
-                  *::before {
-                    transition-delay: 0s !important;
-                    transition-duration: 0s !important;
-                    animation-delay: -0.0001s !important;
-                    animation-duration: 0s !important;
-                    animation-play-state: paused !important;
-                    caret-color: transparent !important;
-                  }`,
-      });
+
       // eslint-disable-next-line no-restricted-syntax
       for (const actions of keyboardEvents) {
         await this.pressKey(actions.actionLabel, actions.count);
-        void page.waitFor(1000);
       }
     };
 
