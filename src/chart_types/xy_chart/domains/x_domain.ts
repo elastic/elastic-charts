@@ -123,22 +123,23 @@ export function mergeXDomain(
   };
 }
 
-function getMinInterval(computedMinInterval: number, size: number, customMinInterval?: number) {
-  if (customMinInterval != null) {
-    // Allow greater custom min if xValues has 1 member.
-    if (size > 1 && customMinInterval > computedMinInterval) {
-      Logger.warn(
-        'custom xDomain is invalid, custom minInterval is greater than computed minInterval. Using computed minInterval.',
-      );
-      return computedMinInterval;
-    }
-    if (customMinInterval < 0) {
-      Logger.warn('custom xDomain is invalid, custom minInterval is less than 0. Using computed minInterval.');
-      return computedMinInterval;
-    }
+function getMinInterval(computedMinInterval: number, size: number, customMinInterval?: number): number {
+  if (customMinInterval == null) {
+    return computedMinInterval;
+  }
+  // Allow greater custom min if xValues has 1 member.
+  if (size > 1 && customMinInterval > computedMinInterval) {
+    Logger.warn(
+      'custom xDomain is invalid, custom minInterval is greater than computed minInterval. Using computed minInterval.',
+    );
+    return computedMinInterval;
+  }
+  if (customMinInterval < 0) {
+    Logger.warn('custom xDomain is invalid, custom minInterval is less than 0. Using computed minInterval.');
+    return computedMinInterval;
   }
 
-  return customMinInterval || computedMinInterval;
+  return customMinInterval;
 }
 
 /**
