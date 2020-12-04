@@ -24,8 +24,7 @@ describe('Test cases stories', () => {
     await common.expectChartAtUrlToMatchScreenshot(
       'http://localhost:9001/?path=/story/test-cases--no-series&knob-Show custom no results=true',
       {
-        waitSelector: '.echReactiveChart_noResults',
-        delay: 500, // needed for icon to load
+        waitSelector: '.echReactiveChart_noResults .euiIcon:not(.euiIcon-isLoading)',
       },
     );
   });

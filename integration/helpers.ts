@@ -102,6 +102,7 @@ export function getStorybookInfo(): StoryGroupInfo[] {
 
       const encodedGroup = encodeString(group);
 
-      return [group, encodedGroup, stories];
-    });
+      return [group, encodedGroup, stories] as StoryGroupInfo;
+    })
+    .filter(([, , stories]) => stories.length > 0);
 }
