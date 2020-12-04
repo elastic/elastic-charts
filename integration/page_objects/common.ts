@@ -372,6 +372,7 @@ class CommonPage {
   async loadElementFromURL(url: string, waitSelector?: string, timeout?: number) {
     const cleanUrl = CommonPage.parseUrl(url);
     await page.goto(cleanUrl);
+    await page.addStyleTag({ content: '.body{background: red !important;}' });
 
     if (waitSelector) {
       await this.waitForElement(waitSelector, timeout);

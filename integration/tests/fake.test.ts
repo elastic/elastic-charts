@@ -16,18 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { common } from '../page_objects/common';
 
-import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
-
-const customConfig = { threshold: 0 };
-export const toMatchImageSnapshot = configureToMatchImageSnapshot({
-  customDiffConfig: customConfig,
-  failureThreshold: 0,
-  failureThresholdType: 'percent',
+it('stacked as NOT percentage', async () => {
+  await common.expectElementAtUrlToMatchScreenshot(
+    'http://localhost:9001/?path=/story/area-chart--stacked-percentage&knob-stacked as percentage=',
+  );
 });
-
-expect.extend({ toMatchImageSnapshot });
-
-// if (process.env.DEBUG === 'true') {
-jest.setTimeout(10 * 60 * 1000); // set timeout to 10 minutes;
-// }

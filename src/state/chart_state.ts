@@ -342,13 +342,12 @@ export const chartStoreReducer = (chartId: string) => {
           },
         };
       case CHART_RENDERED:
-        return state;
-      // const count = state.chartRendered ? state.chartRenderedCount : state.chartRenderedCount + 1;
-      // return {
-      //   ...state,
-      //   chartRendered: true,
-      //   chartRenderedCount: count,
-      // };
+        const count = state.chartRendered ? state.chartRenderedCount : state.chartRenderedCount + 1;
+        return {
+          ...state,
+          chartRendered: true,
+          chartRenderedCount: count,
+        };
       case UPDATE_PARENT_DIMENSION:
         return {
           ...state,
