@@ -93,6 +93,9 @@ describe('Legend stories', () => {
     });
   });
   describe('keyboard navigation', () => {
+    beforeEach(async () => {
+      await common.disableAnimations('http://localhost:9001/?path=/story/legend--right');
+    });
     // eslint-disable-next-line jest/expect-expect
     it('should navigate to legend item with tab', async () => {
       await common.expectChartWithKeyboardEventsAtUrlToMatchScreenshot(

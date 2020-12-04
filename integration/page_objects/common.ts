@@ -347,26 +347,6 @@ class CommonPage {
    * @param options
    */
   async expectChartAtUrlToMatchScreenshot(url: string, options?: ScreenshotElementAtUrlOptions) {
-    await page.evaluateOnNewDocument(() => {
-      const style = document.createElement('style');
-      style.type = 'text/css';
-      style.innerHTML = `
-      *,
-      *::after,
-      *::before,
-      .echLegendItem {
-        transition-delay: 0s !important;
-        transition-duration: 0s !important;
-        animation-delay: -0.0001s !important;
-        animation-duration: 0s !important;
-        animation-play-state: paused !important;
-        caret-color: transparent !important;
-      };`;
-      const storyRoot = document.getElementById('#story-root');
-      if (storyRoot) {
-        storyRoot.appendChild(style);
-      }
-    });
     await this.expectElementAtUrlToMatchScreenshot(url, this.chartSelector, {
       waitSelector: this.chartWaitSelector,
       ...options,
@@ -404,8 +384,8 @@ class CommonPage {
     options?: Omit<ScreenshotElementAtUrlOptions, 'action'>,
   ) {
     const action = async () => {
+      await this.disableAnimations('http://localhost:9001/?path=/story/legend--right');
       await this.clickMouseRelativeToDOMElement({ top: 242, left: 910 }, this.chartSelector);
-
       // eslint-disable-next-line no-restricted-syntax
       for (const actions of keyboardEvents) {
         await this.pressKey(actions.actionLabel, actions.count);
@@ -457,6 +437,13 @@ class CommonPage {
     // activate peripheral visibility
     await page.evaluate(() => {
       document.querySelector('html')!.classList.add('echVisualTesting');
+    });
+  }
+
+  async disableAnimations(url: string) {
+    await this.loadElementFromURL(url, '#story-root');
+    await page.evaluate(() => {
+      document.querySelector('#story-root')!.classList.add('disable-animations');
     });
   }
 
