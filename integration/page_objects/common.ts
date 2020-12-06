@@ -384,7 +384,7 @@ class CommonPage {
     options?: Omit<ScreenshotElementAtUrlOptions, 'action'>,
   ) {
     const action = async () => {
-      await this.disableAnimations('http://localhost:9001/?path=/story/legend--right');
+      await this.disableAnimations();
       await this.clickMouseRelativeToDOMElement({ top: 242, left: 910 }, this.chartSelector);
       // eslint-disable-next-line no-restricted-syntax
       for (const actions of keyboardEvents) {
@@ -440,8 +440,8 @@ class CommonPage {
     });
   }
 
-  async disableAnimations(url: string) {
-    await this.loadElementFromURL(url, '#story-root');
+  async disableAnimations() {
+    // await this.loadElementFromURL(url, '#story-root');
     await page.evaluate(() => {
       document.querySelector('#story-root')!.classList.add('disable-animations');
     });
