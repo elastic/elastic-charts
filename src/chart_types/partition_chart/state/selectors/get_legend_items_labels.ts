@@ -32,20 +32,12 @@ import { getTree } from './tree';
 export const getLegendItemsLabels = createCachedSelector(
   [getPieSpec, getSettingsSpecSelector, getTree],
   (pieSpec, { legendMaxDepth }, tree): LegendItemLabel[] => {
-    if (!pieSpec) {
+    if (!pieSpec || isInvalidLegendMaxDepth(legendMaxDepth)) {
       return [];
     }
-    if (isInvalidLegendMaxDepth(legendMaxDepth)) {
-      return [];
-    }
-    const labels = flatSlicesNames(pieSpec.layers, 0, tree).filter(({ depth }) => {
-      if (typeof legendMaxDepth !== 'number') {
-        return true;
-      }
-      return depth <= legendMaxDepth;
-    });
 
-    return labels;
+    const labels = flatSlicesNames(pieSpec.layers, 0, tree);
+    return typeof legendMaxDepth === 'number' ? labels.filter(({ depth }) => depth <= legendMaxDepth) : labels;
   },
 )(getChartIdSelector);
 

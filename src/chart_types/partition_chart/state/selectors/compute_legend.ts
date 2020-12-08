@@ -23,7 +23,7 @@ import { LegendItem } from '../../../../commons/legend';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { Position } from '../../../../utils/commons';
-import { QuadViewModel } from '../../layout/types/viewmodel_types';
+import { QuadViewModel, DataName } from '../../layout/types/viewmodel_types';
 import { PrimitiveValue } from '../../layout/utils/group_by_rollup';
 import { partitionGeometries } from './geometries';
 import { getFlatHierarchy } from './get_flat_hierarchy';
@@ -36,16 +36,13 @@ export const computeLegendSelector = createCachedSelector(
     if (!pieSpec) {
       return [];
     }
+
     const { id, layers: labelFormatters } = pieSpec;
 
-    const uniqueNames = geoms.quadViewModel.reduce<Record<string, number>>((acc, { dataName, fillColor }) => {
-      const key = [dataName, fillColor].join('---');
-      if (!acc[key]) {
-        acc[key] = 0;
-      }
-      acc[key] += 1;
+    const uniqueNames = geoms.quadViewModel.reduce<Set<string>>((acc, { dataName, fillColor }) => {
+      acc.add(getKey(dataName, fillColor));
       return acc;
-    }, {});
+    }, new Set());
 
     const { flatLegend, legendMaxDepth, legendPosition } = settings;
     const forceFlatLegend = flatLegend || legendPosition === Position.Bottom || legendPosition === Position.Top;
@@ -56,8 +53,8 @@ export const computeLegendSelector = createCachedSelector(
         return depth <= legendMaxDepth;
       }
       if (forceFlatLegend) {
-        const key = [dataName, fillColor].join('---');
-        if (uniqueNames[key] > 1 && excluded.has(key)) {
+        const key = getKey(dataName, fillColor);
+        if (uniqueNames.has(key) && excluded.has(key)) {
           return false;
         }
         excluded.add(key);
@@ -93,6 +90,10 @@ export const computeLegendSelector = createCachedSelector(
       });
   },
 )(getChartIdSelector);
+
+function getKey(dataName: DataName, fillColor: string) {
+  return [dataName, fillColor].join('---');
+}
 
 function findIndex(items: Array<[PrimitiveValue, number, PrimitiveValue]>, child: QuadViewModel) {
   return items.findIndex(
