@@ -572,7 +572,7 @@ describe('Series', () => {
   });
   test('should only include deselectedDataSeries when splitting series if deselectedDataSeries is defined', () => {
     const id = 'splitSpec';
-
+    const yAccessors = ['y1', 'y2'];
     const splitSpec: BasicSeriesSpec = {
       specType: SpecTypes.Series,
       chartType: ChartTypes.XYAxis,
@@ -582,7 +582,7 @@ describe('Series', () => {
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
-      yAccessors: ['y1', 'y2'],
+      yAccessors,
       stackAccessors: ['x'],
       data: TestDataset.BARCHART_2Y0G,
       hideInLegend: false,
@@ -597,7 +597,7 @@ describe('Series', () => {
     const deselectedDataSeries: XYChartSeriesIdentifier[] = [
       {
         specId: id,
-        yAccessor: splitSpec.yAccessors[0],
+        yAccessor: yAccessors[0],
         splitAccessors: new Map(),
         seriesKeys: [],
         key:

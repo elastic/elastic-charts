@@ -24,7 +24,10 @@ import { Datum } from './commons';
  * @param datum - the datum
  * @public
  */
-export type UnaryAccessorFn<Return = any> = (datum: Datum) => Return;
+export interface UnaryAccessorFn<Return = any> {
+  seriesName?: string;
+  (datum: Datum): Return;
+}
 
 /**
  * Accessor function
