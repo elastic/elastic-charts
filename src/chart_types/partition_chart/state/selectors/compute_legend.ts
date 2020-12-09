@@ -42,7 +42,7 @@ export const computeLegendSelector = createCachedSelector(
     const forceFlatLegend = flatLegend || legendPosition === Position.Bottom || legendPosition === Position.Top;
 
     const excluded: Set<string> = new Set();
-    let items = quadViewModel.filter(({ depth, dataName, fillColor }) => {
+    const items = quadViewModel.filter(({ depth, dataName, fillColor }) => {
       if (legendMaxDepth != null) {
         return depth <= legendMaxDepth;
       }
@@ -58,7 +58,7 @@ export const computeLegendSelector = createCachedSelector(
 
     // this will sort by depth, and the `sort` in the `return` below will leave this order in effect, due to stable sort
     if (forceFlatLegend) {
-      items = items.sort(({ depth: a }, { depth: b }) => a - b);
+      items.sort(({ depth: a }, { depth: b }) => a - b);
     }
 
     const indices = new Map(sortedItems.map(([dataName, depth, value], i) => [makeKey(dataName, depth, value), i]));
