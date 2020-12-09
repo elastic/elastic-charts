@@ -25,7 +25,7 @@ import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/grou
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import { DomainRange } from '../chart_types/xy_chart/utils/specs';
 import { SeriesIdentifier } from '../commons/series_id';
-import { TooltipPortalSettings } from '../components/portal';
+import { TooltipPortalSettings } from '../components';
 import { CustomTooltip } from '../components/tooltip/types';
 import { ScaleContinuousType, ScaleOrdinalType } from '../scales';
 import { getConnect, specComponentFactory } from '../state/spec_factory';
