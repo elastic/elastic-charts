@@ -22,7 +22,7 @@ import createCachedSelector from 're-reselect';
 import { LegendItem } from '../../../../commons/legend';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { Position } from '../../../../utils/commons';
+import { identity, Position } from '../../../../utils/commons';
 import { QuadViewModel } from '../../layout/types/viewmodel_types';
 import { PrimitiveValue } from '../../layout/utils/group_by_rollup';
 import { map } from '../iterables';
@@ -61,31 +61,30 @@ export const computeLegendSelector = createCachedSelector(
       items = items.sort(({ depth: a }, { depth: b }) => a - b);
     }
 
+    const indices = new Map(sortedItems.map(([dataName, depth, value], i) => [makeKey(dataName, depth, value), i]));
+
     return items
-      .sort((a, b) => findIndex(sortedItems, a) - findIndex(sortedItems, b))
+      .sort((a, b) => findIndex(indices, a) - findIndex(indices, b))
       .map<LegendItem>(({ dataName, fillColor, depth }) => {
-        const formatter = pieSpec.layers[depth - 1]?.nodeLabel;
+        const formatter = pieSpec.layers[depth - 1]?.nodeLabel ?? identity;
         return {
           color: fillColor,
-          label: formatter ? formatter(dataName) : dataName,
+          label: formatter(dataName),
           dataName,
           childId: dataName,
           depth: forceFlatLegend ? 0 : depth - 1,
-          seriesIdentifier: {
-            key: dataName,
-            specId: pieSpec.id,
-          },
+          seriesIdentifier: { key: dataName, specId: pieSpec.id },
         };
       });
   },
 )(getChartIdSelector);
 
-function makeKey(...keyParts: string[]) {
+function makeKey(...keyParts: PrimitiveValue[]): string {
   return keyParts.join('---');
 }
 
-function findIndex(items: Array<[PrimitiveValue, number, PrimitiveValue]>, child: QuadViewModel) {
-  return items.findIndex(
-    ([dataName, depth, value]) => dataName === child.dataName && depth === child.depth && value === child.value,
-  );
+function findIndex(indices: Map<string, number>, { dataName, depth, value }: QuadViewModel) {
+  // still expensive with `makeKey` but a O(n^2 ln n) or worst case, O(n^3), as it's used by a `[].sort`, is avoided
+  // we can bring in a liteFields hierarchical Map() indexer if needed - Map nesting avoids string concat
+  return indices.get(makeKey(dataName, depth, value)) ?? -1;
 }
