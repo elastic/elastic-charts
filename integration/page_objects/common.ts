@@ -17,9 +17,6 @@
  * under the License.
  */
 
-// eslint-disable-next-line eslint-comments/disable-enable-pair
-/* eslint-disable no-await-in-loop */
-
 import Url from 'url';
 
 import { DRAG_DETECTION_TIMEOUT } from '../../src/state/reducers/interactions';
@@ -276,10 +273,13 @@ class CommonPage {
    * @param count
    * @param actionLabel
    */
+  // eslint-disable-next-line class-methods-use-this
   async pressKey(actionLabel: string, count: number) {
     if (actionLabel === 'tab') {
       let i = 0;
       while (i < count) {
+        // eslint-disable-next-line eslint-comments/disable-enable-pair
+        /* eslint-disable no-await-in-loop */
         await page.keyboard.press('Tab');
         i++;
       }
