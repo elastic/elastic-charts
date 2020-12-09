@@ -21,7 +21,6 @@
 /** @internal */
 export function map<In, Out>(fun: (arg: In) => Out, iterable: Iterable<In>) {
   return (function*() {
-    // eslint-disable-next-line no-restricted-syntax
     for (const next of iterable) yield fun(next);
   })();
 }
