@@ -23,11 +23,12 @@ import { LegendItem } from '../../../../commons/legend';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { Position } from '../../../../utils/commons';
-import { QuadViewModel, DataName } from '../../layout/types/viewmodel_types';
+import { DataName, QuadViewModel } from '../../layout/types/viewmodel_types';
 import { PrimitiveValue } from '../../layout/utils/group_by_rollup';
 import { partitionGeometries } from './geometries';
 import { getFlatHierarchy } from './get_flat_hierarchy';
 import { getPieSpec } from './pie_spec';
+import { map } from '../iterables';
 
 /** @internal */
 export const computeLegendSelector = createCachedSelector(
@@ -39,7 +40,7 @@ export const computeLegendSelector = createCachedSelector(
 
     const { id, layers: labelFormatters } = pieSpec;
 
-    const uniqueNames = new Set(geoms.quadViewModel.map(({ dataName, fillColor }) => getKey(dataName, fillColor)));
+    const uniqueNames = new Set(map(({ dataName, fillColor }) => getKey(dataName, fillColor), geoms.quadViewModel));
 
     const { flatLegend, legendMaxDepth, legendPosition } = settings;
     const forceFlatLegend = flatLegend || legendPosition === Position.Bottom || legendPosition === Position.Top;
