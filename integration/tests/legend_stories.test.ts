@@ -95,15 +95,17 @@ describe('Legend stories', () => {
   describe('keyboard navigation', () => {
     // eslint-disable-next-line jest/expect-expect
     it('should navigate to legend item with tab', async () => {
+      // puts mouse to the bottom left
+      await common.moveMouse(0, 0);
       await common.expectChartWithKeyboardEventsAtUrlToMatchScreenshot(
         'http://localhost:9001/?path=/story/legend--right',
         [
           {
-            actionLabel: 'tab',
+            key: 'tab',
             count: 2,
           },
           {
-            actionLabel: 'enter',
+            key: 'enter',
             count: 1,
           },
         ],

@@ -61,7 +61,7 @@ interface ElementBBox {
 }
 
 interface KeyboardKey {
-  actionLabel: string;
+  key: string;
   count: number;
 }
 
@@ -128,7 +128,7 @@ type ScreenshotElementAtUrlOptions = ScreenshotDOMElementOptions & {
   /**
    * any desired action to be performed after loading url, prior to screenshot
    */
-  action?: () => void | Promise<void> | Iterable<unknown>;
+  action?: () => void | Promise<void>;
   /**
    * Selector used to wait on DOM element
    */
@@ -219,6 +219,15 @@ class CommonPage {
   }
 
   /**
+   * Move mouse
+   * @param mousePosition
+   * @param selector
+   */
+  async moveMouse(x: number, y: number) {
+    await page.mouse.move(x, y);
+  }
+
+  /**
    * Move mouse relative to element
    *
    * @param mousePosition
@@ -227,7 +236,7 @@ class CommonPage {
   async moveMouseRelativeToDOMElement(mousePosition: MousePosition, selector: string) {
     const element = await this.getBoundingClientRect(selector);
     const { x, y } = getCursorPosition(mousePosition, element);
-    await page.mouse.move(x, y);
+    await this.moveMouse(x, y);
   }
 
   /**
@@ -252,10 +261,10 @@ class CommonPage {
     const element = await this.getBoundingClientRect(selector);
     const { x: x0, y: y0 } = getCursorPosition(start, element);
     const { x: x1, y: y1 } = getCursorPosition(end, element);
-    await page.mouse.move(x0, y0);
+    await this.moveMouse(x0, y0);
     await page.mouse.down();
     await page.waitFor(DRAG_DETECTION_TIMEOUT);
-    await page.mouse.move(x1, y1);
+    await this.moveMouse(x1, y1);
   }
 
   /**
@@ -271,11 +280,11 @@ class CommonPage {
   /**
    * Press keyboard keys
    * @param count
-   * @param actionLabel
+   * @param key
    */
   // eslint-disable-next-line class-methods-use-this
-  async pressKey(actionLabel: string, count: number) {
-    if (actionLabel === 'tab') {
+  async pressKey(key: string, count: number) {
+    if (key === 'tab') {
       let i = 0;
       while (i < count) {
         // eslint-disable-next-line eslint-comments/disable-enable-pair
@@ -283,7 +292,7 @@ class CommonPage {
         await page.keyboard.press('Tab');
         i++;
       }
-    } else if (actionLabel === 'enter') {
+    } else if (key === 'enter') {
       let i = 0;
       while (i < count) {
         await page.keyboard.press('Enter');
@@ -385,11 +394,13 @@ class CommonPage {
   ) {
     const action = async () => {
       await this.disableAnimations();
-      await this.clickMouseRelativeToDOMElement({ top: 242, left: 910 }, this.chartSelector);
+      // click to focus within the chart
+      await this.clickMouseRelativeToDOMElement({ top: 0, left: 0 }, this.chartSelector);
       // eslint-disable-next-line no-restricted-syntax
       for (const actions of keyboardEvents) {
-        await this.pressKey(actions.actionLabel, actions.count);
+        await this.pressKey(actions.key, actions.count);
       }
+      await this.moveMouseRelativeToDOMElement({ top: 0, left: 0 }, this.chartSelector);
     };
 
     await this.expectChartAtUrlToMatchScreenshot(url, {
