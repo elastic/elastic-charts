@@ -28,9 +28,9 @@ import { SB_SOURCE_PANEL } from '../utils/storybook';
 export const Example = () => {
   const xAccessorFn: AccessorFn = (d) => d.x;
   const yAccessorFn: AccessorFn = (d) => d.y;
-  yAccessorFn.seriesName = text('y fn name', '') || undefined;
+  yAccessorFn.fieldName = text('y fn name', '') || undefined;
   const splitAccessorFn: AccessorFn = (d) => d.g2;
-  splitAccessorFn.seriesName = text('split fn name', '') || undefined;
+  splitAccessorFn.fieldName = text('split fn name', '') || undefined;
 
   const onElementClick: ElementClickListener = ([[, { key }]]) => action('clicked series key')(key);
 
@@ -64,16 +64,16 @@ This enables serialization of complex values, without needing to transform raw d
 \`\`\`ts
 // simple example
 const yAccessorFn: AccessorFn = (d) => d.y;
-yAccessorFn.seriesName = 'simple y value';
+yAccessorFn.fieldName = 'simple y value';
 
 // complex example
 const yAccessorFn: AccessorFn = ({ range }) => \`\${range.to} - \${range.from}\`;
-yAccessorFn.seriesName = 'complex y value';
+yAccessorFn.fieldName = 'complex y value';
 \`\`\`
 
-If no \`seriesName\` is provided, the default value will be set using the index \`(index:0)\`.
+If no \`fieldName\` is provided, the default value will be set using the index \`(index:0)\`.
 
-Try changing the \`seriesName\` for the y and split accessor functions in the storybook knobs.
+Try changing the \`fieldName\` for the y and split accessor functions in the storybook knobs.
       `,
     },
   },

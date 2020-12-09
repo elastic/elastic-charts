@@ -23832,7 +23832,7 @@ Array [
 ]
 `;
 
-exports[`Series functional accessors Can use functional splitSeriesAccessor with seriesName 1`] = `
+exports[`Series functional accessors Can use functional splitSeriesAccessor with fieldName 1`] = `
 Array [
   Object {
     "data": Array [
@@ -27135,7 +27135,7 @@ Array [
 ]
 `;
 
-exports[`Series functional accessors Can use functional yAccessor with seriesName 1`] = `
+exports[`Series functional accessors Can use functional yAccessor with fieldName 1`] = `
 Array [
   Object {
     "data": Array [

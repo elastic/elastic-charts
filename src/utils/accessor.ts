@@ -25,7 +25,10 @@ import { Datum } from './commons';
  * @public
  */
 export interface UnaryAccessorFn<Return = any> {
-  seriesName?: string;
+  /**
+   * Name used as accessor field name in place of function reference
+   */
+  fieldName?: string;
   (datum: Datum): Return;
 }
 

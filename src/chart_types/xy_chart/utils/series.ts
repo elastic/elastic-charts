@@ -120,8 +120,8 @@ export function getSeriesIndex(series: SeriesIdentifier[], target: SeriesIdentif
  * @param index
  * @internal
  */
-export function getAccessorString(accessor: Accessor | AccessorFn, index: number) {
-  return typeof accessor === 'function' ? accessor.seriesName ?? `(index:${index})` : accessor;
+export function getAccessorFieldName(accessor: Accessor | AccessorFn, index: number) {
+  return typeof accessor === 'function' ? accessor.fieldName ?? `(index:${index})` : accessor;
 }
 
 /**
@@ -212,8 +212,8 @@ export function splitSeriesDataByAccessors(
           y0Accessors && y0Accessors[index],
           markSizeAccessor,
         );
-        const accessorStr = getAccessorString(accessor, index);
-        const splitAccessorStrs = [...splitAccessors.values()].map((a, si) => getAccessorString(a, si));
+        const accessorStr = getAccessorFieldName(accessor, index);
+        const splitAccessorStrs = [...splitAccessors.values()].map((a, si) => getAccessorFieldName(a, si));
         const seriesKeys = [...splitAccessorStrs, accessorStr];
         const seriesIdentifier: Omit<XYChartSeriesIdentifier, 'key'> = {
           specId,
@@ -290,8 +290,8 @@ export function splitSeriesDataByAccessors(
           markSizeAccessor,
         );
 
-        const accessorStr = getAccessorString(accessor, index);
-        const splitAccessorStrs = [...splitAccessors.values()].map((a, si) => getAccessorString(a, si));
+        const accessorStr = getAccessorFieldName(accessor, index);
+        const splitAccessorStrs = [...splitAccessors.values()].map((a, si) => getAccessorFieldName(a, si));
         const seriesKeys = [...splitAccessorStrs, accessorStr];
         const seriesIdentifier: Omit<XYChartSeriesIdentifier, 'key'> = {
           specId,
@@ -379,7 +379,7 @@ function getSplitAccessors(
     accessors.forEach((accessor: Accessor | AccessorFn, index) => {
       const value = getAccessorValue(datum, accessor);
       if (typeof value === 'string' || typeof value === 'number') {
-        const accessorStr = getAccessorString(accessor, index);
+        const accessorStr = getAccessorFieldName(accessor, index);
         splitAccessors.set(accessorStr, value);
       }
     });

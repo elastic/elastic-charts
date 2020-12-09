@@ -1873,8 +1873,7 @@ export type TooltipValueFormatter = (data: TooltipValue) => JSX.Element | string
 export interface UnaryAccessorFn<Return = any> {
     // (undocumented)
     (datum: Datum): Return;
-    // (undocumented)
-    seriesName?: string;
+    fieldName?: string;
 }
 
 // @public (undocumented)

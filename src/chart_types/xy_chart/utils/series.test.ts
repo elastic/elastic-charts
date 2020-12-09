@@ -1008,9 +1008,9 @@ describe('Series', () => {
       expect([...splitSeries.dataSeries.values()].map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
     });
 
-    test('Can use functional yAccessor with seriesName', () => {
+    test('Can use functional yAccessor with fieldName', () => {
       const yAccessor: AccessorFn = (d) => d.y1;
-      yAccessor.seriesName = 'custom name';
+      yAccessor.fieldName = 'custom name';
       const splitSeries = splitSeriesDataByAccessors(
         MockSeriesSpec.bar({
           data: TestDataset.BARCHART_2Y2G,
@@ -1020,7 +1020,7 @@ describe('Series', () => {
         new Map(),
       );
       expect([...splitSeries.dataSeries.values()].map(({ yAccessor }) => yAccessor)).toEqualArrayOf(
-        yAccessor.seriesName,
+        yAccessor.fieldName,
       );
       expect([...splitSeries.dataSeries.values()].length).toBe(2);
       expect([...splitSeries.dataSeries.values()].map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
@@ -1061,9 +1061,9 @@ describe('Series', () => {
       expect([...splitSeries.dataSeries.values()].map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
     });
 
-    test('Can use functional splitSeriesAccessor with seriesName', () => {
+    test('Can use functional splitSeriesAccessor with fieldName', () => {
       const splitSeriesAccessor: AccessorFn = (d) => d.g1;
-      splitSeriesAccessor.seriesName = 'custom name';
+      splitSeriesAccessor.fieldName = 'custom name';
       const splitSeries = splitSeriesDataByAccessors(
         MockSeriesSpec.bar({
           data: TestDataset.BARCHART_2Y2G,
@@ -1074,7 +1074,7 @@ describe('Series', () => {
       );
       expect(
         flatten([...splitSeries.dataSeries.values()].map(({ splitAccessors }) => [...splitAccessors.keys()])),
-      ).toEqualArrayOf(splitSeriesAccessor.seriesName);
+      ).toEqualArrayOf(splitSeriesAccessor.fieldName);
       expect([...splitSeries.dataSeries.values()].length).toBe(2);
       expect([...splitSeries.dataSeries.values()].map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
     });
