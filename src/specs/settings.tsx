@@ -467,12 +467,12 @@ export const Settings: React.FunctionComponent<SettingsSpecProps> = getConnect()
 
 /** @internal */
 export function isPointerOutEvent(event: PointerEvent | null | undefined): event is PointerOutEvent {
-  return event !== null && event !== undefined && event.type === PointerEventType.Out;
+  return event?.type === PointerEventType.Out;
 }
 
 /** @internal */
 export function isPointerOverEvent(event: PointerEvent | null | undefined): event is PointerOverEvent {
-  return event !== null && event !== undefined && event.type === PointerEventType.Over;
+  return event?.type === PointerEventType.Over;
 }
 
 /** @internal */
