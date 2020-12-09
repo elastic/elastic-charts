@@ -73,6 +73,8 @@ export const Example = () => {
             tooltip: { visible: topVisible, placement: topPlacement },
           }}
           tooltip={{ type: topType }}
+          showLegend
+          showLegendExtra
         />
         <Axis
           id="bottom"
@@ -100,6 +102,8 @@ export const Example = () => {
           externalPointerEvents={{
             tooltip: { visible: bottomVisible, placement: bottomPlacement, boundary: 'chart' },
           }}
+          showLegend
+          showLegendExtra
         />
         <Axis
           id="bottom"
