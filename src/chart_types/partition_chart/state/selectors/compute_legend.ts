@@ -23,35 +23,31 @@ import { LegendItem } from '../../../../commons/legend';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { Position } from '../../../../utils/commons';
-import { DataName, QuadViewModel } from '../../layout/types/viewmodel_types';
+import { QuadViewModel } from '../../layout/types/viewmodel_types';
 import { PrimitiveValue } from '../../layout/utils/group_by_rollup';
+import { map } from '../iterables';
 import { partitionGeometries } from './geometries';
 import { getFlatHierarchy } from './get_flat_hierarchy';
 import { getPieSpec } from './pie_spec';
-import { map } from '../iterables';
 
 /** @internal */
 export const computeLegendSelector = createCachedSelector(
   [getPieSpec, getSettingsSpecSelector, partitionGeometries, getFlatHierarchy],
-  (pieSpec, settings, geoms, sortedItems): LegendItem[] => {
+  (pieSpec, { flatLegend, legendMaxDepth, legendPosition }, { quadViewModel }, sortedItems): LegendItem[] => {
     if (!pieSpec) {
       return [];
     }
 
-    const { id, layers: labelFormatters } = pieSpec;
-
-    const uniqueNames = new Set(map(({ dataName, fillColor }) => getKey(dataName, fillColor), geoms.quadViewModel));
-
-    const { flatLegend, legendMaxDepth, legendPosition } = settings;
+    const uniqueNames = new Set(map(({ dataName, fillColor }) => makeKey(dataName, fillColor), quadViewModel));
     const forceFlatLegend = flatLegend || legendPosition === Position.Bottom || legendPosition === Position.Top;
 
     const excluded: Set<string> = new Set();
-    let items = geoms.quadViewModel.filter(({ depth, dataName, fillColor }) => {
+    let items = quadViewModel.filter(({ depth, dataName, fillColor }) => {
       if (legendMaxDepth != null) {
         return depth <= legendMaxDepth;
       }
       if (forceFlatLegend) {
-        const key = getKey(dataName, fillColor);
+        const key = makeKey(dataName, fillColor);
         if (uniqueNames.has(key) && excluded.has(key)) {
           return false;
         }
@@ -60,20 +56,15 @@ export const computeLegendSelector = createCachedSelector(
       return true;
     });
 
+    // this will sort by depth, and the `sort` in the `return` below will leave this order in effect, due to stable sort
     if (forceFlatLegend) {
       items = items.sort(({ depth: a }, { depth: b }) => a - b);
     }
 
     return items
-      .sort((a, b) => {
-        const aIndex = findIndex(sortedItems, a);
-        const bIndex = findIndex(sortedItems, b);
-        return aIndex - bIndex;
-      })
+      .sort((a, b) => findIndex(sortedItems, a) - findIndex(sortedItems, b))
       .map<LegendItem>(({ dataName, fillColor, depth }) => {
-        const labelFormatter = labelFormatters[depth - 1];
-        const formatter = labelFormatter?.nodeLabel;
-
+        const formatter = pieSpec.layers[depth - 1]?.nodeLabel;
         return {
           color: fillColor,
           label: formatter ? formatter(dataName) : dataName,
@@ -82,15 +73,15 @@ export const computeLegendSelector = createCachedSelector(
           depth: forceFlatLegend ? 0 : depth - 1,
           seriesIdentifier: {
             key: dataName,
-            specId: id,
+            specId: pieSpec.id,
           },
         };
       });
   },
 )(getChartIdSelector);
 
-function getKey(dataName: DataName, fillColor: string) {
-  return [dataName, fillColor].join('---');
+function makeKey(...keyParts: string[]) {
+  return keyParts.join('---');
 }
 
 function findIndex(items: Array<[PrimitiveValue, number, PrimitiveValue]>, child: QuadViewModel) {
