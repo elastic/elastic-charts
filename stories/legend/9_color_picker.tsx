@@ -52,7 +52,7 @@ export const Example = () => {
 
       return (
         <>
-          <EuiWrappingPopover isOpen button={anchor} closePopover={handleClose} anchorPosition="leftCenter">
+          <EuiWrappingPopover isOpen button={anchor} closePopover={handleClose} anchorPosition="leftCenter" ownFocus>
             <EuiColorPicker display="inline" color={color} onChange={handleChange} />
             <EuiSpacer size="m" />
             <EuiFlexItem grow={false}>
