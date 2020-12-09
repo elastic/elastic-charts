@@ -74,6 +74,8 @@ yAccessorFn.fieldName = 'complex y value';
 If no \`fieldName\` is provided, the default value will be set using the index \`(index:0)\`.
 
 Try changing the \`fieldName\` for the y and split accessor functions in the storybook knobs.
+
+**Note: All \`fieldName\` and \`Accessor\` values should be unique. Any duplicated values will be ignored.**
       `,
     },
   },
