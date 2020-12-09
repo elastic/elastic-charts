@@ -78,7 +78,6 @@ describe('Area series stories', () => {
     it('shows only positive values when hiding negative one', async () => {
       const action = async () => {
         await common.disableAnimations();
-        // 'http://localhost:9001/?path=/story/area-chart--with-negative-and-positive&knob-Y scale=log',
         await page.click('.echLegendItem:nth-child(2) .echLegendItem__label');
       };
       await common.expectChartAtUrlToMatchScreenshot(
@@ -90,7 +89,6 @@ describe('Area series stories', () => {
     it('shows only negative values when hiding positive one', async () => {
       const action = async () => {
         await common.disableAnimations();
-        // 'http://localhost:9001/?path=/story/area-chart--with-negative-and-positive&knob-Y scale=log',
         await page.click('.echLegendItem:nth-child(1) .echLegendItem__label');
       };
       await common.expectChartAtUrlToMatchScreenshot(

@@ -441,7 +441,6 @@ class CommonPage {
   }
 
   async disableAnimations() {
-    // await this.loadElementFromURL(url, '#story-root');
     await page.evaluate(() => {
       document.querySelector('#story-root')!.classList.add('disable-animations');
     });
