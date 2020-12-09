@@ -45,7 +45,7 @@ export class Playground extends React.Component {
     return (
       <div className="chart">
         <Chart className="story-chart">
-          <Settings showLegend flatLegend={false} legendMaxDepth={2} />
+          <Settings showLegend flatLegend={false} />
           <Partition
             id="spec_1"
             data={[

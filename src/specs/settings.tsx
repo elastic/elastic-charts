@@ -349,7 +349,7 @@ export interface SettingsSpec extends Spec {
   /**
    * Limit the legend to a max depth when showing a hierarchical legend
    */
-  legendMaxDepth?: number;
+  legendMaxDepth: number;
   /**
    * Display the legend as a flat hierarchy
    */
@@ -453,6 +453,7 @@ export type DefaultSettingsProps =
   | 'showLegendExtra'
   | 'theme'
   | 'legendPosition'
+  | 'legendMaxDepth'
   | 'hideDuplicateAxes'
   | 'brushAxis'
   | 'minBrushDelta'
