@@ -482,7 +482,7 @@ export function isTooltipProps(config: TooltipType | TooltipProps): config is To
 
 /** @internal */
 export function isTooltipType(config: TooltipType | TooltipProps): config is TooltipType {
-  return typeof config === 'string';
+  return typeof config !== 'object'; // TooltipType is 'vertical'|'cross'|'follow'|'none' while TooltipProps is object
 }
 
 /** @internal */
