@@ -7,6 +7,7 @@
 import { $Values } from 'utility-types';
 import { ComponentType } from 'react';
 import React from 'react';
+import { ReactChild } from 'react';
 
 // @public
 export type Accessor = AccessorObjectKey | AccessorArrayIndex;
@@ -1473,11 +1474,11 @@ export type ScaleType = $Values<typeof ScaleType>;
 // @public (undocumented)
 export interface SeriesAccessors {
     markSizeAccessor?: Accessor | AccessorFn;
-    splitSeriesAccessors?: Accessor[];
-    stackAccessors?: Accessor[];
+    splitSeriesAccessors?: (Accessor | AccessorFn)[];
+    stackAccessors?: (Accessor | AccessorFn)[];
     xAccessor: Accessor | AccessorFn;
-    y0Accessors?: Accessor[];
-    yAccessors: Accessor[];
+    y0Accessors?: (Accessor | AccessorFn)[];
+    yAccessors: (Accessor | AccessorFn)[];
 }
 
 // @public (undocumented)
@@ -1599,6 +1600,7 @@ export interface SettingsSpec extends Spec {
     legendMaxDepth?: number;
     legendPosition: Position;
     minBrushDelta?: number;
+    noResults?: ComponentType | ReactChild;
     // (undocumented)
     onBrushEnd?: BrushEndListener;
     // (undocumented)
@@ -1646,9 +1648,7 @@ export interface SettingsSpec extends Spec {
 // Warning: (ae-missing-release-tag) "SettingsSpecProps" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type SettingsSpecProps = Partial<Omit<SettingsSpec, 'chartType' | 'specType' | 'id' | 'externalPointerEvents'>> & {
-    externalPointerEvents?: RecursivePartial<SettingsSpec['externalPointerEvents']>;
-};
+export type SettingsSpecProps = Partial<Omit<SettingsSpec, 'chartType' | 'specType' | 'id'>>;
 
 // Warning: (ae-missing-release-tag) "SharedGeometryStateStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1870,7 +1870,11 @@ export interface TooltipValue {
 export type TooltipValueFormatter = (data: TooltipValue) => JSX.Element | string;
 
 // @public
-export type UnaryAccessorFn<Return = any> = (datum: Datum) => Return;
+export interface UnaryAccessorFn<Return = any> {
+    // (undocumented)
+    (datum: Datum): Return;
+    fieldName?: string;
+}
 
 // @public (undocumented)
 export type UnboundedDomainWithInterval = DomainBase;
@@ -1933,7 +1937,7 @@ export interface XYChartSeriesIdentifier extends SeriesIdentifier {
     // (undocumented)
     splitAccessors: Map<string | number, string | number>;
     // (undocumented)
-    yAccessor: string | number;
+    yAccessor: Accessor;
 }
 
 // @public

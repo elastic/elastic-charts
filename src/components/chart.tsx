@@ -181,6 +181,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
           <ChartStatus />
           <ChartResizer />
           <Legend />
+          {/* TODO: Add renderFn to error boundary */}
           <ErrorBoundary>
             <SpecsParser>{this.props.children}</SpecsParser>
             <div className="echContainer">

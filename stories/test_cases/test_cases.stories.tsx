@@ -17,33 +17,13 @@
  * under the License.
  */
 
-import classNames from 'classnames';
-import React, { MouseEventHandler } from 'react';
+import { SB_SOURCE_PANEL } from '../utils/storybook';
 
-interface LabelProps {
-  label: string;
-  isSeriesHidden?: boolean;
-  onClick?: MouseEventHandler;
-}
-/**
- * Label component used to display text in legend item
- * @internal
- */
-export function Label({ label, onClick, isSeriesHidden }: LabelProps) {
-  const labelClassNames = classNames('echLegendItem__label', {
-    'echLegendItem__label--clickable': Boolean(onClick),
-  });
-  return (
-    <button
-      type="button"
-      className={labelClassNames}
-      title={label}
-      onClick={onClick}
-      aria-label={
-        isSeriesHidden ? `${label}; Activate to show series in graph` : `${label}; Activate to hide series in graph`
-      }
-    >
-      {label}
-    </button>
-  );
-}
+export default {
+  title: 'Test Cases',
+  parameters: {
+    options: { selectedPanel: SB_SOURCE_PANEL },
+  },
+};
+
+export { Example as noSeries } from './1_no_series';

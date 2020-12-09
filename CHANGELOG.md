@@ -1,3 +1,30 @@
+# [24.4.0](https://github.com/elastic/elastic-charts/compare/v24.3.0...v24.4.0) (2020-12-09)
+
+
+### Bug Fixes
+
+* empty labels on debug state ([#940](https://github.com/elastic/elastic-charts/issues/940)) ([3c823fd](https://github.com/elastic/elastic-charts/commit/3c823fdbc8437c907c02b58c1aa8e084bc7611d1))
+
+
+### Features
+
+* allow use of functions for y, y0, split and stack accessors ([#943](https://github.com/elastic/elastic-charts/issues/943)) ([22425d3](https://github.com/elastic/elastic-charts/commit/22425d3b9819afde208c651abb6b017839556645))
+
+# [24.3.0](https://github.com/elastic/elastic-charts/compare/v24.2.0...v24.3.0) (2020-12-04)
+
+
+### Bug Fixes
+
+* **highlighter:** show default highlighted radius with hidden dots ([#926](https://github.com/elastic/elastic-charts/issues/926)) ([8b167a4](https://github.com/elastic/elastic-charts/commit/8b167a46bd5d5878a682448c269718dc1076ea14)), closes [#679](https://github.com/elastic/elastic-charts/issues/679)
+* **xy_chart:** improve line joins rendering ([#920](https://github.com/elastic/elastic-charts/issues/920)) ([ec8041a](https://github.com/elastic/elastic-charts/commit/ec8041a2ef8c5f5d173efc5981b2f52830ceaf4f))
+* point highlight based on geom position and transform ([#934](https://github.com/elastic/elastic-charts/issues/934)) ([7198b5d](https://github.com/elastic/elastic-charts/commit/7198b5d47230558e6858076083232f46fa02e0f9))
+
+
+### Features
+
+* allow no results component, don't require series ([#936](https://github.com/elastic/elastic-charts/issues/936)) ([4766c23](https://github.com/elastic/elastic-charts/commit/4766c235ee6d15b2523b9177242e90157f7af8df))
+* improved domain error handling ([#933](https://github.com/elastic/elastic-charts/issues/933)) ([94534a5](https://github.com/elastic/elastic-charts/commit/94534a5d37fc0b71508facc64881f14866603d9c))
+
 # [24.2.0](https://github.com/elastic/elastic-charts/compare/v24.1.0...v24.2.0) (2020-11-25)
 
 

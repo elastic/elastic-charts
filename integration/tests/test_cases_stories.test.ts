@@ -17,33 +17,23 @@
  * under the License.
  */
 
-import classNames from 'classnames';
-import React, { MouseEventHandler } from 'react';
+import { common } from '../page_objects';
 
-interface LabelProps {
-  label: string;
-  isSeriesHidden?: boolean;
-  onClick?: MouseEventHandler;
-}
-/**
- * Label component used to display text in legend item
- * @internal
- */
-export function Label({ label, onClick, isSeriesHidden }: LabelProps) {
-  const labelClassNames = classNames('echLegendItem__label', {
-    'echLegendItem__label--clickable': Boolean(onClick),
+describe('Test cases stories', () => {
+  it('should render custom no results component', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/test-cases--no-series&knob-Show custom no results=true',
+      {
+        waitSelector: '.echReactiveChart_noResults .euiIcon:not(.euiIcon-isLoading)',
+        delay: 500, // wait for icon to load
+      },
+    );
   });
-  return (
-    <button
-      type="button"
-      className={labelClassNames}
-      title={label}
-      onClick={onClick}
-      aria-label={
-        isSeriesHidden ? `${label}; Activate to show series in graph` : `${label}; Activate to hide series in graph`
-      }
-    >
-      {label}
-    </button>
-  );
-}
+
+  it('should render default no results component', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/test-cases--no-series&knob-Show custom no results=false',
+      { waitSelector: '.echReactiveChart_noResults' },
+    );
+  });
+});
