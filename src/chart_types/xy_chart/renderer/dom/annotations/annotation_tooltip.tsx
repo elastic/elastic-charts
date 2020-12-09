@@ -78,7 +78,8 @@ export const AnnotationTooltip = ({ state, chartRef, chartId, onScroll, zIndex }
     <TooltipPortal
       scope="AnnotationTooltip"
       chartId={chartId}
-      zIndex={zIndex}
+      // increasing by 100 the tooltip portal zIndex to avoid conflicts with highlighters and other elements in the DOM
+      zIndex={zIndex + 100}
       anchor={{
         position,
         ref: chartRef.current,
