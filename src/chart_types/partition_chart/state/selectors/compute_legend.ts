@@ -39,10 +39,7 @@ export const computeLegendSelector = createCachedSelector(
 
     const { id, layers: labelFormatters } = pieSpec;
 
-    const uniqueNames = geoms.quadViewModel.reduce<Set<string>>((acc, { dataName, fillColor }) => {
-      acc.add(getKey(dataName, fillColor));
-      return acc;
-    }, new Set());
+    const uniqueNames = new Set(geoms.quadViewModel.map(({ dataName, fillColor }) => getKey(dataName, fillColor)));
 
     const { flatLegend, legendMaxDepth, legendPosition } = settings;
     const forceFlatLegend = flatLegend || legendPosition === Position.Bottom || legendPosition === Position.Top;
