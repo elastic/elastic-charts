@@ -19,7 +19,6 @@
 
 import createCachedSelector from 're-reselect';
 
-import { SettingsSpec } from '../../../../specs';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { LegendItemLabel } from '../../../../state/selectors/get_legend_items_labels';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
@@ -32,22 +31,10 @@ import { getTree } from './tree';
 export const getLegendItemsLabels = createCachedSelector(
   [getPieSpec, getSettingsSpecSelector, getTree],
   (pieSpec, { legendMaxDepth }, tree): LegendItemLabel[] => {
-    if (!pieSpec || isInvalidLegendMaxDepth(legendMaxDepth)) {
-      return [];
-    }
-
-    const labels = flatSlicesNames(pieSpec.layers, 0, tree);
+    const labels = pieSpec ? flatSlicesNames(pieSpec.layers, 0, tree) : [];
     return typeof legendMaxDepth === 'number' ? labels.filter(({ depth }) => depth <= legendMaxDepth) : labels;
   },
 )(getChartIdSelector);
-
-/**
- * Check if the legendMaxDepth from settings is not a valid number (NaN or <=0)
- * @param legendMaxDepth - SettingsSpec['legendMaxDepth']
- */
-function isInvalidLegendMaxDepth(legendMaxDepth: SettingsSpec['legendMaxDepth']): boolean {
-  return typeof legendMaxDepth === 'number' && (Number.isNaN(legendMaxDepth) || legendMaxDepth <= 0);
-}
 
 function flatSlicesNames(
   layers: Layer[],
