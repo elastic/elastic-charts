@@ -23,10 +23,13 @@ import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { HierarchyOfArrays, PrimitiveValue } from '../../layout/utils/group_by_rollup';
 import { getTree } from './tree';
 
+/** #internal */
+export type FlatLegendOrderTuple = [PrimitiveValue, number, PrimitiveValue];
+
 /** @internal */
 export const getFlatHierarchy = createCachedSelector(
   [getTree],
-  (tree): Array<[PrimitiveValue, number, PrimitiveValue]> => flatHierarchy(tree),
+  (tree): Array<FlatLegendOrderTuple> => flatHierarchy(tree),
 )(getChartIdSelector);
 
 function flatHierarchy(tree: HierarchyOfArrays, orderedList: Array<[PrimitiveValue, number, PrimitiveValue]> = []) {

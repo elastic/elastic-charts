@@ -27,7 +27,7 @@ import { QuadViewModel } from '../../layout/types/viewmodel_types';
 import { PrimitiveValue } from '../../layout/utils/group_by_rollup';
 import { map } from '../iterables';
 import { partitionGeometries } from './geometries';
-import { getFlatHierarchy } from './get_flat_hierarchy';
+import { FlatLegendOrderTuple, getFlatHierarchy } from './get_flat_hierarchy';
 import { getPieSpec } from './pie_spec';
 
 /** @internal */
@@ -56,26 +56,19 @@ export const computeLegendSelector = createCachedSelector(
       return true;
     });
 
-    // this will sort by depth, and the `sort` in the `return` below will leave this order in effect, due to stable sort
-    if (forceFlatLegend) {
-      items.sort(({ depth: a }, { depth: b }) => a - b);
-    }
+    items.sort(forceFlatLegend ? makeIndexComparator(sortedItems) : compareTreePaths);
 
-    const indices = new Map(sortedItems.map(([dataName, depth, value], i) => [makeKey(dataName, depth, value), i]));
-
-    return items
-      .sort((a, b) => findIndex(indices, a) - findIndex(indices, b))
-      .map<LegendItem>(({ dataName, fillColor, depth }) => {
-        const formatter = pieSpec.layers[depth - 1]?.nodeLabel ?? identity;
-        return {
-          color: fillColor,
-          label: formatter(dataName),
-          dataName,
-          childId: dataName,
-          depth: forceFlatLegend ? 0 : depth - 1,
-          seriesIdentifier: { key: dataName, specId: pieSpec.id },
-        };
-      });
+    return items.map<LegendItem>(({ dataName, fillColor, depth }) => {
+      const formatter = pieSpec.layers[depth - 1]?.nodeLabel ?? identity;
+      return {
+        color: fillColor,
+        label: formatter(dataName),
+        dataName,
+        childId: dataName,
+        depth: forceFlatLegend ? 0 : depth - 1,
+        seriesIdentifier: { key: dataName, specId: pieSpec.id },
+      };
+    });
   },
 )(getChartIdSelector);
 
@@ -83,8 +76,26 @@ function makeKey(...keyParts: PrimitiveValue[]): string {
   return keyParts.join('---');
 }
 
-function findIndex(indices: Map<string, number>, { dataName, depth, value }: QuadViewModel) {
-  // still expensive with `makeKey` but a O(n^2 ln n) or worst case, O(n^3), as it's used by a `[].sort`, is avoided
-  // we can bring in a liteFields hierarchical Map() indexer if needed - Map nesting avoids string concat
-  return indices.get(makeKey(dataName, depth, value)) ?? -1;
+function compareTreePaths({ path: a }: QuadViewModel, { path: b }: QuadViewModel): number {
+  for (let i = 0; i < Math.min(a.length, b.length); i++) {
+    const diff = a[i] - b[i];
+    if (diff) {
+      return diff;
+    }
+  }
+  return a.length - b.length; // if one path is fully contained in the other, then parent (shorter) goes first
+}
+
+function makeIndexComparator(sortedItems: FlatLegendOrderTuple[]) {
+  const indices = new Map(sortedItems.map(([dataName, depth, value], i) => [makeKey(dataName, depth, value), i]));
+  const findIndex = findInIndex(indices);
+  return (a: QuadViewModel, b: QuadViewModel) => findIndex(a) - findIndex(b);
+}
+
+function findInIndex(indices: Map<string, number>) {
+  return function({ dataName, depth, value }: QuadViewModel) {
+    // still expensive with `makeKey` but a O(n^2 ln n) or worst case, O(n^3), as it's used by a `[].sort`, is avoided
+    // we can bring in a liteFields hierarchical Map() indexer if needed - Map nesting avoids string concat
+    return indices.get(makeKey(dataName, depth, value)) ?? -1;
+  };
 }

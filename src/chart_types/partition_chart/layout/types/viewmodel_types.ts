@@ -154,6 +154,7 @@ export interface ShapeTreeNode extends TreeNode, SectorGeomSpecY {
   yMidPx: Distance;
   depth: number;
   sortIndex: number;
+  path: number[];
   dataName: DataName;
   value: number;
   parent: ArrayNode;
