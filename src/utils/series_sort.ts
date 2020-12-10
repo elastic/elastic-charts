@@ -46,7 +46,7 @@ export function getTooltipCompareFn(settings: SettingsSpec): SeriesCompareFn {
 
 function getCompareFn({ sortSeriesBy }: SettingsSpec, aspect: keyof SortSeriesByConfig): SeriesCompareFn {
   if (typeof sortSeriesBy === 'object') {
-    return sortSeriesBy[aspect] ?? sortSeriesBy.general ?? DEFAULT_SORTING_FN;
+    return sortSeriesBy[aspect] ?? sortSeriesBy.default ?? DEFAULT_SORTING_FN;
   }
   return sortSeriesBy ?? DEFAULT_SORTING_FN;
 }

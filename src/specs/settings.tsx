@@ -442,11 +442,6 @@ export interface SettingsSpec extends Spec {
  */
 export interface SortSeriesByConfig {
   /**
-   * A global SeriesSortFn to use on tooltip, legend and rendering
-   * The rendering sorting is applied only to XY charts at the moment
-   */
-  general?: SeriesCompareFn;
-  /**
    * A SeriesSortFn to sort the legend values (top-bottom)
    * It has precedence over the general one
    */
@@ -463,6 +458,11 @@ export interface SortSeriesByConfig {
    * Currently available only on XY charts
    */
   rendering?: SeriesCompareFn;
+  /**
+   * The default SeriesSortFn in case no other specific sorting fn are used.
+   * The rendering sorting is applied only to XY charts at the moment
+   */
+  default?: SeriesCompareFn;
 }
 
 /**

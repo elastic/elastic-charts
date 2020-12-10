@@ -33,6 +33,8 @@ import * as TestDatasets from '../../src/utils/data_samples/test_dataset';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 function getGroups(a: SeriesIdentifier, b: SeriesIdentifier) {
+  // we can cast the SeriesIdentifier to the XYChartSeriesIdentifier safely since we know that we are using
+  // only XY series on our chart in this example
   const { splitAccessors: aSplit, yAccessor: aYAccessor, specId: specIdA } = a as XYChartSeriesIdentifier;
   const { splitAccessors: bSplit, yAccessor: bYAccessor, specId: specIdB } = b as XYChartSeriesIdentifier;
   const aGroup = `${aSplit.get('g') ?? ''}`;
