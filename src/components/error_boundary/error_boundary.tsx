@@ -19,10 +19,13 @@
 
 import React, { Component, ReactNode } from 'react';
 
+import { SettingsSpecProps } from '../../specs';
+import { NoResults } from '../no_results';
 import { isGracefulError } from './errors';
 
 type ErrorBoundaryProps = {
   children: ReactNode;
+  renderFn?: SettingsSpecProps['noResults'];
 };
 
 interface ErrorBoundaryState {
@@ -51,11 +54,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
   render() {
     if (this.hasError) {
-      return (
-        <div className="echReactiveChart_unavailable">
-          <p>No data to display</p>
-        </div>
-      );
+      return <NoResults renderFn={this.props.renderFn} />;
     }
 
     return this.props.children;
