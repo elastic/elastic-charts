@@ -142,4 +142,5 @@ export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
   baseTheme: LIGHT_THEME,
   brushAxis: BrushAxis.X,
   minBrushDelta: 2,
+  haveDataTable: false,
 };

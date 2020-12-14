@@ -428,6 +428,10 @@ export interface SettingsSpec extends Spec {
    * Render component for no results UI
    */
   noResults?: ComponentType | ReactChild;
+  /**
+   * Optional data table generated for screen readers, defaults to false
+   */
+  haveDataTable: boolean;
 }
 
 /**
@@ -457,7 +461,8 @@ export type DefaultSettingsProps =
   | 'hideDuplicateAxes'
   | 'brushAxis'
   | 'minBrushDelta'
-  | 'externalPointerEvents';
+  | 'externalPointerEvents'
+  | 'haveDataTable';
 
 export type SettingsSpecProps = Partial<Omit<SettingsSpec, 'chartType' | 'specType' | 'id'>>;
 

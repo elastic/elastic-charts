@@ -54,6 +54,7 @@ import { Geometries, Transform } from '../../state/utils/types';
 import { LinesGrid } from '../../utils/grid_lines';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
 import { AxisSpec, AnnotationSpec } from '../../utils/specs';
+import { XYDataTable } from './data_table';
 import { renderXYChartCanvas2d } from './renderers';
 
 /** @internal */
@@ -76,6 +77,7 @@ export interface ReactiveChartStateProps {
   annotationDimensions: Map<AnnotationId, AnnotationDimensions>;
   annotationSpecs: AnnotationSpec[];
   panelGeoms: PanelGeoms;
+  haveDataTable: boolean;
 }
 
 interface ReactiveChartDispatchProps {
@@ -126,6 +128,55 @@ class XYChartComponent extends React.Component<XYChartProps> {
     }
   }
 
+  render() {
+    const {
+      forwardStageRef,
+      initialized,
+      isChartEmpty,
+      chartContainerDimensions: { width, height },
+      haveDataTable,
+    } = this.props;
+
+    if (!initialized || isChartEmpty) {
+      this.ctx = null;
+      return null;
+    }
+
+    return haveDataTable ? (
+      <>
+        <canvas
+          // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
+          role="img"
+          aria-label="canvas chart"
+          ref={forwardStageRef}
+          className="echCanvasRenderer"
+          width={width * this.devicePixelRatio}
+          height={height * this.devicePixelRatio}
+          style={{
+            width,
+            height,
+          }}
+        />
+        <XYDataTable
+          dataTableGeometries={this.props.geometries}
+          isChartEmpty={this.props.isChartEmpty}
+          geometriesIndex={this.props.geometriesIndex}
+        />
+      </>
+    ) : (
+      <canvas
+        ref={forwardStageRef}
+        className="echCanvasRenderer"
+        width={width * this.devicePixelRatio}
+        height={height * this.devicePixelRatio}
+        style={{
+          width,
+          height,
+        }}
+      />
+    );
+  }
+
   private drawCanvas() {
     if (this.ctx) {
       const { renderingArea, rotation } = this.props;
@@ -142,33 +193,6 @@ class XYChartComponent extends React.Component<XYChartProps> {
   private tryCanvasContext() {
     const canvas = this.props.forwardStageRef.current;
     this.ctx = canvas && canvas.getContext('2d');
-  }
-
-  render() {
-    const {
-      forwardStageRef,
-      initialized,
-      isChartEmpty,
-      chartContainerDimensions: { width, height },
-    } = this.props;
-
-    if (!initialized || isChartEmpty) {
-      this.ctx = null;
-      return null;
-    }
-
-    return (
-      <canvas
-        ref={forwardStageRef}
-        className="echCanvasRenderer"
-        width={width * this.devicePixelRatio}
-        height={height * this.devicePixelRatio}
-        style={{
-          width,
-          height,
-        }}
-      />
-    );
   }
 }
 
@@ -219,6 +243,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   annotationDimensions: new Map(),
   annotationSpecs: [],
   panelGeoms: [],
+  haveDataTable: true,
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -227,7 +252,6 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   }
 
   const { geometries, geometriesIndex } = computeSeriesGeometriesSelector(state);
-
   return {
     initialized: true,
     isChartEmpty: isChartEmptySelector(state),
@@ -247,6 +271,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     annotationDimensions: computeAnnotationDimensionsSelector(state),
     annotationSpecs: getAnnotationSpecsSelector(state),
     panelGeoms: computePanelsSelectors(state),
+    haveDataTable: getSettingsSpecSelector(state).haveDataTable,
   };
 };
 

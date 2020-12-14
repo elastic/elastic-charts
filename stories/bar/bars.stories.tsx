@@ -68,6 +68,7 @@ export { Example as dualAxisSameYDomain } from './52_multi_group_same_domain';
 export { Example as specifyDomainFromDifferentGroup } from './53_use_domain_from_different_groupid';
 export { Example as orderBinsBySum } from './50_order_bins_by_sum';
 export { Example as functionalAccessors } from './54_functional_accessors';
+export { Example as withDataTable } from './55_with_data_table';
 
 // for testing purposes only
 export { Example as testLinear } from './34_test_linear';
