@@ -27,13 +27,12 @@ import { QuadViewModel } from '../../layout/types/viewmodel_types';
 import { PrimitiveValue } from '../../layout/utils/group_by_rollup';
 import { map } from '../iterables';
 import { partitionGeometries } from './geometries';
-import { FlatLegendOrderTuple, getFlatHierarchy } from './get_flat_hierarchy';
 import { getPieSpec } from './pie_spec';
 
 /** @internal */
 export const computeLegendSelector = createCachedSelector(
-  [getPieSpec, getSettingsSpecSelector, partitionGeometries, getFlatHierarchy],
-  (pieSpec, { flatLegend, legendMaxDepth, legendPosition }, { quadViewModel }, sortedItems): LegendItem[] => {
+  [getPieSpec, getSettingsSpecSelector, partitionGeometries],
+  (pieSpec, { flatLegend, legendMaxDepth, legendPosition }, { quadViewModel }): LegendItem[] => {
     if (!pieSpec) {
       return [];
     }
@@ -56,7 +55,7 @@ export const computeLegendSelector = createCachedSelector(
       return true;
     });
 
-    items.sort(forceFlatLegend ? makeIndexComparator(sortedItems) : compareTreePaths);
+    items.sort(compareTreePaths);
 
     return items.map<LegendItem>(({ dataName, fillColor, depth }) => {
       const formatter = pieSpec.layers[depth - 1]?.nodeLabel ?? identity;
@@ -84,18 +83,4 @@ function compareTreePaths({ path: a }: QuadViewModel, { path: b }: QuadViewModel
     }
   }
   return a.length - b.length; // if one path is fully contained in the other, then parent (shorter) goes first
-}
-
-function makeIndexComparator(sortedItems: FlatLegendOrderTuple[]) {
-  const indices = new Map(sortedItems.map(([dataName, depth, value], i) => [makeKey(dataName, depth, value), i]));
-  const findIndex = findInIndex(indices);
-  return (a: QuadViewModel, b: QuadViewModel) => findIndex(a) - findIndex(b);
-}
-
-function findInIndex(indices: Map<string, number>) {
-  return function({ dataName, depth, value }: QuadViewModel) {
-    // still expensive with `makeKey` but a O(n^2 ln n) or worst case, O(n^3), as it's used by a `[].sort`, is avoided
-    // we can bring in a liteFields hierarchical Map() indexer if needed - Map nesting avoids string concat
-    return indices.get(makeKey(dataName, depth, value)) ?? -1;
-  };
 }
