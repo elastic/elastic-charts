@@ -28,7 +28,7 @@ const getHighlightedLegendItemKey = (state: GlobalChartState) => state.interacti
 
 /** @internal */
 // why is it called highlighted... when it's a legend hover related thing, not a hover over the slices?
-export const getHighlightedSectorsSelector = createCachedSelector(
+export const legendHoverHighlightNodes = createCachedSelector(
   [getHighlightedLegendItemKey, partitionGeometries],
   (highlightedLegendItemKey, geoms): QuadViewModel[] => {
     if (!highlightedLegendItemKey) {
