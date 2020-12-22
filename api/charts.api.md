@@ -571,7 +571,7 @@ export const DEFAULT_TOOLTIP_TYPE: "vertical";
 // Warning: (ae-missing-release-tag) "DefaultSettingsProps" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'showLegend' | 'debug' | 'tooltip' | 'showLegendExtra' | 'theme' | 'legendPosition' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents';
+export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'showLegend' | 'debug' | 'tooltip' | 'showLegendExtra' | 'theme' | 'legendPosition' | 'legendMaxDepth' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents';
 
 // Warning: (ae-missing-release-tag) "Direction" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1599,7 +1599,7 @@ export interface SettingsSpec extends Spec {
     legendAction?: LegendAction;
     // (undocumented)
     legendColorPicker?: LegendColorPicker;
-    legendMaxDepth?: number;
+    legendMaxDepth: number;
     legendPosition: Position;
     minBrushDelta?: number;
     noResults?: ComponentType | ReactChild;
