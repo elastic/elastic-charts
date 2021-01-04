@@ -17,8 +17,14 @@
  * under the License.
  */
 import { Dimensions } from '../../../../utils/dimensions';
+import { RectAnnotationDatum } from '../../utils/specs';
 
+/**
+ * @internal
+ */
 export interface AnnotationRectProps {
+  specId: string;
+  datum: RectAnnotationDatum;
   rect: {
     x: number;
     y: number;
@@ -26,5 +32,4 @@ export interface AnnotationRectProps {
     height: number;
   };
   panel: Dimensions;
-  details?: string;
 }

@@ -23,6 +23,7 @@ import { isContinuousScale, isBandScale } from '../../../../scales/types';
 import { isNil, Position, Rotation } from '../../../../utils/commons';
 import { Dimensions, Size } from '../../../../utils/dimensions';
 import { GroupId } from '../../../../utils/ids';
+import { mergeWithDefaultAnnotationLine } from '../../../../utils/themes/theme';
 import { SmallMultipleScales } from '../../state/selectors/compute_small_multiple_scales';
 import { isHorizontalRotation } from '../../state/utils/common';
 import { computeXScaleOffset } from '../../state/utils/utils';
@@ -31,23 +32,23 @@ import { AnnotationDomainTypes, LineAnnotationSpec, LineAnnotationDatum } from '
 import { AnnotationMarker } from '../types';
 import { AnnotationLineProps } from './types';
 
-/** @internal */
-export const DEFAULT_LINE_OVERFLOW = 0;
-
 function computeYDomainLineAnnotationDimensions(
   annotationSpec: LineAnnotationSpec,
   yScale: Scale,
   { vertical, horizontal }: SmallMultipleScales,
   chartRotation: Rotation,
-  lineColor: string,
   axisPosition?: Position,
 ): AnnotationLineProps[] {
   const {
+    id: specId,
     dataValues,
     marker,
-    markerDimensions = { width: 0, height: 0 },
+    markerDimensions,
     markerPosition: specMarkerPosition,
+    style,
   } = annotationSpec;
+  const lineStyle = mergeWithDefaultAnnotationLine(style);
+  const lineColor = lineStyle?.line?.stroke ?? 'red';
   const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
   // let's use a default Bottom-X/Left-Y axis orientation if we are not showing an axis
   // but we are displaying a line annotation
@@ -88,24 +89,28 @@ function computeYDomainLineAnnotationDimensions(
         const markerPosition = getMarkerPositionForYAnnotation(
           panelSize,
           chartRotation,
-          markerDimensions,
           anchorPosition,
           annotationValueYPosition,
+          markerDimensions,
         );
+
         const linePathPoints = getYLinePath({ width, height }, annotationValueYPosition);
 
         const annotationMarker: AnnotationMarker | undefined = marker
           ? {
               icon: marker,
               color: lineColor,
-              dimension: { ...markerDimensions },
+              dimension: markerDimensions,
               position: {
-                top: markerPosition.top,
-                left: markerPosition.left,
+                ...markerPosition,
               },
+              alignment: anchorPosition,
             }
           : undefined;
         const lineProp: AnnotationLineProps = {
+          specId,
+          id: `${lineProps.length}`,
+          datum,
           linePathPoints,
           marker: annotationMarker,
           panel: {
@@ -113,10 +118,11 @@ function computeYDomainLineAnnotationDimensions(
             top: topPos,
             left: leftPos,
           },
-          details: {
-            detailsText: datum.details,
-            headerText: datum.header || dataValue.toString(),
-          },
+          // details: {
+          //   detailsText: datum.details,
+          //   // we should allow showing empty string as header
+          //   headerText: datum.header ?? dataValue.toString(),
+          // },
         };
 
         lineProps.push(lineProp);
@@ -132,16 +138,19 @@ function computeXDomainLineAnnotationDimensions(
   xScale: Scale,
   { vertical, horizontal }: SmallMultipleScales,
   chartRotation: Rotation,
-  lineColor: string,
   isHistogramMode: boolean,
   axisPosition?: Position,
 ): AnnotationLineProps[] {
   const {
+    id: specId,
     dataValues,
     marker,
-    markerDimensions = { width: 0, height: 0 },
+    markerDimensions,
     markerPosition: specMarkerPosition,
+    style,
   } = annotationSpec;
+  const lineStyle = mergeWithDefaultAnnotationLine(style);
+  const lineColor = lineStyle?.line?.stroke ?? 'red';
 
   const lineProps: AnnotationLineProps[] = [];
   const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
@@ -198,9 +207,9 @@ function computeXDomainLineAnnotationDimensions(
         const markerPosition = getMarkerPositionForXAnnotation(
           panelSize,
           chartRotation,
-          markerDimensions,
           anchorPosition,
           annotationValueXPosition,
+          markerDimensions,
         );
 
         const linePathPoints = getXLinePath({ width, height }, annotationValueXPosition);
@@ -209,19 +218,23 @@ function computeXDomainLineAnnotationDimensions(
           ? {
               icon: marker,
               color: lineColor,
-              dimension: { ...markerDimensions },
+              dimension: markerDimensions,
               position: {
-                top: markerPosition.top,
-                left: markerPosition.left,
+                ...markerPosition,
               },
+              alignment: anchorPosition,
             }
           : undefined;
         const lineProp: AnnotationLineProps = {
+          specId,
+          id: `${lineProps.length}`,
+          datum,
           linePathPoints,
-          details: {
-            detailsText: datum.details,
-            headerText: datum.header || dataValue.toString(),
-          },
+          // details: {
+          //   detailsText: datum.details,
+          //   // we should allow showing empty string as header
+          //   headerText: datum.header ?? dataValue.toString(),
+          // },
           marker: annotationMarker,
           panel: {
             ...panelSize,
@@ -253,17 +266,12 @@ export function computeLineAnnotationDimensions(
     return null;
   }
 
-  // this type is guaranteed as this has been merged with default
-  const lineStyle = annotationSpec.style;
-  const lineColor = lineStyle?.line?.stroke ?? 'red';
-
   if (domainType === AnnotationDomainTypes.XDomain) {
     return computeXDomainLineAnnotationDimensions(
       annotationSpec,
       xScale,
       smallMultipleScales,
       chartRotation,
-      lineColor,
       isHistogramMode,
       axisPosition,
     );
@@ -280,7 +288,6 @@ export function computeLineAnnotationDimensions(
     yScale,
     smallMultipleScales,
     chartRotation,
-    lineColor,
     axisPosition,
   );
 }
@@ -343,9 +350,9 @@ function getYLinePath({ width }: Size, value: number): Line {
 export function getMarkerPositionForXAnnotation(
   { width, height }: Size,
   rotation: Rotation,
-  { width: mWidth, height: mHeight }: Size,
   position: Position,
   value: number,
+  { width: mWidth, height: mHeight }: Size = { width: 0, height: 0 },
 ): Pick<Dimensions, 'top' | 'left'> {
   switch (position) {
     case Position.Right:
@@ -375,13 +382,10 @@ export function getMarkerPositionForXAnnotation(
 function getMarkerPositionForYAnnotation(
   { width, height }: Size,
   rotation: Rotation,
-  { width: mWidth, height: mHeight }: Size,
   position: Position,
   value: number,
-): {
-  top: number;
-  left: number;
-} {
+  { width: mWidth, height: mHeight }: Size = { width: 0, height: 0 },
+): Pick<Dimensions, 'top' | 'left'> {
   switch (position) {
     case Position.Right:
       return {

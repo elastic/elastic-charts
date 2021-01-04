@@ -51,3 +51,8 @@ class ResizeObserverMock {
 
 // @ts-ignore
 window.ResizeObserver = ResizeObserverMock;
+
+// Some tests will fail due to undefined Path2D, this mock doesn't create issues on test env
+class Path2D {}
+// @ts-ignore
+window.Path2D = Path2D;

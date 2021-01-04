@@ -19,7 +19,9 @@
 
 import createCachedSelector from 're-reselect';
 
+import { TooltipPortalSettings } from '../../../../components/portal/types';
 import { TooltipInfo } from '../../../../components/tooltip/types';
+import { DOMElement } from '../../../../state/actions/dom_element';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
@@ -27,9 +29,10 @@ import { Rotation } from '../../../../utils/commons';
 import { Dimensions } from '../../../../utils/dimensions';
 import { AnnotationId } from '../../../../utils/ids';
 import { Point } from '../../../../utils/point';
-import { computeAnnotationTooltipState } from '../../annotations/tooltip';
+import { AnnotationLineProps } from '../../annotations/line/types';
+import { computeRectAnnotationTooltipState } from '../../annotations/tooltip';
 import { AnnotationTooltipState, AnnotationDimensions } from '../../annotations/types';
-import { AxisSpec, AnnotationSpec, AnnotationTypes } from '../../utils/specs';
+import { AxisSpec, AnnotationSpec, AnnotationTypes, LineAnnotationDatum } from '../../utils/specs';
 import { ComputedGeometries } from '../utils/types';
 import { computeAnnotationDimensionsSelector } from './compute_annotations';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
@@ -38,6 +41,7 @@ import { getAxisSpecsSelector, getAnnotationSpecsSelector } from './get_specs';
 import { getTooltipInfoSelector } from './get_tooltip_values_highlighted_geoms';
 
 const getCurrentPointerPosition = (state: GlobalChartState) => state.interactions.pointer.current.position;
+const getHoveredDOMElement = (state: GlobalChartState) => state.interactions.hoveredDOMElement;
 
 /** @internal */
 export const getAnnotationTooltipStateSelector = createCachedSelector(
@@ -50,6 +54,7 @@ export const getAnnotationTooltipStateSelector = createCachedSelector(
     getAxisSpecsSelector,
     computeAnnotationDimensionsSelector,
     getTooltipInfoSelector,
+    getHoveredDOMElement,
   ],
   getAnnotationTooltipState,
 )(getChartIdSelector);
@@ -67,7 +72,17 @@ function getAnnotationTooltipState(
   axesSpecs: AxisSpec[],
   annotationDimensions: Map<AnnotationId, AnnotationDimensions>,
   tooltip: TooltipInfo,
+  hoveredDOMElement: DOMElement | null,
 ): AnnotationTooltipState | null {
+  const hoveredTooltip = getTooltipStateForDOMElements(
+    chartDimensions,
+    annotationSpecs,
+    annotationDimensions,
+    hoveredDOMElement,
+  );
+  if (hoveredTooltip) {
+    return hoveredTooltip;
+  }
   // get positions relative to chart
   if (cursorPosition.x < 0 || cursorPosition.y < 0) {
     return null;
@@ -77,7 +92,7 @@ function getAnnotationTooltipState(
   if (!xScale || !yScales) {
     return null;
   }
-  const tooltipState = computeAnnotationTooltipState(
+  const tooltipState = computeRectAnnotationTooltipState(
     cursorPosition,
     annotationDimensions,
     annotationSpecs,
@@ -98,4 +113,55 @@ function getAnnotationTooltipState(
   }
 
   return tooltipState;
+}
+
+function getTooltipSettings({
+  placement,
+  fallbackPlacements,
+  boundary,
+  offset,
+}: AnnotationSpec): TooltipPortalSettings<'chart'> {
+  return {
+    placement,
+    fallbackPlacements,
+    boundary,
+    offset,
+  };
+}
+
+function getTooltipStateForDOMElements(
+  chartDimensions: Dimensions,
+  annotationSpecs: AnnotationSpec[],
+  annotationDimensions: Map<AnnotationId, AnnotationDimensions>,
+  hoveredDOMElement: DOMElement | null,
+): AnnotationTooltipState | null {
+  if (!hoveredDOMElement) {
+    return null;
+  }
+  const spec = annotationSpecs.find(({ id }) => id === hoveredDOMElement.createdBySpecId);
+  if (!spec || spec.hideTooltips) {
+    return null;
+  }
+  const annotations = annotationDimensions.get(hoveredDOMElement.createdBySpecId);
+  const annDims = (annotations as AnnotationLineProps[]).find((d) => {
+    return d.id === hoveredDOMElement.id && d.datum === hoveredDOMElement.datum;
+  });
+
+  if (!annDims) {
+    return null;
+  }
+  // current type for hoveredDOMElement is only used for line annotation markers
+  return {
+    isVisible: true,
+    annotationType: AnnotationTypes.Line,
+    datum: hoveredDOMElement.datum as LineAnnotationDatum,
+    anchor: {
+      position: undefined,
+      top: (annDims.marker?.position.top ?? 0) + annDims.panel.top + chartDimensions.top,
+      left: (annDims.marker?.position.left ?? 0) + annDims.panel.left + chartDimensions.left,
+    },
+    customTooltipDetails: spec.customTooltipDetails,
+    customTooltip: spec.customTooltip,
+    tooltipSettings: getTooltipSettings(spec),
+  };
 }

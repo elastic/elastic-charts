@@ -27,8 +27,7 @@ import { XYAxisChartState } from '../chart_types/xy_chart/state/chart_state';
 import { LegendItem, LegendItemExtraValues } from '../commons/legend';
 import { SeriesKey, SeriesIdentifier } from '../commons/series_id';
 import { TooltipInfo, TooltipAnchorPosition } from '../components/tooltip/types';
-import { Spec, PointerEvent } from '../specs';
-import { DEFAULT_SETTINGS_SPEC } from '../specs';
+import { Spec, PointerEvent, DEFAULT_SETTINGS_SPEC } from '../specs';
 import { Color } from '../utils/commons';
 import { Dimensions } from '../utils/dimensions';
 import { Logger } from '../utils/logger';
@@ -37,6 +36,7 @@ import { StateActions } from './actions';
 import { CHART_RENDERED } from './actions/chart';
 import { UPDATE_PARENT_DIMENSION } from './actions/chart_settings';
 import { SET_PERSISTED_COLOR, SET_TEMPORARY_COLOR, CLEAR_TEMPORARY_COLORS } from './actions/colors';
+import { DOMElement } from './actions/dom_element';
 import { EXTERNAL_POINTER_EVENT } from './actions/events';
 import { SPEC_PARSED, SPEC_UNMOUNTED, UPSERT_SPEC, REMOVE_SPEC } from './actions/specs';
 import { interactionsReducer } from './reducers/interactions';
@@ -182,6 +182,7 @@ export interface InteractionsState {
   highlightedLegendItemKey: string | null;
   legendCollapsed: boolean;
   deselectedDataSeries: SeriesIdentifier[];
+  hoveredDOMElement: DOMElement | null;
 }
 
 /** @internal */
@@ -265,6 +266,7 @@ export const getInitialState = (chartId: string): GlobalChartState => ({
     legendCollapsed: false,
     highlightedLegendItemKey: null,
     deselectedDataSeries: [],
+    hoveredDOMElement: null,
   },
   externalEvents: {
     pointer: null,

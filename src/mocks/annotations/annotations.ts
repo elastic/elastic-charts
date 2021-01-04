@@ -24,6 +24,8 @@ import { mergePartial, RecursivePartial } from '../../utils/commons';
 /** @internal */
 export class MockAnnotationLineProps {
   private static readonly base: AnnotationLineProps = {
+    id: '0',
+    specId: 'spec1',
     linePathPoints: {
       x1: 0,
       y1: 0,
@@ -31,7 +33,7 @@ export class MockAnnotationLineProps {
       y2: 0,
     },
     panel: { top: 0, left: 0, width: 100, height: 100 },
-    details: {},
+    datum: { dataValue: 0 },
   };
 
   static default(partial?: RecursivePartial<AnnotationLineProps>) {
@@ -55,6 +57,8 @@ export class MockAnnotationLineProps {
 /** @internal */
 export class MockAnnotationRectProps {
   private static readonly base: AnnotationRectProps = {
+    specId: 'spec1',
+    datum: { coordinates: { x0: 0, x1: 1, y0: 0, y1: 1 } },
     rect: {
       x: 0,
       y: 0,

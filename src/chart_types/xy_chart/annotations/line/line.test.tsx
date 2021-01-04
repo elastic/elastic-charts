@@ -83,13 +83,13 @@ describe('annotation marker', () => {
           x2: 100,
           y2: 80,
         },
-        details: { detailsText: 'foo', headerText: '2' },
-
+        specId: 'foo-line',
+        datum: { dataValue: 2, details: 'foo' },
         marker: {
           icon: <div />,
           color: '#777',
-          dimension: { width: 0, height: 0 },
           position: { left: -0, top: 80 },
+          alignment: 'left',
         },
       }),
     ];
@@ -121,12 +121,13 @@ describe('annotation marker', () => {
           x2: 100,
           y2: 80,
         },
-        details: { detailsText: 'foo', headerText: '2' },
+        specId: 'foo-line',
+        datum: { dataValue: 2, details: 'foo' },
         marker: {
           icon: <div />,
           color: '#777',
-          dimension: { width: 0, height: 0 },
           position: { left: -0, top: 20 },
+          alignment: 'left',
         },
       }),
     ];
@@ -148,7 +149,8 @@ describe('annotation marker', () => {
 
     const expectedDimensions: AnnotationLineProps[] = [
       MockAnnotationLineProps.default({
-        details: { detailsText: 'foo', headerText: '2' },
+        specId: 'foo-line',
+        datum: { dataValue: 2, details: 'foo' },
         linePathPoints: {
           x1: 20,
           y1: 0,
@@ -158,8 +160,8 @@ describe('annotation marker', () => {
         marker: {
           icon: <div />,
           color: '#777',
-          dimension: { width: 0, height: 0 },
           position: { top: 100, left: 20 },
+          alignment: 'bottom',
         },
       }),
     ];
