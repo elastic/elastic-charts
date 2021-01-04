@@ -45,7 +45,7 @@ export function computeRectAnnotationDimensions(
   smallMultiplesScales: SmallMultipleScales,
   isHistogram: boolean = false,
 ): AnnotationRectProps[] | null {
-  const { id, dataValues, groupId } = annotationSpec;
+  const { dataValues, groupId } = annotationSpec;
   const yScale = yScales.get(groupId);
 
   const rectsProps: Omit<AnnotationRectProps, 'panel'>[] = [];
@@ -85,7 +85,6 @@ export function computeRectAnnotationDimensions(
         };
 
         rectsProps.push({
-          specId: id,
           rect: rectDimensions,
           datum,
         });
@@ -119,7 +118,6 @@ export function computeRectAnnotationDimensions(
     };
 
     rectsProps.push({
-      specId: id,
       rect: rectDimensions,
       datum,
     });

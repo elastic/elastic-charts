@@ -118,11 +118,6 @@ function computeYDomainLineAnnotationDimensions(
             top: topPos,
             left: leftPos,
           },
-          // details: {
-          //   detailsText: datum.details,
-          //   // we should allow showing empty string as header
-          //   headerText: datum.header ?? dataValue.toString(),
-          // },
         };
 
         lineProps.push(lineProp);
@@ -230,11 +225,6 @@ function computeXDomainLineAnnotationDimensions(
           id: `${lineProps.length}`,
           datum,
           linePathPoints,
-          // details: {
-          //   detailsText: datum.details,
-          //   // we should allow showing empty string as header
-          //   headerText: datum.header ?? dataValue.toString(),
-          // },
           marker: annotationMarker,
           panel: {
             ...panelSize,

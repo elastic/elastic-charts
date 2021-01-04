@@ -23,7 +23,6 @@ import { RectAnnotationDatum } from '../../utils/specs';
  * @internal
  */
 export interface AnnotationRectProps {
-  specId: string;
   datum: RectAnnotationDatum;
   rect: {
     x: number;

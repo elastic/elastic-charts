@@ -115,6 +115,48 @@ function getAnnotationTooltipState(
   return tooltipState;
 }
 
+function getTooltipStateForDOMElements(
+  chartDimensions: Dimensions,
+  annotationSpecs: AnnotationSpec[],
+  annotationDimensions: Map<AnnotationId, AnnotationDimensions>,
+  hoveredDOMElement: DOMElement | null,
+): AnnotationTooltipState | null {
+  if (!hoveredDOMElement) {
+    return null;
+  }
+  // current type for hoveredDOMElement is only used for line annotation markers
+  // and we can safety cast the union types to the respective Line types
+  const spec = annotationSpecs.find(({ id }) => id === hoveredDOMElement.createdBySpecId);
+  if (!spec || spec.hideTooltips) {
+    return null;
+  }
+  const annotations = annotationDimensions.get(hoveredDOMElement.createdBySpecId);
+  if (!annotations) {
+    return null;
+  }
+  const dimension = (annotations as AnnotationLineProps[]).find((d) => {
+    return d.id === hoveredDOMElement.id && d.datum === hoveredDOMElement.datum;
+  });
+
+  if (!dimension) {
+    return null;
+  }
+
+  return {
+    isVisible: true,
+    annotationType: AnnotationTypes.Line,
+    datum: hoveredDOMElement.datum as LineAnnotationDatum,
+    anchor: {
+      position: undefined,
+      top: (dimension.marker?.position.top ?? 0) + dimension.panel.top + chartDimensions.top,
+      left: (dimension.marker?.position.left ?? 0) + dimension.panel.left + chartDimensions.left,
+    },
+    customTooltipDetails: spec.customTooltipDetails,
+    customTooltip: spec.customTooltip,
+    tooltipSettings: getTooltipSettings(spec),
+  };
+}
+
 function getTooltipSettings({
   placement,
   fallbackPlacements,
@@ -126,42 +168,5 @@ function getTooltipSettings({
     fallbackPlacements,
     boundary,
     offset,
-  };
-}
-
-function getTooltipStateForDOMElements(
-  chartDimensions: Dimensions,
-  annotationSpecs: AnnotationSpec[],
-  annotationDimensions: Map<AnnotationId, AnnotationDimensions>,
-  hoveredDOMElement: DOMElement | null,
-): AnnotationTooltipState | null {
-  if (!hoveredDOMElement) {
-    return null;
-  }
-  const spec = annotationSpecs.find(({ id }) => id === hoveredDOMElement.createdBySpecId);
-  if (!spec || spec.hideTooltips) {
-    return null;
-  }
-  const annotations = annotationDimensions.get(hoveredDOMElement.createdBySpecId);
-  const annDims = (annotations as AnnotationLineProps[]).find((d) => {
-    return d.id === hoveredDOMElement.id && d.datum === hoveredDOMElement.datum;
-  });
-
-  if (!annDims) {
-    return null;
-  }
-  // current type for hoveredDOMElement is only used for line annotation markers
-  return {
-    isVisible: true,
-    annotationType: AnnotationTypes.Line,
-    datum: hoveredDOMElement.datum as LineAnnotationDatum,
-    anchor: {
-      position: undefined,
-      top: (annDims.marker?.position.top ?? 0) + annDims.panel.top + chartDimensions.top,
-      left: (annDims.marker?.position.left ?? 0) + annDims.panel.left + chartDimensions.left,
-    },
-    customTooltipDetails: spec.customTooltipDetails,
-    customTooltip: spec.customTooltip,
-    tooltipSettings: getTooltipSettings(spec),
   };
 }
