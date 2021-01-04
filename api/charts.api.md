@@ -428,9 +428,11 @@ export const CurveType: Readonly<{
 export type CurveType = $Values<typeof CurveType>;
 
 // @public (undocumented)
-export type CustomAnnotationTooltip = ComponentType<{
+export type 
+= ComponentType<{
     header?: string;
     details?: string;
+    datum: LineAnnotationDatum | RectAnnotationDatum;
 }> | null;
 
 // @public
