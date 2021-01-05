@@ -82,8 +82,8 @@
     "@babel/polyfill": "^7.10.4",
     "@babel/preset-env": "^7.10.4",
     "@babel/preset-react": "^7.10.4",
-    "@commitlint/cli": "^9.1.2",
-    "@commitlint/config-conventional": "^9.1.2",
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
     "@elastic/datemath": "^5.0.2",
     "@elastic/eui": "^27.0.0",
     "@elastic/github-checks-reporter": "^0.0.20-b3",
@@ -138,7 +138,7 @@
     "@typescript-eslint/parser": "^4.12.0",
     "autoprefixer": "^9.8.4",
     "babel-loader": "^8.1.0",
-    "backport": "^4.8.0",
+    "backport": "^5.6.1",
     "canvas": "^2.6.1",
     "chromedriver": "^80.0.0",
     "circular-dependency-plugin": "^5.2.0",
@@ -164,7 +164,7 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-unicorn": "^25.0.1",
     "geckodriver": "^1.19.1",
-    "husky": "^3.1.0",
+    "husky": "^4.3.6",
     "jest": "^26.6.3",
     "jest-extended": "^0.11.5",
     "jest-image-snapshot": "^4.3.0",
@@ -198,7 +198,7 @@
     "style-loader": "^1.2.1",
     "ts-jest": "^26.4.4",
     "ts-loader": "^7.0.5",
-    "ts-prune": "^0.3.0",
+    "ts-prune": "^0.8.4",
     "typescript": "^3.7.2",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.12",
@@ -220,7 +220,7 @@
     "refractor": "~3.1.0"
   },
   "engines": {
-    "node": ">=10.19",
+    "node": ">=10.23",
     "yarn": "^1.10.1"
   },
   "browserslist": [
