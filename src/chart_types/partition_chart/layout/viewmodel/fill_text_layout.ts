@@ -391,7 +391,7 @@ function fill<C>(
     leftAlign: boolean,
     middleAlign: boolean,
   ) {
-    const { maxRowCount, fillLabel, fontFamily: configFontFamily } = config;
+    const { maxRowCount, fillLabel } = config;
     return (allFontSizes: Pixels[][], textFillOrigin: PointTuple, node: QuadViewModel): RowSet => {
       const container = shapeConstructor(node);
       const rotation = getRotation(node);
@@ -415,9 +415,6 @@ function fill<C>(
         textContrast,
         textOpacity,
       } = {
-        fontFamily: configFontFamily,
-        fontWeight: 'normal',
-        padding: 2,
         ...fillLabel,
         valueFormatter: formatter,
         ...layer.fillLabel,
@@ -432,8 +429,6 @@ function fill<C>(
       );
 
       const valueFont = {
-        fontFamily: configFontFamily,
-        fontWeight: 'normal',
         ...fillLabel,
         ...fillLabel.valueFont,
         ...layer.fillLabel,
