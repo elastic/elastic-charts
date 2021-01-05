@@ -288,6 +288,16 @@ export interface LegendColorPickerProps {
 }
 export type LegendColorPicker = ComponentType<LegendColorPickerProps>;
 
+export interface DataTableProps {
+  // dataTable: ComponentType<string>;
+  /**
+   * Whether to show the data table for screen readers
+   */
+  showDataTable: boolean;
+}
+
+export type DataTable = DataTableProps;
+
 /**
  * Buffer between cursor and point to trigger interaction
  */
@@ -431,7 +441,7 @@ export interface SettingsSpec extends Spec {
   /**
    * Optional data table generated for screen readers, defaults to false
    */
-  haveDataTable: boolean;
+  dataTable?: DataTable;
 }
 
 /**
@@ -461,8 +471,7 @@ export type DefaultSettingsProps =
   | 'hideDuplicateAxes'
   | 'brushAxis'
   | 'minBrushDelta'
-  | 'externalPointerEvents'
-  | 'haveDataTable';
+  | 'externalPointerEvents';
 
 export type SettingsSpecProps = Partial<Omit<SettingsSpec, 'chartType' | 'specType' | 'id'>>;
 

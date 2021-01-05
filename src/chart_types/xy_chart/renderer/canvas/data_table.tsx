@@ -32,23 +32,38 @@ export interface ReactiveDataTableProps {
 class XYDataTableComponent extends React.Component<ReactiveDataTableProps> {
   static displayName = 'text alternative data table';
 
-  renderDataAsTable(data: Geometries) {
-    // check if the values in the keys are not an empty array
+  getKey = (data: Geometries) => {
     const entries = Object.values(data);
-    const entriesWithValues = entries
+
+    return entries
       .filter((a) => a.length !== 0)[0][0]
-      .value.map((value: any) => Object.values(value.value.datum));
-    return entriesWithValues;
-  }
+      .value.map((value: any) => {
+        return Object.entries(value.value.datum).map((val) => {
+          return (
+            <button type="button" key={Math.random()} aria-label={`value ${val[0]} amount ${val[1]}`}>
+              {`${val[0]}: ${val[1]}`}
+            </button>
+          );
+        });
+      });
+  };
+
+  // getValue(data: Geometries) {
+  //   const entries = Object.values(data);
+
+  //   return entries
+  //     .filter((a) => a.length !== 0)[0][0]
+  //     .value.map((value: any) => {
+  //       return Object.entries(value.value.datum).map((val) => {
+  //         return val[1];
+  //       });
+  //     });
+  // }
 
   render() {
     const { dataTableGeometries } = this.props;
-
-    return (
-      <span className="data-table" role="table">
-        {this.renderDataAsTable(dataTableGeometries)}
-      </span>
-    );
+    const classNames = 'screen-reader echChart';
+    return <div className={classNames}>{this.getKey(dataTableGeometries)}</div>;
   }
 }
 

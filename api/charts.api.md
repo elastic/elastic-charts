@@ -494,6 +494,18 @@ export interface DataSeriesDatum<T = any> {
     y1: number | null;
 }
 
+// Warning: (ae-missing-release-tag) "DataTable" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type DataTable = DataTableProps;
+
+// Warning: (ae-missing-release-tag) "DataTableProps" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface DataTableProps {
+    showDataTable: boolean;
+}
+
 // @public (undocumented)
 export type Datum = any;
 
@@ -1589,6 +1601,7 @@ export interface SettingsSpec extends Spec {
     animateData: boolean;
     baseTheme?: Theme;
     brushAxis?: BrushAxis;
+    dataTable?: DataTable;
     debug: boolean;
     // @alpha
     debugState?: boolean;
