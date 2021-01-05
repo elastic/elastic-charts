@@ -482,7 +482,7 @@ function tryFontSize<C>(
   boxes: Box[],
   maxRowCount: number,
 ) {
-  return function(initialRowSet: RowSet, fontSize: Pixels): { rowSet: RowSet; completed: boolean } {
+  return function (initialRowSet: RowSet, fontSize: Pixels): { rowSet: RowSet; completed: boolean } {
     let rowSet: RowSet = initialRowSet;
 
     const wordSpacing = getWordSpacing(fontSize);

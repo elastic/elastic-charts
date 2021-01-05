@@ -18,6 +18,7 @@
  */
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable jest/no-conditional-expect */
+
 import { Store } from 'redux';
 
 import { ChartTypes } from '../..';

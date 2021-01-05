@@ -77,7 +77,7 @@ const TooltipComponent = ({
 
   const handleScroll = () => {
     // TODO: handle scroll cursor update
-    onPointerMove({ x: -1, y: -1 }, new Date().getTime());
+    onPointerMove({ x: -1, y: -1 }, Date.now());
   };
 
   useEffect(() => {

@@ -74,8 +74,11 @@ export class Chart extends React.Component<ChartProps, ChartState> {
   };
 
   private unsubscribeToStore: Unsubscribe;
+
   private chartStore: Store<GlobalChartState>;
+
   private chartContainerRef: React.RefObject<HTMLDivElement>;
+
   private chartStageRef: React.RefObject<HTMLCanvasElement>;
 
   constructor(props: ChartProps) {
@@ -113,6 +116,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
   }
 
   getPNGSnapshot(
+    // eslint-disable-next-line unicorn/no-object-as-default-parameter
     options = {
       backgroundColor: 'transparent',
       pixelRatio: 2,

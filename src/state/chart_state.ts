@@ -27,8 +27,7 @@ import { XYAxisChartState } from '../chart_types/xy_chart/state/chart_state';
 import { LegendItem, LegendItemExtraValues } from '../commons/legend';
 import { SeriesKey, SeriesIdentifier } from '../commons/series_id';
 import { TooltipInfo, TooltipAnchorPosition } from '../components/tooltip/types';
-import { Spec, PointerEvent } from '../specs';
-import { DEFAULT_SETTINGS_SPEC } from '../specs';
+import { Spec, PointerEvent, DEFAULT_SETTINGS_SPEC } from '../specs';
 import { Color } from '../utils/commons';
 import { Dimensions } from '../utils/dimensions';
 import { Logger } from '../utils/logger';
@@ -180,7 +179,6 @@ export interface PointerStates {
 export interface InteractionsState {
   pointer: PointerStates;
   highlightedLegendItemKey: string | null;
-  legendCollapsed: boolean;
   deselectedDataSeries: SeriesIdentifier[];
 }
 
@@ -262,7 +260,6 @@ export const getInitialState = (chartId: string): GlobalChartState => ({
   internalChartState: null,
   interactions: {
     pointer: getInitialPointerState(),
-    legendCollapsed: false,
     highlightedLegendItemKey: null,
     deselectedDataSeries: [],
   },
