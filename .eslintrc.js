@@ -334,7 +334,7 @@ module.exports = {
         'prefer-destructuring': [
           'warn',
           {
-            array: true,
+            array: false,
             object: true,
           },
           {

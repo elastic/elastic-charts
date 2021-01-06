@@ -57,7 +57,10 @@ interface MapNode extends NodeDescriptor {
 
 export type PrimitiveValue = string | number | null; // there could be more but sufficient for now
 type Key = PrimitiveValue;
-type Sorter = (a: number, b: number) => number;
+
+/** @internal */
+export type Sorter = (a: number, b: number) => number;
+
 type NodeSorter = (a: ArrayEntry, b: ArrayEntry) => number;
 
 export const entryKey = ([key]: ArrayEntry) => key;
@@ -145,9 +148,9 @@ function getRootArrayNode(): ArrayNode {
 }
 
 /** @internal */
-export function mapsToArrays(root: HierarchyOfMaps, sorter: NodeSorter): HierarchyOfArrays {
-  const groupByMap = (node: HierarchyOfMaps, parent: ArrayNode) =>
-    Array.from(
+export function mapsToArrays(root: HierarchyOfMaps, sorter: NodeSorter | null): HierarchyOfArrays {
+  const groupByMap = (node: HierarchyOfMaps, parent: ArrayNode) => {
+    const items = Array.from(
       node,
       ([key, value]: [Key, MapNode]): ArrayEntry => {
         const valueElement = value[CHILDREN_KEY];
@@ -168,12 +171,15 @@ export function mapsToArrays(root: HierarchyOfMaps, sorter: NodeSorter): Hierarc
         );
         return [key, newValue];
       },
-    )
-      .sort(sorter)
-      .map((n: ArrayEntry, i) => {
-        entryValue(n).sortIndex = i;
-        return n;
-      }); // with the current algo, decreasing order is important
+    );
+    if (sorter !== null) {
+      items.sort(sorter);
+    }
+    return items.map((n: ArrayEntry, i) => {
+      entryValue(n).sortIndex = i;
+      return n;
+    });
+  }; // with the current algo, decreasing order is important
   const tree = groupByMap(root, getRootArrayNode());
   const buildPaths = ([, mapNode]: ArrayEntry, currentPath: number[]) => {
     const newPath = [...currentPath, mapNode[SORT_INDEX_KEY]];

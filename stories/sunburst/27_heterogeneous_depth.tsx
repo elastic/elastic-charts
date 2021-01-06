@@ -68,7 +68,7 @@ export const Example = () => (
         },
       ]}
       config={{
-        partitionLayout: PartitionLayout.sunburst,
+        partitionLayout: PartitionLayout.icicle,
         linkLabel: {
           maxCount: 0,
           fontSize: 14,

@@ -149,9 +149,9 @@ export interface RectangleConstruction {
   y1: Pixels;
 }
 
-function rectangleConstruction(treeHeight: number, topGroove: number) {
+function rectangleConstruction(treeHeight: number, topGroove: number | null) {
   return function rectangleConstructionClosure(node: ShapeTreeNode): RectangleConstruction {
-    return node.depth < treeHeight
+    return node.depth < treeHeight && topGroove
       ? {
           x0: node.x0,
           y0: node.y0px,
@@ -175,6 +175,7 @@ const rawChildNodes = (
   height: number,
   clockwiseSectors: boolean,
   specialFirstInnermostSector: boolean,
+  maxDepth: number,
 ): Array<Part> => {
   const totalValue = tree.reduce((p: number, n: ArrayEntry): number => p + mapEntryValue(n), 0);
   switch (partitionLayout) {
@@ -193,6 +194,32 @@ const rawChildNodes = (
         width,
         height,
       });
+
+    case PartitionLayout.icicle:
+      const icicleValueToAreaScale = width / totalValue;
+      const icicleAreaAccessor = (e: ArrayEntry) => icicleValueToAreaScale * mapEntryValue(e);
+      const rowHeight = height / maxDepth;
+      return sunburst(
+        tree,
+        icicleAreaAccessor,
+        { x0: -width / 2, y0: -height / 2 - rowHeight },
+        true,
+        false,
+        height / maxDepth,
+      );
+
+    case PartitionLayout.flame:
+      const flameValueToAreaScale = width / totalValue;
+      const flameAreaAccessor = (e: ArrayEntry) => flameValueToAreaScale * mapEntryValue(e);
+      const flameRowHeight = height / maxDepth;
+      return sunburst(
+        tree,
+        flameAreaAccessor,
+        { x0: -width / 2, y0: -height / 2 - flameRowHeight },
+        true,
+        false,
+        height / maxDepth,
+      );
 
     default:
       // Let's ensure TS complains if we add a new PartitionLayout type in the future without creating a `case` for it
@@ -243,7 +270,12 @@ export function shapeViewModel(
   }
 
   const treemapLayout = partitionLayout === PartitionLayout.treemap;
-
+  const sunburstLayout = partitionLayout === PartitionLayout.sunburst;
+  const icicleLayout = partitionLayout === PartitionLayout.icicle;
+  const flameLayout = partitionLayout === PartitionLayout.flame;
+  const longestPath = ([, { children, path }]: ArrayEntry): number =>
+    children.length > 0 ? children.reduce((p, n) => Math.max(p, longestPath(n)), 0) : path.length;
+  const maxDepth = longestPath(tree[0]);
   const childNodes = rawChildNodes(
     partitionLayout,
     tree,
@@ -252,6 +284,7 @@ export function shapeViewModel(
     height,
     clockwiseSectors,
     specialFirstInnermostSector,
+    maxDepth,
   );
 
   const shownChildNodes = childNodes.filter((n: Part) => {
@@ -266,7 +299,7 @@ export function shapeViewModel(
   const innerRadius: Radius = outerRadius - (1 - emptySizeRatio) * outerRadius;
   const treeHeight = shownChildNodes.reduce((p: number, n: Part) => Math.max(p, entryValue(n.node).depth), 0); // 1: pie, 2: two-ring donut etc.
   const ringThickness = (outerRadius - innerRadius) / treeHeight;
-  const partToShapeFn = partToShapeTreeNode(treemapLayout, innerRadius, ringThickness);
+  const partToShapeFn = partToShapeTreeNode(!sunburstLayout, innerRadius, ringThickness);
   const quadViewModel = makeQuadViewModel(
     shownChildNodes.slice(1).map(partToShapeFn),
     layers,
@@ -277,31 +310,34 @@ export function shapeViewModel(
   // fill text
   const roomCondition = (n: ShapeTreeNode) => {
     const diff = n.x1 - n.x0;
-    return treemapLayout
+    return treemapLayout || icicleLayout || flameLayout
       ? n.x1 - n.x0 > minFontSize && n.y1px - n.y0px > minFontSize
       : (diff < 0 ? TAU + diff : diff) * ringSectorMiddleRadius(n) > Math.max(minFontSize, linkLabel.maximumSection);
   };
 
   const nodesWithRoom = quadViewModel.filter(roomCondition);
-  const outsideFillNodes = fillOutside && !treemapLayout ? nodesWithRoom : [];
+  const outsideFillNodes = fillOutside && !treemapLayout && !icicleLayout && !flameLayout ? nodesWithRoom : [];
 
-  const textFillOrigins = nodesWithRoom.map(treemapLayout ? rectangleFillOrigins : sectorFillOrigins(fillOutside));
+  const textFillOrigins = nodesWithRoom.map(
+    treemapLayout || icicleLayout || flameLayout ? rectangleFillOrigins : sectorFillOrigins(fillOutside),
+  );
 
   const valueFormatter = valueGetter === percentValueGetter ? specifiedPercentFormatter : specifiedValueFormatter;
 
-  const getRowSets = treemapLayout
-    ? fillTextLayout(
-        rectangleConstruction(treeHeight, topGroove),
-        getRectangleRowGeometry,
-        () => 0,
-        containerBackgroundColor,
-      )
-    : fillTextLayout(
-        ringSectorConstruction(config, innerRadius, ringThickness),
-        getSectorRowGeometry,
-        inSectorRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
-        containerBackgroundColor,
-      );
+  const getRowSets =
+    treemapLayout || icicleLayout || flameLayout
+      ? fillTextLayout(
+          rectangleConstruction(treeHeight, treemapLayout ? topGroove : null),
+          getRectangleRowGeometry,
+          () => 0,
+          containerBackgroundColor,
+        )
+      : fillTextLayout(
+          ringSectorConstruction(config, innerRadius, ringThickness),
+          getSectorRowGeometry,
+          inSectorRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
+          containerBackgroundColor,
+        );
 
   const rowSets: RowSet[] = getRowSets(
     textMeasure,
@@ -312,7 +348,7 @@ export function shapeViewModel(
     config,
     layers,
     textFillOrigins,
-    treemapLayout,
+    !sunburstLayout,
     !treemapLayout,
   );
 
@@ -323,7 +359,7 @@ export function shapeViewModel(
   const currentY = [-height, -height, -height, -height];
 
   const nodesWithoutRoom =
-    fillOutside || treemapLayout
+    fillOutside || treemapLayout || icicleLayout || flameLayout
       ? [] // outsideFillNodes and linkLabels are in inherent conflict due to very likely overlaps
       : quadViewModel.filter((n: ShapeTreeNode) => {
           const id = nodeId(n);
@@ -350,7 +386,7 @@ export function shapeViewModel(
 
   const pickQuads: PickFunction = (x, y) =>
     quadViewModel.filter(
-      treemapLayout
+      treemapLayout || icicleLayout || flameLayout
         ? ({ x0, y0, x1, y1 }) => x0 <= x && x <= x1 && y0 <= y && y <= y1
         : ({ x0, y0px, x1, y1px }) => {
             const angleX = (Math.atan2(y, x) + TAU / 4 + TAU) % TAU;

@@ -266,9 +266,9 @@ export function renderPartitionCanvas2d(
 
       // bottom layer: sectors (pie slices, ring sectors etc.)
       (ctx: CanvasRenderingContext2D) =>
-        config.partitionLayout === PartitionLayout.treemap
-          ? renderRectangles(ctx, quadViewModel)
-          : renderSectors(ctx, quadViewModel),
+        config.partitionLayout === PartitionLayout.sunburst
+          ? renderSectors(ctx, quadViewModel)
+          : renderRectangles(ctx, quadViewModel),
 
       // all the fill-based, potentially multirow text, whether inside or outside the sector
       (ctx: CanvasRenderingContext2D) => renderRowSets(ctx, rowSets, linkLineColor),
