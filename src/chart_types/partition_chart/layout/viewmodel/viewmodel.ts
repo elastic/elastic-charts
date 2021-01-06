@@ -167,6 +167,41 @@ function rectangleConstruction(treeHeight: number, topGroove: number) {
   };
 }
 
+const rawChildNodes = (
+  partitionLayout: PartitionLayout,
+  tree: HierarchyOfArrays,
+  topGroove: number,
+  width: number,
+  height: number,
+  clockwiseSectors: boolean,
+  specialFirstInnermostSector: boolean,
+): Array<Part> => {
+  const totalValue = tree.reduce((p: number, n: ArrayEntry): number => p + mapEntryValue(n), 0);
+  switch (partitionLayout) {
+    case PartitionLayout.sunburst:
+      const sunburstValueToAreaScale = TAU / totalValue;
+      const sunburstAreaAccessor = (e: ArrayEntry) => sunburstValueToAreaScale * mapEntryValue(e);
+      return sunburst(tree, sunburstAreaAccessor, { x0: 0, y0: -1 }, clockwiseSectors, specialFirstInnermostSector);
+
+    case PartitionLayout.treemap:
+      const treemapInnerArea = partitionLayout === PartitionLayout.treemap ? width * height : 1; // assuming 1 x 1 unit square
+      const treemapValueToAreaScale = treemapInnerArea / totalValue;
+      const treemapAreaAccessor = (e: ArrayEntry) => treemapValueToAreaScale * mapEntryValue(e);
+      return treemap(tree, treemapAreaAccessor, topGrooveAccessor(topGroove), grooveAccessor, {
+        x0: -width / 2,
+        y0: -height / 2,
+        width,
+        height,
+      });
+
+    default:
+      // Let's ensure TS complains if we add a new PartitionLayout type in the future without creating a `case` for it
+      // Hopefully, a future TS version will do away with the need for this boilerplate `default`. Now TS even needs a `default` even if all possible cases are covered.
+      // Even in runtime it does something sensible (returns the empty set); explicit throwing is avoided as it can deopt the function
+      return ((layout: never) => layout || [])(partitionLayout);
+  }
+};
+
 /** @internal */
 export function shapeViewModel(
   textMeasure: TextMeasure,
@@ -207,25 +242,19 @@ export function shapeViewModel(
     return nullShapeViewModel(config, diskCenter);
   }
 
-  const totalValue = tree.reduce((p: number, n: ArrayEntry): number => p + mapEntryValue(n), 0);
-
-  const sunburstValueToAreaScale = TAU / totalValue;
-  const sunburstAreaAccessor = (e: ArrayEntry) => sunburstValueToAreaScale * mapEntryValue(e);
   const treemapLayout = partitionLayout === PartitionLayout.treemap;
-  const treemapInnerArea = treemapLayout ? width * height : 1; // assuming 1 x 1 unit square
-  const treemapValueToAreaScale = treemapInnerArea / totalValue;
-  const treemapAreaAccessor = (e: ArrayEntry) => treemapValueToAreaScale * mapEntryValue(e);
 
-  const rawChildNodes: Array<Part> = treemapLayout
-    ? treemap(tree, treemapAreaAccessor, topGrooveAccessor(topGroove), grooveAccessor, {
-        x0: -width / 2,
-        y0: -height / 2,
-        width,
-        height,
-      })
-    : sunburst(tree, sunburstAreaAccessor, { x0: 0, y0: -1 }, clockwiseSectors, specialFirstInnermostSector);
+  const childNodes = rawChildNodes(
+    partitionLayout,
+    tree,
+    topGroove,
+    width,
+    height,
+    clockwiseSectors,
+    specialFirstInnermostSector,
+  );
 
-  const shownChildNodes = rawChildNodes.filter((n: Part) => {
+  const shownChildNodes = childNodes.filter((n: Part) => {
     const layerIndex = entryValue(n.node).depth - 1;
     const layer = layers[layerIndex];
     return !layer || !layer.showAccessor || layer.showAccessor(entryKey(n.node));
