@@ -101,14 +101,19 @@ export function treemap(
   areaAccessor: (e: ArrayEntry) => number,
   topPaddingAccessor: (e: ArrayEntry) => number,
   paddingAccessor: (e: ArrayEntry) => number,
-  { x0, y0, width, height }: { x0: number; y0: number; width: number; height: number },
+  {
+    x0: outerX0,
+    y0: outerY0,
+    width: outerWidth,
+    height: outerHeight,
+  }: { x0: number; y0: number; width: number; height: number },
 ): Array<Part> {
   if (nodes.length === 0) return [];
   // some bias toward horizontal rectangles with a golden ratio of width to height
-  const vertical = width / GOLDEN_RATIO <= height;
-  const independentSize = vertical ? width : height;
+  const vertical = outerWidth / GOLDEN_RATIO <= outerHeight;
+  const independentSize = vertical ? outerWidth : outerHeight;
   const vectorElements = bestVector(nodes, independentSize, areaAccessor);
-  const vector = vectorNodeCoordinates(vectorElements, x0, y0, vertical);
+  const vector = vectorNodeCoordinates(vectorElements, outerX0, outerY0, vertical);
   const { dependentSize } = vectorElements;
   return vector
     .concat(
@@ -148,8 +153,8 @@ export function treemap(
         topPaddingAccessor,
         paddingAccessor,
         vertical
-          ? { x0, y0: y0 + dependentSize, width, height: height - dependentSize }
-          : { x0: x0 + dependentSize, y0, width: width - dependentSize, height },
+          ? { x0: outerX0, y0: outerY0 + dependentSize, width: outerWidth, height: outerHeight - dependentSize }
+          : { x0: outerX0 + dependentSize, y0: outerY0, width: outerWidth - dependentSize, height: outerHeight },
       ),
     );
 }
