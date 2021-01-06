@@ -99,7 +99,7 @@ export function groupByRollup(
   const statistics: Statistics = {
     globalAggregate: NaN,
   };
-  const reductionMap = factTable.reduce((p: HierarchyOfMaps, n, index) => {
+  const reductionMap: HierarchyOfMaps = factTable.reduce((p: HierarchyOfMaps, n, index) => {
     const keyCount = keyAccessors.length;
     let pointer: HierarchyOfMaps = p;
     keyAccessors.forEach((keyAccessor, i) => {
@@ -107,7 +107,7 @@ export function groupByRollup(
       const keyExists = pointer.has(key);
       const last = i === keyCount - 1;
       const node = keyExists && pointer.get(key);
-      const inputIndices = node ? node[INPUT_KEY] : [];
+      const inputIndices = node ? (node[INPUT_KEY] as number[]) : [];
       const childrenMap = node ? node[CHILDREN_KEY] : new Map();
       const aggregate = node ? node[AGGREGATE_KEY] : identity();
       const reductionValue = reducer(aggregate, valueAccessor(n));
@@ -141,8 +141,7 @@ function getRootArrayNode(): ArrayNode {
     [PATH_KEY]: [] as number[],
   };
   Object.assign(bootstrap, { [PARENT_KEY]: bootstrap });
-  const result: ArrayNode = bootstrap as ArrayNode;
-  return result;
+  return bootstrap as ArrayNode;
 }
 
 /** @internal */
@@ -178,6 +177,7 @@ export function mapsToArrays(root: HierarchyOfMaps, sorter: NodeSorter): Hierarc
   const tree = groupByMap(root, getRootArrayNode());
   const buildPaths = ([, mapNode]: ArrayEntry, currentPath: number[]) => {
     const newPath = [...currentPath, mapNode[SORT_INDEX_KEY]];
+    // eslint-disable-next-line no-param-reassign
     mapNode[PATH_KEY] = newPath;
     mapNode.children.forEach((entry) => buildPaths(entry, newPath));
   };
