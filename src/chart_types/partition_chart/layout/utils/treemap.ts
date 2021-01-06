@@ -114,7 +114,7 @@ export function treemap(
     .concat(
       ...vector.map(({ node, x0, y0, x1, y1 }) => {
         const childrenNodes = entryValue(node)[CHILDREN_KEY];
-        if (!childrenNodes || !childrenNodes.length) {
+        if (childrenNodes.length === 0) {
           return [];
         }
         const fullWidth = x1 - x0;
