@@ -42,7 +42,16 @@ const flatTree = ({ c, n, v }: Node, depth: number): Row[] => {
   if (!c) {
     return [{ [`layer_${depth}`]: n, value: v, depth }];
   }
-  const childrenRows: Row[] = c.flatMap((child) => flatTree(child, depth + 1));
+  // looks like our test runner can't run c.flatMap(...)
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  // eslint-disable-next-line prefer-spread
+  const childrenRows: Row[] = [].concat.apply(
+    [],
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    c.map((child) => flatTree(child, depth + 1)),
+  );
   const childrenTotal = childrenRows.reduce((p, { value }) => p + value, 0);
   const missing = Math.max(0, v - childrenTotal);
   if (missing > 0) {
