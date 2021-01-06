@@ -22,7 +22,6 @@ import createCachedSelector from 're-reselect';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { getRenderingCompareFn } from '../../../../utils/series_sort';
 import { ComputedGeometries } from '../utils/types';
 import { computeSeriesGeometries } from '../utils/utils';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
@@ -62,7 +61,6 @@ export const computeSeriesGeometriesSelector = createCachedSelector(
       axesSpecs,
       smallMultiplesScales,
       isHistogramMode,
-      getRenderingCompareFn(settingsSpec),
     );
   },
 )(getChartIdSelector);

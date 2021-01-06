@@ -17,13 +17,21 @@
  * under the License.
  */
 
+import { Store } from 'redux';
+
 import { ChartTypes } from '../..';
 import { LegendItem } from '../../../commons/legend';
+import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs/specs';
+import { MockStore } from '../../../mocks/store/store';
 import { ScaleType } from '../../../scales/constants';
 import { SpecTypes } from '../../../specs/constants';
+import { ON_TOGGLE_DESELECT_SERIES, onToggleDeselectSeriesAction } from '../../../state/actions/legend';
+import { GlobalChartState } from '../../../state/chart_state';
 import { Position, RecursivePartial } from '../../../utils/commons';
 import { AxisStyle } from '../../../utils/themes/theme';
-import { SeriesCollectionValue, getSeriesName } from '../utils/series';
+import { computeLegendSelector } from '../state/selectors/compute_legend';
+import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_domains';
+import { getSeriesName } from '../utils/series';
 import { AxisSpec, BasicSeriesSpec, SeriesTypes } from '../utils/specs';
 import { computeLegend, getLegendExtra } from './legend';
 
@@ -118,147 +126,210 @@ const axisSpec: AxisSpec = {
 axesSpecs.push(axisSpec);
 
 describe('Legends', () => {
-  const seriesCollection = new Map<string, SeriesCollectionValue>();
-  const seriesCollectionMap = new Map<string, string>();
-  const specs = [spec1, spec2];
-  seriesCollectionMap.set('seriesCollectionValue1a', 'red');
-  seriesCollectionMap.set('seriesCollectionValue1b', 'blue');
-  seriesCollectionMap.set('seriesCollectionValue2a', 'green');
-  seriesCollectionMap.set('seriesCollectionValue2b', 'white');
+  let store: Store<GlobalChartState>;
+
+  // const specs = [spec1, spec2];
+  // seriesCollectionMap.set('seriesCollectionValue1a', 'red');
+  // seriesCollectionMap.set('seriesCollectionValue1b', 'blue');
+  // seriesCollectionMap.set('seriesCollectionValue2a', 'green');
+  // seriesCollectionMap.set('seriesCollectionValue2b', 'white');
   beforeEach(() => {
-    seriesCollection.clear();
+    store = MockStore.default();
   });
   it('compute legend for a single series', () => {
-    seriesCollection.set('seriesCollectionValue1a', seriesCollectionValue1a);
-    const legend = computeLegend(seriesCollection, seriesCollectionMap, specs, 'violet', axesSpecs, false);
-    const expected: LegendItem[] = [
-      {
-        color: 'red',
-        label: 'Spec 1 title',
-        childId: 'y1',
-        seriesIdentifier: seriesCollectionValue1a.seriesIdentifier,
-        isItemHidden: false,
-        isSeriesHidden: false,
-        isToggleable: true,
-        defaultExtra: nullDisplayValue,
-      },
-    ];
-    expect([...legend.values()]).toEqual(expected);
+    MockStore.addSpecs(
+      [
+        MockSeriesSpec.bar({
+          name: 'Spec 1 title',
+          yAccessors: ['y1'],
+          data: [{ x: 0, y1: 1 }],
+        }),
+        MockGlobalSpec.settings({ showLegend: true, theme: { colors: { vizColors: ['red'] } } }),
+      ],
+      store,
+    );
+    const legend = computeLegendSelector(store.getState());
+    const expected = {
+      color: 'red',
+      label: 'Spec 1 title',
+      childId: 'y1',
+      isItemHidden: false,
+      isSeriesHidden: false,
+      isToggleable: true,
+      defaultExtra: nullDisplayValue,
+    };
+    expect(legend[0]).toMatchObject(expected);
   });
   it('compute legend for a single spec but with multiple series', () => {
-    seriesCollection.set('seriesCollectionValue1a', seriesCollectionValue1a);
-    seriesCollection.set('seriesCollectionValue1b', seriesCollectionValue1b);
-    const legend = computeLegend(seriesCollection, seriesCollectionMap, specs, 'violet', axesSpecs, false);
-    const expected: LegendItem[] = [
+    MockStore.addSpecs(
+      [
+        MockSeriesSpec.bar({
+          yAccessors: ['y1', 'y2'],
+          splitSeriesAccessors: ['g'],
+          data: [
+            {
+              x: 0,
+              y1: 1,
+              g: 'a',
+              y2: 3,
+            },
+            {
+              x: 0,
+              y1: 1,
+              g: 'b',
+              y2: 3,
+            },
+          ],
+        }),
+        MockGlobalSpec.settings({
+          showLegend: true,
+          theme: { colors: { vizColors: ['red', 'blue', 'violet', 'green'] } },
+        }),
+      ],
+      store,
+    );
+    const legend = computeLegendSelector(store.getState());
+
+    const expected = [
       {
         color: 'red',
-        label: 'Spec 1 title',
-        seriesIdentifier: seriesCollectionValue1a.seriesIdentifier,
+        label: 'a - y1',
         childId: 'y1',
-        isItemHidden: false,
-        isSeriesHidden: false,
-        isToggleable: true,
-        defaultExtra: nullDisplayValue,
       },
       {
         color: 'blue',
-        label: 'a - b',
-        seriesIdentifier: seriesCollectionValue1b.seriesIdentifier,
+        label: 'a - y2',
         childId: 'y1',
-        isItemHidden: false,
-        isSeriesHidden: false,
-        isToggleable: true,
-        defaultExtra: nullDisplayValue,
       },
-    ];
-    expect([...legend.values()]).toEqual(expected);
-  });
-  it('compute legend for multiple specs', () => {
-    seriesCollection.set('seriesCollectionValue1a', seriesCollectionValue1a);
-    seriesCollection.set('seriesCollectionValue2a', seriesCollectionValue2a);
-    const legend = computeLegend(seriesCollection, seriesCollectionMap, specs, 'violet', axesSpecs, false);
-    const expected: LegendItem[] = [
       {
-        color: 'red',
-        label: 'Spec 1 title',
+        color: 'violet',
+        label: 'b - y1',
         childId: 'y1',
-        seriesIdentifier: seriesCollectionValue1a.seriesIdentifier,
-        isItemHidden: false,
-        isSeriesHidden: false,
-        isToggleable: true,
-        defaultExtra: nullDisplayValue,
       },
       {
         color: 'green',
+        label: 'b - y2',
+        childId: 'y1',
+      },
+    ];
+    expect(legend).toHaveLength(4);
+    expect(legend).toMatchObject(expected);
+  });
+  it('compute legend for multiple specs', () => {
+    MockStore.addSpecs(
+      [
+        MockSeriesSpec.bar({
+          id: 'spec1',
+          data: [
+            {
+              x: 0,
+              y: 1,
+            },
+          ],
+        }),
+        MockSeriesSpec.bar({
+          id: 'spec2',
+          data: [
+            {
+              x: 0,
+              y: 1,
+            },
+          ],
+        }),
+        MockGlobalSpec.settings({
+          showLegend: true,
+          theme: { colors: { vizColors: ['red', 'blue'] } },
+        }),
+      ],
+      store,
+    );
+    const legend = computeLegendSelector(store.getState());
+    const expected = [
+      {
+        color: 'red',
+        label: 'spec1',
+        childId: 'y1',
+      },
+      {
+        color: 'blue',
         label: 'spec2',
         childId: 'y1',
-        seriesIdentifier: seriesCollectionValue2a.seriesIdentifier,
-        isItemHidden: false,
-        isSeriesHidden: false,
-        isToggleable: true,
-        defaultExtra: nullDisplayValue,
       },
     ];
-    expect([...legend.values()]).toEqual(expected);
+    expect(legend).toHaveLength(2);
+    expect(legend).toMatchObject(expected);
   });
-  it('empty legend for missing spec', () => {
-    seriesCollection.set('seriesCollectionValue2b', seriesCollectionValue2b);
-    const legend = computeLegend(seriesCollection, seriesCollectionMap, specs, 'violet', axesSpecs, false);
-    expect(legend.length).toEqual(0);
-  });
-  it('compute legend with default color for missing series color', () => {
-    seriesCollection.set('seriesCollectionValue1a', seriesCollectionValue1a);
-    const emptyColorMap = new Map<string, string>();
-    const legend = computeLegend(seriesCollection, emptyColorMap, specs, 'violet', axesSpecs, false);
-    const expected: LegendItem[] = [
-      {
-        color: 'violet',
-        label: 'Spec 1 title',
-        childId: 'y1',
-        seriesIdentifier: seriesCollectionValue1a.seriesIdentifier,
-        isItemHidden: false,
-        isSeriesHidden: false,
-        isToggleable: true,
-        defaultExtra: nullDisplayValue,
-      },
-    ];
-    expect([...legend.values()]).toEqual(expected);
-  });
+
   it('default all series legend items to visible when deselectedDataSeries is null', () => {
-    seriesCollection.set('seriesCollectionValue1a', seriesCollectionValue1a);
-    seriesCollection.set('seriesCollectionValue1b', seriesCollectionValue1b);
-    seriesCollection.set('seriesCollectionValue2a', seriesCollectionValue2a);
-    seriesCollection.set('seriesCollectionValue2b', seriesCollectionValue2b);
+    MockStore.addSpecs(
+      [
+        MockSeriesSpec.bar({
+          id: 'spec1',
+          data: [
+            {
+              x: 0,
+              y: 1,
+            },
+          ],
+        }),
+        MockSeriesSpec.bar({
+          id: 'spec2',
+          data: [
+            {
+              x: 0,
+              y: 1,
+            },
+          ],
+        }),
+        MockGlobalSpec.settings({
+          showLegend: true,
+          theme: { colors: { vizColors: ['red', 'blue'] } },
+        }),
+      ],
+      store,
+    );
+    const legend = computeLegendSelector(store.getState());
 
-    const emptyColorMap = new Map<string, string>();
+    const visibility = legend.map((item) => !item.isSeriesHidden);
 
-    const legend = computeLegend(seriesCollection, emptyColorMap, specs, 'violet', axesSpecs, false);
-
-    const visibility = [...legend.values()].map((item) => !item.isSeriesHidden);
-
-    expect(visibility).toEqual([true, true, true]);
+    expect(visibility).toEqual([true, true]);
   });
   it('selectively sets series to visible when there are deselectedDataSeries items', () => {
-    seriesCollection.set('seriesCollectionValue1a', seriesCollectionValue1a);
-    seriesCollection.set('seriesCollectionValue1b', seriesCollectionValue1b);
-    seriesCollection.set('seriesCollectionValue2a', seriesCollectionValue2a);
-    seriesCollection.set('seriesCollectionValue2b', seriesCollectionValue2b);
-
-    const emptyColorMap = new Map<string, string>();
-    const deselectedDataSeries = [seriesCollectionValue1a.seriesIdentifier, seriesCollectionValue1b.seriesIdentifier];
-
-    const legend = computeLegend(
-      seriesCollection,
-      emptyColorMap,
-      specs,
-      'violet',
-      axesSpecs,
-      false,
-      deselectedDataSeries,
+    MockStore.addSpecs(
+      [
+        MockSeriesSpec.bar({
+          id: 'spec1',
+          data: [
+            {
+              x: 0,
+              y: 1,
+            },
+          ],
+        }),
+        MockSeriesSpec.bar({
+          id: 'spec2',
+          data: [
+            {
+              x: 0,
+              y: 1,
+            },
+          ],
+        }),
+        MockGlobalSpec.settings({
+          showLegend: true,
+          theme: { colors: { vizColors: ['red', 'blue'] } },
+        }),
+      ],
+      store,
     );
+    const {
+      formattedDataSeries: [{ key, specId }],
+    } = computeSeriesDomainsSelector(store.getState());
 
-    const visibility = [...legend.values()].map((item) => !item.isSeriesHidden);
-    expect(visibility).toEqual([false, false, true]);
+    store.dispatch(onToggleDeselectSeriesAction({ key, specId }));
+    const legend = computeLegendSelector(store.getState());
+    const visibility = legend.map((item) => !item.isSeriesHidden);
+    expect(visibility).toEqual([false, true]);
   });
   it('returns the right series name for a color series', () => {
     const seriesIdentifier1 = {

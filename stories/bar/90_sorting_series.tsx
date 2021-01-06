@@ -56,36 +56,45 @@ function compareSeriesFn(a: SeriesIdentifier, b: SeriesIdentifier) {
 
 export const Example = () => (
   <Chart className="story-chart">
-    <Settings showLegend showLegendExtra legendPosition={Position.Right} sortSeriesBy={compareSeriesFn} />
+    <Settings showLegend showLegendExtra />
     <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
     <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
-
     <BarSeries
-      id="clustered"
-      xScaleType={ScaleType.Ordinal}
-      yScaleType={ScaleType.Linear}
-      xAccessor="x"
-      yAccessors={['y1', 'y2']}
-      splitSeriesAccessors={['g']}
-      data={TestDatasets.BARCHART_2Y1G}
-    />
-    <BarSeries
-      id="stacked"
-      xScaleType={ScaleType.Ordinal}
+      id="series1"
+      xScaleType={ScaleType.Linear}
       yScaleType={ScaleType.Linear}
       xAccessor="x"
       yAccessors={['y']}
       splitSeriesAccessors={['g']}
       stackAccessors={['x']}
       data={[
-        { x: 0, g: 'stackA', y: 1 },
-        { x: 0, g: 'stackB', y: 2 },
-        { x: 1, g: 'stackA', y: 2 },
-        { x: 1, g: 'stackB', y: 3 },
-        { x: 2, g: 'stackA', y: 3 },
-        { x: 2, g: 'stackB', y: 4 },
-        { x: 3, g: 'stackA', y: 4 },
-        { x: 3, g: 'stackB', y: 5 },
+        { x: 0, g: 'Group1StackA', y: 1 },
+        { x: 0, g: 'Group1StackB', y: 2 },
+      ]}
+    />
+
+    <BarSeries
+      id="series2"
+      xScaleType={ScaleType.Linear}
+      yScaleType={ScaleType.Linear}
+      xAccessor="x"
+      yAccessors={['y1', 'y2']}
+      splitSeriesAccessors={['g']}
+      data={TestDatasets.BARCHART_2Y1G.slice(0, 2)}
+    />
+
+    <BarSeries
+      id="series3"
+      groupId="group2"
+      xScaleType={ScaleType.Linear}
+      yScaleType={ScaleType.Linear}
+      xAccessor="x"
+      yAccessors={['y']}
+      splitSeriesAccessors={['g']}
+      stackAccessors={['x']}
+      data={[
+        { x: 0, g: 'Group2StackA', y: 1 },
+        { x: 0, g: 'Group2StackB', y: 2 },
       ]}
     />
   </Chart>

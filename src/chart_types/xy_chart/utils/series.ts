@@ -28,7 +28,6 @@ import { GroupId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
 import { ColorConfig } from '../../../utils/themes/theme';
 import { groupSeriesByYGroup, isHistogramEnabled, isStackedSpec } from '../domains/y_domain';
-import { LastValues } from '../state/utils/types';
 import { applyFitFunctionToDataSeries } from './fit_function_utils';
 import { groupBy } from './group_data_series';
 import { BasicSeriesSpec, SeriesTypes, SeriesSpecs, SeriesNameConfigOptions, StackMode } from './specs';
@@ -83,26 +82,12 @@ export type DataSeries = XYChartSeriesIdentifier & {
   isStacked: boolean;
   stackMode: StackMode | undefined;
   spec: Exclude<BasicSeriesSpec, 'data'>;
+  insertIndex: number;
+  isFiltered: boolean;
 };
-
-/** @internal */
-export interface FormattedDataSeries {
-  groupId: GroupId;
-  dataSeries: DataSeries[];
-  counts: DataSeriesCounts;
-  stackMode?: StackMode;
-}
 
 /** @internal */
 export type DataSeriesCounts = { [key in SeriesTypes]: number };
-
-/** @internal */
-export type SeriesCollectionValue = {
-  banded?: boolean;
-  lastValue?: LastValues;
-  specSortIndex?: number;
-  seriesIdentifier: XYChartSeriesIdentifier;
-};
 
 /** @internal */
 export function getSeriesIndex(series: SeriesIdentifier[], target: SeriesIdentifier): number {
@@ -231,6 +216,9 @@ export function splitSeriesDataByAccessors(
           key: seriesKey,
           data: [newDatum],
           spec,
+          // current default to 0, will be correctly computed on a later stage
+          insertIndex: 0,
+          isFiltered: false,
         });
       }
 
@@ -397,14 +385,12 @@ export function getDataSeriesFromSpecs(
   smallMultiples?: { vertical?: GroupBySpec; horizontal?: GroupBySpec },
 ): {
   dataSeries: DataSeries[];
-  seriesCollection: Map<SeriesKey, SeriesCollectionValue>;
   xValues: Set<string | number>;
   smVValues: Set<string | number>;
   smHValues: Set<string | number>;
   fallbackScale?: XScaleType;
 } {
   let globalDataSeries: DataSeries[] = [];
-  const seriesCollection = new Map<SeriesKey, SeriesCollectionValue>();
   const mutatedXValueSums = new Map<string | number, number>();
 
   // the unique set of values along the x axis
@@ -419,6 +405,7 @@ export function getDataSeriesFromSpecs(
   let isOrdinalScale = false;
 
   const specsByYGroup = groupSeriesByYGroup(seriesSpecs);
+
   // eslint-disable-next-line no-restricted-syntax
   for (const spec of seriesSpecs) {
     // check scale type and cast to Ordinal if we found at least one series
@@ -440,23 +427,15 @@ export function getDataSeriesFromSpecs(
     // filter deselected DataSeries
     let filteredDataSeries: DataSeries[] = [...dataSeries.values()];
     if (deselectedDataSeries.length > 0) {
-      filteredDataSeries = filteredDataSeries.filter(
-        ({ key }) => !deselectedDataSeries.some(({ key: deselectedKey }) => key === deselectedKey),
-      );
+      filteredDataSeries = filteredDataSeries.map((series) => {
+        return {
+          ...series,
+          isFiltered: deselectedDataSeries.some(({ key: deselectedKey }) => series.key === deselectedKey),
+        };
+      });
     }
 
     globalDataSeries = [...globalDataSeries, ...filteredDataSeries];
-
-    const banded = spec.y0Accessors && spec.y0Accessors.length > 0;
-
-    dataSeries.forEach((series, key) => {
-      const { data, ...seriesIdentifier } = series;
-      seriesCollection.set(key, {
-        banded,
-        specSortIndex: spec.sortIndex,
-        seriesIdentifier,
-      });
-    });
 
     // check the nature of the x values. If all of them are numbers
     // we can use a continuous scale, if not we should use an ordinal scale.
@@ -484,15 +463,25 @@ export function getDataSeriesFromSpecs(
           }),
         );
 
+  const dataSeries = globalDataSeries.map((d, i) => {
+    return {
+      ...d,
+      insertIndex: i,
+    };
+  });
+
   return {
-    dataSeries: globalDataSeries,
-    seriesCollection,
+    dataSeries,
     // keep the user order for ordinal scales
     xValues,
     smVValues: globalSMVValues,
     smHValues: globalSMHValues,
     fallbackScale: !isOrdinalScale && !isNumberArray ? ScaleType.Ordinal : undefined,
   };
+}
+
+export function isDataSeriesBanded({ spec }: DataSeries) {
+  return spec.y0Accessors && spec.y0Accessors.length > 0;
 }
 
 function getSortedOrdinalXValues(
@@ -596,22 +585,6 @@ export function getSeriesName(
   return name;
 }
 
-function getSortIndex({ specSortIndex }: SeriesCollectionValue, total: number): number {
-  return specSortIndex != null ? specSortIndex : total;
-}
-
-/** @internal */
-export function getSortedDataSeriesColorsValuesMap(
-  seriesCollection: Map<SeriesKey, SeriesCollectionValue>,
-): Map<SeriesKey, SeriesCollectionValue> {
-  const seriesColorsArray = [...seriesCollection];
-  seriesColorsArray.sort(
-    ([, specA], [, specB]) => getSortIndex(specA, seriesCollection.size) - getSortIndex(specB, seriesCollection.size),
-  );
-
-  return new Map([...seriesColorsArray]);
-}
-
 /**
  * Helper function to get highest override color.
  *
@@ -649,14 +622,14 @@ function getHighestOverride(
 /**
  * Returns color for a series given all color hierarchies
  *
- * @param seriesCollection
+ * @param dataSeries
  * @param chartColors
  * @param customColors
  * @param overrides
  * @internal
  */
 export function getSeriesColors(
-  seriesCollection: Map<SeriesKey, SeriesCollectionValue>,
+  dataSeries: DataSeries[],
   chartColors: ColorConfig,
   customColors: Map<SeriesKey, Color>,
   overrides: ColorOverrides,
@@ -664,7 +637,8 @@ export function getSeriesColors(
   const seriesColorMap = new Map<SeriesKey, Color>();
   let counter = 0;
 
-  seriesCollection.forEach((_, seriesKey) => {
+  dataSeries.forEach((ds) => {
+    const seriesKey = getSeriesKey(ds, ds.groupId);
     const colorOverride = getHighestOverride(seriesKey, customColors, overrides);
     const color = colorOverride || chartColors.vizColors[counter % chartColors.vizColors.length];
 
@@ -672,4 +646,25 @@ export function getSeriesColors(
     counter++;
   });
   return seriesColorMap;
+}
+
+export function getSeriesIdentifierFromDataSeries(dataSeries: DataSeries): XYChartSeriesIdentifier {
+  const {
+    yAccessor,
+    splitAccessors,
+    smVerticalAccessorValue,
+    smHorizontalAccessorValue,
+    seriesKeys,
+    specId,
+    key,
+  } = dataSeries;
+  return {
+    yAccessor,
+    splitAccessors,
+    smVerticalAccessorValue,
+    smHorizontalAccessorValue,
+    seriesKeys,
+    specId,
+    key,
+  };
 }

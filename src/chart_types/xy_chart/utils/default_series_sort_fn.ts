@@ -17,14 +17,18 @@
  * under the License.
  */
 
-import createCachedSelector from 're-reselect';
+import { DataSeries } from './series';
 
-import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { computeSeriesDomainsSelector } from './compute_series_domains';
+/**
+ * Return the default sorting used for XY series.
+ * Ordered by group insert order, then first stacked, after non stacked.
+ * @param a
+ * @param b
+ */
+export function defaultXYSeriesSort(a: DataSeries, b: DataSeries) {
+  if (a.groupId === b.groupId && a.isStacked && b.isStacked) {
+    return b.insertIndex - a.insertIndex;
+  }
 
-/** @internal */
-export const hasSingleSeriesSelector = createCachedSelector(
-  [computeSeriesDomainsSelector],
-  (seriesDomainsAndData): boolean =>
-    Boolean(seriesDomainsAndData) && seriesDomainsAndData.formattedDataSeries.length > 1,
-)(getChartIdSelector);
+  return a.insertIndex - b.insertIndex;
+}

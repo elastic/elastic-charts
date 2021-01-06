@@ -32,21 +32,34 @@ export const DEFAULT_SORTING_FN = () => {
   return 0;
 };
 
-export function getRenderingCompareFn(settings: SettingsSpec): SeriesCompareFn {
-  return getCompareFn(settings, 'tooltip');
+export function getRenderingCompareFn(
+  sortSeriesBy: SettingsSpec['sortSeriesBy'],
+  defaultSortFn?: SeriesCompareFn,
+): SeriesCompareFn {
+  return getCompareFn('rendering', sortSeriesBy, defaultSortFn);
 }
 
-export function getLegendCompareFn(settings: SettingsSpec): SeriesCompareFn {
-  return getCompareFn(settings, 'tooltip');
+export function getLegendCompareFn(
+  sortSeriesBy: SettingsSpec['sortSeriesBy'],
+  defaultSortFn?: SeriesCompareFn,
+): SeriesCompareFn {
+  return getCompareFn('legend', sortSeriesBy, defaultSortFn);
 }
 
-export function getTooltipCompareFn(settings: SettingsSpec): SeriesCompareFn {
-  return getCompareFn(settings, 'tooltip');
+export function getTooltipCompareFn(
+  sortSeriesBy: SettingsSpec['sortSeriesBy'],
+  defaultSortFn?: SeriesCompareFn,
+): SeriesCompareFn {
+  return getCompareFn('tooltip', sortSeriesBy, defaultSortFn);
 }
 
-function getCompareFn({ sortSeriesBy }: SettingsSpec, aspect: keyof SortSeriesByConfig): SeriesCompareFn {
+function getCompareFn(
+  aspect: keyof SortSeriesByConfig,
+  sortSeriesBy: SettingsSpec['sortSeriesBy'],
+  defaultSortFn: SeriesCompareFn = DEFAULT_SORTING_FN,
+): SeriesCompareFn {
   if (typeof sortSeriesBy === 'object') {
-    return sortSeriesBy[aspect] ?? sortSeriesBy.default ?? DEFAULT_SORTING_FN;
+    return sortSeriesBy[aspect] ?? sortSeriesBy.default ?? defaultSortFn;
   }
-  return sortSeriesBy ?? DEFAULT_SORTING_FN;
+  return sortSeriesBy ?? defaultSortFn;
 }

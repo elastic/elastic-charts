@@ -864,7 +864,7 @@ describe('Rendering points - areas', () => {
     const store = initStore([pointSeriesSpec1, pointSeriesSpec2]);
     const domains = computeSeriesDomainsSelector(store.getState());
 
-    expect(domains.formattedDataSeries[0].data).toMatchObject([
+    expect(domains.formattedDataSeries[1].data).toMatchObject([
       {
         datum: [1546300800000, 0],
         initialY0: null,
@@ -913,7 +913,7 @@ describe('Rendering points - areas', () => {
     const store = initStore([pointSeriesSpec1, pointSeriesSpec2]);
     const domains = computeSeriesDomainsSelector(store.getState());
 
-    expect(domains.formattedDataSeries[0].data).toMatchObject([
+    expect(domains.formattedDataSeries[1].data).toMatchObject([
       {
         datum: [1546300800000, null],
         initialY0: null,
@@ -934,7 +934,7 @@ describe('Rendering points - areas', () => {
       },
     ]);
 
-    expect(domains.formattedDataSeries[1].data).toEqual([
+    expect(domains.formattedDataSeries[0].data).toEqual([
       {
         datum: [1546300800000, 3],
         initialY0: null,

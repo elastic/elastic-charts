@@ -367,7 +367,10 @@ export interface SeriesSpec extends Spec {
    * @defaultValue `false`
    */
   hideInLegend?: boolean;
-  /** Index per series to sort by */
+  /**
+   * Index per series to sort by
+   * @deprecated
+   */
   sortIndex?: number;
   displayValueSettings?: DisplayValueSpec;
   /**

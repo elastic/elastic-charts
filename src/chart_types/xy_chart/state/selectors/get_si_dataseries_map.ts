@@ -20,11 +20,17 @@
 import createCachedSelector from 're-reselect';
 
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { DataSeries, getSeriesKey } from '../../utils/series';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 
 /** @internal */
-export const hasSingleSeriesSelector = createCachedSelector(
+export const getSiDataSeriesMapSelector = createCachedSelector(
   [computeSeriesDomainsSelector],
-  (seriesDomainsAndData): boolean =>
-    Boolean(seriesDomainsAndData) && seriesDomainsAndData.formattedDataSeries.length > 1,
+  ({ formattedDataSeries }) => {
+    return formattedDataSeries.reduce<Record<string, DataSeries>>((acc, dataSeries) => {
+      const seriesKey = getSeriesKey(dataSeries, dataSeries.groupId);
+      acc[seriesKey] = dataSeries;
+      return acc;
+    }, {});
+  },
 )(getChartIdSelector);
