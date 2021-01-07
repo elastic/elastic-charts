@@ -151,7 +151,7 @@ export interface RectangleConstruction {
 
 function rectangleConstruction(treeHeight: number, topGroove: number | null) {
   return function rectangleConstructionClosure(node: ShapeTreeNode): RectangleConstruction {
-    return node.depth < treeHeight && topGroove
+    return node.depth < treeHeight && topGroove !== null
       ? {
           x0: node.x0,
           y0: node.y0px,
