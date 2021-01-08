@@ -35,9 +35,10 @@ import { Point } from '../utils/point';
 import { StateActions } from './actions';
 import { CHART_RENDERED } from './actions/chart';
 import { UPDATE_PARENT_DIMENSION } from './actions/chart_settings';
-import { SET_PERSISTED_COLOR, SET_TEMPORARY_COLOR, CLEAR_TEMPORARY_COLORS } from './actions/colors';
+import { CLEAR_TEMPORARY_COLORS, SET_PERSISTED_COLOR, SET_TEMPORARY_COLOR } from './actions/colors';
 import { EXTERNAL_POINTER_EVENT } from './actions/events';
-import { SPEC_PARSED, SPEC_UNMOUNTED, UPSERT_SPEC, REMOVE_SPEC } from './actions/specs';
+import { REMOVE_SPEC, SPEC_PARSED, SPEC_UNMOUNTED, UPSERT_SPEC } from './actions/specs';
+import { Z_INDEX_EVENT } from './actions/z_index';
 import { interactionsReducer } from './reducers/interactions';
 import { getInternalIsInitializedSelector, InitStatus } from './selectors/get_internal_is_intialized';
 import { getLegendItemsSelector } from './selectors/get_legend_items';
@@ -200,6 +201,10 @@ export interface GlobalChartState {
    */
   chartId: string;
   /**
+   * The Z-Index of the chart component
+   */
+  zIndex: number;
+  /**
    * true when all all the specs are parsed ad stored into the specs object
    */
   specsInitialized: boolean;
@@ -245,6 +250,7 @@ export interface GlobalChartState {
 /** @internal */
 export const getInitialState = (chartId: string): GlobalChartState => ({
   chartId,
+  zIndex: 0,
   specsInitialized: false,
   specParsing: false,
   chartRendered: false,
@@ -279,6 +285,11 @@ export const chartStoreReducer = (chartId: string) => {
   const initialState = getInitialState(chartId);
   return (state = initialState, action: StateActions): GlobalChartState => {
     switch (action.type) {
+      case Z_INDEX_EVENT:
+        return {
+          ...state,
+          zIndex: action.zIndex,
+        };
       case SPEC_PARSED:
         const chartType = findMainChartType(state.specs);
 
