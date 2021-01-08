@@ -163,9 +163,8 @@ export function shapeViewModel(
   const textXValues: Array<TextBox> = timeScale
     ? timeScale.ticks().map<TextBox>(getTextValue(config.xAxisLabel.formatter, (x: any) => timeScale.scale(x)))
     : xValues.map<TextBox>((textBox: any) => {
-        const textValue = getTextValue(config.xAxisLabel.formatter)(textBox);
         return {
-          ...textValue,
+          ...getTextValue(config.xAxisLabel.formatter)(textBox),
           x: chartDimensions.left + (xScale(textBox) || 0) + xScale.bandwidth() / 2,
         };
       });

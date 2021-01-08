@@ -59,7 +59,7 @@ import {
   defaultTickFormatter,
 } from './axis_utils';
 import { computeXScale } from './scales';
-import { AxisSpec, DomainRange, DEFAULT_GLOBAL_ID, TickFormatter } from './specs';
+import { AxisSpec, DomainRange, DEFAULT_GLOBAL_ID } from './specs';
 
 const getCustomStyle = (rotation = 0, padding = 10): AxisStyle =>
   mergePartial(LIGHT_THEME.axes, {
@@ -1540,8 +1540,6 @@ describe('Axis computational utils', () => {
     ]);
   });
   test('should show unique consecutive ticks if duplicateTicks is set to false', () => {
-    const formatter: TickFormatter = (d, { timeZone } = { timeZone: 'utc+1' }) =>
-      DateTime.fromMillis(d, { setZone: true, zone: timeZone }).toFormat('HH:mm');
     const axisSpec: AxisSpec = {
       id: 'bottom',
       position: 'bottom',
@@ -1553,7 +1551,8 @@ describe('Axis computational utils', () => {
       showOverlappingLabels: false,
       showOverlappingTicks: false,
       style,
-      tickFormat: formatter,
+      tickFormat: (d, options) =>
+        DateTime.fromMillis(d, { setZone: true, zone: options?.timeZone ?? 'utc+1' }).toFormat('HH:mm'),
     };
     const xDomainTime: XDomain = {
       type: 'xDomain',
