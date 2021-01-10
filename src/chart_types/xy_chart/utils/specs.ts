@@ -369,7 +369,8 @@ export interface SeriesSpec extends Spec {
   hideInLegend?: boolean;
   /**
    * Index per series to sort by
-   * @deprecated
+   * @deprecated This prop is not currently used and will
+   * soon be removed.
    */
   sortIndex?: number;
   displayValueSettings?: DisplayValueSpec;

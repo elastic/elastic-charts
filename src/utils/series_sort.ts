@@ -32,21 +32,27 @@ export const DEFAULT_SORTING_FN = () => {
   return 0;
 };
 
+/** @internal */
 export function getRenderingCompareFn(
+  // @ts-ignore
   sortSeriesBy: SettingsSpec['sortSeriesBy'],
   defaultSortFn?: SeriesCompareFn,
 ): SeriesCompareFn {
   return getCompareFn('rendering', sortSeriesBy, defaultSortFn);
 }
 
+/** @internal */
 export function getLegendCompareFn(
+  // @ts-ignore
   sortSeriesBy: SettingsSpec['sortSeriesBy'],
   defaultSortFn?: SeriesCompareFn,
 ): SeriesCompareFn {
   return getCompareFn('legend', sortSeriesBy, defaultSortFn);
 }
 
+/** @internal */
 export function getTooltipCompareFn(
+  // @ts-ignore
   sortSeriesBy: SettingsSpec['sortSeriesBy'],
   defaultSortFn?: SeriesCompareFn,
 ): SeriesCompareFn {
@@ -55,6 +61,7 @@ export function getTooltipCompareFn(
 
 function getCompareFn(
   aspect: keyof SortSeriesByConfig,
+  // @ts-ignore
   sortSeriesBy: SettingsSpec['sortSeriesBy'],
   defaultSortFn: SeriesCompareFn = DEFAULT_SORTING_FN,
 ): SeriesCompareFn {

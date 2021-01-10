@@ -24,6 +24,7 @@ import { DataSeries } from './series';
  * Ordered by group insert order, then first stacked, after non stacked.
  * @param a
  * @param b
+ * @internal
  */
 export function defaultXYSeriesSort(a: DataSeries, b: DataSeries) {
   if (a.groupId === b.groupId && a.isStacked && b.isStacked) {

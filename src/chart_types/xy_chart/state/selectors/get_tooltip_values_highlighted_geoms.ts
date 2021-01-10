@@ -202,6 +202,7 @@ function getTooltipAndHighlightFromValue(
     header = null;
   }
 
+  // @ts-ignore
   const tooltipSortFn = getTooltipCompareFn(settings.sortSeriesBy, (a, b) => {
     const aDs = serialIdentifierDataSeriesMap[a.key];
     const bDs = serialIdentifierDataSeriesMap[b.key];

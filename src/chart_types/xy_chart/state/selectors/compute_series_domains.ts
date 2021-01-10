@@ -46,6 +46,7 @@ export const computeSeriesDomainsSelector = createCachedSelector(
       settingsSpec.xDomain,
       settingsSpec.orderOrdinalBinsBy,
       smallMultiples,
+      // @ts-ignore
       settingsSpec.sortSeriesBy,
     );
   },

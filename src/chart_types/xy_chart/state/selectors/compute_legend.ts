@@ -65,6 +65,7 @@ export const computeLegendSelector = createCachedSelector(
       settings.showLegendExtra,
       siDataSeriesMap,
       deselectedDataSeries,
+      // @ts-ignore
       settings.sortSeriesBy,
     );
   },

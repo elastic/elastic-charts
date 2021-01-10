@@ -432,8 +432,9 @@ export interface SettingsSpec extends Spec {
    * series in different part of the chart like tooltip, legend and
    * the rendering order on the screen. To assign the same compare function.
    *  @defaultValue the series are sorted in order of appearance in the chart configuration
+   *  @alpha
    */
-  sortSeriesBy?: SeriesCompareFn | SortSeriesByConfig;
+  // sortSeriesBy?: SeriesCompareFn | SortSeriesByConfig;
 
   /**
    * Render component for no results UI

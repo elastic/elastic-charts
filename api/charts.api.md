@@ -1552,6 +1552,7 @@ export interface SeriesSpec extends Spec {
     hideInLegend?: boolean;
     name?: SeriesNameAccessor;
     seriesType: SeriesTypes;
+    // @deprecated
     sortIndex?: number;
     // (undocumented)
     specType: typeof SpecTypes.Series;
@@ -1640,7 +1641,6 @@ export interface SettingsSpec extends Spec {
     // (undocumented)
     showLegend: boolean;
     showLegendExtra: boolean;
-    sortSeriesBy?: SeriesCompareFn | SortSeriesByConfig;
     theme?: PartialTheme | PartialTheme[];
     tooltip: TooltipSettings;
     // Warning: (ae-forgotten-export) The symbol "Domain" needs to be exported by the entry point index.d.ts
@@ -1697,7 +1697,7 @@ export interface SmallMultiplesSpec extends Spec {
 //
 // @public
 export interface SortSeriesByConfig {
-    general?: SeriesCompareFn;
+    default?: SeriesCompareFn;
     legend?: SeriesCompareFn;
     rendering?: SeriesCompareFn;
     tooltip?: SeriesCompareFn;

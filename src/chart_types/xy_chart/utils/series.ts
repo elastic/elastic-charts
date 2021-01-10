@@ -480,6 +480,7 @@ export function getDataSeriesFromSpecs(
   };
 }
 
+/** @internal */
 export function isDataSeriesBanded({ spec }: DataSeries) {
   return spec.y0Accessors && spec.y0Accessors.length > 0;
 }
@@ -648,6 +649,7 @@ export function getSeriesColors(
   return seriesColorMap;
 }
 
+/** @internal */
 export function getSeriesIdentifierFromDataSeries(dataSeries: DataSeries): XYChartSeriesIdentifier {
   const {
     yAccessor,
