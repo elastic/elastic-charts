@@ -20,12 +20,11 @@
 import { Store } from 'redux';
 
 import { ChartTypes } from '../..';
-import { LegendItem } from '../../../commons/legend';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs/specs';
 import { MockStore } from '../../../mocks/store/store';
 import { ScaleType } from '../../../scales/constants';
 import { SpecTypes } from '../../../specs/constants';
-import { ON_TOGGLE_DESELECT_SERIES, onToggleDeselectSeriesAction } from '../../../state/actions/legend';
+import { onToggleDeselectSeriesAction } from '../../../state/actions/legend';
 import { GlobalChartState } from '../../../state/chart_state';
 import { Position, RecursivePartial } from '../../../utils/commons';
 import { AxisStyle } from '../../../utils/themes/theme';
@@ -33,49 +32,14 @@ import { computeLegendSelector } from '../state/selectors/compute_legend';
 import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_domains';
 import { getSeriesName } from '../utils/series';
 import { AxisSpec, BasicSeriesSpec, SeriesTypes } from '../utils/specs';
-import { computeLegend, getLegendExtra } from './legend';
+import { getLegendExtra } from './legend';
 
 const nullDisplayValue = {
   formatted: null,
   raw: null,
   legendSizingLabel: null,
 };
-const seriesCollectionValue1a = {
-  seriesIdentifier: {
-    specId: 'spec1',
-    yAccessor: 'y1',
-    splitAccessors: new Map(),
-    seriesKeys: ['y1'],
-    key: 'seriesCollectionValue1a',
-  },
-};
-const seriesCollectionValue1b = {
-  seriesIdentifier: {
-    specId: 'spec1',
-    yAccessor: 'y1',
-    splitAccessors: new Map(),
-    seriesKeys: ['a', 'b', 'y1'],
-    key: 'seriesCollectionValue1b',
-  },
-};
-const seriesCollectionValue2a = {
-  seriesIdentifier: {
-    specId: 'spec2',
-    yAccessor: 'y1',
-    splitAccessors: new Map(),
-    seriesKeys: ['y1'],
-    key: 'seriesCollectionValue2a',
-  },
-};
-const seriesCollectionValue2b = {
-  seriesIdentifier: {
-    specId: 'spec3',
-    yAccessor: 'y1',
-    splitAccessors: new Map(),
-    seriesKeys: ['c', 'd', 'y1'],
-    key: 'seriesCollectionValue2b',
-  },
-};
+
 const spec1: BasicSeriesSpec = {
   chartType: ChartTypes.XYAxis,
   specType: SpecTypes.Series,
@@ -128,11 +92,6 @@ axesSpecs.push(axisSpec);
 describe('Legends', () => {
   let store: Store<GlobalChartState>;
 
-  // const specs = [spec1, spec2];
-  // seriesCollectionMap.set('seriesCollectionValue1a', 'red');
-  // seriesCollectionMap.set('seriesCollectionValue1b', 'blue');
-  // seriesCollectionMap.set('seriesCollectionValue2a', 'green');
-  // seriesCollectionMap.set('seriesCollectionValue2b', 'white');
   beforeEach(() => {
     store = MockStore.default();
   });

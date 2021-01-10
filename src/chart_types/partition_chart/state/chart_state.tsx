@@ -38,7 +38,7 @@ import { getPieSpec } from './selectors/pie_spec';
 import { getTooltipInfoSelector } from './selectors/tooltip';
 
 const EMPTY_MAP = new Map();
-const EMPTY_ARRAY = [];
+
 /** @internal */
 export class PartitionState implements InternalChartState {
   chartType = ChartTypes.Partition;
@@ -70,8 +70,7 @@ export class PartitionState implements InternalChartState {
   }
 
   getLegendItemsLabels(globalState: GlobalChartState) {
-    // return getLegendItemsLabels(globalState);
-    return computeLegendSelector(globalState).map(({ depth, label }) => ({ depth: depth || 1, label }));
+    return getLegendItemsLabels(globalState);
   }
 
   getLegendItems(globalState: GlobalChartState) {

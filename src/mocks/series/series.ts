@@ -21,7 +21,7 @@ import { shuffle } from 'lodash';
 
 import { FullDataSeriesDatum, WithIndex } from '../../chart_types/xy_chart/utils/fit_function';
 import { DataSeries, DataSeriesDatum, XYChartSeriesIdentifier } from '../../chart_types/xy_chart/utils/series';
-import { SeriesSpecs, SeriesTypes } from '../../specs';
+import { SeriesTypes } from '../../specs';
 import { mergePartial } from '../../utils/commons';
 import { MockSeriesSpec } from '../specs';
 import { getRandomNumberGenerator } from '../utils';
@@ -51,6 +51,7 @@ export class MockDataSeries {
     spec: MockSeriesSpec.bar(),
     isStacked: false,
     insertIndex: 0,
+    isFiltered: false,
   };
 
   static default(partial?: Partial<DataSeries>) {
