@@ -1490,7 +1490,7 @@ export type SeriesColorAccessorFn = (seriesIdentifier: XYChartSeriesIdentifier) 
 // @public (undocumented)
 export type SeriesColorsArray = string[];
 
-// @public
+// @alpha
 export type SeriesCompareFn = (siA: SeriesIdentifier, siB: SeriesIdentifier) => number;
 
 // @public
@@ -1693,9 +1693,7 @@ export interface SmallMultiplesSpec extends Spec {
     };
 }
 
-// Warning: (ae-missing-release-tag) "SortSeriesByConfig" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public
+// @alpha
 export interface SortSeriesByConfig {
     default?: SeriesCompareFn;
     legend?: SeriesCompareFn;
