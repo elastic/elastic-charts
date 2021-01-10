@@ -19,7 +19,7 @@
 
 import { SeriesKey, SeriesIdentifier } from '../../../../commons/series_id';
 import { Scale } from '../../../../scales';
-import { GroupBySpec, SeriesCompareFn, SortSeriesByConfig } from '../../../../specs';
+import { GroupBySpec, SortSeriesByConfig } from '../../../../specs';
 import { OrderBy } from '../../../../specs/settings';
 import { mergePartial, Rotation, Color, isUniqueArray } from '../../../../utils/commons';
 import { CurveType } from '../../../../utils/curves';
@@ -34,7 +34,7 @@ import {
   PerPanel,
 } from '../../../../utils/geometry';
 import { GroupId, SpecId } from '../../../../utils/ids';
-import { getRenderingCompareFn } from '../../../../utils/series_sort';
+import { getRenderingCompareFn, SeriesCompareFn } from '../../../../utils/series_sort';
 import { ColorConfig, Theme } from '../../../../utils/themes/theme';
 import { getPredicateFn, Predicate } from '../../../heatmap/utils/commons';
 import { XDomain } from '../../domains/types';

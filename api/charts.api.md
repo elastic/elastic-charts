@@ -1490,9 +1490,6 @@ export type SeriesColorAccessorFn = (seriesIdentifier: XYChartSeriesIdentifier) 
 // @public (undocumented)
 export type SeriesColorsArray = string[];
 
-// @alpha
-export type SeriesCompareFn = (siA: SeriesIdentifier, siB: SeriesIdentifier) => number;
-
 // @public
 export type SeriesIdentifier = {
     specId: SpecId;
@@ -1691,14 +1688,6 @@ export interface SmallMultiplesSpec extends Spec {
         verticalPanelPadding?: [number, number];
         horizontalPanelPadding?: [number, number];
     };
-}
-
-// @alpha
-export interface SortSeriesByConfig {
-    default?: SeriesCompareFn;
-    legend?: SeriesCompareFn;
-    rendering?: SeriesCompareFn;
-    tooltip?: SeriesCompareFn;
 }
 
 // Warning: (ae-missing-release-tag) "Spec" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
