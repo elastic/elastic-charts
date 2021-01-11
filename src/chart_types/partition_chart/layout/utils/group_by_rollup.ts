@@ -17,6 +17,8 @@
  * under the License.
  */
 
+import { CategoryKey } from '../../../../commons/category';
+import { LegendPath } from '../../../../state/actions/legend';
 import { Datum } from '../../../../utils/commons';
 import { Relation } from '../types/types';
 
@@ -46,7 +48,7 @@ export interface ArrayNode extends NodeDescriptor {
   [CHILDREN_KEY]: HierarchyOfArrays;
   [PARENT_KEY]: ArrayNode;
   [SORT_INDEX_KEY]: number;
-  [PATH_KEY]: number[];
+  [PATH_KEY]: LegendPath;
 }
 
 type HierarchyOfMaps = Map<Key, MapNode>;
@@ -56,10 +58,8 @@ interface MapNode extends NodeDescriptor {
 }
 
 export type PrimitiveValue = string | number | null; // there could be more but sufficient for now
-type Key = PrimitiveValue;
-
-export type Sorter = (a: number, b: number) => number;
-
+type Key = CategoryKey;
+type Sorter = (a: number, b: number) => number;
 type NodeSorter = (a: ArrayEntry, b: ArrayEntry) => number;
 
 export const entryKey = ([key]: ArrayEntry) => key;
@@ -139,11 +139,11 @@ function getRootArrayNode(): ArrayNode {
     [DEPTH_KEY]: NaN,
     [CHILDREN_KEY]: children,
     [INPUT_KEY]: [] as number[],
-    [PATH_KEY]: [] as number[],
+    [PATH_KEY]: [] as LegendPath,
     [SORT_INDEX_KEY]: 0,
     [STATISTICS_KEY]: { globalAggregate: 0 },
   };
-  return { ...bootstrap, [PARENT_KEY]: bootstrap } as ArrayNode; // TS doesn't yet handle bootstrapping but the `Omit` above retains guarantee for all props except `[PARENT_KEY`
+  return { ...bootstrap, [PARENT_KEY]: bootstrap } as ArrayNode; // TS doesn't yet handle bootstrapping but the `Omit` above retains guarantee for all props except `[PARENT_KEY]`
 }
 
 /** @internal */
@@ -180,9 +180,9 @@ export function mapsToArrays(root: HierarchyOfMaps, sorter: NodeSorter | null): 
     });
   }; // with the current algo, decreasing order is important
   const tree = groupByMap(root, getRootArrayNode());
-  const buildPaths = ([, mapNode]: ArrayEntry, currentPath: number[]) => {
-    const newPath = [...currentPath, mapNode[SORT_INDEX_KEY]];
-    mapNode[PATH_KEY] = newPath;
+  const buildPaths = ([key, mapNode]: ArrayEntry, currentPath: LegendPath) => {
+    const newPath = [...currentPath, { index: mapNode[SORT_INDEX_KEY], value: key }];
+    mapNode[PATH_KEY] = newPath; // in-place mutation, so disabled `no-param-reassign`
     mapNode.children.forEach((entry) => buildPaths(entry, newPath));
   };
   buildPaths(tree[0], []);

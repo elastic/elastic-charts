@@ -127,6 +127,7 @@ export function computeLegend(
       isItemHidden: hideInLegend,
       isToggleable: true,
       defaultExtra: getLegendExtra(showLegendExtra, spec.xScaleType, formatter, 'y1', lastValue),
+      path: [],
     });
     if (banded) {
       const labelY0 = getBandedLegendItemLabel(name, BandedAccessorType.Y0, postFixes);
@@ -139,6 +140,7 @@ export function computeLegend(
         isItemHidden: hideInLegend,
         isToggleable: true,
         defaultExtra: getLegendExtra(showLegendExtra, spec.xScaleType, formatter, 'y0', lastValue),
+        path: [],
       });
     }
   });
