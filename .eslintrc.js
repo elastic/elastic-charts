@@ -80,6 +80,7 @@ module.exports = {
     'import/no-dynamic-require': 1,
     'no-shadow': 1,
     'no-param-reassign': 1,
+    '@typescript-eslint/comma-spacing': 0,
     'react/no-array-index-key': 1,
     'react/prefer-stateless-function': 1,
     'jsx-a11y/no-static-element-interactions': 1,
