@@ -106,12 +106,11 @@ export function groupByRollup(
     let pointer: HierarchyOfMaps = p;
     keyAccessors.forEach((keyAccessor, i) => {
       const key = keyAccessor(n, index);
-      const keyExists = pointer.has(key);
       const last = i === keyCount - 1;
-      const node = keyExists && pointer.get(key);
-      const inputIndices = node ? (node[INPUT_KEY] as number[]) : [];
-      const childrenMap: HierarchyOfMaps = (node ? node[CHILDREN_KEY] : new Map()) as HierarchyOfMaps;
-      const aggregate = node ? node[AGGREGATE_KEY] : identity();
+      const node = pointer.get(key);
+      const inputIndices = node?.[INPUT_KEY] ?? [];
+      const childrenMap = node?.[CHILDREN_KEY] ?? new Map();
+      const aggregate = node?.[AGGREGATE_KEY] ?? identity();
       const reductionValue = reducer(aggregate, valueAccessor(n));
       pointer.set(key, {
         [AGGREGATE_KEY]: reductionValue,
