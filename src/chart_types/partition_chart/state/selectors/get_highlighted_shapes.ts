@@ -28,35 +28,35 @@ import { partitionGeometries } from './geometries';
 const getHighlightedLegendItemPath = (state: GlobalChartState) => state.interactions.highlightedLegendPath;
 
 const logic = {
-  0: (legendPath: LegendPath) => ({ path }: QuadViewModel) =>
+  node: (legendPath: LegendPath) => ({ path }: QuadViewModel) =>
     // highlight exact match in the path only
     legendPath.length === path.length &&
     legendPath.every(({ index, value }, i) => index === path[i]?.index && value === path[i]?.value),
 
-  1: (legendPath: LegendPath) => ({ path }: QuadViewModel) =>
+  path: (legendPath: LegendPath) => ({ path }: QuadViewModel) =>
     // highlight members of the exact path; ie. exact match in the path, plus all its ancestors
     path.every(({ index, value }, i) => index === legendPath[i]?.index && value === legendPath[i]?.value),
 
-  2: (legendPath: LegendPath) => ({ dataName, path }: QuadViewModel) =>
+  keyInLayer: (legendPath: LegendPath) => ({ dataName, path }: QuadViewModel) =>
     // highlight all identically named items which are within the same depth (ring) as the hovered legend depth
     legendPath.length === path.length && dataName === legendPath[legendPath.length - 1].value,
 
-  3: (legendPath: LegendPath) => ({ dataName }: QuadViewModel) =>
+  key: (legendPath: LegendPath) => ({ dataName }: QuadViewModel) =>
     // highlight all identically named items, no matter where they are
     dataName === legendPath[legendPath.length - 1].value,
 
-  4: (legendPath: LegendPath) => ({ path }: QuadViewModel) =>
+  nodeWithDescendants: (legendPath: LegendPath) => ({ path }: QuadViewModel) =>
     // highlight exact match in the path, and everything that is its descendant in that branch
     legendPath.every(({ index, value }, i) => index === path[i]?.index && value === path[i]?.value),
 
-  5: (legendPath: LegendPath) => ({ path }: QuadViewModel) =>
+  pathWithDescendants: (legendPath: LegendPath) => ({ path }: QuadViewModel) =>
     // highlight exact match in the path, and everything that is its ancestor, or its descendant in that branch
     legendPath
       .slice(0, path.length)
       .every(({ index, value }, i) => index === path[i]?.index && value === path[i]?.value),
 };
 
-const pickedLogic = 3;
+const pickedLogic: keyof typeof logic = 'key';
 
 /** @internal */
 // why is it called highlighted... when it's a legend hover related thing, not a hover over the slices?
