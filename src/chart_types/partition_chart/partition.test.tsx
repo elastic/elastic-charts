@@ -96,7 +96,10 @@ describe('Retain hierarchy even with arbitrary names', () => {
         {
           childId: 'A',
           color: 'rgba(128, 0, 0, 0.5)',
-          dataName: 'A',
+          path: [
+            { index: 0, value: null },
+            { index: 0, value: 'A' },
+          ],
           depth: 0,
           label: 'A',
           seriesIdentifier: { key: 'A', specId: 'spec1' },
@@ -104,7 +107,11 @@ describe('Retain hierarchy even with arbitrary names', () => {
         {
           childId: 'A',
           color: 'rgba(128, 0, 0, 0.5)',
-          dataName: 'A',
+          path: [
+            { index: 0, value: null },
+            { index: 0, value: 'A' },
+            { index: 0, value: 'A' },
+          ],
           depth: 1,
           label: 'A',
           seriesIdentifier: { key: 'A', specId: 'spec1' },
@@ -112,7 +119,11 @@ describe('Retain hierarchy even with arbitrary names', () => {
         {
           childId: 'B',
           color: 'rgba(128, 0, 0, 0.5)',
-          dataName: 'B',
+          path: [
+            { index: 0, value: null },
+            { index: 0, value: 'A' },
+            { index: 1, value: 'B' },
+          ],
           depth: 1,
           label: 'B',
           seriesIdentifier: { key: 'B', specId: 'spec1' },
@@ -120,7 +131,10 @@ describe('Retain hierarchy even with arbitrary names', () => {
         {
           childId: 'B',
           color: 'rgba(128, 0, 0, 0.5)',
-          dataName: 'B',
+          path: [
+            { index: 0, value: null },
+            { index: 1, value: 'B' },
+          ],
           depth: 0,
           label: 'B',
           seriesIdentifier: { key: 'B', specId: 'spec1' },
@@ -128,7 +142,11 @@ describe('Retain hierarchy even with arbitrary names', () => {
         {
           childId: 'A',
           color: 'rgba(128, 0, 0, 0.5)',
-          dataName: 'A',
+          path: [
+            { index: 0, value: null },
+            { index: 1, value: 'B' },
+            { index: 0, value: 'A' },
+          ],
           depth: 1,
           label: 'A',
           seriesIdentifier: { key: 'A', specId: 'spec1' },
@@ -136,7 +154,11 @@ describe('Retain hierarchy even with arbitrary names', () => {
         {
           childId: 'B',
           color: 'rgba(128, 0, 0, 0.5)',
-          dataName: 'B',
+          path: [
+            { index: 0, value: null },
+            { index: 1, value: 'B' },
+            { index: 1, value: 'B' },
+          ],
           depth: 1,
           label: 'B',
           seriesIdentifier: { key: 'B', specId: 'spec1' },
@@ -144,7 +166,10 @@ describe('Retain hierarchy even with arbitrary names', () => {
         {
           childId: 'C',
           color: 'rgba(128, 0, 0, 0.5)',
-          dataName: 'C',
+          path: [
+            { index: 0, value: null },
+            { index: 2, value: 'C' },
+          ],
           depth: 0,
           label: 'C',
           seriesIdentifier: { key: 'C', specId: 'spec1' },
@@ -152,7 +177,11 @@ describe('Retain hierarchy even with arbitrary names', () => {
         {
           childId: 'A',
           color: 'rgba(128, 0, 0, 0.5)',
-          dataName: 'A',
+          path: [
+            { index: 0, value: null },
+            { index: 2, value: 'C' },
+            { index: 0, value: 'A' },
+          ],
           depth: 1,
           label: 'A',
           seriesIdentifier: { key: 'A', specId: 'spec1' },
@@ -160,7 +189,11 @@ describe('Retain hierarchy even with arbitrary names', () => {
         {
           childId: 'B',
           color: 'rgba(128, 0, 0, 0.5)',
-          dataName: 'B',
+          path: [
+            { index: 0, value: null },
+            { index: 2, value: 'C' },
+            { index: 1, value: 'B' },
+          ],
           depth: 1,
           label: 'B',
           seriesIdentifier: { key: 'B', specId: 'spec1' },
@@ -174,7 +207,16 @@ describe('Retain hierarchy even with arbitrary names', () => {
         {
           childId: 'A',
           color: 'rgba(128, 0, 0, 0.5)',
-          dataName: 'A',
+          path: [
+            {
+              index: 0,
+              value: null,
+            },
+            {
+              index: 0,
+              value: 'A',
+            },
+          ],
           depth: 0,
           label: 'A',
           seriesIdentifier: { key: 'A', specId: 'spec1' },
@@ -182,7 +224,21 @@ describe('Retain hierarchy even with arbitrary names', () => {
         {
           childId: 'A',
           color: 'rgba(128, 0, 0, 0.5)',
-          dataName: 'A',
+          path: [
+            {
+              index: 0,
+              value: null,
+            },
+            {
+              index: 0,
+              value: 'A',
+            },
+            {
+              index: 0,
+              value: 'A',
+            },
+          ],
+
           depth: 1,
           label: 'A',
           seriesIdentifier: { key: 'A', specId: 'spec1' },
@@ -196,7 +252,16 @@ describe('Retain hierarchy even with arbitrary names', () => {
         {
           childId: 'C',
           color: 'rgba(128, 0, 0, 0.5)',
-          dataName: 'C',
+          path: [
+            {
+              index: 0,
+              value: null,
+            },
+            {
+              index: 0,
+              value: 'C',
+            },
+          ],
           depth: 0,
           label: 'C',
           seriesIdentifier: { key: 'C', specId: 'spec1' },
@@ -204,7 +269,20 @@ describe('Retain hierarchy even with arbitrary names', () => {
         {
           childId: 'B',
           color: 'rgba(128, 0, 0, 0.5)',
-          dataName: 'B',
+          path: [
+            {
+              index: 0,
+              value: null,
+            },
+            {
+              index: 0,
+              value: 'C',
+            },
+            {
+              index: 0,
+              value: 'B',
+            },
+          ],
           depth: 1,
           label: 'B',
           seriesIdentifier: { key: 'B', specId: 'spec1' },
