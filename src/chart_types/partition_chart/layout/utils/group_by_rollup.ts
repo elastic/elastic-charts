@@ -181,7 +181,6 @@ export function mapsToArrays(root: HierarchyOfMaps, sorter: NodeSorter | null): 
   const tree = groupByMap(root, getRootArrayNode());
   const buildPaths = ([, mapNode]: ArrayEntry, currentPath: number[]) => {
     const newPath = [...currentPath, mapNode[SORT_INDEX_KEY]];
-    // eslint-disable-next-line no-param-reassign
     mapNode[PATH_KEY] = newPath;
     mapNode.children.forEach((entry) => buildPaths(entry, newPath));
   };

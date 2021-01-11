@@ -59,7 +59,6 @@ const flatTree = ({ c, n, v }: Node, depth: number): Row[] => {
     childrenRows.push({ [`layer_${depth + 1}`]: undefined, value: missing / 2, depth });
   }
   childrenRows.forEach((innerChild) => {
-    // eslint-disable-next-line no-param-reassign
     innerChild[`layer_${depth}`] = n;
   });
   return childrenRows;

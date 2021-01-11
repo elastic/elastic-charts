@@ -81,7 +81,7 @@ module.exports = {
     'global-require': 1,
     'import/no-dynamic-require': 1,
     'no-shadow': 1,
-    'no-param-reassign': 1,
+    'no-param-reassign': [1, { props: false }],
     '@typescript-eslint/comma-spacing': 0,
     'react/no-array-index-key': 1,
     'react/prefer-stateless-function': 1,
