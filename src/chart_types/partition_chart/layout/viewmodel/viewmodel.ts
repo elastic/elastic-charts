@@ -198,14 +198,14 @@ const rawChildNodes = (
     case PartitionLayout.icicle:
       const icicleValueToAreaScale = width / totalValue;
       const icicleAreaAccessor = (e: ArrayEntry) => icicleValueToAreaScale * mapEntryValue(e);
-      const rowHeight = height / maxDepth;
+      const icicleRowHeight = height / maxDepth;
       return sunburst(
         tree,
         icicleAreaAccessor,
-        { x0: -width / 2, y0: -height / 2 - rowHeight },
+        { x0: -width / 2, y0: -height / 2 - icicleRowHeight },
         true,
         false,
-        height / maxDepth,
+        icicleRowHeight,
       );
 
     case PartitionLayout.flame:
@@ -218,7 +218,7 @@ const rawChildNodes = (
         { x0: -width / 2, y0: -height / 2 - flameRowHeight },
         true,
         false,
-        height / maxDepth,
+        flameRowHeight,
       );
 
     default:
@@ -275,7 +275,7 @@ export function shapeViewModel(
   const flameLayout = partitionLayout === PartitionLayout.flame;
   const longestPath = ([, { children, path }]: ArrayEntry): number =>
     children.length > 0 ? children.reduce((p, n) => Math.max(p, longestPath(n)), 0) : path.length;
-  const maxDepth = longestPath(tree[0]);
+  const maxDepth = longestPath(tree[0]) - 2; // don't include the root node
   const childNodes = rawChildNodes(
     partitionLayout,
     tree,
