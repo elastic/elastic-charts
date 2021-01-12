@@ -78,7 +78,7 @@ const layerSpec = [...new Array(maxDepth + 1)].map((_, depth) => ({
 
 export const Example = () => {
   return (
-    <Chart className="story-chart" size={{ height: 700 }}>
+    <Chart className="story-chart" size={{ height: 512 }}>
       <Settings showLegend flatLegend legendMaxDepth={18} theme={STORYBOOK_LIGHT_THEME} />
       <Partition
         id="spec_1"

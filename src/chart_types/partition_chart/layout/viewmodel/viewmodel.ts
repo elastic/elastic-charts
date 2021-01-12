@@ -196,30 +196,23 @@ const rawChildNodes = (
       });
 
     case PartitionLayout.icicle:
+    case PartitionLayout.flame:
+      const icicleLayout = partitionLayout === PartitionLayout.icicle;
+      const multiplier = icicleLayout ? -1 : 1;
       const icicleValueToAreaScale = width / totalValue;
       const icicleAreaAccessor = (e: ArrayEntry) => icicleValueToAreaScale * mapEntryValue(e);
       const icicleRowHeight = height / maxDepth;
-      return sunburst(
+      const result = sunburst(
         tree,
         icicleAreaAccessor,
-        { x0: -width / 2, y0: -height / 2 - icicleRowHeight },
+        { x0: -width / 2, y0: (multiplier * height) / 2 - icicleRowHeight },
         true,
         false,
         icicleRowHeight,
       );
-
-    case PartitionLayout.flame:
-      const flameValueToAreaScale = width / totalValue;
-      const flameAreaAccessor = (e: ArrayEntry) => flameValueToAreaScale * mapEntryValue(e);
-      const flameRowHeight = height / maxDepth;
-      return sunburst(
-        tree,
-        flameAreaAccessor,
-        { x0: -width / 2, y0: -height / 2 - flameRowHeight },
-        true,
-        false,
-        flameRowHeight,
-      );
+      return icicleLayout
+        ? result
+        : result.map(({ y0, y1, ...rest }) => ({ y0: height - y1, y1: height - y0, ...rest }));
 
     default:
       // Let's ensure TS complains if we add a new PartitionLayout type in the future without creating a `case` for it

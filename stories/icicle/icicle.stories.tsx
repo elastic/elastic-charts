@@ -20,10 +20,11 @@
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export default {
-  title: 'Icicle (@alpha)',
+  title: 'Flame (@alpha)',
   parameters: {
     options: { selectedPanel: SB_SOURCE_PANEL },
   },
 };
 
-export { Example as icicleChart } from './01_unix';
+export { Example as flameChart } from './02_unix_flame';
+export { Example as icicleChart } from './01_unix_icicle';
