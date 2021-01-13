@@ -134,15 +134,16 @@ export function groupByRollup(
 
 function getRootArrayNode(): ArrayNode {
   const children: HierarchyOfArrays = [];
-  const bootstrap = {
+  const bootstrap: Omit<ArrayNode, typeof PARENT_KEY> = {
     [AGGREGATE_KEY]: NaN,
     [DEPTH_KEY]: NaN,
     [CHILDREN_KEY]: children,
     [INPUT_KEY]: [] as number[],
     [PATH_KEY]: [] as number[],
+    [SORT_INDEX_KEY]: 0,
+    [STATISTICS_KEY]: { globalAggregate: 0 },
   };
-  Object.assign(bootstrap, { [PARENT_KEY]: bootstrap });
-  return bootstrap as ArrayNode;
+  return { ...bootstrap, [PARENT_KEY]: bootstrap } as ArrayNode; // TS doesn't yet handle bootstrapping but the `Omit` above retains guarantee for all props except `[PARENT_KEY`
 }
 
 /** @internal */
