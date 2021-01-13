@@ -23,9 +23,10 @@ import { ChartTypes } from '../../..';
 import { SpecTypes } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getSpecsFromStore } from '../../../../state/utils';
-import { PartitionLayout } from '../../layout/types/config_types';
+import { configMetadata } from '../../layout/config/config';
 import { childOrders, HierarchyOfArrays } from '../../layout/utils/group_by_rollup';
 import { getHierarchyOfArrays } from '../../layout/viewmodel/hierarchy_of_arrays';
+import { isSunburst, isTreemap } from '../../layout/viewmodel/viewmodel';
 import { PartitionSpec } from '../../specs';
 
 const getSpecs = (state: GlobalChartState) => state.specs;
@@ -39,9 +40,8 @@ export const getTree = createCachedSelector(
       return [];
     }
     const { data, valueAccessor, layers } = pieSpecs[0];
-    const layout = pieSpecs[0].config.partitionLayout;
-    const sorter =
-      layout === PartitionLayout.treemap || layout === PartitionLayout.sunburst ? childOrders.descending : null;
+    const layout = pieSpecs[0].config.partitionLayout ?? configMetadata.partitionLayout.dflt;
+    const sorter = isTreemap(layout) || isSunburst(layout) ? childOrders.descending : null;
     return getHierarchyOfArrays(
       data,
       valueAccessor,

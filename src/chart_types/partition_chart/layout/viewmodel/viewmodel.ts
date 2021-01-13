@@ -103,7 +103,7 @@ export function makeQuadViewModel(
     const opacityMultiplier = 1; // could alter in the future, eg. in response to interactions
     const layer = layers[node.depth - 1];
     const fillColorSpec = layer && layer.shape && layer.shape.fillColor;
-    const fill = fillColorSpec || 'rgba(128,0,0,0.5)';
+    const fill = fillColorSpec ?? 'rgba(128,0,0,0.5)';
     const shapeFillColor = typeof fill === 'function' ? fill(node, node.sortIndex, node.parent.children) : fill;
     const { r, g, b, opacity } = stringToRGB(shapeFillColor);
     const fillColor = argsToRGBString(r, g, b, opacity * opacityMultiplier);
@@ -185,7 +185,7 @@ const rawChildNodes = (
       return sunburst(tree, sunburstAreaAccessor, { x0: 0, y0: -1 }, clockwiseSectors, specialFirstInnermostSector);
 
     case PartitionLayout.treemap:
-      const treemapInnerArea = partitionLayout === PartitionLayout.treemap ? width * height : 1; // assuming 1 x 1 unit square
+      const treemapInnerArea = isTreemap(partitionLayout) ? width * height : 1; // assuming 1 x 1 unit square
       const treemapValueToAreaScale = treemapInnerArea / totalValue;
       const treemapAreaAccessor = (e: ArrayEntry) => treemapValueToAreaScale * mapEntryValue(e);
       return treemap(tree, treemapAreaAccessor, topGrooveAccessor(topGroove), grooveAccessor, {
@@ -197,7 +197,7 @@ const rawChildNodes = (
 
     case PartitionLayout.icicle:
     case PartitionLayout.flame:
-      const icicleLayout = partitionLayout === PartitionLayout.icicle;
+      const icicleLayout = isIcicle(partitionLayout);
       const multiplier = icicleLayout ? -1 : 1;
       const icicleValueToAreaScale = width / totalValue;
       const icicleAreaAccessor = (e: ArrayEntry) => icicleValueToAreaScale * mapEntryValue(e);
@@ -218,9 +218,14 @@ const rawChildNodes = (
       // Let's ensure TS complains if we add a new PartitionLayout type in the future without creating a `case` for it
       // Hopefully, a future TS version will do away with the need for this boilerplate `default`. Now TS even needs a `default` even if all possible cases are covered.
       // Even in runtime it does something sensible (returns the empty set); explicit throwing is avoided as it can deopt the function
-      return ((layout: never) => layout || [])(partitionLayout);
+      return ((layout: never) => layout ?? [])(partitionLayout);
   }
 };
+
+export const isTreemap = (partitionLayout: PartitionLayout) => partitionLayout === PartitionLayout.treemap;
+export const isSunburst = (partitionLayout: PartitionLayout) => partitionLayout === PartitionLayout.sunburst;
+const isIcicle = (partitionLayout: PartitionLayout) => partitionLayout === PartitionLayout.icicle;
+const isFlame = (partitionLayout: PartitionLayout) => partitionLayout === PartitionLayout.flame;
 
 /** @internal */
 export function shapeViewModel(
@@ -262,10 +267,10 @@ export function shapeViewModel(
     return nullShapeViewModel(config, diskCenter);
   }
 
-  const treemapLayout = partitionLayout === PartitionLayout.treemap;
-  const sunburstLayout = partitionLayout === PartitionLayout.sunburst;
-  const icicleLayout = partitionLayout === PartitionLayout.icicle;
-  const flameLayout = partitionLayout === PartitionLayout.flame;
+  const treemapLayout = isTreemap(partitionLayout);
+  const sunburstLayout = isSunburst(partitionLayout);
+  const icicleLayout = isIcicle(partitionLayout);
+  const flameLayout = isFlame(partitionLayout);
   const longestPath = ([, { children, path }]: ArrayEntry): number =>
     children.length > 0 ? children.reduce((p, n) => Math.max(p, longestPath(n)), 0) : path.length;
   const maxDepth = longestPath(tree[0]) - 2; // don't include the root node
@@ -303,35 +308,31 @@ export function shapeViewModel(
   // fill text
   const roomCondition = (n: ShapeTreeNode) => {
     const diff = n.x1 - n.x0;
-    return treemapLayout || icicleLayout || flameLayout
-      ? n.x1 - n.x0 > minFontSize && n.y1px - n.y0px > minFontSize
-      : (diff < 0 ? TAU + diff : diff) * ringSectorMiddleRadius(n) > Math.max(minFontSize, linkLabel.maximumSection);
+    return sunburstLayout
+      ? (diff < 0 ? TAU + diff : diff) * ringSectorMiddleRadius(n) > Math.max(minFontSize, linkLabel.maximumSection)
+      : n.x1 - n.x0 > minFontSize && n.y1px - n.y0px > minFontSize;
   };
 
   const nodesWithRoom = quadViewModel.filter(roomCondition);
   const outsideFillNodes = fillOutside && sunburstLayout ? nodesWithRoom : [];
 
-  const textFillOrigins = nodesWithRoom.map(
-    treemapLayout || icicleLayout || flameLayout ? rectangleFillOrigins : sectorFillOrigins(fillOutside),
-  );
+  const textFillOrigins = nodesWithRoom.map(sunburstLayout ? sectorFillOrigins(fillOutside) : rectangleFillOrigins);
 
   const valueFormatter = valueGetter === percentValueGetter ? specifiedPercentFormatter : specifiedValueFormatter;
 
-  const getRowSets =
-    treemapLayout || icicleLayout || flameLayout
-      ? fillTextLayout(
-          rectangleConstruction(treeHeight, treemapLayout ? topGroove : null),
-          getRectangleRowGeometry,
-          () => 0,
-          containerBackgroundColor,
-        )
-      : fillTextLayout(
-          ringSectorConstruction(config, innerRadius, ringThickness),
-          getSectorRowGeometry,
-          inSectorRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
-          containerBackgroundColor,
-        );
-
+  const getRowSets = sunburstLayout
+    ? fillTextLayout(
+        ringSectorConstruction(config, innerRadius, ringThickness),
+        getSectorRowGeometry,
+        inSectorRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
+        containerBackgroundColor,
+      )
+    : fillTextLayout(
+        rectangleConstruction(treeHeight, treemapLayout ? topGroove : null),
+        getRectangleRowGeometry,
+        () => 0,
+        containerBackgroundColor,
+      );
   const rowSets: RowSet[] = getRowSets(
     textMeasure,
     rawTextGetter,
@@ -358,7 +359,7 @@ export function shapeViewModel(
           const id = nodeId(n);
           const foundInFillText = rowSets.find((r: RowSet) => r.id === id);
           // successful text render if found, and has some row(s)
-          return !(foundInFillText && foundInFillText.rows.length !== 0);
+          return !(foundInFillText && foundInFillText.rows.length > 0);
         });
   const maxLinkedLabelTextLength = config.linkLabel.maxTextLength;
   const linkLabelViewModels = linkTextLayout(
