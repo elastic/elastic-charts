@@ -17,22 +17,14 @@
  * under the License.
  */
 
-import React from 'react';
+import { SB_SOURCE_PANEL } from '../utils/storybook';
 
-import { deepEqual } from '../../../utils/fast_deep_equal';
-import { IconComponentProps } from '../icon';
+export default {
+  title: 'Flame (@alpha)',
+  parameters: {
+    options: { selectedPanel: SB_SOURCE_PANEL },
+  },
+};
 
-/** @internal */
-export class DotIcon extends React.Component<IconComponentProps> {
-  shouldComponentUpdate(nextProps: IconComponentProps) {
-    return !deepEqual(this.props, nextProps);
-  }
-
-  render() {
-    return (
-      <svg width={16} height={16} viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" {...this.props}>
-        <circle cx={8} cy={8} r={4} />
-      </svg>
-    );
-  }
-}
+export { Example as flameChart } from './02_unix_flame';
+export { Example as icicleChart } from './01_unix_icicle';

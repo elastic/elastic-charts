@@ -19,20 +19,25 @@
 
 import React from 'react';
 
-import { deepEqual } from '../../../utils/fast_deep_equal';
-import { IconComponentProps } from '../icon';
+import { Chart, Datum, Partition, PartitionLayout, Settings } from '../../src';
+import { STORYBOOK_LIGHT_THEME } from '../shared';
+import { config, getFlatData, getLayerSpec, maxDepth } from '../utils/hierarchical_input_utils';
+import { plasma18 as palette } from '../utils/utils';
 
-/** @internal */
-export class DotIcon extends React.Component<IconComponentProps> {
-  shouldComponentUpdate(nextProps: IconComponentProps) {
-    return !deepEqual(this.props, nextProps);
-  }
+const color = palette.slice().reverse();
 
-  render() {
-    return (
-      <svg width={16} height={16} viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" {...this.props}>
-        <circle cx={8} cy={8} r={4} />
-      </svg>
-    );
-  }
-}
+export const Example = () => {
+  return (
+    <Chart className="story-chart">
+      <Settings showLegend flatLegend legendMaxDepth={maxDepth} theme={STORYBOOK_LIGHT_THEME} />
+      <Partition
+        id="spec_1"
+        data={getFlatData()}
+        valueAccessor={(d: Datum) => d.value as number}
+        valueFormatter={() => ''}
+        layers={getLayerSpec(color)}
+        config={{ ...config, partitionLayout: PartitionLayout.flame }}
+      />
+    </Chart>
+  );
+};
