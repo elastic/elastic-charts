@@ -309,7 +309,7 @@ export function shapeViewModel(
   };
 
   const nodesWithRoom = quadViewModel.filter(roomCondition);
-  const outsideFillNodes = fillOutside && !treemapLayout && !icicleLayout && !flameLayout ? nodesWithRoom : [];
+  const outsideFillNodes = fillOutside && sunburstLayout ? nodesWithRoom : [];
 
   const textFillOrigins = nodesWithRoom.map(
     treemapLayout || icicleLayout || flameLayout ? rectangleFillOrigins : sectorFillOrigins(fillOutside),
