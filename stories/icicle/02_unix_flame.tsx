@@ -28,7 +28,7 @@ const color = palette.slice().reverse();
 
 export const Example = () => {
   return (
-    <Chart className="story-chart" size={{ height: 512 }}>
+    <Chart className="story-chart" size={{ width: 1024 }}>
       <Settings showLegend flatLegend legendMaxDepth={maxDepth} theme={STORYBOOK_LIGHT_THEME} />
       <Partition
         id="spec_1"
