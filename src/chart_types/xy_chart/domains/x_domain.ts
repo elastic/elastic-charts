@@ -185,13 +185,11 @@ export function convertXScaleTypes(
   isBandScale: boolean;
   timeZone?: string;
 } | null {
-  const seriesTypes = new Set<string>();
+  const seriesTypes = new Set<string | undefined>();
   const scaleTypes = new Set<ScaleType>();
   const timeZones = new Set<string>();
   specs.forEach((spec) => {
-    if (spec.seriesType) {
-      seriesTypes.add(spec.seriesType);
-    }
+    seriesTypes.add(spec.seriesType);
     scaleTypes.add(spec.xScaleType);
     if (spec.timeZone) {
       timeZones.add(spec.timeZone.toLowerCase());
