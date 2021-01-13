@@ -43,9 +43,6 @@ const flatTree = ({ c, n, v }: Node, depth: number): Row[] => {
     return [{ [`layer_${depth}`]: n, value: v, depth }];
   }
   // looks like our test runner can't run c.flatMap(...)
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  // eslint-disable-next-line prefer-spread
   const childrenRows = c.reduce<Row[]>((a, child) => [...a, ...flatTree(child, depth + 1)], []);
   const childrenTotal = childrenRows.reduce((p, { value }) => p + value, 0);
   const missing = Math.max(0, v - childrenTotal);
