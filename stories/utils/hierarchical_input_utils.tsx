@@ -77,8 +77,8 @@ export const config: RecursivePartial<Config> = {
     fontWeight: 500,
   },
   margin: { top: 0, bottom: 0, left: 0, right: 0 },
-  minFontSize: 4,
-  maxFontSize: 8,
+  minFontSize: 5,
+  maxFontSize: 9,
   idealFontSizeJump: 1.01,
   backgroundColor: 'rgba(229,229,229,1)',
 };
