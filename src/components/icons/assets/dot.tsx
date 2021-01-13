@@ -29,16 +29,8 @@ export class DotIcon extends React.Component<IconComponentProps> {
   }
 
   render() {
-    const { color } = this.props;
     return (
-      <svg
-        width={16}
-        height={16}
-        viewBox="0 0 16 16"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-labelledby={color}
-        {...this.props}
-      >
+      <svg width={16} height={16} viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" {...this.props}>
         <circle cx={8} cy={8} r={4} />
       </svg>
     );
