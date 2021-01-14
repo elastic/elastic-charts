@@ -93,7 +93,7 @@ function getCursorBand(
   isTooltipSnapEnabled: boolean,
   geometriesIndexKeys: (string | number)[],
   smallMultipleScales: SmallMultipleScales,
-): (Dimensions & { visible: boolean; fromExternalEvent: boolean }) | undefined {
+): (Dimensions & { visible: boolean; isLine?: boolean; fromExternalEvent: boolean }) | undefined {
   if (!xScale) {
     return;
   }

@@ -38,7 +38,7 @@ import { isHorizontalRotation } from '../../state/utils/common';
 interface CrosshairProps {
   theme: Theme;
   chartRotation: Rotation;
-  cursorBandPosition?: Dimensions;
+  cursorBandPosition?: Dimensions & { isLine?: boolean };
   cursorLinePosition?: Dimensions;
   tooltipType: TooltipType;
   fromExternalEvent?: boolean;
@@ -59,7 +59,7 @@ class CrosshairComponent extends React.Component<CrosshairProps> {
   renderBand() {
     const {
       theme: {
-        crosshair: { band },
+        crosshair: { band, line },
       },
       cursorBandPosition,
       tooltipType,
@@ -69,12 +69,27 @@ class CrosshairComponent extends React.Component<CrosshairProps> {
     if (!cursorBandPosition || !canRenderBand(tooltipType, band.visible, fromExternalEvent)) {
       return null;
     }
+    const { width, left, top, height, isLine } = cursorBandPosition;
     const style: CSSProperties = {
-      ...cursorBandPosition,
-      background: band.fill,
+      transform: `translate(${left}px, ${top}px)`,
+      width,
+      height,
     };
+    const extraStyle = isLine
+      ? {
+          borderLeft: `${line.strokeWidth}px ${line.stroke} ${line.dash ? 'dashed' : 'solid'}`,
+          width: 0,
+          transform: `translate(${left - line.strokeWidth / 2}px, ${top}px)`,
+          height,
+        }
+      : {
+          background: band.fill,
+          transform: `translate(${left}px, ${top}px)`,
+          width,
+          height,
+        };
 
-    return <div className="echCrosshair__band" style={style} />;
+    return <div className="echCrosshair__band" style={{ ...style, ...extraStyle }} />;
   }
 
   renderLine() {

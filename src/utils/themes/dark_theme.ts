@@ -176,6 +176,12 @@ export const DARK_THEME: Theme = {
       visible: true,
     },
     line: {
+      stroke: '#535966',
+      strokeWidth: 3,
+      visible: true,
+      dash: [5, 5],
+    },
+    crossLine: {
       stroke: '#999',
       strokeWidth: 1,
       dash: [5, 5],

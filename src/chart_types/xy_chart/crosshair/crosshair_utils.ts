@@ -48,7 +48,7 @@ export function getSnapPosition(
     };
   }
   return {
-    position,
+    position: position - DEFAULT_SNAP_POSITION_BAND / 2,
     band: DEFAULT_SNAP_POSITION_BAND,
   };
 }
@@ -96,7 +96,7 @@ export function getCursorBandPosition(
   snapEnabled: boolean,
   xScale: Scale,
   totalBarsInCluster?: number,
-): Dimensions & { visible: boolean } {
+): Dimensions & { visible: boolean; isLine?: boolean } {
   const { top, left, width, height } = panel;
   const { x, y } = cursorPosition;
   const isHorizontalRotated = isHorizontalRotation(chartRotation);
@@ -112,6 +112,7 @@ export function getCursorBandPosition(
       visible: false,
     };
   }
+
   const snappedPosition = getSnapPosition(invertedValue.value, xScale, totalBarsInCluster);
   if (!snappedPosition) {
     return {
@@ -142,6 +143,7 @@ export function getCursorBandPosition(
       width: adjustedWidth,
       height,
       visible: true,
+      isLine: band === 1,
     };
   }
   const adjustedTop = snapEnabled ? position : cursorPosition.x;
@@ -159,6 +161,7 @@ export function getCursorBandPosition(
     width,
     height: adjustedHeight,
     visible: true,
+    isLine: band === 1,
   };
 }
 
