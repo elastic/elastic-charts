@@ -24,7 +24,7 @@ import { SpecTypes } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getSpecsFromStore } from '../../../../state/utils';
 import { configMetadata } from '../../layout/config/config';
-import { childOrders, HierarchyOfArrays } from '../../layout/utils/group_by_rollup';
+import { childOrders, HierarchyOfArrays, hierarchyRootKey } from '../../layout/utils/group_by_rollup';
 import { getHierarchyOfArrays } from '../../layout/viewmodel/hierarchy_of_arrays';
 import { isSunburst, isTreemap } from '../../layout/viewmodel/viewmodel';
 import { PartitionSpec } from '../../specs';
@@ -45,7 +45,7 @@ export const getTree = createCachedSelector(
     return getHierarchyOfArrays(
       data,
       valueAccessor,
-      [() => null, ...layers.map(({ groupByRollup }) => groupByRollup)],
+      [() => hierarchyRootKey, ...layers.map(({ groupByRollup }) => groupByRollup)],
       sorter,
     );
   },
