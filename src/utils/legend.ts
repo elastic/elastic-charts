@@ -19,8 +19,8 @@
 
 import { Position } from './commons';
 
-export const horizontalLegend = (legendPosition: Position) =>
+export const isHorizontalLegend = (legendPosition: Position) =>
   legendPosition === Position.Bottom || legendPosition === Position.Top;
 
-export const hierarchicalLegend = (flatLegend: boolean | undefined, legendPosition: Position) =>
-  !flatLegend && !horizontalLegend(legendPosition);
+export const isHierarchicalLegend = (flatLegend: boolean | undefined, legendPosition: Position) =>
+  !flatLegend && !isHorizontalLegend(legendPosition);

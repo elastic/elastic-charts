@@ -24,7 +24,7 @@ import { LegendItem } from '../../../../commons/legend';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { identity } from '../../../../utils/commons';
-import { hierarchicalLegend } from '../../../../utils/legend';
+import { isHierarchicalLegend } from '../../../../utils/legend';
 import { QuadViewModel } from '../../layout/types/viewmodel_types';
 import { map } from '../iterables';
 import { partitionGeometries } from './geometries';
@@ -39,7 +39,7 @@ export const computeLegendSelector = createCachedSelector(
     }
 
     const uniqueNames = new Set(map(({ dataName, fillColor }) => makeKey(dataName, fillColor), quadViewModel));
-    const useHierarchicalLegend = hierarchicalLegend(flatLegend, legendPosition);
+    const useHierarchicalLegend = isHierarchicalLegend(flatLegend, legendPosition);
 
     const excluded: Set<string> = new Set();
     const items = quadViewModel.filter(({ depth, dataName, fillColor }) => {
