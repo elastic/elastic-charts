@@ -29,7 +29,13 @@ const color = palette.slice().reverse();
 export const Example = () => {
   return (
     <Chart className="story-chart">
-      <Settings showLegend flatLegend legendMaxDepth={maxDepth} theme={STORYBOOK_LIGHT_THEME} />
+      <Settings
+        showLegend
+        flatLegend
+        legendStrategy="pathWithDescendants"
+        legendMaxDepth={maxDepth}
+        theme={STORYBOOK_LIGHT_THEME}
+      />
       <Partition
         id="spec_1"
         data={getFlatData()}

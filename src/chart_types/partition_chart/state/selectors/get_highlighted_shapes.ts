@@ -18,7 +18,9 @@
  */
 
 import createCachedSelector from 're-reselect';
+import { $Keys } from 'utility-types';
 
+import { SettingsSpec } from '../../../../specs';
 import { LegendPath } from '../../../../state/actions/legend';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
@@ -26,8 +28,9 @@ import { QuadViewModel } from '../../layout/types/viewmodel_types';
 import { partitionGeometries } from './geometries';
 
 const getHighlightedLegendItemPath = (state: GlobalChartState) => state.interactions.highlightedLegendPath;
+const getSpecs = (state: GlobalChartState) => state.specs;
 
-const logic = {
+export const LegendStrategy = Object.freeze({
   node: (legendPath: LegendPath) => ({ path }: QuadViewModel) =>
     // highlight exact match in the path only
     legendPath.length === path.length &&
@@ -54,18 +57,22 @@ const logic = {
     legendPath
       .slice(0, path.length)
       .every(({ index, value }, i) => index === path[i]?.index && value === path[i]?.value),
-};
+});
 
-const pickedLogic: keyof typeof logic = 'key';
+export type LegendStrategy = $Keys<typeof LegendStrategy>;
+
+const defaultStrategy: LegendStrategy = 'key';
 
 /** @internal */
 // why is it called highlighted... when it's a legend hover related thing, not a hover over the slices?
 export const legendHoverHighlightNodes = createCachedSelector(
-  [getHighlightedLegendItemPath, partitionGeometries],
-  (highlightedLegendItemPath, geoms): QuadViewModel[] => {
+  [getSpecs, getHighlightedLegendItemPath, partitionGeometries],
+  (specs, highlightedLegendItemPath, geoms): QuadViewModel[] => {
     if (highlightedLegendItemPath.length === 0) {
       return [];
     }
-    return geoms.quadViewModel.filter(logic[pickedLogic](highlightedLegendItemPath));
+    // eslint-disable-next-line no-underscore-dangle
+    const pickedLogic: LegendStrategy = (specs.__global__settings___ as SettingsSpec).legendStrategy ?? defaultStrategy;
+    return geoms.quadViewModel.filter(LegendStrategy[pickedLogic](highlightedLegendItemPath));
   },
 )(getChartIdSelector);
