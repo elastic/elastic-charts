@@ -59,7 +59,7 @@ interface MapNode extends NodeDescriptor {
 
 export type PrimitiveValue = string | number | null; // there could be more but sufficient for now
 type Key = CategoryKey;
-type Sorter = (a: number, b: number) => number;
+export type Sorter = (a: number, b: number) => number;
 type NodeSorter = (a: ArrayEntry, b: ArrayEntry) => number;
 
 export const entryKey = ([key]: ArrayEntry) => key;

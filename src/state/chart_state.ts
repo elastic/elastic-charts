@@ -183,7 +183,6 @@ export interface InteractionsState {
   pointer: PointerStates;
   highlightedLegendItemKey: PrimitiveValue | null;
   highlightedLegendPath: LegendPath;
-  legendCollapsed: boolean;
   deselectedDataSeries: SeriesIdentifier[];
 }
 
