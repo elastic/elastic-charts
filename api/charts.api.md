@@ -1935,9 +1935,9 @@ export interface XYChartSeriesIdentifier extends SeriesIdentifier {
     // (undocumented)
     seriesKeys: (string | number)[];
     // (undocumented)
-    smHorizontalAccessorValue?: string | number;
+    smHorizontalAccessorValue?: string | number | null;
     // (undocumented)
-    smVerticalAccessorValue?: string | number;
+    smVerticalAccessorValue?: string | number | null;
     // (undocumented)
     splitAccessors: Map<string | number, string | number>;
     // (undocumented)
