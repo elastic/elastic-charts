@@ -88,6 +88,10 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
     padding-top: $legendItemVerticalPadding / 2;
     padding-bottom: $legendItemVerticalPadding / 2;
 
+    &:first-of-type {
+      margin-top: $legendItemVerticalPadding / 2;
+    }
+
     .background {
       margin-top: $legendItemVerticalPadding / 2;
       margin-bottom: $legendItemVerticalPadding / 2;
