@@ -19,7 +19,7 @@
 
 import { SeriesIdentifier, SeriesKey } from '../../../commons/series_id';
 import { ScaleType } from '../../../scales/constants';
-import { GroupBySpec, BinAgg, Direction, XScaleType, DEFAULT_SINGLE_PANEL_SM_VALUE } from '../../../specs';
+import { GroupBySpec, BinAgg, Direction, XScaleType } from '../../../specs';
 import { OrderBy } from '../../../specs/settings';
 import { ColorOverrides } from '../../../state/chart_state';
 import { Accessor, AccessorFn, getAccessorValue } from '../../../utils/accessor';
@@ -70,8 +70,8 @@ export interface DataSeriesDatum<T = any> {
 export interface XYChartSeriesIdentifier extends SeriesIdentifier {
   yAccessor: Accessor;
   splitAccessors: Map<string | number, string | number>; // does the map have a size vs making it optional
-  smVerticalAccessorValue?: string | number;
-  smHorizontalAccessorValue?: string | number;
+  smVerticalAccessorValue?: string | number | null;
+  smHorizontalAccessorValue?: string | number | null;
   seriesKeys: (string | number)[];
 }
 
@@ -182,14 +182,12 @@ export function splitSeriesDataByAccessors(
     let sum = xValueSums.get(x) ?? 0;
 
     // extract small multiples aggregation values
-    const smH = smallMultiples?.horizontal?.by
-      ? smallMultiples.horizontal?.by(spec, datum)
-      : DEFAULT_SINGLE_PANEL_SM_VALUE;
+    const smH = smallMultiples?.horizontal?.by?.(spec, datum) ?? null;
     if (!isNil(smH)) {
       smHValues.add(smH);
     }
 
-    const smV = smallMultiples?.vertical?.by ? smallMultiples.vertical.by(spec, datum) : DEFAULT_SINGLE_PANEL_SM_VALUE;
+    const smV = smallMultiples?.vertical?.by?.(spec, datum) ?? null;
     if (!isNil(smV)) {
       smVValues.add(smV);
     }
