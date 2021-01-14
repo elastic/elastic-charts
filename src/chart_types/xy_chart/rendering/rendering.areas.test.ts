@@ -117,10 +117,9 @@ describe('Rendering points - areas', () => {
             yAccessor: 1,
             splitAccessors: new Map(),
             seriesKeys: [1],
-            key:
-              'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}smV{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}smH{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}',
-            smHorizontalAccessorValue: '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__',
-            smVerticalAccessorValue: '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__',
+            key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
+            smHorizontalAccessorValue: null,
+            smVerticalAccessorValue: null,
           },
           styleOverrides: undefined,
           value: {
@@ -153,10 +152,9 @@ describe('Rendering points - areas', () => {
             yAccessor: 1,
             splitAccessors: new Map(),
             seriesKeys: [1],
-            key:
-              'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}smV{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}smH{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}',
-            smHorizontalAccessorValue: '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__',
-            smVerticalAccessorValue: '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__',
+            key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
+            smHorizontalAccessorValue: null,
+            smVerticalAccessorValue: null,
           },
           styleOverrides: undefined,
           value: {
@@ -248,10 +246,9 @@ describe('Rendering points - areas', () => {
             yAccessor: 1,
             splitAccessors: new Map(),
             seriesKeys: [1],
-            key:
-              'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}smV{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}smH{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}',
-            smHorizontalAccessorValue: '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__',
-            smVerticalAccessorValue: '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__',
+            key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
+            smHorizontalAccessorValue: null,
+            smVerticalAccessorValue: null,
           },
           styleOverrides: undefined,
           value: {
@@ -284,10 +281,9 @@ describe('Rendering points - areas', () => {
             yAccessor: 1,
             splitAccessors: new Map(),
             seriesKeys: [1],
-            key:
-              'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}smV{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}smH{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}',
-            smHorizontalAccessorValue: '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__',
-            smVerticalAccessorValue: '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__',
+            key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
+            smHorizontalAccessorValue: null,
+            smVerticalAccessorValue: null,
           },
           styleOverrides: undefined,
           value: {
@@ -325,10 +321,9 @@ describe('Rendering points - areas', () => {
             yAccessor: 1,
             splitAccessors: new Map(),
             seriesKeys: [1],
-            key:
-              'groupId{group_1}spec{spec_2}yAccessor{1}splitAccessors{}smV{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}smH{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}',
-            smHorizontalAccessorValue: '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__',
-            smVerticalAccessorValue: '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__',
+            key: 'groupId{group_1}spec{spec_2}yAccessor{1}splitAccessors{}',
+            smHorizontalAccessorValue: null,
+            smVerticalAccessorValue: null,
           },
           styleOverrides: undefined,
           value: {
@@ -361,10 +356,9 @@ describe('Rendering points - areas', () => {
             yAccessor: 1,
             splitAccessors: new Map(),
             seriesKeys: [1],
-            key:
-              'groupId{group_1}spec{spec_2}yAccessor{1}splitAccessors{}smV{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}smH{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}',
-            smHorizontalAccessorValue: '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__',
-            smVerticalAccessorValue: '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__',
+            key: 'groupId{group_1}spec{spec_2}yAccessor{1}splitAccessors{}',
+            smHorizontalAccessorValue: null,
+            smVerticalAccessorValue: null,
           },
           styleOverrides: undefined,
           value: {

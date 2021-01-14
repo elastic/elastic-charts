@@ -78,11 +78,11 @@ export class IndexedGeometryMap {
     }
 
     const spatialValues = point === undefined ? [] : this.spatialMap.find(point);
-    const values = [...this.linearMap.find(x), ...spatialValues].filter((v) => !isNil(v));
-
-    return values.filter(({ seriesIdentifier: { smHorizontalAccessorValue, smVerticalAccessorValue } }) => {
-      return smVerticalAccessorValue === smVerticalValue && smHorizontalAccessorValue === smHorizontalValue;
-    });
+    return [...this.linearMap.find(x), ...spatialValues].filter(
+      ({ seriesIdentifier: { smHorizontalAccessorValue, smVerticalAccessorValue } }) =>
+        (isNil(smVerticalValue) || smVerticalAccessorValue === smVerticalValue) &&
+        (isNil(smHorizontalValue) || smHorizontalAccessorValue === smHorizontalValue),
+    );
   }
 
   getMergeData() {
