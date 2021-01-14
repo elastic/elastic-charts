@@ -57,13 +57,14 @@ export const computeLegendSelector = createCachedSelector(
 
     items.sort(compareTreePaths);
 
-    return items.map<LegendItem>(({ dataName, fillColor, depth }) => {
+    return items.map<LegendItem>(({ dataName, fillColor, depth, path }) => {
       const formatter = pieSpec.layers[depth - 1]?.nodeLabel ?? identity;
       return {
         color: fillColor,
         label: formatter(dataName),
         dataName,
         childId: dataName,
+        path,
         depth: forceFlatLegend ? 0 : depth - 1,
         seriesIdentifier: { key: dataName, specId: pieSpec.id },
       };

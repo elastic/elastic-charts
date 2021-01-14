@@ -24,11 +24,13 @@ export function getExtra(extraValues: Map<string, LegendItemExtraValues>, item: 
     seriesIdentifier: { key },
     defaultExtra,
     childId,
+    path,
   } = item;
   if (extraValues.size === 0) {
     return defaultExtra?.formatted ?? '';
   }
-  const itemExtraValues = extraValues.get(key);
+  const extraValueKey = path ? path.join('__') : key;
+  const itemExtraValues = extraValues.get(extraValueKey);
   const actionExtra = (childId && itemExtraValues?.get(childId)) ?? null;
   if (extraValues.size !== totalItems) {
     if (actionExtra != null) {

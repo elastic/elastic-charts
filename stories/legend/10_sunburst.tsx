@@ -35,6 +35,7 @@ import {
 
 export const Example = () => {
   const flatLegend = boolean('flatLegend', true);
+  const showLegendExtra = boolean('showLegendExtra', false);
   const legendMaxDepth = number('legendMaxDepth', 2, {
     min: 0,
     max: 3,
@@ -43,7 +44,13 @@ export const Example = () => {
 
   return (
     <Chart className="story-chart">
-      <Settings showLegend flatLegend={flatLegend} legendMaxDepth={legendMaxDepth} theme={STORYBOOK_LIGHT_THEME} />
+      <Settings
+        showLegend
+        showLegendExtra={showLegendExtra}
+        flatLegend={flatLegend}
+        legendMaxDepth={legendMaxDepth}
+        theme={STORYBOOK_LIGHT_THEME}
+      />
       <Partition
         id="spec_1"
         data={mocks.miniSunburst}

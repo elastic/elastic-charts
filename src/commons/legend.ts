@@ -20,14 +20,19 @@
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { Color } from '../utils/commons';
 import { SeriesIdentifier } from './series_id';
+
 /** @internal */
-export type LegendItemChildId = string;
+export type LegendItemChildId = string | number;
 
 /** @internal */
 export type LegendItem = {
   seriesIdentifier: SeriesIdentifier;
   childId?: LegendItemChildId;
   depth?: number;
+  /**
+   * Path to iterm in hierarchical legend
+   */
+  path?: number[];
   color: Color;
   label: string;
   isSeriesHidden?: boolean;
