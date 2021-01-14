@@ -6,7 +6,6 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
   flex-wrap: nowrap;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
 
   &:not(&--hidden) {
     .echLegendItem__color--changable {

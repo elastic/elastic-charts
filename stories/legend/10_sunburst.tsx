@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { boolean, number } from '@storybook/addon-knobs';
+import { boolean, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Datum, Partition, PartitionLayout, Settings } from '../../src';
@@ -34,6 +34,14 @@ import {
 } from '../utils/utils';
 
 export const Example = () => {
+  const partitionLayout = select(
+    'Partition Layout',
+    {
+      treemap: PartitionLayout.treemap,
+      sunburst: PartitionLayout.sunburst,
+    },
+    PartitionLayout.sunburst,
+  );
   const flatLegend = boolean('flatLegend', true);
   const showLegendExtra = boolean('showLegendExtra', false);
   const legendMaxDepth = number('legendMaxDepth', 2, {
@@ -81,7 +89,7 @@ export const Example = () => {
           },
         ]}
         config={{
-          partitionLayout: PartitionLayout.sunburst,
+          partitionLayout,
           linkLabel: {
             maxCount: 0,
             fontSize: 14,
