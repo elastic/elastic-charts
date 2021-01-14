@@ -23,7 +23,6 @@ import { ChartTypes } from '../chart_types';
 import { getConnect, specComponentFactory } from '../state/spec_factory';
 import { SpecTypes } from './constants';
 
-/** @internal */
 export const DEFAULT_SINGLE_PANEL_SM_VALUE = '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__';
 
 /** @internal */
