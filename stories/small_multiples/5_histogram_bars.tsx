@@ -55,7 +55,7 @@ const numberOptions: NumberTypeKnobOptions = {
 };
 
 export const Example = () => {
-  const enableHistogramMode = boolean('EnableHistogramMode', false);
+  const enableHistogramMode = boolean('EnableHistogramMode', true);
   const barsPadding = number('barsPadding', 0, numberOptions);
   const histogramPadding = number('histogramPadding', 0, numberOptions);
 
