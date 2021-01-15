@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { boolean, number } from '@storybook/addon-knobs';
+import { boolean, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Datum, Partition, PartitionLayout, Settings } from '../../src';
@@ -40,10 +40,28 @@ export const Example = () => {
     max: 3,
     step: 1,
   });
+  const legendStrategy = select(
+    'legendStrategy',
+    {
+      node: 'node',
+      path: 'path',
+      keyInLayer: 'keyInLayer',
+      key: 'key',
+      nodeWithDescendants: 'nodeWithDescendants',
+      pathWithDescendants: 'pathWithDescendants',
+    },
+    'key',
+  );
 
   return (
     <Chart className="story-chart">
-      <Settings showLegend flatLegend={flatLegend} legendMaxDepth={legendMaxDepth} theme={STORYBOOK_LIGHT_THEME} />
+      <Settings
+        showLegend
+        flatLegend={flatLegend}
+        legendStrategy={legendStrategy}
+        legendMaxDepth={legendMaxDepth}
+        theme={STORYBOOK_LIGHT_THEME}
+      />
       <Partition
         id="spec_1"
         data={mocks.miniSunburst}
