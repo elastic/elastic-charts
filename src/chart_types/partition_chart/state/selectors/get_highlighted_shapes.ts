@@ -58,8 +58,7 @@ const legendStrategies = Object.freeze({
 });
 
 /** @public */
-export type LegendStrategy = keyof typeof legendStrategies;
-// export type LegendStrategy = 'node' | 'path' | 'key' | 'keyInLayer' | 'nodeWithDescendants' | 'pathWithDescendants';
+export type LegendStrategy = 'node' | 'path' | 'key' | 'keyInLayer' | 'nodeWithDescendants' | 'pathWithDescendants'; // keyof typeof legendStrategies
 
 const defaultStrategy: LegendStrategy = 'key';
 

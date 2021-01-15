@@ -1061,10 +1061,8 @@ export interface LegendColorPickerProps {
 // @public (undocumented)
 export type LegendItemListener = (series: SeriesIdentifier | null) => void;
 
-// Warning: (ae-forgotten-export) The symbol "legendStrategies" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
-export type LegendStrategy = keyof typeof legendStrategies;
+export type LegendStrategy = 'node' | 'path' | 'key' | 'keyInLayer' | 'nodeWithDescendants' | 'pathWithDescendants';
 
 // Warning: (ae-missing-release-tag) "LegendStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
