@@ -177,9 +177,8 @@ export const LIGHT_THEME: Theme = {
     },
     line: {
       stroke: '#98A2B3',
-      strokeWidth: 3,
+      strokeWidth: 1,
       visible: true,
-      dash: [5, 5],
     },
     crossLine: {
       stroke: '#777',
