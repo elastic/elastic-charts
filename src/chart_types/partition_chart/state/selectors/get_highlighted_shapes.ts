@@ -20,15 +20,14 @@
 import createCachedSelector from 're-reselect';
 import { $Keys } from 'utility-types';
 
-import { SettingsSpec } from '../../../../specs';
 import { LegendPath } from '../../../../state/actions/legend';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { QuadViewModel } from '../../layout/types/viewmodel_types';
 import { partitionGeometries } from './geometries';
 
 const getHighlightedLegendItemPath = (state: GlobalChartState) => state.interactions.highlightedLegendPath;
-const getSpecs = (state: GlobalChartState) => state.specs;
 
 export const LegendStrategy = Object.freeze({
   node: (legendPath: LegendPath) => ({ path }: QuadViewModel) =>
@@ -66,13 +65,12 @@ const defaultStrategy: LegendStrategy = 'key';
 /** @internal */
 // why is it called highlighted... when it's a legend hover related thing, not a hover over the slices?
 export const legendHoverHighlightNodes = createCachedSelector(
-  [getSpecs, getHighlightedLegendItemPath, partitionGeometries],
+  [getSettingsSpecSelector, getHighlightedLegendItemPath, partitionGeometries],
   (specs, highlightedLegendItemPath, geoms): QuadViewModel[] => {
     if (highlightedLegendItemPath.length === 0) {
       return [];
     }
-    // eslint-disable-next-line no-underscore-dangle
-    const pickedLogic: LegendStrategy = (specs.__global__settings___ as SettingsSpec).legendStrategy ?? defaultStrategy;
+    const pickedLogic: LegendStrategy = specs.legendStrategy ?? defaultStrategy;
     return geoms.quadViewModel.filter(LegendStrategy[pickedLogic](highlightedLegendItemPath));
   },
 )(getChartIdSelector);
