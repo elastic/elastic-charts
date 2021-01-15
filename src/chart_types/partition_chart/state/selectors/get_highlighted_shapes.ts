@@ -18,47 +18,48 @@
  */
 
 import createCachedSelector from 're-reselect';
-import { $Keys } from 'utility-types';
 
 import { LegendPath } from '../../../../state/actions/legend';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { QuadViewModel } from '../../layout/types/viewmodel_types';
+import { DataName, QuadViewModel } from '../../layout/types/viewmodel_types';
 import { partitionGeometries } from './geometries';
 
 const getHighlightedLegendItemPath = (state: GlobalChartState) => state.interactions.highlightedLegendPath;
 
-export const LegendStrategy = Object.freeze({
-  node: (legendPath: LegendPath) => ({ path }: QuadViewModel) =>
+const legendStrategies = Object.freeze({
+  node: (legendPath: LegendPath) => ({ path }: { path: LegendPath }) =>
     // highlight exact match in the path only
     legendPath.length === path.length &&
     legendPath.every(({ index, value }, i) => index === path[i]?.index && value === path[i]?.value),
 
-  path: (legendPath: LegendPath) => ({ path }: QuadViewModel) =>
+  path: (legendPath: LegendPath) => ({ path }: { path: LegendPath }) =>
     // highlight members of the exact path; ie. exact match in the path, plus all its ancestors
     path.every(({ index, value }, i) => index === legendPath[i]?.index && value === legendPath[i]?.value),
 
-  keyInLayer: (legendPath: LegendPath) => ({ dataName, path }: QuadViewModel) =>
+  keyInLayer: (legendPath: LegendPath) => ({ path, dataName }: { path: LegendPath; dataName: DataName }) =>
     // highlight all identically named items which are within the same depth (ring) as the hovered legend depth
     legendPath.length === path.length && dataName === legendPath[legendPath.length - 1].value,
 
-  key: (legendPath: LegendPath) => ({ dataName }: QuadViewModel) =>
+  key: (legendPath: LegendPath) => ({ dataName }: { dataName: DataName }) =>
     // highlight all identically named items, no matter where they are
     dataName === legendPath[legendPath.length - 1].value,
 
-  nodeWithDescendants: (legendPath: LegendPath) => ({ path }: QuadViewModel) =>
+  nodeWithDescendants: (legendPath: LegendPath) => ({ path }: { path: LegendPath }) =>
     // highlight exact match in the path, and everything that is its descendant in that branch
     legendPath.every(({ index, value }, i) => index === path[i]?.index && value === path[i]?.value),
 
-  pathWithDescendants: (legendPath: LegendPath) => ({ path }: QuadViewModel) =>
+  pathWithDescendants: (legendPath: LegendPath) => ({ path }: { path: LegendPath }) =>
     // highlight exact match in the path, and everything that is its ancestor, or its descendant in that branch
     legendPath
       .slice(0, path.length)
       .every(({ index, value }, i) => index === path[i]?.index && value === path[i]?.value),
 });
 
-export type LegendStrategy = $Keys<typeof LegendStrategy>;
+/** @public */
+export type LegendStrategy = keyof typeof legendStrategies;
+// export type LegendStrategy = 'node' | 'path' | 'key' | 'keyInLayer' | 'nodeWithDescendants' | 'pathWithDescendants';
 
 const defaultStrategy: LegendStrategy = 'key';
 
@@ -71,6 +72,6 @@ export const legendHoverHighlightNodes = createCachedSelector(
       return [];
     }
     const pickedLogic: LegendStrategy = specs.legendStrategy ?? defaultStrategy;
-    return geoms.quadViewModel.filter(LegendStrategy[pickedLogic](highlightedLegendItemPath));
+    return geoms.quadViewModel.filter(legendStrategies[pickedLogic](highlightedLegendItemPath));
   },
 )(getChartIdSelector);
