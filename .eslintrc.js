@@ -58,13 +58,6 @@ module.exports = {
 
     /**
      *****************************************
-     * Override overbearing rules
-     *****************************************
-     */
-    '@typescript-eslint/lines-between-class-members': 0,
-
-    /**
-     *****************************************
      * Rules to consider adding/fixing later
      *****************************************
      */
@@ -114,6 +107,7 @@ module.exports = {
     'no-bitwise': 0,
     'no-void': 0,
     yoda: 0,
+    'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
     'no-restricted-globals': 0,
     'no-case-declarations': 0,
     'no-return-await': 0,
