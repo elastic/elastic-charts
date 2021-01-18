@@ -181,7 +181,7 @@ export interface PointerStates {
 /** @internal */
 export interface InteractionsState {
   pointer: PointerStates;
-  highlightedLegendItemKey: PrimitiveValue | null;
+  highlightedLegendItemKey: PrimitiveValue;
   highlightedLegendPath: LegendPath;
   deselectedDataSeries: SeriesIdentifier[];
 }
