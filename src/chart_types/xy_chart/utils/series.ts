@@ -70,8 +70,8 @@ export interface DataSeriesDatum<T = any> {
 export interface XYChartSeriesIdentifier extends SeriesIdentifier {
   yAccessor: Accessor;
   splitAccessors: Map<string | number, string | number>; // does the map have a size vs making it optional
-  smVerticalAccessorValue?: string | number | null;
-  smHorizontalAccessorValue?: string | number | null;
+  smVerticalAccessorValue?: string | number;
+  smHorizontalAccessorValue?: string | number;
   seriesKeys: (string | number)[];
 }
 
