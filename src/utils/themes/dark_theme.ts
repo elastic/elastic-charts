@@ -176,7 +176,7 @@ export const DARK_THEME: Theme = {
       visible: true,
     },
     line: {
-      stroke: '#535966',
+      stroke: '#999',
       strokeWidth: 1,
       visible: true,
     },

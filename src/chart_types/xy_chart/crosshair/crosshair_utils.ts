@@ -20,6 +20,7 @@
 import { TooltipAnchorPosition } from '../../../components/tooltip/types';
 import { Line, Rect } from '../../../geoms/types';
 import { Scale } from '../../../scales';
+import { isContinuousScale } from '../../../scales/types';
 import { Rotation } from '../../../utils/commons';
 import { Dimensions } from '../../../utils/dimensions';
 import { Point } from '../../../utils/point';
@@ -110,7 +111,7 @@ export function getCursorBandPosition(
     return undefined;
   }
 
-  const snappedPosition = getSnapPosition(invertedValue.value, xScale, totalBarsInCluster);
+  const snappedPosition = getSnapPosition(invertedValue.value, xScale, isLineOrAreaOnly ? 1 : totalBarsInCluster);
   if (!snappedPosition) {
     return undefined;
   }
@@ -128,7 +129,7 @@ export function getCursorBandPosition(
       adjustedWidth = band - (left - leftPosition);
       leftPosition = left;
     }
-    if (isLineOrAreaOnly) {
+    if (isLineOrAreaOnly && isContinuousScale(xScale)) {
       return {
         x1: leftPosition,
         x2: leftPosition,
@@ -152,7 +153,7 @@ export function getCursorBandPosition(
     adjustedHeight = band - (top - topPosition);
     topPosition = top;
   }
-  if (isLineOrAreaOnly) {
+  if (isLineOrAreaOnly && isContinuousScale(xScale)) {
     return {
       x1: left,
       x2: left + width,
