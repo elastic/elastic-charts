@@ -118,8 +118,6 @@ describe('Rendering points - areas', () => {
             splitAccessors: new Map(),
             seriesKeys: [1],
             key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
-            smHorizontalAccessorValue: null,
-            smVerticalAccessorValue: null,
           },
           styleOverrides: undefined,
           value: {
@@ -153,8 +151,6 @@ describe('Rendering points - areas', () => {
             splitAccessors: new Map(),
             seriesKeys: [1],
             key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
-            smHorizontalAccessorValue: null,
-            smVerticalAccessorValue: null,
           },
           styleOverrides: undefined,
           value: {
@@ -247,8 +243,6 @@ describe('Rendering points - areas', () => {
             splitAccessors: new Map(),
             seriesKeys: [1],
             key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
-            smHorizontalAccessorValue: null,
-            smVerticalAccessorValue: null,
           },
           styleOverrides: undefined,
           value: {
@@ -282,8 +276,6 @@ describe('Rendering points - areas', () => {
             splitAccessors: new Map(),
             seriesKeys: [1],
             key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
-            smHorizontalAccessorValue: null,
-            smVerticalAccessorValue: null,
           },
           styleOverrides: undefined,
           value: {
@@ -322,8 +314,6 @@ describe('Rendering points - areas', () => {
             splitAccessors: new Map(),
             seriesKeys: [1],
             key: 'groupId{group_1}spec{spec_2}yAccessor{1}splitAccessors{}',
-            smHorizontalAccessorValue: null,
-            smVerticalAccessorValue: null,
           },
           styleOverrides: undefined,
           value: {
@@ -357,8 +347,6 @@ describe('Rendering points - areas', () => {
             splitAccessors: new Map(),
             seriesKeys: [1],
             key: 'groupId{group_1}spec{spec_2}yAccessor{1}splitAccessors{}',
-            smHorizontalAccessorValue: null,
-            smVerticalAccessorValue: null,
           },
           styleOverrides: undefined,
           value: {

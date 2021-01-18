@@ -48,8 +48,6 @@ export class MockSeriesIdentifier {
     seriesKeys: ['a'],
     splitAccessors: new Map().set('g', 'a'),
     key: 'spec{bars}yAccessor{y}splitAccessors{g-a}',
-    smHorizontalAccessorValue: null,
-    smVerticalAccessorValue: null,
   };
 
   static default(partial?: Partial<XYChartSeriesIdentifier>) {

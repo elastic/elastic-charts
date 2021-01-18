@@ -28595,8 +28595,6 @@ Array [
       "y",
     ],
     "seriesType": "line",
-    "smHorizontalAccessorValue": null,
-    "smVerticalAccessorValue": null,
     "spec": Object {
       "chartType": "xy_axis",
       "data": Array [
@@ -28709,8 +28707,6 @@ Array [
       "y1",
     ],
     "seriesType": "line",
-    "smHorizontalAccessorValue": null,
-    "smVerticalAccessorValue": null,
     "spec": Object {
       "chartType": "xy_axis",
       "data": Array [
@@ -28826,8 +28822,6 @@ Array [
       "y2",
     ],
     "seriesType": "line",
-    "smHorizontalAccessorValue": null,
-    "smVerticalAccessorValue": null,
     "spec": Object {
       "chartType": "xy_axis",
       "data": Array [

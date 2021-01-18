@@ -375,8 +375,6 @@ function mouseOverTestSuite(scaleType: XScaleType) {
           specId: 'spec_1',
           splitAccessors: new Map(),
           yAccessor: 1,
-          smHorizontalAccessorValue: null,
-          smVerticalAccessorValue: null,
         },
       ],
     ]);
@@ -423,9 +421,6 @@ function mouseOverTestSuite(scaleType: XScaleType) {
           specId: 'spec_1',
           splitAccessors: new Map(),
           yAccessor: 1,
-
-          smHorizontalAccessorValue: null,
-          smVerticalAccessorValue: null,
         },
       ],
     ]);
@@ -475,8 +470,6 @@ function mouseOverTestSuite(scaleType: XScaleType) {
           specId: 'spec_1',
           splitAccessors: new Map(),
           yAccessor: 1,
-          smHorizontalAccessorValue: null,
-          smVerticalAccessorValue: null,
         },
       ],
     ]);
@@ -531,8 +524,6 @@ function mouseOverTestSuite(scaleType: XScaleType) {
           specId: 'spec_1',
           splitAccessors: new Map(),
           yAccessor: 1,
-          smHorizontalAccessorValue: null,
-          smVerticalAccessorValue: null,
         },
       ],
     ]);
@@ -566,8 +557,6 @@ function mouseOverTestSuite(scaleType: XScaleType) {
           specId: 'spec_1',
           splitAccessors: new Map(),
           yAccessor: 1,
-          smHorizontalAccessorValue: null,
-          smVerticalAccessorValue: null,
         },
       ],
     ]);
@@ -665,8 +654,6 @@ function mouseOverTestSuite(scaleType: XScaleType) {
           specId: 'spec_1',
           splitAccessors: new Map(),
           yAccessor: 1,
-          smHorizontalAccessorValue: null,
-          smVerticalAccessorValue: null,
         },
       ],
     ]);

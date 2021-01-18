@@ -68,8 +68,6 @@ Array [
       "y",
     ],
     "seriesType": "line",
-    "smHorizontalAccessorValue": null,
-    "smVerticalAccessorValue": null,
     "spec": Object {
       "chartType": "xy_axis",
       "data": Array [
@@ -174,8 +172,6 @@ Array [
       "y",
     ],
     "seriesType": "line",
-    "smHorizontalAccessorValue": null,
-    "smVerticalAccessorValue": null,
     "spec": Object {
       "chartType": "xy_axis",
       "data": Array [
@@ -286,8 +282,6 @@ Array [
       "y",
     ],
     "seriesType": "line",
-    "smHorizontalAccessorValue": null,
-    "smVerticalAccessorValue": null,
     "spec": Object {
       "chartType": "xy_axis",
       "data": Array [
@@ -425,8 +419,6 @@ Array [
       "y",
     ],
     "seriesType": "line",
-    "smHorizontalAccessorValue": null,
-    "smVerticalAccessorValue": null,
     "spec": Object {
       "chartType": "xy_axis",
       "data": Array [
@@ -573,8 +565,6 @@ Array [
       "y",
     ],
     "seriesType": "line",
-    "smHorizontalAccessorValue": null,
-    "smVerticalAccessorValue": null,
     "spec": Object {
       "chartType": "xy_axis",
       "data": Array [
@@ -713,8 +703,6 @@ Array [
       "y",
     ],
     "seriesType": "line",
-    "smHorizontalAccessorValue": null,
-    "smVerticalAccessorValue": null,
     "spec": Object {
       "chartType": "xy_axis",
       "data": Array [

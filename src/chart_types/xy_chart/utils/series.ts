@@ -209,8 +209,8 @@ export function splitSeriesDataByAccessors(
         seriesKeys,
         yAccessor: accessorStr,
         splitAccessors,
-        smVerticalAccessorValue: smV,
-        smHorizontalAccessorValue: smH,
+        ...(smV && { smVerticalAccessorValue: smV }),
+        ...(smH && { smHorizontalAccessorValue: smH }),
       };
       const seriesKey = getSeriesKey(seriesIdentifier, groupId);
       sum += cleanedDatum.y1 ?? 0;
