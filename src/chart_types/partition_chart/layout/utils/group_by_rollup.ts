@@ -58,7 +58,7 @@ interface MapNode extends NodeDescriptor {
 }
 
 /** @internal */
-export const hierarchyRootKey: Key = '';
+export const hierarchyRootKey: Key = '__root_key__';
 
 export type PrimitiveValue = string | number | null; // there could be more but sufficient for now
 type Key = CategoryKey;
