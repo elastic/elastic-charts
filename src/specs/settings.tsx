@@ -356,7 +356,7 @@ export interface SettingsSpec extends Spec {
    */
   flatLegend?: boolean;
   /**
-   * Display the legend as a flat hierarchy
+   * Choose a partition highlighting strategy for hovering over legend items
    */
   legendStrategy?: LegendStrategy;
   /**

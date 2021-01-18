@@ -146,7 +146,8 @@ function getRootArrayNode(): ArrayNode {
     [SORT_INDEX_KEY]: 0,
     [STATISTICS_KEY]: { globalAggregate: 0 },
   };
-  return { ...bootstrap, [PARENT_KEY]: bootstrap } as ArrayNode; // TS doesn't yet handle bootstrapping but the `Omit` above retains guarantee for all props except `[PARENT_KEY]`
+  (bootstrap as ArrayNode)[PARENT_KEY] = bootstrap as ArrayNode;
+  return bootstrap as ArrayNode; // TS doesn't yet handle bootstrapping but the `Omit` above retains guarantee for all props except `[PARENT_KEY]`
 }
 
 /** @internal */
