@@ -18,6 +18,7 @@
  */
 
 import createCachedSelector from 're-reselect';
+import { $Values } from 'utility-types';
 
 import { LegendPath } from '../../../../state/actions/legend';
 import { GlobalChartState } from '../../../../state/chart_state';
@@ -58,9 +59,36 @@ const legendStrategies = Object.freeze({
 });
 
 /** @public */
-export type LegendStrategy = 'node' | 'path' | 'key' | 'keyInLayer' | 'nodeWithDescendants' | 'pathWithDescendants'; // keyof typeof legendStrategies
+export const LegendStrategy = Object.freeze({
+  /**
+   * Highlight the specific node(s) that the legend item stands for.
+   */
+  Node: 'node' as const,
+  /**
+   * Highlight members of the exact path; ie. like `Node`, plus all its ancestors
+   */
+  Path: 'path' as const,
+  /**
+   * Highlight all identically named (labelled) items within the tree layer (depth or ring) of the specific node(s) that the legend item stands for
+   */
+  KeyInLayer: 'keyInLayer' as const,
+  /**
+   * Highlight all identically named (labelled) items, no matter where they are
+   */
+  Key: 'key' as const,
+  /**
+   * Highlight the specific node(s) that the legend item stands for, plus all descendants
+   */
+  NodeWithDescendants: 'nodeWithDescendants' as const,
+  /**
+   * Highlight the specific node(s) that the legend item stands for, plus all ancestors and descendants
+   */
+  PathWithDescendants: 'pathWithDescendants' as const,
+});
 
-const defaultStrategy: LegendStrategy = 'key';
+/** @public */
+export type LegendStrategy = $Values<typeof LegendStrategy>;
+const defaultStrategy: LegendStrategy = LegendStrategy.Key;
 
 /** @internal */
 // why is it called highlighted... when it's a legend hover related thing, not a hover over the slices?

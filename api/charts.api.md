@@ -1062,7 +1062,17 @@ export interface LegendColorPickerProps {
 export type LegendItemListener = (series: SeriesIdentifier | null) => void;
 
 // @public (undocumented)
-export type LegendStrategy = 'node' | 'path' | 'key' | 'keyInLayer' | 'nodeWithDescendants' | 'pathWithDescendants';
+export const LegendStrategy: Readonly<{
+    Node: "node";
+    Path: "path";
+    KeyInLayer: "keyInLayer";
+    Key: "key";
+    NodeWithDescendants: "nodeWithDescendants";
+    PathWithDescendants: "pathWithDescendants";
+}>;
+
+// @public (undocumented)
+export type LegendStrategy = $Values<typeof LegendStrategy>;
 
 // Warning: (ae-missing-release-tag) "LegendStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //

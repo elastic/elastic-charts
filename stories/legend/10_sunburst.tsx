@@ -20,7 +20,7 @@
 import { boolean, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, Settings } from '../../src';
+import { Chart, Datum, LegendStrategy, Partition, PartitionLayout, Settings } from '../../src';
 import { config } from '../../src/chart_types/partition_chart/layout/config/config';
 import { ShapeTreeNode } from '../../src/chart_types/partition_chart/layout/types/viewmodel_types';
 import { mocks } from '../../src/mocks/hierarchical';
@@ -40,18 +40,7 @@ export const Example = () => {
     max: 3,
     step: 1,
   });
-  const legendStrategy = select(
-    'legendStrategy',
-    {
-      node: 'node',
-      path: 'path',
-      keyInLayer: 'keyInLayer',
-      key: 'key',
-      nodeWithDescendants: 'nodeWithDescendants',
-      pathWithDescendants: 'pathWithDescendants',
-    },
-    'key',
-  );
+  const legendStrategy = select('legendStrategy', LegendStrategy, LegendStrategy.Key);
 
   return (
     <Chart className="story-chart">
