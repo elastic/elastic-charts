@@ -58,7 +58,7 @@ interface MapNode extends NodeDescriptor {
 }
 
 /** @internal */
-export const hierarchyRootKey: Key = '__root_key__';
+export const HIERARCHY_ROOT_KEY: Key = '__root_key__';
 
 export type PrimitiveValue = string | number | null; // there could be more but sufficient for now
 type Key = CategoryKey;
@@ -129,8 +129,8 @@ export function groupByRollup(
     });
     return p;
   }, new Map());
-  if (reductionMap.get(hierarchyRootKey) !== undefined) {
-    statistics.globalAggregate = (reductionMap.get(hierarchyRootKey) as MapNode)[AGGREGATE_KEY];
+  if (reductionMap.get(HIERARCHY_ROOT_KEY) !== undefined) {
+    statistics.globalAggregate = (reductionMap.get(HIERARCHY_ROOT_KEY) as MapNode)[AGGREGATE_KEY];
   }
   return reductionMap;
 }

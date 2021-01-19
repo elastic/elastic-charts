@@ -23,7 +23,7 @@ import { MockSeriesSpec } from '../../mocks/specs';
 import { MockStore } from '../../mocks/store';
 import { GlobalChartState } from '../../state/chart_state';
 import { LegendItemLabel } from '../../state/selectors/get_legend_items_labels';
-import { hierarchyRootKey } from './layout/utils/group_by_rollup';
+import { HIERARCHY_ROOT_KEY } from './layout/utils/group_by_rollup';
 import { computeLegendSelector } from './state/selectors/compute_legend';
 import { getLegendItemsLabels } from './state/selectors/get_legend_items_labels';
 
@@ -98,7 +98,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
           childId: 'A',
           color: 'rgba(128, 0, 0, 0.5)',
           path: [
-            { index: 0, value: hierarchyRootKey },
+            { index: 0, value: HIERARCHY_ROOT_KEY },
             { index: 0, value: 'A' },
           ],
           depth: 0,
@@ -109,7 +109,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
           childId: 'A',
           color: 'rgba(128, 0, 0, 0.5)',
           path: [
-            { index: 0, value: hierarchyRootKey },
+            { index: 0, value: HIERARCHY_ROOT_KEY },
             { index: 0, value: 'A' },
             { index: 0, value: 'A' },
           ],
@@ -121,7 +121,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
           childId: 'B',
           color: 'rgba(128, 0, 0, 0.5)',
           path: [
-            { index: 0, value: hierarchyRootKey },
+            { index: 0, value: HIERARCHY_ROOT_KEY },
             { index: 0, value: 'A' },
             { index: 1, value: 'B' },
           ],
@@ -133,7 +133,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
           childId: 'B',
           color: 'rgba(128, 0, 0, 0.5)',
           path: [
-            { index: 0, value: hierarchyRootKey },
+            { index: 0, value: HIERARCHY_ROOT_KEY },
             { index: 1, value: 'B' },
           ],
           depth: 0,
@@ -144,7 +144,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
           childId: 'A',
           color: 'rgba(128, 0, 0, 0.5)',
           path: [
-            { index: 0, value: hierarchyRootKey },
+            { index: 0, value: HIERARCHY_ROOT_KEY },
             { index: 1, value: 'B' },
             { index: 0, value: 'A' },
           ],
@@ -156,7 +156,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
           childId: 'B',
           color: 'rgba(128, 0, 0, 0.5)',
           path: [
-            { index: 0, value: hierarchyRootKey },
+            { index: 0, value: HIERARCHY_ROOT_KEY },
             { index: 1, value: 'B' },
             { index: 1, value: 'B' },
           ],
@@ -168,7 +168,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
           childId: 'C',
           color: 'rgba(128, 0, 0, 0.5)',
           path: [
-            { index: 0, value: hierarchyRootKey },
+            { index: 0, value: HIERARCHY_ROOT_KEY },
             { index: 2, value: 'C' },
           ],
           depth: 0,
@@ -179,7 +179,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
           childId: 'A',
           color: 'rgba(128, 0, 0, 0.5)',
           path: [
-            { index: 0, value: hierarchyRootKey },
+            { index: 0, value: HIERARCHY_ROOT_KEY },
             { index: 2, value: 'C' },
             { index: 0, value: 'A' },
           ],
@@ -191,7 +191,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
           childId: 'B',
           color: 'rgba(128, 0, 0, 0.5)',
           path: [
-            { index: 0, value: hierarchyRootKey },
+            { index: 0, value: HIERARCHY_ROOT_KEY },
             { index: 2, value: 'C' },
             { index: 1, value: 'B' },
           ],
@@ -211,7 +211,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
           path: [
             {
               index: 0,
-              value: hierarchyRootKey,
+              value: HIERARCHY_ROOT_KEY,
             },
             {
               index: 0,
@@ -228,7 +228,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
           path: [
             {
               index: 0,
-              value: hierarchyRootKey,
+              value: HIERARCHY_ROOT_KEY,
             },
             {
               index: 0,
@@ -256,7 +256,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
           path: [
             {
               index: 0,
-              value: hierarchyRootKey,
+              value: HIERARCHY_ROOT_KEY,
             },
             {
               index: 0,
@@ -273,7 +273,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
           path: [
             {
               index: 0,
-              value: hierarchyRootKey,
+              value: HIERARCHY_ROOT_KEY,
             },
             {
               index: 0,

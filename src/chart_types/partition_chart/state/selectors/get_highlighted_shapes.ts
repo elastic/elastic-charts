@@ -93,7 +93,6 @@ export type LegendStrategy = $Values<typeof LegendStrategy>;
 const defaultStrategy: LegendStrategy = LegendStrategy.Key;
 
 /** @internal */
-// why is it called highlighted... when it's a legend hover related thing, not a hover over the slices?
 export const legendHoverHighlightNodes = createCachedSelector(
   [getSettingsSpecSelector, getHighlightedLegendItemPath, partitionGeometries],
   (specs, highlightedLegendItemPath, geoms): QuadViewModel[] => {
